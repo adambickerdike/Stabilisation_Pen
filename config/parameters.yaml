@@ -1,0 +1,125 @@
+# Active stabilisation pen: versioned parameter file
+# ---------------------------------------------------------------------------
+# Every leaf parameter is a mapping with:
+#   value : nominal value in the stated unit (SI unless the key ends in _deg or _pct)
+#   unit  : unit of value/min/max
+#   min, max : declared range used for sweeps and Monte Carlo (exploratory unless status says otherwise)
+#   dist  : sampling distribution for Monte Carlo: fixed | uniform | loguniform | normal_clip
+#   status: inherited_target | sourced | calculated | assumed | unknown | measured
+#   source: evidence ledger id(s) (docs/evidence.csv), requirement id, or "assumption"
+#   note  : what would change it / measurement that closes it
+# Nothing in this file is a measurement of our hardware unless status == measured.
+# ---------------------------------------------------------------------------
+meta:
+  version: "0.2.0"
+  date: "2026-09-26"
+  changelog:
+    - "0.1.0 initial provisional set from report audit"
+    - "0.2.0 lever/pivot baseline (DEC-003), transverse contact load model (COR-01)"
+
+# ---------------------------------------------------------------------------
+writing:            # use conditions (user + paper), NOT population distributions
+  tilt_deg:        {value: 50,   unit: deg, min: 35,    max: 75,   dist: uniform,    status: inherited_target, source: "REQ-ENV-001; report s4", note: "Altitude of barrel axis above paper. Replace range with measured task distribution (EXP-B05)."}
+  normal_force:    {value: 1.0,  unit: N,   min: 0.2,   max: 2.0,  dist: loguniform, status: inherited_target, source: "REQ-ENV-002; report s4", note: "Force normal to page. Bench sweep range, not a population distribution; see CON ledger."}
+  mu_eff:          {value: 0.15, unit: "-", min: 0.05,  max: 0.35, dist: uniform,    status: assumed,          source: "assumption pending EXP-B01 and CON ledger", note: "Effective tangential drag / normal force for rolling ballpoint with ink."}
+  mu_static_ratio: {value: 1.3,  unit: "-", min: 1.0,   max: 2.0,  dist: uniform,    status: assumed,          source: "assumption", note: "Breakaway / kinetic drag ratio; EXP-B01 measures."}
+  stribeck_speed:  {value: 0.002,unit: m/s, min: 0.0005,max: 0.01, dist: loguniform, status: assumed,          source: "assumption", note: "Speed scale of breakaway-to-kinetic transition."}
+  speed_typ:       {value: 0.030,unit: m/s, min: 0.010, max: 0.080,dist: uniform,    status: assumed,          source: "assumption pending CON ledger", note: "Typical pen-tip speed in fluent handwriting."}
+  letter_height:   {value: 0.004,unit: m,   min: 0.002, max: 0.008,dist: uniform,    status: assumed,          source: "assumption", note: "x-height of lower case letters."}
+  stroke_freq:     {value: 4.5,  unit: Hz,  min: 3.0,   max: 7.0,  dist: uniform,    status: assumed,          source: "assumption pending CON ledger", note: "Dominant stroke (half-cycle) frequency; overlaps tremor band."}
+  paper_stiffness: {value: 5.0e+4,unit: N/m, min: 1.0e+4, max: 2.0e+5,dist: loguniform, status: assumed,          source: "assumption", note: "Local contact stiffness of paper + underlay at the ball; EXP-B01 indentation."}
+  paper_damping:   {value: 5.0,  unit: N s/m, min: 1.0, max: 20.0, dist: loguniform, status: assumed,          source: "assumption", note: "Contact damping."}
+
+disturbance:        # synthetic test disturbances (inherited coverage), NOT patient distributions
+  tremor_freq:     {value: 6.0,  unit: Hz,  min: 3.0,  max: 12.0, dist: uniform,    status: inherited_target, source: "REQ-ENV-003", note: "Replace with measured writing-tremor spectra."}
+  tremor_amp_pk:   {value: 3.0e-4, unit: m, min: 1.0e-4, max: 1.0e-3, dist: loguniform, status: inherited_target, source: "REQ-ENV-003", note: "Peak displacement of housing at nib, per axis direction of oscillation."}
+  tremor_freq_jitter: {value: 0.3, unit: Hz, min: 0.0, max: 1.0, dist: uniform,   status: assumed,          source: "assumption", note: "RMS slow frequency wander (random walk bounded)."}
+  tremor_am_depth: {value: 0.3,  unit: "-", min: 0.0,  max: 0.6,  dist: uniform,    status: assumed,          source: "assumption", note: "Relative amplitude modulation depth."}
+  tremor_harmonic: {value: 0.15, unit: "-", min: 0.0,  max: 0.4,  dist: uniform,    status: assumed,          source: "assumption", note: "Relative amplitude of 2nd harmonic."}
+  tremor_ellipticity: {value: 0.4, unit: "-", min: 0.0, max: 1.0, dist: uniform,    status: assumed,          source: "assumption", note: "Minor/major axis ratio of tremor ellipse in paper plane."}
+
+hand:               # impedance of the hand holding the barrel (pending HAP ledger)
+  grip_stiffness:  {value: 800,  unit: N/m,   min: 200,  max: 3000, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: "Translational stiffness at the grip point."}
+  grip_damping:    {value: 8.0,  unit: N s/m, min: 2.0,  max: 30.0, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: "Translational damping at the grip point."}
+  normal_stiffness: {value: 800, unit: N/m,  min: 200, max: 3000, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: "Hand stiffness normal to the page at the grip (about the push force operating point)."}
+  normal_damping:  {value: 8.0,  unit: N s/m, min: 2.0, max: 30.0, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: ""}
+  effective_mass:  {value: 0.08, unit: kg,    min: 0.04, max: 0.3,  dist: loguniform, status: assumed, source: "assumption", note: "Pen housing plus effective finger mass moving with it at tremor frequencies."}
+
+pen:
+  barrel_od:       {value: 0.015,  unit: m, min: 0.014, max: 0.016, dist: fixed, status: inherited_target, source: "REQ-FORM-001", note: "Grip outside diameter of product concept."}
+  barrel_wall:     {value: 0.0007, unit: m, min: 0.0005,max: 0.0010,dist: fixed, status: assumed, source: "report s23", note: "Al 6061-T6 or PC/ABS; rigidity check pending."}
+  length:          {value: 0.150,  unit: m, min: 0.145, max: 0.160, dist: fixed, status: inherited_target, source: "REQ-FORM-002", note: ""}
+  mass_target:     {value: 0.035,  unit: kg,min: 0.0,   max: 0.035, dist: fixed, status: inherited_target, source: "REQ-FORM-003", note: "Upper bound incl. refill and battery."}
+
+refill:
+  type:            {value: "ISO 12757-2 D1 ballpoint (mini refill)", unit: "-", status: assumed, source: "DEC-004; CON ledger", note: "Short sealed refill baseline."}
+  length:          {value: 0.067,  unit: m, min: 0.0665, max: 0.0675, dist: fixed, status: sourced, source: "ISO 12757-2 D1 (CON ledger, verify revision)", note: "Verify against purchased samples (EXP-B02)."}
+  diameter:        {value: 0.00235,unit: m, min: 0.0023, max: 0.0024, dist: fixed, status: sourced, source: "ISO 12757-2 D1 (CON ledger, verify revision)", note: ""}
+  mass:            {value: 0.0006, unit: kg,min: 0.0004, max: 0.0010, dist: uniform, status: assumed, source: "assumption", note: "Weigh 10 samples (EXP-B02)."}
+  ball_radius:     {value: 0.00035,unit: m, min: 0.00025,max: 0.0005, dist: uniform, status: assumed, source: "0.5-1.0 mm ball family", note: ""}
+
+stage:              # front-pivot lever (baseline configuration B, DEC-003); tip-equivalent quantities
+  L1:              {value: 0.012, unit: m, min: 0.008, max: 0.016, dist: uniform, status: assumed, source: "DEC-003 concept geometry", note: "Pivot to ball centre."}
+  L2:              {value: 0.048, unit: m, min: 0.035, max: 0.060, dist: uniform, status: assumed, source: "DEC-003 concept geometry", note: "Pivot to actuator force line."}
+  travel_tip_mech: {value: 0.00065, unit: m, min: 0.0006, max: 0.0008, dist: fixed, status: calculated, source: "REQ-MECH-001 + margin (analysis/workspace)", note: "Radius of mechanical stop circle at the tip."}
+  travel_tip_ctrl: {value: 0.00055, unit: m, min: 0.0005, max: 0.0006, dist: fixed, status: calculated, source: "REQ-MECH-001", note: "Commanded travel limit radius (soft)."}
+  k_tip:           {value: 150.0, unit: N/m, min: 50.0,  max: 600.0, dist: loguniform, status: assumed, source: "flexure concept (mechanics/flexure_calc)", note: "Pivot flexure rotational stiffness referred to the tip."}
+  zeta_open:       {value: 0.05,  unit: "-", min: 0.01,  max: 0.2,   dist: loguniform, status: assumed, source: "assumption", note: "Open-loop mechanical damping ratio."}
+  m_eq:            {value: 0.012, unit: kg,  min: 0.005, max: 0.025, dist: uniform, status: calculated, source: "mechanics/mass_model lever inertia", note: "Tip-equivalent inertia J_pivot/L1^2."}
+  m_couple:        {value: 0.004, unit: kg,  min: -0.002,max: 0.008, dist: uniform, status: calculated, source: "mechanics/mass_model", note: "Base-acceleration coupling mass m_tot*L_cm/L1 (positive = amplifies)."}
+  axial_k:         {value: 2000.0, unit: N/m, min: 500.0, max: 10000.0, dist: loguniform, status: assumed, source: "sim sweep results/sim/axial_sweep (DEC-006)", note: "Axial load-path stiffness at nib; stiff relative to hand so writing-force changes do not move the ink."}
+  axial_preload:   {value: 0.25,  unit: N,   min: 0.1,   max: 0.5,   dist: uniform, status: assumed, source: "assumption", note: "Axial preload at front stop (contact detection threshold above this)."}
+  axial_travel:    {value: 0.0010,unit: m,   min: 0.0005,max: 0.003, dist: fixed,   status: assumed, source: "k_ax and 2 N bench load", note: "Axial travel before rear (overload) stop."}
+  axial_mass:      {value: 0.0012,unit: kg,  min: 0.0008,max: 0.002, dist: uniform, status: assumed, source: "refill + axial carriage", note: ""}
+  axial_zeta:      {value: 0.1,   unit: "-", min: 0.03,  max: 0.3,   dist: uniform, status: assumed, source: "assumption", note: ""}
+  stop_stiffness:  {value: 2.0e+5, unit: N/m, min: 5.0e+4, max: 1.0e+6, dist: loguniform, status: assumed, source: "assumption", note: "Elastomer-faced hard stop."}
+
+actuator:           # rear moving-coil planar Lorentz actuator, per axis (values at the actuator, not the tip)
+  Kf:              {value: 1.2,   unit: N/A,   min: 0.6,  max: 2.0,  dist: uniform, status: calculated, source: "analysis/em_actuator (magpylib), unvalidated", note: "Force constant at actuator; force-current map EXP-B03."}
+  R20:             {value: 12.0,  unit: ohm,   min: 6.0,  max: 20.0, dist: uniform, status: calculated, source: "analysis/em_actuator", note: "Coil resistance at 20 C."}
+  L:               {value: 1.5e-4,unit: H,     min: 5.0e-5, max: 4.0e-4, dist: loguniform, status: assumed, source: "analysis/em_actuator estimate", note: "Coil inductance; LCR measurement."}
+  alpha_cu:        {value: 0.00393, unit: 1/K, min: 0.0039, max: 0.00393, dist: fixed, status: sourced, source: "copper resistivity tempco (AMF ledger)", note: ""}
+  i_max:           {value: 0.45,  unit: A,     min: 0.3,  max: 0.6,  dist: fixed, status: assumed, source: "thermal/driver limit", note: "Software current limit per axis."}
+  i_trip:          {value: 0.6,   unit: A,     min: 0.5,  max: 0.8,  dist: fixed, status: assumed, source: "independent hardware trip", note: ""}
+  Rth_coil_amb:    {value: 60.0,  unit: K/W,   min: 30.0, max: 120.0,dist: uniform, status: assumed, source: "analysis/thermal network estimate", note: "Coil to ambient with hand contact; EXP-B07."}
+  Cth_coil:        {value: 0.25,  unit: J/K,   min: 0.1,  max: 0.6,  dist: uniform, status: assumed, source: "analysis/thermal", note: "Coil + local structure heat capacity."}
+
+electrical:
+  v_bat_nom:       {value: 3.7,  unit: V,   min: 3.0,  max: 4.2,  dist: uniform, status: sourced, source: "Li-ion single cell", note: ""}
+  v_bat_min:       {value: 3.3,  unit: V,   min: 3.2,  max: 3.4,  dist: fixed,   status: assumed, source: "cut-off for actuation", note: "Below this, assistance disabled."}
+  r_bridge:        {value: 0.6,  unit: ohm, min: 0.4,  max: 1.0,  dist: uniform, status: assumed, source: "H-bridge high+low side Rds(on) (verify datasheet)", note: ""}
+  r_shunt:         {value: 0.2,  unit: ohm, min: 0.1,  max: 0.5,  dist: fixed,   status: calculated, source: "electronics/calcs/current_sense", note: ""}
+  f_pwm:           {value: 50000,unit: Hz,  min: 20000,max: 100000, dist: fixed, status: calculated, source: "electronics/calcs/ripple", note: ""}
+  p_electronics_active: {value: 0.060, unit: W, min: 0.03, max: 0.12, dist: uniform, status: assumed, source: "power budget (docs/budgets)", note: "MCU + sensors + optics during writing, excl. actuators; measure."}
+
+sensing:
+  hall_noise_tip:  {value: 1.0e-6, unit: m,  min: 0.3e-6, max: 3.0e-6, dist: loguniform, status: assumed, source: "analysis sensing budget", note: "RMS, referred to tip, after calibration."}
+  hall_i_crosstalk_tip: {value: 2.0e-6, unit: m/A, min: 0.0, max: 2.0e-5, dist: uniform, status: assumed, source: "analysis/em_actuator", note: "Residual after linear current compensation."}
+  hall_delay:      {value: 1.0e-4, unit: s,  min: 5.0e-5, max: 3.0e-4, dist: uniform, status: assumed, source: "ADC + filter", note: ""}
+  opt_rate:        {value: 1000, unit: Hz,  min: 500, max: 2000, dist: fixed, status: assumed, source: "OPT ledger (DeltaPen-class sensors)", note: ""}
+  opt_delay:       {value: 2.0e-3, unit: s,  min: 1.0e-3, max: 5.0e-3, dist: uniform, status: assumed, source: "OPT ledger; exposure+processing+SPI", note: "Measure with LED-strobe method (EXP-S01)."}
+  opt_noise:       {value: 3.0e-6, unit: m,  min: 1.0e-6, max: 1.0e-5, dist: loguniform, status: assumed, source: "OPT ledger", note: "RMS per sample, relative displacement."}
+  opt_scale_err:   {value: 0.01, unit: "-", min: 0.0, max: 0.05, dist: uniform, status: assumed, source: "assumption", note: "Uncalibrated scale error vs paper/tilt."}
+  imu_rate:        {value: 3840, unit: Hz,  min: 960, max: 7680, dist: fixed, status: assumed, source: "LSM6DSV16X ODR options (verify)", note: ""}
+  imu_acc_noise_density: {value: 7.0e-4, unit: m/s^2/sqrtHz, min: 5.0e-4, max: 1.5e-3, dist: uniform, status: assumed, source: "~70 ug/sqrtHz class (verify datasheet)", note: ""}
+  imu_acc_bias:    {value: 0.02, unit: m/s^2, min: 0.0, max: 0.1, dist: uniform, status: assumed, source: "assumption", note: "After calibration; slowly varying."}
+  imu_delay:       {value: 1.0e-3, unit: s, min: 3.0e-4, max: 2.0e-3, dist: uniform, status: assumed, source: "digital filter chain", note: ""}
+  force_noise:     {value: 0.005, unit: N, min: 0.002, max: 0.02, dist: loguniform, status: assumed, source: "assumption", note: "RMS axial force estimate noise."}
+  force_rate:      {value: 1000, unit: Hz, min: 250, max: 2000, dist: fixed, status: assumed, source: "ADC choice", note: ""}
+
+control:
+  f_current:       {value: 20000, unit: Hz, min: 10000, max: 40000, dist: fixed, status: inherited_target, source: "report s5", note: "Current regulation update."}
+  current_bw:      {value: 3000, unit: Hz, min: 1000, max: 5000, dist: fixed, status: assumed, source: "design", note: "Closed-loop current bandwidth target."}
+  f_stage:         {value: 2000, unit: Hz, min: 1000, max: 4000, dist: fixed, status: inherited_target, source: "REQ-CTRL-001", note: ""}
+  f_predictor:     {value: 250, unit: Hz, min: 100, max: 500, dist: fixed, status: inherited_target, source: "report s5", note: "Learned predictor update (optional)."}
+  pos_bw:          {value: 60, unit: Hz, min: 30, max: 120, dist: uniform, status: assumed, source: "design", note: "Closed-loop stage position bandwidth target."}
+  exec_jitter:     {value: 2.0e-5, unit: s, min: 0.0, max: 1.0e-4, dist: uniform, status: assumed, source: "assumption", note: "Control task release jitter; measure (firmware profiling)."}
+
+battery:
+  capacity_mAh:    {value: 350, unit: mAh, min: 150, max: 400, dist: fixed, status: assumed, source: "10440-class Li-ion (AMF ledger, cell not yet qualified)", note: ""}
+  usable_fraction: {value: 0.8, unit: "-", min: 0.7, max: 0.9, dist: fixed, status: assumed, source: "report s22 convention", note: ""}
+  r_internal:      {value: 0.25, unit: ohm, min: 0.1, max: 0.6, dist: uniform, status: assumed, source: "small Li-ion, verify", note: ""}
+
+thermal:
+  t_ambient:       {value: 25.0, unit: C, min: 15.0, max: 35.0, dist: uniform, status: assumed, source: "use environment", note: ""}
+  t_surface_limit: {value: 43.0, unit: C, min: 41.0, max: 48.0, dist: fixed, status: assumed, source: "provisional; AMF ledger touch-temperature row; regulatory review required", note: "Continuously held surface limit."}

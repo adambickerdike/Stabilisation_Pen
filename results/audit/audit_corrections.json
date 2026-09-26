@@ -1,0 +1,129 @@
+{
+  "COR-01": {
+    "statement": "Stage must react the transverse component of the full contact reaction, |R_perp| = N sqrt((cos th + mu cos beta sin th)^2 + (mu sin beta)^2), not mu N.",
+    "report_assumptions": {
+      "N": 0.75,
+      "mu": 0.2
+    },
+    "report_drag_term_N": 0.15000000000000002,
+    "corrected_at_35deg_N": {
+      "max": 0.7004004986694008,
+      "min": 0.5283275677640868,
+      "mean": 0.6234633512405221
+    },
+    "corrected_at_55deg_N": {
+      "max": 0.5530551339066334,
+      "min": 0.3073095206199359,
+      "mean": 0.4432284462725169
+    },
+    "corrected_at_75deg_N": {
+      "max": 0.3390031577702508,
+      "min": 0.049225409883530274,
+      "mean": 0.2240458021387495
+    },
+    "ratio_mean_to_report_at_35_55_75": [
+      4.156422341603481,
+      2.9548563084834463,
+      1.4936386809249966
+    ],
+    "bench_envelope_worst_N": 2.0398075940237157,
+    "evidence_status": "analytical calculation; mu and N ranges are assumptions pending EXP-B01"
+  },
+  "COR-02": {
+    "design_point": {
+      "N": 1.0,
+      "mu": 0.15,
+      "theta_deg": 50,
+      "F_perp_rms_N": 0.6565269851010782
+    },
+    "worst_bench_point": {
+      "N": 2.0,
+      "mu": 0.35,
+      "theta_deg": 35,
+      "F_perp_max_N": 2.0398075940237157
+    },
+    "direct_drive_hold_power_W": {
+      "Km=0.15": 19.15678587404051,
+      "Km=0.3": 4.789196468510127,
+      "Km=0.6": 1.1972991171275318
+    },
+    "lever_n4_Km0.35_hold_power_W": 0.21991208273770993,
+    "lever_n4_Km0.35_worst_W": 2.1228648064473576,
+    "note": "Holding power is independent of wire gauge (motor-constant scaling). Km values are bracketing assumptions until analysis/em_actuator.py and EXP-B03 establish them."
+  },
+  "COR-03": {
+    "statement": "For a +/-0.5 mm PAGE disc, transverse stage radius 0.5 mm suffices for any roll; axial accommodation needed is r*cos(theta) (0.41 mm at 35 deg), not 0.71 mm.",
+    "values_m": {
+      "35": {
+        "q_t1_max": 0.000286788218175523,
+        "q_t2_max": 0.0005,
+        "q_radius_any_roll": 0.0005,
+        "s_max": 0.0004095760221444959
+      },
+      "50": {
+        "q_t1_max": 0.000383022221559489,
+        "q_t2_max": 0.0005,
+        "q_radius_any_roll": 0.0005,
+        "s_max": 0.00032139380484326967
+      },
+      "75": {
+        "q_t1_max": 0.0004829629131445342,
+        "q_t2_max": 0.0005,
+        "q_radius_any_roll": 0.0005,
+        "s_max": 0.00012940952255126038
+      }
+    }
+  },
+  "COR-04": {
+    "statement": "Axial accommodation against an axial stiffness k modulates the normal force by k * r cos(theta) / sin(theta) ... at 0.5 mm page correction.",
+    "k_for_dN_le_0.1N_at35deg": 148.31546601564685,
+    "dN_at_k250_35deg_N": 0.1785185008427643,
+    "dN_at_k1000_35deg_N": 0.7140740033710572
+  },
+  "COR-05": {
+    "statement": "Report's |1-exp(-j w tau)| holds only for unity-gain instantaneous actuation. Servo phase lag adds equivalent delay; e.g. a 60 Hz, zeta 0.7 servo adds ~3.7 ms at 8 Hz.",
+    "residual_at_8Hz": {
+      "ideal 5 ms": 0.2506664671286085,
+      "5 ms + 60 Hz servo": 0.4356562110419326,
+      "2 ms + 60 Hz servo": 0.2873672531550938,
+      "2 ms + 30 Hz servo": 0.47775123636817984
+    }
+  },
+  "COR-07": {
+    "bias_1mg_1s_mm": 4.903325,
+    "attitude_0.1deg_gravity_leak_1s_mm": 8.557912209718324,
+    "noise_70ug_rtHz_random_walk_1s_mm": 0.40414518843273806,
+    "statement": "Report's 1 mg example understates the problem; a 0.1 deg attitude error leaks ~1.7 mg of gravity (8.6 mm after 1 s). IMU is useful only over the optical latency window (ms).",
+    "error_over_2ms_optical_gap_um": 0.0538449488388733
+  },
+  "COR-08": {
+    "assumptions": "design point N=1 N, mu=0.15, theta=50 deg; 65% pen-down duty; 0.06 W electronics; dynamic tremor currents excluded (see sim results)",
+    "runtime": {
+      "direct Km0.3": {
+        "P_act_avg_W": 3.1129777045315827,
+        "runtime_min_120mAh": 6.716719115158808,
+        "runtime_min_350mAh": 19.590430752546524
+      },
+      "direct Km0.6": {
+        "P_act_avg_W": 0.7782444261328957,
+        "runtime_min_120mAh": 25.42456512155941,
+        "runtime_min_350mAh": 74.15498160454827
+      },
+      "lever n4 Km0.35": {
+        "P_act_avg_W": 0.14294285377951146,
+        "runtime_min_120mAh": 105.01478422666983,
+        "runtime_min_350mAh": 306.2931206611203
+      },
+      "lever n5 Km0.45": {
+        "P_act_avg_W": 0.055341825858339244,
+        "runtime_min_120mAh": 184.77252151509217,
+        "runtime_min_350mAh": 538.9198544190187
+      }
+    }
+  },
+  "COR-09": {
+    "paired_t_exact_n_for_ratio_2": 34,
+    "achieved_power": 0.8077775012792737,
+    "statement": "Normal approximation gives 32; exact paired t gives slightly more before attrition."
+  }
+}

@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.nbi
+*.nbc
+.pytest_cache/
+*.egg-info/
+build/
+firmware/build*/
+electronics/**/*-backups/
+electronics/**/*.kicad_prl
+electronics/**/fp-info-cache
+ml/runs/
+*.log.tmp
+.ipynb_checkpoints/
