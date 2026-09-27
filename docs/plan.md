@@ -8,7 +8,7 @@ Naming: **Phases A–G** below follow the brief's §18. **Prototype stages A–D
 
 | Phase | Outputs so far | Gate status |
 |---|---|---|
-| A Requirements and evidence | Audit with 28 corrections; evidence ledger of 246 sources; 50 requirements; parameter file v0.4.1 with provenance; physics; coupled simulator | **Met on paper.** Bounded first use case: action tremor ≤ 1 mm p-p at the nib with f ≥ gate, plus guided tasks, plus capture for everyone. The measurements that close it are listed |
+| A Requirements and evidence | Audit with 28 corrections; evidence ledger of 247 sources; 53 requirements; parameter file v0.4.2 with provenance; physics; coupled simulator | **Met on paper.** Bounded first use case: action tremor ≤ 1 mm p-p at the nib with f ≥ gate, plus guided tasks, plus capture for everyone. The measurements that close it are listed |
 | B Loaded mechanism feasibility | Refill drag protocol (EXP-B01); rig concept CAD; controller simulated with sweeps, Monte Carlo and failures | **Open.** Needs measured transverse load, ink tolerance and loaded cancellation (B01, B08, B09) |
 | C Research electronics and mechanics | Editable KiCad schematic (ERC and netlist verified); calculations and SPICE; parametric pen CAD with tolerance and mass models; firmware core (host and ARM builds, see `firmware/`) | **Design review possible; packaging open** (DEC-014). No PCB yet |
 | D Local sensing and capture | Capture format, app reference implementation, fusion model in simulation | **Open.** Optical sensor on paper unmeasured (EXP-S01) |
@@ -69,6 +69,9 @@ Effort is in person-weeks (pw) to complete each item to its gate. The basis for 
 | ML on real data (E01 onward) | ML engineer; controls | 8–12 pw after H01 data exist | `ml/README.md` pipeline already runs on synthetic data |
 | Human studies H02–H05 and the assistance crossover | clinical research; human factors; statistician | 20–40 pw + recruitment | `validation/human_study_plan.md` sample sizes |
 | Regulatory and quality framing | regulatory affairs | 3–6 pw early, more later | Claims (DEC-002) set obligations: assistance and capture, no diagnosis |
+| **Total to the gates above** | | **100–174 pw** | Sum of the rows. It excludes ethics approval, recruitment, supplier lead times and manufacturing engineering for Phase G |
+
+**Cost basis.** Labour cost is the effort above times the organisation's loaded weekly rate; no rate is assumed here. Instruments, custom parts and services are priced by the quotations in §4. The two lines that set the calendar are the ethics approval for EXP-H01 and the custom-actuator lead time, not the effort total.
 
 ## 4. Needs quotations (do not estimate prices)
 

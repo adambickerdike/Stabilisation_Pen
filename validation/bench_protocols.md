@@ -869,7 +869,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows fo
 
 | Result | Consequence |
 |---|---|
-| Allowable < 0.31 W | Rev A cannot sustain design-point writing. The thermal governor derates assistance (ICD fault bit 2 path), human sessions are time-limited, and DEC-008 (D/E) becomes necessary. |
+| Allowable < 0.33 W (the predicted average copper loss at the design point, 65 % pen-down) | Rev A cannot sustain design-point writing. The thermal governor derates assistance (ICD fault bit 2 path), human sessions are time-limited, and DEC-008 (D/E) becomes necessary. |
 | Surface > 41 °C at the design load | No human use of that build (G-S) until the governor limit is lowered and B07 is re-run. |
 | Model outside ±15 % / ±25 % | Update `analysis/thermal.py` conductances and the simulator's `actuator.Rth_coil_amb`. |
 | Firmware estimate error > 5 K | The governor uses a direct NTC reading instead (the coil NTC exists on the schematic). |
@@ -1851,18 +1851,20 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
 
 This experiment measures the electrical power in each mode and the runtime from a full charge with the qualified cell. It covers REQ-PWR-001 (≥ 60 min of active writing at the design point) and REQ-ACT-002 in use (≤ 0.25 W average copper loss while writing), and informs DEC-008.
 
-The predictions disagree across the repository, which is itself a reason to measure:
+The predictions were reconciled in the v0.4.2 consistency pass (`README.md` §6.8, items 19 and 20). They depend on the pen-down duty and on the cell that fits (DEC-014):
 
-| Source | Runtime at the design point | Electronics power |
+| Case (configuration B, design point, 115 mW electronics) | Runtime | Source |
 |---|---|---|
-| `electronics/README.md` budgets; REQ-PWR-001 current estimate | ≈ 55 min | 115 mW (31 mA at 3.7 V) |
-| `results/trade/config_trade.json`; COR-02 | ≈ 96 min | 60 mW |
+| 200 mAh cell, 65 % pen-down duty | ≈ 81 min | `results/trade/config_trade.json` (v0.4.2) |
+| 200 mAh cell, continuously in contact | ≈ 54 min | `electronics/README.md` budgets |
+| ≈ 130 mAh cell that fits the Rev A.1 bay, 65 % duty | ≈ 53 min | DEC-014 option (a), scaled by capacity |
+| D / E, 200 mAh, 65 % duty | ≈ 215 / 277 min | `results/trade/config_trade.json` |
 
-See `README.md` for this inconsistency.
+Average copper loss while writing at 65 % duty: B 0.33 W (0.50 W in contact), D 0.05 W, E 0.01 W (same file). The older thermal model gives 0.31 W for B (`results/thermal/thermal.json`, v0.3.0).
 
 ### Hypotheses
 
-- Configuration B's runtime at the design point is below 60 min (≈ 55 min predicted) and its copper loss is above 0.25 W (0.31 W predicted) (AC-P01-01, AC-P01-02).
+- Configuration B's runtime at the design point is below 60 min with the cell that fits the Rev A.1 bay (≈ 53 min predicted; ≈ 81 min with a 200 mAh cell). Its average copper loss is above 0.25 W (0.33 W predicted) (AC-P01-01, AC-P01-02).
 - Electronics power is 115 mW ± 20 % (AC-P01-03).
 - The real pen-down duty is 0.5–0.8 (AC-P01-04).
 
@@ -1891,8 +1893,8 @@ See `README.md` for this inconsistency.
 <!-- AC-TABLE:EXP-P01:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-P01-01 | REQ-PWR-001 | Runtime from full charge to the 3.3 V actuation cut-off, continuous scripted writing at the design point (θ 50°, N 1 N, 65 % pen-down, 0.3 mm 9 Hz disturbance, ASSIST_KF), qualified cell, 25 °C; minimum of 3 cells x 3 repeats | ≥ 60 min | requirement | REQ-PWR-001; prediction ~55 min (electronics/README.md budgets) -> expected FAIL for configuration B | DEC-008; cell choice |
-| AC-P01-02 | REQ-ACT-002 | Average actuator copper loss over the same design-point script | ≤ 0.25 W | requirement | REQ-ACT-002; prediction 0.31 W (results/thermal/thermal.json config B design) -> expected FAIL | DEC-008 |
+| AC-P01-01 | REQ-PWR-001 | Runtime from full charge to the 3.3 V actuation cut-off, continuous scripted writing at the design point (θ 50°, N 1 N, 65 % pen-down, 0.3 mm 9 Hz disturbance, ASSIST_KF), qualified cell, 25 °C; minimum of 3 cells x 3 repeats | ≥ 60 min | requirement | REQ-PWR-001; prediction for configuration B: ~53 min with the ~130 mAh cell that fits the Rev A.1 bay (DEC-014 option a) -> expected FAIL; ~81 min with a 200 mAh cell (results/trade/config_trade.json v0.4.2; 54 min if continuously in contact) | DEC-008; cell choice |
+| AC-P01-02 | REQ-ACT-002 | Average actuator copper loss over the same design-point script | ≤ 0.25 W | requirement | REQ-ACT-002; prediction 0.33 W for configuration B at 65 % pen-down (results/trade/config_trade.json v0.4.2; 0.31 W in results/thermal/thermal.json v0.3.0) -> expected FAIL | DEC-008 |
 | AC-P01-03 | — | Electronics supply power excluding actuators in writing mode | within 115 mW ± 20 % | hypothesis | results/electronics/drive_sense.json (31 mA at 3.7 V; optics 15 mA placeholder). Note: config electrical.p_electronics_active is 60 mW | power budget; optics selection |
 | AC-P01-04 | — | Median pen-down duty across participants in EXP-H06 free-writing sessions | within 0.5-0.8 | hypothesis | results/trade/config_trade.json duty_down 0.65 (assumption) | runtime budget |
 

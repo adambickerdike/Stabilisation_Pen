@@ -10,6 +10,7 @@ This repository holds the research and development package: the audit of the sou
 
 | If you want… | Read |
 |---|---|
+| The recommended route: what to build, where custom hardware and our own data are unavoidable, what evidence each benefit needs | [`docs/recommendation.md`](docs/recommendation.md) |
 | The verdict on the source report | [`docs/audit.md`](docs/audit.md), [`docs/corrections.csv`](docs/corrections.csv) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
@@ -43,7 +44,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Brief area | Deliverable | State | Evidence |
 |---|---|---|---|
 | 1 Research | Audit and recalculation of the report (37/37 numbers reproduce; 28 corrections) | executed | `analysis/audit_recalc.py` → `results/audit/` |
-| 1 Research | Evidence ledger (246 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
+| 1 Research | Evidence ledger (247 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
 | 1 Research | Ranked research questions with decisive experiments | drafted | `docs/research_questions.md` |
 | 2 Mechanics | Parametric CAD (Rev A, Rev A.1) with interference checks, STEP, drawings | executed | `mechanics/cad/`, `results/cad/` |
 | 2 Mechanics | Flexures, tolerance stacks (S1–S6), mass/CoM budget, configuration trade | executed | `mechanics/`, `results/mechanics/`, `results/trade/` |
@@ -58,7 +59,8 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | 6 Firmware | Control core, safety, logging, host tests, ARM build | see `firmware/README.md` | `firmware/`, `results/firmware/` |
 | 6 Product | ICD log reader/writer with CRC and resync (parses the firmware's golden log with zero issues); immutable content-addressed note store with provenance-carrying derived layers; segmentation; SVG rendering; recogniser interface (on-device adapter specified); FTS5 search with stroke citations; grounded assistant that refuses unsupported, uncited or clinical answers; capture-fidelity analysis; 136 tests | executed (synthetic data) · real recogniser pending | `app/README.md`, `results/app/` |
 | 7 Validation | 29 experiments (23 bench/offline, 6 human) with procedures, equipment, uncertainty and decision rules; 221 acceptance criteria (77 requirement, 35 derived, 109 hypothesis; checker passes); prototype stages A–D with gates; human study plan separating immediate assistance from lasting improvement; review of 33 document inconsistencies, now resolved or recorded | drafted · hardware and participants pending | `validation/README.md` |
-| — | Interfaces, decisions, plan, environment | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md` |
+| — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
+| — | Interfaces, decisions, plan with effort ranges (100–174 pw) and quotation list, environment lock | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md`, `requirements.txt` |
 
 ## Reproduce
 

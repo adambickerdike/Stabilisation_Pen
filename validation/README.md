@@ -14,7 +14,7 @@ Executed results will live only in [`records/`](records/README.md).
 |---|---|
 | [`bench_protocols.md`](bench_protocols.md) | 23 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01. Each gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
 | [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
-| [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 218 rows, 29 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
+| [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 221 rows, 29 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
 | [`prototype_stages.md`](prototype_stages.md) | Stages A (bench rig with commercial actuators), B (tethered Rev A pen), C (untethered pen), D (product-form candidates, DEC-008). Gates G-A, G-B, G-S (safety before any participant), G-C, G-D and the claim gates C-IA, C-LI, C-CAP, each defined by criterion ids. Also: what each stage may and may not claim, a mermaid dependency graph, and the mapping to the phases of `docs/plan.md`. |
 | [`records/README.md`](records/README.md) | How executed records are stored: layout, naming, mandatory `record.yaml` metadata, write-once raw data with SHA-256 manifests, verdict files, retention, human-data rules. |
 | [`check_criteria.py`](check_criteria.py) | Checks the CSV (unique ids, requirement ids exist in `docs/requirements.csv`, status and direction vocabulary, coverage) and regenerates the criteria tables embedded in the two protocol documents. Edit the CSV, then run `python3 validation/check_criteria.py`; add `--check` to only check. |
@@ -38,9 +38,9 @@ Executed results will live only in [`records/`](records/README.md).
 
   | Status | Meaning | Rows |
   |---|---|---|
-  | `requirement` | The threshold is copied from `docs/requirements.csv`; `requirement_id` is set | 75 |
+  | `requirement` | The threshold is copied from `docs/requirements.csv`; `requirement_id` is set | 77 |
   | `derived` | The threshold is computed from a requirement, literature value, simulation result or design rule (ICD, decision log), or chosen to protect another criterion (metrology qualification). The derivation is in `basis` | 35 |
-  | `hypothesis` | A prediction or proposed pass line about the device or the world, often engineering judgement, that the experiment tests | 108 |
+  | `hypothesis` | A prediction or proposed pass line about the device or the world, often engineering judgement, that the experiment tests | 109 |
 
 - **`direction`:** `<=`, `>=`, `<`, `>`, `=`, `within` (inclusive interval) or `pass/fail` (a conformity check described in `metric`).
 - **Decision rules:** simple acceptance when TUR ≥ 4, otherwise guarded acceptance. Safety criteria always use guarded acceptance (`bench_protocols.md` §0.5).
@@ -49,8 +49,8 @@ Executed results will live only in [`records/`](records/README.md).
 ## 3. Coverage
 
 - **Experiments:** 29 (23 bench or offline, 6 human-participant).
-- **Criteria:** 218.
-- **Requirements:** all 50 requirements in `docs/requirements.csv` have at least one criterion.
+- **Criteria:** 221.
+- **Requirements:** all 53 requirements in `docs/requirements.csv` have at least one criterion.
 - **Model validation:** the physics.md model-validation table is covered for every model:
   - P-1…P-4: AC-B04-05, AC-B06-03;
   - P-5…P-9: AC-B01-03, AC-B02-01;
@@ -97,12 +97,12 @@ Stating these in advance keeps the plan honest. Each will be measured, not assum
 | Criterion | Why it is expected to fail |
 |---|---|
 | AC-B03-03 (K_m ≥ 0.37 N/√W for REQ-ACT-002) | Predicted K_m 0.293 N/√W |
-| AC-P01-02 (REQ-ACT-002 ≤ 0.25 W) | Predicted 0.31 W average copper loss |
+| AC-P01-02 (REQ-ACT-002 ≤ 0.25 W) | Predicted 0.33 W average copper loss (configuration B, 65 % pen-down) |
 | AC-B03-10 (REQ-ACT-001: 0.75 N continuous) | Needs 0.65–0.82 W against 0.455 W allowable |
 | AC-B03-11 (REQ-ACT-001: 1.4 N for 2 s) | Needs 0.62 A per axis against a 0.45 A or 0.60 A clamp |
 | AC-B04-04 (REQ-MECH-001) | Page disc of 0.5 mm unreachable in the tilt direction below θ ≈ 56° with q_lim 0.55 mm and K_n 800 N/m |
 | AC-B05-02 (REQ-MECH-003) | m_eq 13.7 g against ≤ 12 g |
-| AC-P01-01 (REQ-PWR-001) | About 55 min against ≥ 60 min |
+| AC-P01-01 (REQ-PWR-001) | About 53 min with the cell that fits the Rev A.1 bay, against ≥ 60 min (81 min with a 200 mAh cell) |
 | AC-M03-02 (REQ-FORM-004) | CoM 76–81 mm against ≤ 70 mm |
 | AC-B09-05 (REQ-CTRL-007) | Kalman 1.10 / 1.06 of neutral error at 4 / 5 Hz against ≤ 1.05 (grid at 0.3 mm, v0.4.2) |
 | AC-B09-06 (REQ-CTRL-005) | 55–101 µm distortion predicted against 50 µm (v0.4.2; was marginal at 57–62 µm with the v0.4.1 inert set) |
