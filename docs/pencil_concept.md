@@ -25,8 +25,8 @@ The short answer, with the numbers behind it in the sections below:
 1. **The Rev A mechanism cannot be shrunk.** Any stage that moves the nib across the barrel must hold the paper's reaction N·cos θ plus friction: 0.64 N + 0.15 N at 1 N and 50° (COR-01, CALC). The Rev A moving coil holds that at 0.49 W against a 0.41 W thermal allowance in a 15 mm barrel. A coil in a 7.9 mm bore is far worse (§3).
 2. **The pencil works if the writing force bypasses the nib.** A skid ring on the nose grounds the user's force to the barrel (DEC-008 candidate D). The nib is pressed on by a light axial spring, so the stage only carries F_c·cot θ + friction. That is 0.13 N + 0.03 N at F_c = 0.15 N (CALC).
 3. **The stage is piezo, not a coil.** A piezo bender holds a static load at almost no power. Four custom 2.6 mm multilayer plates (PICMA technology, AMF-11) fit around a D1 refill in the 7.9 mm bore. Under the design load they give ±277 µm of stroke and 0.329 N at the nib, with a 192 Hz first resonance (CALC). The best voice coil that fits needs 2.4 W to hold the same load (SIM). CAD: 12.2 g before wiring and margin, and no interference at full travel (§3, §4).
-4. **What the ink can gain is bounded.** The usable correction is about ±0.3 mm at the nib. That is enough to remove tremor of that size when the intended stroke is known, and to pull strokes toward a predicted template. It cannot turn one word into another. The pen corrects shapes physically; the app corrects spelling and words digitally (§6).
-5. **AI prediction is used as a template.** The app predicts the next letters, synthesises them in the user's own style, and sends the template to the pen. Guided mode pulls the nib toward it, with authority scaled by confidence and bounded by travel. A wrong prediction therefore costs at most the travel limit (§6).
+4. **What the ink can gain is bounded.** The usable correction is about ±0.3 mm at the nib (±277 µm under load). With perfect knowledge of intent the pencil cuts the ink error to 0.19–0.26 of the uncorrected value for 0.1 mm tremor. It reaches 0.20–0.46 at 0.3 mm, where it hits its travel limit (SIM). With the pen's own tremor estimator it achieves 0.85–0.92, and only at 8–12 Hz; at lower frequencies it cannot tell tremor from writing. That estimator is the same open problem as in Rev A (§3, §10).
+5. **AI autocorrect works digitally, not physically.** In the app, a language-model corrector cuts word errors from 32 % to 10 % at a 7 % recognition error rate. It changes ≤ 0.1 % of correct words and leaves the original ink untouched (CALC). Physically, the pen can pull the nib toward an AI-predicted letter drawn in the user's style. But such a template is itself about 300 µm off, which is right at the 230–330 µm break-even. So AI templates give no net benefit on free handwriting, although wrong predictions are safely bounded by the travel (SIM). Physical guidance pays off when the template is known, as in tracing, copying or drawing aids (§6).
 6. **Recording on paper needs a new sensor.** Nothing off the shelf fits the nose. The simulation sets the requirement: a page sensor of ≥ 120 Hz with ≤ 10 ms latency, fused with the IMU. The chip-scale camera that does fit runs at 30 fps and loses most of the guided-mode benefit (§5).
 7. **Sim-to-real.** The calibration pipeline is built and tested on twin experiments. It predicts how much bench time each parameter needs, and what the calibrated simulator will and will not predict (§8).
 
@@ -152,7 +152,51 @@ No existing part meets the requirement inside 8.9 mm, so capture on paper is a d
 
 Tablet capture through an active-stylus protocol is the fallback product path. There the correction acts on glass and the digital ink can be corrected in software anyway.
 
-## 6. AI prediction, guidance and autocorrect (pending: `ai_guidance.md`)
+## 6. AI prediction, guidance and autocorrect
+
+Source: [`ai_guidance.md`](ai_guidance.md) (`aiguide/`, `app/penapp/autocorrect.py`, `results/ai/`). The data are synthetic: glyph-font writers with synthetic tremor, and CC0 text from Tatoeba. No person was recorded.
+
+**What "autocorrect" can mean for a pen.** The physical correction is bounded by the stage travel (±0.30 mm usable) on letters 2–4 mm tall. The pen can reshape strokes; it cannot change a letter into another letter. So there are two layers:
+1. **Physical micro-guidance.** The app predicts the next letters, draws them in the user's style and sends them to the pen as templates. Guided mode pulls the nib toward them, with authority scaled by the prediction's confidence (ICD §5 rule 5) and bounded by the travel.
+2. **Digital autocorrect.** It works on the recognised text and has no bound. It is written as a derived layer that cites stroke ids; the original ink is never changed (DEC-017).
+
+**Prediction** (CALC, held-out text):
+- Next character: 61 % top-1, 81 % top-3, calibration error 0.006.
+- The template must reach the pen before the nib lands on the letter, so the phone has to predict **two letters ahead** within a 0.3 s lead (latency budget 182 ms, allocated). Two letters ahead is right only 40 % of the time, and 19–32 % on note-like text.
+- A correctly predicted letter drawn in the user's estimated style is still about **300 µm RMS** from what they meant (SIM, 24 writers). The writer's own earlier letters give a floor of 239 µm.
+
+**Physical guidance on free writing** (SIM; path error, µm RMS; M1 plant with Rev A and pencil-like limits, 6 writers × 4 tremor frequencies):
+
+| Condition | Rev A limits | Pencil-like limits |
+|---|---|---|
+| No guidance | 209 | 176 |
+| Oracle template (the true intended path) | 167 | 158 |
+| AI template, letter predicted correctly | 234 | 182 |
+| AI prediction, confidence-gated | 217 | 177 |
+| Wrong letter at full authority | 253 | 184 |
+
+What the table shows:
+- **Break-even.** Guidance stops helping once the template is 230–330 µm from the intended path. Realistic AI templates sit right at that break-even, so they give **no net benefit on free handwriting**.
+- **Oracle templates do help.** They reduce letter-level error by 10–26 %, and by up to 63 % on slow shapes such as a circle. Physical guidance is useful when the template is **known**: tracing, copying set text, drawing aids.
+- **Wrong predictions are safe.** The stage stays within its stops. At most 1.9 % of letters read as the wrongly predicted letter, and the next word is not disturbed.
+- **Micrographia is not restored physically**, in line with COR-10 and DEC-002.
+
+The M1 runs lack the pencil's skid and piezo stage. A rerun on the pencil model P1 is in progress and will be added here.
+
+**Digital autocorrect** (CALC; injected recognition errors; threshold 0.9):
+- At a character error rate of about 7 %, word error falls from **32 % to 10 %** on held-out sentences and from **30 % to 16 %** on note-like lines.
+- Correct words are changed in ≤ 0.1 % of cases.
+- Names and rare words are the failure mode: 6–14 % are wrongly changed until a personal dictionary is added, and then 0 %.
+- Corrected words can be re-drawn in the user's own handwriting as a derived drawing.
+
+**Deployment.** The pen MCU runs the guided core, the template buffer with its checks and an optional stroke predictor (7.8 k MAC). The phone runs recognition, prediction, style synthesis and autocorrect. Templates add 0.3 kB/s over BLE. A proposed ICD record 0x06 (template segment with validity window and confidence) and pen-side rules T1–T8 are in `ai_guidance.md` §7, not yet in `docs/icd.md`.
+
+**Freedom to operate.** The template pipeline (recognition → characters → shapes → commands to the pen) is structurally close to claim 15 of BIC's US 12,026,327 B2 (PAT-01). Attorney review is needed before any guided-letter feature. This is not legal advice.
+
+**Recommendation** (from the study):
+- Ship the digital layer first: autocorrect, personal dictionary and re-rendering.
+- Use physical guidance where the template is known.
+- Do not claim AI-predicted physical correction of free writing unless a study with people (EXP-A02) shows their intended letters sit closer than about 250 µm to a personal template.
 
 ## 7. Power and battery
 

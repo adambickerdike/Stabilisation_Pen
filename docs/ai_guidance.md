@@ -17,10 +17,10 @@ The request was for "advanced AI prediction models almost to autocorrect the sen
 
 - **Digital autocorrect works and is the main benefit.** Word error rate (WER) at an injected character error rate (CER) of about 7 % falls from 32 % to 10 % on held-out corpus text and from 30 % to 16 % on note-like text. Correct words are changed in ≤ 0.1 % of cases. The weak spot is names and rare words: 6–14 % of them are wrongly "corrected" until a personal dictionary is added (§6).
 - **Physical guidance toward AI templates gives no net benefit on free handwriting in M1, but it is safe.**
-  - Even a perfect (oracle) template reduces letter-level ink error by only 10–27 % (vs 63 % on the slow circle of the feature course, 443 → 163 µm).
+  - Even a perfect (oracle) template reduces letter-level ink error by only 10–26 % (vs 63 % on the slow circle of the feature course, 443 → 163 µm).
   - A correctly predicted letter drawn in the user's estimated style is about 300 µm RMS from what the user intended. That is the break-even template error (230–330 µm) at which guidance stops helping. Guidance toward correct AI templates is 3–12 % *worse* than none (2–7 % with ideal anchoring; §4).
-  - Realistic predictions are right for only 40 % of letters two ahead (27 % on the study sentence). The confidence gate therefore keeps authority low, and the result is within 4 % of no guidance.
-  - Wrong templates cost 5–21 % in path error. The stage stayed at its mechanical stop at worst, and at most 1.9 % of letters read as the wrongly predicted letter.
+  - Realistic predictions are right for only 40 % of letters two ahead (27 % on the study sentence). The confidence gate therefore keeps authority low, and the result is 0.4–4.3 % worse than no guidance.
+  - Wrong templates at full authority cost 3.5–21.5 % in path error (0.5–1.9 % when gated by their confidence). The stage stayed at its mechanical stop at worst, and at most 1.9 % of letters read as the wrongly predicted letter.
 - **Micrographia is not corrected physically.** In no configuration did the templates enlarge letters beyond the user's own intended size (§4.6). This agrees with COR-10 and DEC-002.
 - **Prediction must run two letters ahead.** A template must reach the pen before the nib lands on that letter. With an allocated 0.18 s end-to-end latency (0.3 s allowed), it must be predicted from text two letters back. Next-glyph top-1 accuracy is 56 % one letter ahead but 40 % two ahead (§5).
 - **Freedom to operate.** The template pipeline (recognition → character identifiers → character shapes → commands to the pen) is structurally close to claim 15 of BIC's US 12,026,327 B2 (PAT-01). Attorney review is recommended before any guided-letter feature (§8).
@@ -224,8 +224,8 @@ Legibility and limits:
 | Condition | DTW to clean letter, µm (Rev A / pencil-like / 0.3 N) | Recognised (same order) | Time at soft limit (same order) |
 |---|---|---|---|
 | Neutral | 210 / 160 / 150 | 0.92 / 0.97 / 0.97 | 0 |
-| Oracle | 176 / 164 / 131 | 0.97 / 0.96 / 0.98 | 11 / 11 / 14 % |
-| AI correct | 220 / 178 / 158 | 0.93 / 0.94 / 0.97 | 24 / 19 / 28 % |
+| Oracle | 176 / 164 / 131 | 0.97 / 0.96 / 0.98 | 11 / 11 / 13 % |
+| AI correct | 220 / 178 / 158 | 0.93 / 0.94 / 0.97 | 24 / 19 / 27 % |
 | AI predicted | 216 / 164 / 152 | 0.91 / 0.97 / 0.96 | 5 / 3 / 5 % |
 | Wrong letter, full | 250 / 181 / 168 | 0.87 / 0.94 / 0.95 | 32 / 22 / 29 % |
 
@@ -237,7 +237,7 @@ These are diagnostics of the M1 guided core on handwriting; they point to firmwa
 
 - **Short strokes against a 50 ms fade-in.** Contact runs last a median of 164 ms (Rev A). Authority fades in over 50 ms after contact detection, so mean authority in contact is only 0.50–0.74 with the oracle. A 10 ms fade-in helps where contact is stable (0.3 N: 132 → 121 µm).
 - **Hooks at the lift.** Authority drops when the measured axial force crosses its threshold, while the nib still touches. The stage then returns across the paper. During authority ramps the guided error was *above* neutral (188 vs 137 µm in the diagnostic run).
-- **Travel saturation.** The soft limit is reached 11–14 % of the time even with the oracle.
+- **Travel saturation.** The soft limit is reached 11–13 % of the time even with the oracle.
 - **Bounce at 0.15 N** in M1 without a skid (§4.1).
 - **Open-loop hand.** M1's hand follows a fixed reference path, so users neither exploit nor fight the guidance. At 1 N, friction through the grip compliance makes the nib lag the hand by about 0.5 mm, which shortens small letters by 21 % even unguided.
 
@@ -267,7 +267,7 @@ Realistic AI templates (≈ 300 µm, §3.2) sit at or beyond break-even. For phy
 - The stage reached but did not pass its mechanical stop (it presses 15 µm into the elastomer stop in Rev A).
 - The ink can deviate more than the stage travel from the unguided run (0.79 mm in Rev A). The stage sits on its stop (0.6 mm), and the compliant hand/housing drifts a further 0.2 mm under the changed contact forces.
 - The capture gate (2·q_lim) disengages guidance once the user's letter departs from the template.
-- **The wrong word also disturbed the next word** (path 256 vs 191 µm in Rev A). The core's forward search had advanced past the start of the next template. A segment must be dropped once the ink leaves it (rule T5, §7.3).
+- **No knock-on into the next word.** On the letters of the word after the wrong one, path RMS was 256 µm after the wrong word against 261 µm when both words were predicted correctly (unguided 227 µm) in Rev A; 189 vs 188 (182) µm pencil-like; 185 vs 188 (171) µm at 0.3 N. The extra error there is the ordinary cost of correct-but-imperfect AI templates (§4.2), not a consequence of the wrong word. Rule T5 (§7.3) still bounds how long any wrong segment can act.
 
 ### 4.6 Micrographia (`fig_micrographia.png`)
 
@@ -393,7 +393,7 @@ The same bytes go over a BLE characteristic (downlink) and into the research log
 - **T2.** If ANCHOR is set, translate the segment so that its first point is the nib position at the first contact after t_valid_from.
 - **T3.** Authority = rule 5 (min(1, ĉ/c_full), slewed within 20 ms) × the existing capture gate. Also consider a corridor of about 150 µm, the writer's own variability (§3.2), inside which the template does not correct.
 - **T4.** Expire at t_valid_to, or at the lift after the last stroke. SUPERSEDE replaces revised predictions.
-- **T5.** A-posteriori check: if the hand path stays more than ~1.5·q_lim from the segment for more than ~60 ms, drop the segment *and* re-acquire the next one from its own anchor. This addresses the wrong-word knock-on (§4.5).
+- **T5.** A-posteriori check: if the hand path stays more than ~1.5·q_lim from the segment for more than ~60 ms, drop the segment *and* re-acquire the next one from its own anchor. This bounds how long a wrong segment acts (§4.5).
 - **T6.** At a stroke end, hold the stage command until the nib is off the paper (optical height, or axial force below threshold for 10 ms), then return with the slew limit. This addresses the hooks (§4.3).
 - **T7.** When an anchored segment is pending and the nib hovers within ~1 mm, start the authority ramp before touchdown. This addresses the 50 ms fade-in on short strokes.
 - **T8.** Templates never scale letters. Size support is a cue (haptic or visual), not a correction (DEC-002).
@@ -458,7 +458,7 @@ A design-around for claim 15 is available: disable the font fallback, so that le
 
 ## 10. Reproduce
 
-`bash aiguide/run_all.sh` takes about 13 minutes here and uses at most two processes. Each study has its own script (`aiguide/README.md`).
+`bash aiguide/run_all.sh` takes about 14 minutes here (plus 2 minutes on the first run to build the cached text model) and uses at most two processes. Each study has its own script (`aiguide/README.md`).
 
 Tests:
 - `python3 -m pytest -q -p no:cacheprovider aiguide/tests`: 29 tests;
