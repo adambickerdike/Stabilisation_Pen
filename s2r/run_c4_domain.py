@@ -67,6 +67,14 @@ def cases_for(plant_vals, seeds, f0s, mode, kf=None, distortion=False, tag=""):
     return out
 
 
+def cases_conflated(plant_vals, seeds, f0s, mode, kf=None, tag=""):
+    """As sim/run_sweeps.py's Monte Carlo: plain overrides, so model.build_params also gives the
+    controller the plant's true K_f, k_tip, L, R20, K_n, k_ax and delays."""
+    ov = twin.plant_overrides(plant_vals)
+    return [dict(seed=s, f0=f, amp=3e-4, mode=mode, ctrl=dict(kf or {}), overrides=ov, distortion=False, tag=tag)
+            for s in seeds for f in f0s]
+
+
 def J(rows):
     """tune_estimators objective; distortion is per seed (computed once per seed)."""
     dist = {r["seed"]: r["distortion_um"] for r in rows if r["distortion_um"] > 0}
@@ -107,6 +115,23 @@ def main():
         ent["neutral_e_um@9"] = float(np.mean([r["base_e_rms_um"] for r in sub if r["f0"] == 9.0]))
         deg.append(ent)
     print("degradation done", f"{time.time() - t0:.0f} s", flush=True)
+    # 1b. the same held-out plants evaluated the run_sweeps way (controller told the true plant)
+    cs = []
+    for p in held:
+        cs += cases_conflated(p["values"], test_seeds, (6.0, 9.0), "oracle", tag=f"{p['id']}|oracle")
+        cs += cases_conflated(p["values"], test_seeds, (6.0, 9.0), "kfosc", frozen, tag=f"{p['id']}|kf")
+    rows = fastharness.run_cases(cs, a.workers)
+    confl = []
+    for p, d in zip(held, deg[1:]):
+        sub = [r for r in rows if r["tag"].startswith(p["id"] + "|")]
+        ent = {"id": p["id"], "kind": p["kind"]}
+        for f in (6.0, 9.0):
+            for tag in ("oracle", "kf"):
+                v = float(np.mean([r["ratio"] for r in sub if r["tag"].endswith(tag) and r["f0"] == f]))
+                ent[f"{tag}@{f:g}"] = v
+                ent[f"{tag}@{f:g}_minus_shim"] = v - d[f"{tag}@{f:g}"]
+        confl.append(ent)
+    print("conflation check done", f"{time.time() - t0:.0f} s", flush=True)
     # 2. tuning on the nominal plant vs on randomised plants (one batch)
     cs = []
     for ci, kf in enumerate(cands):
@@ -149,7 +174,11 @@ def main():
     for kind in ("inside", "outside"):
         sub = [d for d in deg if d["kind"] == kind]
         summ[kind] = {k: common.summarize([d[k] for d in sub]) for k in sub[0] if k not in ("id", "kind")}
+    conf_summ = {k: common.summarize([c[k] for c in confl]) for k in confl[0] if k.endswith("_minus_shim")}
     payload = {"nominal": base, "held_out": deg[1:], "degradation_summary": summ,
+               "controller_knows_plant": {"per_plant": confl, "summary": conf_summ,
+                                          "note": "ratio with plain overrides (as sim/run_sweeps.py) minus ratio "
+                                                  "under the nominal firmware (s2r.twin.shim)"},
                "candidates": cands, "tuning_J": tune, "selected_nominal": sel_nom, "selected_randomised": sel_dr,
                "heldout_eval": evalc, "frozen_set": frozen,
                "seeds": {"test": list(test_seeds), "test_candidate_eval": list(eval_seeds),

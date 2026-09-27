@@ -136,7 +136,7 @@ HALL_FRAME = Channel(
     "hall_q_research_frame", "m", fs=2000.0, noise_rms=1.0e-6, lsb=0.1e-6,
     src={"noise_rms": "CONFIG sensing.hall_noise_tip 1 um RMS (the pen's own sensor)",
          "lsb": "DESIGN docs/icd.md §4.2 q in 0.1 um", "fs": "DESIGN research frame 2 kHz",
-         "latency": "hidden truth sensing.hall_delay (identified in EXP-B05)"})
+         "latency": "CONFIG sensing.hall_delay range; the hidden truth value is identified in EXP-B05"})
 PEN_ISNS = Channel(
     "pen_current_sense", "A", fs=2000.0, noise_rms=0.55e-3 / np.sqrt(20.0), lsb=0.1e-3,
     src={"noise_rms": "DESIGN results/electronics/drive_sense.json 0.55 mA RMS per SAADC sample, 20 samples averaged per 2 kHz frame",

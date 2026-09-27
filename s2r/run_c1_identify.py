@@ -88,8 +88,9 @@ def main():
         for r in rows:
             s = r["score"][k]
             c = plotstyle.SERIES[0] if s["in_declared_range"] else plotstyle.SERIES[1]
-            ax.plot(100 * s["rel_err"], j + np.random.default_rng(j).uniform(-0.15, 0.15), "o", ms=4, color=c,
-                    alpha=0.8)
+            flagged = s["U95_rel"] > 0.5          # the analysis itself reports "not identifiable"
+            ax.plot(100 * s["rel_err"], j + np.random.default_rng(j).uniform(-0.15, 0.15), "o", ms=5 if flagged else 4,
+                    markerfacecolor="none" if flagged else c, markeredgecolor=c, alpha=0.9)
         ax.plot([-100 * summary[k]["U95_rel_median"], 100 * summary[k]["U95_rel_median"]], [j, j], "|-",
                 color=plotstyle.INK2, lw=1.0, ms=9)
     ax.set_yticks(ys, [k.split(".", 1)[1] for k in keys], fontsize=8)
@@ -97,8 +98,8 @@ def main():
     ax.set_xscale("symlog", linthresh=1.0)
     ax.axvline(0, color=plotstyle.MUTED, lw=0.8)
     ax.set_xlabel("identification error (%), symlog; bar = median U95")
-    ax.set_title("Blind recovery of hidden plants at protocol settings (blue in range, orange outside)",
-                 loc="left", fontsize=10)
+    ax.set_title("Blind recovery of hidden plants at protocol settings (blue: value in declared range, orange: "
+                 "outside; hollow: U95 > 50 %, reported unidentifiable)", loc="left", fontsize=9.5)
     common.save_figure(fig, "fig_c1_recovery", "simulation",
                        f"virtual bench, {len(rows)} hidden plants, protocol instruments; twin experiment, not a measurement")
     print(path, f"{time.time() - t0:.0f} s")

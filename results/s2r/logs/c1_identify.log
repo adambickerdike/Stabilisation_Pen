@@ -1,0 +1,17 @@
+/home/user/Stabilisation_Pen/results/s2r/c1_identification.json 135 s
+actuator.Kf                  rms 0.57%  p95|e| 0.89%  U95 1.04%  cov 1.00  z_rms 1.09
+actuator.R20                 rms 0.11%  p95|e| 0.20%  U95 0.23%  cov 1.00  z_rms 0.95
+actuator.L                   rms 0.14%  p95|e| 0.25%  U95 0.33%  cov 1.00  z_rms 0.89
+actuator.Rth_coil_amb        rms 0.11%  p95|e| 0.20%  U95 0.94%  cov 1.00  z_rms 0.23
+actuator.Cth_coil            rms 0.11%  p95|e| 0.20%  U95 0.94%  cov 1.00  z_rms 0.24
+stage.k_tip                  rms 0.32%  p95|e| 0.54%  U95 0.59%  cov 0.93  z_rms 1.08
+stage.zeta_open              rms 0.07%  p95|e| 0.13%  U95 0.59%  cov 1.00  z_rms 0.23
+stage.m_eq                   rms 0.84%  p95|e| 1.35%  U95 1.56%  cov 0.93  z_rms 1.07
+sensing.hall_delay           rms 3.97%  p95|e| 7.61%  U95 3.36%  cov 1.00  z_rms 1.01
+stage.axial_k                rms 0.10%  p95|e| 0.15%  U95 0.85%  cov 1.00  z_rms 0.14
+stage.axial_preload          rms 1.81%  p95|e| 3.68%  U95 1.59%  cov 0.93  z_rms 1.28
+writing.mu_eff               rms 0.80%  p95|e| 1.18%  U95 3.47%  cov 1.00  z_rms 0.46
+writing.mu_static_ratio      rms 3.03%  p95|e| 4.41%  U95 1.03%  cov 0.93  z_rms 0.87
+writing.stribeck_speed       rms 36.02%  p95|e| 88.48%  U95 5.62%  cov 0.87  z_rms 0.99
+writing.paper_stiffness      rms 0.80%  p95|e| 1.63%  U95 2.51%  cov 1.00  z_rms 0.48
+friction.x_presliding        rms 0.23%  p95|e| 0.36%  U95 0.64%  cov 1.00  z_rms 0.68

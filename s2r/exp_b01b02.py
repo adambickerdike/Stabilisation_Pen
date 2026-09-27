@@ -570,16 +570,19 @@ def identify(ds, rng=None, n_boot=100, theta_offset_known=0.0):
         yps.append(fp[m])
         nr.append(float(np.sqrt(np.mean((f_h[m] - fp[m]) ** 2)) / (mu_k * rec["N_set"])))
     r2_pooled = ident.r2(np.concatenate(ys), np.concatenate(yps))
-    # the same after a 50 Hz zero-phase low-pass (3-15 Hz reciprocation and its first harmonics):
-    # removes the F/T noise that caps R^2 for low-friction inks
+    # the same after a 50 Hz zero-phase low-pass of both signals (3-15 Hz reciprocation and harmonics)
     from scipy.signal import butter, sosfiltfilt
     sos = butter(4, 50.0, fs=5000.0, output="sos")
-    ylp = [sosfiltfilt(sos, y) for y in ys]
-    r2_lp = ident.r2(np.concatenate(ylp), np.concatenate(yps))
-    ceiling = 1 - np.mean([FT_RIG.noise_rms ** 2 + FT_RIG.lsb ** 2 / 12 for _ in ys]) / np.var(np.concatenate(ys))
+    r2_lp = ident.r2(np.concatenate([sosfiltfilt(sos, y) for y in ys]),
+                     np.concatenate([sosfiltfilt(sos, y) for y in yps]))
+    # per-record means removed: a constant tangential offset from F/T cross-axis gain errors
+    # (N (g_a - g_t1) sin th cos th, up to ~1 % of N) is not friction dynamics
+    r2_dyn = ident.r2(np.concatenate([y - y.mean() for y in ys]), np.concatenate([y - y.mean() for y in yps]))
+    ceiling = 1 - (FT_RIG.noise_rms ** 2 + FT_RIG.lsb ** 2 / 12) / np.var(np.concatenate(ys))
     diag = {"sigma2_fit_N_s_per_m": float(s2), "breakaway_ratio_median": float(np.median(brk)),
             "mu1_per_N": float(rN["b"][1]), "mu1_se": float(rN["se"][1]), "n_reversals": len(revs),
             "recip_R2_pooled": float(r2_pooled), "recip_R2_pooled_lp50": float(r2_lp),
+            "recip_R2_pooled_mean_removed": float(r2_dyn),
             "recip_R2_noise_ceiling": float(ceiling), "recip_R2_median": float(np.median(r2s)),
             "recip_R2_min": float(np.min(r2s)), "recip_NRMSE_vs_muN_median": float(np.median(nr)),
             "recip_NRMSE_vs_muN_max": float(np.max(nr)), "AC_B02_01_pooled_R2_gt_0.9": bool(r2_pooled > 0.9)}
