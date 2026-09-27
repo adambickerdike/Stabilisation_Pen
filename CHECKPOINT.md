@@ -30,13 +30,13 @@ All are calculation or simulation unless stated otherwise.
   - Lever: n = 3.17, L1 = 12 mm.
   - K_m = 0.293 N/√W (analytic field model, with the 0.50 mm gap).
   - Winding: 6 Ω, K_f 0.717 N/A, L ≈ 175 µH (unmeasured).
-  - Drive: 40 kHz PWM; current loop 2.3 kHz; design hold current 0.335 A.
+  - Drive: 40 kHz PWM; current loop crossing at 2 kHz with 55.8° phase margin (2.3 kHz is the 50° limit); design hold current 0.335 A.
 - **Estimation.**
   - Oracle bound 0.22–0.32 across 4–12 Hz.
   - Kalman 1.03–1.14 at 4–9 Hz and 0.85 at 12 Hz. Since v0.4.2 the balanced and assertive objectives select the same set. At 0.15 mm tremor it adds error at every frequency.
   - Band-pass 1.1–1.5 below 7 Hz.
   - Distortion without tremor: Kalman 100 µm on 12 seeds (55 µm on 4), band-pass 168 µm. REQ-CTRL-005 (≤ 50 µm) is violated.
-  - The selection is fragile: 3–5 % of the tuning objective separates an inert set from the active one, and the v0.4.2 plant change flipped it (`docs/sim_report.md` §3.2).
+  - The selection is fragile: 3–6 % of the tuning objective separates an inert set from the active one, and the v0.4.2 plant change flipped it (`docs/sim_report.md` §3.2).
   - Guided mode: circle 443 → 163 µm, spiral 382 → 112 µm path distance.
 - **Mechanism.** Device distortion (neutral vs rigid pen) ≈ 59 µm. Axial path 2 kN/m. γ ≈ 0.19 at 50°.
 - **Budgets.**
@@ -49,7 +49,7 @@ All are calculation or simulation unless stated otherwise.
 ## 3. Provisional assumptions currently carried
 
 - **Hand.** Literature impedance (HAP-26), measured in-plane and without the hand resting on paper. γ is computed from assumed normal compliances.
-- **Paper contact.** Stiffness 5×10⁴ N/m; μ 0.15; LuGre parameters assumed. Friction turned out to drive estimator performance (ρ 0.52).
+- **Paper contact.** Stiffness 5×10⁴ N/m; μ 0.15; LuGre parameters assumed. Friction turned out to drive estimator performance (ρ 0.51).
 - **Optics.** Latency 2 ms, noise 3 µm, 1 kHz on paper at the nib (unmeasured; EXP-S01).
 - **Writing and tremor.** Synthetic handwriting and tremor. Real separability is unknown.
 - **Cell.** 200 mAh ≥ 5 C pouch; no supplier drawing yet.

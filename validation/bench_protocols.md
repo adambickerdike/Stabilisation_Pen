@@ -609,7 +609,7 @@ It runs twice: on the Stage A rig module (commercial VCMs through the same 3.17 
 | Open-loop first mode | (1/2π)·√(75.8 / 0.0137) = 11.8 Hz | calculation from the two rows above |
 | k_ax | 1984 N/m | `results/mechanics/flexure_calc.json` |
 | Axial overload stop | 0.6 mm, 1.45 N | config `stage.axial_travel` |
-| Current-loop crossover | 2.34 kHz at 50° phase margin | `results/electronics/drive_sense.json` |
+| Current-loop crossover | 2.0 kHz as implemented (55.8° phase margin); 2.34 kHz is the limit for 50° | `results/electronics/drive_sense.json` |
 | Stage-against-paper mode | about 180 Hz | DEC-011, `results/sim/ff_chatter.json` |
 
 ### Equipment and setup
@@ -669,7 +669,7 @@ HDF5 FRF files (complex H(f), coherence, raw time series); a margin table per co
 | AC-B05-01 | — | Open-loop first transverse resonance (current-driven chirp, no contact) | within prediction ± 10 % | hypothesis | docs/physics.md (resonance within ±10 %); prediction from as-built k_tip and m_eq, currently 11.8 Hz (75.8 N/m, results/mechanics/flexure_calc.json; 13.7 g, REQ-MECH-003 estimate) | stage model P-10...P-12 validation; servo design |
 | AC-B05-02 | REQ-MECH-003 | Tip-equivalent inertia m_eq from the mass line of the transverse FRF | ≤ 12 g | requirement | REQ-MECH-003; current estimate 13.7 g (distributed-mass CAD, Rev A.1) -> expected FAIL | carrier material (M-6 CFRP option); REQ-MECH-003 revision |
 | AC-B05-03 | — | Static transverse tip stiffness k_tip (±0.2 N, 8 directions) | within 75.8 N/m ± 15 % | hypothesis | docs/physics.md (stiffness within ±15 %); results/mechanics/flexure_calc.json gimbal 0.05 x 1.0 x 2.0 mm. Note: config stage.k_tip is 150 N/m | stage model validation; config stage.k_tip |
-| AC-B05-04 | REQ-ACT-003 | Closed-loop current bandwidth (-3 dB of i/i_ref) | ≥ 2 kHz | requirement | REQ-ACT-003; prediction 2.34 kHz crossover at 50° phase margin (results/electronics/drive_sense.json) | DEC-012 (40 kHz PWM) |
+| AC-B05-04 | REQ-ACT-003 | Closed-loop current bandwidth (-3 dB of i/i_ref) | ≥ 2 kHz | requirement | REQ-ACT-003; prediction: crossover 2.0 kHz as implemented, 55.8° phase margin (results/electronics/drive_sense.json); the firmware step test's 125 µs rise implies about 2.8 kHz closed-loop bandwidth (0.35/t_r, results/firmware/test_report.txt) -> expected PASS | DEC-012 (40 kHz PWM) |
 | AC-B05-05 | REQ-ACT-003 | Closed-loop position bandwidth (-3 dB of q/q_r), free and in contact (N 1 N, θ 50°) | ≥ 60 Hz | requirement | REQ-ACT-003 | servo design; REQ-CTRL-003 |
 | AC-B05-06 | REQ-CTRL-002 | Minimum phase margin of the stage loop over the loaded-plant range (N 0.2-2 N, θ 35-75°, 3 paper stacks, housing normal compliance 200-3000 N/m) | ≥ 40° | requirement | REQ-CTRL-002 | servo gains; DEC-011 |
 | AC-B05-07 | REQ-CTRL-002 | Minimum gain margin of the stage loop over the same range | ≥ 6 dB | requirement | REQ-CTRL-002 | servo gains; DEC-011 |

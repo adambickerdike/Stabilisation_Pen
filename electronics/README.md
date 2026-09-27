@@ -91,7 +91,7 @@ flowchart LR
   - Consequences: K_f = 0.717 N/A (after the 0.50 mm gap of DEC-007 rev.), L ≈ 175 µH (air-core estimate scaled by turns²), design-point hold current 0.335 A, bridge and shunt loss 7.7 % of copper loss.
 - **40 kHz centre-aligned PWM, 200 duty levels.**
   - At 20 kHz the 6 Ω coil's ripple is 159–239 mA p-p and loop delay limits the current loop to about 1.3 kHz.
-  - At 40 kHz the ripple is 83–129 mA p-p and the crossover is 2.3 kHz at 50° phase margin. This matches the 2 kHz current bandwidth the simulator assumes.
+  - At 40 kHz the ripple is 83–129 mA p-p, and the loop delay allows a crossover of up to 2.3 kHz at 50° phase margin. The implemented loop crosses at 2 kHz with 55.8° margin, as in the simulator and firmware (Kp 2.20 V/A, Ki 81.9 kV/(A·s)).
   - The force ripple at 40 kHz moves the stage by less than 1 nm.
 - **In-line shunt with INA241A1.**
   - The INA241 tolerates PWM common-mode swings. The chain gives 1.0 V/A about 1.25 V, a ±1.2 A linear range and 0.59 mA per ADC LSB.

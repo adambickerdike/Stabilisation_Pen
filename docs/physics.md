@@ -108,7 +108,7 @@ A separate normal stiffness and damping acts along n. Parameters are literature 
 - The drive is limited by duty ≤ 0.97 of VBAT.
 - PWM ripple for drive/brake modulation has an exact exponential steady-state solution (`electronics/calcs/drive_sense.py::pwm_ripple`), cross-checked by ngspice (104 mA p-p at duty 0.72 in both).
 
-**P-17: current loop.** A PI with its zero on the electrical pole gives open loop ω_c/s·e^(−sτ). The phase margin is 90° − 360°·f_c·τ, where τ is compute, zero-order-hold and anti-alias delay combined (47.5 µs at 40 kHz). The result is f_c ≈ 2.3 kHz at 50° margin.
+**P-17: current loop.** A PI with its zero on the electrical pole gives open loop ω_c/s·e^(−sτ). The phase margin is 90° − 360°·f_c·τ, where τ is compute, zero-order-hold and anti-alias delay combined (47.5 µs at 40 kHz). The result is f_c ≈ 2.3 kHz at 50° margin. The implemented loop crosses at 2 kHz (55.8° margin), the value the simulator and firmware use.
 
 ## 6. Thermal
 
