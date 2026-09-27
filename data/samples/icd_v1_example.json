@@ -1,0 +1,406 @@
+{
+  "object": "icd_example_vector",
+  "icd_version": "1.0",
+  "generator": "penapp.vectors",
+  "evidence_status": "SYNTHETIC interoperability vector (writer and reader of this package)",
+  "conventions": [
+    "all multi-byte fields little-endian, CRC fields included",
+    "record CRC = CRC-16/CCITT-FALSE over type, length and payload",
+    "stroke sample phi_raw = round(phi / 2 deg), theta_raw = round(theta / 0.5 deg)",
+    "event 0x0009 is logged after the wrap with arg = wraps since session start",
+    "unknown record types with a valid CRC are kept as raw records"
+  ],
+  "crc_check": {
+    "input_ascii": "123456789",
+    "crc16_ccitt_false": "0x29B1"
+  },
+  "header": {
+    "format_version": 1,
+    "device_id": "81985529216486895",
+    "session_id": "42",
+    "start_unix_ms": 1790000000000,
+    "bytes_hex": "50454e4c4f4700010100efcdab89674523012a00000000000000006c50c4a001000079e3",
+    "header_crc": "0xE379"
+  },
+  "n_bytes": 402,
+  "records": [
+    {
+      "offset": 36,
+      "type": "0x05",
+      "length": 43,
+      "bytes_hex": "052b4943442076312e30206578616d706c6520766563746f72202870656e617070293b2053594e544845544943101b",
+      "crc16": "0x1B10",
+      "decoded": {
+        "payload_hex": "4943442076312e30206578616d706c6520766563746f72202870656e617070293b2053594e544845544943",
+        "text": "ICD v1.0 example vector (penapp); SYNTHETIC"
+      }
+    },
+    {
+      "offset": 83,
+      "type": "0x03",
+      "length": 10,
+      "bytes_hex": "030a00000000010003000000275d",
+      "crc16": "0x5D27",
+      "decoded": {
+        "t_us": 0,
+        "code": 1,
+        "arg": 3,
+        "name": "MODE_CHANGE"
+      },
+      "t_us_unwrapped": 0
+    },
+    {
+      "offset": 97,
+      "type": "0x03",
+      "length": 10,
+      "bytes_hex": "030ae80300000700000000003683",
+      "crc16": "0x8336",
+      "decoded": {
+        "t_us": 1000,
+        "code": 7,
+        "arg": 0,
+        "name": "PEN_DOWN"
+      },
+      "t_us_unwrapped": 1000
+    },
+    {
+      "offset": 111,
+      "type": "0x02",
+      "length": 20,
+      "bytes_hex": "02140100000000000000000000000000000000000000c198",
+      "crc16": "0x98C1",
+      "decoded": {
+        "t_ms": 1,
+        "stroke_id": 0,
+        "x_um": 0,
+        "y_um": 0,
+        "force_mN": 0,
+        "theta_raw": 0,
+        "phi_raw": 0
+      }
+    },
+    {
+      "offset": 135,
+      "type": "0x02",
+      "length": 20,
+      "bytes_hex": "0214060000000000000000000080ffffff7fffffb4b32573",
+      "crc16": "0x7325",
+      "decoded": {
+        "t_ms": 6,
+        "stroke_id": 0,
+        "x_um": -2147483648,
+        "y_um": 2147483647,
+        "force_mN": 65535,
+        "theta_raw": 180,
+        "phi_raw": 179
+      }
+    },
+    {
+      "offset": 159,
+      "type": "0x02",
+      "length": 20,
+      "bytes_hex": "02140b000000000000002efbffff2e160000b60368129275",
+      "crc16": "0x7592",
+      "decoded": {
+        "t_ms": 11,
+        "stroke_id": 0,
+        "x_um": -1234,
+        "y_um": 5678,
+        "force_mN": 950,
+        "theta_raw": 104,
+        "phi_raw": 18
+      }
+    },
+    {
+      "offset": 183,
+      "type": "0x01",
+      "length": 52,
+      "bytes_hex": "0134f82a00000080ff7fffff01002efbd20430f8d007b60300000080ffffff7f07d4fe2c01ff5a03a100740ede0d2bfc0c008813d8dcdd7d",
+      "crc16": "0x7DDD",
+      "decoded": {
+        "t_us": 11000,
+        "q1": -32768,
+        "q2": 32767,
+        "qr1": -1,
+        "qr2": 1,
+        "i1": -1234,
+        "i2": 1234,
+        "iref1": -2000,
+        "iref2": 2000,
+        "f_ax": 950,
+        "p_Hx": -2147483648,
+        "p_Hy": 2147483647,
+        "opt_valid": 7,
+        "dhat_x": -300,
+        "dhat_y": 300,
+        "g": 255,
+        "f_est": 90,
+        "mode": 3,
+        "flags": 161,
+        "vbat_mV": 3700,
+        "t_coil": 3550,
+        "imu_ax": -981,
+        "imu_ay": 12,
+        "theta": 5000,
+        "phi": -9000
+      },
+      "t_us_unwrapped": 11000
+    },
+    {
+      "offset": 239,
+      "type": "0x03",
+      "length": 10,
+      "bytes_hex": "030ae02e0000080000000000b1f5",
+      "crc16": "0xF5B1",
+      "decoded": {
+        "t_us": 12000,
+        "code": 8,
+        "arg": 0,
+        "name": "PEN_UP"
+      },
+      "t_us_unwrapped": 12000
+    },
+    {
+      "offset": 253,
+      "type": "0x04",
+      "length": 8,
+      "bytes_hex": "040800010203040506074043",
+      "crc16": "0x4340",
+      "decoded": {
+        "payload_hex": "0001020304050607"
+      }
+    },
+    {
+      "offset": 265,
+      "type": "0x01",
+      "length": 52,
+      "bytes_hex": "0134d8feffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003fda",
+      "crc16": "0xDA3F",
+      "decoded": {
+        "t_us": 4294967000,
+        "q1": 0,
+        "q2": 0,
+        "qr1": 0,
+        "qr2": 0,
+        "i1": 0,
+        "i2": 0,
+        "iref1": 0,
+        "iref2": 0,
+        "f_ax": 0,
+        "p_Hx": 0,
+        "p_Hy": 0,
+        "opt_valid": 0,
+        "dhat_x": 0,
+        "dhat_y": 0,
+        "g": 0,
+        "f_est": 0,
+        "mode": 0,
+        "flags": 0,
+        "vbat_mV": 0,
+        "t_coil": 0,
+        "imu_ax": 0,
+        "imu_ay": 0,
+        "theta": 0,
+        "phi": 0
+      },
+      "t_us_unwrapped": 4294967000
+    },
+    {
+      "offset": 321,
+      "type": "0x03",
+      "length": 10,
+      "bytes_hex": "030a050000000900010000007d7f",
+      "crc16": "0x7F7D",
+      "decoded": {
+        "t_us": 5,
+        "code": 9,
+        "arg": 1,
+        "name": "TIMESTAMP_WRAP"
+      },
+      "t_us_unwrapped": 4294967301
+    },
+    {
+      "offset": 335,
+      "type": "0x01",
+      "length": 52,
+      "bytes_hex": "0134f9010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000938a",
+      "crc16": "0x8A93",
+      "decoded": {
+        "t_us": 505,
+        "q1": 0,
+        "q2": 0,
+        "qr1": 0,
+        "qr2": 0,
+        "i1": 0,
+        "i2": 0,
+        "iref1": 0,
+        "iref2": 0,
+        "f_ax": 0,
+        "p_Hx": 0,
+        "p_Hy": 0,
+        "opt_valid": 0,
+        "dhat_x": 0,
+        "dhat_y": 0,
+        "g": 0,
+        "f_est": 0,
+        "mode": 0,
+        "flags": 0,
+        "vbat_mV": 0,
+        "t_coil": 0,
+        "imu_ax": 0,
+        "imu_ay": 0,
+        "theta": 0,
+        "phi": 0
+      },
+      "t_us_unwrapped": 4294967801
+    },
+    {
+      "offset": 391,
+      "type": "0x7F",
+      "length": 7,
+      "bytes_hex": "7f070066757475726589e9",
+      "crc16": "0xE989",
+      "decoded": {
+        "payload_hex": "00667574757265"
+      }
+    }
+  ],
+  "corruption_cases": [
+    {
+      "name": "flip_bit_in_stroke_sample",
+      "operation": "xor 0x10 at offset 142",
+      "expected": {
+        "records": {
+          "RESEARCH_FRAME": 3,
+          "STROKE_SAMPLE": 2,
+          "EVENT": 4,
+          "CALIBRATION_SNAPSHOT": 1,
+          "ANNOTATION": 1,
+          "0x7F": 1
+        },
+        "issues_by_kind": {
+          "crc_mismatch": 1,
+          "resync": 1,
+          "unknown_type": 1
+        },
+        "bytes_skipped": 24,
+        "stroke_samples": [
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            11,
+            0,
+            -1234,
+            5678,
+            950,
+            104,
+            18
+          ]
+        ]
+      }
+    },
+    {
+      "name": "insert_10_bytes_before_research_frame",
+      "operation": "insert 02 14 'garbage!' at offset 183",
+      "expected": {
+        "records": {
+          "RESEARCH_FRAME": 3,
+          "STROKE_SAMPLE": 3,
+          "EVENT": 4,
+          "CALIBRATION_SNAPSHOT": 1,
+          "ANNOTATION": 1,
+          "0x7F": 1
+        },
+        "issues_by_kind": {
+          "crc_mismatch": 1,
+          "resync": 1,
+          "unknown_type": 1
+        },
+        "bytes_skipped": 10,
+        "stroke_samples": [
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            0,
+            -2147483648,
+            2147483647,
+            65535,
+            180,
+            179
+          ],
+          [
+            11,
+            0,
+            -1234,
+            5678,
+            950,
+            104,
+            18
+          ]
+        ]
+      }
+    },
+    {
+      "name": "truncate_last_3_bytes",
+      "operation": "drop the final 3 bytes",
+      "expected": {
+        "records": {
+          "RESEARCH_FRAME": 3,
+          "STROKE_SAMPLE": 3,
+          "EVENT": 4,
+          "CALIBRATION_SNAPSHOT": 1,
+          "ANNOTATION": 1
+        },
+        "issues_by_kind": {
+          "trailing_garbage": 1,
+          "truncated": 1
+        },
+        "bytes_skipped": 8,
+        "stroke_samples": [
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            0,
+            -2147483648,
+            2147483647,
+            65535,
+            180,
+            179
+          ],
+          [
+            11,
+            0,
+            -1234,
+            5678,
+            950,
+            104,
+            18
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "user_edit-4104075841528e2e",
+ "kind": "user_edit",
+ "note_ids": ["note-b7ae997b289ebefc"],
+ "created_by": "user",
+ "created_utc": "2026-09-01T09:00:00.014Z",
+ "inputs": [
+  {
+   "type": "layer",
+   "layer_id": "recognition-150a5ecbe84625d1",
+   "span_ids": ["l0.w1","l0.w6","l2.w1"]
+  },
+  {
+   "type": "original",
+   "sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+   "stroke_ranges": [
+    [5,8],
+    [27,37],
+    [75,81]
+   ]
+  }
+ ],
+ "params": {},
+ "payload": {
+  "target_layer": "recognition-150a5ecbe84625d1",
+  "edits": [
+   {
+    "span_id": "l0.w1",
+    "text": "rev",
+    "previous_text": "lev",
+    "stroke_ranges": [
+     [5,8]
+    ]
+   },
+   {
+    "span_id": "l0.w6",
+    "text": "monday",
+    "previous_text": "mondapy",
+    "stroke_ranges": [
+     [27,37]
+    ]
+   },
+   {
+    "span_id": "l2.w1",
+    "text": "spare",
+    "previous_text": "hpare",
+    "stroke_ranges": [
+     [75,81]
+    ]
+   }
+  ]
+ },
+ "digest": "080f7a84a6ad25653cdd7f169d758dd3519970b3845a1cd83108908887937a8e"
+}

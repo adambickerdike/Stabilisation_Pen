@@ -1,0 +1,26 @@
+{
+ "file": "jacobian.vec",
+ "rows": 240,
+ "columns": [
+  "theta",
+  "phi",
+  "rho",
+  "gamma",
+  "J00",
+  "J01",
+  "J10",
+  "J11",
+  "Ji00",
+  "Ji01",
+  "Ji10",
+  "Ji11"
+ ],
+ "sha256": "a8f52718269ebf8e3ce79f05500873c093ad93e910dda9fc190b97ae25016aa6",
+ "evidence_status": "reference computation / simulation (no hardware)",
+ "generator": "firmware/tools/gen_vectors.py",
+ "yaml_sha16": "f44bd71afad66b15",
+ "estimator_selection_sha16": "27a067afa9ea4937",
+ "core_py_sha16": "c46570f25d1439cb",
+ "model_py_sha16": "f6888a2b3aafbd87",
+ "reference": "stabpen.frames basis/jacobian/inverse_jacobian; numeric 3-D construction generalised to gamma"
+}

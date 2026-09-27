@@ -1,0 +1,125 @@
+{
+ "object": "note",
+ "schema_version": 1,
+ "note_id": "note-6d3fcf71a8f4e749",
+ "original_sha256": "302717c6c2c916dece48531d49c40b78c0386e6d816f832f2f322e78be41029c",
+ "session": {
+  "format_version": 1,
+  "device_id": "6840123409045651617",
+  "session_id": "3",
+  "start_unix_ms": 1788256800000
+ },
+ "source": {
+  "file_name": "demo_sim_kf_asr.penlog",
+  "file_sha256": "3e97e3381c382ad48b4f38d39a1c9fa0e0c94d19c47ae9de494a7bc54df7ddd2",
+  "file_bytes": 361006,
+  "parse": {
+   "n_bytes": 361006,
+   "records": {
+    "RESEARCH_FRAME": 6000,
+    "STROKE_SAMPLE": 1029,
+    "EVENT": 11,
+    "ANNOTATION": 1
+   },
+   "n_records": 7041,
+   "issues_by_kind": {},
+   "bytes_skipped": 0,
+   "data_loss": false,
+   "t_us_wraps": {
+    "total": 0,
+    "wrap_events": 0,
+    "heuristic_detections": 0
+   },
+   "t_ms_wraps_inferred": 0,
+   "issues": [],
+   "issues_truncated": 0,
+   "stroke_semantics": {
+    "n_samples": 1029,
+    "n_strokes": 4,
+    "n_stroke_runs": 4,
+    "stroke_id_decreases": 0,
+    "t_ms_decreases_within_stroke": 0,
+    "theta_out_of_range": 0,
+    "phi_out_of_range": 0
+   }
+  }
+ },
+ "imported_utc": "2026-09-01T09:00:00.006Z",
+ "imported_by": "penapp.import@0.1.0",
+ "labels": ["synthetic"],
+ "events": [
+  {
+   "t_us": 0,
+   "code": 1,
+   "name": "MODE_CHANGE",
+   "arg": 3
+  },
+  {
+   "t_us": 147000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 0
+  },
+  {
+   "t_us": 1549000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 0
+  },
+  {
+   "t_us": 1552000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 1
+  },
+  {
+   "t_us": 1553000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 1
+  },
+  {
+   "t_us": 1903000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 2
+  },
+  {
+   "t_us": 3959000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 2
+  },
+  {
+   "t_us": 3960000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 3
+  },
+  {
+   "t_us": 3962000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 3
+  },
+  {
+   "t_us": 4313000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 4
+  },
+  {
+   "t_us": 6000000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 4
+  }
+ ],
+ "annotations": [
+  {
+   "offset": 36,
+   "text": "SYNTHETIC session: penapp.synth@0.1.0 from simulator trace traces_kf_asr.npz sha256 42edb8598b28b49d; not human data"
+  }
+ ],
+ "digest": "ace062a802bcbddef39212d46448712fdc9b4bedc4f1db78e53ac7dd209c5728"
+}

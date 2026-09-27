@@ -1,0 +1,170 @@
+{
+  "object": "synthetic_truth",
+  "generator": "penapp.synth@0.1.0",
+  "seed": 11,
+  "language": "en",
+  "evidence_status": "SYNTHETIC ground truth (generator-known transcript and stroke ids)",
+  "text": "buy milk eggs and bread\nreturn library books by friday\ncall the plumber at 9 am",
+  "lines": [
+    {
+      "text": "buy milk eggs and bread",
+      "words": [
+        {
+          "text": "buy",
+          "stroke_ranges": [
+            [
+              0,
+              4
+            ]
+          ]
+        },
+        {
+          "text": "milk",
+          "stroke_ranges": [
+            [
+              5,
+              12
+            ]
+          ]
+        },
+        {
+          "text": "eggs",
+          "stroke_ranges": [
+            [
+              13,
+              18
+            ]
+          ]
+        },
+        {
+          "text": "and",
+          "stroke_ranges": [
+            [
+              19,
+              23
+            ]
+          ]
+        },
+        {
+          "text": "bread",
+          "stroke_ranges": [
+            [
+              24,
+              31
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "text": "return library books by friday",
+      "words": [
+        {
+          "text": "return",
+          "stroke_ranges": [
+            [
+              32,
+              41
+            ]
+          ]
+        },
+        {
+          "text": "library",
+          "stroke_ranges": [
+            [
+              42,
+              53
+            ]
+          ]
+        },
+        {
+          "text": "books",
+          "stroke_ranges": [
+            [
+              54,
+              60
+            ]
+          ]
+        },
+        {
+          "text": "by",
+          "stroke_ranges": [
+            [
+              61,
+              64
+            ]
+          ]
+        },
+        {
+          "text": "friday",
+          "stroke_ranges": [
+            [
+              65,
+              75
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "text": "call the plumber at 9 am",
+      "words": [
+        {
+          "text": "call",
+          "stroke_ranges": [
+            [
+              76,
+              79
+            ]
+          ]
+        },
+        {
+          "text": "the",
+          "stroke_ranges": [
+            [
+              80,
+              84
+            ]
+          ]
+        },
+        {
+          "text": "plumber",
+          "stroke_ranges": [
+            [
+              85,
+              96
+            ]
+          ]
+        },
+        {
+          "text": "at",
+          "stroke_ranges": [
+            [
+              97,
+              99
+            ]
+          ]
+        },
+        {
+          "text": "9",
+          "stroke_ranges": [
+            [
+              100,
+              101
+            ]
+          ]
+        },
+        {
+          "text": "am",
+          "stroke_ranges": [
+            [
+              102,
+              105
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "n_strokes": 106
+}

@@ -1,0 +1,42 @@
+{
+  "object": "synthetic_session_meta",
+  "generator": "penapp.synth@0.1.0",
+  "kind": "glyph_text",
+  "seed": 11,
+  "evidence_status": "SYNTHETIC - not a recording of a person, not a measurement",
+  "session_id": 1,
+  "device_id": "6840123409045651617",
+  "start_unix_ms": 1788253200000,
+  "config": {
+    "x_height_mm": 2.6,
+    "slant_deg": 12.0,
+    "letter_gap": 0.3,
+    "word_gap": 1.3,
+    "line_pitch": 3.4,
+    "speed_mm_s": 28.0,
+    "air_speed_mm_s": 60.0,
+    "corner_deg": 60.0,
+    "jitter": 0.04,
+    "scale_jitter": 0.05,
+    "tremor_residual_um": 25.0,
+    "force_mN": 950.0,
+    "theta_deg": 52.0,
+    "phi_deg": 35.0,
+    "dt": 0.001
+  },
+  "duration_s": 43.213,
+  "n_strokes": 106,
+  "stroke_samples": 4989,
+  "notes": [
+    "pen-down/up events carry arg = stroke_id (proposed; ICD does not define the arg)",
+    "mode-change arg 3 = ASSIST_KF by position in ICD section 6 (numbering not defined by ICD)",
+    "force: synthetic profile with 15 ms ramps; theta/phi slow synthetic variation"
+  ],
+  "files": {
+    "log": "data/samples/demo_text_errands.penlog",
+    "log_sha256": "aa274477b93f314860e6e5a1543885c85c30589ce0b90ea46e39135a91610cf5",
+    "log_bytes": 122860,
+    "truth": "data/samples/demo_text_errands.truth.json",
+    "truth_sha256": "1ade6558c8487c2052a197e5975b54369465cecd3ed9d05d9a4cd24696b9752f"
+  }
+}

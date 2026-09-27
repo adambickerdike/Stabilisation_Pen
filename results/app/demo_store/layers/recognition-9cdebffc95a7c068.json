@@ -1,0 +1,22 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "recognition-9cdebffc95a7c068",
+ "kind": "recognition",
+ "note_ids": ["note-6d3fcf71a8f4e749"],
+ "created_by": "penapp.recognize.null@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.009Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "302717c6c2c916dece48531d49c40b78c0386e6d816f832f2f322e78be41029c"
+  }
+ ],
+ "params": {},
+ "payload": {
+  "language": null,
+  "evidence_status": "no recognition performed (null recogniser)",
+  "spans": []
+ },
+ "digest": "c74d7f3de60af50d7c477ccdd215741867b5049c3715da780888a8d64903af94"
+}

@@ -1,0 +1,219 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "recognition-b2653a4b4c47cb68",
+ "kind": "recognition",
+ "note_ids": ["note-b7ae997b289ebefc"],
+ "created_by": "penapp.recognize.groundtruth@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.005Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+   "stroke_ranges": [
+    [0,91]
+   ]
+  },
+  {
+   "type": "external_file",
+   "sha256": "34fed10ac8888504df14cab3fe2f64725ca9ee4c1eb4086d5c9936dd65949cdb",
+   "role": "synthetic ground-truth transcript",
+   "name": "demo_text_project.truth.json"
+  }
+ ],
+ "params": {
+  "truth_file": "demo_text_project.truth.json",
+  "dropped_words": []
+ },
+ "payload": {
+  "language": "en",
+  "evidence_status": "GROUND-TRUTH PASSTHROUGH of a synthetic transcript; not recogniser output, CER = 0 by construction",
+  "spans": [
+   {
+    "span_id": "l0",
+    "level": "line",
+    "text": "pen rev a bench test on monday",
+    "stroke_ranges": [
+     [0,37]
+    ],
+    "bbox_um": [-939,-4398,73433,1334],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w0",
+    "level": "word",
+    "parent": "l0",
+    "text": "pen",
+    "stroke_ranges": [
+     [0,4]
+    ],
+    "bbox_um": [-939,-4398,6345,0],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w1",
+    "level": "word",
+    "parent": "l0",
+    "text": "rev",
+    "stroke_ranges": [
+     [5,8]
+    ],
+    "bbox_um": [9367,-3024,16394,-11],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w2",
+    "level": "word",
+    "parent": "l0",
+    "text": "a",
+    "stroke_ranges": [
+     [9,9]
+    ],
+    "bbox_um": [19386,-2847,21431,-155],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w3",
+    "level": "word",
+    "parent": "l0",
+    "text": "bench",
+    "stroke_ranges": [
+     [10,17]
+    ],
+    "bbox_um": [24146,-2929,35619,1334],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w4",
+    "level": "word",
+    "parent": "l0",
+    "text": "test",
+    "stroke_ranges": [
+     [18,23]
+    ],
+    "bbox_um": [39251,-2850,47045,1058],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w5",
+    "level": "word",
+    "parent": "l0",
+    "text": "on",
+    "stroke_ranges": [
+     [24,26]
+    ],
+    "bbox_um": [50399,-2758,54780,52],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w6",
+    "level": "word",
+    "parent": "l0",
+    "text": "monday",
+    "stroke_ranges": [
+     [27,37]
+    ],
+    "bbox_um": [57938,-4365,73433,1078],
+    "confidence": null
+   },
+   {
+    "span_id": "l1",
+    "level": "line",
+    "text": "check hall sensor offset",
+    "stroke_ranges": [
+     [38,66]
+    ],
+    "bbox_um": [-295,-11884,53155,-7570],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w0",
+    "level": "word",
+    "parent": "l1",
+    "text": "check",
+    "stroke_ranges": [
+     [38,44]
+    ],
+    "bbox_um": [-295,-11845,10782,-7570],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w1",
+    "level": "word",
+    "parent": "l1",
+    "text": "hall",
+    "stroke_ranges": [
+     [45,49]
+    ],
+    "bbox_um": [13780,-11884,20445,-7762],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w2",
+    "level": "word",
+    "parent": "l1",
+    "text": "sensor",
+    "stroke_ranges": [
+     [50,57]
+    ],
+    "bbox_um": [23115,-11740,37199,-8829],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w3",
+    "level": "word",
+    "parent": "l1",
+    "text": "offset",
+    "stroke_ranges": [
+     [58,66]
+    ],
+    "bbox_um": [40282,-11813,53155,-7727],
+    "confidence": null
+   },
+   {
+    "span_id": "l2",
+    "level": "line",
+    "text": "order spare refills",
+    "stroke_ranges": [
+     [67,91]
+    ],
+    "bbox_um": [-369,-22146,40159,-15956],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w0",
+    "level": "word",
+    "parent": "l2",
+    "text": "order",
+    "stroke_ranges": [
+     [67,74]
+    ],
+    "bbox_um": [-369,-20540,10773,-16807],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w1",
+    "level": "word",
+    "parent": "l2",
+    "text": "spare",
+    "stroke_ranges": [
+     [75,81]
+    ],
+    "bbox_um": [13694,-22146,24821,-17884],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w2",
+    "level": "word",
+    "parent": "l2",
+    "text": "refills",
+    "stroke_ranges": [
+     [82,91]
+    ],
+    "bbox_um": [28127,-20573,40159,-15956],
+    "confidence": null
+   }
+  ]
+ },
+ "digest": "463d583698f74034a5b12b61ddd6725275ee31e56ff45ee2686dfb292cbc2363"
+}

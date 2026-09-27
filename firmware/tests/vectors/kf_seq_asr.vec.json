@@ -1,0 +1,27 @@
+{
+ "file": "kf_seq_asr.vec",
+ "rows": 6000,
+ "columns": [
+  "t",
+  "ph0",
+  "ph1",
+  "valid",
+  "dhat0",
+  "dhat1",
+  "w",
+  "conf_nis",
+  "gate",
+  "conf",
+  "nis_f",
+  "updated"
+ ],
+ "sha256": "e6484a8bc20163f59dd52e827a7127e97f9196b4b9832df705173d7f9fc36cd5",
+ "evidence_status": "reference computation / simulation (no hardware)",
+ "generator": "firmware/tools/gen_vectors.py",
+ "yaml_sha16": "f44bd71afad66b15",
+ "estimator_selection_sha16": "27a067afa9ea4937",
+ "core_py_sha16": "c46570f25d1439cb",
+ "model_py_sha16": "f6888a2b3aafbd87",
+ "profile": "assertive",
+ "reference": "ref_kf_estimator (core._kf_step)"
+}

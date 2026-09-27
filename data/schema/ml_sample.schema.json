@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/stabilisation-pen/data/schema/ml_sample.schema.json",
+  "title": "Disturbance-predictor training sample (one window + metadata)",
+  "description": "One input window of the firmware <-> ML contract (docs/icd.md s5) with its target and provenance. format_version 1. Every sample produced by ml/synth.py or ml/datasets.py is SIMULATION / synthetic data; the evidence_status field must say so. Real recordings (EXP-H01) will use the same structure with evidence_status 'measured', writer ids that are pseudonymous participant codes, and 'tremor' = null (no ground-truth tremor exists for free writing; see ml/README.md).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format_version", "evidence_status", "sample_id", "writer_id", "split", "recording_id", "tick_index",
+               "t_s", "fs_hz", "window", "horizon_s", "target", "labels", "tremor", "writer", "sensor", "seed", "generator"],
+  "properties": {
+    "format_version": {"const": 1},
+    "evidence_status": {"enum": ["SIMULATION / synthetic data", "bench (injected disturbance)", "measured"],
+                        "description": "Synthetic samples must carry 'SIMULATION / synthetic data'."},
+    "sample_id": {"type": "string", "description": "<recording_id>#<tick_index>"},
+    "writer_id": {"type": "string", "pattern": "^(W[0-9]{4}|FC[0-9]{2}|SIM[0-9]+|P[0-9]{3})$",
+                  "description": "Synthetic writer (W....), feature-course run (FC..), simulator seed (SIM...), or pseudonymous participant (P...). Splits are disjoint by writer_id."},
+    "split": {"enum": ["train", "val", "test", "test_freq_holdout", "test_features", "stress_tremor", "stress_writing",
+                       "realism_sim", "bench", "human"]},
+    "recording_id": {"type": "string"},
+    "tick_index": {"type": "integer", "minimum": 63, "description": "Index k of the newest sample (250 Hz ticks since recording start)."},
+    "t_s": {"type": "number", "minimum": 0, "description": "Time stamp of the newest sample = when it became available to the firmware (s)."},
+    "fs_hz": {"const": 250.0},
+    "window": {
+      "type": "object", "additionalProperties": false, "required": ["length", "dp_um", "f_est_hz"],
+      "properties": {
+        "length": {"const": 64},
+        "dp_um": {"type": "array", "minItems": 64, "maxItems": 64, "description": "Housing page-displacement increments (x, y) in um, oldest first; dp_um[63] is the newest.",
+                  "items": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number"}}},
+        "f_est_hz": {"type": "number", "minimum": 0, "maximum": 30, "description": "Kalman oscillator phase-rate estimate at the newest tick (Hz)."}
+      }
+    },
+    "horizon_s": {"const": 0.006},
+    "target": {
+      "type": "object", "additionalProperties": false, "required": ["d_um", "t_target_s"],
+      "properties": {
+        "d_um": {"type": ["array", "null"], "minItems": 2, "maxItems": 2, "items": {"type": "number"},
+                 "description": "True housing disturbance (x, y) in um at t_s + horizon_s; null for unlabelled human data."},
+        "t_target_s": {"type": "number"}
+      }
+    },
+    "labels": {
+      "type": "object", "additionalProperties": false,
+      "required": ["tremor_present", "tremor_envelope", "pen_down", "f0_nominal_hz", "band"],
+      "properties": {
+        "tremor_present": {"type": ["boolean", "null"]},
+        "tremor_envelope": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "pen_down": {"type": "boolean", "description": "Contact at the target time."},
+        "f0_nominal_hz": {"type": ["number", "null"]},
+        "band": {"type": ["string", "null"], "enum": ["4-6 Hz", "6-7 Hz", "7-8 Hz (holdout)", "8-10 Hz", "10-12 Hz", null]}
+      }
+    },
+    "tremor": {
+      "description": "Parameters of the active synthetic tremor segment (stabpen.signals.TremorSpec fields plus segment bounds), or null.",
+      "oneOf": [
+        {"type": "null"},
+        {"type": "object", "required": ["segment_t0_s", "segment_t1_s", "f0", "amp_pk"],
+         "properties": {
+           "segment_t0_s": {"type": "number"}, "segment_t1_s": {"type": "number"},
+           "f0": {"type": "number", "minimum": 0.5, "maximum": 30}, "amp_pk": {"type": "number", "minimum": 0, "maximum": 0.005},
+           "f_jitter": {"type": "number"}, "f_tau": {"type": "number"}, "am_depth": {"type": "number"}, "am_tau": {"type": "number"},
+           "harmonic": {"type": "number"}, "harm_phase": {"type": "number"}, "ellipticity": {"type": "number"},
+           "orientation": {"type": "number"}, "onset": {"type": "number"}, "burst_rate": {"type": "number"},
+           "burst_amp": {"type": "number"}, "broadband_rms": {"type": "number"}
+         }}
+      ]
+    },
+    "writer": {"type": "object", "required": ["writer_id", "split"],
+               "properties": {"writer_id": {"type": "string"}, "split": {"type": "string"},
+                              "letter_height_m": {"type": "number"}, "slant_deg": {"type": "number"},
+                              "advance_ratio": {"type": "number"}, "speed": {"type": "number"},
+                              "strokes_per_word": {"type": "array", "items": {"type": "integer"}},
+                              "word_gap_s": {"type": "number"}, "feature_frac": {"type": "number"},
+                              "tremor_duty": {"type": "number"}}},
+    "sensor": {"type": "object", "required": ["delay_s", "noise_um", "scale_err"],
+               "properties": {"delay_s": {"type": "number", "minimum": 0, "maximum": 0.02},
+                              "noise_um": {"type": "number", "minimum": 0}, "scale_err": {"type": "number"},
+                              "fs_hz": {"type": "number"}}},
+    "seed": {"type": "object", "required": ["entropy", "spawn_key"],
+             "properties": {"entropy": {"type": "integer"}, "spawn_key": {"type": "array", "items": {"type": "integer"}}},
+             "description": "numpy SeedSequence(entropy, spawn_key) that regenerates the recording."},
+    "generator": {"type": "object", "required": ["name"],
+                  "properties": {"name": {"type": "string"}, "f_est_source": {"type": "string"},
+                                 "kf_params_source": {"type": ["string", "null"]}}}
+  }
+}

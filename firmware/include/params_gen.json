@@ -1,0 +1,1541 @@
+{
+ "meta": {
+  "generator": "firmware/tools/gen_params.py",
+  "yaml_version": "0.4.1",
+  "yaml_sha16": "f44bd71afad66b15",
+  "estimator_selection_sha16": "27a067afa9ea4937",
+  "drive_sense_sha16": "9f90f6fbbfd4b76c",
+  "design_revA_sha16": "433ad7f1224c4987",
+  "model_py_sha16": "f6888a2b3aafbd87",
+  "core_py_sha16": "c46570f25d1439cb",
+  "icd_sha16": "67b737b1c0f5d96f",
+  "model_version": "M1.0",
+  "git_head": "5ebd218",
+  "nominal_theta_deg": 50.0,
+  "nominal_N0": 1.0,
+  "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
+ },
+ "checks": [],
+ "constants": [
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_F_PWM_HZ",
+   "value": 40000.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "config/parameters.yaml electrical.f_pwm (calculated)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_F_CURRENT_HZ",
+   "value": 40000.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "config/parameters.yaml control.f_current"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_F_STAGE_HZ",
+   "value": 2000.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "config/parameters.yaml control.f_stage (REQ-CTRL-001)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_PWM_PER_STAGE",
+   "value": 20,
+   "type": "int",
+   "unit": "-",
+   "source": "derived f_pwm / f_stage (ICD s2: every 20 PWM periods)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_TS_STAGE",
+   "value": 0.0005,
+   "type": "float",
+   "unit": "s",
+   "source": "sim/pensim/model.py build_params(): Ts = stage_decim * dt"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_TS_CURRENT",
+   "value": 2.5e-05,
+   "type": "float",
+   "unit": "s",
+   "source": "1 / f_current"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_CUR_DECIM_SIM",
+   "value": 1,
+   "type": "int",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): cur_decim (sim steps of 25 us per current update; 1 = 40 kHz)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_PWM_CLOCK_HZ",
+   "value": 16000000.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "results/electronics/drive_sense.json components.pwm_clock_hz (nRF5340 PWM base clock)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_PWM_COUNTERTOP",
+   "value": 200,
+   "type": "int",
+   "unit": "counts",
+   "source": "derived: centre-aligned up/down counter, 16 MHz / (2 x 40 kHz) = 200 levels (ICD s2)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_F_ML_HZ",
+   "value": 250.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "config/parameters.yaml control.f_predictor; ICD s2/s5"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_ML_DECIM",
+   "value": 8,
+   "type": "int",
+   "unit": "ticks",
+   "source": "derived f_stage / f_predictor (ICD s2: every 8 stage ticks)"
+  },
+  {
+   "section": "Timing (ICD section 2)",
+   "name": "PEN_F_STROKE_LOG_HZ",
+   "value": 200.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "docs/icd.md s2/s4.3 stroke sample rate"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_M_EQ",
+   "value": 0.013690949074074074,
+   "type": "float",
+   "unit": "kg",
+   "source": "sim/pensim/model.py build_params(): Geometry.reduce() J_pivot/L1^2 (CAD Rev A masses; calculated)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_K_TIP",
+   "value": 150.0,
+   "type": "float",
+   "unit": "N/m",
+   "source": "config/parameters.yaml stage.k_tip (assumed)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_C_TIP",
+   "value": 0.14330535095072727,
+   "type": "float",
+   "unit": "N s/m",
+   "source": "sim/pensim/model.py build_params(): 2 zeta_open sqrt(k_tip m_eq)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_M_COUPLE",
+   "value": 0.004492916666666666,
+   "type": "float",
+   "unit": "kg",
+   "source": "sim/pensim/model.py build_params(): Geometry.reduce() m_mov L_cm / L1"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_L1",
+   "value": 0.012,
+   "type": "float",
+   "unit": "m",
+   "source": "config/parameters.yaml stage.L1"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_N_LEVER",
+   "value": 3.1666666666666665,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): L2 / L1 (config/parameters.yaml stage.L2 / stage.L1)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_Q_STOP",
+   "value": 0.0006,
+   "type": "float",
+   "unit": "m",
+   "source": "config/parameters.yaml stage.travel_tip_mech (mechanical stop radius at the tip)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_F_PRE",
+   "value": 0.25,
+   "type": "float",
+   "unit": "N",
+   "source": "config/parameters.yaml stage.axial_preload"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_K_AX",
+   "value": 2000.0,
+   "type": "float",
+   "unit": "N/m",
+   "source": "config/parameters.yaml stage.axial_k"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_S_MAX",
+   "value": 0.0006,
+   "type": "float",
+   "unit": "m",
+   "source": "config/parameters.yaml stage.axial_travel"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_KF20",
+   "value": 0.717,
+   "type": "float",
+   "unit": "N/A",
+   "source": "config/parameters.yaml actuator.Kf (per axis, at the actuator; calculated)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_R20",
+   "value": 6.0,
+   "type": "float",
+   "unit": "ohm",
+   "source": "config/parameters.yaml actuator.R20 (DEC-012)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_L_COIL",
+   "value": 0.000175,
+   "type": "float",
+   "unit": "H",
+   "source": "config/parameters.yaml actuator.L"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_R_BRIDGE",
+   "value": 0.42,
+   "type": "float",
+   "unit": "ohm",
+   "source": "config/parameters.yaml electrical.r_bridge (DRV8212P HS+LS hot; VERIFY)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_R_SHUNT",
+   "value": 0.1,
+   "type": "float",
+   "unit": "ohm",
+   "source": "config/parameters.yaml electrical.r_shunt"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_I_MAX",
+   "value": 0.6,
+   "type": "float",
+   "unit": "A",
+   "source": "config/parameters.yaml actuator.i_max (software limit per axis)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_I_TRIP_HW",
+   "value": 0.8,
+   "type": "float",
+   "unit": "A",
+   "source": "config/parameters.yaml actuator.i_trip (hardware window comparator + latch)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_ALPHA_CU",
+   "value": 0.00393,
+   "type": "float",
+   "unit": "1/K",
+   "source": "config/parameters.yaml actuator.alpha_cu"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_ALPHA_B",
+   "value": -0.0012,
+   "type": "float",
+   "unit": "1/K",
+   "source": "sim/pensim/model.py build_params(): alpha_B default (NdFeB Br tempco, assumed)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_RTH_COIL",
+   "value": 60.0,
+   "type": "float",
+   "unit": "K/W",
+   "source": "config/parameters.yaml actuator.Rth_coil_amb (assumed; see README discrepancy D6)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_CTH_COIL",
+   "value": 0.25,
+   "type": "float",
+   "unit": "J/K",
+   "source": "config/parameters.yaml actuator.Cth_coil"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_T_AMB",
+   "value": 25.0,
+   "type": "float",
+   "unit": "degC",
+   "source": "config/parameters.yaml thermal.t_ambient"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_V_BAT_NOM",
+   "value": 3.7,
+   "type": "float",
+   "unit": "V",
+   "source": "config/parameters.yaml electrical.v_bat_nom"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_V_BAT_MIN",
+   "value": 3.3,
+   "type": "float",
+   "unit": "V",
+   "source": "config/parameters.yaml electrical.v_bat_min (actuation cut-off)"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_CUR_BW_HZ",
+   "value": 2000.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "sim/pensim/model.py Controller.cur_bw (yaml control.current_bw = 2000)"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_KP_I",
+   "value": 2.199114857512855,
+   "type": "float",
+   "unit": "V/A",
+   "source": "sim/pensim/model.py build_params(): Kp_i = L wc_i"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_KI_I",
+   "value": 81932.73640562179,
+   "type": "float",
+   "unit": "V/(A s)",
+   "source": "sim/pensim/model.py build_params(): Ki_i = (R20 + r_bridge + r_shunt) wc_i"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_R_LOOP_FF",
+   "value": 6.52,
+   "type": "float",
+   "unit": "ohm",
+   "source": "sim/pensim/model.py build_params(): Rhat used for the R*i_ref voltage feedforward (at 20 C)"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_DUTY_MAX",
+   "value": 0.97,
+   "type": "float",
+   "unit": "-",
+   "source": "results/electronics/drive_sense.json components.d_max (sampling window)"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_R_LOAD_SWITCH",
+   "value": 0.08,
+   "type": "float",
+   "unit": "ohm",
+   "source": "drive_sense.json components.r_load_switch_ohm (TPS22917, shared; VERIFY)"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_DUTY_HEADROOM",
+   "value": 0.95,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s6 fault bit 6 threshold"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_ISNS_V_PER_A",
+   "value": 1.0,
+   "type": "float",
+   "unit": "V/A",
+   "source": "INA241A1 G = 10 x 0.1 ohm shunt (drive_sense sense_chain.sensitivity_V_per_A)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_ISNS_VREF",
+   "value": 1.25,
+   "type": "float",
+   "unit": "V",
+   "source": "REF3012 1.25 V (INA241 REF and SAADC negative input AIN4)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_SAADC_DIFF_FS_V",
+   "value": 1.2,
+   "type": "float",
+   "unit": "V",
+   "source": "SAADC gain 1/2, internal 0.6 V reference, differential (drive_sense adc_fs_diff_v)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_SAADC_BITS",
+   "value": 12,
+   "type": "int",
+   "unit": "bit",
+   "source": "SAADC 12-bit mode (drive_sense adc_bits)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_ISNS_COUNTS_PER_A",
+   "value": 1706.6666666666667,
+   "type": "float",
+   "unit": "count/A",
+   "source": "derived: 2^(bits-1)/FS x V/A (differential result is signed)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_ISNS_OFFSET_MAX_A",
+   "value": 0.025,
+   "type": "float",
+   "unit": "A",
+   "source": "proposed plausibility bound on the pen-up offset (drive_sense offset_mA_uncal 0.25 mA + ADC offset; generous)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_ISNS_OFFSET_SAMPLES",
+   "value": 32,
+   "type": "int",
+   "unit": "samples",
+   "source": "proposed: centre+edge samples averaged during a coast window"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_VBAT_DIV",
+   "value": 0.5,
+   "type": "float",
+   "unit": "-",
+   "source": "design_revA.py R9/R10 470k/470k (VBAT_SENSE = VBAT/2)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_SAADC_SE_FS_V",
+   "value": 3.6,
+   "type": "float",
+   "unit": "V",
+   "source": "SAADC gain 1/6 x internal 0.6 V reference (single-ended; VERIFY)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_NTC_R25",
+   "value": 10000.0,
+   "type": "float",
+   "unit": "ohm",
+   "source": "design_revA.py sheet_sensing note: NTC 10k"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_NTC_BETA",
+   "value": 3435.0,
+   "type": "float",
+   "unit": "K",
+   "source": "design_revA.py sheet_sensing note: B25/85 ~3435 K (VERIFY part)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_NTC_R_PULLUP",
+   "value": 10000.0,
+   "type": "float",
+   "unit": "ohm",
+   "source": "design_revA.py R14 10k to +3V0A (ratiometric read, REFSEL VDD/4, gain 1/4)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_I_HOLD_DESIGN",
+   "value": 0.3347280334728034,
+   "type": "float",
+   "unit": "A",
+   "source": "drive_sense.json design_point_hold_current_A (50 deg, 1 N, mu 0.15 worst direction)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_R_EXT_HOT",
+   "value": 0.5800000000000001,
+   "type": "float",
+   "unit": "ohm",
+   "source": "drive_sense.json headroom.r_ext_ohm (bridge hot + shunt + wiring)"
+  },
+  {
+   "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
+   "name": "PEN_T_COIL_DESIGN",
+   "value": 85.0,
+   "type": "float",
+   "unit": "degC",
+   "source": "drive_sense.json components.t_coil_design_c"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_POS_BW_HZ",
+   "value": 60.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "sim/pensim/model.py Controller.pos_bw (yaml control.pos_bw = 60)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_ZETA",
+   "value": 0.7,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.zeta"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_KP",
+   "value": 1795.789217806633,
+   "type": "float",
+   "unit": "N/m",
+   "source": "sim/pensim/model.py build_params(): Kp = m_eq wc^2 - k_tip"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_KD",
+   "value": 7.2259126853395585,
+   "type": "float",
+   "unit": "N s/m",
+   "source": "sim/pensim/model.py build_params(): Kd = 2 zeta m_eq wc"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_KI",
+   "value": 135399.3171373699,
+   "type": "float",
+   "unit": "N/(m s)",
+   "source": "sim/pensim/model.py build_params(): Ki = Kp wc ki_ratio"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_D_FILT_HZ",
+   "value": 300.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "sim/pensim/model.py build_params(): d_filt = d_filt_ratio pos_bw"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_ALPHA_D",
+   "value": 0.6103388626246532,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate(): alpha_d = 1 - exp(-2 pi d_filt Ts)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FF_REF",
+   "value": 1.0,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.ff_ref"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FF_ACCEL",
+   "value": 1.0,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.ff_accel"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FF_CONTACT",
+   "value": 0.0,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.ff_contact = 0 (DEC-011: contact feedforward disabled by default; bench option)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FFC_FC_HZ",
+   "value": 60.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "model.Controller.ff_contact_fc (2nd-order Butterworth, DEC-011)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FFC_B0",
+   "value": 0.007820208033497193,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): scipy.signal.butter(2, fc, fs=f_stage) sos[0] (b0)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FFC_B1",
+   "value": 0.015640416066994386,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): scipy.signal.butter(2, fc, fs=f_stage) sos[0] (b1)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FFC_B2",
+   "value": 0.007820208033497193,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): scipy.signal.butter(2, fc, fs=f_stage) sos[0] (b2)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FFC_A1",
+   "value": -1.734725768809275,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): scipy.signal.butter(2, fc, fs=f_stage) sos[0] (a1)"
+  },
+  {
+   "section": "Stage position servo (2 kHz)",
+   "name": "PEN_FFC_A2",
+   "value": 0.7660066009432638,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): scipy.signal.butter(2, fc, fs=f_stage) sos[0] (a2)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_G_ASSIST",
+   "value": 1.0,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.g_assist"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_Q_LIM",
+   "value": 0.00055,
+   "type": "float",
+   "unit": "m",
+   "source": "model.Controller.q_lim (= yaml stage.travel_tip_ctrl 0.00055)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_Q_TAPER",
+   "value": 0.0001,
+   "type": "float",
+   "unit": "m",
+   "source": "model.Controller.q_taper"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_SLEW",
+   "value": 0.08,
+   "type": "float",
+   "unit": "m/s",
+   "source": "model.Controller.slew"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_AUTHORITY_TAU",
+   "value": 0.05,
+   "type": "float",
+   "unit": "s",
+   "source": "model.Controller.authority_tau"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_ALPHA_A",
+   "value": 0.009950166250831893,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate(): alpha_a = 1 - exp(-Ts/authority_tau)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_GAMMA_NOM",
+   "value": 0.19010609997385067,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (default CAL_USER gamma)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_K_HAND_NORMAL",
+   "value": 800.0,
+   "type": "float",
+   "unit": "N/m",
+   "source": "config/parameters.yaml hand.normal_stiffness (gamma formula)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_THETA_NOM",
+   "value": 0.8726646259971648,
+   "type": "float",
+   "unit": "rad",
+   "source": "config/parameters.yaml writing.tilt_deg"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_KAPPA_S",
+   "value": 1.0,
+   "type": "float",
+   "unit": "-",
+   "source": "config/parameters.yaml stage.kappa_s via sim/pensim/model.py build_params() (DEC-007 rev.: 1 = refill slides in the carrier, lever arm L1 - s)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_AXIAL_COMP",
+   "value": 0.0,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.axial_comp (off)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_AXIAL_COMP_TAU",
+   "value": 2.0,
+   "type": "float",
+   "unit": "s",
+   "source": "model.Controller.axial_comp_tau"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_AXIAL_COMP_MAX",
+   "value": 0.0003,
+   "type": "float",
+   "unit": "m",
+   "source": "core.simulate(): axial compensation magnitude clamp 0.3e-3"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_LAM_MIN",
+   "value": 0.5,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate(): lam_hat = max(0.5, 1 - kappa s/L1)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_CONTACT_DF",
+   "value": 0.02,
+   "type": "float",
+   "unit": "N",
+   "source": "core.simulate(): in_contact = F_ax > F_pre + 0.02"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BP_DERIV_ALPHA",
+   "value": 0.2,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate() mode 2: ybpd += 0.2 (yd - ybpd)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_HORIZON",
+   "value": 0.0013295774715459477,
+   "type": "float",
+   "unit": "s",
+   "source": "sim/pensim/model.py build_params(): imu_delay + Ts/2 + servo_lag(0 with ff_ref) + 1/(2 pi cur_bw)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_R",
+   "value": 2.5e-11,
+   "type": "float",
+   "unit": "m^2",
+   "source": "model.Controller.kf_r"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_RDAMP",
+   "value": 0.999000499833375,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): exp(-Ts/kf_tau_decay)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_RH",
+   "value": 0.9973443774776355,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate(): rh = rdamp^(horizon/Ts) (constant)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_WGAIN",
+   "value": 0.0016666666666666668,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): Ts/kf_tau_w"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_WMIN",
+   "value": 15.707963267948966,
+   "type": "float",
+   "unit": "rad/s",
+   "source": "sim/pensim/model.py build_params(): 2 pi kf_wmin_hz"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_WMAX",
+   "value": 87.96459430051421,
+   "type": "float",
+   "unit": "rad/s",
+   "source": "sim/pensim/model.py build_params(): 2 pi kf_wmax_hz"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_CONF_NIS_HI",
+   "value": 6.0,
+   "type": "float",
+   "unit": "-",
+   "source": "model.Controller.conf_nis_hi"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_NIS_ALPHA",
+   "value": 0.01,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate(): nis_f += 0.01 (0.5 nis_sum - nis_f)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_AMP_MIN",
+   "value": 2e-05,
+   "type": "float",
+   "unit": "m",
+   "source": "core.simulate(): frequency adaptation only if oscillator amplitude > 2e-5"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_P0_POS",
+   "value": 1e-08,
+   "type": "float",
+   "unit": "m^2",
+   "source": "core.simulate(): reinit P diag"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_P0_VEL",
+   "value": 0.0001,
+   "type": "float",
+   "unit": "(m/s)^2",
+   "source": "core.simulate(): reinit P diag"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_P0_ACC",
+   "value": 0.01,
+   "type": "float",
+   "unit": "(m/s^2)^2",
+   "source": "core.simulate(): reinit P diag"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_P0_OSC",
+   "value": 1e-07,
+   "type": "float",
+   "unit": "m^2",
+   "source": "core.simulate(): reinit P diag"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_KF_P_INIT",
+   "value": 1e-06,
+   "type": "float",
+   "unit": "-",
+   "source": "core.simulate(): initial P = 1e-6 I (before first reinit)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_F_GATE_WIDTH",
+   "value": 1.5,
+   "type": "float",
+   "unit": "Hz",
+   "source": "model.Controller.f_gate_width"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_QJ",
+   "value": 10.0,
+   "type": "float",
+   "unit": "m^2/s^5",
+   "source": "results/sim/estimator_selection.json kfosc.selected kf_qj=10.0"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_QT",
+   "value": 3e-09,
+   "type": "float",
+   "unit": "m^2/s",
+   "source": "results/sim/estimator_selection.json kfosc.selected kf_qt=3e-09"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_W0",
+   "value": 43.982297150257104,
+   "type": "float",
+   "unit": "rad/s",
+   "source": "results/sim/estimator_selection.json kfosc.selected kf_w0_hz=7.0"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_F_GATE",
+   "value": 7.5,
+   "type": "float",
+   "unit": "Hz",
+   "source": "results/sim/estimator_selection.json kfosc.selected f_gate=7.5 (default CAL_USER f_gate)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_Q00",
+   "value": 1.5625000000000004e-17,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_Q01",
+   "value": 7.812500000000001e-14,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_Q02",
+   "value": 2.0833333333333334e-10,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_Q11",
+   "value": 4.166666666666667e-10,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_Q12",
+   "value": 1.2499999999999999e-06,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_Q22",
+   "value": 0.005,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_KF_QOSC",
+   "value": 1.5e-12,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_QJ",
+   "value": 0.1,
+   "type": "float",
+   "unit": "m^2/s^5",
+   "source": "results/sim/estimator_selection.json kfosc.selected_assertive kf_qj=0.1"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_QT",
+   "value": 1e-08,
+   "type": "float",
+   "unit": "m^2/s",
+   "source": "results/sim/estimator_selection.json kfosc.selected_assertive kf_qt=1e-08"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_W0",
+   "value": 43.982297150257104,
+   "type": "float",
+   "unit": "rad/s",
+   "source": "results/sim/estimator_selection.json kfosc.selected_assertive kf_w0_hz=7.0"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_F_GATE",
+   "value": 7.5,
+   "type": "float",
+   "unit": "Hz",
+   "source": "results/sim/estimator_selection.json kfosc.selected_assertive f_gate=7.5 (default CAL_USER f_gate)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_Q00",
+   "value": 1.5625000000000006e-19,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_Q01",
+   "value": 7.812500000000002e-16,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_Q02",
+   "value": 2.083333333333334e-12,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_Q11",
+   "value": 4.166666666666668e-12,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_Q12",
+   "value": 1.25e-08,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_Q22",
+   "value": 5e-05,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_KF_QOSC",
+   "value": 5.0000000000000005e-12,
+   "type": "float",
+   "unit": "SI",
+   "source": "core._kf_step(): Q entries precomputed in double precision"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP1_B0",
+   "value": 0.9867597804394032,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (b0); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP1_B1",
+   "value": -1.9735195608788063,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (b1); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP1_B2",
+   "value": 0.9867597804394032,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (b2); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP1_A1",
+   "value": -1.9733442497812987,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (a1); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP1_A2",
+   "value": 0.9736948719763148,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (a2); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP2_B0",
+   "value": 0.00034604133763910385,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (b0); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP2_B1",
+   "value": 0.0006920826752782077,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (b1); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP2_B2",
+   "value": 0.00034604133763910385,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (b2); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP2_A1",
+   "value": -1.9466975407561833,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (a1); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP2_A2",
+   "value": 0.9480817061067397,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (a2); results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_BAL_BP_GAIN_COMP",
+   "value": 1.3107183458495626,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): 1/|H(bp_tune_hz=7.0)|; results/sim/estimator_selection.json bpf.selected"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP1_B0",
+   "value": 0.9867597804394032,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (b0); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP1_B1",
+   "value": -1.9735195608788063,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (b1); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP1_B2",
+   "value": 0.9867597804394032,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (b2); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP1_A1",
+   "value": -1.9733442497812987,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (a1); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP1_A2",
+   "value": 0.9736948719763148,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_lo=6.0 Hz, high) sos (a2); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP2_B0",
+   "value": 0.00034604133763910385,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (b0); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP2_B1",
+   "value": 0.0006920826752782077,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (b1); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP2_B2",
+   "value": 0.00034604133763910385,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (b2); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP2_A1",
+   "value": -1.9466975407561833,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (a1); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP2_A2",
+   "value": 0.9480817061067397,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (a2); results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_ASR_BP_GAIN_COMP",
+   "value": 1.3107183458495626,
+   "type": "float",
+   "unit": "-",
+   "source": "sim/pensim/model.py build_params(): 1/|H(bp_tune_hz=7.0)|; results/sim/estimator_selection.json bpf.selected_assertive"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_HALL_ICT_COMP",
+   "value": 2e-06,
+   "type": "float",
+   "unit": "m/A",
+   "source": "config/parameters.yaml sensing.hall_i_crosstalk_tip (sim compensation; firmware uses CAL_HALL T/A)"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_HALL_DELAY",
+   "value": 0.0001,
+   "type": "float",
+   "unit": "s",
+   "source": "config/parameters.yaml sensing.hall_delay"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_OPT_DELAY",
+   "value": 0.002,
+   "type": "float",
+   "unit": "s",
+   "source": "config/parameters.yaml sensing.opt_delay"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_IMU_DELAY",
+   "value": 0.001,
+   "type": "float",
+   "unit": "s",
+   "source": "config/parameters.yaml sensing.imu_delay"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_FUSION_LAG_TICKS",
+   "value": 2,
+   "type": "int",
+   "unit": "ticks",
+   "source": "core.simulate(): lag_t = max(0, (opt_delay - imu_delay) // stage_decim) in sim steps"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_IMU_LEAK_TAU",
+   "value": 0.5,
+   "type": "float",
+   "unit": "s",
+   "source": "core.simulate(): vimu *= (1 - dti/0.5) leaky velocity"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_IMU_RATE_HZ",
+   "value": 3840.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "config/parameters.yaml sensing.imu_rate (ICD s2 says 7.68 kHz ODR; README D8)"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_OPT_RATE_HZ",
+   "value": 1000.0,
+   "type": "float",
+   "unit": "Hz",
+   "source": "config/parameters.yaml sensing.opt_rate (ICD s2 says 2 kHz burst; README D8)"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_OPT_LIFT_MAX",
+   "value": 0.0008,
+   "type": "float",
+   "unit": "m",
+   "source": "model.build_params default sensing.opt_lift_max"
+  },
+  {
+   "section": "Sensing and housing-position fusion",
+   "name": "PEN_FUSION_RING",
+   "value": 1024,
+   "type": "int",
+   "unit": "ticks",
+   "source": "core.simulate(): rb_pimu length"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_HEADROOM_TIME",
+   "value": 0.05,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s6 fault bit 6: duty > 0.95 for > 50 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_OPT_INVALID_TIME",
+   "value": 0.3,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s6 fault bit 4: optical invalid > 300 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_HALL_DETECT_BUDGET",
+   "value": 0.005,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s6: frozen Hall detected within 5 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_HALL_STUCK_TICKS",
+   "value": 8,
+   "type": "int",
+   "unit": "ticks",
+   "source": "proposed: 8 bit-identical x/y/z readings (4 ms < 5 ms budget); needs >= 1 LSB noise (VERIFY EXP-B04)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_HALL_JUMP_MAX",
+   "value": 0.0001,
+   "type": "float",
+   "unit": "m",
+   "source": "proposed: |second difference| residual bound (physical accel <= ~330 m/s^2 -> 83 um/tick^2)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_HALL_RANGE_MARGIN",
+   "value": 5e-05,
+   "type": "float",
+   "unit": "m",
+   "source": "proposed: |q| > q_stop + margin is implausible"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_PENUP_TIMEOUT",
+   "value": 5.0,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s6: soft-fault shutdown waits for pen-up, timeout 5 s"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_RAMP_DOWN_TIME",
+   "value": 0.03,
+   "type": "float",
+   "unit": "s",
+   "source": "REQ-SAF-004: ramp actuator current down over >= 30 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_VBAT_RECOVER",
+   "value": 3.45,
+   "type": "float",
+   "unit": "V",
+   "source": "proposed: low-battery clear threshold (hysteresis)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_VBAT_DEBOUNCE",
+   "value": 0.2,
+   "type": "float",
+   "unit": "s",
+   "source": "proposed: low-battery debounce"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_VBAT_LPF_TAU",
+   "value": 0.05,
+   "type": "float",
+   "unit": "s",
+   "source": "proposed: VBAT measurement low-pass"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_T_COIL_LIMIT",
+   "value": 120.0,
+   "type": "float",
+   "unit": "degC",
+   "source": "REQ-THM-002 coil hot-spot limit"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_T_DERATE_START",
+   "value": 100.0,
+   "type": "float",
+   "unit": "degC",
+   "source": "proposed: authority cap starts falling"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_T_FAULT",
+   "value": 115.0,
+   "type": "float",
+   "unit": "degC",
+   "source": "proposed: over-temperature fault (bit 2), 5 degC margin for observer error"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_T_RECOVER",
+   "value": 90.0,
+   "type": "float",
+   "unit": "degC",
+   "source": "proposed: over-temperature clear threshold"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_T_NTC_GAIN",
+   "value": 0.02,
+   "type": "float",
+   "unit": "-",
+   "source": "proposed: NTC relaxation gain per 100 Hz observer update (both coils idle)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_T_RES_GAIN",
+   "value": 0.05,
+   "type": "float",
+   "unit": "-",
+   "source": "proposed: resistance-thermometry gain per valid 100 Hz observer update"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_R_EST_I_MIN",
+   "value": 0.1,
+   "type": "float",
+   "unit": "A",
+   "source": "proposed: minimum |I| for resistance estimate"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_R_EST_DI_MAX",
+   "value": 0.02,
+   "type": "float",
+   "unit": "A",
+   "source": "proposed: max current change over a tick for 'steady'"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_OC_CLEAR_RETRIES",
+   "value": 3.0,
+   "type": "float",
+   "unit": "-",
+   "source": "proposed: latch clear attempts before the fault is permanent"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_DHAT_DIFF_MAX",
+   "value": 0.00015,
+   "type": "float",
+   "unit": "m",
+   "source": "docs/icd.md s5: |d_ML - d_KF| > 150 um"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_DIFF_TIME",
+   "value": 0.02,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s5: for > 20 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_RATE_MAX",
+   "value": 0.05,
+   "type": "float",
+   "unit": "m/s",
+   "source": "docs/icd.md s5: output rate > 50 mm/s"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_HORIZON",
+   "value": 0.006,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s5: horizon h = 6 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_WINDOW",
+   "value": 64,
+   "type": "int",
+   "unit": "samples",
+   "source": "docs/icd.md s5: W = 64 at 250 Hz"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_STALE_TIME",
+   "value": 0.008,
+   "type": "float",
+   "unit": "s",
+   "source": "proposed: ML output older than 2 predictor periods is expired (REQ-SAF-003)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_FADE_TIME",
+   "value": 0.02,
+   "type": "float",
+   "unit": "s",
+   "source": "REQ-SAF-003: fall back smoothly within 20 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_TRIP_COUNT",
+   "value": 5,
+   "type": "int",
+   "unit": "trips",
+   "source": "proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_TRIP_WINDOW",
+   "value": 10.0,
+   "type": "float",
+   "unit": "s",
+   "source": "proposed"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_PENUP_DEBOUNCE",
+   "value": 0.02,
+   "type": "float",
+   "unit": "s",
+   "source": "proposed: contact must be absent 20 ms to declare pen-up"
+  }
+ ]
+}

@@ -1,0 +1,241 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "recognition-dc2f8772e6e5b26f",
+ "kind": "recognition",
+ "note_ids": ["note-f8094823c1a7b965"],
+ "created_by": "penapp.recognize.groundtruth@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.002Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+   "stroke_ranges": [
+    [0,105]
+   ]
+  },
+  {
+   "type": "external_file",
+   "sha256": "1ade6558c8487c2052a197e5975b54369465cecd3ed9d05d9a4cd24696b9752f",
+   "role": "synthetic ground-truth transcript",
+   "name": "demo_text_errands.truth.json"
+  }
+ ],
+ "params": {
+  "truth_file": "demo_text_errands.truth.json",
+  "dropped_words": []
+ },
+ "payload": {
+  "language": "en",
+  "evidence_status": "GROUND-TRUTH PASSTHROUGH of a synthetic transcript; not recogniser output, CER = 0 by construction",
+  "spans": [
+   {
+    "span_id": "l0",
+    "level": "line",
+    "text": "buy milk eggs and bread",
+    "stroke_ranges": [
+     [0,31]
+    ],
+    "bbox_um": [-929,-6121,53709,21],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w0",
+    "level": "word",
+    "parent": "l0",
+    "text": "buy",
+    "stroke_ranges": [
+     [0,4]
+    ],
+    "bbox_um": [-929,-6121,6206,21],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w1",
+    "level": "word",
+    "parent": "l0",
+    "text": "milk",
+    "stroke_ranges": [
+     [5,12]
+    ],
+    "bbox_um": [8951,-4543,16791,-38],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w2",
+    "level": "word",
+    "parent": "l0",
+    "text": "eggs",
+    "stroke_ranges": [
+     [13,18]
+    ],
+    "bbox_um": [19946,-6056,28856,-1766],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w3",
+    "level": "word",
+    "parent": "l0",
+    "text": "and",
+    "stroke_ranges": [
+     [19,23]
+    ],
+    "bbox_um": [32129,-4469,39565,-22],
+    "confidence": null
+   },
+   {
+    "span_id": "l0.w4",
+    "level": "word",
+    "parent": "l0",
+    "text": "bread",
+    "stroke_ranges": [
+     [24,31]
+    ],
+    "bbox_um": [41898,-4471,53709,-435],
+    "confidence": null
+   },
+   {
+    "span_id": "l1",
+    "level": "line",
+    "text": "return library books by friday",
+    "stroke_ranges": [
+     [32,75]
+    ],
+    "bbox_um": [-1305,-14976,66756,-8879],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w0",
+    "level": "word",
+    "parent": "l1",
+    "text": "return",
+    "stroke_ranges": [
+     [32,41]
+    ],
+    "bbox_um": [-1305,-13388,12269,-9601],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w1",
+    "level": "word",
+    "parent": "l1",
+    "text": "library",
+    "stroke_ranges": [
+     [42,53]
+    ],
+    "bbox_um": [15441,-14778,28810,-8879],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w2",
+    "level": "word",
+    "parent": "l1",
+    "text": "books",
+    "stroke_ranges": [
+     [54,60]
+    ],
+    "bbox_um": [31637,-13373,43639,-8959],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w3",
+    "level": "word",
+    "parent": "l1",
+    "text": "by",
+    "stroke_ranges": [
+     [61,64]
+    ],
+    "bbox_um": [46374,-14976,51507,-9181],
+    "confidence": null
+   },
+   {
+    "span_id": "l1.w4",
+    "level": "word",
+    "parent": "l1",
+    "text": "friday",
+    "stroke_ranges": [
+     [65,75]
+    ],
+    "bbox_um": [54611,-14689,66756,-9199],
+    "confidence": null
+   },
+   {
+    "span_id": "l2",
+    "level": "line",
+    "text": "call the plumber at 9 am",
+    "stroke_ranges": [
+     [76,105]
+    ],
+    "bbox_um": [-714,-23502,54779,-17736],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w0",
+    "level": "word",
+    "parent": "l2",
+    "text": "call",
+    "stroke_ranges": [
+     [76,79]
+    ],
+    "bbox_um": [-714,-22174,5688,-17952],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w1",
+    "level": "word",
+    "parent": "l2",
+    "text": "the",
+    "stroke_ranges": [
+     [80,84]
+    ],
+    "bbox_um": [9075,-22002,15143,-17819],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w2",
+    "level": "word",
+    "parent": "l2",
+    "text": "plumber",
+    "stroke_ranges": [
+     [85,96]
+    ],
+    "bbox_um": [17716,-23502,34023,-17736],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w3",
+    "level": "word",
+    "parent": "l2",
+    "text": "at",
+    "stroke_ranges": [
+     [97,99]
+    ],
+    "bbox_um": [37206,-22203,41095,-18177],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w4",
+    "level": "word",
+    "parent": "l2",
+    "text": "9",
+    "stroke_ranges": [
+     [100,101]
+    ],
+    "bbox_um": [44613,-22042,46358,-18155],
+    "confidence": null
+   },
+   {
+    "span_id": "l2.w5",
+    "level": "word",
+    "parent": "l2",
+    "text": "am",
+    "stroke_ranges": [
+     [102,105]
+    ],
+    "bbox_um": [49269,-22169,54779,-19396],
+    "confidence": null
+   }
+  ]
+ },
+ "digest": "b46f4fe7da995e68605e652ef3540ca4417cdbc73b81e5d66bc8b23cdced9413"
+}

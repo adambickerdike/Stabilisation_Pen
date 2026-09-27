@@ -1,0 +1,21 @@
+{
+ "file": "bpf_seq.vec",
+ "rows": 6000,
+ "columns": [
+  "t",
+  "ph0",
+  "ph1",
+  "valid",
+  "dhat0",
+  "dhat1"
+ ],
+ "sha256": "921c18c8ab998bd87bd3570881ff5664f9774e392a930d76602eff7703dd63fa",
+ "evidence_status": "reference computation / simulation (no hardware)",
+ "generator": "firmware/tools/gen_vectors.py",
+ "yaml_sha16": "f44bd71afad66b15",
+ "estimator_selection_sha16": "27a067afa9ea4937",
+ "core_py_sha16": "c46570f25d1439cb",
+ "model_py_sha16": "f6888a2b3aafbd87",
+ "profile": "balanced",
+ "reference": "mode==2 transcription (core._biquad)"
+}

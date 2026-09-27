@@ -1,0 +1,82 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "ai_summary-6dec0ff6dc129c31",
+ "kind": "ai_summary",
+ "note_ids": ["note-f8094823c1a7b965"],
+ "created_by": "penapp.grounded@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.010Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+   "stroke_ranges": [
+    [32,75]
+   ]
+  },
+  {
+   "type": "layer",
+   "layer_id": "recognition-dc2f8772e6e5b26f",
+   "span_ids": ["l1"]
+  }
+ ],
+ "params": {
+  "retrieval": {
+   "method": "sqlite-fts5 bm25 (porter, unicode61) + query-term coverage",
+   "top_k": 5,
+   "min_coverage": 0.5
+  },
+  "max_sentences": 3,
+  "consent": null
+ },
+ "payload": {
+  "question": "When should I return the library books?",
+  "sentences": [
+   {
+    "text": "return library books by friday",
+    "citations": [
+     {
+      "source_id": "S1",
+      "note_id": "note-f8094823c1a7b965",
+      "original_sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+      "layer_ids": ["recognition-dc2f8772e6e5b26f"],
+      "span_id": "l1",
+      "stroke_ranges": [
+       [32,75]
+      ],
+      "bbox_um": [-1305,-14976,66756,-8879]
+     }
+    ],
+    "support": 1.0
+   }
+  ],
+  "sources": [
+   {
+    "source_id": "S1",
+    "note_id": "note-f8094823c1a7b965",
+    "layer_ids": ["recognition-dc2f8772e6e5b26f"],
+    "span_id": "l1",
+    "text": "return library books by friday",
+    "stroke_ranges": [
+     [32,75]
+    ],
+    "bbox_um": [-1305,-14976,66756,-8879],
+    "score": 3.897849
+   }
+  ],
+  "llm": {
+   "model_id": "penapp.extractive",
+   "version": "0.1.0",
+   "local": true,
+   "deterministic": true
+  },
+  "validation": {
+   "all_sentences_cited": true,
+   "min_support": 0.75,
+   "numbers_checked": true,
+   "raw_output_chars": 35
+  },
+  "disclaimer": "Generated only from your recognised notes; each sentence cites the note strokes it comes from. Not medical advice: this assistant is not a medical device and makes no inference about health or handwriting."
+ },
+ "digest": "27c7dec60839494654260649855a12eb6fe73282dbec00290a93b65c543d6d3e"
+}

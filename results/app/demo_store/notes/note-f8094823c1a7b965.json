@@ -1,0 +1,1336 @@
+{
+ "object": "note",
+ "schema_version": 1,
+ "note_id": "note-f8094823c1a7b965",
+ "original_sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+ "session": {
+  "format_version": 1,
+  "device_id": "6840123409045651617",
+  "session_id": "1",
+  "start_unix_ms": 1788253200000
+ },
+ "source": {
+  "file_name": "demo_text_errands.penlog",
+  "file_sha256": "aa274477b93f314860e6e5a1543885c85c30589ce0b90ea46e39135a91610cf5",
+  "file_bytes": 122860,
+  "parse": {
+   "n_bytes": 122860,
+   "records": {
+    "STROKE_SAMPLE": 4989,
+    "EVENT": 213,
+    "ANNOTATION": 1
+   },
+   "n_records": 5203,
+   "issues_by_kind": {},
+   "bytes_skipped": 0,
+   "data_loss": false,
+   "t_us_wraps": {
+    "total": 0,
+    "wrap_events": 0,
+    "heuristic_detections": 0
+   },
+   "t_ms_wraps_inferred": 0,
+   "issues": [],
+   "issues_truncated": 0,
+   "stroke_semantics": {
+    "n_samples": 4989,
+    "n_strokes": 106,
+    "n_stroke_runs": 106,
+    "stroke_id_decreases": 0,
+    "t_ms_decreases_within_stroke": 0,
+    "theta_out_of_range": 0,
+    "phi_out_of_range": 0
+   }
+  }
+ },
+ "imported_utc": "2026-09-01T09:00:00.000Z",
+ "imported_by": "penapp.import@0.1.0",
+ "labels": ["synthetic"],
+ "events": [
+  {
+   "t_us": 0,
+   "code": 1,
+   "name": "MODE_CHANGE",
+   "arg": 3
+  },
+  {
+   "t_us": 356000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 0
+  },
+  {
+   "t_us": 583000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 0
+  },
+  {
+   "t_us": 707000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 1
+  },
+  {
+   "t_us": 1033000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 1
+  },
+  {
+   "t_us": 1182000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 2
+  },
+  {
+   "t_us": 1558000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 2
+  },
+  {
+   "t_us": 1704000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 3
+  },
+  {
+   "t_us": 1858000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 3
+  },
+  {
+   "t_us": 2005000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 4
+  },
+  {
+   "t_us": 2238000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 4
+  },
+  {
+   "t_us": 2459000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 5
+  },
+  {
+   "t_us": 2626000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 5
+  },
+  {
+   "t_us": 2755000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 6
+  },
+  {
+   "t_us": 2987000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 6
+  },
+  {
+   "t_us": 3116000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 7
+  },
+  {
+   "t_us": 3348000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 7
+  },
+  {
+   "t_us": 3498000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 8
+  },
+  {
+   "t_us": 3657000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 8
+  },
+  {
+   "t_us": 3819000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 9
+  },
+  {
+   "t_us": 3934000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 9
+  },
+  {
+   "t_us": 4056000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 10
+  },
+  {
+   "t_us": 4279000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 10
+  },
+  {
+   "t_us": 4453000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 11
+  },
+  {
+   "t_us": 4675000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 11
+  },
+  {
+   "t_us": 4831000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 12
+  },
+  {
+   "t_us": 5039000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 12
+  },
+  {
+   "t_us": 5205000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 13
+  },
+  {
+   "t_us": 5545000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 13
+  },
+  {
+   "t_us": 5693000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 14
+  },
+  {
+   "t_us": 5993000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 14
+  },
+  {
+   "t_us": 6114000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 15
+  },
+  {
+   "t_us": 6375000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 15
+  },
+  {
+   "t_us": 6559000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 16
+  },
+  {
+   "t_us": 6850000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 16
+  },
+  {
+   "t_us": 6970000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 17
+  },
+  {
+   "t_us": 7224000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 17
+  },
+  {
+   "t_us": 7413000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 18
+  },
+  {
+   "t_us": 7686000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 18
+  },
+  {
+   "t_us": 7905000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 19
+  },
+  {
+   "t_us": 8342000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 19
+  },
+  {
+   "t_us": 8491000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 20
+  },
+  {
+   "t_us": 8656000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 20
+  },
+  {
+   "t_us": 8784000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 21
+  },
+  {
+   "t_us": 9021000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 21
+  },
+  {
+   "t_us": 9175000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 22
+  },
+  {
+   "t_us": 9489000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 22
+  },
+  {
+   "t_us": 9639000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 23
+  },
+  {
+   "t_us": 9859000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 23
+  },
+  {
+   "t_us": 10051000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 24
+  },
+  {
+   "t_us": 10258000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 24
+  },
+  {
+   "t_us": 10379000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 25
+  },
+  {
+   "t_us": 10673000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 25
+  },
+  {
+   "t_us": 10823000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 26
+  },
+  {
+   "t_us": 10975000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 26
+  },
+  {
+   "t_us": 11099000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 27
+  },
+  {
+   "t_us": 11234000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 27
+  },
+  {
+   "t_us": 11353000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 28
+  },
+  {
+   "t_us": 11677000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 28
+  },
+  {
+   "t_us": 11832000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 29
+  },
+  {
+   "t_us": 12268000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 29
+  },
+  {
+   "t_us": 12416000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 30
+  },
+  {
+   "t_us": 12709000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 30
+  },
+  {
+   "t_us": 12854000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 31
+  },
+  {
+   "t_us": 13061000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 31
+  },
+  {
+   "t_us": 14060000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 32
+  },
+  {
+   "t_us": 14222000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 32
+  },
+  {
+   "t_us": 14349000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 33
+  },
+  {
+   "t_us": 14492000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 33
+  },
+  {
+   "t_us": 14614000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 34
+  },
+  {
+   "t_us": 14942000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 34
+  },
+  {
+   "t_us": 15105000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 35
+  },
+  {
+   "t_us": 15320000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 35
+  },
+  {
+   "t_us": 15462000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 36
+  },
+  {
+   "t_us": 15577000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 36
+  },
+  {
+   "t_us": 15692000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 37
+  },
+  {
+   "t_us": 16080000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 37
+  },
+  {
+   "t_us": 16229000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 38
+  },
+  {
+   "t_us": 16392000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 38
+  },
+  {
+   "t_us": 16519000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 39
+  },
+  {
+   "t_us": 16663000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 39
+  },
+  {
+   "t_us": 16780000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 40
+  },
+  {
+   "t_us": 16946000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 40
+  },
+  {
+   "t_us": 17074000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 41
+  },
+  {
+   "t_us": 17312000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 41
+  },
+  {
+   "t_us": 17518000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 42
+  },
+  {
+   "t_us": 17742000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 42
+  },
+  {
+   "t_us": 17889000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 43
+  },
+  {
+   "t_us": 18044000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 43
+  },
+  {
+   "t_us": 18203000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 44
+  },
+  {
+   "t_us": 18318000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 44
+  },
+  {
+   "t_us": 18438000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 45
+  },
+  {
+   "t_us": 18659000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 45
+  },
+  {
+   "t_us": 18782000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 46
+  },
+  {
+   "t_us": 19099000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 46
+  },
+  {
+   "t_us": 19247000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 47
+  },
+  {
+   "t_us": 19405000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 47
+  },
+  {
+   "t_us": 19531000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 48
+  },
+  {
+   "t_us": 19671000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 48
+  },
+  {
+   "t_us": 19815000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 49
+  },
+  {
+   "t_us": 20266000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 49
+  },
+  {
+   "t_us": 20418000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 50
+  },
+  {
+   "t_us": 20575000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 50
+  },
+  {
+   "t_us": 20701000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 51
+  },
+  {
+   "t_us": 20840000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 51
+  },
+  {
+   "t_us": 20952000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 52
+  },
+  {
+   "t_us": 21108000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 52
+  },
+  {
+   "t_us": 21256000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 53
+  },
+  {
+   "t_us": 21493000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 53
+  },
+  {
+   "t_us": 21730000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 54
+  },
+  {
+   "t_us": 21947000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 54
+  },
+  {
+   "t_us": 22069000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 55
+  },
+  {
+   "t_us": 22378000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 55
+  },
+  {
+   "t_us": 22543000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 56
+  },
+  {
+   "t_us": 22857000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 56
+  },
+  {
+   "t_us": 22995000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 57
+  },
+  {
+   "t_us": 23302000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 57
+  },
+  {
+   "t_us": 23447000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 58
+  },
+  {
+   "t_us": 23673000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 58
+  },
+  {
+   "t_us": 23831000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 59
+  },
+  {
+   "t_us": 24042000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 59
+  },
+  {
+   "t_us": 24210000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 60
+  },
+  {
+   "t_us": 24500000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 60
+  },
+  {
+   "t_us": 24711000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 61
+  },
+  {
+   "t_us": 24928000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 61
+  },
+  {
+   "t_us": 25050000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 62
+  },
+  {
+   "t_us": 25360000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 62
+  },
+  {
+   "t_us": 25517000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 63
+  },
+  {
+   "t_us": 25677000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 63
+  },
+  {
+   "t_us": 25827000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 64
+  },
+  {
+   "t_us": 26072000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 64
+  },
+  {
+   "t_us": 26323000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 65
+  },
+  {
+   "t_us": 26558000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 65
+  },
+  {
+   "t_us": 26700000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 66
+  },
+  {
+   "t_us": 26815000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 66
+  },
+  {
+   "t_us": 26931000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 67
+  },
+  {
+   "t_us": 27090000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 67
+  },
+  {
+   "t_us": 27216000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 68
+  },
+  {
+   "t_us": 27357000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 68
+  },
+  {
+   "t_us": 27479000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 69
+  },
+  {
+   "t_us": 27644000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 69
+  },
+  {
+   "t_us": 27809000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 70
+  },
+  {
+   "t_us": 27924000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 70
+  },
+  {
+   "t_us": 28082000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 71
+  },
+  {
+   "t_us": 28386000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 71
+  },
+  {
+   "t_us": 28534000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 72
+  },
+  {
+   "t_us": 28748000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 72
+  },
+  {
+   "t_us": 28905000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 73
+  },
+  {
+   "t_us": 29303000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 73
+  },
+  {
+   "t_us": 29456000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 74
+  },
+  {
+   "t_us": 29612000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 74
+  },
+  {
+   "t_us": 29760000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 75
+  },
+  {
+   "t_us": 29999000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 75
+  },
+  {
+   "t_us": 31159000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 76
+  },
+  {
+   "t_us": 31407000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 76
+  },
+  {
+   "t_us": 31557000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 77
+  },
+  {
+   "t_us": 31968000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 77
+  },
+  {
+   "t_us": 32145000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 78
+  },
+  {
+   "t_us": 32358000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 78
+  },
+  {
+   "t_us": 32531000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 79
+  },
+  {
+   "t_us": 32745000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 79
+  },
+  {
+   "t_us": 32951000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 80
+  },
+  {
+   "t_us": 33174000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 80
+  },
+  {
+   "t_us": 33319000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 81
+  },
+  {
+   "t_us": 33434000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 81
+  },
+  {
+   "t_us": 33565000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 82
+  },
+  {
+   "t_us": 33777000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 82
+  },
+  {
+   "t_us": 33903000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 83
+  },
+  {
+   "t_us": 34126000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 83
+  },
+  {
+   "t_us": 34258000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 84
+  },
+  {
+   "t_us": 34603000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 84
+  },
+  {
+   "t_us": 34774000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 85
+  },
+  {
+   "t_us": 34985000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 85
+  },
+  {
+   "t_us": 35132000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 86
+  },
+  {
+   "t_us": 35432000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 86
+  },
+  {
+   "t_us": 35606000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 87
+  },
+  {
+   "t_us": 35827000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 87
+  },
+  {
+   "t_us": 35974000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 88
+  },
+  {
+   "t_us": 36357000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 88
+  },
+  {
+   "t_us": 36505000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 89
+  },
+  {
+   "t_us": 36661000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 89
+  },
+  {
+   "t_us": 36787000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 90
+  },
+  {
+   "t_us": 37002000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 90
+  },
+  {
+   "t_us": 37128000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 91
+  },
+  {
+   "t_us": 37343000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 91
+  },
+  {
+   "t_us": 37522000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 92
+  },
+  {
+   "t_us": 37744000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 92
+  },
+  {
+   "t_us": 37867000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 93
+  },
+  {
+   "t_us": 38184000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 93
+  },
+  {
+   "t_us": 38325000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 94
+  },
+  {
+   "t_us": 38663000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 94
+  },
+  {
+   "t_us": 38806000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 95
+  },
+  {
+   "t_us": 38965000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 95
+  },
+  {
+   "t_us": 39091000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 96
+  },
+  {
+   "t_us": 39232000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 96
+  },
+  {
+   "t_us": 39414000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 97
+  },
+  {
+   "t_us": 39838000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 97
+  },
+  {
+   "t_us": 40013000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 98
+  },
+  {
+   "t_us": 40242000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 98
+  },
+  {
+   "t_us": 40388000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 99
+  },
+  {
+   "t_us": 40503000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 99
+  },
+  {
+   "t_us": 40690000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 100
+  },
+  {
+   "t_us": 40972000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 100
+  },
+  {
+   "t_us": 41073000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 101
+  },
+  {
+   "t_us": 41245000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 101
+  },
+  {
+   "t_us": 41443000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 102
+  },
+  {
+   "t_us": 41857000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 102
+  },
+  {
+   "t_us": 42009000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 103
+  },
+  {
+   "t_us": 42175000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 103
+  },
+  {
+   "t_us": 42303000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 104
+  },
+  {
+   "t_us": 42534000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 104
+  },
+  {
+   "t_us": 42662000,
+   "code": 7,
+   "name": "PEN_DOWN",
+   "arg": 105
+  },
+  {
+   "t_us": 42893000,
+   "code": 8,
+   "name": "PEN_UP",
+   "arg": 105
+  }
+ ],
+ "annotations": [
+  {
+   "offset": 36,
+   "text": "SYNTHETIC session: penapp.synth@0.1.0 glyph handwriting of a known transcript, seed 11; not human data"
+  }
+ ],
+ "digest": "2f4ea52b4b23f7e8d13c87188ae4efd54785c0b15a76fc18696e092242f4bdf5"
+}

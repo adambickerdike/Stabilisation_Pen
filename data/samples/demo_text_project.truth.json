@@ -1,0 +1,152 @@
+{
+  "object": "synthetic_truth",
+  "generator": "penapp.synth@0.1.0",
+  "seed": 12,
+  "language": "en",
+  "evidence_status": "SYNTHETIC ground truth (generator-known transcript and stroke ids)",
+  "text": "pen rev a bench test on monday\ncheck hall sensor offset\norder spare refills",
+  "lines": [
+    {
+      "text": "pen rev a bench test on monday",
+      "words": [
+        {
+          "text": "pen",
+          "stroke_ranges": [
+            [
+              0,
+              4
+            ]
+          ]
+        },
+        {
+          "text": "rev",
+          "stroke_ranges": [
+            [
+              5,
+              8
+            ]
+          ]
+        },
+        {
+          "text": "a",
+          "stroke_ranges": [
+            [
+              9,
+              9
+            ]
+          ]
+        },
+        {
+          "text": "bench",
+          "stroke_ranges": [
+            [
+              10,
+              17
+            ]
+          ]
+        },
+        {
+          "text": "test",
+          "stroke_ranges": [
+            [
+              18,
+              23
+            ]
+          ]
+        },
+        {
+          "text": "on",
+          "stroke_ranges": [
+            [
+              24,
+              26
+            ]
+          ]
+        },
+        {
+          "text": "monday",
+          "stroke_ranges": [
+            [
+              27,
+              37
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "text": "check hall sensor offset",
+      "words": [
+        {
+          "text": "check",
+          "stroke_ranges": [
+            [
+              38,
+              44
+            ]
+          ]
+        },
+        {
+          "text": "hall",
+          "stroke_ranges": [
+            [
+              45,
+              49
+            ]
+          ]
+        },
+        {
+          "text": "sensor",
+          "stroke_ranges": [
+            [
+              50,
+              57
+            ]
+          ]
+        },
+        {
+          "text": "offset",
+          "stroke_ranges": [
+            [
+              58,
+              66
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "text": "order spare refills",
+      "words": [
+        {
+          "text": "order",
+          "stroke_ranges": [
+            [
+              67,
+              74
+            ]
+          ]
+        },
+        {
+          "text": "spare",
+          "stroke_ranges": [
+            [
+              75,
+              81
+            ]
+          ]
+        },
+        {
+          "text": "refills",
+          "stroke_ranges": [
+            [
+              82,
+              91
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "n_strokes": 92
+}

@@ -1,0 +1,123 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "ai_summary-663faaeb892c2483",
+ "kind": "ai_summary",
+ "note_ids": ["note-b7ae997b289ebefc","note-f8094823c1a7b965"],
+ "created_by": "penapp.grounded@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.012Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+   "stroke_ranges": [
+    [67,91]
+   ]
+  },
+  {
+   "type": "original",
+   "sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+   "stroke_ranges": [
+    [0,31]
+   ]
+  },
+  {
+   "type": "layer",
+   "layer_id": "recognition-b2653a4b4c47cb68",
+   "span_ids": ["l2"]
+  },
+  {
+   "type": "layer",
+   "layer_id": "recognition-dc2f8772e6e5b26f",
+   "span_ids": ["l0"]
+  }
+ ],
+ "params": {
+  "retrieval": {
+   "method": "sqlite-fts5 bm25 (porter, unicode61) + query-term coverage",
+   "top_k": 5,
+   "min_coverage": 0.5
+  },
+  "max_sentences": 3,
+  "consent": null
+ },
+ "payload": {
+  "question": "What should I buy or order?",
+  "sentences": [
+   {
+    "text": "order spare refills",
+    "citations": [
+     {
+      "source_id": "S1",
+      "note_id": "note-b7ae997b289ebefc",
+      "original_sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+      "layer_ids": ["recognition-b2653a4b4c47cb68"],
+      "span_id": "l2",
+      "stroke_ranges": [
+       [67,91]
+      ],
+      "bbox_um": [-369,-22146,40159,-15956]
+     }
+    ],
+    "support": 1.0
+   },
+   {
+    "text": "buy milk eggs and bread",
+    "citations": [
+     {
+      "source_id": "S2",
+      "note_id": "note-f8094823c1a7b965",
+      "original_sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+      "layer_ids": ["recognition-dc2f8772e6e5b26f"],
+      "span_id": "l0",
+      "stroke_ranges": [
+       [0,31]
+      ],
+      "bbox_um": [-929,-6121,53709,21]
+     }
+    ],
+    "support": 1.0
+   }
+  ],
+  "sources": [
+   {
+    "source_id": "S1",
+    "note_id": "note-b7ae997b289ebefc",
+    "layer_ids": ["recognition-b2653a4b4c47cb68"],
+    "span_id": "l2",
+    "text": "order spare refills",
+    "stroke_ranges": [
+     [67,91]
+    ],
+    "bbox_um": [-369,-22146,40159,-15956],
+    "score": 1.553491
+   },
+   {
+    "source_id": "S2",
+    "note_id": "note-f8094823c1a7b965",
+    "layer_ids": ["recognition-dc2f8772e6e5b26f"],
+    "span_id": "l0",
+    "text": "buy milk eggs and bread",
+    "stroke_ranges": [
+     [0,31]
+    ],
+    "bbox_um": [-929,-6121,53709,21],
+    "score": 1.299283
+   }
+  ],
+  "llm": {
+   "model_id": "penapp.extractive",
+   "version": "0.1.0",
+   "local": true,
+   "deterministic": true
+  },
+  "validation": {
+   "all_sentences_cited": true,
+   "min_support": 0.75,
+   "numbers_checked": true,
+   "raw_output_chars": 53
+  },
+  "disclaimer": "Generated only from your recognised notes; each sentence cites the note strokes it comes from. Not medical advice: this assistant is not a medical device and makes no inference about health or handwriting."
+ },
+ "digest": "8ab825d8e5ae3927e207c67d855f56c7ad4bae95cbe097335e834a90c33576a4"
+}

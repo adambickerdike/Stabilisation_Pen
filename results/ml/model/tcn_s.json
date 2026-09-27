@@ -1,0 +1,38 @@
+{
+  "arch": "TCNTree",
+  "channels": [
+    8,
+    12,
+    16,
+    24,
+    32,
+    32
+  ],
+  "head": 24,
+  "c_in": 3,
+  "kernel": 2,
+  "dilations": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "receptive_field": 64,
+  "name": "tcn_s",
+  "macs_window": 16688,
+  "n_params": 5942,
+  "best_epoch": 14,
+  "val_rr_all_at_fc25": 0.486250187108281,
+  "input": {
+    "IN_CLIP_UM": 400.0,
+    "S_IN": 100.0,
+    "F_REF_HZ": 8.0,
+    "F_GAIN": 50.0,
+    "S_OUT": 100.0,
+    "W": 64,
+    "fs_hz": 250.0,
+    "horizon_s": 0.006
+  }
+}

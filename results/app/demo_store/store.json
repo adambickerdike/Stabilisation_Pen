@@ -1,0 +1,5 @@
+{
+ "format": "penapp.note_store",
+ "version": 1,
+ "schema": "data/schema/note_store.schema.json"
+}

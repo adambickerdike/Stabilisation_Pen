@@ -1,0 +1,1108 @@
+{
+  "meta": {
+    "evidence_status": "SYNTHETIC DEMO - synthetic handwriting and simulator traces; no human data, no measurements, no network calls",
+    "generated_by": "app/demo.py (penapp 0.1.0)",
+    "git_revision": "c608ea1-dirty",
+    "environment": {
+      "python": "3.11.15",
+      "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+      "numpy": "2.4.6",
+      "sqlite": "3.45.1"
+    },
+    "clock": "note-store created_utc/imported_utc values come from a fixed synthetic clock (2026-09-01T09:00:00Z + 1 ms per call) so the store is reproducible",
+    "elapsed_s": 37.2
+  },
+  "sample_files": {
+    "demo_text_errands": {
+      "log": "data/samples/demo_text_errands.penlog",
+      "log_sha256": "aa274477b93f314860e6e5a1543885c85c30589ce0b90ea46e39135a91610cf5",
+      "log_bytes": 122860,
+      "truth": "data/samples/demo_text_errands.truth.json",
+      "truth_sha256": "1ade6558c8487c2052a197e5975b54369465cecd3ed9d05d9a4cd24696b9752f",
+      "meta": "data/samples/demo_text_errands.meta.json"
+    },
+    "demo_text_project": {
+      "log": "data/samples/demo_text_project.penlog",
+      "log_sha256": "50c7180099be2acc87bc820c23a61891a54ef7e9765acc2731aa2592bda23960",
+      "log_bytes": 106388,
+      "truth": "data/samples/demo_text_project.truth.json",
+      "truth_sha256": "34fed10ac8888504df14cab3fe2f64725ca9ee4c1eb4086d5c9936dd65949cdb",
+      "meta": "data/samples/demo_text_project.meta.json"
+    },
+    "demo_sim_kf_asr": {
+      "log": "data/samples/demo_sim_kf_asr.penlog",
+      "log_sha256": "3e97e3381c382ad48b4f38d39a1c9fa0e0c94d19c47ae9de494a7bc54df7ddd2",
+      "log_bytes": 361006,
+      "meta": "data/samples/demo_sim_kf_asr.meta.json"
+    },
+    "icd_v1_example": {
+      "log": "data/samples/icd_v1_example.penlog",
+      "log_sha256": "fa75a3d89a103c36bc5ae78c8fe5dc2601b06be7e07856048c66058ab8b66619",
+      "expectation": "data/samples/icd_v1_example.json"
+    }
+  },
+  "corruption_test": {
+    "operations": {
+      "bit_flips": 25,
+      "bytes_deleted": 3,
+      "bytes_inserted": 17
+    },
+    "records_clean": 5203,
+    "records_recovered": 5176,
+    "records_lost": 27,
+    "false_records_accepted": 0,
+    "stroke_samples_clean": 4989,
+    "stroke_samples_recovered": 4964,
+    "issues_by_kind": {
+      "crc_mismatch": 27,
+      "resync": 27
+    },
+    "bytes_skipped": 642
+  },
+  "imports": {
+    "demo_text_errands": {
+      "note_id": "note-f8094823c1a7b965",
+      "original_sha256": "4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35",
+      "labels": [
+        "synthetic"
+      ],
+      "parse": {
+        "records": {
+          "STROKE_SAMPLE": 4989,
+          "EVENT": 213,
+          "ANNOTATION": 1
+        },
+        "bytes_skipped": 0,
+        "issues_by_kind": {},
+        "data_loss": false
+      },
+      "layers": {
+        "segmentation": "segmentation-1b3d814ceb53a538",
+        "hand_path_estimate": null,
+        "recognition": "recognition-dc2f8772e6e5b26f"
+      },
+      "recognizer": "penapp.recognize.groundtruth@0.1.0",
+      "indexed_lines": 3
+    },
+    "demo_text_project": {
+      "note_id": "note-b7ae997b289ebefc",
+      "original_sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+      "labels": [
+        "synthetic"
+      ],
+      "parse": {
+        "records": {
+          "STROKE_SAMPLE": 4319,
+          "EVENT": 185,
+          "ANNOTATION": 1
+        },
+        "bytes_skipped": 0,
+        "issues_by_kind": {},
+        "data_loss": false
+      },
+      "layers": {
+        "segmentation": "segmentation-011fcaa094605dee",
+        "hand_path_estimate": null,
+        "recognition": "recognition-b2653a4b4c47cb68"
+      },
+      "recognizer": "penapp.recognize.groundtruth@0.1.0",
+      "indexed_lines": 3
+    },
+    "demo_sim_kf_asr": {
+      "note_id": "note-6d3fcf71a8f4e749",
+      "original_sha256": "302717c6c2c916dece48531d49c40b78c0386e6d816f832f2f322e78be41029c",
+      "labels": [
+        "synthetic"
+      ],
+      "parse": {
+        "records": {
+          "RESEARCH_FRAME": 6000,
+          "STROKE_SAMPLE": 1029,
+          "EVENT": 11,
+          "ANNOTATION": 1
+        },
+        "bytes_skipped": 0,
+        "issues_by_kind": {},
+        "data_loss": false
+      },
+      "layers": {
+        "segmentation": "segmentation-0e3a6c73fb09d277",
+        "hand_path_estimate": "hand_path_estimate-17b498dfe1e7eef7",
+        "recognition": "recognition-9cdebffc95a7c068"
+      },
+      "recognizer": "penapp.recognize.null@0.1.0",
+      "indexed_lines": 0
+    }
+  },
+  "segmentation_vs_truth": {
+    "demo_text_errands": {
+      "words_truth": 16,
+      "words_segmented": 16,
+      "words_exact_stroke_match": 16,
+      "lines_truth": 3,
+      "lines_segmented": 3,
+      "flagged_strokes": 0
+    },
+    "demo_text_project": {
+      "words_truth": 14,
+      "words_segmented": 14,
+      "words_exact_stroke_match": 14,
+      "lines_truth": 3,
+      "lines_segmented": 3,
+      "flagged_strokes": 0
+    }
+  },
+  "simulator_session": {
+    "note_id": "note-6d3fcf71a8f4e749",
+    "strokes": [
+      {
+        "stroke_id": 0,
+        "n": 280,
+        "duration_ms": 1395,
+        "flags": []
+      },
+      {
+        "stroke_id": 2,
+        "n": 411,
+        "duration_ms": 2050,
+        "flags": []
+      },
+      {
+        "stroke_id": 3,
+        "n": 1,
+        "duration_ms": 0,
+        "flags": [
+          "single_sample",
+          "short"
+        ]
+      },
+      {
+        "stroke_id": 4,
+        "n": 337,
+        "duration_ms": 1680,
+        "flags": []
+      }
+    ],
+    "events": 11,
+    "hand_path_layer": "hand_path_estimate-17b498dfe1e7eef7",
+    "ink_minus_hand_path_um": {
+      "rms": 272.8,
+      "max": 592.5,
+      "meaning": "distance between deposited ink (original layer) and the housing path (hand-path estimate) at the stroke samples: the stage correction in this simulated run (Kalman, assertive)"
+    }
+  },
+  "search": [
+    {
+      "query": "library",
+      "options": {},
+      "hits": [
+        {
+          "note_id": "note-f8094823c1a7b965",
+          "line_span": "l1",
+          "text": "return library books by friday",
+          "score": 1.299283,
+          "layer_ids": [
+            "recognition-dc2f8772e6e5b26f"
+          ],
+          "line_stroke_ranges": [
+            [
+              32,
+              75
+            ]
+          ],
+          "line_bbox_um": [
+            -1305,
+            -14976,
+            66756,
+            -8879
+          ],
+          "matched_words": [
+            {
+              "text": "library",
+              "span_id": "l1.w1",
+              "stroke_ranges": [
+                [
+                  42,
+                  53
+                ]
+              ],
+              "bbox_um": [
+                15441,
+                -14778,
+                28810,
+                -8879
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "query": "\"hall sensor\"",
+      "options": {},
+      "hits": [
+        {
+          "note_id": "note-b7ae997b289ebefc",
+          "line_span": "l1",
+          "text": "check hall sensor offset",
+          "score": 1.415061,
+          "layer_ids": [
+            "recognition-b2653a4b4c47cb68"
+          ],
+          "line_stroke_ranges": [
+            [
+              38,
+              66
+            ]
+          ],
+          "line_bbox_um": [
+            -295,
+            -11884,
+            53155,
+            -7570
+          ],
+          "matched_words": [
+            {
+              "text": "hall",
+              "span_id": "l1.w1",
+              "stroke_ranges": [
+                [
+                  45,
+                  49
+                ]
+              ],
+              "bbox_um": [
+                13780,
+                -11884,
+                20445,
+                -7762
+              ]
+            },
+            {
+              "text": "sensor",
+              "span_id": "l1.w2",
+              "stroke_ranges": [
+                [
+                  50,
+                  57
+                ]
+              ],
+              "bbox_um": [
+                23115,
+                -11740,
+                37199,
+                -8829
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "query": "refill",
+      "options": {},
+      "hits": [
+        {
+          "note_id": "note-b7ae997b289ebefc",
+          "line_span": "l2",
+          "text": "order spare refills",
+          "score": 1.553491,
+          "layer_ids": [
+            "recognition-b2653a4b4c47cb68"
+          ],
+          "line_stroke_ranges": [
+            [
+              67,
+              91
+            ]
+          ],
+          "line_bbox_um": [
+            -369,
+            -22146,
+            40159,
+            -15956
+          ],
+          "matched_words": [
+            {
+              "text": "refills",
+              "span_id": "l2.w2",
+              "stroke_ranges": [
+                [
+                  82,
+                  91
+                ]
+              ],
+              "bbox_um": [
+                28127,
+                -20573,
+                40159,
+                -15956
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "query": "plumber 9",
+      "options": {},
+      "hits": [
+        {
+          "note_id": "note-f8094823c1a7b965",
+          "line_span": "l2",
+          "text": "call the plumber at 9 am",
+          "score": 2.402036,
+          "layer_ids": [
+            "recognition-dc2f8772e6e5b26f"
+          ],
+          "line_stroke_ranges": [
+            [
+              76,
+              105
+            ]
+          ],
+          "line_bbox_um": [
+            -714,
+            -23502,
+            54779,
+            -17736
+          ],
+          "matched_words": [
+            {
+              "text": "plumber",
+              "span_id": "l2.w2",
+              "stroke_ranges": [
+                [
+                  85,
+                  96
+                ]
+              ],
+              "bbox_um": [
+                17716,
+                -23502,
+                34023,
+                -17736
+              ]
+            },
+            {
+              "text": "9",
+              "span_id": "l2.w4",
+              "stroke_ranges": [
+                [
+                  100,
+                  101
+                ]
+              ],
+              "bbox_um": [
+                44613,
+                -22042,
+                46358,
+                -18155
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "query": "mon",
+      "options": {
+        "prefix": true
+      },
+      "hits": [
+        {
+          "note_id": "note-b7ae997b289ebefc",
+          "line_span": "l0",
+          "text": "pen rev a bench test on monday",
+          "score": 1.116571,
+          "layer_ids": [
+            "recognition-b2653a4b4c47cb68"
+          ],
+          "line_stroke_ranges": [
+            [
+              0,
+              37
+            ]
+          ],
+          "line_bbox_um": [
+            -939,
+            -4398,
+            73433,
+            1334
+          ],
+          "matched_words": [
+            {
+              "text": "monday",
+              "span_id": "l0.w6",
+              "stroke_ranges": [
+                [
+                  27,
+                  37
+                ]
+              ],
+              "bbox_um": [
+                57938,
+                -4365,
+                73433,
+                1078
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ask": [
+    {
+      "question": "When should I return the library books?",
+      "status": "answered",
+      "ai_summary_layer_id": "ai_summary-6dec0ff6dc129c31",
+      "model": "penapp.extractive",
+      "sentences": [
+        {
+          "text": "return library books by friday",
+          "support": 1.0,
+          "citations": [
+            {
+              "source": "S1",
+              "note_id": "note-f8094823c1a7b965",
+              "span_id": "l1",
+              "layer_ids": [
+                "recognition-dc2f8772e6e5b26f"
+              ],
+              "stroke_ranges": [
+                [
+                  32,
+                  75
+                ]
+              ],
+              "bbox_um": [
+                -1305,
+                -14976,
+                66756,
+                -8879
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "What do I need to check on the hall sensor?",
+      "status": "answered",
+      "ai_summary_layer_id": "ai_summary-c3d508f0f4fba6fc",
+      "model": "penapp.extractive",
+      "sentences": [
+        {
+          "text": "check hall sensor offset",
+          "support": 1.0,
+          "citations": [
+            {
+              "source": "S1",
+              "note_id": "note-b7ae997b289ebefc",
+              "span_id": "l1",
+              "layer_ids": [
+                "recognition-b2653a4b4c47cb68"
+              ],
+              "stroke_ranges": [
+                [
+                  38,
+                  66
+                ]
+              ],
+              "bbox_um": [
+                -295,
+                -11884,
+                53155,
+                -7570
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "What should I buy or order?",
+      "status": "answered",
+      "ai_summary_layer_id": "ai_summary-663faaeb892c2483",
+      "model": "penapp.extractive",
+      "sentences": [
+        {
+          "text": "order spare refills",
+          "support": 1.0,
+          "citations": [
+            {
+              "source": "S1",
+              "note_id": "note-b7ae997b289ebefc",
+              "span_id": "l2",
+              "layer_ids": [
+                "recognition-b2653a4b4c47cb68"
+              ],
+              "stroke_ranges": [
+                [
+                  67,
+                  91
+                ]
+              ],
+              "bbox_um": [
+                -369,
+                -22146,
+                40159,
+                -15956
+              ]
+            }
+          ]
+        },
+        {
+          "text": "buy milk eggs and bread",
+          "support": 1.0,
+          "citations": [
+            {
+              "source": "S2",
+              "note_id": "note-f8094823c1a7b965",
+              "span_id": "l0",
+              "layer_ids": [
+                "recognition-dc2f8772e6e5b26f"
+              ],
+              "stroke_ranges": [
+                [
+                  0,
+                  31
+                ]
+              ],
+              "bbox_um": [
+                -929,
+                -6121,
+                53709,
+                21
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "question": "What is the wifi password?",
+      "status": "refused",
+      "reason": "no_supporting_notes",
+      "message": "No supporting notes were found for this question.",
+      "violations": [],
+      "llm_called": false
+    },
+    {
+      "question": "Is my handwriting getting worse?",
+      "status": "refused",
+      "reason": "out_of_scope_clinical",
+      "message": "I can only look things up in your notes. I am not a medical device and do not assess health, tremor or handwriting.",
+      "violations": [],
+      "llm_called": false
+    }
+  ],
+  "user_edit_demo": {
+    "recognition_layer": "recognition-150a5ecbe84625d1",
+    "recognizer": "penapp.recognize.inject_errors@0.1.0",
+    "achieved_cer": 0.0411,
+    "misrecognised_words": {
+      "l0.w1": {
+        "recognised": "lev",
+        "truth": "rev"
+      },
+      "l0.w6": {
+        "recognised": "mondapy",
+        "truth": "monday"
+      },
+      "l2.w1": {
+        "recognised": "hpare",
+        "truth": "spare"
+      }
+    },
+    "user_edit_layer": "user_edit-4104075841528e2e",
+    "probe_query": "rev",
+    "hits_before_edit": 0,
+    "hits_after_edit": 1,
+    "hit_after_edit": {
+      "note_id": "note-b7ae997b289ebefc",
+      "line_span": "l0",
+      "text": "pen rev a bench test on monday",
+      "score": 1.116571,
+      "layer_ids": [
+        "recognition-150a5ecbe84625d1",
+        "user_edit-4104075841528e2e"
+      ],
+      "line_stroke_ranges": [
+        [
+          0,
+          37
+        ]
+      ],
+      "line_bbox_um": [
+        -939,
+        -4398,
+        73433,
+        1334
+      ],
+      "matched_words": [
+        {
+          "text": "rev",
+          "span_id": "l0.w1",
+          "stroke_ranges": [
+            [
+              5,
+              8
+            ]
+          ],
+          "bbox_um": [
+            9367,
+            -3024,
+            16394,
+            -11
+          ]
+        }
+      ]
+    },
+    "original_unchanged": true
+  },
+  "ask_after_edit": {
+    "question": "What do I need to check on the hall sensor?",
+    "status": "answered",
+    "ai_summary_layer_id": "",
+    "model": "penapp.extractive",
+    "sentences": [
+      {
+        "text": "check hall sensor offset",
+        "support": 1.0,
+        "citations": [
+          {
+            "source": "S1",
+            "note_id": "note-b7ae997b289ebefc",
+            "span_id": "l1",
+            "layer_ids": [
+              "recognition-150a5ecbe84625d1",
+              "user_edit-4104075841528e2e"
+            ],
+            "stroke_ranges": [
+              [
+                38,
+                66
+              ]
+            ],
+            "bbox_um": [
+              -295,
+              -11884,
+              53155,
+              -7570
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "renders": {
+    "errands_force_width": "results/app/demo_errands_force_width.svg",
+    "errands_recognition_overlay": "results/app/demo_errands_text_overlay.svg",
+    "simulator_hand_path_overlay": "results/app/demo_sim_hand_path_overlay.svg",
+    "answer_highlight": "results/app/demo_answer_highlight.svg",
+    "project_user_edit_overlay": "results/app/demo_project_user_edit_overlay.svg"
+  },
+  "cer_stress_test": {
+    "evidence_status": "SYNTHETIC stress test: ground-truth transcripts with injected character errors",
+    "method": "per (CER, seed): recognition layer from ErrorInjectingRecognizer over the ground truth; word recall = fraction of truth words (>= 3 chars) whose search hits link to exactly the word's stroke ids; two answerable questions asked without storing answers",
+    "summary": [
+      {
+        "target_cer": 0.0,
+        "n_seeds": 5,
+        "word_search_recall_mean": 1.0,
+        "word_search_recall_min": 1.0,
+        "answered_of_2_mean": 2.0,
+        "correct_citation_of_2_mean": 2.0
+      },
+      {
+        "target_cer": 0.05,
+        "n_seeds": 5,
+        "word_search_recall_mean": 0.825,
+        "word_search_recall_min": 0.667,
+        "answered_of_2_mean": 1.8,
+        "correct_citation_of_2_mean": 1.8
+      },
+      {
+        "target_cer": 0.1,
+        "n_seeds": 5,
+        "word_search_recall_mean": 0.692,
+        "word_search_recall_min": 0.458,
+        "answered_of_2_mean": 1.6,
+        "correct_citation_of_2_mean": 1.6
+      },
+      {
+        "target_cer": 0.2,
+        "n_seeds": 5,
+        "word_search_recall_mean": 0.425,
+        "word_search_recall_min": 0.292,
+        "answered_of_2_mean": 1.6,
+        "correct_citation_of_2_mean": 1.6
+      },
+      {
+        "target_cer": 0.3,
+        "n_seeds": 5,
+        "word_search_recall_mean": 0.233,
+        "word_search_recall_min": 0.042,
+        "answered_of_2_mean": 0.8,
+        "correct_citation_of_2_mean": 0.8
+      }
+    ],
+    "runs": [
+      {
+        "target_cer": 0.0,
+        "seed": 0,
+        "word_search_recall": 1.0,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.0,
+        "seed": 1,
+        "word_search_recall": 1.0,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.0,
+        "seed": 2,
+        "word_search_recall": 1.0,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.0,
+        "seed": 3,
+        "word_search_recall": 1.0,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.0,
+        "seed": 4,
+        "word_search_recall": 1.0,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.05,
+        "seed": 0,
+        "word_search_recall": 0.6666666666666666,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.05,
+        "seed": 1,
+        "word_search_recall": 0.7916666666666666,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.05,
+        "seed": 2,
+        "word_search_recall": 0.9166666666666666,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.05,
+        "seed": 3,
+        "word_search_recall": 0.8333333333333334,
+        "questions_answered": 1,
+        "questions_citing_correct_line": 1
+      },
+      {
+        "target_cer": 0.05,
+        "seed": 4,
+        "word_search_recall": 0.9166666666666666,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.1,
+        "seed": 0,
+        "word_search_recall": 0.4583333333333333,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.1,
+        "seed": 1,
+        "word_search_recall": 0.7083333333333334,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.1,
+        "seed": 2,
+        "word_search_recall": 0.8333333333333334,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.1,
+        "seed": 3,
+        "word_search_recall": 0.625,
+        "questions_answered": 0,
+        "questions_citing_correct_line": 0
+      },
+      {
+        "target_cer": 0.1,
+        "seed": 4,
+        "word_search_recall": 0.8333333333333334,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.2,
+        "seed": 0,
+        "word_search_recall": 0.3333333333333333,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.2,
+        "seed": 1,
+        "word_search_recall": 0.2916666666666667,
+        "questions_answered": 0,
+        "questions_citing_correct_line": 0
+      },
+      {
+        "target_cer": 0.2,
+        "seed": 2,
+        "word_search_recall": 0.5416666666666666,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.2,
+        "seed": 3,
+        "word_search_recall": 0.3333333333333333,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.2,
+        "seed": 4,
+        "word_search_recall": 0.625,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.3,
+        "seed": 0,
+        "word_search_recall": 0.2916666666666667,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.3,
+        "seed": 1,
+        "word_search_recall": 0.125,
+        "questions_answered": 0,
+        "questions_citing_correct_line": 0
+      },
+      {
+        "target_cer": 0.3,
+        "seed": 2,
+        "word_search_recall": 0.375,
+        "questions_answered": 2,
+        "questions_citing_correct_line": 2
+      },
+      {
+        "target_cer": 0.3,
+        "seed": 3,
+        "word_search_recall": 0.041666666666666664,
+        "questions_answered": 0,
+        "questions_citing_correct_line": 0
+      },
+      {
+        "target_cer": 0.3,
+        "seed": 4,
+        "word_search_recall": 0.3333333333333333,
+        "questions_answered": 0,
+        "questions_citing_correct_line": 0
+      }
+    ]
+  },
+  "integrity": {
+    "verify": {
+      "ok": true,
+      "originals": 3,
+      "notes": 3,
+      "layers": 12,
+      "problems": []
+    },
+    "export_bundle_valid": true,
+    "bundle_counts": {
+      "notes": 3,
+      "originals": 3,
+      "layers": 12
+    },
+    "layers_by_kind": {
+      "segmentation": 3,
+      "recognition": 4,
+      "hand_path_estimate": 1,
+      "user_edit": 1,
+      "ai_summary": 3
+    },
+    "originals_match_logs": true,
+    "tamper_test": {
+      "modification": "x of sample 10 of one original changed by +1 um in a copy of the store",
+      "detected_on_load": true,
+      "verify_ok_after_tamper": false,
+      "verify_problems": [
+        "original 4814c2ed89cf: original layer content hash c56d98071706af66d5609c8058292a18c54930f2b3a517d5bbbdd9c6744a0780 does not match its address 4814c2ed89cfde1eb1af16350a3e6ccbb644ee9f0dd7764a92e9d136430a8f35"
+      ]
+    }
+  },
+  "capture_fidelity": {
+    "file": "results/app/capture_fidelity.json",
+    "inputs": [
+      {
+        "trace": "bpf",
+        "path": "results/sim/nominal/traces_bpf.npz",
+        "sha256": "d69534eb990a115e2716b5c46a634186d328550c1de90285008814e1b0b8a25c",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 6
+      },
+      {
+        "trace": "kf_asr",
+        "path": "results/sim/nominal/traces_kf_asr.npz",
+        "sha256": "42edb8598b28b49d2e9a75450246cb31731386db5c42a149d1452c856dfe4e8d",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 5
+      },
+      {
+        "trace": "kf_bal",
+        "path": "results/sim/nominal/traces_kf_bal.npz",
+        "sha256": "8142d61f2fe34590137efb3ac0833760959e04d5f0f6d9688f43acc8f53d9448",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 3
+      },
+      {
+        "trace": "neutral",
+        "path": "results/sim/nominal/traces_neutral.npz",
+        "sha256": "8142d61f2fe34590137efb3ac0833760959e04d5f0f6d9688f43acc8f53d9448",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 3
+      },
+      {
+        "trace": "oracle",
+        "path": "results/sim/nominal/traces_oracle.npz",
+        "sha256": "d46fe0ab5495c6002bf9c8f65b74ef729594b6f6ade29872e9bf225d0755abbe",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 4
+      },
+      {
+        "trace": "ref_same",
+        "path": "results/sim/nominal/traces_ref_same.npz",
+        "sha256": "2980f57432e77c54661824a9a7b40a47f6da919e1a7fe5677c2cab78e9a6e9a0",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 3
+      },
+      {
+        "trace": "rigid",
+        "path": "results/sim/nominal/traces_rigid.npz",
+        "sha256": "0d745789833d404c04d3d8493fa12bc017da0dbcb503b3aab471b453257575cc",
+        "n_samples": 6000,
+        "rate_hz": 1000,
+        "n_contact_intervals": 9
+      }
+    ],
+    "headline_format_point": {
+      "n_stroke_evaluations": 165,
+      "n_main": 105,
+      "n_short": 60,
+      "short_missed": 22,
+      "short_single_sample": 38,
+      "main_missed": 0,
+      "max_dev_um": 120.608,
+      "max_dev_at": {
+        "trace": "kf_bal",
+        "phase_ms": 3,
+        "i0": 1903,
+        "duration_ms": 2060
+      },
+      "rms_dev_um": 3.594,
+      "interior_max_dev_um": 75.602,
+      "interior_rms_dev_um": 2.942,
+      "end_truncation_max_um": 120.608,
+      "interior_max_in_first_50ms": "64/105",
+      "interior_within_interp_bound": "105/105",
+      "frechet_max_um": 120.608,
+      "frechet_median_um": 46.771,
+      "frechet_p95_um": 116.622,
+      "short_max_dev_um": 188.531,
+      "frechet_vertices_only_max_um": 157.042,
+      "frechet_vertices_only_median_um": 116.512
+    },
+    "with_endpoint_samples": {
+      "n_stroke_evaluations": 165,
+      "n_main": 105,
+      "n_short": 60,
+      "short_missed": 0,
+      "short_single_sample": 10,
+      "main_missed": 0,
+      "max_dev_um": 81.52,
+      "max_dev_at": {
+        "trace": "bpf",
+        "phase_ms": 4,
+        "i0": 1916,
+        "duration_ms": 2045
+      },
+      "rms_dev_um": 2.983,
+      "interior_max_dev_um": 81.52,
+      "interior_rms_dev_um": 2.983,
+      "end_truncation_max_um": 0.0,
+      "interior_max_in_first_50ms": "73/105",
+      "interior_within_interp_bound": "105/105",
+      "frechet_max_um": 76.018,
+      "frechet_median_um": 9.079,
+      "frechet_p95_um": 32.939,
+      "short_max_dev_um": 102.069
+    },
+    "quantisation_only": {
+      "n_stroke_evaluations": 33,
+      "n_main": 21,
+      "n_short": 12,
+      "short_missed": 0,
+      "short_single_sample": 2,
+      "main_missed": 0,
+      "max_dev_um": 0.704,
+      "max_dev_at": {
+        "trace": "bpf",
+        "phase_ms": 0,
+        "i0": 4323,
+        "duration_ms": 1677
+      },
+      "rms_dev_um": 0.409,
+      "interior_max_dev_um": 0.704,
+      "interior_rms_dev_um": 0.409,
+      "end_truncation_max_um": 0.0,
+      "interior_max_in_first_50ms": "2/21",
+      "interior_within_interp_bound": "21/21",
+      "frechet_max_um": 1.127,
+      "frechet_median_um": 1.078,
+      "frechet_p95_um": 1.127,
+      "short_max_dev_um": 0.683
+    },
+    "interpretation": [
+      "Headline (format_point, main strokes, worst over traces and sampling phases): time-aligned max deviation 120.608 um, RMS 3.594 um; interior-only max 75.602 um, RMS 2.942 um; densified discrete Frechet max 120.608 um (median 46.771 um).",
+      "End truncation dominates the maximum: up to 120.608 um because the first/last sample can fall up to 4 ms inside the contact interval while the pen moves.",
+      "Adding samples at the pen-down/up instants reduces the max deviation to 81.52 um (end truncation 0.0 um).",
+      "1 um rounding alone contributes at most 0.704 um (RMS 0.409 um); the format error is sampling-dominated.",
+      "Short contacts (< 50 ms, bounces in the simulator): 22 of 60 phase-evaluations produced no sample and 38 a single sample; the format cannot represent them faithfully.",
+      "Scale for comparison (research ledger OPT-02): DeltaPen optical-flow tracking reports 0.068 mm mean absolute error per 10 ms window, i.e. the sensing error, not the stroke format, is expected to dominate capture error.",
+      "These figures describe the format applied to simulated ink; they say nothing about sensor accuracy, which must be measured (bench protocol)."
+    ]
+  }
+}

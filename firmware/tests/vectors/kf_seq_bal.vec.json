@@ -1,0 +1,28 @@
+{
+ "file": "kf_seq_bal.vec",
+ "rows": 6000,
+ "columns": [
+  "t",
+  "ph0",
+  "ph1",
+  "valid",
+  "dhat0",
+  "dhat1",
+  "w",
+  "conf_nis",
+  "gate",
+  "conf",
+  "nis_f",
+  "updated"
+ ],
+ "sha256": "24c091619983b12c4442842b6aac495da69ac5ca74f7679827eff53cad27838a",
+ "evidence_status": "reference computation / simulation (no hardware)",
+ "generator": "firmware/tools/gen_vectors.py",
+ "yaml_sha16": "f44bd71afad66b15",
+ "estimator_selection_sha16": "27a067afa9ea4937",
+ "core_py_sha16": "c46570f25d1439cb",
+ "model_py_sha16": "f6888a2b3aafbd87",
+ "profile": "balanced",
+ "reference": "ref_kf_estimator (core._kf_step)",
+ "signal": "synthetic housing motion, tremor 8->10 Hz at 1.5 s, dropout 2.0-2.1 s"
+}

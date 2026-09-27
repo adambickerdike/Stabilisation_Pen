@@ -1,0 +1,82 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "ai_summary-c3d508f0f4fba6fc",
+ "kind": "ai_summary",
+ "note_ids": ["note-b7ae997b289ebefc"],
+ "created_by": "penapp.grounded@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.011Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+   "stroke_ranges": [
+    [38,66]
+   ]
+  },
+  {
+   "type": "layer",
+   "layer_id": "recognition-b2653a4b4c47cb68",
+   "span_ids": ["l1"]
+  }
+ ],
+ "params": {
+  "retrieval": {
+   "method": "sqlite-fts5 bm25 (porter, unicode61) + query-term coverage",
+   "top_k": 5,
+   "min_coverage": 0.5
+  },
+  "max_sentences": 3,
+  "consent": null
+ },
+ "payload": {
+  "question": "What do I need to check on the hall sensor?",
+  "sentences": [
+   {
+    "text": "check hall sensor offset",
+    "citations": [
+     {
+      "source_id": "S1",
+      "note_id": "note-b7ae997b289ebefc",
+      "original_sha256": "6b531925f29b5b58010c3ab747a9a817742e4eea3faa8dd293feae4e4a18c128",
+      "layer_ids": ["recognition-b2653a4b4c47cb68"],
+      "span_id": "l1",
+      "stroke_ranges": [
+       [38,66]
+      ],
+      "bbox_um": [-295,-11884,53155,-7570]
+     }
+    ],
+    "support": 1.0
+   }
+  ],
+  "sources": [
+   {
+    "source_id": "S1",
+    "note_id": "note-b7ae997b289ebefc",
+    "layer_ids": ["recognition-b2653a4b4c47cb68"],
+    "span_id": "l1",
+    "text": "check hall sensor offset",
+    "stroke_ranges": [
+     [38,66]
+    ],
+    "bbox_um": [-295,-11884,53155,-7570],
+    "score": 4.245182
+   }
+  ],
+  "llm": {
+   "model_id": "penapp.extractive",
+   "version": "0.1.0",
+   "local": true,
+   "deterministic": true
+  },
+  "validation": {
+   "all_sentences_cited": true,
+   "min_support": 0.75,
+   "numbers_checked": true,
+   "raw_output_chars": 29
+  },
+  "disclaimer": "Generated only from your recognised notes; each sentence cites the note strokes it comes from. Not medical advice: this assistant is not a medical device and makes no inference about health or handwriting."
+ },
+ "digest": "449f2c47f50c6f0d4e98d414b8f25abacbf7c2850dc0acdce9aab5c94d429126"
+}

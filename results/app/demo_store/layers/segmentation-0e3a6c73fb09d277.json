@@ -1,0 +1,114 @@
+{
+ "object": "derived_layer",
+ "schema_version": 1,
+ "layer_id": "segmentation-0e3a6c73fb09d277",
+ "kind": "segmentation",
+ "note_ids": ["note-6d3fcf71a8f4e749"],
+ "created_by": "penapp.capture.segment@0.1.0",
+ "created_utc": "2026-09-01T09:00:00.007Z",
+ "inputs": [
+  {
+   "type": "original",
+   "sha256": "302717c6c2c916dece48531d49c40b78c0386e6d816f832f2f322e78be41029c",
+   "stroke_ranges": [
+    [0,0],
+    [2,4]
+   ]
+  }
+ ],
+ "params": {
+  "period_ms": 5,
+  "short_ms": 25,
+  "event_tol_ms": 10,
+  "line_factor": 1.1,
+  "word_gap_factor": 0.6
+ },
+ "payload": {
+  "x_height_um": 2882.0,
+  "strokes": [
+   {
+    "stroke_id": 0,
+    "i0": 0,
+    "i1": 280,
+    "t0_ms": 150,
+    "t1_ms": 1545,
+    "n": 280,
+    "bbox_um": [-62,-64,6713,4065],
+    "length_um": 17085.1,
+    "flags": []
+   },
+   {
+    "stroke_id": 2,
+    "i0": 280,
+    "i1": 691,
+    "t0_ms": 1905,
+    "t1_ms": 3955,
+    "n": 411,
+    "bbox_um": [9821,-629,19170,2253],
+    "length_um": 22088.9,
+    "flags": []
+   },
+   {
+    "stroke_id": 3,
+    "i0": 691,
+    "i1": 692,
+    "t0_ms": 3960,
+    "t1_ms": 3960,
+    "n": 1,
+    "bbox_um": [19253,1657,19253,1657],
+    "length_um": 0.0,
+    "flags": ["single_sample","short"]
+   },
+   {
+    "stroke_id": 4,
+    "i0": 692,
+    "i1": 1029,
+    "t0_ms": 4315,
+    "t1_ms": 5995,
+    "n": 337,
+    "bbox_um": [22097,2045,31050,4820],
+    "length_um": 17575.8,
+    "flags": []
+   }
+  ],
+  "spans": [
+   {
+    "span_id": "l0",
+    "level": "line",
+    "stroke_ranges": [
+     [0,0],
+     [2,4]
+    ],
+    "bbox_um": [-62,-629,31050,4820]
+   },
+   {
+    "span_id": "l0.w0",
+    "level": "word",
+    "parent": "l0",
+    "stroke_ranges": [
+     [0,0]
+    ],
+    "bbox_um": [-62,-64,6713,4065]
+   },
+   {
+    "span_id": "l0.w1",
+    "level": "word",
+    "parent": "l0",
+    "stroke_ranges": [
+     [2,3]
+    ],
+    "bbox_um": [9821,-629,19253,2253]
+   },
+   {
+    "span_id": "l0.w2",
+    "level": "word",
+    "parent": "l0",
+    "stroke_ranges": [
+     [4,4]
+    ],
+    "bbox_um": [22097,2045,31050,4820]
+   }
+  ]
+ },
+ "digest": "207c63841cd37b69665b2e6a600aea5f612d88a8e135b653cbf929842a0869a3"
+}

@@ -1,0 +1,26 @@
+{
+  "object": "synthetic_session_meta",
+  "generator": "penapp.synth@0.1.0",
+  "kind": "simulator_trace",
+  "evidence_status": "SYNTHETIC - coupled-simulator output on synthetic handwriting; not a measurement",
+  "trace": "results/sim/nominal/traces_kf_asr.npz",
+  "trace_sha256": "42edb8598b28b49d2e9a75450246cb31731386db5c42a149d1452c856dfe4e8d",
+  "session_id": 3,
+  "device_id": "6840123409045651617",
+  "start_unix_ms": 1788256800000,
+  "n_strokes": 5,
+  "theta_deg": 50.0,
+  "phi_deg": 0.0,
+  "notes": [
+    "stroke samples: 'tip' (deposited ink) on the 5 ms grid inside contact runs, rounded to 1 um",
+    "research frames at the trace's 1 kHz (ICD: 2 kHz); p_H = 'housing', q = stage, i = coil current",
+    "force / f_ax = simulator normal force N * sin(theta) (axial component with mu = 0; the trace has no F_ax)",
+    "research-frame fields absent from the trace (qr, iref, dhat, g, f_est, vbat, t_coil, imu) are 0",
+    "p_H and stroke x, y share the page origin (first-contact ink position)"
+  ],
+  "files": {
+    "log": "data/samples/demo_sim_kf_asr.penlog",
+    "log_sha256": "3e97e3381c382ad48b4f38d39a1c9fa0e0c94d19c47ae9de494a7bc54df7ddd2",
+    "log_bytes": 361006
+  }
+}
