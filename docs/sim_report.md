@@ -71,7 +71,8 @@ Small tremor is made worse at every frequency. At 0.15 mm the neutral pen's erro
 | Parameters | Inert set: J (ratio, distortion) | Active set: J (ratio, distortion) | Balanced choice |
 |---|---|---|---|
 | v0.4.1 | **1.123** (1.00, 38 µm) | 1.157 (0.89, 83 µm) | inert |
-| v0.4.2 | 1.204 (1.00, 62 µm) | **1.151** (0.89, 81 µm) | active (grid row above) |
+| v0.4.2 | 1.204 (1.00, 62 µm) | **1.151** (0.89, 81 µm) | active |
+| v0.4.4 (magnet tempco at the magnet temperature; coil-to-structure 145 K/W) | 1.207 (1.00, 62 µm) | **1.143** (0.90, 78 µm) | active (grid row above) |
 
 How the inert set behaves:
 
@@ -79,7 +80,7 @@ How the inert set behaves:
 - In v0.4.1 the ink trace for seed 200 at 9 Hz was byte-identical to the neutral pen's.
 - Its tremor-free false correction was 4–81 µm per seed.
 
-The flip came from the inert set's false corrections, which rose from 38 to 62 µm on the tuning seeds with the plant change; the active set's score hardly moved. About 3–5 % of the objective separates "do almost nothing" from "correct actively". The same fragility appeared earlier: filtering the contact feedforward moved the tuning-seed distortion between 5 and 45 µm. Both findings match the separability limit: on synthetic writing no setting of this estimator is both useful and harmless.
+The flip came from the inert set's false corrections, which rose from 38 to 62 µm on the tuning seeds with the plant change; the active set's score hardly moved. About 3–6 % of the objective separates "do almost nothing" from "correct actively". The same fragility appeared earlier: filtering the contact feedforward moved the tuning-seed distortion between 5 and 45 µm. Both findings match the separability limit: on synthetic writing no setting of this estimator is both useful and harmless.
 
 **The gate cannot tell writing from tremor.** Fraction of in-contact time with applied authority g ≥ 0.5 (the research-frame field g), seeds 200–203, θ 50°, N 1 N, 0.3 mm tremor (`sim/diag_gate.py` → `results/sim/gate_fraction.json`). AC-B09-15 asks for ≥ 0.9 with 9–10 Hz tremor and ≤ 0.05 without tremor.
 

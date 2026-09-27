@@ -10,9 +10,9 @@ Naming: **Phases A–G** below follow the brief's §18. **Prototype stages A–D
 |---|---|---|
 | A Requirements and evidence | Audit with 28 corrections; evidence ledger of 247 sources; 53 requirements; parameter file v0.4.2 with provenance; physics; coupled simulator | **Met on paper.** Bounded first use case: action tremor ≤ 1 mm p-p at the nib with f ≥ gate, plus guided tasks, plus capture for everyone. The measurements that close it are listed |
 | B Loaded mechanism feasibility | Refill drag protocol (EXP-B01); rig concept CAD; controller simulated with sweeps, Monte Carlo and failures | **Open.** Needs measured transverse load, ink tolerance and loaded cancellation (B01, B08, B09) |
-| C Research electronics and mechanics | Editable KiCad schematic (ERC and netlist verified); calculations and SPICE; parametric pen CAD with tolerance and mass models; firmware core (host and ARM builds, see `firmware/`) | **Design review possible; packaging open** (DEC-014). No PCB yet |
+| C Research electronics and mechanics | Editable KiCad schematic (ERC and netlist verified); calculations and SPICE; parametric pen CAD with tolerance and mass models; firmware core (60 test cases on host and emulated Cortex-M33; ARM image links; see `firmware/`) | **Design review possible; packaging (DEC-014) and winding (DEC-012 revisited) open.** No PCB yet |
 | D Local sensing and capture | Capture format, app reference implementation, fusion model in simulation | **Open.** Optical sensor on paper unmeasured (EXP-S01) |
-| E ML contribution | Synthetic pipeline with baselines, quantisation and MCU budget (`ml/`) | **Not met by design:** no real data yet (EXP-H01 → E01) |
+| E ML contribution | Synthetic pipeline with baselines, int8 export without f_est (bit-exact C, 16.2 k MAC) and MCU budget (`ml/`) | **Not met by design:** no real data yet (EXP-H01 → E01) |
 | F Compact integration | Placement study; Rev A.1 package plan | Not started |
 | G Product evidence | Study plans (`validation/`) | Not started |
 
