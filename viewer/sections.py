@@ -202,6 +202,23 @@ def sensor(root):
                     "results/sim/page_sensor_rate.json (sim/diag_page_sensor_rate.py)")
 
 
+def tails(root):
+    d = _load(root, "results/pencil/touchdown_tails.json")
+    if not d:
+        return ""
+    lab = {"tilt_range_stop": "Stop set for the whole tilt range (current CAD)", "adaptive_0.30mm": "Tilt-adaptive stop, 0.30 mm margin",
+           "adaptive_0.20mm": "Tilt-adaptive stop, 0.20 mm margin", "adaptive_0.10mm": "Tilt-adaptive stop, 0.10 mm margin"}
+    rows = [[lab[k], f"{100 * v['tail_fraction_no_tremor']:.1f} %", f"{v['tail_mm_per_pen_down']:.2f} mm", f"{v['oracle_ratio']:.2f}"]
+            for k, v in d["summary"].items() if k in lab]
+    lede = ("With the skid, a light spring pushes the refill out whenever the pen is lifted. If its front stop allows for every "
+            "tilt, the ball lands first and slides while the refill retracts, drawing a tail at every touchdown and lift. "
+            "A stop that follows the pen's tilt, set by a slow trim motor from the IMU, cuts the tails; the margin must still "
+            "leave the refill room to slide while the stage corrects.")
+    return _section("Touchdown tails and a tilt-adaptive stop", _tags("SIM"), lede,
+                    _table(["Front stop", "Tail ink, share of all ink", "Tail per touchdown", "Correction ratio, perfect intent"], rows, (1, 2, 3)),
+                    "results/pencil/touchdown_tails.json (sim/pencil/diag_touchdown_tails.py)")
+
+
 def packaging(root, variant="Q"):
     d = _load(root, f"results/cad/pencil_revP{variant}_summary.json")
     if not d:
@@ -236,7 +253,7 @@ def make_buy(root):
 
 
 def render(root, variant="Q"):
-    parts = [forces(root), mechanisms(root), effect(root), power(root), sensor(root), packaging(root, variant), make_buy(root)]
+    parts = [forces(root), mechanisms(root), effect(root), tails(root), power(root), sensor(root), packaging(root, variant), make_buy(root)]
     try:
         from viewer import sections_extra  # AI guidance and sim-to-real tables, once those results exist
         parts += [sections_extra.ai(root), sections_extra.s2r(root)]

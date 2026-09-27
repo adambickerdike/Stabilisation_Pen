@@ -165,23 +165,37 @@ Source: [`ai_guidance.md`](ai_guidance.md) (`aiguide/`, `app/penapp/autocorrect.
 - The template must reach the pen before the nib lands on the letter, so the phone has to predict **two letters ahead** within a 0.3 s lead (latency budget 182 ms, allocated). Two letters ahead is right only 40 % of the time, and 19–32 % on note-like text.
 - A correctly predicted letter drawn in the user's estimated style is still about **300 µm RMS** from what they meant (SIM, 24 writers). The writer's own earlier letters give a floor of 239 µm.
 
-**Physical guidance on free writing** (SIM; path error, µm RMS; M1 plant with Rev A and pencil-like limits, 6 writers × 4 tremor frequencies):
+**Physical guidance on free writing** (SIM; path error to the intended letters, µm RMS, 6 synthetic writers × 4 tremor frequencies). The main result is on the pencil model P1, with the skid, the spring-loaded refill and the piezo stage. "Writing only" leaves out the touchdown and lift tails described below. The M1 columns keep the Rev A plant for comparison.
 
-| Condition | Rev A limits | Pencil-like limits |
-|---|---|---|
-| No guidance | 209 | 176 |
-| Oracle template (the true intended path) | 167 | 158 |
-| AI template, letter predicted correctly | 234 | 182 |
-| AI prediction, confidence-gated | 217 | 177 |
-| Wrong letter at full authority | 253 | 184 |
+| Condition | P1, all ink | P1, writing only | M1, Rev A limits | M1, pencil-like limits |
+|---|---|---|---|---|
+| No guidance | 243 | 196 | 209 | 176 |
+| Oracle template (the true intended path) | 213 (−12 %) | 155 (−21 %) | 167 | 158 |
+| AI template, letter predicted correctly | 265 (+9 %) | 222 (+13 %) | 234 | 182 |
+| AI prediction, confidence-gated | 249 (+2.5 %) | 204 (+4 %) | 217 | 177 |
+| Wrong letter at full authority | 274 (+13 %) | 234 (+20 %) | 253 | 184 |
 
 What the table shows:
-- **Break-even.** Guidance stops helping once the template is 230–330 µm from the intended path. Realistic AI templates sit right at that break-even, so they give **no net benefit on free handwriting**.
-- **Oracle templates do help.** They reduce letter-level error by 10–26 %, and by up to 63 % on slow shapes such as a circle. Physical guidance is useful when the template is **known**: tracing, copying set text, drawing aids.
-- **Wrong predictions are safe.** The stage stays within its stops. At most 1.9 % of letters read as the wrongly predicted letter, and the next word is not disturbed.
+- **Break-even.** Guidance stops helping once the template is 265 µm from the intended path in P1, and 230–330 µm in M1. A correctly predicted letter in the user's style is about 300 µm off, so realistic AI templates give **no net benefit on free handwriting**. Even a perfect template barely changes legibility (recognition +0.00 to +0.02).
+- **Oracle templates do help the path.** On slow shapes the gain is larger: circle 348 → 174 µm on P1's feature course. Physical guidance is useful when the template is **known**: tracing, copying set text, drawing aids.
+- **Wrong predictions are safe.** The stage reaches its 0.40 mm stop and no further, and the ink moves at most 0.51 mm from the unguided run. 2.2 % of letters newly read as the wrong letter at full authority, and 0.3 % when gated. The next word is not disturbed.
 - **Micrographia is not restored physically**, in line with COR-10 and DEC-002.
 
-The M1 runs lack the pencil's skid and piezo stage. A rerun on the pencil model P1 is in progress and will be added here.
+**Touchdown and lift tails: a finding for the mechanism.** The AI rerun on P1 showed a tail of about 0.87 mm at every touchdown and lift (SIM).
+- **Cause.** The refill's front stop covers the whole tilt range. At 50° the unloaded refill therefore stands 1.34 mm proud of where it writes. The ball lands first and slides by about 1.34 × cos 50° ≈ 0.86 mm while the refill retracts, and does the same in reverse at lift.
+- **Size.** This distorts letters more than the tremor does: unguided recognition is 0.79 with the tails and 0.93 without.
+- **Mitigation tested:** a front stop that follows the tilt, at the protrusion the current tilt needs plus a margin (`sim/pencil/diag_touchdown_tails.py`, `results/pencil/touchdown_tails.json`; SIM, 4 seeds; tilt constant, so tracking is perfect):
+
+| Front stop | Tail ink (share of all ink) | Tail per touchdown | Correction ratio, perfect intent, 6 Hz 0.3 mm |
+|---|---|---|---|
+| Tilt-range stop (P0.1.2) | 13.4 % | 0.87 mm | 0.24 |
+| Tilt-adaptive, 0.30 mm margin | 2.9 % | 0.29 mm | 0.30 |
+| Tilt-adaptive, 0.20 mm margin | 2.3 % | 0.19 mm | 0.45 |
+| Tilt-adaptive, 0.10 mm margin | 2.0 % | 0.21 mm | 0.69 |
+
+- **The margin cannot be small.** The refill must also slide q·cot θ while the stage corrects in the tilt plane (±0.25 mm at 50°). About **0.3 mm** is the working margin: it cuts the tails about threefold and keeps most of the correction.
+- **How to build it.** A slow trim actuator can set the stop from the IMU's tilt. A SQUIGGLE-class screw motor fits (2.8 × 2.8 × 6 mm, holds with power off; AMF-15). It was rejected as the tremor actuator because 1 M cycles last 35 h at 8 Hz, but tilt tracking uses only a few cycles a minute.
+- **Remaining.** A 0.29 mm tail per touchdown is still visible. Two firmware options could remove it: stage compensation of the axial slide during touchdown (Rev A's M1 has one; P1 does not) and an ink-aware touchdown profile. Both are untested. Fewer pen-down events are registered with the adaptive stop (0.88 of the rigid pen's count); whether stroke starts are lost needs checking.
 
 **Digital autocorrect** (CALC; injected recognition errors; threshold 0.9):
 - At a character error rate of about 7 %, word error falls from **32 % to 10 %** on held-out sentences and from **30 % to 16 %** on note-like lines.
@@ -258,7 +272,8 @@ Barrel temperature stays ≤ 37.4 °C in every mode (CALC).
 6. EXP-Q03: cell pulse discharge.
 7. EXP-Q06: loaded 1-axis rig (PL128.10, D1 refill, skid nose) on the stage-A rig, with the EXP-B09 cancellation protocol.
 8. EXP-Q07: 2-axis demonstrator in a 7.9 mm bore. It gates Rev P1.
-9. The claims studies: EXP-H01/E01 (separability), EXP-H02 (form factor), EXP-H06.
+9. EXP-Q08 (new): touchdown and lift tails. Measure the ink at pen-down and pen-up on the EXP-Q06 rig with the tilt-range stop, then with a tilt-adaptive stop (a SQUIGGLE-class trim motor driven by the IMU tilt) at 0.2–0.4 mm margin. Include stroke-start loss and the correction ratio.
+10. The claims studies: EXP-H01/E01 (separability), EXP-H02 (form factor), EXP-H06.
 
 ## 10. Open risks
 
@@ -267,12 +282,13 @@ Barrel temperature stays ≤ 37.4 °C in every mode (CALC).
    - large tremor saturates the stage even with perfect intent.
 
    The pencil suits small tremor and guided writing.
-2. **Intent separation.** It is unchanged from Rev A. The Kalman estimator helps only at 8 Hz and above with tremor of 0.3 mm or more (ratio 0.85–0.92), and it adds error on small tremor. Free-writing tremor cancellation still waits on EXP-H01/E01. Guided writing toward a known or predicted template is the credible first use (§6).
-3. **Drop survival.** Without snubbers and a compliant nose the plates fracture in a sideways 1 m drop. The PICMA material and diced-edge strength are unknown (EXP-Q04).
-4. **Driver.** No catalogue part is both low-power and rated for 2–2.6 µF. Until one is qualified, assist time is under 1.5 h.
-5. **Paper capture.** No sensor that fits meets ≥ 120 Hz at ≤ 10 ms latency (§5).
-6. **Feel.** Behind the skid, the pen writes differently: 116 µm of device distortion comes from the skid's contact and drag alone (SIM). EXP-H03 decides whether users accept it.
-7. **Assumed, not measured:**
+2. **Touchdown and lift tails.** With the tilt-range front stop, every touchdown and lift draws a tail of about 0.87 mm (SIM, P1). That is 13 % of the ink, and it matters more for legibility than the tremor. A tilt-adaptive stop with a 0.3 mm margin cuts the tail to 0.29 mm, at a small cost in correction. It needs a slow trim actuator and firmware, and the remaining tail is still visible (§6).
+3. **Intent separation.** It is unchanged from Rev A. The Kalman estimator helps only at 8 Hz and above with tremor of 0.3 mm or more (ratio 0.85–0.92), and it adds error on small tremor. Free-writing tremor cancellation still waits on EXP-H01/E01. Guided writing toward a *known* template (tracing, copying, drawing aids) is the credible first use; AI-predicted templates did not help on free writing (§6).
+4. **Drop survival.** Without snubbers and a compliant nose the plates fracture in a sideways 1 m drop. The PICMA material and diced-edge strength are unknown (EXP-Q04).
+5. **Driver.** No catalogue part is both low-power and rated for 2–2.6 µF. Until one is qualified, assist time is under 1.5 h.
+6. **Paper capture.** No sensor that fits meets ≥ 120 Hz at ≤ 10 ms latency (§5).
+7. **Feel.** Behind the skid, the pen writes differently: 116 µm of device distortion comes from the skid's contact and drag alone (SIM). EXP-H03 decides whether users accept it.
+8. **Assumed, not measured:**
    - servo rate and Hall sampling (10 kHz);
    - stage damping;
    - piezo hysteresis (12 %);

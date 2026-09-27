@@ -1,9 +1,16 @@
-"""Closed-loop guided writing with the unmodified M1 simulator (sim/pensim).
+"""Closed-loop guided writing on the unmodified simulators: M1 (sim/pensim) and the pencil model P1 (sim/pencil).
 
 ``model.run(scn, Controller(mode="guided"), tmpl=...)`` is called exactly as
 sim/guided_eval.py does; nothing in sim/ is changed.
 
 Configurations
+  pencil_P1    the pencil model P1 (sim/pencil): skid-paper LuGre contact, spring-loaded
+               refill (F_c 0.15 N), four-plate piezo stage with lever, driver and Bouc-Wen
+               hysteresis; Controller(q_lim = 0.30 mm), stage stop 0.40 mm.  The scenario's
+               N0 is the USER force (1.0 N); P1 splits it between skid and nib itself.
+               The guided core (binary gate, nearest-point progress, 50 ms fade-in) is the
+               same code as M1's.  Static ink offset: measured on the same writing without
+               tremor (ink_offset), not the M1 formula.
   revA         Controller defaults (q_lim 0.55 mm), N0 = 1.0 N
   pencil_like  Controller(q_lim = 0.30 mm), overrides stage.travel_tip_mech = 0.40 mm,
                N0 = 0.15 N; and stage.axial_preload = 0.05 N, because M1 declares
@@ -49,15 +56,19 @@ from .metrics import GlyphRecognizer, letter_metrics, pool, travel_limit  # noqa
 from .template import LetterTemplate, TemplateTrack, anchor_to, build_track, letter_template  # noqa: E402
 
 CONFIGS = {
-    "revA": {"ctrl": {"q_lim": 0.55e-3}, "overrides": {}, "N0": 1.0,
+    "revA": {"plant": "M1", "ctrl": {"q_lim": 0.55e-3}, "overrides": {}, "N0": 1.0,
              "label": "Rev A defaults (q_lim 0.55 mm, N0 1.0 N)"},
-    "pencil_like": {"ctrl": {"q_lim": 0.30e-3},
+    "pencil_like": {"plant": "M1", "ctrl": {"q_lim": 0.30e-3},
                     "overrides": {"stage.travel_tip_mech": 0.40e-3, "stage.axial_preload": 0.05}, "N0": 0.15,
                     "label": "pencil-like limits on the Rev A plant (q_lim 0.30 mm, stop 0.40 mm, N0 0.15 N, F_pre 0.05 N)"},
-    "pencil_0.3N": {"ctrl": {"q_lim": 0.30e-3},
+    "pencil_0.3N": {"plant": "M1", "ctrl": {"q_lim": 0.30e-3},
                     "overrides": {"stage.travel_tip_mech": 0.40e-3, "stage.axial_preload": 0.05}, "N0": 0.30,
                     "label": "supplementary: pencil-like limits at N0 0.3 N, where M1 contact is stable (one contact per stroke)"},
+    "pencil_P1": {"plant": "P1", "ctrl": {"q_lim": 0.30e-3}, "overrides": {}, "pencil": {}, "N0": 1.0,
+                  "label": "pencil model P1 (sim/pencil: skid, spring-loaded refill F_c 0.15 N, piezo stage; "
+                           "q_lim 0.30 mm, stop 0.40 mm, user force 1.0 N)"},
 }
+M1_CONFIGS = ("revA", "pencil_like", "pencil_0.3N")
 THETA_DEG = 50.0
 LEVELS = (0.0, 0.25, 0.5, 0.75, 1.0)
 C_FULL = 0.8
@@ -68,6 +79,10 @@ SIM_DT = 25e-6
 def kalman_params() -> Dict:
     p = REPO_ROOT / "results" / "sim" / "estimator_selection.json"
     return json.loads(p.read_text())["results"]["kfosc"]["selected_assertive"]["params"]
+
+
+def plant(cfg: Dict) -> str:
+    return cfg.get("plant", "M1")
 
 
 def nib_offset(cfg: Dict, theta_deg: float = THETA_DEG) -> np.ndarray:
@@ -89,6 +104,36 @@ def nib_offset(cfg: Dict, theta_deg: float = THETA_DEG) -> np.ndarray:
     return np.array([s0 * math.cos(th), 0.0])
 
 
+def static_offset_from_run(arr: Dict[str, np.ndarray], guard_s: float = 0.03) -> np.ndarray:
+    """Median of (ink - housing datum) over in-contact samples (P1: skid on the paper too), away from
+    contact transitions."""
+    t = arr["t"]
+    c = arr["contact"] > 0
+    if "skid" in arr:
+        c = writing_only(arr)["contact"] > 0
+    g = int(round(guard_s / (t[1] - t[0])))
+    m = c.copy()
+    for e in np.flatnonzero(np.diff(c.astype(np.int8)) != 0):
+        m[max(0, e - g):e + g + 1] = False
+    if not m.any():
+        m = c
+    return np.median(arr["tip"][m] - arr["pH"][m, :2], axis=0)
+
+
+def ink_offset(cfg: Dict, written=None, seed: int = 1, theta_deg: float = THETA_DEG) -> np.ndarray:
+    """Static ink offset from the housing datum that the reference path includes.
+
+    M1 configurations: the formula of nib_offset (checked against M1 runs in the tests).
+    P1: measured on the same writing without tremor in neutral mode (median of ink - housing datum
+    in contact); in P1 the housing datum is the nominal ball centre, so the offset is the refill's
+    axial slide and the stage's static deflection.
+    """
+    if plant(cfg) != "P1":
+        return nib_offset(cfg, theta_deg)
+    scn0 = make_scenario(written, None, cfg["N0"], seed=0, theta_deg=theta_deg)
+    return static_offset_from_run(arrays(run(scn0, cfg, "neutral", seed=seed)))
+
+
 def authority(conf: float, c_full: float = C_FULL, c_min: float = C_MIN) -> float:
     return 0.0 if conf < c_min else min(1.0, conf / c_full)
 
@@ -108,14 +153,57 @@ def run(scn, cfg: Dict, mode: str, *, tmpl: Optional[np.ndarray] = None, g: floa
         extra: Optional[Dict] = None):
     kw = dict(cfg["ctrl"])
     kw.update(extra or {})
+    if plant(cfg) == "P1":
+        from sim.pencil import model as pmodel      # the pencil model P1, unmodified
+        ctrl = pmodel.Controller(mode=mode, g_assist=g, **kw)
+        return pmodel.run(scn, ctrl, pmodel.PencilConfig(**cfg.get("pencil", {})), seed=seed, tmpl=tmpl)
     ctrl = model.Controller(mode=mode, g_assist=g, **kw)
     return model.run(scn, ctrl, overrides=cfg["overrides"], seed=seed, tmpl=tmpl)
 
 
 def arrays(r) -> Dict[str, np.ndarray]:
-    return {"t": r["t"].copy(), "tip": r.xy("tipx").copy(), "pH": np.column_stack([r["pHx"], r["pHy"], r["pHz"]]),
-            "q": r.xy("q1").copy(), "qr": r.xy("qr1").copy(), "contact": r["contact"].copy(),
-            "g": r["conf"].copy(), "stop": r["stop"].copy()}
+    """Recorded channels under common names.  M1 (sim/pensim/layout.py) records the ink as tipx/tipy;
+    P1 (sim/pencil/layout.py) as Cx/Cy (page projection of the ball centre) and adds the driver's
+    voltage-saturation flag vsat.  pH, q, qr, contact (nib force > 0), conf (g_eff) and stop have the
+    same names and meanings in both."""
+    p1 = type(r).__module__.startswith("sim.pencil")
+    tip = np.column_stack([r["Cx"], r["Cy"]]) if p1 else r.xy("tipx").copy()
+    out = {"t": r["t"].copy(), "tip": tip, "pH": np.column_stack([r["pHx"], r["pHy"], r["pHz"]]),
+           "q": r.xy("q1").copy(), "qr": r.xy("qr1").copy(), "contact": r["contact"].copy(),
+           "g": r["conf"].copy(), "stop": r["stop"].copy()}
+    if p1:
+        out["vsat"] = r["vsat"].copy()
+        out["skid"] = r["skid_contact"].copy()
+    return out
+
+
+def writing_only(arr: Dict[str, np.ndarray], bridge_s: float = 0.005) -> Dict[str, np.ndarray]:
+    """P1: ink in contact while the skid is on the paper too, i.e. without the touchdown and lift tails.
+
+    In P1 the unloaded refill protrudes up to |s_min| = 1.34 mm beyond its working position.  At every
+    touchdown and lift the ball stays on the paper while the refill travels between the front stop and
+    the working point, so it draws a tail of about (s_work - s_min) cos(theta) = 0.87 mm along the pen
+    azimuth (~28 ms, about 1.8 mm of the 5.6 mm of ink per contact run on the study sentence).  Those
+    samples have nib contact but no skid contact.  The skid's impact bounce at touchdown (skid off the
+    paper for ~2.5 ms while the nib stays down) is bridged, so each stroke stays one run.  M1 arrays
+    are returned unchanged."""
+    if "skid" not in arr:
+        return arr
+    t = arr["t"]
+    sk = _bridge(arr["skid"] > 0, int(round(bridge_s / (t[1] - t[0]))))
+    out = dict(arr)
+    out["contact"] = arr["contact"] * sk
+    return out
+
+
+def _bridge(x: np.ndarray, n: int) -> np.ndarray:
+    """Fill interior gaps (runs of False) of at most n samples."""
+    x = x.copy()
+    d = np.diff(np.r_[0, (~x).astype(np.int8), 0])
+    for a, b in zip(np.flatnonzero(d == 1), np.flatnonzero(d == -1)):
+        if a > 0 and b < len(x) and b - a <= n:
+            x[a:b] = True
+    return x
 
 
 def letter_windows(written, t_end: float) -> List[Tuple[float, float]]:
@@ -205,6 +293,8 @@ def case_metrics(written, arr: Dict[str, np.ndarray], recognizer: GlyphRecognize
     summ = pool(per)
     summ.update(travel_limit(arr["qr"], arr["stop"], arr["contact"], q_lim))
     c = arr["contact"] > 0
+    if "vsat" in arr:
+        summ["at_voltage_limit"] = float(np.mean(arr["vsat"][c] > 0.5)) if c.any() else 0.0
     summ["mean_authority_in_contact"] = float(arr["g"][c].mean()) if c.any() else 0.0
     d = np.diff(np.r_[0, c.astype(np.int8), 0])
     summ["contact_runs"] = int(np.sum(d == 1))

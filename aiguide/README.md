@@ -27,7 +27,7 @@ The rest of Tatoeba is CC BY 2.0 FR and is **not** used. The corpus is conversat
 | `template.py` | Letter templates in the user's style (own exemplars, else font), app placement or pen anchoring at touchdown, stage-rate template tracks |
 | `stroke_predict.py` | On-device stroke continuation: hold, constant velocity / acceleration (FIR), constant turn rate (circumcircle), 2×64 MLP (torch); Cortex-M33 MAC budget |
 | `metrics.py` | Per-letter path distance, DTW legibility proxy, size-normalised DTW template-matching recogniser, travel-limit time |
-| `guidance.py` | Closed loop on the **unmodified** M1 simulator (`model.run(..., tmpl=...)`): configurations, splice emulation of per-letter authority, nib-offset reference, metrics |
+| `guidance.py` | Closed loop on the **unmodified** simulators, `model.run(..., tmpl=...)`: the pencil model P1 (`sim/pencil`, configuration `pencil_P1`) and M1 (`sim/pensim`; `revA`, `pencil_like`, `pencil_0.3N` for comparison). Channel mapping, splice emulation of per-letter authority, static ink offset (M1 formula; P1 measured on the same writing without tremor), P1 writing-only scoring (touchdown and lift tails excluded), metrics |
 | `icd_template.py` | Proposed ICD record 0x06 (template segment): reference encoder/decoder, framing through `penapp.logfmt`, bandwidth |
 | `run_*.py` | One script per study (below) |
 
@@ -42,17 +42,18 @@ From the repository root, Python 3.11 with `requirements.txt` (torch CPU only fo
 | B1.1 text predictor | `python3 -m aiguide.run_text` | `text_predictor.json`, `fig_text_calibration.png` | ~2.5 min (+2 min first build of the cached model in `aiguide/build/`) |
 | B1.2 style templates | `python3 -m aiguide.run_style` | `style_templates.json`, `fig_style_template_error.png`, `fig_style_example.png` | ~5 min |
 | B1.3 stroke continuation | `python3 -m aiguide.run_stroke` | `stroke_prediction.json`, `fig_stroke_prediction.png` | ~0.5 min |
-| B2 closed-loop guidance | `python3 -m aiguide.run_guidance` (2 processes) | `guidance.json`, `viz_guided.json`, `fig_guidance_*.png`, `fig_micrographia.png` | ~4 min |
+| B2 closed-loop guidance (P1 and M1) | `python3 -m aiguide.run_guidance` (2 processes) | `guidance.json`, `viz_guided.json` (P1), `fig_guidance_*.png`, `fig_micrographia.png` | ~6 min |
 | B3 autocorrect | `python3 -m aiguide.run_autocorrect` | `autocorrect.json`, `fig_autocorrect.png`, `autocorrect_rerender.svg` | ~1 min |
 | B4 deployment | `python3 -m aiguide.run_deploy` | `deployment.json`, `fig_lead_time.png` | ~10 s |
-| all | `bash aiguide/run_all.sh` | all of the above, then the tests | ~14 min (+2 min on the first run) |
+| all | `bash aiguide/run_all.sh` | all of the above, then the tests | ~16 min (+2 min on the first run) |
 
-Tests: `python3 -m pytest -q -p no:cacheprovider aiguide/tests` (29 tests, about 6 s) and `python3 -m pytest -q app/tests` (147 tests including the 10 of `test_autocorrect.py`, about 9 s).
+Tests: `python3 -m pytest -q -p no:cacheprovider aiguide/tests` (32 tests, about 6 s) and `python3 -m pytest -q app/tests` (147 tests including the 10 of `test_autocorrect.py`, about 9 s).
 
-Caches (git-ignored through `build/`): `aiguide/build/pred_o7_*.pkl` (trained predictor) and `aiguide/build/numba_cache/` (numba cache of the simulator core, kept out of `sim/`, which other jobs use). Nothing here writes into `sim/`, `stabpen/`, `config/`, `ml/`, `firmware/` or existing `app/` files.
+Caches (git-ignored through `build/`): `aiguide/build/pred_o7_*.pkl` (trained predictor) and `aiguide/build/numba_cache/` (numba cache of the M1 and P1 simulator cores, kept out of `sim/`, which other jobs use). Nothing here writes into `sim/`, `stabpen/`, `config/`, `ml/`, `firmware/` or existing `app/` files.
 
 ## Conventions
 
 - Seeds are fixed in every script and recorded in the result metadata. Writers are seeded by index; the simulator's sensor noise by writer; tremor by writer and frequency.
-- Path distances are to the *ideal-pen ink path*: the intended path plus the static axial nib offset of the configuration (`guidance.nib_offset`), because the guided core servoes the housing datum and a constant offset of all writing does not affect legibility.
-- The M1 guided core has binary confidence. Per-letter authority c = min(1, ĉ/c_full), zero below c_min, is emulated by segment-wise runs at quantised `Controller.g_assist` levels spliced at the pen-up gaps; the splice discontinuity is measured and a one-run (mean authority) cross-check is reported.
+- Path distances are to the *ideal-pen ink path*: the intended path plus the static ink offset from the housing datum, because the guided core servoes the housing datum and a constant offset of all writing does not affect legibility. M1: the axial-slide formula `guidance.nib_offset`. P1: measured on the same writing without tremor, neutral mode (`guidance.ink_offset`, 4–7 µm).
+- P1 draws a tail at every touchdown and lift: the unloaded refill protrudes up to 1.34 mm beyond its working point, so the ball stays on the paper while the refill travels and writes about 0.87 mm along the pen azimuth. P1 results are given for all ink and for the writing only (`guidance.writing_only`: nib contact while the skid is on the paper).
+- The guided core (the same code in M1 and P1) has binary confidence. Per-letter authority c = min(1, ĉ/c_full), zero below c_min, is emulated by segment-wise runs at quantised `Controller.g_assist` levels spliced at the pen-up gaps; the splice discontinuity is measured and a one-run (mean authority) cross-check is reported.

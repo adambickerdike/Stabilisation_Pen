@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""B2 closed-loop guidance with AI-predicted templates on the unmodified M1 simulator.
+"""B2 closed-loop guidance with AI-predicted templates on the unmodified simulators M1 and P1.
 
-Evidence status: SIMULATION (model M1, sim/pensim unmodified) on synthetic
-writers (aiguide/writer.py) with synthetic tremor; the text predictor is the
-Tatoeba-CC0 n-gram model of B1.1.  No person was recorded.
+Evidence status: SIMULATION (model M1, sim/pensim, and the pencil model P1,
+sim/pencil, both unmodified) on synthetic writers (aiguide/writer.py) with
+synthetic tremor; the text predictor is the Tatoeba-CC0 n-gram model of B1.1.
+No person was recorded.
 
 A synthetic writer first writes a pangram (style calibration), then the study
 sentence with 0.3 mm tremor at 4, 6, 8 or 10 Hz.  Template conditions:
@@ -15,12 +16,13 @@ sentence with 0.3 mm tremor at 4, 6, 8 or 10 Hz.  Template conditions:
                   at full authority (worst case) and gated by its own confidence
   wrong_word      the second word's template is the predictor's next-word guess (app-placed)
   neutral         no correction;   kalman   free mode (assertive Kalman set, results/sim/estimator_selection.json)
-Configurations: revA and pencil_like (aiguide/guidance.py).  Micrographia: the
-same writers with a 35 % size decrement along the line and templates at the
-calibration size.
+Configurations (aiguide/guidance.py): pencil_P1 (the pencil model P1: skid,
+spring-loaded refill, piezo stage; user force 1.0 N) and, for comparison on M1,
+revA, pencil_like and pencil_0.3N.  Micrographia: the same writers with a 35 %
+size decrement along the line and templates at the calibration size.
 
-Outputs results/ai/guidance.json, viz_guided.json and fig_guidance_*.png.
-Run: python3 -m aiguide.run_guidance  (about 4-5 min with 2 processes)
+Outputs results/ai/guidance.json, viz_guided.json (pencil_P1) and fig_guidance_*.png.
+Run: python3 -m aiguide.run_guidance  (about 6 min with 2 processes)
 """
 from __future__ import annotations
 
@@ -54,7 +56,12 @@ AMP = 3e-4
 F0S = (4.0, 6.0, 8.0, 10.0)
 DEPTH = 2
 WRONG_WORD_INDEX = 1
-VIZ = {"writer": 0, "f0": 6.0, "config": "pencil_like"}
+VIZ = {"writer": 0, "f0": 6.0, "config": "pencil_P1"}
+CFGS = ("revA", "pencil_like", "pencil_0.3N", "pencil_P1")
+CFG_NAMES = {"revA": "M1 Rev A (0.55 mm, 1 N)", "pencil_like": "M1, pencil-like limits (0.30 mm, 0.15 N)",
+             "pencil_0.3N": "M1, pencil limits at 0.3 N (suppl.)", "pencil_P1": "pencil model P1 (0.30 mm, user 1 N)",
+             "pencil_P1__writing_only": "P1, writing only (touchdown/lift tails excluded)"}
+VIZ_GROUP = "AI guidance: a written sentence (pencil model P1)"
 VIZ_EXTRA: dict = {}   # the viewer compares every AI case with the first case keyed "neutral": keep one config
 
 
@@ -160,7 +167,6 @@ def scenario(job):
     wseed, f0, cfg_name, kind = job["writer"], job["f0"], job["config"], job["kind"]
     cfg = G.CONFIGS[cfg_name]
     q_lim = cfg["ctrl"]["q_lim"]
-    off = G.nib_offset(cfg)
     pred = lm.cached_predictor()
     st = sample_style(np.random.default_rng(wseed))
     wtr = SyntheticWriter(st, seed=wseed)
@@ -181,11 +187,15 @@ def scenario(job):
     tremor = None if amp <= 0 else sg.TremorSpec(f0=f0, amp_pk=amp)
     scn = G.make_scenario(wr, tremor, cfg["N0"], seed=3000 + 10 * wseed + int(f0))
     S = 11 + wseed
+    # the same writing without tremor, no guidance: the device-only error, and for P1 the static ink offset
+    clean = G.arrays(G.run(G.make_scenario(wr, None, cfg["N0"], seed=0), cfg, "neutral", seed=S))
+    off = G.static_offset_from_run(clean) if G.plant(cfg) == "P1" else G.nib_offset(cfg)   # = G.ink_offset(cfg, wr, S)
     arrs, info = {}, {}
     arrs["neutral"] = G.arrays(G.run(scn, cfg, "neutral", seed=S))
     neutral = arrs["neutral"]
     windows = G.letter_windows(wr, float(neutral["t"][-1]))
-    out = {"job": job, "nib_offset_um": (off * 1e6).tolist(), "style": vars(st), "calib_estimate": {"h_mm": e0.h * 1e3, "width": e0.width,
+    out = {"job": job, "nib_offset_um": (off * 1e6).tolist(), "offset_method": OFFSET_METHOD[G.plant(cfg)],
+           "style": vars(st), "calib_estimate": {"h_mm": e0.h * 1e3, "width": e0.width,
                                                               "slant_deg": math.degrees(e0.slant)}}
     out["intended_recognition_accuracy"] = float(np.mean([rec.classify(L.polylines)[0] == L.char for L in wr.letters]))
     preds = predictions(pred, GUIDE_SENTENCE, DEPTH)
@@ -251,6 +261,13 @@ def scenario(job):
     res = {}
     for name, arr in arrs.items():
         res[name] = G.case_metrics(wr, arr, rec, q_lim, neutral=neutral if name != "neutral" else None, offset=off)
+    res["neutral_no_tremor"] = G.case_metrics(wr, clean, rec, q_lim, offset=off)
+    if G.plant(cfg) == "P1":      # the same runs scored on the writing only (touchdown/lift tails excluded)
+        nw = G.writing_only(neutral)
+        for name in NO_TAIL_CASES:
+            res[name + TAIL_SUFFIX] = G.case_metrics(wr, G.writing_only(arrs[name]), rec, q_lim,
+                                                     neutral=nw if name != "neutral" else None, offset=off)
+        res["neutral_no_tremor" + TAIL_SUFFIX] = G.case_metrics(wr, G.writing_only(clean), rec, q_lim, offset=off)
     # prediction-split metrics for ai_predicted
     ok = [k for k, p in enumerate(preds) if p["correct"]]
     bad = [k for k, p in enumerate(preds) if not p["correct"]]
@@ -270,14 +287,34 @@ def scenario(job):
     extra["a_for_o_letters"] = G.case_metrics(wr, arrs["a_for_o"], rec, q_lim, neutral=neutral, letter_idx=o_idx, offset=off)["summary"]
     extra["a_for_o_letters_neutral"] = G.case_metrics(wr, arrs["neutral"], rec, q_lim, letter_idx=o_idx, offset=off)["summary"]
     # flips: wrong-letter guidance making the letter read as the predicted letter
+    # neutral_*: the same letters without guidance (baseline: the unguided ink may already read as that letter)
+    rn = res["neutral"]["letters"]
     flips = {"a_for_o": {"read_as_predicted_wrong_letter": sum(1 for k in o_idx if res["a_for_o"]["letters"][k].get("recognised_as") == "a"),
                          "still_read_as_true_letter": sum(1 for k in o_idx if res["a_for_o"]["letters"][k].get("recognised_ok")),
+                         "neutral_read_as_predicted_wrong_letter": sum(1 for k in o_idx if rn[k].get("recognised_as") == "a"),
+                         "neutral_still_read_as_true_letter": sum(1 for k in o_idx if rn[k].get("recognised_ok")),
                          "n": len(o_idx)}}
-    for name in ("wrong_letter_full", "wrong_letter_gated"):
-        n_flip = sum(1 for k, L in enumerate(res[name]["letters"]) if L.get("recognised_as") == preds[k]["wrong"])
-        n_ok = sum(1 for L in res[name]["letters"] if L.get("recognised_ok"))
-        flips[name] = {"read_as_predicted_wrong_letter": n_flip, "still_read_as_true_letter": n_ok,
-                       "n": len(res[name]["letters"])}
+    sfx = [""] + ([TAIL_SUFFIX] if G.plant(cfg) == "P1" else [])
+    for x in sfx:
+        rn = res["neutral" + x]["letters"]
+        for name in ("wrong_letter_full", "wrong_letter_gated"):
+            rl = res[name + x]["letters"]
+            n_flip = sum(1 for k, L in enumerate(rl) if L.get("recognised_as") == preds[k]["wrong"])
+            n_ok = sum(1 for L in rl if L.get("recognised_ok"))
+            n_flip0 = sum(1 for k, L in enumerate(rn) if L.get("recognised_as") == preds[k]["wrong"])
+            n_ok0 = sum(1 for L in rn if L.get("recognised_ok"))
+            n_new = sum(1 for k, L in enumerate(rl)
+                        if L.get("recognised_as") == preds[k]["wrong"] and rn[k].get("recognised_as") != preds[k]["wrong"])
+            flips[name + x] = {"read_as_predicted_wrong_letter": n_flip, "still_read_as_true_letter": n_ok,
+                               "neutral_read_as_predicted_wrong_letter": n_flip0, "neutral_still_read_as_true_letter": n_ok0,
+                               "newly_read_as_predicted_wrong_letter": n_new, "n": len(rl)}
+        if x:
+            ra = res["a_for_o" + x]["letters"]
+            flips["a_for_o" + x] = {"read_as_predicted_wrong_letter": sum(1 for k in o_idx if ra[k].get("recognised_as") == "a"),
+                                    "still_read_as_true_letter": sum(1 for k in o_idx if ra[k].get("recognised_ok")),
+                                    "neutral_read_as_predicted_wrong_letter": sum(1 for k in o_idx if rn[k].get("recognised_as") == "a"),
+                                    "neutral_still_read_as_true_letter": sum(1 for k in o_idx if rn[k].get("recognised_ok")),
+                                    "n": len(o_idx)}
     out.update({"cases": {k: v["summary"] for k, v in res.items()}, "letters": {k: v["letters"] for k, v in res.items()},
                 "ai_predicted_split": extra, "wrong_letter_flips": flips, "splice": info,
                 "predictions": preds if (wseed == 0 and f0 == F0S[0]) else None, "wrong_word": {"true": GUIDE_SENTENCE.split(" ")[WRONG_WORD_INDEX],
@@ -285,6 +322,13 @@ def scenario(job):
     if job.get("viz"):
         out["viz"] = viz_cases(wr, scn, arrs, tracks, conf_by_case, res, preds=preds, config=cfg_name, levels=info)
     return out
+
+
+OFFSET_METHOD = {"M1": "formula s0 cos(theta) of the axial slide (guidance.nib_offset)",
+                 "P1": "median(ink - housing datum) in contact with the skid on the paper, same writing without tremor, neutral mode"}
+TAIL_SUFFIX = "__writing_only"
+NO_TAIL_CASES = ("neutral", "kalman", "oracle", "oracle_fast", "ai_correct", "ai_correct_ideal_anchor", "ai_correct_fast",
+                 "ai_predicted", "wrong_letter_gated", "wrong_letter_full", "wrong_word", "a_for_o")
 
 
 # ------------------------------------------------------------------ break-even sweep
@@ -298,15 +342,16 @@ def sweep_job(job):
     from .writer import apply_warp, warp_params
     wseed, f0, cfg_name = job["writer"], job["f0"], job["config"]
     cfg = G.CONFIGS[cfg_name]
-    off = G.nib_offset(cfg)
     st = sample_style(np.random.default_rng(wseed))
     wtr = SyntheticWriter(st, seed=wseed)
     wr = wtr.write(GUIDE_SENTENCE, dt=G.SIM_DT, seed=2000 + wseed)
     scn = G.make_scenario(wr, sg.TremorSpec(f0=f0, amp_pk=AMP), cfg["N0"], seed=3000 + 10 * wseed + int(f0))
     S = 11 + wseed
+    off = G.ink_offset(cfg, wr, seed=S)
     rec = GlyphRecognizer(st.x_height_mm * 1e-3, st.width, math.radians(st.slant_deg))
     neutral = G.arrays(G.run(scn, cfg, "neutral", seed=S))
     base = G.case_metrics(wr, neutral, rec, cfg["ctrl"]["q_lim"], offset=off)["summary"]
+    base2 = G.case_metrics(wr, G.writing_only(neutral), rec, cfg["ctrl"]["q_lim"], offset=off)["summary"]
     rows = []
     for amp in SWEEP_AMPS:
         rng = np.random.default_rng(700 + wseed)
@@ -328,6 +373,12 @@ def sweep_job(job):
                      "template_rms_um": float(np.sqrt(np.mean(e ** 2))), "ink_path_rms_um": m["path_rms_um"],
                      "ink_dtw_um": m.get("dtw_mean_um"), "neutral_path_rms_um": base["path_rms_um"],
                      "neutral_dtw_um": base.get("dtw_mean_um")})
+        if G.plant(cfg) == "P1":           # the same runs scored on the writing only (tails excluded)
+            m2 = G.case_metrics(wr, G.writing_only(arr), rec, cfg["ctrl"]["q_lim"], neutral=G.writing_only(neutral),
+                                offset=off)["summary"]
+            rows.append(dict(rows[-1], config=cfg_name + TAIL_SUFFIX, ink_path_rms_um=m2["path_rms_um"],
+                             ink_dtw_um=m2.get("dtw_mean_um"), neutral_path_rms_um=base2["path_rms_um"],
+                             neutral_dtw_um=base2.get("dtw_mean_um")))
     return rows
 
 
@@ -363,23 +414,25 @@ def breakeven(rows):
 def fig_breakeven(be, path):
     import matplotlib.pyplot as plt
     plotstyle.apply()
-    fig, axes = plt.subplots(1, 2, figsize=(10, 3.8))
-    names = {"revA": "Rev A (0.55 mm, 1 N)", "pencil_like": "pencil-like (0.30 mm, 0.15 N)", "pencil_0.3N": "pencil limits at 0.3 N"}
+    fig, axes = plt.subplots(1, 2, figsize=(10, 4.4))
     for ax, (key, nkey, title) in zip(axes, (("ink_path_rms_um", "neutral_path_rms_um", "Ink path distance to intended, RMS (µm)"),
                                              ("ink_dtw_um", "neutral_dtw_um", "Legibility proxy: DTW to clean letter (µm)"))):
-        for cfg in ("revA", "pencil_like", "pencil_0.3N"):
+        for cfg in CFGS + ("pencil_P1" + TAIL_SUFFIX,):
+            if cfg not in be:
+                continue
             d = be[cfg]
             c = plotstyle.SERIES[CFG_COLOR[cfg]]
-            ax.plot(d["template_rms_um"], d[key], color=c, label=f"guided, {names.get(cfg, cfg)}")
+            ax.plot(d["template_rms_um"], d[key], color=c, label=f"guided, {CFG_NAMES[cfg]}")
             ax.plot(d["template_rms_um"], d[key], **plotstyle.marker_kw(c))
             ax.axhline(d[nkey], color=c, lw=1.0, ls="--")
         ax.set_xlabel("template error to the intended path, RMS (µm)")
         ax.set_title(title, fontsize=9.5)
     axes[0].text(0.02, 0.97, "dashed: no guidance (same config)", transform=axes[0].transAxes, fontsize=7.5,
                  color=plotstyle.INK2, va="top")
-    axes[0].legend(loc="lower right", fontsize=7.5)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
-    plotstyle.stamp(fig, "SIMULATION", "M1 unmodified; 6 Hz 0.3 mm tremor; intended letters warped by a smooth random field")
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", ncol=3, fontsize=7.5, frameon=False, bbox_to_anchor=(0.5, 0.045))
+    fig.tight_layout(rect=(0, 0.15, 1, 1))
+    plotstyle.stamp(fig, "SIMULATION", "M1 and P1 unmodified; 6 Hz 0.3 mm tremor; intended letters warped by a smooth random field")
     fig.savefig(path)
     plt.close(fig)
 
@@ -389,7 +442,7 @@ def _r(a, nd=3):
     return np.round(np.asarray(a, float) * 1e3, nd).tolist()
 
 
-def viz_cases(wr, scn, arrs, tracks, conf_by_case, res, preds=None, micro=False, config="pencil_like", levels=None):
+def viz_cases(wr, scn, arrs, tracks, conf_by_case, res, preds=None, micro=False, config="pencil_P1", levels=None):
     t = arrs["neutral"]["t"]
     step = max(1, int(round(0.01 / (t[1] - t[0]))))
     sel = np.arange(0, len(t), step)
@@ -440,12 +493,29 @@ def viz_cases(wr, scn, arrs, tracks, conf_by_case, res, preds=None, micro=False,
         tpl = np.round(tp * 1e3, 3).tolist()
         prefix = ("" if config == VIZ["config"] else config.replace(".", "") + "_") + ("micrographia_" if micro else "")
         lab = names[key] + ("" if config == VIZ["config"] else f" [{G.CONFIGS[config]['label']}]")
-        out.append({"key": prefix + key, "label": lab, "config": config, "t": np.round(ts, 3).tolist(), "intended": _r(intended),
-                    "template": tpl, "template_pen_down": tdown.tolist(), "housing": _r(a["pH"][sel]), "ink": _r(a["tip"][sel]),
-                    "contact": a["contact"][sel].astype(int).tolist(), "confidence": np.round(conf, 3).tolist(),
-                    "authority": np.round(a["g"][sel], 2).tolist(),
-                    "metrics": {k: (round(v, 4) if isinstance(v, float) else v) for k, v in res[key]["summary"].items()}})
+        item = {"key": prefix + key, "label": lab, "config": config, "t": np.round(ts, 3).tolist(), "intended": _r(intended),
+                "template": tpl, "template_pen_down": tdown.tolist(), "housing": _r(a["pH"][sel]), "ink": _r(a["tip"][sel]),
+                "contact": a["contact"][sel].astype(int).tolist(), "confidence": np.round(conf, 3).tolist(),
+                "authority": np.round(a["g"][sel], 2).tolist(),
+                "metrics": {k: (round(v, 4) if isinstance(v, float) else v) for k, v in res[key]["summary"].items()}}
+        if "skid" in a:                      # P1: skid on the paper (contact without skid = touchdown/lift tail)
+            item["skid_contact"] = a["skid"][sel].astype(int).tolist()
+        if key + TAIL_SUFFIX in res:
+            item["metrics_writing_only"] = {k: (round(v, 4) if isinstance(v, float) else v)
+                                            for k, v in res[key + TAIL_SUFFIX]["summary"].items()}
+        out.append(item)
     return out
+
+
+def _sig(x, n: int = 5):
+    """Round floats to n significant digits (per-scenario detail in guidance.json; aggregates use full precision)."""
+    if isinstance(x, float):
+        return float(f"{x:.{n}g}") if math.isfinite(x) else x
+    if isinstance(x, dict):
+        return {k: _sig(v, n) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [_sig(v, n) for v in x]
+    return x
 
 
 # ------------------------------------------------------------------ aggregation
@@ -494,9 +564,19 @@ def safety_aggregate(outs):
         for case, d in o["splice"].items():
             if "max_housing_jump_um" in d and d["n_splices"]:
                 jumps[cfg].append(d["max_housing_jump_um"])
+    ext = defaultdict(lambda: defaultdict(dict))
+    for o in outs:
+        if "cases" not in o:
+            continue
+        for case, sm in o["cases"].items():
+            e = ext[o["job"]["config"]][case]
+            for k in ("max_stage_um", "max_imposed_um", "qr_max_um"):
+                if k in sm:
+                    e[k] = max(e.get(k, 0.0), float(sm[k]))
     return {"flips": {c: {k: dict(v) for k, v in d.items()} for c, d in fl.items()},
             "splice_housing_jump_um": {c: {"median_of_max": float(np.median(v)), "max": float(np.max(v)), "n_runs": len(v)}
-                                       for c, v in jumps.items()}}
+                                       for c, v in jumps.items()},
+            "extremes_over_scenarios": {c: {k: dict(v) for k, v in d.items()} for c, d in ext.items()}}
 
 
 def micro_aggregate(outs):
@@ -543,37 +623,40 @@ def micro_aggregate(outs):
 
 
 # ------------------------------------------------------------------ figures
-CFG_COLOR = {"revA": 0, "pencil_like": 1, "pencil_0.3N": 2}
+CFG_COLOR = {"revA": 0, "pencil_like": 1, "pencil_0.3N": 2, "pencil_P1": 3, "pencil_P1__writing_only": 4}
 
 
 def fig_summary(table, path):
     import matplotlib.pyplot as plt
     plotstyle.apply()
-    cases = ["neutral", "kalman", "oracle", "oracle_fast", "ai_correct", "ai_correct_ideal_anchor", "ai_correct_fast",
-             "ai_predicted", "wrong_letter_gated", "wrong_letter_full", "wrong_word"]
-    labels = ["neutral", "Kalman\nfree", "oracle", "oracle\n10 ms", "AI\ncorrect", "AI corr.\nideal anchor",
+    cases = ["neutral_no_tremor", "neutral", "kalman", "oracle", "oracle_fast", "ai_correct", "ai_correct_ideal_anchor",
+             "ai_correct_fast", "ai_predicted", "wrong_letter_gated", "wrong_letter_full", "wrong_word"]
+    labels = ["no tremor,\nneutral", "neutral", "Kalman\nfree", "oracle", "oracle\n10 ms", "AI\ncorrect", "AI corr.\nideal anchor",
               "AI corr.\n10 ms", "AI\npredicted", "wrong\ngated", "wrong\nfull", "wrong\nword"]
     metrics = [("path_rms_um", "Path distance to intended, RMS (µm)"), ("dtw_mean_um", "Legibility proxy: DTW to clean letter (µm)"),
                ("recognition_accuracy", "Template-matching recognition (fraction)")]
     fig, axes = plt.subplots(3, 1, figsize=(11, 9.5))
     x = np.arange(len(cases))
-    names = {"revA": "Rev A (0.55 mm, 1 N)", "pencil_like": "pencil-like (0.30 mm, 0.15 N)",
-             "pencil_0.3N": "pencil limits at 0.3 N (suppl.)"}
+    series = [(c, "", c) for c in CFGS if c in table]
+    if "pencil_P1" in table:
+        series.append(("pencil_P1", TAIL_SUFFIX, "pencil_P1" + TAIL_SUFFIX))
+    bw = 0.8 / len(series)
     for ai, (m, title) in enumerate(metrics):
         ax = axes[ai]
-        for ci, cfg in enumerate(("revA", "pencil_like", "pencil_0.3N")):
-            vals = [table.get(cfg, {}).get(c, {}).get(m, {}).get("mean", np.nan) for c in cases]
-            sds = [table.get(cfg, {}).get(c, {}).get(m, {}).get("sd", np.nan) for c in cases]
-            ax.bar(x + (ci - 1) * 0.27, vals, 0.27, yerr=sds, color=plotstyle.SERIES[ci], ecolor=plotstyle.INK2,
-                   capsize=2, error_kw={"lw": 0.8}, label=names[cfg])
+        for ci, (cfg, sfx, name) in enumerate(series):
+            vals = [table.get(cfg, {}).get(c + sfx, {}).get(m, {}).get("mean", np.nan) for c in cases]
+            sds = [table.get(cfg, {}).get(c + sfx, {}).get(m, {}).get("sd", np.nan) for c in cases]
+            ax.bar(x + (ci - (len(series) - 1) / 2) * bw, vals, bw, yerr=sds, color=plotstyle.SERIES[CFG_COLOR[name]],
+                   ecolor=plotstyle.INK2, capsize=1.5, error_kw={"lw": 0.7}, label=CFG_NAMES[name])
         ax.set_xticks(x)
         ax.set_xticklabels(labels, fontsize=7.5)
         ax.set_title(title, fontsize=9.5, loc="left")
         if m == "recognition_accuracy":
             ax.set_ylim(0, 1.05)
-    axes[0].legend(loc="upper right", fontsize=7.5)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
-    plotstyle.stamp(fig, "SIMULATION", "M1 unmodified; synthetic writers; 0.3 mm tremor 4-10 Hz; mean ± SD over writers and f0")
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="upper center", ncol=3, fontsize=7.5, frameon=False, bbox_to_anchor=(0.5, 1.0))
+    fig.tight_layout(rect=(0, 0.04, 1, 0.955))
+    plotstyle.stamp(fig, "SIMULATION", "M1 and P1 unmodified; synthetic writers; 0.3 mm tremor 4-10 Hz; mean ± SD over writers and f0")
     fig.savefig(path)
     plt.close(fig)
 
@@ -583,21 +666,23 @@ def fig_frequency(f0tab, path):
     plotstyle.apply()
     cases = [("neutral", "neutral"), ("kalman", "Kalman free"), ("oracle", "oracle template"), ("ai_correct", "AI, correct"),
              ("ai_predicted", "AI predicted (gated)"), ("wrong_letter_full", "wrong letter, full")]
-    fig, axes = plt.subplots(1, 3, figsize=(13, 3.7), sharey=True)
-    for ax, cfg in zip(axes, ("revA", "pencil_like", "pencil_0.3N")):
+    cfgs = [c for c in CFGS if c in f0tab]
+    fig, axes = plt.subplots(1, len(cfgs), figsize=(4.3 * len(cfgs), 4.2), sharey=True)
+    for ax, cfg in zip(np.atleast_1d(axes), cfgs):
         for i, (c, lab) in enumerate(cases):
             d = f0tab.get(cfg, {}).get(c, {})
             fs = sorted(float(k) for k in d)
             ys = [d[str(f)]["path_rms_um"] for f in fs]
             ax.plot(fs, ys, color=plotstyle.SERIES[i], label=lab)
             ax.plot(fs, ys, **plotstyle.marker_kw(plotstyle.SERIES[i]))
-        ax.set_title({"revA": "Rev A (q_lim 0.55 mm, 1 N)", "pencil_like": "Pencil-like (q_lim 0.30 mm, 0.15 N)",
-                      "pencil_0.3N": "Pencil limits at 0.3 N (suppl.)"}[cfg], fontsize=9.5)
+        ax.set_title(CFG_NAMES[cfg], fontsize=9.5)
         ax.set_xlabel("tremor frequency (Hz), 0.3 mm peak")
         ax.set_xticks(F0S)
+    axes = np.atleast_1d(axes)
     axes[0].set_ylabel("path distance to intended, RMS (µm)")
-    axes[0].legend(fontsize=7.5)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", ncol=6, fontsize=7.5, frameon=False, bbox_to_anchor=(0.5, 0.05))
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
     plotstyle.stamp(fig, "SIMULATION", "mean over synthetic writers")
     fig.savefig(path)
     plt.close(fig)
@@ -631,7 +716,7 @@ def fig_example(viz, path):
     axes[0].legend(loc="upper right", fontsize=7, ncol=3)
     axes[-1].set_xlabel("x (mm)")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
-    plotstyle.stamp(fig, "SIMULATION", "pencil-like limits, 6 Hz 0.3 mm tremor, one synthetic writer")
+    plotstyle.stamp(fig, "SIMULATION", f"{CFG_NAMES[VIZ['config']]}, 6 Hz 0.3 mm tremor, one synthetic writer")
     fig.savefig(path)
     plt.close(fig)
 
@@ -639,8 +724,10 @@ def fig_example(viz, path):
 def fig_micro(outs, path):
     import matplotlib.pyplot as plt
     plotstyle.apply()
-    fig, axes = plt.subplots(1, 3, figsize=(13, 3.6), sharey=True)
-    for ax, cfg in zip(axes, ("revA", "pencil_like", "pencil_0.3N")):
+    cfgs = [c for c in CFGS if any("micrographia" in o and o["job"]["config"] == c for o in outs)]
+    fig, axes = plt.subplots(1, len(cfgs), figsize=(4.3 * len(cfgs), 4.1), sharey=True)
+    axes = np.atleast_1d(axes)
+    for ax, cfg in zip(axes, cfgs):
         rows = [h for o in outs if "micrographia" in o and o["job"]["config"] == cfg for h in o["micrographia"]["heights"]]
         if not rows:
             continue
@@ -660,12 +747,12 @@ def fig_micro(outs, path):
                                         ("ink_target_ai_um", "ink, guided (AI template)"))):
             ys = [np.mean(by[k][key]) for k in ks]
             ax.plot(ks, ys, color=plotstyle.SERIES[i], label=lab, lw=1.6)
-        ax.set_title({"revA": "Rev A (q_lim 0.55 mm)", "pencil_like": "Pencil-like (q_lim 0.30 mm, 0.15 N)",
-                      "pencil_0.3N": "Pencil limits at 0.3 N (suppl.)"}[cfg], fontsize=9.5)
+        ax.set_title(CFG_NAMES[cfg], fontsize=9.5)
         ax.set_xlabel("letter index in the sentence")
     axes[0].set_ylabel("letter height (mm), mean over writers")
-    axes[0].legend(fontsize=7)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", ncol=5, fontsize=7.5, frameon=False, bbox_to_anchor=(0.5, 0.05))
+    fig.tight_layout(rect=(0, 0.13, 1, 1))
     plotstyle.stamp(fig, "SIMULATION", "synthetic micrographia, no tremor")
     fig.savefig(path)
     plt.close(fig)
@@ -680,7 +767,7 @@ def main(argv=None):
     t0 = time.time()
     lm.cached_predictor()          # build once before forking
     jobs = []
-    for cfg in ("revA", "pencil_like", "pencil_0.3N"):
+    for cfg in CFGS:
         for w in range(args.writers):
             for f0 in args.f0:
                 jobs.append({"writer": w, "f0": f0, "config": cfg, "kind": "tremor",
@@ -691,8 +778,7 @@ def main(argv=None):
             outs = list(ex.map(scenario, jobs))
     else:
         outs = [scenario(j) for j in jobs]
-    sweep_jobs = [{"writer": w, "f0": 6.0, "config": cfg} for cfg in ("revA", "pencil_like", "pencil_0.3N")
-                  for w in range(min(args.writers, 4))]
+    sweep_jobs = [{"writer": w, "f0": 6.0, "config": cfg} for cfg in CFGS for w in range(min(args.writers, 4))]
     if args.workers > 1:
         with ProcessPoolExecutor(max_workers=args.workers) as ex:
             sweep_rows = [r for rows in ex.map(sweep_job, sweep_jobs) for r in rows]
@@ -706,11 +792,14 @@ def main(argv=None):
     for o in outs:
         o.pop("letters", None) if o["job"]["kind"] == "micrographia" else None
     first = next(o for o in outs if o["job"]["kind"] == "tremor")
-    res = {"meta": provenance.metadata(EVIDENCE_SIM, seeds={"writers": list(range(args.writers)), "f0_hz": args.f0,
+    res = {"meta": provenance.metadata(EVIDENCE_SIM + "; plants: pencil model P1 (sim/pencil) and model M1 (sim/pensim), "
+                                                      "both unmodified", seeds={"writers": list(range(args.writers)), "f0_hz": args.f0,
                                                             "tremor": "3000+10w+f0", "sensor_noise": "11+w",
                                                             "calibration": "1000+w", "sentence_instance": "2000+w"},
-                                       extra={"model": "M1 (sim/pensim, unmodified)",
+                                       extra={"model": "pencil_P1: model P1 (sim/pencil, unmodified); revA, pencil_like, "
+                                                       "pencil_0.3N: model M1 (sim/pensim, unmodified)",
                                               "configs": {k: v["label"] for k, v in G.CONFIGS.items()},
+                                              "static_ink_offset": OFFSET_METHOD,
                                               "authority_rule": f"c = min(1, c_hat/{G.C_FULL}), 0 below c_hat {G.C_MIN}; levels {G.LEVELS}",
                                               "lm": "char KN 7-gram + word KN bigram, Tatoeba CC0 (results/ai/text_predictor.json)"}),
            "setup": {"sentence": GUIDE_SENTENCE, "calibration_sentence": CALIB_SENTENCE, "tremor_amp_m": AMP,
@@ -720,19 +809,33 @@ def main(argv=None):
            "wrong_word": first["wrong_word"],
            "summary": table, "by_frequency": f0tab, "micrographia": micro, "safety": safety,
            "breakeven": {"method": "intended letters warped by a smooth random field (first point kept), guided at full "
-                                   "authority; writers 0-3, 6 Hz 0.3 mm tremor", "by_config": be, "rows": sweep_rows},
-           "splice_checks": [dict(o["splice"], job=o["job"]) for o in outs if "splice" in o],
-           "scenarios": [{k: v for k, v in o.items() if k not in ("letters",)} for o in outs],
+                                   "authority; writers 0-3, 6 Hz 0.3 mm tremor", "by_config": be, "rows": _sig(sweep_rows)},
+           "splice_checks": _sig([dict(o["splice"], job=o["job"]) for o in outs if "splice" in o]),
+           "scenarios": _sig([{k: v for k, v in o.items() if k not in ("letters", "splice")} for o in outs]),
            "runtime_s": round(time.time() - t0, 1)}
     provenance.write_json(str(RESULTS_DIR / "guidance.json"), res)
-    vz = {"meta": provenance.metadata(EVIDENCE_SIM + "; synthetic writer, 100 Hz export",
+    p1 = G.plant(G.CONFIGS[VIZ["config"]]) == "P1"
+    plant_note = ("model P1 (sim/pencil, unmodified): skid-paper LuGre contact, spring-loaded refill (F_c 0.15 N), "
+                  "four-plate piezo stage with lever, driver and hysteresis; the user force 1.0 N is split between "
+                  "skid and nib by the model" if p1 else "model M1 (sim/pensim, unmodified)")
+    vz = {"meta": provenance.metadata(EVIDENCE_SIM + ("; plant: pencil model P1 (sim/pencil), unmodified" if p1 else
+                                                      "; plant: model M1 (sim/pensim), unmodified") + "; synthetic writer, 100 Hz export",
                                       seeds={"writer": VIZ["writer"], "f0_hz": VIZ["f0"]},
-                                      extra={"config": G.CONFIGS[VIZ["config"]]["label"], "sentence": GUIDE_SENTENCE,
+                                      extra={"case_group": VIZ_GROUP if p1 else "AI guidance: a written sentence",
+                                             "plant": plant_note, "config": G.CONFIGS[VIZ["config"]]["label"],
+                                             "sentence": GUIDE_SENTENCE,
                                              "notes": ["template: the template trajectory at 50 Hz including pen-up moves; template_pen_down flags its pen-down points; empty for no-guidance cases",
                                                        "confidence: predictor confidence of the letter being written (1 for oracle and forced cases)",
                                                        "authority: effective stage authority g_eff recorded by the simulator",
+                                                       ("housing: the housing datum p_H (in P1 the nominal ball centre fixed to the barrel), "
+                                                        "z = its height (mm); ink = page projection of the ball centre") if p1 else
                                                        "housing z: simulator housing height (mm); ink = deposited nib position",
-                                                       "the pencil concept's piezo stage and skid are not in M1"]}),
+                                                       "metrics: path distances are to the intended path plus the static ink offset "
+                                                       f"({OFFSET_METHOD[G.plant(G.CONFIGS[VIZ['config']])]})"]
+                                                      + (["skid_contact: 1 while the skid is on the paper; ink in contact while it is 0 is a "
+                                                          "touchdown or lift tail (the unloaded refill protrudes up to 1.34 mm beyond its "
+                                                          "working point, about 0.87 mm on the page along the pen azimuth)",
+                                                          "metrics_writing_only: the same metrics with the tails excluded"] if p1 else [])}),
           "units": {"length": "mm", "time": "s"}, "cases": viz}
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     with open(RESULTS_DIR / "viz_guided.json", "w", encoding="utf-8") as f:   # compact: the 3D-view file must stay < 2 MB

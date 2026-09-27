@@ -22,7 +22,7 @@ style           online style estimation from written letters (affine fit, exempl
 template        style-conditioned template synthesis, placement, confidence
 stroke_predict  on-device stroke continuation (kinematic and a small MLP), MAC budget
 metrics         path distance, DTW legibility proxy, template-matching recogniser
-guidance        closed-loop runs of the unmodified M1 simulator with templates
+guidance        closed-loop runs of the unmodified simulators (pencil model P1, M1) with templates
 icd_template    proposed ICD record 0x06 (template segment), BLE bandwidth
 """
 from __future__ import annotations
@@ -39,7 +39,7 @@ DATA_DIR = PKG_DIR / "data"
 BUILD_DIR = PKG_DIR / "build"            # git-ignored (".gitignore: build/"): caches only
 RESULTS_DIR = REPO_ROOT / "results" / "ai"
 
-EVIDENCE_SIM = "SIMULATION (synthetic glyph writers and synthetic tremor; model M1 unmodified; not a measurement)"
+EVIDENCE_SIM = "SIMULATION (synthetic glyph writers and synthetic tremor; not a measurement)"
 EVIDENCE_CALC = "CALCULATION (on synthetic data or public-domain text; not a measurement)"
 
 

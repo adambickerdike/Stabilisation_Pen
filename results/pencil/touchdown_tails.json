@@ -1,0 +1,363 @@
+{
+  "meta": {
+    "evidence_status": "simulation (pencil model P1, synthetic handwriting; tilt constant, so the adaptive stop tracks it perfectly)",
+    "generated_utc": "2026-09-27T23:12:51+00:00",
+    "git_revision": "e9c747a-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "diag_touchdown_tails.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "handwriting": [
+        200,
+        201,
+        202,
+        203
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "summary": {
+    "tilt_range_stop": {
+      "tail_fraction_no_tremor": 0.1337669793353975,
+      "tail_mm_per_pen_down": 0.8657309075978062,
+      "pen_downs_vs_rigid": 1.375,
+      "path_rms_all_um_no_tremor": 295.84597869300194,
+      "oracle_ratio": 0.2393060805272707,
+      "oracle_lost_contact_frac": 0.0006749999999999999
+    },
+    "adaptive_0.30mm": {
+      "tail_fraction_no_tremor": 0.029029113130945326,
+      "tail_mm_per_pen_down": 0.2851336408205431,
+      "pen_downs_vs_rigid": 0.875,
+      "path_rms_all_um_no_tremor": 275.9068596567271,
+      "oracle_ratio": 0.295587762568101,
+      "oracle_lost_contact_frac": 0.0006
+    },
+    "adaptive_0.20mm": {
+      "tail_fraction_no_tremor": 0.022743057119221692,
+      "tail_mm_per_pen_down": 0.186891598169653,
+      "pen_downs_vs_rigid": 0.9583333333333334,
+      "path_rms_all_um_no_tremor": 275.8524260126775,
+      "oracle_ratio": 0.45002582609352987,
+      "oracle_lost_contact_frac": 0.0009249999999999999
+    },
+    "adaptive_0.10mm": {
+      "tail_fraction_no_tremor": 0.019866971783481128,
+      "tail_mm_per_pen_down": 0.21441713078034882,
+      "pen_downs_vs_rigid": 0.75,
+      "path_rms_all_um_no_tremor": 273.09751671979006,
+      "oracle_ratio": 0.6859251370800369,
+      "oracle_lost_contact_frac": 0.005525
+    }
+  },
+  "rows": [
+    {
+      "seed": 200,
+      "margin_mm": null,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 37.91145807858123,
+        "tail_mm": 5.148136244661088,
+        "pen_downs": 6,
+        "path_rms_all_um": 291.9507262363607
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 40.15499088438619,
+        "tail_mm": 5.123917372461512,
+        "pen_downs": 5,
+        "path_rms_all_um": 281.6953214783329
+      },
+      "oracle_ratio": 0.29152271925265644,
+      "oracle_lost_contact_frac": 0.0002
+    },
+    {
+      "seed": 200,
+      "margin_mm": 0.3,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 33.99877251315946,
+        "tail_mm": 1.0071680576146247,
+        "pen_downs": 4,
+        "path_rms_all_um": 265.1577871714691
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 37.140199889449306,
+        "tail_mm": 1.1177125768022143,
+        "pen_downs": 4,
+        "path_rms_all_um": 240.37144491003116
+      },
+      "oracle_ratio": 0.3196531701047472,
+      "oracle_lost_contact_frac": 0.0002
+    },
+    {
+      "seed": 200,
+      "margin_mm": 0.2,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 33.80502846855774,
+        "tail_mm": 0.7979858992302424,
+        "pen_downs": 4,
+        "path_rms_all_um": 265.2074226875624
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 37.97199615721115,
+        "tail_mm": 0.8462242507963557,
+        "pen_downs": 5,
+        "path_rms_all_um": 226.55512085745423
+      },
+      "oracle_ratio": 0.43588867928822783,
+      "oracle_lost_contact_frac": 0.0026
+    },
+    {
+      "seed": 200,
+      "margin_mm": 0.1,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 33.65357819317451,
+        "tail_mm": 0.6770604419771753,
+        "pen_downs": 4,
+        "path_rms_all_um": 264.00483838654907
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 38.845818723239475,
+        "tail_mm": 0.5704371516969652,
+        "pen_downs": 5,
+        "path_rms_all_um": 210.76112734033265
+      },
+      "oracle_ratio": 0.64226732171129,
+      "oracle_lost_contact_frac": 0.0077
+    },
+    {
+      "seed": 201,
+      "margin_mm": null,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 38.24362342613279,
+        "tail_mm": 5.044440690731756,
+        "pen_downs": 6,
+        "path_rms_all_um": 299.54394264112045
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 39.669786566593146,
+        "tail_mm": 5.418550485861314,
+        "pen_downs": 6,
+        "path_rms_all_um": 299.2009925897333
+      },
+      "oracle_ratio": 0.17165117501629046,
+      "oracle_lost_contact_frac": 0.0002
+    },
+    {
+      "seed": 201,
+      "margin_mm": 0.3,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 34.39194888863381,
+        "tail_mm": 0.9478911464774585,
+        "pen_downs": 5,
+        "path_rms_all_um": 281.0907034007596
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 36.72437056300297,
+        "tail_mm": 1.2613273878985465,
+        "pen_downs": 4,
+        "path_rms_all_um": 274.87236660009313
+      },
+      "oracle_ratio": 0.2662235825647799,
+      "oracle_lost_contact_frac": 0.0005
+    },
+    {
+      "seed": 201,
+      "margin_mm": 0.2,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 34.18656900902321,
+        "tail_mm": 0.7573458049995856,
+        "pen_downs": 4,
+        "path_rms_all_um": 281.04200711220176
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 38.26539642941205,
+        "tail_mm": 0.9627337260440412,
+        "pen_downs": 3,
+        "path_rms_all_um": 261.40584674710226
+      },
+      "oracle_ratio": 0.4597190943233282,
+      "oracle_lost_contact_frac": 0.0003
+    },
+    {
+      "seed": 201,
+      "margin_mm": 0.1,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 34.108828335738266,
+        "tail_mm": 0.6644437409931937,
+        "pen_downs": 3,
+        "path_rms_all_um": 278.5104272543618
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 39.28003504734862,
+        "tail_mm": 0.8145920603194888,
+        "pen_downs": 4,
+        "path_rms_all_um": 242.1180886182257
+      },
+      "oracle_ratio": 0.7184332817174477,
+      "oracle_lost_contact_frac": 0.0002
+    },
+    {
+      "seed": 202,
+      "margin_mm": null,
+      "strokes_rigid": 6,
+      "no_tremor": {
+        "ink_mm": 41.16460077410039,
+        "tail_mm": 5.5843938607553785,
+        "pen_downs": 6,
+        "path_rms_all_um": 294.3616275415185
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 42.71359985942677,
+        "tail_mm": 5.631560310805187,
+        "pen_downs": 9,
+        "path_rms_all_um": 288.67733619217876
+      },
+      "oracle_ratio": 0.19435318981161237,
+      "oracle_lost_contact_frac": 0.0017
+    },
+    {
+      "seed": 202,
+      "margin_mm": 0.3,
+      "strokes_rigid": 6,
+      "no_tremor": {
+        "ink_mm": 37.012224199782146,
+        "tail_mm": 1.0732213674476079,
+        "pen_downs": 3,
+        "path_rms_all_um": 278.0681253019914
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 38.94764991735114,
+        "tail_mm": 1.0855254205960774,
+        "pen_downs": 3,
+        "path_rms_all_um": 270.9763902598768
+      },
+      "oracle_ratio": 0.26679113092112555,
+      "oracle_lost_contact_frac": 0.0012
+    },
+    {
+      "seed": 202,
+      "margin_mm": 0.2,
+      "strokes_rigid": 6,
+      "no_tremor": {
+        "ink_mm": 36.766542169053785,
+        "tail_mm": 0.8176401294994836,
+        "pen_downs": 5,
+        "path_rms_all_um": 277.97066282931286
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 39.74123742439758,
+        "tail_mm": 0.8852287440782517,
+        "pen_downs": 3,
+        "path_rms_all_um": 262.7795601290991
+      },
+      "oracle_ratio": 0.43074113224272054,
+      "oracle_lost_contact_frac": 0.0007
+    },
+    {
+      "seed": 202,
+      "margin_mm": 0.1,
+      "strokes_rigid": 6,
+      "no_tremor": {
+        "ink_mm": 36.49155944963886,
+        "tail_mm": 0.6984916780243127,
+        "pen_downs": 3,
+        "path_rms_all_um": 273.75107832149234
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 39.694300362983114,
+        "tail_mm": 0.8303860490668366,
+        "pen_downs": 6,
+        "path_rms_all_um": 249.5425728318891
+      },
+      "oracle_ratio": 0.677119682675692,
+      "oracle_lost_contact_frac": 0.0098
+    },
+    {
+      "seed": 203,
+      "margin_mm": null,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 37.96613570962428,
+        "tail_mm": 5.000570986199127,
+        "pen_downs": 6,
+        "path_rms_all_um": 297.52761835300794
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 41.10547654502647,
+        "tail_mm": 5.625335787853458,
+        "pen_downs": 6,
+        "path_rms_all_um": 285.29891464970586
+      },
+      "oracle_ratio": 0.2996972380285235,
+      "oracle_lost_contact_frac": 0.0006
+    },
+    {
+      "seed": 203,
+      "margin_mm": 0.3,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 34.21656290259064,
+        "tail_mm": 1.0242715913014653,
+        "pen_downs": 3,
+        "path_rms_all_um": 279.3108227526882
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 37.21667035569053,
+        "tail_mm": 1.0041035084127699,
+        "pen_downs": 4,
+        "path_rms_all_um": 266.70290798798123
+      },
+      "oracle_ratio": 0.3296831666817512,
+      "oracle_lost_contact_frac": 0.0005
+    },
+    {
+      "seed": 203,
+      "margin_mm": 0.2,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 33.986193974439416,
+        "tail_mm": 0.7808217628850331,
+        "pen_downs": 4,
+        "path_rms_all_um": 279.18961142163295
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 38.73383342070849,
+        "tail_mm": 0.8080889875607754,
+        "pen_downs": 3,
+        "path_rms_all_um": 257.14911431229353
+      },
+      "oracle_ratio": 0.47375439851984286,
+      "oracle_lost_contact_frac": 0.0001
+    },
+    {
+      "seed": 203,
+      "margin_mm": 0.1,
+      "strokes_rigid": 4,
+      "no_tremor": {
+        "ink_mm": 33.88038567098267,
+        "tail_mm": 0.702274818863798,
+        "pen_downs": 3,
+        "path_rms_all_um": 276.123722916757
+      },
+      "oracle_6Hz_0.3mm": {
+        "ink_mm": 38.66012993553932,
+        "tail_mm": 0.6034017656006628,
+        "pen_downs": 4,
+        "path_rms_all_um": 242.03670740121464
+      },
+      "oracle_ratio": 0.7058802622157178,
+      "oracle_lost_contact_frac": 0.0044
+    }
+  ],
+  "note": "margin = front stop beyond the protrusion the tilt needs; the refill must also slide q cot(theta) while the stage corrects, so small margins lose contact during correction"
+}

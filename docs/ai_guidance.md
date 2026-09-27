@@ -1,6 +1,6 @@
 # AI prediction, physical guidance and digital autocorrect (pencil-class concept)
 
-**Status: proposed design, first study (2026-09-27).** Every number here is a **SIM** (simulation) or **CALC** (calculation) on **synthetic** handwriting (glyph-font writers with synthetic tremor) and on a **public-domain text corpus**. No person was recorded; nothing was measured. Labels: **SIM**, **CALC**, **ASSUMPTION** (an allocation or design value, not a result).
+**Status: proposed design, first study (2026-09-27); closed-loop results (§4) re-run on the pencil model P1, with M1 kept for comparison.** Every number here is a **SIM** (simulation) or **CALC** (calculation) on **synthetic** handwriting (glyph-font writers with synthetic tremor) and on a **public-domain text corpus**. No person was recorded; nothing was measured. Labels: **SIM**, **CALC**, **ASSUMPTION** (an allocation or design value, not a result).
 
 Code: [`aiguide/`](../aiguide/README.md) and [`app/penapp/autocorrect.py`](../app/penapp/autocorrect.py). Results: `results/ai/`. Parent report: [`pencil_concept.md`](pencil_concept.md) §6.
 
@@ -16,19 +16,25 @@ The request was for "advanced AI prediction models almost to autocorrect the sen
 **Short answer (SIM, CALC; synthetic data only):**
 
 - **Digital autocorrect works and is the main benefit.** Word error rate (WER) at an injected character error rate (CER) of about 7 % falls from 32 % to 10 % on held-out corpus text and from 30 % to 16 % on note-like text. Correct words are changed in ≤ 0.1 % of cases. The weak spot is names and rare words: 6–14 % of them are wrongly "corrected" until a personal dictionary is added (§6).
-- **Physical guidance toward AI templates gives no net benefit on free handwriting in M1, but it is safe.**
-  - Even a perfect (oracle) template reduces letter-level ink error by only 10–26 % (vs 63 % on the slow circle of the feature course, 443 → 163 µm).
-  - A correctly predicted letter drawn in the user's estimated style is about 300 µm RMS from what the user intended. That is the break-even template error (230–330 µm) at which guidance stops helping. Guidance toward correct AI templates is 3–12 % *worse* than none (2–7 % with ideal anchoring; §4).
-  - Realistic predictions are right for only 40 % of letters two ahead (27 % on the study sentence). The confidence gate therefore keeps authority low, and the result is 0.4–4.3 % worse than no guidance.
-  - Wrong templates at full authority cost 3.5–21.5 % in path error (0.5–1.9 % when gated by their confidence). The stage stayed at its mechanical stop at worst, and at most 1.9 % of letters read as the wrongly predicted letter.
-- **Micrographia is not corrected physically.** In no configuration did the templates enlarge letters beyond the user's own intended size (§4.6). This agrees with COR-10 and DEC-002.
+- **Physical guidance toward AI templates gives no net benefit on free handwriting, in the pencil model P1 as in M1, but it is safe** (§4). P1 has the skid, the spring-loaded refill and the piezo stage; M1 results are kept for comparison.
+  - **Even a perfect (oracle) template helps little.** It reduces the letters' ink path error by 12 % in P1, 21 % on the writing alone (without the touchdown and lift tails below), and 10–20 % in M1. That compares with 63 % on the slow circle of the feature course (443 → 163 µm). In P1, legibility barely moves: DTW −1 to −4 %, recognition +0.00 to +0.02.
+  - **Correct AI templates are worse than none.** A correctly predicted letter drawn in the user's estimated style is about 300 µm RMS from what the user intended. That is beyond the break-even template error at which guidance stops helping: 265 µm in P1, 230–330 µm in M1. Guidance toward correct AI templates is 9 % *worse* than none in P1 (13 % on the writing alone; 3–12 % in M1).
+  - **Realistic, gated predictions end up slightly worse than none.** Predictions are right for only 40 % of letters two ahead (27 % on the study sentence), so the confidence gate keeps authority low. The result is 2.5 % worse than no guidance in P1 and 0.4–4.3 % worse in M1.
+  - **Wrong templates are bounded.** At full authority they cost 8–13 % in path error in P1 (3.5–21.5 % in M1). Gated by their confidence, they cost 0.5–2 %.
+    - The stage reached its stop and went no further (0.40 mm in P1).
+    - 2.2 % of letters were newly read as the wrongly predicted letter at full authority, and 0.3 % when gated (M1: at most 1.8 %).
+- **Finding for the mechanism study: P1 draws a tail at every touchdown and lift.**
+  - The unloaded refill protrudes 1.34 mm beyond its working point. The ball stays on the paper while the refill travels, and writes about 0.87 mm along the pen azimuth at each end of a stroke.
+  - This, not tremor, is the largest letter-level distortion in P1. Unguided recognition is 0.79 with the tails and 0.93 without them. Guidance cannot remove it (§4.1, §4.3).
+- **Micrographia is not corrected physically.** In no configuration, P1 included, did the templates enlarge letters beyond the user's own intended size (§4.6). This agrees with COR-10 and DEC-002.
 - **Prediction must run two letters ahead.** A template must reach the pen before the nib lands on that letter. With an allocated 0.18 s end-to-end latency (0.3 s allowed), it must be predicted from text two letters back. Next-glyph top-1 accuracy is 56 % one letter ahead but 40 % two ahead (§5).
 - **Freedom to operate.** The template pipeline (recognition → character identifiers → character shapes → commands to the pen) is structurally close to claim 15 of BIC's US 12,026,327 B2 (PAT-01). Attorney review is recommended before any guided-letter feature (§8).
 
 **Recommendation.**
 - Ship the digital layer: autocorrect, personal dictionary and re-rendering.
 - Keep physical guidance for tasks whose template is *known* (tracing, copying set text, drawing aids; `docs/features.md` "Guided tracing"), where the oracle numbers apply.
-- Do not claim AI-predicted physical correction of free writing. Revisit it only if EXP-A02 (§9) shows people's intended letters are closer to a personal template than 230–330 µm, and after the firmware changes in §7.3.
+- Do not claim AI-predicted physical correction of free writing. Revisit it only if EXP-A02 (§9) shows people's intended letters are closer to a personal template than about 230–330 µm (265 µm in P1), and after the firmware changes in §7.3.
+- Pass the touchdown and lift tails of P1 to the mechanism study (free refill protrusion, §4.1). They matter for any writing with the pencil, guided or not.
 
 ## 2. Architecture and where each part runs
 
@@ -160,19 +166,36 @@ Median error (µm) on test writers, clean / tremor input (`results/ai/stroke_pre
 - Constant velocity: 30 MAC. Turn rate: 120 MAC.
 - All are far inside the ICD §5 budget (≤ 35 k MAC, ≤ 1 ms).
 
-## 4. B2 Closed-loop guidance on the unmodified M1 simulator (SIM)
+## 4. B2 Closed-loop guidance on the unmodified simulators: pencil model P1, with M1 for comparison (SIM)
 
 ### 4.1 Set-up
 
-**Writing.** A synthetic writer writes "return library books by friday" (26 letters, 44 strokes, ≈ 18 s) after a calibration pangram. There are 6 writers; tremor is 0.3 mm peak at 4, 6, 8 and 10 Hz. `model.run(scn, Controller(mode="guided"), tmpl=...)` is called exactly as `sim/guided_eval.py` does, with no change to `sim/`.
+**Writing.** A synthetic writer writes "return library books by friday" (26 letters, 44 strokes, ≈ 18 s) after a calibration pangram. There are 6 writers; tremor is 0.3 mm peak at 4, 6, 8 and 10 Hz. `model.run(scn, Controller(mode="guided", ...), tmpl=...)` is called exactly as `sim/guided_eval.py` does, with no change to `sim/`.
 
-**Configurations:**
-- **Rev A**: Controller defaults, q_lim 0.55 mm, stop 0.60 mm, N0 = 1.0 N.
-- **Pencil-like**, as specified: `Controller(q_lim=0.30e-3)`, overrides `stage.travel_tip_mech = 0.40e-3`, N0 = 0.15 N.
-  - **Plus `stage.axial_preload = 0.05 N`.** M1 declares contact when the axial force exceeds F_pre + 20 mN. With the Rev A preload of 0.25 N, a 0.15 N nib force never registers contact, so the guided mode never engages (checked: mean authority 0.004).
-- **Pencil limits at 0.3 N** (supplementary): same as pencil-like but at 0.3 N, where M1 contact is stable (one contact per stroke).
+**Plants and configurations** (`aiguide/guidance.py` `CONFIGS`):
+- **Pencil model P1** (`pencil_P1`, the main result): `sim.pencil.model.run`. It has the skid–paper LuGre contact, the spring-loaded refill (F_c 0.15 N), and the four-plate piezo stage with lever, driver and Bouc–Wen hysteresis (`docs/pencil_mechanisms.md` §6).
+  - Settings: `Controller(q_lim=0.30e-3)`; stage stop 0.40 mm.
+  - The scenario's N0 = 1.0 N is the user's force. P1 splits it into 0.80 N on the skid and 0.20 N on the nib.
+  - No preload override is needed and the nib does not bounce: 44 contacts for 44 strokes unguided, 46 with oracle guidance.
+  - P1's guided core is the same code as M1's.
+- **M1 for comparison** (`sim/pensim`, results unchanged from the first revision):
+  - **Rev A**: Controller defaults, q_lim 0.55 mm, stop 0.60 mm, N0 = 1.0 N.
+  - **Pencil-like**: `Controller(q_lim=0.30e-3)`, overrides `stage.travel_tip_mech = 0.40e-3`, N0 = 0.15 N, plus `stage.axial_preload = 0.05 N`. M1 declares contact when the axial force exceeds F_pre + 20 mN. With the Rev A preload of 0.25 N, a 0.15 N nib force never registers contact, so the guided mode never engages (checked: mean authority 0.004).
+  - **Pencil limits at 0.3 N** (supplementary): as pencil-like, but at 0.3 N.
+  - M1 has no skid, so at 0.15 N its stiff 2 kN/m axial path turns lateral stage motion into normal-force changes larger than 0.15 N, and the nib bounces: 88 contacts for 44 strokes unguided, 345 with oracle guidance.
 
-**The pencil's piezo stage and skid are not in M1.** These runs use the Rev A voice-coil lever with pencil-like limits and force. Without the skid, M1's stiff 2 kN/m axial path turns the lateral stage motion (x_H has a −cos θ page-normal component) into normal-force changes larger than 0.15 N, so the nib bounces. Unguided there are 88 contacts for 44 strokes; with oracle guidance there are 345. A parallel study is building `sim/pencil/`; the lead may re-run the main case there.
+**Static ink offset.** Path distances are measured to the ideal-pen ink path, which is the intended path plus the static ink offset from the housing datum. The guided core servoes the housing datum, and a constant offset of all writing does not affect legibility.
+- M1: the axial-slide formula s₀·cos θ, 166 µm in Rev A and 21 µm pencil-like.
+- P1: measured on the same writing without tremor, in neutral mode (median of ink − housing datum while nib and skid touch): 4–7 µm. P1's housing datum is the nominal ball centre.
+
+**P1 draws a tail at every touchdown and lift** (a model result for the mechanism study).
+- The unloaded refill protrudes up to 1.34 mm beyond its working point (P1 `s_min`).
+- While the refill travels between its front stop and the working point, the ball stays on the paper, pushed by the 0.15 N spring. It writes a line of (s_work − s_min)·cos θ ≈ 0.87 mm along the pen azimuth.
+- This happens at both ends of every stroke. It takes about 28 ms and accounts for 1.8 mm of the 5.6 mm of ink per stroke on the study sentence (one writer, no tremor).
+- The guided core cannot prevent it: the tail is the refill's axial travel, and the core counts itself in contact for 86 % of it.
+- P1 results are therefore given twice:
+  - **all ink**, as the plant draws it;
+  - **writing only**: nib contact while the skid is also on the paper (`guidance.writing_only`). This bridges the skid's 2.5 ms impact bounce at touchdown.
 
 **Template conditions:**
 
@@ -186,40 +209,61 @@ Median error (µm) on test writers, clean / tremor input (`results/ai/stroke_pre
 | wrong_word | the predictor's next word ("to") for "library" |
 | a_for_o | an "a" template on each "o" |
 | no prediction | neutral stage, and Kalman free mode (assertive set from `results/sim/estimator_selection.json`) |
+| no tremor, neutral | the same writing without tremor and without guidance: the device's own error |
 
 **Confidence scaling.** The guided core has only a binary gate (template within 2·q_lim). Per-letter authority is therefore emulated:
 - the sentence is simulated once per authority level (quantised to 0, 0.25, 0.5, 0.75 and 1 via `Controller.g_assist`);
 - the runs are spliced letter by letter at the middle of the pen-up gaps;
-- the housing discontinuity at splice points is 9 µm (pencil-like), 19 µm (0.3 N) and 85 µm (Rev A, median of per-run maxima; max 195 µm), because M1's compliant hand lets runs diverge;
-- a cross-check with one run at the mean authority (0.18) agrees within 3–6 µm of path RMS.
+- the housing discontinuity at the splice points (median of per-run maxima) is 19 µm in P1 (max 42 µm). In M1 it is 9 µm pencil-like, 19 µm at 0.3 N and 85 µm in Rev A (max 195 µm), because the compliant hand lets runs diverge;
+- a cross-check with one run at the mean authority (0.18) agrees within 3 µm of path RMS in P1 and 3–6 µm in M1.
 
 **Metrics:**
-- **Path distance** from each in-contact ink sample to the same letter's intended path, measured against the ideal-pen ink path. That path is the intended path plus the static axial nib offset s₀·cos θ, 166 µm in Rev A and 21 µm in the pencil-like configuration. The guided core servoes the housing datum, and a constant offset of all writing does not affect legibility.
+- **Path distance** from each in-contact ink sample to the same letter's intended path plus the static ink offset.
 - **Legibility:**
   - DTW to the clean letter after removing the centroid offset;
   - template-matching recognition among 26 size-normalised glyphs in the writer's estimated style. Intended letters read 100 %.
 - **Time at the soft limit:** |q_ref| ≥ 0.95 q_lim while in contact.
-- **Maximum stage displacement.**
+- **Maximum stage displacement**, and in P1 the time at the piezo driver's voltage limit.
 - **Maximum ink deviation** from the unguided run with the same tremor and seed.
 
 ### 4.2 Results (mean ± SD over 6 writers × 4 frequencies; `results/ai/guidance.json`, `fig_guidance_summary.png`, `fig_guidance_frequency.png`, `fig_guidance_example.png`)
 
 Ink path distance, RMS (µm), with the p95 in brackets:
 
-| Condition | Rev A | Pencil-like | Pencil limits, 0.3 N |
-|---|---|---|---|
-| No guidance (neutral) | 209 ± 27 (423) | 176 ± 16 (341) | 165 ± 15 (321) |
-| Kalman free mode | 204 (416) | 169 (330) | 158 (309) |
-| **Oracle template** | **167 (370)** | **158 (341)** | **132 (292)** |
-| Oracle, 10 ms authority fade-in | 174 | 156 | 121 |
-| AI template, correct letter | 234 (462) | 182 (362) | 174 (346) |
-| AI template, correct letter, ideal anchor | 224 | 179 | 169 |
-| **AI predicted, confidence-gated** | **217 (439)** | **177 (345)** | **165 (322)** |
-| Wrong letter, gated by its confidence | 213 | 177 | 166 |
-| Wrong letter, full authority | 253 (500) | 184 (366) | 179 (354) |
-| Wrong next word | 230 | 183 | 174 |
+| Condition | **P1, all ink** | **P1, writing only** | M1 Rev A | M1 pencil-like | M1 0.3 N |
+|---|---|---|---|---|---|
+| No tremor, no guidance (device only) | 212 | 155 | 168 | 57 | 65 |
+| No guidance (neutral) | 243 ± 15 (485) | 196 ± 22 (398) | 209 ± 27 (423) | 176 ± 16 (341) | 165 ± 15 (321) |
+| Kalman free mode | 242 | 195 | 204 (416) | 169 (330) | 158 (309) |
+| **Oracle template** | **213 (488)** | **155 (373)** | **167 (370)** | **158 (341)** | **132 (292)** |
+| Oracle, 10 ms authority fade-in | 199 | 136 | 174 | 156 | 121 |
+| AI template, correct letter | 265 (525) | 222 (442) | 234 (462) | 182 (362) | 174 (346) |
+| AI template, correct letter, ideal anchor | 258 | 214 | 224 | 179 | 169 |
+| **AI predicted, confidence-gated** | **249 (503)** | **204 (413)** | **217 (439)** | **177 (345)** | **165 (322)** |
+| Wrong letter, gated by its confidence | 247 | 200 | 213 | 177 | 166 |
+| Wrong letter, full authority | 274 (551) | 234 (470) | 253 (500) | 184 (366) | 179 (354) |
+| Wrong next word | 262 | 220 | 230 | 183 | 174 |
 
-Legibility and limits:
+Relative to no guidance in P1 (all ink / writing only):
+- oracle −12 / −21 %; with a 10 ms fade-in, −18 / −31 %;
+- AI correct +9 / +13 %;
+- AI predicted +2.5 / +4 %;
+- wrong letter +13 / +20 % at full authority, and +1.4 / +2 % when gated.
+
+Legibility and limits, P1:
+
+| Condition | DTW to clean letter, µm (all ink / writing only) | Recognised (all ink / writing only) | Time at soft limit |
+|---|---|---|---|
+| No tremor, no guidance | 307 / 191 | 0.76 / 0.97 | 0 |
+| Neutral | 307 / 197 | 0.79 / 0.93 | 0 |
+| Oracle | 304 / 189 | 0.79 / 0.95 | 12 % |
+| AI correct | 321 / 224 | 0.76 / 0.91 | 21 % |
+| AI predicted | 315 / 206 | 0.78 / 0.93 | 4 % |
+| Wrong letter, full | 332 / 243 | 0.74 / 0.86 | 25 % |
+
+The piezo driver was at its voltage limit for at most 0.1 % of contact time (mean over runs) in any condition.
+
+Legibility and limits, M1:
 
 | Condition | DTW to clean letter, µm (Rev A / pencil-like / 0.3 N) | Recognised (same order) | Time at soft limit (same order) |
 |---|---|---|---|
@@ -229,57 +273,72 @@ Legibility and limits:
 | AI predicted | 216 / 164 / 152 | 0.91 / 0.97 / 0.96 | 5 / 3 / 5 % |
 | Wrong letter, full | 250 / 181 / 168 | 0.87 / 0.94 / 0.95 | 32 / 22 / 29 % |
 
-The ranking holds at every tremor frequency from 4 to 10 Hz (`by_frequency`).
+The order oracle < no guidance < AI predicted < AI correct < wrong letter at full authority holds at every tremor frequency from 4 to 10 Hz in P1 and in Rev A (`by_frequency`). At M1's pencil limits, AI predicted and no guidance are within 2 µm of each other.
 
 ### 4.3 Why letters gain so little, even with the oracle
 
-These are diagnostics of the M1 guided core on handwriting; they point to firmware changes (§7.3).
+These are diagnostics of the guided core on handwriting, which is the same code in P1 and M1. They point to firmware changes (§7.3) and, for P1, to the mechanism.
 
-- **Short strokes against a 50 ms fade-in.** Contact runs last a median of 164 ms (Rev A). Authority fades in over 50 ms after contact detection, so mean authority in contact is only 0.50–0.74 with the oracle. A 10 ms fade-in helps where contact is stable (0.3 N: 132 → 121 µm).
-- **Hooks at the lift.** Authority drops when the measured axial force crosses its threshold, while the nib still touches. The stage then returns across the paper. During authority ramps the guided error was *above* neutral (188 vs 137 µm in the diagnostic run).
-- **Travel saturation.** The soft limit is reached 11–13 % of the time even with the oracle.
-- **Bounce at 0.15 N** in M1 without a skid (§4.1).
-- **Open-loop hand.** M1's hand follows a fixed reference path, so users neither exploit nor fight the guidance. At 1 N, friction through the grip compliance makes the nib lag the hand by about 0.5 mm, which shortens small letters by 21 % even unguided.
+- **P1: the tails** (§4.1) are the largest letter-level distortion. They lower unguided recognition from 0.93 to 0.79 and raise the DTW from 197 to 307 µm, and no template condition changes them.
+- **P1: the pen's own error at the user's 1 N is larger than the tremor's share.** Without tremor, P1's writing is already 155 µm from intent; with tremor it is 196 µm. This is consistent with friction drag through the compliant grip: M1 shows the same dependence on force, with 168 µm at 1 N in Rev A and 57–65 µm at 0.15–0.3 N.
+  - The oracle template brings it back to 155 µm: it removes about the tremor's share and none of the pen's own error.
+  - Unguided letters come out 17 % smaller than intended (§4.6).
+- **Short strokes against a 50 ms fade-in.** Authority fades in over 50 ms after contact detection, so mean authority in contact with the oracle is only 0.69 in P1 (0.50–0.74 in M1). A 10 ms fade-in helps: P1 writing only 155 → 136 µm; M1 0.3 N 132 → 121 µm.
+- **Hooks at the lift.** Authority drops when contact detection ends while the nib still touches, and the stage then returns across the paper. During authority ramps the guided error was *above* neutral (188 vs 137 µm in an M1 diagnostic run).
+- **Travel saturation.** The soft limit is reached 12–13 % of the time in P1 and 11–13 % in M1 even with the oracle.
+- **Bounce at 0.15 N** in M1 without a skid (§4.1). P1 does not bounce.
+- **Open-loop hand** in both models. The hand follows a fixed reference path, so users neither exploit nor fight the guidance.
 
 ### 4.4 Break-even template error (`fig_guidance_breakeven.png`)
 
 The intended letters were warped by a smooth random field with the start point kept, to set the template error, and guided at full authority (writers 0–3, 6 Hz).
 
-| | Rev A | Pencil-like | Pencil limits, 0.3 N |
-|---|---|---|---|
-| Unguided path RMS | 204 µm | 185 µm | 173 µm |
-| Guided with a perfect template | 161 µm | 168 µm | 139 µm |
-| Template error at which guided = unguided (path) | **291 µm** | **233 µm** | **334 µm** |
-| Same for the DTW legibility proxy | 232 µm | (below 30 µm: bounce) | 257 µm |
+| | **P1, all ink** | **P1, writing only** | M1 Rev A | M1 pencil-like | M1 0.3 N |
+|---|---|---|---|---|---|
+| Unguided path RMS | 244 µm | 197 µm | 204 µm | 185 µm | 173 µm |
+| Guided with a perfect template | 207 µm | 143 µm | 161 µm | 168 µm | 139 µm |
+| Template error at which guided = unguided (path) | **265 µm** | **267 µm** | **291 µm** | **233 µm** | **334 µm** |
+| Same for the DTW legibility proxy | none: a perfect template does not improve it (305 vs 303 µm) | 121 µm | 232 µm | (below 30 µm: bounce) | 257 µm |
 
-Realistic AI templates (≈ 300 µm, §3.2) sit at or beyond break-even. For physical guidance to keep most of the oracle's gain on free writing, templates would need to be within about 100–150 µm of intent. Templates built from the writer's own earlier instances did not get there even on clean ink (239 µm), because every instance of a letter differs.
+Realistic AI templates (≈ 300 µm, §3.2) sit beyond break-even in P1 as in M1. For physical guidance to keep most of the oracle's gain on free writing, templates would need to be within about 100–150 µm of intent. Templates built from the writer's own earlier instances did not get there even on clean ink (239 µm), because every instance of a letter differs.
 
 ### 4.5 Wrong predictions: bounded, and letters stay readable
 
-| | Rev A | Pencil-like | Pencil limits, 0.3 N |
-|---|---|---|---|
-| Letters read as the wrongly predicted letter: full authority / gated (of 624) | 12 / 2 | 0 / 0 | 2 / 1 |
-| "a" template on "o": still read as "o" / read as "a" (of 48) | 45 / 0 | 47 / 0 | 47 / 0 |
-| Max stage displacement, any case (the elastomer stop is at 0.60 / 0.40 / 0.40 mm) | 0.62 mm | 0.38 mm | 0.40 mm |
-| Max ink deviation from the unguided pen | 0.79 mm | 0.36 mm | 0.38 mm |
-| Path error, wrong word vs neutral, on its letters | 220 vs 191 µm | 176 vs 170 µm | 169 vs 159 µm |
+| | **P1** (all ink / writing only) | M1 Rev A | M1 pencil-like | M1 0.3 N |
+|---|---|---|---|---|
+| Letters newly read as the wrongly predicted letter: full authority / gated (of 624) | 14 / 2 (16 / 2) | 11 / 1 | 0 / 0 | 2 / 1 |
+| … read as that letter already without guidance (of 624) | 13 (2) | 2 | 0 | 0 |
+| "a" template on "o": read as "a" (of 48) | 0 (0) | 0 | 0 | 0 |
+| Max stage displacement, any guided case, over all runs (stop) | 0.40 mm (0.40) | 0.62 mm (0.60) | 0.40 mm (0.40) | 0.41 mm (0.40) |
+| Max ink deviation from the unguided pen, wrong letter at full authority: mean of per-run maxima / largest | 0.47 / 0.51 mm | 0.73 / 1.09 mm | 0.36 / 0.39 mm | 0.38 / 0.45 mm |
+| Path error on the wrong word's letters vs neutral | 258 vs 240 µm | 220 vs 191 µm | 176 vs 170 µm | 169 vs 159 µm |
 
-- The stage reached but did not pass its mechanical stop (it presses 15 µm into the elastomer stop in Rev A).
-- The ink can deviate more than the stage travel from the unguided run (0.79 mm in Rev A). The stage sits on its stop (0.6 mm), and the compliant hand/housing drifts a further 0.2 mm under the changed contact forces.
+- The stage reached but did not pass its mechanical stop. It pressed at most 1 µm into it in P1 and up to 20 µm into the elastomer stop in Rev A.
+- The ink can deviate from the unguided run by more than the stage travel: up to 0.51 mm in P1 and 1.09 mm in Rev A. The stage sits on its stop, and the compliant hand and housing drift further under the changed contact forces.
 - The capture gate (2·q_lim) disengages guidance once the user's letter departs from the template.
-- **No knock-on into the next word.** On the letters of the word after the wrong one, path RMS was 256 µm after the wrong word against 261 µm when both words were predicted correctly (unguided 227 µm) in Rev A; 189 vs 188 (182) µm pencil-like; 185 vs 188 (171) µm at 0.3 N. The extra error there is the ordinary cost of correct-but-imperfect AI templates (§4.2), not a consequence of the wrong word. Rule T5 (§7.3) still bounds how long any wrong segment can act.
+- In P1, the unguided ink already reads 13 of 624 letters as the predicted wrong letter, because the tails distort letters. Guidance at full authority makes 14 further letters read that way (2.2 %); gated, 2 (0.3 %).
+- **No knock-on into the next word.** On the letters of the word after the wrong one, path RMS was about the same as when both words were predicted correctly:
+
+  | Plant | After the wrong word | Both words correct | Unguided |
+  |---|---|---|---|
+  | P1 | 267 µm | 271 µm | 244 µm |
+  | M1 Rev A | 256 µm | 261 µm | 227 µm |
+  | M1 pencil-like | 189 µm | 188 µm | 182 µm |
+  | M1 0.3 N | 185 µm | 188 µm | 171 µm |
+
+  The extra error there is the ordinary cost of correct-but-imperfect AI templates (§4.2), not a consequence of the wrong word. Rule T5 (§7.3) still bounds how long any wrong segment can act.
 
 ### 4.6 Micrographia (`fig_micrographia.png`)
 
 Set-up: a 35 % linear size decrement along the line, no tremor, and templates at the calibration size. The mean deficit is 0.69 mm (template 3.46 mm vs intended 2.83 mm).
 
-| Height change relative to the user's intended letter (fraction of the deficit) | Rev A | Pencil-like | Pencil limits, 0.3 N |
-|---|---|---|---|
-| Unguided ink | −0.83 (M1 lag shrinks letters 21 %) | +0.06 | −0.11 |
-| Guided toward oracle shapes at full size | −0.51 | +0.07 | −0.03 |
-| Guided toward AI templates at full size | −0.46 | +0.06 | −0.02 |
+| Height change relative to the user's intended letter (fraction of the deficit) | **P1** | M1 Rev A | M1 pencil-like | M1 0.3 N |
+|---|---|---|---|---|
+| Unguided ink | −0.66 (the pen shrinks letters 17 %) | −0.83 (M1 lag shrinks letters 21 %) | +0.06 | −0.11 |
+| Guided toward oracle shapes at full size | −0.63 | −0.51 | +0.07 | −0.03 |
+| Guided toward AI templates at full size | −0.58 | −0.46 | +0.06 | −0.02 |
 
-- **Guidance never made letters larger than the user intended.** It recovered only part of M1's own lag-shrinkage.
+- **Guidance never made letters larger than the user intended.** It recovered only part of the pen's own shrinkage (at 1 N in P1 and in Rev A).
 - The travel bound would allow up to q_lim ≈ 0.3 mm of the 0.69 mm deficit (43 %). The nearest-point core cannot use it, because it corrects toward the *nearest* template point; a smaller letter lies close to parts of the larger template.
 - Micrographia support stays cueing and feedback (DEC-002). The app can report size drift from the captured ink.
 
@@ -287,11 +346,17 @@ Set-up: a 35 % linear size decrement along the line, no tremor, and templates at
 
 `results/ai/viz_guided.json` (1.0 MB) follows the requested schema: `meta`, `units` {mm, s}, and `cases` with `key`, `label`, `t`, `intended`, `template`, `housing` [x, y, z], `ink`, `contact`, `confidence` and `metrics`.
 
+- The plant is the pencil model P1, so the page can show it with the pencil CAD.
+  - `meta.plant` names the model; `meta.case_group` is "AI guidance: a written sentence (pencil model P1)".
+  - `housing` is P1's housing datum (the nominal ball centre); `ink` is the page projection of the ball centre.
 - Sampling: 100 Hz, 1 µm resolution.
-- Extra fields: `authority` (g_eff), `template_pen_down` and `config`.
+- Extra fields:
+  - `authority` (g_eff), `template_pen_down` and `config`;
+  - `skid_contact`: contact without the skid is a touchdown or lift tail;
+  - `metrics_writing_only`: the metrics with the tails excluded.
 - The template includes its pen-up moves. For `ai_predicted`, only letters whose confidence reached c_min are included.
-- It holds eight cases on the same sentence, writer and tremor (6 Hz), pencil-like configuration: neutral, Kalman, oracle, AI predicted, AI correct, wrong letter, wrong word, and "a" for "o".
-- The viewer (`viewer/template.html`) compares every AI case with the first case keyed `neutral`, so a single configuration is exported.
+- It holds eight cases on the same sentence, writer and tremor (6 Hz): neutral, Kalman, oracle, AI predicted, AI correct, wrong letter, wrong word, and "a" for "o".
+- The viewer compares every AI case with the first case keyed `neutral`, so a single configuration is exported.
 
 ## 5. B4 Lead time, latency and bandwidth (CALC; `results/ai/deployment.json`, `fig_lead_time.png`)
 
@@ -429,12 +494,16 @@ A design-around for claim 15 is available: disable the font fallback, so that le
 
 **Limits** (most decisive first):
 
-1. **No human data.** Writers, allographs, variability and tremor are generator settings. The 230–330 µm break-even must be compared with real within-writer variability.
-2. **M1 is not the pencil.** It has no skid and no piezo stage. The contact at 0.15 N is an artefact (bounce), and the hand is an open-loop reference path that neither follows nor resists guidance.
+1. **No human data.** Writers, allographs, variability and tremor are generator settings. The break-even of 230–330 µm (265 µm in P1) must be compared with real within-writer variability.
+2. **P1 is a model of the pencil, not the pencil.**
+   - Its skid, refill and stage parameters include ASSUMPTION values (`docs/pencil_mechanisms.md`).
+   - The touchdown and lift tails follow from the refill's 1.34 mm free protrusion and from the model hand lifting the pen straight up from the page. A lift that moves back along the pen axis would shorten them; only a prototype can say by how much.
+   - In both P1 and M1 the hand is an open-loop reference path that neither follows nor resists guidance.
+   - M1 has no skid or piezo stage, and its contact at 0.15 N bounces.
 3. **The guided core was used as is.** Its binary gate, nearest-point progress, 50 ms fade-in and fade at contact loss shape the results. T5–T7 are untested.
 4. **The text domain is a proxy.** Tatoeba is not personal notes. Calibration degrades on notes (ECE up to 0.19), and names are the main autocorrect risk.
 5. **Recognition is simulated** by error injection. Real recogniser errors are not uniform edits.
-6. **Splice emulation of per-letter authority** carries up to 0.2 mm housing discontinuity in Rev A. The one-run cross-check agrees.
+6. **Splice emulation of per-letter authority** carries up to 0.2 mm housing discontinuity in Rev A and 42 µm in P1. The one-run cross-check agrees.
 7. **Print-style writing only.** Letter segmentation for recognition and anchoring assumes pen lifts between letters. Cursive needs online segmentation.
 
 **Open experiments** (EXP-C01 already covers recognition CER on real ink; it now also feeds the predictor's calibration):
@@ -454,14 +523,17 @@ A design-around for claim 15 is available: disable the font fallback, so that le
   - **Decision rule (proposed):** keep AI-template guidance only if it improves legibility with a 95 % CI excluding zero, *and* does not reduce agency ratings, *and* wrong templates never make a letter unreadable. Otherwise ship known-template guidance and digital correction only.
 - **EXP-A03 (proposed): autocorrect on real notes.**
   - Recogniser output on consented notes. Report WER before and after, over-correction, name handling with and without the personal dictionary, and the acceptance rate of suggestions.
-- **Simulator follow-up.** Re-run the main case on `sim/pencil/` (skid, piezo), and on a firmware-faithful guided core with T5–T7.
+- **Simulator follow-up.** The main case now runs on P1 (§4). Still open:
+  - P1 with a shorter free refill protrusion (the tails);
+  - a firmware-faithful guided core with T5–T7;
+  - a closed-loop hand model.
 
 ## 10. Reproduce
 
-`bash aiguide/run_all.sh` takes about 14 minutes here (plus 2 minutes on the first run to build the cached text model) and uses at most two processes. Each study has its own script (`aiguide/README.md`).
+`bash aiguide/run_all.sh` takes about 16 minutes here (plus 2 minutes on the first run to build the cached text model) and uses at most two processes. B2 (P1 and M1) alone takes about 6 minutes. Each study has its own script (`aiguide/README.md`).
 
 Tests:
-- `python3 -m pytest -q -p no:cacheprovider aiguide/tests`: 29 tests;
+- `python3 -m pytest -q -p no:cacheprovider aiguide/tests`: 32 tests, 3 of them on the P1 dispatch, static offset and tails;
 - `python3 -m pytest -q app/tests`: 147 tests, the 137 existing plus 10 for autocorrect.
 
 Every JSON records the git revision, parameter digest, seeds and command. Every figure is stamped with its evidence status.

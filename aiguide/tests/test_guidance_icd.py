@@ -1,4 +1,4 @@
-"""Closed-loop helpers on the unmodified M1 simulator, the proposed 0x06 record, and the adapter spec."""
+"""Closed-loop helpers on the unmodified M1 and P1 simulators, the proposed 0x06 record, and the adapter spec."""
 from __future__ import annotations
 
 import numpy as np
@@ -46,6 +46,56 @@ def test_nib_offset_matches_simulated_ink_minus_housing(short_case):
     measured = np.mean(neutral["tip"][c] - neutral["pH"][c, :2], axis=0)
     o = G.nib_offset(cfg)
     assert o[0] == pytest.approx(measured[0], rel=0.35) and abs(measured[1]) < 20e-6
+
+
+@pytest.fixture(scope="module")
+def p1_case():
+    wr = SyntheticWriter(WriterStyle(), seed=2).write("on", dt=G.SIM_DT, seed=4)
+    cfg = G.CONFIGS["pencil_P1"]
+    scn = G.make_scenario(wr, sg.TremorSpec(f0=6.0, amp_pk=3e-4), cfg["N0"], seed=9)
+    neutral = G.arrays(G.run(scn, cfg, "neutral", seed=3))
+    guided = G.arrays(G.run(scn, cfg, "guided", seed=3))
+    clean = G.arrays(G.run(G.make_scenario(wr, None, cfg["N0"], seed=0), cfg, "neutral", seed=3))
+    return wr, cfg, scn, neutral, guided, clean
+
+
+def test_p1_dispatch_maps_channels_and_guided_mode_engages(p1_case):
+    wr, cfg, scn, neutral, guided, clean = p1_case
+    assert G.plant(cfg) == "P1" and cfg["N0"] == 1.0                 # P1 takes the user's force
+    for a in (neutral, guided):
+        assert {"t", "tip", "pH", "q", "qr", "contact", "g", "stop", "vsat", "skid"} <= set(a)
+        assert a["tip"].shape == (len(a["t"]), 2)
+    c = guided["contact"] > 0
+    assert c.any() and guided["g"][c].max() > 0.9
+    assert np.hypot(*guided["qr"].T).max() <= cfg["ctrl"]["q_lim"] + 1e-9
+    assert neutral["g"].max() == 0.0
+    # no bounce: one nib contact per intended stroke on the clean writing (the skid carries most of the force)
+    runs = int(np.sum(np.diff(np.r_[0, (clean["contact"] > 0).astype(np.int8), 0]) == 1))
+    assert runs == sum(len(L.strokes) for L in wr.letters)
+
+
+def test_p1_static_offset_is_measured_from_the_clean_neutral_run(p1_case):
+    wr, cfg, scn, neutral, guided, clean = p1_case
+    o = G.ink_offset(cfg, wr, seed=3)
+    assert np.allclose(o, G.static_offset_from_run(clean))
+    # in P1 the housing datum is the nominal ball centre: the static offset is tens of micrometres at most,
+    # far below the M1 formula's axial-slide offset (166 um at 1 N in Rev A)
+    assert np.all(np.isfinite(o)) and np.hypot(*o) < 50e-6
+    assert G.nib_offset(G.CONFIGS["revA"])[0] > 100e-6
+
+
+def test_p1_touchdown_and_lift_tails_are_scored_separately(p1_case, short_case):
+    wr, cfg, scn, neutral, guided, clean = p1_case
+    c = clean["contact"] > 0
+    w = G.writing_only(clean)["contact"] > 0
+    runs = lambda m: int(np.sum(np.diff(np.r_[0, m.astype(np.int8), 0]) == 1))  # noqa: E731
+    assert runs(w) == runs(c) == sum(len(L.strokes) for L in wr.letters)    # skid impact bounce bridged
+    step = np.r_[0.0, np.hypot(*np.diff(clean["tip"], axis=0).T)]
+    tail_per_stroke = step[c & ~w].sum() / runs(c)
+    # the unloaded refill protrudes 1.34 mm: ~0.87 mm of ink along the azimuth at touchdown and again at lift
+    assert 1.0e-3 < tail_per_stroke < 2.5e-3
+    m1_neutral = short_case[3]
+    assert G.writing_only(m1_neutral) is m1_neutral                           # M1 has no skid: unchanged
 
 
 def test_authority_rule():
