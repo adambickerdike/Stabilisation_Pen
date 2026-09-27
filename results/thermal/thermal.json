@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "evidence_status": "analytical calculation (lumped thermal network; assumed conductances)",
+    "generated_utc": "2026-09-27T00:26:30+00:00",
+    "git_revision": "714de4b-dirty",
+    "parameters_version": "0.3.0",
+    "parameters_sha256_16": "c7f5042d2195064e",
+    "command": "thermal.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "conductance_basis": "air-gap conduction k=0.026 W/mK; epoxy 0.25 W/mK; Al 167 W/mK; h_out 10 W/m2K; finger contact 600 W/m2K x 3 cm2; hand 33 C"
+  },
+  "cases": {
+    "A direct-drive carriage near tip | design": {
+      "P_coil_avg_W": 7.777613788043316,
+      "infeasible": true
+    },
+    "A direct-drive carriage near tip | high": {
+      "P_coil_avg_W": 24.93544292689987,
+      "infeasible": true
+    },
+    "B lever n=3.17, moving-coil annular sandwich (Rev A) | design": {
+      "P_coil_avg_W": 0.31028002631004137,
+      "coil_type": "moving",
+      "T_coil_end_C": 85.54363632529902,
+      "T_grip_end_C": 33.097843195200134,
+      "T_act_surface_end_C": 33.525431179083064,
+      "t_to_41C_act_surface_min": NaN
+    },
+    "B lever n=3.17, moving-coil annular sandwich (Rev A) | high": {
+      "P_coil_avg_W": 0.9951506002177678,
+      "coil_type": "moving",
+      "T_coil_end_C": 360.4328117244739,
+      "T_grip_end_C": 40.09652928236612,
+      "T_act_surface_end_C": 48.00302831723919,
+      "t_to_41C_act_surface_min": 3.4757464824006816
+    },
+    "B-MM lever n=3.17, moving magnet, fixed bonded coils | design": {
+      "P_coil_avg_W": 0.6977686016974786,
+      "coil_type": "fixed",
+      "T_coil_end_C": 44.57875558036789,
+      "T_grip_end_C": 34.43487528542351,
+      "T_act_surface_end_C": 36.29123740236165,
+      "t_to_41C_act_surface_min": NaN
+    },
+    "B-MM lever n=3.17, moving magnet, fixed bonded coils | high": {
+      "P_coil_avg_W": 2.238727392989863,
+      "coil_type": "fixed",
+      "T_coil_end_C": 81.38512437070163,
+      "T_grip_end_C": 41.653607604740955,
+      "T_act_surface_end_C": 51.224024434157684,
+      "t_to_41C_act_surface_min": 1.725715345120469
+    },
+    "D skid + constant-force nib (Fc = 0.30 N) on B actuator | design": {
+      "P_coil_avg_W": 0.04800786363976024,
+      "coil_type": "moving",
+      "T_coil_end_C": 37.84284351826129,
+      "T_grip_end_C": 31.88337768910347,
+      "T_act_surface_end_C": 31.013168049224877,
+      "t_to_41C_act_surface_min": NaN
+    },
+    "D skid + constant-force nib (Fc = 0.30 N) on B actuator | high": {
+      "P_coil_avg_W": 0.09679055961708964,
+      "coil_type": "moving",
+      "T_coil_end_C": 45.589844725631515,
+      "T_grip_end_C": 32.080616908410974,
+      "T_act_surface_end_C": 31.421180308670394,
+      "t_to_41C_act_surface_min": NaN
+    },
+    "E B + slow zero-hold bias actuator (80% of static load) | design": {
+      "P_coil_avg_W": 0.012888411670596355,
+      "coil_type": "moving",
+      "T_coil_end_C": 32.53046415320091,
+      "T_grip_end_C": 31.74812411435779,
+      "T_act_surface_end_C": 30.73338030360773,
+      "t_to_41C_act_surface_min": NaN
+    },
+    "E B + slow zero-hold bias actuator (80% of static load) | high": {
+      "P_coil_avg_W": 0.0402832346269054,
+      "coil_type": "moving",
+      "T_coil_end_C": 36.65596951887415,
+      "T_grip_end_C": 31.85315978901699,
+      "T_act_surface_end_C": 30.950658809348706,
+      "t_to_41C_act_surface_min": NaN
+    }
+  },
+  "allowable_avg_copper_W_for_41C_and_coil120C": {
+    "moving": 0.455190209671855,
+    "fixed": 1.2265437841415405
+  }
+}

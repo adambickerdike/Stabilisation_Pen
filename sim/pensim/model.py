@@ -31,13 +31,13 @@ MODEL_VERSION = "M1.0"
 class Geometry:
     """Moving-part geometry of a configuration (tip-equivalent reduction)."""
     kind: str = "lever"            # "lever" (front pivot, rear actuator) or "translational"
-    L1: float = 0.012              # pivot -> ball (m)
-    L2: float = 0.048              # pivot -> actuator force line (m)
-    m_carrier: float = 0.55e-3     # carrier tube (kg)
-    L_carrier_front: float = 0.012 # carrier extent in front of pivot (m)
-    L_carrier_rear: float = 0.055  # carrier extent behind pivot (m)
-    m_refill: float = 0.6e-3       # kg
-    m_act: float = 0.25e-3         # moving actuator part at L2 (kg) (moving coil)
+    L1: float = 0.012              # pivot -> ball (m)             [CAD Rev A]
+    L2: float = 0.038              # pivot -> actuator force line (m)  [CAD Rev A, n = 3.17]
+    m_carrier: float = 1.13e-3     # Ti carrier tube (kg)          [CAD Rev A]
+    L_carrier_front: float = 0.009 # carrier extent in front of pivot (m)
+    L_carrier_rear: float = 0.052  # carrier extent behind pivot (m)
+    m_refill: float = 0.6e-3       # kg (weigh samples, EXP-B02)
+    m_act: float = 0.44e-3         # moving-coil paddle at L2 (kg)  [CAD Rev A]
     m_trans: float = 2.0e-3        # translational carriage mass (kg) if kind == translational
 
     def reduce(self):
@@ -92,6 +92,8 @@ class Controller:
     cur_bw: float = 2000.0
     axial_comp: float = 0.0
     gamma_acc: Optional[float] = None   # None -> computed from nominal compliances
+    f_gate: float = 0.0                 # Hz; 0 disables the frequency gate
+    f_gate_width: float = 1.5           # Hz
     axial_comp_tau: float = 2.0
 
 
@@ -147,8 +149,10 @@ def build_params(scn: Scenario, ctrl: Controller, geom: Optional[Geometry] = Non
     F_pre = _pget(p, "stage.axial_preload", over)
     setp("F_pre", F_pre); setp("s_max", _pget(p, "stage.axial_travel", over))
     # housing + hand
-    setp("m_H", _pget(p, "hand.effective_mass", over))
+    setp("m_H", _pget(p, "pen.housing_mass", over))
     setp("K_hxy", _pget(p, "hand.grip_stiffness", over)); setp("C_hxy", _pget(p, "hand.grip_damping", over))
+    setp("M_hand", _pget(p, "hand.mass", over)); setp("k_arm", _pget(p, "hand.arm_stiffness", over))
+    setp("b_arm", _pget(p, "hand.arm_damping", over))
     setp("K_hz", _pget(p, "hand.normal_stiffness", over)); setp("C_hz", _pget(p, "hand.normal_damping", over))
     # contact + friction
     k_p = _pget(p, "writing.paper_stiffness", over)
@@ -242,6 +246,9 @@ def build_params(scn: Scenario, ctrl: Controller, geom: Optional[Geometry] = Non
     else:
         gam = ctrl.gamma_acc
     setp("gamma_acc", gam)
+    setp("f_gate", ctrl.f_gate); setp("f_gate_width", ctrl.f_gate_width)
+    setp("kappa_s", over.get("stage.kappa_s", 0.0))   # Rev A: suspension behind pivot (DEC-007)
+    setp("fail_type", over.get("fail_type", 0)); setp("fail_time", over.get("fail_time", 1e9))
     info_gamma = gam
     # direct layout-name overrides last
     for k_, v in over.items():

@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "evidence_status": "analytical calculation (beam theory; nominal geometry)",
+    "generated_utc": "2026-09-27T00:20:53+00:00",
+    "git_revision": "714de4b-dirty",
+    "parameters_version": "0.3.0",
+    "parameters_sha256_16": "c20ec325d5f80675",
+    "command": "flexure_calc.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "results": {
+    "material": {
+      "E": 131000000000.0,
+      "fatigue": 310000000.0,
+      "yield": 1241000000.0,
+      "allow_alt": 150000000.0,
+      "allow_peak": 310000000.0,
+      "rho": 8360
+    },
+    "L1_m": 0.012,
+    "wire_candidates": [
+      {
+        "type": "3-wire conical pivot",
+        "d_mm": 0.25,
+        "l_mm": 5.37,
+        "r_c_mm": 2.4,
+        "k_tip_N_per_m_range": [
+          573.0138943469361,
+          1146.0277886938723
+        ],
+        "stress_full_travel_MPa": 1104.15459234328,
+        "stress_typical_MPa": 509.4134761207392,
+        "buckling_load_per_wire_N": 34.38843362366703,
+        "axial_load_per_wire_N": 0.9428090415820632,
+        "buckling_margin": 36.474441914517655,
+        "passes": false
+      },
+      {
+        "type": "3-wire conical pivot",
+        "d_mm": 0.1,
+        "l_mm": 8.0,
+        "r_c_mm": 1.8,
+        "k_tip_N_per_m_range": [
+          6.1185540149130695,
+          12.237108029826139
+        ],
+        "stress_full_travel_MPa": 237.38310516597,
+        "stress_typical_MPa": 109.51922277323283,
+        "buckling_load_per_wire_N": 0.39666232862492934,
+        "axial_load_per_wire_N": 0.9428090415820632,
+        "buckling_margin": 0.4207239336179015,
+        "passes": false
+      },
+      {
+        "type": "3-wire conical pivot",
+        "d_mm": 0.15,
+        "l_mm": 10.0,
+        "r_c_mm": 1.8,
+        "k_tip_N_per_m_range": [
+          22.20734936135393,
+          44.41469872270786
+        ],
+        "stress_full_travel_MPa": 270.4836278676173,
+        "stress_typical_MPa": 124.79050131320133,
+        "buckling_load_per_wire_N": 1.2851859447447704,
+        "axial_load_per_wire_N": 0.9428090415820632,
+        "buckling_margin": 1.3631455449220002,
+        "passes": false
+      }
+    ],
+    "gimbal_candidates": [
+      {
+        "type": "two-stage cross-strip gimbal",
+        "t_mm": 0.05,
+        "w_mm": 1.0,
+        "L_mm": 2.0,
+        "k_tip_N_per_m_per_axis": 75.81018518518519,
+        "stress_full_travel_MPa": 177.4826954511925,
+        "stress_typical_MPa": 81.88353104540771,
+        "buckling_load_per_blade_N": 13.467897672319857,
+        "axial_load_per_blade_N": 0.7071067811865475,
+        "buckling_margin": 19.04648354484778,
+        "centre_shift_note": "cross-strip pivot centre drift ~ L psi^2/8 ~ sub-micrometre here",
+        "blade_mass_mg": 6.688000000000001,
+        "passes": true
+      },
+      {
+        "type": "two-stage cross-strip gimbal",
+        "t_mm": 0.04,
+        "w_mm": 1.2,
+        "L_mm": 2.5,
+        "k_tip_N_per_m_per_axis": 37.26222222222223,
+        "stress_full_travel_MPa": 113.58892508876319,
+        "stress_typical_MPa": 52.40545986906094,
+        "buckling_load_per_blade_N": 5.295792851118923,
+        "axial_load_per_blade_N": 0.7071067811865475,
+        "buckling_margin": 7.489382073570863,
+        "centre_shift_note": "cross-strip pivot centre drift ~ L psi^2/8 ~ sub-micrometre here",
+        "blade_mass_mg": 8.0256,
+        "passes": true
+      },
+      {
+        "type": "two-stage cross-strip gimbal",
+        "t_mm": 0.075,
+        "w_mm": 0.8,
+        "L_mm": 2.5,
+        "k_tip_N_per_m_per_axis": 163.74999999999997,
+        "stress_full_travel_MPa": 212.97923454143097,
+        "stress_typical_MPa": 98.26023725448925,
+        "buckling_load_per_blade_N": 23.2725271777687,
+        "axial_load_per_blade_N": 0.7071067811865475,
+        "buckling_margin": 32.91232356549695,
+        "centre_shift_note": "cross-strip pivot centre drift ~ L psi^2/8 ~ sub-micrometre here",
+        "blade_mass_mg": 10.032,
+        "passes": true
+      }
+    ],
+    "suspension_candidates": [
+      {
+        "type": "spiral-arm diaphragm pair",
+        "t_mm": 0.1,
+        "b_mm": 0.8,
+        "L_arm_mm": 6.0,
+        "k_axial_N_per_m": 2911.1111111111118,
+        "stress_at_stop_MPa": 1091.6666666666667,
+        "radial_k_upper_N_per_m": 5240000.0,
+        "passes": false
+      },
+      {
+        "type": "spiral-arm diaphragm pair",
+        "t_mm": 0.12000000000000001,
+        "b_mm": 0.8,
+        "L_arm_mm": 7.0,
+        "k_axial_N_per_m": 3167.832069970845,
+        "stress_at_stop_MPa": 962.4489795918367,
+        "radial_k_upper_N_per_m": 5389714.285714285,
+        "passes": false
+      },
+      {
+        "type": "spiral-arm diaphragm pair",
+        "t_mm": 0.22,
+        "b_mm": 0.8,
+        "L_arm_mm": 15.0,
+        "k_axial_N_per_m": 1983.8407111111114,
+        "stress_at_stop_MPa": 230.55999999999997,
+        "radial_k_upper_N_per_m": 4611200.0,
+        "passes": true
+      },
+      {
+        "type": "spiral-arm diaphragm pair",
+        "t_mm": 0.2,
+        "b_mm": 1.0,
+        "L_arm_mm": 16.0,
+        "k_axial_N_per_m": 1535.1562500000005,
+        "stress_at_stop_MPa": 184.21874999999997,
+        "radial_k_upper_N_per_m": 4912500.0,
+        "passes": true
+      }
+    ]
+  }
+}

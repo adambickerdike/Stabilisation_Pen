@@ -23,23 +23,23 @@ from sim.pensim import harness  # noqa: E402
 from stabpen import provenance  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "sim")
-LAMBDA_D = 1.0
+LAMBDA_D = 1.0          # balanced operating point
+LAMBDA_ASSERTIVE = 0.3  # assertive operating point (accepts more distortion)
 TUNE_F0 = (4.5, 6.0, 8.0, 10.0)
 TUNE_AMP = 3e-4
 
 
-def objective(rows):
+def objective(rows, lam=LAMBDA_D):
     import numpy as np
-    return float(np.mean([r["ratio"] + LAMBDA_D * r["distortion_um"] / r["base_e_rms_um"] for r in rows]))
+    return float(np.mean([r["ratio"] + lam * r["distortion_um"] / r["base_e_rms_um"] for r in rows]))
 
 
 def main():
     t0 = time.time()
     grids = {
-        "kfosc": [dict(kf_qj=qj, kf_qt=qt, kf_w0_hz=7.0) for qj, qt in
-                  itertools.product((0.3, 1.0, 3.0, 10.0, 30.0), (3e-9, 1e-8, 3e-8, 1e-7))],
-        "bpf": [dict(bp_lo=lo, bp_hi=hi, bp_tune_hz=7.0) for lo, hi in
-                itertools.product((3.0, 4.5, 6.0), (12.0, 16.0))],
+        "kfosc": [dict(kf_qj=qj, kf_qt=qt, kf_w0_hz=7.0, f_gate=fg) for qj, qt, fg in
+                  itertools.product((0.1, 0.3, 1.0, 3.0, 10.0), (3e-9, 1e-8), (0.0, 6.5, 7.5))],
+        "bpf": [dict(bp_lo=lo, bp_hi=hi, bp_tune_hz=7.0) for lo, hi in ((6.0, 16.0), (4.5, 16.0), (6.0, 12.0))],
     }
     results = {}
     for mode, grid in grids.items():
@@ -48,12 +48,16 @@ def main():
             cases = [dict(seed=s, f0=f, amp=TUNE_AMP, mode=mode, ctrl=kw) for s in harness.TUNING_SEEDS for f in TUNE_F0]
             rows = harness.run_cases(cases)
             J = objective(rows)
-            scored.append({"params": kw, "J": J,
+            scored.append({"params": kw, "J": J, "J_assertive": objective(rows, LAMBDA_ASSERTIVE),
+                           "per_f0": {str(f): {"ratio": float(sum(r["ratio"] for r in rows if r["f0"] == f) / sum(1 for r in rows if r["f0"] == f)),
+                                                "distortion_um": float(sum(r["distortion_um"] for r in rows if r["f0"] == f) / sum(1 for r in rows if r["f0"] == f))}
+                                      for f in TUNE_F0},
                            "mean_ratio": sum(r["ratio"] for r in rows) / len(rows),
                            "mean_distortion_um": sum(r["distortion_um"] for r in rows) / len(rows)})
             print(f"{mode} {kw} J={J:.3f} ratio={scored[-1]['mean_ratio']:.3f} dist={scored[-1]['mean_distortion_um']:.1f}", flush=True)
         scored.sort(key=lambda d: d["J"])
-        results[mode] = {"selected": scored[0], "all": scored}
+        assertive = min(scored, key=lambda d: d["J_assertive"])
+        results[mode] = {"selected": scored[0], "selected_assertive": assertive, "all": scored}
     meta = provenance.metadata("simulation (synthetic signals, tuning seeds only)",
                                seeds={"tuning": list(harness.TUNING_SEEDS)},
                                extra={"objective": "mean(ratio + lambda_d*distortion/base)", "lambda_d": LAMBDA_D,

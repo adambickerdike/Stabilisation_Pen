@@ -11,11 +11,12 @@
 # Nothing in this file is a measurement of our hardware unless status == measured.
 # ---------------------------------------------------------------------------
 meta:
-  version: "0.2.0"
+  version: "0.3.0"
   date: "2026-09-26"
   changelog:
     - "0.1.0 initial provisional set from report audit"
     - "0.2.0 lever/pivot baseline (DEC-003), transverse contact load model (COR-01)"
+    - "0.3.0 literature two-stage hand impedance (HAP-26), stiff axial path (DEC-006), CAD Rev A geometry, EM-based actuator constants"
 
 # ---------------------------------------------------------------------------
 writing:            # use conditions (user + paper), NOT population distributions
@@ -38,14 +39,16 @@ disturbance:        # synthetic test disturbances (inherited coverage), NOT pati
   tremor_harmonic: {value: 0.15, unit: "-", min: 0.0,  max: 0.4,  dist: uniform,    status: assumed,          source: "assumption", note: "Relative amplitude of 2nd harmonic."}
   tremor_ellipticity: {value: 0.4, unit: "-", min: 0.0, max: 1.0, dist: uniform,    status: assumed,          source: "assumption", note: "Minor/major axis ratio of tremor ellipse in paper plane."}
 
-hand:               # impedance of the hand holding the barrel (pending HAP ledger)
-  grip_stiffness:  {value: 800,  unit: N/m,   min: 200,  max: 3000, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: "Translational stiffness at the grip point."}
-  grip_damping:    {value: 8.0,  unit: N s/m, min: 2.0,  max: 30.0, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: "Translational damping at the grip point."}
-  normal_stiffness: {value: 800, unit: N/m,  min: 200, max: 3000, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: "Hand stiffness normal to the page at the grip (about the push force operating point)."}
-  normal_damping:  {value: 8.0,  unit: N s/m, min: 2.0, max: 30.0, dist: loguniform, status: assumed, source: "assumption pending HAP ledger", note: ""}
-  effective_mass:  {value: 0.08, unit: kg,    min: 0.04, max: 0.3,  dist: loguniform, status: assumed, source: "assumption", note: "Pen housing plus effective finger mass moving with it at tremor frequencies."}
-
+hand:               # two-stage stylus-grip impedance: barrel -(k1,b1)- hand mass M -(k2,b2)- imposed hand path
+  grip_stiffness:  {value: 575,  unit: N/m,   min: 230,  max: 1040, dist: loguniform, status: sourced, source: "HAP-26 Fu & Cavusoglu 2012 Tables II-III (k1 baseline 380-770, sweep 230-1040)", note: "In-plane grip stiffness, pen-hold grasp, arm unsupported; hand resting on paper not measured."}
+  grip_damping:    {value: 1.3,  unit: N s/m, min: 0.3,  max: 4.6,  dist: loguniform, status: sourced, source: "HAP-26 (b1 baseline 0.8-1.8, sweep ~0-4.6)", note: ""}
+  mass:            {value: 0.21, unit: kg,    min: 0.05, max: 0.57, dist: loguniform, status: sourced, source: "HAP-26 (M 0.20-0.22, sweep 0.02-0.57)", note: "Effective hand/arm mass behind the grip."}
+  arm_stiffness:   {value: 170,  unit: N/m,   min: 63,   max: 533,  dist: loguniform, status: sourced, source: "HAP-26 (k2 79-272, sweep 63-533)", note: ""}
+  arm_damping:     {value: 11.0, unit: N s/m, min: 3.7,  max: 27.6, dist: loguniform, status: sourced, source: "HAP-26 (b2 4.6-18, sweep 3.7-27.6)", note: ""}
+  normal_stiffness: {value: 800, unit: N/m,   min: 200,  max: 3000, dist: loguniform, status: assumed, source: "assumption; HAP-26 measured in-plane only", note: "Grip stiffness normal to the page; decisive for gamma_acc (EXP-B06)."}
+  normal_damping:  {value: 3.0,  unit: N s/m, min: 0.5,  max: 10.0, dist: loguniform, status: assumed, source: "assumption", note: ""}
 pen:
+  housing_mass:    {value: 0.030,  unit: kg, min: 0.020, max: 0.040, dist: uniform, status: inherited_target, source: "REQ-FORM-003 (mass target); pen body excl. moving parts", note: "Barrel mass seen by the grip spring."}
   barrel_od:       {value: 0.015,  unit: m, min: 0.014, max: 0.016, dist: fixed, status: inherited_target, source: "REQ-FORM-001", note: "Grip outside diameter of product concept."}
   barrel_wall:     {value: 0.0007, unit: m, min: 0.0005,max: 0.0010,dist: fixed, status: assumed, source: "report s23", note: "Al 6061-T6 or PC/ABS; rigidity check pending."}
   length:          {value: 0.150,  unit: m, min: 0.145, max: 0.160, dist: fixed, status: inherited_target, source: "REQ-FORM-002", note: ""}
@@ -60,24 +63,24 @@ refill:
 
 stage:              # front-pivot lever (baseline configuration B, DEC-003); tip-equivalent quantities
   L1:              {value: 0.012, unit: m, min: 0.008, max: 0.016, dist: uniform, status: assumed, source: "DEC-003 concept geometry", note: "Pivot to ball centre."}
-  L2:              {value: 0.048, unit: m, min: 0.035, max: 0.060, dist: uniform, status: assumed, source: "DEC-003 concept geometry", note: "Pivot to actuator force line."}
+  L2:              {value: 0.038, unit: m, min: 0.030, max: 0.050, dist: uniform, status: calculated, source: "CAD Rev A (mechanics/cad/pen_revA.py); DEC-003", note: "Pivot to actuator force line; n = L2/L1 = 3.17. Limited by actuator stroke inside the bore (analysis/em_planar)."}
   travel_tip_mech: {value: 0.00065, unit: m, min: 0.0006, max: 0.0008, dist: fixed, status: calculated, source: "REQ-MECH-001 + margin (analysis/workspace)", note: "Radius of mechanical stop circle at the tip."}
   travel_tip_ctrl: {value: 0.00055, unit: m, min: 0.0005, max: 0.0006, dist: fixed, status: calculated, source: "REQ-MECH-001", note: "Commanded travel limit radius (soft)."}
   k_tip:           {value: 150.0, unit: N/m, min: 50.0,  max: 600.0, dist: loguniform, status: assumed, source: "flexure concept (mechanics/flexure_calc)", note: "Pivot flexure rotational stiffness referred to the tip."}
   zeta_open:       {value: 0.05,  unit: "-", min: 0.01,  max: 0.2,   dist: loguniform, status: assumed, source: "assumption", note: "Open-loop mechanical damping ratio."}
-  m_eq:            {value: 0.012, unit: kg,  min: 0.005, max: 0.025, dist: uniform, status: calculated, source: "mechanics/mass_model lever inertia", note: "Tip-equivalent inertia J_pivot/L1^2."}
+  m_eq:            {value: 0.0103, unit: kg, min: 0.006, max: 0.016, dist: uniform, status: calculated, source: "results/cad/pen_revA_summary.json (point-mass approximation)", note: "Tip-equivalent inertia J_pivot/L1^2; simulator recomputes from sim/pensim/model.Geometry."}
   m_couple:        {value: 0.004, unit: kg,  min: -0.002,max: 0.008, dist: uniform, status: calculated, source: "mechanics/mass_model", note: "Base-acceleration coupling mass m_tot*L_cm/L1 (positive = amplifies)."}
   axial_k:         {value: 2000.0, unit: N/m, min: 500.0, max: 10000.0, dist: loguniform, status: assumed, source: "sim sweep results/sim/axial_sweep (DEC-006)", note: "Axial load-path stiffness at nib; stiff relative to hand so writing-force changes do not move the ink."}
   axial_preload:   {value: 0.25,  unit: N,   min: 0.1,   max: 0.5,   dist: uniform, status: assumed, source: "assumption", note: "Axial preload at front stop (contact detection threshold above this)."}
-  axial_travel:    {value: 0.0010,unit: m,   min: 0.0005,max: 0.003, dist: fixed,   status: assumed, source: "k_ax and 2 N bench load", note: "Axial travel before rear (overload) stop."}
+  axial_travel:    {value: 0.0006,unit: m,   min: 0.0004,max: 0.001, dist: fixed,   status: calculated, source: "results/mechanics/flexure_calc.json (spiral diaphragm stress at stop <= 230 MPa)", note: "Axial overload stop; suspension compliant up to ~1.45 N axial force (F_pre + k_ax * travel)."}
   axial_mass:      {value: 0.0012,unit: kg,  min: 0.0008,max: 0.002, dist: uniform, status: assumed, source: "refill + axial carriage", note: ""}
   axial_zeta:      {value: 0.1,   unit: "-", min: 0.03,  max: 0.3,   dist: uniform, status: assumed, source: "assumption", note: ""}
   stop_stiffness:  {value: 2.0e+5, unit: N/m, min: 5.0e+4, max: 1.0e+6, dist: loguniform, status: assumed, source: "assumption", note: "Elastomer-faced hard stop."}
 
 actuator:           # rear moving-coil planar Lorentz actuator, per axis (values at the actuator, not the tip)
-  Kf:              {value: 1.2,   unit: N/A,   min: 0.6,  max: 2.0,  dist: uniform, status: calculated, source: "analysis/em_actuator (magpylib), unvalidated", note: "Force constant at actuator; force-current map EXP-B03."}
-  R20:             {value: 12.0,  unit: ohm,   min: 6.0,  max: 20.0, dist: uniform, status: calculated, source: "analysis/em_actuator", note: "Coil resistance at 20 C."}
-  L:               {value: 1.5e-4,unit: H,     min: 5.0e-5, max: 4.0e-4, dist: loguniform, status: assumed, source: "analysis/em_actuator estimate", note: "Coil inductance; LCR measurement."}
+  Kf:              {value: 1.0,   unit: N/A,   min: 0.7,  max: 1.3,  dist: uniform, status: calculated, source: "results/em/em_actuator.json flat sandwich proxy (0.80-1.13 N/A no-iron..image-iron); unvalidated", note: "Per-axis force constant at the actuator; annular layout FEM + force-current map EXP-B03."}
+  R20:             {value: 11.0,  unit: ohm,   min: 8.0,  max: 16.0, dist: uniform, status: calculated, source: "results/em/em_actuator.json", note: "Coil resistance at 20 C (Km = Kf/sqrt(R) ~ 0.30 N/sqrtW)."}
+  L:               {value: 3.2e-4,unit: H,     min: 1.5e-4, max: 7.0e-4, dist: loguniform, status: calculated, source: "results/em/em_actuator.json air-core estimate 322 uH; iron raises it", note: "LCR measurement pending."}
   alpha_cu:        {value: 0.00393, unit: 1/K, min: 0.0039, max: 0.00393, dist: fixed, status: sourced, source: "copper resistivity tempco (AMF ledger)", note: ""}
   i_max:           {value: 0.45,  unit: A,     min: 0.3,  max: 0.6,  dist: fixed, status: assumed, source: "thermal/driver limit", note: "Software current limit per axis."}
   i_trip:          {value: 0.6,   unit: A,     min: 0.5,  max: 0.8,  dist: fixed, status: assumed, source: "independent hardware trip", note: ""}

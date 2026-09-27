@@ -1,0 +1,324 @@
+{
+  "meta": {
+    "evidence_status": "simulation (synthetic signals, tuning seeds only)",
+    "generated_utc": "2026-09-27T00:03:19+00:00",
+    "git_revision": "714de4b",
+    "parameters_version": "0.2.0",
+    "parameters_sha256_16": "112d44b97ac23bbc",
+    "command": "tune_estimators.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "tuning": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "objective": "mean(ratio + lambda_d*distortion/base)",
+    "lambda_d": 1.0,
+    "tune_f0_hz": [
+      4.5,
+      6.0,
+      8.0,
+      10.0
+    ],
+    "tune_amp_m": 0.0003,
+    "elapsed_s": 571.2659721374512
+  },
+  "results": {
+    "kfosc": {
+      "selected": {
+        "params": {
+          "kf_qj": 3.0,
+          "kf_qt": 3e-09,
+          "kf_w0_hz": 7.0
+        },
+        "J": 1.033069985401595,
+        "mean_ratio": 0.8919129539922146,
+        "mean_distortion_um": 36.85016209186359
+      },
+      "all": [
+        {
+          "params": {
+            "kf_qj": 3.0,
+            "kf_qt": 3e-09,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.033069985401595,
+          "mean_ratio": 0.8919129539922146,
+          "mean_distortion_um": 36.85016209186359
+        },
+        {
+          "params": {
+            "kf_qj": 1.0,
+            "kf_qt": 1e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.040162926122793,
+          "mean_ratio": 0.7565407536140974,
+          "mean_distortion_um": 72.5751321522474
+        },
+        {
+          "params": {
+            "kf_qj": 10.0,
+            "kf_qt": 1e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0558863093610755,
+          "mean_ratio": 0.9145713514446837,
+          "mean_distortion_um": 37.097742375041115
+        },
+        {
+          "params": {
+            "kf_qj": 1.0,
+            "kf_qt": 3e-09,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0650730370220949,
+          "mean_ratio": 0.8779677896019336,
+          "mean_distortion_um": 48.88870421959978
+        },
+        {
+          "params": {
+            "kf_qj": 3.0,
+            "kf_qt": 1e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0654472200017946,
+          "mean_ratio": 0.8649477487737315,
+          "mean_distortion_um": 51.784765307126776
+        },
+        {
+          "params": {
+            "kf_qj": 10.0,
+            "kf_qt": 3e-09,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0673182330570634,
+          "mean_ratio": 0.9731366314419888,
+          "mean_distortion_um": 24.63132180627933
+        },
+        {
+          "params": {
+            "kf_qj": 30.0,
+            "kf_qt": 3e-09,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0685302356433863,
+          "mean_ratio": 0.9879400074251791,
+          "mean_distortion_um": 20.929234699976295
+        },
+        {
+          "params": {
+            "kf_qj": 30.0,
+            "kf_qt": 1e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0836091822100788,
+          "mean_ratio": 0.9820935607913167,
+          "mean_distortion_um": 26.187340583150117
+        },
+        {
+          "params": {
+            "kf_qj": 0.3,
+            "kf_qt": 3e-09,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0845500521395257,
+          "mean_ratio": 0.824233139579505,
+          "mean_distortion_um": 67.76525679103729
+        },
+        {
+          "params": {
+            "kf_qj": 10.0,
+            "kf_qt": 3e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.085123719365049,
+          "mean_ratio": 0.8820314570904327,
+          "mean_distortion_um": 53.38272005045001
+        },
+        {
+          "params": {
+            "kf_qj": 30.0,
+            "kf_qt": 1e-07,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.0851546169898463,
+          "mean_ratio": 0.8373657462451352,
+          "mean_distortion_um": 65.57048294324828
+        },
+        {
+          "params": {
+            "kf_qj": 10.0,
+            "kf_qt": 1e-07,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.109033893268936,
+          "mean_ratio": 0.7597323310051372,
+          "mean_distortion_um": 91.72310538642635
+        },
+        {
+          "params": {
+            "kf_qj": 0.3,
+            "kf_qt": 1e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.1179495321222805,
+          "mean_ratio": 0.7341846828730914,
+          "mean_distortion_um": 99.96194117207752
+        },
+        {
+          "params": {
+            "kf_qj": 30.0,
+            "kf_qt": 3e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.1187328513670989,
+          "mean_ratio": 0.9360397718265392,
+          "mean_distortion_um": 47.5866762493827
+        },
+        {
+          "params": {
+            "kf_qj": 3.0,
+            "kf_qt": 3e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.1191068129885056,
+          "mean_ratio": 0.7874155434421249,
+          "mean_distortion_um": 86.25992050507911
+        },
+        {
+          "params": {
+            "kf_qj": 1.0,
+            "kf_qt": 3e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.132865463495117,
+          "mean_ratio": 0.7163922954489689,
+          "mean_distortion_um": 108.66676340279633
+        },
+        {
+          "params": {
+            "kf_qj": 0.3,
+            "kf_qt": 3e-08,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.2109851695262375,
+          "mean_ratio": 0.7093382692202987,
+          "mean_distortion_um": 130.76037609777268
+        },
+        {
+          "params": {
+            "kf_qj": 3.0,
+            "kf_qt": 1e-07,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.2185651031721518,
+          "mean_ratio": 0.7465248346514285,
+          "mean_distortion_um": 123.59418229512329
+        },
+        {
+          "params": {
+            "kf_qj": 1.0,
+            "kf_qt": 1e-07,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.2768577312621512,
+          "mean_ratio": 0.7366031109884195,
+          "mean_distortion_um": 141.4825564754582
+        },
+        {
+          "params": {
+            "kf_qj": 0.3,
+            "kf_qt": 1e-07,
+            "kf_w0_hz": 7.0
+          },
+          "J": 1.4162196022446125,
+          "mean_ratio": 0.7833267499657991,
+          "mean_distortion_um": 166.21673555804333
+        }
+      ]
+    },
+    "bpf": {
+      "selected": {
+        "params": {
+          "bp_lo": 6.0,
+          "bp_hi": 16.0,
+          "bp_tune_hz": 7.0
+        },
+        "J": 2.220909222939816,
+        "mean_ratio": 1.2074820934193218,
+        "mean_distortion_um": 265.9131453020248
+      },
+      "all": [
+        {
+          "params": {
+            "bp_lo": 6.0,
+            "bp_hi": 16.0,
+            "bp_tune_hz": 7.0
+          },
+          "J": 2.220909222939816,
+          "mean_ratio": 1.2074820934193218,
+          "mean_distortion_um": 265.9131453020248
+        },
+        {
+          "params": {
+            "bp_lo": 6.0,
+            "bp_hi": 12.0,
+            "bp_tune_hz": 7.0
+          },
+          "J": 2.262526131764386,
+          "mean_ratio": 1.2197867872637098,
+          "mean_distortion_um": 273.62685471595506
+        },
+        {
+          "params": {
+            "bp_lo": 4.5,
+            "bp_hi": 16.0,
+            "bp_tune_hz": 7.0
+          },
+          "J": 2.6442572264635893,
+          "mean_ratio": 1.3675705049080056,
+          "mean_distortion_um": 334.508009664899
+        },
+        {
+          "params": {
+            "bp_lo": 4.5,
+            "bp_hi": 12.0,
+            "bp_tune_hz": 7.0
+          },
+          "J": 2.7214596956564954,
+          "mean_ratio": 1.4132514383361654,
+          "mean_distortion_um": 342.72283628031687
+        },
+        {
+          "params": {
+            "bp_lo": 3.0,
+            "bp_hi": 16.0,
+            "bp_tune_hz": 7.0
+          },
+          "J": 3.296506303523825,
+          "mean_ratio": 1.674527873815425,
+          "mean_distortion_um": 423.48007982037524
+        },
+        {
+          "params": {
+            "bp_lo": 3.0,
+            "bp_hi": 12.0,
+            "bp_tune_hz": 7.0
+          },
+          "J": 3.367297867747419,
+          "mean_ratio": 1.722828394360642,
+          "mean_distortion_um": 429.2430694952173
+        }
+      ]
+    }
+  }
+}

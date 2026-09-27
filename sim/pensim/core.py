@@ -45,6 +45,7 @@ I_mmov = _mk("m_mov"); I_cf = _mk("cm_factor"); I_L1 = _mk("L1")
 I_qstop = _mk("q_stop"); I_kstop = _mk("k_stop"); I_cstop = _mk("c_stop")
 I_max = _mk("m_ax"); I_kax = _mk("k_ax"); I_cax = _mk("c_ax"); I_Fpre = _mk("F_pre"); I_smax = _mk("s_max")
 I_mH = _mk("m_H"); I_Khxy = _mk("K_hxy"); I_Chxy = _mk("C_hxy"); I_Khz = _mk("K_hz"); I_Chz = _mk("C_hz"); I_z0 = _mk("z0")
+I_Mh = _mk("M_hand"); I_ka = _mk("k_arm"); I_ba = _mk("b_arm")
 I_kp = _mk("k_p"); I_cp = _mk("c_p"); I_rb = _mk("r_b"); I_muk = _mk("mu_k"); I_mus = _mk("mu_s"); I_vs = _mk("v_s")
 I_s0 = _mk("sigma0"); I_s1 = _mk("sigma1"); I_s2 = _mk("sigma2")
 I_nlev = _mk("n_lever"); I_Kf = _mk("Kf"); I_R20 = _mk("R20"); I_Lc = _mk("Lc"); I_Vbus = _mk("V_bus")
@@ -64,6 +65,8 @@ I_wg = _mk("kf_wgain"); I_wmin = _mk("kf_wmin"); I_wmax = _mk("kf_wmax"); I_nis 
 I_oh = _mk("oracle_h")
 I_qinit = _mk("q_init"); I_reqc = _mk("require_contact")
 I_axc = _mk("axial_comp"); I_axct = _mk("axial_comp_tau"); I_gam = _mk("gamma_acc")
+I_fg = _mk("f_gate"); I_fgw = _mk("f_gate_width"); I_kap = _mk("kappa_s")
+I_ftyp = _mk("fail_type"); I_ftim = _mk("fail_time")
 
 R_t = RIDX["t"]; R_pHx = RIDX["pHx"]; R_q1 = RIDX["q1"]; R_qr1 = RIDX["qr1"]; R_s = RIDX["s"]; R_N = RIDX["N"]
 R_fx = RIDX["fx"]; R_tipx = RIDX["tipx"]; R_i1 = RIDX["i1"]; R_V1 = RIDX["V1"]; R_con = RIDX["contact"]
@@ -155,6 +158,8 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     q_stop = P[I_qstop]; k_stop = P[I_kstop]; c_stop = P[I_cstop]
     m_ax = P[I_max]; k_ax = P[I_kax]; c_ax = P[I_cax]; F_pre = P[I_Fpre]; s_max = P[I_smax]
     m_H = P[I_mH]; Khxy = P[I_Khxy]; Chxy = P[I_Chxy]; Khz = P[I_Khz]; Chz = P[I_Chz]; z0 = P[I_z0]
+    Mh = P[I_Mh]; ka = P[I_ka]; ba = P[I_ba]
+    dM = np.zeros(3); vM = np.zeros(3)   # passive hand-mass perturbation about the imposed path
     k_p = P[I_kp]; c_p = P[I_cp]; r_b = P[I_rb]; mu_k = P[I_muk]; mu_s = P[I_mus]; v_s = P[I_vs]
     sg0 = P[I_s0]; sg1 = P[I_s1]; sg2 = P[I_s2]
     nlev = P[I_nlev]; Kf20 = P[I_Kf]; R20 = P[I_R20]; Lc = P[I_Lc]; Vbus = P[I_Vbus]
@@ -206,6 +211,12 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     iref = np.zeros(2); ivint = np.zeros(2)
     g_eff = 0.0; conf = 0.0
     axc = P[I_axc]; axct = max(P[I_axct], 1e-3); s_lp = 0.0; was_contact = False
+    fgate = P[I_fg]; fgw = P[I_fgw]
+    kap = P[I_kap]
+    ftyp = int(P[I_ftyp]); ftim = P[I_ftim]
+    failed = False
+    qm_frozen0 = 0.0; qm_frozen1 = 0.0
+    reacq = 1
     dhat = np.zeros(2)
     prog = 0
     sat_v_flag = 0.0
@@ -215,6 +226,8 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     nrec = rec.shape[0]
 
     for k in range(n):
+        if ftyp > 0 and (not failed) and k * dt >= ftim:
+            failed = True
         # ======================= control tick (sensors -> estimator -> servo)
         if k % sdec == 0 and mode != 0:
             kk = k % RB
@@ -222,6 +235,10 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             kh = (k - hd) % RB
             qm0 = rb_q[kh, 0] + hn * np.random.standard_normal() + hict * rb_i[kh, 0] - hictc * cur[0]
             qm1 = rb_q[kh, 1] + hn * np.random.standard_normal() + hict * rb_i[kh, 1] - hictc * cur[1]
+            if failed and ftyp == 3:
+                qm0 = qm_frozen0; qm1 = qm_frozen1
+            else:
+                qm_frozen0 = qm0; qm_frozen1 = qm1
             # --- fused housing page position: optical (delayed) + IMU over the gap
             pim_now0 = pimu[0]; pim_now1 = pimu[1]
             rb_pimu[tick % 1024, 0] = pim_now0; rb_pimu[tick % 1024, 1] = pim_now1
@@ -297,6 +314,11 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
                     dhat[0] = rh * (ch * xk[0, 3] + sh * xk[0, 4])
                     dhat[1] = rh * (ch * xk[1, 3] + sh * xk[1, 4])
                     conf = min(1.0, max(0.0, 1.0 - (nis_f - 1.0) / max(nishi - 1.0, 1e-6)))
+                    # frequency gate: authority ramps from 0 at f_gate - w/2 to 1 at f_gate + w/2
+                    f_tr = wkf / (2.0 * math.pi)
+                    if fgate > 0.0:
+                        gate = min(1.0, max(0.0, (f_tr - (fgate - 0.5 * fgw)) / max(fgw, 1e-6)))
+                        conf = conf * gate
                     corr0 = -dhat[0]; corr1 = -dhat[1]
                     target_g = g_as * conf if in_contact else 0.0
                 else:
@@ -309,10 +331,12 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
                 target_g = g_as if in_contact else 0.0
                 conf = 1.0
             elif mode == 6:  # guided: user-paced progress along registered template
-                if valid:
+                if valid and in_contact:
                     m_t = tmpl.shape[0]
                     best = 1e9; bj = prog
-                    j0 = max(0, prog - 20); j1 = min(m_t, prog + 200)
+                    # restricted forward window; wider forward search to re-acquire after a lift
+                    j0 = max(0, prog - 20); j1 = min(m_t, prog + (4000 if reacq == 1 else 200))
+                    reacq = 0
                     for j in range(j0, j1):
                         dx = tmpl[j, 0] - ph0; dy = tmpl[j, 1] - ph1
                         dd = dx * dx + dy * dy
@@ -326,6 +350,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
                     target_g = g_as * conf if in_contact else 0.0
                 else:
                     target_g = 0.0
+                    reacq = 1
             # mode 1 (neutral), 5 (unpowered): no correction
             g_eff = g_eff + alpha_a * (target_g - g_eff)
             # axial-slide compensation: the ball moves s*cos(theta) along h when
@@ -348,7 +373,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             # shortening lam = 1 - s/L1 using the axial deflection implied by the
             # measured suspension force
             s_hat = max(0.0, (fa_meas - F_pre) / k_ax)
-            lam_hat = max(0.5, 1.0 - s_hat / L1)
+            lam_hat = max(0.5, 1.0 - kap * s_hat / L1)
             qn0 = (g_eff * (Ji00 * corr0 + Ji01 * corr1) + (Ji00 * ax_c0 + Ji01 * ax_c1)) / lam_hat
             qn1 = (g_eff * (Ji10 * corr0 + Ji11 * corr1) + (Ji10 * ax_c0 + Ji11 * ax_c1)) / lam_hat
             # radial soft limit with smooth taper
@@ -421,15 +446,15 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
 
         # ======================= mechanics
         # kinematics of the ball centre
-        lam = 1.0 - s / L1
+        lam = 1.0 - kap * s / L1
         qq = q[0] * q[0] + q[1] * q[1]
         ax_off = s + qq / (2.0 * L1)
         Cx = pH[0] + lam * (q[0] * xHx + q[1] * yHx) + ax_off * ax_
         Cy = pH[1] + lam * (q[0] * xHy + q[1] * yHy) + ax_off * ay_
         Cz = pH[2] + lam * (q[0] * xHz + q[1] * yHz) + ax_off * az_
         qdot_dot = (q[0] * qd[0] + q[1] * qd[1]) / L1
-        vtr0 = lam * qd[0] - sd / L1 * q[0]
-        vtr1 = lam * qd[1] - sd / L1 * q[1]
+        vtr0 = lam * qd[0] - kap * sd / L1 * q[0]
+        vtr1 = lam * qd[1] - kap * sd / L1 * q[1]
         vax = sd + qdot_dot
         vCx = vH[0] + vtr0 * xHx + vtr1 * yHx + vax * ax_
         vCy = vH[1] + vtr0 * xHy + vtr1 * yHy + vax * ay_
@@ -461,11 +486,18 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
         Fca = fx * ax_ + fy * ay_ + Nf * az_
         Qq0 = lam * Fc1 + Fca * q[0] / L1
         Qq1 = lam * Fc2 + Fca * q[1] / L1
-        Qs = -(q[0] * Fc1 + q[1] * Fc2) / L1 + Fca
-        # hand force on housing
-        Fhx = Khxy * (pref[k, 0] - pH[0]) + Chxy * (vref[k, 0] - vH[0])
-        Fhy = Khxy * (pref[k, 1] - pH[1]) + Chxy * (vref[k, 1] - vH[1])
-        Fhz = Khz * (z0 + pref[k, 2] - pH[2]) + Chz * (vref[k, 2] - vH[2]) - fpush[k]
+        Qs = -kap * (q[0] * Fc1 + q[1] * Fc2) / L1 + Fca
+        # grip force on housing: hand position = imposed path + passive perturbation dM
+        Fhx = Khxy * (pref[k, 0] + dM[0] - pH[0]) + Chxy * (vref[k, 0] + vM[0] - vH[0])
+        Fhy = Khxy * (pref[k, 1] + dM[1] - pH[1]) + Chxy * (vref[k, 1] + vM[1] - vH[1])
+        Fhz = Khz * (z0 + pref[k, 2] + dM[2] - pH[2]) + Chz * (vref[k, 2] + vM[2] - vH[2]) - fpush[k]
+        # passive hand mass responds to the grip reaction through the arm impedance
+        if Mh > 0.0:
+            aMx = (-(Fhx) - ka * dM[0] - ba * vM[0]) / Mh
+            aMy = (-(Fhy) - ka * dM[1] - ba * vM[1]) / Mh
+            aMz = (-(Fhz + fpush[k]) - ka * dM[2] - ba * vM[2]) / Mh
+            vM[0] += aMx * dt; vM[1] += aMy * dt; vM[2] += aMz * dt
+            dM[0] += vM[0] * dt; dM[1] += vM[1] * dt; dM[2] += vM[2] * dt
         # stage dynamics
         stopf = 0.0
         if mode == 0:
@@ -520,7 +552,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
         Pcu = 0.0
         for ax in range(2):
             Rc = R20 * (1.0 + acu * (Tc[ax] - 20.0))
-            if mode == 0 or mode == 5:
+            if mode == 0 or mode == 5 or (failed and ftyp == 1):
                 cur[ax] = 0.0
             else:
                 Rt = Rc + rbr + rsh
@@ -569,7 +601,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             if mode == 0:
                 Cx = pH[0]; Cy = pH[1]
             else:
-                lam_r = 1.0 - s / L1
+                lam_r = 1.0 - kap * s / L1
                 ao_r = s + (q[0] * q[0] + q[1] * q[1]) / (2.0 * L1)
                 Cx = pH[0] + lam_r * (q[0] * xHx + q[1] * yHx) + ao_r * ax_
                 Cy = pH[1] + lam_r * (q[0] * xHy + q[1] * yHy) + ao_r * ay_

@@ -1,0 +1,265 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (CAD concept, nominal geometry)",
+    "generated_utc": "2026-09-27T00:15:21+00:00",
+    "git_revision": "714de4b-dirty",
+    "parameters_version": "0.2.0",
+    "parameters_sha256_16": "ec993ed557e72b79",
+    "command": "pen_revA.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0"
+  },
+  "summary": {
+    "parameters_mm": {
+      "od_grip": 15.0,
+      "od_act": 16.0,
+      "wall": 0.7,
+      "L_total": 150.0,
+      "z_nose_end": 22.0,
+      "z_bulge0": 40.0,
+      "z_bulge1": 60.0,
+      "nose_tip_od": 6.0,
+      "tip_aperture": 3.6,
+      "refill_d": 2.35,
+      "refill_L": 67.0,
+      "cone_L": 5.0,
+      "ball_d": 0.7,
+      "L1": 12.0,
+      "carrier_od": 3.4,
+      "carrier_id": 2.5,
+      "carrier_z0": 3.0,
+      "carrier_z1": 64.0,
+      "tip_travel_mech": 0.65,
+      "wire_d": 0.25,
+      "wire_r_in": 1.7,
+      "wire_r_out": 5.5,
+      "n_wires": 3,
+      "z_stop": 36.0,
+      "stop_t": 1.2,
+      "stop_clear": 0.1,
+      "z_act": 50.0,
+      "mag_t": 1.5,
+      "fe_t": 1.5,
+      "coil_t": 1.0,
+      "act_gap": 0.45,
+      "act_od": 14.6,
+      "act_id_clear": 0.35,
+      "plug_L": 2.5,
+      "sense_mag_d": 2.0,
+      "sense_mag_t": 1.5,
+      "hall_gap": 1.2,
+      "pcb_z0": 71.0,
+      "pcb_L": 29.0,
+      "pcb_w": 11.5,
+      "pcb_t": 0.8,
+      "comp_h": 1.2,
+      "batt_d": 10.0,
+      "batt_L": 44.0,
+      "batt_z0": 102.0,
+      "opt_z": 14.2,
+      "opt_size": [
+        3.0,
+        2.5,
+        1.2
+      ],
+      "opt_r": 3.75
+    },
+    "derived_mm": {
+      "stop_hole_r": 3.1,
+      "act_ri_front": 3.894375,
+      "act_ri_rear": 4.322291666666667,
+      "paddle_ro": 4.941666666666667
+    },
+    "mass_total_g": 31.62,
+    "mass_moving_g": 1.928,
+    "com_z_mm": 81.3,
+    "lever_J_pivot_g_mm2_point_approx": 1482.1,
+    "tip_equivalent_mass_g_point_approx": 10.29,
+    "lever_ratio_act": 3.17,
+    "psi_max_deg": 3.11,
+    "interference_at_full_travel": [],
+    "note": "Mass excludes adhesives, wiring, fasteners, grip overmould and margin; see mechanics/mass_budget.csv."
+  },
+  "parts": [
+    {
+      "part": "barrel",
+      "group": "fixed",
+      "material": "Al6061",
+      "volume_mm3": 5091.1,
+      "mass_g": 13.746,
+      "com_z_mm": 74.94
+    },
+    {
+      "part": "pivot_ring",
+      "group": "fixed",
+      "material": "PEEK",
+      "volume_mm3": 63.33,
+      "mass_g": 0.082,
+      "com_z_mm": 17.7
+    },
+    {
+      "part": "stop_ring",
+      "group": "fixed",
+      "material": "PEEK",
+      "volume_mm3": 138.09,
+      "mass_g": 0.18,
+      "com_z_mm": 36.0
+    },
+    {
+      "part": "magnet_front",
+      "group": "fixed",
+      "material": "NdFeB",
+      "volume_mm3": 179.65,
+      "mass_g": 1.347,
+      "com_z_mm": 48.3
+    },
+    {
+      "part": "iron_front",
+      "group": "fixed",
+      "material": "FeCo_or_1010",
+      "volume_mm3": 179.65,
+      "mass_g": 1.414,
+      "com_z_mm": 46.8
+    },
+    {
+      "part": "magnet_rear",
+      "group": "fixed",
+      "material": "NdFeB",
+      "volume_mm3": 163.09,
+      "mass_g": 1.223,
+      "com_z_mm": 51.7
+    },
+    {
+      "part": "iron_rear",
+      "group": "fixed",
+      "material": "FeCo_or_1010",
+      "volume_mm3": 163.09,
+      "mass_g": 1.283,
+      "com_z_mm": 53.2
+    },
+    {
+      "part": "pcb",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 266.8,
+      "mass_g": 0.64,
+      "com_z_mm": 85.5
+    },
+    {
+      "part": "pcb_components_envelope",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 680.4,
+      "mass_g": 1.633,
+      "com_z_mm": 85.5
+    },
+    {
+      "part": "hall_3d",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 7.2,
+      "mass_g": 0.017,
+      "com_z_mm": 71.1
+    },
+    {
+      "part": "battery_10440",
+      "group": "fixed",
+      "material": "Li_ion_10440",
+      "volume_mm3": 3455.75,
+      "mass_g": 8.052,
+      "com_z_mm": 124.0
+    },
+    {
+      "part": "optical_sensor_1",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 9.0,
+      "mass_g": 0.022,
+      "com_z_mm": 14.2
+    },
+    {
+      "part": "optical_sensor_2",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 9.0,
+      "mass_g": 0.022,
+      "com_z_mm": 14.2
+    },
+    {
+      "part": "optical_sensor_3",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 9.0,
+      "mass_g": 0.022,
+      "com_z_mm": 14.2
+    },
+    {
+      "part": "pivot_wire_1",
+      "group": "fixed",
+      "material": "spring_steel",
+      "volume_mm3": 0.26,
+      "mass_g": 0.002,
+      "com_z_mm": 15.6
+    },
+    {
+      "part": "pivot_wire_2",
+      "group": "fixed",
+      "material": "spring_steel",
+      "volume_mm3": 0.26,
+      "mass_g": 0.002,
+      "com_z_mm": 15.6
+    },
+    {
+      "part": "pivot_wire_3",
+      "group": "fixed",
+      "material": "spring_steel",
+      "volume_mm3": 0.26,
+      "mass_g": 0.002,
+      "com_z_mm": 15.6
+    },
+    {
+      "part": "refill_D1",
+      "group": "moving",
+      "material": "PP_refill_with_ink",
+      "volume_mm3": 280.06,
+      "mass_g": 0.308,
+      "com_z_mm": 34.69
+    },
+    {
+      "part": "carrier",
+      "group": "moving",
+      "material": "Ti6Al4V",
+      "volume_mm3": 254.4,
+      "mass_g": 1.127,
+      "com_z_mm": 33.5
+    },
+    {
+      "part": "coil_paddle",
+      "group": "moving",
+      "material": "Cu_coil",
+      "volume_mm3": 67.64,
+      "mass_g": 0.44,
+      "com_z_mm": 50.0
+    },
+    {
+      "part": "rear_plug",
+      "group": "moving",
+      "material": "PEEK",
+      "volume_mm3": 13.67,
+      "mass_g": 0.018,
+      "com_z_mm": 67.0
+    },
+    {
+      "part": "sensing_magnet",
+      "group": "moving",
+      "material": "NdFeB",
+      "volume_mm3": 4.71,
+      "mass_g": 0.035,
+      "com_z_mm": 68.75
+    }
+  ]
+}

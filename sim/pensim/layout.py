@@ -13,8 +13,8 @@ NAMES = [
     "q_stop", "k_stop", "c_stop",
     # axial suspension
     "m_ax", "k_ax", "c_ax", "F_pre", "s_max",
-    # housing + hand
-    "m_H", "K_hxy", "C_hxy", "K_hz", "C_hz", "z0",
+    # housing + hand (two-stage: barrel -(grip k1,b1)- hand mass M -(arm k2,b2)- imposed path)
+    "m_H", "K_hxy", "C_hxy", "K_hz", "C_hz", "z0", "M_hand", "k_arm", "b_arm",
     # paper contact and friction (LuGre, normalised by N)
     "k_p", "c_p", "r_b", "mu_k", "mu_s", "v_s", "sigma0", "sigma1", "sigma2",
     # actuator / electrical (per axis, values at actuator; n = lever ratio)
@@ -46,6 +46,12 @@ NAMES = [
     "axial_comp", "axial_comp_tau",
     # compliance-aware Jacobian: fraction of tilt-coupled axial accommodation in the suspension
     "gamma_acc",
+    # frequency-gated authority (per-user calibration): cancel only when tracked f >= f_gate
+    "f_gate", "f_gate_width",
+    # axial suspension location: 1 = refill slides in carrier (lever arm L1 - s), 0 = whole lever slides (Rev A)
+    "kappa_s",
+    # fault injection: type 0 none, 1 actuator power loss (coils open), 3 stage sensor frozen; time in s
+    "fail_type", "fail_time",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
