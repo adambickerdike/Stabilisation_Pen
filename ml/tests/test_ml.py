@@ -23,7 +23,10 @@ from ml import synth
 from stabpen import signals as sg
 
 HAVE_DATA = os.path.exists(os.path.join(C.RUNS, "data", "test.npz"))
-HAVE_MODEL = os.path.exists(os.path.join(C.RESULTS, "model", "tcn_s_int8.npz"))
+
+
+def _have_int8(name):
+    return os.path.exists(os.path.join(C.RESULTS, "model", f"{name}_int8.npz"))
 
 
 def test_kf_step_is_a_verbatim_port_of_the_simulator():
@@ -62,10 +65,11 @@ def test_oscillator_oracle_is_exact_at_zero_horizon():
     np.testing.assert_allclose(synth.oscillator_oracle(st, 0.0), d, atol=1e-15)
 
 
-def test_tcn_output_depends_only_on_the_window():
+@pytest.mark.parametrize("c_in", [2, 3])
+def test_tcn_output_depends_only_on_the_window(c_in):
     torch = pytest.importorskip("torch")
     torch.manual_seed(0)
-    model = M.build("tcn_s")
+    model = M.TCNTree(**M.CONFIGS["tcn_s"], c_in=c_in)
     rng = np.random.default_rng(2)
     n = 300
     rec = {"dp_um": rng.normal(0, 50, (n, 2)).astype(np.float32), "f_est": rng.uniform(4, 10, n).astype(np.float32)}
@@ -80,15 +84,16 @@ def test_tcn_output_depends_only_on_the_window():
     assert not np.allclose(base[k + 1], p2[k + 1])
 
 
-def test_tree_equals_streaming_dilated_tcn():
+@pytest.mark.parametrize("c_in", [2, 3])
+def test_tree_equals_streaming_dilated_tcn(c_in):
     torch = pytest.importorskip("torch")
     torch.manual_seed(1)
-    model = M.build("tcn_s")
+    model = M.TCNTree(**M.CONFIGS["tcn_s"], c_in=c_in)
     rng = np.random.default_rng(3)
     n = 400
     dp = rng.normal(0, 60, (n, 2)).astype(np.float32)
-    f = np.full(n, 6.5, np.float32)                  # constant f_est: exact equivalence
-    ch = M.input_channels(dp, f)
+    f = np.full(n, 6.5, np.float32)                  # constant f_est (3 channels) or none (2): exact equivalence
+    ch = M.input_channels(dp, f, c_in)
     stream = M.stream_reference(model, ch) * C.S_OUT
     tree = M.predict(model, {"dp_um": dp, "f_est": f})
     np.testing.assert_allclose(stream[C.W - 1:], tree[C.W - 1:], rtol=1e-4, atol=1e-3)
@@ -160,11 +165,81 @@ def test_schema_examples_validate():
         assert s["evidence_status"] == C.EVIDENCE
 
 
-@pytest.mark.skipif(not (HAVE_DATA and HAVE_MODEL), reason="model or data not built")
-def test_int8_reference_is_close_to_float():
+def test_fest_free_model_reduces_exactly_to_two_channels():
+    """models.drop_fest: a 3-channel TCN whose f_est input is held at zero equals the
+    2-channel TCN without the f_est weight columns (contract v1.1 export of tcn_s_nofest)."""
+    torch = pytest.importorskip("torch")
+    torch.manual_seed(5)
+    m3 = M.build("tcn_s")
+    m3.use_fest = False
+    with torch.no_grad():                            # make the dropped columns large: they must not matter
+        m3.levels[0].weight[:, [2, 5]] = 3.0
+    m2 = M.drop_fest(m3)
+    assert m2.c_in == 2 and not m2.use_fest and m2.config()["c_in"] == 2
+    assert m2.macs() == m3.macs() - 32 * 2 * 8 and m2.n_params() == m3.n_params() - 2 * 8
+    rng = np.random.default_rng(6)
+    n = 500
+    rec = {"dp_um": rng.normal(0, 80, (n, 2)).astype(np.float32), "f_est": rng.uniform(4, 12, n).astype(np.float32)}
+    p3, p2 = M.predict(m3, rec), M.predict(m2, rec)
+    np.testing.assert_allclose(p2, p3, rtol=0, atol=1e-3)            # um; float32 summation order only
+    np.testing.assert_array_equal(p2, M.predict(m2, {"dp_um": rec["dp_um"]}))   # f_est not needed at all
+
+
+def test_deployed_nofest_model_equals_its_training_form():
+    torch = pytest.importorskip("torch")
+    name = C.EXPORT_MODEL
+    path = os.path.join(C.RESULTS, "model", f"{name}.pt")
+    if not os.path.exists(path):
+        pytest.skip("model not trained")
+    cfg = json.load(open(os.path.join(C.RESULTS, "model", f"{name}.json")))
+    assert M.deployed_c_in(cfg) == 2, "the exported model implements contract v1.1 (no f_est)"
+    m3 = M.TCNTree(channels=tuple(cfg["channels"]), head=cfg["head"], c_in=cfg["c_in"])
+    m3.load_state_dict(torch.load(path))
+    m3.use_fest = bool(cfg["use_fest"])
+    m2, _ = Q.load_float(name)
+    assert m2.c_in == 2
+    rng = np.random.default_rng(7)
+    n = 800
+    rec = {"dp_um": rng.normal(0, 60, (n, 2)).astype(np.float32), "f_est": rng.uniform(4, 12, n).astype(np.float32)}
+    np.testing.assert_allclose(M.predict(m2, rec), M.predict(m3, rec), rtol=0, atol=1e-3)
+
+
+def test_two_channel_input_quantiser_is_the_dp_part():
+    rng = np.random.default_rng(8)
+    n = 300
+    dp = rng.normal(0, 150, (n, 2)).astype(np.float32)
+    f = rng.uniform(3, 13, n).astype(np.float32)
+    q3, q2 = Q.quantize_inputs(dp, f, 3), Q.quantize_inputs(dp, None, 2)
+    np.testing.assert_array_equal(q2, q3[:, :2])
+    w3, w2 = Q.int_windows(q3), Q.int_windows(q2)
+    assert w2.shape == (n, C.W, 2) and w3.shape == (n, C.W, 3)
+    np.testing.assert_array_equal(w2, w3[:, :, :2])
+
+
+@pytest.mark.skipif(not _have_int8(C.EXPORT_MODEL), reason="exported model not quantised")
+def test_committed_export_is_the_export_model():
+    """ml/export/ holds the int8 model C.EXPORT_MODEL: channel count, name and hash agree."""
+    import re
+    qm = Q.load_qmodel(os.path.join(C.RESULTS, "model", f"{C.EXPORT_MODEL}_int8.npz"))
+    txt = open(os.path.join(C.EXPORT, "tcn_model.h")).read()
+    d = dict(re.findall(r"#define (TCN_\w+) (\S+)", txt))
+    assert int(d["TCN_CIN"]) == Q.qm_c_in(qm) == 2
+    assert d["TCN_MODEL_NAME"] == f'"{C.EXPORT_MODEL}"'
+    assert d["TCN_MODEL_HASH_LOW32"].lower() == f"0x{qm['hash'][-8:]}u"
+    w = open(os.path.join(C.EXPORT, "tcn_weights.h")).read()
+    assert f"TCN_L0_W[{qm['layers'][0]['c_out']}][{2 * Q.qm_c_in(qm)}]" in w
+    assert "TCN_F_INV_SCALE" not in w                # no f_est quantiser in a 2-channel export
+
+
+@pytest.mark.skipif(not HAVE_DATA, reason="data not built")
+@pytest.mark.parametrize("name", [C.EXPORT_MODEL, "tcn_s"])
+def test_int8_reference_is_close_to_float(name):
     from ml import datasets as D
-    model, _ = Q.load_float("tcn_s")
-    qm = Q.load_qmodel(os.path.join(C.RESULTS, "model", "tcn_s_int8.npz"))
+    if not _have_int8(name):
+        pytest.skip(f"{name} not quantised")
+    model, _ = Q.load_float(name)
+    qm = Q.load_qmodel(os.path.join(C.RESULTS, "model", f"{name}_int8.npz"))
+    assert Q.qm_c_in(qm) == model.c_in
     rec = D.load_split("test")[0]
     pf, pq = M.predict(model, rec), Q.predict_int8(qm, rec)
     m = MT.score_mask(rec)

@@ -23,9 +23,225 @@
       "source": "EML-02 CoreMark, whole SoC"
     }
   },
+  "exported_model": "tcn_s_nofest",
   "models": {
+    "tcn_s_nofest": {
+      "name": "tcn_s_nofest",
+      "c_in": 2,
+      "inputs": [
+        "dp_x",
+        "dp_y"
+      ],
+      "channels": [
+        8,
+        12,
+        16,
+        24,
+        32,
+        32
+      ],
+      "head": 24,
+      "layers": [
+        {
+          "layer": "level1 (dilation 1)",
+          "positions": 32,
+          "c_in": 2,
+          "c_out": 8,
+          "macs": 1024,
+          "weights": 32,
+          "biases": 8,
+          "out_elems": 256,
+          "stream_macs": 32,
+          "stream_state_elems": 2
+        },
+        {
+          "layer": "level2 (dilation 2)",
+          "positions": 16,
+          "c_in": 8,
+          "c_out": 12,
+          "macs": 3072,
+          "weights": 192,
+          "biases": 12,
+          "out_elems": 192,
+          "stream_macs": 192,
+          "stream_state_elems": 16
+        },
+        {
+          "layer": "level3 (dilation 4)",
+          "positions": 8,
+          "c_in": 12,
+          "c_out": 16,
+          "macs": 3072,
+          "weights": 384,
+          "biases": 16,
+          "out_elems": 128,
+          "stream_macs": 384,
+          "stream_state_elems": 48
+        },
+        {
+          "layer": "level4 (dilation 8)",
+          "positions": 4,
+          "c_in": 16,
+          "c_out": 24,
+          "macs": 3072,
+          "weights": 768,
+          "biases": 24,
+          "out_elems": 96,
+          "stream_macs": 768,
+          "stream_state_elems": 128
+        },
+        {
+          "layer": "level5 (dilation 16)",
+          "positions": 2,
+          "c_in": 24,
+          "c_out": 32,
+          "macs": 3072,
+          "weights": 1536,
+          "biases": 32,
+          "out_elems": 64,
+          "stream_macs": 1536,
+          "stream_state_elems": 384
+        },
+        {
+          "layer": "level6 (dilation 32)",
+          "positions": 1,
+          "c_in": 32,
+          "c_out": 32,
+          "macs": 2048,
+          "weights": 2048,
+          "biases": 32,
+          "out_elems": 32,
+          "stream_macs": 2048,
+          "stream_state_elems": 1024
+        },
+        {
+          "layer": "head",
+          "positions": 1,
+          "c_in": 32,
+          "c_out": 24,
+          "macs": 768,
+          "weights": 768,
+          "biases": 24,
+          "out_elems": 24,
+          "stream_macs": 768,
+          "stream_state_elems": 0
+        },
+        {
+          "layer": "out",
+          "positions": 1,
+          "c_in": 24,
+          "c_out": 2,
+          "macs": 48,
+          "weights": 48,
+          "biases": 2,
+          "out_elems": 2,
+          "stream_macs": 48,
+          "stream_state_elems": 0
+        }
+      ],
+      "macs_window_tree": 16176,
+      "params": 5926,
+      "weights_int8_B": 5776,
+      "biases_int32_B": 600,
+      "flash_params_B": 7360,
+      "ram_activation_int_B": 576,
+      "ram_activation_float_api_B": 1088,
+      "streaming": {
+        "macs_per_step": 5776,
+        "state_int8_B": 1602,
+        "note": "one new position per level per 4 ms step from cached level outputs; exactly equal to the window form (no f_est channel)"
+      },
+      "naive_dilated_all_positions_macs": 318256,
+      "val_rr_all_at_fc25": 0.4762322975858272,
+      "cmsis_nn_estimate": {
+        "central": {
+          "mac_per_cycle": 0.5,
+          "cycles": 34752.0,
+          "time_ms_128MHz": 0.27149999999999996,
+          "time_ms_64MHz": 0.5429999999999999,
+          "energy_uJ_128MHz": 6.359616,
+          "power_mW_at_250Hz_128MHz": 1.5899039999999998,
+          "cpu_load_128MHz": 0.06787499999999999,
+          "streaming_time_ms_128MHz": 0.10900000000000001
+        },
+        "pessimistic": {
+          "mac_per_cycle": 0.15,
+          "cycles": 110240.0,
+          "time_ms_128MHz": 0.8612500000000001,
+          "time_ms_64MHz": 1.7225000000000001,
+          "energy_uJ_128MHz": 20.17392,
+          "power_mW_at_250Hz_128MHz": 5.04348,
+          "cpu_load_128MHz": 0.21531250000000002,
+          "streaming_time_ms_128MHz": 0.3195833333333334
+        }
+      },
+      "export_c": {
+        "source": "results/ml/export_c.json",
+        "export_dir": "ml/export",
+        "hash_sha256": "eebeafdddf00ec305404846e7953b2cad20af625996e2c12407f4d02a57d81f6"
+      },
+      "arm_O2_object": {
+        "text_code_B": 1096,
+        "rodata_B": 7276,
+        "data_B": 0,
+        "bss_B": 0,
+        "flash_total_B": 8372
+      },
+      "arm_Os_object": {
+        "text_code_B": 822,
+        "rodata_B": 7268,
+        "data_B": 0,
+        "bss_B": 0,
+        "flash_total_B": 8090
+      },
+      "plain_c": {
+        "qemu_instructions_per_inference": 115031.25,
+        "instructions_per_mac": 7.111229599406528,
+        "by_cpi": {
+          "cpi_1.0": {
+            "cycles": 115031.25,
+            "time_ms_128MHz": 0.898681640625,
+            "time_ms_64MHz": 1.79736328125,
+            "energy_uJ_128MHz": 21.050718749999998,
+            "power_mW_at_250Hz_128MHz": 5.2626796874999995,
+            "cpu_load_128MHz": 0.22467041015625
+          },
+          "cpi_1.3": {
+            "cycles": 149540.625,
+            "time_ms_128MHz": 1.1682861328125,
+            "time_ms_64MHz": 2.336572265625,
+            "energy_uJ_128MHz": 27.365934375,
+            "power_mW_at_250Hz_128MHz": 6.8414835937500005,
+            "cpu_load_128MHz": 0.292071533203125
+          },
+          "cpi_1.6": {
+            "cycles": 184050.0,
+            "time_ms_128MHz": 1.4378906249999999,
+            "time_ms_64MHz": 2.8757812499999997,
+            "energy_uJ_128MHz": 33.681149999999995,
+            "power_mW_at_250Hz_128MHz": 8.420287499999999,
+            "cpu_load_128MHz": 0.35947265624999997
+          }
+        },
+        "note": "QEMU -icount instruction count (not cycle accurate)"
+      },
+      "meets_icd": {
+        "macs": true,
+        "flash_params": true,
+        "ram": true,
+        "time_cmsis_central": true,
+        "time_cmsis_pessimistic": true,
+        "time_plain_c_cpi_1.3": false
+      }
+    },
     "tcn_s": {
       "name": "tcn_s",
+      "c_in": 3,
+      "inputs": [
+        "dp_x",
+        "dp_y",
+        "f_est"
+      ],
       "channels": [
         8,
         12,
@@ -169,6 +385,11 @@
           "streaming_time_ms_128MHz": 0.32041666666666674
         }
       },
+      "export_c": {
+        "source": "results/ml/export_c_tcn_s.json",
+        "export_dir": "ml/runs/export_tcn_s",
+        "hash_sha256": "d2d2c237ad2dbef65fd09e09600d2652e4113df73f70430e9a296fea71feeb47"
+      },
       "arm_O2_object": {
         "text_code_B": 1240,
         "rodata_B": 7292,
@@ -225,6 +446,12 @@
     },
     "tcn_m": {
       "name": "tcn_m",
+      "c_in": 3,
+      "inputs": [
+        "dp_x",
+        "dp_y",
+        "f_est"
+      ],
       "channels": [
         12,
         16,
@@ -369,9 +596,9 @@
         }
       },
       "plain_c_scaled": {
-        "instructions_est": 221966.38302972197,
-        "time_ms_128MHz_cpi_1.3": 2.2543460776456135,
-        "note": "scaled from the exported model by MAC count"
+        "instructions_est": 222553.0415430267,
+        "time_ms_128MHz_cpi_1.3": 2.260304328171365,
+        "note": "scaled from tcn_s_nofest by MAC count"
       },
       "meets_icd": {
         "macs": true,
@@ -384,10 +611,10 @@
   },
   "meta": {
     "evidence_status": "ANALYTICAL CALCULATION + emulator instruction count (no hardware measurement); model trained on SIMULATION / synthetic data",
-    "generated_utc": "2026-09-27T02:14:09+00:00",
-    "git_revision": "876c866-dirty",
-    "parameters_version": "0.4.1",
-    "parameters_sha256_16": "f44bd71afad66b15",
+    "generated_utc": "2026-09-27T03:58:31+00:00",
+    "git_revision": "8dba406-dirty",
+    "parameters_version": "0.4.3",
+    "parameters_sha256_16": "3fbe200f8ff5c330",
     "command": "budget.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",

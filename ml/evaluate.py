@@ -492,7 +492,7 @@ def main():
         guard[ref] = {"reject_fraction_scored": nrej / max(ntr, 1), "reasons_ticks": whys,
                       "rr_band": [float(x) for x in p["rr_band"]], "rr_all": p["rr_all"], "fc_um": p["fc_um"]}
     res["guard_int8_test"] = guard
-    q = json.load(open(os.path.join(C.RESULTS, "quantization.json")))
+    q = json.load(open(C.result_json("quantization", args.model)))   # quantization[_<model>].json
     res["quantization_summary"] = {"rms_diff_test_um": q["splits"]["test"]["rms_float_minus_int8_um"],
                                    "hash": q["hash_sha256"]}
     res["meta"] = C.meta(seeds={"bootstrap": "1000 + len(gain key)"}, extra={"elapsed_s": time.time() - t0})

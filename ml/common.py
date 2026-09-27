@@ -43,6 +43,17 @@ RAM_BUDGET_B = 8 * 1024
 TIME_BUDGET_S = 1e-3
 F_CLK_HZ = 128e6
 
+# The model exported to ml/export/ (contract v1.1: dp_x, dp_y only, no f_est input).  Its
+# results use the plain file names (results/ml/quantization.json, export_c.json); any other
+# model (e.g. tcn_s, contract v1.0 with f_est) gets <stem>_<model>.json and an out-of-tree
+# C export in ml/runs/export_<model>/ (see ml/export_c.py).
+EXPORT_MODEL = "tcn_s_nofest"
+
+
+def result_json(stem, model):
+    """results/ml/<stem>.json for EXPORT_MODEL, results/ml/<stem>_<model>.json otherwise."""
+    return os.path.join(RESULTS, f"{stem}.json" if model == EXPORT_MODEL else f"{stem}_{model}.json")
+
 # Time-stamp convention (proposed clarification, see ml/README.md "Proposed contract changes"):
 # a sample is time-stamped when it becomes available to the firmware; it describes the housing
 # at (stamp - sensor delay).  The target is d(stamp + h), i.e. the physical prediction horizon is

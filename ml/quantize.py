@@ -5,6 +5,9 @@ Scheme (docs/icd.md s5; TFLite / CMSIS-NN conventions):
   * input tensor: int8 symmetric, zero point 0, scale IN_CLIP_UM/127 um per LSB for dp
     (f_est channel: 0.063 Hz per LSB), q = clamp(floor(x * inv_scale + 0.5), -127, 127)
     evaluated in float32 (the C code does the same with -ffp-contract=off);
+    the number of input channels comes from the model config: 2 (dp_x, dp_y; contract
+    v1.1, e.g. tcn_s_nofest, reduced exactly from its 3-channel training layout by
+    models.drop_fest) or 3 (dp_x, dp_y, f_est; contract v1.0, e.g. tcn_s);
   * weights: int8 symmetric per tensor (zero point 0), scale max|W|/127;
   * bias: int32, scale s_in * s_w;
   * activations after ReLU: int8 asymmetric, zero point -128, scale a_max/255 with a_max
@@ -16,8 +19,9 @@ Scheme (docs/icd.md s5; TFLite / CMSIS-NN conventions):
   * output layer: int32 accumulator requantised to int16 in 0.1 um (the research-log unit
     of dhat, docs/icd.md s4.2), clamp +-32767.
 `run_int8` is the integer reference that ml/export/tcn_int8.c must match bit-exactly.
-Outputs: results/ml/model/<name>_int8.npz, results/ml/quantization.json.
-Run: python3 -m ml.quantize --model tcn_s
+Outputs: results/ml/model/<name>_int8.npz and results/ml/quantization.json for the exported
+model (common.EXPORT_MODEL), results/ml/quantization_<name>.json for any other model.
+Run: python3 -m ml.quantize [--model tcn_s_nofest]      (python3 -m ml.quantize --model tcn_s)
 Evidence status: SIMULATION / synthetic data.
 """
 from __future__ import annotations
@@ -83,32 +87,47 @@ def requantize(acc, mult, shift):
 
 
 # ------------------------------------------------------------------ input quantisation (float32, as in C)
-def quantize_inputs(dp_um, f_est):
-    """Per-tick int8 channels (n, 3) exactly as tcn_quantize_input() in C."""
+def quantize_inputs(dp_um, f_est=None, c_in=3):
+    """Per-tick int8 channels (n, c_in) exactly as tcn_quantize_window() in C.
+    c_in == 2 (contract v1.1): dp only, f_est is ignored (may be None)."""
+    assert c_in in (2, 3), c_in
     dp = np.asarray(dp_um, np.float32)
-    q = np.empty((len(dp), 3), np.int8)
+    q = np.empty((len(dp), c_in), np.int8)
     v = np.floor(dp * IN_INV_SCALE + np.float32(0.5))
     q[:, :2] = np.clip(v, -127, 127).astype(np.int8)
-    f = np.asarray(f_est, np.float32)
-    vf = np.floor((f - F_REF) * F_INV_SCALE + np.float32(0.5))
-    q[:, 2] = np.clip(vf, -127, 127).astype(np.int8)
+    if c_in == 3:
+        f = np.asarray(f_est, np.float32)
+        vf = np.floor((f - F_REF) * F_INV_SCALE + np.float32(0.5))
+        q[:, 2] = np.clip(vf, -127, 127).astype(np.int8)
     return q
 
 
 def int_windows(qch):
-    """(K, 64, 3) int8 windows of a recording (zero padded before tick 63, f broadcast)."""
-    pad = np.zeros((C.W - 1, 3), np.int8)
+    """(K, 64, c_in) int8 windows of a recording (zero padded before tick 63; a 3rd, f_est,
+    channel is broadcast from the newest tick)."""
+    c = qch.shape[1]
+    pad = np.zeros((C.W - 1, c), np.int8)
     chp = np.vstack([pad, qch])
     idx = np.arange(len(qch)) + (C.W - 1)
     off = np.arange(-(C.W - 1), 1)
     win = chp[idx[:, None] + off[None, :]]
-    win[:, :, 2] = chp[idx, 2][:, None]
+    if c > 2:
+        win[:, :, 2] = chp[idx, 2][:, None]
     return win
+
+
+def qm_c_in(qm):
+    """Input channels of a quantised model (2: dp_x, dp_y; 3: + f_est)."""
+    c = int(qm["arch"].get("c_in", 3))
+    assert qm["layers"][0]["w"].shape[1] == 2 * c, "level-1 weights do not match the config's c_in"
+    return c
 
 
 # ------------------------------------------------------------------ quantised model
 def build_qmodel(model, calib_x, calib="max", pct=99.99):
-    """calib_x: (N, 64, 3) float windows from training writers."""
+    """calib_x: (N, 64, c_in) float windows from training writers, c_in = model.c_in."""
+    assert calib_x.shape[2] == model.c_in, (calib_x.shape, model.c_in)
+    assert model.c_in == 2 or model.use_fest, "3-channel model without f_est: reduce it with models.drop_fest"
     with torch.no_grad():
         _, acts = model(torch.from_numpy(calib_x), return_acts=True)
     acts = [a.numpy() for a in acts]          # [input, level1..6, head, out]
@@ -140,9 +159,10 @@ def build_qmodel(model, calib_x, calib="max", pct=99.99):
     mult, shift = quantize_multiplier(m_out)
     out = {"w": wq, "b": bq.astype(np.int32), "in_offset": -zp_prev, "mult": mult, "shift": shift, "s_w": s_w,
            "s_in": s_prev, "out_lsb_um": OUT_LSB_UM, "c_in": int(Wf.shape[1]), "c_out": 2}
+    fest = model.c_in == 3                     # f_est scale only exists in 3-channel (v1.0) models
     qm = {"layers": layers, "out": out, "in_scale_um": IN_SCALE_UM, "in_inv_scale": float(IN_INV_SCALE),
-          "f_inv_scale": float(F_INV_SCALE), "f_ref_hz": float(F_REF), "calib": calib, "pct": pct,
-          "arch": model.config()}
+          "f_inv_scale": float(F_INV_SCALE) if fest else None, "f_ref_hz": float(F_REF) if fest else None,
+          "calib": calib, "pct": pct, "arch": model.config()}
     qm["hash"] = model_hash(qm)
     return qm
 
@@ -157,7 +177,8 @@ def model_hash(qm):
 
 
 def run_int8(qm, xq, stats=None):
-    """Integer reference.  xq: (N, 64, 3) int8.  Returns (N, 2) int16 in 0.1 um."""
+    """Integer reference.  xq: (N, 64, c_in) int8.  Returns (N, 2) int16 in 0.1 um."""
+    assert xq.shape[1:] == (C.W, qm_c_in(qm)), xq.shape
     h = xq.astype(np.int64)
     for i, L in enumerate(qm["layers"]):
         if i < 6:
@@ -183,7 +204,7 @@ def run_int8(qm, xq, stats=None):
 
 
 def predict_int8(qm, rec, batch=65536, stats=None):
-    X = int_windows(quantize_inputs(rec["dp_um"], rec["f_est"]))
+    X = int_windows(quantize_inputs(rec["dp_um"], rec.get("f_est"), qm_c_in(qm)))
     out = np.empty((len(X), 2), np.float64)
     for a in range(0, len(X), batch):
         out[a:a + batch] = run_int8(qm, X[a:a + batch], stats) * OUT_LSB_UM
@@ -214,11 +235,18 @@ def load_qmodel(path):
 
 
 def load_float(name):
+    """Float model as deployed, and its saved training config.  A 3-channel model trained with
+    the f_est channel held at zero (config use_fest false, e.g. tcn_s_nofest) is returned as the
+    equivalent 2-channel model (models.drop_fest): the channel count follows
+    models.deployed_c_in(config) and is carried by model.config()["c_in"] from here on."""
     cfg = json.load(open(os.path.join(C.RESULTS, "model", f"{name}.json")))
-    model = M.TCNTree(channels=tuple(cfg["channels"]), head=cfg["head"])
+    model = M.TCNTree(channels=tuple(cfg["channels"]), head=cfg["head"], c_in=int(cfg.get("c_in", M.C_IN)))
     model.load_state_dict(torch.load(os.path.join(C.RESULTS, "model", f"{name}.pt")))
     model.use_fest = bool(cfg.get("use_fest", True))
     model.eval()
+    if model.c_in == 3 and not model.use_fest:
+        model = M.drop_fest(model)
+    assert model.c_in == M.deployed_c_in(cfg)
     return model, cfg
 
 
@@ -239,7 +267,7 @@ def compare(model, qm, recs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="tcn_s")
+    ap.add_argument("--model", default=C.EXPORT_MODEL)
     ap.add_argument("--n-calib", type=int, default=50_000)
     ap.add_argument("--seed", type=int, default=11)
     args = ap.parse_args()
@@ -248,6 +276,7 @@ def main():
     model, cfg = load_float(args.model)
     train, val = D.load_split("train"), D.load_split("val")
     ch, _, w = T.stack_split(train)
+    ch = np.ascontiguousarray(ch[:, :model.c_in])      # the model's input channels only (2: no f_est)
     rng = np.random.default_rng(args.seed)
     ci = rng.choice(np.flatnonzero(w > 0), size=args.n_calib, replace=False)
     calib_x = M.gather_windows(ch, ci)
@@ -261,32 +290,55 @@ def main():
     best_key = min(cands, key=lambda k: cands[k][0])
     qm = cands[best_key][1]
     save_qmodel(qm, os.path.join(C.RESULTS, "model", f"{args.model}_int8.npz"))
-    res = {"model": args.model, "calibration": {"n_windows": args.n_calib, "source": "training writers", "seed": args.seed,
-                                                "candidates_val_criterion": {k: v[0] for k, v in cands.items()},
-                                                "candidates_val_rms_diff_um": {k: v[2] for k, v in cands.items()},
-                                                "selected": best_key},
+    F = C.FC_HEADLINE_UM
+    res = {"model": args.model, "c_in": model.c_in, "inputs": M.input_names(model.c_in),
+           "icd_contract": "v1.1 (no f_est input)" if model.c_in == 2 else "v1.0 (f_est input channel)",
+           "exported_to_ml_export": args.model == C.EXPORT_MODEL,
+           "calibration": {"n_windows": args.n_calib, "source": "training writers", "seed": args.seed,
+                           "candidates_val_criterion": {k: v[0] for k, v in cands.items()},
+                           "candidates_val_rms_diff_um": {k: v[2] for k, v in cands.items()},
+                           "selected": best_key},
            "hash_sha256": qm["hash"], "hash_low32": int(qm["hash"][-8:], 16),
            "scheme": "int8 symmetric per-tensor weights, int8 asymmetric activations (zp -128 after ReLU), int32 bias, "
                      "CMSIS-NN requantisation, int16 output in 0.1 um",
            "layers": [{k: v for k, v in L.items() if k not in ("w", "b")} for L in qm["layers"]],
-           "out_layer": {k: v for k, v in qm["out"].items() if k not in ("w", "b")}, "splits": {}}
-    for split in ("val", "test", "test_freq_holdout", "test_features", "realism_sim"):
+           "out_layer": {k: v for k, v in qm["out"].items() if k not in ("w", "b")},
+           "fc25_note": f"gains frozen on validation for FC <= {F:g} um (g = min(g_opt, F / FC_val(1), G_MAX)), as in "
+                        "ml/evaluate.py; 95 % CIs: 2000-sample writer bootstrap (gains fixed); no CI for val, "
+                        "the feature course (no tremor) or the simulator set (records are not independent writers)",
+           "splits": {}}
+    gains = None
+    for split in ("val", "test", "test_freq_holdout", "test_features", "stress_tremor", "stress_writing", "realism_sim"):
         if not D.exists(split):
             continue
         recs = val if split == "val" else D.load_split(split)
         sf, sq, d_rms, sat = compare(model, qm, recs)
+        if gains is None:                  # val comes first: freeze the matched-FC gains there
+            gains = {"float": MT.select_gain(sf, F)[0], "int8": MT.select_gain(sq, F)[0]}
+            res["gains_fc25_frozen_on_val"] = gains
         row = {"rms_float_minus_int8_um": d_rms,
                "saturation_fraction": {str(k): v[0] / max(v[1], 1) for k, v in sat.items()}}
+        boot = None
+        if split in ("test", "test_freq_holdout", "stress_tremor", "stress_writing"):   # one record per writer
+            boot, diffs = MT.bootstrap({"float": sf, "int8": sq}, gains, B=2000, seed=4242, paired=[("int8", "float")])
+            row["paired_int8_minus_float_fc25"] = diffs["int8-float"]
         for tag, st in (("float", sf), ("int8", sq)):
             p1 = MT.pooled(st, 1.0)
-            row[tag] = {"rr_band_g1": [float(x) for x in p1["rr_band"]], "rr_all_g1": p1["rr_all"], "fc_g1_um": p1["fc_um"]}
+            pm = MT.pooled(st, gains[tag])
+            row[tag] = {"rr_band_g1": [float(x) for x in p1["rr_band"]], "rr_all_g1": p1["rr_all"], "fc_g1_um": p1["fc_um"],
+                        "fc25": {"gain": gains[tag], "rr_band": [float(x) for x in pm["rr_band"]],
+                                 "rr_all": pm["rr_all"], "fc_um": pm["fc_um"]}}
+            if boot is not None:
+                row[tag]["fc25"]["ci95"] = boot[tag]
         res["splits"][split] = row
-        print(f"{split}: rms diff {d_rms:.2f} um; rr_all float {row['float']['rr_all_g1']:.4f} "
-              f"int8 {row['int8']['rr_all_g1']:.4f}; fc float {row['float']['fc_g1_um']:.2f} int8 {row['int8']['fc_g1_um']:.2f}",
-              flush=True)
-    res["meta"] = C.meta(seeds={"calibration": args.seed}, extra={"elapsed_s": time.time() - t0})
-    C.write_json(os.path.join(C.RESULTS, "quantization.json"), res)
-    print(f"done {time.time() - t0:.0f} s", flush=True)
+        print(f"{split}: rms diff {d_rms:.2f} um; rr_all g=1 float {row['float']['rr_all_g1']:.4f} "
+              f"int8 {row['int8']['rr_all_g1']:.4f}; FC<={F:g} float {row['float']['fc25']['rr_all']:.4f} "
+              f"int8 {row['int8']['fc25']['rr_all']:.4f} (FC {row['float']['fc25']['fc_um']:.1f} / "
+              f"{row['int8']['fc25']['fc_um']:.1f} um)", flush=True)
+    res["meta"] = C.meta(seeds={"calibration": args.seed, "bootstrap": 4242}, extra={"elapsed_s": time.time() - t0})
+    out = C.result_json("quantization", args.model)
+    C.write_json(out, res)
+    print(f"wrote {C.rpath(out)}; done {time.time() - t0:.0f} s", flush=True)
 
 
 if __name__ == "__main__":

@@ -11,6 +11,9 @@ all-band residual ratio at matched false correction FC <= 25 um (the same
 criterion used to tune every baseline).  Training writers only; validation
 writers only for selection; test writers never touched here.
 Outputs: results/ml/model/<name>.pt (+ .json), results/ml/train_<name>.json.
+--no-fest (tcn_s_nofest, the exported model, ICD s5 contract v1.1) keeps the 3-channel
+training layout with the f_est channel held at zero (config use_fest false); the pipeline
+deploys it as the equivalent 2-channel model (quantize.load_float -> models.drop_fest).
 Run: python3 -m ml.train --model tcn_s
 """
 from __future__ import annotations

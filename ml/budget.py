@@ -13,7 +13,11 @@ hardware.  Assumptions (stated in the output):
     pessimistic (EML-23 / EML-24), plus ~300 cycles per kernel call (8 calls);
   * energy: 183 pJ/cycle at 128 MHz, 155 pJ/cycle at 64 MHz (EML-02: CoreMark current of the
     whole SoC, typical, 3 V) - an order-of-magnitude figure, not an NN-kernel measurement.
-Run: python3 -m ml.budget --model tcn_s --alt tcn_m
+The input channel count of each model comes from its config (models.deployed_c_in): the
+exported tcn_s_nofest has 2 (dp_x, dp_y; contract v1.1), tcn_s and tcn_m have 3 (+ f_est).
+Measured artefacts (ARM object sizes, QEMU instruction count) are read from
+results/ml/export_c.json (exported model) or export_c_<model>.json when present.
+Run: python3 -m ml.budget [--model tcn_s_nofest --alt tcn_s tcn_m]
 """
 from __future__ import annotations
 
@@ -34,7 +38,8 @@ CMSIS_CALL_OVERHEAD = 300
 
 def arch_budget(name):
     cfg = json.load(open(os.path.join(C.RESULTS, "model", f"{name}.json")))
-    m = M.TCNTree(channels=tuple(cfg["channels"]), head=cfg["head"])
+    c_in = M.deployed_c_in(cfg)
+    m = M.TCNTree(channels=tuple(cfg["channels"]), head=cfg["head"], c_in=c_in)
     rows = m.layer_table()
     macs = sum(r["macs"] for r in rows)
     weights = sum(r["weights"] for r in rows)
@@ -46,19 +51,21 @@ def arch_budget(name):
     outs = [r["out_elems"] for r in rows[:6]]
     head = rows[6]["out_elems"]
     scratch = max(outs[0], outs[2], outs[4], head) + max(outs[1], outs[3], outs[5])
-    ram_int = C.W * M.C_IN + scratch
+    ram_int = C.W * c_in + scratch
     ram_float_api = ram_int + C.W * 2 * 4          # + float window kept by the caller
     stream_macs = sum(r["stream_macs"] for r in rows)
     stream_state = sum(r["stream_state_elems"] for r in rows[:6])
     naive = sum(C.W * 2 * r["c_in"] * r["c_out"] for r in rows[:6]) + sum(r["macs"] for r in rows[6:])
-    out = {"name": name, "channels": cfg["channels"], "head": cfg["head"], "layers": rows,
+    out = {"name": name, "c_in": c_in, "inputs": M.input_names(c_in), "channels": cfg["channels"], "head": cfg["head"],
+           "layers": rows,
            "macs_window_tree": int(macs), "params": int(weights + biases), "weights_int8_B": int(weights),
            "biases_int32_B": int(4 * biases), "flash_params_B": int(flash_params),
            "ram_activation_int_B": int(ram_int), "ram_activation_float_api_B": int(ram_float_api),
            "streaming": {"macs_per_step": int(stream_macs),
                          "state_int8_B": int(stream_state),
-                         "note": "one new position per level per 4 ms step from cached level outputs; exact "
-                                 "only if the f_est channel is stored per step or moved to the head"},
+                         "note": "one new position per level per 4 ms step from cached level outputs; " +
+                                 ("exactly equal to the window form (no f_est channel)" if c_in == 2 else
+                                  "exact only if the f_est channel is stored per step or moved to the head")},
            "naive_dilated_all_positions_macs": int(naive),
            "val_rr_all_at_fc25": cfg.get("val_rr_all_at_fc25")}
     cm = {}
@@ -74,48 +81,61 @@ def arch_budget(name):
     return out
 
 
+def plain_c_block(ins, macs):
+    """Time / energy of the plain-C kernel from a QEMU instruction count (CPI assumptions)."""
+    pc = {}
+    for cpi in CPI:
+        cyc = ins * cpi
+        pc[f"cpi_{cpi}"] = {"cycles": cyc, "time_ms_128MHz": cyc / 128e6 * 1e3, "time_ms_64MHz": cyc / 64e6 * 1e3,
+                            "energy_uJ_128MHz": cyc * PJ_PER_CYCLE[128e6] * 1e6,
+                            "power_mW_at_250Hz_128MHz": cyc * PJ_PER_CYCLE[128e6] * 250 * 1e3,
+                            "cpu_load_128MHz": cyc / 128e6 / C.TS}
+    return {"qemu_instructions_per_inference": ins, "instructions_per_mac": ins / macs, "by_cpi": pc,
+            "note": "QEMU -icount instruction count (not cycle accurate)"}
+
+
+def int8_hash(name):
+    p = os.path.join(C.RESULTS, "model", f"{name}_int8.npz")
+    return json.loads(str(np.load(p)["meta"]))["hash"] if os.path.exists(p) else None
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="tcn_s")
-    ap.add_argument("--alt", default="tcn_m")
+    ap.add_argument("--model", default=C.EXPORT_MODEL)
+    ap.add_argument("--alt", nargs="*", default=["tcn_s", "tcn_m"], help="other models reported alongside")
     args = ap.parse_args()
     res = {"budget_icd": {"macs": C.MAC_BUDGET, "flash_B": C.FLASH_BUDGET_B, "ram_B": C.RAM_BUDGET_B,
                           "time_ms": C.TIME_BUDGET_S * 1e3, "f_clk_MHz": C.F_CLK_HZ / 1e6},
            "assumptions": {"cpi_plain_c": CPI, "cmsis_mac_per_cycle": CMSIS_MAC_PER_CYCLE,
                            "cmsis_call_overhead_cycles": CMSIS_CALL_OVERHEAD,
                            "energy_pJ_per_cycle": {"128MHz": 183, "64MHz": 155, "source": "EML-02 CoreMark, whole SoC"}},
-           "models": {}}
-    for nm in (args.model, args.alt):
-        if nm and os.path.exists(os.path.join(C.RESULTS, "model", f"{nm}.json")):
+           "exported_model": C.EXPORT_MODEL, "models": {}}
+    for nm in [args.model, *args.alt]:
+        if nm and nm not in res["models"] and os.path.exists(os.path.join(C.RESULTS, "model", f"{nm}.json")):
             res["models"][nm] = arch_budget(nm)
-    # measured artefacts of the exported model
-    ex_path = os.path.join(C.RESULTS, "export_c.json")
-    if os.path.exists(ex_path):
+    # measured artefacts: ml/export_c.py results of each model (export_c.json for the exported model)
+    for nm, d in res["models"].items():
+        ex_path = C.result_json("export_c", nm)
+        if not os.path.exists(ex_path):
+            continue
         ex = json.load(open(ex_path))
-        d = res["models"][ex["model"]]
-        arm = ex.get("arm_m33", {}).get("sections", {}).get("-O2", {})
-        d["arm_O2_object"] = {k: v for k, v in arm.items() if k != "detail"}
-        d["arm_Os_object"] = {k: v for k, v in ex.get("arm_m33", {}).get("sections", {}).get("-Os", {}).items()
-                              if k != "detail"}
+        if ex.get("model") != nm or ex.get("hash_sha256") != int8_hash(nm):
+            d["export_c_skipped"] = f"{C.rpath(ex_path)} does not match the current int8 model"
+            continue
+        d["export_c"] = {"source": C.rpath(ex_path), "export_dir": ex.get("export_dir"), "hash_sha256": ex["hash_sha256"]}
+        secs = ex.get("arm_m33", {}).get("sections", {})
+        d["arm_O2_object"] = {k: v for k, v in secs.get("-O2", {}).items() if k != "detail"}
+        d["arm_Os_object"] = {k: v for k, v in secs.get("-Os", {}).items() if k != "detail"}
         ins = ex.get("qemu_m33", {}).get("instructions_per_inference")
         if ins:
-            pc = {}
-            for cpi in CPI:
-                cyc = ins * cpi
-                pc[f"cpi_{cpi}"] = {"cycles": cyc, "time_ms_128MHz": cyc / 128e6 * 1e3, "time_ms_64MHz": cyc / 64e6 * 1e3,
-                                    "energy_uJ_128MHz": cyc * PJ_PER_CYCLE[128e6] * 1e6,
-                                    "power_mW_at_250Hz_128MHz": cyc * PJ_PER_CYCLE[128e6] * 250 * 1e3,
-                                    "cpu_load_128MHz": cyc / 128e6 / C.TS}
-            d["plain_c"] = {"qemu_instructions_per_inference": ins,
-                            "instructions_per_mac": ins / d["macs_window_tree"], "by_cpi": pc,
-                            "note": "QEMU -icount instruction count (not cycle accurate)"}
-            # scale the instruction count to the other architecture by MACs (same kernel)
-            for nm, dd in res["models"].items():
-                if nm != ex["model"]:
-                    ins2 = ins / d["macs_window_tree"] * dd["macs_window_tree"]
-                    dd["plain_c_scaled"] = {"instructions_est": ins2,
-                                            "time_ms_128MHz_cpi_1.3": ins2 * 1.3 / 128e6 * 1e3,
-                                            "note": "scaled from the exported model by MAC count"}
+            d["plain_c"] = plain_c_block(ins, d["macs_window_tree"])
+    # models without a QEMU count: scale the exported model's instructions per MAC (same kernel)
+    ref = res["models"].get(args.model, {}).get("plain_c")
+    for nm, dd in res["models"].items():
+        if "plain_c" not in dd and ref:
+            ins2 = ref["instructions_per_mac"] * dd["macs_window_tree"]
+            dd["plain_c_scaled"] = {"instructions_est": ins2, "time_ms_128MHz_cpi_1.3": ins2 * 1.3 / 128e6 * 1e3,
+                                    "note": f"scaled from {args.model} by MAC count"}
     for nm, d in res["models"].items():
         chk = {"macs": d["macs_window_tree"] <= C.MAC_BUDGET, "flash_params": d["flash_params_B"] <= C.FLASH_BUDGET_B,
                "ram": d["ram_activation_float_api_B"] <= C.RAM_BUDGET_B,
@@ -127,10 +147,12 @@ def main():
     res["meta"] = C.meta(status="ANALYTICAL CALCULATION + emulator instruction count (no hardware measurement); "
                                 "model trained on SIMULATION / synthetic data")
     C.write_json(os.path.join(C.RESULTS, "budget.json"), res)
-    lines = ["| quantity | " + " | ".join(res["models"]) + " | ICD budget |", "|---|" + "---|" * (len(res["models"]) + 1)]
+    heads = [f"{nm} (exported)" if nm == C.EXPORT_MODEL else nm for nm in res["models"]]
+    lines = ["| quantity | " + " | ".join(heads) + " | ICD budget |", "|---|" + "---|" * (len(res["models"]) + 1)]
 
     def row(label, f, budget=""):
         lines.append(f"| {label} | " + " | ".join(f(d) for d in res["models"].values()) + f" | {budget} |")
+    row("input channels per sample", lambda d: f"{d['c_in']} ({', '.join(d['inputs'])})")
     row("MAC per inference (window, tree)", lambda d: f"{d['macs_window_tree']:,}", "<= 35,000")
     row("parameters", lambda d: f"{d['params']:,}")
     row("flash: int8 weights + int32 biases (x2) + structs", lambda d: f"{d['flash_params_B']:,} B", "<= 32 kB")

@@ -8,20 +8,23 @@
 
 ## Summary
 
-**Contract implemented as written** (`docs/icd.md` §5):
+**Contract** (`docs/icd.md` §5):
 
-- Input: 64 increments Δp_H (x, y, µm) at 250 Hz, plus f_est.
-- Output: d̂ (x, y, µm) at h = 6 ms.
+- Input: 64 increments Δp_H (x, y, µm) at 250 Hz. Contract v1.0 also passed the tracked tremor frequency f_est. v1.1 dropped it because it adds nothing measurable (§c.9).
+- Output: d̂ (x, y) at h = 6 ms, as int16 in 0.1 µm from the C kernel.
 - Quantisation: int8.
 - Budget: ≤ 35 k MAC, ≤ 32 kB, ≤ 8 kB, ≤ 1 ms at 128 MHz.
 
-**Model.** `tcn_s` is a causal dilated TCN (kernel 2, dilations 1–32, receptive field = W = 64). It is evaluated only at the newest sample, so it reduces to 6 stride-2 "pair" layers plus a 2-layer head. It has 5,942 parameters and 16,688 MAC per inference.
+**Model.** `tcn_s` is a causal dilated TCN (kernel 2, dilations 1–32, receptive field = W = 64). It is evaluated only at the newest sample, so it reduces to 6 stride-2 "pair" layers plus a 2-layer head. With the three v1.0 inputs it has 5,942 parameters and 16,688 MAC per inference. The comparison in §c.1–c.6 uses this model.
+
+**Exported artefact: `tcn_s_nofest`** (§c.7). It is the same network trained without f_est, so it implements contract v1.1: 2 input channels, 5,926 parameters, 16,176 MAC per inference. It is not worse than `tcn_s`: test 0.469 against 0.475, validation 0.476 against 0.486 (§c.9).
 
 **In-distribution result (80 test writers).** At matched false correction (gain frozen on validation for FC ≤ 25 µm RMS on no-tremor writing), the residual ratio (all bands) is:
 
 | Method | Residual ratio (all bands) |
 |---|---|
-| TCN | 0.48 [0.41, 0.55] |
+| TCN (`tcn_s`) | 0.48 [0.41, 0.55] |
+| TCN without f_est (`tcn_s_nofest`, exported) | 0.47 [0.40, 0.54] |
 | f_est-scheduled least-squares FIR | 0.76 |
 | Kalman oscillator + frequency gate, tuned | 0.80 |
 | Kalman oscillator, tuned | 0.81 |
@@ -38,14 +41,15 @@
 - **Simulator realism (coupled hand–pen–paper housing):** 0.96 for every method on the full band. On the 3–15 Hz band the TCN reaches 0.73 against 0.77 for the linear baseline and 0.79 for the gated Kalman. At 9–11 Hz the TCN and the conventional estimators are within 0.03.
 - **Fast writing:** false correction rises from about 25 µm to 73–155 µm for every method, the TCN included.
 
-**Deployment:**
+**Deployment** (the exported `tcn_s_nofest`, §c.7):
 
-- int8 costs almost nothing: 0.475 → 0.476, with an RMS prediction difference of 11.9 µm.
-- The C reference is bit-exact with the Python integer reference on 20,000 test windows, on host GCC, on clang with UBSan, and on an emulated Cortex-M33.
-- ARM `-O2` object: 1.2 kB code + 7.3 kB weights. RAM: 640 B.
-- Time at 128 MHz: 0.28 ms estimated with CMSIS-NN (0.89 ms pessimistic). The plain-C reference executes 118 k instructions (QEMU count), i.e. 0.92–1.48 ms for CPI 1.0–1.6, at the limit. Energy about 6.5 µJ per inference.
+- int8 costs little: 0.469 → 0.472 on the test writers (paired difference +0.003 [+0.002, +0.006]), with an RMS prediction difference of 12.0 µm. For `tcn_s` it was 0.475 → 0.476.
+- The C reference is bit-exact with the Python integer reference on 20,000 test windows, on host GCC, on clang with UBSan, and on an emulated Cortex-M33. The same C sources pass the same checks with the 3-channel `tcn_s`.
+- ARM `-O2` object: 1.1 kB code + 7.3 kB weights (7,276 B read-only data). RAM: 576 B.
+- Time at 128 MHz: 0.27 ms estimated with CMSIS-NN (0.86 ms pessimistic). The plain-C reference executes 115 k instructions (QEMU count), i.e. 0.90–1.44 ms for CPI 1.0–1.6, at the limit. Energy about 6.4 µJ per inference.
+- **Confidence is uncalibrated.** The model has no confidence output, so an adapter reports the constant 255 (`TCN_CONFIDENCE_UNCALIBRATED`). ICD §5 v1.2 guard rule (5) scales the ML share of authority by min(1, ĉ / c_full), with ĉ = byte / 255, and rejects ĉ < c_min. With the defaults c_min = 0 and c_full = 1 it has no effect until a confidence is calibrated on held-out writers (EXP-E01).
 
-**The contract's guard, as written, suppresses the predictor.** Its "|d̂ − d̂_KF| > 150 µm for > 20 ms" rule uses the frozen controller KF as reference, and that KF barely moves at 250 Hz. It rejects 18 % of ticks and returns the TCN to 0.94.
+**The v1.0 guard suppressed the predictor.** Its "|d̂ − d̂_KF| > 150 µm for > 20 ms" rule uses the frozen controller KF as reference, and that KF barely moves at 250 Hz. It rejects 18 % of ticks and returns the TCN to 0.94 (§c.6). ICD v1.1 removed that rule.
 
 **Verdict:** a learned predictor is **not justified for deployment or for any claim at this stage**. It is justified as the lead candidate for the real-data bake-off (EXP-E01, REQ-ML-001), and the edge path is ready.
 
@@ -77,7 +81,7 @@
 
 ## (b) Pipeline
 
-`ml/run_all.sh` reproduces every number (about 30–35 min on 4 shared cores; about 12 min of it is training). It writes only to `ml/` (`ml/runs/` is git-ignored), `data/` and `results/ml/`. It never writes byte-code or numba caches into `stabpen/` or `sim/`.
+`ml/run_all.sh` reproduces every number (about 35–40 min on 4 shared cores, estimated; about 12 min of it is training). It writes only to `ml/` (`ml/runs/` is git-ignored), `data/` and `results/ml/`. It never writes byte-code or numba caches into `stabpen/` or `sim/`.
 
 | Step | Module | What it does |
 |---|---|---|
@@ -85,11 +89,11 @@
 | 2 | `ml/datasets.py` | Splits by writer id: 240 train / 40 val / 80 test / 30 frequency-holdout writers, a no-tremor feature course, two stress sets, and a simulator realism set of 60 runs. Leakage checks, manifest, schema examples. |
 | 3 | `ml/baselines.py`, `ml/tune_baselines.py` | Zero; band-pass + extrapolation (`core.py` mode 2 at 250 Hz); Kalman oscillator (verbatim `_kf_step` port + phase-rate adaptation, equality tested against `sim.pensim.core._kf_step.py_func`); KF with NIS confidence, frequency gate and authority smoothing; BMFLC (NLMS, pre-filter gain and phase inverted per basis frequency); least-squares direct h-step FIR predictor (AR-LS), global and f_est-scheduled; two oracles. All hyperparameters are chosen on **validation** with the network's criterion; grids were widened until every optimum was interior or the criterion was flat (§c.8). |
 | 4 | `ml/models.py`, `ml/train.py` | TCN tree (see the Summary). Loss: weighted MSE on d(t + h), weight 1 on tremor ticks and 4 on no-tremor ticks (penalty on false correction). AdamW, one-cycle cosine schedule, seed 7, 2 threads, 14 epochs of 1.5 M windows. Epoch selected on validation. |
-| 5 | `ml/quantize.py` | int8 post-training quantisation: per-tensor symmetric int8 weights, int8 activations (zero point −128 after ReLU), int32 bias, CMSIS-NN requantisation, int16 output in 0.1 µm. Calibration: 50 k training windows, 99.99th percentile, chosen on validation over max and the 99.9th percentile. Includes the integer reference `run_int8`. |
-| 6 | `ml/export_c.py` + `ml/export/` | Generates `tcn_weights.h` and `test_vectors.h`. Builds and runs `test_host.c` with gcc `-O2 -Werror` and clang UBSan (trap mode). Cross-compiles `tcn_int8.c` for Cortex-M33 and reports section sizes. Runs the same test on QEMU `mps2-an505` (Cortex-M33) and counts executed instructions. |
-| 7 | `ml/budget.py` | MACs, parameter and activation memory, cycles (plain C: QEMU instructions × CPI 1.0/1.3/1.6; CMSIS-NN: 0.5 or 0.15 MAC/cycle + 300 cycles per call), time at 64 and 128 MHz, energy (183 / 155 pJ per cycle, EML-02), and the streaming alternative. |
+| 5 | `ml/quantize.py` | int8 post-training quantisation: per-tensor symmetric int8 weights, int8 activations (zero point −128 after ReLU), int32 bias, CMSIS-NN requantisation, int16 output in 0.1 µm. Calibration: 50 k training windows, 99.99th percentile, chosen on validation over max and the 99.9th percentile. Includes the integer reference `run_int8`. The number of input channels comes from the model config: 2 for `tcn_s_nofest`, reduced exactly from its 3-channel training layout by `models.drop_fest`; 3 for `tcn_s`. Reports float against int8 at unit gain and at FC ≤ 25 µm (gains frozen on validation, writer-bootstrap CIs). Writes `quantization.json` for the exported model and `quantization_<model>.json` for any other. |
+| 6 | `ml/export_c.py` + `ml/export/` | Generates `tcn_model.h` (`TCN_CIN`, model name and hash, scratch size; included by `tcn_int8.h`), `tcn_weights.h` (parameters; included by `tcn_int8.c` only) and `test_vectors.h`. Builds and runs `test_host.c` with gcc `-O2 -Werror` and clang UBSan (trap mode). Cross-compiles `tcn_int8.c` for Cortex-M33 and reports section sizes. Runs the same test on QEMU `mps2-an505` (Cortex-M33) and counts executed instructions. The exported model goes to `ml/export/` and `export_c.json`. Any other model (`--model tcn_s`) goes to `ml/runs/export_<model>/` and `export_c_<model>.json`, so a reproduction never overwrites the committed artefact. |
+| 7 | `ml/budget.py` | MACs, parameter and activation memory, cycles (plain C: QEMU instructions × CPI 1.0/1.3/1.6; CMSIS-NN: 0.5 or 0.15 MAC/cycle + 300 cycles per call), time at 64 and 128 MHz, energy (183 / 155 pJ per cycle, EML-02), and the streaming alternative. Covers the exported model, with `tcn_s` and `tcn_m` alongside. |
 | 8 | `ml/evaluate.py`, `ml/metrics.py` | Residual ratio per band, false correction, matched-FC gains frozen on validation (10 / 25 / 50 µm and unit gain), 2000-sample writer bootstrap with paired differences, feature-course distortion, the ICD guard, figures with CSV data twins. |
-| 9 | `ml/tests/test_ml.py` | 15 tests: KF port = simulator; tremor wrapper = `stabpen`; oscillator oracle; causality and window-only dependence; tree = streaming dilated TCN; requantisation vs an independent scalar implementation; metrics; leakage; schema; int8 vs float; C host bit-exactness. Run: `python3 -m pytest -p no:cacheprovider ml/tests -q`. |
+| 9 | `ml/tests/test_ml.py` | 22 tests: KF port = simulator; tremor wrapper = `stabpen`; oscillator oracle; causality and window-only dependence (2 and 3 channels); tree = streaming dilated TCN (2 and 3 channels); requantisation vs an independent scalar implementation; metrics; leakage; schema; the 2-channel reduction of a model trained without f_est is exact (synthetic weights and the real `tcn_s_nofest`); 2-channel input quantiser; the committed `ml/export/` holds the exported model (channels, name, hash); int8 vs float for both models; C host bit-exactness. Run: `python3 -m pytest -p no:cacheprovider ml/tests -q`. |
 
 **Definitions** (`ml/metrics.py`):
 
@@ -118,6 +122,8 @@ The equivalence of the tree and streaming forms is unit-tested.
 
 All results are SIMULATION on synthetic data. The CI is a 95 % writer-bootstrap interval (2000 resamples, gains frozen, gain-selection uncertainty not included). Each network was trained with one seed; the three TCN variants (§c.9) land within 0.03 of each other, far less than the gap to the baselines.
 
+The TCN rows in §c.1–c.6 are `tcn_s` (three inputs including f_est, contract v1.0), float and int8. The exported model `tcn_s_nofest` (two inputs, v1.1) is reported in §c.7 (int8) and §c.9 (float).
+
 ### c.1 Headline: residual ratio per band at matched false correction (FC ≤ 25 µm)
 
 Test writers; the 7–8 Hz column comes from the frequency-holdout writers; "all bands" is over the test writers. Source: `results/ml/eval_results.json` (`sets.*.matched.25`); figure `fig_residual_by_band.png`.
@@ -133,7 +139,7 @@ Test writers; the 7–8 Hz column comes from the frequency-holdout writers; "all
 | AR-LS global (64 taps/axis) | 0.98 [0.97, 0.98] | 0.95 [0.95, 0.97] | 0.94 [0.93, 0.96] | 0.84 [0.81, 0.87] | 0.72 [0.70, 0.74] | 0.88 [0.84, 0.91] | 28.4 | 0.60 |
 | AR-LS f_est-scheduled | 0.97 [0.96, 0.98] | 0.81 [0.76, 0.96] | 0.84 [0.80, 0.89] | 0.62 [0.53, 0.73] | 0.53 [0.43, 0.66] | 0.76 [0.67, 0.83] | 26.5 | 0.81 |
 | **TCN (float)** | **0.63 [0.56, 0.72]** | **0.50 [0.38, 0.79]** | **0.55 [0.48, 0.64]** | **0.36 [0.28, 0.46]** | **0.32 [0.28, 0.40]** | **0.48 [0.41, 0.55]** | 14.1 | 1.01 |
-| **TCN (int8, deployed)** | 0.63 [0.56, 0.72] | 0.50 [0.38, 0.79] | 0.55 [0.48, 0.64] | 0.36 [0.28, 0.46] | 0.32 [0.29, 0.40] | 0.48 [0.41, 0.55] | 16.6 | 1.00 |
+| **TCN (int8)** | 0.63 [0.56, 0.72] | 0.50 [0.38, 0.79] | 0.55 [0.48, 0.64] | 0.36 [0.28, 0.46] | 0.32 [0.29, 0.40] | 0.48 [0.41, 0.55] | 16.6 | 1.00 |
 | oracle: true d at the newest sample, no prediction | 0.28 | 0.36 | 0.41 | 0.50 | 0.55 | 0.44 | 0 | 0.90 |
 | oracle: true oscillator state, extrapolated | 0.06 | 0.04 | 0.07 | 0.06 | 0.06 | 0.06 | 0 | 1.00 |
 
@@ -222,54 +228,86 @@ Values are RMS / maximum of |g·d̂| in µm, pen down, gains frozen for FC ≤ 2
 - These are estimator outputs at frozen gains. Ink error additionally depends on the servo and the stage limits.
 - A time-domain view is in `fig_example_trace.png`: the TCN tracks a 5.7 Hz, 0.69 mm tremor while BMFLC runs out of phase, and on no-tremor writing BMFLC produces ±150 µm of false correction.
 
-### c.6 The ICD §5 guard applied to the int8 TCN (test writers)
+### c.6 The v1.0 ICD §5 guard applied to the int8 TCN (test writers)
 
-With the frozen controller KF (balanced or assertive) as reference and fallback, the guard rejects **18.3 % of scored ticks**. Nearly all rejections come from the |d̂ − d̂_KF| > 150 µm for > 20 ms rule; the q_lim and 50 mm/s rules add fewer. The TCN's residual ratio goes from 0.48 to **0.94**. The KF reference is nearly inert at 250 Hz, so any correction of a tremor larger than about 0.2 mm is "rejected". See proposed change 3.
+With the frozen controller KF (balanced or assertive) as reference and fallback, the guard rejects **18.3 % of scored ticks**. Nearly all rejections come from the |d̂ − d̂_KF| > 150 µm for > 20 ms rule; the q_lim and 50 mm/s rules add fewer. The TCN's residual ratio goes from 0.48 to **0.94**. The KF reference is nearly inert at 250 Hz, so any correction of a tremor larger than about 0.2 mm is "rejected". See proposed change 3. ICD v1.1 replaced this guard (rules 1–4) and v1.2 added the confidence rule (5). Neither has been evaluated in `ml/`.
 
-### c.7 Quantisation, C port, size, time and energy
+### c.7 Exported artefact: quantisation, C port, size, time and energy
 
-**int8 vs float (`results/ml/quantization.json`, `fig_quantization.png`).**
+**Which model is exported, and why.** `ml/export/` holds **`tcn_s_nofest`**: the `tcn_s` network trained with the f_est channel held at zero (`python3 -m ml.train --no-fest`). It implements ICD §5 v1.1, whose input is the 64 increments (dx, dy) only.
 
-- RMS prediction difference: 11.9 µm (test), 12.8 µm (holdout), 6.2 µm (feature course), 8.2 µm (realism).
-- All-band RR: 0.4752 → 0.4764 (test), 0.552 → 0.554 (holdout).
-- FC at unit gain: 13.9 → 16.6 µm.
-- Activation saturation is below 0.012 % per layer; the output never saturates.
-- Model hash: SHA-256 `…71feeb47` (low 32 bits for event 0x0005).
+- v1.1 dropped f_est because it adds nothing measurable (§c.9): test 0.469 without it against 0.475 with it. Validation agrees (0.476 against 0.486), so the choice does not rest on the test set.
+- The model was trained in the 3-channel layout. For export, `models.drop_fest` removes the two level-1 weight columns that only ever multiplied the zero channel, leaving a genuine 2-channel network. Predictions are unchanged: the difference was 0.0 µm on five test recordings, and a unit test checks it on synthetic and real weights.
+- `tcn_s` (with f_est, v1.0) is kept and stays reproducible. `python3 -m ml.quantize --model tcn_s` regenerates `tcn_s_int8.npz` bit for bit (hash `…71feeb47`), and every figure in `quantization_tcn_s.json` equals the previous `quantization.json`. `python3 -m ml.export_c --model tcn_s` exports it to `ml/runs/export_tcn_s/`, with the same weights, test vectors and 20,000-window file as the previous `ml/export/`.
 
-**C vs Python integer reference: bit-exact (0 LSB) everywhere.** Checked on:
+**C API** (`ml/export/tcn_int8.h`). The signatures are unchanged, and the same `tcn_int8.c` and `test_host.c` serve 2 and 3 channels.
 
-- 20,000 test windows (40,000 outputs), plus 64 embedded integer windows, 32 float-API windows and 104 requantisation edge cases;
+- `TCN_CIN` comes from the generated `tcn_model.h`: 2 for the exported model, 3 for `tcn_s`. `tcn_weights.h` (parameters, private to `tcn_int8.c`) and `tcn_model.h` check each other's channel count, hash and scratch size at compile time.
+- `tcn_quantize_window(dp_um, f_est_hz, q)` and `tcn_predict(dp_um, f_est_hz, dhat_um, scratch)` keep `f_est_hz`. With `TCN_CIN == 2` it is ignored: it is neither read nor checked for NaN, and callers pass 0.0f. The host test passes NaN and checks that the output and status bits do not change.
+- A 2-argument API would read more cleanly. Keeping the signatures lets one adapter build against either export, so the old v1.0 artefact can still be compared on the target.
+- Model hash (event 0x0005 argument): `0xa57d81f6` (SHA-256 `eebeafdd…a57d81f6`). `tcn_s` was `0x71feeb47`.
+
+**Confidence.** The model outputs d̂ and status bits, but **no confidence, so any confidence byte is uncalibrated.**
+
+- ICD §5 v1.2 guard rule (5) uses the normalised confidence ĉ = byte / 255: it scales the ML share of authority by min(1, ĉ / c_full) and rejects ĉ < c_min (c_min and c_full both in 0–1).
+- The model card sets the ICD defaults c_min = 0 and c_full = 1. With them the rule has no effect until a confidence is calibrated on held-out writers (EXP-E01).
+- An adapter that fills the ICD output struct should report `TCN_CONFIDENCE_UNCALIBRATED` (255), which the ICD now requires. A byte of 0 would remove all ML authority.
+
+**int8 vs float for the exported model** (`results/ml/quantization.json`). The gains are frozen on validation for FC ≤ 25 µm (float 1.019, int8 1.017). Brackets are 95 % writer-bootstrap CIs; the paired int8 − float differences use the same resamples.
+
+| Set (writers) | float | int8 | int8 − float | RMS(float − int8) | FC float / int8 (µm) |
+|---|---|---|---|---|---|
+| test (80) | 0.469 [0.40, 0.54] | 0.472 [0.41, 0.54] | +0.003 [+0.002, +0.006] | 12.0 µm | 14.1 / 14.1 |
+| frequency holdout 7–8 Hz (30) | 0.537 [0.46, 0.62] | 0.540 [0.46, 0.63] | +0.003 [+0.001, +0.005] | 11.9 µm | 16.4 / 16.2 |
+| stress: tremor model (30) | 0.844 [0.76, 0.91] | 0.843 [0.76, 0.91] | −0.001 [−0.002, +0.000] | 15.7 µm | 14.3 / 14.2 |
+| stress: fast writing (30) | 0.695 [0.60, 0.82] | 0.689 [0.59, 0.81] | −0.007 [−0.013, −0.002] | 29.0 µm | 79.8 / 72.6 |
+| simulator realism, full band (12 seeds) | 0.957 | 0.958 | | 8.6 µm | 17.8 / 18.5 |
+| feature course (no tremor) | | | | 4.6 µm | 15.5 / 16.4 |
+
+- int8 test per band: 0.63 / 0.49 / 0.54 (7–8 Hz, holdout) / 0.35 / 0.32, against float 0.63 / 0.49 / 0.54 / 0.35 / 0.31.
+- Activation saturation is at most 0.006 % per layer on the test writers (0.011 % on validation) and 0.17 % in level 1 on the fast-writing set (clipped fast strokes). The output never saturates.
+- The simulator's 3–15 Hz scoring (§c.4) was run for the float model only: 0.72 (§c.9).
+- For comparison, `tcn_s` loses less to int8 on test (0.475 → 0.476, paired +0.001 [−0.001, +0.003]) but its no-tremor floor rises (FC 14.1 → 16.6 µm at the frozen gains). Source: `results/ml/quantization_tcn_s.json`; `fig_quantization.png` shows `tcn_s`.
+
+**C vs Python integer reference: bit-exact (0 LSB) everywhere** for the exported model. Checked on:
+
+- 20,000 test windows (40,000 outputs), plus 64 embedded integer windows (128 outputs), 32 float-API windows (64 outputs), 32 f_est-ignored checks and 104 requantisation edge cases;
 - with gcc 13.3 `-O2 -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror`;
-- with clang UBSan (trap mode: no undefined behaviour);
-- on an **emulated Cortex-M33** (QEMU 8.2.2 `mps2-an505`, built with arm-none-eabi-gcc 13.2.1 `-O2`, hard float).
+- with clang 18.1 UBSan (trap mode: no undefined behaviour);
+- on an **emulated Cortex-M33** (QEMU 8.2.2 `mps2-an505`, built with arm-none-eabi-gcc 13.2.1 `-O2`, hard float): the embedded vectors, not the 20,000-window file.
+
+The `tcn_s` export (`TCN_CIN 3`) passes the same checks with the same sources; there a NaN f_est is replaced by 0 and flagged.
 
 **ARM build** (`-mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -O2`):
 
-- `tcn_int8.o`: 1,240 B code + 7,292 B read-only data (int8 weights, int32 biases, parameter structs); no `.data` or `.bss`. With `-Os`: 862 B code.
-- RAM: 448 B scratch + 192 B int8 window, all caller-provided; 1,152 B if the caller keeps a float window.
+- `tcn_int8.o`: 1,096 B code + 7,276 B read-only data (int8 weights, int32 biases, parameter structs); no `.data` or `.bss`. With `-Os`: 822 B code. `tcn_s`: 1,240 B + 7,292 B.
+- RAM: 448 B scratch + 128 B int8 window = 576 B, all caller-provided; 1,088 B if the caller keeps a float window.
 
-**Budget** (`results/ml/budget.json`; ICD limits in the last column):
+**Budget** (`results/ml/budget.json`, `budget_table.md`; ICD limits in the last column):
 
-| Quantity | tcn_s (deployed) | tcn_m (alternative) | ICD budget |
-|---|---|---|---|
-| MAC per inference (tree) | 16,688 | 31,296 | ≤ 35,000 |
-| Parameters | 5,942 | 10,966 | |
-| Flash: weights + biases (×2) + structs | 7,376 B | 12,792 B | ≤ 32 kB |
-| Activation RAM (int8 / with float window) | 640 B / 1,152 B | 832 B / 1,344 B | ≤ 8 kB |
-| Plain C, QEMU executed instructions | 118,359 (7.1 per MAC) | ≈ 222,000 (scaled by MAC) | |
-| Plain C time at 128 MHz, CPI 1.0 / 1.3 / 1.6 | 0.92 / 1.20 / 1.48 ms | ≈ 2.3 ms | ≤ 1 ms |
-| CMSIS-NN time at 128 MHz, 0.5 / 0.15 MAC per cycle | 0.28 / 0.89 ms | 0.51 / 1.65 ms | ≤ 1 ms |
-| Energy per inference, CMSIS central / plain C at CPI 1.3 | 6.5 µJ / 28 µJ | 11.9 µJ | |
-| Power at 250 Hz, CMSIS central | 1.6 mW (CPU load 7 %) | 3.0 mW | |
-| Streaming alternative: MAC per step / state | 5,792 / 1,603 B | 10,760 / 2,075 B | |
+| Quantity | tcn_s_nofest (exported) | tcn_s (v1.0, with f_est) | tcn_m (alternative) | ICD budget |
+|---|---|---|---|---|
+| Input channels | 2 (dp_x, dp_y) | 3 (dp_x, dp_y, f_est) | 3 | |
+| MAC per inference (tree) | 16,176 | 16,688 | 31,296 | ≤ 35,000 |
+| Parameters | 5,926 | 5,942 | 10,966 | |
+| Flash: weights + biases (×2) + structs | 7,360 B | 7,376 B | 12,792 B | ≤ 32 kB |
+| ARM `-O2` object: code / read-only data | 1,096 / 7,276 B | 1,240 / 7,292 B | not built | |
+| Activation RAM (int8 / with float window) | 576 B / 1,088 B | 640 B / 1,152 B | 832 B / 1,344 B | ≤ 8 kB |
+| Plain C, QEMU executed instructions | 115,031 (7.1 per MAC) | 118,359 (7.1 per MAC) | ≈ 223,000 (scaled by MAC) | |
+| Plain C time at 128 MHz, CPI 1.0 / 1.3 / 1.6 | 0.90 / 1.17 / 1.44 ms | 0.92 / 1.20 / 1.48 ms | ≈ 2.3 ms | ≤ 1 ms |
+| CMSIS-NN time at 128 MHz, 0.5 / 0.15 MAC per cycle | 0.27 / 0.86 ms | 0.28 / 0.89 ms | 0.51 / 1.65 ms | ≤ 1 ms |
+| Energy per inference, CMSIS central / plain C at CPI 1.3 | 6.4 µJ / 27 µJ | 6.5 µJ / 28 µJ | 11.9 µJ | |
+| Power at 250 Hz, CMSIS central | 1.6 mW (CPU load 7 %) | 1.6 mW (CPU load 7 %) | 3.0 mW | |
+| Streaming alternative: MAC per step / state | 5,776 / 1,602 B | 5,792 / 1,603 B | 10,760 / 2,075 B | |
 
 Assumptions and caveats:
 
 - **Plain C:** instructions come from QEMU `-icount`, calibrated with a 2-instruction loop. QEMU is not cycle accurate, so cycles = instructions × assumed CPI, with the 8 kB flash cache assumed warm.
-- **Where plain C spends its time:** about 37 % of instructions are per-output requantisation (794 outputs, 256 of them in level 1 with only 6 MACs each).
+- **Where plain C spends its time:** in `tcn_s` about 37 % of instructions were per-output requantisation (794 outputs, 256 of them in level 1 with only 6 MACs each). The exported model has the same 794 outputs. Level 1 does 4 MACs per output instead of 6, which saves 3,328 instructions (13 per level-1 output, 6.5 per removed MAC).
 - **CMSIS-NN:** 0.5 MAC per cycle for optimised int8 on Cortex-M33 (EML-23), 0.15 for small dilated layers on M4 (EML-24), plus 300 cycles per kernel call.
 - **Energy:** 183 pJ per cycle is a CoreMark whole-SoC figure (EML-02), not an NN measurement.
-- **Consequence:** the plain-C reference meets 1 ms only if CPI ≤ 1.08. **CMSIS-NN (or equivalent SIMD kernels) is required for margin, and nRF5340 DWT cycle measurements are still missing** (EML "must be benchmarked" 1–5).
+- **Streaming:** without f_est the streaming form equals the window form exactly (unit-tested), which removes the caveat of proposed change 5.
+- **Consequence:** the plain-C reference meets 1 ms only if CPI ≤ 1.11 (`tcn_s`: 1.08). **CMSIS-NN (or equivalent SIMD kernels) is required for margin, and nRF5340 DWT cycle measurements are still missing** (EML "must be benchmarked" 1–5).
 
 ### c.8 Baseline tuning and fairness (`results/ml/baselines_tuning.json`)
 
@@ -282,13 +320,16 @@ Assumptions and caveats:
 
 | Variant | Val | Test | Stress tremor | Realism 3–15 Hz | MAC |
 |---|---|---|---|---|---|
-| tcn_s with f_est (deployed) | 0.486 | 0.475 | 0.828 | 0.728 | 16,688 |
-| tcn_s **without f_est** | 0.476 | 0.469 | 0.844 | 0.724 | 16,688 |
+| tcn_s with f_est (contract v1.0; §c.1–c.6) | 0.486 | 0.475 | 0.828 | 0.728 | 16,688 |
+| tcn_s **without f_est** (`tcn_s_nofest`, exported, v1.1) | 0.476 | 0.469 | 0.844 | 0.724 | 16,176 |
 | tcn_m (larger) | 0.449 | 0.449 | 0.815 | 0.715 | 31,296 |
 
+Float models at FC ≤ 25 µm. The int8 version of the exported model is in §c.7 (test 0.472).
+
 - **f_est adds nothing measurable.** Its source is also fragile: the balanced controller KF's f_est never leaves about 7.5 Hz, which is why the channel uses the assertive configuration.
+- **ICD v1.1 dropped f_est, so `tcn_s_nofest` is the exported artefact** (§c.7). It was trained with the f_est channel held at zero and is exported as the equivalent 2-channel network, which costs 16,176 MAC: 512 fewer than with the unused channel.
 - **tcn_m is better by 0.03 but does not fit.** It fails 1 ms in plain C (≈ 2.3 ms) and in the pessimistic CMSIS case (1.65 ms).
-- **Choice of tcn_s** was made on validation for deployment margin, not on test.
+- **The size (tcn_s)** was chosen on validation for deployment margin, not on test. Dropping f_est is also supported on validation (0.476 against 0.486).
 
 ### c.10 Figures (each stamped "SIMULATION", with a `.csv` data twin)
 
@@ -312,7 +353,7 @@ Assumptions and caveats:
 2. **Kinematic housing.** Grip compliance, friction, stick-slip and contact transitions appear only in the 60-run realism set. There, the TCN's lead drops to 0.04–0.06 (3–15 Hz).
 3. **No impaired writing.** The data has no micrographia, bradykinesia or pathological stroke shapes. The intended-motion spectrum is matched to a single literature writer (CON-25).
 4. **The output-gain / FC calibration does not transfer across writing speed.** Every method's FC tripled or worse on fast writers. A per-user calibration of the operating point is needed (§a, personalisation).
-5. **Idealised sensing.** Optical data is always valid, noise is white, and f_est comes from our 250 Hz port of the KF, not the firmware's 2 kHz estimator.
+5. **Idealised sensing.** Optical data is always valid, noise is white, and f_est comes from our 250 Hz port of the KF, not the firmware's 2 kHz estimator. The f_est point concerns `tcn_s` and the scheduled baselines; the exported model has no f_est input.
 6. **Metric scope.** RR and FC are signal-level metrics of d(t + h). They are not ink metrics. Servo lag, stage limits and the actuator are excluded (the simulator covers those).
 7. **Statistics.** Each network was trained with one seed. The bootstrap ignores gain-selection uncertainty. The realism set has 12 seeds with identical tremor specifications.
 8. **Timing.** No nRF5340 measurement exists. The QEMU instruction count is not a cycle count, and the CMSIS-NN numbers are literature assumptions.
@@ -351,7 +392,14 @@ On synthetic data this gate:
 
 ## Proposed changes to the contract (`docs/icd.md` §5)
 
-The contract is implemented as written. These are proposals only.
+These were proposed against contract v1.0. Status in ICD §5 v1.2:
+
+- Changes 1 (time stamp and horizon) and 2 (drop f_est) were adopted in v1.1. The exported artefact implements change 2 (§c.7).
+- Change 3 (guard) was adopted in v1.1 as guard rules 1–4.
+- Change 4 (output) was adopted in v1.1 as the output struct with expiry and a confidence byte, and v1.2 added the confidence rule (5).
+  - The model has no confidence output, so the confidence is uncalibrated and rule 5 stays neutral (c_min = 0, c_full = 1) until EXP-E01.
+  - The struct gives d̂ as "µm, int16"; the kernel, like the research frame (`docs/icd.md` §4.2), uses int16 in 0.1 µm.
+- Changes 5–7 are still proposals. The v1.2 budget row states the CMSIS-NN need of change 6.
 
 1. **Time stamp and horizon.** State whether h is measured from the sample's physical time or its arrival.
    - We assumed arrival, which gives an 8–9 ms physical horizon with a 2–3 ms optical latency.
@@ -392,9 +440,9 @@ On this evidence REQ-ML-001 is not met. The firmware should keep the conventiona
 - in distribution, 0.63 against at best 0.97;
 - in the simulator realism set, 0.92 and 0.84 at 4.5 and 6 Hz, against ≥ 0.98 and ≥ 0.91 for every other method.
 
-It also fits the edge budget with margin via CMSIS-NN: 16.7 k MAC, 8.5 kB flash, 640 B RAM, about 0.3 ms and 6.5 µJ.
+The exported 2-channel artefact (`tcn_s_nofest`, contract v1.1) also fits the edge budget with margin via CMSIS-NN: 16.2 k MAC, 8.4 kB flash (1.1 kB code + 7.3 kB weights), 576 B RAM, about 0.3 ms and 6.4 µJ.
 
-**Next step:** EXP-B09 bench labels and EXP-H01 recordings, then the pre-registered EXP-E01 bake-off. Guard (change 3) and f_est (change 2) should be fixed first.
+**Next step:** EXP-B09 bench labels and EXP-H01 recordings, then the pre-registered EXP-E01 bake-off. The contract already carries the guard (change 3) and f_est (change 2) fixes. EXP-E01 must also calibrate a confidence output before ICD rule 5 can do anything.
 
 ---
 
@@ -409,7 +457,7 @@ It also fits the edge budget with margin via CMSIS-NN: 16.7 k MAC, 8.5 kB flash,
 | `ml/models.py`, `ml/train.py` | TCN tree (+ streaming reference) and training |
 | `ml/metrics.py`, `ml/evaluate.py` | Metrics, gains, bootstrap, figures |
 | `ml/quantize.py` | int8 PTQ and the integer reference |
-| `ml/export_c.py`, `ml/export/` | C inference (`tcn_int8.[ch]`), generated `tcn_weights.h` and `test_vectors.h`, `test_host.c`, QEMU Cortex-M33 harness (`qemu/`) |
+| `ml/export_c.py`, `ml/export/` | C inference (`tcn_int8.[ch]`), generated `tcn_model.h` (`TCN_CIN`, name, hash), `tcn_weights.h` and `test_vectors.h`, `test_host.c`, QEMU Cortex-M33 harness (`qemu/`). Holds the exported `tcn_s_nofest`; `--model tcn_s` exports to `ml/runs/export_tcn_s/` (git-ignored) |
 | `ml/budget.py` | Compute, memory, time and energy budget |
-| `ml/model_card.md`, `data/dataset_card.md`, `data/schema/ml_sample.schema.json` | Cards and schema |
-| `results/ml/` | `dataset_manifest.json`, `baselines_tuning.json`, `train_*.json`, `quantization.json`, `export_c.json`, `budget.json`, `eval_results.json`, `headline_table.md`, `budget_table.md`, figures + CSV twins, `model/` (float `.pt` + `.json`, int8 `.npz`, AR-LS coefficients; all < 100 kB) |
+| `ml/model_card.md`, `data/dataset_card.md`, `data/schema/ml_sample.schema.json` | Cards (the model card covers the exported `tcn_s_nofest`) and schema |
+| `results/ml/` | `dataset_manifest.json`, `baselines_tuning.json`, `train_*.json`, `quantization.json` and `export_c.json` (exported model), `quantization_tcn_s.json` and `export_c_tcn_s.json` (`tcn_s`), `budget.json`, `eval_results.json`, `headline_table.md`, `budget_table.md`, figures + CSV twins, `model/` (float `.pt` + `.json`, int8 `.npz`, AR-LS coefficients; all < 100 kB) |

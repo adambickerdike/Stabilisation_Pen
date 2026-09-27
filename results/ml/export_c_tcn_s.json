@@ -1,35 +1,36 @@
 {
-  "model": "tcn_s_nofest",
-  "c_in": 2,
+  "model": "tcn_s",
+  "c_in": 3,
   "inputs": [
     "dp_x",
-    "dp_y"
+    "dp_y",
+    "f_est"
   ],
-  "icd_contract": "docs/icd.md s5 contract v1.1: no f_est input",
-  "export_dir": "ml/export",
-  "hash_sha256": "eebeafdddf00ec305404846e7953b2cad20af625996e2c12407f4d02a57d81f6",
-  "hash_low32_hex": "0xa57d81f6",
+  "icd_contract": "docs/icd.md s5 contract v1.0: f_est input channel",
+  "export_dir": "ml/runs/export_tcn_s",
+  "hash_sha256": "d2d2c237ad2dbef65fd09e09600d2652e4113df73f70430e9a296fea71feeb47",
+  "hash_low32_hex": "0x71feeb47",
   "test_vectors": {
     "n_int": 64,
     "n_float": 32,
     "n_requant": 104,
     "n_binary": 20000,
-    "c_in": 2,
+    "c_in": 3,
     "int_out_range_01um": [
-      -7125,
-      4331
+      -7150,
+      4741
     ]
   },
   "generated": [
-    "ml/export/tcn_model.h",
-    "ml/export/tcn_weights.h",
-    "ml/export/test_vectors.h"
+    "ml/runs/export_tcn_s/tcn_model.h",
+    "ml/runs/export_tcn_s/tcn_weights.h",
+    "ml/runs/export_tcn_s/test_vectors.h"
   ],
   "scratch_bytes": 448,
-  "input_window_int8_B": 128,
+  "input_window_int8_B": 192,
   "host_gcc": {
     "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
-    "cmd": "gcc -O2 -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror -I ml/export ml/export/tcn_int8.c ml/export/test_host.c -lm -o test_host",
+    "cmd": "gcc -O2 -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror -I ml/runs/export_tcn_s ml/runs/export_tcn_s/tcn_int8.c ml/runs/export_tcn_s/test_host.c -lm -o test_host",
     "build_rc": 0,
     "run_rc": 0,
     "parsed": {
@@ -46,7 +47,7 @@
       "fest_api": {
         "n": "32",
         "mismatches": "0",
-        "mode": "ignored"
+        "mode": "nan_flagged"
       },
       "requantize_cases": {
         "n": "104",
@@ -58,14 +59,14 @@
         "max_abs_diff_lsb": "0"
       },
       "model": {
-        "name": "tcn_s_nofest",
-        "cin": "2",
-        "hash_low32": "0xa57d81f6",
+        "name": "tcn_s",
+        "cin": "3",
+        "hash_low32": "0x71feeb47",
         "scratch_bytes": "448"
       },
       "RESULT": "PASS"
     },
-    "stdout": "int_vectors n=128 mismatches=0 max_abs_diff_lsb=0\nfloat_vectors n=64 mismatches=0 max_abs_diff_lsb=0\nfest_api n=32 mismatches=0 mode=ignored\nrequantize_cases n=104 mismatches=0\nfile_vectors n=40000 mismatches=0 max_abs_diff_lsb=0\nmodel name=tcn_s_nofest cin=2 hash_low32=0xa57d81f6 scratch_bytes=448\nRESULT PASS\n"
+    "stdout": "int_vectors n=128 mismatches=0 max_abs_diff_lsb=0\nfloat_vectors n=64 mismatches=0 max_abs_diff_lsb=0\nfest_api n=32 mismatches=0 mode=nan_flagged\nrequantize_cases n=104 mismatches=0\nfile_vectors n=40000 mismatches=0 max_abs_diff_lsb=0\nmodel name=tcn_s cin=3 hash_low32=0x71feeb47 scratch_bytes=448\nRESULT PASS\n"
   },
   "host_clang_sanitizers": {
     "cmd": "clang -O1 -fsanitize=undefined -fsanitize-trap=undefined ...",
@@ -85,7 +86,7 @@
       "fest_api": {
         "n": "32",
         "mismatches": "0",
-        "mode": "ignored"
+        "mode": "nan_flagged"
       },
       "requantize_cases": {
         "n": "104",
@@ -97,9 +98,9 @@
         "max_abs_diff_lsb": "0"
       },
       "model": {
-        "name": "tcn_s_nofest",
-        "cin": "2",
-        "hash_low32": "0xa57d81f6",
+        "name": "tcn_s",
+        "cin": "3",
+        "hash_low32": "0x71feeb47",
         "scratch_bytes": "448"
       },
       "RESULT": "PASS"
@@ -108,16 +109,16 @@
   "arm_m33": {
     "compiler": "arm-none-eabi-gcc (15:13.2.rel1-2) 13.2.1 20231009",
     "flags": {
-      "-O2": "arm-none-eabi-gcc -mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -O2 -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror -ffunction-sections -fdata-sections -I ml/export -c ml/export/tcn_int8.c",
-      "-Os": "arm-none-eabi-gcc -mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Os -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror -ffunction-sections -fdata-sections -I ml/export -c ml/export/tcn_int8.c"
+      "-O2": "arm-none-eabi-gcc -mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -O2 -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror -ffunction-sections -fdata-sections -I ml/runs/export_tcn_s -c ml/runs/export_tcn_s/tcn_int8.c",
+      "-Os": "arm-none-eabi-gcc -mcpu=cortex-m33 -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Os -std=c99 -ffp-contract=off -Wall -Wextra -Wpedantic -Werror -ffunction-sections -fdata-sections -I ml/runs/export_tcn_s -c ml/runs/export_tcn_s/tcn_int8.c"
     },
     "sections": {
       "-O2": {
-        "text_code_B": 1096,
-        "rodata_B": 7276,
+        "text_code_B": 1240,
+        "rodata_B": 7292,
         "data_B": 0,
         "bss_B": 0,
-        "flash_total_B": 8372,
+        "flash_total_B": 8532,
         "detail": {
           ".text": 0,
           ".data": 0,
@@ -126,7 +127,7 @@
           ".text.tcn_requantize": 68,
           ".text.tcn_scratch_bytes": 8,
           ".text.tcn_run_q": 276,
-          ".text.tcn_quantize_window": 296,
+          ".text.tcn_quantize_window": 440,
           ".text.tcn_predict": 112,
           ".text.tcn_model_hash_low32": 8,
           ".rodata.TCN_HEAD": 44,
@@ -153,17 +154,17 @@
           ".rodata.TCN_L1_W": 192,
           ".rodata.TCN_L0_BF": 32,
           ".rodata.TCN_L0_B": 32,
-          ".rodata.TCN_L0_W": 32,
+          ".rodata.TCN_L0_W": 48,
           ".comment": 39,
           ".ARM.attributes": 58
         }
       },
       "-Os": {
-        "text_code_B": 822,
-        "rodata_B": 7268,
+        "text_code_B": 862,
+        "rodata_B": 7284,
         "data_B": 0,
         "bss_B": 0,
-        "flash_total_B": 8090,
+        "flash_total_B": 8146,
         "detail": {
           ".text": 0,
           ".data": 0,
@@ -174,7 +175,7 @@
           ".text.tcn_fc_s8": 102,
           ".text.tcn_scratch_bytes": 6,
           ".text.tcn_run_q": 212,
-          ".text.tcn_quantize_window": 72,
+          ".text.tcn_quantize_window": 112,
           ".text.tcn_predict": 112,
           ".text.tcn_model_hash_low32": 8,
           ".rodata.TCN_HEAD": 44,
@@ -200,7 +201,7 @@
           ".rodata.TCN_L1_W": 192,
           ".rodata.TCN_L0_BF": 32,
           ".rodata.TCN_L0_B": 32,
-          ".rodata.TCN_L0_W": 32,
+          ".rodata.TCN_L0_W": 48,
           ".comment": 39,
           ".ARM.attributes": 58
         }
@@ -227,7 +228,7 @@
       "fest_api": {
         "n": "32",
         "mismatches": "0",
-        "mode": "ignored"
+        "mode": "nan_flagged"
       },
       "requantize_cases": {
         "n": "104",
@@ -235,30 +236,30 @@
       },
       "bench": {
         "reps": "16",
-        "systick_ticks": "36810"
+        "systick_ticks": "37875"
       },
       "calib": {
         "loop_instructions": "200000",
         "systick_ticks": "4000"
       },
       "model": {
-        "name": "tcn_s_nofest",
-        "cin": "2",
-        "hash_low32": "0xa57d81f6",
+        "name": "tcn_s",
+        "cin": "3",
+        "hash_low32": "0x71feeb47",
         "scratch_bytes": "448"
       },
       "RESULT": "PASS"
     },
-    "stdout": "int_vectors n=128 mismatches=0 max_abs_diff_lsb=0\nfloat_vectors n=64 mismatches=0 max_abs_diff_lsb=0\nfest_api n=32 mismatches=0 mode=ignored\nrequantize_cases n=104 mismatches=0\nbench reps=16 systick_ticks=36810\ncalib loop_instructions=200000 systick_ticks=4000\nmodel name=tcn_s_nofest cin=2 hash_low32=0xa57d81f6 scratch_bytes=448\nRESULT PASS\n",
-    "instructions_per_inference": 115031.25
+    "stdout": "int_vectors n=128 mismatches=0 max_abs_diff_lsb=0\nfloat_vectors n=64 mismatches=0 max_abs_diff_lsb=0\nfest_api n=32 mismatches=0 mode=nan_flagged\nrequantize_cases n=104 mismatches=0\nbench reps=16 systick_ticks=37875\ncalib loop_instructions=200000 systick_ticks=4000\nmodel name=tcn_s cin=3 hash_low32=0x71feeb47 scratch_bytes=448\nRESULT PASS\n",
+    "instructions_per_inference": 118359.375
   },
   "meta": {
     "evidence_status": "SIMULATION / synthetic data",
-    "generated_utc": "2026-09-27T03:58:10+00:00",
+    "generated_utc": "2026-09-27T03:58:03+00:00",
     "git_revision": "8dba406-dirty",
     "parameters_version": "0.4.3",
     "parameters_sha256_16": "3fbe200f8ff5c330",
-    "command": "export_c.py",
+    "command": "export_c.py --model tcn_s",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
@@ -267,6 +268,6 @@
     "evidence_detail": "SIMULATION / synthetic data: synthetic handwriting (sigma-lognormal, stabpen.signals) plus synthetic tremor; not human recordings, not bench measurements, no clinical claim",
     "torch": "2.14.0+cpu",
     "numba": "0.67.0",
-    "elapsed_s": 4.735648155212402
+    "elapsed_s": 5.226693868637085
   }
 }
