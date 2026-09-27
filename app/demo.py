@@ -164,9 +164,11 @@ def cer_stress(logs, truths, cers=(0.0, 0.05, 0.1, 0.2, 0.3), seeds=range(5)) ->
               ("What do I need to check on the hall sensor?", nids[1], "l1")]
         for c in cers:
             for sd in seeds:
+                achieved = []
                 for nid, tp in zip(nids, truths):
                     base = recognize.GroundTruthRecognizer.from_file(tp)
-                    recognize.run_recognizer(store, nid, recognize.ErrorInjectingRecognizer(base, c, seed=sd))
+                    lay = recognize.run_recognizer(store, nid, recognize.ErrorInjectingRecognizer(base, c, seed=sd))
+                    achieved.append(lay["params"]["achieved_cer_vs_base"])
                     idx.index_note(store, nid)
                 found = total = 0
                 for nid, tp in zip(nids, truths):
@@ -186,13 +188,15 @@ def cer_stress(logs, truths, cers=(0.0, 0.05, 0.1, 0.2, 0.3), seeds=range(5)) ->
                         answered += 1
                         correct += any(cc["note_id"] == nid and cc["span_id"] == line
                                        for s in r.sentences for cc in s.citations)
-                rows.append({"target_cer": c, "seed": sd, "word_search_recall": found / total,
+                rows.append({"target_cer": c, "seed": sd, "achieved_cer": round(float(np.mean(achieved)), 4),
+                             "word_search_recall": found / total,
                              "questions_answered": answered, "questions_citing_correct_line": correct})
         idx.close()
     summ = []
     for c in cers:
         sub = [r for r in rows if r["target_cer"] == c]
         summ.append({"target_cer": c, "n_seeds": len(sub),
+                     "achieved_cer_mean": round(float(np.mean([r["achieved_cer"] for r in sub])), 3),
                      "word_search_recall_mean": round(float(np.mean([r["word_search_recall"] for r in sub])), 3),
                      "word_search_recall_min": round(float(np.min([r["word_search_recall"] for r in sub])), 3),
                      "answered_of_2_mean": round(float(np.mean([r["questions_answered"] for r in sub])), 2),

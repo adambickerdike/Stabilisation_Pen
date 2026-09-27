@@ -19,7 +19,8 @@ recognize   recogniser interface, null / ground-truth / error-injection, ML Kit 
 search      SQLite FTS5 index, hits linked to stroke ids and page bounding boxes
 grounded    source-grounded assistant with cited sentences stored as ai_summary layers
 synth       synthetic sessions (glyph polylines timed with stabpen.signals; simulator traces)
-cli         ``python -m penapp import|render|search|ask|fidelity``
+vectors     ICD section 4 example vector for cross-team parser checks
+cli         ``python -m penapp import|render|search|ask|fidelity`` (+ list, verify, edit)
 """
 from __future__ import annotations
 

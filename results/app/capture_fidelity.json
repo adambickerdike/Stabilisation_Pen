@@ -2,8 +2,8 @@
   "meta": {
     "evidence_status": "SIMULATION-DERIVED ANALYSIS: synthetic handwriting and tremor through the coupled pen simulator (model M1); not a measurement of any person or device",
     "generated_by": "penapp.capture.fidelity@0.1.0",
-    "generated_utc": "2026-09-27T02:15:46.628Z",
-    "git_revision": "876c866-dirty",
+    "generated_utc": "2026-09-27T02:18:03.824Z",
+    "git_revision": "65f505b-dirty",
     "environment": {
       "python": "3.11.15",
       "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",

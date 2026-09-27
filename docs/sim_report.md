@@ -58,6 +58,15 @@ Distortion of intended writing without tremor: Kalman balanced 62 µm, assertive
 
 **Frequency-gate fragility.** Small plant changes (for example, filtering the contact feedforward) moved balanced-Kalman distortion between 5 and 45 µm on the same tuning seeds, because the gate opens or closes over whole segments. A hysteretic, confidence-weighted gate is future work.
 
+**The "balanced" Kalman profile is effectively inert against tremor.** The mechanism, found by the app and ML workstreams and confirmed here:
+
+1. Its intent model (q_j = 10) absorbs the tremor as intended motion.
+2. The oscillator's frequency estimate therefore stays near its 7 Hz prior.
+3. The 7.5 Hz gate stays closed with tremor present. For seed 200 at 9 Hz, the ink trace is byte-identical to the neutral pen (`results/sim/nominal/traces_kf_bal.npz` = `traces_neutral.npz`).
+4. On tremor-free writing, the tracker occasionally crosses the gate, giving 4–81 µm of false correction.
+
+The tuning objective selected "do almost nothing" as the best balance on synthetic writing, which is itself evidence for the separability limit. The gate should not be driven by the estimator's own tracker: a separate spectral detector with hysteresis is the next controller revision (DEC-009 revisit).
+
 ### 3.3 Guided (template) mode → features
 
 Path distance to the template, RMS, 6 Hz / 0.3 mm tremor, 4 seeds (`results/sim/guided_path_distance.json`):

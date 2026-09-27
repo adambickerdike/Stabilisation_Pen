@@ -2,7 +2,7 @@
   "meta": {
     "evidence_status": "SYNTHETIC DEMO - synthetic handwriting and simulator traces; no human data, no measurements, no network calls",
     "generated_by": "app/demo.py (penapp 0.1.0)",
-    "git_revision": "876c866-dirty",
+    "git_revision": "65f505b-dirty",
     "environment": {
       "python": "3.11.15",
       "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -10,7 +10,7 @@
       "sqlite": "3.45.1"
     },
     "clock": "note-store created_utc/imported_utc values come from a fixed synthetic clock (2026-09-01T09:00:00Z + 1 ms per call) so the store is reproducible",
-    "elapsed_s": 25.3
+    "elapsed_s": 2.7
   },
   "sample_files": {
     "demo_text_errands": {
@@ -711,6 +711,7 @@
       {
         "target_cer": 0.0,
         "n_seeds": 5,
+        "achieved_cer_mean": 0.0,
         "word_search_recall_mean": 1.0,
         "word_search_recall_min": 1.0,
         "answered_of_2_mean": 2.0,
@@ -719,6 +720,7 @@
       {
         "target_cer": 0.05,
         "n_seeds": 5,
+        "achieved_cer_mean": 0.028,
         "word_search_recall_mean": 0.825,
         "word_search_recall_min": 0.667,
         "answered_of_2_mean": 1.8,
@@ -727,6 +729,7 @@
       {
         "target_cer": 0.1,
         "n_seeds": 5,
+        "achieved_cer_mean": 0.061,
         "word_search_recall_mean": 0.692,
         "word_search_recall_min": 0.458,
         "answered_of_2_mean": 1.6,
@@ -735,6 +738,7 @@
       {
         "target_cer": 0.2,
         "n_seeds": 5,
+        "achieved_cer_mean": 0.143,
         "word_search_recall_mean": 0.425,
         "word_search_recall_min": 0.292,
         "answered_of_2_mean": 1.6,
@@ -743,6 +747,7 @@
       {
         "target_cer": 0.3,
         "n_seeds": 5,
+        "achieved_cer_mean": 0.232,
         "word_search_recall_mean": 0.233,
         "word_search_recall_min": 0.042,
         "answered_of_2_mean": 0.8,
@@ -753,6 +758,7 @@
       {
         "target_cer": 0.0,
         "seed": 0,
+        "achieved_cer": 0.0,
         "word_search_recall": 1.0,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -760,6 +766,7 @@
       {
         "target_cer": 0.0,
         "seed": 1,
+        "achieved_cer": 0.0,
         "word_search_recall": 1.0,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -767,6 +774,7 @@
       {
         "target_cer": 0.0,
         "seed": 2,
+        "achieved_cer": 0.0,
         "word_search_recall": 1.0,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -774,6 +782,7 @@
       {
         "target_cer": 0.0,
         "seed": 3,
+        "achieved_cer": 0.0,
         "word_search_recall": 1.0,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -781,6 +790,7 @@
       {
         "target_cer": 0.0,
         "seed": 4,
+        "achieved_cer": 0.0,
         "word_search_recall": 1.0,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -788,6 +798,7 @@
       {
         "target_cer": 0.05,
         "seed": 0,
+        "achieved_cer": 0.0534,
         "word_search_recall": 0.6666666666666666,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -795,6 +806,7 @@
       {
         "target_cer": 0.05,
         "seed": 1,
+        "achieved_cer": 0.0335,
         "word_search_recall": 0.7916666666666666,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -802,6 +814,7 @@
       {
         "target_cer": 0.05,
         "seed": 2,
+        "achieved_cer": 0.0134,
         "word_search_recall": 0.9166666666666666,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -809,6 +822,7 @@
       {
         "target_cer": 0.05,
         "seed": 3,
+        "achieved_cer": 0.0267,
         "word_search_recall": 0.8333333333333334,
         "questions_answered": 1,
         "questions_citing_correct_line": 1
@@ -816,6 +830,7 @@
       {
         "target_cer": 0.05,
         "seed": 4,
+        "achieved_cer": 0.0134,
         "word_search_recall": 0.9166666666666666,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -823,6 +838,7 @@
       {
         "target_cer": 0.1,
         "seed": 0,
+        "achieved_cer": 0.0999,
         "word_search_recall": 0.4583333333333333,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -830,6 +846,7 @@
       {
         "target_cer": 0.1,
         "seed": 1,
+        "achieved_cer": 0.0667,
         "word_search_recall": 0.7083333333333334,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -837,6 +854,7 @@
       {
         "target_cer": 0.1,
         "seed": 2,
+        "achieved_cer": 0.0465,
         "word_search_recall": 0.8333333333333334,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -844,6 +862,7 @@
       {
         "target_cer": 0.1,
         "seed": 3,
+        "achieved_cer": 0.0667,
         "word_search_recall": 0.625,
         "questions_answered": 0,
         "questions_citing_correct_line": 0
@@ -851,6 +870,7 @@
       {
         "target_cer": 0.1,
         "seed": 4,
+        "achieved_cer": 0.0267,
         "word_search_recall": 0.8333333333333334,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -858,6 +878,7 @@
       {
         "target_cer": 0.2,
         "seed": 0,
+        "achieved_cer": 0.1532,
         "word_search_recall": 0.3333333333333333,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -865,6 +886,7 @@
       {
         "target_cer": 0.2,
         "seed": 1,
+        "achieved_cer": 0.1468,
         "word_search_recall": 0.2916666666666667,
         "questions_answered": 0,
         "questions_citing_correct_line": 0
@@ -872,6 +894,7 @@
       {
         "target_cer": 0.2,
         "seed": 2,
+        "achieved_cer": 0.1669,
         "word_search_recall": 0.5416666666666666,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -879,6 +902,7 @@
       {
         "target_cer": 0.2,
         "seed": 3,
+        "achieved_cer": 0.1464,
         "word_search_recall": 0.3333333333333333,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -886,6 +910,7 @@
       {
         "target_cer": 0.2,
         "seed": 4,
+        "achieved_cer": 0.0999,
         "word_search_recall": 0.625,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -893,6 +918,7 @@
       {
         "target_cer": 0.3,
         "seed": 0,
+        "achieved_cer": 0.247,
         "word_search_recall": 0.2916666666666667,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -900,6 +926,7 @@
       {
         "target_cer": 0.3,
         "seed": 1,
+        "achieved_cer": 0.26,
         "word_search_recall": 0.125,
         "questions_answered": 0,
         "questions_citing_correct_line": 0
@@ -907,6 +934,7 @@
       {
         "target_cer": 0.3,
         "seed": 2,
+        "achieved_cer": 0.207,
         "word_search_recall": 0.375,
         "questions_answered": 2,
         "questions_citing_correct_line": 2
@@ -914,6 +942,7 @@
       {
         "target_cer": 0.3,
         "seed": 3,
+        "achieved_cer": 0.2802,
         "word_search_recall": 0.041666666666666664,
         "questions_answered": 0,
         "questions_citing_correct_line": 0
@@ -921,6 +950,7 @@
       {
         "target_cer": 0.3,
         "seed": 4,
+        "achieved_cer": 0.1666,
         "word_search_recall": 0.3333333333333333,
         "questions_answered": 0,
         "questions_citing_correct_line": 0

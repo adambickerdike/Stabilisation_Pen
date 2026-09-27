@@ -56,7 +56,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | 4 Simulation | Validation plan per model | drafted | `docs/physics.md` (table), `validation/` |
 | 5 ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines tuned on validation; causal TCN; int8 quantisation (no loss); C export bit-exact with the Python reference, also on emulated Cortex-M33; MCU budget (16.7 k MAC, 7.3 kB weights); model and dataset cards; 15 tests | executed (synthetic only) · real data pending (EXP-H01) | `ml/README.md`, `results/ml/` |
 | 6 Firmware | Control core, safety, logging, host tests, ARM build | see `firmware/README.md` | `firmware/`, `results/firmware/` |
-| 6 Product | Capture format, note store, recognition interface, search, grounded AI | see `app/README.md` | `app/`, `results/app/` |
+| 6 Product | ICD log reader/writer with CRC and resync (parses the firmware's golden log with zero issues); immutable content-addressed note store with provenance-carrying derived layers; segmentation; SVG rendering; recogniser interface (on-device adapter specified); FTS5 search with stroke citations; grounded assistant that refuses unsupported, uncited or clinical answers; capture-fidelity analysis; 136 tests | executed (synthetic data) · real recogniser pending | `app/README.md`, `results/app/` |
 | 7 Validation | Bench protocols, acceptance criteria, prototype stages, human study plan | see `validation/README.md` | `validation/` |
 | — | Interfaces, decisions, plan, environment | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md` |
 
