@@ -74,6 +74,43 @@ static void put_i32(uint8_t *p, int32_t v) { le_put_u32(p, (uint32_t)v); }
 static int16_t get_i16(const uint8_t *p) { return (int16_t)le_get_u16(p); }
 static int32_t get_i32(const uint8_t *p) { return (int32_t)le_get_u32(p); }
 
+/* ------------------------------------------------------------------ session clock */
+void penlog_clock_start(penlog_clock_t *c, uint32_t now32)
+{
+    const uint64_t t = c->init ? c->t64_us + (uint64_t)(uint32_t)(now32 - c->last32) : (uint64_t)now32;
+    c->t64_us = t;
+    c->t0_us = t;
+    c->last32 = now32;
+    c->wraps = 0;
+    c->init = true;
+}
+
+bool penlog_clock_update(penlog_clock_t *c, uint32_t now32)
+{
+    if (!c->init) {
+        penlog_clock_start(c, now32);
+        return false;
+    }
+    c->t64_us += (uint64_t)(uint32_t)(now32 - c->last32);   /* modular difference: hardware wrap safe */
+    c->last32 = now32;
+    const uint32_t w = (uint32_t)((c->t64_us - c->t0_us) >> 32);
+    if (w != c->wraps) {
+        c->wraps = w;
+        return true;
+    }
+    return false;
+}
+
+uint32_t penlog_clock_us32(const penlog_clock_t *c)
+{
+    return (uint32_t)((c->t64_us - c->t0_us) & 0xFFFFFFFFull);
+}
+
+uint32_t penlog_clock_ms32(const penlog_clock_t *c)
+{
+    return (uint32_t)(((c->t64_us - c->t0_us) / 1000u) & 0xFFFFFFFFull);
+}
+
 /* ------------------------------------------------------------------ header */
 void penlog_encode_header(const penlog_header_t *h, uint8_t out[PENLOG_HEADER_LEN])
 {
@@ -318,7 +355,7 @@ static int32_t sat_i32(float v)
         return INT32_MAX;
     }
     if (r <= -2147483648.0f) {
-        return INT32_MIN;
+        return INT32_MIN + 1;   /* INT32_MIN is reserved: PENLOG_PH_UNDEFINED */
     }
     return (int32_t)r;
 }
@@ -378,6 +415,12 @@ void penlog_research_from_si(const penlog_research_si_t *si, penlog_research_t *
     r->t_coil = sat_i16(si->t_coil * 100.0f);
     r->theta = sat_i16(si->theta * RAD2CDEG);
     r->phi = sat_i16(si->phi * RAD2CDEG);
+}
+
+void penlog_research_ph_undefined(penlog_research_t *r)
+{
+    r->p_h[0] = PENLOG_PH_UNDEFINED;
+    r->p_h[1] = PENLOG_PH_UNDEFINED;
 }
 
 void penlog_research_to_si(const penlog_research_t *r, penlog_research_si_t *si)

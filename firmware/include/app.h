@@ -101,11 +101,17 @@ typedef struct {
     float iref_out[2];       /* what the current loop is asked to track */
     uint16_t faults_logged;
     pen_mode_t mode_logged;
-    uint32_t t_us_last;
-    /* capture layer */
+    /* session clock (64-bit extension of the hardware us counter) */
+    penlog_clock_t clk;
+    /* capture layer: 200 Hz stroke samples plus exact pen-down / pen-up samples */
     uint32_t stroke_id;
     bool page_origin_set;
-    float page_origin[2];
+    float page_origin[2];     /* deposited-ink page position at the first pen-down */
+    bool cap_prev_contact;
+    bool cap_last_emitted;
+    uint32_t cap_phase;
+    penlog_stroke_t cap_last;
+    uint32_t n_stroke_boundary;
     /* logging */
     pen_log_sink_t sink;
     void *sink_ctx;

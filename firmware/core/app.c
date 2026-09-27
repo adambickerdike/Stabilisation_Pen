@@ -80,6 +80,7 @@ void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog)
     a->pen_up = true;
     a->mode_logged = PEN_MODE_OFF;
     a->offset_cal_pending = true;
+    penlog_clock_start(&a->clk, hal_time_us());
     hal_act_en_req(false);
     hal_drv_sleep_n(false);
 }
@@ -95,7 +96,8 @@ bool pen_app_apply_user_cal(pen_app_t *a, const cal_user_t *u)
     a->ctrl.prm.g_max = u->g_max;
     a->ctrl.prm.q_lim = u->q_lim_m;
     a->ctrl.prm.gamma = u->gamma;
-    log_event(a, hal_time_us(), PEN_EV_CAL_APPLIED, CAL_USER);
+    (void)penlog_clock_update(&a->clk, hal_time_us());
+    log_event(a, penlog_clock_us32(&a->clk), PEN_EV_CAL_APPLIED, CAL_USER);
     return true;
 }
 
@@ -140,11 +142,12 @@ static pen_est_t est_for_mode(pen_mode_t m)
 
 void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
 {
-    const uint32_t t_us = hal_time_us();
-    if (a->tick > 0u && t_us < a->t_us_last) {
-        log_event(a, t_us, PEN_EV_TIME_WRAP, 0);
+    const uint32_t t_hw = hal_time_us();
+    const bool wrapped = penlog_clock_update(&a->clk, t_hw);
+    const uint32_t t_us = penlog_clock_us32(&a->clk);   /* us since session start (log time base) */
+    if (wrapped) {
+        log_event(a, t_us, PEN_EV_TIME_WRAP, (int32_t)a->clk.wraps);   /* arg = cumulative wrap count */
     }
-    a->t_us_last = t_us;
     safety_tick_begin(&a->sf);
 
     /* ---- 1. current-loop accumulators of the last 20 PWM periods ---- */
@@ -226,7 +229,7 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
     (void)safety_optical_check(&a->sf, a->opt_valid, a->in_contact, assisting);
     /* ML predictor (ICD s5 v1.1): samples stamped at acquisition = tick time
      * minus the IMU group delay the fusion leaves */
-    const uint32_t t_acq = t_us - (uint32_t)lrintf(PEN_IMU_DELAY * 1e6f);
+    const uint32_t t_acq = t_hw - (uint32_t)lrintf(PEN_IMU_DELAY * 1e6f);
     ml_guard_realised(&a->mlg, a->ph, t_acq, a->opt_valid);
     if (!a->opt_valid) {
         ml_window_reset(&a->mlw);
@@ -398,7 +401,7 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
             r.qr[ax] = a->ctrl.servo.qr[ax];
             r.i[ax] = a->i_mean[ax];
             r.iref[ax] = iref[ax];
-            r.p_h[ax] = a->ph[ax];
+            r.p_h[ax] = a->ph[ax] - a->page_origin[ax];   /* page-origin relative (ICD s4 note) */
             r.dhat[ax] = a->ctrl.dhat[ax];
             r.imu_a[ax] = sens->imu_a_page[ax];
         }
@@ -423,12 +426,17 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         r.phi = a->fu.phi;
         penlog_research_t raw;
         penlog_research_from_si(&r, &raw);
+        if (!a->page_origin_set) {
+            penlog_research_ph_undefined(&raw);
+        }
         uint8_t p[PENLOG_RESEARCH_LEN];
         penlog_pack_research(&raw, p);
         emit(a, PENLOG_T_RESEARCH, p, sizeof(p));
     }
-    if (a->in_contact && (a->tick % 10u) == 0u) {
-        /* deposited-ink position = p_H + J q (page frame, origin = first contact) */
+    /* ---- 12. capture layer (ICD s4.3): 200 Hz inside a stroke, plus one sample
+     * at the pen-down tick and one at the last in-contact tick (pen-up) ---- */
+    if (a->in_contact) {
+        /* deposited-ink position = p_H + J q (page frame, origin = first pen-down) */
         float dpage[2];
         jac_stage_to_page(&a->ctrl.jac, a->q, dpage);
         const float x = a->ph[0] + dpage[0];
@@ -439,11 +447,29 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
             a->page_origin_set = true;
         }
         penlog_stroke_t s;
-        penlog_stroke_from_si(t_us / 1000u, a->stroke_id, x - a->page_origin[0], y - a->page_origin[1], a->f_ax,
-                              a->fu.theta, a->fu.phi, &s);
+        penlog_stroke_from_si(penlog_clock_ms32(&a->clk), a->stroke_id, x - a->page_origin[0],
+                              y - a->page_origin[1], a->f_ax, a->fu.theta, a->fu.phi, &s);
+        const bool down_edge = !a->cap_prev_contact;
+        if (down_edge) {
+            a->cap_phase = 0;
+        }
+        a->cap_last_emitted = (a->cap_phase % 10u) == 0u;   /* includes the pen-down tick */
+        if (a->cap_last_emitted) {
+            uint8_t p[PENLOG_STROKE_LEN];
+            penlog_pack_stroke(&s, p);
+            emit(a, PENLOG_T_STROKE, p, sizeof(p));
+            if (down_edge) {
+                a->n_stroke_boundary++;
+            }
+        }
+        a->cap_phase++;
+        a->cap_last = s;
+    } else if (a->cap_prev_contact && !a->cap_last_emitted) {
         uint8_t p[PENLOG_STROKE_LEN];
-        penlog_pack_stroke(&s, p);
+        penlog_pack_stroke(&a->cap_last, p);   /* pen-up boundary sample */
         emit(a, PENLOG_T_STROKE, p, sizeof(p));
+        a->n_stroke_boundary++;
     }
+    a->cap_prev_contact = a->in_contact;
     a->tick++;
 }

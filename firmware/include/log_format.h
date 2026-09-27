@@ -15,9 +15,17 @@
  *        cal_type u8 | cal_version u16 | record bytes as stored in flash (calib.h)
  *   0x05 annotation: NOT DEFINED in the ICD. Proposed here:
  *        t_us u32 | UTF-8 text (no terminator)
- * Stroke phi: ICD s4.3 says "u8, 0.5 deg (phi 0-360 as phi/2)", which does not
- * fit a u8 at 0.5 deg; implemented as round(phi_deg / 2) mod 180 (2 deg steps),
- * README discrepancy D5.
+ * Stroke phi: u8 in 2-degree steps, round(phi_deg / 2) mod 180 (0-358 deg);
+ * theta u8 in 0.5-degree steps. (ICD s4.3 v1.0 wrote "0.5 deg ... phi/2",
+ * which does not fit a u8; the project lead confirmed the 2-degree coding and
+ * the ICD is being corrected, README D5.)
+ * Time: research t_us = us since session start (wraps every 71.6 min; event
+ * 0x0009 carries the cumulative wrap count); stroke t_ms = ms since session
+ * start from a 64-bit time base (wraps only after 49.7 days). penlog_clock_t
+ * extends the 32-bit hardware microsecond counter to 64 bits.
+ * Positions: stroke x/y and research p_H are relative to the session page
+ * origin = deposited-ink position at the first pen-down of the session
+ * (research p_H = INT32_MIN before that origin exists).
  */
 #ifndef PEN_LOG_FORMAT_H
 #define PEN_LOG_FORMAT_H
@@ -119,6 +127,26 @@ typedef struct {
     int32_t arg;
 } penlog_event_t;
 
+/* ---- session clock ---- */
+typedef struct {
+    uint64_t t64_us;     /* extended hardware time */
+    uint64_t t0_us;      /* session start */
+    uint32_t last32;
+    uint32_t wraps;      /* wraps of the session-relative 32-bit us time */
+    bool init;
+} penlog_clock_t;
+
+/* Start a session at the current 32-bit hardware microsecond count. */
+void penlog_clock_start(penlog_clock_t *c, uint32_t now32);
+/* Advance with the hardware counter (call at least once per 71 min). Returns
+ * true when the session-relative 32-bit microsecond time wrapped: log event
+ * 0x0009 with arg = c->wraps. */
+bool penlog_clock_update(penlog_clock_t *c, uint32_t now32);
+uint32_t penlog_clock_us32(const penlog_clock_t *c);   /* research frame / event t_us */
+uint32_t penlog_clock_ms32(const penlog_clock_t *c);   /* stroke t_ms */
+
+#define PENLOG_PH_UNDEFINED INT32_MIN   /* research p_H before the page origin exists */
+
 /* ---- header ---- */
 void penlog_encode_header(const penlog_header_t *h, uint8_t out[PENLOG_HEADER_LEN]);
 penlog_status_t penlog_decode_header(const uint8_t *in, size_t n, penlog_header_t *h);
@@ -141,7 +169,10 @@ size_t penlog_pack_calsnap(uint8_t cal_type, uint16_t cal_version, const uint8_t
 size_t penlog_pack_annot(uint32_t t_us, const char *text, size_t n, uint8_t *out, size_t cap);
 
 /* ---- unit conversion (saturating, round to nearest) ---- */
+/* si->p_h must already be relative to the page origin; pass ph_defined =
+ * false before the origin exists (p_H = PENLOG_PH_UNDEFINED). */
 void penlog_research_from_si(const penlog_research_si_t *si, penlog_research_t *r);
+void penlog_research_ph_undefined(penlog_research_t *r);
 void penlog_research_to_si(const penlog_research_t *r, penlog_research_si_t *si);
 void penlog_stroke_from_si(uint32_t t_ms, uint32_t stroke_id, float x_m, float y_m, float force_n, float theta_rad,
                            float phi_rad, penlog_stroke_t *s);
