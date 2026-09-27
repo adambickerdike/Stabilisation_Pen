@@ -1,0 +1,90 @@
+# Pencil-class concept (Rev P0): provisional parameter overlay
+# ---------------------------------------------------------------------------
+# Same leaf schema as config/parameters.yaml (value, unit, min, max, dist,
+# status, source, note); load with stabpen.params.load("config/pencil.yaml").
+# Anything not defined here is taken from config/parameters.yaml (v0.4.4):
+# hand impedance, tremor and writing kinematics, paper contact, sensing noise.
+# Nothing in this file is a measurement of our hardware. Every value is a
+# design hypothesis, a manufacturer statement (evidence ledger id) or a
+# calculation from one, as its status says.
+#
+# Origin: user request 2026-09-27 for an Apple-Pencil-class form factor that
+# still corrects the ink physically. The physics that shapes this file
+# (docs/pencil_concept.md):
+#   * any nib stage that moves across the barrel axis must hold the
+#     transverse contact load N cos(theta) + friction (COR-01); at N = 1 N,
+#     theta 50 deg that is 0.64 N plus 0.15 N of friction;
+#   * no actuator that fits a 7.9 mm bore holds 0.64 N with enough stroke
+#     (piezo bender blocking force 0.55 N for the 6.15 mm wide PL128.10,
+#     AMF-11; a voice coil scaled to the bore needs watts to hold it);
+#   * so the writing force is grounded to the barrel through a skid ring on
+#     the nose (AMF-11's own implication), and the nib is pressed onto the
+#     paper by a light spring only. The stage then sees only the spring
+#     force's transverse component and the nib friction.
+# ---------------------------------------------------------------------------
+meta:
+  version: "P0.1.0"
+  date: "2026-09-27"
+  base: "config/parameters.yaml 0.4.4"
+  changelog:
+    - "P0.1.0 first provisional pencil-class set: Apple Pencil Pro envelope (AMF-41), skid-grounded writing force, low-force nib spring, two custom-width PICMA-class piezo benders in an L arrangement driving a D1-format gel refill through a front collar with a rear gimbal; voice-coil alternative kept for comparison"
+
+envelope:
+  od:              {value: 0.0089, unit: m,  min: 0.0085, max: 0.0095, dist: fixed, status: inherited_target, source: "user request 2026-09-27; AMF-41 (Apple Pencil Pro 8.9 mm)", note: "Grip diameter. A flat for anti-roll and charging contacts is allowed (as on Apple Pencil 2 and Pro)."}
+  length:          {value: 0.166,  unit: m,  min: 0.150,  max: 0.170,  dist: fixed, status: inherited_target, source: "AMF-41 (166 mm)", note: ""}
+  mass_target:     {value: 0.020,  unit: kg, min: 0.015,  max: 0.024,  dist: fixed, status: inherited_target, source: "AMF-41 (19.15 g)", note: "Stretch target 20 g; 24 g is the provisional upper bound until users judge it (EXP-H02)."}
+  wall:            {value: 0.0005, unit: m,  min: 0.0004, max: 0.0007, dist: fixed, status: assumed, source: "assumption: glass-filled PA or PC/ABS moulding over a stainless or titanium chassis tube (AMF-42 construction)", note: "Plastic barrel keeps the BLE antenna usable; inner bore 7.9 mm at 0.5 mm."}
+  bore:            {value: 0.0079, unit: m,  min: 0.0075, max: 0.0085, dist: fixed, status: calculated, source: "od - 2 wall", note: "Envelope for every internal part, including a 0.2 mm radial assembly clearance."}
+  nose_length:     {value: 0.018,  unit: m,  min: 0.012,  max: 0.025,  dist: fixed, status: assumed, source: "Apple-Pencil-like taper", note: "Cone from the barrel to the skid ring."}
+
+skid:               # grounds the user's writing force to the barrel
+  ring_radius:     {value: 0.0013, unit: m,  min: 0.0010, max: 0.0020, dist: uniform, status: assumed, source: "nose opening: nib sleeve 0.8 mm + 2 x 0.3 mm travel + clearance", note: "Radius of the skid contact ring around the nib axis. Sets the nib protrusion range: p >= r cot(theta)."}
+  mu:              {value: 0.12,   unit: "-", min: 0.05,  max: 0.25,   dist: uniform, status: assumed, source: "assumption: PTFE-filled POM on paper; EXP-Q01 measures", note: "Skid-paper friction coefficient; replaces nib friction as the drag the hand feels."}
+  theta_min:       {value: 35,     unit: deg, min: 30,    max: 40,     dist: fixed,   status: inherited_target, source: "REQ-ENV-001 (35-75 deg)", note: "Lowest tilt at which the nib must still reach the paper."}
+
+nib:                # writing element and its axial spring
+  refill:          {value: "ISO 12757-2 D1-format gel refill (67 x 2.35 mm), metal tube preferred", unit: "-", status: assumed, source: "CON ledger (D1 geometry); DEC-004 lineage", note: "Low-force ink (gel or fineliner) because the nib carries only the spring force; line quality versus force is unmeasured (EXP-Q02)."}
+  spring_force:    {value: 0.15,   unit: N,  min: 0.08,   max: 0.30,   dist: uniform, status: assumed, source: "assumption; EXP-Q02 finds the lowest force with an acceptable line per ink", note: "Axial nib force set by a preloaded soft spring; the skid carries the rest of the user's force."}
+  spring_rate:     {value: 25.0,   unit: N/m, min: 10.0,  max: 60.0,   dist: uniform, status: assumed, source: "design: 2 mm protrusion range changes the force by 0.05 N", note: ""}
+  protrusion_travel: {value: 0.0021, unit: m, min: 0.0015, max: 0.0030, dist: fixed, status: calculated, source: "ring_radius x (cot 35 deg - cot 75 deg) = 1.3 x 1.16 mm, rounded up", note: "Axial travel the nib spring must accommodate over the tilt range."}
+  mu_nib:          {value: 0.15,   unit: "-", min: 0.05,  max: 0.35,   dist: uniform, status: assumed, source: "writing.mu_eff (parameters.yaml)", note: "Nib-paper drag at the spring force."}
+  mass_moving:     {value: 0.0012, unit: kg, min: 0.0008, max: 0.0018, dist: uniform, status: assumed, source: "D1 metal gel refill about 1.0 g + collar and magnet 0.2 g (weigh, EXP-B01 part 0)", note: ""}
+
+stage:              # baseline actuator: piezo, two axes (analysis/pencil_mechanisms.py checks every number)
+  type:            {value: "two custom-width multilayer piezo benders (PICMA PIC252 class) in an L arrangement beside the refill, each pushing a front collar through a wire flexure; refill pivots in a rear gimbal", unit: "-", status: assumed, source: "AMF-11 technology; layout from docs/pencil_concept.md", note: "PL128.10 (6.15 mm wide) fits the bore alone but two orthogonal plates beside a refill do not; 4.0 mm wide plates do."}
+  bender_free_length: {value: 0.028, unit: m, min: 0.022, max: 0.034, dist: fixed, status: sourced, source: "AMF-11 PL128.10 (28 mm free length, 36 mm overall)", note: ""}
+  bender_width:    {value: 0.0040, unit: m,  min: 0.0035, max: 0.00615, dist: fixed, status: assumed, source: "custom width (make: supplier custom part); PL128.10 is 6.15 mm", note: "Blocking force scales with width; free stroke does not."}
+  bender_thickness: {value: 0.00067, unit: m, min: 0.00055, max: 0.0008, dist: fixed, status: sourced, source: "AMF-11 (0.67 mm)", note: ""}
+  bender_free_stroke: {value: 4.5e-4, unit: m, min: 3.6e-4, max: 5.4e-4, dist: uniform, status: sourced, source: "AMF-11 PL128.10 +/-450 um at 0-60 V differential (+/-20 %)", note: "Tip, unloaded, per bender."}
+  bender_block_force: {value: 0.358, unit: N, min: 0.286, max: 0.429, dist: uniform, status: calculated, source: "AMF-11 PL128.10 +/-0.55 N x 4.0/6.15 (+/-20 %)", note: "Tip, per bender."}
+  bender_capacitance: {value: 7.8e-7, unit: F, min: 6.2e-7, max: 9.4e-7, dist: uniform, status: calculated, source: "AMF-11 PL128.10 2 x 1.2 uF x 4.0/6.15, per half", note: "Each of the two halves of one bender."}
+  bender_voltage:  {value: 60.0,   unit: V,  min: 60.0,   max: 60.0,   dist: fixed,   status: sourced, source: "AMF-11 (0-60 V, differential control)", note: ""}
+  lever:           {value: 1.2,    unit: "-", min: 1.0,   max: 1.6,    dist: fixed,   status: assumed, source: "rear gimbal 60 mm behind the nib, collar 10 mm behind the nib: 60/50", note: "Nib motion per collar motion."}
+  travel_nib:      {value: 3.0e-4, unit: m,  min: 2.0e-4, max: 4.0e-4, dist: fixed,   status: assumed, source: "design target, checked in analysis/pencil_mechanisms.py", note: "Usable correction radius at the nib under load; stops at 0.40 mm protect the ceramic."}
+  position_sensor: {value: "3D Hall sensor on the chassis facing a 1 mm magnet on the collar", unit: "-", status: assumed, source: "Rev A sensing lineage (sensing.hall_*)", note: "Closes the loop around piezo hysteresis and creep."}
+
+stage_vcm:          # alternative: moving-magnet voice coil scaled to the bore, same lever idea as Rev A
+  Km:              {value: 0.13,   unit: N/sqrt(W), min: 0.08, max: 0.18, dist: uniform, status: calculated, source: "Km scales as length^1.5 from 0.293 N/sqrtW at the Rev A bore (hand calculation, to be replaced by the magpylib model)", note: "analysis/pencil_mechanisms.py recomputes it."}
+  lever:           {value: 3.17,   unit: "-", min: 2.0,   max: 4.0,    dist: fixed,   status: assumed, source: "Rev A lever ratio", note: ""}
+  Rth_coil:        {value: 580.0,  unit: K/W, min: 300.0, max: 900.0,  dist: uniform, status: calculated, source: "Rev A 145 K/W scaled by 1/length^2 at a fixed 0.5 mm gap (hand calculation)", note: "analysis/pencil_mechanisms.py recomputes it."}
+
+electronics:
+  soc:             {value: "nRF54L15 CSP47 (2.45 x 2.25 mm)", unit: "-", status: sourced, source: "AMF-44", note: ""}
+  board_width:     {value: 0.0055, unit: m,  min: 0.0050, max: 0.0060, dist: fixed, status: assumed, source: "chord of the 7.9 mm bore at 2.5 mm from the axis, with components on both sides", note: "Rigid-flex, 6-8 layers HDI."}
+  p_active:        {value: 0.065,  unit: W,  min: 0.040,  max: 0.120,  dist: uniform, status: assumed, source: "SoC with BLE about 10 mW (AMF-44), IMU 2 mW, Hall 3 mW, optics 50 mW placeholder (sensing.opt_*)", note: "Excludes the piezo drive; measure (EXP-P01)."}
+  piezo_driver:    {value: "2 x DRV2700-class boost amplifier (4 x 4 mm), boost at 60 V", unit: "-", status: assumed, source: "AMF-16", note: "Quiescent 9 mA per chip at 55 V boost (AMF-16) is a large share of the budget; analysis/pencil_mechanisms.py counts it."}
+
+battery:
+  capacity_mAh:    {value: 90,     unit: mAh, min: 50,    max: 120,    dist: uniform, status: assumed, source: "AMF-42 (Apple Pencil 50 mAh to 0.329 Wh); custom 6.5 x 40 mm Li-ion cylinder; fallback 3 x Panasonic CG-425A (AMF-43)", note: "Pulse discharge for the piezo driver to qualify (EXP-Q03)."}
+  v_nom:           {value: 3.7,    unit: V,   min: 3.6,   max: 3.8,    dist: fixed,   status: sourced, source: "Li-ion", note: ""}
+  usable_fraction: {value: 0.8,    unit: "-", min: 0.7,   max: 0.9,    dist: fixed,   status: assumed, source: "battery.usable_fraction (parameters.yaml)", note: ""}
+  diameter:        {value: 0.0065, unit: m,   min: 0.0047, max: 0.0070, dist: fixed,  status: assumed, source: "bore minus wrap and clearance", note: ""}
+  length:          {value: 0.040,  unit: m,   min: 0.030, max: 0.050,  dist: fixed,   status: assumed, source: "space budget (mechanics/cad/pencil_revP.py)", note: ""}
+
+haptics:
+  channel:         {value: "piezo nib stage bursts (150-250 Hz) with an optional 6 mm coin LRA", unit: "-", status: assumed, source: "AMF-45; analysis/pencil_mechanisms.py", note: "Used for cues when the physical correction is at its travel limit, and for guided-mode prompts."}
+
+ai:
+  device_horizon:  {value: 0.10,   unit: s,   min: 0.05,  max: 0.20,   dist: uniform, status: assumed, source: "on-device stroke predictor (ml/, ICD s5 contract)", note: "How far ahead the pen predicts its own stroke."}
+  template_lead:   {value: 0.30,   unit: s,   min: 0.15,  max: 0.60,   dist: uniform, status: assumed, source: "app-side letter prediction plus BLE latency (about 30 ms)", note: "How far ahead of the nib an AI-predicted template must arrive for guided mode."}
+  confidence_full: {value: 0.8,    unit: "-", min: 0.6,   max: 0.95,   dist: uniform, status: assumed, source: "ICD s5 guard rule 5 (c_full)", note: "Prediction confidence at which guidance reaches full authority."}
