@@ -1,0 +1,582 @@
+<title>Active Nib Pencil</title>
+<meta name="description" content="Pencil-class active pen: 3D replay of simulated writing with tremor, the forces at the nib and skid, and the engineering numbers behind the concept.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef1ef; --panel:#ffffff; --panel-2:#f6f8f6; --ink:#15191c; --muted:#59626a; --faint:#8b949b;
+  --rule:#d5dbd6; --accent:#2346c8; --accent-soft:#dfe5fb; --tremor:#cf4a2c; --act:#0b8a79;
+  --normal:#6b46d6; --fric:#b77900; --skid:#3f4a55; --tmpl:#1c8a3a;
+  --good:#0c8a44; --warn:#a86a00; --bad:#c23b2b;
+  --scene-bg:#f7f8f6; --paper-line:#c9d6ea;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0e1113; --panel:#161a1d; --panel-2:#1b2024; --ink:#e7ecee; --muted:#a3adb3; --faint:#78828a;
+    --rule:#2b3237; --accent:#86a0ff; --accent-soft:#1e2745; --tremor:#ff7e62; --act:#3ccbb5;
+    --normal:#a893ff; --fric:#f0b84a; --skid:#aab6c1; --tmpl:#56d27b;
+    --good:#4fd08a; --warn:#f0b84a; --bad:#ff7e6b;
+    --scene-bg:#12171a; --paper-line:#2b3d57;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0e1113; --panel:#161a1d; --panel-2:#1b2024; --ink:#e7ecee; --muted:#a3adb3; --faint:#78828a;
+  --rule:#2b3237; --accent:#86a0ff; --accent-soft:#1e2745; --tremor:#ff7e62; --act:#3ccbb5;
+  --normal:#a893ff; --fric:#f0b84a; --skid:#aab6c1; --tmpl:#56d27b;
+  --good:#4fd08a; --warn:#f0b84a; --bad:#ff7e6b;
+  --scene-bg:#12171a; --paper-line:#2b3d57;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;margin:0;
+  padding-inline:clamp(16px,3vw,40px);padding-block:20px 48px}
+.wrap{max-width:1320px;margin:0 auto;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:.01em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,4.4vw,52px);line-height:1}
+h2{font-size:26px;line-height:1.1}
+h3{font-size:18px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+p{margin:0;max-width:68ch}
+.eyebrow{font-family:var(--display);text-transform:uppercase;letter-spacing:.12em;font-size:14px;color:var(--muted)}
+.mono,td.num,.readout b{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header.title{display:grid;grid-template-columns:1fr auto;gap:18px 32px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:14px}
+header.title .lede{grid-column:1/-1;color:var(--muted)}
+@media (max-width:640px){header.title{grid-template-columns:1fr} .tblock{justify-self:start}}
+.tblock{display:grid;grid-template-columns:auto auto;gap:2px 14px;font-size:13px;border:1px solid var(--rule);padding:8px 12px;background:var(--panel)}
+.tblock span{color:var(--muted)} .tblock b{font-family:var(--mono);font-weight:500}
+.legend{display:flex;flex-wrap:wrap;gap:8px;grid-column:1/-1}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-family:var(--display);letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--rule);border-radius:3px;padding:2px 8px;background:var(--panel)}
+.tag i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.tag.sim i{background:var(--accent)} .tag.calc i{background:var(--act)} .tag.mfr i{background:var(--fric)} .tag.asm i{background:var(--faint)} .tag.meas i{background:var(--bad)}
+/* stage */
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+@media (max-width:980px){.stage{grid-template-columns:1fr}}
+.viewport{position:relative;background:var(--scene-bg);border:1px solid var(--rule);aspect-ratio:16/10;max-height:74vh;width:100%;overflow:hidden}
+@media (max-width:600px){.viewport{aspect-ratio:4/5}}
+.viewport canvas{display:block;width:100%;height:100%}
+.hud{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:4px;pointer-events:none;font-size:12px}
+.hud .chip{background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--rule);padding:3px 8px;border-radius:3px;font-family:var(--mono)}
+.hud .chip.case{font-family:var(--display);font-size:15px;letter-spacing:.04em}
+.keys{position:absolute;right:10px;bottom:10px;display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:flex-end;max-width:70%;
+  background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--rule);padding:6px 10px;border-radius:3px;font-size:12px}
+.keys span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:3px;display:inline-block;border-radius:2px}
+.loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-family:var(--display);letter-spacing:.08em;text-transform:uppercase}
+.side{display:grid;gap:14px}
+.card{background:var(--panel);border:1px solid var(--rule);padding:12px 14px;display:grid;gap:10px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button,.btn,select{font:inherit;font-size:13px;border:1px solid var(--rule);background:var(--panel-2);color:var(--ink);padding:5px 10px;border-radius:3px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#0e1113}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#0e1113}}
+.seg button.ai{border-style:dashed}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row label{font-size:13px;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:13px}
+.readout span{color:var(--muted)} .readout b{font-weight:500;text-align:right}
+.readout .hd{grid-column:1/-1;font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-size:12px;border-bottom:1px solid var(--rule);padding-bottom:2px;margin-top:4px}
+.insets{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:760px){.insets{grid-template-columns:1fr}}
+.inset{background:var(--panel);border:1px solid var(--rule);padding:10px 12px;display:grid;gap:6px}
+.inset canvas{width:100%;height:220px;display:block}
+.note{font-size:13px;color:var(--muted)}
+/* numbers */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+section.block{display:grid;gap:12px}
+.tablewrap{overflow-x:auto;background:var(--panel);border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{padding:6px 10px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:12.5px;color:var(--muted);background:var(--panel-2)}
+td.num{text-align:right;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.pill{display:inline-block;font-family:var(--display);letter-spacing:.06em;text-transform:uppercase;font-size:12px;padding:1px 7px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.pill.go{color:var(--good)} .pill.maybe{color:var(--warn)} .pill.no{color:var(--bad)}
+.callout{border-left:3px solid var(--accent);background:var(--panel);padding:10px 14px;display:grid;gap:6px}
+footer{border-top:1px solid var(--rule);padding-top:12px;color:var(--muted);font-size:13px;display:grid;gap:6px}
+code{font-family:var(--mono);font-size:12.5px}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+</style>
+
+<div class="wrap">
+  <header class="title">
+    <div>
+      <div class="eyebrow">Rev P0 concept · simulation replay</div>
+      <h1>Active Nib Pencil</h1>
+    </div>
+    <div class="tblock" aria-label="Drawing title block">
+      <span>Envelope</span><b>Ø8.9 × 166 mm</b>
+      <span>Stage</span><b id="tb-stage">piezo, 2 axes</b>
+      <span>Mass (CAD)</span><b id="tb-mass">—</b>
+      <span>Parameters</span><b id="tb-params">—</b>
+    </div>
+    <p class="lede">A pencil-sized pen that moves its own nib by fractions of a millimetre to keep tremor out of the ink.
+      The replay below is a simulation: the hand shakes the pen, a skid on the nose carries the writing force, and a piezo stage
+      pulls the nib back toward the stroke the writer meant. Deviations are magnified so the sub-millimetre motion is visible.</p>
+    <div class="legend" aria-label="Evidence labels">
+      <span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span>
+      <span class="tag mfr"><i></i>Manufacturer statement</span><span class="tag asm"><i></i>Assumption</span>
+      <span class="tag meas"><i></i>Measurement: none yet</span>
+    </div>
+  </header>
+
+  <section class="stage" aria-label="3D replay">
+    <div class="viewport" id="vp">
+      <div class="loading" id="loading">Loading simulation…</div>
+      <div class="hud">
+        <div class="chip case" id="hud-case">—</div>
+        <div class="chip" id="hud-t">t = 0.00 s</div>
+        <div class="chip" id="hud-mag">deviations ×10 · forces 40 mm/N</div>
+      </div>
+      <div class="keys" aria-hidden="true">
+        <span><i class="sw" style="background:var(--accent)"></i>ink</span>
+        <span><i class="sw" style="background:var(--faint)"></i>intended stroke</span>
+        <span><i class="sw" style="background:var(--tremor)"></i>barrel (tremor)</span>
+        <span id="key-tmpl" hidden><i class="sw" style="background:var(--tmpl)"></i>AI template</span>
+        <span><i class="sw" style="background:var(--normal)"></i>paper on nib</span>
+        <span><i class="sw" style="background:var(--skid)"></i>paper on skid</span>
+        <span><i class="sw" style="background:var(--act)"></i>stage force</span>
+      </div>
+    </div>
+    <div class="side">
+      <div class="card">
+        <h3>Case</h3>
+        <div class="seg" id="cases" role="group" aria-label="Simulated case"></div>
+        <p class="note" id="case-note">—</p>
+      </div>
+      <div class="card">
+        <div class="row">
+          <button class="btn" id="play" aria-label="Pause">Pause</button>
+          <label for="speed">Speed <select id="speed"><option value="1">1×</option><option value="0.25" selected>0.25×</option><option value="0.1">0.1×</option></select></label>
+          <label for="mag">Magnify <select id="mag"><option value="1">×1</option><option value="10" selected>×10</option><option value="30">×30</option></select></label>
+        </div>
+        <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Time">
+        <div class="row">
+          <label><input type="checkbox" id="xray" checked> See inside</label>
+          <label><input type="checkbox" id="forces" checked> Forces</label>
+          <label><input type="checkbox" id="trail" checked> Barrel trail</label>
+        </div>
+        <div class="seg" role="group" aria-label="Camera">
+          <button id="cam-nib" aria-pressed="true">Nib close-up</button>
+          <button id="cam-pen" aria-pressed="false">Whole pencil</button>
+        </div>
+      </div>
+      <div class="card readout" id="readout" aria-live="off">
+        <div class="hd">Now</div>
+        <span>Ink off the intended stroke</span><b id="r-err">—</b>
+        <span>Stage deflection at nib</span><b id="r-q">—</b>
+        <span>Nib force (paper on nib)</span><b id="r-fn">—</b>
+        <span>Skid force (paper on skid)</span><b id="r-fs">—</b>
+        <span>Stage force at nib</span><b id="r-fa">—</b>
+        <span>Drive</span><b id="r-v">—</b>
+        <div class="hd">This case, whole run</div>
+        <span>Ink error, RMS</span><b id="m-err">—</b>
+        <span>Relative to no correction</span><b id="m-ratio">—</b>
+        <span>Time at travel limit</span><b id="m-sat">—</b>
+        <span>Drive power</span><b id="m-p">—</b>
+      </div>
+    </div>
+  </section>
+
+  <section class="insets" aria-label="Top view and error">
+    <div class="inset">
+      <h3>Page, from above</h3>
+      <canvas id="top" aria-label="Top view of the ink"></canvas>
+      <p class="note" id="top-note">Grey: intended stroke. Blue: ink. Coral: ink with no correction. Deviations magnified as in the 3D view.</p>
+    </div>
+    <div class="inset">
+      <h3>Ink distance from the intended stroke</h3>
+      <canvas id="err" aria-label="Ink error over time"></canvas>
+      <p class="note" id="err-note">µm, pen down only. Blue: this case. Coral: no correction.</p>
+    </div>
+  </section>
+
+  <!--SECTIONS-->
+
+  <footer>
+    <div>Everything on this page is simulation or calculation from the project repository; no pencil has been built or measured.
+      Data files: <code>results/pencil/</code>, <code>results/ai/</code>, <code>results/s2r/</code>, <code>results/cad/pencil_revP*</code>; parameters <code>config/pencil.yaml</code>.</div>
+    <div id="provenance" class="mono"></div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const S = {cases:[], ci:0, playing:true, speed:0.25, t:0, mag:10, fscale:40, xray:true, forces:true, trail:true, view:"nib",
+           geom:null, theta:50, phi:0, dtRec:0.01};
+
+/* ---------- geometry helpers: paper frame (x,y on page, z up) -> three (X=x, Y=z, Z=-y) ---------- */
+const P2T = (x,y,z) => new THREE.Vector3(x, z, -y);
+function basis(thDeg, phDeg){
+  const th = thDeg*Math.PI/180, ph = phDeg*Math.PI/180, ct=Math.cos(th), st=Math.sin(th);
+  const h=[Math.cos(ph),Math.sin(ph),0];
+  const a=[ct*h[0], ct*h[1], st], t1=[st*h[0], st*h[1], -ct], t2=[-Math.sin(ph), Math.cos(ph), 0];
+  return {a, xH:t1, yH:t2};
+}
+const dot=(u,v)=>u[0]*v[0]+u[1]*v[1]+u[2]*v[2];
+
+/* ---------- three.js scene ---------- */
+const vp = $("vp");
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:false, preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+vp.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(28, 1.6, 0.5, 4000);
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true; controls.dampingFactor = 0.12;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a938c, 0.95));
+const sun = new THREE.DirectionalLight(0xffffff, 0.75); sun.position.set(-80, 160, 90); scene.add(sun);
+
+function themeColors(){
+  return {bg:css("--scene-bg"), accent:css("--accent"), tremor:css("--tremor"), act:css("--act"), normal:css("--normal"),
+          fric:css("--fric"), skid:css("--skid"), faint:css("--faint"), tmpl:css("--tmpl"), line:css("--paper-line"), ink:css("--ink")};
+}
+let C = themeColors();
+
+/* paper */
+function paperTexture(){
+  const c=document.createElement("canvas"); c.width=c.height=1024; const g=c.getContext("2d");
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches && document.documentElement.getAttribute("data-theme")!=="light"
+               || document.documentElement.getAttribute("data-theme")==="dark";
+  g.fillStyle = dark ? "#1b2126" : "#fbfbf8"; g.fillRect(0,0,1024,1024);
+  g.strokeStyle = C.line; g.lineWidth = 2;
+  for(let i=0;i<=1024;i+=1024/16){ g.beginPath(); g.moveTo(0,i); g.lineTo(1024,i); g.stroke(); }  // 8 mm ruling on a 128 mm sheet
+  g.strokeStyle = dark? "#5a2f35":"#e7b3b3"; g.beginPath(); g.moveTo(96,0); g.lineTo(96,1024); g.stroke();
+  const t=new THREE.CanvasTexture(c); t.anisotropy=4; t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(2.5,2.5); return t;
+}
+let paper = new THREE.Mesh(new THREE.PlaneGeometry(320,320), new THREE.MeshStandardMaterial({map:paperTexture(), roughness:0.95}));
+paper.rotation.x = -Math.PI/2; scene.add(paper);
+
+/* pen */
+const pen = new THREE.Group(); pen.matrixAutoUpdate = false; scene.add(pen);
+const nib = new THREE.Group(); nib.matrixAutoUpdate = false; pen.add(nib);
+const MAT = {
+  barrel: () => new THREE.MeshStandardMaterial({color:0xe6e8e4, roughness:0.5, metalness:0.0, transparent:true, opacity:0.22, side:THREE.DoubleSide, depthWrite:false}),
+  cap:    () => new THREE.MeshStandardMaterial({color:0xd4d7d2, roughness:0.6}),
+  skid:   () => new THREE.MeshStandardMaterial({color:0x2d3338, roughness:0.4}),
+  metal:  () => new THREE.MeshStandardMaterial({color:0x9ea6ad, roughness:0.35, metalness:0.6}),
+  pcb:    () => new THREE.MeshStandardMaterial({color:0x1f6a45, roughness:0.6}),
+  chip:   () => new THREE.MeshStandardMaterial({color:0x23282e, roughness:0.5}),
+  battery:() => new THREE.MeshStandardMaterial({color:0x345f88, roughness:0.5}),
+  refill: () => new THREE.MeshStandardMaterial({color:0xc4cbd2, roughness:0.3, metalness:0.7}),
+  magnet: () => new THREE.MeshStandardMaterial({color:0xb2493a, roughness:0.4, metalness:0.3}),
+  piezo:  () => new THREE.MeshStandardMaterial({color:0xc2a45e, roughness:0.45, metalness:0.2}),
+};
+function along(geo){ geo.rotateX(Math.PI/2); return geo; }   // three builds along +Y; the pen axis is local +Z
+function lathe(profile, seg){ return along(new THREE.LatheGeometry(profile.map(p=>new THREE.Vector2(p[0],p[1])), seg||48)); }
+function tubeGeo(ro, ri, z0, z1){ return lathe([[ri,z0],[ro,z0],[ro,z1],[ri,z1],[ri,z0]]); }
+const benders = [];
+let barrelMesh=null;
+function buildPen(g){
+  while(pen.children.length>1) pen.remove(pen.children[1]);
+  while(nib.children.length) nib.remove(nib.children[0]);
+  benders.length=0;
+  for(const p of g.primitives){
+    let mesh=null; const m = MAT[p.color] ? MAT[p.color]() : MAT.metal();
+    if(p.type==="lathe"){ mesh=new THREE.Mesh(lathe([[0.001,p.profile[0][1]]].concat(p.profile)), m); }
+    else if(p.type==="tube"){ mesh=new THREE.Mesh(tubeGeo(p.r_out,p.r_in,p.z0,p.z1), m); }
+    else if(p.type==="cylinder"){ mesh=new THREE.Mesh(along(new THREE.CylinderGeometry(p.r,p.r,p.z1-p.z0,32)), m); mesh.position.z=(p.z0+p.z1)/2; }
+    else if(p.type==="box"){ mesh=new THREE.Mesh(new THREE.BoxGeometry(p.size[0],p.size[1],p.size[2]), m); mesh.position.set(p.center[0],p.center[1],p.center[2]); }
+    else if(p.type==="refill"){
+      const pr=[[0.001,-p.ball_r]]; for(let k=1;k<=8;k++){const a=-Math.PI/2+k*(Math.PI/2)/8; pr.push([p.ball_r*Math.cos(a), p.ball_r*Math.sin(a)]);}
+      pr.push([p.socket_r,0.3],[p.r,p.cone_L],[p.r,p.L],[0.001,p.L]);
+      mesh=new THREE.Mesh(lathe(pr,32), m);
+    }
+    else if(p.type==="spring"){
+      const pts=[]; const n=p.turns*24; for(let k=0;k<=n;k++){const a=k/24*2*Math.PI; pts.push(new THREE.Vector3(p.r*Math.cos(a),p.r*Math.sin(a),p.z0+(p.z1-p.z0)*k/n));}
+      mesh=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), n, 0.1, 6), m);
+    }
+    else if(p.type==="plate"){
+      const geo=new THREE.BoxGeometry(p.size[0],p.size[1],p.size[2],1,1,36);
+      geo.translate(p.center_xy[0], p.center_xy[1], (p.root_z+p.tip_z)/2);
+      mesh=new THREE.Mesh(geo, m);
+      benders.push({mesh, base:geo.attributes.position.array.slice(), p});
+    }
+    if(!mesh) continue;
+    mesh.userData.name=p.name;
+    if(p.name==="barrel"){ barrelMesh=mesh; mesh.renderOrder=10; }
+    (p.group==="nib" ? nib : pen).add(mesh);
+  }
+}
+
+/* ink ribbons, lines, arrows */
+const inkGroup=new THREE.Group(); scene.add(inkGroup);
+function ribbon(pts2, width, color, z){
+  const n=pts2.length; if(n<2) return null;
+  const pos=new Float32Array(n*2*3); const idx=[];
+  for(let i=0;i<n;i++){
+    const a=pts2[Math.max(0,i-1)], b=pts2[Math.min(n-1,i+1)];
+    let dx=b[0]-a[0], dy=b[1]-a[1]; const L=Math.hypot(dx,dy)||1; dx/=L; dy/=L;
+    const nx=-dy*width/2, ny=dx*width/2, p=pts2[i];
+    const A=P2T(p[0]+nx,p[1]+ny,z), B=P2T(p[0]-nx,p[1]-ny,z);
+    pos.set([A.x,A.y,A.z,B.x,B.y,B.z], i*6);
+    if(i<n-1){ const k=i*2; idx.push(k,k+1,k+2, k+1,k+3,k+2); }
+  }
+  const geo=new THREE.BufferGeometry(); geo.setAttribute("position",new THREE.BufferAttribute(pos,3)); geo.setIndex(idx);
+  const mat=new THREE.MeshBasicMaterial({color, side:THREE.DoubleSide});
+  return new THREE.Mesh(geo, mat);
+}
+function polyline(pts3, color, dashed){
+  const geo=new THREE.BufferGeometry().setFromPoints(pts3.map(p=>P2T(p[0],p[1],p[2]||0)));
+  const mat = dashed ? new THREE.LineDashedMaterial({color, dashSize:0.8, gapSize:0.6}) : new THREE.LineBasicMaterial({color});
+  const l=new THREE.Line(geo, mat); if(dashed) l.computeLineDistances(); return l;
+}
+function arrow(color){ const a=new THREE.ArrowHelper(new THREE.Vector3(0,1,0), new THREE.Vector3(), 1, new THREE.Color(color), 1.2, 0.7); scene.add(a); return a; }
+let AR = {};
+function makeArrows(){ for(const k in AR) scene.remove(AR[k]); AR={normal:arrow(C.normal), fric:arrow(C.fric), skid:arrow(C.skid), act:arrow(C.act)}; }
+makeArrows();
+function setArrow(a, origin3, vec3, scale){
+  const L=vec3.length()*scale;
+  if(!S.forces || L<0.05){ a.visible=false; return; }
+  a.visible=true; a.position.copy(origin3); a.setDirection(vec3.clone().normalize());
+  a.setLength(L, Math.min(1.6, 0.35*L+0.3), Math.min(0.9, 0.2*L+0.2));
+}
+
+/* ---------- data ---------- */
+function normalizeCase(c, group){
+  const n=c.t.length, M={...c.metrics};
+  const housing=c.housing, ref=c.intended;
+  let nibp=c.nib;
+  if(!nibp){ nibp=c.ink.map((p,i)=>[p[0],p[1], c.contact[i]?0:housing[i][2]]); }
+  return {key:c.key, label:c.label, group, t:c.t, housing, nib:nibp, ref, contact:c.contact, q:c.q||null,
+          F_nib:c.F_nib||null, F_skid:c.F_skid||null, F_act:c.F_act||null, V:c.V||null, template:c.template||null,
+          confidence:c.confidence||null, metrics:M, note:c.note||""};
+}
+function errorSeries(c){
+  const n=c.t.length, e=new Float32Array(n).fill(NaN);
+  if(c.group==="ai"){
+    const R=c.ref;
+    for(let i=0;i<n;i++){ if(!c.contact[i]) continue; let best=1e9; const p=c.nib[i];
+      const j0=Math.max(0,i-80), j1=Math.min(R.length,i+80);
+      for(let j=j0;j<j1;j++){ const d=Math.hypot(R[j][0]-p[0],R[j][1]-p[1]); if(d<best) best=d; } e[i]=best*1000; }
+  } else {
+    for(let i=0;i<n;i++){ if(!c.contact[i]) continue; e[i]=Math.hypot(c.nib[i][0]-c.ref[i][0], c.nib[i][1]-c.ref[i][1])*1000; }
+  }
+  return e;
+}
+let meshes={};
+function mag(p, r, m){ return [r[0]+m*(p[0]-r[0]), r[1]+m*(p[1]-r[1])]; }
+function buildInk(){
+  while(inkGroup.children.length) inkGroup.remove(inkGroup.children[0]);
+  const c=S.cases[S.ci], m=S.mag, n=c.t.length;
+  const ref2=c.ref.map(p=>[p[0],p[1]]);
+  const refLine=polyline(ref2.map(p=>[p[0],p[1],0.02]), C.faint, true); inkGroup.add(refLine);
+  if(c.template){ inkGroup.add(polyline(c.template.map(p=>[p[0],p[1],0.03]), C.tmpl, true)); }
+  // ink as ribbon segments over pen-down runs, revealed progressively with drawRange
+  const pts=[]; for(let i=0;i<n;i++){ const nb=c.nib[i]; pts.push(mag(nb, c.ref[i]||nb, m)); }
+  meshes.ink=[];
+  let s=0; while(s<n){ while(s<n && !c.contact[s]) s++; let e=s; while(e<n && c.contact[e]) e++;
+    if(e-s>1){ const r=ribbon(pts.slice(s,e), 0.35, C.accent, 0.05); r.userData={s,e}; inkGroup.add(r); meshes.ink.push(r); } s=e; }
+  // barrel trail (housing reference point, magnified), last 1.2 s
+  const tg=new THREE.BufferGeometry(); tg.setAttribute("position", new THREE.BufferAttribute(new Float32Array(3*121),3));
+  meshes.trail=new THREE.Line(tg, new THREE.LineBasicMaterial({color:C.tremor})); inkGroup.add(meshes.trail);
+  meshes.pts=pts;
+  // recentre paper under the writing
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; for(const p of ref2){x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);}
+  S.bounds=[x0,x1,y0,y1];
+  paper.position.copy(P2T((x0+x1)/2, (y0+y1)/2, 0));
+}
+
+/* ---------- per-frame pose ---------- */
+const B={};
+function frameIndex(){ const c=S.cases[S.ci]; const i=Math.round(S.t/S.dtRec); return Math.max(0,Math.min(c.t.length-1,i)); }
+function pose(i){
+  const c=S.cases[S.ci], m=S.mag, g=S.geom, bs=B.bs;
+  const r=c.ref[i]||c.nib[i], hz=c.housing[i];
+  const hv=[r[0]+m*(hz[0]-r[0]), r[1]+m*(hz[1]-r[1]), hz[2]];
+  const nb=c.nib[i]; const nv=[r[0]+m*(nb[0]-r[0]), r[1]+m*(nb[1]-r[1]), nb[2]];
+  // pen pose
+  const X=P2T(...bs.xH), Y=P2T(...bs.yH), Z=P2T(...bs.a), O=P2T(...hv);
+  const M4=new THREE.Matrix4().makeBasis(X,Y,Z); M4.setPosition(O); pen.matrix.copy(M4); pen.matrixWorldNeedsUpdate=true;
+  // nib pose relative to housing, in pen frame
+  const d=[nv[0]-hv[0], nv[1]-hv[1], nv[2]-hv[2]];
+  const dx=dot(d,bs.xH), dy=dot(d,bs.yH), dz=dot(d,bs.a), zg=g.gimbal_z;
+  const al=-Math.asin(Math.max(-1,Math.min(1,dx/zg))), be=Math.asin(Math.max(-1,Math.min(1,dy/zg)));
+  const T=new THREE.Matrix4().makeTranslation(0,0,zg).multiply(new THREE.Matrix4().makeRotationY(al)).multiply(new THREE.Matrix4().makeRotationX(be))
+        .multiply(new THREE.Matrix4().makeTranslation(0,0,-zg)).multiply(new THREE.Matrix4().makeTranslation(0,0,dz));
+  nib.matrix.copy(T); nib.matrixWorldNeedsUpdate=true;
+  // benders: tip follows the collar along the drive axis; uniform curvature from the clamp
+  const zc=16.5, uc=[dx*(zg-zc)/zg, dy*(zg-zc)/zg];
+  for(const b of benders){
+    const p=b.p, arr=b.mesh.geometry.attributes.position.array, u=p.drive_axis[0]?uc[0]:uc[1], ax=p.drive_axis[0]?0:1;
+    for(let k=0;k<arr.length;k+=3){
+      const z=b.base[k+2]; arr[k]=b.base[k]; arr[k+1]=b.base[k+1];
+      const s=Math.max(0,Math.min(1,(p.clamp_z-z)/(p.clamp_z-p.tip_z)));
+      arr[k+ax]+=u*s*s;
+    }
+    b.mesh.geometry.attributes.position.needsUpdate=true;
+  }
+  // forces (paper frame vectors -> three)
+  const cp=P2T(nv[0],nv[1],0);
+  if(c.F_nib){ const f=c.F_nib[i]; setArrow(AR.normal, cp, P2T(0,0,f[2]), S.fscale); setArrow(AR.fric, cp, P2T(f[0],f[1],0), S.fscale); }
+  else { AR.normal.visible=AR.fric.visible=false; }
+  if(c.F_skid){ const f=c.F_skid[i];
+    const rs=g.skid_contact_r||1.4, zs=g.z_skid||1.1;
+    const pw=[hv[0]+rs*bs.xH[0]+zs*bs.a[0], hv[1]+rs*bs.xH[1]+zs*bs.a[1], hv[2]+rs*bs.xH[2]+zs*bs.a[2]];
+    setArrow(AR.skid, P2T(pw[0],pw[1],Math.max(0,pw[2])), P2T(f[0],f[1],f[2]), S.fscale); }
+  else AR.skid.visible=false;
+  if(c.F_act){ const f=c.F_act[i]; const v=[f[0]*bs.xH[0]+f[1]*bs.yH[0], f[0]*bs.xH[1]+f[1]*bs.yH[1], f[0]*bs.xH[2]+f[1]*bs.yH[2]];
+    setArrow(AR.act, P2T(nv[0],nv[1],nv[2]+0.4), P2T(...v), S.fscale); } else AR.act.visible=false;
+  // trail
+  const tr=meshes.trail.geometry.attributes.position.array; const i0=Math.max(0,i-120);
+  for(let k=0;k<=120;k++){ const j=Math.min(i, i0+k), rr=c.ref[j]||c.nib[j], hh=c.housing[j];
+    const q=P2T(rr[0]+m*(hh[0]-rr[0]), rr[1]+m*(hh[1]-rr[1]), 0.08); tr[k*3]=q.x; tr[k*3+1]=q.y; tr[k*3+2]=q.z; }
+  meshes.trail.geometry.attributes.position.needsUpdate=true; meshes.trail.visible=S.trail;
+  // progressive ink
+  for(const r of meshes.ink){ const {s,e}=r.userData; const k=Math.max(0,Math.min(e-s-1, i-s)); r.geometry.setDrawRange(0, k>0? k*6:0); }
+  return {hv, nv, dx, dy};
+}
+
+/* camera follow */
+let lastTarget=null;
+function follow(nv, hv){
+  const bs=B.bs; let tgt;
+  if(S.view==="nib") tgt=P2T(nv[0],nv[1],2);
+  else tgt=P2T(hv[0]+80*bs.a[0], hv[1]+80*bs.a[1], hv[2]+80*bs.a[2]);
+  if(lastTarget){ const d=tgt.clone().sub(lastTarget); camera.position.add(d); controls.target.add(d); }
+  else { controls.target.copy(tgt); }
+  lastTarget=tgt;
+}
+function setView(v){
+  S.view=v; $("cam-nib").setAttribute("aria-pressed", v==="nib"); $("cam-pen").setAttribute("aria-pressed", v==="pen");
+  const i=frameIndex(), c=S.cases[S.ci], nb=c.nib[i], hz=c.housing[i], bs=B.bs;
+  lastTarget=null;
+  if(v==="nib"){ const t=P2T(nb[0],nb[1],2); controls.target.copy(t); camera.position.copy(t.clone().add(P2T(-18,-62,34))); }
+  else { const t=P2T(hz[0]+80*bs.a[0], hz[1]+80*bs.a[1], hz[2]+80*bs.a[2]); controls.target.copy(t); camera.position.copy(t.clone().add(P2T(-60,-260,120))); }
+  lastTarget=controls.target.clone();
+}
+
+/* ---------- 2D insets ---------- */
+function sizeCanvas(cv){ const r=cv.getBoundingClientRect(), d=Math.min(devicePixelRatio||1,2); cv.width=Math.max(10,r.width*d); cv.height=Math.max(10,r.height*d); const g=cv.getContext("2d"); g.setTransform(d,0,0,d,0,0); return [g,r.width,r.height]; }
+function drawTop(i){
+  const cv=$("top"); const [g,w,h]=sizeCanvas(cv); const c=S.cases[S.ci], m=S.mag;
+  g.clearRect(0,0,w,h);
+  const [x0,x1,y0,y1]=S.bounds, pad=2; const sx=(w-8)/((x1-x0)+2*pad), sy=(h-8)/((y1-y0)+2*pad), s=Math.min(sx,sy);
+  const ox=4+((w-8)-s*(x1-x0))/2, oy=4+((h-8)-s*(y1-y0))/2;
+  const X=x=>ox+(x-x0)*s, Y=y=>h-(oy+(y-y0)*s);
+  const path=(arr, pick, color, lw, dash, onlyDown, upto)=>{ g.strokeStyle=color; g.lineWidth=lw; g.setLineDash(dash||[]); g.beginPath(); let pen=false;
+    const n=upto==null?arr.length:Math.min(arr.length,upto+1);
+    for(let k=0;k<n;k++){ const p=pick(k); if(onlyDown && !c.contact[k]){pen=false;continue;} if(!pen){g.moveTo(X(p[0]),Y(p[1]));pen=true;} else g.lineTo(X(p[0]),Y(p[1])); } g.stroke(); g.setLineDash([]); };
+  path(c.ref, k=>c.ref[k], C.faint, 1.2, [4,3], true);
+  const base=S.cases.find(o=>o.group===c.group && (o.key==="neutral"||o.key==="none"||o.key==="no_guidance"));
+  if(base && base!==c){ path(base.nib, k=>mag(base.nib[k], base.ref[k]||base.nib[k], m), C.tremor, 1, null, true); }
+  if(c.template) path(c.template, k=>c.template[k], C.tmpl, 1, [2,2], false);
+  path(c.nib, k=>meshes.pts[k], C.accent, 1.6, null, true, i);
+  const p=meshes.pts[i]; g.fillStyle=C.accent; g.beginPath(); g.arc(X(p[0]),Y(p[1]),3.2,0,7); g.fill();
+  g.fillStyle=css("--muted"); g.font="11px "+css("--mono"); g.fillText("10 mm", 8, h-8); g.strokeStyle=css("--muted"); g.lineWidth=1.5;
+  g.beginPath(); g.moveTo(8,h-20); g.lineTo(8+10*s,h-20); g.stroke();
+}
+function drawErr(i){
+  const cv=$("err"); const [g,w,h]=sizeCanvas(cv); const c=S.cases[S.ci]; g.clearRect(0,0,w,h);
+  const base=S.cases.find(o=>o.group===c.group && (o.key==="neutral"||o.key==="none"||o.key==="no_guidance"));
+  const E=c.err, Eb=base?base.err:null;
+  let ym=0; for(const a of [E,Eb]) if(a) for(const v of a) if(v>ym) ym=v; ym=Math.max(50, Math.ceil(ym/100)*100);
+  const L=42,R=8,T=8,Bt=22, n=c.t.length, tmax=c.t[n-1];
+  const X=t=>L+(w-L-R)*t/tmax, Y=v=>T+(h-T-Bt)*(1-v/ym);
+  g.strokeStyle=css("--rule"); g.lineWidth=1; g.fillStyle=css("--muted"); g.font="11px "+css("--mono");
+  for(let k=0;k<=4;k++){ const v=ym*k/4, y=Y(v); g.beginPath(); g.moveTo(L,y); g.lineTo(w-R,y); g.stroke(); g.fillText(String(Math.round(v)), 4, y+4); }
+  for(let s=0;s<=tmax+1e-6;s+=1){ g.fillText(s+" s", X(s)-8, h-6); }
+  const line=(a,color,lw)=>{ if(!a) return; g.strokeStyle=color; g.lineWidth=lw; g.beginPath(); let on=false;
+    for(let k=0;k<a.length;k++){ const v=a[k]; if(isNaN(v)){on=false;continue;} const x=X(c.t[k]), y=Y(v); if(!on){g.moveTo(x,y);on=true;} else g.lineTo(x,y);} g.stroke(); };
+  if(Eb && base!==c) line(Eb, C.tremor, 1);
+  line(E, C.accent, 1.6);
+  g.strokeStyle=css("--ink"); g.lineWidth=1; g.beginPath(); g.moveTo(X(c.t[i]),T); g.lineTo(X(c.t[i]),h-Bt); g.stroke();
+}
+
+/* ---------- UI ---------- */
+const fmt=(v,d=0)=>(v==null||isNaN(v))?"—":Number(v).toFixed(d);
+function selectCase(k){
+  S.ci=k; const c=S.cases[k];
+  document.querySelectorAll("#cases button").forEach((b,j)=>b.setAttribute("aria-pressed", j===k));
+  $("hud-case").textContent=c.label; $("case-note").textContent=c.note || "";
+  $("key-tmpl").hidden=!c.template;
+  const M=c.metrics||{};
+  $("m-err").textContent = M.ink_err_rms_um!=null ? fmt(M.ink_err_rms_um)+" µm" : (M.path_rms_um!=null? fmt(M.path_rms_um)+" µm (path)" : "—");
+  $("m-ratio").textContent = M.ratio_vs_neutral!=null ? fmt(M.ratio_vs_neutral,2)+"×" : (M.ratio_vs_none!=null? fmt(M.ratio_vs_none,2)+"×":"—");
+  $("m-sat").textContent = M.q_sat_frac!=null ? fmt(100*M.q_sat_frac,1)+" %" : "—";
+  $("m-p").textContent = M.P_drive_mW!=null ? fmt(M.P_drive_mW,0)+" mW" : "—";
+  S.t=Math.min(S.t, c.t[c.t.length-1]);
+  buildInk(); setView(S.view);
+}
+function readouts(i, st){
+  const c=S.cases[S.ci];
+  $("hud-t").textContent="t = "+c.t[i].toFixed(2)+" s";
+  $("r-err").textContent = isNaN(c.err[i]) ? "pen up" : fmt(c.err[i])+" µm";
+  const q = c.q ? Math.hypot(c.q[i][0],c.q[i][1])*1000 : Math.hypot(st.dx,st.dy)/S.mag*1000;
+  $("r-q").textContent=fmt(q)+" µm";
+  $("r-fn").textContent = c.F_nib ? fmt(Math.hypot(...c.F_nib[i]),3)+" N" : "—";
+  $("r-fs").textContent = c.F_skid ? fmt(Math.hypot(...c.F_skid[i]),3)+" N" : "—";
+  $("r-fa").textContent = c.F_act ? fmt(Math.hypot(c.F_act[i][0],c.F_act[i][1])*1000,0)+" mN" : "—";
+  $("r-v").textContent = c.V ? fmt(c.V[i][0],1)+" / "+fmt(c.V[i][1],1)+" V" : "—";
+  $("scrub").value = Math.round(1000*c.t[i]/c.t[c.t.length-1]);
+}
+function updateMagLabel(){ $("hud-mag").textContent = "deviations ×"+S.mag+" · forces "+S.fscale+" mm/N"; }
+
+/* ---------- loop ---------- */
+let last=performance.now();
+function resize(){ const r=vp.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); camera.aspect=r.width/Math.max(1,r.height); camera.updateProjectionMatrix(); }
+window.addEventListener("resize", ()=>{ resize(); const i=frameIndex(); drawTop(i); drawErr(i); });
+let lastDraw2d=0;
+function tick(now){
+  const dt=Math.min(0.1,(now-last)/1000); last=now;
+  if(S.cases.length){
+    const c=S.cases[S.ci], T=c.t[c.t.length-1];
+    if(S.playing){ S.t+=dt*S.speed; if(S.t>T) S.t=0; }
+    const i=frameIndex(); const st=pose(i); follow(st.nv, st.hv);
+    readouts(i, st);
+    if(now-lastDraw2d>60){ drawTop(i); drawErr(i); lastDraw2d=now; }
+  }
+  controls.update(); renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+
+/* ---------- wiring ---------- */
+$("play").onclick=()=>{ S.playing=!S.playing; $("play").textContent=S.playing?"Pause":"Play"; $("play").setAttribute("aria-label", S.playing?"Pause":"Play"); };
+$("speed").onchange=e=>{ S.speed=+e.target.value; };
+$("mag").onchange=e=>{ S.mag=+e.target.value; updateMagLabel(); buildInk(); };
+$("scrub").oninput=e=>{ const c=S.cases[S.ci]; S.t=(+e.target.value/1000)*c.t[c.t.length-1]; };
+$("xray").onchange=e=>{ S.xray=e.target.checked; if(barrelMesh){ barrelMesh.material.opacity=S.xray?0.22:1.0; barrelMesh.material.depthWrite=!S.xray; } };
+$("forces").onchange=e=>{ S.forces=e.target.checked; };
+$("trail").onchange=e=>{ S.trail=e.target.checked; };
+$("cam-nib").onclick=()=>setView("nib"); $("cam-pen").onclick=()=>setView("pen");
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{ C=themeColors(); applyTheme(); });
+new MutationObserver(()=>{ C=themeColors(); applyTheme(); }).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+function applyTheme(){ scene.background=new THREE.Color(C.bg); paper.material.map=paperTexture(); paper.material.needsUpdate=true; makeArrows(); if(S.cases.length) buildInk(); }
+
+async function load(){
+  const [geom, trace, ai] = await Promise.all([
+    fetch("data/geometry.json").then(r=>r.json()),
+    fetch("data/viz_trace.json").then(r=>r.json()),
+    fetch("data/viz_guided.json").then(r=>r.ok?r.json():null).catch(()=>null)]);
+  S.geom=geom; S.theta=trace.theta_deg||50; S.phi=trace.phi_deg||0; B.bs=basis(S.theta,S.phi);
+  buildPen(geom);
+  S.cases = trace.cases.map(c=>normalizeCase(c,"pencil"));
+  if(ai && ai.cases) S.cases = S.cases.concat(ai.cases.map(c=>normalizeCase(c,"ai")));
+  for(const c of S.cases) c.err=errorSeries(c);
+  const t=S.cases[0].t; S.dtRec=(t[t.length-1]-t[0])/(t.length-1);
+  const box=$("cases");
+  S.cases.forEach((c,k)=>{ const b=document.createElement("button"); b.textContent=c.label; b.className=c.group==="ai"?"ai":""; b.onclick=()=>selectCase(k); box.appendChild(b); });
+  if(geom.mass_total_g) $("tb-mass").textContent=geom.mass_total_g.toFixed(1)+" g";
+  if(geom.stage_label) $("tb-stage").textContent=geom.stage_label;
+  if(geom.pencil_params) $("tb-params").textContent="config/pencil.yaml "+geom.pencil_params;
+  $("provenance").textContent = [trace.meta&&trace.meta.git_revision?("git "+String(trace.meta.git_revision).slice(0,12)):"", trace.meta&&trace.meta.model?trace.meta.model:""].filter(Boolean).join(" · ");
+  scene.background=new THREE.Color(C.bg);
+  resize(); selectCase(0); $("loading").hidden=true;
+}
+updateMagLabel(); resize(); requestAnimationFrame(tick);
+load().catch(err=>{ $("loading").textContent="Could not load the simulation data ("+err.message+")."; });
+})();
+</script>

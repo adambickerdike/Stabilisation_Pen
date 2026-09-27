@@ -1,0 +1,306 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (CAD concept, nominal geometry)",
+    "generated_utc": "2026-09-27T21:02:47+00:00",
+    "git_revision": "2aad846",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "pencil_revP.py --variant Q",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "pencil_params": "P0.1.0"
+  },
+  "summary": {
+    "variant": "Q",
+    "parameters_mm": {
+      "od": 8.9,
+      "L_total": 166.0,
+      "wall": 0.5,
+      "nose_L": 18.0,
+      "skid_r": 1.3,
+      "skid_w": 0.4,
+      "theta_design": 50.0,
+      "theta_min": 35,
+      "refill_d": 2.35,
+      "refill_L": 67.0,
+      "cone_L": 5.0,
+      "ball_d": 0.7,
+      "socket_d": 1.0,
+      "plate_t": 0.67,
+      "plate_free": 28.0,
+      "plate_clamp": 8.0,
+      "plate_d": 2.15,
+      "tip_sweep": 0.4,
+      "nib_travel": 0.4,
+      "collar_z0": 15.0,
+      "collar_L": 3.0,
+      "collar_od": 4.0,
+      "z_plate_tip": 19.0,
+      "z_gimbal": 60.0,
+      "spring_L": 10.0,
+      "spring_od": 2.4,
+      "pcb_L": 42.0,
+      "pcb_w": 5.5,
+      "pcb_t": 0.6,
+      "comp_h": 1.0,
+      "batt_d": 6.5,
+      "batt_L": 40.0,
+      "cap_L": 5.0,
+      "clear_min": 0.1,
+      "plate_w": 2.6,
+      "n_plates": 4,
+      "r_bore": 3.95,
+      "z_skid": 1.0908295205304641,
+      "plate_L": 36.0,
+      "z_clamp0": 47.0,
+      "z_clamp1": 55.0,
+      "z_spring0": 67.0,
+      "z_bulkhead": 77.0,
+      "z_pcb0": 78.0,
+      "z_batt0": 121.0,
+      "z_cap0": 161.0,
+      "lever": 1.3793103448275863
+    },
+    "mass_total_g": 12.12,
+    "mass_nib_assembly_g": 0.968,
+    "com_z_mm": 87.3,
+    "com_from_nib_fraction": 0.526,
+    "lever_nib_per_collar": 1.379,
+    "section_checks": {
+      "plate_to_bore_mm": 0.786,
+      "plate_to_plate_mm": 0.115,
+      "plate_to_refill_mm": 0.513,
+      "refill_sweep_at_plate_tip_mm": 0.273,
+      "collar_magnet_to_hall_mm": 0.15,
+      "hall_outer_to_nose_wall_mm": 0.226,
+      "collar_to_nose_wall_mm": 1.044,
+      "refill_cone_to_skid_aperture_at_theta_min_mm": 0.026,
+      "skid_ring_radius_required": 1.4,
+      "nib_protrusion_range_mm": [
+        0.348,
+        1.857
+      ],
+      "pcb_diagonal_to_bore_mm": 0.908,
+      "battery_to_bore_mm": 0.7,
+      "optical_sensor_to_refill_mm": 0.751,
+      "min_required_mm": 0.1,
+      "all_ok": false
+    },
+    "nib_assembly_interference": [],
+    "note": "Mass excludes adhesives, wiring, flex tails and margin (add about 10 %). Bender blocking force scales with plate width: 3.5 mm (L) or 2 x 2.6 mm per axis (Q) against PL128.10's 6.15 mm (AMF-11). Fit checks use nominal dimensions and rigid parts."
+  },
+  "parts": [
+    {
+      "part": "barrel",
+      "group": "fixed",
+      "material": "PA_GF30",
+      "volume_mm3": 2000.42,
+      "mass_g": 2.721,
+      "com_z_mm": 85.04
+    },
+    {
+      "part": "skid_ring",
+      "group": "fixed",
+      "material": "POM_PTFE",
+      "volume_mm3": 1.76,
+      "mass_g": 0.003,
+      "com_z_mm": 1.29
+    },
+    {
+      "part": "rear_cap",
+      "group": "fixed",
+      "material": "PC",
+      "volume_mm3": 102.55,
+      "mass_g": 0.123,
+      "com_z_mm": 163.99
+    },
+    {
+      "part": "clamp_block",
+      "group": "fixed",
+      "material": "Ti6Al4V",
+      "volume_mm3": 315.9,
+      "mass_g": 1.399,
+      "com_z_mm": 51.0
+    },
+    {
+      "part": "bulkhead",
+      "group": "fixed",
+      "material": "PC",
+      "volume_mm3": 38.23,
+      "mass_g": 0.046,
+      "com_z_mm": 77.4
+    },
+    {
+      "part": "battery",
+      "group": "fixed",
+      "material": "Li_ion_cyl",
+      "volume_mm3": 1327.32,
+      "mass_g": 3.451,
+      "com_z_mm": 141.0
+    },
+    {
+      "part": "gimbal_flexure",
+      "group": "fixed",
+      "material": "stainless",
+      "volume_mm3": 3.64,
+      "mass_g": 0.029,
+      "com_z_mm": 60.0
+    },
+    {
+      "part": "pcb",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 138.6,
+      "mass_g": 0.333,
+      "com_z_mm": 99.0
+    },
+    {
+      "part": "pcb_components_envelope",
+      "group": "fixed",
+      "material": "FR4_populated",
+      "volume_mm3": 418.2,
+      "mass_g": 1.004,
+      "com_z_mm": 99.0
+    },
+    {
+      "part": "hall_3d_nose",
+      "group": "fixed",
+      "material": "sensor_pkg",
+      "volume_mm3": 1.35,
+      "mass_g": 0.003,
+      "com_z_mm": 16.5
+    },
+    {
+      "part": "optical_sensor",
+      "group": "fixed",
+      "material": "sensor_pkg",
+      "volume_mm3": 1.79,
+      "mass_g": 0.004,
+      "com_z_mm": 13.0
+    },
+    {
+      "part": "bender_x_neg",
+      "group": "bender",
+      "material": "PZT_multilayer",
+      "volume_mm3": 62.71,
+      "mass_g": 0.489,
+      "com_z_mm": 37.0
+    },
+    {
+      "part": "bender_x_pos",
+      "group": "bender",
+      "material": "PZT_multilayer",
+      "volume_mm3": 62.71,
+      "mass_g": 0.489,
+      "com_z_mm": 37.0
+    },
+    {
+      "part": "bender_y_neg",
+      "group": "bender",
+      "material": "PZT_multilayer",
+      "volume_mm3": 62.71,
+      "mass_g": 0.489,
+      "com_z_mm": 37.0
+    },
+    {
+      "part": "bender_y_pos",
+      "group": "bender",
+      "material": "PZT_multilayer",
+      "volume_mm3": 62.71,
+      "mass_g": 0.489,
+      "com_z_mm": 37.0
+    },
+    {
+      "part": "leaf_x_neg",
+      "group": "leaf",
+      "material": "stainless",
+      "volume_mm3": 0.11,
+      "mass_g": 0.001,
+      "com_z_mm": 18.25
+    },
+    {
+      "part": "leaf_x_pos",
+      "group": "leaf",
+      "material": "stainless",
+      "volume_mm3": 0.11,
+      "mass_g": 0.001,
+      "com_z_mm": 18.25
+    },
+    {
+      "part": "leaf_y_neg",
+      "group": "leaf",
+      "material": "stainless",
+      "volume_mm3": 0.11,
+      "mass_g": 0.001,
+      "com_z_mm": 18.25
+    },
+    {
+      "part": "leaf_y_pos",
+      "group": "leaf",
+      "material": "stainless",
+      "volume_mm3": 0.11,
+      "mass_g": 0.001,
+      "com_z_mm": 18.25
+    },
+    {
+      "part": "refill_D1",
+      "group": "moving",
+      "material": "brass_refill_with_ink",
+      "volume_mm3": 280.01,
+      "mass_g": 0.84,
+      "com_z_mm": 34.7
+    },
+    {
+      "part": "collar",
+      "group": "moving",
+      "material": "Ti6Al4V",
+      "volume_mm3": 22.27,
+      "mass_g": 0.099,
+      "com_z_mm": 16.5
+    },
+    {
+      "part": "collar_magnet",
+      "group": "moving",
+      "material": "NdFeB",
+      "volume_mm3": 0.6,
+      "mass_g": 0.004,
+      "com_z_mm": 16.5
+    },
+    {
+      "part": "gimbal_hub",
+      "group": "moving",
+      "material": "PC",
+      "volume_mm3": 13.71,
+      "mass_g": 0.016,
+      "com_z_mm": 60.0
+    },
+    {
+      "part": "rear_plug",
+      "group": "moving",
+      "material": "PC",
+      "volume_mm3": 4.34,
+      "mass_g": 0.005,
+      "com_z_mm": 67.5
+    },
+    {
+      "part": "axial_magnet",
+      "group": "moving",
+      "material": "NdFeB",
+      "volume_mm3": 0.55,
+      "mass_g": 0.004,
+      "com_z_mm": 67.55
+    },
+    {
+      "part": "nib_spring",
+      "group": "moving",
+      "material": "spring_steel",
+      "volume_mm3": 9.54,
+      "mass_g": 0.075,
+      "com_z_mm": 72.5
+    }
+  ]
+}
