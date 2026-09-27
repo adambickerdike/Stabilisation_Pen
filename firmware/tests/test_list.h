@@ -38,6 +38,7 @@
     X(test_closed_loop_margins)               \
     X(test_closed_loop_hold_no_vsat)          \
     X(test_thermal_model_steady_state)        \
+    X(test_thermal_two_time_constants)        \
     X(test_thermal_resistance_estimate)       \
     X(test_thermal_ntc_and_derating)          \
     X(test_safety_hall_stuck)                 \
@@ -51,9 +52,12 @@
     X(test_sm_fault_policies)                 \
     X(test_ml_guard_rejects)                  \
     X(test_ml_guard_fallback_within_20ms)     \
+    X(test_ml_guard_confidence)               \
     X(test_ml_window)                         \
     X(test_calib_record_roundtrip)            \
     X(test_calib_record_corruption)           \
+    X(test_calib_user_v1_conversion)          \
+    X(test_jacobian_gamma_of_theta)           \
     X(test_calib_spectral_f0)                 \
     X(test_calib_gate_rule)                   \
     X(test_hall_conversion)                   \

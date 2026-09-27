@@ -1,10 +1,9 @@
 # Host unit tests - firmware/tests (gcc 13.3.0, -fsanitize=address,undefined)
 # Evidence status: HOST TEST (x86-64, float32 code paths); not hardware, not target timing.
-# params: 0.4.2 yaml sha 62292f1efdb00e0f
-input check: yaml 0.4.2 [62292f1efdb00e0f], estimator_selection [ecd777b4a7ae9117], model.py [2bcbc83194379333], core.py [c46570f25d1439cb]
-STALE generated files (run: make -C firmware params vectors):
-  include/params_gen.h: icd_sha16 7e35839af70f9f1d != current 2a6164b95d63e5b7 (docs/icd.md)
-pen firmware unit tests: params yaml 0.4.2 [62292f1efdb00e0f], model M1.0
+# params: 0.4.3 yaml sha 3fbe200f8ff5c330
+input check: yaml 0.4.3 [3fbe200f8ff5c330], estimator_selection [ecd777b4a7ae9117], model.py [c62e5e157c7e8264], core.py [c46570f25d1439cb]
+params_gen.h and all golden vectors match the current sources
+pen firmware unit tests: params yaml 0.4.3 [3fbe200f8ff5c330], model M1.0
 [ RUN  ] test_crc_known_answer
     CRC-16/CCITT-FALSE("123456789") = 0x29B1; 64 random vectors vs binascii.crc_hqx: 0 mismatches
 [  OK  ] test_crc_known_answer (5 checks)
@@ -18,8 +17,8 @@ pen firmware unit tests: params yaml 0.4.2 [62292f1efdb00e0f], model M1.0
     single-bit corruptions detected: 448 / 448
 [  OK  ] test_log_corruption_detected (2 checks)
 [ RUN  ] test_log_golden_file
-    golden_log_v1.bin: 502 bytes, records research 3 stroke 4 event 7 calsnap 1 annot 2
-[  OK  ] test_log_golden_file (25 checks)
+    golden_log_v1.bin: 491 bytes, records research 3 stroke 4 event 7 calsnap 1 annot 2
+[  OK  ] test_log_golden_file (26 checks)
 [ RUN  ] test_log_session_clock
     session clock: hardware counter wrap transparent (t_ms monotonic); 4 session wraps in 20000 s, event 0x0009 arg = cumulative count (last 4); stroke t_ms = 20000000
 [  OK  ] test_log_session_clock (5 checks)
@@ -56,18 +55,18 @@ pen firmware unit tests: params yaml 0.4.2 [62292f1efdb00e0f], model M1.0
     band-pass estimator vs mode==2 transcription: max |d dhat| 1.02e-07 m over 6000 ticks
 [  OK  ] test_bpf_estimator_golden (2 checks)
 [ RUN  ] test_replay_sim_kf
-    Kalman (balanced), local origin on (shift invariance): 3999 ticks vs core.simulate(): max |d dhat| 5.52e-09 m, |d f_est| 4.82e-05 Hz, |d g| 5.1e-06, |d q_r| 3.39e-09 m, |d i_ref| 2.46e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
-    Kalman (balanced), local origin off: 3999 ticks vs core.simulate(): max |d dhat| 1.6e-08 m, |d f_est| 5.63e-05 Hz, |d g| 7.21e-06, |d q_r| 4.09e-09 m, |d i_ref| 2.31e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
-[  OK  ] test_replay_sim_kf (16 checks)
+    Kalman (balanced), local origin on (shift invariance): 3999 ticks vs core.simulate(): max |d dhat| 4.7e-09 m, |d f_est| 4.82e-05 Hz, |d g| 5.45e-06, |d q_r| 3.37e-09 m, |d i_ref| 1.53e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
+    Kalman (balanced), local origin off: 3999 ticks vs core.simulate(): max |d dhat| 1.6e-08 m, |d f_est| 5.63e-05 Hz, |d g| 7.21e-06, |d q_r| 4.08e-09 m, |d i_ref| 3.75e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
+[  OK  ] test_replay_sim_kf (18 checks)
 [ RUN  ] test_replay_sim_bpf
-    band-pass, local origin off (as simulator): 3999 ticks vs core.simulate(): max |d dhat| 1.61e-07 m, |d f_est| 0 Hz, |d g| 2.98e-06, |d q_r| 1.6e-07 m, |d i_ref| 0.00165 A; reference authority g_eff > 0 on 93 % of ticks (max 1.000), max |q_r| 532 um
-[  OK  ] test_replay_sim_bpf (8 checks)
+    band-pass, local origin off (as simulator): 3999 ticks vs core.simulate(): max |d dhat| 1.71e-07 m, |d f_est| 0 Hz, |d g| 2.98e-06, |d q_r| 1.88e-07 m, |d i_ref| 0.00209 A; reference authority g_eff > 0 on 93 % of ticks (max 1.000), max |q_r| 532 um
+[  OK  ] test_replay_sim_bpf (9 checks)
 [ RUN  ] test_replay_sim_ffc
-    Kalman + contact FF (bench option): 3999 ticks vs core.simulate(): max |d dhat| 2.13e-08 m, |d f_est| 4.91e-05 Hz, |d g| 1.3e-05, |d q_r| 5.98e-09 m, |d i_ref| 1.79e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 1.000), max |q_r| 346 um
-[  OK  ] test_replay_sim_ffc (8 checks)
+    Kalman + contact FF (bench option): 3999 ticks vs core.simulate(): max |d dhat| 2.13e-08 m, |d f_est| 7.63e-05 Hz, |d g| 1.3e-05, |d q_r| 5.97e-09 m, |d i_ref| 1.86e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 1.000), max |q_r| 346 um
+[  OK  ] test_replay_sim_ffc (9 checks)
 [ RUN  ] test_replay_sim_kf_authority
-    Kalman (balanced) 4 s / 9 Hz, local origin on: 7999 ticks vs core.simulate(): max |d dhat| 1.7e-08 m, |d f_est| 6.77e-05 Hz, |d g| 3.04e-06, |d q_r| 5.75e-09 m, |d i_ref| 3.34e-05 A; reference authority g_eff > 0 on 96 % of ticks (max 1.000), max |q_r| 399 um
-[  OK  ] test_replay_sim_kf_authority (8 checks)
+    Kalman (balanced) 4 s / 9 Hz, local origin on: 7999 ticks vs core.simulate(): max |d dhat| 1.78e-08 m, |d f_est| 4.39e-05 Hz, |d g| 7.24e-06, |d q_r| 5.75e-09 m, |d i_ref| 3.11e-05 A; reference authority g_eff > 0 on 96 % of ticks (max 1.000), max |q_r| 399 um
+[  OK  ] test_replay_sim_kf_authority (9 checks)
 [ RUN  ] test_bpf_reacquisition_transient
     band-pass after re-acquisition at 20 mm: peak |dhat| 9.86 mm (simulator scheme) vs 0.270 mm (local origin)
 [  OK  ] test_bpf_reacquisition_transient (2 checks)
@@ -124,19 +123,22 @@ pen firmware unit tests: params yaml 0.4.2 [62292f1efdb00e0f], model M1.0
 [ RUN  ] test_closed_loop_hold_no_vsat
     design hold force 0.760 N (i = 0.335 A at Kf20):
       3.7 V, 25 degC: mean 0.337 A, DC duty 0.608; max |duty| static 0.650, with 0.3 mm 8 Hz motion 0.660; clamp ticks 0/0
-      3.3 V, 85 degC (R x1.255, Kf x0.922 magnet tempco): mean 0.363 A, V 2.92 V, DC duty 0.894; noise off: max |duty| 0.890, clamp ticks 0
-      3.3 V, 85 degC with Hall/ADC noise: max |duty| static 0.945 (clamp ticks 0); with 0.3 mm 8 Hz motion 0.955, clamp ticks 0 of 2000, longest run > 0.95: 0.5 ms (fault needs > 50 ms)
-      FINDING: at the 3.3 V / 85 degC corner the correction peaks exceed the 0.95 headroom threshold; drive_sense.py's headroom check omits the magnet tempco (+8.5 % current) and the flexure/inertia force of the correction
-[  OK  ] test_closed_loop_hold_no_vsat (6 checks)
+      3.3 V, coil 96.6 degC (R x1.301), magnets 36.1 degC (Kf x0.981): mean 0.341 A, V 2.84 V, DC duty 0.868; noise off: max |duty| 0.865, clamp ticks 0
+      same corner with Hall/ADC noise: max |duty| static 0.920 (clamp ticks 0); with 0.3 mm 8 Hz motion 0.930, clamp ticks 0 of 2000, longest run > 0.95: 0.0 ms (fault needs > 50 ms)
+      (drive_sense.json v0.4.3: the 6 ohm winding binds at 3.3 V in 0.5 % of the thermally allowed envelope; sim/pensim/core.py applies the Br tempco at the coil temperature, the pessimistic convention)
+[  OK  ] test_closed_loop_hold_no_vsat (7 checks)
 [ RUN  ] test_thermal_model_steady_state
-    0.30 A on coil x (model only): steady 123.73 degC (analytic 123.85), 63 % rise at 44.9 s (R_th C_th = 32 s); R_th = 130 K/W from config (README D6)
-[  OK  ] test_thermal_model_steady_state (3 checks)
+    two-node steady state: 0.20 W -> coil 62.400 degC (closed form 62.400), structure 33.400 (33.400); 0.15 A on one coil with copper tempco -> 55.095 degC (closed form 55.095); no loss -> coil 30.900 degC (T_amb + 5.9 K = 30.900); R_coil-struct 145 K/W + R_struct-amb 12.5 K/W = 157.5 K/W (README D6)
+[  OK  ] test_thermal_model_steady_state (6 checks)
+[ RUN  ] test_thermal_two_time_constants
+    0.30 W step: time constants from the response 35.5 s and 190.1 s (network eigenvalues 35.5 s and 190.1 s; uncoupled R C products 36.25 s and 186.25 s); max |T - analytic| 0.022 K over 900 s
+[  OK  ] test_thermal_two_time_constants (4 checks)
 [ RUN  ] test_thermal_resistance_estimate
-    resistance thermometry (V/I - r_bridge - r_shunt): T_R = 70.00 degC for a 70 degC coil; estimate within 2 degC after 0.59 s; systematic error from r_bridge spread 0.28-0.60 ohm: +/-6.8 degC (VERIFY EXP-B07)
+    resistance thermometry (NTC invalid; V/I - r_bridge - r_shunt): T_R = 70.00 degC for a 70 degC coil; estimate within 2 degC after 0.30 s; systematic error from r_bridge spread 0.28-0.60 ohm: +/-6.8 degC (VERIFY EXP-B07)
 [  OK  ] test_thermal_resistance_estimate (5 checks)
 [ RUN  ] test_thermal_ntc_and_derating
-    NTC 50 degC -> 25.00 degC; derate 1 at <= 100 degC -> 0 at 115 degC (fault), clears < 90 degC
-[  OK  ] test_thermal_ntc_and_derating (13 checks)
+    NTC 50 degC -> 50.00 degC; the coil-former NTC is preferred when valid (90 -> 40 degC within 0.43 s; resistance thermometry only without it); derate 1 at <= 100 degC -> 0 at 115 degC (fault), clears < 90 degC (unchanged)
+[  OK  ] test_thermal_ntc_and_derating (15 checks)
 [ RUN  ] test_safety_hall_stuck
     frozen Hall frame detected 4.0 ms after the first repeated frame (budget 5 ms, ICD s6); no false trip in 10 s of live frames with ~3 LSB noise
 [  OK  ] test_safety_hall_stuck (6 checks)
@@ -179,14 +181,27 @@ pen firmware unit tests: params yaml 0.4.2 [62292f1efdb00e0f], model M1.0
     a-posteriori (rule 4): good predictor admitted at 518.0 ms (RMS error 0.0 um vs realised 145.0 um); sign-inverted predictor -> fallback 38.5 ms after the switch, Kalman fully in use 20.0 ms later; re-admitted 1000 ms after the last failing evaluation (hold >= 1 s)
     expiry: output expired when its newest input was 8.5 ms old (contract: t_acq_newest + 8 ms, 2 kHz tick granularity); Kalman fully in use 20.0 ms later
 [  OK  ] test_ml_guard_fallback_within_20ms (12 checks)
+[ RUN  ] test_ml_guard_confidence
+    rule 5: defaults (c_min 0, c_full 1) with full confidence: w = mix on every tick (no effect); c_full 0.5: confidence 0.25 -> ML share 0.5 reached 10.0 ms after the output, 0.75 -> share 1 within 10.0 ms; c_min 0.3 rejects confidence 0.2 (reason 0x40); at the defaults a byte of 128 gives c = 0.502
+[  OK  ] test_ml_guard_confidence (9 checks)
 [ RUN  ] test_ml_window
     input window: 64 x (dx, dy) um increments, oldest first, newest acquisition stamp exported (no f_est, ICD s5 v1.1); reset on optical dropout
 [  OK  ] test_ml_window (69 checks)
 [ RUN  ] test_calib_record_roundtrip
-[  OK  ] test_calib_record_roundtrip (8 checks)
+    CAL_USER v2 (r_n = K_n/k_ax) flash record and log payload round-trip bit-exactly; r_n outside 0.02-10 and other out-of-range fields are never written
+[  OK  ] test_calib_record_roundtrip (12 checks)
 [ RUN  ] test_calib_record_corruption
     CAL_USER record: 328/328 single-bit corruptions rejected; wrong version/type/range rejected
 [  OK  ] test_calib_record_corruption (5 checks)
+[ RUN  ] test_calib_user_v1_conversion
+    CAL_USER v1 -> v2: r_n = gamma / ((1 - gamma) sin^2 50 deg); gamma(50 deg) recomputed from r_n within 3.0e-08 for gamma 0.05-0.8; v1 gamma outside 0.0116-0.854 is clamped to r_n 0.02 / 10 (flagged); re-encoded as version 2
+[  OK  ] test_calib_user_v1_conversion (22 checks)
+[ RUN  ] test_jacobian_gamma_of_theta
+    theta 35 deg: gamma 0.11629 (simulator formula 0.11629), J_t1 0.70962 (0.70962)
+    theta 50 deg: gamma 0.19011 (simulator formula 0.19011), J_t1 0.86858 (0.86858)
+    theta 75 deg: gamma 0.27178 (simulator formula 0.27178), J_t1 0.98477 (0.98477)
+    gamma(theta) and J_t1 vs the simulator formula at 35/50/75 deg: max |d gamma| 1.5e-08, rel |d J_t1| 4.1e-08 (r_n = K_n/k_ax = 0.400)
+[  OK  ] test_jacobian_gamma_of_theta (11 checks)
 [ RUN  ] test_calib_spectral_f0
     Goertzel bank 2-14 Hz (0.1 Hz bins, Hann, 4.1 s at 250 Hz): tremor peak error <= 0.000 Hz for 5.3/8.3/11.7 Hz; stroke peak 4.60 Hz (true 4.6); noise-only window -> no peak
 [  OK  ] test_calib_spectral_f0 (5 checks)
@@ -215,4 +230,4 @@ pen firmware unit tests: params yaml 0.4.2 [62292f1efdb00e0f], model M1.0
 [ RUN  ] test_system_capture_boundaries
     capture: 102 stroke samples for a 501.5 ms stroke (pen-down sample, 200 Hz, pen-up sample at the last in-contact tick); t_ms monotonic across the hardware counter wrap (55 -> 556 ms); research p_H undefined (INT32_MIN) in 111 frames before the first pen-down, page-origin relative afterwards
 [  OK  ] test_system_capture_boundaries (8 checks)
-SUMMARY: 56 test cases, 56 passed, 0 failed; 1053 checks, 0 failed checks
+SUMMARY: 60 test cases, 60 passed, 0 failed; 1115 checks, 0 failed checks

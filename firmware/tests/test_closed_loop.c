@@ -283,11 +283,13 @@ typedef struct {
     double qerr;
 } hold_res_t;
 
-static void hold_case(double vm, double temp_c, bool noise, hold_res_t *h)
+/* coil at temp_c, magnets (on the structure) at magnet_c: K_f follows the magnet temperature */
+static void hold_case(double vm, double temp_c, double magnet_c, bool noise, hold_res_t *h)
 {
     const double F = (double)PEN_I_HOLD_DESIGN * PEN_N_LEVER * PEN_KF20;
     rig_t r;
     rig_init(&r, vm, temp_c, true, noise);
+    r.pl.kf = PEN_KF20 * (1.0 + PEN_ALPHA_B * (magnet_c - 20.0));
     r.pl.f_ext[0] = F;
     const float zero[2] = {0.0f, 0.0f};
     for (int k = 0; k < 600; k++) {
@@ -325,9 +327,15 @@ void test_closed_loop_hold_no_vsat(void)
      * mu 0.15, worst direction), plus a 0.3 mm 8 Hz correction on top */
     const double F = (double)PEN_I_HOLD_DESIGN * PEN_N_LEVER * PEN_KF20;
     hold_res_t nom, cor, cor_q;
-    hold_case(3.7, 25.0, true, &nom);   /* nominal cell, cool coil */
-    hold_case(3.3, 85.0, true, &cor);   /* minimum actuation voltage, hot coil */
-    hold_case(3.3, 85.0, false, &cor_q);
+    /* hot corner as results/electronics/drive_sense.json v0.4.3: coil at the design temperature
+     * (t_coil_design_c), magnets at the structure temperature of the two-node model in the steady
+     * state that holds the coil there */
+    const double T_ref = (double)PEN_T_AMB + (double)PEN_T_STRUCT_RISE_IDLE;
+    const double T_c = PEN_T_COIL_DESIGN;
+    const double T_m = T_ref + (T_c - T_ref) * PEN_RTH_STRUCT / ((double)PEN_RTH_COIL + (double)PEN_RTH_STRUCT);
+    hold_case(3.7, 25.0, 25.0, true, &nom);   /* nominal cell, cool coil */
+    hold_case(3.3, T_c, T_m, true, &cor);     /* minimum actuation voltage, hot coil */
+    hold_case(3.3, T_c, T_m, false, &cor_q);
     /* nominal: no clamp at all, duty well inside the headroom threshold */
     CHECK(nom.clamp_static == 0u && nom.clamp_motion == 0u);
     CHECK(nom.dmax_motion < PEN_DUTY_HEADROOM);
@@ -337,24 +345,21 @@ void test_closed_loop_hold_no_vsat(void)
     CHECK(cor.duty_dc < PEN_DUTY_HEADROOM);
     CHECK(cor_q.clamp_static == 0u && cor_q.dmax_static < PEN_DUTY_HEADROOM);
     CHECK((double)cor.headroom_run_max * 0.5 < 50.0);
+    /* with the magnets at the structure temperature (drive_sense v0.4.3) the corrected hold stays
+     * below the headroom threshold and the clamp */
+    CHECK(cor.clamp_motion == 0u && cor.dmax_motion < PEN_DUTY_HEADROOM);
     tr_log("design hold force %.3f N (i = %.3f A at Kf20):", F, (double)PEN_I_HOLD_DESIGN);
     tr_log("  3.7 V, 25 degC: mean %.3f A, DC duty %.3f; max |duty| static %.3f, with 0.3 mm 8 Hz motion %.3f; "
            "clamp ticks %u/%u", nom.i_hold, nom.duty_dc, (double)nom.dmax_static, (double)nom.dmax_motion,
            (unsigned)nom.clamp_static, (unsigned)nom.clamp_motion);
-    tr_log("  3.3 V, 85 degC (R x1.255, Kf x0.922 magnet tempco): mean %.3f A, V %.2f V, DC duty %.3f; noise off: "
-           "max |duty| %.3f, clamp ticks %u", cor.i_hold, cor.v_need, cor.duty_dc, (double)cor_q.dmax_static,
-           (unsigned)cor_q.clamp_static);
-    tr_log("  3.3 V, 85 degC with Hall/ADC noise: max |duty| static %.3f (clamp ticks %u); with 0.3 mm 8 Hz motion "
-           "%.3f, clamp ticks %u of 2000, longest run > 0.95: %.1f ms (fault needs > 50 ms)", (double)cor.dmax_static,
+    const double r_fac = 1.0 + PEN_ALPHA_CU * (T_c - 20.0), k_fac = 1.0 + PEN_ALPHA_B * (T_m - 20.0);
+    tr_log("  3.3 V, coil %.1f degC (R x%.3f), magnets %.1f degC (Kf x%.3f): mean %.3f A, V %.2f V, DC duty %.3f; noise "
+           "off: max |duty| %.3f, clamp ticks %u", T_c, r_fac, T_m, k_fac, cor.i_hold, cor.v_need, cor.duty_dc,
+           (double)cor_q.dmax_static, (unsigned)cor_q.clamp_static);
+    tr_log("  same corner with Hall/ADC noise: max |duty| static %.3f (clamp ticks %u); with 0.3 mm 8 Hz motion %.3f, "
+           "clamp ticks %u of 2000, longest run > %.2f: %.1f ms (fault needs > 50 ms)", (double)cor.dmax_static,
            (unsigned)cor.clamp_static, (double)cor.dmax_motion, (unsigned)cor.clamp_motion,
-           (double)cor.headroom_run_max * 0.5);
-    if (cor.clamp_motion > 0u || cor.dmax_motion > PEN_DUTY_HEADROOM) {
-        tr_log("  FINDING: at the 3.3 V / 85 degC corner the correction peaks exceed the %.2f headroom threshold%s; "
-               "drive_sense.py's headroom check omits the magnet tempco (+8.5 %% current) and the flexure/inertia "
-               "force of the correction", (double)PEN_DUTY_HEADROOM, cor.clamp_motion > 0u ? " and reach the clamp" : "");
-    } else {
-        tr_log("  3.3 V / 85 degC corner: correction peaks stay below the %.2f headroom threshold (margin %.3f of "
-               "duty); drive_sense.py's headroom check still omits the magnet tempco (+8.5 %% current) and the "
-               "correction force", (double)PEN_DUTY_HEADROOM, (double)(PEN_DUTY_HEADROOM - cor.dmax_motion));
-    }
+           (double)PEN_DUTY_HEADROOM, (double)cor.headroom_run_max * 0.5);
+    tr_log("  (drive_sense.json v0.4.3: the 6 ohm winding binds at 3.3 V in 0.5 %% of the thermally allowed envelope; "
+           "sim/pensim/core.py applies the Br tempco at the coil temperature, the pessimistic convention)");
 }

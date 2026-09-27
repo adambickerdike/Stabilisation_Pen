@@ -1,16 +1,16 @@
 {
  "meta": {
   "generator": "firmware/tools/gen_params.py",
-  "yaml_version": "0.4.2",
-  "yaml_sha16": "62292f1efdb00e0f",
+  "yaml_version": "0.4.3",
+  "yaml_sha16": "3fbe200f8ff5c330",
   "estimator_selection_sha16": "ecd777b4a7ae9117",
-  "drive_sense_sha16": "9f90f6fbbfd4b76c",
-  "design_revA_sha16": "433ad7f1224c4987",
-  "model_py_sha16": "2bcbc83194379333",
+  "drive_sense_sha16": "f934a426ab37edfe",
+  "design_revA_sha16": "69844a9aa4e6bd48",
+  "model_py_sha16": "c62e5e157c7e8264",
   "core_py_sha16": "c46570f25d1439cb",
-  "icd_sha16": "7e35839af70f9f1d",
+  "icd_sha16": "b925602e937d8774",
   "model_version": "M1.0",
-  "git_head": "2477142",
+  "git_head": "8dba406",
   "nominal_theta_deg": 50.0,
   "nominal_N0": 1.0,
   "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
@@ -268,10 +268,10 @@
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
    "name": "PEN_RTH_COIL",
-   "value": 130.0,
+   "value": 145.0,
    "type": "float",
    "unit": "K/W",
-   "source": "config/parameters.yaml actuator.Rth_coil_amb (calculated; see README discrepancy D6)"
+   "source": "config/parameters.yaml actuator.Rth_coil_amb (calculated): coil to structure through the air gaps (key name historical)"
   },
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
@@ -279,7 +279,31 @@
    "value": 0.25,
    "type": "float",
    "unit": "J/K",
-   "source": "config/parameters.yaml actuator.Cth_coil"
+   "source": "config/parameters.yaml actuator.Cth_coil (assumed)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_RTH_STRUCT",
+   "value": 12.5,
+   "type": "float",
+   "unit": "K/W",
+   "source": "config/parameters.yaml actuator.Rth_struct_amb (calculated): structure to ambient and hand"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_CTH_STRUCT",
+   "value": 14.9,
+   "type": "float",
+   "unit": "J/K",
+   "source": "config/parameters.yaml actuator.Cth_struct (calculated)"
+  },
+  {
+   "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
+   "name": "PEN_T_STRUCT_RISE_IDLE",
+   "value": 5.9,
+   "type": "float",
+   "unit": "K",
+   "source": "config/parameters.yaml actuator.T_struct_rise_idle: structure above ambient with no coil loss (electronics, hand)"
   },
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
@@ -287,7 +311,7 @@
    "value": 25.0,
    "type": "float",
    "unit": "degC",
-   "source": "config/parameters.yaml thermal.t_ambient"
+   "source": "config/parameters.yaml thermal.t_ambient (assumed)"
   },
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
@@ -311,7 +335,7 @@
    "value": 2000.0,
    "type": "float",
    "unit": "Hz",
-   "source": "sim/pensim/model.py Controller.cur_bw (yaml control.current_bw = 2000)"
+   "source": "config/parameters.yaml control.current_bw as resolved by sim/pensim/model.py build_params() (Controller.cur_bw None)"
   },
   {
    "section": "Current loop (40 kHz PI per axis)",
@@ -484,7 +508,7 @@
   {
    "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
    "name": "PEN_T_COIL_DESIGN",
-   "value": 85.0,
+   "value": 96.60619052057275,
    "type": "float",
    "unit": "degC",
    "source": "drive_sense.json components.t_coil_design_c"
@@ -495,7 +519,7 @@
    "value": 60.0,
    "type": "float",
    "unit": "Hz",
-   "source": "sim/pensim/model.py Controller.pos_bw (yaml control.pos_bw = 60)"
+   "source": "config/parameters.yaml control.pos_bw as resolved by sim/pensim/model.py build_params() (Controller.pos_bw None)"
   },
   {
    "section": "Stage position servo (2 kHz)",
@@ -671,7 +695,7 @@
    "value": 0.19010609997385067,
    "type": "float",
    "unit": "-",
-   "source": "sim/pensim/model.py build_params(): gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (default CAL_USER gamma)"
+   "source": "sim/pensim/model.py build_params(): gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (reference for tests)"
   },
   {
    "section": "Authority, Jacobian and limits",
@@ -683,11 +707,35 @@
   },
   {
    "section": "Authority, Jacobian and limits",
+   "name": "PEN_R_N_NOM",
+   "value": 0.4,
+   "type": "float",
+   "unit": "-",
+   "source": "config/parameters.yaml hand.normal_stiffness / stage.axial_k: default CAL_USER v2 r_n = K_n/k_ax (docs/icd.md s1, s3 v1.3)"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_R_N_MIN",
+   "value": 0.02,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s3 v1.3: CAL_USER r_n range 0.02-10"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
+   "name": "PEN_R_N_MAX",
+   "value": 10.0,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s3 v1.3: CAL_USER r_n range 0.02-10"
+  },
+  {
+   "section": "Authority, Jacobian and limits",
    "name": "PEN_THETA_NOM",
    "value": 0.8726646259971648,
    "type": "float",
    "unit": "rad",
-   "source": "config/parameters.yaml writing.tilt_deg"
+   "source": "config/parameters.yaml writing.tilt_deg (v1 CAL_USER gamma -> r_n conversion at this tilt, ICD s3)"
   },
   {
    "section": "Authority, Jacobian and limits",
@@ -1367,7 +1415,7 @@
    "value": 1000.0,
    "type": "float",
    "unit": "Hz",
-   "source": "config/parameters.yaml sensing.opt_rate (ICD s2 says 2 kHz burst; README D8)"
+   "source": "config/parameters.yaml sensing.opt_rate (ICD s2 v1.3: 1 kHz)"
   },
   {
    "section": "Sensing and housing-position fusion",
@@ -1508,10 +1556,10 @@
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
    "name": "PEN_T_NTC_GAIN",
-   "value": 0.02,
+   "value": 0.1,
    "type": "float",
    "unit": "-",
-   "source": "proposed: NTC relaxation gain per 100 Hz observer update (both coils idle)"
+   "source": "proposed: coil-node correction toward the coil-former NTC per 100 Hz update (NTC preferred when valid; time constant 0.1 s)"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
@@ -1519,7 +1567,7 @@
    "value": 0.05,
    "type": "float",
    "unit": "-",
-   "source": "proposed: resistance-thermometry gain per valid 100 Hz observer update"
+   "source": "proposed: resistance-thermometry gain per valid 100 Hz observer update (used when the NTC is invalid)"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
@@ -1608,6 +1656,30 @@
    "type": "float",
    "unit": "s",
    "source": "REQ-SAF-003: fall back smoothly within 20 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_C_MIN",
+   "value": 0.0,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.2 rule 5: confidence (byte/255) below c_min is a rejected inference; uncalibrated default 0"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_C_FULL",
+   "value": 1.0,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, confidence/c_full); uncalibrated default 1"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_CONF_SLEW_TIME",
+   "value": 0.02,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s5 v1.2 rule 5: the scaled ML share reaches its new value within 20 ms"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",

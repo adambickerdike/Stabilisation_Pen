@@ -125,6 +125,22 @@ def nominal_scenario(p):
                           phi_deg=0.0, rho_deg=0.0, N0=float(p["writing.normal_force"]))
 
 
+def resolved_rates(ctrl, p):
+    """f_stage, pos_bw, cur_bw as sim/pensim/model.py build_params() resolves them:
+    a Controller field left at None (the default since model.py for YAML 0.4.3)
+    takes config control.f_stage / control.pos_bw / control.current_bw."""
+    f_stage = ctrl.f_stage if ctrl.f_stage is not None else float(p["control.f_stage"])
+    pos_bw = ctrl.pos_bw if ctrl.pos_bw is not None else float(p["control.pos_bw"])
+    cur_bw = ctrl.cur_bw if ctrl.cur_bw is not None else float(p["control.current_bw"])
+    return float(f_stage), float(pos_bw), float(cur_bw)
+
+
+def gamma_of(r_n, theta):
+    """ICD s1 v1.3: gamma(theta) = r_n sin^2 th / (r_n sin^2 th + 1), r_n = K_n / k_ax."""
+    s2 = math.sin(theta) ** 2
+    return r_n * s2 / (r_n * s2 + 1.0)
+
+
 def kf_q(qj, qt, Ts):
     """Process-noise entries exactly as sim/pensim/core.py _kf_step()."""
     T2 = Ts * Ts; T3 = T2 * Ts; T4 = T3 * Ts; T5 = T4 * Ts
@@ -165,8 +181,17 @@ def main():
 
     E = Emitter()
     src_bp = "sim/pensim/model.py build_params()"
-    ctl = model.Controller()
     yml = "config/parameters.yaml"
+    # rates and bandwidths as build_params() resolved them, verified against the packed gains
+    f_stage_r, pos_bw, cur_bw = resolved_rates(ctrl_bal, p)
+    if resolved_rates(ctrl_asr, p) != (f_stage_r, pos_bw, cur_bw):
+        raise SystemExit("profile Controllers resolve different rates/bandwidths")
+    wc_pos, wc_cur = 2.0 * math.pi * pos_bw, 2.0 * math.pi * cur_bw
+    for what, got, want in (("Ts", info["Ts"], 1.0 / f_stage_r),
+                            ("Kp", g("Kp"), g("m_eq") * wc_pos ** 2 - g("k_tip")),
+                            ("Kp_i", g("Kp_i"), g("Lc") * wc_cur)):
+        if abs(got - want) > 1e-9 * max(1.0, abs(want)):
+            raise SystemExit(f"{src_bp}: {what} = {got} is not built from the resolved rates ({want})")
 
     # ------------------------------------------------------------------ timing
     E.sec("Timing (ICD section 2)")
@@ -175,6 +200,8 @@ def main():
     f_pwm = float(p["electrical.f_pwm"])
     f_cur = float(p["control.f_current"])
     f_stage = float(p["control.f_stage"])
+    if abs(f_stage - f_stage_r) > 1e-9:
+        raise SystemExit(f"model Controller f_stage {f_stage_r} != yaml control.f_stage {f_stage}")
     if abs(f_pwm - f_cur) > 0.5:
         raise SystemExit("current loop must run once per PWM period (f_current == f_pwm)")
     if abs(comp["f_pwm_hz"] - f_pwm) > 0.5:
@@ -214,17 +241,22 @@ def main():
     E.f("I_TRIP_HW", float(p["actuator.i_trip"]), "A", f"{yml} actuator.i_trip (hardware window comparator + latch)")
     E.f("ALPHA_CU", g("alpha_cu"), "1/K", f"{yml} actuator.alpha_cu")
     E.f("ALPHA_B", g("alpha_B"), "1/K", f"{src_bp}: alpha_B default (NdFeB Br tempco, assumed)")
-    E.f("RTH_COIL", g("Rth"), "K/W", f"{yml} actuator.Rth_coil_amb ({p.leaf('actuator.Rth_coil_amb')['status']}; see README discrepancy D6)")
-    E.f("CTH_COIL", g("Cth"), "J/K", f"{yml} actuator.Cth_coil")
-    E.f("T_AMB", g("T_amb"), "degC", f"{yml} thermal.t_ambient")
+    # two-node thermal model of the firmware governor (YAML 0.4.3, results/thermal/thermal.json
+    # two_node_governor_model): coil node -> structure (iron, magnets, barrel) -> ambient
+    if abs(g("Rth") - float(p["actuator.Rth_coil_amb"])) > 1e-12:
+        raise SystemExit("simulator Rth differs from yaml actuator.Rth_coil_amb")
+    E.f("RTH_COIL", g("Rth"), "K/W", f"{yml} actuator.Rth_coil_amb ({p.leaf('actuator.Rth_coil_amb')['status']}): coil to structure through the air gaps (key name historical)")
+    E.f("CTH_COIL", g("Cth"), "J/K", f"{yml} actuator.Cth_coil ({p.leaf('actuator.Cth_coil')['status']})")
+    E.f("RTH_STRUCT", float(p["actuator.Rth_struct_amb"]), "K/W", f"{yml} actuator.Rth_struct_amb ({p.leaf('actuator.Rth_struct_amb')['status']}): structure to ambient and hand")
+    E.f("CTH_STRUCT", float(p["actuator.Cth_struct"]), "J/K", f"{yml} actuator.Cth_struct ({p.leaf('actuator.Cth_struct')['status']})")
+    E.f("T_STRUCT_RISE_IDLE", float(p["actuator.T_struct_rise_idle"]), "K", f"{yml} actuator.T_struct_rise_idle: structure above ambient with no coil loss (electronics, hand)")
+    E.f("T_AMB", g("T_amb"), "degC", f"{yml} thermal.t_ambient ({p.leaf('thermal.t_ambient')['status']})")
     E.f("V_BAT_NOM", g("V_bus"), "V", f"{yml} electrical.v_bat_nom")
     E.f("V_BAT_MIN", float(p["electrical.v_bat_min"]), "V", f"{yml} electrical.v_bat_min (actuation cut-off)")
 
     # ------------------------------------------------------------------ current loop
     E.sec("Current loop (40 kHz PI per axis)")
-    E.f("CUR_BW_HZ", ctl.cur_bw, "Hz", "sim/pensim/model.py Controller.cur_bw (yaml control.current_bw = %g)" % float(p["control.current_bw"]))
-    if abs(ctl.cur_bw - float(p["control.current_bw"])) > 1e-9:
-        checks.append("model.Controller.cur_bw != yaml control.current_bw")
+    E.f("CUR_BW_HZ", cur_bw, "Hz", "%s control.current_bw as resolved by %s (Controller.cur_bw %s)" % (yml, src_bp, ctrl_bal.cur_bw))
     E.f("KP_I", g("Kp_i"), "V/A", f"{src_bp}: Kp_i = L wc_i")
     E.f("KI_I", g("Ki_i"), "V/(A s)", f"{src_bp}: Ki_i = (R20 + r_bridge + r_shunt) wc_i")
     E.f("R_LOOP_FF", g("R20") + g("r_bridge") + g("r_shunt"), "ohm", f"{src_bp}: Rhat used for the R*i_ref voltage feedforward (at 20 C)")
@@ -257,10 +289,8 @@ def main():
 
     # ------------------------------------------------------------------ servo
     E.sec("Stage position servo (2 kHz)")
-    E.f("POS_BW_HZ", ctl.pos_bw, "Hz", "sim/pensim/model.py Controller.pos_bw (yaml control.pos_bw = %g)" % float(p["control.pos_bw"]))
-    if abs(ctl.pos_bw - float(p["control.pos_bw"])) > 1e-9:
-        checks.append("model.Controller.pos_bw != yaml control.pos_bw")
-    E.f("ZETA", ctl.zeta, "-", "model.Controller.zeta")
+    E.f("POS_BW_HZ", pos_bw, "Hz", "%s control.pos_bw as resolved by %s (Controller.pos_bw %s)" % (yml, src_bp, ctrl_bal.pos_bw))
+    E.f("ZETA", ctrl_bal.zeta, "-", "model.Controller.zeta")
     E.f("KP", g("Kp"), "N/m", f"{src_bp}: Kp = m_eq wc^2 - k_tip")
     E.f("KD", g("Kd"), "N s/m", f"{src_bp}: Kd = 2 zeta m_eq wc")
     E.f("KI", g("Ki"), "N/(m s)", f"{src_bp}: Ki = Kp wc ki_ratio")
@@ -283,9 +313,16 @@ def main():
     E.f("SLEW", g("slew"), "m/s", "model.Controller.slew")
     E.f("AUTHORITY_TAU", g("authority_tau"), "s", "model.Controller.authority_tau")
     E.f("ALPHA_A", 1.0 - math.exp(-Ts / max(g("authority_tau"), 1e-6)), "-", "core.simulate(): alpha_a = 1 - exp(-Ts/authority_tau)")
-    E.f("GAMMA_NOM", g("gamma_acc"), "-", f"{src_bp}: gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (default CAL_USER gamma)")
+    th_nom = math.radians(float(p["writing.tilt_deg"]))
+    r_n = float(p["hand.normal_stiffness"]) / float(p["stage.axial_k"])
+    if abs(gamma_of(r_n, th_nom) - g("gamma_acc")) > 1e-12:
+        raise SystemExit("gamma(r_n, theta_nom) differs from the simulator's gamma_acc")
+    E.f("GAMMA_NOM", g("gamma_acc"), "-", f"{src_bp}: gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (reference for tests)")
     E.f("K_HAND_NORMAL", float(p["hand.normal_stiffness"]), "N/m", f"{yml} hand.normal_stiffness (gamma formula)")
-    E.f("THETA_NOM", math.radians(float(p["writing.tilt_deg"])), "rad", f"{yml} writing.tilt_deg")
+    E.f("R_N_NOM", r_n, "-", f"{yml} hand.normal_stiffness / stage.axial_k: default CAL_USER v2 r_n = K_n/k_ax (docs/icd.md s1, s3 v1.3)")
+    E.f("R_N_MIN", 0.02, "-", "docs/icd.md s3 v1.3: CAL_USER r_n range 0.02-10")
+    E.f("R_N_MAX", 10.0, "-", "docs/icd.md s3 v1.3: CAL_USER r_n range 0.02-10")
+    E.f("THETA_NOM", th_nom, "rad", f"{yml} writing.tilt_deg (v1 CAL_USER gamma -> r_n conversion at this tilt, ICD s3)")
     E.f("KAPPA_S", g("kappa_s"), "-", f"{yml} stage.kappa_s via {src_bp} (DEC-007 rev.: 1 = refill slides in the carrier, lever arm L1 - s)")
     E.f("AXIAL_COMP", g("axial_comp"), "-", "model.Controller.axial_comp (off)")
     E.f("AXIAL_COMP_TAU", g("axial_comp_tau"), "s", "model.Controller.axial_comp_tau")
@@ -346,7 +383,7 @@ def main():
     E.i("FUSION_LAG_TICKS", max(0, (od - idl) // sdec), "ticks", "core.simulate(): lag_t = max(0, (opt_delay - imu_delay) // stage_decim) in sim steps")
     E.f("IMU_LEAK_TAU", 0.5, "s", "core.simulate(): vimu *= (1 - dti/0.5) leaky velocity")
     E.f("IMU_RATE_HZ", float(p["sensing.imu_rate"]), "Hz", f"{yml} sensing.imu_rate (ICD s2 v1.2: 3.84 kHz ODR, 7.68 kHz available)")
-    E.f("OPT_RATE_HZ", float(p["sensing.opt_rate"]), "Hz", f"{yml} sensing.opt_rate (ICD s2 says 2 kHz burst; README D8)")
+    E.f("OPT_RATE_HZ", float(p["sensing.opt_rate"]), "Hz", f"{yml} sensing.opt_rate (ICD s2 v1.3: 1 kHz)")
     E.f("OPT_LIFT_MAX", 0.8e-3, "m", "model.build_params default sensing.opt_lift_max")
     E.i("FUSION_RING", 1024, "ticks", "core.simulate(): rb_pimu length")
 
@@ -367,8 +404,8 @@ def main():
     E.f("T_DERATE_START", 100.0, "degC", "proposed: authority cap starts falling")
     E.f("T_FAULT", 115.0, "degC", "proposed: over-temperature fault (bit 2), 5 degC margin for observer error")
     E.f("T_RECOVER", 90.0, "degC", "proposed: over-temperature clear threshold")
-    E.f("T_NTC_GAIN", 0.02, "-", "proposed: NTC relaxation gain per 100 Hz observer update (both coils idle)")
-    E.f("T_RES_GAIN", 0.05, "-", "proposed: resistance-thermometry gain per valid 100 Hz observer update")
+    E.f("T_NTC_GAIN", 0.1, "-", "proposed: coil-node correction toward the coil-former NTC per 100 Hz update (NTC preferred when valid; time constant 0.1 s)")
+    E.f("T_RES_GAIN", 0.05, "-", "proposed: resistance-thermometry gain per valid 100 Hz observer update (used when the NTC is invalid)")
     E.f("R_EST_I_MIN", 0.10, "A", "proposed: minimum |I| for resistance estimate")
     E.f("R_EST_DI_MAX", 0.02, "A", "proposed: max current change over a tick for 'steady'")
     E.f("OC_CLEAR_RETRIES", 3.0, "-", "proposed: latch clear attempts before the fault is permanent")
@@ -380,6 +417,9 @@ def main():
     E.f("ML_REAL_SETTLE", 0.300, "s", "proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset")
     E.f("ML_STALE_TIME", 0.008, "s", "docs/icd.md s5 v1.2: expiry = t_acq_newest + 8 ms (REQ-SAF-003, REQ-ML-002)")
     E.f("ML_FADE_TIME", 0.020, "s", "REQ-SAF-003: fall back smoothly within 20 ms")
+    E.f("ML_C_MIN", 0.0, "-", "docs/icd.md s5 v1.2 rule 5: confidence (byte/255) below c_min is a rejected inference; uncalibrated default 0")
+    E.f("ML_C_FULL", 1.0, "-", "docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, confidence/c_full); uncalibrated default 1")
+    E.f("ML_CONF_SLEW_TIME", 0.020, "s", "docs/icd.md s5 v1.2 rule 5: the scaled ML share reaches its new value within 20 ms")
     E.i("ML_TRIP_COUNT", 5, "trips", "proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW")
     E.f("ML_TRIP_WINDOW", 10.0, "s", "proposed")
     E.f("PENUP_DEBOUNCE", 0.020, "s", "proposed: contact must be absent 20 ms to declare pen-up")

@@ -19,7 +19,8 @@ void ctrl_init(ctrl_t *c, pen_profile_t profile)
     bpf_est_init(&c->bpf);
     guided_init(&c->guided, NULL, 0);
     servo_init(&c->servo);
-    jac_update(&c->jac, PEN_THETA_NOM, 0.0f, 0.0f, c->prm.gamma);
+    c->gamma = jac_gamma(c->prm.r_n, PEN_THETA_NOM);
+    jac_update(&c->jac, PEN_THETA_NOM, 0.0f, 0.0f, c->gamma);
     c->lam_hat = 1.0f;
     c->local_origin = true;
 }
@@ -44,7 +45,8 @@ void ctrl_tick(ctrl_t *c, const ctrl_in_t *in)
     const float phl[2] = {in->ph[0] - c->origin[0], in->ph[1] - c->origin[1]};
     c->bpf.reset_deriv = c->local_origin;
 
-    jac_update(&c->jac, in->theta, in->phi, in->rho, p->gamma);
+    c->gamma = jac_gamma(p->r_n, in->theta);   /* ICD s1 v1.3: gamma follows the tilt */
+    jac_update(&c->jac, in->theta, in->phi, in->rho, c->gamma);
 
     /* ---- disturbance estimate and page correction ---- */
     float corr0 = 0.0f, corr1 = 0.0f;

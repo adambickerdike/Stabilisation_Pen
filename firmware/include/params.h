@@ -36,7 +36,7 @@ typedef struct {
     float g_assist;      /* nominal assistance gain */
     float g_max;         /* authority cap (CAL_USER) */
     float q_lim, q_taper, slew, alpha_a;
-    float gamma;         /* compliance ratio for J (CAL_USER) */
+    float r_n;           /* K_n / k_ax (CAL_USER v2); gamma(theta) is computed from it at each Jacobian update */
     float kappa_s, axial_comp, axial_comp_tau;
     /* ---- servo ---- */
     float kp, kd, ki, alpha_d;

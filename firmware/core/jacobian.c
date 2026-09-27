@@ -9,6 +9,14 @@
 
 #include "mathx.h"
 
+float jac_gamma(float r_n, float theta)
+{
+    const float th = pen_clampf(theta, JAC_THETA_MIN, 0.5f * PEN_PI_F);
+    const float s = sinf(th);
+    const float k = r_n * s * s;
+    return k / (k + 1.0f);
+}
+
 void jac_update(jac_t *J, float theta, float phi, float rho, float gamma)
 {
     const float th = pen_clampf(theta, JAC_THETA_MIN, 0.5f * PEN_PI_F);

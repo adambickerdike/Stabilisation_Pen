@@ -3,16 +3,16 @@
  * Evidence status: PROPOSED DESIGN. Every value is calculated, assumed or copied
  * from a design file as cited; none is a measurement of Rev A hardware.
  *   generator: firmware/tools/gen_params.py
- *   yaml_version: 0.4.2
- *   yaml_sha16: 62292f1efdb00e0f
+ *   yaml_version: 0.4.3
+ *   yaml_sha16: 3fbe200f8ff5c330
  *   estimator_selection_sha16: ecd777b4a7ae9117
- *   drive_sense_sha16: 9f90f6fbbfd4b76c
- *   design_revA_sha16: 433ad7f1224c4987
- *   model_py_sha16: 2bcbc83194379333
+ *   drive_sense_sha16: f934a426ab37edfe
+ *   design_revA_sha16: 69844a9aa4e6bd48
+ *   model_py_sha16: c62e5e157c7e8264
  *   core_py_sha16: c46570f25d1439cb
- *   icd_sha16: 7e35839af70f9f1d
+ *   icd_sha16: b925602e937d8774
  *   model_version: M1.0
- *   git_head: 2477142
+ *   git_head: 8dba406
  *   nominal_theta_deg: 50.0
  *   nominal_N0: 1.0
  *   evidence_status: proposed design / calculated / assumed values; no hardware measurement
@@ -20,13 +20,13 @@
 #ifndef PEN_PARAMS_GEN_H
 #define PEN_PARAMS_GEN_H
 
-#define PEN_PARAMS_YAML_VERSION "0.4.2"
-#define PEN_PARAMS_YAML_SHA16 "62292f1efdb00e0f"
+#define PEN_PARAMS_YAML_VERSION "0.4.3"
+#define PEN_PARAMS_YAML_SHA16 "3fbe200f8ff5c330"
 #define PEN_PARAMS_MODEL_VERSION "M1.0"
-#define PEN_PARAMS_YAML_VERSION_NUM (402u)
+#define PEN_PARAMS_YAML_VERSION_NUM (403u)
 #define PEN_PARAMS_SEL_SHA16 "ecd777b4a7ae9117"
-#define PEN_PARAMS_DRV_SHA16 "9f90f6fbbfd4b76c"
-#define PEN_PARAMS_MODEL_SHA16 "2bcbc83194379333"
+#define PEN_PARAMS_DRV_SHA16 "f934a426ab37edfe"
+#define PEN_PARAMS_MODEL_SHA16 "c62e5e157c7e8264"
 #define PEN_PARAMS_CORE_SHA16 "c46570f25d1439cb"
 
 /* ---- Timing (ICD section 2) ---- */
@@ -63,14 +63,17 @@
 #define PEN_I_TRIP_HW              (0.800000012f) /* A; config/parameters.yaml actuator.i_trip (hardware window comparator + latch) */
 #define PEN_ALPHA_CU               (0.00393000012f) /* 1/K; config/parameters.yaml actuator.alpha_cu */
 #define PEN_ALPHA_B                (-0.00120000006f) /* 1/K; sim/pensim/model.py build_params(): alpha_B default (NdFeB Br tempco, assumed) */
-#define PEN_RTH_COIL               (130.0f) /* K/W; config/parameters.yaml actuator.Rth_coil_amb (calculated; see README discrepancy D6) */
-#define PEN_CTH_COIL               (0.25f) /* J/K; config/parameters.yaml actuator.Cth_coil */
-#define PEN_T_AMB                  (25.0f) /* degC; config/parameters.yaml thermal.t_ambient */
+#define PEN_RTH_COIL               (145.0f) /* K/W; config/parameters.yaml actuator.Rth_coil_amb (calculated): coil to structure through the air gaps (key name historical) */
+#define PEN_CTH_COIL               (0.25f) /* J/K; config/parameters.yaml actuator.Cth_coil (assumed) */
+#define PEN_RTH_STRUCT             (12.5f) /* K/W; config/parameters.yaml actuator.Rth_struct_amb (calculated): structure to ambient and hand */
+#define PEN_CTH_STRUCT             (14.8999996f) /* J/K; config/parameters.yaml actuator.Cth_struct (calculated) */
+#define PEN_T_STRUCT_RISE_IDLE     (5.9000001f) /* K; config/parameters.yaml actuator.T_struct_rise_idle: structure above ambient with no coil loss (electronics, hand) */
+#define PEN_T_AMB                  (25.0f) /* degC; config/parameters.yaml thermal.t_ambient (assumed) */
 #define PEN_V_BAT_NOM              (3.70000005f) /* V; config/parameters.yaml electrical.v_bat_nom */
 #define PEN_V_BAT_MIN              (3.29999995f) /* V; config/parameters.yaml electrical.v_bat_min (actuation cut-off) */
 
 /* ---- Current loop (40 kHz PI per axis) ---- */
-#define PEN_CUR_BW_HZ              (2000.0f) /* Hz; sim/pensim/model.py Controller.cur_bw (yaml control.current_bw = 2000) */
+#define PEN_CUR_BW_HZ              (2000.0f) /* Hz; config/parameters.yaml control.current_bw as resolved by sim/pensim/model.py build_params() (Controller.cur_bw None) */
 #define PEN_KP_I                   (2.1991148f) /* V/A; sim/pensim/model.py build_params(): Kp_i = L wc_i */
 #define PEN_KI_I                   (81932.7344f) /* V/(A s); sim/pensim/model.py build_params(): Ki_i = (R20 + r_bridge + r_shunt) wc_i */
 #define PEN_R_LOOP_FF              (6.51999998f) /* ohm; sim/pensim/model.py build_params(): Rhat used for the R*i_ref voltage feedforward (at 20 C) */
@@ -94,10 +97,10 @@
 #define PEN_NTC_R_PULLUP           (10000.0f) /* ohm; design_revA.py R14 10k to +3V0A (ratiometric read, REFSEL VDD/4, gain 1/4) */
 #define PEN_I_HOLD_DESIGN          (0.334728032f) /* A; drive_sense.json design_point_hold_current_A (50 deg, 1 N, mu 0.15 worst direction) */
 #define PEN_R_EXT_HOT              (0.579999983f) /* ohm; drive_sense.json headroom.r_ext_ohm (bridge hot + shunt + wiring) */
-#define PEN_T_COIL_DESIGN          (85.0f) /* degC; drive_sense.json components.t_coil_design_c */
+#define PEN_T_COIL_DESIGN          (96.6061935f) /* degC; drive_sense.json components.t_coil_design_c */
 
 /* ---- Stage position servo (2 kHz) ---- */
-#define PEN_POS_BW_HZ              (60.0f) /* Hz; sim/pensim/model.py Controller.pos_bw (yaml control.pos_bw = 60) */
+#define PEN_POS_BW_HZ              (60.0f) /* Hz; config/parameters.yaml control.pos_bw as resolved by sim/pensim/model.py build_params() (Controller.pos_bw None) */
 #define PEN_ZETA                   (0.699999988f) /* -; model.Controller.zeta */
 #define PEN_KP                     (1865.78918f) /* N/m; sim/pensim/model.py build_params(): Kp = m_eq wc^2 - k_tip */
 #define PEN_KD                     (7.22591257f) /* N s/m; sim/pensim/model.py build_params(): Kd = 2 zeta m_eq wc */
@@ -121,9 +124,12 @@
 #define PEN_SLEW                   (0.0799999982f) /* m/s; model.Controller.slew */
 #define PEN_AUTHORITY_TAU          (0.0500000007f) /* s; model.Controller.authority_tau */
 #define PEN_ALPHA_A                (0.00995016657f) /* -; core.simulate(): alpha_a = 1 - exp(-Ts/authority_tau) */
-#define PEN_GAMMA_NOM              (0.190106094f) /* -; sim/pensim/model.py build_params(): gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (default CAL_USER gamma) */
+#define PEN_GAMMA_NOM              (0.190106094f) /* -; sim/pensim/model.py build_params(): gamma = Kn sin^2(th)/(Kn sin^2(th) + k_ax) at the nominal theta (reference for tests) */
 #define PEN_K_HAND_NORMAL          (800.0f) /* N/m; config/parameters.yaml hand.normal_stiffness (gamma formula) */
-#define PEN_THETA_NOM              (0.87266463f) /* rad; config/parameters.yaml writing.tilt_deg */
+#define PEN_R_N_NOM                (0.400000006f) /* -; config/parameters.yaml hand.normal_stiffness / stage.axial_k: default CAL_USER v2 r_n = K_n/k_ax (docs/icd.md s1, s3 v1.3) */
+#define PEN_R_N_MIN                (0.0199999996f) /* -; docs/icd.md s3 v1.3: CAL_USER r_n range 0.02-10 */
+#define PEN_R_N_MAX                (10.0f) /* -; docs/icd.md s3 v1.3: CAL_USER r_n range 0.02-10 */
+#define PEN_THETA_NOM              (0.87266463f) /* rad; config/parameters.yaml writing.tilt_deg (v1 CAL_USER gamma -> r_n conversion at this tilt, ICD s3) */
 #define PEN_KAPPA_S                (1.0f) /* -; config/parameters.yaml stage.kappa_s via sim/pensim/model.py build_params() (DEC-007 rev.: 1 = refill slides in the carrier, lever arm L1 - s) */
 #define PEN_AXIAL_COMP             (0.0f) /* -; model.Controller.axial_comp (off) */
 #define PEN_AXIAL_COMP_TAU         (2.0f) /* s; model.Controller.axial_comp_tau */
@@ -212,7 +218,7 @@
 #define PEN_FUSION_LAG_TICKS       (2) /* ticks; core.simulate(): lag_t = max(0, (opt_delay - imu_delay) // stage_decim) in sim steps */
 #define PEN_IMU_LEAK_TAU           (0.5f) /* s; core.simulate(): vimu *= (1 - dti/0.5) leaky velocity */
 #define PEN_IMU_RATE_HZ            (3840.0f) /* Hz; config/parameters.yaml sensing.imu_rate (ICD s2 v1.2: 3.84 kHz ODR, 7.68 kHz available) */
-#define PEN_OPT_RATE_HZ            (1000.0f) /* Hz; config/parameters.yaml sensing.opt_rate (ICD s2 says 2 kHz burst; README D8) */
+#define PEN_OPT_RATE_HZ            (1000.0f) /* Hz; config/parameters.yaml sensing.opt_rate (ICD s2 v1.3: 1 kHz) */
 #define PEN_OPT_LIFT_MAX           (0.00079999998f) /* m; model.build_params default sensing.opt_lift_max */
 #define PEN_FUSION_RING            (1024) /* ticks; core.simulate(): rb_pimu length */
 
@@ -232,8 +238,8 @@
 #define PEN_T_DERATE_START         (100.0f) /* degC; proposed: authority cap starts falling */
 #define PEN_T_FAULT                (115.0f) /* degC; proposed: over-temperature fault (bit 2), 5 degC margin for observer error */
 #define PEN_T_RECOVER              (90.0f) /* degC; proposed: over-temperature clear threshold */
-#define PEN_T_NTC_GAIN             (0.0199999996f) /* -; proposed: NTC relaxation gain per 100 Hz observer update (both coils idle) */
-#define PEN_T_RES_GAIN             (0.0500000007f) /* -; proposed: resistance-thermometry gain per valid 100 Hz observer update */
+#define PEN_T_NTC_GAIN             (0.100000001f) /* -; proposed: coil-node correction toward the coil-former NTC per 100 Hz update (NTC preferred when valid; time constant 0.1 s) */
+#define PEN_T_RES_GAIN             (0.0500000007f) /* -; proposed: resistance-thermometry gain per valid 100 Hz observer update (used when the NTC is invalid) */
 #define PEN_R_EST_I_MIN            (0.100000001f) /* A; proposed: minimum |I| for resistance estimate */
 #define PEN_R_EST_DI_MAX           (0.0199999996f) /* A; proposed: max current change over a tick for 'steady' */
 #define PEN_OC_CLEAR_RETRIES       (3.0f) /* -; proposed: latch clear attempts before the fault is permanent */
@@ -245,6 +251,9 @@
 #define PEN_ML_REAL_SETTLE         (0.300000012f) /* s; proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset */
 #define PEN_ML_STALE_TIME          (0.00800000038f) /* s; docs/icd.md s5 v1.2: expiry = t_acq_newest + 8 ms (REQ-SAF-003, REQ-ML-002) */
 #define PEN_ML_FADE_TIME           (0.0199999996f) /* s; REQ-SAF-003: fall back smoothly within 20 ms */
+#define PEN_ML_C_MIN               (0.0f) /* -; docs/icd.md s5 v1.2 rule 5: confidence (byte/255) below c_min is a rejected inference; uncalibrated default 0 */
+#define PEN_ML_C_FULL              (1.0f) /* -; docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, confidence/c_full); uncalibrated default 1 */
+#define PEN_ML_CONF_SLEW_TIME      (0.0199999996f) /* s; docs/icd.md s5 v1.2 rule 5: the scaled ML share reaches its new value within 20 ms */
 #define PEN_ML_TRIP_COUNT          (5) /* trips; proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW */
 #define PEN_ML_TRIP_WINDOW         (10.0f) /* s; proposed */
 #define PEN_PENUP_DEBOUNCE         (0.0199999996f) /* s; proposed: contact must be absent 20 ms to declare pen-up */

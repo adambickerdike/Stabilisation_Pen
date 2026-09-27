@@ -89,6 +89,8 @@ typedef struct {
     float ph[2];
     bool opt_valid;
     float i_mean[2];
+    float th_i2_sum[2];      /* sum of i_mean^2 over the ticks since the last thermal step */
+    uint32_t th_n;
     bool in_contact;
     bool pen_up;
     float t_no_contact;      /* s without contact */
@@ -119,12 +121,19 @@ typedef struct {
     uint32_t log_drops;
 } pen_app_t;
 
-/* ML inference hook (ICD s5 v1.1), called at 250 Hz from the stage task when a
+/* ML inference hook (ICD s5 v1.2), called at 250 Hz from the stage task when a
  * validated model is available. dp_um: 64 x (dx, dy) increments, oldest
- * first. Returns false if no model is linked (weak default). The adapter to
- * ml/export/tcn_int8.h belongs to the ML integration (that v1 kernel still
- * takes f_est as a third channel; README D12). */
-bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float d_um[2], bool *nan_or_inf, bool *saturated);
+ * first, stamped at acquisition. f_est_hz: the Kalman frequency estimate; the
+ * exported v1 C model (ml/export/tcn_int8.h, tcn_predict()) still takes it as
+ * a third input channel (ICD s5 artefact status, README D12); models of the
+ * v1.1+ contract ignore it. Returns false if no model is linked (weak default). */
+typedef struct {
+    float d_um[2];       /* predicted disturbance at t_acq_newest + 6 ms, um */
+    float confidence;    /* output byte / 255; 1 for a model without a confidence output */
+    bool nan_or_inf;     /* kernel status */
+    bool saturated;      /* int8 output saturation */
+} pen_ml_out_t;
+bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float f_est_hz, pen_ml_out_t *out);
 
 void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog);
 void pen_app_set_sink(pen_app_t *a, pen_log_sink_t sink, void *ctx, bool research_frames);

@@ -11,7 +11,11 @@
  * which contradicts both (README discrepancy D1); the firmware follows the
  * simulator and frames.py.
  * gamma = fraction of the tilt-coupled axial accommodation taken by the
- * axial suspension (1) rather than the hand (0), from CAL_USER.
+ * axial suspension (1) rather than the hand (0). It depends on tilt
+ * (docs/icd.md s1 v1.3):  gamma(theta) = r_n sin^2 th / (r_n sin^2 th + 1),
+ * r_n = K_n / k_ax from CAL_USER v2 (the simulator's
+ * Kn sin^2 th / (Kn sin^2 th + k_ax)); control.c evaluates it at every
+ * Jacobian update (jac_gamma()).
  */
 #ifndef PEN_JACOBIAN_H
 #define PEN_JACOBIAN_H
@@ -31,6 +35,8 @@ typedef struct {
 #define JAC_THETA_MIN 0.34906585f  /* 20 deg, proposed */
 
 void jac_update(jac_t *J, float theta, float phi, float rho, float gamma);
+/* gamma(theta) for the compliance ratio r_n = K_n / k_ax; theta clamped as in jac_update(). */
+float jac_gamma(float r_n, float theta);
 void jac_page_to_stage(const jac_t *J, const float d_page[2], float q[2]);
 void jac_stage_to_page(const jac_t *J, const float q[2], float d_page[2]);
 

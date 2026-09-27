@@ -1,5 +1,6 @@
 /*
- * ml_guard.h - firmware <-> ML predictor contract, docs/icd.md s5 v1.1.
+ * ml_guard.h - firmware <-> ML predictor contract, docs/icd.md s5 v1.2
+ * (guard rules v1.1 + rule 5 confidence + output expiry).
  *
  * Input (ml_window_*): W = 64 samples at 250 Hz of housing page displacement
  * increments dp_H (x, y) in um, oldest first, each time-stamped at sensor
@@ -20,6 +21,14 @@
  *      If the running RMS prediction error over the last 200 ms exceeds the
  *      running RMS of the realised disturbance (worse than predicting zero),
  *      fall back to the Kalman estimate for >= 1 s and log event 0x0006.
+ *  (5) confidence (ICD s5 v1.2, REQ-SAF-003): the ML share of the correction
+ *      is scaled by c = min(1, confidence / c_full) and slewed to reach a new
+ *      value within ML_CONF_SLEW_TIME (20 ms); confidence < c_min is a
+ *      rejected inference (as rule 1). confidence = output byte / 255.
+ *      c_min, c_full come with the model card (ml_guard_set_confidence_cal);
+ *      uncalibrated defaults c_min 0, c_full 1. The share is the weight of the
+ *      ML estimate in the blend with the Kalman estimate:
+ *      w = mix * c_slewed, out = w d_ML + (1 - w) d_KF.
  *  The v1 rule |d_hat - d_KF| > 150 um for 20 ms is removed.
  * Expiry (ICD s5 v1.2, REQ-SAF-003 / REQ-ML-002): an output expires at
  * t_acq_newest + ML_STALE_TIME (8 ms); with no newer accepted output the
@@ -45,7 +54,8 @@ enum {
     MLG_R_CLIP = 1u << 2,   /* (2) informational */
     MLG_R_SLEW = 1u << 3,   /* (3) informational */
     MLG_R_APOST = 1u << 4,  /* (4) fallback >= 1 s */
-    MLG_R_STALE = 1u << 5   /* expired output, fallback until outputs resume */
+    MLG_R_STALE = 1u << 5,  /* expired output, fallback until outputs resume */
+    MLG_R_CONF = 1u << 6    /* (5) confidence below c_min: inference rejected */
 };
 
 #define MLG_EVAL_N 50u      /* 200 ms of 250 Hz predictions */
@@ -80,7 +90,11 @@ typedef struct {
     float t_fallback;         /* s in the rule-(4) fallback */
     bool stale;               /* the last accepted output has expired */
     bool fallback;            /* apost_fallback || stale (for flags/logging) */
-    float mix;                /* 1 = ML, 0 = Kalman */
+    float mix;                /* 1 = ML, 0 = Kalman (admission / fallback cross-fade) */
+    float c_min, c_full;      /* rule 5 calibration (model card) */
+    float conf_c;             /* rule 5 target scale min(1, confidence / c_full) */
+    float conf_s;             /* rule 5 scale, slewed (full scale in ML_CONF_SLEW_TIME) */
+    float w;                  /* ML share of the correction = mix * conf_s */
     uint8_t reason;           /* reason bits of the last event */
     uint8_t info;             /* clip/slew bits of the last accepted output */
     bool event;               /* event 0x0006 pending (arg = reason); the caller logs and clears it */
@@ -95,9 +109,12 @@ void ml_guard_init(ml_guard_t *g);
  * evaluates predictions whose target time has been reached. */
 void ml_guard_realised(ml_guard_t *g, const float p_h[2], uint32_t t_acq_us, bool valid);
 /* A new inference: d_hat in um, kernel status (NaN/Inf, output saturation),
+ * confidence 0..1 (byte / 255; 1 for models without a confidence output),
  * acquisition time of the newest input sample, travel limit (m). */
-void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, uint32_t t_acq_newest_us,
-                         float q_lim);
+void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, float confidence,
+                         uint32_t t_acq_newest_us, float q_lim);
+/* Rule 5 calibration from the model card (c_full <= 0 disables the scaling). */
+void ml_guard_set_confidence_cal(ml_guard_t *g, float c_min, float c_full);
 /* Every stage tick: expiry against the current time now_us (same clock as
  * the acquisition stamps), fallback timing, cross-fade; writes g->out. */
 void ml_guard_tick(ml_guard_t *g, const float d_kf[2], float dt, uint32_t now_us);

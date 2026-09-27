@@ -1,5 +1,5 @@
 /*
- * pen_types.h - shared enumerations of the ICD (docs/icd.md v1.2).
+ * pen_types.h - shared enumerations of the ICD (docs/icd.md v1.3).
  *
  * Status: PROPOSED DESIGN (research prototype Rev A). Nothing here is
  * validated on hardware.
@@ -30,8 +30,8 @@ enum {
 #define PEN_FAULT_VMOT_LOST_MASK (PEN_FAULT_OVERCURRENT | PEN_FAULT_WATCHDOG | PEN_FAULT_CHARGING)
 
 /* ---- Modes, ICD section 6. The numeric codes are the `mode` byte of the
- * research frame (ICD s4.2). The ICD names the states but does not number
- * them: this numbering is PROPOSED (README open issue O3). ---- */
+ * research frame (ICD s4.2) and the event 0x0001 arg; ICD v1.3 s6 adopted
+ * this numbering. ---- */
 typedef enum {
     PEN_MODE_OFF = 0,
     PEN_MODE_STANDBY = 1,

@@ -18,10 +18,10 @@
  "sha256": "e6484a8bc20163f59dd52e827a7127e97f9196b4b9832df705173d7f9fc36cd5",
  "evidence_status": "reference computation / simulation (no hardware)",
  "generator": "firmware/tools/gen_vectors.py",
- "yaml_sha16": "62292f1efdb00e0f",
+ "yaml_sha16": "3fbe200f8ff5c330",
  "estimator_selection_sha16": "ecd777b4a7ae9117",
  "core_py_sha16": "c46570f25d1439cb",
- "model_py_sha16": "2bcbc83194379333",
+ "model_py_sha16": "c62e5e157c7e8264",
  "profile": "balanced",
  "reference": "ref_kf_estimator (core._kf_step)",
  "signal": "synthetic housing motion, tremor 8->10 Hz at 1.5 s, dropout 2.0-2.1 s"

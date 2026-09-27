@@ -16,6 +16,16 @@ static const biquad_coef_t MLG_BP2 = {PEN_MLG_BP2_B0, PEN_MLG_BP2_B1, PEN_MLG_BP
 void ml_guard_init(ml_guard_t *g)
 {
     memset(g, 0, sizeof(*g));
+    g->c_min = PEN_ML_C_MIN;
+    g->c_full = PEN_ML_C_FULL;
+    g->conf_c = 1.0f;
+    g->conf_s = 1.0f;
+}
+
+void ml_guard_set_confidence_cal(ml_guard_t *g, float c_min, float c_full)
+{
+    g->c_min = c_min;
+    g->c_full = c_full;
 }
 
 static void raise_event(ml_guard_t *g, uint8_t reason)
@@ -115,8 +125,8 @@ void ml_guard_realised(ml_guard_t *g, const float p_h[2], uint32_t t_acq_us, boo
     g->pend_n = keep;
 }
 
-void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, uint32_t t_acq_newest_us,
-                         float q_lim)
+void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, float confidence,
+                         uint32_t t_acq_newest_us, float q_lim)
 {
     const bool bad_num = nan_or_inf || !pen_isfinitef(d_um[0]) || !pen_isfinitef(d_um[1]);
     if (bad_num || saturated) {
@@ -125,6 +135,14 @@ void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bo
         raise_event(g, (uint8_t)((bad_num ? MLG_R_NAN : 0u) | (saturated ? MLG_R_SAT : 0u)));
         return;
     }
+    /* (5) confidence: below c_min the inference is rejected; otherwise it sets the share scale */
+    const float conf = pen_isfinitef(confidence) ? pen_clampf(confidence, 0.0f, 1.0f) : 0.0f;
+    if (conf < g->c_min) {
+        g->n_rejected++;
+        raise_event(g, MLG_R_CONF);
+        return;
+    }
+    g->conf_c = (g->c_full > 0.0f) ? pen_minf(1.0f, conf / g->c_full) : 1.0f;
     float d[2] = {d_um[0] * 1e-6f, d_um[1] * 1e-6f};
     uint8_t info = 0;
     /* (2) clip to the travel limit */
@@ -193,9 +211,17 @@ void ml_guard_tick(ml_guard_t *g, const float d_kf[2], float dt, uint32_t now_us
             g->mix = 0.0f;
         }
     }
+    /* (5) the confidence scale reaches a new target within ML_CONF_SLEW_TIME */
+    const float cstep = dt / PEN_ML_CONF_SLEW_TIME;
+    if (g->conf_s < g->conf_c) {
+        g->conf_s = (g->conf_c - g->conf_s <= 1.5f * cstep) ? g->conf_c : g->conf_s + cstep;
+    } else if (g->conf_s > g->conf_c) {
+        g->conf_s = (g->conf_s - g->conf_c <= 1.5f * cstep) ? g->conf_c : g->conf_s - cstep;
+    }
+    g->w = g->mix * g->conf_s;
     for (int ax = 0; ax < 2; ax++) {
         const float dm = g->have ? g->d[ax] : d_kf[ax];
-        g->out[ax] = g->mix * dm + (1.0f - g->mix) * d_kf[ax];
+        g->out[ax] = g->w * dm + (1.0f - g->w) * d_kf[ax];
     }
 }
 

@@ -540,36 +540,42 @@
    "offset": 398,
    "type": 4,
    "type_name": "calibration_snapshot",
-   "length": 44,
-   "crc": "0x434d",
+   "length": 33,
+   "crc": "0xfa0c",
    "crc_ok": true,
    "length_ok": true,
    "raw": {
     "cal_type": 5,
-    "cal_version": 1,
-    "data_hex": "5043414c0501001e0033330341cdcc8c409a99c9400000c03f0000803fe02d103a2cab423e0d03bf9d"
+    "cal_version": 2,
+    "data_hex": "33330341cdcc8c409a99c9400000c03f0000803fe02d103acdcccc3e0d03"
    },
    "si": {
     "cal_type": "CAL_USER",
+    "cal_version": 2,
     "record": {
-     "rec_type": "CAL_USER",
-     "cal_version": 1,
-     "length": 30,
-     "crc_ok": true,
      "f0_Hz": 8.19999980927,
      "f_stroke_Hz": 4.40000009537,
      "f_gate_Hz": 6.30000019073,
      "f_gate_width_Hz": 1.5,
      "g_max": 1.0,
      "q_lim_m": 0.00054999999702,
-     "gamma": 0.190106093884,
      "mode_perm": 13,
-     "flags": 3
+     "flags": 3,
+     "mode_perm_names": [
+      "ASSIST_KF",
+      "GUIDED",
+      "TRAINING_FADE"
+     ],
+     "flag_names": [
+      "separable",
+      "tremor_found"
+     ],
+     "r_n": 0.40000000596
     }
    }
   },
   {
-   "offset": 446,
+   "offset": 435,
    "type": 5,
    "type_name": "annotation",
    "length": 32,
@@ -586,7 +592,7 @@
    }
   },
   {
-   "offset": 482,
+   "offset": 471,
    "type": 5,
    "type_name": "annotation",
    "length": 16,

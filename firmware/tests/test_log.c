@@ -280,13 +280,13 @@ static size_t golden_build(uint8_t *buf, size_t cap)
         penlog_pack_event(&ev[k], p);
         off += penlog_encode_record(PENLOG_T_EVENT, p, PENLOG_EVENT_LEN, buf + off, cap - off);
     }
-    /* calibration snapshot: a CAL_USER flash record */
+    /* calibration snapshot: CAL_USER v2 payload (ICD s4.1 v1.3: no container) */
     cal_user_t u;
     cal_user_default(&u);
     cal_user_apply_frequencies(&u, 8.2f, 4.4f);
-    uint8_t calrec[64];
-    const size_t nc = cal_user_encode(&u, calrec, sizeof(calrec));
-    n = penlog_pack_calsnap(CAL_USER, CAL_USER_VERSION, calrec, nc, p, sizeof(p));
+    uint8_t calpl[CAL_USER_LEN];
+    const size_t nc = cal_user_payload(&u, calpl);
+    n = penlog_pack_calsnap(CAL_USER, CAL_USER_VERSION, calpl, nc, p, sizeof(p));
     off += penlog_encode_record(PENLOG_T_CALSNAP, p, n, buf + off, cap - off);
     /* annotations */
     const char *t1 = "bench session 1: 50 deg, 1 N";
@@ -344,9 +344,10 @@ void test_log_golden_file(void)
         }
         if (type == PENLOG_T_CALSNAP) {
             cal_user_t u;
-            CHECK(pl[0] == CAL_USER && le_get_u16(pl + 1) == CAL_USER_VERSION);
-            CHECK(cal_user_decode(pl + 3, (size_t)len - 3u, &u) == CAL_OK);
+            CHECK(pl[0] == CAL_USER && le_get_u16(pl + 1) == CAL_USER_VERSION && len == 3u + CAL_USER_LEN);
+            CHECK(cal_user_from_payload(le_get_u16(pl + 1), pl + 3, (uint16_t)(len - 3u), &u) == CAL_OK);
             CHECK_CLOSE(u.f0_hz, 8.2, 1e-6, 0.0);
+            CHECK_CLOSE(u.r_n, PEN_R_N_NOM, 1e-7, 0.0);
         }
         off += used;
     }

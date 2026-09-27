@@ -11,10 +11,10 @@
  *   0x01 research frame, 52 B (ICD s4.2)
  *   0x02 stroke sample,  20 B (ICD s4.3)
  *   0x03 event,          10 B (ICD s4.4)
- *   0x04 calibration snapshot: NOT DEFINED in the ICD. Proposed here:
- *        cal_type u8 | cal_version u16 | record bytes as stored in flash (calib.h)
- *   0x05 annotation: NOT DEFINED in the ICD. Proposed here:
- *        t_us u32 | UTF-8 text (no terminator)
+ *   0x04 calibration snapshot (ICD s4.1 v1.3): rec_type u8 | cal_version u16 |
+ *        the flash container's payload only (no magic, length or CRC; the log
+ *        record has its own CRC); logged with event 0x0004
+ *   0x05 annotation (ICD s4.1 v1.3): t_us u32 | UTF-8 text (no terminator, <= 251 B)
  * Stroke phi: u8 in 2-degree steps, round(phi_deg / 2) mod 180 (0-358 deg);
  * theta u8 in 0.5-degree steps. (ICD s4.3 v1.0 wrote "0.5 deg ... phi/2",
  * which does not fit a u8; ICD v1.2 now specifies the 2-degree coding,

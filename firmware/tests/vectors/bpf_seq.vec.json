@@ -12,10 +12,10 @@
  "sha256": "921c18c8ab998bd87bd3570881ff5664f9774e392a930d76602eff7703dd63fa",
  "evidence_status": "reference computation / simulation (no hardware)",
  "generator": "firmware/tools/gen_vectors.py",
- "yaml_sha16": "62292f1efdb00e0f",
+ "yaml_sha16": "3fbe200f8ff5c330",
  "estimator_selection_sha16": "ecd777b4a7ae9117",
  "core_py_sha16": "c46570f25d1439cb",
- "model_py_sha16": "2bcbc83194379333",
+ "model_py_sha16": "c62e5e157c7e8264",
  "profile": "balanced",
  "reference": "mode==2 transcription (core._biquad)"
 }

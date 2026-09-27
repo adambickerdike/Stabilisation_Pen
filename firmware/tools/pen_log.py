@@ -118,26 +118,45 @@ def enc_event(raw) -> bytes:
     return struct.pack(EVENT_FMT, raw["t_us"], raw["code"], raw["arg"])
 
 
-def dec_cal_user(rec: bytes):
-    """CAL_USER flash record (firmware/include/calib.h)."""
-    if len(rec) < 11 or rec[:4] != b"PCAL":
-        return {"error": "not a PCAL record"}
+def dec_cal_user_payload(ver: int, body: bytes):
+    """CAL_USER payload (docs/icd.md s3 v1.3): version 2 carries r_n = K_n/k_ax, version 1 gamma at 50 deg."""
+    if len(body) != 30 or ver not in (1, 2):
+        return {"error": f"unknown CAL_USER payload (version {ver}, {len(body)} bytes)"}
+    f = struct.unpack("<7fBB", body)
+    out = {"f0_Hz": f[0], "f_stroke_Hz": f[1], "f_gate_Hz": f[2], "f_gate_width_Hz": f[3], "g_max": f[4],
+           "q_lim_m": f[5], "mode_perm": f[7], "flags": f[8],
+           "mode_perm_names": [n for b, n in enumerate(("ASSIST_KF", "ASSIST_ML", "GUIDED", "TRAINING_FADE"))
+                               if f[7] & (1 << b)],
+           "flag_names": [n for b, n in enumerate(("separable", "tremor_found")) if f[8] & (1 << b)]}
+    if ver == 2:
+        out["r_n"] = f[6]
+    else:
+        out["gamma_at_50deg"] = f[6]
+    return out
+
+
+def dec_cal_container(rec: bytes):
+    """Legacy (pre-ICD v1.3 firmware) snapshot body: the whole PCAL flash container."""
     rtype, ver, ln = rec[4], struct.unpack("<H", rec[5:7])[0], struct.unpack("<H", rec[7:9])[0]
     body = rec[9:9 + ln]
-    crc_ok = crc16(rec[:9 + ln]) == struct.unpack("<H", rec[9 + ln:11 + ln])[0]
-    out = {"rec_type": CAL_NAMES.get(rtype, rtype), "cal_version": ver, "length": ln, "crc_ok": crc_ok}
-    if rtype == 5 and ver == 1 and ln == 30:
-        f = struct.unpack("<7fBB", body)
-        out.update({"f0_Hz": f[0], "f_stroke_Hz": f[1], "f_gate_Hz": f[2], "f_gate_width_Hz": f[3], "g_max": f[4],
-                    "q_lim_m": f[5], "gamma": f[6], "mode_perm": f[7], "flags": f[8]})
+    crc_ok = len(rec) >= 11 + ln and crc16(rec[:9 + ln]) == struct.unpack("<H", rec[9 + ln:11 + ln])[0]
+    out = {"legacy_container": True, "rec_type": CAL_NAMES.get(rtype, rtype), "cal_version": ver, "length": ln,
+           "crc_ok": crc_ok}
+    if rtype == 5:
+        out.update(dec_cal_user_payload(ver, body))
     return out
 
 
 def dec_calsnap(p: bytes):
-    raw = {"cal_type": p[0], "cal_version": struct.unpack("<H", p[1:3])[0], "data_hex": p[3:].hex()}
-    si = {"cal_type": CAL_NAMES.get(p[0], p[0])}
-    if p[0] == 5:
-        si["record"] = dec_cal_user(p[3:])
+    """Record 0x04 (ICD s4.1 v1.3): rec_type u8 | cal_version u16 | container payload (no magic/length/CRC)."""
+    ver = struct.unpack("<H", p[1:3])[0]
+    raw = {"cal_type": p[0], "cal_version": ver, "data_hex": p[3:].hex()}
+    si = {"cal_type": CAL_NAMES.get(p[0], p[0]), "cal_version": ver}
+    body = p[3:]
+    if body[:4] == b"PCAL" and len(body) >= 11:
+        si["record"] = dec_cal_container(body)
+    elif p[0] == 5:
+        si["record"] = dec_cal_user_payload(ver, body)
     return raw, si
 
 

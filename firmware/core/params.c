@@ -54,7 +54,7 @@ void pen_params_default(pen_ctrl_params_t *p, pen_profile_t profile)
     p->q_taper = PEN_Q_TAPER;
     p->slew = PEN_SLEW;
     p->alpha_a = PEN_ALPHA_A;
-    p->gamma = PEN_GAMMA_NOM;
+    p->r_n = PEN_R_N_NOM;
     p->kappa_s = PEN_KAPPA_S;
     p->axial_comp = PEN_AXIAL_COMP;
     p->axial_comp_tau = PEN_AXIAL_COMP_TAU;

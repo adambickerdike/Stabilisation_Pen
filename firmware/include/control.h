@@ -43,6 +43,7 @@ typedef struct {
     guided_t guided;
     servo_t servo;
     jac_t jac;
+    float gamma;          /* gamma(theta) used by the last Jacobian update */
     float g_eff;          /* smoothed authority */
     float target_g;
     float conf;

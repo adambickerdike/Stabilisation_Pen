@@ -44,14 +44,12 @@ void pen_app_set_sink(pen_app_t *a, pen_log_sink_t sink, void *ctx, bool researc
 }
 
 /* ------------------------------------------------------------------ ML hook */
-__attribute__((weak)) bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float d_um[2], bool *nan_or_inf,
-                                          bool *saturated)
+__attribute__((weak)) bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float f_est_hz, pen_ml_out_t *out)
 {
     (void)dp_um;
-    d_um[0] = 0.0f;
-    d_um[1] = 0.0f;
-    *nan_or_inf = false;
-    *saturated = false;
+    (void)f_est_hz;
+    memset(out, 0, sizeof(*out));
+    out->confidence = 1.0f;
     return false;   /* no model linked */
 }
 
@@ -74,7 +72,7 @@ void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog)
     a->ctrl.prm.f_gate_width = a->user.f_gate_width_hz;
     a->ctrl.prm.g_max = a->user.g_max;
     a->ctrl.prm.q_lim = a->user.q_lim_m;
-    a->ctrl.prm.gamma = a->user.gamma;
+    a->ctrl.prm.r_n = a->user.r_n;
     a->req.assist = PEN_MODE_NEUTRAL_HOLD;
     a->vbat_f = PEN_V_BAT_NOM;
     a->pen_up = true;
@@ -87,7 +85,8 @@ void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog)
 
 bool pen_app_apply_user_cal(pen_app_t *a, const cal_user_t *u)
 {
-    if (cal_user_validate(u) != CAL_OK) {
+    uint8_t pl[CAL_USER_LEN];
+    if (cal_user_payload(u, pl) != CAL_USER_LEN) {   /* validates */
         return false;
     }
     a->user = *u;
@@ -95,9 +94,15 @@ bool pen_app_apply_user_cal(pen_app_t *a, const cal_user_t *u)
     a->ctrl.prm.f_gate_width = u->f_gate_width_hz;
     a->ctrl.prm.g_max = u->g_max;
     a->ctrl.prm.q_lim = u->q_lim_m;
-    a->ctrl.prm.gamma = u->gamma;
+    a->ctrl.prm.r_n = u->r_n;
     (void)penlog_clock_update(&a->clk, hal_time_us());
+    /* ICD s4.1 v1.3: event 0x0004 plus the applied payload as record 0x04 */
     log_event(a, penlog_clock_us32(&a->clk), PEN_EV_CAL_APPLIED, CAL_USER);
+    uint8_t rec[CAL_USER_LEN + 3u];
+    const size_t n = penlog_pack_calsnap(CAL_USER, CAL_USER_VERSION, pl, sizeof(pl), rec, sizeof(rec));
+    if (n > 0u) {
+        emit(a, PENLOG_T_CALSNAP, rec, n);
+    }
     return true;
 }
 
@@ -170,6 +175,10 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
     }
 
     /* ---- 2. Hall -> q, s, F_ax and Hall checks ---- */
+    for (int ax = 0; ax < 2; ax++) {
+        a->th_i2_sum[ax] += a->i_mean[ax] * a->i_mean[ax];   /* copper loss for the thermal estimator */
+    }
+    a->th_n++;
     hall_convert(&a->hall_cal, sens->hall_raw, a->i_mean, a->q, &a->s, &a->f_ax);
     (void)safety_hall_check(&a->sf, sens->hall_raw, sens->hall_fresh, a->q, a->i_mean);
 
@@ -211,12 +220,20 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         const float vb = hal_vbat_volts();
         (void)safety_battery_check(&a->sf, vb, dt_slow);
         a->vbat_f = a->sf.vbat_f;
-        float t_ntc = 0.0f;
-        const bool ntc_ok = thermal_ntc_degC(hal_ntc_ratio(), &t_ntc);
-        const float speed = 0.0f;   /* stage speed from the servo derivative would go here */
-        thermal_step(&a->th, dt_slow, a->i_mean, v_mean, speed, t_ntc, ntc_ok);
+        thermal_in_t ti;
+        memset(&ti, 0, sizeof(ti));
+        ti.ntc_valid = thermal_ntc_degC(hal_ntc_ratio(), &ti.ntc_degC);   /* coil-former NTC, preferred */
+        ti.stage_speed = 0.0f;   /* stage speed from the servo derivative would go here */
         for (int ax = 0; ax < 2; ax++) {
-            a->r_extra[ax] = PEN_R20 * PEN_ALPHA_CU * (a->th.T[ax] - 20.0f);
+            ti.i2_mean[ax] = (a->th_n > 0u) ? a->th_i2_sum[ax] / (float)a->th_n : 0.0f;
+            ti.i_mean[ax] = a->i_mean[ax];
+            ti.v_mean[ax] = v_mean[ax];
+            a->th_i2_sum[ax] = 0.0f;
+        }
+        a->th_n = 0;
+        thermal_step(&a->th, dt_slow, &ti);
+        for (int ax = 0; ax < 2; ax++) {
+            a->r_extra[ax] = PEN_R20 * PEN_ALPHA_CU * (a->th.T_coil - 20.0f);
         }
     }
 
@@ -238,10 +255,12 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         static float dp[PEN_ML_WINDOW][2];
         uint32_t t_newest;
         if (a->ml_available && ml_window_export(&a->mlw, dp, &t_newest)) {
-            float d_um[2];
-            bool bad = false, sat = false;
-            if (pen_ml_predict(dp, d_um, &bad, &sat)) {
-                ml_guard_new_output(&a->mlg, d_um, bad, sat, t_newest, a->ctrl.prm.q_lim);
+            pen_ml_out_t mo;
+            memset(&mo, 0, sizeof(mo));
+            mo.confidence = 1.0f;
+            if (pen_ml_predict(dp, kf_est_freq_hz(&a->ctrl.kf), &mo)) {
+                ml_guard_new_output(&a->mlg, mo.d_um, mo.nan_or_inf, mo.saturated, mo.confidence, t_newest,
+                                    a->ctrl.prm.q_lim);
             }
         }
     }
@@ -310,7 +329,7 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
     ci.i_max = a->ctrl.prm.i_max;
     ci.est = est_for_mode(a->sm.mode);
     ci.d_ml = a->mlg.d;
-    ci.ml_mix = a->mlg.have ? a->mlg.mix : 0.0f;
+    ci.ml_mix = a->mlg.have ? a->mlg.w : 0.0f;   /* admission cross-fade x confidence scale (rule 5) */
     const bool hall_ok = (a->sf.faults & PEN_FAULT_HALL) == 0u;
     ci.servo_on = hall_ok && (a->sm.act == SM_ACT_SERVO || a->sm.act == SM_ACT_NEUTRAL || a->sm.act == SM_ACT_RAMP);
     if (a->cl.cal_state != CL_CAL_IDLE) {
@@ -416,12 +435,12 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         if (vsat) fl |= PEN_FLAG_VSAT;
         if (hypotf(a->q[0], a->q[1]) >= PEN_Q_STOP) fl |= PEN_FLAG_STOP;
         if (a->sf.faults != 0u) fl |= PEN_FLAG_FAULT;
-        if (a->sm.mode == PEN_MODE_ASSIST_ML && a->mlg.mix > 0.0f) fl |= PEN_FLAG_ML_ACTIVE;
+        if (a->sm.mode == PEN_MODE_ASSIST_ML && a->mlg.w > 0.0f) fl |= PEN_FLAG_ML_ACTIVE;
         if (a->sm.mode == PEN_MODE_ASSIST_ML && a->mlg.fallback) fl |= PEN_FLAG_ML_REJECTED;
         if (a->th.derate < 1.0f) fl |= PEN_FLAG_THERMAL_DERATE;
         r.flags = fl;
         r.vbat = a->vbat_f;
-        r.t_coil = thermal_max(&a->th);
+        r.t_coil = a->th.T_coil;
         r.theta = a->fu.theta;
         r.phi = a->fu.phi;
         penlog_research_t raw;

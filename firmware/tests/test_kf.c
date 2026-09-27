@@ -229,7 +229,9 @@ static bool replay(const char *file, replay_err_t *er, uint32_t *rows, bool loca
     const int cth = vec_col(&v, "theta"), cph = vec_col(&v, "phi"), crh = vec_col(&v, "rho"), cg = vec_col(&v, "gamma");
     const int cfa = vec_col(&v, "ff_accel"), cfc = vec_col(&v, "ff_contact"), ce = vec_col(&v, "est");
     const int chz = vec_col(&v, "horizon");
-    c.prm.gamma = vec_at(&v, 0, cg);
+    /* the simulator's gamma_acc at the scenario tilt must come out of gamma(theta) with the default r_n */
+    c.prm.r_n = PEN_R_N_NOM;
+    CHECK_CLOSE(jac_gamma(c.prm.r_n, vec_at(&v, 0, cth)), vec_at(&v, 0, cg), 1e-6, 0.0);
     c.prm.ff_accel = vec_at(&v, 0, cfa);
     c.prm.ff_contact = vec_at(&v, 0, cfc);
     CHECK_CLOSE(vec_at(&v, 0, chz), c.prm.horizon, 1e-9, 1e-6);

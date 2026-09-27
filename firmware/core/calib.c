@@ -63,7 +63,7 @@ void cal_user_default(cal_user_t *u)
     u->f_gate_width_hz = PEN_F_GATE_WIDTH;
     u->g_max = 1.0f;
     u->q_lim_m = PEN_Q_LIM;
-    u->gamma = PEN_GAMMA_NOM;
+    u->r_n = PEN_R_N_NOM;
     u->mode_perm = (uint8_t)SM_PERM_DEFAULT;
 }
 
@@ -77,28 +77,84 @@ cal_status_t cal_user_validate(const cal_user_t *u)
     if (!in_range(u->f0_hz, 0.0f, 20.0f) || !in_range(u->f_stroke_hz, 0.0f, 20.0f) ||
         !in_range(u->f_gate_hz, 0.0f, 20.0f) || !in_range(u->f_gate_width_hz, 0.1f, 10.0f) ||
         !in_range(u->g_max, 0.0f, 1.0f) || !in_range(u->q_lim_m, 1e-6f, PEN_Q_LIM) ||
-        !in_range(u->gamma, 0.0f, 1.0f) || (u->mode_perm & ~0x0Fu) != 0u || (u->flags & ~0x03u) != 0u) {
+        !in_range(u->r_n, PEN_R_N_MIN, PEN_R_N_MAX) || (u->mode_perm & ~0x0Fu) != 0u || (u->flags & ~0x03u) != 0u) {
         return CAL_E_RANGE;
     }
     return CAL_OK;
 }
 
-size_t cal_user_encode(const cal_user_t *u, uint8_t *out, size_t cap)
+size_t cal_user_payload(const cal_user_t *u, uint8_t out[CAL_USER_LEN])
 {
     if (cal_user_validate(u) != CAL_OK) {
         return 0;
     }
+    le_put_f32(out + 0, u->f0_hz);
+    le_put_f32(out + 4, u->f_stroke_hz);
+    le_put_f32(out + 8, u->f_gate_hz);
+    le_put_f32(out + 12, u->f_gate_width_hz);
+    le_put_f32(out + 16, u->g_max);
+    le_put_f32(out + 20, u->q_lim_m);
+    le_put_f32(out + 24, u->r_n);
+    out[28] = u->mode_perm;
+    out[29] = u->flags;
+    return CAL_USER_LEN;
+}
+
+size_t cal_user_encode(const cal_user_t *u, uint8_t *out, size_t cap)
+{
     uint8_t p[CAL_USER_LEN];
-    le_put_f32(p + 0, u->f0_hz);
-    le_put_f32(p + 4, u->f_stroke_hz);
-    le_put_f32(p + 8, u->f_gate_hz);
-    le_put_f32(p + 12, u->f_gate_width_hz);
-    le_put_f32(p + 16, u->g_max);
-    le_put_f32(p + 20, u->q_lim_m);
-    le_put_f32(p + 24, u->gamma);
-    p[28] = u->mode_perm;
-    p[29] = u->flags;
+    if (cal_user_payload(u, p) == 0u) {
+        return 0;
+    }
     return cal_record_encode(CAL_USER, CAL_USER_VERSION, p, CAL_USER_LEN, out, cap);
+}
+
+float cal_rn_from_gamma(float gamma, float theta)
+{
+    const float s = sinf(theta);
+    return gamma / ((1.0f - gamma) * s * s);
+}
+
+cal_status_t cal_user_from_payload(uint16_t version, const uint8_t *p, uint16_t len, cal_user_t *u)
+{
+    if (version != CAL_USER_VERSION && version != CAL_USER_VERSION_V1) {
+        return CAL_E_VERSION;
+    }
+    if (len != CAL_USER_LEN) {
+        return CAL_E_LENGTH;
+    }
+    cal_user_t v;
+    memset(&v, 0, sizeof(v));
+    v.f0_hz = le_get_f32(p + 0);
+    v.f_stroke_hz = le_get_f32(p + 4);
+    v.f_gate_hz = le_get_f32(p + 8);
+    v.f_gate_width_hz = le_get_f32(p + 12);
+    v.g_max = le_get_f32(p + 16);
+    v.q_lim_m = le_get_f32(p + 20);
+    v.mode_perm = p[28];
+    v.flags = p[29];
+    const float f24 = le_get_f32(p + 24);
+    if (version == CAL_USER_VERSION_V1) {
+        /* ICD s3 v1.3: r_n derived from the v1 gamma at the nominal 50 deg tilt */
+        if (!in_range(f24, 0.0f, 1.0f)) {
+            return CAL_E_RANGE;
+        }
+        if (f24 >= 1.0f) {
+            v.r_n = PEN_R_N_MAX;   /* gamma = 1 (rigid page) has no finite r_n */
+            v.from_v1_clamped = true;
+        } else {
+            const float r = cal_rn_from_gamma(f24, PEN_THETA_NOM);
+            v.r_n = pen_clampf(r, PEN_R_N_MIN, PEN_R_N_MAX);
+            v.from_v1_clamped = (r < PEN_R_N_MIN) || (r > PEN_R_N_MAX);
+        }
+    } else {
+        v.r_n = f24;
+    }
+    if (cal_user_validate(&v) != CAL_OK) {
+        return CAL_E_RANGE;
+    }
+    *u = v;
+    return CAL_OK;
 }
 
 cal_status_t cal_user_decode(const uint8_t *in, size_t n, cal_user_t *u)
@@ -113,27 +169,7 @@ cal_status_t cal_user_decode(const uint8_t *in, size_t n, cal_user_t *u)
     if (type != CAL_USER) {
         return CAL_E_TYPE;
     }
-    if (ver != CAL_USER_VERSION) {
-        return CAL_E_VERSION;
-    }
-    if (len != CAL_USER_LEN) {
-        return CAL_E_LENGTH;
-    }
-    cal_user_t v;
-    v.f0_hz = le_get_f32(p + 0);
-    v.f_stroke_hz = le_get_f32(p + 4);
-    v.f_gate_hz = le_get_f32(p + 8);
-    v.f_gate_width_hz = le_get_f32(p + 12);
-    v.g_max = le_get_f32(p + 16);
-    v.q_lim_m = le_get_f32(p + 20);
-    v.gamma = le_get_f32(p + 24);
-    v.mode_perm = p[28];
-    v.flags = p[29];
-    if (cal_user_validate(&v) != CAL_OK) {
-        return CAL_E_RANGE;
-    }
-    *u = v;
-    return CAL_OK;
+    return cal_user_from_payload(ver, p, len, u);
 }
 
 /* ------------------------------------------------------------------ spectrum */
