@@ -126,7 +126,7 @@ code{font-family:var(--mono);font-size:12.5px}
     </div>
     <p class="lede">A pencil-sized pen that moves its own nib by fractions of a millimetre to keep tremor out of the ink.
       The replay below is a simulation: the hand shakes the pen, a skid on the nose carries the writing force, and a piezo stage
-      pulls the nib back toward the stroke the writer meant. Deviations are magnified so the sub-millimetre motion is visible.</p>
+      pulls the nib back toward the stroke the writer meant. Tremor and stage motion are magnified so the sub-millimetre motion is visible; the refill's axial slide is shown at true scale.</p>
     <div class="legend" aria-label="Evidence labels">
       <span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span>
       <span class="tag mfr"><i></i>Manufacturer statement</span><span class="tag asm"><i></i>Assumption</span>
@@ -356,7 +356,19 @@ function normalizeCase(c, group){
   const n=c.t.length, M={...c.metrics};
   const housing=c.housing, ref=c.intended;
   let nibp=c.nib;
-  if(!nibp){ nibp=c.ink.map((p,i)=>[p[0],p[1], c.contact[i]?0:housing[i][2]]); }
+  if(!nibp){
+    // AI traces give the ink point on the page and the housing datum at the nominal ball centre (0.35 mm up).
+    // In contact the ball centre is at z = ball radius; lifted, the refill sits on its front stop, so the
+    // offset from the housing is taken as purely axial.
+    const rb=(S.geom && S.geom.ball_r) || 0.35, bs=B.bs, h=[Math.cos(S.phi*Math.PI/180), Math.sin(S.phi*Math.PI/180)];
+    const cth=Math.cos(S.theta*Math.PI/180);
+    nibp=c.ink.map((p,i)=>{
+      const H=housing[i];
+      if(c.contact[i]) return [p[0], p[1], rb];
+      const along=((p[0]-H[0])*h[0]+(p[1]-H[1])*h[1])/cth;
+      return [H[0]+along*bs.a[0], H[1]+along*bs.a[1], H[2]+along*bs.a[2]];
+    });
+  }
   return {key:c.key, label:c.label, group, metric:c.metric||"time", t:c.t, housing, nib:nibp, ref, contact:c.contact, q:c.q||null,
           F_nib:c.F_nib||null, F_skid:c.F_skid||null, F_act:c.F_act||null, V:c.V||null, template:c.template||null,
           confidence:c.confidence||null, metrics:M, note:c.note||""};
@@ -375,6 +387,17 @@ function errorSeries(c){
 }
 let meshes={};
 function mag(p, r, m){ return [r[0]+m*(p[0]-r[0]), r[1]+m*(p[1]-r[1])]; }
+/* Visual geometry: the barrel's deviation from the reference stroke and the stage's transverse deflection are
+   magnified; the refill's axial slide (touchdown and lift) is shown at true scale, so the refill never leaves the
+   barrel on screen. Returns housing and nib positions (paper frame, mm) and the pen-frame nib offset. */
+function visPose(c, i, m){
+  const bs=B.bs, r=c.ref[i]||c.nib[i], hz=c.housing[i], nb=c.nib[i];
+  const hv=[r[0]+m*(hz[0]-r[0]), r[1]+m*(hz[1]-r[1]), hz[2]];
+  const d=[nb[0]-hz[0], nb[1]-hz[1], nb[2]-hz[2]];
+  const dx=m*dot(d,bs.xH), dy=m*dot(d,bs.yH), dz=dot(d,bs.a);
+  const nv=[hv[0]+dx*bs.xH[0]+dy*bs.yH[0]+dz*bs.a[0], hv[1]+dx*bs.xH[1]+dy*bs.yH[1]+dz*bs.a[1], hv[2]+dx*bs.xH[2]+dy*bs.yH[2]+dz*bs.a[2]];
+  return {hv, nv, dx, dy, dz};
+}
 function buildInk(){
   while(inkGroup.children.length) inkGroup.remove(inkGroup.children[0]);
   const c=S.cases[S.ci], m=S.mag, n=c.t.length;
@@ -382,7 +405,7 @@ function buildInk(){
   const refLine=polyline(ref2.map(p=>[p[0],p[1],0.02]), C.faint, true); inkGroup.add(refLine);
   if(c.template && c.template.length>1){ inkGroup.add(polyline(c.template.map(p=>[p[0],p[1],0.03]), C.tmpl, true)); }
   // ink as ribbon segments over pen-down runs, revealed progressively with drawRange
-  const pts=[]; for(let i=0;i<n;i++){ const nb=c.nib[i]; pts.push(mag(nb, c.ref[i]||nb, m)); }
+  const pts=[]; for(let i=0;i<n;i++){ const v=visPose(c,i,m).nv; pts.push([v[0],v[1]]); }
   meshes.ink=[];
   let s=0; while(s<n){ while(s<n && !c.contact[s]) s++; let e=s; while(e<n && c.contact[e]) e++;
     if(e-s>1){ const r=ribbon(pts.slice(s,e), 0.35, C.accent, 0.05); r.userData={s,e}; inkGroup.add(r); meshes.ink.push(r); } s=e; }
@@ -401,15 +424,12 @@ const B={};
 function frameIndex(){ const c=S.cases[S.ci]; const i=Math.round(S.t/S.dtRec); return Math.max(0,Math.min(c.t.length-1,i)); }
 function pose(i){
   const c=S.cases[S.ci], m=S.mag, g=S.geom, bs=B.bs;
-  const r=c.ref[i]||c.nib[i], hz=c.housing[i];
-  const hv=[r[0]+m*(hz[0]-r[0]), r[1]+m*(hz[1]-r[1]), hz[2]];
-  const nb=c.nib[i]; const nv=[r[0]+m*(nb[0]-r[0]), r[1]+m*(nb[1]-r[1]), nb[2]];
+  const vp_=visPose(c,i,m), hv=vp_.hv, nv=vp_.nv;
   // pen pose
   const X=P2T(...bs.xH), Y=P2T(...bs.yH), Z=P2T(...bs.a), O=P2T(...hv);
   const M4=new THREE.Matrix4().makeBasis(X,Y,Z); M4.setPosition(O); pen.matrix.copy(M4); pen.matrixWorldNeedsUpdate=true;
-  // nib pose relative to housing, in pen frame
-  const d=[nv[0]-hv[0], nv[1]-hv[1], nv[2]-hv[2]];
-  const dx=dot(d,bs.xH), dy=dot(d,bs.yH), dz=dot(d,bs.a), zg=g.gimbal_z;
+  // nib pose relative to housing, in pen frame (transverse magnified, axial at true scale)
+  const dx=vp_.dx, dy=vp_.dy, dz=vp_.dz, zg=g.gimbal_z;
   const al=-Math.asin(Math.max(-1,Math.min(1,dx/zg))), be=Math.asin(Math.max(-1,Math.min(1,dy/zg)));
   const T=new THREE.Matrix4().makeTranslation(0,0,zg).multiply(new THREE.Matrix4().makeRotationY(al)).multiply(new THREE.Matrix4().makeRotationX(be))
         .multiply(new THREE.Matrix4().makeTranslation(0,0,-zg)).multiply(new THREE.Matrix4().makeTranslation(0,0,dz));
@@ -438,8 +458,8 @@ function pose(i){
     setArrow(AR.act, P2T(nv[0],nv[1],nv[2]+0.4), P2T(...v), S.fscale); } else AR.act.visible=false;
   // trail
   const tr=meshes.trail.geometry.attributes.position.array; const i0=Math.max(0,i-120);
-  for(let k=0;k<=120;k++){ const j=Math.min(i, i0+k), rr=c.ref[j]||c.nib[j], hh=c.housing[j];
-    const q=P2T(rr[0]+m*(hh[0]-rr[0]), rr[1]+m*(hh[1]-rr[1]), 0.08); tr[k*3]=q.x; tr[k*3+1]=q.y; tr[k*3+2]=q.z; }
+  for(let k=0;k<=120;k++){ const j=Math.min(i, i0+k), hvj=visPose(c,j,m).hv;
+    const q=P2T(hvj[0], hvj[1], 0.08); tr[k*3]=q.x; tr[k*3+1]=q.y; tr[k*3+2]=q.z; }
   meshes.trail.geometry.attributes.position.needsUpdate=true; meshes.trail.visible=S.trail;
   // progressive ink
   for(const r of meshes.ink){ const {s,e}=r.userData; const k=Math.max(0,Math.min(e-s-1, i-s)); r.geometry.setDrawRange(0, k>0? k*6:0); }
@@ -478,7 +498,7 @@ function drawTop(i){
     for(let k=0;k<n;k++){ const p=pick(k); if(onlyDown && !c.contact[k]){pen=false;continue;} if(!pen){g.moveTo(X(p[0]),Y(p[1]));pen=true;} else g.lineTo(X(p[0]),Y(p[1])); } g.stroke(); g.setLineDash([]); };
   path(c.ref, k=>c.ref[k], C.faint, 1.2, [4,3], true);
   const base=S.cases.find(o=>o.group===c.group && (o.key==="neutral"||o.key==="none"||o.key==="no_guidance"));
-  if(base && base!==c){ path(base.nib, k=>mag(base.nib[k], base.ref[k]||base.nib[k], m), C.tremor, 1, null, true); }
+  if(base && base!==c){ const bp=base.nib.map((_,k)=>visPose(base,k,m).nv); path(base.nib, k=>bp[k], C.tremor, 1, null, true); }
   if(c.template && c.template.length>1) path(c.template, k=>c.template[k], C.tmpl, 1, [2,2], false);
   path(c.nib, k=>meshes.pts[k], C.accent, 1.6, null, true, i);
   const p=meshes.pts[i]; g.fillStyle=C.accent; g.beginPath(); g.arc(X(p[0]),Y(p[1]),3.2,0,7); g.fill();
@@ -506,8 +526,12 @@ function drawErr(i){
 
 /* ---------- UI ---------- */
 const fmt=(v,d=0)=>(v==null||isNaN(v))?"—":Number(v).toFixed(d);
+const GROUP_MAG={pencil:10, ai:1};
 function selectCase(k){
-  S.ci=k; const c=S.cases[k];
+  const prev=S.cases[S.ci]; S.ci=k; const c=S.cases[k];
+  if(!prev || prev.group!==c.group || S.firstSelect===undefined){
+    S.mag=GROUP_MAG[c.group]||10; $("mag").value=String(S.mag); updateMagLabel(); S.firstSelect=false;
+  }
   document.querySelectorAll("#cases button").forEach((b,j)=>b.setAttribute("aria-pressed", j===k));
   $("hud-case").textContent=c.label; $("case-note").textContent=c.note || "";
   $("key-tmpl").hidden=!(c.template && c.template.length);

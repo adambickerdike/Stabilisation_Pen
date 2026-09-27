@@ -57,7 +57,8 @@ def main():
     P = summ["parameters_mm"]
     geom.update({"mass_total_g": summ["mass_total_g"], "z_skid": P["z_skid"], "skid_contact_r": P["skid_r"],
                  "stage_label": {"L": "piezo L pair", "Q": "piezo quad"}[a.variant], "variant": a.variant,
-                 "pencil_params": load_version()})
+                 "pencil_params": load_version(),
+                 "ball_r": next((q["ball_r"] for q in geom["primitives"] if q["type"] == "refill"), 0.35)})
     with open(os.path.join(DATA, "geometry.json"), "w") as f:
         json.dump(geom, f, separators=(",", ":"))
     trace = load(a.trace)
