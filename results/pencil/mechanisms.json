@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "calculation and simulation (analytical, magpylib, FE); nothing measured",
-    "generated_utc": "2026-09-27T21:53:40+00:00",
-    "git_revision": "77a79f3-dirty",
-    "parameters_version": "P0.1.1",
-    "parameters_sha256_16": "61640ff6c2fc6aa6",
-    "command": "pencil_mechanisms.py --fast",
+    "generated_utc": "2026-09-27T22:10:39+00:00",
+    "git_revision": "e5bf826-dirty",
+    "parameters_version": "P0.1.2",
+    "parameters_sha256_16": "601cff8b7aea32fb",
+    "command": "pencil_mechanisms.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
@@ -13,8 +13,8 @@
     "scipy": "1.17.1",
     "parameters_base_version": "0.4.4",
     "script": "analysis/pencil_mechanisms.py",
-    "elapsed_s": 22.0,
-    "vcm_sweep_elapsed_s": 72.77
+    "elapsed_s": 86.1,
+    "vcm_sweep_elapsed_s": 67.05
   },
   "labels_legend": {
     "CALCULATION": "analytical from labelled inputs",
@@ -146,10 +146,10 @@
           "source": "the skid touches only if N_user > F_c/sin th; below that the nib carries all of N"
         },
         "nib_force_band_from_bushings_N": {
-          "value": 0.03117,
+          "value": 0.03058,
           "unit": "N",
           "label": "CALCULATION",
-          "source": "mu_b 0.08 (ASSUMPTION, PTFE-lined collar and gimbal bores) x bearing factor 1.76 x R_perp_max / sin th"
+          "source": "mu_b 0.08 (ASSUMPTION, PTFE-lined collar and gimbal bores) x bearing factor 1.73 x R_perp_max / sin th"
         }
       },
       "cross_check_config_trade_D": {
@@ -161,26 +161,26 @@
         "label": "CALCULATION"
       },
       "dynamic_parts_Q26": {
-        "m_eq_nib_g": 0.3852,
-        "m_couple_nib_g": 0.6346,
-        "k_parasitic_nib_N_per_m": 37.7,
+        "m_eq_nib_g": 0.3951,
+        "m_couple_nib_g": 0.6519,
+        "k_parasitic_nib_N_per_m": 38.57,
         "at_8Hz_0.3mm": {
-          "inertia_rel_N": 0.000292,
-          "base_coupling_N": 0.000481,
-          "nib_still_in_page_N": 0.0001891,
-          "parasitic_elastic_N": 0.01131
+          "inertia_rel_N": 0.0002995,
+          "base_coupling_N": 0.0004941,
+          "nib_still_in_page_N": 0.0001946,
+          "parasitic_elastic_N": 0.01157
         },
         "at_12Hz_1mm": {
-          "inertia_rel_N": 0.00219,
-          "base_coupling_N": 0.003608,
-          "nib_still_in_page_N": 0.001418,
-          "parasitic_elastic_N": 0.0377
+          "inertia_rel_N": 0.002246,
+          "base_coupling_N": 0.003706,
+          "nib_still_in_page_N": 0.001459,
+          "parasitic_elastic_N": 0.03857
         },
         "at_4Hz_0.1mm": {
-          "inertia_rel_N": 2.433e-05,
-          "base_coupling_N": 4.009e-05,
-          "nib_still_in_page_N": 1.575e-05,
-          "parasitic_elastic_N": 0.00377
+          "inertia_rel_N": 2.496e-05,
+          "base_coupling_N": 4.117e-05,
+          "nib_still_in_page_N": 1.622e-05,
+          "parasitic_elastic_N": 0.003857
         },
         "label": "CALCULATION",
         "note": "inertia of the nib assembly and plate effective masses referred to the nib; the benders' own stiffness is inside the actuator's load line and is not listed"
@@ -198,7 +198,7 @@
           "note": "drag = mu_skid N_skid + mu_nib N_nib; plus the stage reaction of the moving mass (m_couple w^2 q)"
         },
         "stage_reaction_at_8Hz_0.3mm_N": {
-          "value": 0.000481,
+          "value": 0.0004941,
           "unit": "N",
           "label": "CALCULATION"
         }
@@ -271,16 +271,16 @@
       },
       "dynamic_Q26": {
         "min_4Hz_0.1mm": {
-          "inertia_rel_N": 2.433e-05,
-          "base_coupling_N": 4.009e-05,
-          "nib_still_in_page_N": 1.575e-05,
-          "parasitic_elastic_N": 0.00377
+          "inertia_rel_N": 2.496e-05,
+          "base_coupling_N": 4.117e-05,
+          "nib_still_in_page_N": 1.622e-05,
+          "parasitic_elastic_N": 0.003857
         },
         "max_12Hz_1mm": {
-          "inertia_rel_N": 0.00219,
-          "base_coupling_N": 0.003608,
-          "nib_still_in_page_N": 0.001418,
-          "parasitic_elastic_N": 0.0377
+          "inertia_rel_N": 0.002246,
+          "base_coupling_N": 0.003706,
+          "nib_still_in_page_N": 0.001459,
+          "parasitic_elastic_N": 0.03857
         }
       },
       "N_skid_range_N": [
@@ -4598,21 +4598,21 @@
       "candidate": "PL128.10 as-is (6.15 mm), one axis",
       "key": "PL128",
       "stroke_nib_um": {
-        "at_F_frictionless_0.126N": 419.0,
-        "at_F_betaworst_0.170N": 349.4,
-        "at_35deg_0.301N": 140.8,
-        "betaworst_at_minus20pct_tolerance": 225.7,
+        "at_F_frictionless_0.126N": 416.4,
+        "at_F_betaworst_0.170N": 348.5,
+        "at_35deg_0.301N": 144.8,
+        "betaworst_at_minus20pct_tolerance": 226.2,
         "limit_by_stops": 400.0
       },
-      "force_nib_N": 0.39,
-      "first_resonance_Hz": 199.2,
+      "force_nib_N": 0.3947,
+      "first_resonance_Hz": 199.1,
       "holding_power_W": 0.0,
       "holding_note": "capacitive: static load held at zero power apart from leakage and the driver's quiescent power (see drive table)",
       "dyn_power_8Hz_0.3mm_one_axis_mW": {
-        "V_amplitude_V": 14.52,
-        "reactive_mVA": 16.54,
-        "rail_class_B_mW": 43.5,
-        "rail_recovery_mW": 6.509
+        "V_amplitude_V": 14.7,
+        "reactive_mVA": 16.94,
+        "rail_class_B_mW": 44.03,
+        "rail_recovery_mW": 6.588
       },
       "temperature_rise": "piezo self-heating < 1 mK (dielectric loss ~ 2 % of the reactive power); driver heat in the board zone (see drive table)",
       "fit_7p9_bore": "one axis only (fits)",
@@ -4631,21 +4631,21 @@
         "plates_per_axis": 1,
         "axes": 1,
         "fit": "one plate fits beside an off-centre refill (AMF-11, lead)",
-        "lever_nib_per_collar": 1.379,
+        "lever_nib_per_collar": 1.363,
         "F_b_collar_N": 0.55,
         "k_collar_N_per_m": 1222.0,
         "k_leaf_series_N_per_m": 54330.0,
-        "k_parasitic_collar_N_per_m": 3.805,
-        "F_b_nib_N": 0.39,
-        "free_stroke_nib_um": 620.7,
-        "k_b_nib_N_per_m": 628.3,
+        "k_parasitic_collar_N_per_m": 3.714,
+        "F_b_nib_N": 0.3947,
+        "free_stroke_nib_um": 613.2,
+        "k_b_nib_N_per_m": 643.8,
         "k_par_nib_N_per_m": 2.0,
-        "m_eq_nib_g": 0.4024,
-        "m_couple_nib_g": 0.6724,
-        "f1_Hz": 199.2,
+        "m_eq_nib_g": 0.4128,
+        "m_couple_nib_g": 0.6901,
+        "f1_Hz": 199.1,
         "C_axis_small_signal_uF": 2.4,
         "V_rail": 60.0,
-        "g_V_um_per_V": 20.69
+        "g_V_um_per_V": 20.44
       },
       "verdict": "bench part: off the shelf, one axis only; use for the 1-axis loaded rig (EXP-Q06), not the product"
     },
@@ -4653,21 +4653,21 @@
       "candidate": "custom 4.0 mm L pair (P0.1.0 concept)",
       "key": "L40",
       "stroke_nib_um": {
-        "at_F_frictionless_0.126N": 300.6,
-        "at_F_betaworst_0.170N": 199.0,
+        "at_F_frictionless_0.126N": 300.5,
+        "at_F_betaworst_0.170N": 201.3,
         "at_35deg_0.301N": 0.0,
-        "betaworst_at_minus20pct_tolerance": 80.53,
+        "betaworst_at_minus20pct_tolerance": 84.26,
         "limit_by_stops": 400.0
       },
-      "force_nib_N": 0.2556,
-      "first_resonance_Hz": 173.5,
+      "force_nib_N": 0.2587,
+      "first_resonance_Hz": 173.3,
       "holding_power_W": 0.0,
       "holding_note": "capacitive: static load held at zero power apart from leakage and the driver's quiescent power (see drive table)",
       "dyn_power_8Hz_0.3mm_one_axis_mW": {
-        "V_amplitude_V": 15.17,
-        "reactive_mVA": 11.73,
-        "rail_class_B_mW": 29.55,
-        "rail_recovery_mW": 4.421
+        "V_amplitude_V": 15.35,
+        "reactive_mVA": 12.02,
+        "rail_class_B_mW": 29.9,
+        "rail_recovery_mW": 4.475
       },
       "temperature_rise": "piezo self-heating < 1 mK (dielectric loss ~ 2 % of the reactive power); driver heat in the board zone (see drive table)",
       "fit_7p9_bore": "no (CAD)",
@@ -4686,21 +4686,21 @@
         "plates_per_axis": 1,
         "axes": 2,
         "fit": "does not fit: corners collide at +/-0.40 mm tip sweep (CAD message)",
-        "lever_nib_per_collar": 1.379,
+        "lever_nib_per_collar": 1.363,
         "F_b_collar_N": 0.3577,
         "k_collar_N_per_m": 794.9,
         "k_leaf_series_N_per_m": 54330.0,
-        "k_parasitic_collar_N_per_m": 37.76,
-        "F_b_nib_N": 0.2556,
-        "free_stroke_nib_um": 620.7,
-        "k_b_nib_N_per_m": 411.8,
-        "k_par_nib_N_per_m": 19.85,
-        "m_eq_nib_g": 0.3634,
-        "m_couple_nib_g": 0.5869,
-        "f1_Hz": 173.5,
+        "k_parasitic_collar_N_per_m": 37.67,
+        "F_b_nib_N": 0.2587,
+        "free_stroke_nib_um": 613.2,
+        "k_b_nib_N_per_m": 422.0,
+        "k_par_nib_N_per_m": 20.29,
+        "m_eq_nib_g": 0.3728,
+        "m_couple_nib_g": 0.6035,
+        "f1_Hz": 173.3,
         "C_axis_small_signal_uF": 1.561,
         "V_rail": 60.0,
-        "g_V_um_per_V": 20.69
+        "g_V_um_per_V": 20.44
       },
       "verdict": "reject: does not fit the bore (CAD)"
     },
@@ -4708,26 +4708,26 @@
       "candidate": "custom 3.5 mm L pair",
       "key": "L35",
       "stroke_nib_um": {
-        "at_F_frictionless_0.126N": 257.8,
-        "at_F_betaworst_0.170N": 142.7,
+        "at_F_frictionless_0.126N": 258.7,
+        "at_F_betaworst_0.170N": 146.3,
         "at_35deg_0.301N": 0.0,
-        "betaworst_at_minus20pct_tolerance": 25.0,
+        "betaworst_at_minus20pct_tolerance": 30.03,
         "limit_by_stops": 400.0
       },
-      "force_nib_N": 0.2241,
-      "first_resonance_Hz": 165.0,
+      "force_nib_N": 0.2268,
+      "first_resonance_Hz": 164.9,
       "holding_power_W": 0.0,
       "holding_note": "capacitive: static load held at zero power apart from leakage and the driver's quiescent power (see drive table)",
       "dyn_power_8Hz_0.3mm_one_axis_mW": {
-        "V_amplitude_V": 15.26,
-        "reactive_mVA": 10.39,
-        "rail_class_B_mW": 26.01,
-        "rail_recovery_mW": 3.893
+        "V_amplitude_V": 15.45,
+        "reactive_mVA": 10.65,
+        "rail_class_B_mW": 26.33,
+        "rail_recovery_mW": 3.94
       },
       "temperature_rise": "piezo self-heating < 1 mK (dielectric loss ~ 2 % of the reactive power); driver heat in the board zone (see drive table)",
       "fit_7p9_bore": "yes (CAD, 0.215 mm corner gap)",
       "mass_plates_g": 1.317,
-      "drop_and_stops": "stops alone: 164-589 MPa peak in a 1 m sideways drop (P_fail up to 1.00); with four snubbers and a 2 ms (compliant-nose) pulse 71 MPa (P_fail 7.7e-04); pushed onto a stop while driven the other way 55 MPa",
+      "drop_and_stops": "stops alone: 164-587 MPa peak in a 1 m sideways drop (P_fail up to 1.00); with four snubbers and a 2 ms (compliant-nose) pulse 72 MPa (P_fail 8.0e-04); pushed onto a stop while driven the other way 55 MPa",
       "availability": "custom-width PICMA-class plates (supplier custom part; make via PI or equivalent)",
       "labels": {
         "stroke": "CALCULATION from AMF-11 (+/-20 %) and CAD lever",
@@ -4741,48 +4741,48 @@
         "plates_per_axis": 1,
         "axes": 2,
         "fit": "fits: corner gap 0.215 mm, bore gap 0.26 mm (CAD pencil_revPL)",
-        "lever_nib_per_collar": 1.379,
+        "lever_nib_per_collar": 1.363,
         "F_b_collar_N": 0.313,
         "k_collar_N_per_m": 695.6,
         "k_leaf_series_N_per_m": 54330.0,
-        "k_parasitic_collar_N_per_m": 37.76,
-        "F_b_nib_N": 0.2241,
-        "free_stroke_nib_um": 620.7,
-        "k_b_nib_N_per_m": 361.0,
-        "k_par_nib_N_per_m": 19.85,
-        "m_eq_nib_g": 0.3544,
-        "m_couple_nib_g": 0.567,
-        "f1_Hz": 165.0,
+        "k_parasitic_collar_N_per_m": 37.67,
+        "F_b_nib_N": 0.2268,
+        "free_stroke_nib_um": 613.2,
+        "k_b_nib_N_per_m": 369.9,
+        "k_par_nib_N_per_m": 20.29,
+        "m_eq_nib_g": 0.3636,
+        "m_couple_nib_g": 0.5834,
+        "f1_Hz": 164.9,
         "C_axis_small_signal_uF": 1.366,
         "V_rail": 60.0,
-        "g_V_um_per_V": 20.69
+        "g_V_um_per_V": 20.44
       },
-      "verdict": "second choice: fits, but 143 um under the worst-direction nominal load and 25 um at -20 % tolerance"
+      "verdict": "second choice: fits, but 146 um under the worst-direction nominal load and 30 um at -20 % tolerance"
     },
     {
       "candidate": "custom 2.6 mm quad, push-pull pair per axis",
       "key": "Q26",
       "stroke_nib_um": {
-        "at_F_frictionless_0.126N": 354.6,
-        "at_F_betaworst_0.170N": 276.4,
-        "at_35deg_0.301N": 41.96,
-        "betaworst_at_minus20pct_tolerance": 160.6,
+        "at_F_frictionless_0.126N": 353.0,
+        "at_F_betaworst_0.170N": 276.7,
+        "at_35deg_0.301N": 47.87,
+        "betaworst_at_minus20pct_tolerance": 162.3,
         "limit_by_stops": 400.0
       },
-      "force_nib_N": 0.3248,
-      "first_resonance_Hz": 192.1,
+      "force_nib_N": 0.3288,
+      "first_resonance_Hz": 191.9,
       "holding_power_W": 0.0,
       "holding_note": "capacitive: static load held at zero power apart from leakage and the driver's quiescent power (see drive table)",
       "dyn_power_8Hz_0.3mm_one_axis_mW": {
-        "V_amplitude_V": 15.52,
-        "reactive_mVA": 15.97,
-        "rail_class_B_mW": 39.3,
-        "rail_recovery_mW": 5.88
+        "V_amplitude_V": 15.71,
+        "reactive_mVA": 16.36,
+        "rail_class_B_mW": 39.78,
+        "rail_recovery_mW": 5.952
       },
       "temperature_rise": "piezo self-heating < 1 mK (dielectric loss ~ 2 % of the reactive power); driver heat in the board zone (see drive table)",
       "fit_7p9_bore": "yes (CAD, 0.115 mm plate gap)",
       "mass_plates_g": 1.957,
-      "drop_and_stops": "stops alone: 138-605 MPa peak in a 1 m sideways drop (P_fail up to 1.00); with four snubbers and a 2 ms (compliant-nose) pulse 50 MPa (P_fail 3.1e-05); pushed onto a stop while driven the other way 55 MPa",
+      "drop_and_stops": "stops alone: 139-604 MPa peak in a 1 m sideways drop (P_fail up to 1.00); with four snubbers and a 2 ms (compliant-nose) pulse 49 MPa (P_fail 3.1e-05); pushed onto a stop while driven the other way 55 MPa",
       "availability": "custom-width PICMA-class plates (supplier custom part; make via PI or equivalent)",
       "labels": {
         "stroke": "CALCULATION from AMF-11 (+/-20 %) and CAD lever",
@@ -4796,23 +4796,23 @@
         "plates_per_axis": 2,
         "axes": 2,
         "fit": "fits: plate gap 0.115 mm, bore gap 0.786 mm (CAD pencil_revPQ)",
-        "lever_nib_per_collar": 1.379,
+        "lever_nib_per_collar": 1.363,
         "F_b_collar_N": 0.465,
         "k_collar_N_per_m": 1033.0,
         "k_leaf_series_N_per_m": 27160.0,
-        "k_parasitic_collar_N_per_m": 71.72,
-        "F_b_nib_N": 0.3248,
-        "free_stroke_nib_um": 620.7,
-        "k_b_nib_N_per_m": 523.3,
-        "k_par_nib_N_per_m": 37.7,
-        "m_eq_nib_g": 0.3852,
-        "m_couple_nib_g": 0.6346,
-        "f1_Hz": 192.1,
+        "k_parasitic_collar_N_per_m": 71.62,
+        "F_b_nib_N": 0.3288,
+        "free_stroke_nib_um": 613.2,
+        "k_b_nib_N_per_m": 536.2,
+        "k_par_nib_N_per_m": 38.57,
+        "m_eq_nib_g": 0.3951,
+        "m_couple_nib_g": 0.6519,
+        "f1_Hz": 191.9,
         "C_axis_small_signal_uF": 2.029,
         "V_rail": 60.0,
-        "g_V_um_per_V": 20.69
+        "g_V_um_per_V": 20.44
       },
-      "verdict": "RECOMMENDED: fits, zero holding power, 276 um under the worst-direction nominal load (355 um frictionless), f1 192 Hz"
+      "verdict": "RECOMMENDED: fits, zero holding power, 277 um under the worst-direction nominal load (353 um frictionless), f1 192 Hz"
     },
     {
       "candidate": "PL112.10 / PL122.10 / PL127.10 / PL140.10 (catalogue)",
@@ -4990,34 +4990,11 @@
       "cad_section_checks": {
         "plate_to_bore_mm": 0.26,
         "plate_to_plate_mm": 0.215,
-        "plate_to_refill_mm": 0.513,
-        "refill_sweep_at_plate_tip_mm": 0.273,
+        "plate_to_refill_mm": 0.492,
+        "refill_sweep_at_plate_tip_mm": 0.252,
         "collar_magnet_to_hall_mm": 0.15,
-        "hall_outer_to_nose_wall_mm": 0.226,
-        "collar_to_nose_wall_mm": 1.044,
-        "refill_cone_to_skid_aperture_at_theta_min_mm": 0.026,
-        "skid_ring_radius_required": 1.4,
-        "nib_protrusion_range_mm": [
-          0.348,
-          1.857
-        ],
-        "pcb_diagonal_to_bore_mm": 0.908,
-        "battery_to_bore_mm": 0.7,
-        "optical_sensor_to_refill_mm": 0.751,
-        "min_required_mm": 0.1,
-        "all_ok": false
-      },
-      "label": "CAD (proposed design)"
-    },
-    "Q26": {
-      "cad_section_checks": {
-        "plate_to_bore_mm": 0.786,
-        "plate_to_plate_mm": 0.115,
-        "plate_to_refill_mm": 0.513,
-        "refill_sweep_at_plate_tip_mm": 0.273,
-        "collar_magnet_to_hall_mm": 0.15,
-        "hall_outer_to_nose_wall_mm": 0.227,
-        "collar_to_nose_wall_mm": 1.055,
+        "hall_outer_to_nose_wall_mm": 0.224,
+        "collar_to_nose_wall_mm": 1.051,
         "refill_cone_to_skid_aperture_at_theta_min_mm": 0.106,
         "skid_ring_radius_required": 1.4,
         "nib_protrusion_range_mm": [
@@ -5028,7 +5005,32 @@
         "battery_to_bore_mm": 0.7,
         "optical_sensor_to_refill_mm": 0.772,
         "min_required_mm": 0.1,
-        "all_ok": true
+        "all_ok": false,
+        "snubber_min_web_mm": 0.088
+      },
+      "label": "CAD (proposed design)"
+    },
+    "Q26": {
+      "cad_section_checks": {
+        "plate_to_bore_mm": 0.417,
+        "plate_to_plate_mm": 0.515,
+        "plate_to_refill_mm": 0.892,
+        "refill_sweep_at_plate_tip_mm": 0.252,
+        "collar_magnet_to_hall_mm": 0.15,
+        "hall_outer_to_nose_wall_mm": 0.224,
+        "collar_to_nose_wall_mm": 1.051,
+        "refill_cone_to_skid_aperture_at_theta_min_mm": 0.106,
+        "skid_ring_radius_required": 1.4,
+        "nib_protrusion_range_mm": [
+          0.375,
+          1.999
+        ],
+        "pcb_diagonal_to_bore_mm": 0.908,
+        "battery_to_bore_mm": 0.7,
+        "optical_sensor_to_refill_mm": 0.772,
+        "min_required_mm": 0.1,
+        "all_ok": true,
+        "snubber_min_web_mm": 0.488
       },
       "label": "CAD (proposed design)"
     },
@@ -5233,7 +5235,7 @@
       }
     ],
     "R_env_mm": 3.75,
-    "elapsed_s": 72.77,
+    "elapsed_s": 67.05,
     "label": "SIMULATION (magpylib magnetostatics, image iron = upper bound, linear magnets; analysis/em_planar.py topology)"
   },
   "c_stage_check_Q26": {
@@ -5245,21 +5247,21 @@
       "plates_per_axis": 2,
       "axes": 2,
       "fit": "fits: plate gap 0.115 mm, bore gap 0.786 mm (CAD pencil_revPQ)",
-      "lever_nib_per_collar": 1.379,
+      "lever_nib_per_collar": 1.363,
       "F_b_collar_N": 0.465,
       "k_collar_N_per_m": 1033.0,
       "k_leaf_series_N_per_m": 27160.0,
-      "k_parasitic_collar_N_per_m": 71.72,
-      "F_b_nib_N": 0.3248,
-      "free_stroke_nib_um": 620.7,
-      "k_b_nib_N_per_m": 523.3,
-      "k_par_nib_N_per_m": 37.7,
-      "m_eq_nib_g": 0.3852,
-      "m_couple_nib_g": 0.6346,
-      "f1_Hz": 192.1,
+      "k_parasitic_collar_N_per_m": 71.62,
+      "F_b_nib_N": 0.3288,
+      "free_stroke_nib_um": 613.2,
+      "k_b_nib_N_per_m": 536.2,
+      "k_par_nib_N_per_m": 38.57,
+      "m_eq_nib_g": 0.3951,
+      "m_couple_nib_g": 0.6519,
+      "f1_Hz": 191.9,
       "C_axis_small_signal_uF": 2.029,
       "V_rail": 60.0,
-      "g_V_um_per_V": 20.69
+      "g_V_um_per_V": 20.44
     },
     "beam": {
       "E_eff_GPa": 58.02,
@@ -5280,21 +5282,21 @@
         "k_drive_N_per_m": 439700.0,
         "k_cross_over_axis_stiffness": 2.626,
         "buckling_SF_at_plate_F_b": 19.3,
-        "stress_at_stop_MPa": 4198.0,
-        "stress_at_0.30mm_MPa": 3148.0
+        "stress_at_stop_MPa": 4249.0,
+        "stress_at_0.30mm_MPa": 3187.0
       },
       "recommended_C17200_30um_1.2x5mm": {
         "k_cross_N_per_m": 33.96,
         "k_drive_N_per_m": 54330.0,
         "k_cross_over_axis_stiffness": 0.06571,
         "buckling_SF_at_plate_F_b": 2.371,
-        "stress_at_stop_MPa": 136.8,
-        "stress_at_0.30mm_MPa": 102.6
+        "stress_at_stop_MPa": 138.4,
+        "stress_at_0.30mm_MPa": 103.8
       },
       "effect_of_CAD_leaf": {
-        "stroke_betaworst_um": 84.22,
-        "free_stroke_nib_um": 170.4,
-        "f1_Hz": 359.9
+        "stroke_betaworst_um": 84.23,
+        "free_stroke_nib_um": 168.4,
+        "f1_Hz": 359.6
       },
       "design_rule": "across: E w t^3/L^3 <= 5 % of the axis stiffness; along: E t w^3/L^3 >= 20x; lateral-torsional buckling SF >= 2 at the plate's blocking force; cross-deflection stress <= 150 MPa alternating (AMF-19). A single leaf meets all four only with >= ~4.5 mm of free axial span",
       "label": "CALCULATION (beam theory; buckling factor ASSUMPTION, confirm by FEA); material AMF-18/19"
@@ -5302,7 +5304,7 @@
     "lever_sweep": [
       {
         "n": 0.8,
-        "stroke_betaworst_um": 234.0
+        "stroke_betaworst_um": 234.1
       },
       {
         "n": 0.9,
@@ -5310,7 +5312,7 @@
       },
       {
         "n": 1.0,
-        "stroke_betaworst_um": 260.7
+        "stroke_betaworst_um": 260.8
       },
       {
         "n": 1.1,
@@ -5322,7 +5324,7 @@
       },
       {
         "n": 1.3,
-        "stroke_betaworst_um": 276.9
+        "stroke_betaworst_um": 277.0
       },
       {
         "n": 1.4,
@@ -5346,7 +5348,7 @@
       },
       {
         "n": 1.9,
-        "stroke_betaworst_um": 223.4
+        "stroke_betaworst_um": 223.5
       },
       {
         "n": 2.0,
@@ -5366,7 +5368,7 @@
       },
       {
         "n": 2.4,
-        "stroke_betaworst_um": 91.41
+        "stroke_betaworst_um": 91.42
       }
     ],
     "optimum_lever_betaworst": 1.37,
@@ -5376,23 +5378,23 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.1273,
-        "stroke_um": 352.0,
-        "stroke_minus20_um": 236.2
+        "stroke_um": 350.5,
+        "stroke_minus20_um": 236.1
       },
       {
         "theta_deg": 35,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.1607,
-        "stroke_um": 292.6,
-        "stroke_minus20_um": 176.8
+        "stroke_um": 292.5,
+        "stroke_minus20_um": 178.1
       },
       {
         "theta_deg": 35,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.2844,
-        "stroke_um": 71.98,
+        "stroke_um": 77.17,
         "stroke_minus20_um": 0.0
       },
       {
@@ -5400,15 +5402,15 @@
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.2388,
-        "stroke_um": 153.3,
-        "stroke_minus20_um": 37.55
+        "stroke_um": 156.6,
+        "stroke_minus20_um": 42.18
       },
       {
         "theta_deg": 35,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.3013,
-        "stroke_um": 41.96,
+        "stroke_um": 47.87,
         "stroke_minus20_um": 0.0
       },
       {
@@ -5448,15 +5450,15 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.1056,
-        "stroke_um": 390.7,
-        "stroke_minus20_um": 274.9
+        "stroke_um": 388.2,
+        "stroke_minus20_um": 273.8
       },
       {
         "theta_deg": 40,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.1307,
-        "stroke_um": 346.0,
+        "stroke_um": 344.6,
         "stroke_minus20_um": 230.2
       },
       {
@@ -5464,24 +5466,24 @@
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.2116,
-        "stroke_um": 201.8,
-        "stroke_minus20_um": 85.98
+        "stroke_um": 203.9,
+        "stroke_minus20_um": 89.46
       },
       {
         "theta_deg": 40,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1981,
-        "stroke_um": 225.9,
-        "stroke_minus20_um": 110.1
+        "stroke_um": 227.4,
+        "stroke_minus20_um": 113.0
       },
       {
         "theta_deg": 40,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.2451,
-        "stroke_um": 142.1,
-        "stroke_minus20_um": 26.32
+        "stroke_um": 145.6,
+        "stroke_minus20_um": 31.22
       },
       {
         "theta_deg": 40,
@@ -5520,47 +5522,47 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.08842,
-        "stroke_um": 421.4,
-        "stroke_minus20_um": 305.6
+        "stroke_um": 418.2,
+        "stroke_minus20_um": 303.8
       },
       {
         "theta_deg": 45,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.1082,
-        "stroke_um": 386.0,
-        "stroke_minus20_um": 270.2
+        "stroke_um": 383.7,
+        "stroke_minus20_um": 269.3
       },
       {
         "theta_deg": 45,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.1662,
-        "stroke_um": 282.8,
-        "stroke_minus20_um": 167.0
+        "stroke_um": 282.9,
+        "stroke_minus20_um": 168.5
       },
       {
         "theta_deg": 45,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1658,
-        "stroke_um": 283.4,
-        "stroke_minus20_um": 167.7
+        "stroke_um": 283.6,
+        "stroke_minus20_um": 169.2
       },
       {
         "theta_deg": 45,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.2029,
-        "stroke_um": 217.2,
-        "stroke_minus20_um": 101.4
+        "stroke_um": 218.9,
+        "stroke_minus20_um": 104.5
       },
       {
         "theta_deg": 45,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.3115,
-        "stroke_um": 23.64,
+        "stroke_um": 29.98,
         "stroke_minus20_um": 0.0
       },
       {
@@ -5592,55 +5594,55 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.07424,
-        "stroke_um": 446.6,
-        "stroke_minus20_um": 330.8
+        "stroke_um": 442.9,
+        "stroke_minus20_um": 328.5
       },
       {
         "theta_deg": 50,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.09052,
-        "stroke_um": 417.6,
-        "stroke_minus20_um": 301.8
+        "stroke_um": 414.5,
+        "stroke_minus20_um": 300.1
       },
       {
         "theta_deg": 50,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.1347,
-        "stroke_um": 338.9,
-        "stroke_minus20_um": 223.1
+        "stroke_um": 337.7,
+        "stroke_minus20_um": 223.3
       },
       {
         "theta_deg": 50,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1392,
-        "stroke_um": 330.8,
-        "stroke_minus20_um": 215.0
+        "stroke_um": 329.8,
+        "stroke_minus20_um": 215.4
       },
       {
         "theta_deg": 50,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.1697,
-        "stroke_um": 276.4,
-        "stroke_minus20_um": 160.6
+        "stroke_um": 276.7,
+        "stroke_minus20_um": 162.3
       },
       {
         "theta_deg": 50,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.2525,
-        "stroke_um": 128.8,
-        "stroke_minus20_um": 13.03
+        "stroke_um": 132.7,
+        "stroke_minus20_um": 18.25
       },
       {
         "theta_deg": 50,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.2784,
-        "stroke_um": 82.69,
+        "stroke_um": 87.62,
         "stroke_minus20_um": 0.0
       },
       {
@@ -5664,63 +5666,63 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.06219,
-        "stroke_um": 468.1,
-        "stroke_minus20_um": 352.3
+        "stroke_um": 463.8,
+        "stroke_minus20_um": 349.4
       },
       {
         "theta_deg": 55,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.076,
-        "stroke_um": 443.5,
-        "stroke_minus20_um": 327.7
+        "stroke_um": 439.8,
+        "stroke_minus20_um": 325.4
       },
       {
         "theta_deg": 55,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.1113,
-        "stroke_um": 380.6,
-        "stroke_minus20_um": 264.8
+        "stroke_um": 378.4,
+        "stroke_minus20_um": 264.0
       },
       {
         "theta_deg": 55,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1166,
-        "stroke_um": 371.1,
-        "stroke_minus20_um": 255.3
+        "stroke_um": 369.1,
+        "stroke_minus20_um": 254.7
       },
       {
         "theta_deg": 55,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.1425,
-        "stroke_um": 325.0,
-        "stroke_minus20_um": 209.2
+        "stroke_um": 324.1,
+        "stroke_minus20_um": 209.7
       },
       {
         "theta_deg": 55,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.2087,
-        "stroke_um": 207.0,
-        "stroke_minus20_um": 91.21
+        "stroke_um": 209.0,
+        "stroke_minus20_um": 94.56
       },
       {
         "theta_deg": 55,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.2332,
-        "stroke_um": 163.2,
-        "stroke_minus20_um": 47.44
+        "stroke_um": 166.2,
+        "stroke_minus20_um": 51.83
       },
       {
         "theta_deg": 55,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.285,
-        "stroke_um": 70.95,
+        "stroke_um": 76.17,
         "stroke_minus20_um": 0.0
       },
       {
@@ -5736,64 +5738,64 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.05168,
-        "stroke_um": 486.9,
-        "stroke_minus20_um": 371.1
+        "stroke_um": 482.1,
+        "stroke_minus20_um": 367.7
       },
       {
         "theta_deg": 60,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.06371,
-        "stroke_um": 465.4,
-        "stroke_minus20_um": 349.6
+        "stroke_um": 461.2,
+        "stroke_minus20_um": 346.8
       },
       {
         "theta_deg": 60,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.09298,
-        "stroke_um": 413.2,
-        "stroke_minus20_um": 297.4
+        "stroke_um": 410.3,
+        "stroke_minus20_um": 295.9
       },
       {
         "theta_deg": 60,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.0969,
-        "stroke_um": 406.2,
-        "stroke_minus20_um": 290.5
+        "stroke_um": 403.4,
+        "stroke_minus20_um": 289.0
       },
       {
         "theta_deg": 60,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.1194,
-        "stroke_um": 366.1,
-        "stroke_minus20_um": 250.3
+        "stroke_um": 364.2,
+        "stroke_minus20_um": 249.8
       },
       {
         "theta_deg": 60,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1743,
-        "stroke_um": 268.2,
-        "stroke_minus20_um": 152.4
+        "stroke_um": 268.7,
+        "stroke_minus20_um": 154.3
       },
       {
         "theta_deg": 60,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.1938,
-        "stroke_um": 233.5,
-        "stroke_minus20_um": 117.7
+        "stroke_um": 234.8,
+        "stroke_minus20_um": 120.4
       },
       {
         "theta_deg": 60,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.2389,
-        "stroke_um": 153.1,
-        "stroke_minus20_um": 37.34
+        "stroke_um": 156.4,
+        "stroke_minus20_um": 41.97
       },
       {
         "theta_deg": 60,
@@ -5808,71 +5810,71 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.04229,
-        "stroke_um": 503.6,
-        "stroke_minus20_um": 387.8
+        "stroke_um": 498.5,
+        "stroke_minus20_um": 384.0
       },
       {
         "theta_deg": 65,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.05301,
-        "stroke_um": 484.5,
-        "stroke_minus20_um": 368.7
+        "stroke_um": 479.8,
+        "stroke_minus20_um": 365.4
       },
       {
         "theta_deg": 65,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.07804,
-        "stroke_um": 439.9,
-        "stroke_minus20_um": 324.1
+        "stroke_um": 436.2,
+        "stroke_minus20_um": 321.8
       },
       {
         "theta_deg": 65,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.07929,
-        "stroke_um": 437.6,
-        "stroke_minus20_um": 321.8
+        "stroke_um": 434.1,
+        "stroke_minus20_um": 319.7
       },
       {
         "theta_deg": 65,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.0994,
-        "stroke_um": 401.8,
-        "stroke_minus20_um": 286.0
+        "stroke_um": 399.1,
+        "stroke_minus20_um": 284.7
       },
       {
         "theta_deg": 65,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1463,
-        "stroke_um": 318.1,
-        "stroke_minus20_um": 202.3
+        "stroke_um": 317.4,
+        "stroke_minus20_um": 203.0
       },
       {
         "theta_deg": 65,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.1586,
-        "stroke_um": 296.3,
-        "stroke_minus20_um": 180.5
+        "stroke_um": 296.1,
+        "stroke_minus20_um": 181.7
       },
       {
         "theta_deg": 65,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.1988,
-        "stroke_um": 224.6,
-        "stroke_minus20_um": 108.8
+        "stroke_um": 226.1,
+        "stroke_minus20_um": 111.7
       },
       {
         "theta_deg": 65,
         "F_c": 0.3,
         "mu": 0.35,
         "F_nib_N": 0.2927,
-        "stroke_um": 57.3,
+        "stroke_um": 62.84,
         "stroke_minus20_um": 0.0
       },
       {
@@ -5880,135 +5882,135 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.03373,
-        "stroke_um": 518.9,
-        "stroke_minus20_um": 403.1
+        "stroke_um": 513.3,
+        "stroke_minus20_um": 398.9
       },
       {
         "theta_deg": 70,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.04349,
-        "stroke_um": 501.5,
-        "stroke_minus20_um": 385.7
+        "stroke_um": 496.4,
+        "stroke_minus20_um": 382.0
       },
       {
         "theta_deg": 70,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.06546,
-        "stroke_um": 462.3,
-        "stroke_minus20_um": 346.5
+        "stroke_um": 458.1,
+        "stroke_minus20_um": 343.7
       },
       {
         "theta_deg": 70,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.06325,
-        "stroke_um": 466.2,
-        "stroke_minus20_um": 350.4
+        "stroke_um": 462.0,
+        "stroke_minus20_um": 347.6
       },
       {
         "theta_deg": 70,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.08155,
-        "stroke_um": 433.6,
-        "stroke_minus20_um": 317.8
+        "stroke_um": 430.1,
+        "stroke_minus20_um": 315.7
       },
       {
         "theta_deg": 70,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1227,
-        "stroke_um": 360.2,
-        "stroke_minus20_um": 244.4
+        "stroke_um": 358.5,
+        "stroke_minus20_um": 244.1
       },
       {
         "theta_deg": 70,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.1265,
-        "stroke_um": 353.5,
-        "stroke_minus20_um": 237.7
+        "stroke_um": 351.9,
+        "stroke_minus20_um": 237.5
       },
       {
         "theta_deg": 70,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.1631,
-        "stroke_um": 288.2,
-        "stroke_minus20_um": 172.5
+        "stroke_um": 288.3,
+        "stroke_minus20_um": 173.9
       },
       {
         "theta_deg": 70,
         "F_c": 0.3,
         "mu": 0.35,
         "F_nib_N": 0.2455,
-        "stroke_um": 141.4,
-        "stroke_minus20_um": 25.63
+        "stroke_um": 145.0,
+        "stroke_minus20_um": 30.55
       },
       {
         "theta_deg": 75,
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.02578,
-        "stroke_um": 533.0,
-        "stroke_minus20_um": 417.2
+        "stroke_um": 527.2,
+        "stroke_minus20_um": 412.8
       },
       {
         "theta_deg": 75,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.03484,
-        "stroke_um": 516.9,
-        "stroke_minus20_um": 401.1
+        "stroke_um": 511.4,
+        "stroke_minus20_um": 397.0
       },
       {
         "theta_deg": 75,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.05455,
-        "stroke_um": 481.7,
-        "stroke_minus20_um": 365.9
+        "stroke_um": 477.1,
+        "stroke_minus20_um": 362.7
       },
       {
         "theta_deg": 75,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.04834,
-        "stroke_um": 492.8,
-        "stroke_minus20_um": 377.0
+        "stroke_um": 487.9,
+        "stroke_minus20_um": 373.5
       },
       {
         "theta_deg": 75,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.06532,
-        "stroke_um": 462.5,
-        "stroke_minus20_um": 346.8
+        "stroke_um": 458.4,
+        "stroke_minus20_um": 344.0
       },
       {
         "theta_deg": 75,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1023,
-        "stroke_um": 396.6,
-        "stroke_minus20_um": 280.9
+        "stroke_um": 394.1,
+        "stroke_minus20_um": 279.7
       },
       {
         "theta_deg": 75,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.09668,
-        "stroke_um": 406.6,
-        "stroke_minus20_um": 290.8
+        "stroke_um": 403.8,
+        "stroke_minus20_um": 289.4
       },
       {
         "theta_deg": 75,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.1306,
-        "stroke_um": 346.1,
+        "stroke_um": 344.7,
         "stroke_minus20_um": 230.3
       },
       {
@@ -6016,21 +6018,21 @@
         "F_c": 0.3,
         "mu": 0.35,
         "F_nib_N": 0.2046,
-        "stroke_um": 214.3,
-        "stroke_minus20_um": 98.52
+        "stroke_um": 216.1,
+        "stroke_minus20_um": 101.7
       }
     ],
     "fraction_of_grid_with_300um": 0.4938,
     "resonance": {
-      "lumped_Hz": 192.1,
+      "lumped_Hz": 191.9,
       "FE_first_three_Hz": [
-        195.3,
+        195.1,
         1768.0,
         5484.0
       ],
       "bare_plate_FE_Hz": 376.5,
-      "m_eq_nib_g": 0.3852,
-      "k_total_nib_N_per_m": 561.0,
+      "m_eq_nib_g": 0.3951,
+      "k_total_nib_N_per_m": 574.7,
       "label": "CALCULATION (lumped and 14-element Euler-Bernoulli FE)"
     },
     "sensor": {
@@ -6039,25 +6041,25 @@
         0.0,
         0.0
       ],
-      "B_max_over_travel_mT": 167.8,
+      "B_max_over_travel_mT": 169.4,
       "dBx_dx_mT_per_mm_centre": 189.6,
       "dBy_dy_mT_per_mm_centre": -94.78,
-      "min_sensitivity_mT_per_mm": 34.34,
+      "min_sensitivity_mT_per_mm": 33.84,
       "noise_assumed_mT": 0.1,
-      "resolution_collar_um": 2.912,
-      "resolution_nib_um": 4.017,
+      "resolution_collar_um": 2.955,
+      "resolution_nib_um": 4.026,
       "label": "CALCULATION (magpylib, linear magnet) with ASSUMPTIONS (Br 1.32 T, 0.3 mm element depth, 0.1 mT noise)",
       "choice": "3-D Hall (TMAG5170/TLE493D class, SPI or I2C, >= 2 kSPS) in the nose facing a 0.6 x 1 x 1 mm NdFeB magnet on the collar; the piezo drive carries no current near it, so there is no coil crosstalk (unlike Rev A); piezo charge self-sensing kept as a plausibility check"
     },
     "stops": {
-      "unpowered_at_stop_MPa": 21.57,
-      "driven_opposite_at_stop_MPa": 55.04,
+      "unpowered_at_stop_MPa": 21.83,
+      "driven_opposite_at_stop_MPa": 55.3,
       "blocking_rated_MPa": 33.47,
       "sigma0_bender_MPa": 181.2,
       "P_fail_per_event": {
         "rated_blocking": 1.357e-06,
-        "driven_opposite_at_stop": 7.257e-05,
-        "unpowered_at_stop": 4.037e-08
+        "driven_opposite_at_stop": 7.54e-05,
+        "unpowered_at_stop": 4.45e-08
       },
       "strength_basis": "LITERATURE (proposed AMF-48: Bermejo & Deluca 2012, poled PZT multilayer, 4PB, sigma0 124 MPa elastic, Weibull m 8) scaled to the plate's effective volume; PICMA material itself UNKNOWN (EXP-Q04)",
       "label": "CALCULATION"
@@ -6067,87 +6069,87 @@
       "snubbers": [
         {
           "x_over_L": 0.35,
-          "gap_um": 77.07
+          "gap_um": 77.65
         },
         {
           "x_over_L": 0.7,
-          "gap_um": 193.4
+          "gap_um": 195.4
         }
       ],
       "snubbers4": [
         {
           "x_over_L": 0.2,
-          "gap_um": 46.24
+          "gap_um": 46.44
         },
         {
           "x_over_L": 0.4,
-          "gap_um": 90.32
+          "gap_um": 91.06
         },
         {
           "x_over_L": 0.6,
-          "gap_um": 155.3
+          "gap_um": 156.8
         },
         {
           "x_over_L": 0.8,
-          "gap_um": 234.2
+          "gap_um": 236.7
         }
       ],
       "transverse": [
         {
           "pulse_ms": 0.2,
           "peak_g": 4967.0,
-          "no_snubbers_MPa": 604.9,
+          "no_snubbers_MPa": 604.4,
           "P_fail_no_snubbers": 1.0,
-          "two_snubbers_MPa": 239.5,
-          "P_fail_two_snubbers": 0.9999,
-          "four_snubbers_MPa": 244.3,
-          "P_fail_four_snubbers": 1.0
+          "two_snubbers_MPa": 234.2,
+          "P_fail_two_snubbers": 0.9996,
+          "four_snubbers_MPa": 235.1,
+          "P_fail_four_snubbers": 0.9997
         },
         {
           "pulse_ms": 0.35,
           "peak_g": 2838.0,
-          "no_snubbers_MPa": 448.5,
+          "no_snubbers_MPa": 450.5,
           "P_fail_no_snubbers": 1.0,
-          "two_snubbers_MPa": 144.2,
-          "P_fail_two_snubbers": 0.1488,
-          "four_snubbers_MPa": 145.5,
-          "P_fail_four_snubbers": 0.1589
+          "two_snubbers_MPa": 145.5,
+          "P_fail_two_snubbers": 0.159,
+          "four_snubbers_MPa": 143.7,
+          "P_fail_four_snubbers": 0.1451
         },
         {
           "pulse_ms": 0.5,
           "peak_g": 1987.0,
-          "no_snubbers_MPa": 376.5,
+          "no_snubbers_MPa": 376.9,
           "P_fail_no_snubbers": 1.0,
-          "two_snubbers_MPa": 135.1,
-          "P_fail_two_snubbers": 0.0913,
-          "four_snubbers_MPa": 111.1,
-          "P_fail_four_snubbers": 0.01974
+          "two_snubbers_MPa": 135.3,
+          "P_fail_two_snubbers": 0.09218,
+          "four_snubbers_MPa": 110.8,
+          "P_fail_four_snubbers": 0.0194
         },
         {
           "pulse_ms": 1.0,
           "peak_g": 993.4,
-          "no_snubbers_MPa": 233.0,
-          "P_fail_no_snubbers": 0.9994,
-          "two_snubbers_MPa": 100.8,
-          "P_fail_two_snubbers": 0.009141,
-          "four_snubbers_MPa": 76.87,
-          "P_fail_four_snubbers": 0.00105
+          "no_snubbers_MPa": 233.9,
+          "P_fail_no_snubbers": 0.9996,
+          "two_snubbers_MPa": 101.1,
+          "P_fail_two_snubbers": 0.009351,
+          "four_snubbers_MPa": 77.17,
+          "P_fail_four_snubbers": 0.001083
         },
         {
           "pulse_ms": 2.0,
           "peak_g": 496.7,
-          "no_snubbers_MPa": 138.0,
-          "P_fail_no_snubbers": 0.1069,
-          "two_snubbers_MPa": 63.58,
-          "P_fail_two_snubbers": 0.0002302,
-          "four_snubbers_MPa": 49.56,
-          "P_fail_four_snubbers": 3.138e-05
+          "no_snubbers_MPa": 138.9,
+          "P_fail_no_snubbers": 0.1123,
+          "two_snubbers_MPa": 64.12,
+          "P_fail_two_snubbers": 0.0002463,
+          "four_snubbers_MPa": 49.44,
+          "P_fail_four_snubbers": 3.077e-05
         }
       ],
-      "axial_nib_first_0.35ms_MPa": 6.852,
+      "axial_nib_first_0.35ms_MPa": 6.85,
       "FE_static_check_MPa": {
-        "FE": 67.17,
-        "closed_form": 67.22
+        "FE": 67.23,
+        "closed_form": 67.28
       },
       "labels": {
         "result": "SIMULATION (FE beam, Newmark, unilateral stops)",
@@ -6161,328 +6163,328 @@
         {
           "f_Hz": 4.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.179,
+          "V_amp_60V_rail": 5.242,
           "drv2700": {
-            "reactive_mVA_major": 0.8893,
-            "P_rail_mW_2axes": 9.182,
-            "P_battery_mW": 84.76
+            "reactive_mVA_major": 0.911,
+            "P_rail_mW_2axes": 9.293,
+            "P_battery_mW": 84.91
           },
           "recovery": {
-            "reactive_mVA_major": 0.8893,
-            "P_rail_mW_2axes": 1.374,
-            "P_battery_mW": 2.74
+            "reactive_mVA_major": 0.911,
+            "P_rail_mW_2axes": 1.391,
+            "P_battery_mW": 2.76
           },
           "capdrive": {
-            "reactive_mVA_major": 0.8893,
-            "P_rail_mW_2axes": 1.499,
-            "P_battery_mW": 28.51
+            "reactive_mVA_major": 0.911,
+            "P_rail_mW_2axes": 1.517,
+            "P_battery_mW": 28.54
           }
         },
         {
           "f_Hz": 4.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.54,
+          "V_amp_60V_rail": 15.73,
           "drv2700": {
-            "reactive_mVA_major": 8.003,
-            "P_rail_mW_2axes": 27.54,
-            "P_battery_mW": 109.2
+            "reactive_mVA_major": 8.199,
+            "P_rail_mW_2axes": 27.88,
+            "P_battery_mW": 109.7
           },
           "recovery": {
-            "reactive_mVA_major": 8.003,
-            "P_rail_mW_2axes": 4.122,
-            "P_battery_mW": 6.174
+            "reactive_mVA_major": 8.199,
+            "P_rail_mW_2axes": 4.172,
+            "P_battery_mW": 6.237
           },
           "capdrive": {
-            "reactive_mVA_major": 8.003,
-            "P_rail_mW_2axes": 4.496,
-            "P_battery_mW": 32.26
+            "reactive_mVA_major": 8.199,
+            "P_rail_mW_2axes": 4.551,
+            "P_battery_mW": 32.33
           }
         },
         {
           "f_Hz": 4.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.72,
+          "V_amp_60V_rail": 20.97,
           "drv2700": {
-            "reactive_mVA_major": 14.23,
-            "P_rail_mW_2axes": 36.73,
-            "P_battery_mW": 121.5
+            "reactive_mVA_major": 14.58,
+            "P_rail_mW_2axes": 37.17,
+            "P_battery_mW": 122.1
           },
           "recovery": {
-            "reactive_mVA_major": 14.23,
-            "P_rail_mW_2axes": 5.495,
-            "P_battery_mW": 7.892
+            "reactive_mVA_major": 14.58,
+            "P_rail_mW_2axes": 5.562,
+            "P_battery_mW": 7.975
           },
           "capdrive": {
-            "reactive_mVA_major": 14.23,
-            "P_rail_mW_2axes": 5.995,
-            "P_battery_mW": 34.13
+            "reactive_mVA_major": 14.58,
+            "P_rail_mW_2axes": 6.068,
+            "P_battery_mW": 34.22
           }
         },
         {
           "f_Hz": 6.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.176,
+          "V_amp_60V_rail": 5.239,
           "drv2700": {
-            "reactive_mVA_major": 1.332,
-            "P_rail_mW_2axes": 13.76,
-            "P_battery_mW": 90.87
+            "reactive_mVA_major": 1.365,
+            "P_rail_mW_2axes": 13.93,
+            "P_battery_mW": 91.1
           },
           "recovery": {
-            "reactive_mVA_major": 1.332,
-            "P_rail_mW_2axes": 2.06,
-            "P_battery_mW": 3.597
+            "reactive_mVA_major": 1.365,
+            "P_rail_mW_2axes": 2.085,
+            "P_battery_mW": 3.628
           },
           "capdrive": {
-            "reactive_mVA_major": 1.332,
-            "P_rail_mW_2axes": 2.247,
-            "P_battery_mW": 29.45
+            "reactive_mVA_major": 1.365,
+            "P_rail_mW_2axes": 2.274,
+            "P_battery_mW": 29.48
           }
         },
         {
           "f_Hz": 6.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.53,
+          "V_amp_60V_rail": 15.72,
           "drv2700": {
-            "reactive_mVA_major": 11.99,
-            "P_rail_mW_2axes": 41.29,
-            "P_battery_mW": 127.6
+            "reactive_mVA_major": 12.29,
+            "P_rail_mW_2axes": 41.8,
+            "P_battery_mW": 128.2
           },
           "recovery": {
-            "reactive_mVA_major": 11.99,
-            "P_rail_mW_2axes": 6.179,
-            "P_battery_mW": 8.746
+            "reactive_mVA_major": 12.29,
+            "P_rail_mW_2axes": 6.254,
+            "P_battery_mW": 8.84
           },
           "capdrive": {
-            "reactive_mVA_major": 11.99,
-            "P_rail_mW_2axes": 6.741,
-            "P_battery_mW": 35.07
+            "reactive_mVA_major": 12.29,
+            "P_rail_mW_2axes": 6.823,
+            "P_battery_mW": 35.17
           }
         },
         {
           "f_Hz": 6.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.71,
+          "V_amp_60V_rail": 20.96,
           "drv2700": {
-            "reactive_mVA_major": 21.32,
-            "P_rail_mW_2axes": 55.06,
-            "P_battery_mW": 145.9
+            "reactive_mVA_major": 21.84,
+            "P_rail_mW_2axes": 55.73,
+            "P_battery_mW": 146.8
           },
           "recovery": {
-            "reactive_mVA_major": 21.32,
-            "P_rail_mW_2axes": 8.239,
-            "P_battery_mW": 11.32
+            "reactive_mVA_major": 21.84,
+            "P_rail_mW_2axes": 8.339,
+            "P_battery_mW": 11.45
           },
           "capdrive": {
-            "reactive_mVA_major": 21.32,
-            "P_rail_mW_2axes": 8.988,
-            "P_battery_mW": 37.87
+            "reactive_mVA_major": 21.84,
+            "P_rail_mW_2axes": 9.097,
+            "P_battery_mW": 38.01
           }
         },
         {
           "f_Hz": 8.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.173,
+          "V_amp_60V_rail": 5.235,
           "drv2700": {
-            "reactive_mVA_major": 1.774,
-            "P_rail_mW_2axes": 18.34,
-            "P_battery_mW": 96.97
+            "reactive_mVA_major": 1.817,
+            "P_rail_mW_2axes": 18.56,
+            "P_battery_mW": 97.27
           },
           "recovery": {
-            "reactive_mVA_major": 1.774,
-            "P_rail_mW_2axes": 2.744,
-            "P_battery_mW": 4.452
+            "reactive_mVA_major": 1.817,
+            "P_rail_mW_2axes": 2.777,
+            "P_battery_mW": 4.494
           },
           "capdrive": {
-            "reactive_mVA_major": 1.774,
-            "P_rail_mW_2axes": 2.994,
-            "P_battery_mW": 30.38
+            "reactive_mVA_major": 1.817,
+            "P_rail_mW_2axes": 3.03,
+            "P_battery_mW": 30.43
           }
         },
         {
           "f_Hz": 8.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.52,
+          "V_amp_60V_rail": 15.71,
           "drv2700": {
-            "reactive_mVA_major": 15.97,
-            "P_rail_mW_2axes": 55.02,
-            "P_battery_mW": 145.9
+            "reactive_mVA_major": 16.36,
+            "P_rail_mW_2axes": 55.69,
+            "P_battery_mW": 146.8
           },
           "recovery": {
-            "reactive_mVA_major": 15.97,
-            "P_rail_mW_2axes": 8.232,
-            "P_battery_mW": 11.31
+            "reactive_mVA_major": 16.36,
+            "P_rail_mW_2axes": 8.332,
+            "P_battery_mW": 11.44
           },
           "capdrive": {
-            "reactive_mVA_major": 15.97,
-            "P_rail_mW_2axes": 8.981,
-            "P_battery_mW": 37.87
+            "reactive_mVA_major": 16.36,
+            "P_rail_mW_2axes": 9.09,
+            "P_battery_mW": 38.0
           }
         },
         {
           "f_Hz": 8.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.69,
+          "V_amp_60V_rail": 20.94,
           "drv2700": {
-            "reactive_mVA_major": 28.38,
-            "P_rail_mW_2axes": 73.36,
-            "P_battery_mW": 170.3
+            "reactive_mVA_major": 29.08,
+            "P_rail_mW_2axes": 74.25,
+            "P_battery_mW": 171.5
           },
           "recovery": {
-            "reactive_mVA_major": 28.38,
-            "P_rail_mW_2axes": 10.98,
-            "P_battery_mW": 14.74
+            "reactive_mVA_major": 29.08,
+            "P_rail_mW_2axes": 11.11,
+            "P_battery_mW": 14.91
           },
           "capdrive": {
-            "reactive_mVA_major": 28.38,
-            "P_rail_mW_2axes": 11.97,
-            "P_battery_mW": 41.61
+            "reactive_mVA_major": 29.08,
+            "P_rail_mW_2axes": 12.12,
+            "P_battery_mW": 41.79
           }
         },
         {
           "f_Hz": 10.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.167,
+          "V_amp_60V_rail": 5.23,
           "drv2700": {
-            "reactive_mVA_major": 2.213,
-            "P_rail_mW_2axes": 22.9,
-            "P_battery_mW": 103.1
+            "reactive_mVA_major": 2.267,
+            "P_rail_mW_2axes": 23.18,
+            "P_battery_mW": 103.4
           },
           "recovery": {
-            "reactive_mVA_major": 2.213,
-            "P_rail_mW_2axes": 3.427,
-            "P_battery_mW": 5.306
+            "reactive_mVA_major": 2.267,
+            "P_rail_mW_2axes": 3.468,
+            "P_battery_mW": 5.358
           },
           "capdrive": {
-            "reactive_mVA_major": 2.213,
-            "P_rail_mW_2axes": 3.738,
-            "P_battery_mW": 31.31
+            "reactive_mVA_major": 2.267,
+            "P_rail_mW_2axes": 3.784,
+            "P_battery_mW": 31.37
           }
         },
         {
           "f_Hz": 10.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.5,
+          "V_amp_60V_rail": 15.69,
           "drv2700": {
-            "reactive_mVA_major": 19.92,
-            "P_rail_mW_2axes": 68.71,
-            "P_battery_mW": 164.1
+            "reactive_mVA_major": 20.4,
+            "P_rail_mW_2axes": 69.54,
+            "P_battery_mW": 165.2
           },
           "recovery": {
-            "reactive_mVA_major": 19.92,
-            "P_rail_mW_2axes": 10.28,
-            "P_battery_mW": 13.87
+            "reactive_mVA_major": 20.4,
+            "P_rail_mW_2axes": 10.41,
+            "P_battery_mW": 14.03
           },
           "capdrive": {
-            "reactive_mVA_major": 19.92,
-            "P_rail_mW_2axes": 11.22,
-            "P_battery_mW": 40.66
+            "reactive_mVA_major": 20.4,
+            "P_rail_mW_2axes": 11.35,
+            "P_battery_mW": 40.83
           }
         },
         {
           "f_Hz": 10.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.67,
+          "V_amp_60V_rail": 20.92,
           "drv2700": {
-            "reactive_mVA_major": 35.41,
-            "P_rail_mW_2axes": 91.61,
-            "P_battery_mW": 194.7
+            "reactive_mVA_major": 36.27,
+            "P_rail_mW_2axes": 92.72,
+            "P_battery_mW": 196.1
           },
           "recovery": {
-            "reactive_mVA_major": 35.41,
-            "P_rail_mW_2axes": 13.71,
-            "P_battery_mW": 18.16
+            "reactive_mVA_major": 36.27,
+            "P_rail_mW_2axes": 13.87,
+            "P_battery_mW": 18.36
           },
           "capdrive": {
-            "reactive_mVA_major": 35.41,
-            "P_rail_mW_2axes": 14.95,
-            "P_battery_mW": 45.33
+            "reactive_mVA_major": 36.27,
+            "P_rail_mW_2axes": 15.14,
+            "P_battery_mW": 45.56
           }
         },
         {
           "f_Hz": 12.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.161,
+          "V_amp_60V_rail": 5.224,
           "drv2700": {
-            "reactive_mVA_major": 2.649,
-            "P_rail_mW_2axes": 27.45,
-            "P_battery_mW": 109.1
+            "reactive_mVA_major": 2.714,
+            "P_rail_mW_2axes": 27.78,
+            "P_battery_mW": 109.6
           },
           "recovery": {
-            "reactive_mVA_major": 2.649,
-            "P_rail_mW_2axes": 4.107,
-            "P_battery_mW": 6.156
+            "reactive_mVA_major": 2.714,
+            "P_rail_mW_2axes": 4.157,
+            "P_battery_mW": 6.219
           },
           "capdrive": {
-            "reactive_mVA_major": 2.649,
-            "P_rail_mW_2axes": 4.481,
-            "P_battery_mW": 32.24
+            "reactive_mVA_major": 2.714,
+            "P_rail_mW_2axes": 4.535,
+            "P_battery_mW": 32.31
           }
         },
         {
           "f_Hz": 12.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.48,
+          "V_amp_60V_rail": 15.67,
           "drv2700": {
-            "reactive_mVA_major": 23.84,
-            "P_rail_mW_2axes": 82.35,
-            "P_battery_mW": 182.3
+            "reactive_mVA_major": 24.43,
+            "P_rail_mW_2axes": 83.35,
+            "P_battery_mW": 183.7
           },
           "recovery": {
-            "reactive_mVA_major": 23.84,
-            "P_rail_mW_2axes": 12.32,
-            "P_battery_mW": 16.42
+            "reactive_mVA_major": 24.43,
+            "P_rail_mW_2axes": 12.47,
+            "P_battery_mW": 16.61
           },
           "capdrive": {
-            "reactive_mVA_major": 23.84,
-            "P_rail_mW_2axes": 13.44,
-            "P_battery_mW": 43.44
+            "reactive_mVA_major": 24.43,
+            "P_rail_mW_2axes": 13.61,
+            "P_battery_mW": 43.65
           }
         },
         {
           "f_Hz": 12.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.65,
+          "V_amp_60V_rail": 20.9,
           "drv2700": {
-            "reactive_mVA_major": 42.39,
-            "P_rail_mW_2axes": 109.8,
-            "P_battery_mW": 218.9
+            "reactive_mVA_major": 43.42,
+            "P_rail_mW_2axes": 111.1,
+            "P_battery_mW": 220.7
           },
           "recovery": {
-            "reactive_mVA_major": 42.39,
-            "P_rail_mW_2axes": 16.43,
-            "P_battery_mW": 21.56
+            "reactive_mVA_major": 43.42,
+            "P_rail_mW_2axes": 16.63,
+            "P_battery_mW": 21.81
           },
           "capdrive": {
-            "reactive_mVA_major": 42.39,
-            "P_rail_mW_2axes": 17.92,
-            "P_battery_mW": 49.04
+            "reactive_mVA_major": 43.42,
+            "P_rail_mW_2axes": 18.14,
+            "P_battery_mW": 49.32
           }
         }
       ],
       "modes_analytic": {
         "drv2700": {
           "recording_only_W": 0.0651,
-          "tremor_assist_6Hz_0.3mm_W": 0.1926,
+          "tremor_assist_6Hz_0.3mm_W": 0.1932,
           "life_recording_h": 4.092,
-          "life_tremor_assist_h": 1.383,
+          "life_tremor_assist_h": 1.379,
           "energy_per_hour_recording_mWh": 65.1,
-          "energy_per_hour_assist_mWh": 192.6
+          "energy_per_hour_assist_mWh": 193.2
         },
         "recovery": {
           "recording_only_W": 0.065,
-          "tremor_assist_6Hz_0.3mm_W": 0.07375,
+          "tremor_assist_6Hz_0.3mm_W": 0.07384,
           "life_recording_h": 4.098,
-          "life_tremor_assist_h": 3.612,
+          "life_tremor_assist_h": 3.608,
           "energy_per_hour_recording_mWh": 65.0,
-          "energy_per_hour_assist_mWh": 73.75
+          "energy_per_hour_assist_mWh": 73.84
         },
         "capdrive": {
           "recording_only_W": 0.065,
-          "tremor_assist_6Hz_0.3mm_W": 0.1001,
+          "tremor_assist_6Hz_0.3mm_W": 0.1002,
           "life_recording_h": 4.098,
-          "life_tremor_assist_h": 2.662,
+          "life_tremor_assist_h": 2.66,
           "energy_per_hour_recording_mWh": 65.0,
-          "energy_per_hour_assist_mWh": 100.1
+          "energy_per_hour_assist_mWh": 100.2
         }
       },
       "drivers": {
@@ -6536,9 +6538,9 @@
         }
       },
       "rail_55V_penalty": {
-        "stroke_betaworst_60V_um": 276.4,
-        "stroke_betaworst_55V_um": 228.2,
-        "F_b_nib_55V_N": 0.2977,
+        "stroke_betaworst_60V_um": 276.7,
+        "stroke_betaworst_55V_um": 229.1,
+        "F_b_nib_55V_N": 0.3014,
         "label": "CALCULATION (piezo force and stroke proportional to the drive range)"
       },
       "C_axis_small_signal_uF": 2.029,
@@ -6557,15 +6559,15 @@
       },
       "thermal_board_zone": {
         "drv2700": {
-          "P_W": 0.1926,
-          "T_surface_max_C": 37.36
+          "P_W": 0.1932,
+          "T_surface_max_C": 37.4
         },
         "recovery": {
-          "P_W": 0.07375,
+          "P_W": 0.07384,
           "T_surface_max_C": 32.48
         },
         "capdrive": {
-          "P_W": 0.1001,
+          "P_W": 0.1002,
           "T_surface_max_C": 32.48
         },
         "recording_only": {
@@ -6578,32 +6580,32 @@
       "stage_200Hz": [
         {
           "nib_amp_um": 20.0,
-          "barrel_acc_m_s2_peak": 1.503,
-          "barrel_acc_G_rms": 0.1084,
-          "dB_above_threshold": 21.51
+          "barrel_acc_m_s2_peak": 1.534,
+          "barrel_acc_G_rms": 0.1106,
+          "dB_above_threshold": 21.69
         },
         {
           "nib_amp_um": 100.0,
-          "barrel_acc_m_s2_peak": 7.517,
-          "barrel_acc_G_rms": 0.542,
-          "dB_above_threshold": 35.49
+          "barrel_acc_m_s2_peak": 7.67,
+          "barrel_acc_G_rms": 0.5531,
+          "dB_above_threshold": 35.67
         },
         {
           "nib_amp_um": 300.0,
-          "barrel_acc_m_s2_peak": 22.55,
-          "barrel_acc_G_rms": 1.626,
-          "dB_above_threshold": 45.03
+          "barrel_acc_m_s2_peak": 23.01,
+          "barrel_acc_G_rms": 1.659,
+          "dB_above_threshold": 45.21
         }
       ],
       "lra_6mm": {
         "G_rms_vendor": 0.9,
         "F_rms_N_if_100g_jig": 0.8826,
         "F_rms_N_if_50g_jig": 0.4413,
-        "G_rms_in_pencil_100g": 6.751,
-        "G_rms_in_pencil_50g": 3.375
+        "G_rms_in_pencil_100g": 6.706,
+        "G_rms_in_pencil_50g": 3.353
       },
       "threshold_m_s2_at_200Hz": 0.1263,
-      "pen_mass_g": 13.33,
+      "pen_mass_g": 13.42,
       "labels": {
         "stage": "CALCULATION (momentum balance, free pen; skin impedance ~1 N s/m at 200 Hz, HAP-27, neglected)",
         "threshold": "LITERATURE (HAP-27)",
@@ -6621,21 +6623,21 @@
       "plates_per_axis": 1,
       "axes": 2,
       "fit": "fits: corner gap 0.215 mm, bore gap 0.26 mm (CAD pencil_revPL)",
-      "lever_nib_per_collar": 1.379,
+      "lever_nib_per_collar": 1.363,
       "F_b_collar_N": 0.313,
       "k_collar_N_per_m": 695.6,
       "k_leaf_series_N_per_m": 54330.0,
-      "k_parasitic_collar_N_per_m": 37.76,
-      "F_b_nib_N": 0.2241,
-      "free_stroke_nib_um": 620.7,
-      "k_b_nib_N_per_m": 361.0,
-      "k_par_nib_N_per_m": 19.85,
-      "m_eq_nib_g": 0.3544,
-      "m_couple_nib_g": 0.567,
-      "f1_Hz": 165.0,
+      "k_parasitic_collar_N_per_m": 37.67,
+      "F_b_nib_N": 0.2268,
+      "free_stroke_nib_um": 613.2,
+      "k_b_nib_N_per_m": 369.9,
+      "k_par_nib_N_per_m": 20.29,
+      "m_eq_nib_g": 0.3636,
+      "m_couple_nib_g": 0.5834,
+      "f1_Hz": 164.9,
       "C_axis_small_signal_uF": 1.366,
       "V_rail": 60.0,
-      "g_V_um_per_V": 20.69
+      "g_V_um_per_V": 20.44
     },
     "beam": {
       "E_eff_GPa": 58.02,
@@ -6656,21 +6658,21 @@
         "k_drive_N_per_m": 439700.0,
         "k_cross_over_axis_stiffness": 1.951,
         "buckling_SF_at_plate_F_b": 14.34,
-        "stress_at_stop_MPa": 4198.0,
-        "stress_at_0.30mm_MPa": 3148.0
+        "stress_at_stop_MPa": 4249.0,
+        "stress_at_0.30mm_MPa": 3187.0
       },
       "recommended_C17200_30um_1.2x5mm": {
         "k_cross_N_per_m": 33.96,
         "k_drive_N_per_m": 54330.0,
         "k_cross_over_axis_stiffness": 0.04882,
         "buckling_SF_at_plate_F_b": 1.762,
-        "stress_at_stop_MPa": 136.8,
-        "stress_at_0.30mm_MPa": 102.6
+        "stress_at_stop_MPa": 138.4,
+        "stress_at_0.30mm_MPa": 103.8
       },
       "effect_of_CAD_leaf": {
-        "stroke_betaworst_um": 52.62,
-        "free_stroke_nib_um": 209.7,
-        "f1_Hz": 277.9
+        "stroke_betaworst_um": 53.86,
+        "free_stroke_nib_um": 207.2,
+        "f1_Hz": 277.7
       },
       "design_rule": "across: E w t^3/L^3 <= 5 % of the axis stiffness; along: E t w^3/L^3 >= 20x; lateral-torsional buckling SF >= 2 at the plate's blocking force; cross-deflection stress <= 150 MPa alternating (AMF-19). A single leaf meets all four only with >= ~4.5 mm of free axial span",
       "label": "CALCULATION (beam theory; buckling factor ASSUMPTION, confirm by FEA); material AMF-18/19"
@@ -6682,7 +6684,7 @@
       },
       {
         "n": 0.9,
-        "stroke_betaworst_um": 194.1
+        "stroke_betaworst_um": 194.2
       },
       {
         "n": 1.0,
@@ -6694,7 +6696,7 @@
       },
       {
         "n": 1.2,
-        "stroke_betaworst_um": 174.5
+        "stroke_betaworst_um": 174.6
       },
       {
         "n": 1.3,
@@ -6706,19 +6708,19 @@
       },
       {
         "n": 1.5,
-        "stroke_betaworst_um": 112.7
+        "stroke_betaworst_um": 112.8
       },
       {
         "n": 1.6,
-        "stroke_betaworst_um": 82.78
+        "stroke_betaworst_um": 82.79
       },
       {
         "n": 1.7,
-        "stroke_betaworst_um": 48.13
+        "stroke_betaworst_um": 48.14
       },
       {
         "n": 1.8,
-        "stroke_betaworst_um": 8.798
+        "stroke_betaworst_um": 8.799
       },
       {
         "n": 1.9,
@@ -6752,16 +6754,16 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.1273,
-        "stroke_um": 254.0,
-        "stroke_minus20_um": 136.3
+        "stroke_um": 254.9,
+        "stroke_minus20_um": 138.7
       },
       {
         "theta_deg": 35,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.1607,
-        "stroke_um": 166.5,
-        "stroke_minus20_um": 48.78
+        "stroke_um": 169.5,
+        "stroke_minus20_um": 53.24
       },
       {
         "theta_deg": 35,
@@ -6824,23 +6826,23 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.1056,
-        "stroke_um": 311.0,
-        "stroke_minus20_um": 193.3
+        "stroke_um": 310.6,
+        "stroke_minus20_um": 194.3
       },
       {
         "theta_deg": 40,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.1307,
-        "stroke_um": 245.1,
-        "stroke_minus20_um": 127.5
+        "stroke_um": 246.3,
+        "stroke_minus20_um": 130.0
       },
       {
         "theta_deg": 40,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.2116,
-        "stroke_um": 32.72,
+        "stroke_um": 38.96,
         "stroke_minus20_um": 0.0
       },
       {
@@ -6848,7 +6850,7 @@
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1981,
-        "stroke_um": 68.26,
+        "stroke_um": 73.66,
         "stroke_minus20_um": 0.0
       },
       {
@@ -6896,39 +6898,39 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.08842,
-        "stroke_um": 356.2,
-        "stroke_minus20_um": 238.5
+        "stroke_um": 354.7,
+        "stroke_minus20_um": 238.4
       },
       {
         "theta_deg": 45,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.1082,
-        "stroke_um": 304.1,
-        "stroke_minus20_um": 186.5
+        "stroke_um": 303.9,
+        "stroke_minus20_um": 187.6
       },
       {
         "theta_deg": 45,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.1662,
-        "stroke_um": 152.1,
-        "stroke_minus20_um": 34.39
+        "stroke_um": 155.4,
+        "stroke_minus20_um": 39.19
       },
       {
         "theta_deg": 45,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1658,
-        "stroke_um": 153.0,
-        "stroke_minus20_um": 35.34
+        "stroke_um": 156.4,
+        "stroke_minus20_um": 40.12
       },
       {
         "theta_deg": 45,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.2029,
-        "stroke_um": 55.46,
+        "stroke_um": 61.16,
         "stroke_minus20_um": 0.0
       },
       {
@@ -6968,15 +6970,15 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.07424,
-        "stroke_um": 393.4,
-        "stroke_minus20_um": 275.7
+        "stroke_um": 391.0,
+        "stroke_minus20_um": 274.8
       },
       {
         "theta_deg": 50,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.09052,
-        "stroke_um": 350.7,
+        "stroke_um": 349.3,
         "stroke_minus20_um": 233.0
       },
       {
@@ -6984,24 +6986,24 @@
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.1347,
-        "stroke_um": 234.7,
-        "stroke_minus20_um": 117.0
+        "stroke_um": 236.1,
+        "stroke_minus20_um": 119.8
       },
       {
         "theta_deg": 50,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1392,
-        "stroke_um": 222.8,
-        "stroke_minus20_um": 105.1
+        "stroke_um": 224.5,
+        "stroke_minus20_um": 108.3
       },
       {
         "theta_deg": 50,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.1697,
-        "stroke_um": 142.7,
-        "stroke_minus20_um": 25.0
+        "stroke_um": 146.3,
+        "stroke_minus20_um": 30.03
       },
       {
         "theta_deg": 50,
@@ -7040,16 +7042,16 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.06219,
-        "stroke_um": 425.0,
-        "stroke_minus20_um": 307.4
+        "stroke_um": 421.9,
+        "stroke_minus20_um": 305.6
       },
       {
         "theta_deg": 55,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.076,
-        "stroke_um": 388.8,
-        "stroke_minus20_um": 271.1
+        "stroke_um": 386.5,
+        "stroke_minus20_um": 270.3
       },
       {
         "theta_deg": 55,
@@ -7057,30 +7059,30 @@
         "mu": 0.35,
         "F_nib_N": 0.1113,
         "stroke_um": 296.1,
-        "stroke_minus20_um": 178.4
+        "stroke_minus20_um": 179.8
       },
       {
         "theta_deg": 55,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.1166,
-        "stroke_um": 282.1,
-        "stroke_minus20_um": 164.5
+        "stroke_um": 282.4,
+        "stroke_minus20_um": 166.2
       },
       {
         "theta_deg": 55,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.1425,
-        "stroke_um": 214.2,
-        "stroke_minus20_um": 96.5
+        "stroke_um": 216.1,
+        "stroke_minus20_um": 99.82
       },
       {
         "theta_deg": 55,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.2087,
-        "stroke_um": 40.42,
+        "stroke_um": 46.48,
         "stroke_minus20_um": 0.0
       },
       {
@@ -7112,55 +7114,55 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.05168,
-        "stroke_um": 452.6,
-        "stroke_minus20_um": 335.0
+        "stroke_um": 448.8,
+        "stroke_minus20_um": 332.6
       },
       {
         "theta_deg": 60,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.06371,
-        "stroke_um": 421.1,
-        "stroke_minus20_um": 303.4
+        "stroke_um": 418.0,
+        "stroke_minus20_um": 301.8
       },
       {
         "theta_deg": 60,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.09298,
-        "stroke_um": 344.2,
-        "stroke_minus20_um": 226.5
+        "stroke_um": 343.0,
+        "stroke_minus20_um": 226.7
       },
       {
         "theta_deg": 60,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.0969,
-        "stroke_um": 333.9,
-        "stroke_minus20_um": 216.2
+        "stroke_um": 332.9,
+        "stroke_minus20_um": 216.7
       },
       {
         "theta_deg": 60,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.1194,
-        "stroke_um": 274.7,
-        "stroke_minus20_um": 157.0
+        "stroke_um": 275.2,
+        "stroke_minus20_um": 158.9
       },
       {
         "theta_deg": 60,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1743,
-        "stroke_um": 130.6,
-        "stroke_minus20_um": 12.92
+        "stroke_um": 134.5,
+        "stroke_minus20_um": 18.23
       },
       {
         "theta_deg": 60,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.1938,
-        "stroke_um": 79.46,
+        "stroke_um": 84.59,
         "stroke_minus20_um": 0.0
       },
       {
@@ -7184,63 +7186,63 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.04229,
-        "stroke_um": 477.3,
-        "stroke_minus20_um": 359.6
+        "stroke_um": 472.9,
+        "stroke_minus20_um": 356.7
       },
       {
         "theta_deg": 65,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.05301,
-        "stroke_um": 449.1,
-        "stroke_minus20_um": 331.5
+        "stroke_um": 445.4,
+        "stroke_minus20_um": 329.2
       },
       {
         "theta_deg": 65,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.07804,
-        "stroke_um": 383.4,
-        "stroke_minus20_um": 265.8
+        "stroke_um": 381.3,
+        "stroke_minus20_um": 265.0
       },
       {
         "theta_deg": 65,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.07929,
-        "stroke_um": 380.1,
-        "stroke_minus20_um": 262.5
+        "stroke_um": 378.1,
+        "stroke_minus20_um": 261.8
       },
       {
         "theta_deg": 65,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.0994,
-        "stroke_um": 327.3,
-        "stroke_minus20_um": 209.7
+        "stroke_um": 326.5,
+        "stroke_minus20_um": 210.3
       },
       {
         "theta_deg": 65,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1463,
-        "stroke_um": 204.1,
-        "stroke_minus20_um": 86.45
+        "stroke_um": 206.3,
+        "stroke_minus20_um": 90.0
       },
       {
         "theta_deg": 65,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.1586,
-        "stroke_um": 171.9,
-        "stroke_minus20_um": 54.25
+        "stroke_um": 174.8,
+        "stroke_minus20_um": 58.57
       },
       {
         "theta_deg": 65,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.1988,
-        "stroke_um": 66.34,
+        "stroke_um": 71.78,
         "stroke_minus20_um": 0.0
       },
       {
@@ -7256,64 +7258,64 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.03373,
-        "stroke_um": 499.8,
-        "stroke_minus20_um": 382.1
+        "stroke_um": 494.8,
+        "stroke_minus20_um": 378.6
       },
       {
         "theta_deg": 70,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.04349,
-        "stroke_um": 474.1,
-        "stroke_minus20_um": 356.5
+        "stroke_um": 469.8,
+        "stroke_minus20_um": 353.6
       },
       {
         "theta_deg": 70,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.06546,
-        "stroke_um": 416.5,
-        "stroke_minus20_um": 298.8
+        "stroke_um": 413.5,
+        "stroke_minus20_um": 297.3
       },
       {
         "theta_deg": 70,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.06325,
-        "stroke_um": 422.3,
-        "stroke_minus20_um": 304.6
+        "stroke_um": 419.2,
+        "stroke_minus20_um": 302.9
       },
       {
         "theta_deg": 70,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.08155,
-        "stroke_um": 374.2,
-        "stroke_minus20_um": 256.5
+        "stroke_um": 372.3,
+        "stroke_minus20_um": 256.0
       },
       {
         "theta_deg": 70,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1227,
-        "stroke_um": 266.1,
-        "stroke_minus20_um": 148.4
+        "stroke_um": 266.7,
+        "stroke_minus20_um": 150.5
       },
       {
         "theta_deg": 70,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.1265,
-        "stroke_um": 256.2,
-        "stroke_minus20_um": 138.5
+        "stroke_um": 257.1,
+        "stroke_minus20_um": 140.8
       },
       {
         "theta_deg": 70,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.1631,
-        "stroke_um": 160.1,
-        "stroke_minus20_um": 42.42
+        "stroke_um": 163.3,
+        "stroke_minus20_um": 47.03
       },
       {
         "theta_deg": 70,
@@ -7328,85 +7330,85 @@
         "F_c": 0.08,
         "mu": 0.05,
         "F_nib_N": 0.02578,
-        "stroke_um": 520.6,
-        "stroke_minus20_um": 403.0
+        "stroke_um": 515.2,
+        "stroke_minus20_um": 399.0
       },
       {
         "theta_deg": 75,
         "F_c": 0.08,
         "mu": 0.15,
         "F_nib_N": 0.03484,
-        "stroke_um": 496.9,
-        "stroke_minus20_um": 379.2
+        "stroke_um": 492.0,
+        "stroke_minus20_um": 375.8
       },
       {
         "theta_deg": 75,
         "F_c": 0.08,
         "mu": 0.35,
         "F_nib_N": 0.05455,
-        "stroke_um": 445.1,
-        "stroke_minus20_um": 327.4
+        "stroke_um": 441.5,
+        "stroke_minus20_um": 325.2
       },
       {
         "theta_deg": 75,
         "F_c": 0.15,
         "mu": 0.05,
         "F_nib_N": 0.04834,
-        "stroke_um": 461.4,
-        "stroke_minus20_um": 343.7
+        "stroke_um": 457.4,
+        "stroke_minus20_um": 341.1
       },
       {
         "theta_deg": 75,
         "F_c": 0.15,
         "mu": 0.15,
         "F_nib_N": 0.06532,
-        "stroke_um": 416.8,
-        "stroke_minus20_um": 299.2
+        "stroke_um": 413.9,
+        "stroke_minus20_um": 297.6
       },
       {
         "theta_deg": 75,
         "F_c": 0.15,
         "mu": 0.35,
         "F_nib_N": 0.1023,
-        "stroke_um": 319.8,
-        "stroke_minus20_um": 202.1
+        "stroke_um": 319.1,
+        "stroke_minus20_um": 202.9
       },
       {
         "theta_deg": 75,
         "F_c": 0.3,
         "mu": 0.05,
         "F_nib_N": 0.09668,
-        "stroke_um": 334.5,
-        "stroke_minus20_um": 216.8
+        "stroke_um": 333.5,
+        "stroke_minus20_um": 217.2
       },
       {
         "theta_deg": 75,
         "F_c": 0.3,
         "mu": 0.15,
         "F_nib_N": 0.1306,
-        "stroke_um": 245.3,
-        "stroke_minus20_um": 127.7
+        "stroke_um": 246.5,
+        "stroke_minus20_um": 130.2
       },
       {
         "theta_deg": 75,
         "F_c": 0.3,
         "mu": 0.35,
         "F_nib_N": 0.2046,
-        "stroke_um": 51.18,
+        "stroke_um": 56.99,
         "stroke_minus20_um": 0.0
       }
     ],
     "fraction_of_grid_with_300um": 0.3457,
     "resonance": {
-      "lumped_Hz": 165.0,
+      "lumped_Hz": 164.9,
       "FE_first_three_Hz": [
-        165.9,
+        165.8,
         1734.0,
-        5444.0
+        5443.0
       ],
       "bare_plate_FE_Hz": 376.5,
-      "m_eq_nib_g": 0.3544,
-      "k_total_nib_N_per_m": 380.8,
+      "m_eq_nib_g": 0.3636,
+      "k_total_nib_N_per_m": 390.2,
       "label": "CALCULATION (lumped and 14-element Euler-Bernoulli FE)"
     },
     "sensor": {
@@ -7415,25 +7417,25 @@
         0.0,
         0.0
       ],
-      "B_max_over_travel_mT": 167.8,
+      "B_max_over_travel_mT": 169.4,
       "dBx_dx_mT_per_mm_centre": 189.6,
       "dBy_dy_mT_per_mm_centre": -94.78,
-      "min_sensitivity_mT_per_mm": 34.34,
+      "min_sensitivity_mT_per_mm": 33.84,
       "noise_assumed_mT": 0.1,
-      "resolution_collar_um": 2.912,
-      "resolution_nib_um": 4.017,
+      "resolution_collar_um": 2.955,
+      "resolution_nib_um": 4.026,
       "label": "CALCULATION (magpylib, linear magnet) with ASSUMPTIONS (Br 1.32 T, 0.3 mm element depth, 0.1 mT noise)",
       "choice": "3-D Hall (TMAG5170/TLE493D class, SPI or I2C, >= 2 kSPS) in the nose facing a 0.6 x 1 x 1 mm NdFeB magnet on the collar; the piezo drive carries no current near it, so there is no coil crosstalk (unlike Rev A); piezo charge self-sensing kept as a plausibility check"
     },
     "stops": {
-      "unpowered_at_stop_MPa": 21.57,
-      "driven_opposite_at_stop_MPa": 55.04,
+      "unpowered_at_stop_MPa": 21.83,
+      "driven_opposite_at_stop_MPa": 55.3,
       "blocking_rated_MPa": 33.47,
       "sigma0_bender_MPa": 174.6,
       "P_fail_per_event": {
         "rated_blocking": 1.827e-06,
-        "driven_opposite_at_stop": 9.769e-05,
-        "unpowered_at_stop": 5.435e-08
+        "driven_opposite_at_stop": 0.0001015,
+        "unpowered_at_stop": 5.99e-08
       },
       "strength_basis": "LITERATURE (proposed AMF-48: Bermejo & Deluca 2012, poled PZT multilayer, 4PB, sigma0 124 MPa elastic, Weibull m 8) scaled to the plate's effective volume; PICMA material itself UNKNOWN (EXP-Q04)",
       "label": "CALCULATION"
@@ -7443,87 +7445,87 @@
       "snubbers": [
         {
           "x_over_L": 0.35,
-          "gap_um": 77.07
+          "gap_um": 77.65
         },
         {
           "x_over_L": 0.7,
-          "gap_um": 193.4
+          "gap_um": 195.4
         }
       ],
       "snubbers4": [
         {
           "x_over_L": 0.2,
-          "gap_um": 46.24
+          "gap_um": 46.44
         },
         {
           "x_over_L": 0.4,
-          "gap_um": 90.32
+          "gap_um": 91.06
         },
         {
           "x_over_L": 0.6,
-          "gap_um": 155.3
+          "gap_um": 156.8
         },
         {
           "x_over_L": 0.8,
-          "gap_um": 234.2
+          "gap_um": 236.7
         }
       ],
       "transverse": [
         {
           "pulse_ms": 0.2,
           "peak_g": 4967.0,
-          "no_snubbers_MPa": 589.3,
+          "no_snubbers_MPa": 587.2,
           "P_fail_no_snubbers": 1.0,
-          "two_snubbers_MPa": 222.9,
-          "P_fail_two_snubbers": 0.9991,
-          "four_snubbers_MPa": 231.5,
-          "P_fail_four_snubbers": 0.9999
+          "two_snubbers_MPa": 225.1,
+          "P_fail_two_snubbers": 0.9995,
+          "four_snubbers_MPa": 234.3,
+          "P_fail_four_snubbers": 1.0
         },
         {
           "pulse_ms": 0.35,
           "peak_g": 2838.0,
-          "no_snubbers_MPa": 498.1,
+          "no_snubbers_MPa": 497.8,
           "P_fail_no_snubbers": 1.0,
-          "two_snubbers_MPa": 163.3,
-          "P_fail_two_snubbers": 0.4442,
-          "four_snubbers_MPa": 146.4,
-          "P_fail_four_snubbers": 0.2171
+          "two_snubbers_MPa": 165.2,
+          "P_fail_two_snubbers": 0.474,
+          "four_snubbers_MPa": 147.7,
+          "P_fail_four_snubbers": 0.2309
         },
         {
           "pulse_ms": 0.5,
           "peak_g": 1987.0,
-          "no_snubbers_MPa": 334.4,
+          "no_snubbers_MPa": 334.6,
           "P_fail_no_snubbers": 1.0,
-          "two_snubbers_MPa": 138.2,
-          "P_fail_two_snubbers": 0.1431,
-          "four_snubbers_MPa": 122.1,
-          "P_fail_four_snubbers": 0.05566
+          "two_snubbers_MPa": 138.8,
+          "P_fail_two_snubbers": 0.1476,
+          "four_snubbers_MPa": 122.3,
+          "P_fail_four_snubbers": 0.05638
         },
         {
           "pulse_ms": 1.0,
           "peak_g": 993.4,
-          "no_snubbers_MPa": 217.5,
-          "P_fail_no_snubbers": 0.997,
-          "two_snubbers_MPa": 91.57,
-          "P_fail_two_snubbers": 0.005717,
-          "four_snubbers_MPa": 82.82,
-          "P_fail_four_snubbers": 0.002565
+          "no_snubbers_MPa": 218.4,
+          "P_fail_no_snubbers": 0.9975,
+          "two_snubbers_MPa": 92.09,
+          "P_fail_two_snubbers": 0.005985,
+          "four_snubbers_MPa": 82.79,
+          "P_fail_four_snubbers": 0.002557
         },
         {
           "pulse_ms": 2.0,
           "peak_g": 496.7,
-          "no_snubbers_MPa": 164.0,
-          "P_fail_no_snubbers": 0.4545,
-          "two_snubbers_MPa": 69.6,
-          "P_fail_two_snubbers": 0.0006387,
-          "four_snubbers_MPa": 71.24,
-          "P_fail_four_snubbers": 0.0007694
+          "no_snubbers_MPa": 164.4,
+          "P_fail_no_snubbers": 0.462,
+          "two_snubbers_MPa": 69.46,
+          "P_fail_two_snubbers": 0.0006282,
+          "four_snubbers_MPa": 71.56,
+          "P_fail_four_snubbers": 0.0007976
         }
       ],
-      "axial_nib_first_0.35ms_MPa": 7.228,
+      "axial_nib_first_0.35ms_MPa": 7.224,
       "FE_static_check_MPa": {
-        "FE": 86.51,
-        "closed_form": 86.56
+        "FE": 86.6,
+        "closed_form": 86.65
       },
       "labels": {
         "result": "SIMULATION (FE beam, Newmark, unilateral stops)",
@@ -7537,328 +7539,328 @@
         {
           "f_Hz": 4.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.096,
+          "V_amp_60V_rail": 5.158,
           "drv2700": {
-            "reactive_mVA_major": 0.5795,
-            "P_rail_mW_2axes": 6.081,
-            "P_battery_mW": 80.63
+            "reactive_mVA_major": 0.5936,
+            "P_rail_mW_2axes": 6.154,
+            "P_battery_mW": 80.73
           },
           "recovery": {
-            "reactive_mVA_major": 0.5795,
-            "P_rail_mW_2axes": 0.9099,
-            "P_battery_mW": 2.16
+            "reactive_mVA_major": 0.5936,
+            "P_rail_mW_2axes": 0.9209,
+            "P_battery_mW": 2.173
           },
           "capdrive": {
-            "reactive_mVA_major": 0.5795,
-            "P_rail_mW_2axes": 0.9926,
-            "P_battery_mW": 27.88
+            "reactive_mVA_major": 0.5936,
+            "P_rail_mW_2axes": 1.005,
+            "P_battery_mW": 27.9
           }
         },
         {
           "f_Hz": 4.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.29,
+          "V_amp_60V_rail": 15.47,
           "drv2700": {
-            "reactive_mVA_major": 5.215,
-            "P_rail_mW_2axes": 18.24,
-            "P_battery_mW": 96.84
+            "reactive_mVA_major": 5.342,
+            "P_rail_mW_2axes": 18.46,
+            "P_battery_mW": 97.14
           },
           "recovery": {
-            "reactive_mVA_major": 5.215,
-            "P_rail_mW_2axes": 2.73,
-            "P_battery_mW": 4.434
+            "reactive_mVA_major": 5.342,
+            "P_rail_mW_2axes": 2.763,
+            "P_battery_mW": 4.476
           },
           "capdrive": {
-            "reactive_mVA_major": 5.215,
-            "P_rail_mW_2axes": 2.978,
-            "P_battery_mW": 30.36
+            "reactive_mVA_major": 5.342,
+            "P_rail_mW_2axes": 3.014,
+            "P_battery_mW": 30.41
           }
         },
         {
           "f_Hz": 4.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.38,
+          "V_amp_60V_rail": 20.63,
           "drv2700": {
-            "reactive_mVA_major": 9.271,
-            "P_rail_mW_2axes": 24.32,
-            "P_battery_mW": 105.0
+            "reactive_mVA_major": 9.497,
+            "P_rail_mW_2axes": 24.62,
+            "P_battery_mW": 105.3
           },
           "recovery": {
-            "reactive_mVA_major": 9.271,
-            "P_rail_mW_2axes": 3.639,
-            "P_battery_mW": 5.572
+            "reactive_mVA_major": 9.497,
+            "P_rail_mW_2axes": 3.684,
+            "P_battery_mW": 5.627
           },
           "capdrive": {
-            "reactive_mVA_major": 9.271,
-            "P_rail_mW_2axes": 3.97,
-            "P_battery_mW": 31.6
+            "reactive_mVA_major": 9.497,
+            "P_rail_mW_2axes": 4.018,
+            "P_battery_mW": 31.66
           }
         },
         {
           "f_Hz": 6.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.092,
+          "V_amp_60V_rail": 5.154,
           "drv2700": {
-            "reactive_mVA_major": 0.8679,
-            "P_rail_mW_2axes": 9.114,
-            "P_battery_mW": 84.67
+            "reactive_mVA_major": 0.8891,
+            "P_rail_mW_2axes": 9.225,
+            "P_battery_mW": 84.82
           },
           "recovery": {
-            "reactive_mVA_major": 0.8679,
-            "P_rail_mW_2axes": 1.364,
-            "P_battery_mW": 2.727
+            "reactive_mVA_major": 0.8891,
+            "P_rail_mW_2axes": 1.38,
+            "P_battery_mW": 2.748
           },
           "capdrive": {
-            "reactive_mVA_major": 0.8679,
-            "P_rail_mW_2axes": 1.488,
-            "P_battery_mW": 28.5
+            "reactive_mVA_major": 0.8891,
+            "P_rail_mW_2axes": 1.506,
+            "P_battery_mW": 28.52
           }
         },
         {
           "f_Hz": 6.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.28,
+          "V_amp_60V_rail": 15.46,
           "drv2700": {
-            "reactive_mVA_major": 7.811,
-            "P_rail_mW_2axes": 27.34,
-            "P_battery_mW": 109.0
+            "reactive_mVA_major": 8.002,
+            "P_rail_mW_2axes": 27.67,
+            "P_battery_mW": 109.4
           },
           "recovery": {
-            "reactive_mVA_major": 7.811,
-            "P_rail_mW_2axes": 4.091,
-            "P_battery_mW": 6.136
+            "reactive_mVA_major": 8.002,
+            "P_rail_mW_2axes": 4.141,
+            "P_battery_mW": 6.198
           },
           "capdrive": {
-            "reactive_mVA_major": 7.811,
-            "P_rail_mW_2axes": 4.463,
-            "P_battery_mW": 32.22
+            "reactive_mVA_major": 8.002,
+            "P_rail_mW_2axes": 4.517,
+            "P_battery_mW": 32.29
           }
         },
         {
           "f_Hz": 6.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.37,
+          "V_amp_60V_rail": 20.62,
           "drv2700": {
-            "reactive_mVA_major": 13.89,
-            "P_rail_mW_2axes": 36.46,
-            "P_battery_mW": 121.1
+            "reactive_mVA_major": 14.23,
+            "P_rail_mW_2axes": 36.9,
+            "P_battery_mW": 121.7
           },
           "recovery": {
-            "reactive_mVA_major": 13.89,
-            "P_rail_mW_2axes": 5.455,
-            "P_battery_mW": 7.841
+            "reactive_mVA_major": 14.23,
+            "P_rail_mW_2axes": 5.521,
+            "P_battery_mW": 7.924
           },
           "capdrive": {
-            "reactive_mVA_major": 13.89,
-            "P_rail_mW_2axes": 5.951,
-            "P_battery_mW": 34.08
+            "reactive_mVA_major": 14.23,
+            "P_rail_mW_2axes": 6.023,
+            "P_battery_mW": 34.17
           }
         },
         {
           "f_Hz": 8.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.087,
+          "V_amp_60V_rail": 5.149,
           "drv2700": {
-            "reactive_mVA_major": 1.155,
-            "P_rail_mW_2axes": 12.14,
-            "P_battery_mW": 88.71
+            "reactive_mVA_major": 1.183,
+            "P_rail_mW_2axes": 12.29,
+            "P_battery_mW": 88.9
           },
           "recovery": {
-            "reactive_mVA_major": 1.155,
-            "P_rail_mW_2axes": 1.817,
-            "P_battery_mW": 3.293
+            "reactive_mVA_major": 1.183,
+            "P_rail_mW_2axes": 1.839,
+            "P_battery_mW": 3.32
           },
           "capdrive": {
-            "reactive_mVA_major": 1.155,
-            "P_rail_mW_2axes": 1.982,
-            "P_battery_mW": 29.12
+            "reactive_mVA_major": 1.183,
+            "P_rail_mW_2axes": 2.006,
+            "P_battery_mW": 29.15
           }
         },
         {
           "f_Hz": 8.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.26,
+          "V_amp_60V_rail": 15.45,
           "drv2700": {
-            "reactive_mVA_major": 10.39,
-            "P_rail_mW_2axes": 36.42,
-            "P_battery_mW": 121.1
+            "reactive_mVA_major": 10.65,
+            "P_rail_mW_2axes": 36.86,
+            "P_battery_mW": 121.7
           },
           "recovery": {
-            "reactive_mVA_major": 10.39,
-            "P_rail_mW_2axes": 5.45,
-            "P_battery_mW": 7.834
+            "reactive_mVA_major": 10.65,
+            "P_rail_mW_2axes": 5.516,
+            "P_battery_mW": 7.917
           },
           "capdrive": {
-            "reactive_mVA_major": 10.39,
-            "P_rail_mW_2axes": 5.945,
-            "P_battery_mW": 34.07
+            "reactive_mVA_major": 10.65,
+            "P_rail_mW_2axes": 6.017,
+            "P_battery_mW": 34.16
           }
         },
         {
           "f_Hz": 8.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.35,
+          "V_amp_60V_rail": 20.59,
           "drv2700": {
-            "reactive_mVA_major": 18.48,
-            "P_rail_mW_2axes": 48.56,
-            "P_battery_mW": 137.3
+            "reactive_mVA_major": 18.93,
+            "P_rail_mW_2axes": 49.15,
+            "P_battery_mW": 138.0
           },
           "recovery": {
-            "reactive_mVA_major": 18.48,
-            "P_rail_mW_2axes": 7.266,
-            "P_battery_mW": 10.1
+            "reactive_mVA_major": 18.93,
+            "P_rail_mW_2axes": 7.354,
+            "P_battery_mW": 10.21
           },
           "capdrive": {
-            "reactive_mVA_major": 18.48,
-            "P_rail_mW_2axes": 7.927,
-            "P_battery_mW": 36.55
+            "reactive_mVA_major": 18.93,
+            "P_rail_mW_2axes": 8.023,
+            "P_battery_mW": 36.67
           }
         },
         {
           "f_Hz": 10.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.08,
+          "V_amp_60V_rail": 5.142,
           "drv2700": {
-            "reactive_mVA_major": 1.44,
-            "P_rail_mW_2axes": 15.15,
-            "P_battery_mW": 92.73
+            "reactive_mVA_major": 1.475,
+            "P_rail_mW_2axes": 15.34,
+            "P_battery_mW": 92.97
           },
           "recovery": {
-            "reactive_mVA_major": 1.44,
-            "P_rail_mW_2axes": 2.268,
-            "P_battery_mW": 3.857
+            "reactive_mVA_major": 1.475,
+            "P_rail_mW_2axes": 2.295,
+            "P_battery_mW": 3.891
           },
           "capdrive": {
-            "reactive_mVA_major": 1.44,
-            "P_rail_mW_2axes": 2.474,
-            "P_battery_mW": 29.73
+            "reactive_mVA_major": 1.475,
+            "P_rail_mW_2axes": 2.504,
+            "P_battery_mW": 29.77
           }
         },
         {
           "f_Hz": 10.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.24,
+          "V_amp_60V_rail": 15.43,
           "drv2700": {
-            "reactive_mVA_major": 12.96,
-            "P_rail_mW_2axes": 45.46,
-            "P_battery_mW": 133.1
+            "reactive_mVA_major": 13.27,
+            "P_rail_mW_2axes": 46.01,
+            "P_battery_mW": 133.9
           },
           "recovery": {
-            "reactive_mVA_major": 12.96,
-            "P_rail_mW_2axes": 6.803,
-            "P_battery_mW": 9.526
+            "reactive_mVA_major": 13.27,
+            "P_rail_mW_2axes": 6.885,
+            "P_battery_mW": 9.629
           },
           "capdrive": {
-            "reactive_mVA_major": 12.96,
-            "P_rail_mW_2axes": 7.421,
-            "P_battery_mW": 35.92
+            "reactive_mVA_major": 13.27,
+            "P_rail_mW_2axes": 7.511,
+            "P_battery_mW": 36.03
           }
         },
         {
           "f_Hz": 10.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.32,
+          "V_amp_60V_rail": 20.57,
           "drv2700": {
-            "reactive_mVA_major": 23.04,
-            "P_rail_mW_2axes": 60.62,
-            "P_battery_mW": 153.3
+            "reactive_mVA_major": 23.6,
+            "P_rail_mW_2axes": 61.35,
+            "P_battery_mW": 154.3
           },
           "recovery": {
-            "reactive_mVA_major": 23.04,
-            "P_rail_mW_2axes": 9.071,
-            "P_battery_mW": 12.36
+            "reactive_mVA_major": 23.6,
+            "P_rail_mW_2axes": 9.18,
+            "P_battery_mW": 12.5
           },
           "capdrive": {
-            "reactive_mVA_major": 23.04,
-            "P_rail_mW_2axes": 9.895,
-            "P_battery_mW": 39.01
+            "reactive_mVA_major": 23.6,
+            "P_rail_mW_2axes": 10.01,
+            "P_battery_mW": 39.16
           }
         },
         {
           "f_Hz": 12.0,
           "nib_amp_mm": 0.1,
-          "V_amp_60V_rail": 5.072,
+          "V_amp_60V_rail": 5.133,
           "drv2700": {
-            "reactive_mVA_major": 1.722,
-            "P_rail_mW_2axes": 18.16,
-            "P_battery_mW": 96.73
+            "reactive_mVA_major": 1.764,
+            "P_rail_mW_2axes": 18.38,
+            "P_battery_mW": 97.02
           },
           "recovery": {
-            "reactive_mVA_major": 1.722,
-            "P_rail_mW_2axes": 2.717,
-            "P_battery_mW": 4.418
+            "reactive_mVA_major": 1.764,
+            "P_rail_mW_2axes": 2.75,
+            "P_battery_mW": 4.459
           },
           "capdrive": {
-            "reactive_mVA_major": 1.722,
-            "P_rail_mW_2axes": 2.964,
-            "P_battery_mW": 30.34
+            "reactive_mVA_major": 1.764,
+            "P_rail_mW_2axes": 3.0,
+            "P_battery_mW": 30.39
           }
         },
         {
           "f_Hz": 12.0,
           "nib_amp_mm": 0.3,
-          "V_amp_60V_rail": 15.22,
+          "V_amp_60V_rail": 15.4,
           "drv2700": {
-            "reactive_mVA_major": 15.5,
-            "P_rail_mW_2axes": 54.47,
-            "P_battery_mW": 145.1
+            "reactive_mVA_major": 15.88,
+            "P_rail_mW_2axes": 55.13,
+            "P_battery_mW": 146.0
           },
           "recovery": {
-            "reactive_mVA_major": 15.5,
-            "P_rail_mW_2axes": 8.15,
-            "P_battery_mW": 11.21
+            "reactive_mVA_major": 15.88,
+            "P_rail_mW_2axes": 8.249,
+            "P_battery_mW": 11.33
           },
           "capdrive": {
-            "reactive_mVA_major": 15.5,
-            "P_rail_mW_2axes": 8.891,
-            "P_battery_mW": 37.75
+            "reactive_mVA_major": 15.88,
+            "P_rail_mW_2axes": 8.999,
+            "P_battery_mW": 37.89
           }
         },
         {
           "f_Hz": 12.0,
           "nib_amp_mm": 0.5,
-          "V_amp_60V_rail": 20.29,
+          "V_amp_60V_rail": 20.53,
           "drv2700": {
-            "reactive_mVA_major": 27.55,
-            "P_rail_mW_2axes": 72.62,
-            "P_battery_mW": 169.4
+            "reactive_mVA_major": 28.22,
+            "P_rail_mW_2axes": 73.5,
+            "P_battery_mW": 170.5
           },
           "recovery": {
-            "reactive_mVA_major": 27.55,
-            "P_rail_mW_2axes": 10.87,
-            "P_battery_mW": 14.61
+            "reactive_mVA_major": 28.22,
+            "P_rail_mW_2axes": 11.0,
+            "P_battery_mW": 14.77
           },
           "capdrive": {
-            "reactive_mVA_major": 27.55,
-            "P_rail_mW_2axes": 11.85,
-            "P_battery_mW": 41.46
+            "reactive_mVA_major": 28.22,
+            "P_rail_mW_2axes": 12.0,
+            "P_battery_mW": 41.64
           }
         }
       ],
       "modes_analytic": {
         "drv2700": {
           "recording_only_W": 0.0651,
-          "tremor_assist_6Hz_0.3mm_W": 0.174,
+          "tremor_assist_6Hz_0.3mm_W": 0.1744,
           "life_recording_h": 4.092,
-          "life_tremor_assist_h": 1.531,
+          "life_tremor_assist_h": 1.527,
           "energy_per_hour_recording_mWh": 65.1,
-          "energy_per_hour_assist_mWh": 174.0
+          "energy_per_hour_assist_mWh": 174.4
         },
         "recovery": {
           "recording_only_W": 0.065,
-          "tremor_assist_6Hz_0.3mm_W": 0.07114,
+          "tremor_assist_6Hz_0.3mm_W": 0.0712,
           "life_recording_h": 4.098,
-          "life_tremor_assist_h": 3.745,
+          "life_tremor_assist_h": 3.742,
           "energy_per_hour_recording_mWh": 65.0,
-          "energy_per_hour_assist_mWh": 71.14
+          "energy_per_hour_assist_mWh": 71.2
         },
         "capdrive": {
           "recording_only_W": 0.065,
-          "tremor_assist_6Hz_0.3mm_W": 0.09722,
+          "tremor_assist_6Hz_0.3mm_W": 0.09729,
           "life_recording_h": 4.098,
-          "life_tremor_assist_h": 2.74,
+          "life_tremor_assist_h": 2.738,
           "energy_per_hour_recording_mWh": 65.0,
-          "energy_per_hour_assist_mWh": 97.22
+          "energy_per_hour_assist_mWh": 97.29
         }
       },
       "drivers": {
@@ -7912,9 +7914,9 @@
         }
       },
       "rail_55V_penalty": {
-        "stroke_betaworst_60V_um": 142.7,
-        "stroke_betaworst_55V_um": 93.64,
-        "F_b_nib_55V_N": 0.2054,
+        "stroke_betaworst_60V_um": 146.3,
+        "stroke_betaworst_55V_um": 97.85,
+        "F_b_nib_55V_N": 0.2079,
         "label": "CALCULATION (piezo force and stroke proportional to the drive range)"
       },
       "C_axis_small_signal_uF": 1.366,
@@ -7933,15 +7935,15 @@
       },
       "thermal_board_zone": {
         "drv2700": {
-          "P_W": 0.174,
-          "T_surface_max_C": 36.18
+          "P_W": 0.1744,
+          "T_surface_max_C": 36.2
         },
         "recovery": {
-          "P_W": 0.07114,
+          "P_W": 0.0712,
           "T_surface_max_C": 32.48
         },
         "capdrive": {
-          "P_W": 0.09722,
+          "P_W": 0.09729,
           "T_surface_max_C": 32.48
         },
         "recording_only": {
@@ -7954,32 +7956,32 @@
       "stage_200Hz": [
         {
           "nib_amp_um": 20.0,
-          "barrel_acc_m_s2_peak": 1.343,
-          "barrel_acc_G_rms": 0.09685,
-          "dB_above_threshold": 20.53
+          "barrel_acc_m_s2_peak": 1.373,
+          "barrel_acc_G_rms": 0.099,
+          "dB_above_threshold": 20.72
         },
         {
           "nib_amp_um": 100.0,
-          "barrel_acc_m_s2_peak": 6.716,
-          "barrel_acc_G_rms": 0.4842,
-          "dB_above_threshold": 34.51
+          "barrel_acc_m_s2_peak": 6.865,
+          "barrel_acc_G_rms": 0.495,
+          "dB_above_threshold": 34.7
         },
         {
           "nib_amp_um": 300.0,
-          "barrel_acc_m_s2_peak": 20.15,
-          "barrel_acc_G_rms": 1.453,
-          "dB_above_threshold": 44.05
+          "barrel_acc_m_s2_peak": 20.59,
+          "barrel_acc_G_rms": 1.485,
+          "dB_above_threshold": 44.24
         }
       ],
       "lra_6mm": {
         "G_rms_vendor": 0.9,
         "F_rms_N_if_100g_jig": 0.8826,
         "F_rms_N_if_50g_jig": 0.4413,
-        "G_rms_in_pencil_100g": 6.751,
-        "G_rms_in_pencil_50g": 3.375
+        "G_rms_in_pencil_100g": 6.706,
+        "G_rms_in_pencil_50g": 3.353
       },
       "threshold_m_s2_at_200Hz": 0.1263,
-      "pen_mass_g": 13.33,
+      "pen_mass_g": 13.42,
       "labels": {
         "stage": "CALCULATION (momentum balance, free pen; skin impedance ~1 N s/m at 200 Hz, HAP-27, neglected)",
         "threshold": "LITERATURE (HAP-27)",

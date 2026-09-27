@@ -1,4 +1,4 @@
-# Pencil-class pen: forces, mechanisms and simulation (Rev P0, config/pencil.yaml P0.1.1)
+# Pencil-class pen: forces, mechanisms and simulation (Rev P0, config/pencil.yaml P0.1.2)
 
 Task A1/A2 of the pencil study. Everything below is a calculation or a simulation from labelled inputs. **Nothing has been built or measured.**
 
@@ -13,7 +13,9 @@ Task A1/A2 of the pencil study. Everything below is a calculation or a simulatio
 | CAD | proposed design (`mechanics/cad/pencil_revP.py`) |
 | ASSUMP | ASSUMPTION: range and measuring experiment given |
 
-"Proposed AMF-46/47/48" are new sources used here. They are not yet in `docs/evidence.csv`; the rows are ready in `results/pencil/proposed_evidence_rows.csv`.
+AMF-46/47/48 are new sources used here; they are in `docs/evidence.csv` (AMF-46 and AMF-48 lead-verified against the primary PDFs, AMF-47 from a datasheet mirror).
+
+**Geometry.** Numbers are for CAD P0.1.2 (`mechanics/cad/pencil_revP.py`): the lead moved the plates 4 mm rearward so the decoupling leaves get their 5 mm span (§4.2), moved the gimbal to z = 62 mm (lever 62/45.5 = 1.363), and added the snubber frames and a PTFE collar liner. The analysis and the simulation were re-run on that geometry; every result moved by less than 2 % except the stroke at 35° (42 → 48 µm) and the guided spiral (253 → 202 µm).
 
 ## 1. Answer in brief
 
@@ -26,19 +28,19 @@ Task A1/A2 of the pencil study. Everything below is a calculation or a simulatio
   - The skid carries 0.80 N with 0.097 N of friction.
   - The fingers feel 1 N normal and 0.126 N of drag, against 0.15 N for a conventional pen.
 - **Stage.**
-  - Blocking force at the nib: 0.325 N. Free stroke: ±621 µm. Stops: ±0.40 mm.
-  - Stroke under load: **±276 µm** at the worst-direction design load, ±355 µm friction-free (both CALC). This is ±160 µm at the −20 % catalogue tolerance and ±42 µm at 35° (CALC).
+  - Blocking force at the nib: 0.329 N. Free stroke: ±613 µm. Stops: ±0.40 mm.
+  - Stroke under load: **±277 µm** at the worst-direction design load, ±353 µm friction-free (both CALC). This is ±162 µm at the −20 % catalogue tolerance and ±48 µm at 35° (CALC).
   - First resonance: **192 Hz** (lumped), 195 Hz (FE).
 - **Power.** The static hold costs no power, but the driver and the sensor noise set the battery life (90 mAh, 65 mW electronics placeholder):
   - recording only: **4.1 h**;
   - tremor assist with 2 × DRV2700: **0.8 h** (1 µm Hall noise) to 1.4 h (noise-free);
   - with a charge-recovery driver: **2.7 h** to 3.6 h (all SIM).
 - **Simulated benefit** (Q stage, test seeds 200–203, ratio vs the neutral pencil; SIM):
-  - Oracle bound: 0.20–0.26 at 0.1 mm tremor. It is stroke-limited at larger tremor: 0.20–0.46 at 0.3 mm and 0.40–0.61 at 0.5 mm.
-  - Kalman (frozen M1 set): 0.85–0.89 at 8–12 Hz and ≥ 0.3 mm. It adds error at 0.1 mm (1.11–1.23).
+  - Oracle bound: 0.19–0.26 at 0.1 mm tremor. It is stroke-limited at larger tremor: 0.20–0.46 at 0.3 mm and 0.40–0.61 at 0.5 mm.
+  - Kalman (frozen M1 set): 0.85–0.92 at 8–12 Hz and ≥ 0.3 mm. It adds error at 0.1 mm (1.10–1.22 at 8–12 Hz).
   - Guided on the feature course: circle 348 → 174 µm path distance, fast stroke 112 → 20 µm.
 - **Must-fix design findings.**
-  - The CAD decoupling leaf locks the other axis and would break (§4.2).
+  - The first CAD decoupling leaf locked the other axis and would have broken (§4.2). Fixed in CAD P0.1.2.
   - Stops alone do not save the ceramic in a sideways 1 m drop (§4.6).
   - Hall noise at 1 µm doubles to triples the drive power (§5).
 
@@ -113,7 +115,7 @@ The design load is 0.170 N per axis at the nib (skid, worst direction) and the u
 | PL128.10 as-is, 6.15 mm (MFR AMF-11) | ±349 µm (±226 at −20 %) | 0.39 N | 199 Hz | ≈ 0 | 44 mW class-B, 6.5 mW recovery | < 1 mK | **one axis only**: refill must sit 1.06 mm off-axis | 1.16 g | as below | catalogue | Bench part for the 1-axis rig (EXP-Q06), not the product |
 | Custom 4.0 mm L pair (P0.1.0) | ±199 µm (±81) | 0.26 N | 173 Hz | ≈ 0 | 30 / 4.4 mW | < 1 mK | **no**: corners collide at ±0.40 mm (CAD) | 1.5 g | — | custom | Reject |
 | Custom 3.5 mm L pair | ±143 µm (±25); 0 at 35° | 0.22 N | 165 Hz | ≈ 0 | 26 / 3.9 mW | < 1 mK | yes, 0.215 mm corner gap (CAD) | 1.3 g | stops alone fracture (§4.6) | custom | Second choice |
-| **Custom 2.6 mm quad (Q)** | **±276 µm** (±160); ±42 at 35° | **0.325 N** | **192 Hz** | ≈ 0 | 39 / 5.9 mW | < 1 mK | yes, 0.115 mm plate gap (CAD) | 2.0 g | needs snubbers and a soft nose | custom plates | **Recommended** |
+| **Custom 2.6 mm quad (Q)** | **±277 µm** (±162); ±48 at 35° | **0.329 N** | **192 Hz** | ≈ 0 | 39 / 5.9 mW | < 1 mK | yes, 0.115 mm plate gap (CAD) | 2.0 g | needs snubbers and a soft nose | custom plates | **Recommended** |
 | PL112/122/127/140 (MFR AMF-11) | — | — | — | — | — | — | **no**: 9.6–11.0 mm wide | — | — | catalogue | Reject (width) |
 | APA50XS amplified stack (MFR AMF-14) | 66 µm × 4.5 lever | 3.5 N | 2.7 kHz before lever | ≈ 0 | 150 V drive | — | **no**: 5 × 9 mm section, 10.3 mm diagonal | 4 g | — | catalogue | Reject (fit, 150 V) |
 | Moving-magnet voice coil (SIM magpylib, em_planar topology) | ±300 µm | K_m 0.080 N/√W (n 1.38) | ≈ 60 Hz closed loop | **2.4 W** (1.3 W friction-free; 47.5 W without skid) | 16 mW | coil 118 °C, surface 98 °C at hold | yes | 0.69 g active | robust | make | **Reject**: 8× the 0.31 W thermal allowance, 0.11 h per charge |
@@ -140,9 +142,9 @@ Notes on the table:
 - **Plate resonance check.** The bare-plate first mode is 376 Hz (Euler–Bernoulli) against 360 Hz ± 20 % in the datasheet. The density, 7.8 g/cm³, is an assumption.
 - **Per axis (pair).**
   - At the collar: F_b = 0.465 N and k = 1033 N/m.
-  - At the nib, through the 60/43.5 = **1.379** lever and the leaves in series: F_b 0.325 N, k_b 523 N/m, parasitic 37.7 N/m (other axis' leaves plus gimbal), m_eq 0.385 g, coupling mass 0.635 g.
+  - At the nib, through the 62/45.5 = **1.363** lever and the leaves in series: F_b 0.329 N, k_b 536 N/m, parasitic 38.6 N/m (other axis' leaves plus gimbal), m_eq 0.395 g, coupling mass 0.652 g.
 - **Load line.** The stroke is symmetric about the housing-fixed centre because roll is unknown: q = (F_b,nib − |F|)/(k_b + k_par).
-  - The optimum lever n* = F_b,col/(2F) is 1.37 at 0.170 N, and the curve is flat: 277 µm at n 1.3, 276 µm at 1.38 and 272 µm at 1.5.
+  - The optimum lever n* = F_b,col/(2F) is 1.37 at 0.170 N, and the curve is flat: 277 µm at n 1.3, 276 µm at 1.4 and 272 µm at 1.5.
   - Over the 9 θ × 3 F_c × 3 μ grid, 49 % of cases keep ≥ ±300 µm.
   - It fails at low altitude combined with stiff springs or high friction (fig_stroke_under_load.png).
 
@@ -150,8 +152,8 @@ Notes on the table:
 
 | Leaf | Cross stiffness | Drive stiffness | Buckling SF at plate F_b | Stress at the stops | Loaded stroke |
 |---|---|---|---|---|---|
-| CAD: 25 µm × 0.45 mm stainless, **1 mm** free span | **1357 N/m (2.6× the axis)** | 440 kN/m | 19 | **4.2 GPa** | **84 µm** |
-| Recommended: C17200, 30 µm × 1.2 mm (radial), **≥ 5 mm** span | 34 N/m (7 %) | 54 kN/m | 2.4 | 137 MPa (103 MPa at ±0.30 mm) | 276 µm |
+| First CAD leaf (P0.1.0–P0.1.1): 25 µm × 0.45 mm stainless, **1 mm** free span | **1357 N/m (2.6× the axis)** | 440 kN/m | 19 | **4.2 GPa** | **84 µm** |
+| Recommended, in CAD P0.1.2: C17200, 30 µm × 1.2 mm (radial), **5 mm** span | 34 N/m (7 %) | 54 kN/m | 2.4 | 138 MPa (104 MPa at ±0.30 mm) | 277 µm |
 
 Design rule: the leaf must satisfy all four at once:
 
@@ -160,7 +162,7 @@ Design rule: the leaf must satisfy all four at once:
 3. lateral-torsional buckling SF ≥ 2;
 4. alternating stress ≤ 150 MPa (AMF-19).
 
-A single leaf meets these only with about 4.5–5 mm of free axial span. **The CAD needs that span**: for example, move the collar forward to z ≈ 12–13 mm, giving n 1.26–1.28 with the loaded stroke unchanged within 1 %.
+A single leaf meets these only with about 4.5–5 mm of free axial span. **Done in CAD P0.1.2**: the collar stays at z = 15–18 mm (the nose Hall sensor needs the wider part of the nose), the plates start at z = 23 mm and the gimbal moves to z = 62 mm, so the leaves span 5 mm and the lever is 1.363 with the loaded stroke unchanged within 1 %. (Moving the collar forward to z ≈ 12–13 mm would also work, at n 1.26–1.28, but leaves no room for the Hall sensor.)
 
 ### 4.3 Resonance, sensor, servo
 
@@ -192,7 +194,7 @@ See §5 for power.
 
 - **Prototype driver:** 2 × DRV2700 at 60 V (MFR AMF-16). The quiescent current is 9.8 mA × 2 by interpolation, which is 72 mW. The driver drives µF loads (3.3 µF up to 30 Hz).
 - **Product driver:** a shared low-Iq boost (LT8330 class, 6 µA, 60 V switch; MFR proposed AMF-47) at about 55 V, plus one discrete charge-recovery half-bridge per axis.
-  - A 55 V rail costs 17 % of the loaded stroke: 228 against 276 µm (CALC).
+  - A 55 V rail costs 17 % of the loaded stroke: 229 against 277 µm (CALC).
 - **Integrated alternative:** the BOS1921/1931 CapDrive (MFR proposed AMF-46) has energy recovery. Its rating is ≤ 820 nF at 100 Vpp/130 Hz against our 2.0–2.6 µF per axis, and it draws 3.7 mA at DC. It needs vendor qualification.
 
 ### 4.6 One-metre drop onto the nib
@@ -201,11 +203,11 @@ SIM: FE plate with the collar share as a tip mass, unilateral stops and a transv
 
 | Pulse | Peak | Stops only | + 2 snubbers | + 4 snubbers (P_fail) |
 |---|---|---|---|---|
-| 0.2 ms | 4970 g | 605 MPa | 240 MPa | 244 MPa (≈ 1) |
-| 0.35 ms | 2840 g | 448 MPa | 144 MPa | 146 MPa (0.16) |
-| 0.5 ms | 1990 g | 376 MPa | 135 MPa | 111 MPa (0.02) |
-| 1 ms | 990 g | 233 MPa | 101 MPa | 77 MPa (1 × 10⁻³) |
-| 2 ms | 500 g | 138 MPa | 64 MPa | 50 MPa (3 × 10⁻⁵) |
+| 0.2 ms | 4970 g | 604 MPa | 234 MPa | 235 MPa (≈ 1) |
+| 0.35 ms | 2840 g | 451 MPa | 146 MPa | 144 MPa (0.15) |
+| 0.5 ms | 1990 g | 377 MPa | 135 MPa | 111 MPa (0.02) |
+| 1 ms | 990 g | 234 MPa | 101 MPa | 77 MPa (1 × 10⁻³) |
+| 2 ms | 500 g | 139 MPa | 64 MPa | 49 MPa (3 × 10⁻⁵) |
 
 - **Axial drop** (nib first, 0.35 ms): 6.9 MPa, benign.
 - **Sideways drop.** Stops alone leave the plates to whip: fracture is near-certain below 2 ms. **Required:**
@@ -243,7 +245,7 @@ Real power is class-B charging: f·C·V_pp·V_rail. The recovery column uses η 
 |---|---|---|---|
 | Recording only (drivers off) | — | 65 mW / **4.1 h** | 65 mW / **4.1 h** |
 | Stage held (neutral) | 1 µm | 308 mW / 0.87 h | 97 mW / 2.8 h |
-| Tremor assist, full correction (oracle), 6 Hz | 1 µm | 319 mW / **0.84 h** | 97 mW / **2.7 h** |
+| Tremor assist, full correction (oracle), 6 Hz | 1 µm | 320 mW / **0.83 h** | 97 mW / **2.7 h** |
 | Tremor assist, oracle, 10 Hz | 1 µm | 328 mW / 0.81 h | 98 mW / 2.7 h |
 | Tremor assist, Kalman, 10 Hz | 1 µm | 520 mW / 0.51 h | 133 mW / 2.0 h |
 | Guided assist, 6 Hz tremor | 1 µm | 386 mW / 0.69 h | 110 mW / 2.4 h |
@@ -282,24 +284,24 @@ Ink-error ratio vs neutral (mean of 4 seeds; sd ≤ 0.04). SIM:
 | Tremor | 4 Hz | 6 Hz | 8 Hz | 10 Hz | 12 Hz |
 |---|---|---|---|---|---|
 | Neutral error, 0.3 mm (µm) | 240 | 295 | 374 | 462 | 528 |
-| Oracle 0.1 / 0.3 / 0.5 mm | 0.20 / 0.20 / 0.40 | 0.22 / 0.25 / 0.45 | 0.26 / 0.32 / 0.52 | 0.26 / 0.40 / 0.57 | 0.26 / 0.46 / 0.61 |
-| Time at the travel limit, oracle 0.3 mm | 16 % | 28 % | 39 % | 57 % | 65 % |
-| Kalman 0.1 / 0.3 / 0.5 mm | 1.14 / 1.02 / 1.01 | 1.04 / 1.00 / 0.99 | 1.11 / 0.89 / 0.85 | 1.23 / 0.86 / 0.87 | 1.22 / 0.88 / 0.92 |
-| Guided (time-aligned) 0.1 / 0.3 / 0.5 mm | 1.51 / 1.04 / 1.00 | 1.42 / 1.01 / 0.99 | 1.23 / 0.99 / 0.95 | 1.23 / 0.99 / 0.95 | 1.11 / 0.98 / 0.94 |
+| Oracle 0.1 / 0.3 / 0.5 mm | 0.19 / 0.20 / 0.40 | 0.21 / 0.24 / 0.45 | 0.25 / 0.32 / 0.52 | 0.25 / 0.40 / 0.57 | 0.26 / 0.46 / 0.61 |
+| Time at the travel limit, oracle 0.3 mm | 16 % | 27 % | 39 % | 57 % | 65 % |
+| Kalman 0.1 / 0.3 / 0.5 mm | 1.12 / 1.01 / 1.00 | 1.03 / 1.00 / 0.99 | 1.10 / 0.89 / 0.85 | 1.22 / 0.86 / 0.87 | 1.21 / 0.88 / 0.92 |
+| Guided (time-aligned) 0.1 / 0.3 / 0.5 mm | 1.51 / 1.04 / 1.00 | 1.41 / 1.01 / 0.99 | 1.23 / 0.99 / 0.96 | 1.23 / 0.99 / 0.95 | 1.16 / 0.97 / 0.94 |
 
 Other results (SIM):
 
-- **Distortion without tremor.** Kalman 31 µm, guided 84 µm.
+- **Distortion without tremor.** Kalman 30 µm, guided 92 µm.
 - **Guided mode on the feature course** (path distance to the template, 6 Hz 0.3 mm, 4 seeds, as `sim/guided_eval.py`):
 
   | Feature | Neutral → guided |
   |---|---|
   | Circle | 348 → 174 µm |
-  | Spiral | 334 → 253 µm |
+  | Spiral | 334 → 202 µm |
   | Fast stroke | 112 → 20 µm |
   | Dots | 155 → 90 µm |
   | Corners | 188 → 161 µm |
-  | Hatching | 175 → 159 µm |
+  | Hatching | 175 → 158 µm |
 
   Guided pulls toward the template, not the reference ink, so its time-aligned ratio on free writing is ≈ 1.
 - **Skid on/off, passive effect on housing tremor** (3–15 Hz band, stage held, vs a conventional pen that carries 1 N at μ 0.15):
@@ -310,18 +312,18 @@ Other results (SIM):
 - **Device distortion vs a rigid conventional pen:** 119 µm. Of this, 116 µm is the skid's different contact and drag (a changed feel, EXP-H03) and 16 µm is the servo's compliance.
 - **Sensitivity** (oracle ratio 6 / 10 Hz, 0.3 mm, seeds 200–201):
 
-  | Case | Ratio (6 / 10 Hz) | Voltage saturated |
+  | Case | Ratio (6 / 10 Hz) | Voltage saturated (6 Hz) |
   |---|---|---|
-  | Q nominal | 0.23 / 0.36 | 0 % |
-  | L pair | 0.24 / 0.37 | — |
-  | L at −20 % tolerance | 0.26 / 0.37 | 18 % |
-  | **L at 35°** | **0.52 / 0.48** | 51 % |
-  | Q at 35° | 0.30 / 0.38 | 14 % |
-  | Q at 35° and −20 % | 0.39 / 0.38 | 41 % |
-  | F_c 0.30 N | 0.29 / 0.40 | 29 % |
-  | μ_nib 0.35 | 0.29 / 0.44 | — |
-  | θ 75° | 0.38 / 0.46 | — |
-  | No hysteresis, Hall 0.3 µm or 55 V rail | unchanged within 0.01 | — |
+  | Q nominal | 0.22 / 0.36 | 0 % |
+  | L pair | 0.24 / 0.37 | 1 % |
+  | L at −20 % tolerance | 0.25 / 0.37 | 16 % |
+  | **L at 35°** | **0.51 / 0.47** | 51 % |
+  | Q at 35° | 0.29 / 0.38 | 10 % |
+  | Q at 35° and −20 % | 0.37 / 0.37 | 39 % |
+  | F_c 0.30 N | 0.29 / 0.39 | 27 % |
+  | μ_nib 0.35 | 0.29 / 0.44 | 2 % |
+  | θ 75° | 0.38 / 0.46 | 0 % |
+  | No hysteresis, Hall 0.3 µm or 55 V rail | unchanged within 0.01 | 0 % |
 
 ## 7. Verification
 
@@ -384,10 +386,10 @@ Other results (SIM):
 ## 10. Open risks
 
 1. **Stroke margin.**
-   - ±276 µm at the worst-direction design load, ±160 µm at −20 % tolerance, ±42 µm at 35°.
+   - ±277 µm at the worst-direction design load, ±162 µm at −20 % tolerance, ±48 µm at 35°.
    - Tremor ≥ 0.3 mm hits the limit 16–65 % of the time even for the oracle.
    - The pencil corrects small tremor well and larger tremor partly.
-2. **Decoupling leaf.** The CAD leaf fails. The recommended one needs ≥ 5 mm span and a layout change. Its buckling factor is assumed (FEA).
+2. **Decoupling leaf.** The first CAD leaf failed; the recommended leaf and its 5 mm span are in CAD P0.1.2. Its buckling factor is assumed (FEA).
 3. **Drop.** Fracture is likely without snubbers and a compliant nose. The ceramic strength of the PICMA material and diced edges is unknown (EXP-Q04).
 4. **Driver.** No off-the-shelf part is both low-power and rated for 2–2.6 µF. The DRV2700 alone limits assist to under 1.5 h.
 5. **Sensor noise and servo.**

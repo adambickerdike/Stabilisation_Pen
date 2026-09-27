@@ -57,17 +57,21 @@ def parameters(variant: str) -> dict:
         refill_d=2.35, refill_L=67.0, cone_L=5.0, ball_d=0.7, socket_d=1.0,
         # stage (bender thickness and free length from config/pencil.yaml; widths per variant)
         plate_t=pc["stage.bender_thickness"] * mm, plate_free=pc["stage.bender_free_length"] * mm, plate_clamp=8.0,
-        plate_d=2.15,            # plate mid-plane distance from the axis
         tip_sweep=0.40,          # bender tip travel to the stops (+/-)
         nib_travel=0.40,         # nib travel to the stops (+/-); usable correction 0.30 (stage.travel_nib)
         collar_z0=15.0, collar_L=3.0, collar_od=4.0,
-        z_plate_tip=19.0, z_gimbal=60.0,
+        z_plate_tip=23.0, z_gimbal=62.0,     # 5 mm leaf span behind the collar (analysis/pencil_mechanisms.py s4.2)
+        leaf_t=0.03, leaf_w=1.2,             # C17200, 30 um thick, 1.2 mm radial width
+        snub_t=0.5, snub_stations=(0.2, 0.4, 0.6, 0.8), snub_gap_extra=0.03, travel_op=0.30,
+        liner_t=0.10,                        # PTFE liner in the collar bore (nib-force band, s2.1)
         spring_L=10.0, spring_od=2.4,
         pcb_L=42.0, pcb_w=pc["electronics.board_width"] * mm, pcb_t=0.6, comp_h=1.0,
         batt_d=pc["battery.diameter"] * mm, batt_L=pc["battery.length"] * mm,
         cap_L=5.0, clear_min=0.10,
     )
-    P["plate_w"], P["n_plates"] = {"L": (3.5, 2), "Q": (2.6, 4)}[variant]
+    # plate width, number and mid-plane offset from the axis; the Q plates sit further out so the
+    # snubber frames keep a web between the refill hole and the plate windows
+    P["plate_w"], P["n_plates"], P["plate_d"] = {"L": (3.5, 2, 2.15), "Q": (2.6, 4, 2.55)}[variant]
     P["r_bore"] = P["od"] / 2 - P["wall"]
     P["z_skid"] = P["skid_r"] / math.tan(math.radians(P["theta_design"]))     # ring plane above the ball, in contact
     P["plate_L"] = P["plate_free"] + P["plate_clamp"]
@@ -86,6 +90,7 @@ DENS = {  # g/mm^3
     "PA_GF30": 1.36e-3, "POM_PTFE": 1.50e-3, "Ti6Al4V": 4.43e-3, "PZT_multilayer": 7.80e-3,
     "stainless": 8.00e-3, "brass_refill_with_ink": 3.0e-3, "NdFeB": 7.50e-3, "FR4_populated": 2.4e-3,
     "Li_ion_cyl": 2.6e-3, "PC": 1.20e-3, "spring_steel": 7.85e-3, "sensor_pkg": 2.4e-3,
+    "PEEK": 1.30e-3, "PTFE": 2.20e-3, "C17200": 8.25e-3,
 }
 
 
@@ -144,7 +149,7 @@ def refill(P):
 
 def collar(P):
     z0, z1 = P["collar_z0"], P["collar_z0"] + P["collar_L"]
-    c = tube(P["collar_od"] / 2, P["refill_d"] / 2 + 0.05, z0, z1)
+    c = tube(P["collar_od"] / 2, P["refill_d"] / 2 + 0.02 + P["liner_t"], z0, z1)
     # flat on +x for the stage-sensing magnet
     return c.cut(box(1.0, 5.0, P["collar_L"] + 0.2, P["collar_od"] / 2 + 0.5 - 0.3, 0, (z0 + z1) / 2))
 
@@ -173,21 +178,47 @@ def plates(P):
 
 
 def leaves(P, plate_list):
-    """Decoupling leaf flexures from each bender tip to the collar (25 um stainless, drawn 0.1 mm)."""
-    z0, z1 = P["collar_z0"] + P["collar_L"] - 1.0, P["z_plate_tip"] + 0.5
+    """Decoupling leaves (C17200, 30 um x 1.2 mm radial, free span from the collar's rear face
+    to the bender tip): stiff along the bender's drive axis, compliant across it."""
+    z0, z1 = P["collar_z0"] + P["collar_L"], P["z_plate_tip"]
+    rc = P["plate_d"] + 0.1                    # radial centre of the leaf, clear of the refill sweep
     out = []
     for name, sol, ax in plate_list:
         bb = sol.val().BoundingBox()
         cx, cy = (bb.xmin + bb.xmax) / 2, (bb.ymin + bb.ymax) / 2
-        # leaf plane contains the drive axis and z; thin across the other in-plane axis
-        if ax[0]:
-            out.append((name.replace("bender", "leaf"), box(abs(cx) - P["collar_od"] / 2 + 0.3, 0.1, z1 - z0,
-                                                             math.copysign((abs(cx) + P["collar_od"] / 2 - 0.3) / 2, cx),
-                                                             0.0, (z0 + z1) / 2)))
-        else:
-            out.append((name.replace("bender", "leaf"), box(0.1, abs(cy) - P["collar_od"] / 2 + 0.3, z1 - z0,
-                                                             0.0, math.copysign((abs(cy) + P["collar_od"] / 2 - 0.3) / 2, cy),
-                                                             (z0 + z1) / 2)))
+        if ax[0]:      # plate drives x: leaf in the x-z plane, thin in y
+            out.append((name.replace("bender", "leaf"), box(P["leaf_w"], P["leaf_t"], z1 - z0,
+                                                             math.copysign(rc, cx), cy if P["n_plates"] == 2 else 0.0, (z0 + z1) / 2)))
+        else:          # plate drives y: leaf in the y-z plane, thin in x
+            out.append((name.replace("bender", "leaf"), box(P["leaf_t"], P["leaf_w"], z1 - z0,
+                                                             cx if P["n_plates"] == 2 else 0.0, math.copysign(rc, cy), (z0 + z1) / 2)))
+    return out
+
+
+def snubbers(P, plate_list):
+    """Snubber frames (PEEK) at fractions of the free length from the tip: windows around each plate
+    with gap = operating deflection shape + 30 um (analysis/pencil_mechanisms.py s4.6); central hole
+    clears the refill at the nib stops."""
+    out = []
+    Lf, rr = P["plate_free"], P["refill_d"] / 2
+    tip_stop = P["nib_travel"] / P["lever"]              # plate-tip deflection with the nib on its stop
+    for k, sfr in enumerate(P["snub_stations"]):
+        z = P["z_plate_tip"] + sfr * Lf
+        xi = (P["z_clamp0"] - z) / Lf                    # position from the clamp, 0..1
+        gap = tip_stop * (3 * xi ** 2 - xi ** 3) / 2 + P["snub_gap_extra"]   # tip-load shape at the stop + 30 um
+        sweep = P["nib_travel"] * (P["z_gimbal"] - z) / P["z_gimbal"]
+        r_hole = rr + sweep + 0.10
+        frame = tube(P["r_bore"] - 0.05, r_hole, z - P["snub_t"] / 2, z + P["snub_t"] / 2)
+        web_in, web_out = 1e9, 1e9
+        for name, sol, ax in plate_list:
+            bb = sol.val().BoundingBox()
+            gx, gy = (gap, 0.05) if ax[0] else (0.05, gap)
+            win = box(bb.xlen + 2 * gx, bb.ylen + 2 * gy, P["snub_t"] + 0.2, (bb.xmin + bb.xmax) / 2, (bb.ymin + bb.ymax) / 2, z)
+            frame = frame.cut(win)
+            inner = (min(abs(bb.xmin), abs(bb.xmax)) - gx) if ax[0] else (min(abs(bb.ymin), abs(bb.ymax)) - gy)
+            outer = (max(abs(bb.xmin), abs(bb.xmax)) + gx) if ax[0] else (max(abs(bb.ymin), abs(bb.ymax)) + gy)
+            web_in, web_out = min(web_in, inner - r_hole), min(web_out, (P["r_bore"] - 0.05) - outer)
+        out.append((f"snubber_{k + 1}", frame, round(z, 2), round(gap, 3), round(web_in, 3), round(web_out, 3)))
     return out
 
 
@@ -253,9 +284,13 @@ def build(P):
     fixed["optical_sensor"] = (optics(P), "sensor_pkg")
     pl = plates(P)
     benders = {n: (s, "PZT_multilayer") for n, s, _ax in pl}
-    lvs = {n: (s, "stainless") for n, s in leaves(P, pl)}
+    lvs = {n: (s, "C17200") for n, s in leaves(P, pl)}
+    for n, s, *_rest in snubbers(P, pl):
+        fixed[n] = (s, "PEEK")
     plug, smag = rear_plug(P)
+    liner = tube(P["refill_d"] / 2 + 0.02 + P["liner_t"], P["refill_d"] / 2 + 0.02, P["collar_z0"], P["collar_z0"] + P["collar_L"])
     moving = {"refill_D1": (refill(P), "brass_refill_with_ink"), "collar": (collar(P), "Ti6Al4V"),
+              "collar_liner": (liner, "PTFE"),
               "collar_magnet": (collar_magnet(P), "NdFeB"), "gimbal_hub": (hub, "PC"),
               "rear_plug": (plug, "PC"), "axial_magnet": (smag, "NdFeB"), "nib_spring": (nib_spring(P), "spring_steel")}
     return fixed, benders, lvs, moving, pl
@@ -401,12 +436,15 @@ def viewer_primitives(P, pl):
         {"name": "refill_D1", "group": "nib", "type": "refill", "color": "refill", "r": P["refill_d"] / 2,
          "L": P["refill_L"], "cone_L": P["cone_L"], "ball_r": P["ball_d"] / 2, "socket_r": P["socket_d"] / 2},
         {"name": "collar", "group": "nib", "type": "tube", "color": "metal", "r_out": P["collar_od"] / 2,
-         "r_in": P["refill_d"] / 2 + 0.05, "z0": P["collar_z0"], "z1": P["collar_z0"] + P["collar_L"]},
+         "r_in": P["refill_d"] / 2 + 0.02, "z0": P["collar_z0"], "z1": P["collar_z0"] + P["collar_L"]},
         {"name": "collar_magnet", "group": "nib", "type": "box", "color": "magnet", "size": [0.6, 1.0, 1.0],
          "center": [P["collar_od"] / 2, 0, P["collar_z0"] + P["collar_L"] / 2]},
         {"name": "nib_spring", "group": "housing", "type": "spring", "color": "metal", "r": P["spring_od"] / 2,
          "z0": P["z_spring0"] + 1.0, "z1": P["z_bulkhead"], "turns": 12},
     ]
+    for n, _s, z, *_rest in snubbers(P, pl):
+        prims.append({"name": n, "group": "housing", "type": "tube", "color": "snubber", "r_out": P["r_bore"] - 0.05,
+                      "r_in": 3.0, "z0": z - P["snub_t"] / 2, "z1": z + P["snub_t"] / 2})
     for name, sol, ax in pl:
         bb = sol.val().BoundingBox()
         prims.append({"name": name, "group": "bender", "type": "plate", "color": "piezo",
@@ -430,6 +468,9 @@ def main():
     com = sum(r["mass_g"] * r["com_z_mm"] for r in rows) / total
     m_mov = sum(r["mass_g"] for r in rows if r["group"] == "moving" and r["part"] not in ("nib_spring",))
     checks = section_checks(P, pl)
+    webs = [min(wi, wo) for *_x, wi, wo in snubbers(P, pl)]
+    checks["snubber_min_web_mm"] = round(min(webs), 3)     # manufacturable web: >= 0.2 mm (etched Ti or moulded PEEK)
+    checks["all_ok"] = bool(checks["all_ok"] and min(webs) >= 0.2)
     inter = moving_interference(fixed, moving, P)
     if not a.no_step:
         asm = cq.Assembly(name=tag)
@@ -442,10 +483,14 @@ def main():
         "mass_total_g": round(total, 2), "mass_nib_assembly_g": round(m_mov, 3), "com_z_mm": round(com, 1),
         "com_from_nib_fraction": round(com / P["L_total"], 3),
         "lever_nib_per_collar": round(P["lever"], 3),
+        "leaf_free_span_mm": round(P["z_plate_tip"] - (P["collar_z0"] + P["collar_L"]), 2),
+        "snubbers": [{"name": n, "z_mm": z, "gap_mm": g, "web_inner_mm": wi, "web_outer_mm": wo}
+                     for n, _s, z, g, wi, wo in snubbers(P, pl)],
         "section_checks": checks, "nib_assembly_interference": inter,
         "note": ("Mass excludes adhesives, wiring, flex tails and margin (add about 10 %). Bender blocking force "
                  "scales with plate width: 3.5 mm (L) or 2 x 2.6 mm per axis (Q) against PL128.10's 6.15 mm "
-                 "(AMF-11). Fit checks use nominal dimensions and rigid parts."),
+                 "(AMF-11). Fit checks use nominal dimensions and rigid parts. The nose must be compliant so a "
+                 "1 m drop pulse lasts >= 2 ms (analysis/pencil_mechanisms.py s4.6); not modelled here."),
     }
     meta = provenance.metadata("proposed design (CAD concept, nominal geometry)",
                                extra={"cadquery": cq.__version__, "pencil_params": sp_params.load(PENCIL).version()})

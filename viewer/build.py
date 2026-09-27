@@ -29,6 +29,16 @@ def load(path):
         return json.load(f)
 
 
+NOTES = {
+    "neutral": "Stage held at centre. The ink carries the hand's tremor; this is the pencil with its correction switched off.",
+    "oracle": "The stage is told the true tremor. This is what the mechanism can physically do with perfect knowledge of intent; "
+              "at 0.3 mm tremor it spends about a third of the time at its travel limit.",
+    "kalman": "The pen estimates the tremor from its own sensors. At 6 Hz it cannot separate tremor from writing, so it corrects "
+              "almost nothing (it helps from about 8 Hz). Separating intent is the open problem.",
+    "guided": "The nib is pulled toward a template of the stroke. Judged by distance to the path: the error chart shows the nearest-point distance.",
+}
+
+
 def load_version():
     from stabpen import params as sp_params
     return sp_params.load(os.path.join(ROOT, "config", "pencil.yaml")).version()
@@ -50,7 +60,13 @@ def main():
                  "pencil_params": load_version()})
     with open(os.path.join(DATA, "geometry.json"), "w") as f:
         json.dump(geom, f, separators=(",", ":"))
-    shutil.copyfile(a.trace, os.path.join(DATA, "viz_trace.json"))
+    trace = load(a.trace)
+    for c in trace["cases"]:
+        c.setdefault("note", NOTES.get(c["key"], ""))
+        if c["key"] == "guided":
+            c["metric"] = "path"      # guided mode is judged by distance to the path, not time-aligned
+    with open(os.path.join(DATA, "viz_trace.json"), "w") as f:
+        json.dump(trace, f, separators=(",", ":"))
     g_out = os.path.join(DATA, "viz_guided.json")
     if os.path.exists(a.guided):
         shutil.copyfile(a.guided, g_out)

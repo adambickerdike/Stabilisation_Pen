@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-27T21:52:56+00:00",
-    "git_revision": "77a79f3-dirty",
+    "generated_utc": "2026-09-27T22:08:14+00:00",
+    "git_revision": "e5bf826-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "pencil_revP.py --variant Q --no-step",
+    "command": "pencil_revP.py --variant Q",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
@@ -16,8 +16,8 @@
   },
   "units": "mm",
   "frame": "origin at the ball centre in contact at 50 deg tilt; z along the barrel toward the cap",
-  "gimbal_z": 60.0,
-  "lever": 1.3793103448275863,
+  "gimbal_z": 62.0,
+  "lever": 1.3626373626373627,
   "primitives": [
     {
       "name": "barrel",
@@ -82,8 +82,8 @@
       "color": "metal",
       "r_out": 3.9000000000000004,
       "r_in": 1.625,
-      "z0": 47.0,
-      "z1": 55.0
+      "z0": 51.0,
+      "z1": 59.0
     },
     {
       "name": "gimbal_flexure",
@@ -92,8 +92,8 @@
       "color": "metal",
       "r_out": 3.9000000000000004,
       "r_in": 1.9,
-      "z0": 59.9,
-      "z1": 60.1
+      "z0": 61.9,
+      "z1": 62.1
     },
     {
       "name": "bulkhead",
@@ -157,7 +157,7 @@
         1.5
       ],
       "center": [
-        3.0399999999999996,
+        3.0435483870967737,
         0,
         16.5
       ]
@@ -179,7 +179,7 @@
       "type": "tube",
       "color": "metal",
       "r_out": 2.0,
-      "r_in": 1.225,
+      "r_in": 1.195,
       "z0": 15.0,
       "z1": 18.0
     },
@@ -210,6 +210,46 @@
       "turns": 12
     },
     {
+      "name": "snubber_1",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 28.35,
+      "z1": 28.85
+    },
+    {
+      "name": "snubber_2",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 33.95,
+      "z1": 34.45
+    },
+    {
+      "name": "snubber_3",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 39.55,
+      "z1": 40.05
+    },
+    {
+      "name": "snubber_4",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 45.15,
+      "z1": 45.65
+    },
+    {
       "name": "bender_x_neg",
       "group": "bender",
       "type": "plate",
@@ -219,11 +259,11 @@
         2.6,
         36.0
       ],
-      "root_z": 55.0,
-      "tip_z": 19.0,
-      "clamp_z": 47.0,
+      "root_z": 59.0,
+      "tip_z": 23.0,
+      "clamp_z": 51.0,
       "center_xy": [
-        -2.15,
+        -2.55,
         0.0
       ],
       "drive_axis": [
@@ -242,11 +282,11 @@
         2.6,
         36.0
       ],
-      "root_z": 55.0,
-      "tip_z": 19.0,
-      "clamp_z": 47.0,
+      "root_z": 59.0,
+      "tip_z": 23.0,
+      "clamp_z": 51.0,
       "center_xy": [
-        2.15,
+        2.55,
         0.0
       ],
       "drive_axis": [
@@ -265,12 +305,12 @@
         0.6699999999999999,
         36.0
       ],
-      "root_z": 55.0,
-      "tip_z": 19.0,
-      "clamp_z": 47.0,
+      "root_z": 59.0,
+      "tip_z": 23.0,
+      "clamp_z": 51.0,
       "center_xy": [
         0.0,
-        -2.15
+        -2.55
       ],
       "drive_axis": [
         0,
@@ -288,12 +328,12 @@
         0.6699999999999999,
         36.0
       ],
-      "root_z": 55.0,
-      "tip_z": 19.0,
-      "clamp_z": 47.0,
+      "root_z": 59.0,
+      "tip_z": 23.0,
+      "clamp_z": 51.0,
       "center_xy": [
         0.0,
-        2.15
+        2.55
       ],
       "drive_axis": [
         0,
