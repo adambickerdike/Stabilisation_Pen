@@ -29,7 +29,7 @@ import time
 import numpy as np
 
 import s2r  # noqa: F401
-from s2r import common, twin
+from s2r import common, fastharness, twin
 from s2r import truth as tr
 from sim.pensim import harness, model
 
@@ -94,7 +94,7 @@ def main():
     for p in allp:
         cs += cases_for(p["values"], test_seeds, (6.0, 9.0), "oracle", tag=f"{p['id']}|oracle")
         cs += cases_for(p["values"], test_seeds, (6.0, 9.0), "kfosc", frozen, distortion=True, tag=f"{p['id']}|kf")
-    rows = harness.run_cases(cs, a.workers)
+    rows = fastharness.run_cases(cs, a.workers)
     deg = []
     for p in allp:
         ent = {"id": p["id"], "kind": p["kind"]}
@@ -113,7 +113,7 @@ def main():
         cs += cases_for(nominal, harness.TUNING_SEEDS[:3], TUNE_F0, "kfosc", kf, True, tag=f"nom|{ci}")
         for p in train:
             cs += cases_for(p["values"], harness.TUNING_SEEDS[:2], TUNE_F0, "kfosc", kf, True, tag=f"{p['id']}|{ci}")
-    rows = harness.run_cases(cs, a.workers)
+    rows = fastharness.run_cases(cs, a.workers)
     tune = {"nominal": {}, "randomised": {}}
     for ci in range(len(cands)):
         tune["nominal"][ci] = J([r for r in rows if r["tag"] == f"nom|{ci}"])
@@ -127,7 +127,7 @@ def main():
     for ci, kf in enumerate(cands):
         for p in ins_:
             cs += cases_for(p["values"], eval_seeds, TUNE_F0, "kfosc", kf, True, tag=f"{p['id']}|{ci}")
-    rows = harness.run_cases(cs, a.workers)
+    rows = fastharness.run_cases(cs, a.workers)
     evalc = {}
     for ci, kf in enumerate(cands):
         js, r6, r9, ds = [], [], [], []

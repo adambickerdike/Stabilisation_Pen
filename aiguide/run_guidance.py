@@ -20,7 +20,7 @@ same writers with a 35 % size decrement along the line and templates at the
 calibration size.
 
 Outputs results/ai/guidance.json, viz_guided.json and fig_guidance_*.png.
-Run: python3 -m aiguide.run_guidance  (about 6-10 min with 2 processes)
+Run: python3 -m aiguide.run_guidance  (about 4-5 min with 2 processes)
 """
 from __future__ import annotations
 
@@ -264,6 +264,8 @@ def scenario(job):
     extra["wrong_word_letters_neutral"] = G.case_metrics(wr, arrs["neutral"], rec, q_lim, letter_idx=widx, offset=off)["summary"]
     nxt = [k for k, L in enumerate(wr.letters) if L.word_index == WRONG_WORD_INDEX + 1]
     extra["after_wrong_word_letters"] = G.case_metrics(wr, arrs["wrong_word"], rec, q_lim, neutral=neutral, letter_idx=nxt, offset=off)["summary"]
+    extra["after_wrong_word_letters_neutral"] = G.case_metrics(wr, arrs["neutral"], rec, q_lim, letter_idx=nxt, offset=off)["summary"]
+    extra["after_wrong_word_letters_ai_correct"] = G.case_metrics(wr, arrs["ai_correct"], rec, q_lim, neutral=neutral, letter_idx=nxt, offset=off)["summary"]
     o_idx = [k for k, L in enumerate(wr.letters) if L.char == "o"]
     extra["a_for_o_letters"] = G.case_metrics(wr, arrs["a_for_o"], rec, q_lim, neutral=neutral, letter_idx=o_idx, offset=off)["summary"]
     extra["a_for_o_letters_neutral"] = G.case_metrics(wr, arrs["neutral"], rec, q_lim, letter_idx=o_idx, offset=off)["summary"]

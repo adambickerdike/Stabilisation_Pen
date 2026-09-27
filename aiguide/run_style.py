@@ -17,7 +17,7 @@ start = nib position at touchdown, i.e. intended start + tremor), app placement
 from the previous letter (depth 1) or the one before it (depth 2).
 
 Outputs results/ai/style_templates.json, fig_style_template_error.png,
-fig_style_example.png.  Run: python3 -m aiguide.run_style  (about 2 min)
+fig_style_example.png.  Run: python3 -m aiguide.run_style  (about 5 min)
 """
 from __future__ import annotations
 

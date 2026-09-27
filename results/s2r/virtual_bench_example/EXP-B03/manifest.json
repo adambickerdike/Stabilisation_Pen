@@ -1,0 +1,35 @@
+{
+ "format": "s2r-bench-1",
+ "experiment": "EXP-B03",
+ "evidence_status": "SIMULATION (virtual bench)",
+ "meta": {
+  "coupon": "virtual",
+  "settings": "protocol"
+ },
+ "scalars": {},
+ "groups": {
+  "r20": {
+   "n_records": 1,
+   "single": true
+  },
+  "step": {
+   "n_records": 1,
+   "single": true
+  },
+  "force": {
+   "n_records": 1,
+   "single": true
+  },
+  "thermal": {
+   "n_records": 1,
+   "single": true
+  },
+  "emf": {
+   "n_records": 3,
+   "attrs": {
+    "T_magnet_C": 22.2294279355842,
+    "bench_s": 366.0
+   }
+  }
+ }
+}

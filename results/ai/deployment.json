@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "evidence_status": "CALCULATION (on synthetic data or public-domain text; not a measurement)",
+    "generated_utc": "2026-09-27T22:03:34+00:00",
+    "git_revision": "e5bf826-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_deploy.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "writers": "0-23",
+      "instances": "2000+10w+i"
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "pencil_params": "P0.1.1"
+  },
+  "inputs": {
+    "template_lead_s": 0.3,
+    "confidence_full": 0.8,
+    "travel_nib_m": 0.0003
+  },
+  "writing_timing": {
+    "letter_duration_s": {
+      "median": 0.5109999999999992,
+      "p10": 0.27200000000000024,
+      "p90": 0.8232000000000006
+    },
+    "pen_up_gap_s": {
+      "median": 0.15700000000000003,
+      "p10": 0.12600000000000017,
+      "p90": 0.20400000000000063
+    }
+  },
+  "template_on_time_fraction": {
+    "d1_optimistic": {
+      "0.05": 1.0,
+      "0.1": 1.0,
+      "0.15": 0.6069958847736625,
+      "0.2": 0.11265432098765432,
+      "0.3": 0.00102880658436214,
+      "0.45": 0.0,
+      "0.6": 0.0
+    },
+    "d1_conservative": {
+      "0.05": 0.0,
+      "0.1": 0.0,
+      "0.15": 0.0,
+      "0.2": 0.0,
+      "0.3": 0.0,
+      "0.45": 0.0,
+      "0.6": 0.0
+    },
+    "d2_optimistic": {
+      "0.05": 1.0,
+      "0.1": 1.0,
+      "0.15": 1.0,
+      "0.2": 1.0,
+      "0.3": 1.0,
+      "0.45": 1.0,
+      "0.6": 0.9090909090909091
+    },
+    "d2_conservative": {
+      "0.05": 1.0,
+      "0.1": 1.0,
+      "0.15": 1.0,
+      "0.2": 1.0,
+      "0.3": 1.0,
+      "0.45": 0.8906926406926406,
+      "0.6": 0.6293290043290043
+    },
+    "d3_optimistic": {
+      "0.05": 1.0,
+      "0.1": 1.0,
+      "0.15": 1.0,
+      "0.2": 1.0,
+      "0.3": 1.0,
+      "0.45": 1.0,
+      "0.6": 1.0
+    },
+    "d3_conservative": {
+      "0.05": 1.0,
+      "0.1": 1.0,
+      "0.15": 1.0,
+      "0.2": 1.0,
+      "0.3": 1.0,
+      "0.45": 1.0,
+      "0.6": 1.0
+    }
+  },
+  "latencies_measured": {
+    "predictor_glyph_depth2": {
+      "n": 200,
+      "median_ms": 12.899944499622507,
+      "p95_ms": 19.048795450089525
+    },
+    "predictor_glyph_depth1": {
+      "n": 200,
+      "median_ms": 1.5618465004081372,
+      "p95_ms": 1.972814899363584
+    },
+    "style_update_per_letter_ms": {
+      "median": 3.5271869992357097,
+      "p95": 4.34609189933326
+    },
+    "template_synthesis_per_letter_ms": {
+      "median": 0.7931334998829698,
+      "p95": 1.2307397505537665
+    },
+    "machine": "this container, CPython + numpy, single thread; a phone will differ"
+  },
+  "latency_budget_allocations": {
+    "template_lead": 0.3,
+    "ble_uplink": 0.03,
+    "recognition": 0.06,
+    "prediction": 0.05,
+    "synthesis": 0.01,
+    "ble_downlink": 0.03,
+    "pen": 0.002,
+    "total": 0.18200000000000002,
+    "margin": 0.11799999999999997
+  },
+  "bandwidth": {
+    "records_per_letter": 1.6923076923076923,
+    "points_per_letter": 81.23076923076923,
+    "bytes_per_letter": 206.46153846153848,
+    "letters_per_s": 1.4458006560228156,
+    "points_per_s": 117.44349944308408,
+    "bytes_per_s_once": 298.50222775117203,
+    "bytes_per_s_with_resends": 895.5066832535161,
+    "resend_factor": 3.0,
+    "note": "uplink: ICD 0x02 stroke samples at 200 Hz, 20 B payload + 4 B framing"
+  },
+  "model_sizes": {
+    "char_kn7_npz_bytes": 5816532,
+    "char_kn7_ngrams": 1367359,
+    "word_kn2_pickle_bytes": 10914455,
+    "word_vocab": 38622,
+    "stroke_mlp_params": 7946,
+    "stroke_mlp_int8_bytes": 7946,
+    "stroke_mlp_macs": 7808
+  },
+  "stroke_mcu_budget": {
+    "cv": {
+      "mac": 30,
+      "cycles": 245,
+      "time_us_128MHz": 1.9140625,
+      "cpu_load_at_rate": 0.000478515625
+    },
+    "ca": {
+      "mac": 240,
+      "cycles": 560,
+      "time_us_128MHz": 4.375,
+      "cpu_load_at_rate": 0.00109375
+    },
+    "arc": {
+      "mac": 120,
+      "cycles": 380,
+      "time_us_128MHz": 2.96875,
+      "cpu_load_at_rate": 0.0007421875
+    },
+    "mlp_float": {
+      "mac": 7808,
+      "cycles": 11912,
+      "time_us_128MHz": 93.0625,
+      "cpu_load_at_rate": 0.023265625
+    },
+    "mlp_int8_cmsis": {
+      "mac": 7808,
+      "cycles": 16516,
+      "time_us_128MHz": 129.03125,
+      "cpu_load_at_rate": 0.0322578125
+    },
+    "_assumptions": {
+      "rate_hz": 250.0,
+      "f_cpu_hz": 128000000.0,
+      "float_cycles_per_mac": 1.5,
+      "overhead_cycles": 200,
+      "int8_mac_per_cycle": 0.5,
+      "icd_s5_budget": "<= 35 k MAC, <= 1 ms at 128 MHz per inference"
+    }
+  },
+  "icd_0x06_example": {
+    "letter": "t",
+    "records": 2,
+    "framed_bytes": [
+      116,
+      52
+    ],
+    "first_record_hex": "06702a00000174db42ef0000c0f3000000000000000000001c2c00f600f600f600f600f700f600f600f600f600f600f600f600f700f600f600f600f600f600f600f600f700f600f600f600f600f600f600f600f700f600f600f600f601f602f705f706f808fa08fc0afd09fe0a010a0209038633",
+    "header_fields": [
+      "<",
+      "H",
+      "B",
+      "B",
+      "B",
+      "B",
+      "I",
+      "I",
+      "i",
+      "i",
+      "B",
+      "B"
+    ]
+  },
+  "llm_adapter_specs": {
+    "phone-llm-spec": {
+      "locality": "on_phone",
+      "p95_latency_budget_s": 0.05,
+      "requires_consent": false,
+      "use": "letter templates only if the p95 latency and calibration are met"
+    },
+    "cloud-llm-spec": {
+      "locality": "cloud",
+      "p95_latency_budget_s": 0.6,
+      "requires_consent": true,
+      "use": "autocorrect and next-word suggestions only; never letter templates"
+    }
+  },
+  "runtime_s": 8.4
+}

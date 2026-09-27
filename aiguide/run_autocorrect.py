@@ -16,7 +16,7 @@ A 'personal dictionary' variant adds the rare lines' names to the lexicon,
 as if they came from the user's contacts or earlier accepted notes.
 
 Outputs results/ai/autocorrect.json, fig_autocorrect.png, autocorrect_rerender.svg.
-Run: python3 -m aiguide.run_autocorrect  (about 3 min)
+Run: python3 -m aiguide.run_autocorrect  (about 1 min)
 """
 from __future__ import annotations
 

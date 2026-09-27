@@ -11,7 +11,7 @@ synthetic tremor (random 4-10 Hz, 0.3 mm peak); the target is the intended
 position h ahead.  The MAC budget is a CALCULATION.
 
 Outputs results/ai/stroke_prediction.json and fig_stroke_prediction.png.
-Run: python3 -m aiguide.run_stroke  (about 3 min, 2 torch threads)
+Run: python3 -m aiguide.run_stroke  (about 30 s, 2 torch threads)
 """
 from __future__ import annotations
 
@@ -76,7 +76,13 @@ def main(argv=None):
     ap.add_argument("--val", type=int, default=10)
     ap.add_argument("--test", type=int, default=10)
     ap.add_argument("--epochs", type=int, default=30)
+    ap.add_argument("--figure-only", action="store_true", help="redraw the figure from results/ai/stroke_prediction.json")
     args = ap.parse_args(argv)
+    if args.figure_only:
+        import json
+        d = json.loads((RESULTS_DIR / "stroke_prediction.json").read_text())
+        figure({c: v["test"] for c, v in d["conditions"].items()}, RESULTS_DIR / "fig_stroke_prediction.png")
+        return
     t0 = time.time()
     spl = corpus.make_splits()
     pool = [s for s in spl.train if 12 <= len(s) <= 60 and all(c in corpus.ALPHABET for c in s)]
@@ -158,7 +164,9 @@ def figure(rel, path):
             ax.plot(hs, med, **plotstyle.marker_kw(c))
             ax.plot(hs, p90, color=c, lw=1.0, ls=":")
         ax.axhline(300, color=plotstyle.STATUS["critical"], lw=1, ls="--")
-        ax.text(hs[0], 310, "pencil travel 300 µm", fontsize=7, color=plotstyle.INK2, va="bottom")
+        ax.text(hs[-1], 320, "pencil travel 300 µm", fontsize=7, color=plotstyle.INK2, va="bottom", ha="right")
+        ax.set_yscale("log")
+        ax.set_ylim(50, 3e4)
         ax.set_title(f"{'Clean position input' if cond == 'clean' else 'Input with 4-10 Hz, 0.3 mm tremor'}")
         ax.set_xlabel("prediction horizon (ms)")
         ax.set_xticks(hs)

@@ -1,0 +1,100 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (virtual bench files) + CALCULATION",
+    "generated_utc": "2026-09-27T22:14:51+00:00",
+    "git_revision": "e5bf826-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_c5_example.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "directory": "results/s2r/virtual_bench_example",
+  "bytes": 2930850,
+  "roundtrip_identical": {
+    "actuator.R20": true,
+    "actuator.L": true,
+    "actuator.Kf": true,
+    "actuator.Rth_coil_amb": true,
+    "actuator.Cth_coil": true,
+    "stage.m_eq": true,
+    "stage.k_tip": true,
+    "stage.zeta_open": true,
+    "sensing.hall_delay": true,
+    "stage.axial_k": true,
+    "stage.axial_preload": true
+  },
+  "estimates_from_files": {
+    "actuator.R20": {
+      "value": 6.552148454348384,
+      "u": 0.0074718000001396945,
+      "U95": 0.014943600000279389
+    },
+    "actuator.L": {
+      "value": 0.0002061257748915281,
+      "u": 3.377413060179833e-07,
+      "U95": 6.754826120359666e-07
+    },
+    "actuator.Kf": {
+      "value": 0.5557733322338845,
+      "u": 0.0028811724858935524,
+      "U95": 0.005762344971787105,
+      "force_only": 0.545545243967088,
+      "coil_dT_max_K": 26.993405939285438,
+      "protocol_dT_rule_2K_met": false,
+      "emf_only": 0.5584095536100435,
+      "u_force_only": 0.006364606567899471,
+      "u_emf_only": 0.0032312106205218513
+    },
+    "actuator.Rth_coil_amb": {
+      "value": 83.37625630596496,
+      "u": 0.3918733215834395,
+      "U95": 0.783746643166879
+    },
+    "actuator.Cth_coil": {
+      "value": 0.17404778465832282,
+      "u": 0.0008180351259995479,
+      "U95": 0.0016360702519990957
+    },
+    "stage.m_eq": {
+      "value": 0.011057327046561679,
+      "u": 8.604349023433173e-05,
+      "U95": 0.00017208698046866346
+    },
+    "stage.k_tip": {
+      "value": 180.66662053253498,
+      "u": 0.5275839147107151,
+      "U95": 1.0551678294214302,
+      "frf": 181.35260358483401,
+      "u_frf": 1.4112937209895413,
+      "static": 180.55518173868387,
+      "u_static": 0.5688253171236323
+    },
+    "stage.zeta_open": {
+      "value": 0.012354450184756774,
+      "u": 5.5376430442712255e-05,
+      "U95": 0.00011075286088542451
+    },
+    "sensing.hall_delay": {
+      "value": 0.00027723659766855385,
+      "u": 3.590285934700493e-06,
+      "U95": 7.180571869400986e-06,
+      "loop_delay_s": 0.0002410492596684443,
+      "timing_offset_s": -3.618733800010955e-05,
+      "f_max_coh_0.9_hz": 211.02344704967217
+    },
+    "stage.axial_k": {
+      "value": 3218.2657271359485,
+      "u": 13.795313810362748,
+      "U95": 27.590627620725495
+    },
+    "stage.axial_preload": {
+      "value": 0.25058823529411767,
+      "u": 0.002889401878938026,
+      "U95": 0.005778803757876052
+    }
+  }
+}

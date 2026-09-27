@@ -1,0 +1,30 @@
+{
+ "format": "s2r-bench-1",
+ "experiment": "EXP-B05",
+ "evidence_status": "SIMULATION (virtual bench)",
+ "meta": {
+  "pen": "virtual",
+  "settings": "2 chirps x 3 s"
+ },
+ "scalars": {
+  "T_c": 3.0,
+  "n_chirps": 2,
+  "q_peak_last_m": 7.824359073466378e-05,
+  "T_magnet_C": 24.68603735070679,
+  "bench_s": 2230.5
+ },
+ "groups": {
+  "chirps": {
+   "n_records": 2,
+   "list": true
+  },
+  "static": {
+   "n_records": 1,
+   "single": true
+  },
+  "axial": {
+   "n_records": 1,
+   "single": true
+  }
+ }
+}

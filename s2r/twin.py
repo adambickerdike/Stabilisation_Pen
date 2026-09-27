@@ -37,6 +37,7 @@ from sim.pensim import bench, evaluate, harness, model, scenarios
 from sim.pensim.layout import IDX
 from stabpen import params as sp_params
 from stabpen import signals as sg
+from . import fastharness
 from . import truth as tr
 
 _P = sp_params.load()
@@ -194,7 +195,7 @@ def static_hold_power(ov, theta=50.0, N0=1.0, duration=1.2):
 def device_distortion(ov, seeds, duration=6.0, theta=50.0, N0=1.0):
     vals = []
     for s in seeds:
-        sc0 = scenarios.handwriting(seed=s, duration=duration, theta_deg=theta, N0=N0)
+        sc0 = fastharness.scenario(s, duration, theta, N0)
         rs = model.run(sc0, model.Controller(mode="neutral"), overrides=ov, seed=s)
         rr = model.run(sc0, model.Controller(mode="rigid"), overrides=ov, seed=s)
         vals.append(bench.device_distortion(rs, rr)["detrended_rms_um"])
@@ -205,7 +206,7 @@ def evaluate_plant(plant_vals, ctrl_vals=None, seeds=harness.TEST_SEEDS, f0s=(6.
                    kf_params=None, device=True, theta=50.0, N0=1.0):
     """All C2 outcomes for one plant under firmware built from ctrl_vals (nominal by default)."""
     ov, kw, info = shim(plant_vals, ctrl_vals, model.Controller(), theta)
-    rows = harness.run_cases(outcome_cases(ov, kw, seeds, f0s, amp, kf_params, theta, N0), workers)
+    rows = fastharness.run_cases(outcome_cases(ov, kw, seeds, f0s, amp, kf_params, theta, N0), workers)
     out = aggregate(rows, f0s)
     out["static_hold_W"] = static_hold_power(ov, theta, N0)
     if device:

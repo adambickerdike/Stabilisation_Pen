@@ -48,7 +48,7 @@ from stabpen import params as sp_params
 
 _P = sp_params.load()
 DT = 25e-6
-REC_HZ = 40000.0
+REC_HZ = 20000.0               # M1 record rate for the virtual instruments (spectral velocity)
 F_LO, F_HI = 1.0, 500.0          # PROTOCOL EXP-B05 procedure 3: chirp 1-500 Hz
 I_CAP = 0.05                     # PROTOCOL EXP-B05 procedure 3: 0.05 A per axis (used as a cap)
 K_INJ = 400.0                    # N/m: test-build injection gain (0.05 A <-> q_r 0.28 mm)
@@ -342,8 +342,9 @@ def m1_timing_offset(L: float = None, R20: float = None) -> float:
         t_in, i_c = chirp_current(10.0, 10000.0, nominal_amp_fn(30e-6))
         r, _ = run_chirp(pv, t_in, i_c, seed=1)
         sdec = int(round(1.0 / (_P["control.f_stage"] * DT)))
-        kt = np.arange(0, len(r["t"]) - sdec, sdec)
-        f, H, _, _ = ident.frf_h1([r["iref1"][kt]], [r["q1"][kt]], 2000.0, 5.0, 300.0)
+        tt = np.arange(0, r["t"][-1] - sdec * DT, sdec * DT)          # tick instants (record-rate independent)
+        f, H, _, _ = ident.frf_h1([np.interp(tt, r["t"], r["iref1"])], [np.interp(tt, r["t"], r["q1"])], 2000.0,
+                                  5.0, 300.0)
         k = pv["stage.k_tip"]
         m = pv["stage.m_eq"]
         z = pv["stage.zeta_open"]

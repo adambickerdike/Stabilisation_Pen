@@ -1,0 +1,41 @@
+{
+ "attrs": {},
+ "files": [
+  {
+   "sub": "daq",
+   "files": [
+    {
+     "file": "0000_daq_0.npz",
+     "columns": [
+      "i_A",
+      "v_m_s",
+      "ref_A"
+     ],
+     "units": [
+      "A",
+      "m/s",
+      "A"
+     ],
+     "n": 45000
+    }
+   ]
+  },
+  {
+   "sub": "pen",
+   "files": [
+    {
+     "file": "0000_pen_0.npz",
+     "columns": [
+      "iref_A",
+      "q_hall_m"
+     ],
+     "units": [
+      "A",
+      "m"
+     ],
+     "n": 8999
+    }
+   ]
+  }
+ ]
+}

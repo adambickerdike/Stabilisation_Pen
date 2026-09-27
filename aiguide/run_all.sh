@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Reproduce every aiguide result (results/ai/).  Evidence status: SIMULATION / CALCULATION on synthetic data
-# and public-domain text.  At most two processes (run_guidance uses two workers).  About 13 min here.
+# and public-domain text.  At most two processes (run_guidance uses two workers).  About 14 min here.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 python3 -m aiguide.run_text

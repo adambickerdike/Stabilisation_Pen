@@ -8,7 +8,7 @@ on the test split unless labelled otherwise.  "Note lines" are synthetic
 note-like text (aiguide/sentences.py), out of the corpus domain.
 
 Outputs results/ai/text_predictor.json and fig_text_calibration.png.
-Run: python3 -m aiguide.run_text   (about 4 min on one core; the model is cached in aiguide/build/)
+Run: python3 -m aiguide.run_text   (about 3 min on one core, +2 min to build the cached model in aiguide/build/)
 """
 from __future__ import annotations
 

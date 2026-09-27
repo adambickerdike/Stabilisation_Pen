@@ -1,0 +1,19 @@
+{
+ "attrs": {
+  "fs": 2000.0
+ },
+ "files": [
+  {
+   "file": "0000_pen_0.npz",
+   "columns": [
+    "iref_A",
+    "q_hall_m"
+   ],
+   "units": [
+    "A",
+    "m"
+   ],
+   "n": 8999
+  }
+ ]
+}

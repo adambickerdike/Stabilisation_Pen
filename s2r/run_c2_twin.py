@@ -2,13 +2,16 @@
 """C2: how well does a calibrated twin predict the hidden plant's performance?
 
 For each hidden plant of C1 (results/s2r/c1_identification.json):
-  truth     M1 with every true parameter (actuator, stage, contact, hand, sensors),
-            running the unchanged nominal firmware (s2r.twin.shim);
-  before    the nominal twin (config/parameters.yaml v0.4.4), i.e. no calibration;
-  after     the twin updated with the EXP-B03/B05/B01/B02 estimates; hand and sensor
-            parameters stay nominal (EXP-B06, S01, B04 not modelled here);
-  after+    the same plus the true hand and sensor values, i.e. what calibration
-            would give if B06/S01/B04 were done perfectly (run on a subset).
+  truth          M1 with every true parameter (actuator, stage, contact, hand, sensors),
+                 running the unchanged nominal firmware (s2r.twin.shim). On the EXP-B09 rig
+                 the "hand" is the R2 simulant;
+  before         the nominal twin (config/parameters.yaml v0.4.4), i.e. no calibration;
+  after_nohand   the twin updated with the EXP-B03/B05/B01/B02 estimates, hand and sensor
+                 keys nominal (a twin of a human writer before EXP-B06);
+  after          the same with the simulant's set values: the true hand keys, each off by
+                 U(+-10 %) (PROTOCOL R2: simulant FRF within +-10 % of target); sensors nominal
+                 (EXP-S01/B04 not modelled here). This is the B09 prediction the protocol freezes;
+  after_plus     after, with the true sensor keys (as if EXP-S01/B04 were done perfectly).
 Outcomes on the TEST seeds 200-211 at the EXP-B09 primary cells (theta 50 deg,
 N 1 N, 0.3 mm tremor at 6 and 9 Hz): oracle ratio, Kalman ratio (frozen set),
 Kalman distortion without tremor, neutral-pen ink error, static hold copper loss
@@ -44,76 +47,112 @@ def evaluate(plant, seeds, workers):
     return out
 
 
+def conditions(nominal, tv, idv, rng):
+    hand = tr.GROUPS["B06_hand"]
+    sens = tr.GROUPS["S01B04_sensors"]
+    after_nohand = dict(nominal)
+    after_nohand.update(idv)
+    after = dict(after_nohand)
+    for k in hand:
+        after[k] = tv[k] * (1 + rng.uniform(-0.1, 0.1))
+    plus = dict(after)
+    for k in sens:
+        plus[k] = tv[k]
+    return {"after_nohand": after_nohand, "after": after, "after_plus": plus}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--workers", type=int, default=2)
-    ap.add_argument("--plus", type=int, default=6, help="number of plants that also get the after+ twin")
+    ap.add_argument("--part", type=int, default=0, help="0 = all plants; 1 = plants 0-7; 2 = plants 8-")
+    ap.add_argument("--merge", action="store_true", help="merge c2_twin_part1/2.json into c2_twin.json")
     a = ap.parse_args()
+    if a.merge:
+        return merge()
     c1 = json.load(open(os.path.join(s2r.RESULTS, "c1_identification.json")))
     rows_in = c1["per_truth"]
     truths = {t["id"]: t for t in c1["truths_revealed"]}
     seeds = harness.TEST_SEEDS[:2] if a.quick else harness.TEST_SEEDS
     if a.quick:
         rows_in = rows_in[:2]
+    elif a.part == 1:
+        rows_in = rows_in[:8]
+    elif a.part == 2:
+        rows_in = rows_in[8:]
     t0 = time.time()
     nominal = twin.nominal_plant()
-    nom = evaluate(nominal, seeds, a.workers)
+    nom = evaluate(nominal, seeds, a.workers) if a.part in (0, 1) else None
     per = []
-    for j, r in enumerate(rows_in):
+    for r in rows_in:
         tv = dict(nominal)
         tv.update(truths[r["id"]]["values"])
         idv = pipeline.identified_values(r["estimates"])
-        after_plant = dict(nominal)
-        after_plant.update(idv)
-        ent = {"id": r["id"], "kind": r["kind"], "outside": r["outside"]}
-        ent["truth"] = evaluate(tv, seeds, a.workers)
-        ent["after"] = evaluate(after_plant, seeds, a.workers)
-        if j < a.plus:
-            plus = dict(tv)
-            plus.update(idv)
-            ent["after_plus"] = evaluate(plus, seeds, a.workers)
+        rng = np.random.default_rng(int(r["id"][1:]) + 555)
+        ent = {"id": r["id"], "kind": r["kind"], "outside": r["outside"], "truth": evaluate(tv, seeds, a.workers)}
+        for lab, pv in conditions(nominal, tv, idv, rng).items():
+            ent[lab] = evaluate(pv, seeds, a.workers)
         per.append(ent)
-        print(r["id"], f"{time.time() - t0:.0f} s",
-              {k: round(ent["truth"][k], 3) for k in RATIOS}, flush=True)
+        print(r["id"], f"{time.time() - t0:.0f} s", {k: round(ent["truth"][k], 3) for k in RATIOS}, flush=True)
+    part = {"nominal": None if nom is None else {k: nom[k] for k in OUTCOMES},
+            "per_plant": [{kk: ({k: e[k] for k in OUTCOMES + ["_per_seed", "_shim"]} if isinstance(e, dict)
+                                and kk in LABELS + ("truth",) else e) for kk, e in ent.items()} for ent in per],
+            "seeds": list(seeds), "elapsed_s": time.time() - t0}
+    if a.part in (1, 2):
+        common.write_result(f"c2_twin_part{a.part}", part, "SIMULATION (twin experiment, partial)",
+                            seeds={"test": list(seeds)})
+        print("part written", f"{time.time() - t0:.0f} s")
+        return
+    finish(part, seeds, t0)
+
+
+LABELS = ("after_nohand", "after", "after_plus")
+
+
+def merge():
+    p1 = json.load(open(os.path.join(s2r.RESULTS, "c2_twin_part1.json")))
+    p2 = json.load(open(os.path.join(s2r.RESULTS, "c2_twin_part2.json")))
+    part = {"nominal": p1["nominal"], "per_plant": p1["per_plant"] + p2["per_plant"], "seeds": p1["seeds"]}
+    finish(part, p1["seeds"], time.time() - p1["elapsed_s"] - p2["elapsed_s"])
+    for k in (1, 2):
+        os.remove(os.path.join(s2r.RESULTS, f"c2_twin_part{k}.json"))
+
+
+def finish(part, seeds, t0):
+    nom = part["nominal"]
+    per = part["per_plant"]
     gaps = {}
-    for label in ("before", "after", "after_plus"):
+    for label in ("before",) + LABELS:
         g = {}
         for k in OUTCOMES:
             vals = []
             for ent in per:
-                if label == "before":
-                    pred = nom[k]
-                elif label in ent:
-                    pred = ent[label][k]
-                else:
-                    continue
+                pred = nom[k] if label == "before" else ent[label][k]
                 tru = ent["truth"][k]
                 vals.append(pred - tru if k in RATIOS else (pred - tru) / tru)
             v = np.array(vals)
-            if len(v) == 0:
-                continue
             g[k] = {"kind": "absolute" if k in RATIOS else "relative", **common.summarize(v),
                     "abs_max": float(np.max(np.abs(v)))}
             if k in RATIOS:
                 g[k]["frac_within_0.1"] = float(np.mean(np.abs(v) <= 0.1))
                 g[k]["frac_within_0.05"] = float(np.mean(np.abs(v) <= 0.05))
         gaps[label] = g
-    # truth spread (how different the hidden plants are from nominal and from each other)
     spread = {k: common.summarize([ent["truth"][k] for ent in per]) for k in OUTCOMES}
-    payload = {"nominal": {k: nom[k] for k in OUTCOMES}, "gaps": gaps, "truth_spread": spread,
-               "per_plant": [{kk: ({k: e[k] for k in OUTCOMES} if isinstance(e, dict) and kk in (
-                   "truth", "after", "after_plus") else e) for kk, e in ent.items()} for ent in per],
+    payload = {"nominal": nom, "gaps": gaps, "truth_spread": spread,
+               "per_plant": [{kk: ({k: e[k] for k in OUTCOMES} if isinstance(e, dict) and kk in LABELS + ("truth",)
+                                   else e) for kk, e in ent.items()} for ent in per],
                "per_seed_truth_after": [{"id": ent["id"], "truth": ent["truth"]["_per_seed"],
                                          "after": ent["after"]["_per_seed"]} for ent in per],
                "shim": {ent["id"]: ent["truth"]["_shim"] for ent in per},
                "seeds": list(seeds), "cells": {"theta_deg": 50, "N0": 1.0, "amp_m": 3e-4, "f0_hz": [6, 9]},
+               "conditions": {"after_nohand": "B03/B05/B01-B02 estimates; hand and sensors nominal",
+                              "after": "estimates + simulant hand (true +-10 %); sensors nominal",
+                              "after_plus": "estimates + simulant hand + true sensors"},
                "elapsed_s": time.time() - t0}
     path = common.write_result("c2_twin", payload, "SIMULATION (twin experiment: M1 truth vs M1 twins)",
-                               seeds={"test": list(seeds)},
-                               extra={"frozen_kf": twin.frozen_kf()})
+                               seeds={"test": list(seeds)}, extra={"frozen_kf": twin.frozen_kf()})
     plot(per, nom)
-    print(path, f"{time.time() - t0:.0f} s")
+    print(path)
     for label, g in gaps.items():
         print(label, {k: (round(v["abs_max"], 3), round(v.get("frac_within_0.1", float("nan")), 2)) for k, v in g.items()})
 

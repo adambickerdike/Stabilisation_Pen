@@ -1,0 +1,18 @@
+{
+ "attrs": {
+  "T_nominal_C": 20.0,
+  "bench_s": 80.0
+ },
+ "files": [
+  {
+   "file": "0000_0.npz",
+   "columns": [
+    "R_ohm"
+   ],
+   "units": [
+    "ohm"
+   ],
+   "n": 10
+  }
+ ]
+}

@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "SIMULATION (synthetic glyph writers and synthetic tremor; model M1 unmodified; not a measurement)",
-    "generated_utc": "2026-09-27T21:53:34+00:00",
-    "git_revision": "77a79f3-dirty",
+    "generated_utc": "2026-09-27T22:11:33+00:00",
+    "git_revision": "e5bf826-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_guidance.py --writers 6 --workers 2",
@@ -2135,6 +2135,170 @@
           "n": 24
         }
       },
+      "split:after_wrong_word_letters_neutral": {
+        "n_letters": {
+          "mean": 5.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "path_rms_um": {
+          "mean": 227.38947192318142,
+          "sd": 37.666053857476854,
+          "n": 24
+        },
+        "path_p95_um": {
+          "mean": 452.50211728882965,
+          "sd": 69.432904281691,
+          "n": 24
+        },
+        "path_max_um": {
+          "mean": 680.7513285993292,
+          "sd": 99.45830437666139,
+          "n": 24
+        },
+        "dtw_mean_um": {
+          "mean": 236.16087978641247,
+          "sd": 39.68554952253183,
+          "n": 24
+        },
+        "recognition_accuracy": {
+          "mean": 0.9666666666666668,
+          "sd": 0.1247219128924647,
+          "n": 24
+        },
+        "recognition_margin_median": {
+          "mean": 0.9118626712010944,
+          "sd": 0.37903472999593757,
+          "n": 24
+        },
+        "at_soft_limit": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "on_stop": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "qr_p95_um": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "qr_max_um": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "mean_authority_in_contact": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "contact_runs": {
+          "mean": 49.166666666666664,
+          "sd": 3.507927529974865,
+          "n": 24
+        },
+        "intended_strokes": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "max_stage_um": {
+          "mean": 375.8808333390091,
+          "sd": 16.46121981281491,
+          "n": 24
+        }
+      },
+      "split:after_wrong_word_letters_ai_correct": {
+        "n_letters": {
+          "mean": 5.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "path_rms_um": {
+          "mean": 260.67642166657157,
+          "sd": 26.351777197922818,
+          "n": 24
+        },
+        "path_p95_um": {
+          "mean": 505.0362100374616,
+          "sd": 39.32725103546524,
+          "n": 24
+        },
+        "path_max_um": {
+          "mean": 710.2252529651354,
+          "sd": 94.78821213172843,
+          "n": 24
+        },
+        "dtw_mean_um": {
+          "mean": 267.2435905638493,
+          "sd": 34.15723409338397,
+          "n": 24
+        },
+        "recognition_accuracy": {
+          "mean": 0.9666666666666667,
+          "sd": 0.09428090415820634,
+          "n": 24
+        },
+        "recognition_margin_median": {
+          "mean": 0.8785684119017615,
+          "sd": 0.36508756330385567,
+          "n": 24
+        },
+        "at_soft_limit": {
+          "mean": 0.24321267358026788,
+          "sd": 0.021623218377594868,
+          "n": 24
+        },
+        "on_stop": {
+          "mean": 0.012452248565326986,
+          "sd": 0.003649989907611696,
+          "n": 24
+        },
+        "qr_p95_um": {
+          "mean": 549.9916519183868,
+          "sd": 0.006067627457225187,
+          "n": 24
+        },
+        "qr_max_um": {
+          "mean": 549.9999915892689,
+          "sd": 1.0077425571774417e-05,
+          "n": 24
+        },
+        "mean_authority_in_contact": {
+          "mean": 0.7025104480840092,
+          "sd": 0.02309157604268737,
+          "n": 24
+        },
+        "contact_runs": {
+          "mean": 66.20833333333333,
+          "sd": 2.8574342609333216,
+          "n": 24
+        },
+        "intended_strokes": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "max_stage_um": {
+          "mean": 611.0614234891167,
+          "sd": 3.830695075917574,
+          "n": 24
+        },
+        "max_imposed_um": {
+          "mean": 696.5553279441143,
+          "sd": 96.71554986549538,
+          "n": 24
+        },
+        "median_letter_max_imposed_um": {
+          "mean": 550.606150187862,
+          "sd": 69.67951569257266,
+          "n": 24
+        }
+      },
       "split:a_for_o_letters": {
         "n_letters": {
           "mean": 2.0,
@@ -4088,6 +4252,170 @@
           "n": 24
         }
       },
+      "split:after_wrong_word_letters_neutral": {
+        "n_letters": {
+          "mean": 5.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "path_rms_um": {
+          "mean": 182.01048440501805,
+          "sd": 32.40035565467756,
+          "n": 24
+        },
+        "path_p95_um": {
+          "mean": 349.57117695778,
+          "sd": 64.82344871478574,
+          "n": 24
+        },
+        "path_max_um": {
+          "mean": 574.292624088496,
+          "sd": 98.07314116525596,
+          "n": 24
+        },
+        "dtw_mean_um": {
+          "mean": 173.13294626518788,
+          "sd": 33.17909560524538,
+          "n": 24
+        },
+        "recognition_accuracy": {
+          "mean": 0.9916666666666667,
+          "sd": 0.03996526269427265,
+          "n": 24
+        },
+        "recognition_margin_median": {
+          "mean": 1.225779584969082,
+          "sd": 0.3790210025829355,
+          "n": 24
+        },
+        "at_soft_limit": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "on_stop": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "qr_p95_um": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "qr_max_um": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "mean_authority_in_contact": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "contact_runs": {
+          "mean": 87.66666666666667,
+          "sd": 0.7993052538854533,
+          "n": 24
+        },
+        "intended_strokes": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "max_stage_um": {
+          "mean": 144.15491926028025,
+          "sd": 8.445153572972082,
+          "n": 24
+        }
+      },
+      "split:after_wrong_word_letters_ai_correct": {
+        "n_letters": {
+          "mean": 5.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "path_rms_um": {
+          "mean": 188.35730786550485,
+          "sd": 27.588909742698373,
+          "n": 24
+        },
+        "path_p95_um": {
+          "mean": 372.0838009553839,
+          "sd": 53.82034998112305,
+          "n": 24
+        },
+        "path_max_um": {
+          "mean": 600.4743313545496,
+          "sd": 84.53263477693045,
+          "n": 24
+        },
+        "dtw_mean_um": {
+          "mean": 187.62740650878573,
+          "sd": 25.52488584286412,
+          "n": 24
+        },
+        "recognition_accuracy": {
+          "mean": 0.9833333333333334,
+          "sd": 0.07993052538854532,
+          "n": 24
+        },
+        "recognition_margin_median": {
+          "mean": 0.9901166924970872,
+          "sd": 0.19918144924675185,
+          "n": 24
+        },
+        "at_soft_limit": {
+          "mean": 0.19098904557487495,
+          "sd": 0.022802054817565656,
+          "n": 24
+        },
+        "on_stop": {
+          "mean": 2.1293267920414283e-06,
+          "sd": 1.021189255270663e-05,
+          "n": 24
+        },
+        "qr_p95_um": {
+          "mean": 299.8357582030322,
+          "sd": 0.14922682478150218,
+          "n": 24
+        },
+        "qr_max_um": {
+          "mean": 299.999712561761,
+          "sd": 0.0006038143714565524,
+          "n": 24
+        },
+        "mean_authority_in_contact": {
+          "mean": 0.44213528436220956,
+          "sd": 0.04172980533909604,
+          "n": 24
+        },
+        "contact_runs": {
+          "mean": 322.625,
+          "sd": 42.66420484434229,
+          "n": 24
+        },
+        "intended_strokes": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "max_stage_um": {
+          "mean": 360.0455447588529,
+          "sd": 19.711366088006393,
+          "n": 24
+        },
+        "max_imposed_um": {
+          "mean": 329.7401108248347,
+          "sd": 20.705296372865103,
+          "n": 24
+        },
+        "median_letter_max_imposed_um": {
+          "mean": 293.1500994179787,
+          "sd": 11.743277015791001,
+          "n": 24
+        }
+      },
       "split:a_for_o_letters": {
         "n_letters": {
           "mean": 2.0,
@@ -6038,6 +6366,170 @@
         "median_letter_max_imposed_um": {
           "mean": 300.0070846709602,
           "sd": 22.334184380318696,
+          "n": 24
+        }
+      },
+      "split:after_wrong_word_letters_neutral": {
+        "n_letters": {
+          "mean": 5.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "path_rms_um": {
+          "mean": 171.14787674462536,
+          "sd": 31.80862742808765,
+          "n": 24
+        },
+        "path_p95_um": {
+          "mean": 336.581901424352,
+          "sd": 64.6781923106416,
+          "n": 24
+        },
+        "path_max_um": {
+          "mean": 558.8564341981834,
+          "sd": 103.17666327366852,
+          "n": 24
+        },
+        "dtw_mean_um": {
+          "mean": 161.46753487592966,
+          "sd": 31.409362231617855,
+          "n": 24
+        },
+        "recognition_accuracy": {
+          "mean": 0.9916666666666667,
+          "sd": 0.03996526269427265,
+          "n": 24
+        },
+        "recognition_margin_median": {
+          "mean": 1.281526647924854,
+          "sd": 0.3532393133459186,
+          "n": 24
+        },
+        "at_soft_limit": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "on_stop": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "qr_p95_um": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "qr_max_um": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "mean_authority_in_contact": {
+          "mean": 0.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "contact_runs": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "intended_strokes": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "max_stage_um": {
+          "mean": 198.64649264674767,
+          "sd": 12.263857918483358,
+          "n": 24
+        }
+      },
+      "split:after_wrong_word_letters_ai_correct": {
+        "n_letters": {
+          "mean": 5.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "path_rms_um": {
+          "mean": 188.23410502984044,
+          "sd": 28.700362245215832,
+          "n": 24
+        },
+        "path_p95_um": {
+          "mean": 371.56730894809783,
+          "sd": 54.27508608289313,
+          "n": 24
+        },
+        "path_max_um": {
+          "mean": 562.5265618744463,
+          "sd": 93.56090210204422,
+          "n": 24
+        },
+        "dtw_mean_um": {
+          "mean": 176.00197403364018,
+          "sd": 27.669388362711253,
+          "n": 24
+        },
+        "recognition_accuracy": {
+          "mean": 0.9833333333333334,
+          "sd": 0.07993052538854532,
+          "n": 24
+        },
+        "recognition_margin_median": {
+          "mean": 1.2389126568090716,
+          "sd": 0.3914031155588716,
+          "n": 24
+        },
+        "at_soft_limit": {
+          "mean": 0.2749059734981745,
+          "sd": 0.023048185392953564,
+          "n": 24
+        },
+        "on_stop": {
+          "mean": 3.246159722830697e-05,
+          "sd": 4.4474248753730425e-05,
+          "n": 24
+        },
+        "qr_p95_um": {
+          "mean": 299.9595313235416,
+          "sd": 0.01770978332010806,
+          "n": 24
+        },
+        "qr_max_um": {
+          "mean": 299.99996190520363,
+          "sd": 8.183714024987208e-05,
+          "n": 24
+        },
+        "mean_authority_in_contact": {
+          "mean": 0.5758846256755619,
+          "sd": 0.03709027656274907,
+          "n": 24
+        },
+        "contact_runs": {
+          "mean": 87.58333333333333,
+          "sd": 12.13094069815784,
+          "n": 24
+        },
+        "intended_strokes": {
+          "mean": 44.0,
+          "sd": 0.0,
+          "n": 24
+        },
+        "max_stage_um": {
+          "mean": 370.27348599976557,
+          "sd": 17.154354529227774,
+          "n": 24
+        },
+        "max_imposed_um": {
+          "mean": 353.2054358897032,
+          "sd": 37.95873883259687,
+          "n": 24
+        },
+        "median_letter_max_imposed_um": {
+          "mean": 292.85223801376105,
+          "sd": 20.50190576289278,
           "n": 24
         }
       },
@@ -16957,6 +17449,42 @@
           "max_imposed_um": 701.971032863908,
           "median_letter_max_imposed_um": 614.6965015183031
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 173.90431837998287,
+          "path_p95_um": 352.88540767372734,
+          "path_max_um": 570.0432854502011,
+          "dtw_mean_um": 199.02484735475588,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7270527855882789,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 45,
+          "intended_strokes": 44,
+          "max_stage_um": 362.1907652925681
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 230.67445433089622,
+          "path_p95_um": 501.480795963009,
+          "path_max_um": 693.5840765591674,
+          "dtw_mean_um": 274.602377090427,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.287014752030845,
+          "at_soft_limit": 0.2588450125542114,
+          "on_stop": 0.010773795937000685,
+          "qr_p95_um": 549.996218421158,
+          "qr_max_um": 549.9999999854014,
+          "mean_authority_in_contact": 0.7268688449834279,
+          "contact_runs": 65,
+          "intended_strokes": 44,
+          "max_stage_um": 607.6519125426154,
+          "max_imposed_um": 705.1626051381197,
+          "median_letter_max_imposed_um": 581.9432615228333
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 215.39968733655328,
@@ -17839,6 +18367,42 @@
           "max_imposed_um": 671.7470317534955,
           "median_letter_max_imposed_um": 533.3344598109188
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 189.38619291906596,
+          "path_p95_um": 372.20030546922646,
+          "path_max_um": 897.7911642397913,
+          "dtw_mean_um": 192.6382773016688,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.157535842348835,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 47,
+          "intended_strokes": 44,
+          "max_stage_um": 357.5250489687083
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 257.43672763567895,
+          "path_p95_um": 516.8627212278423,
+          "path_max_um": 841.5593999838931,
+          "dtw_mean_um": 274.08769044507335,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7513924003273252,
+          "at_soft_limit": 0.23845872566048085,
+          "on_stop": 0.01023859584971204,
+          "qr_p95_um": 549.9889848515619,
+          "qr_max_um": 549.9999999118905,
+          "mean_authority_in_contact": 0.7264157308244303,
+          "contact_runs": 64,
+          "intended_strokes": 44,
+          "max_stage_um": 610.1626251478774,
+          "max_imposed_um": 667.6843879028405,
+          "median_letter_max_imposed_um": 513.4454483431246
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 249.85665580490908,
@@ -18434,6 +18998,42 @@
           "max_imposed_um": 611.4873594883143,
           "median_letter_max_imposed_um": 535.0539528325676
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 216.2462790910715,
+          "path_p95_um": 457.88647994909076,
+          "path_max_um": 693.4063306058928,
+          "dtw_mean_um": 242.91967075896864,
+          "recognition_accuracy": 0.8,
+          "recognition_margin_median": 1.0049952716585746,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 52,
+          "intended_strokes": 44,
+          "max_stage_um": 384.07840731767254
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 235.05874658564275,
+          "path_p95_um": 505.74754761538895,
+          "path_max_um": 591.7575689590938,
+          "dtw_mean_um": 289.93498181389026,
+          "recognition_accuracy": 0.8,
+          "recognition_margin_median": 0.5814986581338073,
+          "at_soft_limit": 0.2712948161680749,
+          "on_stop": 0.01470655400776433,
+          "qr_p95_um": 549.9822701913371,
+          "qr_max_um": 549.999996573776,
+          "mean_authority_in_contact": 0.7057611731120241,
+          "contact_runs": 72,
+          "intended_strokes": 44,
+          "max_stage_um": 613.5685499042908,
+          "max_imposed_um": 643.4380779086576,
+          "median_letter_max_imposed_um": 541.7766236002535
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 227.24518068028303,
@@ -19028,6 +19628,42 @@
           "max_stage_um": 612.6638421373781,
           "max_imposed_um": 724.2209967104361,
           "median_letter_max_imposed_um": 554.7527178323976
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 212.87911983506228,
+          "path_p95_um": 390.28142976890433,
+          "path_max_um": 695.2911543562782,
+          "dtw_mean_um": 216.33721995152715,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2289247365477332,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 49,
+          "intended_strokes": 44,
+          "max_stage_um": 415.66648966410924
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 271.35826801315415,
+          "path_p95_um": 552.5149493864616,
+          "path_max_um": 739.6451943964314,
+          "dtw_mean_um": 270.3055373746032,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7543050110609241,
+          "at_soft_limit": 0.25726027397260276,
+          "on_stop": 0.01908675799086758,
+          "qr_p95_um": 549.9943422934617,
+          "qr_max_um": 549.9999992687663,
+          "mean_authority_in_contact": 0.6746376250070106,
+          "contact_runs": 67,
+          "intended_strokes": 44,
+          "max_stage_um": 615.8709126868603,
+          "max_imposed_um": 700.3350771347374,
+          "median_letter_max_imposed_um": 562.8437506561592
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -19959,6 +20595,42 @@
           "max_imposed_um": 638.7179666566055,
           "median_letter_max_imposed_um": 575.1312154494987
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 266.3474662269751,
+          "path_p95_um": 482.5203470927298,
+          "path_max_um": 617.8309479753755,
+          "dtw_mean_um": 286.81174660533213,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.3081347298024525,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 46,
+          "intended_strokes": 44,
+          "max_stage_um": 358.95618863346573
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 252.1885824547072,
+          "path_p95_um": 447.6814908541401,
+          "path_max_um": 606.3069594722562,
+          "dtw_mean_um": 257.13055412449694,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8252076674211338,
+          "at_soft_limit": 0.26108026724381295,
+          "on_stop": 0.00832784417050908,
+          "qr_p95_um": 549.991847730477,
+          "qr_max_um": 549.9999911214206,
+          "mean_authority_in_contact": 0.7116756779647176,
+          "contact_runs": 69,
+          "intended_strokes": 44,
+          "max_stage_um": 619.2579745790263,
+          "max_imposed_um": 619.1783735914802,
+          "median_letter_max_imposed_um": 555.8577507666166
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 211.12960996605494,
@@ -20553,6 +21225,42 @@
           "max_stage_um": 606.2539311042481,
           "max_imposed_um": 630.4659364192744,
           "median_letter_max_imposed_um": 506.41093464701265
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 293.706412387054,
+          "path_p95_um": 634.5510762582873,
+          "path_max_um": 745.8044703926779,
+          "dtw_mean_um": 308.52070982935845,
+          "recognition_accuracy": 0.4,
+          "recognition_margin_median": -0.11963976805846477,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 54,
+          "intended_strokes": 44,
+          "max_stage_um": 370.7291916977283
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 294.9044366312817,
+          "path_p95_um": 541.5713174711861,
+          "path_max_um": 728.1595525117044,
+          "dtw_mean_um": 362.39666544492763,
+          "recognition_accuracy": 0.6,
+          "recognition_margin_median": 0.15796046359417756,
+          "at_soft_limit": 0.25540820165538,
+          "on_stop": 0.010675319789315275,
+          "qr_p95_um": 549.9880243803551,
+          "qr_max_um": 549.9999890004749,
+          "mean_authority_in_contact": 0.6835770982036669,
+          "contact_runs": 64,
+          "intended_strokes": 44,
+          "max_stage_um": 608.8774032393505,
+          "max_imposed_um": 632.0775045278658,
+          "median_letter_max_imposed_um": 544.2661877818433
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -21149,6 +21857,42 @@
           "max_imposed_um": 510.52143658276344,
           "median_letter_max_imposed_um": 456.0989018189728
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 212.00572076749404,
+          "path_p95_um": 459.4911698933532,
+          "path_max_um": 544.6355100538793,
+          "dtw_mean_um": 189.000871080369,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1651627644658038,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 50,
+          "intended_strokes": 44,
+          "max_stage_um": 385.65115283082184
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 278.1682290505207,
+          "path_p95_um": 560.0175517627686,
+          "path_max_um": 716.3945391720907,
+          "dtw_mean_um": 269.63580317394116,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.29355136738002674,
+          "at_soft_limit": 0.2535039036779231,
+          "on_stop": 0.005784968488383031,
+          "qr_p95_um": 549.9975866728029,
+          "qr_max_um": 549.9999753051858,
+          "mean_authority_in_contact": 0.7053082802527019,
+          "contact_runs": 64,
+          "intended_strokes": 44,
+          "max_stage_um": 604.9621231296128,
+          "max_imposed_um": 508.82027719794604,
+          "median_letter_max_imposed_um": 484.3030117301734
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 238.83434880196486,
@@ -21743,6 +22487,42 @@
           "max_stage_um": 609.4290695074761,
           "max_imposed_um": 810.67237630268,
           "median_letter_max_imposed_um": 464.4200568549836
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 188.74549109182104,
+          "path_p95_um": 361.40299874465785,
+          "path_max_um": 652.4714760982478,
+          "dtw_mean_um": 213.89161458198978,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0661231065321706,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 56,
+          "intended_strokes": 44,
+          "max_stage_um": 350.67468341450865
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 225.66905492586076,
+          "path_p95_um": 444.4425864760178,
+          "path_max_um": 549.5239224403027,
+          "dtw_mean_um": 196.21725217328293,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0505289250368819,
+          "at_soft_limit": 0.23416858633820695,
+          "on_stop": 0.013445536176014291,
+          "qr_p95_um": 549.9890335270773,
+          "qr_max_um": 549.9999892745315,
+          "mean_authority_in_contact": 0.7116854958054383,
+          "contact_runs": 70,
+          "intended_strokes": 44,
+          "max_stage_um": 606.1652754989859,
+          "max_imposed_um": 809.0870839650033,
+          "median_letter_max_imposed_um": 435.5338767958376
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -22674,6 +23454,42 @@
           "max_imposed_um": 651.5290890617526,
           "median_letter_max_imposed_um": 489.6549068821337
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 200.94514317015782,
+          "path_p95_um": 406.6865034372978,
+          "path_max_um": 616.2615932905248,
+          "dtw_mean_um": 263.5209685387505,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.4672992164551876,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 46,
+          "intended_strokes": 44,
+          "max_stage_um": 368.3140129777914
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 241.70219842521075,
+          "path_p95_um": 483.9499881890477,
+          "path_max_um": 660.2394056636294,
+          "dtw_mean_um": 295.80753434290193,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6045724483490829,
+          "at_soft_limit": 0.2504827846074137,
+          "on_stop": 0.010362206207903537,
+          "qr_p95_um": 549.9901323487943,
+          "qr_max_um": 549.999988872276,
+          "mean_authority_in_contact": 0.7101726752719191,
+          "contact_runs": 68,
+          "intended_strokes": 44,
+          "max_stage_um": 616.3238878880511,
+          "max_imposed_um": 667.6213200386775,
+          "median_letter_max_imposed_um": 496.10749092898993
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 232.2625268991366,
@@ -23268,6 +24084,42 @@
           "max_stage_um": 615.2875063729964,
           "max_imposed_um": 641.3449760621592,
           "median_letter_max_imposed_um": 490.54798457020576
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 220.6975853031014,
+          "path_p95_um": 451.51461626649024,
+          "path_max_um": 575.4738031286556,
+          "dtw_mean_um": 222.7929764876847,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.4906977355961706,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 46,
+          "intended_strokes": 44,
+          "max_stage_um": 378.5149089076159
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 274.0422613964587,
+          "path_p95_um": 536.7108795334331,
+          "path_max_um": 680.772479666833,
+          "dtw_mean_um": 295.92566738982316,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7740472157166378,
+          "at_soft_limit": 0.23300376647834276,
+          "on_stop": 0.01059322033898305,
+          "qr_p95_um": 549.9977249741786,
+          "qr_max_um": 549.9999731603947,
+          "mean_authority_in_contact": 0.667266562337516,
+          "contact_runs": 67,
+          "intended_strokes": 44,
+          "max_stage_um": 614.7668596149227,
+          "max_imposed_um": 648.2748728643793,
+          "median_letter_max_imposed_um": 504.76901099766246
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -23864,6 +24716,42 @@
           "max_imposed_um": 661.2430047760847,
           "median_letter_max_imposed_um": 550.1057299090202
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 200.19057180665064,
+          "path_p95_um": 433.9783982109547,
+          "path_max_um": 634.484091405041,
+          "dtw_mean_um": 264.4999124942476,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.856371222766497,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 49,
+          "intended_strokes": 44,
+          "max_stage_um": 390.0488782678789
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 235.19477829087626,
+          "path_p95_um": 458.6064041528437,
+          "path_max_um": 588.3857877837515,
+          "dtw_mean_um": 230.16334416465776,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8075468746125203,
+          "at_soft_limit": 0.24065101839221037,
+          "on_stop": 0.014252787054894397,
+          "qr_p95_um": 549.9912217578953,
+          "qr_max_um": 549.9999718072056,
+          "mean_authority_in_contact": 0.725020219527031,
+          "contact_runs": 70,
+          "intended_strokes": 44,
+          "max_stage_um": 607.6706855238637,
+          "max_imposed_um": 676.1695728754257,
+          "median_letter_max_imposed_um": 572.7492218707488
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 288.48316709874365,
@@ -24458,6 +25346,42 @@
           "max_stage_um": 610.2080627941649,
           "max_imposed_um": 672.37350410799,
           "median_letter_max_imposed_um": 599.389100433473
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 199.23207720322895,
+          "path_p95_um": 368.8349110696775,
+          "path_max_um": 558.5863812469413,
+          "dtw_mean_um": 216.3634325827649,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6362840132167338,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 59,
+          "intended_strokes": 44,
+          "max_stage_um": 376.0645941272254
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 251.40350815353364,
+          "path_p95_um": 509.90074843926783,
+          "path_max_um": 613.5593545614275,
+          "dtw_mean_um": 244.4488837057636,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6410220913099217,
+          "at_soft_limit": 0.23837291323771456,
+          "on_stop": 0.013731483658593934,
+          "qr_p95_um": 549.9974861181443,
+          "qr_max_um": 549.9999995225936,
+          "mean_authority_in_contact": 0.6732875468035262,
+          "contact_runs": 72,
+          "intended_strokes": 44,
+          "max_stage_um": 606.2325621252003,
+          "max_imposed_um": 669.1522531657997,
+          "median_letter_max_imposed_um": 533.8316206379187
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -25389,6 +26313,42 @@
           "max_imposed_um": 580.2308815425848,
           "median_letter_max_imposed_um": 515.1289799614516
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 179.44106633882993,
+          "path_p95_um": 353.17854988772024,
+          "path_max_um": 518.8974752142573,
+          "dtw_mean_um": 159.03240629359146,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.5832027456197066,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 46,
+          "intended_strokes": 44,
+          "max_stage_um": 357.2566984761409
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 265.04458526762454,
+          "path_p95_um": 472.0764175520929,
+          "path_max_um": 618.7035518421366,
+          "dtw_mean_um": 272.6798884039328,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4682013306625614,
+          "at_soft_limit": 0.2564024575704118,
+          "on_stop": 0.01861427094105481,
+          "qr_p95_um": 549.985522805019,
+          "qr_max_um": 549.999988190829,
+          "mean_authority_in_contact": 0.6928795655182445,
+          "contact_runs": 66,
+          "intended_strokes": 44,
+          "max_stage_um": 611.8049344954534,
+          "max_imposed_um": 590.7831183674946,
+          "median_letter_max_imposed_um": 488.6924948371696
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 194.86872512219958,
@@ -25983,6 +26943,42 @@
           "max_stage_um": 611.3474119365433,
           "max_imposed_um": 701.2877299635179,
           "median_letter_max_imposed_um": 571.663790324542
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 256.96865359293605,
+          "path_p95_um": 525.1052627222356,
+          "path_max_um": 662.4190315778101,
+          "dtw_mean_um": 224.94098236874348,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0187258735948326,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 49,
+          "intended_strokes": 44,
+          "max_stage_um": 383.0294518664065
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 265.64446947755556,
+          "path_p95_um": 478.6665792395113,
+          "path_max_um": 751.3288128341976,
+          "dtw_mean_um": 268.17102065596833,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.94195735351537,
+          "at_soft_limit": 0.2767716056885864,
+          "on_stop": 0.018779628053968638,
+          "qr_p95_um": 549.9952997486598,
+          "qr_max_um": 549.9999900078985,
+          "mean_authority_in_contact": 0.6858455636921255,
+          "contact_runs": 64,
+          "intended_strokes": 44,
+          "max_stage_um": 611.0596072746342,
+          "max_imposed_um": 700.959400720207,
+          "median_letter_max_imposed_um": 577.7246938771913
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -26579,6 +27575,42 @@
           "max_imposed_um": 611.0869982339062,
           "median_letter_max_imposed_um": 573.2782017873083
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 220.26172921844915,
+          "path_p95_um": 455.1175256760054,
+          "path_max_um": 793.1655259031007,
+          "dtw_mean_um": 233.37140929964653,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.224919711290502,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 51,
+          "intended_strokes": 44,
+          "max_stage_um": 374.4970322949999
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 251.70659228096721,
+          "path_p95_um": 500.10799950068986,
+          "path_max_um": 754.4042697815693,
+          "dtw_mean_um": 290.5707480717369,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.5683281725430149,
+          "at_soft_limit": 0.22266099635479952,
+          "on_stop": 0.013487241798298907,
+          "qr_p95_um": 549.9952073319118,
+          "qr_max_um": 549.99999996112,
+          "mean_authority_in_contact": 0.6666929320531471,
+          "contact_runs": 64,
+          "intended_strokes": 44,
+          "max_stage_um": 614.926371119103,
+          "max_imposed_um": 636.7645499622757,
+          "median_letter_max_imposed_um": 566.5895159622814
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 239.3500357611415,
@@ -27173,6 +28205,42 @@
           "max_stage_um": 613.664373643087,
           "max_imposed_um": 606.4776372999206,
           "median_letter_max_imposed_um": 558.9662763849343
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 205.57034870402418,
+          "path_p95_um": 451.2197449374539,
+          "path_max_um": 714.9341517629435,
+          "dtw_mean_um": 168.14692148329962,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.5932076317964086,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 49,
+          "intended_strokes": 44,
+          "max_stage_um": 398.3167467870026
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 227.77046857889468,
+          "path_p95_um": 458.29535929047535,
+          "path_max_um": 741.1187024603059,
+          "dtw_mean_um": 243.2031593816122,
+          "recognition_accuracy": 0.8,
+          "recognition_margin_median": 0.6522407369309041,
+          "at_soft_limit": 0.17877298379756054,
+          "on_stop": 0.011165726075611384,
+          "qr_p95_um": 549.9762345398743,
+          "qr_max_um": 549.9999909263449,
+          "mean_authority_in_contact": 0.7018681916794627,
+          "contact_runs": 67,
+          "intended_strokes": 44,
+          "max_stage_um": 611.5491598746573,
+          "max_imposed_um": 607.7950194085298,
+          "median_letter_max_imposed_um": 547.7255340000363
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -28104,6 +29172,42 @@
           "max_imposed_um": 621.8880773771712,
           "median_letter_max_imposed_um": 510.2905737560759
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 216.60477276133028,
+          "path_p95_um": 483.80427498205137,
+          "path_max_um": 738.0686014788843,
+          "dtw_mean_um": 236.02896943080805,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0889209328976883,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 45,
+          "intended_strokes": 44,
+          "max_stage_um": 368.6472179819403
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 227.60471689804697,
+          "path_p95_um": 467.16713616133194,
+          "path_max_um": 739.700907214149,
+          "dtw_mean_um": 265.1115061664808,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0848777201819197,
+          "at_soft_limit": 0.2298226406831618,
+          "on_stop": 0.012743595358003065,
+          "qr_p95_um": 549.9971108634171,
+          "qr_max_um": 549.9999999947823,
+          "mean_authority_in_contact": 0.730457970206208,
+          "contact_runs": 62,
+          "intended_strokes": 44,
+          "max_stage_um": 607.5879357333,
+          "max_imposed_um": 663.6699841766709,
+          "median_letter_max_imposed_um": 480.2272248649945
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 232.04354533254357,
@@ -28698,6 +29802,42 @@
           "max_stage_um": 612.1363828587831,
           "max_imposed_um": 632.1243780843137,
           "median_letter_max_imposed_um": 525.4295575534109
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 235.70066820324894,
+          "path_p95_um": 460.32780670707405,
+          "path_max_um": 829.3366372226649,
+          "dtw_mean_um": 249.04053290747888,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0958693212844668,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 49,
+          "intended_strokes": 44,
+          "max_stage_um": 364.3865060778676
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 250.0845494144753,
+          "path_p95_um": 484.0558219943605,
+          "path_max_um": 807.9572015710459,
+          "dtw_mean_um": 242.19330306642505,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7541266189781167,
+          "at_soft_limit": 0.22433792952506018,
+          "on_stop": 0.010242941562705186,
+          "qr_p95_um": 549.9922356555068,
+          "qr_max_um": 549.9999920516457,
+          "mean_authority_in_contact": 0.6636690361365349,
+          "contact_runs": 65,
+          "intended_strokes": 44,
+          "max_stage_um": 609.5569284336094,
+          "max_imposed_um": 618.9326375894436,
+          "median_letter_max_imposed_um": 514.0509733654859
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -29294,6 +30434,42 @@
           "max_imposed_um": 752.5551916321202,
           "median_letter_max_imposed_um": 667.6819464652855
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 229.42058961341388,
+          "path_p95_um": 489.7004391603314,
+          "path_max_um": 780.4604293558642,
+          "dtw_mean_um": 276.14981837811365,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6318808516080426,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 46,
+          "intended_strokes": 44,
+          "max_stage_um": 391.53680161876724
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 249.93303868072297,
+          "path_p95_um": 510.16541399114203,
+          "path_max_um": 960.2688133794875,
+          "dtw_mean_um": 300.25728347030133,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6876249256432792,
+          "at_soft_limit": 0.231960792893712,
+          "on_stop": 0.012558526232879709,
+          "qr_p95_um": 549.9978303825246,
+          "qr_max_um": 549.9999998569406,
+          "mean_authority_in_contact": 0.6880258157926565,
+          "contact_runs": 66,
+          "intended_strokes": 44,
+          "max_stage_um": 613.0403065454836,
+          "max_imposed_um": 774.9895061110636,
+          "median_letter_max_imposed_um": 580.7400707650977
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 226.0781231218689,
@@ -29888,6 +31064,42 @@
           "max_stage_um": 611.2308325408651,
           "max_imposed_um": 811.543016749653,
           "median_letter_max_imposed_um": 503.77263622715947
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 212.19360459008232,
+          "path_p95_um": 441.2456714436723,
+          "path_max_um": 669.4650726079295,
+          "dtw_mean_um": 239.82176997186025,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6916054968934197,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 53,
+          "intended_strokes": 44,
+          "max_stage_um": 364.8022234045965
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 264.48196872160946,
+          "path_p95_um": 475.57304379020115,
+          "path_max_um": 829.1082302903937,
+          "dtw_mean_um": 261.5166439706113,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8432421066157233,
+          "at_soft_limit": 0.27600402925590156,
+          "on_stop": 0.017343318880567598,
+          "qr_p95_um": 549.9972886428236,
+          "qr_max_um": 549.9999987463414,
+          "mean_authority_in_contact": 0.7013946922526614,
+          "contact_runs": 65,
+          "intended_strokes": 44,
+          "max_stage_um": 609.2688431258705,
+          "max_imposed_um": 808.3825796144178,
+          "median_letter_max_imposed_um": 511.93099609328885
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -30819,6 +32031,42 @@
           "max_imposed_um": 804.2688705764888,
           "median_letter_max_imposed_um": 625.0630465479813
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 284.797664663165,
+          "path_p95_um": 497.51623616968243,
+          "path_max_um": 659.4148600147632,
+          "dtw_mean_um": 274.95989308104816,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0580255586292997,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 46,
+          "intended_strokes": 44,
+          "max_stage_um": 355.42552358357926
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 290.5854307564985,
+          "path_p95_um": 572.9114712872407,
+          "path_max_um": 693.868814473801,
+          "dtw_mean_um": 278.00797205573014,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1453876031880124,
+          "at_soft_limit": 0.24783592543371286,
+          "on_stop": 0.0070758952623828164,
+          "qr_p95_um": 549.9889451055908,
+          "qr_max_um": 549.999965768329,
+          "mean_authority_in_contact": 0.737837812946045,
+          "contact_runs": 61,
+          "intended_strokes": 44,
+          "max_stage_um": 605.4097398132302,
+          "max_imposed_um": 812.4275050660525,
+          "median_letter_max_imposed_um": 606.2230286163048
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 261.124610275957,
@@ -31413,6 +32661,42 @@
           "max_stage_um": 613.1146251797959,
           "max_imposed_um": 727.1465345816205,
           "median_letter_max_imposed_um": 544.4878391432158
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 306.1871415494304,
+          "path_p95_um": 551.2908307936085,
+          "path_max_um": 779.9968275435999,
+          "dtw_mean_um": 296.887078706346,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.838575939857963,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 50,
+          "intended_strokes": 44,
+          "max_stage_um": 371.7252684243359
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 337.1828174221612,
+          "path_p95_um": 569.7648352137886,
+          "path_max_um": 737.6340766897735,
+          "dtw_mean_um": 292.1974469126691,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1630890457316265,
+          "at_soft_limit": 0.2616057975173997,
+          "on_stop": 0.006278252134605726,
+          "qr_p95_um": 549.9969514745289,
+          "qr_max_um": 549.9999993675727,
+          "mean_authority_in_contact": 0.7026359128415933,
+          "contact_runs": 68,
+          "intended_strokes": 44,
+          "max_stage_um": 616.6616303763088,
+          "max_imposed_um": 725.3957334249026,
+          "median_letter_max_imposed_um": 531.7196722648142
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -32009,6 +33293,42 @@
           "max_imposed_um": 1006.941571474291,
           "median_letter_max_imposed_um": 714.6855876835461
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 303.80413538719444,
+          "path_p95_um": 564.99874501968,
+          "path_max_um": 820.1403437795627,
+          "dtw_mean_um": 288.6864992932262,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.042265916451638,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 49,
+          "intended_strokes": 44,
+          "max_stage_um": 384.8384681266218
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 292.23621506844137,
+          "path_p95_um": 569.8759476070836,
+          "path_max_um": 794.0497884946968,
+          "dtw_mean_um": 246.64066225039346,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.5447233129623712,
+          "at_soft_limit": 0.21871861099153395,
+          "on_stop": 0.013524178504807003,
+          "qr_p95_um": 549.9779268781983,
+          "qr_max_um": 549.999999502863,
+          "mean_authority_in_contact": 0.7460674061195656,
+          "contact_runs": 66,
+          "intended_strokes": 44,
+          "max_stage_um": 611.5611168340591,
+          "max_imposed_um": 923.6391636461677,
+          "median_letter_max_imposed_um": 717.263868085595
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 364.93986428400524,
@@ -32603,6 +33923,42 @@
           "max_stage_um": 613.002258542834,
           "max_imposed_um": 921.1234371795341,
           "median_letter_max_imposed_um": 783.7781166239764
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 232.1105733525839,
+          "path_p95_um": 414.3120835980002,
+          "path_max_um": 569.6527216790147,
+          "dtw_mean_um": 204.4725860923192,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.028562471982326,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 48,
+          "intended_strokes": 44,
+          "max_stage_um": 408.26373939386554
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 286.15802153689765,
+          "path_p95_um": 502.72203419975335,
+          "path_max_um": 607.3746609611087,
+          "dtw_mean_um": 192.64024788273326,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.7031950837160947,
+          "at_soft_limit": 0.21968012622821487,
+          "on_stop": 0.015061321093021588,
+          "qr_p95_um": 549.9942193459842,
+          "qr_max_um": 549.9999999638686,
+          "mean_authority_in_contact": 0.7211989246845663,
+          "contact_runs": 63,
+          "intended_strokes": 44,
+          "max_stage_um": 611.536818232433,
+          "max_imposed_um": 906.5872662605841,
+          "median_letter_max_imposed_um": 764.2322761442675
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -33534,6 +34890,42 @@
           "max_imposed_um": 327.2938998905898,
           "median_letter_max_imposed_um": 301.3314694740822
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 151.4923224890569,
+          "path_p95_um": 310.25438746237523,
+          "path_max_um": 450.64955628012615,
+          "dtw_mean_um": 159.28088346676495,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2279342222767777,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 137.1670497917197
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 179.98746629726705,
+          "path_p95_um": 348.987037184646,
+          "path_max_um": 501.2972620886931,
+          "dtw_mean_um": 166.5896797569275,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1384161092099094,
+          "at_soft_limit": 0.2226176564325932,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.91245660055534,
+          "qr_max_um": 299.9999484426244,
+          "mean_authority_in_contact": 0.49832308380877727,
+          "contact_runs": 336,
+          "intended_strokes": 44,
+          "max_stage_um": 358.9503213385207,
+          "max_imposed_um": 354.8933609354247,
+          "median_letter_max_imposed_um": 296.5851064851182
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 188.74131377388025,
@@ -34416,6 +35808,42 @@
           "max_imposed_um": 345.8303375811035,
           "median_letter_max_imposed_um": 291.3189137052498
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 167.86743323774087,
+          "path_p95_um": 308.56638229579875,
+          "path_max_um": 738.097831857362,
+          "dtw_mean_um": 172.4674262862467,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4594864865936974,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 135.69591143913178
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 177.00845710299757,
+          "path_p95_um": 374.34688187268887,
+          "path_max_um": 754.6016056501711,
+          "dtw_mean_um": 194.15291834329673,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1305038363236404,
+          "at_soft_limit": 0.18367989918084435,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.93296260197997,
+          "qr_max_um": 299.99986360756935,
+          "mean_authority_in_contact": 0.42844613557838723,
+          "contact_runs": 295,
+          "intended_strokes": 44,
+          "max_stage_um": 359.6413266061564,
+          "max_imposed_um": 304.0706643063434,
+          "median_letter_max_imposed_um": 288.513157247771
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 186.8524138867792,
@@ -35011,6 +36439,42 @@
           "max_imposed_um": 331.5416812470277,
           "median_letter_max_imposed_um": 312.87660049582564
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 182.83683716948977,
+          "path_p95_um": 331.7128361536694,
+          "path_max_um": 639.6757876061124,
+          "dtw_mean_um": 179.22906498736467,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0220887011224868,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 87,
+          "intended_strokes": 44,
+          "max_stage_um": 144.68778889313026
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 169.65864598162628,
+          "path_p95_um": 331.57348300119065,
+          "path_max_um": 641.0751308247413,
+          "dtw_mean_um": 181.77390031707938,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.202793212763949,
+          "at_soft_limit": 0.1941274178856561,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8649686210463,
+          "qr_max_um": 299.99936536035426,
+          "mean_authority_in_contact": 0.44857942688483093,
+          "contact_runs": 345,
+          "intended_strokes": 44,
+          "max_stage_um": 340.46663281426055,
+          "max_imposed_um": 331.6226588770347,
+          "median_letter_max_imposed_um": 306.8982374276239
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 200.6615011628083,
@@ -35605,6 +37069,42 @@
           "max_stage_um": 329.17492858028885,
           "max_imposed_um": 331.9631768677119,
           "median_letter_max_imposed_um": 311.15182814367563
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 224.14757086010437,
+          "path_p95_um": 462.01581149372737,
+          "path_max_um": 665.4709053989977,
+          "dtw_mean_um": 228.59125905785692,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2018832390488776,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 86,
+          "intended_strokes": 44,
+          "max_stage_um": 163.8077309260521
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 230.68423658915182,
+          "path_p95_um": 500.7099964494173,
+          "path_max_um": 680.5322477055712,
+          "dtw_mean_um": 209.18292820183152,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2162803432368032,
+          "at_soft_limit": 0.22079983072365636,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9479597878055,
+          "qr_max_um": 299.99993812114684,
+          "mean_authority_in_contact": 0.4086672051632137,
+          "contact_runs": 323,
+          "intended_strokes": 44,
+          "max_stage_um": 335.8922761414873,
+          "max_imposed_um": 351.7496639288776,
+          "median_letter_max_imposed_um": 323.7962334966598
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -36536,6 +38036,42 @@
           "max_imposed_um": 324.7015123645773,
           "median_letter_max_imposed_um": 277.19904179962856
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 150.69333855301883,
+          "path_p95_um": 261.35928153492335,
+          "path_max_um": 473.6393623830369,
+          "dtw_mean_um": 160.69133536587796,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0187267727972398,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 135.4534400586707
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 168.5898953273192,
+          "path_p95_um": 314.6932050327299,
+          "path_max_um": 476.9657530824433,
+          "dtw_mean_um": 195.80371447143693,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.6304686661670451,
+          "at_soft_limit": 0.16427249972793556,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8096135338907,
+          "qr_max_um": 299.9999862509718,
+          "mean_authority_in_contact": 0.49532298688474996,
+          "contact_runs": 305,
+          "intended_strokes": 44,
+          "max_stage_um": 339.59725882329786,
+          "max_imposed_um": 337.50210369662403,
+          "median_letter_max_imposed_um": 286.919707801248
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 166.70139844683848,
@@ -37130,6 +38666,42 @@
           "max_stage_um": 344.4008755784359,
           "max_imposed_um": 304.0418037421448,
           "median_letter_max_imposed_um": 296.25450186190466
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 251.41448548151752,
+          "path_p95_um": 457.6442434859751,
+          "path_max_um": 653.4189716355284,
+          "dtw_mean_um": 256.5370922386245,
+          "recognition_accuracy": 0.8,
+          "recognition_margin_median": 0.4764165738003229,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 141.2078360488465
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 250.7105665190265,
+          "path_p95_um": 461.6525892288919,
+          "path_max_um": 655.0947985011953,
+          "dtw_mean_um": 264.60940041675155,
+          "recognition_accuracy": 0.6,
+          "recognition_margin_median": 0.6916471252243025,
+          "at_soft_limit": 0.14706205985915494,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.53659483287504,
+          "qr_max_um": 299.99780771930097,
+          "mean_authority_in_contact": 0.43156262518887617,
+          "contact_runs": 361,
+          "intended_strokes": 44,
+          "max_stage_um": 399.738818608367,
+          "max_imposed_um": 319.7207588073752,
+          "median_letter_max_imposed_um": 297.32860400086855
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -37726,6 +39298,42 @@
           "max_imposed_um": 337.6378938913358,
           "median_letter_max_imposed_um": 302.94575909996814
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 158.29360043876702,
+          "path_p95_um": 308.5893783325876,
+          "path_max_um": 627.7987252777795,
+          "dtw_mean_um": 144.32791805817251,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.3562889492113133,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 146.8814294244811
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 177.67726394557445,
+          "path_p95_um": 350.9556505523047,
+          "path_max_um": 607.8178828742858,
+          "dtw_mean_um": 178.2308922979053,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.5326919197630566,
+          "at_soft_limit": 0.18617663192539768,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8368459715266,
+          "qr_max_um": 299.99999326400257,
+          "mean_authority_in_contact": 0.5032680542526794,
+          "contact_runs": 350,
+          "intended_strokes": 44,
+          "max_stage_um": 376.08539415378476,
+          "max_imposed_um": 326.4634701627915,
+          "median_letter_max_imposed_um": 305.47130733460847
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 200.9285747814808,
@@ -38320,6 +39928,42 @@
           "max_stage_um": 324.0222434625494,
           "max_imposed_um": 318.93147441083676,
           "median_letter_max_imposed_um": 288.4031650559266
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 149.61410167734996,
+          "path_p95_um": 291.0329446357435,
+          "path_max_um": 461.8405307882464,
+          "dtw_mean_um": 139.75917655403913,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.3186119410359685,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 134.19287053315804
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 162.90500835252806,
+          "path_p95_um": 331.032361756863,
+          "path_max_um": 499.74534681590825,
+          "dtw_mean_um": 161.64459717211895,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9440746434826243,
+          "at_soft_limit": 0.1648898365316276,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.89526366768695,
+          "qr_max_um": 299.99997334491263,
+          "mean_authority_in_contact": 0.4657428660366776,
+          "contact_runs": 350,
+          "intended_strokes": 44,
+          "max_stage_um": 328.3390771720267,
+          "max_imposed_um": 317.56754971264604,
+          "median_letter_max_imposed_um": 296.48602256296925
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -39251,6 +40895,42 @@
           "max_imposed_um": 401.4961223381508,
           "median_letter_max_imposed_um": 313.34774080978264
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 153.88278878389,
+          "path_p95_um": 281.14330789011683,
+          "path_max_um": 401.118049464483,
+          "dtw_mean_um": 147.05295225532205,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8576832526553532,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 138.23331993450807
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 176.906554104868,
+          "path_p95_um": 349.4647788195131,
+          "path_max_um": 465.7365357919508,
+          "dtw_mean_um": 180.12708220303145,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8764568505068924,
+          "at_soft_limit": 0.18718325976786007,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.7650221725777,
+          "qr_max_um": 299.99999445939915,
+          "mean_authority_in_contact": 0.4319174544222852,
+          "contact_runs": 312,
+          "intended_strokes": 44,
+          "max_stage_um": 356.03295030628453,
+          "max_imposed_um": 334.5406030983534,
+          "median_letter_max_imposed_um": 293.7736147785391
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 174.8210630322508,
@@ -39845,6 +41525,42 @@
           "max_stage_um": 350.80939738354294,
           "max_imposed_um": 336.23775717784895,
           "median_letter_max_imposed_um": 294.1892868251579
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 190.8644820845508,
+          "path_p95_um": 366.90656644874616,
+          "path_max_um": 488.6021854657615,
+          "dtw_mean_um": 174.14924534279385,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9245499488584018,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 147.7967245470879
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 182.72976731008737,
+          "path_p95_um": 358.7681167008119,
+          "path_max_um": 504.37390511463735,
+          "dtw_mean_um": 182.02560387848865,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0446525504694342,
+          "at_soft_limit": 0.17362195938406605,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8528632345245,
+          "qr_max_um": 299.9999991813642,
+          "mean_authority_in_contact": 0.47504543658280834,
+          "contact_runs": 360,
+          "intended_strokes": 44,
+          "max_stage_um": 340.9675157463218,
+          "max_imposed_um": 322.8006847597942,
+          "median_letter_max_imposed_um": 287.2549270403197
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -40441,6 +42157,42 @@
           "max_imposed_um": 305.6470661048024,
           "median_letter_max_imposed_um": 296.0070911201768
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 175.36650784884844,
+          "path_p95_um": 374.79400687506416,
+          "path_max_um": 551.6415529689618,
+          "dtw_mean_um": 166.62002057754586,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0552244463390574,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 87,
+          "intended_strokes": 44,
+          "max_stage_um": 148.87781235777373
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 180.05185168449842,
+          "path_p95_um": 381.0849072916895,
+          "path_max_um": 570.0252197925445,
+          "dtw_mean_um": 160.38725504710675,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7627337999821541,
+          "at_soft_limit": 0.1939165545087483,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8970338870109,
+          "qr_max_um": 299.99999334079047,
+          "mean_authority_in_contact": 0.42175418669200937,
+          "contact_runs": 272,
+          "intended_strokes": 44,
+          "max_stage_um": 385.2250272327182,
+          "max_imposed_um": 309.388353654057,
+          "median_letter_max_imposed_um": 293.85086662166157
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 122.05900335862108,
@@ -41035,6 +42787,42 @@
           "max_stage_um": 365.811723239061,
           "max_imposed_um": 377.9464267806591,
           "median_letter_max_imposed_um": 299.56115377866877
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 164.3477921552721,
+          "path_p95_um": 310.5195968609864,
+          "path_max_um": 638.0536884473972,
+          "dtw_mean_um": 171.01493237027802,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0306304407100497,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 87,
+          "intended_strokes": 44,
+          "max_stage_um": 147.0701419051767
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 166.25644596661513,
+          "path_p95_um": 311.5253306091004,
+          "path_max_um": 649.1107592684716,
+          "dtw_mean_um": 199.40866959331268,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.7627071914518181,
+          "at_soft_limit": 0.17643793026870974,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8105830669039,
+          "qr_max_um": 299.99996810381316,
+          "mean_authority_in_contact": 0.4075480951590257,
+          "contact_runs": 362,
+          "intended_strokes": 44,
+          "max_stage_um": 381.79812604617234,
+          "max_imposed_um": 332.736842210208,
+          "median_letter_max_imposed_um": 296.11673307492043
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -41966,6 +43754,42 @@
           "max_imposed_um": 323.41850377887624,
           "median_letter_max_imposed_um": 303.69700075857077
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 192.15412263289988,
+          "path_p95_um": 398.63592963471484,
+          "path_max_um": 507.73747619063505,
+          "dtw_mean_um": 136.06131344458578,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.592802668438448,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 89,
+          "intended_strokes": 44,
+          "max_stage_um": 135.34662312358972
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 193.36559446165143,
+          "path_p95_um": 391.26621179569923,
+          "path_max_um": 526.1896001862552,
+          "dtw_mean_um": 161.0425620572634,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0931341371030696,
+          "at_soft_limit": 0.18823956442831216,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.90541821417577,
+          "qr_max_um": 299.99951210786077,
+          "mean_authority_in_contact": 0.41665663581769663,
+          "contact_runs": 265,
+          "intended_strokes": 44,
+          "max_stage_um": 341.5536156809865,
+          "max_imposed_um": 321.64899028261925,
+          "median_letter_max_imposed_um": 287.63451352475437
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 195.5836545638918,
@@ -42560,6 +44384,42 @@
           "max_stage_um": 366.9644192975762,
           "max_imposed_um": 334.8436088348223,
           "median_letter_max_imposed_um": 307.9633702728788
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 255.011567164552,
+          "path_p95_um": 487.3551878842464,
+          "path_max_um": 665.8427627824312,
+          "dtw_mean_um": 235.38022774705195,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.3241705692923695,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 146.50587020721073
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 255.26400104425352,
+          "path_p95_um": 477.1528269794099,
+          "path_max_um": 700.0903886232218,
+          "dtw_mean_um": 218.55582233499135,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0799932156546836,
+          "at_soft_limit": 0.1998843763549646,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9116775682909,
+          "qr_max_um": 299.9998762819764,
+          "mean_authority_in_contact": 0.4060904957987546,
+          "contact_runs": 251,
+          "intended_strokes": 44,
+          "max_stage_um": 369.8229571647616,
+          "max_imposed_um": 334.36145376741194,
+          "median_letter_max_imposed_um": 306.36498462188234
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -43156,6 +45016,42 @@
           "max_imposed_um": 338.0645960958202,
           "median_letter_max_imposed_um": 298.723627970361
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 183.3074692393395,
+          "path_p95_um": 342.8426089021002,
+          "path_max_um": 665.8451070902566,
+          "dtw_mean_um": 174.45865482024095,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.3134386158451727,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 86,
+          "intended_strokes": 44,
+          "max_stage_um": 139.6743353461159
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 199.7402294180507,
+          "path_p95_um": 383.483537822274,
+          "path_max_um": 732.2580479900162,
+          "dtw_mean_um": 180.78179691284203,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2952062679239322,
+          "at_soft_limit": 0.16974142940151074,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.53712245701934,
+          "qr_max_um": 299.9998977503562,
+          "mean_authority_in_contact": 0.42775996877416606,
+          "contact_runs": 261,
+          "intended_strokes": 44,
+          "max_stage_um": 355.21557496712325,
+          "max_imposed_um": 373.45239392094686,
+          "median_letter_max_imposed_um": 294.68512457599746
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 240.33998638169336,
@@ -43750,6 +45646,42 @@
           "max_stage_um": 366.9253064896997,
           "max_imposed_um": 322.71874371889373,
           "median_letter_max_imposed_um": 270.55242868092944
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 180.42797991874218,
+          "path_p95_um": 346.12259244646265,
+          "path_max_um": 722.1726967152842,
+          "dtw_mean_um": 168.3221011161424,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2651874715251046,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 87,
+          "intended_strokes": 44,
+          "max_stage_um": 158.0621744071339
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 186.09447489268638,
+          "path_p95_um": 366.6335919836467,
+          "path_max_um": 723.7327538723058,
+          "dtw_mean_um": 165.53491343762792,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0868356953238012,
+          "at_soft_limit": 0.17054890146226762,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.36589926387677,
+          "qr_max_um": 299.997892184666,
+          "mean_authority_in_contact": 0.37926859020917725,
+          "contact_runs": 276,
+          "intended_strokes": 44,
+          "max_stage_um": 381.4997940607185,
+          "max_imposed_um": 324.02189530836785,
+          "median_letter_max_imposed_um": 295.0489872761647
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -44681,6 +46613,42 @@
           "max_imposed_um": 306.05750040346,
           "median_letter_max_imposed_um": 274.02610002343806
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 219.64907611707633,
+          "path_p95_um": 396.1994679397689,
+          "path_max_um": 673.1227038884555,
+          "dtw_mean_um": 197.27356942702082,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9238448910210321,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 137.82216928788762
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 206.3322802450676,
+          "path_p95_um": 386.626096933642,
+          "path_max_um": 664.6614578554241,
+          "dtw_mean_um": 204.650774066557,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8231874462744876,
+          "at_soft_limit": 0.22238328501449564,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9545035440117,
+          "qr_max_um": 299.99999999537926,
+          "mean_authority_in_contact": 0.4428111674794196,
+          "contact_runs": 312,
+          "intended_strokes": 44,
+          "max_stage_um": 393.48093654645396,
+          "max_imposed_um": 314.373431028491,
+          "median_letter_max_imposed_um": 271.6756242394611
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 220.2662826367822,
@@ -45275,6 +47243,42 @@
           "max_stage_um": 355.03796462327824,
           "max_imposed_um": 330.97618437246314,
           "median_letter_max_imposed_um": 293.06561482620253
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 181.3008898145216,
+          "path_p95_um": 343.86806778827906,
+          "path_max_um": 542.9956225797135,
+          "dtw_mean_um": 177.0054316415863,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.3060099091702193,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 136.88014199900613
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 173.446991240684,
+          "path_p95_um": 359.5967921852348,
+          "path_max_um": 544.2460557833393,
+          "dtw_mean_um": 186.15462892347855,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2178325803452381,
+          "at_soft_limit": 0.16097806906982606,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9027262298921,
+          "qr_max_um": 299.9999999088087,
+          "mean_authority_in_contact": 0.37922935198608393,
+          "contact_runs": 317,
+          "intended_strokes": 44,
+          "max_stage_um": 335.11978500668255,
+          "max_imposed_um": 323.985796678152,
+          "median_letter_max_imposed_um": 294.2026676156607
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -45871,6 +47875,42 @@
           "max_imposed_um": 337.1296071616587,
           "median_letter_max_imposed_um": 264.7252684295111
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 206.4879761990761,
+          "path_p95_um": 439.75194478169954,
+          "path_max_um": 593.8091955342602,
+          "dtw_mean_um": 182.0134136541985,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8939956779526077,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 86,
+          "intended_strokes": 44,
+          "max_stage_um": 155.88073118121835
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 209.96171209859602,
+          "path_p95_um": 430.27374044258914,
+          "path_max_um": 600.2037885036096,
+          "dtw_mean_um": 207.94172138939547,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8799882603756579,
+          "at_soft_limit": 0.2149339517999395,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9726202511552,
+          "qr_max_um": 299.9999997597675,
+          "mean_authority_in_contact": 0.40692669435255785,
+          "contact_runs": 336,
+          "intended_strokes": 44,
+          "max_stage_um": 363.0547072480353,
+          "max_imposed_um": 313.56150886172423,
+          "median_letter_max_imposed_um": 264.3412641543362
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 218.51941829855588,
@@ -46465,6 +48505,42 @@
           "max_stage_um": 393.766136300767,
           "max_imposed_um": 367.83428441009823,
           "median_letter_max_imposed_um": 282.90729664941614
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 147.30916737718113,
+          "path_p95_um": 302.29128707317955,
+          "path_max_um": 472.55789092951335,
+          "dtw_mean_um": 158.56270834890665,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9494442230186533,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 144.4218009307314
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 160.2761341184257,
+          "path_p95_um": 316.47229328223557,
+          "path_max_um": 553.9152906164807,
+          "dtw_mean_um": 164.7357231409199,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0552711394233751,
+          "at_soft_limit": 0.20497751430907604,
+          "on_stop": 5.110384300899428e-05,
+          "qr_p95_um": 299.97410978373404,
+          "qr_max_um": 299.99999145623565,
+          "mean_authority_in_contact": 0.3821574234101403,
+          "contact_runs": 374,
+          "intended_strokes": 44,
+          "max_stage_um": 381.1714991650659,
+          "max_imposed_um": 393.796372383838,
+          "median_letter_max_imposed_um": 282.2445697712129
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -47396,6 +49472,42 @@
           "max_imposed_um": 299.2250693456229,
           "median_letter_max_imposed_um": 281.03108363470693
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 142.6807693138084,
+          "path_p95_um": 280.02423462327147,
+          "path_max_um": 439.8903199079253,
+          "dtw_mean_um": 121.33616687300999,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 2.557761496712214,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 136.07578946116095
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 162.79990571228285,
+          "path_p95_um": 336.50085181540487,
+          "path_max_um": 544.5719605595,
+          "dtw_mean_um": 145.6260729352777,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.161957538338844,
+          "at_soft_limit": 0.2396991886008312,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.95393670633865,
+          "qr_max_um": 299.9999972456951,
+          "mean_authority_in_contact": 0.5230231161759947,
+          "contact_runs": 270,
+          "intended_strokes": 44,
+          "max_stage_um": 369.79566662322895,
+          "max_imposed_um": 302.0875195148807,
+          "median_letter_max_imposed_um": 285.478640959081
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 108.90245813941166,
@@ -47990,6 +50102,42 @@
           "max_stage_um": 353.555392660194,
           "max_imposed_um": 315.54190795342004,
           "median_letter_max_imposed_um": 288.84290027299033
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 155.0577055608407,
+          "path_p95_um": 284.1190984949936,
+          "path_max_um": 459.11798831874256,
+          "dtw_mean_um": 143.0631512238726,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.634202139394805,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 141.52080681591437
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 154.3036294969177,
+          "path_p95_um": 301.2986434047122,
+          "path_max_um": 532.3103106433896,
+          "dtw_mean_um": 190.3436192169801,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.023023828409962,
+          "at_soft_limit": 0.19302530429212045,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.8399326833383,
+          "qr_max_um": 299.9999927789121,
+          "mean_authority_in_contact": 0.4711848925261228,
+          "contact_runs": 305,
+          "intended_strokes": 44,
+          "max_stage_um": 349.59916233220633,
+          "max_imposed_um": 315.0993122685356,
+          "median_letter_max_imposed_um": 286.07390764335884
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -48586,6 +50734,42 @@
           "max_imposed_um": 327.13510148653387,
           "median_letter_max_imposed_um": 295.01284014776326
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 156.5157883903528,
+          "path_p95_um": 282.00618979824293,
+          "path_max_um": 599.2944684015786,
+          "dtw_mean_um": 139.40880883047163,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4435838030188408,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 89,
+          "intended_strokes": 44,
+          "max_stage_um": 143.99343988977697
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 168.46482927350007,
+          "path_p95_um": 319.7767420959707,
+          "path_max_um": 608.5882247713446,
+          "dtw_mean_um": 176.1574816435542,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1210494243731466,
+          "at_soft_limit": 0.21640174886609734,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.764091124128,
+          "qr_max_um": 299.99911101602726,
+          "mean_authority_in_contact": 0.5123799252100112,
+          "contact_runs": 410,
+          "intended_strokes": 44,
+          "max_stage_um": 354.0402034232978,
+          "max_imposed_um": 331.5577032304798,
+          "median_letter_max_imposed_um": 289.78470115009793
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 120.61221215047472,
@@ -49180,6 +51364,42 @@
           "max_stage_um": 346.1956570731372,
           "max_imposed_um": 323.1483402643723,
           "median_letter_max_imposed_um": 305.7637096809931
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 227.52785321243562,
+          "path_p95_um": 421.9528941500461,
+          "path_max_um": 650.6295982113159,
+          "dtw_mean_um": 222.58385667653437,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2647435994189542,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 88,
+          "intended_strokes": 44,
+          "max_stage_um": 162.4621237372434
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 227.3594475884413,
+          "path_p95_um": 446.13555568854594,
+          "path_max_um": 674.2396255936893,
+          "dtw_mean_um": 227.59599845268298,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9918948378022677,
+          "at_soft_limit": 0.18813822400130709,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9139910684277,
+          "qr_max_um": 299.99999980032936,
+          "mean_authority_in_contact": 0.4475810062985838,
+          "contact_runs": 395,
+          "intended_strokes": 44,
+          "max_stage_um": 344.004447004511,
+          "max_imposed_um": 322.75956840105584,
+          "median_letter_max_imposed_um": 305.0728826271741
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -50111,6 +52331,42 @@
           "max_imposed_um": 338.3715416450285,
           "median_letter_max_imposed_um": 287.64820484794103
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 139.18069110656796,
+          "path_p95_um": 278.83800801877135,
+          "path_max_um": 415.44011419462976,
+          "dtw_mean_um": 149.0281452068025,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.159582355086013,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 188.3781741637871
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 158.17832891213018,
+          "path_p95_um": 326.73774273531376,
+          "path_max_um": 438.3700090420713,
+          "dtw_mean_um": 178.2106005051715,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9333412225734594,
+          "at_soft_limit": 0.2807303397709302,
+          "on_stop": 9.58451142952988e-05,
+          "qr_p95_um": 299.9462570986066,
+          "qr_max_um": 299.99999643442106,
+          "mean_authority_in_contact": 0.6361625258997387,
+          "contact_runs": 94,
+          "intended_strokes": 44,
+          "max_stage_um": 369.2912496729643,
+          "max_imposed_um": 289.8244657510824,
+          "median_letter_max_imposed_um": 287.2139588201625
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 142.28933254669454,
@@ -50993,6 +53249,42 @@
           "max_imposed_um": 320.3502311739038,
           "median_letter_max_imposed_um": 309.3330504085402
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 156.79441117418077,
+          "path_p95_um": 320.2108667518277,
+          "path_max_um": 769.4556249387206,
+          "dtw_mean_um": 157.40340458187816,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4359799736246794,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 186.35391733154617
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 177.27052678586156,
+          "path_p95_um": 356.8607520716053,
+          "path_max_um": 792.5425975532288,
+          "dtw_mean_um": 177.19885688383624,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1971208806116984,
+          "at_soft_limit": 0.2662331452615473,
+          "on_stop": 9.56297217175098e-05,
+          "qr_p95_um": 299.9626826276261,
+          "qr_max_um": 299.9999415934025,
+          "mean_authority_in_contact": 0.526584821487151,
+          "contact_runs": 79,
+          "intended_strokes": 44,
+          "max_stage_um": 370.63585535326433,
+          "max_imposed_um": 341.4987237567855,
+          "median_letter_max_imposed_um": 288.7439573873302
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 161.1011028260877,
@@ -51588,6 +53880,42 @@
           "max_imposed_um": 387.5182810701224,
           "median_letter_max_imposed_um": 291.70023613264857
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 176.6066036970682,
+          "path_p95_um": 333.0841263119958,
+          "path_max_um": 619.3521803856405,
+          "dtw_mean_um": 172.41797689229242,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1774172789961825,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 203.578292040811
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 185.55495509292408,
+          "path_p95_um": 401.7347592858417,
+          "path_max_um": 619.3336935074951,
+          "dtw_mean_um": 191.6601945173315,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2189399355547004,
+          "at_soft_limit": 0.283207899908921,
+          "on_stop": 0.0001438090216192896,
+          "qr_p95_um": 299.93675561735046,
+          "qr_max_um": 299.9999497098793,
+          "mean_authority_in_contact": 0.5892950691872474,
+          "contact_runs": 90,
+          "intended_strokes": 44,
+          "max_stage_um": 399.3017577587668,
+          "max_imposed_um": 382.92067971291004,
+          "median_letter_max_imposed_um": 285.64912940152925
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 173.39976706621297,
@@ -52182,6 +54510,42 @@
           "max_stage_um": 363.05794623869554,
           "max_imposed_um": 392.11422067602115,
           "median_letter_max_imposed_um": 346.0438519274153
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 211.5263086793989,
+          "path_p95_um": 435.4216020619868,
+          "path_max_um": 637.8470973093314,
+          "dtw_mean_um": 207.1920423247745,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0937984487009265,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 226.9173594837218
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 215.89215467344056,
+          "path_p95_um": 461.1285456919382,
+          "path_max_um": 662.9593488335126,
+          "dtw_mean_um": 208.36233568196053,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.282698639425998,
+          "at_soft_limit": 0.262973115952484,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.93834771014184,
+          "qr_max_um": 299.9999974745544,
+          "mean_authority_in_contact": 0.536428636804921,
+          "contact_runs": 104,
+          "intended_strokes": 44,
+          "max_stage_um": 352.4559082895291,
+          "max_imposed_um": 399.9504033081498,
+          "median_letter_max_imposed_um": 310.0596039986689
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -53113,6 +55477,42 @@
           "max_imposed_um": 311.08416003553344,
           "median_letter_max_imposed_um": 299.93441057459404
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 151.23020046988137,
+          "path_p95_um": 293.3891115399702,
+          "path_max_um": 472.95907753365384,
+          "dtw_mean_um": 164.52078108417385,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9970172647049338,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 183.14505601575686
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 172.66955804517252,
+          "path_p95_um": 334.6020109584381,
+          "path_max_um": 472.2147160105005,
+          "dtw_mean_um": 169.1794235923408,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1621046687968735,
+          "at_soft_limit": 0.30536268281873247,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.97523182218737,
+          "qr_max_um": 299.9999944431582,
+          "mean_authority_in_contact": 0.605654071576956,
+          "contact_runs": 78,
+          "intended_strokes": 44,
+          "max_stage_um": 367.4079330054348,
+          "max_imposed_um": 313.7578207000427,
+          "median_letter_max_imposed_um": 303.9057453734276
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 188.9348251636478,
@@ -53707,6 +56107,42 @@
           "max_stage_um": 362.5817390548841,
           "max_imposed_um": 315.4982878034412,
           "median_letter_max_imposed_um": 288.1894341440312
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 239.11240454734764,
+          "path_p95_um": 478.1600415651439,
+          "path_max_um": 638.1628291198468,
+          "dtw_mean_um": 242.84095895905392,
+          "recognition_accuracy": 0.8,
+          "recognition_margin_median": 0.6133010398627958,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 197.09857109754347
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 269.4744688519046,
+          "path_p95_um": 504.3577871923651,
+          "path_max_um": 636.3472154594754,
+          "dtw_mean_um": 260.90860820361024,
+          "recognition_accuracy": 0.6,
+          "recognition_margin_median": 0.49832875660607145,
+          "at_soft_limit": 0.25403940886699505,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9356315203677,
+          "qr_max_um": 299.9997936168897,
+          "mean_authority_in_contact": 0.5564679016776052,
+          "contact_runs": 87,
+          "intended_strokes": 44,
+          "max_stage_um": 341.1067158316511,
+          "max_imposed_um": 314.0458770692296,
+          "median_letter_max_imposed_um": 289.2258031450197
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -54303,6 +56739,42 @@
           "max_imposed_um": 343.88501017518104,
           "median_letter_max_imposed_um": 290.97427167040195
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 147.9607223920399,
+          "path_p95_um": 292.4012822618659,
+          "path_max_um": 568.3264644302006,
+          "dtw_mean_um": 132.81446461972152,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1118646331244353,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 203.1210817625314
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 180.05807737061593,
+          "path_p95_um": 356.0661981713479,
+          "path_max_um": 558.2000110828363,
+          "dtw_mean_um": 163.2139001336646,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.8312546059944298,
+          "at_soft_limit": 0.2543141702001775,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9604899241443,
+          "qr_max_um": 299.99999321919427,
+          "mean_authority_in_contact": 0.5885037397873015,
+          "contact_runs": 78,
+          "intended_strokes": 44,
+          "max_stage_um": 349.8398081855639,
+          "max_imposed_um": 334.08259687015385,
+          "median_letter_max_imposed_um": 284.5550379890159
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 223.4157623567744,
@@ -54897,6 +57369,42 @@
           "max_stage_um": 343.8217469646203,
           "max_imposed_um": 323.6702662957999,
           "median_letter_max_imposed_um": 294.20377865443487
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 132.47961769734286,
+          "path_p95_um": 248.3603243760215,
+          "path_max_um": 416.2507689043796,
+          "dtw_mean_um": 134.13630942088713,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4047565939391033,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 182.32242263404598
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 154.45049674488357,
+          "path_p95_um": 326.15428047379805,
+          "path_max_um": 429.91473536667144,
+          "dtw_mean_um": 144.88183527184256,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2474695955849358,
+          "at_soft_limit": 0.25272610647851185,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9614348650431,
+          "qr_max_um": 299.9999968586729,
+          "mean_authority_in_contact": 0.5789775087050271,
+          "contact_runs": 98,
+          "intended_strokes": 44,
+          "max_stage_um": 343.87757844536543,
+          "max_imposed_um": 327.19382662225627,
+          "median_letter_max_imposed_um": 294.5241346479845
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -55828,6 +58336,42 @@
           "max_imposed_um": 348.7968434917291,
           "median_letter_max_imposed_um": 289.98385269144825
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 138.3293045461676,
+          "path_p95_um": 257.83320238836944,
+          "path_max_um": 394.8137439071504,
+          "dtw_mean_um": 138.97743354245029,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9132937386462897,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 192.32732431562093
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 158.5788058315436,
+          "path_p95_um": 291.1361422007624,
+          "path_max_um": 477.57998377211203,
+          "dtw_mean_um": 160.53320403599884,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.993863518616432,
+          "at_soft_limit": 0.27696476964769645,
+          "on_stop": 4.927322000492732e-05,
+          "qr_p95_um": 299.94042340656466,
+          "qr_max_um": 299.9999985183801,
+          "mean_authority_in_contact": 0.6054418290169532,
+          "contact_runs": 86,
+          "intended_strokes": 44,
+          "max_stage_um": 358.2097666054458,
+          "max_imposed_um": 351.7634128778588,
+          "median_letter_max_imposed_um": 298.7495788303683
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 140.77351756324913,
@@ -56422,6 +58966,42 @@
           "max_stage_um": 403.8357311437628,
           "max_imposed_um": 382.40270656801414,
           "median_letter_max_imposed_um": 325.7136757243748
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 174.8667750251698,
+          "path_p95_um": 341.33390130578664,
+          "path_max_um": 473.1005549048162,
+          "dtw_mean_um": 157.73287220086624,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.067127335069724,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 203.9195469562674
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 201.11210602740633,
+          "path_p95_um": 369.90696247146934,
+          "path_max_um": 487.9348320421005,
+          "dtw_mean_um": 187.82371940871047,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0635926151352424,
+          "at_soft_limit": 0.29866020665447174,
+          "on_stop": 4.943886883868097e-05,
+          "qr_p95_um": 299.9413910280043,
+          "qr_max_um": 299.99963300392045,
+          "mean_authority_in_contact": 0.6266703721218079,
+          "contact_runs": 95,
+          "intended_strokes": 44,
+          "max_stage_um": 403.96676171781615,
+          "max_imposed_um": 375.23318261468654,
+          "median_letter_max_imposed_um": 317.50508354899193
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -57018,6 +59598,42 @@
           "max_imposed_um": 401.70629663465076,
           "median_letter_max_imposed_um": 307.18681609699655
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 172.9291187263783,
+          "path_p95_um": 377.1095352834192,
+          "path_max_um": 527.2318378245636,
+          "dtw_mean_um": 161.78434117234332,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.1591995010723226,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 204.97366570960645
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 175.3161493969182,
+          "path_p95_um": 403.2556844131437,
+          "path_max_um": 524.1580464086641,
+          "dtw_mean_um": 146.9249659468541,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2563212611946095,
+          "at_soft_limit": 0.2749135802469136,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.96930125925314,
+          "qr_max_um": 299.99999667319776,
+          "mean_authority_in_contact": 0.5777218652968322,
+          "contact_runs": 84,
+          "intended_strokes": 44,
+          "max_stage_um": 385.1446964511064,
+          "max_imposed_um": 401.2650357561481,
+          "median_letter_max_imposed_um": 307.85453096942587
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 149.4116265258531,
@@ -57612,6 +60228,42 @@
           "max_stage_um": 364.35172911728847,
           "max_imposed_um": 415.83281496538365,
           "median_letter_max_imposed_um": 327.1430866969792
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 151.9794653818124,
+          "path_p95_um": 285.6246901296863,
+          "path_max_um": 597.9082543909827,
+          "dtw_mean_um": 159.8466022116529,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2279815500301814,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 203.37949979052038
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 164.40587191400482,
+          "path_p95_um": 319.2655261617598,
+          "path_max_um": 619.006890755204,
+          "dtw_mean_um": 156.59473371062134,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2245344530280653,
+          "at_soft_limit": 0.25938009787928223,
+          "on_stop": 4.943398091848337e-05,
+          "qr_p95_um": 299.95707699912293,
+          "qr_max_um": 299.99992911341076,
+          "mean_authority_in_contact": 0.562688939489324,
+          "contact_runs": 104,
+          "intended_strokes": 44,
+          "max_stage_um": 367.7878157568084,
+          "max_imposed_um": 408.7191846580033,
+          "median_letter_max_imposed_um": 290.96117727996733
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -58543,6 +61195,42 @@
           "max_imposed_um": 366.7465167706834,
           "median_letter_max_imposed_um": 307.74375716559655
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 182.29076781101895,
+          "path_p95_um": 377.04311529811156,
+          "path_max_um": 475.55683711616035,
+          "dtw_mean_um": 120.19888210204685,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.5250874620326151,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 183.47072834491533
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 210.48650303145112,
+          "path_p95_um": 391.85166115230254,
+          "path_max_um": 474.7039422752073,
+          "dtw_mean_um": 153.09483975597033,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 2.67793945163614,
+          "at_soft_limit": 0.31044275203304506,
+          "on_stop": 6.454111268878275e-05,
+          "qr_p95_um": 299.98448185979805,
+          "qr_max_um": 299.9999927372639,
+          "mean_authority_in_contact": 0.5732198083227972,
+          "contact_runs": 83,
+          "intended_strokes": 44,
+          "max_stage_um": 369.4061789570155,
+          "max_imposed_um": 370.76635175574165,
+          "median_letter_max_imposed_um": 299.8985614479832
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 118.96496480592549,
@@ -59137,6 +61825,42 @@
           "max_stage_um": 383.41780510046925,
           "max_imposed_um": 417.27408402195863,
           "median_letter_max_imposed_um": 356.9151306591938
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 246.87584423163716,
+          "path_p95_um": 474.16282982406085,
+          "path_max_um": 669.6326328597611,
+          "dtw_mean_um": 217.86796358166663,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2781884883713022,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 202.697549624624
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 250.65738397544465,
+          "path_p95_um": 471.65172673452645,
+          "path_max_um": 644.7968659281131,
+          "dtw_mean_um": 225.17614419004752,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0582542139380302,
+          "at_soft_limit": 0.3135483870967742,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.98651012210865,
+          "qr_max_um": 299.9999996634962,
+          "mean_authority_in_contact": 0.5715328569577728,
+          "contact_runs": 81,
+          "intended_strokes": 44,
+          "max_stage_um": 390.78962991205475,
+          "max_imposed_um": 410.9788248848525,
+          "median_letter_max_imposed_um": 357.32428103661556
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -59733,6 +62457,42 @@
           "max_imposed_um": 322.6261615373597,
           "median_letter_max_imposed_um": 280.7332573611224
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 179.59837567234484,
+          "path_p95_um": 343.0063766854317,
+          "path_max_um": 671.2729706006096,
+          "dtw_mean_um": 168.591307596964,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4246424050090964,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 193.04464306498642
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 179.11525305248125,
+          "path_p95_um": 299.8647981395802,
+          "path_max_um": 649.056138875765,
+          "dtw_mean_um": 154.84519354160594,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.7533314296824587,
+          "at_soft_limit": 0.2315395051359907,
+          "on_stop": 0.00012920731313392338,
+          "qr_p95_um": 299.9470490640173,
+          "qr_max_um": 299.99999780619805,
+          "mean_authority_in_contact": 0.565239326854934,
+          "contact_runs": 75,
+          "intended_strokes": 44,
+          "max_stage_um": 359.6009280449777,
+          "max_imposed_um": 332.83372494977186,
+          "median_letter_max_imposed_um": 280.4905967623552
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 230.3553689098683,
@@ -60327,6 +63087,42 @@
           "max_stage_um": 386.2112601701973,
           "max_imposed_um": 319.0204339418804,
           "median_letter_max_imposed_um": 288.7114921528982
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 166.30414127736518,
+          "path_p95_um": 316.43116945918496,
+          "path_max_um": 724.0538167627233,
+          "dtw_mean_um": 152.90090597524437,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.420096856031681,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 218.98038311115772
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 160.85841500946344,
+          "path_p95_um": 339.17804905558484,
+          "path_max_um": 650.1374687078026,
+          "dtw_mean_um": 149.99864868194243,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4819886855904836,
+          "at_soft_limit": 0.2447063394418183,
+          "on_stop": 6.47542575924367e-05,
+          "qr_p95_um": 299.95425892485014,
+          "qr_max_um": 299.99993238317717,
+          "mean_authority_in_contact": 0.5676614235420896,
+          "contact_runs": 81,
+          "intended_strokes": 44,
+          "max_stage_um": 379.0587732308626,
+          "max_imposed_um": 324.88743770608477,
+          "median_letter_max_imposed_um": 302.8167597466428
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -61258,6 +64054,42 @@
           "max_imposed_um": 392.5001583164021,
           "median_letter_max_imposed_um": 290.4333312766698
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 198.3411372116823,
+          "path_p95_um": 368.57832239914194,
+          "path_max_um": 648.4413762334727,
+          "dtw_mean_um": 178.23668525053247,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0948521719322306,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 191.12446943448762
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 196.15093062195223,
+          "path_p95_um": 396.7266380046645,
+          "path_max_um": 643.3773435813698,
+          "dtw_mean_um": 196.16000664388142,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.0080723708122832,
+          "at_soft_limit": 0.24881788550704678,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.96303207327594,
+          "qr_max_um": 299.9999999990561,
+          "mean_authority_in_contact": 0.5541383904358944,
+          "contact_runs": 108,
+          "intended_strokes": 44,
+          "max_stage_um": 375.6183534719678,
+          "max_imposed_um": 397.4456500919813,
+          "median_letter_max_imposed_um": 293.1176040454827
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 188.08091343218481,
@@ -61852,6 +64684,42 @@
           "max_stage_um": 385.6600000587923,
           "max_imposed_um": 412.97722929697886,
           "median_letter_max_imposed_um": 289.6206526335385
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 173.04159686320773,
+          "path_p95_um": 339.32411622083384,
+          "path_max_um": 528.2180471996495,
+          "dtw_mean_um": 169.88519627975185,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.2466337663444156,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 187.7107968234986
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 190.8307616781347,
+          "path_p95_um": 385.2215646597438,
+          "path_max_um": 527.7336936962678,
+          "dtw_mean_um": 168.82071069399984,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9204898555946958,
+          "at_soft_limit": 0.25446960667461266,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9945937696906,
+          "qr_max_um": 299.99999989682146,
+          "mean_authority_in_contact": 0.5252765110804195,
+          "contact_runs": 105,
+          "intended_strokes": 44,
+          "max_stage_um": 398.29948193989725,
+          "max_imposed_um": 420.51898918700226,
+          "median_letter_max_imposed_um": 278.1405701787034
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -62448,6 +65316,42 @@
           "max_imposed_um": 341.16086930519566,
           "median_letter_max_imposed_um": 276.45459064279436
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 195.54127923061316,
+          "path_p95_um": 408.0894161109519,
+          "path_max_um": 585.444766147733,
+          "dtw_mean_um": 175.20405987715395,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 0.9736443646548628,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 214.1267735953027
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 206.9596628592188,
+          "path_p95_um": 400.656850410786,
+          "path_max_um": 595.463809855983,
+          "dtw_mean_um": 177.61693709715442,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.012822036037741,
+          "at_soft_limit": 0.2736113022338425,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.97263166429474,
+          "qr_max_um": 299.99994946829923,
+          "mean_authority_in_contact": 0.544883336017728,
+          "contact_runs": 89,
+          "intended_strokes": 44,
+          "max_stage_um": 391.87547223544186,
+          "max_imposed_um": 355.84685557512256,
+          "median_letter_max_imposed_um": 254.28910883360834
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 164.94425835765108,
@@ -63042,6 +65946,42 @@
           "max_stage_um": 374.378746832222,
           "max_imposed_um": 364.0001681384852,
           "median_letter_max_imposed_um": 289.1721698687213
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 136.75463363474233,
+          "path_p95_um": 284.0814723600068,
+          "path_max_um": 437.0269302644882,
+          "dtw_mean_um": 145.88431154520717,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.3079552808509587,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 197.66748539476333
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 158.6463789003871,
+          "path_p95_um": 315.36029329768894,
+          "path_max_um": 421.77200680658666,
+          "dtw_mean_um": 167.26475239982415,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.251292053002174,
+          "at_soft_limit": 0.27009808415070125,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.98402914468954,
+          "qr_max_um": 299.99999997688946,
+          "mean_authority_in_contact": 0.48621687399533253,
+          "contact_runs": 99,
+          "intended_strokes": 44,
+          "max_stage_um": 370.016236026116,
+          "max_imposed_um": 345.0665264074368,
+          "median_letter_max_imposed_um": 264.3986292795486
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -63973,6 +66913,42 @@
           "max_imposed_um": 311.90258956243684,
           "median_letter_max_imposed_um": 272.97770122926715
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 125.05063421733772,
+          "path_p95_um": 249.19531098986513,
+          "path_max_um": 445.6406690327951,
+          "dtw_mean_um": 103.16603435136835,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 2.5996115894383633,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 184.83655494134425
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 165.13706058935642,
+          "path_p95_um": 324.3992467551069,
+          "path_max_um": 472.4582791391346,
+          "dtw_mean_um": 149.40567657393558,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4805636918411942,
+          "at_soft_limit": 0.28038771493296694,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9716476814641,
+          "qr_max_um": 299.9999964798933,
+          "mean_authority_in_contact": 0.5851246894234191,
+          "contact_runs": 62,
+          "intended_strokes": 44,
+          "max_stage_um": 357.36257575288204,
+          "max_imposed_um": 306.5057904613178,
+          "median_letter_max_imposed_um": 272.9876453119323
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 114.75640225947478,
@@ -64567,6 +67543,42 @@
           "max_stage_um": 349.0805946826128,
           "max_imposed_um": 320.3211005337976,
           "median_letter_max_imposed_um": 262.43945912194783
+        },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 150.1711477783463,
+          "path_p95_um": 284.19230579118994,
+          "path_max_um": 471.8676886021632,
+          "dtw_mean_um": 131.05692107888734,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.6003676012034842,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 195.23911360457214
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 189.61622103348924,
+          "path_p95_um": 391.4013013230493,
+          "path_max_um": 480.637931684563,
+          "dtw_mean_um": 163.94687947145547,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.4476793741525766,
+          "at_soft_limit": 0.28884513948218865,
+          "on_stop": 3.714572267003454e-05,
+          "qr_p95_um": 299.97002962681785,
+          "qr_max_um": 299.9999988739502,
+          "mean_authority_in_contact": 0.5826861866701971,
+          "contact_runs": 67,
+          "intended_strokes": 44,
+          "max_stage_um": 352.1950368851274,
+          "max_imposed_um": 315.07438618356804,
+          "median_letter_max_imposed_um": 260.9741106380358
         },
         "a_for_o_letters": {
           "n_letters": 2,
@@ -65163,6 +68175,42 @@
           "max_imposed_um": 317.5034951768511,
           "median_letter_max_imposed_um": 296.6264907590685
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 151.33012478791645,
+          "path_p95_um": 298.97071635782515,
+          "path_max_um": 616.9742973274778,
+          "dtw_mean_um": 132.11148260478413,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.508070926037984,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 200.91013098890554
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 176.96804196548845,
+          "path_p95_um": 330.6543314034514,
+          "path_max_um": 579.3515994932258,
+          "dtw_mean_um": 159.409176150877,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.364516223011933,
+          "at_soft_limit": 0.3220817843866171,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.9384129880632,
+          "qr_max_um": 299.9999995705737,
+          "mean_authority_in_contact": 0.6266220954361332,
+          "contact_runs": 75,
+          "intended_strokes": 44,
+          "max_stage_um": 368.51135744359505,
+          "max_imposed_um": 305.40441514491255,
+          "median_letter_max_imposed_um": 297.88875853410286
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 167.56224455971156,
@@ -65758,6 +68806,42 @@
           "max_imposed_um": 358.30820585471537,
           "median_letter_max_imposed_um": 330.2873296624201
         },
+        "after_wrong_word_letters_neutral": {
+          "n_letters": 5,
+          "path_rms_um": 209.25373571144124,
+          "path_p95_um": 393.12379069299897,
+          "path_max_um": 607.5758407654517,
+          "dtw_mean_um": 201.42175456180752,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.416168925431913,
+          "at_soft_limit": 0.0,
+          "on_stop": 0.0,
+          "qr_p95_um": 0.0,
+          "qr_max_um": 0.0,
+          "mean_authority_in_contact": 0.0,
+          "contact_runs": 44,
+          "intended_strokes": 44,
+          "max_stage_um": 222.19228329162743
+        },
+        "after_wrong_word_letters_ai_correct": {
+          "n_letters": 5,
+          "path_rms_um": 219.2304083524976,
+          "path_p95_um": 419.4425619900796,
+          "path_max_um": 642.5863251088203,
+          "dtw_mean_um": 212.81603371472778,
+          "recognition_accuracy": 1.0,
+          "recognition_margin_median": 1.367384224995494,
+          "at_soft_limit": 0.28968933919392087,
+          "on_stop": 0.0,
+          "qr_p95_um": 299.93705096751665,
+          "qr_max_um": 299.999998210187,
+          "mean_authority_in_contact": 0.6480322364259025,
+          "contact_runs": 100,
+          "intended_strokes": 44,
+          "max_stage_um": 364.8037930207169,
+          "max_imposed_um": 351.34629930777606,
+          "median_letter_max_imposed_um": 307.1793451233621
+        },
         "a_for_o_letters": {
           "n_letters": 2,
           "path_rms_um": 183.25105735386958,
@@ -66258,5 +69342,5 @@
       }
     }
   ],
-  "runtime_s": 244.0
+  "runtime_s": 250.6
 }

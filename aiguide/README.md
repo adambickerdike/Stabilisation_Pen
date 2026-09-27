@@ -40,14 +40,14 @@ From the repository root, Python 3.11 with `requirements.txt` (torch CPU only fo
 | Study | Command | Output | Runtime here |
 |---|---|---|---|
 | B1.1 text predictor | `python3 -m aiguide.run_text` | `text_predictor.json`, `fig_text_calibration.png` | ~2.5 min (+2 min first build of the cached model in `aiguide/build/`) |
-| B1.2 style templates | `python3 -m aiguide.run_style` | `style_templates.json`, `fig_style_template_error.png`, `fig_style_example.png` | ~1.5 min |
+| B1.2 style templates | `python3 -m aiguide.run_style` | `style_templates.json`, `fig_style_template_error.png`, `fig_style_example.png` | ~5 min |
 | B1.3 stroke continuation | `python3 -m aiguide.run_stroke` | `stroke_prediction.json`, `fig_stroke_prediction.png` | ~0.5 min |
 | B2 closed-loop guidance | `python3 -m aiguide.run_guidance` (2 processes) | `guidance.json`, `viz_guided.json`, `fig_guidance_*.png`, `fig_micrographia.png` | ~4 min |
-| B3 autocorrect | `python3 -m aiguide.run_autocorrect` | `autocorrect.json`, `fig_autocorrect.png`, `autocorrect_rerender.svg` | ~3 min |
-| B4 deployment | `python3 -m aiguide.run_deploy` | `deployment.json`, `fig_lead_time.png` | ~1 min |
-| all | `bash aiguide/run_all.sh` | all of the above | ~13 min |
+| B3 autocorrect | `python3 -m aiguide.run_autocorrect` | `autocorrect.json`, `fig_autocorrect.png`, `autocorrect_rerender.svg` | ~1 min |
+| B4 deployment | `python3 -m aiguide.run_deploy` | `deployment.json`, `fig_lead_time.png` | ~10 s |
+| all | `bash aiguide/run_all.sh` | all of the above, then the tests | ~14 min (+2 min on the first run) |
 
-Tests: `python3 -m pytest -q -p no:cacheprovider aiguide/tests` (about 10 s) and `python3 -m pytest -q app/tests` (includes `test_autocorrect.py`).
+Tests: `python3 -m pytest -q -p no:cacheprovider aiguide/tests` (29 tests, about 6 s) and `python3 -m pytest -q app/tests` (147 tests including the 10 of `test_autocorrect.py`, about 9 s).
 
 Caches (git-ignored through `build/`): `aiguide/build/pred_o7_*.pkl` (trained predictor) and `aiguide/build/numba_cache/` (numba cache of the simulator core, kept out of `sim/`, which other jobs use). Nothing here writes into `sim/`, `stabpen/`, `config/`, `ml/`, `firmware/` or existing `app/` files.
 

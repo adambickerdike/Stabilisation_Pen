@@ -16,7 +16,7 @@ touchdown of letter k-d+1 (conservative: only then is letter k-d known to be
 finished; a 't' crossbar or an 'i' dot may still follow).
 
 Outputs results/ai/deployment.json and fig_lead_time.png.
-Run: python3 -m aiguide.run_deploy  (about 1 min)
+Run: python3 -m aiguide.run_deploy  (about 10 s)
 """
 from __future__ import annotations
 
@@ -68,7 +68,9 @@ def lead_time_table(n_writers=24):
                     if k - d < 0:
                         continue
                     t_opt = lt[k - d][1]
-                    t_con = lt[k - d + 1][0] if k - d + 1 < k else lt[k - d][1]
+                    # conservative: letter k-d is known finished only when letter k-d+1 touches down;
+                    # for d = 1 that is the touchdown of letter k itself, i.e. always too late
+                    t_con = lt[k - d + 1][0]
                     for L in LATENCIES:
                         rows[f"d{d}_optimistic"][str(L)].append(lt[k][0] - t_opt >= L)
                         rows[f"d{d}_conservative"][str(L)].append(lt[k][0] - t_con >= L)
@@ -124,6 +126,7 @@ def bandwidth_study(est, n_writers=6):
 def model_sizes(pred):
     buf = io.BytesIO()
     pred.char.to_npz(buf)
+    pred.word._cache.clear()                        # the per-context probability cache is not part of the model
     wbuf = pickle.dumps(pred.word, protocol=pickle.HIGHEST_PROTOCOL)
     mlp = sp.MLPPredictor()
     return {"char_kn7_npz_bytes": len(buf.getvalue()), "char_kn7_ngrams": pred.char.n_params(),

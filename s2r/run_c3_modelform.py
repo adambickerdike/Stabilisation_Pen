@@ -29,7 +29,7 @@ import time
 import numpy as np
 
 import s2r  # noqa: F401
-from s2r import common, exp_b01b02, ident, modelform, twin
+from s2r import common, exp_b01b02, fastharness, ident, modelform, twin
 from s2r import stage_model as sm
 from sim.pensim import evaluate, harness, model, scenarios
 from stabpen import signals as sg
@@ -117,8 +117,8 @@ def friction_part(quick):
 def neutral_band_error(ov, seeds, f0, bands=((1, 3), (3, 6), (6, 10), (10, 15), (15, 30))):
     rows = []
     for s in seeds:
-        sc0 = scenarios.handwriting(seed=s, duration=6.0)
-        sc1 = scenarios.handwriting(seed=s, duration=6.0, tremor=sg.TremorSpec(f0=f0, amp_pk=3e-4))
+        sc0 = fastharness.scenario(s)
+        sc1 = fastharness.scenario(s, f0=f0, amp=3e-4)
         rs = model.run(sc0, model.Controller(mode="neutral"), overrides=ov, seed=s)
         rn = model.run(sc1, model.Controller(mode="neutral"), overrides=ov, seed=s)
         msk, fs = evaluate._mask(rn, rs, 0.5, 0.03)

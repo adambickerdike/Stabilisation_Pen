@@ -38,8 +38,7 @@ B03_LEVELS = [("0.2 s holds, 4 step averages, 45 s thermal, no back-EMF",
                dict(hold=2.0, n_rep=3, n_avg=64, thermal_s=360.0, back_emf=True))]
 B05_LEVELS = [("2 chirps x 3 s", dict(n_chirps=2, T_c=3.0)), ("2 chirps x 10 s", dict(n_chirps=2, T_c=10.0)),
               ("4 chirps x 10 s", dict(n_chirps=4, T_c=10.0)),
-              ("protocol: 10 chirps x 10 s", dict(n_chirps=10, T_c=10.0)),
-              ("10 chirps x 30 s", dict(n_chirps=10, T_c=30.0))]
+              ("protocol: 10 chirps x 10 s", dict(n_chirps=10, T_c=10.0))]
 B12_LEVELS = [("reduced grid x1 (1 N, 50 deg, +-t1)", dict(n_rep=1, reduced=True)),
               ("reduced grid x3", dict(n_rep=3, reduced=True)),
               ("protocol grid x1 (3 N x 2 angles x 4 directions)", dict(n_rep=1, reduced=False)),
@@ -116,7 +115,7 @@ def main():
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--workers", type=int, default=2)
     a = ap.parse_args()
-    nt = {"B03": 3 if a.quick else 24, "B05": 2 if a.quick else 8, "B01B02": 2 if a.quick else 8}
+    nt = {"B03": 3 if a.quick else 24, "B05": 1 if a.quick else 6, "B01B02": 1 if a.quick else 5}
     noises = {"B03": (1.0, 4.0, 16.0), "B05": (1.0, 4.0), "B01B02": (1.0, 4.0)}
     levels = {"B03": B03_LEVELS, "B05": B05_LEVELS, "B01B02": B12_LEVELS}
     jobs = []
