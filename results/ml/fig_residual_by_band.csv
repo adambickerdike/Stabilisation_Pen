@@ -1,0 +1,31 @@
+band,set,method,fc_target_um,rr,ci_lo,ci_hi
+4-6 Hz,test,bpf,25,1.0075,1.003,1.0126
+6-7 Hz,test,bpf,25,0.97986,0.97555,0.99347
+7-8 Hz (holdout),test_freq_holdout,bpf,25,0.95828,0.95158,0.96638
+8-10 Hz,test,bpf,25,0.91403,0.90693,0.92431
+10-12 Hz,test,bpf,25,0.89724,0.89492,0.90226
+4-6 Hz,test,bmflc,25,1.0192,1.0161,1.0231
+6-7 Hz,test,bmflc,25,1.0079,1.0042,1.0181
+7-8 Hz (holdout),test_freq_holdout,bmflc,25,0.98947,0.98397,0.99661
+8-10 Hz,test,bmflc,25,0.91165,0.89796,0.93115
+10-12 Hz,test,bmflc,25,0.90061,0.89322,0.90862
+4-6 Hz,test,kf,25,0.99171,0.98408,0.99864
+6-7 Hz,test,kf,25,0.87511,0.84312,0.98779
+7-8 Hz (holdout),test_freq_holdout,kf,25,0.85037,0.7927,0.91046
+8-10 Hz,test,kf,25,0.64785,0.58007,0.75121
+10-12 Hz,test,kf,25,0.64395,0.45973,0.84848
+4-6 Hz,test,arls_sched,25,0.96679,0.95623,0.97591
+6-7 Hz,test,arls_sched,25,0.8065,0.75855,0.96077
+7-8 Hz (holdout),test_freq_holdout,arls_sched,25,0.84378,0.79709,0.89419
+8-10 Hz,test,arls_sched,25,0.61587,0.53362,0.7268
+10-12 Hz,test,arls_sched,25,0.53075,0.42797,0.66303
+4-6 Hz,test,tcn,25,0.63219,0.55698,0.71871
+6-7 Hz,test,tcn,25,0.49896,0.37938,0.78726
+7-8 Hz (holdout),test_freq_holdout,tcn,25,0.55243,0.47562,0.64298
+8-10 Hz,test,tcn,25,0.35615,0.28431,0.45905
+10-12 Hz,test,tcn,25,0.31765,0.27562,0.39579
+4-6 Hz,test,oracle_osc,25,0.059761,0.04794,0.076629
+6-7 Hz,test,oracle_osc,25,0.044792,0.031517,0.083663
+7-8 Hz (holdout),test_freq_holdout,oracle_osc,25,0.067057,0.054637,0.084489
+8-10 Hz,test,oracle_osc,25,0.062767,0.045921,0.087478
+10-12 Hz,test,oracle_osc,25,0.056091,0.044605,0.069437

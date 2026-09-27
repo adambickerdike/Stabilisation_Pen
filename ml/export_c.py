@@ -17,6 +17,7 @@ Evidence status: the model is trained on SIMULATION / synthetic data.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import shutil
@@ -38,12 +39,23 @@ def _fmt_f32(v):
     return np.format_float_positional(np.float32(v), unique=True, trim="0") + "f"
 
 
+def _nested(a, fmt, per_line, indent):
+    if a.ndim == 1:
+        items = [fmt(x) for x in a]
+        rows = [", ".join(items[i:i + per_line]) for i in range(0, len(items), per_line)]
+        if len(rows) <= 1:
+            return "{" + (rows[0] if rows else "") + "}"
+        pad = " " * (indent + 4)
+        return "{\n" + pad + (",\n" + pad).join(rows) + "\n" + " " * indent + "}"
+    pad = " " * (indent + 4)
+    return "{\n" + pad + (",\n" + pad).join(_nested(x, fmt, per_line, indent + 4) for x in a) + "\n" + " " * indent + "}"
+
+
 def c_array(name, arr, ctype, per_line=20, fmt=str):
-    flat = np.asarray(arr).ravel()
-    rows = [", ".join(fmt(x) for x in flat[i:i + per_line]) for i in range(0, len(flat), per_line)]
-    shape = "".join(f"[{d}]" for d in np.asarray(arr).shape)
-    body = ",\n    ".join(rows)
-    return f"static const {ctype} {name}{shape} = {{\n    {body}\n}};\n"
+    """C initialiser with nested braces for multi-dimensional arrays (-Wmissing-braces clean)."""
+    a = np.asarray(arr)
+    shape = "".join(f"[{d}]" for d in a.shape)
+    return f"static const {ctype} {name}{shape} = {_nested(a, fmt, per_line, 0)};\n"
 
 
 def folded_bias(L):
@@ -257,10 +269,12 @@ def main():
     # ---- host clang + sanitizers
     if shutil.which("clang"):
         exe2 = os.path.join(BUILD, "test_host_ubsan")
-        cmd = ["clang", "-O1", "-g", "-fsanitize=undefined,address", "-fno-sanitize-recover=all", *COMMON_CFLAGS,
+        # trap mode: any undefined behaviour (signed overflow, bad shift, out-of-bounds index with a
+        # known bound, ...) aborts with SIGILL; no sanitizer runtime library is needed
+        cmd = ["clang", "-O1", "-g", "-fsanitize=undefined", "-fsanitize-trap=undefined", *COMMON_CFLAGS,
                "-I", C.EXPORT, *srcs, "-lm", "-o", exe2]
         rc, out = run(cmd)
-        san = {"cmd": "clang -O1 -fsanitize=undefined,address -fno-sanitize-recover=all ...", "build_rc": rc}
+        san = {"cmd": "clang -O1 -fsanitize=undefined -fsanitize-trap=undefined ...", "build_rc": rc}
         if rc == 0:
             rc2, out2 = run([exe2, binp], timeout=600)
             san.update({"run_rc": rc2, "parsed": parse_test(out2)})
@@ -322,7 +336,9 @@ def main():
         res["qemu_m33"] = qe
         print("qemu:", {k: v for k, v in qe.items() if k not in ("stdout", "build_log")}, flush=True)
     res["meta"] = C.meta(extra={"elapsed_s": time.time() - t0})
-    C.write_json(os.path.join(C.RESULTS, "export_c.json"), res)
+    txt = json.dumps(res, indent=2, default=str).replace(C.ROOT + "/", "")
+    with open(os.path.join(C.RESULTS, "export_c.json"), "w") as f:
+        f.write(txt)
     print(f"done {time.time() - t0:.0f} s", flush=True)
 
 

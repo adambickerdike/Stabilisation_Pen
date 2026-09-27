@@ -44,6 +44,20 @@ int32_t tcn_requantize(int32_t val, int32_t mult, int32_t shift)
 }
 
 /* ---- kernels ---- */
+/* dot product of n int8 pairs, 4-way unrolled (exact integer sum; order irrelevant) */
+static inline int32_t tcn_dot_s8(const int8_t *w, const int8_t *x, int32_t n, int32_t acc)
+{
+    int32_t i = 0;
+    for (; i + 4 <= n; i += 4) {
+        acc += (int32_t)w[i] * (int32_t)x[i] + (int32_t)w[i + 1] * (int32_t)x[i + 1] +
+               (int32_t)w[i + 2] * (int32_t)x[i + 2] + (int32_t)w[i + 3] * (int32_t)x[i + 3];
+    }
+    for (; i < n; ++i) {
+        acc += (int32_t)w[i] * (int32_t)x[i];
+    }
+    return acc;
+}
+
 /* batch rows of n_in int8 inputs -> batch rows of c_out int8 outputs */
 static void tcn_fc_s8(const int8_t *in, int32_t batch, const tcn_fc_params_t *p, int8_t *out)
 {
@@ -51,11 +65,8 @@ static void tcn_fc_s8(const int8_t *in, int32_t batch, const tcn_fc_params_t *p,
         const int8_t *x = in + (size_t)b * (size_t)p->n_in;
         for (int32_t o = 0; o < p->c_out; ++o) {
             const int8_t *w = p->w + (size_t)o * (size_t)p->n_in;
-            /* bias_folded = bias + in_offset * sum(w): identical integer result, one MLA per MAC */
-            int32_t acc = p->bias_folded[o];
-            for (int32_t i = 0; i < p->n_in; ++i) {
-                acc += (int32_t)w[i] * (int32_t)x[i];
-            }
+            /* bias_folded = bias + in_offset * sum(w): identical integer result, one MAC per product */
+            int32_t acc = tcn_dot_s8(w, x, p->n_in, p->bias_folded[o]);
             acc = tcn_requantize(acc, p->mult, p->shift) + p->out_offset;
             if (acc < p->act_min) {
                 acc = p->act_min;
@@ -73,10 +84,7 @@ static void tcn_out_s16(const int8_t *in, int16_t out[2])
 {
     for (int32_t o = 0; o < 2; ++o) {
         const int8_t *w = TCN_OUT_W + (size_t)o * (size_t)TCN_OUT_N_IN;
-        int32_t acc = TCN_OUT_BF[o];
-        for (int32_t i = 0; i < TCN_OUT_N_IN; ++i) {
-            acc += (int32_t)w[i] * (int32_t)in[i];
-        }
+        int32_t acc = tcn_dot_s8(w, in, TCN_OUT_N_IN, TCN_OUT_BF[o]);
         acc = tcn_requantize(acc, TCN_OUT_MULT, TCN_OUT_SHIFT);
         if (acc > 32767) {
             acc = 32767;

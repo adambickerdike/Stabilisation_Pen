@@ -1,6 +1,6 @@
 # Interface control document (ICD) — research pen Rev A
 
-**Status:** proposed design, version 1.0 (2026-09-27). Nothing here is measured.
+**Status:** proposed design, version 1.1 (2026-09-27; §5 revised from the ML workstream's results). Nothing here is measured.
 This file is the contract between electronics, firmware, simulator, ML and app.
 Any change bumps the version and the `format_version` fields below.
 
@@ -103,15 +103,15 @@ Record types: 0x01 research frame, 0x02 stroke sample, 0x03 event, 0x04 calibrat
 
 The immutable **original layer** is the list of stroke samples exactly as logged (§4.3), content-addressed by SHA-256. **Derived layers** (never overwrite the original) each carry `layer_id`, `kind` (`recognition`, `segmentation`, `hand_path_estimate`, `user_edit`, `ai_summary`), `created_by` (algorithm id + version or `user`), `inputs` (layer ids / stroke-id ranges) and `created_utc`. Every text span in a derived layer links to the stroke ids it came from. Schema: `data/schema/note_store.schema.json`.
 
-## 5. Firmware ↔ ML predictor contract
+## 5. Firmware ↔ ML predictor contract (v1.1)
 
 | Item | Definition |
 |---|---|
-| Input | window of W = 64 samples at 250 Hz (256 ms) of housing page displacement increments Δp_H (x, y) in µm, plus the Kalman oscillator phase-rate estimate f_est (Hz); float32 before quantisation |
-| Output | predicted disturbance d̂ (x, y) in µm at horizon h = 6 ms after the newest sample |
-| Quantisation | int8 symmetric per-tensor weights, int8 activations, scales stored with the model; C reference kernels in `ml/export/` |
-| Budget | ≤ 35 k MAC per inference, ≤ 32 kB flash weights, ≤ 8 kB RAM activations, ≤ 1 ms at 128 MHz |
-| Guard (`ml_guard.c`) | reject if \|d̂\| > q_lim, if \|d̂ − d̂_KF\| > 150 µm for > 20 ms, if output rate > 50 mm/s, or if any NaN/saturation; on reject fall back to the Kalman estimate and log event 0x0006 |
+| Input | window of W = 64 samples at 250 Hz (256 ms) of housing page displacement increments Δp_H (x, y) in µm, **time-stamped at sensor acquisition** (the fusion knows each sensor's latency); float32 before quantisation. The tracked frequency f_est was dropped in v1.1: removing it did not change the result (test ratio 0.469 vs 0.475, `results/ml/train_tcn_s_nofest.json`) |
+| Output | predicted disturbance d̂ (x, y) in µm at horizon **h = 6 ms after the acquisition time of the newest input sample**. h covers the worst-case age of a 250 Hz sample (4 ms) plus stage loop and actuation (1.33 ms, `docs/architecture.md` §3). The v1 synthetic model was trained with arrival-stamped inputs, which is equivalent to 8–9 ms and therefore conservative |
+| Quantisation | int8 symmetric per-tensor weights, int8 activations, scales stored with the model; C reference kernels in `ml/export/` (bit-exact with the Python int8 reference on 20 000 windows) |
+| Budget | ≤ 35 k MAC per inference, ≤ 32 kB flash weights, ≤ 8 kB RAM activations, ≤ 1 ms at 128 MHz. The v1 model uses 16.7 k MAC, 7.3 kB weights and 0.64 kB RAM. It needs CMSIS-NN kernels to meet 1 ms with margin: 0.28–0.89 ms estimated; plain C is 0.92–1.48 ms by QEMU instruction count, not cycle-accurate |
+| Guard (`ml_guard.c`), v1.1 | Checks and actions: (1) NaN/Inf or int8 output saturation → reject that inference; (2) clip \|d̂\| to q_lim; (3) slew-limit d̂ at 50 mm/s; (4) a-posteriori check, comparing the prediction made h ago with the realised disturbance (fused housing displacement, band-passed 3–15 Hz) → if the running RMS error over 200 ms exceeds the running RMS of the realised disturbance (worse than predicting zero), fall back to the Kalman estimate for ≥ 1 s and log event 0x0006. The v1 rule rejecting \|d̂ − d̂_KF\| > 150 µm was removed: it rejected 18 % of ticks and cancelled the predictor's benefit (`ml/README.md`) |
 
 ## 6. Modes and safety states
 

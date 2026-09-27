@@ -9,6 +9,10 @@ Splits (one 60 s recording per synthetic writer; writer ids disjoint):
   test_features       canonical stabpen.signals.feature_course (corners, dots, 4 Hz hatching,
                       fast stroke, circle, spiral) at 3 scales x 3 speeds x 2 sensor draws,
                       no tremor: intended-feature distortion ("false correction") test
+  stress_tremor       30 writers, tremor outside the training ranges (faster FM/AM wander,
+                      stronger random-phase harmonic, broadband part in every writer)
+  stress_writing      30 writers, writing outside the training ranges (speed factor 2.1-2.6,
+                      5-8 mm letters, 50 % deliberate-feature chunks)
   realism_sim         coupled hand-pen-paper simulator (sim/pensim, powered-neutral pen) on
                       12 seeds x (no tremor + tremor at 4.5, 6, 9, 11 Hz, 0.3 mm): housing
                       trajectories and housing-level disturbance (tremor run - clean run)
@@ -17,7 +21,7 @@ About 15 % of writers in train/val/test never have tremor; the others alternate 
 Seeds: numpy SeedSequence(MASTER_SEED, spawn_key=(split_code, writer_index)); spawn keys are
 recorded per writer.  Cached arrays go to ml/runs/data/ (git-ignored, reproducible);
 the manifest and leakage checks go to results/ml/dataset_manifest.json.
-Run: python3 -m ml.datasets [--quick]
+Run: python3 -m ml.datasets [--quick] [--only SPLIT ...]
 """
 from __future__ import annotations
 

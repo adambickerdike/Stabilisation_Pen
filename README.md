@@ -54,7 +54,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | 4 Simulation | Coupled pen–hand–paper model M1: 12 verification tests; tuning/test split; grid, Monte Carlo, sensitivity, failures, design sweeps | executed | `sim/`, `results/sim/`, `docs/sim_report.md` |
 | 4 Simulation | EM field models, thermal network | executed | `analysis/`, `results/em/`, `results/thermal/` |
 | 4 Simulation | Validation plan per model | drafted | `docs/physics.md` (table), `validation/` |
-| 5 ML | Pipeline, baselines, quantisation, C export, MCU budget, model card | see `ml/README.md` | `ml/`, `data/`, `results/ml/` |
+| 5 ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines tuned on validation; causal TCN; int8 quantisation (no loss); C export bit-exact with the Python reference, also on emulated Cortex-M33; MCU budget (16.7 k MAC, 7.3 kB weights); model and dataset cards; 15 tests | executed (synthetic only) · real data pending (EXP-H01) | `ml/README.md`, `results/ml/` |
 | 6 Firmware | Control core, safety, logging, host tests, ARM build | see `firmware/README.md` | `firmware/`, `results/firmware/` |
 | 6 Product | Capture format, note store, recognition interface, search, grounded AI | see `app/README.md` | `app/`, `results/app/` |
 | 7 Validation | Bench protocols, acceptance criteria, prototype stages, human study plan | see `validation/README.md` | `validation/` |

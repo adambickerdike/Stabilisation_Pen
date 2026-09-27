@@ -36,10 +36,10 @@ from . import metrics as MT
 from . import models as M
 from . import quantize as Q
 
-SETS = ("test", "test_freq_holdout", "stress_tremor", "stress_writing", "realism_sim")
+SETS = ("test", "test_freq_holdout", "stress_tremor", "stress_writing", "realism_sim", "realism_sim_band")
 SET_LABEL = {"test": "test (in-distribution)", "test_freq_holdout": "frequency holdout 7-8 Hz",
              "stress_tremor": "stress: tremor model", "stress_writing": "stress: fast writing",
-             "realism_sim": "simulator realism"}
+             "realism_sim": "simulator realism (full band)", "realism_sim_band": "simulator realism (3-15 Hz)"}
 NON_ORACLE = ("bpf", "kf", "kf_gated", "kf_ctrl_bal", "kf_ctrl_ass", "bmflc", "arls", "arls_sched")
 LABEL = {"zero": "zero", "bpf": "band-pass + extrapolation", "kf": "Kalman oscillator (tuned)",
          "kf_gated": "Kalman + f-gate (tuned)", "kf_ctrl_bal": "Kalman controller, frozen balanced",
@@ -224,7 +224,7 @@ def fig_curves(res, path):
     from stabpen import plotstyle as ps
     ps.apply()
     col = colors()
-    meths = ["bpf", "bmflc", "kf", "kf_gated", "arls_sched", "tcn", "oracle_osc"]
+    meths = ["bpf", "bmflc", "kf", "kf_gated", "arls_sched", "tcn"]   # oracles have FC = 0 (a vertical line)
     fig, ax = plt.subplots(figsize=(7.6, 4.4))
     rows = []
     for m in meths:
@@ -364,15 +364,42 @@ def fig_features(res, path):
     ax.text(len(feats) - 0.55, 51, "REQ-CTRL-005 limit (50 um RMS, whole controller)", ha="right", va="bottom",
             fontsize=8, color=ps.INK2)
     ax.set_xticks(xs, feats)
+    ax.set_ylim(0, max(60.0, float(np.nanmax([r[2] for r in rows])) * 1.12))
     ax.set_ylabel("false correction RMS |g d_hat| (um)")
     ax.set_title("No-tremor distortion on the canonical feature course (never in training), frozen gains",
                  loc="left", fontsize=10)
-    ax.legend(ncol=3, loc="upper left", fontsize=8)
+    ax.legend(ncol=3, loc="lower left", bbox_to_anchor=(0.0, -0.36), frameon=False, fontsize=8)
     ps.stamp(fig, "simulation", "synthetic course, 3 scales x 3 speeds x 2 sensor draws")
     fig.tight_layout()
     fig.savefig(path)
     plt.close(fig)
     _csv(path.replace(".png", ".csv"), ["feature", "method", "rms_um", "max_um"], rows)
+
+
+def eval_set(recs, preds, names, gains, boot_n, with_sweep=False):
+    st, wids = {}, None
+    for m in names:
+        st[m], wids = grouped_stats(recs, preds[m])
+    out = {"n_writers": len(wids), "matched": {}}
+    if with_sweep:
+        out["sweep"] = {m: MT.sweep(st[m], np.linspace(0.0, C.G_MAX, 41)) for m in names}
+    for key, gm in gains.items():
+        rows = {}
+        boot, diffs = MT.bootstrap(st, gm, B=boot_n, seed=1000 + len(key),
+                                   paired=[("tcn", b) for b in NON_ORACLE] + [("tcn_int8", "tcn")])
+        for m in names:
+            p = MT.pooled(st[m], gm[m])
+            rows[m] = {"gain": gm[m], "rr_band": [float(x) for x in p["rr_band"]], "rr_all": p["rr_all"],
+                       "fc_um": p["fc_um"], "n_band": [int(x) for x in p["n_band"]],
+                       "d_rms_band_um": [float(x) for x in p["d_rms_band_um"]], "ci": boot[m]}
+        strongest = []
+        for b in range(len(C.BANDS)):
+            cand = [(rows[m]["rr_band"][b], m) for m in NON_ORACLE if np.isfinite(rows[m]["rr_band"][b])]
+            strongest.append(min(cand)[1] if cand else None)
+        out["matched"][key] = rows
+        out.setdefault("paired", {})[key] = diffs
+        out.setdefault("strongest_baseline_per_band", {})[key] = strongest
+    return out
 
 
 # ------------------------------------------------------------------ main
@@ -381,7 +408,17 @@ def main():
     ap.add_argument("--model", default="tcn_s")
     ap.add_argument("--alt", default=None, help="other TCN size to report alongside")
     ap.add_argument("--boot", type=int, default=2000)
+    ap.add_argument("--figures-only", action="store_true", help="redraw figures from eval_results.json")
     args = ap.parse_args()
+    if args.figures_only:
+        res = json.load(open(os.path.join(C.RESULTS, "eval_results.json")))
+        fig_by_band(res, os.path.join(C.RESULTS, "fig_residual_by_band.png"))
+        fig_curves(res, os.path.join(C.RESULTS, "fig_operating_curves.png"))
+        fig_shift(res, os.path.join(C.RESULTS, "fig_distribution_shift.png"))
+        fig_quant(res, os.path.join(C.RESULTS, "fig_quantization.png"))
+        fig_features(res, os.path.join(C.RESULTS, "fig_feature_course.png"))
+        headline_table(res, os.path.join(C.RESULTS, "headline_table.md"))
+        return
     torch.set_num_threads(2)
     t0 = time.time()
     P, info, model, qm = load_predictors(args.model, args.alt)
@@ -403,38 +440,35 @@ def main():
                       "fc_g1_um": MT.pooled(vst[m], 1.0)["fc_um"]} for m in names}
     print(f"validation done {time.time() - t0:.0f} s", flush=True)
     keep_preds = {}
+    test_recs = None
     for sname in SETS:
-        if not D.exists(sname):
-            continue
-        recs = D.load_split(sname)
-        preds = {m: [P[m](r) for r in recs] for m in names}
+        if sname == "realism_sim_band":
+            if "realism_sim" not in res["sets"]:
+                continue
+            # the simulator's housing disturbance (tremor run - clean run) holds 40-70 % of its power below
+            # 3 Hz (slow path divergence through contact/hand dynamics) that no causal tremor estimator can
+            # separate from intent; score the 3-15 Hz part as sim/pensim/evaluate.py does (zero-phase band-pass
+            # of target and prediction, offline scoring only)
+            from scipy import signal as sps
+            sos = sps.butter(4, [3.0, 15.0], btype="band", fs=C.FS, output="sos")
+            bp = lambda x: sps.sosfiltfilt(sos, np.asarray(x, np.float64), axis=0) if np.all(np.isfinite(x)) else x  # noqa: E731
+            recs = [dict(r, d_tgt_um=bp(r["d_tgt_um"])) for r in realism_recs]
+            preds = {m: [bp(p) for p in realism_preds[m]] for m in names}
+        else:
+            if not D.exists(sname):
+                continue
+            recs = D.load_split(sname)
+            preds = {m: [P[m](r) for r in recs] for m in names}
         if sname == "test":
             keep_preds = {m: preds[m] for m in ("kf", "bmflc", "tcn", "tcn_int8", "kf_ctrl_bal", "kf_ctrl_ass")}
             test_recs = recs
-        st, wids = {}, None
-        for m in names:
-            st[m], wids = grouped_stats(recs, preds[m])
-        out = {"n_writers": len(wids), "matched": {}, "sweep": {m: MT.sweep(st[m]) for m in names}}
-        for key, gm in gains.items():
-            rows = {}
-            boot, diffs = MT.bootstrap(st, gm, B=args.boot, seed=1000 + len(key),
-                                       paired=[("tcn", b) for b in NON_ORACLE] + [("tcn_int8", "tcn")])
-            for m in names:
-                p = MT.pooled(st[m], gm[m])
-                rows[m] = {"gain": gm[m], "rr_band": [float(x) for x in p["rr_band"]], "rr_all": p["rr_all"],
-                           "fc_um": p["fc_um"], "n_band": [int(x) for x in p["n_band"]],
-                           "d_rms_band_um": [float(x) for x in p["d_rms_band_um"]], "ci": boot[m]}
-            strongest = []
-            for b in range(len(C.BANDS)):
-                cand = [(rows[m]["rr_band"][b], m) for m in NON_ORACLE if np.isfinite(rows[m]["rr_band"][b])]
-                strongest.append(min(cand)[1] if cand else None)
-            out["matched"][key] = rows
-            out.setdefault("paired", {})[key] = diffs
-            out.setdefault("strongest_baseline_per_band", {})[key] = strongest
-        res["sets"][sname] = out
+        if sname == "realism_sim":
+            realism_recs, realism_preds = recs, preds
+        res["sets"][sname] = eval_set(recs, preds, names, gains, args.boot, with_sweep=(sname == "test"))
         F = f"{C.FC_HEADLINE_UM:g}"
+        out = res["sets"][sname]
         print(f"{sname}: " + ", ".join(f"{m} {out['matched'][F][m]['rr_all']:.3f}" for m in
-                                       ("kf", "bmflc", "arls_sched", "tcn", "tcn_int8")), flush=True)
+                                       ("kf", "kf_gated", "bmflc", "arls_sched", "tcn", "tcn_int8")), flush=True)
     # ---- no-tremor feature course
     recs = D.load_split("test_features")
     preds = {m: [P[m](r) for r in recs] for m in names}
@@ -462,7 +496,7 @@ def main():
     res["quantization_summary"] = {"rms_diff_test_um": q["splits"]["test"]["rms_float_minus_int8_um"],
                                    "hash": q["hash_sha256"]}
     res["meta"] = C.meta(seeds={"bootstrap": "1000 + len(gain key)"}, extra={"elapsed_s": time.time() - t0})
-    C.write_json(os.path.join(C.RESULTS, "eval_results.json"), res)
+    write_compact(os.path.join(C.RESULTS, "eval_results.json"), res)
     # ---- figures
     fig_by_band(res, os.path.join(C.RESULTS, "fig_residual_by_band.png"))
     fig_curves(res, os.path.join(C.RESULTS, "fig_operating_curves.png"))
@@ -489,6 +523,30 @@ def main():
                    (a + 0.6, a + 2.1, "same writer, no tremor: any output is false correction")])
     headline_table(res, os.path.join(C.RESULTS, "headline_table.md"))
     print(f"done {time.time() - t0:.0f} s", flush=True)
+
+
+def _round(o, sig=5):
+    if isinstance(o, float):
+        return float(f"{o:.{sig}g}") if np.isfinite(o) else None
+    if isinstance(o, dict):
+        return {k: _round(v, sig) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_round(v, sig) for v in o]
+    if isinstance(o, np.ndarray):
+        return _round(o.tolist(), sig)
+    if isinstance(o, (np.floating,)):
+        return _round(float(o), sig)
+    if isinstance(o, (np.integer,)):
+        return int(o)
+    return o
+
+
+def write_compact(path, res):
+    """Floats rounded to 5 significant digits (NaN -> null), one JSON line per top-level key."""
+    r = _round(res)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("{\n" + ",\n".join(f"{json.dumps(k)}: {json.dumps(v, separators=(',', ':'))}" for k, v in r.items())
+                + "\n}\n")
 
 
 def headline_table(res, path):

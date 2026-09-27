@@ -40,13 +40,17 @@ GRIDS = {
     "arls": [dict(p=p, alpha=a) for p, a in itertools.product((32, 64), (1e-4, 3e-4, 1e-3, 3e-3, 1e-2))],
     "arls_sched": [dict(p=p, alpha=a) for p, a in itertools.product((32, 64), (1e-4, 1e-3, 1e-2))],
 }
-EXTENSIONS = {   # second pass: widen grids whose first-pass optimum sat on an edge (merged, not replaced)
+EXTENSIONS = {   # later passes: widen grids whose optimum sat on an edge (merged, never replaced)
     "bpf": [dict(lo=lo, hi=hi, tune_hz=7.0, tau_d=td) for lo, hi, td in
-            itertools.product((10.0, 11.0, 12.0), (13.0, 14.0), (0.02, 0.05))],
+            itertools.product((10.0, 11.0, 12.0), (12.0, 13.0, 14.0), (0.02, 0.05)) if hi > lo],
     "kf": [dict(qj=qj, qt=qt, r=r) for qj, qt, r in
-           itertools.product((30.0, 100.0, 300.0, 1000.0), (3e-9, 1e-8, 3e-8), (1e-10, 3e-10, 1e-9, 3e-9))],
+           itertools.product((30.0, 100.0, 300.0, 1000.0), (3e-9, 1e-8, 3e-8), (1e-10, 3e-10, 1e-9, 3e-9))] +
+          [dict(qj=qj, qt=qt, r=r) for qj, qt, r in
+           itertools.product((10.0, 30.0, 100.0), (1e-8, 3e-8, 1e-7), (3e-9, 1e-8, 3e-8, 1e-7))],
     "bmflc": [dict(f_lo=a, f_hi=14.0, df=0.5, mu=mu, f_hp=hp) for a, mu, hp in
-              itertools.product((8.0, 9.0, 10.0), (0.1, 0.2, 0.4), (6.0, 8.0))],
+              itertools.product((8.0, 9.0, 10.0), (0.1, 0.2, 0.4), (6.0, 8.0))] +
+             [dict(f_lo=a, f_hi=14.0, df=0.5, mu=mu, f_hp=hp) for a, mu, hp in
+              itertools.product((10.0, 11.0, 12.0), (0.2, 0.4, 0.8), (8.0, 10.0))],
 }
 KF_FIXED = {"w0_hz": 7.0, "tau_decay": 0.5, "tau_w": 0.3, "wmin_hz": 2.5, "wmax_hz": 14.0, "nis_hi": 6.0,
             "f_gate_width": 1.5, "authority_tau": 0.05}
