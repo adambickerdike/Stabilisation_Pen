@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, replace
-from typing import Dict, List
+from typing import Dict
 
 import numpy as np
 from numba import njit
@@ -560,7 +560,7 @@ def identify(ds, rng=None, n_boot=100, theta_offset_known=0.0):
         "friction.x_presliding": {"value": x_pre, **_c(x_pre, u_x, [ins.CAPACITIVE.gain_bound])},
     }
     cont = Contact(paper["k_p"], _P["writing.paper_damping"], mu_k, mu_s, v_s, x_pre)
-    r2s, ys, yps, nr = [], [], [], []
+    r2s, ys, yps, nr, nr_dyn = [], [], [], [], []
     for rec in ds["recip"]["records"]:
         r2v, fp = predict_recip(rec, cont, th(rec))
         f_h, _, N = to_page(rec, th(rec))
@@ -569,6 +569,8 @@ def identify(ds, rng=None, n_boot=100, theta_offset_known=0.0):
         ys.append(f_h[m])
         yps.append(fp[m])
         nr.append(float(np.sqrt(np.mean((f_h[m] - fp[m]) ** 2)) / (mu_k * rec["N_set"])))
+        d = (f_h[m] - f_h[m].mean()) - (fp[m] - fp[m].mean())
+        nr_dyn.append(float(np.sqrt(np.mean(d ** 2)) / (mu_k * rec["N_set"])))
     r2_pooled = ident.r2(np.concatenate(ys), np.concatenate(yps))
     # the same after a 50 Hz zero-phase low-pass of both signals (3-15 Hz reciprocation and harmonics)
     from scipy.signal import butter, sosfiltfilt
@@ -585,7 +587,10 @@ def identify(ds, rng=None, n_boot=100, theta_offset_known=0.0):
             "recip_R2_pooled_mean_removed": float(r2_dyn),
             "recip_R2_noise_ceiling": float(ceiling), "recip_R2_median": float(np.median(r2s)),
             "recip_R2_min": float(np.min(r2s)), "recip_NRMSE_vs_muN_median": float(np.median(nr)),
-            "recip_NRMSE_vs_muN_max": float(np.max(nr)), "AC_B02_01_pooled_R2_gt_0.9": bool(r2_pooled > 0.9)}
+            "recip_NRMSE_vs_muN_max": float(np.max(nr)),
+            "recip_NRMSE_mean_removed_median": float(np.median(nr_dyn)),
+            "recip_NRMSE_mean_removed_max": float(np.max(nr_dyn)),
+            "AC_B02_01_pooled_R2_gt_0.9": bool(r2_pooled > 0.9)}
     bench = sum(ds[k]["bench_s"] for k in ("indent", "sliding", "steps", "sweeps", "recip"))
     return {"estimates": est, "diag": diag, "bench_s": float(bench), "contact_model": cont}
 

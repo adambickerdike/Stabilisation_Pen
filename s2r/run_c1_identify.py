@@ -75,7 +75,13 @@ def main():
                    "B05_coherence_min": float(np.min([r["diag"]["B05"]["coherence_min_fit_band"] for r in rows])),
                    "B05_q_peak_um_max": float(np.max([r["diag"]["B05"]["q_peak_um"] for r in rows])),
                    "B02_recip_R2_pooled_min": float(np.min([r["diag"]["B01B02"]["recip_R2_pooled"] for r in rows])),
-                   "B02_recip_R2_record_min": float(np.min([r["diag"]["B01B02"]["recip_R2_min"] for r in rows]))},
+                   "B02_recip_R2_record_min": float(np.min([r["diag"]["B01B02"]["recip_R2_min"] for r in rows])),
+                   "B02_recip_R2_pooled_mean_removed_min": float(np.min(
+                       [r["diag"]["B01B02"]["recip_R2_pooled_mean_removed"] for r in rows])),
+                   "B02_recip_NRMSE_median_max": float(np.max(
+                       [r["diag"]["B01B02"]["recip_NRMSE_vs_muN_median"] for r in rows])),
+                   "B02_recip_NRMSE_mean_removed_median_max": float(np.max(
+                       [r["diag"]["B01B02"]["recip_NRMSE_mean_removed_median"] for r in rows]))},
                "elapsed_s": time.time() - t0}
     path = common.write_result("c1_identification", payload,
                                "SIMULATION (virtual bench, hidden plants) + CALCULATION (identification)",

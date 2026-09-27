@@ -1,17 +1,21 @@
 {
   "meta": {
     "evidence_status": "SIMULATION + CALCULATION (central differences in ln parameter, common random numbers)",
-    "generated_utc": "2026-09-27T21:57:21+00:00",
-    "git_revision": "77a79f3-dirty",
+    "generated_utc": "2026-09-27T22:40:43+00:00",
+    "git_revision": "e9c747a-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_c2_sensitivity.py --quick",
+    "command": "run_c2_sensitivity.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": {
       "test": [
         200,
-        201
+        201,
+        202,
+        203,
+        204,
+        205
       ]
     },
     "numpy": "2.4.6",
@@ -20,111 +24,873 @@
   "step_ln": 0.22314355131420976,
   "seeds": [
     200,
-    201
+    201,
+    202,
+    203,
+    204,
+    205
   ],
   "base": {
-    "oracle_ratio@6Hz": 0.15044276181738964,
-    "oracle_ratio@9Hz": 0.21773129820581302,
-    "kfosc_ratio@6Hz": 1.023523745191341,
-    "kfosc_ratio@9Hz": 0.7521655887424576,
-    "kf_distortion_um": 140.11481738321453,
-    "neutral_e_um@6Hz": 270.0703544009505,
-    "neutral_e_um@9Hz": 434.7282251832995,
+    "oracle_ratio@6Hz": 0.17084393180135074,
+    "oracle_ratio@9Hz": 0.2120754304372425,
+    "kfosc_ratio@6Hz": 1.0243144043157104,
+    "kfosc_ratio@9Hz": 0.7463631414617419,
+    "kf_distortion_um": 101.73350137260623,
+    "neutral_e_um@6Hz": 268.6567782468807,
+    "neutral_e_um@9Hz": 431.29517064472816,
     "static_hold_W": 0.48638671542703044
   },
   "S": {
+    "actuator.Kf": {
+      "oracle_ratio@6Hz": -0.019693345665921156,
+      "oracle_ratio@9Hz": -0.055248090695369075,
+      "kfosc_ratio@6Hz": 0.033707291050668754,
+      "kfosc_ratio@9Hz": 0.3802381382476858,
+      "kf_distortion_um": 104.4284448764132,
+      "neutral_e_um@6Hz": -32.5633907761902,
+      "neutral_e_um@9Hz": -63.620397322583734,
+      "static_hold_W": -1.0247721211655703,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.0017185659201910607,
+        "oracle_ratio@9Hz": -0.04381901263600535,
+        "kfosc_ratio@6Hz": -0.09901889278825492,
+        "kfosc_ratio@9Hz": 0.6566185375160982,
+        "kf_distortion_um": 451.3968037469532,
+        "neutral_e_um@6Hz": -11.499857863061397,
+        "neutral_e_um@9Hz": -30.844376184232555,
+        "static_hold_W": 2.079456760378929
+      }
+    },
+    "actuator.R20": {
+      "oracle_ratio@6Hz": 3.0536056328816815e-05,
+      "oracle_ratio@9Hz": -0.0002628676714676495,
+      "kfosc_ratio@6Hz": -0.005002366072305998,
+      "kfosc_ratio@9Hz": -0.06231310889383591,
+      "kf_distortion_um": -84.83636885395825,
+      "neutral_e_um@6Hz": -0.1586634061240958,
+      "neutral_e_um@9Hz": -0.26010898295542634,
+      "static_hold_W": 0.49408382052713135,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.001675140459161998,
+        "oracle_ratio@9Hz": -0.0004342522409026064,
+        "kfosc_ratio@6Hz": -0.041417186020947995,
+        "kfosc_ratio@9Hz": -0.38476641452022675,
+        "kf_distortion_um": 39.70425877027704,
+        "neutral_e_um@6Hz": -0.1722084976122689,
+        "neutral_e_um@9Hz": -0.2561975881400665,
+        "static_hold_W": 0.49894945429915116
+      }
+    },
+    "actuator.L": {
+      "oracle_ratio@6Hz": -0.00035710580775081716,
+      "oracle_ratio@9Hz": -0.0005986105217343277,
+      "kfosc_ratio@6Hz": 0.010418323121261609,
+      "kfosc_ratio@9Hz": 0.005277720102520091,
+      "kf_distortion_um": -42.17028176745277,
+      "neutral_e_um@6Hz": -0.3238152295915093,
+      "neutral_e_um@9Hz": -0.5632371595440693,
+      "static_hold_W": -0.00040192378425234286,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.0003869721510734531,
+        "oracle_ratio@9Hz": -0.00020483361393629752,
+        "kfosc_ratio@6Hz": 0.07281629744547587,
+        "kfosc_ratio@9Hz": 0.0038323094613249733,
+        "kf_distortion_um": 384.0047717001399,
+        "neutral_e_um@6Hz": -0.37104607040361515,
+        "neutral_e_um@9Hz": -0.6444958796063005,
+        "static_hold_W": 0.00047149084990303264
+      }
+    },
+    "actuator.Rth_coil_amb": {
+      "oracle_ratio@6Hz": -1.2053500195219802e-06,
+      "oracle_ratio@9Hz": -1.2006880489271742e-06,
+      "kfosc_ratio@6Hz": -2.8619769385971526e-06,
+      "kfosc_ratio@9Hz": -4.958810091674527e-05,
+      "kf_distortion_um": -0.0030379726064811347,
+      "neutral_e_um@6Hz": -0.0008159277931752433,
+      "neutral_e_um@9Hz": -0.0010826437926462625,
+      "static_hold_W": 4.303490116330621e-05,
+      "_curvature": {
+        "oracle_ratio@6Hz": 1.0988032909405118e-06,
+        "oracle_ratio@9Hz": 1.1089476925311749e-06,
+        "kfosc_ratio@6Hz": 3.3622290860198816e-06,
+        "kfosc_ratio@9Hz": 4.244335953655975e-05,
+        "kf_distortion_um": 0.005218803598259437,
+        "neutral_e_um@6Hz": 0.0007529979915511565,
+        "neutral_e_um@9Hz": 0.0009981574492275614,
+        "static_hold_W": -4.211297629818934e-05
+      }
+    },
+    "actuator.Cth_coil": {
+      "oracle_ratio@6Hz": 1.9423616626563914e-05,
+      "oracle_ratio@9Hz": 2.051140296527786e-05,
+      "kfosc_ratio@6Hz": 0.00010600843568481275,
+      "kfosc_ratio@9Hz": 0.0010925827247185507,
+      "kf_distortion_um": 0.0717523095697272,
+      "neutral_e_um@6Hz": 0.015576936574368335,
+      "neutral_e_um@9Hz": 0.02116981591491838,
+      "static_hold_W": -0.0033110640022598684,
+      "_curvature": {
+        "oracle_ratio@6Hz": -1.724088822985689e-05,
+        "oracle_ratio@9Hz": -1.6042776335634755e-05,
+        "kfosc_ratio@6Hz": 0.00018148616595784013,
+        "kfosc_ratio@9Hz": -0.0010959380735625036,
+        "kf_distortion_um": -0.06564381530617401,
+        "neutral_e_um@6Hz": -0.01418171523220893,
+        "neutral_e_um@9Hz": -0.0192089869945262,
+        "static_hold_W": 0.003235242823299483
+      }
+    },
+    "stage.k_tip": {
+      "oracle_ratio@6Hz": -0.004160424579655852,
+      "oracle_ratio@9Hz": 0.011905845757733569,
+      "kfosc_ratio@6Hz": -0.05125327027187663,
+      "kfosc_ratio@9Hz": -0.25702807399664246,
+      "kf_distortion_um": -7.9414247911605855,
+      "neutral_e_um@6Hz": 0.013630129625594917,
+      "neutral_e_um@9Hz": -0.3943357597894005,
+      "static_hold_W": 0.00012316004589664194,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.029759868861609244,
+        "oracle_ratio@9Hz": 0.041224215911554,
+        "kfosc_ratio@6Hz": -0.08078059015507094,
+        "kfosc_ratio@9Hz": -0.558847287509224,
+        "kf_distortion_um": 10.094894358729896,
+        "neutral_e_um@6Hz": -0.14133915245698764,
+        "neutral_e_um@9Hz": -0.48985234305613307,
+        "static_hold_W": 2.8393996580678126e-05
+      }
+    },
+    "stage.zeta_open": {
+      "oracle_ratio@6Hz": 0.0002627203002246743,
+      "oracle_ratio@9Hz": 0.0005659955633533554,
+      "kfosc_ratio@6Hz": -0.001451809678318969,
+      "kfosc_ratio@9Hz": -0.005228092156922221,
+      "kf_distortion_um": 1.3013713401378966,
+      "neutral_e_um@6Hz": 0.2566117007885519,
+      "neutral_e_um@9Hz": 0.4284166364218154,
+      "static_hold_W": 0.00014948246224966787,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.00014827359341103077,
+        "oracle_ratio@9Hz": 0.0018255997449332442,
+        "kfosc_ratio@6Hz": 0.13884819115303373,
+        "kfosc_ratio@9Hz": -0.01555997028830141,
+        "kf_distortion_um": 778.0278581087542,
+        "neutral_e_um@6Hz": 0.2509183343060366,
+        "neutral_e_um@9Hz": 0.4129896725486967,
+        "static_hold_W": 0.00015410295068873857
+      }
+    },
+    "stage.m_eq": {
+      "oracle_ratio@6Hz": 0.04419308415651735,
+      "oracle_ratio@9Hz": 0.07527418361634294,
+      "kfosc_ratio@6Hz": 0.005422768196200571,
+      "kfosc_ratio@9Hz": -0.04662404678499308,
+      "kf_distortion_um": 46.2001933844073,
+      "neutral_e_um@6Hz": 40.09770271178855,
+      "neutral_e_um@9Hz": 73.0128055885724,
+      "static_hold_W": 0.014104158876565083,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.04909471841470256,
+        "oracle_ratio@9Hz": -0.11119610529237578,
+        "kfosc_ratio@6Hz": -0.12190843038261907,
+        "kfosc_ratio@9Hz": -0.7179292313933711,
+        "kf_distortion_um": 90.30719618321983,
+        "neutral_e_um@6Hz": -56.99146489891016,
+        "neutral_e_um@9Hz": -123.25840580613156,
+        "static_hold_W": 0.015478295551604097
+      }
+    },
+    "sensing.hall_delay": {
+      "oracle_ratio@6Hz": -0.0025060219874218533,
+      "oracle_ratio@9Hz": -0.002750303307558233,
+      "kfosc_ratio@6Hz": -0.0069772468850419515,
+      "kfosc_ratio@9Hz": 0.007295968088666709,
+      "kf_distortion_um": 18.428982286117794,
+      "neutral_e_um@6Hz": -2.5490184388173707,
+      "neutral_e_um@9Hz": -4.40544987823326,
+      "static_hold_W": -0.0013768430544633052,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.012159057044679835,
+        "oracle_ratio@9Hz": 0.003329381668609425,
+        "kfosc_ratio@6Hz": -0.08789303589544921,
+        "kfosc_ratio@9Hz": 0.1777469154436546,
+        "kf_distortion_um": 290.3033720837462,
+        "neutral_e_um@6Hz": -0.20674985926704448,
+        "neutral_e_um@9Hz": -0.26596268420249947,
+        "static_hold_W": -7.477708697183213e-05
+      }
+    },
+    "stage.axial_k": {
+      "oracle_ratio@6Hz": -0.023915228669224294,
+      "oracle_ratio@9Hz": 0.020374441215331635,
+      "kfosc_ratio@6Hz": 0.04374661077490795,
+      "kfosc_ratio@9Hz": 0.011983665076278485,
+      "kf_distortion_um": -34.69986478080444,
+      "neutral_e_um@6Hz": -0.8803179261150582,
+      "neutral_e_um@9Hz": 0.6978476077335171,
+      "static_hold_W": 0.013729307785515912,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.08001210089268566,
+        "oracle_ratio@9Hz": 0.06676560872114964,
+        "kfosc_ratio@6Hz": 0.4324087395689705,
+        "kfosc_ratio@9Hz": 0.3703546826237785,
+        "kf_distortion_um": -643.6506130958822,
+        "neutral_e_um@6Hz": -1.940842891379978,
+        "neutral_e_um@9Hz": -12.933078694053366,
+        "static_hold_W": -0.008985716734254854
+      }
+    },
+    "stage.axial_preload": {
+      "oracle_ratio@6Hz": -0.0056293785758310825,
+      "oracle_ratio@9Hz": -0.006917025941114343,
+      "kfosc_ratio@6Hz": -0.014049049844417134,
+      "kfosc_ratio@9Hz": 0.004419559217364866,
+      "kf_distortion_um": 68.21571224447018,
+      "neutral_e_um@6Hz": -1.0281223104575652,
+      "neutral_e_um@9Hz": -2.5319516983609622,
+      "static_hold_W": 0.007364302218878038,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.05793788531201408,
+        "oracle_ratio@9Hz": -0.01180906641198262,
+        "kfosc_ratio@6Hz": 0.10543479553939573,
+        "kfosc_ratio@9Hz": 0.4373519878725747,
+        "kf_distortion_um": 348.100424534312,
+        "neutral_e_um@6Hz": -2.4258040533239345,
+        "neutral_e_um@9Hz": -9.027825361490562,
+        "static_hold_W": 0.009778451722552196
+      }
+    },
     "writing.mu_eff": {
-      "oracle_ratio@6Hz": 0.06727053010009776,
-      "oracle_ratio@9Hz": 0.10455375074126863,
-      "kfosc_ratio@6Hz": 0.09897928674185594,
-      "kfosc_ratio@9Hz": 0.4227826832860972,
-      "kf_distortion_um": 172.19188261562658,
-      "neutral_e_um@6Hz": 46.035443027611194,
-      "neutral_e_um@9Hz": 259.41947566033497,
+      "oracle_ratio@6Hz": 0.033275881074939694,
+      "oracle_ratio@9Hz": 0.1698250352514234,
+      "kfosc_ratio@6Hz": 0.0761146904805972,
+      "kfosc_ratio@9Hz": 0.3957813443643768,
+      "kf_distortion_um": 116.62854593002358,
+      "neutral_e_um@6Hz": 63.71817428098868,
+      "neutral_e_um@9Hz": 251.67253602247845,
       "static_hold_W": 0.0031171815502479983,
       "_curvature": {
-        "oracle_ratio@6Hz": 0.15065571572938366,
-        "oracle_ratio@9Hz": 0.24239582500908932,
-        "kfosc_ratio@6Hz": 0.19529232725678417,
-        "kfosc_ratio@9Hz": 0.8072452737101518,
-        "kf_distortion_um": 363.7836443264676,
-        "neutral_e_um@6Hz": 109.3660103165182,
-        "neutral_e_um@9Hz": 302.7673958154603,
+        "oracle_ratio@6Hz": 0.012981323059309222,
+        "oracle_ratio@9Hz": 0.39087085586178066,
+        "kfosc_ratio@6Hz": -0.34250818764940677,
+        "kfosc_ratio@9Hz": 0.9733011134514847,
+        "kf_distortion_um": -219.24766662064744,
+        "neutral_e_um@6Hz": 60.49114328321447,
+        "neutral_e_um@9Hz": 148.18611351481212,
         "static_hold_W": 0.00904448024999478
       }
     },
-    "actuator.Kf": {
-      "oracle_ratio@6Hz": -0.004021095391503678,
-      "oracle_ratio@9Hz": -0.032982078818173784,
-      "kfosc_ratio@6Hz": 0.018326538510095615,
-      "kfosc_ratio@9Hz": 0.377643980099842,
-      "kf_distortion_um": 83.90753110982371,
-      "neutral_e_um@6Hz": -33.41503146218927,
-      "neutral_e_um@9Hz": -65.33925647674954,
-      "static_hold_W": -1.0247721211655703,
+    "writing.mu_static_ratio": {
+      "oracle_ratio@6Hz": 0.009643505426180027,
+      "oracle_ratio@9Hz": 0.035566726344118414,
+      "kfosc_ratio@6Hz": 0.0005799741958027022,
+      "kfosc_ratio@9Hz": -0.021837646839325164,
+      "kf_distortion_um": 7.158478451410673,
+      "neutral_e_um@6Hz": 23.583235877077637,
+      "neutral_e_um@9Hz": 36.27773078356887,
+      "static_hold_W": 0.0010288349269197458,
       "_curvature": {
-        "oracle_ratio@6Hz": -0.08183550917165205,
-        "oracle_ratio@9Hz": -0.17833794596542246,
-        "kfosc_ratio@6Hz": -0.217966077026077,
-        "kfosc_ratio@9Hz": 0.362180623720737,
-        "kf_distortion_um": 629.1493663955484,
-        "neutral_e_um@6Hz": -15.043108612613029,
-        "neutral_e_um@9Hz": -45.60996567470063,
-        "static_hold_W": 2.079456760378929
+        "oracle_ratio@6Hz": -0.04329832916548323,
+        "oracle_ratio@9Hz": -0.01638036962749311,
+        "kfosc_ratio@6Hz": -0.0741312566201028,
+        "kfosc_ratio@9Hz": 0.14734407449977893,
+        "kf_distortion_um": -83.89046176353294,
+        "neutral_e_um@6Hz": -8.141352381641065,
+        "neutral_e_um@9Hz": -17.394163134783103,
+        "static_hold_W": 0.011148848473082212
+      }
+    },
+    "writing.stribeck_speed": {
+      "oracle_ratio@6Hz": 0.005084224951986982,
+      "oracle_ratio@9Hz": 0.02269435766962143,
+      "kfosc_ratio@6Hz": 0.01670442531320746,
+      "kfosc_ratio@9Hz": 0.039158273498149154,
+      "kf_distortion_um": 17.57846638746205,
+      "neutral_e_um@6Hz": 16.104202813541015,
+      "neutral_e_um@9Hz": 24.769879836524364,
+      "static_hold_W": 0.0009099845447039144,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.02751575820222328,
+        "oracle_ratio@9Hz": 0.031930830492535846,
+        "kfosc_ratio@6Hz": 0.01549300218165335,
+        "kfosc_ratio@9Hz": 0.17664783727218708,
+        "kf_distortion_um": 135.20256383978648,
+        "neutral_e_um@6Hz": 33.864531052816744,
+        "neutral_e_um@9Hz": 52.92038205573112,
+        "static_hold_W": 0.00015025479845047005
+      }
+    },
+    "writing.paper_stiffness": {
+      "oracle_ratio@6Hz": -0.004918333381160093,
+      "oracle_ratio@9Hz": -0.00544776851476502,
+      "kfosc_ratio@6Hz": -0.02980723552575082,
+      "kfosc_ratio@9Hz": 0.040315846335558694,
+      "kf_distortion_um": 9.194269552350583,
+      "neutral_e_um@6Hz": -4.9613120346610575,
+      "neutral_e_um@9Hz": -8.893604523628602,
+      "static_hold_W": -0.0008476006640964278,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.007958765307231181,
+        "oracle_ratio@9Hz": -0.004980431408087176,
+        "kfosc_ratio@6Hz": 0.1842905582018369,
+        "kfosc_ratio@9Hz": 0.09158097192365242,
+        "kf_distortion_um": -814.8736432053606,
+        "neutral_e_um@6Hz": 10.076965429141687,
+        "neutral_e_um@9Hz": 14.358473378906634,
+        "static_hold_W": 0.0034968693291740956
+      }
+    },
+    "friction.x_presliding": {
+      "oracle_ratio@6Hz": 0.00442338337144977,
+      "oracle_ratio@9Hz": -0.005317470066299166,
+      "kfosc_ratio@6Hz": 0.006694328750469697,
+      "kfosc_ratio@9Hz": 0.04520239625690625,
+      "kf_distortion_um": 53.349194481230604,
+      "neutral_e_um@6Hz": -1.6024221837937134,
+      "neutral_e_um@9Hz": -1.0275394876270056,
+      "static_hold_W": 0.0017931389649450413,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.03744335802207917,
+        "oracle_ratio@9Hz": 0.02727173013691025,
+        "kfosc_ratio@6Hz": -0.16464453014975594,
+        "kfosc_ratio@9Hz": 0.28310738483587206,
+        "kf_distortion_um": -423.4100597783241,
+        "neutral_e_um@6Hz": -0.783620989891,
+        "neutral_e_um@9Hz": -6.974419995108049,
+        "static_hold_W": 0.015645995912671025
+      }
+    },
+    "hand.grip_stiffness": {
+      "oracle_ratio@6Hz": -0.023216409344358903,
+      "oracle_ratio@9Hz": -0.1239460226391652,
+      "kfosc_ratio@6Hz": -0.05259666394735568,
+      "kfosc_ratio@9Hz": -0.0634286327349029,
+      "kf_distortion_um": -130.04528103583144,
+      "neutral_e_um@6Hz": -27.34873650286168,
+      "neutral_e_um@9Hz": -39.235580412624465,
+      "static_hold_W": 0.00043520849427822997,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.10162914699118543,
+        "oracle_ratio@9Hz": 0.13299141052037425,
+        "kfosc_ratio@6Hz": 0.5104221166350617,
+        "kfosc_ratio@9Hz": 1.305239157238915,
+        "kf_distortion_um": 95.06017492060184,
+        "neutral_e_um@6Hz": -0.9990240489955721,
+        "neutral_e_um@9Hz": -159.29141731134033,
+        "static_hold_W": -0.00011330491914294312
+      }
+    },
+    "hand.grip_damping": {
+      "oracle_ratio@6Hz": 0.0028550805878737365,
+      "oracle_ratio@9Hz": -0.03829223070996943,
+      "kfosc_ratio@6Hz": -0.0022383680132746233,
+      "kfosc_ratio@9Hz": 0.009457275355674647,
+      "kf_distortion_um": 43.852731422060685,
+      "neutral_e_um@6Hz": -6.195582812237051,
+      "neutral_e_um@9Hz": -33.741900575477686,
+      "static_hold_W": 0.00038116622906783464,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.015874605408312734,
+        "oracle_ratio@9Hz": -0.007901308846009399,
+        "kfosc_ratio@6Hz": 0.10198490909782174,
+        "kfosc_ratio@9Hz": 0.05535095733137174,
+        "kf_distortion_um": 376.93899931099793,
+        "neutral_e_um@6Hz": -3.3016888168367053,
+        "neutral_e_um@9Hz": -20.746658330215602,
+        "static_hold_W": 0.00043359109682540126
+      }
+    },
+    "hand.mass": {
+      "oracle_ratio@6Hz": 0.0034978071326739963,
+      "oracle_ratio@9Hz": 0.061515631732064716,
+      "kfosc_ratio@6Hz": -0.02539957551265631,
+      "kfosc_ratio@9Hz": -0.21517095461652927,
+      "kf_distortion_um": -9.33425054130506,
+      "neutral_e_um@6Hz": 55.22069644732628,
+      "neutral_e_um@9Hz": 147.17124164363477,
+      "static_hold_W": -6.907745304166186e-05,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.024368541104494455,
+        "oracle_ratio@9Hz": 0.13928614956133195,
+        "kfosc_ratio@6Hz": 0.29778328604501997,
+        "kfosc_ratio@9Hz": 0.5938433008336115,
+        "kf_distortion_um": 470.47996311696136,
+        "neutral_e_um@6Hz": 145.80808745785149,
+        "neutral_e_um@9Hz": 107.04635107615034,
+        "static_hold_W": 0.0002488042407535724
+      }
+    },
+    "hand.arm_stiffness": {
+      "oracle_ratio@6Hz": -0.016104884227790012,
+      "oracle_ratio@9Hz": -0.18386180822587567,
+      "kfosc_ratio@6Hz": -0.021607822616120813,
+      "kfosc_ratio@9Hz": -0.07083902249137884,
+      "kf_distortion_um": -33.049735187156315,
+      "neutral_e_um@6Hz": -134.2500583297846,
+      "neutral_e_um@9Hz": -298.1854542790648,
+      "static_hold_W": 0.0006963299858528733,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.07541555350782538,
+        "oracle_ratio@9Hz": 0.5995726503870296,
+        "kfosc_ratio@6Hz": 0.2525673320133004,
+        "kfosc_ratio@9Hz": 0.2897502403368397,
+        "kf_distortion_um": 168.53413706021152,
+        "neutral_e_um@6Hz": 195.58135196491904,
+        "neutral_e_um@9Hz": 285.1447371370346,
+        "static_hold_W": -0.0041433866570092836
+      }
+    },
+    "hand.arm_damping": {
+      "oracle_ratio@6Hz": -0.019078463086684306,
+      "oracle_ratio@9Hz": -0.03398595518114584,
+      "kfosc_ratio@6Hz": -0.07130078463036972,
+      "kfosc_ratio@9Hz": -0.01755017571870989,
+      "kf_distortion_um": 56.36569698428255,
+      "neutral_e_um@6Hz": 38.56472701494658,
+      "neutral_e_um@9Hz": -69.87994000005827,
+      "static_hold_W": -0.00043427192414488493,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.004165370723264027,
+        "oracle_ratio@9Hz": 0.06272443367475697,
+        "kfosc_ratio@6Hz": 0.36862575670036357,
+        "kfosc_ratio@9Hz": -0.09641585692277652,
+        "kf_distortion_um": -845.5292286255982,
+        "neutral_e_um@6Hz": -20.00873924247571,
+        "neutral_e_um@9Hz": 45.665982328429926,
+        "static_hold_W": -0.00047977441880318986
+      }
+    },
+    "hand.normal_stiffness": {
+      "oracle_ratio@6Hz": 0.022267666269435705,
+      "oracle_ratio@9Hz": 0.02752440521893041,
+      "kfosc_ratio@6Hz": 0.00991201731050485,
+      "kfosc_ratio@9Hz": -0.03336824274548352,
+      "kf_distortion_um": 22.63794826442901,
+      "neutral_e_um@6Hz": -0.6172635288637492,
+      "neutral_e_um@9Hz": -1.878498624960047,
+      "static_hold_W": -0.0007729032701836387,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.05702501381828673,
+        "oracle_ratio@9Hz": 0.060882282595355545,
+        "kfosc_ratio@6Hz": 0.5900561635594177,
+        "kfosc_ratio@9Hz": 0.7548068693550741,
+        "kf_distortion_um": 7.1161458843855465,
+        "neutral_e_um@6Hz": 23.754381809267343,
+        "neutral_e_um@9Hz": 18.975838430252562,
+        "static_hold_W": 0.007641608274533561
+      }
+    },
+    "sensing.opt_noise": {
+      "oracle_ratio@6Hz": 0.0,
+      "oracle_ratio@9Hz": 0.0,
+      "kfosc_ratio@6Hz": 0.0676326317981049,
+      "kfosc_ratio@9Hz": 0.21973316403881804,
+      "kf_distortion_um": 91.09051537454297,
+      "neutral_e_um@6Hz": 0.0,
+      "neutral_e_um@9Hz": 0.0,
+      "static_hold_W": 0.0,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.0,
+        "oracle_ratio@9Hz": 0.0,
+        "kfosc_ratio@6Hz": 0.2726930024431569,
+        "kfosc_ratio@9Hz": 0.4583203665761717,
+        "kf_distortion_um": 763.750631275134,
+        "neutral_e_um@6Hz": 0.0,
+        "neutral_e_um@9Hz": 0.0,
+        "static_hold_W": 0.0
+      }
+    },
+    "sensing.opt_delay": {
+      "oracle_ratio@6Hz": 0.003946243492086218,
+      "oracle_ratio@9Hz": -0.0026113756278210824,
+      "kfosc_ratio@6Hz": -0.002566635430886978,
+      "kfosc_ratio@9Hz": -0.0457671716712759,
+      "kf_distortion_um": -98.81853457441103,
+      "neutral_e_um@6Hz": 0.7264612782524978,
+      "neutral_e_um@9Hz": 0.6900103238801154,
+      "static_hold_W": 2.8233522083241634e-05,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.026771499640082252,
+        "oracle_ratio@9Hz": -0.002553163627726951,
+        "kfosc_ratio@6Hz": -0.2624627266501273,
+        "kfosc_ratio@9Hz": 1.2468628415779437,
+        "kf_distortion_um": -703.576732672687,
+        "neutral_e_um@6Hz": -7.685030915919172,
+        "neutral_e_um@9Hz": -17.258475956930457,
+        "static_hold_W": 0.0002530525477161188
+      }
+    },
+    "sensing.hall_noise_tip": {
+      "oracle_ratio@6Hz": -0.02587477828477808,
+      "oracle_ratio@9Hz": -0.03933391879198025,
+      "kfosc_ratio@6Hz": -0.02275501990242857,
+      "kfosc_ratio@9Hz": -0.04162243141590007,
+      "kf_distortion_um": -37.22140648158462,
+      "neutral_e_um@6Hz": -24.4078807471672,
+      "neutral_e_um@9Hz": -41.85465963604001,
+      "static_hold_W": -0.005948452285380328,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.000857747103897158,
+        "oracle_ratio@9Hz": -0.013419595110188979,
+        "kfosc_ratio@6Hz": 0.07808270178612634,
+        "kfosc_ratio@9Hz": 0.18566857120275235,
+        "kf_distortion_um": 179.15253854958536,
+        "neutral_e_um@6Hz": -5.703144039558205,
+        "neutral_e_um@9Hz": -15.440996468859952,
+        "static_hold_W": 0.0034419020931695066
+      }
+    },
+    "sensing.imu_delay": {
+      "oracle_ratio@6Hz": -0.014002989736972457,
+      "oracle_ratio@9Hz": -0.01905148410829516,
+      "kfosc_ratio@6Hz": 0.0023584528487597496,
+      "kfosc_ratio@9Hz": -0.019592802507113444,
+      "kf_distortion_um": 50.280407455961615,
+      "neutral_e_um@6Hz": -8.337684927183103,
+      "neutral_e_um@9Hz": -15.388885201092968,
+      "static_hold_W": -0.00467124286956209,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.03011478316922514,
+        "oracle_ratio@9Hz": -0.06008126950450489,
+        "kfosc_ratio@6Hz": 0.4521092499555331,
+        "kfosc_ratio@9Hz": 0.4810169277881226,
+        "kf_distortion_um": 419.9849740157835,
+        "neutral_e_um@6Hz": -15.847367300452788,
+        "neutral_e_um@9Hz": -38.71442412411824,
+        "static_hold_W": -0.00199851947648465
       }
     }
   },
   "required_rel_accuracy_single": {
+    "actuator.Kf": {
+      "oracle_ratio@6Hz": 2.5389286740913586,
+      "oracle_ratio@9Hz": 0.9050086504471915,
+      "kfosc_ratio@6Hz": 1.4833585981394966,
+      "kfosc_ratio@9Hz": 0.1314965411687088,
+      "kf_distortion_um": 0.04870966980931473,
+      "neutral_e_um@6Hz": 0.41251351877538206,
+      "neutral_e_um@9Hz": 0.3389598216888443,
+      "static_hold_W": 0.023731457237235187
+    },
+    "actuator.R20": {
+      "oracle_ratio@6Hz": 1637.4085592976558,
+      "oracle_ratio@9Hz": 190.20977254768044,
+      "kfosc_ratio@6Hz": 9.99527009364809,
+      "kfosc_ratio@9Hz": 0.8023993809261869,
+      "kf_distortion_um": 0.05995866085908014,
+      "neutral_e_um@6Hz": 84.66248923105671,
+      "neutral_e_um@9Hz": 82.90662739599371,
+      "static_hold_W": 0.04922107294548838
+    },
+    "actuator.L": {
+      "oracle_ratio@6Hz": 140.0145248684648,
+      "oracle_ratio@9Hz": 83.52676437282997,
+      "kfosc_ratio@6Hz": 4.799236827082135,
+      "kfosc_ratio@9Hz": 9.473787739544049,
+      "kf_distortion_um": 0.12062226894002478,
+      "neutral_e_um@6Hz": 41.483036265124,
+      "neutral_e_um@9Hz": 38.28717293740475,
+      "static_hold_W": 60.50733179821707
+    },
+    "actuator.Rth_coil_amb": {
+      "oracle_ratio@6Hz": 41481.726627282165,
+      "oracle_ratio@9Hz": 41642.78976931224,
+      "kfosc_ratio@6Hz": 17470.44126236334,
+      "kfosc_ratio@9Hz": 1008.3064097160382,
+      "kf_distortion_um": 1674.3650215207756,
+      "neutral_e_um@6Hz": 16463.269206787467,
+      "neutral_e_um@9Hz": 19918.609129533306,
+      "static_hold_W": 565.1072760470854
+    },
+    "actuator.Cth_coil": {
+      "oracle_ratio@6Hz": 2574.1858975747878,
+      "oracle_ratio@9Hz": 2437.6684561578295,
+      "kfosc_ratio@6Hz": 471.6605775474454,
+      "kfosc_ratio@9Hz": 45.76312517926732,
+      "kf_distortion_um": 70.89214408753215,
+      "neutral_e_um@6Hz": 862.3543434366687,
+      "neutral_e_um@9Hz": 1018.6559306375317,
+      "static_hold_W": 7.344870336167795
+    },
+    "stage.k_tip": {
+      "oracle_ratio@6Hz": 12.0180041826731,
+      "oracle_ratio@9Hz": 4.199617651482002,
+      "kfosc_ratio@6Hz": 0.9755475062327035,
+      "kfosc_ratio@9Hz": 0.1945312791032047,
+      "kf_distortion_um": 0.6405242387099317,
+      "neutral_e_um@6Hz": 985.5253971407283,
+      "neutral_e_um@9Hz": 54.68628699500475,
+      "static_hold_W": 197.4612431677781
+    },
+    "stage.zeta_open": {
+      "oracle_ratio@6Hz": 190.31646948195774,
+      "oracle_ratio@9Hz": 88.33991507595019,
+      "kfosc_ratio@6Hz": 34.43977592014288,
+      "kfosc_ratio@9Hz": 9.5637181784942,
+      "kf_distortion_um": 3.9087037740444743,
+      "neutral_e_um@6Hz": 52.346946265761666,
+      "neutral_e_um@9Hz": 50.3359503317792,
+      "static_hold_W": 162.69022737084035
+    },
+    "stage.m_eq": {
+      "oracle_ratio@6Hz": 1.1313987460779265,
+      "oracle_ratio@9Hz": 0.6642383563379409,
+      "kfosc_ratio@6Hz": 9.220383057316038,
+      "kfosc_ratio@9Hz": 1.0724079836007188,
+      "kf_distortion_um": 0.11010073110098884,
+      "neutral_e_um@6Hz": 0.3350027059878131,
+      "neutral_e_um@9Hz": 0.29535584009405075,
+      "static_hold_W": 1.7242670040933514
+    },
+    "sensing.hall_delay": {
+      "oracle_ratio@6Hz": 19.951939867630223,
+      "oracle_ratio@9Hz": 18.179813063742003,
+      "kfosc_ratio@6Hz": 7.166150320292037,
+      "kfosc_ratio@9Hz": 6.8531001496111505,
+      "kf_distortion_um": 0.2760149741129226,
+      "neutral_e_um@6Hz": 5.269808451670623,
+      "neutral_e_um@9Hz": 4.895018472184874,
+      "static_hold_W": 17.6631139566094
+    },
+    "stage.axial_k": {
+      "oracle_ratio@6Hz": 2.090718039603917,
+      "oracle_ratio@9Hz": 2.454055032555952,
+      "kfosc_ratio@6Hz": 1.1429456845758403,
+      "kfosc_ratio@9Hz": 4.172346246472991,
+      "kf_distortion_um": 0.14659063085007182,
+      "neutral_e_um@6Hz": 15.259076878764313,
+      "neutral_e_um@9Hz": 30.901816232163995,
+      "static_hold_W": 1.7713446410610616
+    },
+    "stage.axial_preload": {
+      "oracle_ratio@6Hz": 8.881975039779297,
+      "oracle_ratio@9Hz": 7.228540188465005,
+      "kfosc_ratio@6Hz": 3.558959542012672,
+      "kfosc_ratio@9Hz": 11.313345413168191,
+      "kf_distortion_um": 0.07456749920605947,
+      "neutral_e_um@6Hz": 13.065409412588041,
+      "neutral_e_um@9Hz": 8.517049731318403,
+      "static_hold_W": 3.302327233259122
+    },
     "writing.mu_eff": {
-      "oracle_ratio@6Hz": 0.743267518861537,
-      "oracle_ratio@9Hz": 0.47822292022532287,
-      "kfosc_ratio@6Hz": 0.5051561962696607,
-      "kfosc_ratio@9Hz": 0.11826406798729971,
-      "kf_distortion_um": 0.040685662777723466,
-      "neutral_e_um@6Hz": 0.29332872308730407,
-      "neutral_e_um@9Hz": 0.0837886639152145,
+      "oracle_ratio@6Hz": 1.5025898153499342,
+      "oracle_ratio@9Hz": 0.2944206661048282,
+      "kfosc_ratio@6Hz": 0.6569034135761974,
+      "kfosc_ratio@9Hz": 0.12633238203862235,
+      "kf_distortion_um": 0.043614322960712264,
+      "neutral_e_um@6Hz": 0.21081644387842946,
+      "neutral_e_um@9Hz": 0.08568578388827584,
       "static_hold_W": 7.801706567080353
     },
-    "actuator.Kf": {
-      "oracle_ratio@6Hz": 12.434422746012656,
-      "oracle_ratio@9Hz": 1.5159747896924254,
-      "kfosc_ratio@6Hz": 2.728283902192239,
-      "kfosc_ratio@9Hz": 0.13239983326830984,
-      "kf_distortion_um": 0.08349358843595518,
-      "neutral_e_um@6Hz": 0.40411506825386095,
-      "neutral_e_um@9Hz": 0.3326700123516053,
-      "static_hold_W": 0.023731457237235187
+    "writing.mu_static_ratio": {
+      "oracle_ratio@6Hz": 5.184836611825907,
+      "oracle_ratio@9Hz": 1.405808325349808,
+      "kfosc_ratio@6Hz": 86.21073206679215,
+      "kfosc_ratio@9Hz": 2.2896239859488965,
+      "kf_distortion_um": 0.7105804820335688,
+      "neutral_e_um@6Hz": 0.5695926963695617,
+      "neutral_e_um@9Hz": 0.5944351552992848,
+      "static_hold_W": 23.637743174370822
+    },
+    "writing.stribeck_speed": {
+      "oracle_ratio@6Hz": 9.834340626580525,
+      "oracle_ratio@9Hz": 2.2031907986948576,
+      "kfosc_ratio@6Hz": 2.993218806543868,
+      "kfosc_ratio@9Hz": 1.2768693696968865,
+      "kf_distortion_um": 0.28936967290038534,
+      "neutral_e_um@6Hz": 0.8341200783344087,
+      "neutral_e_um@9Hz": 0.8706040834496964,
+      "static_hold_W": 26.724998696834362
+    },
+    "writing.paper_stiffness": {
+      "oracle_ratio@6Hz": 10.166045309479703,
+      "oracle_ratio@9Hz": 9.17806985823381,
+      "kfosc_ratio@6Hz": 1.6774450605056754,
+      "kfosc_ratio@9Hz": 1.2402071280815419,
+      "kf_distortion_um": 0.5532440657376491,
+      "neutral_e_um@6Hz": 2.707517450726465,
+      "neutral_e_um@9Hz": 2.424748983940424,
+      "static_hold_W": 28.691973474651288
+    },
+    "friction.x_presliding": {
+      "oracle_ratio@6Hz": 11.30356467013901,
+      "oracle_ratio@9Hz": 9.40296783556674,
+      "kfosc_ratio@6Hz": 7.469008748112621,
+      "kfosc_ratio@9Hz": 1.106136048979057,
+      "kf_distortion_um": 0.09534680172949778,
+      "neutral_e_um@6Hz": 8.382833842540776,
+      "neutral_e_um@9Hz": 20.986793005919363,
+      "static_hold_W": 13.562437851601143
+    },
+    "hand.grip_stiffness": {
+      "oracle_ratio@6Hz": 2.1536491392088997,
+      "oracle_ratio@9Hz": 0.40340140760757826,
+      "kfosc_ratio@6Hz": 0.9506306341034348,
+      "kfosc_ratio@9Hz": 0.7882875263758679,
+      "kf_distortion_um": 0.03911464551511699,
+      "neutral_e_um@6Hz": 0.4911685375643759,
+      "neutral_e_um@9Hz": 0.5496225187813896,
+      "static_hold_W": 55.87973601407721
+    },
+    "hand.grip_damping": {
+      "oracle_ratio@6Hz": 17.512640523130205,
+      "oracle_ratio@9Hz": 1.3057479042865592,
+      "kfosc_ratio@6Hz": 22.337703051274595,
+      "kfosc_ratio@9Hz": 5.286934991270875,
+      "kf_distortion_um": 0.11599448663011658,
+      "neutral_e_um@6Hz": 2.168131605926161,
+      "neutral_e_um@9Hz": 0.6391091836690683,
+      "static_hold_W": 63.80244081650662
+    },
+    "hand.mass": {
+      "oracle_ratio@6Hz": 14.294670375886652,
+      "oracle_ratio@9Hz": 0.8128015366529635,
+      "kfosc_ratio@6Hz": 1.968536835392607,
+      "kfosc_ratio@9Hz": 0.2323733706954472,
+      "kf_distortion_um": 0.5449473469906586,
+      "neutral_e_um@6Hz": 0.2432573251798319,
+      "neutral_e_um@9Hz": 0.14652834542535162,
+      "static_hold_W": 352.05895267568843
+    },
+    "hand.arm_stiffness": {
+      "oracle_ratio@6Hz": 3.104648210616863,
+      "oracle_ratio@9Hz": 0.2719433713964926,
+      "kfosc_ratio@6Hz": 2.3139767892530188,
+      "kfosc_ratio@9Hz": 0.7058256627706154,
+      "kf_distortion_um": 0.1539097072888826,
+      "neutral_e_um@6Hz": 0.10005834693454163,
+      "neutral_e_um@9Hz": 0.07231995465497944,
+      "static_hold_W": 34.9250158192813
+    },
+    "hand.arm_damping": {
+      "oracle_ratio@6Hz": 2.6207561779385253,
+      "oracle_ratio@9Hz": 1.4711959611992358,
+      "kfosc_ratio@6Hz": 0.7012545550403817,
+      "kfosc_ratio@9Hz": 2.8489743237554026,
+      "kf_distortion_um": 0.09024416162278132,
+      "neutral_e_um@6Hz": 0.3483193050254927,
+      "neutral_e_um@9Hz": 0.30859726743065935,
+      "static_hold_W": 56.00024873640675
+    },
+    "hand.normal_stiffness": {
+      "oracle_ratio@6Hz": 2.245408180408619,
+      "oracle_ratio@9Hz": 1.816569680699643,
+      "kfosc_ratio@6Hz": 5.044381828006851,
+      "kfosc_ratio@9Hz": 1.4984307199325813,
+      "kf_distortion_um": 0.22469682363498464,
+      "neutral_e_um@6Hz": 21.761918992802045,
+      "neutral_e_um@9Hz": 11.479784039072724,
+      "static_hold_W": 31.464915092898167
+    },
+    "sensing.opt_noise": {
+      "oracle_ratio@6Hz": null,
+      "oracle_ratio@9Hz": null,
+      "kfosc_ratio@6Hz": 0.7392881020697027,
+      "kfosc_ratio@9Hz": 0.22754871900523405,
+      "kf_distortion_um": 0.055841983632599825,
+      "neutral_e_um@6Hz": null,
+      "neutral_e_um@9Hz": null,
+      "static_hold_W": null
+    },
+    "sensing.opt_delay": {
+      "oracle_ratio@6Hz": 12.670277467741112,
+      "oracle_ratio@9Hz": 19.146996497673424,
+      "kfosc_ratio@6Hz": 19.48075655712467,
+      "kfosc_ratio@9Hz": 1.0924861243147495,
+      "kf_distortion_um": 0.051474908938262086,
+      "neutral_e_um@6Hz": 18.49078445675277,
+      "neutral_e_um@9Hz": 31.252805626112835,
+      "static_hold_W": 861.3638673790039
+    },
+    "sensing.hall_noise_tip": {
+      "oracle_ratio@6Hz": 1.9323837077829027,
+      "oracle_ratio@9Hz": 1.2711675199317911,
+      "kfosc_ratio@6Hz": 2.1973173486288036,
+      "kfosc_ratio@9Hz": 1.2012753291702136,
+      "kf_distortion_um": 0.13665993710224134,
+      "neutral_e_um@6Hz": 0.5503484326021653,
+      "neutral_e_um@9Hz": 0.5152295758646555,
+      "static_hold_W": 4.088346784107491
+    },
+    "sensing.imu_delay": {
+      "oracle_ratio@6Hz": 3.5706660462646562,
+      "oracle_ratio@9Hz": 2.6244674543874313,
+      "kfosc_ratio@6Hz": 21.20033903849031,
+      "kfosc_ratio@9Hz": 2.5519575355208524,
+      "kf_distortion_um": 0.10116614653700859,
+      "neutral_e_um@6Hz": 1.6110993674694225,
+      "neutral_e_um@9Hz": 1.4013203848388454,
+      "static_hold_W": 5.206180978046933
     }
   },
   "rss_budget_identified": {
     "oracle_ratio@6Hz": {
-      "writing.mu_eff": 0.743267518861537
+      "stage.m_eq": 0.6532133706088958,
+      "stage.axial_k": 1.2070766229649281,
+      "writing.mu_eff": 0.8675206343738746
     },
     "oracle_ratio@9Hz": {
-      "writing.mu_eff": 0.3381546698101591,
-      "actuator.Kf": 1.0719560538993642
+      "actuator.Kf": 0.3694682344000737,
+      "stage.m_eq": 0.27117417343549066,
+      "stage.axial_k": 1.001863771745207,
+      "writing.mu_eff": 0.12019673361452793,
+      "writing.mu_static_ratio": 0.5739188455439252,
+      "writing.stribeck_speed": 0.8994488771328886
     },
     "kfosc_ratio@6Hz": {
-      "writing.mu_eff": 0.5051561962696607
+      "actuator.Kf": 0.6633781320897415,
+      "stage.k_tip": 0.4362781078433449,
+      "stage.axial_k": 0.5111408490603224,
+      "writing.mu_eff": 0.29377613748160714,
+      "writing.paper_stiffness": 0.7501762367623875
     },
     "kfosc_ratio@9Hz": {
-      "writing.mu_eff": 0.08362532444452651,
-      "actuator.Kf": 0.09362081993199013
+      "actuator.Kf": 0.04383218038956959,
+      "actuator.R20": 0.26746646030872895,
+      "stage.k_tip": 0.06484375970106823,
+      "stage.m_eq": 0.3574693278669062,
+      "writing.mu_eff": 0.04211079401287412,
+      "writing.mu_static_ratio": 0.7632079953162988,
+      "writing.stribeck_speed": 0.42562312323229545,
+      "writing.paper_stiffness": 0.4134023760271806,
+      "friction.x_presliding": 0.36871201632635237
     },
     "kf_distortion_um": {
-      "writing.mu_eff": 0.028769108047197366,
-      "actuator.Kf": 0.05903888256866262
+      "actuator.Kf": 0.0135096317006465,
+      "actuator.R20": 0.01662954047196686,
+      "actuator.L": 0.03345459812508206,
+      "stage.k_tip": 0.1776494604497073,
+      "stage.m_eq": 0.03053644857312985,
+      "sensing.hall_delay": 0.07655278015076984,
+      "stage.axial_k": 0.04065692584865748,
+      "stage.axial_preload": 0.0206813032208129,
+      "writing.mu_eff": 0.012096436752268805,
+      "writing.mu_static_ratio": 0.19707956640891927,
+      "writing.stribeck_speed": 0.08025670716973707,
+      "writing.paper_stiffness": 0.15344229591255876,
+      "friction.x_presliding": 0.026444444814400215
     },
     "neutral_e_um@6Hz": {
-      "writing.mu_eff": 0.2074147292118237,
-      "actuator.Kf": 0.28575250514196954
+      "actuator.Kf": 0.184481653923878,
+      "stage.m_eq": 0.14981776464702518,
+      "writing.mu_eff": 0.09427997985738754,
+      "writing.mu_static_ratio": 0.25472959771394754,
+      "writing.stribeck_speed": 0.37302983931063743
     },
     "neutral_e_um@9Hz": {
-      "writing.mu_eff": 0.05924753244100875,
-      "actuator.Kf": 0.23523322163123261
+      "actuator.Kf": 0.13837976774040653,
+      "stage.m_eq": 0.12057851679691432,
+      "writing.mu_eff": 0.034981074789444636,
+      "writing.mu_static_ratio": 0.24267713594255397,
+      "writing.stribeck_speed": 0.3554226287391969,
+      "writing.paper_stiffness": 0.9898996274976668
     },
     "static_hold_W": {
-      "actuator.Kf": 0.023731457237235187
+      "actuator.Kf": 0.011865728618617594,
+      "actuator.R20": 0.02461053647274419,
+      "stage.m_eq": 0.8621335020466757,
+      "stage.axial_k": 0.8856723205305308
     }
   },
   "tolerances": {
@@ -161,7 +927,916 @@
       0.05
     ]
   },
-  "mc_rank_comparison": {},
-  "gap_attribution": null,
-  "elapsed_s": 17.41346025466919
+  "mc_rank_comparison": {
+    "oracle_ratio@9Hz": {
+      "n": 16,
+      "spearman_abs": 0.5529411764705882,
+      "rows": [
+        {
+          "param": "writing.mu_eff",
+          "mc_rho": 0.24033458338216335,
+          "local_S": 0.1698250352514234
+        },
+        {
+          "param": "hand.arm_stiffness",
+          "mc_rho": -0.22127036212352044,
+          "local_S": -0.18386180822587567
+        },
+        {
+          "param": "hand.grip_damping",
+          "mc_rho": -0.20107816711590296,
+          "local_S": -0.03829223070996943
+        },
+        {
+          "param": "hand.mass",
+          "mc_rho": 0.1936101019571077,
+          "local_S": 0.061515631732064716
+        },
+        {
+          "param": "stage.axial_k",
+          "mc_rho": -0.15989101136763156,
+          "local_S": 0.020374441215331635
+        },
+        {
+          "param": "writing.paper_stiffness",
+          "mc_rho": 0.1583235673268487,
+          "local_S": -0.00544776851476502
+        },
+        {
+          "param": "hand.grip_stiffness",
+          "mc_rho": -0.12887026836985818,
+          "local_S": -0.1239460226391652
+        },
+        {
+          "param": "sensing.hall_noise_tip",
+          "mc_rho": -0.09680651587952656,
+          "local_S": -0.03933391879198025
+        },
+        {
+          "param": "hand.arm_damping",
+          "mc_rho": -0.09023497011602015,
+          "local_S": -0.03398595518114584
+        },
+        {
+          "param": "actuator.R20",
+          "mc_rho": -0.08379233563811087,
+          "local_S": -0.0002628676714676495
+        },
+        {
+          "param": "sensing.opt_noise",
+          "mc_rho": 0.058141919606234625,
+          "local_S": 0.0
+        },
+        {
+          "param": "stage.k_tip",
+          "mc_rho": 0.049068322981366465,
+          "local_S": 0.011905845757733569
+        },
+        {
+          "param": "hand.normal_stiffness",
+          "mc_rho": 0.04552912223133717,
+          "local_S": 0.02752440521893041
+        },
+        {
+          "param": "sensing.opt_delay",
+          "mc_rho": 0.03157447556545177,
+          "local_S": -0.0026113756278210824
+        },
+        {
+          "param": "actuator.Kf",
+          "mc_rho": -0.026001992265322866,
+          "local_S": -0.055248090695369075
+        },
+        {
+          "param": "sensing.imu_delay",
+          "mc_rho": 0.0007851869213641156,
+          "local_S": -0.01905148410829516
+        }
+      ]
+    },
+    "kfosc_ratio@9Hz": {
+      "n": 16,
+      "spearman_abs": 0.17352941176470588,
+      "rows": [
+        {
+          "param": "writing.mu_eff",
+          "mc_rho": 0.5076119972549097,
+          "local_S": 0.3957813443643768
+        },
+        {
+          "param": "sensing.opt_noise",
+          "mc_rho": 0.22944467760808163,
+          "local_S": 0.21973316403881804
+        },
+        {
+          "param": "hand.grip_stiffness",
+          "mc_rho": -0.20768502262180555,
+          "local_S": -0.0634286327349029
+        },
+        {
+          "param": "hand.arm_stiffness",
+          "mc_rho": -0.20549645896558527,
+          "local_S": -0.07083902249137884
+        },
+        {
+          "param": "sensing.hall_noise_tip",
+          "mc_rho": -0.13454685818799622,
+          "local_S": -0.04162243141590007
+        },
+        {
+          "param": "hand.mass",
+          "mc_rho": -0.13428903542795956,
+          "local_S": -0.21517095461652927
+        },
+        {
+          "param": "hand.arm_damping",
+          "mc_rho": -0.12284375574519568,
+          "local_S": -0.01755017571870989
+        },
+        {
+          "param": "writing.paper_stiffness",
+          "mc_rho": 0.10334444461537741,
+          "local_S": 0.040315846335558694
+        },
+        {
+          "param": "stage.axial_k",
+          "mc_rho": -0.07333006660179117,
+          "local_S": 0.011983665076278485
+        },
+        {
+          "param": "hand.grip_damping",
+          "mc_rho": -0.07331541758133454,
+          "local_S": 0.009457275355674647
+        },
+        {
+          "param": "sensing.opt_delay",
+          "mc_rho": 0.06357381897767657,
+          "local_S": -0.0457671716712759
+        },
+        {
+          "param": "sensing.imu_delay",
+          "mc_rho": -0.06228763498158458,
+          "local_S": -0.019592802507113444
+        },
+        {
+          "param": "hand.normal_stiffness",
+          "mc_rho": -0.04471174023772165,
+          "local_S": -0.03336824274548352
+        },
+        {
+          "param": "actuator.R20",
+          "mc_rho": -0.04001819408341787,
+          "local_S": -0.06231310889383591
+        },
+        {
+          "param": "stage.k_tip",
+          "mc_rho": 0.003958165327381033,
+          "local_S": -0.25702807399664246
+        },
+        {
+          "param": "actuator.Kf",
+          "mc_rho": -0.0005932853284934561,
+          "local_S": 0.3802381382476858
+        }
+      ]
+    }
+  },
+  "gap_attribution": [
+    {
+      "id": "T00",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.0056701731555539574,
+            "B05_stage": 0.006877721216025334,
+            "B01B02_contact": 0.03868017692609649,
+            "B06_hand": -0.02479351963562244,
+            "S01B04_sensors": -0.019906531661025267
+          },
+          "linear_sum": 0.006528020001028072,
+          "simulated_truth_minus_nominal": 0.24870805607162025
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.015651103340933115,
+            "B05_stage": -0.01267565081501006,
+            "B01B02_contact": 0.16295038161960146,
+            "B06_hand": 0.01053537118955182,
+            "S01B04_sensors": -0.030749547306575555
+          },
+          "linear_sum": 0.14571165802850075,
+          "simulated_truth_minus_nominal": 0.24284947915383623
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.016649356359114294,
+            "B05_stage": -0.08711623284158178,
+            "B01B02_contact": 0.10664717872869282,
+            "B06_hand": -0.08769663957226254,
+            "S01B04_sensors": -0.0020955460259171796
+          },
+          "linear_sum": -0.08691059607018296,
+          "simulated_truth_minus_nominal": 0.0054819670556218725
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.1108129981571997,
+            "B05_stage": -0.201285008756622,
+            "B01B02_contact": 0.288783793712515,
+            "B06_hand": -0.10178891379765931,
+            "S01B04_sensors": 0.020963119015141616
+          },
+          "linear_sum": -0.10414000798382442,
+          "simulated_truth_minus_nominal": -0.08424160879851961
+        }
+      }
+    },
+    {
+      "id": "T01",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.005639147545383112,
+            "B05_stage": 0.003981985839737726,
+            "B01B02_contact": 0.03464191984317646,
+            "B06_hand": -0.0041030627271250175,
+            "S01B04_sensors": 0.009015914738734178
+          },
+          "linear_sum": 0.049175905239906455,
+          "simulated_truth_minus_nominal": 0.40389708253750967
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.0158701073416011,
+            "B05_stage": -0.01968904828447926,
+            "B01B02_contact": 0.1773844022001427,
+            "B06_hand": 0.060113695148343416,
+            "S01B04_sensors": 0.01219438716564427
+          },
+          "linear_sum": 0.24587354357125224,
+          "simulated_truth_minus_nominal": 0.41098121380935193
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.009542958184445161,
+            "B05_stage": -0.05312960141256994,
+            "B01B02_contact": 0.08603939201404498,
+            "B06_hand": 0.07713611086392978,
+            "S01B04_sensors": -0.011364336974647483
+          },
+          "linear_sum": 0.08913860630631218,
+          "simulated_truth_minus_nominal": 0.1198648453970581
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.09009093683422285,
+            "B05_stage": -0.08917785586418413,
+            "B01B02_contact": 0.349365090081004,
+            "B06_hand": 0.06774142613561066,
+            "S01B04_sensors": -0.036093761830879506
+          },
+          "linear_sum": 0.2017439616873282,
+          "simulated_truth_minus_nominal": 0.2321792237527014
+        }
+      }
+    },
+    {
+      "id": "T02",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.004717351128167639,
+            "B05_stage": -0.015915077167945855,
+            "B01B02_contact": -0.033851034958414745,
+            "B06_hand": 0.017368570359681264,
+            "S01B04_sensors": 0.0019935238753092874
+          },
+          "linear_sum": -0.03512136901953769,
+          "simulated_truth_minus_nominal": -0.002367501684375939
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.013268985315021898,
+            "B05_stage": 0.012202395516864483,
+            "B01B02_contact": -0.143864388530577,
+            "B06_hand": -0.024316812358053823,
+            "S01B04_sensors": -0.002968215574594797
+          },
+          "linear_sum": -0.17221600626138303,
+          "simulated_truth_minus_nominal": 0.019804217156725368
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.007532444100684461,
+            "B05_stage": -0.010753399440137028,
+            "B01B02_contact": -0.0870087130282893,
+            "B06_hand": 0.0318684022427861,
+            "S01B04_sensors": 0.07283599638007167
+          },
+          "linear_sum": 0.014474730255115906,
+          "simulated_truth_minus_nominal": -0.02918834567960693
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.09708944557213606,
+            "B05_stage": -0.14649464760104597,
+            "B01B02_contact": -0.4308386044359332,
+            "B06_hand": -0.21072391505561444,
+            "S01B04_sensors": 0.18690136717459607
+          },
+          "linear_sum": -0.5040663543458614,
+          "simulated_truth_minus_nominal": -0.05006280136769525
+        }
+      }
+    },
+    {
+      "id": "T03",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.001637268553407864,
+            "B05_stage": -0.03084705221366938,
+            "B01B02_contact": -0.006518911064872344,
+            "B06_hand": -0.0034610758037582033,
+            "S01B04_sensors": 0.0116627068179461
+          },
+          "linear_sum": -0.030801600817761697,
+          "simulated_truth_minus_nominal": 0.011410088661487516
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.004612982272133747,
+            "B05_stage": 0.05108036846136474,
+            "B01B02_contact": -0.02621210237423623,
+            "B06_hand": 0.007067452232449575,
+            "S01B04_sensors": 0.011441706337981201
+          },
+          "linear_sum": 0.038764442385425535,
+          "simulated_truth_minus_nominal": 0.11642861581472944
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.0023167820062526528,
+            "B05_stage": 0.03930734612622961,
+            "B01B02_contact": -0.035185571130905036,
+            "B06_hand": 0.04514460109318858,
+            "S01B04_sensors": -0.010717285867559977
+          },
+          "linear_sum": 0.040865872227205835,
+          "simulated_truth_minus_nominal": 0.014427849519143221
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.040450099754931454,
+            "B05_stage": -0.12540803257752717,
+            "B01B02_contact": 0.056204533549123276,
+            "B06_hand": 0.23041053291058858,
+            "S01B04_sensors": -0.10382661846043684
+          },
+          "linear_sum": 0.09783051517667929,
+          "simulated_truth_minus_nominal": 0.07982930649783893
+        }
+      }
+    },
+    {
+      "id": "T04",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0023800464241089106,
+            "B05_stage": -0.0295348126619806,
+            "B01B02_contact": 0.02306992432735429,
+            "B06_hand": 0.01842617449377241,
+            "S01B04_sensors": 0.010150508498123396
+          },
+          "linear_sum": 0.01973174823316059,
+          "simulated_truth_minus_nominal": 0.3873328571915622
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.006801536063011323,
+            "B05_stage": 0.027511664559666065,
+            "B01B02_contact": 0.1321082765818106,
+            "B06_hand": 0.0630602302676887,
+            "S01B04_sensors": 0.01683290139810977
+          },
+          "linear_sum": 0.2327115367442638,
+          "simulated_truth_minus_nominal": 0.5290132616484111
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.001670440720434779,
+            "B05_stage": 0.06507262379042011,
+            "B01B02_contact": 0.05520872267588492,
+            "B06_hand": 0.029159547684959104,
+            "S01B04_sensors": 0.055094142352564705
+          },
+          "linear_sum": 0.20620547722426363,
+          "simulated_truth_minus_nominal": 0.7211547867963066
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.024825002570303498,
+            "B05_stage": 0.08184733813928591,
+            "B01B02_contact": 0.2356794339124781,
+            "B06_hand": 0.021577507065540555,
+            "S01B04_sensors": 0.14975868592118113
+          },
+          "linear_sum": 0.5136879676087892,
+          "simulated_truth_minus_nominal": 0.25245068089106737
+        }
+      }
+    },
+    {
+      "id": "T05",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0003721523518280252,
+            "B05_stage": 0.020863293345959814,
+            "B01B02_contact": 0.005420731660546922,
+            "B06_hand": -0.026311614731206204,
+            "S01B04_sensors": 0.015208363752526904
+          },
+          "linear_sum": 0.01480862167599941,
+          "simulated_truth_minus_nominal": 0.18157691628710246
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.001155942942719534,
+            "B05_stage": -0.005839792605442208,
+            "B01B02_contact": 0.04413263428652731,
+            "B06_hand": -0.10549663662392952,
+            "S01B04_sensors": 0.02052116930246242
+          },
+          "linear_sum": -0.04783856858310154,
+          "simulated_truth_minus_nominal": 0.20284227832609206
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0024451105167576782,
+            "B05_stage": -0.025461676951923987,
+            "B01B02_contact": 0.004685235782780009,
+            "B06_hand": -0.009488323666870423,
+            "S01B04_sensors": 0.09825031588496097
+          },
+          "linear_sum": 0.0655404405321889,
+          "simulated_truth_minus_nominal": 0.09510610017928967
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.01686490692362365,
+            "B05_stage": 0.03963855261634244,
+            "B01B02_contact": 0.10472219712354544,
+            "B06_hand": -0.033786004298200764,
+            "S01B04_sensors": 0.26593347735539835
+          },
+          "linear_sum": 0.3933731297207091,
+          "simulated_truth_minus_nominal": 0.3307601417411403
+        }
+      }
+    },
+    {
+      "id": "T06",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.00018016441989620447,
+            "B05_stage": 0.024513742590081402,
+            "B01B02_contact": 0.014032986332603782,
+            "B06_hand": -0.02630282356772875,
+            "S01B04_sensors": -0.013118201277255949
+          },
+          "linear_sum": -0.0010544603421957146,
+          "simulated_truth_minus_nominal": 0.005666272693725827
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0004902058056784952,
+            "B05_stage": -0.01341754633851637,
+            "B01B02_contact": 0.035970320501391984,
+            "B06_hand": -0.25817499422775636,
+            "S01B04_sensors": -0.02604022230505224
+          },
+          "linear_sum": -0.2621526481756115,
+          "simulated_truth_minus_nominal": -0.015522898097961618
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.0021322271572254926,
+            "B05_stage": -0.08227294116844742,
+            "B01B02_contact": 0.03290559993706305,
+            "B06_hand": -0.05527691840998602,
+            "S01B04_sensors": 0.06283753038536083
+          },
+          "linear_sum": -0.039674502098784065,
+          "simulated_truth_minus_nominal": 0.0008322226834340807
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.00798645808065736,
+            "B05_stage": -0.11120861025887992,
+            "B01B02_contact": 0.10892170387093429,
+            "B06_hand": -0.07229593594490366,
+            "S01B04_sensors": 0.18276290059042571
+          },
+          "linear_sum": 0.10019360017691907,
+          "simulated_truth_minus_nominal": 0.15837472292703236
+        }
+      }
+    },
+    {
+      "id": "T07",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0047102705323792664,
+            "B05_stage": 0.0088876603143256,
+            "B01B02_contact": 0.0004958358337596427,
+            "B06_hand": 0.045220280663314266,
+            "S01B04_sensors": 0.024024631025522457
+          },
+          "linear_sum": 0.07391813730454269,
+          "simulated_truth_minus_nominal": 0.21185791993250228
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.013147801726578236,
+            "B05_stage": -0.026076558246692732,
+            "B01B02_contact": 0.035092721137719156,
+            "B06_hand": 0.019510910966754818,
+            "S01B04_sensors": 0.0336369341938392
+          },
+          "linear_sum": 0.04901620632504221,
+          "simulated_truth_minus_nominal": 0.19904214630099318
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.011255164562838288,
+            "B05_stage": -0.015245355806323234,
+            "B01B02_contact": -0.021683729701546535,
+            "B06_hand": 0.0800200229465461,
+            "S01B04_sensors": 0.0866561026164297
+          },
+          "linear_sum": 0.14100220461794433,
+          "simulated_truth_minus_nominal": 0.4245895254566441
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.07192392424544014,
+            "B05_stage": 0.11583633054062462,
+            "B01B02_contact": 0.133665446739659,
+            "B06_hand": 0.05842723259820054,
+            "S01B04_sensors": 0.2788077855158529
+          },
+          "linear_sum": 0.6586607196397771,
+          "simulated_truth_minus_nominal": 1.1653106899899643
+        }
+      }
+    },
+    {
+      "id": "T08",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.004841439287089997,
+            "B05_stage": -0.00667323501052334,
+            "B01B02_contact": -0.002485216537863582,
+            "B06_hand": 0.01775113346296109,
+            "S01B04_sensors": -0.011908242761454572
+          },
+          "linear_sum": 0.0015258784402095923,
+          "simulated_truth_minus_nominal": 0.22215248366986454
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.013465670602127219,
+            "B05_stage": 0.03541130489168146,
+            "B01B02_contact": 0.015798807145422325,
+            "B06_hand": 0.17503493820011673,
+            "S01B04_sensors": -0.01381054961456691
+          },
+          "linear_sum": 0.22590017122478084,
+          "simulated_truth_minus_nominal": 0.34569368930650834
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.011600760547813904,
+            "B05_stage": -0.022311986792107937,
+            "B01B02_contact": -0.0320592038332997,
+            "B06_hand": 0.08376955149054469,
+            "S01B04_sensors": 0.024842818131033288
+          },
+          "linear_sum": 0.04264041844835642,
+          "simulated_truth_minus_nominal": 0.1325535564174194
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0801774212233283,
+            "B05_stage": -0.2285840168744364,
+            "B01B02_contact": 0.13802674445952887,
+            "B06_hand": 0.11032332388620898,
+            "S01B04_sensors": 0.08219789961154944
+          },
+          "linear_sum": 0.021786529859522605,
+          "simulated_truth_minus_nominal": 0.03448145645517953
+        }
+      }
+    },
+    {
+      "id": "T09",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0048692938884942515,
+            "B05_stage": 0.007672922640225054,
+            "B01B02_contact": 0.02271874302800913,
+            "B06_hand": -0.03463747014554325,
+            "S01B04_sensors": 0.024295130781806562
+          },
+          "linear_sum": 0.015180032416003245,
+          "simulated_truth_minus_nominal": -0.008766746533613534
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.013662206959650784,
+            "B05_stage": -0.0246285427793401,
+            "B01B02_contact": 0.12352471033211641,
+            "B06_hand": -0.06085229663033486,
+            "S01B04_sensors": 0.028245581610122653
+          },
+          "linear_sum": 0.052627245572913324,
+          "simulated_truth_minus_nominal": 0.04121760251926221
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.008047695483878898,
+            "B05_stage": -0.024482888824950012,
+            "B01B02_contact": 0.04959396823338463,
+            "B06_hand": -0.07429493496708689,
+            "S01B04_sensors": 0.011047538668116433
+          },
+          "linear_sum": -0.03008862140665694,
+          "simulated_truth_minus_nominal": 0.23027122911687536
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.11038813463374408,
+            "B05_stage": 0.03937357587697699,
+            "B01B02_contact": 0.27288917413933433,
+            "B06_hand": 0.0009224574440912757,
+            "S01B04_sensors": -0.007964885689409666
+          },
+          "linear_sum": 0.415608456404737,
+          "simulated_truth_minus_nominal": 0.4969716268936355
+        }
+      }
+    },
+    {
+      "id": "T10",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0018254648666853831,
+            "B05_stage": -0.02659312801320012,
+            "B01B02_contact": 0.03575293347818162,
+            "B06_hand": -0.026965305783257,
+            "S01B04_sensors": -0.04134581751024609
+          },
+          "linear_sum": -0.06097678269520697,
+          "simulated_truth_minus_nominal": 0.36250530821705984
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.004787965512044119,
+            "B05_stage": 0.04693080398129684,
+            "B01B02_contact": 0.21980194726481325,
+            "B06_hand": -0.029601162720531662,
+            "S01B04_sensors": -0.061091257854725176
+          },
+          "linear_sum": 0.17125236515880915,
+          "simulated_truth_minus_nominal": 0.27913831686676516
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.01266124613059349,
+            "B05_stage": 0.005049704182671985,
+            "B01B02_contact": 0.12456955575206737,
+            "B06_hand": -0.010036895464019393,
+            "S01B04_sensors": 0.039478967581154385
+          },
+          "linear_sum": 0.17172257818246783,
+          "simulated_truth_minus_nominal": 0.11536911219617818
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.013751643621129251,
+            "B05_stage": -0.17762284771100692,
+            "B01B02_contact": 0.32667776416081995,
+            "B06_hand": -0.11380450484003775,
+            "S01B04_sensors": 0.13085716757846214
+          },
+          "linear_sum": 0.17985922280936667,
+          "simulated_truth_minus_nominal": 0.3765997280497493
+        }
+      }
+    },
+    {
+      "id": "T11",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.011059434174902297,
+            "B05_stage": -0.02654909578214207,
+            "B01B02_contact": -0.03435119935550959,
+            "B06_hand": -0.07898877036135481,
+            "S01B04_sensors": 0.029604111790900587
+          },
+          "linear_sum": -0.0992255195332036,
+          "simulated_truth_minus_nominal": 0.5895663266143997
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.03119054853354192,
+            "B05_stage": 0.05242827667235318,
+            "B01B02_contact": -0.2611988544482516,
+            "B06_hand": -0.364921589791381,
+            "S01B04_sensors": 0.04330372604838929
+          },
+          "linear_sum": -0.4991978929853482,
+          "simulated_truth_minus_nominal": 0.5319560765368248
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.013057639887482927,
+            "B05_stage": 0.017024851248747135,
+            "B01B02_contact": -0.05772361485292909,
+            "B06_hand": -0.18372487869946827,
+            "S01B04_sensors": 0.019984524053229126
+          },
+          "linear_sum": -0.21749675813790403,
+          "simulated_truth_minus_nominal": -0.0237131214807359
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.23113920085361986,
+            "B05_stage": -0.21930947022473044,
+            "B01B02_contact": -0.5588321609252835,
+            "B06_hand": -0.39594443727812373,
+            "S01B04_sensors": -0.03259075733049971
+          },
+          "linear_sum": -1.4378160266122575,
+          "simulated_truth_minus_nominal": 0.0813890790235462
+        }
+      }
+    },
+    {
+      "id": "T12",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.010742143658389674,
+            "B05_stage": -0.05395929394030725,
+            "B01B02_contact": 0.06634803715636467,
+            "B06_hand": -0.017715193402691058,
+            "S01B04_sensors": 0.034276027998721405
+          },
+          "linear_sum": 0.03969172147047744,
+          "simulated_truth_minus_nominal": 0.7922810822195522
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.02980814590718286,
+            "B05_stage": 0.0644359701480215,
+            "B01B02_contact": 0.2788322287024881,
+            "B06_hand": -0.1038702401740886,
+            "S01B04_sensors": 0.0391998073725139
+          },
+          "linear_sum": 0.3084059119561178,
+          "simulated_truth_minus_nominal": 0.7589884615261059
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.025977863473214794,
+            "B05_stage": 0.10384158224996429,
+            "B01B02_contact": 0.20249558024573755,
+            "B06_hand": -0.07679084005395866,
+            "S01B04_sensors": 0.158207422466971
+          },
+          "linear_sum": 0.3617758814354994,
+          "simulated_truth_minus_nominal": -0.02274982769083178
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.20860646166283603,
+            "B05_stage": -0.13579756891815364,
+            "B01B02_contact": 0.4008459957109026,
+            "B06_hand": -0.4690154809656879,
+            "S01B04_sensors": 0.4766397859357506
+          },
+          "linear_sum": 0.06406627009997568,
+          "simulated_truth_minus_nominal": 0.219201900519848
+        }
+      }
+    },
+    {
+      "id": "T13",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.0009459061004955065,
+            "B05_stage": 0.02974476273621438,
+            "B01B02_contact": 0.009470199733915156,
+            "B06_hand": 0.061378498046344765,
+            "S01B04_sensors": 0.001353771483025536
+          },
+          "linear_sum": 0.10289313809999534,
+          "simulated_truth_minus_nominal": 0.7803397027016707
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.002671121190163804,
+            "B05_stage": 0.011306433330748438,
+            "B01B02_contact": 0.10301053898974366,
+            "B06_hand": 0.30356504678025314,
+            "S01B04_sensors": -0.0008048365732426658
+          },
+          "linear_sum": 0.4197483037176664,
+          "simulated_truth_minus_nominal": 0.7214611528126925
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0016092327613961162,
+            "B05_stage": 0.028048490604995285,
+            "B01B02_contact": -0.02239863055392571,
+            "B06_hand": 0.1981708382130193,
+            "S01B04_sensors": 0.04515440131889773
+          },
+          "linear_sum": 0.2473658668215905,
+          "simulated_truth_minus_nominal": 0.2573535962539153
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.0353393718024339,
+            "B05_stage": 0.2333796147376429,
+            "B01B02_contact": 0.290787103158266,
+            "B06_hand": 0.5086340792917807,
+            "S01B04_sensors": 0.12196013421380061
+          },
+          "linear_sum": 1.1194215595990564,
+          "simulated_truth_minus_nominal": 0.4495723459762708
+        }
+      }
+    },
+    {
+      "id": "T14",
+      "groups": {
+        "oracle_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.009769988118238575,
+            "B05_stage": -0.06180946089736199,
+            "B01B02_contact": -0.01860598943649015,
+            "B06_hand": -0.03483672916318858,
+            "S01B04_sensors": -0.026416907603379128
+          },
+          "linear_sum": -0.13189909898218127,
+          "simulated_truth_minus_nominal": 0.005962463216647035
+        },
+        "oracle_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": 0.027671079825094966,
+            "B05_stage": 0.04099055029710838,
+            "B01B02_contact": -0.01720535631262497,
+            "B06_hand": 0.03267209062021092,
+            "S01B04_sensors": -0.03806105914396965
+          },
+          "linear_sum": 0.04606730528581965,
+          "simulated_truth_minus_nominal": -0.010403922183603781
+        },
+        "kfosc_ratio@6Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.011844439187129576,
+            "B05_stage": 0.163322403507025,
+            "B01B02_contact": -0.10983704175089702,
+            "B06_hand": -0.1564817663527317,
+            "S01B04_sensors": -0.035063009785758666
+          },
+          "linear_sum": -0.14990385356949196,
+          "simulated_truth_minus_nominal": -0.025190886970989923
+        },
+        "kfosc_ratio@9Hz": {
+          "linear_truth_minus_nominal": {
+            "B03_actuator": -0.15619587780442692,
+            "B05_stage": 0.26020953812866976,
+            "B01B02_contact": -0.002657797033543685,
+            "B06_hand": -0.28441710512754204,
+            "S01B04_sensors": -0.12742419080232317
+          },
+          "linear_sum": -0.31048543263916606,
+          "simulated_truth_minus_nominal": -0.20019966841905223
+        }
+      }
+    }
+  ],
+  "elapsed_s": 160.90582585334778
 }

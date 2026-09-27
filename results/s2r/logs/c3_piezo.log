@@ -1,0 +1,6 @@
+4.0 {'linear_ff': 7.14, 'pi_ff': 2.81, 'fb': 9.32, 'linear_ff+fb': 0.81, 'pi_ff+fb': 0.54}
+6.0 {'linear_ff': 7.46, 'pi_ff': 2.83, 'fb': 14.68, 'linear_ff+fb': 1.11, 'pi_ff+fb': 0.79}
+8.0 {'linear_ff': 7.48, 'pi_ff': 2.93, 'fb': 19.59, 'linear_ff+fb': 1.45, 'pi_ff+fb': 1.04}
+10.0 {'linear_ff': 7.4, 'pi_ff': 3.06, 'fb': 24.01, 'linear_ff+fb': 1.78, 'pi_ff+fb': 1.31}
+12.0 {'linear_ff': 7.05, 'pi_ff': 3.08, 'fb': 27.01, 'linear_ff+fb': 2.01, 'pi_ff+fb': 1.56}
+/home/user/Stabilisation_Pen/results/s2r/c3_piezo.json 4 s

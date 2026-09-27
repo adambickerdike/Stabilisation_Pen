@@ -1,25 +1,8 @@
-T08 27 s {'oracle_ratio@6Hz': 0.384, 'oracle_ratio@9Hz': 0.549, 'kfosc_ratio@6Hz': 1.155, 'kfosc_ratio@9Hz': 0.815}
-T09 52 s {'oracle_ratio@6Hz': 0.154, 'oracle_ratio@9Hz': 0.244, 'kfosc_ratio@6Hz': 1.253, 'kfosc_ratio@9Hz': 1.278}
-T10 78 s {'oracle_ratio@6Hz': 0.525, 'oracle_ratio@9Hz': 0.482, 'kfosc_ratio@6Hz': 1.138, 'kfosc_ratio@9Hz': 1.157}
-T11 103 s {'oracle_ratio@6Hz': 0.752, 'oracle_ratio@9Hz': 0.735, 'kfosc_ratio@6Hz': 0.999, 'kfosc_ratio@9Hz': 0.862}
-T12 129 s {'oracle_ratio@6Hz': 0.955, 'oracle_ratio@9Hz': 0.962, 'kfosc_ratio@6Hz': 1.0, 'kfosc_ratio@9Hz': 1.0}
-T13 156 s {'oracle_ratio@6Hz': 0.943, 'oracle_ratio@9Hz': 0.924, 'kfosc_ratio@6Hz': 1.28, 'kfosc_ratio@9Hz': 1.23}
+T08 26 s {'oracle_ratio@6Hz': 0.384, 'oracle_ratio@9Hz': 0.549, 'kfosc_ratio@6Hz': 1.155, 'kfosc_ratio@9Hz': 0.815}
+T09 53 s {'oracle_ratio@6Hz': 0.154, 'oracle_ratio@9Hz': 0.244, 'kfosc_ratio@6Hz': 1.253, 'kfosc_ratio@9Hz': 1.278}
+T10 79 s {'oracle_ratio@6Hz': 0.525, 'oracle_ratio@9Hz': 0.482, 'kfosc_ratio@6Hz': 1.138, 'kfosc_ratio@9Hz': 1.157}
+T11 106 s {'oracle_ratio@6Hz': 0.752, 'oracle_ratio@9Hz': 0.735, 'kfosc_ratio@6Hz': 0.999, 'kfosc_ratio@9Hz': 0.862}
+T12 132 s {'oracle_ratio@6Hz': 0.955, 'oracle_ratio@9Hz': 0.962, 'kfosc_ratio@6Hz': 1.0, 'kfosc_ratio@9Hz': 1.0}
+T13 157 s {'oracle_ratio@6Hz': 0.943, 'oracle_ratio@9Hz': 0.924, 'kfosc_ratio@6Hz': 1.28, 'kfosc_ratio@9Hz': 1.23}
 T14 183 s {'oracle_ratio@6Hz': 0.168, 'oracle_ratio@9Hz': 0.192, 'kfosc_ratio@6Hz': 0.998, 'kfosc_ratio@9Hz': 0.581}
-Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/home/user/Stabilisation_Pen/s2r/run_c2_twin.py", line 185, in <module>
-    main()
-  File "/home/user/Stabilisation_Pen/s2r/run_c2_twin.py", line 98, in main
-    "per_plant": [{kk: ({k: e[k] for k in OUTCOMES + ["_per_seed", "_shim"]} if isinstance(e, dict)
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/Stabilisation_Pen/s2r/run_c2_twin.py", line 98, in <listcomp>
-    "per_plant": [{kk: ({k: e[k] for k in OUTCOMES + ["_per_seed", "_shim"]} if isinstance(e, dict)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/Stabilisation_Pen/s2r/run_c2_twin.py", line 98, in <dictcomp>
-    "per_plant": [{kk: ({k: e[k] for k in OUTCOMES + ["_per_seed", "_shim"]} if isinstance(e, dict)
-                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/user/Stabilisation_Pen/s2r/run_c2_twin.py", line 98, in <dictcomp>
-    "per_plant": [{kk: ({k: e[k] for k in OUTCOMES + ["_per_seed", "_shim"]} if isinstance(e, dict)
-                            ~^^^
-KeyError: 'kf_distortion_um'
+part written 183 s

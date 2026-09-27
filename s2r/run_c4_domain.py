@@ -19,7 +19,7 @@ Every candidate is then scored on the 16 held-out in-range plants with TEST seed
 Evidence status: SIMULATION (synthetic writing and tremor, plants from declared ranges,
 which are not population distributions).
 Outputs: results/s2r/c4_domain.json, fig_c4_domain.png
-Run: python3 -m s2r.run_c4_domain [--quick]     (about 15 min on 2 processes)
+Run: python3 -m s2r.run_c4_domain [--quick]     (about 5 min on 2 processes)
 """
 from __future__ import annotations
 
@@ -77,7 +77,7 @@ def cases_conflated(plant_vals, seeds, f0s, mode, kf=None, tag=""):
 
 def J(rows):
     """tune_estimators objective; distortion is per seed (computed once per seed)."""
-    dist = {r["seed"]: r["distortion_um"] for r in rows if r["distortion_um"] > 0}
+    dist = {r["seed"]: r["distortion_um"] for r in rows if r["f0"] == TUNE_F0[0]}     # zero is a valid value
     vals = [r["ratio"] + LAMBDA * dist.get(r["seed"], 0.0) / r["base_e_rms_um"] for r in rows]
     return float(np.mean(vals))
 
@@ -110,8 +110,9 @@ def main():
         for f in (6.0, 9.0):
             for tag in ("oracle", "kf"):
                 ent[f"{tag}@{f:g}"] = float(np.mean([r["ratio"] for r in sub if r["tag"].endswith(tag) and r["f0"] == f]))
+        # distortion is computed on the 6 Hz Kalman cases (cases_for); a gate that never opens gives 0
         ent["kf_distortion_um"] = float(np.mean([r["distortion_um"] for r in sub if r["tag"].endswith("kf")
-                                                 and r["distortion_um"] > 0]))
+                                                 and r["f0"] == 6.0]))
         ent["neutral_e_um@9"] = float(np.mean([r["base_e_rms_um"] for r in sub if r["f0"] == 9.0]))
         deg.append(ent)
     print("degradation done", f"{time.time() - t0:.0f} s", flush=True)
@@ -161,7 +162,7 @@ def main():
             js.append(J(sub))
             r6.append(np.mean([r["ratio"] for r in sub if r["f0"] == 6.0]))
             r9.append(np.mean([r["ratio"] for r in sub if r["f0"] in (8.0, 10.0)]))
-            ds.append(np.mean([r["distortion_um"] for r in sub if r["distortion_um"] > 0]))
+            ds.append(np.mean([r["distortion_um"] for r in sub if r["f0"] == TUNE_F0[0]]))
         evalc[ci] = {"params": kf, "J_heldout_mean": float(np.mean(js)), "J_heldout_p90": float(np.percentile(js, 90)),
                      "ratio6_mean": float(np.mean(r6)), "ratio_8_10_mean": float(np.mean(r9)),
                      "distortion_um_mean": float(np.mean(ds)), "J_per_plant": [float(x) for x in js],
@@ -214,8 +215,9 @@ def plot(deg, evalc, sel_nom, sel_dr):
                                        f"gate {evalc[c]['params']['f_gate']:g}" for c in ci], fontsize=7)
     ax.set_ylabel("held-out objective J (lower is better)")
     ax.set_title("Candidates on held-out plants (blue: nominal pick, orange: randomised pick)", loc="left", fontsize=10)
-    lo = min(evalc[c]["J_heldout_mean"] for c in ci)
-    ax.set_ylim(lo - 0.1, None)
+    # J = 1 is "no better than NEUTRAL"; bars start at zero so heights compare honestly
+    ax.axhline(1.0, color=plotstyle.MUTED, lw=0.8, ls="--")
+    ax.set_ylim(0, 1.1 * max(evalc[c]["J_heldout_mean"] for c in ci))
     common.save_figure(fig, "fig_c4_domain", "simulation",
                        "randomised plants from declared ranges under the nominal firmware; synthetic writing and tremor")
 

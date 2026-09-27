@@ -255,8 +255,10 @@ def band_misfit(f: np.ndarray, norm_resid: np.ndarray, bands) -> list:
     return out
 
 
-def drift_test(values: np.ndarray, sigmas: np.ndarray) -> Dict:
-    """Chi-square test that a parameter identified at several excitation levels is constant."""
+def drift_test(values: np.ndarray, sigmas: np.ndarray, tol: float = 0.0) -> Dict:
+    """Chi-square test that a parameter identified at several excitation levels is constant.
+    `drift` needs both statistical significance (p < 0.01) and a spread (max - min) above `tol`,
+    the smallest change that matters (practical significance)."""
     v = np.asarray(values, float)
     s = np.asarray(sigmas, float)
     w = 1 / s ** 2
@@ -264,8 +266,10 @@ def drift_test(values: np.ndarray, sigmas: np.ndarray) -> Dict:
     chi2 = float(np.sum(w * (v - mean) ** 2))
     dof = len(v) - 1
     p = float(stats.chi2.sf(chi2, dof)) if dof > 0 else 1.0
+    spread = float(v.max() - v.min())
     return {"weighted_mean": mean, "chi2": chi2, "dof": dof, "p": p, "constant_at_1pct": bool(p >= 0.01),
-            "spread_rel": float((v.max() - v.min()) / abs(mean)) if mean != 0 else float("nan")}
+            "spread": spread, "tol": float(tol), "drift": bool(p < 0.01 and spread > tol),
+            "spread_rel": float(spread / abs(mean)) if mean != 0 else float("nan")}
 
 
 def r2(y: np.ndarray, yhat: np.ndarray) -> float:

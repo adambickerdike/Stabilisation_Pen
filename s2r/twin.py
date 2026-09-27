@@ -28,7 +28,6 @@ Evidence status of outcomes computed here: SIMULATION.
 from __future__ import annotations
 
 import math
-from dataclasses import replace
 from typing import Dict, Optional
 
 import numpy as np
@@ -36,7 +35,6 @@ import numpy as np
 from sim.pensim import bench, evaluate, harness, model, scenarios
 from sim.pensim.layout import IDX
 from stabpen import params as sp_params
-from stabpen import signals as sg
 from . import fastharness
 from . import truth as tr
 
@@ -178,7 +176,9 @@ def aggregate(rows, f0s=(6.0, 9.0)):
                 continue
             out[f"{mode}_ratio@{f:g}Hz"] = float(np.mean([r["ratio"] for r in sub]))
             out[f"neutral_e_um@{f:g}Hz"] = float(np.mean([r["base_e_rms_um"] for r in sub]))
-    d = [r["distortion_um"] for r in rows if r["mode"] == "kfosc" and r["distortion_um"] > 0]
+    # distortion is computed on the first f0's kfosc cases (outcome_cases); a Kalman set whose gate
+    # never opens gives exactly 0, which is a valid value
+    d = [r["distortion_um"] for r in rows if r["mode"] == "kfosc" and r["f0"] == f0s[0]]
     if d:
         out["kf_distortion_um"] = float(np.mean(d))
     return out

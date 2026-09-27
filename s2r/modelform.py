@@ -13,7 +13,6 @@ Evidence status: SIMULATION (truth data) + CALCULATION (diagnostics).
 """
 from __future__ import annotations
 
-import math
 from typing import Dict
 
 import numpy as np
@@ -25,15 +24,42 @@ from . import stage_model as sm
 BANDS = [(2, 8), (8, 20), (20, 50), (50, 100), (100, 160), (160, 240), (240, 300)]
 
 
+LADDER = (0.05, 0.25)   # setup chirps at these fractions of the target, each shaped on the previous FRF
+
+# Practical-significance margins for the drift test (PROPOSAL, set after the control case showed a
+# statistically significant but 0.01 % change of f_n): a parameter drifts only when the change is
+# significant at 1 % AND larger than this. f_n, m_eq: a tenth of the smallest single-parameter accuracy
+# C2 asks for (m_eq 11 %); loop delay: about a tenth of its 28 us requirement; zeta: its C2
+# requirement is > 300 %, so 5 % keeps friction-like amplitude dependence visible.
+DRIFT_TOL = {"fn_hz": ("rel", 0.01), "zeta": ("rel", 0.05), "m_eq": ("rel", 0.01), "hall_delay_us": ("abs", 5.0)}
+
+
+def _shaping_fit(rec):
+    """Second-order fit of one chirp's IV FRF (5 % weights), used only to shape the next chirp."""
+    fp, Hp, _, _ = ident.frf_iv([rec["daq"]["ref_A"]], [rec["daq"]["i_A"]],
+                                [exp_b05._disp(rec["daq"]["v_m_s"], 10000.0)], 10000.0, 2.0, 300.0)
+    return ident.fit_second_order(fp, Hp, 0.05 * np.abs(Hp) + 1e-12, fit_delay=False)
+
+
 def stage_dataset(plant: Dict, ex: sm.Extras, rng, session, q_target=30e-6, n_chirps=4, T_c=10.0, noise_scale=1.0):
-    """EXP-B05 dataset (same format as exp_b05.generate) from the standalone structural truth."""
+    """EXP-B05 dataset (same format as exp_b05.generate) from the standalone structural truth.
+    Excitation: pilot chirp shaped for 5 um on the nominal plant, then an amplitude ladder (5 %
+    and 25 % of the target, each shaped on the FRF of the previous chirp), then the identification
+    chirps shaped on the last ladder FRF. With amplitude-dependent physics (friction) the pilot
+    alone under-predicts the response at the target level and the first shaped chirp overshoots."""
     t_in, i_p = exp_b05.chirp_current(min(T_c, 10.0), 10000.0, exp_b05.nominal_amp_fn(5e-6))
     r = sm.run(plant, t_in, i_p, ex, rng)
-    pil = exp_b05.attach_reference(exp_b05.measure_chirp(r, rng, session, plant, noise_scale, hall_key="q_lever"),
+    rec = exp_b05.attach_reference(exp_b05.measure_chirp(r, rng, session, plant, noise_scale, hall_key="q_lever"),
                                    t_in, i_p)
-    fp, Hp, _, _ = ident.frf_iv([pil["daq"]["ref_A"]], [pil["daq"]["i_A"]],
-                                [exp_b05._disp(pil["daq"]["v_m_s"], 10000.0)], 10000.0, 2.0, 300.0)
-    fit_p = ident.fit_second_order(fp, Hp, 0.05 * np.abs(Hp) + 1e-12, fit_delay=False)
+    fit_p = _shaping_fit(rec)
+    setup_peaks = [float(np.max(np.abs(r["q1"])))]
+    for s in LADDER:
+        t_in, i_c = exp_b05.chirp_current(T_c, 10000.0, exp_b05.fitted_amp_fn(s * q_target, fit_p))
+        r = sm.run(plant, t_in, i_c, ex, rng)
+        rec = exp_b05.attach_reference(
+            exp_b05.measure_chirp(r, rng, session, plant, noise_scale, hall_key="q_lever"), t_in, i_c)
+        fit_p = _shaping_fit(rec)
+        setup_peaks.append(float(np.max(np.abs(r["q1"]))))
     amp = exp_b05.fitted_amp_fn(q_target, fit_p)
     recs = []
     peak = 0.0
@@ -44,11 +70,35 @@ def stage_dataset(plant: Dict, ex: sm.Extras, rng, session, q_target=30e-6, n_ch
             exp_b05.measure_chirp(r, rng, session, plant, noise_scale, hall_key="q_lever"), t_in, i_c))
         peak = max(peak, float(np.max(np.abs(r["q1"]))))
     k = plant["stage.k_tip"]
-    return {"chirps": recs, "T_c": T_c, "n_chirps": n_chirps, "q_peak_last_m": peak,
+    return {"chirps": recs, "T_c": T_c, "n_chirps": n_chirps, "q_peak_last_m": peak, "setup_peaks_m": setup_peaks,
             "static": exp_b05.ds_static_tip(k, rng, session, F_max=0.03, noise_scale=noise_scale),
             "axial": exp_b05.ds_axial(plant["stage.axial_k"], plant["stage.axial_preload"], rng, session,
                                       noise_scale=noise_scale),
             "T_magnet_C": exp_b05.T_TEST + session.offset(ins.THERMOCOUPLE), "bench_s": 0.0}
+
+
+def g1_bands(f, H, model, sig, fn_hz, f_lo=2.0, f_hi=100.0, per_octave=3, res_factor=1.3):
+    """Gap metric G1 (validation/sim_to_real.md section 4): the measured FRF over the twin FRF,
+    averaged per 1/3 octave (inverse-variance weights), as magnitude (dB) and phase (deg).
+    Reported separately off the resonance and inside [fn/1.3, 1.3 fn]."""
+    n_b = int(np.ceil(per_octave * np.log2(f_hi / f_lo)))
+    edges = f_lo * 2.0 ** (np.arange(n_b + 1) / per_octave)
+    r = H / model
+    w = (np.abs(model) / np.maximum(sig, 1e-30)) ** 2
+    bands = []
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        m = (f >= lo) & (f < hi)
+        if not m.any():
+            continue
+        rm = np.sum(w[m] * r[m]) / np.sum(w[m])
+        res = (hi > fn_hz / res_factor) and (lo < fn_hz * res_factor)
+        bands.append({"band_hz": [float(lo), float(hi)], "mag_db": float(20 * np.log10(abs(rm))),
+                      "phase_deg": float(np.degrees(np.angle(rm))), "resonance": bool(res)})
+    off = [b for b in bands if not b["resonance"]]
+    on = [b for b in bands if b["resonance"]]
+    mx = lambda bs, k: float(max(abs(b[k]) for b in bs)) if bs else 0.0  # noqa: E731
+    return {"bands": bands, "off_res_max_db": mx(off, "mag_db"), "off_res_max_deg": mx(off, "phase_deg"),
+            "res_max_db": mx(on, "mag_db"), "res_max_deg": mx(on, "phase_deg")}
 
 
 def pen_oe_residual(res: Dict, rec: Dict, tail_s=1.2):
@@ -125,6 +175,9 @@ def run_stage_case(plant: Dict, ex: sm.Extras, rng, levels=(10e-6, 30e-6, 100e-6
                                R20_hat=R20 or plant["actuator.R20"], fit_band=fit_band)
         f = res["frf"]["f"]
         bands = ident.band_misfit(f, res["frf"]["fit"]["norm_resid"], BANDS)
+        sig_eff = np.maximum(res["frf"]["sigma"], 1e-3 * np.abs(res["frf"]["H"]) + 1e-30)
+        model = res["frf"]["H"] + res["frf"]["fit"]["norm_resid"] * sig_eff     # the fitted twin FRF
+        g1 = g1_bands(f, res["frf"]["H"], model, sig_eff, res["frf"]["fit"]["p"][1])
         oe_raw = pen_oe_residual(res, held)
         oe = pen_oe_residual(oe_refine(res, ds["chirps"]), held)
         oe["before_refinement"] = {"excess_ratio": oe_raw["excess_ratio"], "ljung_box_p": oe_raw["ljung_box"]["p"]}
@@ -133,17 +186,21 @@ def run_stage_case(plant: Dict, ex: sm.Extras, rng, levels=(10e-6, 30e-6, 100e-6
         se = res["frf"]["fit"]["se"]
         out["levels"].append({
             "q_target_um": lv * 1e6, "q_peak_um": ds["q_peak_last_m"] * 1e6,
+            "setup_peaks_um": [x * 1e6 for x in ds["setup_peaks_m"]],
             "fn_hz": float(fn_), "u_fn_hz": float(se[1]), "zeta": float(z), "u_zeta": float(se[2]),
             "m_eq": e["stage.m_eq"]["value"], "u_m_eq": e["stage.m_eq"]["u"],
             "k_tip_frf": e["stage.k_tip"]["frf"], "u_k_frf": e["stage.k_tip"]["u_frf"],
             "hall_delay_us": e["sensing.hall_delay"]["value"] * 1e6, "u_hall_delay_us": e["sensing.hall_delay"]["u"] * 1e6,
             "tau_mech_us": float(tau_m * 1e6), "fit_chi2_per_dof": res["frf"]["fit"]["chi2_per_dof"],
-            "band_misfit": bands, "oe": oe,
+            "band_misfit": bands, "g1": g1, "oe": oe,
             "coh_pen_fmax_hz": e["sensing.hall_delay"]["f_max_coh_0.9_hz"]})
     lv = out["levels"]
-    out["drift"] = {k: ident.drift_test(np.array([x[k] for x in lv]), np.array([x[u] for x in lv]))
-                    for k, u in (("fn_hz", "u_fn_hz"), ("zeta", "u_zeta"), ("m_eq", "u_m_eq"),
-                                 ("hall_delay_us", "u_hall_delay_us"))}
+    out["drift"] = {}
+    for k, u in (("fn_hz", "u_fn_hz"), ("zeta", "u_zeta"), ("m_eq", "u_m_eq"), ("hall_delay_us", "u_hall_delay_us")):
+        v = np.array([x[k] for x in lv])
+        kind, tol = DRIFT_TOL[k]
+        out["drift"][k] = ident.drift_test(v, np.array([x[u] for x in lv]),
+                                           tol=tol * abs(float(np.mean(v))) if kind == "rel" else tol)
     return out
 
 
@@ -159,7 +216,12 @@ def verdicts(case: Dict, design_hall_us=100.0, delay_tol_us=25.0):
         "oe_excess_over_sensor_noise": mid["oe"]["excess_ratio"],
         "oe_flag": mid["oe"]["excess_ratio"] > 1.3,
         "oe_resid_peak_hz": mid["oe"]["resid_peak_hz"],
-        "drift_flags": [k for k, d in case["drift"].items() if not d["constant_at_1pct"]],
+        "drift_flags": [k for k, d in case["drift"].items() if d["drift"]],
+        "drift_significant_only": [k for k, d in case["drift"].items() if not d["constant_at_1pct"] and not d["drift"]],
+        "g1_off_res_db_deg": [mid["g1"]["off_res_max_db"], mid["g1"]["off_res_max_deg"]],
+        "g1_res_db_deg": [mid["g1"]["res_max_db"], mid["g1"]["res_max_deg"]],
+        "g1_flag": bool(mid["g1"]["off_res_max_db"] > 1.0 or mid["g1"]["off_res_max_deg"] > 5.0
+                        or mid["g1"]["res_max_db"] > 3.0 or mid["g1"]["res_max_deg"] > 20.0),
         "loop_delay_excess_us": mid["hall_delay_us"] - design_hall_us,
         "loop_delay_flag": abs(mid["hall_delay_us"] - design_hall_us) > max(delay_tol_us, 3 * mid["u_hall_delay_us"]),
     }

@@ -24,19 +24,19 @@ Report: [`docs/sim_to_real.md`](../docs/sim_to_real.md). Procedure for the bench
 ## Run
 
 ```bash
-python3 -m pytest s2r/tests -q                 # about 2-3 min (first run compiles numba into s2r/build/)
-bash s2r/run_all.sh                            # full chain, about 45-60 min on 2 processes; logs in results/s2r/logs/
+python3 -m pytest s2r/tests -q                 # about 3-5 min (first run compiles numba into s2r/build/)
+bash s2r/run_all.sh                            # full chain, about 35-45 min on 2 processes; logs in results/s2r/logs/
 ```
 
 | Script | Output (`results/s2r/`) | Runtime (2 processes, shared machine) |
 |---|---|---|
-| `python3 -m s2r.run_c1_identify` | `c1_identification.json`, `fig_c1_recovery.png` | about 4 min |
-| `python3 -m s2r.run_c1_benchtime` | `c1_bench_time.json`, `fig_c1_bench_time.png` | about 12-18 min |
-| `python3 -m s2r.run_c2_twin --part 1`, `--part 2`, `--merge` | `c2_twin.json`, `fig_c2_gap.png` | about 8-12 min per part |
-| `python3 -m s2r.run_c2_sensitivity` | `c2_sensitivity.json`, `fig_c2_sensitivity.png` | about 6-10 min |
-| `python3 -m s2r.run_c3_modelform` | `c3_modelform.json`, `fig_c3_model_form.png` | about 3-5 min |
+| `python3 -m s2r.run_c1_identify` | `c1_identification.json`, `fig_c1_recovery.png` | about 2-3 min |
+| `python3 -m s2r.run_c1_benchtime` | `c1_bench_time.json`, `fig_c1_bench_time.png` | {{BT_RUNTIME}} |
+| `python3 -m s2r.run_c2_twin --part 1`, `--part 2`, `--merge` | `c2_twin.json`, `fig_c2_gap.png` | about 4 min per part |
+| `python3 -m s2r.run_c2_sensitivity` | `c2_sensitivity.json`, `fig_c2_sensitivity.png` | about 3 min |
+| `python3 -m s2r.run_c3_modelform` | `c3_modelform.json`, `fig_c3_model_form.png` | about 2-3 min |
 | `python3 -m s2r.run_c3_piezo` | `c3_piezo.json`, `fig_c3_piezo.png` | under 1 min |
-| `python3 -m s2r.run_c4_domain` | `c4_domain.json`, `fig_c4_domain.png` | about 8-12 min |
+| `python3 -m s2r.run_c4_domain` | `c4_domain.json`, `fig_c4_domain.png` | about 4-5 min |
 | `python3 -m s2r.run_c5_example` | `c5_example.json`, `virtual_bench_example/` (2.9 MB) | under 1 min |
 
 Every script accepts `--quick` for a smoke run. Every JSON carries `stabpen.provenance.metadata()` (git revision, parameter version and digest, seeds, command).

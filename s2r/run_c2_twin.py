@@ -39,6 +39,7 @@ from sim.pensim import harness
 OUTCOMES = ["oracle_ratio@6Hz", "oracle_ratio@9Hz", "kfosc_ratio@6Hz", "kfosc_ratio@9Hz", "kf_distortion_um",
             "neutral_e_um@6Hz", "neutral_e_um@9Hz", "static_hold_W", "device_distortion_um"]
 RATIOS = OUTCOMES[:4]
+ABSOLUTE = RATIOS + ["kf_distortion_um", "device_distortion_um"]     # gaps in ratio units or um
 
 
 def evaluate(plant, seeds, workers):
@@ -129,9 +130,12 @@ def finish(part, seeds, t0):
             for ent in per:
                 pred = nom[k] if label == "before" else ent[label][k]
                 tru = ent["truth"][k]
-                vals.append(pred - tru if k in RATIOS else (pred - tru) / tru)
+                if k in ABSOLUTE:
+                    vals.append(pred - tru)
+                elif abs(tru) > 1e-12:
+                    vals.append((pred - tru) / tru)
             v = np.array(vals)
-            g[k] = {"kind": "absolute" if k in RATIOS else "relative", **common.summarize(v),
+            g[k] = {"kind": "absolute" if k in ABSOLUTE else "relative", **common.summarize(v),
                     "abs_max": float(np.max(np.abs(v)))}
             if k in RATIOS:
                 g[k]["frac_within_0.1"] = float(np.mean(np.abs(v) <= 0.1))
@@ -169,8 +173,9 @@ def plot(per, nom):
                         label="+-0.1 (AC-B09-03)")
         ax.plot([lo, hi], [lo, hi], color=plotstyle.MUTED, lw=0.8)
         ax.plot(tru, np.full_like(tru, nom[k]), "s", ms=5, color=plotstyle.SERIES[1], label="before (nominal twin)")
-        ax.plot(tru[~out], aft[~out], "o", ms=5, color=plotstyle.SERIES[0], label="after, plant in range")
-        ax.plot(tru[out], aft[out], "^", ms=6, color=plotstyle.SERIES[2], label="after, plant partly out of range")
+        ax.plot(tru[~out], aft[~out], "o", ms=5, color=plotstyle.SERIES[0], label="after calibration, plant in range")
+        ax.plot(tru[out], aft[out], "^", ms=6, color=plotstyle.SERIES[2],
+                label="after calibration, plant partly out of range")
         ax.set_xlim(lo, hi)
         ax.set_ylim(lo, hi)
         ax.set_xlabel(f"hidden plant: {k}")
@@ -178,7 +183,8 @@ def plot(per, nom):
     axs[0].set_ylabel("twin prediction")
     axs[0].legend(fontsize=7)
     common.save_figure(fig, "fig_c2_gap", "simulation",
-                       "twin experiment on M1: prediction vs hidden plant, 12 test seeds; hand and sensor keys stay nominal after calibration")
+                       "twin experiment on M1, 12 test seeds; after = B03/B05/B01-B02 estimates + simulant hand "
+                       "(true +-10 %), sensor keys nominal")
 
 
 if __name__ == "__main__":

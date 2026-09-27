@@ -36,7 +36,7 @@ Evidence status: SIMULATION (data) and CALCULATION (fits).
 from __future__ import annotations
 
 import math
-from typing import Dict, Optional
+from typing import Dict
 
 import numpy as np
 

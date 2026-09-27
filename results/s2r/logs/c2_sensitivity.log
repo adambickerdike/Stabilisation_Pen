@@ -1,0 +1,27 @@
+actuator.Kf 10 s {'oracle_ratio@6Hz': -0.02, 'oracle_ratio@9Hz': -0.055, 'kfosc_ratio@6Hz': 0.034, 'kfosc_ratio@9Hz': 0.38}
+actuator.R20 16 s {'oracle_ratio@6Hz': 0.0, 'oracle_ratio@9Hz': -0.0, 'kfosc_ratio@6Hz': -0.005, 'kfosc_ratio@9Hz': -0.062}
+actuator.L 22 s {'oracle_ratio@6Hz': -0.0, 'oracle_ratio@9Hz': -0.001, 'kfosc_ratio@6Hz': 0.01, 'kfosc_ratio@9Hz': 0.005}
+actuator.Rth_coil_amb 28 s {'oracle_ratio@6Hz': -0.0, 'oracle_ratio@9Hz': -0.0, 'kfosc_ratio@6Hz': -0.0, 'kfosc_ratio@9Hz': -0.0}
+actuator.Cth_coil 34 s {'oracle_ratio@6Hz': 0.0, 'oracle_ratio@9Hz': 0.0, 'kfosc_ratio@6Hz': 0.0, 'kfosc_ratio@9Hz': 0.001}
+stage.k_tip 40 s {'oracle_ratio@6Hz': -0.004, 'oracle_ratio@9Hz': 0.012, 'kfosc_ratio@6Hz': -0.051, 'kfosc_ratio@9Hz': -0.257}
+stage.zeta_open 46 s {'oracle_ratio@6Hz': 0.0, 'oracle_ratio@9Hz': 0.001, 'kfosc_ratio@6Hz': -0.001, 'kfosc_ratio@9Hz': -0.005}
+stage.m_eq 52 s {'oracle_ratio@6Hz': 0.044, 'oracle_ratio@9Hz': 0.075, 'kfosc_ratio@6Hz': 0.005, 'kfosc_ratio@9Hz': -0.047}
+sensing.hall_delay 59 s {'oracle_ratio@6Hz': -0.003, 'oracle_ratio@9Hz': -0.003, 'kfosc_ratio@6Hz': -0.007, 'kfosc_ratio@9Hz': 0.007}
+stage.axial_k 65 s {'oracle_ratio@6Hz': -0.024, 'oracle_ratio@9Hz': 0.02, 'kfosc_ratio@6Hz': 0.044, 'kfosc_ratio@9Hz': 0.012}
+stage.axial_preload 72 s {'oracle_ratio@6Hz': -0.006, 'oracle_ratio@9Hz': -0.007, 'kfosc_ratio@6Hz': -0.014, 'kfosc_ratio@9Hz': 0.004}
+writing.mu_eff 78 s {'oracle_ratio@6Hz': 0.033, 'oracle_ratio@9Hz': 0.17, 'kfosc_ratio@6Hz': 0.076, 'kfosc_ratio@9Hz': 0.396}
+writing.mu_static_ratio 84 s {'oracle_ratio@6Hz': 0.01, 'oracle_ratio@9Hz': 0.036, 'kfosc_ratio@6Hz': 0.001, 'kfosc_ratio@9Hz': -0.022}
+writing.stribeck_speed 90 s {'oracle_ratio@6Hz': 0.005, 'oracle_ratio@9Hz': 0.023, 'kfosc_ratio@6Hz': 0.017, 'kfosc_ratio@9Hz': 0.039}
+writing.paper_stiffness 96 s {'oracle_ratio@6Hz': -0.005, 'oracle_ratio@9Hz': -0.005, 'kfosc_ratio@6Hz': -0.03, 'kfosc_ratio@9Hz': 0.04}
+friction.x_presliding 102 s {'oracle_ratio@6Hz': 0.004, 'oracle_ratio@9Hz': -0.005, 'kfosc_ratio@6Hz': 0.007, 'kfosc_ratio@9Hz': 0.045}
+hand.grip_stiffness 108 s {'oracle_ratio@6Hz': -0.023, 'oracle_ratio@9Hz': -0.124, 'kfosc_ratio@6Hz': -0.053, 'kfosc_ratio@9Hz': -0.063}
+hand.grip_damping 114 s {'oracle_ratio@6Hz': 0.003, 'oracle_ratio@9Hz': -0.038, 'kfosc_ratio@6Hz': -0.002, 'kfosc_ratio@9Hz': 0.009}
+hand.mass 120 s {'oracle_ratio@6Hz': 0.003, 'oracle_ratio@9Hz': 0.062, 'kfosc_ratio@6Hz': -0.025, 'kfosc_ratio@9Hz': -0.215}
+hand.arm_stiffness 126 s {'oracle_ratio@6Hz': -0.016, 'oracle_ratio@9Hz': -0.184, 'kfosc_ratio@6Hz': -0.022, 'kfosc_ratio@9Hz': -0.071}
+hand.arm_damping 131 s {'oracle_ratio@6Hz': -0.019, 'oracle_ratio@9Hz': -0.034, 'kfosc_ratio@6Hz': -0.071, 'kfosc_ratio@9Hz': -0.018}
+hand.normal_stiffness 137 s {'oracle_ratio@6Hz': 0.022, 'oracle_ratio@9Hz': 0.028, 'kfosc_ratio@6Hz': 0.01, 'kfosc_ratio@9Hz': -0.033}
+sensing.opt_noise 143 s {'oracle_ratio@6Hz': 0.0, 'oracle_ratio@9Hz': 0.0, 'kfosc_ratio@6Hz': 0.068, 'kfosc_ratio@9Hz': 0.22}
+sensing.opt_delay 149 s {'oracle_ratio@6Hz': 0.004, 'oracle_ratio@9Hz': -0.003, 'kfosc_ratio@6Hz': -0.003, 'kfosc_ratio@9Hz': -0.046}
+sensing.hall_noise_tip 155 s {'oracle_ratio@6Hz': -0.026, 'oracle_ratio@9Hz': -0.039, 'kfosc_ratio@6Hz': -0.023, 'kfosc_ratio@9Hz': -0.042}
+sensing.imu_delay 161 s {'oracle_ratio@6Hz': -0.014, 'oracle_ratio@9Hz': -0.019, 'kfosc_ratio@6Hz': 0.002, 'kfosc_ratio@9Hz': -0.02}
+/home/user/Stabilisation_Pen/results/s2r/c2_sensitivity.json 161 s

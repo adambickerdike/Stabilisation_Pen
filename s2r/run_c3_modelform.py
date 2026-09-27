@@ -2,7 +2,8 @@
 """C3: model-form gap. Structurally different truths, identified with M1's structure.
 
 1. Stage (EXP-B05 test build) with physics M1 lacks, each at three excitation levels
-   (tip 10 / 30 / 100 um), 3 estimation chirps + 1 held-out chirp per level:
+   (tip 10 / 30 / 100 um; pilot chirp and a two-step amplitude ladder before the chirps that are
+   analysed), 3 estimation chirps + 1 held-out chirp per level:
      control (M1 structure), flexure mode at 220 Hz (tip mass 10 %), extra loop delay
      150 us + 20 us release jitter, pivot Coulomb friction 0.3 mN, backlash +-2 um.
    Diagnostics: FRF misfit bands, output-error whiteness on the held-out chirp (after an
@@ -17,8 +18,8 @@
 
 Evidence status: SIMULATION + CALCULATION. The truths are constructed; the point is which
 diagnostic catches which missing physics, not the size of any real effect.
-Outputs: results/s2r/c3_modelform.json, fig_c3_frf_misfit.png, fig_c3_friction_memory.png
-Run: python3 -m s2r.run_c3_modelform [--quick]     (about 6 min, 1-2 processes)
+Outputs: results/s2r/c3_modelform.json, fig_c3_model_form.png
+Run: python3 -m s2r.run_c3_modelform [--quick]     (about 2-3 min, 1-2 processes)
 """
 from __future__ import annotations
 
@@ -31,8 +32,7 @@ import numpy as np
 import s2r  # noqa: F401
 from s2r import common, exp_b01b02, fastharness, ident, modelform, twin
 from s2r import stage_model as sm
-from sim.pensim import evaluate, harness, model, scenarios
-from stabpen import signals as sg
+from sim.pensim import evaluate, harness, model
 
 CASES = {"control (M1 structure)": sm.Extras(),
          "flexure mode 220 Hz": sm.Extras(f2_hz=220.0, zeta2=0.02, mass_ratio2=0.1),
@@ -40,6 +40,7 @@ CASES = {"control (M1 structure)": sm.Extras(),
          "pivot Coulomb friction 0.3 mN": sm.Extras(coulomb_N=3e-4),
          "backlash +-2 um": sm.Extras(backlash_m=2e-6)}
 PALM = {"hand.arm_stiffness": 500.0, "hand.arm_damping": 10.0}     # ASSUMPTION palm stuck to the paper
+X_PRE_TOL = 0.10   # practical margin on pre-sliding drift (about a tenth of its C2 requirement, 110 %)
 
 
 def stage_part(quick):
@@ -89,18 +90,23 @@ def friction_part(quick):
                                                      "n": len(xs)}
         vals = np.array([v["x_pre_um"] for v in per_amp.values()])
         us = np.array([v["u_um"] for v in per_amp.values()])
-        drift = ident.drift_test(vals, us) if len(vals) > 1 else None
+        drift = ident.drift_test(vals, us, tol=X_PRE_TOL * float(np.mean(vals))) if len(vals) > 1 else None
         # held-out reciprocation residual: small-amplitude records (tremor scale) separately
-        small, large = [], []
+        small, large, small_dyn = [], [], []
         for rec in ds["recip"]["records"]:
             r2v, fp = exp_b01b02.predict_recip(rec, r["contact_model"], rec["theta"])
             f_h, _, _ = exp_b01b02.to_page(rec, rec["theta"])
             m = rec["t"] > 0.3
-            nr = float(np.sqrt(np.mean((f_h[m] - fp[m]) ** 2)) / (r["contact_model"].mu_k * rec["N_set"]))
+            muN = r["contact_model"].mu_k * rec["N_set"]
+            nr = float(np.sqrt(np.mean((f_h[m] - fp[m]) ** 2)) / muN)
             (small if rec["A"] <= 5e-5 else large).append(nr)
+            if rec["A"] <= 5e-5:
+                d = (f_h[m] - f_h[m].mean()) - (fp[m] - fp[m].mean())
+                small_dyn.append(float(np.sqrt(np.mean(d ** 2)) / muN))
         out[label] = {"estimates": r["estimates"], "diag": r["diag"], "x_pre_by_sweep_amplitude": per_amp,
                       "x_pre_drift": drift,
                       "recip_nrmse_small_amp_median": float(np.median(small)) if small else None,
+                      "recip_nrmse_small_amp_mean_removed_median": float(np.median(small_dyn)) if small_dyn else None,
                       "recip_nrmse_large_amp_median": float(np.median(large)) if large else None,
                       "truth": vars(c)}
         # reversal curve for the figure: 200 um sweep
@@ -149,36 +155,37 @@ def hand_part(quick, workers):
 def plot(stage, fric):
     from stabpen import plotstyle
     fig, axs = common.figure(1, 3, figsize=(14.0, 4.0))
+    col = {name: plotstyle.SERIES[j] for j, name in enumerate(CASES)}     # one colour per case in every panel
     ax = axs[0]
-    for j, name in enumerate(["control (M1 structure)", "flexure mode 220 Hz", "pivot Coulomb friction 0.3 mN",
-                              "backlash +-2 um"]):
+    for name in CASES:
         lv = stage[name]["levels"][len(stage[name]["levels"]) // 2]
         xs = [0.5 * (b["band_hz"][0] + b["band_hz"][1]) for b in lv["band_misfit"]]
         ys = [max(b["chi2_per_dof"], 1e-2) for b in lv["band_misfit"]]
-        ax.plot(xs, ys, "-o", ms=4, color=plotstyle.SERIES[j], label=name)
+        ax.plot(xs, ys, "-o", ms=4, color=col[name], label=name)
     ax.axhline(4.0, color=plotstyle.MUTED, lw=0.8, ls="--")
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlabel("band centre (Hz)")
     ax.set_ylabel("normalised FRF misfit (1 = noise level)")
-    ax.set_title("FRF misfit bands (30 um level)", loc="left", fontsize=10)
+    ax.set_title("FRF misfit bands (30 um level; dashed: threshold 4)", loc="left", fontsize=10)
     ax.legend(fontsize=7)
     ax = axs[1]
-    for j, name in enumerate(CASES):
+    for name in CASES:
         lv = stage[name]["levels"]
         ax.plot([x["q_target_um"] for x in lv], [x["zeta"] / lv[-1]["zeta"] for x in lv], "-o", ms=4,
-                color=plotstyle.SERIES[j], label=name)
+                color=col[name], label=name)
     ax.set_xscale("log")
     ax.set_xlabel("excitation level (um at the tip)")
     ax.set_ylabel("identified zeta / zeta at 100 um")
     ax.set_title("Parameter drift across excitation levels", loc="left", fontsize=10)
     ax.set_ylim(0.9, 1.6)
+    ax.legend(fontsize=7)
     ax = axs[2]
     for j, (label, v) in enumerate(fric.items()):
         c = v["_curve"]
         ax.plot(c["x_um"], c["f_over_N"], lw=1.0, color=plotstyle.SERIES[j], label=label)
     ax.set_xlabel("platen displacement (um)")
-    ax.set_ylabel("friction / N")
+    ax.set_ylabel("friction force / normal force")
     ax.set_title("Pre-sliding loops, 200 um sweep", loc="left", fontsize=10)
     ax.legend(fontsize=7)
     common.save_figure(fig, "fig_c3_model_form", "simulation",
@@ -199,7 +206,10 @@ def main():
         v.pop("_curve", None)
     payload = {"stage": stage, "friction_memory": fric, "hand_on_paper": hand, "elapsed_s": time.time() - t0,
                "thresholds_proposed": {"frf_band_chi2": 4.0, "oe_excess_over_sensor_noise": 1.3,
-                                       "ljung_box_p": 0.01, "drift_p": 0.01, "loop_delay_tol_us": 25.0}}
+                                       "ljung_box_p": 0.01, "drift_p": 0.01,
+                                       "drift_practical_tolerance": {k: {"kind": v[0], "tol": v[1]}
+                                                                     for k, v in modelform.DRIFT_TOL.items()},
+                                       "x_pre_drift_tolerance_rel": X_PRE_TOL, "loop_delay_tol_us": 25.0}}
     path = common.write_result("c3_modelform", payload, "SIMULATION (constructed structural truths) + CALCULATION",
                                seeds={"stage": [300 + i for i in range(len(CASES))], "friction": 77,
                                       "hand": list(harness.TEST_SEEDS)})

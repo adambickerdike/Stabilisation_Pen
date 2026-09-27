@@ -92,6 +92,10 @@ def test_whiteness_and_drift_tests():
     assert not ident.ljung_box(ar)["white_at_1pct"]
     assert ident.drift_test(np.array([1.0, 1.01, 0.99]), np.array([0.02, 0.02, 0.02]))["constant_at_1pct"]
     assert not ident.drift_test(np.array([1.0, 1.2, 1.4]), np.array([0.02, 0.02, 0.02]))["constant_at_1pct"]
+    # statistically significant but below the practical margin: not a drift
+    tiny = ident.drift_test(np.array([1.0, 1.0002, 1.0004]), np.array([1e-5, 1e-5, 1e-5]), tol=0.01)
+    assert not tiny["constant_at_1pct"] and not tiny["drift"]
+    assert ident.drift_test(np.array([1.0, 1.2, 1.4]), np.array([0.02, 0.02, 0.02]), tol=0.01)["drift"]
 
 
 def test_combine_rectangular_bound():
