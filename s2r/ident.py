@@ -96,10 +96,20 @@ def combine(value: float, u_stat: float, rel_bounds: Sequence[float] = (), abs_b
 
 
 # --------------------------------------------------------------------------- frequency response
+def _smooth(x, k):
+    """Sum spectra over consecutive groups of k bins (frequency smoothing)."""
+    if k <= 1:
+        return x
+    n = (len(x) // k) * k
+    return x[:n].reshape(-1, k).sum(axis=1)
+
+
 def frf_h1(u_recs: Sequence[np.ndarray], y_recs: Sequence[np.ndarray], fs: float, fmin=0.0, fmax=np.inf,
-           window: Optional[str] = None):
+           window: Optional[str] = None, smooth: int = 1):
     """H1 = sum(Y U*) / sum(|U|^2) over records (each record one transient chirp or one
-    period of a periodic signal). Returns f, H, coherence, sigma_H (1-sigma, complex magnitude)."""
+    period of a periodic signal), optionally summed over `smooth` adjacent bins so the
+    coherence estimate has nd*smooth degrees of freedom. Returns f, H, coherence,
+    sigma_H (1-sigma of the complex estimate, Bendat-Piersol 9.90)."""
     n = min(min(len(u) for u in u_recs), min(len(y) for y in y_recs))
     win = np.ones(n) if window is None else __import__("scipy.signal", fromlist=["get_window"]).get_window(window, n)
     Suu = 0.0
@@ -112,15 +122,49 @@ def frf_h1(u_recs: Sequence[np.ndarray], y_recs: Sequence[np.ndarray], fs: float
         Syy = Syy + np.abs(Y) ** 2
         Syu = Syu + Y * np.conj(U)
     f = np.fft.rfftfreq(n, 1.0 / fs)
+    if smooth > 1:
+        f = _smooth(f, smooth) / smooth
+        Suu, Syy, Syu = _smooth(Suu, smooth), _smooth(Syy, smooth), _smooth(Syu, smooth)
     with np.errstate(divide="ignore", invalid="ignore"):
         H = Syu / Suu
         coh = np.abs(Syu) ** 2 / (Suu * Syy)
-    nd = len(u_recs)
+    nd = len(u_recs) * max(smooth, 1)
     coh = np.clip(np.nan_to_num(coh), 1e-12, 1.0)
-    # Bendat & Piersol (9.90): normalised random error of |H| ~ sqrt(1-g2)/(|g| sqrt(2 nd))
     with np.errstate(divide="ignore", invalid="ignore"):
         eps = np.sqrt((1 - coh) / (2 * max(nd, 1) * coh))
     sigma = np.abs(H) * eps
+    m = (f >= fmin) & (f <= fmax) & np.isfinite(H)
+    return f[m], H[m], coh[m], sigma[m]
+
+
+def frf_iv(r_recs, u_recs, y_recs, fs: float, fmin=0.0, fmax=np.inf):
+    """Instrumental-variable FRF H = S_ry / S_ru with the known digital excitation r.
+    Unbiased for noise on both the measured input u and the output y (H1 is biased low by
+    input noise), and any time offset of r cancels in the ratio (no cross-clock sync needed)."""
+    n = min(min(len(x) for x in r_recs), min(len(x) for x in u_recs), min(len(x) for x in y_recs))
+    Sru = 0.0
+    Sry = 0.0
+    Srr = 0.0
+    Suu = 0.0
+    Syy = 0.0
+    for r, u, y in zip(r_recs, u_recs, y_recs):
+        R = np.fft.rfft(r[:n] - np.mean(r[:n]))
+        U = np.fft.rfft(u[:n] - np.mean(u[:n]))
+        Y = np.fft.rfft(y[:n] - np.mean(y[:n]))
+        Sru = Sru + U * np.conj(R)
+        Sry = Sry + Y * np.conj(R)
+        Srr = Srr + np.abs(R) ** 2
+        Suu = Suu + np.abs(U) ** 2
+        Syy = Syy + np.abs(Y) ** 2
+    f = np.fft.rfftfreq(n, 1.0 / fs)
+    nd = max(len(r_recs), 1)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        H = Sry / Sru
+        g_ru = np.clip(np.nan_to_num(np.abs(Sru) ** 2 / (Srr * Suu)), 1e-12, 1.0)
+        g_ry = np.clip(np.nan_to_num(np.abs(Sry) ** 2 / (Srr * Syy)), 1e-12, 1.0)
+        eps2 = (1 - g_ru) / (2 * nd * g_ru) + (1 - g_ry) / (2 * nd * g_ry)
+    sigma = np.abs(H) * np.sqrt(eps2)
+    coh = g_ru * g_ry
     m = (f >= fmin) & (f <= fmax) & np.isfinite(H)
     return f[m], H[m], coh[m], sigma[m]
 
@@ -155,6 +199,11 @@ def fit_second_order(f, H, sigma, p0=None, fit_delay=True, sign=-1.0):
         p0 = list(p0)
         p0[3] = 0.0
     r = nls(res, p0, bounds=(lo, hi), x_scale=np.abs(np.asarray(p0)) + np.array([0, 0, 0, 1e-5]))
+    # sigma is an absolute noise model: Laplace covariance with s^2 floored at 1 (conservative
+    # when the coherence-based sigma over-states the noise)
+    if r["s2"] < 1.0:
+        r["cov"] = r["cov"] / max(r["s2"], 1e-12)
+        r["se"] = np.sqrt(np.abs(np.diag(r["cov"])))
     e = (so_model(f, *r["p"], sign=sign) - H) / sig
     r["norm_resid"] = e
     r["chi2_per_dof"] = float(np.sum(np.abs(e) ** 2) / max(2 * len(f) - 4, 1))

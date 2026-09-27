@@ -119,7 +119,7 @@ def build_track(letters: Sequence[LetterTemplate], *, speed: float, air_speed: f
 
 
 # ------------------------------------------------------------------ metrics
-def dense(strokes: Sequence[np.ndarray], step: float = 20e-6) -> np.ndarray:
+def dense(strokes: Sequence[np.ndarray], step: float = 5e-6) -> np.ndarray:
     out = []
     for s in strokes:
         L = arclength(s)[-1]

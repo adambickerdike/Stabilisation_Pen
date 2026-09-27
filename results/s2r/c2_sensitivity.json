@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION + CALCULATION (central differences in ln parameter, common random numbers)",
+    "generated_utc": "2026-09-27T21:57:21+00:00",
+    "git_revision": "77a79f3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_c2_sensitivity.py --quick",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "test": [
+        200,
+        201
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "step_ln": 0.22314355131420976,
+  "seeds": [
+    200,
+    201
+  ],
+  "base": {
+    "oracle_ratio@6Hz": 0.15044276181738964,
+    "oracle_ratio@9Hz": 0.21773129820581302,
+    "kfosc_ratio@6Hz": 1.023523745191341,
+    "kfosc_ratio@9Hz": 0.7521655887424576,
+    "kf_distortion_um": 140.11481738321453,
+    "neutral_e_um@6Hz": 270.0703544009505,
+    "neutral_e_um@9Hz": 434.7282251832995,
+    "static_hold_W": 0.48638671542703044
+  },
+  "S": {
+    "writing.mu_eff": {
+      "oracle_ratio@6Hz": 0.06727053010009776,
+      "oracle_ratio@9Hz": 0.10455375074126863,
+      "kfosc_ratio@6Hz": 0.09897928674185594,
+      "kfosc_ratio@9Hz": 0.4227826832860972,
+      "kf_distortion_um": 172.19188261562658,
+      "neutral_e_um@6Hz": 46.035443027611194,
+      "neutral_e_um@9Hz": 259.41947566033497,
+      "static_hold_W": 0.0031171815502479983,
+      "_curvature": {
+        "oracle_ratio@6Hz": 0.15065571572938366,
+        "oracle_ratio@9Hz": 0.24239582500908932,
+        "kfosc_ratio@6Hz": 0.19529232725678417,
+        "kfosc_ratio@9Hz": 0.8072452737101518,
+        "kf_distortion_um": 363.7836443264676,
+        "neutral_e_um@6Hz": 109.3660103165182,
+        "neutral_e_um@9Hz": 302.7673958154603,
+        "static_hold_W": 0.00904448024999478
+      }
+    },
+    "actuator.Kf": {
+      "oracle_ratio@6Hz": -0.004021095391503678,
+      "oracle_ratio@9Hz": -0.032982078818173784,
+      "kfosc_ratio@6Hz": 0.018326538510095615,
+      "kfosc_ratio@9Hz": 0.377643980099842,
+      "kf_distortion_um": 83.90753110982371,
+      "neutral_e_um@6Hz": -33.41503146218927,
+      "neutral_e_um@9Hz": -65.33925647674954,
+      "static_hold_W": -1.0247721211655703,
+      "_curvature": {
+        "oracle_ratio@6Hz": -0.08183550917165205,
+        "oracle_ratio@9Hz": -0.17833794596542246,
+        "kfosc_ratio@6Hz": -0.217966077026077,
+        "kfosc_ratio@9Hz": 0.362180623720737,
+        "kf_distortion_um": 629.1493663955484,
+        "neutral_e_um@6Hz": -15.043108612613029,
+        "neutral_e_um@9Hz": -45.60996567470063,
+        "static_hold_W": 2.079456760378929
+      }
+    }
+  },
+  "required_rel_accuracy_single": {
+    "writing.mu_eff": {
+      "oracle_ratio@6Hz": 0.743267518861537,
+      "oracle_ratio@9Hz": 0.47822292022532287,
+      "kfosc_ratio@6Hz": 0.5051561962696607,
+      "kfosc_ratio@9Hz": 0.11826406798729971,
+      "kf_distortion_um": 0.040685662777723466,
+      "neutral_e_um@6Hz": 0.29332872308730407,
+      "neutral_e_um@9Hz": 0.0837886639152145,
+      "static_hold_W": 7.801706567080353
+    },
+    "actuator.Kf": {
+      "oracle_ratio@6Hz": 12.434422746012656,
+      "oracle_ratio@9Hz": 1.5159747896924254,
+      "kfosc_ratio@6Hz": 2.728283902192239,
+      "kfosc_ratio@9Hz": 0.13239983326830984,
+      "kf_distortion_um": 0.08349358843595518,
+      "neutral_e_um@6Hz": 0.40411506825386095,
+      "neutral_e_um@9Hz": 0.3326700123516053,
+      "static_hold_W": 0.023731457237235187
+    }
+  },
+  "rss_budget_identified": {
+    "oracle_ratio@6Hz": {
+      "writing.mu_eff": 0.743267518861537
+    },
+    "oracle_ratio@9Hz": {
+      "writing.mu_eff": 0.3381546698101591,
+      "actuator.Kf": 1.0719560538993642
+    },
+    "kfosc_ratio@6Hz": {
+      "writing.mu_eff": 0.5051561962696607
+    },
+    "kfosc_ratio@9Hz": {
+      "writing.mu_eff": 0.08362532444452651,
+      "actuator.Kf": 0.09362081993199013
+    },
+    "kf_distortion_um": {
+      "writing.mu_eff": 0.028769108047197366,
+      "actuator.Kf": 0.05903888256866262
+    },
+    "neutral_e_um@6Hz": {
+      "writing.mu_eff": 0.2074147292118237,
+      "actuator.Kf": 0.28575250514196954
+    },
+    "neutral_e_um@9Hz": {
+      "writing.mu_eff": 0.05924753244100875,
+      "actuator.Kf": 0.23523322163123261
+    },
+    "static_hold_W": {
+      "actuator.Kf": 0.023731457237235187
+    }
+  },
+  "tolerances": {
+    "oracle_ratio@6Hz": [
+      "abs",
+      0.05
+    ],
+    "oracle_ratio@9Hz": [
+      "abs",
+      0.05
+    ],
+    "kfosc_ratio@6Hz": [
+      "abs",
+      0.05
+    ],
+    "kfosc_ratio@9Hz": [
+      "abs",
+      0.05
+    ],
+    "kf_distortion_um": [
+      "rel",
+      0.05
+    ],
+    "neutral_e_um@6Hz": [
+      "rel",
+      0.05
+    ],
+    "neutral_e_um@9Hz": [
+      "rel",
+      0.05
+    ],
+    "static_hold_W": [
+      "rel",
+      0.05
+    ]
+  },
+  "mc_rank_comparison": {},
+  "gap_attribution": null,
+  "elapsed_s": 17.41346025466919
+}

@@ -1,18 +1,18 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-27T21:02:47+00:00",
-    "git_revision": "2aad846",
+    "generated_utc": "2026-09-27T21:52:56+00:00",
+    "git_revision": "77a79f3-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "pencil_revP.py --variant Q",
+    "command": "pencil_revP.py --variant Q --no-step",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
     "numpy": "2.4.6",
     "scipy": "1.17.1",
     "cadquery": "2.8.0",
-    "pencil_params": "P0.1.0"
+    "pencil_params": "P0.1.1"
   },
   "units": "mm",
   "frame": "origin at the ball centre in contact at 50 deg tilt; z along the barrel toward the cap",
@@ -27,12 +27,12 @@
       "opacity": 0.28,
       "profile": [
         [
-          1.65,
-          1.4908295205304642
+          1.75,
+          1.5747394836481918
         ],
         [
           4.45,
-          19.490829520530465
+          19.57473948364819
         ],
         [
           4.45,
@@ -70,10 +70,10 @@
       "group": "housing",
       "type": "tube",
       "color": "skid",
-      "r_out": 1.65,
-      "r_in": 1.1500000000000001,
-      "z0": 1.0908295205304641,
-      "z1": 1.4908295205304642
+      "r_out": 1.75,
+      "r_in": 1.25,
+      "z0": 1.174739483648192,
+      "z1": 1.5747394836481918
     },
     {
       "name": "clamp_block",

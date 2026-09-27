@@ -1,18 +1,18 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-27T21:02:47+00:00",
-    "git_revision": "2aad846",
+    "generated_utc": "2026-09-27T21:52:56+00:00",
+    "git_revision": "77a79f3-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "pencil_revP.py --variant Q",
+    "command": "pencil_revP.py --variant Q --no-step",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
     "numpy": "2.4.6",
     "scipy": "1.17.1",
     "cadquery": "2.8.0",
-    "pencil_params": "P0.1.0"
+    "pencil_params": "P0.1.1"
   },
   "summary": {
     "variant": "Q",
@@ -21,7 +21,7 @@
       "L_total": 166.0,
       "wall": 0.5,
       "nose_L": 18.0,
-      "skid_r": 1.3,
+      "skid_r": 1.4,
       "skid_w": 0.4,
       "theta_design": 50.0,
       "theta_min": 35,
@@ -54,7 +54,7 @@
       "plate_w": 2.6,
       "n_plates": 4,
       "r_bore": 3.95,
-      "z_skid": 1.0908295205304641,
+      "z_skid": 1.174739483648192,
       "plate_L": 36.0,
       "z_clamp0": 47.0,
       "z_clamp1": 55.0,
@@ -67,7 +67,7 @@
     },
     "mass_total_g": 12.12,
     "mass_nib_assembly_g": 0.968,
-    "com_z_mm": 87.3,
+    "com_z_mm": 87.2,
     "com_from_nib_fraction": 0.526,
     "lever_nib_per_collar": 1.379,
     "section_checks": {
@@ -76,19 +76,19 @@
       "plate_to_refill_mm": 0.513,
       "refill_sweep_at_plate_tip_mm": 0.273,
       "collar_magnet_to_hall_mm": 0.15,
-      "hall_outer_to_nose_wall_mm": 0.226,
-      "collar_to_nose_wall_mm": 1.044,
-      "refill_cone_to_skid_aperture_at_theta_min_mm": 0.026,
+      "hall_outer_to_nose_wall_mm": 0.227,
+      "collar_to_nose_wall_mm": 1.055,
+      "refill_cone_to_skid_aperture_at_theta_min_mm": 0.106,
       "skid_ring_radius_required": 1.4,
       "nib_protrusion_range_mm": [
-        0.348,
-        1.857
+        0.375,
+        1.999
       ],
       "pcb_diagonal_to_bore_mm": 0.908,
       "battery_to_bore_mm": 0.7,
-      "optical_sensor_to_refill_mm": 0.751,
+      "optical_sensor_to_refill_mm": 0.772,
       "min_required_mm": 0.1,
-      "all_ok": false
+      "all_ok": true
     },
     "nib_assembly_interference": [],
     "note": "Mass excludes adhesives, wiring, flex tails and margin (add about 10 %). Bender blocking force scales with plate width: 3.5 mm (L) or 2 x 2.6 mm per axis (Q) against PL128.10's 6.15 mm (AMF-11). Fit checks use nominal dimensions and rigid parts."
@@ -98,17 +98,17 @@
       "part": "barrel",
       "group": "fixed",
       "material": "PA_GF30",
-      "volume_mm3": 2000.42,
-      "mass_g": 2.721,
-      "com_z_mm": 85.04
+      "volume_mm3": 2002.11,
+      "mass_g": 2.723,
+      "com_z_mm": 84.97
     },
     {
       "part": "skid_ring",
       "group": "fixed",
       "material": "POM_PTFE",
-      "volume_mm3": 1.76,
+      "volume_mm3": 1.88,
       "mass_g": 0.003,
-      "com_z_mm": 1.29
+      "com_z_mm": 1.37
     },
     {
       "part": "rear_cap",

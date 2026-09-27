@@ -1,0 +1,1631 @@
+{
+  "sets": {
+    "in_domain": {
+      "n_lines": 60,
+      "n_words": 371
+    },
+    "notes": {
+      "n_lines": 18,
+      "n_words": 111
+    },
+    "rare": {
+      "n_lines": 10,
+      "n_words": 54
+    }
+  },
+  "rare_out_of_lexicon_words": [
+    "anneliese",
+    "bartholomew",
+    "deli",
+    "ikea",
+    "invoice",
+    "kombucha",
+    "kowalski",
+    "llandudno",
+    "nakamura",
+    "okafor",
+    "priya",
+    "quinoa",
+    "siobhan",
+    "sumac",
+    "tahini",
+    "zoltan"
+  ],
+  "by_set": {
+    "in_domain": {
+      "lexicon": {
+        "0.02": {
+          "achieved_cer": 0.016644,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.08733153638814017,
+              "wer_after": 0.014555256064690028,
+              "cer_before": 0.016748768472906406,
+              "cer_after": 0.0034482758620689655,
+              "fix_rate": 0.8510453467350019,
+              "over_correction_rate": 0.002957230601657153,
+              "changed": 154,
+              "fixed": 140,
+              "broken": 5,
+              "changed_still_wrong": 9,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.9295238095238096,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.08733153638814017,
+              "wer_after": 0.018328840970350403,
+              "cer_before": 0.016748768472906406,
+              "cer_after": 0.004039408866995073,
+              "fix_rate": 0.8175015756912309,
+              "over_correction_rate": 0.002957230601657153,
+              "changed": 144,
+              "fixed": 133,
+              "broken": 5,
+              "changed_still_wrong": 6,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.9295238095238096,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.08733153638814017,
+              "wer_after": 0.021024258760107817,
+              "cer_before": 0.016748768472906406,
+              "cer_after": 0.004532019704433498,
+              "fix_rate": 0.7654871788492479,
+              "over_correction_rate": 0.0,
+              "changed": 125,
+              "fixed": 123,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.08733153638814017,
+              "wer_after": 0.02533692722371968,
+              "cer_before": 0.016748768472906406,
+              "cer_after": 0.005320197044334975,
+              "fix_rate": 0.7277767411388101,
+              "over_correction_rate": 0.0,
+              "changed": 117,
+              "fixed": 115,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.05": {
+          "achieved_cer": 0.031032000000000004,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.14986522911051212,
+              "wer_after": 0.03557951482479784,
+              "cer_before": 0.031231527093596056,
+              "cer_after": 0.009261083743842364,
+              "fix_rate": 0.7980514901289164,
+              "over_correction_rate": 0.0056725267878826565,
+              "changed": 251,
+              "fixed": 221,
+              "broken": 9,
+              "changed_still_wrong": 21,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.8428815628815629,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.14986522911051212,
+              "wer_after": 0.03719676549865229,
+              "cer_before": 0.031231527093596056,
+              "cer_after": 0.009556650246305417,
+              "fix_rate": 0.7714316979375463,
+              "over_correction_rate": 0.0024902426326956534,
+              "changed": 228,
+              "fixed": 213,
+              "broken": 4,
+              "changed_still_wrong": 11,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.9314407814407814,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.14986522911051212,
+              "wer_after": 0.04258760107816712,
+              "cer_before": 0.031231527093596056,
+              "cer_after": 0.00975369458128079,
+              "fix_rate": 0.7243306665369744,
+              "over_correction_rate": 0.0,
+              "changed": 201,
+              "fixed": 199,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.14986522911051212,
+              "wer_after": 0.055525606469002696,
+              "cer_before": 0.031231527093596056,
+              "cer_after": 0.01251231527093596,
+              "fix_rate": 0.6324641059400197,
+              "over_correction_rate": 0.0,
+              "changed": 177,
+              "fixed": 175,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.1": {
+          "achieved_cer": 0.07177200000000002,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.3212938005390836,
+              "wer_after": 0.07331536388140161,
+              "cer_before": 0.07172413793103448,
+              "cer_after": 0.0212807881773399,
+              "fix_rate": 0.8008445520684244,
+              "over_correction_rate": 0.012736670585386755,
+              "changed": 538,
+              "fixed": 476,
+              "broken": 16,
+              "changed_still_wrong": 46,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.634920634920635,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.3212938005390836,
+              "wer_after": 0.08086253369272237,
+              "cer_before": 0.07172413793103448,
+              "cer_after": 0.022068965517241378,
+              "fix_rate": 0.754950886869756,
+              "over_correction_rate": 0.0023282777828232378,
+              "changed": 476,
+              "fixed": 449,
+              "broken": 3,
+              "changed_still_wrong": 24,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.9325396825396826,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.3212938005390836,
+              "wer_after": 0.1051212938005391,
+              "cer_before": 0.07172413793103448,
+              "cer_after": 0.026502463054187193,
+              "fix_rate": 0.6772878559287224,
+              "over_correction_rate": 0.0,
+              "changed": 409,
+              "fixed": 401,
+              "broken": 0,
+              "changed_still_wrong": 8,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.3212938005390836,
+              "wer_after": 0.13153638814016172,
+              "cer_before": 0.07172413793103448,
+              "cer_after": 0.03152709359605911,
+              "fix_rate": 0.5942351321605377,
+              "over_correction_rate": 0.0,
+              "changed": 357,
+              "fixed": 352,
+              "broken": 0,
+              "changed_still_wrong": 5,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.15": {
+          "achieved_cer": 0.11257199999999998,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.4636118598382749,
+              "wer_after": 0.12237196765498652,
+              "cer_before": 0.11261083743842364,
+              "cer_after": 0.03911330049261084,
+              "fix_rate": 0.7541102836348587,
+              "over_correction_rate": 0.015335699789305199,
+              "changed": 724,
+              "fixed": 648,
+              "broken": 15,
+              "changed_still_wrong": 61,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.5390476190476191,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.4636118598382749,
+              "wer_after": 0.13800539083557953,
+              "cer_before": 0.11261083743842364,
+              "cer_after": 0.04187192118226601,
+              "fix_rate": 0.7070915705934007,
+              "over_correction_rate": 0.004147961876812314,
+              "changed": 645,
+              "fixed": 608,
+              "broken": 4,
+              "changed_still_wrong": 33,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 0.9464285714285715,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.4636118598382749,
+              "wer_after": 0.1719676549865229,
+              "cer_before": 0.11261083743842364,
+              "cer_after": 0.048078817733990156,
+              "fix_rate": 0.6302257300414372,
+              "over_correction_rate": 0.0010309278350515464,
+              "changed": 551,
+              "fixed": 542,
+              "broken": 1,
+              "changed_still_wrong": 8,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.4636118598382749,
+              "wer_after": 0.20485175202156336,
+              "cer_before": 0.11261083743842364,
+              "cer_after": 0.054679802955665026,
+              "fix_rate": 0.5579160495934754,
+              "over_correction_rate": 0.0,
+              "changed": 485,
+              "fixed": 480,
+              "broken": 0,
+              "changed_still_wrong": 5,
+              "words": 1855,
+              "rare_words": 75,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        }
+      }
+    },
+    "notes": {
+      "lexicon": {
+        "0.02": {
+          "achieved_cer": 0.015906666666666666,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.025225225225225228,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.007142857142857143,
+              "fix_rate": 0.6670995670995671,
+              "over_correction_rate": 0.0,
+              "changed": 33,
+              "fixed": 26,
+              "broken": 0,
+              "changed_still_wrong": 7,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.025225225225225228,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.005639097744360902,
+              "fix_rate": 0.6670995670995671,
+              "over_correction_rate": 0.0,
+              "changed": 28,
+              "fixed": 26,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.028828828828828822,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.006390977443609022,
+              "fix_rate": 0.6194805194805195,
+              "over_correction_rate": 0.0,
+              "changed": 24,
+              "fixed": 24,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.032432432432432434,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.007142857142857143,
+              "fix_rate": 0.5718614718614718,
+              "over_correction_rate": 0.0,
+              "changed": 22,
+              "fixed": 22,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.05": {
+          "achieved_cer": 0.028393333333333333,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.03423423423423423,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.008270676691729323,
+              "fix_rate": 0.7624741200828157,
+              "over_correction_rate": 0.0,
+              "changed": 59,
+              "fixed": 51,
+              "broken": 0,
+              "changed_still_wrong": 8,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.05225225225225225,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.012030075187969924,
+              "fix_rate": 0.624120082815735,
+              "over_correction_rate": 0.0,
+              "changed": 45,
+              "fixed": 41,
+              "broken": 0,
+              "changed_still_wrong": 4,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.06306306306306306,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.014661654135338344,
+              "fix_rate": 0.5614906832298137,
+              "over_correction_rate": 0.0,
+              "changed": 36,
+              "fixed": 35,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.07567567567567568,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.017293233082706767,
+              "fix_rate": 0.4600414078674948,
+              "over_correction_rate": 0.0,
+              "changed": 28,
+              "fixed": 28,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.1": {
+          "achieved_cer": 0.07264,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.11711711711711711,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.03721804511278195,
+              "fix_rate": 0.6421245421245421,
+              "over_correction_rate": 0.009978007267163894,
+              "changed": 135,
+              "fixed": 103,
+              "broken": 4,
+              "changed_still_wrong": 28,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 0.8033333333333333,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.12972972972972974,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.03533834586466165,
+              "fix_rate": 0.5695360195360195,
+              "over_correction_rate": 0.0,
+              "changed": 106,
+              "fixed": 92,
+              "broken": 0,
+              "changed_still_wrong": 14,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.16036036036036036,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.04097744360902256,
+              "fix_rate": 0.46717541717541716,
+              "over_correction_rate": 0.0,
+              "changed": 79,
+              "fixed": 75,
+              "broken": 0,
+              "changed_still_wrong": 4,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.17297297297297295,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.04360902255639097,
+              "fix_rate": 0.4163817663817664,
+              "over_correction_rate": 0.0,
+              "changed": 70,
+              "fixed": 68,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.15": {
+          "achieved_cer": 0.11088,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.16756756756756755,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.05263157894736842,
+              "fix_rate": 0.6287476206857011,
+              "over_correction_rate": 0.00994535519125683,
+              "changed": 190,
+              "fixed": 153,
+              "broken": 3,
+              "changed_still_wrong": 34,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 0.86,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.1963963963963964,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.055263157894736833,
+              "fix_rate": 0.5445155372090357,
+              "over_correction_rate": 0.0,
+              "changed": 153,
+              "fixed": 134,
+              "broken": 0,
+              "changed_still_wrong": 19,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.24684684684684682,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.0669172932330827,
+              "fix_rate": 0.4316454535030386,
+              "over_correction_rate": 0.0,
+              "changed": 113,
+              "fixed": 106,
+              "broken": 0,
+              "changed_still_wrong": 7,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.30090090090090094,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.07894736842105263,
+              "fix_rate": 0.30945075106065817,
+              "over_correction_rate": 0.0,
+              "changed": 77,
+              "fixed": 76,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        }
+      },
+      "personal": {
+        "0.02": {
+          "achieved_cer": 0.015906666666666666,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.025225225225225228,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.007142857142857143,
+              "fix_rate": 0.6670995670995671,
+              "over_correction_rate": 0.0,
+              "changed": 33,
+              "fixed": 26,
+              "broken": 0,
+              "changed_still_wrong": 7,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.025225225225225228,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.005639097744360902,
+              "fix_rate": 0.6670995670995671,
+              "over_correction_rate": 0.0,
+              "changed": 28,
+              "fixed": 26,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.028828828828828822,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.006390977443609022,
+              "fix_rate": 0.6194805194805195,
+              "over_correction_rate": 0.0,
+              "changed": 24,
+              "fixed": 24,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.07207207207207207,
+              "wer_after": 0.032432432432432434,
+              "cer_before": 0.015789473684210527,
+              "cer_after": 0.007142857142857143,
+              "fix_rate": 0.5718614718614718,
+              "over_correction_rate": 0.0,
+              "changed": 22,
+              "fixed": 22,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.05": {
+          "achieved_cer": 0.028393333333333333,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.03423423423423423,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.008270676691729323,
+              "fix_rate": 0.7624741200828157,
+              "over_correction_rate": 0.0,
+              "changed": 59,
+              "fixed": 51,
+              "broken": 0,
+              "changed_still_wrong": 8,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.05225225225225225,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.012030075187969924,
+              "fix_rate": 0.624120082815735,
+              "over_correction_rate": 0.0,
+              "changed": 45,
+              "fixed": 41,
+              "broken": 0,
+              "changed_still_wrong": 4,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.06306306306306306,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.014661654135338344,
+              "fix_rate": 0.5614906832298137,
+              "over_correction_rate": 0.0,
+              "changed": 36,
+              "fixed": 35,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.12612612612612611,
+              "wer_after": 0.07567567567567568,
+              "cer_before": 0.028195488721804513,
+              "cer_after": 0.017293233082706767,
+              "fix_rate": 0.4600414078674948,
+              "over_correction_rate": 0.0,
+              "changed": 28,
+              "fixed": 28,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.1": {
+          "achieved_cer": 0.07264,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.11711711711711711,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.03721804511278195,
+              "fix_rate": 0.6421245421245421,
+              "over_correction_rate": 0.009978007267163894,
+              "changed": 135,
+              "fixed": 103,
+              "broken": 4,
+              "changed_still_wrong": 28,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 0.8033333333333333,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.12972972972972974,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.03533834586466165,
+              "fix_rate": 0.5695360195360195,
+              "over_correction_rate": 0.0,
+              "changed": 106,
+              "fixed": 92,
+              "broken": 0,
+              "changed_still_wrong": 14,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.16036036036036036,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.04097744360902256,
+              "fix_rate": 0.46717541717541716,
+              "over_correction_rate": 0.0,
+              "changed": 79,
+              "fixed": 75,
+              "broken": 0,
+              "changed_still_wrong": 4,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.2954954954954955,
+              "wer_after": 0.17297297297297295,
+              "cer_before": 0.07255639097744361,
+              "cer_after": 0.04360902255639097,
+              "fix_rate": 0.4163817663817664,
+              "over_correction_rate": 0.0,
+              "changed": 70,
+              "fixed": 68,
+              "broken": 0,
+              "changed_still_wrong": 2,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.15": {
+          "achieved_cer": 0.11088,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.16756756756756755,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.05263157894736842,
+              "fix_rate": 0.6287476206857011,
+              "over_correction_rate": 0.00994535519125683,
+              "changed": 190,
+              "fixed": 153,
+              "broken": 3,
+              "changed_still_wrong": 34,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 0.86,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.1963963963963964,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.055263157894736833,
+              "fix_rate": 0.5445155372090357,
+              "over_correction_rate": 0.0,
+              "changed": 153,
+              "fixed": 134,
+              "broken": 0,
+              "changed_still_wrong": 19,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.24684684684684682,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.0669172932330827,
+              "fix_rate": 0.4316454535030386,
+              "over_correction_rate": 0.0,
+              "changed": 113,
+              "fixed": 106,
+              "broken": 0,
+              "changed_still_wrong": 7,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.4378378378378378,
+              "wer_after": 0.30090090090090094,
+              "cer_before": 0.11090225563909775,
+              "cer_after": 0.07894736842105263,
+              "fix_rate": 0.30945075106065817,
+              "over_correction_rate": 0.0,
+              "changed": 77,
+              "fixed": 76,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 555,
+              "rare_words": 30,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.0
+            }
+          }
+        }
+      }
+    },
+    "rare": {
+      "lexicon": {
+        "0.02": {
+          "achieved_cer": 0.01679,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.08888888888888888,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.02558922558922559,
+              "fix_rate": 0.5833333333333333,
+              "over_correction_rate": 0.048476764947160154,
+              "changed": 29,
+              "fixed": 12,
+              "broken": 12,
+              "changed_still_wrong": 5,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8231593406593406,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.08148148148148147,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.021548821548821546,
+              "fix_rate": 0.5166666666666666,
+              "over_correction_rate": 0.03643378532709228,
+              "changed": 24,
+              "fixed": 11,
+              "broken": 9,
+              "changed_still_wrong": 4,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8632783882783883,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.06296296296296296,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.014814814814814814,
+              "fix_rate": 0.5166666666666666,
+              "over_correction_rate": 0.016042979620067878,
+              "changed": 18,
+              "fixed": 11,
+              "broken": 4,
+              "changed_still_wrong": 3,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.9387820512820513,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.07777777777777778,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.01616161616161616,
+              "fix_rate": 0.21666666666666665,
+              "over_correction_rate": 0.016042979620067878,
+              "changed": 13,
+              "fixed": 7,
+              "broken": 4,
+              "changed_still_wrong": 2,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.9387820512820513,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.05": {
+          "achieved_cer": 0.03248,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.14444444444444443,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.03703703703703704,
+              "fix_rate": 0.4541025641025641,
+              "over_correction_rate": 0.07004547628363984,
+              "changed": 43,
+              "fixed": 20,
+              "broken": 16,
+              "changed_still_wrong": 7,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8269841269841269,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.1222222222222222,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.028956228956228958,
+              "fix_rate": 0.4079487179487179,
+              "over_correction_rate": 0.030477283596365378,
+              "changed": 28,
+              "fixed": 17,
+              "broken": 7,
+              "changed_still_wrong": 4,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.887936507936508,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.13333333333333333,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.030303030303030304,
+              "fix_rate": 0.31051282051282053,
+              "over_correction_rate": 0.030477283596365378,
+              "changed": 23,
+              "fixed": 14,
+              "broken": 7,
+              "changed_still_wrong": 2,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.887936507936508,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.12592592592592594,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.02558922558922559,
+              "fix_rate": 0.2797435897435897,
+              "over_correction_rate": 0.012799617407938784,
+              "changed": 16,
+              "fixed": 12,
+              "broken": 3,
+              "changed_still_wrong": 1,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.9511111111111111,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.1": {
+          "achieved_cer": 0.07422,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.26296296296296295,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.07272727272727272,
+              "fix_rate": 0.44223389355742293,
+              "over_correction_rate": 0.11604381449582687,
+              "changed": 75,
+              "fixed": 39,
+              "broken": 21,
+              "changed_still_wrong": 15,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.7288672438672439,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.21111111111111108,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.055892255892255896,
+              "fix_rate": 0.41713585434173667,
+              "over_correction_rate": 0.028394928085330562,
+              "changed": 52,
+              "fixed": 37,
+              "broken": 5,
+              "changed_still_wrong": 10,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8923737373737375,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.22592592592592592,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.05454545454545454,
+              "fix_rate": 0.3730882352941176,
+              "over_correction_rate": 0.028394928085330562,
+              "changed": 42,
+              "fixed": 33,
+              "broken": 5,
+              "changed_still_wrong": 4,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8923737373737375,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.24444444444444446,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.055892255892255896,
+              "fix_rate": 0.29455882352941176,
+              "over_correction_rate": 0.01645196908354803,
+              "changed": 32,
+              "fixed": 26,
+              "broken": 3,
+              "changed_still_wrong": 3,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.9395959595959595,
+              "rare_fix_rate": 0.0
+            }
+          }
+        },
+        "0.15": {
+          "achieved_cer": 0.11542,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.3333333333333333,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.10303030303030303,
+              "fix_rate": 0.4479295608605954,
+              "over_correction_rate": 0.11863166463166464,
+              "changed": 100,
+              "fixed": 60,
+              "broken": 16,
+              "changed_still_wrong": 24,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.6823809523809523,
+              "rare_fix_rate": 0.0
+            },
+            "0.7": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.31851851851851853,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.0936026936026936,
+              "fix_rate": 0.4023700756459377,
+              "over_correction_rate": 0.04276190476190476,
+              "changed": 77,
+              "fixed": 54,
+              "broken": 6,
+              "changed_still_wrong": 17,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8642857142857142,
+              "rare_fix_rate": 0.0
+            },
+            "0.9": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.3481481481481481,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.09158249158249158,
+              "fix_rate": 0.32712201591511936,
+              "over_correction_rate": 0.02895238095238095,
+              "changed": 56,
+              "fixed": 44,
+              "broken": 4,
+              "changed_still_wrong": 8,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.8642857142857142,
+              "rare_fix_rate": 0.0
+            },
+            "0.97": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.39259259259259255,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.09494949494949495,
+              "fix_rate": 0.2143036082691255,
+              "over_correction_rate": 0.006666666666666666,
+              "changed": 34,
+              "fixed": 29,
+              "broken": 1,
+              "changed_still_wrong": 4,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 0.9714285714285715,
+              "rare_fix_rate": 0.0
+            }
+          }
+        }
+      },
+      "personal": {
+        "0.02": {
+          "achieved_cer": 0.01679,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.0,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.0,
+              "fix_rate": 1.0,
+              "over_correction_rate": 0.0,
+              "changed": 24,
+              "fixed": 24,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8
+            },
+            "0.7": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.0037037037037037034,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.0006734006734006733,
+              "fix_rate": 0.9333333333333332,
+              "over_correction_rate": 0.0,
+              "changed": 23,
+              "fixed": 23,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8
+            },
+            "0.9": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.0037037037037037034,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.0006734006734006733,
+              "fix_rate": 0.9333333333333332,
+              "over_correction_rate": 0.0,
+              "changed": 23,
+              "fixed": 23,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8
+            },
+            "0.97": {
+              "wer_before": 0.08888888888888888,
+              "wer_after": 0.018518518518518517,
+              "cer_before": 0.016835016835016835,
+              "cer_after": 0.003367003367003367,
+              "fix_rate": 0.6333333333333333,
+              "over_correction_rate": 0.0,
+              "changed": 19,
+              "fixed": 19,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8
+            }
+          }
+        },
+        "0.05": {
+          "achieved_cer": 0.03248,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.04814814814814815,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.0101010101010101,
+              "fix_rate": 0.7938461538461539,
+              "over_correction_rate": 0.022223120733881135,
+              "changed": 42,
+              "fixed": 35,
+              "broken": 5,
+              "changed_still_wrong": 2,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.9380952380952381
+            },
+            "0.7": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.04074074074074074,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.008754208754208754,
+              "fix_rate": 0.7476923076923077,
+              "over_correction_rate": 0.0,
+              "changed": 33,
+              "fixed": 32,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.9380952380952381
+            },
+            "0.9": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.05555555555555556,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.011447811447811446,
+              "fix_rate": 0.6348717948717948,
+              "over_correction_rate": 0.0,
+              "changed": 28,
+              "fixed": 28,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.9095238095238095
+            },
+            "0.97": {
+              "wer_before": 0.15925925925925927,
+              "wer_after": 0.06666666666666667,
+              "cer_before": 0.03232323232323232,
+              "cer_after": 0.013468013468013467,
+              "fix_rate": 0.5374358974358975,
+              "over_correction_rate": 0.0,
+              "changed": 25,
+              "fixed": 25,
+              "broken": 0,
+              "changed_still_wrong": 0,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.7095238095238096
+            }
+          }
+        },
+        "0.1": {
+          "achieved_cer": 0.07422,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.1,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.026262626262626265,
+              "fix_rate": 0.8026610644257703,
+              "over_correction_rate": 0.04941884879965375,
+              "changed": 87,
+              "fixed": 71,
+              "broken": 9,
+              "changed_still_wrong": 7,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.9158730158730158
+            },
+            "0.7": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.08148148148148147,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.02222222222222222,
+              "fix_rate": 0.7580392156862745,
+              "over_correction_rate": 0.0,
+              "changed": 72,
+              "fixed": 67,
+              "broken": 0,
+              "changed_still_wrong": 5,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8623015873015873
+            },
+            "0.9": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.1,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.02424242424242424,
+              "fix_rate": 0.700658263305322,
+              "over_correction_rate": 0.0,
+              "changed": 63,
+              "fixed": 62,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8289682539682539
+            },
+            "0.97": {
+              "wer_before": 0.3296296296296296,
+              "wer_after": 0.14074074074074075,
+              "cer_before": 0.07407407407407408,
+              "cer_after": 0.03164983164983165,
+              "fix_rate": 0.577983193277311,
+              "over_correction_rate": 0.0,
+              "changed": 52,
+              "fixed": 51,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.7448412698412697
+            }
+          }
+        },
+        "0.15": {
+          "achieved_cer": 0.11542,
+          "thresholds": {
+            "0.5": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.14074074074074075,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.0430976430976431,
+              "fix_rate": 0.7669764781833748,
+              "over_correction_rate": 0.052052096052096056,
+              "changed": 121,
+              "fixed": 103,
+              "broken": 7,
+              "changed_still_wrong": 11,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8299999999999998
+            },
+            "0.7": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.14444444444444443,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.04175084175084175,
+              "fix_rate": 0.7209061372854477,
+              "over_correction_rate": 0.01380952380952381,
+              "changed": 103,
+              "fixed": 97,
+              "broken": 2,
+              "changed_still_wrong": 4,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.8099999999999998
+            },
+            "0.9": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.17777777777777776,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.04579124579124579,
+              "fix_rate": 0.6390464261153916,
+              "over_correction_rate": 0.0,
+              "changed": 87,
+              "fixed": 86,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.7933333333333332
+            },
+            "0.97": {
+              "wer_before": 0.49629629629629635,
+              "wer_after": 0.25925925925925924,
+              "cer_before": 0.1158249158249158,
+              "cer_after": 0.06127946127946127,
+              "fix_rate": 0.4720888945026876,
+              "over_correction_rate": 0.0,
+              "changed": 65,
+              "fixed": 64,
+              "broken": 0,
+              "changed_still_wrong": 1,
+              "words": 270,
+              "rare_words": 80,
+              "rare_preserved_rate": 1.0,
+              "rare_fix_rate": 0.6940404040404041
+            }
+          }
+        }
+      }
+    }
+  },
+  "demo": {
+    "lines": [
+      "buy milk eggs and bread",
+      "return library books by friday",
+      "call the plumber at 9 am",
+      "pen rev a bench test on monday",
+      "check hall sensor offset",
+      "order spare refills"
+    ],
+    "changes": [
+      {
+        "span_id": "l0.w1",
+        "from": "mlilk",
+        "to": "milk",
+        "posterior": 0.990176,
+        "posterior_observed": 0.0,
+        "stroke_ranges": [
+          [
+            5,
+            12
+          ]
+        ]
+      },
+      {
+        "span_id": "l2.w1",
+        "from": "tpe",
+        "to": "the",
+        "posterior": 0.989179,
+        "posterior_observed": 0.0,
+        "stroke_ranges": [
+          [
+            80,
+            84
+          ]
+        ]
+      },
+      {
+        "span_id": "l3.w3",
+        "from": "benc",
+        "to": "bench",
+        "posterior": 0.905042,
+        "posterior_observed": 0.002134,
+        "stroke_ranges": [
+          [
+            116,
+            123
+          ]
+        ]
+      },
+      {
+        "span_id": "l3.w4",
+        "from": "testb",
+        "to": "tests",
+        "posterior": 0.940499,
+        "posterior_observed": 9.1e-05,
+        "stroke_ranges": [
+          [
+            124,
+            129
+          ]
+        ]
+      },
+      {
+        "span_id": "l3.w6",
+        "from": "mondy",
+        "to": "monday",
+        "posterior": 0.995614,
+        "posterior_observed": 3e-06,
+        "stroke_ranges": [
+          [
+            133,
+            143
+          ]
+        ]
+      }
+    ],
+    "layer_id": "recognition-2220d10d52be2777",
+    "created_by": "penapp.autocorrect@0.1.0",
+    "inputs": [
+      {
+        "type": "layer",
+        "layer_id": "recognition-e259ada1fdf723b5",
+        "span_ids": [
+          "l0.w0",
+          "l0.w1",
+          "l0.w2",
+          "l0.w3",
+          "l0.w4",
+          "l1.w0",
+          "l1.w1",
+          "l1.w2",
+          "l1.w3",
+          "l1.w4",
+          "l2.w0",
+          "l2.w1",
+          "l2.w2",
+          "l2.w3",
+          "l2.w4",
+          "l2.w5",
+          "l3.w0",
+          "l3.w1",
+          "l3.w2",
+          "l3.w3",
+          "l3.w4",
+          "l3.w5",
+          "l3.w6",
+          "l4.w0",
+          "l4.w1",
+          "l4.w2",
+          "l4.w3",
+          "l5.w0",
+          "l5.w1",
+          "l5.w2"
+        ]
+      },
+      {
+        "type": "original",
+        "sha256": "4d93307fad70ad181aaba3da208768e7fd8479ef06ecf647b064ddf4d454ada1",
+        "stroke_ranges": [
+          [
+            0,
+            197
+          ]
+        ]
+      },
+      {
+        "type": "external_file",
+        "sha256": "88741ad33d7e71adca99de65b10f592584b6d85f073b8f8c454bc3ae9dab4c2a",
+        "role": "language-model training corpus (CC0 1.0 Universal (public-domain dedication))",
+        "name": "https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences_CC0.tsv.bz2"
+      }
+    ],
+    "effective_text_recognizer": "penapp.autocorrect@0.1.0",
+    "store_verify_ok": true,
+    "rerender_style": {
+      "x_height_um": 2471.2181032975373,
+      "width": 1.095416975951915,
+      "slant_deg": 12.23835044314326,
+      "letters_fitted": 92
+    },
+    "rerendered_words": [
+      "milk",
+      "the",
+      "bench",
+      "tests",
+      "monday"
+    ]
+  },
+  "setup": {
+    "cer_targets": [
+      0.02,
+      0.05,
+      0.1,
+      0.15
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "thresholds": [
+      0.5,
+      0.7,
+      0.9,
+      0.97
+    ],
+    "default_threshold": 0.9,
+    "channel": "cer assumed = target CER",
+    "lexicon_min_count": 2,
+    "p_oov": 0.046
+  },
+  "meta": {
+    "evidence_status": "CALCULATION (on synthetic data or public-domain text; not a measurement); synthetic sessions with injected recognition errors",
+    "generated_utc": "2026-09-27T21:49:10+00:00",
+    "git_revision": "77a79f3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_autocorrect.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "injection": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "in_domain_sample": 0,
+      "sessions": "100.."
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "corpus_url": "https://downloads.tatoeba.org/exports/per_language/eng/eng_sentences_CC0.tsv.bz2",
+    "corpus_licence": "CC0 1.0 Universal (public-domain dedication)"
+  },
+  "runtime_s": 50.2
+}

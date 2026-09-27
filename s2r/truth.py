@@ -73,8 +73,11 @@ def _draw_outside(key, lf, rng, reach=(0.15, 0.5)):
     up = rng.random() < 0.5
     if dist == "loguniform":
         v = hi * (hi / lo) ** u if up else lo / (hi / lo) ** u
+    elif up:
+        v = hi + u * (hi - lo)
     else:
-        v = hi + u * (hi - lo) if up else lo - u * (hi - lo)
+        # below the range: log extension, so positive quantities stay positive
+        v = lo * (lo / hi) ** u if lo > 0 else lo - u * (hi - lo)
     a, b = LIMITS.get(key, (1e-12, np.inf))
     return float(np.clip(v, a, b))
 

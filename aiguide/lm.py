@@ -291,6 +291,18 @@ class WordKN:
         self._cache[key] = p
         return p.copy()
 
+    def prob(self, w: str, prev: Optional[str]) -> float:
+        """P(w | prev) without copying the distribution (uses the per-context cache)."""
+        i = self.index.get(w)
+        if i is None or i < 0:
+            return 0.0
+        key = prev if prev is not None else BOS_W
+        vec = self._cache.get(key)
+        if vec is None:
+            self.dist(prev)
+            vec = self._cache.get(key)
+        return float(vec[i])
+
     def prefix_range(self, prefix: str) -> np.ndarray:
         """Vocabulary ids of words starting with ``prefix``."""
         lo = bisect.bisect_left(self.sorted_vocab, prefix)

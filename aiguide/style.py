@@ -7,8 +7,8 @@ use):
     x = x0 + a * gx + b * gy,     y = y0 + h * gy        (a = h * width, b = h * tan(slant))
 
 Correspondence starts from arclength fractions of the (lightly smoothed) ink
-and the glyph, stroke by stroke, and is refined by three iterations of
-nearest-point matching (ICP), which tolerates tremor wiggle.  The estimator
+and the glyph, stroke by stroke, and is refined by iterations of
+nearest-point matching (ICP, 10 iterations), which tolerates tremor wiggle.  The estimator
 aggregates robust (median) size, width and slant over recent letters, a
 baseline line through the recent letter origins, the letter and word gaps,
 the pen-down speed and the air-move speed, and keeps each letter's
@@ -66,15 +66,37 @@ def _smooth(P: np.ndarray, k: int = 5) -> np.ndarray:
     return np.column_stack([np.convolve(pad[:, 0], ker, "valid"), np.convolve(pad[:, 1], ker, "valid")])
 
 
-def _solve(G: np.ndarray, Q: np.ndarray, w: Optional[np.ndarray] = None) -> Tuple[float, ...]:
-    """Least squares for (a, b, x0) and (h, y0) given glyph points G and ink points Q."""
-    w = np.ones(len(G)) if w is None else w
-    sw = np.sqrt(w)
-    Ax = np.column_stack([G[:, 0], G[:, 1], np.ones(len(G))]) * sw[:, None]
-    ax, bx, x0 = np.linalg.lstsq(Ax, Q[:, 0] * sw, rcond=None)[0]
-    Ay = np.column_stack([G[:, 1], np.ones(len(G))]) * sw[:, None]
-    h, y0 = np.linalg.lstsq(Ay, Q[:, 1] * sw, rcond=None)[0]
-    return float(ax), float(bx), float(h), float(x0), float(y0)
+@dataclass
+class Prior:
+    """Current style belief used to regularise letters whose glyph does not constrain a parameter
+    (e.g. 'l' has no horizontal extent, '-' no vertical extent)."""
+    h: float = 2.6e-3
+    width: float = 1.0
+    slant: float = math.radians(10.0)
+    weight: float = 2e-4      # prior weight per point (glyph units squared); matters only for degenerate glyphs
+
+
+def _solve(G: np.ndarray, Q: np.ndarray, prior: Optional[Prior] = None) -> Tuple[float, ...]:
+    """Ridge least squares for (a, b, x0) and (h, y0) given glyph points G and ink points Q.
+
+    The ridge terms pull h, a = h*width and b = h*tan(slant) toward the prior with
+    a weight that only matters when the glyph's extent does not determine them.
+    """
+    pr = prior or Prior()
+    n = len(G)
+    lam = pr.weight * n
+    gy = G[:, 1]
+    # y: minimise |h gy + y0 - Qy|^2 + lam (h - h_p)^2
+    Ay = np.column_stack([gy, np.ones(n)])
+    Ay = np.vstack([Ay, [math.sqrt(lam), 0.0]])
+    by = np.r_[Q[:, 1], math.sqrt(lam) * pr.h]
+    h, y0 = np.linalg.lstsq(Ay, by, rcond=None)[0]
+    hp = h if h > 1e-5 else pr.h
+    Ax = np.column_stack([G[:, 0], gy, np.ones(n)])
+    Ax = np.vstack([Ax, [math.sqrt(lam), 0.0, 0.0], [0.0, math.sqrt(lam), 0.0]])
+    bx = np.r_[Q[:, 0], math.sqrt(lam) * hp * pr.width, math.sqrt(lam) * hp * math.tan(pr.slant)]
+    ax, bb, x0 = np.linalg.lstsq(Ax, bx, rcond=None)[0]
+    return float(ax), float(bb), float(h), float(x0), float(y0)
 
 
 def _apply(G: np.ndarray, a, b, h, x0, y0) -> np.ndarray:
@@ -87,8 +109,8 @@ def _inverse(Q: np.ndarray, a, b, h, x0, y0) -> np.ndarray:
     return np.column_stack([gx, gy])
 
 
-def fit_letter(char: str, ink_strokes: Sequence[np.ndarray], *, n_icp: int = 3, smooth: int = 5,
-               glyph: Optional[List[np.ndarray]] = None) -> LetterFit:
+def fit_letter(char: str, ink_strokes: Sequence[np.ndarray], *, n_icp: int = 10, smooth: int = 11,
+               glyph: Optional[List[np.ndarray]] = None, prior: Optional[Prior] = None) -> LetterFit:
     """Fit the style's affine map from ``glyph`` (default: the font glyph) to the ink."""
     glyph = glyph if glyph is not None else GLYPH_SET[char]
     ink = [_smooth(np.asarray(s, float), smooth) for s in ink_strokes if len(s) >= 2]
@@ -106,13 +128,13 @@ def fit_letter(char: str, ink_strokes: Sequence[np.ndarray], *, n_icp: int = 3, 
         Q.append(resample(q, m) if lq > 0 else np.repeat(q[:1], m, 0))
     G = np.vstack(G)
     Q = np.vstack(Q)
-    p = _solve(G, Q)
-    dense = np.vstack([resample(g, 80) if arclength(g)[-1] > 0 else np.repeat(g[:1], 4, 0) for g in glyph])
+    p = _solve(G, Q, prior)
+    dense = np.vstack([resample(g, 400) if arclength(g)[-1] > 0 else np.repeat(g[:1], 4, 0) for g in glyph])
     Qall = np.vstack(ink)
     for _ in range(n_icp):
         tree = cKDTree(_apply(dense, *p))
         _, j = tree.query(Qall)
-        p = _solve(dense[j], Qall)
+        p = _solve(dense[j], Qall, prior)
     tree = cKDTree(_apply(dense, *p))
     d, _ = tree.query(Qall)
     a, b, h, x0, y0 = p
@@ -120,6 +142,24 @@ def fit_letter(char: str, ink_strokes: Sequence[np.ndarray], *, n_icp: int = 3, 
     if h > 1e-5 and abs(a) > 1e-5:
         ex = [_inverse(s, a, b, h, x0, y0) for s in ink]
     return LetterFit(char, a, b, h, x0, y0, float(np.sqrt(np.mean(d ** 2))), len(ink), ex)
+
+
+def _active_length_time(ink_strokes, t_strokes, frac: float = 0.2) -> Tuple[float, float]:
+    """Path length and time while the (smoothed) pen speed exceeds ``frac`` of its stroke maximum
+    (excludes touchdown, dwell and lift phases)."""
+    L = T = 0.0
+    for s, t in zip(ink_strokes, t_strokes):
+        s = _smooth(np.asarray(s, float), 5)
+        t = np.asarray(t, float)
+        if len(s) < 3:
+            continue
+        seg = np.hypot(*np.diff(s, axis=0).T)
+        dtt = np.diff(t)
+        v = seg / np.maximum(dtt, 1e-9)
+        m = v > frac * v.max()
+        L += float(seg[m].sum())
+        T += float(dtt[m].sum())
+    return L, T
 
 
 @dataclass
@@ -168,12 +208,15 @@ class StyleEstimator:
 
     def update(self, char: str, ink_strokes: Sequence[np.ndarray], *, t_strokes: Sequence[np.ndarray] = (),
                new_word: bool = False, keep_exemplar: bool = True) -> LetterFit:
-        f = fit_letter(char, ink_strokes)
+        prior = None
+        if self.fits:
+            e = self.estimate()
+            prior = Prior(e.h, e.width, e.slant)
+        f = fit_letter(char, ink_strokes, prior=prior)
         if t_strokes:
             f.t_start = float(t_strokes[0][0])
             f.t_end = float(t_strokes[-1][-1])
-            f.path_len = float(sum(arclength(_smooth(np.asarray(s, float)))[-1] for s in ink_strokes))
-            f.pen_down_time = float(sum(t[-1] - t[0] for t in t_strokes))
+            f.path_len, f.pen_down_time = _active_length_time(ink_strokes, t_strokes)
         prev = self._last
         if prev is not None and f.h > 0:
             adv = prev.x0 + prev.a * glyph_width(prev.char)
