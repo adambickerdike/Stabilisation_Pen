@@ -222,39 +222,50 @@ def _fit_frame_offset(d: np.ndarray, q: np.ndarray) -> dict:
     return out
 
 
+def _covered(t_r: np.ndarray, tq: np.ndarray, max_gap_us: int) -> np.ndarray:
+    """Mask of query times inside the research-frame span with a frame within ``max_gap_us``."""
+    if len(t_r) < 2:
+        return np.zeros(len(tq), bool)
+    j = np.clip(np.searchsorted(t_r, tq), 1, len(t_r) - 1)
+    gap = np.minimum(np.abs(t_r[j] - tq), np.abs(t_r[j - 1] - tq))
+    return (gap <= max_gap_us) & (tq >= t_r[0]) & (tq <= t_r[-1])
+
+
 def hand_path_payload(orig: OriginalLayer, research: np.ndarray, research_t_us: np.ndarray,
-                      *, max_gap_us: int = 2000, origin: str = "fit") -> dict:
+                      *, stroke_t_ms: Optional[np.ndarray] = None, max_gap_us: int = 2000,
+                      origin: str = "fit") -> dict:
     """Hand-path estimate at each stroke-sample time from research-frame p_H.
 
     p_H (fused housing position, 0.1 um) is linearly interpolated to the
     stroke-sample times; points farther than ``max_gap_us`` from any frame are
-    omitted.  Origin (ICD ambiguity A9): the firmware logs p_H in its fusion
-    frame while stroke x, y = p_H + J q - page_origin.  ``origin="fit"``
-    (default) estimates page_origin (and J) by least squares over all stroke
-    samples from that relation; ``"first_contact"`` aligns at the first stroke
-    sample (error = J q there, recorded); ``"shared"`` applies no offset.
+    omitted.  ``stroke_t_ms`` are the unwrapped sample times from the parser
+    (``ParsedLog.stroke_t_ms``, same order as the original); the raw logged
+    t_ms are used if it is omitted and are what the layer stores.  Origin (ICD
+    ambiguity A9): the firmware logs p_H in its fusion frame while stroke
+    x, y = p_H + J q - page_origin.  ``origin="fit"`` (default) estimates
+    page_origin (and J) by least squares over all stroke samples from that
+    relation; ``"first_contact"`` aligns at the first stroke sample (error =
+    J q there, recorded); ``"shared"`` applies no offset.
     """
     t_r = np.asarray(research_t_us, np.int64)
     if len(research) != len(t_r):
         raise ValidationError("research frames and time stamps differ in length")
     if origin not in ("fit", "first_contact", "shared"):
         raise ValueError("origin must be 'fit', 'first_contact' or 'shared'")
+    s = orig.samples
+    t_samples = (np.asarray(stroke_t_ms, np.int64) if stroke_t_ms is not None
+                 else s["t_ms"].astype(np.int64))
+    if len(t_samples) != len(s):
+        raise ValidationError("stroke_t_ms must have one entry per original sample")
     order = np.argsort(t_r, kind="stable")
     t_r = t_r[order]
     px = research["p_Hx"].astype(np.float64)[order] * 0.1
     py = research["p_Hy"].astype(np.float64)[order] * 0.1
     q1 = research["q1"].astype(np.float64)[order] * 0.1
     q2 = research["q2"].astype(np.float64)[order] * 0.1
-    s = orig.samples
     align = {"mode": origin, "offset_um": [0.0, 0.0]}
-    tq_all = s["t_ms"].astype(np.int64) * 1000
-    if len(t_r):
-        j = np.clip(np.searchsorted(t_r, tq_all), 1, max(len(t_r) - 1, 1))
-        gap = np.minimum(np.abs(t_r[j] - tq_all), np.abs(t_r[j - 1] - tq_all)) if len(t_r) > 1 else \
-            np.abs(t_r[0] - tq_all)
-        covered = np.flatnonzero((gap <= max_gap_us) & (tq_all >= t_r[0]) & (tq_all <= t_r[-1]))
-    else:
-        covered = np.zeros(0, np.int64)
+    tq_all = t_samples * 1000
+    covered = np.flatnonzero(_covered(t_r, tq_all, max_gap_us))
     if origin != "shared" and len(covered):
         tq = tq_all[covered]
         ink = np.column_stack([s["x_um"][covered], s["y_um"][covered]]).astype(np.float64)
@@ -265,36 +276,32 @@ def hand_path_payload(orig: OriginalLayer, research: np.ndarray, research_t_us: 
                      **_fit_frame_offset(ink - ph, qq)}
         else:
             align = {"mode": "first_contact", "aligned_at_sample": int(covered[0]),
-                     "offset_um": [round(float(-(ink[0, 0] - ph[0, 0])), 1), round(float(-(ink[0, 1] - ph[0, 1])), 1)],
+                     "offset_um": [round(float(ph[0, 0] - ink[0, 0]), 1), round(float(ph[0, 1] - ink[0, 1]), 1)],
                      "stage_q_at_alignment_um": round(float(np.hypot(*qq[0])), 1)}
         px = px - align["offset_um"][0]
         py = py - align["offset_um"][1]
     strokes = []
     for sid, a, b in orig.stroke_runs:
-        t_ms = s["t_ms"][a:b].astype(np.int64)
-        tq = t_ms * 1000
-        if not len(t_r):
-            break
-        j = np.clip(np.searchsorted(t_r, tq), 1, len(t_r) - 1)
-        gap = np.minimum(np.abs(t_r[j] - tq), np.abs(t_r[j - 1] - tq))
-        ok = (gap <= max_gap_us) & (tq >= t_r[0]) & (tq <= t_r[-1])
+        tq = tq_all[a:b]
+        ok = _covered(t_r, tq, max_gap_us)
         if not ok.any():
             continue
-        xs = np.interp(tq[ok], t_r, px)
-        ys = np.interp(tq[ok], t_r, py)
-        strokes.append({"stroke_id": int(sid), "t_ms": t_ms[ok].tolist(),
-                        "x_um": np.round(xs, 1).tolist(), "y_um": np.round(ys, 1).tolist()})
+        strokes.append({"stroke_id": int(sid), "t_ms": s["t_ms"][a:b][ok].astype(np.int64).tolist(),
+                        "x_um": np.round(np.interp(tq[ok], t_r, px), 1).tolist(),
+                        "y_um": np.round(np.interp(tq[ok], t_r, py), 1).tolist()})
     return {"method": "research-frame p_H (0x01 p_Hx, p_Hy) linearly interpolated to stroke-sample times",
             "evidence_status": "derived estimate; synthetic when the log is synthetic",
             "origin_alignment": align, "strokes": strokes}
 
 
 def add_hand_path_layer(store: NoteStore, note_id: str, parsed: ParsedLog, source_sha256: str) -> Optional[dict]:
-    if not len(parsed.research):
+    if len(parsed.research) < 2:
         return None
     note = store.get_note(note_id)
     orig = store.get_original(note["original_sha256"])
-    payload = hand_path_payload(orig, parsed.research, parsed.research_t_us)
+    if orig.payload != parsed.stroke_payload:
+        raise ValidationError("parsed log does not match the note's original layer")
+    payload = hand_path_payload(orig, parsed.research, parsed.research_t_us, stroke_t_ms=parsed.stroke_t_ms)
     if not payload["strokes"]:
         return None
     ids = [st["stroke_id"] for st in payload["strokes"]]
