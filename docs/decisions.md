@@ -18,7 +18,7 @@ None of the evidence is a physical measurement of our hardware. Revisit a decisi
 | DEC-004 | **Standard D1 mini refill** (Ø2.35 mm, 67 mm) in a titanium carrier tube, clamped at the cone. | Custom short cartridge | Availability, user-replaceable ink; CAD Rev A fits (`results/cad/pen_revA_summary.json`) — CAD | provisional | EXP-B08 ink tolerance to force modulation |
 | DEC-005 | **Page-referenced correction**: near-nib optical tracking fused with the IMU. Hall stage sensing and axial-force sensing sit on the lever. IMU-only correction and capture are ruled out. | IMU-only; external tablet | COR-07/08: 0.1° attitude error gives 8.6 mm in 1 s — calculation; DeltaPen-class optical flow 24–68 µm per 10 ms — literature | accepted | EXP-S01 optical latency and accuracy |
 | DEC-006 | **Stiff axial path** (k_ax ≈ 2 kN/m) with the axial force *measured*, not absorbed. | Soft suspension (200 N/m) with deflection compensation | Soft path: writing-force changes move the ink (ball slides s·cos θ), ~1 mm pen-down hooks; stiff path trades this for more normal-force modulation. Sweep: [`results/sim/design_sweeps.json`](../results/sim/design_sweeps.json), `fig_axial_sweep.png` — simulation | provisional | EXP-B06 hand normal compliance (γ); EXP-B08 ink vs modulated force |
-| DEC-007 | **Cross-strip gimbal** (BeCu 0.05 mm strips) at the pivot. Spiral-arm diaphragm axial suspension **behind** the pivot, so the whole lever slides and the lever arm does not change with axial deflection (κ_s = 0). | Wire flexures; axial suspension in the carrier | Wire pivots fail on stress or buckling; short diaphragms over-stressed; gimbal 177/82 MPa, buckling margin 19 (`results/mechanics/flexure_calc.json`) — calculation. κ_s = 1 caused a load-dependent lever gain (sim) | accepted for Rev A | Flexure fatigue coupons (EXP-M02) |
+| DEC-007 | **Cross-strip gimbal** (BeCu 0.05 mm strips) at the pivot. **Revised:** the axial suspension (spiral-arm diaphragm) sits **in the carrier**, so only the refill slides (κ_s = 1). The lever-arm change L1 − s is compensated from the measured slide. Actuator gap is 0.50 mm per side; mechanical tip travel is 0.60 mm. | Wire flexures; suspension behind the pivot, so the whole lever slides (κ_s = 0), which was the earlier choice | Wire pivots fail on stress or buckling; gimbal 177/82 MPa, buckling margin 19 (`results/mechanics/flexure_calc.json`) — calculation. With κ_s = 0, the paddle–magnet contact probability is 0.97 at the design load (`results/mechanics/tolerance.json`) — calculation. κ_s = 1 matches κ_s = 0 in simulation (`results/sim/kappa_compare.json`) | accepted for Rev A.1 | Flexure fatigue coupons (EXP-M02); actuator coupon gap measurement (EXP-B03) |
 | DEC-008 | Carry two **product-path candidates** alongside the Rev A research pen: (D) nose skid with constant-force nib (0.07 W); (E) slow zero-hold bias actuator (0.02 W). | Rev A architecture as the product | Rev A holding power 0.48 W at the design point, at the moving-coil thermal limit (`results/thermal/thermal.json`, `electronics/README.md`) — calculation | open | EXP-H03 skid feel and smear study |
 | DEC-009 | **Frequency-gated authority**: cancellation only when the tracked tremor frequency is ≥ a per-user gate (default 7.5 Hz). Below it, assistance is guided-mode or training only. | Always-on cancellation; band-pass cancellation | Intended writing has ~17 % of velocity energy in 4–7 Hz (COR-28); estimators help only above ~8 Hz (COR-11); band-pass harms writing below 6 Hz (ratio 1.24 at 6 Hz, 160 µm distortion) — simulation, synthetic writing | provisional; the gate is fragile (distortion 5–45 µm across small plant changes) | EXP-E01 estimator bake-off on recorded writing |
 | DEC-010 | **nRF5340** for the research pen (BLE, USB, QSPI, 128 MHz M33 with FPU, SAADC). STM32U5 is the fallback if the SAADC or PWM limits bite. | STM32U5, nRF52840, nRF54L | COR-13; sampling plan fits (`results/electronics/drive_sense.json`) — calculation. Its single SAR ADC limits dual-edge current sampling to 160 kS/s aggregate (VERIFY 200 kS/s limit) | accepted for Rev A | Bring-up step 7 timing |
@@ -30,7 +30,7 @@ None of the evidence is a physical measurement of our hardware. Revisit a decisi
 | DEC-016 | A **learned disturbance predictor** is deployed only if, on held-out recorded writers, it beats the Kalman oscillator and BMFLC at matched false-correction. Until then the Kalman estimator is the product default, and ML stays behind `ml_guard`. | Ship a learned predictor first | Synthetic-data results in `results/ml/`; no real recordings yet — simulation | provisional | EXP-E01 on EXP-H01 recordings |
 | DEC-017 | **Immutable original stroke layer; derived layers carry provenance; local-first notes.** AI output is stored only as a cited `ai_summary` layer. | Editable ink; cloud-first | Report s19 (retained, audit.md); `docs/icd.md` §4.5 — design check | accepted | Privacy review |
 
-## Decision records for the three decisions made in this iteration
+## Decision records for the decisions made in this iteration
 
 ### DEC-011: contact feedforward removed
 
@@ -44,6 +44,18 @@ None of the evidence is a physical measurement of our hardware. Revisit a decisi
 ### DEC-012: 6 Ω winding and 40 kHz PWM
 
 See `electronics/README.md`, "Decisions carried by the circuit". The parameter file moved to v0.4.0, and every simulation was re-run on it.
+
+### DEC-007 (revised): refill slides in the carrier
+
+The tolerance stack of the actuator's axial gap (`mechanics/tolerance_analysis.py`) adds three contributions:
+
+- the lever tilt at full travel, which moves the paddle rim up to 0.32 mm axially;
+- nine manufacturing tolerances, 113 µm RSS;
+- the axial slide of whatever carries the paddle.
+
+With the whole lever sliding, the 0.26 mm slide at the design load closes the 0.45 mm gap (contact probability 0.97). With only the refill sliding, the paddle does not move axially. After also widening the gap to 0.50 mm and limiting travel to 0.60 mm, every face keeps ≥ 93 µm RSS clearance.
+
+The cost is a load-dependent lever arm, compensated in the controller (`lam_hat`), and about 6 % more holding power for the wider gap. Parameters v0.4.1 carry the change; all simulations were re-run.
 
 ### DEC-014: packaging open
 

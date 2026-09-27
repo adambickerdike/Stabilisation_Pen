@@ -11,5 +11,8 @@ python3 sim/tune_estimators.py > results/sim/tune_estimators.log 2>&1
 python3 sim/diag_ff_options.py > results/sim/diag_ff_options.log 2>&1
 python3 sim/run_nominal.py > results/sim/run_nominal.log 2>&1
 python3 sim/run_sweeps.py > results/sim/run_sweeps.log 2>&1
+python3 sim/mc_sensitivity.py > results/sim/mc_sensitivity.log 2>&1
 python3 sim/sweep_design.py > results/sim/sweep_design.log 2>&1
+python3 sim/diag_kappa.py > results/sim/diag_kappa.log 2>&1
+python3 sim/guided_eval.py > results/sim/guided_eval.log 2>&1
 echo "run_all complete"

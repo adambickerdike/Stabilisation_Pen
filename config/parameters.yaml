@@ -11,12 +11,13 @@
 # Nothing in this file is a measurement of our hardware unless status == measured.
 # ---------------------------------------------------------------------------
 meta:
-  version: "0.4.0"
+  version: "0.4.1"
   date: "2026-09-27"
   changelog:
     - "0.1.0 initial provisional set from report audit"
     - "0.2.0 lever/pivot baseline (DEC-003), transverse contact load model (COR-01)"
     - "0.3.0 literature two-stage hand impedance (HAP-26), stiff axial path (DEC-006), CAD Rev A geometry, EM-based actuator constants"
+    - "0.4.1 axial suspension in the carrier (refill slides, kappa_s = 1, DEC-007 rev.), actuator gap 0.50 mm and tip travel 0.60 mm from the tolerance analysis; Kf -2.9 % for the wider gap"
     - "0.4.0 winding matched to the single-cell supply (R20 6 ohm, DEC-012), 40 kHz PWM and current loop, 0.1 ohm shunt, pouch cell (COR-18); contact feedforward disabled in the controller (DEC-011)"
 
 # ---------------------------------------------------------------------------
@@ -65,7 +66,8 @@ refill:
 stage:              # front-pivot lever (baseline configuration B, DEC-003); tip-equivalent quantities
   L1:              {value: 0.012, unit: m, min: 0.008, max: 0.016, dist: uniform, status: assumed, source: "DEC-003 concept geometry", note: "Pivot to ball centre."}
   L2:              {value: 0.038, unit: m, min: 0.030, max: 0.050, dist: uniform, status: calculated, source: "CAD Rev A (mechanics/cad/pen_revA.py); DEC-003", note: "Pivot to actuator force line; n = L2/L1 = 3.17. Limited by actuator stroke inside the bore (analysis/em_planar)."}
-  travel_tip_mech: {value: 0.00065, unit: m, min: 0.0006, max: 0.0008, dist: fixed, status: calculated, source: "REQ-MECH-001 + margin (analysis/workspace)", note: "Radius of mechanical stop circle at the tip."}
+  travel_tip_mech: {value: 0.00060, unit: m, min: 0.00055, max: 0.00065, dist: fixed, status: calculated, source: "mechanics/tolerance_analysis.py (paddle-to-magnet and carrier-bore clearances; DEC-007 rev.)", note: "Radius of mechanical stop circle at the tip; control limit q_lim 0.55 mm."}
+  kappa_s:         {value: 1.0, unit: "-", min: 0.0, max: 1.0, dist: fixed, status: calculated, source: "DEC-007 rev.: refill slides in the carrier; lever arm L1 - s compensated from the measured slide", note: "1 = refill slides in carrier; 0 = whole lever slides (closes the actuator gap, rejected)."}
   travel_tip_ctrl: {value: 0.00055, unit: m, min: 0.0005, max: 0.0006, dist: fixed, status: calculated, source: "REQ-MECH-001", note: "Commanded travel limit radius (soft)."}
   k_tip:           {value: 150.0, unit: N/m, min: 50.0,  max: 600.0, dist: loguniform, status: assumed, source: "flexure concept (mechanics/flexure_calc)", note: "Pivot flexure rotational stiffness referred to the tip."}
   zeta_open:       {value: 0.05,  unit: "-", min: 0.01,  max: 0.2,   dist: loguniform, status: assumed, source: "assumption", note: "Open-loop mechanical damping ratio."}
@@ -74,12 +76,12 @@ stage:              # front-pivot lever (baseline configuration B, DEC-003); tip
   axial_k:         {value: 2000.0, unit: N/m, min: 500.0, max: 10000.0, dist: loguniform, status: assumed, source: "sim sweep results/sim/axial_sweep (DEC-006)", note: "Axial load-path stiffness at nib; stiff relative to hand so writing-force changes do not move the ink."}
   axial_preload:   {value: 0.25,  unit: N,   min: 0.1,   max: 0.5,   dist: uniform, status: assumed, source: "assumption", note: "Axial preload at front stop (contact detection threshold above this)."}
   axial_travel:    {value: 0.0006,unit: m,   min: 0.0004,max: 0.001, dist: fixed,   status: calculated, source: "results/mechanics/flexure_calc.json (spiral diaphragm stress at stop <= 230 MPa)", note: "Axial overload stop; suspension compliant up to ~1.45 N axial force (F_pre + k_ax * travel)."}
-  axial_mass:      {value: 0.0012,unit: kg,  min: 0.0008,max: 0.002, dist: uniform, status: assumed, source: "refill + axial carriage", note: ""}
+  axial_mass:      {value: 0.0006,unit: kg,  min: 0.0004,max: 0.0009, dist: uniform, status: calculated, source: "CAD refill + plug + sense magnet 0.36 g + diaphragm moving part (DEC-007 rev.)", note: "Refill slides in the carrier."}
   axial_zeta:      {value: 0.1,   unit: "-", min: 0.03,  max: 0.3,   dist: uniform, status: assumed, source: "assumption", note: ""}
   stop_stiffness:  {value: 2.0e+5, unit: N/m, min: 5.0e+4, max: 1.0e+6, dist: loguniform, status: assumed, source: "assumption", note: "Elastomer-faced hard stop."}
 
 actuator:           # rear moving-coil planar Lorentz actuator, per axis (values at the actuator, not the tip)
-  Kf:              {value: 0.7385, unit: N/A,  min: 0.517, max: 0.960, dist: uniform, status: calculated, source: "Km 0.302 N/sqrtW (results/em rear-actuator proxy, 1.0 N/A at 11 ohm) x sqrt(R20); electronics/calcs/drive_sense.py", note: "Per-axis force constant at the actuator; force-current map EXP-B03."}
+  Kf:              {value: 0.717, unit: N/A,  min: 0.502, max: 0.932, dist: uniform, status: calculated, source: "Km 0.302 N/sqrtW x sqrt(R20) x 0.971 for the 0.50 mm gap (mechanics/tolerance_analysis.py); electronics/calcs/drive_sense.py", note: "Per-axis force constant at the actuator; force-current map EXP-B03."}
   R20:             {value: 6.0,   unit: ohm,   min: 4.4,  max: 8.7,  dist: uniform, status: calculated, source: "electronics/calcs/drive_sense.py winding choice (DEC-012)", note: "Largest winding for which the 3.3 V supply never binds inside the thermally allowed envelope at 85 C coil."}
   L:               {value: 1.75e-4,unit: H,     min: 8.2e-5, max: 3.8e-4, dist: loguniform, status: calculated, source: "results/em air-core 322 uH at 11 ohm scaled by turns^2 (R ratio); iron raises it", note: "LCR measurement pending."}
   alpha_cu:        {value: 0.00393, unit: 1/K, min: 0.0039, max: 0.00393, dist: fixed, status: sourced, source: "copper resistivity tempco (AMF ledger)", note: ""}

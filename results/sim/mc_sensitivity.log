@@ -1,0 +1,4 @@
+oracle_ratio [('writing.tilt_deg', -0.44), ('writing.normal_force', -0.34), ('writing.mu_eff', 0.24), ('hand.arm_stiffness', -0.22), ('hand.grip_damping', -0.2)]
+kf_asr_ratio [('writing.mu_eff', 0.52), ('hand.grip_stiffness', -0.22), ('sensing.opt_noise', 0.22), ('hand.arm_stiffness', -0.21), ('writing.normal_force', 0.14)]
+P_cu_neutral_W [('writing.normal_force', 0.89), ('actuator.Kf', -0.29), ('writing.tilt_deg', -0.26), ('hand.arm_stiffness', -0.18), ('sensing.opt_noise', -0.15)]
+T_coil_max_C [('writing.normal_force', 0.89), ('actuator.Kf', -0.29), ('writing.tilt_deg', -0.27), ('hand.arm_stiffness', -0.18), ('sensing.opt_noise', -0.15)]

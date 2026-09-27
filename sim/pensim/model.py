@@ -261,7 +261,7 @@ def build_params(scn: Scenario, ctrl: Controller, geom: Optional[Geometry] = Non
         gam = ctrl.gamma_acc
     setp("gamma_acc", gam)
     setp("f_gate", ctrl.f_gate); setp("f_gate_width", ctrl.f_gate_width)
-    setp("kappa_s", over.get("stage.kappa_s", 0.0))   # Rev A: suspension behind pivot (DEC-007)
+    setp("kappa_s", _pget(p, "stage.kappa_s", over))   # DEC-007 rev.: refill slides in the carrier (1.0)
     setp("fail_type", over.get("fail_type", 0)); setp("fail_time", over.get("fail_time", 1e9))
     info_gamma = gam
     # direct layout-name overrides last

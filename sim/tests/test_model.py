@@ -148,9 +148,10 @@ def test_contact_feedforward_does_not_chatter_at_light_force():
     not bounce."""
     ov = {"writing.paper_stiffness": 2.0e5, "stage.axial_k": 1.0e4, "hand.normal_stiffness": 3000.0,
           "stage.k_tip": 50.0, "writing.mu_eff": 0.05}
-    sc = scenarios.handwriting(seed=200, duration=3.0, theta_deg=50.0, N0=0.2)
-    rr = model.run(sc, model.Controller(mode="rigid"), overrides=ov, seed=200)
-    rf = model.run(sc, model.Controller(mode="neutral"), overrides=ov, seed=200)
-    ru = model.run(sc, model.Controller(mode="neutral", ff_contact=1.0, ff_contact_fc=0.0), overrides=ov, seed=200)
+    # low altitude, light force: the regime where the Monte Carlo found the bounce
+    sc = scenarios.handwriting(seed=208, duration=3.0, theta_deg=36.3, N0=0.41)
+    rr = model.run(sc, model.Controller(mode="rigid"), overrides=ov, seed=208)
+    rf = model.run(sc, model.Controller(mode="neutral"), overrides=ov, seed=208)
+    ru = model.run(sc, model.Controller(mode="neutral", ff_contact=1.0, ff_contact_fc=0.0), overrides=ov, seed=208)
     assert _transitions(ru) > 10 * max(_transitions(rr), 1)      # the defect is reproduced
     assert _transitions(rf) < 6 * max(_transitions(rr), 1)       # and removed by the filter

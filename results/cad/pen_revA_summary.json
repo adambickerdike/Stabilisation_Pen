@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-27T00:15:21+00:00",
-    "git_revision": "714de4b-dirty",
-    "parameters_version": "0.2.0",
-    "parameters_sha256_16": "ec993ed557e72b79",
+    "generated_utc": "2026-09-27T01:38:12+00:00",
+    "git_revision": "0801fbf-dirty",
+    "parameters_version": "0.4.1",
+    "parameters_sha256_16": "f44bd71afad66b15",
     "command": "pen_revA.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -60,6 +60,9 @@
       "batt_d": 10.0,
       "batt_L": 44.0,
       "batt_z0": 102.0,
+      "batt_kind": "cyl",
+      "batt_w": 12.0,
+      "batt_t": 5.0,
       "opt_z": 14.2,
       "opt_size": [
         3.0,
@@ -79,9 +82,12 @@
     "com_z_mm": 81.3,
     "lever_J_pivot_g_mm2_point_approx": 1482.1,
     "tip_equivalent_mass_g_point_approx": 10.29,
+    "lever_J_pivot_g_mm2_distributed": 1929.5,
+    "tip_equivalent_mass_g_distributed": 13.4,
     "lever_ratio_act": 3.17,
     "psi_max_deg": 3.11,
     "interference_at_full_travel": [],
+    "variant": "A",
     "note": "Mass excludes adhesives, wiring, fasteners, grip overmould and margin; see mechanics/mass_budget.csv."
   },
   "parts": [

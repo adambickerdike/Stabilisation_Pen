@@ -87,7 +87,7 @@ flowchart LR
   - Holding power (F/(n·K_m))² does not depend on the winding. The voltage needed does: V = F/(n·K_m·√R)·(aR + R_ext).
   - With the 11 Ω winding, at VBAT = 3.3 V and an 85 °C coil, 3.7 % of the thermally allowed envelope is voltage-limited.
   - 6 Ω is the largest winding with none voltage-limited (`drive_sense.py`, `fig_headroom.png`).
-  - Consequences: K_f = 0.739 N/A, L ≈ 175 µH (air-core estimate scaled by turns²), design-point hold current 0.325 A, bridge and shunt loss 7.7 % of copper loss.
+  - Consequences: K_f = 0.717 N/A (after the 0.50 mm gap of DEC-007 rev.), L ≈ 175 µH (air-core estimate scaled by turns²), design-point hold current 0.335 A, bridge and shunt loss 7.7 % of copper loss.
 - **40 kHz centre-aligned PWM, 200 duty levels.**
   - At 20 kHz the 6 Ω coil's ripple is 159–239 mA p-p and loop delay limits the current loop to about 1.3 kHz.
   - At 40 kHz the ripple is 83–129 mA p-p and the crossover is 2.3 kHz at 50° phase margin. This matches the 2 kHz current bandwidth the simulator assumes.
@@ -112,7 +112,7 @@ flowchart LR
 | Electronics supply current (typical, excl. actuator) | 31 mA (115 mW at 3.7 V); optics are a 15 mA placeholder | `drive_sense.json` |
 | Actuator copper loss, nominal writing (θ 50°, N 1 N) | ≈ 0.45 W at 20 °C, ≈ 0.57 W hot (direction-averaged) | sim static check; `drive_sense.py` |
 | Allowable average copper loss (moving coil) | 0.455 W | `results/thermal/thermal.json` |
-| Share of the writing envelope within that limit | 69 % (θ 35–75°, N 0.2–2 N log-uniform, μ 0.05–0.35) | `drive_sense.json` |
+| Share of the writing envelope within that limit | 68 % (θ 35–75°, N 0.2–2 N log-uniform, μ 0.05–0.35) | `drive_sense.json` |
 | Continuous writing at the design point, 200 mAh × 0.8 usable | ≈ 55 min; ≈ 1.9 h at the Monte Carlo median load | this README |
 | Stage-period CPU and bus occupancy (500 µs) | CPU ≈ 130 µs, SAADC ≈ 210 µs, SPIM4 ≈ 50 µs, SPIB ≈ 16 µs | `fig_stage_timeline.png`; to be replaced by logic-analyser captures |
 

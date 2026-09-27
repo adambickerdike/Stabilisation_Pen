@@ -61,7 +61,7 @@ P = dict(
     plug_L=2.5, sense_mag_d=2.0, sense_mag_t=1.5, hall_gap=1.2,
     # electronics and battery
     pcb_z0=71.0, pcb_L=29.0, pcb_w=11.5, pcb_t=0.8, comp_h=1.2,
-    batt_d=10.0, batt_L=44.0, batt_z0=102.0,
+    batt_d=10.0, batt_L=44.0, batt_z0=102.0, batt_kind="cyl", batt_w=12.0, batt_t=5.0,
     # optics
     opt_z=14.2, opt_size=(3.0, 2.5, 1.2), opt_r=3.75,  # chip-scale sensor + micro-optic (custom; EXP-S01)
 )
@@ -69,8 +69,15 @@ P = dict(
 DENS = {  # g/mm^3
     "Al6061": 2.70e-3, "Ti6Al4V": 4.43e-3, "NdFeB": 7.50e-3, "FeCo_or_1010": 7.87e-3, "Cu_coil": 6.5e-3,
     "PP_refill_with_ink": 1.1e-3, "FR4_populated": 2.4e-3, "Li_ion_10440": 2.33e-3, "PEEK": 1.30e-3,
-    "spring_steel": 7.85e-3, "PC": 1.20e-3,
+    "spring_steel": 7.85e-3, "PC": 1.20e-3, "LiPo_pouch": 2.4e-3,
 }
+
+# Rev A.1 packaging variant (DEC-014, electronics/gen/placement_study.py): the
+# 44 mm 10440 cell becomes a ~200 mAh LiPo pouch (5 x 12 x 32 mm class, >= 5 C,
+# supplier drawing pending) and the main PCB grows from 29 to 41 mm.
+VARIANTS = {"A": {}, "A1": {"pcb_L": 41.0, "batt_kind": "pouch", "batt_L": 32.0, "batt_z0": 114.0,
+                            # tolerance analysis (mechanics/tolerance_analysis.py, DEC-007 rev.)
+                            "act_gap": 0.50, "tip_travel_mech": 0.60}}
 
 
 def tube(r_out, r_in, z0, z1):
@@ -149,6 +156,9 @@ def hall_sensor(P):
 
 
 def battery(P):
+    if P.get("batt_kind") == "pouch":
+        return (cq.Workplane("XY").box(P["batt_w"], P["batt_t"], P["batt_L"], centered=(True, True, False))
+                .translate((0, 0, P["batt_z0"])))
     return cyl(P["batt_d"] / 2, P["batt_z0"], P["batt_z0"] + P["batt_L"])
 
 
@@ -217,7 +227,10 @@ def build(P):
     fixed["pcb"] = (board, "FR4_populated")
     fixed["pcb_components_envelope"] = (comps, "FR4_populated")
     fixed["hall_3d"] = (hall_sensor(P), "FR4_populated")
-    fixed["battery_10440"] = (battery(P), "Li_ion_10440")
+    if P.get("batt_kind") == "pouch":
+        fixed["battery_pouch"] = (battery(P), "LiPo_pouch")
+    else:
+        fixed["battery_10440"] = (battery(P), "Li_ion_10440")
     for i, o in enumerate(optics(P)):
         fixed[f"optical_sensor_{i+1}"] = (o, "FR4_populated")
     paddle, paddle_ro = coil_paddle(P, ri_f)
@@ -289,6 +302,12 @@ def interference(fixed, moving, P, n_dir=12, margins=(1.0,)):
 
 
 def main():
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--variant", default="A", choices=sorted(VARIANTS))
+    a = ap.parse_args()
+    P.update(VARIANTS[a.variant])
+    tag = "revA" if a.variant == "A" else f"rev{a.variant}"
     os.makedirs(OUT, exist_ok=True)
     fixed, moving, derived = build(P)
     rows = mass_table(fixed, moving)
@@ -300,27 +319,40 @@ def main():
     for r in rows:
         if r["group"] == "moving":
             J += r["mass_g"] * (r["com_z_mm"] - P["L1"]) ** 2
+    # distributed-mass inertia about the pivot: each moving part as a uniform
+    # line mass over its axial extent (tubes and rods), which the point-mass
+    # sum above understates by ~30 % for the long carrier and refill
+    Jd = 0.0
+    for name, (wp, mat) in moving.items():
+        m = next(r["mass_g"] for r in rows if r["part"] == name)
+        bb = (wp.val() if hasattr(wp, "val") else wp).BoundingBox()
+        za, zb = bb.zmin - P["L1"], bb.zmax - P["L1"]
+        Jd += m * (zb ** 3 - za ** 3) / (3.0 * (zb - za)) if zb - za > 1e-6 else m * za * za
     psi, inter = interference(fixed, moving, P)
-    asm = cq.Assembly(name="pen_revA")
+    asm = cq.Assembly(name=f"pen_{tag}")
     for name, (wp, mat) in {**fixed, **moving}.items():
         asm.add(wp, name=name)
-    asm.save(os.path.join(OUT, "pen_revA_assembly.step"))
-    for name, (wp, mat) in moving.items():
-        cq.exporters.export(wp, os.path.join(OUT, f"part_{name}.step"))
-    for name in ("barrel", "stop_ring", "magnet_front", "magnet_rear"):
-        cq.exporters.export(fixed[name][0], os.path.join(OUT, f"part_{name}.step"))
+    asm.save(os.path.join(OUT, f"pen_{tag}_assembly.step"))
+    if a.variant == "A":
+        for name, (wp, mat) in moving.items():
+            cq.exporters.export(wp, os.path.join(OUT, f"part_{name}.step"))
+        for name in ("barrel", "stop_ring", "magnet_front", "magnet_rear"):
+            cq.exporters.export(fixed[name][0], os.path.join(OUT, f"part_{name}.step"))
     summary = {
         "parameters_mm": P, "derived_mm": derived,
         "mass_total_g": round(total, 2), "mass_moving_g": round(m_mov, 3), "com_z_mm": round(com, 1),
         "lever_J_pivot_g_mm2_point_approx": round(J, 1),
         "tip_equivalent_mass_g_point_approx": round(J / P["L1"] ** 2, 2),
+        "lever_J_pivot_g_mm2_distributed": round(Jd, 1),
+        "tip_equivalent_mass_g_distributed": round(Jd / P["L1"] ** 2, 2),
         "lever_ratio_act": round((P["z_act"] - P["L1"]) / P["L1"], 2),
         "psi_max_deg": round(math.degrees(psi), 2),
         "interference_at_full_travel": inter,
+        "variant": a.variant,
         "note": "Mass excludes adhesives, wiring, fasteners, grip overmould and margin; see mechanics/mass_budget.csv.",
     }
     meta = provenance.metadata("proposed design (CAD concept, nominal geometry)", extra={"cadquery": cq.__version__})
-    provenance.write_json(os.path.join(OUT, "pen_revA_summary.json"), {"meta": meta, "summary": summary, "parts": rows})
+    provenance.write_json(os.path.join(OUT, f"pen_{tag}_summary.json"), {"meta": meta, "summary": summary, "parts": rows})
     print(json.dumps({k: v for k, v in summary.items() if k != "parameters_mm"}, indent=1, default=str)[:3000])
     for r in rows:
         print(f"  {r['part']:26s} {r['group']:7s} {r['material']:20s} {r['mass_g']:7.3f} g  com_z {r['com_z_mm']:6.1f}")

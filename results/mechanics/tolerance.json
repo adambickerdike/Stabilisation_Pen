@@ -1,0 +1,325 @@
+{
+  "meta": {
+    "evidence_status": "calculation (nominal CAD + assumed tolerances)",
+    "generated_utc": "2026-09-27T01:35:48+00:00",
+    "git_revision": "0801fbf-dirty",
+    "parameters_version": "0.4.1",
+    "parameters_sha256_16": "f44bd71afad66b15",
+    "command": "tolerance_analysis.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "S1_actuator_gap": {
+    "RevA_nominal_kappa0": {
+      "gap_mm": 0.45,
+      "tip_travel_mm": 0.65,
+      "kappa_s": 0,
+      "psi_deg": 3.1050410338806307,
+      "tilt_edge_mm": 0.26767361111111115,
+      "arc_mm": 0.05578747834013975,
+      "tol_worst_mm": 0.31187438793359845,
+      "tol_rss_mm": 0.11276295469230285,
+      "sides": {
+        "front": {
+          "nominal_clearance_mm": 0.1265389105487491,
+          "worst_case_mm": -0.18533547738484935,
+          "rss_mm": 0.013775955856446254,
+          "p_contact": 0.0004,
+          "p_below_0p05": 0.021025
+        },
+        "rear_design_load": {
+          "nominal_clearance_mm": -0.0681174250569509,
+          "worst_case_mm": -0.37999181299054935,
+          "rss_mm": -0.18088037974925375,
+          "p_contact": 0.965075,
+          "p_below_0p05": 0.99921
+        },
+        "rear_at_axial_stop": {
+          "nominal_clearance_mm": -0.3618861327709714,
+          "worst_case_mm": -0.6737605207045698,
+          "rss_mm": -0.4746490874632743,
+          "p_contact": 1.0,
+          "p_below_0p05": 1.0
+        }
+      }
+    },
+    "RevA_nominal_kappa1": {
+      "gap_mm": 0.45,
+      "tip_travel_mm": 0.65,
+      "kappa_s": 1,
+      "psi_deg": 3.1050410338806307,
+      "tilt_edge_mm": 0.26767361111111115,
+      "arc_mm": 0.05578747834013975,
+      "tol_worst_mm": 0.31187438793359845,
+      "tol_rss_mm": 0.11276295469230285,
+      "sides": {
+        "front": {
+          "nominal_clearance_mm": 0.1265389105487491,
+          "worst_case_mm": -0.18533547738484935,
+          "rss_mm": 0.013775955856446254,
+          "p_contact": 0.000415,
+          "p_below_0p05": 0.021165
+        },
+        "rear_design_load": {
+          "nominal_clearance_mm": 0.2381138672290286,
+          "worst_case_mm": -0.07376052070456984,
+          "rss_mm": 0.12535091253672576,
+          "p_contact": 0.0,
+          "p_below_0p05": 0.0
+        },
+        "rear_at_axial_stop": {
+          "nominal_clearance_mm": 0.2381138672290286,
+          "worst_case_mm": -0.07376052070456984,
+          "rss_mm": 0.12535091253672576,
+          "p_contact": 0.0,
+          "p_below_0p05": 0.0
+        }
+      }
+    },
+    "RevA1_proposed_kappa0": {
+      "gap_mm": 0.5,
+      "tip_travel_mm": 0.6,
+      "kappa_s": 0,
+      "psi_deg": 2.865983982598862,
+      "tilt_edge_mm": 0.24708333333333335,
+      "arc_mm": 0.04752972466745997,
+      "tol_worst_mm": 0.31187438793359845,
+      "tol_rss_mm": 0.11276295469230285,
+      "sides": {
+        "front": {
+          "nominal_clearance_mm": 0.2053869419992067,
+          "worst_case_mm": -0.10648744593439174,
+          "rss_mm": 0.09262398730690385,
+          "p_contact": 0.0,
+          "p_below_0p05": 2e-05
+        },
+        "rear_design_load": {
+          "nominal_clearance_mm": -0.0057849009518528005,
+          "worst_case_mm": -0.31765928888545125,
+          "rss_mm": -0.11854785564415565,
+          "p_contact": 0.55825,
+          "p_below_0p05": 0.930955
+        },
+        "rear_at_axial_stop": {
+          "nominal_clearance_mm": -0.2995536086658733,
+          "worst_case_mm": -0.6114279965994718,
+          "rss_mm": -0.4123165633581762,
+          "p_contact": 1.0,
+          "p_below_0p05": 1.0
+        }
+      }
+    },
+    "RevA1_proposed_kappa1": {
+      "gap_mm": 0.5,
+      "tip_travel_mm": 0.6,
+      "kappa_s": 1,
+      "psi_deg": 2.865983982598862,
+      "tilt_edge_mm": 0.24708333333333335,
+      "arc_mm": 0.04752972466745997,
+      "tol_worst_mm": 0.31187438793359845,
+      "tol_rss_mm": 0.11276295469230285,
+      "sides": {
+        "front": {
+          "nominal_clearance_mm": 0.2053869419992067,
+          "worst_case_mm": -0.10648744593439174,
+          "rss_mm": 0.09262398730690385,
+          "p_contact": 0.0,
+          "p_below_0p05": 1.5e-05
+        },
+        "rear_design_load": {
+          "nominal_clearance_mm": 0.30044639133412665,
+          "worst_case_mm": -0.011427996599471801,
+          "rss_mm": 0.1876834366418238,
+          "p_contact": 0.0,
+          "p_below_0p05": 0.0
+        },
+        "rear_at_axial_stop": {
+          "nominal_clearance_mm": 0.30044639133412665,
+          "worst_case_mm": -0.011427996599471801,
+          "rss_mm": 0.1876834366418238,
+          "p_contact": 0.0,
+          "p_below_0p05": 0.0
+        }
+      }
+    }
+  },
+  "S1_tolerances": [
+    [
+      "magnet thickness",
+      0.05,
+      "sintered NdFeB ground, +/-0.05"
+    ],
+    [
+      "magnet bond line",
+      0.02,
+      "controlled adhesive gap"
+    ],
+    [
+      "stator axial position in barrel",
+      0.05,
+      "bore shoulder + press fit"
+    ],
+    [
+      "iron/magnet stack",
+      0.03,
+      "ground back iron"
+    ],
+    [
+      "coil paddle half-thickness",
+      0.025,
+      "coil thickness +/-0.05"
+    ],
+    [
+      "paddle perpendicularity 0.3 deg at r_p",
+      0.025874387933598426,
+      "r_p sin(0.3 deg)"
+    ],
+    [
+      "paddle axial position on carrier",
+      0.05,
+      "bonded on a shoulder"
+    ],
+    [
+      "pivot (gimbal) axial position",
+      0.05,
+      "gimbal clamp datum"
+    ],
+    [
+      "differential expansion Al/Ti over 38 mm, 20 K",
+      0.011,
+      "(23.6-8.6) ppm/K"
+    ]
+  ],
+  "S1_axial_slide_design_mm": 0.30623129228597945,
+  "S1_axial_slide_stop_mm": 0.6,
+  "S2_carrier_bore": {
+    "travel_0.65": {
+      "swing_mm": 2.058333333333333,
+      "nominal_clearance_mm": 0.13604166666666684,
+      "worst_case_mm": -0.07895833333333316,
+      "rss_mm": 0.015937545172023698,
+      "tolerances": [
+        [
+          "magnet ID",
+          0.05
+        ],
+        [
+          "carrier OD",
+          0.02
+        ],
+        [
+          "stator concentricity to pivot axis (TIR 0.10)",
+          0.05
+        ],
+        [
+          "pivot lateral position scaled to z_act",
+          0.09499999999999999
+        ]
+      ]
+    },
+    "travel_0.60": {
+      "swing_mm": 1.9000000000000001,
+      "nominal_clearance_mm": 0.29437499999999983,
+      "worst_case_mm": 0.07937499999999983,
+      "rss_mm": 0.1742708785053567,
+      "tolerances": [
+        [
+          "magnet ID",
+          0.05
+        ],
+        [
+          "carrier OD",
+          0.02
+        ],
+        [
+          "stator concentricity to pivot axis (TIR 0.10)",
+          0.05
+        ],
+        [
+          "pivot lateral position scaled to z_act",
+          0.09499999999999999
+        ]
+      ]
+    }
+  },
+  "S3_tip_aperture": {
+    "travel_0.65": {
+      "nominal_clearance_mm": 0.555,
+      "worst_case_mm": 0.405,
+      "rss_mm": 0.47562746066806233,
+      "tolerances": [
+        [
+          "aperture diameter/2",
+          0.02
+        ],
+        [
+          "refill cone OD/2 (ISO 12757 class, VERIFY)",
+          0.05
+        ],
+        [
+          "nose concentricity",
+          0.05
+        ],
+        [
+          "pivot lateral position",
+          0.03
+        ]
+      ]
+    },
+    "travel_0.60": {
+      "nominal_clearance_mm": 0.6050000000000001,
+      "worst_case_mm": 0.45500000000000007,
+      "rss_mm": 0.5256274606680624,
+      "tolerances": [
+        [
+          "aperture diameter/2",
+          0.02
+        ],
+        [
+          "refill cone OD/2 (ISO 12757 class, VERIFY)",
+          0.05
+        ],
+        [
+          "nose concentricity",
+          0.05
+        ],
+        [
+          "pivot lateral position",
+          0.03
+        ]
+      ]
+    }
+  },
+  "S4_lever_gain": {
+    "n": 3.1666666666666665,
+    "n_tol_rss": 0.027673415062737888,
+    "gain_error_pct_rss": 0.8738973177706701,
+    "note": "static gain error calibrated with the Hall/optical map (EXP-B04); residual after calibration < 0.5 %"
+  },
+  "S5_hall_gap": {
+    "nominal_distance_mm": 1.95,
+    "field_variation": [
+      {
+        "refill_length_dev_mm": -0.3,
+        "rel_field": 1.6506386175807666
+      },
+      {
+        "refill_length_dev_mm": 0.0,
+        "rel_field": 1.0
+      },
+      {
+        "refill_length_dev_mm": 0.3,
+        "rel_field": 0.6509629629629631
+      }
+    ],
+    "consequence": "Bz offset changes by up to ~+/-40 % between refills: the axial-force channel must be re-zeroed at each refill insertion (pen-up, s = 0) and its gain re-checked against a known force (dock)"
+  },
+  "magnetic_gap_penalty": {
+    "note": "air-gap field B ~ Br t_m/(t_m + g_total) for the sandwich; gap 0.45 -> 0.50 per side raises g_total 1.9 -> 2.0 mm",
+    "B_ratio": 0.9714285714285714,
+    "power_ratio": 1.059688581314879
+  }
+}
