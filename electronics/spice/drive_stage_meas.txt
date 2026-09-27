@@ -1,0 +1,11 @@
+RESULTS
+i_avg = 3.222644e-01
+i_max = 3.697445e-01
+i_min = 2.659692e-01
+vis_avg = 1.572262e+00
+t_trip = 1.208757e-03
+t_off = 1.222627e-03
+i_peak_fault = 5.371187e+00
+i_sh_after = 6.389397e-04
+i_end = -6.47917e-03
+ibat_avg = 2.341514e-01

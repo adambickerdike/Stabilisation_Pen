@@ -66,6 +66,7 @@ I_oh = _mk("oracle_h")
 I_qinit = _mk("q_init"); I_reqc = _mk("require_contact")
 I_axc = _mk("axial_comp"); I_axct = _mk("axial_comp_tau"); I_gam = _mk("gamma_acc")
 I_fg = _mk("f_gate"); I_fgw = _mk("f_gate_width"); I_kap = _mk("kappa_s")
+I_ffcfc = _mk("ffc_fc"); I_ffcb = _mk("ffc_b0")
 I_ftyp = _mk("fail_type"); I_ftim = _mk("fail_time")
 
 R_t = RIDX["t"]; R_pHx = RIDX["pHx"]; R_q1 = RIDX["q1"]; R_qr1 = RIDX["qr1"]; R_s = RIDX["s"]; R_N = RIDX["N"]
@@ -213,6 +214,12 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     axc = P[I_axc]; axct = max(P[I_axct], 1e-3); s_lp = 0.0; was_contact = False
     fgate = P[I_fg]; fgw = P[I_fgw]
     kap = P[I_kap]
+    # contact feedforward force filter (the loop through the transverse-normal
+    # coupling has gain ~ cos^2(theta) K_n / K_servo; unfiltered it limit-cycles
+    # at low altitude with stiff paper and a stiff axial path)
+    ffb = P[I_ffcb:I_ffcb + 5]
+    ffs = np.zeros(2)
+    Nh_f = 0.0
     ftyp = int(P[I_ftyp]); ftim = P[I_ftim]
     failed = False
     qm_frozen0 = 0.0; qm_frozen1 = 0.0
@@ -406,8 +413,9 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
                     qdd1 = (qr[1] - 2 * qr_prev[1] + qr_prev2[1]) / (Ts * Ts)
                     F0 += ffr * (m_eq * qdd0 + k_tip * qr[0] + c_tip * (qr[0] - qr_prev[0]) / Ts)
                     F1 += ffr * (m_eq * qdd1 + k_tip * qr[1] + c_tip * (qr[1] - qr_prev[1]) / Ts)
+                Nh_f = _biquad(ffb[0], ffb[1], ffb[2], ffb[3], ffb[4], (fa_meas / st_ if in_contact else 0.0), ffs)
                 if ffc > 0 and in_contact:
-                    Nh = fa_meas / st_
+                    Nh = Nh_f
                     # normal-reaction direction in housing axes: n.xH, n.yH;
                     # generalised stage force is lam * (transverse contact force)
                     F0 += ffc * lam_hat * (Nh * ct * cr)      # -(N n.xH) = N cos th cos rho

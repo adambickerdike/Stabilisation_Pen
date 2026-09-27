@@ -87,6 +87,8 @@ def _mc_one(args):
     out["P_cu_neutral_W"] = base["P_cu_mean_W"]
     out["T_coil_max_C"] = base["T_coil_max_C"]
     out["frac_vsat_neutral"] = base["frac_vsat"]
+    out["neutral_transitions_per_s"] = base["contact_transitions_per_s"]
+    out["neutral_n_eval"] = base["n_eval"]
     for name in ("kf_asr", "oracle"):
         mode, kw = fz[name]
         scn = bench.with_disturbance(sc1, d) if name == "oracle" else sc1
@@ -207,7 +209,7 @@ def plots(rows, dist, mc):
         axs[0].set_title("Holding power across the declared envelope", loc="left", fontsize=10)
         fig.colorbar(sc, ax=axs[0], label="normal force N (N)")
         for j, key in enumerate(("oracle_ratio", "kf_asr_ratio")):
-            axs[1].hist([r[key] for r in mc], bins=25, color=plotstyle.SERIES[j], alpha=0.7, label=key.replace("_ratio", ""))
+            axs[1].hist([r[key] for r in mc if np.isfinite(r[key])], bins=25, color=plotstyle.SERIES[j], alpha=0.7, label=key.replace("_ratio", ""))
         axs[1].axvline(1.0, color=plotstyle.MUTED, lw=1.0)
         axs[1].set_xlabel("Ink error / powered-neutral error (9 Hz, 0.3 mm)"); axs[1].set_ylabel("Monte Carlo samples")
         axs[1].set_title("Sensitivity of benefit to uncertain parameters", loc="left", fontsize=10)
@@ -240,9 +242,15 @@ def main():
         for f in F0S:
             v = [r["ratio"] for r in rows if r["tag"] == tag and r["f0"] == f]
             summ[f"{tag}@{f:g}"] = {"mean": float(np.mean(v)), "p10": float(np.percentile(v, 10)), "p90": float(np.percentile(v, 90))}
-    mc_summ = {k: {"median": float(np.median([r[k] for r in mc])), "p10": float(np.percentile([r[k] for r in mc], 10)),
-                   "p90": float(np.percentile([r[k] for r in mc], 90))}
-               for k in ("oracle_ratio", "kf_asr_ratio", "P_cu_neutral_W", "T_coil_max_C", "oracle_Nmod", "oracle_near_limit", "frac_vsat_neutral")}
+    def _stats(k):
+        v = np.array([r[k] for r in mc], float)
+        ok = np.isfinite(v)
+        return {"median": float(np.median(v[ok])) if ok.any() else None,
+                "p10": float(np.percentile(v[ok], 10)) if ok.any() else None,
+                "p90": float(np.percentile(v[ok], 90)) if ok.any() else None,
+                "n_valid": int(ok.sum()), "n_invalid": int((~ok).sum())}
+    mc_summ = {k: _stats(k) for k in ("oracle_ratio", "kf_asr_ratio", "P_cu_neutral_W", "T_coil_max_C", "oracle_Nmod",
+                                      "oracle_near_limit", "frac_vsat_neutral", "neutral_transitions_per_s")}
     meta = provenance.metadata("simulation (synthetic signals; exploratory parameter ranges)",
                                seeds={"test": list(seeds), "mc_seed": 7},
                                extra={"elapsed_s": time.time() - t0, "mc_keys": MC_KEYS, "quick": a.quick})

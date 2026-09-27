@@ -1,35 +1,35 @@
-kfosc {'kf_qj': 0.1, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.320 ratio=0.867 dist=140.3
-kfosc {'kf_qj': 0.1, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.184 ratio=0.884 dist=96.5
-kfosc {'kf_qj': 0.1, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.082 ratio=0.895 dist=61.1
-kfosc {'kf_qj': 0.1, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.626 ratio=0.944 dist=212.0
-kfosc {'kf_qj': 0.1, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.266 ratio=0.898 dist=115.4
-kfosc {'kf_qj': 0.1, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.050 ratio=0.887 dist=51.6
-kfosc {'kf_qj': 0.3, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.347 ratio=0.915 dist=134.2
-kfosc {'kf_qj': 0.3, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.285 ratio=0.903 dist=119.7
-kfosc {'kf_qj': 0.3, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.122 ratio=0.905 dist=70.2
-kfosc {'kf_qj': 0.3, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.606 ratio=0.965 dist=200.1
-kfosc {'kf_qj': 0.3, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.455 ratio=0.957 dist=155.4
-kfosc {'kf_qj': 0.3, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.159 ratio=0.923 dist=77.4
-kfosc {'kf_qj': 1.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.236 ratio=0.936 dist=93.0
-kfosc {'kf_qj': 1.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.224 ratio=0.926 dist=92.0
-kfosc {'kf_qj': 1.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.179 ratio=0.933 dist=75.9
-kfosc {'kf_qj': 1.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.504 ratio=0.969 dist=168.8
-kfosc {'kf_qj': 1.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.399 ratio=0.951 dist=143.6
-kfosc {'kf_qj': 1.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.266 ratio=0.954 dist=100.6
-kfosc {'kf_qj': 3.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.204 ratio=0.960 dist=75.7
-kfosc {'kf_qj': 3.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.067 ratio=0.950 dist=35.7
-kfosc {'kf_qj': 3.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.102 ratio=0.962 dist=45.6
-kfosc {'kf_qj': 3.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.362 ratio=0.979 dist=120.0
-kfosc {'kf_qj': 3.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.461 ratio=0.971 dist=149.2
-kfosc {'kf_qj': 3.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.343 ratio=0.998 dist=106.4
-kfosc {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.084 ratio=0.974 dist=34.4
-kfosc {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.058 ratio=0.985 dist=22.9
-kfosc {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.002 ratio=0.988 dist=4.6
-kfosc {'kf_qj': 10.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.298 ratio=0.996 dist=93.4
-kfosc {'kf_qj': 10.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.112 ratio=0.986 dist=40.2
-kfosc {'kf_qj': 10.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.163 ratio=1.000 dist=50.1
-bpf {'bp_lo': 6.0, 'bp_hi': 16.0, 'bp_tune_hz': 7.0} J=1.490 ratio=0.985 dist=158.8
-bpf {'bp_lo': 4.5, 'bp_hi': 16.0, 'bp_tune_hz': 7.0} J=1.544 ratio=0.935 dist=190.3
-bpf {'bp_lo': 6.0, 'bp_hi': 12.0, 'bp_tune_hz': 7.0} J=1.472 ratio=0.942 dist=165.9
-SELECTED kfosc {'params': {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5}, 'J': 1.0018435135165054, 'J_assertive': 0.992446457314412, 'per_f0': {'4.5': {'ratio': 1.009008636782278, 'distortion_um': 4.618020795964642}, '6.0': {'ratio': 1.0041443244074524, 'distortion_um': 4.618020795964642}, '8.0': {'ratio': 0.974374303420407, 'distortion_um': 4.618020795964642}, '10.0': {'ratio': 0.9661493254439223, 'distortion_um': 4.618020795964642}}, 'mean_ratio': 0.9884191475135147, 'mean_distortion_um': 4.618020795964643}
-SELECTED bpf {'params': {'bp_lo': 6.0, 'bp_hi': 12.0, 'bp_tune_hz': 7.0}, 'J': 1.471686472145407, 'J_assertive': 1.1012410293608388, 'per_f0': {'4.5': {'ratio': 1.327051411234595, 'distortion_um': 165.9119780360538}, '6.0': {'ratio': 1.1733606338779055, 'distortion_um': 165.9119780360538}, '8.0': {'ratio': 0.5985675971037302, 'distortion_um': 165.9119780360538}, '10.0': {'ratio': 0.6709351447392939, 'distortion_um': 165.9119780360538}}, 'mean_ratio': 0.9424786967388813, 'mean_distortion_um': 165.91197803605374}
+kfosc {'kf_qj': 0.1, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.366 ratio=0.898 dist=145.4
+kfosc {'kf_qj': 0.1, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.346 ratio=0.901 dist=139.9
+kfosc {'kf_qj': 0.1, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.203 ratio=0.893 dist=98.5
+kfosc {'kf_qj': 0.1, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.761 ratio=0.995 dist=238.5
+kfosc {'kf_qj': 0.1, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.445 ratio=0.928 dist=161.6
+kfosc {'kf_qj': 0.1, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.186 ratio=0.892 dist=93.4
+kfosc {'kf_qj': 0.3, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.371 ratio=0.931 dist=137.5
+kfosc {'kf_qj': 0.3, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.384 ratio=0.925 dist=143.0
+kfosc {'kf_qj': 0.3, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.302 ratio=0.936 dist=115.3
+kfosc {'kf_qj': 0.3, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.722 ratio=1.004 dist=224.0
+kfosc {'kf_qj': 0.3, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.571 ratio=0.975 dist=185.5
+kfosc {'kf_qj': 0.3, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.406 ratio=0.976 dist=135.7
+kfosc {'kf_qj': 1.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.368 ratio=0.941 dist=132.7
+kfosc {'kf_qj': 1.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.393 ratio=0.940 dist=140.6
+kfosc {'kf_qj': 1.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.409 ratio=0.966 dist=137.6
+kfosc {'kf_qj': 1.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.684 ratio=1.015 dist=207.5
+kfosc {'kf_qj': 1.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.646 ratio=1.008 dist=199.4
+kfosc {'kf_qj': 1.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.544 ratio=0.999 dist=171.1
+kfosc {'kf_qj': 3.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.277 ratio=0.969 dist=95.8
+kfosc {'kf_qj': 3.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.270 ratio=0.962 dist=94.7
+kfosc {'kf_qj': 3.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.286 ratio=0.977 dist=95.7
+kfosc {'kf_qj': 3.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.478 ratio=1.013 dist=141.5
+kfosc {'kf_qj': 3.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.451 ratio=1.014 dist=130.1
+kfosc {'kf_qj': 3.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.369 ratio=1.004 dist=108.5
+kfosc {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.183 ratio=0.996 dist=57.1
+kfosc {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.134 ratio=0.994 dist=44.1
+kfosc {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.099 ratio=0.989 dist=35.5
+kfosc {'kf_qj': 10.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 0.0} J=1.366 ratio=0.987 dist=116.3
+kfosc {'kf_qj': 10.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 6.5} J=1.333 ratio=0.970 dist=113.9
+kfosc {'kf_qj': 10.0, 'kf_qt': 1e-08, 'kf_w0_hz': 7.0, 'f_gate': 7.5} J=1.355 ratio=1.005 dist=105.6
+bpf {'bp_lo': 6.0, 'bp_hi': 16.0, 'bp_tune_hz': 7.0} J=1.498 ratio=0.988 dist=160.1
+bpf {'bp_lo': 4.5, 'bp_hi': 16.0, 'bp_tune_hz': 7.0} J=1.582 ratio=0.964 dist=193.4
+bpf {'bp_lo': 6.0, 'bp_hi': 12.0, 'bp_tune_hz': 7.0} J=1.504 ratio=0.969 dist=168.0
+SELECTED kfosc {'params': {'kf_qj': 10.0, 'kf_qt': 3e-09, 'kf_w0_hz': 7.0, 'f_gate': 7.5}, 'J': 1.0992090169276487, 'J_assertive': 1.0218102247804897, 'per_f0': {'4.5': {'ratio': 1.0141913525462434, 'distortion_um': 35.46461770932748}, '6.0': {'ratio': 1.0317900499424526, 'distortion_um': 35.46461770932748}, '8.0': {'ratio': 0.9507702851374523, 'distortion_um': 35.46461770932748}, '10.0': {'ratio': 0.9578055678149663, 'distortion_um': 35.46461770932748}}, 'mean_ratio': 0.9886393138602787, 'mean_distortion_um': 35.464617709327484}
+SELECTED bpf {'params': {'bp_lo': 6.0, 'bp_hi': 16.0, 'bp_tune_hz': 7.0}, 'J': 1.4976023642164662, 'J_assertive': 1.1410176914982546, 'per_f0': {'4.5': {'ratio': 1.3564659793140843, 'distortion_um': 160.0894609668203}, '6.0': {'ratio': 1.3027149345820448, 'distortion_um': 160.0894609668203}, '8.0': {'ratio': 0.8156479279866217, 'distortion_um': 160.0894609668203}, '10.0': {'ratio': 0.477953913736191, 'distortion_um': 160.0894609668203}}, 'mean_ratio': 0.9881956889047353, 'mean_distortion_um': 160.08946096682027}

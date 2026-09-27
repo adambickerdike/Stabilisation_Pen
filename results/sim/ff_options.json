@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "evidence_status": "simulation",
+    "generated_utc": "2026-09-27T01:24:08+00:00",
+    "git_revision": "bbcf1c7-dirty",
+    "parameters_version": "0.4.0",
+    "parameters_sha256_16": "db74175bead59531",
+    "command": "diag_ff_options.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "tuning": [
+        100,
+        101,
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "worst_case_transitions_in_5s": {
+    "ff_2nd60": {
+      "mc125": 142,
+      "mc22": 208,
+      "mc32": 2413,
+      "mc123": 198,
+      "mc116": 221,
+      "mc14": 185
+    },
+    "ff_off": {
+      "mc125": 4,
+      "mc22": 10,
+      "mc32": 9,
+      "mc123": 6,
+      "mc116": 7,
+      "mc14": 9
+    },
+    "ff_2nd10": {
+      "mc125": 120,
+      "mc22": 302,
+      "mc32": 2625,
+      "mc123": 156,
+      "mc116": 51,
+      "mc14": 35
+    },
+    "ff_2nd5": {
+      "mc125": 22,
+      "mc22": 100,
+      "mc32": 2621,
+      "mc123": 54,
+      "mc116": 15,
+      "mc14": 13
+    },
+    "ff_off_ki04": {
+      "mc125": 6,
+      "mc22": 12,
+      "mc32": 7,
+      "mc123": 6,
+      "mc116": 7,
+      "mc14": 33
+    }
+  },
+  "tuning_seed_means": {
+    "ff_2nd60": {
+      "servo_err_um": 20.088602987847576,
+      "device_distortion_um": 50.728707544986925,
+      "oracle_ratio_9Hz": 0.1751573918535461,
+      "kf_bal_distortion_um": 40.44818475682971,
+      "kf_bal_ratio_9Hz": 0.932291164870955,
+      "kf_asr_distortion_um": 75.26216386778005,
+      "kf_asr_ratio_9Hz": 0.7290953297443119
+    },
+    "ff_off": {
+      "servo_err_um": 29.378224579842556,
+      "device_distortion_um": 59.158008043000535,
+      "oracle_ratio_9Hz": 0.12811641867610216,
+      "kf_bal_distortion_um": 35.46461770932748,
+      "kf_bal_ratio_9Hz": 0.9266341147273821,
+      "kf_asr_distortion_um": 93.44264785282589,
+      "kf_asr_ratio_9Hz": 0.7269547696593085
+    },
+    "ff_2nd10": {
+      "servo_err_um": 29.31761405264631,
+      "device_distortion_um": 56.23789636964039,
+      "oracle_ratio_9Hz": 0.11923189886533551,
+      "kf_bal_distortion_um": 52.79861174019237,
+      "kf_bal_ratio_9Hz": 0.93545539028203,
+      "kf_asr_distortion_um": 79.7062928754191,
+      "kf_asr_ratio_9Hz": 0.7024765796659468
+    },
+    "ff_2nd5": {
+      "servo_err_um": 30.019276053558098,
+      "device_distortion_um": 58.7107828036728,
+      "oracle_ratio_9Hz": 0.11679565192297048,
+      "kf_bal_distortion_um": 44.64035257943562,
+      "kf_bal_ratio_9Hz": 0.9029377688637227,
+      "kf_asr_distortion_um": 82.71319592109265,
+      "kf_asr_ratio_9Hz": 0.7101682115534519
+    },
+    "ff_off_ki04": {
+      "servo_err_um": 18.467664391663035,
+      "device_distortion_um": 52.77470715598647,
+      "oracle_ratio_9Hz": 0.15113863718443174,
+      "kf_bal_distortion_um": 36.48340096477093,
+      "kf_bal_ratio_9Hz": 0.9419310517018783,
+      "kf_asr_distortion_um": 105.49889156588972,
+      "kf_asr_ratio_9Hz": 0.7214156503083013
+    }
+  },
+  "rigid_pen_transitions_in_5s_reference": "4-18 (pen lifts only)"
+}

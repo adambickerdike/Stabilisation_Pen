@@ -1,0 +1,552 @@
+{
+  "meta": {
+    "evidence_status": "analytical calculation (datasheet-class values; VERIFY flags in components)",
+    "generated_utc": "2026-09-27T01:08:58+00:00",
+    "git_revision": "bbcf1c7-dirty",
+    "parameters_version": "0.3.0",
+    "parameters_sha256_16": "c7f5042d2195064e",
+    "command": "drive_sense.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "components": {
+    "r_ds_on_hs_ls_ohm": {
+      "value": 0.28,
+      "source": "DRV8212P HS+LS typ at 25 C; VERIFY; x1.5 hot -> 0.42"
+    },
+    "r_ds_hot_factor": {
+      "value": 1.5,
+      "source": "assumed FET tempco at 100 C junction"
+    },
+    "r_shunt_ohm": {
+      "value": 0.1,
+      "source": "design (electronics/gen/design_revA.py R30/R50)"
+    },
+    "r_load_switch_ohm": {
+      "value": 0.08,
+      "source": "TPS22917 Ron at 3.6 V; VERIFY; shared by both axes"
+    },
+    "r_wiring_ohm": {
+      "value": 0.06,
+      "source": "flex + connector per coil loop; estimate"
+    },
+    "d_max": {
+      "value": 0.97,
+      "source": "max PWM duty kept for current sampling window"
+    },
+    "ina_gain": {
+      "value": 10.0,
+      "source": "INA241A1 G = 10 V/V"
+    },
+    "ina_bw_hz": {
+      "value": 1000000.0,
+      "source": "INA241A1 small-signal bandwidth class; VERIFY"
+    },
+    "ina_vos_v": {
+      "value": 2.5e-05,
+      "source": "INA241A1 input offset max class; VERIFY"
+    },
+    "ina_en_nv_rthz": {
+      "value": 40.0,
+      "source": "INA241 input-referred noise density class; VERIFY"
+    },
+    "aa_r_ohm": {
+      "value": 1000.0,
+      "source": "design"
+    },
+    "aa_c_f": {
+      "value": 1e-08,
+      "source": "design"
+    },
+    "vref_v": {
+      "value": 1.25,
+      "source": "REF3012"
+    },
+    "adc_bits": {
+      "value": 12,
+      "source": "nRF5340 SAADC differential, 12-bit mode"
+    },
+    "adc_fs_diff_v": {
+      "value": 1.2,
+      "source": "gain 1/2, internal 0.6 V reference -> +/-1.2 V"
+    },
+    "adc_enob": {
+      "value": 10.3,
+      "source": "SAADC effective bits class; VERIFY"
+    },
+    "adc_tacq_s": {
+      "value": 3e-06,
+      "source": "SAADC TACQ setting for <= 10 kOhm source"
+    },
+    "adc_tconv_s": {
+      "value": 2e-06,
+      "source": "SAADC conversion time"
+    },
+    "pwm_clock_hz": {
+      "value": 16000000.0,
+      "source": "nRF5340 PWM base clock"
+    },
+    "f_pwm_hz": {
+      "value": 40000.0,
+      "source": "centre-aligned, 200 duty levels; 20 periods per stage tick; ripple and loop-delay choice (see pwm_ripple, current_loop)"
+    },
+    "f_stage_hz": {
+      "value": 2000.0,
+      "source": "config control.f_stage"
+    },
+    "t_coil_design_c": {
+      "value": 85.0,
+      "source": "hot-coil design point (results/thermal: 85.5 C at design load)"
+    },
+    "t_amb_c": {
+      "value": 25.0,
+      "source": "config thermal.t_ambient"
+    },
+    "v_bat_act_min": {
+      "value": 3.3,
+      "source": "config electrical.v_bat_min"
+    },
+    "p_cu_allow_w": {
+      "value": 0.455,
+      "source": "results/thermal/thermal.json allowable average copper loss, moving coil"
+    },
+    "v_tip_stage_max": {
+      "value": 0.05,
+      "source": "m/s stage velocity relative to housing (tremor 0.3 mm @ 9 Hz ~ 17 mm/s, x3)"
+    }
+  },
+  "headroom": {
+    "n": 3.1666666666666665,
+    "Km20": 0.30151134457776363,
+    "Km_hot": 0.2690939581873608,
+    "a_hot": 1.25545,
+    "r_ext_ohm": 0.5800000000000001,
+    "frac_thermal_ok": 0.6896,
+    "rows": [
+      {
+        "R20_ohm": 2.5,
+        "Kf_N_per_A": 0.4767312946227962,
+        "L_H": 7.272727272727273e-05,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.9169,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.4287119811353344,
+        "I_max_within_thermal_A": 0.5300520377194574,
+        "bridge_loss_frac": 0.18479429686566573
+      },
+      {
+        "R20_ohm": 2.5,
+        "Kf_N_per_A": 0.4767312946227962,
+        "L_H": 7.272727272727273e-05,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.9517,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.4287119811353344,
+        "I_max_within_thermal_A": 0.5300520377194574,
+        "bridge_loss_frac": 0.18479429686566573
+      },
+      {
+        "R20_ohm": 2.5,
+        "Kf_N_per_A": 0.4767312946227962,
+        "L_H": 7.272727272727273e-05,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.97885,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.4287119811353344,
+        "I_max_within_thermal_A": 0.5300520377194574,
+        "bridge_loss_frac": 0.18479429686566573
+      },
+      {
+        "R20_ohm": 3.0,
+        "Kf_N_per_A": 0.5222329678670935,
+        "L_H": 8.727272727272728e-05,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.8958,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.3913587045675865,
+        "I_max_within_thermal_A": 0.4838690961842101,
+        "bridge_loss_frac": 0.15399524738805476
+      },
+      {
+        "R20_ohm": 3.0,
+        "Kf_N_per_A": 0.5222329678670935,
+        "L_H": 8.727272727272728e-05,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.9339,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.3913587045675865,
+        "I_max_within_thermal_A": 0.4838690961842101,
+        "bridge_loss_frac": 0.15399524738805476
+      },
+      {
+        "R20_ohm": 3.0,
+        "Kf_N_per_A": 0.5222329678670935,
+        "L_H": 8.727272727272728e-05,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.96785,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.3913587045675865,
+        "I_max_within_thermal_A": 0.4838690961842101,
+        "bridge_loss_frac": 0.15399524738805476
+      },
+      {
+        "R20_ohm": 4.0,
+        "Kf_N_per_A": 0.6030226891555273,
+        "L_H": 0.00011636363636363637,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.8545,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.3389265801476989,
+        "I_max_within_thermal_A": 0.41904292940174187,
+        "bridge_loss_frac": 0.11549643554104108
+      },
+      {
+        "R20_ohm": 4.0,
+        "Kf_N_per_A": 0.6030226891555273,
+        "L_H": 0.00011636363636363637,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.9003,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.3389265801476989,
+        "I_max_within_thermal_A": 0.41904292940174187,
+        "bridge_loss_frac": 0.11549643554104108
+      },
+      {
+        "R20_ohm": 4.0,
+        "Kf_N_per_A": 0.6030226891555273,
+        "L_H": 0.00011636363636363637,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.9408,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.3389265801476989,
+        "I_max_within_thermal_A": 0.41904292940174187,
+        "bridge_loss_frac": 0.11549643554104108
+      },
+      {
+        "R20_ohm": 5.0,
+        "Kf_N_per_A": 0.6741998624632421,
+        "L_H": 0.00014545454545454546,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.8184,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.30314514903671413,
+        "I_max_within_thermal_A": 0.374803390253176,
+        "bridge_loss_frac": 0.09239714843283287
+      },
+      {
+        "R20_ohm": 5.0,
+        "Kf_N_per_A": 0.6741998624632421,
+        "L_H": 0.00014545454545454546,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.8661,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.30314514903671413,
+        "I_max_within_thermal_A": 0.374803390253176,
+        "bridge_loss_frac": 0.09239714843283287
+      },
+      {
+        "R20_ohm": 5.0,
+        "Kf_N_per_A": 0.6741998624632421,
+        "L_H": 0.00014545454545454546,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.9142,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.30314514903671413,
+        "I_max_within_thermal_A": 0.374803390253176,
+        "bridge_loss_frac": 0.09239714843283287
+      },
+      {
+        "R20_ohm": 6.0,
+        "Kf_N_per_A": 0.7385489458759964,
+        "L_H": 0.00017454545454545457,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.78455,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.27673239387612303,
+        "I_max_within_thermal_A": 0.34214711911846074,
+        "bridge_loss_frac": 0.07699762369402738
+      },
+      {
+        "R20_ohm": 6.0,
+        "Kf_N_per_A": 0.7385489458759964,
+        "L_H": 0.00017454545454545457,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.8354,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.27673239387612303,
+        "I_max_within_thermal_A": 0.34214711911846074,
+        "bridge_loss_frac": 0.07699762369402738
+      },
+      {
+        "R20_ohm": 6.0,
+        "Kf_N_per_A": 0.7385489458759964,
+        "L_H": 0.00017454545454545457,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.8872,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.27673239387612303,
+        "I_max_within_thermal_A": 0.34214711911846074,
+        "bridge_loss_frac": 0.07699762369402738
+      },
+      {
+        "R20_ohm": 8.0,
+        "Kf_N_per_A": 0.8528028654224418,
+        "L_H": 0.00023272727272727274,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.7296,
+        "frac_voltage_ok_within_thermal": 0.9974622969837587,
+        "I_p95_A": 0.23965728314680376,
+        "I_max_within_thermal_A": 0.2963080969882474,
+        "bridge_loss_frac": 0.05774821777052054
+      },
+      {
+        "R20_ohm": 8.0,
+        "Kf_N_per_A": 0.8528028654224418,
+        "L_H": 0.00023272727272727274,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.78095,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.23965728314680376,
+        "I_max_within_thermal_A": 0.2963080969882474,
+        "bridge_loss_frac": 0.05774821777052054
+      },
+      {
+        "R20_ohm": 8.0,
+        "Kf_N_per_A": 0.8528028654224418,
+        "L_H": 0.00023272727272727274,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.8372,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.23965728314680376,
+        "I_max_within_thermal_A": 0.2963080969882474,
+        "bridge_loss_frac": 0.05774821777052054
+      },
+      {
+        "R20_ohm": 11.0,
+        "Kf_N_per_A": 1.0,
+        "L_H": 0.00032,
+        "v_bat": 3.3,
+        "frac_voltage_ok": 0.66965,
+        "frac_voltage_ok_within_thermal": 0.962949535962877,
+        "I_p95_A": 0.2043804177869517,
+        "I_max_within_thermal_A": 0.25269239415944816,
+        "bridge_loss_frac": 0.04199870383310585
+      },
+      {
+        "R20_ohm": 11.0,
+        "Kf_N_per_A": 1.0,
+        "L_H": 0.00032,
+        "v_bat": 3.7,
+        "frac_voltage_ok": 0.71745,
+        "frac_voltage_ok_within_thermal": 0.9939095127610209,
+        "I_p95_A": 0.2043804177869517,
+        "I_max_within_thermal_A": 0.25269239415944816,
+        "bridge_loss_frac": 0.04199870383310585
+      },
+      {
+        "R20_ohm": 11.0,
+        "Kf_N_per_A": 1.0,
+        "L_H": 0.00032,
+        "v_bat": 4.2,
+        "frac_voltage_ok": 0.7739,
+        "frac_voltage_ok_within_thermal": 1.0,
+        "I_p95_A": 0.2043804177869517,
+        "I_max_within_thermal_A": 0.25269239415944816,
+        "bridge_loss_frac": 0.04199870383310585
+      }
+    ]
+  },
+  "chosen_winding": {
+    "R20_ohm": 6.0,
+    "Kf_N_per_A": 0.7385489458759964,
+    "L_H": 0.00017454545454545457,
+    "v_bat": 3.3,
+    "frac_voltage_ok": 0.78455,
+    "frac_voltage_ok_within_thermal": 1.0,
+    "I_p95_A": 0.27673239387612303,
+    "I_max_within_thermal_A": 0.34214711911846074,
+    "bridge_loss_frac": 0.07699762369402738,
+    "criterion": "largest R with all thermally-allowed envelope points voltage-feasible at 3.3 V, 85 C coil"
+  },
+  "design_point_hold_current_A": 0.3249615361854384,
+  "sense_chain": {
+    "sensitivity_V_per_A": 1.0,
+    "linear_range_A": 1.2,
+    "adc_lsb_mA": 0.5859375,
+    "adc_range_A": 1.2,
+    "ina_noise_mA_rms": 0.0632455532033676,
+    "adc_noise_mA_rms": 0.5495556324447549,
+    "total_noise_mA_rms_per_sample": 0.5531829653484953,
+    "offset_mA_uncal": 0.25,
+    "aa_corner_Hz": 15915.494309189537,
+    "aa_phase_deg_at_2kHz": 7.162455806725821,
+    "shunt_loss_W_at_0p5A": 0.025,
+    "trip_window_A": 0.8,
+    "note": "offset calibrated at every pen-lift with the bridge in coast (I = 0)"
+  },
+  "pwm_ripple": [
+    {
+      "f_pwm_kHz": 10.0,
+      "D": 0.3,
+      "ripple_pp_mA": 332.9115897448994,
+      "i_avg_A": 0.17983564708357136,
+      "pwm_levels_centre_aligned": 800.0
+    },
+    {
+      "f_pwm_kHz": 10.0,
+      "D": 0.5,
+      "ripple_pp_mA": 374.7489100131216,
+      "i_avg_A": 0.22803752141703748,
+      "pwm_levels_centre_aligned": 800.0
+    },
+    {
+      "f_pwm_kHz": 10.0,
+      "D": 0.8,
+      "ripple_pp_mA": 271.9580938090794,
+      "i_avg_A": 0.31333005502532624,
+      "pwm_levels_centre_aligned": 800.0
+    },
+    {
+      "f_pwm_kHz": 20.0,
+      "D": 0.3,
+      "ripple_pp_mA": 203.91194019369598,
+      "i_avg_A": 0.15184399879503674,
+      "pwm_levels_centre_aligned": 400.0
+    },
+    {
+      "f_pwm_kHz": 20.0,
+      "D": 0.5,
+      "ripple_pp_mA": 238.7018736679301,
+      "i_avg_A": 0.22803752141703745,
+      "pwm_levels_centre_aligned": 400.0
+    },
+    {
+      "f_pwm_kHz": 20.0,
+      "D": 0.8,
+      "ripple_pp_mA": 158.6535191157971,
+      "i_avg_A": 0.3474674795444008,
+      "pwm_levels_centre_aligned": 400.0
+    },
+    {
+      "f_pwm_kHz": 25.0,
+      "D": 0.3,
+      "ripple_pp_mA": 168.10306863732853,
+      "i_avg_A": 0.14690596393087887,
+      "pwm_levels_centre_aligned": 320.0
+    },
+    {
+      "f_pwm_kHz": 25.0,
+      "D": 0.5,
+      "ripple_pp_mA": 197.9275484329516,
+      "i_avg_A": 0.22803752141703748,
+      "pwm_levels_centre_aligned": 320.0
+    },
+    {
+      "f_pwm_kHz": 25.0,
+      "D": 0.8,
+      "ripple_pp_mA": 129.85268013392565,
+      "i_avg_A": 0.3532383550429423,
+      "pwm_levels_centre_aligned": 320.0
+    },
+    {
+      "f_pwm_kHz": 40.0,
+      "D": 0.3,
+      "ripple_pp_mA": 108.74078751105601,
+      "i_avg_A": 0.1409802207580203,
+      "pwm_levels_centre_aligned": 200.0
+    },
+    {
+      "f_pwm_kHz": 40.0,
+      "D": 0.5,
+      "ripple_pp_mA": 128.88190736046258,
+      "i_avg_A": 0.22803752141703748,
+      "pwm_levels_centre_aligned": 200.0
+    },
+    {
+      "f_pwm_kHz": 40.0,
+      "D": 0.8,
+      "ripple_pp_mA": 83.30909714489626,
+      "i_avg_A": 0.36009244629901593,
+      "pwm_levels_centre_aligned": 200.0
+    },
+    {
+      "f_pwm_kHz": 50.0,
+      "D": 0.3,
+      "ripple_pp_mA": 87.7118650301022,
+      "i_avg_A": 0.13951788368806278,
+      "pwm_levels_centre_aligned": 160.0
+    },
+    {
+      "f_pwm_kHz": 50.0,
+      "D": 0.5,
+      "ripple_pp_mA": 104.12184562047302,
+      "i_avg_A": 0.22803752141703748,
+      "pwm_levels_centre_aligned": 160.0
+    },
+    {
+      "f_pwm_kHz": 50.0,
+      "D": 0.8,
+      "ripple_pp_mA": 67.06633519686406,
+      "i_avg_A": 0.3617729870393609,
+      "pwm_levels_centre_aligned": 160.0
+    },
+    {
+      "f_pwm_kHz": 100.0,
+      "D": 0.3,
+      "ripple_pp_mA": 44.34818851311665,
+      "i_avg_A": 0.13750816836322838,
+      "pwm_levels_centre_aligned": 80.0
+    },
+    {
+      "f_pwm_kHz": 100.0,
+      "D": 0.5,
+      "ripple_pp_mA": 52.75756328595124,
+      "i_avg_A": 0.22803752141703743,
+      "pwm_levels_centre_aligned": 80.0
+    },
+    {
+      "f_pwm_kHz": 100.0,
+      "D": 0.8,
+      "ripple_pp_mA": 33.81943503117496,
+      "i_avg_A": 0.36407600525877915,
+      "pwm_levels_centre_aligned": 80.0
+    }
+  ],
+  "current_loop": {
+    "loop_delay_us": 47.5,
+    "crossover_Hz_for_PM50": 2339.1812865497077,
+    "electrical_pole_Hz": 6868.505644849749,
+    "Kp_V_per_A": 2.5653834747017137,
+    "Ki_V_per_As": 110711.9297389279
+  },
+  "stage_period_busy_us": {
+    "CPU": 130.0,
+    "SAADC": 210.0,
+    "SPIB 8 MHz": 16.0,
+    "SPIM4 32 MHz": 50.0
+  },
+  "electronics_power": {
+    "loads_mA": {
+      "nRF5340 app 128 MHz + net core idle (LDO mode)": 7.5,
+      "BLE connection (average, 7.5 ms interval, streaming)": 2.5,
+      "TMAG5170 continuous 3-axis": 2.3,
+      "LSM6DSV16X 7.68 kHz accel+gyro high-performance": 0.65,
+      "optical modules x3 (unselected; placeholder)": 15.0,
+      "INA241 x2": 2.0,
+      "LMV331 x4, logic, REF3012, dividers": 0.4,
+      "QSPI flash (write duty 5 %)": 0.8,
+      "TLV75530 quiescent": 0.03
+    },
+    "total_mA": 31.180000000000003,
+    "total_mW_at_3V7": 115.36600000000001
+  },
+  "protection_timing_us": {
+    "comparator_LMV331_prop": 1.0,
+    "latch_and_gate": 0.02,
+    "load_switch_off_with_QOD": 20.0,
+    "note": "VERIFY each against datasheets; coil current then decays with tau = L/R through the bridge body diodes"
+  }
+}

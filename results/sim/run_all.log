@@ -1,0 +1,15 @@
+............                                                             [100%]
+12 passed in 2.95s
+mc32 {'rigid': 8, 'unpowered': 8, 'neutral_fc0': 1378, 'neutral_fc60': 8, 'neutral_fc30': 1428, 'neutral_fc15': 8, 'neutral_fc10': 8, 'neutral_fc5': 6, 'neutral_2nd30': 8, 'neutral_2nd40': 8, 'neutral_2nd60': 6, 'neutral_no_ff': 4}
+mc140 {'rigid': 10, 'unpowered': 12, 'neutral_fc0': 392, 'neutral_fc60': 14, 'neutral_fc30': 8, 'neutral_fc15': 4, 'neutral_fc10': 4, 'neutral_fc5': 4, 'neutral_2nd30': 4, 'neutral_2nd40': 4, 'neutral_2nd60': 4, 'neutral_no_ff': 4}
+corner_50deg_0p2N {'rigid': 39, 'unpowered': 39, 'neutral_fc0': 639, 'neutral_fc60': 81, 'neutral_fc30': 77, 'neutral_fc15': 35, 'neutral_fc10': 37, 'neutral_fc5': 29, 'neutral_2nd30': 29, 'neutral_2nd40': 55, 'neutral_2nd60': 25, 'neutral_no_ff': 19}
+nominal {'rigid': 11, 'unpowered': 7, 'neutral_fc0': 5, 'neutral_fc60': 5, 'neutral_fc30': 5, 'neutral_fc15': 5, 'neutral_fc10': 7, 'neutral_fc5': 7, 'neutral_2nd30': 5, 'neutral_2nd40': 5, 'neutral_2nd60': 5, 'neutral_no_ff': 3}
+{
+ "K_n_N_per_m": 18692.077599563465,
+ "K_c_cos2_N_per_m": 12140.885646924586,
+ "mode_Hz": 182.91390782295582,
+ "servo_damping_Ns_per_m": 5.436211927771777,
+ "ff_negative_damping_Ns_per_m": 10.440279626386367,
+ "assumed_force_delay_s": 0.0015
+}
+run_all complete

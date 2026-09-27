@@ -1,0 +1,80 @@
+Refs,Qty,Value,Symbol,Footprint,Manufacturer,MPN,Tolerance,Voltage,DNP,Board,Status,Notes
+U22,1,74AUP1G74,74xGxx:74AUP1G74,Package_SO:VSSOP-8_2.3x2mm_P0.5mm,Texas Instruments,SN74AUP1G74DCUR,,,,main,VERIFY,PRE and CLR both low gives Q = ~Q = high: firmware clears only with ACT_EN_REQ low
+U23,1,74LVC1G11,74xGxx:74LVC1G11,Package_TO_SOT_SMD:SOT-363_SC-70-6,Texas Instruments,SN74LVC1G11DCKR,,,,main,OK,
+U14 U18,2,INA241A1,Amplifier_Current:INA241A1xDDF,Package_TO_SOT_SMD:SOT-23-8,Texas Instruments,INA241A1IDDFR,,,,main,VERIFY,G = 10 V/V; CM range and PWM transient recovery at 3-4.2 V VMOT; REF pin load on REF3012
+U9,1,ADS1220IPW,Analog_ADC:ADS1220xPW,Package_SO:TSSOP-16_4.4x5mm_P0.65mm,Texas Instruments,ADS1220IPWR,,,DNP,bench,OK,
+U3,1,BQ29700,Battery_Management:BQ297xy,Package_SON:WSON-6_1.5x1.5mm_P0.5mm,Texas Instruments,BQ29700DSER,,,,main,VERIFY,variant thresholds (OVP/UVP/OCD) vs cell; X2SON/WSON package code
+U2,1,MCP73831-2-OT,Battery_Management:MCP73831-2-OT,Package_TO_SOT_SMD:SOT-23-5,Microchip,MCP73831T-2ACI/OT,,,,main,VERIFY,4.20 V variant; charge current 1000/R_PROG[kohm] mA -> 147 mA (0.7 C of 200 mAh)
+U15 U16 U19 U20,4,LMV331,Comparator:LMV331,Package_TO_SOT_SMD:SOT-353_SC-70-5,Texas Instruments,LMV331IDCKR,,,,main,OK,
+J3,1,TC2030-NL,Connector:Conn_ARM_SWD_TagConnect_TC2030-NL,Connector:Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical,,,,,,main,VERIFY,pads only (zero height); needs 3 locating holes inside an 11.5 mm board
+TP4,1,+3V0,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP5,1,+3V0A,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP11,1,AIN7_SPARE,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP28,1,ERM +,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP29,1,ERM -,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP6,1,GND,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP8,1,ISNS_X,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP9,1,ISNS_Y,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP22,1,NTC a,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP23,1,NTC b,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP2,1,UART_RX,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP1,1,UART_TX,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP7,1,VBAT,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP3,1,VMOT,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP10,1,VREF_1V25,Connector:TestPoint,TestPoint:TestPoint_Pad_D1.0mm,,,,,,main,VERIFY,
+TP20,1,cell +,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP21,1,cell -,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP24,1,coil X +,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP25,1,coil X -,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP26,1,coil Y +,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+TP27,1,coil Y -,Connector:TestPoint,Connector_Wire:SolderWirePad_1x01_SMD_1x2mm,,,,,,main,VERIFY,
+J1,1,USB-C receptacle (USB 2.0),Connector:USB_C_Receptacle_USB2.0_16P,Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12,HRO,TYPE-C-31-M-12,,,,tail,VERIFY,mid-mount height vs 11 mm board width
+J8,1,strain bridge,Connector_Generic_MountingPin:Conn_01x04_MountingPin,Connector_JST:JST_SH_SM04B-SRSS-TB_1x04-1MP_P1.00mm_Horizontal,,,,,DNP,bench,VERIFY,
+J4,1,optical module 1,Connector_Generic_MountingPin:Conn_01x07_MountingPin,Connector_FFC-FPC:TE_0-1734839-7_1x07-1MP_P0.5mm_Horizontal,,,,,,main,VERIFY,"module interface pending sensor selection (EXP-S01); 3 modules at 30/150/270 deg, z = 14.2 mm"
+J5,1,optical module 2,Connector_Generic_MountingPin:Conn_01x07_MountingPin,Connector_FFC-FPC:TE_0-1734839-7_1x07-1MP_P0.5mm_Horizontal,,,,,,main,VERIFY,"module interface pending sensor selection (EXP-S01); 3 modules at 30/150/270 deg, z = 14.2 mm"
+J6,1,optical module 3,Connector_Generic_MountingPin:Conn_01x07_MountingPin,Connector_FFC-FPC:TE_0-1734839-7_1x07-1MP_P0.5mm_Horizontal,,,,,,main,VERIFY,"module interface pending sensor selection (EXP-S01); 3 modules at 30/150/270 deg, z = 14.2 mm"
+AE1,1,2450AT18A100,Device:Antenna_Chip,RF_Antenna:Johanson_2450AT18x100,Johanson Technology,2450AT18A100E,,,,main,VERIFY,keep-out and ground clearance in a 15 mm metal-free tail
+C3 C7 C10 C13 C14 C15 C17 C18 C19 C21 C25 C26 C27 C31 C41 C42 C43 C45 C61 C62 C63 C65 C70 C71 C72 C73 C80,27,100n,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,,hall_flex;main,GENERIC,Nordic ref.
+C28 C29 C32 C33,4,100n,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,DNP,bench;hall_flex,GENERIC,
+C34 C44 C64,3,10n,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,,main,GENERIC+VERIFY,C0G | C0G; 15.9 kHz anti-alias corner
+C30,1,10n,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,DNP,bench,GENERIC+VERIFY,differential RC with bridge output resistance
+C40 C60,2,10u,Device:C,Capacitor_SMD:C_0603_1608Metric,,,,6.3V,,main,GENERIC,
+C8 C11,2,1n,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,,main,GENERIC+VERIFY,REF3012 capacitive-load limit | sets VMOT slew; check inrush into 2 x 10 uF
+C4 C5 C6 C9 C20,5,1u,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,,main,GENERIC,Nordic ref.
+C1 C2 C12 C16,4,4u7,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,10V,,main,GENERIC,Nordic ref.
+C23 C24,2,DNP,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,DNP,main,GENERIC,
+C22,1,RF match C,Device:C,Capacitor_SMD:C_0402_1005Metric,,,,,,main,GENERIC+VERIFY,Nordic ref. matching value
+Y2,1,32.768kHz,Device:Crystal,Crystal:Crystal_SMD_2012-2Pin_2.0x1.2mm,,,,,,main,VERIFY,CL 7-9 pF (internal LFXO caps)
+Y1,1,32MHz,Device:Crystal_GND24,Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm,,,,,,main,VERIFY,CL within nRF5340 internal HFXO load-cap range; +/-40 ppm total for BLE
+D2,1,Schottky 0.5A,Device:D_Schottky,Diode_SMD:D_SOD-523,,,,,,main,VERIFY,
+FB1,1,600R@100MHz,Device:FerriteBead,Inductor_SMD:L_0402_1005Metric,,,,,,main,GENERIC+VERIFY,DCR <= 0.5 ohm at 30 mA
+L1,1,RF match L,Device:L,Inductor_SMD:L_0402_1005Metric,,,,,,main,GENERIC+VERIFY,Nordic ref. matching value
+D1,1,green,Device:LED,LED_SMD:LED_0402_1005Metric,,,,,,main,VERIFY,
+Q2,1,NMOS 20V <=30mR@2.5V (CHG),Device:Q_NMOS_GSD,Package_TO_SOT_SMD:SOT-23,,,,,,main,SELECT,SELECT: see Q1
+Q1,1,NMOS 20V <=30mR@2.5V (DSG),Device:Q_NMOS_GSD,Package_TO_SOT_SMD:SOT-23,,,,,,main,SELECT,SELECT: common-drain dual NMOS in one package preferred
+Q3 Q4,2,NMOS logic-level,Device:Q_NMOS_GSD,Package_TO_SOT_SMD:SOT-723,,,,,,main,SELECT,"SELECT: Vgs(th) < 1.0 V, Id >= 0.3 A | SELECT: Vgs(th) max < 1.2 V (CHG_DET high = 2.37 V min)"
+R11 R16,2,0R,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC+VERIFY,QOD-to-VOUT link; a resistor here slows output discharge | antenna pi-pad series; tune with VNA on assembled pen
+R30 R50,2,0R1,Device:R,Resistor_SMD:R_0603_1608Metric,,,1%,,,main,GENERIC+VERIFY,"sense shunt, <= 50 ppm/K"
+R18 R62,2,100,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC+VERIFY,isolates SAADC sampling kick-back from the INA241 REF pins
+R4 R5 R6 R63 R70 R71 R72,7,100k,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC,
+R14 R15 R17 R60 R73 R74 R75 R78,8,10k,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,hall_flex;main,GENERIC,
+R31 R51 R61,3,1k,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC,
+R76,1,21k5,Device:R,Resistor_SMD:R_0402_1005Metric,,,1%,,,main,GENERIC,
+R8,1,2k2,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC,
+R12 R13,2,33,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC+VERIFY,series termination for 60 mm flex to optics; tune from SI check
+R7,1,330,Device:R,Resistor_SMD:R_0402_1005Metric,,,,,,main,GENERIC,
+R9 R10,2,470k,Device:R,Resistor_SMD:R_0402_1005Metric,,,0.5%,,,main,GENERIC,
+R77,1,56k,Device:R,Resistor_SMD:R_0402_1005Metric,,,1%,,,main,GENERIC,
+R1 R2,2,5k1,Device:R,Resistor_SMD:R_0402_1005Metric,,,1%,,,tail,GENERIC,
+R3,1,6k8,Device:R,Resistor_SMD:R_0402_1005Metric,,,1%,,,main,GENERIC,
+U13 U17,2,DRV8212PDSG,Driver_Motor:DRV8212P,Package_SON:WSON-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm_ThermalVias,Texas Instruments,DRV8212PDSGR,,,,main,VERIFY,"Rds(on) HS+LS, PWM frequency limit, input pull-downs, OCP threshold"
+U7,1,nRF5340-QKAA,MCU_Nordic:nRF5340-QKxx,Package_DFN_QFN:Nordic_AQFN-94-1EP_7x7mm_P0.4mm,Nordic Semiconductor,NRF5340-QKAA-R7,,,,main,VERIFY,"decoupling values and DEC-pin wiring against nRF5340 PS reference circuitry (LDO-only, normal voltage mode); P0.02/P0.03 as GPIO need UICR.NFCPINS = 0"
+U21,1,W25Q128JVPIQ,Memory_Flash:W25Q128JVP,Package_SON:WSON-8-1EP_6x5mm_P1.27mm_EP3.4x4.3mm,Winbond,W25Q128JVPIQ,,,,main,VERIFY,QE bit default for quad mode; 2.7 V minimum VCC
+U5,1,TPS22917DBV,Power_Management:TPS22917DBV,Package_TO_SOT_SMD:SOT-23-6,Texas Instruments,TPS22917DBVR,,,,main,VERIFY,"2 A continuous, Ron ~80 mOhm at 3.6 V; QOD to VOUT = fastest discharge"
+U1,1,USBLC6-2P6,Power_Protection:USBLC6-2P6,Package_TO_SOT_SMD:SOT-666,STMicroelectronics,USBLC6-2P6,,,,tail,OK,
+U6,1,REF3012,Reference_Voltage:REF3012,Package_TO_SOT_SMD:SOT-23,Texas Instruments,REF3012AIDBZR,,,,main,VERIFY,output capacitor range for stability; load = 2 x INA241 REF + SAADC input
+U4,1,TLV75530PDBV,Regulator_Linear:TLV75530PDBV,Package_TO_SOT_SMD:SOT-23-5,Texas Instruments,TLV75530PDBVR,,,,main,OK,
+U11 U12,2,DRV5055A1,Sensor_Magnetic:DRV5055A1xDBZxQ1,Package_TO_SOT_SMD:SOT-23,,,,,DNP,hall_flex,VERIFY,ratiometric; 3.0 V supply below 3.3 V min? check
+U10,1,TMAG5170A1,Sensor_Magnetic:TMAG5170-Q1,Package_SO:VSSOP-8_3x3mm_P0.65mm,Texas Instruments,TMAG5170A1QDGKR,,,,hall_flex,VERIFY,range variant (A1 +/-25..100 mT vs A2) from magnet field map; TEST pin handling; mounted on tail flex
+U8,1,LSM6DSV16X,Sensor_Motion:LSM6DSM,Package_LGA:LGA-14_3x2.5mm_P0.5mm_LayoutBorder3x4y,STMicroelectronics,LSM6DSV16XTR,,,,main,VERIFY,"LSM6DSM symbol used as LGA-14 placeholder: confirm LSM6DSV16X pins 2, 3, 10, 11 functions and unused-pin handling"
+SW1,1,mode button,Switch:SW_Push,Button_Switch_SMD:SW_Push_1P1T_NO_CK_KMR2,,,,,,main,VERIFY,

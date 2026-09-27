@@ -1,0 +1,31 @@
+ERC report (2026-09-27T01:20:53+0000, Encoding UTF8)
+
+***** Sheet /
+
+***** Sheet /power_charge/
+[pin_to_pin]: Pins of type Power output and Bidirectional are connected
+    ; warning
+    @(386.0800 mm, 210.8200 mm): Symbol #FLG0201 Pin 1 [Power output, Line]
+    @(50.8000 mm, 53.3400 mm): Symbol U8 Pin 2 [SDX, Bidirectional, Line]
+
+***** Sheet /battery_supply/
+
+***** Sheet /mcu/
+
+***** Sheet /sensing/
+
+***** Sheet /force/
+
+***** Sheet /stage_position/
+
+***** Sheet /actuator_x/
+
+***** Sheet /actuator_y/
+
+***** Sheet /storage_comm/
+
+***** Sheet /user_interface/
+
+***** Sheet /fault_handling/
+
+ ** ERC messages: 1  Errors 0  Warnings 1

@@ -11,12 +11,13 @@
 # Nothing in this file is a measurement of our hardware unless status == measured.
 # ---------------------------------------------------------------------------
 meta:
-  version: "0.3.0"
-  date: "2026-09-26"
+  version: "0.4.0"
+  date: "2026-09-27"
   changelog:
     - "0.1.0 initial provisional set from report audit"
     - "0.2.0 lever/pivot baseline (DEC-003), transverse contact load model (COR-01)"
     - "0.3.0 literature two-stage hand impedance (HAP-26), stiff axial path (DEC-006), CAD Rev A geometry, EM-based actuator constants"
+    - "0.4.0 winding matched to the single-cell supply (R20 6 ohm, DEC-012), 40 kHz PWM and current loop, 0.1 ohm shunt, pouch cell (COR-18); contact feedforward disabled in the controller (DEC-011)"
 
 # ---------------------------------------------------------------------------
 writing:            # use conditions (user + paper), NOT population distributions
@@ -78,21 +79,21 @@ stage:              # front-pivot lever (baseline configuration B, DEC-003); tip
   stop_stiffness:  {value: 2.0e+5, unit: N/m, min: 5.0e+4, max: 1.0e+6, dist: loguniform, status: assumed, source: "assumption", note: "Elastomer-faced hard stop."}
 
 actuator:           # rear moving-coil planar Lorentz actuator, per axis (values at the actuator, not the tip)
-  Kf:              {value: 1.0,   unit: N/A,   min: 0.7,  max: 1.3,  dist: uniform, status: calculated, source: "results/em/em_actuator.json flat sandwich proxy (0.80-1.13 N/A no-iron..image-iron); unvalidated", note: "Per-axis force constant at the actuator; annular layout FEM + force-current map EXP-B03."}
-  R20:             {value: 11.0,  unit: ohm,   min: 8.0,  max: 16.0, dist: uniform, status: calculated, source: "results/em/em_actuator.json", note: "Coil resistance at 20 C (Km = Kf/sqrt(R) ~ 0.30 N/sqrtW)."}
-  L:               {value: 3.2e-4,unit: H,     min: 1.5e-4, max: 7.0e-4, dist: loguniform, status: calculated, source: "results/em/em_actuator.json air-core estimate 322 uH; iron raises it", note: "LCR measurement pending."}
+  Kf:              {value: 0.7385, unit: N/A,  min: 0.517, max: 0.960, dist: uniform, status: calculated, source: "Km 0.302 N/sqrtW (results/em rear-actuator proxy, 1.0 N/A at 11 ohm) x sqrt(R20); electronics/calcs/drive_sense.py", note: "Per-axis force constant at the actuator; force-current map EXP-B03."}
+  R20:             {value: 6.0,   unit: ohm,   min: 4.4,  max: 8.7,  dist: uniform, status: calculated, source: "electronics/calcs/drive_sense.py winding choice (DEC-012)", note: "Largest winding for which the 3.3 V supply never binds inside the thermally allowed envelope at 85 C coil."}
+  L:               {value: 1.75e-4,unit: H,     min: 8.2e-5, max: 3.8e-4, dist: loguniform, status: calculated, source: "results/em air-core 322 uH at 11 ohm scaled by turns^2 (R ratio); iron raises it", note: "LCR measurement pending."}
   alpha_cu:        {value: 0.00393, unit: 1/K, min: 0.0039, max: 0.00393, dist: fixed, status: sourced, source: "copper resistivity tempco (AMF ledger)", note: ""}
-  i_max:           {value: 0.45,  unit: A,     min: 0.3,  max: 0.6,  dist: fixed, status: assumed, source: "thermal/driver limit", note: "Software current limit per axis."}
-  i_trip:          {value: 0.6,   unit: A,     min: 0.5,  max: 0.8,  dist: fixed, status: assumed, source: "independent hardware trip", note: ""}
+  i_max:           {value: 0.60,  unit: A,     min: 0.45, max: 0.80, dist: fixed, status: assumed, source: "software current limit; same force limit as v0.3 (0.44 N at actuator)", note: "Per axis."}
+  i_trip:          {value: 0.80,  unit: A,     min: 0.70, max: 0.90, dist: fixed, status: calculated, source: "electronics/gen/design_revA.py window comparator (VTH_HI/VTH_LO)", note: "Independent hardware latch."}
   Rth_coil_amb:    {value: 60.0,  unit: K/W,   min: 30.0, max: 120.0,dist: uniform, status: assumed, source: "analysis/thermal network estimate", note: "Coil to ambient with hand contact; EXP-B07."}
   Cth_coil:        {value: 0.25,  unit: J/K,   min: 0.1,  max: 0.6,  dist: uniform, status: assumed, source: "analysis/thermal", note: "Coil + local structure heat capacity."}
 
 electrical:
   v_bat_nom:       {value: 3.7,  unit: V,   min: 3.0,  max: 4.2,  dist: uniform, status: sourced, source: "Li-ion single cell", note: ""}
   v_bat_min:       {value: 3.3,  unit: V,   min: 3.2,  max: 3.4,  dist: fixed,   status: assumed, source: "cut-off for actuation", note: "Below this, assistance disabled."}
-  r_bridge:        {value: 0.6,  unit: ohm, min: 0.4,  max: 1.0,  dist: uniform, status: assumed, source: "H-bridge high+low side Rds(on) (verify datasheet)", note: ""}
-  r_shunt:         {value: 0.2,  unit: ohm, min: 0.1,  max: 0.5,  dist: fixed,   status: calculated, source: "electronics/calcs/current_sense", note: ""}
-  f_pwm:           {value: 50000,unit: Hz,  min: 20000,max: 100000, dist: fixed, status: calculated, source: "electronics/calcs/ripple", note: ""}
+  r_bridge:        {value: 0.42, unit: ohm, min: 0.28, max: 0.60, dist: uniform, status: sourced, source: "DRV8212P HS+LS Rds(on) 0.28 ohm typ x1.5 hot (VERIFY datasheet)", note: ""}
+  r_shunt:         {value: 0.10, unit: ohm, min: 0.10, max: 0.10, dist: fixed,   status: calculated, source: "electronics/gen/design_revA.py; electronics/calcs/drive_sense.py", note: "INA241A1 G=10 -> 1 V/A."}
+  f_pwm:           {value: 40000,unit: Hz,  min: 20000,max: 100000, dist: fixed, status: calculated, source: "electronics/calcs/drive_sense.py (ripple 83-129 mA p-p; loop delay 47.5 us)", note: "Centre-aligned, 200 duty levels."}
   p_electronics_active: {value: 0.060, unit: W, min: 0.03, max: 0.12, dist: uniform, status: assumed, source: "power budget (docs/budgets)", note: "MCU + sensors + optics during writing, excl. actuators; measure."}
 
 sensing:
@@ -111,18 +112,17 @@ sensing:
   force_rate:      {value: 1000, unit: Hz, min: 250, max: 2000, dist: fixed, status: assumed, source: "ADC choice", note: ""}
 
 control:
-  f_current:       {value: 20000, unit: Hz, min: 10000, max: 40000, dist: fixed, status: inherited_target, source: "report s5", note: "Current regulation update."}
-  current_bw:      {value: 3000, unit: Hz, min: 1000, max: 5000, dist: fixed, status: assumed, source: "design", note: "Closed-loop current bandwidth target."}
+  f_current:       {value: 40000, unit: Hz, min: 20000, max: 40000, dist: fixed, status: calculated, source: "electronics/calcs/drive_sense.py", note: "Current regulation update = PWM rate."}
+  current_bw:      {value: 2000, unit: Hz, min: 1000, max: 3000, dist: fixed, status: calculated, source: "electronics/calcs/drive_sense.py: 2.3 kHz crossover at 50 deg phase margin with 47.5 us loop delay", note: "Closed-loop current bandwidth."}
   f_stage:         {value: 2000, unit: Hz, min: 1000, max: 4000, dist: fixed, status: inherited_target, source: "REQ-CTRL-001", note: ""}
   f_predictor:     {value: 250, unit: Hz, min: 100, max: 500, dist: fixed, status: inherited_target, source: "report s5", note: "Learned predictor update (optional)."}
   pos_bw:          {value: 60, unit: Hz, min: 30, max: 120, dist: uniform, status: assumed, source: "design", note: "Closed-loop stage position bandwidth target."}
   exec_jitter:     {value: 2.0e-5, unit: s, min: 0.0, max: 1.0e-4, dist: uniform, status: assumed, source: "assumption", note: "Control task release jitter; measure (firmware profiling)."}
 
 battery:
-  capacity_mAh:    {value: 350, unit: mAh, min: 150, max: 400, dist: fixed, status: assumed, source: "10440-class Li-ion (AMF ledger, cell not yet qualified)", note: ""}
+  capacity_mAh:    {value: 200, unit: mAh, min: 150, max: 300, dist: fixed, status: assumed, source: "LiPo pouch rated >= 5 C (AMF ledger; COR-18: 10440 cells are limited to ~1 C)", note: "Cell not yet qualified."}
   usable_fraction: {value: 0.8, unit: "-", min: 0.7, max: 0.9, dist: fixed, status: assumed, source: "report s22 convention", note: ""}
-  r_internal:      {value: 0.25, unit: ohm, min: 0.1, max: 0.6, dist: uniform, status: assumed, source: "small Li-ion, verify", note: ""}
-
+  r_internal:      {value: 0.15, unit: ohm, min: 0.08, max: 0.30, dist: uniform, status: assumed, source: "small high-rate LiPo pouch, verify", note: ""}
 thermal:
   t_ambient:       {value: 25.0, unit: C, min: 15.0, max: 35.0, dist: uniform, status: assumed, source: "use environment", note: ""}
   t_surface_limit: {value: 43.0, unit: C, min: 41.0, max: 48.0, dist: fixed, status: assumed, source: "provisional; AMF ledger touch-temperature row; regulatory review required", note: "Continuously held surface limit."}

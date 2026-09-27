@@ -52,6 +52,10 @@ NAMES = [
     "kappa_s",
     # fault injection: type 0 none, 1 actuator power loss (coils open), 3 stage sensor frozen; time in s
     "fail_type", "fail_time",
+    # contact-load feedforward: first-order low-pass corner on the measured axial force (Hz; <= 0 = unfiltered)
+    "ffc_fc",
+    # contact-feedforward force filter as a biquad (b0 b1 b2 a1 a2), computed in model.build_params
+    "ffc_b0", "ffc_b1", "ffc_b2", "ffc_a1", "ffc_a2",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)

@@ -133,3 +133,24 @@ def test_oracle_bound_regression_guard():
     sc1 = scenarios.handwriting(seed=11, duration=5.0, tremor=tr)
     out, _, _ = bench.compare_modes(sc0, sc1, modes=("neutral", "oracle"))
     assert out["oracle"]["ratio_vs_neutral"] < 0.3
+
+
+def _transitions(r):
+    c = (r["contact"] > 0).astype(int)
+    return int(np.sum(np.diff(c) != 0))
+
+
+def test_contact_feedforward_does_not_chatter_at_light_force():
+    """Regression for the Monte Carlo finding (sim/diag_ff_chatter.py): a
+    contact-load feedforward from the delayed axial-force signal makes the nib
+    bounce at light force with stiff paper and axial path.  With the default
+    controller (feedforward disabled, DEC-011) the powered-neutral pen must
+    not bounce."""
+    ov = {"writing.paper_stiffness": 2.0e5, "stage.axial_k": 1.0e4, "hand.normal_stiffness": 3000.0,
+          "stage.k_tip": 50.0, "writing.mu_eff": 0.05}
+    sc = scenarios.handwriting(seed=200, duration=3.0, theta_deg=50.0, N0=0.2)
+    rr = model.run(sc, model.Controller(mode="rigid"), overrides=ov, seed=200)
+    rf = model.run(sc, model.Controller(mode="neutral"), overrides=ov, seed=200)
+    ru = model.run(sc, model.Controller(mode="neutral", ff_contact=1.0, ff_contact_fc=0.0), overrides=ov, seed=200)
+    assert _transitions(ru) > 10 * max(_transitions(rr), 1)      # the defect is reproduced
+    assert _transitions(rf) < 6 * max(_transitions(rr), 1)       # and removed by the filter

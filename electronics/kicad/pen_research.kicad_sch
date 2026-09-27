@@ -1,0 +1,333 @@
+(kicad_sch
+  (version 20230121)
+  (generator "eeschema")
+  (uuid "8dc8c6c6-b52c-4ea1-b54e-983058d7675b")
+  (paper "A3")
+  (title_block
+    (title "Active stabilisation pen - research electronics Rev A")
+    (date "2026-09-27")
+    (rev "A")
+    (company "Active stabilisation pen programme")
+    (comment 1 "RESEARCH ELECTRONICS - DEVELOPMENT DRAFT - NOT RELEASED FOR FABRICATION"))
+  (lib_symbols)
+  (sheet
+    (at 30 35)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "eed3cbe2-0fa1-47b1-9b1e-cff3b47196fe")
+    (property "Sheetname" "power_charge"
+      (at 30 34 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "power_charge.kicad_sch"
+      (at 30 81 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "2")))))
+  (sheet
+    (at 125 35)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "2138a1b6-1e8f-4136-8748-79e65d9b7d07")
+    (property "Sheetname" "battery_supply"
+      (at 125 34 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "battery_supply.kicad_sch"
+      (at 125 81 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "3")))))
+  (sheet
+    (at 220 35)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "e48f2468-9abe-4135-b35a-803a5c27ad35")
+    (property "Sheetname" "mcu"
+      (at 220 34 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "mcu.kicad_sch"
+      (at 220 81 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "4")))))
+  (sheet
+    (at 315 35)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "93d272a0-9423-402b-a001-77bdadfece2f")
+    (property "Sheetname" "sensing"
+      (at 315 34 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "sensing.kicad_sch"
+      (at 315 81 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "5")))))
+  (sheet
+    (at 30 97)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "8ddc9e81-e726-4314-abd6-90e9de6a95e8")
+    (property "Sheetname" "force"
+      (at 30 96 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "force.kicad_sch"
+      (at 30 143 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "6")))))
+  (sheet
+    (at 125 97)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "00a3ed01-aedd-4c13-804d-a4e87dafe588")
+    (property "Sheetname" "stage_position"
+      (at 125 96 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "stage_position.kicad_sch"
+      (at 125 143 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "7")))))
+  (sheet
+    (at 220 97)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "e71e060f-ce0c-4bfd-b118-ec4691d6525e")
+    (property "Sheetname" "actuator_x"
+      (at 220 96 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "actuator_x.kicad_sch"
+      (at 220 143 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "8")))))
+  (sheet
+    (at 315 97)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "f0a18f19-96a9-433d-b9f0-5a690030b810")
+    (property "Sheetname" "actuator_y"
+      (at 315 96 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "actuator_y.kicad_sch"
+      (at 315 143 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "9")))))
+  (sheet
+    (at 30 159)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "ed7dd53e-6741-41fa-8f6e-a8853deccbe7")
+    (property "Sheetname" "storage_comm"
+      (at 30 158 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "storage_comm.kicad_sch"
+      (at 30 205 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "10")))))
+  (sheet
+    (at 125 159)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "18f3e340-7914-49f8-ac87-6e45e06c5a7c")
+    (property "Sheetname" "user_interface"
+      (at 125 158 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "user_interface.kicad_sch"
+      (at 125 205 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "11")))))
+  (sheet
+    (at 220 159)
+    (size 80 45)
+    (fields_autoplaced)
+    (stroke
+      (width 0.1524)
+      (type solid))
+    (fill
+      (color 0 0 0 0.0000))
+    (uuid "0a24b024-9390-41b9-982a-06a424c71fc3")
+    (property "Sheetname" "fault_handling"
+      (at 220 158 0)
+      (effects
+        (font
+          (size 1.8 1.8))
+        (justify left bottom)))
+    (property "Sheetfile" "fault_handling.kicad_sch"
+      (at 220 205 0)
+      (effects
+        (font
+          (size 1.27 1.27))
+        (justify left top)))
+    (instances
+      (project "pen_research"
+        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+          (page "12")))))
+  (text "Active stabilisation pen - research electronics Rev A.  PROPOSED DESIGN: not built, not measured."
+    (exclude_from_sim no)
+    (at 30 228.00 0)
+    (effects
+      (font
+        (size 2 2))
+      (justify left bottom))
+    (uuid "2e4a21c3-fb76-4a9a-994a-7906468e2195"))
+  (text "Every part marked VERIFY or SELECT in its fields must be checked against the named source before layout."
+    (exclude_from_sim no)
+    (at 30 233.00 0)
+    (effects
+      (font
+        (size 2 2))
+      (justify left bottom))
+    (uuid "c2aae196-bba2-4419-835d-73b11e907689"))
+  (text "Power tree: USB-C -> MCP73831 -> cell (BQ29700 + 2 NMOS) -> TLV75530 (+3V0, +3V0A) and TPS22917 (VMOT, gated)."
+    (exclude_from_sim no)
+    (at 30 238.00 0)
+    (effects
+      (font
+        (size 2 2))
+      (justify left bottom))
+    (uuid "a45f38cb-1c25-4eb2-8a38-c4786a5b9455"))
+  (text "Calculations: electronics/calcs/drive_sense.py -> results/electronics/; ngspice drive stage: electronics/spice/."
+    (exclude_from_sim no)
+    (at 30 243.00 0)
+    (effects
+      (font
+        (size 2 2))
+      (justify left bottom))
+    (uuid "4a685241-13e8-474a-be85-e3bd74c1e5b0"))
+  (sheet_instances
+    (path "/"
+      (page "1"))))

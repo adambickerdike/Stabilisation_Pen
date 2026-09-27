@@ -12,3 +12,5 @@ electronics/**/fp-info-cache
 ml/runs/
 *.log.tmp
 .ipynb_checkpoints/
+electronics/spice/*_out.csv
+electronics/spice/*.log

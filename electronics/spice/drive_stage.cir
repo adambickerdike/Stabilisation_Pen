@@ -1,0 +1,83 @@
+* Rev A actuator channel: H-bridge (drive/brake slow decay), in-line shunt,
+* INA241A1 (behavioural, G=10, 1-pole BW), 1k/10n anti-alias, window comparators.
+* Evidence status: SIMULATION of a PROPOSED circuit with idealised device models.
+* Device values: electronics/calcs/drive_sense.py (hot coil, 85 C).  A coil short
+* is applied at t = 1.2 ms to show the hardware trip.
+.param VBAT=3.7 FPWM=40k D=0.72 DEAD=50n
+.param RCOIL=7.53 LCOIL=175u VEMF=0.05 RSH=0.1 RLS=0.08 RON=0.21
+.param T={1/FPWM} TON={D*T} TOFF={T-TON}
+
+VBAT vbat 0 {VBAT}
+* TPS22917 load switch, opened by the latched fault (ACT_EN = REQ & FAULT_N & NOCHG);
+* turn-off modelled as a 20 us first-order delay (VERIFY t_OFF with QOD)
+.model SWLS SW(Ron={RLS} Roff=1e6 Vt=0.5 Vh=0.1)
+S_LSW vbat vmot en 0 SWLS
+CVM vmot 0 10u
+
+* gate commands (1 = on); OUT2 held low (IN2 = 0): LS2 always on, HS2 off
+VG_HS1 g_hs1 0 PULSE(0 1 {TOFF/2} 5n 5n {TON} {T})
+VG_LS1 g_ls1 0 PULSE(1 0 {TOFF/2-DEAD} 5n 5n {TON+2*DEAD} {T})
+VG_LS2 g_ls2 0 DC 1
+VG_HS2 g_hs2 0 DC 0
+
+.model SWM SW(Ron={RON} Roff=1e6 Vt=0.5 Vh=0.1)
+.model DB D(Is=1e-9 N=1.5 Rs=0.05 Cjo=100p)
+S_HS1 vmot out1 g_hs1 0 SWM
+S_LS1 out1 0 g_ls1 0 SWM
+S_HS2 vmot out2 g_hs2 0 SWM
+S_LS2 out2 0 g_ls2 0 SWM
+D_HS1 out1 vmot DB
+D_LS1 0 out1 DB
+D_HS2 out2 vmot DB
+D_LS2 0 out2 DB
+
+* shunt and coil (R, L, back-EMF); fault: coil shorted by a switch at 1.2 ms
+VSH out1 xsh 0
+RSH xsh coilp {RSH}
+RCOIL coilp cl {RCOIL}
+LCOIL cl ce {LCOIL}
+VEMF ce out2 {VEMF}
+VFLT flt 0 PWL(0 0 1.2m 0 1.2001m 1)
+.model SWF SW(Ron=0.2 Roff=1e9 Vt=0.5 Vh=0.1)
+S_FAULT coilp out2 flt 0 SWF
+
+* INA241A1: Vout = VREF + G*(V(out1)-V(coilp)), single pole ~1 MHz, clamped to rails
+EINA ina_i 0 VALUE={1.25 + 10*(V(out1)-V(coilp))}
+RINA ina_i ina_p 159
+CINA ina_p 0 1n
+BCLAMP isns_raw 0 V={min(max(V(ina_p),0.02),2.98)}
+* anti-alias RC to the SAADC pin
+RAA isns_raw isns 1k
+CAA isns 0 10n
+* window comparator (LMV331, ~1 us modelled by RC) -> OC_N (1 = ok, 0 = trip)
+BCMP cmp_i 0 V={ (V(isns) > 2.048 || V(isns) < 0.455) ? 0 : 1 }
+RCMP cmp_i oc_n 1k
+CCMP oc_n 0 1n
+* 74AUP1G74 latch + AND gate: enable stays low once OC_N has fallen
+BLAT en_i 0 V={ (V(oc_n) > 0.5 && V(en) > 0.5) ? 1 : 0 }
+RLAT en_i en 20k
+CLAT en 0 1n IC=1
+
+.control
+set wr_singlescale
+set wr_vecnames
+tran 10n 1.6m 0 20n uic
+meas tran i_avg AVG i(VEMF) FROM=0.8m TO=1.0m
+meas tran i_max MAX i(VEMF) FROM=0.8m TO=1.0m
+meas tran i_min MIN i(VEMF) FROM=0.8m TO=1.0m
+meas tran vis_avg AVG v(isns) FROM=0.8m TO=1.0m
+meas tran t_trip WHEN v(oc_n)=0.5 FALL=1
+meas tran t_off WHEN v(en)=0.5 FALL=1
+meas tran i_peak_fault MAX i(VSH) FROM=1.2m TO=1.6m
+meas tran i_sh_after FIND i(VSH) AT=1.3m
+meas tran i_end FIND i(VEMF) AT=1.59m
+let i_coil = i(VEMF)
+let i_bat = -i(VBAT)
+meas tran ibat_avg AVG i_bat FROM=0.8m TO=1.0m
+let i_shunt = i(VSH)
+wrdata drive_stage_out.csv i_coil i_shunt v(isns_raw) v(isns) v(oc_n) v(en) v(out1) i_bat
+echo "RESULTS" > drive_stage_meas.txt
+print i_avg i_max i_min vis_avg t_trip t_off i_peak_fault i_sh_after i_end ibat_avg >> drive_stage_meas.txt
+quit
+.endc
+.end

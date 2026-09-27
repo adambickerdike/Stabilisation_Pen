@@ -1,0 +1,17 @@
+{
+  "meta": {
+    "filename": "pen_research.kicad_pro",
+    "version": 1
+  },
+  "schematic": {
+    "legacy_lib_dir": "",
+    "legacy_lib_list": []
+  },
+  "sheets": [
+    [
+      "8dc8c6c6-b52c-4ea1-b54e-983058d7675b",
+      "Root"
+    ]
+  ],
+  "text_variables": {}
+}

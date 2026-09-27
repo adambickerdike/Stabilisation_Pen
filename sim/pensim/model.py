@@ -67,7 +67,9 @@ class Controller:
     zeta: float = 0.7
     ki_ratio: float = 0.2           # integral corner as fraction of pos_bw
     d_filt_ratio: float = 5.0
-    ff_contact: float = 1.0
+    ff_contact: float = 0.0         # DEC-011: measured-force contact feedforward disabled (nib bounce at low altitude, sim/diag_ff_chatter.py)
+    ff_contact_fc: float = 60.0     # Hz low-pass on the force used for contact feedforward when enabled (<=0: none)
+    ff_contact_order: int = 2       # 1: first-order, 2: second-order Butterworth
     ff_accel: float = 1.0
     ff_ref: float = 1.0
     g_assist: float = 1.0
@@ -213,6 +215,18 @@ def build_params(scn: Scenario, ctrl: Controller, geom: Optional[Geometry] = Non
     Ki = Kp * wc * ctrl.ki_ratio
     setp("Kp", Kp); setp("Kd", Kd); setp("Ki", Ki); setp("d_filt", ctrl.d_filt_ratio * ctrl.pos_bw)
     setp("ff_contact", ctrl.ff_contact); setp("ff_accel", ctrl.ff_accel); setp("ff_ref", ctrl.ff_ref)
+    setp("ffc_fc", ctrl.ff_contact_fc)
+    fsd = 1.0 / (round(1.0 / (ctrl.f_stage * dt)) * dt)
+    if ctrl.ff_contact_fc <= 0:
+        fb = (1.0, 0.0, 0.0, 0.0, 0.0)
+    elif ctrl.ff_contact_order == 2:
+        b0, b1, b2, _a0, a1, a2 = sps.butter(2, ctrl.ff_contact_fc, btype="low", fs=fsd, output="sos")[0]
+        fb = (b0, b1, b2, a1, a2)
+    else:
+        al = 1.0 - math.exp(-2.0 * math.pi * ctrl.ff_contact_fc / fsd)
+        fb = (al, 0.0, 0.0, -(1.0 - al), 0.0)
+    for nm, v in zip(("ffc_b0", "ffc_b1", "ffc_b2", "ffc_a1", "ffc_a2"), fb):
+        setp(nm, v)
     setp("mu_hat", mu_k)
     setp("g_assist", ctrl.g_assist); setp("q_lim", ctrl.q_lim); setp("q_taper", ctrl.q_taper)
     setp("slew", ctrl.slew); setp("authority_tau", ctrl.authority_tau)

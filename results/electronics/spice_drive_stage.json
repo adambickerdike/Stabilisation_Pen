@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "evidence_status": "simulation (ngspice 42, idealised device models)",
+    "generated_utc": "2026-09-27T01:10:41+00:00",
+    "git_revision": "bbcf1c7-dirty",
+    "parameters_version": "0.3.0",
+    "parameters_sha256_16": "c7f5042d2195064e",
+    "command": "plot_drive_stage.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "summary": {
+    "i_coil_avg_A": 0.3222644,
+    "ripple_pp_mA": 103.77529999999996,
+    "centre_sample_current_A": 0.32856546394114944,
+    "centre_sample_error_mA": 6.301063941149431,
+    "isns_centre_mean_V": 1.5614146621708125,
+    "isns_implied_A": 0.3114146621708125,
+    "fault_detect_us": 8.75700000000008,
+    "fault_vmot_off_us": 22.627000000000105,
+    "fault_peak_shunt_A": 5.371187,
+    "battery_current_avg_A": 0.2341514,
+    "notes": "ideal switches (Ron 0.21 ohm each), no driver OCP modelled; DRV8212P internal OCP (VERIFY) would clamp the fault peak earlier"
+  },
+  "ngspice_meas": {
+    "i_avg": 0.3222644,
+    "i_max": 0.3697445,
+    "i_min": 0.2659692,
+    "vis_avg": 1.572262,
+    "t_trip": 0.001208757,
+    "t_off": 0.001222627,
+    "i_peak_fault": 5.371187,
+    "i_sh_after": 0.0006389397,
+    "i_end": -0.00647917,
+    "ibat_avg": 0.2341514
+  }
+}

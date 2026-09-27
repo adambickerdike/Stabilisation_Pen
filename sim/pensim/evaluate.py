@@ -78,6 +78,7 @@ def compare(res, ref, t_settle=0.5, guard_s=0.03, band_lo=3.0, band_hi=15.0, low
         "ink_gap_frac": float(np.mean((ref["contact"][:n] > 0) & (res["contact"][:n] <= 0))),
         "F_hand_band_rms": rms2(Fhb, m),
         "n_eval": int(m.sum()),
+        "contact_transitions_per_s": float(np.sum(np.diff((res["contact"][:n] > 0).astype(int)) != 0) / max(res["t"][n - 1] - res["t"][0], 1e-9)),
     }
     return out
 
