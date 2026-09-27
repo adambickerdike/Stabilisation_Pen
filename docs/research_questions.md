@@ -14,3 +14,12 @@
 | 8 | Does assisted practice (fading guidance, error amplification) improve unassisted handwriting, or impair it? | HAP-09 shows harm from error-removing guidance | Separates the training claim from the assistance claim | **EXP-H04**: matched-practice RCT with delayed retention and transfer | Training-mode claims |
 | 9 | Can a compact actuator reach K_m ≥ 0.3 N/√W per axis with ±1.6 mm stroke inside Ø14.6 mm without overheating a moving coil? | Field model 0.24–0.34 (flat proxy); thermal 130 K/W air gap | Rev A may not be buildable at spec | **EXP-B03**: force–current–position map and thermal test of actuator coupons (moving coil vs moving magnet) | Actuator freeze; REQ-ACT-* |
 | 10 | Which intended-path features must be preserved (corners, dots, hatching), and what distortion can users perceive? | No direct data | Sets the distortion limits used in tuning | **EXP-H05**: perception thresholds for ink distortion (blinded pairs) | REQ-CTRL-005 |
+
+## Updates from this iteration (simulation and calculation, 2026-09-27)
+
+- **Friction matters more than expected for Q3.** Across the 160-sample Monte Carlo, the paper–ball friction coefficient is the strongest rank correlate of the assertive Kalman residual ratio: ρ = +0.52. Grip stiffness is −0.22 and optical noise +0.22 (`results/sim/mc_sensitivity.json`). EXP-B02 (friction vs speed, paper and ink) therefore moves up alongside EXP-B01.
+- **Q3 restated with the full grid.** Over 12 test seeds × 9 frequencies × 3 amplitudes, the causal estimators tested give ≈ no benefit below 9 Hz (balanced Kalman 0.99–1.07, assertive 1.04–1.15; band-pass harms below 8 Hz), against a mechanical bound of 0.22–0.32. The answer to Q3 decides whether free-writing assistance exists at all (`docs/sim_report.md` §3.2).
+- **Q9 now has two geometric constraints.**
+  - The actuator's axial gap must not absorb the writing-force slide. So the refill slides in the carrier, the gap widens to 0.50 mm (≈ 6 % more holding power) and tip travel drops to 0.60 mm (DEC-007 rev.).
+  - The nose must sit ≈ 5 mm behind the ball to clear the paper at 35° (DEC-018).
+- **Instability risk (new, closed in simulation).** A measured-force contact feedforward made the nib bounce at low altitude (DEC-011). Bench confirmation is part of EXP-B05 and B09.

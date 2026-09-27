@@ -25,6 +25,10 @@ from stabpen import plotstyle  # noqa: E402
 import pen_revA as cad  # noqa: E402
 
 P = cad.P
+TAG = "A"
+if "--variant" in sys.argv:
+    TAG = sys.argv[sys.argv.index("--variant") + 1]
+    P.update(cad.VARIANTS[TAG])
 OUT = os.path.join(ROOT, "results", "cad")
 INK, INK2, MUTED = plotstyle.INK, plotstyle.INK2, plotstyle.MUTED
 C_FIX, C_MOV, C_MAG, C_PCB, C_BAT = "#c3c2b7", plotstyle.SERIES[0], plotstyle.SERIES[1], plotstyle.SERIES[2], plotstyle.SERIES[3]
@@ -47,7 +51,7 @@ def section():
     ax.grid(False)
     ri = P["od_grip"] / 2 - P["wall"]
     # barrel outline (upper and lower walls), nose cone
-    zs = [1.0, P["z_nose_end"], P["z_bulge0"], P["z_bulge0"] + 5, P["z_bulge1"] - 3, P["z_bulge1"], P["L_total"]]
+    zs = [P.get("nose_z0", 1.0), P["z_nose_end"], P["z_bulge0"], P["z_bulge0"] + 5, P["z_bulge1"] - 3, P["z_bulge1"], P["L_total"]]
     ro = [P["nose_tip_od"] / 2, P["od_grip"] / 2, P["od_grip"] / 2, P["od_act"] / 2, P["od_act"] / 2, P["od_grip"] / 2, P["od_grip"] / 2]
     for sgn in (1, -1):
         ax.plot(zs, [sgn * r for r in ro], color=INK2, lw=1.2)
@@ -98,7 +102,8 @@ def section():
     for sgn in (1, -1):
         ax.add_patch(Rectangle((P["pcb_z0"] + 1, sgn * P["pcb_t"] / 2 if sgn > 0 else -P["pcb_t"] / 2 - P["comp_h"]),
                                P["pcb_L"] - 2, P["comp_h"], fc=C_PCB, alpha=0.35, lw=0))
-    ax.add_patch(Rectangle((P["batt_z0"], -P["batt_d"] / 2), P["batt_L"], P["batt_d"], fc=C_BAT, alpha=0.6, lw=0))
+    bh = P["batt_t"] if P.get("batt_kind") == "pouch" else P["batt_d"]
+    ax.add_patch(Rectangle((P["batt_z0"], -bh / 2), P["batt_L"], bh, fc=C_BAT, alpha=0.6, lw=0))
     # optics (three at 30/150/270 deg; the 270 deg sensor lies in this section plane)
     ax.add_patch(Rectangle((P["opt_z"] - P["opt_size"][0] / 2, -P["opt_r"] - P["opt_size"][2] / 2),
                            P["opt_size"][0], P["opt_size"][2], fc="#4a3aa7", lw=0))
@@ -114,7 +119,8 @@ def section():
     dim_h(ax, 0, P["z_stop"], 9.8, f"stop {P['z_stop']:.0f}")
     dim_h(ax, 0, P["refill_L"], 12.0, f"refill D1 {P['refill_L']:.0f}")
     dim_h(ax, P["pcb_z0"], P["pcb_z0"] + P["pcb_L"], 9.8, f"PCB {P['pcb_L']:.0f} x {P['pcb_w']}")
-    dim_h(ax, P["batt_z0"], P["batt_z0"] + P["batt_L"], 9.8, f"cell 10440 (Ø{P['batt_d']:.0f})")
+    dim_h(ax, P["batt_z0"], P["batt_z0"] + P["batt_L"], 9.8,
+          f"LiPo pouch {P['batt_t']:.0f} x {P['batt_w']:.0f} x {P['batt_L']:.0f}" if P.get("batt_kind") == "pouch" else f"cell 10440 (Ø{P['batt_d']:.0f})")
     dim_v(ax, P["L_total"] - 6, -P["od_grip"] / 2, P["od_grip"] / 2, f"Ø{P['od_grip']:.0f}")
     dim_v(ax, (P["z_bulge0"] + P["z_bulge1"]) / 2 + 3, -P["od_act"] / 2, P["od_act"] / 2, f"Ø{P['od_act']:.0f}")
     ax.text(z, P["od_act"] / 2 + 1.6, f"actuator: coil paddle between annular\nquadrant magnets, gap {P['act_gap']} mm", ha="center", fontsize=6.5, color=INK2)
@@ -124,11 +130,11 @@ def section():
     ax.set_xlim(-5, P["L_total"] + 6)
     ax.set_ylim(-14.5, 14.5)
     ax.set_xlabel("z from ball centre (mm)")
-    ax.set_title("Pen Rev A: longitudinal section (proposed design, nominal dimensions in mm)", loc="left")
+    ax.set_title(f"Pen Rev {TAG}: longitudinal section (proposed design, nominal dimensions in mm)", loc="left")
     plotstyle.stamp(fig, "proposed design", "not a fit check; generated from mechanics/cad/pen_revA.py parameters")
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT, "drawing_revA_section.png"), dpi=200)
-    fig.savefig(os.path.join(OUT, "drawing_revA_section.svg"))
+    fig.savefig(os.path.join(OUT, f"drawing_rev{TAG}_section.png"), dpi=200)
+    fig.savefig(os.path.join(OUT, f"drawing_rev{TAG}_section.svg"))
     plt.close(fig)
 
 
@@ -166,8 +172,12 @@ def cross_sections():
             ax.add_patch(Rectangle((-P["pcb_w"] / 2 + 0.5, -P["pcb_t"] / 2 - P["comp_h"]), P["pcb_w"] - 1, P["comp_h"], fc=C_PCB, alpha=0.35, lw=0))
             occ += P["pcb_w"] * (P["pcb_t"] + 2 * P["comp_h"])
         if P["batt_z0"] <= z <= P["batt_z0"] + P["batt_L"]:
-            ax.add_patch(Circle((0, 0), P["batt_d"] / 2, fc=C_BAT, alpha=0.6, lw=0))
-            occ += math.pi * (P["batt_d"] / 2) ** 2
+            if P.get("batt_kind") == "pouch":
+                ax.add_patch(Rectangle((-P["batt_w"] / 2, -P["batt_t"] / 2), P["batt_w"], P["batt_t"], fc=C_BAT, alpha=0.6, lw=0))
+                occ += P["batt_w"] * P["batt_t"]
+            else:
+                ax.add_patch(Circle((0, 0), P["batt_d"] / 2, fc=C_BAT, alpha=0.6, lw=0))
+                occ += math.pi * (P["batt_d"] / 2) ** 2
         if abs(z - P["opt_z"]) < 2:
             for sgn in (1, -1):
                 ax.add_patch(Rectangle((-P["opt_size"][0] / 2, sgn * P["opt_r"] - P["opt_size"][2] / 2), P["opt_size"][0], P["opt_size"][2], fc="#4a3aa7", lw=0))
@@ -175,7 +185,7 @@ def cross_sections():
         ax.set_title(f"{name}\nbore Ø{2*r_in:.1f}, swept/used {min(occ/area_bore,1)*100:.0f}%", fontsize=8, loc="center")
     plotstyle.stamp(fig, "proposed design", "dashed circle = swept envelope of lever at full tip travel")
     fig.tight_layout()
-    fig.savefig(os.path.join(OUT, "drawing_revA_cross_sections.png"), dpi=180)
+    fig.savefig(os.path.join(OUT, f"drawing_rev{TAG}_cross_sections.png"), dpi=180)
     plt.close(fig)
 
 
