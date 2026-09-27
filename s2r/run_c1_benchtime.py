@@ -12,12 +12,16 @@ Bench time = recorded time plus per-record overheads (repositioning, zeroing,
 cooling, settling) that are ASSUMPTIONS stated in each generator.
 Evidence status: SIMULATION (virtual bench) + CALCULATION (identification).
 Outputs: results/s2r/c1_bench_time.json, fig_c1_bench_time.png
-Run: python3 -m s2r.run_c1_benchtime [--quick]    (about 12 min on 2 processes)
+Run: python3 -m s2r.run_c1_benchtime [--quick] [--only B05|B01B02|B03] [--replot]
+     (about 10 min for all three on 2 single-threaded processes: B05 1 min, B01/B02 8 min, B03 1 min;
+     run_all.sh calls it once per experiment and the parts merge into one JSON)
 """
 from __future__ import annotations
 
 import argparse
+import json
 import math
+import os
 import time
 from concurrent.futures import ProcessPoolExecutor
 
@@ -114,7 +118,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--replot", action="store_true", help="redraw the figure from the saved JSON")
+    ap.add_argument("--only", default="", help="comma list of B03,B05,B01B02: run only these experiments (same "
+                    "seeds as the full run) and merge them into an existing c1_bench_time.json, so each part "
+                    "stays under the 25 min budget")
     a = ap.parse_args()
+    if a.replot:
+        plot(json.load(open(os.path.join(s2r.RESULTS, "c1_bench_time.json")))["table"])
+        return
+    sel = set(x.strip() for x in a.only.split(",") if x.strip()) or {"B03", "B05", "B01B02"}
+    assert sel <= {"B03", "B05", "B01B02"}, sel
     nt = {"B03": 3 if a.quick else 24, "B05": 1 if a.quick else 6, "B01B02": 1 if a.quick else 5}
     noises = {"B03": (1.0, 4.0, 16.0), "B05": (1.0, 4.0), "B01B02": (1.0, 4.0)}
     levels = {"B03": B03_LEVELS, "B05": B05_LEVELS, "B01B02": B12_LEVELS}
@@ -127,18 +140,23 @@ def main():
                 for _ in range(nt[exp]):
                     seed += 1
                     jobs.append((exp, li, kw, noise, syst, seed))
+    jobs = [j for j in jobs if j[0] in sel]          # seeds are assigned before filtering: parts reproduce the full run
     t0 = time.time()
     with ProcessPoolExecutor(max_workers=a.workers) as ex:
         rows = list(ex.map(_trial, jobs, chunksize=1))
+    elapsed = {"+".join(sorted(sel)): time.time() - t0}
     table = []
     for exp in ("B03", "B05", "B01B02"):
+        if exp not in sel:
+            continue
         for li, (label, kw) in enumerate(levels[exp]):
             combos = sorted({(r["noise"], r["syst"]) for r in rows if r["exp"] == exp and r["level"] == li})
             for noise, syst in combos:
                 sub = [r for r in rows if r["exp"] == exp and r["level"] == li and r["noise"] == noise
                        and r["syst"] == syst]
                 ent = {"exp": exp, "level": li, "label": label, "noise_scale": noise, "systematics": syst,
-                       "bench_s_median": float(np.median([r["bench_s"] for r in sub])), "n": len(sub), "params": {}}
+                       "bench_s_median": float(np.median([r["bench_s"] for r in sub])), "n": len(sub),
+                       "trial_wall_s_median": float(np.median([r["elapsed_s"] for r in sub])), "params": {}}
                 for k in KEYS[exp]:
                     e = np.array([r["score"][k]["rel_err"] for r in sub if k in r["score"]])
                     u = np.array([r["score"][k]["U95_rel"] for r in sub if k in r["score"]])
@@ -147,9 +165,16 @@ def main():
                                         "U95_median": float(np.median(u)), "coverage95": float(np.mean(c)),
                                         "bench_s_param": float(np.median([r["per_param_s"][k] for r in sub]))}
                 table.append(ent)
+    out_path = os.path.join(s2r.RESULTS, "c1_bench_time.json")
+    if a.only and os.path.exists(out_path):
+        old = json.load(open(out_path))
+        table = [e for e in old["table"] if e["exp"] not in sel] + table
+        elapsed = {**old.get("elapsed_s_by_part", {}), **elapsed}
     # time to accuracy at protocol instruments (noise 1, systematics on)
     tta = {}
     for exp in ("B03", "B05", "B01B02"):
+        if not any(e["exp"] == exp for e in table):
+            continue
         ents = sorted([e for e in table if e["exp"] == exp and e["noise_scale"] == 1.0 and e["systematics"] == 1.0],
                       key=lambda e: e["bench_s_median"])
         for k in KEYS[exp]:
@@ -171,6 +196,7 @@ def main():
     payload = {"levels": {"B03": [l for l, _ in B03_LEVELS], "B05": [l for l, _ in B05_LEVELS],
                           "B01B02": [l for l, _ in B12_LEVELS]},
                "table": table, "time_to_accuracy": tta, "elapsed_s": time.time() - t0,
+               "elapsed_s_by_part": elapsed,
                "notes": ["noise_scale multiplies the random noise of every instrument channel",
                          "systematics 0 removes session gain, offset, angle and sync errors (ideal calibration)",
                          "bench time includes ASSUMED per-record overheads (see generators)"]}
@@ -184,29 +210,37 @@ def main():
               f"{[round(100 * x, 2) for x in v['p95_no_systematics_by_level']]} ; t(1%) {v.get('time_to_1pct_s')}")
 
 
+SHORT = {"B03": ["0.2 s holds,\nno back-EMF", "0.5 s holds,\n+ back-EMF", "protocol\n(2 s holds)", "2 s holds x3,\n64 averages"],
+         "B05": ["2 x 3 s", "2 x 10 s", "4 x 10 s", "protocol\n10 x 10 s"],
+         "B01B02": ["reduced\ngrid", "reduced\ngrid x3", "protocol\ngrid", "reduced +\n1/4-decade"]}
+
+
 def plot(table):
     from stabpen import plotstyle
     show = {"B03": ["actuator.Kf", "actuator.L", "actuator.Rth_coil_amb"],
-            "B05": ["stage.m_eq", "stage.k_tip", "sensing.hall_delay"],
+            "B05": ["stage.m_eq", "stage.k_tip", "stage.zeta_open", "sensing.hall_delay"],
             "B01B02": ["writing.mu_eff", "writing.stribeck_speed", "friction.x_presliding"]}
-    fig, axs = common.figure(1, 3, figsize=(13.5, 4.0))
+    fig, axs = common.figure(1, 3, figsize=(14.0, 4.4))
     for ax, (exp, keys) in zip(axs, show.items()):
+        levels = sorted({e["level"] for e in table if e["exp"] == exp})
         for j, k in enumerate(keys):
             for style, (noise, syst) in (("-", (1.0, 1.0)), ("--", (4.0, 1.0)), (":", (1.0, 0.0))):
-                ents = sorted([e for e in table if e["exp"] == exp and e["noise_scale"] == noise
-                               and e["systematics"] == syst], key=lambda e: e["bench_s_median"])
+                ents = {e["level"]: e for e in table if e["exp"] == exp and e["noise_scale"] == noise
+                        and e["systematics"] == syst}
                 if not ents:
                     continue
-                x = [e["bench_s_median"] / 60 for e in ents]
-                y = [100 * max(e["params"][k]["p95"], 1e-4) for e in ents]
+                x = [li for li in levels if li in ents]
+                y = [100 * max(ents[li]["params"][k]["p95"], 1e-4) for li in x]
                 ax.plot(x, y, style, color=plotstyle.SERIES[j], lw=1.6,
                         label=f"{k.split('.', 1)[1]}" if style == "-" else None)
                 ax.plot(x, y, "o", color=plotstyle.SERIES[j], ms=3.5)
-        ax.set_xscale("log")
+        prot = {e["level"]: e["bench_s_median"] / 60 for e in table if e["exp"] == exp and e["noise_scale"] == 1.0
+                and e["systematics"] == 1.0}
+        ax.set_xticks(levels, [f"{SHORT[exp][li]}\n{prot.get(li, float('nan')):.0f} min" for li in levels], fontsize=7.5)
         ax.set_yscale("log")
-        ax.set_xlabel("bench time for the experiment (min)")
-        ax.set_title({"B03": "EXP-B03 actuator coupon", "B05": "EXP-B05 stage FRF + statics",
-                      "B01B02": "EXP-B01/B02 contact and friction"}[exp], loc="left", fontsize=10)
+        ax.set_xlabel("test level and bench time for the experiment")
+        ax.set_title({"B03": "EXP-B03 actuator coupon (24 per level)", "B05": "EXP-B05 stage FRF + statics (6 per level)",
+                      "B01B02": "EXP-B01/B02 contact and friction (5 per level)"}[exp], loc="left", fontsize=9.5)
         ax.legend(fontsize=7.5)
     axs[0].set_ylabel("95th percentile |identification error| (%)")
     common.save_figure(fig, "fig_c1_bench_time", "simulation",

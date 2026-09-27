@@ -1,9 +1,9 @@
-T00 40 s {'oracle_ratio@6Hz': 0.411, 'oracle_ratio@9Hz': 0.446, 'kfosc_ratio@6Hz': 1.028, 'kfosc_ratio@9Hz': 0.697}
-T01 65 s {'oracle_ratio@6Hz': 0.566, 'oracle_ratio@9Hz': 0.614, 'kfosc_ratio@6Hz': 1.143, 'kfosc_ratio@9Hz': 1.013}
-T02 91 s {'oracle_ratio@6Hz': 0.16, 'oracle_ratio@9Hz': 0.223, 'kfosc_ratio@6Hz': 0.994, 'kfosc_ratio@9Hz': 0.731}
-T03 117 s {'oracle_ratio@6Hz': 0.174, 'oracle_ratio@9Hz': 0.319, 'kfosc_ratio@6Hz': 1.037, 'kfosc_ratio@9Hz': 0.861}
-T04 142 s {'oracle_ratio@6Hz': 0.55, 'oracle_ratio@9Hz': 0.732, 'kfosc_ratio@6Hz': 1.744, 'kfosc_ratio@9Hz': 1.033}
-T05 167 s {'oracle_ratio@6Hz': 0.344, 'oracle_ratio@9Hz': 0.406, 'kfosc_ratio@6Hz': 1.118, 'kfosc_ratio@9Hz': 1.112}
-T06 193 s {'oracle_ratio@6Hz': 0.168, 'oracle_ratio@9Hz': 0.187, 'kfosc_ratio@6Hz': 1.024, 'kfosc_ratio@9Hz': 0.939}
-T07 218 s {'oracle_ratio@6Hz': 0.374, 'oracle_ratio@9Hz': 0.402, 'kfosc_ratio@6Hz': 1.447, 'kfosc_ratio@9Hz': 1.946}
-part written 218 s
+T00 32 s {'oracle_ratio@6Hz': 0.411, 'oracle_ratio@9Hz': 0.446, 'kfosc_ratio@6Hz': 1.028, 'kfosc_ratio@9Hz': 0.697}
+T01 58 s {'oracle_ratio@6Hz': 0.566, 'oracle_ratio@9Hz': 0.614, 'kfosc_ratio@6Hz': 1.143, 'kfosc_ratio@9Hz': 1.013}
+T02 84 s {'oracle_ratio@6Hz': 0.16, 'oracle_ratio@9Hz': 0.223, 'kfosc_ratio@6Hz': 0.994, 'kfosc_ratio@9Hz': 0.731}
+T03 110 s {'oracle_ratio@6Hz': 0.174, 'oracle_ratio@9Hz': 0.319, 'kfosc_ratio@6Hz': 1.037, 'kfosc_ratio@9Hz': 0.861}
+T04 136 s {'oracle_ratio@6Hz': 0.55, 'oracle_ratio@9Hz': 0.732, 'kfosc_ratio@6Hz': 1.744, 'kfosc_ratio@9Hz': 1.033}
+T05 162 s {'oracle_ratio@6Hz': 0.344, 'oracle_ratio@9Hz': 0.406, 'kfosc_ratio@6Hz': 1.118, 'kfosc_ratio@9Hz': 1.112}
+T06 188 s {'oracle_ratio@6Hz': 0.168, 'oracle_ratio@9Hz': 0.187, 'kfosc_ratio@6Hz': 1.024, 'kfosc_ratio@9Hz': 0.939}
+T07 213 s {'oracle_ratio@6Hz': 0.374, 'oracle_ratio@9Hz': 0.402, 'kfosc_ratio@6Hz': 1.447, 'kfosc_ratio@9Hz': 1.946}
+part written 213 s

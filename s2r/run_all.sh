@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Sim-to-real evidence chain (SIMULATION + CALCULATION; twin experiments, not measurements).
 # At most 2 worker processes at any time. Order matters: C1 identification feeds C2.
-# Logs: results/s2r/logs/*.log. Total about 45-60 min on a shared 4-core machine.
+# Logs: results/s2r/logs/*.log. Total about 30 min on a shared 4-core machine; no single call over ~10 min.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export PYTHONPATH=.
@@ -15,6 +15,8 @@ python3 -m s2r.run_c2_sensitivity         > "$LOG/c2_sensitivity.log" 2>&1
 python3 -m s2r.run_c3_modelform           > "$LOG/c3_modelform.log" 2>&1
 python3 -m s2r.run_c3_piezo               > "$LOG/c3_piezo.log" 2>&1
 python3 -m s2r.run_c4_domain              > "$LOG/c4_domain.log" 2>&1
-python3 -m s2r.run_c1_benchtime           > "$LOG/c1_benchtime.log" 2>&1
+python3 -m s2r.run_c1_benchtime --only B05     > "$LOG/c1_benchtime_b05.log" 2>&1
+python3 -m s2r.run_c1_benchtime --only B01B02  > "$LOG/c1_benchtime_b01b02.log" 2>&1
+python3 -m s2r.run_c1_benchtime --only B03     > "$LOG/c1_benchtime_b03.log" 2>&1
 python3 -m s2r.run_c5_example             > "$LOG/c5_example.log" 2>&1
 echo "s2r chain complete"

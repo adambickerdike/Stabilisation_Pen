@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "SIMULATION (virtual bench files) + CALCULATION",
-    "generated_utc": "2026-09-27T22:14:51+00:00",
-    "git_revision": "e5bf826-dirty",
+    "generated_utc": "2026-09-27T23:22:48+00:00",
+    "git_revision": "26d05b5-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_c5_example.py",

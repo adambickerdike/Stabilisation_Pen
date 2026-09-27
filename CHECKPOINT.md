@@ -1,6 +1,6 @@
 # Checkpoint — 2026-09-27
 
-Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it.
+Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it. The pencil-class concept has its own overlay, `config/pencil.yaml` **P0.1.2** (§7).
 
 ## 1. What exists and what actually ran
 
@@ -94,3 +94,73 @@ All are calculation or simulation unless stated otherwise.
 - **Firmware and ML.**
   - Firmware: `make -C firmware test` (host, ASan/UBSan, about 15 s) and `make -C firmware qemu` (emulated Cortex-M33, about 25 min).
   - ML: `python3 -m pytest ml/tests -q`; the C export is `python3 -m ml.export_c` (see `ml/README.md`).
+
+## 7. Pencil-class concept, AI guidance and sim-to-real (added 2026-09-27)
+
+The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still corrects the ink, with AI prediction, app capture, exact forces and mechanisms, a 3D simulation and sim-to-real work. Integrating report: `docs/pencil_concept.md`. 3D replay: `viewer/` (published as a private artifact).
+
+**What exists and ran** (all calculation or simulation):
+- `config/pencil.yaml` P0.1.2.
+- CAD `mechanics/cad/pencil_revP.py`, Q and L layouts: fit checks, STEP, drawings.
+- Mechanism study: `analysis/pencil_mechanisms.py`, 12 candidates.
+- Pencil model P1: `sim/pencil/`, 10 tests, exact match with M1 when locked.
+- Page-sensor rate study.
+- Touchdown-tail study.
+- AI prediction, guidance and autocorrect: `aiguide/` (32 tests) and `app/penapp/autocorrect.py` (app 147 tests).
+- Sim-to-real twin experiments: `s2r/`, 22 tests.
+- Decisions DEC-019 to DEC-023; requirements REQ-PNC-001 to 008.
+
+**Numbers not to lose:**
+- **Forces.** The stage design load is 0.170 N per axis behind the skid, against 0.758 N with a conventional nib. It scales with the axial nib force F_c (0.15 N assumed; EXP-Q02).
+- **Stage.** Four custom 2.6 × 36 × 0.67 mm piezo plates, push-pull pair per axis:
+  - lever 1.363;
+  - ±277 µm stroke at the design load, ±162 µm at −20 % tolerance, ±48 µm at 35°;
+  - 0.329 N at the nib; 192 Hz; zero static hold power.
+- **Voice coil at the 7.9 mm bore.** K_m 0.080 N/√W, so holding 0.170 N costs 2.4 W against 0.31 W allowed.
+- **CAD.** 12.2 g before wiring and margin; centre of mass 88 mm from the nib; all checks pass for Q. L fails on the snubber web.
+- **Battery, 90 mAh.**
+  - Recording only: 4.1 h.
+  - Assist with 2 × DRV2700: 0.83 h.
+  - Assist with a charge-recovery driver: 2.7 h, or 3.4 h at 0.3 µm Hall noise.
+- **Simulated effect, pencil model P1.**
+  - Oracle ratio: 0.19–0.26 at 0.1 mm tremor; 0.20–0.46 at 0.3 mm, with 16–65 % of the time at the travel limit.
+  - Kalman: 0.85–0.92, and only at 8–12 Hz.
+- **Touchdown tails.** 0.87 mm per touchdown with the tilt-range front stop; 0.29 mm with a tilt-adaptive stop at 0.3 mm margin (oracle ratio 0.24 → 0.30).
+- **Page sensor for guided mode.** ≥ 120 Hz at ≤ 10 ms is needed (guided/neutral 0.42), against 0.76 at 30 Hz. No fitting part was found.
+- **AI.**
+  - Digital autocorrect: word errors 32 % → 10 % at 7 % recognition errors; ≤ 0.1 % of correct words changed.
+  - Physical guidance toward AI-predicted letters gives no net benefit: break-even is 265 µm (P1) and a correct letter in the user's style is about 300 µm off.
+  - Wrong templates stay at the 0.40 mm stop; 2.2 % of letters are misread at full authority, 0.3 % gated.
+  - The phone must predict two letters ahead to meet the 0.3 s lead.
+- **Sim-to-real.**
+  - Identification recovers parameters to ≤ 1.6 % (95th percentile) in about 1.5 h of bench time per build.
+  - The calibrated twin predicts the oracle ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated.
+  - The frozen Kalman set degrades to a median of 0.88 at 9 Hz on randomised plants.
+  - The existing Monte Carlo conflates plant and controller values.
+
+**Blockers and next actions:**
+1. EXP-Q02: lowest usable nib force per ink. Every stage load scales with it.
+2. EXP-Q04: custom-width plates. Stroke, strength and drop with snubbers.
+3. EXP-Q05: a low-power driver for 2–2.6 µF. It decides assist time.
+4. EXP-Q06/Q07: loaded 1- and 2-axis stages.
+5. EXP-Q08: touchdown tails with a tilt-adaptive stop (SQUIGGLE-class trim motor from the IMU tilt).
+6. EXP-H03: skid feel.
+7. Page sensor at ≥ 120 Hz in the nose (EXP-S01 on a candidate).
+8. EXP-A02: people's letters against personal templates, before any physical AI-guidance claim.
+9. Freedom to operate: the template pipeline is close to PAT-01 claim 15; attorney review.
+10. Simulator: split `core.simulate` into a plant step and a controller tick. Redo the Monte Carlo and the estimator selection under fixed firmware on randomised plants (`docs/sim_to_real.md` §8, items 12–14).
+
+**Resume.**
+
+```bash
+python3 mechanics/cad/pencil_revP.py --variant Q
+python3 analysis/pencil_mechanisms.py
+python3 -m sim.pencil.run_study
+python3 -m sim.pencil.diag_touchdown_tails
+bash aiguide/run_all.sh
+bash s2r/run_all.sh
+python3 viewer/build.py
+```
+
+- The pencil model reads the CAD summary, so re-run the CAD first after any geometry change.
+- `sim/pencil` and `aiguide` keep their numba caches in their own `build/` directories.

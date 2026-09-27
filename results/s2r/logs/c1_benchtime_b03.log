@@ -1,5 +1,5 @@
-/home/user/Stabilisation_Pen/results/s2r/c1_bench_time.json 2170 s
-actuator.Kf                  p95 by level [1.93, 0.69, 0.88, 0.99] % ; no-syst [0.1, 0.06, 0.04, 0.03] ; t(1%) 369.50595412271326
+/home/user/Stabilisation_Pen/results/s2r/c1_bench_time.json 54 s
+actuator.Kf                  p95 by level [1.93, 0.69, 0.88, 0.99] % ; no-syst [0.1, 0.06, 0.04, 0.03] ; t(1%) 369.5059541227208
 actuator.R20                 p95 by level [0.18, 0.17, 0.17, 0.19] % ; no-syst [0.16, 0.19, 0.19, 0.18] ; t(1%) 80.0
 actuator.L                   p95 by level [0.27, 0.33, 0.26, 0.27] % ; no-syst [0.22, 0.2, 0.19, 0.17] ; t(1%) 110.03999999999999
 actuator.Rth_coil_amb        p95 by level [0.18, 0.17, 0.17, 0.19] % ; no-syst [0.16, 0.19, 0.19, 0.18] ; t(1%) 170.0

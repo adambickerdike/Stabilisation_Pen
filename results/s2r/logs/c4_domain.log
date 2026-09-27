@@ -1,9 +1,5 @@
-/usr/local/lib/python3.11/dist-packages/numpy/_core/fromnumeric.py:3824: RuntimeWarning: Mean of empty slice
-  return _methods._mean(a, axis=axis, dtype=dtype,
-/usr/local/lib/python3.11/dist-packages/numpy/_core/_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
-  ret = ret.dtype.type(ret / rcount)
-degradation done 52 s
-conflation check done 92 s
-tuning done 143 s {'nominal': {0: 1.1868969783817502, 1: 1.2545840793132876, 2: 1.5564791593821352, 3: 1.749588956628816, 4: 1.282912599172161, 5: 1.2924087818986456}, 'randomised': {0: 1.4937788650653263, 1: 1.1821919460040187, 2: 1.830198389683628, 3: 1.9186946396619344, 4: 1.2431050063208215, 5: 1.362246754622737}}
-eval done 250 s
-/home/user/Stabilisation_Pen/results/s2r/c4_domain.json 250 s selected nominal 0 selected DR 1
+degradation done 51 s
+conflation check done 91 s
+tuning done 131 s {'nominal': {0: 1.1868969783817502, 1: 1.2545840793132876, 2: 1.5564791593821352, 3: 1.749588956628816, 4: 1.282912599172161, 5: 1.2924087818986456}, 'randomised': {0: 1.4937788650653263, 1: 1.1821919460040187, 2: 1.830198389683628, 3: 1.9186946396619344, 4: 1.2431050063208215, 5: 1.362246754622737}}
+eval done 232 s
+/home/user/Stabilisation_Pen/results/s2r/c4_domain.json 232 s selected nominal 0 selected DR 1

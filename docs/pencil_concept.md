@@ -28,7 +28,7 @@ The short answer, with the numbers behind it in the sections below:
 4. **What the ink can gain is bounded.** The usable correction is about ±0.3 mm at the nib (±277 µm under load). With perfect knowledge of intent the pencil cuts the ink error to 0.19–0.26 of the uncorrected value for 0.1 mm tremor. It reaches 0.20–0.46 at 0.3 mm, where it hits its travel limit (SIM). With the pen's own tremor estimator it achieves 0.85–0.92, and only at 8–12 Hz; at lower frequencies it cannot tell tremor from writing. That estimator is the same open problem as in Rev A (§3, §10).
 5. **AI autocorrect works digitally, not physically.** In the app, a language-model corrector cuts word errors from 32 % to 10 % at a 7 % recognition error rate. It changes ≤ 0.1 % of correct words and leaves the original ink untouched (CALC). Physically, the pen can pull the nib toward an AI-predicted letter drawn in the user's style. But such a template is itself about 300 µm off, which is right at the 230–330 µm break-even. So AI templates give no net benefit on free handwriting, although wrong predictions are safely bounded by the travel (SIM). Physical guidance pays off when the template is known, as in tracing, copying or drawing aids (§6).
 6. **Recording on paper needs a new sensor.** Nothing off the shelf fits the nose. The simulation sets the requirement: a page sensor of ≥ 120 Hz with ≤ 10 ms latency, fused with the IMU. The chip-scale camera that does fit runs at 30 fps and loses most of the guided-mode benefit (§5).
-7. **Sim-to-real.** The calibration pipeline is built and tested on twin experiments. It predicts how much bench time each parameter needs, and what the calibrated simulator will and will not predict (§8).
+7. **Sim-to-real is ready before the hardware.** A calibration pipeline follows the bench protocols. On 15 blind simulated plants it recovers every model parameter to ≤ 1.6 % in about 1.5 h of bench time per build. The calibrated twin then predicts the physical-limit ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated. The same work found that the frozen tremor estimator is fragile across plants, and that the existing Monte Carlo lets the simulated controller see true plant values (§8).
 
 ## 2. Forces at the nib
 
@@ -230,7 +230,52 @@ Drivers and sensor noise:
 
 Barrel temperature stays ≤ 37.4 °C in every mode (CALC).
 
-## 8. Sim-to-real (pending: `sim_to_real.md`)
+## 8. Sim-to-real
+
+Sources:
+- [`sim_to_real.md`](sim_to_real.md), the report;
+- [`../validation/sim_to_real.md`](../validation/sim_to_real.md): bench workflow, data formats, gap metrics G1–G9 and the hardware-in-the-loop plan;
+- `s2r/` (22 tests) and `results/s2r/`.
+
+These are **twin experiments**. Hidden "true" plants, some outside the declared ranges, are measured through models of the instruments the protocols name. The identification sees only the recorded data. This shows that the method works and what it costs. It cannot show that the simulator's structure is right about a real pen; only the bench can (SIM, CALC).
+
+**Calibration pipeline**, run in protocol order (EXP-B03 → B05 → B01/B02) on 15 blind plants:
+- **Recovery.** Every model parameter is recovered to ≤ 1.6 % at the 95th percentile: K_f 0.9 %, m_eq 1.4 %, μ_k 1.2 %, paper stiffness 1.6 %. The stated uncertainties cover the truth for 93–100 % of plants.
+- **The exception** is the Stribeck speed. It cannot be identified when the friction curve has no dip, and its uncertainty says so.
+
+**Bench time for that accuracy:**
+- about 15 min per actuator coupon;
+- about 40 min per stage build;
+- about 33 min per ink × paper × underlay.
+
+That is about 1.5 h per build against 2.5 h at the protocol settings. The accuracy floor is instrument calibration (force-sensor gain, vibrometer scale, bath temperature), not test duration. K_f needs the back-EMF method (uncertainty 2.3 % → 1.0 %).
+
+**How well a calibrated twin predicts the plant:**
+
+| Prediction | Uncalibrated | Calibrated (B03, B05, B01/B02; hand simulant known to ±10 %) |
+|---|---|---|
+| Oracle ratio within ±0.1 (AC-B09-03) | 4–5 of 15 plants | **14 of 15** |
+| Kalman ratio at 9 Hz within ±0.1 | 5 of 15 | 9 of 15 (14 of 15 once the sensor parameters, EXP-S01/B04, are identified) |
+| Static hold power | — | within 2.3 % |
+| No-correction ink error | — | within 15 % |
+| Writing distortion | — | only within a factor of 2 |
+
+What the twin experiments also found:
+- **Model-form diagnostics.**
+  - Each missing effect the study planted is flagged by a different mix of residual tests: a flexure mode, extra delay, pivot friction, backlash, friction memory, and a hand resting on the paper.
+  - The correct model passes all of them.
+  - Two existing criteria miss most of these defects and should be replaced: resonance within ±10 % (AC-B05-01) and friction-model R² (AC-B02-01).
+- **Pencil piezo stage.** Hysteresis is manageable:
+  - An inverse model fitted from one 8 s sweep tracks a 0.2 mm sine to 2.8–3.1 % open loop, against 7 % for a linear gain.
+  - With Hall feedback it tracks to 0.5–1.6 %.
+  - Under a 0.1 N nib load the drive saturates at 30 V. That is a stroke-budget problem, consistent with §3.
+- **Estimator robustness.**
+  - The frozen Kalman set degrades from a ratio of 0.70 on the nominal plant to a median of 0.88 on randomised held-out plants; 7 of 16 meet AC-B09-04.
+  - A set tuned on randomised plants (the v0.4.1 one) is better on 15 of 16.
+  - Estimator selection should be done on randomised plants under fixed firmware (DEC-009 revisit).
+- **A flaw in the existing Monte Carlo.** When `sim/run_sweeps.py` varies a plant parameter, the simulated controller receives the true value as well. Real firmware keeps the constants it was generated with. Under fixed firmware, K_f and k_tip rank 2nd and 3rd for the Kalman ratio at 9 Hz; the existing sensitivity file ranks them last. `s2r/twin.py` separates the two. The simulator split is proposed (`sim_to_real.md` §8, items 12–13).
+
+**Hardware in the loop.** `validation/sim_to_real.md` §7 specifies running the real MCU against M1 as the plant. It needs the core split into a plant step and a controller tick (item 12).
 
 ## 9. What to make, what to buy, what to do
 

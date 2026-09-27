@@ -164,6 +164,18 @@ Strongest rank correlations:
 
 Friction's effect on estimator performance raises the priority of EXP-B02 (friction vs speed and paper) and EXP-B01.
 
+**Caveat found by the sim-to-real study (`docs/sim_to_real.md` §4, §8 item 13).**
+
+This Monte Carlo varies a plant parameter and also hands the new value to the simulated controller. `model.build_params` builds the servo feedforward, the current reference, the current-loop PI and γ from the same overridden values. Real firmware keeps the constants it was generated with.
+
+The consequences:
+
+- The ranking above treats every sample as if the firmware had been retuned for that plant.
+- Under fixed firmware (`s2r/twin.py`), K_f and k_tip are the 2nd and 3rd most influential parameters for the Kalman ratio at 9 Hz. This table ranks them last.
+- Bench priorities should follow the fixed-firmware ranking, which puts EXP-B03 and EXP-B05 alongside EXP-B01/B02.
+
+The simulator split that would make this the default (plant step versus controller tick) is proposed, not made.
+
 ### 3.8 Failure cases → DEC-015
 
 `results/sim/sweeps/summary.json`, 9 Hz tremor, Kalman; reference residual 302 µm.

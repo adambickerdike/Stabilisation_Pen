@@ -14,7 +14,7 @@ noise for every run). S = d outcome / d ln(theta). From S:
 
 Evidence status: SIMULATION + CALCULATION (finite differences of simulation outputs).
 Outputs: results/s2r/c2_sensitivity.json, fig_c2_sensitivity.png
-Run: python3 -m s2r.run_c2_sensitivity [--quick]     (about 11 min on 2 processes)
+Run: python3 -m s2r.run_c2_sensitivity [--quick]     (about 3 min on 2 processes)
 """
 from __future__ import annotations
 

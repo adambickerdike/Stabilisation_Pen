@@ -26,7 +26,9 @@ def test_measure_applies_gain_latency_and_quantisation():
     ses = ins.Session({"probe": 1.02}, {"probe": 0.1}, {}, 0.0)
     tr_, y = ins.measure(ch, t, x, np.random.default_rng(0), ses)
     expect = 1.02 * np.sin(2 * np.pi * 5 * (tr_ - 2e-3)) + 0.1
-    assert np.max(np.abs(y - expect)) <= 0.5e-3 + 1e-9
+    ok = tr_ >= 2e-3              # before the latency has elapsed the channel can only report the first value
+    assert np.max(np.abs(y[ok] - expect[ok])) <= 0.5e-3 + 1e-9
+    assert np.allclose(y[~ok], 0.1)
     assert np.allclose(np.diff(tr_), 1e-3)
 
 

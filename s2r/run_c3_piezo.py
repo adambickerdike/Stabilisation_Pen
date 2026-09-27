@@ -16,7 +16,7 @@ in total, relative to the reference RMS. Also: the PI inverse applied to a bende
 Evidence status: SIMULATION + CALCULATION; the hysteresis, creep, mass and flexure numbers
 are ASSUMPTIONS (AMF-11 gives no hysteresis figure).
 Outputs: results/s2r/c3_piezo.json, fig_c3_piezo.png
-Run: python3 -m s2r.run_c3_piezo     (about 2 min, 1 process)
+Run: python3 -m s2r.run_c3_piezo     (under 1 min, 1 process)
 """
 from __future__ import annotations
 

@@ -10,7 +10,7 @@ The identified sets feed C2 (run_c2_twin.py).
 Evidence status: SIMULATION (virtual bench on M1 and standalone models) and
 CALCULATION (identification). Not a measurement of any pen.
 Outputs: results/s2r/c1_identification.json, fig_c1_recovery.png
-Run: python3 -m s2r.run_c1_identify [--quick]     (about 4 min on 2 processes)
+Run: python3 -m s2r.run_c1_identify [--quick]     (about 2-3 min on 2 processes)
 """
 from __future__ import annotations
 

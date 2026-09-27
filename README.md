@@ -15,7 +15,7 @@ This repository holds the research and development package: the audit of the sou
 | The verdict on the source report | [`docs/audit.md`](docs/audit.md), [`docs/corrections.csv`](docs/corrections.csv) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
-| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…022) |
+| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…023) |
 | What the simulations say | [`docs/sim_report.md`](docs/sim_report.md) |
 | What may be claimed for each feature | [`docs/features.md`](docs/features.md) |
 | The riskiest open questions | [`docs/research_questions.md`](docs/research_questions.md) |
@@ -46,6 +46,10 @@ This repository holds the research and development package: the audit of the sou
    - The skid causes touchdown tails. A tilt-adaptive front stop cuts them from 0.87 to 0.29 mm.
    - Paper capture needs a ≥ 120 Hz page sensor that does not yet exist at this size.
    - AI helps as a digital autocorrect (word errors 32 % → 10 %). Physical guidance toward AI-predicted letters does not help free writing: a correct prediction is already about 300 µm off, beyond break-even. Guidance toward known templates does help.
+6. **The simulator can be calibrated from the planned bench work, and the twin experiments say how well** (`docs/sim_to_real.md`, DEC-023).
+   - On 15 blind simulated plants the protocol experiments recover every model parameter to ≤ 1.6 % in about 1.5 h of bench time per build.
+   - The calibrated twin then predicts the oracle ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated.
+   - The same work found that the frozen tremor estimator degrades on randomised plants (median ratio 0.88 at 9 Hz), and that the existing Monte Carlo lets the controller see true plant values.
 
 ## Completion table
 
@@ -72,6 +76,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Pencil | Pencil-class concept: CAD (Q and L layouts, fit checks, STEP, drawings), mechanism study (forces, 12 mechanisms, drive power, drop), pencil model P1 (skid, spring-loaded refill, piezo stage; exact match with M1 when locked), page-sensor rate study, touchdown tails | executed (design, calculation, simulation) · hardware pending | `docs/pencil_concept.md`, `docs/pencil_mechanisms.md`, `mechanics/cad/pencil_revP.py`, `sim/pencil/`, `results/pencil/` |
 | Pencil | AI prediction and guidance (text predictor, style templates, stroke continuation, closed loop on P1 and M1, deployment and ICD proposal) and app autocorrect | executed (synthetic data) · people pending (EXP-A02/A03) | `docs/ai_guidance.md`, `aiguide/`, `results/ai/` |
 | Pencil | 3D replay page of the simulated pencil with generated tables | executed | `viewer/` (`python3 viewer/build.py`) |
+| 4 Simulation | Sim-to-real: virtual bench with instrument models, blind identification of 15 plants in protocol order, bench-time study, calibrated-twin prediction gap, model-form diagnostics, piezo hysteresis identification, domain randomisation, hardware-in-the-loop specification; 22 tests | executed (twin experiments) · bench pending | `docs/sim_to_real.md`, `validation/sim_to_real.md`, `s2r/`, `results/s2r/` |
 | — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
 | — | Interfaces, decisions, plan with effort ranges (100–174 pw) and quotation list, environment lock | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md`, `requirements.txt` |
 
@@ -99,6 +104,7 @@ python3 analysis/pencil_mechanisms.py                 # forces, mechanisms, powe
 python3 -m sim.pencil.run_study                       # pencil model P1 (about 95 s); tests: python3 -m pytest sim/pencil/tests -q
 python3 -m sim.pencil.diag_touchdown_tails            # touchdown tails and the tilt-adaptive stop
 bash aiguide/run_all.sh                               # AI prediction, guidance and autocorrect (about 15 min)
+bash s2r/run_all.sh                                   # sim-to-real twin experiments (about 30 min on 2 processes)
 python3 viewer/build.py                               # 3D replay page from the results
 ```
 
@@ -119,6 +125,7 @@ Firmware, ML and app have their own build and test commands in their READMEs.
 | `ml/`, `data/` | Learned predictor pipeline, schemas |
 | `app/` | Companion software |
 | `aiguide/` | AI prediction, templates and guidance studies (pencil concept) |
+| `s2r/` | Sim-to-real: virtual bench, identification, calibrated twin |
 | `viewer/` | 3D replay page |
 | `validation/` | Experiments and studies |
 | `docs/` | Everything written |

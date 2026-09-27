@@ -20,7 +20,8 @@ Kalman distortion without tremor, neutral-pen ink error, static hold copper loss
 Evidence status: SIMULATION (twin experiment). It shows how the method behaves
 when the model structure is right; it says nothing about whether M1 is right.
 Outputs: results/s2r/c2_twin.json, fig_c2_gap.png
-Run: python3 -m s2r.run_c2_twin [--quick] [--plus N]   (about 20 min on 2 processes)
+Run: python3 -m s2r.run_c2_twin --part 1; --part 2; --merge   (about 4 min per part on 2 processes;
+     no --part runs all 15 plants in one call, about 8 min)
 """
 from __future__ import annotations
 

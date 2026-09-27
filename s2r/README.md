@@ -24,14 +24,14 @@ Report: [`docs/sim_to_real.md`](../docs/sim_to_real.md). Procedure for the bench
 ## Run
 
 ```bash
-python3 -m pytest s2r/tests -q                 # about 3-5 min (first run compiles numba into s2r/build/)
-bash s2r/run_all.sh                            # full chain, about 35-45 min on 2 processes; logs in results/s2r/logs/
+python3 -m pytest s2r/tests -q                 # 22 tests, about 25 s with a warm numba cache (first run compiles into s2r/build/)
+bash s2r/run_all.sh                            # full chain, about 30 min on 2 processes; logs in results/s2r/logs/
 ```
 
 | Script | Output (`results/s2r/`) | Runtime (2 processes, shared machine) |
 |---|---|---|
 | `python3 -m s2r.run_c1_identify` | `c1_identification.json`, `fig_c1_recovery.png` | about 2-3 min |
-| `python3 -m s2r.run_c1_benchtime` | `c1_bench_time.json`, `fig_c1_bench_time.png` | {{BT_RUNTIME}} |
+| `python3 -m s2r.run_c1_benchtime --only B05`, `--only B01B02`, `--only B03` (merged into one file; `--replot` redraws the figure) | `c1_bench_time.json`, `fig_c1_bench_time.png` | about 10 min in all: B05 1 min, B01/B02 8 min, B03 1 min. The first run (one call) took 36 min: BLAS thread pools oversubscribed the shared cores. `s2r/__init__.py` now pins one thread per process |
 | `python3 -m s2r.run_c2_twin --part 1`, `--part 2`, `--merge` | `c2_twin.json`, `fig_c2_gap.png` | about 4 min per part |
 | `python3 -m s2r.run_c2_sensitivity` | `c2_sensitivity.json`, `fig_c2_sensitivity.png` | about 3 min |
 | `python3 -m s2r.run_c3_modelform` | `c3_modelform.json`, `fig_c3_model_form.png` | about 2-3 min |
@@ -44,5 +44,5 @@ Every script accepts `--quick` for a smoke run. Every JSON carries `stabpen.prov
 ## Rules this package keeps
 
 - It never writes under `sim/`, `stabpen/`, `config/`, `firmware/`, `ml/` or `app/`. The numba cache goes to `s2r/build/numba_cache` (set in `s2r/__init__.py`); scenario caches to `s2r/build/scn_cache` (both git-ignored via `build/`).
-- At most 2 worker processes.
+- At most 2 worker processes, one BLAS/OpenMP/numba thread each (set in `s2r/__init__.py`).
 - Identification code receives datasets only; hidden truths and session errors live under `_hidden` keys that `io.save` never writes.

@@ -1,0 +1,2461 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (virtual bench) + CALCULATION (identification); bench times include ASSUMED overheads",
+    "generated_utc": "2026-09-27T23:47:46+00:00",
+    "git_revision": "26d05b5-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_c1_benchtime.py --only B03",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "first": 5001,
+      "n_jobs": 384
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "levels": {
+    "B03": [
+      "0.2 s holds, 4 step averages, 45 s thermal, no back-EMF",
+      "0.5 s holds, 16 averages, 90 s thermal, back-EMF",
+      "protocol: 2 s holds, 16 averages, 180 s thermal, back-EMF",
+      "2 s holds x3, 64 averages, 360 s thermal, back-EMF"
+    ],
+    "B05": [
+      "2 chirps x 3 s",
+      "2 chirps x 10 s",
+      "4 chirps x 10 s",
+      "protocol: 10 chirps x 10 s"
+    ],
+    "B01B02": [
+      "reduced grid x1 (1 N, 50 deg, +-t1)",
+      "reduced grid x3",
+      "protocol grid x1 (3 N x 2 angles x 4 directions)",
+      "reduced grid x1, quarter-decade speeds (proposed)"
+    ]
+  },
+  "table": [
+    {
+      "exp": "B05",
+      "level": 0,
+      "label": "2 chirps x 3 s",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 2230.5,
+      "n": 6,
+      "trial_wall_s_median": 1.0787324905395508,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0009470814791003847,
+          "p95": 0.0013929959331398217,
+          "U95_median": 0.0058374950194430425,
+          "coverage95": 1.0,
+          "bench_s_param": 1924.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.03048041436950975,
+          "p95": 0.0571693509385231,
+          "U95_median": 0.005826813365957235,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "stage.m_eq": {
+          "rms": 0.005293129597058446,
+          "p95": 0.008996498841685168,
+          "U95_median": 0.015598125397668052,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.023561476734912216,
+          "p95": 0.031918522007010675,
+          "U95_median": 0.04930589350175173,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0005125940027683127,
+          "p95": 0.0009700509020149168,
+          "U95_median": 0.007786245770928091,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.002099130740756591,
+          "p95": 0.003958789110446485,
+          "U95_median": 0.015534684717310385,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 0,
+      "label": "2 chirps x 3 s",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 2230.5,
+      "n": 6,
+      "trial_wall_s_median": 1.195630669593811,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0026206540950491743,
+          "p95": 0.0031364626328206167,
+          "U95_median": 0.005852205368936315,
+          "coverage95": 1.0,
+          "bench_s_param": 1924.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.003708600050596822,
+          "p95": 0.006976139192306931,
+          "U95_median": 0.005976045176188464,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "stage.m_eq": {
+          "rms": 0.006604986020788759,
+          "p95": 0.009369151574864,
+          "U95_median": 0.01551867946212009,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.01980074182510931,
+          "p95": 0.027346981153720272,
+          "U95_median": 0.045772979718332996,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "stage.axial_k": {
+          "rms": 0.000992129699543659,
+          "p95": 0.0017713635568967021,
+          "U95_median": 0.007791039487203723,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.010304943573013757,
+          "p95": 0.013464837877572647,
+          "U95_median": 0.017872822686436654,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 0,
+      "label": "2 chirps x 3 s",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 2230.5,
+      "n": 6,
+      "trial_wall_s_median": 1.111228585243225,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0031481703123125305,
+          "p95": 0.0049910781899832795,
+          "U95_median": 0.006684685465332951,
+          "coverage95": 1.0,
+          "bench_s_param": 1924.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.03959809679737179,
+          "p95": 0.07565936169334338,
+          "U95_median": 0.01660915531816617,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "stage.m_eq": {
+          "rms": 0.005016007971055222,
+          "p95": 0.008921191938569007,
+          "U95_median": 0.015535249871587144,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.08095716088403167,
+          "p95": 0.13442505401770355,
+          "U95_median": 0.15622373758590447,
+          "coverage95": 1.0,
+          "bench_s_param": 628.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0013745391826390104,
+          "p95": 0.0019841746589208263,
+          "U95_median": 0.007836514493100046,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.020934690547242046,
+          "p95": 0.03182487273807861,
+          "U95_median": 0.027777081897107765,
+          "coverage95": 0.6666666666666666,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 1,
+      "label": "2 chirps x 10 s",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 2251.5,
+      "n": 6,
+      "trial_wall_s_median": 1.356227993965149,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0006073913203339382,
+          "p95": 0.0008892586501803846,
+          "U95_median": 0.0058362007541850995,
+          "coverage95": 1.0,
+          "bench_s_param": 1945.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.003245379947154206,
+          "p95": 0.006247758479489863,
+          "U95_median": 0.005822978827177805,
+          "coverage95": 0.8333333333333334,
+          "bench_s_param": 649.5
+        },
+        "stage.m_eq": {
+          "rms": 0.003566202129937635,
+          "p95": 0.006095495013767233,
+          "U95_median": 0.015556334098221412,
+          "coverage95": 1.0,
+          "bench_s_param": 649.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.032066201982766086,
+          "p95": 0.05290160511419417,
+          "U95_median": 0.05272451218472022,
+          "coverage95": 1.0,
+          "bench_s_param": 649.5
+        },
+        "stage.axial_k": {
+          "rms": 6.795038942799103e-05,
+          "p95": 0.0001071624356622836,
+          "U95_median": 0.007784924164802091,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.0022073405612955846,
+          "p95": 0.0042622658534837285,
+          "U95_median": 0.02753887675666332,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 1,
+      "label": "2 chirps x 10 s",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 2251.5,
+      "n": 6,
+      "trial_wall_s_median": 1.4059967994689941,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0029790889851549485,
+          "p95": 0.004185392198511287,
+          "U95_median": 0.005845844456363026,
+          "coverage95": 1.0,
+          "bench_s_param": 1945.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.001477746375013001,
+          "p95": 0.002193492776160641,
+          "U95_median": 0.005929228904738938,
+          "coverage95": 1.0,
+          "bench_s_param": 649.5
+        },
+        "stage.m_eq": {
+          "rms": 0.010061545819338664,
+          "p95": 0.01459626385021699,
+          "U95_median": 0.015417777683749523,
+          "coverage95": 0.8333333333333334,
+          "bench_s_param": 649.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.017321033407829048,
+          "p95": 0.025387993559140915,
+          "U95_median": 0.03920558865206408,
+          "coverage95": 1.0,
+          "bench_s_param": 649.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0008535510881999463,
+          "p95": 0.0013733813396209858,
+          "U95_median": 0.008517593040235841,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.017262238745946252,
+          "p95": 0.028695964981008446,
+          "U95_median": 0.021184347931679184,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 1,
+      "label": "2 chirps x 10 s",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 2251.5,
+      "n": 6,
+      "trial_wall_s_median": 1.3568813800811768,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.003755173472073709,
+          "p95": 0.00553910313745299,
+          "U95_median": 0.006655558723825207,
+          "coverage95": 1.0,
+          "bench_s_param": 1945.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.008895049474609128,
+          "p95": 0.016865276461515585,
+          "U95_median": 0.006340911046537458,
+          "coverage95": 0.6666666666666666,
+          "bench_s_param": 649.5
+        },
+        "stage.m_eq": {
+          "rms": 0.004802414446744372,
+          "p95": 0.007801075820310623,
+          "U95_median": 0.015537633138773998,
+          "coverage95": 1.0,
+          "bench_s_param": 649.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.013834696128198008,
+          "p95": 0.023753295638396538,
+          "U95_median": 0.06411628301490453,
+          "coverage95": 1.0,
+          "bench_s_param": 649.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0005066267326611174,
+          "p95": 0.0007773124049881914,
+          "U95_median": 0.007805076390678964,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.008709776119344845,
+          "p95": 0.013345083113067417,
+          "U95_median": 0.014437486272097582,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 2,
+      "label": "4 chirps x 10 s",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 2284.5,
+      "n": 6,
+      "trial_wall_s_median": 1.8004800081253052,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0008299907805741749,
+          "p95": 0.001352011995932372,
+          "U95_median": 0.005835608916895209,
+          "coverage95": 1.0,
+          "bench_s_param": 1978.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.0012782636038230343,
+          "p95": 0.0022964922015023307,
+          "U95_median": 0.006060190189933529,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "stage.m_eq": {
+          "rms": 0.005007005191976301,
+          "p95": 0.00881767137175413,
+          "U95_median": 0.015532263601192153,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.022331351044398165,
+          "p95": 0.04062436261531642,
+          "U95_median": 0.027628069917669366,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0003354851495901205,
+          "p95": 0.0006329851492886951,
+          "U95_median": 0.0077852258876306875,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.014976185299019182,
+          "p95": 0.02897295421769912,
+          "U95_median": 0.025068155543044403,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 2,
+      "label": "4 chirps x 10 s",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 2284.5,
+      "n": 6,
+      "trial_wall_s_median": 1.8772106170654297,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.00294026056698191,
+          "p95": 0.004645680923933264,
+          "U95_median": 0.0058636855246684385,
+          "coverage95": 1.0,
+          "bench_s_param": 1978.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.0009578460663604518,
+          "p95": 0.0013783118742302792,
+          "U95_median": 0.005853946176190527,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "stage.m_eq": {
+          "rms": 0.0072141565475338,
+          "p95": 0.011942164409522331,
+          "U95_median": 0.01562746838201084,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.037151351845060035,
+          "p95": 0.06182853615720136,
+          "U95_median": 0.054937078630924646,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0014191991361707417,
+          "p95": 0.002213232847097956,
+          "U95_median": 0.013680859487430419,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.018090218330411016,
+          "p95": 0.03069839807215813,
+          "U95_median": 0.019318524805086987,
+          "coverage95": 0.6666666666666666,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 2,
+      "label": "4 chirps x 10 s",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 2284.5,
+      "n": 6,
+      "trial_wall_s_median": 1.8515902757644653,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.002033614752551996,
+          "p95": 0.0031792805530549174,
+          "U95_median": 0.006684185127370573,
+          "coverage95": 1.0,
+          "bench_s_param": 1978.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.004242756093111664,
+          "p95": 0.008020734758162014,
+          "U95_median": 0.005938614684079489,
+          "coverage95": 0.8333333333333334,
+          "bench_s_param": 682.5
+        },
+        "stage.m_eq": {
+          "rms": 0.007537164425902208,
+          "p95": 0.01172685973303719,
+          "U95_median": 0.01561903182097028,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.035715395766348856,
+          "p95": 0.06684776140307834,
+          "U95_median": 0.04514805731572983,
+          "coverage95": 1.0,
+          "bench_s_param": 682.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0009696738057278008,
+          "p95": 0.0015795305596893608,
+          "U95_median": 0.008016208455520321,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.010070779634677389,
+          "p95": 0.015734353624388495,
+          "U95_median": 0.02174119706985942,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 3,
+      "label": "protocol: 10 chirps x 10 s",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 2383.5,
+      "n": 6,
+      "trial_wall_s_median": 3.164998412132263,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.0010066362084049723,
+          "p95": 0.0014969871571206316,
+          "U95_median": 0.005835834585256846,
+          "coverage95": 1.0,
+          "bench_s_param": 2077.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.000655162605827711,
+          "p95": 0.0011095596004960474,
+          "U95_median": 0.006022867090357197,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "stage.m_eq": {
+          "rms": 0.0068302431563574935,
+          "p95": 0.01090669277610819,
+          "U95_median": 0.015487456925543396,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.012176889632052344,
+          "p95": 0.01864378788528525,
+          "U95_median": 0.026125677432851914,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0005011616163358325,
+          "p95": 0.0009414077600402694,
+          "U95_median": 0.007786782656391129,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.006876333769363193,
+          "p95": 0.012764977012171625,
+          "U95_median": 0.023498893974623222,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 3,
+      "label": "protocol: 10 chirps x 10 s",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 2383.5,
+      "n": 6,
+      "trial_wall_s_median": 3.074975848197937,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.002565920771004984,
+          "p95": 0.004262710549312099,
+          "U95_median": 0.005847866480055161,
+          "coverage95": 1.0,
+          "bench_s_param": 2077.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.0005909333867069746,
+          "p95": 0.0008828556155496745,
+          "U95_median": 0.005881919182353956,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "stage.m_eq": {
+          "rms": 0.010733754445454094,
+          "p95": 0.017045483389490527,
+          "U95_median": 0.015676716689592286,
+          "coverage95": 0.8333333333333334,
+          "bench_s_param": 781.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.025316303097075447,
+          "p95": 0.041397125607196154,
+          "U95_median": 0.03943430543493785,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "stage.axial_k": {
+          "rms": 0.0013347243822046779,
+          "p95": 0.002324862042658677,
+          "U95_median": 0.007785758289053431,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.008475971474737382,
+          "p95": 0.014656843577648983,
+          "U95_median": 0.01750546113951365,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B05",
+      "level": 3,
+      "label": "protocol: 10 chirps x 10 s",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 2383.5,
+      "n": 6,
+      "trial_wall_s_median": 3.012425661087036,
+      "params": {
+        "stage.k_tip": {
+          "rms": 0.003282696677020785,
+          "p95": 0.005763352998847268,
+          "U95_median": 0.006690531821995734,
+          "coverage95": 0.8333333333333334,
+          "bench_s_param": 2077.5
+        },
+        "stage.zeta_open": {
+          "rms": 0.0011280980958042887,
+          "p95": 0.002119824473347234,
+          "U95_median": 0.006196768328024481,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "stage.m_eq": {
+          "rms": 0.0074587787801507445,
+          "p95": 0.012669441616312522,
+          "U95_median": 0.015597351185686732,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "sensing.hall_delay": {
+          "rms": 0.04382284343523513,
+          "p95": 0.08147564541789763,
+          "U95_median": 0.047727143905875805,
+          "coverage95": 1.0,
+          "bench_s_param": 781.5
+        },
+        "stage.axial_k": {
+          "rms": 0.001268714666116851,
+          "p95": 0.0020935026500017505,
+          "U95_median": 0.009664356683241383,
+          "coverage95": 1.0,
+          "bench_s_param": 306.0
+        },
+        "stage.axial_preload": {
+          "rms": 0.020398048878811404,
+          "p95": 0.038398901191629926,
+          "U95_median": 0.022906976511916224,
+          "coverage95": 0.8333333333333334,
+          "bench_s_param": 306.0
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 0,
+      "label": "reduced grid x1 (1 N, 50 deg, +-t1)",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 1868.5957333333333,
+      "n": 5,
+      "trial_wall_s_median": 3.500347375869751,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.000189455309882291,
+          "p95": 0.000295001601583532,
+          "U95_median": 0.035584800815591004,
+          "coverage95": 1.0,
+          "bench_s_param": 672.5965333333334
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.0017983322879546572,
+          "p95": 0.0032518403532452557,
+          "U95_median": 0.005827053856028802,
+          "coverage95": 1.0,
+          "bench_s_param": 339.2632
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.009983242796525963,
+          "p95": 0.01263965144218798,
+          "U95_median": 0.017277126143263107,
+          "coverage95": 1.0,
+          "bench_s_param": 339.2632
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.0006638327236686499,
+          "p95": 0.0011723205024496025,
+          "U95_median": 0.02617501410529145,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0003123708503755805,
+          "p95": 0.0005255919253565639,
+          "U95_median": 0.0058227055679571345,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 0,
+      "label": "reduced grid x1 (1 N, 50 deg, +-t1)",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 1868.5957333333333,
+      "n": 5,
+      "trial_wall_s_median": 3.6469738483428955,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.0038821191655367374,
+          "p95": 0.0053981917349358345,
+          "U95_median": 0.03874861916731004,
+          "coverage95": 1.0,
+          "bench_s_param": 672.5965333333334
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.006063061896241956,
+          "p95": 0.010922812635868927,
+          "U95_median": 0.022712464785002936,
+          "coverage95": 1.0,
+          "bench_s_param": 339.2632
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.0600229075305183,
+          "p95": 0.10949543772701707,
+          "U95_median": 0.48289953051960804,
+          "coverage95": 1.0,
+          "bench_s_param": 339.2632
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.007950543239502486,
+          "p95": 0.011508225138394551,
+          "U95_median": 0.025776107556788344,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.002543136568859299,
+          "p95": 0.003351287033182359,
+          "U95_median": 0.006958327194229607,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 0,
+      "label": "reduced grid x1 (1 N, 50 deg, +-t1)",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 1868.5957333333333,
+      "n": 5,
+      "trial_wall_s_median": 30.698134183883667,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.004027007627410951,
+          "p95": 0.006399693531143206,
+          "U95_median": 0.048327877365044465,
+          "coverage95": 1.0,
+          "bench_s_param": 672.5965333333334
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.002614554700400178,
+          "p95": 0.0045057862676865365,
+          "U95_median": 0.03777869090680416,
+          "coverage95": 1.0,
+          "bench_s_param": 339.2631999999999
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.006394231985420498,
+          "p95": 0.01060424057469489,
+          "U95_median": 0.25046010630454646,
+          "coverage95": 1.0,
+          "bench_s_param": 339.2631999999999
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.00541821875780148,
+          "p95": 0.008584559699700232,
+          "U95_median": 0.02458045743650735,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.006085473675306924,
+          "p95": 0.008967165789779538,
+          "U95_median": 3.0155860323647703,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 1,
+      "label": "reduced grid x3",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 3213.788800000001,
+      "n": 5,
+      "trial_wall_s_median": 5.521198749542236,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.0021468221586779983,
+          "p95": 0.0039453567512782485,
+          "U95_median": 0.03481589940958253,
+          "coverage95": 1.0,
+          "bench_s_param": 2017.789600000001
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.004411270512380561,
+          "p95": 0.008065329602266821,
+          "U95_median": 0.005798464541956375,
+          "coverage95": 1.0,
+          "bench_s_param": 1017.7896000000007
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.024187484003791213,
+          "p95": 0.04400810206867655,
+          "U95_median": 0.01388191837478577,
+          "coverage95": 0.8,
+          "bench_s_param": 1017.7896000000007
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.0012860301607940969,
+          "p95": 0.0023285233864137867,
+          "U95_median": 0.02478284694221671,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0002914403964867907,
+          "p95": 0.0004561497513586641,
+          "U95_median": 0.005780844943453272,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 1,
+      "label": "reduced grid x3",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 3213.788800000001,
+      "n": 5,
+      "trial_wall_s_median": 5.503434658050537,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.019086144186779293,
+          "p95": 0.03453634654176959,
+          "U95_median": 0.06656790724430932,
+          "coverage95": 1.0,
+          "bench_s_param": 2017.789600000001
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.008214290787219303,
+          "p95": 0.013455153589533189,
+          "U95_median": 0.052454665295268835,
+          "coverage95": 1.0,
+          "bench_s_param": 1017.7896000000007
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.029298587235328476,
+          "p95": 0.05320339041430393,
+          "U95_median": 0.3009123834441254,
+          "coverage95": 1.0,
+          "bench_s_param": 1017.7896000000007
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.00999439517083943,
+          "p95": 0.012030874339366828,
+          "U95_median": 0.02438039776731876,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0032898394242867656,
+          "p95": 0.004627227202428494,
+          "U95_median": 0.005853270363487612,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 1,
+      "label": "reduced grid x3",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 3213.788800000001,
+      "n": 5,
+      "trial_wall_s_median": 30.229220867156982,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.003181406226170605,
+          "p95": 0.004848587087885524,
+          "U95_median": 0.03636492523116059,
+          "coverage95": 1.0,
+          "bench_s_param": 2017.789600000001
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.005591768105581614,
+          "p95": 0.010250588935817984,
+          "U95_median": 0.019923731399861873,
+          "coverage95": 1.0,
+          "bench_s_param": 1017.7896000000007
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.2951027183840413,
+          "p95": 0.5356025955943993,
+          "U95_median": 0.5031205152865789,
+          "coverage95": 1.0,
+          "bench_s_param": 1017.7896000000007
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.0075044747611868155,
+          "p95": 0.01057410927122188,
+          "U95_median": 0.02404422031404232,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0024713933937020264,
+          "p95": 0.00324593594086944,
+          "U95_median": 0.2863258675873766,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 2,
+      "label": "protocol grid x1 (3 N x 2 angles x 4 directions)",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 5600.490933333338,
+      "n": 5,
+      "trial_wall_s_median": 11.58377480506897,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.00023682164897013573,
+          "p95": 0.000357270292019135,
+          "U95_median": 0.0336062595018914,
+          "coverage95": 1.0,
+          "bench_s_param": 4404.491733333338
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.0020936278031379553,
+          "p95": 0.00378916044087034,
+          "U95_median": 0.005779787024795128,
+          "coverage95": 1.0,
+          "bench_s_param": 4071.158400000005
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.006371761227980801,
+          "p95": 0.010397989478426012,
+          "U95_median": 0.012292073073777738,
+          "coverage95": 1.0,
+          "bench_s_param": 4071.158400000005
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.0006416963437703231,
+          "p95": 0.001162853497958028,
+          "U95_median": 0.024511015925913034,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0004301492959119779,
+          "p95": 0.0005409313882558449,
+          "U95_median": 0.005788262759045757,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 2,
+      "label": "protocol grid x1 (3 N x 2 angles x 4 directions)",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 5600.490933333338,
+      "n": 5,
+      "trial_wall_s_median": 11.865690231323242,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.005815171871040667,
+          "p95": 0.009429062590233758,
+          "U95_median": 0.03457730683802041,
+          "coverage95": 1.0,
+          "bench_s_param": 4404.491733333338
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.00713574368990337,
+          "p95": 0.013124934436400686,
+          "U95_median": 0.007598799164714527,
+          "coverage95": 0.8,
+          "bench_s_param": 4071.158400000005
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.017855837844105563,
+          "p95": 0.032794674472948156,
+          "U95_median": 0.03524320200109446,
+          "coverage95": 0.8,
+          "bench_s_param": 4071.158400000005
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.012154199935128587,
+          "p95": 0.016464574579479016,
+          "U95_median": 0.023928367565215457,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.003264655580998315,
+          "p95": 0.004808040133069607,
+          "U95_median": 0.005953491750258209,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 2,
+      "label": "protocol grid x1 (3 N x 2 angles x 4 directions)",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 5600.490933333338,
+      "n": 5,
+      "trial_wall_s_median": 41.10183787345886,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.00972155125889269,
+          "p95": 0.012714825676295042,
+          "U95_median": 0.03844523589900453,
+          "coverage95": 1.0,
+          "bench_s_param": 4404.491733333338
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.008073366841042475,
+          "p95": 0.01455447384412221,
+          "U95_median": 0.007304407674469533,
+          "coverage95": 0.6,
+          "bench_s_param": 4071.158400000005
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.031237040238559537,
+          "p95": 0.05653098407235305,
+          "U95_median": 0.020024329562463264,
+          "coverage95": 0.8,
+          "bench_s_param": 4071.158400000005
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.009367795227548183,
+          "p95": 0.013583115859803936,
+          "U95_median": 0.025248180544676417,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0016199440248017734,
+          "p95": 0.0027657566294027095,
+          "U95_median": 2.459288171809287,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 3,
+      "label": "reduced grid x1, quarter-decade speeds (proposed)",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 2005.0425333333333,
+      "n": 5,
+      "trial_wall_s_median": 4.199387550354004,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.00040139380311270546,
+          "p95": 0.0005592844946033425,
+          "U95_median": 0.033550248516735895,
+          "coverage95": 1.0,
+          "bench_s_param": 809.0433333333333
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.0013107431694543488,
+          "p95": 0.0020292602319620908,
+          "U95_median": 0.006025097460314441,
+          "coverage95": 1.0,
+          "bench_s_param": 475.7099999999999
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.004472147292762647,
+          "p95": 0.006602367397680062,
+          "U95_median": 0.015845875099524453,
+          "coverage95": 1.0,
+          "bench_s_param": 475.7099999999999
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.0004653931873728955,
+          "p95": 0.0007509835655088653,
+          "U95_median": 0.02479672117878413,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0006013173003577955,
+          "p95": 0.0010981384897398028,
+          "U95_median": 0.0057779394024942456,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 3,
+      "label": "reduced grid x1, quarter-decade speeds (proposed)",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 2005.0425333333333,
+      "n": 5,
+      "trial_wall_s_median": 3.752761125564575,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.004866903669205587,
+          "p95": 0.007760899223667894,
+          "U95_median": 0.062350165607153424,
+          "coverage95": 1.0,
+          "bench_s_param": 809.0433333333333
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.0038356428029771247,
+          "p95": 0.0066560148171672,
+          "U95_median": 0.05517563779082961,
+          "coverage95": 1.0,
+          "bench_s_param": 475.70999999999987
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.02481707984718073,
+          "p95": 0.044155775731970916,
+          "U95_median": 0.3423457266339379,
+          "coverage95": 1.0,
+          "bench_s_param": 475.70999999999987
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.006367999378936776,
+          "p95": 0.008689477401312666,
+          "U95_median": 0.024065840026974445,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.0030937554032651905,
+          "p95": 0.00489623457894381,
+          "U95_median": 0.006995356431303965,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B01B02",
+      "level": 3,
+      "label": "reduced grid x1, quarter-decade speeds (proposed)",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 2005.0425333333333,
+      "n": 5,
+      "trial_wall_s_median": 33.390031576156616,
+      "params": {
+        "writing.mu_eff": {
+          "rms": 0.009995472952292103,
+          "p95": 0.01816731847532855,
+          "U95_median": 0.04336646646523404,
+          "coverage95": 1.0,
+          "bench_s_param": 809.0433333333333
+        },
+        "writing.mu_static_ratio": {
+          "rms": 0.010525563590796979,
+          "p95": 0.0189041731301534,
+          "U95_median": 0.03260576175185512,
+          "coverage95": 1.0,
+          "bench_s_param": 475.70999999999987
+        },
+        "writing.stribeck_speed": {
+          "rms": 0.02455410165158069,
+          "p95": 0.044760926920269235,
+          "U95_median": 0.115360947712665,
+          "coverage95": 1.0,
+          "bench_s_param": 475.70999999999987
+        },
+        "writing.paper_stiffness": {
+          "rms": 0.012454827730542706,
+          "p95": 0.016830776987061643,
+          "U95_median": 0.024023622761021688,
+          "coverage95": 1.0,
+          "bench_s_param": 420.0
+        },
+        "friction.x_presliding": {
+          "rms": 0.004321785396182432,
+          "p95": 0.005469714858773035,
+          "U95_median": 0.8198613594632402,
+          "coverage95": 1.0,
+          "bench_s_param": 231.9992
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 0,
+      "label": "0.2 s holds, 4 step averages, 45 s thermal, no back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 461.24,
+      "n": 24,
+      "trial_wall_s_median": 0.22986674308776855,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.0006556770485688558,
+          "p95": 0.0010370654450232645,
+          "U95_median": 0.023215315376871538,
+          "coverage95": 1.0,
+          "bench_s_param": 181.2
+        },
+        "actuator.R20": {
+          "rms": 0.0008763315431847762,
+          "p95": 0.0016433459205452226,
+          "U95_median": 0.0022812970694541567,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.001227871720171524,
+          "p95": 0.0021791982666162705,
+          "U95_median": 0.0034548887072482866,
+          "coverage95": 1.0,
+          "bench_s_param": 110.03999999999999
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0008804054696700457,
+          "p95": 0.0016200536952457028,
+          "U95_median": 0.009398475635079298,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0008428360135177002,
+          "p95": 0.0015581324691567955,
+          "U95_median": 0.009401129306556313,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 0,
+      "label": "0.2 s holds, 4 step averages, 45 s thermal, no back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 461.24,
+      "n": 24,
+      "trial_wall_s_median": 0.22145307064056396,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.012744103933867169,
+          "p95": 0.01925690460800285,
+          "U95_median": 0.02318149370977666,
+          "coverage95": 1.0,
+          "bench_s_param": 181.2
+        },
+        "actuator.R20": {
+          "rms": 0.001163678791801369,
+          "p95": 0.001830564375193188,
+          "U95_median": 0.0022815076786169655,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0015334239489288755,
+          "p95": 0.0026854541213315332,
+          "U95_median": 0.003561257347688484,
+          "coverage95": 1.0,
+          "bench_s_param": 110.03999999999999
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0011587934797080309,
+          "p95": 0.001827465329681353,
+          "U95_median": 0.00939726109770905,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.001195445628774167,
+          "p95": 0.0017964794540195476,
+          "U95_median": 0.00940142647541467,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 0,
+      "label": "0.2 s holds, 4 step averages, 45 s thermal, no back-EMF",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 461.24,
+      "n": 24,
+      "trial_wall_s_median": 0.21407043933868408,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.010098566626829402,
+          "p95": 0.01692495312355848,
+          "U95_median": 0.023257195293423696,
+          "coverage95": 1.0,
+          "bench_s_param": 181.2
+        },
+        "actuator.R20": {
+          "rms": 0.0009338379345340247,
+          "p95": 0.0018256391813923504,
+          "U95_median": 0.0022816513251134847,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0031296159881475955,
+          "p95": 0.005520813221134101,
+          "U95_median": 0.005576164557585192,
+          "coverage95": 0.9583333333333334,
+          "bench_s_param": 110.03999999999999
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.001009652905349366,
+          "p95": 0.0018731877834762916,
+          "U95_median": 0.0094040452235549,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0009373441222731289,
+          "p95": 0.00181199160489381,
+          "U95_median": 0.009401336179581807,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 0,
+      "label": "0.2 s holds, 4 step averages, 45 s thermal, no back-EMF",
+      "noise_scale": 16.0,
+      "systematics": 1.0,
+      "bench_s_median": 461.24,
+      "n": 24,
+      "trial_wall_s_median": 0.21836447715759277,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.011507667563053357,
+          "p95": 0.016552749115588992,
+          "U95_median": 0.023874022817074136,
+          "coverage95": 1.0,
+          "bench_s_param": 181.2
+        },
+        "actuator.R20": {
+          "rms": 0.0010606527806832286,
+          "p95": 0.001659097624952654,
+          "U95_median": 0.0022914271863062633,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.011923911954489634,
+          "p95": 0.02196250084552976,
+          "U95_median": 0.02308500563280976,
+          "coverage95": 0.9166666666666666,
+          "bench_s_param": 110.03999999999999
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0011569117493886087,
+          "p95": 0.0020549335973986623,
+          "U95_median": 0.00940997359243203,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0010457046812211042,
+          "p95": 0.001696844715771882,
+          "U95_median": 0.009405424116845057,
+          "coverage95": 1.0,
+          "bench_s_param": 170.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 1,
+      "label": "0.5 s holds, 16 averages, 90 s thermal, back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 874.16,
+      "n": 24,
+      "trial_wall_s_median": 0.2357172966003418,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.0003193212917746934,
+          "p95": 0.0005603452808667386,
+          "U95_median": 0.010371625784387745,
+          "coverage95": 1.0,
+          "bench_s_param": 549.0
+        },
+        "actuator.R20": {
+          "rms": 0.0013409544983975124,
+          "p95": 0.0018968325609501598,
+          "U95_median": 0.0022790750506021446,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.001354564515607417,
+          "p95": 0.0019576333461386497,
+          "U95_median": 0.003290148105421044,
+          "coverage95": 1.0,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.001341194019895509,
+          "p95": 0.0018981651642612067,
+          "U95_median": 0.009407160163028902,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0013768098102246976,
+          "p95": 0.0020154001375852705,
+          "U95_median": 0.009392157939615684,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 1,
+      "label": "0.5 s holds, 16 averages, 90 s thermal, back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 874.16,
+      "n": 24,
+      "trial_wall_s_median": 0.23917555809020996,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.004522809659040306,
+          "p95": 0.006948189969956873,
+          "U95_median": 0.010387466720616235,
+          "coverage95": 1.0,
+          "bench_s_param": 549.0
+        },
+        "actuator.R20": {
+          "rms": 0.001044501166524551,
+          "p95": 0.001710538068898306,
+          "U95_median": 0.0022797794921598233,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0019517309954557914,
+          "p95": 0.0033427652867991093,
+          "U95_median": 0.0033006561416964422,
+          "coverage95": 0.9166666666666666,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0010437146147806737,
+          "p95": 0.0017067432818978973,
+          "U95_median": 0.009404069990542743,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0010481697576838066,
+          "p95": 0.0016321616104153995,
+          "U95_median": 0.009395286781712144,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 1,
+      "label": "0.5 s holds, 16 averages, 90 s thermal, back-EMF",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 874.16,
+      "n": 24,
+      "trial_wall_s_median": 0.22523820400238037,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.004069194669345542,
+          "p95": 0.0070958161884909264,
+          "U95_median": 0.010361102842872671,
+          "coverage95": 1.0,
+          "bench_s_param": 549.0
+        },
+        "actuator.R20": {
+          "rms": 0.0010939635979466257,
+          "p95": 0.0017273114187714366,
+          "U95_median": 0.002280923670575069,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0018971823511432164,
+          "p95": 0.0031581694638919853,
+          "U95_median": 0.004323360118168333,
+          "coverage95": 0.9583333333333334,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0010908795313290716,
+          "p95": 0.0017125761490666906,
+          "U95_median": 0.009402460904917977,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0011039211758898668,
+          "p95": 0.0017326677592973327,
+          "U95_median": 0.009396653577001347,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 1,
+      "label": "0.5 s holds, 16 averages, 90 s thermal, back-EMF",
+      "noise_scale": 16.0,
+      "systematics": 1.0,
+      "bench_s_median": 874.16,
+      "n": 24,
+      "trial_wall_s_median": 0.24727880954742432,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.005065267008693758,
+          "p95": 0.008644262380346327,
+          "U95_median": 0.010394629506334898,
+          "coverage95": 1.0,
+          "bench_s_param": 549.0
+        },
+        "actuator.R20": {
+          "rms": 0.0012873845208117706,
+          "p95": 0.0021156656782517678,
+          "U95_median": 0.00228784107001399,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0057768724971154865,
+          "p95": 0.009299224857163686,
+          "U95_median": 0.01128237067407585,
+          "coverage95": 0.9583333333333334,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0013018677648672598,
+          "p95": 0.0021422783473756743,
+          "U95_median": 0.009403322379770884,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0013051899303455877,
+          "p95": 0.0020304208284660013,
+          "U95_median": 0.009401099036503968,
+          "coverage95": 1.0,
+          "bench_s_param": 215.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 2,
+      "label": "protocol: 2 s holds, 16 averages, 180 s thermal, back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 973.16,
+      "n": 24,
+      "trial_wall_s_median": 0.23373734951019287,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.00029970522444457685,
+          "p95": 0.0004260044153795718,
+          "U95_median": 0.01035619823460216,
+          "coverage95": 1.0,
+          "bench_s_param": 558.0
+        },
+        "actuator.R20": {
+          "rms": 0.001047783423756526,
+          "p95": 0.0019306668980371756,
+          "U95_median": 0.0022811255203972775,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0010669862289287245,
+          "p95": 0.0019499866127511776,
+          "U95_median": 0.0032782293784607555,
+          "coverage95": 1.0,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.001047526587191657,
+          "p95": 0.00192856307141045,
+          "U95_median": 0.00939862939872195,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0010384687199410903,
+          "p95": 0.001876460311629385,
+          "U95_median": 0.009400996128145395,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 2,
+      "label": "protocol: 2 s holds, 16 averages, 180 s thermal, back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 973.16,
+      "n": 24,
+      "trial_wall_s_median": 0.2328559160232544,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.004648648053967011,
+          "p95": 0.00881538105795401,
+          "U95_median": 0.01036519936520095,
+          "coverage95": 1.0,
+          "bench_s_param": 558.0
+        },
+        "actuator.R20": {
+          "rms": 0.0012033260975972636,
+          "p95": 0.001698076362755364,
+          "U95_median": 0.0022821564998798958,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0014784417458310831,
+          "p95": 0.0025541381780701065,
+          "U95_median": 0.003288955030613641,
+          "coverage95": 1.0,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0012019444020513123,
+          "p95": 0.0016979388381353543,
+          "U95_median": 0.009394279671489675,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.001173413524753408,
+          "p95": 0.0016900284316308503,
+          "U95_median": 0.009404911449208617,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 2,
+      "label": "protocol: 2 s holds, 16 averages, 180 s thermal, back-EMF",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 973.16,
+      "n": 24,
+      "trial_wall_s_median": 0.23417413234710693,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.004698235403560631,
+          "p95": 0.007124478856739448,
+          "U95_median": 0.010366326850684799,
+          "coverage95": 1.0,
+          "bench_s_param": 558.0
+        },
+        "actuator.R20": {
+          "rms": 0.0011780203693923328,
+          "p95": 0.0018633825442700936,
+          "U95_median": 0.002280416761144135,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.002357733508519187,
+          "p95": 0.0039564086134946455,
+          "U95_median": 0.003899612160652138,
+          "coverage95": 0.9166666666666666,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0011772486272660606,
+          "p95": 0.0018635516615918472,
+          "U95_median": 0.009404307921441632,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0012108791217724873,
+          "p95": 0.00200458768828835,
+          "U95_median": 0.009394709420656466,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 2,
+      "label": "protocol: 2 s holds, 16 averages, 180 s thermal, back-EMF",
+      "noise_scale": 16.0,
+      "systematics": 1.0,
+      "bench_s_median": 973.16,
+      "n": 24,
+      "trial_wall_s_median": 0.22924280166625977,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.005754480967855511,
+          "p95": 0.008887307533191613,
+          "U95_median": 0.010362421190120276,
+          "coverage95": 1.0,
+          "bench_s_param": 558.0
+        },
+        "actuator.R20": {
+          "rms": 0.001089649901784665,
+          "p95": 0.0016549345335294633,
+          "U95_median": 0.002291126682256268,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0062501740429265545,
+          "p95": 0.010974228093248987,
+          "U95_median": 0.011718168029109834,
+          "coverage95": 0.9583333333333334,
+          "bench_s_param": 110.16
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0010874422332253874,
+          "p95": 0.0016513401050906337,
+          "U95_median": 0.009404108629080681,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.00113663726623603,
+          "p95": 0.0017367765098017637,
+          "U95_median": 0.009395822383258826,
+          "coverage95": 1.0,
+          "bench_s_param": 305.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 3,
+      "label": "2 s holds x3, 64 averages, 360 s thermal, back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 0.0,
+      "bench_s_median": 1597.6399999999999,
+      "n": 24,
+      "trial_wall_s_median": 0.25442254543304443,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.00025221007706268463,
+          "p95": 0.00034589900842320705,
+          "U95_median": 0.010354360362949726,
+          "coverage95": 1.0,
+          "bench_s_param": 1002.0
+        },
+        "actuator.R20": {
+          "rms": 0.0010134787124819323,
+          "p95": 0.001789269382373622,
+          "U95_median": 0.002281821346733423,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0010297572261163165,
+          "p95": 0.0016954276212165637,
+          "U95_median": 0.0032348839963124987,
+          "coverage95": 1.0,
+          "bench_s_param": 110.64
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0010127582291960054,
+          "p95": 0.0017920537966116972,
+          "U95_median": 0.009395735535602563,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0010002298880675104,
+          "p95": 0.001735635944541427,
+          "U95_median": 0.009403018261906017,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 3,
+      "label": "2 s holds x3, 64 averages, 360 s thermal, back-EMF",
+      "noise_scale": 1.0,
+      "systematics": 1.0,
+      "bench_s_median": 1597.6399999999999,
+      "n": 24,
+      "trial_wall_s_median": 0.22218608856201172,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.005858649076757711,
+          "p95": 0.009923031869057308,
+          "U95_median": 0.010344438193165125,
+          "coverage95": 0.9583333333333334,
+          "bench_s_param": 1002.0
+        },
+        "actuator.R20": {
+          "rms": 0.0011153111752076287,
+          "p95": 0.0018774622573905883,
+          "U95_median": 0.002279997566429869,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0015342825807932077,
+          "p95": 0.0026698273054433274,
+          "U95_median": 0.0032345233220818876,
+          "coverage95": 1.0,
+          "bench_s_param": 110.64
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0011159354694856292,
+          "p95": 0.001881289976103557,
+          "U95_median": 0.009403156529322752,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0011608397759539264,
+          "p95": 0.0019334453960139616,
+          "U95_median": 0.009395696173391057,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 3,
+      "label": "2 s holds x3, 64 averages, 360 s thermal, back-EMF",
+      "noise_scale": 4.0,
+      "systematics": 1.0,
+      "bench_s_median": 1597.6399999999999,
+      "n": 24,
+      "trial_wall_s_median": 0.25505173206329346,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.005812407363569353,
+          "p95": 0.00951797638960545,
+          "U95_median": 0.010339022549034257,
+          "coverage95": 0.9583333333333334,
+          "bench_s_param": 1002.0
+        },
+        "actuator.R20": {
+          "rms": 0.0010509581888602688,
+          "p95": 0.001680610223135562,
+          "U95_median": 0.0022808456157561636,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.001490329204913768,
+          "p95": 0.0030010231631894427,
+          "U95_median": 0.0035031089279323486,
+          "coverage95": 1.0,
+          "bench_s_param": 110.64
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0010514580630834312,
+          "p95": 0.0016810852797729246,
+          "U95_median": 0.00940290460566463,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0010853141353906904,
+          "p95": 0.0017631698276875103,
+          "U95_median": 0.009396780837451194,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        }
+      }
+    },
+    {
+      "exp": "B03",
+      "level": 3,
+      "label": "2 s holds x3, 64 averages, 360 s thermal, back-EMF",
+      "noise_scale": 16.0,
+      "systematics": 1.0,
+      "bench_s_median": 1597.6399999999999,
+      "n": 24,
+      "trial_wall_s_median": 0.23882412910461426,
+      "params": {
+        "actuator.Kf": {
+          "rms": 0.0040912718582375345,
+          "p95": 0.008339185147704608,
+          "U95_median": 0.01036230770121484,
+          "coverage95": 1.0,
+          "bench_s_param": 1002.0
+        },
+        "actuator.R20": {
+          "rms": 0.0009866950170816817,
+          "p95": 0.0017064896656897488,
+          "U95_median": 0.002289889200798089,
+          "coverage95": 1.0,
+          "bench_s_param": 80.0
+        },
+        "actuator.L": {
+          "rms": 0.0022682119820527234,
+          "p95": 0.0037642816550847525,
+          "U95_median": 0.0056554683796607545,
+          "coverage95": 1.0,
+          "bench_s_param": 110.64
+        },
+        "actuator.Rth_coil_amb": {
+          "rms": 0.0010023596449401308,
+          "p95": 0.0017433538623016513,
+          "U95_median": 0.009397270692228541,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        },
+        "actuator.Cth_coil": {
+          "rms": 0.0009644273152573953,
+          "p95": 0.0015528919337387838,
+          "U95_median": 0.009402470020430856,
+          "coverage95": 1.0,
+          "bench_s_param": 485.0
+        }
+      }
+    }
+  ],
+  "time_to_accuracy": {
+    "actuator.Kf": {
+      "p95_by_level": [
+        0.01925690460800285,
+        0.006948189969956873,
+        0.00881538105795401,
+        0.009923031869057308
+      ],
+      "bench_s_by_level": [
+        181.2,
+        549.0,
+        558.0,
+        1002.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.0010370654450232645,
+        0.0005603452808667386,
+        0.0004260044153795718,
+        0.00034589900842320705
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": 369.5059541227208,
+      "time_to_2pct_s": 181.2,
+      "time_to_5pct_s": 181.2,
+      "TUR_protocol": {
+        "criterion": "AC-B03-01 +-10 %",
+        "band_rel": 0.1,
+        "U95_rel": 0.01036519936520095,
+        "TUR": 9.647667784927483
+      }
+    },
+    "actuator.R20": {
+      "p95_by_level": [
+        0.001830564375193188,
+        0.001710538068898306,
+        0.001698076362755364,
+        0.0018774622573905883
+      ],
+      "bench_s_by_level": [
+        80.0,
+        80.0,
+        80.0,
+        80.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.0016433459205452226,
+        0.0018968325609501598,
+        0.0019306668980371756,
+        0.001789269382373622
+      ],
+      "time_to_0.5pct_s": 80.0,
+      "time_to_1pct_s": 80.0,
+      "time_to_2pct_s": 80.0,
+      "time_to_5pct_s": 80.0,
+      "TUR_protocol": {
+        "criterion": "AC-B03-05 +-5 %",
+        "band_rel": 0.05,
+        "U95_rel": 0.0022821564998798958,
+        "TUR": 21.909102203390248
+      }
+    },
+    "actuator.L": {
+      "p95_by_level": [
+        0.0026854541213315332,
+        0.0033427652867991093,
+        0.0025541381780701065,
+        0.0026698273054433274
+      ],
+      "bench_s_by_level": [
+        110.03999999999999,
+        110.16,
+        110.16,
+        110.64
+      ],
+      "p95_no_systematics_by_level": [
+        0.0021791982666162705,
+        0.0019576333461386497,
+        0.0019499866127511776,
+        0.0016954276212165637
+      ],
+      "time_to_0.5pct_s": 110.03999999999999,
+      "time_to_1pct_s": 110.03999999999999,
+      "time_to_2pct_s": 110.03999999999999,
+      "time_to_5pct_s": 110.03999999999999
+    },
+    "actuator.Rth_coil_amb": {
+      "p95_by_level": [
+        0.001827465329681353,
+        0.0017067432818978973,
+        0.0016979388381353543,
+        0.001881289976103557
+      ],
+      "bench_s_by_level": [
+        170.0,
+        215.0,
+        305.0,
+        485.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.0016200536952457028,
+        0.0018981651642612067,
+        0.00192856307141045,
+        0.0017920537966116972
+      ],
+      "time_to_0.5pct_s": 170.0,
+      "time_to_1pct_s": 170.0,
+      "time_to_2pct_s": 170.0,
+      "time_to_5pct_s": 170.0,
+      "TUR_protocol": {
+        "criterion": "AC-B03-08 +-15 %",
+        "band_rel": 0.15,
+        "U95_rel": 0.009394279671489675,
+        "TUR": 15.967163555416496
+      }
+    },
+    "actuator.Cth_coil": {
+      "p95_by_level": [
+        0.0017964794540195476,
+        0.0016321616104153995,
+        0.0016900284316308503,
+        0.0019334453960139616
+      ],
+      "bench_s_by_level": [
+        170.0,
+        215.0,
+        305.0,
+        485.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.0015581324691567955,
+        0.0020154001375852705,
+        0.001876460311629385,
+        0.001735635944541427
+      ],
+      "time_to_0.5pct_s": 170.0,
+      "time_to_1pct_s": 170.0,
+      "time_to_2pct_s": 170.0,
+      "time_to_5pct_s": 170.0
+    },
+    "stage.k_tip": {
+      "p95_by_level": [
+        0.0031364626328206167,
+        0.004185392198511287,
+        0.004645680923933264,
+        0.004262710549312099
+      ],
+      "bench_s_by_level": [
+        1924.5,
+        1945.5,
+        1978.5,
+        2077.5
+      ],
+      "p95_no_systematics_by_level": [
+        0.0013929959331398217,
+        0.0008892586501803846,
+        0.001352011995932372,
+        0.0014969871571206316
+      ],
+      "time_to_0.5pct_s": 1924.5,
+      "time_to_1pct_s": 1924.5,
+      "time_to_2pct_s": 1924.5,
+      "time_to_5pct_s": 1924.5,
+      "TUR_protocol": {
+        "criterion": "AC-B05-03 +-15 %",
+        "band_rel": 0.15,
+        "U95_rel": 0.005847866480055161,
+        "TUR": 25.65038044414877
+      }
+    },
+    "stage.zeta_open": {
+      "p95_by_level": [
+        0.006976139192306931,
+        0.002193492776160641,
+        0.0013783118742302792,
+        0.0008828556155496745
+      ],
+      "bench_s_by_level": [
+        628.5,
+        649.5,
+        682.5,
+        781.5
+      ],
+      "p95_no_systematics_by_level": [
+        0.0571693509385231,
+        0.006247758479489863,
+        0.0022964922015023307,
+        0.0011095596004960474
+      ],
+      "time_to_0.5pct_s": 634.4745453466958,
+      "time_to_1pct_s": 628.5,
+      "time_to_2pct_s": 628.5,
+      "time_to_5pct_s": 628.5
+    },
+    "stage.m_eq": {
+      "p95_by_level": [
+        0.009369151574864,
+        0.01459626385021699,
+        0.011942164409522331,
+        0.017045483389490527
+      ],
+      "bench_s_by_level": [
+        628.5,
+        649.5,
+        682.5,
+        781.5
+      ],
+      "p95_no_systematics_by_level": [
+        0.008996498841685168,
+        0.006095495013767233,
+        0.00881767137175413,
+        0.01090669277610819
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": 628.5,
+      "time_to_2pct_s": 628.5,
+      "time_to_5pct_s": 628.5,
+      "TUR_protocol": {
+        "criterion": "AC-B05-02 <= 12 g vs 13.7 g expected",
+        "band_rel": 0.12408759124087587,
+        "U95_rel": 0.015676716689592286,
+        "TUR": 7.915406886395871
+      }
+    },
+    "sensing.hall_delay": {
+      "p95_by_level": [
+        0.027346981153720272,
+        0.025387993559140915,
+        0.06182853615720136,
+        0.041397125607196154
+      ],
+      "bench_s_by_level": [
+        628.5,
+        649.5,
+        682.5,
+        781.5
+      ],
+      "p95_no_systematics_by_level": [
+        0.031918522007010675,
+        0.05290160511419417,
+        0.04062436261531642,
+        0.01864378788528525
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": null,
+      "time_to_2pct_s": null,
+      "time_to_5pct_s": 628.5
+    },
+    "stage.axial_k": {
+      "p95_by_level": [
+        0.0017713635568967021,
+        0.0013733813396209858,
+        0.002213232847097956,
+        0.002324862042658677
+      ],
+      "bench_s_by_level": [
+        306.0,
+        306.0,
+        306.0,
+        306.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.0009700509020149168,
+        0.0001071624356622836,
+        0.0006329851492886951,
+        0.0009414077600402694
+      ],
+      "time_to_0.5pct_s": 306.0,
+      "time_to_1pct_s": 306.0,
+      "time_to_2pct_s": 306.0,
+      "time_to_5pct_s": 306.0,
+      "TUR_protocol": {
+        "criterion": "AC-B05-08 1-5 kN/m vs 2 kN/m",
+        "band_rel": 0.5,
+        "U95_rel": 0.007785758289053431,
+        "TUR": 64.21982052833398
+      }
+    },
+    "stage.axial_preload": {
+      "p95_by_level": [
+        0.013464837877572647,
+        0.028695964981008446,
+        0.03069839807215813,
+        0.014656843577648983
+      ],
+      "bench_s_by_level": [
+        306.0,
+        306.0,
+        306.0,
+        306.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.003958789110446485,
+        0.0042622658534837285,
+        0.02897295421769912,
+        0.012764977012171625
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": null,
+      "time_to_2pct_s": 306.0,
+      "time_to_5pct_s": 306.0
+    },
+    "writing.mu_eff": {
+      "p95_by_level": [
+        0.0053981917349358345,
+        0.007760899223667894,
+        0.03453634654176959,
+        0.009429062590233758
+      ],
+      "bench_s_by_level": [
+        672.5965333333334,
+        809.0433333333333,
+        2017.789600000001,
+        4404.491733333338
+      ],
+      "p95_no_systematics_by_level": [
+        0.000295001601583532,
+        0.0005592844946033425,
+        0.0039453567512782485,
+        0.000357270292019135
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": 672.5965333333334,
+      "time_to_2pct_s": 672.5965333333334,
+      "time_to_5pct_s": 672.5965333333334,
+      "TUR_protocol": {
+        "criterion": "AC-B01-04 0.09-0.40 vs 0.15",
+        "band_rel": 0.4,
+        "U95_rel": 0.03457730683802041,
+        "TUR": 11.568280950099018
+      }
+    },
+    "writing.mu_static_ratio": {
+      "p95_by_level": [
+        0.010922812635868927,
+        0.0066560148171672,
+        0.013455153589533189,
+        0.013124934436400686
+      ],
+      "bench_s_by_level": [
+        339.2632,
+        475.70999999999987,
+        1017.7896000000007,
+        4071.158400000005
+      ],
+      "p95_no_systematics_by_level": [
+        0.0032518403532452557,
+        0.0020292602319620908,
+        0.008065329602266821,
+        0.00378916044087034
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": 360.32761115112083,
+      "time_to_2pct_s": 339.2632,
+      "time_to_5pct_s": 339.2632,
+      "TUR_protocol": {
+        "criterion": "AC-B01-05 1.0-2.0 vs 1.3",
+        "band_rel": 0.23,
+        "U95_rel": 0.007598799164714527,
+        "TUR": 30.26794036984404
+      }
+    },
+    "writing.stribeck_speed": {
+      "p95_by_level": [
+        0.10949543772701707,
+        0.044155775731970916,
+        0.05320339041430393,
+        0.032794674472948156
+      ],
+      "bench_s_by_level": [
+        339.2632,
+        475.70999999999987,
+        1017.7896000000007,
+        4071.158400000005
+      ],
+      "p95_no_systematics_by_level": [
+        0.01263965144218798,
+        0.006602367397680062,
+        0.04400810206867655,
+        0.010397989478426012
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": null,
+      "time_to_2pct_s": null,
+      "time_to_5pct_s": 454.2020451313418,
+      "TUR_protocol": {
+        "criterion": "AC-B02-02 0.5-10 mm/s vs 2 mm/s",
+        "band_rel": 0.75,
+        "U95_rel": 0.03524320200109446,
+        "TUR": 21.280699749605873
+      }
+    },
+    "writing.paper_stiffness": {
+      "p95_by_level": [
+        0.011508225138394551,
+        0.008689477401312666,
+        0.012030874339366828,
+        0.016464574579479016
+      ],
+      "bench_s_by_level": [
+        420.0,
+        420.0,
+        420.0,
+        420.0
+      ],
+      "p95_no_systematics_by_level": [
+        0.0011723205024496025,
+        0.0007509835655088653,
+        0.0023285233864137867,
+        0.001162853497958028
+      ],
+      "time_to_0.5pct_s": null,
+      "time_to_1pct_s": 419.99999999999994,
+      "time_to_2pct_s": 420.0,
+      "time_to_5pct_s": 420.0,
+      "TUR_protocol": {
+        "criterion": "AC-B01-08 1e4-2e5 N/m vs 5e4",
+        "band_rel": 0.8,
+        "U95_rel": 0.023928367565215457,
+        "TUR": 33.433120659804466
+      }
+    },
+    "friction.x_presliding": {
+      "p95_by_level": [
+        0.003351287033182359,
+        0.00489623457894381,
+        0.004627227202428494,
+        0.004808040133069607
+      ],
+      "bench_s_by_level": [
+        231.9992,
+        231.9992,
+        231.9992,
+        231.9992
+      ],
+      "p95_no_systematics_by_level": [
+        0.0005255919253565639,
+        0.0010981384897398028,
+        0.0004561497513586641,
+        0.0005409313882558449
+      ],
+      "time_to_0.5pct_s": 231.9992,
+      "time_to_1pct_s": 231.9992,
+      "time_to_2pct_s": 231.9992,
+      "time_to_5pct_s": 231.9992
+    }
+  },
+  "elapsed_s": 53.65264081954956,
+  "elapsed_s_by_part": {
+    "B05": 70.61375260353088,
+    "B01B02": 465.6300287246704,
+    "B03": 53.6382954120636
+  },
+  "notes": [
+    "noise_scale multiplies the random noise of every instrument channel",
+    "systematics 0 removes session gain, offset, angle and sync errors (ideal calibration)",
+    "bench time includes ASSUMED per-record overheads (see generators)"
+  ]
+}

@@ -165,10 +165,11 @@ def plot(stage, fric):
     ax.axhline(4.0, color=plotstyle.MUTED, lw=0.8, ls="--")
     ax.set_xscale("log")
     ax.set_yscale("log")
+    ax.set_ylim(5e-3, 1e9)                      # headroom for the legend above the data
     ax.set_xlabel("band centre (Hz)")
     ax.set_ylabel("normalised FRF misfit (1 = noise level)")
     ax.set_title("FRF misfit bands (30 um level; dashed: threshold 4)", loc="left", fontsize=10)
-    ax.legend(fontsize=7)
+    ax.legend(fontsize=6.5, ncol=2, loc="upper left")
     ax = axs[1]
     for name in CASES:
         lv = stage[name]["levels"]
@@ -178,8 +179,9 @@ def plot(stage, fric):
     ax.set_xlabel("excitation level (um at the tip)")
     ax.set_ylabel("identified zeta / zeta at 100 um")
     ax.set_title("Parameter drift across excitation levels", loc="left", fontsize=10)
-    ax.set_ylim(0.9, 1.6)
-    ax.legend(fontsize=7)
+    ax.set_yscale("log")
+    ax.set_ylim(0.8, 5.0)
+    ax.legend(fontsize=6.5, loc="upper right")
     ax = axs[2]
     for j, (label, v) in enumerate(fric.items()):
         c = v["_curve"]

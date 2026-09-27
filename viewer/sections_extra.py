@@ -77,5 +77,43 @@ def ai(root):
     return guidance(root) + autocorrect(root)
 
 
+PARAMS = [("actuator.Kf", "Force constant K<sub>f</sub>", "EXP-B03"), ("actuator.R20", "Coil resistance", "EXP-B03"),
+          ("actuator.L", "Coil inductance", "EXP-B03"), ("stage.k_tip", "Stage stiffness", "EXP-B05"),
+          ("stage.m_eq", "Tip-equivalent mass", "EXP-B05"), ("stage.zeta_open", "Stage damping", "EXP-B05"),
+          ("writing.mu_eff", "Nib friction coefficient", "EXP-B01/B02"), ("writing.paper_stiffness", "Paper contact stiffness", "EXP-B01/B02"),
+          ("friction.x_presliding", "Pre-sliding length", "EXP-B02"), ("writing.stribeck_speed", "Stribeck speed", "EXP-B02")]
+
+
 def s2r(root):
-    return ""
+    c1 = _load(root, "results/s2r/c1_identification.json")
+    c2 = _load(root, "results/s2r/c2_twin.json")
+    if not c1 or not c2:
+        return ""
+    sm = c1["summary"]
+    rows = [[lab, exp, f"{100 * sm[k]['rel_err']['abs_p95']:.1f} %", f"{100 * sm[k]['coverage95']:.0f} %"] for k, lab, exp in PARAMS if k in sm]
+    bt = c1["bench_time_s_median"]
+    lede1 = ("Twin experiments: 15 hidden plants (5 partly outside the declared ranges) are measured through models of the "
+             "instruments the bench protocols name, and the identification sees only the recorded data. This shows the "
+             "method works and what it costs; only the bench can show the simulator's structure is right. Median bench time "
+             f"at protocol settings: EXP-B03 {bt['B03'] / 60:.0f} min per coil coupon, EXP-B05 {bt['B05'] / 60:.0f} min per "
+             f"stage build, EXP-B01/B02 {bt['B01B02'] / 60:.0f} min per ink, paper and underlay (about 33 min with the reduced grid "
+             "at the same accuracy).")
+    t1 = _section("Calibrating the simulator from bench data", _tags("SIM", "CALC"), lede1,
+                  _table(["Parameter", "Experiment", "Error, 95th percentile", "Truth inside the stated U95"], rows, (2, 3)),
+                  "results/s2r/c1_identification.json (s2r/; docs/sim_to_real.md s3)")
+    g = c2["gaps"]
+    conds = [("before", "Uncalibrated (nominal parameters)"), ("after", "Calibrated, hand simulant known to ±10 %"),
+             ("after_plus", "Calibrated, plus sensor parameters")]
+    mets = [("oracle_ratio@6Hz", "Physical-limit ratio, 6 Hz"), ("oracle_ratio@9Hz", "Physical-limit ratio, 9 Hz"),
+            ("kfosc_ratio@6Hz", "Estimator ratio, 6 Hz"), ("kfosc_ratio@9Hz", "Estimator ratio, 9 Hz")]
+    rows2 = []
+    for key, lab in mets:
+        rows2.append([lab] + [f"{round(15 * g[c][key]['frac_within_0.1'])} of 15" for c, _l in conds])
+    rows2.append(["Static hold power, 95th-percentile error"] + [f"{100 * g[c]['static_hold_W']['abs_p95']:.0f} %" for c, _l in conds])
+    rows2.append(["Uncorrected ink error at 9 Hz, 95th-percentile error"] + [f"{100 * g[c]['neutral_e_um@9Hz']['abs_p95']:.0f} %" for c, _l in conds])
+    lede2 = ("How many of the 15 hidden plants the twin predicts within ±0.1 of the true ratio (the AC-B09-03 tolerance), "
+             "before and after calibrating it from the virtual bench runs above (12 test seeds per plant).")
+    t2 = _section("Does the calibrated twin predict the real plant", _tags("SIM"), lede2,
+                  _table(["Prediction"] + [l for _c, l in conds], rows2, (1, 2, 3)),
+                  "results/s2r/c2_twin.json (docs/sim_to_real.md s4)")
+    return t1 + t2

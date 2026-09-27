@@ -1,4 +1,4 @@
-/home/user/Stabilisation_Pen/results/s2r/c1_identification.json 135 s
+/home/user/Stabilisation_Pen/results/s2r/c1_identification.json 127 s
 actuator.Kf                  rms 0.57%  p95|e| 0.89%  U95 1.04%  cov 1.00  z_rms 1.09
 actuator.R20                 rms 0.11%  p95|e| 0.20%  U95 0.23%  cov 1.00  z_rms 0.95
 actuator.L                   rms 0.14%  p95|e| 0.25%  U95 0.33%  cov 1.00  z_rms 0.89
