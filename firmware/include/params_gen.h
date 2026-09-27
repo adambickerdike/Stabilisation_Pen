@@ -3,16 +3,16 @@
  * Evidence status: PROPOSED DESIGN. Every value is calculated, assumed or copied
  * from a design file as cited; none is a measurement of Rev A hardware.
  *   generator: firmware/tools/gen_params.py
- *   yaml_version: 0.4.1
- *   yaml_sha16: f44bd71afad66b15
- *   estimator_selection_sha16: 27a067afa9ea4937
+ *   yaml_version: 0.4.2
+ *   yaml_sha16: 62292f1efdb00e0f
+ *   estimator_selection_sha16: ecd777b4a7ae9117
  *   drive_sense_sha16: 9f90f6fbbfd4b76c
  *   design_revA_sha16: 433ad7f1224c4987
- *   model_py_sha16: f6888a2b3aafbd87
+ *   model_py_sha16: 2bcbc83194379333
  *   core_py_sha16: c46570f25d1439cb
- *   icd_sha16: d6ae722593d323bb
+ *   icd_sha16: 7e35839af70f9f1d
  *   model_version: M1.0
- *   git_head: 65f505b
+ *   git_head: 2477142
  *   nominal_theta_deg: 50.0
  *   nominal_N0: 1.0
  *   evidence_status: proposed design / calculated / assumed values; no hardware measurement
@@ -20,13 +20,13 @@
 #ifndef PEN_PARAMS_GEN_H
 #define PEN_PARAMS_GEN_H
 
-#define PEN_PARAMS_YAML_VERSION "0.4.1"
-#define PEN_PARAMS_YAML_SHA16 "f44bd71afad66b15"
+#define PEN_PARAMS_YAML_VERSION "0.4.2"
+#define PEN_PARAMS_YAML_SHA16 "62292f1efdb00e0f"
 #define PEN_PARAMS_MODEL_VERSION "M1.0"
-#define PEN_PARAMS_YAML_VERSION_NUM (401u)
-#define PEN_PARAMS_SEL_SHA16 "27a067afa9ea4937"
+#define PEN_PARAMS_YAML_VERSION_NUM (402u)
+#define PEN_PARAMS_SEL_SHA16 "ecd777b4a7ae9117"
 #define PEN_PARAMS_DRV_SHA16 "9f90f6fbbfd4b76c"
-#define PEN_PARAMS_MODEL_SHA16 "f6888a2b3aafbd87"
+#define PEN_PARAMS_MODEL_SHA16 "2bcbc83194379333"
 #define PEN_PARAMS_CORE_SHA16 "c46570f25d1439cb"
 
 /* ---- Timing (ICD section 2) ---- */
@@ -45,8 +45,8 @@
 
 /* ---- Stage, lever and actuator (tip-equivalent; used by servo and tests) ---- */
 #define PEN_M_EQ                   (0.0136909494f) /* kg; sim/pensim/model.py build_params(): Geometry.reduce() J_pivot/L1^2 (CAD Rev A masses; calculated) */
-#define PEN_K_TIP                  (150.0f) /* N/m; config/parameters.yaml stage.k_tip (assumed) */
-#define PEN_C_TIP                  (0.143305346f) /* N s/m; sim/pensim/model.py build_params(): 2 zeta_open sqrt(k_tip m_eq) */
+#define PEN_K_TIP                  (80.0f) /* N/m; config/parameters.yaml stage.k_tip (calculated) */
+#define PEN_C_TIP                  (0.10465543f) /* N s/m; sim/pensim/model.py build_params(): 2 zeta_open sqrt(k_tip m_eq) */
 #define PEN_M_COUPLE               (0.00449291663f) /* kg; sim/pensim/model.py build_params(): Geometry.reduce() m_mov L_cm / L1 */
 #define PEN_L1                     (0.0120000001f) /* m; config/parameters.yaml stage.L1 */
 #define PEN_N_LEVER                (3.16666675f) /* -; sim/pensim/model.py build_params(): L2 / L1 (config/parameters.yaml stage.L2 / stage.L1) */
@@ -63,7 +63,7 @@
 #define PEN_I_TRIP_HW              (0.800000012f) /* A; config/parameters.yaml actuator.i_trip (hardware window comparator + latch) */
 #define PEN_ALPHA_CU               (0.00393000012f) /* 1/K; config/parameters.yaml actuator.alpha_cu */
 #define PEN_ALPHA_B                (-0.00120000006f) /* 1/K; sim/pensim/model.py build_params(): alpha_B default (NdFeB Br tempco, assumed) */
-#define PEN_RTH_COIL               (60.0f) /* K/W; config/parameters.yaml actuator.Rth_coil_amb (assumed; see README discrepancy D6) */
+#define PEN_RTH_COIL               (130.0f) /* K/W; config/parameters.yaml actuator.Rth_coil_amb (calculated; see README discrepancy D6) */
 #define PEN_CTH_COIL               (0.25f) /* J/K; config/parameters.yaml actuator.Cth_coil */
 #define PEN_T_AMB                  (25.0f) /* degC; config/parameters.yaml thermal.t_ambient */
 #define PEN_V_BAT_NOM              (3.70000005f) /* V; config/parameters.yaml electrical.v_bat_nom */
@@ -99,9 +99,9 @@
 /* ---- Stage position servo (2 kHz) ---- */
 #define PEN_POS_BW_HZ              (60.0f) /* Hz; sim/pensim/model.py Controller.pos_bw (yaml control.pos_bw = 60) */
 #define PEN_ZETA                   (0.699999988f) /* -; model.Controller.zeta */
-#define PEN_KP                     (1795.78918f) /* N/m; sim/pensim/model.py build_params(): Kp = m_eq wc^2 - k_tip */
+#define PEN_KP                     (1865.78918f) /* N/m; sim/pensim/model.py build_params(): Kp = m_eq wc^2 - k_tip */
 #define PEN_KD                     (7.22591257f) /* N s/m; sim/pensim/model.py build_params(): Kd = 2 zeta m_eq wc */
-#define PEN_KI                     (135399.312f) /* N/(m s); sim/pensim/model.py build_params(): Ki = Kp wc ki_ratio */
+#define PEN_KI                     (140677.188f) /* N/(m s); sim/pensim/model.py build_params(): Ki = Kp wc ki_ratio */
 #define PEN_D_FILT_HZ              (300.0f) /* Hz; sim/pensim/model.py build_params(): d_filt = d_filt_ratio pos_bw */
 #define PEN_ALPHA_D                (0.610338867f) /* -; core.simulate(): alpha_d = 1 - exp(-2 pi d_filt Ts) */
 #define PEN_FF_REF                 (1.0f) /* -; model.Controller.ff_ref */
@@ -149,17 +149,17 @@
 #define PEN_KF_P0_OSC              (1.00000001e-07f) /* m^2; core.simulate(): reinit P diag */
 #define PEN_KF_P_INIT              (9.99999997e-07f) /* -; core.simulate(): initial P = 1e-6 I (before first reinit) */
 #define PEN_F_GATE_WIDTH           (1.5f) /* Hz; model.Controller.f_gate_width */
-#define PEN_BAL_KF_QJ              (10.0f) /* m^2/s^5; results/sim/estimator_selection.json kfosc.selected kf_qj=10.0 */
-#define PEN_BAL_KF_QT              (3.00000003e-09f) /* m^2/s; results/sim/estimator_selection.json kfosc.selected kf_qt=3e-09 */
+#define PEN_BAL_KF_QJ              (0.100000001f) /* m^2/s^5; results/sim/estimator_selection.json kfosc.selected kf_qj=0.1 */
+#define PEN_BAL_KF_QT              (9.99999994e-09f) /* m^2/s; results/sim/estimator_selection.json kfosc.selected kf_qt=1e-08 */
 #define PEN_BAL_KF_W0              (43.982296f) /* rad/s; results/sim/estimator_selection.json kfosc.selected kf_w0_hz=7.0 */
 #define PEN_BAL_F_GATE             (7.5f) /* Hz; results/sim/estimator_selection.json kfosc.selected f_gate=7.5 (default CAL_USER f_gate) */
-#define PEN_BAL_KF_Q00             (1.56250001e-17f) /* SI; core._kf_step(): Q entries precomputed in double precision */
-#define PEN_BAL_KF_Q01             (7.81249997e-14f) /* SI; core._kf_step(): Q entries precomputed in double precision */
-#define PEN_BAL_KF_Q02             (2.08333337e-10f) /* SI; core._kf_step(): Q entries precomputed in double precision */
-#define PEN_BAL_KF_Q11             (4.16666673e-10f) /* SI; core._kf_step(): Q entries precomputed in double precision */
-#define PEN_BAL_KF_Q12             (1.24999997e-06f) /* SI; core._kf_step(): Q entries precomputed in double precision */
-#define PEN_BAL_KF_Q22             (0.00499999989f) /* SI; core._kf_step(): Q entries precomputed in double precision */
-#define PEN_BAL_KF_QOSC            (1.49999999e-12f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_Q00             (1.56249997e-19f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_Q01             (7.81249986e-16f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_Q02             (2.08333329e-12f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_Q11             (4.16666658e-12f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_Q12             (1.25000001e-08f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_Q22             (4.99999987e-05f) /* SI; core._kf_step(): Q entries precomputed in double precision */
+#define PEN_BAL_KF_QOSC            (4.99999998e-12f) /* SI; core._kf_step(): Q entries precomputed in double precision */
 #define PEN_ASR_KF_QJ              (0.100000001f) /* m^2/s^5; results/sim/estimator_selection.json kfosc.selected_assertive kf_qj=0.1 */
 #define PEN_ASR_KF_QT              (9.99999994e-09f) /* m^2/s; results/sim/estimator_selection.json kfosc.selected_assertive kf_qt=1e-08 */
 #define PEN_ASR_KF_W0              (43.982296f) /* rad/s; results/sim/estimator_selection.json kfosc.selected_assertive kf_w0_hz=7.0 */
@@ -211,7 +211,7 @@
 #define PEN_IMU_DELAY              (0.00100000005f) /* s; config/parameters.yaml sensing.imu_delay */
 #define PEN_FUSION_LAG_TICKS       (2) /* ticks; core.simulate(): lag_t = max(0, (opt_delay - imu_delay) // stage_decim) in sim steps */
 #define PEN_IMU_LEAK_TAU           (0.5f) /* s; core.simulate(): vimu *= (1 - dti/0.5) leaky velocity */
-#define PEN_IMU_RATE_HZ            (3840.0f) /* Hz; config/parameters.yaml sensing.imu_rate (ICD s2 says 7.68 kHz ODR; README D8) */
+#define PEN_IMU_RATE_HZ            (3840.0f) /* Hz; config/parameters.yaml sensing.imu_rate (ICD s2 v1.2: 3.84 kHz ODR, 7.68 kHz available) */
 #define PEN_OPT_RATE_HZ            (1000.0f) /* Hz; config/parameters.yaml sensing.opt_rate (ICD s2 says 2 kHz burst; README D8) */
 #define PEN_OPT_LIFT_MAX           (0.00079999998f) /* m; model.build_params default sensing.opt_lift_max */
 #define PEN_FUSION_RING            (1024) /* ticks; core.simulate(): rb_pimu length */
@@ -243,7 +243,7 @@
 #define PEN_ML_APOST_WINDOW        (0.200000003f) /* s; docs/icd.md s5 v1.1 rule 4: running RMS over 200 ms */
 #define PEN_ML_FALLBACK_HOLD       (1.0f) /* s; docs/icd.md s5 v1.1 rule 4: fall back to the Kalman estimate for >= 1 s */
 #define PEN_ML_REAL_SETTLE         (0.300000012f) /* s; proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset */
-#define PEN_ML_STALE_TIME          (0.00800000038f) /* s; proposed: ML output older than 2 predictor periods is expired (REQ-SAF-003) */
+#define PEN_ML_STALE_TIME          (0.00800000038f) /* s; docs/icd.md s5 v1.2: expiry = t_acq_newest + 8 ms (REQ-SAF-003, REQ-ML-002) */
 #define PEN_ML_FADE_TIME           (0.0199999996f) /* s; REQ-SAF-003: fall back smoothly within 20 ms */
 #define PEN_ML_TRIP_COUNT          (5) /* trips; proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW */
 #define PEN_ML_TRIP_WINDOW         (10.0f) /* s; proposed */

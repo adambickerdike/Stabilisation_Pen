@@ -89,9 +89,9 @@ QEMU_ELF  := $(BUILD)/qemu/pen_tests_an505.elf
 QEMU_LD   := $(FW)/port/qemu_an505/an505.ld
 QEMU_CFLAGS := -std=c11 -O2 -g $(ARM_CPU) -ffunction-sections -fdata-sections -fno-common -fno-math-errno $(WARN) -DPEN_TARGET_QEMU=1
 
-$(BUILD)/qemu/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h)
+$(BUILD)/qemu/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h) $(wildcard $(FW)/port/qemu_an505/*.h)
 	@mkdir -p $(dir $@)
-	$(ARM_CC) $(QEMU_CFLAGS) $(TEST_EXTRA) $(INC_TEST) -c $< -o $@
+	$(ARM_CC) $(QEMU_CFLAGS) $(TEST_EXTRA) $(INC_TEST) -I$(FW)/port/qemu_an505 -c $< -o $@
 
 $(QEMU_ELF): $(QEMU_OBJ) $(QEMU_LD)
 	$(ARM_CC) $(ARM_CPU) -T$(QEMU_LD) -nostartfiles --specs=rdimon.specs -Wl,--gc-sections \
@@ -111,6 +111,7 @@ vectors: $(HOST_BIN)
 	$(PY) $(FW)/tools/gen_vectors.py
 	cd $(FW) && $(HOST_BIN) --golden-log tests/vectors/golden_log_v1.bin
 	$(PY) $(FW)/tools/pen_log.py decode $(FW)/tests/vectors/golden_log_v1.bin --json $(FW)/tests/vectors/golden_log_v1.json
+	$(PY) $(FW)/tools/pen_log.py verify $(FW)/tests/vectors/golden_log_v1.bin $(FW)/tests/vectors/golden_log_v1.json
 
 .PHONY: all clean
 all: test arm qemu

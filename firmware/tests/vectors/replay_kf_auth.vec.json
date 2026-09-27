@@ -1,6 +1,6 @@
 {
- "file": "replay_bpf.vec",
- "rows": 3999,
+ "file": "replay_kf_auth.vec",
+ "rows": 7999,
  "columns": [
   "qm0",
   "qm1",
@@ -25,7 +25,7 @@
   "horizon",
   "est"
  ],
- "sha256": "60157888d186b053724a81aa2d58b0e10506432dc684f2c0e2ea5ed45467b999",
+ "sha256": "f86a6c111c921c2e7b7e9e5f970ddf86dab2567442fb84e615eda6f1b0221c68",
  "evidence_status": "reference computation / simulation (no hardware)",
  "generator": "firmware/tools/gen_vectors.py",
  "yaml_sha16": "62292f1efdb00e0f",
@@ -33,8 +33,12 @@
  "core_py_sha16": "c46570f25d1439cb",
  "model_py_sha16": "2bcbc83194379333",
  "reference": "sim.pensim.core.simulate() closed-loop run (numba float64)",
- "mode": "bpf",
+ "mode": "kfosc",
  "controller": {
+  "kf_qj": 0.1,
+  "kf_qt": 1e-08,
+  "kf_w0_hz": 7.0,
+  "f_gate": 7.5,
   "bp_lo": 6.0,
   "bp_hi": 12.0,
   "bp_tune_hz": 7.0,
@@ -53,10 +57,10 @@
   "sensing.imu_delay": 0.001,
   "electrical.v_bat_nom": 20.0
  },
- "seed": 200,
- "tremor_f0": 8.0,
- "duration_s": 2.0,
- "frac_valid": 0.7566891722930733,
- "frac_contact": 0.6936734183545886,
+ "seed": 202,
+ "tremor_f0": 9.0,
+ "duration_s": 4.0,
+ "frac_valid": 0.8088511063882985,
+ "frac_contact": 0.776847105888236,
  "note": "inputs reconstructed exactly from the recording (see module docstring)"
 }

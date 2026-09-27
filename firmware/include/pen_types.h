@@ -1,5 +1,5 @@
 /*
- * pen_types.h - shared enumerations of the ICD (docs/icd.md v1.0).
+ * pen_types.h - shared enumerations of the ICD (docs/icd.md v1.2).
  *
  * Status: PROPOSED DESIGN (research prototype Rev A). Nothing here is
  * validated on hardware.
@@ -66,7 +66,11 @@ enum {
     PEN_EV_AUTHORITY_CAPPED = 0x0006,
     PEN_EV_PEN_DOWN = 0x0007,
     PEN_EV_PEN_UP = 0x0008,
-    PEN_EV_TIME_WRAP = 0x0009
+    PEN_EV_TIME_WRAP = 0x0009,       /* arg = cumulative wrap count */
+    /* ICD v1.2: defined for the decoder; Rev A firmware does not emit them yet
+     * (no coded-paper page id, no sync input on the Rev A pin plan) */
+    PEN_EV_PAGE_SET = 0x000A,        /* arg = page id */
+    PEN_EV_SYNC_PULSE = 0x000B       /* arg = pulse counter (bench rigs) */
 };
 
 /* ---- Estimator used by the stage task (maps to simulator modes) ---- */

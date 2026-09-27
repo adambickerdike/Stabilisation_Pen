@@ -18,9 +18,9 @@
  "sha256": "a8f52718269ebf8e3ce79f05500873c093ad93e910dda9fc190b97ae25016aa6",
  "evidence_status": "reference computation / simulation (no hardware)",
  "generator": "firmware/tools/gen_vectors.py",
- "yaml_sha16": "f44bd71afad66b15",
- "estimator_selection_sha16": "27a067afa9ea4937",
+ "yaml_sha16": "62292f1efdb00e0f",
+ "estimator_selection_sha16": "ecd777b4a7ae9117",
  "core_py_sha16": "c46570f25d1439cb",
- "model_py_sha16": "f6888a2b3aafbd87",
+ "model_py_sha16": "2bcbc83194379333",
  "reference": "stabpen.frames basis/jacobian/inverse_jacobian; numeric 3-D construction generalised to gamma"
 }

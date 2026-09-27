@@ -51,7 +51,7 @@ static void run_guard(ml_guard_t *g, int k0, int k1, pred_t pred, int *k_fallbac
             const float d_um[2] = {sg * s_r[kt][0] * 1e6f, sg * s_r[kt][1] * 1e6f};
             ml_guard_new_output(g, d_um, false, false, t_acq, PEN_Q_LIM);
         }
-        ml_guard_tick(g, kf, TS);
+        ml_guard_tick(g, kf, TS, t_us);
         if (k_fallback != NULL && *k_fallback < 0 && g->apost_fallback) {
             *k_fallback = k;
         }
@@ -92,7 +92,7 @@ void test_ml_guard_rejects(void)
     const float kf[2] = {0.0f, 0.0f};
     ml_guard_new_output(&g, da, false, false, 1000u, PEN_Q_LIM);
     for (int k = 0; k < PEN_ML_DECIM; k++) {
-        ml_guard_tick(&g, kf, TS);
+        ml_guard_tick(&g, kf, TS, 2000u + (uint32_t)k * 500u);   /* tick time = acquisition + 1 ms */
     }
     ml_guard_new_output(&g, db, false, false, 5000u, PEN_Q_LIM);
     CHECK(g.n_rejected == 0u && (g.info & MLG_R_SLEW) != 0u);
@@ -127,7 +127,7 @@ void test_ml_guard_fallback_within_20ms(void)
     CHECK(k_fb > 2000 && (k_fb - 2000) * 0.5 < 100.0);
     CHECK(k_zero >= k_fb && (k_zero - k_fb + 1) * 0.5 <= 20.0 + 1e-9);   /* REQ-SAF-003 */
     CHECK(g.n_fallbacks >= 1u);
-    ml_guard_tick(&g, kf, TS);
+    ml_guard_tick(&g, kf, TS, 2400u * 500u + 1000000u);
     CHECK_CLOSE(g.out[0], 0.0, 1e-12, 0.0);   /* Kalman estimate in use */
     /* good predictor again: held in fallback >= 1 s after the last failing evaluation */
     const int k_good = 2400;
@@ -152,8 +152,10 @@ void test_ml_guard_fallback_within_20ms(void)
            "re-admitted %.0f ms after the last failing evaluation (hold >= 1 s)", t_adm, (double)rms_good * 1e6,
            (double)rms_real * 1e6, (k_fb - 2000 + 1) * 0.5, (k_zero - k_fb + 1) * 0.5,
            ((double)k_readmit - (double)last_fail_t) * 0.5);
-    /* staleness (REQ-SAF-003): outputs stop -> expired after 8 ms, faded within 20 ms */
+    /* expiry (ICD s5 v1.2, REQ-SAF-003): outputs stop -> the last one expires
+     * at its newest-input acquisition time + 8 ms; faded within 20 ms */
     int k_stale = -1, k_out = -1;
+    const int k_last_out = 7999 - (7999 % PEN_ML_DECIM);   /* last prediction tick of the good run */
     for (int k = 8000; k < 8100; k++) {
         run_guard(&g, k, k + 1, PRED_NONE, NULL, NULL);
         if (k_stale < 0 && g.stale) {
@@ -163,7 +165,12 @@ void test_ml_guard_fallback_within_20ms(void)
             k_out = k;
         }
     }
-    CHECK(k_stale > 0 && k_out > 0 && (k_out - k_stale + 1) * 0.5 <= 20.0 + 1e-9);
+    /* tick time of the expiry vs t_acq_last + 8 ms = (tick time of the last output - 1 ms) + 8 ms */
+    const double age_ms = (k_stale - k_last_out) * 0.5 + 1.0;
+    CHECK(k_stale > 0 && age_ms > 8.0 && age_ms <= 8.5);
+    CHECK(k_out > 0 && (k_out - k_stale + 1) * 0.5 <= 20.0 + 1e-9);
+    tr_log("expiry: output expired when its newest input was %.1f ms old (contract: t_acq_newest + 8 ms, 2 kHz "
+           "tick granularity); Kalman fully in use %.1f ms later", age_ms, (k_out - k_stale + 1) * 0.5);
     run_guard(&g, 8100, 8200, PRED_GOOD, NULL, NULL);
     CHECK(!g.stale && g.mix == 1.0f);   /* resumes without the 1 s hold (not an a-posteriori failure) */
 }

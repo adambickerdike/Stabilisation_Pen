@@ -348,6 +348,13 @@ void test_closed_loop_hold_no_vsat(void)
            "%.3f, clamp ticks %u of 2000, longest run > 0.95: %.1f ms (fault needs > 50 ms)", (double)cor.dmax_static,
            (unsigned)cor.clamp_static, (double)cor.dmax_motion, (unsigned)cor.clamp_motion,
            (double)cor.headroom_run_max * 0.5);
-    tr_log("  FINDING: at the 3.3 V / 85 degC corner the correction peaks reach the 0.97 clamp; drive_sense.py's "
-           "headroom check omits the magnet tempco (+8.5 %% current) and the flexure/inertia force of the correction");
+    if (cor.clamp_motion > 0u || cor.dmax_motion > PEN_DUTY_HEADROOM) {
+        tr_log("  FINDING: at the 3.3 V / 85 degC corner the correction peaks exceed the %.2f headroom threshold%s; "
+               "drive_sense.py's headroom check omits the magnet tempco (+8.5 %% current) and the flexure/inertia "
+               "force of the correction", (double)PEN_DUTY_HEADROOM, cor.clamp_motion > 0u ? " and reach the clamp" : "");
+    } else {
+        tr_log("  3.3 V / 85 degC corner: correction peaks stay below the %.2f headroom threshold (margin %.3f of "
+               "duty); drive_sense.py's headroom check still omits the magnet tempco (+8.5 %% current) and the "
+               "correction force", (double)PEN_DUTY_HEADROOM, (double)(PEN_DUTY_HEADROOM - cor.dmax_motion));
+    }
 }

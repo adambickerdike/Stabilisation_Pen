@@ -12,6 +12,7 @@
     X(test_log_unit_conversion)               \
     X(test_log_corruption_detected)           \
     X(test_log_golden_file)                   \
+    X(test_log_session_clock)                 \
     X(test_biquad_vs_scipy)                   \
     X(test_jacobian_vs_frames)                \
     X(test_jacobian_properties)               \
@@ -25,6 +26,7 @@
     X(test_replay_sim_kf)                     \
     X(test_replay_sim_bpf)                    \
     X(test_replay_sim_ffc)                    \
+    X(test_replay_sim_kf_authority)           \
     X(test_bpf_reacquisition_transient)       \
     X(test_guided_tracks_template)            \
     X(test_current_loop_bridge_mapping)       \
@@ -58,7 +60,8 @@
     X(test_fusion_matches_sim_scheme)         \
     X(test_attitude_from_gravity)             \
     X(test_system_hall_frozen_detect)         \
-    X(test_system_fault_sequences)
+    X(test_system_fault_sequences)            \
+    X(test_system_capture_boundaries)
 
 #define TEST_DECL(name) void name(void);
 TEST_LIST(TEST_DECL)

@@ -213,6 +213,8 @@ void test_bpf_estimator_golden(void)
 typedef struct {
     double dhat, west, g, qr, iref;
     uint32_t n_iref_big;
+    double g_ref_max, qr_ref_max;   /* coverage: authority and correction reached by the reference */
+    uint32_t n_g_ref;               /* ticks with g_eff > 0 in the reference */
 } replay_err_t;
 
 static bool replay(const char *file, replay_err_t *er, uint32_t *rows, bool local_origin)
@@ -261,6 +263,9 @@ static bool replay(const char *file, replay_err_t *er, uint32_t *rows, bool loca
             er->west = fmax(er->west, fabs((double)kf_est_freq_hz(&c.kf) - (double)vec_at(&v, r, cw)));
         }
         er->g = fmax(er->g, fabs((double)c.g_eff - (double)vec_at(&v, r, cge)));
+        er->g_ref_max = fmax(er->g_ref_max, (double)vec_at(&v, r, cge));
+        er->n_g_ref += (vec_at(&v, r, cge) > 0.0f) ? 1u : 0u;
+        er->qr_ref_max = fmax(er->qr_ref_max, fmax(fabs((double)vec_at(&v, r, cr0)), fabs((double)vec_at(&v, r, cr1))));
         er->qr = fmax(er->qr, fmax(fabs((double)c.servo.qr[0] - (double)vec_at(&v, r, cr0)),
                                    fabs((double)c.servo.qr[1] - (double)vec_at(&v, r, cr1))));
         const double di = fmax(fabs((double)c.servo.iref[0] - (double)vec_at(&v, r, ci0)),
@@ -291,8 +296,12 @@ static void check_replay(const char *file, const char *label, bool local_origin,
     CHECK(e.g < 1e-4);
     CHECK(e.qr < tol_d);          /* m */
     CHECK(e.iref < tol_i);        /* A */
+    /* coverage: the correction chain (Jacobian, limiter, slew) must be active */
+    CHECK(e.g_ref_max > 0.5 && e.n_g_ref > rows / 2u && e.qr_ref_max > 50e-6);
     tr_log("%s: %u ticks vs core.simulate(): max |d dhat| %.3g m, |d f_est| %.3g Hz, |d g| %.3g, |d q_r| %.3g m, "
-           "|d i_ref| %.3g A", label, (unsigned)rows, e.dhat, e.west, e.g, e.qr, e.iref);
+           "|d i_ref| %.3g A; reference authority g_eff > 0 on %.0f %% of ticks (max %.3f), max |q_r| %.0f um",
+           label, (unsigned)rows, e.dhat, e.west, e.g, e.qr, e.iref, 100.0 * e.n_g_ref / (double)(rows ? rows : 1u),
+           e.g_ref_max, e.qr_ref_max * 1e6);
 }
 
 void test_replay_sim_kf(void)
@@ -304,6 +313,12 @@ void test_replay_sim_bpf(void) { check_replay("replay_bpf.vec", "band-pass, loca
 void test_replay_sim_ffc(void)
 {
     check_replay("replay_ffc.vec", "Kalman + contact FF (bench option)", true, 0.2e-6, 1e-4);
+}
+/* 4 s, 9 Hz tremor: long run with the frequency tracker and the correction
+ * chain engaged most of the time */
+void test_replay_sim_kf_authority(void)
+{
+    check_replay("replay_kf_auth.vec", "Kalman (balanced) 4 s / 9 Hz, local origin on", true, 0.2e-6, 1e-4);
 }
 
 void test_bpf_reacquisition_transient(void)

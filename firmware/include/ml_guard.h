@@ -21,10 +21,13 @@
  *      running RMS of the realised disturbance (worse than predicting zero),
  *      fall back to the Kalman estimate for >= 1 s and log event 0x0006.
  *  The v1 rule |d_hat - d_KF| > 150 um for 20 ms is removed.
- * Firmware additions (REQ-SAF-003): an output older than ML_STALE_TIME is
- * expired (fallback until outputs resume); every fallback and re-admission is
- * a cross-fade completed within ML_FADE_TIME (20 ms). The ML output is used
- * only after the 200 ms a-posteriori window has filled and passes.
+ * Expiry (ICD s5 v1.2, REQ-SAF-003 / REQ-ML-002): an output expires at
+ * t_acq_newest + ML_STALE_TIME (8 ms); with no newer accepted output the
+ * guard falls back until outputs resume. Firmware additions: every fallback
+ * and re-admission is a cross-fade completed within ML_FADE_TIME (20 ms); the
+ * ML output is used only after the 200 ms a-posteriori window has filled and
+ * passes. The kernel's confidence byte (ICD v1.2 output struct) is not used
+ * by any v1.1 rule and is not passed in.
  * Units inside the guard: metres and microsecond time stamps.
  */
 #ifndef PEN_ML_GUARD_H
@@ -57,7 +60,8 @@ typedef struct {
     /* accepted (clipped, slew-limited) ML estimate */
     float d[2];
     bool have;
-    float t_since_out;        /* s since the last accepted output */
+    uint32_t t_acq_last_us;   /* newest-input acquisition time of the last accepted output */
+    uint32_t t_expiry_us;     /* t_acq_last_us + ML_STALE_TIME */
     /* realised disturbance */
     biquad_state_t bp1[2], bp2[2];
     float origin[2];
@@ -74,7 +78,7 @@ typedef struct {
     /* state */
     bool apost_fallback;      /* rule (4): held >= ML_FALLBACK_HOLD */
     float t_fallback;         /* s in the rule-(4) fallback */
-    bool stale;               /* no accepted output for > ML_STALE_TIME */
+    bool stale;               /* the last accepted output has expired */
     bool fallback;            /* apost_fallback || stale (for flags/logging) */
     float mix;                /* 1 = ML, 0 = Kalman */
     uint8_t reason;           /* reason bits of the last event */
@@ -94,8 +98,9 @@ void ml_guard_realised(ml_guard_t *g, const float p_h[2], uint32_t t_acq_us, boo
  * acquisition time of the newest input sample, travel limit (m). */
 void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, uint32_t t_acq_newest_us,
                          float q_lim);
-/* Every stage tick: staleness, fallback timing, cross-fade; writes g->out. */
-void ml_guard_tick(ml_guard_t *g, const float d_kf[2], float dt);
+/* Every stage tick: expiry against the current time now_us (same clock as
+ * the acquisition stamps), fallback timing, cross-fade; writes g->out. */
+void ml_guard_tick(ml_guard_t *g, const float d_kf[2], float dt, uint32_t now_us);
 static inline bool ml_guard_admitted(const ml_guard_t *g) { return g->mix > 0.0f; }
 
 /* ---- input window (ICD s5 v1.1) ---- */

@@ -1,16 +1,16 @@
 {
  "meta": {
   "generator": "firmware/tools/gen_params.py",
-  "yaml_version": "0.4.1",
-  "yaml_sha16": "f44bd71afad66b15",
-  "estimator_selection_sha16": "27a067afa9ea4937",
+  "yaml_version": "0.4.2",
+  "yaml_sha16": "62292f1efdb00e0f",
+  "estimator_selection_sha16": "ecd777b4a7ae9117",
   "drive_sense_sha16": "9f90f6fbbfd4b76c",
   "design_revA_sha16": "433ad7f1224c4987",
-  "model_py_sha16": "f6888a2b3aafbd87",
+  "model_py_sha16": "2bcbc83194379333",
   "core_py_sha16": "c46570f25d1439cb",
-  "icd_sha16": "d6ae722593d323bb",
+  "icd_sha16": "7e35839af70f9f1d",
   "model_version": "M1.0",
-  "git_head": "65f505b",
+  "git_head": "2477142",
   "nominal_theta_deg": 50.0,
   "nominal_N0": 1.0,
   "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
@@ -124,15 +124,15 @@
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
    "name": "PEN_K_TIP",
-   "value": 150.0,
+   "value": 80.0,
    "type": "float",
    "unit": "N/m",
-   "source": "config/parameters.yaml stage.k_tip (assumed)"
+   "source": "config/parameters.yaml stage.k_tip (calculated)"
   },
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
    "name": "PEN_C_TIP",
-   "value": 0.14330535095072727,
+   "value": 0.10465543110254366,
    "type": "float",
    "unit": "N s/m",
    "source": "sim/pensim/model.py build_params(): 2 zeta_open sqrt(k_tip m_eq)"
@@ -268,10 +268,10 @@
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
    "name": "PEN_RTH_COIL",
-   "value": 60.0,
+   "value": 130.0,
    "type": "float",
    "unit": "K/W",
-   "source": "config/parameters.yaml actuator.Rth_coil_amb (assumed; see README discrepancy D6)"
+   "source": "config/parameters.yaml actuator.Rth_coil_amb (calculated; see README discrepancy D6)"
   },
   {
    "section": "Stage, lever and actuator (tip-equivalent; used by servo and tests)",
@@ -508,7 +508,7 @@
   {
    "section": "Stage position servo (2 kHz)",
    "name": "PEN_KP",
-   "value": 1795.789217806633,
+   "value": 1865.789217806633,
    "type": "float",
    "unit": "N/m",
    "source": "sim/pensim/model.py build_params(): Kp = m_eq wc^2 - k_tip"
@@ -524,7 +524,7 @@
   {
    "section": "Stage position servo (2 kHz)",
    "name": "PEN_KI",
-   "value": 135399.3171373699,
+   "value": 140677.19279540074,
    "type": "float",
    "unit": "N/(m s)",
    "source": "sim/pensim/model.py build_params(): Ki = Kp wc ki_ratio"
@@ -876,18 +876,18 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_QJ",
-   "value": 10.0,
+   "value": 0.1,
    "type": "float",
    "unit": "m^2/s^5",
-   "source": "results/sim/estimator_selection.json kfosc.selected kf_qj=10.0"
+   "source": "results/sim/estimator_selection.json kfosc.selected kf_qj=0.1"
   },
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_QT",
-   "value": 3e-09,
+   "value": 1e-08,
    "type": "float",
    "unit": "m^2/s",
-   "source": "results/sim/estimator_selection.json kfosc.selected kf_qt=3e-09"
+   "source": "results/sim/estimator_selection.json kfosc.selected kf_qt=1e-08"
   },
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
@@ -908,7 +908,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_Q00",
-   "value": 1.5625000000000004e-17,
+   "value": 1.5625000000000006e-19,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -916,7 +916,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_Q01",
-   "value": 7.812500000000001e-14,
+   "value": 7.812500000000002e-16,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -924,7 +924,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_Q02",
-   "value": 2.0833333333333334e-10,
+   "value": 2.083333333333334e-12,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -932,7 +932,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_Q11",
-   "value": 4.166666666666667e-10,
+   "value": 4.166666666666668e-12,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -940,7 +940,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_Q12",
-   "value": 1.2499999999999999e-06,
+   "value": 1.25e-08,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -948,7 +948,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_Q22",
-   "value": 0.005,
+   "value": 5e-05,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -956,7 +956,7 @@
   {
    "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
    "name": "PEN_BAL_KF_QOSC",
-   "value": 1.5e-12,
+   "value": 5.0000000000000005e-12,
    "type": "float",
    "unit": "SI",
    "source": "core._kf_step(): Q entries precomputed in double precision"
@@ -1359,7 +1359,7 @@
    "value": 3840.0,
    "type": "float",
    "unit": "Hz",
-   "source": "config/parameters.yaml sensing.imu_rate (ICD s2 says 7.68 kHz ODR; README D8)"
+   "source": "config/parameters.yaml sensing.imu_rate (ICD s2 v1.2: 3.84 kHz ODR, 7.68 kHz available)"
   },
   {
    "section": "Sensing and housing-position fusion",
@@ -1599,7 +1599,7 @@
    "value": 0.008,
    "type": "float",
    "unit": "s",
-   "source": "proposed: ML output older than 2 predictor periods is expired (REQ-SAF-003)"
+   "source": "docs/icd.md s5 v1.2: expiry = t_acq_newest + 8 ms (REQ-SAF-003, REQ-ML-002)"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",

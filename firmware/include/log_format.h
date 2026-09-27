@@ -17,8 +17,8 @@
  *        t_us u32 | UTF-8 text (no terminator)
  * Stroke phi: u8 in 2-degree steps, round(phi_deg / 2) mod 180 (0-358 deg);
  * theta u8 in 0.5-degree steps. (ICD s4.3 v1.0 wrote "0.5 deg ... phi/2",
- * which does not fit a u8; the project lead confirmed the 2-degree coding and
- * the ICD is being corrected, README D5.)
+ * which does not fit a u8; ICD v1.2 now specifies the 2-degree coding,
+ * README D5, resolved.)
  * Time: research t_us = us since session start (wraps every 71.6 min; event
  * 0x0009 carries the cumulative wrap count); stroke t_ms = ms since session
  * start from a 64-bit time base (wraps only after 49.7 days). penlog_clock_t

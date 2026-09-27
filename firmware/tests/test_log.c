@@ -8,6 +8,7 @@
 #include "calib.h"
 #include "crc16.h"
 #include "log_format.h"
+#include "ml_guard.h"
 #include "pen_types.h"
 #include "tr.h"
 #include "vec.h"
@@ -227,27 +228,55 @@ static size_t golden_build(uint8_t *buf, size_t cap)
     off += PENLOG_HEADER_LEN;
     uint8_t p[PENLOG_MAX_PAYLOAD];
     size_t n;
-    /* research frames */
-    for (uint32_t k = 0; k < 3; k++) {
-        const penlog_research_t r = sample_research(k);
-        penlog_pack_research(&r, p);
-        off += penlog_encode_record(PENLOG_T_RESEARCH, p, PENLOG_RESEARCH_LEN, buf + off, cap - off);
-    }
-    /* stroke samples */
-    const penlog_stroke_t st[3] = {{1000u, 1u, 0, 0, 950u, 100u, 0u},
+    /* research frames: (1) before the first pen-down: p_H undefined (INT32_MIN);
+     * (2, 3) writing, page-origin relative; (3) also exercises extremes */
+    penlog_research_t r = sample_research(0);
+    r.mode = PEN_MODE_NEUTRAL_HOLD;
+    r.flags = PEN_FLAG_LIFT;
+    r.q[0] = 12;
+    r.q[1] = -8;
+    r.qr[0] = 0;
+    r.qr[1] = 0;
+    r.i[0] = 3;
+    r.i[1] = -2;
+    r.iref[0] = 0;
+    r.iref[1] = 0;
+    r.f_ax = 250;
+    r.opt_valid = 0;
+    r.dhat[0] = 0;
+    r.dhat[1] = 0;
+    r.g = 0;
+    penlog_research_ph_undefined(&r);
+    penlog_pack_research(&r, p);
+    off += penlog_encode_record(PENLOG_T_RESEARCH, p, PENLOG_RESEARCH_LEN, buf + off, cap - off);
+    r = sample_research(1);
+    r.p_h[0] = 15230;      /* 1.523 mm from the page origin */
+    r.p_h[1] = -4410;
+    penlog_pack_research(&r, p);
+    off += penlog_encode_record(PENLOG_T_RESEARCH, p, PENLOG_RESEARCH_LEN, buf + off, cap - off);
+    r = sample_research(2);
+    penlog_pack_research(&r, p);
+    off += penlog_encode_record(PENLOG_T_RESEARCH, p, PENLOG_RESEARCH_LEN, buf + off, cap - off);
+    /* stroke samples: pen-down (page origin), a 200 Hz sample, the pen-up
+     * boundary sample 2 ms later, then a range-extreme sample */
+    const penlog_stroke_t st[4] = {{1000u, 1u, 0, 0, 950u, 100u, 0u},
                                    {1005u, 1u, 152, -37, 1010u, 101u, 179u},
-                                   {1010u, 2u, -2147483647, 2147483647, 65535u, 180u, 90u}};
-    for (int k = 0; k < 3; k++) {
+                                   {1007u, 1u, 188, -41, 400u, 101u, 179u},
+                                   {4294967295u, 4294967295u, -2147483647, 2147483647, 65535u, 180u, 90u}};
+    for (int k = 0; k < 4; k++) {
         penlog_pack_stroke(&st[k], p);
         off += penlog_encode_record(PENLOG_T_STROKE, p, PENLOG_STROKE_LEN, buf + off, cap - off);
     }
     /* events */
-    const penlog_event_t ev[5] = {{1000000u, PEN_EV_MODE_CHANGE, (int32_t)(PEN_MODE_ASSIST_KF | (PEN_MODE_NEUTRAL_HOLD << 8))},
-                                  {1000500u, PEN_EV_PEN_DOWN, 0},
-                                  {1002000u, PEN_EV_FAULT_SET, (int32_t)PEN_FAULT_HALL},
-                                  {1500000u, PEN_EV_FAULT_CLEARED, (int32_t)PEN_FAULT_HALL},
-                                  {1500500u, PEN_EV_AUTHORITY_CAPPED, -1}};
-    for (int k = 0; k < 5; k++) {
+    const penlog_event_t ev[7] = {
+        {1000000u, PEN_EV_MODE_CHANGE, (int32_t)(PEN_MODE_ASSIST_KF | (PEN_MODE_NEUTRAL_HOLD << 8))},
+        {1000500u, PEN_EV_PEN_DOWN, 0},
+        {1002000u, PEN_EV_FAULT_SET, (int32_t)PEN_FAULT_HALL},
+        {1500000u, PEN_EV_FAULT_CLEARED, (int32_t)PEN_FAULT_HALL},
+        {1500500u, PEN_EV_ML_LOADED, (int32_t)0x71FEEB47},        /* ml/export tcn_s model hash (low 32 bits) */
+        {1600000u, PEN_EV_AUTHORITY_CAPPED, (int32_t)MLG_R_APOST},  /* ML a-posteriori fallback (ICD s5 v1.1) */
+        {1234u, PEN_EV_TIME_WRAP, 1}};                             /* first session wrap: arg = wrap count */
+    for (int k = 0; k < 7; k++) {
         penlog_pack_event(&ev[k], p);
         off += penlog_encode_record(PENLOG_T_EVENT, p, PENLOG_EVENT_LEN, buf + off, cap - off);
     }
@@ -321,7 +350,49 @@ void test_log_golden_file(void)
         }
         off += used;
     }
-    CHECK(counts[1] == 3u && counts[2] == 3u && counts[3] == 5u && counts[4] == 1u && counts[5] == 2u);
+    CHECK(counts[1] == 3u && counts[2] == 4u && counts[3] == 7u && counts[4] == 1u && counts[5] == 2u);
     tr_log("golden_log_v1.bin: %u bytes, records research %u stroke %u event %u calsnap %u annot %u", (unsigned)m,
            (unsigned)counts[1], (unsigned)counts[2], (unsigned)counts[3], (unsigned)counts[4], (unsigned)counts[5]);
+}
+
+void test_log_session_clock(void)
+{
+    /* (a) the 32-bit hardware us counter wraps 0.3 s into the session: the
+     * session time bases continue (the old stroke t_ms restarted here) */
+    penlog_clock_t c;
+    memset(&c, 0, sizeof(c));
+    uint32_t hw = 0xFFFFFFFFu - 300000u;
+    penlog_clock_start(&c, hw);
+    uint32_t prev_ms = 0, prev_us = 0;
+    bool mono = true, wrap_evt = false;
+    for (int k = 0; k < 2000; k++) {
+        hw += 500u;   /* wraps at k = 600 */
+        wrap_evt = penlog_clock_update(&c, hw) || wrap_evt;
+        const uint32_t us = penlog_clock_us32(&c), ms = penlog_clock_ms32(&c);
+        mono = mono && us > prev_us && ms >= prev_ms;
+        prev_us = us;
+        prev_ms = ms;
+    }
+    CHECK(mono && !wrap_evt);
+    CHECK(prev_us == 1000000u && prev_ms == 1000u);
+    /* (b) session-relative us wraps after 2^32 us (71.6 min): event with the
+     * cumulative wrap count; t_ms keeps counting (u32 ms wraps after 49.7 days) */
+    memset(&c, 0, sizeof(c));
+    hw = 12345u;
+    penlog_clock_start(&c, hw);
+    uint32_t events = 0, last_arg = 0;
+    for (int k = 0; k < 20; k++) {
+        hw += 1000000000u;   /* 1000 s per update (< 2^32 us between updates) */
+        if (penlog_clock_update(&c, hw)) {
+            events++;
+            last_arg = c.wraps;
+        }
+    }
+    const uint64_t t_s = 20000u;
+    CHECK(events == (uint32_t)((t_s * 1000000u) >> 32) && last_arg == events);
+    CHECK(penlog_clock_ms32(&c) == 20000000u);
+    CHECK(penlog_clock_us32(&c) == (uint32_t)((t_s * 1000000u) & 0xFFFFFFFFu));
+    tr_log("session clock: hardware counter wrap transparent (t_ms monotonic); %u session wraps in 20000 s, event "
+           "0x0009 arg = cumulative count (last %u); stroke t_ms = %u", (unsigned)events, (unsigned)last_arg,
+           (unsigned)penlog_clock_ms32(&c));
 }

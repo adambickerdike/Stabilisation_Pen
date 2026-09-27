@@ -245,7 +245,7 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
             }
         }
     }
-    ml_guard_tick(&a->mlg, a->ctrl.kf.dhat, TS);
+    ml_guard_tick(&a->mlg, a->ctrl.kf.dhat, TS, t_hw);
     if (a->mlg.event) {
         log_event(a, t_us, PEN_EV_AUTHORITY_CAPPED, (int32_t)a->mlg.reason);
         a->mlg.event = false;

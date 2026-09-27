@@ -14,9 +14,9 @@
  * Derating: authority cap falls linearly from 1 at T_DERATE_START to 0 at
  * T_FAULT; over-temperature condition (fault bit 2) at T_FAULT, cleared
  * below T_RECOVER. All thresholds are proposed (params_gen.h).
- * VERIFY: R_th, C_th (config says 60 K/W, 0.25 J/K; the thermal network in
- * results/thermal implies ~190 K/W for the moving coil, README D6),
- * r_bridge spread, NTC coupling (EXP-B07).
+ * VERIFY: R_th, C_th (config v0.4.2: 130 K/W, 0.25 J/K; the design case of
+ * results/thermal/thermal.json, 0.31 W -> 85.5 degC coil over a 33 degC hand,
+ * implies ~170 K/W, README D6), r_bridge spread, NTC coupling (EXP-B07).
  */
 #ifndef PEN_THERMAL_H
 #define PEN_THERMAL_H

@@ -446,20 +446,41 @@ def params_fresh():
 
 
 def main():
+    only = None
+    if len(sys.argv) >= 3 and sys.argv[1] == "--only":
+        only = set(sys.argv[2].split(","))
     params_fresh()
     os.makedirs(OUT, exist_ok=True)
     meta = {"generator": "firmware/tools/gen_vectors.py", "yaml_sha16": sha16(os.path.join(ROOT, "config", "parameters.yaml")),
             "estimator_selection_sha16": sha16(SEL), "core_py_sha16": sha16(os.path.join(ROOT, "sim", "pensim", "core.py")),
             "model_py_sha16": sha16(os.path.join(ROOT, "sim", "pensim", "model.py"))}
     print("generating vectors in", os.path.relpath(OUT, ROOT))
-    gen_crc(meta)
-    gen_jacobian(meta)
-    gen_biquad(meta)
-    gen_kf(meta)
-    gen_bpf(meta)
-    gen_replay(meta, "replay_kf.vec", "kfosc", {"ff_accel": 0.0})
-    gen_replay(meta, "replay_bpf.vec", "bpf", {"ff_accel": 0.0})
-    gen_replay(meta, "replay_ffc.vec", "kfosc", {"ff_accel": 0.0, "ff_contact": 1.0}, seed=201, f0=9.0)
+
+    def want(group):   # `gen_vectors.py --only kf,replay_kf_auth` regenerates a subset
+        return only is None or group in only
+
+    if want("crc"):
+        gen_crc(meta)
+    if want("jacobian"):
+        gen_jacobian(meta)
+    if want("biquad"):
+        gen_biquad(meta)
+    if want("kf"):
+        gen_kf(meta)
+    if want("bpf"):
+        gen_bpf(meta)
+    if want("replay_kf"):
+        gen_replay(meta, "replay_kf.vec", "kfosc", {"ff_accel": 0.0})
+    if want("replay_bpf"):
+        gen_replay(meta, "replay_bpf.vec", "bpf", {"ff_accel": 0.0})
+    if want("replay_ffc"):
+        gen_replay(meta, "replay_ffc.vec", "kfosc", {"ff_accel": 0.0, "ff_contact": 1.0}, seed=201, f0=9.0)
+    # The 2 s runs above never open the Kalman frequency gate (f_est stays
+    # below f_gate - width/2 = 6.75 Hz, so g_eff = 0 and the Jacobian /
+    # limiter / slew chain is idle in them); this 4 s run engages authority
+    # (g_eff > 0 on ~96 % of the ticks, up to 1.0).
+    if want("replay_kf_auth"):
+        gen_replay(meta, "replay_kf_auth.vec", "kfosc", {"ff_accel": 0.0}, seed=202, f0=9.0, duration=4.0)
     return 0
 
 

@@ -1,0 +1,69 @@
+nRF5340 application-core image: per-module size after --gc-sections
+Evidence status: BUILD ARTEFACT (compile/link only; not run on hardware)
+toolchain: arm-none-eabi-gcc (15:13.2.rel1-2) 13.2.1 20231009
+flags: -mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -O2 -ffunction-sections -fdata-sections -fno-math-errno; link --gc-sections, newlib-nano, nosys
+elf: firmware/build/arm/pen_fw_nrf5340.elf
+generated: 2026-09-27T03:02:19Z
+
+module                                       text    data      bss    flash      RAM
+------------------------------------------------------------------------------------
+core/app.o                                   3672       0      512     3672      512
+core/calib.o                                   60       0        0       60        0
+core/control.o                               1364       0        0     1364        0
+core/crc16.o                                  560       0        0      560        0
+core/current_loop.o                          1096       0        0     1096        0
+core/estimator_bpf.o                          336       0        0      336        0
+core/estimator_kf.o                          1748       0        0     1748        0
+core/fusion.o                                 596       0        0      596        0
+core/guided.o                                 312       0        0      312        0
+core/hall.o                                   292       0        0      292        0
+core/jacobian.o                               536       0        0      536        0
+core/limiter.o                                212       0        0      212        0
+core/log_format.o                            2564       0        0     2564        0
+core/ml_guard.o                              1948       0        0     1948        0
+core/params.o                                 544       0        0      544        0
+core/safety.o                                1548       0        0     1548        0
+core/servo.o                                  788       0        0      788        0
+core/state_machine.o                         1060       0        0     1060        0
+core/thermal.o                                808       0        0      808        0
+port/nrf5340/hal_nrf5340.o                    656       0       14      656       14
+port/nrf5340/main.o                            88       0      256       88      256
+port/nrf5340/scheduler.o                      636       0     3908      636     3908
+port/nrf5340/sensors_nrf5340.o                588       0     8212      588     8212
+port/nrf5340/startup_nrf5340.o                488       0        0      488        0
+libc_nano                                     668      80        0      748       80
+libgcc                                        828       0        0      828        0
+libm                                         7545       0        0     7545        0
+------------------------------------------------------------------------------------
+subtotal core                               20044       0      512    20044      512
+subtotal port                                2456       0    12390     2456    12390
+subtotal libraries                           9041      80        0     9121       80
+sum of input sections                       31541      80    12902    31621    12982
+ELF (arm-none-eabi-size -B)                 31544      80    29296    31624    29376
+
+ELF bss includes the 16 kB main stack reserved by the linker script (.stack); the
+difference between the ELF and the sum of input sections is alignment padding and the stack.
+Budgets (nRF5340 application core, VERIFY): 1024 kB flash, 512 kB RAM.
+Flash use 3.02 %, RAM use 5.60 % (incl. stack).
+
+arm-none-eabi-size -A:
+  /home/user/Stabilisation_Pen/firmware/build/arm/pen_fw_nrf5340.elf  :
+  section             size        addr
+  .isr_vector          340           0
+  .text              31196         340
+  .ARM.exidx             8       31536
+  .data                 80   536870912
+  .bss               12908   536870992
+  .stack             16388   536883900
+  .debug_info       101776           0
+  .debug_abbrev      22466           0
+  .debug_loclists    49116           0
+  .debug_aranges      2760           0
+  .debug_rnglists     6670           0
+  .debug_line        64742           0
+  .debug_str         14535           0
+  .comment              38           0
+  .ARM.attributes       56           0
+  .debug_frame        6336           0
+  .debug_line_str      324           0
+  Total             329739

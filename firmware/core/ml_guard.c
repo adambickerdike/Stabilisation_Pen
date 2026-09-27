@@ -16,7 +16,6 @@ static const biquad_coef_t MLG_BP2 = {PEN_MLG_BP2_B0, PEN_MLG_BP2_B1, PEN_MLG_BP
 void ml_guard_init(ml_guard_t *g)
 {
     memset(g, 0, sizeof(*g));
-    g->t_since_out = 1e3f;
 }
 
 static void raise_event(ml_guard_t *g, uint8_t reason)
@@ -135,9 +134,11 @@ void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bo
         d[1] *= q_lim / m;
         info |= MLG_R_CLIP;
     }
-    /* (3) slew limit 50 mm/s against the previous accepted estimate */
+    /* (3) slew limit 50 mm/s against the previous accepted estimate, over the
+     * acquisition-time interval between the two predictions */
     if (g->have) {
-        const float dmax = PEN_ML_RATE_MAX * g->t_since_out;
+        const int32_t dt_acq = dt_us(t_acq_newest_us, g->t_acq_last_us);
+        const float dmax = PEN_ML_RATE_MAX * ((dt_acq > 0) ? (float)dt_acq * 1e-6f : 0.0f);
         const float dx = d[0] - g->d[0], dy = d[1] - g->d[1];
         const float dm = hypotf(dx, dy);
         if (dm > dmax) {
@@ -150,7 +151,8 @@ void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bo
     g->d[1] = d[1];
     g->have = true;
     g->info = info;
-    g->t_since_out = 0.0f;
+    g->t_acq_last_us = t_acq_newest_us;
+    g->t_expiry_us = t_acq_newest_us + (uint32_t)lrintf(PEN_ML_STALE_TIME * 1e6f);
     g->stale = false;             /* outputs resumed */
     /* (4) keep the prediction with its target time */
     const uint32_t target = t_acq_newest_us + (uint32_t)lrintf(PEN_ML_HORIZON * 1e6f);
@@ -164,10 +166,9 @@ void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bo
     g->pend_n++;
 }
 
-void ml_guard_tick(ml_guard_t *g, const float d_kf[2], float dt)
+void ml_guard_tick(ml_guard_t *g, const float d_kf[2], float dt, uint32_t now_us)
 {
-    g->t_since_out += dt;
-    if (g->have && !g->stale && g->t_since_out > PEN_ML_STALE_TIME) {
+    if (g->have && !g->stale && dt_us(now_us, g->t_expiry_us) > 0) {
         g->stale = true;          /* expired (REQ-SAF-003) */
         g->n_fallbacks++;
         raise_event(g, MLG_R_STALE);

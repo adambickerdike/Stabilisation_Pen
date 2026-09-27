@@ -15,7 +15,7 @@
  *   soft faults 2, 3, 4, 6, 8: fade authority to zero and keep the closed-loop
  *       neutral hold (SM_ACT_NEUTRAL) until pen-up or the 5 s timeout, then
  *       ramp down and coast.
- * Transition table: README section "State machine" and tests/test_state_machine.c.
+ * Transition table: README section "State machine" and tests/test_sm.c.
  */
 #ifndef PEN_STATE_MACHINE_H
 #define PEN_STATE_MACHINE_H

@@ -4,6 +4,7 @@
  * sequences of ICD s6. Evidence status: HOST TEST on a model.
  */
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "app.h"
@@ -22,6 +23,11 @@ typedef struct {
     uint32_t n_bad;
     uint32_t ev_count[16];
     int32_t last_fault_arg;
+    /* capture checks */
+    penlog_stroke_t strokes[256];
+    uint32_t n_strokes;
+    uint32_t n_ph_undef, n_ph_def;
+    int32_t ph_first[2];
 } sys_t;
 
 static sys_t g_sys;   /* large: keep off the (QEMU) stack */
@@ -38,6 +44,22 @@ static void sink(const uint8_t *rec, size_t len, void *ctx)
     }
     if (type >= 1u && type <= 5u) {
         s->n_rec[type]++;
+    }
+    if (type == PENLOG_T_STROKE && s->n_strokes < 256u) {
+        (void)penlog_unpack_stroke(pl, l, &s->strokes[s->n_strokes++]);
+    }
+    if (type == PENLOG_T_RESEARCH) {
+        penlog_research_t r;
+        (void)penlog_unpack_research(pl, l, &r);
+        if (r.p_h[0] == PENLOG_PH_UNDEFINED) {
+            s->n_ph_undef++;
+        } else {
+            if (s->n_ph_def == 0u) {
+                s->ph_first[0] = r.p_h[0];
+                s->ph_first[1] = r.p_h[1];
+            }
+            s->n_ph_def++;
+        }
     }
     if (type == PENLOG_T_EVENT) {
         penlog_event_t e;
@@ -251,4 +273,41 @@ void test_system_fault_sequences(void)
     CHECK(g_hal.wdt_kicks > 1000u);
     tr_log("(d) watchdog-reset boot -> SAFE_PASSIVE -> STANDBY; (e) charging: off, re-arm only after unplug; "
            "watchdog kicked %u times (only while the current ISR runs)", (unsigned)g_hal.wdt_kicks);
+}
+
+void test_system_capture_boundaries(void)
+{
+    sys_t *s = &g_sys;
+    sys_init(s, false);
+    g_hal.time_us = 0xFFFFFFFFu - 300000u;   /* the hardware us counter wraps 0.3 s in */
+    penlog_clock_start(&s->app.clk, g_hal.time_us);   /* session starts here */
+    s->pen_down = false;
+    run(s, 100);
+    s->app.req.arm = true;
+    run(s, 10);
+    const uint32_t n0 = s->n_strokes;
+    CHECK(n0 == 0u && s->n_ph_undef > 0u && s->n_ph_def == 0u);   /* no page origin before the first pen-down */
+    s->pen_down = true;
+    run(s, 1003);            /* stroke of 1003 ticks: pen-down + 100 regular + pen-up boundary */
+    s->pen_down = false;
+    run(s, 50);
+    const uint32_t n = s->n_strokes;
+    CHECK(n == 102u);
+    bool mono = true, same_id = true;
+    for (uint32_t k = 1; k < n; k++) {
+        mono = mono && s->strokes[k].t_ms >= s->strokes[k - 1].t_ms;
+        same_id = same_id && s->strokes[k].stroke_id == s->strokes[0].stroke_id;
+    }
+    CHECK(mono && same_id);
+    /* first sample at the pen-down tick is the page origin; the boundary sample
+     * is the last in-contact tick, 2 ticks after the last regular sample */
+    CHECK(s->strokes[0].x == 0 && s->strokes[0].y == 0);
+    CHECK(s->strokes[n - 1].t_ms - s->strokes[n - 2].t_ms <= 1u);
+    CHECK(s->n_ph_def > 1000u && abs(s->ph_first[0]) < 100 && abs(s->ph_first[1]) < 100);   /* < 10 um of the origin */
+    CHECK(s->app.n_stroke_boundary == 2u);
+    CHECK(s->ev_count[PEN_EV_TIME_WRAP] == 0u);   /* the session clock did not wrap, only the hardware counter */
+    tr_log("capture: %u stroke samples for a 501.5 ms stroke (pen-down sample, 200 Hz, pen-up sample at the last "
+           "in-contact tick); t_ms monotonic across the hardware counter wrap (%u -> %u ms); research p_H undefined "
+           "(INT32_MIN) in %u frames before the first pen-down, page-origin relative afterwards",
+           (unsigned)n, (unsigned)s->strokes[0].t_ms, (unsigned)s->strokes[n - 1].t_ms, (unsigned)s->n_ph_undef);
 }
