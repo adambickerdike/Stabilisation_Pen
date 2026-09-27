@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "analytical calculation (lumped thermal network; assumed conductances)",
-    "generated_utc": "2026-09-27T03:34:52+00:00",
-    "git_revision": "b69a53a-dirty",
-    "parameters_version": "0.4.3",
-    "parameters_sha256_16": "3fbe200f8ff5c330",
+    "generated_utc": "2026-09-27T04:48:59+00:00",
+    "git_revision": "e28901b-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
     "command": "thermal.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -25,81 +25,81 @@
     "B lever n=3.17, moving-coil annular sandwich (Rev A) | design": {
       "P_coil_avg_W": 0.32546651901836426,
       "coil_type": "moving",
-      "T_coil_end_C": 96.60619052057275,
-      "T_grip_end_C": 33.36679908845501,
-      "T_act_surface_end_C": 34.08179778801273,
+      "T_coil_end_C": 96.60618900322086,
+      "T_grip_end_C": 33.366798881853796,
+      "T_act_surface_end_C": 34.08179737560342,
       "t_to_41C_act_surface_min": NaN
     },
     "B lever n=3.17, moving-coil annular sandwich (Rev A) | high": {
       "P_coil_avg_W": 1.044855788016869,
       "coil_type": "moving",
-      "T_coil_end_C": 507.2130821165256,
-      "T_grip_end_C": 42.85863166916061,
-      "T_act_surface_end_C": 53.716760054550114,
-      "t_to_41C_act_surface_min": 2.8908659772271625
+      "T_coil_end_C": 507.2129826312683,
+      "T_grip_end_C": 42.85862309447913,
+      "T_act_surface_end_C": 53.71674291114719,
+      "t_to_41C_act_surface_min": 3.0556220073155447
     },
     "B-MM lever n=3.17, moving magnet, fixed bonded coils | design": {
       "P_coil_avg_W": 0.6970860856261405,
       "coil_type": "fixed",
-      "T_coil_end_C": 44.889182670581626,
-      "T_grip_end_C": 34.58432524729326,
-      "T_act_surface_end_C": 36.60039208571475,
+      "T_coil_end_C": 44.889106836387086,
+      "T_grip_end_C": 34.58432522434549,
+      "T_act_surface_end_C": 36.600391078956,
       "t_to_41C_act_surface_min": NaN
     },
     "B-MM lever n=3.17, moving magnet, fixed bonded coils | high": {
       "P_coil_avg_W": 2.238044876918525,
       "coil_type": "fixed",
-      "T_coil_end_C": 81.73505595990818,
-      "T_grip_end_C": 41.81080486207739,
-      "T_act_surface_end_C": 51.54920534664288,
-      "t_to_41C_act_surface_min": 1.6471450495524291
+      "T_coil_end_C": 81.73510001261583,
+      "T_grip_end_C": 41.81080455184462,
+      "T_act_surface_end_C": 51.54920507812324,
+      "t_to_41C_act_surface_min": 1.6890291155375758
     },
     "D skid + constant-force nib (Fc = 0.30 N) on B actuator | design": {
       "P_coil_avg_W": 0.04997537285116008,
       "coil_type": "moving",
-      "T_coil_end_C": 39.25092111484775,
-      "T_grip_end_C": 32.040936749422386,
-      "T_act_surface_end_C": 31.339097340445267,
+      "T_coil_end_C": 39.25092057916973,
+      "T_grip_end_C": 32.04093669274609,
+      "T_act_surface_end_C": 31.339097227250527,
       "t_to_41C_act_surface_min": NaN
     },
     "D skid + constant-force nib (Fc = 0.30 N) on B actuator | high": {
       "P_coil_avg_W": 0.10121680347456942,
       "coil_type": "moving",
-      "T_coil_end_C": 48.33982460514476,
-      "T_grip_end_C": 32.25104189210076,
-      "T_act_surface_end_C": 31.77372426000371,
+      "T_coil_end_C": 48.33982395822464,
+      "T_grip_end_C": 32.25104181712621,
+      "T_act_surface_end_C": 31.773724110295188,
       "t_to_41C_act_surface_min": NaN
     },
     "E B + slow zero-hold bias actuator (80% of static load) | design": {
       "P_coil_avg_W": 0.013085838036471377,
       "coil_type": "moving",
-      "T_coil_end_C": 33.067405494831036,
-      "T_grip_end_C": 31.89799447873992,
-      "T_act_surface_end_C": 31.04340463231042,
+      "T_coil_end_C": 33.067405027079666,
+      "T_grip_end_C": 31.897994433489423,
+      "T_act_surface_end_C": 31.04340454191473,
       "t_to_41C_act_surface_min": NaN
     },
     "E B + slow zero-hold bias actuator (80% of static load) | high": {
       "P_coil_avg_W": 0.041861408796411544,
       "coil_type": "moving",
-      "T_coil_end_C": 37.86597750953765,
-      "T_grip_end_C": 32.00892147000945,
-      "T_act_surface_end_C": 31.272870012215456,
+      "T_coil_end_C": 37.865976989600604,
+      "T_grip_end_C": 32.0089214159626,
+      "T_act_surface_end_C": 31.2728699042676,
       "t_to_41C_act_surface_min": NaN
     }
   },
   "allowable_avg_copper_W_for_41C_and_coil120C": {
     "moving": 0.41186768375337124,
-    "fixed": 1.1919521894305944
+    "fixed": 1.1919521866366267
   },
   "two_node_governor_model": {
     "R_coil_iron_K_per_W": 144.91818099130916,
-    "C_coil_J_per_K": 0.21939999999999998,
-    "R_struct_amb_K_per_W": 12.529071798044598,
+    "C_coil_J_per_K": 0.25,
+    "R_struct_amb_K_per_W": 12.529071798040192,
     "C_struct_J_per_K": 14.85,
-    "T_struct_no_coil_loss_C": 30.941774558476588,
-    "R_coil_amb_total_K_per_W": 157.44725278935374,
-    "tau_coil_s": 31.795048909493225,
-    "tau_struct_s": 186.05671620096226,
+    "T_struct_no_coil_loss_C": 30.941774558475274,
+    "R_coil_amb_total_K_per_W": 157.44725278934936,
+    "tau_coil_s": 36.22954524782729,
+    "tau_struct_s": 186.05671620089686,
     "gap_m": 0.0005,
     "P_electronics_W": 0.115,
     "note": "coil node against the iron/magnet/barrel structure; structure node against ambient 25 C and hand 33 C (linear fit of two steady states at constant coil loss)"

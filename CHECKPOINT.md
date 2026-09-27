@@ -8,13 +8,13 @@ Use this file to resume work without losing assumptions. Branch: `claude/pensive
 |---|---|---|
 | Audit | Recalculation of all 37 report numbers (all reproduce); 28 corrections with severity | — |
 | Evidence | 247 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
-| Simulation | M1 coupled model, 12 tests passing; estimator tuning on seeds 100–105; nominal benchmark; 12-seed × 9 f × 3 amplitude grid; 160-sample Monte Carlo + rank sensitivity; failure cases F1–F7; design sweeps; κ_s comparison; guided-mode evaluation; contact-feedforward diagnosis | Validation against hardware (all EXP-B*) |
+| Simulation | M1 coupled model, 12 tests passing; estimator tuning on seeds 100–105; nominal benchmark; 12-seed × 9 f × 3 amplitude grid; 160-sample Monte Carlo + rank sensitivity; failure cases F1–F7; design sweeps; κ_s comparison; guided-mode evaluation; contact-feedforward diagnosis; frequency-gate diagnostic | Validation against hardware (all EXP-B*) |
 | Mechanics | CAD Rev A and A.1 (interference-free at full travel); flexure calculation; tolerance stacks S1–S6; mass budget; stage-A rig CAD with platen-clearance check; drawings | Physical parts; FEM of flexures and actuator |
-| Electronics | KiCad 8 schematic generated; ERC (0 errors, 1 accepted warning); netlist cross-check pass (102 nets / 492 pins); BOM; drive/sense calculations; ngspice transient incl. coil short; placement study | PCB layout (DEC-014 open); datasheet checks behind 45 VERIFY and 3 SELECT BOM lines |
-| Firmware | see `firmware/README.md` | Execution on nRF5340 hardware |
-| ML | see `ml/README.md` | Any real-data training (no recordings exist) |
-| App | see `app/README.md` | On-device recogniser (adapter specified only) |
-| Validation | see `validation/README.md` | Every experiment and study |
+| Electronics | KiCad 8 schematic generated deterministically; ERC (0 errors, 1 accepted warning); netlist cross-check pass (102 nets / 492 pins); BOM; drive/sense calculations with the winding headroom assessment; ngspice transient incl. coil short; placement study | PCB layout (DEC-014 open); datasheet checks behind 45 VERIFY and 3 SELECT BOM lines |
+| Firmware | C control core with safety, logging, calibration and ML guard; parameters generated from the YAML with a freshness check; 60 test cases (1120 checks) on host (ASan/UBSan) and emulated Cortex-M33; nRF5340 image links (32.3 kB flash, 29.4 kB RAM) | Execution on nRF5340 hardware; cycle-accurate timing; register-level drivers (VERIFY); IMU, optics, USB, flash and BLE drivers |
+| ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines; causal TCN; int8 C export without f_est, bit-exact on 20 000 windows (16.2 k MAC, 7.3 kB weights); 22 tests | Any real-data training (no recordings exist) |
+| App | ICD log reader with CRC and resync; immutable note store with provenance; search with stroke citations; grounded assistant with refusal rules; capture-fidelity analysis; 137 tests | On-device recogniser (adapter specified only) |
+| Validation | 29 experiment protocols; 221 acceptance criteria generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
 
 ## 2. Numbers the next session must not lose
 
@@ -62,11 +62,13 @@ All are calculation or simulation unless stated otherwise.
 | 1 | Transverse load and friction on real paper and ink | **EXP-B01/B02**: 6-axis F/T sensor under a platen; θ 35–80°, N 0.2–4 N, 8 directions, 1–100 mm/s, 3 papers × 3 inks |
 | 2 | Whether tremor is causally separable from real writing | **EXP-H01** (ethics approval, then instrumented passive pen, n ≈ 20 per group), then **EXP-E01** estimator bake-off |
 | 3 | Loaded cancellation and ink tolerance | Stage-A rig build (`mechanics/cad/bench_rig.py`), then **EXP-B09** and **EXP-B08** |
-| 4 | Actuator K_m, R, L and thermal path of a moving coil | **EXP-B03** coupons; **EXP-B07** thermal |
+| 4 | Actuator K_m, R, L, thermal path of a moving coil, and the winding (6 Ω binds at 3.3 V in the hot high-force corner; 4 Ω does not) | **EXP-B03** coupons wound at 4 Ω and 6 Ω (K_f, R, L, coil-to-structure R_th); **EXP-B07** thermal; bench headroom at 3.3 V with a hot coil |
 | 5 | Near-nib optical sensing on paper | **EXP-S01**; sensor access under NDA |
 | 6 | Packaging (DEC-014) | Decide between a 41 mm board with pouch cell and a two-board split; pouch-cell supplier drawing; HDI layout attempt |
 | 7 | Datasheet checks behind the VERIFY/SELECT lines | Datasheet review, with Nordic reference circuitry for the nRF5340 |
 | 8 | Centre of mass and inertia above requirements | CFRP carrier; lighter stator or shorter barrel; confirm the CoM requirement against ordinary pens (EXP-M03, H02) |
+| 9 | Stage-loop phase margin 35.3° against REQ-CTRL-002's 40° (unloaded model; firmware loop test) | Identify the loaded plant (**EXP-B05**), then retune: lower position bandwidth or add phase lead, and re-run the simulation chain |
+| 10 | Intent separation in the controller itself: the tracker-driven frequency gate also opens on writing (15 % of tremor-free handwriting, 52 % of the feature course) | Implement the separate spectral detector with hysteresis (DEC-009 revisit); test it in simulation, then in **EXP-E01** on recorded writing |
 
 ## 5. Next actions, in order
 
@@ -85,3 +87,10 @@ All are calculation or simulation unless stated otherwise.
   - Copy `/usr/share/kicad/template/{sym,fp}-lib-table` to `~/.config/kicad/8.0/`.
 - **Long simulation runs.** Do not edit `sim/`, `stabpen/` or `config/` while `sim/run_all.sh` runs: worker processes re-import modules.
 - **Generated files.** Regenerate from their scripts rather than editing outputs: `electronics/kicad/*`, `results/*`, `mechanics/mass_budget.csv`.
+- **Dependency order after a parameter or interface change.** Parameters feed the simulator, trade, thermal and drive calculations, and the firmware generator also fingerprints the ICD and the schematic generator. Run, in order:
+  1. `bash sim/run_all.sh` (if simulator inputs changed);
+  2. `python3 analysis/config_trade.py && python3 analysis/thermal.py && python3 electronics/calcs/drive_sense.py`;
+  3. `make -C firmware params vectors test arm`. `make test` fails if any generated input is stale.
+- **Firmware and ML.**
+  - Firmware: `make -C firmware test` (host, ASan/UBSan, about 15 s) and `make -C firmware qemu` (emulated Cortex-M33, about 25 min).
+  - ML: `python3 -m pytest ml/tests -q`; the C export is `python3 -m ml.export_c` (see `ml/README.md`).

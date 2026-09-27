@@ -125,18 +125,21 @@ void ml_guard_realised(ml_guard_t *g, const float p_h[2], uint32_t t_acq_us, boo
     g->pend_n = keep;
 }
 
-void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, float confidence,
+void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, uint8_t confidence,
                          uint32_t t_acq_newest_us, float q_lim)
 {
     const bool bad_num = nan_or_inf || !pen_isfinitef(d_um[0]) || !pen_isfinitef(d_um[1]);
-    if (bad_num || saturated) {
+    /* int16 output at full scale (32767 LSB of 0.1 um): threshold half an LSB below */
+    const float fs = PEN_ML_DHAT_FS_UM - 0.05f;
+    const bool sat = saturated || (!bad_num && (pen_absf(d_um[0]) >= fs || pen_absf(d_um[1]) >= fs));
+    if (bad_num || sat) {
         /* (1) reject this inference */
         g->n_rejected++;
-        raise_event(g, (uint8_t)((bad_num ? MLG_R_NAN : 0u) | (saturated ? MLG_R_SAT : 0u)));
+        raise_event(g, (uint8_t)((bad_num ? MLG_R_NAN : 0u) | (sat ? MLG_R_SAT : 0u)));
         return;
     }
-    /* (5) confidence: below c_min the inference is rejected; otherwise it sets the share scale */
-    const float conf = pen_isfinitef(confidence) ? pen_clampf(confidence, 0.0f, 1.0f) : 0.0f;
+    /* (5) confidence: c^ = byte/255 below c_min rejects; otherwise it sets the share scale */
+    const float conf = (float)confidence / 255.0f;
     if (conf < g->c_min) {
         g->n_rejected++;
         raise_event(g, MLG_R_CONF);

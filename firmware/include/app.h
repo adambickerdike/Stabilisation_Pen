@@ -121,19 +121,20 @@ typedef struct {
     uint32_t log_drops;
 } pen_app_t;
 
-/* ML inference hook (ICD s5 v1.2), called at 250 Hz from the stage task when a
- * validated model is available. dp_um: 64 x (dx, dy) increments, oldest
- * first, stamped at acquisition. f_est_hz: the Kalman frequency estimate; the
- * exported v1 C model (ml/export/tcn_int8.h, tcn_predict()) still takes it as
- * a third input channel (ICD s5 artefact status, README D12); models of the
- * v1.1+ contract ignore it. Returns false if no model is linked (weak default). */
+/* ML inference hook (ICD s5 contract v1.2), called at 250 Hz from the stage
+ * task when a validated model is available. dp_um: 64 x (dx, dy) increments,
+ * oldest first, stamped at acquisition (no f_est). The adapter to the exported
+ * model (ml/export, tcn_s_nofest, TCN_CIN 2) calls tcn_predict() with
+ * f_est_hz = 0.0f (ignored), maps TCN_ST_INPUT_NAN / TCN_ST_OUTPUT_SAT to the
+ * status flags and reports TCN_CONFIDENCE_UNCALIBRATED (255) as confidence.
+ * Returns false if no model is linked (weak default). */
 typedef struct {
-    float d_um[2];       /* predicted disturbance at t_acq_newest + 6 ms, um */
-    float confidence;    /* output byte / 255; 1 for a model without a confidence output */
+    float d_um[2];       /* d_hat at t_acq_newest + 6 ms: the kernel's int16 0.1 um output as float um */
+    uint8_t confidence;  /* ICD s5 confidence byte (255 = uncalibrated / full) */
     bool nan_or_inf;     /* kernel status */
-    bool saturated;      /* int8 output saturation */
+    bool saturated;      /* int16 output at full scale (+/-3.2767 mm) */
 } pen_ml_out_t;
-bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float f_est_hz, pen_ml_out_t *out);
+bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], pen_ml_out_t *out);
 
 void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog);
 void pen_app_set_sink(pen_app_t *a, pen_log_sink_t sink, void *ctx, bool research_frames);

@@ -15,10 +15,10 @@ Layout (docs/icd.md section 4.1)::
 
 Record payloads: 0x01 research frame (52 B, section 4.2), 0x02 stroke sample
 (20 B, section 4.3), 0x03 event (10 B, section 4.4), 0x04 calibration
-snapshot and 0x05 annotation.  ICD v1.0 does not define 0x04/0x05 payloads;
-this module follows the layouts proposed by the firmware team
-(firmware/include/log_format.h): 0x04 = cal_type u8 | cal_version u16 |
-record bytes, 0x05 = t_us u32 | UTF-8 text.  Both stay available as raw bytes.
+snapshot and 0x05 annotation, as defined in ICD v1.3 section 4.1 (the layouts
+the firmware team proposed): 0x04 = rec_type u8 | cal_version u16 | the payload
+of the calibration flash container (no magic, length or CRC), 0x05 = t_us u32 |
+UTF-8 text.  Both stay available as raw bytes.
 
 Interpretations of points the ICD leaves open (see app/README.md, "ICD
 ambiguities"): CRCs are stored little-endian like every other field; the
@@ -86,6 +86,8 @@ class EventCode(IntEnum):
     PEN_DOWN = 0x0007
     PEN_UP = 0x0008
     TIMESTAMP_WRAP = 0x0009
+    PAGE_SET = 0x000A
+    SYNC_PULSE = 0x000B
 
 
 # numpy views of the packed payloads (no padding: itemsize == ICD length)
@@ -315,14 +317,14 @@ class RawRecord:
             return None
 
     def calibration(self) -> Optional[Tuple[int, int, bytes]]:
-        """(cal_type, cal_version, record bytes) of a 0x04 payload in the proposed layout, else None."""
+        """(cal_type, cal_version, container payload) of a 0x04 record (ICD v1.3 s4.1), else None."""
         if self.rtype != RecordType.CALIBRATION_SNAPSHOT or len(self.payload) < 3:
             return None
         return self.payload[0], int.from_bytes(self.payload[1:3], "little"), self.payload[3:]
 
 
 def annotation_record(text: str, t_us: int = 0) -> RawRecord:
-    """0x05 record in the proposed layout t_us u32 | UTF-8 text."""
+    """0x05 record (ICD v1.3 s4.1): t_us u32 | UTF-8 text."""
     body = _check_range("t_us", t_us, *U32).to_bytes(4, "little") + text.encode("utf-8")
     if len(body) > 255:
         raise ValueError("annotation longer than the 255-byte payload limit")
@@ -330,7 +332,7 @@ def annotation_record(text: str, t_us: int = 0) -> RawRecord:
 
 
 def calibration_record(cal_type: int, cal_version: int, data: bytes) -> RawRecord:
-    """0x04 record in the proposed layout cal_type u8 | cal_version u16 | record bytes."""
+    """0x04 record (ICD v1.3 s4.1): rec_type u8 | cal_version u16 | calibration container payload."""
     body = bytes([_check_range("cal_type", cal_type, *U8)]) + _check_range(
         "cal_version", cal_version, *U16).to_bytes(2, "little") + bytes(data)
     return RawRecord(int(RecordType.CALIBRATION_SNAPSHOT), body)

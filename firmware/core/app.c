@@ -44,12 +44,11 @@ void pen_app_set_sink(pen_app_t *a, pen_log_sink_t sink, void *ctx, bool researc
 }
 
 /* ------------------------------------------------------------------ ML hook */
-__attribute__((weak)) bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float f_est_hz, pen_ml_out_t *out)
+__attribute__((weak)) bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], pen_ml_out_t *out)
 {
     (void)dp_um;
-    (void)f_est_hz;
     memset(out, 0, sizeof(*out));
-    out->confidence = 1.0f;
+    out->confidence = 255u;
     return false;   /* no model linked */
 }
 
@@ -257,8 +256,8 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         if (a->ml_available && ml_window_export(&a->mlw, dp, &t_newest)) {
             pen_ml_out_t mo;
             memset(&mo, 0, sizeof(mo));
-            mo.confidence = 1.0f;
-            if (pen_ml_predict(dp, kf_est_freq_hz(&a->ctrl.kf), &mo)) {
+            mo.confidence = 255u;
+            if (pen_ml_predict(dp, &mo)) {
                 ml_guard_new_output(&a->mlg, mo.d_um, mo.nan_or_inf, mo.saturated, mo.confidence, t_newest,
                                     a->ctrl.prm.q_lim);
             }

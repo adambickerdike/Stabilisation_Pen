@@ -20,7 +20,7 @@ Contract documents:
 | Path | Content |
 |---|---|
 | `include/`, `core/` | Portable control core, C11. No dynamic allocation; float32 only in control code. Builds with `-Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wsign-conversion -Wshadow -Wstrict-prototypes -Wmissing-prototypes -Wundef -Wcast-align -Wformat=2 -Wvla`. |
-| `include/params_gen.h`, `.json` | 211 constants generated from the YAML, the simulator, the estimator selection and drive_sense by `tools/gen_params.py`. Do not edit. |
+| `include/params_gen.h`, `.json` | 212 constants generated from the YAML, the simulator, the estimator selection and drive_sense by `tools/gen_params.py`. Do not edit. |
 | `include/hal.h` | Hardware interface. The control core never touches registers. |
 | `port/host/` | Host HAL, including a behavioural model of the Rev A over-current latch and the ACT_EN AND gate. |
 | `port/nrf5340/` | Application-core port: start-up, linker script, register definitions, PWM→DPPI→SAADC scheduler, GPIO/WDT/time-base HAL (including the coil-former NTC on AIN3), sensor front ends and log ring. **Compile-tested only; VERIFY throughout.** |
@@ -106,20 +106,20 @@ Aggregate SAADC rate is 160 kS/s + 200 S/s, against the 200 kS/s limit (DEC-010,
 
 | Body | Mean | Max | Budget (128 MHz) | Max / budget at CPI 1 |
 |---|---|---|---|---|
-| Current ISR | @@ISR_MEAN@@ | @@ISR_MAX@@ | 3200 cycles per 25 µs | @@ISR_PCT@@ |
-| Stage tick, steady assist | @@ST_MEAN@@ | @@ST_MAX@@ | 64000 cycles per 500 µs (brief); 32000 = the ≤ 250 µs compute of ICD §2 | @@ST_PCT@@ / @@ST_ICD_PCT@@ |
-| Stage tick, all ticks (incl. pen-down/up, events, 100 Hz ticks) | @@SA_MEAN@@ | @@SA_MAX@@ | same | @@SA_PCT@@ / @@SA_ICD_PCT@@ |
+| Current ISR | 422 | 446 | 3200 cycles per 25 µs | 14.0 % |
+| Stage tick, steady assist | 11535 | 13112 | 64000 cycles per 500 µs (brief); 32000 = the ≤ 250 µs compute of ICD §2 | 20.5 % / 41.0 % |
+| Stage tick, all ticks (incl. pen-down/up, events, 100 Hz ticks) | 9744 | 13112 | same | 20.5 % / 41.0 % |
 
 Breakdown of one steady tick:
-- @@BREAKDOWN@@
+- 11385 instructions in total: Kalman estimator (both axes) 6866; research frame (pack + CRC + ring copy) 1627, of which the table CRC over the 52-byte payload is 425; everything else (Hall, fusion, safety, state machine, servo, Jacobian with γ(θ), limiter, ML window and guard, capture) about 2892
 
 CRC history:
 - the bitwise CRC-16 cost ≈ 3600 instructions per research frame;
 - `crc16.c` is now table-driven (512 B of flash).
 
-Mean load in assist is about @@LOAD@@ % of the 128 MHz core at CPI 1 (20 ISR calls + one stage tick per 500 µs). This is a lower bound. The ML inference itself is not included: no model is linked, and ICD §5 allows ≤ 1 ms per 4 ms.
+Mean load in assist is about 31 % of the 128 MHz core at CPI 1 (20 ISR calls + one stage tick per 500 µs). This is a lower bound. The ML inference itself is not included: no model is linked, and ICD §5 allows ≤ 1 ms per 4 ms.
 
-@@QEMU_TESTS@@
+The unit tests on QEMU ran 60 cases (1120 checks) on the Cortex-M33 code: FPv5-SP, newlib libm. 60 passed and 0 failed (0 failed checks), with the host tolerances. The run took 24 min of host time, because the test plant is soft double.
 
 ## 4. Module map to the ICD
 
@@ -151,7 +151,7 @@ Mean load in assist is about @@LOAD@@ % of the 128 MHz core at CPI 1 (20 ISR cal
 - `results/sim/estimator_selection.json`;
 - `results/electronics/drive_sense.json`, the output of `electronics/calcs/drive_sense.py`: sense chain, PWM, duty limit, design hold current and design coil temperature.
 
-It writes `include/params_gen.h` (211 `#define`s, each with its source and status) and `params_gen.json`. The output is deterministic: no timestamps; the digests of every input are recorded. `tools/check_inputs.py` compares those digests with the current files. `make test` records the result in the report and **fails if the generated header or any vector is stale**. The upstream files changed several times during this work, so check this before trusting a report.
+It writes `include/params_gen.h` (212 `#define`s, each with its source and status) and `params_gen.json`. The output is deterministic: no timestamps; the digests of every input are recorded. `tools/check_inputs.py` compares those digests with the current files. `make test` records the result in the report and **fails if the generated header or any vector is stale**. The upstream files changed several times during this work, so check this before trusting a report.
 
 Current inputs:
 
@@ -162,7 +162,7 @@ Current inputs:
 | `model.py` | [c62e5e157c7e8264] |
 | `core.py` | [c46570f25d1439cb] |
 | `drive_sense.json` | [f934a426ab37edfe] |
-| `docs/icd.md` | [b925602e937d8774] (recorded; the ICD is not an input to the values) |
+| `docs/icd.md` | [aeb4d48bc20883c3] (recorded; the ICD is not an input to the values) |
 
 Notable values:
 
@@ -224,13 +224,13 @@ Useful direct invocations:
 
 ## 7. Verification status
 
-Evidence labels: **H** = host test (float32 code on x86-64), **Q** = QEMU execution (Cortex-M33 code, emulator), **B** = build artefact, **P** = proposed / not verified. All host cases also run on QEMU (section 3 and `qemu_report.txt`).
+Evidence labels: **H** = host test (float32 code on x86-64), **Q** = QEMU execution (Cortex-M33 code, emulator), **B** = build artefact, **P** = proposed / not verified. All host cases also run on QEMU (section 3 and `qemu_report.txt`). The numbers are the host values; the QEMU run passes the same checks, with target values printed in its log (for example KF replay i_ref 22 µA vs 15 µA on the host).
 
 | Item (brief / requirement) | Method | Status | Result |
 |---|---|---|---|
 | CRC-16/CCITT-FALSE | KAT "123456789", 64 vectors vs `binascii.crc_hqx`, 448 single-bit corruptions | H, Q | 0x29B1; 0 mismatches; 448/448 detected |
 | Log round-trip | header and all record types packed and unpacked; unit conversions; corruption | H, Q | pass |
-| Golden log | `golden_log_v1.bin` (491 B) + `golden_log_v1.json`; the firmware writer reproduces the file byte for byte, and the independent Python decoder re-encodes it byte-identically | H, Q (C side) | pass |
+| Golden log | `golden_log_v1.bin` (491 B) + `golden_log_v1.json` (CAL_USER v2 snapshot, ML model hash 0xa57d81f6); the firmware writer reproduces the file byte for byte, and the independent Python decoder re-encodes it byte-identically | H, Q (C side) | pass |
 | Log fixes (1)–(5) from the project lead | 64-bit t_ms, wrap-count arg, 2° φ, pen-down/up boundary samples, page-origin p_H | H, Q | all done (section 8); documented in ICD v1.3 |
 | Jacobian vs `stabpen/frames.py` | 240 poses, γ = 1 closed form and 0 ≤ γ ≤ 1 numeric construction | H, Q | max error J 2.4e-7, J⁻¹ 2.1e-7 |
 | γ(θ) and J_t1 vs the simulator formula (D7) | 35°, 50°, 75° through `ctrl_tick`; replays check γ(θ_scenario) = the simulator's `gamma_acc` | H, Q | \|Δγ\| ≤ 1.5e-8, relative ΔJ_t1 ≤ 4.1e-8; γ(50°) = 0.19011 |
@@ -255,7 +255,7 @@ Evidence labels: **H** = host test (float32 code on x86-64), **Q** = QEMU execut
 | Over-current latch clear | host latch model (PRE/CLR/Q, AND gate) | H, Q | clears only with ACT_EN_REQ low; FAILED after 3 retries |
 | State-machine table, every fault | 18 transitions; 9 fault bits × (in contact, pen-up, timeout, self-check) | H, Q | as ICD §6 (policy per bit in section 10) |
 | System fault sequences (a)–(e) | app + plant + host HAL | H, Q | pass. Watchdog kicked only while the ISR runs |
-| ML guard (§5 v1.2) | injected good, bad, NaN, saturated, stale and low-confidence predictors | H, Q | rules 1–3; bad predictor → fallback 38.5 ms, Kalman fully in use 20 ms later; re-admission ≥ 1 s; expiry at t_acq + 8 ms (8.5 ms at tick granularity); rule 5: no effect at the defaults with full confidence, c_full 0.5 halves the share within 10 ms, c_min rejects |
+| ML guard (§5 v1.2) | injected good, bad, NaN, saturated (flag and int16 full-scale value), stale and low-confidence predictors | H, Q | rules 1–3; bad predictor → fallback 38.5 ms, Kalman fully in use 20 ms later; re-admission ≥ 1 s; expiry at t_acq + 8 ms (8.5 ms at tick granularity); rule 5: byte 255 at the defaults leaves the share unchanged, byte 0 removes it within 20 ms, c_full 0.4 with byte 51 halves it within 10 ms, c_min 0.3 rejects byte 51 |
 | Calibration records and f0 | 328 corruptions; Goertzel bank; gate rule | H, Q | 328/328 rejected; peak error < 0.001 Hz |
 | Fusion, attitude | vs double transcription of the simulator scheme | H, Q | 1.1e-9 m; θ, ρ, φ exact |
 | Capture layer | 501.5 ms stroke across a hardware counter wrap | H, Q | 102 samples incl. pen-down and pen-up; t_ms monotonic |
@@ -280,11 +280,11 @@ Evidence labels: **H** = host test (float32 code on x86-64), **Q** = QEMU execut
 ## 9. ML guard (ICD §5 contract v1.2)
 
 `ml_guard.c` implements:
-1. NaN/Inf or int8 saturation rejects that inference;
+1. NaN/Inf or output saturation rejects that inference. Saturation means the kernel's int16 d̂ (0.1 µm) at full scale, ±3.2767 mm: the kernel's status bit (`TCN_ST_OUTPUT_SAT`) or |d̂| ≥ 3276.65 µm in the value. int8 activation saturation is not observable and not used;
 2. |d̂| is clipped to q_lim;
 3. d̂ is slew-limited at 50 mm/s, over acquisition-time intervals;
 4. a-posteriori check: the prediction made h = 6 ms earlier is compared with the realised disturbance (fused p_H band-passed 3–15 Hz, 2nd-order Butterworth). If the 200 ms running RMS error exceeds the running RMS of the realised disturbance, the guard falls back to the Kalman estimate for ≥ 1 s and logs event 0x0006 with a reason bit;
-5. confidence (v1.2): the ML share of the correction is scaled by c = min(1, confidence/c_full), slewed so that a new value is reached within 20 ms. Confidence below c_min is a rejected inference (reason bit 0x40). Confidence is the output byte / 255. c_min and c_full come with the model card (`ml_guard_set_confidence_cal()`); the uncalibrated defaults are 0 and 1. The share is the weight of the ML estimate in its blend with the Kalman estimate: w = cross-fade × c.
+5. confidence (v1.2): with ĉ = confidence byte / 255, the ML share of the correction is scaled by c = min(1, ĉ/c_full), slewed so that a new value is reached within 20 ms. ĉ below c_min is a rejected inference (reason bit 0x40). c_min and c_full (0–1) come with the model card (`ml_guard_set_confidence_cal()`); the defaults are 0 and 1. An uncalibrated model reports 255 (`TCN_CONFIDENCE_UNCALIBRATED`), so the rule has no effect; a byte of 0 removes all ML authority. The share is the weight of the ML estimate in its blend with the Kalman estimate: w = cross-fade × c.
 
 The v1 rule "|d̂ − d̂_KF| > 150 µm" is **not** present.
 
@@ -294,9 +294,9 @@ Other behaviour:
 - More than 5 trips in 10 s set fault bit 8.
 
 Input and hook:
-- The window holds 64 × (dx, dy) µm increments, oldest first, stamped at acquisition (tick time − IMU delay).
-- `pen_ml_predict(dp_um, f_est_hz, &out)` also passes the Kalman f_est. The exported v1 C model (`tcn_int8.h`) still takes it as a third channel (ICD §5 artefact status, D12); models of the newer contract ignore it.
-- The output struct carries d̂, the kernel status and the confidence. A model without a confidence output reports 1.
+- The window holds 64 × (dx, dy) µm increments, oldest first, stamped at acquisition (tick time − IMU delay). There is no f_est input.
+- `pen_ml_predict(dp_um, &out)` returns d̂ in float µm (the kernel's int16 0.1 µm output), the NaN/Inf and saturation status and the confidence byte. The weak default reports that no model is linked.
+- The exported model is `tcn_s_nofest` (`ml/export/tcn_model.h`: TCN_CIN 2, hash low32 0xa57d81f6, 448 B scratch). Its adapter calls `tcn_predict()` with `f_est_hz = 0.0f` (ignored), maps `TCN_ST_INPUT_NAN` / `TCN_ST_OUTPUT_SAT` to the status flags and reports confidence 255. The adapter and the link of `ml/export` into the image are ML-integration work, not in this baseline.
 
 ## 10. State machine (ICD §6)
 
@@ -319,15 +319,15 @@ Mode codes (research frame `mode` byte, event 0x0001 arg): OFF 0, STANDBY 1, NEU
 | D3 | `design_revA.py` note described "PWM on one input, other low" as drive/brake; under the DRV8212P IN/IN truth table that is drive/coast | **resolved upstream**: `design_revA.py` note corrected (one input high, the other with inverted duty = drive/brake, slow decay); matches the firmware mapping. The truth table itself stays VERIFY |
 | D4 | 0x04/0x05 payloads and the mode codes were undefined | **resolved upstream**: ICD v1.3 §4.1 and §6. The firmware now logs 0x04 as rec_type, cal_version and the container payload only |
 | D5 | φ encoding "0.5° as φ/2" did not fit a u8 | **resolved upstream**: ICD v1.2/v1.3 (2° steps) |
-| D6 | Coil thermal resistance: one-node 60 → 130 K/W vs the thermal network | **resolved in firmware + upstream**: YAML 0.4.3 two-node values, `thermal.c` two-node estimator. Note: `thermal.json` gives C_coil 0.219 J/K (τ 31.8 s) while the YAML keeps the assumed 0.25 J/K; the simulator still uses a one-node model against ambient (valid for runs much shorter than 3 min) |
+| D6 | Coil thermal resistance: one-node 60 → 130 K/W vs the thermal network | **resolved in firmware + upstream**: YAML 0.4.3 two-node values, `thermal.c` two-node estimator. The C_coil mismatch (thermal network 0.219 J/K vs YAML 0.25 J/K) is resolved in YAML 0.4.4: `analysis/thermal.py` takes the coil node from `actuator.Cth_coil`. The simulator keeps a one-node model against ambient, which is valid for runs much shorter than 3 min |
 | D7 | Simulator γ(θ) varies with tilt; the ICD stored a fixed γ | **resolved in firmware + upstream**: ICD v1.3 CAL_USER v2 stores r_n; `control.c` evaluates γ(θ) at every Jacobian update; v1 records are converted |
 | D8 | Optics "2 kHz burst" (ICD) vs 1 kHz (YAML, simulator) | **resolved upstream**: ICD v1.3 §2 (1 kHz; 2 kHz if the selected sensor allows) |
 | D9 | Simulator band-pass estimator re-initialises on absolute page position: up to 10.6 mm transient at optical re-acquisition | **open (simulator)**, recorded in `docs/sim_report.md`. Firmware: local-origin option, default on (9.86 mm → 0.27 mm); replays run with it off to match |
 | D10 | Simulator current loop adds R·i_ref feedforward with no sample-to-PWM delay; with the Rev A timing this overshoots 55 % | **open (simulator)**, recorded in `docs/sim_report.md`. Firmware: PI only by default (`cur_r_ff = 0`, 13 % overshoot) |
 | D11 | `drive_sense.py` headroom check omitted the magnet tempco and the correction force | **resolved upstream**: drive_sense v0.4.3 (per-point coil and magnet temperatures, Br tempco, correction force). Its r_ext 0.58 Ω includes 0.06 Ω of wiring; the firmware models the shared load switch separately in V_M. The host hold test now uses the same corner |
-| D12 | `ml/export/tcn_int8.h` (v1 kernel) takes f_est as a third input channel | **open (ML artefact)**: re-export pending. The hook passes the Kalman f_est so the v1 kernel can be adapted meanwhile |
-| D13 (new) | Current-loop PI: drive_sense v0.4.3 designs Kp 2.57 V/A, Ki 114.7 kV/(A·s) (2.34 kHz crossover at 50° PM, pole cancelled at the hot-coil resistance); the simulator and firmware use Kp 2.20, Ki 81.9 k (YAML `current_bw` 2 kHz, R at 20 °C) | **open (design choice)**: the firmware follows the YAML/simulator. Scheduling Ki with the thermal estimate R(T) is a cheap option if bench tests show a slow integral tail when hot |
-| D14 (new) | `core.py` applies the magnet Br tempco at the **coil** temperature; drive_sense v0.4.3 uses the magnet (structure) temperature, which is far cooler (36 °C vs 97 °C at the design corner) | **open (simulator)**: pessimistic by ≈ 7 % force per ampere at the corner. The host hold test follows drive_sense |
+| D12 | `ml/export/tcn_int8.h` (v1 kernel) took f_est as a third input channel | **resolved upstream**: re-exported as `tcn_s_nofest` (TCN_CIN 2, hash 0xa57d81f6); `f_est_hz` is ignored and callers pass 0.0f. The firmware hook has no f_est |
+| D13 (new) | Current-loop PI: drive_sense v0.4.3 designs Kp 2.57 V/A, Ki 114.7 kV/(A·s) (2.34 kHz crossover at 50° PM, pole cancelled at the hot-coil resistance); the simulator and firmware use Kp 2.20, Ki 81.9 k (YAML `current_bw` 2 kHz, R at 20 °C) | **resolved upstream** (YAML 0.4.4): `drive_sense.py` now evaluates the implemented loop (2 kHz, zero on the cold pole: Kp 2.20 V/A, Ki 81.9 kV/(A·s), 55.8° phase margin) and reports 2.34 kHz as the 50° limit. Scheduling Ki with the thermal estimate R(T) remains a cheap option if bench tests show a slow integral tail when hot |
+| D14 (new) | `core.py` applies the magnet Br tempco at the **coil** temperature; drive_sense v0.4.3 uses the magnet (structure) temperature, which is far cooler (36 °C vs 97 °C at the design corner) | **resolved upstream** (YAML 0.4.4): `core.py` applies the Br tempco at the magnet temperature, which is ambient over the simulator's short runs; `actuator.alpha_B` moved to the parameter file. The simulation chain was re-run. The host hold test follows drive_sense |
 
 ## 12. Findings and open issues
 
@@ -357,8 +357,8 @@ Mode codes (research frame `mode` byte, event 0x0001 arg): OFF 0, STANDBY 1, NEU
 - O6: sensor noise floors and delays: Hall noise sets the stuck detector and the residual threshold; the optical delay sets the fusion lag (FUSION_LAG_TICKS = 2).
 - O7: thermal: EXP-B07 must confirm R/C values, the NTC-to-winding gradient (the estimator prefers the coil-former NTC and does not model its lag), and the r_bridge spread (±6.8 °C systematic in resistance thermometry, used only without the NTC). T_amb is the config value (25 °C); without a valid NTC a hotter room makes the open-loop model optimistic by the difference.
 - O8: ML integration:
-  - the export adapter (D12);
+  - the adapter from `pen_ml_predict()` to `tcn_predict()` and linking `ml/export` into the nRF5340 image (7.3 kB weights, 448 B scratch);
   - ML inference cost is not in the bench; the ML workstream reports 0.92–1.48 ms in plain C by QEMU instruction count;
-  - rule 5 defaults: with c_full = 1, c = confidence (byte/255). "No effect until calibrated" (ICD §5) therefore holds only for models that report full confidence, as the v1 export does through the adapter. An uncalibrated model emitting, say, 128 would halve its share. Suggest either c_full = 0 meaning "rule off" or requiring uncalibrated models to report 255.
+  - the model card must supply c_min and c_full once a confidence is calibrated (EXP-E01); until then the adapter reports 255.
 - O9: log format v2 items: nib offset and uncertainty (REQ-CAP-001), and per-page origins.
 - O10: v1 CAL_USER records with γ outside 0.0116–0.854 (r_n outside 0.02–10) are clamped on conversion and flagged (`from_v1_clamped`); γ = 1 (rigid page) has no finite r_n.

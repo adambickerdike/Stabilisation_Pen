@@ -10,9 +10,9 @@
  *   design_revA_sha16: 69844a9aa4e6bd48
  *   model_py_sha16: c62e5e157c7e8264
  *   core_py_sha16: c46570f25d1439cb
- *   icd_sha16: b925602e937d8774
+ *   icd_sha16: aeb4d48bc20883c3
  *   model_version: M1.0
- *   git_head: 8dba406
+ *   git_head: e28901b
  *   nominal_theta_deg: 50.0
  *   nominal_N0: 1.0
  *   evidence_status: proposed design / calculated / assumed values; no hardware measurement
@@ -251,8 +251,9 @@
 #define PEN_ML_REAL_SETTLE         (0.300000012f) /* s; proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset */
 #define PEN_ML_STALE_TIME          (0.00800000038f) /* s; docs/icd.md s5 v1.2: expiry = t_acq_newest + 8 ms (REQ-SAF-003, REQ-ML-002) */
 #define PEN_ML_FADE_TIME           (0.0199999996f) /* s; REQ-SAF-003: fall back smoothly within 20 ms */
-#define PEN_ML_C_MIN               (0.0f) /* -; docs/icd.md s5 v1.2 rule 5: confidence (byte/255) below c_min is a rejected inference; uncalibrated default 0 */
-#define PEN_ML_C_FULL              (1.0f) /* -; docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, confidence/c_full); uncalibrated default 1 */
+#define PEN_ML_C_MIN               (0.0f) /* -; docs/icd.md s5 v1.2 rule 5: normalised confidence c^ = byte/255 below c_min is a rejected inference (0-1; default 0) */
+#define PEN_ML_C_FULL              (1.0f) /* -; docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, c^/c_full) (0-1; default 1; an uncalibrated model reports 255) */
+#define PEN_ML_DHAT_FS_UM          (3276.69995f) /* um; docs/icd.md s5 v1.2 rule 1: output saturation = int16 d_hat (0.1 um) at full scale, +/-3.2767 mm */
 #define PEN_ML_CONF_SLEW_TIME      (0.0199999996f) /* s; docs/icd.md s5 v1.2 rule 5: the scaled ML share reaches its new value within 20 ms */
 #define PEN_ML_TRIP_COUNT          (5) /* trips; proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW */
 #define PEN_ML_TRIP_WINDOW         (10.0f) /* s; proposed */

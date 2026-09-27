@@ -511,8 +511,11 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
         if mode == 0:
             qdd[0] = 0.0; qdd[1] = 0.0; sdd = 0.0
         else:
-            Kf_T0 = Kf20 * (1.0 + aB * (Tc[0] - 20.0))
-            Kf_T1 = Kf20 * (1.0 + aB * (Tc[1] - 20.0))
+            # magnet Br tempco at the magnet (structure) temperature, which stays at ambient over the
+            # simulator's runs of seconds (structure time constant ~3 min); the coil temperature only
+            # changes the winding resistance (firmware review D14)
+            Kf_T0 = Kf20 * (1.0 + aB * (Tamb - 20.0))
+            Kf_T1 = Kf_T0
             Fa0 = -nlev * Kf_T0 * cur[0]
             Fa1 = -nlev * Kf_T1 * cur[1]
             rq = math.hypot(q[0], q[1])
@@ -564,7 +567,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
                 cur[ax] = 0.0
             else:
                 Rt = Rc + rbr + rsh
-                Kf_T = Kf20 * (1.0 + aB * (Tc[ax] - 20.0))
+                Kf_T = Kf20 * (1.0 + aB * (Tamb - 20.0))
                 emf = -nlev * Kf_T * qd[ax]
                 ex = math.exp(-dt * Rt / Lc)
                 cur[ax] = cur[ax] * ex + (V[ax] - emf) / Rt * (1.0 - ex)

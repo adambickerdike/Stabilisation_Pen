@@ -28,12 +28,13 @@ OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
 K_AIR, K_AL, K_EPOXY = 0.026, 167.0, 0.25
 
 NODES = ["coil", "iron", "barrel_act", "barrel_grip", "barrel_rear", "pcb", "cell"]
-C = {"coil": 0.44e-3 * 385 + 0.05, "iron": 5.6e-3 * 450, "barrel_act": 4.0e-3 * 900,
+C = {"coil": None, "iron": 5.6e-3 * 450, "barrel_act": 4.0e-3 * 900,
      "barrel_grip": 4.5e-3 * 900, "barrel_rear": 5.2e-3 * 900, "pcb": 2.3e-3 * 900, "cell": 8.5e-3 * 1000}
 
 
 _P = sp.load()
 GAP = _P["actuator.air_gap"]                  # coil-to-magnet clearance per side (DEC-007 rev.)
+C["coil"] = _P["actuator.Cth_coil"]             # coil + local former (config; same as the simulator)
 P_EL = _P["electrical.p_electronics_active"]    # PCB dissipation while writing
 
 

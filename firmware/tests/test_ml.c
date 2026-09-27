@@ -36,7 +36,7 @@ static void make_signal(void)
 
 typedef enum { PRED_GOOD, PRED_BAD, PRED_NONE } pred_t;
 
-static float s_conf = 1.0f;   /* confidence reported by the synthetic predictor (rule 5) */
+static uint8_t s_conf = 255u;   /* confidence byte reported by the synthetic predictor (rule 5) */
 
 /* run ticks [k0, k1): stamps t_acq = tick time - 1 ms; predictions at 250 Hz */
 static void run_guard(ml_guard_t *g, int k0, int k1, pred_t pred, int *k_fallback, int *k_admit_full)
@@ -70,37 +70,46 @@ void test_ml_guard_rejects(void)
     ml_guard_t g;
     ml_guard_init(&g);
     const float d0[2] = {120.0f, -40.0f};
-    ml_guard_new_output(&g, d0, false, false, 1.0f, 1000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, d0, false, false, 255u, 1000u, PEN_Q_LIM);
     CHECK(g.have && g.info == 0u);
     /* (1) NaN / Inf / saturation: that inference is rejected, previous estimate kept */
     const float dn[2] = {NAN, 0.0f};
-    ml_guard_new_output(&g, dn, false, false, 1.0f, 5000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, dn, false, false, 255u, 5000u, PEN_Q_LIM);
     CHECK(g.n_rejected == 1u && (g.reason & MLG_R_NAN) != 0u && g.event);
     CHECK_CLOSE(g.d[0], 120e-6, 1e-10, 0.0);
     const float di[2] = {INFINITY, 0.0f};
-    ml_guard_new_output(&g, di, false, false, 1.0f, 5000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, di, false, false, 255u, 5000u, PEN_Q_LIM);
     CHECK(g.n_rejected == 2u);
-    ml_guard_new_output(&g, d0, false, true, 1.0f, 5000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, d0, false, true, 255u, 5000u, PEN_Q_LIM);
     CHECK(g.n_rejected == 3u && (g.reason & MLG_R_SAT) != 0u);
+    /* saturation seen in the value: int16 d_hat (0.1 um) at full scale = 3276.7 um, either sign */
+    const float dfs[2] = {0.0f, -3276.8f}, dfs2[2] = {3276.7f, 0.0f}, dbelow[2] = {3276.5f, 0.0f};
+    ml_guard_new_output(&g, dfs, false, false, 255u, 5000u, PEN_Q_LIM);
+    CHECK(g.n_rejected == 4u && (g.reason & MLG_R_SAT) != 0u);
+    ml_guard_new_output(&g, dfs2, false, false, 255u, 5000u, PEN_Q_LIM);
+    CHECK(g.n_rejected == 5u);
+    ml_guard_new_output(&g, dbelow, false, false, 255u, 9000u, PEN_Q_LIM);   /* 1 LSB below: accepted, then clipped */
+    CHECK(g.n_rejected == 5u && (g.info & MLG_R_CLIP) != 0u);
     /* (2) clip to q_lim: not rejected */
     ml_guard_init(&g);
     const float dbig[2] = {700.0f, 0.0f};
-    ml_guard_new_output(&g, dbig, false, false, 1.0f, 1000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, dbig, false, false, 255u, 1000u, PEN_Q_LIM);
     CHECK(g.n_rejected == 0u && (g.info & MLG_R_CLIP) != 0u);
     CHECK_CLOSE(g.d[0], PEN_Q_LIM, 1e-9, 0.0);
     /* (3) slew limit 50 mm/s: +400 um after 4 ms -> +200 um */
     ml_guard_init(&g);
     const float da[2] = {0.0f, 0.0f}, db[2] = {400.0f, 0.0f};
     const float kf[2] = {0.0f, 0.0f};
-    ml_guard_new_output(&g, da, false, false, 1.0f, 1000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, da, false, false, 255u, 1000u, PEN_Q_LIM);
     for (int k = 0; k < PEN_ML_DECIM; k++) {
         ml_guard_tick(&g, kf, TS, 2000u + (uint32_t)k * 500u);   /* tick time = acquisition + 1 ms */
     }
-    ml_guard_new_output(&g, db, false, false, 1.0f, 5000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, db, false, false, 255u, 5000u, PEN_Q_LIM);
     CHECK(g.n_rejected == 0u && (g.info & MLG_R_SLEW) != 0u);
     CHECK_CLOSE(g.d[0], PEN_ML_RATE_MAX * 4e-3, 1e-8, 0.0);
-    tr_log("v1.1 rules 1-3: NaN/Inf/saturation reject that inference only; |d| clipped to q_lim; slew limited to "
-           "%.0f mm/s (400 um in 4 ms -> %.0f um)", (double)PEN_ML_RATE_MAX * 1e3, (double)g.d[0] * 1e6);
+    tr_log("rules 1-3: NaN/Inf and int16 output saturation (flag, or |d| at 3276.7 um full scale) reject that "
+           "inference only; |d| clipped to q_lim; slew limited to %.0f mm/s (400 um in 4 ms -> %.0f um)",
+           (double)PEN_ML_RATE_MAX * 1e3, (double)g.d[0] * 1e6);
     tr_log("the v1 rule |d - d_KF| > 150 um is not implemented (removed in ICD s5 v1.1)");
 }
 
@@ -177,17 +186,17 @@ void test_ml_guard_fallback_within_20ms(void)
     CHECK(!g.stale && g.mix == 1.0f);   /* resumes without the 1 s hold (not an a-posteriori failure) */
 }
 
-/* ICD s5 v1.2 rule 5: ML share scaled by c = min(1, confidence / c_full), slewed within 20 ms;
- * confidence below c_min is a rejected inference */
+/* ICD s5 v1.2 rule 5 (normalised c^ = byte/255): ML share scaled by c = min(1, c^/c_full),
+ * slewed within 20 ms; c^ below c_min is a rejected inference */
 void test_ml_guard_confidence(void)
 {
     make_signal();
     ml_guard_t g;
     ml_guard_init(&g);
     CHECK(g.c_min == PEN_ML_C_MIN && g.c_full == PEN_ML_C_FULL && PEN_ML_C_MIN == 0.0f && PEN_ML_C_FULL == 1.0f);
-    /* (a) uncalibrated defaults with a model that reports full confidence (the v1 export has no
-     * confidence output; the adapter reports 255): no effect, w == mix throughout */
-    s_conf = 1.0f;
+    /* (a) defaults, byte 255 (an uncalibrated model, TCN_CONFIDENCE_UNCALIBRATED): authority unchanged,
+     * w == mix on every tick */
+    s_conf = 255u;
     int k_adm = -1;
     bool same = true;
     for (int k = 0; k < 2000; k++) {
@@ -198,54 +207,68 @@ void test_ml_guard_confidence(void)
         }
     }
     CHECK(same && k_adm > 0 && g.n_rejected == 0u && g.w == 1.0f);
-    /* the formula at the defaults with a byte below 255: c = confidence (see README O8) */
-    ml_guard_t gd;
-    ml_guard_init(&gd);
-    const float dz[2] = {0.0f, 0.0f};
-    ml_guard_new_output(&gd, dz, false, false, 128.0f / 255.0f, 1000u, PEN_Q_LIM);
-    const float c_def_128 = gd.conf_c;
-    CHECK_CLOSE(c_def_128, 128.0 / 255.0, 1e-6, 0.0);
-    /* (b) injected calibration c_full = 0.5: confidence 0.25 -> share 0.5, reached within 20 ms */
-    ml_guard_set_confidence_cal(&g, 0.0f, 0.5f);
-    s_conf = 0.25f;
-    const float kf[2] = {0.0f, 0.0f};
-    int k_half = -1;
+    /* defaults, byte 0: all ML authority removed within 20 ms, the Kalman estimate takes over */
+    s_conf = 0u;
+    int k_zero = -1;
     for (int k = 2000; k < 2100; k++) {
         run_guard(&g, k, k + 1, PRED_GOOD, NULL, NULL);
-        if (k_half < 0 && g.conf_s == 0.5f) {
+        if (k_zero < 0 && g.w == 0.0f) {
+            k_zero = k;
+        }
+    }
+    const float kf[2] = {0.0f, 0.0f};
+    CHECK(k_zero >= 2000 && (k_zero - 2000 + 1) * 0.5 <= 20.0 + 1e-9 && g.mix == 1.0f && g.n_rejected == 0u);
+    ml_guard_tick(&g, kf, TS, 2100u * 500u + 1000000u);
+    CHECK(g.out[0] == 0.0f && g.out[1] == 0.0f);   /* Kalman estimate (0 here) only */
+    const double t_zero = (k_zero - 2000 + 1) * 0.5;
+    /* byte 255 again: full share back within 20 ms (not an a-posteriori failure, no 1 s hold) */
+    s_conf = 255u;
+    int k_back = -1;
+    for (int k = 2100; k < 2200; k++) {
+        run_guard(&g, k, k + 1, PRED_GOOD, NULL, NULL);
+        if (k_back < 0 && g.w == 1.0f) {
+            k_back = k;
+        }
+    }
+    CHECK(k_back >= 2104 && (k_back - 2104 + 1) * 0.5 <= 20.0 + 1e-9);
+    /* (b) injected calibration c_full = 0.4: byte 51 (c^ 0.2) -> share 0.5, reached within 20 ms */
+    ml_guard_set_confidence_cal(&g, 0.0f, 0.4f);
+    s_conf = 51u;
+    int k_half = -1;
+    for (int k = 2200; k < 2300; k++) {
+        run_guard(&g, k, k + 1, PRED_GOOD, NULL, NULL);
+        if (k_half < 0 && g.conf_s == g.conf_c && g.conf_c < 1.0f) {
             k_half = k;
         }
     }
-    /* predictions arrive every 8 ticks: the first one after tick 2000 is at tick 2000 */
-    CHECK(k_half >= 2000 && (k_half - 2000 + 1) * 0.5 <= 20.0 + 1e-9);
-    CHECK(g.mix == 1.0f && g.w == 0.5f);
-    ml_guard_tick(&g, kf, TS, 2100u * 500u + 1000000u);
-    CHECK_CLOSE(g.out[0], 0.5 * (double)g.d[0], 1e-12, 1e-6);   /* half ML, half Kalman (= 0 here) */
-    /* confidence 0.75 >= c_full: back to the full share within 20 ms */
-    s_conf = 0.75f;
+    CHECK_CLOSE(g.conf_c, 0.5, 1e-6, 0.0);
+    CHECK(k_half >= 2200 && (k_half - 2200 + 1) * 0.5 <= 20.0 + 1e-9 && g.mix == 1.0f);
+    CHECK_CLOSE(g.w, 0.5, 1e-6, 0.0);
+    /* byte 204 (c^ 0.8 >= c_full): full share */
+    s_conf = 204u;
     int k_full = -1;
-    for (int k = 2100; k < 2200; k++) {
+    for (int k = 2300; k < 2400; k++) {
         run_guard(&g, k, k + 1, PRED_GOOD, NULL, NULL);
-        if (k_full < 0 && g.conf_s == 1.0f) {
+        if (k_full < 0 && g.w == 1.0f) {
             k_full = k;
         }
     }
-    CHECK(k_full >= 2100 && (k_full - 2104 + 1) * 0.5 <= 20.0 + 1e-9 && g.w == 1.0f);
-    /* (c) c_min = 0.3: confidence 0.2 is a rejected inference (event, previous estimate kept) */
-    ml_guard_set_confidence_cal(&g, 0.3f, 0.5f);
+    CHECK(k_full >= 2304 && (k_full - 2304 + 1) * 0.5 <= 20.0 + 1e-9);
+    /* (c) c_min = 0.3: byte 51 (0.2) is a rejected inference (event, previous estimate kept); byte 102 (0.4) is not */
+    ml_guard_set_confidence_cal(&g, 0.3f, 0.4f);
     const uint32_t rej0 = g.n_rejected;
     const float d_keep = g.d[0];
     const float d_new[2] = {123.0f, 0.0f};
     g.event = false;
-    ml_guard_new_output(&g, d_new, false, false, 0.2f, 2200u * 500u + 999000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, d_new, false, false, 51u, 2400u * 500u + 999000u, PEN_Q_LIM);
     CHECK(g.n_rejected == rej0 + 1u && g.event && (g.reason & MLG_R_CONF) != 0u && g.d[0] == d_keep);
-    ml_guard_new_output(&g, d_new, false, false, 0.35f, 2200u * 500u + 999000u, PEN_Q_LIM);
+    ml_guard_new_output(&g, d_new, false, false, 102u, 2400u * 500u + 999000u, PEN_Q_LIM);
     CHECK(g.n_rejected == rej0 + 1u && g.d[0] != d_keep);
-    s_conf = 1.0f;
-    tr_log("rule 5: defaults (c_min 0, c_full 1) with full confidence: w = mix on every tick (no effect); c_full 0.5: "
-           "confidence 0.25 -> ML share 0.5 reached %.1f ms after the output, 0.75 -> share 1 within %.1f ms; c_min "
-           "0.3 rejects confidence 0.2 (reason 0x%02x); at the defaults a byte of 128 gives c = %.3f",
-           (k_half - 2000 + 1) * 0.5, (k_full - 2104 + 1) * 0.5, (unsigned)MLG_R_CONF, (double)c_def_128);
+    s_conf = 255u;
+    tr_log("rule 5 (c^ = byte/255): defaults c_min 0, c_full 1: byte 255 leaves the ML share unchanged (w = mix on every "
+           "tick), byte 0 removes it within %.1f ms (Kalman only) and 255 restores it within %.1f ms; c_full 0.4: byte 51 "
+           "-> share 0.5 within %.1f ms, byte 204 -> 1; c_min 0.3 rejects byte 51 (reason 0x%02x), accepts 102", t_zero,
+           (k_back - 2104 + 1) * 0.5, (k_half - 2200 + 1) * 0.5, (unsigned)MLG_R_CONF);
 }
 
 void test_ml_window(void)

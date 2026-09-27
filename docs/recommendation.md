@@ -97,7 +97,7 @@ Claim gates C-IA, C-LI and C-CAP are defined in `validation/prototype_stages.md`
 | Free-writing tremor reduction (immediate) | Action/essential tremor ≤ 1 mm p-p at the nib | EXP-H01 → EXP-E01 → EXP-B09 → EXP-H06 crossover (C-IA) | Benefit only above ~9 Hz on synthetic writing (0.78 / 0.71 at 9 / 10 Hz, 0.3 mm), harm below it (**sim**) |
 | Larger, steadier unassisted writing (lasting) | Parkinson's micrographia; novice learners | EXP-H04 training with retention and transfer (C-LI) | Amplitude training: 7–17 % larger writing, retained (PDT-16/17, **lit**). Error-minimising guidance gave the worst unassisted retention (HAP-09, **lit**), so practice modes fade guidance |
 | Faithful capture, recognition and search | Everyone | EXP-S01, S02, C01, C02 (C-CAP); AC-C01-04 for ordinary paper | Format and resampling error measured on simulated traces only (`results/app/`) |
-| Trustworthy note assistance | Everyone | EXP-A01 grounding audit (C-CAP) | Refusal and citation rules tested on synthetic notes (136 app tests) |
+| Trustworthy note assistance | Everyone | EXP-A01 grounding audit (C-CAP) | Refusal and citation rules tested on synthetic notes (137 app tests) |
 
 ## 7. What would change this recommendation
 

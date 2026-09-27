@@ -182,7 +182,7 @@ def build_params(scn: Scenario, ctrl: Controller, geom: Optional[Geometry] = Non
     rbr = _pget(p, "electrical.r_bridge", over); rsh = _pget(p, "electrical.r_shunt", over)
     setp("r_bridge", rbr); setp("r_shunt", rsh)
     setp("i_max", _pget(p, "actuator.i_max", over)); setp("alpha_cu", _pget(p, "actuator.alpha_cu", over))
-    setp("alpha_B", over.get("actuator.alpha_B", -0.0012))
+    setp("alpha_B", _pget(p, "actuator.alpha_B", over))
     setp("Rth", _pget(p, "actuator.Rth_coil_amb", over)); setp("Cth", _pget(p, "actuator.Cth_coil", over))
     setp("T_amb", _pget(p, "thermal.t_ambient", over))
     f_cur = _pget(p, "control.f_current", over)

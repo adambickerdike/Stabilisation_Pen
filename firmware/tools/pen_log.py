@@ -35,7 +35,8 @@ FAULT_NAMES = ["over_current_latch", "hall_frozen_implausible", "over_temperatur
                "ml_guard_trip_count"]
 FLAG_NAMES = ["contact", "lift", "v_sat", "stop", "fault_latched", "ml_active", "ml_rejected", "thermal_derate"]
 CAL_NAMES = {1: "CAL_HALL", 2: "CAL_ACT", 3: "CAL_ISNS", 4: "CAL_AXIAL", 5: "CAL_USER"}
-ML_REASONS = ["nan_inf", "output_saturation", "clipped", "slew_limited", "a_posteriori_fallback", "stale"]
+ML_REASONS = ["nan_inf", "output_saturation", "clipped", "slew_limited", "a_posteriori_fallback", "stale",
+              "low_confidence"]
 PH_UNDEFINED = -2147483648
 G0 = 9.80665
 
@@ -107,6 +108,8 @@ def dec_event(p: bytes):
         si["mode_old"] = MODE_NAMES.get((arg >> 8) & 0xFF)
     elif code in (2, 3):
         si["faults"] = bits(arg & 0xFFFF, FAULT_NAMES)
+    elif code == 5:
+        si["model_hash_low32"] = f"{arg & 0xFFFFFFFF:#010x}"
     elif code == 6:
         si["reasons"] = bits(arg & 0xFF, ML_REASONS)
     elif code == 9:

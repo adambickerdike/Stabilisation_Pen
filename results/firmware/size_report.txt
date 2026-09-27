@@ -3,11 +3,11 @@ Evidence status: BUILD ARTEFACT (compile/link only; not run on hardware)
 toolchain: arm-none-eabi-gcc (15:13.2.rel1-2) 13.2.1 20231009
 flags: -mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -O2 -ffunction-sections -fdata-sections -fno-math-errno; link --gc-sections, newlib-nano, nosys
 elf: firmware/build/arm/pen_fw_nrf5340.elf
-generated: 2026-09-27T03:54:49Z
+generated: 2026-09-27T04:21:07Z
 
 module                                       text    data      bss    flash      RAM
 ------------------------------------------------------------------------------------
-core/app.o                                   3836       0      512     3836      512
+core/app.o                                   3828       0      512     3828      512
 core/calib.o                                   60       0        0       60        0
 core/control.o                               1408       0        0     1408        0
 core/crc16.o                                  560       0        0      560        0
@@ -20,7 +20,7 @@ core/hall.o                                   292       0        0      292     
 core/jacobian.o                               636       0        0      636        0
 core/limiter.o                                212       0        0      212        0
 core/log_format.o                            2564       0        0     2564        0
-core/ml_guard.o                              2132       0        0     2132        0
+core/ml_guard.o                              2156       0        0     2156        0
 core/params.o                                 544       0        0      544        0
 core/safety.o                                1548       0        0     1548        0
 core/servo.o                                  788       0        0      788        0
@@ -35,11 +35,11 @@ libc_nano                                     668      80        0      748     
 libgcc                                        828       0        0      828        0
 libm                                         7545       0        0     7545        0
 ------------------------------------------------------------------------------------
-subtotal core                               20688       0      512    20688      512
+subtotal core                               20704       0      512    20704      512
 subtotal port                                2456       0    12446     2456    12446
 subtotal libraries                           9041      80        0     9121       80
-sum of input sections                       32185      80    12958    32265    13038
-ELF (arm-none-eabi-size -B)                 32188      80    29352    32268    29432
+sum of input sections                       32201      80    12958    32281    13038
+ELF (arm-none-eabi-size -B)                 32204      80    29352    32284    29432
 
 ELF bss includes the 16 kB main stack reserved by the linker script (.stack); the
 difference between the ELF and the sum of input sections is alignment padding and the stack.
@@ -50,20 +50,20 @@ arm-none-eabi-size -A:
   /home/user/Stabilisation_Pen/firmware/build/arm/pen_fw_nrf5340.elf  :
   section             size        addr
   .isr_vector          340           0
-  .text              31840         340
-  .ARM.exidx             8       32180
+  .text              31856         340
+  .ARM.exidx             8       32196
   .data                 80   536870912
   .bss               12964   536870992
   .stack             16388   536883956
-  .debug_info       104393           0
-  .debug_abbrev      22853           0
-  .debug_loclists    50418           0
+  .debug_info       104317           0
+  .debug_abbrev      22870           0
+  .debug_loclists    50389           0
   .debug_aranges      2808           0
-  .debug_rnglists     6826           0
-  .debug_line        65966           0
-  .debug_str         14849           0
+  .debug_rnglists     6815           0
+  .debug_line        65959           0
+  .debug_str         14840           0
   .comment              38           0
   .ARM.attributes       56           0
-  .debug_frame        6556           0
+  .debug_frame        6580           0
   .debug_line_str      324           0
-  Total             336707
+  Total             336632

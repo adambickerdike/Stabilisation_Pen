@@ -8,9 +8,9 @@
   "design_revA_sha16": "69844a9aa4e6bd48",
   "model_py_sha16": "c62e5e157c7e8264",
   "core_py_sha16": "c46570f25d1439cb",
-  "icd_sha16": "b925602e937d8774",
+  "icd_sha16": "aeb4d48bc20883c3",
   "model_version": "M1.0",
-  "git_head": "8dba406",
+  "git_head": "e28901b",
   "nominal_theta_deg": 50.0,
   "nominal_N0": 1.0,
   "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
@@ -1663,7 +1663,7 @@
    "value": 0.0,
    "type": "float",
    "unit": "-",
-   "source": "docs/icd.md s5 v1.2 rule 5: confidence (byte/255) below c_min is a rejected inference; uncalibrated default 0"
+   "source": "docs/icd.md s5 v1.2 rule 5: normalised confidence c^ = byte/255 below c_min is a rejected inference (0-1; default 0)"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
@@ -1671,7 +1671,15 @@
    "value": 1.0,
    "type": "float",
    "unit": "-",
-   "source": "docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, confidence/c_full); uncalibrated default 1"
+   "source": "docs/icd.md s5 v1.2 rule 5: ML share scaled by min(1, c^/c_full) (0-1; default 1; an uncalibrated model reports 255)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_DHAT_FS_UM",
+   "value": 3276.7,
+   "type": "float",
+   "unit": "um",
+   "source": "docs/icd.md s5 v1.2 rule 1: output saturation = int16 d_hat (0.1 um) at full scale, +/-3.2767 mm"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",

@@ -10,8 +10,10 @@
  * newest input sample; used from the next stage tick.
  *
  * Guard v1.1 (this file implements exactly these rules):
- *  (1) NaN/Inf or output saturation reported by the kernel -> reject that
- *      inference (the previous accepted estimate stays in use);
+ *  (1) NaN/Inf, or output saturation (the kernel's int16 d_hat in 0.1 um at
+ *      full scale, +/-3.2767 mm: reported by the kernel status bit or seen in
+ *      the value) -> reject that inference (the previous accepted estimate
+ *      stays in use);
  *  (2) clip |d_hat| to q_lim (no rejection);
  *  (3) slew-limit d_hat at 50 mm/s (no rejection);
  *  (4) a-posteriori check: each accepted prediction is kept with its target
@@ -21,14 +23,16 @@
  *      If the running RMS prediction error over the last 200 ms exceeds the
  *      running RMS of the realised disturbance (worse than predicting zero),
  *      fall back to the Kalman estimate for >= 1 s and log event 0x0006.
- *  (5) confidence (ICD s5 v1.2, REQ-SAF-003): the ML share of the correction
- *      is scaled by c = min(1, confidence / c_full) and slewed to reach a new
- *      value within ML_CONF_SLEW_TIME (20 ms); confidence < c_min is a
- *      rejected inference (as rule 1). confidence = output byte / 255.
- *      c_min, c_full come with the model card (ml_guard_set_confidence_cal);
- *      uncalibrated defaults c_min 0, c_full 1. The share is the weight of the
- *      ML estimate in the blend with the Kalman estimate:
- *      w = mix * c_slewed, out = w d_ML + (1 - w) d_KF.
+ *  (5) confidence (ICD s5 v1.2, REQ-SAF-003): with the normalised
+ *      c^ = confidence_byte / 255, the ML share of the correction is scaled by
+ *      c = min(1, c^ / c_full) and slewed to reach a new value within
+ *      ML_CONF_SLEW_TIME (20 ms); c^ < c_min is a rejected inference (as
+ *      rule 1). c_min, c_full (0-1) come with the model card
+ *      (ml_guard_set_confidence_cal); defaults 0 and 1. An uncalibrated model
+ *      reports 255 (TCN_CONFIDENCE_UNCALIBRATED): no effect; a byte of 0
+ *      removes all ML authority. The share is the weight of the ML estimate in
+ *      the blend with the Kalman estimate: w = mix * c_slewed,
+ *      out = w d_ML + (1 - w) d_KF.
  *  The v1 rule |d_hat - d_KF| > 150 um for 20 ms is removed.
  * Expiry (ICD s5 v1.2, REQ-SAF-003 / REQ-ML-002): an output expires at
  * t_acq_newest + ML_STALE_TIME (8 ms); with no newer accepted output the
@@ -108,12 +112,12 @@ void ml_guard_init(ml_guard_t *g);
  * and the optical validity. Feeds the realised-disturbance band-pass and
  * evaluates predictions whose target time has been reached. */
 void ml_guard_realised(ml_guard_t *g, const float p_h[2], uint32_t t_acq_us, bool valid);
-/* A new inference: d_hat in um, kernel status (NaN/Inf, output saturation),
- * confidence 0..1 (byte / 255; 1 for models without a confidence output),
+/* A new inference: d_hat in um (the kernel's int16 0.1 um output as float),
+ * kernel status (NaN/Inf, int16 output saturation), the ICD confidence byte,
  * acquisition time of the newest input sample, travel limit (m). */
-void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, float confidence,
+void ml_guard_new_output(ml_guard_t *g, const float d_um[2], bool nan_or_inf, bool saturated, uint8_t confidence,
                          uint32_t t_acq_newest_us, float q_lim);
-/* Rule 5 calibration from the model card (c_full <= 0 disables the scaling). */
+/* Rule 5 calibration from the model card, normalised 0-1 (c_full <= 0 disables the scaling). */
 void ml_guard_set_confidence_cal(ml_guard_t *g, float c_min, float c_full);
 /* Every stage tick: expiry against the current time now_us (same clock as
  * the acquisition stamps), fallback timing, cross-fade; writes g->out. */

@@ -483,17 +483,18 @@
    "type": 3,
    "type_name": "event",
    "length": 10,
-   "crc": "0x37ce",
+   "crc": "0x2933",
    "crc_ok": true,
    "length_ok": true,
    "raw": {
     "t_us": 1500500,
     "code": 5,
-    "arg": 1912531783
+    "arg": -1518501386
    },
    "si": {
     "t_s": 1.5005,
-    "name": "ml_model_loaded"
+    "name": "ml_model_loaded",
+    "model_hash_low32": "0xa57d81f6"
    }
   },
   {

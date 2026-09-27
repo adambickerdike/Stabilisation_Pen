@@ -273,7 +273,7 @@ static size_t golden_build(uint8_t *buf, size_t cap)
         {1000500u, PEN_EV_PEN_DOWN, 0},
         {1002000u, PEN_EV_FAULT_SET, (int32_t)PEN_FAULT_HALL},
         {1500000u, PEN_EV_FAULT_CLEARED, (int32_t)PEN_FAULT_HALL},
-        {1500500u, PEN_EV_ML_LOADED, (int32_t)0x71FEEB47},        /* ml/export tcn_s model hash (low 32 bits) */
+        {1500500u, PEN_EV_ML_LOADED, (int32_t)0xA57D81F6u},       /* ml/export tcn_s_nofest model hash (low 32 bits) */
         {1600000u, PEN_EV_AUTHORITY_CAPPED, (int32_t)MLG_R_APOST},  /* ML a-posteriori fallback (ICD s5 v1.1) */
         {1234u, PEN_EV_TIME_WRAP, 1}};                             /* first session wrap: arg = wrap count */
     for (int k = 0; k < 7; k++) {

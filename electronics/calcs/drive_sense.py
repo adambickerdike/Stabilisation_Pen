@@ -63,7 +63,6 @@ COMP = {
     "f_stage_hz": (2000.0, "config control.f_stage"),
     "t_coil_design_c": (None, "hot-coil design point: configuration B at the design load, results/thermal/thermal.json (read at run time)"),
     "t_coil_limit_c": (120.0, "coil temperature limit used for the thermal allowable (analysis/thermal.py)"),
-    "br_tempco_per_k": (-0.0012, "NdFeB reversible Br tempco class (AMF-27, AMF-29); VERIFY with the magnet grade"),
     "f_corr_hz": (12.0, "highest tremor frequency addressed (REQ-ENV-003)"),
     "q_corr_m": (0.55e-3, "correction amplitude at the control limit q_lim (sim/pensim/model.py)"),
     "t_amb_c": (25.0, "config thermal.t_ambient"),
@@ -121,7 +120,7 @@ def headroom(p, env, two_node):
         P_hot = P25 * (1 + alpha * (T_coil - 25.0))
         T_coil = two_node["T_struct_no_coil_loss_C"] + two_node["R_coil_amb_total_K_per_W"] * P_hot
     T_mag = two_node["T_struct_no_coil_loss_C"] + two_node["R_struct_amb_K_per_W"] * P_hot
-    k_br = 1 + cv("br_tempco_per_k") * (T_mag - 20.0)
+    k_br = 1 + p["actuator.alpha_B"] * (T_mag - 20.0)
     a_pt = 1 + alpha * (T_coil - 20.0)
 
     def f_corr(f_hz, q):
@@ -200,14 +199,24 @@ def pwm_ripple(R, L, vb, D, f, r_ext):
     return i_max - i_min, 0.5 * (i_max + i_min), tau
 
 
-def current_loop(R, L):
+def current_loop(p, R_hot):
+    """PI current loop as implemented in the simulator and firmware: crossover at config
+    control.current_bw, zero on the cold electrical pole (R20 + r_bridge + r_shunt) / L.
+    Also reported: the largest crossover that keeps 50 deg phase margin with the loop delay."""
     Ts = 1 / cv("f_pwm_hz")
     t_aa = cv("aa_r_ohm") * cv("aa_c_f")
     delay = Ts + 0.5 * Ts + t_aa                     # compute + ZOH + anti-alias (first-order approximation)
     # PI with zero on the electrical pole: open loop = wc/s * exp(-s delay); PM = 90 - 360 f_c delay
-    fc = (90.0 - 50.0) / (360.0 * delay)
-    return {"loop_delay_us": delay * 1e6, "crossover_Hz_for_PM50": fc, "electrical_pole_Hz": (R / L) / (2 * math.pi),
-            "Kp_V_per_A": 2 * math.pi * fc * L, "Ki_V_per_As": 2 * math.pi * fc * R}
+    fc_limit = (90.0 - 50.0) / (360.0 * delay)
+    fc = p["control.current_bw"]
+    L = p["actuator.L"]
+    R_zero = p["actuator.R20"] + p["electrical.r_bridge"] + p["electrical.r_shunt"]
+    return {"loop_delay_us": delay * 1e6, "crossover_Hz_for_PM50": fc_limit, "crossover_Hz": fc,
+            "phase_margin_deg": 90.0 - 360.0 * fc * delay,
+            "electrical_pole_cold_Hz": (R_zero / L) / (2 * math.pi), "electrical_pole_hot_Hz": (R_hot / L) / (2 * math.pi),
+            "Kp_V_per_A": 2 * math.pi * fc * L, "Ki_V_per_As": 2 * math.pi * fc * R_zero,
+            "note": "Kp, Ki as in sim/pensim/model.py and the firmware (zero on the cold pole); hot, the plant pole "
+                    "moves above the zero, which leaves a slow closed-loop doublet but no loss of stability"}
 
 
 def timeline():
@@ -318,7 +327,7 @@ def main():
             rp, iav, tau = pwm_ripple(a * R, L, 3.7, D, f, h["r_ext_ohm"])
             ripple_rows.append({"f_pwm_kHz": f / 1e3, "D": D, "ripple_pp_mA": rp * 1e3, "i_avg_A": iav,
                                 "pwm_levels_centre_aligned": cv("pwm_clock_hz") / (2 * f)})
-    loop = current_loop(a * R, L)
+    loop = current_loop(p, a * R + h["r_ext_ohm"])
     sense = sense_chain()
     ev = timeline()
     busy = {r: sum(d for rr, _, _, d in ev if rr == r) for r in {e[0] for e in ev}}
@@ -355,7 +364,7 @@ def main():
     print("largest R meeting the criterion:", best["R20_ohm"] if best else None)
     print("design-point hold current", round(hold_I_design, 3), "A")
     print("sense", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in sense.items()})
-    print("loop", {k: round(v, 3) for k, v in loop.items()})
+    print("loop", {k: (round(v, 3) if isinstance(v, float) else v) for k, v in loop.items() if k != "note"})
     print("ripple @20k", [(r["D"], round(r["ripple_pp_mA"], 1)) for r in ripple_rows if r["f_pwm_kHz"] == 20])
     print("ripple @40k", [(r["D"], round(r["ripple_pp_mA"], 1)) for r in ripple_rows if r["f_pwm_kHz"] == 40])
     print("busy us", busy, "electronics mW", round(powr["total_mW_at_3V7"], 1))

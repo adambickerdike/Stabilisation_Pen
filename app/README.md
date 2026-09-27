@@ -13,7 +13,7 @@ The app implements the two principles the audit retained from the source report 
 ```bash
 # from the repository root; Python 3.11, numpy, jsonschema (+ scipy for synthesis; numba optional, faster)
 python3 app/demo.py                    # full synthetic demo -> data/samples/, results/app/ (~30 s)
-python3 -m pytest app/tests -q         # 136 tests, 1 skipped (see "Tests")
+python3 -m pytest app/tests -q         # 137 tests (see "Tests")
 
 export PYTHONPATH=app PENAPP_STORE=/tmp/penstore
 python3 -m penapp import data/samples/demo_text_errands.penlog     # uses <log>.truth.json if present
@@ -369,7 +369,7 @@ Every answer that was given cited the correct line. As errors grow, the assistan
 
 ## Tests
 
-`python3 -m pytest app/tests -q` runs 136 tests, all passing; 1 is skipped because `firmware/tests/vectors/golden_log_v1.json` does not exist yet. The suite takes about 6 s. Coverage includes:
+`python3 -m pytest app/tests -q` runs 137 tests, all passing, including the cross-check against the firmware's golden log and its JSON decode (ICD v1.3: CAL_USER v2 snapshot, pen-up boundary sample, timestamp-wrap event, model hash 0xa57d81f6). The suite takes about 6 s. Coverage includes:
 
 - byte layouts checked by hand against an independent bitwise CRC;
 - resync fuzzing: no false record is ever accepted;

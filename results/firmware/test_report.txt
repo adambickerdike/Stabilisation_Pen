@@ -174,16 +174,16 @@ pen firmware unit tests: params yaml 0.4.3 [3fbe200f8ff5c330], model M1.0
     soft fault in contact: de-energised after the 5 s pen-up timeout with a 30 ms ramp; escalation NEUTRAL -> HOLD_OL -> OFF; fault at pen-up ramps immediately
 [  OK  ] test_sm_fault_policies (98 checks)
 [ RUN  ] test_ml_guard_rejects
-    v1.1 rules 1-3: NaN/Inf/saturation reject that inference only; |d| clipped to q_lim; slew limited to 50 mm/s (400 um in 4 ms -> 200 um)
+    rules 1-3: NaN/Inf and int16 output saturation (flag, or |d| at 3276.7 um full scale) reject that inference only; |d| clipped to q_lim; slew limited to 50 mm/s (400 um in 4 ms -> 200 um)
     the v1 rule |d - d_KF| > 150 um is not implemented (removed in ICD s5 v1.1)
-[  OK  ] test_ml_guard_rejects (9 checks)
+[  OK  ] test_ml_guard_rejects (12 checks)
 [ RUN  ] test_ml_guard_fallback_within_20ms
     a-posteriori (rule 4): good predictor admitted at 518.0 ms (RMS error 0.0 um vs realised 145.0 um); sign-inverted predictor -> fallback 38.5 ms after the switch, Kalman fully in use 20.0 ms later; re-admitted 1000 ms after the last failing evaluation (hold >= 1 s)
     expiry: output expired when its newest input was 8.5 ms old (contract: t_acq_newest + 8 ms, 2 kHz tick granularity); Kalman fully in use 20.0 ms later
 [  OK  ] test_ml_guard_fallback_within_20ms (12 checks)
 [ RUN  ] test_ml_guard_confidence
-    rule 5: defaults (c_min 0, c_full 1) with full confidence: w = mix on every tick (no effect); c_full 0.5: confidence 0.25 -> ML share 0.5 reached 10.0 ms after the output, 0.75 -> share 1 within 10.0 ms; c_min 0.3 rejects confidence 0.2 (reason 0x40); at the defaults a byte of 128 gives c = 0.502
-[  OK  ] test_ml_guard_confidence (9 checks)
+    rule 5 (c^ = byte/255): defaults c_min 0, c_full 1: byte 255 leaves the ML share unchanged (w = mix on every tick), byte 0 removes it within 20.0 ms (Kalman only) and 255 restores it within 20.0 ms; c_full 0.4: byte 51 -> share 0.5 within 10.0 ms, byte 204 -> 1; c_min 0.3 rejects byte 51 (reason 0x40), accepts 102
+[  OK  ] test_ml_guard_confidence (11 checks)
 [ RUN  ] test_ml_window
     input window: 64 x (dx, dy) um increments, oldest first, newest acquisition stamp exported (no f_est, ICD s5 v1.1); reset on optical dropout
 [  OK  ] test_ml_window (69 checks)
@@ -230,4 +230,4 @@ pen firmware unit tests: params yaml 0.4.3 [3fbe200f8ff5c330], model M1.0
 [ RUN  ] test_system_capture_boundaries
     capture: 102 stroke samples for a 501.5 ms stroke (pen-down sample, 200 Hz, pen-up sample at the last in-contact tick); t_ms monotonic across the hardware counter wrap (55 -> 556 ms); research p_H undefined (INT32_MIN) in 111 frames before the first pen-down, page-origin relative afterwards
 [  OK  ] test_system_capture_boundaries (8 checks)
-SUMMARY: 60 test cases, 60 passed, 0 failed; 1115 checks, 0 failed checks
+SUMMARY: 60 test cases, 60 passed, 0 failed; 1120 checks, 0 failed checks

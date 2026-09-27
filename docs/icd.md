@@ -59,7 +59,7 @@ rec_type: CAL_HALL 1, CAL_ACT 2, CAL_ISNS 3, CAL_AXIAL 4, CAL_USER 5
 `CAL_USER` payload (30 B):
 
 - cal_version 1: f0_hz f32 | f_stroke_hz f32 | f_gate_hz f32 | f_gate_width_hz f32 | g_max f32 | q_lim_m f32 | gamma f32 | mode_perm u8 | flags u8.
-- **cal_version 2 (v1.3):** the same layout with `gamma` replaced by `r_n` f32 (K_n / k_ax, dimensionless, 0.02–10). The firmware computes γ(θ) at each Jacobian update. A version-1 record is read with r_n derived from its γ at the nominal 50° tilt.
+- **cal_version 2 (v1.3):** the same layout with `gamma` replaced by `r_n` f32 (K_n / k_ax, dimensionless, 0.02–10). The firmware computes γ(θ) at each Jacobian update. A version-1 record is read with r_n derived from its γ at the nominal 50° tilt. A γ outside 0.0116–0.854 maps outside the r_n range (γ = 1 has no finite r_n), so it is clamped and the record flagged.
 
 Flags: bit0 tremor and writing separable in frequency, bit1 tremor found. The stroke frequency and flags record why the calibration placed or withheld the gate. mode_perm bits: 0 ASSIST_KF, 1 ASSIST_ML, 2 GUIDED, 3 TRAINING_FADE. The payload layouts of the other four records are defined when their calibration procedures are implemented.
 
