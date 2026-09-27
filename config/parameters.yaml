@@ -11,18 +11,19 @@
 # Nothing in this file is a measurement of our hardware unless status == measured.
 # ---------------------------------------------------------------------------
 meta:
-  version: "0.4.1"
+  version: "0.4.2"
   date: "2026-09-27"
   changelog:
     - "0.1.0 initial provisional set from report audit"
     - "0.2.0 lever/pivot baseline (DEC-003), transverse contact load model (COR-01)"
     - "0.3.0 literature two-stage hand impedance (HAP-26), stiff axial path (DEC-006), CAD Rev A geometry, EM-based actuator constants"
+    - "0.4.2 consistency pass after the validation review: k_tip 80 N/m from the selected gimbal (was 150), coil-to-ambient 130 K/W for a moving coil in an air gap (was 60), electronics 115 mW (was 60), m_eq documented as 13.7 g (distributed mass), stale experiment and source references corrected"
     - "0.4.1 axial suspension in the carrier (refill slides, kappa_s = 1, DEC-007 rev.), actuator gap 0.50 mm and tip travel 0.60 mm from the tolerance analysis; Kf -2.9 % for the wider gap"
-    - "0.4.0 winding matched to the single-cell supply (R20 6 ohm, DEC-012), 40 kHz PWM and current loop, 0.1 ohm shunt, pouch cell (COR-18); contact feedforward disabled in the controller (DEC-011)"
+    - "0.4.0 winding matched to the single-cell supply (R20 6 ohm, DEC-012), 40 kHz PWM and current loop, 0.1 ohm shunt, pouch cell (COR-14); contact feedforward disabled in the controller (DEC-011)"
 
 # ---------------------------------------------------------------------------
 writing:            # use conditions (user + paper), NOT population distributions
-  tilt_deg:        {value: 50,   unit: deg, min: 35,    max: 75,   dist: uniform,    status: inherited_target, source: "REQ-ENV-001; report s4", note: "Altitude of barrel axis above paper. Replace range with measured task distribution (EXP-B05)."}
+  tilt_deg:        {value: 50,   unit: deg, min: 35,    max: 75,   dist: uniform,    status: inherited_target, source: "REQ-ENV-001; report s4", note: "Altitude of barrel axis above paper (EXP-H01 measures it). Replace range with measured task distribution (EXP-B05)."}
   normal_force:    {value: 1.0,  unit: N,   min: 0.2,   max: 2.0,  dist: loguniform, status: inherited_target, source: "REQ-ENV-002; report s4", note: "Force normal to page. Bench sweep range, not a population distribution; see CON ledger."}
   mu_eff:          {value: 0.15, unit: "-", min: 0.05,  max: 0.35, dist: uniform,    status: assumed,          source: "assumption pending EXP-B01 and CON ledger", note: "Effective tangential drag / normal force for rolling ballpoint with ink."}
   mu_static_ratio: {value: 1.3,  unit: "-", min: 1.0,   max: 2.0,  dist: uniform,    status: assumed,          source: "assumption", note: "Breakaway / kinetic drag ratio; EXP-B01 measures."}
@@ -58,9 +59,9 @@ pen:
 
 refill:
   type:            {value: "ISO 12757-2 D1 ballpoint (mini refill)", unit: "-", status: assumed, source: "DEC-004; CON ledger", note: "Short sealed refill baseline."}
-  length:          {value: 0.067,  unit: m, min: 0.0665, max: 0.0675, dist: fixed, status: sourced, source: "ISO 12757-2 D1 (CON ledger, verify revision)", note: "Verify against purchased samples (EXP-B02)."}
+  length:          {value: 0.067,  unit: m, min: 0.0665, max: 0.0675, dist: fixed, status: sourced, source: "ISO 12757-2 D1 (CON ledger, verify revision)", note: "Verify against purchased samples (EXP-B01 part 0, refill metrology)."}
   diameter:        {value: 0.00235,unit: m, min: 0.0023, max: 0.0024, dist: fixed, status: sourced, source: "ISO 12757-2 D1 (CON ledger, verify revision)", note: ""}
-  mass:            {value: 0.0006, unit: kg,min: 0.0004, max: 0.0010, dist: uniform, status: assumed, source: "assumption", note: "Weigh 10 samples (EXP-B02)."}
+  mass:            {value: 0.0006, unit: kg,min: 0.0004, max: 0.0010, dist: uniform, status: assumed, source: "assumption", note: "Weigh 10 samples (EXP-B01 part 0)."}
   ball_radius:     {value: 0.00035,unit: m, min: 0.00025,max: 0.0005, dist: uniform, status: assumed, source: "0.5-1.0 mm ball family", note: ""}
 
 stage:              # front-pivot lever (baseline configuration B, DEC-003); tip-equivalent quantities
@@ -69,11 +70,11 @@ stage:              # front-pivot lever (baseline configuration B, DEC-003); tip
   travel_tip_mech: {value: 0.00060, unit: m, min: 0.00055, max: 0.00065, dist: fixed, status: calculated, source: "mechanics/tolerance_analysis.py (paddle-to-magnet and carrier-bore clearances; DEC-007 rev.)", note: "Radius of mechanical stop circle at the tip; control limit q_lim 0.55 mm."}
   kappa_s:         {value: 1.0, unit: "-", min: 0.0, max: 1.0, dist: fixed, status: calculated, source: "DEC-007 rev.: refill slides in the carrier; lever arm L1 - s compensated from the measured slide", note: "1 = refill slides in carrier; 0 = whole lever slides (closes the actuator gap, rejected)."}
   travel_tip_ctrl: {value: 0.00055, unit: m, min: 0.0005, max: 0.0006, dist: fixed, status: calculated, source: "REQ-MECH-001", note: "Commanded travel limit radius (soft)."}
-  k_tip:           {value: 150.0, unit: N/m, min: 50.0,  max: 600.0, dist: loguniform, status: assumed, source: "flexure concept (mechanics/flexure_calc)", note: "Pivot flexure rotational stiffness referred to the tip."}
+  k_tip:           {value: 80.0,  unit: N/m, min: 50.0,  max: 200.0, dist: loguniform, status: calculated, source: "results/mechanics/flexure_calc.json cross-strip gimbal 75.8 N/m + coil-lead allowance", note: "Pivot rotational stiffness referred to the tip; measure in EXP-B05."}
   zeta_open:       {value: 0.05,  unit: "-", min: 0.01,  max: 0.2,   dist: loguniform, status: assumed, source: "assumption", note: "Open-loop mechanical damping ratio."}
-  m_eq:            {value: 0.0103, unit: kg, min: 0.006, max: 0.016, dist: uniform, status: calculated, source: "results/cad/pen_revA_summary.json (point-mass approximation)", note: "Tip-equivalent inertia J_pivot/L1^2; simulator recomputes from sim/pensim/model.Geometry."}
-  m_couple:        {value: 0.004, unit: kg,  min: -0.002,max: 0.008, dist: uniform, status: calculated, source: "mechanics/mass_model", note: "Base-acceleration coupling mass m_tot*L_cm/L1 (positive = amplifies)."}
-  axial_k:         {value: 2000.0, unit: N/m, min: 500.0, max: 10000.0, dist: loguniform, status: assumed, source: "sim sweep results/sim/axial_sweep (DEC-006)", note: "Axial load-path stiffness at nib; stiff relative to hand so writing-force changes do not move the ink."}
+  m_eq:            {value: 0.0137, unit: kg, min: 0.010, max: 0.018, dist: uniform, status: calculated, source: "results/cad/pen_revA1_summary.json (distributed-mass integration)", note: "Tip-equivalent inertia J_pivot/L1^2. The simulator computes it from its own geometry (13.7 g); this entry documents the value."}
+  m_couple:        {value: 0.004, unit: kg,  min: -0.002,max: 0.008, dist: uniform, status: calculated, source: "sim/pensim/model.py Geometry (m_mov L_cm / L1) from the CAD masses", note: "Base-acceleration coupling mass m_tot*L_cm/L1 (positive = amplifies)."}
+  axial_k:         {value: 2000.0, unit: N/m, min: 500.0, max: 10000.0, dist: loguniform, status: assumed, source: "results/sim/design_sweeps.json axial sweep (DEC-006)", note: "Axial load-path stiffness at nib; stiff relative to hand so writing-force changes do not move the ink."}
   axial_preload:   {value: 0.25,  unit: N,   min: 0.1,   max: 0.5,   dist: uniform, status: assumed, source: "assumption", note: "Axial preload at front stop (contact detection threshold above this)."}
   axial_travel:    {value: 0.0006,unit: m,   min: 0.0004,max: 0.001, dist: fixed,   status: calculated, source: "results/mechanics/flexure_calc.json (spiral diaphragm stress at stop <= 230 MPa)", note: "Axial overload stop; suspension compliant up to ~1.45 N axial force (F_pre + k_ax * travel)."}
   axial_mass:      {value: 0.0006,unit: kg,  min: 0.0004,max: 0.0009, dist: uniform, status: calculated, source: "CAD refill + plug + sense magnet 0.36 g + diaphragm moving part (DEC-007 rev.)", note: "Refill slides in the carrier."}
@@ -87,7 +88,7 @@ actuator:           # rear moving-coil planar Lorentz actuator, per axis (values
   alpha_cu:        {value: 0.00393, unit: 1/K, min: 0.0039, max: 0.00393, dist: fixed, status: sourced, source: "copper resistivity tempco (AMF ledger)", note: ""}
   i_max:           {value: 0.60,  unit: A,     min: 0.45, max: 0.80, dist: fixed, status: assumed, source: "software current limit; same force limit as v0.3 (0.44 N at actuator)", note: "Per axis."}
   i_trip:          {value: 0.80,  unit: A,     min: 0.70, max: 0.90, dist: fixed, status: calculated, source: "electronics/gen/design_revA.py window comparator (VTH_HI/VTH_LO)", note: "Independent hardware latch."}
-  Rth_coil_amb:    {value: 60.0,  unit: K/W,   min: 30.0, max: 120.0,dist: uniform, status: assumed, source: "analysis/thermal network estimate", note: "Coil to ambient with hand contact; EXP-B07."}
+  Rth_coil_amb:    {value: 130.0, unit: K/W,   min: 80.0, max: 200.0,dist: uniform, status: calculated, source: "results/thermal/thermal.json (moving coil in an air gap, lumped network)", note: "Coil to ambient; EXP-B07."}
   Cth_coil:        {value: 0.25,  unit: J/K,   min: 0.1,  max: 0.6,  dist: uniform, status: assumed, source: "analysis/thermal", note: "Coil + local structure heat capacity."}
 
 electrical:
@@ -96,8 +97,7 @@ electrical:
   r_bridge:        {value: 0.42, unit: ohm, min: 0.28, max: 0.60, dist: uniform, status: sourced, source: "DRV8212P HS+LS Rds(on) 0.28 ohm typ x1.5 hot (VERIFY datasheet)", note: ""}
   r_shunt:         {value: 0.10, unit: ohm, min: 0.10, max: 0.10, dist: fixed,   status: calculated, source: "electronics/gen/design_revA.py; electronics/calcs/drive_sense.py", note: "INA241A1 G=10 -> 1 V/A."}
   f_pwm:           {value: 40000,unit: Hz,  min: 20000,max: 100000, dist: fixed, status: calculated, source: "electronics/calcs/drive_sense.py (ripple 83-129 mA p-p; loop delay 47.5 us)", note: "Centre-aligned, 200 duty levels."}
-  p_electronics_active: {value: 0.060, unit: W, min: 0.03, max: 0.12, dist: uniform, status: assumed, source: "power budget (docs/budgets)", note: "MCU + sensors + optics during writing, excl. actuators; measure."}
-
+  p_electronics_active: {value: 0.115, unit: W, min: 0.08, max: 0.16, dist: uniform, status: calculated, source: "electronics/calcs/drive_sense.py (results/electronics/drive_sense.json); optics are a 15 mA placeholder", note: "MCU + sensors + optics during writing, excl. actuators; measure (EXP-P01)."}
 sensing:
   hall_noise_tip:  {value: 1.0e-6, unit: m,  min: 0.3e-6, max: 3.0e-6, dist: loguniform, status: assumed, source: "analysis sensing budget", note: "RMS, referred to tip, after calibration."}
   hall_i_crosstalk_tip: {value: 2.0e-6, unit: m/A, min: 0.0, max: 2.0e-5, dist: uniform, status: assumed, source: "analysis/em_actuator", note: "Residual after linear current compensation."}
@@ -122,7 +122,7 @@ control:
   exec_jitter:     {value: 2.0e-5, unit: s, min: 0.0, max: 1.0e-4, dist: uniform, status: assumed, source: "assumption", note: "Control task release jitter; measure (firmware profiling)."}
 
 battery:
-  capacity_mAh:    {value: 200, unit: mAh, min: 150, max: 300, dist: fixed, status: assumed, source: "LiPo pouch rated >= 5 C (AMF ledger; COR-18: 10440 cells are limited to ~1 C)", note: "Cell not yet qualified."}
+  capacity_mAh:    {value: 200, unit: mAh, min: 150, max: 300, dist: fixed, status: assumed, source: "LiPo pouch rated >= 5 C (AMF ledger; COR-14: 10440 cells are limited to ~1 C)", note: "Cell not yet qualified."}
   usable_fraction: {value: 0.8, unit: "-", min: 0.7, max: 0.9, dist: fixed, status: assumed, source: "report s22 convention", note: ""}
   r_internal:      {value: 0.15, unit: ohm, min: 0.08, max: 0.30, dist: uniform, status: assumed, source: "small high-rate LiPo pouch, verify", note: ""}
 thermal:

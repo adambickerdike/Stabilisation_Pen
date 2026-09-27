@@ -74,13 +74,13 @@
       }
     }
   },
-  "COR-04": {
+  "COR-05": {
     "statement": "Axial accommodation against an axial stiffness k modulates the normal force by k * r cos(theta) / sin(theta) ... at 0.5 mm page correction.",
     "k_for_dN_le_0.1N_at35deg": 148.31546601564685,
     "dN_at_k250_35deg_N": 0.1785185008427643,
     "dN_at_k1000_35deg_N": 0.7140740033710572
   },
-  "COR-05": {
+  "COR-07": {
     "statement": "Report's |1-exp(-j w tau)| holds only for unity-gain instantaneous actuation. Servo phase lag adds equivalent delay; e.g. a 60 Hz, zeta 0.7 servo adds ~3.7 ms at 8 Hz.",
     "residual_at_8Hz": {
       "ideal 5 ms": 0.2506664671286085,
@@ -89,35 +89,35 @@
       "2 ms + 30 Hz servo": 0.47775123636817984
     }
   },
-  "COR-07": {
+  "COR-08": {
     "bias_1mg_1s_mm": 4.903325,
     "attitude_0.1deg_gravity_leak_1s_mm": 8.557912209718324,
     "noise_70ug_rtHz_random_walk_1s_mm": 0.40414518843273806,
     "statement": "Report's 1 mg example understates the problem; a 0.1 deg attitude error leaks ~1.7 mg of gravity (8.6 mm after 1 s). IMU is useful only over the optical latency window (ms).",
     "error_over_2ms_optical_gap_um": 0.0538449488388733
   },
-  "COR-08": {
-    "assumptions": "design point N=1 N, mu=0.15, theta=50 deg; 65% pen-down duty; 0.06 W electronics; dynamic tremor currents excluded (see sim results)",
+  "COR-02_runtime": {
+    "assumptions": "design point N=1 N, mu=0.15, theta=50 deg; 65% pen-down duty; 0.115 W electronics (config); dynamic tremor currents excluded (see sim results)",
     "runtime": {
       "direct Km0.3": {
         "P_act_avg_W": 3.1129777045315827,
-        "runtime_min_120mAh": 6.716719115158808,
-        "runtime_min_350mAh": 19.590430752546524
+        "runtime_min_120mAh": 6.602276084522281,
+        "runtime_min_350mAh": 19.256638579856656
       },
       "direct Km0.6": {
         "P_act_avg_W": 0.7782444261328957,
-        "runtime_min_120mAh": 25.42456512155941,
-        "runtime_min_350mAh": 74.15498160454827
+        "runtime_min_120mAh": 23.85909094587424,
+        "runtime_min_350mAh": 69.58901525879986
       },
       "lever n4 Km0.35": {
         "P_act_avg_W": 0.14294285377951146,
-        "runtime_min_120mAh": 105.01478422666983,
-        "runtime_min_350mAh": 306.2931206611203
+        "runtime_min_120mAh": 82.62295189700201,
+        "runtime_min_350mAh": 240.98360969958918
       },
       "lever n5 Km0.45": {
         "P_act_avg_W": 0.055341825858339244,
-        "runtime_min_120mAh": 184.77252151509217,
-        "runtime_min_350mAh": 538.9198544190187
+        "runtime_min_120mAh": 125.1131358526333,
+        "runtime_min_350mAh": 364.91331290351377
       }
     }
   },

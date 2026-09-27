@@ -36,7 +36,11 @@ from stabpen import contact, provenance  # noqa: E402
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "trade")
 D2R = math.pi / 180
 POINTS = {"design": (1.0, 0.15, 50.0), "high": (1.5, 0.20, 40.0), "bench_corner": (2.0, 0.35, 35.0)}
-P_ELEC = 0.06            # W electronics (budget, docs/budgets.md)
+_P = __import__("stabpen.params", fromlist=["load"]).load()
+P_ELEC = float(_P["electrical.p_electronics_active"])  # W electronics (config; electronics/calcs/drive_sense.py)
+KM_B = float(_P["actuator.Kf"]) / math.sqrt(float(_P["actuator.R20"]))  # N/sqrtW at the actuator, Rev A.1 (0.50 mm gap)
+M_EQ_B = float(_P["stage.m_eq"])                                        # kg, distributed-mass CAD value
+RTH_B = float(_P["actuator.Rth_coil_amb"])                              # K/W, moving coil
 DUTY_DOWN = 0.65         # pen-down fraction while writing (assumption, measure EXP-H02)
 CELL = {"name": "Grepow GRP5811047 narrow LiPo (AMF-33)", "mAh": 200, "V": 3.7, "usable": 0.8, "Imax_A": 4.0}
 CELL_10440 = {"name": "EEMB LIR10440 (AMF-31)", "mAh": 320, "V": 3.7, "usable": 0.8, "Imax_A": 0.32}
@@ -54,7 +58,7 @@ def load(point, Fc=None):
     return float(b["rms"]), float(b["max"]), N
 
 
-def dyn_force_tip(m_eq, amp=0.3e-3, f=8.0, k=150.0, c_fric=0.0):
+def dyn_force_tip(m_eq, amp=0.3e-3, f=8.0, k=80.0, c_fric=0.0):
     w = 2 * math.pi * f
     return math.hypot(m_eq * w * w * amp - k * amp, c_fric)
 
@@ -88,13 +92,13 @@ def main():
     cfgs.append(lorentz("A direct-drive carriage near tip", 0.19, 1.0, 2.5e-3, 60.0,
                         "Km from magpylib frontDD module (results/em/em_actuator.json); annulus around refill limits copper and magnet volume",
                         fits=True))
-    cfgs.append(lorentz("B lever n=3.17, moving-coil annular sandwich (Rev A)", 0.30, 3.17, 10.3e-3, 130.0,
+    cfgs.append(lorentz("B lever n=3.17, moving-coil annular sandwich (Rev A)", KM_B, 3.17, M_EQ_B, RTH_B,
                         "Km bracket 0.24-0.34 (em_actuator flat sandwich proxy); moving coil in 0.45 mm air gaps: poor heat path (~130 K/W)"))
     cfgs.append(lorentz("B-MM lever n=3.17, moving magnet, fixed bonded coils", 0.20, 3.17, 19.0e-3, 25.0,
                         "Coils outside a single moving magnet give lower Km (em_planar 0.13-0.15 thin disc; 0.20 assumed with iron); magnet adds ~1.2 g at L2 (x n^2)"))
-    cfgs.append(lorentz("D skid + constant-force nib (Fc = 0.30 N) on B actuator", 0.30, 3.17, 10.3e-3, 130.0,
+    cfgs.append(lorentz("D skid + constant-force nib (Fc = 0.30 N) on B actuator", KM_B, 3.17, M_EQ_B, RTH_B,
                         "User force carried by nose skid; nib load bounded; changes writing feel (EXP-H03)", Fc=0.30))
-    cfgs.append(lorentz("E B + slow zero-hold bias actuator (80% of static load)", 0.30, 3.17, 10.3e-3, 130.0,
+    cfgs.append(lorentz("E B + slow zero-hold bias actuator (80% of static load)", KM_B, 3.17, M_EQ_B, RTH_B,
                         "SQUIGGLE-class bias (AMF-15: 0.3 N stall, 0 mW hold) through a spring; bias bandwidth ~1-2 Hz", bias_fraction=0.8))
     # C: amplified piezo (APA50XS: 66 um nominal stroke, 16 N blocked, -20..150 V, 0.30 uF, 2.0 g each; AMF-14)
     stroke_um, Fb = 66.0, 16.0

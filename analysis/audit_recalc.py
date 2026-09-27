@@ -181,11 +181,11 @@ corr["COR-03"] = {"statement": "For a +/-0.5 mm PAGE disc, transverse stage radi
                                "axial accommodation needed is r*cos(theta) (0.41 mm at 35 deg), not 0.71 mm.",
                   "values_m": wt}
 
-# COR-04 pressure modulation vs axial stiffness
+# COR-05 pressure modulation vs axial stiffness (corrections.csv numbering)
 ks = np.logspace(1.5, 3.7, 60)
 dN35 = contact.pressure_modulation(ks, 0.5e-3 * math.sin(35 * D2R), 35 * D2R)
 dN50 = contact.pressure_modulation(ks, 0.5e-3 * math.sin(50 * D2R), 50 * D2R)
-corr["COR-04"] = {"statement": "Axial accommodation against an axial stiffness k modulates the normal force by "
+corr["COR-05"] = {"statement": "Axial accommodation against an axial stiffness k modulates the normal force by "
                                "k * r cos(theta) / sin(theta) ... at 0.5 mm page correction.",
                   "k_for_dN_le_0.1N_at35deg": float(ks[np.argmax(dN35 > 0.1)]) if np.any(dN35 > 0.1) else None,
                   "dN_at_k250_35deg_N": float(contact.pressure_modulation(250, 0.5e-3 * math.sin(35 * D2R), 35 * D2R)),
@@ -204,7 +204,7 @@ fig.tight_layout()
 fig.savefig(os.path.join(OUT, "fig_pressure_modulation.png"))
 plt.close(fig)
 
-# COR-05 delay: extend beyond ideal equal-amplitude cancellation
+# COR-07 delay: extend beyond ideal equal-amplitude cancellation
 f_ax = np.linspace(1, 15, 281)
 out = {}
 for label, tau, fn, zeta in (("ideal 5 ms", 5e-3, None, None), ("5 ms + 60 Hz servo", 5e-3, 60.0, 0.7),
@@ -212,7 +212,7 @@ for label, tau, fn, zeta in (("ideal 5 ms", 5e-3, None, None), ("5 ms + 60 Hz se
     s = 2j * math.pi * f_ax
     T = np.ones_like(s) if fn is None else (2 * math.pi * fn) ** 2 / (s ** 2 + 2 * zeta * 2 * math.pi * fn * s + (2 * math.pi * fn) ** 2)
     out[label] = np.abs(1 - T * np.exp(-s * tau))
-corr["COR-05"] = {"statement": "Report's |1-exp(-j w tau)| holds only for unity-gain instantaneous actuation. "
+corr["COR-07"] = {"statement": "Report's |1-exp(-j w tau)| holds only for unity-gain instantaneous actuation. "
                                "Servo phase lag adds equivalent delay; e.g. a 60 Hz, zeta 0.7 servo adds ~3.7 ms at 8 Hz.",
                   "residual_at_8Hz": {k: float(np.interp(8.0, f_ax, v)) for k, v in out.items()}}
 fig, ax = plt.subplots(figsize=(6.4, 3.5))
@@ -229,9 +229,9 @@ fig.tight_layout()
 fig.savefig(os.path.join(OUT, "fig_delay_residual_servo.png"))
 plt.close(fig)
 
-# COR-07 IMU: attitude error dominates bias
+# COR-08 IMU: attitude error dominates bias
 g0 = 9.80665
-corr["COR-07"] = {
+corr["COR-08"] = {
     "bias_1mg_1s_mm": 0.5 * 1e-3 * g0 * 1e3,
     "attitude_0.1deg_gravity_leak_1s_mm": 0.5 * g0 * math.sin(0.1 * D2R) * 1e3,
     "noise_70ug_rtHz_random_walk_1s_mm": 7e-4 * 1.0 ** 1.5 / math.sqrt(3) * 1e3,
@@ -240,15 +240,15 @@ corr["COR-07"] = {
     "error_over_2ms_optical_gap_um": 0.5 * (1e-3 * g0 + g0 * math.sin(0.1 * D2R)) * (2e-3) ** 2 * 1e6,
 }
 
-# COR-08 energy: runtime with corrected load
-Pel = 0.06
+# COR-02 (runtime part) energy: runtime with corrected load
+Pel = float(__import__("stabpen.params", fromlist=["load"]).load()["electrical.p_electronics_active"])
 E_10440 = 0.8 * 3.7 * 0.350
 rt = {}
 for label, n_lev, km in (("direct Km0.3", 1, 0.3), ("direct Km0.6", 1, 0.6), ("lever n4 Km0.35", 4, 0.35), ("lever n5 Km0.45", 5, 0.45)):
     P_act = actuator.hold_power(F_design / n_lev, km) * 0.65  # 65% pen-down duty (assumption)
     rt[label] = {"P_act_avg_W": float(P_act), "runtime_min_120mAh": float(E / (P_act + Pel) * 60),
                  "runtime_min_350mAh": float(E_10440 / (P_act + Pel) * 60)}
-corr["COR-08"] = {"assumptions": "design point N=1 N, mu=0.15, theta=50 deg; 65% pen-down duty; 0.06 W electronics; "
+corr["COR-02_runtime"] = {"assumptions": f"design point N=1 N, mu=0.15, theta=50 deg; 65% pen-down duty; {Pel:.3f} W electronics (config); "
                                  "dynamic tremor currents excluded (see sim results)", "runtime": rt}
 
 # Sample size: t-distribution
@@ -273,8 +273,8 @@ print("COR-01 mean transverse load at 35/55/75 deg (N):",
       [round(corr["COR-01"][k]["mean"], 3) for k in ("corrected_at_35deg_N", "corrected_at_55deg_N", "corrected_at_75deg_N")])
 print("COR-02 hold power direct (W):", corr["COR-02"]["direct_drive_hold_power_W"], " lever:",
       round(corr["COR-02"]["lever_n4_Km0.35_hold_power_W"], 3), " lever worst:", round(corr["COR-02"]["lever_n4_Km0.35_worst_W"], 3))
-print("COR-04", corr["COR-04"])
-print("COR-05", corr["COR-05"]["residual_at_8Hz"])
-print("COR-07", {k: round(v, 3) if isinstance(v, float) else v for k, v in corr["COR-07"].items() if k != "statement"})
-print("COR-08", rt)
+print("COR-05", corr["COR-05"])
+print("COR-07", corr["COR-07"]["residual_at_8Hz"])
+print("COR-08", {k: round(v, 3) if isinstance(v, float) else v for k, v in corr["COR-08"].items() if k != "statement"})
+print("COR-02 runtime", rt)
 print("COR-09", corr["COR-09"])

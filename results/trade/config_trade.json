@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "analytical calculation (datasheet and magpylib inputs; nothing built)",
-    "generated_utc": "2026-09-27T00:18:19+00:00",
-    "git_revision": "714de4b-dirty",
-    "parameters_version": "0.3.0",
-    "parameters_sha256_16": "c20ec325d5f80675",
+    "generated_utc": "2026-09-27T02:44:51+00:00",
+    "git_revision": "fa98fa9-dirty",
+    "parameters_version": "0.4.2",
+    "parameters_sha256_16": "62292f1efdb00e0f",
     "command": "config_trade.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -28,7 +28,7 @@
         35.0
       ]
     },
-    "P_elec_W": 0.06,
+    "P_elec_W": 0.115,
     "duty_down": 0.65,
     "cell": {
       "name": "Grepow GRP5811047 narrow LiPo (AMF-33)",
@@ -53,8 +53,8 @@
           "F_perp_max_N": 0.7576942761543861,
           "N_nib_N": 1.0,
           "Km_tip": 0.19,
-          "P_copper_contact_W": 11.965559673912793,
-          "coil_rise_K": 717.9335804347676,
+          "P_copper_contact_W": 11.946592755490222,
+          "coil_rise_K": 716.7955653294133,
           "I_axis_A_at_F_max": 1.2023864209588646
         },
         "high": {
@@ -62,8 +62,8 @@
           "F_perp_max_N": 1.3419029475844289,
           "N_nib_N": 1.5,
           "Km_tip": 0.19,
-          "P_copper_contact_W": 38.36221988753826,
-          "coil_rise_K": 2301.7331932522957,
+          "P_copper_contact_W": 38.34325296911569,
+          "coil_rise_K": 2300.595178146941,
           "I_axis_A_at_F_max": 2.1294682211528704
         },
         "bench_corner": {
@@ -71,56 +71,56 @@
           "F_perp_max_N": 2.0398075940237157,
           "N_nib_N": 2.0,
           "Km_tip": 0.19,
-          "P_copper_contact_W": 83.39534186028487,
-          "coil_rise_K": 5003.720511617093,
+          "P_copper_contact_W": 83.3763749418623,
+          "coil_rise_K": 5002.582496511738,
           "I_axis_A_at_F_max": 3.2369743702843343
         }
       },
-      "avg_power_writing_W": 7.837613788043315,
-      "runtime_min_grepow200": 4.531991618952646,
-      "runtime_min_10440": 7.251186590324234,
+      "avg_power_writing_W": 7.8802852910686445,
+      "runtime_min_grepow200": 4.507451023411253,
+      "runtime_min_10440": 7.211921637458005,
       "note": "Km from magpylib frontDD module (results/em/em_actuator.json); annulus around refill limits copper and magnet volume"
     },
     {
       "config": "B lever n=3.17, moving-coil annular sandwich (Rev A)",
       "fits_envelope": true,
       "stroke_feasible": true,
-      "Km_axis": 0.3,
+      "Km_axis": 0.2927140242625898,
       "n": 3.17,
-      "m_eq_g": 10.3,
+      "m_eq_g": 13.700000000000001,
       "Rth_coil_K_per_W": 130.0,
       "points": {
         "design": {
           "F_perp_rms_N": 0.6565269851010782,
           "F_perp_max_N": 0.7576942761543861,
           "N_nib_N": 1.0,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.4773538866308329,
-          "coil_rise_K": 62.05600526200828,
-          "I_axis_A_at_F_max": 0.24022441638505185
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.5007177215667142,
+          "coil_rise_K": 65.09330380367285,
+          "I_axis_A_at_F_max": 0.24620386774111286
         },
         "high": {
           "F_perp_rms_N": 1.1764128169472614,
           "F_perp_max_N": 1.3419029475844289,
           "N_nib_N": 1.5,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 1.5310009234119504,
-          "coil_rise_K": 199.03012004355355,
-          "I_axis_A_at_F_max": 0.42544580653947994
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 1.6074704431028752,
+          "coil_rise_K": 208.97115760337377,
+          "I_axis_A_at_F_max": 0.43603562310818933
         },
         "bench_corner": {
           "F_perp_rms_N": 1.734832216409974,
           "F_perp_max_N": 2.0398075940237157,
           "N_nib_N": 2.0,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 3.328539518809515,
-          "coil_rise_K": 432.71013744523697,
-          "I_axis_A_at_F_max": 0.646714122349131
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 3.4956081809550454,
+          "coil_rise_K": 454.42906352415594,
+          "I_axis_A_at_F_max": 0.6628115519695488
         }
       },
-      "avg_power_writing_W": 0.37028002631004137,
-      "runtime_min_grepow200": 95.92739947106557,
-      "runtime_min_10440": 153.4838391537049,
+      "avg_power_writing_W": 0.44046651901836426,
+      "runtime_min_grepow200": 80.64177063709825,
+      "runtime_min_10440": 129.0268330193572,
       "note": "Km bracket 0.24-0.34 (em_actuator flat sandwich proxy); moving coil in 0.45 mm air gaps: poor heat path (~130 K/W)"
     },
     {
@@ -137,8 +137,8 @@
           "F_perp_max_N": 0.7576942761543861,
           "N_nib_N": 1.0,
           "Km_tip": 0.634,
-          "P_copper_contact_W": 1.0734901564576593,
-          "coil_rise_K": 26.837253911441483,
+          "P_copper_contact_W": 1.0724401317325238,
+          "coil_rise_K": 26.811003293313096,
           "I_axis_A_at_F_max": 0.36033662457757776
         },
         "high": {
@@ -146,8 +146,8 @@
           "F_perp_max_N": 1.3419029475844289,
           "N_nib_N": 1.5,
           "Km_tip": 0.634,
-          "P_copper_contact_W": 3.4441959892151734,
-          "coil_rise_K": 86.10489973037933,
+          "P_copper_contact_W": 3.443145964490038,
+          "coil_rise_K": 86.07864911225094,
           "I_axis_A_at_F_max": 0.6381687098092199
         },
         "bench_corner": {
@@ -155,98 +155,98 @@
           "F_perp_max_N": 2.0398075940237157,
           "N_nib_N": 2.0,
           "Km_tip": 0.634,
-          "P_copper_contact_W": 7.488657828859693,
-          "coil_rise_K": 187.2164457214923,
+          "P_copper_contact_W": 7.487607804134557,
+          "coil_rise_K": 187.19019510336392,
           "I_axis_A_at_F_max": 0.9700711835236964
         }
       },
-      "avg_power_writing_W": 0.7577686016974785,
-      "runtime_min_grepow200": 46.87446790541546,
-      "runtime_min_10440": 74.99914864866473,
+      "avg_power_writing_W": 0.8120860856261405,
+      "runtime_min_grepow200": 43.739205274787,
+      "runtime_min_10440": 69.98272843965918,
       "note": "Coils outside a single moving magnet give lower Km (em_planar 0.13-0.15 thin disc; 0.20 assumed with iron); magnet adds ~1.2 g at L2 (x n^2)"
     },
     {
       "config": "D skid + constant-force nib (Fc = 0.30 N) on B actuator",
       "fits_envelope": true,
       "stroke_feasible": true,
-      "Km_axis": 0.3,
+      "Km_axis": 0.2927140242625898,
       "n": 3.17,
-      "m_eq_g": 10.3,
+      "m_eq_g": 13.700000000000001,
       "Rth_coil_K_per_W": 130.0,
       "points": {
         "design": {
           "F_perp_rms_N": 0.2571105335982875,
           "F_perp_max_N": 0.296729889353184,
           "N_nib_N": 0.3916221867996836,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.0738582517534773,
-          "coil_rise_K": 9.601572727952048,
-          "I_axis_A_at_F_max": 0.09407721126739173
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.07688518900178473,
+          "coil_rise_K": 9.995074570232015,
+          "I_axis_A_at_F_max": 0.09641889708331468
         },
         "high": {
           "F_perp_rms_N": 0.36603468990976623,
           "F_perp_max_N": 0.417526077778263,
           "N_nib_N": 0.46671714805812375,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.14890855325706098,
-          "coil_rise_K": 19.358111923417926,
-          "I_axis_A_at_F_max": 0.13237523565426287
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.15571815919164525,
+          "coil_rise_K": 20.243360694913882,
+          "I_axis_A_at_F_max": 0.13567020164586735
         },
         "bench_corner": {
           "F_perp_rms_N": 0.45368815029603254,
           "F_perp_max_N": 0.5334444020226344,
           "N_nib_N": 0.5230340386863295,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.22835510793988056,
-          "coil_rise_K": 29.68616403218447,
-          "I_axis_A_at_F_max": 0.1691267496438755
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.23916896154050424,
+          "coil_rise_K": 31.09196500026555,
+          "I_axis_A_at_F_max": 0.17333650145729354
         }
       },
-      "avg_power_writing_W": 0.10800786363976024,
-      "runtime_min_grepow200": 328.86494374585754,
-      "runtime_min_10440": 526.1839099933721,
+      "avg_power_writing_W": 0.1649753728511601,
+      "runtime_min_grepow200": 215.3048626963611,
+      "runtime_min_10440": 344.48778031417777,
       "note": "User force carried by nose skid; nib load bounded; changes writing feel (EXP-H03)"
     },
     {
       "config": "E B + slow zero-hold bias actuator (80% of static load)",
       "fits_envelope": true,
       "stroke_feasible": true,
-      "Km_axis": 0.3,
+      "Km_axis": 0.2927140242625898,
       "n": 3.17,
-      "m_eq_g": 10.3,
+      "m_eq_g": 13.700000000000001,
       "Rth_coil_K_per_W": 130.0,
       "points": {
         "design": {
           "F_perp_rms_N": 0.6565269851010782,
           "F_perp_max_N": 0.7576942761543861,
           "N_nib_N": 1.0,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.019828325647071314,
-          "coil_rise_K": 2.5776823341192707,
-          "I_axis_A_at_F_max": 0.048044883277010356
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.020132058517648273,
+          "coil_rise_K": 2.6171676072942756,
+          "I_axis_A_at_F_max": 0.04924077354822256
         },
         "high": {
           "F_perp_rms_N": 1.1764128169472614,
           "F_perp_max_N": 1.3419029475844289,
           "N_nib_N": 1.5,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.06197420711831599,
-          "coil_rise_K": 8.056646925381079,
-          "I_axis_A_at_F_max": 0.08508916130789597
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.06440216737909468,
+          "coil_rise_K": 8.372281759282309,
+          "I_axis_A_at_F_max": 0.08720712462163785
         },
         "bench_corner": {
           "F_perp_rms_N": 1.734832216409974,
           "F_perp_max_N": 2.0398075940237157,
           "N_nib_N": 2.0,
-          "Km_tip": 0.951,
-          "P_copper_contact_W": 0.1338757509342185,
-          "coil_rise_K": 17.403847621448403,
-          "I_axis_A_at_F_max": 0.12934282446982617
+          "Km_tip": 0.9279034569124096,
+          "P_copper_contact_W": 0.13992767689318147,
+          "coil_rise_K": 18.190597996113592,
+          "I_axis_A_at_F_max": 0.13256231039390973
         }
       },
-      "avg_power_writing_W": 0.07288841167059636,
-      "runtime_min_grepow200": 487.320263755027,
-      "runtime_min_10440": 779.7124220080433,
+      "avg_power_writing_W": 0.1280858380364714,
+      "runtime_min_grepow200": 277.3140305322902,
+      "runtime_min_10440": 443.70244885166437,
       "note": "SQUIGGLE-class bias (AMF-15: 0.3 N stall, 0 mW hold) through a spring; bias bandwidth ~1-2 Hz"
     },
     {

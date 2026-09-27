@@ -46,7 +46,7 @@ P = dict(
     # barrel
     od_grip=15.0, od_act=16.0, wall=0.7, L_total=150.0, z_nose_end=22.0, z_bulge0=40.0, z_bulge1=60.0,
     nose_tip_od=6.0, tip_aperture=3.6, nose_z0=1.0,
-    # refill ISO 12757-2 D1 (verify against purchased samples, EXP-B02)
+    # refill ISO 12757-2 D1 (verify against purchased samples, EXP-B01 part 0)
     refill_d=2.35, refill_L=67.0, cone_L=5.0, ball_d=0.7,
     # lever carrier
     L1=12.0, carrier_od=3.4, carrier_id=2.5, carrier_z0=3.0, carrier_z1=64.0,

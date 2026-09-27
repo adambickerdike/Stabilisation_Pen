@@ -307,8 +307,10 @@ Minimal risk: writing tasks and fatigue. The optional OFF sub-study carries OFF-
 | AC-H01-06 | — | 2.5-97.5 % range of pen altitude during writing, pooled across participants | within 35-80° | hypothesis | CON-12 (47-77° on tablets), CON-02 (~50° on paper); config writing.tilt_deg 35-75° | config writing.tilt_deg; REQ-MECH-001 envelope (COR-26) |
 | AC-H01-07 | — | Median fraction of intended velocity energy in 4-7 Hz in healthy participants' sentence copying | within 0.10-0.25 | hypothesis | CON-25 (single writer, derived ~17 %); CON-10 (36 % of angular-velocity power in 4-7 Hz in older adults); range engineering judgement | DEC-009; EXP-E01 benchmark |
 | AC-H01-08 | — | Reference-system qualification: RMS difference between motion-capture-derived nib position and the scanned ink centreline | ≤ 50 µm | derived | PDT notes s2.7 (instrumentation ≥ 200 Hz and 0.05 mm accuracy) | validity of EXP-H01 |
+| AC-H01-20 | REQ-ENV-001 | Fraction of in-contact writing time (sentence copying, all groups) with barrel altitude within 35-75°, per participant median and group 10th percentile | ≥ 90 % | requirement | REQ-ENV-001 range; COR-26 (paper ~50°, tablets 62 ± 7.5°) | REQ-ENV-001 range; REQ-MECH-001 low-altitude limit |
+| AC-H01-21 | REQ-ENV-003 | Fraction of ET participants whose nib writing tremor lies in 3-12 Hz and ≤ 1 mm p-p (the addressable box of REQ-ENV-003), with 95 % CI | ≥ report with CI; programme review if < 20 % | hypothesis | REQ-ENV-003; PDT-12 (~30 % ≤ 1 mm) and PDT-31 (frequency 5.79 ± 1.32 Hz) | DEC-001; DEC-009 programme scope |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows for EXP-H01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (10 rows for EXP-H01).
 <!-- AC-TABLE:EXP-H01:END -->
 
 ### What changes which decision
@@ -327,9 +329,9 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows fo
 
 ### Question and what it gates
 
-Is the research-pen form acceptable for comfort, fatigue, speed and legibility compared with ordinary pens? The form is Ø15 mm grip, a 16 mm bulge, 34–40 g and a centre of mass 74–81 mm from the tip (`results/mechanics/mass_budget.json`).
+Is the research-pen form acceptable for comfort, fatigue, speed and legibility compared with ordinary pens? The form is Ø15 mm grip, a 16 mm bulge, 33–41 g and a centre of mass 76–81 mm from the tip (`results/mechanics/mass_budget.json`, v0.4.1).
 
-Does moving the centre of mass forward matter enough to justify redesign? This informs REQ-FORM-001…004 and open issue M-1. It also serves as a formative usability evaluation (IEC 62366-1).
+Does moving the centre of mass forward matter enough to justify redesign? Is the writing point visible enough with the Rev A.1 nose? This informs REQ-FORM-001…004, open issue M-1 and DEC-018 (revisit trigger: visibility of the tip). It also serves as a formative usability evaluation (IEC 62366-1).
 
 ### Population
 
@@ -341,7 +343,7 @@ Randomised 4-period crossover. The order follows a Williams design for 4 treatme
 
 | Pen | Description |
 |---|---|
-| A | Research-pen form: an unpowered mass- and CoM-matched mock-up of Rev A.1 with a polymer rear barrel (≈ 34 g, CoM ≈ 74 mm) |
+| A | Research-pen form: an unpowered mass- and CoM-matched mock-up of Rev A.1 with a polymer rear barrel (≈ 33 g, CoM ≈ 76 mm) |
 | B | The same shell with the ballast moved forward (CoM ≈ 66 mm, ≈ 30 g) |
 | C | A standard ballpoint (≈ 10 g), the reference |
 | D | A wide-grip weighted assistive pen |
@@ -360,6 +362,7 @@ Randomised 4-period crossover. The order follows a Williams design for 4 treatme
   - writing speed;
   - legibility;
   - grip-diameter acceptability;
+  - visibility of the writing point with the Rev A.1 nose (point protruding about 5 mm, tip Ø5.2 mm, aperture Ø4.2 mm). This is DEC-018's revisit trigger (AC-H02-06), so mock-ups A and B reproduce that nose;
   - nib tremor (ET, exploratory).
 
 ### Sample size
@@ -381,13 +384,14 @@ Randomised 4-period crossover. The order follows a Williams design for 4 treatme
 <!-- AC-TABLE:EXP-H02:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-H02-01 | REQ-FORM-003 | Comfort VAS (0-100 mm) after 10 min of writing: research-pen form (unpowered) minus the participant's reference pen, paired; 90 % CI of the difference | within within ± 10 mm | hypothesis | engineering judgement (VAS minimal important difference ~10 mm convention) | REQ-FORM-003/004 revision (M-1) |
-| AC-H02-02 | REQ-FORM-004 | Comfort VAS difference between CoM variants of the same shell (74 mm vs 66 mm, ballast moved), paired 90 % CI | within within ± 10 mm | hypothesis | engineering judgement; mechanics/README.md M-1 | REQ-FORM-004 revision |
+| AC-H02-01 | REQ-FORM-003 | Comfort VAS (0-100 mm) after 10 min of writing: research-pen form (unpowered) minus the participant's reference pen, paired; 90 % CI of the difference | within ± 10 mm | hypothesis | engineering judgement (VAS minimal important difference ~10 mm convention) | REQ-FORM-003/004 revision (M-1) |
+| AC-H02-02 | REQ-FORM-004 | Comfort VAS difference between CoM variants of the same shell (about 76 mm vs about 66 mm, ballast moved), paired 90 % CI | within ± 10 mm | hypothesis | engineering judgement; mechanics/README.md M-1 | REQ-FORM-004 revision |
 | AC-H02-03 | REQ-FORM-001 | Proportion of participants rating grip diameter 'acceptable' or better | ≥ 80 % | hypothesis | engineering judgement | REQ-FORM-001 |
 | AC-H02-04 | — | Writing speed with the research-pen form relative to the reference pen (ratio, lower 95 % bound) | ≥ 0.90 | hypothesis | engineering judgement (Micron users slowed 18-37 % with an active tool, ACT-02; the unpowered form must not add that burden) | form factor |
 | AC-H02-05 | — | Hand/arm fatigue (Borg CR10) after 10 min, research form minus reference pen (mean difference) | ≤ 1 point | hypothesis | engineering judgement | mass and CoM |
+| AC-H02-06 | — | Proportion of participants rating the visibility of the writing point 'acceptable or better' with the Rev A.1 nose (point protruding ~5 mm, tip 5.2 mm, aperture 4.2 mm) | ≥ 80 % | hypothesis | DEC-018 revisit trigger (H02: visibility of the tip); 80 % engineering judgement | DEC-018 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-H02).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-H02).
 <!-- AC-TABLE:EXP-H02:END -->
 
 ### What changes which decision
@@ -747,6 +751,8 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows fo
 | NEUTRAL | NEUTRAL_HOLD: powered sham with the same warmth and sound, q_r = 0 |
 | OFF | Actuation off, **stage mechanically locked** (rigid pen) |
 
+The ASSIST_KF profile used for ON must have passed AC-B09-15 (gate behaviour). In simulation the balanced profile never opens its gate with tremor present (`docs/sim_report.md` §3.2); with it, ON would equal NEUTRAL by construction and the study could not detect an effect.
+
 The OFF condition needs a stage lock or a mass-matched rigid replica. Without a lock the unpowered nib rests at its stop under the contact load (COR-19). This is a Stage C design input.
 
 ### Design
@@ -831,7 +837,7 @@ The OFF condition needs a stage lock or a mass-matched rigid replica. Without a 
 | AC-H06-02 | REQ-USR-002 | Primary: geometric-mean ratio ON / NEUTRAL of the primary tremor outcome in the pre-specified variant (free-writing ink tremor amplitude, or guided-task path distance), upper 95 % CI bound | < 1.0 | hypothesis | superiority at two-sided alpha 0.05; sample size from COR-09 (n = 34 pairs for sigma_D = 2 delta) | immediate-assistance claim (C-IA); DEC-008 |
 | AC-H06-03 | REQ-USR-002 | Primary outcome point estimate (GM ratio ON / NEUTRAL) needed to describe the effect as clinically meaningful | ≤ 0.7 | hypothesis | design effect size; about 0.4 FTM rating points via PDT-11 (one point ~ 2.6-2.8 x amplitude); engineering judgement | wording of the immediate-assistance claim |
 | AC-H06-04 | — | Blinded FTM/TETRAS spiral and handwriting item ratings, ON vs NEUTRAL: median paired improvement | ≥ 0.5 point | hypothesis | PDT-11, PDT-12 (a 50 % amplitude reduction is about 0.7 rating points); engineering judgement | clinical corroboration of C-IA |
-| AC-H06-05 | — | Device burden, NEUTRAL vs OFF, all participants: legibility (lower 95 % bound of the difference) / writing-speed ratio (lower 95 % bound) | ≥ ≥ -5 percentage points / ≥ 0.90 | hypothesis | engineering judgement; simulated device distortion 60-75 µm (results/sim/nominal/metrics.json) | DEC-006 (device distortion) |
+| AC-H06-05 | — | Device burden, NEUTRAL vs OFF, all participants: legibility (lower 95 % bound of the difference) / writing-speed ratio (lower 95 % bound) | ≥ -5 percentage points / ≥ 0.90 | hypothesis | engineering judgement; simulated device distortion 60-75 µm (results/sim/nominal/metrics.json) | DEC-006 (device distortion) |
 | AC-H06-06 | — | Serious adverse device effects | = 0 | derived | ISO 14155 safety reporting; stopping rules in human_study_plan.md | study continuation |
 | AC-H06-07 | REQ-THM-001 | Maximum logged grip temperature during sessions | ≤ 41 °C design / 43 °C absolute | requirement | REQ-THM-001 | G-S |
 | AC-H06-08 | REQ-USR-001 | Results reported and claimed per user group; no pooled cross-group claim | conforms | requirement | REQ-USR-001 | claims |

@@ -36,7 +36,7 @@ class Geometry:
     m_carrier: float = 1.13e-3     # Ti carrier tube (kg)          [CAD Rev A]
     L_carrier_front: float = 0.009 # carrier extent in front of pivot (m)
     L_carrier_rear: float = 0.052  # carrier extent behind pivot (m)
-    m_refill: float = 0.6e-3       # kg (weigh samples, EXP-B02)
+    m_refill: float = 0.6e-3       # kg (weigh samples, EXP-B01 part 0)
     m_act: float = 0.44e-3         # moving-coil paddle at L2 (kg)  [CAD Rev A]
     m_trans: float = 2.0e-3        # translational carriage mass (kg) if kind == translational
 

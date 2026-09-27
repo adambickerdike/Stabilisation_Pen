@@ -24,6 +24,22 @@
 
 Stage D **design work** can start after G-D. H03 (non-active skid feel) runs during Stage A so that DEC-008 has human data early.
 
+### 2.1 Stages here vs phases in `docs/plan.md`
+
+`docs/plan.md` orders the programme by the development **phases** of the brief (§18): A requirements and evidence; B loaded mechanism feasibility; C research electronics and mechanics; D local sensing and capture; E ML; F compact integration; G product evidence. The hardware **stages** in this file (A–D) are a different axis. **The letters do not correspond**; Stage D (product form) is not Phase D (sensing).
+
+| Plan phase (docs/plan.md) | Where it is decided here |
+|---|---|
+| A Requirements and evidence | Pre-registration and requirement conflicts at G-A |
+| B Loaded mechanism feasibility ("Phase B gate": B08, B09) | **G-B**, the exit from Stage A |
+| C Research electronics and mechanics | Stage B build; G-S; the B-side criteria of G-C |
+| D Local sensing and capture ("Phase D gate": S01) | EXP-S01 at G-B (sensor selection or recorded DEC-005 revision); S02 and C-series at G-C and C-CAP |
+| E ML contribution | EXP-E01/E02 (DEC-016), inputs to G-C and the H06 variant |
+| F Compact integration | Stage C build (DEC-014 packaging) |
+| G Product evidence | Claim gates C-IA and C-LI; G-D; Stage D |
+
+In all project documents, "gate" references should name either a plan phase ("Phase B gate") or a stage gate here ("G-B"). To avoid ambiguity: COR-23's "gate G-B" is used here as the name of the Stage A → B gate. That gate is the same event as `docs/plan.md`'s "Phase B gate".
+
 ## 3. Gates
 
 ### G-A: entry to Stage A (readiness)
@@ -50,7 +66,7 @@ This is COR-23's "gate G-B", redefined per frequency band and task type with µm
 | Ink tolerance | AC-B08-01, AC-B08-02, AC-B08-03, AC-B08-04 | Limiter force-modulation budget and a lower REQ-MECH-005, or re-open DEC-006 and DEC-004 before building |
 | Contact and friction models | AC-B01-03, AC-B02-01 | Replace the contact model; regenerate predictions; repeat AC-B09-03 |
 | Loads and configuration | AC-B01-01, AC-B01-02 recorded (pass or fail); DEC-003 and DEC-008 decisions recorded | If loads exceed REQ-ACT-001: build Rev A only as a derated research pen, and move D/E earlier |
-| Actuator coupons | AC-B03-01, **AC-B03-02**, AC-B03-04, AC-B03-07, AC-B03-09 (AC-B03-03, -10, -11 recorded; they are expected to fail by calculation) | K_m < 0.30: fixed-coil variant (B-MM) or D/E; gap contact: DEC-007 rev. re-opened |
+| Actuator coupons | AC-B03-01, **AC-B03-02**, AC-B03-04, AC-B03-07, AC-B03-09 (AC-B03-03, -10, -11 recorded; they are expected to fail by calculation) | K_m < 0.29: fixed-coil variant (B-MM) or D/E; gap contact: DEC-007 rev. re-opened |
 | Flexures | AC-M02-02, AC-M02-03 (AC-M02-01 may still be running: Rev A then carries a cycle-count limit) | Blade redesign (M02 → B05 predictions) |
 | Servo on the rig module | AC-B05-04 … AC-B05-07, AC-B05-14 | Servo redesign; DEC-011 re-opened |
 | Motion sensing | AC-S01-01 … AC-S01-03 pass for a selected module, **or** a recorded DEC-005 revision that Stage B uses external housing metrology as the correction reference (tethered research only) | — |
@@ -75,17 +91,17 @@ Decisions recorded at G-B: DEC-003, DEC-006, DEC-011 and DEC-012 confirmed or re
 
 | Area | Criteria |
 |---|---|
-| Loaded cancellation (pen) | B09-pen: AC-B09-02, AC-B09-03, AC-B09-05, AC-B09-06, AC-B09-07, AC-B09-09, AC-B09-10, AC-B09-13; AC-B09-11 if guided mode is used |
+| Loaded cancellation (pen) | B09-pen: AC-B09-02, AC-B09-03, AC-B09-05, AC-B09-06, AC-B09-07, AC-B09-09, AC-B09-10, AC-B09-13; AC-B09-15 for the ASSIST_KF profile used in H06; AC-B09-11 if guided mode is used |
 | Closed-loop replay | AC-E02-03; AC-E02-02 and AC-E02-05 if ASSIST_ML is used |
 | Firmware | AC-F02-01 … AC-F02-04, AC-F02-09, AC-F02-10, AC-F02-11 |
-| Capture chain (needed for H04-B home use and notes) | AC-C02-01 … AC-C02-06 |
+| Capture chain (needed for H04-B home use and notes) | AC-C02-01 … AC-C02-06; AC-C02-07 recorded |
 | Battery and power | AC-P02-01 … AC-P02-08; AC-P01-01 and AC-P01-02 **measured** (a pass is not required for research use; the runtime sets session logistics) |
 | Durability | AC-B10-01, AC-B10-03 (or AC-B10-04), AC-B10-05 |
 | Form | AC-M03-01 … AC-M03-05 measured and reported |
 | H06 variant decision | H06-F if AC-E01-04 and AC-E02-04 pass; otherwise H06-G if AC-B09-12 passes; otherwise H06 is postponed and DEC-009 revisited |
 | Approvals | Ethics and regulatory approvals for H04 and H06 (`human_study_plan.md` §10) |
 
-`docs/research_questions.md` (rank 4) says EXP-B09 gates "Phase B → C". In this plan EXP-B09 runs twice, on the rig at G-B and on the pen at G-C, so both that statement and `mechanics/README.md` hold.
+`docs/research_questions.md` (rank 4) says EXP-B09 gates "Phase B → C". That refers to the development **phases** of `docs/plan.md` (brief §18), where Phase B is "loaded mechanism feasibility". It is the same event as **G-B** here (§2.1). EXP-B09 then runs again on the pen for G-C.
 
 ### G-D: product-path decision (DEC-008) and entry to Stage D
 
@@ -106,7 +122,7 @@ The decision is recorded in `docs/decisions.md` as the resolution of DEC-008.
 |---|---|---|
 | **C-IA: immediate assistance** | AC-H06-01, AC-H06-02, AC-H06-06, AC-H06-07, AC-H06-08, AC-H06-09 | "While in use, [metric] was reduced by [GM ratio, CI] vs the same pen not correcting, in [group], for [task type]". "Clinically meaningful" only if AC-H06-03 is met. |
 | **C-LI: lasting improvement** | AC-H04-01, plus AC-H04-02 (and AC-H04-03 for faded guidance) for novice training; AC-H04-04, AC-H04-05 and AC-H04-06 for PD micrographia | "After [dose] of practice with [mode], unassisted [metric] improved by [effect, CI] vs control practice at [interval], with transfer to [tasks]". |
-| **C-CAP: capture and notes** | AC-S02-01 … AC-S02-05, AC-C01-01 … AC-C01-03, AC-C02-01 … AC-C02-06, AC-A01-01 … AC-A01-09 | Per group (REQ-USR-001) and per paper type |
+| **C-CAP: capture and notes** | AC-S02-01 … AC-S02-05, AC-C01-01 … AC-C01-03, AC-C02-01 … AC-C02-06, AC-A01-01 … AC-A01-09. Also AC-S02-06 and AC-C02-08 once the ICD stroke record carries the REQ-CAP-001 fields (both are expected to fail until then); AC-C01-04 for any claim about ordinary paper without a position pattern (REQ-CAP-003). AC-C01-06 and AC-A01-10 are validity conditions: if either fails, the recognition or grounding figures are not reported, whatever their values. AC-C01-05, AC-C02-07 and AC-A01-11 are recorded. | Per group (REQ-USR-001) and per paper type |
 | Never | — | Any diagnostic or disease-scoring claim (REQ-USR-003; AC-A01-08, AC-H06-09) |
 
 ## 4. What each stage may and may not claim

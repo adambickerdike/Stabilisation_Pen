@@ -4,6 +4,8 @@ This is a plan, not a promise. It orders work by dependency and risk, as the bri
 
 ## 1. Where the programme stands (brief §18 phases)
 
+Naming: **Phases A–G** below follow the brief's §18. **Prototype stages A–D** in `validation/prototype_stages.md` are hardware builds (stage A = bench rig, B = tethered pen, C = untethered pen, D = product-form candidates). `validation/prototype_stages.md` §2.1 maps one onto the other.
+
 | Phase | Outputs so far | Gate status |
 |---|---|---|
 | A Requirements and evidence | Audit with 28 corrections; evidence ledger of 246 sources; 50 requirements; parameter file v0.4.1 with provenance; physics; coupled simulator | **Met on paper.** Bounded first use case: action tremor ≤ 1 mm p-p at the nib with f ≥ gate, plus guided tasks, plus capture for everyone. The measurements that close it are listed |

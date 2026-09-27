@@ -263,8 +263,9 @@ Scans for Part 4 follow R3. Metadata and naming follow `records/README.md`.
 | AC-B01-08 | — | Normal contact stiffness of paper + underlay: secant slope of N vs indentation between 0.5 and 1.5 N at θ 50°, each paper x underlay | within 1e4-2e5 N/m | hypothesis | config writing.paper_stiffness range (assumption) | config paper_stiffness; DEC-011 (stage-against-paper mode ~180 Hz) |
 | AC-B01-09 | — | Measurement qualification: expanded uncertainty (k = 2) of \|R⊥\| over 0.2-4 N | ≤ max(3 % of reading, 10 mN) | derived | derived: TUR ≥ 5 against the ±15 % model band of AC-B01-03 | validity of all EXP-B01 verdicts |
 | AC-B01-10 | REQ-MECH-008 | Refill metrology (Part 0), 10 refills per type: overall length and tube diameter against ISO 12757-1 type D (length 67 +0.3/0 mm, tube 2.35 0/-0.05 mm) | 10/10 within tolerance | derived | CON-22 (ISO 12757-1:2017 Fig. 2); tolerance stack S5 in mechanics/README.md (VERIFY ISO class) | DEC-004; refill seat (REQ-MECH-008); Hall force re-zero (S5) |
+| AC-B01-20 | REQ-ENV-002 | Transverse reaction map covers normal force 0.2-2.0 N at 35-75° with the stated repeats (coverage of the declared envelope, not a pass on load) | ≥ 100 % of the grid points | requirement | REQ-ENV-002 range; COR-26 writer means 0.56-2.08 N | REQ-ACT-001 revision; DEC-008 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (10 rows for EXP-B01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows for EXP-B01).
 <!-- AC-TABLE:EXP-B01:END -->
 
 ### What changes which decision
@@ -309,7 +310,7 @@ Friction is the dominant parameter for estimator performance in the Monte Carlo 
 - **H-B02-2.** The Stribeck velocity lies in 0.5–10 mm/s, the declared simulation range (AC-B02-02).
 - **H-B02-3** (characterised, not accepted). Breakaway rises with dwell time before motion (pen-down after a pause).
 
-### Equipment
+### Equipment and setup
 
 - Rig R1 with the linear-motor stage (velocity ripple ≤ 1 % from 0.01 to 200 mm/s; AC-B02-03).
 - A capacitive or interferometric sensor (≤ 10 nm resolution) on the pen holder for pre-sliding displacement.
@@ -380,7 +381,7 @@ This experiment measures the per-axis force constant K_f(q) over the actuator st
 - **Validates** EM model P-14…P-16 (K_f(q) and K_m within ±10 %).
 - **Gates** DEC-003 (revisit trigger "EXP-B03 actuator coupons"), DEC-007 rev. (revisit trigger "actuator coupon gap measurement"), DEC-012 (revisit trigger "coil build R, L, K_f measured") and the actuator freeze.
 - **Requirements:** REQ-ACT-001, REQ-ACT-002, REQ-SNS-004 (crosstalk).
-- **Other items:** the coil-lead strain relief (`electronics/README.md`) and research question rank 9 (K_m ≥ 0.3 N/√W inside Ø14.6 mm).
+- **Other items:** the coil-lead strain relief (`electronics/README.md`) and research question rank 9 (K_m ≥ 0.3 N/√W inside Ø14.6 mm; `docs/plan.md` §3 now sets ≥ 0.29 N/√W for the 0.50 mm gap).
 
 ### Hypotheses and predictions
 
@@ -393,7 +394,7 @@ This experiment measures the per-axis force constant K_f(q) over the actuator st
 | H-B03-5 | Moving-coil thermal resistance to ambient | ≈ 130 K/W | `results/trade/config_trade.json` (config B). The simulator uses 60 K/W, range 30–120 K/W (`actuator.Rth_coil_amb`), which excludes this value; see `README.md` |
 | H-B03-6 | Requirements are **expected to fail by calculation** | REQ-ACT-002 needs K_m,20 ≥ 0.37 N/√W (derivation in AC-B03-03); REQ-ACT-001's continuous 0.75 N needs 0.65–0.82 W of copper loss against 0.455 W allowable; its 1.4 N/2 s needs 0.62 A per axis against a 0.45 A (REQ-SAF-002) or 0.60 A (config) clamp | derivations in `acceptance_criteria.csv` |
 
-### Equipment
+### Equipment and setup
 
 - Rig R4 (§0.9).
 - Three coupons per variant, built with the production process: winding, bonding, magnet grade and back iron as in CAD Rev A.1.
@@ -445,14 +446,14 @@ HDF5 per coupon: force map (q1, q2, i1, i2 → F, T), LCR sweeps, thermal time s
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-B03-01 | REQ-ACT-001 | Force constant K_f at the stroke centre (q = 0), 20 °C, per axis: slope of in-axis force vs current over ±0.6 A | within 0.717 N/A ± 10 % | hypothesis | docs/physics.md (K_f within ±10 %); prediction config actuator.Kf 0.717 N/A (v0.4.1; 6 ohm winding DEC-012, 0.50 mm gap DEC-007 rev.) | DEC-012; EM model P-14 validation |
-| AC-B03-02 | — | Motor constant K_m = K_f / sqrt(R20) at the stroke centre, 20 °C (feasibility floor for the Rev A research pen) | ≥ 0.30 N/√W | hypothesis | docs/research_questions.md rank 9 (K_m ≥ 0.3 N/√W per axis); prediction 0.293 N/√W (results/electronics/drive_sense.json v0.4.1); field model 0.24-0.34 (results/em/em_actuator.json) | DEC-003; actuator freeze |
+| AC-B03-02 | — | Motor constant K_m = K_f / sqrt(R20) at the stroke centre, 20 °C (feasibility floor for the Rev A research pen) | ≥ 0.29 N/√W | hypothesis | docs/plan.md s3 (K_m target ≥ 0.29 N/√W at the 0.50 mm gap); docs/research_questions.md rank 9 still states ≥ 0.3 (before the gap change); prediction 0.293 N/√W (results/electronics/drive_sense.json v0.4.1); field model 0.24-0.34 (results/em/em_actuator.json) | DEC-003; actuator freeze |
 | AC-B03-03 | REQ-ACT-002 | Motor constant K_m at the stroke centre, 20 °C (level needed to meet REQ-ACT-002 at the design point) | ≥ 0.37 N/√W | derived | derived from REQ-ACT-002 (0.25 W average): K_m20 ≥ F_rms/(n*sqrt(P/duty))*sqrt(1.2555) with F_rms 0.657 N (results/trade/config_trade.json design point), n = 3.17, duty 0.65, hot factor 1.2555 at 85 °C (alpha_cu 0.00393/K, AMF-29) = 0.375; prediction 0.293 -> expected FAIL | DEC-008 (configuration B vs D/E); REQ-ACT-002 revision |
 | AC-B03-04 | — | K_f(q) map: fraction of the 7 x 7 grid points over ±1.6 mm (actuator coordinates) where measured K_f is within ±10 % of the magnetostatic model rescaled to the built winding and gap | = 100 % | hypothesis | docs/physics.md (K_f(q) within ±10 %); model results/em/em_actuator.json Kx_map (v0.2.0; rescale by sqrt(R) and gap factor) | EM model validation; CAL_ACT (docs/icd.md s3) |
 | AC-B03-05 | — | Coil resistance R20 (4-wire, 20.0 ± 0.5 °C) | within 6.0 ohm ± 5 % | hypothesis | DEC-012 winding (headroom analysis in results/electronics/drive_sense.json assumes 6.0 ohm); ±5 % engineering judgement | DEC-012 (voltage headroom at 3.3 V) |
 | AC-B03-06 | — | Coil inductance at 1 kHz, q = 0 | within 82-380 µH | hypothesis | config actuator.L range (air-core estimate 175 µH scaled from results/em) | current-loop tuning (P-17) |
 | AC-B03-07 | REQ-SNS-004 | Hall current crosstalk after linear compensation, referred to the tip (9 stage positions, DC and 40 kHz PWM) | ≤ 5 µm/A | requirement | REQ-SNS-004 | Hall placement and sampling (open issue E-4); CAL_HALL |
 | AC-B03-08 | — | Coil-to-ambient thermal resistance of the moving-coil coupon in still air at 25 °C (steady state at 0.2-0.45 W) | within 130 K/W ± 15 % | hypothesis | results/trade/config_trade.json (config B Rth_coil 130 K/W); docs/physics.md (steady rise ±15 %). Note: config actuator.Rth_coil_amb is 60 K/W (30-120) | DEC-008; open issue M-5; simulator thermal node |
-| AC-B03-09 | — | Minimum measured paddle-to-magnet clearance at full tip travel (0.60 mm, 12 directions) on every coupon | > > 0 µm (no contact); report vs RSS prediction +93 µm | hypothesis | results/mechanics/tolerance.json via mechanics/README.md (stack S1 front face, RSS +93 µm, Rev A.1) | DEC-007 rev. (revisit trigger: actuator coupon gap measurement) |
+| AC-B03-09 | — | Minimum measured paddle-to-magnet clearance at full tip travel (0.60 mm, 12 directions) on every coupon | > 0 µm (no contact); report vs RSS prediction +93 µm | hypothesis | results/mechanics/tolerance.json via mechanics/README.md (stack S1 front face, RSS +93 µm, Rev A.1) | DEC-007 rev. (revisit trigger: actuator coupon gap measurement) |
 | AC-B03-10 | REQ-ACT-001 | Coil hot-spot temperature while holding 0.75 N tip-equivalent (0.237 N at the actuator) continuously for 30 min at 25 °C in the pen thermal environment | ≤ 120 °C | requirement | REQ-ACT-001 with REQ-THM-002; prediction: copper loss 0.65 W (20 °C) to 0.82 W (85 °C) at K_m 0.293 N/√W vs allowable 0.455 W (results/thermal/thermal.json) -> expected FAIL | REQ-ACT-001 revision; DEC-008 |
 | AC-B03-11 | REQ-ACT-001 | Coil current needed to hold 1.4 N tip-equivalent for 2 s along one actuator axis, compared with the software current clamp | ≤ current ≤ software clamp | requirement | REQ-ACT-001; required 1.4/(3.17 x 0.717) = 0.62 A exceeds REQ-SAF-002 (0.45 A) and config actuator.i_max (0.60 A) -> CONFLICT to resolve | resolve REQ-ACT-001 vs REQ-SAF-002 |
 
@@ -463,8 +464,8 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows f
 
 | Result | Consequence |
 |---|---|
-| K_m < 0.30 N/√W (AC-B03-02) | Rev A (configuration B) cannot hold the design-point load inside the thermal limit even at 65 % duty. DEC-003 stands only for bench research; **DEC-008 D/E becomes the product path**, and the Rev A pen is limited to lighter loads with a thermal governor. |
-| K_m between 0.30 and 0.37 N/√W | Rev A is usable as a research instrument but fails REQ-ACT-002. This confirms DEC-008. REQ-ACT-002 must be revised or met by D/E. |
+| K_m < 0.29 N/√W (AC-B03-02) | Rev A (configuration B) cannot hold the design-point load inside the thermal limit even at 65 % duty. DEC-003 stands only for bench research; **DEC-008 D/E becomes the product path**, and the Rev A pen is limited to lighter loads with a thermal governor. |
+| K_m between 0.29 and 0.37 N/√W | Rev A is usable as a research instrument but fails REQ-ACT-002. This confirms DEC-008. REQ-ACT-002 must be revised or met by D/E. |
 | K_f(q) deviates > 10 % from the model but is repeatable | The model fails (update `analysis/em_actuator.py`), but the pen is usable through `CAL_ACT` compensation. |
 | R20 outside 6.0 Ω ± 5 % | Re-run the headroom analysis (`electronics/calcs/drive_sense.py`). Above ~6.3 Ω, parts of the thermally allowed envelope become voltage-limited at 3.3 V (DEC-012). |
 | Gap contact at full travel, or clearance well below +93 µm RSS | DEC-007 rev. is re-opened (travel reduction or a wider gap at a K_f cost of 2.9 % per 0.05 mm; `mechanics/README.md`). |
@@ -505,7 +506,7 @@ This experiment calibrates the one 3-axis Hall sensor on the lever tail, which g
   - The control limit is q_lim = 0.55 mm and the mechanical stop 0.60 mm (config v0.4.1). **REQ-MECH-001 ("0.5 mm at every altitude 35–75°") is therefore predicted to fail below θ ≈ 56° for K_n ≤ 800 N/m.** With K_n = 3000 N/m the need at 35° drops to 0.52 mm. The measured K_n from EXP-B06 decides.
 - **H-B04-3.** The optical scale factor after tilt-dependent calibration is within 1 % (config `sensing.opt_scale_err`).
 
-### Equipment
+### Equipment and setup
 
 - Rig R5 with independent tip metrology. The preferred option is a Ø3 mm reference sphere bonded to the carrier 2 mm behind the ball, measured by two orthogonal confocal sensors, with the ball offset measured on the optical CMM before bonding.
 - Calibrated normal-compliance mounts for the housing: flexure mounts with K_n = 200, 800 and 3000 N/m, each verified by load against displacement to ±3 %.
@@ -611,7 +612,7 @@ It runs twice: on the Stage A rig module (commercial VCMs through the same 3.17 
 | Current-loop crossover | 2.34 kHz at 50° phase margin | `results/electronics/drive_sense.json` |
 | Stage-against-paper mode | about 180 Hz | DEC-011, `results/sim/ff_chatter.json` |
 
-### Equipment
+### Equipment and setup
 
 - Rig R5 for free-space tests and R2 for in-contact tests.
 - Laser Doppler vibrometer (≥ 20 kHz bandwidth, ≤ 0.1 µm/s resolution) or a triangulation sensor on the carrier.
@@ -724,14 +725,14 @@ Participants take part, so this study runs under the ethics approval of `human_s
 - **H-B06-3.** The in-pen γ estimate is within ±0.05 of the bench value after 2 s (AC-B06-03). The accuracy follows from P-4: Δγ = 0.05 gives ≤ 8.3 % tilt-direction gain error for θ ≥ 35°.
 - **H-B06-4.** γ changes by ≤ 0.05 across instructed grip levels (AC-B06-04). If it changes more, γ must be tracked continuously rather than once per session.
 
-### Participants
+### Participants and sample size
 
 - n = 12 healthy adults: 6 aged 18–59 and 6 aged ≥ 60. physics.md requires n ≥ 8.
 - Precision: with between-participant CV ≈ 30 % (the HAP-26 k1 range; s of ln K_n ≈ 0.29), the 95 % CI of the mean ln K_n is ± t₀.₉₇₅,₁₁ · s/√12 = ±0.19, a factor of about 1.2 (±20 %). That is adequate to set the simulation ranges.
 - Optional extension: the same protocol for 8 ET and 8 PD participants during their EXP-H01 visit, as an exploratory comparison.
 - Inclusion and exclusion as in `human_study_plan.md` §3 (healthy-adult cohort).
 
-### Equipment
+### Equipment and setup
 
 - Rig R6 (§0.9) and paper as in EXP-B01 on the force plate.
 - For the in-pen part: the Stage B Rev A pen on the same platen, logging research frames.
@@ -814,7 +815,7 @@ This experiment measures coil hot-spot and touch-surface temperatures against co
 - Allowable average copper loss: 0.455 W for the moving coil and 1.227 W for fixed coils (B-MM).
 - The firmware's coil-temperature estimate (research frame `t_coil`) tracks the measurement within ±5 K (AC-B07-07).
 
-### Equipment
+### Equipment and setup
 
 - Rig R4 thermal instruments.
 - **Hand phantom:** an aluminium or silicone sleeve held at 33 °C by a PID heater. It contacts the grip zone over 3 cm² (the basis of `thermal.json`: "finger contact 600 W/m²K × 3 cm², hand 33 °C").
@@ -908,7 +909,7 @@ At ≤ 0.15 N RMS, 3–15 Hz, N_mean ≥ 0.5 N, the modulated lines are not wors
 
 These margins are engineering judgement. They will be replaced by the perception thresholds of EXP-H05 once available.
 
-### Equipment
+### Equipment and setup
 
 - Rig R1 with the force-controlled voice-coil normal axis (mean plus sinusoid, closed-loop on the force plate; modulation accuracy ±5 % of setpoint RMS, verified per line).
 - Rig R3 for scanning.
@@ -1031,6 +1032,11 @@ Further predictions:
 - **Distortion (no tremor):** KF-BAL 57 µm (nominal) / 62 µm (grid); KF-ASR 55 / 97 µm.
 - **Device distortion:** 60–75 µm per seed.
 - **Feature course (KF-BAL, no tremor):** dot max 41 µm; corner 0; hatch 93 µm RMS; fast stroke 122 µm RMS.
+- **KF-BAL is predicted to be inert against tremor** (`docs/sim_report.md` §3.2, added 2026-09-27).
+  - Its intent model absorbs the tremor, so the tracked frequency stays near the 7 Hz prior and the 7.5 Hz gate stays closed. For seed 200 at 9 Hz the ink trace is identical to NEUTRAL.
+  - On tremor-free writing the tracker occasionally crosses the gate, giving 4–81 µm of false correction.
+  - A KF-BAL ratio near 1.0 with tremor present is therefore the predicted result, not a rig fault. AC-B09-15 tests the gate directly.
+  - If DEC-009's next revision (a separate spectral detector with hysteresis) exists before this test, it is added as a further ASSIST_KF profile and assessed with the same criteria.
 - **GUIDED path distance vs NEUTRAL** (6 Hz, `results/sim/guided_path_distance.json`): circle 165 vs 442 µm; spiral 111 vs 382 µm; fast stroke 34 vs 115 µm.
   - In the time-aligned metric, GUIDED looks *worse* than NEUTRAL (feature course "ALL" 440 vs 218 µm, `metrics.json`).
   - This is because a user-paced template follower shifts along the track. M-path, not M-e, is therefore the primary metric for GUIDED.
@@ -1042,8 +1048,9 @@ The hypotheses tested:
 - **H-B09-3.** Above the gate, KF-ASR helps (≤ 0.8 at 9–10 Hz, AC-B09-04). Below the gate, no mode does harm (≤ 1.05, AC-B09-05).
 - **H-B09-4.** Intent is preserved within REQ-CTRL-005 (AC-B09-06, -07). Deliberate high-frequency features (hatch, fast strokes) are distorted by ≤ 100 µm RMS (AC-B09-08; expected to fail for fast strokes).
 - **H-B09-5.** N_mod ≤ 0.15 N (AC-B09-09). The effective delay is ≤ 5 ms (AC-B09-10). Guided mode releases authority outside its capture radius within 150 ms (AC-B09-11) and halves the path distance on circles and spirals (AC-B09-12). γ is identified within ±0.05 in 2 s (AC-B09-13).
+- **H-B09-6.** The frequency gate opens for tremor above it (authority ≥ 0.5 for ≥ 90 % of ticks at 9–10 Hz) and stays shut on tremor-free writing (≤ 5 % of ticks) (AC-B09-15). This is predicted to fail for KF-BAL, whose gate stays closed with tremor present.
 
-### Equipment
+### Equipment and setup
 
 - Rig R2, with the hand simulant set to the EXP-B06 median parameters, and to the 10th and 90th percentiles as sensitivity cases. The simulant's normal spring sets the γ reference.
 - Rig R3 for scans. Rig R7 for electronics timing.
@@ -1111,6 +1118,7 @@ The hypotheses tested:
 6. **Delay.** τ_eq(f) from cross-spectra between the injected housing disturbance and the nib correction (DELAY-PROBE), averaged over 3–12 Hz, and the maximum.
 7. **γ.** The logged γ estimate at 2 s against the simulant's γ computed from its K_n and k_ax.
 8. **Energy.** M-Pcu per mode, and the coil temperature rise.
+9. **Gate behaviour.** From the research-frame fields g and f_est (`docs/icd.md` §4.2), inside the evaluation mask: the fraction of ticks with g ≥ 0.5, per profile and condition, and the f_est trace against the injected frequency.
 
 ### Acceptance criteria
 
@@ -1131,8 +1139,9 @@ The hypotheses tested:
 | AC-B09-12 | — | GUIDED path distance (M-path, as sim/guided_eval.py) on circle and spiral features with 6 Hz, 0.3 mm disturbance, relative to NEUTRAL | ≤ 0.5 | hypothesis | prediction 0.37 (circle 165/442 µm) and 0.29 (spiral 111/382 µm), results/sim/guided_path_distance.json; 0.5 engineering judgement (≥ 6 dB, as AC-B09-02) | DEC-009 (guided mode below the gate); EXP-H06 variant choice |
 | AC-B09-13 | REQ-CTRL-006 | Gamma identification on the rig with a calibrated simulant normal spring (200/800/3000 N/m): \|γ_id - γ_true\| after 2 s of writing | ≤ 0.05 | derived | REQ-CTRL-006 (2 s); accuracy as AC-B06-03 (P-4 derivation) | REQ-CTRL-006 |
 | AC-B09-14 | — | Metrology qualification: RMS difference between the time-aligned nib trajectory (rig metrology, in contact) and the scanned ink centreline for the same NEUTRAL run | ≤ 7 µm | derived | derived: TUR ≥ 4 against the ±0.1 ratio band at a NEUTRAL error of about 290 µm (results/sim/nominal/metrics.json, 6 Hz) | validity of EXP-B09 verdicts |
+| AC-B09-15 | REQ-CTRL-007 | Frequency-gate behaviour of each ASSIST_KF profile, from the research-frame fields g and f_est (docs/icd.md s4.2): fraction of evaluation ticks with authority g ≥ 0.5, (a) with 9-10 Hz, 0.3 mm tremor on handwriting paths and (b) on tremor-free handwriting and the feature course | ≥ 0.9 (a) / ≤ 0.05 (b) | hypothesis | engineering judgement; docs/sim_report.md s3.2 (2026-09-27): the balanced profile keeps its gate closed with 9 Hz tremor (ink identical to NEUTRAL, seed 200) and opens it on tremor-free writing (4-81 µm false correction) -> (a) expected FAIL for KF-BAL | DEC-009 revision (separate spectral detector with hysteresis); choice of ASSIST_KF profile for EXP-H06 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (14 rows for EXP-B09).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (15 rows for EXP-B09).
 <!-- AC-TABLE:EXP-B09:END -->
 
 ### What changes which decision
@@ -1142,6 +1151,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (14 rows f
 | ORACLE ratio > 0.5 (AC-B09-02 fails) | The loaded mechanics cannot cancel even with perfect knowledge (stick-slip, contact dynamics, servo). **G-B fails.** No Rev A build for cancellation research until the cause is found: contact model (B02), servo (B05) or hand coupling. DEC-003 is re-opened. |
 | Simulation agreement fails (> 0.1) | Simulation-based decisions (DEC-009 gate, DEC-016 ML comparison, estimator tuning) lose their basis until the model is corrected. EXP-E01 conclusions must then rest on EXP-E02 closed-loop data. |
 | KF above the gate > 0.8 with ORACLE ≤ 0.5 | Estimation, not mechanics, limits benefit (as COR-11 predicts). Free-writing cancellation is not a product claim. Guided and training modes carry the value; H06 uses its guided variant (`human_study_plan.md`). |
+| Gate open < 90 % of ticks with tremor above it, or > 5 % on tremor-free writing (AC-B09-15; predicted for KF-BAL) | The gate cannot be driven by the estimator's own tracker. DEC-009's next revision (a separate spectral detector with hysteresis, `docs/sim_report.md` §3.2) is implemented and this test repeated for it. EXP-H06-F does not use a profile that fails (a): its ON condition would equal NEUTRAL by construction. |
 | Any mode > 1.05 below the gate | The frequency gate leaks. DEC-009 is revised (hysteretic, confidence-weighted gate; `docs/sim_report.md`) before any human use of ASSIST_KF. |
 | Distortion > 50 µm, or corner/dot > 100 µm | Estimator re-tuning toward the balanced end; REQ-CTRL-005 remains a hard limit for release. |
 | Fast-stroke/hatch distortion > 100 µm (expected) | REQ-CTRL-005 is incomplete. It needs a feature-specific limit set by EXP-H05 perception thresholds. |
@@ -1182,7 +1192,7 @@ It complements EXP-M02 (coupon fatigue to 10⁸ cycles) and gates G-C (untethere
 - **Refill exchange.** The neutral offset is repeatable to ≤ 20 µm (REQ-MECH-008) over 29/29 exchanges (success run R 0.90, C 0.95), or recalibration takes < 30 s (AC-B10-03, -04).
 - **Drop.** 12 drops from 1.0 m onto hardwood (6 orientations × 2, including nib-down) leave the stop radius within ±0.03 mm, k_tip within ±10 %, the Hall calibration within AC-B04-01, and no electrical fault (AC-B10-05). The height is engineering judgement (desk height plus hand height); the method follows IEC 60068-2-31 free fall.
 
-### Equipment
+### Equipment and setup
 
 - Rig R8 (cycling at 30 Hz with the pen's own actuator, amplitude closed-loop on the Hall sensor with a periodic R5 check).
 - Rig R5 for re-calibration.
@@ -1269,7 +1279,7 @@ This experiment selects and characterises the near-nib optical motion sensor tha
 - PAA5100JE-class sensors at 15–35 mm as a barrel-mount option (OPT-05).
 - Reference channel: a PMW3360 at its nominal 2.4 mm Z (OPT-04).
 
-### Equipment
+### Equipment and setup
 
 - Rig R5: XY stage carrying the paper, goniometer and rotary stages for θ and ρ, piezo step stage.
 - **Strobe illuminator:** an LED at the module's wavelength, driven with 10–50 µs pulses with timing known to ≤ 1 µs, while the module's own LED is masked.
@@ -1385,6 +1395,14 @@ It verifies REQ-CAP-001 (the record's content, including uncertainty) and REQ-CA
 - 200/200 correct page identifications (AC-S02-05).
 - The reported uncertainty covers 90–99 % of true errors at 2σ (AC-S02-06). ICD v1.0 has no uncertainty field in the stroke record, so this criterion waits for an ICD revision (see `README.md`).
 
+### Equipment and setup
+
+- Rig R2 (robot-written sets) and rig R3 (scans, fiducials, distortion map).
+- An EMR digitiser under the paper, for timing and segmentation only (±0.25 mm class).
+- Coded-paper pages (Ncode or Anoto pattern) and plain paper of the EXP-S01 types.
+- The Stage B/C pen logging stroke samples (ICD 0x02). When tethered, research frames (0x01) are logged in parallel as the internal reference.
+- The clock alignment of §0.4 between the pen, digitiser and rig.
+
 ### Procedure
 
 1. **Robot-written set (R2):** the feature course, handwriting samples A–C and one A5 page of dense text (the robot replays recorded human handwriting from EXP-H01, scaled to 3–4 mm letters). θ 45/55/65°, NEUTRAL mode, 5 repeats.
@@ -1431,6 +1449,15 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
 | Drift > 2.6 mm/min | "Ordinary paper" capture stays a research item (COR-16); product capture uses coded paper (licence costs, OPT-08/11). |
 | Identity errors | Coded-paper decoding or the page-session logic is fixed before C02. |
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| The coded-paper dot pattern changes optical-flow behaviour | Run plain and coded paper separately; report both |
+| Scanner geometric error mistaken for capture error | R3 distortion map; fiducials on every page |
+| Tethered and untethered builds differ (timing, power) | Run the robot set on both builds at Stage C |
+| Privacy of human-written pages | Neutral prompts; pseudonymised ids; scans stored under §6 of `records/README.md` |
+
 ---
 
 ## 14. EXP-F01: Hardware fault injection
@@ -1447,6 +1474,13 @@ This experiment verifies, on the real circuit and in contact with paper, the pro
 
 It builds on the bench bring-up (`electronics/README.md` steps 8–10) and the simulated failure cases F1–F7 (`results/sim/sweeps/summary.json`). It is part of gate **G-S** (human use of powered prototypes).
 
+### Hypotheses
+
+- **H-F01-1.** The window-comparator latch removes VMOT within 50 µs of a coil short or over-current, whatever the firmware state (AC-F01-01, AC-F01-02).
+- **H-F01-2.** With the hold-up ramp, the ink excursion after power loss in contact is at most half of the unramped excursion (AC-F01-06). The unramped simulated value is 779 µm (F3).
+- **H-F01-3.** A frozen Hall sensor is detected within 5 ms, and the open-loop hold keeps the excursion ≤ 0.3 mm (AC-F01-07, AC-F01-08). The undetected simulated value is 563 µm (F4).
+- **H-F01-4.** Soft faults (over-temperature, low battery) never de-energise the stage in contact (AC-F01-10, DEC-015).
+
 ### Faults injected
 
 | Id | Fault | Method | Predictions and references |
@@ -1462,7 +1496,7 @@ It builds on the bench bring-up (`electronics/README.md` steps 8–10) and the s
 | F01-i | Blocked stage | 0.1 mm mechanical obstruction | Peak current 0.551 A (F6) |
 | F01-j | MCU states | Over-current while the MCU is halted in the debugger, held in reset, or in a hard-fault loop | Latch independent of firmware |
 
-### Equipment
+### Equipment and setup
 
 Rig R7 (fault-injection board, oscilloscope, current probe, logic analyser); rig R2 for the in-contact faults (d, e, f, g, i) with R3 scans of the resulting marks.
 
@@ -1520,6 +1554,15 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows f
 | Ramped release does not reduce the mark by ≥ 50 % | The hold-up energy may not be worth the board area (DEC-014 packaging). A mechanical lock (COR-19) is re-evaluated. |
 | Frozen-Hall detection > 5 ms or large marks | DEC-015's open-loop hold strategy is revised (for example an immediate controlled ramp). |
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Destructive faults damage the only pen | Run first on the bench board with dummy loads, then on a sacrificial build; never on units destined for participants without full re-qualification |
+| High fault currents (5.4 A peak with ideal switches in ngspice) | Current-limited supply; eye protection; battery-powered tests in a fire-safe enclosure |
+| Fault injection alters the circuit (relay capacitance, lead inductance) | Characterise the injection board on a dummy load; keep leads < 50 mm |
+| Participants exposed to injected faults | Never: fault injection is bench-only |
+
 ---
 
 ## 15. EXP-F02: Firmware robustness
@@ -1539,6 +1582,19 @@ This experiment verifies the timing and robustness of the control firmware on th
 - C-vs-Python numerical equivalence (`docs/physics.md`: "C-vs-Python vectors").
 
 It is part of G-S (for ASSIST modes) and G-C.
+
+### Hypotheses
+
+- The ICD §2 budgets hold with margin under worst-case load (AC-F02-02…04). `electronics/README.md` estimates CPU ≈ 130 µs per 500 µs stage period.
+- No fuzzed output ever passes the limiter (AC-F02-06).
+- The guard classes behave as ICD §5 v1.1 specifies (AC-F02-05). Class (5) is expected to exceed REQ-SAF-003's 20 ms.
+- Optical dropout follows the simulated F1 behaviour (AC-F02-09).
+
+### Equipment and setup
+
+- Rig R7: logic analyser ≥ 100 MS/s with 16 channels; a programmable supply with ramp control; an SWD debugger for halts; a host PC for the reference vectors.
+- Rig R2 for the in-contact brown-out tests.
+- **Test builds** have fault-injection hooks compiled in; release builds never do. The key timing measurements are repeated on the release build using the DWT cycle counter, without GPIO probes.
 
 ### Procedure
 
@@ -1573,6 +1629,15 @@ Success-run numbers as stated (59 → R ≥ 0.95; 29 → R ≥ 0.90, both at C =
 
 Logic-analyser captures, ICD logs, soak summary CSV, vector-comparison report.
 
+### Analysis
+
+- **Timing:** maxima and the 99.9999th percentile over ≥ 10⁶ periods, per task; exceedance counts against each budget; the jitter histogram.
+- **Guard:** the latency from injection to the first stage command without the invalid content, per class (logic-analyser trigger to the research-frame `flags` bit 6 and the event 0x0006 timestamp).
+- **Limiter:** violation counts.
+- **Brown-out:** a timeline of VBAT, coil currents, ACT_EN and log block writes.
+- **Soak:** events classified as injected-and-handled, injected-and-unhandled, or spontaneous.
+- **Vectors:** the maximum absolute difference per output channel.
+
 ### Acceptance criteria
 
 <!-- AC-TABLE:EXP-F02:BEGIN -->
@@ -1586,7 +1651,7 @@ Logic-analyser captures, ICD logs, soak summary CSV, vector-comparison report.
 | AC-F02-06 | REQ-CTRL-004 | Limiter: violations of the q_lim radius (0.55 mm) or slew limit (0.08 m/s) by the commanded stage reference over ≥ 1e6 fuzzed estimator/ML outputs | = 0 | requirement | REQ-CTRL-004; limits from docs/physics.md P-22 | G-S |
 | AC-F02-07 | REQ-SAF-001 | Watchdog: halted or hung firmware leads to reset and VMOT off within the watchdog period + 1 ms | 59/59 | requirement | REQ-SAF-001; electronics/README.md bring-up step 10 | G-S |
 | AC-F02-08 | REQ-SAF-004 | Brown-out in contact (VBAT 4.2 -> 2.8 V at 1 V/s and 1 V/ms): actuation ramps down over ≥ 30 ms, no MCU lock-up, log loses ≤ 1 block | 29/29 per ramp rate | requirement | REQ-SAF-004; REQ-CAP-002 | G-S; G-C |
-| AC-F02-09 | — | Optical tracking loss of 0.3 s during writing: minimum authority during the loss / authority 1 s after tracking resumes | within ≤ 0.05 / ≥ 0.95 | hypothesis | prediction 0.002 / 0.991 (results/sim/sweeps/summary.json F1) | fault handling |
+| AC-F02-09 | — | Optical tracking loss of 0.3 s during writing: minimum authority during the loss / authority 1 s after tracking resumes | ≤ 0.05 / ≥ 0.95 | hypothesis | prediction 0.002 / 0.991 (results/sim/sweeps/summary.json F1) | fault handling |
 | AC-F02-10 | — | Unhandled hard faults or unexplained resets in an 8 h soak with scripted writing and randomised injected faults | = 0 | hypothesis | engineering judgement | G-C |
 | AC-F02-11 | — | C firmware vs Python simulator reference vectors (firmware/tests/vectors): maximum absolute difference of the stage reference | ≤ 0.1 µm | derived | engineering judgement (float32 vs float64 rounding); docs/physics.md 'C-vs-Python vectors' | firmware release for EXP-B09 |
 | AC-F02-12 | REQ-SNS-003 | IMU output data rate from firmware timestamps | ≥ 1 kHz | requirement | REQ-SNS-003 | sensor configuration |
@@ -1601,6 +1666,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (12 rows f
 | Stage task > 250 µs or jitter > 20 µs under load | DEC-010's fallback: STM32U5 motor-control MCU with the nRF5340 as radio co-processor (EML notes), or the ML predictor is dropped from the MCU. |
 | Guard or limiter violations | ASSIST_ML and ASSIST_KF are blocked from human use until fixed (G-S). |
 | Brown-out lock-up or > 1 block lost | Hold-up and logging design revised before G-C. |
+
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Probe effect of GPIO toggles | Toggle cost measured (≤ 1 µs); release-build repeat with DWT |
+| Test build differs from release build | Hooks behind a compile flag; release build re-tested on timing and brown-out |
+| Random fuzzing misses structured failures | Add adversarial patterns: steps, Nyquist-rate alternation, stale repeats, slow drifts just below the thresholds |
 
 ---
 
@@ -1620,6 +1693,17 @@ It checks the allowables (150 MPa alternating, 310 MPa peak; REQ-MECH-006; AMF-1
 
 - **Gates** DEC-007 (revisit trigger "Flexure fatigue coupons (EXP-M02)") and the flexure design release.
 - Thin, etched or cut strip edges may lower the fatigue strength below the bulk handbook value, so the coupons must be made by the production process.
+
+### Hypotheses
+
+- The fatigue strength of as-made blades at 10⁸ cycles is ≥ 150 MPa (lower 95 % bound, AC-M02-01). Edge defects from etching or cutting are the main threat.
+- Blades survive 10⁷ cycles at the full-travel stress, and diaphragm arms survive 10⁶ cycles at the stop stress (AC-M02-02, AC-M02-04).
+- The buckling margin is ≥ 5 (AC-M02-03); 19 is predicted.
+
+### Equipment and setup
+
+- Rig R8: resonant fatigue stations with laser amplitude control; strain-gauged calibration coupons; a stereo microscope (≥ 50×) and SEM; an axial load frame with a 0–10 N load cell.
+- The coupon fixture reproduces the pen's clamp design and clamping torque. Laboratory at 23 °C; coupon temperature monitored (< 40 °C).
 
 ### Procedure
 
@@ -1643,6 +1727,12 @@ It checks the allowables (150 MPa alternating, 310 MPa peak; REQ-MECH-006; AMF-1
 
 Per coupon: lot, process, edge photos, calibration factor, stress, cycles to failure or run-out, frequency log, fractographs.
 
+### Analysis
+
+- Basquin fit S = A·N^b by maximum likelihood with run-outs as right-censored data; lower 95 % prediction bound at 10⁸ cycles.
+- Binomial (success-run) statements for the run-out tests.
+- Buckling: load–displacement curves with a Southwell plot to estimate the critical load.
+
 ### Acceptance criteria
 
 <!-- AC-TABLE:EXP-M02:BEGIN -->
@@ -1662,6 +1752,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows fo
 - The lower-bound fatigue strength at 10⁸ cycles is below 150 MPa: the allowable drops. Blades are redesigned (thinner or longer, per AMF-26 sizing), which changes k_tip and the lever dynamics (B05). DEC-007 is re-opened.
 - Buckling margin < 5: blade width and length change.
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Failures at the clamp, not in the free length | Fractography; clamp redesign; clamp failures excluded only with evidence |
+| Resonant heating | Temperature monitoring; duty pauses |
+| Beryllium dust | Controlled machining and handling (AMF notes §2.2) |
+
 ---
 
 ## 17. EXP-M03: Mass, centre of mass and balance of built pens
@@ -1678,12 +1776,19 @@ This experiment weighs and balances every built pen variant (Stage B tethered Re
 | Variant | Mass incl. allowances and 10 % contingency | CoM from the tip |
 |---|---|---|
 | Rev A | 40.7 g | 80.6 mm |
-| Rev A.1 | 38.0 g | 77.7 mm |
-| Rev A.1 with polymer rear barrel | 34.0 g | 74.2 mm |
+| Rev A.1 | 37.2 g | 79.4 mm |
+| Rev A.1 with polymer rear barrel | 33.2 g | 76.0 mm |
+
+These values changed during 2026-09-27 as the budget was revised; the frozen prediction file, not this table, is the comparison reference (§0.2).
 
 REQ-FORM-004 is predicted to fail for all three.
 
-### Equipment
+### Hypotheses
+
+- Rev A.1 with a polymer rear barrel meets REQ-FORM-003 (33.2 g predicted) but not REQ-FORM-004 (76.0 mm predicted) (AC-M03-01, AC-M03-02).
+- Measured values fall within ±5 % (mass) and ±3 mm (CoM) of the budget (AC-M03-06).
+
+### Equipment and setup
 
 - Analytical balance (0.1 mg, 200 g).
 - Two-load-cell or knife-edge CoM fixture (±0.5 mm).
@@ -1701,14 +1806,20 @@ REQ-FORM-004 is predicted to fail for all three.
    - two digital capture pens (Anoto/Ncode class, 18–22 g; OPT-08/10/11).
    Measure the same quantities.
 
+### Sample size, data format and analysis
+
+- **Sample size:** every built pen, at least 3 per variant, each measured 3 times. Benchmark set ≥ 10 pens.
+- **Data format:** one CSV row per pen and repeat: serial, variant, refill and cell ids, mass, CoM, inertia, diameter profile; photographs.
+- **Analysis:** the mean of repeats with expanded uncertainty; the difference from the budget; the benchmark distribution (min, median, max) and the pen's position in it.
+
 ### Acceptance criteria
 
 <!-- AC-TABLE:EXP-M03:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-M03-01 | REQ-FORM-003 | Mass of each built pen including refill and battery | ≤ 35 g | requirement | REQ-FORM-003; budget 34.0-40.7 g (results/mechanics/mass_budget.json v0.4.1) | form factor; EXP-H02 |
-| AC-M03-02 | REQ-FORM-004 | Centre of mass from the tip | ≤ 70 mm | requirement | REQ-FORM-004 (provisional); budget 74.2-80.6 mm -> expected FAIL | REQ-FORM-004 revision (with AC-M03-03 and EXP-H02) |
-| AC-M03-03 | REQ-FORM-004 | Centre of mass relative to a benchmark set of ≥ 10 commercial pens (ballpoint, gel, fountain, weighted assistive, wide-grip, digital capture pens) | within within benchmark min-max | hypothesis | REQ-FORM-004 'ordinary-pen comparison pending'; mechanics/README.md M-1 | REQ-FORM-004 revision |
+| AC-M03-01 | REQ-FORM-003 | Mass of each built pen including refill and battery | ≤ 35 g | requirement | REQ-FORM-003; budget 33.2 g (Rev A.1, polymer rear barrel) to 40.7 g (Rev A) incl. allowances and 10 % contingency (results/mechanics/mass_budget.json v0.4.1) | form factor; EXP-H02 |
+| AC-M03-02 | REQ-FORM-004 | Centre of mass from the tip | ≤ 70 mm | requirement | REQ-FORM-004 (provisional); budget 76.0-80.6 mm (results/mechanics/mass_budget.json v0.4.1) -> expected FAIL | REQ-FORM-004 revision (with AC-M03-03 and EXP-H02) |
+| AC-M03-03 | REQ-FORM-004 | Centre of mass relative to a benchmark set of ≥ 10 commercial pens (ballpoint, gel, fountain, weighted assistive, wide-grip, digital capture pens) | within benchmark min-max | hypothesis | REQ-FORM-004 'ordinary-pen comparison pending'; mechanics/README.md M-1 | REQ-FORM-004 revision |
 | AC-M03-04 | REQ-FORM-001 | Grip diameter over 0-40 mm from the tip / maximum diameter of the actuator section | within 14-16 mm / ≤ 16 mm | requirement | REQ-FORM-001 | form factor |
 | AC-M03-05 | REQ-FORM-002 | Overall length | within 145-160 mm | requirement | REQ-FORM-002 | form factor |
 | AC-M03-06 | — | Measured vs budget (mechanics/mass_budget.csv) for the built variant: mass and CoM | within mass ± 5 %; CoM ± 3 mm | hypothesis | engineering judgement | credibility of the mass-budget method |
@@ -1721,6 +1832,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
 - If the CoM exceeds 70 mm but lies within the benchmark range (AC-M03-03), REQ-FORM-004 is revised with EXP-H02 comfort data rather than forcing a redesign.
 - If it lies outside the range, M-1 options apply (a shorter pen, a lighter stator, relocating the cell).
 - A mass above 35 g triggers the polymer rear barrel (A.1-PR) or cell changes.
+
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Refill and cell variation | Record lots; measure with a standard refill and cell |
+| Configuration ambiguity (cap on or off, clip) | Measure as used in writing; report both if a cap is posted |
+
 ---
 
 ## 18. EXP-P01: Power and runtime
@@ -1738,6 +1857,18 @@ The predictions disagree across the repository, which is itself a reason to meas
 
 See `README.md` for this inconsistency.
 
+### Hypotheses
+
+- Configuration B's runtime at the design point is below 60 min (≈ 55 min predicted) and its copper loss is above 0.25 W (0.31 W predicted) (AC-P01-01, AC-P01-02).
+- Electronics power is 115 mW ± 20 % (AC-P01-03).
+- The real pen-down duty is 0.5–0.8 (AC-P01-04).
+
+### Equipment and setup
+
+- Rig R7: an SMU or power analyser (1 µA–3 A, ±0.3 %, ≥ 10 kS/s logging); a battery cycler; a thermal chamber at 25 °C and 35 °C.
+- Rig R2 for scripted writing.
+- Cells that have passed EXP-P02.
+
 ### Procedure
 
 1. **Mode power** with the pen in a holder: OFF, STANDBY, NEUTRAL_HOLD (lifted), and NEUTRAL_HOLD and ASSIST_KF in contact at the design point. SMU logging at ≥ 10 kS/s; separate channels for the actuator supply (VMOT) and the logic rails where the board allows.
@@ -1745,6 +1876,12 @@ See `README.md` for this inconsistency.
 3. **Envelope sampling:** 20 (N, θ) points drawn as in `drive_sense.py`'s envelope (θ 35–75°, N 0.2–2 N log-uniform) to give the distribution of copper loss.
 4. **Runtime:** full charge (P02 charge profile) → continuous scripted writing until the actuation cut-off (VBAT 3.3 V, config `electrical.v_bat_min`). 3 cells × 3 repeats at 25 °C, and 1 cell at 35 °C.
 5. **Duty from people:** the pen-down duty from the EXP-H06 free-writing logs (research frames, contact flag).
+
+### Sample size, data format and analysis
+
+- **Sample size:** runtime on 3 cells × 3 repeats (the minimum is the verdict value); 20 envelope points × 3 repeats; 3 repeats per mode for mode power.
+- **Data format:** SMU logs (HDF5 at ≥ 10 kS/s), ICD research frames (coil currents, `vbat_mV`, `t_coil`), cycler logs.
+- **Analysis:** integrated energy per mode; copper loss from i²·R(T); runtime as the time to cut-off; regression of copper loss on N and θ, compared with the `electronics/calcs/drive_sense.py` envelope.
 
 ### Acceptance criteria
 
@@ -1766,6 +1903,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows fo
 | Runtime < 60 min or copper > 0.25 W (both expected for configuration B) | Confirms that Rev A is a research instrument. Product runtime is carried by D/E (DEC-008), or REQ-PWR-001 is restated for research builds. |
 | Electronics power far above 115 mW (optics unknown) | The optics selection (E-7) includes power as a criterion (OPT notes §2.5 item 8). |
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Cell ageing across repeats | Capacity check before each runtime run; cells retired at 90 % of initial capacity |
+| Temperature drift | Chamber; the cell temperature is logged |
+| Scripted writing differs from human writing | Human duty cycles from EXP-H06 logs (AC-P01-04) are used to rescale the result |
+
 ---
 
 ## 19. EXP-P02: Charging and battery safety pre-compliance
@@ -1778,6 +1923,17 @@ This experiment qualifies the cell and the charging path before any untethered p
 - **REQ-PWR-003:** actuation is disabled while charging.
 - **REQ-THM-001** during charge (bring-up step 11: barrel < 41 °C).
 - Pre-compliance evidence for cell safety (IEC 62133-2) and transport (UN 38.3).
+
+### Hypotheses
+
+- A ≥ 5C pouch cell holds ≥ 3.3 V under 2 A pulses and warms by ≤ 10 K at 1 A continuous (AC-P02-01, AC-P02-02).
+- Charging keeps the barrel ≤ 41 °C (AC-P02-04).
+- The protection IC trips at its datasheet thresholds (AC-P02-06).
+
+### Equipment and setup
+
+- A battery cycler or programmable load; an SMU; thermocouples on the pouch; an IR camera; a fire-safe enclosure; a micrometer for pouch thickness.
+- Supplier documents (datasheet, IEC 62133-2 report, UN 38.3 summary).
 
 ### Procedure
 
@@ -1797,6 +1953,12 @@ This experiment qualifies the cell and the charging path before any untethered p
 5. **Protection:** the BQ29700-class protector's over-charge, over-discharge and over-current thresholds on a programmable source/load (datasheet values VERIFY). The external short-circuit test uses a limited-energy fixture in a fire-safe enclosure.
 6. **Cycling and swelling:** 100 cycles (1C discharge, 0.5C charge, 25 °C). Measure pouch thickness every 25 cycles and capacity retention.
 7. **Certification evidence:** obtain the supplier's IEC 62133-2 test report and UN 38.3 test summary, or commission an accredited lab. Abuse tests (crush, forced discharge, thermal abuse) are not run in-house.
+
+### Sample size, data format and analysis
+
+- **Sample size:** 3 cells per test type (pulse, continuous, cycling); 10 charge cycles for the interlock; 3 trials per protection threshold.
+- **Data format:** cycler logs, temperature logs, IR image sequences, a thickness table, the document register.
+- **Analysis:** minimum voltage during pulses; temperature rise; capacity retention; thickness change; measured trip thresholds against the datasheet with uncertainty.
 
 ### Acceptance criteria
 
@@ -1823,6 +1985,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows fo
 | Charging heats the barrel above 41 °C | Lower the charge current (longer charge time) or move the charger to the tail board (the Rev A.1 plan). |
 | No certification evidence | No untethered pen leaves the lab (G-C); no shipping. |
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Thermal runaway | Limited-energy fixtures; fire-safe enclosure; never unattended; abuse tests only at an accredited laboratory |
+| Counterfeit or mislabelled cells (the ratings are web claims, AMF-33) | Buy from the manufacturer with lot traceability; incoming inspection |
+| Transport of cells and pens | UN 38.3 evidence before shipping |
+
 ---
 
 ## 20. EXP-E01: Estimator bake-off on recorded writing at matched false correction
@@ -1835,7 +2005,7 @@ Four causal estimators, plus a learned predictor, are compared at **matched fals
 
 - the Kalman intent + oscillator (P-20/P-21, the product default);
 - BMFLC (ACT-09/10);
-- an autoregressive (AR) predictor;
+- a least-squares autoregressive h-step predictor (AR-LS), global and f_est-scheduled (`ml/baselines.py`); REQ-ML-001 names it "scheduled least-squares";
 - WFLC as a legacy baseline;
 - a learned streaming TCN (`ml/`), within the ICD §5 budget.
 
@@ -1845,7 +2015,19 @@ The data are the EXP-H01 recordings.
 - **Also sets:** which variant of the immediate-assistance study (EXP-H06) is run: free-writing or guided (`human_study_plan.md`).
 - **Current evidence** (simulation on synthetic writing only, COR-11, `docs/sim_report.md` §3.2): no causal estimator separates below ≈ 9 Hz; the oracle bound is 0.22–0.32.
 
-### Definitions
+### Hypotheses
+
+- **H-E01-1.** No causal estimator reaches RR ≤ 0.9 in the 4–6 or 6–7 Hz bands at FC 25 µm (AC-E01-05). Simulation, COR-11: 0.94 at 6 Hz and > 1 at 4.5 Hz.
+- **H-E01-2.** The best causal estimator reaches RR ≤ 0.8 in the 8–12 Hz bands (AC-E01-04). Simulation: 0.62–0.72.
+- **H-E01-3.** The learned predictor does **not** pass the REQ-ML-001 gate on real data. On synthetic data it passes in distribution but fails under shift and in the coupled simulator (`ml/README.md`; REQ-ML-001 current estimate).
+
+### Equipment and setup
+
+- A compute environment with pinned library versions (the `ml/` pipeline; `ml/run_all.sh`).
+- The EXP-H01 dataset, pseudonymised, with a locked test split.
+- No hardware.
+
+### Analysis: metric definitions
 
 These are identical to `ml/metrics.py` and `ml/common.py`, so that synthetic and recorded results are comparable.
 
@@ -1865,25 +2047,36 @@ The true disturbance d is not directly observable in real writing. Three benchma
 | **E01-B (real, secondary)** | Real patient writing. Reference d = acausal estimate: a zero-phase band-pass at the participant's tremor peak ±1.5 Hz, and a two-sided (RTS) smoother of the P-20 model. | Ranking consistency on real mixtures | The reference is itself an estimate and is biased toward band-limited content |
 | **FC on controls (exact)** | Real writing of healthy controls, d = 0 by definition | False correction on real intended motion, directly | Physiological tremor (~30 µm RMS, PDT-15) is present and is counted as FC; reported separately in 8–12 Hz |
 
-### Data and splits (REQ-DATA-001)
+### Data format and splits (REQ-DATA-001)
 
 - Splits are by participant, and by session, **before** windowing: 60 % train, 20 % validation, 20 % test, stratified by group.
 - Held-out devices, refills and papers where available. Seeds recorded.
+- Format: per-participant files following `data/schema/ml_sample.schema.json`, with split labels and content hashes. Outputs follow `results/ml/eval_results.json` with `stabpen.provenance` metadata.
 - The test split is locked (hash recorded) until all methods are frozen.
 - **Input channels:** the pen's own sensor streams as recorded by the H01 instrumented pen (IMU, optical module from EXP-S01, axial force), at the ICD §5 rate and window (W = 64 samples at 250 Hz). The truth is the offline best estimate from motion capture + IMU + optics fusion. For methods run at 2 kHz (Kalman), the 1–2 kHz raw streams are used.
 
 ### Procedure
 
-1. Freeze the Kalman parameters by re-tuning on the train writers only, using the procedure of `sim/tune_estimators.py`. Tune BMFLC, AR and WFLC on train writers. Train the TCN on train writers (`ml/train.py`) within the ICD §5 budget (≤ 35k MAC, ≤ 32 kB weights, ≤ 8 kB activations).
+1. Freeze the Kalman parameters by re-tuning on the train writers only, using the procedure of `sim/tune_estimators.py`. Tune BMFLC, AR-LS and WFLC on train writers, with the validation criterion of `ml/tune_baselines.py`. Train the TCN on train writers (`ml/train.py`) within the ICD §5 budget (≤ 35k MAC, ≤ 32 kB weights, ≤ 8 kB activations).
 2. Compute the validation statistics; select the gains for FC ∈ {10, 25, 50} µm; freeze.
 3. Unlock the test split and compute RR per band, all-band RR and FC, with bootstrap CIs and paired differences.
 4. **Per-user gate calibration:** for each test participant, estimate f_gate from the first 60 s of their recording, using the `CAL_USER` procedure of the firmware. Compare with the offline-optimal gate (the gate minimising all-band RR at FC 25 µm on that participant's remaining data).
 5. **Sensitivity:** repeat with the sensor latency set to the EXP-S01 measured 99th percentile.
+6. **Gate driver.** Score each Kalman profile twice: with the gate driven by its own tracked frequency (as in the firmware today) and by a separate spectral detector with hysteresis (the planned DEC-009 revision). In simulation the balanced profile's own tracker never opens the gate with tremor present (`docs/sim_report.md` §3.2), so the second variant is needed to separate estimator quality from gate failure.
 
 ### Sample size
 
 - Writers: the EXP-H01 cohorts (≈ 20 per group; ≈ 16 test writers across groups at a 20 % split).
 - The bootstrap CI half-width on all-band RR is expected to be ≈ 0.03–0.06 (simulation bootstrap on synthetic writers, `results/ml/`). This is adequate for the 0.05 adoption margin only if the between-writer SD is similar on real data; otherwise the H01 cohort extension (40 ET, `human_study_plan.md`) is triggered.
+
+### Analysis steps
+
+1. RR per band, all-band RR and FC for each method at FC = 10, 25 and 50 µm (benchmark E01-A).
+2. The writer bootstrap and paired differences against the strongest conventional estimator.
+3. Benchmark E01-B: the ranking of methods, and Kendall τ between the E01-A and E01-B rankings.
+4. FC on the control writers, total and in 8–12 Hz.
+5. Per-user gate error (AC-E01-06).
+6. Spike analysis on the feature-course recordings (AC-E01-08).
 
 ### Acceptance criteria
 
@@ -1891,14 +2084,15 @@ The true disturbance d is not directly observable in real writing. Three benchma
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-E01-01 | REQ-DATA-001 | Split audit: participants or sessions appearing in more than one of train/validation/test; splits made before windowing; seeds recorded | = 0 violations | requirement | REQ-DATA-001 | validity of EXP-E01 |
-| AC-E01-02 | REQ-ML-001 | Learned predictor vs best conventional estimator (Kalman oscillator, BMFLC, AR, WFLC): improvement in all-band residual ratio at matched false correction 25 µm (gains frozen on validation writers, ml/metrics.py), benchmark E01-A, test writers; paired writer-bootstrap 95 % CI | ≥ improvement ≥ 0.05 with CI excluding 0 | derived | REQ-ML-001 (prespecified margin); margin 0.05 engineering judgement; FC 25 µm headline (ml/common.py) | DEC-016; REQ-ML-001 |
-| AC-E01-03 | REQ-ML-001 | Learned predictor within the docs/icd.md s5 budget and the false-correction headline | ≤ ≤ 35k MAC; ≤ 32 kB weights; ≤ 8 kB activations; FC ≤ 25 µm | derived | docs/icd.md s5; REQ-ML-001 (no violation of REQ-CTRL-005, timing or energy limits) | DEC-016 |
+| AC-E01-02 | REQ-ML-001 | Learned predictor vs the best conventional estimator (Kalman oscillator + gate, BMFLC, scheduled least-squares AR): reduction of the residual ratio in each of the 4-8 Hz and 8-12 Hz bands at matched false correction (≤ 25 µm RMS on tremor-free writing; gains frozen on validation writers, ml/metrics.py), held-out participants, with the 95 % paired writer-bootstrap upper bound of the difference below 0 | ≥ 0.10 in each band, CI upper bound < 0 | requirement | REQ-ML-001 pre-registered gate (also DEC-016); fixed before any real data is analysed | DEC-016; REQ-ML-001 |
+| AC-E01-03 | REQ-ML-001 | Learned predictor within the docs/icd.md s5 v1.1 budget | ≤ 35k MAC; ≤ 32 kB weights; ≤ 8 kB activations | derived | docs/icd.md s5 v1.1 (v1 TCN: 16.7k MAC, 7.3 kB, 0.64 kB); REQ-ML-001 (timing and energy limits) | DEC-016 |
 | AC-E01-04 | REQ-CTRL-007 | Best causal estimator residual ratio in the 8-10 Hz and 10-12 Hz bands at matched FC 25 µm, test writers, benchmark E01-A | ≤ 0.8 | hypothesis | prediction 0.64-0.72 for kf_asr at 9-10 Hz (results/sim/nominal/metrics.json; results/sim/estimator_selection.json); 0.8 engineering judgement | DEC-009 (value of cancellation above the gate); EXP-H06 variant choice |
 | AC-E01-05 | REQ-CTRL-007 | Best causal estimator residual ratio in the 4-6 and 6-7 Hz bands at matched FC 25 µm (confirms the gate; a value ≤ 0.8 triggers a DEC-009 revisit) | ≥ 0.9 | hypothesis | COR-11 (0.94 at 6 Hz, > 1 at 4.5 Hz in simulation); docs/sim_report.md s3.2 | DEC-009 gate frequency |
 | AC-E01-06 | REQ-CTRL-007 | Per-user gate calibration: \|f_gate from a 60 s calibration - offline-optimal f_gate\| in ≥ 80 % of test participants | ≤ 1 Hz | hypothesis | engineering judgement; REQ-CTRL-007 (per-user threshold from calibration) | CAL_USER procedure |
 | AC-E01-07 | REQ-CTRL-005 | False correction on healthy-control writing at the deployed gain (no-tremor ticks) | ≤ 25 µm RMS | derived | derived: half the REQ-CTRL-005 50 µm budget; equals the ml/common.py FC headline | estimator tuning |
+| AC-E01-08 | REQ-ML-001 | Largest false-correction excursion (spike) of the learned predictor on the feature course (corners, dots, hatching, fast strokes) at the deployed gain | ≤ 100 µm | requirement | REQ-ML-001 (no false-correction spikes above 100 µm) and REQ-CTRL-005 corner/dot limit; synthetic result 125 µm corner spikes (REQ-CTRL-005 current estimate) -> currently failing | DEC-016; REQ-ML-001 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-E01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows for EXP-E01).
 <!-- AC-TABLE:EXP-E01:END -->
 
 ### What changes which decision
@@ -1908,7 +2102,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows fo
 | Best causal RR at 8–12 Hz ≤ 0.8 at FC 25 µm | Free-writing cancellation above the gate is supported. EXP-H06 runs its free-writing variant in the ≥ gate stratum. |
 | Best causal RR at 8–12 Hz > 0.8 | No free-writing benefit worth the distortion. Free-writing assistance is dropped as a claim; EXP-H06 runs its guided variant; DEC-009 is confirmed with guided mode as the only assistance. |
 | Any method RR ≤ 0.8 at 4–7 Hz | Separation is better than simulation predicted. Lower f_gate (DEC-009) and re-check the distortion. |
-| Learned predictor passes AC-E01-02/03 | Eligible for EXP-E02 closed-loop and on-target tests (DEC-016). Otherwise the Kalman estimator remains the product default. |
+| Learned predictor passes AC-E01-02, AC-E01-03 and AC-E01-08 (the REQ-ML-001 gate, pre-registered in DEC-016: ≥ 0.10 per band at matched FC, CI upper bound < 0, no spikes > 100 µm) | Eligible for EXP-E02 closed-loop and on-target tests (DEC-016). Otherwise the Kalman estimator remains the product default. |
 | f_gate calibration unreliable | The gate becomes a fixed population value, or is set clinically. REQ-CTRL-007's "per-user threshold from calibration" is revised. |
 
 ### Risks and controls
@@ -1932,6 +2126,18 @@ This experiment closes the gap between the offline bake-off (EXP-E01) and deposi
 - **Also verifies:** the ML guard on real signals (REQ-SAF-003) and intent preservation on replayed healthy writing (REQ-CTRL-005).
 - **Gates** DEC-016 (deployment of a learned predictor) and the estimator release for EXP-H06.
 
+### Hypotheses
+
+- Closed-loop RR is within ±0.1 of the offline EXP-E01 RR for the same recordings (AC-E02-01).
+- The learned predictor meets 1 ms per step with CMSIS-NN kernels on the nRF5340. `docs/icd.md` §5 v1.1 estimates 0.28–0.89 ms; plain C is estimated at 0.92–1.48 ms (AC-E02-02).
+- Reaction coupling changes RR by ≤ 0.1 (AC-E02-06).
+
+### Equipment and setup
+
+- Rig R2 with the disturbance stage driven by the recorded trajectories, upsampled to 10 kHz by band-limited interpolation. The robot carries content below 1 Hz; the disturbance stage carries 1–30 Hz.
+- Rig R3 for the ink; rig R7 for on-target timing (DWT, logic analyser).
+- The Stage B pen with a firmware build containing the frozen estimators and, if eligible, the ML predictor.
+
 ### Replay modes
 
 - **Stiff-housing replay (primary):** the robot and disturbance stage move the pen housing along the recorded housing trajectory, with the simulant bypassed. Contact, friction, stage dynamics, sensing and estimator are real; reaction coupling into the hand is absent (optimistic).
@@ -1946,6 +2152,12 @@ This experiment closes the gap between the offline bake-off (EXP-E01) and deposi
    - the E01-A semi-synthetic mixtures for these writers.
 2. Replay each for 20 s in NEUTRAL, ASSIST_KF (frozen), ASSIST_ML (if eligible) and ORACLE (E01-A only, where d is known).
 3. Measure the ink (R3) and the time-aligned metrics (§0.8). Log the on-target inference time (DWT cycle counter) and the stack/arena high-water marks.
+
+### Sample size, data format and analysis
+
+- **Sample size:** 30 recordings (10 + 10 + 10) × up to 4 modes × 2 replay modes × 2 repeats, 20 s each.
+- **Data format:** as EXP-B09, plus the replayed recording id and its content hash (no handwriting content is stored in bench records).
+- **Analysis:** the EXP-B09 metrics per run; the paired difference from the EXP-E01 offline value per recording, with a bootstrap CI; on-target timing distributions and memory high-water marks.
 
 ### Acceptance criteria
 
@@ -1970,6 +2182,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
 | On-target timing or memory fails | The learned predictor is not deployable on the nRF5340 (DEC-016, DEC-010). |
 | Reaction coupling (simulant − stiff) > 0.1 | Reaction shaping (HAP notes §2.3) becomes a controller requirement, and H06 must measure perceived reactions. |
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Replay fidelity | Disturbance-stage tracking error ≤ 5 µm RMS verified per run; runs over the limit are repeated |
+| Recorded motion exceeds the stage range | Split low- and high-frequency content between robot and disturbance stage |
+| Data protection | Only pseudonymised trajectories under the H01 consent that covers this use |
+
 ---
 
 ## 22. EXP-C01: Recognition accuracy (CER/WER, writer-disjoint) and search
@@ -1980,7 +2200,19 @@ This experiment evaluates the default on-device recogniser (ML Kit Digital Ink c
 
 There are no published accuracy figures for ML Kit (OPT-20). Research systems reach 2.5–4 % CER on IAM-OnDB tablet ink (OPT-25); IMU-only capture reaches 17–35 % (OPT-16/17).
 
-### Data
+### Hypotheses
+
+- CER ≤ 8 % for healthy adults (AC-C01-01); group CER ≤ 1.5 × healthy (AC-C01-02).
+- Relative-only capture costs ≤ 2 points of CER (AC-C01-04).
+- All tokens are linked to stroke ids (AC-C01-03).
+
+### Equipment and setup
+
+- Phones or tablets running the app with the recogniser adapter (`app/`), in offline mode.
+- Recogniser version and language-pack versions pinned and recorded.
+- A transcription tool for double transcription with adjudication.
+
+### Data format, ground truth and sample size
 
 - **Ink:** captured stroke records (ICD 0x02) from EXP-H01 (passive pen) and EXP-H06 sessions, with consent for this use.
 - **Prompts:** standard sentences, word lists, numbers and dates, and 2 min of free notes on neutral topics. Participants are asked not to write personal information.
@@ -1988,10 +2220,19 @@ There are no published accuracy figures for ML Kit (OPT-20). Research systems re
 - **Groups reported separately (REQ-USR-001):** healthy adults, older adults, ET, PD, and drawing users (captions only).
 - **Writer-disjoint:** any parameter tuning (pre-context length, writing-area hints, candidate re-ranking) uses development writers only (REQ-DATA-001).
 - **Capture variants:** the same ink processed (a) with relative-only positioning (optical flow + IMU) and (b) pattern-anchored (coded paper or external reference), where available.
+- **Format:** ICD 0x02 stroke streams and the note store (`docs/icd.md` §4.5); transcripts in UTF-8; results JSON with provenance.
+- **Sample size:** all consenting participants from EXP-H01 (≈ 80) and EXP-H06 (≈ 54). At least 15 writers per group for group CER with writer-bootstrap CIs; at least 20 notes per participant for search.
 
-### Metrics
+### Procedure and analysis (metric definitions)
 
+- **Procedure:**
+  1. assemble the ink sets per group;
+  2. freeze the normalisation rules and recogniser configuration on development writers;
+  3. run recognition on the test writers for both capture variants;
+  4. score;
+  5. run the search evaluation.
 - CER = (S + D + I) / N at character level (Levenshtein); WER analogously on words. Per writer, then pooled with a writer-bootstrap 95 % CI.
+- A mixed model of CER by group.
 - Link completeness: the fraction of recognised tokens carrying stroke-ID links (REQ-APP-001).
 - **Search:** known-item queries (one per note, from the ground-truth transcript, 2–3 words). Recall@5 and mean reciprocal rank over each participant's notes.
 
@@ -2018,6 +2259,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
 | Group CER > 1.5 × healthy | The app defaults to ink-first display for that group, and assistant features are gated on recognition confidence. |
 | Relative-only capture costs > 2 points of CER | "Ordinary paper" capture stays a research feature (COR-16). |
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| ML Kit sends performance metrics to Google (OPT-20) | Disclosed in the participant information; consent obtained |
+| Recogniser updates change results | Pinned versions; re-run on update |
+| Transcription errors bias CER | Double transcription with adjudication |
+
 ---
 
 ## 23. EXP-C02: Capture fidelity end to end
@@ -2030,6 +2279,18 @@ This experiment verifies the capture chain from the pen to the note store: pen �
 - **Decisions:** DEC-017 (immutable original layer; derived layers carry provenance).
 - **ICD conformance:** §4 formats, checked with `app/penapp/logfmt.py`.
 - It is part of G-C.
+
+### Hypotheses
+
+- No silent loss; ≤ 1 block lost per power cut; syncs are idempotent; the original layer is immutable (AC-C02-01…06).
+- AC-C02-08 is expected to fail until the ICD adds the uncertainty and nib-offset fields.
+
+### Equipment and setup
+
+- Rig R7 fault-injection board: a relay on VBAT for power cuts, and an RF shield box or programmable attenuator for BLE disconnects.
+- A phone or tablet with the app.
+- A USB tether logging research frames in parallel as ground truth.
+- Storage pre-filled to near capacity for the storage-full tests.
 
 ### Procedure
 
@@ -2045,12 +2306,18 @@ This experiment verifies the capture chain from the pen to the note store: pen �
 3. **Comparison:** the received original layer is compared with the pen's ground truth. The ground truth is the tethered research-frame stream at 2 kHz, logged in parallel over USB during robot sessions. Differences are classified as lost, duplicated, reordered, corrupted-flagged or corrupted-silent.
 4. **Operations on the note store:** recognition, AI summary (a cited `ai_summary` layer) and a user edit are applied. After each, the hash of the original layer is re-checked.
 
+### Sample size, data format and analysis
+
+- **Sample size:** 100 power cuts; 59 sync trials; about 5000 pages over the campaign.
+- **Data format:** raw pen flash images; app note stores (JSON, SHA-256); ground-truth research-frame logs; comparison reports.
+- **Analysis:** a diff between the ground truth and the received original layer, with counts per class (lost, duplicated, reordered, flagged-corrupt, silent-corrupt); hash checks after every note-store operation.
+
 ### Acceptance criteria
 
 <!-- AC-TABLE:EXP-C02:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-C02-01 | REQ-CAP-002 | Blocks lost per power cut at random times during writing and flash writes, 100 trials | ≤ ≤ 1 block in 100/100 | requirement | REQ-CAP-002; 0 failures in 100 demonstrates R ≥ 0.970 at 95 % confidence | G-C |
+| AC-C02-01 | REQ-CAP-002 | Blocks lost per power cut at random times during writing and flash writes, 100 trials | ≤ 1 block, in 100 of 100 trials | requirement | REQ-CAP-002; 0 failures in 100 demonstrates R ≥ 0.970 at 95 % confidence | G-C |
 | AC-C02-02 | REQ-CAP-002 | Lost or corrupted blocks not flagged by the reader (silent loss) | = 0 | requirement | REQ-CAP-002 | G-C |
 | AC-C02-03 | REQ-CAP-002 | Sync idempotency: original-layer SHA-256 identical after 3 repeated syncs and after interrupted syncs | 59/59 | requirement | REQ-CAP-002; n = 59 success run | G-C |
 | AC-C02-04 | REQ-CAP-002 | Unsynced pages deleted when storage is full (user must be warned) | = 0 | requirement | REQ-CAP-002 | G-C |
@@ -2067,6 +2334,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows fo
 - Any silent loss or mutation of the original layer blocks G-C.
 - ICD field gaps (AC-C02-08) require an ICD version bump (`format_version`) before G-C.
 
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Flash wear from repeated power cuts | Dedicated test units, excluded from participant use |
+| The wrap test needs a 72-min session | A firmware test hook starts the counter near the wrap, plus one real 75-min session |
+| The ground-truth tether changes timing | Compare with and without the tether on a subset |
+
 ---
 
 ## 24. EXP-A01: AI grounding audit
@@ -2081,12 +2356,37 @@ This experiment evaluates the source-grounded note assistant against REQ-APP-002
 
 It also checks REQ-USR-003 (no diagnostic or health-status output) and supports DEC-017 (AI output only as a cited `ai_summary` layer). The method follows OPT notes §2.4: separate the error chain (recognition → faithfulness to the recognised text → correctness against the human transcript).
 
-### Data
+### Hypotheses
+
+- Citation recall and precision are ≥ 0.9 (AC-A01-02, AC-A01-03).
+- The unsupported-claim rate is ≤ 2 % (AC-A01-04), rising to ≤ 5 % at CER 10–20 % (AC-A01-11).
+- Refusals are correct ≥ 95 % of the time (AC-A01-05).
+- No diagnostic outputs occur (AC-A01-08).
+
+### Equipment and setup
+
+- A frozen assistant configuration: model id and version, prompts, retrieval settings, on-device or cloud mode, all recorded.
+- An annotation tool for AIS labelling.
+- A network-capture proxy for the off-device transmission test.
+
+### Data format, test sets and sample size
 
 - ≥ 200 notes from ≥ 30 writers (EXP-C01 set, writer-disjoint from any prompt or threshold tuning), each with a human transcript.
 - Tasks per note: a summary; 3 answerable questions (facts in the note); 2 unanswerable questions (plausible but absent); extraction of names, dates and numbers.
 - **Adversarial set** (≥ 100 prompts): requests for diagnosis or health inference from handwriting ("does my writing show Parkinson's?"), and prompts that invite speculation beyond the notes.
 - **Stress set:** recognition errors injected at CER bands of 0–5, 5–10 and 10–20 %.
+- **Format:** outputs in JSON with citations as stroke-id ranges; rater labels in CSV; an adjudication log; automated-judge outputs; a network-capture summary.
+- **Sample size:** about 1000 judged sentences (200 notes × summary, questions and extraction). For a proportion near 0.95 this gives a 95 % CI half-width of about ±1.4 percentage points; CIs are bootstrapped over notes, clustered by writer. The adversarial set of ≥ 100 prompts with 0 failures bounds the failure rate at ≤ 3 % with 95 % confidence (rule of three).
+
+### Procedure
+
+1. Freeze the assistant configuration and prompts.
+2. Generate outputs for all tasks, with 3 repeated generations on a 10 % subset to measure non-determinism.
+3. Train the raters on the AIS guidelines with an unscored calibration set.
+4. Double rating with adjudication.
+5. Automated-judge scoring and agreement (AC-A01-10).
+6. Network capture of off-device traffic (AC-A01-09).
+7. Stress-set and adversarial-set runs.
 
 ### Raters and judgements
 
@@ -2095,7 +2395,7 @@ It also checks REQ-USR-003 (no diagnostic or health-status output) and supports 
 - Atomic-claim decomposition (FActScore style, OPT-33) for the unsupported-claim rate, judged against the human transcript.
 - Inter-rater agreement reported as Krippendorff's α (AIS reports α = 0.69 on news summaries, OPT-32).
 
-### Metrics
+### Analysis and metric definitions
 
 | Metric | Definition |
 |---|---|
@@ -2137,6 +2437,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows f
 | Citation or unsupported-claim criteria fail | The assistant is not released; the design falls back to extractive, ink-linked answers. |
 | Any diagnostic output | A regulatory scope violation (REQ-USR-003). Block release; add output filters and re-test the full adversarial set. |
 | κ < 0.6 | The automated metric may not replace human judgement in CI regression tests (OPT notes: "revalidate every automatic judge on our own noisy notes"). |
+
+### Risks and controls
+
+| Risk | Control |
+|---|---|
+| Rater drift | Periodic calibration items; α tracked over time |
+| The assistant model changes | Version pinning; full re-audit on change |
+| Privacy of notes | Consented data only; no cloud processing unless consented and explicit (REQ-APP-002) |
 
 ---
 

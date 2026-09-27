@@ -76,7 +76,7 @@ The delay-limited residual (P-23) at 8 Hz is 2 sin(π·8·1.33 ms) = 0.067 for p
 | Holding power (θ 50°, N 1 N) | 0.48 W copper (≈ 85 °C coil) against 0.455 W allowable for a moving coil | **at limit** (E-8, M-5) | thermal, trade |
 | Share of writing envelope within thermal limit | 68 % | calculation | `drive_sense.json` |
 | Electronics power | 115 mW (optics placeholder 15 mA) | calculation | `drive_sense.json` |
-| Runtime, 200 mAh pouch | ≈ 55 min continuous at the design point; ≈ 1.9 h at the Monte Carlo median load | calculation | `electronics/README.md` |
+| Runtime, 200 mAh pouch | 54 min continuous contact at the design point; 81 min writing at 65 % pen-down duty. A cell fitting the Rev A.1 bay may be ~130 mAh (DEC-014) | calculation | `results/trade/config_trade.json`; `electronics/README.md` |
 | Supply headroom | winding chosen so 3.3 V never binds inside the thermal envelope | calculation | DEC-012 |
 | Ink error (neutral pen vs rigid pen) | device distortion ≈ 59 µm RMS | simulation | `results/sim/design_sweeps.json` |
 | Ink error from false corrections (no tremor) | Kalman balanced ≈ 40–60 µm; assertive ≈ 90–110 µm; band-pass ≈ 160 µm | simulation | `results/sim/sweeps/summary.json` |

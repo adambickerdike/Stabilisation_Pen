@@ -113,7 +113,7 @@ flowchart LR
 | Actuator copper loss, nominal writing (θ 50°, N 1 N) | ≈ 0.45 W at 20 °C, ≈ 0.57 W hot (direction-averaged) | sim static check; `drive_sense.py` |
 | Allowable average copper loss (moving coil) | 0.455 W | `results/thermal/thermal.json` |
 | Share of the writing envelope within that limit | 68 % (θ 35–75°, N 0.2–2 N log-uniform, μ 0.05–0.35) | `drive_sense.json` |
-| Continuous writing at the design point, 200 mAh × 0.8 usable | ≈ 55 min; ≈ 1.9 h at the Monte Carlo median load | this README |
+| Runtime at the design point, 200 mAh × 0.8 usable | 54 min of continuous contact; 81 min of writing at 65 % pen-down duty (`results/trade/config_trade.json`). A cell that fits the Rev A.1 bay may hold only ~130 mAh (DEC-014) | this README |
 | Stage-period CPU and bus occupancy (500 µs) | CPU ≈ 130 µs, SAADC ≈ 210 µs, SPIM4 ≈ 50 µs, SPIB ≈ 16 µs | `fig_stage_timeline.png`; to be replaced by logic-analyser captures |
 
 The nominal design point sits at the moving-coil thermal limit. This is the audit's conclusion (COR-02) seen from the electronics side: Rev A is a research instrument, and the skid or bias variants (DEC-008) remain the product path.

@@ -143,7 +143,7 @@ Implemented in `core.py::_kf_step`, and ported to C in `firmware/`.
 
 **P-22: page correction to stage command.** q_r = −g·J⁻¹(P-4)·d̂(t + h). It then passes through a radial soft limit with taper (q_lim 0.55 mm, 0.1 mm taper) and a slew limit (0.08 m/s).
 
-**P-23: delay-limited cancellation bound.** A sinusoid cancelled with pure delay τ leaves a residual of |1 − e^(−jωτ)| = 2|sin(πfτ)|, which is 0.497 at 8 Hz and 10 ms. The source report's formula reproduces exactly. With servo dynamics the residual is larger (COR-05, 0.44 at 8 Hz for the Rev A loop; `results/audit/fig_delay_residual_servo.png`).
+**P-23: delay-limited cancellation bound.** A sinusoid cancelled with pure delay τ leaves a residual of |1 − e^(−jωτ)| = 2|sin(πfτ)|, which is 0.497 at 8 Hz and 10 ms. The source report's formula reproduces exactly. With servo dynamics the residual is larger (COR-07: 0.44 at 8 Hz for a 5 ms delay with a 60 Hz servo; `results/audit/fig_delay_residual_servo.png`).
 
 **P-24: why the contact feedforward destabilised contact (DEC-011).**
 
