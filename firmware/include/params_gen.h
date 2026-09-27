@@ -3,16 +3,16 @@
  * Evidence status: PROPOSED DESIGN. Every value is calculated, assumed or copied
  * from a design file as cited; none is a measurement of Rev A hardware.
  *   generator: firmware/tools/gen_params.py
- *   yaml_version: 0.4.3
- *   yaml_sha16: 3fbe200f8ff5c330
- *   estimator_selection_sha16: ecd777b4a7ae9117
- *   drive_sense_sha16: f934a426ab37edfe
+ *   yaml_version: 0.4.4
+ *   yaml_sha16: a9d3d0016461d690
+ *   estimator_selection_sha16: eace6b899bb37c3a
+ *   drive_sense_sha16: 7fcbd6c40ee3b4af
  *   design_revA_sha16: 69844a9aa4e6bd48
- *   model_py_sha16: c62e5e157c7e8264
- *   core_py_sha16: c46570f25d1439cb
- *   icd_sha16: aeb4d48bc20883c3
+ *   model_py_sha16: d8e582e84966892f
+ *   core_py_sha16: 7b86d3e72d535bce
+ *   icd_sha16: 7c379c5d77455a2f
  *   model_version: M1.0
- *   git_head: e28901b
+ *   git_head: 4bccea4
  *   nominal_theta_deg: 50.0
  *   nominal_N0: 1.0
  *   evidence_status: proposed design / calculated / assumed values; no hardware measurement
@@ -20,14 +20,14 @@
 #ifndef PEN_PARAMS_GEN_H
 #define PEN_PARAMS_GEN_H
 
-#define PEN_PARAMS_YAML_VERSION "0.4.3"
-#define PEN_PARAMS_YAML_SHA16 "3fbe200f8ff5c330"
+#define PEN_PARAMS_YAML_VERSION "0.4.4"
+#define PEN_PARAMS_YAML_SHA16 "a9d3d0016461d690"
 #define PEN_PARAMS_MODEL_VERSION "M1.0"
-#define PEN_PARAMS_YAML_VERSION_NUM (403u)
-#define PEN_PARAMS_SEL_SHA16 "ecd777b4a7ae9117"
-#define PEN_PARAMS_DRV_SHA16 "f934a426ab37edfe"
-#define PEN_PARAMS_MODEL_SHA16 "c62e5e157c7e8264"
-#define PEN_PARAMS_CORE_SHA16 "c46570f25d1439cb"
+#define PEN_PARAMS_YAML_VERSION_NUM (404u)
+#define PEN_PARAMS_SEL_SHA16 "eace6b899bb37c3a"
+#define PEN_PARAMS_DRV_SHA16 "7fcbd6c40ee3b4af"
+#define PEN_PARAMS_MODEL_SHA16 "d8e582e84966892f"
+#define PEN_PARAMS_CORE_SHA16 "7b86d3e72d535bce"
 
 /* ---- Timing (ICD section 2) ---- */
 #define PEN_F_PWM_HZ               (40000.0f) /* Hz; config/parameters.yaml electrical.f_pwm (calculated) */
@@ -97,7 +97,7 @@
 #define PEN_NTC_R_PULLUP           (10000.0f) /* ohm; design_revA.py R14 10k to +3V0A (ratiometric read, REFSEL VDD/4, gain 1/4) */
 #define PEN_I_HOLD_DESIGN          (0.334728032f) /* A; drive_sense.json design_point_hold_current_A (50 deg, 1 N, mu 0.15 worst direction) */
 #define PEN_R_EXT_HOT              (0.579999983f) /* ohm; drive_sense.json headroom.r_ext_ohm (bridge hot + shunt + wiring) */
-#define PEN_T_COIL_DESIGN          (96.6061935f) /* degC; drive_sense.json components.t_coil_design_c */
+#define PEN_T_COIL_DESIGN          (96.6061859f) /* degC; drive_sense.json components.t_coil_design_c */
 
 /* ---- Stage position servo (2 kHz) ---- */
 #define PEN_POS_BW_HZ              (60.0f) /* Hz; config/parameters.yaml control.pos_bw as resolved by sim/pensim/model.py build_params() (Controller.pos_bw None) */

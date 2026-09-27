@@ -1,4 +1,4 @@
-# Simulation report — model M1, parameters v0.4.2
+# Simulation report — model M1, parameters v0.4.4
 
 **Evidence status: SIMULATION.** Every number below comes from executable models on synthetic signals, with parameters from literature, datasheets, CAD or assumption (`config/parameters.yaml` records which). None is a measurement of a pen or a person.
 
@@ -31,31 +31,31 @@
 
 ### 3.1 Load and holding power → DEC-003, DEC-008
 
-- The static hold matches the analytic transverse load N cos θ: 0.820 / 0.639 / 0.253 N at 35° / 50° / 75° for N = 1 N.
-- Copper loss is 0.81 / 0.49 / 0.08 W.
+- The static hold matches the analytic transverse load N cos θ: 0.817 / 0.638 / 0.253 N at 35° / 50° / 75° for N = 1 N.
+- Copper loss is 0.80 / 0.49 / 0.08 W.
 - Across the 160-sample Monte Carlo, neutral copper loss has median 0.18 W and p90 1.0 W. Rank correlation with normal force is ρ = 0.89 (`mc_sensitivity.json`).
 
 **Normal force, not tremor, sets the heat.** This supports the lever (B) for research and the skid and bias variants (D/E) as product candidates.
 
 ### 3.2 What assistance achieves in free writing → DEC-009, DEC-016, COR-11
 
-Grid: 12 test seeds × 9 frequencies × 3 amplitudes (0.15/0.3/0.6 mm peak). Values are the mean residual ratio against the powered-neutral pen (`results/sim/sweeps/summary.json`, `fig_ratio_vs_frequency.png`). In v0.4.2 the balanced and assertive tuning objectives select the same Kalman set, so the two profiles share one row (see "Estimator selection is fragile" below).
+Grid: 12 test seeds × 9 frequencies × 3 amplitudes (0.15/0.3/0.6 mm peak). Values are the mean residual ratio against the powered-neutral pen (`results/sim/sweeps/summary.json`, `fig_ratio_vs_frequency.png`). Since v0.4.2 the balanced and assertive tuning objectives select the same Kalman set, so the two profiles share one row (see "Estimator selection is fragile" below).
 
 | Tremor frequency (Hz) | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 |---|---|---|---|---|---|---|---|---|---|
 | Oracle (mechanical bound) | 0.24 | 0.22 | 0.23 | 0.23 | 0.26 | 0.27 | 0.29 | 0.30 | 0.32 |
-| Kalman (both profiles) | 1.14 | 1.10 | 1.07 | 1.07 | 1.08 | 1.03 | 0.97 | 0.90 | 0.85 |
+| Kalman (both profiles) | 1.14 | 1.10 | 1.07 | 1.08 | 1.09 | 1.03 | 0.97 | 0.90 | 0.85 |
 | Band-pass | 1.49 | 1.45 | 1.32 | 1.12 | 0.86 | 0.75 | 0.87 | 1.01 | 1.10 |
 
 The Kalman mean hides a strong amplitude dependence (`results/sim/sweeps/grid.csv`, mean over 12 seeds per cell):
 
 | Kalman, tremor peak | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
 |---|---|---|---|---|---|---|---|---|---|
-| 0.15 mm | 1.31 | 1.25 | 1.20 | 1.27 | 1.51 | 1.51 | 1.38 | 1.20 | 1.03 |
-| 0.3 mm | 1.10 | 1.06 | 1.02 | 0.99 | 0.90 | 0.78 | 0.71 | 0.65 | 0.63 |
+| 0.15 mm | 1.31 | 1.25 | 1.20 | 1.28 | 1.53 | 1.52 | 1.38 | 1.19 | 1.03 |
+| 0.3 mm | 1.10 | 1.06 | 1.02 | 0.99 | 0.91 | 0.78 | 0.71 | 0.65 | 0.63 |
 | 0.6 mm | 1.03 | 1.01 | 1.00 | 0.97 | 0.82 | 0.79 | 0.82 | 0.86 | 0.89 |
 
-Small tremor is made worse at every frequency. At 0.15 mm the neutral pen's error is only 102–238 µm, the same order as the Kalman's false corrections of intended writing. Distortion of intended writing without tremor: Kalman 101 µm, band-pass 168 µm RMS (grid seeds). At the nominal case (0.3 mm, 4 seeds), the Kalman reaches 0.705 at 9 Hz with 55 µm distortion and the oracle 0.18–0.23 (`results/sim/nominal/metrics.json`). The distortion depends on the seeds (55 µm on 4, 101 µm on 12) because the frequency gate opens over whole segments.
+Small tremor is made worse at every frequency. At 0.15 mm the neutral pen's error is only 102–237 µm, the same order as the Kalman's false corrections of intended writing. Distortion of intended writing without tremor: Kalman 100 µm, band-pass 168 µm RMS (grid seeds). At the nominal case (0.3 mm, 4 seeds), the Kalman reaches 0.71 at 9 Hz with 55 µm distortion and the oracle 0.18–0.23 (`results/sim/nominal/metrics.json`). The distortion depends on the seeds (55 µm on 4, 100 µm on 12) because the frequency gate opens over whole segments.
 
 **Conclusion.** The mechanism could remove 70–80 % of tremor-induced ink error. Averaged over amplitude, none of the causal estimators tested separates tremor from intended writing below ~9 Hz, where most essential tremor lies. They add error there. At 0.3 mm the Kalman breaks even at ~7 Hz; at 0.15 mm it never helps.
 
@@ -84,12 +84,12 @@ The flip came from the inert set's false corrections, which rose from 38 to 62 �
 
 **The gate cannot tell writing from tremor.** Fraction of in-contact time with applied authority g ≥ 0.5 (the research-frame field g), seeds 200–203, θ 50°, N 1 N, 0.3 mm tremor (`sim/diag_gate.py` → `results/sim/gate_fraction.json`). AC-B09-15 asks for ≥ 0.9 with 9–10 Hz tremor and ≤ 0.05 without tremor.
 
-| Kalman set (plant v0.4.2) | 9 Hz tremor | 10 Hz tremor | 6 Hz tremor (below gate) | No tremor: handwriting | No tremor: feature course |
+| Kalman set (plant v0.4.4) | 9 Hz tremor | 10 Hz tremor | 6 Hz tremor (below gate) | No tremor: handwriting | No tremor: feature course |
 |---|---|---|---|---|---|
-| Selected (active) | 0.94 | 0.93 | 0.12 | 0.15 (0–0.32 per seed) | 0.52 |
-| v0.4.1 inert set, for reference | 0.31 | 0.29 | 0.41 | 0.51 | 0.74 |
+| Selected (active) | 0.94 | 0.94 | 0.12 | 0.14 (0–0.29 per seed) | 0.68 |
+| v0.4.1 inert set, for reference | 0.31 | 0.21 | 0.41 | 0.51 | 0.74 |
 
-The active set tracks the tremor frequency (median 9.1 and 10.0 Hz) and opens its gate for it. It also opens on 15 % of tremor-free handwriting and half of the feature course, where the tracker locks onto strokes (median 8.2 Hz on the feature course). That is where the 55–101 µm distortion comes from. The inert set's gate opens more often on writing than on tremor. Two consequences follow:
+The active set tracks the tremor frequency (median 9.1 and 10.0 Hz) and opens its gate for it. It also opens on 14 % of tremor-free handwriting and two thirds of the feature course, where the tracker locks onto strokes (median 8.7 Hz on the feature course). That is where the 55–100 µm distortion comes from. On the feature course the open fraction was 52 % with the v0.4.2 plant, another instance of the fragility above. The inert set's gate opens more often on writing than on tremor. Two consequences follow:
 
 - The gate should not be driven by the estimator's own tracker. The next controller revision (DEC-009 revisit) uses a separate spectral detector with hysteresis and confidence weighting.
 - EXP-E01 must report whether each estimator's selection is stable across plants and writers, not only its score.
@@ -102,12 +102,12 @@ Path distance to the template, RMS, 6 Hz / 0.3 mm tremor, 4 seeds (`results/sim/
 
 | Feature | Neutral | Guided | Kalman |
 |---|---|---|---|
-| Circle | 443 µm | 164 µm | 437 µm |
+| Circle | 443 µm | 163 µm | 437 µm |
 | Spiral | 382 µm | 112 µm | 383 µm |
-| Fast stroke | 115 µm | 33 µm | 111 µm |
-| Dots | 153 µm | 101 µm | 127 µm |
+| Fast stroke | 115 µm | 37 µm | 111 µm |
+| Dots | 152 µm | 101 µm | 127 µm |
 | Corners | 228 µm | 187 µm | 225 µm |
-| Hatching | 141 µm | 129 µm | 132 µm |
+| Hatching | 141 µm | 128 µm | 132 µm |
 
 When the intended shape is known, the stage removes most of the tremor.
 
@@ -117,9 +117,9 @@ When the intended shape is known, the stage removes most of the tremor.
 
 | k_ax (N/m) | 300 | 700 | 1000 | 2000 | 4000 | 8000 |
 |---|---|---|---|---|---|---|
-| Device distortion vs rigid pen (µm) | 68 | 87 | 82 | 59 | 53 | 53 |
+| Device distortion vs rigid pen (µm) | 69 | 87 | 82 | 59 | 54 | 53 |
 | Normal-force modulation, oracle (mN RMS) | 91 | 95 | 107 | 128 | 138 | 140 |
-| Oracle ratio | 0.27 | 0.16 | 0.13 | 0.13 | 0.15 | 0.17 |
+| Oracle ratio | 0.27 | 0.16 | 0.13 | 0.13 | 0.14 | 0.17 |
 
 The compliance-aware Jacobian (γ from compliances) against the textbook 1/sin θ gives oracle ratios of:
 
@@ -131,35 +131,35 @@ The compliance-aware Jacobian (γ from compliances) against the textbook 1/sin �
 
 Refill sliding in the carrier (κ_s = 1, 0.6 g) against the whole lever sliding (κ_s = 0, 1.2 g); `results/sim/kappa_compare.json`:
 
-- device distortion 60.7 vs 61.3 µm (35°) and 59.3 vs 59.3 µm (50°);
-- oracle ratio 0.27 vs 0.31 and 0.13 vs 0.13;
-- Kalman 0.83 vs 0.78 and 0.73 vs 0.72.
+- device distortion 61.0 vs 61.5 µm (35°) and 59.3 vs 59.1 µm (50°);
+- oracle ratio 0.26 vs 0.31 and 0.13 vs 0.13;
+- Kalman 0.83 vs 0.78 and 0.74 vs 0.72.
 
-The two layouts are equivalent in the dynamics. The tolerance stack decides the choice (`mechanics/README.md`). Reducing the tip travel from 0.65 to 0.60 mm (Rev A.1) leaves the oracle ratios unchanged (0.27 / 0.13). The oracle's time on the stops rises from 0.01 % to 0.4 % at 35° and 0.16 % at 50°.
+The two layouts are equivalent in the dynamics. The tolerance stack decides the choice (`mechanics/README.md`). Reducing the tip travel from 0.65 to 0.60 mm (Rev A.1) leaves the oracle ratios unchanged (0.27 / 0.13). The oracle's time on the stops rises from 0.01–0.02 % to 0.34 % at 35° and 0.17 % at 50°.
 
 ### 3.6 Contact feedforward instability → DEC-011
 
 - **Finding.** The Monte Carlo exposed nib bounce caused by the measured-force contact feedforward. Mechanism: `docs/physics.md` P-24. Diagnosis: `results/sim/ff_chatter.json`, `ff_options.json`.
-- **Worst cases.** In six low-altitude samples with tremor, 2nd-order 60 Hz filtering still bounced (140–2539 contact transitions in 5 s). Without the feedforward there were 4–13, the same as a rigid pen with lifts.
-- **Cost of removal.** Servo error 19.4 → 28.0 µm and device distortion 52 → 59 µm; the oracle ratio at 9 Hz improves, 0.18 → 0.13 (tuning seeds).
-- **Partial recovery.** Doubling the servo's integral corner (0.2 → 0.4 of the position bandwidth) without the feedforward brings the servo error to 17.6 µm and device distortion to 53 µm. One worst case then rose to 35 transitions, against a rigid-pen range of 4–18, so it is not adopted before EXP-B05 measures the stage.
+- **Worst cases.** In six low-altitude samples with tremor, 2nd-order 60 Hz filtering still bounced (132–2539 contact transitions in 5 s). Without the feedforward there were 4–13, the same as a rigid pen with lifts.
+- **Cost of removal.** Servo error 19.4 → 27.9 µm and device distortion 51 → 59 µm; the oracle ratio at 9 Hz improves, 0.18 → 0.13 (tuning seeds).
+- **Partial recovery.** Doubling the servo's integral corner (0.2 → 0.4 of the position bandwidth) without the feedforward brings the servo error to 17.5 µm and device distortion to 53 µm. One worst case then rose to 35 transitions, against a rigid-pen range of 4–18, so it is not adopted before EXP-B05 measures the stage.
 - **After the fix.** 0/160 Monte Carlo samples bounce; neutral contact transitions have p90 2.6/s (pen lifts).
 
 ### 3.7 Uncertainty → research priorities
 
 Monte Carlo: 160 samples over the declared parameter ranges at 9 Hz and 0.3 mm (`monte_carlo.csv`, `mc_sensitivity.json`, `fig_mc_sensitivity.png`). Results:
 
-- oracle ratio median 0.46 (p10 0.11, p90 1.00);
+- oracle ratio median 0.45 (p10 0.11, p90 1.00);
 - Kalman median 0.91 (p10 0.59, p90 1.53);
-- coil temperature p90 44 °C in 5 s runs (coil-to-structure 130 K/W in v0.4.2; the v0.4.3 value of 145 K/W adds 0.2–0.3 K);
-- voltage saturation p90 9 % of contact time.
+- coil temperature p90 43 °C in 5 s runs;
+- voltage saturation p90 5 % of contact time. It was 9 % in v0.4.2, when the simulator lowered K_f with the coil temperature instead of the magnet temperature.
 
 Strongest rank correlations:
 
 | Outcome | Parameters (ρ) |
 |---|---|
-| Oracle ratio | altitude (−0.45), normal force (−0.33), friction (+0.23), arm stiffness (−0.22) |
-| Kalman ratio | **friction (+0.51)**, optical noise (+0.22), grip stiffness (−0.21) |
+| Oracle ratio | altitude (−0.45), normal force (−0.34), friction (+0.24), arm stiffness (−0.22) |
+| Kalman ratio | **friction (+0.51)**, optical noise (+0.23), grip stiffness (−0.21) |
 | Copper loss | normal force (+0.89), K_f (−0.29), altitude (−0.26) |
 
 Friction's effect on estimator performance raises the priority of EXP-B02 (friction vs speed and paper) and EXP-B01.
@@ -170,13 +170,13 @@ Friction's effect on estimator performance raises the priority of EXP-B02 (frict
 
 | Case | Result | Firmware rule |
 |---|---|---|
-| F1: optical dropout 0.3 s | Authority falls to 0.002 within the dropout and recovers to 0.99 after 1 s; residual 329 µm | Confidence fade (implemented) |
-| F2: low battery (3.3 / 3.0 / 2.8 V) | Voltage saturation 11 / 18 / 24 % of contact time | Derate below 3.3 V |
+| F1: optical dropout 0.3 s | Authority falls to 0.002 within the dropout and recovers to 0.99 after 1 s; residual 330 µm | Confidence fade (implemented) |
+| F2: low battery (3.3 / 3.0 / 2.8 V) | Voltage saturation 11 / 18 / 23 % of contact time | Derate below 3.3 V |
 | F3: coil power lost in contact | **Ink jumps up to 0.79 mm within 50 ms** | Never de-energise in contact except on hard faults |
 | F4: Hall sensor frozen | 0.56 mm jump; stage on its stop 99.97 % of the time; 0.55 A | Detect within 5 ms, hold open-loop |
-| F5: overload (2 N at 35°) | Stops 97 % of the time; 1.55 W; coil 59 °C after 6 s. Extrapolated with the same one-node model (0.25 J/K, copper tempco), the 120 °C coil limit is reached in ≈ 18 s at 130 K/W and ≈ 17 s at the v0.4.3 value of 145 K/W (calculation) | Thermal derate |
-| F6: stage blocked at 0.1 mm | Residual 412 µm; current at 0.56 A | Stop and residual detection |
-| F7: optical noise ×10 (30 µm) | Residual 433 µm | Confidence (NIS) derate |
+| F5: overload (2 N at 35°) | Stops 96 % of the time; 1.55 W; coil 59 °C after 6 s. Extrapolated with the same one-node model (145 K/W, 0.25 J/K, copper tempco), the 120 °C coil limit is reached in ≈ 17 s (calculation) | Thermal derate |
+| F6: stage blocked at 0.1 mm | Residual 413 µm; current at 0.56 A | Stop and residual detection |
+| F7: optical noise ×10 (30 µm) | Residual 432 µm | Confidence (NIS) derate |
 
 ## 4. Limitations
 

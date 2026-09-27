@@ -1,9 +1,9 @@
 # Host unit tests - firmware/tests (gcc 13.3.0, -fsanitize=address,undefined)
 # Evidence status: HOST TEST (x86-64, float32 code paths); not hardware, not target timing.
-# params: 0.4.3 yaml sha 3fbe200f8ff5c330
-input check: yaml 0.4.3 [3fbe200f8ff5c330], estimator_selection [ecd777b4a7ae9117], model.py [c62e5e157c7e8264], core.py [c46570f25d1439cb]
+# params: 0.4.4 yaml sha a9d3d0016461d690
+input check: yaml 0.4.4 [a9d3d0016461d690], estimator_selection [eace6b899bb37c3a], model.py [d8e582e84966892f], core.py [7b86d3e72d535bce]
 params_gen.h and all golden vectors match the current sources
-pen firmware unit tests: params yaml 0.4.3 [3fbe200f8ff5c330], model M1.0
+pen firmware unit tests: params yaml 0.4.4 [a9d3d0016461d690], model M1.0
 [ RUN  ] test_crc_known_answer
     CRC-16/CCITT-FALSE("123456789") = 0x29B1; 64 random vectors vs binascii.crc_hqx: 0 mismatches
 [  OK  ] test_crc_known_answer (5 checks)
@@ -55,17 +55,17 @@ pen firmware unit tests: params yaml 0.4.3 [3fbe200f8ff5c330], model M1.0
     band-pass estimator vs mode==2 transcription: max |d dhat| 1.02e-07 m over 6000 ticks
 [  OK  ] test_bpf_estimator_golden (2 checks)
 [ RUN  ] test_replay_sim_kf
-    Kalman (balanced), local origin on (shift invariance): 3999 ticks vs core.simulate(): max |d dhat| 4.7e-09 m, |d f_est| 4.82e-05 Hz, |d g| 5.45e-06, |d q_r| 3.37e-09 m, |d i_ref| 1.53e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
-    Kalman (balanced), local origin off: 3999 ticks vs core.simulate(): max |d dhat| 1.6e-08 m, |d f_est| 5.63e-05 Hz, |d g| 7.21e-06, |d q_r| 4.08e-09 m, |d i_ref| 3.75e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
+    Kalman (balanced), local origin on (shift invariance): 3999 ticks vs core.simulate(): max |d dhat| 1.48e-08 m, |d f_est| 6.01e-05 Hz, |d g| 4.31e-06, |d q_r| 3.36e-09 m, |d i_ref| 2.3e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
+    Kalman (balanced), local origin off: 3999 ticks vs core.simulate(): max |d dhat| 1.16e-08 m, |d f_est| 4.86e-05 Hz, |d g| 5.3e-06, |d q_r| 3.41e-09 m, |d i_ref| 2.98e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
 [  OK  ] test_replay_sim_kf (18 checks)
 [ RUN  ] test_replay_sim_bpf
-    band-pass, local origin off (as simulator): 3999 ticks vs core.simulate(): max |d dhat| 1.71e-07 m, |d f_est| 0 Hz, |d g| 2.98e-06, |d q_r| 1.88e-07 m, |d i_ref| 0.00209 A; reference authority g_eff > 0 on 93 % of ticks (max 1.000), max |q_r| 532 um
+    band-pass, local origin off (as simulator): 3999 ticks vs core.simulate(): max |d dhat| 1.85e-07 m, |d f_est| 0 Hz, |d g| 2.98e-06, |d q_r| 2.15e-07 m, |d i_ref| 0.00127 A; reference authority g_eff > 0 on 93 % of ticks (max 1.000), max |q_r| 532 um
 [  OK  ] test_replay_sim_bpf (9 checks)
 [ RUN  ] test_replay_sim_ffc
-    Kalman + contact FF (bench option): 3999 ticks vs core.simulate(): max |d dhat| 2.13e-08 m, |d f_est| 7.63e-05 Hz, |d g| 1.3e-05, |d q_r| 5.97e-09 m, |d i_ref| 1.86e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 1.000), max |q_r| 346 um
+    Kalman + contact FF (bench option): 3999 ticks vs core.simulate(): max |d dhat| 2.95e-08 m, |d f_est| 7.72e-05 Hz, |d g| 1.72e-05, |d q_r| 8.51e-09 m, |d i_ref| 2.07e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 1.000), max |q_r| 346 um
 [  OK  ] test_replay_sim_ffc (9 checks)
 [ RUN  ] test_replay_sim_kf_authority
-    Kalman (balanced) 4 s / 9 Hz, local origin on: 7999 ticks vs core.simulate(): max |d dhat| 1.78e-08 m, |d f_est| 4.39e-05 Hz, |d g| 7.24e-06, |d q_r| 5.75e-09 m, |d i_ref| 3.11e-05 A; reference authority g_eff > 0 on 96 % of ticks (max 1.000), max |q_r| 399 um
+    Kalman (balanced) 4 s / 9 Hz, local origin on: 7999 ticks vs core.simulate(): max |d dhat| 2.45e-08 m, |d f_est| 9.39e-05 Hz, |d g| 5.45e-06, |d q_r| 5.23e-09 m, |d i_ref| 4.25e-05 A; reference authority g_eff > 0 on 96 % of ticks (max 1.000), max |q_r| 399 um
 [  OK  ] test_replay_sim_kf_authority (9 checks)
 [ RUN  ] test_bpf_reacquisition_transient
     band-pass after re-acquisition at 20 mm: peak |dhat| 9.86 mm (simulator scheme) vs 0.270 mm (local origin)
@@ -124,7 +124,7 @@ pen firmware unit tests: params yaml 0.4.3 [3fbe200f8ff5c330], model M1.0
     design hold force 0.760 N (i = 0.335 A at Kf20):
       3.7 V, 25 degC: mean 0.337 A, DC duty 0.608; max |duty| static 0.650, with 0.3 mm 8 Hz motion 0.660; clamp ticks 0/0
       3.3 V, coil 96.6 degC (R x1.301), magnets 36.1 degC (Kf x0.981): mean 0.341 A, V 2.84 V, DC duty 0.868; noise off: max |duty| 0.865, clamp ticks 0
-      same corner with Hall/ADC noise: max |duty| static 0.920 (clamp ticks 0); with 0.3 mm 8 Hz motion 0.930, clamp ticks 0 of 2000, longest run > 0.95: 0.0 ms (fault needs > 50 ms)
+      same corner with Hall/ADC noise: max |duty| static 0.925 (clamp ticks 0); with 0.3 mm 8 Hz motion 0.930, clamp ticks 0 of 2000, longest run > 0.95: 0.0 ms (fault needs > 50 ms)
       (drive_sense.json v0.4.3: the 6 ohm winding binds at 3.3 V in 0.5 % of the thermally allowed envelope; sim/pensim/core.py applies the Br tempco at the coil temperature, the pessimistic convention)
 [  OK  ] test_closed_loop_hold_no_vsat (7 checks)
 [ RUN  ] test_thermal_model_steady_state

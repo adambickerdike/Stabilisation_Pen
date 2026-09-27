@@ -3,7 +3,7 @@ Evidence status: BUILD ARTEFACT (compile/link only; not run on hardware)
 toolchain: arm-none-eabi-gcc (15:13.2.rel1-2) 13.2.1 20231009
 flags: -mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard -O2 -ffunction-sections -fdata-sections -fno-math-errno; link --gc-sections, newlib-nano, nosys
 elf: firmware/build/arm/pen_fw_nrf5340.elf
-generated: 2026-09-27T04:21:07Z
+generated: 2026-09-27T05:04:20Z
 
 module                                       text    data      bss    flash      RAM
 ------------------------------------------------------------------------------------

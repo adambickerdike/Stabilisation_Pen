@@ -112,7 +112,7 @@ flowchart LR
 |---|---|---|
 | Electronics supply current (typical, excl. actuator) | 31 mA (115 mW at 3.7 V); optics are a 15 mA placeholder | `drive_sense.json` |
 | Actuator copper loss in contact, design point (θ 50°, N 1 N) | ≈ 0.50 W referenced to 20 °C, ≈ 0.65 W at the 96.6 °C design coil (direction-averaged) | `results/trade/config_trade.json`; `drive_sense.py` |
-| Allowable average copper loss (moving coil) | 0.412 W, set by the 120 °C coil limit (0.50 mm air gaps, 115 mW electronics) | `results/thermal/thermal.json` (v0.4.3) |
+| Allowable average copper loss (moving coil) | 0.412 W, set by the 120 °C coil limit (0.50 mm air gaps, 115 mW electronics) | `results/thermal/thermal.json` (v0.4.4) |
 | Share of the writing envelope within that limit | 70 % (θ 35–75°, N 0.2–2 N log-uniform, μ 0.05–0.35; continuous contact) | `drive_sense.json` |
 | Runtime at the design point, 200 mAh × 0.8 usable | 54 min of continuous contact; 81 min of writing at 65 % pen-down duty (`results/trade/config_trade.json`). A cell that fits the Rev A.1 bay may hold only ~130 mAh (DEC-014) | this README |
 | Stage-period CPU and bus occupancy (500 µs) | CPU ≈ 130 µs, SAADC ≈ 210 µs, SPIM4 ≈ 50 µs, SPIB ≈ 16 µs | `fig_stage_timeline.png`; to be replaced by logic-analyser captures |

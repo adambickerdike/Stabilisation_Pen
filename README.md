@@ -26,7 +26,7 @@ This repository holds the research and development package: the audit of the sou
 2. **Intent separation, not mechanics or latency, limits free-writing assistance.**
    - In simulation, the mechanism could remove 70–80 % of tremor-induced ink error (oracle bound 0.22–0.32).
    - The causal estimators tested give no benefit below ~9 Hz on synthetic handwriting.
-   - Guided (template) tasks work in simulation: circle 443 → 164 µm, spiral 382 → 112 µm.
+   - Guided (template) tasks work in simulation: circle 443 → 163 µm, spiral 382 → 112 µm.
    - Whether real handwriting is more separable is the decisive open question (EXP-H01 → E01).
 3. **Parkinson's writing difficulty is mainly micrographia.** A ±0.5 mm stage cannot enlarge letters. PD support means cueing, feedback and practice, measured for lasting unassisted benefit, not immediate correction (DEC-002).
 4. **Design errors found and fixed in this package** (calculation and simulation):
@@ -84,7 +84,7 @@ Firmware, ML and app have their own build and test commands in their READMEs.
 
 ## Repository map
 
-`config/parameters.yaml` holds every parameter with unit, range, status and source (v0.4.2). The directories:
+`config/parameters.yaml` holds every parameter with unit, range, status and source (v0.4.4). The directories:
 
 | Directory | Contents |
 |---|---|

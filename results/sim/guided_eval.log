@@ -1,6 +1,6 @@
-corner_edge {'neutral': 228.0, 'guided': 187.0, 'kf_asr': 224.7}
-dot {'neutral': 152.8, 'guided': 101.4, 'kf_asr': 127.0}
-hatch {'neutral': 141.2, 'guided': 128.6, 'kf_asr': 132.4}
-fast_stroke {'neutral': 114.5, 'guided': 33.4, 'kf_asr': 110.9}
-circle {'neutral': 442.6, 'guided': 164.0, 'kf_asr': 437.5}
-spiral {'neutral': 382.0, 'guided': 112.0, 'kf_asr': 382.9}
+corner_edge {'neutral': 228.0, 'guided': 186.8, 'kf_asr': 224.7}
+dot {'neutral': 152.5, 'guided': 101.1, 'kf_asr': 127.0}
+hatch {'neutral': 141.4, 'guided': 128.4, 'kf_asr': 132.4}
+fast_stroke {'neutral': 114.5, 'guided': 36.9, 'kf_asr': 110.7}
+circle {'neutral': 442.6, 'guided': 163.5, 'kf_asr': 437.4}
+spiral {'neutral': 382.3, 'guided': 111.7, 'kf_asr': 382.9}

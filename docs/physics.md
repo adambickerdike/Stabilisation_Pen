@@ -112,7 +112,7 @@ A separate normal stiffness and damping acts along n. Parameters are literature 
 
 ## 6. Thermal
 
-**P-18: lumped network.** The chain is coil → former/air gap → magnets and iron → barrel → hand/air. The source is P_cu(T), and coil resistance rises with temperature (feedback). `analysis/thermal.py` gives steady state and transients. With the 0.50 mm air gaps and 115 mW of electronics (v0.4.3): 96.6 °C coil and 34.1 °C surface at the design load (0.33 W average); allowable average copper loss 0.412 W, set by the 120 °C coil limit; runaway above it. Its two-node reduction (coil to structure 145 K/W with 0.22 J/K; structure to ambient 12.5 K/W with 14.9 J/K) is the firmware's thermal governor model. The simulator carries only the coil node (R_th, C_th): valid for its runs of seconds, which are much shorter than the structure's time constant (≈ 3 min).
+**P-18: lumped network.** The chain is coil → former/air gap → magnets and iron → barrel → hand/air. The source is P_cu(T), and coil resistance rises with temperature (feedback). `analysis/thermal.py` gives steady state and transients. With the 0.50 mm air gaps and 115 mW of electronics (v0.4.3): 96.6 °C coil and 34.1 °C surface at the design load (0.33 W average); allowable average copper loss 0.412 W, set by the 120 °C coil limit; runaway above it. Its two-node reduction (coil to structure 145 K/W with 0.25 J/K; structure to ambient 12.5 K/W with 14.9 J/K) is the firmware's thermal governor model. The simulator carries only the coil node (R_th, C_th): valid for its runs of seconds, which are much shorter than the structure's time constant (≈ 3 min).
 
 ## 7. Control and estimation
 

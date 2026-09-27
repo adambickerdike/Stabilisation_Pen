@@ -1,16 +1,16 @@
 {
  "meta": {
   "generator": "firmware/tools/gen_params.py",
-  "yaml_version": "0.4.3",
-  "yaml_sha16": "3fbe200f8ff5c330",
-  "estimator_selection_sha16": "ecd777b4a7ae9117",
-  "drive_sense_sha16": "f934a426ab37edfe",
+  "yaml_version": "0.4.4",
+  "yaml_sha16": "a9d3d0016461d690",
+  "estimator_selection_sha16": "eace6b899bb37c3a",
+  "drive_sense_sha16": "7fcbd6c40ee3b4af",
   "design_revA_sha16": "69844a9aa4e6bd48",
-  "model_py_sha16": "c62e5e157c7e8264",
-  "core_py_sha16": "c46570f25d1439cb",
-  "icd_sha16": "aeb4d48bc20883c3",
+  "model_py_sha16": "d8e582e84966892f",
+  "core_py_sha16": "7b86d3e72d535bce",
+  "icd_sha16": "7c379c5d77455a2f",
   "model_version": "M1.0",
-  "git_head": "e28901b",
+  "git_head": "4bccea4",
   "nominal_theta_deg": 50.0,
   "nominal_N0": 1.0,
   "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
@@ -508,7 +508,7 @@
   {
    "section": "Analogue sense chain (electronics/gen/design_revA.py, drive_sense.json)",
    "name": "PEN_T_COIL_DESIGN",
-   "value": 96.60619052057275,
+   "value": 96.60618900322086,
    "type": "float",
    "unit": "degC",
    "source": "drive_sense.json components.t_coil_design_c"

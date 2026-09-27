@@ -9,9 +9,9 @@ Nothing in this directory is a hardware measurement. Every number below carries 
 
 Contract documents:
 - `docs/icd.md` v1.3 (the ML guard implements the §5 guard rules 1–4 of v1.1, rule 5 and the output expiry of contract v1.2);
-- `config/parameters.yaml` v0.4.3;
+- `config/parameters.yaml` v0.4.4;
 - `results/sim/estimator_selection.json`;
-- `results/electronics/drive_sense.json` v0.4.3 and `electronics/calcs/drive_sense.py` (sense chain, PWM, hold current, headroom);
+- `results/electronics/drive_sense.json` v0.4.4 and `electronics/calcs/drive_sense.py` (sense chain, PWM, hold current, headroom);
 - `electronics/gen/design_revA.py` (pin plan and fault logic);
 - `results/thermal/thermal.json` (two-node thermal model).
 
@@ -134,7 +134,7 @@ The unit tests on QEMU ran 60 cases (1120 checks) on the Cortex-M33 code: FPv5-S
 | `control.c` | §2 stage-loop order | `simulate()` control tick | replays |
 | `fusion.c` | §1 p_H; §2 optics 1 kHz, IMU 3.84 kHz | `core.py` fusion | `test_sensing.c` |
 | `hall.c` | §3 CAL_HALL (default map is an **uncalibrated placeholder**) | none | `test_sensing.c` |
-| `thermal.c` | §6 bit 2; two-node model (YAML 0.4.3, `thermal.json`) | `core.py` one-node coil model (different, see D6) | `test_thermal.c` |
+| `thermal.c` | §6 bit 2; two-node model (YAML 0.4.4, `thermal.json`) | `core.py` one-node coil model (different, see D6) | `test_thermal.c` |
 | `safety.c` | §6 fault bits 0–8; REQ-SAF-001/002 | failure cases F1–F7 | `test_safety.c`, `test_system.c` |
 | `state_machine.c` | §6 modes, codes and policies; REQ-SAF-004; REQ-PWR-003 | none | `test_sm.c`, `test_system.c` |
 | `ml_guard.c` | §5 v1.2 (rules 1–5, expiry); REQ-SAF-003 | none | `test_ml.c` |
@@ -157,12 +157,12 @@ Current inputs:
 
 | Input | Version / digest |
 |---|---|
-| YAML | 0.4.3 [3fbe200f8ff5c330] |
-| estimator selection | [ecd777b4a7ae9117]: balanced KF q_j 0.1, q_t 1e-8, w0 7 Hz, f_gate 7.5 Hz (the same values as the assertive profile) |
-| `model.py` | [c62e5e157c7e8264] |
-| `core.py` | [c46570f25d1439cb] |
-| `drive_sense.json` | [f934a426ab37edfe] |
-| `docs/icd.md` | [aeb4d48bc20883c3] (recorded; the ICD is not an input to the values) |
+| YAML | 0.4.4 [a9d3d0016461d690] |
+| estimator selection | [eace6b899bb37c3a]: balanced KF q_j 0.1, q_t 1e-8, w0 7 Hz, f_gate 7.5 Hz (the same values as the assertive profile) |
+| `model.py` | [d8e582e84966892f] |
+| `core.py` | [7b86d3e72d535bce] |
+| `drive_sense.json` | [7fcbd6c40ee3b4af] |
+| `docs/icd.md` | [7c379c5d77455a2f] (recorded; the ICD is not an input to the values) |
 
 Notable values:
 
@@ -184,7 +184,7 @@ Notable values:
 | Thermal: coil → structure | R 145 K/W (`actuator.Rth_coil_amb`, key name historical), C 0.25 J/K |
 | Thermal: structure → ambient | R 12.5 K/W, C 14.9 J/K; reference T_amb (25 °C) + 5.9 K with no coil loss |
 | Thermal: time constants | 35.5 s and 190 s (coupled network); total 157.5 K/W |
-| Design coil temperature | 96.6 °C (drive_sense v0.4.3, used by the hold-corner test) |
+| Design coil temperature | 96.6 °C (drive_sense v0.4.4, used by the hold-corner test) |
 | **ff_contact** | **0.0 (DEC-011)** |
 
 The contact feedforward path (N̂ = F_ax/sin θ through a 60 Hz, 2nd-order biquad) is kept behind that gain; the FFC replay proves it at gain 1.
@@ -248,7 +248,7 @@ Evidence labels: **H** = host test (float32 code on x86-64), **Q** = QEMU execut
 | ISNS offset calibration at pen-up | +8 / −5 mA injected | H, Q | estimated 8.06 / −5.04 mA |
 | Servo + current loop closed loop ("~60 Hz") | C plant: stage, coil, bridge, ADC, delayed Hall | H, Q | 50 µm step: rise 1.5 ms, overshoot 45.8 %, 2 % settling 23 ms; −3 dB at 193 Hz, peak +4.4 dB at 80 Hz. "60 Hz" is the PID natural frequency |
 | Loop margins (REQ-CTRL-002) | force injection, unloaded plant | H, Q | crossover 98 Hz, **PM 35.3° (< 40°, not met; open)**, GM 10.9 dB |
-| No voltage saturation at the design hold current | 0.76 N hold (0.335 A) + 0.3 mm 8 Hz correction | H, Q | 3.7 V / 25 °C: max duty 0.66. 3.3 V, coil 96.6 °C, magnets 36.1 °C (drive_sense v0.4.3 corner): DC 0.868, peaks 0.930; no clamp, below the 0.95 headroom threshold |
+| No voltage saturation at the design hold current | 0.76 N hold (0.335 A) + 0.3 mm 8 Hz correction | H, Q | 3.7 V / 25 °C: max duty 0.66. 3.3 V, coil 96.6 °C, magnets 36.1 °C (drive_sense v0.4.4 corner): DC 0.868, peaks 0.930; no clamp, below the 0.95 headroom threshold |
 | Two-node thermal estimator (D6) | constant loss and constant current (copper tempco) vs closed form; 0.30 W step response; NTC preference; derating | H, Q | steady state within 0.001 K of the closed form; time constants 35.5 s / 190.1 s from the response = network eigenvalues (R·C products 36.25 s / 186.25 s); NTC preferred when valid; derate thresholds unchanged |
 | Hall frozen detection < 5 ms | unit test + system test on the plant | H, Q | 4.0 ms; no false trip in 10 s. Open-loop hold drifts 33 µm in 200 ms (release would move 600 µm) |
 | Fault detections | residual, range, headroom, optical, battery | H, Q | headroom 50.5 ms; optical 300.5 ms; battery 230 ms (LPF 50 ms + debounce 200 ms) |
@@ -334,7 +334,7 @@ Mode codes (research frame `mode` byte, event 0x0001 arg): OFF 0, STANDBY 1, NEU
 **Findings** (host model; to be confirmed on the loaded hardware):
 - F1: phase margin is 35.3° (< 40°, **REQ-CTRL-002 open**) on the unloaded plant with the simulator's gains. The loaded-plant analysis is pending (EXP-B05). Options are to reduce ω_c or to add phase lead.
 - F2: the "~60 Hz bandwidth" is the PID natural frequency. The closed loop is −3 dB at 193 Hz, with a +4.4 dB peak at 80 Hz. The step overshoot is 46 % on feedback only; the firmware reference path applies the slew limit and the reference feedforward.
-- F3: at the drive_sense v0.4.3 hot corner (3.3 V, coil 96.6 °C, magnets 36.1 °C), the design hold plus a 0.3 mm 8 Hz correction peaks at 0.930 duty, below the 0.95 threshold. The earlier 0.955 came from the pessimistic coil-temperature Br tempco (D14). drive_sense reports that the 6 Ω winding binds at 3.3 V in 0.5 % of the thermal envelope.
+- F3: at the drive_sense v0.4.4 hot corner (3.3 V, coil 96.6 °C, magnets 36.1 °C; unchanged in v0.4.4), the design hold plus a 0.3 mm 8 Hz correction peaks at 0.930 duty, below the 0.95 threshold. The earlier 0.955 came from the pessimistic coil-temperature Br tempco (D14). drive_sense reports that the 6 Ω winding binds at 3.3 V in 0.5 % of the thermal envelope.
 - F4: authority coverage: the 2 s KF replays engage authority since the estimator re-tune (q_j 0.1). The 4 s / 9 Hz replay makes coverage independent of the tuning.
 - F5: the simulator does not reset `kf_init`, `phase_prev` or `nis_f` when the KF re-initialises. This is ported as is, for replay fidelity.
 - F6: the stuck-value Hall detector needs ≥ 1 LSB of noise. A conversion-counter freshness check (TMAG5170 status) would be more robust (VERIFY).

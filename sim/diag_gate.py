@@ -45,7 +45,7 @@ def gate_stats(r):
 
 def main():
     sel = json.load(open(os.path.join(ROOT, "results", "sim", "estimator_selection.json")))["results"]["kfosc"]
-    sets = {"kf_selected_v042": sel["selected"]["params"], "kf_inert_v041": INERT_V041}
+    sets = {"kf_selected": sel["selected"]["params"], "kf_inert_v041": INERT_V041}
     out = {}
     for name, kw in sets.items():
         ctrl = model.Controller(mode="kfosc", **kw)

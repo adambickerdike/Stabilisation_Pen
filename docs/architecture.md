@@ -73,7 +73,7 @@ The delay-limited residual (P-23) at 8 Hz is 2 sin(π·8·1.33 ms) = 0.067 for p
 | Centre of mass | 76.0 mm from tip (≤ 70 mm) | **violated** (M-1) | same |
 | Tip-equivalent inertia | 13.7 g (≤ 12 g) | **violated** (M-6); CFRP carrier ≈ 9.5 g | CAD distributed-mass |
 | Stage travel | q_lim 0.55 mm control, 0.60 mm mechanical; paddle–magnet clearance ≥ 93 µm RSS | calculation | `results/mechanics/tolerance.json` |
-| Holding power (θ 50°, N 1 N) | 0.50 W copper in contact against 0.412 W allowable for a moving coil; 0.33 W average at 65 % pen-down, coil ≈ 97 °C | **over the limit in continuous contact** (E-8, M-5) | thermal, trade (v0.4.3) |
+| Holding power (θ 50°, N 1 N) | 0.50 W copper in contact against 0.412 W allowable for a moving coil; 0.33 W average at 65 % pen-down, coil ≈ 97 °C | **over the limit in continuous contact** (E-8, M-5) | thermal, trade (v0.4.4) |
 | Share of writing envelope within thermal limit | 70 % (continuous contact) | calculation | `drive_sense.json` |
 | Electronics power | 115 mW (optics placeholder 15 mA) | calculation | `drive_sense.json` |
 | Runtime, 200 mAh pouch | 54 min continuous contact at the design point; 81 min writing at 65 % pen-down duty. A cell fitting the Rev A.1 bay may be ~130 mAh (DEC-014) | calculation | `results/trade/config_trade.json`; `electronics/README.md` |

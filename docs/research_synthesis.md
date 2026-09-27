@@ -115,7 +115,7 @@ The shared web-search quota ran out during the streams. Later retrieval used pub
   - In real time, BMFLC reached 64 % against WFLC's 43 % *[bench, ACT-10, abstract]*.
   - A 1D-CNN predicting 50 ms ahead reached 93.8 % against WFLC's 68.8 %, assuming voluntary motion below 2 Hz *[bench, ACT-14]*.
 - **None of these was tested on handwriting, where voluntary motion reaches 5–10 Hz.**
-- **Our simulation *[ours-sim, COR-11]*:** conventional estimators help only above about 9 Hz (v0.4.2 grid). The frequency gate is meant to prevent harm below that. But the tracker that drives it also opens it on 15 % of tremor-free handwriting and on 52 % of the feature course, and the tuned selection flips between an inert and an active set with small plant changes. The mechanical bound is 0.22–0.32 (`docs/sim_report.md` §3.2).
+- **Our simulation *[ours-sim, COR-11]*:** conventional estimators help only above about 9 Hz (v0.4.4 grid). The frequency gate is meant to prevent harm below that. But the tracker that drives it also opens it on 14 % of tremor-free handwriting and on 68 % of the feature course, and the tuned selection flips between an inert and an active set with small plant changes. The mechanical bound is 0.22–0.32 (`docs/sim_report.md` §3.2).
 
 ## 8. Edge ML deployment (EML)
 

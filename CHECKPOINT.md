@@ -1,6 +1,6 @@
 # Checkpoint — 2026-09-27
 
-Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.3** (simulation results are v0.4.2; the only simulator input that changed is worth 0.2–0.3 K of coil temperature).
+Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it.
 
 ## 1. What exists and what actually ran
 
@@ -22,7 +22,7 @@ All are calculation or simulation unless stated otherwise.
 
 - **Load.** Transverse load = N·cos θ + friction terms (COR-01).
   - Static hold at N = 1 N: 0.82 / 0.64 / 0.25 N at 35° / 50° / 75°.
-  - Copper loss at the same points: 0.81 / 0.49 / 0.08 W.
+  - Copper loss at the same points: 0.80 / 0.49 / 0.08 W.
   - Moving-coil allowable is 0.412 W average (120 °C coil limit, 0.50 mm air gaps), and 70 % of the envelope (θ 35–75°, N 0.2–2 N, μ 0.05–0.35) stays within it in continuous contact.
   - Coil thermal path: 145 K/W coil to structure, 157 K/W steady to ambient; Rev A coil 96.6 °C at the design load.
   - Supply headroom: at 3.3 V the 6 Ω winding cannot hold 0.5 % of the thermally allowed envelope (hot, high-force corner); 4 Ω can (DEC-012 revisited, EXP-B03).
@@ -35,9 +35,9 @@ All are calculation or simulation unless stated otherwise.
   - Oracle bound 0.22–0.32 across 4–12 Hz.
   - Kalman 1.03–1.14 at 4–9 Hz and 0.85 at 12 Hz. Since v0.4.2 the balanced and assertive objectives select the same set. At 0.15 mm tremor it adds error at every frequency.
   - Band-pass 1.1–1.5 below 7 Hz.
-  - Distortion without tremor: Kalman 101 µm on 12 seeds (55 µm on 4), band-pass 168 µm. REQ-CTRL-005 (≤ 50 µm) is violated.
+  - Distortion without tremor: Kalman 100 µm on 12 seeds (55 µm on 4), band-pass 168 µm. REQ-CTRL-005 (≤ 50 µm) is violated.
   - The selection is fragile: 3–5 % of the tuning objective separates an inert set from the active one, and the v0.4.2 plant change flipped it (`docs/sim_report.md` §3.2).
-  - Guided mode: circle 443 → 164 µm, spiral 382 → 112 µm path distance.
+  - Guided mode: circle 443 → 163 µm, spiral 382 → 112 µm path distance.
 - **Mechanism.** Device distortion (neutral vs rigid pen) ≈ 59 µm. Axial path 2 kN/m. γ ≈ 0.19 at 50°.
 - **Budgets.**
   - Tip-equivalent inertia 13.7 g (requirement ≤ 12 g).
@@ -68,7 +68,7 @@ All are calculation or simulation unless stated otherwise.
 | 7 | Datasheet checks behind the VERIFY/SELECT lines | Datasheet review, with Nordic reference circuitry for the nRF5340 |
 | 8 | Centre of mass and inertia above requirements | CFRP carrier; lighter stator or shorter barrel; confirm the CoM requirement against ordinary pens (EXP-M03, H02) |
 | 9 | Stage-loop phase margin 35.3° against REQ-CTRL-002's 40° (unloaded model; firmware loop test) | Identify the loaded plant (**EXP-B05**), then retune: lower position bandwidth or add phase lead, and re-run the simulation chain |
-| 10 | Intent separation in the controller itself: the tracker-driven frequency gate also opens on writing (15 % of tremor-free handwriting, 52 % of the feature course) | Implement the separate spectral detector with hysteresis (DEC-009 revisit); test it in simulation, then in **EXP-E01** on recorded writing |
+| 10 | Intent separation in the controller itself: the tracker-driven frequency gate also opens on writing (14 % of tremor-free handwriting, 68 % of the feature course) | Implement the separate spectral detector with hysteresis (DEC-009 revisit); test it in simulation, then in **EXP-E01** on recorded writing |
 
 ## 5. Next actions, in order
 
