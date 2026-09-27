@@ -73,11 +73,11 @@ The delay-limited residual (P-23) at 8 Hz is 2 sin(π·8·1.33 ms) = 0.067 for p
 | Centre of mass | 76.0 mm from tip (≤ 70 mm) | **violated** (M-1) | same |
 | Tip-equivalent inertia | 13.7 g (≤ 12 g) | **violated** (M-6); CFRP carrier ≈ 9.5 g | CAD distributed-mass |
 | Stage travel | q_lim 0.55 mm control, 0.60 mm mechanical; paddle–magnet clearance ≥ 93 µm RSS | calculation | `results/mechanics/tolerance.json` |
-| Holding power (θ 50°, N 1 N) | 0.48 W copper (≈ 85 °C coil) against 0.455 W allowable for a moving coil | **at limit** (E-8, M-5) | thermal, trade |
-| Share of writing envelope within thermal limit | 68 % | calculation | `drive_sense.json` |
+| Holding power (θ 50°, N 1 N) | 0.50 W copper in contact against 0.412 W allowable for a moving coil; 0.33 W average at 65 % pen-down, coil ≈ 97 °C | **over the limit in continuous contact** (E-8, M-5) | thermal, trade (v0.4.3) |
+| Share of writing envelope within thermal limit | 70 % (continuous contact) | calculation | `drive_sense.json` |
 | Electronics power | 115 mW (optics placeholder 15 mA) | calculation | `drive_sense.json` |
 | Runtime, 200 mAh pouch | 54 min continuous contact at the design point; 81 min writing at 65 % pen-down duty. A cell fitting the Rev A.1 bay may be ~130 mAh (DEC-014) | calculation | `results/trade/config_trade.json`; `electronics/README.md` |
-| Supply headroom | winding chosen so 3.3 V never binds inside the thermal envelope | calculation | DEC-012 |
+| Supply headroom | 6 Ω: at 3.3 V the static hold exceeds the supply at 0.5 % of the thermally allowed envelope (hot, high-force corner); 4 Ω holds everywhere | calculation; **open** (DEC-012 revisited, EXP-B03) | `drive_sense.json` |
 | Ink error (neutral pen vs rigid pen) | device distortion ≈ 59 µm RMS | simulation | `results/sim/design_sweeps.json` |
 | Ink error from false corrections (no tremor) | Kalman ≈ 55–100 µm (4 nominal / 12 grid seeds; one set for both profiles since v0.4.2, `docs/sim_report.md` §3.2); band-pass ≈ 170 µm. REQ-CTRL-005 (≤ 50 µm) **violated** | simulation | `results/sim/sweeps/summary.json`, `results/sim/nominal/metrics.json` |
 | Tremor residual (with tremor) | oracle bound 0.22–0.32 of powered-neutral across 4–12 Hz; causal estimators ≥ 1.0 below 9 Hz (Kalman 1.03–1.14; worse at 0.15 mm) | simulation | same |

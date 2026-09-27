@@ -1,8 +1,8 @@
 config,P_bench_corner_W,P_design_W,P_high_W,avg_power_W,coil_rise_bench_corner_K,coil_rise_design_K,coil_rise_high_K,fits,runtime_min_200mAh,stroke_ok
 A direct-drive carriage near tip,83.376,11.947,38.343,7.88,5002.6,716.8,2300.6,True,5,True
-"B lever n=3.17, moving-coil annular sandwich (Rev A)",3.496,0.501,1.607,0.44,454.4,65.1,209.0,True,81,True
+"B lever n=3.17, moving-coil annular sandwich (Rev A)",3.496,0.501,1.607,0.44,506.9,72.6,233.1,True,81,True
 "B-MM lever n=3.17, moving magnet, fixed bonded coils",7.488,1.072,3.443,0.812,187.2,26.8,86.1,True,44,True
-D skid + constant-force nib (Fc = 0.30 N) on B actuator,0.239,0.077,0.156,0.165,31.1,10.0,20.2,True,215,True
-E B + slow zero-hold bias actuator (80% of static load),0.14,0.02,0.064,0.128,18.2,2.6,8.4,True,277,True
+D skid + constant-force nib (Fc = 0.30 N) on B actuator,0.239,0.077,0.156,0.165,34.7,11.1,22.6,True,215,True
+E B + slow zero-hold bias actuator (80% of static load),0.14,0.02,0.064,0.128,20.3,2.9,9.3,True,277,True
 "C amplified piezo, 2 x APA50XS per axis",,,,,,,,False,,False
 F external electromagnetic surface (Langerak-class),,,,,,,,True,,True

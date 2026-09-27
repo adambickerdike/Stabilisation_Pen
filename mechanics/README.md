@@ -56,7 +56,7 @@ Dependencies: CadQuery 2.8, magpylib 5.2, numpy, scipy, matplotlib.
 | Mechanical tip travel / lever tilt | 0.65 mm / 3.11° | 0.60 mm / 2.87° | tolerance analysis |
 | Pivot stiffness at the tip | cross-strip gimbal 75.8 N/m; stress 177/82 MPa (full travel / typical); buckling margin 19 | same | `flexure_calc.json` |
 | Axial suspension | spiral-arm diaphragm 1984 N/m, 231 MPa at the 0.6 mm stop | same | `flexure_calc.json` |
-| Holding power at the design point (θ 50°, N 1 N) | 0.48 W (coil ≈ 85 °C) | +6 % for the wider gap | trade, thermal, tolerance |
+| Holding power at the design point (θ 50°, N 1 N) | 0.50 W in contact (referenced to 20 °C); coil ≈ 97 °C at 65 % pen-down | +6 % for the wider gap; the wider gap also raises the coil-to-structure resistance to 145 K/W | trade, thermal, tolerance |
 | Interferences at full travel (nominal geometry) | none | none | CAD check |
 
 Model inconsistency: the CAD still models the pivot with three inclined wires. The flexure analysis replaced them with a cross-strip gimbal at the same virtual centre. The mass difference (~0.1 g) is carried as an allowance; the gimbal geometry is a CAD to-do (M-3).
@@ -106,4 +106,4 @@ Prototype stage B (the tethered research pen) starts only after stage A shows th
 - **M-3.** Replace the wire pivots with the cross-strip gimbal in the CAD; model the diaphragm; model the three optical windows.
 - **M-4.** Moving-coil leads cross the pivot: flex-life of the coil leads over 10⁷ tremor cycles (EXP-M02, B10).
 - **M-6.** Tip-equivalent inertia is 13.7 g, above the ≤ 12 g requirement. A CFRP carrier tube (1.55 g/cm³ against titanium's 4.43 g/cm³) would bring it to about 9.5 g (calculation). The price is stiffness and bond-joint risk at the gimbal and paddle.
-- **M-5.** The thermal path from a moving coil in an air gap (~130 K/W) sets the holding-power limit. Measure it early (EXP-B07).
+- **M-5.** The thermal path from a moving coil in an air gap (≈ 145 K/W to the magnets and iron, 157 K/W to ambient at steady state) sets the holding-power limit. Measure it early (EXP-B03 coupon, EXP-B07).

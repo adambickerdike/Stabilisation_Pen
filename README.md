@@ -22,7 +22,7 @@ This repository holds the research and development package: the audit of the sou
 
 ## Key conclusions so far
 
-1. **The transverse load is dominated by N·cos θ, not friction** (COR-01). Holding power (F/(n·K_m))² therefore rules out direct drive at the tip (about 12 W). A front-pivot lever with a rear annular actuator brings it to about 0.5 W at the design point. That is still **at the moving-coil thermal limit**. Skid and bias-actuator variants remain the product path (DEC-003, DEC-008).
+1. **The transverse load is dominated by N·cos θ, not friction** (COR-01). Holding power (F/(n·K_m))² therefore rules out direct drive at the tip (about 12 W). A front-pivot lever with a rear annular actuator brings it to about 0.5 W in contact at the design point. That is **above the 0.412 W a moving coil can dissipate continuously** (within it on average at 65 % pen-down). Skid and bias-actuator variants remain the product path (DEC-003, DEC-008; route in `docs/recommendation.md`).
 2. **Intent separation, not mechanics or latency, limits free-writing assistance.**
    - In simulation, the mechanism could remove 70–80 % of tremor-induced ink error (oracle bound 0.22–0.32).
    - The causal estimators tested give no benefit below ~9 Hz on synthetic handwriting.
@@ -31,7 +31,9 @@ This repository holds the research and development package: the audit of the sou
 3. **Parkinson's writing difficulty is mainly micrographia.** A ±0.5 mm stage cannot enlarge letters. PD support means cueing, feedback and practice, measured for lasting unassisted benefit, not immediate correction (DEC-002).
 4. **Design errors found and fixed in this package** (calculation and simulation):
    - Nib-bounce instability from a measured-force contact feedforward (DEC-011).
-   - Voltage-limited 11 Ω coil, rewound to 6 Ω (DEC-012).
+   - Voltage-limited 11 Ω coil, rewound to 6 Ω (DEC-012). A later, fuller headroom check found 6 Ω still binds at 3.3 V in the hot, high-force corner (0.5 % of the thermal envelope) and 4 Ω does not; open until EXP-B03 winds both.
+   - A thermal model left at the old 0.45 mm air gap: the moving-coil allowable is 0.412 W, not 0.455 W (v0.4.3).
+   - Interface errors found by the firmware review: the ICD printed the inverse Jacobian and the wrong actuator-force sign (fixed in ICD v1.3; the simulator and firmware were right). Tilt-dependent γ is now computed from a stored stiffness ratio.
    - An axial suspension layout that closes the actuator gap: the refill now slides in the carrier (DEC-007 rev.).
    - A nose that touched the paper at every writing angle: the refill point now protrudes 5 mm (DEC-018).
    - Inertia understated by a point-mass approximation: 13.7 g, above the 12 g requirement.

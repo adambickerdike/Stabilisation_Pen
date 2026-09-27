@@ -325,7 +325,7 @@ def sheet_actuator(axis):
     ]
     s.notes = [
         f"ISNS_{ax} = VREF_1V25 + 1.0 V/A x I_coil (0.1 ohm x 10); linear range +/-1.2 A; trip window +/-0.8 A (VTH_HI 2.05 V, VTH_LO 0.45 V).",
-        "IN/IN drive: PWM on one input, other low = drive/brake (slow decay); both low + SLEEP low = coast. Centre-aligned PWM, current sampled at period centre.",
+        "IN/IN drive (DRV8212P truth table, VERIFY): slow decay = one input held high, the other driven with the inverted duty, i.e. drive (1,0) / brake (1,1). PWM on one input with the other low is drive/coast (fast decay). nSLEEP low = sleep, outputs Hi-Z. Centre-aligned PWM, current sampled at period centre.",
     ]
     return s
 

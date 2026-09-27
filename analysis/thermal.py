@@ -21,6 +21,7 @@ import numpy as np
 from scipy.integrate import solve_ivp
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from stabpen import params as sp  # noqa: E402
 from stabpen import plotstyle, provenance  # noqa: E402
 
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "thermal")
@@ -31,10 +32,16 @@ C = {"coil": 0.44e-3 * 385 + 0.05, "iron": 5.6e-3 * 450, "barrel_act": 4.0e-3 * 
      "barrel_grip": 4.5e-3 * 900, "barrel_rear": 5.2e-3 * 900, "pcb": 2.3e-3 * 900, "cell": 8.5e-3 * 1000}
 
 
-def conductances(coil_type="moving", hand=True):
+_P = sp.load()
+GAP = _P["actuator.air_gap"]                  # coil-to-magnet clearance per side (DEC-007 rev.)
+P_EL = _P["electrical.p_electronics_active"]    # PCB dissipation while writing
+
+
+def conductances(coil_type="moving", hand=True, gap=None):
+    gap = GAP if gap is None else gap
     area_paddle = math.pi * (4.9e-3 ** 2 - 1.7e-3 ** 2)
     if coil_type == "moving":
-        g_cm = K_AIR * 2 * area_paddle / 0.45e-3          # two air gaps (moving coil in air)
+        g_cm = K_AIR * 2 * area_paddle / gap              # two air gaps (moving coil in air)
     else:
         g_cm = K_EPOXY * area_paddle / 0.1e-3             # coil bonded to iron through 0.1 mm epoxy
     A_wall = math.pi * ((7.5e-3) ** 2 - (6.8e-3) ** 2)
@@ -53,8 +60,9 @@ def conductances(coil_type="moving", hand=True):
     return G
 
 
-def simulate(P_coil, P_pcb=0.06, P_cell=0.01, coil_type="moving", hand=True, T_amb=25.0, T_hand=33.0, t_end=3600.0,
+def simulate(P_coil, P_pcb=None, P_cell=0.01, coil_type="moving", hand=True, T_amb=25.0, T_hand=33.0, t_end=3600.0,
              alpha_cu=0.00393):
+    P_pcb = P_EL if P_pcb is None else P_pcb
     G = conductances(coil_type, hand)
     idx = {n: i for i, n in enumerate(NODES)}
 
@@ -131,10 +139,29 @@ def main():
             else:
                 lo = mid
         allow[ctype] = lo
+    # two-node reduction for the firmware thermal governor (coil | iron + barrel)
+    G = conductances("moving")
+    R1 = 1.0 / G[("coil", "iron")]
+    C1 = C["coil"]
+    C2 = sum(C[n] for n in ("iron", "barrel_act", "barrel_grip", "barrel_rear"))
+    ss = {}
+    for Pc in (0.1, 0.3):
+        sol, idx = simulate(Pc, alpha_cu=0.0, t_end=7200.0)
+        ss[Pc] = float(sol.y[idx["iron"], -1])
+    R2 = (ss[0.3] - ss[0.1]) / 0.2                      # iron temperature rise per watt of coil loss
+    T_iron0 = ss[0.1] - R2 * 0.1                        # iron temperature with no coil loss (electronics, hand)
+    two_node = {"R_coil_iron_K_per_W": R1, "C_coil_J_per_K": C1, "R_struct_amb_K_per_W": R2,
+                "C_struct_J_per_K": C2, "T_struct_no_coil_loss_C": T_iron0,
+                "R_coil_amb_total_K_per_W": R1 + R2, "tau_coil_s": R1 * C1, "tau_struct_s": R2 * C2,
+                "gap_m": GAP, "P_electronics_W": P_EL,
+                "note": "coil node against the iron/magnet/barrel structure; structure node against ambient 25 C and "
+                        "hand 33 C (linear fit of two steady states at constant coil loss)"}
     meta = provenance.metadata("analytical calculation (lumped thermal network; assumed conductances)",
                                extra={"conductance_basis": "air-gap conduction k=0.026 W/mK; epoxy 0.25 W/mK; Al 167 W/mK; h_out 10 W/m2K; finger contact 600 W/m2K x 3 cm2; hand 33 C"})
     provenance.write_json(os.path.join(OUT, "thermal.json"), {"meta": meta, "cases": cases,
-                                                              "allowable_avg_copper_W_for_41C_and_coil120C": allow})
+                                                              "allowable_avg_copper_W_for_41C_and_coil120C": allow,
+                                                              "two_node_governor_model": two_node})
+    print("two-node model:", {k: (round(v, 3) if isinstance(v, float) else v) for k, v in two_node.items()})
     for k, v in cases.items():
         print(k, {kk: (round(vv, 1) if isinstance(vv, float) else vv) for kk, vv in v.items()})
     print("allowable average copper loss (W):", {k: round(v, 3) for k, v in allow.items()})

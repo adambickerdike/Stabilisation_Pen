@@ -1,6 +1,6 @@
 # Checkpoint — 2026-09-27
 
-Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.2**.
+Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.3** (simulation results are v0.4.2; the only simulator input that changed is worth 0.2–0.3 K of coil temperature).
 
 ## 1. What exists and what actually ran
 
@@ -23,7 +23,9 @@ All are calculation or simulation unless stated otherwise.
 - **Load.** Transverse load = N·cos θ + friction terms (COR-01).
   - Static hold at N = 1 N: 0.82 / 0.64 / 0.25 N at 35° / 50° / 75°.
   - Copper loss at the same points: 0.81 / 0.49 / 0.08 W.
-  - Moving-coil allowable is 0.455 W, and 68 % of the envelope (θ 35–75°, N 0.2–2 N, μ 0.05–0.35) stays within it.
+  - Moving-coil allowable is 0.412 W average (120 °C coil limit, 0.50 mm air gaps), and 70 % of the envelope (θ 35–75°, N 0.2–2 N, μ 0.05–0.35) stays within it in continuous contact.
+  - Coil thermal path: 145 K/W coil to structure, 157 K/W steady to ambient; Rev A coil 96.6 °C at the design load.
+  - Supply headroom: at 3.3 V the 6 Ω winding cannot hold 0.5 % of the thermally allowed envelope (hot, high-force corner); 4 Ω can (DEC-012 revisited, EXP-B03).
 - **Actuator.**
   - Lever: n = 3.17, L1 = 12 mm.
   - K_m = 0.293 N/√W (analytic field model, with the 0.50 mm gap).

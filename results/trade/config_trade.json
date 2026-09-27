@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "analytical calculation (datasheet and magpylib inputs; nothing built)",
-    "generated_utc": "2026-09-27T02:44:51+00:00",
-    "git_revision": "fa98fa9-dirty",
-    "parameters_version": "0.4.2",
-    "parameters_sha256_16": "62292f1efdb00e0f",
+    "generated_utc": "2026-09-27T03:34:42+00:00",
+    "git_revision": "b69a53a-dirty",
+    "parameters_version": "0.4.3",
+    "parameters_sha256_16": "3fbe200f8ff5c330",
     "command": "config_trade.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -88,7 +88,7 @@
       "Km_axis": 0.2927140242625898,
       "n": 3.17,
       "m_eq_g": 13.700000000000001,
-      "Rth_coil_K_per_W": 130.0,
+      "Rth_coil_K_per_W": 145.0,
       "points": {
         "design": {
           "F_perp_rms_N": 0.6565269851010782,
@@ -96,7 +96,7 @@
           "N_nib_N": 1.0,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.5007177215667142,
-          "coil_rise_K": 65.09330380367285,
+          "coil_rise_K": 72.60406962717356,
           "I_axis_A_at_F_max": 0.24620386774111286
         },
         "high": {
@@ -105,7 +105,7 @@
           "N_nib_N": 1.5,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 1.6074704431028752,
-          "coil_rise_K": 208.97115760337377,
+          "coil_rise_K": 233.08321424991692,
           "I_axis_A_at_F_max": 0.43603562310818933
         },
         "bench_corner": {
@@ -114,7 +114,7 @@
           "N_nib_N": 2.0,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 3.4956081809550454,
-          "coil_rise_K": 454.42906352415594,
+          "coil_rise_K": 506.8631862384816,
           "I_axis_A_at_F_max": 0.6628115519695488
         }
       },
@@ -172,7 +172,7 @@
       "Km_axis": 0.2927140242625898,
       "n": 3.17,
       "m_eq_g": 13.700000000000001,
-      "Rth_coil_K_per_W": 130.0,
+      "Rth_coil_K_per_W": 145.0,
       "points": {
         "design": {
           "F_perp_rms_N": 0.2571105335982875,
@@ -180,7 +180,7 @@
           "N_nib_N": 0.3916221867996836,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.07688518900178473,
-          "coil_rise_K": 9.995074570232015,
+          "coil_rise_K": 11.148352405258786,
           "I_axis_A_at_F_max": 0.09641889708331468
         },
         "high": {
@@ -189,7 +189,7 @@
           "N_nib_N": 0.46671714805812375,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.15571815919164525,
-          "coil_rise_K": 20.243360694913882,
+          "coil_rise_K": 22.579133082788562,
           "I_axis_A_at_F_max": 0.13567020164586735
         },
         "bench_corner": {
@@ -198,7 +198,7 @@
           "N_nib_N": 0.5230340386863295,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.23916896154050424,
-          "coil_rise_K": 31.09196500026555,
+          "coil_rise_K": 34.679499423373116,
           "I_axis_A_at_F_max": 0.17333650145729354
         }
       },
@@ -214,7 +214,7 @@
       "Km_axis": 0.2927140242625898,
       "n": 3.17,
       "m_eq_g": 13.700000000000001,
-      "Rth_coil_K_per_W": 130.0,
+      "Rth_coil_K_per_W": 145.0,
       "points": {
         "design": {
           "F_perp_rms_N": 0.6565269851010782,
@@ -222,7 +222,7 @@
           "N_nib_N": 1.0,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.020132058517648273,
-          "coil_rise_K": 2.6171676072942756,
+          "coil_rise_K": 2.9191484850589995,
           "I_axis_A_at_F_max": 0.04924077354822256
         },
         "high": {
@@ -231,7 +231,7 @@
           "N_nib_N": 1.5,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.06440216737909468,
-          "coil_rise_K": 8.372281759282309,
+          "coil_rise_K": 9.338314269968729,
           "I_axis_A_at_F_max": 0.08720712462163785
         },
         "bench_corner": {
@@ -240,7 +240,7 @@
           "N_nib_N": 2.0,
           "Km_tip": 0.9279034569124096,
           "P_copper_contact_W": 0.13992767689318147,
-          "coil_rise_K": 18.190597996113592,
+          "coil_rise_K": 20.289513149511315,
           "I_axis_A_at_F_max": 0.13256231039390973
         }
       },

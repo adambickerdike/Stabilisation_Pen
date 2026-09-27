@@ -150,7 +150,7 @@ Monte Carlo: 160 samples over the declared parameter ranges at 9 Hz and 0.3 mm (
 
 - oracle ratio median 0.46 (p10 0.11, p90 1.00);
 - Kalman median 0.91 (p10 0.59, p90 1.53);
-- coil temperature p90 44 °C in 5 s runs (coil-to-ambient 130 K/W);
+- coil temperature p90 44 °C in 5 s runs (coil-to-structure 130 K/W in v0.4.2; the v0.4.3 value of 145 K/W adds 0.2–0.3 K);
 - voltage saturation p90 9 % of contact time.
 
 Strongest rank correlations:
@@ -173,7 +173,7 @@ Friction's effect on estimator performance raises the priority of EXP-B02 (frict
 | F2: low battery (3.3 / 3.0 / 2.8 V) | Voltage saturation 11 / 18 / 24 % of contact time | Derate below 3.3 V |
 | F3: coil power lost in contact | **Ink jumps up to 0.79 mm within 50 ms** | Never de-energise in contact except on hard faults |
 | F4: Hall sensor frozen | 0.56 mm jump; stage on its stop 99.97 % of the time; 0.55 A | Detect within 5 ms, hold open-loop |
-| F5: overload (2 N at 35°) | Stops 97 % of the time; 1.55 W; coil 59 °C after 6 s. Extrapolated with the same one-node model (130 K/W, 0.25 J/K, copper tempco), the 120 °C coil limit is reached in ≈ 18 s (calculation) | Thermal derate |
+| F5: overload (2 N at 35°) | Stops 97 % of the time; 1.55 W; coil 59 °C after 6 s. Extrapolated with the same one-node model (0.25 J/K, copper tempco), the 120 °C coil limit is reached in ≈ 18 s at 130 K/W and ≈ 17 s at the v0.4.3 value of 145 K/W (calculation) | Thermal derate |
 | F6: stage blocked at 0.1 mm | Residual 412 µm; current at 0.56 A | Stop and residual detection |
 | F7: optical noise ×10 (30 µm) | Residual 433 µm | Confidence (NIS) derate |
 
@@ -185,6 +185,9 @@ Friction's effect on estimator performance raises the priority of EXP-B02 (frict
 - **Rigid lever.** No flexure nonlinearity or parasitic modes above the stage resonance. The actuator is a constant K_f with a map crosstalk term (the field model shows 37 % K_f variation over the stroke; to be calibrated).
 - **Sensors.** Delay, white noise, simple dropout. Optical accuracy on paper at the nib is unknown (EXP-S01).
 - **Evaluation.** Ink error is the error of the simulated ball path; ink deposition and line width are not modelled.
+- **Found by the firmware review** (`firmware/README.md` D9, D10):
+  - *Current loop.* The simulator applies R·i_ref feedforward plus PI with no sample-to-PWM delay. With the Rev A delay (47.5 µs) the same law overshoots 55 %, so the firmware uses PI only (13 % overshoot, 125 µs rise). The current loop is about 30 times faster than the stage loop, so stage-level results should change little; a re-run with the delayed PI loop would confirm it.
+  - *Band-pass reference estimator.* It re-initialises on absolute page position, which gives transients of up to 10.6 mm at optical re-acquisition. The stage command is clipped at q_lim, but the band-pass figures (ratio and 168 µm distortion) may be inflated by them. The firmware's local-origin option cuts the transient to 0.27 mm. The band-pass is a reference, not a candidate controller.
 
 ## 5. Reproduce
 

@@ -1,7 +1,7 @@
 (kicad_sch
   (version 20230121)
   (generator "eeschema")
-  (uuid "8dc8c6c6-b52c-4ea1-b54e-983058d7675b")
+  (uuid "f9a5e985-59a4-50af-9b9a-f23ea55006e2")
   (paper "A3")
   (title_block
     (title "Active stabilisation pen - research electronics Rev A")
@@ -19,7 +19,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "eed3cbe2-0fa1-47b1-9b1e-cff3b47196fe")
+    (uuid "e37919fe-4e7b-56ef-a87f-5dc61a44528f")
     (property "Sheetname" "power_charge"
       (at 30 34 0)
       (effects
@@ -34,7 +34,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "2")))))
   (sheet
     (at 125 35)
@@ -45,7 +45,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "2138a1b6-1e8f-4136-8748-79e65d9b7d07")
+    (uuid "c1bd6c91-0a67-51e3-b75f-a98ceb089b80")
     (property "Sheetname" "battery_supply"
       (at 125 34 0)
       (effects
@@ -60,7 +60,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "3")))))
   (sheet
     (at 220 35)
@@ -71,7 +71,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "e48f2468-9abe-4135-b35a-803a5c27ad35")
+    (uuid "af733ca0-1553-5e5b-80fc-6ed852787427")
     (property "Sheetname" "mcu"
       (at 220 34 0)
       (effects
@@ -86,7 +86,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "4")))))
   (sheet
     (at 315 35)
@@ -97,7 +97,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "93d272a0-9423-402b-a001-77bdadfece2f")
+    (uuid "3f23de80-9dc7-5aa7-9b0b-92667068b8b5")
     (property "Sheetname" "sensing"
       (at 315 34 0)
       (effects
@@ -112,7 +112,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "5")))))
   (sheet
     (at 30 97)
@@ -123,7 +123,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "8ddc9e81-e726-4314-abd6-90e9de6a95e8")
+    (uuid "48af4c09-9f3d-5e64-8724-6621abb6b970")
     (property "Sheetname" "force"
       (at 30 96 0)
       (effects
@@ -138,7 +138,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "6")))))
   (sheet
     (at 125 97)
@@ -149,7 +149,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "00a3ed01-aedd-4c13-804d-a4e87dafe588")
+    (uuid "773c1369-84fe-51a0-890d-35cb6ac749d3")
     (property "Sheetname" "stage_position"
       (at 125 96 0)
       (effects
@@ -164,7 +164,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "7")))))
   (sheet
     (at 220 97)
@@ -175,7 +175,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "e71e060f-ce0c-4bfd-b118-ec4691d6525e")
+    (uuid "f4dabc70-b00a-5183-a8cf-4cead4bde733")
     (property "Sheetname" "actuator_x"
       (at 220 96 0)
       (effects
@@ -190,7 +190,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "8")))))
   (sheet
     (at 315 97)
@@ -201,7 +201,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "f0a18f19-96a9-433d-b9f0-5a690030b810")
+    (uuid "ddb8b498-860e-5487-980d-a3b64ae1ae94")
     (property "Sheetname" "actuator_y"
       (at 315 96 0)
       (effects
@@ -216,7 +216,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "9")))))
   (sheet
     (at 30 159)
@@ -227,7 +227,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "ed7dd53e-6741-41fa-8f6e-a8853deccbe7")
+    (uuid "3a494e95-bdfe-5abd-8dc3-801c910c9739")
     (property "Sheetname" "storage_comm"
       (at 30 158 0)
       (effects
@@ -242,7 +242,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "10")))))
   (sheet
     (at 125 159)
@@ -253,7 +253,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "18f3e340-7914-49f8-ac87-6e45e06c5a7c")
+    (uuid "062660a0-4266-5fa5-8983-5f49292a2032")
     (property "Sheetname" "user_interface"
       (at 125 158 0)
       (effects
@@ -268,7 +268,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "11")))))
   (sheet
     (at 220 159)
@@ -279,7 +279,7 @@
       (type solid))
     (fill
       (color 0 0 0 0.0000))
-    (uuid "0a24b024-9390-41b9-982a-06a424c71fc3")
+    (uuid "e29de302-d114-5e65-824a-625a04e21bce")
     (property "Sheetname" "fault_handling"
       (at 220 158 0)
       (effects
@@ -294,7 +294,7 @@
         (justify left top)))
     (instances
       (project "pen_research"
-        (path "/8dc8c6c6-b52c-4ea1-b54e-983058d7675b"
+        (path "/f9a5e985-59a4-50af-9b9a-f23ea55006e2"
           (page "12")))))
   (text "Active stabilisation pen - research electronics Rev A.  PROPOSED DESIGN: not built, not measured."
     (exclude_from_sim no)
@@ -303,7 +303,7 @@
       (font
         (size 2 2))
       (justify left bottom))
-    (uuid "2e4a21c3-fb76-4a9a-994a-7906468e2195"))
+    (uuid "584a1c5a-663b-5336-8afd-6254b2fc0df9"))
   (text "Every part marked VERIFY or SELECT in its fields must be checked against the named source before layout."
     (exclude_from_sim no)
     (at 30 233.00 0)
@@ -311,7 +311,7 @@
       (font
         (size 2 2))
       (justify left bottom))
-    (uuid "c2aae196-bba2-4419-835d-73b11e907689"))
+    (uuid "66e3845b-7685-51be-b653-361b07bf3779"))
   (text "Power tree: USB-C -> MCP73831 -> cell (BQ29700 + 2 NMOS) -> TLV75530 (+3V0, +3V0A) and TPS22917 (VMOT, gated)."
     (exclude_from_sim no)
     (at 30 238.00 0)
@@ -319,7 +319,7 @@
       (font
         (size 2 2))
       (justify left bottom))
-    (uuid "a45f38cb-1c25-4eb2-8a38-c4786a5b9455"))
+    (uuid "bf4971d6-2acd-5e28-afe5-ba0a679b6d6c"))
   (text "Calculations: electronics/calcs/drive_sense.py -> results/electronics/; ngspice drive stage: electronics/spice/."
     (exclude_from_sim no)
     (at 30 243.00 0)
@@ -327,7 +327,7 @@
       (font
         (size 2 2))
       (justify left bottom))
-    (uuid "4a685241-13e8-474a-be85-e3bd74c1e5b0"))
+    (uuid "30fb87c8-5314-53bb-b033-d058d95cfd10"))
   (sheet_instances
     (path "/"
       (page "1"))))

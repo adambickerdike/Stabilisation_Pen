@@ -61,12 +61,25 @@ COMP = {
     "pwm_clock_hz": (16e6, "nRF5340 PWM base clock"),
     "f_pwm_hz": (40e3, "centre-aligned, 200 duty levels; 20 periods per stage tick; ripple and loop-delay choice (see pwm_ripple, current_loop)"),
     "f_stage_hz": (2000.0, "config control.f_stage"),
-    "t_coil_design_c": (85.0, "hot-coil design point (results/thermal: 85.5 C at design load)"),
+    "t_coil_design_c": (None, "hot-coil design point: configuration B at the design load, results/thermal/thermal.json (read at run time)"),
+    "t_coil_limit_c": (120.0, "coil temperature limit used for the thermal allowable (analysis/thermal.py)"),
+    "br_tempco_per_k": (-0.0012, "NdFeB reversible Br tempco class (AMF-27, AMF-29); VERIFY with the magnet grade"),
+    "f_corr_hz": (12.0, "highest tremor frequency addressed (REQ-ENV-003)"),
+    "q_corr_m": (0.55e-3, "correction amplitude at the control limit q_lim (sim/pensim/model.py)"),
     "t_amb_c": (25.0, "config thermal.t_ambient"),
     "v_bat_act_min": (3.3, "config electrical.v_bat_min"),
-    "p_cu_allow_w": (0.455, "results/thermal/thermal.json allowable average copper loss, moving coil"),
+    "p_cu_allow_w": (None, "results/thermal/thermal.json allowable average copper loss, moving coil (read at run time; 25 C-referenced)"),
     "v_tip_stage_max": (0.05, "m/s stage velocity relative to housing (tremor 0.3 mm @ 9 Hz ~ 17 mm/s, x3)"),
 }
+
+
+def _thermal_inputs():
+    """Hot-coil design point, thermal allowable and structure (magnet) model from analysis/thermal.py."""
+    th = json.load(open(os.path.join(ROOT, "results", "thermal", "thermal.json")))
+    b = next(v for k, v in th["cases"].items() if k.startswith("B lever") and k.endswith("| design"))
+    COMP["t_coil_design_c"] = (b["T_coil_end_C"], COMP["t_coil_design_c"][1])
+    COMP["p_cu_allow_w"] = (th["allowable_avg_copper_W_for_41C_and_coil120C"]["moving"], COMP["p_cu_allow_w"][1])
+    return th["two_node_governor_model"], th["meta"].get("parameters_version")
 
 
 def cv(k):
@@ -84,38 +97,65 @@ def envelope(n=20000, seed=3):
     return {"theta": th, "N": N, "mu": mu, "F_max": R.max(axis=0), "F_rms": np.sqrt((R ** 2).mean(axis=0))}
 
 
-def headroom(p, env):
+def headroom(p, env, two_node):
+    """Supply headroom of candidate windings over the writing envelope.
+
+    Thermal feasibility: direction-averaged continuous load as copper loss referenced to 25 C,
+    compared with the thermal allowable (analysis/thermal.py adds the tempco feedback itself).
+    Voltage feasibility at each envelope point uses that point's own steady coil temperature and
+    magnet (structure) temperature from the two-node model, the worst stroke direction, and three
+    correction cases on top of the static load: none, typical (9 Hz, 0.3 mm) and extreme (f_corr, q_lim).
+    """
     n = p["stage.L2"] / p["stage.L1"]
     Km20 = p["actuator.Kf"] / math.sqrt(p["actuator.R20"])
-    a = 1 + p["actuator.alpha_cu"] * (cv("t_coil_design_c") - 20.0)
+    alpha = p["actuator.alpha_cu"]
+    a = 1 + alpha * (cv("t_coil_design_c") - 20.0)
     Km_hot = Km20 / math.sqrt(a)
     r_ext = cv("r_ds_on_hs_ls_ohm") * cv("r_ds_hot_factor") + cv("r_shunt_ohm") + cv("r_wiring_ohm")
-    # thermal feasibility (independent of winding): direction-averaged continuous load
-    P_th = (env["F_rms"] / (n * Km_hot)) ** 2
-    therm_ok = P_th <= cv("p_cu_allow_w")
+    Km25 = Km20 / math.sqrt(1 + alpha * 5.0)
+    P25 = (env["F_rms"] / (n * Km25)) ** 2
+    therm_ok = P25 <= cv("p_cu_allow_w")
+    # steady temperatures per envelope point (continuous contact), two-node model
+    T_coil = np.full_like(P25, 60.0)
+    for _ in range(60):
+        P_hot = P25 * (1 + alpha * (T_coil - 25.0))
+        T_coil = two_node["T_struct_no_coil_loss_C"] + two_node["R_coil_amb_total_K_per_W"] * P_hot
+    T_mag = two_node["T_struct_no_coil_loss_C"] + two_node["R_struct_amb_K_per_W"] * P_hot
+    k_br = 1 + cv("br_tempco_per_k") * (T_mag - 20.0)
+    a_pt = 1 + alpha * (T_coil - 20.0)
+
+    def f_corr(f_hz, q):
+        return p["stage.m_eq"] * (2 * math.pi * f_hz) ** 2 * q + p["stage.k_tip"] * q
+    corr = {"static": 0.0, "typical_9Hz_0p3mm": f_corr(9.0, 0.3e-3), "extreme": f_corr(cv("f_corr_hz"), cv("q_corr_m"))}
     rows = []
     for R in (2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 11.0):
-        Kf = Km20 * math.sqrt(R)
-        I = env["F_max"] / (n * Kf)                      # worst stroke direction, one axis carries it all
-        v_emf = Kf * n * cv("v_tip_stage_max")
         for vb in (3.3, 3.7, 4.2):
-            v_av = vb * cv("d_max") - 2 * I * cv("r_load_switch_ohm")
-            V = I * (a * R + r_ext) + v_emf
-            ok = V <= v_av
-            rows.append({"R20_ohm": R, "Kf_N_per_A": Kf, "L_H": p["actuator.L"] * R / p["actuator.R20"],
-                         "v_bat": vb, "frac_voltage_ok": float(ok.mean()),
-                         "frac_voltage_ok_within_thermal": float(ok[therm_ok].mean()),
-                         "I_p95_A": float(np.percentile(I[therm_ok], 95)),
-                         "I_max_within_thermal_A": float(I[therm_ok].max()),
-                         "bridge_loss_frac": float(r_ext / (a * R))})
-    return {"n": n, "Km20": Km20, "Km_hot": Km_hot, "a_hot": a, "r_ext_ohm": r_ext,
-            "frac_thermal_ok": float(therm_ok.mean()), "rows": rows}
+            row = {"R20_ohm": R, "Kf_N_per_A": Km20 * math.sqrt(R), "L_H": p["actuator.L"] * R / p["actuator.R20"],
+                   "v_bat": vb, "bridge_loss_frac": float(r_ext / (a * R))}
+            for name, Fc in corr.items():
+                Kf = Km20 * math.sqrt(R) * k_br
+                I = (env["F_max"] + Fc) / (n * Kf)       # worst stroke direction, one axis carries it all
+                V = I * (a_pt * R + r_ext) + Kf * n * cv("v_tip_stage_max")
+                v_av = vb * cv("d_max") - 2 * I * cv("r_load_switch_ohm")
+                ok = V <= v_av
+                row[f"frac_ok_within_thermal_{name}"] = float(ok[therm_ok].mean())
+                row[f"worst_voltage_ratio_{name}"] = float((V[therm_ok] / v_av[therm_ok]).max())
+                if name == "static":
+                    row["I_p95_A"] = float(np.percentile(I[therm_ok], 95))
+                    row["I_max_within_thermal_A"] = float(I[therm_ok].max())
+            rows.append(row)
+    return {"n": n, "Km20": Km20, "Km_hot": Km_hot, "a_hot": a, "t_coil_design_C": cv("t_coil_design_c"),
+            "r_ext_ohm": r_ext, "r_ext_note": "includes 0.06 ohm wiring; the simulator uses r_bridge + r_shunt = 0.52 ohm",
+            "t_coil_max_in_envelope_C": float(T_coil[therm_ok].max()), "t_magnet_max_in_envelope_C": float(T_mag[therm_ok].max()),
+            "F_corr_N": corr, "p_cu_allow_W": cv("p_cu_allow_w"), "frac_thermal_ok": float(therm_ok.mean()), "rows": rows}
 
 
 def choose_R(h):
-    """Largest winding resistance for which, at the minimum actuation voltage,
-    every envelope point the thermal limit allows is also voltage-feasible."""
-    cands = [r for r in h["rows"] if r["v_bat"] == cv("v_bat_act_min") and r["frac_voltage_ok_within_thermal"] >= 0.999]
+    """Assessment only: largest winding resistance for which, at the minimum actuation voltage, the static
+    hold is voltage-feasible at every thermally allowed envelope point and the typical correction at
+    >= 99.9 % of them.  The design baseline is the YAML actuator.R20 (DEC-012)."""
+    cands = [r for r in h["rows"] if r["v_bat"] == cv("v_bat_act_min") and r["frac_ok_within_thermal_static"] >= 1.0
+             and r["frac_ok_within_thermal_typical_9Hz_0p3mm"] >= 0.999]
     return max(cands, key=lambda r: r["R20_ohm"]) if cands else None
 
 
@@ -204,22 +244,24 @@ def electronics_power():
 def figures(h, choice, ripple_rows, ev, env, p):
     plotstyle.apply()
     import matplotlib.pyplot as plt
-    # --- headroom: feasible fraction vs winding resistance
+    # --- headroom at the minimum actuation voltage: feasible fraction vs winding resistance
     fig, ax = plt.subplots(figsize=(7.2, 3.8))
-    for j, vb in enumerate((3.3, 3.7, 4.2)):
-        rr = [r for r in h["rows"] if r["v_bat"] == vb]
-        xs = [r["R20_ohm"] for r in rr]
-        ys = [100 * r["frac_voltage_ok_within_thermal"] for r in rr]
-        ax.plot(xs, ys, color=plotstyle.SERIES[j], label=f"VBAT {vb} V")
+    vmin = cv("v_bat_act_min")
+    rr = [r for r in h["rows"] if r["v_bat"] == vmin]
+    xs = [r["R20_ohm"] for r in rr]
+    for j, (key, lab) in enumerate((("static", "static hold"), ("typical_9Hz_0p3mm", "+ typical correction (9 Hz, 0.3 mm)"),
+                                    ("extreme", f"+ extreme correction ({cv('f_corr_hz'):g} Hz, q_lim)"))):
+        ys = [100 * r[f"frac_ok_within_thermal_{key}"] for r in rr]
+        ax.plot(xs, ys, color=plotstyle.SERIES[j], label=lab)
         ax.plot(xs, ys, **plotstyle.marker_kw(plotstyle.SERIES[j]))
     ax.axvline(choice["R20_ohm"], color=plotstyle.MUTED, lw=1.0)
-    ax.text(choice["R20_ohm"] + 0.15, 8, f"chosen {choice['R20_ohm']:g} ohm", color=plotstyle.INK2, fontsize=8.5)
+    ax.text(choice["R20_ohm"] + 0.15, 76, f"baseline {choice['R20_ohm']:g} ohm", color=plotstyle.INK2, fontsize=8.5)
     ax.set_xlabel("Coil resistance at 20 C (ohm), Km fixed")
-    ax.set_ylabel("Voltage-feasible share of thermally allowed envelope (%)")
-    ax.set_ylim(0, 105)
-    ax.set_title("Winding choice: the supply must not bind before the heat limit", loc="left", fontsize=10)
+    ax.set_ylabel("Voltage-feasible share (%)")
+    ax.set_ylim(75, 101)
+    ax.set_title(f"Winding choice at VBAT {vmin} V: where the supply binds before the heat limit", loc="left", fontsize=10)
     ax.legend(loc="lower left", fontsize=8)
-    plotstyle.stamp(fig, "analytical calculation", f"coil {cv('t_coil_design_c'):.0f} C, Km {h['Km20']:.3f} N/sqrtW, R_ext {h['r_ext_ohm']:.2f} ohm; thermal-OK share {100*h['frac_thermal_ok']:.0f} %")
+    plotstyle.stamp(fig, "analytical calculation", f"share of the {100*h['frac_thermal_ok']:.0f} % thermally allowed envelope; coil up to {h['t_coil_max_in_envelope_C']:.0f} C")
     fig.tight_layout()
     fig.savefig(os.path.join(OUT, "fig_headroom.png"))
     plt.close(fig)
@@ -262,9 +304,11 @@ def figures(h, choice, ripple_rows, ev, env, p):
 def main():
     os.makedirs(OUT, exist_ok=True)
     p = sp.load()
+    two_node, th_version = _thermal_inputs()
     env = envelope()
-    h = headroom(p, env)
-    choice = choose_R(h)
+    h = headroom(p, env, two_node)
+    best = choose_R(h)
+    choice = next(r for r in h["rows"] if r["R20_ohm"] == p["actuator.R20"] and r["v_bat"] == cv("v_bat_act_min"))
     R = choice["R20_ohm"]
     L = choice["L_H"]
     a = h["a_hot"]
@@ -283,7 +327,12 @@ def main():
     out = {
         "components": {k: {"value": v[0], "source": v[1]} for k, v in COMP.items()},
         "headroom": h,
-        "chosen_winding": {**choice, "criterion": "largest R with all thermally-allowed envelope points voltage-feasible at 3.3 V, 85 C coil"},
+        "chosen_winding": {**choice, "note": "design baseline = config actuator.R20 (DEC-012); ripple, current loop and hold current use it"},
+        "winding_assessment": {"largest_R_meeting_criterion": best["R20_ohm"] if best else None,
+                               "criterion": "at 3.3 V: static hold feasible at every thermally allowed envelope point and typical "
+                                            "correction (9 Hz, 0.3 mm) at >= 99.9 %, each point at its own steady coil and magnet temperature",
+                               "baseline_meets_criterion": bool(best and best["R20_ohm"] >= p["actuator.R20"])},
+        "thermal_inputs": {"source": "results/thermal/thermal.json", "parameters_version": th_version, **two_node},
         "design_point_hold_current_A": hold_I_design,
         "sense_chain": sense,
         "pwm_ripple": ripple_rows,
@@ -296,11 +345,14 @@ def main():
     meta = provenance.metadata("analytical calculation (datasheet-class values; VERIFY flags in components)", p=p)
     provenance.write_json(os.path.join(OUT, "drive_sense.json"), {"meta": meta, **out})
     figures(h, choice, ripple_rows, ev, env, p)
-    print(f"Km20 {h['Km20']:.3f}  Km_hot {h['Km_hot']:.3f}  R_ext {h['r_ext_ohm']:.2f} ohm  thermal-OK {100*h['frac_thermal_ok']:.1f} %")
+    print(f"Km20 {h['Km20']:.3f}  Km_hot {h['Km_hot']:.3f}  R_ext {h['r_ext_ohm']:.2f} ohm  thermal-OK {100*h['frac_thermal_ok']:.1f} %"
+          f"  coil max {h['t_coil_max_in_envelope_C']:.1f} C  magnets max {h['t_magnet_max_in_envelope_C']:.1f} C")
     for r in h["rows"]:
-        print(f"R {r['R20_ohm']:5.1f}  Vb {r['v_bat']}  V-ok {100*r['frac_voltage_ok']:5.1f} %  V-ok|thermal {100*r['frac_voltage_ok_within_thermal']:5.1f} %  "
-              f"I95 {r['I_p95_A']:.2f} A  Imax|th {r['I_max_within_thermal_A']:.2f} A  bridge loss {100*r['bridge_loss_frac']:.0f} %")
-    print("CHOSEN", {k: round(v, 4) if isinstance(v, float) else v for k, v in choice.items()})
+        print(f"R {r['R20_ohm']:5.1f}  Vb {r['v_bat']}  V-ok|thermal static {100*r['frac_ok_within_thermal_static']:6.2f} % "
+              f"(worst {r['worst_voltage_ratio_static']:.3f})  typical {100*r['frac_ok_within_thermal_typical_9Hz_0p3mm']:6.2f} %  "
+              f"extreme {100*r['frac_ok_within_thermal_extreme']:6.2f} %  Imax|th {r['I_max_within_thermal_A']:.2f} A  bridge loss {100*r['bridge_loss_frac']:.0f} %")
+    print("BASELINE", {k: round(v, 4) if isinstance(v, float) else v for k, v in choice.items()})
+    print("largest R meeting the criterion:", best["R20_ohm"] if best else None)
     print("design-point hold current", round(hold_I_design, 3), "A")
     print("sense", {k: (round(v, 4) if isinstance(v, float) else v) for k, v in sense.items()})
     print("loop", {k: round(v, 3) for k, v in loop.items()})

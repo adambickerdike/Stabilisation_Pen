@@ -272,7 +272,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows f
 
 | Result | Consequence |
 |---|---|
-| Design-point load > 0.75 N (AC-B01-01 fails), or envelope p99 > 1.4 N (AC-B01-02) | REQ-ACT-001 is under-specified. Copper loss scales with F², so configuration B at the design point exceeds the 0.455 W moving-coil allowable (`results/thermal/thermal.json`) by more than already predicted. **DEC-008 becomes mandatory** (D or E as the product baseline); DEC-003 is re-opened for the research pen (fixed-coil variant B-MM). |
+| Design-point load > 0.75 N (AC-B01-01 fails), or envelope p99 > 1.4 N (AC-B01-02) | REQ-ACT-001 is under-specified. Copper loss scales with F², so configuration B at the design point exceeds the 0.412 W moving-coil allowable (`results/thermal/thermal.json`, v0.4.3) by more than already predicted. **DEC-008 becomes mandatory** (D or E as the product baseline); DEC-003 is re-opened for the research pen (fixed-coil variant B-MM). |
 | P-6 fails the ±15 % band (AC-B01-03) | Contact model P-5…P-7 is replaced before any B09 comparison. The simulated cancellation numbers are not used for decisions until re-validated. |
 | μ outside 0.09–0.40, or breakaway ratio > 2 | Update `writing.mu_eff` and `mu_static_ratio` and re-run the Monte Carlo and the estimator tuning (kf_asr is most sensitive to μ). Large breakaway transients re-open DEC-011 (servo without contact feedforward). |
 | N_min for continuous ink > 0.30 N (AC-B01-07) | The configuration-D constant-force nib must be raised. D's copper loss scales with F², so re-run the D rows of `analysis/config_trade.py` and `analysis/thermal.py` before the DEC-008 decision. |
@@ -388,11 +388,11 @@ This experiment measures the per-axis force constant K_f(q) over the actuator st
 | Id | Hypothesis | Prediction | Source |
 |---|---|---|---|
 | H-B03-1 | K_f at centre | 0.717 N/A (6 Ω winding, 0.50 mm gap) | `config/parameters.yaml` v0.4.1 `actuator.Kf`; DEC-012, DEC-007 rev. |
-| H-B03-2 | K_m at centre | 0.293 N/√W at 20 °C, 0.261 hot | `results/electronics/drive_sense.json` (v0.4.1) |
+| H-B03-2 | K_m at centre | 0.293 N/√W at 20 °C, 0.257 at the 96.6 °C design coil | `results/electronics/drive_sense.json` (v0.4.3) |
 | H-B03-3 | K_f falls toward the stroke corners | about 37 % lower at ±1.6 mm (actuator coordinates) | `results/em/em_actuator.json` (rearA_iron: Kf_variation 36.9 %; v0.2.0, 11 Ω winding, 0.45 mm gap — rescale) |
 | H-B03-4 | Cross-axis force at the stroke corners | ≤ 0.24 N/A | `results/em/em_actuator.json` `cross_force_max_N_per_A` |
-| H-B03-5 | Moving-coil thermal resistance to ambient | ≈ 130 K/W | `results/trade/config_trade.json` (config B). The simulator uses 60 K/W, range 30–120 K/W (`actuator.Rth_coil_amb`), which excludes this value; see `README.md` |
-| H-B03-6 | Requirements are **expected to fail by calculation** | REQ-ACT-002 needs K_m,20 ≥ 0.37 N/√W (derivation in AC-B03-03); REQ-ACT-001's continuous 0.75 N needs 0.65–0.82 W of copper loss against 0.455 W allowable; its 1.4 N/2 s needs 0.62 A per axis against a 0.45 A (REQ-SAF-002) or 0.60 A (config) clamp | derivations in `acceptance_criteria.csv` |
+| H-B03-5 | Moving-coil thermal resistance, coil to magnets and iron | ≈ 145 K/W (air conduction across two 0.50 mm gaps); ≈ 157 K/W steady coil-to-ambient in the pen | `results/thermal/thermal.json` `two_node_governor_model` (v0.4.3); `config` `actuator.Rth_coil_amb` |
+| H-B03-6 | Requirements are **expected to fail by calculation** | REQ-ACT-002 needs K_m,20 ≥ 0.37 N/√W (derivation in AC-B03-03); REQ-ACT-001's continuous 0.75 N needs 0.65 W of copper loss referenced to 20 °C (0.85 W at the 96.6 °C design coil) against 0.412 W allowable; its 1.4 N/2 s needs 0.62 A per axis against the 0.60 A clamp (REQ-SAF-002, config) | derivations in `acceptance_criteria.csv` |
 
 ### Equipment and setup
 
@@ -416,7 +416,7 @@ This experiment measures the per-axis force constant K_f(q) over the actuator st
 4. **Linearity and saturation.** 0 → 0.8 A (hardware trip level) in 0.05 A steps at q = 0; pulses to 1.2 A of ≤ 100 ms.
 5. **Back-EMF.** The shaker drives the paddle at 10–50 Hz and ±0.5 mm with the coil open. K_f from V/ẋ is an independent check of item 3.
 6. **Thermal.**
-   - DC steps of 0.2, 0.3, 0.455 and 0.6 W per coil pair in still air at 25 °C. Each step runs to steady state (dT/dt < 0.1 K/min) or to 110 °C coil.
+   - DC steps of 0.2, 0.3, 0.412 and 0.6 W per coil pair in still air at 25 °C. Each step runs to steady state (dT/dt < 0.1 K/min) or to 110 °C coil.
    - Coil temperature by resistance (α_cu = 0.00393 K⁻¹, AMF-29) and thermocouples on the magnets and back iron.
    - Repeat at 35 °C ambient.
 7. **Continuous-force test (REQ-ACT-001).** Hold 0.237 N at the actuator (0.75 N tip-equivalent at n = 3.17) for 30 min in the thermal environment of EXP-B07. Stop at 120 °C coil. The 2 s / 1.4 N tip-equivalent test is run with the software clamp disabled on the bench supply only, to measure the current actually needed.
@@ -452,9 +452,9 @@ HDF5 per coupon: force map (q1, q2, i1, i2 → F, T), LCR sweeps, thermal time s
 | AC-B03-05 | — | Coil resistance R20 (4-wire, 20.0 ± 0.5 °C) | within 6.0 ohm ± 5 % | hypothesis | DEC-012 winding (headroom analysis in results/electronics/drive_sense.json assumes 6.0 ohm); ±5 % engineering judgement | DEC-012 (voltage headroom at 3.3 V) |
 | AC-B03-06 | — | Coil inductance at 1 kHz, q = 0 | within 82-380 µH | hypothesis | config actuator.L range (air-core estimate 175 µH scaled from results/em) | current-loop tuning (P-17) |
 | AC-B03-07 | REQ-SNS-004 | Hall current crosstalk after linear compensation, referred to the tip (9 stage positions, DC and 40 kHz PWM) | ≤ 5 µm/A | requirement | REQ-SNS-004 | Hall placement and sampling (open issue E-4); CAL_HALL |
-| AC-B03-08 | — | Coil-to-ambient thermal resistance of the moving-coil coupon in still air at 25 °C (steady state at 0.2-0.45 W) | within 130 K/W ± 15 % | hypothesis | results/trade/config_trade.json (config B Rth_coil 130 K/W); docs/physics.md (steady rise ±15 %). Note: config actuator.Rth_coil_amb is 60 K/W (30-120) | DEC-008; open issue M-5; simulator thermal node |
+| AC-B03-08 | — | Coil-to-structure thermal resistance of the moving-coil coupon: (coil temperature by resistance - magnet/back-iron thermocouple) / copper loss, steady state at 0.2-0.45 W, 25 °C still air | within 145 K/W ± 15 % | hypothesis | results/thermal/thermal.json two_node_governor_model.R_coil_iron (conduction across two 0.50 mm air gaps; config actuator.Rth_coil_amb v0.4.3); docs/physics.md (steady rise ±15 %). Replaces the coupon coil-to-ambient metric, which depended on the fixture | DEC-008; open issue M-5; simulator thermal node |
 | AC-B03-09 | — | Minimum measured paddle-to-magnet clearance at full tip travel (0.60 mm, 12 directions) on every coupon | > 0 µm (no contact); report vs RSS prediction +93 µm | hypothesis | results/mechanics/tolerance.json via mechanics/README.md (stack S1 front face, RSS +93 µm, Rev A.1) | DEC-007 rev. (revisit trigger: actuator coupon gap measurement) |
-| AC-B03-10 | REQ-ACT-001 | Coil hot-spot temperature while holding 0.75 N tip-equivalent (0.237 N at the actuator) continuously for 30 min at 25 °C in the pen thermal environment | ≤ 120 °C | requirement | REQ-ACT-001 with REQ-THM-002; prediction: copper loss 0.65 W (20 °C) to 0.82 W (85 °C) at K_m 0.293 N/√W vs allowable 0.455 W (results/thermal/thermal.json) -> expected FAIL | REQ-ACT-001 revision; DEC-008 |
+| AC-B03-10 | REQ-ACT-001 | Coil hot-spot temperature while holding 0.75 N tip-equivalent (0.237 N at the actuator) continuously for 30 min at 25 °C in the pen thermal environment | ≤ 120 °C | requirement | REQ-ACT-001 with REQ-THM-002; prediction: copper loss 0.65 W referenced to 20 °C (0.85 W at the 96.6 °C design coil) at K_m 0.293 N/√W vs allowable 0.412 W (results/thermal/thermal.json v0.4.3) -> expected FAIL | REQ-ACT-001 revision; DEC-008 |
 | AC-B03-11 | REQ-ACT-001 | Coil current needed to hold 1.4 N tip-equivalent for 2 s along one actuator axis, compared with the software current clamp | ≤ current ≤ software clamp | requirement | REQ-ACT-001; required 1.4/(3.17 x 0.717) = 0.62 A exceeds REQ-SAF-002 (0.45 A) and config actuator.i_max (0.60 A) -> CONFLICT to resolve | resolve REQ-ACT-001 vs REQ-SAF-002 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows for EXP-B03).
@@ -469,7 +469,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows f
 | K_f(q) deviates > 10 % from the model but is repeatable | The model fails (update `analysis/em_actuator.py`), but the pen is usable through `CAL_ACT` compensation. |
 | R20 outside 6.0 Ω ± 5 % | Re-run the headroom analysis (`electronics/calcs/drive_sense.py`). Above ~6.3 Ω, parts of the thermally allowed envelope become voltage-limited at 3.3 V (DEC-012). |
 | Gap contact at full travel, or clearance well below +93 µm RSS | DEC-007 rev. is re-opened (travel reduction or a wider gap at a K_f cost of 2.9 % per 0.05 mm; `mechanics/README.md`). |
-| R_th ≫ 130 K/W | The moving coil's heat path is worse than modelled. Test the fixed-coil B-MM variant further (25 K/W, but K_m ≈ 0.2). |
+| Coil-to-structure R_th ≫ 145 K/W | The moving coil's heat path is worse than modelled. Test the fixed-coil B-MM variant further (25 K/W, but K_m ≈ 0.2). |
 | Crosstalk > 5 µm/A after compensation | Move the Hall sensor or sample mid-PWM (E-4); REQ-SNS-004 is at risk. |
 
 ### Risks and controls
@@ -800,19 +800,20 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows fo
 This experiment measures coil hot-spot and touch-surface temperatures against copper loss (0.2–0.8 W, physics.md) on coupons (Stage A) and on built pens (Stages B, C), with a heated hand phantom, at 25 °C and 35 °C ambient.
 
 - **Validates** thermal model P-18: steady rise within ±15 %, time constant within ±25 %.
-- **Verifies** REQ-THM-001 (≤ 41 °C design target, 43 °C absolute at 25 °C ambient; ECMA-287 and IEC 60601-1 Table 24, AMF-34/35), REQ-THM-002 (coil ≤ 120 °C) and the allowable average copper loss behind REQ-ACT-002 (predicted 0.455 W for the moving coil).
+- **Verifies** REQ-THM-001 (≤ 41 °C design target, 43 °C absolute at 25 °C ambient; ECMA-287 and IEC 60601-1 Table 24, AMF-34/35), REQ-THM-002 (coil ≤ 120 °C) and the allowable average copper loss behind REQ-ACT-002 (predicted 0.412 W for the moving coil).
 - **Gates** G-S (no human use without a passing B07 on the same build) and DEC-008. It addresses open issues M-5 and E-8.
 
 ### Hypotheses and predictions
 
-`results/thermal/thermal.json`, v0.3.0, configuration B (moving coil):
+`results/thermal/thermal.json`, v0.4.3 (0.50 mm air gaps, 115 mW electronics), configuration B (moving coil):
 
 | Case | Average coil loss | Coil | Grip | Actuator surface | Time to 41 °C at the surface |
 |---|---|---|---|---|---|
-| Design | 0.310 W | 85.5 °C | 33.1 °C | 33.5 °C | never |
-| High | 0.995 W | 360 °C (runaway) | 40.1 °C | 48.0 °C | 3.5 min |
+| Design | 0.326 W | 96.6 °C | 33.4 °C | 34.1 °C | never |
+| High | 1.045 W | runaway (far above the 120 °C limit) | 42.9 °C | 53.7 °C | 2.9 min |
 
-- Allowable average copper loss: 0.455 W for the moving coil and 1.227 W for fixed coils (B-MM).
+- Allowable average copper loss: 0.412 W for the moving coil, set by the 120 °C coil limit; 1.192 W for fixed coils (B-MM).
+- Two-node reduction for the firmware governor: coil to structure 145 K/W with 0.22 J/K (τ ≈ 32 s); structure to ambient 12.5 K/W with 14.9 J/K (τ ≈ 3 min).
 - The firmware's coil-temperature estimate (research frame `t_coil`) tracks the measurement within ±5 K (AC-B07-07).
 
 ### Equipment and setup
@@ -826,7 +827,7 @@ This experiment measures coil hot-spot and touch-surface temperatures against co
 ### Procedure
 
 1. Pen horizontal on insulating supports in still air (chamber fan off), 25 °C.
-   - DC copper-loss steps of 0.2, 0.31 (design average), 0.455 (predicted allowable), 0.6 and 0.8 W, shared equally between the axes.
+   - DC copper-loss steps of 0.2, 0.33 (design average), 0.412 (predicted allowable), 0.6 and 0.8 W, shared equally between the axes.
    - Each step runs to steady state or to a limit: coil 110 °C, or any surface 43 °C. On a limit the step stops and the time to limit is recorded.
 2. Repeat with the hand phantom on the grip.
 3. Repeat at 35 °C ambient, where only 6–8 K of surface rise remains (AMF notes §2.4).
@@ -859,7 +860,7 @@ CSV at 1 Hz (temperatures, power) plus IR image sequences (radiometric, lossless
 | AC-B07-03 | REQ-THM-002 | Coil hot-spot temperature (resistance method and thermocouple) at the design-point load and after the 2-s high-load pulse | ≤ 120 °C | requirement | REQ-THM-002 | G-S; thermal governor |
 | AC-B07-04 | — | Thermal model P-18: steady-state coil temperature rise per watt vs analysis/thermal.py for the as-built geometry | within prediction ± 15 % | hypothesis | docs/physics.md (steady rise within ±15 %) | thermal model validation; governor design |
 | AC-B07-05 | — | Thermal model P-18: dominant coil time constant | within prediction ± 25 % | hypothesis | docs/physics.md (time constant within ±25 %) | thermal model validation |
-| AC-B07-06 | REQ-ACT-002 | Allowable average copper loss: largest steady loss keeping held surfaces ≤ 41 °C and coil ≤ 120 °C at 25 °C ambient | ≥ 0.455 W | hypothesis | prediction results/thermal/thermal.json (moving coil 0.455 W; fixed coil 1.227 W) | DEC-008; thermal governor setting |
+| AC-B07-06 | REQ-ACT-002 | Allowable average copper loss: largest steady loss keeping held surfaces ≤ 41 °C and coil ≤ 120 °C at 25 °C ambient | ≥ 0.412 W | hypothesis | prediction results/thermal/thermal.json v0.4.3 (moving coil 0.412 W, set by the 120 °C coil limit with 0.50 mm air gaps; fixed coil 1.192 W) | DEC-008; thermal governor setting |
 | AC-B07-07 | — | Firmware coil-temperature estimate (research frame t_coil) minus measured coil temperature, over the duty-cycle replay | within ± 5 K | derived | engineering judgement (governor must act before 120 °C with margin) | thermal governor (REQ-CTRL-004 limits) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-B07).

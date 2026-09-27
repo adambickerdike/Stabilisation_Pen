@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 import os
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, Optional
 
 import numpy as np
@@ -62,8 +62,8 @@ class Geometry:
 @dataclass
 class Controller:
     mode: str = "kfosc"
-    f_stage: float = 2000.0
-    pos_bw: float = 60.0            # Hz closed-loop design bandwidth
+    f_stage: Optional[float] = None   # Hz stage loop; None -> config control.f_stage
+    pos_bw: Optional[float] = None    # Hz closed-loop design bandwidth; None -> config control.pos_bw
     zeta: float = 0.7
     ki_ratio: float = 0.2           # integral corner as fraction of pos_bw
     d_filt_ratio: float = 5.0
@@ -91,7 +91,7 @@ class Controller:
     kf_wmax_hz: float = 14.0
     conf_nis_hi: float = 6.0
     oracle_h: float = 0.0
-    cur_bw: float = 2000.0
+    cur_bw: Optional[float] = None    # Hz current-loop bandwidth; None -> config control.current_bw
     axial_comp: float = 0.0
     gamma_acc: Optional[float] = None   # None -> computed from nominal compliances
     f_gate: float = 0.0                 # Hz; 0 disables the frequency gate
@@ -125,6 +125,10 @@ def build_params(scn: Scenario, ctrl: Controller, geom: Optional[Geometry] = Non
     (config/parameters.yaml) or direct layout names, applied last."""
     p = sp_params.load()
     over = dict(overrides or {})
+    ctrl = replace(ctrl,
+                   f_stage=ctrl.f_stage if ctrl.f_stage is not None else _pget(p, "control.f_stage", over),
+                   pos_bw=ctrl.pos_bw if ctrl.pos_bw is not None else _pget(p, "control.pos_bw", over),
+                   cur_bw=ctrl.cur_bw if ctrl.cur_bw is not None else _pget(p, "control.current_bw", over))
     geom = geom or Geometry(L1=_pget(p, "stage.L1", over), L2=_pget(p, "stage.L2", over))
     red = geom.reduce()
     P = np.zeros(NP)

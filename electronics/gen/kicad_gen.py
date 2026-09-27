@@ -26,8 +26,24 @@ LIBDIR = os.environ.get("KICAD_SYMBOL_DIR", "/usr/share/kicad/symbols")
 PROJECT = "pen_research"
 
 
+# Deterministic UUIDs (uuid5 of a fixed namespace, a scope and a running count), so that
+# regenerating an unchanged design reproduces the same files and a real change shows up as a
+# small diff instead of a rewrite of every UUID.
+_UUID_NS = uuid.UUID("7d1c5a3e-2b8f-4e61-9c0a-5f3b8e2d4a17")
+_UID = {"scope": "root", "n": 0}
+
+
+def det_uuid(key: str) -> str:
+    return str(uuid.uuid5(_UUID_NS, key))
+
+
+def uid_scope(scope: str):
+    _UID["scope"], _UID["n"] = scope, 0
+
+
 def uid():
-    return Q(str(uuid.uuid4()))
+    _UID["n"] += 1
+    return Q(det_uuid(f"{_UID['scope']}#{_UID['n']}"))
 
 
 # ------------------------------------------------------------------ library
@@ -133,7 +149,7 @@ class Generator:
     def __init__(self, lib: SymbolLib, title="Active stabilisation pen - research electronics Rev A"):
         self.lib = lib
         self.title = title
-        self.root_uuid = str(uuid.uuid4())
+        self.root_uuid = det_uuid(f"{PROJECT}/root")
         self.intended: Dict[str, List[str]] = {}
         self.issues: List[str] = []
 
@@ -265,7 +281,8 @@ class Generator:
         ver = "20231120" if v8 else "20230121"
         root_items = []
         for i, sh in enumerate(sheets):
-            s_uuid = str(uuid.uuid4())
+            s_uuid = det_uuid(f"{PROJECT}/sheet/{sh.file}")
+            uid_scope(f"sheet/{sh.file}")
             lib_syms, items = self.build_sheet(sh, s_uuid, i + 2)
             doc = ["kicad_sch", ["version", ver], ["generator", Q("eeschema")]]
             if v8:
@@ -289,6 +306,7 @@ class Generator:
                                ["property", Q("Sheetfile"), Q(sh.file), ["at", str(sx), str(sy + 46), "0"],
                                 ["effects", ["font", ["size", "1.27", "1.27"]], ["justify", "left", "top"]]],
                                ["instances", ["project", Q(PROJECT), ["path", Q(f"/{self.root_uuid}"), ["page", Q(str(i + 2))]]]]])
+        uid_scope("root")
         for j, note in enumerate(root_notes):
             root_items.append(["text", Q(note), ["exclude_from_sim", "no"], ["at", "30", f"{228 + 5.0 * j:.2f}", "0"],
                                ["effects", ["font", ["size", "2", "2"]], ["justify", "left", "bottom"]], ["uuid", uid()]])

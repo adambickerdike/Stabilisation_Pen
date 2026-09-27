@@ -11,12 +11,13 @@
 # Nothing in this file is a measurement of our hardware unless status == measured.
 # ---------------------------------------------------------------------------
 meta:
-  version: "0.4.2"
+  version: "0.4.3"
   date: "2026-09-27"
   changelog:
     - "0.1.0 initial provisional set from report audit"
     - "0.2.0 lever/pivot baseline (DEC-003), transverse contact load model (COR-01)"
     - "0.3.0 literature two-stage hand impedance (HAP-26), stiff axial path (DEC-006), CAD Rev A geometry, EM-based actuator constants"
+    - "0.4.3 firmware review (firmware/README.md D6, D11): actuator.air_gap added (0.50 mm); coil-to-structure thermal resistance 145 K/W at that gap (was 130 K/W, computed at 0.45 mm); structure node added for the thermal governor (Rth_struct_amb, Cth_struct, T_struct_rise_idle); R20 note corrected (the 3.3 V supply binds at the hot high-force corner, DEC-012 revisited). Simulator results remain at 0.4.2: the only simulator input changed is Rth_coil_amb, worth 0.2–0.3 K of coil temperature in a 6 s run (calculation, one-node model)"
     - "0.4.2 consistency pass after the validation review: k_tip 80 N/m from the selected gimbal (was 150), coil-to-ambient 130 K/W for a moving coil in an air gap (was 60), electronics 115 mW (was 60), m_eq documented as 13.7 g (distributed mass), stale experiment and source references corrected"
     - "0.4.1 axial suspension in the carrier (refill slides, kappa_s = 1, DEC-007 rev.), actuator gap 0.50 mm and tip travel 0.60 mm from the tolerance analysis; Kf -2.9 % for the wider gap"
     - "0.4.0 winding matched to the single-cell supply (R20 6 ohm, DEC-012), 40 kHz PWM and current loop, 0.1 ohm shunt, pouch cell (COR-14); contact feedforward disabled in the controller (DEC-011)"
@@ -83,13 +84,17 @@ stage:              # front-pivot lever (baseline configuration B, DEC-003); tip
 
 actuator:           # rear moving-coil planar Lorentz actuator, per axis (values at the actuator, not the tip)
   Kf:              {value: 0.717, unit: N/A,  min: 0.502, max: 0.932, dist: uniform, status: calculated, source: "Km 0.302 N/sqrtW x sqrt(R20) x 0.971 for the 0.50 mm gap (mechanics/tolerance_analysis.py); electronics/calcs/drive_sense.py", note: "Per-axis force constant at the actuator; force-current map EXP-B03."}
-  R20:             {value: 6.0,   unit: ohm,   min: 4.4,  max: 8.7,  dist: uniform, status: calculated, source: "electronics/calcs/drive_sense.py winding choice (DEC-012)", note: "Largest winding for which the 3.3 V supply never binds inside the thermally allowed envelope at 85 C coil."}
+  R20:             {value: 6.0,   unit: ohm,   min: 4.4,  max: 8.7,  dist: uniform, status: calculated, source: "electronics/calcs/drive_sense.py (DEC-012)", note: "Design baseline. At 3.3 V the static hold exceeds the supply at 0.5 % of the thermally allowed envelope (hot, high-force corner; each point at its own coil temperature, up to 120 C); 4 ohm meets the criterion (results/electronics/drive_sense.json winding_assessment). EXP-B03 winds both."}
   L:               {value: 1.75e-4,unit: H,     min: 8.2e-5, max: 3.8e-4, dist: loguniform, status: calculated, source: "results/em air-core 322 uH at 11 ohm scaled by turns^2 (R ratio); iron raises it", note: "LCR measurement pending."}
   alpha_cu:        {value: 0.00393, unit: 1/K, min: 0.0039, max: 0.00393, dist: fixed, status: sourced, source: "copper resistivity tempco (AMF ledger)", note: ""}
   i_max:           {value: 0.60,  unit: A,     min: 0.45, max: 0.80, dist: fixed, status: assumed, source: "software current limit; same force limit as v0.3 (0.44 N at actuator)", note: "Per axis."}
   i_trip:          {value: 0.80,  unit: A,     min: 0.70, max: 0.90, dist: fixed, status: calculated, source: "electronics/gen/design_revA.py window comparator (VTH_HI/VTH_LO)", note: "Independent hardware latch."}
-  Rth_coil_amb:    {value: 130.0, unit: K/W,   min: 80.0, max: 200.0,dist: uniform, status: calculated, source: "results/thermal/thermal.json (moving coil in an air gap, lumped network)", note: "Coil to ambient; EXP-B07."}
+  air_gap:         {value: 5.0e-4, unit: m,     min: 4.0e-4, max: 6.0e-4, dist: fixed, status: calculated, source: "DEC-007 rev.; mechanics/tolerance_analysis.py (paddle-magnet clearance per side)", note: "Coil-to-magnet clearance per side (was 0.45 mm); sets K_f (-2.9 %) and the coil-to-structure thermal resistance (analysis/thermal.py)."}
+  Rth_coil_amb:    {value: 145.0, unit: K/W,   min: 80.0, max: 200.0,dist: uniform, status: calculated, source: "results/thermal/thermal.json two_node_governor_model.R_coil_iron (conduction across the two 0.50 mm air gaps)", note: "Coil to the iron/magnet structure (the key name is historical). The simulator's one-node coil model treats the structure as ambient, which holds for runs much shorter than the structure time constant (about 3 min). Steady state adds Rth_struct_amb (157 K/W in total). EXP-B07."}
   Cth_coil:        {value: 0.25,  unit: J/K,   min: 0.1,  max: 0.6,  dist: uniform, status: assumed, source: "analysis/thermal", note: "Coil + local structure heat capacity."}
+  Rth_struct_amb:  {value: 12.5,  unit: K/W,   min: 8.0,  max: 20.0, dist: uniform, status: calculated, source: "results/thermal/thermal.json two_node_governor_model.R_struct_amb (iron, magnets and barrel to ambient and hand)", note: "Second node of the firmware thermal governor; EXP-B07."}
+  Cth_struct:      {value: 14.9,  unit: J/K,   min: 8.0,  max: 25.0, dist: uniform, status: calculated, source: "analysis/thermal.py node capacities (iron + barrel sections)", note: "Time constant about 3 min with Rth_struct_amb."}
+  T_struct_rise_idle: {value: 5.9, unit: K,    min: 3.0,  max: 10.0, dist: uniform, status: calculated, source: "results/thermal/thermal.json T_struct_no_coil_loss_C - 25 C (electronics 115 mW, hand at 33 C)", note: "Structure temperature above ambient with no coil loss."}
 
 electrical:
   v_bat_nom:       {value: 3.7,  unit: V,   min: 3.0,  max: 4.2,  dist: uniform, status: sourced, source: "Li-ion single cell", note: ""}

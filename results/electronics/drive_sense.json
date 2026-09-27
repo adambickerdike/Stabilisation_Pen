@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "analytical calculation (datasheet-class values; VERIFY flags in components)",
-    "generated_utc": "2026-09-27T01:35:49+00:00",
-    "git_revision": "0801fbf-dirty",
-    "parameters_version": "0.4.1",
-    "parameters_sha256_16": "f44bd71afad66b15",
+    "generated_utc": "2026-09-27T03:41:34+00:00",
+    "git_revision": "b69a53a-dirty",
+    "parameters_version": "0.4.3",
+    "parameters_sha256_16": "3fbe200f8ff5c330",
     "command": "drive_sense.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -98,8 +98,24 @@
       "source": "config control.f_stage"
     },
     "t_coil_design_c": {
-      "value": 85.0,
-      "source": "hot-coil design point (results/thermal: 85.5 C at design load)"
+      "value": 96.60619052057275,
+      "source": "hot-coil design point: configuration B at the design load, results/thermal/thermal.json (read at run time)"
+    },
+    "t_coil_limit_c": {
+      "value": 120.0,
+      "source": "coil temperature limit used for the thermal allowable (analysis/thermal.py)"
+    },
+    "br_tempco_per_k": {
+      "value": -0.0012,
+      "source": "NdFeB reversible Br tempco class (AMF-27, AMF-29); VERIFY with the magnet grade"
+    },
+    "f_corr_hz": {
+      "value": 12.0,
+      "source": "highest tremor frequency addressed (REQ-ENV-003)"
+    },
+    "q_corr_m": {
+      "value": 0.00055,
+      "source": "correction amplitude at the control limit q_lim (sim/pensim/model.py)"
     },
     "t_amb_c": {
       "value": 25.0,
@@ -110,8 +126,8 @@
       "source": "config electrical.v_bat_min"
     },
     "p_cu_allow_w": {
-      "value": 0.455,
-      "source": "results/thermal/thermal.json allowable average copper loss, moving coil"
+      "value": 0.41186768375337124,
+      "source": "results/thermal/thermal.json allowable average copper loss, moving coil (read at run time; 25 C-referenced)"
     },
     "v_tip_stage_max": {
       "value": 0.05,
@@ -121,241 +137,335 @@
   "headroom": {
     "n": 3.1666666666666665,
     "Km20": 0.2927140242625898,
-    "Km_hot": 0.2612424932669699,
-    "a_hot": 1.25545,
+    "Km_hot": 0.25662235094740293,
+    "a_hot": 1.301062328745851,
+    "t_coil_design_C": 96.60619052057275,
     "r_ext_ohm": 0.5800000000000001,
-    "frac_thermal_ok": 0.6788,
+    "r_ext_note": "includes 0.06 ohm wiring; the simulator uses r_bridge + r_shunt = 0.52 ohm",
+    "t_coil_max_in_envelope_C": 119.99383816701874,
+    "t_magnet_max_in_envelope_C": 38.028209405378554,
+    "F_corr_N": {
+      "static": 0.0,
+      "typical_9Hz_0p3mm": 0.037142760004666625,
+      "extreme": 0.086835662237432
+    },
+    "p_cu_allow_W": 0.41186768375337124,
+    "frac_thermal_ok": 0.70045,
     "rows": [
       {
         "R20_ohm": 2.5,
         "Kf_N_per_A": 0.4628215098717864,
         "L_H": 7.291666666666667e-05,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.90725,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.43285521646549285,
-        "I_max_within_thermal_A": 0.5304647712335854,
-        "bridge_loss_frac": 0.18479429686566573
+        "bridge_loss_frac": 0.1783158230579427,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.771242797342284,
+        "I_p95_A": 0.4598735830973809,
+        "I_max_within_thermal_A": 0.5731656406607327,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.8061291433863113,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.8529491130918543
       },
       {
         "R20_ohm": 2.5,
         "Kf_N_per_A": 0.4628215098717864,
         "L_H": 7.291666666666667e-05,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.9429,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.43285521646549285,
-        "I_max_within_thermal_A": 0.5304647712335854,
-        "bridge_loss_frac": 0.18479429686566573
+        "bridge_loss_frac": 0.1783158230579427,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.6856788589472921,
+        "I_p95_A": 0.4598735830973809,
+        "I_max_within_thermal_A": 0.5731656406607327,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.716588703458084,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.7580575425441225
       },
       {
         "R20_ohm": 2.5,
         "Kf_N_per_A": 0.4628215098717864,
         "L_H": 7.291666666666667e-05,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.9741,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.43285521646549285,
-        "I_max_within_thermal_A": 0.5304647712335854,
-        "bridge_loss_frac": 0.18479429686566573
+        "bridge_loss_frac": 0.1783158230579427,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.6021706376675987,
+        "I_p95_A": 0.4598735830973809,
+        "I_max_within_thermal_A": 0.5731656406607327,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.629225079831216,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.6655092104868844
       },
       {
         "R20_ohm": 3.0,
         "Kf_N_per_A": 0.5069955621107546,
         "L_H": 8.75e-05,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.8852,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.3951409436532201,
-        "I_max_within_thermal_A": 0.48424586861075375,
-        "bridge_loss_frac": 0.15399524738805476
+        "bridge_loss_frac": 0.14859651921495226,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.8232183688171679,
+        "I_p95_A": 0.41980522510527,
+        "I_max_within_thermal_A": 0.523226250961306,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.8603266976688336,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.9101148027052504
       },
       {
         "R20_ohm": 3.0,
         "Kf_N_per_A": 0.5069955621107546,
         "L_H": 8.75e-05,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.9249,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.3951409436532201,
-        "I_max_within_thermal_A": 0.48424586861075375,
-        "bridge_loss_frac": 0.15399524738805476
+        "bridge_loss_frac": 0.14859651921495226,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.7320962955872979,
+        "I_p95_A": 0.41980522510527,
+        "I_max_within_thermal_A": 0.523226250961306,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.7649942085722368,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.8091193166975422
       },
       {
         "R20_ohm": 3.0,
         "Kf_N_per_A": 0.5069955621107546,
         "L_H": 8.75e-05,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.9613,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.3951409436532201,
-        "I_max_within_thermal_A": 0.48424586861075375,
-        "bridge_loss_frac": 0.15399524738805476
+        "bridge_loss_frac": 0.14859651921495226,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.6431134760260613,
+        "I_p95_A": 0.41980522510527,
+        "I_max_within_thermal_A": 0.523226250961306,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.67192456247264,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.7105562391405914
       },
       {
         "R20_ohm": 4.0,
         "Kf_N_per_A": 0.5854280485251796,
         "L_H": 0.00011666666666666667,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.84305,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.34220209527904405,
-        "I_max_within_thermal_A": 0.4193692238945742,
-        "bridge_loss_frac": 0.11549643554104108
+        "bridge_loss_frac": 0.11144738941121418,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.919160733381288,
+        "I_p95_A": 0.36356198958260866,
+        "I_max_within_thermal_A": 0.45312722525938315,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.9603951201633021,
+        "frac_ok_within_thermal_extreme": 0.9996430865871939,
+        "worst_voltage_ratio_extreme": 1.0156975706843456
       },
       {
         "R20_ohm": 4.0,
         "Kf_N_per_A": 0.5854280485251796,
         "L_H": 0.00011666666666666667,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.88935,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.34220209527904405,
-        "I_max_within_thermal_A": 0.4193692238945742,
-        "bridge_loss_frac": 0.11549643554104108
+        "bridge_loss_frac": 0.11144738941121418,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.8177433010875996,
+        "I_p95_A": 0.36356198958260866,
+        "I_max_within_thermal_A": 0.45312722525938315,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.8543291847275458,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.9033839030521726
       },
       {
         "R20_ohm": 4.0,
         "Kf_N_per_A": 0.5854280485251796,
         "L_H": 0.00011666666666666667,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.9326,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.34220209527904405,
-        "I_max_within_thermal_A": 0.4193692238945742,
-        "bridge_loss_frac": 0.11549643554104108
+        "bridge_loss_frac": 0.11144738941121418,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.7186290848396275,
+        "I_p95_A": 0.36356198958260866,
+        "I_max_within_thermal_A": 0.45312722525938315,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.7506957374735316,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.7936796524203861
       },
       {
         "R20_ohm": 5.0,
         "Kf_N_per_A": 0.6545284562186736,
         "L_H": 0.00014583333333333335,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.8055,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.3060748588347209,
-        "I_max_within_thermal_A": 0.37509523691983876,
-        "bridge_loss_frac": 0.09239714843283287
+        "bridge_loss_frac": 0.08915791152897135,
+        "frac_ok_within_thermal_static": 0.9999286173174388,
+        "worst_voltage_ratio_static": 1.0064063185979324,
+        "I_p95_A": 0.32517972909671333,
+        "I_max_within_thermal_A": 0.4052893112543361,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9975729887929189,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.0514091093825915,
+        "frac_ok_within_thermal_extreme": 0.9907202512670427,
+        "worst_voltage_ratio_extreme": 1.111749683089708
       },
       {
         "R20_ohm": 5.0,
         "Kf_N_per_A": 0.6545284562186736,
         "L_H": 0.00014583333333333335,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.85465,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.3060748588347209,
-        "I_max_within_thermal_A": 0.37509523691983876,
-        "bridge_loss_frac": 0.09239714843283287
+        "bridge_loss_frac": 0.08915791152897135,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.8956036454665397,
+        "I_p95_A": 0.32517972909671333,
+        "I_max_within_thermal_A": 0.4052893112543361,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.9355554093181249,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.9891105635192902
       },
       {
         "R20_ohm": 5.0,
         "Kf_N_per_A": 0.6545284562186736,
         "L_H": 0.00014583333333333335,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.9046,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.3060748588347209,
-        "I_max_within_thermal_A": 0.37509523691983876,
-        "bridge_loss_frac": 0.09239714843283287
+        "bridge_loss_frac": 0.08915791152897135,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.7872596408587249,
+        "I_p95_A": 0.32517972909671333,
+        "I_max_within_thermal_A": 0.4052893112543361,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.8222955251693378,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.869249901307579
       },
       {
         "R20_ohm": 6.0,
         "Kf_N_per_A": 0.717,
         "L_H": 0.000175,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.7719,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.27940684078164346,
-        "I_max_within_thermal_A": 0.34241353745623393,
-        "bridge_loss_frac": 0.07699762369402738
+        "bridge_loss_frac": 0.07429825960747613,
+        "frac_ok_within_thermal_static": 0.9950745949032764,
+        "worst_voltage_ratio_static": 1.086820207252899,
+        "I_p95_A": 0.29684712144948155,
+        "I_max_within_thermal_A": 0.36997683014955385,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9877221785994718,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.1353046991845286,
+        "frac_ok_within_thermal_extreme": 0.9712327789278321,
+        "worst_voltage_ratio_extreme": 1.2003009699039215
       },
       {
         "R20_ohm": 6.0,
         "Kf_N_per_A": 0.717,
         "L_H": 0.000175,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.824,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.27940684078164346,
-        "I_max_within_thermal_A": 0.34241353745623393,
-        "bridge_loss_frac": 0.07699762369402738
+        "bridge_loss_frac": 0.07429825960747613,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.9673557057122497,
+        "I_p95_A": 0.29684712144948155,
+        "I_max_within_thermal_A": 0.36997683014955385,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9999286173174388,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.0104160761627239,
+        "frac_ok_within_thermal_extreme": 0.9961453351416947,
+        "worst_voltage_ratio_extreme": 1.0681283441314182
       },
       {
         "R20_ohm": 6.0,
         "Kf_N_per_A": 0.717,
         "L_H": 0.000175,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.87625,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.27940684078164346,
-        "I_max_within_thermal_A": 0.34241353745623393,
-        "bridge_loss_frac": 0.07699762369402738
+        "bridge_loss_frac": 0.07429825960747613,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.850496314446906,
+        "I_p95_A": 0.29684712144948155,
+        "I_max_within_thermal_A": 0.36997683014955385,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 1.0,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 0.8882734789655966,
+        "frac_ok_within_thermal_extreme": 1.0,
+        "worst_voltage_ratio_extreme": 0.9388940014487391
       },
       {
         "R20_ohm": 8.0,
         "Kf_N_per_A": 0.8279202860179234,
         "L_H": 0.00023333333333333333,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.71725,
-        "frac_voltage_ok_within_thermal": 0.9974955804360637,
-        "I_p95_A": 0.24197342210805706,
-        "I_max_within_thermal_A": 0.29653882203679294,
-        "bridge_loss_frac": 0.05774821777052054
+        "bridge_loss_frac": 0.05572369470560709,
+        "frac_ok_within_thermal_static": 0.9683060889428224,
+        "worst_voltage_ratio_static": 1.2321250096926686,
+        "I_p95_A": 0.2570771482155355,
+        "I_max_within_thermal_A": 0.320409333721154,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9507459490327647,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.286913481551556,
+        "frac_ok_within_thermal_extreme": 0.9178385323720465,
+        "worst_voltage_ratio_extreme": 1.3603406611868871
       },
       {
         "R20_ohm": 8.0,
         "Kf_N_per_A": 0.8279202860179234,
         "L_H": 0.00023333333333333333,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.7683,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.24197342210805706,
-        "I_max_within_thermal_A": 0.29653882203679294,
-        "bridge_loss_frac": 0.05774821777052054
+        "bridge_loss_frac": 0.05572369470560709,
+        "frac_ok_within_thermal_static": 0.9940752373474195,
+        "worst_voltage_ratio_static": 1.0969920586845432,
+        "I_p95_A": 0.2570771482155355,
+        "I_max_within_thermal_A": 0.320409333721154,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9857234634877579,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.1456791295608904,
+        "frac_ok_within_thermal_extreme": 0.9683774716253837,
+        "worst_voltage_ratio_extreme": 1.210916923327362
       },
       {
         "R20_ohm": 8.0,
         "Kf_N_per_A": 0.8279202860179234,
         "L_H": 0.00023333333333333333,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.82625,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.24197342210805706,
-        "I_max_within_thermal_A": 0.29653882203679294,
-        "bridge_loss_frac": 0.05774821777052054
+        "bridge_loss_frac": 0.05572369470560709,
+        "frac_ok_within_thermal_static": 1.0,
+        "worst_voltage_ratio_static": 0.9647334799519707,
+        "I_p95_A": 0.2570771482155355,
+        "I_max_within_thermal_A": 0.320409333721154,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9999286173174388,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.0074710088140304,
+        "frac_ok_within_thermal_extreme": 0.996288100506817,
+        "worst_voltage_ratio_extreme": 1.0647261835044002
       },
       {
         "R20_ohm": 11.0,
         "Kf_N_per_A": 0.9708225893539973,
         "L_H": 0.00032083333333333334,
         "v_bat": 3.3,
-        "frac_voltage_ok": 0.6555,
-        "frac_voltage_ok_within_thermal": 0.9591926929876252,
-        "I_p95_A": 0.2063556277298251,
-        "I_max_within_thermal_A": 0.2528891571419725,
-        "bridge_loss_frac": 0.04199870383310585
+        "bridge_loss_frac": 0.0405263234222597,
+        "frac_ok_within_thermal_static": 0.9090584624170176,
+        "worst_voltage_ratio_static": 1.422517996476829,
+        "I_p95_A": 0.21923612863283845,
+        "I_max_within_thermal_A": 0.27324599790549553,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.883432079377543,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.485581280478116,
+        "frac_ok_within_thermal_extreme": 0.8462417017631523,
+        "worst_voltage_ratio_extreme": 1.5700765920553827
       },
       {
         "R20_ohm": 11.0,
         "Kf_N_per_A": 0.9708225893539973,
         "L_H": 0.00032083333333333334,
         "v_bat": 3.7,
-        "frac_voltage_ok": 0.7064,
-        "frac_voltage_ok_within_thermal": 0.9943282262816735,
-        "I_p95_A": 0.2063556277298251,
-        "I_max_within_thermal_A": 0.2528891571419725,
-        "bridge_loss_frac": 0.04199870383310585
+        "bridge_loss_frac": 0.0405263234222597,
+        "frac_ok_within_thermal_static": 0.9603826111785281,
+        "worst_voltage_ratio_static": 1.2668358266780404,
+        "I_p95_A": 0.21923612863283845,
+        "I_max_within_thermal_A": 0.27324599790549553,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9397530159183383,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.3229067276186273,
+        "frac_ok_within_thermal_extreme": 0.9040616746377329,
+        "worst_voltage_ratio_extreme": 1.3980212535952714
       },
       {
         "R20_ohm": 11.0,
         "Kf_N_per_A": 0.9708225893539973,
         "L_H": 0.00032083333333333334,
         "v_bat": 4.2,
-        "frac_voltage_ok": 0.76155,
-        "frac_voltage_ok_within_thermal": 1.0,
-        "I_p95_A": 0.2063556277298251,
-        "I_max_within_thermal_A": 0.2528891571419725,
-        "bridge_loss_frac": 0.04199870383310585
+        "bridge_loss_frac": 0.0405263234222597,
+        "frac_ok_within_thermal_static": 0.9916482261403383,
+        "worst_voltage_ratio_static": 1.1143860518931856,
+        "I_p95_A": 0.21923612863283845,
+        "I_max_within_thermal_A": 0.27324599790549553,
+        "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9827253908201871,
+        "worst_voltage_ratio_typical_9Hz_0p3mm": 1.1636313544336792,
+        "frac_ok_within_thermal_extreme": 0.9635948318937826,
+        "worst_voltage_ratio_extreme": 1.2295917164531207
       }
     ]
   },
@@ -364,12 +474,36 @@
     "Kf_N_per_A": 0.717,
     "L_H": 0.000175,
     "v_bat": 3.3,
-    "frac_voltage_ok": 0.7719,
-    "frac_voltage_ok_within_thermal": 1.0,
-    "I_p95_A": 0.27940684078164346,
-    "I_max_within_thermal_A": 0.34241353745623393,
-    "bridge_loss_frac": 0.07699762369402738,
-    "criterion": "largest R with all thermally-allowed envelope points voltage-feasible at 3.3 V, 85 C coil"
+    "bridge_loss_frac": 0.07429825960747613,
+    "frac_ok_within_thermal_static": 0.9950745949032764,
+    "worst_voltage_ratio_static": 1.086820207252899,
+    "I_p95_A": 0.29684712144948155,
+    "I_max_within_thermal_A": 0.36997683014955385,
+    "frac_ok_within_thermal_typical_9Hz_0p3mm": 0.9877221785994718,
+    "worst_voltage_ratio_typical_9Hz_0p3mm": 1.1353046991845286,
+    "frac_ok_within_thermal_extreme": 0.9712327789278321,
+    "worst_voltage_ratio_extreme": 1.2003009699039215,
+    "note": "design baseline = config actuator.R20 (DEC-012); ripple, current loop and hold current use it"
+  },
+  "winding_assessment": {
+    "largest_R_meeting_criterion": 4.0,
+    "criterion": "at 3.3 V: static hold feasible at every thermally allowed envelope point and typical correction (9 Hz, 0.3 mm) at >= 99.9 %, each point at its own steady coil and magnet temperature",
+    "baseline_meets_criterion": false
+  },
+  "thermal_inputs": {
+    "source": "results/thermal/thermal.json",
+    "parameters_version": "0.4.3",
+    "R_coil_iron_K_per_W": 144.91818099130916,
+    "C_coil_J_per_K": 0.21939999999999998,
+    "R_struct_amb_K_per_W": 12.529071798044598,
+    "C_struct_J_per_K": 14.85,
+    "T_struct_no_coil_loss_C": 30.941774558476588,
+    "R_coil_amb_total_K_per_W": 157.44725278935374,
+    "tau_coil_s": 31.795048909493225,
+    "tau_struct_s": 186.05671620096226,
+    "gap_m": 0.0005,
+    "P_electronics_W": 0.115,
+    "note": "coil node against the iron/magnet/barrel structure; structure node against ambient 25 C and hand 33 C (linear fit of two steady states at constant coil loss)"
   },
   "design_point_hold_current_A": 0.3347280334728034,
   "sense_chain": {
@@ -391,142 +525,142 @@
     {
       "f_pwm_kHz": 10.0,
       "D": 0.3,
-      "ripple_pp_mA": 332.43891043756554,
-      "i_avg_A": 0.1796982949793934,
+      "ripple_pp_mA": 327.3827580647853,
+      "i_avg_A": 0.17553903420872424,
       "pwm_levels_centre_aligned": 800.0
     },
     {
       "f_pwm_kHz": 10.0,
       "D": 0.5,
-      "ripple_pp_mA": 374.3006644366187,
-      "i_avg_A": 0.22803752141703748,
+      "ripple_pp_mA": 367.5392528098828,
+      "i_avg_A": 0.22059593407972025,
       "pwm_levels_centre_aligned": 800.0
     },
     {
       "f_pwm_kHz": 10.0,
       "D": 0.8,
-      "ripple_pp_mA": 271.4957063124935,
-      "i_avg_A": 0.3135055550845903,
+      "ripple_pp_mA": 268.34224370043205,
+      "i_avg_A": 0.3010887698818606,
       "pwm_levels_centre_aligned": 800.0
     },
     {
       "f_pwm_kHz": 20.0,
       "D": 0.3,
-      "ripple_pp_mA": 203.46812300821747,
-      "i_avg_A": 0.1517761302370801,
+      "ripple_pp_mA": 202.34694523448078,
+      "i_avg_A": 0.147679816335075,
       "pwm_levels_centre_aligned": 400.0
     },
     {
       "f_pwm_kHz": 20.0,
       "D": 0.5,
-      "ripple_pp_mA": 238.2017654569773,
-      "i_avg_A": 0.22803752141703745,
+      "ripple_pp_mA": 236.6361858610283,
+      "i_avg_A": 0.22059593407972028,
       "pwm_levels_centre_aligned": 400.0
     },
     {
       "f_pwm_kHz": 20.0,
       "D": 0.8,
-      "ripple_pp_mA": 158.29215354550425,
-      "i_avg_A": 0.3475471903086459,
+      "ripple_pp_mA": 157.62917294848006,
+      "i_avg_A": 0.3351986548749565,
       "pwm_levels_centre_aligned": 400.0
     },
     {
       "f_pwm_kHz": 25.0,
       "D": 0.3,
-      "ripple_pp_mA": 167.7141259028439,
-      "i_avg_A": 0.1468581607983716,
+      "ripple_pp_mA": 167.08971144200498,
+      "i_avg_A": 0.1426707295550519,
       "pwm_levels_centre_aligned": 320.0
     },
     {
       "f_pwm_kHz": 25.0,
       "D": 0.5,
-      "ripple_pp_mA": 197.48041761545187,
-      "i_avg_A": 0.22803752141703748,
+      "ripple_pp_mA": 196.60383854692225,
+      "i_avg_A": 0.22059593407972025,
       "pwm_levels_centre_aligned": 320.0
     },
     {
       "f_pwm_kHz": 25.0,
       "D": 0.8,
-      "ripple_pp_mA": 129.54340330669066,
-      "i_avg_A": 0.35329394586121055,
+      "ripple_pp_mA": 129.17661310987893,
+      "i_avg_A": 0.3410608743605426,
       "pwm_levels_centre_aligned": 320.0
     },
     {
       "f_pwm_kHz": 40.0,
       "D": 0.3,
-      "ripple_pp_mA": 108.47112523831976,
-      "i_avg_A": 0.14095941255336034,
+      "ripple_pp_mA": 108.30330996072328,
+      "i_avg_A": 0.13662367079743784,
       "pwm_levels_centre_aligned": 200.0
     },
     {
       "f_pwm_kHz": 40.0,
       "D": 0.5,
-      "ripple_pp_mA": 128.56519831254357,
-      "i_avg_A": 0.22803752141703748,
+      "ripple_pp_mA": 128.32824493278247,
+      "i_avg_A": 0.22059593407972022,
       "pwm_levels_centre_aligned": 200.0
     },
     {
       "f_pwm_kHz": 40.0,
       "D": 0.8,
-      "ripple_pp_mA": 83.10016280509525,
-      "i_avg_A": 0.36011638837990556,
+      "ripple_pp_mA": 83.00229412091092,
+      "i_avg_A": 0.3480605807049888,
       "pwm_levels_centre_aligned": 200.0
     },
     {
       "f_pwm_kHz": 50.0,
       "D": 0.3,
-      "ripple_pp_mA": 87.49073343011916,
-      "i_avg_A": 0.13950421983259031,
+      "ripple_pp_mA": 87.40281695013894,
+      "i_avg_A": 0.1351253880093503,
       "pwm_levels_centre_aligned": 160.0
     },
     {
       "f_pwm_kHz": 50.0,
       "D": 0.5,
-      "ripple_pp_mA": 103.86086080058851,
-      "i_avg_A": 0.22803752141703748,
+      "ripple_pp_mA": 103.73655782644872,
+      "i_avg_A": 0.22059593407972028,
       "pwm_levels_centre_aligned": 160.0
     },
     {
       "f_pwm_kHz": 50.0,
       "D": 0.8,
-      "ripple_pp_mA": 66.89603246405979,
-      "i_avg_A": 0.3617886704795853,
+      "ripple_pp_mA": 66.84484557408166,
+      "i_avg_A": 0.3497830347910547,
       "pwm_levels_centre_aligned": 160.0
     },
     {
       "f_pwm_kHz": 100.0,
       "D": 0.3,
-      "ripple_pp_mA": 44.23386044503283,
-      "i_avg_A": 0.13750463180260297,
+      "ripple_pp_mA": 44.22252385269329,
+      "i_avg_A": 0.1330624091504225,
       "pwm_levels_centre_aligned": 80.0
     },
     {
       "f_pwm_kHz": 100.0,
       "D": 0.5,
-      "ripple_pp_mA": 52.62175165278765,
-      "i_avg_A": 0.22803752141703745,
+      "ripple_pp_mA": 52.60569457556957,
+      "i_avg_A": 0.22059593407972025,
       "pwm_levels_centre_aligned": 80.0
     },
     {
       "f_pwm_kHz": 100.0,
       "D": 0.8,
-      "ripple_pp_mA": 33.73209311089204,
-      "i_avg_A": 0.3640800514018151,
+      "ripple_pp_mA": 33.72550735406371,
+      "i_avg_A": 0.35214749124389333,
       "pwm_levels_centre_aligned": 80.0
     }
   ],
   "current_loop": {
     "loop_delay_us": 47.5,
     "crossover_Hz_for_PM50": 2339.1812865497077,
-    "electrical_pole_Hz": 6850.665370447543,
+    "electrical_pole_Hz": 7099.560030533305,
     "Kp_V_per_A": 2.572064160833749,
-    "Ki_V_per_As": 110711.9297389279
+    "Ki_V_per_As": 114734.25554667773
   },
   "stage_period_busy_us": {
     "CPU": 130.0,
-    "SPIM4 32 MHz": 50.0,
+    "SPIB 8 MHz": 16.0,
     "SAADC": 210.0,
-    "SPIB 8 MHz": 16.0
+    "SPIM4 32 MHz": 50.0
   },
   "electronics_power": {
     "loads_mA": {

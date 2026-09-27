@@ -98,7 +98,7 @@ Stating these in advance keeps the plan honest. Each will be measured, not assum
 |---|---|
 | AC-B03-03 (K_m ≥ 0.37 N/√W for REQ-ACT-002) | Predicted K_m 0.293 N/√W |
 | AC-P01-02 (REQ-ACT-002 ≤ 0.25 W) | Predicted 0.33 W average copper loss (configuration B, 65 % pen-down) |
-| AC-B03-10 (REQ-ACT-001: 0.75 N continuous) | Needs 0.65–0.82 W against 0.455 W allowable |
+| AC-B03-10 (REQ-ACT-001: 0.75 N continuous) | Needs 0.65 W referenced to 20 °C (0.85 W at the 96.6 °C design coil) against 0.412 W allowable |
 | AC-B03-11 (REQ-ACT-001: 1.4 N for 2 s) | Needs 0.62 A per axis against a 0.45 A or 0.60 A clamp |
 | AC-B04-04 (REQ-MECH-001) | Page disc of 0.5 mm unreachable in the tilt direction below θ ≈ 56° with q_lim 0.55 mm and K_n 800 N/m |
 | AC-B05-02 (REQ-MECH-003) | m_eq 13.7 g against ≤ 12 g |
@@ -121,7 +121,7 @@ This list was checked against the repository on 2026-09-27, while other workstre
 1. **REQ-SAF-002.** The text says a 0.45 A software limit and a 0.6 A hardware trip. The design uses 0.60 A and ±0.80 A: `config/parameters.yaml` `actuator.i_max`/`i_trip`, `electronics/README.md`, `electronics/gen/design_revA.py`, and the requirement's own `current_estimate`.
 2. **REQ-ACT-001 vs REQ-SAF-002 and the thermal limit.**
    - "≥ 1.4 N for 2 s" needs 1.4 / (3.17 × 0.717) = **0.62 A** on one axis, above both current clamps.
-   - "0.75 N continuously" needs about **0.65 W (20 °C) to 0.82 W (85 °C)** of copper loss at K_m 0.293 N/√W. The moving-coil allowable is 0.455 W (`results/thermal/thermal.json`) and REQ-ACT-002 allows 0.25 W. By the repository's own numbers REQ-ACT-001 is infeasible for configuration B, not merely "at risk".
+   - "0.75 N continuously" needs about **0.65 W (20 °C) to 0.82 W (85 °C)** of copper loss at K_m 0.293 N/√W. The moving-coil allowable is 0.455 W (`results/thermal/thermal.json`) and REQ-ACT-002 allows 0.25 W. *(v0.4.3: 0.412 W allowable with the 0.50 mm gaps; see the resolution log.)* By the repository's own numbers REQ-ACT-001 is infeasible for configuration B, not merely "at risk".
 3. **REQ-MECH-002.** The text says "hard stops at 0.65 mm". The design is 0.60 mm (`config` `stage.travel_tip_mech` v0.4.1, DEC-007 rev.); the requirement's own `current_estimate` also says 0.60 mm.
 4. **REQ-MECH-001.** "0.5 mm at every altitude 35–75°" is not reachable with q_lim = 0.55 mm.
    - By P-4 with K_n 800 N/m and k_ax 2 kN/m, the tilt-plane stage needs 0.705 / 0.606 / 0.576 / 0.553 mm at 35 / 45 / 50 / 55°.
@@ -266,6 +266,7 @@ Status of each item above after the consistency pass. Parameters moved to v0.4.2
 | 30, 32, 33 | Fixed. H03 n = 20; phase/stage naming note in `docs/plan.md`; Elble 2000 ledgered as PDT-31 (abstract only). |
 | 31 | Noted; the adaptive extension to 40 ET stays in the plan. |
 | New | The Rev A.1 battery bay (32 mm) cannot hold the 200 mAh the budgets assumed. At the ledgered cell's energy density it holds ~130 mAh. Recorded in DEC-014 as a coupled packaging option set. |
+| New (v0.4.3, firmware review) | The thermal network used the old 0.45 mm air gap and 60 mW of electronics. At 0.50 mm and 115 mW: coil-to-structure 145 K/W, 157 K/W steady to ambient, allowable average copper loss 0.412 W (was 0.455 W; now set by the 120 °C coil limit), Rev A coil 96.6 °C at the design load. AC-B03-08 now measures the coil-to-structure resistance directly (coil by resistance, magnets by thermocouple), because the coupon's fixture made "coil to ambient" ill-defined. AC-B03-10, AC-B07-06, the EXP-B03/B07 predictions and the DC test steps follow. The 6 Ω winding binds at 3.3 V in the hot high-force corner (DEC-012 revisited; EXP-B03 winds 4 Ω and 6 Ω). |
 | New (v0.4.2 re-run) | The balanced Kalman selection flipped from the inert set to the active one, so KF-BAL = KF-ASR (`docs/sim_report.md` §3.2). Updated to match: the EXP-B09 predictions; the bases of AC-B09-02/04/05/06/07/08/15; §5. `sim/diag_gate.py` → `results/sim/gate_fraction.json` now predicts AC-B09-15. |
 
 ## 7. Open items in this plan

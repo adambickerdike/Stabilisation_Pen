@@ -25,7 +25,7 @@ Every part carrying a `VERIFY` or `SELECT` note in [`bom_revA.csv`](bom_revA.csv
 | `spice/drive_stage.cir`, `spice/plot_drive_stage.py` | ngspice transient: H-bridge, shunt, INA241, anti-alias, window comparator, latch and load switch, including a coil short | → `results/electronics/spice_drive_stage.json`, `fig_spice_drive_stage.png` |
 | `gen/placement_study.py` | Board area and height feasibility from library courtyards and the CAD envelope | → `results/electronics/placement_study.json`, `fig_placement_study.png` |
 
-Regenerate everything:
+Regenerate everything. UUIDs are deterministic (uuid5 of the sheet and item order), so regenerating an unchanged design reproduces the schematic files and a real change shows as a small diff:
 
 ```bash
 python3 electronics/gen/design_revA.py
@@ -86,7 +86,8 @@ flowchart LR
 - **DEC-012: coil wound to 6 Ω (was 11 Ω).**
   - Holding power (F/(n·K_m))² does not depend on the winding. The voltage needed does: V = F/(n·K_m·√R)·(aR + R_ext).
   - With the 11 Ω winding, at VBAT = 3.3 V and an 85 °C coil, 3.7 % of the thermally allowed envelope is voltage-limited.
-  - 6 Ω is the largest winding with none voltage-limited (`drive_sense.py`, `fig_headroom.png`).
+  - 6 Ω was chosen as the largest winding with none voltage-limited under that check.
+  - **Revisited in v0.4.3 (firmware review D11).** The check now puts each envelope point at its own steady coil and magnet temperature (coil up to its 120 °C limit), includes the magnets' Br tempco and adds the dynamic correction force. At 3.3 V, 6 Ω then cannot hold the static load at 0.5 % of the thermally allowed envelope (the hot, high-force corner; up to 8.7 % short of voltage), and 1.2 % with a typical correction (9 Hz, 0.3 mm). 4 Ω holds everywhere with ≥ 8 % margin, at 22 % more current and higher ripple. 6 Ω stays the baseline until EXP-B03 winds both. In the corner, the headroom fault (duty > 0.95 for > 50 ms) and the low-battery derate act (`drive_sense.json` `winding_assessment`, `fig_headroom.png`).
   - Consequences: K_f = 0.717 N/A (after the 0.50 mm gap of DEC-007 rev.), L ≈ 175 µH (air-core estimate scaled by turns²), design-point hold current 0.335 A, bridge and shunt loss 7.7 % of copper loss.
 - **40 kHz centre-aligned PWM, 200 duty levels.**
   - At 20 kHz the 6 Ω coil's ripple is 159–239 mA p-p and loop delay limits the current loop to about 1.3 kHz.
@@ -110,9 +111,9 @@ flowchart LR
 | Quantity | Value | Source |
 |---|---|---|
 | Electronics supply current (typical, excl. actuator) | 31 mA (115 mW at 3.7 V); optics are a 15 mA placeholder | `drive_sense.json` |
-| Actuator copper loss, nominal writing (θ 50°, N 1 N) | ≈ 0.45 W at 20 °C, ≈ 0.57 W hot (direction-averaged) | sim static check; `drive_sense.py` |
-| Allowable average copper loss (moving coil) | 0.455 W | `results/thermal/thermal.json` |
-| Share of the writing envelope within that limit | 68 % (θ 35–75°, N 0.2–2 N log-uniform, μ 0.05–0.35) | `drive_sense.json` |
+| Actuator copper loss in contact, design point (θ 50°, N 1 N) | ≈ 0.50 W referenced to 20 °C, ≈ 0.65 W at the 96.6 °C design coil (direction-averaged) | `results/trade/config_trade.json`; `drive_sense.py` |
+| Allowable average copper loss (moving coil) | 0.412 W, set by the 120 °C coil limit (0.50 mm air gaps, 115 mW electronics) | `results/thermal/thermal.json` (v0.4.3) |
+| Share of the writing envelope within that limit | 70 % (θ 35–75°, N 0.2–2 N log-uniform, μ 0.05–0.35; continuous contact) | `drive_sense.json` |
 | Runtime at the design point, 200 mAh × 0.8 usable | 54 min of continuous contact; 81 min of writing at 65 % pen-down duty (`results/trade/config_trade.json`). A cell that fits the Rev A.1 bay may hold only ~130 mAh (DEC-014) | this README |
 | Stage-period CPU and bus occupancy (500 µs) | CPU ≈ 130 µs, SAADC ≈ 210 µs, SPIM4 ≈ 50 µs, SPIB ≈ 16 µs | `fig_stage_timeline.png`; to be replaced by logic-analyser captures |
 
