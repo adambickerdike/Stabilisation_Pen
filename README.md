@@ -11,10 +11,11 @@ This repository holds the research and development package: the audit of the sou
 | If you want… | Read |
 |---|---|
 | The recommended route: what to build, where custom hardware and our own data are unavoidable, what evidence each benefit needs | [`docs/recommendation.md`](docs/recommendation.md) |
+| The pencil-sized concept (Ø8.9 × 166 mm): exact forces, mechanisms with existing parts, what to make, AI guidance and autocorrect, sim-to-real, 3D replay | [`docs/pencil_concept.md`](docs/pencil_concept.md), [`viewer/`](viewer/build.py) |
 | The verdict on the source report | [`docs/audit.md`](docs/audit.md), [`docs/corrections.csv`](docs/corrections.csv) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
-| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…018) |
+| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…022) |
 | What the simulations say | [`docs/sim_report.md`](docs/sim_report.md) |
 | What may be claimed for each feature | [`docs/features.md`](docs/features.md) |
 | The riskiest open questions | [`docs/research_questions.md`](docs/research_questions.md) |
@@ -38,6 +39,13 @@ This repository holds the research and development package: the audit of the sou
    - A nose that touched the paper at every writing angle: the refill point now protrudes 5 mm (DEC-018).
    - Inertia understated by a point-mass approximation: 13.7 g, above the 12 g requirement.
    - The research circuit does not fit the 29 mm board in the CAD envelope. The package plan and a 41 mm board fit at 0.65 density (DEC-014, open).
+5. **A pencil-sized version is possible only if the writing force bypasses the nib** (`docs/pencil_concept.md`, DEC-019 to DEC-022).
+   - A nose skid carries the user's force and a light spring sets the nib force. The stage then holds 0.17 N instead of 0.76 N.
+   - Four custom 2.6 mm piezo plates fit the 7.9 mm bore. They give ±277 µm of stroke under load at zero static power, in 12.2 g of CAD before wiring. A voice coil that fits would need 2.4 W.
+   - The stroke margin is thin (±162 µm at −20 % tolerance). Tremor estimation is the same open problem as in Rev A.
+   - The skid causes touchdown tails. A tilt-adaptive front stop cuts them from 0.87 to 0.29 mm.
+   - Paper capture needs a ≥ 120 Hz page sensor that does not yet exist at this size.
+   - AI helps as a digital autocorrect (word errors 32 % → 10 %). Physical guidance toward AI-predicted letters does not help free writing: a correct prediction is already about 300 µm off, beyond break-even. Guidance toward known templates does help.
 
 ## Completion table
 
@@ -46,7 +54,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Brief area | Deliverable | State | Evidence |
 |---|---|---|---|
 | 1 Research | Audit and recalculation of the report (37/37 numbers reproduce; 28 corrections) | executed | `analysis/audit_recalc.py` → `results/audit/` |
-| 1 Research | Evidence ledger (247 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
+| 1 Research | Evidence ledger (256 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
 | 1 Research | Ranked research questions with decisive experiments | drafted | `docs/research_questions.md` |
 | 2 Mechanics | Parametric CAD (Rev A, Rev A.1) with interference checks, STEP, drawings | executed | `mechanics/cad/`, `results/cad/` |
 | 2 Mechanics | Flexures, tolerance stacks (S1–S6), mass/CoM budget, configuration trade | executed | `mechanics/`, `results/mechanics/`, `results/trade/` |
@@ -59,8 +67,11 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | 4 Simulation | Validation plan per model | drafted | `docs/physics.md` (table), `validation/` |
 | 5 ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines tuned on validation; causal TCN; int8 quantisation (no loss); C export bit-exact with the Python reference, also on emulated Cortex-M33; MCU budget (exported model without f_est: 16.2 k MAC, 7.3 kB weights, 0.58 kB RAM); model and dataset cards; 22 tests | executed (synthetic only) · real data pending (EXP-H01) | `ml/README.md`, `results/ml/` |
 | 6 Firmware | C control core: 40 kHz current loop, 2 kHz stage task, Kalman and band-pass estimators, guided mode, Jacobian with tilt-dependent γ, two-node thermal governor, safety state machine, ML guard (ICD §5 v1.2), calibration records, ICD log writer. Parameters generated from the YAML with a freshness check; golden vectors and replays from the simulator; 60 test cases (1120 checks) pass on host (ASan/UBSan) and on emulated Cortex-M33; nRF5340 image builds (32.3 kB flash). Register-level drivers are stubs marked VERIFY | executed (host, emulator, build) · hardware pending | `firmware/README.md`, `results/firmware/` |
-| 6 Product | ICD log reader/writer with CRC and resync (parses the firmware's golden log with zero issues); immutable content-addressed note store with provenance-carrying derived layers; segmentation; SVG rendering; recogniser interface (on-device adapter specified); FTS5 search with stroke citations; grounded assistant that refuses unsupported, uncited or clinical answers; capture-fidelity analysis; 137 tests | executed (synthetic data) · real recogniser pending | `app/README.md`, `results/app/` |
+| 6 Product | ICD log reader/writer with CRC and resync (parses the firmware's golden log with zero issues); immutable content-addressed note store with provenance-carrying derived layers; segmentation; SVG rendering; recogniser interface (on-device adapter specified); FTS5 search with stroke citations; grounded assistant that refuses unsupported, uncited or clinical answers; capture-fidelity analysis; digital autocorrect as a derived layer; 147 tests | executed (synthetic data) · real recogniser pending | `app/README.md`, `results/app/` |
 | 7 Validation | 29 experiments (23 bench/offline, 6 human) with procedures, equipment, uncertainty and decision rules; 221 acceptance criteria (77 requirement, 35 derived, 109 hypothesis; checker passes); prototype stages A–D with gates; human study plan separating immediate assistance from lasting improvement; review of 33 document inconsistencies, now resolved or recorded | drafted · hardware and participants pending | `validation/README.md` |
+| Pencil | Pencil-class concept: CAD (Q and L layouts, fit checks, STEP, drawings), mechanism study (forces, 12 mechanisms, drive power, drop), pencil model P1 (skid, spring-loaded refill, piezo stage; exact match with M1 when locked), page-sensor rate study, touchdown tails | executed (design, calculation, simulation) · hardware pending | `docs/pencil_concept.md`, `docs/pencil_mechanisms.md`, `mechanics/cad/pencil_revP.py`, `sim/pencil/`, `results/pencil/` |
+| Pencil | AI prediction and guidance (text predictor, style templates, stroke continuation, closed loop on P1 and M1, deployment and ICD proposal) and app autocorrect | executed (synthetic data) · people pending (EXP-A02/A03) | `docs/ai_guidance.md`, `aiguide/`, `results/ai/` |
+| Pencil | 3D replay page of the simulated pencil with generated tables | executed | `viewer/` (`python3 viewer/build.py`) |
 | — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
 | — | Interfaces, decisions, plan with effort ranges (100–174 pw) and quotation list, environment lock | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md`, `requirements.txt` |
 
@@ -80,22 +91,35 @@ python3 electronics/calcs/drive_sense.py
 (cd electronics/spice && ngspice -b drive_stage.cir && python3 plot_drive_stage.py)
 ```
 
+Pencil concept:
+
+```bash
+python3 mechanics/cad/pencil_revP.py --variant Q      # pencil CAD, fit checks, mass (also --variant L)
+python3 analysis/pencil_mechanisms.py                 # forces, mechanisms, power (about 90 s)
+python3 -m sim.pencil.run_study                       # pencil model P1 (about 95 s); tests: python3 -m pytest sim/pencil/tests -q
+python3 -m sim.pencil.diag_touchdown_tails            # touchdown tails and the tilt-adaptive stop
+bash aiguide/run_all.sh                               # AI prediction, guidance and autocorrect (about 15 min)
+python3 viewer/build.py                               # 3D replay page from the results
+```
+
 Firmware, ML and app have their own build and test commands in their READMEs.
 
 ## Repository map
 
-`config/parameters.yaml` holds every parameter with unit, range, status and source (v0.4.4). The directories:
+`config/parameters.yaml` holds every parameter with unit, range, status and source (v0.4.4); `config/pencil.yaml` overlays it for the pencil concept (P0.1.2). The directories:
 
 | Directory | Contents |
 |---|---|
 | `stabpen/` | Shared physics |
 | `analysis/` | Audit, EM, thermal, trade |
-| `sim/` | Coupled simulator |
+| `sim/` | Coupled simulator (M1 in `sim/pensim/`, pencil model P1 in `sim/pencil/`) |
 | `mechanics/` | CAD, flexures, tolerances, mass |
 | `electronics/` | Schematic, calculations, SPICE, BOM |
 | `firmware/` | Embedded control core |
 | `ml/`, `data/` | Learned predictor pipeline, schemas |
 | `app/` | Companion software |
+| `aiguide/` | AI prediction, templates and guidance studies (pencil concept) |
+| `viewer/` | 3D replay page |
 | `validation/` | Experiments and studies |
 | `docs/` | Everything written |
 | `results/` | Generated outputs with provenance |
