@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "calculation (CAD solids x density + allowances)",
-    "generated_utc": "2026-09-27T01:38:19+00:00",
-    "git_revision": "0801fbf-dirty",
+    "generated_utc": "2026-09-27T01:55:12+00:00",
+    "git_revision": "c608ea1-dirty",
     "parameters_version": "0.4.1",
     "parameters_sha256_16": "f44bd71afad66b15",
     "command": "mass_budget.py",
@@ -20,16 +20,16 @@
       "modelled_g": 31.62
     },
     "A1": {
-      "total_g": 38.2,
-      "com_z_mm": 77.5,
+      "total_g": 37.18,
+      "com_z_mm": 79.4,
       "moving_g": 1.96,
-      "modelled_g": 29.39
+      "modelled_g": 28.49
     },
     "A1-PR": {
-      "total_g": 34.21,
-      "com_z_mm": 74.0,
+      "total_g": 33.19,
+      "com_z_mm": 76.0,
       "moving_g": 1.96,
-      "modelled_g": 29.39
+      "modelled_g": 28.49
     }
   },
   "REQ": "REQ-FORM-003 mass <= 35 g incl. refill and battery with >= 10 % margin; REQ-FORM-004 CoM <= 70 mm from the tip (provisional)"

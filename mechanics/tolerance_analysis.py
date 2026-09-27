@@ -108,6 +108,18 @@ def s3(travel):
     return {"nominal_clearance_mm": nom, "worst_case_mm": nom - wc, "rss_mm": nom - rss, "tolerances": tols}
 
 
+def s6(theta_deg, s_nose, r_nose, q_max, r_ball=0.35, margin=0.3):
+    """Nose-to-paper clearance.  A point of the nose at axial distance s behind the
+    ball centre and radius r (on the paper side of the tilt plane) sits
+    s sin(theta) - r cos(theta) + r_ball above the paper; a stage displacement of
+    the ball by -q along t1 lowers the housing by q cos(theta)."""
+    th = math.radians(theta_deg)
+    h = s_nose * math.sin(th) - r_nose * math.cos(th) + r_ball
+    h_worst = h - q_max * math.cos(th)
+    s_needed = (r_nose * math.cos(th) - r_ball + margin + q_max * math.cos(th)) / math.sin(th)
+    return {"theta_deg": theta_deg, "clearance_nominal_mm": h, "clearance_worst_mm": h_worst, "s_needed_mm": s_needed}
+
+
 def s4():
     L1, L2 = PM["L1"], PM["z_act"] - PM["L1"]
     tL1, tL2 = 0.10, 0.10
@@ -144,6 +156,10 @@ def main():
            "S2_carrier_bore": {k: s2(tr, rng) for k, tr in (("travel_0.65", 0.65), ("travel_0.60", 0.60))},
            "S3_tip_aperture": {k: s3(tr) for k, tr in (("travel_0.65", 0.65), ("travel_0.60", 0.60))},
            "S4_lever_gain": s4(), "S5_hall_gap": s5(),
+           "S6_nose_paper_clearance": {
+               "RevA_nose_s1_r3": [s6(th, 1.0, 3.0, 0.65) for th in (35.0, 50.0, 75.0)],
+               "RevA1_nose_s5_r2.6": [s6(th, 5.0, 2.6, 0.60) for th in (35.0, 50.0, 75.0)],
+               "note": "Rev A nose (6 mm OD tip 1 mm behind the ball) touches the paper at all writing altitudes; Rev A.1 moves the nose tip to 5 mm (OD 5.2, aperture 4.2) so the refill point protrudes like an ordinary ballpoint"},
            "magnetic_gap_penalty": {"note": "air-gap field B ~ Br t_m/(t_m + g_total) for the sandwich; gap 0.45 -> 0.50 per side raises g_total 1.9 -> 2.0 mm",
                                     "B_ratio": (1.5 / (1.5 + 2.0)) / (1.5 / (1.5 + 1.9)), "power_ratio": ((1.5 + 2.0) / (1.5 + 1.9)) ** 2}}
     meta = provenance.metadata("calculation (nominal CAD + assumed tolerances)")
@@ -153,6 +169,9 @@ def main():
     for k in ("S2_carrier_bore", "S3_tip_aperture"):
         print(k, {kk: {x: (round(y, 3) if isinstance(y, float) else y) for x, y in vv.items() if x != "tolerances"} for kk, vv in out[k].items()})
     print("S4", out["S4_lever_gain"]); print("S5", out["S5_hall_gap"]["field_variation"]); print("gap penalty", out["magnetic_gap_penalty"])
+    for k, v in out["S6_nose_paper_clearance"].items():
+        if k != "note":
+            print("S6", k, [(r["theta_deg"], round(r["clearance_worst_mm"], 2), round(r["s_needed_mm"], 2)) for r in v])
     # figure: S1 clearance (RSS) per side and case
     plotstyle.apply()
     import matplotlib.pyplot as plt

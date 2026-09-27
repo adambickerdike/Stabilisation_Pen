@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "calculation (nominal CAD + assumed tolerances)",
-    "generated_utc": "2026-09-27T01:35:48+00:00",
-    "git_revision": "0801fbf-dirty",
+    "generated_utc": "2026-09-27T01:54:46+00:00",
+    "git_revision": "c608ea1-dirty",
     "parameters_version": "0.4.1",
     "parameters_sha256_16": "f44bd71afad66b15",
     "command": "tolerance_analysis.py",
@@ -316,6 +316,49 @@
       }
     ],
     "consequence": "Bz offset changes by up to ~+/-40 % between refills: the axial-force channel must be re-zeroed at each refill insertion (pen-up, s = 0) and its gain re-checked against a known force (dock)"
+  },
+  "S6_nose_paper_clearance": {
+    "RevA_nose_s1_r3": [
+      {
+        "theta_deg": 35.0,
+        "clearance_nominal_mm": -1.5338796965159291,
+        "clearance_worst_mm": -2.0663285253037738,
+        "s_needed_mm": 5.125567884827663
+      },
+      {
+        "theta_deg": 50.0,
+        "clearance_nominal_mm": -0.8123183859406403,
+        "clearance_worst_mm": -1.2301303322368908,
+        "s_needed_mm": 2.997443289330459
+      },
+      {
+        "theta_deg": 75.0,
+        "clearance_nominal_mm": 0.5394686909815061,
+        "clearance_worst_mm": 0.3712363116648676,
+        "s_needed_mm": 0.9262507433530935
+      }
+    ],
+    "RevA1_nose_s5_r2.6": [
+      {
+        "theta_deg": 35.0,
+        "clearance_nominal_mm": 1.0880868666038515,
+        "clearance_worst_mm": 0.5965956400304564,
+        "s_needed_mm": 4.482901281793712
+      },
+      {
+        "theta_deg": 50.0,
+        "clearance_nominal_mm": 2.5089744304098875,
+        "clearance_worst_mm": 2.123301864597964,
+        "s_needed_mm": 2.6198484553006827
+      },
+      {
+        "theta_deg": 75.0,
+        "clearance_nominal_mm": 4.506699614178787,
+        "clearance_worst_mm": 4.351408187117275,
+        "s_needed_mm": 0.8056736067590884
+      }
+    ],
+    "note": "Rev A nose (6 mm OD tip 1 mm behind the ball) touches the paper at all writing altitudes; Rev A.1 moves the nose tip to 5 mm (OD 5.2, aperture 4.2) so the refill point protrudes like an ordinary ballpoint"
   },
   "magnetic_gap_penalty": {
     "note": "air-gap field B ~ Br t_m/(t_m + g_total) for the sandwich; gap 0.45 -> 0.50 per side raises g_total 1.9 -> 2.0 mm",

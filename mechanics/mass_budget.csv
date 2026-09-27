@@ -29,7 +29,7 @@ A,"grip sleeve (TPE, 1 mm over 45 mm)",allowance,allowance,1.9,30.0,elastomer 1.
 A,cap/end plug with USB-C tail board,allowance,allowance,1.4,147.0,PC plug + tail PCB + receptacle
 A,fasteners and pins,allowance,allowance,0.3,60.0,M1.2 screws / dowels
 A,contingency 10%,allowance,allowance,3.703,80.6,concept-stage margin
-A1,barrel,fixed,CAD,13.746,74.94,Al6061 nominal solid
+A1,barrel,fixed,CAD,12.847,79.53,Al6061 nominal solid
 A1,pivot_ring,fixed,CAD,0.082,17.7,PEEK nominal solid
 A1,stop_ring,fixed,CAD,0.183,36.0,PEEK nominal solid
 A1,magnet_front,fixed,CAD,1.386,48.25,NdFeB nominal solid
@@ -51,15 +51,15 @@ A1,carrier,moving,CAD,1.127,33.5,Ti6Al4V nominal solid
 A1,coil_paddle,moving,CAD,0.472,50.0,Cu_coil nominal solid
 A1,rear_plug,moving,CAD,0.018,67.0,PEEK nominal solid
 A1,sensing_magnet,moving,CAD,0.035,68.75,NdFeB nominal solid
-A1,adhesives and potting,allowance,allowance,0.823,80.6,"3 % of modelled fixed mass, at its CoM (engineering judgement)"
+A1,adhesives and potting,allowance,allowance,0.796,83.0,"3 % of modelled fixed mass, at its CoM (engineering judgement)"
 A1,flex circuits and coil/battery leads,allowance,allowance,0.6,75.0,"estimate: 3 flexes, 0.05 mm Cu/PI"
 A1,cross-strip gimbal and clamps,allowance,allowance,0.12,12.0,BeCu strips + PEEK clamp (flexure_calc); CAD still shows wire pivots
 A1,axial diaphragm and seat,allowance,allowance,0.2,66.0,spiral-arm diaphragm 0.22 mm BeCu
 A1,"grip sleeve (TPE, 1 mm over 45 mm)",allowance,allowance,1.9,30.0,elastomer 1.1 g/cm3
 A1,cap/end plug with USB-C tail board,allowance,allowance,1.4,147.0,PC plug + tail PCB + receptacle
 A1,fasteners and pins,allowance,allowance,0.3,60.0,M1.2 screws / dowels
-A1,contingency 10%,allowance,allowance,3.473,77.5,concept-stage margin
-A1-PR,barrel,fixed,CAD,13.746,74.94,Al6061 nominal solid
+A1,contingency 10%,allowance,allowance,3.38,79.4,concept-stage margin
+A1-PR,barrel,fixed,CAD,12.847,79.53,Al6061 nominal solid
 A1-PR,pivot_ring,fixed,CAD,0.082,17.7,PEEK nominal solid
 A1-PR,stop_ring,fixed,CAD,0.183,36.0,PEEK nominal solid
 A1-PR,magnet_front,fixed,CAD,1.386,48.25,NdFeB nominal solid
@@ -82,11 +82,11 @@ A1-PR,coil_paddle,moving,CAD,0.472,50.0,Cu_coil nominal solid
 A1-PR,rear_plug,moving,CAD,0.018,67.0,PEEK nominal solid
 A1-PR,sensing_magnet,moving,CAD,0.035,68.75,NdFeB nominal solid
 A1-PR,barrel rear -> PC-GF30 (delta),fixed,option,-3.523,108.0,"tube z > 66 mm, density change Al -> PC-GF30"
-A1-PR,adhesives and potting,allowance,allowance,0.717,76.5,"3 % of modelled fixed mass, at its CoM (engineering judgement)"
+A1-PR,adhesives and potting,allowance,allowance,0.69,79.2,"3 % of modelled fixed mass, at its CoM (engineering judgement)"
 A1-PR,flex circuits and coil/battery leads,allowance,allowance,0.6,75.0,"estimate: 3 flexes, 0.05 mm Cu/PI"
 A1-PR,cross-strip gimbal and clamps,allowance,allowance,0.12,12.0,BeCu strips + PEEK clamp (flexure_calc); CAD still shows wire pivots
 A1-PR,axial diaphragm and seat,allowance,allowance,0.2,66.0,spiral-arm diaphragm 0.22 mm BeCu
 A1-PR,"grip sleeve (TPE, 1 mm over 45 mm)",allowance,allowance,1.9,30.0,elastomer 1.1 g/cm3
 A1-PR,cap/end plug with USB-C tail board,allowance,allowance,1.4,147.0,PC plug + tail PCB + receptacle
 A1-PR,fasteners and pins,allowance,allowance,0.3,60.0,M1.2 screws / dowels
-A1-PR,contingency 10%,allowance,allowance,3.11,74.0,concept-stage margin
+A1-PR,contingency 10%,allowance,allowance,3.017,76.0,concept-stage margin

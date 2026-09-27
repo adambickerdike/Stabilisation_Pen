@@ -69,8 +69,8 @@ The delay-limited residual (P-23) at 8 Hz is 2 sin(π·8·1.33 ms) = 0.067 for p
 
 | Budget | Allocation / estimate | Status | Source |
 |---|---|---|---|
-| Mass | 34.2 g with polymer rear barrel, incl. allowances and 10 % contingency (≤ 35 g) | calculation; meets requirement | `results/mechanics/mass_budget.json` |
-| Centre of mass | 74.0 mm from tip (≤ 70 mm) | **violated** (M-1) | same |
+| Mass | 33.2 g with polymer rear barrel, incl. allowances and 10 % contingency (≤ 35 g) | calculation; meets requirement | `results/mechanics/mass_budget.json` |
+| Centre of mass | 76.0 mm from tip (≤ 70 mm) | **violated** (M-1) | same |
 | Tip-equivalent inertia | 13.7 g (≤ 12 g) | **violated** (M-6); CFRP carrier ≈ 9.5 g | CAD distributed-mass |
 | Stage travel | q_lim 0.55 mm control, 0.60 mm mechanical; paddle–magnet clearance ≥ 93 µm RSS | calculation | `results/mechanics/tolerance.json` |
 | Holding power (θ 50°, N 1 N) | 0.48 W copper (≈ 85 °C coil) against 0.455 W allowable for a moving coil | **at limit** (E-8, M-5) | thermal, trade |

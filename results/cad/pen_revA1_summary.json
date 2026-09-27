@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-27T01:38:18+00:00",
-    "git_revision": "0801fbf-dirty",
+    "generated_utc": "2026-09-27T01:54:52+00:00",
+    "git_revision": "c608ea1-dirty",
     "parameters_version": "0.4.1",
     "parameters_sha256_16": "f44bd71afad66b15",
     "command": "pen_revA.py --variant A1",
@@ -22,8 +22,9 @@
       "z_nose_end": 22.0,
       "z_bulge0": 40.0,
       "z_bulge1": 60.0,
-      "nose_tip_od": 6.0,
-      "tip_aperture": 3.6,
+      "nose_tip_od": 5.2,
+      "tip_aperture": 4.2,
+      "nose_z0": 5.0,
       "refill_d": 2.35,
       "refill_L": 67.0,
       "cone_L": 5.0,
@@ -77,9 +78,9 @@
       "act_ri_rear": 4.1499999999999995,
       "paddle_ro": 5.1
     },
-    "mass_total_g": 29.39,
+    "mass_total_g": 28.49,
     "mass_moving_g": 1.96,
-    "com_z_mm": 77.8,
+    "com_z_mm": 79.9,
     "lever_J_pivot_g_mm2_point_approx": 1528.3,
     "tip_equivalent_mass_g_point_approx": 10.61,
     "lever_J_pivot_g_mm2_distributed": 1975.7,
@@ -95,9 +96,9 @@
       "part": "barrel",
       "group": "fixed",
       "material": "Al6061",
-      "volume_mm3": 5091.1,
-      "mass_g": 13.746,
-      "com_z_mm": 74.94
+      "volume_mm3": 4758.09,
+      "mass_g": 12.847,
+      "com_z_mm": 79.53
     },
     {
       "part": "pivot_ring",

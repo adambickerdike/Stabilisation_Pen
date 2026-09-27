@@ -1,0 +1,106 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (bench concept geometry)",
+    "generated_utc": "2026-09-27T01:56:29+00:00",
+    "git_revision": "c608ea1-dirty",
+    "parameters_version": "0.4.1",
+    "parameters_sha256_16": "f44bd71afad66b15",
+    "command": "bench_rig.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0"
+  },
+  "summary": {
+    "parameters_mm": {
+      "L1": 12.0,
+      "L2": 38.0,
+      "ball_d": 0.7,
+      "refill_d": 2.35,
+      "refill_L": 67.0,
+      "carrier_od": 3.4,
+      "carrier_z0": 3.0,
+      "carrier_z1": 64.0,
+      "tip_travel": 0.6,
+      "vcm_d": 12.7,
+      "vcm_L": 13.0,
+      "strut_L": 6.0,
+      "frame_w": 50.0,
+      "frame_wall": 5.0,
+      "frame_z0": 40.0,
+      "frame_z1": 80.0,
+      "nose_r0": 2.6,
+      "nose_r1": 8.0,
+      "nose_z0": 5.0,
+      "nose_z1": 22.0,
+      "neck_r": 10.0,
+      "hs_L": 22.0,
+      "shaker_d": 25.0,
+      "shaker_L": 25.0,
+      "gon_r_in": 150.0,
+      "gon_r_out": 185.0,
+      "gon_t": 10.0,
+      "gon_a0": 30.0,
+      "gon_a1": 80.0,
+      "platen": [
+        100.0,
+        100.0,
+        4.0
+      ],
+      "ft_d": 17.0,
+      "ft_h": 14.5,
+      "xy": [
+        160.0,
+        160.0,
+        45.0
+      ],
+      "xy_travel": 100.0,
+      "base": [
+        420.0,
+        300.0,
+        15.0
+      ],
+      "col": [
+        60.0,
+        40.0,
+        330.0
+      ],
+      "col_x": -230.0,
+      "carriage": [
+        70.0,
+        30.0,
+        60.0
+      ],
+      "weight_d": 40.0,
+      "weight_h": 30.0,
+      "theta_range": [
+        35.0,
+        75.0
+      ],
+      "N_range": [
+        0.2,
+        2.0
+      ],
+      "speed_range_mm_s": [
+        1.0,
+        100.0
+      ],
+      "disturbance": [
+        3.0,
+        15.0,
+        1.0
+      ]
+    },
+    "theta_deg": 50.0,
+    "interference_with_platen": [],
+    "tip_travel_at_vcm_mm": 1.9000000000000001,
+    "vcm_force_needed_at_design_N": 0.24000000000000002,
+    "notes": [
+      "VCM stroke needed at the lever end = n x tip travel = 1.9 mm (LVCM-013 class stroke +/-3.2 mm, AMF-02/03)",
+      "force at the VCM for the design-point transverse load 0.76 N (theta 50, N 1 N) = 0.24 N; LVCM-013 class continuous force >> 0.24 N",
+      "wire struts decouple the two VCMs; strut buckling and bending stiffness to be sized with flexure_calc (EXP-B05)"
+    ]
+  }
+}

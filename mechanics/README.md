@@ -23,6 +23,7 @@ No part has been made or measured. Measured values replace these rows in EXP-B03
 
 | Path | What it does | Output |
 |---|---|---|
+| `cad/bench_rig.py` | Stage-A loaded bench mechanism (pen-scale nib, lever and gimbal; two commercial VCMs; hand-simulant disturbance stage; goniometer; dead-weight normal force; F/T-sensed platen on an XY stage) with platen-clearance check | `results/cad/bench_rig_*`, `drawing_bench_rig.png` |
 | `cad/pen_revA.py` | Parametric CadQuery model with swept-workspace interference check at full tip travel in 12 directions, fixed-vs-fixed check, and mass/CoM table. `--variant A1` applies the Rev A.1 packaging and tolerance changes | `results/cad/pen_revA*_summary.json`, STEP assembly and parts |
 | `drawings/make_drawings.py` | Section and cross-section drawings from the model | `results/cad/drawing_revA_*.png/svg` |
 | `flexure_calc.py` | Wire-pivot candidates (all fail on stress or buckling), cross-strip gimbal, spiral-arm diaphragm | `results/mechanics/flexure_calc.json` |
@@ -48,9 +49,9 @@ Dependencies: CadQuery 2.8, magpylib 5.2, numpy, scipy, matplotlib.
 
 | Quantity | Rev A | Rev A.1 | Source |
 |---|---|---|---|
-| Modelled mass (solids × density) | 31.6 g | 29.4 g | CAD |
-| Mass with allowances + 10 % contingency | 40.7 g | 38.2 g; **34.2 g** with polymer rear barrel | `mass_budget.json` (REQ-FORM-003 ≤ 35 g) |
-| Centre of mass from the tip | 80.6 mm | 77.5 mm; **74.0 mm** with polymer rear barrel | REQ-FORM-004 ≤ 70 mm: **still violated** |
+| Modelled mass (solids × density) | 31.6 g | 28.5 g | CAD |
+| Mass with allowances + 10 % contingency | 40.7 g | 37.2 g; **33.2 g** with polymer rear barrel | `mass_budget.json` (REQ-FORM-003 ≤ 35 g) |
+| Centre of mass from the tip | 80.6 mm | 79.4 mm; **76.0 mm** with polymer rear barrel | REQ-FORM-004 ≤ 70 mm: **still violated** |
 | Moving mass / tip-equivalent inertia | 1.93 g / **13.4 g** | 1.96 g / **13.7 g** | CAD distributed-mass integration (the earlier 10.3 g point-mass figure understated it); REQ-MECH-003 ≤ 12 g **violated**. The simulator already uses 13.7 g |
 | Mechanical tip travel / lever tilt | 0.65 mm / 3.11° | 0.60 mm / 2.87° | tolerance analysis |
 | Pivot stiffness at the tip | cross-strip gimbal 75.8 N/m; stress 177/82 MPa (full travel / typical); buckling margin 19 | same | `flexure_calc.json` |
@@ -73,12 +74,13 @@ Model inconsistency: the CAD still models the pivot with three inclined wires. T
 | S3 ball/cone in 3.6 mm aperture | RSS +0.48 mm | +0.53 mm | Not critical |
 | S4 lever-ratio gain | ±0.87 % RSS | same | Calibrated out (EXP-B04) |
 | S5 Hall sense-magnet distance vs refill length (±0.3 mm, VERIFY ISO class) | field ×0.65 … ×1.65 | same | Firmware re-zeroes the force channel at every refill insertion |
+| S6 nose-to-paper clearance, worst stage position | **−2.1 mm at 35°, −1.2 mm at 50°: the nose touches the paper** (tip Ø6 mm, 1 mm behind the ball) | +0.60 / +2.1 / +4.4 mm at 35 / 50 / 75° (tip Ø5.2 mm, 5 mm behind the ball, aperture 4.2 mm) | The refill point must protrude about 5 mm, as on an ordinary ballpoint; the optics at z 14.2 mm still fit inside the nose (CAD check) |
 
 Simulation of the κ_s choice (`sim/diag_kappa.py`, `results/sim/kappa_compare.json`) shows κ_s = 1 with compensation matches κ_s = 0. Device distortion is 59–61 µm in both. The oracle ratio is 0.27 vs 0.31 at 35° and 0.127 vs 0.131 at 50°.
 
 ## Bench rig concept (prototype stage A)
 
-The rig tests the physics (EXP-B01, B03, B05, B06, B08, B09) before the miniature pen exists.
+The rig tests the physics (EXP-B01, B03, B05, B06, B08, B09) before the miniature pen exists. It has a dimensioned parametric CAD: `cad/bench_rig.py` → `results/cad/bench_rig_assembly.step`, `bench_rig_summary.json`, `drawing_bench_rig.png`. The model checks that the module clears the platen from 35° to 75°. That check forced the module to adopt the pen's slim nose, with the wide VCM frame starting 40 mm up the axis.
 
 1. **Nib and lever module at pen scale, oversized actuation.**
    - A real D1 refill in a titanium carrier on a cross-strip gimbal, L1 = 12 mm.
@@ -99,7 +101,7 @@ Prototype stage B (the tethered research pen) starts only after stage A shows th
 
 ## Open issues
 
-- **M-1.** The centre of mass is 74 mm even with a polymer rear barrel, against ≤ 70 mm. The requirement itself is provisional: compare with ordinary pens in EXP-M03 and H02. Options: 140 mm length, lighter stator (reduced back iron, at a K_m cost), cell moved forward of the PCB (then RF moves).
+- **M-1.** The centre of mass is 76 mm even with a polymer rear barrel, against ≤ 70 mm. The requirement itself is provisional: compare with ordinary pens in EXP-M03 and H02. Options: 140 mm length, lighter stator (reduced back iron, at a K_m cost), cell moved forward of the PCB (then RF moves).
 - **M-2.** Rev A.1 needs a 41 mm PCB and a ~32 mm pouch cell (DEC-014). Obtain a supplier drawing for a 5 × 12 × 32 mm cell rated ≥ 5 C.
 - **M-3.** Replace the wire pivots with the cross-strip gimbal in the CAD; model the diaphragm; model the three optical windows.
 - **M-4.** Moving-coil leads cross the pivot: flex-life of the coil leads over 10⁷ tremor cycles (EXP-M02, B10).

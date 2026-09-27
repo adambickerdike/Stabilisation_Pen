@@ -45,7 +45,7 @@ OUT = os.path.join(ROOT, "results", "cad")
 P = dict(
     # barrel
     od_grip=15.0, od_act=16.0, wall=0.7, L_total=150.0, z_nose_end=22.0, z_bulge0=40.0, z_bulge1=60.0,
-    nose_tip_od=6.0, tip_aperture=3.6,
+    nose_tip_od=6.0, tip_aperture=3.6, nose_z0=1.0,
     # refill ISO 12757-2 D1 (verify against purchased samples, EXP-B02)
     refill_d=2.35, refill_L=67.0, cone_L=5.0, ball_d=0.7,
     # lever carrier
@@ -77,7 +77,9 @@ DENS = {  # g/mm^3
 # supplier drawing pending) and the main PCB grows from 29 to 41 mm.
 VARIANTS = {"A": {}, "A1": {"pcb_L": 41.0, "batt_kind": "pouch", "batt_L": 32.0, "batt_z0": 114.0,
                             # tolerance analysis (mechanics/tolerance_analysis.py, DEC-007 rev.)
-                            "act_gap": 0.50, "tip_travel_mech": 0.60}}
+                            "act_gap": 0.50, "tip_travel_mech": 0.60,
+                            # paper clearance of the nose at theta >= 35 deg (tolerance stack S6)
+                            "nose_z0": 5.0, "nose_tip_od": 5.2, "tip_aperture": 4.2}}
 
 
 def tube(r_out, r_in, z0, z1):
@@ -103,12 +105,13 @@ def barrel(P):
     ro_g, ro_a = P["od_grip"] / 2, P["od_act"] / 2
     zb0, zb1 = P["z_bulge0"], P["z_bulge1"]
     # revolve an outer profile with a gentle bulge over the actuator section
-    pts = [(P["nose_tip_od"] / 2, 1.0), (ro_g, P["z_nose_end"]), (ro_g, zb0), (ro_a, zb0 + 5), (ro_a, zb1 - 3),
-           (ro_g, zb1), (ro_g, P["L_total"]), (0, P["L_total"]), (0, 1.0)]
+    z0n = P["nose_z0"]
+    pts = [(P["nose_tip_od"] / 2, z0n), (ro_g, P["z_nose_end"]), (ro_g, zb0), (ro_a, zb0 + 5), (ro_a, zb1 - 3),
+           (ro_g, zb1), (ro_g, P["L_total"]), (0, P["L_total"]), (0, z0n)]
     outer = cq.Workplane("XZ").polyline(pts).close().revolve(360, (0, 0, 0), (0, 1, 0))
-    inner_pts = [(P["tip_aperture"] / 2, 1.0), (r_i - 1.5, P["z_nose_end"] - 2), (r_i, P["z_nose_end"]),
+    inner_pts = [(P["tip_aperture"] / 2, z0n), (r_i - 1.5, P["z_nose_end"] - 2), (r_i, P["z_nose_end"]),
                  (r_i, zb0), (ro_a - P["wall"], zb0 + 5), (ro_a - P["wall"], zb1 - 3), (r_i, zb1),
-                 (r_i, P["L_total"] - 1.0), (0, P["L_total"] - 1.0), (0, 1.0)]
+                 (r_i, P["L_total"] - 1.0), (0, P["L_total"] - 1.0), (0, z0n)]
     inner = cq.Workplane("XZ").polyline(inner_pts).close().revolve(360, (0, 0, 0), (0, 1, 0))
     return outer.cut(inner)
 
