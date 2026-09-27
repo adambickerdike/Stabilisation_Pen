@@ -1,0 +1,102 @@
+{
+  "meta": {
+    "evidence_status": "tool check (STEP re-import with OpenCASCADE)",
+    "generated_utc": "2026-09-27T02:00:38+00:00",
+    "git_revision": "5ebd218",
+    "parameters_version": "0.4.1",
+    "parameters_sha256_16": "f44bd71afad66b15",
+    "command": "check_step.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0"
+  },
+  "files": [
+    {
+      "file": "bench_rig_assembly.step",
+      "ok": true,
+      "n_solids": 21,
+      "all_valid": true,
+      "volume_mm3": 4217972.57
+    },
+    {
+      "file": "part_barrel.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 5091.1
+    },
+    {
+      "file": "part_carrier.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 254.4
+    },
+    {
+      "file": "part_coil_paddle.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 67.64
+    },
+    {
+      "file": "part_magnet_front.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 179.65
+    },
+    {
+      "file": "part_magnet_rear.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 163.09
+    },
+    {
+      "file": "part_rear_plug.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 13.67
+    },
+    {
+      "file": "part_refill_D1.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 280.06
+    },
+    {
+      "file": "part_sensing_magnet.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 4.71
+    },
+    {
+      "file": "part_stop_ring.step",
+      "ok": true,
+      "n_solids": 1,
+      "all_valid": true,
+      "volume_mm3": 138.09
+    },
+    {
+      "file": "pen_revA1_assembly.step",
+      "ok": true,
+      "n_solids": 23,
+      "all_valid": true,
+      "volume_mm3": 9611.92
+    },
+    {
+      "file": "pen_revA_assembly.step",
+      "ok": true,
+      "n_solids": 23,
+      "all_valid": true,
+      "volume_mm3": 11036.43
+    }
+  ]
+}
