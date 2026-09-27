@@ -65,12 +65,14 @@ void ctrl_tick(ctrl_t *c, const ctrl_in_t *in)
     case PEN_EST_KF:
     case PEN_EST_ML:
         if (c->kf.updated) {
-            const float *d = c->kf.dhat;
+            c->dhat[0] = c->kf.dhat[0];
+            c->dhat[1] = c->kf.dhat[1];
             if (in->est == PEN_EST_ML && in->d_ml != NULL) {
-                d = in->d_ml;
+                /* guarded ML estimate cross-faded with the current Kalman estimate */
+                const float m = pen_clampf(in->ml_mix, 0.0f, 1.0f);
+                c->dhat[0] = m * in->d_ml[0] + (1.0f - m) * c->kf.dhat[0];
+                c->dhat[1] = m * in->d_ml[1] + (1.0f - m) * c->kf.dhat[1];
             }
-            c->dhat[0] = d[0];
-            c->dhat[1] = d[1];
             c->conf = c->kf.conf;
             corr0 = -c->dhat[0];
             corr1 = -c->dhat[1];

@@ -78,7 +78,7 @@ void test_sm_transition_table(void)
             CHECK(sm.mode == PEN_MODE_NEUTRAL_HOLD);    /* no validated model: refused */
             to_mode(&sm, modes[k], true);
         }
-        CHECK(sm.mode == modes[k] && sm.act == SM_ACT_SERVO && sm.g_cap == 1.0f);
+        CHECK(sm.mode == modes[k] && sm.act == SM_ACT_SERVO && sm.g_cap > 0.999f);   /* training cap starts at 1 */
     }
     /* permission withdrawn by CAL_USER: refused */
     sm_init(&sm);

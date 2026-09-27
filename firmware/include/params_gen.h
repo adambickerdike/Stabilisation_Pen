@@ -10,9 +10,9 @@
  *   design_revA_sha16: 433ad7f1224c4987
  *   model_py_sha16: f6888a2b3aafbd87
  *   core_py_sha16: c46570f25d1439cb
- *   icd_sha16: 67b737b1c0f5d96f
+ *   icd_sha16: d6ae722593d323bb
  *   model_version: M1.0
- *   git_head: 876c866
+ *   git_head: 65f505b
  *   nominal_theta_deg: 50.0
  *   nominal_N0: 1.0
  *   evidence_status: proposed design / calculated / assumed values; no hardware measurement
@@ -193,6 +193,16 @@
 #define PEN_ASR_BP2_A1             (-1.94669759f) /* -; sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (a1); results/sim/estimator_selection.json bpf.selected_assertive */
 #define PEN_ASR_BP2_A2             (0.948081732f) /* -; sim/pensim/model.py build_params(): butter(2, bp_hi=12.0 Hz, low) sos (a2); results/sim/estimator_selection.json bpf.selected_assertive */
 #define PEN_ASR_BP_GAIN_COMP       (1.3107183f) /* -; sim/pensim/model.py build_params(): 1/|H(bp_tune_hz=7.0)|; results/sim/estimator_selection.json bpf.selected_assertive */
+#define PEN_MLG_BP1_B0             (0.993357837f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz) */
+#define PEN_MLG_BP1_B1             (-1.98671567f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz) */
+#define PEN_MLG_BP1_B2             (0.993357837f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz) */
+#define PEN_MLG_BP1_A1             (-1.98667157f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz) */
+#define PEN_MLG_BP1_A2             (0.986759782f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz) */
+#define PEN_MLG_BP2_B0             (0.000537169748f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz) */
+#define PEN_MLG_BP2_B1             (0.0010743395f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz) */
+#define PEN_MLG_BP2_B2             (0.000537169748f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz) */
+#define PEN_MLG_BP2_A1             (-1.93338025f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz) */
+#define PEN_MLG_BP2_A2             (0.935528934f) /* -; docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz) */
 
 /* ---- Sensing and housing-position fusion ---- */
 #define PEN_HALL_ICT_COMP          (1.99999999e-06f) /* m/A; config/parameters.yaml sensing.hall_i_crosstalk_tip (sim compensation; firmware uses CAL_HALL T/A) */
@@ -227,11 +237,12 @@
 #define PEN_R_EST_I_MIN            (0.100000001f) /* A; proposed: minimum |I| for resistance estimate */
 #define PEN_R_EST_DI_MAX           (0.0199999996f) /* A; proposed: max current change over a tick for 'steady' */
 #define PEN_OC_CLEAR_RETRIES       (3.0f) /* -; proposed: latch clear attempts before the fault is permanent */
-#define PEN_ML_DHAT_DIFF_MAX       (0.000150000007f) /* m; docs/icd.md s5: |d_ML - d_KF| > 150 um */
-#define PEN_ML_DIFF_TIME           (0.0199999996f) /* s; docs/icd.md s5: for > 20 ms */
-#define PEN_ML_RATE_MAX            (0.0500000007f) /* m/s; docs/icd.md s5: output rate > 50 mm/s */
-#define PEN_ML_HORIZON             (0.00600000005f) /* s; docs/icd.md s5: horizon h = 6 ms */
-#define PEN_ML_WINDOW              (64) /* samples; docs/icd.md s5: W = 64 at 250 Hz */
+#define PEN_ML_RATE_MAX            (0.0500000007f) /* m/s; docs/icd.md s5 v1.1 rule 3: slew-limit d_hat at 50 mm/s */
+#define PEN_ML_HORIZON             (0.00600000005f) /* s; docs/icd.md s5 v1.1: h = 6 ms after the acquisition time of the newest sample */
+#define PEN_ML_WINDOW              (64) /* samples; docs/icd.md s5 v1.1: W = 64 x (dx, dy) at 250 Hz (f_est dropped) */
+#define PEN_ML_APOST_WINDOW        (0.200000003f) /* s; docs/icd.md s5 v1.1 rule 4: running RMS over 200 ms */
+#define PEN_ML_FALLBACK_HOLD       (1.0f) /* s; docs/icd.md s5 v1.1 rule 4: fall back to the Kalman estimate for >= 1 s */
+#define PEN_ML_REAL_SETTLE         (0.300000012f) /* s; proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset */
 #define PEN_ML_STALE_TIME          (0.00800000038f) /* s; proposed: ML output older than 2 predictor periods is expired (REQ-SAF-003) */
 #define PEN_ML_FADE_TIME           (0.0199999996f) /* s; REQ-SAF-003: fall back smoothly within 20 ms */
 #define PEN_ML_TRIP_COUNT          (5) /* trips; proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW */

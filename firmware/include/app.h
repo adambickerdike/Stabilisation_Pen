@@ -28,7 +28,8 @@
 #include "state_machine.h"
 #include "thermal.h"
 
-#define APP_IREF_HIST 16u   /* ticks of current-reference history (Hall fault hold) */
+#define APP_IREF_HIST 32u   /* ticks of current-reference history (Hall fault hold) */
+#define APP_HOLD_AVG 16u    /* the open-loop hold uses the mean of 16 ticks (8 ms) before the stuck run */
 #define APP_SLOW_DECIM 20u  /* VBAT/NTC/thermal every 20 ticks = 100 Hz */
 
 typedef void (*pen_log_sink_t)(const uint8_t *rec, size_t len, void *ctx);
@@ -111,6 +112,13 @@ typedef struct {
     bool log_research;
     uint32_t log_drops;
 } pen_app_t;
+
+/* ML inference hook (ICD s5 v1.1), called at 250 Hz from the stage task when a
+ * validated model is available. dp_um: 64 x (dx, dy) increments, oldest
+ * first. Returns false if no model is linked (weak default). The adapter to
+ * ml/export/tcn_int8.h belongs to the ML integration (that v1 kernel still
+ * takes f_est as a third channel; README D12). */
+bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float d_um[2], bool *nan_or_inf, bool *saturated);
 
 void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog);
 void pen_app_set_sink(pen_app_t *a, pen_log_sink_t sink, void *ctx, bool research_frames);

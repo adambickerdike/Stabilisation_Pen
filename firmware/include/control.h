@@ -31,7 +31,8 @@ typedef struct {
     float g_cap;        /* authority cap 0..1 (1 = simulator behaviour) */
     float i_max;        /* A */
     pen_est_t est;      /* estimator in use */
-    const float *d_ml;  /* ML (guarded) disturbance estimate, m; used when est == PEN_EST_ML */
+    const float *d_ml;  /* accepted (clipped, slew-limited) ML estimate, m; used when est == PEN_EST_ML */
+    float ml_mix;       /* guard cross-fade: 1 = ML, 0 = Kalman (ml_guard_t.mix) */
     bool servo_on;      /* false: servo not evaluated (coast / hold) */
 } ctrl_in_t;
 

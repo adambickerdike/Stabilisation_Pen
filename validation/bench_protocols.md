@@ -676,7 +676,7 @@ HDF5 FRF files (complex H(f), coherence, raw time series); a margin table per co
 | AC-B05-09 | REQ-MECH-004 | Axial force at which the overload stop engages | ≥ 1.4 N | requirement | REQ-MECH-004 (compliant range up to ≥ 1.4 N); prediction 1.45 N (config stage.axial_travel) | DEC-006 |
 | AC-B05-10 | REQ-SNS-005 | Axial-force estimate noise (Hall z channel -> F_ax) over 0.1-2 N, bandwidth ≥ 500 Hz | ≤ 10 mN RMS | requirement | REQ-SNS-005 | force-sensing choice; contact detection |
 | AC-B05-11 | REQ-SNS-005 | Axial-force calibration residual (CAL_AXIAL) against a reference load cell over 0.1-2 N | ≤ 10 mN RMS | derived | derived: matches the REQ-SNS-005 noise allowance (engineering judgement) | CAL_AXIAL (docs/icd.md s3) |
-| AC-B05-12 | REQ-MECH-002 | Radius of the mechanical stop circle at the tip, 12 directions | within 0.60 mm ± 0.03 mm (design value) | requirement | design value config stage.travel_tip_mech 0.60 mm (v0.4.1, DEC-007 rev.). CONFLICT: REQ-MECH-002 text says 0.65 mm; tolerance ±0.03 mm engineering judgement | resolve REQ-MECH-002 text; stop design |
+| AC-B05-12 | REQ-MECH-002 | Radius of the mechanical stop circle at the tip, 12 directions | within 0.65 mm ± 0.03 mm (requirement text) | requirement | REQ-MECH-002 text (0.65 mm). CONFLICT: design value 0.60 mm (config stage.travel_tip_mech v0.4.1, DEC-007 rev., REQ-MECH-002 current estimate); resolve before test; ±0.03 mm engineering judgement | resolve REQ-MECH-002 text; stop design |
 | AC-B05-13 | REQ-MECH-002 | Peak flexure (gimbal blade) stress during stop impact at tip velocities up to 0.05 m/s, from blade strain and the beam model | ≤ 310 MPa | requirement | REQ-MECH-002 and REQ-MECH-006 peak allowable 310 MPa (AMF-18/19); impact velocity from results/electronics/drive_sense.json v_tip_stage_max | stop design (elastomer face); slew limit |
 | AC-B05-14 | — | Contact chatter episodes (≥ 3 contact transitions within 20 ms) in 60 s of scripted writing on each paper stack, NEUTRAL and ASSIST_KF, contact feedforward disabled | = 0 | hypothesis | DEC-011 (simulated bounce at the ~180 Hz stage-against-paper mode, results/sim/ff_chatter.json); episode definition engineering judgement | DEC-011 revisit (bench servo tests with real paper stacks) |
 
@@ -1530,7 +1530,7 @@ This experiment verifies the timing and robustness of the control firmware on th
 
 - loop rates (REQ-CTRL-001) and the ICD §2 budgets (stage task ≤ 250 µs, jitter ≤ 20 µs, current ISR ≤ 5 µs, DEC-010's revisit trigger "bring-up step 7 timing");
 - the limiter (REQ-CTRL-004: no output bypasses limits);
-- the ML guard (REQ-SAF-003: invalid outputs reduce authority within 20 ms; ICD §5 guard rules);
+- the ML guard (REQ-SAF-003: invalid outputs reduce authority within 20 ms; ICD §5 v1.1 guard rules);
 - the watchdog (REQ-SAF-001);
 - brown-out (REQ-SAF-004, REQ-CAP-002);
 - optical-dropout handling (F1);
@@ -1547,9 +1547,15 @@ It is part of G-S (for ASSIST modes) and G-C.
    - ≥ 10⁶ stage periods (8.3 min) with BLE streaming, QSPI logging, the ML predictor at 250 Hz and all sensors active.
    - Also under worst-case flash erase and BLE connection events.
 2. **Limiter fuzzing.** A test build replaces estimator and ML outputs with ≥ 10⁶ random, extreme, NaN, Inf and rapidly switching values. The stage reference q_r, its slew and the current references are checked against q_lim 0.55 mm, 0.08 m/s (P-22) and the current clamp.
-3. **ML guard.**
-   - Each invalid class of ICD §5 is injected 59 times at random phases: NaN, ±Inf, int8 saturation, expired timestamp, |d̂| > q_lim, |d̂ − d̂_KF| > 150 µm for > 20 ms, output rate > 50 mm/s.
-   - Measure the time to fallback (event 0x0006 logged, authority on the Kalman path).
+3. **ML guard** (ICD §5 v1.1).
+   - Each class is injected 59 times at random phases:
+     - (1) NaN, ±Inf or int8 saturation, which must be rejected;
+     - (2) |d̂| > q_lim, which must be clipped;
+     - (3) output rate > 50 mm/s, which must be slew-limited;
+     - (4) a stale output older than the horizon h;
+     - (5) a confidently wrong prediction (a biased or phase-shifted d̂) that the a-posteriori check must catch and replace with the Kalman estimate for ≥ 1 s, logging event 0x0006.
+   - Measure the time until the stage command no longer contains the invalid part.
+   - REQ-SAF-003 asks for ≤ 20 ms. The v1.1 check (5) averages over 200 ms, and ICD v1.1 defines no output expiry or confidence field. The expected conflict is listed in `README.md`.
 4. **Watchdog.** Halt the core in the debugger during PWM (bring-up step 10); also an infinite loop injected in the stage task. 59 trials each.
 5. **Brown-out.**
    - The programmable supply ramps VBAT 4.2 → 2.8 V at 1 V/s and at 1 V/ms during writing in contact (on R2).
@@ -1576,7 +1582,7 @@ Logic-analyser captures, ICD logs, soak summary CSV, vector-comparison report.
 | AC-F02-02 | — | Worst-case 2 kHz stage-task execution time over ≥ 1e6 periods with BLE streaming, QSPI logging and ML active | ≤ 250 µs | derived | docs/icd.md s2 | DEC-010 (nRF5340 vs STM32U5 fallback) |
 | AC-F02-03 | — | Stage-task release jitter (maximum deviation from the nominal period), same conditions | ≤ 20 µs | derived | docs/icd.md s2; config control.exec_jitter | DEC-010 |
 | AC-F02-04 | — | 40 kHz current-loop ISR execution time | ≤ 5 µs | derived | electronics/README.md bring-up step 7 | DEC-010 |
-| AC-F02-05 | REQ-SAF-003 | ML guard: time until authority is on the Kalman path after each injected invalid-output class (NaN, ±Inf, int8 saturation, expired timestamp, \|d_hat\| > q_lim, \|d_hat - d_hat_KF\| > 150 µm for > 20 ms, rate > 50 mm/s), 59 trials per class | ≤ 20 ms in 59/59 | requirement | REQ-SAF-003; docs/icd.md s5 guard; n = 59 success run | DEC-016; G-S for ASSIST_ML |
+| AC-F02-05 | REQ-SAF-003 | ML guard (docs/icd.md s5 v1.1): time from an injected invalid output until the stage command no longer contains it, per class: (1) NaN/Inf or int8 saturation (rejected), (2) \|d_hat\| > q_lim (clipped), (3) d_hat rate > 50 mm/s (slew-limited), (4) stale output older than h, (5) confidently wrong prediction (Kalman fallback by the a-posteriori check); 59 trials per class | ≤ 20 ms in 59/59 per class | requirement | REQ-SAF-003; n = 59 success run. CONFLICT: the v1.1 a-posteriori check (5) uses a 200 ms running RMS, so its fallback is expected to exceed 20 ms; ICD v1.1 defines no output expiry or confidence field for class (4) (REQ-ML-002 asks for timestamp/expiry/confidence) | DEC-016; G-S for ASSIST_ML; REQ-SAF-003 vs ICD s5 v1.1 |
 | AC-F02-06 | REQ-CTRL-004 | Limiter: violations of the q_lim radius (0.55 mm) or slew limit (0.08 m/s) by the commanded stage reference over ≥ 1e6 fuzzed estimator/ML outputs | = 0 | requirement | REQ-CTRL-004; limits from docs/physics.md P-22 | G-S |
 | AC-F02-07 | REQ-SAF-001 | Watchdog: halted or hung firmware leads to reset and VMOT off within the watchdog period + 1 ms | 59/59 | requirement | REQ-SAF-001; electronics/README.md bring-up step 10 | G-S |
 | AC-F02-08 | REQ-SAF-004 | Brown-out in contact (VBAT 4.2 -> 2.8 V at 1 V/s and 1 V/ms): actuation ramps down over ≥ 30 ms, no MCU lock-up, log loses ≤ 1 block | 29/29 per ramp rate | requirement | REQ-SAF-004; REQ-CAP-002 | G-S; G-C |

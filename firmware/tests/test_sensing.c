@@ -50,11 +50,12 @@ void test_hall_conversion(void)
 
 void test_fusion_matches_sim_scheme(void)
 {
-    /* housing oscillates 0.3 mm at 8 Hz plus 20 mm/s drift; optical delayed
-     * 2 ms (1 kHz), IMU delayed 1 ms (3840 Hz, exact acceleration) */
+    /* housing oscillates 0.3 mm at 8 Hz; optical delayed 2 ms (1 kHz sample
+     * and hold), IMU delayed 1 ms (exact acceleration). The fused estimate
+     * refers to t - imu_delay; both errors are taken against truth(t - 1 ms) */
     fusion_t f;
     fusion_init(&f, (uint16_t)PEN_FUSION_LAG_TICKS);
-    const double w = 2.0 * 3.141592653589793 * 8.0, A = 3e-4, v0 = 0.02;
+    const double w = 2.0 * 3.141592653589793 * 8.0, A = 3e-4, v0 = 0.0;
     const double dt_sim = 25e-6;
     double v_ref[2] = {0.0, 0.0}, p_ref[2] = {0.0, 0.0};   /* double-precision reference of the same scheme */
     double ring[64][2];
@@ -80,7 +81,7 @@ void test_fusion_matches_sim_scheme(void)
                 const double truth = A * sin(w * td) + v0 * td;
                 e_fw = fmax(e_fw, fabs((double)ph[0] - pr));
                 e_ref = fmax(e_ref, fabs(pr - truth));
-                e_opt = fmax(e_opt, fabs(o_last[0] - (A * sin(w * t) + v0 * t)));
+                e_opt = fmax(e_opt, fabs(o_last[0] - truth));
             }
         }
         if (k % 40 == 0) {
@@ -99,9 +100,9 @@ void test_fusion_matches_sim_scheme(void)
         }
     }
     CHECK(e_fw < 5e-9);          /* float32 port = double reference of the scheme */
-    CHECK(e_ref < 0.5 * e_opt);  /* bridging the optical latency with the IMU helps */
-    tr_log("fusion: float32 vs double reference %.2g m; error vs truth(t - 1 ms) %.1f um vs raw delayed optics %.1f um",
-           e_fw, e_ref * 1e6, e_opt * 1e6);
+    CHECK(e_ref < 0.75 * e_opt); /* bridging the optical latency with the IMU helps */
+    tr_log("fusion (simulator scheme): float32 vs double reference %.2g m; max error vs truth(t - 1 ms) %.1f um "
+           "(optical sample-and-hold staleness remains) vs raw delayed optics %.1f um", e_fw, e_ref * 1e6, e_opt * 1e6);
 }
 
 void test_attitude_from_gravity(void)

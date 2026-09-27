@@ -43,6 +43,18 @@ void pen_app_set_sink(pen_app_t *a, pen_log_sink_t sink, void *ctx, bool researc
     a->log_research = research_frames;
 }
 
+/* ------------------------------------------------------------------ ML hook */
+__attribute__((weak)) bool pen_ml_predict(const float dp_um[PEN_ML_WINDOW][2], float d_um[2], bool *nan_or_inf,
+                                          bool *saturated)
+{
+    (void)dp_um;
+    d_um[0] = 0.0f;
+    d_um[1] = 0.0f;
+    *nan_or_inf = false;
+    *saturated = false;
+    return false;   /* no model linked */
+}
+
 /* ------------------------------------------------------------------ init */
 void pen_app_init(pen_app_t *a, pen_profile_t profile, bool reset_by_watchdog)
 {
@@ -212,12 +224,32 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
     (void)safety_charging_check(&a->sf, hal_chg_det());
     (void)safety_headroom_check(&a->sf, duty_max);
     (void)safety_optical_check(&a->sf, a->opt_valid, a->in_contact, assisting);
-    if (a->sm.mode == PEN_MODE_ASSIST_ML) {
-        ml_guard_tick(&a->mlg, a->ctrl.kf.dhat, TS);
-        if (a->mlg.trip) {
-            log_event(a, t_us, PEN_EV_AUTHORITY_CAPPED, (int32_t)a->mlg.reason);
-            (void)safety_ml_trip(&a->sf);
+    /* ML predictor (ICD s5 v1.1): samples stamped at acquisition = tick time
+     * minus the IMU group delay the fusion leaves */
+    const uint32_t t_acq = t_us - (uint32_t)lrintf(PEN_IMU_DELAY * 1e6f);
+    ml_guard_realised(&a->mlg, a->ph, t_acq, a->opt_valid);
+    if (!a->opt_valid) {
+        ml_window_reset(&a->mlw);
+    } else if ((a->tick % (uint32_t)PEN_ML_DECIM) == 0u) {
+        ml_window_push(&a->mlw, a->ph, t_acq);
+        static float dp[PEN_ML_WINDOW][2];
+        uint32_t t_newest;
+        if (a->ml_available && ml_window_export(&a->mlw, dp, &t_newest)) {
+            float d_um[2];
+            bool bad = false, sat = false;
+            if (pen_ml_predict(dp, d_um, &bad, &sat)) {
+                ml_guard_new_output(&a->mlg, d_um, bad, sat, t_newest, a->ctrl.prm.q_lim);
+            }
         }
+    }
+    ml_guard_tick(&a->mlg, a->ctrl.kf.dhat, TS);
+    if (a->mlg.event) {
+        log_event(a, t_us, PEN_EV_AUTHORITY_CAPPED, (int32_t)a->mlg.reason);
+        a->mlg.event = false;
+    }
+    if (a->mlg.trip) {
+        (void)safety_ml_trip(&a->sf);
+        a->mlg.trip = false;
     }
     if ((a->sf.faults & PEN_FAULT_OVERCURRENT) != 0u && a->sm.act == SM_ACT_OFF && a->pen_up) {
         (void)safety_oc_clear_step(&a->sf);
@@ -274,7 +306,8 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
     ci.g_cap = pen_minf(a->sm.g_cap, a->th.derate);
     ci.i_max = a->ctrl.prm.i_max;
     ci.est = est_for_mode(a->sm.mode);
-    ci.d_ml = a->mlg.out;
+    ci.d_ml = a->mlg.d;
+    ci.ml_mix = a->mlg.have ? a->mlg.mix : 0.0f;
     const bool hall_ok = (a->sf.faults & PEN_FAULT_HALL) == 0u;
     ci.servo_on = hall_ok && (a->sm.act == SM_ACT_SERVO || a->sm.act == SM_ACT_NEUTRAL || a->sm.act == SM_ACT_RAMP);
     if (a->cl.cal_state != CL_CAL_IDLE) {
@@ -285,12 +318,21 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
     /* ---- 9. actuator policy -> current references ---- */
     if (a->sf.faults & PEN_FAULT_HALL) {
         if (!a->hold_captured) {
-            /* last reference computed with a fresh sensor: before the stuck run */
+            /* "last current references" (ICD s6): the mean of the APP_HOLD_AVG
+             * references computed with a fresh sensor, i.e. before the stuck
+             * run; a single sample carries the derivative-amplified Hall noise
+             * (~6 mA rms), which the flexure alone (6.7 um/mN) would turn into
+             * tens of um of drift */
             const uint32_t back = (uint32_t)PEN_HALL_STUCK_TICKS + 1u;
-            if (a->iref_hist_n > back) {
-                const uint32_t idx = (a->iref_hist_n - 1u - back) % APP_IREF_HIST;
-                a->iref_hold[0] = a->iref_hist[idx][0];
-                a->iref_hold[1] = a->iref_hist[idx][1];
+            if (a->iref_hist_n > back + APP_HOLD_AVG) {
+                float s0 = 0.0f, s1 = 0.0f;
+                for (uint32_t j = 0; j < APP_HOLD_AVG; j++) {
+                    const uint32_t idx = (a->iref_hist_n - 1u - back - j) % APP_IREF_HIST;
+                    s0 += a->iref_hist[idx][0];
+                    s1 += a->iref_hist[idx][1];
+                }
+                a->iref_hold[0] = s0 / (float)APP_HOLD_AVG;
+                a->iref_hold[1] = s1 / (float)APP_HOLD_AVG;
             } else {
                 a->iref_hold[0] = a->iref_out[0];
                 a->iref_hold[1] = a->iref_out[1];
@@ -340,18 +382,13 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         a->offset_cal_pending = false;
     }
 
-    /* ---- 10. ML input window (250 Hz) ---- */
-    if ((a->tick % (uint32_t)PEN_ML_DECIM) == 0u) {
-        ml_window_push(&a->mlw, a->ph);
-    }
-
-    /* ---- 11. watchdog: kick only if the current ISR is alive ---- */
+    /* ---- 10. watchdog: kick only if the current ISR is alive ---- */
     if (a->isr_count != a->isr_count_seen) {
         hal_watchdog_kick();
         a->isr_count_seen = a->isr_count;
     }
 
-    /* ---- 12. logging ---- */
+    /* ---- 11. logging ---- */
     if (a->log_research) {
         penlog_research_si_t r;
         memset(&r, 0, sizeof(r));
@@ -377,7 +414,7 @@ void pen_app_stage_tick(pen_app_t *a, const pen_sensors_t *sens)
         if (hypotf(a->q[0], a->q[1]) >= PEN_Q_STOP) fl |= PEN_FLAG_STOP;
         if (a->sf.faults != 0u) fl |= PEN_FLAG_FAULT;
         if (a->sm.mode == PEN_MODE_ASSIST_ML && a->mlg.mix > 0.0f) fl |= PEN_FLAG_ML_ACTIVE;
-        if (a->sm.mode == PEN_MODE_ASSIST_ML && a->mlg.rejected) fl |= PEN_FLAG_ML_REJECTED;
+        if (a->sm.mode == PEN_MODE_ASSIST_ML && a->mlg.fallback) fl |= PEN_FLAG_ML_REJECTED;
         if (a->th.derate < 1.0f) fl |= PEN_FLAG_THERMAL_DERATE;
         r.flags = fl;
         r.vbat = a->vbat_f;

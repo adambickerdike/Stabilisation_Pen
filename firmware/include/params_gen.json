@@ -8,9 +8,9 @@
   "design_revA_sha16": "433ad7f1224c4987",
   "model_py_sha16": "f6888a2b3aafbd87",
   "core_py_sha16": "c46570f25d1439cb",
-  "icd_sha16": "67b737b1c0f5d96f",
+  "icd_sha16": "d6ae722593d323bb",
   "model_version": "M1.0",
-  "git_head": "876c866",
+  "git_head": "65f505b",
   "nominal_theta_deg": 50.0,
   "nominal_N0": 1.0,
   "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
@@ -1226,6 +1226,86 @@
    "source": "sim/pensim/model.py build_params(): 1/|H(bp_tune_hz=7.0)|; results/sim/estimator_selection.json bpf.selected_assertive"
   },
   {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP1_B0",
+   "value": 0.9933578327104298,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP1_B1",
+   "value": -1.9867156654208595,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP1_B2",
+   "value": 0.9933578327104298,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP1_A1",
+   "value": -1.9866715465479383,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP1_A2",
+   "value": 0.9867597842937811,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 3 Hz, high, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP2_B0",
+   "value": 0.0005371697748120568,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP2_B1",
+   "value": 0.0010743395496241137,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP2_B2",
+   "value": 0.0005371697748120568,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP2_A1",
+   "value": -1.9333802258799302,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz)"
+  },
+  {
+   "section": "Estimators (profiles: BAL = estimator_selection selected, ASR = selected_assertive)",
+   "name": "PEN_MLG_BP2_A2",
+   "value": 0.9355289049791784,
+   "type": "float",
+   "unit": "-",
+   "source": "docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, 15 Hz, low, fs=2 kHz)"
+  },
+  {
    "section": "Sensing and housing-position fusion",
    "name": "PEN_HALL_ICT_COMP",
    "value": 2e-06,
@@ -1467,27 +1547,11 @@
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
-   "name": "PEN_ML_DHAT_DIFF_MAX",
-   "value": 0.00015,
-   "type": "float",
-   "unit": "m",
-   "source": "docs/icd.md s5: |d_ML - d_KF| > 150 um"
-  },
-  {
-   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
-   "name": "PEN_ML_DIFF_TIME",
-   "value": 0.02,
-   "type": "float",
-   "unit": "s",
-   "source": "docs/icd.md s5: for > 20 ms"
-  },
-  {
-   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
    "name": "PEN_ML_RATE_MAX",
    "value": 0.05,
    "type": "float",
    "unit": "m/s",
-   "source": "docs/icd.md s5: output rate > 50 mm/s"
+   "source": "docs/icd.md s5 v1.1 rule 3: slew-limit d_hat at 50 mm/s"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
@@ -1495,7 +1559,7 @@
    "value": 0.006,
    "type": "float",
    "unit": "s",
-   "source": "docs/icd.md s5: horizon h = 6 ms"
+   "source": "docs/icd.md s5 v1.1: h = 6 ms after the acquisition time of the newest sample"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
@@ -1503,7 +1567,31 @@
    "value": 64,
    "type": "int",
    "unit": "samples",
-   "source": "docs/icd.md s5: W = 64 at 250 Hz"
+   "source": "docs/icd.md s5 v1.1: W = 64 x (dx, dy) at 250 Hz (f_est dropped)"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_APOST_WINDOW",
+   "value": 0.2,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s5 v1.1 rule 4: running RMS over 200 ms"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_FALLBACK_HOLD",
+   "value": 1.0,
+   "type": "float",
+   "unit": "s",
+   "source": "docs/icd.md s5 v1.1 rule 4: fall back to the Kalman estimate for >= 1 s"
+  },
+  {
+   "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",
+   "name": "PEN_ML_REAL_SETTLE",
+   "value": 0.3,
+   "type": "float",
+   "unit": "s",
+   "source": "proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset"
   },
   {
    "section": "Safety thresholds (docs/icd.md s5, s6; requirements; proposed values marked)",

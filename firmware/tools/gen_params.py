@@ -329,6 +329,13 @@ def main():
             E.f(f"{tag}_BP2_{nm.upper()}", g(f"bp2_{nm}", PP), "-", f"{src_bp}: butter(2, bp_hi={bp['bp_hi']} Hz, low) sos ({nm}); {src}")
         E.f(f"{tag}_BP_GAIN_COMP", g("bp_gain_comp", PP), "-", f"{src_bp}: 1/|H(bp_tune_hz={bp['bp_tune_hz']})|; {src}")
 
+    # realised disturbance for the ML a-posteriori check (ICD s5 v1.1 rule 4)
+    from scipy import signal as sps
+    for tag, kind, fc in (("MLG_BP1", "high", 3.0), ("MLG_BP2", "low", 15.0)):
+        b0, b1, b2, _a0, a1, a2 = sps.butter(2, fc, btype=kind, fs=1.0 / Ts, output="sos")[0]
+        for nm, v in zip(("B0", "B1", "B2", "A1", "A2"), (b0, b1, b2, a1, a2)):
+            E.f(f"{tag}_{nm}", v, "-", f"docs/icd.md s5 v1.1: realised disturbance band-pass 3-15 Hz; scipy butter(2, {fc:g} Hz, {kind}, fs=2 kHz)")
+
     # ------------------------------------------------------------------ sensing and fusion
     E.sec("Sensing and housing-position fusion")
     od = int(g("opt_delay")); idl = int(g("imu_delay")); sdec = int(g("stage_decim"))
@@ -365,11 +372,12 @@ def main():
     E.f("R_EST_I_MIN", 0.10, "A", "proposed: minimum |I| for resistance estimate")
     E.f("R_EST_DI_MAX", 0.02, "A", "proposed: max current change over a tick for 'steady'")
     E.f("OC_CLEAR_RETRIES", 3.0, "-", "proposed: latch clear attempts before the fault is permanent")
-    E.f("ML_DHAT_DIFF_MAX", 150e-6, "m", "docs/icd.md s5: |d_ML - d_KF| > 150 um")
-    E.f("ML_DIFF_TIME", 0.020, "s", "docs/icd.md s5: for > 20 ms")
-    E.f("ML_RATE_MAX", 0.050, "m/s", "docs/icd.md s5: output rate > 50 mm/s")
-    E.f("ML_HORIZON", 0.006, "s", "docs/icd.md s5: horizon h = 6 ms")
-    E.i("ML_WINDOW", 64, "samples", "docs/icd.md s5: W = 64 at 250 Hz")
+    E.f("ML_RATE_MAX", 0.050, "m/s", "docs/icd.md s5 v1.1 rule 3: slew-limit d_hat at 50 mm/s")
+    E.f("ML_HORIZON", 0.006, "s", "docs/icd.md s5 v1.1: h = 6 ms after the acquisition time of the newest sample")
+    E.i("ML_WINDOW", 64, "samples", "docs/icd.md s5 v1.1: W = 64 x (dx, dy) at 250 Hz (f_est dropped)")
+    E.f("ML_APOST_WINDOW", 0.200, "s", "docs/icd.md s5 v1.1 rule 4: running RMS over 200 ms")
+    E.f("ML_FALLBACK_HOLD", 1.0, "s", "docs/icd.md s5 v1.1 rule 4: fall back to the Kalman estimate for >= 1 s")
+    E.f("ML_REAL_SETTLE", 0.300, "s", "proposed: a-posteriori evaluation suspended 300 ms after the realised-disturbance band-pass is reset")
     E.f("ML_STALE_TIME", 0.008, "s", "proposed: ML output older than 2 predictor periods is expired (REQ-SAF-003)")
     E.f("ML_FADE_TIME", 0.020, "s", "REQ-SAF-003: fall back smoothly within 20 ms")
     E.i("ML_TRIP_COUNT", 5, "trips", "proposed: fault bit 8 when > 5 guard trips within ML_TRIP_WINDOW")

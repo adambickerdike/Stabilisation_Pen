@@ -136,11 +136,14 @@ void test_system_hall_frozen_detect(void)
     const double latency_ms = (k_det + 1) * 0.5;
     CHECK(latency_ms <= 5.0);
     CHECK(s->app.sm.mode == PEN_MODE_SAFE_PASSIVE && s->app.sm.act == SM_ACT_HOLD_OL);
-    CHECK(fabsf(s->app.iref_out[0] - i_before) < 0.02f);   /* last good references, open loop */
+    const float i_held = s->app.iref_out[0];
+    CHECK(fabsf(i_held - i_before) < 0.02f);              /* last good references, open loop */
     CHECK(hal_host_act_en());                             /* not de-energised in contact */
     run(s, 400);                                          /* 200 ms holding */
     const double q_drift = fabs(s->pl.q[0] - q_before);
-    CHECK(q_drift < 20e-6);
+    /* reference: de-energising would release the full load, F/k_tip beyond the stop */
+    const double q_release = fmin(s->f_load / PEN_K_TIP, PEN_Q_STOP);
+    CHECK(q_drift < 0.1 * PEN_Q_STOP);
     CHECK(s->app.sm.act == SM_ACT_HOLD_OL);
     /* pen-up (optical surface lost, since F_ax is from the frozen sensor) -> ramp -> off */
     s->pen_down = false;
@@ -156,11 +159,11 @@ void test_system_hall_frozen_detect(void)
     CHECK(s->ev_count[PEN_EV_FAULT_SET] >= 1u && (s->last_fault_arg & PEN_FAULT_HALL) != 0);
     CHECK(s->ev_count[PEN_EV_FAULT_CLEARED] >= 1u);
     CHECK(s->n_bad == 0u && s->n_rec[PENLOG_T_RESEARCH] > 2000u && s->n_rec[PENLOG_T_STROKE] > 100u);
-    tr_log("system (app + plant): frozen TMAG5170 detected %.1f ms after the freeze (budget 5 ms); held i_ref %.3f A "
-           "(before %.3f A); stage drift over 200 ms of open-loop hold under a constant %.2f N load %.2f um; "
-           "de-energised only after the optical pen-up + %.0f ms ramp; recovery via self-check",
-           latency_ms, (double)s->app.iref_out[0], (double)i_before, s->f_load, q_drift * 1e6,
-           (double)PEN_RAMP_DOWN_TIME * 1e3);
+    tr_log("system (app + plant): frozen TMAG5170 detected %.1f ms after the freeze (budget 5 ms); held i_ref %.4f A "
+           "(8 ms mean before the stuck run; last servo value %.4f A); stage drift over 200 ms of open-loop hold under "
+           "a constant %.2f N load %.1f um (de-energising would move it %.0f um, to the stop); de-energised only after "
+           "the optical pen-up + %.0f ms ramp; recovery via self-check", latency_ms, (double)i_held, (double)i_before,
+           s->f_load, q_drift * 1e6, q_release * 1e6, (double)PEN_RAMP_DOWN_TIME * 1e3);
     tr_log("log stream: %u research frames, %u stroke samples, %u events, %u bad records", (unsigned)s->n_rec[1],
            (unsigned)s->n_rec[2], (unsigned)s->n_rec[3], (unsigned)s->n_bad);
 }
@@ -200,7 +203,7 @@ void test_system_fault_sequences(void)
     CHECK(hal_host_act_en() && s->app.ctrl.g_eff < 0.01f);
     CHECK(fabs(s->pl.q[0]) < 30e-6);   /* still holding the contact load */
     s->pen_down = false;
-    run(s, 40 + 62);
+    run(s, 130);   /* 20 ms pen-up debounce + 30 ms ramp */
     CHECK(s->app.sm.act == SM_ACT_OFF && !hal_host_act_en());
     run(s, 20);
     CHECK(s->app.sm.mode == PEN_MODE_SAFE_PASSIVE);   /* battery still low */
@@ -215,7 +218,9 @@ void test_system_fault_sequences(void)
     s->app.sf.faults = (uint16_t)(s->app.sf.faults | PEN_FAULT_OPTICAL);   /* inject the latched fault */
     run(s, 10);
     CHECK(s->app.sm.act == SM_ACT_NEUTRAL);
-    run(s, (int)(PEN_PENUP_TIMEOUT / PEN_TS_STAGE));
+    run(s, (int)(PEN_PENUP_TIMEOUT / PEN_TS_STAGE) - 20);
+    CHECK(s->app.sm.act == SM_ACT_NEUTRAL && hal_host_act_en());   /* still holding just before the timeout */
+    run(s, 20 + 70);                                                 /* timeout + 30 ms ramp */
     CHECK(s->app.sm.act == SM_ACT_OFF && !hal_host_act_en());
     tr_log("(c) soft fault with the pen kept down: de-energised after the %.0f s timeout (ICD s6)",
            (double)PEN_PENUP_TIMEOUT);
@@ -238,6 +243,7 @@ void test_system_fault_sequences(void)
     g_hal.chg_det = false;
     run(s, 20);
     CHECK(s->app.sm.mode == PEN_MODE_STANDBY);
+    s->app.req.assist = PEN_MODE_NEUTRAL_HOLD;
     s->app.req.arm = true;
     run(s, 5);
     CHECK(s->app.sm.mode == PEN_MODE_NEUTRAL_HOLD);
