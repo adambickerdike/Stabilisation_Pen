@@ -1,0 +1,14 @@
+# Python environment used to produce every result in results/ (Python 3.11.15, Linux x86_64).
+# Install: python3.11 -m pip install -r requirements.txt
+# torch is only needed for ml/ (CPU wheel: --index-url https://download.pytorch.org/whl/cpu).
+numpy==2.4.6
+scipy==1.17.1
+numba==0.67.0
+llvmlite==0.49.0
+matplotlib==3.11.2
+pandas==3.0.6
+PyYAML==6.0.1
+pytest==9.1.1
+cadquery==2.8.0
+magpylib==5.2.3
+torch==2.14.0
