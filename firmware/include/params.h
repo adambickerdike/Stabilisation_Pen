@@ -45,6 +45,7 @@ typedef struct {
     float i_max;
     /* ---- current loop ---- */
     float kp_i, ki_i, r_loop_ff, duty_max;
+    float cur_r_ff;      /* 0: PI only (default, drive_sense design); 1: + R i_ref feedforward (simulator) */
 } pen_ctrl_params_t;
 
 void pen_params_default(pen_ctrl_params_t *p, pen_profile_t profile);

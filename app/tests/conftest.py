@@ -49,12 +49,26 @@ def store(tmp_path):
     return NoteStore(tmp_path / "store", clock=FixedClock("2026-09-01T09:00:00.000Z"))
 
 
-@pytest.fixture
-def loaded(store, files):
-    """Store with both text sessions imported (segmentation, ground-truth recognition, index)."""
+@pytest.fixture(scope="session")
+def loaded_template(tmp_path_factory, files):
+    """Store with both text sessions imported (segmentation, ground-truth recognition, index), built once."""
     from penapp.cli import import_log_file
-    ids = {k: import_log_file(store, files[k])["note_id"] for k in ("a", "b")}
-    return store, ids
+    from penapp.notes import NoteStore
+    root = tmp_path_factory.mktemp("template") / "store"
+    st = NoteStore(root, clock=FixedClock("2026-09-01T09:00:00.000Z"))
+    ids = {k: import_log_file(st, files[k])["note_id"] for k in ("a", "b")}
+    return root, ids
+
+
+@pytest.fixture
+def loaded(tmp_path, loaded_template):
+    """Private copy of the template store; its clock starts after the template's time stamps."""
+    import shutil
+    from penapp.notes import NoteStore
+    root, ids = loaded_template
+    dst = tmp_path / "store"
+    shutil.copytree(root, dst)
+    return NoteStore(dst, clock=FixedClock("2026-09-02T09:00:00.000Z")), dict(ids)
 
 
 def parse(data: bytes, **kw):

@@ -2,6 +2,7 @@
  * test_filters.c - biquad vs scipy, Jacobian vs stabpen/frames.py, limiter
  * and authority-smoothing properties.
  */
+#include <float.h>
 #include <math.h>
 #include <string.h>
 
@@ -138,7 +139,9 @@ void test_limiter_radial_properties(void)
         float q[2] = {r * cosf(a), r * sinf(a)};
         lim_radial_taper(q, qlim, qt);
         const float ro = hypotf(q[0], q[1]);
-        if (!(ro <= qlim)) {   /* float32 tanh saturates to exactly 1 far out */
+        /* float32: tanh saturates to exactly 1 far out and the rescaled
+         * vector's norm can round one ulp above q_lim (0.5 nm) */
+        if (!(ro <= qlim * (1.0f + 4.0f * FLT_EPSILON))) {
             bad_bound++;
         }
         if (r > 0.0f && fabsf(atan2f(q[1], q[0]) - atan2f(sinf(a), cosf(a))) > 1e-4f) {
@@ -163,7 +166,7 @@ void test_limiter_radial_properties(void)
     float q3[2] = {1.0f, 0.0f};
     lim_radial_taper(q3, qlim, qt);
     CHECK_CLOSE(q3[0], qlim, 1e-9, 1e-6);
-    tr_log("radial taper: |q| <= q_lim = %.3g m for 4000 radii up to 5 mm, identity inside the knee, monotonic, C1",
+    tr_log("radial taper: |q| <= q_lim (+4 ulp) = %.3g m for 4000 radii up to 5 mm, identity inside the knee, monotonic, C1",
            (double)qlim);
 }
 

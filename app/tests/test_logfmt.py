@@ -252,6 +252,49 @@ def test_wrap_count_mismatch_is_reported_and_event_wins():
     assert p.research_t_us[-1] == (1 << 32) + 3_000
 
 
+def test_wrap_marker_arg0_as_emitted_by_firmware():
+    # firmware/core/app.c logs PEN_EV_TIME_WRAP with arg 0 on the first tick after the wrap
+    top = (1 << 32) - 500
+    recs = [ResearchFrame(t_us=top), Event(0, EventCode.TIMESTAMP_WRAP, 0), ResearchFrame(t_us=0),
+            ResearchFrame(t_us=500)]
+    p = read_log(encode_log(H, recs), strict=True)
+    assert p.research_t_us.tolist() == [top, 1 << 32, (1 << 32) + 500]
+    assert p.t_us_wraps_total == 1                     # heuristic and marker count the same wrap once
+
+
+def test_wrap_marker_after_silent_gap_counts_one_wrap():
+    # no t_us record for most of a period: the heuristic sees a forward jump, the marker supplies the wrap
+    recs = [Event(1_000_000_000, EventCode.PEN_UP, 0), Event(2_000_000_000, EventCode.TIMESTAMP_WRAP, 0),
+            Event(2_000_000_100, EventCode.PEN_DOWN, 0)]
+    p = read_log(encode_log(H, recs), strict=True)
+    assert [t for _, _, t in p.events] == [1_000_000_000, (1 << 32) + 2_000_000_000, (1 << 32) + 2_000_000_100]
+
+
+def test_stroke_t_ms_derived_from_wrapping_t_us_is_corrected():
+    # firmware/core/app.c writes t_ms = t_us / 1000 from the 32-bit us counter: t_ms restarts at 4294967 ms
+    recs = []
+    true_ms = []
+    for k in range(-6, 6):
+        t_true = (1 << 32) + k * 5000                 # us, around the wrap
+        t_us = t_true % (1 << 32)
+        if k == 0:
+            recs.append(Event(t_us, EventCode.TIMESTAMP_WRAP, 0))
+        recs.append(StrokeSample(t_us // 1000, 1, k, 0, 900, 100, 0))
+        true_ms.append(t_true // 1000)
+    p = read_log(encode_log(H, recs))
+    assert np.max(np.abs(p.stroke_t_ms - np.array(true_ms))) <= 1
+    assert np.all(np.diff(p.stroke_t_ms) > 0)
+    assert "t_ms_follows_t_us_wrap" in {i.kind for i in p.issues} and not p.data_loss
+
+
+def test_annotation_and_calibration_layouts():
+    a = lf.annotation_record("bench \u00b5m", 1234)
+    assert a.payload[:4] == (1234).to_bytes(4, "little") and a.annotation() == (1234, "bench \u00b5m")
+    c = lf.calibration_record(5, 1, b"PCAL")
+    assert c.payload == b"\x05\x01\x00PCAL" and c.calibration() == (5, 1, b"PCAL")
+    assert RawRecord(0x05, b"\x00").annotation() is None
+
+
 def test_t_ms_wrap_of_stroke_samples():
     recs = [StrokeSample((1 << 32) - 5, 0, 0, 0, 0, 0, 0), StrokeSample(0, 0, 1, 1, 0, 0, 0)]
     p = read_log(encode_log(H, recs))
@@ -275,4 +318,5 @@ def test_example_vector_is_reproducible():
     assert vectors.describe() == expected
     p = read_log(path.read_bytes())
     assert [i.kind for i in p.issues] == ["unknown_type"]
-    assert p.t_us_wraps_total == 1
+    assert p.t_us_wraps_total == 2            # one marker wrap + one counted wrap after a silent gap
+    assert p.events[-1][2] == 2 * (1 << 32) + 300

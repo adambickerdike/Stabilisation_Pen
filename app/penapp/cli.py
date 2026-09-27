@@ -19,11 +19,10 @@ import argparse
 import glob
 import json
 import os
-import sys
 from pathlib import Path
 from typing import List, Optional
 
-from . import SYNTHETIC_LABEL, __version__
+from . import __version__
 from ._util import REPO_ROOT, format_ranges, sha256_hex
 
 

@@ -15,15 +15,18 @@ Layout (docs/icd.md section 4.1)::
 
 Record payloads: 0x01 research frame (52 B, section 4.2), 0x02 stroke sample
 (20 B, section 4.3), 0x03 event (10 B, section 4.4), 0x04 calibration
-snapshot and 0x05 annotation (payload layout not defined by ICD v1.0: kept
-as opaque bytes; annotations are decoded as UTF-8 text when valid).
+snapshot and 0x05 annotation.  ICD v1.0 does not define 0x04/0x05 payloads;
+this module follows the layouts proposed by the firmware team
+(firmware/include/log_format.h): 0x04 = cal_type u8 | cal_version u16 |
+record bytes, 0x05 = t_us u32 | UTF-8 text.  Both stay available as raw bytes.
 
 Interpretations of points the ICD leaves open (see app/README.md, "ICD
 ambiguities"): CRCs are stored little-endian like every other field; the
 record CRC covers the type and length bytes; phi in 0x02 is stored as
 round(phi / 2 deg) (2 deg LSB, 0..179), theta as round(theta / 0.5 deg);
-event 0x0009 (timestamp wrap) is emitted after the wrap with ``arg`` = number
-of wraps since session start.
+event 0x0009 (timestamp wrap) is logged after the wrap; ``arg`` = 0 is a plain
+marker (current firmware), ``arg`` >= 1 is read as the number of wraps since
+session start (proposal that survives lost events and silent gaps).
 
 Robustness
 ----------
@@ -31,9 +34,12 @@ Robustness
   scan that accepts a candidate only if it has a known type, the exact ICD
   length for fixed-length types, a valid CRC and (for the variable-length
   types 0x04/0x05) a valid successor record or end of file;
-* 32-bit time stamps are unwrapped (t_us wraps after 71.6 min, t_ms after
-  49.7 days) from explicit wrap events and, as a fallback, from backward jumps
-  larger than half the counter range;
+* 32-bit time stamps are unwrapped: t_us (wraps after 71.6 min) from wrap
+  events and, as a fallback, from backward jumps larger than half the counter
+  range; stroke t_ms from true 2^32 ms wraps *and* from restarts that follow a
+  t_us wrap (the current firmware derives t_ms = t_us / 1000 from the wrapping
+  microsecond counter, so t_ms restarts every 4 294 967.296 ms; reported as
+  issue ``t_ms_follows_t_us_wrap`` and corrected to within 1 ms);
 * nothing is silently dropped: every anomaly becomes a ``ParseIssue``.
 """
 from __future__ import annotations
@@ -299,13 +305,35 @@ class RawRecord:
     def encode(self) -> bytes:
         return bytes(self.payload)
 
-    @property
-    def text(self) -> Optional[str]:
-        """UTF-8 text of an annotation payload, or None if not valid UTF-8."""
+    def annotation(self) -> Optional[Tuple[int, str]]:
+        """(t_us, text) of a 0x05 payload in the proposed layout t_us u32 | UTF-8, else None."""
+        if self.rtype != RecordType.ANNOTATION or len(self.payload) < 4:
+            return None
         try:
-            return self.payload.decode("utf-8")
+            return int.from_bytes(self.payload[:4], "little"), self.payload[4:].decode("utf-8")
         except UnicodeDecodeError:
             return None
+
+    def calibration(self) -> Optional[Tuple[int, int, bytes]]:
+        """(cal_type, cal_version, record bytes) of a 0x04 payload in the proposed layout, else None."""
+        if self.rtype != RecordType.CALIBRATION_SNAPSHOT or len(self.payload) < 3:
+            return None
+        return self.payload[0], int.from_bytes(self.payload[1:3], "little"), self.payload[3:]
+
+
+def annotation_record(text: str, t_us: int = 0) -> RawRecord:
+    """0x05 record in the proposed layout t_us u32 | UTF-8 text."""
+    body = _check_range("t_us", t_us, *U32).to_bytes(4, "little") + text.encode("utf-8")
+    if len(body) > 255:
+        raise ValueError("annotation longer than the 255-byte payload limit")
+    return RawRecord(int(RecordType.ANNOTATION), body)
+
+
+def calibration_record(cal_type: int, cal_version: int, data: bytes) -> RawRecord:
+    """0x04 record in the proposed layout cal_type u8 | cal_version u16 | record bytes."""
+    body = bytes([_check_range("cal_type", cal_type, *U8)]) + _check_range(
+        "cal_version", cal_version, *U16).to_bytes(2, "little") + bytes(data)
+    return RawRecord(int(RecordType.CALIBRATION_SNAPSHOT), body)
 
 
 AnyRecord = Union[StrokeSample, Event, ResearchFrame, RawRecord]
@@ -347,8 +375,8 @@ class LogWriter:
         for r in recs:
             self.write(r)
 
-    def annotation(self, text: str) -> None:
-        self.write(RawRecord(int(RecordType.ANNOTATION), text.encode("utf-8")))
+    def annotation(self, text: str, t_us: int = 0) -> None:
+        self.write(annotation_record(text, t_us))
 
 
 def encode_log(header: Header, records: Iterable[AnyRecord]) -> bytes:
@@ -382,6 +410,9 @@ DATA_LOSS_KINDS = frozenset({"crc_mismatch", "bad_length", "unknown_type_resync"
                              "resync", "trailing_garbage", "length_mismatch"})
 
 
+T_US_WRAP_MS = T_US_MOD / 1000.0          # 4 294 967.296 ms
+
+
 class _Unwrapper:
     """Extend a wrapping unsigned counter to 64-bit time."""
 
@@ -397,6 +428,71 @@ class _Unwrapper:
             self.inferred += 1
         self.last = t
         return self.epoch * self.mod + t
+
+
+class _MicroClock:
+    """t_us of events and research frames: heuristic unwrap + wrap events (count or marker)."""
+
+    def __init__(self):
+        self.u = _Unwrapper(T_US_MOD)
+        self.n = 0
+        self.inferred_at = -10
+        self.unconfirmed = False
+        self.events = 0
+
+    @property
+    def epoch(self) -> int:
+        return self.u.epoch
+
+    def feed(self, t: int) -> int:
+        before = self.u.epoch
+        v = self.u.feed(t)
+        self.n += 1
+        if self.u.epoch != before:
+            self.inferred_at = self.n
+            self.unconfirmed = True
+        return v
+
+    def wrap_event(self, t: int, arg: int) -> Tuple[int, Optional[str]]:
+        """Apply a 0x0009 event already passed through ``feed``; returns (t unwrapped, issue)."""
+        self.events += 1
+        note = None
+        if arg >= 1:                                   # wraps since session start
+            if self.u.epoch > arg:
+                note = f"inferred epoch {self.u.epoch} > wrap event count {arg}; using event"
+            self.u.epoch = arg
+        elif arg == 0:                                 # marker: exactly one wrap just happened
+            if not (self.unconfirmed and self.inferred_at >= self.n - 1):
+                self.u.epoch += 1
+        else:
+            return self.u.epoch * self.u.mod + t, f"wrap event with negative arg {arg} ignored"
+        self.unconfirmed = False
+        return self.u.epoch * self.u.mod + t, note
+
+
+class _StrokeClock:
+    """Stroke t_ms: true 2^32 ms wraps plus restarts that follow t_us wraps."""
+
+    def __init__(self):
+        self.ms = _Unwrapper(T_MS_MOD)
+        self.k = 0
+        self.prev: Optional[int] = None
+        self.prev_epoch = 0
+
+    def feed(self, t_ms: int, us_epoch: int) -> Tuple[int, Optional[str]]:
+        flag = None
+        if self.prev is not None and t_ms < self.prev and self.prev - t_ms <= T_MS_MOD // 2:
+            if us_epoch > self.prev_epoch:
+                self.k += us_epoch - self.prev_epoch
+                flag = "t_ms_follows_t_us_wrap"
+            elif self.prev > T_US_WRAP_MS - 600_000 and t_ms < 600_000:
+                self.k += 1
+                flag = "t_ms_follows_t_us_wrap"
+            else:
+                flag = "t_ms_backwards"
+        self.prev = t_ms
+        self.prev_epoch = us_epoch
+        return self.ms.feed(t_ms) + int(round(self.k * T_US_WRAP_MS)), flag
 
 
 @dataclass
@@ -500,8 +596,9 @@ def read_log(source: Union[bytes, bytearray, memoryview, str, Path], *, strict: 
     stroke_t: List[int] = []
     research_t: List[int] = []
     counts: Counter = Counter()
-    us = _Unwrapper(T_US_MOD)
-    ms = _Unwrapper(T_MS_MOD)
+    us = _MicroClock()
+    ms = _StrokeClock()
+    seen_flags: set = set()
 
     def issue(pos, kind, detail="", skipped=0):
         pi = ParseIssue(pos, kind, detail, skipped)
@@ -518,21 +615,22 @@ def read_log(source: Union[bytes, bytearray, memoryview, str, Path], *, strict: 
         elif rtype == RecordType.STROKE_SAMPLE:
             rec = StrokeSample.decode(payload)
             strokes.extend(payload)
-            stroke_t.append(ms.feed(rec.t_ms))
+            t_val, flag = ms.feed(rec.t_ms, us.epoch)
+            stroke_t.append(t_val)
+            if flag == "t_ms_backwards" or (flag and flag not in seen_flags):
+                seen_flags.add(flag)
+                issue(pos, flag, "stroke t_ms restarted after a t_us wrap (firmware derives t_ms from the "
+                                 "32-bit us counter; ICD 4.3 implies a u32 ms counter); corrected by "
+                                 "+4294967.296 ms per wrap" if flag != "t_ms_backwards" else
+                      f"t_ms decreased to {rec.t_ms} without a wrap")
         elif rtype == RecordType.EVENT:
             rec = Event.decode(payload)
             t_unwrapped = us.feed(rec.t_us)
             if rec.code == EventCode.TIMESTAMP_WRAP:
-                if rec.arg < 1:
-                    issue(pos, "wrap_event_invalid", f"wrap count arg={rec.arg}")
-                else:
-                    out.t_us_wraps_explicit += 1
-                    if us.epoch != rec.arg:
-                        if us.epoch > rec.arg:
-                            issue(pos, "wrap_count_mismatch",
-                                  f"inferred epoch {us.epoch} > wrap event count {rec.arg}; using event")
-                        us.epoch = rec.arg
-                        t_unwrapped = us.epoch * us.mod + rec.t_us
+                out.t_us_wraps_explicit += 1
+                t_unwrapped, note = us.wrap_event(rec.t_us, rec.arg)
+                if note:
+                    issue(pos, "wrap_count_mismatch" if rec.arg >= 1 else "wrap_event_invalid", note)
             out.events.append((pos, rec, t_unwrapped))
         elif rtype == RecordType.RESEARCH_FRAME:
             rec = ResearchFrame.decode(payload)
@@ -583,9 +681,9 @@ def read_log(source: Union[bytes, bytearray, memoryview, str, Path], *, strict: 
     out.stroke_t_ms = np.asarray(stroke_t, dtype=np.int64)
     out.research_t_us = np.asarray(research_t, dtype=np.int64)
     out.counts = dict(counts)
-    out.t_us_wraps_inferred = us.inferred
+    out.t_us_wraps_inferred = us.u.inferred
     out.t_us_wraps_total = us.epoch
-    out.t_ms_wraps_inferred = ms.inferred
+    out.t_ms_wraps_inferred = ms.ms.inferred + ms.k
     return out
 
 

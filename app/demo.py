@@ -27,7 +27,6 @@ Run: python3 app/demo.py [--skip-fidelity]
 from __future__ import annotations
 
 import argparse
-import copy
 import json
 import shutil
 import sys
@@ -45,7 +44,7 @@ import numpy as np  # noqa: E402
 
 from penapp import __version__, capture, logfmt, recognize, render, vectors  # noqa: E402
 from penapp._util import (FixedClock, environment_info, file_sha256, format_ranges, git_revision,  # noqa: E402
-                          ids_from_ranges, rel_to_repo, write_json)
+                          rel_to_repo, write_json)
 from penapp.cli import import_log_file  # noqa: E402
 from penapp.grounded import GroundedAssistant  # noqa: E402
 from penapp.notes import IntegrityError, NoteStore  # noqa: E402
@@ -333,7 +332,8 @@ def main(argv=None) -> int:
     report["user_edit_demo"] = user_edit_demo(store, idx, nid["demo_text_project"], truths["demo_text_project"])
     renders["project_user_edit_overlay"] = render.save_svg(OUT / "demo_project_user_edit_overlay.svg", render.render_note(
         store, nid["demo_text_project"], overlay="text",
-        title="Synthetic note: injected recognition errors (15% CER) corrected by user_edit (orange)"))
+        title=f"Synthetic note: injected recognition errors (target CER 0.15, achieved "
+              f"{report['user_edit_demo']['achieved_cer']:.3f}) corrected by user_edit (orange)"))
     report["ask_after_edit"] = {"question": QUESTIONS[1], **answer_json(asst.ask(QUESTIONS[1], store_result=False))}
     report["renders"] = {k: rel_to_repo(v) for k, v in renders.items()}
 

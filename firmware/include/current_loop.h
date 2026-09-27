@@ -2,7 +2,13 @@
  * current_loop.h - 40 kHz per-axis coil current PI (port of the simulator's
  * current loop) with the Rev A bridge mapping.
  *
- *   v = R_ff i_ref + Kp_i e + Ki_i int(e),  e = i_ref - i_meas
+ *   v = c_ff R_ff i_ref + Kp_i e + Ki_i int(e),  e = i_ref - i_meas
+ *   Kp_i = L wc_i, Ki_i = R wc_i (zero on the electrical pole, model.py);
+ *   c_ff = 0 by default (drive_sense.py design). The simulator uses c_ff = 1
+ *   with no sample-to-PWM delay; with the Rev A timing (update one PWM
+ *   period after the centre sample, 10 us anti-alias) that overshoots ~55 %
+ *   on reference steps versus ~12 % without it (tests/test_current.c,
+ *   README discrepancy D10).
  *   |v| <= duty_max * V_M,  V_M = VBAT - R_ls (|i_x| + |i_y|)     (duty <= 0.97)
  *   anti-windup: conditional integration (no integration while clamped),
  *   exactly as sim/pensim/core.py.

@@ -12,7 +12,7 @@
  *   core_py_sha16: c46570f25d1439cb
  *   icd_sha16: 67b737b1c0f5d96f
  *   model_version: M1.0
- *   git_head: 5ebd218
+ *   git_head: 876c866
  *   nominal_theta_deg: 50.0
  *   nominal_N0: 1.0
  *   evidence_status: proposed design / calculated / assumed values; no hardware measurement
@@ -74,6 +74,7 @@
 #define PEN_KP_I                   (2.1991148f) /* V/A; sim/pensim/model.py build_params(): Kp_i = L wc_i */
 #define PEN_KI_I                   (81932.7344f) /* V/(A s); sim/pensim/model.py build_params(): Ki_i = (R20 + r_bridge + r_shunt) wc_i */
 #define PEN_R_LOOP_FF              (6.51999998f) /* ohm; sim/pensim/model.py build_params(): Rhat used for the R*i_ref voltage feedforward (at 20 C) */
+#define PEN_CUR_R_FF               (0.0f) /* -; firmware default 0: PI with pole-zero cancellation as designed in electronics/calcs/drive_sense.py; the simulator adds R*i_ref (= 1), which overshoots 55 % with the 1-period sample-to-PWM delay (README D10) */
 #define PEN_DUTY_MAX               (0.970000029f) /* -; results/electronics/drive_sense.json components.d_max (sampling window) */
 #define PEN_R_LOAD_SWITCH          (0.0799999982f) /* ohm; drive_sense.json components.r_load_switch_ohm (TPS22917, shared; VERIFY) */
 #define PEN_DUTY_HEADROOM          (0.949999988f) /* -; docs/icd.md s6 fault bit 6 threshold */

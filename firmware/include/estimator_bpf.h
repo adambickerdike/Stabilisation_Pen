@@ -18,6 +18,8 @@ typedef struct {
     float y_prev[2];
     float yd[2];
     bool need_reinit;
+    bool reset_deriv;   /* also clear the derivative memory at reinit (firmware
+                         * local-origin mode; the simulator keeps it) */
     float dhat[2];
 } bpf_est_t;
 

@@ -29,7 +29,7 @@ import numpy as np
 
 from . import __version__
 from ._util import file_sha256, ids_from_ranges, ranges_from_ids
-from .notes import NoteStore, OriginalLayer, ValidationError
+from .notes import NoteStore, OriginalLayer
 
 
 @dataclass
@@ -157,10 +157,12 @@ class GroundTruthRecognizer:
 class ErrorInjectingRecognizer:
     """Corrupt a base recogniser's words to a target CER (seeded, deterministic).
 
-    Each character is independently substituted (p = 0.6 cer), deleted
-    (p = 0.2 cer) or followed by an inserted character (p = 0.2 cer), so the
-    expected edit count per character is ``cer``.  The achieved CER against the
-    base output is reported in ``params``.
+    Each character of each word is independently substituted (p = 0.6 cer),
+    deleted (p = 0.2 cer) or followed by an inserted character (p = 0.2 cer),
+    so the expected edit count per word character is ``cer``.  Spaces are never
+    corrupted and a substitution can redraw the same letter, so the line-level
+    CER is somewhat lower; the achieved CER against the base output is
+    measured and reported in ``params`` (use it, not the target, in analyses).
     """
     recognizer_id = "penapp.recognize.inject_errors"
     version = __version__

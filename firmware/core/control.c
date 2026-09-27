@@ -21,6 +21,7 @@ void ctrl_init(ctrl_t *c, pen_profile_t profile)
     servo_init(&c->servo);
     jac_update(&c->jac, PEN_THETA_NOM, 0.0f, 0.0f, c->prm.gamma);
     c->lam_hat = 1.0f;
+    c->local_origin = true;
 }
 
 void ctrl_tick(ctrl_t *c, const ctrl_in_t *in)
@@ -34,8 +35,14 @@ void ctrl_tick(ctrl_t *c, const ctrl_in_t *in)
     if (valid && !c->valid_prev) {
         c->kf.need_reinit = true;
         c->bpf.need_reinit = true;
+        if (c->local_origin) {
+            c->origin[0] = in->ph[0];
+            c->origin[1] = in->ph[1];
+        }
     }
     c->valid_prev = valid;
+    const float phl[2] = {in->ph[0] - c->origin[0], in->ph[1] - c->origin[1]};
+    c->bpf.reset_deriv = c->local_origin;
 
     jac_update(&c->jac, in->theta, in->phi, in->rho, p->gamma);
 
@@ -44,10 +51,10 @@ void ctrl_tick(ctrl_t *c, const ctrl_in_t *in)
     float target_g = 0.0f;
     const float g_as = p->g_assist;
     /* the Kalman filter always runs: fallback for ML, f_est for the log */
-    kf_est_tick(&c->kf, p, in->ph, valid);
+    kf_est_tick(&c->kf, p, phl, valid);
     switch (in->est) {
     case PEN_EST_BPF:
-        bpf_est_tick(&c->bpf, p, in->ph, valid);
+        bpf_est_tick(&c->bpf, p, phl, valid);
         c->dhat[0] = c->bpf.dhat[0];
         c->dhat[1] = c->bpf.dhat[1];
         corr0 = -c->dhat[0];

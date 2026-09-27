@@ -40,6 +40,9 @@ bool hal_fault_n(void) { return !g_hal.latch_q; }
 void hal_fault_clr_pulse(void)
 {
     g_hal.clr_pulses++;
+    if (g_hal.act_en_req) {
+        g_hal.clr_while_req_high++;
+    }
     /* CLR low: Q -> 0 unless PRE is also low (then Q = ~Q = 1 during the
      * pulse and PRE wins after CLR is released) */
     if (g_hal.oc_n) {

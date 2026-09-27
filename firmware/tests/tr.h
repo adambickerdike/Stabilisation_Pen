@@ -33,4 +33,6 @@ uint32_t tr_rng_u32(tr_rng_t *r);
 double tr_rng_uniform(tr_rng_t *r);   /* [0, 1) */
 double tr_rng_normal(tr_rng_t *r);
 
+#include "test_list.h"
+
 #endif /* PEN_TR_H */

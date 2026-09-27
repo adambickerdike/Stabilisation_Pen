@@ -184,6 +184,7 @@
             "additionalProperties": false,
             "properties": {
               "offset": {"type": "integer", "minimum": 0},
+              "t_us": {"type": "integer", "minimum": 0},
               "text": {"type": "string"},
               "payload_hex": {"type": "string", "pattern": "^[0-9a-f]*$"}
             }
@@ -301,6 +302,7 @@
       "properties": {
         "method": {"type": "string"},
         "evidence_status": {"type": "string"},
+        "origin_alignment": {"type": "object"},
         "strokes": {
           "type": "array",
           "items": {

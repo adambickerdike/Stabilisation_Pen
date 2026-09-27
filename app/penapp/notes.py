@@ -114,6 +114,23 @@ def schema_available() -> bool:
     return _validator(None) is not None
 
 
+SCHEMA_ROW_SAMPLE = 200
+
+
+def validate_original(obj: dict) -> None:
+    """Schema-validate an original layer: envelope + up to 200 rows via jsonschema.
+
+    Every row's integer ranges are additionally checked vectorised (numpy) in
+    ``OriginalLayer.from_json``; full per-row jsonschema validation of an
+    hour-long session (720 k rows) would take minutes.
+    """
+    rows = obj.get("samples", [])
+    if len(rows) > SCHEMA_ROW_SAMPLE:
+        half = SCHEMA_ROW_SAMPLE // 2
+        obj = {**obj, "samples": rows[:half] + rows[-half:]}
+    validate(obj, "original_layer")
+
+
 # ---------------------------------------------------------- original layer
 class OriginalLayer:
     """Immutable view of the logged stroke samples of one session."""
@@ -341,7 +358,7 @@ class NoteStore:
         """Store an original layer (idempotent; never overwrites)."""
         layer = payload if isinstance(payload, OriginalLayer) else OriginalLayer(payload)
         obj = layer.to_json()
-        validate(obj, "original_layer")
+        validate_original(obj)
         path = self._orig_path(layer.sha256)
         if not _write_once(path, pretty_json(obj).encode("utf-8") + b"\n"):
             existing = self.get_original(layer.sha256)       # verifies content
@@ -396,8 +413,8 @@ class NoteStore:
         for off, rec in parsed.raw:
             if rec.rtype != RecordType.ANNOTATION:
                 continue
-            txt = rec.text
-            annotations.append({"offset": off, "text": txt} if txt is not None
+            ann = rec.annotation()
+            annotations.append({"offset": off, "t_us": ann[0], "text": ann[1]} if ann is not None
                                else {"offset": off, "payload_hex": rec.payload.hex()})
         lab = list(dict.fromkeys(labels))
         if any((a.get("text") or "").startswith("SYNTHETIC") for a in annotations) and "synthetic" not in lab:
@@ -680,14 +697,18 @@ class NoteStore:
                 "problems": problems}
 
     def export_bundle(self, note_ids: Optional[Sequence[str]] = None) -> dict:
+        """Single JSON document (schema root) with notes, originals and their layers."""
         notes = [self.get_note(n) for n in note_ids] if note_ids else self.list_notes()
         keep = {n["note_id"] for n in notes}
         shas = sorted({n["original_sha256"] for n in notes})
         layers = [l for l in self.list_layers() if set(l["note_ids"]) <= keep]
+        originals = [self.get_original(s).to_json() for s in shas]
         bundle = {"object": "note_store_bundle", "schema_version": 1, "exported_utc": self.clock(),
                   "exported_by": f"penapp.export@{__version__}", "notes": notes,
-                  "originals": [self.get_original(s).to_json() for s in shas], "layers": layers}
-        validate(bundle, None)
+                  "originals": originals, "layers": layers}
+        for o in originals:
+            validate_original(o)
+        validate({**bundle, "originals": []}, None)
         return bundle
 
     def purge_note(self, note_id: str, *, confirm: str) -> dict:

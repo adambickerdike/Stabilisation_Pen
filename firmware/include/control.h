@@ -54,6 +54,15 @@ typedef struct {
     bool valid_prev;
     float lam_hat;
     float ax_c[2];
+    /* Local origin of the estimator input (firmware option, default on):
+     * the estimators see p_H - origin, origin = p_H at each optical
+     * re-acquisition. The Kalman filter is shift invariant (its position state
+     * is initialised at the measurement), so its output is unchanged; the
+     * band-pass baseline loses the re-initialisation step transient of the
+     * simulator (README discrepancy D9) and float32 keeps sub-nm resolution
+     * anywhere on the page. Off = exact simulator behaviour (replay tests). */
+    bool local_origin;
+    float origin[2];
 } ctrl_t;
 
 void ctrl_init(ctrl_t *c, pen_profile_t profile);

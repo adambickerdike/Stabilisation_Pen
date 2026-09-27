@@ -11,10 +11,10 @@
  },
  "source": {
   "file_name": "demo_text_errands.penlog",
-  "file_sha256": "aa274477b93f314860e6e5a1543885c85c30589ce0b90ea46e39135a91610cf5",
-  "file_bytes": 122860,
+  "file_sha256": "6ddc7143ef483b1dbb8b4e9183524ad26f00ee4e580a0b104adae0354429a7aa",
+  "file_bytes": 122864,
   "parse": {
-   "n_bytes": 122860,
+   "n_bytes": 122864,
    "records": {
     "STROKE_SAMPLE": 4989,
     "EVENT": 213,
@@ -51,7 +51,7 @@
    "t_us": 0,
    "code": 1,
    "name": "MODE_CHANGE",
-   "arg": 3
+   "arg": 515
   },
   {
    "t_us": 356000,
@@ -69,1268 +69,1269 @@
    "t_us": 707000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 1
+   "arg": 0
   },
   {
    "t_us": 1033000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 1
+   "arg": 0
   },
   {
    "t_us": 1182000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 2
+   "arg": 0
   },
   {
    "t_us": 1558000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 2
+   "arg": 0
   },
   {
    "t_us": 1704000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 3
+   "arg": 0
   },
   {
    "t_us": 1858000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 3
+   "arg": 0
   },
   {
    "t_us": 2005000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 4
+   "arg": 0
   },
   {
    "t_us": 2238000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 4
+   "arg": 0
   },
   {
    "t_us": 2459000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 5
+   "arg": 0
   },
   {
    "t_us": 2626000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 5
+   "arg": 0
   },
   {
    "t_us": 2755000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 6
+   "arg": 0
   },
   {
    "t_us": 2987000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 6
+   "arg": 0
   },
   {
    "t_us": 3116000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 7
+   "arg": 0
   },
   {
    "t_us": 3348000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 7
+   "arg": 0
   },
   {
    "t_us": 3498000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 8
+   "arg": 0
   },
   {
    "t_us": 3657000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 8
+   "arg": 0
   },
   {
    "t_us": 3819000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 9
+   "arg": 0
   },
   {
    "t_us": 3934000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 9
+   "arg": 0
   },
   {
    "t_us": 4056000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 10
+   "arg": 0
   },
   {
    "t_us": 4279000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 10
+   "arg": 0
   },
   {
    "t_us": 4453000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 11
+   "arg": 0
   },
   {
    "t_us": 4675000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 11
+   "arg": 0
   },
   {
    "t_us": 4831000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 12
+   "arg": 0
   },
   {
    "t_us": 5039000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 12
+   "arg": 0
   },
   {
    "t_us": 5205000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 13
+   "arg": 0
   },
   {
    "t_us": 5545000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 13
+   "arg": 0
   },
   {
    "t_us": 5693000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 14
+   "arg": 0
   },
   {
    "t_us": 5993000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 14
+   "arg": 0
   },
   {
    "t_us": 6114000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 15
+   "arg": 0
   },
   {
    "t_us": 6375000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 15
+   "arg": 0
   },
   {
    "t_us": 6559000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 16
+   "arg": 0
   },
   {
    "t_us": 6850000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 16
+   "arg": 0
   },
   {
    "t_us": 6970000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 17
+   "arg": 0
   },
   {
    "t_us": 7224000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 17
+   "arg": 0
   },
   {
    "t_us": 7413000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 18
+   "arg": 0
   },
   {
    "t_us": 7686000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 18
+   "arg": 0
   },
   {
    "t_us": 7905000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 19
+   "arg": 0
   },
   {
    "t_us": 8342000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 19
+   "arg": 0
   },
   {
    "t_us": 8491000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 20
+   "arg": 0
   },
   {
    "t_us": 8656000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 20
+   "arg": 0
   },
   {
    "t_us": 8784000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 21
+   "arg": 0
   },
   {
    "t_us": 9021000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 21
+   "arg": 0
   },
   {
    "t_us": 9175000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 22
+   "arg": 0
   },
   {
    "t_us": 9489000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 22
+   "arg": 0
   },
   {
    "t_us": 9639000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 23
+   "arg": 0
   },
   {
    "t_us": 9859000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 23
+   "arg": 0
   },
   {
    "t_us": 10051000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 24
+   "arg": 0
   },
   {
    "t_us": 10258000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 24
+   "arg": 0
   },
   {
    "t_us": 10379000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 25
+   "arg": 0
   },
   {
    "t_us": 10673000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 25
+   "arg": 0
   },
   {
    "t_us": 10823000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 26
+   "arg": 0
   },
   {
    "t_us": 10975000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 26
+   "arg": 0
   },
   {
    "t_us": 11099000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 27
+   "arg": 0
   },
   {
    "t_us": 11234000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 27
+   "arg": 0
   },
   {
    "t_us": 11353000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 28
+   "arg": 0
   },
   {
    "t_us": 11677000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 28
+   "arg": 0
   },
   {
    "t_us": 11832000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 29
+   "arg": 0
   },
   {
    "t_us": 12268000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 29
+   "arg": 0
   },
   {
    "t_us": 12416000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 30
+   "arg": 0
   },
   {
    "t_us": 12709000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 30
+   "arg": 0
   },
   {
    "t_us": 12854000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 31
+   "arg": 0
   },
   {
    "t_us": 13061000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 31
+   "arg": 0
   },
   {
    "t_us": 14060000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 32
+   "arg": 0
   },
   {
    "t_us": 14222000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 32
+   "arg": 0
   },
   {
    "t_us": 14349000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 33
+   "arg": 0
   },
   {
    "t_us": 14492000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 33
+   "arg": 0
   },
   {
    "t_us": 14614000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 34
+   "arg": 0
   },
   {
    "t_us": 14942000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 34
+   "arg": 0
   },
   {
    "t_us": 15105000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 35
+   "arg": 0
   },
   {
    "t_us": 15320000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 35
+   "arg": 0
   },
   {
    "t_us": 15462000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 36
+   "arg": 0
   },
   {
    "t_us": 15577000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 36
+   "arg": 0
   },
   {
    "t_us": 15692000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 37
+   "arg": 0
   },
   {
    "t_us": 16080000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 37
+   "arg": 0
   },
   {
    "t_us": 16229000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 38
+   "arg": 0
   },
   {
    "t_us": 16392000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 38
+   "arg": 0
   },
   {
    "t_us": 16519000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 39
+   "arg": 0
   },
   {
    "t_us": 16663000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 39
+   "arg": 0
   },
   {
    "t_us": 16780000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 40
+   "arg": 0
   },
   {
    "t_us": 16946000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 40
+   "arg": 0
   },
   {
    "t_us": 17074000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 41
+   "arg": 0
   },
   {
    "t_us": 17312000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 41
+   "arg": 0
   },
   {
    "t_us": 17518000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 42
+   "arg": 0
   },
   {
    "t_us": 17742000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 42
+   "arg": 0
   },
   {
    "t_us": 17889000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 43
+   "arg": 0
   },
   {
    "t_us": 18044000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 43
+   "arg": 0
   },
   {
    "t_us": 18203000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 44
+   "arg": 0
   },
   {
    "t_us": 18318000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 44
+   "arg": 0
   },
   {
    "t_us": 18438000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 45
+   "arg": 0
   },
   {
    "t_us": 18659000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 45
+   "arg": 0
   },
   {
    "t_us": 18782000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 46
+   "arg": 0
   },
   {
    "t_us": 19099000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 46
+   "arg": 0
   },
   {
    "t_us": 19247000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 47
+   "arg": 0
   },
   {
    "t_us": 19405000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 47
+   "arg": 0
   },
   {
    "t_us": 19531000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 48
+   "arg": 0
   },
   {
    "t_us": 19671000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 48
+   "arg": 0
   },
   {
    "t_us": 19815000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 49
+   "arg": 0
   },
   {
    "t_us": 20266000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 49
+   "arg": 0
   },
   {
    "t_us": 20418000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 50
+   "arg": 0
   },
   {
    "t_us": 20575000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 50
+   "arg": 0
   },
   {
    "t_us": 20701000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 51
+   "arg": 0
   },
   {
    "t_us": 20840000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 51
+   "arg": 0
   },
   {
    "t_us": 20952000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 52
+   "arg": 0
   },
   {
    "t_us": 21108000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 52
+   "arg": 0
   },
   {
    "t_us": 21256000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 53
+   "arg": 0
   },
   {
    "t_us": 21493000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 53
+   "arg": 0
   },
   {
    "t_us": 21730000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 54
+   "arg": 0
   },
   {
    "t_us": 21947000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 54
+   "arg": 0
   },
   {
    "t_us": 22069000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 55
+   "arg": 0
   },
   {
    "t_us": 22378000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 55
+   "arg": 0
   },
   {
    "t_us": 22543000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 56
+   "arg": 0
   },
   {
    "t_us": 22857000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 56
+   "arg": 0
   },
   {
    "t_us": 22995000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 57
+   "arg": 0
   },
   {
    "t_us": 23302000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 57
+   "arg": 0
   },
   {
    "t_us": 23447000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 58
+   "arg": 0
   },
   {
    "t_us": 23673000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 58
+   "arg": 0
   },
   {
    "t_us": 23831000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 59
+   "arg": 0
   },
   {
    "t_us": 24042000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 59
+   "arg": 0
   },
   {
    "t_us": 24210000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 60
+   "arg": 0
   },
   {
    "t_us": 24500000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 60
+   "arg": 0
   },
   {
    "t_us": 24711000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 61
+   "arg": 0
   },
   {
    "t_us": 24928000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 61
+   "arg": 0
   },
   {
    "t_us": 25050000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 62
+   "arg": 0
   },
   {
    "t_us": 25360000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 62
+   "arg": 0
   },
   {
    "t_us": 25517000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 63
+   "arg": 0
   },
   {
    "t_us": 25677000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 63
+   "arg": 0
   },
   {
    "t_us": 25827000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 64
+   "arg": 0
   },
   {
    "t_us": 26072000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 64
+   "arg": 0
   },
   {
    "t_us": 26323000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 65
+   "arg": 0
   },
   {
    "t_us": 26558000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 65
+   "arg": 0
   },
   {
    "t_us": 26700000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 66
+   "arg": 0
   },
   {
    "t_us": 26815000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 66
+   "arg": 0
   },
   {
    "t_us": 26931000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 67
+   "arg": 0
   },
   {
    "t_us": 27090000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 67
+   "arg": 0
   },
   {
    "t_us": 27216000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 68
+   "arg": 0
   },
   {
    "t_us": 27357000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 68
+   "arg": 0
   },
   {
    "t_us": 27479000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 69
+   "arg": 0
   },
   {
    "t_us": 27644000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 69
+   "arg": 0
   },
   {
    "t_us": 27809000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 70
+   "arg": 0
   },
   {
    "t_us": 27924000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 70
+   "arg": 0
   },
   {
    "t_us": 28082000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 71
+   "arg": 0
   },
   {
    "t_us": 28386000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 71
+   "arg": 0
   },
   {
    "t_us": 28534000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 72
+   "arg": 0
   },
   {
    "t_us": 28748000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 72
+   "arg": 0
   },
   {
    "t_us": 28905000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 73
+   "arg": 0
   },
   {
    "t_us": 29303000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 73
+   "arg": 0
   },
   {
    "t_us": 29456000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 74
+   "arg": 0
   },
   {
    "t_us": 29612000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 74
+   "arg": 0
   },
   {
    "t_us": 29760000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 75
+   "arg": 0
   },
   {
    "t_us": 29999000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 75
+   "arg": 0
   },
   {
    "t_us": 31159000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 76
+   "arg": 0
   },
   {
    "t_us": 31407000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 76
+   "arg": 0
   },
   {
    "t_us": 31557000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 77
+   "arg": 0
   },
   {
    "t_us": 31968000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 77
+   "arg": 0
   },
   {
    "t_us": 32145000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 78
+   "arg": 0
   },
   {
    "t_us": 32358000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 78
+   "arg": 0
   },
   {
    "t_us": 32531000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 79
+   "arg": 0
   },
   {
    "t_us": 32745000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 79
+   "arg": 0
   },
   {
    "t_us": 32951000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 80
+   "arg": 0
   },
   {
    "t_us": 33174000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 80
+   "arg": 0
   },
   {
    "t_us": 33319000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 81
+   "arg": 0
   },
   {
    "t_us": 33434000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 81
+   "arg": 0
   },
   {
    "t_us": 33565000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 82
+   "arg": 0
   },
   {
    "t_us": 33777000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 82
+   "arg": 0
   },
   {
    "t_us": 33903000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 83
+   "arg": 0
   },
   {
    "t_us": 34126000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 83
+   "arg": 0
   },
   {
    "t_us": 34258000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 84
+   "arg": 0
   },
   {
    "t_us": 34603000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 84
+   "arg": 0
   },
   {
    "t_us": 34774000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 85
+   "arg": 0
   },
   {
    "t_us": 34985000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 85
+   "arg": 0
   },
   {
    "t_us": 35132000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 86
+   "arg": 0
   },
   {
    "t_us": 35432000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 86
+   "arg": 0
   },
   {
    "t_us": 35606000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 87
+   "arg": 0
   },
   {
    "t_us": 35827000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 87
+   "arg": 0
   },
   {
    "t_us": 35974000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 88
+   "arg": 0
   },
   {
    "t_us": 36357000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 88
+   "arg": 0
   },
   {
    "t_us": 36505000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 89
+   "arg": 0
   },
   {
    "t_us": 36661000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 89
+   "arg": 0
   },
   {
    "t_us": 36787000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 90
+   "arg": 0
   },
   {
    "t_us": 37002000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 90
+   "arg": 0
   },
   {
    "t_us": 37128000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 91
+   "arg": 0
   },
   {
    "t_us": 37343000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 91
+   "arg": 0
   },
   {
    "t_us": 37522000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 92
+   "arg": 0
   },
   {
    "t_us": 37744000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 92
+   "arg": 0
   },
   {
    "t_us": 37867000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 93
+   "arg": 0
   },
   {
    "t_us": 38184000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 93
+   "arg": 0
   },
   {
    "t_us": 38325000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 94
+   "arg": 0
   },
   {
    "t_us": 38663000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 94
+   "arg": 0
   },
   {
    "t_us": 38806000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 95
+   "arg": 0
   },
   {
    "t_us": 38965000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 95
+   "arg": 0
   },
   {
    "t_us": 39091000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 96
+   "arg": 0
   },
   {
    "t_us": 39232000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 96
+   "arg": 0
   },
   {
    "t_us": 39414000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 97
+   "arg": 0
   },
   {
    "t_us": 39838000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 97
+   "arg": 0
   },
   {
    "t_us": 40013000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 98
+   "arg": 0
   },
   {
    "t_us": 40242000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 98
+   "arg": 0
   },
   {
    "t_us": 40388000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 99
+   "arg": 0
   },
   {
    "t_us": 40503000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 99
+   "arg": 0
   },
   {
    "t_us": 40690000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 100
+   "arg": 0
   },
   {
    "t_us": 40972000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 100
+   "arg": 0
   },
   {
    "t_us": 41073000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 101
+   "arg": 0
   },
   {
    "t_us": 41245000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 101
+   "arg": 0
   },
   {
    "t_us": 41443000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 102
+   "arg": 0
   },
   {
    "t_us": 41857000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 102
+   "arg": 0
   },
   {
    "t_us": 42009000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 103
+   "arg": 0
   },
   {
    "t_us": 42175000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 103
+   "arg": 0
   },
   {
    "t_us": 42303000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 104
+   "arg": 0
   },
   {
    "t_us": 42534000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 104
+   "arg": 0
   },
   {
    "t_us": 42662000,
    "code": 7,
    "name": "PEN_DOWN",
-   "arg": 105
+   "arg": 0
   },
   {
    "t_us": 42893000,
    "code": 8,
    "name": "PEN_UP",
-   "arg": 105
+   "arg": 0
   }
  ],
  "annotations": [
   {
    "offset": 36,
+   "t_us": 0,
    "text": "SYNTHETIC session: penapp.synth@0.1.0 glyph handwriting of a known transcript, seed 11; not human data"
   }
  ],
- "digest": "2f4ea52b4b23f7e8d13c87188ae4efd54785c0b15a76fc18696e092242f4bdf5"
+ "digest": "f87982c6cb4a8cd6be7e96d4a5f6f65590dc0205bde2b5bd06fc6170c0b9cab4"
 }

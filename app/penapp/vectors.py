@@ -16,16 +16,17 @@ from __future__ import annotations
 from dataclasses import asdict
 from typing import Callable, Dict, List, Tuple
 
-from .logfmt import (HEADER_SIZE, Event, EventCode, Header, RawRecord, RecordType, ResearchFrame,
-                     StrokeSample, crc16_ccitt_false, encode_log, encode_record, iter_record_spans, read_log)
+from .logfmt import (HEADER_SIZE, Event, EventCode, Header, RawRecord, ResearchFrame,
+                     StrokeSample, annotation_record, calibration_record, crc16_ccitt_false, encode_log,
+                     encode_record, iter_record_spans, read_log)
 
 HEADER = Header(device_id=0x0123456789ABCDEF, session_id=42, start_unix_ms=1790000000000)
 
 
 def example_records() -> list:
     return [
-        RawRecord(int(RecordType.ANNOTATION), "ICD v1.0 example vector (penapp); SYNTHETIC".encode()),
-        Event(0, EventCode.MODE_CHANGE, 3),
+        annotation_record("ICD v1.0 example vector (penapp); SYNTHETIC; \u00b5m \u00b0", 0),
+        Event(0, EventCode.MODE_CHANGE, 3 | (2 << 8)),
         Event(1000, EventCode.PEN_DOWN, 0),
         StrokeSample(1, 0, 0, 0, 0, 0, 0),
         StrokeSample(6, 0, -2147483648, 2147483647, 65535, 180, 179),
@@ -35,10 +36,11 @@ def example_records() -> list:
                       dhat_y=300, g=255, f_est=90, mode=3, flags=0b1010_0001, vbat_mV=3700, t_coil=3550,
                       imu_ax=-981, imu_ay=12, theta=5000, phi=-9000),
         Event(12000, EventCode.PEN_UP, 0),
-        RawRecord(int(RecordType.CALIBRATION_SNAPSHOT), bytes(range(8))),
+        calibration_record(4, 1, bytes(range(8))),
         ResearchFrame(t_us=4294967000, flags=0),
-        Event(5, EventCode.TIMESTAMP_WRAP, 1),
+        Event(5, EventCode.TIMESTAMP_WRAP, 0),
         ResearchFrame(t_us=505, flags=0),
+        Event(300, EventCode.TIMESTAMP_WRAP, 2),     # count form after a silent gap of one full period
         RawRecord(0x7F, b"\x00future"),
     ]
 
@@ -71,7 +73,13 @@ def _corruptions() -> List[Tuple[str, str, Callable[[bytes], bytes]]]:
 
 def _decoded(rec) -> dict:
     if isinstance(rec, RawRecord):
-        return {"payload_hex": rec.payload.hex(), **({"text": rec.text} if rec.rtype == RecordType.ANNOTATION else {})}
+        out = {"payload_hex": rec.payload.hex()}
+        if rec.annotation() is not None:
+            out["annotation"] = {"t_us": rec.annotation()[0], "text": rec.annotation()[1]}
+        if rec.calibration() is not None:
+            t, v, b = rec.calibration()
+            out["calibration"] = {"cal_type": t, "cal_version": v, "record_hex": b.hex()}
+        return out
     d = asdict(rec)
     if isinstance(rec, Event):
         d["name"] = rec.name
@@ -107,7 +115,10 @@ def describe() -> Dict:
         "conventions": ["all multi-byte fields little-endian, CRC fields included",
                         "record CRC = CRC-16/CCITT-FALSE over type, length and payload",
                         "stroke sample phi_raw = round(phi / 2 deg), theta_raw = round(theta / 0.5 deg)",
-                        "event 0x0009 is logged after the wrap with arg = wraps since session start",
+                        "event 0x0009 is logged after the wrap; arg 0 = marker (firmware), arg >= 1 = wraps since "
+                        "session start (app proposal)",
+                        "0x04 payload = cal_type u8 | cal_version u16 | record; 0x05 payload = t_us u32 | UTF-8 "
+                        "(firmware-proposed layouts)",
                         "unknown record types with a valid CRC are kept as raw records"],
         "crc_check": {"input_ascii": "123456789", "crc16_ccitt_false": f"0x{crc16_ccitt_false(b'123456789'):04X}"},
         "header": {**HEADER.to_json(), "bytes_hex": data[:HEADER_SIZE].hex(),

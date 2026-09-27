@@ -215,7 +215,7 @@ typedef struct {
     uint32_t n_iref_big;
 } replay_err_t;
 
-static bool replay(const char *file, replay_err_t *er, uint32_t *rows)
+static bool replay(const char *file, replay_err_t *er, uint32_t *rows, bool local_origin)
 {
     vec_t v;
     if (!vec_load(file, &v)) {
@@ -223,6 +223,7 @@ static bool replay(const char *file, replay_err_t *er, uint32_t *rows)
     }
     ctrl_t c;
     ctrl_init(&c, PEN_PROFILE_BALANCED);
+    c.local_origin = local_origin;
     const int cth = vec_col(&v, "theta"), cph = vec_col(&v, "phi"), crh = vec_col(&v, "rho"), cg = vec_col(&v, "gamma");
     const int cfa = vec_col(&v, "ff_accel"), cfc = vec_col(&v, "ff_contact"), ce = vec_col(&v, "est");
     const int chz = vec_col(&v, "horizon");
@@ -273,23 +274,74 @@ static bool replay(const char *file, replay_err_t *er, uint32_t *rows)
     return true;
 }
 
-static void check_replay(const char *file, const char *label)
+/* Tolerances. Kalman path: float32 vs float64 differences stay far below the
+ * sensing noise (optical 3 um, current 0.55 mA rms). Band-pass path: the
+ * 6 Hz high-pass runs on page position in float32; its DF2T states carry the
+ * full input, so rounding of order eps |p| / (1 - pole radius) reaches
+ * ~0.3 um and the servo's derivative (Kd/Ts) turns that into ~1 mA; the
+ * standalone band-pass test shows the same magnitude against its float64
+ * transcription, so the servo itself is not the source. */
+static void check_replay(const char *file, const char *label, bool local_origin, double tol_d, double tol_i)
 {
     replay_err_t e;
     uint32_t rows = 0;
-    CHECK(replay(file, &e, &rows));
-    CHECK(e.dhat < 0.2e-6);       /* m */
+    CHECK(replay(file, &e, &rows, local_origin));
+    CHECK(e.dhat < tol_d);        /* m */
     CHECK(e.west < 1e-3);         /* Hz */
     CHECK(e.g < 1e-4);
-    CHECK(e.qr < 0.2e-6);         /* m */
-    CHECK(e.iref < 1e-4);         /* A = 0.1 mA (sense noise 0.55 mA rms) */
+    CHECK(e.qr < tol_d);          /* m */
+    CHECK(e.iref < tol_i);        /* A */
     tr_log("%s: %u ticks vs core.simulate(): max |d dhat| %.3g m, |d f_est| %.3g Hz, |d g| %.3g, |d q_r| %.3g m, "
            "|d i_ref| %.3g A", label, (unsigned)rows, e.dhat, e.west, e.g, e.qr, e.iref);
 }
 
-void test_replay_sim_kf(void) { check_replay("replay_kf.vec", "Kalman (balanced)"); }
-void test_replay_sim_bpf(void) { check_replay("replay_bpf.vec", "band-pass"); }
-void test_replay_sim_ffc(void) { check_replay("replay_ffc.vec", "Kalman + contact FF (bench option)"); }
+void test_replay_sim_kf(void)
+{
+    check_replay("replay_kf.vec", "Kalman (balanced), local origin on (shift invariance)", true, 0.2e-6, 1e-4);
+    check_replay("replay_kf.vec", "Kalman (balanced), local origin off", false, 0.2e-6, 1e-4);
+}
+void test_replay_sim_bpf(void) { check_replay("replay_bpf.vec", "band-pass, local origin off (as simulator)", false, 1e-6, 5e-3); }
+void test_replay_sim_ffc(void)
+{
+    check_replay("replay_ffc.vec", "Kalman + contact FF (bench option)", true, 0.2e-6, 1e-4);
+}
+
+void test_bpf_reacquisition_transient(void)
+{
+    /* pen re-acquired 20 mm from the page origin with a 0.3 mm 8 Hz tremor:
+     * the simulator's band-pass (zeroed states, absolute input) produces a
+     * step transient of the full coordinate; with the local origin it does not */
+    double peak[2] = {0.0, 0.0};
+    for (int mode = 0; mode < 2; mode++) {
+        ctrl_t c;
+        ctrl_init(&c, PEN_PROFILE_BALANCED);
+        c.local_origin = (mode == 1);
+        for (int k = 0; k < 2000; k++) {
+            const double t = (double)k * 5e-4;
+            ctrl_in_t in;
+            memset(&in, 0, sizeof(in));
+            in.qm[0] = 0.0f;
+            in.fa = 1.0f;
+            in.ph[0] = (float)(0.020 + 3e-4 * sin(2.0 * 3.141592653589793 * 8.0 * t));
+            in.ph[1] = (float)(0.005);
+            in.opt_valid = k >= 200;
+            in.theta = 0.8726646f;
+            in.g_cap = 1.0f;
+            in.i_max = PEN_I_MAX;
+            in.est = PEN_EST_BPF;
+            in.servo_on = true;
+            ctrl_tick(&c, &in);
+            if (k >= 200 && k < 400) {
+                const double d = hypot((double)c.bpf.dhat[0], (double)c.bpf.dhat[1]);
+                peak[mode] = d > peak[mode] ? d : peak[mode];
+            }
+        }
+    }
+    CHECK(peak[0] > 5e-3);     /* simulator behaviour: ~20 mm-scale false estimate */
+    CHECK(peak[1] < 0.6e-3);   /* local origin: only the tremor (0.3 mm, gain-compensated) */
+    tr_log("band-pass after re-acquisition at 20 mm: peak |dhat| %.2f mm (simulator scheme) vs %.3f mm (local origin)",
+           peak[0] * 1e3, peak[1] * 1e3);
+}
 
 void test_guided_tracks_template(void)
 {

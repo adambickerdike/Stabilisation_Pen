@@ -228,6 +228,8 @@ def main():
     E.f("KP_I", g("Kp_i"), "V/A", f"{src_bp}: Kp_i = L wc_i")
     E.f("KI_I", g("Ki_i"), "V/(A s)", f"{src_bp}: Ki_i = (R20 + r_bridge + r_shunt) wc_i")
     E.f("R_LOOP_FF", g("R20") + g("r_bridge") + g("r_shunt"), "ohm", f"{src_bp}: Rhat used for the R*i_ref voltage feedforward (at 20 C)")
+    E.f("CUR_R_FF", 0.0, "-", "firmware default 0: PI with pole-zero cancellation as designed in electronics/calcs/drive_sense.py; "
+        "the simulator adds R*i_ref (= 1), which overshoots 55 % with the 1-period sample-to-PWM delay (README D10)")
     E.f("DUTY_MAX", comp["d_max"], "-", "results/electronics/drive_sense.json components.d_max (sampling window)")
     E.f("R_LOAD_SWITCH", comp["r_load_switch_ohm"], "ohm", "drive_sense.json components.r_load_switch_ohm (TPS22917, shared; VERIFY)")
     E.f("DUTY_HEADROOM", 0.95, "-", "docs/icd.md s6 fault bit 6 threshold")

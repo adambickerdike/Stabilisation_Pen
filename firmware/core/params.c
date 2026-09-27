@@ -73,4 +73,5 @@ void pen_params_default(pen_ctrl_params_t *p, pen_profile_t profile)
     p->ki_i = PEN_KI_I;
     p->r_loop_ff = PEN_R_LOOP_FF;
     p->duty_max = PEN_DUTY_MAX;
+    p->cur_r_ff = PEN_CUR_R_FF;
 }

@@ -36,9 +36,12 @@ HOST_CFLAGS := -std=c11 -O1 -g -fno-omit-frame-pointer -fsanitize=address,undefi
 HOST_BIN    := $(BUILD)/host/pen_tests
 HOST_OBJ    := $(patsubst $(FW)/%.c,$(BUILD)/host/%.o,$(CORE_SRC) $(TEST_SRC) $(HOSTP_SRC))
 
+# test sources use double precision for references: -Wno-double-promotion there only
+TEST_EXTRA = $(if $(findstring /tests/,$<),-Wno-double-promotion,)
+
 $(BUILD)/host/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h) $(FW)/port/host/hal_host.h
 	@mkdir -p $(dir $@)
-	$(HOST_CC) $(HOST_CFLAGS) $(INC_TEST) -c $< -o $@
+	$(HOST_CC) $(HOST_CFLAGS) $(TEST_EXTRA) $(INC_TEST) -c $< -o $@
 
 $(HOST_BIN): $(HOST_OBJ)
 	$(HOST_CC) $(HOST_CFLAGS) $^ -lm -o $@
@@ -46,18 +49,19 @@ $(HOST_BIN): $(HOST_OBJ)
 .PHONY: test
 test: $(HOST_BIN)
 	@mkdir -p $(RESULTS)
-	@cd $(FW) && set -o pipefail 2>/dev/null; \
+	@cd $(FW) && $(PY) tools/check_inputs.py > $(BUILD)/input_check.txt 2>&1; ic=$$?; \
 	 ( echo "# Host unit tests - firmware/tests (gcc $$($(HOST_CC) -dumpfullversion), -fsanitize=address,undefined)"; \
 	   echo "# Evidence status: HOST TEST (x86-64, float32 code paths); not hardware, not target timing."; \
 	   echo "# params: $$(grep -m1 PEN_PARAMS_YAML_VERSION include/params_gen.h | cut -d'"' -f2) yaml sha $$(grep -m1 PEN_PARAMS_YAML_SHA16 include/params_gen.h | cut -d'"' -f2)"; \
+	   cat $(BUILD)/input_check.txt; \
 	   $(HOST_BIN) tests/vectors ) > $(RESULTS)/test_report.txt 2>&1; rc=$$?; \
-	 cat $(RESULTS)/test_report.txt; exit $$rc
+	 cat $(RESULTS)/test_report.txt; if [ $$ic -ne 0 ]; then echo "generated inputs are STALE"; exit 1; fi; exit $$rc
 
 # ------------------------------------------------------------------ ARM (nRF5340 application core)
 ARM_CC   := arm-none-eabi-gcc
 ARM_SIZE := arm-none-eabi-size
 ARM_CPU  := -mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=hard
-ARM_CFLAGS := -std=c11 -O2 -g $(ARM_CPU) -ffunction-sections -fdata-sections -fno-common $(WARN)
+ARM_CFLAGS := -std=c11 -O2 -g $(ARM_CPU) -ffunction-sections -fdata-sections -fno-common -fno-math-errno $(WARN)
 ARM_OBJ  := $(patsubst $(FW)/%.c,$(BUILD)/arm/%.o,$(CORE_SRC) $(NRF_SRC))
 ARM_ELF  := $(BUILD)/arm/pen_fw_nrf5340.elf
 ARM_LD   := $(FW)/port/nrf5340/nrf5340_app.ld
@@ -83,11 +87,11 @@ QEMU      := qemu-system-arm
 QEMU_OBJ  := $(patsubst $(FW)/%.c,$(BUILD)/qemu/%.o,$(CORE_SRC) $(TEST_SRC) $(HOSTP_SRC) $(QEMU_SRC))
 QEMU_ELF  := $(BUILD)/qemu/pen_tests_an505.elf
 QEMU_LD   := $(FW)/port/qemu_an505/an505.ld
-QEMU_CFLAGS := -std=c11 -O2 -g $(ARM_CPU) -ffunction-sections -fdata-sections -fno-common $(WARN) -DPEN_TARGET_QEMU=1
+QEMU_CFLAGS := -std=c11 -O2 -g $(ARM_CPU) -ffunction-sections -fdata-sections -fno-common -fno-math-errno $(WARN) -DPEN_TARGET_QEMU=1
 
 $(BUILD)/qemu/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h)
 	@mkdir -p $(dir $@)
-	$(ARM_CC) $(QEMU_CFLAGS) $(INC_TEST) -c $< -o $@
+	$(ARM_CC) $(QEMU_CFLAGS) $(TEST_EXTRA) $(INC_TEST) -c $< -o $@
 
 $(QEMU_ELF): $(QEMU_OBJ) $(QEMU_LD)
 	$(ARM_CC) $(ARM_CPU) -T$(QEMU_LD) -nostartfiles --specs=rdimon.specs -Wl,--gc-sections \

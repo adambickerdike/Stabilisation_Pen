@@ -28,6 +28,7 @@ typedef struct {
     uint32_t time_us;
     uint32_t wdt_kicks;
     uint32_t clr_pulses;
+    uint32_t clr_while_req_high;  /* CLR pulses issued while ACT_EN_REQ was high (must stay 0) */
     uint32_t irq_depth;
 } hal_host_state_t;
 

@@ -110,7 +110,7 @@ void cl_step(curloop_t *cl, const pen_ctrl_params_t *p, const float i_ref[2], co
     for (int ax = 0; ax < 2; ax++) {
         const float e = i_ref[ax] - cl->i_meas[ax];
         const float r_ff = p->r_loop_ff + ((r_extra != NULL) ? r_extra[ax] : 0.0f);
-        const float vcmd = r_ff * i_ref[ax] + p->kp_i * e + p->ki_i * cl->ivint[ax];
+        const float vcmd = p->cur_r_ff * r_ff * i_ref[ax] + p->kp_i * e + p->ki_i * cl->ivint[ax];
         const float vsat = pen_clampf(vcmd, -vmax, vmax);
         if (vsat == vcmd) {
             cl->ivint[ax] += e * PEN_TS_CURRENT;

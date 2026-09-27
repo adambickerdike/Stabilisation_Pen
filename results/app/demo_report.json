@@ -2,7 +2,7 @@
   "meta": {
     "evidence_status": "SYNTHETIC DEMO - synthetic handwriting and simulator traces; no human data, no measurements, no network calls",
     "generated_by": "app/demo.py (penapp 0.1.0)",
-    "git_revision": "c608ea1-dirty",
+    "git_revision": "876c866-dirty",
     "environment": {
       "python": "3.11.15",
       "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -10,34 +10,34 @@
       "sqlite": "3.45.1"
     },
     "clock": "note-store created_utc/imported_utc values come from a fixed synthetic clock (2026-09-01T09:00:00Z + 1 ms per call) so the store is reproducible",
-    "elapsed_s": 37.2
+    "elapsed_s": 25.3
   },
   "sample_files": {
     "demo_text_errands": {
       "log": "data/samples/demo_text_errands.penlog",
-      "log_sha256": "aa274477b93f314860e6e5a1543885c85c30589ce0b90ea46e39135a91610cf5",
-      "log_bytes": 122860,
+      "log_sha256": "6ddc7143ef483b1dbb8b4e9183524ad26f00ee4e580a0b104adae0354429a7aa",
+      "log_bytes": 122864,
       "truth": "data/samples/demo_text_errands.truth.json",
       "truth_sha256": "1ade6558c8487c2052a197e5975b54369465cecd3ed9d05d9a4cd24696b9752f",
       "meta": "data/samples/demo_text_errands.meta.json"
     },
     "demo_text_project": {
       "log": "data/samples/demo_text_project.penlog",
-      "log_sha256": "50c7180099be2acc87bc820c23a61891a54ef7e9765acc2731aa2592bda23960",
-      "log_bytes": 106388,
+      "log_sha256": "fc8a38493c13eb8c038a7caeca4ba6d4a2e0ebf851dd261ea73fd006a609a3ac",
+      "log_bytes": 106392,
       "truth": "data/samples/demo_text_project.truth.json",
       "truth_sha256": "34fed10ac8888504df14cab3fe2f64725ca9ee4c1eb4086d5c9936dd65949cdb",
       "meta": "data/samples/demo_text_project.meta.json"
     },
     "demo_sim_kf_asr": {
       "log": "data/samples/demo_sim_kf_asr.penlog",
-      "log_sha256": "3e97e3381c382ad48b4f38d39a1c9fa0e0c94d19c47ae9de494a7bc54df7ddd2",
-      "log_bytes": 361006,
+      "log_sha256": "6eac2e2411b405bb5b2db5a005740604dd19c4f20887f2f335122e00e8609f0f",
+      "log_bytes": 361010,
       "meta": "data/samples/demo_sim_kf_asr.meta.json"
     },
     "icd_v1_example": {
       "log": "data/samples/icd_v1_example.penlog",
-      "log_sha256": "fa75a3d89a103c36bc5ae78c8fe5dc2601b06be7e07856048c66058ab8b66619",
+      "log_sha256": "a80f4e00e6bac255c0760b9d81bf3893e428db0ad4bc91de77f26449d4c3283f",
       "expectation": "data/samples/icd_v1_example.json"
     }
   },
@@ -127,7 +127,7 @@
       },
       "layers": {
         "segmentation": "segmentation-0e3a6c73fb09d277",
-        "hand_path_estimate": "hand_path_estimate-17b498dfe1e7eef7",
+        "hand_path_estimate": "hand_path_estimate-04acabf2cec69779",
         "recognition": "recognition-9cdebffc95a7c068"
       },
       "recognizer": "penapp.recognize.null@0.1.0",
@@ -184,10 +184,10 @@
       }
     ],
     "events": 11,
-    "hand_path_layer": "hand_path_estimate-17b498dfe1e7eef7",
+    "hand_path_layer": "hand_path_estimate-04acabf2cec69779",
     "ink_minus_hand_path_um": {
-      "rms": 272.8,
-      "max": 592.5,
+      "rms": 225.2,
+      "max": 462.4,
       "meaning": "distance between deposited ink (original layer) and the housing path (hand-path estimate) at the stroke samples: the stage correction in this simulated run (Kalman, assertive)"
     }
   },
@@ -986,14 +986,6 @@
         "n_contact_intervals": 3
       },
       {
-        "trace": "neutral",
-        "path": "results/sim/nominal/traces_neutral.npz",
-        "sha256": "8142d61f2fe34590137efb3ac0833760959e04d5f0f6d9688f43acc8f53d9448",
-        "n_samples": 6000,
-        "rate_hz": 1000,
-        "n_contact_intervals": 3
-      },
-      {
         "trace": "oracle",
         "path": "results/sim/nominal/traces_oracle.npz",
         "sha256": "d46fe0ab5495c6002bf9c8f65b74ef729594b6f6ade29872e9bf225d0755abbe",
@@ -1019,8 +1011,8 @@
       }
     ],
     "headline_format_point": {
-      "n_stroke_evaluations": 165,
-      "n_main": 105,
+      "n_stroke_evaluations": 150,
+      "n_main": 90,
       "n_short": 60,
       "short_missed": 22,
       "short_single_sample": 38,
@@ -1032,22 +1024,22 @@
         "i0": 1903,
         "duration_ms": 2060
       },
-      "rms_dev_um": 3.594,
+      "rms_dev_um": 3.595,
       "interior_max_dev_um": 75.602,
-      "interior_rms_dev_um": 2.942,
+      "interior_rms_dev_um": 2.993,
       "end_truncation_max_um": 120.608,
-      "interior_max_in_first_50ms": "64/105",
-      "interior_within_interp_bound": "105/105",
+      "interior_max_in_first_50ms": "52/90",
+      "interior_within_interp_bound": "90/90",
       "frechet_max_um": 120.608,
-      "frechet_median_um": 46.771,
-      "frechet_p95_um": 116.622,
+      "frechet_median_um": 45.618,
+      "frechet_p95_um": 112.063,
       "short_max_dev_um": 188.531,
       "frechet_vertices_only_max_um": 157.042,
-      "frechet_vertices_only_median_um": 116.512
+      "frechet_vertices_only_median_um": 111.398
     },
     "with_endpoint_samples": {
-      "n_stroke_evaluations": 165,
-      "n_main": 105,
+      "n_stroke_evaluations": 150,
+      "n_main": 90,
       "n_short": 60,
       "short_missed": 0,
       "short_single_sample": 10,
@@ -1059,20 +1051,20 @@
         "i0": 1916,
         "duration_ms": 2045
       },
-      "rms_dev_um": 2.983,
+      "rms_dev_um": 3.035,
       "interior_max_dev_um": 81.52,
-      "interior_rms_dev_um": 2.983,
+      "interior_rms_dev_um": 3.035,
       "end_truncation_max_um": 0.0,
-      "interior_max_in_first_50ms": "73/105",
-      "interior_within_interp_bound": "105/105",
+      "interior_max_in_first_50ms": "58/90",
+      "interior_within_interp_bound": "90/90",
       "frechet_max_um": 76.018,
-      "frechet_median_um": 9.079,
-      "frechet_p95_um": 32.939,
+      "frechet_median_um": 9.37,
+      "frechet_p95_um": 33.025,
       "short_max_dev_um": 102.069
     },
     "quantisation_only": {
-      "n_stroke_evaluations": 33,
-      "n_main": 21,
+      "n_stroke_evaluations": 30,
+      "n_main": 18,
       "n_short": 12,
       "short_missed": 0,
       "short_single_sample": 2,
@@ -1088,20 +1080,24 @@
       "interior_max_dev_um": 0.704,
       "interior_rms_dev_um": 0.409,
       "end_truncation_max_um": 0.0,
-      "interior_max_in_first_50ms": "2/21",
-      "interior_within_interp_bound": "21/21",
+      "interior_max_in_first_50ms": "2/18",
+      "interior_within_interp_bound": "18/18",
       "frechet_max_um": 1.127,
-      "frechet_median_um": 1.078,
-      "frechet_p95_um": 1.127,
+      "frechet_median_um": 1.082,
+      "frechet_p95_um": 1.123,
       "short_max_dev_um": 0.683
     },
     "interpretation": [
-      "Headline (format_point, main strokes, worst over traces and sampling phases): time-aligned max deviation 120.608 um, RMS 3.594 um; interior-only max 75.602 um, RMS 2.942 um; densified discrete Frechet max 120.608 um (median 46.771 um).",
-      "End truncation dominates the maximum: up to 120.608 um because the first/last sample can fall up to 4 ms inside the contact interval while the pen moves.",
-      "Adding samples at the pen-down/up instants reduces the max deviation to 81.52 um (end truncation 0.0 um).",
-      "1 um rounding alone contributes at most 0.704 um (RMS 0.409 um); the format error is sampling-dominated.",
-      "Short contacts (< 50 ms, bounces in the simulator): 22 of 60 phase-evaluations produced no sample and 38 a single sample; the format cannot represent them faithfully.",
-      "Scale for comparison (research ledger OPT-02): DeltaPen optical-flow tracking reports 0.068 mm mean absolute error per 10 ms window, i.e. the sensing error, not the stroke format, is expected to dominate capture error.",
+      "Headline (format_point, strokes >= 50 ms, worst case over traces and the five 1 ms sampling phases): time-aligned max deviation 120.608 um, RMS 3.595 um; interior-only max 75.602 um, RMS 2.993 um; densified discrete Frechet max 120.608 um (median 45.618 um, 95th percentile 112.063 um).",
+      "End truncation dominates the maximum (120.608 um): the first/last 200 Hz sample can fall up to 4 ms inside the contact interval while the pen moves.",
+      "The largest interior deviation of a stroke lies within 50 ms of touchdown in 52/90 strokes: simulated contact transients with high acceleration that a 200 Hz point sampler cannot follow (the simulator's contact model is unidentified, so their size on paper is unknown).",
+      "Consistency check: every interior maximum is within the linear-interpolation bound a_max T^2/8 + 0.71 um (90/90 strokes).",
+      "Discrete Frechet on raw vertices (1 kHz vs 200 Hz) gives median 111.398 um: that value measures vertex spacing, not capture error, which is why the densified value is reported.",
+      "Adding samples at the pen-down/up instants (proposed ICD change) removes end truncation: max deviation 81.52 um, Frechet median 9.37 um (max 76.018 um), and no short contact is lost.",
+      "A centred 5 ms boxcar instead of point sampling lowers the interior max to 55.496 um but raises interior RMS to 3.377 um (smoothing); the ICD should state which decimation the firmware uses.",
+      "1 um rounding alone contributes at most 0.704 um (RMS 0.409 um, theory 0.408 um): the format error is sampling-dominated.",
+      "Short contacts (< 50 ms; bounces in the simulator): of 60 stroke-phase evaluations, 22 produced no sample and 38 a single sample.",
+      "Scale for comparison (research ledger OPT-02): DeltaPen optical-flow tracking reports 0.068 mm mean absolute error per 10 ms window, so the sensing chain, not the stroke format, is expected to dominate capture error.",
       "These figures describe the format applied to simulated ink; they say nothing about sensor accuracy, which must be measured (bench protocol)."
     ]
   }

@@ -10,7 +10,7 @@
   "core_py_sha16": "c46570f25d1439cb",
   "icd_sha16": "67b737b1c0f5d96f",
   "model_version": "M1.0",
-  "git_head": "5ebd218",
+  "git_head": "876c866",
   "nominal_theta_deg": 50.0,
   "nominal_N0": 1.0,
   "evidence_status": "proposed design / calculated / assumed values; no hardware measurement"
@@ -336,6 +336,14 @@
    "type": "float",
    "unit": "ohm",
    "source": "sim/pensim/model.py build_params(): Rhat used for the R*i_ref voltage feedforward (at 20 C)"
+  },
+  {
+   "section": "Current loop (40 kHz PI per axis)",
+   "name": "PEN_CUR_R_FF",
+   "value": 0.0,
+   "type": "float",
+   "unit": "-",
+   "source": "firmware default 0: PI with pole-zero cancellation as designed in electronics/calcs/drive_sense.py; the simulator adds R*i_ref (= 1), which overshoots 55 % with the 1-period sample-to-PWM delay (README D10)"
   },
   {
    "section": "Current loop (40 kHz PI per axis)",

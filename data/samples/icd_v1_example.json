@@ -7,7 +7,8 @@
     "all multi-byte fields little-endian, CRC fields included",
     "record CRC = CRC-16/CCITT-FALSE over type, length and payload",
     "stroke sample phi_raw = round(phi / 2 deg), theta_raw = round(theta / 0.5 deg)",
-    "event 0x0009 is logged after the wrap with arg = wraps since session start",
+    "event 0x0009 is logged after the wrap; arg 0 = marker (firmware), arg >= 1 = wraps since session start (app proposal)",
+    "0x04 payload = cal_type u8 | cal_version u16 | record; 0x05 payload = t_us u32 | UTF-8 (firmware-proposed layouts)",
     "unknown record types with a valid CRC are kept as raw records"
   ],
   "crc_check": {
@@ -22,35 +23,38 @@
     "bytes_hex": "50454e4c4f4700010100efcdab89674523012a00000000000000006c50c4a001000079e3",
     "header_crc": "0xE379"
   },
-  "n_bytes": 402,
+  "n_bytes": 431,
   "records": [
     {
       "offset": 36,
       "type": "0x05",
-      "length": 43,
-      "bytes_hex": "052b4943442076312e30206578616d706c6520766563746f72202870656e617070293b2053594e544845544943101b",
-      "crc16": "0x1B10",
+      "length": 55,
+      "bytes_hex": "0537000000004943442076312e30206578616d706c6520766563746f72202870656e617070293b2053594e5448455449433b20c2b56d20c2b048a5",
+      "crc16": "0xA548",
       "decoded": {
-        "payload_hex": "4943442076312e30206578616d706c6520766563746f72202870656e617070293b2053594e544845544943",
-        "text": "ICD v1.0 example vector (penapp); SYNTHETIC"
+        "payload_hex": "000000004943442076312e30206578616d706c6520766563746f72202870656e617070293b2053594e5448455449433b20c2b56d20c2b0",
+        "annotation": {
+          "t_us": 0,
+          "text": "ICD v1.0 example vector (penapp); SYNTHETIC; µm °"
+        }
       }
     },
     {
-      "offset": 83,
+      "offset": 95,
       "type": "0x03",
       "length": 10,
-      "bytes_hex": "030a00000000010003000000275d",
-      "crc16": "0x5D27",
+      "bytes_hex": "030a000000000100030200004733",
+      "crc16": "0x3347",
       "decoded": {
         "t_us": 0,
         "code": 1,
-        "arg": 3,
+        "arg": 515,
         "name": "MODE_CHANGE"
       },
       "t_us_unwrapped": 0
     },
     {
-      "offset": 97,
+      "offset": 109,
       "type": "0x03",
       "length": 10,
       "bytes_hex": "030ae80300000700000000003683",
@@ -64,7 +68,7 @@
       "t_us_unwrapped": 1000
     },
     {
-      "offset": 111,
+      "offset": 123,
       "type": "0x02",
       "length": 20,
       "bytes_hex": "02140100000000000000000000000000000000000000c198",
@@ -80,7 +84,7 @@
       }
     },
     {
-      "offset": 135,
+      "offset": 147,
       "type": "0x02",
       "length": 20,
       "bytes_hex": "0214060000000000000000000080ffffff7fffffb4b32573",
@@ -96,7 +100,7 @@
       }
     },
     {
-      "offset": 159,
+      "offset": 171,
       "type": "0x02",
       "length": 20,
       "bytes_hex": "02140b000000000000002efbffff2e160000b60368129275",
@@ -112,7 +116,7 @@
       }
     },
     {
-      "offset": 183,
+      "offset": 195,
       "type": "0x01",
       "length": 52,
       "bytes_hex": "0134f82a00000080ff7fffff01002efbd20430f8d007b60300000080ffffff7f07d4fe2c01ff5a03a100740ede0d2bfc0c008813d8dcdd7d",
@@ -147,7 +151,7 @@
       "t_us_unwrapped": 11000
     },
     {
-      "offset": 239,
+      "offset": 251,
       "type": "0x03",
       "length": 10,
       "bytes_hex": "030ae02e0000080000000000b1f5",
@@ -161,17 +165,22 @@
       "t_us_unwrapped": 12000
     },
     {
-      "offset": 253,
+      "offset": 265,
       "type": "0x04",
-      "length": 8,
-      "bytes_hex": "040800010203040506074043",
-      "crc16": "0x4340",
+      "length": 11,
+      "bytes_hex": "040b0401000001020304050607272b",
+      "crc16": "0x2B27",
       "decoded": {
-        "payload_hex": "0001020304050607"
+        "payload_hex": "0401000001020304050607",
+        "calibration": {
+          "cal_type": 4,
+          "cal_version": 1,
+          "record_hex": "0001020304050607"
+        }
       }
     },
     {
-      "offset": 265,
+      "offset": 280,
       "type": "0x01",
       "length": 52,
       "bytes_hex": "0134d8feffff0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003fda",
@@ -206,21 +215,21 @@
       "t_us_unwrapped": 4294967000
     },
     {
-      "offset": 321,
+      "offset": 336,
       "type": "0x03",
       "length": 10,
-      "bytes_hex": "030a050000000900010000007d7f",
-      "crc16": "0x7F7D",
+      "bytes_hex": "030a05000000090000000000c909",
+      "crc16": "0x09C9",
       "decoded": {
         "t_us": 5,
         "code": 9,
-        "arg": 1,
+        "arg": 0,
         "name": "TIMESTAMP_WRAP"
       },
       "t_us_unwrapped": 4294967301
     },
     {
-      "offset": 335,
+      "offset": 350,
       "type": "0x01",
       "length": 52,
       "bytes_hex": "0134f9010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000938a",
@@ -255,7 +264,21 @@
       "t_us_unwrapped": 4294967801
     },
     {
-      "offset": 391,
+      "offset": 406,
+      "type": "0x03",
+      "length": 10,
+      "bytes_hex": "030a2c0100000900020000008113",
+      "crc16": "0x1381",
+      "decoded": {
+        "t_us": 300,
+        "code": 9,
+        "arg": 2,
+        "name": "TIMESTAMP_WRAP"
+      },
+      "t_us_unwrapped": 8589934892
+    },
+    {
+      "offset": 420,
       "type": "0x7F",
       "length": 7,
       "bytes_hex": "7f070066757475726589e9",
@@ -268,12 +291,12 @@
   "corruption_cases": [
     {
       "name": "flip_bit_in_stroke_sample",
-      "operation": "xor 0x10 at offset 142",
+      "operation": "xor 0x10 at offset 154",
       "expected": {
         "records": {
           "RESEARCH_FRAME": 3,
           "STROKE_SAMPLE": 2,
-          "EVENT": 4,
+          "EVENT": 5,
           "CALIBRATION_SNAPSHOT": 1,
           "ANNOTATION": 1,
           "0x7F": 1
@@ -308,12 +331,12 @@
     },
     {
       "name": "insert_10_bytes_before_research_frame",
-      "operation": "insert 02 14 'garbage!' at offset 183",
+      "operation": "insert 02 14 'garbage!' at offset 195",
       "expected": {
         "records": {
           "RESEARCH_FRAME": 3,
           "STROKE_SAMPLE": 3,
-          "EVENT": 4,
+          "EVENT": 5,
           "CALIBRATION_SNAPSHOT": 1,
           "ANNOTATION": 1,
           "0x7F": 1
@@ -362,7 +385,7 @@
         "records": {
           "RESEARCH_FRAME": 3,
           "STROKE_SAMPLE": 3,
-          "EVENT": 4,
+          "EVENT": 5,
           "CALIBRATION_SNAPSHOT": 1,
           "ANNOTATION": 1
         },

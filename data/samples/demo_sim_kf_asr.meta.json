@@ -16,11 +16,11 @@
     "research frames at the trace's 1 kHz (ICD: 2 kHz); p_H = 'housing', q = stage, i = coil current",
     "force / f_ax = simulator normal force N * sin(theta) (axial component with mu = 0; the trace has no F_ax)",
     "research-frame fields absent from the trace (qr, iref, dhat, g, f_est, vbat, t_coil, imu) are 0",
-    "p_H and stroke x, y share the page origin (first-contact ink position)"
+    "p_H is written in the simulator's page coordinates (not page-origin relative, like the firmware's fusion frame); stroke x, y are relative to the first-contact ink position"
   ],
   "files": {
     "log": "data/samples/demo_sim_kf_asr.penlog",
-    "log_sha256": "3e97e3381c382ad48b4f38d39a1c9fa0e0c94d19c47ae9de494a7bc54df7ddd2",
-    "log_bytes": 361006
+    "log_sha256": "6eac2e2411b405bb5b2db5a005740604dd19c4f20887f2f335122e00e8609f0f",
+    "log_bytes": 361010
   }
 }

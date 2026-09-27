@@ -17,9 +17,9 @@ Overlays
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Iterable, List, Optional, Sequence, Tuple
 from xml.sax.saxutils import escape, quoteattr
 
 import numpy as np

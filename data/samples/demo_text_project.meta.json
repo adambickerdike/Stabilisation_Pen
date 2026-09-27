@@ -28,14 +28,15 @@
   "n_strokes": 92,
   "stroke_samples": 4319,
   "notes": [
-    "pen-down/up events carry arg = stroke_id (proposed; ICD does not define the arg)",
-    "mode-change arg 3 = ASSIST_KF by position in ICD section 6 (numbering not defined by ICD)",
+    "pen-down/up events carry arg = 0 as the firmware does (ICD does not define the arg)",
+    "mode-change arg = new | old << 8 with ICD section 6 order numbering (firmware convention)",
+    "annotation payload = t_us u32 | UTF-8 (firmware-proposed layout)",
     "force: synthetic profile with 15 ms ramps; theta/phi slow synthetic variation"
   ],
   "files": {
     "log": "data/samples/demo_text_project.penlog",
-    "log_sha256": "50c7180099be2acc87bc820c23a61891a54ef7e9765acc2731aa2592bda23960",
-    "log_bytes": 106388,
+    "log_sha256": "fc8a38493c13eb8c038a7caeca4ba6d4a2e0ebf851dd261ea73fd006a609a3ac",
+    "log_bytes": 106392,
     "truth": "data/samples/demo_text_project.truth.json",
     "truth_sha256": "34fed10ac8888504df14cab3fe2f64725ca9ee4c1eb4086d5c9936dd65949cdb"
   }

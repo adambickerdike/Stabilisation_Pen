@@ -24,7 +24,7 @@ import numpy as np
 from . import __version__
 from ._util import (file_sha256, ranges_from_ids, rel_to_repo, git_revision, environment_info,
                     utc_now)
-from .logfmt import EventCode, ParsedLog, RESEARCH_DTYPE
+from .logfmt import EventCode, ParsedLog
 from .notes import NoteStore, OriginalLayer, ValidationError
 
 SEGMENTER_ID = f"penapp.capture.segment@{__version__}"
@@ -205,23 +205,70 @@ def add_segmentation_layer(store: NoteStore, note_id: str, **params) -> dict:
 
 
 # ============================================================ hand path
+def _fit_frame_offset(d: np.ndarray, q: np.ndarray) -> dict:
+    """Least-squares fit of d = J q - o (d = ink - p_H, q = stage) over all stroke samples.
+
+    Returns the offset o (um), the 2x2 J estimate and the residual RMS.  If the
+    stage barely moves (std < 1 um) J is not identifiable and o = -mean(d).
+    """
+    use_q = bool(np.std(q[:, 0]) > 1.0 or np.std(q[:, 1]) > 1.0)
+    X = np.column_stack([q, -np.ones(len(q))]) if use_q else -np.ones((len(q), 1))
+    sol, *_ = np.linalg.lstsq(X, d, rcond=None)          # (k, 2): columns for x and y
+    res = d - X @ sol
+    out = {"offset_um": [round(float(sol[-1, 0]), 1), round(float(sol[-1, 1]), 1)],
+           "residual_rms_um": round(float(np.sqrt(np.mean(np.sum(res ** 2, axis=1)))), 2), "n": int(len(d))}
+    out["J_est"] = [[round(float(sol[0, 0]), 4), round(float(sol[1, 0]), 4)],
+                    [round(float(sol[0, 1]), 4), round(float(sol[1, 1]), 4)]] if use_q else None
+    return out
+
+
 def hand_path_payload(orig: OriginalLayer, research: np.ndarray, research_t_us: np.ndarray,
-                      *, max_gap_us: int = 2000) -> dict:
+                      *, max_gap_us: int = 2000, origin: str = "fit") -> dict:
     """Hand-path estimate at each stroke-sample time from research-frame p_H.
 
-    p_H (fused housing position, 0.1 um, page frame) is linearly interpolated to
-    the stroke-sample times; points farther than ``max_gap_us`` from any frame
-    are omitted.  Assumes p_H and the stroke x, y share the page origin
-    (ICD ambiguity A9).
+    p_H (fused housing position, 0.1 um) is linearly interpolated to the
+    stroke-sample times; points farther than ``max_gap_us`` from any frame are
+    omitted.  Origin (ICD ambiguity A9): the firmware logs p_H in its fusion
+    frame while stroke x, y = p_H + J q - page_origin.  ``origin="fit"``
+    (default) estimates page_origin (and J) by least squares over all stroke
+    samples from that relation; ``"first_contact"`` aligns at the first stroke
+    sample (error = J q there, recorded); ``"shared"`` applies no offset.
     """
     t_r = np.asarray(research_t_us, np.int64)
     if len(research) != len(t_r):
         raise ValidationError("research frames and time stamps differ in length")
+    if origin not in ("fit", "first_contact", "shared"):
+        raise ValueError("origin must be 'fit', 'first_contact' or 'shared'")
     order = np.argsort(t_r, kind="stable")
     t_r = t_r[order]
     px = research["p_Hx"].astype(np.float64)[order] * 0.1
     py = research["p_Hy"].astype(np.float64)[order] * 0.1
+    q1 = research["q1"].astype(np.float64)[order] * 0.1
+    q2 = research["q2"].astype(np.float64)[order] * 0.1
     s = orig.samples
+    align = {"mode": origin, "offset_um": [0.0, 0.0]}
+    tq_all = s["t_ms"].astype(np.int64) * 1000
+    if len(t_r):
+        j = np.clip(np.searchsorted(t_r, tq_all), 1, max(len(t_r) - 1, 1))
+        gap = np.minimum(np.abs(t_r[j] - tq_all), np.abs(t_r[j - 1] - tq_all)) if len(t_r) > 1 else \
+            np.abs(t_r[0] - tq_all)
+        covered = np.flatnonzero((gap <= max_gap_us) & (tq_all >= t_r[0]) & (tq_all <= t_r[-1]))
+    else:
+        covered = np.zeros(0, np.int64)
+    if origin != "shared" and len(covered):
+        tq = tq_all[covered]
+        ink = np.column_stack([s["x_um"][covered], s["y_um"][covered]]).astype(np.float64)
+        ph = np.column_stack([np.interp(tq, t_r, px), np.interp(tq, t_r, py)])
+        qq = np.column_stack([np.interp(tq, t_r, q1), np.interp(tq, t_r, q2)])
+        if origin == "fit":
+            align = {"mode": "fit", "model": "ink = p_H + J q - origin (least squares over all stroke samples)",
+                     **_fit_frame_offset(ink - ph, qq)}
+        else:
+            align = {"mode": "first_contact", "aligned_at_sample": int(covered[0]),
+                     "offset_um": [round(float(-(ink[0, 0] - ph[0, 0])), 1), round(float(-(ink[0, 1] - ph[0, 1])), 1)],
+                     "stage_q_at_alignment_um": round(float(np.hypot(*qq[0])), 1)}
+        px = px - align["offset_um"][0]
+        py = py - align["offset_um"][1]
     strokes = []
     for sid, a, b in orig.stroke_runs:
         t_ms = s["t_ms"][a:b].astype(np.int64)
@@ -238,7 +285,8 @@ def hand_path_payload(orig: OriginalLayer, research: np.ndarray, research_t_us: 
         strokes.append({"stroke_id": int(sid), "t_ms": t_ms[ok].tolist(),
                         "x_um": np.round(xs, 1).tolist(), "y_um": np.round(ys, 1).tolist()})
     return {"method": "research-frame p_H (0x01 p_Hx, p_Hy) linearly interpolated to stroke-sample times",
-            "evidence_status": "derived estimate; synthetic when the log is synthetic", "strokes": strokes}
+            "evidence_status": "derived estimate; synthetic when the log is synthetic",
+            "origin_alignment": align, "strokes": strokes}
 
 
 def add_hand_path_layer(store: NoteStore, note_id: str, parsed: ParsedLog, source_sha256: str) -> Optional[dict]:
@@ -253,8 +301,8 @@ def add_hand_path_layer(store: NoteStore, note_id: str, parsed: ParsedLog, sourc
     return store.add_layer(kind="hand_path_estimate", note_ids=[note_id], created_by=HAND_PATH_ID,
                            inputs=[{"type": "original", "sha256": orig.sha256, "stroke_ranges": ranges_from_ids(ids)},
                                    {"type": "source_file", "sha256": source_sha256, "record_type": 1,
-                                    "fields": ["t_us", "p_Hx", "p_Hy"]}],
-                           payload=payload, params={"max_gap_us": 2000})
+                                    "fields": ["t_us", "p_Hx", "p_Hy", "q1", "q2"]}],
+                           payload=payload, params={"max_gap_us": 2000, "origin": "fit"})
 
 
 # ============================================================ resampling
@@ -641,7 +689,14 @@ def fidelity_analysis(trace_paths: Sequence, *, phases: Sequence[int] = tuple(ra
                       variants: Sequence[str] = tuple(VARIANTS), densify_um: float = 2.0,
                       main_ms: int = 50, frechet: bool = True) -> dict:
     """Capture fidelity of the ICD stroke format against high-rate reference traces."""
-    traces = [load_trace(p) for p in trace_paths]
+    traces, duplicates, seen = [], [], {}
+    for p in trace_paths:
+        tr = load_trace(p)
+        if tr.sha256 in seen:                       # identical content: do not double-count in pooled statistics
+            duplicates.append({"trace": tr.name, "path": tr.path, "identical_to": seen[tr.sha256]})
+            continue
+        seen[tr.sha256] = tr.name
+        traces.append(tr)
     per_variant: Dict[str, List[dict]] = {v: [] for v in variants}
     for tr in traces:
         for a, b in contact_intervals(tr.contact):
@@ -672,6 +727,7 @@ def fidelity_analysis(trace_paths: Sequence, *, phases: Sequence[int] = tuple(ra
             "environment": environment_info(), "numba": HAVE_NUMBA,
             "inputs": [{"trace": tr.name, "path": tr.path, "sha256": tr.sha256, "n_samples": int(len(tr.t_ms)),
                         "rate_hz": 1000, "n_contact_intervals": len(strokes[tr.name])} for tr in traces],
+            "excluded_duplicates": duplicates,
             "reference": ("deposited-ink position 'tip' of each simulator trace at 1 kHz (float32, decimated by "
                           "sim/run_nominal.py from the 2 kHz simulation; scenario per results/sim/nominal/metrics.json: "
                           "test seed 200, 9 Hz 0.3 mm tremor, altitude 50 deg, 1 N); strokes = contiguous "
@@ -710,31 +766,55 @@ def run_fidelity(trace_paths: Sequence, out_path, **kw) -> dict:
 
 
 def interpret_fidelity(res: dict) -> List[str]:
+    """Plain-language reading of the summary; every number is taken from ``res``."""
     s = res["summary"]
     out = []
     fp = s.get("format_point", {})
     if "max_dev_um" in fp:
-        out.append(f"Headline (format_point, main strokes, worst over traces and sampling phases): time-aligned "
-                   f"max deviation {fp['max_dev_um']} um, RMS {fp['rms_dev_um']} um; interior-only max "
-                   f"{fp['interior_max_dev_um']} um, RMS {fp['interior_rms_dev_um']} um; densified discrete "
-                   f"Frechet max {fp.get('frechet_max_um')} um (median {fp.get('frechet_median_um')} um).")
-        out.append(f"End truncation dominates the maximum: up to {fp['end_truncation_max_um']} um because the "
-                   f"first/last sample can fall up to 4 ms inside the contact interval while the pen moves.")
+        out.append(f"Headline (format_point, strokes >= {res['method']['main_stroke_min_ms']} ms, worst case over "
+                   f"traces and the five 1 ms sampling phases): time-aligned max deviation {fp['max_dev_um']} um, "
+                   f"RMS {fp['rms_dev_um']} um; interior-only max {fp['interior_max_dev_um']} um, RMS "
+                   f"{fp['interior_rms_dev_um']} um; densified discrete Frechet max {fp.get('frechet_max_um')} um "
+                   f"(median {fp.get('frechet_median_um')} um, 95th percentile {fp.get('frechet_p95_um')} um).")
+        if fp["end_truncation_max_um"] >= fp["interior_max_dev_um"]:
+            out.append(f"End truncation dominates the maximum ({fp['end_truncation_max_um']} um): the first/last "
+                       f"200 Hz sample can fall up to 4 ms inside the contact interval while the pen moves.")
+        else:
+            out.append(f"Interior deviations dominate the maximum ({fp['interior_max_dev_um']} um); end truncation "
+                       f"reaches {fp['end_truncation_max_um']} um.")
+        if fp.get("interior_max_in_first_50ms"):
+            out.append(f"The largest interior deviation of a stroke lies within 50 ms of touchdown in "
+                       f"{fp['interior_max_in_first_50ms']} strokes: simulated contact transients with high "
+                       f"acceleration that a 200 Hz point sampler cannot follow (the simulator's contact model is "
+                       f"unidentified, so their size on paper is unknown).")
+        if fp.get("interior_within_interp_bound"):
+            out.append(f"Consistency check: every interior maximum is within the linear-interpolation bound "
+                       f"a_max T^2/8 + 0.71 um ({fp['interior_within_interp_bound']} strokes).")
+        if fp.get("frechet_vertices_only_median_um") is not None:
+            out.append(f"Discrete Frechet on raw vertices (1 kHz vs 200 Hz) gives median "
+                       f"{fp['frechet_vertices_only_median_um']} um: that value measures vertex spacing, not capture "
+                       f"error, which is why the densified value is reported.")
     fe = s.get("format_point_endpoints", {})
     if "max_dev_um" in fe:
-        out.append(f"Adding samples at the pen-down/up instants reduces the max deviation to {fe['max_dev_um']} um "
-                   f"(end truncation {fe['end_truncation_max_um']} um).")
+        out.append(f"Adding samples at the pen-down/up instants (proposed ICD change) removes end truncation: max "
+                   f"deviation {fe['max_dev_um']} um, Frechet median {fe.get('frechet_median_um')} um (max "
+                   f"{fe.get('frechet_max_um')} um), and no short contact is lost.")
+    fb = s.get("format_boxcar5", {})
+    if "interior_max_dev_um" in fb:
+        out.append(f"A centred 5 ms boxcar instead of point sampling lowers the interior max to "
+                   f"{fb['interior_max_dev_um']} um but raises interior RMS to {fb['interior_rms_dev_um']} um "
+                   f"(smoothing); the ICD should state which decimation the firmware uses.")
     q = s.get("quantisation_only", {})
     if "max_dev_um" in q:
-        out.append(f"1 um rounding alone contributes at most {q['max_dev_um']} um (RMS {q['rms_dev_um']} um); "
-                   f"the format error is sampling-dominated.")
+        out.append(f"1 um rounding alone contributes at most {q['max_dev_um']} um (RMS {q['rms_dev_um']} um, theory "
+                   f"0.408 um): the format error is sampling-dominated.")
     if fp.get("short_missed") is not None:
-        out.append(f"Short contacts (< {res['method']['main_stroke_min_ms']} ms, bounces in the simulator): "
-                   f"{fp['short_missed']} of {fp['n_short']} phase-evaluations produced no sample and "
-                   f"{fp['short_single_sample']} a single sample; the format cannot represent them faithfully.")
-    out.append("Scale for comparison (research ledger OPT-02): DeltaPen optical-flow tracking reports 0.068 mm "
-               "mean absolute error per 10 ms window, i.e. the sensing error, not the stroke format, is expected "
-               "to dominate capture error.")
+        out.append(f"Short contacts (< {res['method']['main_stroke_min_ms']} ms; bounces in the simulator): of "
+                   f"{fp['n_short']} stroke-phase evaluations, {fp['short_missed']} produced no sample and "
+                   f"{fp['short_single_sample']} a single sample.")
+    out.append("Scale for comparison (research ledger OPT-02): DeltaPen optical-flow tracking reports 0.068 mm mean "
+               "absolute error per 10 ms window, so the sensing chain, not the stroke format, is expected to "
+               "dominate capture error.")
     out.append("These figures describe the format applied to simulated ink; they say nothing about sensor "
                "accuracy, which must be measured (bench protocol).")
     return out

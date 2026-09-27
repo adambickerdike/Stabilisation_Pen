@@ -19,6 +19,10 @@ void bpf_est_tick(bpf_est_t *e, const pen_ctrl_params_t *p, const float ph[2], b
         for (int ax = 0; ax < 2; ax++) {
             biquad_reset(&e->s1[ax]);
             biquad_reset(&e->s2[ax]);
+            if (e->reset_deriv) {
+                e->y_prev[ax] = 0.0f;
+                e->yd[ax] = 0.0f;
+            }
         }
         e->need_reinit = false;
     }

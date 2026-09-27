@@ -20,7 +20,7 @@ illustrative settings of the generator, not claims about people.
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
@@ -29,12 +29,12 @@ import numpy as np
 from . import __version__
 from ._util import ensure_stabpen_importable, file_sha256, ranges_from_ids, rel_to_repo, write_json
 from .capture import contact_intervals
-from .logfmt import (Event, EventCode, Header, RawRecord, RecordType, ResearchFrame, StrokeSample,
-                     encode_log)
+from .logfmt import (Event, EventCode, Header, ResearchFrame, StrokeSample, annotation_record, encode_log)
 
 GENERATOR_ID = f"penapp.synth@{__version__}"
 SYNTHETIC_DEVICE_ID = 0x5EED_0000_0000_00A1
-MODE_ASSIST_KF = 3      # position of ASSIST_KF in the ICD section 6 list (numbering not defined by the ICD)
+MODE_NEUTRAL_HOLD, MODE_ASSIST_KF = 2, 3   # ICD section 6 order, as numbered by firmware/include/pen_types.h
+MODE_CHANGE_ARG = MODE_ASSIST_KF | (MODE_NEUTRAL_HOLD << 8)   # firmware packing: new | old << 8
 
 
 # ================================================================= glyphs
@@ -178,7 +178,7 @@ def _events_and_samples(t_ms, xy_um, contact, force_mN, theta_deg, phi_deg, *, p
     """Stroke samples on the 5 ms grid inside contact runs + pen events."""
     items = []   # (time_us, order, record)
     for sid, (a, b) in enumerate(contact_intervals(contact)):
-        items.append((int(t_ms[a]) * 1000, 0, Event(int(t_ms[a]) * 1000, EventCode.PEN_DOWN, sid)))
+        items.append((int(t_ms[a]) * 1000, 0, Event(int(t_ms[a]) * 1000, EventCode.PEN_DOWN, 0)))
         for k in range(a, b):
             if t_ms[k] % period_ms:
                 continue
@@ -186,7 +186,7 @@ def _events_and_samples(t_ms, xy_um, contact, force_mN, theta_deg, phi_deg, *, p
             items.append((int(t_ms[k]) * 1000, 1, StrokeSample(int(t_ms[k]), sid, int(xy_um[k, 0]), int(xy_um[k, 1]),
                                                               int(np.clip(round(force_mN[k]), 0, 65535)), th, ph)))
         t_up = int(t_ms[b]) if b < len(t_ms) else int(t_ms[b - 1]) + 1
-        items.append((t_up * 1000, 2, Event(t_up * 1000, EventCode.PEN_UP, sid)))
+        items.append((t_up * 1000, 2, Event(t_up * 1000, EventCode.PEN_UP, 0)))
     items.sort(key=lambda it: (it[0], it[1]))
     return [it[2] for it in items], len(contact_intervals(contact))
 
@@ -262,8 +262,7 @@ def synth_text_session(lines: Sequence[str], *, seed: int = 0, session_id: int =
     note = (f"SYNTHETIC session: {GENERATOR_ID} glyph handwriting of a known transcript, seed {seed}; "
             f"not human data")
     header = Header(device_id=device_id, session_id=session_id, start_unix_ms=start_unix_ms)
-    records = [RawRecord(int(RecordType.ANNOTATION), note.encode("utf-8")),
-               Event(0, EventCode.MODE_CHANGE, MODE_ASSIST_KF)] + recs
+    records = [annotation_record(note, 0), Event(0, EventCode.MODE_CHANGE, MODE_CHANGE_ARG)] + recs
     truth = {"object": "synthetic_truth", "generator": GENERATOR_ID, "seed": seed, "language": "en",
              "evidence_status": "SYNTHETIC ground truth (generator-known transcript and stroke ids)",
              "text": "\n".join(l["text"] for l in truth_lines), "lines": truth_lines, "n_strokes": n_strokes}
@@ -272,8 +271,9 @@ def synth_text_session(lines: Sequence[str], *, seed: int = 0, session_id: int =
             "session_id": session_id, "device_id": str(device_id), "start_unix_ms": start_unix_ms,
             "config": vars(cfg), "duration_s": round(n * cfg.dt, 3), "n_strokes": n_strokes,
             "stroke_samples": sum(isinstance(r, StrokeSample) for r in records),
-            "notes": ["pen-down/up events carry arg = stroke_id (proposed; ICD does not define the arg)",
-                      "mode-change arg 3 = ASSIST_KF by position in ICD section 6 (numbering not defined by ICD)",
+            "notes": ["pen-down/up events carry arg = 0 as the firmware does (ICD does not define the arg)",
+                      "mode-change arg = new | old << 8 with ICD section 6 order numbering (firmware convention)",
+                      "annotation payload = t_us u32 | UTF-8 (firmware-proposed layout)",
                       "force: synthetic profile with 15 ms ramps; theta/phi slow synthetic variation"]}
     return SynthSession(header, records, truth, meta, ink_1khz=(ink - ink[first]) * 1e6, contact_1khz=contact)
 
@@ -301,7 +301,7 @@ def synth_sim_session(trace_path, *, session_id: int = 3, start_unix_ms: int = 1
     ph = np.full(len(t_ms), phi_deg)
     recs, n_strokes = _events_and_samples(t_ms, xy_um, contact, f_ax, th, ph)
     frames = []
-    pH = np.rint((housing - origin) * 1e7).astype(np.int64)
+    pH = np.rint(housing * 1e7).astype(np.int64)      # fusion frame, NOT page-origin relative (as firmware)
     q01 = np.clip(np.rint(q * 1e7), -32768, 32767).astype(np.int64)
     i01 = np.clip(np.rint(cur * 1e4), -32768, 32767).astype(np.int64)
     fax = np.clip(np.rint(f_ax), -32768, 32767).astype(np.int64)
@@ -322,8 +322,7 @@ def synth_sim_session(trace_path, *, session_id: int = 3, start_unix_ms: int = 1
     note = (f"SYNTHETIC session: {GENERATOR_ID} from simulator trace {name} sha256 {sha[:16]}; "
             f"not human data")
     header = Header(device_id=device_id, session_id=session_id, start_unix_ms=start_unix_ms)
-    records = [RawRecord(int(RecordType.ANNOTATION), note.encode("utf-8")),
-               Event(0, EventCode.MODE_CHANGE, MODE_ASSIST_KF)] + [it[2] for it in ordered]
+    records = [annotation_record(note, 0), Event(0, EventCode.MODE_CHANGE, MODE_CHANGE_ARG)] + [it[2] for it in ordered]
     meta = {"object": "synthetic_session_meta", "generator": GENERATOR_ID, "kind": "simulator_trace",
             "evidence_status": "SYNTHETIC - coupled-simulator output on synthetic handwriting; not a measurement",
             "trace": rel_to_repo(trace_path), "trace_sha256": sha, "session_id": session_id,
@@ -334,5 +333,6 @@ def synth_sim_session(trace_path, *, session_id: int = 3, start_unix_ms: int = 1
                       "force / f_ax = simulator normal force N * sin(theta) (axial component with mu = 0; the trace "
                       "has no F_ax)",
                       "research-frame fields absent from the trace (qr, iref, dhat, g, f_est, vbat, t_coil, imu) are 0",
-                      "p_H and stroke x, y share the page origin (first-contact ink position)"]}
+                      "p_H is written in the simulator's page coordinates (not page-origin relative, like the "
+                      "firmware's fusion frame); stroke x, y are relative to the first-contact ink position"]}
     return SynthSession(header, records, None, meta, ink_1khz=(tip - origin) * 1e6, contact_1khz=contact)
