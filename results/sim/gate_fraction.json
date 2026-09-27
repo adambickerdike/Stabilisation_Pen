@@ -1,0 +1,151 @@
+{
+  "meta": {
+    "evidence_status": "simulation (synthetic writing and tremor, TEST seeds; not bench data)",
+    "generated_utc": "2026-09-27T03:08:59+00:00",
+    "git_revision": "2477142-dirty",
+    "parameters_version": "0.4.2",
+    "parameters_sha256_16": "62292f1efdb00e0f",
+    "command": "diag_gate.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "test": [
+        200,
+        201,
+        202,
+        203
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "amp_m": 0.0003,
+    "g_open_threshold": 0.5,
+    "criterion": "AC-B09-15: (a) >= 0.9 with 9-10 Hz tremor; (b) <= 0.05 without tremor"
+  },
+  "results": {
+    "kf_selected_v042": {
+      "params": {
+        "kf_qj": 0.1,
+        "kf_qt": 1e-08,
+        "kf_w0_hz": 7.0,
+        "f_gate": 7.5
+      },
+      "cases": {
+        "tremor_6Hz": {
+          "frac_g_open_mean": 0.12499411337285637,
+          "frac_g_open_per_seed": [
+            0.1171,
+            0.1857,
+            0.0667,
+            0.1304
+          ],
+          "g_mean": 0.13430076140314892,
+          "f_track_median_hz": 6.0974388377288005
+        },
+        "tremor_9Hz": {
+          "frac_g_open_mean": 0.9423703941569161,
+          "frac_g_open_per_seed": [
+            0.97,
+            0.9527,
+            0.9262,
+            0.9206
+          ],
+          "g_mean": 0.9056829988787001,
+          "f_track_median_hz": 9.089448730314412
+        },
+        "tremor_10Hz": {
+          "frac_g_open_mean": 0.9255711360735857,
+          "frac_g_open_per_seed": [
+            0.9479,
+            0.8844,
+            0.933,
+            0.9369
+          ],
+          "g_mean": 0.8860231593213272,
+          "f_track_median_hz": 9.992797137770017
+        },
+        "no_tremor_handwriting": {
+          "frac_g_open_mean": 0.152127585602736,
+          "frac_g_open_per_seed": [
+            0.3249,
+            0.2823,
+            0.0,
+            0.0013
+          ],
+          "g_mean": 0.15432214398117186,
+          "f_track_median_hz": 5.810316539328065
+        },
+        "no_tremor_feature_course": {
+          "frac_g_open_mean": 0.5171471334678207,
+          "frac_g_open_per_seed": [
+            0.5171
+          ],
+          "g_mean": 0.506330690942917,
+          "f_track_median_hz": 8.242440035317536
+        }
+      }
+    },
+    "kf_inert_v041": {
+      "params": {
+        "kf_qj": 10.0,
+        "kf_qt": 3e-09,
+        "kf_w0_hz": 7.0,
+        "f_gate": 7.5
+      },
+      "cases": {
+        "tremor_6Hz": {
+          "frac_g_open_mean": 0.4061872448271475,
+          "frac_g_open_per_seed": [
+            0.3149,
+            0.5206,
+            0.133,
+            0.6562
+          ],
+          "g_mean": 0.4013832929018105,
+          "f_track_median_hz": 7.06146714199741
+        },
+        "tremor_9Hz": {
+          "frac_g_open_mean": 0.31286672381706276,
+          "frac_g_open_per_seed": [
+            0.0,
+            0.9367,
+            0.0,
+            0.3148
+          ],
+          "g_mean": 0.3023479394199008,
+          "f_track_median_hz": 6.064543897197346
+        },
+        "tremor_10Hz": {
+          "frac_g_open_mean": 0.28886842477681585,
+          "frac_g_open_per_seed": [
+            0.9669,
+            0.1886,
+            0.0,
+            0.0
+          ],
+          "g_mean": 0.293446497281025,
+          "f_track_median_hz": 6.10433687221694
+        },
+        "no_tremor_handwriting": {
+          "frac_g_open_mean": 0.5107748194166926,
+          "frac_g_open_per_seed": [
+            0.7128,
+            0.6471,
+            0.6832,
+            0.0
+          ],
+          "g_mean": 0.5842350009704501,
+          "f_track_median_hz": 8.839243018682676
+        },
+        "no_tremor_feature_course": {
+          "frac_g_open_mean": 0.7364003123373243,
+          "frac_g_open_per_seed": [
+            0.7364
+          ],
+          "g_mean": 0.7204388345673839,
+          "f_track_median_hz": 13.884300857081994
+        }
+      }
+    }
+  }
+}

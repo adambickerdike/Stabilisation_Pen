@@ -36,7 +36,7 @@ Before any data are taken for an experiment:
 
 1. **Freeze** the protocol text (git commit), the `AC-…` rows it uses, the analysis script (git commit) and the prediction file.
 2. **Regenerate predictions with as-built parameters.** The simulator is re-run with the parameters identified on the hardware under test (for example `m_eq`, `k_tip` and `K_f` from EXP-B03/B05; `μ(N)` from EXP-B01; hand-simulant values from EXP-B06). The prediction file carries the `stabpen.provenance` metadata (`parameters_version`, SHA-256 prefix, git revision).
-   - Result files in the repository currently carry mixed parameter versions: `results/em/*` 0.2.0; `results/thermal/thermal.json` and `results/trade/config_trade.json` 0.3.0; `results/sim/*` and `results/electronics/drive_sense.json` 0.4.1. The numbers quoted in this file are therefore indicative; the frozen prediction file, not this text, is the comparison reference.
+   - Result files in the repository currently carry mixed parameter versions: `results/em/*` 0.2.0; `results/thermal/thermal.json` 0.3.0; `results/electronics/drive_sense.json`, `results/mechanics/*`, `results/cad/*` and `results/ml/*` 0.4.1; `results/sim/*` and `results/trade/config_trade.json` 0.4.2. The 0.4.2 changes (pivot stiffness, coil thermal resistance, electronics power) are not inputs of the 0.4.1 electronics, mechanics and CAD results. The numbers quoted in this file are therefore indicative; the frozen prediction file, not this text, is the comparison reference.
 3. **Deviations** are logged in the record with their reason. The frozen analysis is always reported. Analyses added later are labelled exploratory.
 
 ### 0.3 Frames, units and signs
@@ -167,7 +167,7 @@ It is research question rank 1 (`docs/research_questions.md`). The load enters t
 
 - **H-B01-1.** P-6 with a per-(ink, paper, underlay) μ(N) predicts mean |R⊥| within ±15 % across the map (AC-B01-03).
 - **H-B01-2.** At the design point (N = 1 N, θ = 50°, μ ≈ 0.15), mean |R⊥| ≈ 0.64 N.
-  - Prediction: `results/sim/nominal/metrics.json` "static", v0.4.1: 0.639 N simulated, 0.643 N analytic.
+  - Prediction: `results/sim/nominal/metrics.json` "static", v0.4.2: 0.639 N simulated, 0.643 N analytic.
   - This is below the 0.75 N continuous capability of REQ-ACT-001 (AC-B01-01).
 - **H-B01-3.** Kinetic μ lies in 0.09–0.40 (CON-13, CON-14) and breakaway/kinetic in 1.0–2.0 (AC-B01-04, AC-B01-05).
 - **H-B01-4.** Friction ripple in 3–15 Hz is ≤ 25 % of the mean (CON-15) (AC-B01-06).
@@ -253,7 +253,7 @@ Scans for Part 4 follow R3. Metadata and naming follow `records/README.md`.
 <!-- AC-TABLE:EXP-B01:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-B01-01 | REQ-ACT-001 | Mean transverse contact reaction \|R⊥\| (component of the measured contact force perpendicular to the pen axis), averaged over 8 stroke directions, steady sliding, N = 1.00 ± 0.05 N, θ = 50°, v = 30 mm/s, nominal ink/paper (oil-based D1, ISO 12757-1 test paper, hard underlay) | ≤ 0.75 N | requirement | REQ-ACT-001 continuous capability 0.75 N; prediction 0.64 N (results/sim/nominal/metrics.json static, v0.4.1; P-6 with mu 0.15) | DEC-003; DEC-008; actuator freeze |
+| AC-B01-01 | REQ-ACT-001 | Mean transverse contact reaction \|R⊥\| (component of the measured contact force perpendicular to the pen axis), averaged over 8 stroke directions, steady sliding, N = 1.00 ± 0.05 N, θ = 50°, v = 30 mm/s, nominal ink/paper (oil-based D1, ISO 12757-1 test paper, hard underlay) | ≤ 0.75 N | requirement | REQ-ACT-001 continuous capability 0.75 N; prediction 0.64 N (results/sim/nominal/metrics.json static, v0.4.2; P-6 with mu 0.15) | DEC-003; DEC-008; actuator freeze |
 | AC-B01-02 | REQ-ACT-001 | 99th percentile of \|R⊥\| (1 kHz samples, all 8 directions, v 3-100 mm/s) over the proposed product envelope N ≤ 1.2 N and θ ≥ 45°, all inks, papers and underlays | ≤ 1.4 N | requirement | REQ-ACT-001 2-s capability 1.4 N; envelope from COR-26 | DEC-008; REQ-ACT-001 revision |
 | AC-B01-03 | — | Contact model P-6: fraction of map conditions (θ 35-80°, all beta and v) in which \|R⊥\| predicted with mu(N) fitted per ink/paper/underlay on θ = 50° data is within ±15 % of the measured mean | ≥ 90 % | hypothesis | docs/physics.md model-validation table (Contact P-5...P-9: \|R⊥\| within ±15 %); 90 % coverage engineering judgement | sim contact model; EXP-B09 comparability |
 | AC-B01-04 | — | Kinetic friction coefficient μ_k = mean \|tangential force\| / N in steady sliding at N 1 N, θ 50°, v 30 mm/s, for every ink x paper x underlay | within 0.09-0.40 | hypothesis | CON-13 (0.09-0.17 at 90°), CON-14 (0.10-0.40); config writing.mu_eff range 0.05-0.35 (assumption) | config writing.mu_eff range; Monte Carlo re-run (kf_asr ratio most sensitive to mu, results/sim/mc_sensitivity.json) |
@@ -891,7 +891,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows fo
 Tremor correction moves the nib against a stiff axial path, so the normal force is modulated at the tremor frequency (P-8).
 
 - **Predicted modulation** under correction at the design point:
-  - 0.09–0.12 N RMS for the oracle (`results/sim/nominal/metrics.json` v0.4.1);
+  - 0.09–0.12 N RMS for the oracle (`results/sim/nominal/metrics.json` v0.4.2);
   - Monte Carlo median 0.067 N and p90 0.135 N (`results/sim/sweeps/summary.json`).
 - **The question:** does ink line quality (continuity, width, density, blobbing) tolerate 0.05–0.3 N RMS at 3–15 Hz on 0.3–2 N mean, across inks, papers and speeds?
 - **Sets** the value of REQ-MECH-005 (≤ 0.15 N RMS, "subject to EXP-B08 ink-quality limit").
@@ -1017,28 +1017,31 @@ It runs twice:
 
 ### Hypotheses and predictions
 
-Predictions are regenerated with the identified rig parameters before the test (§0.2). The current values, v0.4.1, at θ 50°, N 1 N, 0.3 mm peak, test seeds 200–203 (`results/sim/nominal/metrics.json`), and the grid over 12 seeds (`results/sim/sweeps/summary.json`):
+Predictions are regenerated with the identified rig parameters before the test (§0.2). The current values, v0.4.2, at θ 50°, N 1 N, 0.3 mm peak, test seeds 200–203 (`results/sim/nominal/metrics.json`), and the grid over 12 seeds (`results/sim/sweeps/summary.json`, `grid.csv`):
 
-| Quantity | 6 Hz | 9 Hz | Grid mean over 4–12 Hz |
-|---|---|---|---|
-| ORACLE ratio | 0.18 | 0.23 | 0.22–0.32 |
-| KF-ASR ratio | 1.01 | 0.72 | 0.85–1.15 |
-| KF-BAL ratio | 1.00 | 0.97 | 0.96–1.07 |
-| Band-pass ratio (reference estimator) | 1.14 | 0.56 | 0.76–1.49 |
-| N_mod (ORACLE) | 0.09 N | 0.12 N | MC p90 0.135 N |
+| Quantity | 6 Hz | 9 Hz | Grid at 0.3 mm over 4–12 Hz | Grid, all amplitudes |
+|---|---|---|---|---|
+| ORACLE ratio | 0.18 | 0.23 | 0.15–0.31 | 0.22–0.32 |
+| KF ratio (KF-BAL = KF-ASR in v0.4.2) | 1.01 | 0.71 | 0.63–1.10 | 0.85–1.14 |
+| Band-pass ratio (reference estimator) | 1.14 | 0.56 | 0.57–1.36 | 0.75–1.49 |
+| N_mod (ORACLE) | 0.09 N | 0.12 N | — | MC p90 0.137 N |
+
+**The two ASSIST_KF profiles are the same set in v0.4.2.** The tuning objective that chose the inert set for KF-BAL in v0.4.1 now chooses the active set that KF-ASR already used (`docs/sim_report.md` §3.2). Both profiles stay in the test matrix, because the rig-identified plant may flip the selection again. The frozen prediction file records which set each profile carries.
 
 Further predictions:
 
-- **Distortion (no tremor):** KF-BAL 57 µm (nominal) / 62 µm (grid); KF-ASR 55 / 97 µm.
+- **Distortion (no tremor):** KF 55 µm (nominal, 4 seeds) / 101 µm (grid, 12 seeds).
 - **Device distortion:** 60–75 µm per seed.
-- **Feature course (KF-BAL, no tremor):** dot max 41 µm; corner 0; hatch 93 µm RMS; fast stroke 122 µm RMS.
-- **KF-BAL is predicted to be inert against tremor** (`docs/sim_report.md` §3.2, added 2026-09-27).
-  - Its intent model absorbs the tremor, so the tracked frequency stays near the 7 Hz prior and the 7.5 Hz gate stays closed. For seed 200 at 9 Hz the ink trace is identical to NEUTRAL.
-  - On tremor-free writing the tracker occasionally crosses the gate, giving 4–81 µm of false correction.
-  - A KF-BAL ratio near 1.0 with tremor present is therefore the predicted result, not a rig fault. AC-B09-15 tests the gate directly.
-  - If DEC-009's next revision (a separate spectral detector with hysteresis) exists before this test, it is added as a further ASSIST_KF profile and assessed with the same criteria.
-- **GUIDED path distance vs NEUTRAL** (6 Hz, `results/sim/guided_path_distance.json`): circle 165 vs 442 µm; spiral 111 vs 382 µm; fast stroke 34 vs 115 µm.
-  - In the time-aligned metric, GUIDED looks *worse* than NEUTRAL (feature course "ALL" 440 vs 218 µm, `metrics.json`).
+- **Feature course (KF, no tremor):** dot max 81 µm; corner max 208 µm; hatch 96 µm RMS; fast stroke 5 µm RMS.
+- **Gate behaviour** (`results/sim/gate_fraction.json`, AC-B09-15). Fraction of contact time with g ≥ 0.5:
+  - 0.94 / 0.93 with 9 / 10 Hz tremor;
+  - 0.12 with 6 Hz tremor (below the gate);
+  - 0.15 on tremor-free handwriting (0–0.32 per seed) and 0.52 on the feature course.
+  - The tracker locks onto strokes, so the gate opens on writing. That is the source of the distortion above and the reason for DEC-009's next revision.
+  - The v0.4.1 inert set, simulated on the same plant, opens its gate less with tremor (0.29–0.31) than without (0.51).
+  - If the revision (a separate spectral detector with hysteresis) exists before this test, it is added as a further ASSIST_KF profile and assessed with the same criteria.
+- **GUIDED path distance vs NEUTRAL** (6 Hz, `results/sim/guided_path_distance.json`): circle 164 vs 443 µm; spiral 112 vs 382 µm; fast stroke 33 vs 115 µm.
+  - In the time-aligned metric, GUIDED looks *worse* than NEUTRAL (feature course "ALL" 441 vs 218 µm, `metrics.json`).
   - This is because a user-paced template follower shifts along the track. M-path, not M-e, is therefore the primary metric for GUIDED.
 
 The hypotheses tested:
@@ -1126,20 +1129,20 @@ The hypotheses tested:
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-B09-01 | REQ-VAL-001 | Protocol conformity: real ink on paper, known reference path, injected housing disturbance, independent metrology of housing, nib and deposited ink, and CANCEL vs NEUTRAL vs UNPOWERED (plus RIGID) all run on the same disturbance realisations | all elements present | requirement | REQ-VAL-001 | G-B; G-C |
-| AC-B09-02 | — | ORACLE residual ratio (M-ratio, time-aligned ink error vs NEUTRAL) at 0.3 mm peak disturbance, 6, 8 and 10 Hz, θ 50°, N 1.0 N, nominal paper; mean over 10 seeds per cell | ≤ 0.5 | hypothesis | ≥ 6 dB acceptance (docs/research/notes/ACT_active_stabilisation.md, decisive experiment 1); prediction 0.18 (6 Hz), 0.23 (9 Hz) (results/sim/nominal/metrics.json v0.4.1) | G-B (loaded cancellation at practical force); DEC-003 |
+| AC-B09-02 | — | ORACLE residual ratio (M-ratio, time-aligned ink error vs NEUTRAL) at 0.3 mm peak disturbance, 6, 8 and 10 Hz, θ 50°, N 1.0 N, nominal paper; mean over 10 seeds per cell | ≤ 0.5 | hypothesis | ≥ 6 dB acceptance (docs/research/notes/ACT_active_stabilisation.md, decisive experiment 1); prediction 0.18 (6 Hz), 0.23 (9 Hz) (results/sim/nominal/metrics.json v0.4.2) | G-B (loaded cancellation at practical force); DEC-003 |
 | AC-B09-03 | — | Simulation agreement: \|measured - predicted\| residual ratio for ORACLE, KF-ASR and KF-BAL at the primary cells, simulator re-parameterised to the identified rig (EXP-B01, B02, B05, B06) | ≤ 0.1 | hypothesis | docs/physics.md model-validation table (control P-19...P-24: within ±0.1 of simulation) | model validation; basis of DEC-009 and DEC-016 |
-| AC-B09-04 | REQ-CTRL-007 | KF-ASR residual ratio at 9 and 10 Hz (0.3 mm peak, θ 50°, N 1 N) | ≤ 0.8 | hypothesis | prediction 0.72 at 9 Hz (nominal) and grid mean 0.96-1.04 at 9-10 Hz (results/sim/sweeps/summary.json); 0.8 engineering judgement | DEC-009 (value of cancellation above the gate); REQ-CTRL-007 |
-| AC-B09-05 | REQ-CTRL-007 | KF-BAL and KF-ASR residual ratios at 4-7 Hz (below the 7.5 Hz gate) | ≤ 1.05 | hypothesis | no-harm criterion for the frequency gate (DEC-009; band-pass 1.14 at 6 Hz in simulation); 5 % engineering judgement | DEC-009 gate design |
-| AC-B09-06 | REQ-CTRL-005 | Intent distortion (M-dist): RMS ink difference KF-BAL vs NEUTRAL on the handwriting paths without disturbance | ≤ 50 µm | requirement | REQ-CTRL-005; prediction 57 µm (nominal) / 62 µm (grid), v0.4.1 -> expected marginal | estimator tuning (DEC-009); REQ-CTRL-005 |
-| AC-B09-07 | REQ-CTRL-005 | Maximum corner and dot position error on the feature course without disturbance, KF-BAL vs NEUTRAL | ≤ 100 µm | requirement | REQ-CTRL-005; prediction dot max 41 µm, corner 0 µm (results/sim/nominal/metrics.json features) | estimator tuning |
-| AC-B09-08 | REQ-CTRL-005 | RMS distortion of hatch (4 Hz) and fast-stroke features on the feature course without disturbance, KF-BAL vs NEUTRAL | ≤ 100 µm | hypothesis | engineering judgement extending the REQ-CTRL-005 corner/dot limit to deliberate high-frequency features (not bounded by REQ-CTRL-005); prediction hatch 93 µm, fast stroke 122 µm -> expected FAIL for fast strokes | REQ-CTRL-005 scope; estimator tuning |
+| AC-B09-04 | REQ-CTRL-007 | KF-ASR residual ratio at 9 and 10 Hz (0.3 mm peak, θ 50°, N 1 N) | ≤ 0.8 | hypothesis | prediction 0.71 at 9 Hz (nominal, v0.4.2); grid at 0.3 mm 0.78 / 0.71 at 9 / 10 Hz (all-amplitude mean 1.03 / 0.97; results/sim/sweeps/grid.csv, summary.json) -> expected marginal PASS; 0.8 engineering judgement | DEC-009 (value of cancellation above the gate); REQ-CTRL-007 |
+| AC-B09-05 | REQ-CTRL-007 | KF-BAL and KF-ASR residual ratios at 4-7 Hz (below the 7.5 Hz gate) | ≤ 1.05 | hypothesis | no-harm criterion for the frequency gate (DEC-009; band-pass 1.14 at 6 Hz in simulation); 5 % engineering judgement; prediction (grid, 0.3 mm, v0.4.2) Kalman 1.10 / 1.06 / 1.02 / 0.99 at 4 / 5 / 6 / 7 Hz -> expected FAIL at 4-5 Hz | DEC-009 gate design |
+| AC-B09-06 | REQ-CTRL-005 | Intent distortion (M-dist): RMS ink difference KF-BAL vs NEUTRAL on the handwriting paths without disturbance | ≤ 50 µm | requirement | REQ-CTRL-005; prediction 55 µm (nominal, 4 seeds) / 101 µm (grid, 12 seeds), v0.4.2, where KF-BAL and KF-ASR are the same set (docs/sim_report.md s3.2) -> expected FAIL | estimator tuning (DEC-009); REQ-CTRL-005 |
+| AC-B09-07 | REQ-CTRL-005 | Maximum corner and dot position error on the feature course without disturbance, KF-BAL vs NEUTRAL | ≤ 100 µm | requirement | REQ-CTRL-005; prediction dot max 81 µm, corner max 208 µm (results/sim/nominal/metrics.json features, v0.4.2) -> expected FAIL at corners | estimator tuning |
+| AC-B09-08 | REQ-CTRL-005 | RMS distortion of hatch (4 Hz) and fast-stroke features on the feature course without disturbance, KF-BAL vs NEUTRAL | ≤ 100 µm | hypothesis | engineering judgement extending the REQ-CTRL-005 corner/dot limit to deliberate high-frequency features (not bounded by REQ-CTRL-005); prediction hatch 96 µm, fast stroke 5 µm RMS (v0.4.2) -> expected marginal PASS (hatch) | REQ-CTRL-005 scope; estimator tuning |
 | AC-B09-09 | REQ-MECH-005 | Normal-force modulation M-Nmod (3-15 Hz RMS at the force plate) during ORACLE and KF-ASR at the design point | ≤ 0.15 N | requirement | REQ-MECH-005; prediction 0.09-0.12 N (oracle), 0.11 N (KF-ASR 9 Hz), results/sim/nominal/metrics.json | DEC-006 |
 | AC-B09-10 | REQ-CTRL-003 | Effective delay tau_eq from housing disturbance to nib correction, maximum over 3-12 Hz, DELAY-PROBE mode | ≤ 5 ms | requirement | REQ-CTRL-003 | sensing and servo architecture; prediction horizon |
 | AC-B09-11 | REQ-CTRL-008 | Guided mode: authority after the housing leaves the capture radius (2 q_lim = 1.1 mm, sim/pensim/core.py mode 6; firmware/core/guided.c) | ≤ 0.05 within 150 ms | derived | derived: 3 x authority_tau (0.05 s, sim/pensim/model.py) for a first-order release | guided-mode release behaviour |
 | AC-B09-12 | — | GUIDED path distance (M-path, as sim/guided_eval.py) on circle and spiral features with 6 Hz, 0.3 mm disturbance, relative to NEUTRAL | ≤ 0.5 | hypothesis | prediction 0.37 (circle 165/442 µm) and 0.29 (spiral 111/382 µm), results/sim/guided_path_distance.json; 0.5 engineering judgement (≥ 6 dB, as AC-B09-02) | DEC-009 (guided mode below the gate); EXP-H06 variant choice |
 | AC-B09-13 | REQ-CTRL-006 | Gamma identification on the rig with a calibrated simulant normal spring (200/800/3000 N/m): \|γ_id - γ_true\| after 2 s of writing | ≤ 0.05 | derived | REQ-CTRL-006 (2 s); accuracy as AC-B06-03 (P-4 derivation) | REQ-CTRL-006 |
 | AC-B09-14 | — | Metrology qualification: RMS difference between the time-aligned nib trajectory (rig metrology, in contact) and the scanned ink centreline for the same NEUTRAL run | ≤ 7 µm | derived | derived: TUR ≥ 4 against the ±0.1 ratio band at a NEUTRAL error of about 290 µm (results/sim/nominal/metrics.json, 6 Hz) | validity of EXP-B09 verdicts |
-| AC-B09-15 | REQ-CTRL-007 | Frequency-gate behaviour of each ASSIST_KF profile, from the research-frame fields g and f_est (docs/icd.md s4.2): fraction of evaluation ticks with authority g ≥ 0.5, (a) with 9-10 Hz, 0.3 mm tremor on handwriting paths and (b) on tremor-free handwriting and the feature course | ≥ 0.9 (a) / ≤ 0.05 (b) | hypothesis | engineering judgement; docs/sim_report.md s3.2 (2026-09-27): the balanced profile keeps its gate closed with 9 Hz tremor (ink identical to NEUTRAL, seed 200) and opens it on tremor-free writing (4-81 µm false correction) -> (a) expected FAIL for KF-BAL | DEC-009 revision (separate spectral detector with hysteresis); choice of ASSIST_KF profile for EXP-H06 |
+| AC-B09-15 | REQ-CTRL-007 | Frequency-gate behaviour of each ASSIST_KF profile, from the research-frame fields g and f_est (docs/icd.md s4.2): fraction of evaluation ticks with authority g ≥ 0.5, (a) with 9-10 Hz, 0.3 mm tremor on handwriting paths and (b) on tremor-free handwriting and the feature course | ≥ 0.9 (a) / ≤ 0.05 (b) | hypothesis | engineering judgement; prediction results/sim/gate_fraction.json (v0.4.2, seeds 200-203): selected Kalman set 0.94 / 0.93 at 9 / 10 Hz -> (a) marginal PASS; open on 0.15 of tremor-free handwriting and 0.52 of the feature course -> (b) expected FAIL. The v0.4.1 balanced (inert) set: 0.31 / 0.29 (a FAIL) and 0.51 / 0.74 (b FAIL). docs/sim_report.md s3.2 | DEC-009 revision (separate spectral detector with hysteresis); choice of ASSIST_KF profile for EXP-H06 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (15 rows for EXP-B09).
 <!-- AC-TABLE:EXP-B09:END -->

@@ -176,13 +176,29 @@ def failure_cases():
     return out
 
 
+def _same_profiles(rows, a="kf_bal", b="kf_asr"):
+    """True when two estimator profiles gave identical results on every grid case
+    (the tuning selected the same parameter set for both objectives)."""
+    ra = {(r["seed"], r["f0"], r["amp"]): r["ratio"] for r in rows if r["tag"] == a}
+    rb = {(r["seed"], r["f0"], r["amp"]): r["ratio"] for r in rows if r["tag"] == b}
+    return bool(ra) and ra == rb
+
+
 def plots(rows, dist, mc):
     plotstyle.apply()
     import matplotlib.pyplot as plt
     fig, axs = plt.subplots(1, 3, figsize=(13.5, 3.8), sharey=True)
-    names = [("kf_bal", "Kalman balanced"), ("kf_asr", "Kalman assertive"), ("bpf", "band-pass"), ("oracle", "oracle bound")]
+    # colour follows the series (index into plotstyle.SERIES), so merging the two
+    # Kalman profiles when they coincide does not repaint the other series
+    names = [("kf_bal", "Kalman balanced", 0), ("kf_asr", "Kalman assertive", 1), ("bpf", "band-pass", 2),
+             ("oracle", "oracle bound", 3)]
+    labels = {"kf_bal": "Kalman balanced", "kf_asr": "Kalman assertive", "bpf": "band-pass"}
+    if _same_profiles(rows):
+        names = [("kf_asr", "Kalman (both profiles: same set)", 1), ("bpf", "band-pass", 2),
+                 ("oracle", "oracle bound", 3)]
+        labels = {"kf_asr": "Kalman", "bpf": "band-pass"}
     for ax, amp in zip(axs, AMPS):
-        for j, (tag, lab) in enumerate(names):
+        for tag, lab, j in names:
             mean, lo, hi = [], [], []
             for f in F0S:
                 v = np.array([r["ratio"] for r in rows if r["tag"] == tag and r["f0"] == f and r["amp"] == amp])
@@ -194,9 +210,11 @@ def plots(rows, dist, mc):
         ax.set_title(f"tremor amplitude {amp*1e3:.2f} mm peak", loc="left", fontsize=10)
         ax.set_xlabel("Tremor frequency (Hz)")
     axs[0].set_ylabel("Ink error / powered-neutral error")
-    axs[0].legend(loc="upper right", fontsize=8)
+    handles, labs = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labs, loc="upper right", ncol=len(labs), fontsize=8, frameon=False, bbox_to_anchor=(0.995, 0.995))
     fig.suptitle("Where assistance helps: residual vs tremor frequency (mean, 10-90% band over test seeds)", x=0.01, ha="left", fontsize=11)
-    plotstyle.stamp(fig, "simulation", "synthetic handwriting; distortion (um): " + ", ".join(f"{k} {v:.0f}" for k, v in dist.items()))
+    plotstyle.stamp(fig, "simulation", "synthetic handwriting; distortion without tremor (um): "
+                    + ", ".join(f"{labels[k]} {v:.0f}" for k, v in dist.items() if k in labels))
     fig.tight_layout()
     fig.savefig(os.path.join(OUT, "fig_ratio_vs_frequency.png"))
     plt.close(fig)
@@ -220,12 +238,33 @@ def plots(rows, dist, mc):
         plt.close(fig)
 
 
+def replot():
+    """Redraw the figures from the saved outputs of the last full run."""
+    def num(v):
+        try:
+            return float(v)
+        except ValueError:
+            return v
+    with open(os.path.join(OUT, "grid.csv"), newline="") as f:
+        rows = [{k: num(v) for k, v in r.items()} for r in csv.DictReader(f)]
+    with open(os.path.join(OUT, "monte_carlo.csv"), newline="") as f:
+        mc = [{k: num(v) for k, v in r.items()} for r in csv.DictReader(f)]
+    dist = json.load(open(os.path.join(OUT, "summary.json")))["distortion_um"]
+    plots(rows, dist, mc)
+    print("figures redrawn from", OUT)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--replot", action="store_true",
+                    help="redraw the figures from grid.csv, monte_carlo.csv and summary.json without simulating")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
+    if a.replot:
+        replot()
+        return
     t0 = time.time()
     seeds = harness.TEST_SEEDS[:3] if a.quick else harness.TEST_SEEDS
     rows, dist = grid(seeds, a.workers)

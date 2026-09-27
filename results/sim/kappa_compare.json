@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "simulation",
-    "generated_utc": "2026-09-27T01:49:29+00:00",
-    "git_revision": "0801fbf-dirty",
-    "parameters_version": "0.4.1",
-    "parameters_sha256_16": "f44bd71afad66b15",
+    "generated_utc": "2026-09-27T02:57:18+00:00",
+    "git_revision": "2477142-dirty",
+    "parameters_version": "0.4.2",
+    "parameters_sha256_16": "62292f1efdb00e0f",
     "command": "diag_kappa.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -38,46 +38,46 @@
   },
   "results": {
     "kappa0_m1.2g_theta35": {
-      "device_distortion_um": 60.96939716043903,
-      "oracle_ratio": 0.3099703963169937,
+      "device_distortion_um": 61.32931096669948,
+      "oracle_ratio": 0.3055145903427991,
       "oracle_frac_stop": 0.0,
-      "kf_asr_ratio": 0.7795076128824244,
-      "kf_bal_distortion_um": 34.07852074042485
+      "kf_asr_ratio": 0.781744620208215,
+      "kf_bal_distortion_um": 65.45039670872035
     },
     "kappa0_m1.2g_theta50": {
-      "device_distortion_um": 59.25527323290556,
-      "oracle_ratio": 0.13095075593900957,
-      "oracle_frac_stop": 7.933149989422466e-05,
-      "kf_asr_ratio": 0.7245561415434671,
-      "kf_bal_distortion_um": 46.30144492553602
+      "device_distortion_um": 59.34666208847301,
+      "oracle_ratio": 0.13182949152548087,
+      "oracle_frac_stop": 0.00010578652279699566,
+      "kf_asr_ratio": 0.7204910217630525,
+      "kf_bal_distortion_um": 104.73907887178831
     },
     "kappa1_m0.6g_theta35": {
-      "device_distortion_um": 60.62906512450653,
-      "oracle_ratio": 0.26673830645652274,
-      "oracle_frac_stop": 0.00037068417708112687,
-      "kf_asr_ratio": 0.8272679215726149,
-      "kf_bal_distortion_um": 19.831383999062723
+      "device_distortion_um": 60.73719523109717,
+      "oracle_ratio": 0.26586636799414143,
+      "oracle_frac_stop": 0.00013238720610040246,
+      "kf_asr_ratio": 0.8266195479954783,
+      "kf_bal_distortion_um": 53.195541418813534
     },
     "kappa1_m0.6g_theta50": {
-      "device_distortion_um": 59.20328635477207,
-      "oracle_ratio": 0.12707671857999076,
-      "oracle_frac_stop": 7.932310946589106e-05,
-      "kf_asr_ratio": 0.7352075484419297,
-      "kf_bal_distortion_um": 43.21096875697589
+      "device_distortion_um": 59.29616641911022,
+      "oracle_ratio": 0.1279875844471336,
+      "oracle_frac_stop": 0.00010576414595452142,
+      "kf_asr_ratio": 0.7335379059179694,
+      "kf_bal_distortion_um": 90.70415197329767
     },
     "kappa1_m0.6g_travel0.60_theta35": {
-      "device_distortion_um": 60.62906512450653,
-      "oracle_ratio": 0.26926842030674825,
-      "oracle_frac_stop": 0.0037997006614497652,
-      "kf_asr_ratio": 0.827409137926014,
-      "kf_bal_distortion_um": 19.831383999062723
+      "device_distortion_um": 60.73719523109717,
+      "oracle_ratio": 0.2695550917778431,
+      "oracle_frac_stop": 0.003750288811722102,
+      "kf_asr_ratio": 0.8267593417118608,
+      "kf_bal_distortion_um": 53.195541418813534
     },
     "kappa1_m0.6g_travel0.60_theta50": {
-      "device_distortion_um": 59.20328635477207,
-      "oracle_ratio": 0.12829256169729186,
-      "oracle_frac_stop": 0.0014191398730388233,
-      "kf_asr_ratio": 0.7352075484419297,
-      "kf_bal_distortion_um": 43.21096875697589
+      "device_distortion_um": 59.29616641911022,
+      "oracle_ratio": 0.13023309926716625,
+      "oracle_frac_stop": 0.00162532774320124,
+      "kf_asr_ratio": 0.7335379059179694,
+      "kf_bal_distortion_um": 90.70415197329767
     }
   }
 }

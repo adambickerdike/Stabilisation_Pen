@@ -79,11 +79,11 @@ The delay-limited residual (P-23) at 8 Hz is 2 sin(π·8·1.33 ms) = 0.067 for p
 | Runtime, 200 mAh pouch | 54 min continuous contact at the design point; 81 min writing at 65 % pen-down duty. A cell fitting the Rev A.1 bay may be ~130 mAh (DEC-014) | calculation | `results/trade/config_trade.json`; `electronics/README.md` |
 | Supply headroom | winding chosen so 3.3 V never binds inside the thermal envelope | calculation | DEC-012 |
 | Ink error (neutral pen vs rigid pen) | device distortion ≈ 59 µm RMS | simulation | `results/sim/design_sweeps.json` |
-| Ink error from false corrections (no tremor) | Kalman balanced ≈ 40–60 µm; assertive ≈ 90–110 µm; band-pass ≈ 160 µm | simulation | `results/sim/sweeps/summary.json` |
-| Tremor residual (with tremor) | oracle bound 0.22–0.32 of powered-neutral across 4–12 Hz; causal estimators ≈ 1.0 below 9 Hz | simulation | same |
+| Ink error from false corrections (no tremor) | Kalman ≈ 55–100 µm (4 nominal / 12 grid seeds; one set for both profiles since v0.4.2, `docs/sim_report.md` §3.2); band-pass ≈ 170 µm. REQ-CTRL-005 (≤ 50 µm) **violated** | simulation | `results/sim/sweeps/summary.json`, `results/sim/nominal/metrics.json` |
+| Tremor residual (with tremor) | oracle bound 0.22–0.32 of powered-neutral across 4–12 Hz; causal estimators ≥ 1.0 below 9 Hz (Kalman 1.03–1.14; worse at 0.15 mm) | simulation | same |
 | Stage-period compute (500 µs) | CPU ≈ 130 µs; SAADC ≈ 210 µs | proposed schedule | `fig_stage_timeline.png` |
-| Product capture data | 200 Hz × 24 B = 4.8 kB/s, ≈ 17 MB/h; 16 MB flash ≈ 1 h | calculation | ICD §4.3 |
-| Research logging | 2 kHz × 56 B = 112 kB/s over USB | calculation | ICD §4.2 |
+| Product capture data | 200 Hz × 24 B (20 B payload + 4 B framing) = 4.8 kB/s, ≈ 17 MB/h; 16 MB flash ≈ 1 h | calculation | ICD §4.3 |
+| Research logging | 2 kHz × 56 B (52 B payload + 4 B framing) = 112 kB/s over USB | calculation | ICD §4.2 |
 | PCB area | as drawn 779 mm² vs 517 mm² available; Rev A.1 plan fits a 41 mm board at 0.65 density | **open** (DEC-014) | `results/electronics/placement_study.json` |
 
 ## 5. Safety architecture

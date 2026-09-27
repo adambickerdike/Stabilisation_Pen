@@ -15,4 +15,5 @@ python3 sim/mc_sensitivity.py > results/sim/mc_sensitivity.log 2>&1
 python3 sim/sweep_design.py > results/sim/sweep_design.log 2>&1
 python3 sim/diag_kappa.py > results/sim/diag_kappa.log 2>&1
 python3 sim/guided_eval.py > results/sim/guided_eval.log 2>&1
+python3 sim/diag_gate.py > results/sim/diag_gate.log 2>&1
 echo "run_all complete"

@@ -1,9 +1,9 @@
 ............                                                             [100%]
-12 passed in 3.26s
-mc32 {'rigid': 8, 'unpowered': 8, 'neutral_fc0': 1370, 'neutral_fc60': 1482, 'neutral_fc30': 1430, 'neutral_fc15': 10, 'neutral_fc10': 10, 'neutral_fc5': 1484, 'neutral_2nd30': 10, 'neutral_2nd40': 8, 'neutral_2nd60': 8, 'neutral_no_ff': 6}
+12 passed in 3.13s
+mc32 {'rigid': 8, 'unpowered': 8, 'neutral_fc0': 1368, 'neutral_fc60': 1482, 'neutral_fc30': 1430, 'neutral_fc15': 10, 'neutral_fc10': 10, 'neutral_fc5': 1484, 'neutral_2nd30': 10, 'neutral_2nd40': 8, 'neutral_2nd60': 8, 'neutral_no_ff': 6}
 mc140 {'rigid': 10, 'unpowered': 12, 'neutral_fc0': 64, 'neutral_fc60': 22, 'neutral_fc30': 12, 'neutral_fc15': 6, 'neutral_fc10': 4, 'neutral_fc5': 4, 'neutral_2nd30': 4, 'neutral_2nd40': 4, 'neutral_2nd60': 8, 'neutral_no_ff': 4}
 corner_50deg_0p2N {'rigid': 37, 'unpowered': 37, 'neutral_fc0': 61, 'neutral_fc60': 81, 'neutral_fc30': 69, 'neutral_fc15': 35, 'neutral_fc10': 39, 'neutral_fc5': 19, 'neutral_2nd30': 25, 'neutral_2nd40': 51, 'neutral_2nd60': 49, 'neutral_no_ff': 17}
-nominal {'rigid': 11, 'unpowered': 7, 'neutral_fc0': 5, 'neutral_fc60': 5, 'neutral_fc30': 5, 'neutral_fc15': 5, 'neutral_fc10': 7, 'neutral_fc5': 7, 'neutral_2nd30': 5, 'neutral_2nd40': 5, 'neutral_2nd60': 5, 'neutral_no_ff': 3}
+nominal {'rigid': 11, 'unpowered': 7, 'neutral_fc0': 5, 'neutral_fc60': 5, 'neutral_fc30': 5, 'neutral_fc15': 5, 'neutral_fc10': 9, 'neutral_fc5': 7, 'neutral_2nd30': 5, 'neutral_2nd40': 5, 'neutral_2nd60': 5, 'neutral_no_ff': 3}
 {
  "K_n_N_per_m": 18692.077599563465,
  "K_c_cos2_N_per_m": 12140.885646924586,

@@ -1,6 +1,6 @@
 # Checkpoint — 2026-09-27
 
-Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.1**.
+Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.2**.
 
 ## 1. What exists and what actually ran
 
@@ -31,9 +31,11 @@ All are calculation or simulation unless stated otherwise.
   - Drive: 40 kHz PWM; current loop 2.3 kHz; design hold current 0.335 A.
 - **Estimation.**
   - Oracle bound 0.22–0.32 across 4–12 Hz.
-  - Kalman balanced ≈ 1.0, assertive 1.04–1.15 below 9 Hz and 0.85 at 12 Hz.
+  - Kalman 1.03–1.14 at 4–9 Hz and 0.85 at 12 Hz. Since v0.4.2 the balanced and assertive objectives select the same set. At 0.15 mm tremor it adds error at every frequency.
   - Band-pass 1.1–1.5 below 7 Hz.
-  - Distortion without tremor: 62 / 97 / 168 µm (balanced / assertive / band-pass).
+  - Distortion without tremor: Kalman 101 µm on 12 seeds (55 µm on 4), band-pass 168 µm. REQ-CTRL-005 (≤ 50 µm) is violated.
+  - The selection is fragile: 3–5 % of the tuning objective separates an inert set from the active one, and the v0.4.2 plant change flipped it (`docs/sim_report.md` §3.2).
+  - Guided mode: circle 443 → 164 µm, spiral 382 → 112 µm path distance.
 - **Mechanism.** Device distortion (neutral vs rigid pen) ≈ 59 µm. Axial path 2 kN/m. γ ≈ 0.19 at 50°.
 - **Budgets.**
   - Tip-equivalent inertia 13.7 g (requirement ≤ 12 g).

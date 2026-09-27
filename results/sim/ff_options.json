@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "simulation",
-    "generated_utc": "2026-09-27T01:42:23+00:00",
-    "git_revision": "0801fbf-dirty",
-    "parameters_version": "0.4.1",
-    "parameters_sha256_16": "f44bd71afad66b15",
+    "generated_utc": "2026-09-27T02:52:11+00:00",
+    "git_revision": "2477142-dirty",
+    "parameters_version": "0.4.2",
+    "parameters_sha256_16": "62292f1efdb00e0f",
     "command": "diag_ff_options.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -23,11 +23,11 @@
   },
   "worst_case_transitions_in_5s": {
     "ff_2nd60": {
-      "mc125": 138,
-      "mc22": 208,
+      "mc125": 140,
+      "mc22": 220,
       "mc32": 2539,
-      "mc123": 234,
-      "mc116": 227,
+      "mc123": 210,
+      "mc116": 225,
       "mc14": 163
     },
     "ff_off": {
@@ -40,17 +40,17 @@
     },
     "ff_2nd10": {
       "mc125": 114,
-      "mc22": 264,
-      "mc32": 2789,
-      "mc123": 284,
+      "mc22": 266,
+      "mc32": 2703,
+      "mc123": 250,
       "mc116": 63,
       "mc14": 31
     },
     "ff_2nd5": {
       "mc125": 20,
-      "mc22": 130,
+      "mc22": 124,
       "mc32": 2722,
-      "mc123": 144,
+      "mc123": 98,
       "mc116": 17,
       "mc14": 19
     },
@@ -65,49 +65,49 @@
   },
   "tuning_seed_means": {
     "ff_2nd60": {
-      "servo_err_um": 19.72076392450407,
-      "device_distortion_um": 51.32515388602241,
-      "oracle_ratio_9Hz": 0.17570677738875004,
-      "kf_bal_distortion_um": 23.943206050225132,
-      "kf_bal_ratio_9Hz": 0.939976930291987,
-      "kf_asr_distortion_um": 87.98976505304067,
-      "kf_asr_ratio_9Hz": 0.7304036184619257
+      "servo_err_um": 19.379679769669732,
+      "device_distortion_um": 51.554204831075424,
+      "oracle_ratio_9Hz": 0.17854720504831503,
+      "kf_bal_distortion_um": 98.56910478890534,
+      "kf_bal_ratio_9Hz": 0.7299313595911991,
+      "kf_asr_distortion_um": 98.56910478890534,
+      "kf_asr_ratio_9Hz": 0.7299313595911991
     },
     "ff_off": {
-      "servo_err_um": 28.725557859856398,
-      "device_distortion_um": 59.14283768385497,
-      "oracle_ratio_9Hz": 0.12670068998308015,
-      "kf_bal_distortion_um": 38.21757890718093,
-      "kf_bal_ratio_9Hz": 0.9047628244099771,
-      "kf_asr_distortion_um": 82.82124949863314,
-      "kf_asr_ratio_9Hz": 0.7415449303912344
+      "servo_err_um": 28.025986573071595,
+      "device_distortion_um": 59.14739645589014,
+      "oracle_ratio_9Hz": 0.12830729117506898,
+      "kf_bal_distortion_um": 81.17873844192313,
+      "kf_bal_ratio_9Hz": 0.7369930220617699,
+      "kf_asr_distortion_um": 81.17873844192313,
+      "kf_asr_ratio_9Hz": 0.7369930220617699
     },
     "ff_2nd10": {
-      "servo_err_um": 28.753043400529833,
-      "device_distortion_um": 56.430838255772436,
-      "oracle_ratio_9Hz": 0.14255959290602446,
-      "kf_bal_distortion_um": 58.20703005970362,
-      "kf_bal_ratio_9Hz": 0.9253534110804714,
-      "kf_asr_distortion_um": 86.62062715335988,
-      "kf_asr_ratio_9Hz": 0.7146239964678229
+      "servo_err_um": 28.204081795776943,
+      "device_distortion_um": 56.94327266464032,
+      "oracle_ratio_9Hz": 0.14352102316446516,
+      "kf_bal_distortion_um": 100.62454399142017,
+      "kf_bal_ratio_9Hz": 0.713258459083618,
+      "kf_asr_distortion_um": 100.62454399142017,
+      "kf_asr_ratio_9Hz": 0.713258459083618
     },
     "ff_2nd5": {
-      "servo_err_um": 29.38717374240785,
-      "device_distortion_um": 59.08582479594249,
-      "oracle_ratio_9Hz": 0.12269619588154503,
-      "kf_bal_distortion_um": 35.19753115483286,
-      "kf_bal_ratio_9Hz": 0.8843672356730213,
-      "kf_asr_distortion_um": 100.1525441233644,
-      "kf_asr_ratio_9Hz": 0.7243729134792719
+      "servo_err_um": 28.757124751283687,
+      "device_distortion_um": 59.28006499090288,
+      "oracle_ratio_9Hz": 0.12322517434450449,
+      "kf_bal_distortion_um": 90.14189576441002,
+      "kf_bal_ratio_9Hz": 0.7265577220119878,
+      "kf_asr_distortion_um": 90.14189576441002,
+      "kf_asr_ratio_9Hz": 0.7265577220119878
     },
     "ff_off_ki04": {
-      "servo_err_um": 17.95498038011934,
-      "device_distortion_um": 54.089000497813196,
-      "oracle_ratio_9Hz": 0.1492610493368675,
-      "kf_bal_distortion_um": 63.67907056836152,
-      "kf_bal_ratio_9Hz": 0.9572734571343693,
-      "kf_asr_distortion_um": 94.3816221260384,
-      "kf_asr_ratio_9Hz": 0.7309492806742733
+      "servo_err_um": 17.602222489804532,
+      "device_distortion_um": 53.224979267390204,
+      "oracle_ratio_9Hz": 0.15059164319067964,
+      "kf_bal_distortion_um": 99.6507152580209,
+      "kf_bal_ratio_9Hz": 0.7288822455377407,
+      "kf_asr_distortion_um": 99.6507152580209,
+      "kf_asr_ratio_9Hz": 0.7288822455377407
     }
   },
   "rigid_pen_transitions_in_5s_reference": "4-18 (pen lifts only)"

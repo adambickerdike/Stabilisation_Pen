@@ -1,10 +1,10 @@
 {
   "meta": {
     "evidence_status": "simulation + analytic estimate",
-    "generated_utc": "2026-09-27T01:35:49+00:00",
-    "git_revision": "0801fbf-dirty",
-    "parameters_version": "0.4.1",
-    "parameters_sha256_16": "f44bd71afad66b15",
+    "generated_utc": "2026-09-27T02:45:24+00:00",
+    "git_revision": "fa98fa9-dirty",
+    "parameters_version": "0.4.2",
+    "parameters_sha256_16": "62292f1efdb00e0f",
     "command": "diag_ff_chatter.py",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
@@ -21,7 +21,7 @@
     "mc32": {
       "rigid": 8,
       "unpowered": 8,
-      "neutral_fc0": 1370,
+      "neutral_fc0": 1368,
       "neutral_fc60": 1482,
       "neutral_fc30": 1430,
       "neutral_fc15": 10,
@@ -67,7 +67,7 @@
       "neutral_fc60": 5,
       "neutral_fc30": 5,
       "neutral_fc15": 5,
-      "neutral_fc10": 7,
+      "neutral_fc10": 9,
       "neutral_fc5": 7,
       "neutral_2nd30": 5,
       "neutral_2nd40": 5,

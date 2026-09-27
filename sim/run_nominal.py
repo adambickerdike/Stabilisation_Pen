@@ -151,19 +151,22 @@ def main():
     ref = keep["ref_same"]
     t = ref["t"]
     win = (t > 1.0) & (t < 3.2)
-    fig, axs = plt.subplots(1, 3, figsize=(13, 3.8), sharex=True, sharey=True)
-    for ax, (name, lab) in zip(axs, (("neutral", "powered neutral"), ("kf_asr", "Kalman (assertive)"), ("oracle", "oracle bound"))):
+    same_kf = fz["kf_bal"] == fz["kf_asr"]  # tuning may select one set for both objectives
+    kf_title = "Kalman (both profiles: same set)" if same_kf else "Kalman (assertive)"
+    fig, axs = plt.subplots(1, 3, figsize=(13, 2.9), sharex=True, sharey=True)
+    for ax, (name, title) in zip(axs, (("neutral", "powered neutral"), ("kf_asr", kf_title), ("oracle", "oracle bound"))):
         r = keep[name]
         cm = win & (r["contact"] > 0) & (ref["contact"] > 0)
         ax.plot(ref.xy("tipx")[win, 0] * 1e3, ref.xy("tipx")[win, 1] * 1e3, color=plotstyle.MUTED, lw=1.0, label="intended ink (no tremor)")
         tip = r.xy("tipx").copy()
         tip[~cm] = np.nan
-        ax.plot(tip[win, 0] * 1e3, tip[win, 1] * 1e3, color=plotstyle.SERIES[0], lw=1.0, label=lab)
-        ax.set_title(lab, loc="left", fontsize=10)
+        ax.plot(tip[win, 0] * 1e3, tip[win, 1] * 1e3, color=plotstyle.SERIES[0], lw=1.0, label="ink with tremor")
+        ax.set_title(title, loc="left", fontsize=10)
         ax.set_aspect("equal")
         ax.set_xlabel("page x (mm)")
     axs[0].set_ylabel("page y (mm)")
-    axs[0].legend(loc="lower right", fontsize=7.5)
+    handles, labs = axs[0].get_legend_handles_labels()
+    fig.legend(handles, labs, loc="upper right", ncol=2, fontsize=8, frameon=False, bbox_to_anchor=(0.995, 0.995))
     fig.suptitle("Ink with 9 Hz, 0.3 mm tremor (test seed %d), 50°, 1 N" % SEEDS[0], x=0.01, ha="left", fontsize=11)
     plotstyle.stamp(fig, "simulation", "synthetic handwriting and tremor; model M1")
     fig.tight_layout()
@@ -182,7 +185,8 @@ def main():
     ax.set_ylabel("Ink error / powered-neutral error")
     ax.set_title("Residual ink error by controller (mean ± SD over test seeds)", loc="left")
     ax.legend()
-    plotstyle.stamp(fig, "simulation", "lower is better; >1 means assistance made ink worse")
+    plotstyle.stamp(fig, "simulation", "lower is better; >1 means assistance made ink worse"
+                    + ("; both Kalman profiles are the same selected set" if same_kf else ""))
     fig.tight_layout()
     fig.savefig(os.path.join(OUT, "fig_ratio_by_controller.png"))
     plt.close(fig)

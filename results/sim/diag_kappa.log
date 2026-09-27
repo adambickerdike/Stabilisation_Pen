@@ -1,6 +1,6 @@
-kappa0_m1.2g_theta35 {'device_distortion_um': 60.969, 'oracle_ratio': 0.31, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.78, 'kf_bal_distortion_um': 34.079}
-kappa0_m1.2g_theta50 {'device_distortion_um': 59.255, 'oracle_ratio': 0.131, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.725, 'kf_bal_distortion_um': 46.301}
-kappa1_m0.6g_theta35 {'device_distortion_um': 60.629, 'oracle_ratio': 0.267, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.827, 'kf_bal_distortion_um': 19.831}
-kappa1_m0.6g_theta50 {'device_distortion_um': 59.203, 'oracle_ratio': 0.127, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.735, 'kf_bal_distortion_um': 43.211}
-kappa1_m0.6g_travel0.60_theta35 {'device_distortion_um': 60.629, 'oracle_ratio': 0.269, 'oracle_frac_stop': 0.004, 'kf_asr_ratio': 0.827, 'kf_bal_distortion_um': 19.831}
-kappa1_m0.6g_travel0.60_theta50 {'device_distortion_um': 59.203, 'oracle_ratio': 0.128, 'oracle_frac_stop': 0.001, 'kf_asr_ratio': 0.735, 'kf_bal_distortion_um': 43.211}
+kappa0_m1.2g_theta35 {'device_distortion_um': 61.329, 'oracle_ratio': 0.306, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.782, 'kf_bal_distortion_um': 65.45}
+kappa0_m1.2g_theta50 {'device_distortion_um': 59.347, 'oracle_ratio': 0.132, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.72, 'kf_bal_distortion_um': 104.739}
+kappa1_m0.6g_theta35 {'device_distortion_um': 60.737, 'oracle_ratio': 0.266, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.827, 'kf_bal_distortion_um': 53.196}
+kappa1_m0.6g_theta50 {'device_distortion_um': 59.296, 'oracle_ratio': 0.128, 'oracle_frac_stop': 0.0, 'kf_asr_ratio': 0.734, 'kf_bal_distortion_um': 90.704}
+kappa1_m0.6g_travel0.60_theta35 {'device_distortion_um': 60.737, 'oracle_ratio': 0.27, 'oracle_frac_stop': 0.004, 'kf_asr_ratio': 0.827, 'kf_bal_distortion_um': 53.196}
+kappa1_m0.6g_travel0.60_theta50 {'device_distortion_um': 59.296, 'oracle_ratio': 0.13, 'oracle_frac_stop': 0.002, 'kf_asr_ratio': 0.734, 'kf_bal_distortion_um': 90.704}

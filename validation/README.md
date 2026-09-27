@@ -44,7 +44,7 @@ Executed results will live only in [`records/`](records/README.md).
 
 - **`direction`:** `<=`, `>=`, `<`, `>`, `=`, `within` (inclusive interval) or `pass/fail` (a conformity check described in `metric`).
 - **Decision rules:** simple acceptance when TUR ≥ 4, otherwise guarded acceptance. Safety criteria always use guarded acceptance (`bench_protocols.md` §0.5).
-- **Predictions are indicative until frozen.** Result files carry mixed parameter versions (EM 0.2.0; thermal and trade 0.3.0; simulation and electronics 0.4.1). Before each experiment the predictions are regenerated with the as-built parameters and frozen (`bench_protocols.md` §0.2).
+- **Predictions are indicative until frozen.** Result files carry mixed parameter versions (EM 0.2.0; thermal 0.3.0; electronics, mechanics, CAD and ML 0.4.1; simulation and trade 0.4.2). Before each experiment the predictions are regenerated with the as-built parameters and frozen (`bench_protocols.md` §0.2).
 
 ## 3. Coverage
 
@@ -104,9 +104,10 @@ Stating these in advance keeps the plan honest. Each will be measured, not assum
 | AC-B05-02 (REQ-MECH-003) | m_eq 13.7 g against ≤ 12 g |
 | AC-P01-01 (REQ-PWR-001) | About 55 min against ≥ 60 min |
 | AC-M03-02 (REQ-FORM-004) | CoM 76–81 mm against ≤ 70 mm |
-| AC-B09-06 (REQ-CTRL-005) | Marginal: 57–62 µm predicted against 50 µm |
-| AC-B09-08 | Fast strokes 122 µm against 100 µm |
-| AC-B09-15 (a), KF-BAL only | In simulation the balanced profile's gate never opens with tremor present (`docs/sim_report.md` §3.2) |
+| AC-B09-05 (REQ-CTRL-007) | Kalman 1.10 / 1.06 of neutral error at 4 / 5 Hz against ≤ 1.05 (grid at 0.3 mm, v0.4.2) |
+| AC-B09-06 (REQ-CTRL-005) | 55–101 µm distortion predicted against 50 µm (v0.4.2; was marginal at 57–62 µm with the v0.4.1 inert set) |
+| AC-B09-07 (REQ-CTRL-005) | Corner error 208 µm max against 100 µm |
+| AC-B09-15 (b) | Gate open on 15 % of tremor-free handwriting and 52 % of the feature course against ≤ 5 % (`results/sim/gate_fraction.json`). In v0.4.1 part (a) was the predicted failure (inert set); `docs/sim_report.md` §3.2 |
 | AC-C02-08, AC-S02-06 | The ICD lacks the uncertainty and nib-offset fields |
 | AC-E01-08 (REQ-ML-001: no spikes > 100 µm) | The synthetic TCN shows 125 µm corner spikes (REQ-CTRL-005 current estimate) |
 | AC-B04-03, AC-B05-12, AC-F01-03/04, AC-F02-05 (class 5) | Requirement text conflicts with the design (§6). AC-F02-01 is also flagged, but 40 kHz meets "≥ 20 kHz" |
@@ -265,6 +266,7 @@ Status of each item above after the consistency pass. Parameters moved to v0.4.2
 | 30, 32, 33 | Fixed. H03 n = 20; phase/stage naming note in `docs/plan.md`; Elble 2000 ledgered as PDT-31 (abstract only). |
 | 31 | Noted; the adaptive extension to 40 ET stays in the plan. |
 | New | The Rev A.1 battery bay (32 mm) cannot hold the 200 mAh the budgets assumed. At the ledgered cell's energy density it holds ~130 mAh. Recorded in DEC-014 as a coupled packaging option set. |
+| New (v0.4.2 re-run) | The balanced Kalman selection flipped from the inert set to the active one, so KF-BAL = KF-ASR (`docs/sim_report.md` §3.2). Updated to match: the EXP-B09 predictions; the bases of AC-B09-02/04/05/06/07/08/15; §5. `sim/diag_gate.py` → `results/sim/gate_fraction.json` now predicts AC-B09-15. |
 
 ## 7. Open items in this plan
 

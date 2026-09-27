@@ -146,6 +146,7 @@ How to read it:
   - At 4–6 Hz it stays far above that oracle (0.63 against 0.28). There, separation from intent, not prediction, limits it.
 - **The TCN's frozen gain reaches its optimum at 14 µm FC**, below the 25 µm allowed. The comparison therefore gives the baselines more false-correction room than the TCN uses.
 - **The frozen controller KF is not a verdict on the controller.** Its parameters were selected at 2 kHz with a 1.3 ms horizon inside the coupled simulator. At 250 Hz with an 8.5 ms physical horizon it is nearly inert.
+- **Parameters v0.4.2 changed the controller's balanced selection** (`docs/sim_report.md` §3.2). The balanced profile now uses the set this pipeline evaluated as "assertive" (q_j 0.1, q_t 10⁻⁸, gate 7.5 Hz), so the "assertive" rows describe the current controller. The "balanced" rows describe the v0.4.1 inert set and are kept as a record. The results here were generated with v0.4.1; re-running regenerates both rows from the current selection.
 
 ### c.2 Paired differences (TCN − baseline, same bootstrap resamples; test writers)
 
