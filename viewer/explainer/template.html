@@ -825,7 +825,8 @@ const GROUPS = {
   electronics:{name:"Electronics", tok:"--g-elec", desc:"The control board with Bluetooth, the coil drivers, the charger and the charging port."},
   power:{name:"Battery", tok:"--g-power", desc:"Rechargeable lithium-ion cell."},
   haptic:{name:"Vibration motor", tok:"--g-haptic", desc:"Gives gentle buzz cues."},
-  inertial:{name:"Inertial module (optional)", tok:"--g-inertial", desc:"Optional moving weight or gyroscope in the back of the pen."},
+  inertial:{name:"Inertial module (optional; in the first prototype)", tok:"--g-inertial", desc:"A 19.8 g tungsten slug in the back of the pen, pushed sideways by coils: its reaction steadies the whole pen against the shake. Optional: it is fitted in the first prototype, and a measurement of how people grip the pen decides whether the product keeps it."},
+  magnet:{name:"Board magnet (optional)", tok:"--g-act", desc:"A small disc magnet in a keel under the fixed sleeve. Only for the guidance board: the board's magnet under the glass pulls it, so the board moves the whole pen, not the nose."},
   structure:{name:"Handle shell", tok:"--g-shell", desc:"The body of the pen that you hold."},
 };
 const GROUP_ORDER = ["moving_nose","refill","skid","grip","mechanism","actuator","sensor","electronics","power","haptic","inertial","structure"];
@@ -882,10 +883,13 @@ function partRadiusAt(lay, pred, z, dflt){ const cs=(lay.components||[]).filter(
   const t=clamp((z-s.z0)/((s.z1-s.z0)||1),0,1), d0=s.d0||2*dflt, d1=(s.d1==null?d0:s.d1); return (d0+(d1-d0)*t)/2; }
 function sleeveRadius(lay, z){ return partRadiusAt(lay, c=>c.group==="grip", z, 10); }
 function shellRadius(lay, z){ return partRadiusAt(lay, c=>c.group==="structure" && !/skid|cap/i.test(c.id||""), z, 10); }
+/* layout.json frame: x in the tilt plane, positive away from the paper; y lateral.  Pen-local frame here: y up (away
+   from the paper), x lateral.  So layout (x, y) -> pen-local (-y, x), and a box's two widths swap. */
+function layOff(c){ const off=c.offset||[0,0]; return [-(+off[1]||0), +off[0]||0]; }
 function partGeometry(c){
-  const z0=+c.z0, z1=+c.z1, off=c.offset||[0,0], ox=+off[0]||0, oy=+off[1]||0;
+  const z0=+c.z0, z1=+c.z1, [ox, oy]=layOff(c);
   let g;
-  if(c.shape==="box"){ const s=c.size||[2,2,z1-z0]; const L=(s[2]>0?s[2]:(z1-z0)); g=new THREE.BoxGeometry(s[0]||1, s[1]||1, L); g.translate(ox, oy, (z0+z1)/2); }
+  if(c.shape==="box"){ const s=c.size||[2,2,z1-z0]; const L=(s[2]>0?s[2]:(z1-z0)); g=new THREE.BoxGeometry(s[1]||1, s[0]||1, L); g.translate(ox, oy, (z0+z1)/2); }
   else if(c.shape==="tube"){ let ro0=(c.d0||2)/2, ro1=(c.d1||c.d0||2)/2, ri=(c.d_in||0)/2;
     if(c.group==="actuator"){ ro0+=0.18; ro1+=0.18; ri-=0.18; }       /* a flux ring flush with the shell: keep it just proud, no z-fighting */
     if(c.group==="grip"){ ri+=0.05; }
@@ -1076,11 +1080,11 @@ function initHero(lay){
   const zMid=((lay.length||170)/2)+2, penLen=lay.length||170;
   /* explode: stretch along the axis about the pivot; shell up, sleeve and skid down, sensors outward */
   for(const m of pen.parts){
-    const c=m.userData.comp, zc=(c.z0+c.z1)/2, off=c.offset||[0,0], g=m.userData.group;
+    const c=m.userData.comp, zc=(c.z0+c.z1)/2, off=layOff(c), g=m.userData.group;
     let ex=[0,0,0.62*(zc-pen.pivot)];
     if(g==="structure") ex=[0, 38, ex[2]*0.5];
     else if(g==="grip") ex=[0, -34, ex[2]];
-    else if(g==="skid") ex=[0, -34, ex[2]];
+    else if(g==="skid" || g==="magnet") ex=[0, -34, ex[2]];
     if(g==="sensor"){ const ox=+off[0]||0, oy=+off[1]||0, n=Math.hypot(ox,oy); if(n>0.1){ ex[0]+=16*ox/n; ex[1]+=16*oy/n; } else ex[1]+=16; }
     m.userData.ex=ex; m.userData.base=m.position.clone();
   }
@@ -1175,7 +1179,7 @@ function initHero(lay){
   /* labels: one per group (one per sensor) */
   const labelDefs=[];
   const byGroup={}; for(const m of pen.parts) (byGroup[m.userData.group]=byGroup[m.userData.group]||[]).push(m);
-  const PRI={moving_nose:10, skid:10, grip:9, mechanism:9, actuator:9, power:7, haptic:6, electronics:7, refill:6, inertial:5, structure:4};
+  const PRI={moving_nose:10, skid:10, grip:9, mechanism:9, actuator:9, power:7, haptic:6, electronics:7, refill:6, inertial:5, magnet:5, structure:4};
   for(const [g,ms] of Object.entries(byGroup)){
     if(g==="sensor"){ const seen={}; for(const m of ms){ const base=String(m.userData.comp.label||m.userData.id).replace(/\s*\([^)]*\)\s*$/,"");
         if(seen[base]){ seen[base].n++; continue; } const id=m.userData.id; const pri=/imu|motion/i.test(base+id)?8:6;
@@ -1429,6 +1433,10 @@ function initScenes(lay, board, samples, tip){
   setXrayParts(pen, true, {grip:0.42, structure:1});
   for(const m of pen.parts){ if(m.userData.group==="structure"){ solid(m.material); }
     if(m.userData.comp.optional && m.userData.group==="sensor") m.visible=false; }   /* keep the nose area clear in the scenes */
+  /* the board magnet and its keel (optional parts of layout.json) belong to scene (e) only */
+  const boardOnly=pen.parts.filter(m=>m.userData.group==="magnet" || /board_keel/i.test(m.userData.id||""));
+  for(const m of boardOnly) m.visible=false;
+  const rmMass=pen.parts.find(m=>/rm_mass|reaction_mass/i.test(m.userData.id||""));      /* the rear module's moving slug */
   v.scene.add(pen.root);
   const paper=makePaper(640, 640, 8); v.scene.add(paper);
   const inkG=new THREE.Group(); v.scene.add(inkG);
@@ -1437,7 +1445,9 @@ function initScenes(lay, board, samples, tip){
      with the handle and the hand, not with the nose */
   const pm=(board&&board.pen_magnet)||{d:6.35, h:3.17, pen_frame_mm:{along_axis_from_ball:13.5, off_axis_toward_paper:10.2}};
   let penMag;
-  if(pm.pen_frame_mm){ const z=+pm.pen_frame_mm.along_axis_from_ball||13.5, off=+pm.pen_frame_mm.off_axis_toward_paper||0, h=+pm.h||3, d=+pm.d||6;
+  const layMag=boardOnly.find(m=>m.userData.group==="magnet");
+  if(layMag){ penMag=layMag; solid(penMag.material); const c=layMag.userData.comp, o=layOff(c); penMag.userData.local=new THREE.Vector3(o[0], o[1], (c.z0+c.z1)/2); }
+  else if(pm.pen_frame_mm){ const z=+pm.pen_frame_mm.along_axis_from_ball||13.5, off=+pm.pen_frame_mm.off_axis_toward_paper||0, h=+pm.h||3, d=+pm.d||6;
     const geo=frustumGeo(d/2, d/2, z-h/2, z+h/2); geo.translate(0, -off, 0); penMag=new THREE.Mesh(geo, stdMat(css("--g-act"))); pen.body.add(penMag);
     const keel=new THREE.Mesh(new THREE.BoxGeometry(2.2, off, h+2.2), stdMat(css("--g-grip"))); keel.position.set(0, -off/2, z); penMag.add(keel);
     penMag.userData.local=new THREE.Vector3(0, -off, z); }
@@ -1654,7 +1664,7 @@ function initScenes(lay, board, samples, tip){
     if(key==="e") keyItems.push(`<span><span class="ln" style="--c:var(--good)"></span>pull on the sleeve magnet</span>`);
     $("scene-key").innerHTML=keyItems.join("");
     $("size-wrap").hidden = key!=="c";
-    penMag.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false; couple.visible=false;
+    penMag.visible = key==="e"; for(const m of boardOnly) m.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false; couple.visible=false;
     const vb=document.querySelectorAll("[data-view]");     /* in the board scene the two views are the magnets close up and the whole board */
     vb.forEach(b=>b.textContent = key==="e" ? (b.dataset.view==="tip" ? "Magnets close-up" : "Whole board") : (b.dataset.view==="tip" ? "Tip close-up" : "Whole hand"));
     if(paper.userData.spacing!==S.ruling) retexturePaper(paper, S.ruling);
@@ -1737,7 +1747,7 @@ function initScenes(lay, board, samples, tip){
   Sx.onTheme=function(){ v.scene.background=new THREE.Color(css("--scene-bg")); retexturePaper(paper);
     for(const m of pen.parts){ const nm=partMaterial(m.userData.comp); m.material.color.copy(nm.color); nm.dispose(); }
     for(const mt of hand.userData.mats) mt.color.set(css("--skin")); hand.userData.mats[1].color.multiplyScalar(0.9);
-    penMag.material.color.set(css("--g-act")); if(penMag.children[0]) penMag.children[0].material.color.set(css("--g-grip")); arrow.setColor(new THREE.Color(css("--good"))); couple.material.color.set(css("--good"));
+    penMag.material.color.set(css("--g-act")); if(penMag.children[0]) penMag.children[0].material.color.set(css("--g-grip")); if(layMag) solid(penMag.material); arrow.setColor(new THREE.Color(css("--good"))); couple.material.color.set(css("--good"));
     if(S){ if(S.key==="e") buildBoard(); buildInk(); frame(true); } };
   document.querySelectorAll(".scene-btn").forEach(b=>b.onclick=()=>selectScene(b.dataset.scene));
   $("play").onclick=()=>{ Sx.playing=!Sx.playing; $("play").textContent=Sx.playing?"Pause":"Play"; $("play").setAttribute("aria-label", Sx.playing?"Pause":"Play"); };

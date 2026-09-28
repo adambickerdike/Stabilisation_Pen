@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """One command for the handwriting-outcomes study (model HW1).  Evidence status: SIMULATION / CALCULATION.
 
-  python3 -m handwriting.run_study            # full study (about 50 min with 2 worker processes here)
-  python3 -m handwriting.run_study --quick    # reduced grid (about 4 min), same outputs, marked "quick"
+  python3 -m handwriting.run_study            # full study (about 45 min on one core)
+  python3 -m handwriting.run_study --quick    # reduced grid, same outputs in handwriting/build/quick/
   python3 -m handwriting.run_study --stages figures   # redraw figures and pages from the cached stage outputs
 
 Stages: tuning (writers >= 100, seeds >= 300 only), et, et_sens, pd, practice, crosscheck, figures (figures, samples.json,
 outcomes.json, evidence_rows.csv).  Final numbers use aiguide test writers 0-5 and seeds 200-203.
-Outputs: results/handwriting/ (outcomes.json, samples.json, fig_*.png + CSV twins, evidence_rows.csv, _cache/).
+Outputs: results/handwriting/ (outcomes.json, samples.json, fig_*.png + CSV twins, evidence_rows.csv, _cache/);
+--quick writes the same files to handwriting/build/quick/ (git-ignored) so it never overwrites the published results.
 """
 from __future__ import annotations
 
@@ -19,10 +20,11 @@ import time
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
-from . import RESULTS_DIR, TEST_SEEDS, TEST_WRITERS, TUNE_SEEDS, TUNE_WRITERS, ensure_paths
+from . import BUILD_DIR, RESULTS_DIR, TEST_SEEDS, TEST_WRITERS, TUNE_SEEDS, TUNE_WRITERS, ensure_paths
 
 ensure_paths()
 CACHE = RESULTS_DIR / "_cache"
+QUICK_DIR = BUILD_DIR / "quick"          # --quick writes here (git-ignored), never over the published results
 STAGES = ("tuning", "et", "et_sens", "pd", "practice", "crosscheck", "figures")
 
 
@@ -135,9 +137,12 @@ def _cc_job(job):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--quick", action="store_true", help="reduced grid for a fast check")
-    ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--workers", type=int, default=1, help="worker processes (the machine is shared: default 1)")
     ap.add_argument("--stages", nargs="*", default=list(STAGES), choices=STAGES)
     args = ap.parse_args(argv)
+    global CACHE
+    if args.quick:
+        CACHE = QUICK_DIR / "_cache"
     _limit_threads()
     from . import et_study as ET
     from . import pd_study as PD
@@ -219,7 +224,10 @@ def main(argv=None):
     if "figures" in args.stages:
         t0 = time.time()
         from . import report as RP
-        RP.build(quick=q, timing=log)
+        if q:
+            RP.CACHE = CACHE
+            QUICK_DIR.mkdir(parents=True, exist_ok=True)
+        RP.build(quick=q, timing=log, outdir=QUICK_DIR if q else RESULTS_DIR)
         log["figures_s"] = time.time() - t0
     log["total_s"] = time.time() - t_all
     print(json.dumps(log, indent=1))
