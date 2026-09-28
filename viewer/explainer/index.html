@@ -726,8 +726,8 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <tr><td>Custom mechanics (flexure pivot, nose, handle)</td><td><span class="pill yes">Yes</span></td><td>A friction-free pivot so the nose moves smoothly; a fixed sleeve so your fingers stay still while the tip moves</td></tr>
           <tr><td>Force sensor</td><td><span class="pill yes">Yes</span></td><td>Knows when the pen touches the paper and how hard</td></tr>
           <tr><td>Vibration motor</td><td><span class="pill yes">Yes</span></td><td>Gentle cues: “write bigger”, “check this word”, “slow down”</td></tr>
-          <tr><td>Weights</td><td><span class="pill maybe">Maybe</span></td><td>A heavier handle damps some shake for some people (evidence mixed; no effect on Parkinson's tremor); an active weight or gyroscope adds a little more (being quantified) <span class="tag lit"><i></i>Literature · PDT-21, PDT-22, ACT-32</span></td></tr>
-          <tr><td>Guidance board (electromagnet under the paper)</td><td><span class="pill opt">Optional, for practice</span></td><td>The only way to physically steer whole letters with real force; a desk accessory</td></tr>
+          <tr><td>Weights</td><td><span class="pill maybe">Only as an active module</span></td><td>A plain heavier handle made the ink worse in many simulated cases, because the pen rocks on the finger grip; evidence in people is mixed and shows no effect on Parkinson's tremor. An active tungsten weight in the back of the pen, moved by coils, adds a further 6–17 % on top of the nose; it is fitted in the first prototype <span class="tag sim"><i></i>Simulation · model H1</span> <span class="tag lit"><i></i>Literature · PDT-21, PDT-22, ACT-32</span></td></tr>
+          <tr><td>Guidance board (a magnet moved under the paper)</td><td><span class="pill opt">Optional, for practice</span></td><td>The only way to physically steer whole letters with real force; a desk accessory</td></tr>
           <tr><td>AI in the phone app</td><td><span class="pill yes">Yes</span></td><td>Reads your writing, spots spelling mistakes, gives cues, saves corrected notes</td></tr>
         </tbody>
       </table>
@@ -800,7 +800,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
     <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> replay.json: <code>results/opt/viz_inertial_opt_1mm.json + results/opt/viz_inertial_opt.json (+ averages from results/opt/inertial_opt.json)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 19:05 UTC from git 4c17dd2-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-28 19:25 UTC from git 5db415a-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
   </footer>
 </div>
 
