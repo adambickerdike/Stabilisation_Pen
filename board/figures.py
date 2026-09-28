@@ -20,33 +20,46 @@ def _csv(path, header, rows):
             w.writerow(r)
 
 
-def force_vs_gap(out_dir, rows, diam_rows, zlift_rows, status="CALC (magpylib 5.2; nothing measured)"):
-    g = np.array([r["gap_mm"] for r in rows])
-    iso = np.array([r["lateral_isotropic_N"] for r in rows])
-    best = np.array([r["lateral_best_direction_N"] for r in rows])
-    fz0 = np.array([-r["normal_at_zero_lateral_N"] for r in rows])
+def force_vs_gap(out_dir, rows, diam_rows, zlift_rows, design_gaps=(("A4", 3.7), ("A5", 2.7)), zlift=(3.7, 15.7),
+                 status="CALC (magpylib 5.2; nothing measured)"):
+    allr = sorted(rows + zlift_rows, key=lambda r: r["gap_mm"])
+    g = np.array([r["gap_mm"] for r in allr])
+    iso = np.array([r["lateral_isotropic_N"] for r in allr])
+    best = np.array([r["lateral_best_direction_N"] for r in allr])
+    fz0 = np.array([-r["normal_at_zero_lateral_N"] for r in allr])
     dg = np.array([r["gap_mm"] for r in diam_rows])
     dacross = np.array([r["across_azimuth_lateral_N"] for r in diam_rows])
-    fig, axs = plt.subplots(1, 2, figsize=(11.0, 4.3))
+    fig, axs = plt.subplots(1, 2, figsize=(11.5, 4.6))
+    for ax in axs:
+        ax.axvspan(0.5, 3.0, color=ps.GRID, alpha=0.6, lw=0)
+        ax.axvspan(zlift[0], zlift[1], ymin=0.0, ymax=0.04, color=ps.SEQ_BLUE[2], lw=0)
+        for name, dgap in design_gaps:
+            ax.axvline(dgap, color=ps.INK2, lw=1, ls=":")
     ax = axs[0]
     ax.plot(g, best, color=ps.SERIES[0], lw=2, label="axial head, best direction")
     ax.plot(g, iso, color=ps.SERIES[0], lw=2, ls="--", label="axial head, weakest direction")
     ax.plot(dg, dacross, color=ps.SERIES[1], lw=2, label="diametric head (variant)")
     ax.plot(g, iso, **ps.marker_kw(ps.SERIES[0]))
-    ax.axvspan(0.5, 3.0, color=ps.GRID, alpha=0.5, lw=0)
-    ax.axvline(2.7, color=ps.INK2, lw=1, ls=":")
-    ax.text(2.75, ax.get_ylim()[1] * 0.93 if ax.get_ylim()[1] > 0 else 1, "design gap 2.7 mm", fontsize=8, color=ps.INK2)
     ax.axhline(0.40, color=ps.MUTED, lw=1, ls="-.")
-    ax.text(g.max() * 0.62, 0.43, "software cap 0.40 N", fontsize=8, color=ps.INK2)
+    ax.set_ylim(0, max(best.max(), dacross.max() if len(dacross) else 0) * 1.08)
+    ax.set_xlim(0, g.max() + 0.5)
+    top = ax.get_ylim()[1]
+    ax.text(g.max() * 0.55, 0.45, "software cap 0.40 N", fontsize=8, color=ps.INK2)
+    ax.text(0.55, top * 0.03 + 0.05, "range asked:\n0.5-3 mm", fontsize=7.5, color=ps.INK2)
+    for name, dgap in design_gaps:
+        ax.text(dgap + 0.15, top * 0.55, f"{name} design gap {dgap:g} mm", fontsize=7.5, color=ps.INK2, rotation=90, va="center")
+    ax.text(zlift[0] + 0.3, top * 0.07, "Z-lift range (guidance level)", fontsize=7.5, color=ps.INK2)
     ax.set_xlabel("gap: paper top to head-magnet top (mm)")
     ax.set_ylabel("lateral force available at the pen (N)")
     ax.set_title("Lateral force vs gap (pen at 50 deg)", loc="left")
     ax.legend(loc="upper right")
     ax = axs[1]
-    ax.plot(g, fz0, color=ps.SERIES[2], lw=2, label="axial head, head under the zero-force point")
+    ax.plot(g, fz0, color=ps.SERIES[2], lw=2, label="axial head under the zero-force point")
     ax.plot(g, fz0, **ps.marker_kw(ps.SERIES[2]))
     ax.axhline(1.0, color=ps.MUTED, lw=1, ls="-.")
-    ax.text(g.max() * 0.55, 1.05, "writer's own normal force ~1 N", fontsize=8, color=ps.INK2)
+    ax.set_ylim(0, fz0.max() * 1.08)
+    ax.set_xlim(0, g.max() + 0.5)
+    ax.text(g.max() * 0.5, 1.12, "writer's own normal force ~1 N", fontsize=8, color=ps.INK2)
     ax.set_xlabel("gap (mm)")
     ax.set_ylabel("extra normal pull on the pen (N)")
     ax.set_title("The price: the head also pulls the pen down", loc="left")
@@ -57,14 +70,11 @@ def force_vs_gap(out_dir, rows, diam_rows, zlift_rows, status="CALC (magpylib 5.
     fig.savefig(p)
     plt.close(fig)
     rows_csv = []
-    for r in rows:
+    for r in allr:
         rows_csv.append([r["gap_mm"], r["lateral_isotropic_N"], r["lateral_best_direction_N"], -r["normal_at_zero_lateral_N"],
                          r["max_normal_pull_N"], r["slope_at_zero_N_per_mm"], "", ""])
     for r in diam_rows:
         rows_csv.append([r["gap_mm"], "", "", "", "", "", r["across_azimuth_lateral_N"], r["along_azimuth_normal_N"]])
-    for r in zlift_rows:
-        rows_csv.append([r["gap_mm"], r["lateral_isotropic_N"], r["lateral_best_direction_N"], -r["normal_at_zero_lateral_N"],
-                         r["max_normal_pull_N"], r["slope_at_zero_N_per_mm"], "", ""])
     _csv(os.path.join(out_dir, "fig_force_vs_gap.csv"),
          ["gap_mm", "axial_lateral_isotropic_N", "axial_lateral_best_direction_N", "axial_normal_pull_at_zero_lateral_N",
           "axial_max_normal_pull_N", "axial_slope_at_zero_N_per_mm", "diametric_lateral_across_azimuth_N",
@@ -157,7 +167,7 @@ def guidance_examples(out_dir, panels, status="SIMULATION (synthetic paths, HAP-
              "ink_off": dict(color=ps.SERIES[1], lw=1.8),
              "ink_guided": dict(color=ps.SERIES[0], lw=1.8),
              "ink_lead": dict(color=ps.SERIES[2], lw=1.8)}
-    fig, axs = plt.subplots(1, len(panels), figsize=(4.4 * len(panels), 4.6))
+    fig, axs = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 5.6))
     rows = []
     for ax, (title, series) in zip(np.atleast_1d(axs), panels):
         seen = set()
@@ -167,10 +177,10 @@ def guidance_examples(out_dir, panels, status="SIMULATION (synthetic paths, HAP-
             seen.add(label)
             for x, y in xy[::5]:
                 rows.append([title, label, float(x), float(y)])
-        ax.set_aspect("equal")
+        ax.set_aspect("equal", adjustable="datalim")
         ax.set_title(title, loc="left", fontsize=10)
         ax.set_xlabel("x (mm)")
-        ax.legend(loc="lower right", fontsize=7.5)
+        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=7.5)
     np.atleast_1d(axs)[0].set_ylabel("y (mm)")
     ps.stamp(fig, status)
     fig.tight_layout(rect=(0, 0.03, 1, 1))

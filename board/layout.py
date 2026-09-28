@@ -11,11 +11,12 @@ from . import params as P
 
 G = {
     "board": (300.0, 420.0),           # outer x, y
-    "glass_y": 360.0,                  # glass covers y 0..360; back housing 360..420
+    "glass_y": 372.0,                  # glass covers y 0..372; back housing 372..420
     "glass_t": P.STACK["glass_mm"].value,
     "wall_t": 3.0,
     "base_top": -42.0, "base_t": 3.0,
     "paper": (45.0, 38.0, *P.A4_MM),   # x0, y0, w, h (A4 portrait)
+    "guided": (60.0, 53.0, 180.0, 267.0),  # printable practice area: A4 minus 15 mm margins (ASSUMPTION)
     "yrail_x": (10.0, 290.0), "yrail": (12.0, 8.0), "yblock": (27.0, 45.4, 5.0),   # MGN12: rail w,h; block w,l,(h above rail)
     "beam": (20.0, 10.0),              # gantry beam width (y) x height
     "xrail": (9.0, 6.5), "xblock": (20.0, 39.9, 3.5),                              # MGN9
@@ -24,12 +25,14 @@ G = {
     "head": (P.HEAD["head_d_mm"].value, P.HEAD["head_h_mm"].value),
     "head_top_z": -(P.STACK["glass_mm"].value + P.STACK["clearance_mm"].value),
     "zlift": P.HEAD["zlift_travel_mm"].value,
-    "ring": (52.0, 20.0, 1.0),         # Hall ring PCB OD, ID, thickness
+    "ring": (44.0, 20.0, 1.0),         # Hall ring PCB OD, ID, thickness (sensors at radius 18)
     "servo": (20.0, 34.0, 26.0),       # XL330 envelope
     "motor": (42.0, 42.0, 48.0),
-    "motor_xy": ((24.0, 396.0), (276.0, 396.0)),
+    "motor_xy": ((24.0, 397.0), (276.0, 397.0)),
     "idler_xy": ((24.0, 8.0), (276.0, 8.0)),
-    "travel": {"x": [25.0, 275.0], "y": [8.0, 347.0]},   # head axis; the pen magnet sits 16.5 mm toward the writer from the ball
+    # head-axis travel: the guided area +/-12 mm, shifted by the pen magnet's 16.5 mm lever toward the writer
+    # (azimuth -60 to -120 deg); limited by the Hall ring (walls), the servo (right wall) and the motors (back)
+    "travel": {"x": [36.0, 254.0], "y": [25.0, 324.0]},
     "housing_top": 12.0,
 }
 
@@ -93,11 +96,11 @@ def components(head_xy=None, zlift_mm: float = 0.0):
         function="An ordinary sheet; practice sheets are printed with corner marks and pushed against the paper stop.", part="A4 paper")
     box("paper_stop", "Paper stop", "structure", x0 - 4, y0 - 4, 0.0, w + 4, 4, 2.0,
         function="L-shaped stop that places the sheet where the app expects it.", part="custom: PA12 print")
-    box("housing", "Back housing", "structure", 0, gy, base_z0(), bx, by - gy, G["housing_top"] - base_z0(),
+    box("housing", "Back housing (top cover)", "structure", 0, gy, -8.0, bx, by - gy, G["housing_top"] + 8.0,
         function="Covers the motors and the electronics; also a pen ledge.", part="custom: PA12 or aluminium")
     # --- stage
     for i, xr in enumerate(G["yrail_x"]):
-        box(f"yrail_{i}", "Y rail (MGN12)", "mechanism", xr - G["yrail"][0] / 2, 5.0, G["base_top"], G["yrail"][0], 405.0, G["yrail"][1],
+        box(f"yrail_{i}", "Y rail (MGN12)", "mechanism", xr - G["yrail"][0] / 2, 5.0, G["base_top"], G["yrail"][0], 368.0, G["yrail"][1],
             function="Steel guide for the gantry (front-back).", part="HIWIN MGN12 rail", ledger="AMF-94")
         box(f"yblock_{i}", "Y block (MGN12H)", "mechanism", xr - G["yblock"][0] / 2, beam_y - G["yblock"][1] / 2, Z["yrail_top"],
             G["yblock"][0], G["yblock"][1], Z["yblock_top"] - Z["yrail_top"], moves="carriage",
@@ -113,9 +116,10 @@ def components(head_xy=None, zlift_mm: float = 0.0):
         function="Carriage block.", part="HIWIN MGN9H", ledger="AMF-94")
     cp = G["carriage_plate"]
     box("carriage_plate", "Carriage plate and cantilever", "mechanism", hx - cp[0] / 2, hy - 15.0, Z["xblock_top"],
-        cp[0], beam_y - hy + 25.0, cp[2], moves="carriage",
+        cp[0] / 2 + 8.0, beam_y - hy + 25.0, cp[2], moves="carriage",
         function="Aluminium plate on the X block; its arm reaches 25 mm toward the writer to hold the head beside the rail.",
         part="custom: aluminium 3 mm")
+    comps[-1]["hole"] = {"center": [round(hx, 2), round(hy, 2)], "d": 20.0}
     for i, (mx, my) in enumerate(G["motor_xy"]):
         m = G["motor"]
         box(f"motor_{'AB'[i]}", f"Stepper motor {'AB'[i]}", "actuator", mx - m[0] / 2, my - m[1] / 2, G["base_top"], m[0], m[1], m[2],
@@ -141,11 +145,11 @@ def components(head_xy=None, zlift_mm: float = 0.0):
         part="custom PCB with 8 x TI TMAG5170A2", ledger="AMF-95", shape="tube", d_in=ri)
     sv = G["servo"]
     # hangs under the carriage plate beside the magnet: 34 mm along x, 20 along y, 26 high
-    box("zservo", "Z-lift servo", "actuator", hx + 9.0, hy - sv[0] / 2, Z["xblock_top"] - sv[2], sv[1], sv[0], sv[2], moves="carriage",
+    box("zservo", "Z-lift servo", "actuator", hx + 9.0, hy - sv[0] / 2, Z["plate_top"] - sv[2], sv[1], sv[0], sv[2], moves="carriage",
         function="Raises and lowers the head magnet: the guidance level, and off.",
         part="ROBOTIS XL330-M288-T", ledger="AMF-96")
     # --- electronics and power
-    box("main_pcb", "Main board", "electronics", 100.0, 372.0, G["base_top"] + 4, 100.0, 40.0, 1.6,
+    box("main_pcb", "Main board", "electronics", 100.0, 376.0, G["base_top"] + 4, 100.0, 40.0, 1.6,
         function="nRF54L15 (Bluetooth to the pen and the phone), two TMC2209 motor drivers, the safety monitor.",
         part="custom PCB: nRF54L15 + 2 x TMC2209", ledger="AMF-44/AMF-93")
     box("dc_jack", "24 V input and power switch", "power", 140.0, 416.0, -20.0, 20.0, 4.0, 12.0,
@@ -177,6 +181,8 @@ def layout_json(meta: dict) -> dict:
             "axis": "board frame: x right, y away from the writer, z up; origin at the board's front-left corner on the writing surface",
             "board_outer_mm": list(G["board"]) + [G["housing_top"] - base_z0()],
             "writing_surface_z": 0.0, "paper_area": {"x0": G["paper"][0], "y0": G["paper"][1], "w": G["paper"][2], "h": G["paper"][3]},
+            "guided_area": {"x0": G["guided"][0], "y0": G["guided"][1], "w": G["guided"][2], "h": G["guided"][3],
+                            "note": "full force here; printed practice sheets keep 15 mm margins (ASSUMPTION)"},
             "carriage_travel": travel(),
             "head_z_travel": {"top_face_z": [G["head_top_z"] - G["zlift"], G["head_top_z"]],
                               "note": "top = working (gap 2.7 mm to the paper top), bottom = retracted/off"},

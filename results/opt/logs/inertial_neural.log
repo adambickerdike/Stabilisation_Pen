@@ -1,1 +1,19 @@
 == stage neural
+[  124.0 s] data 192 + 32 runs in 124.0 s
+[  148.6 s] imitation step 0: rms error 0.0734 N of 0.0780 N rms feed-forward force
+[  149.4 s] imitation step 500: rms error 0.0224 N of 0.0780 N rms feed-forward force
+[  150.2 s] imitation step 1000: rms error 0.0192 N of 0.0780 N rms feed-forward force
+[  151.0 s] imitation step 1500: rms error 0.0183 N of 0.0780 N rms feed-forward force
+[  151.7 s] imitation step 2000: rms error 0.0181 N of 0.0780 N rms feed-forward force
+[  152.6 s] imitation step 2499: rms error 0.0178 N of 0.0780 N rms feed-forward force
+[  176.9 s] it 9 loss 1.101 train ratio 0.945 | val ratio 0.955 false 3.3 um F 0.096 N
+[  200.7 s] it 19 loss 0.981 train ratio 0.964 | val ratio 0.958 false 3.5 um F 0.092 N
+[  230.8 s] it 29 loss 1.066 train ratio 0.966 | val ratio 0.960 false 3.3 um F 0.092 N
+[  255.5 s] it 39 loss 0.917 train ratio 0.935 | val ratio 0.961 false 3.3 um F 0.094 N
+[  277.7 s] it 49 loss 1.011 train ratio 0.965 | val ratio 0.956 false 3.5 um F 0.102 N
+[  300.1 s] it 59 loss 0.967 train ratio 0.972 | val ratio 0.958 false 3.5 um F 0.101 N
+[  320.5 s] validation done (24 rows)
+[  355.4 s] test r_rot 0.3 done (24 rows)
+[  380.2 s] test r_rot 0.5 done (48 rows)
+[  402.4 s] test r_rot 0.7 done (72 rows)
+== stage neural done in 405.6 s

@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (concept geometry)",
+    "generated_utc": "2026-09-28T17:43:35+00:00",
+    "git_revision": "6b3095c-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "guidance_board.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "script": "mechanics/cad/guidance_board.py"
+  },
+  "summary": {
+    "board_outer_mm": [
+      300.0,
+      420.0,
+      57.0
+    ],
+    "writing_surface_above_desk_mm": 45.0,
+    "glass_mm": 3.0,
+    "design_gap_mm": 3.7,
+    "head_top_below_glass_top_mm": 3.5,
+    "carriage_travel": {
+      "x": [
+        36.0,
+        254.0
+      ],
+      "y": [
+        25.0,
+        324.0
+      ]
+    },
+    "paper": [
+      45.0,
+      38.0,
+      210.0,
+      297.0
+    ],
+    "interference_checks": {
+      "working": [
+        {
+          "a": "head_magnet",
+          "b": "glass",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "head_magnet",
+          "b": "carriage_plate",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "head_magnet",
+          "b": "beam",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "zservo",
+          "b": "beam",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "hall_ring",
+          "b": "glass",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "carriage_plate",
+          "b": "glass",
+          "overlap_mm3": 0.0
+        }
+      ],
+      "retracted": [
+        {
+          "a": "head_magnet",
+          "b": "beam",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "head_cup",
+          "b": "base_plate",
+          "overlap_mm3": 0.0
+        },
+        {
+          "a": "head_magnet",
+          "b": "zservo",
+          "overlap_mm3": 0.0
+        }
+      ]
+    },
+    "travel_corner_interferences": [],
+    "mass_estimate_g": {
+      "total": 4080.0,
+      "parts": [
+        {
+          "id": "base_plate",
+          "mass_g": 1020.6,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "wall_left",
+          "mass_g": 126.6,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "wall_right",
+          "mass_g": 126.6,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "wall_front",
+          "mass_g": 102.1,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "glass",
+          "mass_g": 837.0,
+          "source": "CALC volume x glass density (ASSUMPTION)"
+        },
+        {
+          "id": "paper",
+          "mass_g": 10.0,
+          "source": "CALC volume x paper density (ASSUMPTION)"
+        },
+        {
+          "id": "paper_stop",
+          "mass_g": 1.7,
+          "source": "CALC volume x PA12 density (ASSUMPTION)"
+        },
+        {
+          "id": "housing",
+          "mass_g": 57.2,
+          "source": "CALC volume x PA12 density (ASSUMPTION)"
+        },
+        {
+          "id": "yrail_0",
+          "mass_g": 239.2,
+          "source": "MFR AMF-94 (kg/m) x CALC length"
+        },
+        {
+          "id": "yblock_0",
+          "mass_g": 54.0,
+          "source": "MFR"
+        },
+        {
+          "id": "yrail_1",
+          "mass_g": 239.2,
+          "source": "MFR AMF-94 (kg/m) x CALC length"
+        },
+        {
+          "id": "yblock_1",
+          "mass_g": 54.0,
+          "source": "MFR"
+        },
+        {
+          "id": "beam",
+          "mass_g": 151.2,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "xrail",
+          "mass_g": 98.8,
+          "source": "MFR AMF-94 (kg/m) x CALC length"
+        },
+        {
+          "id": "xblock",
+          "mass_g": 26.0,
+          "source": "MFR"
+        },
+        {
+          "id": "carriage_plate",
+          "mass_g": 13.4,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "motor_A",
+          "mass_g": 400.0,
+          "source": "MFR"
+        },
+        {
+          "id": "motor_B",
+          "mass_g": 400.0,
+          "source": "MFR"
+        },
+        {
+          "id": "idler_0",
+          "mass_g": 4.9,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "idler_1",
+          "mass_g": 4.9,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "belt_left",
+          "mass_g": 4.7,
+          "source": "CALC volume x PA12 density (ASSUMPTION)"
+        },
+        {
+          "id": "belt_right",
+          "mass_g": 4.7,
+          "source": "CALC volume x PA12 density (ASSUMPTION)"
+        },
+        {
+          "id": "head_magnet",
+          "mass_g": 12.1,
+          "source": "MFR"
+        },
+        {
+          "id": "head_cup",
+          "mass_g": 3.3,
+          "source": "CALC volume x aluminium density (ASSUMPTION)"
+        },
+        {
+          "id": "hall_ring",
+          "mass_g": 2.3,
+          "source": "CALC volume x FR4 density (ASSUMPTION)"
+        },
+        {
+          "id": "zservo",
+          "mass_g": 18.0,
+          "source": "MFR"
+        },
+        {
+          "id": "main_pcb",
+          "mass_g": 12.2,
+          "source": "CALC volume x FR4 density (ASSUMPTION)"
+        },
+        {
+          "id": "dc_jack",
+          "mass_g": 1.0,
+          "source": "CALC volume x PA12 density (ASSUMPTION)"
+        },
+        {
+          "id": "stop_button",
+          "mass_g": 1.0,
+          "source": "CALC volume x PA12 density (ASSUMPTION)"
+        },
+        {
+          "id": "arm_rest",
+          "mass_g": 54.0,
+          "source": "CALC volume x foam density (ASSUMPTION)"
+        }
+      ],
+      "label": "CALC: MFR masses where known (AMF-90/92/94/96), otherwise volume x density (ASSUMPTION); excludes the external 24 V adaptor, screws and cables"
+    },
+    "notes": [
+      "the head magnet hangs beside the gantry beam on a 25 mm cantilever so it can drop 12 mm without hitting the beam",
+      "keep >= 20 mm between the head magnet and the steel MGN9 rail (about 0.8 N upper-bound pull, image-dipole CALC)",
+      "the pen magnet sits in the Rev H front sleeve; its keel geometry is for the Rev H team to confirm"
+    ]
+  }
+}

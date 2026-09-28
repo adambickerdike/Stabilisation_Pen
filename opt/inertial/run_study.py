@@ -364,7 +364,55 @@ def stage_neural(quick=False):
     return out
 
 
-STAGES = ("nose_adjoint", "tracker", "grid", "sweep", "addon", "neural", "tiers", "report")
+def calibrated_params(base, f_cal, lo=0.75, hi=1.3):
+    """Per-user tremor-band calibration (firmware option): the tracker's frequency search is limited to [lo, hi] x f_cal,
+    f_cal from a 20-30 s calibration recording (ASSUMPTION: identified within +/-10 %).  Prevents the lock onto the
+    second harmonic seen at 4-6 Hz."""
+    p = dict(base)
+    p.update(w0_hz=f_cal, wmin_hz=lo * f_cal, wmax_hz=hi * f_cal)
+    return p
+
+
+def stage_calib(quick=False):
+    """Rev H-B nose with the per-user calibrated tremor band: development on TRAINING seeds 300-303 (r_rot 0.5, exact and
+    +10 % calibration error), then TEST seeds 200-203 at the three grip splits with the +10 % error; false correction on
+    tremor-free writing with the band set for 4, 6 and 10 Hz (SIM)."""
+    from opt.inertial import evaluate as EV
+    prm = revh_tracker_params()
+    f0s = (4.0, 10.0) if quick else (4.0, 6.0, 8.0, 10.0, 12.0)
+    amps = (1.0e-3,) if quick else (0.3e-3, 1.0e-3, 2.0e-3)
+    t0 = time.time()
+    dev_rows, test_rows, dist = [], [], []
+    d = RH.RevH()
+    for err in ((1.1,) if quick else (1.0, 1.1)):
+        for seed in ((300,) if quick else (300, 301, 302, 303)):
+            for f0 in f0s:
+                ev = EV.RevHEval(d, r_rot=0.5, akf_params=calibrated_params(prm, f0 * err))
+                for amp in amps:
+                    r = ev.case(seed, f0, amp, controllers=("akf",), power=False)
+                    r["cal_err"] = err
+                    dev_rows.append(r)
+        print(f"[{time.time() - t0:7.1f} s] calib training, error x{err} ({len(dev_rows)} rows)", flush=True)
+    for rr in ((0.5,) if quick else (0.3, 0.5, 0.7)):
+        for f0 in f0s:
+            ev = EV.RevHEval(d, r_rot=rr, akf_params=calibrated_params(prm, f0 * 1.1))
+            for seed in (SC.SEEDS["test"][:1] if quick else SC.SEEDS["test"]):
+                for amp in amps:
+                    r = ev.case(seed, f0, amp, controllers=("akf",))
+                    r["r_rot"] = rr
+                    test_rows.append(r)
+            if rr == 0.5:
+                for s_, w_ in ([(200, "lognormal")] if quick else [(s, "lognormal") for s in SC.SEEDS["test"]] +
+                               [(s, "glyph") for s in SC.SEEDS["glyph_test"]]):
+                    dist.append({**ev.distortion(s_, w_), "f_cal": f0 * 1.1})
+        print(f"[{time.time() - t0:7.1f} s] calib test r_rot {rr} ({len(test_rows)} rows)", flush=True)
+    out = {"band": [0.75, 1.3], "dev_rows": dev_rows, "test_rows": test_rows, "distortion": dist,
+           "label": "SIM (model H1, Rev H-B nose, Rev H tracker setting with a per-user calibrated frequency band)"}
+    save_stage("calib" + ("_quick" if quick else ""), out)
+    return out
+
+
+STAGES = ("nose_adjoint", "tracker", "grid", "sweep", "addon", "calib", "neural", "tiers", "report")
 
 
 def main():

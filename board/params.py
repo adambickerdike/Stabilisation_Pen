@@ -127,7 +127,7 @@ STAGE = {
 # --------------------------------------------------------------------- sensing (carriage Hall ring)
 SENSE = {
     "n_sensors": V(8, "-", "ASSUMPTION", "ring of 3-axis Hall sensors on the carriage"),
-    "ring_radius_mm": V(22.0, "mm", "CALC", "head field at the ring < 75 mT range (board.sensing)"),
+    "ring_radius_mm": V(18.0, "mm", "CALC", "head field at the ring < 75 mT range (board.sensing); ring PCB OD 44 mm fits the travel"),
     "noise_xy_uT_fast": V(160.0, "uT", "MFR", "AMF-95 TMAG5170A2 NRMS X/Y, CONV_AVG 000, 25 C"),
     "noise_z_uT_fast": V(72.0, "uT", "MFR", "AMF-95 TMAG5170A2 NRMS Z, CONV_AVG 000"),
     "noise_xy_uT_avg32": V(28.0, "uT", "MFR", "AMF-95 TMAG5170A2 NRMS X/Y, CONV_AVG 101 (32x)"),

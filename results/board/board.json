@@ -1,0 +1,2819 @@
+{
+  "meta": {
+    "evidence_status": "CALCULATION + SIMULATION (magpylib 5.2 magnetostatics, linear dynamics, plate theory, closed-loop guidance simulation on synthetic paths with the HAP-26 hand model); PROPOSED DESIGN; nothing built or measured",
+    "generated_utc": "2026-09-28T17:42:29+00:00",
+    "git_revision": "6b3095c-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "tracing": 0,
+      "sensing_mc": 1
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "magpylib": "5.2.3",
+    "script": "board/run_study.py",
+    "doc": "docs/guidance_board.md"
+  },
+  "params": {
+    "pen": {
+      "pen_magnet_d_mm": {
+        "value": 6.35,
+        "unit": "mm",
+        "label": "MFR",
+        "source": "AMF-91 (K&J D42-N52)"
+      },
+      "pen_magnet_h_mm": {
+        "value": 3.17,
+        "unit": "mm",
+        "label": "MFR",
+        "source": "AMF-91 (K&J D42-N52)"
+      },
+      "pen_magnet_Br_T": {
+        "value": 1.45,
+        "unit": "T",
+        "label": "MFR",
+        "source": "AMF-28 (N52 Br 1.45-1.48 T, lower bound); AMF-91 Br max 1.48 T"
+      },
+      "pen_magnet_mass_g": {
+        "value": 0.75,
+        "unit": "g",
+        "label": "MFR",
+        "source": "AMF-91"
+      },
+      "pen_magnet_height_mm": {
+        "value": 3.8,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "centre above the paper at 50 deg: half-extent 3.26 mm of a 6.35 x 3.17 disc tilted 40 deg from vertical plus 0.5 mm clearance",
+        "note": "Rev H team to confirm in CAD (heel boss of the front sleeve)"
+      },
+      "pen_magnet_behind_ball_mm": {
+        "value": 16.5,
+        "unit": "mm",
+        "label": "CALC",
+        "source": "disc edge outside the nose envelope (fixed-sleeve bore radius 6.47 mm + 0.5 mm wall, results/revH/layout.json): centre 10.2 mm off-axis, 13.5 mm along the axis, 3.8 mm high at 50 deg",
+        "note": "horizontal distance from the ball to the magnet centre, along the pen azimuth; a keel under the fixed front sleeve"
+      },
+      "pen_magnet_axial_mm": {
+        "value": 13.5,
+        "unit": "mm",
+        "label": "CALC",
+        "source": "pen frame: along the axis from the ball"
+      },
+      "pen_magnet_radial_mm": {
+        "value": 10.2,
+        "unit": "mm",
+        "label": "CALC",
+        "source": "pen frame: off-axis toward the paper side"
+      },
+      "alt_deg": {
+        "value": 50.0,
+        "unit": "deg",
+        "label": "ASSUMPTION",
+        "source": "config/parameters.yaml writing.tilt_deg (REQ-ENV-001)",
+        "note": "sweep 35-75 deg"
+      },
+      "az_deg": {
+        "value": -90.0,
+        "unit": "deg",
+        "label": "ASSUMPTION",
+        "source": "pen rear toward the writer (right-hander about -60 to -120 deg)"
+      },
+      "nose_continuous_force_N": {
+        "value": 0.21,
+        "unit": "N",
+        "label": "CALC",
+        "source": "results/revH/tip_params.json actuator.force_limit_at_tip_N.continuous",
+        "note": "why the board magnet may not ride on the moving nose"
+      },
+      "nose_suspension_N_per_m": {
+        "value": 12.35,
+        "unit": "N/m",
+        "label": "ASSUMPTION",
+        "source": "results/revH/tip_params.json suspension_stiffness_N_per_m"
+      },
+      "pen_mass_kg": {
+        "value": 0.075,
+        "unit": "kg",
+        "label": "CALC",
+        "source": "results/revH/layout.json mass_g.total_g 74.95"
+      }
+    },
+    "head": {
+      "head_d_mm": {
+        "value": 12.7,
+        "unit": "mm",
+        "label": "MFR",
+        "source": "AMF-90 (K&J D88-N52, 12.7 x 12.7 mm, axial)"
+      },
+      "head_h_mm": {
+        "value": 12.7,
+        "unit": "mm",
+        "label": "MFR",
+        "source": "AMF-90"
+      },
+      "head_Br_T": {
+        "value": 1.45,
+        "unit": "T",
+        "label": "MFR",
+        "source": "AMF-28 N52 lower bound; AMF-90 Br max 1.48 T"
+      },
+      "head_mass_g": {
+        "value": 12.07,
+        "unit": "g",
+        "label": "MFR",
+        "source": "AMF-90"
+      },
+      "zlift_travel_mm": {
+        "value": 12.0,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "cam on the Z servo (AMF-96); retracted = working gap + 12 mm"
+      },
+      "diam_head_d_mm": {
+        "value": 12.7,
+        "unit": "mm",
+        "label": "MFR",
+        "source": "AMF-99 (K&J D8X0DIA 12.7 x 25.4 mm N42, diametric) - variant only"
+      },
+      "diam_head_h_mm": {
+        "value": 25.4,
+        "unit": "mm",
+        "label": "MFR",
+        "source": "AMF-99"
+      },
+      "diam_head_Br_T": {
+        "value": 1.3,
+        "unit": "T",
+        "label": "MFR",
+        "source": "AMF-28 N42 lower bound; AMF-99 Br max 1.32 T"
+      }
+    },
+    "stack": {
+      "paper_mm": {
+        "value": 0.2,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "one or two 80 g/m2 sheets plus a thin underlay"
+      },
+      "glass_mm": {
+        "value": 3.0,
+        "unit": "mm",
+        "label": "CALC",
+        "source": "A4 span 294 x 357 mm: 2 mm glass would touch the head at ~20 N of hand load, 3 mm at ~70 N (board.stage.cover_check); A5 keeps 2 mm"
+      },
+      "glass_mm_A5": {
+        "value": 2.0,
+        "unit": "mm",
+        "label": "CALC",
+        "source": "A5 span ~202 x 270 mm (board.stage.cover_check)"
+      },
+      "clearance_mm": {
+        "value": 0.5,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "running clearance head-to-glass incl. flatness"
+      },
+      "glass_E_GPa": {
+        "value": 72.0,
+        "unit": "GPa",
+        "label": "ASSUMPTION",
+        "source": "soda-lime / aluminosilicate glass, textbook class value"
+      },
+      "glass_nu": {
+        "value": 0.22,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "textbook class value"
+      },
+      "glass_density_kg_m3": {
+        "value": 2500.0,
+        "unit": "kg/m3",
+        "label": "ASSUMPTION",
+        "source": "textbook class value"
+      }
+    },
+    "hand": {
+      "k1": {
+        "value": 575.0,
+        "unit": "N/m",
+        "label": "LIT",
+        "source": "HAP-26 grip stiffness (config hand.grip_stiffness)"
+      },
+      "b1": {
+        "value": 1.3,
+        "unit": "N s/m",
+        "label": "LIT",
+        "source": "HAP-26 grip damping"
+      },
+      "M": {
+        "value": 0.21,
+        "unit": "kg",
+        "label": "LIT",
+        "source": "HAP-26 hand/arm mass (M1/P1 convention)"
+      },
+      "k2": {
+        "value": 170.0,
+        "unit": "N/m",
+        "label": "LIT",
+        "source": "HAP-26 arm stiffness"
+      },
+      "b2": {
+        "value": 11.0,
+        "unit": "N s/m",
+        "label": "LIT",
+        "source": "HAP-26 arm damping"
+      },
+      "k1_range": {
+        "value": [
+          230.0,
+          1040.0
+        ],
+        "unit": "N/m",
+        "label": "LIT",
+        "source": "HAP-26 95 % CI sweep"
+      },
+      "k2_range": {
+        "value": [
+          63.0,
+          533.0
+        ],
+        "unit": "N/m",
+        "label": "LIT",
+        "source": "HAP-26 95 % CI sweep"
+      },
+      "b2_range": {
+        "value": [
+          3.7,
+          27.6
+        ],
+        "unit": "N s/m",
+        "label": "LIT",
+        "source": "HAP-26 95 % CI sweep"
+      },
+      "mu_paper": {
+        "value": 0.15,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "config writing.mu_eff (skid / ball on paper)"
+      },
+      "writing_force_N": {
+        "value": 1.0,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "config writing.normal_force (REQ-ENV-002)"
+      }
+    },
+    "stage": {
+      "motor_hold_Nm": {
+        "value": 0.59,
+        "unit": "N m",
+        "label": "MFR",
+        "source": "AMF-92 (17HS19-2004S1)"
+      },
+      "motor_I_rated_A": {
+        "value": 2.0,
+        "unit": "A",
+        "label": "MFR",
+        "source": "AMF-92"
+      },
+      "motor_R_ohm": {
+        "value": 1.4,
+        "unit": "ohm",
+        "label": "MFR",
+        "source": "AMF-92"
+      },
+      "motor_L_H": {
+        "value": 0.003,
+        "unit": "H",
+        "label": "MFR",
+        "source": "AMF-92"
+      },
+      "motor_J_kgm2": {
+        "value": 8.2e-06,
+        "unit": "kg m2",
+        "label": "MFR",
+        "source": "AMF-92 (82 g cm2)"
+      },
+      "motor_mass_kg": {
+        "value": 0.4,
+        "unit": "kg",
+        "label": "MFR",
+        "source": "AMF-92"
+      },
+      "I_run_A": {
+        "value": 1.2,
+        "unit": "A",
+        "label": "ASSUMPTION",
+        "source": "TMC2209 run current (<= 2 A RMS, AMF-93); quiet, cool"
+      },
+      "V_bus": {
+        "value": 24.0,
+        "unit": "V",
+        "label": "MFR",
+        "source": "AMF-97 (GST60A24-P1J 24 V 2.5 A)"
+      },
+      "pulley_teeth": {
+        "value": 20,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "GT2 20-tooth pulley, 2 mm pitch: 40 mm per revolution"
+      },
+      "microsteps": {
+        "value": 16,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "TMC2209 16 microsteps interpolated to 256 (AMF-93)"
+      },
+      "carriage_mass_kg": {
+        "value": 0.16,
+        "unit": "kg",
+        "label": "CALC",
+        "source": "head magnet 12 g (AMF-90) + servo 18 g (AMF-96) + MGN9H block 26 g (AMF-94) + plate, cam, Hall ring PCB, clamps 100 g (ASSUMPTION)"
+      },
+      "gantry_mass_kg": {
+        "value": 0.42,
+        "unit": "kg",
+        "label": "CALC",
+        "source": "MGN9 rail 0.38 kg/m x 0.30 m (AMF-94) + 2 MGN12H blocks 0.108 kg + beam 0.15 kg (ASSUMPTION) + carriage"
+      },
+      "belt_EA_N": {
+        "value": 25000.0,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "GT2 6 mm glass-cord belt axial stiffness per unit strain; range 15-40 kN; no verified datasheet (Gates does not publish it)"
+      },
+      "belt_loop_m": {
+        "value": 1.3,
+        "unit": "m",
+        "label": "CALC",
+        "source": "CoreXY belt length per motor for a 300 x 400 mm frame"
+      },
+      "friction_N": {
+        "value": 1.5,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "rails, belts, idlers"
+      },
+      "loop_rate_Hz": {
+        "value": 1000.0,
+        "unit": "Hz",
+        "label": "ASSUMPTION",
+        "source": "control loop"
+      }
+    },
+    "sensing": {
+      "n_sensors": {
+        "value": 8,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "ring of 3-axis Hall sensors on the carriage"
+      },
+      "ring_radius_mm": {
+        "value": 18.0,
+        "unit": "mm",
+        "label": "CALC",
+        "source": "head field at the ring < 75 mT range (board.sensing); ring PCB OD 44 mm fits the travel"
+      },
+      "noise_xy_uT_fast": {
+        "value": 160.0,
+        "unit": "uT",
+        "label": "MFR",
+        "source": "AMF-95 TMAG5170A2 NRMS X/Y, CONV_AVG 000, 25 C"
+      },
+      "noise_z_uT_fast": {
+        "value": 72.0,
+        "unit": "uT",
+        "label": "MFR",
+        "source": "AMF-95 TMAG5170A2 NRMS Z, CONV_AVG 000"
+      },
+      "noise_xy_uT_avg32": {
+        "value": 28.0,
+        "unit": "uT",
+        "label": "MFR",
+        "source": "AMF-95 TMAG5170A2 NRMS X/Y, CONV_AVG 101 (32x)"
+      },
+      "noise_z_uT_avg32": {
+        "value": 13.0,
+        "unit": "uT",
+        "label": "MFR",
+        "source": "AMF-95 TMAG5170A2 NRMS Z, CONV_AVG 101"
+      },
+      "averaging": {
+        "value": 8,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "8x averaging: ~0.6 ms for 3 axes (AMF-95 conversion times), 1 kHz frame"
+      },
+      "gain_error_after_cal": {
+        "value": 0.003,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "residual gain error after a one-time calibration (datasheet total error +/-2.6 % before calibration, AMF-95)"
+      },
+      "placement_error_mm": {
+        "value": 0.05,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "residual sensor position error after calibration"
+      }
+    },
+    "control": {
+      "force_cap_N": {
+        "value": 0.4,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "software cap below the magnetic breakaway (board.magnetics)"
+      },
+      "slew_N_per_s": {
+        "value": 8.0,
+        "unit": "N/s",
+        "label": "ASSUMPTION",
+        "source": "force rate limit (no jerks)"
+      },
+      "partial_deadband_mm": {
+        "value": 1.0,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "HAP-03 assist-as-needed deadband; HAP-15 retroactive guidance"
+      },
+      "partial_gain_N_per_mm": {
+        "value": 0.1,
+        "unit": "N/mm",
+        "label": "ASSUMPTION",
+        "source": "a quarter of Bluteau's 0.4 N/mm (HAP-10), limited by the magnet"
+      },
+      "full_gain_N_per_mm": {
+        "value": 0.2,
+        "unit": "N/mm",
+        "label": "ASSUMPTION",
+        "source": "half of Bluteau's 0.4 N/mm (HAP-10)"
+      },
+      "damping_N_s_per_m": {
+        "value": 2.0,
+        "unit": "N s/m",
+        "label": "ASSUMPTION",
+        "source": "normal damping of the path spring"
+      },
+      "lead_force_N": {
+        "value": 0.1,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "full guidance: tangential pull along the path, only while the writer moves forward"
+      },
+      "override_error_mm": {
+        "value": 4.0,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "sustained error that counts as the writer overriding"
+      },
+      "override_time_s": {
+        "value": 0.3,
+        "unit": "s",
+        "label": "ASSUMPTION",
+        "source": "HAP-22/23: yield when the writer persistently deviates"
+      },
+      "head_speed_max_mm_s": {
+        "value": 300.0,
+        "unit": "mm/s",
+        "label": "CALC",
+        "source": "stepper torque at 24 V (board.stage)"
+      }
+    },
+    "design_gap_mm": {
+      "value": 3.7,
+      "unit": "mm",
+      "label": "CALC",
+      "source": "paper + glass + clearance"
+    }
+  },
+  "magnetics": {
+    "force_vs_gap": [
+      {
+        "gap_mm": 0.5,
+        "lateral_isotropic_N": 2.6616635251018104,
+        "lateral_best_direction_N": 3.978581636689041,
+        "lateral_mean_over_directions_N": 3.404373091509758,
+        "normal_at_best_N": [
+          -4.871930888181847,
+          -0.7636236711226755
+        ],
+        "offset_for_best_mm": [
+          8.54400374531753,
+          6.708203932499369,
+          6.4031242374328485,
+          7.0710678118654755,
+          6.4031242374328485,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          7.0,
+          7.0710678118654755,
+          7.280109889280518,
+          7.615773105863909,
+          8.06225774829855,
+          6.4031242374328485,
+          7.0710678118654755,
+          6.4031242374328485,
+          6.708203932499369,
+          8.54400374531753,
+          4.47213595499958,
+          5.0990195135927845,
+          5.0,
+          5.0990195135927845,
+          5.830951894845301,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0,
+          5.385164807134504,
+          5.0,
+          5.0,
+          5.830951894845301,
+          5.0990195135927845,
+          5.0,
+          5.0990195135927845,
+          4.47213595499958
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -6.5367100340918505,
+        "max_normal_pull_N": 6.5367100340918505,
+        "slope_at_zero_N_per_mm": 0.9195274342589308
+      },
+      {
+        "gap_mm": 1.0,
+        "lateral_isotropic_N": 2.3404776760765107,
+        "lateral_best_direction_N": 3.4305658564340447,
+        "lateral_mean_over_directions_N": 2.909190178663855,
+        "normal_at_best_N": [
+          -4.210480500135052,
+          -0.8118689021269856
+        ],
+        "offset_for_best_mm": [
+          8.54400374531753,
+          5.830951894845301,
+          6.4031242374328485,
+          7.0710678118654755,
+          6.4031242374328485,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          7.0,
+          7.0710678118654755,
+          7.280109889280518,
+          7.615773105863909,
+          8.06225774829855,
+          6.4031242374328485,
+          7.0710678118654755,
+          6.4031242374328485,
+          5.830951894845301,
+          8.54400374531753,
+          4.47213595499958,
+          5.0990195135927845,
+          5.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          5.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          5.0,
+          5.0990195135927845,
+          4.47213595499958
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -5.679116274724759,
+        "max_normal_pull_N": 5.679116274724759,
+        "slope_at_zero_N_per_mm": 0.7950267735697761
+      },
+      {
+        "gap_mm": 1.5,
+        "lateral_isotropic_N": 2.060514018005063,
+        "lateral_best_direction_N": 2.976057425514056,
+        "lateral_mean_over_directions_N": 2.4949343145667306,
+        "normal_at_best_N": [
+          -2.885551882734516,
+          -0.8299256918126982
+        ],
+        "offset_for_best_mm": [
+          8.54400374531753,
+          5.830951894845301,
+          6.4031242374328485,
+          7.0710678118654755,
+          7.810249675906654,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          7.0,
+          7.0710678118654755,
+          7.280109889280518,
+          7.615773105863909,
+          8.06225774829855,
+          7.810249675906654,
+          7.0710678118654755,
+          6.4031242374328485,
+          5.830951894845301,
+          8.54400374531753,
+          8.246211251235321,
+          5.0990195135927845,
+          5.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          4.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          5.0,
+          5.0990195135927845,
+          8.246211251235321
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -4.939881316394582,
+        "max_normal_pull_N": 4.939881316394582,
+        "slope_at_zero_N_per_mm": 0.6822398512842193
+      },
+      {
+        "gap_mm": 2.0,
+        "lateral_isotropic_N": 1.9380245553939761,
+        "lateral_best_direction_N": 2.6011270429532365,
+        "lateral_mean_over_directions_N": 2.1760650551389897,
+        "normal_at_best_N": [
+          -2.4869545338732295,
+          -1.129933952570731
+        ],
+        "offset_for_best_mm": [
+          7.615773105863909,
+          8.06225774829855,
+          6.4031242374328485,
+          7.0710678118654755,
+          7.810249675906654,
+          6.708203932499369,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          7.0,
+          7.0710678118654755,
+          7.280109889280518,
+          7.615773105863909,
+          6.708203932499369,
+          7.810249675906654,
+          7.0710678118654755,
+          6.4031242374328485,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          4.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          7.280109889280518
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -4.306038445877886,
+        "max_normal_pull_N": 4.306038445877886,
+        "slope_at_zero_N_per_mm": 0.5841571759137858
+      },
+      {
+        "gap_mm": 2.2,
+        "lateral_isotropic_N": 1.835996710753311,
+        "lateral_best_direction_N": 2.4654661602835244,
+        "lateral_mean_over_directions_N": 2.055776569083328,
+        "normal_at_best_N": [
+          -2.386918312316318,
+          -1.0837452626351025
+        ],
+        "offset_for_best_mm": [
+          7.615773105863909,
+          8.06225774829855,
+          6.4031242374328485,
+          7.0710678118654755,
+          7.810249675906654,
+          6.708203932499369,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          7.0,
+          7.0710678118654755,
+          7.280109889280518,
+          7.615773105863909,
+          6.708203932499369,
+          7.810249675906654,
+          7.0710678118654755,
+          6.4031242374328485,
+          8.06225774829855,
+          7.615773105863909,
+          6.324555320336759,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          4.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          6.324555320336759
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -4.0787639055737515,
+        "max_normal_pull_N": 4.0787639055737515,
+        "slope_at_zero_N_per_mm": 0.549010843501493
+      },
+      {
+        "gap_mm": 2.5,
+        "lateral_isotropic_N": 1.572610817976067,
+        "lateral_best_direction_N": 2.2760827931748646,
+        "lateral_mean_over_directions_N": 1.8769789747570558,
+        "normal_at_best_N": [
+          -2.6774147126925847,
+          -1.0203002673543449
+        ],
+        "offset_for_best_mm": [
+          7.615773105863909,
+          8.06225774829855,
+          6.4031242374328485,
+          7.0710678118654755,
+          5.830951894845301,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          8.0,
+          7.0710678118654755,
+          7.280109889280518,
+          7.615773105863909,
+          8.06225774829855,
+          5.830951894845301,
+          7.0710678118654755,
+          6.4031242374328485,
+          8.06225774829855,
+          7.615773105863909,
+          6.324555320336759,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          4.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          6.324555320336759
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -3.7631692803090515,
+        "max_normal_pull_N": 3.7631692803090515,
+        "slope_at_zero_N_per_mm": 0.5004010709337348
+      },
+      {
+        "gap_mm": 2.7,
+        "lateral_isotropic_N": 1.5530625745287254,
+        "lateral_best_direction_N": 2.1586667072650463,
+        "lateral_mean_over_directions_N": 1.7800634369172872,
+        "normal_at_best_N": [
+          -2.0258759266310813,
+          -0.9813712359923163
+        ],
+        "offset_for_best_mm": [
+          6.708203932499369,
+          8.06225774829855,
+          6.4031242374328485,
+          7.0710678118654755,
+          8.602325267042627,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          8.06225774829855,
+          8.0,
+          8.06225774829855,
+          7.280109889280518,
+          7.615773105863909,
+          8.06225774829855,
+          8.602325267042627,
+          7.0710678118654755,
+          6.4031242374328485,
+          8.06225774829855,
+          6.708203932499369,
+          6.324555320336759,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          4.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          6.324555320336759
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -3.5684137344796016,
+        "max_normal_pull_N": 3.5684137344796016,
+        "slope_at_zero_N_per_mm": 0.47057215198325875
+      },
+      {
+        "gap_mm": 3.0,
+        "lateral_isotropic_N": 1.4704093267652154,
+        "lateral_best_direction_N": 1.9948588721230633,
+        "lateral_mean_over_directions_N": 1.642523651434,
+        "normal_at_best_N": [
+          -1.825289080109478,
+          -0.9272936126610904
+        ],
+        "offset_for_best_mm": [
+          6.708203932499369,
+          7.211102550927978,
+          7.810249675906654,
+          7.0710678118654755,
+          7.211102550927978,
+          8.06225774829855,
+          7.615773105863909,
+          7.280109889280518,
+          8.06225774829855,
+          8.0,
+          8.06225774829855,
+          7.280109889280518,
+          7.615773105863909,
+          8.06225774829855,
+          7.211102550927978,
+          7.0710678118654755,
+          7.810249675906654,
+          7.211102550927978,
+          6.708203932499369,
+          6.324555320336759,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          4.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          6.324555320336759
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -3.2977592998014345,
+        "max_normal_pull_N": 3.2977592998014345,
+        "slope_at_zero_N_per_mm": 0.4294008062862775
+      },
+      {
+        "gap_mm": 3.7,
+        "lateral_isotropic_N": 1.2039772979820171,
+        "lateral_best_direction_N": 1.6639267227386514,
+        "lateral_mean_over_directions_N": 1.3512959201302013,
+        "normal_at_best_N": [
+          -1.5350375799999303,
+          -0.8174011398785682
+        ],
+        "offset_for_best_mm": [
+          6.708203932499369,
+          7.211102550927978,
+          7.810249675906654,
+          8.48528137423857,
+          7.211102550927978,
+          8.06225774829855,
+          7.615773105863909,
+          8.246211251235321,
+          8.06225774829855,
+          8.0,
+          8.06225774829855,
+          8.246211251235321,
+          7.615773105863909,
+          8.06225774829855,
+          7.211102550927978,
+          8.48528137423857,
+          7.810249675906654,
+          7.211102550927978,
+          6.708203932499369,
+          6.324555320336759,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          3.1622776601683795,
+          4.0,
+          3.1622776601683795,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          6.324555320336759
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -2.7540978344949787,
+        "max_normal_pull_N": 2.759702598944944,
+        "slope_at_zero_N_per_mm": 0.3479829466662485
+      },
+      {
+        "gap_mm": 4.0,
+        "lateral_isotropic_N": 1.1052691706952198,
+        "lateral_best_direction_N": 1.5414289417686353,
+        "lateral_mean_over_directions_N": 1.2493677254637894,
+        "normal_at_best_N": [
+          -1.4534139874372294,
+          -0.7759407672385248
+        ],
+        "offset_for_best_mm": [
+          6.708203932499369,
+          7.211102550927978,
+          7.810249675906654,
+          8.48528137423857,
+          7.211102550927978,
+          8.06225774829855,
+          7.615773105863909,
+          8.246211251235321,
+          8.06225774829855,
+          8.0,
+          8.06225774829855,
+          8.246211251235321,
+          7.615773105863909,
+          8.06225774829855,
+          7.211102550927978,
+          8.48528137423857,
+          7.810249675906654,
+          7.211102550927978,
+          6.708203932499369,
+          6.324555320336759,
+          6.082762530298219,
+          6.0,
+          5.0990195135927845,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.47213595499958,
+          4.0,
+          4.47213595499958,
+          5.0,
+          5.0,
+          5.385164807134504,
+          5.0990195135927845,
+          6.0,
+          6.082762530298219,
+          6.324555320336759
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -2.5536861143010143,
+        "max_normal_pull_N": 2.560086725155379,
+        "slope_at_zero_N_per_mm": 0.31849803320965986
+      },
+      {
+        "gap_mm": 5.0,
+        "lateral_isotropic_N": 0.8410216847145119,
+        "lateral_best_direction_N": 1.2016162714230845,
+        "lateral_mean_over_directions_N": 0.965583475202357,
+        "normal_at_best_N": [
+          -1.0518360468475048,
+          -0.6562115626982473
+        ],
+        "offset_for_best_mm": [
+          7.615773105863909,
+          7.211102550927978,
+          7.810249675906654,
+          8.48528137423857,
+          8.602325267042627,
+          8.06225774829855,
+          8.54400374531753,
+          8.246211251235321,
+          9.055385138137417,
+          9.0,
+          9.055385138137417,
+          8.246211251235321,
+          8.54400374531753,
+          8.06225774829855,
+          8.602325267042627,
+          8.48528137423857,
+          7.810249675906654,
+          7.211102550927978,
+          7.615773105863909,
+          7.280109889280518,
+          6.082762530298219,
+          6.0,
+          6.082762530298219,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.47213595499958,
+          4.0,
+          4.47213595499958,
+          5.0,
+          5.0,
+          5.385164807134504,
+          6.082762530298219,
+          6.0,
+          6.082762530298219,
+          7.280109889280518
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -1.9991144218580448,
+        "max_normal_pull_N": 2.003913801497066,
+        "slope_at_zero_N_per_mm": 0.23876241691723118
+      }
+    ],
+    "zlift_levels": [
+      {
+        "gap_mm": 6.0,
+        "lateral_isotropic_N": 0.6545035095834396,
+        "lateral_best_direction_N": 0.9454446047803149,
+        "lateral_mean_over_directions_N": 0.756200819981476,
+        "normal_at_best_N": [
+          -0.8811299411769181,
+          -0.5584348649561953
+        ],
+        "offset_for_best_mm": [
+          7.615773105863909,
+          7.211102550927978,
+          7.810249675906654,
+          8.48528137423857,
+          8.602325267042627,
+          8.94427190999916,
+          8.54400374531753,
+          9.219544457292887,
+          9.055385138137417,
+          9.0,
+          9.055385138137417,
+          9.219544457292887,
+          8.54400374531753,
+          8.94427190999916,
+          8.602325267042627,
+          8.48528137423857,
+          7.810249675906654,
+          7.211102550927978,
+          7.615773105863909,
+          7.280109889280518,
+          7.0710678118654755,
+          6.0,
+          6.082762530298219,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.47213595499958,
+          4.0,
+          4.47213595499958,
+          5.0,
+          5.0,
+          5.385164807134504,
+          6.082762530298219,
+          6.0,
+          7.0710678118654755,
+          7.280109889280518
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -1.5813467998048298,
+        "max_normal_pull_N": 1.582536579742182,
+        "slope_at_zero_N_per_mm": 0.1808970363816383
+      },
+      {
+        "gap_mm": 8.0,
+        "lateral_isotropic_N": 0.4106095565256807,
+        "lateral_best_direction_N": 0.6039041243793664,
+        "lateral_mean_over_directions_N": 0.4782624599313854,
+        "normal_at_best_N": [
+          -0.5354262074321581,
+          -0.34578302246521014
+        ],
+        "offset_for_best_mm": [
+          8.94427190999916,
+          8.602325267042627,
+          9.219544457292887,
+          9.219544457292887,
+          10.0,
+          10.295630140987,
+          9.486832980505138,
+          10.44030650891055,
+          10.04987562112089,
+          10.0,
+          10.04987562112089,
+          10.44030650891055,
+          9.486832980505138,
+          10.295630140987,
+          10.0,
+          9.219544457292887,
+          9.219544457292887,
+          8.602325267042627,
+          8.94427190999916,
+          8.54400374531753,
+          7.0710678118654755,
+          7.0,
+          6.082762530298219,
+          5.385164807134504,
+          5.0,
+          5.0,
+          4.123105625617661,
+          5.0,
+          4.123105625617661,
+          5.0,
+          5.0,
+          5.385164807134504,
+          6.082762530298219,
+          7.0,
+          7.0710678118654755,
+          8.54400374531753
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ],
+        "normal_at_zero_lateral_N": -1.018782024981598,
+        "max_normal_pull_N": 1.018782024981598,
+        "slope_at_zero_N_per_mm": 0.1070380953409411
+      },
+      {
+        "gap_mm": 11.0,
+        "lateral_isotropic_N": 0.22175910682008787,
+        "lateral_best_direction_N": 0.3319905502430964,
+        "lateral_mean_over_directions_N": 0.2610307072500679,
+        "normal_at_best_N": [
+          -0.300232613035871,
+          -0.21517060123908435
+        ],
+        "offset_for_best_mm": [
+          9.848857801796104,
+          9.433981132056603,
+          10.63014581273465,
+          10.63014581273465,
+          11.40175425099138,
+          11.180339887498949,
+          11.704699910719626,
+          11.40175425099138,
+          12.041594578792296,
+          12.0,
+          12.041594578792296,
+          11.40175425099138,
+          11.704699910719626,
+          11.180339887498949,
+          11.40175425099138,
+          10.63014581273465,
+          10.63014581273465,
+          9.433981132056603,
+          9.848857801796104,
+          9.486832980505138,
+          9.055385138137417,
+          7.0,
+          7.0710678118654755,
+          6.324555320336759,
+          6.4031242374328485,
+          5.0,
+          5.385164807134504,
+          5.0,
+          5.385164807134504,
+          5.0,
+          6.4031242374328485,
+          6.324555320336759,
+          7.0710678118654755,
+          7.0,
+          9.055385138137417,
+          9.486832980505138
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          4.0
+        ],
+        "normal_at_zero_lateral_N": -0.5562257452477453,
+        "max_normal_pull_N": 0.5624721239477661,
+        "slope_at_zero_N_per_mm": 0.050642565303055276
+      },
+      {
+        "gap_mm": 15.7,
+        "lateral_isotropic_N": 0.09905006238092438,
+        "lateral_best_direction_N": 0.14890773284902845,
+        "lateral_mean_over_directions_N": 0.11740514519222595,
+        "normal_at_best_N": [
+          -0.1271807680627185,
+          -0.10243079813547401
+        ],
+        "offset_for_best_mm": [
+          11.180339887498949,
+          11.661903789690601,
+          12.806248474865697,
+          12.727922061357855,
+          13.601470508735444,
+          13.892443989449804,
+          13.92838827718412,
+          14.560219778561036,
+          14.142135623730951,
+          14.0,
+          14.142135623730951,
+          14.560219778561036,
+          13.92838827718412,
+          13.892443989449804,
+          13.601470508735444,
+          12.727922061357855,
+          12.806248474865697,
+          11.661903789690601,
+          11.180339887498949,
+          10.44030650891055,
+          10.04987562112089,
+          9.0,
+          8.246211251235321,
+          7.615773105863909,
+          6.4031242374328485,
+          5.830951894845301,
+          6.082762530298219,
+          6.0,
+          6.082762530298219,
+          5.830951894845301,
+          6.4031242374328485,
+          7.615773105863909,
+          8.246211251235321,
+          9.0,
+          10.04987562112089,
+          10.44030650891055
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          5.0
+        ],
+        "normal_at_zero_lateral_N": -0.2500148636829196,
+        "max_normal_pull_N": 0.25331078558373027,
+        "slope_at_zero_N_per_mm": 0.018801046086903465
+      },
+      {
+        "gap_mm": 20.0,
+        "lateral_isotropic_N": 0.05319032161109873,
+        "lateral_best_direction_N": 0.08019705527196817,
+        "lateral_mean_over_directions_N": 0.06340665650994323,
+        "normal_at_best_N": [
+          -0.07021175909230011,
+          -0.05364306383590769
+        ],
+        "offset_for_best_mm": [
+          13.0,
+          13.416407864998739,
+          14.212670403551895,
+          14.866068747318506,
+          15.0,
+          16.1245154965971,
+          16.15549442140351,
+          16.492422502470642,
+          16.1245154965971,
+          16.0,
+          16.1245154965971,
+          16.492422502470642,
+          16.15549442140351,
+          16.1245154965971,
+          15.0,
+          14.866068747318506,
+          14.212670403551895,
+          13.416407864998739,
+          13.0,
+          12.36931687685298,
+          11.045361017187261,
+          10.04987562112089,
+          9.486832980505138,
+          8.06225774829855,
+          7.0710678118654755,
+          7.211102550927978,
+          7.280109889280518,
+          7.0,
+          7.280109889280518,
+          7.211102550927978,
+          7.0710678118654755,
+          8.06225774829855,
+          9.486832980505138,
+          10.04987562112089,
+          11.045361017187261,
+          12.36931687685298
+        ],
+        "zero_lateral_offset_mm": [
+          0.0,
+          5.0
+        ],
+        "normal_at_zero_lateral_N": -0.1365055158538983,
+        "max_normal_pull_N": 0.13689147732481577,
+        "slope_at_zero_N_per_mm": 0.008973882093052945
+      }
+    ],
+    "diametric_variant": [
+      {
+        "gap_mm": 0.5,
+        "across_azimuth_lateral_N": 2.52065278009389,
+        "across_azimuth_normal_N": 1.3050007735319164e-12,
+        "along_azimuth_lateral_N": 2.5583935927925587,
+        "along_azimuth_normal_N": 2.056536990065253
+      },
+      {
+        "gap_mm": 1.0,
+        "across_azimuth_lateral_N": 2.2468404609623476,
+        "across_azimuth_normal_N": 3.2953748447971336e-13,
+        "along_azimuth_lateral_N": 2.291197073234777,
+        "along_azimuth_normal_N": 1.8161807388557718
+      },
+      {
+        "gap_mm": 1.5,
+        "across_azimuth_lateral_N": 1.9968899751684728,
+        "across_azimuth_normal_N": 1.167179395539544e-12,
+        "along_azimuth_lateral_N": 2.043735184840736,
+        "along_azimuth_normal_N": 1.6022763418863644
+      },
+      {
+        "gap_mm": 2.0,
+        "across_azimuth_lateral_N": 1.7717288570420802,
+        "across_azimuth_normal_N": 5.109086799732561e-13,
+        "along_azimuth_lateral_N": 1.8181717042332857,
+        "along_azimuth_normal_N": 1.4137162553553768
+      },
+      {
+        "gap_mm": 2.2,
+        "across_azimuth_lateral_N": 1.6885276670280829,
+        "across_azimuth_normal_N": 1.6309751836679774e-12,
+        "along_azimuth_lateral_N": 1.7342402782524904,
+        "along_azimuth_normal_N": 1.3449554797858614
+      },
+      {
+        "gap_mm": 2.5,
+        "across_azimuth_lateral_N": 1.5708552522987393,
+        "across_azimuth_normal_N": -8.832040901191279e-13,
+        "along_azimuth_lateral_N": 1.6150407579745625,
+        "along_azimuth_normal_N": 1.2484905793992334
+      },
+      {
+        "gap_mm": 2.7,
+        "across_azimuth_lateral_N": 1.4970157525018994,
+        "across_azimuth_normal_N": -2.1838522434233187e-12,
+        "along_azimuth_lateral_N": 1.5399647369639233,
+        "along_azimuth_normal_N": 1.1884027423992667
+      },
+      {
+        "gap_mm": 3.0,
+        "across_azimuth_lateral_N": 1.3928844733453771,
+        "across_azimuth_normal_N": 1.092121584629534e-12,
+        "along_azimuth_lateral_N": 1.4337514092480272,
+        "along_azimuth_normal_N": 1.1042077851520824
+      },
+      {
+        "gap_mm": 3.7,
+        "across_azimuth_lateral_N": 1.178612039032846,
+        "across_azimuth_normal_N": -2.7427385269723767e-12,
+        "along_azimuth_lateral_N": 1.2140916524619134,
+        "along_azimuth_normal_N": 0.932746986244535
+      },
+      {
+        "gap_mm": 4.0,
+        "across_azimuth_lateral_N": 1.0979995140174112,
+        "across_azimuth_normal_N": 5.197036423225603e-13,
+        "along_azimuth_lateral_N": 1.13112340410415,
+        "along_azimuth_normal_N": 0.8687801952533549
+      },
+      {
+        "gap_mm": 5.0,
+        "across_azimuth_lateral_N": 0.8707957907814572,
+        "across_azimuth_normal_N": -9.841248951086186e-13,
+        "along_azimuth_lateral_N": 0.8965566843836594,
+        "along_azimuth_normal_N": 0.6897007906562076
+      }
+    ],
+    "tilt": [
+      {
+        "alt_deg": 35.0,
+        "lateral_isotropic_N": 1.0287396559760034,
+        "lateral_best_direction_N": 1.6776008779091434,
+        "normal_at_zero_lateral_N": -2.5054372758551677,
+        "zero_lateral_offset_mm": [
+          0.0,
+          4.0
+        ]
+      },
+      {
+        "alt_deg": 50.0,
+        "lateral_isotropic_N": 1.2039772979820171,
+        "lateral_best_direction_N": 1.6639267227386514,
+        "normal_at_zero_lateral_N": -2.7540978344949787,
+        "zero_lateral_offset_mm": [
+          0.0,
+          3.0
+        ]
+      },
+      {
+        "alt_deg": 75.0,
+        "lateral_isotropic_N": 1.4124651361811156,
+        "lateral_best_direction_N": 1.5831373493582888,
+        "normal_at_zero_lateral_N": -3.0108824558281584,
+        "zero_lateral_offset_mm": [
+          0.0,
+          1.0
+        ]
+      }
+    ],
+    "constrained": {
+      "abs_Fz_le_0.3N": {
+        "isotropic_N": 0.7073696101542428,
+        "best_N": 1.5203001461447347,
+        "normal_band_N": [
+          -0.3,
+          0.3
+        ]
+      },
+      "Fz_in_-0.8_to_0.05N": {
+        "isotropic_N": 0.9960313680819329,
+        "best_N": 1.6375251316473984,
+        "normal_band_N": [
+          -0.8,
+          0.05
+        ]
+      },
+      "unconstrained": 1.2039772979820171,
+      "gap_mm": 3.7,
+      "label": "CALC: the controller may choose any head offset within +/-24 mm"
+    },
+    "variants": {
+      "pen_magnet_vertical_axis": {
+        "height_mm": 2.185,
+        "lateral_isotropic_N": 2.357175221288439,
+        "normal_at_zero_lateral_N": -4.561999329410934,
+        "note": "more force, but the fit can no longer see the pen azimuth (needed to place the ball)"
+      }
+    },
+    "pcb_array": [
+      {
+        "gap_to_copper_mm": 0.8,
+        "pitch_mm": 12.0,
+        "layers": 6,
+        "turns_per_layer": 16,
+        "resistance_pair_ohm_60C": 7.564437077803254,
+        "lateral_N_per_A": 0.05543646628874391,
+        "normal_N_per_A": 3.740885400928262e-10,
+        "km_N_per_sqrtW": 0.020156133757929025,
+        "best_pen_x_mm": 0.0
+      },
+      {
+        "gap_to_copper_mm": 3.7,
+        "pitch_mm": 12.0,
+        "layers": 6,
+        "turns_per_layer": 16,
+        "resistance_pair_ohm_60C": 7.564437077803254,
+        "lateral_N_per_A": 0.021170330089602975,
+        "normal_N_per_A": 1.9884059676567034e-12,
+        "km_N_per_sqrtW": 0.00769731610891275,
+        "best_pen_x_mm": 0.0
+      }
+    ],
+    "em_cross_head_air_core": {
+      "gap_mm": 3.7,
+      "turns_per_coil": 360,
+      "resistance_pair_ohm_60C": 4.788308448,
+      "lateral_N_per_A": 0.03565522229176319,
+      "normal_N_per_A": 2.503773230411177e-12,
+      "km_N_per_sqrtW": 0.016294164224050913
+    },
+    "langerak_em_km_N_per_sqrtW": {
+      "value": 0.14713753615394864,
+      "label": "CALC from LIT HAP-16"
+    }
+  },
+  "hand": {
+    "cases": [
+      {
+        "name": "relaxed",
+        "k1": 575.0,
+        "b1": 1.3,
+        "M": 0.21,
+        "k2": 170.0,
+        "b2": 11.0,
+        "m_pen": 0.075,
+        "label": "LIT HAP-26 nominal",
+        "note": "the writer lets the board lead; passive grip and arm"
+      },
+      {
+        "name": "relaxed_compliant",
+        "k1": 230.0,
+        "b1": 0.87,
+        "M": 0.21,
+        "k2": 63.0,
+        "b2": 3.7,
+        "m_pen": 0.075,
+        "label": "LIT HAP-26 lower 95 % CI",
+        "note": "soft grip, soft arm"
+      },
+      {
+        "name": "lightly_resisting",
+        "k1": 575.0,
+        "b1": 1.3,
+        "M": 0.21,
+        "k2": 533.0,
+        "b2": 27.6,
+        "m_pen": 0.075,
+        "label": "LIT HAP-26 upper 95 % CI for the arm (ASSUMPTION: co-contraction = light resistance)",
+        "note": "arm stiffened by co-contraction"
+      },
+      {
+        "name": "hand_held_still",
+        "k1": 575.0,
+        "b1": 1.3,
+        "M": 0.21,
+        "k2": 1000000000.0,
+        "b2": 0.0,
+        "m_pen": 0.075,
+        "label": "CALC limit (ASSUMPTION)",
+        "note": "arm holds its position; only the grip yields"
+      }
+    ],
+    "deflection_per_0p1N": [
+      {
+        "case": "relaxed",
+        "label": "LIT HAP-26 nominal",
+        "note": "the writer lets the board lead; passive grip and arm",
+        "force_N": 0.1,
+        "deflection_mm_at_0Hz": 0.7621483374651247,
+        "deflection_mm_at_1Hz": 0.747887719566351,
+        "deflection_mm_at_2Hz": 0.6943687277194479,
+        "deflection_mm_at_4Hz": 0.4682956677655757,
+        "deflection_mm_at_8Hz": 0.19543543696030713
+      },
+      {
+        "case": "relaxed_compliant",
+        "label": "LIT HAP-26 lower 95 % CI",
+        "note": "soft grip, soft arm",
+        "force_N": 0.1,
+        "deflection_mm_at_0Hz": 2.0220841980113504,
+        "deflection_mm_at_1Hz": 2.222392974859539,
+        "deflection_mm_at_2Hz": 2.4533137694355016,
+        "deflection_mm_at_4Hz": 0.6702963841529659,
+        "deflection_mm_at_8Hz": 0.4479935676874522
+      },
+      {
+        "case": "lightly_resisting",
+        "label": "LIT HAP-26 upper 95 % CI for the arm (ASSUMPTION: co-contraction = light resistance)",
+        "note": "arm stiffened by co-contraction",
+        "force_N": 0.1,
+        "deflection_mm_at_0Hz": 0.3615303041909672,
+        "deflection_mm_at_1Hz": 0.3543604923035895,
+        "deflection_mm_at_2Hz": 0.33647067000179903,
+        "deflection_mm_at_4Hz": 0.2962066687759528,
+        "deflection_mm_at_8Hz": 0.279601092249205
+      },
+      {
+        "case": "hand_held_still",
+        "label": "CALC limit (ASSUMPTION)",
+        "note": "arm holds its position; only the grip yields",
+        "force_N": 0.1,
+        "deflection_mm_at_0Hz": 0.17391314348704087,
+        "deflection_mm_at_1Hz": 0.17479550192875226,
+        "deflection_mm_at_2Hz": 0.1774959807335819,
+        "deflection_mm_at_4Hz": 0.18916600753218177,
+        "deflection_mm_at_8Hz": 0.2557530149839887
+      }
+    ],
+    "nudge_vs_steer_0p3N": [
+      {
+        "case": "relaxed",
+        "force_N": 0.3,
+        "correction_mm_at_0.5Hz": 2.2764048692151024,
+        "correction_mm_at_1Hz": 2.2436631586990523,
+        "correction_mm_at_2Hz": 2.0831061831583435,
+        "correction_mm_at_4Hz": 1.4048870032967269,
+        "static_correction_mm": 2.286445012395374
+      },
+      {
+        "case": "relaxed_compliant",
+        "force_N": 0.3,
+        "correction_mm_at_0.5Hz": 6.217790399579715,
+        "correction_mm_at_1Hz": 6.667178924578617,
+        "correction_mm_at_2Hz": 7.359941308306506,
+        "correction_mm_at_4Hz": 2.010889152458897,
+        "static_correction_mm": 6.06625259403405
+      },
+      {
+        "case": "lightly_resisting",
+        "force_N": 0.3,
+        "correction_mm_at_0.5Hz": 1.079014101062418,
+        "correction_mm_at_1Hz": 1.0630814769107684,
+        "correction_mm_at_2Hz": 1.009412010005397,
+        "correction_mm_at_4Hz": 0.8886200063278585,
+        "static_correction_mm": 1.0845909125729016
+      },
+      {
+        "case": "hand_held_still",
+        "force_N": 0.3,
+        "correction_mm_at_0.5Hz": 0.5223987414519788,
+        "correction_mm_at_1Hz": 0.5243865057862568,
+        "correction_mm_at_2Hz": 0.5324879422007456,
+        "correction_mm_at_4Hz": 0.5674980225965452,
+        "static_correction_mm": 0.5217394304611225
+      }
+    ],
+    "forces_needed": [
+      {
+        "case": "relaxed",
+        "correction_mm": 1.0,
+        "f_Hz": 1.0,
+        "force_N": 0.13370991043680083
+      },
+      {
+        "case": "relaxed",
+        "correction_mm": 1.0,
+        "f_Hz": 4.0,
+        "force_N": 0.21354030558757817
+      },
+      {
+        "case": "relaxed",
+        "correction_mm": 3.0,
+        "f_Hz": 1.0,
+        "force_N": 0.4011297313104025
+      },
+      {
+        "case": "relaxed",
+        "correction_mm": 3.0,
+        "f_Hz": 4.0,
+        "force_N": 0.6406209167627345
+      },
+      {
+        "case": "relaxed_compliant",
+        "correction_mm": 1.0,
+        "f_Hz": 1.0,
+        "force_N": 0.04499654252476219
+      },
+      {
+        "case": "relaxed_compliant",
+        "correction_mm": 1.0,
+        "f_Hz": 4.0,
+        "force_N": 0.14918773599885538
+      },
+      {
+        "case": "relaxed_compliant",
+        "correction_mm": 3.0,
+        "f_Hz": 1.0,
+        "force_N": 0.13498962757428656
+      },
+      {
+        "case": "relaxed_compliant",
+        "correction_mm": 3.0,
+        "f_Hz": 4.0,
+        "force_N": 0.4475632079965661
+      },
+      {
+        "case": "lightly_resisting",
+        "correction_mm": 1.0,
+        "f_Hz": 1.0,
+        "force_N": 0.2821985017289329
+      },
+      {
+        "case": "lightly_resisting",
+        "correction_mm": 1.0,
+        "f_Hz": 4.0,
+        "force_N": 0.33760212223864144
+      },
+      {
+        "case": "lightly_resisting",
+        "correction_mm": 3.0,
+        "f_Hz": 1.0,
+        "force_N": 0.8465955051867986
+      },
+      {
+        "case": "lightly_resisting",
+        "correction_mm": 3.0,
+        "f_Hz": 4.0,
+        "force_N": 1.0128063667159244
+      },
+      {
+        "case": "hand_held_still",
+        "correction_mm": 1.0,
+        "f_Hz": 1.0,
+        "force_N": 0.5720971014503602
+      },
+      {
+        "case": "hand_held_still",
+        "correction_mm": 1.0,
+        "f_Hz": 4.0,
+        "force_N": 0.5286362032194794
+      },
+      {
+        "case": "hand_held_still",
+        "correction_mm": 3.0,
+        "f_Hz": 1.0,
+        "force_N": 1.7162913043510803
+      },
+      {
+        "case": "hand_held_still",
+        "correction_mm": 3.0,
+        "f_Hz": 4.0,
+        "force_N": 1.585908609658438
+      }
+    ],
+    "friction": {
+      "off": {
+        "mu_kinetic": 0.15,
+        "mu_static": 0.195,
+        "writing_force_N": 1.0,
+        "magnetic_normal_N": 0.25,
+        "static_friction_N": 0.24375000000000002,
+        "kinetic_friction_N": 0.1875,
+        "label": "CALC from ASSUMPTION mu (config writing.mu_eff, mu_static_ratio)"
+      },
+      "guiding": {
+        "mu_kinetic": 0.15,
+        "mu_static": 0.195,
+        "writing_force_N": 1.0,
+        "magnetic_normal_N": 1.0,
+        "static_friction_N": 0.39,
+        "kinetic_friction_N": 0.3,
+        "label": "CALC from ASSUMPTION mu (config writing.mu_eff, mu_static_ratio)"
+      }
+    }
+  },
+  "stage": {
+    "pulley_radius_mm": 6.366197723675814,
+    "microstep_mm": 0.0125,
+    "effective_mass_kg": {
+      "x": 0.5646537804446636,
+      "y": 0.9846537804446636
+    },
+    "torque_Nm_at": {
+      "0": 0.5006316010800756,
+      "100": 0.5006316010800756,
+      "200": 0.5006316010800756,
+      "300": 0.4180207648984253,
+      "400": 0.170617013230261
+    },
+    "accel_m_s2_at_200mm_s": {
+      "x": 273.2259330475261,
+      "y": 156.68254068057823
+    },
+    "top_speed_mm_s": 509.5402118614034,
+    "mode_x_Hz": 142.37942118528122,
+    "mode_y_Hz": 74.78133563388515,
+    "position_bandwidth_Hz": 24.927111877961718,
+    "rule": "closed-loop position bandwidth about one third of the first mode (ASSUMPTION, input-shaped step commands)",
+    "latency": {
+      "hall_conversion_ms": 0.6,
+      "spi_read_8_sensors_ms": 0.1,
+      "pose_fit_ms": 0.2,
+      "control_and_allocation_ms": 0.1,
+      "step_generation_ms": 0.5,
+      "stage_equivalent_delay_ms": 6.385,
+      "total_effective_ms": 7.88,
+      "label": "CALC from MFR conversion times (AMF-95) and ASSUMPTION compute times; stage delay = 1/(2 pi f_bw)",
+      "comparison": "Langerak et al.: ~10 ms pen-to-magnet, ~20 ms total (LIT HAP-16)"
+    },
+    "demand": {
+      "pen_speed_peak_mm_s": 150.0,
+      "pen_accel_m_s2": 1.9739208802178716,
+      "offset_modulation_accel_m_s2": 15.791367041742973,
+      "required_accel_m_s2": 17.765287921960844,
+      "label": "CALC from ASSUMPTION kinematics (config writing.speed_typ, stroke_freq)"
+    },
+    "power": {
+      "motor_copper_W_each_running": 4.032,
+      "driver_W_each_running": 0.9792000000000001,
+      "motors_and_drivers_W_avg": 6.303744,
+      "servo_W": 0.35,
+      "logic_W": 0.25,
+      "board_W_avg": 6.903744,
+      "wall_W_avg": 7.628446408839778,
+      "peak_W": 17.7724,
+      "magnet_force_power_W": 0.0,
+      "label": "CALC from MFR resistances and currents (AMF-92/93/96/97) with ASSUMPTION duty"
+    },
+    "cover_A4_3mm": {
+      "glass_mm": 3.0,
+      "span_mm": [
+        294.0,
+        357.0
+      ],
+      "load_N": 10.0,
+      "centre_deflection_mm": 0.06936179083400483,
+      "load_for_clearance_contact_N": 72.08579738037466,
+      "centre_stress_MPa_at_100N": 20.9460798885594,
+      "label": "CALC (Kirchhoff plate, simply supported; glass properties ASSUMPTION)",
+      "note": "chemically strengthened glass or a bonded anti-shatter film is needed at a 100 N lean load (annealed glass design strength is of the same order)"
+    },
+    "cover_A4_2mm": {
+      "glass_mm": 2.0,
+      "span_mm": [
+        294.0,
+        357.0
+      ],
+      "load_N": 10.0,
+      "centre_deflection_mm": 0.2340960440647663,
+      "load_for_clearance_contact_N": 21.358754779370265,
+      "centre_stress_MPa_at_100N": 47.12867974925865,
+      "label": "CALC (Kirchhoff plate, simply supported; glass properties ASSUMPTION)",
+      "note": "chemically strengthened glass or a bonded anti-shatter film is needed at a 100 N lean load (annealed glass design strength is of the same order)"
+    },
+    "cover_A5_2mm": {
+      "glass_mm": 2.0,
+      "span_mm": [
+        202.0,
+        270.0
+      ],
+      "load_N": 10.0,
+      "centre_deflection_mm": 0.11731358098144334,
+      "load_for_clearance_contact_N": 42.62081131758223,
+      "centre_stress_MPa_at_100N": 41.66313119062571,
+      "label": "CALC (Kirchhoff plate, simply supported; glass properties ASSUMPTION)",
+      "note": "chemically strengthened glass or a bonded anti-shatter film is needed at a 100 N lean load (annealed glass design strength is of the same order)"
+    },
+    "cover_A5_1p5mm": {
+      "glass_mm": 1.5,
+      "span_mm": [
+        202.0,
+        270.0
+      ],
+      "load_N": 10.0,
+      "centre_deflection_mm": 0.2780766364004583,
+      "load_for_clearance_contact_N": 17.980654774605004,
+      "centre_stress_MPa_at_100N": 74.06778878333458,
+      "label": "CALC (Kirchhoff plate, simply supported; glass properties ASSUMPTION)",
+      "note": "chemically strengthened glass or a bonded anti-shatter film is needed at a 100 N lean load (annealed glass design strength is of the same order)"
+    }
+  },
+  "sensing": {
+    "monte_carlo_8x_avg": {
+      "gap_mm": 3.7,
+      "sensors": 8,
+      "ring_radius_mm": 18.0,
+      "head_field_at_ring_mT": {
+        "max_abs_component": 23.826004547684626,
+        "range_used_mT": 75.0,
+        "fits_range": true
+      },
+      "noise_sigma_uT": [
+        56.56854249492379,
+        56.56854249492379,
+        25.45584412271571
+      ],
+      "averaging": 8,
+      "calibration_residual_uT": 20.0,
+      "head_scale_error_rms": 0.005,
+      "rows": [
+        {
+          "offset_mm": [
+            0,
+            0
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.06163793458760671,
+            "ball_xy_mm": 0.061637934587608356,
+            "az_deg": 9.703694222083028e-09
+          },
+          "magnet_xy_noise_rms_mm": 0.12075253820105745,
+          "magnet_xy_total_rms_mm": 0.12928808706461067,
+          "ball_xy_noise_rms_mm": 0.24045456376826238,
+          "ball_xy_total_rms_mm": 0.24474954817678124,
+          "pen_field_at_ring_max_mT": 2.8264997922906883
+        },
+        {
+          "offset_mm": [
+            6,
+            0
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.17372760539847326,
+            "ball_xy_mm": 0.13345407706267917,
+            "az_deg": 0.4688982100535027
+          },
+          "magnet_xy_noise_rms_mm": 0.09689100666264419,
+          "magnet_xy_total_rms_mm": 0.19443499330183406,
+          "ball_xy_noise_rms_mm": 0.20703282516833182,
+          "ball_xy_total_rms_mm": 0.24753368524171568,
+          "pen_field_at_ring_max_mT": 4.450415992996986
+        },
+        {
+          "offset_mm": [
+            0,
+            10
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.1637613807493712,
+            "ball_xy_mm": 0.1637613807493728,
+            "az_deg": -1.3190433269399802e-07
+          },
+          "magnet_xy_noise_rms_mm": 0.05278889041749067,
+          "magnet_xy_total_rms_mm": 0.17942299709196594,
+          "ball_xy_noise_rms_mm": 0.11924127126528966,
+          "ball_xy_total_rms_mm": 0.2100470139284103,
+          "pen_field_at_ring_max_mT": 13.056082283381043
+        },
+        {
+          "offset_mm": [
+            -12,
+            4
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.3989594611687737,
+            "ball_xy_mm": 0.8160091349974341,
+            "az_deg": -3.5263130269841163
+          },
+          "magnet_xy_noise_rms_mm": 0.04795038860493564,
+          "magnet_xy_total_rms_mm": 0.4015508834077106,
+          "ball_xy_noise_rms_mm": 0.15312232322601077,
+          "ball_xy_total_rms_mm": 0.8230989590942636,
+          "pen_field_at_ring_max_mT": 11.735400358007427
+        },
+        {
+          "offset_mm": [
+            8,
+            -8
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.31175271522084713,
+            "ball_xy_mm": 0.3103148390579875,
+            "az_deg": 0.675969009592233
+          },
+          "magnet_xy_noise_rms_mm": 0.05586749308393108,
+          "magnet_xy_total_rms_mm": 0.31773298671478784,
+          "ball_xy_noise_rms_mm": 0.13169669549029347,
+          "ball_xy_total_rms_mm": 0.3362706483327588,
+          "pen_field_at_ring_max_mT": 13.09416844838748
+        },
+        {
+          "offset_mm": [
+            15,
+            0
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.37614649821610024,
+            "ball_xy_mm": 0.6867841782355057,
+            "az_deg": -1.8875200670642853
+          },
+          "magnet_xy_noise_rms_mm": 0.06445499186704134,
+          "magnet_xy_total_rms_mm": 0.37781186754661694,
+          "ball_xy_noise_rms_mm": 0.39797283606765554,
+          "ball_xy_total_rms_mm": 0.811760427637168,
+          "pen_field_at_ring_max_mT": 30.393734801721735
+        }
+      ],
+      "summary": {
+        "magnet_noise_rms_mm_median": 0.06016124247548621,
+        "ball_noise_rms_mm_median": 0.1800775741971713,
+        "ball_total_rms_mm_max": 0.8230989590942636,
+        "dipole_bias_ball_mm_max": 0.8160091349974341
+      },
+      "label": "CALC (Monte Carlo; MFR noise AMF-95; calibration residual and scale error ASSUMPTION)"
+    },
+    "monte_carlo_no_avg": {
+      "gap_mm": 3.7,
+      "sensors": 8,
+      "ring_radius_mm": 18.0,
+      "head_field_at_ring_mT": {
+        "max_abs_component": 23.826004547684626,
+        "range_used_mT": 75.0,
+        "fits_range": true
+      },
+      "noise_sigma_uT": [
+        160.0,
+        160.0,
+        72.0
+      ],
+      "averaging": 1,
+      "calibration_residual_uT": 20.0,
+      "head_scale_error_rms": 0.005,
+      "rows": [
+        {
+          "offset_mm": [
+            0,
+            0
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.06163795719136507,
+            "ball_xy_mm": 0.061637957191365444,
+            "az_deg": -1.4868775080373795e-08
+          },
+          "magnet_xy_noise_rms_mm": 0.3309854660348299,
+          "magnet_xy_total_rms_mm": 0.3441190053301699,
+          "ball_xy_noise_rms_mm": 0.5147902841288928,
+          "ball_xy_total_rms_mm": 0.5299445195620883,
+          "pen_field_at_ring_max_mT": 2.8264997922906883
+        },
+        {
+          "offset_mm": [
+            6,
+            0
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.17372760473479537,
+            "ball_xy_mm": 0.13345407532885423,
+            "az_deg": 0.468898351238096
+          },
+          "magnet_xy_noise_rms_mm": 0.21051207235429958,
+          "magnet_xy_total_rms_mm": 0.29863569627868086,
+          "ball_xy_noise_rms_mm": 0.5199801766869271,
+          "ball_xy_total_rms_mm": 0.5735289170685225,
+          "pen_field_at_ring_max_mT": 4.450415992996986
+        },
+        {
+          "offset_mm": [
+            0,
+            10
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.1637613772983482,
+            "ball_xy_mm": 0.16376137729835455,
+            "az_deg": 2.638630274286116e-07
+          },
+          "magnet_xy_noise_rms_mm": 0.14122882893762892,
+          "magnet_xy_total_rms_mm": 0.22335886614276487,
+          "ball_xy_noise_rms_mm": 0.3228764737030201,
+          "ball_xy_total_rms_mm": 0.3725500180485684,
+          "pen_field_at_ring_max_mT": 13.056082283381043
+        },
+        {
+          "offset_mm": [
+            -12,
+            4
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.3989594729785983,
+            "ball_xy_mm": 0.8160092090445306,
+            "az_deg": -3.526313407820121
+          },
+          "magnet_xy_noise_rms_mm": 0.09510946138616501,
+          "magnet_xy_total_rms_mm": 0.42740938438312526,
+          "ball_xy_noise_rms_mm": 0.3271131389373966,
+          "ball_xy_total_rms_mm": 0.94194258636224,
+          "pen_field_at_ring_max_mT": 11.735400358007427
+        },
+        {
+          "offset_mm": [
+            8,
+            -8
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.3117527224916427,
+            "ball_xy_mm": 0.3103148513017404,
+            "az_deg": 0.6759691164090502
+          },
+          "magnet_xy_noise_rms_mm": 0.14353298729652136,
+          "magnet_xy_total_rms_mm": 0.36310772520354045,
+          "ball_xy_noise_rms_mm": 0.3647772604002089,
+          "ball_xy_total_rms_mm": 0.49075872163319045,
+          "pen_field_at_ring_max_mT": 13.09416844838748
+        },
+        {
+          "offset_mm": [
+            15,
+            0
+          ],
+          "dipole_model_bias": {
+            "magnet_xy_mm": 0.3761464685505207,
+            "ball_xy_mm": 0.6867849120550904,
+            "az_deg": -1.887523560895079
+          },
+          "magnet_xy_noise_rms_mm": 0.18480584210104292,
+          "magnet_xy_total_rms_mm": 0.43094071639682996,
+          "ball_xy_noise_rms_mm": 1.1877823528321676,
+          "ball_xy_total_rms_mm": 1.3578405407763552,
+          "pen_field_at_ring_max_mT": 30.393734801721735
+        }
+      ],
+      "summary": {
+        "magnet_noise_rms_mm_median": 0.16416941469878216,
+        "ball_noise_rms_mm_median": 0.4397837722645509,
+        "ball_total_rms_mm_max": 1.3578405407763552,
+        "dipole_bias_ball_mm_max": 0.8160092090445306
+      },
+      "label": "CALC (Monte Carlo; MFR noise AMF-95; calibration residual and scale error ASSUMPTION)"
+    },
+    "options": [
+      {
+        "option": "EMR digitiser under the glass (Wacom-type)",
+        "rate_Hz": "133-200 (MFR AMF-98)",
+        "latency_ms": ">= 5-8 + USB/UART (CALC from rate)",
+        "accuracy_mm": "+/-0.25 to +/-0.4 (MFR AMF-98)",
+        "pen_hardware": "LC resonant coil on a ferrite core near the tip",
+        "compatibility": "Poor: a Wacom digitiser is a sensor board plus a magnetic (soft-iron) sheet (MFR AMF-98); a sheet between head and pen would short the head's field, and the moving NdFeB head and steel stage would disturb the EMR field. The ferrite in the pen would also be pulled by the head.",
+        "availability": "OEM modules exist (Wacom components catalogue 2010, sensor boards 6-14 inch, 2.7 mm thick; Hanvon Ugee business EMR modules) - MFR AMF-98; pen-coil parts: Chinese EMR refills sold as spares (search summary only, not verified)",
+        "verdict": "Reject for the magnetic board; good choice for architecture (iii) if encoders were not enough"
+      },
+      {
+        "option": "Pen's own sensors over BLE (paper optical-flow sensor + IMU in Rev H)",
+        "rate_Hz": "1000 in the pen; 67-133 over BLE (7.5-15 ms connection interval, ASSUMPTION)",
+        "latency_ms": "10-20 (ASSUMPTION)",
+        "accuracy_mm": "relative only; drifts with distance (OPT-01/02 class)",
+        "pen_hardware": "already in Rev H (optional paper sensor)",
+        "compatibility": "Good, no interference; cannot give absolute page position alone",
+        "availability": "in the pen",
+        "verdict": "Secondary: pen-up tracking, pen-down flag, tilt; fuse with the ring"
+      },
+      {
+        "option": "Camera above the page",
+        "rate_Hz": "30-120 (ASSUMPTION)",
+        "latency_ms": "20-50 (ASSUMPTION)",
+        "accuracy_mm": "0.2-0.5 on A4 with a marker on the pen's rear (ASSUMPTION); hand occludes the tip",
+        "pen_hardware": "a marker",
+        "compatibility": "Good, but needs an arm over the desk",
+        "availability": "commodity",
+        "verdict": "Optional: page registration and video for therapists; not in the force loop"
+      },
+      {
+        "option": "Carriage Hall ring + stage position (recommended)",
+        "rate_Hz": "1000 (8x averaging; AMF-95 conversion times)",
+        "latency_ms": "about 1.5 (CALC, board.stage.latency_budget)",
+        "accuracy_mm": "see localise_mc: noise and dipole-model bias; stage position error after homing 0.1-0.2 (ASSUMPTION)",
+        "pen_hardware": "none beyond the force magnet (the same magnet is sensed)",
+        "compatibility": "Designed together with the head (axisymmetric head field is common-mode on the ring)",
+        "availability": "catalogue parts (TMAG5170, AMF-95)",
+        "verdict": "Choose: measures exactly the offset that sets the force, at the loop rate"
+      }
+    ]
+  },
+  "simulation": {
+    "tracing": [
+      {
+        "mode": "off",
+        "hand": "relaxed",
+        "nose": "locked",
+        "ink_rms_mm": 1.4907446642867106,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.0,
+        "force_max_N": 0.0
+      },
+      {
+        "mode": "off",
+        "hand": "lightly_resisting",
+        "nose": "locked",
+        "ink_rms_mm": 1.4453186600104646,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.0,
+        "force_max_N": 0.0
+      },
+      {
+        "mode": "off",
+        "hand": "hand_held_still",
+        "nose": "locked",
+        "ink_rms_mm": 1.4080461771870716,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.0,
+        "force_max_N": 0.0
+      },
+      {
+        "mode": "off",
+        "hand": "relaxed",
+        "nose": "assist",
+        "ink_rms_mm": 0.19031898801293204,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.0,
+        "force_max_N": 0.0
+      },
+      {
+        "mode": "partial",
+        "hand": "relaxed",
+        "nose": "locked",
+        "ink_rms_mm": 1.071989132845823,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.03941945451390486,
+        "force_max_N": 0.12197525365817442
+      },
+      {
+        "mode": "partial",
+        "hand": "lightly_resisting",
+        "nose": "locked",
+        "ink_rms_mm": 1.2163277911360622,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.05459445273554,
+        "force_max_N": 0.16224367250419305
+      },
+      {
+        "mode": "partial",
+        "hand": "hand_held_still",
+        "nose": "locked",
+        "ink_rms_mm": 1.3011250618009709,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.06350584535682938,
+        "force_max_N": 0.18781749702415668
+      },
+      {
+        "mode": "partial",
+        "hand": "relaxed",
+        "nose": "assist",
+        "ink_rms_mm": 0.12771850336793486,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.03941945451390486,
+        "force_max_N": 0.12197525365817442
+      },
+      {
+        "mode": "full",
+        "hand": "relaxed",
+        "nose": "locked",
+        "ink_rms_mm": 0.6332165609439423,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.15815814414576435,
+        "force_max_N": 0.29301452959125396
+      },
+      {
+        "mode": "full",
+        "hand": "lightly_resisting",
+        "nose": "locked",
+        "ink_rms_mm": 0.8589763515204556,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.1970242604289418,
+        "force_max_N": 0.3954683771656053
+      },
+      {
+        "mode": "full",
+        "hand": "hand_held_still",
+        "nose": "locked",
+        "ink_rms_mm": 1.059133434047264,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.22723300551404027,
+        "force_max_N": 0.39995639662710464
+      },
+      {
+        "mode": "full",
+        "hand": "relaxed",
+        "nose": "assist",
+        "ink_rms_mm": 0.084900866782061,
+        "intended_rms_mm": 1.4546850868247,
+        "force_rms_N": 0.15815814414576435,
+        "force_max_N": 0.29301452959125396
+      }
+    ],
+    "write_big": [
+      {
+        "mode": "off",
+        "hand": "relaxed",
+        "ink_to_template_rms_mm": 1.1779715660821546,
+        "ink_to_template_max_mm": 2.8745389363147233,
+        "intended_to_template_rms_mm": 1.2907529773416027,
+        "force_rms_N": 0.0,
+        "force_max_N": 0.0,
+        "normal_pull_mean_N": 0.25,
+        "yield_events": 0,
+        "duration_s": 3.9841786804261394,
+        "loop_height_ratio_ink": 0.826855616814637,
+        "loop_height_ratio_intended": 0.7800073031770693
+      },
+      {
+        "mode": "off",
+        "hand": "lightly_resisting",
+        "ink_to_template_rms_mm": 1.227738846614503,
+        "ink_to_template_max_mm": 2.9233163289950777,
+        "intended_to_template_rms_mm": 1.2907529773416027,
+        "force_rms_N": 0.0,
+        "force_max_N": 0.0,
+        "normal_pull_mean_N": 0.25,
+        "yield_events": 0,
+        "duration_s": 3.9841786804261394,
+        "loop_height_ratio_ink": 0.8020000330278367,
+        "loop_height_ratio_intended": 0.7800073031770693
+      },
+      {
+        "mode": "partial",
+        "hand": "relaxed",
+        "ink_to_template_rms_mm": 1.1858937685328927,
+        "ink_to_template_max_mm": 2.7218494295555264,
+        "intended_to_template_rms_mm": 1.2907529773416027,
+        "force_rms_N": 0.08911880584097666,
+        "force_max_N": 0.21061476386754363,
+        "normal_pull_mean_N": 1.0,
+        "yield_events": 0,
+        "duration_s": 3.9841786804261394,
+        "loop_height_ratio_ink": 0.8121616616343637,
+        "loop_height_ratio_intended": 0.7800073031770693
+      },
+      {
+        "mode": "partial",
+        "hand": "lightly_resisting",
+        "ink_to_template_rms_mm": 1.1694113699781086,
+        "ink_to_template_max_mm": 2.7212325852813946,
+        "intended_to_template_rms_mm": 1.2907529773416027,
+        "force_rms_N": 0.09291843789670307,
+        "force_max_N": 0.21719758374538442,
+        "normal_pull_mean_N": 1.0,
+        "yield_events": 0,
+        "duration_s": 3.9841786804261394,
+        "loop_height_ratio_ink": 0.8056128884260312,
+        "loop_height_ratio_intended": 0.7800073031770693
+      },
+      {
+        "mode": "full",
+        "hand": "relaxed",
+        "ink_to_template_rms_mm": 0.6538832217389711,
+        "ink_to_template_max_mm": 1.7326751851264948,
+        "intended_to_template_rms_mm": 1.2907529773416027,
+        "force_rms_N": 0.1939654698784569,
+        "force_max_N": 0.36492390154047644,
+        "normal_pull_mean_N": 1.0,
+        "yield_events": 0,
+        "duration_s": 3.9841786804261394,
+        "loop_height_ratio_ink": 0.926115799990721,
+        "loop_height_ratio_intended": 0.7800073031770693
+      },
+      {
+        "mode": "full",
+        "hand": "lightly_resisting",
+        "ink_to_template_rms_mm": 0.8474896394821201,
+        "ink_to_template_max_mm": 2.2777293176552735,
+        "intended_to_template_rms_mm": 1.2907529773416027,
+        "force_rms_N": 0.24489714052862158,
+        "force_max_N": 0.3995712768633462,
+        "normal_pull_mean_N": 1.0,
+        "yield_events": 0,
+        "duration_s": 3.9841786804261394,
+        "loop_height_ratio_ink": 0.8807923578482395,
+        "loop_height_ratio_intended": 0.7800073031770693
+      }
+    ],
+    "reversal": [
+      {
+        "mode": "off",
+        "stem_rms_mm": 0.09985524219318374,
+        "bowl_rms_mm": 5.013562583569564,
+        "bowl_on_correct_side_fraction": 0.0,
+        "force_max_N": 0.0,
+        "yield_events": 0,
+        "duration_s": 1.2552911520518146
+      },
+      {
+        "mode": "partial",
+        "stem_rms_mm": 0.02049468832210475,
+        "bowl_rms_mm": 3.236011024793776,
+        "bowl_on_correct_side_fraction": 0.0,
+        "force_max_N": 0.3973989919516473,
+        "yield_events": 4,
+        "duration_s": 1.2552911520518146
+      },
+      {
+        "mode": "full",
+        "stem_rms_mm": 0.06459828980411916,
+        "bowl_rms_mm": 2.6771264438821993,
+        "bowl_on_correct_side_fraction": 0.0,
+        "force_max_N": 0.3999779948172104,
+        "yield_events": 0,
+        "duration_s": 1.2552911520518146
+      },
+      {
+        "mode": "lead_through",
+        "stem_rms_mm": 0.01862788007939054,
+        "bowl_rms_mm": 0.16169945242781633,
+        "bowl_on_correct_side_fraction": 0.939522719843086,
+        "force_max_N": 0.30268394907993057,
+        "yield_events": 0,
+        "duration_s": 4.688713133549228
+      }
+    ],
+    "robustness": [
+      {
+        "case": "force gain -30 %",
+        "mode": "full",
+        "hand": "relaxed",
+        "ink_rms_mm": 0.7466128982112544
+      },
+      {
+        "case": "stage twice as slow (lag 12.7 ms, delay 5 ms)",
+        "mode": "full",
+        "hand": "relaxed",
+        "ink_rms_mm": 0.6546175038956337
+      }
+    ]
+  },
+  "architectures": [
+    {
+      "id": "i-a",
+      "name": "Magnetic carriage, permanent-magnet head (axial) on a CoreXY stage [RECOMMENDED]",
+      "lateral_force_vs_gap_N": {
+        "0.5": 2.66,
+        "1.0": 2.34,
+        "2.0": 1.94,
+        "2.7": 1.55,
+        "3.0": 1.47
+      },
+      "force_note": "CALC magpylib; isotropic = weakest direction; best direction x1.3-1.5; the Z-lift scales it down to 0.1 N (15 mm gap) for partial guidance or off",
+      "normal_pull_N": "-3.57 at zero lateral offset (2.7 mm gap); the controller keeps it lower by raising the Z-lift or using larger offsets",
+      "workspace": "A4 (head travel 230 x 317 mm) or A5; the head must reach 10-15 mm beyond the paper edge for full force at the edge",
+      "bandwidth_Hz": 25.0,
+      "latency_ms": 7.9,
+      "position_accuracy_mm": "0.18 noise, <= 0.82 total at the ball (CALC)",
+      "power_heat": "magnet force 0 W; steppers 6.9 W average (18 W peak) at the back corners, not under the page",
+      "noise": "stepper and belt: StealthChop chopper claimed inaudible at low speed (MFR AMF-93); to be measured (EXP-G04)",
+      "safety": "force bounded by the magnets (breakaway); software cap 0.40 N; yield on override; no pinch points above the glass; power loss leaves at most the passive magnet pull; magnet warnings (pacemakers, cards)",
+      "pen_addon": "K&J D42-N52 disc 6.35 x 3.17 mm, 0.75 g, in the heel of the fixed front sleeve (MFR AMF-91)",
+      "build": "moderate: 3D-printer-class mechanics, catalogue electronics, one calibration jig"
+    },
+    {
+      "id": "i-b",
+      "name": "Magnetic carriage, electromagnet head (Langerak et al.)",
+      "lateral_force_vs_gap_N": {
+        "reported": 0.488
+      },
+      "force_note": "LIT HAP-16: 488 mN at 11 W through a Sensel Morph tablet and paper; force per watt 0.15 N/sqrt(W) (CALC from LIT)",
+      "normal_pull_N": "similar to i-a at equal lateral force (dipole physics), but zero with the coil off",
+      "workspace": "as i-a",
+      "bandwidth_Hz": "current loop > 100 Hz; the carriage still has to follow the pen",
+      "latency_ms": "~10 pen-to-magnet, ~20 total (LIT HAP-16)",
+      "position_accuracy_mm": "their tablet 6502 DPI, 500 Hz (LIT HAP-16); ours as i-a",
+      "power_heat": "7.4 W for 0.4 N (CALC from LIT), under the page: touch-temperature and a fan",
+      "noise": "fan + stage",
+      "safety": "force off with power off (a plus)",
+      "pen_addon": "ring magnet in the pen (LIT)",
+      "build": "moderate; thermal design under the paper is the hard part"
+    },
+    {
+      "id": "i-c",
+      "name": "Magnetic carriage, rotating diametric permanent magnet (variant)",
+      "lateral_force_vs_gap_N": {
+        "0.5": 2.52,
+        "1.0": 2.25,
+        "2.0": 1.77,
+        "2.7": 1.5,
+        "3.0": 1.39
+      },
+      "force_note": "CALC magpylib, K&J D8X0DIA 12.7 x 25.4 mm N42 centred under the pen magnet; force points along the head's magnetisation",
+      "normal_pull_N": "0 across the pen azimuth; 1.19 N (push up) at full force along it (2.7 mm gap)",
+      "workspace": "as i-a",
+      "bandwidth_Hz": "direction set by a rotary axis (small stepper, ~30 ms for 180 deg, ASSUMPTION)",
+      "latency_ms": "as i-a",
+      "position_accuracy_mm": "harder: the head field is not axisymmetric, so the Hall ring must rotate with it or carry an angle-dependent calibration",
+      "power_heat": "as i-a plus a third motor",
+      "noise": "as i-a",
+      "safety": "as i-a",
+      "pen_addon": "as i-a (better with a vertical magnet, which then loses the pen azimuth)",
+      "build": "moderate-hard: 4 axes (X, Y, rotation, Z)"
+    },
+    {
+      "id": "ii",
+      "name": "Planar coil array under the page, no moving parts",
+      "lateral_force_vs_gap_N": {
+        "pcb_km_N_per_sqrtW_at_0.8mm": 0.02
+      },
+      "force_note": "CALC magpylib: 6-layer PCB coils at 12 mm pitch in anti-phase pairs; 0.4 N needs 394 W per coil pair. Iron-core grids (FingerFlux: 19 x 12 electromagnets, 3500 turns, 40 V, 255 mA each = 10.2 W, LIT HAP-54) are strong enough to be felt but an A4 grid needs about 165 channels",
+      "normal_pull_N": "can be zero (anti-phase pairs)",
+      "workspace": "any size, cost scales with area",
+      "bandwidth_Hz": "> 100 (current)",
+      "latency_ms": "~2",
+      "position_accuracy_mm": "the coils can also sense (inductive), unproven here",
+      "power_heat": "tens to hundreds of W under the page for 0.4 N: not acceptable",
+      "noise": "silent",
+      "safety": "no moving parts; heat is the hazard",
+      "pen_addon": "as i-a",
+      "build": "hard (165+ driver channels, thermal)"
+    },
+    {
+      "id": "iii",
+      "name": "2-DOF desktop haptic linkage (five-bar pantograph) tied to the pen",
+      "lateral_force_vs_gap_N": {
+        "no_gap": "0.86-0.95 N worst direction over A5 with 0.15 N m motors (CALC)"
+      },
+      "force_note": "no magnetic gap; research devices: 3D Systems Touch 3.3 N peak, > 0.88 N continuous (MFR HAP-52); Pantograph Mk-II DC-400 Hz (LIT HAP-53)",
+      "normal_pull_N": "none (planar), but the linkage's mass and friction are felt (Touch: 45 g apparent mass, 0.26 N backdrive friction, MFR HAP-52)",
+      "workspace": "A5 reachable with 160/220 mm links (100 % of the grid); A4 needs longer, heavier links (100 % reachable with 220/300 mm)",
+      "bandwidth_Hz": "> 100 (direct drive)",
+      "latency_ms": "~1 (encoders in the loop)",
+      "position_accuracy_mm": "0.01-0.06 from encoders (Touch 0.055 mm resolution, MFR HAP-52; Pantograph ~10 um, LIT HAP-53)",
+      "power_heat": "a few W in motors beside the page",
+      "noise": "quiet (direct drive); cogging if gimbal BLDC",
+      "safety": "active device that can inject energy: needs torque limits and a clutch; scissor pinch points beside the hand; the pen is tethered",
+      "pen_addon": "a collar with a ball joint and a light rod (10-20 g, ASSUMPTION); must allow pen lift, tilt and roll",
+      "build": "moderate (kits exist for small workspaces), hard for A4"
+    },
+    {
+      "id": "iv",
+      "name": "Macro-mini: magnetic board for the gross path + Rev H nose for the fine path (recommended use of i-a)",
+      "lateral_force_vs_gap_N": {
+        "board": "as i-a",
+        "nose": "0.21 N continuous, 0.84 N peak at the tip, +/-3 mm (results/revH/tip_params.json)"
+      },
+      "force_note": "SIM (board.control): tracing ink error 1.6 mm -> 0.7 mm with full board guidance, -> 0.11-0.14 mm with the nose assisting",
+      "normal_pull_N": "as i-a",
+      "workspace": "as i-a",
+      "bandwidth_Hz": "board ~25, nose 80 (Rev H servo)",
+      "latency_ms": "board ~8, nose < 2",
+      "position_accuracy_mm": "as i-a; the nose knows its own deflection (Hall)",
+      "power_heat": "as i-a; the pen spends nothing on the board's force (magnet on the handle)",
+      "noise": "as i-a",
+      "safety": "as i-a; in learning modes the nose is held central so errors stay visible (HAP-01/05/06)",
+      "pen_addon": "as i-a",
+      "build": "as i-a plus a BLE link to the pen",
+      "also_considered": "a passive 'cobot' pen that steers a wheel on the paper (PAT-27, expired) uses the paper as ground without a board; not studied here"
+    }
+  ],
+  "pantograph": {
+    "A5": {
+      "paper_mm": [
+        148.0,
+        210.0
+      ],
+      "link_L1_m": 0.16,
+      "link_L2_m": 0.22,
+      "base_m": 0.06,
+      "motor_torque_Nm": 0.15,
+      "reach_fraction": 1.0,
+      "force_worst_direction_N": [
+        0.8634373006376991,
+        0.9541639808817918
+      ],
+      "apparent_mass_kg_median": 0.10199842233349304,
+      "apparent_mass_kg_p90": 0.47197860365016475,
+      "label": "CALC (rigid five-bar; ASSUMPTION link mass 0.03 kg each, 15 g collar, no rotor inertia)"
+    },
+    "A4": {
+      "paper_mm": [
+        210.0,
+        297.0
+      ],
+      "link_L1_m": 0.22,
+      "link_L2_m": 0.3,
+      "base_m": 0.08,
+      "motor_torque_Nm": 0.15,
+      "reach_fraction": 1.0,
+      "force_worst_direction_N": [
+        0.6167757673745854,
+        0.6863557186336885
+      ],
+      "apparent_mass_kg_median": 0.10043608930486099,
+      "apparent_mass_kg_p90": 0.4453889327079663,
+      "label": "CALC (rigid five-bar; ASSUMPTION link mass 0.03 kg each, 15 g collar, no rotor inertia)"
+    }
+  },
+  "bom": [
+    {
+      "item": "Head magnet",
+      "qty": 1,
+      "part": "K&J Magnetics D88-N52, NdFeB cylinder 12.7 x 12.7 mm, axial",
+      "key_data": "N52, Br max 1.48 T, 12.07 g, 80 C max",
+      "ledger": "AMF-90",
+      "url": "https://www.kjmagnetics.com/d88-n52-neodymium-cylinder-magnet",
+      "price_seen": "USD 4.78 each (vendor page, 2026-09-28)"
+    },
+    {
+      "item": "Pen magnet (pen add-on, in the heel of the Rev H front sleeve)",
+      "qty": 1,
+      "part": "K&J Magnetics D42-N52, NdFeB disc 6.35 x 3.17 mm, axial",
+      "key_data": "N52, Br max 1.48 T, 0.75 g, 80 C max",
+      "ledger": "AMF-91",
+      "url": "https://www.kjmagnetics.com/d42-n52-neodymium-disc-magnet",
+      "price_seen": "USD 0.52 each (qty 1-49, 2026-09-28)"
+    },
+    {
+      "item": "Stepper motors (CoreXY A and B)",
+      "qty": 2,
+      "part": "StepperOnline 17HS19-2004S1 NEMA 17",
+      "key_data": "0.59 N m holding, 2.0 A, 1.40 ohm, 3.0 mH, 82 g cm2, 0.40 kg",
+      "ledger": "AMF-92",
+      "url": "https://www.omc-stepperonline.com/download/17HS19-2004S1.pdf",
+      "price_seen": ""
+    },
+    {
+      "item": "Stepper drivers",
+      "qty": 2,
+      "part": "ADI/Trinamic TMC2209 (on a carrier or on the main PCB)",
+      "key_data": "2 A RMS, 2.8 A peak, 4.75-29 V, StealthChop2, StallGuard4, UART",
+      "ledger": "AMF-93",
+      "url": "https://www.analog.com/media/en/technical-documentation/data-sheets/tmc2209_datasheet_rev1.09.pdf",
+      "price_seen": ""
+    },
+    {
+      "item": "Linear guides",
+      "qty": "2 x MGN12 (Y, 330 mm) + 1 x MGN9 (X, 300 mm)",
+      "part": "HIWIN MGN12H and MGN9H blocks and rails",
+      "key_data": "MGN12H: H 13 mm, C 3.72 kN, block 0.054 kg, rail 0.65 kg/m; MGN9H: H 10 mm, C 2.55 kN, block 0.026 kg, rail 0.38 kg/m",
+      "ledger": "AMF-94",
+      "url": "https://s3.amazonaws.com/www.motionusa.com/hiwin/2025/MG%20Series-2025.pdf",
+      "price_seen": ""
+    },
+    {
+      "item": "Hall sensors (ring on the carriage)",
+      "qty": 8,
+      "part": "TI TMAG5170A2 (VSSOP-8)",
+      "key_data": "+/-75/150/300 mT, 12-bit, 20 ksps single axis, 10 MHz SPI, noise X/Y 160 uT RMS (28 uT with 32x averaging)",
+      "ledger": "AMF-95",
+      "url": "https://www.ti.com/lit/ds/symlink/tmag5170.pdf",
+      "price_seen": ""
+    },
+    {
+      "item": "Z-lift servo (guidance level and off)",
+      "qty": 1,
+      "part": "ROBOTIS DYNAMIXEL XL330-M288-T",
+      "key_data": "0.52 N m stall at 5 V (1.47 A), 12-bit absolute encoder, current-based position mode, 18 g",
+      "ledger": "AMF-96",
+      "url": "https://emanual.robotis.com/docs/en/dxl/x/xl330-m288/",
+      "price_seen": ""
+    },
+    {
+      "item": "Power supply (external, desktop)",
+      "qty": 1,
+      "part": "MEAN WELL GST60A24-P1J",
+      "key_data": "24 V 2.5 A 60 W, 90.5 % typ. efficiency, IEC/UL/EN 62368-1",
+      "ledger": "AMF-97",
+      "url": "https://www.meanwell.com/Upload/PDF/GST60A/GST60A-SPEC.PDF",
+      "price_seen": ""
+    },
+    {
+      "item": "MCU with Bluetooth LE",
+      "qty": 1,
+      "part": "Nordic nRF54L15 (module or QFN40 on the main PCB)",
+      "key_data": "128 MHz Cortex-M33, 256 KB RAM, BLE; same family as the pen",
+      "ledger": "AMF-44 (existing row)",
+      "url": "https://www.nordicsemi.com/Products/nRF54L15",
+      "price_seen": ""
+    },
+    {
+      "item": "Belts, pulleys, idlers",
+      "qty": "2 x ~1.3 m GT2 6 mm belt, 2 x 20T pulleys, 6 idlers",
+      "part": "GT2 2 mm pitch (to select; Gates PowerGrip GT2 class)",
+      "key_data": "belt stiffness not published by the maker: ASSUMPTION 15-40 kN per unit strain",
+      "ledger": "none (ASSUMPTION)",
+      "url": "https://www.gates.com/us/en/search.p.9231-000000-000000.html",
+      "price_seen": ""
+    },
+    {
+      "item": "Variant only: diametric head magnet",
+      "qty": "(1)",
+      "part": "K&J Magnetics D8X0DIA, 12.7 x 25.4 mm, N42, diametric",
+      "key_data": "Br max 1.32 T, 24.14 g",
+      "ledger": "AMF-99",
+      "url": "https://www.kjmagnetics.com/d8x0dia-neodymium-diametric-cylinder-magnet",
+      "price_seen": "USD 8.05 each (2026-09-28)"
+    }
+  ],
+  "custom_parts": [
+    {
+      "part": "Cover glass (writing surface)",
+      "dims_mm": "300 x 360 x 2.0",
+      "material": "chemically strengthened soda-lime or aluminosilicate glass, anti-shatter PET film on the underside",
+      "process": "cut and edge-ground by a glass supplier",
+      "why": "2 mm keeps the magnetic gap small; 0.18 mm sag under a 10 N hand (CALC)"
+    },
+    {
+      "part": "Base plate",
+      "dims_mm": "300 x 400 x 3",
+      "material": "aluminium 5052 or 6061",
+      "process": "laser or waterjet cut, tapped",
+      "why": "stiff, non-magnetic ground for the rails"
+    },
+    {
+      "part": "Side frame and glass support rim",
+      "dims_mm": "walls 3 mm, height 48 mm",
+      "material": "aluminium sheet or 20 x 20 extrusion; PA12 corners",
+      "process": "cut + 3D-printed corners",
+      "why": "carries the glass on its edges; encloses all moving parts"
+    },
+    {
+      "part": "Gantry beam (X)",
+      "dims_mm": "300 x 20 x 10 rectangular tube",
+      "material": "aluminium 6063",
+      "process": "cut, drilled",
+      "why": "carries the MGN9 rail and the carriage"
+    },
+    {
+      "part": "Carriage plate and Z parallelogram",
+      "dims_mm": "60 x 50 x 3 plate; two 40 mm links",
+      "material": "aluminium plate; PA12 or POM links; brass pins",
+      "process": "CNC / 3D print",
+      "why": "non-magnetic; keeps the head magnet vertical over 12 mm of lift"
+    },
+    {
+      "part": "Head magnet cup with aluminium spacer",
+      "dims_mm": "cup OD 16, spacer >= 20 mm to the steel rail",
+      "material": "aluminium 6061",
+      "process": "turned",
+      "why": "keeps the magnet's pull on the steel rail below ~0.8 N (CALC image-dipole bound)"
+    },
+    {
+      "part": "Hall ring PCB",
+      "dims_mm": "ring OD 52, ID 20, 1.0 thick, 8 x TMAG5170 at radius 22",
+      "material": "FR4, 4 layers",
+      "process": "PCB assembly",
+      "why": "measures the pen magnet relative to the head"
+    },
+    {
+      "part": "Main PCB",
+      "dims_mm": "100 x 60",
+      "material": "FR4, 4 layers",
+      "process": "PCB assembly",
+      "why": "nRF54L15, 2 x TMC2209, 24 V -> 5 V/3.3 V buck, servo TTL bus, e-stop input, fan-less"
+    },
+    {
+      "part": "Pen heel boss (Rev H team)",
+      "dims_mm": "pocket 6.45 dia x 3.3 deep, axis along the pen axis",
+      "material": "PEEK front sleeve (Rev H)",
+      "process": "machined or moulded; magnet bonded",
+      "why": "a small keel under the fixed front sleeve holds the D42 magnet 3.8 mm above the paper and about 16.5 mm behind the ball at 50 deg, outside the nose envelope (ASSUMPTION to confirm in Rev H CAD)"
+    },
+    {
+      "part": "Writing underlay and paper stop",
+      "dims_mm": "0.2 PET sheet; L-shaped corner stop 2 mm high",
+      "material": "PET; PA12",
+      "process": "cut / 3D print",
+      "why": "a consistent writing feel on glass; registers printed practice sheets"
+    },
+    {
+      "part": "Arm-rest wedge",
+      "dims_mm": "300 x 80, 0 -> 50 high",
+      "material": "PU foam in a PA12 shell",
+      "process": "moulded / printed",
+      "why": "the writing surface is ~50 mm above the desk"
+    }
+  ],
+  "evidence_rows": 16,
+  "workspace": {
+    "travel": {
+      "x": [
+        36.0,
+        254.0
+      ],
+      "y": [
+        25.0,
+        324.0
+      ]
+    },
+    "paper": [
+      45.0,
+      38.0,
+      210.0,
+      297.0
+    ],
+    "min_isotropic_N_on_page_design": 0.0,
+    "min_isotropic_N_on_page_page_only_travel": 0.0,
+    "median_isotropic_N_design": 1.1791260862831752
+  },
+  "figures": [
+    "results/board/fig_force_vs_gap.png",
+    "results/board/fig_force_vs_position.png",
+    "results/board/fig_force_cuts.png",
+    "results/board/fig_hand_deflection.png",
+    "results/board/fig_guidance_sim.png"
+  ]
+}

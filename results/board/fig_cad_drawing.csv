@@ -1,0 +1,31 @@
+id,label,group,shape,x0_or_cx_mm,y0_or_cy_mm,z0_or_cz_mm,size_x_or_d_mm,size_y_or_d_in_mm,size_z_or_h_mm,moves_with,part,ledger
+base_plate,Base plate,structure,box,0,0,-45.0,300.0,420.0,3.0,board,"custom: aluminium 5052/6061, 3 mm",
+wall_left,Left wall,structure,box,0,0,-42.0,3.0,372.0,42.0,board,custom: aluminium sheet 3 mm,
+wall_right,Right wall,structure,box,297.0,0,-42.0,3.0,372.0,42.0,board,custom: aluminium sheet 3 mm,
+wall_front,Front wall,structure,box,0,0,-42.0,300.0,3.0,42.0,board,custom: aluminium sheet 3 mm,
+glass,Glass writing surface,structure,box,0,0,-3.0,300.0,372.0,3.0,board,"custom: chemically strengthened glass 2.0 mm, anti-shatter film",
+paper,Paper (A4),structure,box,45.0,38.0,0.0,210.0,297.0,0.2,board,A4 paper,
+paper_stop,Paper stop,structure,box,41.0,34.0,0.0,214.0,4,2.0,board,custom: PA12 print,
+housing,Back housing (top cover),structure,box,0,372.0,-8.0,300.0,48.0,20.0,board,custom: PA12 or aluminium,
+yrail_0,Y rail (MGN12),mechanism,box,4.0,5.0,-42.0,12.0,368.0,8.0,board,HIWIN MGN12 rail,AMF-94
+yblock_0,Y block (MGN12H),mechanism,box,-3.5,188.8,-34.0,27.0,45.4,5.0,carriage,HIWIN MGN12H,AMF-94
+yrail_1,Y rail (MGN12),mechanism,box,284.0,5.0,-42.0,12.0,368.0,8.0,board,HIWIN MGN12 rail,AMF-94
+yblock_1,Y block (MGN12H),mechanism,box,276.5,188.8,-34.0,27.0,45.4,5.0,carriage,HIWIN MGN12H,AMF-94
+beam,Gantry beam,mechanism,box,10.0,201.5,-29.0,280.0,20.0,10.0,carriage,custom: aluminium 20 x 10 tube,
+xrail,X rail (MGN9),mechanism,box,20.0,207.0,-19.0,260.0,9.0,6.5,carriage,HIWIN MGN9 rail,AMF-94
+xblock,X block (MGN9H),mechanism,box,130.05,201.5,-12.5,39.9,20.0,3.5,carriage,HIWIN MGN9H,AMF-94
+carriage_plate,Carriage plate and cantilever,mechanism,box,125.0,171.5,-9.0,33.0,50.0,3.0,carriage,custom: aluminium 3 mm,
+motor_A,Stepper motor A,actuator,box,3.0,376.0,-42.0,42.0,42.0,48.0,board,StepperOnline 17HS19-2004S1 (NEMA 17),AMF-92
+motor_B,Stepper motor B,actuator,box,255.0,376.0,-42.0,42.0,42.0,48.0,board,StepperOnline 17HS19-2004S1 (NEMA 17),AMF-92
+idler_0,Belt idler,mechanism,cylinder,24.0,8.0,-35.0,16.0,,9.0,board,GT2 20T idler (to select),
+idler_1,Belt idler,mechanism,cylinder,276.0,8.0,-35.0,16.0,,9.0,board,GT2 20T idler (to select),
+belt_left,Belt (left run),mechanism,box,22.0,8.0,-37.0,2.0,388.0,6.0,board,GT2 6 mm belt (to select),
+belt_right,Belt (right run),mechanism,box,276.0,8.0,-37.0,2.0,388.0,6.0,board,GT2 6 mm belt (to select),
+head_magnet,Head magnet,magnet,cylinder,150.0,186.5,-9.85,12.7,,12.7,carriage,"K&J D88-N52, 12.7 x 12.7 mm, N52",AMF-90
+head_cup,Magnet cup on the Z parallelogram,mechanism,cylinder,150.0,186.5,-19.2,16.0,,6.0,carriage,"custom: aluminium cup, PA12/POM links",
+hall_ring,Hall sensor ring,sensor,tube,150.0,186.5,-3.8,44.0,20.0,1.0,carriage,custom PCB with 8 x TI TMAG5170A2,AMF-95
+zservo,Z-lift servo,actuator,box,159.0,176.5,-32.0,34.0,20.0,26.0,carriage,ROBOTIS XL330-M288-T,AMF-96
+main_pcb,Main board,electronics,box,100.0,376.0,-38.0,100.0,40.0,1.6,board,custom PCB: nRF54L15 + 2 x TMC2209,AMF-44/AMF-93
+dc_jack,24 V input and power switch,power,box,140.0,416.0,-20.0,20.0,4.0,12.0,board,MEAN WELL GST60A24-P1J (external),AMF-97
+stop_button,Stop button,electronics,box,230.0,375.0,12.0,16.0,16.0,4.0,board,momentary switch (to select),
+arm_rest,Arm-rest wedge (optional),structure,box,0,-80.0,-45.0,300.0,80.0,45.0,board,custom: PU foam in a PA12 shell,

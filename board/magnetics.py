@@ -147,7 +147,7 @@ def lateral_capability(F: np.ndarray, offsets: np.ndarray, n_dir: int = 36, tol_
         best.append(float(v[k]))
         fz.append(float(F[k, 2]))
         off_used.append(offsets[k].tolist())
-    best = np.array(best)
+    best = np.maximum(np.array(best), 0.0)   # a direction the head cannot push toward counts as zero
     Fl = np.hypot(F[:, 0], F[:, 1])
     i0 = int(np.argmin(Fl + 10.0 * (np.hypot(offsets[:, 0], offsets[:, 1]) > 8.0)))
     return {

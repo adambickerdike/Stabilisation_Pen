@@ -1,0 +1,8 @@
+case,f0_hz,amp_m
+no tremor,,
+0.3 mm at 5 Hz,5.0,0.0003
+0.3 mm at 9 Hz,9.0,0.0003
+1 mm at 5 Hz,5.0,0.001
+1 mm at 9 Hz,9.0,0.001
+2 mm at 5 Hz,5.0,0.002
+2 mm at 9 Hz,9.0,0.002

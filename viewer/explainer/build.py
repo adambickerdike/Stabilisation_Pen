@@ -9,6 +9,8 @@ Every input has a final file and a provisional fallback.  The final file wins as
                                                              design (results/fusion/viz_fusion.json,
                                                              results/ai/viz_guided.json) plus an illustration of
                                                              shrinking letters (not a result)
+  data/tip.json      <- results/revH/tip_params.json      else tip_params_provisional.json (optional: headline numbers
+                                                             of the Rev H tip study; the page hides them when absent)
   data/manifest.json    which source each file came from (the page shows it)
 
 The page itself is viewer/explainer/template.html; build.py fills its <!--BUILD:...--> placeholders (component table,
@@ -42,6 +44,9 @@ SAMPLES_FINAL = "results/handwriting/samples.json"
 FUSION = "results/fusion/viz_fusion.json"
 GUIDED = "results/ai/viz_guided.json"
 GUIDANCE = "results/ai/guidance.json"
+TIP_FINAL = "results/revH/tip_params.json"
+TIP_PROV = "results/revH/tip_params_provisional.json"
+BOARD_PARAMS = ("results/board/board_params.json", "results/board/board_params_provisional.json")
 
 PROVISIONAL_LABEL = "earlier pencil design (±0.3 mm), simulation; the new pen's results are being computed"
 
@@ -119,13 +124,25 @@ def build_layout():
 
 
 # -------------------------------------------------------------------------------------------------------------- board
+def board_params():
+    for p in BOARD_PARAMS:
+        if exists(p):
+            try:
+                return load(p), p
+            except (OSError, ValueError):
+                pass
+    return None, None
+
+
 def provisional_board() -> dict:
     """A desk guidance board to draw until results/board/layout.json exists.  PROPOSED DESIGN, every size ASSUMED.
 
     Frame: desk, x to the right, y away from the writer, z up; z = 0 is the top of the paper; the centre of the
     writing area is at x = y = 0.  Parts listed under 'moves' follow the carriage: 'xy' the carriage itself,
-    'y' the gantry bridge that carries it.  The pull figure is the published magnetic-stylus device (HAP-15),
-    not a calculation for this board."""
+    'y' the gantry bridge that carries it.  When the board study's parameter file exists (results/board/
+    board_params*.json) its pull, pen-magnet and head-magnet values are used (CALCULATION / ASSUMPTION as labelled
+    there); otherwise the pull is the published magnetic-stylus device (HAP-15), not a calculation for this board."""
+    bp, bp_src = board_params()
     comps = [
         {"id": "base", "label": "Board case", "shape": "box", "center": [0, 0, -14.0], "size": [300, 220, 20],
          "moves": "none", "role": "case", "function": "A flat case that sits on the desk under the paper."},
@@ -140,9 +157,9 @@ def provisional_board() -> dict:
          "moves": "y", "role": "mechanism", "function": "Bridge that slides along the rails and carries the magnet carriage."},
         {"id": "carriage", "label": "Carriage", "shape": "box", "center": [0, 0, -8.0], "size": [30, 26, 5],
          "moves": "xy", "role": "mechanism", "function": "Runs along the bridge, so the magnet can reach any point under the page."},
-        {"id": "magnet", "label": "Electromagnet", "shape": "cylinder", "axis": "z", "center": [0, 0, -4.5], "d": 20,
-         "length": 5, "moves": "xy", "role": "magnet",
-         "function": "Pulls the magnet in the pen through the paper; its current sets how hard it pulls."},
+        {"id": "magnet", "label": "Magnet head", "shape": "cylinder", "axis": "z", "center": [0, 0, -9.0], "d": 12,
+         "length": 12, "moves": "xy", "role": "magnet",
+         "function": "Pulls the magnet in the pen through the paper and the glass; a spring lift sets how hard it pulls."},
         {"id": "motor_x", "label": "Motor (x)", "shape": "box", "center": [110, 0, -9.0], "size": [20, 20, 12],
          "moves": "y", "role": "drive", "function": "Moves the carriage left and right."},
         {"id": "motor_y", "label": "Motor (y)", "shape": "box", "center": [-135, -95, -13.0], "size": [20, 20, 12],
@@ -151,23 +168,43 @@ def provisional_board() -> dict:
          "size": [60, 20, 3], "moves": "none", "role": "electronics",
          "function": "Motor drivers, magnet driver and Bluetooth link to the pen and the app."},
     ]
+    numbers = [
+        {"label": "Pull on the pen (published magnetic stylus, 3.5 mm from the magnet)", "value": 0.43, "unit": "N",
+         "evidence": "LITERATURE HAP-15"},
+        {"label": "Shape error when copying letters: lower with the magnetic pull than without", "value": None,
+         "unit": "", "evidence": "LITERATURE HAP-15"},
+    ]
+    pen_magnet = {"z0": 5.0, "z1": 8.0, "d": 5.0, "d_in": 2.5, "moves_with": "nose", "label": "Magnet ring in the pen's nose",
+                  "function": "A small magnet near the tip that the board's magnet pulls on."}
+    if bp:
+        lo = bp.get("leading_option", {})
+        pm = lo.get("pen_magnet", {})
+        zc = pm.get("centre_along_axis_from_ball_mm")
+        if isinstance(zc, (int, float)):
+            pen_magnet.update({"z0": zc - 1.5, "z1": zc + 1.5, "d": 5.0, "d_in": 2.5})
+        mf = (bp.get("max_lateral_force_N") or {})
+        cap = (bp.get("software_force_cap_N") or {})
+        nums = []
+        if isinstance(mf.get("A4_design_gap_2p7mm"), (int, float)):
+            nums.append({"label": "Largest sideways pull on the pen (A4 board)", "value": mf["A4_design_gap_2p7mm"], "unit": "N",
+                         "evidence": "CALCULATION"})
+        if isinstance(cap.get("value"), (int, float)):
+            nums.append({"label": "Software limit on the pull", "value": cap["value"], "unit": "N", "evidence": "ASSUMPTION"})
+        nums.append({"label": "A published magnetic stylus: copying error lower with the pull", "value": None, "unit": "",
+                     "evidence": "LITERATURE HAP-15"})
+        numbers = nums
     return {
         "meta": {"evidence_status": "PROPOSED DESIGN (provisional board defined in viewer/explainer/build.py; every "
-                                    "dimension is an ASSUMPTION until results/board/layout.json exists)",
+                                    "dimension is an ASSUMPTION until results/board/layout.json exists)"
+                                    + (f"; pull and magnets from {bp_src}" if bp_src else ""),
                  "provisional": True},
         "units": "mm",
         "frame": "desk: x right, y away from the writer, z up; z = 0 is the paper surface; writing area centred at x = y = 0",
         "paper": {"size": [210, 148]},
         "work_area": [200, 140],
-        "pen_magnet": {"z0": 5.0, "z1": 9.0, "d": 7.0, "label": "Magnet ring in the pen's nose",
-                       "function": "A small magnet near the tip that the board's electromagnet pulls on."},
+        "pen_magnet": pen_magnet,
         "components": comps,
-        "numbers": [
-            {"label": "Pull on the pen (published magnetic stylus, 3.5 mm from the magnet)", "value": 0.43, "unit": "N",
-             "evidence": "LITERATURE HAP-15"},
-            {"label": "Shape error when copying letters: lower with the magnetic pull than without", "value": None,
-             "unit": "", "evidence": "LITERATURE HAP-15"},
-        ],
+        "numbers": numbers,
     }
 
 
@@ -570,6 +607,7 @@ def build_samples():
 
 # ------------------------------------------------------------------------------------------------------------ tables
 GROUP_NAMES = {"moving_nose": "Moving nose", "refill": "Ink refill", "grip": "Finger sleeve", "structure": "Handle shell",
+               "skid": "Skid ring",
                "mechanism": "Pivot", "actuator": "Coils and magnets", "sensor": "Sensors", "electronics": "Electronics",
                "power": "Battery", "haptic": "Vibration motor", "inertial": "Inertial module"}
 
@@ -594,7 +632,7 @@ def component_rows(lay: dict) -> str:
     rows = []
     comps = sorted(lay.get("components", []), key=lambda c: (c.get("z0", 0), c.get("z1", 0)))
     for c in comps:
-        g = c.get("group", "other")
+        g = "skid" if "skid" in str(c.get("id", "")).lower() else c.get("group", "other")
         pills = []
         if c.get("moves_with") == "nose":
             pills.append('<span class="pill move">moves with the nose</span>')
@@ -610,7 +648,8 @@ def component_rows(lay: dict) -> str:
 
 
 def status_html(manifest: dict) -> str:
-    names = {"layout.json": "Pen layout", "board.json": "Guidance board", "samples.json": "Handwriting results"}
+    names = {"layout.json": "Pen layout", "board.json": "Guidance board", "samples.json": "Handwriting results",
+             "tip.json": "Tip study headline numbers"}
     items = []
     for m in manifest["files"]:
         st = m["status"]
@@ -631,6 +670,21 @@ def provenance_html(manifest: dict, lay: dict) -> str:
     return " · ".join(bits)
 
 
+# ---------------------------------------------------------------------------------------------------- tip study file
+def build_tip():
+    """Optional headline numbers of the Rev H tip study (results/revH/tip_params*.json), copied as they are."""
+    for src, status in ((TIP_FINAL, "final"), (TIP_PROV, "provisional")):
+        if exists(src):
+            try:
+                t = load(src)
+            except (OSError, ValueError) as ex:
+                warn(f"{src} could not be read ({ex})")
+                continue
+            return t, {"file": "tip.json", "source": src, "status": status, "modified": mtime_utc(src),
+                       "evidence": (t.get("meta") or {}).get("evidence_status", "")}
+    return None, None
+
+
 # -------------------------------------------------------------------------------------------------------------- main
 def dump(obj, name):
     p = os.path.join(DATA, name)
@@ -644,11 +698,18 @@ def main():
     lay, m_lay = build_layout()
     board, m_board = build_board()
     samples, m_samp = build_samples()
+    tip, m_tip = build_tip()
+    files = [m_lay, m_board, m_samp] + ([m_tip] if m_tip else [])
     manifest = {"built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
-                "git_revision": git_revision(), "files": [m_lay, m_board, m_samp], "warnings": WARNINGS,
+                "git_revision": git_revision(), "files": files, "warnings": WARNINGS,
                 "provisional_label": PROVISIONAL_LABEL}
     sizes = {"layout.json": dump(lay, "layout.json"), "board.json": dump(board, "board.json"),
              "samples.json": dump(samples, "samples.json")}
+    tip_path = os.path.join(DATA, "tip.json")
+    if tip is not None:
+        sizes["tip.json"] = dump(tip, "tip.json")
+    elif os.path.exists(tip_path):
+        os.remove(tip_path)
     sizes["manifest.json"] = dump(manifest, "manifest.json")
     with open(os.path.join(HERE, "template.html"), encoding="utf-8") as f:
         page = f.read()

@@ -149,3 +149,154 @@ def write(rows, path):
         w.writeheader()
         for r in rows:
             w.writerow({k: r.get(k, "") for k in HEADER})
+
+
+def _f(x, n=2):
+    try:
+        return f"{float(x):.{n}f}"
+    except (TypeError, ValueError):
+        return "n/a"
+
+
+def study_rows(out) -> List[Dict]:
+    """SIM / CALC rows of this study (numbers taken from results/opt/inertial_opt.json)."""
+    rows = []
+    common = dict(year="2026", access_level="full text", participants_or_bench="none (simulation)", search_query="n/a (derived)",
+                  lead_verification="")
+    ar = out["architecture"]["ranges"]
+    rows.append(_row(id="ACT-62", topic="Rev H active nose: architecture B (skid on the fixed sleeve carries the load) vs A (rigid nose carries the load) (this study)",
+        citation="This ledger's simulation: opt/inertial (evaluate.py, run_study.py stage grid), model H1 extended (sim/handpen core sleeve/pivot, stage source, controller hook)",
+        doi_or_url="results/opt/inertial_opt.json architecture; results/opt/fig_in_arch.png", source_type="derived simulation",
+        evidence_class="numerical simulation", task_or_setup=("Model H1 Rev H handle 22 mm x 170 mm, 75 g, tripod grip on the fixed front sleeve (HAP-26 impedance, "
+                                                                "split r_rot 0.5); tremor 0.3-2 mm at 4-12 Hz on lognormal handwriting; A: nose on a pivot 38 mm "
+                                                                "from the tip carrying the writing force, PID Hall servo 80 Hz, bias spring; B: skid ring carries the force, "
+                                                                "the refill carrier tilts +/-3 mm, servo 80 Hz; perfect-knowledge (oracle) and causal (accelerometer tracker)"),
+        comparator="A vs B; Rev H without correction", key_quantitative_findings=(
+            f"Ink error ratio with perfect knowledge: B {_f(ar['B_oracle'][0])}-{_f(ar['B_oracle'][1])}, A {_f(ar['A_oracle'][0])}-{_f(ar['A_oracle'][1])}; "
+            f"causal (shipped tracker): B {_f(ar['B_causal_ship'][0])}-{_f(ar['B_causal_ship'][1])}, A {_f(ar['A_causal_ship'][0])}-{_f(ar['A_causal_ship'][1])}; "
+            f"causal (Rev H tracker) B {_f(ar['B_causal_revh'][0])}-{_f(ar['B_causal_revh'][1])}. Coil copper loss: A {_f(ar['A_P_cu_W'][0])}-{_f(ar['A_P_cu_W'][1])} W with the bias "
+            f"({_f(ar['A_P_cu_no_bias_W'][0], 1)}-{_f(ar['A_P_cu_no_bias_W'][1], 1)} W without), B {_f(ar['B_P_cu_W'][0], 4)}-{_f(ar['B_P_cu_W'][1], 4)} W. "
+            f"A modulates the writing force by {_f(ar['A_N_std_N'][0])}-{_f(ar['A_N_std_N'][1])} N rms."),
+        units_and_conditions="ratio of RMS ink deviation from the tremor-free reference (same pen) with / without correction; test seeds 200-203; 5 s runs",
+        locator="results/opt/inertial_opt.json architecture.by_condition", limitations=(
+            "Model-to-model; hand impedance and grip split unmeasured (EXP-I01); the skid-ring feel and the A nose feel are not modelled; ball-paper "
+            "friction 0.15 and a constant-force refill spring are ASSUMPTIONS"),
+        relevance_to_design="Decides the Rev H nose architecture", transferability="medium",
+        transferability_reason="Kinematic and power conclusions are robust (pure rotation moves the tip normal to the axis; A's actuator carries the writing load)",
+        design_implication="Build architecture B; keep A only as a fallback if the skid ring is rejected on feel (EXP-H03 extension)",
+        stream="ACT", **common))
+    B = out["rev_h_B"]
+    bb = B["band_8_12Hz_1_2mm"]
+    rows.append(_row(id="ACT-63", topic="Rev H-B active nose at three grip splits: causal vs perfect knowledge, false correction, power and battery (this study)",
+        citation="This ledger's simulation and calculation: opt/inertial (evaluate.py, tracker.py, run_study stage grid)",
+        doi_or_url="results/opt/inertial_opt.json rev_h_B, rev_h_B_table, power_battery; results/opt/fig_in_splits.png", source_type="derived simulation",
+        evidence_class="numerical simulation", task_or_setup="As ACT-62, architecture B; splits r_rot 0.3/0.5/0.7; translational and wrist tremor; shipped and Rev H tracker settings",
+        comparator="Rev H without correction; perfect knowledge (oracle)", key_quantitative_findings=(
+            "Mean ink error ratio at 8-12 Hz, 1-2 mm: " + "; ".join(f"r_rot {rr}: causal {_f(bb[f'revh_r{rr}']['causal'])} (oracle {_f(bb[f'revh_r{rr}']['oracle'])})"
+                                                                for rr in (0.3, 0.5, 0.7)) +
+            f". No causal correction at 4-6 Hz (ratio ~1.0: the tracker locks onto the second harmonic, OPT-49). False correction on tremor-free "
+            f"writing: Rev H tracker {_f(B['distortion']['revh']['lognormal_um'], 1)} um (lognormal) / {_f(B['distortion']['revh']['glyph_um'], 1)} um (glyph), "
+            f"shipped {_f(B['distortion']['ship']['lognormal_um'], 1)} / {_f(B['distortion']['ship']['glyph_um'], 1)} um. Power {_f(out['power_battery']['P_total_W_typical'], 3)} W "
+            f"typical -> {_f(out['power_battery']['life_h'], 0)} h on the {out['power_battery']['cell']}."),
+        units_and_conditions="ratios of RMS ink deviation; um RMS detrended distortion; W; h continuous writing",
+        locator="results/opt/inertial_opt.json", limitations="As ACT-62; base electronics power 0.065 W ASSUMPTION; tracker sees H1's true rotation through fusion's sensor models",
+        relevance_to_design="Headline performance of the Rev H pen", transferability="medium", transferability_reason="Simulated tremor and grip",
+        design_implication="Expect roughly 25-40 % less tremor in the ink at 8-12 Hz and >= 1 mm, little at small amplitude; the estimator, not the mechanism, is the limit",
+        stream="ACT", **common))
+    dec = out["choice"]["inertial_module"]
+    g = dec["gain_band_8_12Hz_1_2mm"]; gw = dec["passive_weight_gain"]; gc = dec["gain_with_grip_calibration"]
+    scr = out["inertial_screen"]
+    rows.append(_row(id="ACT-64", topic="Rear-cap inertial module (tungsten reaction mass) on top of the Rev H active nose; passive weighted-handle comparator; CMG screen (this study)",
+        citation="This ledger's simulation: opt/inertial (addon.py, addon_eval.py, run_study stage addon)",
+        doi_or_url="results/opt/inertial_opt.json inertial_module, inertial_screen; results/opt/fig_in_addon.png", source_type="derived simulation",
+        evidence_class="numerical simulation", task_or_setup=(f"{dec['module']}; 5 Hz centring; +{_f(dec['added_mass_g'], 1)} g total; tracker-driven phasor feed-forward "
+                                                                "(model inverse at the nominal split, or after a grip calibration) and adaptive narrow-band feedback (AFC); "
+                                                                "nose re-estimated on the closed-loop motion; passive comparator = same mass fixed in the cap"),
+        comparator="Rev H nose alone; passive weight; RM with perfect knowledge (iterative learning)", key_quantitative_findings=(
+            "Further reduction of the ink error by the module in the 8-12 Hz, 1-2 mm band (mean over seeds; min seed): " +
+            "; ".join(f"r_rot {rr}: {_f(100 * g[rr]['mean'], 0)} % ({_f(100 * g[rr]['seed_min'], 0)} %), after grip calibration {_f(100 * gc[rr]['mean'], 0)} %"
+                      for rr in ("0.3", "0.5", "0.7")) +
+            ". Passive weight: " + "; ".join(f"r_rot {rr} {_f(100 * gw[rr]['mean'], 0)} % with {_f(100 * gw[rr]['frac_conditions_worse'], 0)} % of conditions worse"
+                                            for rr in ("0.3", "0.5", "0.7")) +
+            f". Module power <= {_f(dec['power_W']['module_total_max_W'], 3)} W. CMG screen: {scr['cmg']['label']} needs {_f(scr['cmg']['added_g'], 0)} g and "
+            f"{_f(scr['cmg']['power']['P_total_W'], 2)} W (CALC) - over the 30 g budget."),
+        units_and_conditions="relative change of the RMS ink deviation; test seeds 200-203", locator="results/opt/inertial_opt.json inertial_module.by_split",
+        limitations="Actuator constant Km 0.9 N/sqrt(W) and centring ASSUMPTIONS; end-stop impacts at >= 1 mm, >= 8 Hz; the 'measurable' criterion was set after the grid",
+        relevance_to_design="Whether the rear-cap module earns its 28 g", transferability="medium", transferability_reason="Model-to-model; grip unmeasured",
+        design_implication="Offer the module as an option for large (>= 1 mm) tremor; do not add passive weight (it amplifies 10-12 Hz at r_rot 0.5-0.7)",
+        stream="ACT", **common))
+    adj = out.get("adjoint_nose") or {}
+    ch = [r for r in adj.get("front", []) if r.get("mu_mass") == adj.get("chosen_mu")]
+    rows.append(_row(id="ACT-65", topic="Rev H nose actuator sized by adjoint (autograd) optimisation of a magnet-coil model (this study)",
+        citation="This ledger's calculation: opt/inertial/adjoint.py (torch autograd; gradients checked by central differences)",
+        doi_or_url="results/opt/inertial_opt.json adjoint_nose; results/opt/fig_in_adjoint.png", source_type="derived calculation",
+        evidence_class="calculation", task_or_setup="Pivot position, arm length, magnet width/length/thickness, coil thickness, travel; copper loss for the design tip force + mass weight; penalties for stroke, peak force, travel, bore",
+        comparator="front over the mass weight 0.5-20", key_quantitative_findings=(
+            f"Chosen (mass weight {adj.get('chosen_mu')}): Km {_f(ch[0]['out']['Km'], 2)} N/sqrt(W) at the magnets, {_f(ch[0]['out']['Km_tip'], 2)} at the tip, "
+            f"copper {_f(1e3 * ch[0]['out']['P'], 1)} mW for the design force, actuator mass {_f(1e3 * ch[0]['out']['mass'], 1)} g" if ch else "see file"),
+        units_and_conditions="CALC; NdFeB N45 from the AMF-28 grade table (Br 1.33 T), copper (AMF-29); leakage, fill and end-turn factors ASSUMPTION", locator="adjoint_nose.front",
+        limitations="Lumped magnetic model (no FEM); thermal limits assumed", relevance_to_design="Actuator dimensions in layout.json",
+        transferability="low", transferability_reason="Model-level sizing; verify by FEM and a coil bench test", design_implication="Build the flat coils and magnets to the chosen sizes; measure Km first (EXP-H05)",
+        stream="ACT", **common))
+    sw = out.get("sweep") or {"rows": []}
+    s80 = {r["travel_mm"]: r for r in sw["rows"] if r["servo_hz"] == 80.0}
+    rows.append(_row(id="ACT-66", topic="Rev H nose travel and servo bandwidth sensitivity (this study)",
+        citation="This ledger's simulation: opt/inertial/run_study.py stage sweep", doi_or_url="results/opt/inertial_opt.json sweep; results/opt/fig_in_sweep.png",
+        source_type="derived simulation", evidence_class="numerical simulation", task_or_setup="Travel 1-4 mm x servo 30/80/150 Hz, 6-12 Hz x 1-2 mm, training seeds 300-303, r_rot 0.5",
+        comparator="design point 3 mm / 80 Hz", key_quantitative_findings=(
+            "Perfect knowledge (mean): " + ", ".join(f"{k:g} mm {_f(v['oracle'])}" for k, v in sorted(s80.items())) +
+            " at 80 Hz; causal: " + ", ".join(f"{k:g} mm {_f(v['causal'])}" for k, v in sorted(s80.items()))),
+        units_and_conditions="ink error ratio", locator="sweep.rows", limitations="Training seeds; servo modelled as a 2nd-order follower",
+        relevance_to_design="Travel and servo requirements", transferability="medium", transferability_reason="Model-to-model",
+        design_implication="+/-2-3 mm usable travel and >= 80 Hz servo; beyond that the tracker limits the causal result", stream="ACT", **common))
+    nn = out.get("neural")
+    if nn:
+        t5 = nn["test_h1"].get("0.5", {})
+        rows.append(_row(id="ACT-67", topic="Neural reaction-mass controller trained by backpropagation through time (this study)",
+            citation="This ledger's simulation: opt/inertial/neural.py (torch; behaviour cloning of the phasor feed-forward, then BPTT on the linear model; run in H1 via the MLP hook)",
+            doi_or_url="results/opt/inertial_opt.json neural; results/opt/fig_in_neural.png", source_type="derived simulation", evidence_class="numerical simulation",
+            task_or_setup="MLP 10-12-2 (tanh) on the tracker estimate, two low-passed copies, frequency, authority and the mass position; training seeds 300-311, validation 316-319, test 200-203",
+            comparator="phasor feed-forward (model inverse)", key_quantitative_findings=(
+                f"Test, r_rot 0.5: RM alone ratio nn {_f(t5.get('nn'))} vs feed-forward {_f(t5.get('ff'))}; with the nose nn {_f(t5.get('nose+nn'))} vs {_f(t5.get('nose+ff'))}. "
+                f"Cost {nn['cost']['macs_per_tick']} MAC per 0.5 ms tick ({_f(nn['cost']['mcu_load_pct_nrf54l15'], 2)} % of the nRF54L15)."),
+            units_and_conditions="ink error ratio vs Rev H without correction", locator="neural.test_h1", limitations="Small network; trained on a linear model; the information limit is the tracker's estimate",
+            relevance_to_design="Whether learning beats the model-based law", transferability="low", transferability_reason="Model-to-model",
+            design_implication="Ship the model-based feed-forward; keep the learned policy as a research option once real data exist", stream="ACT", **common))
+    tr = out.get("tracker_setting") or {}
+    if tr:
+        rows.append(_row(id="OPT-48", topic="Rev H tracker setting chosen by multi-objective Bayesian optimisation (ParEGO) on the Rev H pen (this study)",
+            citation="This ledger's simulation: opt/inertial/tracker_tune.py (ParEGO from opt/touchdown/bo.py; fusion AKF shipped set as the start)",
+            doi_or_url="results/opt/inertial_tracker_revh.json; results/opt/fig_in_tracker.png", source_type="derived simulation", evidence_class="numerical simulation",
+            task_or_setup="10 AKF parameters (gain, frequency gate, amplitude gate, cap, slow-motion speed, harmonic weight, output filter, max frequency); 51 evaluations; training seeds 300-301, glyph 330-331",
+            comparator="shipped AKF set", key_quantitative_findings=(
+                f"Training band ratio {_f(tr['training']['band_ratio'])} vs shipped {_f(tr['ship_on_training']['band_ratio'])}; false correction {_f(tr['training']['false_corr_um'], 1)} um vs "
+                f"{_f(tr['ship_on_training']['false_corr_um'], 1)} um; distortion lognormal {_f(tr['training']['dist_lognormal_um'], 1)} um, glyph {_f(tr['training']['dist_glyph_um'], 1)} um "
+                f"(rule <= 15 / 30 um). Parameters at their bounds: {', '.join(tr.get('at_bounds', []))}."),
+            units_and_conditions="ratio of RMS 3-15 Hz ink error; um", locator="inertial_tracker_revh.json", limitations="Two training seeds per writer; three parameters at bounds",
+            relevance_to_design="Firmware tracker setting for Rev H", transferability="medium", transferability_reason="Simulated sensors",
+            design_implication="Use the Rev H setting with the per-user band (OPT-49); re-tune on recorded data", stream="OPT", **common))
+    cb = out.get("calibrated_band")
+    if cb:
+        t5 = [r for r in cb["test"] if r["r_rot"] == 0.5]
+        lo = {(r["amp_mm"], r["f0"]): r["causal"] for r in t5}
+        rows.append(_row(id="OPT-49", topic="Tracker frequency lock at 4-6 Hz and a per-user calibrated tremor band (this study)",
+            citation="This ledger's simulation: opt/inertial/run_study.py stage calib (fusion AKF with the frequency search limited to 0.75-1.3 x f_cal)",
+            doi_or_url="results/opt/inertial_opt.json calibrated_band; results/opt/fig_in_calib.png", source_type="derived simulation", evidence_class="numerical simulation",
+            task_or_setup="Rev H-B nose, Rev H tracker; band set from a calibration 10 % above the true tremor frequency; development on training seeds 300-303, test seeds 200-203",
+            comparator="open-band Rev H tracker", key_quantitative_findings=(
+                "Open band: mean frequency estimate 8.0 Hz for 4 Hz tremor and 12.0 Hz for 6 Hz at 2 mm (second-harmonic lock), no correction. Calibrated band, r_rot 0.5: " +
+                ", ".join(f"{a:g} mm {f:g} Hz {_f(v)}" for (a, f), v in sorted(lo.items()) if f <= 6.0) +
+                ". False correction with the band set for " + ", ".join(f"{k} Hz: {_f(v['lognormal'], 1)} / {_f(v['glyph'], 1)} um" for k, v in cb["distortion"].items())),
+            units_and_conditions="ink error ratio; um lognormal / glyph", locator="calibrated_band", limitations="Calibration accuracy assumed (+10 %); tremor frequency drift within a session not modelled",
+            relevance_to_design="Parkinson's rest and action tremor lie at 4-7 Hz", transferability="medium", transferability_reason="Simulated tremor with a fixed frequency",
+            design_implication="Add a first-use calibration of the tremor frequency and limit the tracker's search band; test in EXP-H04", stream="OPT", **common))
+    tiers = out.get("tiers_T0_T2")
+    if tiers:
+        rows.append(_row(id="ACT-68", topic="Slim tiers T0-T2 with a cap reaction mass: linear bounds (this study)",
+            citation="This ledger's calculation: opt/inertial/run_study.py stage tiers (opt/inertial/linear_ext.py)", doi_or_url="results/opt/inertial_opt.json tiers_T0_T2",
+            source_type="derived calculation", evidence_class="calculation", task_or_setup="Best cap slug per tier (T0 5.2 g, T1 10.2 g, T2 19.5 g), 0.3 mm, 4-12 Hz, three splits, 0.5 N",
+            comparator="no device", key_quantitative_findings=("T0 ratio 0.48-0.95, T1 0.00-0.87, T2c 0.00-0.63 over 4-12 Hz and splits (optimistic single-frequency bound)"),
+            units_and_conditions="ratio of linear-model tip amplitude", locator="tiers_T0_T2", limitations="Frictionless linear bound; the time-domain oracle realised a quarter to a half of these gains (study I1)",
+            relevance_to_design="Secondary slim variants", transferability="low", transferability_reason="Bounds only",
+            design_implication="Slim tiers need >= 10 g of moving mass to matter; Rev H's bigger grip is the primary product", stream="ACT", **common))
+    return rows

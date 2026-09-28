@@ -120,14 +120,17 @@ def tracing_word(xh=8.0, x0=0.0, y0=0.0):
     return [o, c, u]
 
 
-def smooth_deviation(path: Path, rms_mm: float, rng, wavelengths=(4.0, 7.0, 13.0)):
-    """A smooth normal deviation along a path (the writer's own tracing error)."""
+def smooth_deviation(path: Path, rms_mm: float, rng, wavelengths=(7.0, 13.0, 26.0)):
+    """A smooth normal deviation along a path (the writer's own tracing error).
+
+    Normals come from a smoothed tangent so sharp corners do not create loops.
+    """
     s = path.s
     d = np.zeros_like(s)
     for lam in wavelengths:
         d += rng.normal() * np.sin(2 * math.pi * s / lam + rng.uniform(0, 2 * math.pi))
     d *= rms_mm / max(np.sqrt(np.mean(d ** 2)), 1e-9)
-    t = np.array([path.tangent(si) for si in s])
+    t = np.array([path.tangent(si, h=1.5) for si in s])
     nrm = np.stack([-t[:, 1], t[:, 0]], 1)
     return path.p + d[:, None] * nrm
 
@@ -142,6 +145,7 @@ class Guidance:
     k_full: float = P.CONTROL["full_gain_N_per_mm"].value
     b_n: float = P.CONTROL["damping_N_s_per_m"].value
     lead_N: float = P.CONTROL["lead_force_N"].value
+    lead_through_N: float = 0.30   # must exceed the extra skid friction of the magnet's pull (0.15 x 1.0 N)
     cap_N: float = P.CONTROL["force_cap_N"].value
     slew_N_s: float = P.CONTROL["slew_N_per_s"].value
     override_mm: float = P.CONTROL["override_error_mm"].value
@@ -157,7 +161,9 @@ class Guidance:
             return self.authority * f_n * n_hat
         k = self.k_full
         f = -k * e_vec - self.b_n * e_n_dot * 1e-3 * n_hat
-        if self.mode == "lead_through" or (self.mode == "full" and float(np.dot(v_pen, t_hat)) > 3.0):
+        if self.mode == "lead_through":
+            f = f + self.lead_through_N * t_hat
+        elif self.mode == "full" and float(np.dot(v_pen, t_hat)) > 3.0:
             f = f + self.lead_N * t_hat
         return self.authority * f
 
@@ -211,8 +217,8 @@ class SimConfig:
     stage_delay_s: float = 1.5e-3
     stage_tau_s: float = 1.0 / (2 * math.pi * 25.0)
     force_gain_error: float = 0.0
-    normal_pull_per_N: float = 2.2     # |F_z| per N of lateral capability in use (board.magnetics, near branch)
-    normal_pull_offset_N: float = 0.0
+    normal_pull_per_N: float = 0.0     # extra |F_z| per N of instantaneous lateral force (0: near-branch operation)
+    normal_pull_offset_N: float = 1.0  # |F_z| while guiding: ~2.2-2.5 x the ~0.4 N capability set by the Z-lift (CALC)
     mu_skid: float = P.HAND["mu_paper"].value
     nose: str = "locked"               # "locked" (learn) | "assist"
     nose_travel_mm: float = 3.0
@@ -338,6 +344,11 @@ def simulate_stroke(template: Path, intended: np.ndarray, guid: Guidance, cfg: S
 
 
 # ----------------------------------------------------------------------------- scenarios
+def pull_for(mode: str) -> float:
+    """Normal pull of the head on the pen: retracted when off, ~1 N while guiding (CALC, board.magnetics)."""
+    return 0.25 if mode == "off" else 1.0
+
+
 def scenario_tracing(mode, hand="relaxed", nose="locked", seed=0, dev_rms=1.5, speed=25.0):
     rng = np.random.default_rng(seed)
     res = []
@@ -345,7 +356,7 @@ def scenario_tracing(mode, hand="relaxed", nose="locked", seed=0, dev_rms=1.5, s
         tp = Path(stroke)
         intended = smooth_deviation(tp, dev_rms, rng)
         guid = Guidance(mode=mode)
-        cfg = SimConfig(hand=hand, nose=nose, speed_mm_s=speed, seed=seed)
+        cfg = SimConfig(hand=hand, nose=nose, speed_mm_s=speed, seed=seed, normal_pull_offset_N=pull_for(mode))
         res.append(simulate_stroke(tp, intended, guid, cfg))
     return res
 
@@ -356,7 +367,7 @@ def scenario_write_big(mode, hand="relaxed", seed=0, target_mm=10.0, start_ratio
     intended = loops(5, target_mm, 6.0, 900, 20.0, 150.0,
                      scale_fn=lambda u: start_ratio + (end_ratio - start_ratio) * u)
     guid = Guidance(mode=mode)
-    cfg = SimConfig(hand=hand, speed_mm_s=speed, seed=seed)
+    cfg = SimConfig(hand=hand, speed_mm_s=speed, seed=seed, normal_pull_offset_N=pull_for(mode))
     r = simulate_stroke(tp, intended, guid, cfg)
     y = r["ink"][:, 1] - 150.0
     yi = intended[:, 1] - 150.0
@@ -374,7 +385,7 @@ def scenario_reversal(mode, hand="relaxed", lead_through=False):
     for k in range(2):
         tp = Path(tpl[k])
         guid = Guidance(mode=mode)
-        cfg = SimConfig(hand=hand, speed_mm_s=25.0,
+        cfg = SimConfig(hand=hand, speed_mm_s=25.0, normal_pull_offset_N=pull_for(mode),
                         floating_anchor_tau_s=(0.25 if lead_through else 0.0))
         r = simulate_stroke(tp, intended[k], guid, cfg)
         if k == 1:
