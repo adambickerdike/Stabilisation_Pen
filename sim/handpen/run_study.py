@@ -608,11 +608,14 @@ def viz(seed=200, f0=8.0, amp=0.3e-3, t0=1.0, t1=3.5, rate=200.0):
                    "torque_Nm": arr(np.column_stack([r["tq1"][sel], r["tq2"][sel]])), "rotor_rpm": 60000.0}
         if key.startswith("stage"):
             dev["stage_q_m"] = arr(np.column_stack([r["q1"][sel], r["q2"][sel]]))
+        rsel = np.searchsorted(ref["t"], tr_[sel]).clip(0, len(ref["t"]) - 1)
+        ref_nib = np.column_stack([ref["bx"][rsel], ref["by"][rsel], ref["bz"][rsel] - HP.CONTACT["r_b"]])
         cases.append({"key": key, "label": {"unmodified": "Unmodified pencil", "reaction_mass": "Reaction mass in the cap (oracle)",
                                             "stage": "Nib stage (oracle)", "stage+reaction_mass": "Nib stage + reaction mass (oracle)",
                                             "cmg": "CMG pairs in the cap (oracle, over budget)", "stage+cmg": "Nib stage + CMG (oracle)"}[key],
                       "description": desc[key],
                       "nib": arr(nib), "axis": arr(axis), "tilt_rad": arr(np.column_stack([b1, b2])), "grip": arr(grip),
+                      "ref_nib": arr(ref_nib), "ref_ink": arr(ref.ink()[rsel]),
                       "ink": arr(r.ink()[sel]), "pen_down": [int(v > 0) for v in r["contact"][sel]],
                       "device": dev,
                       "metrics": {"ink_err_rms_um": f4(m["e_rms_um"]), "band_rms_um": f4(m["e_band_rms_um"]),
@@ -629,6 +632,7 @@ def viz(seed=200, f0=8.0, amp=0.3e-3, t0=1.0, t1=3.5, rate=200.0):
                                                  "nib": "ball contact point (ball centre minus r_b in z), m, page frame",
                                                  "grip": "pen point at the finger-pad zone (z_f), m, page frame",
                                                  "ink": "page projection of the ball centre plus the stage correction, m",
+                                                 "ref_nib, ref_ink": "the same pen and device on the same handwriting without tremor (the ratio reference), same times",
                                                  "device.r_pen_frame_m": "reaction-mass displacement relative to the pen along t1, t2, a",
                                                  "device.gimbal_rad": "CMG pair gimbal angles (pair 1 torques about t2, pair 2 about t1)",
                                                  "device.stage_q_m": "nib-stage deflection at the nib along t1, t2 (ink moves q1/sin(theta) along x, q2 along y)"},

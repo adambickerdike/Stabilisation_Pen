@@ -9,7 +9,7 @@
   --rule:#d5dbd6; --accent:#2346c8; --accent-soft:#dfe5fb; --tremor:#cf4a2c; --act:#0b8a79;
   --normal:#6b46d6; --fric:#b77900; --skid:#3f4a55; --tmpl:#1c8a3a;
   --good:#0c8a44; --warn:#a86a00; --bad:#c23b2b;
-  --scene-bg:#f7f8f6; --paper-line:#c9d6ea;
+  --scene-bg:#f7f8f6; --paper-line:#c9d6ea; --grip:#c07a45;
   --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
@@ -21,7 +21,7 @@
     --rule:#2b3237; --accent:#86a0ff; --accent-soft:#1e2745; --tremor:#ff7e62; --act:#3ccbb5;
     --normal:#a893ff; --fric:#f0b84a; --skid:#aab6c1; --tmpl:#56d27b;
     --good:#4fd08a; --warn:#f0b84a; --bad:#ff7e6b;
-    --scene-bg:#12171a; --paper-line:#2b3d57;
+    --scene-bg:#12171a; --paper-line:#2b3d57; --grip:#e0a070;
   }
 }
 :root[data-theme="dark"]{
@@ -30,7 +30,7 @@
   --rule:#2b3237; --accent:#86a0ff; --accent-soft:#1e2745; --tremor:#ff7e62; --act:#3ccbb5;
   --normal:#a893ff; --fric:#f0b84a; --skid:#aab6c1; --tmpl:#56d27b;
   --good:#4fd08a; --warn:#f0b84a; --bad:#ff7e6b;
-  --scene-bg:#12171a; --paper-line:#2b3d57;
+  --scene-bg:#12171a; --paper-line:#2b3d57; --grip:#e0a070;
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -75,7 +75,7 @@ header.title .lede{grid-column:1/-1;color:var(--muted)}
 .seg button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 :root[data-theme="dark"] .seg button[aria-pressed="true"]{color:#0e1113}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:#0e1113}}
-.seg button.ai{border-style:dashed}
+.seg button.ai{border-style:dashed} .seg button.stab{border-style:dotted}
 .grouphead{flex-basis:100%;font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;font-size:12px;color:var(--muted);margin-top:4px}
 button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -148,6 +148,7 @@ code{font-family:var(--mono);font-size:12.5px}
         <span><i class="sw" style="background:var(--faint)"></i>intended stroke</span>
         <span><i class="sw" style="background:var(--tremor)"></i>barrel (tremor)</span>
         <span id="key-tmpl" hidden><i class="sw" style="background:var(--tmpl)"></i>AI template</span>
+        <span id="key-grip" hidden><i class="sw" style="background:var(--grip)"></i>where the fingers hold</span>
         <span><i class="sw" style="background:var(--normal)"></i>paper on nib</span>
         <span><i class="sw" style="background:var(--skid)"></i>paper on skid</span>
         <span><i class="sw" style="background:var(--act)"></i>stage force</span>
@@ -184,6 +185,7 @@ code{font-family:var(--mono);font-size:12.5px}
         <span>Skid force (paper on skid)</span><b id="r-fs">—</b>
         <span>Stage force at nib</span><b id="r-fa">—</b>
         <span>Drive</span><b id="r-v">—</b>
+        <span>Cap device (offset or gimbals, push)</span><b id="r-dev">—</b>
         <div class="hd">This case, whole run</div>
         <span>Ink error, RMS</span><b id="m-err">—</b>
         <span>Relative to no correction</span><b id="m-ratio">—</b>
@@ -281,6 +283,9 @@ const MAT = {
   refill: () => new THREE.MeshStandardMaterial({color:0xc4cbd2, roughness:0.3, metalness:0.7}),
   magnet: () => new THREE.MeshStandardMaterial({color:0xb2493a, roughness:0.4, metalness:0.3}),
   piezo:  () => new THREE.MeshStandardMaterial({color:0xc2a45e, roughness:0.45, metalness:0.2}),
+  tungsten:() => new THREE.MeshStandardMaterial({color:0x4b535c, roughness:0.35, metalness:0.8}),
+  mark:   () => new THREE.MeshStandardMaterial({color:0xf4f1ea, roughness:0.6}),
+  grip:   () => new THREE.MeshStandardMaterial({color:new THREE.Color(css("--grip")), roughness:0.8, transparent:true, opacity:0.3, depthWrite:false, side:THREE.DoubleSide}),
 };
 function along(geo){ geo.rotateX(Math.PI/2); return geo; }   // three builds along +Y; the pen axis is local +Z
 function lathe(profile, seg){ return along(new THREE.LatheGeometry(profile.map(p=>new THREE.Vector2(p[0],p[1])), seg||48)); }
@@ -318,6 +323,29 @@ function buildPen(g){
     (p.group==="nib" ? nib : pen).add(mesh);
   }
 }
+
+/* cap devices and grip zones of the hand-pen model (group "stab"); pen frame: X = t1, Y = t2, Z = axis, mm */
+const DEV={slug:null, cmg:null, rotors:[], grip:null};
+function buildDevices(gm){
+  gm=gm||{};
+  for(const k of ["slug","cmg","grip"]) if(DEV[k]) pen.remove(DEV[k]);
+  const rm=gm.reaction_mass||{z_centre:151, d:4.5, L:18};
+  DEV.slug=new THREE.Mesh(along(new THREE.CylinderGeometry(rm.d/2, rm.d/2, rm.L, 32)), MAT.tungsten());
+  DEV.slug.userData.z=rm.z_centre; DEV.slug.position.z=rm.z_centre; DEV.slug.visible=false; pen.add(DEV.slug);
+  const cg=gm.cmg||{z_centre:146, rotor_d:5.5, rotor_L:4};
+  DEV.cmg=new THREE.Group(); DEV.cmg.visible=false; pen.add(DEV.cmg); DEV.rotors=[];
+  [-18,-6,6,18].forEach((o,k)=>{
+    const gimbal=new THREE.Group(); gimbal.position.z=cg.z_centre+o; DEV.cmg.add(gimbal);
+    const rotor=new THREE.Mesh(along(new THREE.CylinderGeometry(cg.rotor_d/2, cg.rotor_d/2, cg.rotor_L, 32)), MAT.tungsten());
+    const mark=new THREE.Mesh(new THREE.BoxGeometry(cg.rotor_d*0.9, 0.5, 0.2), MAT.mark()); mark.position.z=cg.rotor_L/2+0.1; rotor.add(mark);
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(cg.rotor_d/2+0.45, 0.18, 8, 40), MAT.metal());
+    gimbal.add(rotor); gimbal.add(ring);
+    DEV.rotors.push({gimbal, rotor, pair:k<2?0:1, sign:k%2===0?1:-1});
+  });
+  DEV.grip=new THREE.Group(); DEV.grip.visible=false; pen.add(DEV.grip);
+  for(const z of [gm.finger_zone_z||[20,35], gm.web_zone_z||[60,90]]) DEV.grip.add(new THREE.Mesh(tubeGeo(5.3,4.5,z[0],z[1]), MAT.grip()));
+}
+function penPart(name){ return pen.children.find(o=>o.userData && o.userData.name===name) || null; }
 
 /* ink ribbons, lines, arrows */
 const inkGroup=new THREE.Group(); scene.add(inkGroup);
@@ -370,7 +398,9 @@ function normalizeCase(c, group){
       return [H[0]+along*bs.a[0], H[1]+along*bs.a[1], H[2]+along*bs.a[2]];
     });
   }
-  return {key:c.key, label:c.label, group, metric:c.metric||"time", t:c.t, housing, nib:nibp, ref, contact:c.contact, q:c.q||null,
+  const dt=(c.t[c.t.length-1]-c.t[0])/Math.max(1,c.t.length-1);
+  return {key:c.key, label:c.label, group, metric:c.metric||"time", t:c.t, dt, tilt:c.tilt||null, device:c.device||null,
+          housing, nib:nibp, ref, contact:c.contact, q:c.q||null,
           F_nib:c.F_nib||null, F_skid:c.F_skid||null, F_act:c.F_act||null, V:c.V||null, template:c.template||null,
           confidence:c.confidence||null, metrics:M, note:c.note||""};
 }
@@ -422,13 +452,21 @@ function buildInk(){
 
 /* ---------- per-frame pose ---------- */
 const B={};
-function frameIndex(){ const c=S.cases[S.ci]; const i=Math.round(S.t/S.dtRec); return Math.max(0,Math.min(c.t.length-1,i)); }
+function frameIndex(){ const c=S.cases[S.ci]; const i=Math.round(S.t/(c.dt||S.dtRec)); return Math.max(0,Math.min(c.t.length-1,i)); }
 function pose(i){
   const c=S.cases[S.ci], m=S.mag, g=S.geom, bs=B.bs;
   const vp_=visPose(c,i,m), hv=vp_.hv, nv=vp_.nv;
   // pen pose
   const X=P2T(...bs.xH), Y=P2T(...bs.yH), Z=P2T(...bs.a), O=P2T(...hv);
+  if(c.tilt){   // hand-pen model: the pen tilts in the grip; the tilt is magnified like the other deviations
+    const b=c.tilt[i], av=[0,1,2].map(k=>bs.a[k]+m*(b[0]*bs.xH[k]+b[1]*bs.yH[k]));
+    const qr=new THREE.Quaternion().setFromUnitVectors(Z.clone().normalize(), P2T(...av).normalize());
+    X.applyQuaternion(qr); Y.applyQuaternion(qr); Z.applyQuaternion(qr);
+  }
   const M4=new THREE.Matrix4().makeBasis(X,Y,Z); M4.setPosition(O); pen.matrix.copy(M4); pen.matrixWorldNeedsUpdate=true;
+  if(c.device && c.device.type==="reaction_mass" && DEV.slug){ const r=c.device.r[i]; DEV.slug.position.set(r[0], r[1], DEV.slug.userData.z+r[2]); }
+  if(c.device && c.device.type==="cmg"){ const gd=c.device.gimbal[i], spin=2*Math.PI*1.5*c.t[i];
+    for(const R of DEV.rotors){ const d=gd[R.pair]*R.sign; R.gimbal.rotation.set(R.pair===0?d:0, R.pair===1?d:0, 0); R.rotor.rotation.z=spin*R.sign; } }
   // nib pose relative to housing, in pen frame (transverse magnified, axial at true scale)
   const dx=vp_.dx, dy=vp_.dy, dz=vp_.dz, zg=g.gimbal_z;
   const al=-Math.asin(Math.max(-1,Math.min(1,dx/zg))), be=Math.asin(Math.max(-1,Math.min(1,dy/zg)));
@@ -527,7 +565,7 @@ function drawErr(i){
 
 /* ---------- UI ---------- */
 const fmt=(v,d=0)=>(v==null||isNaN(v))?"—":Number(v).toFixed(d);
-const GROUP_MAG={pencil:10, ai:1};
+const GROUP_MAG={pencil:10, ai:1, stab:10};
 function selectCase(k){
   const prev=S.cases[S.ci]; S.ci=k; const c=S.cases[k];
   if(!prev || prev.group!==c.group || S.firstSelect===undefined){
@@ -536,6 +574,12 @@ function selectCase(k){
   document.querySelectorAll("#cases button").forEach((b,j)=>b.setAttribute("aria-pressed", j===k));
   $("hud-case").textContent=c.label; $("case-note").textContent=c.note || "";
   $("key-tmpl").hidden=!(c.template && c.template.length);
+  const dtype=c.device&&c.device.type, stab=c.group==="stab";
+  if(DEV.slug) DEV.slug.visible=dtype==="reaction_mass";
+  if(DEV.cmg) DEV.cmg.visible=dtype==="cmg";
+  if(DEV.grip) DEV.grip.visible=stab;
+  const cell=penPart("battery"); if(cell) cell.visible=!dtype;
+  $("key-grip").hidden=!stab;
   const M=c.metrics||{};
   $("m-err").textContent = M.ink_err_rms_um!=null ? fmt(M.ink_err_rms_um)+" µm" : (M.path_rms_um!=null? fmt(M.path_rms_um)+" µm (path)" : "—");
   $("m-ratio").textContent = M.ratio_vs_neutral!=null ? fmt(M.ratio_vs_neutral,2)+"×" : (M.ratio_vs_none!=null? fmt(M.ratio_vs_none,2)+"×":"—");
@@ -554,6 +598,12 @@ function readouts(i, st){
   $("r-fs").textContent = c.F_skid ? fmt(Math.hypot(...c.F_skid[i]),3)+" N" : "—";
   $("r-fa").textContent = c.F_act ? fmt(Math.hypot(c.F_act[i][0],c.F_act[i][1])*1000,0)+" mN" : "—";
   $("r-v").textContent = c.V ? fmt(c.V[i][0],1)+" / "+fmt(c.V[i][1],1)+" V" : "—";
+  let dv="—";
+  if(c.device && c.device.type==="reaction_mass"){ const r=c.device.r[i], f=c.device.force[i];
+    dv=fmt(Math.hypot(r[0],r[1]),2)+" / "+fmt(r[2],2)+" mm · "+fmt(Math.hypot(f[0],f[1],f[2])*1000,0)+" mN"; }
+  else if(c.device && c.device.type==="cmg"){ const gd=c.device.gimbal[i], tq=c.device.torque[i];
+    dv=fmt(gd[0]*180/Math.PI,0)+"° / "+fmt(gd[1]*180/Math.PI,0)+"° · "+fmt(Math.hypot(tq[0],tq[1])*1000,1)+" mN·m"; }
+  $("r-dev").textContent=dv;
   $("scrub").value = Math.round(1000*c.t[i]/c.t[c.t.length-1]);
 }
 function updateMagLabel(){ $("hud-mag").textContent = "deviations ×"+S.mag+" · forces "+S.fscale+" mm/N"; }
@@ -587,31 +637,36 @@ $("trail").onchange=e=>{ S.trail=e.target.checked; };
 $("cam-nib").onclick=()=>setView("nib"); $("cam-pen").onclick=()=>setView("pen");
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ()=>{ C=themeColors(); applyTheme(); });
 new MutationObserver(()=>{ C=themeColors(); applyTheme(); }).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
-function applyTheme(){ scene.background=new THREE.Color(C.bg); paper.material.map=paperTexture(); paper.material.needsUpdate=true; makeArrows(); if(S.cases.length) buildInk(); }
+function applyTheme(){ if(DEV.grip) for(const o of DEV.grip.children) o.material.color=new THREE.Color(css("--grip"));
+  scene.background=new THREE.Color(C.bg); paper.material.map=paperTexture(); paper.material.needsUpdate=true; makeArrows(); if(S.cases.length) buildInk(); }
 
 async function load(){
-  const [geom, trace, ai] = await Promise.all([
+  const [geom, trace, ai, stab] = await Promise.all([
     fetch("data/geometry.json").then(r=>r.json()),
     fetch("data/viz_trace.json").then(r=>r.json()),
-    fetch("data/viz_guided.json").then(r=>r.ok?r.json():null).catch(()=>null)]);
+    fetch("data/viz_guided.json").then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch("data/viz_inertial.json").then(r=>r.ok?r.json():null).catch(()=>null)]);
   S.geom=geom; S.theta=trace.theta_deg||50; S.phi=trace.phi_deg||0; B.bs=basis(S.theta,S.phi);
-  buildPen(geom);
+  buildPen(geom); buildDevices(stab && stab.meta && stab.meta.geometry_mm);
   S.cases = trace.cases.map(c=>normalizeCase(c,"pencil"));
   if(ai && ai.cases) S.cases = S.cases.concat(ai.cases.map(c=>normalizeCase(c,"ai")));
+  if(stab && stab.cases) S.cases = S.cases.concat(stab.cases.map(c=>normalizeCase(c,"stab")));
   for(const c of S.cases) c.err=errorSeries(c);
   const t=S.cases[0].t; S.dtRec=(t[t.length-1]-t[0])/(t.length-1);
   const box=$("cases");
   const heads={pencil:(trace.meta&&trace.meta.case_group)||"Pencil model: handwriting with 6 Hz, 0.3 mm tremor",
-               ai:(ai&&ai.meta&&ai.meta.case_group)||"AI guidance: a written sentence (simulator M1, pencil travel limits)"};
+               ai:(ai&&ai.meta&&ai.meta.case_group)||"AI guidance: a written sentence (simulator M1, pencil travel limits)",
+               stab:(stab&&stab.meta&&stab.meta.case_group)||"Weights and gyroscopes in the cap (hand-pen model H1)"};
   let lastGroup=null;
   S.cases.forEach((c,k)=>{
     if(c.group!==lastGroup){ const h=document.createElement("div"); h.className="grouphead"; h.textContent=heads[c.group]; box.appendChild(h); lastGroup=c.group; }
-    const b=document.createElement("button"); b.textContent=c.label; b.className=c.group==="ai"?"ai":""; b.onclick=()=>selectCase(k); box.appendChild(b); });
+    const b=document.createElement("button"); b.textContent=c.label; b.className=c.group==="ai"?"ai":(c.group==="stab"?"stab":""); b.onclick=()=>selectCase(k); box.appendChild(b); });
   if(geom.mass_total_g) $("tb-mass").textContent=geom.mass_total_g.toFixed(1)+" g";
   if(geom.stage_label) $("tb-stage").textContent=geom.stage_label;
   if(geom.pencil_params) $("tb-params").textContent="config/pencil.yaml "+geom.pencil_params;
   $("provenance").textContent = ["Pencil traces: model "+((trace.meta&&trace.meta.model_version)||"P1")+", git "+((trace.meta&&trace.meta.git_revision)||"?")+", generated "+((trace.meta&&trace.meta.generated_utc)||"?"),
-      ai&&ai.meta ? ("AI traces: git "+(ai.meta.git_revision||"?")+", generated "+(ai.meta.generated_utc||"?")) : ""].filter(Boolean).join(" · ");
+      ai&&ai.meta ? ("AI traces: git "+(ai.meta.git_revision||"?")+", generated "+(ai.meta.generated_utc||"?")) : "",
+      stab&&stab.meta ? ("Hand-pen traces: model "+(stab.meta.model_version||"H1")+", git "+(stab.meta.git_revision||"?")+", generated "+(stab.meta.generated_utc||"?")) : ""].filter(Boolean).join(" · ");
   scene.background=new THREE.Color(C.bg);
   resize(); selectCase(0); $("loading").hidden=true;
 }

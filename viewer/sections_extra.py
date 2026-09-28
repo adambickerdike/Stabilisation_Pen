@@ -1,7 +1,7 @@
-"""AI-guidance and sim-to-real tables for viewer/index.html (rendered at build time).
+"""AI-guidance, sim-to-real and inertial-helper tables for viewer/index.html (rendered at build time).
 
-Reads results/ai/*.json (aiguide, app/penapp/autocorrect.py) and results/s2r/*.json
-(s2r).  Missing inputs skip the section.
+Reads results/ai/*.json (aiguide, app/penapp/autocorrect.py), results/s2r/*.json (s2r) and
+results/pencil/inertial.json (sim/handpen).  Missing inputs skip the section.
 """
 from __future__ import annotations
 
@@ -116,4 +116,66 @@ def s2r(root):
     t2 = _section("Does the calibrated twin predict the real plant", _tags("SIM"), lede2,
                   _table(["Prediction"] + [l for _c, l in conds], rows2, (1, 2, 3)),
                   "results/s2r/c2_twin.json (docs/sim_to_real.md s4)")
+    return t1 + t2
+
+
+def _rng(v, nd=2):
+    return f"{v[0]:.{nd}f}–{v[1]:.{nd}f}"
+
+
+def _pct_rng(v):
+    return f"{100 * v[0]:.0f}–{100 * v[1]:.0f} %"
+
+
+def _drag0(d):
+    try:
+        v = d["time_domain"]["passive"]["unmodified"]["drag_N"]
+        vals = [x["mean"] for x in v.values()] if isinstance(v, dict) else [v]
+        return f"{sum(vals) / len(vals):.2f} N"
+    except (KeyError, TypeError, ZeroDivisionError):
+        return "—"
+
+
+def inertial(root):
+    d = _load(root, "results/pencil/inertial.json")
+    if not d or "headline" not in d:
+        return ""
+    h, b = d["headline"], d["budgets"]
+    orc, sat = h["ink_error_ratio_oracle"], h["stage_time_at_limit"]
+    a = "0.3mm"
+    rows = [
+        ["Piezo nib stage (current design)", _rng(orc["stage"][a]), "—", _pct_rng(sat["stage"][a]), "in the CAD"],
+        ["Tungsten slug in the cap, pushed on 3 axes (5.15 g)", _rng(orc["rm_slug3"][a]), _rng(orc["stage+rm_slug3"][a]),
+         _pct_rng(sat["stage+rm_slug3"][a]),
+         f"pen {b['rm_slug3']['pen_mass_g']:.1f} g; takes {100 * (1 - b['rm_slug3']['cell_capacity_left']):.0f} % of the cell"],
+        ["Two pairs of gyroscopes on motorised gimbals", _rng(orc["cmg_2ax"][a]), _rng(orc["stage+cmg_2ax"][a]),
+         _pct_rng(sat["stage+cmg_2ax"][a]),
+         f"pen {b['cmg_2ax']['pen_mass_g']:.1f} g; no room left for the cell"],
+    ]
+    lede1 = ("Can a moving weight or a gyroscope in the cap steady the pen? Ink error left at 0.3 mm tremor, 4–12 Hz, as a fraction of "
+             "no correction, with perfect knowledge of the tremor (an upper bound). The hand pushes the pen around with about "
+             "0.17 N through the grip; a few grams moving ±1 mm in the cap push back with only 2–30 mN, and a gyroscope only resists "
+             "the pen's rotation, which is tiny. Helpers matter only where the stage runs out of travel.")
+    t1 = _section("Weights and gyroscopes in the cap", _tags("SIM", "CALC"), lede1,
+                  _table(["Helper", "Ink error left, alone", "With the nib stage", "Stage time at its limit", "Cost"], rows, (1, 2, 3)),
+                  "results/pencil/inertial.json (sim/handpen/, hand-pen model H1; docs/inertial_stabilisation.md)")
+    ps = h["passive_0.3mm"]
+    lab = [("skid_mu_0.25", "Skid friction 0.25 (now 0.12)"), ("skid_mu_0.40", "Skid friction 0.40"),
+           ("viscous_10", "Damped roller at the nose, 10 N s/m"), ("grip_soft_x0.5", "Soft grip sleeve, half the grip stiffness"),
+           ("grip_soft_x0.25", "Soft grip sleeve, a quarter"), ("cap_10g", "10 g heavier cap"), ("tmd_8Hz", "Tuned mass damper, 8 Hz"),
+           ("gyro_30k", "Spinning gyroscope, 30 000 rpm")]
+    rows2 = [["Pencil as designed (skid friction 0.12, normal grip)", "1", "1", "100 %", _drag0(d)]]
+    for k, l in lab:
+        v = ps.get(k)
+        if not v:
+            continue
+        rows2.append([l, _rng(v["in_band_tremor"]), _rng(v["net_in_band_vs_intended"]),
+                      f"{100 * v['letters_vs_unmodified']:.0f} %", f"{v['drag_N']:.2f} N"])
+    lede2 = ("Passive ways to steady the pen at the paper or in the grip, relative to the pencil as designed (0.3 mm tremor, "
+             "4–12 Hz). Tremor and handwriting strokes share frequencies, so whatever filters the tremor also shrinks and "
+             "delays the letters: against what the writer meant, the net change is close to nothing.")
+    t2 = _section("Pivots at the paper and in the grip", _tags("SIM"), lede2,
+                  _table(["Option", "Tremor in the ink", "Net error against the intended writing", "Letter size", "Drag felt"],
+                         rows2, (1, 2, 3, 4)),
+                  "results/pencil/inertial.json passive (docs/inertial_stabilisation.md §5.6)")
     return t1 + t2

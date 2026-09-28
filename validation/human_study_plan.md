@@ -13,6 +13,8 @@ Contents:
 - §10 Ethics, regulatory and data-protection notes
 - §11 Sample-size summary
 - §12 EXP-A02: guidance acceptance with people (pencil concept). It follows §10–§11 so that existing references to those sections stay valid.
+- §13 EXP-I02: rotational share of writing tremor (inside EXP-H01 sessions)
+- §14 EXP-I03: passive nose and grip options on writers (extends EXP-H03)
 
 ---
 
@@ -75,6 +77,8 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-H05 | What ink distortions and quality changes can people perceive? | 30 raters (+ 10 writers judging their own writing); H05b haptic 16 | Psychophysics, 2AFC adaptive staircases, blinded stimuli | 75 %-correct thresholds (10th percentile across raters) | sets REQ-CTRL-005 and REQ-MECH-005 | Stage A onward |
 | EXP-H06 | While active, does the pen reduce tremor in the deposited ink compared with sham and off? | 42 with action/essential tremor (+ 12 healthy for device burden) | Randomised 3-period crossover (ON / NEUTRAL / OFF), participant, operator and assessor blinded | H06-F: ink tremor amplitude in free writing; or H06-G: path distance in guided tasks. GM ratio ON/NEUTRAL | **IA** | Stage C (a pilot of 10 at Stage B); G-S |
 | EXP-A02 (§12) | Do people's letters sit close enough to a personal template for AI-template guidance to help, and do people accept known- and AI-template guidance? | 60 (20 healthy, 20 ET, 20 PD) | A02-P: passive measurement; A02-G: within-subject, counterbalanced guidance conditions, reader-blinded | Legibility with gated AI templates vs none; template distance | **IA** (A02-G); measurement (A02-P) | A02-P with the passive pen (Stage A); A02-G after a G-S-equivalent gate for the build; DEC-020 |
+| EXP-I02 (§13) | How much of the tremor at the nib comes from wrist or forearm rotation rather than hand translation, and about which pivot? | EXP-H01 participants (80) | Measurement inside EXP-H01 sessions; hand-dorsum IMU plus the pen's IMU and a page reference | Rotational share of nib tremor-band variance; pivot distance | none (measurement) | Stage A; DEC-024, H1 tremor model |
+| EXP-I03 (§14) | Do passive nose and grip options (skid friction, soft sleeve, hand resting, heavier cap) improve writing on balance? | 20 ET (EXP-H03-T cohort) + 12 healthy | Within-subject, randomised, participant- and reader-blinded, non-active prototypes | Legibility and in-band ink tremor against the unmodified pencil | device burden; passive effect | Stage A–B; DEC-024 |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3.
 
@@ -900,6 +904,8 @@ These notes are for planning. The project lead must confirm each item with the i
 | EXP-H05 | 30 raters (+ 16 haptic) | ±0.37 SD precision on the mean log-threshold; 10th percentile from a log-normal fit |
 | EXP-H06 | 42 (+ 12 healthy) | Paired, δ = ln(1/0.7), σ_D = 2δ (COR-09) → 34 (t) + 15 %, rounded to 6 Williams sequences |
 | EXP-A02 | 60 (20 per group) | Paired legibility, σ_D 8 points, δ 4 points → 34 (t); agency non-inferiority, σ_D 1.0, margin 0.5 → 34 (t); ≈ 9000 AI-guided letters keep the upper bound of a 0.3 % misread excess below 1 % |
+| EXP-I02 | EXP-H01 participants (80) | Descriptive: per-group median rotational share with a bootstrap CI; no hypothesis test |
+| EXP-I03 | 20 ET + 12 healthy | Paired log-ratio of in-band ink tremor, detect 0.85 with SD 0.3, α 0.05, power 0.8 → 17 (t) + attrition → 20 ET; healthy for letter size and drag |
 
 All assumed variances are replaced by pilot or internal-pilot estimates before the full studies. Every re-estimation rule is pre-registered.
 
@@ -1000,3 +1006,89 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 | AC-A02-03 fails | Ship known-template guidance and digital correction only (DEC-020). |
 | AC-A02-03 and AC-A02-01 pass | AI-template guidance may be offered as a gated option. Any claim needs an H06-type crossover first, and the freedom-to-operate review of PAT-01 comes before any guided-letter feature (`docs/ai_guidance.md` §8). |
 | AC-A02-01 fails | REQ-PNC-007 is not met. Tighten c_min, the T3 corridor and the T5 drop rule, and re-test before any AI-template guidance. |
+
+---
+
+## 13. EXP-I02: Rotational share of writing tremor
+
+### Question and what it gates
+
+How much of the tremor at the nib during writing is hand-path translation, and how much is wrist or forearm rotation? About which pivot?
+
+- The hand-pen model H1 drives the pen by a hand-path translation, with wrist rotation as a sweep (`docs/inertial_stabilisation.md` §4.2). Pronation–supination and wrist flexion–extension carry most essential-tremor kinetic tremor at the limb level (LIT HAP-33, abstract), but the share at the nib during writing is unmeasured.
+- Gyroscopic devices act only on rotation, but H1 found them no better on rotational tremor (SIM). So this result mainly sets the tremor model of H1 and the lever-arm error of the pen's IMU (the IMU sits 78–120 mm from the nib).
+- **Decision:** DEC-024 (input to the EXP-I01 re-run).
+
+### Design
+
+- Inside EXP-H01 sessions, under the same consent.
+- Sensors: a 3-axis gyroscope and accelerometer on the dorsum of the hand (≥ 500 Hz); the pen's own IMU; the nib trajectory from a digitiser tablet under the paper, or coded paper at ≥ 120 Hz.
+- Tasks: Archimedes spiral, a copied sentence, and hold-still with the nib on the paper; 3 repeats each.
+
+### Analysis
+
+- Coherence between the hand's angular velocity and the nib's in-plane motion in the tremor band.
+- Least-squares fit of the nib motion as a translation plus a rotation about a pivot; the rotational share of the tremor-band variance and the pivot distance L_p per participant.
+- Feed both to `sim.handpen.model.Tremor(amp_trans, amp_rot, L_p)`.
+- Results per group (R5).
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I02-01 | — | Fraction of the nib's tremor-band (3-15 Hz) in-plane variance explained by hand rotation (translation + rotation-about-a-pivot fit), median per group, copied sentence | ≤ 0.5 | hypothesis | H1 drives the pen mainly by hand-path translation (ASSUMPTION); HAP-33 (abstract) reports pronation-supination and wrist flexion-extension carry most ET kinetic tremor at the limb level, so this may fail; H1 found gyroscopic devices no better on rotational tremor (SIMULATION) | H1 tremor model; IMU lever-arm budget |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-I02).
+<!-- AC-TABLE:EXP-I02:END -->
+
+---
+
+## 14. EXP-I03: Passive nose and grip options on writers (extends EXP-H03)
+
+### Question and what it gates
+
+Do passive ways of steadying the pen at the paper or in the grip improve writing on balance? In H1, friction, damping and compliance trade tremor for writing about one for one: the net in-band error against the intended writing stays within 0.93–1.25 of the unmodified pencil (SIM, `results/pencil/inertial.json` passive). H1 has no voluntary correction and no hand on the paper, so people may do better than the model predicts. This study measures that.
+
+- **Decision:** DEC-024 (revisit trigger "EXP-I03 shows hand resting or a passive option improves net ink error by ≥ 15 %").
+- **Claim type:** device burden and passive effect (§1). No active assistance is involved.
+
+### Conditions (blinded, randomised within subject)
+
+- Skid friction μ ≈ 0.05, 0.12 (as designed) and 0.25: EXP-Q01 materials in identical shells.
+- Grip sleeve at about 1×, 0.5× and 0.25× the grip stiffness: silicone tubes of Shore 20A–60A, stiffness measured on the EXP-I01 rig.
+- Hand resting on the paper vs not resting (instructed, verified from video).
+- A heavier-cap control (+10 g).
+
+### Population
+
+EXP-H03-T participants (20 ET) and 12 healthy adults from EXP-H03-F, in the same visits where possible. Inclusion and exclusion as §3.2.
+
+### Outcomes
+
+- **Primary:** legibility of copied sentences (blinded transcription, % words correct) with each option against the unmodified pencil.
+- **Key secondary:**
+  - in-band ink tremor (3–15 Hz, the M-band of `bench_protocols.md` §0.8);
+  - letter height against the same participant's unmodified pencil;
+  - drag and comfort ratings.
+- Recogniser CER is secondary.
+
+### Analysis
+
+Mixed models with the participant as a random effect: outcome ~ option + order + group. Paired log-ratios for the tremor and letter-height outcomes.
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I03-01 | — | Legibility of copied sentences (blinded transcription, % words correct) with the best passive option (skid friction, grip sleeve, hand resting, heavier cap) minus the unmodified pencil, ET participants | ≥ 5 percentage points | hypothesis | DEC-024 revisit rule; H1 predicts no net gain from any modelled passive option (net in-band error against intended 0.93-1.25 of the unmodified pencil; results/pencil/inertial.json passive; SIMULATION) -> expected FAIL except possibly hand resting (not modelled); 5 points engineering judgement | DEC-024 |
+| AC-I03-02 | — | In-band (3-15 Hz) ink tremor with skid friction 0.25 relative to 0.12, ET participants, geometric mean of paired ratios | ≤ 0.9 | hypothesis | H1 predicts 0.83-0.86 (results/pencil/inertial.json passive skid_mu_0.25; SIMULATION): a check of the model's passive friction effect | H1 validation (passive friction) |
+| AC-I03-03 | — | Letter height with skid friction 0.25 relative to 0.12, same participant, copied sentences | ≥ 0.9 | hypothesis | H1 predicts 0.81 but has no voluntary correction (docs/inertial_stabilisation.md s4.5); a PASS shows the model overstates friction's shrinking of the writing | H1 hand model (voluntary correction) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-I03).
+<!-- AC-TABLE:EXP-I03:END -->
+
+### Decision
+
+Adopt a passive option only if legibility improves (AC-I03-01) with no loss of letter size beyond AC-I03-03. The prediction is that none will, except possibly hand resting, which the model cannot evaluate.

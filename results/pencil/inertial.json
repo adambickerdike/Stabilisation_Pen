@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "simulation and calculation (hand-pen-paper model H1, synthetic handwriting and tremor; nothing measured)",
-    "generated_utc": "2026-09-28T09:19:34+00:00",
-    "git_revision": "b201af4",
+    "generated_utc": "2026-09-28T09:33:29+00:00",
+    "git_revision": "68c63e0-dirty",
     "parameters_version": "P0.1.2",
     "parameters_sha256_16": "957eae6e98e9b8c8",
     "command": "run_study.py --workers 2",
@@ -28,8 +28,8 @@
     "record_Hz": 2000.0,
     "duration_s": 5.0,
     "workers": 2,
-    "elapsed_s": 309.4,
-    "time_domain_s": 302.3,
+    "elapsed_s": 329.1,
+    "time_domain_s": 321.3,
     "script": "sim/handpen/run_study.py",
     "labels": {
       "hand.k_nib": [
@@ -141,6 +141,352 @@
     "passive": "ratio_own = tremor error against the same pen's clean ink / unmodified; ratio_total = against the unmodified pen's clean ink; distortion = clean ink of the variant vs the unmodified pen",
     "tremor": "trans: hand-path TremorSpec (P1); rot_yaw: hand-frame rotation about the page normal through a wrist pivot L_p behind the grip, 0.3 mm peak at the nib; mixed: both at 0.21 mm",
     "grip_split": "nominal r_rot 0.5, rho_w 0.3 (ASSUMPTION); swept in split_sensitivity"
+  },
+  "headline": {
+    "ink_error_ratio_oracle": {
+      "stage": {
+        "0.1mm": [
+          0.06973,
+          0.08911
+        ],
+        "0.3mm": [
+          0.1849,
+          0.4271
+        ],
+        "0.5mm": [
+          0.3924,
+          0.5739
+        ]
+      },
+      "rm_slug3": {
+        "0.1mm": [
+          0.8652,
+          0.9287
+        ],
+        "0.3mm": [
+          0.8461,
+          0.9718
+        ],
+        "0.5mm": [
+          0.9188,
+          0.983
+        ]
+      },
+      "cmg_2ax": {
+        "0.1mm": [
+          0.7581,
+          0.8317
+        ],
+        "0.3mm": [
+          0.8692,
+          0.9241
+        ],
+        "0.5mm": [
+          0.9138,
+          0.9508
+        ]
+      },
+      "stage+rm_slug3": {
+        "0.1mm": [
+          0.06479,
+          0.08427
+        ],
+        "0.3mm": [
+          0.171,
+          0.3075
+        ],
+        "0.5mm": [
+          0.3764,
+          0.4995
+        ]
+      },
+      "stage+cmg_2ax": {
+        "0.1mm": [
+          0.05682,
+          0.06198
+        ],
+        "0.3mm": [
+          0.1348,
+          0.289
+        ],
+        "0.5mm": [
+          0.3413,
+          0.4767
+        ]
+      }
+    },
+    "stage_time_at_limit": {
+      "stage": {
+        "0.1mm": [
+          0.001792,
+          0.01479
+        ],
+        "0.3mm": [
+          0.189,
+          0.6159
+        ],
+        "0.5mm": [
+          0.5019,
+          0.8104
+        ]
+      },
+      "stage+rm_slug3": {
+        "0.1mm": [
+          0.0008333,
+          0.01215
+        ],
+        "0.3mm": [
+          0.1764,
+          0.5237
+        ],
+        "0.5mm": [
+          0.4865,
+          0.7846
+        ]
+      },
+      "stage+cmg_2ax": {
+        "0.1mm": [
+          0.0,
+          0.005537
+        ],
+        "0.3mm": [
+          0.1512,
+          0.4538
+        ],
+        "0.5mm": [
+          0.4592,
+          0.7443
+        ]
+      }
+    },
+    "rotational_0.3mm": {
+      "stage": [
+        0.2077,
+        0.4272
+      ],
+      "rm_slug3": [
+        0.9344,
+        0.9878
+      ],
+      "cmg_2ax": [
+        0.8434,
+        0.9296
+      ],
+      "stage+rm_slug3": [
+        0.2001,
+        0.3454
+      ],
+      "stage+cmg_2ax": [
+        0.1538,
+        0.2755
+      ]
+    },
+    "passive_0.3mm": {
+      "skid_mu_0.05": {
+        "in_band_tremor": [
+          1.108,
+          1.183
+        ],
+        "net_in_band_vs_intended": [
+          1.04,
+          1.075
+        ],
+        "letters_vs_unmodified": 1.235,
+        "lag_ms": -4.875,
+        "drag_N": 0.06643
+      },
+      "skid_mu_0.25": {
+        "in_band_tremor": [
+          0.8257,
+          0.8644
+        ],
+        "net_in_band_vs_intended": [
+          0.9961,
+          1.062
+        ],
+        "letters_vs_unmodified": 0.8095,
+        "lag_ms": 4.25,
+        "drag_N": 0.1951
+      },
+      "skid_mu_0.40": {
+        "in_band_tremor": [
+          0.7347,
+          0.821
+        ],
+        "net_in_band_vs_intended": [
+          1.073,
+          1.17
+        ],
+        "letters_vs_unmodified": 0.8388,
+        "lag_ms": 3.875,
+        "drag_N": 0.2832
+      },
+      "viscous_3": {
+        "in_band_tremor": [
+          0.7946,
+          0.842
+        ],
+        "net_in_band_vs_intended": [
+          0.9647,
+          0.9894
+        ],
+        "letters_vs_unmodified": 0.9021,
+        "lag_ms": 3.0,
+        "drag_N": 0.1458
+      },
+      "viscous_10": {
+        "in_band_tremor": [
+          0.5233,
+          0.6192
+        ],
+        "net_in_band_vs_intended": [
+          0.9735,
+          1.021
+        ],
+        "letters_vs_unmodified": 0.7585,
+        "lag_ms": 10.75,
+        "drag_N": 0.1949
+      },
+      "viscous_20": {
+        "in_band_tremor": [
+          0.3571,
+          0.4556
+        ],
+        "net_in_band_vs_intended": [
+          1.007,
+          1.07
+        ],
+        "letters_vs_unmodified": 0.6693,
+        "lag_ms": 15.75,
+        "drag_N": 0.2452
+      },
+      "grip_soft_x0.5": {
+        "in_band_tremor": [
+          0.8252,
+          0.9614
+        ],
+        "net_in_band_vs_intended": [
+          0.9604,
+          1.074
+        ],
+        "letters_vs_unmodified": 0.9271,
+        "lag_ms": 8.375,
+        "drag_N": 0.1112
+      },
+      "grip_soft_x0.25": {
+        "in_band_tremor": [
+          0.6905,
+          0.9439
+        ],
+        "net_in_band_vs_intended": [
+          1.139,
+          1.252
+        ],
+        "letters_vs_unmodified": 0.8411,
+        "lag_ms": 18.25,
+        "drag_N": 0.1088
+      },
+      "grip_visco_x0.5": {
+        "in_band_tremor": [
+          0.8042,
+          0.941
+        ],
+        "net_in_band_vs_intended": [
+          0.9311,
+          1.06
+        ],
+        "letters_vs_unmodified": 0.923,
+        "lag_ms": 7.75,
+        "drag_N": 0.1082
+      },
+      "cap_5g": {
+        "in_band_tremor": [
+          0.9284,
+          0.9983
+        ],
+        "net_in_band_vs_intended": [
+          0.9494,
+          1.003
+        ],
+        "letters_vs_unmodified": 1.003,
+        "lag_ms": 0.375,
+        "drag_N": 0.1148
+      },
+      "cap_10g": {
+        "in_band_tremor": [
+          0.7819,
+          0.9952
+        ],
+        "net_in_band_vs_intended": [
+          0.8576,
+          1.006
+        ],
+        "letters_vs_unmodified": 1.006,
+        "lag_ms": 1.0,
+        "drag_N": 0.1143
+      },
+      "tmd_8Hz": {
+        "in_band_tremor": [
+          0.9199,
+          1.056
+        ],
+        "net_in_band_vs_intended": [
+          0.946,
+          1.049
+        ],
+        "letters_vs_unmodified": 1.003,
+        "lag_ms": 0.0,
+        "drag_N": 0.1143
+      },
+      "gyro_30k": {
+        "in_band_tremor": [
+          0.9674,
+          0.9984
+        ],
+        "net_in_band_vs_intended": [
+          0.977,
+          1.002
+        ],
+        "letters_vs_unmodified": 1.002,
+        "lag_ms": 0.25,
+        "drag_N": 0.1148
+      }
+    },
+    "size_for_50pct_available": {
+      "rm_slug_mass_x_stroke_g_mm": 5.153,
+      "rm_cell_mass_x_stroke_g_mm": 1.726,
+      "cmg_H_per_rotor_uNms": 40.42,
+      "gyro_30k_H_uNms": 79.44,
+      "wheel_torque_rated_mNm": 0.084,
+      "wheel_torque_stall_mNm": 0.4
+    },
+    "budgets": {
+      "rm_cell": {
+        "pen_mass_g": 14.22,
+        "cell_capacity_left": 1.0
+      },
+      "rm_slug3": {
+        "pen_mass_g": 17.65,
+        "cell_capacity_left": 0.5
+      },
+      "cap_10g": {
+        "pen_mass_g": 23.72,
+        "cell_capacity_left": 1.0
+      },
+      "gyro_30k": {
+        "pen_mass_g": 17.17,
+        "cell_capacity_left": 0.4,
+        "spin_power_W": 0.2027
+      },
+      "cmg_2ax": {
+        "pen_mass_g": 25.1,
+        "cell_capacity_left": 0.0
+      },
+      "sleeve": {
+        "hold_power_W": 2.112
+      }
+    },
+    "label": "SIMULATION (model H1, oracle = perfect disturbance knowledge) and CALCULATION; nothing measured"
   },
   "calibration": {
     "hap26_check": {
@@ -2490,6 +2836,155 @@
       "windage": "CALC (Couette + enclosed disc)",
       "balance": "ASSUMPTION (G2.5, G0.4 best)"
     }
+  },
+  "oracle_method_check": {
+    "rows": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "friction",
+        "tremor": "tremorspec",
+        "device": "rm_slug3",
+        "ratio": 0.9447,
+        "linear_bound": 0.78
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "friction",
+        "tremor": "tremorspec",
+        "device": "cmg_2ax",
+        "ratio": 0.8789,
+        "linear_bound": 0.6752
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "friction",
+        "tremor": "pure_sine",
+        "device": "rm_slug3",
+        "ratio": 0.9154,
+        "linear_bound": 0.78
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "friction",
+        "tremor": "pure_sine",
+        "device": "cmg_2ax",
+        "ratio": 0.852,
+        "linear_bound": 0.6752
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "friction",
+        "tremor": "tremorspec",
+        "device": "rm_slug3",
+        "ratio": 0.8556,
+        "linear_bound": 0.5489
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "friction",
+        "tremor": "tremorspec",
+        "device": "cmg_2ax",
+        "ratio": 0.8792,
+        "linear_bound": 0.5021
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "friction",
+        "tremor": "pure_sine",
+        "device": "rm_slug3",
+        "ratio": 0.8003,
+        "linear_bound": 0.5489
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "friction",
+        "tremor": "pure_sine",
+        "device": "cmg_2ax",
+        "ratio": 0.7711,
+        "linear_bound": 0.5021
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "frictionless",
+        "tremor": "tremorspec",
+        "device": "rm_slug3",
+        "ratio": 0.9042,
+        "linear_bound": 0.78
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "frictionless",
+        "tremor": "tremorspec",
+        "device": "cmg_2ax",
+        "ratio": 0.8122,
+        "linear_bound": 0.6752
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "frictionless",
+        "tremor": "pure_sine",
+        "device": "rm_slug3",
+        "ratio": 0.8444,
+        "linear_bound": 0.78
+      },
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "paper": "frictionless",
+        "tremor": "pure_sine",
+        "device": "cmg_2ax",
+        "ratio": 0.7166,
+        "linear_bound": 0.6752
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "frictionless",
+        "tremor": "tremorspec",
+        "device": "rm_slug3",
+        "ratio": 0.8241,
+        "linear_bound": 0.5489
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "frictionless",
+        "tremor": "tremorspec",
+        "device": "cmg_2ax",
+        "ratio": 0.7058,
+        "linear_bound": 0.5021
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "frictionless",
+        "tremor": "pure_sine",
+        "device": "rm_slug3",
+        "ratio": 0.7455,
+        "linear_bound": 0.5489
+      },
+      {
+        "seed": 200,
+        "f0": 12.0,
+        "paper": "frictionless",
+        "tremor": "pure_sine",
+        "device": "cmg_2ax",
+        "ratio": 0.5536,
+        "linear_bound": 0.5021
+      }
+    ],
+    "note": "time-domain oracle vs the frictionless linear bound, seed 200: pure sine vs TremorSpec default, with and without paper friction"
   },
   "time_domain": {
     "translational": {

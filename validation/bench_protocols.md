@@ -18,6 +18,8 @@ Contents:
 - §25 EXP-A03: autocorrect on real notes
 - §26–§33 Pencil-class protocols (Rev P0): EXP-Q01…Q08
 - §34 Pointers to the human-participant protocols
+- §35 EXP-I01: grip compliance split (translation vs tilt), run inside EXP-B06 sessions
+- §36 EXP-I04 (conditional): nib stage plus an inertial helper on the loaded rig
 
 ---
 
@@ -166,7 +168,9 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-Q06 | Loaded 1-axis rig: PL128.10, D1 refill, skid nose | A | R2, R3 | REQ-PNC-002/003, DEC-019 | Q01, Q02, Q04 |
 | EXP-Q07 | Two-axis Q stage in a 7.9 mm bore | A | R5, R2 | REQ-PNC-003, DEC-019, Rev P1 build | Q04, Q05, Q06 |
 | EXP-Q08 | Touchdown and lift tails; tilt-adaptive front stop | A | R2, R3 | REQ-PNC-006, DEC-022 | Q06 |
-| EXP-H01…H06, A02 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, DEC-002/008/009/016/020 | ethics |
+| EXP-I01 | Grip compliance split: translation vs tilt of a pen grasp (participants) | A | R6 + second stinger | DEC-024, hand-pen model H1 | B06 session, ethics |
+| EXP-I04 | Nib stage plus an inertial helper on the loaded rig (only if EXP-I01 finds r_rot ≥ 0.6) | A | R2, R3 | DEC-024 | I01, Q06 |
+| EXP-H01…H06, A02, I02, I03 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, DEC-002/008/009/016/020/024 | ethics |
 
 ---
 
@@ -3064,5 +3068,137 @@ The following are specified in [`human_study_plan.md`](human_study_plan.md), wit
 | EXP-H05 | Perception thresholds for ink distortion, blinded pairs | Sets thresholds for REQ-CTRL-005 and REQ-MECH-005 |
 | EXP-H06 | Immediate-assistance efficacy: device on vs neutral vs off, randomised crossover, blinded assessor | **Immediate assistance** |
 | EXP-A02 | Guidance acceptance with people (pencil concept): template distance from unguided writing (passive), then known- and AI-template guidance | Measurement (passive part); **immediate assistance** (guided part) |
+| EXP-I02 | Rotational share of writing tremor (inside EXP-H01 sessions) | Measurement only |
+| EXP-I03 | Passive nose and grip options on writers (extends EXP-H03) | Device burden; passive effect |
 
-EXP-B06 (grip impedance, §7) also involves participants and is covered by the same ethics approval.
+EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval.
+
+---
+
+## 35. EXP-I01: Grip compliance split (translation vs tilt) of a pen grasp
+
+### Purpose and what it gates
+
+EXP-B06 measures the grip impedance from one input point, the handle tail. The inertial study (`docs/inertial_stabilisation.md` §3.2) showed that the unmeasured split of the grip's compliance between **translation** and **tilt** decides whether any force or torque applied in the cap can reach the nib:
+
+- at r_rot ≈ 0.3 a force at the cap does not move the nib at all;
+- a torque device moves the nib 4–38 µm per mN·m across the plausible splits (CALC).
+
+This experiment adds a second input point (the nib) and a hand-resting condition to EXP-B06. It identifies the 2 × 2 grip stiffness per plane, the share r_rot of the nib's compliance that comes from tilt, the web's share rho_w of the translational stiffness, and the elastic centre z_c.
+
+- **Decision:** DEC-024 (revisit trigger "EXP-I01 measures r_rot ≥ 0.6 …").
+- **Model:** the two-zone grip of the hand-pen model H1 (`sim/handpen/grip.py`); nominal r_rot 0.5, rho_w 0.3 (ASSUMPTION).
+- **Runs inside EXP-B06 sessions:** same participants, consent and ethics approval, rig R6 plus a second stinger. It adds about 45 min.
+
+### Hypotheses and predictions
+
+- **H-I01-1.** The tip-referred in-plane stiffness lies in 230–1040 N/m at 1–3 N grip force (HAP-26 range; AC-I01-01).
+- **H-I01-2.** r_rot < 0.6 in most participants (AC-I01-02). At the nominal split H1 predicts that the best cap device leaves 0.85–0.97 of the ink error; at r_rot 0.7 it reaches 0.79 at 12 Hz (SIM, `results/pencil/inertial.json` split sensitivity).
+- **H-I01-3.** Resting the ulnar side of the hand on the paper raises the grip-referred in-plane stiffness by more than 2× (AC-I01-03). HAP-26 measured the arm unsupported and without paper; H1 cannot represent a hand on the paper.
+
+### Equipment
+
+- Rig R6 (§0.9).
+- Dummy pen: Ø8.9 × 166 mm, 13–20 g, rigid (first bending mode > 500 Hz), with a thin-film grip-force sensor at the finger zone.
+- Two stingers from a 2-axis voice-coil shaker (0.5 N, 0.5–40 Hz), attachable at the nib (z = 0) or the cap (z = 150 mm).
+- Six-axis force sensor at the stinger (Nano17 class).
+- Two optical markers (nib and cap) tracked at ≥ 1 kHz with ≤ 5 µm noise, or two laser triangulation sensors.
+- Paper on a low-friction film for the "nib on paper" condition.
+
+### Procedure (per participant, about 45 min after EXP-B06)
+
+1. Tilt 50° ± 5°, checked from the markers.
+2. Grip-force targets 1, 2 and 3 N, shown from the grip-force channel.
+3. For each plane (lateral, tilt plane) and each input point (nib, cap): 20 s of band-limited random force, 0.6–30 Hz, ≤ 0.3 N rms.
+4. Conditions:
+   - arm unsupported, forearm supported, or ulnar side of the hand resting on the paper;
+   - nib in air or on paper.
+
+   If time is short, run the three "nib on paper" conditions first.
+5. Randomised order; 60 s rest between trials.
+
+### Data format
+
+HDF5 per trial, as EXP-B06: force (6), marker positions (2 × 3), grip force and condition tags at 2 kHz.
+
+### Analysis
+
+1. H1 estimate of the 2 × 2 receptance matrix per plane from the two input points (coherence > 0.8 per bin).
+2. Fit `sim/handpen/grip.py` (k_f, k_w, κ_f with the hand mass and arm) per participant and condition. Confidence intervals by bootstrap over trials.
+3. Report r_rot, rho_w and z_c (10/50/90 % over participants).
+4. Re-run `python3 -m sim.handpen.run_study` with the fitted distribution in place of the six assumed splits.
+
+### Measurands and uncertainty
+
+| Measurand | Definition | Target U (k = 2) |
+|---|---|---|
+| Tip-referred in-plane stiffness | Driving-point stiffness at the nib, 1–10 Hz fit | ≤ 10 % |
+| r_rot | Share of the nib's compliance due to tilt of the pen in the grip | ≤ 0.05 (absolute) |
+| z_c | Elastic centre of the grip along the pen axis | ≤ 5 mm |
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I01:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I01-01 | — | Tip-referred in-plane grip stiffness (nib input, 1-10 Hz fit, nib on paper, forearm supported), median over participants at 1-3 N grip force | within 230-1040 N/m | hypothesis | HAP-26 range (k1 sweep 230-1040 N/m; LITERATURE); the calibration target of sim/handpen/grip.py | hand model ranges (with EXP-B06); H1 calibration |
+| AC-I01-02 | — | Share of the nib's in-plane compliance due to tilt of the pen in the grip (r_rot, from the 2 x 2 receptance with nib and cap inputs), median over participants | < 0.6 | hypothesis | DEC-024 revisit threshold; H1 assumes r_rot 0.5 (ASSUMPTION); at r_rot 0.7 the best cap device reaches 0.79 at 12 Hz (results/pencil/inertial.json split sensitivity; SIMULATION) | DEC-024 (cap devices stay closed if met) |
+| AC-I01-03 | — | Grip-referred in-plane stiffness with the ulnar side of the hand resting on the paper, relative to the arm unsupported (same participant, nib input) | > 2 | hypothesis | hypothesis of docs/inertial_stabilisation.md EXP-I01 H3 (engineering judgement); HAP-26 measured without paper or hand support | H1 hand-on-paper extension; EXP-I03 hand-resting arm |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-I01).
+<!-- AC-TABLE:EXP-I01:END -->
+
+### What changes which decision
+
+| Result | Consequence |
+|---|---|
+| r_rot < 0.6 for most participants | Close the cap-device line; DEC-024 stands. |
+| r_rot ≥ 0.6 and the H1 re-run predicts ≥ 25 % less stage time at the travel limit at 10–12 Hz | Run EXP-I04, knowing any helper breaks the mass and power budgets. |
+| Hand resting raises the stiffness > 2× | Add a hand-on-paper contact to H1 and re-run the passive options; the hand-resting arm of EXP-I03 becomes its primary comparison. |
+| Tip-referred stiffness outside 230–1040 N/m | Replace the `hand.*` ranges (with EXP-B06) and re-run P1 and H1. |
+
+### Risks and controls
+
+- The grip adapts to the shaker: keep the forces random and small.
+- Marker occlusion: two markers, redundant camera.
+- The tilt changes with grip force: log it and include it as a covariate.
+
+---
+
+## 36. EXP-I04 (conditional): Nib stage plus an inertial helper on the loaded rig
+
+### Purpose and what it gates
+
+Run only if EXP-I01 finds r_rot ≥ 0.6 and the H1 re-run predicts that a helper cuts the stage's time at its travel limit by ≥ 25 % at 10–12 Hz (DEC-024). The inertial study found helpers matter only where the stage saturates: at 12 Hz and 0.3 mm the stage sits at its limit 62 % of the time, 52 % with a 5.15 g tungsten reaction mass and 45 % with two control-moment-gyroscope pairs (SIM, H1, perfect knowledge).
+
+### Set-up
+
+- The EXP-Q06 rig (R2, R3) with the pen body held by a hand simulant that has the EXP-I01 two-zone compliance.
+- The helper module in the cap position: a CMG pair or a tungsten reaction mass on voice coils (`docs/inertial_stabilisation.md` §5.8 for sizes).
+
+### Procedure
+
+The EXP-B09 cancellation protocol with an injected disturbance at 8, 10 and 12 Hz and 0.3–0.5 mm, with and without the helper, 10 seeds each, ORACLE control of both.
+
+### Measurands
+
+- Stage time at the travel limit (definition as P1: command ≥ 95 % of the soft limit, drive saturated, or on the stop).
+- ORACLE ink-error ratio.
+- Helper electrical power; for a CMG, vibration at the spin frequency.
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I04:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I04-01 | — | Relative reduction of the stage's time at its travel limit with the helper (CMG pair or reaction mass) at 10-12 Hz, 0.3 mm injected disturbance, ORACLE control, hand simulant with the EXP-I01 compliance | ≥ 25 % | hypothesis | DEC-024 revisit threshold; H1 predicts 16 % (tungsten reaction mass) and 27 % (CMG pairs) at 12 Hz (62 % -> 52 % / 45 %; results/pencil/inertial.json; SIMULATION) | DEC-024 (conditional on EXP-I01) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-I04).
+<!-- AC-TABLE:EXP-I04:END -->
+
+### What changes which decision
+
+| Result | Consequence |
+|---|---|
+| Reduction ≥ 25 % | Re-open DEC-024 for a larger form factor only; the pencil envelope still has no room (mass, power, cell). |
+| Reduction < 25 % | Close the helper line. |

@@ -5,6 +5,7 @@ Inputs (all generated elsewhere in the repository):
   results/cad/pencil_revP{L,Q}_viewer.json and _summary.json  (mechanics/cad/pencil_revP.py)
   results/pencil/viz_trace.json                               (sim/pencil, pencil model)
   results/ai/viz_guided.json                                  (aiguide, M1 guided mode)
+  results/pencil/inertial_viz.json                            (sim/handpen, hand-pen model H1: cap devices)
   results/pencil/*.json, results/ai/*.json, results/s2r/*.json (numbers for the tables, via viewer/sections.py)
 The page itself is viewer/template.html; the tables are rendered into it here so
 they are readable without running any script.
@@ -39,6 +40,52 @@ NOTES = {
 }
 
 
+STAB_NOTES = {
+    "unmodified": "No correction. The pen tilts in the grip and slides on its skid; the ink carries the hand's tremor minus what "
+                  "the skid friction absorbs. The rings show where the fingers and the thumb-index web hold the pen.",
+    "reaction_mass": "A 5.15 g tungsten slug in the cap, pushed sideways and along the pen by coils, with perfect knowledge of the "
+                     "tremor. It is the best moving weight that fits the 20 g target, and it takes half the cell.",
+    "stage": "The piezo nib stage alone, with perfect knowledge of the tremor. The same result as the pencil group, "
+             "in the model that lets the pen tilt in the grip.",
+    "stage+reaction_mass": "Nib stage plus the tungsten slug: the slug shaves the tremor peaks the stage cannot reach.",
+    "cmg": "Two pairs of spinning tungsten rotors (60 000 rpm, spin slowed for display) on motorised gimbals that tip them to make "
+           "torque. The strongest inertial option studied, but about 25 g and 0.34 W, with no room left for the cell; the full "
+           "unit needs about 20 mm more length than the pen has.",
+    "stage+cmg": "Nib stage plus the gyroscope pairs: the best physics studied, and impossible packaging.",
+}
+
+
+def stab_trace(path):
+    """results/pencil/inertial_viz.json (model H1, m, window t0-t1) -> the viewer schema (mm, t from 0, key 'neutral'
+    for the uncorrected case). housing = ball centre fixed to the barrel; nib = ball centre with the stage correction;
+    intended = the same pen's tremor-free ink (the ratio reference)."""
+    vz = load(path)
+    r_b = 0.35e-3
+    t0 = vz["t"][0]
+    rnd = lambda v: float(f"{v:.5g}")          # noqa: E731
+    cases = []
+    for c in vz["cases"]:
+        down = c["pen_down"]
+        housing = [[rnd(x * 1e3), rnd(y * 1e3), rnd((z + r_b) * 1e3)] for x, y, z in c["nib"]]
+        nib = [[rnd(ix * 1e3), rnd(iy * 1e3), rnd(r_b * 1e3 if d else h[2])] for (ix, iy), d, h in zip(c["ink"], down, housing)]
+        dev = c.get("device") or {}
+        out = {"key": "neutral" if c["key"] == "unmodified" else c["key"], "label": c["label"], "t": [rnd(t - t0) for t in vz["t"]],
+               "housing": housing, "nib": nib, "intended": [[rnd(x * 1e3), rnd(y * 1e3)] for x, y in c["ref_ink"]],
+               "contact": down, "tilt": c["tilt_rad"], "metric": "time",
+               "q": [[rnd(a * 1e3), rnd(b * 1e3)] for a, b in dev["stage_q_m"]] if "stage_q_m" in dev else [[0.0, 0.0]] * len(down),
+               "metrics": {"ink_err_rms_um": c["metrics"]["ink_err_rms_um"], "ratio_vs_neutral": c["metrics"]["ratio_vs_unmodified"],
+                           "q_sat_frac": c["metrics"]["q_sat_frac"] if c["key"].startswith("stage") else None},
+               "note": STAB_NOTES.get(c["key"], c.get("description", ""))}
+        if dev.get("type") == "reaction_mass":
+            out["device"] = {"type": "reaction_mass", "r": [[rnd(v * 1e3) for v in row] for row in dev["r_pen_frame_m"]], "force": dev["force_N"]}
+        elif dev.get("type") == "cmg":
+            out["device"] = {"type": "cmg", "gimbal": dev["gimbal_rad"], "torque": dev["torque_Nm"], "rpm": dev.get("rotor_rpm")}
+        cases.append(out)
+    meta = dict(vz["meta"])
+    meta["case_group"] = "Weights and gyroscopes in the cap: 8 Hz, 0.3 mm tremor (hand-pen model H1, perfect knowledge)"
+    return {"meta": meta, "units": {"length": "mm", "time": "s", "angle": "rad"}, "theta_deg": 50.0, "cases": cases}
+
+
 def load_version():
     from stabpen import params as sp_params
     return sp_params.load(os.path.join(ROOT, "config", "pencil.yaml")).version()
@@ -49,6 +96,7 @@ def main():
     ap.add_argument("--variant", default="L", choices=("L", "Q"))
     ap.add_argument("--trace", default=os.path.join(ROOT, "results", "pencil", "viz_trace.json"))
     ap.add_argument("--guided", default=os.path.join(ROOT, "results", "ai", "viz_guided.json"))
+    ap.add_argument("--inertial", default=os.path.join(ROOT, "results", "pencil", "inertial_viz.json"))
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True)
     cad = os.path.join(ROOT, "results", "cad", f"pencil_revP{a.variant}")
@@ -73,6 +121,12 @@ def main():
         shutil.copyfile(a.guided, g_out)
     elif os.path.exists(g_out):
         os.remove(g_out)
+    s_out = os.path.join(DATA, "viz_inertial.json")
+    if os.path.exists(a.inertial):
+        with open(s_out, "w") as f:
+            json.dump(stab_trace(a.inertial), f, separators=(",", ":"))
+    elif os.path.exists(s_out):
+        os.remove(s_out)
     html = open(os.path.join(VIEW, "template.html"), encoding="utf-8").read()
     try:
         from viewer import sections

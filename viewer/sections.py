@@ -255,12 +255,16 @@ def make_buy(root):
 
 
 def render(root, variant="Q"):
-    parts = [forces(root), mechanisms(root), effect(root), tails(root), power(root), sensor(root), packaging(root, variant), make_buy(root)]
     try:
-        from viewer import sections_extra  # AI guidance and sim-to-real tables, once those results exist
-        parts += [sections_extra.ai(root), sections_extra.s2r(root)]
+        from viewer import sections_extra  # AI guidance, sim-to-real and inertial-helper tables, once those results exist
     except ImportError:
-        pass
+        sections_extra = None
+    parts = [forces(root), mechanisms(root)]
+    if sections_extra:
+        parts.append(sections_extra.inertial(root))
+    parts += [effect(root), tails(root), power(root), sensor(root), packaging(root, variant), make_buy(root)]
+    if sections_extra:
+        parts += [sections_extra.ai(root), sections_extra.s2r(root)]
     body = [p for p in parts if p]
     if not body:
         return ""
