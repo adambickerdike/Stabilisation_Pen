@@ -264,14 +264,22 @@ WHERE_ROWS = [
     ("Design models", "Loads, stroke, resonance, stress and fit of the stage; CAD of the pencil", "sim/pencil/design.py, analysis/, "
      "mechanics/cad/, opt/hardware/", "Gallery; tables below"),
     ("Twin experiments", "A virtual bench that calibrates the simulator before hardware exists", "s2r/", "Gallery"),
+    ("Rev H in H1", "The bigger-grip pen: fixed sleeve with a skid ring, the nose tilting on its gimbal, voice coils, the rear "
+     "inertial module", "sim/handpen/, opt/inertial/", "Rev H table below; gallery; the 3-D explainer (link above)"),
+    ("Handwriting model HW1", "Letters and words with tremor, shrinking letters, poor letter shapes and spelling errors, read by the "
+     "app's recogniser", "handwriting/", "Gallery; the 3-D explainer"),
+    ("Guidance board", "A magnet moved under the paper: forces, stage, sensing, guided practice", "board/", "Gallery"),
     ("Rev A model M1", "The earlier, larger voice-coil pen", "sim/pensim/", "docs/sim_report.md"),
 ]
+EXPLAINER_URL = "https://claude.ai/artifact/VSMxtB8vpbTQjtoAjzqbez"
 
 
 def where(root):
     rows = [[_e(a), _e(b), f"<code>{_e(c)}</code>", _e(d)] for a, b, c, d in WHERE_ROWS]
     lede = ("Every simulation is Python in the repository and re-runs with one command (README.md, “Reproduce”). "
-            "This page replays their recorded runs in 3D and shows their charts. Nothing here is a measurement.")
+            "This page replays their recorded runs in 3D and shows their charts. Nothing here is a measurement. "
+            f'The bigger-grip pen (Rev H), its parts and how it moves are shown in 3-D on the separate '
+            f'<a href="{EXPLAINER_URL}" target="_blank" rel="noopener">explainer page</a>.')
     return _section("Where the simulations are", _tags("SIM", "CALC"), lede,
                     _table(["Model", "What it simulates", "Code", "On this page"], rows), "README.md; CHECKPOINT.md")
 
@@ -403,10 +411,43 @@ def tracker_opt(root):
                     "results/opt/tracker.json (opt/tracker/; docs/opt_tracker.md)")
 
 
+def revh_opt(root):
+    """Rev H (bigger grip): moving nose and inertial module, from results/opt/inertial_opt.json (opt/inertial)."""
+    import json
+    import os
+    p = os.path.join(root, "results", "opt", "inertial_opt.json")
+    if not os.path.exists(p):
+        return ""
+    O = json.load(open(p, encoding="utf-8"))
+    band = O.get("rev_h_B", {}).get("band_8_12Hz_1_2mm", {})
+    mod = O.get("inertial_module", {}).get("by_split", {})
+    splits = ("0.3", "0.5", "0.7")
+
+    def cell(v):
+        return _f(v) if isinstance(v, (int, float)) else "—"
+    rows = [
+        ["Nose, perfect knowledge of the tremor (the mechanism's limit)"] + [cell(band.get(f"revh_r{r}", {}).get("oracle")) for r in splits],
+        ["<b>Nose with the accelerometer tracker</b>"] + [f"<b>{cell(band.get(f'revh_r{r}', {}).get('causal'))}</b>" for r in splits],
+        ["Nose + rear inertial module"] + [cell(mod.get(r, {}).get("band_8_12Hz_1_2mm", {}).get("nose+ff")) for r in splits],
+        ["Nose + the same mass as a plain weight"] + [cell(mod.get(r, {}).get("band_8_12Hz_1_2mm", {}).get("nose+weight")) for r in splits],
+    ]
+    fe = O.get("front_end") or {}
+    lede = ("Ink error with correction divided by the error without it (lower is better), tremor at the hand 8–12 Hz and 1–2 mm, "
+            "test seeds 200–203. r_rot is the unmeasured share of the grip that tilts the pen (EXP-I01). The plain weight helps on "
+            "average here, but at r_rot 0.5–0.7 it makes 38–42 % of these cases worse than the nose alone (the hand–pen resonance "
+            "falls into the tremor band), so it is not used. At 4–6 Hz the tracker removes nothing yet.")
+    if fe:
+        lede += (f" Front end closed over 35–75° of tilt (skid contact radius {fe.get('skid_contact_radius_mm')} mm, DEC-034); "
+                 "the ratios change by at most 0.004 against the radius the study used.")
+    return _section("Rev H: moving nose and inertial module", _tags("SIM"), lede,
+                    _table(["Corrector", "r_rot 0.3", "r_rot 0.5", "r_rot 0.7"], rows, num_cols=(1, 2, 3)),
+                    "results/opt/inertial_opt.json; docs/opt_inertial.md")
+
+
 def optimisation(root):
     """Optimisation studies: hardware (opt/hardware), tracker (opt/tracker), touchdown and servo (opt/touchdown)."""
     parts = []
-    for fn in ("hardware_opt", "tracker_opt", "touchdown_opt"):
+    for fn in ("revh_opt", "hardware_opt", "tracker_opt", "touchdown_opt"):
         f = globals().get(fn)
         if f is not None:
             parts.append(f(root))
@@ -451,6 +492,41 @@ GALLERY = [
      "Twin experiments: predictions before and after calibrating the simulator from virtual bench runs, against 15 hidden plants.",
      ("SIM",), "s2r/"),
 ]
+GALLERY_REVH = [   # the bigger-grip pen (Rev H), its handwriting outcomes and the guidance board
+    ("results/cad/drawing_revH_pen_addon.png", "Rev H: the bigger-grip pen",
+     "Section through the proposed design with the rear inertial module: skid ring, moving nose, gimbal, coils and magnets, "
+     "sensors, cell. Dashed: the nose at its full travel.", ("CAD",), "mechanics/cad/revH_pen.py --addon"),
+    ("results/revH/fig_front_end.png", "Rev H front end at 35°, 50° and 75°",
+     "The skid ring, nozzle and refill with the nose at rest and at its usable travel: the ring alone touches the paper and the "
+     "refill slides so the ball stays on it.", ("CALC",), "opt/inertial/front_end.py"),
+    ("results/handwriting/fig_primer_grasp.png", "How the pen is held",
+     "The dynamic tripod on the fixed sleeve, and where the parts sit.", ("CAD",), "handwriting/primer.py"),
+    ("results/opt/fig_in_arch.png", "Two ways to move the tip",
+     "Ink error left against tremor frequency at 0.3, 1 and 2 mm: a rigid nose that carries the writing load (A) against a nose that "
+     "only steers while a ring carries the load (B), each with perfect knowledge and with its tracker.",
+     ("SIM",), "opt/inertial/"),
+    ("results/opt/fig_in_splits.png", "Rev H: tremor removed",
+     "Ink error left against tremor frequency at 1 and 2 mm, with the accelerometer tracker for three grip splits and with perfect "
+     "knowledge.",
+     ("SIM",), "opt/inertial/"),
+    ("results/opt/fig_in_addon.png", "The inertial module on top of the nose",
+     "What the rear reaction mass (feed-forward, adaptive, after a grip calibration) and a plain 27.8 g weight add to the nose, for "
+     "each grip split.", ("SIM",), "opt/inertial/"),
+    ("results/handwriting/fig_et_before_after.png", "Essential tremor: writing before and after",
+     "The same words with 1 mm tremor at 6 and 10 Hz and 2 mm at 8 Hz: intended, ordinary pen, weighted pen, the pencil, Rev H with "
+     "its trackers and with perfect knowledge.", ("SIM",), "handwriting/"),
+    ("results/handwriting/fig_pd_before_after.png", "Parkinson's shrinking letters",
+     "Letters along a pangram with no help, a vibration cue, lines, and three kinds of size assist (assumed responses to the cue).",
+     ("SIM",), "handwriting/"),
+    ("results/handwriting/fig_practice_before_after.png", "Guided practice and spelling",
+     "A learner copying words with each kind of guidance. Guidance moves the ink toward the letters but never turns a wrong "
+     "letter into the right one.", ("SIM",), "handwriting/"),
+    ("results/board/fig_guidance_sim.png", "Guidance board: guided tracing",
+     "Three tasks with the board's magnet pulling the pen: tracing 8 mm letters, 'write big' loops, and a reversed letter ('d' asked, "
+     "'b' intended) with full guidance and with lead-through.", ("SIM",), "board/"),
+    ("results/board/fig_force_vs_gap.png", "Guidance board: magnet force",
+     "Force on the pen's magnet against the gap under the paper: sideways force and the extra pull onto the page.", ("CALC",), "board/magnetics.py"),
+]
 GALLERY_OPT = [   # optimisation studies (shown when their figures exist)
     ("results/opt/fig_hw_validation.png", "Slim pencil hardware: before and after",
      "Error left with perfect tremor knowledge, and time at the travel limit, for the current and optimised pencil stages in the pencil model. "
@@ -477,7 +553,7 @@ def gallery_files(root):
     """Figures of the gallery that exist: (published name, source path)."""
     import os
     out = []
-    for rel, *_ in GALLERY + GALLERY_OPT:
+    for rel, *_ in GALLERY_REVH + GALLERY + GALLERY_OPT:
         src = os.path.join(root, rel)
         if os.path.exists(src):
             out.append((rel.replace("/", "__"), src))
@@ -487,7 +563,7 @@ def gallery_files(root):
 def gallery(root):
     import os
     items = []
-    for rel, title, cap, tags, src in GALLERY + GALLERY_OPT:
+    for rel, title, cap, tags, src in GALLERY_REVH + GALLERY + GALLERY_OPT:
         if not os.path.exists(os.path.join(root, rel)):
             continue
         name = "figures/" + rel.replace("/", "__")
