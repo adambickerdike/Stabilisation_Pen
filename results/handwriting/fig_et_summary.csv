@@ -1,73 +1,145 @@
 panel,series,x,y
-Ink error vs the intended letters: tremor 0.3 mm at the hand,No device (ordinary pen),6.0,0.1499124858572561
-Ink error vs the intended letters: tremor 0.3 mm at the hand,No device (ordinary pen),10.0,0.15357855561860098
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Weighted pen (+60 g),6.0,0.16079532930891213
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Weighted pen (+60 g),10.0,0.1850253562491687
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Pencil Rev P0 + tracker,6.0,0.15158673302498943
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Pencil Rev P0 + tracker,10.0,0.11968247184627091
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),6.0,0.16246817110200373
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),10.0,0.12870984706417046
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Rev H + tracker re-tuned for Rev H,6.0,0.162717906539442
-Ink error vs the intended letters: tremor 0.3 mm at the hand,Rev H + tracker re-tuned for Rev H,10.0,0.12140272893247105
-Ink error vs the intended letters: tremor 0.3 mm at the hand,"Rev H, perfect knowledge (limit)",6.0,0.003408844211051998
-Ink error vs the intended letters: tremor 0.3 mm at the hand,"Rev H, perfect knowledge (limit)",10.0,0.006260134630102386
-Ink error vs the intended letters: tremor 1 mm at the hand,No device (ordinary pen),6.0,0.5644525667965493
-Ink error vs the intended letters: tremor 1 mm at the hand,No device (ordinary pen),10.0,0.5508508575388794
-Ink error vs the intended letters: tremor 1 mm at the hand,Weighted pen (+60 g),6.0,0.6017567540855534
-Ink error vs the intended letters: tremor 1 mm at the hand,Weighted pen (+60 g),10.0,0.6673916006724576
-Ink error vs the intended letters: tremor 1 mm at the hand,Pencil Rev P0 + tracker,6.0,0.5565242228639184
-Ink error vs the intended letters: tremor 1 mm at the hand,Pencil Rev P0 + tracker,10.0,0.4133507359362111
-Ink error vs the intended letters: tremor 1 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),6.0,0.5955073231115527
-Ink error vs the intended letters: tremor 1 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),10.0,0.4168214688903696
-Ink error vs the intended letters: tremor 1 mm at the hand,Rev H + tracker re-tuned for Rev H,6.0,0.580784472153503
-Ink error vs the intended letters: tremor 1 mm at the hand,Rev H + tracker re-tuned for Rev H,10.0,0.2978105371642815
-Ink error vs the intended letters: tremor 1 mm at the hand,"Rev H, perfect knowledge (limit)",6.0,0.011817897564821092
-Ink error vs the intended letters: tremor 1 mm at the hand,"Rev H, perfect knowledge (limit)",10.0,0.022757225897673115
-Ink error vs the intended letters: tremor 2 mm at the hand,No device (ordinary pen),6.0,1.0942111404474453
-Ink error vs the intended letters: tremor 2 mm at the hand,No device (ordinary pen),10.0,1.0895477590086151
-Ink error vs the intended letters: tremor 2 mm at the hand,Weighted pen (+60 g),6.0,1.1860737468159064
-Ink error vs the intended letters: tremor 2 mm at the hand,Weighted pen (+60 g),10.0,1.3604033964527054
-Ink error vs the intended letters: tremor 2 mm at the hand,Pencil Rev P0 + tracker,6.0,1.0580649447406705
-Ink error vs the intended letters: tremor 2 mm at the hand,Pencil Rev P0 + tracker,10.0,0.9188480643228165
-Ink error vs the intended letters: tremor 2 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),6.0,1.1541070573012795
-Ink error vs the intended letters: tremor 2 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),10.0,1.004915960011705
-Ink error vs the intended letters: tremor 2 mm at the hand,Rev H + tracker re-tuned for Rev H,6.0,1.0825824148901302
-Ink error vs the intended letters: tremor 2 mm at the hand,Rev H + tracker re-tuned for Rev H,10.0,0.49952092826669175
-Ink error vs the intended letters: tremor 2 mm at the hand,"Rev H, perfect knowledge (limit)",6.0,0.08536799337202987
-Ink error vs the intended letters: tremor 2 mm at the hand,"Rev H, perfect knowledge (limit)",10.0,0.10803808002120621
-Words read correctly by the app: tremor 0.3 mm at the hand,No device (ordinary pen),6.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,No device (ordinary pen),10.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Weighted pen (+60 g),6.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Weighted pen (+60 g),10.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Pencil Rev P0 + tracker,6.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Pencil Rev P0 + tracker,10.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),6.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),10.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Rev H + tracker re-tuned for Rev H,6.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,Rev H + tracker re-tuned for Rev H,10.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,"Rev H, perfect knowledge (limit)",6.0,1.0
-Words read correctly by the app: tremor 0.3 mm at the hand,"Rev H, perfect knowledge (limit)",10.0,1.0
-Words read correctly by the app: tremor 1 mm at the hand,No device (ordinary pen),6.0,0.6
-Words read correctly by the app: tremor 1 mm at the hand,No device (ordinary pen),10.0,0.6
-Words read correctly by the app: tremor 1 mm at the hand,Weighted pen (+60 g),6.0,0.5
-Words read correctly by the app: tremor 1 mm at the hand,Weighted pen (+60 g),10.0,0.2
-Words read correctly by the app: tremor 1 mm at the hand,Pencil Rev P0 + tracker,6.0,0.6
-Words read correctly by the app: tremor 1 mm at the hand,Pencil Rev P0 + tracker,10.0,0.9
-Words read correctly by the app: tremor 1 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),6.0,0.5
-Words read correctly by the app: tremor 1 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),10.0,0.6
-Words read correctly by the app: tremor 1 mm at the hand,Rev H + tracker re-tuned for Rev H,6.0,0.5
-Words read correctly by the app: tremor 1 mm at the hand,Rev H + tracker re-tuned for Rev H,10.0,1.0
-Words read correctly by the app: tremor 1 mm at the hand,"Rev H, perfect knowledge (limit)",6.0,1.0
-Words read correctly by the app: tremor 1 mm at the hand,"Rev H, perfect knowledge (limit)",10.0,1.0
-Words read correctly by the app: tremor 2 mm at the hand,No device (ordinary pen),6.0,0.0
-Words read correctly by the app: tremor 2 mm at the hand,No device (ordinary pen),10.0,0.1
-Words read correctly by the app: tremor 2 mm at the hand,Weighted pen (+60 g),6.0,0.1
-Words read correctly by the app: tremor 2 mm at the hand,Weighted pen (+60 g),10.0,0.1
-Words read correctly by the app: tremor 2 mm at the hand,Pencil Rev P0 + tracker,6.0,0.1
-Words read correctly by the app: tremor 2 mm at the hand,Pencil Rev P0 + tracker,10.0,0.1
-Words read correctly by the app: tremor 2 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),6.0,0.2
-Words read correctly by the app: tremor 2 mm at the hand,Rev H + tracker as shipped (tuned on the pencil),10.0,0.1
-Words read correctly by the app: tremor 2 mm at the hand,Rev H + tracker re-tuned for Rev H,6.0,0.0
-Words read correctly by the app: tremor 2 mm at the hand,Rev H + tracker re-tuned for Rev H,10.0,0.5
-Words read correctly by the app: tremor 2 mm at the hand,"Rev H, perfect knowledge (limit)",6.0,1.0
-Words read correctly by the app: tremor 2 mm at the hand,"Rev H, perfect knowledge (limit)",10.0,1.0
+"Ink error, tremor 0.3 mm at the hand",No device (ordinary pen),4.0,0.16698528648241742
+"Ink error, tremor 0.3 mm at the hand",No device (ordinary pen),6.0,0.170565619244739
+"Ink error, tremor 0.3 mm at the hand",No device (ordinary pen),8.0,0.16733055537945912
+"Ink error, tremor 0.3 mm at the hand",No device (ordinary pen),10.0,0.17436751844652745
+"Ink error, tremor 0.3 mm at the hand",Weighted pen (+60 g),4.0,0.1790482455976339
+"Ink error, tremor 0.3 mm at the hand",Weighted pen (+60 g),6.0,0.18310184063994278
+"Ink error, tremor 0.3 mm at the hand",Weighted pen (+60 g),8.0,0.1902083789919293
+"Ink error, tremor 0.3 mm at the hand",Weighted pen (+60 g),10.0,0.21133750806298313
+"Ink error, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,4.0,0.16829070140423383
+"Ink error, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,6.0,0.1720020939004938
+"Ink error, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,8.0,0.15677314320455957
+"Ink error, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,10.0,0.12954756218074093
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),4.0,0.18059672280519531
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),6.0,0.18458904658347525
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),8.0,0.1782461019266107
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),10.0,0.13914036170228566
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,4.0,0.18120836275507524
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,6.0,0.18486060197344228
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,8.0,0.174972137930952
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,10.0,0.13099363896438804
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",4.0,0.0025524647220172884
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.0036566527433507024
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.00672292061885575
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.0067380250573808205
+"Ink error, tremor 1 mm at the hand",No device (ordinary pen),4.0,0.5159131101069685
+"Ink error, tremor 1 mm at the hand",No device (ordinary pen),6.0,0.5336330835037248
+"Ink error, tremor 1 mm at the hand",No device (ordinary pen),8.0,0.5505565949744858
+"Ink error, tremor 1 mm at the hand",No device (ordinary pen),10.0,0.5510244650113901
+"Ink error, tremor 1 mm at the hand",Weighted pen (+60 g),4.0,0.5537120634659567
+"Ink error, tremor 1 mm at the hand",Weighted pen (+60 g),6.0,0.5704834434878051
+"Ink error, tremor 1 mm at the hand",Weighted pen (+60 g),8.0,0.6274200483107173
+"Ink error, tremor 1 mm at the hand",Weighted pen (+60 g),10.0,0.6693281981082162
+"Ink error, tremor 1 mm at the hand",Pencil Rev P0 + tracker,4.0,0.5181103622769898
+"Ink error, tremor 1 mm at the hand",Pencil Rev P0 + tracker,6.0,0.5253459395508538
+"Ink error, tremor 1 mm at the hand",Pencil Rev P0 + tracker,8.0,0.43616067799962366
+"Ink error, tremor 1 mm at the hand",Pencil Rev P0 + tracker,10.0,0.4101540977809796
+"Ink error, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),4.0,0.5567067896922485
+"Ink error, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),6.0,0.5645090545120105
+"Ink error, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),8.0,0.49986466232347093
+"Ink error, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),10.0,0.39587262149257096
+"Ink error, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,4.0,0.5569913875258179
+"Ink error, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,6.0,0.552828740433587
+"Ink error, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,8.0,0.43844958409150564
+"Ink error, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,10.0,0.28685798001468105
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",4.0,0.007271357489163074
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.011565598293384952
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.0236116730912871
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.022582243192717604
+"Ink error, tremor 2 mm at the hand",No device (ordinary pen),4.0,1.0536731385560631
+"Ink error, tremor 2 mm at the hand",No device (ordinary pen),6.0,1.1096412450564257
+"Ink error, tremor 2 mm at the hand",No device (ordinary pen),8.0,1.1236812212589378
+"Ink error, tremor 2 mm at the hand",No device (ordinary pen),10.0,1.1131904126411793
+"Ink error, tremor 2 mm at the hand",Weighted pen (+60 g),4.0,1.141277165926999
+"Ink error, tremor 2 mm at the hand",Weighted pen (+60 g),6.0,1.2040232870314238
+"Ink error, tremor 2 mm at the hand",Weighted pen (+60 g),8.0,1.308488429178207
+"Ink error, tremor 2 mm at the hand",Weighted pen (+60 g),10.0,1.3963783483718393
+"Ink error, tremor 2 mm at the hand",Pencil Rev P0 + tracker,4.0,1.0567774293775531
+"Ink error, tremor 2 mm at the hand",Pencil Rev P0 + tracker,6.0,1.0682479439832977
+"Ink error, tremor 2 mm at the hand",Pencil Rev P0 + tracker,8.0,0.9757460238361728
+"Ink error, tremor 2 mm at the hand",Pencil Rev P0 + tracker,10.0,0.9519982635933424
+"Ink error, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),4.0,1.1462262256989093
+"Ink error, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),6.0,1.1722445116301645
+"Ink error, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),8.0,1.1703747202412953
+"Ink error, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),10.0,1.034972123813445
+"Ink error, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,4.0,1.1450539416695475
+"Ink error, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,6.0,1.1106975762380469
+"Ink error, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,8.0,0.8706392419014088
+"Ink error, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,10.0,0.5442793988156829
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",4.0,0.058842362315997813
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.08098140189476526
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.14314050728802166
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.12602709402641665
+"Words read by the app, tremor 0.3 mm at the hand",No device (ordinary pen),4.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",No device (ordinary pen),6.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand",No device (ordinary pen),8.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",No device (ordinary pen),10.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Weighted pen (+60 g),4.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",Weighted pen (+60 g),6.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Weighted pen (+60 g),8.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Weighted pen (+60 g),10.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,4.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,6.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,8.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Pencil Rev P0 + tracker,10.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),4.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),6.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),8.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),10.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,4.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,6.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,8.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker re-tuned for Rev H,10.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",4.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",6.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",8.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",10.0,1.0
+"Words read by the app, tremor 1 mm at the hand",No device (ordinary pen),4.0,0.5
+"Words read by the app, tremor 1 mm at the hand",No device (ordinary pen),6.0,0.5
+"Words read by the app, tremor 1 mm at the hand",No device (ordinary pen),8.0,0.5583333333333333
+"Words read by the app, tremor 1 mm at the hand",No device (ordinary pen),10.0,0.5416666666666666
+"Words read by the app, tremor 1 mm at the hand",Weighted pen (+60 g),4.0,0.425
+"Words read by the app, tremor 1 mm at the hand",Weighted pen (+60 g),6.0,0.4416666666666667
+"Words read by the app, tremor 1 mm at the hand",Weighted pen (+60 g),8.0,0.3583333333333334
+"Words read by the app, tremor 1 mm at the hand",Weighted pen (+60 g),10.0,0.375
+"Words read by the app, tremor 1 mm at the hand",Pencil Rev P0 + tracker,4.0,0.4916666666666667
+"Words read by the app, tremor 1 mm at the hand",Pencil Rev P0 + tracker,6.0,0.5166666666666667
+"Words read by the app, tremor 1 mm at the hand",Pencil Rev P0 + tracker,8.0,0.6833333333333332
+"Words read by the app, tremor 1 mm at the hand",Pencil Rev P0 + tracker,10.0,0.7333333333333334
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),4.0,0.425
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),6.0,0.4416666666666667
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),8.0,0.6
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),10.0,0.7583333333333334
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,4.0,0.43333333333333335
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,6.0,0.4750000000000001
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,8.0,0.6916666666666668
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker re-tuned for Rev H,10.0,0.875
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",4.0,1.0
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",6.0,1.0
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",8.0,1.0
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",10.0,1.0
+"Words read by the app, tremor 2 mm at the hand",No device (ordinary pen),4.0,0.06666666666666667
+"Words read by the app, tremor 2 mm at the hand",No device (ordinary pen),6.0,0.09166666666666667
+"Words read by the app, tremor 2 mm at the hand",No device (ordinary pen),8.0,0.08333333333333333
+"Words read by the app, tremor 2 mm at the hand",No device (ordinary pen),10.0,0.075
+"Words read by the app, tremor 2 mm at the hand",Weighted pen (+60 g),4.0,0.05000000000000001
+"Words read by the app, tremor 2 mm at the hand",Weighted pen (+60 g),6.0,0.075
+"Words read by the app, tremor 2 mm at the hand",Weighted pen (+60 g),8.0,0.05000000000000001
+"Words read by the app, tremor 2 mm at the hand",Weighted pen (+60 g),10.0,0.05000000000000001
+"Words read by the app, tremor 2 mm at the hand",Pencil Rev P0 + tracker,4.0,0.075
+"Words read by the app, tremor 2 mm at the hand",Pencil Rev P0 + tracker,6.0,0.10000000000000002
+"Words read by the app, tremor 2 mm at the hand",Pencil Rev P0 + tracker,8.0,0.17500000000000004
+"Words read by the app, tremor 2 mm at the hand",Pencil Rev P0 + tracker,10.0,0.15
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),4.0,0.05000000000000001
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),6.0,0.09166666666666667
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),8.0,0.05833333333333334
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker as shipped (tuned on the pencil),10.0,0.17500000000000002
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,4.0,0.05000000000000001
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,6.0,0.08333333333333333
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,8.0,0.19166666666666665
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker re-tuned for Rev H,10.0,0.55
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",4.0,1.0
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.9916666666666667
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.9916666666666667
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.9833333333333334

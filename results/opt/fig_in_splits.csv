@@ -1,41 +1,41 @@
 panel,series,tremor frequency (Hz),ink error ratio
-1 mm tremor,"causal, r_rot 0.3",4,0.998039
-1 mm tremor,"causal, r_rot 0.3",6,0.973645
-1 mm tremor,"causal, r_rot 0.3",8,0.838696
-1 mm tremor,"causal, r_rot 0.3",10,0.666862
-1 mm tremor,"causal, r_rot 0.3",12,0.660369
-1 mm tremor,"causal, r_rot 0.5",4,1.00039
-1 mm tremor,"causal, r_rot 0.5",6,0.989172
-1 mm tremor,"causal, r_rot 0.5",8,0.806641
-1 mm tremor,"causal, r_rot 0.5",10,0.73953
-1 mm tremor,"causal, r_rot 0.5",12,0.730957
-1 mm tremor,"causal, r_rot 0.7",4,1.00106
-1 mm tremor,"causal, r_rot 0.7",6,0.994069
-1 mm tremor,"causal, r_rot 0.7",8,0.849466
-1 mm tremor,"causal, r_rot 0.7",10,0.80525
-1 mm tremor,"causal, r_rot 0.7",12,0.774346
-1 mm tremor,"perfect knowledge, r_rot 0.5",4,0.0868156
-1 mm tremor,"perfect knowledge, r_rot 0.5",6,0.102197
-1 mm tremor,"perfect knowledge, r_rot 0.5",8,0.122983
-1 mm tremor,"perfect knowledge, r_rot 0.5",10,0.155234
-1 mm tremor,"perfect knowledge, r_rot 0.5",12,0.203027
-2 mm tremor,"causal, r_rot 0.3",4,1.00269
-2 mm tremor,"causal, r_rot 0.3",6,0.951871
-2 mm tremor,"causal, r_rot 0.3",8,0.671827
-2 mm tremor,"causal, r_rot 0.3",10,0.530256
-2 mm tremor,"causal, r_rot 0.3",12,0.519993
-2 mm tremor,"causal, r_rot 0.5",4,1.00348
-2 mm tremor,"causal, r_rot 0.5",6,1.02771
-2 mm tremor,"causal, r_rot 0.5",8,0.704599
-2 mm tremor,"causal, r_rot 0.5",10,0.608729
-2 mm tremor,"causal, r_rot 0.5",12,0.641665
-2 mm tremor,"causal, r_rot 0.7",4,1.00318
-2 mm tremor,"causal, r_rot 0.7",6,0.981151
-2 mm tremor,"causal, r_rot 0.7",8,0.737391
-2 mm tremor,"causal, r_rot 0.7",10,0.689429
-2 mm tremor,"causal, r_rot 0.7",12,0.703311
-2 mm tremor,"perfect knowledge, r_rot 0.5",4,0.0962777
-2 mm tremor,"perfect knowledge, r_rot 0.5",6,0.119957
-2 mm tremor,"perfect knowledge, r_rot 0.5",8,0.156964
-2 mm tremor,"perfect knowledge, r_rot 0.5",10,0.200538
-2 mm tremor,"perfect knowledge, r_rot 0.5",12,0.24029
+1 mm tremor,"causal, r_rot 0.3",4,0.998457
+1 mm tremor,"causal, r_rot 0.3",6,0.969356
+1 mm tremor,"causal, r_rot 0.3",8,0.764598
+1 mm tremor,"causal, r_rot 0.3",10,0.675458
+1 mm tremor,"causal, r_rot 0.3",12,0.656668
+1 mm tremor,"causal, r_rot 0.5",4,1.00062
+1 mm tremor,"causal, r_rot 0.5",6,0.980036
+1 mm tremor,"causal, r_rot 0.5",8,0.798688
+1 mm tremor,"causal, r_rot 0.5",10,0.722835
+1 mm tremor,"causal, r_rot 0.5",12,0.732365
+1 mm tremor,"causal, r_rot 0.7",4,1.00092
+1 mm tremor,"causal, r_rot 0.7",6,0.997154
+1 mm tremor,"causal, r_rot 0.7",8,0.878932
+1 mm tremor,"causal, r_rot 0.7",10,0.78959
+1 mm tremor,"causal, r_rot 0.7",12,0.762693
+1 mm tremor,"perfect knowledge, r_rot 0.5",4,0.0868357
+1 mm tremor,"perfect knowledge, r_rot 0.5",6,0.101762
+1 mm tremor,"perfect knowledge, r_rot 0.5",8,0.123168
+1 mm tremor,"perfect knowledge, r_rot 0.5",10,0.157161
+1 mm tremor,"perfect knowledge, r_rot 0.5",12,0.205491
+2 mm tremor,"causal, r_rot 0.3",4,1.00464
+2 mm tremor,"causal, r_rot 0.3",6,0.955683
+2 mm tremor,"causal, r_rot 0.3",8,0.693044
+2 mm tremor,"causal, r_rot 0.3",10,0.55226
+2 mm tremor,"causal, r_rot 0.3",12,0.518841
+2 mm tremor,"causal, r_rot 0.5",4,1.00404
+2 mm tremor,"causal, r_rot 0.5",6,1.00009
+2 mm tremor,"causal, r_rot 0.5",8,0.724311
+2 mm tremor,"causal, r_rot 0.5",10,0.599366
+2 mm tremor,"causal, r_rot 0.5",12,0.640721
+2 mm tremor,"causal, r_rot 0.7",4,1.00369
+2 mm tremor,"causal, r_rot 0.7",6,1.03052
+2 mm tremor,"causal, r_rot 0.7",8,0.739215
+2 mm tremor,"causal, r_rot 0.7",10,0.682787
+2 mm tremor,"causal, r_rot 0.7",12,0.722863
+2 mm tremor,"perfect knowledge, r_rot 0.5",4,0.0961915
+2 mm tremor,"perfect knowledge, r_rot 0.5",6,0.119395
+2 mm tremor,"perfect knowledge, r_rot 0.5",8,0.158221
+2 mm tremor,"perfect knowledge, r_rot 0.5",10,0.202098
+2 mm tremor,"perfect knowledge, r_rot 0.5",12,0.241396

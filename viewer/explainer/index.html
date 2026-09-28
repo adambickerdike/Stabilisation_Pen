@@ -204,6 +204,8 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
 .pp-read{display:grid;gap:4px;font-size:15.5px}
 .pp-read .row{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}
 .pp-read b{font-family:var(--mono);font-weight:500}
+.pp-read .kv{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:5px 9px;align-items:center}
+.pp-read .kv b{text-align:right;white-space:nowrap}
 .scene-explain{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
 @media (max-width:820px){.scene-explain{grid-template-columns:1fr}}
 .player{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -211,6 +213,7 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
 .key span{display:inline-flex;align-items:center;gap:7px}
 .ln{display:inline-block;width:22px;height:0;border-top:3px solid var(--c)}
 .ln.dash{border-top-style:dashed;border-top-width:2px}
+.lab3d{position:absolute;left:0;top:0;pointer-events:none;font-size:13.5px;line-height:1.25;color:var(--ink);background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--rule);border-radius:4px;padding:2px 7px;white-space:nowrap}
 .buzz{position:absolute;pointer-events:none;display:flex;align-items:center;gap:6px;font-family:var(--display);font-weight:600;font-size:17px;
   letter-spacing:.02em;background:var(--panel);border:2px solid var(--g-haptic);border-radius:6px;padding:3px 9px;transform:translate(-50%,-130%);
   box-shadow:0 2px 10px rgb(0 0 0 / .12);white-space:nowrap}
@@ -474,6 +477,9 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <div class="chip sizebar"><span>Letter size <b id="size-val">100 %</b></span><div class="track"><div class="fill" id="size-fill"></div><div class="thr" id="size-thr"></div></div></div>
         </div>
         <div class="buzz" id="buzz" hidden><svg viewBox="0 0 26 20" aria-hidden="true"><path d="M9 4a8 8 0 0 0 0 12M5 1a12 12 0 0 0 0 18M17 4a8 8 0 0 1 0 12M21 1a12 12 0 0 1 0 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="13" cy="10" r="2.5" fill="currentColor"/></svg><span>Buzz: write bigger</span></div>
+        <div class="lab3d" id="lab-pm" hidden>magnet in the pen's sleeve</div>
+        <div class="lab3d" id="lab-bm" hidden>board magnet, under the glass</div>
+        <div class="lab3d" id="lab-gl" hidden>paper on 3&nbsp;mm glass</div>
         <div class="loading" id="scene-loading">Loading the scenes…</div>
       </div>
       <div class="paperpanel" aria-label="The paper seen from above">
@@ -760,7 +766,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
         <h3>What it cannot do</h3>
         <ul>
           <li>It cannot write for you or fix spelling on the paper. The app can flag a word and show the right spelling.</li>
-          <li>It cannot push your hand. Only the desk board can pull the pen along a letter.</li>
+          <li>It cannot push your hand. Only the desk board can pull the pen along a letter, and it cannot overpower you: it pulls at most 0.4&nbsp;N and gives way if you push against it. <span class="tag asm"><i></i>Assumption</span></li>
           <li>It cannot move the tip more than about 3&nbsp;mm. <span class="tag prop"><i></i>Proposed design</span> A bigger shake is only partly corrected.</li>
           <li>It cannot perfectly tell shake from writing when both have the same rhythm, about 4–6 per second. <span class="tag lit"><i></i>Literature · CON-24, PDT-31</span></li>
           <li>It does not cure tremor or small writing. It helps while you write, and it helps you practise.</li>
@@ -775,6 +781,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <li>Find out how the pen feels: weight, balance, the ring on the paper, noise, warmth of the coils, battery life.</li>
           <li>Test the “write bigger” buzz with people with Parkinson's: do letters stay bigger, and does writing stay fluent? <span class="tag lit"><i></i>Literature · PDT-17</span></li>
           <li>Test guided practice without the pen afterwards: does writing stay better once the help is removed? <span class="tag lit"><i></i>Literature · HAP-12</span></li>
+          <li>Test the board first with a mechanical “hand” and then with writers: does a gentle pull lead a relaxed hand along the letter, and does it give way when pushed?</li>
           <li>Check magnet safety for people with implants (pacemakers, deep-brain stimulators) before any board or pen trial.</li>
           <li>Test the spelling help with dyslexic writers: the cues must help, not distract.</li>
         </ul>
@@ -789,7 +796,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
     <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json + provisional panels for the conditions not yet in it (micrographia_illustration, guided_sentence)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 18:21 UTC from git 2277880-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:57:14+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-28 18:29 UTC from git 6da1c46-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:57:14+00:00</div>
   </footer>
 </div>
 
@@ -1588,7 +1595,7 @@ function initScenes(lay, board, samples, tip){
     const dir=P2W(-0.3, -0.6, 1.3);       /* from above and a little to the left: letters on the left, the pen and hand come in from the right */
     if(c==="board"){ const hh=bs.h;       /* the pen's rear points along hh; its sleeve magnet is 16.5 mm back along hh */
       if(Sx.view==="hand") fitCamera(v, P2W(cx+10, cy-30, -20), narrow?185:165, P2W(-0.5, -1.0, 0.9));
-      else fitCamera(v, P2W(cx+7*hh[0], cy+7*hh[1], 3), narrow?34:30, P2W(hh[1], -hh[0], 0.45));   /* side-on to the pen, from the writer's left */
+      else fitCamera(v, P2W(cx+5*hh[0], cy+5*hh[1], 4), 26, P2W(hh[1], -hh[0], 0.45));   /* side-on to the pen, from the writer's left */
       boardDetail(); Sx.lastFollow=null; return; }
     if(Sx.view==="hand"){ const fx=c==="line"? followX(idxAt(Sx.t)) : cx; fitCamera(v, P2W(fx+34, cy-26, 30), narrow?100:92, P2W(-0.45, -0.9, 0.95)); Sx.lastFollow=c==="line"? fx : null; return; }
     if(c==="letter"){ fitCamera(v, P2W(cx+6, cy, 6), narrow?28:25, dir); }
@@ -1642,11 +1649,11 @@ function initScenes(lay, board, samples, tip){
       if(S.ghost){ const g=rmsSoFar(S.ghost, i); h+=`<div class="row"><span>${S.key==="d"?"Your hand alone":"With the pen off"}:</span><b>${isNaN(g)?"—":g.toFixed(2)+" mm"}</b></div>`; } }
     else if(S.key==="c"){ h+=`<div class="row"><span>Guide lines:</span><b>1 cm apart</b>${tagHTML("LITERATURE PDT-18")}</div>`; }
     else if(S.key==="e" && S.force){ const f=x=>isNaN(x)? "—" : x.toFixed(2)+" mm", F=Math.hypot(S.force[2*i], S.force[2*i+1]);
-      h+=`<div class="row"><span>Off the letter, on average:</span>${tagHTML("ILLUSTRATION")}</div>`;
-      h+=`<div class="row"><span class="ln dash" style="--c:var(--shake)"></span><span>your hand without the board</span><b>${f(rmsSoFar(S.ghost, i))}</b></div>`;
-      h+=`<div class="row"><span class="ln" style="--c:var(--g-skid)"></span><span>the sleeve, led by the board</span><b>${f(rmsSoFar(S.hand, i))}</b></div>`;
-      h+=`<div class="row"><span class="ln" style="--c:var(--accent)"></span><span>the ink, nose correcting</span><b>${f(rmsSoFar(S.ink, i))}</b></div>`;
-      h+=`<div class="row"><span class="ln" style="--c:var(--good)"></span><span>Pull on the sleeve now:</span><b>${(S.down[i]? F : 0).toFixed(2)} N</b><span class="note">limit ${fmt(S.phys.cap)} N</span></div>`; }
+      h+=`<div class="row"><span>Off the letter, on average:</span>${tagHTML("ILLUSTRATION")}</div><div class="kv">`;
+      h+=`<span class="ln dash" style="--c:var(--shake)"></span><span>your hand without the board</span><b>${f(rmsSoFar(S.ghost, i))}</b>`;
+      h+=`<span class="ln" style="--c:var(--g-skid)"></span><span>the sleeve, led by the board</span><b>${f(rmsSoFar(S.hand, i))}</b>`;
+      h+=`<span class="ln" style="--c:var(--accent)"></span><span>the ink, nose correcting</span><b>${f(rmsSoFar(S.ink, i))}</b>`;
+      h+=`<span class="ln" style="--c:var(--good)"></span><span>pull on the sleeve now (limit ${fmt(S.phys.cap)} N)</span><b>${(S.down[i]? F : 0).toFixed(2)} N</b></div>`; }
     if(el.innerHTML!==h) el.innerHTML=h;
   }
   /* ---- dial: the ring (moves with the hand) and the tip inside it, seen from above ---- */
@@ -1698,6 +1705,12 @@ function initScenes(lay, board, samples, tip){
   const tmpM=new THREE.Matrix4();
   function idxAt(t){ return clamp(Math.round(t/S.dt), 0, S.t.length-1); }
   let last2d=0;
+  /* a small text label next to a point of the 3-D view (dx, dy: offset in px; negative dx puts the label to the left) */
+  function place3d(id, show, world, dx, dy){ const el=$(id); if(!show){ el.hidden=true; return; }
+    const c=world.clone().project(v.camera); if(c.z>1){ el.hidden=true; return; } el.hidden=false;
+    const w=el.offsetWidth||120, h=el.offsetHeight||22, px=(c.x+1)/2*v.w, py=(1-c.y)/2*v.h;
+    let x = dx>=0 ? px+dx : px+dx-w, y=py+dy-h/2; x=clamp(x, 4, v.w-w-4); y=clamp(y, 46, v.h-h-4);
+    el.style.transform=`translate(${Math.round(x)}px,${Math.round(y)}px)`; }
   function frame(force){
     if(!S) return; const i=idxAt(Sx.t), mag=Sx.mag;
     const ix=S.intended[2*i], iy=S.intended[2*i+1];
@@ -1726,8 +1739,12 @@ function initScenes(lay, board, samples, tip){
       cp.setXYZ(0, top.x, top.y, top.z); cp.setXYZ(1, mw.x, mw.y, mw.z); cp.needsUpdate=true; couple.computeLineDistances(); couple.visible=true;
       if(S.down[i] && F>0.01){ const d=P2W(fx,fy,0).normalize(); arrow.visible=true;
         arrow.position.copy(mw.clone().add(d.clone().multiplyScalar(4.2))); arrow.setDirection(d); arrow.setLength(5+48*F, 3.0, 2.2); }
-      else arrow.visible=false; }
-    else couple.visible=false;
+      else arrow.visible=false;
+      const close=Sx.view!=="hand"; const [x0,x1,y0,y1]=S.bounds, nar=v.w<560;
+      if(nar!==Sx.labNarrow){ Sx.labNarrow=nar; $("lab-pm").textContent=nar? "pen's magnet" : "magnet in the pen's sleeve";
+        $("lab-bm").textContent=nar? "board's magnet" : "board magnet, under the glass"; $("lab-gl").textContent=nar? "paper on glass" : "paper on 3\u00a0mm glass"; }
+      place3d("lab-pm", close, mw, 14, 10); place3d("lab-bm", close, P2W(hX, hY, -10), 34, 0); place3d("lab-gl", close, P2W((x0+x1)/2-4, y0-9, 0), -30, 14); }
+    else { couple.visible=false; for(const id of ["lab-pm","lab-bm","lab-gl"]) $(id).hidden=true; }
     $("scene-t").textContent=`${S.t[i].toFixed(1)} s of writing`;
     if(S.cam==="line"){ const fx=followX(i); if(Sx.lastFollow!=null){ const d=fx-Sx.lastFollow; v.camera.position.x+=d; v.controls.target.x+=d; } Sx.lastFollow=fx; }
     const now=performance.now(); if(force || now-last2d>33){ last2d=now; drawPaper(ppZ, i, S.ppScale, followX(i)); drawPaper(ppT, i, MM, followX(i)); drawDial(i); readout(i); }
@@ -1737,8 +1754,17 @@ function initScenes(lay, board, samples, tip){
   Sx.seek=function(t){ Sx.t=t; frame(true); };
   Sx.stats=function(){ return {key:Sx.key, samples:S? S.t.length : 0, fromData:!!(S&&S.fromData), mag:Sx.mag, view:Sx.view,
     inkTriangles:ribbons.reduce((a,r)=>a+(r.geometry.drawRange.count===Infinity? 0 : r.geometry.drawRange.count),0)/3,
-    board:boardG.visible? boardParts.length : 0}; };
+    board:boardG.visible? boardParts.length : 0, boardCheck:boardCheck()}; };
+  /* test hook for scene (e): the pen magnet rides on the handle (not the nose), the board's head sits under it, and
+     the ink ends closer to the letter than the sleeve, which is closer than the hand alone */
+  function boardCheck(){ if(!S || S.key!=="e" || !S.force) return null; const n=S.t.length-1;
+    const head=boardParts.find(m=>/head_magnet|^magnet$/i.test(m.userData.c.id||"")); pen.root.updateMatrixWorld(true);
+    const mw=penMag.userData.local.clone().applyMatrix4(penMag.parent.matrixWorld), hp=head? head.getWorldPosition(new THREE.Vector3()) : null;
+    return {onHandle: penMag.parent===pen.body, headToMagnetMm: hp? Math.hypot(hp.x-mw.x, hp.z-mw.z) : null, magnetHeightMm: mw.y,
+      rms:[rmsSoFar(S.ghost, n), rmsSoFar(S.hand, n), rmsSoFar(S.ink, n)], maxPullN: Math.max(...Array.from({length:n+1}, (_, k)=>Math.hypot(S.force[2*k], S.force[2*k+1]))), capN:S.phys.cap}; }
   Sx.onResize=function(){ if(S){ prepPaper(); setCamera(); frame(true); } };
+  let labelQ=false;      /* keep the board labels on their parts while the view is turned, also when paused */
+  v.controls.addEventListener("change", ()=>{ if(S && S.key==="e" && !labelQ){ labelQ=true; requestAnimationFrame(()=>{ labelQ=false; if(S && S.key==="e") frame(); }); } });
   Sx.onTheme=function(){ v.scene.background=new THREE.Color(css("--scene-bg")); retexturePaper(paper);
     for(const m of pen.parts){ const nm=partMaterial(m.userData.comp); m.material.color.copy(nm.color); nm.dispose(); }
     for(const mt of hand.userData.mats) mt.color.set(css("--skin")); hand.userData.mats[1].color.multiplyScalar(0.9);

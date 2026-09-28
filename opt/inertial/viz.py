@@ -75,7 +75,7 @@ def build(seed=200, f0=8.0, amp=0.3e-3, t0=1.0, t1=3.5, rate=200.0, akf_params=N
         "nose_oracle": "Active nose (architecture B) with perfect knowledge of the tremor: the ceiling of the mechanism (+/-3 mm travel).",
         "nose": "Active nose driven by the accelerometer tracker (Rev H setting): what a real pen could do (causal).",
         "reaction_mass": "Rear-cap tungsten reaction mass (19.8 g, +/-2.75 mm) driven by the tracker estimate through a model inverse; the nose held centred.",
-        "nose+reaction_mass": "Active nose plus the rear-cap reaction mass, both causal (Rev H with the optional inertial module).",
+        "nose+reaction_mass": "Active nose plus the rear-cap reaction mass, both causal (the evaluated rear-cap module; not fitted in the standard Rev H).",
         "nose_A": "Architecture A (the whole nose carries the writing load, no skid) with its position servo and the same tracker: rejected (more power, lower ceiling, writing-force changes).",
     }
     labels = {"unmodified": "Rev H, no correction", "nose_oracle": "Active nose, perfect knowledge", "nose": "Active nose (tracker)",

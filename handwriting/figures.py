@@ -164,18 +164,29 @@ def lines_chart(out: Path, panels: List[Dict], status: str, note: str = "", ncol
     write_csv(out.with_suffix(".csv"), ["panel", "series", "x", "y"], rows)
 
 
-def bars_chart(out: Path, panels: List[Dict], status: str, note: str = "", ncols: int = 3, size=(12.5, 4.2)):
-    """panels: [{"title", "labels", "values", "colors", "xlabel", "fmt", "ref"}]; horizontal bars."""
+def bars_chart(out: Path, panels: List[Dict], status: str, note: str = "", ncols: int = 3, size=(12.5, 4.2),
+               share_labels: bool = True):
+    """panels: [{"title", "labels", "values", "colors", "xlabel", "fmt", "ref"}]; horizontal bars.  Bar labels are
+    printed only in the first column when a row of panels shares them."""
     plotstyle.apply()
     nrows = int(np.ceil(len(panels) / ncols))
     fig, axes = plt.subplots(nrows, ncols, figsize=(size[0], size[1] * nrows), squeeze=False)
     rows = []
-    for ax, p in zip(axes.flat, panels):
+    for i, (ax, p) in enumerate(zip(axes.flat, panels)):
         n = len(p["values"])
         yy = np.arange(n)[::-1]
-        ax.barh(yy, p["values"], color=p.get("colors") or [C[0]] * n)
+        vals = [0.0 if v is None else v for v in p["values"]]
+        ax.barh(yy, vals, color=p.get("colors") or [C[0]] * n)
         ax.set_yticks(yy)
-        ax.set_yticklabels(p["labels"], fontsize=8)
+        first = panels[i - i % ncols]
+        if share_labels and i % ncols > 0 and list(p["labels"]) == list(first["labels"]):
+            ax.set_yticklabels([])
+        else:
+            ax.set_yticklabels(p["labels"], fontsize=8)
+        fin = [v for v in vals if np.isfinite(v)]
+        if fin and not p.get("xlim") and min(fin) >= 0:
+            hi = max(max(fin), p.get("ref") or 0.0)
+            ax.set_xlim(0, hi * 1.3 if hi > 0 else 1.0)
         fmt = p.get("fmt", "{:.2f}")
         for yv, v in zip(yy, p["values"]):
             if v is not None and np.isfinite(v):

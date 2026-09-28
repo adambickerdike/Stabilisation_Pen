@@ -1,0 +1,37 @@
+panel,label,value
+dysgraphia: ink vs target (µm RMS),No guidance,582.3604134566253
+dysgraphia: ink vs target (µm RMS),"Nose guidance, partial (0.5)",377.4346695199303
+dysgraphia: ink vs target (µm RMS),"Nose guidance, full",225.34508329169384
+dysgraphia: ink vs target (µm RMS),"Guidance board, partial (1 mm band, 0.10 N/mm)",444.1401758843977
+dysgraphia: ink vs target (µm RMS),"Guidance board, full (0.20 N/mm + 0.1 N lead)",383.8555413274477
+dysgraphia: ink vs target (µm RMS),Nose guidance without the capture gate (the pen writes),96.71028986294088
+dysgraphia: letters read as the target,No guidance,0.9228395061728394
+dysgraphia: letters read as the target,"Nose guidance, partial (0.5)",0.9351851851851851
+dysgraphia: letters read as the target,"Nose guidance, full",0.8580246913580246
+dysgraphia: letters read as the target,"Guidance board, partial (1 mm band, 0.10 N/mm)",0.9104938271604938
+dysgraphia: letters read as the target,"Guidance board, full (0.20 N/mm + 0.1 N lead)",0.851851851851852
+dysgraphia: letters read as the target,Nose guidance without the capture gate (the pen writes),0.8549382716049383
+dysgraphia: device share of the ink motion,No guidance,0.0
+dysgraphia: device share of the ink motion,"Nose guidance, partial (0.5)",0.23365878427232845
+dysgraphia: device share of the ink motion,"Nose guidance, full",0.3797114803761567
+dysgraphia: device share of the ink motion,"Guidance board, partial (1 mm band, 0.10 N/mm)",0.27184399959935374
+dysgraphia: device share of the ink motion,"Guidance board, full (0.20 N/mm + 0.1 N lead)",0.2540795165984086
+dysgraphia: device share of the ink motion,Nose guidance without the capture gate (the pen writes),0.3871157646105638
+dyslexia: ink vs target (µm RMS),No guidance,616.149128326338
+dyslexia: ink vs target (µm RMS),"Nose guidance, partial (0.5)",462.7922637528834
+dyslexia: ink vs target (µm RMS),"Nose guidance, full",369.24920279310146
+dyslexia: ink vs target (µm RMS),"Guidance board, partial (1 mm band, 0.10 N/mm)",506.6980358606308
+dyslexia: ink vs target (µm RMS),"Guidance board, full (0.20 N/mm + 0.1 N lead)",416.68224747156484
+dyslexia: ink vs target (µm RMS),Nose guidance without the capture gate (the pen writes),108.05224145875985
+dyslexia: letters read as the target,No guidance,0.8256172839506174
+dyslexia: letters read as the target,"Nose guidance, partial (0.5)",0.8379629629629631
+dyslexia: letters read as the target,"Nose guidance, full",0.7669753086419752
+dyslexia: letters read as the target,"Guidance board, partial (1 mm band, 0.10 N/mm)",0.8256172839506172
+dyslexia: letters read as the target,"Guidance board, full (0.20 N/mm + 0.1 N lead)",0.7885802469135802
+dyslexia: letters read as the target,Nose guidance without the capture gate (the pen writes),0.7669753086419752
+dyslexia: device share of the ink motion,No guidance,0.0
+dyslexia: device share of the ink motion,"Nose guidance, partial (0.5)",0.20401746211313912
+dyslexia: device share of the ink motion,"Nose guidance, full",0.3397911776180753
+dyslexia: device share of the ink motion,"Guidance board, partial (1 mm band, 0.10 N/mm)",0.260829532324888
+dyslexia: device share of the ink motion,"Guidance board, full (0.20 N/mm + 0.1 N lead)",0.24320120927469502
+dyslexia: device share of the ink motion,Nose guidance without the capture gate (the pen writes),0.35359965127295556

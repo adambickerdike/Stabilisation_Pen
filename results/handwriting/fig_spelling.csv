@@ -1,0 +1,6 @@
+step,text
+2. The app reads the words:,a  big  dog  dug  a  deap  pit  by  the  pond
+3. It knows the target (copying or dictation) and flags:,deep
+A gentle buzz and the right spelling shown and read aloud:,a big dog dug a deep pit by the pond
+4. A corrected digital copy is kept with the original ink:,a big dog dug a deep pit by the pond
+"Without the target (free writing), lexicon correction gives:",a big dog dug a deap pit by the pond

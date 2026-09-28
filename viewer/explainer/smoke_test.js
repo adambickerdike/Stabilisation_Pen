@@ -13,7 +13,9 @@
    Checks, at 1360 x 900 and at 390 x 844: no page errors and no console errors (Google Fonts TLS errors in a
    sandbox are ignored); no horizontal page scroll; the 3-D pen draws, the legend and the part selection work
    (legend click, and a click on the canvas over a part); "Take apart" moves the parts; the tip pad moves the nose;
-   each of the five scenes plays and draws ink; the toggles work; the handwriting panels render and magnify.
+   each of the five scenes plays and draws ink; in the board scene the magnet rides on the handle, the board's head
+   sits under it, the pull stays within the limit and the ink ends closer to the letter than the sleeve; the toggles
+   work; the handwriting panels render and magnify.
    Screenshots of every section (and of every scene) go to --shots.  Exit code 1 when a check fails. */
 "use strict";
 const fs = require("fs");
@@ -119,6 +121,14 @@ async function run(browser, label, viewport) {
     const pressed = await page.getAttribute(`.scene-btn[data-scene='${k}']`, "aria-pressed");
     check(`${label}: scene ${k} plays and draws ink`, st.key === k && pressed === "true" && st.inkTriangles > 10 && (k !== "e" || st.board > 3),
       `${st.samples} samples, ${Math.round(st.inkTriangles)} ink triangles${st.fromData ? ", simulation data" : ""}${k === "e" ? `, ${st.board} board parts` : ""}`);
+    if (k === "e") {
+      const bc = st.boardCheck || {};
+      const r = bc.rms || [];
+      check(`${label}: board pulls the sleeve magnet, the nose fixes the rest`,
+        bc.onHandle === true && bc.headToMagnetMm != null && bc.headToMagnetMm < 5 && r.length === 3 && r[0] > r[1] && r[1] > r[2] && bc.maxPullN <= bc.capN + 1e-9,
+        `magnet on the handle: ${bc.onHandle}; head ${bc.headToMagnetMm != null ? bc.headToMagnetMm.toFixed(1) : "?"} mm from it; ` +
+        `off the letter ${r.map(x => x.toFixed(2)).join(" > ")} mm (hand alone, sleeve, ink); pull max ${bc.maxPullN != null ? bc.maxPullN.toFixed(2) : "?"} N <= ${bc.capN} N`);
+    }
     await (await page.$(".scene-grid")).screenshot({ path: path.join(SHOTS, `${label}_scene_${k}.png`) });
   }
   await page.click(".scene-btn[data-scene='b']");

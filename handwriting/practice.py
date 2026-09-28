@@ -167,6 +167,30 @@ def spelling(su: Dict, rows_none: List[Dict]) -> Dict:
             "free_writing_word_accuracy": wd.get("word_accuracy_app")}
 
 
+def spelling_stats(rows: List[Dict]) -> Dict:
+    """Over every dyslexia-like run: misspelled words as written, how many the app flags against the known target,
+    correctly spelled words it flags by mistake (reader errors), and misspelled words that the free-writing lexicon
+    correction repairs."""
+    mis = flagged = fixed = false_flag = correct = 0
+    for r in rows:
+        sp = r.get("spelling")
+        if not sp:
+            continue
+        for w, t, rec, a in zip(sp["written_letters"].split(), sp["target"].split(), sp["recognised"].split(),
+                                sp["app_corrected_free_writing"].split()):
+            if w != t:
+                mis += 1
+                flagged += int(rec != t)
+                fixed += int(a == t)
+            else:
+                correct += 1
+                false_flag += int(rec != t)
+    return {"misspelled_words": mis, "flagged_with_target": flagged, "correct_words": correct,
+            "correct_words_flagged": false_flag, "fixed_by_free_writing_lexicon": fixed,
+            "flag_rate": flagged / max(mis, 1), "false_flag_rate": false_flag / max(correct, 1),
+            "free_fix_rate": fixed / max(mis, 1)}
+
+
 def writer_job(job: Dict) -> Dict:
     t0 = time.time()
     hand = PR.Hand.from_config()

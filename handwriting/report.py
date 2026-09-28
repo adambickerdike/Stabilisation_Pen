@@ -106,6 +106,20 @@ def fig_et(et: Dict, outdir: Path) -> List[Dict]:
     return panels
 
 
+PD_SHORT = {"pen_none": "Ordinary pen", "revH_off": "Rev H, off", "cue": "Vibration cue", "lines": "Lines >= 1 cm",
+            "size_assist_1.2": "Size x1.2", "size_assist_1.35": "Size x1.35", "size_assist_1.5": "Size x1.5",
+            "size_assist_y1.35": "Size x1.35, vertical", "size_adapt_y1.5": "Adaptive, vertical",
+            "cue_size_1.35": "Cue + size x1.35"}
+PD_ROW = {"pen_none": "No device\n(ordinary pen)", "cue": "Vibration cue\n'write bigger'", "lines": "Lines >= 1 cm",
+          "size_assist_1.35": "Size assist x1.35", "size_assist_y1.35": "Size assist x1.35,\nvertical only",
+          "size_adapt_y1.5": "Adaptive size\nassist, vertical"}
+PR_SHORT = {"none": "No guidance", "cue": "Cue on error", "nose_partial": "Nose, partial", "nose_full": "Nose, full",
+            "nose_nogate": "Nose, no gate", "board_partial": "Board, partial", "board_full": "Board, full"}
+PR_ROW = {"none": "No guidance", "nose_partial": "Nose guidance,\npartial (0.5)", "nose_full": "Nose guidance,\nfull",
+          "board_partial": "Board, partial\n(1 mm band)", "board_full": "Board, full\n(0.20 N/mm + lead)",
+          "nose_nogate": "Nose, no gate\n(the pen writes)"}
+
+
 def _et_label(dv):
     from .et_study import LABELS
     return LABELS.get(dv, dv)
@@ -187,10 +201,13 @@ def fig_pd(pd: Dict, outdir: Path) -> None:
     agg = pd["aggregate"]["by_condition"]
     order = [c for c in ("revH_off", "cue", "lines", "size_assist_1.2", "size_assist_1.35", "size_assist_1.5",
                          "size_assist_y1.35", "size_adapt_y1.5", "cue_size_1.35") if c in agg]
-    colours = {c: C[i % len(C)] for i, c in enumerate(order)}
-    # size profile along the sentence
-    series = [{"label": LABELS[c], "y": agg[c]["xh_profile_mm"], "color": colours[c], "ls": "-" if "size" not in c else "--"}
-              for c in order if c in ("revH_off", "cue", "lines", "size_assist_1.35", "size_assist_y1.35", "size_adapt_y1.5")]
+    pal = list(C) + [plotstyle.MUTED, plotstyle.INK2]
+    colours = {c: pal[i % len(pal)] for i, c in enumerate(order)}
+    # size profile along the sentence (x1.35 in both axes and vertical only give the same letter height)
+    lab = dict(LABELS)
+    lab["size_assist_1.35"] = "Size assist x1.35 (both axes or vertical only: same letter height)"
+    series = [{"label": lab[c], "y": agg[c]["xh_profile_mm"], "color": colours[c], "ls": "-" if "size" not in c else "--"}
+              for c in order if c in ("revH_off", "cue", "lines", "size_assist_1.35", "size_adapt_y1.5")]
     n = len(series[0]["y"])
     FG.lines_chart(outdir / "fig_pd_size_profile.png",
                    [{"title": "Letter size (x-height) along the pangram, mean of writers 0-5 x seeds 200-203", "x": list(range(1, n + 1)),
@@ -204,11 +221,11 @@ def fig_pd(pd: Dict, outdir: Path) -> None:
                             ("tremor_in_ink_um", "Tremor in the ink, 3-15 Hz (µm)", "{:.0f}"),
                             ("touching_frac", "Neighbouring letters touching", "{:.0%}"),
                             ("writing_time_s", "Writing time (s)", "{:.1f}")):
-        panels.append({"title": title, "labels": [LABELS[c] for c in order], "values": [agg[c].get(key) for c in order],
+        panels.append({"title": title, "labels": [PD_SHORT[c] for c in order], "values": [agg[c].get(key) for c in order],
                        "colors": [colours[c] for c in order], "fmt": fmt})
     FG.bars_chart(outdir / "fig_pd_summary.png", panels, "SIMULATION (model HW1; writer responses = ASSUMPTION ranges)",
                   "writers 0-5 x seeds 200-203; PD-like writers (5 mm start, 20-30 % loss, slow, 4-6 Hz tremor 0.05-0.25 mm)",
-                  ncols=3, size=(14.0, 4.6))
+                  ncols=3, size=(13.0, 4.2))
 
 
 def fig_pd_before_after(pd: Dict, outdir: Path) -> None:
@@ -231,7 +248,7 @@ def fig_pd_before_after(pd: Dict, outdir: Path) -> None:
     col = {"title": f"PD-like writer {writer}, seed 200: 'the quick brown fox jumps over the lazy dog'",
            "paths": {c: viz[c]["ink"] for c in keys}, "intended": viz[keys[0]]["intended"], "metrics": metrics,
            "x_height": 5.0, "show_intended": False}
-    FG.before_after(outdir / "fig_pd_before_after.png", [col], keys, {c: LABELS[c].replace(" (", "\n(") for c in keys},
+    FG.before_after(outdir / "fig_pd_before_after.png", [col], keys, {c: PD_ROW.get(c, LABELS[c]) for c in keys},
                     "SIMULATION (model HW1)", "Ruled lines 10 mm apart. Cue and lines change the writer (ASSUMPTION response); size assist moves the ink.",
                     suptitle="Parkinson's micrographia: letters shrink along the line; what each help does",
                     panel_h=22.0, ylim=(-8.0, 14.0), spacing=10.0)
@@ -273,9 +290,9 @@ def fig_practice(pr: Dict, outdir: Path) -> None:
                               f"device share of the ink motion {m['device_share']:.0%}")
         cols.append({"title": f"{prof}-like learner (writer {writer}, seed 200); green = target letters",
                      "paths": {c: v[c] for c in keys if c in v}, "intended": v["intended"], "metrics": metrics,
-                     "x_height": v.get("x_height_mm", 2.5), "target": [s for letter in v["target"] for s in letter],
+                     "x_height": v.get("x_height_mm", 2.5), "target": [np.asarray(s) * 1e3 for letter in v["target"] for s in letter],
                      "show_intended": False})
-    FG.before_after(outdir / "fig_practice_before_after.png", cols, keys, {c: LABELS[c].replace(" (", "\n(") for c in keys},
+    FG.before_after(outdir / "fig_practice_before_after.png", cols, keys, {c: PR_ROW.get(c, LABELS[c]) for c in keys},
                     "SIMULATION (model HW1)", "Passive hand (neither follows nor resists); copybook target anchored at each letter's first touchdown.",
                     suptitle="Guided practice: 'a big dog dug a deep pit by the pond' copied with each kind of guidance")
 
@@ -293,10 +310,11 @@ def fig_practice_summary(pr: Dict, outdir: Path) -> None:
         for key, title, fmt in (("target_err_um", f"{prof}: ink vs target (µm RMS)", "{:.0f}"),
                                 ("letters_read_ok", f"{prof}: letters read as the target", "{:.0%}"),
                                 ("device_share", f"{prof}: device share of the ink motion", "{:.0%}")):
-            panels.append({"title": title, "labels": [LABELS[c] for c in cs], "values": [a[c].get(key) for c in cs],
+            panels.append({"title": title, "labels": [PR_SHORT[c] for c in cs], "values": [a[c].get(key) for c in cs],
                            "colors": [C[i] for i in range(len(cs))], "fmt": fmt})
     FG.bars_chart(outdir / "fig_practice_summary.png", panels, "SIMULATION (model HW1)",
-                  "writers 0-5 x seeds 200-203; passive hand; stroke-matched guidance", ncols=3, size=(14.5, 4.4))
+                  "writers 0-5 x seeds 200-203; passive hand; stroke-matched guidance; board = final board file + the board study's law",
+                  ncols=3, size=(13.0, 3.6))
 
 
 def fig_spelling(pr: Dict, outdir: Path) -> Dict:
@@ -315,7 +333,7 @@ def fig_spelling(pr: Dict, outdir: Path) -> Dict:
     ax = fig.add_axes([0.02, 0.50, 0.96, 0.40])
     FG.lined_panel(ax, ink[:, :2], ink[:, 2] > 0.5, viz["dyslexia"].get("x_height_mm", 2.5))
     ax.set_title("1. The ink stays exactly as written (the pen does not write for the user)", fontsize=10, loc="left")
-    ax2 = fig.add_axes([0.02, 0.04, 0.96, 0.40])
+    ax2 = fig.add_axes([0.02, 0.09, 0.96, 0.38])
     ax2.axis("off")
     lines = [("2. The app reads the words:", "  ".join(sp["recognised"].split()), plotstyle.INK2),
              ("3. It knows the target (copying or dictation) and flags:", ", ".join(sp["flagged_words_known_target"]) or "nothing", C[7]),
@@ -328,6 +346,15 @@ def fig_spelling(pr: Dict, outdir: Path) -> Dict:
         ax2.text(0.46, y, b, fontsize=11, color=col, va="top", family="monospace")
         y -= 0.2
     fig.text(0.02, 0.965, "Dyslexia-like learner: letters written  '" + sp["written_letters"] + "'", fontsize=10, color=plotstyle.INK2)
+    from .practice import spelling_stats
+    st = spelling_stats([r for o in pr["outs"] for r in o["rows"] if r["profile"] == "dyslexia"])
+    fig.text(0.02, 0.035, (f"All dyslexia-like runs (writers 0-5 x seeds 200-203): {st['misspelled_words']} misspelled words. With the known "
+                           f"target the app flagged {st['flagged_with_target']} ({st['flag_rate']:.0%}) and wrongly flagged "
+                           f"{st['correct_words_flagged']} of {st['correct_words']} correct words ({st['false_flag_rate']:.0%}, reader errors). "
+                           f"In free writing the lexicon correction repaired {st['fixed_by_free_writing_lexicon']} ({st['free_fix_rate']:.0%})."),
+             fontsize=8.5, color=plotstyle.INK, wrap=True)
+    sp = dict(sp)
+    sp["stats_all_runs"] = st
     plotstyle.stamp(fig, "SIMULATION + CALCULATION (synthetic writer; app reader and lexicon correction)",
                     "real-word errors (dig, bog) need the known target; HAP-47/48/50")
     fig.savefig(outdir / "fig_spelling.png")
@@ -533,7 +560,11 @@ def headline_text(o: Dict) -> Dict:
             f"tremor in ink off {p('revH_off', 'tremor_in_ink_um'):.0f} vs x1.35 {p('size_assist_1.35', 'tremor_in_ink_um'):.0f} um; "
             f"jerk off {p('revH_off', 'norm_jerk_median'):.0f} vs x1.35 {p('size_assist_1.35', 'norm_jerk_median'):.0f}; letters touching "
             f"{p('revH_off', 'touching_frac'):.0%} vs {p('size_assist_1.35', 'touching_frac'):.0%}"),
-            "implication": "Cues and lines keep letters large at no fluency cost in this model (if people respond as assumed); a fixed size gain enlarges letters but also tremor and crowding; an adaptive vertical gain is the only assist variant worth testing"}
+            "implication": ("If people respond to a cue as assumed (PDT-19), a vibration cue keeps letters at their start size for "
+                            "about 11 % more writing time; lines >= 1 cm halve the shrinkage; a fixed size gain only rescales the "
+                            "shrinking letters and enlarges tremor, jerk and (horizontally) crowding; an adaptive vertical gain "
+                            "restores the size with little ink cost but hides the deficit from the writer: test it against lines "
+                            "and the cue for agency, after-effects and fluency (EXP-HW3)")}
     prh = o.get("practice", {}).get("headlines")
     if prh:
         def q(prof, c, k):
@@ -545,7 +576,11 @@ def headline_text(o: Dict) -> Dict:
             f"{q('dysgraphia', 'nose_full', 'device_share'):.0%} (nose) and {q('dysgraphia', 'board_full', 'device_share'):.0%} (board). "
             f"Dyslexia-like: reversed or wrong letters read as the target: none {q('dyslexia', 'none', 'error_letters_read_as_target'):.2f}, "
             f"nose full {q('dyslexia', 'nose_full', 'error_letters_read_as_target'):.2f}; cue flags {q('dyslexia', 'cue', 'flag_rate_on_errors'):.0%} of errors"),
-            "implication": "Guidance pulls the ink toward the template but the device then authors a third or more of the motion and letters are not read better; for dyslexia the gate keeps the pen from rewriting letters, so the app's flagging and spelling help carry the benefit"}
+            "implication": ("Guidance brings the ink closer to the copybook target during guidance, but the device then authors "
+                            "20-40 % of the ink motion; full guidance leaves hybrid letters that are read less well, partial nose "
+                            "guidance keeps them readable; no guidance turns a reversed or wrong letter into the right one, so for "
+                            "dyslexia the app's flagging against a known target carries the benefit. Only unassisted retention "
+                            "tests can show learning (HAP-41..44; EXP-HW4)")}
     ccs = o.get("crosscheck", {}).get("summary")
     if ccs:
         parts = []

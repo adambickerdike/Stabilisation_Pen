@@ -1,0 +1,15 @@
+column,row_key,row,metrics
+"PD-like writer 0, seed 200: 'the quick brown fox jumps over the lazy dog'",pen_none,"No device
+(ordinary pen)","x-height 5.2 → 4.6 mm  ·  letters read 94%
+jerk 186  ·  tremor in ink 107 µm"
+"PD-like writer 0, seed 200: 'the quick brown fox jumps over the lazy dog'",cue,Vibration cue 'write bigger',"x-height 5.3 → 5.6 mm  ·  letters read 97%
+jerk 204  ·  tremor in ink 112 µm  ·  cues 2"
+"PD-like writer 0, seed 200: 'the quick brown fox jumps over the lazy dog'",lines,Lines >= 1 cm,"x-height 5.4 → 5.2 mm  ·  letters read 91%
+jerk 225  ·  tremor in ink 112 µm"
+"PD-like writer 0, seed 200: 'the quick brown fox jumps over the lazy dog'",size_assist_1.35,Size assist x1.35,"x-height 6.9 → 6.2 mm  ·  letters read 91%
+jerk 595  ·  tremor in ink 153 µm"
+"PD-like writer 0, seed 200: 'the quick brown fox jumps over the lazy dog'",size_assist_y1.35,"Size assist x1.35, vertical only","x-height 6.9 → 6.2 mm  ·  letters read 94%
+jerk 416  ·  tremor in ink 130 µm"
+"PD-like writer 0, seed 200: 'the quick brown fox jumps over the lazy dog'",size_adapt_y1.5,"Adaptive size assist, vertical
+(restores the start size, up to x1.5)","x-height 5.2 → 5.4 mm  ·  letters read 94%
+jerk 261  ·  tremor in ink 117 µm"

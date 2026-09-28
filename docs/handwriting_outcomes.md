@@ -120,7 +120,45 @@ The same hand, the same sentence and the same tremor, written with each pen, at 
 
 HW1 reproduces P1's tracker results within 0.00–0.07. Its perfect-knowledge limit is 0.08–0.13 less favourable than P1's. So HW1 errs on the cautious side. The difference in "this study" comes from starting before touchdown (above).
 
-<!-- SECTION4 -->
+## 4. Parkinson's micrographia: before and after
+
+![PD before and after](../results/handwriting/fig_pd_before_after.png)
+
+One PD-like writer copying the pangram with each kind of help, on ruled lines 10 mm apart (SIM, writer 0, seed 200). The letters start at 5 mm and shrink along the line.
+
+![Letter size along the line](../results/handwriting/fig_pd_size_profile.png)
+
+**Set-up (SIM; the writer's responses are ASSUMPTION ranges, §7 items 12–14).**
+- The six test writers are made PD-like: start x-height 5.0 mm, 20–30 % progressive size loss over the pangram, 50–70 % of normal speed, and a small 4–6 Hz tremor (0.05–0.25 mm at the hand). Four seeds each: 24 runs per condition.
+- **Cue:** Rev H measures each letter's size. When a letter is more than 10 % below the writer's start size, it buzzes "write bigger". The writer then recovers 50–100 % of the lost size and slows by 10–20 % for three letters (from LIT PDT-19).
+- **Lines:** paper with lines at least 1 cm apart. The size loss is 30–70 % of that without lines (from LIT PDT-18, PDT-33).
+- **Size assist:** a new, untested function. The nose adds (G − 1) times the fast part of the writer's movement, so the ink is larger than the hand's movement. G is 1.2, 1.35 or 1.5 in both directions, or 1.35 vertically only. The adaptive version measures each finished letter and sets a vertical G (up to 1.5) that brings the letters back to the writer's start size. The anchor time constant (0.8 s) was chosen on tuning writers.
+
+![PD summary](../results/handwriting/fig_pd_summary.png)
+
+**Results** (SIM; mean of 24 runs; changes are paired against Rev H with its functions off):
+
+| Help | x-height, first → last 5 letters | Letters / words read | Jerk (smoothness; lower is smoother) | Writing time | Tremor in the ink | Neighbouring letters touching |
+|---|---|---|---|---|---|---|
+| Ordinary pen | 5.10 → 4.18 mm | 97 % / 92 % | 231 | 49.1 s | 116 µm | 12 % |
+| Rev H, functions off (75 g) | 5.11 → 4.19 mm | 97 % / 92 % | 239 | 49.1 s | 124 µm | 12 % |
+| Vibration cue "write bigger" | 5.12 → **5.18 mm** | 97 % / 92 % | 280 (+17 %) | 54.3 s (+11 %) | 125 µm | 12 % |
+| Lines ≥ 1 cm | 5.16 → 4.85 mm | 97 % / 92 % | 255 (+6 %) | 52.1 s (+6 %) | 125 µm | 12 % |
+| Size assist ×1.35 | 6.83 → 5.58 mm | 96 % / 91 % | 595 (+152 %) | 49.1 s | 165 µm (+33 %) | **50 %** |
+| Size assist ×1.5 | 7.56 → 6.18 mm | 94 % / 88 % | 702 | 49.1 s | 181 µm (+46 %) | 64 % |
+| Size assist ×1.35, vertical only | 6.83 → 5.58 mm | 97 % / 90 % | 419 (+77 %) | 49.1 s | 141 µm (+13 %) | 12 % |
+| **Adaptive size assist, vertical** | 5.13 → **5.22 mm** | 97 % / 92 % | 290 (+25 %) | 49.1 s | 130 µm (+5 %) | 12 % |
+| Cue + size assist ×1.35 | 6.84 → 6.86 mm | 95 % / 88 % | 760 (+225 %) | 54.3 s (+11 %) | 166 µm (+33 %) | 47 % |
+
+**What the table says.**
+1. **Without help,** the letters shrink by 18 % along one pangram (5.1 → 4.2 mm). That is set by the assumed 20–30 % loss (LIT PDT-05: −23 % stroke length).
+2. **A vibration cue keeps the size** (5.1 → 5.2 mm), *if* people respond as assumed. It costs 11 % more writing time and 17 % more jerk (SIM). The time cost is part of the assumed response. Size recovered through longer movement time in LIT PDT-19. Training for size made writing less fluent in LIT PDT-17.
+3. **Lines ≥ 1 cm** halve the shrinkage in this model (4.85 mm at the end). This is the cheapest help, and the literature supports it best (LIT PDT-18, PDT-33). The app can print or show the lines.
+4. **A fixed size gain is the wrong tool.** It makes every letter larger, but the letters still shrink by 18 %. Only the scale changes. Horizontal gain crowds the letters (50 % of neighbours touch, against 12 %). The nose also enlarges the tremor (+33 %) and makes the ink less smooth (jerk ×2.5). A vertical-only gain avoids the crowding but still enlarges tremor and jerk.
+5. **The adaptive vertical assist** restores the start size (5.1 → 5.2 mm) with little cost in the ink: jerk +25 %, tremor +5 %, no crowding, no extra time, and the nose moves only 0.28 mm RMS (SIM). It does as well as the cue, without relying on the writer's response.
+6. **But it hides the problem from the writer.** The writer sees normal-sized letters while moving small. PD patients with progressive micrographia already have altered motor awareness (LIT PDT-35). Visual feedback changes PD writing size (LIT PDT-34), so the writer may shrink the movement further. The model cannot show this. The adaptive assist is the only size-assist variant worth testing, and only against lines and the cue, for agency, after-effects and fluency (EXP-HW3).
+7. **Letters stay readable** at these sizes (94–97 % letters, 88–92 % words, SIM). The app's reader normalises size, so micrographia at 4 mm does not make letters unreadable to it. The benefit to aim for is the writer's own size and comfort, not the app's reading. LIT PDT-38: kinematic measures separate PD from controls better than size.
+8. **The 75 g pen** puts 7 % more tremor into the ink than a 12 g pen at 4–6 Hz (124 against 116 µm, SIM; the grip effect of §3).
 
 <!-- SECTION5 -->
 

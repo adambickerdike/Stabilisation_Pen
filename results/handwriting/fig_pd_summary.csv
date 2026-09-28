@@ -1,0 +1,55 @@
+panel,label,value
+Letter size at the end (mm),"Rev H, functions off",4.190604037374737
+Letter size at the end (mm),Vibration cue 'write bigger',5.1794050980538
+Letter size at the end (mm),Lines >= 1 cm,4.849658659858262
+Letter size at the end (mm),Size assist x1.2,4.977153888750691
+Letter size at the end (mm),Size assist x1.35,5.575085103247034
+Letter size at the end (mm),Size assist x1.5,6.176084079180671
+Letter size at the end (mm),"Size assist x1.35, vertical only",5.575477981218657
+Letter size at the end (mm),"Adaptive size assist, vertical (restores the start size, up to x1.5)",5.2185614195304835
+Letter size at the end (mm),Cue + size assist x1.35,6.8627181846859315
+Letters read correctly,"Rev H, functions off",0.9714285714285714
+Letters read correctly,Vibration cue 'write bigger',0.9726190476190476
+Letters read correctly,Lines >= 1 cm,0.9714285714285714
+Letters read correctly,Size assist x1.2,0.9666666666666667
+Letters read correctly,Size assist x1.35,0.9571428571428572
+Letters read correctly,Size assist x1.5,0.942857142857143
+Letters read correctly,"Size assist x1.35, vertical only",0.9654761904761905
+Letters read correctly,"Adaptive size assist, vertical (restores the start size, up to x1.5)",0.9738095238095238
+Letters read correctly,Cue + size assist x1.35,0.9535714285714286
+Normalised jerk per stroke (lower = smoother),"Rev H, functions off",238.5372125509248
+Normalised jerk per stroke (lower = smoother),Vibration cue 'write bigger',280.4954499450675
+Normalised jerk per stroke (lower = smoother),Lines >= 1 cm,254.52520634911892
+Normalised jerk per stroke (lower = smoother),Size assist x1.2,428.55387355069587
+Normalised jerk per stroke (lower = smoother),Size assist x1.35,594.8341219613675
+Normalised jerk per stroke (lower = smoother),Size assist x1.5,702.3737108498873
+Normalised jerk per stroke (lower = smoother),"Size assist x1.35, vertical only",419.3719263700009
+Normalised jerk per stroke (lower = smoother),"Adaptive size assist, vertical (restores the start size, up to x1.5)",290.34808613606384
+Normalised jerk per stroke (lower = smoother),Cue + size assist x1.35,760.1095341786128
+"Tremor in the ink, 3-15 Hz (µm)","Rev H, functions off",124.43593996695479
+"Tremor in the ink, 3-15 Hz (µm)",Vibration cue 'write bigger',124.78329113613682
+"Tremor in the ink, 3-15 Hz (µm)",Lines >= 1 cm,124.62718572802567
+"Tremor in the ink, 3-15 Hz (µm)",Size assist x1.2,147.78226497215792
+"Tremor in the ink, 3-15 Hz (µm)",Size assist x1.35,165.1864622703915
+"Tremor in the ink, 3-15 Hz (µm)",Size assist x1.5,180.96557470121857
+"Tremor in the ink, 3-15 Hz (µm)","Size assist x1.35, vertical only",140.94503041199417
+"Tremor in the ink, 3-15 Hz (µm)","Adaptive size assist, vertical (restores the start size, up to x1.5)",129.9320157748855
+"Tremor in the ink, 3-15 Hz (µm)",Cue + size assist x1.35,165.7364648255826
+Neighbouring letters touching,"Rev H, functions off",0.12339743589743589
+Neighbouring letters touching,Vibration cue 'write bigger',0.1233974358974359
+Neighbouring letters touching,Lines >= 1 cm,0.1185897435897436
+Neighbouring letters touching,Size assist x1.2,0.3317307692307692
+Neighbouring letters touching,Size assist x1.35,0.4967948717948718
+Neighbouring letters touching,Size assist x1.5,0.641025641025641
+Neighbouring letters touching,"Size assist x1.35, vertical only",0.1169871794871795
+Neighbouring letters touching,"Adaptive size assist, vertical (restores the start size, up to x1.5)",0.1185897435897436
+Neighbouring letters touching,Cue + size assist x1.35,0.4695512820512821
+Writing time (s),"Rev H, functions off",49.1261625
+Writing time (s),Vibration cue 'write bigger',54.325444791666676
+Writing time (s),Lines >= 1 cm,52.084853124999995
+Writing time (s),Size assist x1.2,49.1261625
+Writing time (s),Size assist x1.35,49.1261625
+Writing time (s),Size assist x1.5,49.1261625
+Writing time (s),"Size assist x1.35, vertical only",49.1261625
+Writing time (s),"Adaptive size assist, vertical (restores the start size, up to x1.5)",49.1261625
+Writing time (s),Cue + size assist x1.35,54.325444791666676

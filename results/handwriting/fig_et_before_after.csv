@@ -19,6 +19,26 @@ words read by the app 3/5  ·  at travel limit 0%"
 "hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",revH_oracle,"Rev H, perfect
 knowledge (limit)","ink error 13 µm  ·  letters read 100%
 words read by the app 5/5  ·  at travel limit 0%"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",none,"No device
+(ordinary pen)","ink error 1.16 mm  ·  letters read 38%
+words read by the app 1/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",weighted,"Weighted pen
+(+60 g)","ink error 1.36 mm  ·  letters read 19%
+words read by the app 0/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",pencil_akf,"Pencil Rev P0
++ tracker","ink error 1.02 mm  ·  letters read 38%
+words read by the app 1/5  ·  at travel limit 42%"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",revH_akf,"Rev H + tracker
+as shipped","ink error 1.26 mm  ·  letters read 23%
+words read by the app 0/5  ·  at travel limit 0%"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",revH_akf_revh,"Rev H + tracker
+re-tuned for Rev H","ink error 0.83 mm  ·  letters read 38%
+words read by the app 1/5  ·  at travel limit 0%"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",revH_oracle,"Rev H, perfect
+knowledge (limit)","ink error 0.11 mm  ·  letters read 100%
+words read by the app 5/5  ·  at travel limit 13%"
 "hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
 (the same hand without tremor)"
 "hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",none,"No device

@@ -1,14 +1,14 @@
 panel,series,tremor frequency (Hz),ink error ratio (lower is better)
-0.3 mm tremor,"B (skid carries load), perfect knowledge",4,0.0864802
-0.3 mm tremor,"B (skid carries load), perfect knowledge",6,0.0956891
-0.3 mm tremor,"B (skid carries load), perfect knowledge",8,0.0973157
-0.3 mm tremor,"B (skid carries load), perfect knowledge",10,0.0954967
-0.3 mm tremor,"B (skid carries load), perfect knowledge",12,0.0986771
-0.3 mm tremor,"B, causal (Rev H tracker)",4,1.0036
-0.3 mm tremor,"B, causal (Rev H tracker)",6,1.00322
-0.3 mm tremor,"B, causal (Rev H tracker)",8,0.951458
-0.3 mm tremor,"B, causal (Rev H tracker)",10,0.915703
-0.3 mm tremor,"B, causal (Rev H tracker)",12,0.924867
+0.3 mm tremor,"B (skid carries load), perfect knowledge",4,0.0863468
+0.3 mm tremor,"B (skid carries load), perfect knowledge",6,0.0955887
+0.3 mm tremor,"B (skid carries load), perfect knowledge",8,0.0972322
+0.3 mm tremor,"B (skid carries load), perfect knowledge",10,0.0953194
+0.3 mm tremor,"B (skid carries load), perfect knowledge",12,0.0994726
+0.3 mm tremor,"B, causal (Rev H tracker)",4,1.00404
+0.3 mm tremor,"B, causal (Rev H tracker)",6,1.00732
+0.3 mm tremor,"B, causal (Rev H tracker)",8,0.952756
+0.3 mm tremor,"B, causal (Rev H tracker)",10,0.91454
+0.3 mm tremor,"B, causal (Rev H tracker)",12,0.930742
 0.3 mm tremor,"A (nose carries load), perfect knowledge",4,0.170371
 0.3 mm tremor,"A (nose carries load), perfect knowledge",6,0.288825
 0.3 mm tremor,"A (nose carries load), perfect knowledge",8,0.538705
@@ -19,16 +19,16 @@ panel,series,tremor frequency (Hz),ink error ratio (lower is better)
 0.3 mm tremor,"A, causal (shipped tracker)",8,0.927547
 0.3 mm tremor,"A, causal (shipped tracker)",10,0.871253
 0.3 mm tremor,"A, causal (shipped tracker)",12,0.874199
-1 mm tremor,"B (skid carries load), perfect knowledge",4,0.0868156
-1 mm tremor,"B (skid carries load), perfect knowledge",6,0.102197
-1 mm tremor,"B (skid carries load), perfect knowledge",8,0.122983
-1 mm tremor,"B (skid carries load), perfect knowledge",10,0.155234
-1 mm tremor,"B (skid carries load), perfect knowledge",12,0.203027
-1 mm tremor,"B, causal (Rev H tracker)",4,1.00039
-1 mm tremor,"B, causal (Rev H tracker)",6,0.989172
-1 mm tremor,"B, causal (Rev H tracker)",8,0.806641
-1 mm tremor,"B, causal (Rev H tracker)",10,0.73953
-1 mm tremor,"B, causal (Rev H tracker)",12,0.730957
+1 mm tremor,"B (skid carries load), perfect knowledge",4,0.0868357
+1 mm tremor,"B (skid carries load), perfect knowledge",6,0.101762
+1 mm tremor,"B (skid carries load), perfect knowledge",8,0.123168
+1 mm tremor,"B (skid carries load), perfect knowledge",10,0.157161
+1 mm tremor,"B (skid carries load), perfect knowledge",12,0.205491
+1 mm tremor,"B, causal (Rev H tracker)",4,1.00062
+1 mm tremor,"B, causal (Rev H tracker)",6,0.980036
+1 mm tremor,"B, causal (Rev H tracker)",8,0.798688
+1 mm tremor,"B, causal (Rev H tracker)",10,0.722835
+1 mm tremor,"B, causal (Rev H tracker)",12,0.732365
 1 mm tremor,"A (nose carries load), perfect knowledge",4,0.159462
 1 mm tremor,"A (nose carries load), perfect knowledge",6,0.282934
 1 mm tremor,"A (nose carries load), perfect knowledge",8,0.460491
@@ -39,16 +39,16 @@ panel,series,tremor frequency (Hz),ink error ratio (lower is better)
 1 mm tremor,"A, causal (shipped tracker)",8,0.844544
 1 mm tremor,"A, causal (shipped tracker)",10,0.752424
 1 mm tremor,"A, causal (shipped tracker)",12,0.854916
-2 mm tremor,"B (skid carries load), perfect knowledge",4,0.0962777
-2 mm tremor,"B (skid carries load), perfect knowledge",6,0.119957
-2 mm tremor,"B (skid carries load), perfect knowledge",8,0.156964
-2 mm tremor,"B (skid carries load), perfect knowledge",10,0.200538
-2 mm tremor,"B (skid carries load), perfect knowledge",12,0.24029
-2 mm tremor,"B, causal (Rev H tracker)",4,1.00348
-2 mm tremor,"B, causal (Rev H tracker)",6,1.02771
-2 mm tremor,"B, causal (Rev H tracker)",8,0.704599
-2 mm tremor,"B, causal (Rev H tracker)",10,0.608729
-2 mm tremor,"B, causal (Rev H tracker)",12,0.641665
+2 mm tremor,"B (skid carries load), perfect knowledge",4,0.0961915
+2 mm tremor,"B (skid carries load), perfect knowledge",6,0.119395
+2 mm tremor,"B (skid carries load), perfect knowledge",8,0.158221
+2 mm tremor,"B (skid carries load), perfect knowledge",10,0.202098
+2 mm tremor,"B (skid carries load), perfect knowledge",12,0.241396
+2 mm tremor,"B, causal (Rev H tracker)",4,1.00404
+2 mm tremor,"B, causal (Rev H tracker)",6,1.00009
+2 mm tremor,"B, causal (Rev H tracker)",8,0.724311
+2 mm tremor,"B, causal (Rev H tracker)",10,0.599366
+2 mm tremor,"B, causal (Rev H tracker)",12,0.640721
 2 mm tremor,"A (nose carries load), perfect knowledge",4,0.153238
 2 mm tremor,"A (nose carries load), perfect knowledge",6,0.248579
 2 mm tremor,"A (nose carries load), perfect knowledge",8,0.244343

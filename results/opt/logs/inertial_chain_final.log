@@ -104,3 +104,27 @@
 == stage calib
 [   43.4 s] calib training, error x1.0 (60 rows)
 [   86.0 s] calib training, error x1.1 (120 rows)
+[  130.0 s] calib test r_rot 0.3 (60 rows)
+[  179.3 s] calib test r_rot 0.5 (120 rows)
+[  221.7 s] calib test r_rot 0.7 (180 rows)
+== stage calib done in 221.7 s
+== stage neural
+[  123.9 s] data 192 + 32 runs in 123.9 s
+[  147.4 s] imitation step 0: rms error 0.0734 N of 0.0783 N rms feed-forward force
+[  149.0 s] imitation step 500: rms error 0.0260 N of 0.0783 N rms feed-forward force
+[  150.8 s] imitation step 1000: rms error 0.0228 N of 0.0783 N rms feed-forward force
+[  152.8 s] imitation step 1500: rms error 0.0206 N of 0.0783 N rms feed-forward force
+[  154.7 s] imitation step 2000: rms error 0.0195 N of 0.0783 N rms feed-forward force
+[  157.0 s] imitation step 2499: rms error 0.0188 N of 0.0783 N rms feed-forward force
+[  190.5 s] it 9 loss 1.120 train ratio 0.944 | val ratio 0.959 false 3.3 um F 0.086 N
+[  230.9 s] it 19 loss 1.046 train ratio 0.966 | val ratio 0.961 false 3.7 um F 0.085 N
+[  266.0 s] it 29 loss 1.049 train ratio 0.970 | val ratio 0.963 false 3.5 um F 0.086 N
+[  291.4 s] it 39 loss 0.924 train ratio 0.941 | val ratio 0.965 false 3.2 um F 0.088 N
+[  317.3 s] it 49 loss 0.989 train ratio 0.970 | val ratio 0.961 false 3.3 um F 0.095 N
+[  367.6 s] it 59 loss 1.003 train ratio 0.977 | val ratio 0.963 false 3.3 um F 0.092 N
+[  389.7 s] validation done (24 rows)
+[  425.7 s] test r_rot 0.3 done (24 rows)
+[  449.5 s] test r_rot 0.5 done (48 rows)
+[  473.7 s] test r_rot 0.7 done (72 rows)
+== stage neural done in 477.1 s
+== stage report

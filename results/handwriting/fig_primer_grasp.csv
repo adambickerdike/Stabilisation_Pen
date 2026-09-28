@@ -24,7 +24,10 @@ hall3d,handle,84.75,85.75,,,Reads the nose position in x and y about 10 000 time
 pcb,handle,86.52,99.0,,,"nRF54L15-class MCU with Bluetooth, two coil drivers with current sensing, charger and the "
 imu,handle,90.0,92.5,,,Accelerometer and gyroscope: measures the hand's shake about 2000 times a second (feeds th
 battery,handle,101.0,149.5,14.1,14.1,"EEMB LIR14500, 750 mAh."
-lra,handle,150.5,153.5,8.0,8.0,"Gentle buzz cues (write bigger, slow down, check a word)."
-usb,handle,154.5,158.0,,,Charging and on/off / mode button (side port so the rear cap stays free).
+lra,handle,94.0,97.0,8.0,8.0,"Gentle buzz cues (write bigger, slow down, check a word)."
+usb,handle,150.0,153.5,,,Charging and on/off / mode button (side port so the rear cap stays free).
 rear_cap,handle,167.0,170.0,22.0,20.0,Closes the handle.
 optical,handle,14.0,20.0,,,Optical sensor beside the nose that sees the paper: page position for capture and the trac
+rm_frame,handle,151.0,169.0,20.0,20.0,"Houses the moving tungsten mass, its coils and flexures."
+rm_mass,inertial_mass,153.0,167.0,10.0,10.0,A heavy slug pushed sideways by coils: its reaction steadies the whole pen against the sha
+rm_coils,handle,153.0,167.0,19.0,19.0,Four flat coils facing magnets on the slug (2 axes).

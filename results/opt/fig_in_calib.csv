@@ -1,46 +1,46 @@
 panel,series,tremor frequency (Hz),ink error ratio
-0.3 mm tremor,Rev H tracker (open band),4,1.0036
-0.3 mm tremor,Rev H tracker (open band),6,1.00322
-0.3 mm tremor,Rev H tracker (open band),8,0.951458
-0.3 mm tremor,Rev H tracker (open band),10,0.915703
-0.3 mm tremor,Rev H tracker (open band),12,0.924867
-0.3 mm tremor,per-user calibrated band (+10 % error),4,1.01559
-0.3 mm tremor,per-user calibrated band (+10 % error),6,0.98281
-0.3 mm tremor,per-user calibrated band (+10 % error),8,0.954062
-0.3 mm tremor,per-user calibrated band (+10 % error),10,0.931801
-0.3 mm tremor,per-user calibrated band (+10 % error),12,0.944648
-0.3 mm tremor,perfect knowledge,4,0.0864802
-0.3 mm tremor,perfect knowledge,6,0.0956891
-0.3 mm tremor,perfect knowledge,8,0.0973157
-0.3 mm tremor,perfect knowledge,10,0.0954967
-0.3 mm tremor,perfect knowledge,12,0.0986771
-1 mm tremor,Rev H tracker (open band),4,1.00039
-1 mm tremor,Rev H tracker (open band),6,0.989172
-1 mm tremor,Rev H tracker (open band),8,0.806641
-1 mm tremor,Rev H tracker (open band),10,0.73953
-1 mm tremor,Rev H tracker (open band),12,0.730957
-1 mm tremor,per-user calibrated band (+10 % error),4,0.997715
-1 mm tremor,per-user calibrated band (+10 % error),6,0.939213
-1 mm tremor,per-user calibrated band (+10 % error),8,0.811658
-1 mm tremor,per-user calibrated band (+10 % error),10,0.75564
-1 mm tremor,per-user calibrated band (+10 % error),12,0.744447
-1 mm tremor,perfect knowledge,4,0.0868156
-1 mm tremor,perfect knowledge,6,0.102197
-1 mm tremor,perfect knowledge,8,0.122983
-1 mm tremor,perfect knowledge,10,0.155234
-1 mm tremor,perfect knowledge,12,0.203027
-2 mm tremor,Rev H tracker (open band),4,1.00348
-2 mm tremor,Rev H tracker (open band),6,1.02771
-2 mm tremor,Rev H tracker (open band),8,0.704599
-2 mm tremor,Rev H tracker (open band),10,0.608729
-2 mm tremor,Rev H tracker (open band),12,0.641665
-2 mm tremor,per-user calibrated band (+10 % error),4,0.992498
-2 mm tremor,per-user calibrated band (+10 % error),6,0.876466
-2 mm tremor,per-user calibrated band (+10 % error),8,0.710408
-2 mm tremor,per-user calibrated band (+10 % error),10,0.623881
-2 mm tremor,per-user calibrated band (+10 % error),12,0.648505
-2 mm tremor,perfect knowledge,4,0.0962777
-2 mm tremor,perfect knowledge,6,0.119957
-2 mm tremor,perfect knowledge,8,0.156964
-2 mm tremor,perfect knowledge,10,0.200538
-2 mm tremor,perfect knowledge,12,0.24029
+0.3 mm tremor,Rev H tracker (open band),4,1.00404
+0.3 mm tremor,Rev H tracker (open band),6,1.00732
+0.3 mm tremor,Rev H tracker (open band),8,0.952756
+0.3 mm tremor,Rev H tracker (open band),10,0.91454
+0.3 mm tremor,Rev H tracker (open band),12,0.930742
+0.3 mm tremor,per-user calibrated band (+10 % error),4,1.01338
+0.3 mm tremor,per-user calibrated band (+10 % error),6,0.982392
+0.3 mm tremor,per-user calibrated band (+10 % error),8,0.956247
+0.3 mm tremor,per-user calibrated band (+10 % error),10,0.923819
+0.3 mm tremor,per-user calibrated band (+10 % error),12,0.930515
+0.3 mm tremor,perfect knowledge,4,0.0863468
+0.3 mm tremor,perfect knowledge,6,0.0955887
+0.3 mm tremor,perfect knowledge,8,0.0972322
+0.3 mm tremor,perfect knowledge,10,0.0953194
+0.3 mm tremor,perfect knowledge,12,0.0994726
+1 mm tremor,Rev H tracker (open band),4,1.00062
+1 mm tremor,Rev H tracker (open band),6,0.980036
+1 mm tremor,Rev H tracker (open band),8,0.798688
+1 mm tremor,Rev H tracker (open band),10,0.722835
+1 mm tremor,Rev H tracker (open band),12,0.732365
+1 mm tremor,per-user calibrated band (+10 % error),4,0.996453
+1 mm tremor,per-user calibrated band (+10 % error),6,0.932917
+1 mm tremor,per-user calibrated band (+10 % error),8,0.801049
+1 mm tremor,per-user calibrated band (+10 % error),10,0.736687
+1 mm tremor,per-user calibrated band (+10 % error),12,0.739797
+1 mm tremor,perfect knowledge,4,0.0868357
+1 mm tremor,perfect knowledge,6,0.101762
+1 mm tremor,perfect knowledge,8,0.123168
+1 mm tremor,perfect knowledge,10,0.157161
+1 mm tremor,perfect knowledge,12,0.205491
+2 mm tremor,Rev H tracker (open band),4,1.00404
+2 mm tremor,Rev H tracker (open band),6,1.00009
+2 mm tremor,Rev H tracker (open band),8,0.724311
+2 mm tremor,Rev H tracker (open band),10,0.599366
+2 mm tremor,Rev H tracker (open band),12,0.640721
+2 mm tremor,per-user calibrated band (+10 % error),4,0.992903
+2 mm tremor,per-user calibrated band (+10 % error),6,0.871878
+2 mm tremor,per-user calibrated band (+10 % error),8,0.727075
+2 mm tremor,per-user calibrated band (+10 % error),10,0.614167
+2 mm tremor,per-user calibrated band (+10 % error),12,0.644339
+2 mm tremor,perfect knowledge,4,0.0961915
+2 mm tremor,perfect knowledge,6,0.119395
+2 mm tremor,perfect knowledge,8,0.158221
+2 mm tremor,perfect knowledge,10,0.202098
+2 mm tremor,perfect knowledge,12,0.241396
