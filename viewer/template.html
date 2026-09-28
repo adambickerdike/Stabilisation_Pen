@@ -573,7 +573,7 @@ function drawErr(i){
 
 /* ---------- UI ---------- */
 const fmt=(v,d=0)=>(v==null||isNaN(v))?"—":Number(v).toFixed(d);
-const GROUP_MAG={pencil:10, fusion:10, ai:1, stab:10};
+const GROUP_MAG={pencil:10, fusion:10, touch:1, ai:1, stab:10};
 function selectCase(k){
   const prev=S.cases[S.ci]; S.ci=k; const c=S.cases[k];
   if(!prev || prev.group!==c.group || S.firstSelect===undefined){
@@ -649,16 +649,18 @@ function applyTheme(){ if(DEV.grip) for(const o of DEV.grip.children) o.material
   scene.background=new THREE.Color(C.bg); paper.material.map=paperTexture(); paper.material.needsUpdate=true; makeArrows(); if(S.cases.length) buildInk(); }
 
 async function load(){
-  const [geom, trace, ai, stab, fus] = await Promise.all([
+  const [geom, trace, ai, stab, fus, touch] = await Promise.all([
     fetch("data/geometry.json").then(r=>r.json()),
     fetch("data/viz_trace.json").then(r=>r.json()),
     fetch("data/viz_guided.json").then(r=>r.ok?r.json():null).catch(()=>null),
     fetch("data/viz_inertial.json").then(r=>r.ok?r.json():null).catch(()=>null),
-    fetch("data/viz_fusion.json").then(r=>r.ok?r.json():null).catch(()=>null)]);
+    fetch("data/viz_fusion.json").then(r=>r.ok?r.json():null).catch(()=>null),
+    fetch("data/viz_touchdown.json").then(r=>r.ok?r.json():null).catch(()=>null)]);
   S.geom=geom; S.theta=trace.theta_deg||50; S.phi=trace.phi_deg||0; B.bs=basis(S.theta,S.phi);
   buildPen(geom); buildDevices(stab && stab.meta && stab.meta.geometry_mm);
   S.cases = trace.cases.map(c=>normalizeCase(c,"pencil"));
   if(fus && fus.cases) S.cases = S.cases.concat(fus.cases.map(c=>normalizeCase(c,"fusion")));
+  if(touch && touch.cases) S.cases = S.cases.concat(touch.cases.map(c=>normalizeCase(c,"touch")));
   if(ai && ai.cases) S.cases = S.cases.concat(ai.cases.map(c=>normalizeCase(c,"ai")));
   if(stab && stab.cases) S.cases = S.cases.concat(stab.cases.map(c=>normalizeCase(c,"stab")));
   for(const c of S.cases) c.err=errorSeries(c);
@@ -667,7 +669,8 @@ async function load(){
   const heads={pencil:(trace.meta&&trace.meta.case_group)||"Pencil model: handwriting with 6 Hz, 0.3 mm tremor",
                ai:(ai&&ai.meta&&ai.meta.case_group)||"AI guidance: a written sentence (simulator M1, pencil travel limits)",
                stab:(stab&&stab.meta&&stab.meta.case_group)||"Weights and gyroscopes in the cap (hand-pen model H1)",
-               fusion:(fus&&fus.meta&&fus.meta.case_group)||"Accelerometer tremor tracker (pencil model P1)"};
+               fusion:(fus&&fus.meta&&fus.meta.case_group)||"Accelerometer tremor tracker (pencil model P1)",
+               touch:(touch&&touch.meta&&touch.meta.case_group)||"Touchdown and lift (pencil model P1)"};
   let lastGroup=null;
   S.cases.forEach((c,k)=>{
     if(c.group!==lastGroup){ const h=document.createElement("div"); h.className="grouphead"; h.textContent=heads[c.group]; box.appendChild(h); lastGroup=c.group; }
@@ -678,7 +681,8 @@ async function load(){
   $("provenance").textContent = ["Pencil traces: model "+((trace.meta&&trace.meta.model_version)||"P1")+", git "+((trace.meta&&trace.meta.git_revision)||"?")+", generated "+((trace.meta&&trace.meta.generated_utc)||"?"),
       ai&&ai.meta ? ("AI traces: git "+(ai.meta.git_revision||"?")+", generated "+(ai.meta.generated_utc||"?")) : "",
       stab&&stab.meta ? ("Hand-pen traces: model "+(stab.meta.model_version||"H1")+", git "+(stab.meta.git_revision||"?")+", generated "+(stab.meta.generated_utc||"?")) : "",
-      fus&&fus.meta ? ("Tracker traces: git "+(fus.meta.git_revision||"?")+", generated "+(fus.meta.generated_utc||"?")) : ""].filter(Boolean).join(" · ");
+      fus&&fus.meta ? ("Tracker traces: git "+(fus.meta.git_revision||"?")+", generated "+(fus.meta.generated_utc||"?")) : "",
+      touch&&touch.meta ? ("Touchdown traces: git "+(touch.meta.git_revision||"?")+", generated "+(touch.meta.generated_utc||"?")) : ""].filter(Boolean).join(" · ");
   scene.background=new THREE.Color(C.bg);
   resize(); selectCase(0); $("loading").hidden=true;
 }

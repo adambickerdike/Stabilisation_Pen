@@ -6,6 +6,7 @@ run():          one scenario -> named recorded channels.
 references(), housing_disturbance(), with_disturbance(): the harness conventions of
                 sim/pensim/bench.py and harness.py (neutral clean reference; the oracle gets the
                 clean housing path as its disturbance reference).
+PencilConfig.touchdown_ff / servo_kp: touchdown / lift feed-forward and proportional servo gain (default off).
 with_estimate(): scenario for mode "external", where an estimator outside the core supplies
                 the disturbance estimate per step (recorded aHx/aHy/aHz give the true housing
                 acceleration for external sensor models).
@@ -63,6 +64,10 @@ class PencilConfig:
     servo_zeta: float = 0.4              # damping target of the D term
     d_filt_hz: float = 600.0             # derivative filter corner (Hz): limits Hall-noise-driven drive power
     overrides: Dict = field(default_factory=dict)
+    servo_kp: float = 0.0                # proportional servo gain as a fraction of the stage stiffness k_b + k_par (0: none)
+    touchdown_ff: Optional[Dict] = None  # touchdown / lift feed-forward (opt/touchdown/law.py); None: off.  Keys (defaults
+                                         # in TD_DEFAULTS): gain, kappa, s_ref (None: static working slide), lead_s, lp_hz,
+                                         # pre, dz, prio, bias, k_load, det_s, det_e, hold_s, v_td, handover
 
 
 @dataclass
@@ -88,6 +93,25 @@ class Controller:
     ff_ref: float = 1.0
     ff_bias: float = 1.0
     V_fixed: float = 30.0
+
+
+# Touchdown / lift feed-forward (PencilConfig.touchdown_ff): ideal kinematic law, full removal of the stage-induced
+# slide, full pre-positioning, feed-forward first on the travel, contact-load bias switched at once by the feed-forward's
+# contact state.  The layout keys are td_<name> (sim/pencil/layout.py); opt/touchdown/law.py documents each.
+TD_DEFAULTS = {"gain": 1.0, "kappa": 1.0, "s_ref": None, "lead_s": 0.0, "lp_hz": 200.0, "pre": 1.0, "dz": 0.0, "prio": 1,
+               "bias": 1, "k_load": 1.0, "det_s": 20e-6, "det_e": 0.0, "hold_s": 2e-3, "v_td": 0.0, "handover": 1}
+TD_KEYS = {"gain": "td_gain", "kappa": "td_kappa", "s_ref": "td_sref", "lead_s": "td_lead", "lp_hz": "td_lp", "pre": "td_pre",
+           "dz": "td_dz", "prio": "td_prio", "bias": "td_bias", "k_load": "td_kl", "det_s": "td_det_s", "det_e": "td_det_e",
+           "hold_s": "td_hold", "v_td": "td_vtd", "handover": "td_handover"}
+
+
+def working_slide(theta, N0, F_sp0, k_p, k_sk, skid_on=True):
+    """Axial slide of the refill in steady writing with the skid on the page: the skid sinks N_skid/k_sk and the ball
+    N_nib/k_p, so s_w = (N_skid/k_sk - N_nib/k_p)/sin(theta), N_nib = F_sp0/sin(theta) (frictionless axial balance)."""
+    N_nib = F_sp0 / math.sin(theta)
+    N_sk = max(N0 - N_nib, 0.0) if skid_on else 0.0
+    sink = N_sk / k_sk if (skid_on and k_sk > 0) else 0.0
+    return (sink - N_nib / k_p) / math.sin(theta)
 
 
 def kalman_controller(**kw):
@@ -216,7 +240,7 @@ def build_params(scn, ctrl: Controller, cfg: Optional[PencilConfig] = None, dt: 
     setp("stage_decim", sdec); setp("servo_decim", vdec)
     Ki = k_tot * 2 * math.pi * cfg.servo_bw
     Kd = max(2 * cfg.servo_zeta * math.sqrt(k_tot * st.m_eq_nib) - c_st, 0.0)
-    setp("Ki", Ki); setp("Kp", 0.0); setp("Kd", Kd); setp("d_filt", cfg.d_filt_hz)
+    setp("Ki", Ki); setp("Kp", cfg.servo_kp * k_tot); setp("Kd", Kd); setp("d_filt", cfg.d_filt_hz)
     setp("ff_ref", ctrl.ff_ref); setp("ff_bias", ctrl.ff_bias)
     # static transverse load the stage supplies (paper normal force at the nib, expected)
     cr, sr = math.cos(math.radians(scn.rho_deg)), math.sin(math.radians(scn.rho_deg))
@@ -242,9 +266,25 @@ def build_params(scn, ctrl: Controller, cfg: Optional[PencilConfig] = None, dt: 
     for k_, v in ov.items():
         if k_ in IDX:
             setp(k_, v)
+    td = None
+    if cfg.touchdown_ff is not None:
+        unknown = set(cfg.touchdown_ff) - set(TD_KEYS)
+        if unknown:
+            raise KeyError(f"unknown touchdown_ff keys: {sorted(unknown)}")
+        td = dict(TD_DEFAULTS, **cfg.touchdown_ff)
+        if td["s_ref"] is None:
+            td["s_ref"] = working_slide(th, scn.N0, Pv[IDX["F_sp0"]], Pv[IDX["k_p"]], Pv[IDX["k_sk"]], Pv[IDX["skid_on"]] > 0.5)
+        setp("td_on", 1.0)
+        for k_, name in TD_KEYS.items():
+            if name not in ov:
+                setp(name, td[k_])
     info = {"model_version": MODEL_VERSION, "stage": st.summary(), "static": {k: v for k, v in ss.items() if k not in ("stage", "budget")},
             "M_t_kg": M_t, "Ki": Ki, "Kd": Kd, "c_stage": c_st, "gamma_acc": gam, "horizon_s": hor, "Ts": Ts,
             "servo_Ts": vdec * dt, "params_version": P.version()}
+    if td is not None:
+        info["touchdown_ff"] = td
+    if cfg.servo_kp:
+        info["Kp"] = cfg.servo_kp * k_tot
     return Pv, info
 
 

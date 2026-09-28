@@ -23,6 +23,9 @@ Control: outer loop (estimator, page-to-stage reference) at the stage rate as in
 mode 7 (external) cancels a disturbance estimate the harness computes outside the core and
 passes per simulation step in place of dtrue (the estimator must be causal; see model.py);
 inner piezo servo (feedforward + integral + damping) at servo_decim.
+Touchdown / lift feed-forward (td_* parameters, default off; opt/touchdown/law.py): a stage command from the
+measured axial slide with the stage-induced slide removed (predicted ahead by an alpha-beta tracker), pre-positioning
+while the refill rests on its stop, and the contact-load bias switched at once by its contact state.
 Estimators _kf_step and the fusion/gate/guided logic are copied from sim/pensim/core.py
 (model M1) so both simulators run the same estimator.
 Integration: semi-implicit (symplectic) Euler at dt (default 25 us).
@@ -101,6 +104,22 @@ def _lugre(zb, vx, vy, N, mu_k, mu_s, v_s, sg0, sg1, sg2, dt):
 
 
 @njit(cache=True)
+def _taper(x0, x1, lim, qtap):
+    """Radial soft limit of a stage command at radius lim (the tanh taper of the tremor path, width qtap)."""
+    r = math.hypot(x0, x1)
+    if lim <= 0.0:
+        return 0.0, 0.0
+    if r <= 0.0:
+        return x0, x1
+    w = min(qtap, lim)
+    knee = lim - w
+    if r > knee:
+        rn = knee + w * math.tanh((r - knee) / w)
+        return x0 * rn / r, x1 * rn / r
+    return x0, x1
+
+
+@njit(cache=True)
 def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     np.random.seed(seed)
     dt = P[I_dt]
@@ -152,6 +171,11 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     wg = P[I_kf_wgain]; wmin = P[I_kf_wmin]; wmax = P[I_kf_wmax]; nishi = P[I_conf_nis_hi]
     fgate = P[I_f_gate]; fgw = P[I_f_gate_width]
     Ft0 = P[I_F_test0]; Ft1 = P[I_F_test1]; Vfix = P[I_V_fixed]; reqc = P[I_require_contact] > 0.5
+    # touchdown / lift feed-forward (all zero = off; see layout.py and opt/touchdown/law.py)
+    td_on = P[I_td_on] > 0.5
+    tdK = P[I_td_gain]; tdkap = P[I_td_kappa]; tdsref = P[I_td_sref]; tdlead = P[I_td_lead]; tdlp = P[I_td_lp]
+    tdpre = P[I_td_pre]; tddz = P[I_td_dz]; tdprio = int(P[I_td_prio]); tdbias = int(P[I_td_bias]); tdkl = P[I_td_kl]
+    tddets = P[I_td_det_s]; tddete = P[I_td_det_e]; tdhold = P[I_td_hold]; tdvtd = P[I_td_vtd]; tdho = P[I_td_handover] > 0.5
     Ts = dt * sdec
     Tv = dt * vdec
     V_mid = 0.5 * V_rail
@@ -200,6 +224,21 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     EB = 0.0; ER = 0.0; nacc = 0
     bias_g = 0.0
     cur = np.zeros(2)
+    # touchdown / lift feed-forward state
+    cot_ = ct / st_
+    sc_ = st_ * ct
+    uf0 = cr; uf1 = -sr                  # stage direction that moves the ink along the azimuth at constant housing height
+    Fbn = math.hypot(Fb0, Fb1)
+    ub0 = Fb0 / Fbn if Fbn > 0 else 1.0  # direction in which the actuator holds the paper's normal load
+    ub1 = Fb1 / Fbn if Fbn > 0 else 0.0
+    q_pre = (tdsref - s_min) * cot_      # stage deflection that lands the ball where it writes (refill on its stop)
+    rb_qm = np.zeros((RB, 2)); qm_last = np.zeros(2)
+    Ta = dt * adec
+    r_ab = math.exp(-2.0 * math.pi * max(tdlp, 1e-3) * Ta)
+    a_ab = 1.0 - r_ab * r_ab; b_ab = (1.0 - r_ab) ** 2          # critically damped alpha-beta tracker
+    td_x = 0.0; td_v = 0.0; td_init = 0; k_samp = 0; td_stop = 1
+    td_c = 0; td_c_prev = 0; k_tdsw = -(1 << 30); k_quiet = -1; k_exc = -1; td_armed = 0; td_left = 0
+    qf0 = 0.0; qf1 = 0.0
 
     for k in range(n):
         # ======================= outer tick: sensors -> estimator -> stage reference
@@ -295,11 +334,37 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             bias_g = bias_g + alpha_a * ((1.0 if in_contact else 0.0) - bias_g)
             qn0 = g_eff * (Ji00 * corr0 + Ji01 * corr1)
             qn1 = g_eff * (Ji10 * corr0 + Ji11 * corr1)
-            rq = math.hypot(qn0, qn1)
-            knee = qlim - qtap
-            if rq > knee and rq > 0:
-                rnew = knee + qtap * math.tanh((rq - knee) / qtap)
-                qn0 *= rnew / rq; qn1 *= rnew / rq
+            if td_on:
+                # touchdown / lift feed-forward: acts at once (not through the authority ramp)
+                if td_c == 0 and td_stop == 1:
+                    qfm = tdpre * q_pre                   # in the air: pre-position so the ball lands where it writes
+                else:
+                    shp = td_x + td_v * ((k - k_samp) * dt + tdlead)
+                    dev = tdsref - shp
+                    if dev > tddz:
+                        dev -= tddz
+                    elif dev < -tddz:
+                        dev += tddz
+                    else:
+                        dev = 0.0
+                    qfm = tdK * sc_ * dev
+                qf0 = qfm * uf0; qf1 = qfm * uf1
+                if tdprio == 0:                           # shared: the sum is tapered
+                    qn0, qn1 = _taper(qn0 + qf0, qn1 + qf1, qlim, qtap)
+                elif tdprio == 1:                         # feed-forward first, the tremor command gets what is left
+                    a0, a1 = _taper(qf0, qf1, qlim, qtap)
+                    b0, b1 = _taper(qn0, qn1, qlim - math.hypot(a0, a1), qtap)
+                    qn0 = a0 + b0; qn1 = a1 + b1
+                else:                                     # tremor first
+                    b0, b1 = _taper(qn0, qn1, qlim, qtap)
+                    a0, a1 = _taper(qf0, qf1, qlim - math.hypot(b0, b1), qtap)
+                    qn0 = a0 + b0; qn1 = a1 + b1
+            else:
+                rq = math.hypot(qn0, qn1)
+                knee = qlim - qtap
+                if rq > knee and rq > 0:
+                    rnew = knee + qtap * math.tanh((rq - knee) / qtap)
+                    qn0 *= rnew / rq; qn1 *= rnew / rq
             dq0 = qn0 - qr[0]; dq1 = qn1 - qr[1]
             dmax = slew * Ts
             dm = math.hypot(dq0, dq1)
@@ -323,15 +388,68 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             else:
                 kh = (k - hd) % RB
                 vsat = 0.0
+                bg = bias_g
+                if td_on:
+                    for axx in range(2):
+                        qm_last[axx] = rb_q[kh, axx] + hn * np.random.standard_normal()
+                    # contact state of the feed-forward.  Touchdown: the refill leaves its stop (axial sensor), or the
+                    # Hall sees the stage pushed back along the load direction by more than td_det_e within 1 ms of
+                    # leaving a quiet band (|e| < td_det_e/2) held for td_hold: a load step, which neither a free-stage
+                    # oscillation nor a slowly growing contact load (slow touchdown) produces.  Lift: the refill is back
+                    # on its stop after having left it, or 10 ms after a Hall-detected touchdown it never left.
+                    eb = (qr[0] - qm_last[0]) * ub0 + (qr[1] - qm_last[1]) * ub1
+                    off_stop = s_meas > s_min + tddets
+                    if off_stop:
+                        td_left = 1
+                    if tddete > 0.0:
+                        if abs(eb) < 0.5 * tddete:
+                            if k_quiet < 0:
+                                k_quiet = k
+                            td_armed = 1 if (k - k_quiet) * dt >= tdhold else 0
+                            k_exc = -1
+                        else:
+                            k_quiet = -1
+                            if k_exc < 0:
+                                k_exc = k
+                    if (k - k_tdsw) * dt >= tdhold:
+                        if td_c == 0:
+                            hall_td = tddete > 0.0 and eb > tddete and td_armed == 1 and (k - k_exc) * dt <= 1e-3
+                            if off_stop or hall_td:
+                                td_c = 1
+                                k_tdsw = k
+                                td_armed = 0
+                                td_left = 1 if off_stop else 0
+                                if hall_td and not off_stop and tdvtd > 0.0:
+                                    td_v = tdvtd / st_          # assumed descent speed until the slide is measured
+                                    k_samp = k
+                        elif not off_stop and (td_left == 1 or (k - k_tdsw) * dt > 0.01):
+                            td_c = 0
+                            k_tdsw = k
+                            td_armed = 0
+                    if tdbias == 1:
+                        bg = tdkl * td_c
+                        if tdho and td_c != td_c_prev and Ki > 0.0:
+                            # load hand-over: at switch-on the integrator gives up the load share it already carries along
+                            # the load direction (a slow touchdown), at switch-off it drops a negative share (a slow lift)
+                            carried = Ki * (eint[0] * ub0 + eint[1] * ub1)
+                            if td_c == 1:
+                                tr_ = min(max(carried, 0.0), tdkl * Fbn)
+                            else:
+                                tr_ = -min(max(-carried, 0.0), tdkl * Fbn)
+                            eint[0] -= tr_ * ub0 / Ki; eint[1] -= tr_ * ub1 / Ki
+                    td_c_prev = td_c
                 for axx in range(2):
-                    qm = rb_q[kh, axx] + hn * np.random.standard_normal()
+                    if td_on:
+                        qm = qm_last[axx]
+                    else:
+                        qm = rb_q[kh, axx] + hn * np.random.standard_normal()
                     e = qr[axx] - qm
                     # damping on the measurement only (no derivative kick from the 2 kHz reference steps)
                     vmeas = (qm - qm_prev[axx]) / Tv
                     qm_prev[axx] = qm
                     ed_f[axx] += alpha_d * (-vmeas - ed_f[axx])
                     Fb = Fb0 if axx == 0 else Fb1
-                    F = (ffr * (k_tot * qr[axx] + (c_st + Kd) * qdr[axx] + m_eq * qddr[axx]) + ffb * bias_g * Fb
+                    F = (ffr * (k_tot * qr[axx] + (c_st + Kd) * qdr[axx] + m_eq * qddr[axx]) + ffb * bg * Fb
                          + Kp * e + Ki * eint[axx] + Kd * ed_f[axx])
                     Vcmd = V_mid + F / Fv
                     Vs = min(max(Vcmd, 0.0), V_rail)
@@ -489,6 +607,8 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             rb_aH[kk, 0] = aH[0]; rb_aH[kk, 1] = aH[1]
         rb_s[kk] = s
         rb_ok[kk] = opt_ok[k]
+        if td_on:
+            rb_qm[kk, 0] = qm_last[0]; rb_qm[kk, 1] = qm_last[1]
         # sensors
         if k % odec == 0:
             ko = (k - od) % RB
@@ -514,6 +634,21 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
         if k % adec == 0:
             ks = (k - adl) % RB
             s_meas = rb_s[ks] + anz * np.random.standard_normal() if k >= adl else s
+            if td_on and k >= adl:
+                # housing-induced slide: measured slide minus the stage's own contribution cot(th) (u_ff . q), with the
+                # Hall reading taken at the axial sample's acquisition time; alpha-beta tracker for the lead
+                jq = (k - adl + hd) % RB
+                sh_raw = s_meas - tdkap * cot_ * (uf0 * rb_qm[jq, 0] + uf1 * rb_qm[jq, 1])
+                on_stop = s_meas <= s_min + tddets
+                if td_init == 0 or (on_stop and td_c == 0):
+                    td_x = sh_raw; td_v = 0.0; td_init = 1
+                else:
+                    pred = td_x + td_v * (k - k_samp) * dt
+                    res_ = sh_raw - pred
+                    td_x = pred + a_ab * res_
+                    td_v = td_v + b_ab / Ta * res_
+                k_samp = k
+                td_stop = 1 if on_stop else 0
         # record
         if k % rdec == 0 and rec_i < nrec:
             r = rec[rec_i]
@@ -539,5 +674,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             r[R_i1] = cur[0]; r[R_i2] = cur[1]
             r[R_incontact] = 1.0 if in_contact else 0.0
             r[R_aHx] = aa2[0]; r[R_aHy] = aa2[1]; r[R_aHz] = aa2[2]
+            if td_on:
+                r[R_qff1] = qf0; r[R_qff2] = qf1; r[R_td_sh] = td_x; r[R_td_state] = td_c
             rec_i += 1
     return rec_i

@@ -174,6 +174,11 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
   - EXP-B01/B02 with superimposed vibration.
   - EXP-S01: IMU latency.
 
+**Added 2026-09-28: touchdown optimisation** (`docs/opt_touchdown.md`, `opt/touchdown/`, 29 tests).
+- Most of the tail left by the adaptive stop is the stage yielding to the contact-load step. A stage feed-forward (pre-position in the air, cancel the measured slide, switch the load bias at contact with integrator hand-over, Hall early detection) brings tail ink to 0.005 / 0.008 / 0.000 mm per stroke at 35 / 50 / 75° (SIM, test seeds). The structure was chosen with adjoint gradients of a differentiable reduced model and the 11 parameters by ParEGO on P1 (DEC-026).
+- Servo retune (DEC-027, proposed; defaults unchanged): tracking 19.3 → 12.5 µm at 136 → 117 mW, margins kept.
+- Open: bounce (1.7 against 1.2 contact transitions per pen-down), the axial sensor's latency, tilt changes during a run (P1 has constant θ). Validation: AC-Q08-01 split to tail ink; AC-Q08-04…07; 272 criteria.
+
 **Resume.**
 
 ```bash
@@ -183,6 +188,7 @@ python3 -m sim.pencil.run_study
 python3 -m sim.pencil.diag_touchdown_tails
 python3 -m sim.handpen.run_study
 python3 -m fusion.run_study --workers 2
+python3 -m opt.touchdown.run_study
 bash aiguide/run_all.sh
 bash s2r/run_all.sh
 python3 viewer/build.py

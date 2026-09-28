@@ -294,7 +294,12 @@ GALLERY_OPT = [   # optimisation studies (shown when their figures exist)
     ("results/opt/fig_tr_ratio_vs_frequency.png", "Tracker optimisation: before and after",
      "Tremor-band error left by the trackers tuned by backpropagation through time, against the earlier sets.", ("SIM",), "opt/tracker/"),
     ("results/opt/fig_td_tails.png", "Touchdown tails: before and after",
-     "Extra ink per stroke with the tilt-range stop, the adaptive stop, and the optimised stage feed-forward.", ("SIM",), "opt/touchdown/"),
+     "Extra ink at touchdown and lift, extra ink within strokes, and missing ink, with the tilt-range stop, the adaptive stop, "
+     "and the stage feed-forward tuned by Bayesian optimisation.", ("SIM",), "opt/touchdown/"),
+    ("results/opt/fig_td_event.png", "One touchdown, before and after",
+     "The ink point, stage deflection and refill slide through a single pen-down and lift.", ("SIM",), "opt/touchdown/"),
+    ("results/opt/fig_td_servo.png", "Nib servo retuned",
+     "Stage tracking error against drive power for the servo settings Bayesian optimisation explored.", ("SIM", "CALC"), "opt/touchdown/servo.py"),
 ]
 
 

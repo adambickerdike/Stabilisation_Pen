@@ -8,7 +8,8 @@ Detailed reports:
 - [`ai_guidance.md`](ai_guidance.md): prediction, guidance, autocorrect;
 - [`sim_to_real.md`](sim_to_real.md): calibration and twin experiments;
 - [`inertial_stabilisation.md`](inertial_stabilisation.md): weights, gyroscopes and pivots in the cap, the grip and at the paper;
-- [`sensor_fusion_ai.md`](sensor_fusion_ai.md): the accelerometer, the tremor tracker and AI in the estimator.
+- [`sensor_fusion_ai.md`](sensor_fusion_ai.md): the accelerometer, the tremor tracker and AI in the estimator;
+- [`opt_touchdown.md`](opt_touchdown.md): touchdown and lift feed-forward, stop margin and servo tuning, optimised by adjoint gradients and Bayesian search.
 
 3D replay: `viewer/` (build with `python3 viewer/build.py`).
 
@@ -213,7 +214,7 @@ What the table shows:
   - it cuts the extra ink about 3.5-fold and keeps most of the correction;
   - at 0.1 mm the pen starts to lose ink.
 - **How to build it.** A slow trim actuator can set the stop from the IMU's tilt. A SQUIGGLE-class screw motor fits (2.8 × 2.8 × 6 mm, holds with power off; AMF-15). It was rejected as the tremor actuator because 1 M cycles last 35 h at 8 Hz, but tilt tracking uses only a few cycles a minute.
-- **Remaining.** About 0.3 mm of extra ink per stroke is still visible. Two firmware options could remove it: stage compensation of the axial slide during touchdown (Rev A's M1 has one; P1 does not) and an ink-aware touchdown profile. Both are untested.
+- **Remaining, and how the feed-forward removes it (added 2026-09-28).** Of the 0.33 mm, about 0.11 mm per stroke is at the transitions and the rest is the skid's in-stroke distortion. Most of the transition part is the stage yielding to the contact-load step, not the slide. A stage feed-forward in firmware (DEC-026) removes it: it uses only sensors P1 already has. It pre-positions the stage in the air, cancels the measured slide, switches the contact-load bias at contact and detects contact early from the Hall sensor. Tail ink falls to 0.005–0.008 mm per stroke at 35–75° (SIM, test seeds; [`opt_touchdown.md`](opt_touchdown.md)). The open risk is bounce: 1.7 contact transitions per pen-down against 1.2.
 
 **Digital autocorrect** (CALC; injected recognition errors; threshold 0.9):
 - At a character error rate of about 7 %, word error falls from **32 % to 10 %** on held-out sentences and from **30 % to 16 %** on note-like lines.
@@ -335,7 +336,7 @@ What the twin experiments also found:
 6. EXP-Q03: cell pulse discharge.
 7. EXP-Q06: loaded 1-axis rig (PL128.10, D1 refill, skid nose) on the stage-A rig, with the EXP-B09 cancellation protocol.
 8. EXP-Q07: 2-axis demonstrator in a 7.9 mm bore. It gates Rev P1.
-9. EXP-Q08 (new): touchdown and lift tails. Measure the ink at pen-down and pen-up on the EXP-Q06 rig with the tilt-range stop, then with a tilt-adaptive stop (a SQUIGGLE-class trim motor driven by the IMU tilt) at 0.2–0.4 mm margin. Compare with a rigid reference pen on the same robot paths (extra and missing ink per stroke) and include the correction ratio.
+9. EXP-Q08 (new): touchdown and lift tails. Measure the ink at pen-down and pen-up on the EXP-Q06 rig with the tilt-range stop, then with a tilt-adaptive stop (a SQUIGGLE-class trim motor driven by the IMU tilt) at 0.2–0.4 mm margin, each with the touchdown feed-forward (DEC-026) on and off. Compare with a rigid reference pen on the same robot paths (tail and in-stroke ink per stroke, missing ink) and include the correction ratio. First identify the axial sensor's latency and the stage's push-back at contact (step 0); also count contact events and test slow pen-downs.
 10. The claims studies: EXP-H01/E01 (separability), EXP-H02 (form factor), EXP-H06.
 11. From §11: EXP-I01 (how the grip gives, inside EXP-B06), EXP-I02 (rotational share of tremor, inside EXP-H01) and EXP-I03 (passive nose and grip options, with EXP-H03). EXP-I04 runs only if EXP-I01 calls for it. Add IMU latency to EXP-S01 and superimposed vibration to EXP-B01/B02.
 
@@ -346,7 +347,7 @@ What the twin experiments also found:
    - large tremor saturates the stage even with perfect intent.
 
    The pencil suits small tremor and guided writing.
-2. **Touchdown and lift tails.** With the tilt-range front stop, the ball slides up to 0.86 mm at every touchdown and lift. That adds about 1.1 mm of ink per stroke against a rigid pen (SIM, P1), and it matters more for legibility than the tremor. A tilt-adaptive stop with a 0.3 mm margin cuts it to 0.33 mm, at a small cost in correction. It needs a slow trim actuator and firmware, and what remains is still visible (§6).
+2. **Touchdown and lift tails.** With the tilt-range front stop, the ball slides up to 0.86 mm at every touchdown and lift. That adds about 1.1 mm of ink per stroke against a rigid pen (SIM, P1), and it matters more for legibility than the tremor. A tilt-adaptive stop with a 0.3 mm margin cuts it to 0.33 mm, at a small cost in correction; with the touchdown feed-forward (DEC-026) the ink at the transitions is 0.008 mm per stroke (SIM). It needs a slow trim actuator and firmware. The feed-forward's own risk is bounce: in SIM it adds short re-contacts after lift-off, the mechanism family that made DEC-011 remove the old contact feed-forward. Bench bounce counts decide (§6, EXP-Q08).
 3. **Intent separation.** It remains the main limit.
    - The accelerometer tracker (§11) leaves 0.78 of the tremor-band error on average, and 0.58–0.71 at 8–12 Hz once calibrated per writer. It no longer adds error on small tremor.
    - At 4–6 Hz no tracker separates tremor from writing.

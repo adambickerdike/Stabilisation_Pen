@@ -35,6 +35,16 @@ NAMES = [
     "f_gate", "f_gate_width", "gamma_acc",
     # verification hooks
     "q_init", "F_test0", "F_test1", "V_fixed", "require_contact",
+    # touchdown / lift feed-forward (opt/touchdown; appended, every entry 0 = off, so default runs are unchanged):
+    # kinematic law q_ff = td_gain sin(th) cos(th) (td_sref - s_h) (cos rho, -sin rho), s_h = s_meas - td_kappa cot(th) q_meas,
+    # predicted td_lead ahead through a td_lp low-pass; td_pre pre-positions the stage while the refill rests on its stop;
+    # td_dz dead zone; td_prio travel priority (0 shared, 1 feed-forward first, 2 tremor first); td_bias 1 switches the
+    # static contact-load bias at once on the feed-forward's contact state (td_kl its gain), detected from the slide
+    # (td_det_s above the stop) and from the Hall error along the load direction (td_det_e); td_hold debounce time;
+    # td_vtd assumed descent speed that bridges the axial sensor's latency after a Hall-detected touchdown (0: none);
+    # td_handover 1: when the bias switches, the servo integrator hands over the load share it already carries
+    "td_on", "td_gain", "td_kappa", "td_sref", "td_lead", "td_lp", "td_pre", "td_dz", "td_prio",
+    "td_bias", "td_kl", "td_det_s", "td_det_e", "td_hold", "td_vtd", "td_handover",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
@@ -47,6 +57,9 @@ REC = [
     "V1", "V2", "Fa1", "Fa2", "contact", "skid_contact", "dhx", "dhy", "conf", "vsat", "stop",
     "PrailB", "PrailR", "Fhx", "Fhy", "Fhz", "west", "i1", "i2", "incontact",
     "aHx", "aHy", "aHz",   # true housing acceleration (page frame) after the acc_aa_hz anti-aliasing low-pass
+    # touchdown / lift feed-forward (appended; zero when td_on = 0): stage command of the feed-forward (housing axes),
+    # its estimate of the housing-induced slide, and its contact state (0 air, 1 contact)
+    "qff1", "qff2", "td_sh", "td_state",
 ]
 RIDX = {n: i for i, n in enumerate(REC)}
 NREC = len(REC)

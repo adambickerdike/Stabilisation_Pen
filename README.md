@@ -43,7 +43,7 @@ This repository holds the research and development package: the audit of the sou
    - A nose skid carries the user's force and a light spring sets the nib force. The stage then holds 0.17 N instead of 0.76 N.
    - Four custom 2.6 mm piezo plates fit the 7.9 mm bore. They give ±277 µm of stroke under load at zero static power, in 12.2 g of CAD before wiring. A voice coil that fits would need 2.4 W.
    - The stroke margin is thin (±162 µm at −20 % tolerance). Tremor estimation is the same open problem as in Rev A.
-   - The skid causes touchdown and lift tails: about 1.1 mm of extra ink per stroke. A tilt-adaptive front stop cuts this to 0.33 mm.
+   - The skid causes touchdown and lift tails: about 1.1 mm of extra ink per stroke. A tilt-adaptive front stop cuts this to 0.33 mm. A stage feed-forward in firmware, tuned by adjoint gradients and Bayesian search, then brings the ink at the transitions to 0.005–0.008 mm per stroke; bounce is its open risk (`docs/opt_touchdown.md`, DEC-026).
    - Paper capture needs a ≥ 120 Hz page sensor that does not yet exist at this size.
    - AI helps as a digital autocorrect (word errors 32 % → 10 %). Physical guidance toward AI-predicted letters does not help free writing: a correct prediction is already about 300 µm off, beyond break-even. Guidance toward known templates does help.
    - Weights, gyroscopes or a motorised grip do not help at this size: the best that fits leaves 0.85–0.97 of the ink error with perfect knowledge, against 0.18–0.43 for the nib stage (`docs/inertial_stabilisation.md`, DEC-024).
@@ -79,6 +79,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Pencil | AI prediction and guidance (text predictor, style templates, stroke continuation, closed loop on P1 and M1, deployment and ICD proposal) and app autocorrect | executed (synthetic data) · people pending (EXP-A02/A03) | `docs/ai_guidance.md`, `aiguide/`, `results/ai/` |
 | Pencil | Inertial and pivot stabilisation study: hand-pen model H1 with pen tilt in a two-zone grip; weights, gyroscopes, CMGs, reaction wheels, grip sleeve, passive pivots | executed (simulation, calculation) · grip measurement pending (EXP-I01) | `docs/inertial_stabilisation.md`, `sim/handpen/`, `results/pencil/inertial*.json` |
 | Pencil | Sensing and AI estimation: IMU parts and lever arm, acceleration-domain Kalman, WFLC/BMFLC, learned GRU, template prior, 20 s personal calibration, closed loop on P1 | executed (simulation) · real data pending (EXP-H01/E01) | `docs/sensor_fusion_ai.md`, `fusion/`, `results/fusion/` |
+| Pencil | Touchdown and lift optimisation: stage feed-forward, stop margin and servo retune; adjoint gradients of a differentiable reduced model (torch), ParEGO Bayesian optimisation and CMA-ES on P1; faster slide-sensor option | executed (simulation) · bench pending (EXP-Q08) | `docs/opt_touchdown.md`, `opt/touchdown/`, `results/opt/` |
 | Pencil | 3D replay page of the simulated pencil with generated tables | executed | `viewer/` (`python3 viewer/build.py`) |
 | 4 Simulation | Sim-to-real: virtual bench with instrument models, blind identification of 15 plants in protocol order, bench-time study, calibrated-twin prediction gap, model-form diagnostics, piezo hysteresis identification, domain randomisation, hardware-in-the-loop specification; 22 tests | executed (twin experiments) · bench pending | `docs/sim_to_real.md`, `validation/sim_to_real.md`, `s2r/`, `results/s2r/` |
 | — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
@@ -112,6 +113,7 @@ bash s2r/run_all.sh                                   # sim-to-real twin experim
 python3 -m sim.handpen.run_study                      # weights, gyroscopes and pivots (about 5 min); tests: python3 -m pytest sim/handpen/tests -q
 python3 -m fusion.run_study --workers 2               # accelerometer tracker and AI estimation (tests: python3 -m pytest fusion/tests -q)
 python3 -m fusion.viz                                 # 3D replay of the tracker
+python3 -m opt.touchdown.run_study                    # touchdown feed-forward and servo optimisation (about 1.5 h on 2 processes; --quick smoke run); tests: python3 -m pytest opt/touchdown/tests -q
 python3 viewer/build.py                               # 3D replay page from the results
 ```
 

@@ -3004,7 +3004,7 @@ AC-Q07-01 and AC-Q07-02 are requirement verdicts, with guarded acceptance where 
 In P1 the refill's front stop covers the whole tilt range, so at 50° the unloaded refill stands 1.34 mm proud of its working point. The ball lands first and slides while the refill retracts, and does the same at lift. The tail ink is 13 % of all ink and lowers unguided recognition from 0.93 to 0.79 (`docs/pencil_mechanisms.md` §12; `docs/ai_guidance.md` §4). A tilt-adaptive stop (DEC-022) sets the stop from the IMU tilt with a margin. Too small a margin starves the axial slide q·cot θ that the stage needs.
 
 - **Requirement:** REQ-PNC-006: extra ink at touchdown and lift, beyond what a rigid pen draws on the same writing, ≤ 0.1 mm per stroke; no missing ink.
-- **Decision:** DEC-022 (revisit trigger EXP-Q08): whether to build the adaptive stop, and at what margin.
+- **Decisions:** DEC-022 (revisit trigger EXP-Q08): whether to build the adaptive stop, and at what margin. DEC-026: whether the touchdown and lift feed-forward goes into the firmware (bounce counts decide). DEC-027: whether the retuned servo replaces P0.1.2's.
 - **Predictions (SIMULATION, P1 with the tilt held constant, θ 50°, straight-up lifts, 4 seeds with 18 strokes in all; means per stroke against a rigid pen on the same writing, 0.2 mm tolerance; `results/pencil/touchdown_tails.json`):**
 
   | Front stop | Extra ink per stroke | Missing ink per stroke | ORACLE ratio, 6 Hz 0.3 mm |
@@ -3014,6 +3014,17 @@ In P1 the refill's front stop covers the whole tilt range, so at 50° the unload
   | Adaptive, 0.20 mm margin | 0.28 mm | 0.013 mm | 0.45 |
   | Adaptive, 0.10 mm margin | 0.31 mm | 0.090 mm | 0.69 |
 
+- **Predictions with the touchdown feed-forward (SIMULATION, P1, test seeds 200–203, tilt constant; `docs/opt_touchdown.md` §4, `results/opt/touchdown.json`).** The table above counts all extra ink, including the skid's in-stroke distortion. The criteria now separate tail ink (within 30 ms of a touchdown or lift) from in-stroke ink.
+
+  | Configuration | Tail ink per stroke, 35° / 50° / 75° | In-stroke extra ink, 50° | Missing ink, 50° | ORACLE ratio, 6 Hz 0.3 mm, 35° / 50° |
+  |---|---|---|---|---|
+  | Tilt-range stop (P0.1.2) | 0.35 / 0.81 / 0.42 mm | 0.16 mm | 0.009 mm | 0.27 / 0.22 |
+  | Adaptive stop 0.30 mm alone | 0.14 / 0.11 / 0.00 mm | 0.17 mm | 0.010 mm | 0.42 / 0.27 |
+  | Adaptive 0.31 mm + feed-forward (DEC-026) | 0.005 / 0.008 / 0.000 mm | 0.17 mm | 0.009 mm | 0.45 / 0.25 |
+  | + retuned servo (DEC-027) | 0.012 / 0.009 / 0.000 mm | 0.09 mm | 0.010 mm | 0.35 / 0.25 |
+
+  Slow pen-downs with the feed-forward (held-out training seeds): peak contact-point deviation 65 / 70 µm at 1 / 10 mm/s (236 / 239 µm without pre-positioning). Contact events (training seeds 300–303): 16 touchdowns at 50° and 21 at 35° with the feed-forward, against 18 for the rigid pen and 12 / 10 for the adaptive stop alone; the extra ones are re-contacts within 30 ms after lift-off.
+
 ### Set-up and equipment
 
 - The EXP-Q06 rig (R2, R3).
@@ -3021,13 +3032,17 @@ In P1 the refill's front stop covers the whole tilt range, so at 50° the unload
   - (a) the fixed tilt-range stop of P0.1.2 (ball-centre protrusion 2.06 mm);
   - (b) an adaptive stop set from the pen's IMU tilt by a SQUIGGLE-class trim motor (AMF-15), at margins of 0.2, 0.3 and 0.4 mm. An LDV on the refill measures the stop position.
   - (c) the rigid reference: the same refill in a rigid holder at the same tilt, on the same robot paths.
-- The robot writes strokes of 3–20 mm with pen-downs and lifts at θ 35, 50 and 75°. Lifts go straight up (as P1's model hand) and along the pen axis, because the tails depend on the lift direction (`docs/ai_guidance.md` §9).
+- Firmware: the touchdown feed-forward of DEC-026 (reference implementation: the td_* path of `sim/pencil/core.py`, parameters in `results/opt/touchdown.json` `recommended`), switchable on and off; the servo at the P0.1.2 settings and, once the stage is identified (EXP-Q04/Q07), at settings retuned by the DEC-027 method.
+- Extra sensing: an LDV on the refill collar; the pen's axial sensor and stage Hall sensors logged at 20 kHz; a conductive trace or contact microphone for contact events.
+- The robot writes strokes of 3–20 mm with pen-downs and lifts at θ 35, 50 and 75°, and also makes slow pen-downs at 1, 10 and 50 mm/s without writing. Lifts go straight up (as P1's model hand) and along the pen axis, because the tails depend on the lift direction (`docs/ai_guidance.md` §9).
 
 ### Procedure
 
-1. For each stop and margin, and for the rigid reference: ≥ 200 strokes per θ and lift type in NEUTRAL; then ORACLE with 6 Hz, 0.3 mm disturbance (10 seeds, as EXP-Q06).
+0. **Latencies first.** During 50 touchdowns, log the axial sensor, the stage Hall sensors and the collar LDV at 20 kHz. Measure the axial sensor's delay, the time from contact to the refill leaving its stop, and the stage's push-back at contact without and with the switched load bias. Enter them in P1 (`PencilConfig(overrides={"ax_decim": n, "ax_delay": n})`, stage stiffness and damping in `config/pencil.yaml`), re-run `python3 -m opt.touchdown.run_study` and freeze the predictions before step 1.
+1. For each stop and margin (adaptive stop at 0.31 and 0.40 mm, each with the feed-forward on and off), and for the rigid reference: ≥ 200 strokes per θ and lift type in NEUTRAL; then ORACLE with 6 Hz, 0.3 mm disturbance (10 seeds, as EXP-Q06).
 2. A slow tilt sweep (35 → 75° over 10 s) while writing, to check that the trim motor follows the tilt.
-3. Scan every sheet (R3). Extra and missing ink are measured blind against the rigid reference's ink on the same path (0.2 mm tolerance), per stroke and at touchdown and lift separately.
+2a. Slow pen-downs at 1, 10 and 50 mm/s, 20 per speed and condition, feed-forward on and off.
+3. Scan every sheet (R3). Extra and missing ink are measured blind against the rigid reference's ink on the same path (0.2 mm tolerance), per stroke, and split into tail ink (within 30 ms of a touchdown or lift, each reported separately) and in-stroke ink.
 
 ### Measurands and uncertainty
 
@@ -3037,17 +3052,26 @@ In P1 the refill's front stop covers the whole tilt range, so at 50° the unload
 | Missing-ink strokes | Strokes with a gap longer than 0.3 mm in the reference ink that has no pencil ink within 0.2 mm / all strokes | Binomial CI |
 | ORACLE ratio | As EXP-Q06 | 95 % CI over seeds |
 | Stop tracking error | Stop position minus the target set from the tilt, during the sweep | ≤ 5 µm |
+| Tail ink per stroke | Extra ink within 30 ms of a touchdown or lift, per event and per stroke | ≤ 10 µm |
+| In-stroke extra ink per stroke | Extra ink more than 30 ms from any transition | ≤ 10 µm |
+| Peak contact-point deviation | Slow pen-downs: largest distance of the ball from its working position, LDV or camera | ≤ 5 µm |
+| Contact events per pen-down | Transitions of the continuity trace (gaps from 0.2 ms), per robot pen-down | Count |
+| Stage travel at touchdown | Hall-measured stage position in the 30 ms after contact | ≤ 5 µm |
 
 ### Acceptance criteria
 
 <!-- AC-TABLE:EXP-Q08:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-Q08-01 | REQ-PNC-006 | Extra ink per stroke: pencil ink farther than 0.2 mm from the ink of a rigid reference pen on the same robot path (same refill in a rigid holder at the same tilt), touchdown and lift together, per intended stroke (R3 scans), tilt-adaptive front stop at its selected margin, θ 35/50/75°, straight-up and along-axis lifts; 95th percentile over ≥ 200 strokes per condition | ≤ 0.1 mm | requirement | REQ-PNC-006; prediction (mean per stroke; 18 strokes over 4 seeds, θ 50°, straight-up lifts): 1.15 mm with the tilt-range stop, 0.33 mm with the adaptive stop at 0.30 mm margin, 0.28 mm at 0.20 mm (results/pencil/touchdown_tails.json extra_ink_mm_per_stroke; SIMULATION, tilt constant) -> expected FAIL | DEC-022 (adaptive stop and margin); REQ-PNC-006 |
-| AC-Q08-02 | — | Increase of the ORACLE residual ratio (6 Hz, 0.3 mm peak, θ 50°, EXP-Q06 rig) with the adaptive stop at the selected margin over the same rig with the tilt-range stop | ≤ 0.1 | hypothesis | DEC-022 trade-off: P1 oracle ratio 0.24 (tilt-range stop), 0.30 / 0.45 / 0.69 at 0.30 / 0.20 / 0.10 mm margin, because a small margin starves the axial slide the stage needs (results/pencil/touchdown_tails.json; SIMULATION); 0.1 engineering judgement | DEC-022 margin choice |
-| AC-Q08-03 | REQ-PNC-006 | Missing ink with the adaptive stop: intended strokes (robot pen-downs) with a gap longer than 0.3 mm in the rigid reference's ink that has no pencil ink within 0.2 mm (lost starts, early lifts, bounces), all conditions | ≤ 1 % | hypothesis | REQ-PNC-006 (no missing ink), made measurable: missing ink averages 0.013 mm per stroke at 0.30 mm margin and 0.09 mm at 0.10 mm; P1 registers 0.875 of the rigid pen's pen-downs at 0.30 mm because short lifts merge (results/pencil/touchdown_tails.json; SIMULATION, 18 strokes); 0.3 mm and 1 % engineering judgement | DEC-022; firmware touchdown profile |
+| AC-Q08-01 | REQ-PNC-006 | Tail ink per stroke: pencil ink farther than 0.2 mm from the ink of a rigid reference pen on the same robot path (same refill in a rigid holder at the same tilt) and within 30 ms of a touchdown or lift, per intended stroke (R3 scans), tilt-adaptive front stop at its selected margin with the touchdown feed-forward (DEC-026) and, as the comparator, without it; θ 35/50/75°, straight-up and along-axis lifts; 95th percentile over ≥ 200 strokes per condition. In-stroke extra ink (more than 30 ms from any transition) is reported separately (AC-Q08-04) | ≤ 0.1 mm | requirement | REQ-PNC-006 (touchdown and lift); prediction (mean per stroke, test seeds 200-203, straight-up lifts, θ 35/50/75°): 0.005 / 0.008 / 0.000 mm with the adaptive stop at 0.31 mm and the feed-forward, 0.14 / 0.11 / 0.00 mm with the adaptive stop alone, 0.35 / 0.81 / 0.42 mm with the tilt-range stop (results/opt/touchdown.json validation_test_seeds; SIMULATION, tilt constant) -> expected PASS with the feed-forward, marginal FAIL without; 95th percentile not predicted. Split from the earlier all-extra-ink metric (1.15 / 0.33 / 0.23 mm per stroke, results/pencil/touchdown_tails.json), which is dominated by the skid's in-stroke distortion | DEC-022 (adaptive stop and margin); DEC-026 (touchdown feed-forward); REQ-PNC-006 |
+| AC-Q08-02 | — | Increase of the ORACLE residual ratio (6 Hz, 0.3 mm peak, θ 50°, EXP-Q06 rig) with the adaptive stop at the selected margin over the same rig with the tilt-range stop | ≤ 0.1 | hypothesis | DEC-022 trade-off: P1 oracle ratio 0.24 (tilt-range stop), 0.30 / 0.45 / 0.69 at 0.30 / 0.20 / 0.10 mm margin, because a small margin starves the axial slide the stage needs (results/pencil/touchdown_tails.json; SIMULATION); with the feed-forward (DEC-026) at 0.31 mm: 0.250 against 0.218 for the tilt-range stop on the test seeds (increase 0.03; results/opt/touchdown.json; SIMULATION); 0.1 engineering judgement | DEC-022 margin choice |
+| AC-Q08-03 | REQ-PNC-006 | Missing ink with the adaptive stop: intended strokes (robot pen-downs) with a gap longer than 0.3 mm in the rigid reference's ink that has no pencil ink within 0.2 mm (lost starts, early lifts, bounces), all conditions | ≤ 1 % | hypothesis | REQ-PNC-006 (no missing ink), made measurable: missing ink averages 0.013 mm per stroke at 0.30 mm margin and 0.09 mm at 0.10 mm; P1 registers 0.875 of the rigid pen's pen-downs at 0.30 mm because short lifts merge (results/pencil/touchdown_tails.json; SIMULATION, 18 strokes); with the feed-forward 0.009 mm per stroke at 50°, none of it within 30 ms of a transition, 0.05 mm at 75° (in-stroke, in every configuration) (results/opt/touchdown.json; SIMULATION); 0.3 mm and 1 % engineering judgement | DEC-022; firmware touchdown profile |
+| AC-Q08-04 | — | In-stroke extra ink per stroke (pencil ink farther than 0.2 mm from the rigid reference's ink and more than 30 ms from any transition), adaptive stop with the feed-forward, θ 50°, tremor-free: servo retuned on the identified stage by the DEC-027 method / P0.1.2 servo, same strokes | ≤ 0.8 | hypothesis | DEC-027; prediction 0.087 / 0.171 mm per stroke = 0.51 (results/opt/touchdown.json per_θ 50 adaptive_ff_tuned_servo vs adaptive_ff; SIMULATION). Fragile: the in-stroke ink counts excursions beyond 0.2 mm of a 0.14 mm RMS distortion, and the halving comes from 135.9 -> 133.4 µm RMS; 0.8 engineering judgement | DEC-027 (servo retune) |
+| AC-Q08-05 | — | Peak contact-point deviation from its working position during slow robot pen-downs at 1 and 10 mm/s (LDV or camera on the ball holder), adaptive stop at the selected margin with the feed-forward, θ 50°, 20 pen-downs per speed; maximum of the per-speed means | ≤ 0.1 mm | hypothesis | DEC-026; prediction 65 / 70 µm at 1 / 10 mm/s with the recommended law, 236 / 239 µm without pre-positioning, 65 / 173 µm with a ramped load bias (held-out training seeds 310-319; results/opt/touchdown.json search.ablations; SIMULATION); 0.1 mm = half the 0.2 mm ink tolerance, engineering judgement | DEC-026 (pre-positioning, switched load bias) |
+| AC-Q08-06 | — | Contact transitions per robot pen-down (electrical continuity through a conductive trace, or acoustic; a gap counts from 0.2 ms), adaptive stop with the feed-forward, θ 35/50/75°: ratio to the rigid reference on the same paths | ≤ 1.0 | hypothesis | DEC-026 bounce risk (DEC-011 family); prediction on training seeds 300-303 (SIMULATION; results/opt/touchdown.json mechanism_checks.contact_events_training): touchdowns 16 at 50° and 21 at 35° with the feed-forward against 18 for the rigid pen and 12 / 10 for the adaptive stop alone; the extra events are re-contacts within 30 ms after lift-off (gaps 0.5-2 ms, separation 1-16 µm) -> PASS at 50°, FAIL at 35°; engineering judgement | DEC-026 (bias release at lift); DEC-011 |
+| AC-Q08-07 | — | ORACLE residual ratio (6 Hz, 0.3 mm peak, EXP-Q06 rig) with the feed-forward minus the same adaptive stop without it, θ 35/50/75°, same servo | ≤ 0.02 | hypothesis | DEC-026 cost to the correction; prediction (test seeds, SIMULATION; results/opt/touchdown.json): 50° 0.250 - 0.257 = -0.007, 35° 0.446 - 0.416 = +0.03 (FAIL; the tuned servo of DEC-027 brings it to 0.354), 75° 0.00; 0.02 engineering judgement | DEC-026; DEC-027 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-Q08).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-Q08).
 <!-- AC-TABLE:EXP-Q08:END -->
 
 ### Decision rule and what changes
@@ -3055,7 +3079,10 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 | Result | Consequence |
 |---|---|
 | Tails ≤ 0.1 mm at a margin whose ratio increase is ≤ 0.1 | Build the adaptive stop at that margin (DEC-022 accepted). |
-| Tails above 0.1 mm at every margin that keeps the ratio (expected) | REQ-PNC-006 fails with the stop alone. Before restating it, test the two firmware options: stage compensation of the axial slide during touchdown (Rev A's `axial_comp`), and an ink-aware touchdown profile. |
+| Tails above 0.1 mm at every margin that keeps the ratio without the feed-forward (expected) and ≤ 0.1 mm with it | Adopt DEC-026 if AC-Q08-05…07 also pass. |
+| Feed-forward adds contact events (AC-Q08-06 fails) | Add a bias ramp of a few ms at lift (untested in SIM), re-run the P1 study with the measured latencies, and repeat. If the events stay, keep the adaptive stop alone and restate REQ-PNC-006 at the measured tails. |
+| Tails above 0.1 mm with the feed-forward | Check the step-0 latencies against P1's assumptions; fit the 10 kHz slide sensor option (AMF-70…72, `docs/opt_touchdown.md` §7) if the axial sensor is slower than assumed. |
+| The retuned servo lowers in-stroke ink (AC-Q08-04) without failing AC-Q08-07 | Adopt the DEC-027 settings for the identified stage. |
 | Stroke starts lost (AC-Q08-03) | Raise the margin or change the touchdown detection; measure the effect on recognition in EXP-C01. |
 | Tails depend strongly on the lift direction | P1's straight-up lift over- or understates the tails. People's lift kinematics are taken from the EXP-H01 recordings. |
 
