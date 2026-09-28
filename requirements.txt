@@ -12,3 +12,9 @@ pytest==9.1.1
 cadquery==2.8.0
 magpylib==5.2.3
 torch==2.14.0
+# Rev J studies (sim2/, ai2/, drive/, endcap/, nose2/): MuJoCo physics, MyoSuite muscle models, Gymnasium and SB3 for RL.
+# MyoSuite 2.12.2 pins MuJoCo 3.6.x and Gymnasium 1.2.x.
+mujoco==3.6.0
+MyoSuite==2.12.2
+gymnasium==1.2.3
+stable-baselines3==2.9.0
