@@ -1,20 +1,20 @@
-# Checkpoint — 2026-09-27
+# Checkpoint — 2026-09-28
 
-Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it. The pencil-class concept has its own overlay, `config/pencil.yaml` **P0.1.2** (§7).
+Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it. The pencil-class concept has its own overlay, `config/pencil.yaml` **P0.1.2** (§7). **The primary design is now Rev H, the bigger-grip pen (§8).**
 
 ## 1. What exists and what actually ran
 
 | Area | Ran here | Not run or not possible here |
 |---|---|---|
 | Audit | Recalculation of all 37 report numbers (all reproduce); 28 corrections with severity | — |
-| Evidence | 247 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
+| Evidence | 384 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
 | Simulation | M1 coupled model, 12 tests passing; estimator tuning on seeds 100–105; nominal benchmark; 12-seed × 9 f × 3 amplitude grid; 160-sample Monte Carlo + rank sensitivity; failure cases F1–F7; design sweeps; κ_s comparison; guided-mode evaluation; contact-feedforward diagnosis; frequency-gate diagnostic | Validation against hardware (all EXP-B*) |
 | Mechanics | CAD Rev A and A.1 (interference-free at full travel); flexure calculation; tolerance stacks S1–S6; mass budget; stage-A rig CAD with platen-clearance check; drawings | Physical parts; FEM of flexures and actuator |
 | Electronics | KiCad 8 schematic generated deterministically; ERC (0 errors, 1 accepted warning); netlist cross-check pass (102 nets / 492 pins); BOM; drive/sense calculations with the winding headroom assessment; ngspice transient incl. coil short; placement study | PCB layout (DEC-014 open); datasheet checks behind 45 VERIFY and 3 SELECT BOM lines |
 | Firmware | C control core with safety, logging, calibration and ML guard; parameters generated from the YAML with a freshness check; 60 test cases (1120 checks) on host (ASan/UBSan) and emulated Cortex-M33; nRF5340 image links (32.3 kB flash, 29.4 kB RAM) | Execution on nRF5340 hardware; cycle-accurate timing; register-level drivers (VERIFY); IMU, optics, USB, flash and BLE drivers |
 | ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines; causal TCN; int8 C export without f_est, bit-exact on 20 000 windows (16.2 k MAC, 7.3 kB weights); 22 tests | Any real-data training (no recordings exist) |
 | App | ICD log reader with CRC and resync; immutable note store with provenance; search with stroke citations; grounded assistant with refusal rules; capture-fidelity analysis; 137 tests | On-device recogniser (adapter specified only) |
-| Validation | 29 experiment protocols; 221 acceptance criteria generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
+| Validation | 57 experiments with criteria (42 bench/offline, 15 human); 295 acceptance criteria generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
 
 ## 2. Numbers the next session must not lose
 
@@ -71,6 +71,8 @@ All are calculation or simulation unless stated otherwise.
 | 10 | Intent separation in the controller itself: the tracker-driven frequency gate also opens on writing (14 % of tremor-free handwriting, 68 % of the feature course) | Implement the separate spectral detector with hysteresis (DEC-009 revisit); test it in simulation, then in **EXP-E01** on recorded writing |
 
 ## 5. Next actions, in order
+
+For Rev A. The Rev H order is in §8.
 
 1. Build the stage-A rig. Run EXP-B01 and B02; re-fit the contact and friction parameters (`config/parameters.yaml`, status → measured); re-run `sim/run_all.sh`.
 2. Submit the EXP-H01 ethics application. Build the passive instrumented pen from the Rev A sensing subset.
@@ -186,7 +188,7 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
 
 **Added 2026-09-28: slim pencil hardware optimisation** (`docs/opt_hardware.md`, `opt/hardware/`, 14 tests). P0.2 (DEC-030, proposed): custom PICMA-class plates 3.23 × 39.8 × 0.96 mm, C17200 leaves 38 µm, gimbal at 65.5 mm, LT8365 charge-recovery drive, 2 × DRV5055A4. Worst-case stroke 0 → 212 µm, resonance 192 → 213 Hz, assist life 0.50 → 2.73 h, mass 14.6 g (CALC); P1 worst corner 0.375 → 0.281 (SIM). It is now the slim variant: the user chose a bigger grip (DEC-029, Rev H).
 
-**Added 2026-09-28: inertial control of the pen body, at the user's direction.** DEC-024 is reopened: the user wants active inertial control and movement of the pen, not only the nib stage. Study `opt/inertial` (docs/opt_inertial.md) in progress: reaction-mass, gyroscope and grip-pivot modules with causal and learned control, combined with the nib stage, over envelope tiers and grip splits.
+**Added 2026-09-28: inertial control of the pen body, at the user's direction.** DEC-024 is superseded by DEC-033; the study is finished and its results are in §8.
 
 **Resume.**
 
@@ -207,3 +209,33 @@ python3 viewer/build.py
 
 - The pencil model reads the CAD summary, so re-run the CAD first after any geometry change.
 - `sim/pencil` and `aiguide` keep their numba caches in their own `build/` directories.
+
+## 8. Rev H, the bigger-grip pen (added 2026-09-28)
+
+The user chose a bigger grip, asked for inertial control of the whole pen and not only the nib, and asked how the pen would change handwriting for Parkinson's, poor handwriting and dyslexia. Integrating report: `docs/revH_concept.md`. 3-D explainer: `viewer/explainer/` (published as a private artifact).
+
+- **Design (DEC-029, DEC-032; proposed).** Ø22 × 170 mm, 75 g. The fingers hold a fixed sleeve; its C-shaped front ring rests on the paper and carries the writing force. The nose (titanium refill carrier, PEEK nozzle, aluminium rear arm) tilts on a laser-cut two-axis spring-steel gimbal at 45 mm, so the ball moves ±3 mm (stop 3.5 mm). The refill slides on a 0.15 N constant-force spring. Four NdFeB magnets on the arm and four flat voice coils at 79 mm drive it (Km 0.47 N/√W at the magnets, 0.36 at the tip; 0.84 N peak, 0.21 N continuous at the tip). A TMAG5273 3-D Hall reads the nose at 10 kHz; LSM6DSV16X IMU; nRF54L15 with 2 × DRV8214; EEMB LIR14500. 0.081 W, about 27 h (CALC).
+- **Inertial module (DEC-033).** 19.8 g tungsten slug (ASTM B777), ±2.75 mm, two axes, 27.8 g added, ≤ 0.051 W; fitted in the first prototype at the user's direction. On top of the nose: a further 6 / 17 / 17 % at r_rot 0.3 / 0.5 / 0.7 (SIM). The product keeps it if EXP-I01 and EXP-I06 confirm ≥ 10 %. No passive weight (it worsened 38–42 % of 8–12 Hz cases), no gyroscope pair (81 g, 0.42 W).
+- **Results (SIM).** With perfect knowledge of the tremor the nose leaves 0.17–0.18 of the ink error (words read 98–100 %). With the tracker: 0.64 / 0.70 / 0.76 at 8–12 Hz, 1–2 mm; words read at 10 Hz, 1 mm 54 → 87 %; nothing at 4–6 Hz (the tracker locks onto the second harmonic). The tracker is the limit, not the mechanism.
+- **Handwriting (SIM, `docs/handwriting_outcomes.md`).** Parkinson's: a vibration cue keeps the x-height at 5.2 mm instead of shrinking to 4.2 mm, if people respond as small studies suggest. Poor handwriting: partial nose guidance brings the ink 35 % closer with slightly better reading; full guidance reads worse. Dyslexia: no guidance turned a wrong letter into the right one (0 %); the app flags misspelt words when it knows the target.
+- **Guidance board (DEC-031).** CoreXY stage under 3 mm glass with a K&J D88-N52 magnet head; a D42-N52 disc (0.75 g) in the pen's keel, 16.5 mm behind the ball; 1.2 N available, 0.4 N cap; about 25 Hz. Open: the keel limits tilt to ≥ 51°; up to 48 µm crosstalk at the nose Hall; board commands below about 3 Hz; about 1 N extra normal pull.
+- **Open issue in the explainer and layout.** The skid ring is drawn as a full annulus about 1.5–3 mm below the paper at 50°; the contact geometry in the model is a 5.5 mm radius ring at z ≈ 4.62 mm. Reconcile `results/revH/layout.json` with `opt/inertial/geometry.py` before the CAD is released.
+
+**Next for Rev H, in order.**
+1. EXP-I01: grip split r_rot on a Ø22 handle (decides where the inertial module acts, and whether it stays).
+2. EXP-I05: the active nose on the bench (stroke, force, bandwidth, Hall, writing force unchanged).
+3. EXP-H01 recordings, then EXP-I07 / EXP-W02: the tracker on real tremor writing (decides the stabiliser claim and whether 4–6 Hz is reachable).
+4. EXP-I06: the inertial module on a hand simulant with the nose on.
+5. EXP-W01…W05 and EXP-G01…G07 as the prototype and the board become available.
+
+**Resume.**
+
+```bash
+python3 -m opt.inertial.run_study          # about 35 min; --quick about 2 min
+python3 mechanics/cad/revH_pen.py --addon
+python3 -m handwriting.run_study           # results/handwriting/_cache is regenerable and git-ignored
+python3 -m board.run_study
+python3 mechanics/cad/guidance_board.py
+python3 viewer/explainer/build.py          # smoke test: viewer/explainer/smoke_test.js (Playwright; see its README)
+python3 validation/check_criteria.py
+```

@@ -6,6 +6,8 @@
 - **MFR / LITERATURE**: a manufacturer or published statement, with its ledger id (`docs/evidence.csv`, or the proposed rows in `results/opt/inertial_evidence_rows.csv`);
 - **ASSUMPTION**: an input or a choice nobody has measured.
 
+**Decision since this report (DEC-033, 2026-09-28).** At the user's direction the first Rev H prototype fits the rear-cap inertial module. Sections 1 and 6.3 keep this study's own recommendation (not fitted in the standard pen); it now decides only the product, after EXP-I01 and EXP-I06.
+
 All numbers come from `results/opt/inertial_opt.json` (provenance block: git revision, parameter digest, seeds, library versions). The interface files for the other Rev H work are `results/revH/tip_params.json` and `results/revH/layout.json`. Seed plan (no test leakage):
 - every choice (tracker setting, actuator, add-on controllers, neural policy) used training seeds 300–315, validation seeds 316–319 and glyph training writers 330–331;
 - test seeds 200–203 (lognormal writing) and glyph test writers 210–213 were used for the final tables only.

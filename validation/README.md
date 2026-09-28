@@ -1,6 +1,6 @@
 # Validation plan
 
-**Status (2026-09-27): PROPOSED. No experiment or study has been executed, no participant enrolled, no bench record exists.** Everything in this directory is one of three things:
+**Status (2026-09-28): PROPOSED. No experiment or study has been executed, no participant enrolled, no bench record exists.** Everything in this directory is one of three things:
 
 - a proposed procedure;
 - a prediction copied from `results/` with its source;
@@ -12,8 +12,8 @@ Executed results will live only in [`records/`](records/README.md).
 
 | File | Content |
 |---|---|
-| [`bench_protocols.md`](bench_protocols.md) | 34 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01, A03, the pencil-class Q01–Q08, and I01 and I04 from the inertial study (§35–§36) (§0.11 holds the pencil conventions; the A03 and Q sections are compact: purpose and gates, set-up, procedure, measurands with uncertainty, criteria, decision rule). Each of the others gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
-| [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. §12: EXP-A02, guidance acceptance with people (pencil concept). §13–§14: EXP-I02 (rotational share of writing tremor) and EXP-I03 (passive nose and grip options). The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
+| [`bench_protocols.md`](bench_protocols.md) | 43 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01, A03, the pencil-class Q01–Q08, I01 and I04 from the inertial study (§35–§36; I04 is superseded for Rev H by I06), the Rev H I05–I07 (§37–§39) and the guidance board G01…G06 (§40) (§0.11 holds the pencil conventions; the A03 and Q sections are compact: purpose and gates, set-up, procedure, measurands with uncertainty, criteria, decision rule). Each of the others gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
+| [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. §12: EXP-A02, guidance acceptance with people (pencil concept). §13–§14: EXP-I02 (rotational share of writing tremor) and EXP-I03 (passive nose and grip options). §15: the Rev H outcome studies EXP-W01…W05 (pen mass, tremor stabiliser, Parkinson's cues and size assist, guided practice, spelling help for dyslexia) and EXP-G07 (the guidance board with people). The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
 | [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 295 rows, 57 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
 | [`prototype_stages.md`](prototype_stages.md) | Stages A (bench rig with commercial actuators), B (tethered Rev A pen), C (untethered pen), D (product-form candidates, DEC-008). Gates G-A, G-B, G-S (safety before any participant), G-C, G-D and the claim gates C-IA, C-LI, C-CAP, each defined by criterion ids. Also: what each stage may and may not claim, a mermaid dependency graph, and the mapping to the phases of `docs/plan.md`. |
 | [`records/README.md`](records/README.md) | How executed records are stored: layout, naming, mandatory `record.yaml` metadata, write-once raw data with SHA-256 manifests, verdict files, retention, human-data rules. |
@@ -31,6 +31,9 @@ Executed results will live only in [`records/`](records/README.md).
   - EXP-Cnn: capture and recognition;
   - EXP-Ann: AI;
   - EXP-Qnn: pencil-class concept (Rev P0) components and stages;
+  - EXP-Inn: inertial control and the Rev H nose (I02, I03 are human studies);
+  - EXP-Gnn: the guidance board (G07 is a human study);
+  - EXP-Wnn: Rev H handwriting outcomes, human studies;
   - EXP-Hnn: human studies.
 
   The ids used in `docs/` for B01–B10, S01, S02, M02, M03, E01, E02, H01–H05 are kept. EXP-H06 is the immediate-assistance crossover that `docs/features.md` calls "immediate-assistance crossover study".
