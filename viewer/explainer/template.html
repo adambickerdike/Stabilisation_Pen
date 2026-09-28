@@ -345,7 +345,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
 
 /* group colour classes (tables and legends) */
 .g-moving_nose{--c:var(--g-nose)} .g-mechanism{--c:var(--g-pivot)} .g-sensor{--c:var(--g-sensor)} .g-actuator{--c:var(--g-act)}
-.g-electronics{--c:var(--g-elec)} .g-power{--c:var(--g-power)} .g-haptic{--c:var(--g-haptic)} .g-inertial{--c:var(--g-inertial)}
+.g-electronics{--c:var(--g-elec)} .g-power{--c:var(--g-power)} .g-haptic{--c:var(--g-haptic)} .g-inertial{--c:var(--g-inertial)} .g-magnet{--c:var(--g-act)}
 .g-refill{--c:var(--g-refill)} .g-grip{--c:var(--g-grip)} .g-structure{--c:var(--g-shell)} .g-skid{--c:var(--g-skid)}
 </style>
 
@@ -699,6 +699,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
         </tbody>
       </table>
     </div>
+<!--BUILD:INERTIAL_NOTE-->
     <p class="note">Guidance board: the board study since chose a permanent magnet moved by a small motorised carriage under 3&nbsp;mm glass, instead of an electromagnet. It pulls a 6.35&nbsp;mm magnet under the pen's fixed sleeve; a safety setting limits the pull to 0.4&nbsp;N. <span class="tag prop"><i></i>Proposed design</span> <span class="tag asm"><i></i>Assumption</span></p>
   </section>
 
@@ -751,6 +752,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <li>Test the “write bigger” buzz with people with Parkinson's: do letters stay bigger, and does writing stay fluent? <span class="tag lit"><i></i>Literature · PDT-17</span></li>
           <li>Test guided practice without the pen afterwards: does writing stay better once the help is removed? <span class="tag lit"><i></i>Literature · HAP-12</span></li>
           <li>Test the board first with a mechanical “hand” and then with writers: does a gentle pull lead a relaxed hand along the letter, and does it give way when pushed?</li>
+          <li>Measure how people hold and turn the pen while writing. This decides whether the product keeps the rear inertial module that is fitted in the first prototype.</li>
           <li>Check magnet safety for people with implants (pacemakers, deep-brain stimulators) before any board or pen trial.</li>
           <li>Test the spelling help with dyslexic writers: the cues must help, not distract.</li>
         </ul>
@@ -1530,8 +1532,8 @@ function initScenes(lay, board, samples, tip, replay){
     else {
       if(C.ink_err_mm!=null && off.ink_err_mm!=null) S.numbers.push(["Ink off the letters, this run", `${C.ink_err_mm.toFixed(2)} mm, against ${off.ink_err_mm.toFixed(2)} mm with the nose held still (${pc(C.ratio!=null? C.ratio : C.ink_err_mm/off.ink_err_mm)} %)`, sim]);
       if(HL && HL.causal) S.numbers.push(["Today's tracker, shakes of 1–2 mm at 8–12 per second", `the ink error falls to ${pc(HL.causal[0])}–${pc(HL.causal[1])} % of the nose held still: it removes about a quarter to a third`, sim]);
-      if(HL && HL.oracle) S.numbers.push(["If the pen knew the shake exactly", `${pc(HL.oracle[0])}–${pc(HL.oracle[1])} %: it would remove ${100-pc(HL.oracle[1])}–${100-pc(HL.oracle[0])} %`, sim]);
-      if(HL && HL.module) S.numbers.push(["Today's tracker + rear module (first prototype)", `${pc(HL.module[0])}–${pc(HL.module[1])} %`, sim]);
+      if(HL && HL.oracle) S.numbers.push(["If the pen knew the shake exactly", `${pc(HL.oracle[0])}–${pc(HL.oracle[1])} % of the nose held still: it would remove ${100-pc(HL.oracle[1])}–${100-pc(HL.oracle[0])} %`, sim]);
+      if(HL && HL.module) S.numbers.push(["Today's tracker + rear module (first prototype)", `${pc(HL.module[0])}–${pc(HL.module[1])} % of the nose held still`, sim]);
       if(HL) S.numbers.push(["Ranges", "over three assumptions about how the hand holds the pen", "ASSUMPTION"]);
       S.numbers.push(["Slower shakes, 4–6 per second", "today's tracker removes almost nothing", sim],
                      ["What limits it", "telling shake from writing, not the mechanism or its 3 mm reach", sim],
@@ -1767,7 +1769,9 @@ function initScenes(lay, board, samples, tip, replay){
       const close=Sx.view!=="hand"; const [x0,x1,y0,y1]=S.bounds, nar=v.w<560;
       if(nar!==Sx.labNarrow){ Sx.labNarrow=nar; $("lab-pm").textContent=nar? "pen's magnet" : "magnet in the pen's sleeve";
         $("lab-bm").textContent=nar? "board's magnet" : "board magnet, under the glass"; $("lab-gl").textContent=nar? "paper on glass" : "paper on 3\u00a0mm glass"; }
-      place3d("lab-pm", close, mw, 14, 10); place3d("lab-bm", close, P2W(hX, hY, -10), 34, 0); place3d("lab-gl", close, P2W((x0+x1)/2-4, y0-9, 0), -30, 14); }
+      /* the pen-magnet label goes on the side away from the pull arrow */
+      let side=14; if(S.down[i] && F>0.01){ const a0=mw.clone().project(v.camera), a1=mw.clone().add(P2W(fx,fy,0).normalize().multiplyScalar(8)).project(v.camera); if(a1.x>a0.x) side=-14; }
+      place3d("lab-pm", close, mw, side, 10); place3d("lab-bm", close, P2W(hX, hY, -10), 34, 0); place3d("lab-gl", close, P2W((x0+x1)/2-4, y0-9, 0), -30, 14); }
     else { couple.visible=false; for(const id of ["lab-pm","lab-bm","lab-gl"]) $(id).hidden=true; }
     $("scene-t").textContent=`${S.t[i].toFixed(1)} s of writing`;
     if(S.cam==="line"){ const fx=followX(i); if(Sx.lastFollow!=null){ const d=fx-Sx.lastFollow; v.camera.position.x+=d; v.controls.target.x+=d; } Sx.lastFollow=fx; }

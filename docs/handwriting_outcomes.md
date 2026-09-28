@@ -110,13 +110,13 @@ The same hand, the same sentence and the same tremor, written with each pen, at 
 5. **The tracker barely touches clean writing.** On tremor-free writing, the tracker moves the ink by 22 µm RMS (as shipped) and 26 µm (re-tuned) (SIM). Letters and words are still read as before (99 % and 100 %). The re-tuned tracker is just above the 25 µm false-correction bound of AC-E01-09.
 6. **The nose works easily.** The actuator force is at most 0.05 N RMS, well below the 0.21 N continuous rating, and never hits the force limit (SIM).
 
-**How robust these numbers are** (SIM; ratio of ink error to the ordinary pen; writers 0–5, seed 200):
+**How robust these numbers are** (SIM; ratio of ink error to the ordinary pen; writers 0–5, seed 200 only, so "this study" differs slightly from the four-seed table above):
 
 ![ET sensitivity](../results/handwriting/fig_et_sensitivity.png)
 
 | Variant | Weighted pen | Rev H, nose held | Rev H + re-tuned tracker | Rev H, perfect knowledge |
 |---|---|---|---|---|
-| 10 Hz, 1 mm: this study | 1.21 | 1.22 | 0.53 | 0.04 |
+| 10 Hz, 1 mm: this study | 1.21 | 1.22 | 0.55 | 0.04 |
 | 10 Hz, 1 mm: the writer does not compensate paper drag (P1 convention) | 1.16 | 1.20 | 0.57 | 0.43 |
 | 10 Hz, 1 mm: grip twice as stiff (1150 N/m) | 1.02 | 1.02 | 0.45 | 0.03 |
 | 10 Hz, 1 mm: the nose acts only in contact (P1 convention) | 1.21 | 1.22 | 0.71 | 0.44 |
@@ -127,9 +127,9 @@ The same hand, the same sentence and the same tremor, written with each pen, at 
 | 6 Hz, 1 mm: the nose acts only in contact | 1.07 | 1.07 | 1.04 | 0.38 |
 | 6 Hz, 1 mm: the lead's first Rev H defaults | – | 1.08 | 1.05 | 0.03 |
 
-- **Start before touchdown.** If the nose acts only while the tip touches the paper, the limit worsens from 0.04 to 0.44 and the tracker result from 0.53 to 0.71 (10 Hz, 1 mm). Each stroke then begins with a burst of uncorrected tremor. Starting while the tip hovers within 2 mm fixes this. This is rule T7 of `docs/ai_guidance.md` §7.3, which had not been tested before (SIM).
-- **Paper drag.** If the writer does not compensate the paper drag, the drag bends the letters. That error is not tremor, so even perfect tremor knowledge leaves 43 % (SIM). The tracker result hardly changes (0.53 → 0.57).
-- **Rev H parameters.** The final Rev H values and the lead's first defaults give nearly the same answer (0.53 against 0.57).
+- **Start before touchdown.** If the nose acts only while the tip touches the paper, the limit worsens from 0.04 to 0.44 and the tracker result from 0.55 to 0.71 (10 Hz, 1 mm). Each stroke then begins with a burst of uncorrected tremor. Starting while the tip hovers within 2 mm fixes this. This is rule T7 of `docs/ai_guidance.md` §7.3, which had not been tested before (SIM).
+- **Paper drag.** If the writer does not compensate the paper drag, the drag bends the letters. That error is not tremor, so even perfect tremor knowledge leaves 43 % (SIM). The tracker result hardly changes (0.55 → 0.57).
+- **Rev H parameters.** The final Rev H values and the lead's first defaults give nearly the same answer (0.55 against 0.57).
 - **Grip.** A grip twice as stiff removes the weight penalty (1.02) and helps the tracker a little (0.45).
 
 **Why a new model (HW1), and a check against P1.** Model M1 has no input for an external tremor estimate, and it models Rev A's axial suspension. So this study built HW1: a 2-D page-plane model with the HAP-26 hand, a grip, a lumped pen, paper friction and a force-limited nose module (`handwriting/plant.py`). HW1 was checked against the unmodified pencil model P1 on the pencil (SIM; 3–15 Hz ink error relative to each pen's own neutral run; writers 0–5, seed 200):
@@ -330,7 +330,7 @@ Each item says what was assumed and which way it pushes the results.
 **Practice learners**
 15. Dysgraphia-like: 60 % of letters malformed (smooth warp of 0.14 x-height), size jitter 15 %, baseline jitter 0.12 x-height. Dyslexia-like: normal letter shapes, b/d and p/q reversed in 35 % of cases, and one wrong letter ('deap' for 'deep').
 16. **Passive hand.** The learner neither follows nor resists the guidance. This is an upper bound for being steered.
-17. **Target.** The copybook letter in the learner's own size and slant, anchored at the learner's first touchdown of that letter (the pen knows only relative position).
+17. **Target.** The copybook letter in the learner's own size and slant, anchored at the learner's first touchdown of that letter (the pen knows only relative position). For a reversed letter the anchor itself is in the wrong place, so its target is misplaced (the green 'd' above the line in 'bug' in §5). Anchoring each word instead (as the board study does) would avoid this, but would count spacing errors as shape errors.
 18. **Board.** The final board file's values and the board study's law (their ASSUMPTION values). A constant sensing offset cancels because each letter's template is anchored at the board's own sensed touchdown.
 19. **No learning.** Nothing here models learning or retention. All practice results are *during* guidance.
 

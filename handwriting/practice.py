@@ -204,7 +204,8 @@ def writer_job(job: Dict) -> Dict:
             res = {}
             r_none = run_condition(su, "none", hand, pen, brd)
             ev_none = evaluate(su, r_none, r_none)
-            keep = job.get("viz") and seed == VIZ["seed"][profile]
+            vseed = VIZ["seed"][profile] if VIZ["seed"][profile] in job["seeds"] else job["seeds"][0]
+            keep = job.get("viz") and seed == vseed
             for cond in job.get("conds", CONDITIONS):
                 if cond in ("none", "cue"):
                     ev = dict(ev_none)

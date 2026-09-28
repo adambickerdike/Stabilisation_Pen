@@ -375,7 +375,7 @@ def fig_spelling(pr: Dict, outdir: Path) -> Dict:
     sp = dict(sp)
     sp["stats_all_runs"] = st
     plotstyle.stamp(fig, "SIMULATION + CALCULATION (synthetic writer; app reader and lexicon correction)",
-                    "real-word errors (dig, bog) need the known target; HAP-47/48/50")
+                    "real-word errors ('bug' for 'dug', 'bog' for 'dog') need the known target; HAP-47/48/50")
     fig.savefig(outdir / "fig_spelling.png")
     plt.close(fig)
     FG.write_csv((outdir / "fig_spelling.csv"), ["step", "text"], [[a.strip(), b] for a, b, _ in lines])

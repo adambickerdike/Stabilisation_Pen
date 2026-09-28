@@ -1016,7 +1016,7 @@ def build_samples():
 GROUP_NAMES = {"moving_nose": "Moving nose", "refill": "Ink refill", "grip": "Finger sleeve", "structure": "Handle shell",
                "skid": "Skid ring",
                "mechanism": "Pivot", "actuator": "Coils and magnets", "sensor": "Sensors", "electronics": "Electronics",
-               "power": "Battery", "haptic": "Vibration motor", "inertial": "Inertial module"}
+               "power": "Battery", "haptic": "Vibration motor", "inertial": "Inertial module", "magnet": "Board magnet"}
 
 
 def e(x) -> str:
@@ -1044,7 +1044,9 @@ def component_rows(lay: dict) -> str:
         if c.get("moves_with") == "nose":
             pills.append('<span class="pill move">moves with the nose</span>')
         if c.get("optional"):
-            pills.append('<span class="pill opt">optional</span>')
+            pills.append('<span class="pill opt">optional, in the first prototype</span>' if g == "inertial" else
+                         '<span class="pill opt">optional, for the guidance board</span>' if (g == "magnet" or "board" in str(c.get("id", "")))
+                         else '<span class="pill opt">optional</span>')
         ledger = e(c["ledger"]) if c.get("ledger") else '<span class="muted">—</span>'
         rows.append(
             f'<tr data-part="{e(c.get("id", ""))}"><td><span class="sw g-{e(g)}" aria-hidden="true"></span>'
@@ -1052,6 +1054,30 @@ def component_rows(lay: dict) -> str:
             f'z {c["z0"]:g}–{c["z1"]:g} mm · {e(dims(c))}</span>{"".join(pills)}</td>'
             f'<td>{e(c.get("function", ""))}</td><td>{e(c.get("part", ""))}</td><td class="mono">{ledger}</td></tr>')
     return "\n".join(rows)
+
+
+def inertial_note_html() -> str:
+    """One line under the technology table: what the mechanism study found for weights and the rear module."""
+    if not exists(INERTIAL_OPT):
+        return ""
+    try:
+        ch = (load(INERTIAL_OPT).get("choice") or {}).get("inertial_module") or {}
+        gains = [v.get("mean") for v in (ch.get("gain_band_8_12Hz_1_2mm") or {}).values() if _num((v or {}).get("mean")) is not None]
+        worse = [v.get("frac_conditions_worse") for k, v in (ch.get("passive_weight_gain") or {}).items()
+                 if k in ("0.5", "0.7") and _num((v or {}).get("frac_conditions_worse")) is not None]
+        added = _num(ch.get("added_mass_g"))
+    except (OSError, ValueError, AttributeError, TypeError):
+        return ""
+    if not gains:
+        return ""
+    t = (f"Weights: the mechanism study's rear module{f' ({added:.0f} g added)' if added else ''}, a tungsten slug moved by "
+         f"coils, cuts the ink error left by the nose by a further {100 * min(gains):.0f}–{100 * max(gains):.0f} % for fast shakes of 1–2 mm. "
+         "It is fitted in the first prototype; a measurement of how people grip the pen decides the product.")
+    if worse:
+        t += (f" A fixed extra weight made {100 * min(worse):.0f}–{100 * max(worse):.0f} % of those cases worse than the nose "
+              "alone.")
+    return (f'    <p class="note">{html.escape(t)} <span class="tag sim"><i></i>Simulation · model H1</span> '
+            '<span class="tag prop"><i></i>Proposed design</span></p>')
 
 
 def status_html(manifest: dict) -> str:
@@ -1271,7 +1297,7 @@ def main():
     with open(os.path.join(HERE, "template.html"), encoding="utf-8") as f:
         page = f.read()
     fills = {"<!--BUILD:COMPONENT_ROWS-->": component_rows(lay), "<!--BUILD:DATA_STATUS-->": status_html(manifest),
-             "<!--BUILD:PROVENANCE-->": provenance_html(manifest, lay)}
+             "<!--BUILD:PROVENANCE-->": provenance_html(manifest, lay), "<!--BUILD:INERTIAL_NOTE-->": inertial_note_html()}
     for k, v in fills.items():
         if k not in page:
             warn(f"template.html has no {k} placeholder")

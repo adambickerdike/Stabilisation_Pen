@@ -14,7 +14,7 @@ words read by the app 3/5  ·  at travel limit 0%"
 as shipped","ink error 0.63 mm  ·  letters read 65%
 words read by the app 3/5  ·  at travel limit 0%"
 "hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",revH_akf_revh,"Rev H + tracker
-re-tuned for Rev H","ink error 0.61 mm  ·  letters read 69%
+re-tuned for Rev H","ink error 0.60 mm  ·  letters read 69%
 words read by the app 3/5  ·  at travel limit 0%"
 "hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",revH_oracle,"Rev H, perfect
 knowledge (limit)","ink error 13 µm  ·  letters read 100%
@@ -34,7 +34,7 @@ words read by the app 1/5  ·  at travel limit 42%"
 as shipped","ink error 1.26 mm  ·  letters read 23%
 words read by the app 0/5  ·  at travel limit 0%"
 "hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",revH_akf_revh,"Rev H + tracker
-re-tuned for Rev H","ink error 0.83 mm  ·  letters read 38%
+re-tuned for Rev H","ink error 0.82 mm  ·  letters read 42%
 words read by the app 1/5  ·  at travel limit 0%"
 "hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",revH_oracle,"Rev H, perfect
 knowledge (limit)","ink error 0.11 mm  ·  letters read 100%
@@ -54,7 +54,7 @@ words read by the app 5/5  ·  at travel limit 67%"
 as shipped","ink error 0.46 mm  ·  letters read 77%
 words read by the app 3/5  ·  at travel limit 0%"
 "hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",revH_akf_revh,"Rev H + tracker
-re-tuned for Rev H","ink error 0.32 mm  ·  letters read 88%
+re-tuned for Rev H","ink error 0.33 mm  ·  letters read 88%
 words read by the app 5/5  ·  at travel limit 0%"
 "hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",revH_oracle,"Rev H, perfect
 knowledge (limit)","ink error 25 µm  ·  letters read 100%

@@ -1,25 +1,25 @@
 panel,label,value
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_0.3mm P1 oracle,0.32730701176038557
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_0.3mm P1 akf,1.004271878126726
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_0.3mm HW1 oracle,0.44112508253338817
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_0.3mm HW1 akf,1.0064849776582385
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_0.3mm HW1_nominal oracle,0.12360936761424564
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_0.3mm HW1_nominal akf,1.0041688889606113
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_1mm P1 oracle,0.5896219150021008
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_1mm P1 akf,0.9877661761713696
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_1mm HW1 oracle,0.6768058458792575
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_1mm HW1 akf,0.9916036009682613
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_1mm HW1_nominal oracle,0.6740118207576162
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,6Hz_1mm HW1_nominal akf,0.98191631067674
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_0.3mm P1 oracle,0.29778878837156325
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_0.3mm P1 akf,0.839835853025451
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_0.3mm HW1 oracle,0.43033840926755795
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_0.3mm HW1 akf,0.8596600477678283
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_0.3mm HW1_nominal oracle,0.13709959994923293
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_0.3mm HW1_nominal akf,0.7053524100812877
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_1mm P1 oracle,0.6149284529668534
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_1mm P1 akf,0.6550246661319835
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_1mm HW1 oracle,0.7000297395642562
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_1mm HW1 akf,0.7292734932048344
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_1mm HW1_nominal oracle,0.6841370312581593
-Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1,10Hz_1mm HW1_nominal akf,0.7063244417005595
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 0.3 mm | P1 (pencil model) | perfect knowledge",0.327307
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 0.3 mm | P1 (pencil model) | tracker",1.00427
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 0.3 mm | HW1, P1's conventions | perfect knowledge",0.441125
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 0.3 mm | HW1, P1's conventions | tracker",1.00648
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 0.3 mm | HW1, this study | perfect knowledge",0.123609
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 0.3 mm | HW1, this study | tracker",1.00417
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 1 mm | P1 (pencil model) | perfect knowledge",0.589622
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 1 mm | P1 (pencil model) | tracker",0.987766
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 1 mm | HW1, P1's conventions | perfect knowledge",0.676806
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 1 mm | HW1, P1's conventions | tracker",0.991604
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 1 mm | HW1, this study | perfect knowledge",0.674012
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","6 Hz, 1 mm | HW1, this study | tracker",0.981916
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 0.3 mm | P1 (pencil model) | perfect knowledge",0.297789
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 0.3 mm | P1 (pencil model) | tracker",0.839836
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 0.3 mm | HW1, P1's conventions | perfect knowledge",0.430338
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 0.3 mm | HW1, P1's conventions | tracker",0.85966
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 0.3 mm | HW1, this study | perfect knowledge",0.1371
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 0.3 mm | HW1, this study | tracker",0.705352
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 1 mm | P1 (pencil model) | perfect knowledge",0.614928
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 1 mm | P1 (pencil model) | tracker",0.655025
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 1 mm | HW1, P1's conventions | perfect knowledge",0.70003
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 1 mm | HW1, P1's conventions | tracker",0.729273
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 1 mm | HW1, this study | perfect knowledge",0.684137
+"Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1","10 Hz, 1 mm | HW1, this study | tracker",0.706324

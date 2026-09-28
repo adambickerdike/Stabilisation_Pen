@@ -1,37 +1,37 @@
 panel,label,value
-dysgraphia: ink vs target (µm RMS),No guidance,582.3604134566253
-dysgraphia: ink vs target (µm RMS),"Nose, partial",377.4346695199303
-dysgraphia: ink vs target (µm RMS),"Nose, full",225.34508329169384
-dysgraphia: ink vs target (µm RMS),"Board, partial",444.1401758843977
-dysgraphia: ink vs target (µm RMS),"Board, full",383.8555413274477
-dysgraphia: ink vs target (µm RMS),"Nose, no gate",96.71028986294088
-dysgraphia: letters read as the target,No guidance,0.9228395061728394
-dysgraphia: letters read as the target,"Nose, partial",0.9351851851851851
-dysgraphia: letters read as the target,"Nose, full",0.8580246913580246
-dysgraphia: letters read as the target,"Board, partial",0.9104938271604938
-dysgraphia: letters read as the target,"Board, full",0.851851851851852
-dysgraphia: letters read as the target,"Nose, no gate",0.8549382716049383
+dysgraphia: ink vs target (µm RMS),No guidance,582.36
+dysgraphia: ink vs target (µm RMS),"Nose, partial",377.435
+dysgraphia: ink vs target (µm RMS),"Nose, full",225.345
+dysgraphia: ink vs target (µm RMS),"Board, partial",444.14
+dysgraphia: ink vs target (µm RMS),"Board, full",383.856
+dysgraphia: ink vs target (µm RMS),"Nose, no gate",96.7103
+dysgraphia: letters read as the target,No guidance,0.92284
+dysgraphia: letters read as the target,"Nose, partial",0.935185
+dysgraphia: letters read as the target,"Nose, full",0.858025
+dysgraphia: letters read as the target,"Board, partial",0.910494
+dysgraphia: letters read as the target,"Board, full",0.851852
+dysgraphia: letters read as the target,"Nose, no gate",0.854938
 dysgraphia: device share of the ink motion,No guidance,0.0
-dysgraphia: device share of the ink motion,"Nose, partial",0.23365878427232845
-dysgraphia: device share of the ink motion,"Nose, full",0.3797114803761567
-dysgraphia: device share of the ink motion,"Board, partial",0.27184399959935374
-dysgraphia: device share of the ink motion,"Board, full",0.2540795165984086
-dysgraphia: device share of the ink motion,"Nose, no gate",0.3871157646105638
-dyslexia: ink vs target (µm RMS),No guidance,616.149128326338
-dyslexia: ink vs target (µm RMS),"Nose, partial",462.7922637528834
-dyslexia: ink vs target (µm RMS),"Nose, full",369.24920279310146
-dyslexia: ink vs target (µm RMS),"Board, partial",506.6980358606308
-dyslexia: ink vs target (µm RMS),"Board, full",416.68224747156484
-dyslexia: ink vs target (µm RMS),"Nose, no gate",108.05224145875985
-dyslexia: letters read as the target,No guidance,0.8256172839506174
-dyslexia: letters read as the target,"Nose, partial",0.8379629629629631
-dyslexia: letters read as the target,"Nose, full",0.7669753086419752
-dyslexia: letters read as the target,"Board, partial",0.8256172839506172
-dyslexia: letters read as the target,"Board, full",0.7885802469135802
-dyslexia: letters read as the target,"Nose, no gate",0.7669753086419752
+dysgraphia: device share of the ink motion,"Nose, partial",0.233659
+dysgraphia: device share of the ink motion,"Nose, full",0.379711
+dysgraphia: device share of the ink motion,"Board, partial",0.271844
+dysgraphia: device share of the ink motion,"Board, full",0.25408
+dysgraphia: device share of the ink motion,"Nose, no gate",0.387116
+dyslexia: ink vs target (µm RMS),No guidance,616.149
+dyslexia: ink vs target (µm RMS),"Nose, partial",462.792
+dyslexia: ink vs target (µm RMS),"Nose, full",369.249
+dyslexia: ink vs target (µm RMS),"Board, partial",506.698
+dyslexia: ink vs target (µm RMS),"Board, full",416.682
+dyslexia: ink vs target (µm RMS),"Nose, no gate",108.052
+dyslexia: letters read as the target,No guidance,0.825617
+dyslexia: letters read as the target,"Nose, partial",0.837963
+dyslexia: letters read as the target,"Nose, full",0.766975
+dyslexia: letters read as the target,"Board, partial",0.825617
+dyslexia: letters read as the target,"Board, full",0.78858
+dyslexia: letters read as the target,"Nose, no gate",0.766975
 dyslexia: device share of the ink motion,No guidance,0.0
-dyslexia: device share of the ink motion,"Nose, partial",0.20401746211313912
-dyslexia: device share of the ink motion,"Nose, full",0.3397911776180753
-dyslexia: device share of the ink motion,"Board, partial",0.260829532324888
-dyslexia: device share of the ink motion,"Board, full",0.24320120927469502
-dyslexia: device share of the ink motion,"Nose, no gate",0.35359965127295556
+dyslexia: device share of the ink motion,"Nose, partial",0.204017
+dyslexia: device share of the ink motion,"Nose, full",0.339791
+dyslexia: device share of the ink motion,"Board, partial",0.26083
+dyslexia: device share of the ink motion,"Board, full",0.243201
+dyslexia: device share of the ink motion,"Nose, no gate",0.3536

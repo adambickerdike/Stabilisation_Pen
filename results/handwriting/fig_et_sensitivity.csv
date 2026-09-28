@@ -1,37 +1,47 @@
 panel,label,value
-"Ink error relative to the ordinary pen, 10Hz, 1mm",open_loop_hand: weighted,1.1561304485557151
-"Ink error relative to the ordinary pen, 10Hz, 1mm",open_loop_hand: revH_off,1.1964933803954692
-"Ink error relative to the ordinary pen, 10Hz, 1mm",open_loop_hand: pencil_akf,0.7512303515335592
-"Ink error relative to the ordinary pen, 10Hz, 1mm",open_loop_hand: revH_akf_revh,0.560572601345103
-"Ink error relative to the ordinary pen, 10Hz, 1mm",open_loop_hand: revH_oracle,0.42954353136135986
-"Ink error relative to the ordinary pen, 10Hz, 1mm",stiff_grip_x2: weighted,1.022133544922603
-"Ink error relative to the ordinary pen, 10Hz, 1mm",stiff_grip_x2: revH_off,1.02242771073041
-"Ink error relative to the ordinary pen, 10Hz, 1mm",stiff_grip_x2: pencil_akf,0.7310308444310952
-"Ink error relative to the ordinary pen, 10Hz, 1mm",stiff_grip_x2: revH_akf_revh,0.4782883412447492
-"Ink error relative to the ordinary pen, 10Hz, 1mm",stiff_grip_x2: revH_oracle,0.028316565090614837
-"Ink error relative to the ordinary pen, 10Hz, 1mm",contact_gating: weighted,1.2148453766933158
-"Ink error relative to the ordinary pen, 10Hz, 1mm",contact_gating: revH_off,1.223467773767469
-"Ink error relative to the ordinary pen, 10Hz, 1mm",contact_gating: pencil_akf,0.778390394240044
-"Ink error relative to the ordinary pen, 10Hz, 1mm",contact_gating: revH_akf_revh,0.6999266588583501
-"Ink error relative to the ordinary pen, 10Hz, 1mm",contact_gating: revH_oracle,0.4406174525638577
-"Ink error relative to the ordinary pen, 10Hz, 1mm",revH_lead_defaults: revH_off,1.2492133016871054
-"Ink error relative to the ordinary pen, 10Hz, 1mm",revH_lead_defaults: revH_akf_revh,0.5517451611617591
-"Ink error relative to the ordinary pen, 10Hz, 1mm",revH_lead_defaults: revH_oracle,0.06047344654834597
-"Ink error relative to the ordinary pen, 6Hz, 1mm",open_loop_hand: weighted,1.0533288746400322
-"Ink error relative to the ordinary pen, 6Hz, 1mm",open_loop_hand: revH_off,1.0898867701309098
-"Ink error relative to the ordinary pen, 6Hz, 1mm",open_loop_hand: pencil_akf,1.023681715823075
-"Ink error relative to the ordinary pen, 6Hz, 1mm",open_loop_hand: revH_akf_revh,1.0693842547253987
-"Ink error relative to the ordinary pen, 6Hz, 1mm",open_loop_hand: revH_oracle,0.4813349897424361
-"Ink error relative to the ordinary pen, 6Hz, 1mm",stiff_grip_x2: weighted,0.9893624027541507
-"Ink error relative to the ordinary pen, 6Hz, 1mm",stiff_grip_x2: revH_off,0.9881468637918941
-"Ink error relative to the ordinary pen, 6Hz, 1mm",stiff_grip_x2: pencil_akf,0.9826918207648584
-"Ink error relative to the ordinary pen, 6Hz, 1mm",stiff_grip_x2: revH_akf_revh,0.9531957021625975
-"Ink error relative to the ordinary pen, 6Hz, 1mm",stiff_grip_x2: revH_oracle,0.014811124540757219
-"Ink error relative to the ordinary pen, 6Hz, 1mm",contact_gating: weighted,1.0674254545495414
-"Ink error relative to the ordinary pen, 6Hz, 1mm",contact_gating: revH_off,1.069830152601454
-"Ink error relative to the ordinary pen, 6Hz, 1mm",contact_gating: pencil_akf,0.9876671465573504
-"Ink error relative to the ordinary pen, 6Hz, 1mm",contact_gating: revH_akf_revh,1.0467250482915207
-"Ink error relative to the ordinary pen, 6Hz, 1mm",contact_gating: revH_oracle,0.38379008703131956
-"Ink error relative to the ordinary pen, 6Hz, 1mm",revH_lead_defaults: revH_off,1.076243028467861
-"Ink error relative to the ordinary pen, 6Hz, 1mm",revH_lead_defaults: revH_akf_revh,1.0465452169634488
-"Ink error relative to the ordinary pen, 6Hz, 1mm",revH_lead_defaults: revH_oracle,0.030606807684861213
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",This study: weighted pen,1.2148457133524218
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","This study: Rev H, nose held",1.2234677872154813
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",This study: pencil + tracker,0.7465650937906457
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",This study: Rev H + re-tuned tracker,0.5453804343652235
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","This study: Rev H, perfect knowledge",0.040702305053709274
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Drag not compensated: weighted pen,1.15613
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Drag not compensated: Rev H, nose held",1.19649
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Drag not compensated: pencil + tracker,0.75123
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Drag not compensated: Rev H + re-tuned tracker,0.565298
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Drag not compensated: Rev H, perfect knowledge",0.429544
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Grip twice as stiff: weighted pen,1.02213
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Grip twice as stiff: Rev H, nose held",1.02243
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Grip twice as stiff: pencil + tracker,0.731031
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Grip twice as stiff: Rev H + re-tuned tracker,0.453777
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Grip twice as stiff: Rev H, perfect knowledge",0.0283166
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Nose acts only in contact: weighted pen,1.21485
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Nose acts only in contact: Rev H, nose held",1.22347
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Nose acts only in contact: pencil + tracker,0.77839
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Nose acts only in contact: Rev H + re-tuned tracker,0.70613
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Nose acts only in contact: Rev H, perfect knowledge",0.440617
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Lead's first Rev H values: Rev H, nose held",1.24921
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm",Lead's first Rev H values: Rev H + re-tuned tracker,0.570053
+"Ink error relative to the ordinary pen, 10 Hz, 1 mm","Lead's first Rev H values: Rev H, perfect knowledge",0.0604734
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",This study: weighted pen,1.0674255600333897
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","This study: Rev H, nose held",1.0698302395672252
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",This study: pencil + tracker,0.9845729860849285
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",This study: Rev H + re-tuned tracker,1.0342699835707485
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","This study: Rev H, perfect knowledge",0.02140997679197837
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Drag not compensated: weighted pen,1.05333
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Drag not compensated: Rev H, nose held",1.08989
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Drag not compensated: pencil + tracker,1.02368
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Drag not compensated: Rev H + re-tuned tracker,1.05853
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Drag not compensated: Rev H, perfect knowledge",0.481335
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Grip twice as stiff: weighted pen,0.989362
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Grip twice as stiff: Rev H, nose held",0.988147
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Grip twice as stiff: pencil + tracker,0.982692
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Grip twice as stiff: Rev H + re-tuned tracker,0.965487
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Grip twice as stiff: Rev H, perfect knowledge",0.0148111
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Nose acts only in contact: weighted pen,1.06743
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Nose acts only in contact: Rev H, nose held",1.06983
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Nose acts only in contact: pencil + tracker,0.987667
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Nose acts only in contact: Rev H + re-tuned tracker,1.04193
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Nose acts only in contact: Rev H, perfect knowledge",0.38379
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Lead's first Rev H values: Rev H, nose held",1.07624
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm",Lead's first Rev H values: Rev H + re-tuned tracker,1.0464
+"Ink error relative to the ordinary pen, 6 Hz, 1 mm","Lead's first Rev H values: Rev H, perfect knowledge",0.0306068

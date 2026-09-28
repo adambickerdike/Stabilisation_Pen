@@ -13,7 +13,8 @@
    Checks, at 1360 x 900 and at 390 x 844: no page errors and no console errors (Google Fonts TLS errors in a
    sandbox are ignored); no horizontal page scroll; the 3-D pen draws, the legend and the part selection work
    (legend click, and a click on the canvas over a part); "Take apart" moves the parts; the tip pad moves the nose;
-   each of the five scenes plays and draws ink; in the board scene the magnet rides on the handle, the board's head
+   each of the five scenes plays and draws ink; scenes a and b replay the mechanism study (data/replay.json), including
+   the rear-module case; in the board scene the magnet rides on the handle, the board's head
    sits under it, the pull stays within the limit and the ink ends closer to the letter than the sleeve; the toggles
    work; the handwriting panels render and magnify.
    Screenshots of every section (and of every scene) go to --shots.  Exit code 1 when a check fails. */
@@ -138,6 +139,19 @@ async function run(browser, label, viewport) {
   await page.click("[data-trk='today']"); await page.waitForTimeout(200);
   const trk = await page.evaluate(() => window.__explainer.scenes.trk);
   check(`${label}: stabiliser quality toggle`, trk === "today");
+  /* scenes a and b replay the mechanism study when data/replay.json is there; the rear-module case moves its slug */
+  const rp = await page.evaluate(() => { const E = window.__explainer, S = E.scenes; return { has: !!E.data.replay, fromReplay: !!(S.S && S.S.fromReplay), caseKey: S.S && S.S.caseKey }; });
+  if (rp.has) {
+    const modBtn = await page.$("[data-trk='module']");
+    let mod = null;
+    if (modBtn && await modBtn.isVisible()) {
+      await modBtn.click(); await page.waitForTimeout(250);
+      mod = await page.evaluate(() => { const S = window.__explainer.scenes; S.playing = false; S.seek(S.S.T * 0.5); return { caseKey: S.S.caseKey, rm: !!S.S.rm }; });
+    }
+    check(`${label}: scenes a and b replay the mechanism study (data/replay.json)`, rp.fromReplay && rp.caseKey === "today" && (!mod || (mod.caseKey === "module" && mod.rm)),
+      `case ${rp.caseKey}${mod ? `, then ${mod.caseKey} with the rear module's slug` : ""}`);
+    await page.click("[data-trk='today']"); await page.evaluate(() => { window.__explainer.scenes.playing = true; });
+  }
   await page.click("[data-view='hand']"); await page.waitForTimeout(300);
   const vw = await page.evaluate(() => window.__explainer.scenes.stats().view);
   check(`${label}: whole-hand view toggle`, vw === "hand");

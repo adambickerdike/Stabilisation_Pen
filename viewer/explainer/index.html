@@ -345,7 +345,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
 
 /* group colour classes (tables and legends) */
 .g-moving_nose{--c:var(--g-nose)} .g-mechanism{--c:var(--g-pivot)} .g-sensor{--c:var(--g-sensor)} .g-actuator{--c:var(--g-act)}
-.g-electronics{--c:var(--g-elec)} .g-power{--c:var(--g-power)} .g-haptic{--c:var(--g-haptic)} .g-inertial{--c:var(--g-inertial)}
+.g-electronics{--c:var(--g-elec)} .g-power{--c:var(--g-power)} .g-haptic{--c:var(--g-haptic)} .g-inertial{--c:var(--g-inertial)} .g-magnet{--c:var(--g-act)}
 .g-refill{--c:var(--g-refill)} .g-grip{--c:var(--g-grip)} .g-structure{--c:var(--g-shell)} .g-skid{--c:var(--g-skid)}
 </style>
 
@@ -684,8 +684,8 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
 <tr data-part="refill"><td><span class="sw g-refill" aria-hidden="true"></span><b>Ink refill (D1 mini)</b><span class="where">Ink refill · z 3–67 mm · Ø2.35 × 64 mm</span><span class="pill move">moves with the nose</span></td><td>Standard replaceable refill; it slides along its axis on a soft constant-force spring so the ball stays on the paper while the nose tilts.</td><td>ISO 12757-2 D1 mini refill</td><td class="mono">DEC-004</td></tr>
 <tr data-part="front_sleeve"><td><span class="sw g-grip" aria-hidden="true"></span><b>Front sleeve (fixed grip)</b><span class="where">Finger sleeve · z 4.66–50 mm · Ø16–22 × 45.34 mm</span></td><td>Where the thumb, index and middle finger rest. It does not move; the nose moves inside it.</td><td>PEEK core + TPE overmould</td><td class="mono">AMF-24</td></tr>
 <tr data-part="carrier"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Moving nose (refill carrier)</b><span class="where">Moving nose · z 8–43.5 mm · Ø7 × 35.5 mm</span><span class="pill move">moves with the nose</span></td><td>Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to about 3 mm against the handle.</td><td>custom (Ti-6Al-4V tube 7/6 mm)</td><td class="mono">AMF-21</td></tr>
-<tr data-part="board_keel"><td><span class="sw g-grip" aria-hidden="true"></span><b>Keel for the board magnet (optional)</b><span class="where">Finger sleeve · z 11.41–15.59 mm · 6.29 × 7.35 × 4.17 mm</span><span class="pill opt">optional</span></td><td>Moulded bump under the fixed front sleeve holding the board magnet close to the paper.</td><td>PEEK / TPE, part of the sleeve moulding</td><td class="mono">AMF-24</td></tr>
-<tr data-part="board_magnet"><td><span class="sw g-magnet" aria-hidden="true"></span><b>Board magnet (optional)</b><span class="where">magnet · z 11.91–15.09 mm · Ø6.35 × 3.18 mm</span><span class="pill opt">optional</span></td><td>Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N sideways, about 1 N down while guiding). Magnetised along the pen axis. Fixed to the sleeve, not the nose.</td><td>K&amp;J D42-N52 NdFeB disc (6.35 x 3.17 mm)</td><td class="mono">AMF-91</td></tr>
+<tr data-part="board_keel"><td><span class="sw g-grip" aria-hidden="true"></span><b>Keel for the board magnet (optional)</b><span class="where">Finger sleeve · z 11.41–15.59 mm · 6.29 × 7.35 × 4.17 mm</span><span class="pill opt">optional, for the guidance board</span></td><td>Moulded bump under the fixed front sleeve holding the board magnet close to the paper.</td><td>PEEK / TPE, part of the sleeve moulding</td><td class="mono">AMF-24</td></tr>
+<tr data-part="board_magnet"><td><span class="sw g-magnet" aria-hidden="true"></span><b>Board magnet (optional)</b><span class="where">Board magnet · z 11.91–15.09 mm · Ø6.35 × 3.18 mm</span><span class="pill opt">optional, for the guidance board</span></td><td>Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N sideways, about 1 N down while guiding). Magnetised along the pen axis. Fixed to the sleeve, not the nose.</td><td>K&amp;J D42-N52 NdFeB disc (6.35 x 3.17 mm)</td><td class="mono">AMF-91</td></tr>
 <tr data-part="optical"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Paper sensor (optional)</b><span class="where">Sensors · z 14–20 mm · 5 × 5 × 6 mm</span><span class="pill opt">optional</span></td><td>Optical sensor beside the nose that sees the paper: page position for capture and the tracker (1 kHz, 2 ms assumed).</td><td>to select (optical flow class)</td><td class="mono"><span class="muted">—</span></td></tr>
 <tr data-part="gimbal"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Flexure gimbal (2-axis)</b><span class="where">Pivot · z 43.5–46.5 mm · Ø17 × 3 mm</span></td><td>Laser-cut spring-steel cross flexures: the nose tilts in two directions with no friction or backlash; stiff along the pen.</td><td>custom (301 full-hard or 17-7PH 0.1 mm, laser-cut)</td><td class="mono">AMF-20</td></tr>
 <tr data-part="arm"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Rear arm</b><span class="where">Moving nose · z 46.5–75.75 mm · Ø5 × 29.25 mm</span><span class="pill move">moves with the nose</span></td><td>Carries the magnets behind the gimbal: the tip moves the opposite way, 1/lever times the magnet motion.</td><td>custom (aluminium 6061)</td><td class="mono"><span class="muted">—</span></td></tr>
@@ -708,9 +708,9 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
 <tr data-part="lra"><td><span class="sw g-haptic" aria-hidden="true"></span><b>Vibration cue motor</b><span class="where">Vibration motor · z 94–97 mm · Ø8 × 3 mm</span><span class="pill opt">optional</span></td><td>Gentle buzz cues (write bigger, slow down, check a word).</td><td>coin LRA 8 mm</td><td class="mono">AMF-45</td></tr>
 <tr data-part="battery"><td><span class="sw g-power" aria-hidden="true"></span><b>Rechargeable cell</b><span class="where">Battery · z 101–149.5 mm · Ø14.1 × 48.5 mm</span></td><td>EEMB LIR14500, 750 mAh.</td><td>EEMB LIR14500</td><td class="mono">AMF-80</td></tr>
 <tr data-part="usb"><td><span class="sw g-electronics" aria-hidden="true"></span><b>USB-C port and button</b><span class="where">Electronics · z 150–153.5 mm · 8.4 × 2.6 × 3.5 mm</span></td><td>Charging and on/off / mode button (side port so the rear cap stays free).</td><td>USB-C receptacle (mid-mount)</td><td class="mono"><span class="muted">—</span></td></tr>
-<tr data-part="rm_frame"><td><span class="sw g-inertial" aria-hidden="true"></span><b>Inertial module frame</b><span class="where">Inertial module · z 151–169 mm · Ø20 × 18 mm</span><span class="pill opt">optional</span></td><td>Houses the moving tungsten mass, its coils and flexures.</td><td>custom (aluminium)</td><td class="mono"><span class="muted">—</span></td></tr>
-<tr data-part="rm_mass"><td><span class="sw g-inertial" aria-hidden="true"></span><b>Tungsten reaction mass</b><span class="where">Inertial module · z 153–167 mm · Ø10 × 14 mm</span><span class="pill opt">optional</span></td><td>A heavy slug pushed sideways by coils: its reaction steadies the whole pen against the shake.</td><td>Tungsten heavy alloy ASTM B777 class 3 (non-magnetic grade)</td><td class="mono">AMF-49</td></tr>
-<tr data-part="rm_coils"><td><span class="sw g-inertial" aria-hidden="true"></span><b>Reaction-mass coils</b><span class="where">Inertial module · z 153–167 mm · Ø19 × 14 mm</span><span class="pill opt">optional</span></td><td>Four flat coils facing magnets on the slug (2 axes).</td><td>custom</td><td class="mono"><span class="muted">—</span></td></tr>
+<tr data-part="rm_frame"><td><span class="sw g-inertial" aria-hidden="true"></span><b>Inertial module frame</b><span class="where">Inertial module · z 151–169 mm · Ø20 × 18 mm</span><span class="pill opt">optional, in the first prototype</span></td><td>Houses the moving tungsten mass, its coils and flexures.</td><td>custom (aluminium)</td><td class="mono"><span class="muted">—</span></td></tr>
+<tr data-part="rm_mass"><td><span class="sw g-inertial" aria-hidden="true"></span><b>Tungsten reaction mass</b><span class="where">Inertial module · z 153–167 mm · Ø10 × 14 mm</span><span class="pill opt">optional, in the first prototype</span></td><td>A heavy slug pushed sideways by coils: its reaction steadies the whole pen against the shake.</td><td>Tungsten heavy alloy ASTM B777 class 3 (non-magnetic grade)</td><td class="mono">AMF-49</td></tr>
+<tr data-part="rm_coils"><td><span class="sw g-inertial" aria-hidden="true"></span><b>Reaction-mass coils</b><span class="where">Inertial module · z 153–167 mm · Ø19 × 14 mm</span><span class="pill opt">optional, in the first prototype</span></td><td>Four flat coils facing magnets on the slug (2 axes).</td><td>custom</td><td class="mono"><span class="muted">—</span></td></tr>
 <tr data-part="rear_cap"><td><span class="sw g-structure" aria-hidden="true"></span><b>Rear cap</b><span class="where">Handle shell · z 167–170 mm · Ø22–20 × 3 mm</span></td><td>Closes the handle.</td><td>custom (PEEK)</td><td class="mono">AMF-24</td></tr>
         </tbody>
       </table>
@@ -732,6 +732,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
         </tbody>
       </table>
     </div>
+    <p class="note">Weights: the mechanism study&#x27;s rear module (28 g added), a tungsten slug moved by coils, cuts the ink error left by the nose by a further 6–17 % for fast shakes of 1–2 mm. It is fitted in the first prototype; a measurement of how people grip the pen decides the product. A fixed extra weight made 38–42 % of those cases worse than the nose alone. <span class="tag sim"><i></i>Simulation · model H1</span> <span class="tag prop"><i></i>Proposed design</span></p>
     <p class="note">Guidance board: the board study since chose a permanent magnet moved by a small motorised carriage under 3&nbsp;mm glass, instead of an electromagnet. It pulls a 6.35&nbsp;mm magnet under the pen's fixed sleeve; a safety setting limits the pull to 0.4&nbsp;N. <span class="tag prop"><i></i>Proposed design</span> <span class="tag asm"><i></i>Assumption</span></p>
   </section>
 
@@ -784,6 +785,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <li>Test the “write bigger” buzz with people with Parkinson's: do letters stay bigger, and does writing stay fluent? <span class="tag lit"><i></i>Literature · PDT-17</span></li>
           <li>Test guided practice without the pen afterwards: does writing stay better once the help is removed? <span class="tag lit"><i></i>Literature · HAP-12</span></li>
           <li>Test the board first with a mechanical “hand” and then with writers: does a gentle pull lead a relaxed hand along the letter, and does it give way when pushed?</li>
+          <li>Measure how people hold and turn the pen while writing. This decides whether the product keeps the rear inertial module that is fitted in the first prototype.</li>
           <li>Check magnet safety for people with implants (pacemakers, deep-brain stimulators) before any board or pen trial.</li>
           <li>Test the spelling help with dyslexic writers: the cues must help, not distract.</li>
         </ul>
@@ -798,7 +800,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
     <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> replay.json: <code>results/opt/viz_inertial_opt_1mm.json + results/opt/viz_inertial_opt.json (+ averages from results/opt/inertial_opt.json)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 18:56 UTC from git e3774ca-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-28 19:05 UTC from git 4c17dd2-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
   </footer>
 </div>
 
@@ -1563,8 +1565,8 @@ function initScenes(lay, board, samples, tip, replay){
     else {
       if(C.ink_err_mm!=null && off.ink_err_mm!=null) S.numbers.push(["Ink off the letters, this run", `${C.ink_err_mm.toFixed(2)} mm, against ${off.ink_err_mm.toFixed(2)} mm with the nose held still (${pc(C.ratio!=null? C.ratio : C.ink_err_mm/off.ink_err_mm)} %)`, sim]);
       if(HL && HL.causal) S.numbers.push(["Today's tracker, shakes of 1–2 mm at 8–12 per second", `the ink error falls to ${pc(HL.causal[0])}–${pc(HL.causal[1])} % of the nose held still: it removes about a quarter to a third`, sim]);
-      if(HL && HL.oracle) S.numbers.push(["If the pen knew the shake exactly", `${pc(HL.oracle[0])}–${pc(HL.oracle[1])} %: it would remove ${100-pc(HL.oracle[1])}–${100-pc(HL.oracle[0])} %`, sim]);
-      if(HL && HL.module) S.numbers.push(["Today's tracker + rear module (first prototype)", `${pc(HL.module[0])}–${pc(HL.module[1])} %`, sim]);
+      if(HL && HL.oracle) S.numbers.push(["If the pen knew the shake exactly", `${pc(HL.oracle[0])}–${pc(HL.oracle[1])} % of the nose held still: it would remove ${100-pc(HL.oracle[1])}–${100-pc(HL.oracle[0])} %`, sim]);
+      if(HL && HL.module) S.numbers.push(["Today's tracker + rear module (first prototype)", `${pc(HL.module[0])}–${pc(HL.module[1])} % of the nose held still`, sim]);
       if(HL) S.numbers.push(["Ranges", "over three assumptions about how the hand holds the pen", "ASSUMPTION"]);
       S.numbers.push(["Slower shakes, 4–6 per second", "today's tracker removes almost nothing", sim],
                      ["What limits it", "telling shake from writing, not the mechanism or its 3 mm reach", sim],
@@ -1800,7 +1802,9 @@ function initScenes(lay, board, samples, tip, replay){
       const close=Sx.view!=="hand"; const [x0,x1,y0,y1]=S.bounds, nar=v.w<560;
       if(nar!==Sx.labNarrow){ Sx.labNarrow=nar; $("lab-pm").textContent=nar? "pen's magnet" : "magnet in the pen's sleeve";
         $("lab-bm").textContent=nar? "board's magnet" : "board magnet, under the glass"; $("lab-gl").textContent=nar? "paper on glass" : "paper on 3\u00a0mm glass"; }
-      place3d("lab-pm", close, mw, 14, 10); place3d("lab-bm", close, P2W(hX, hY, -10), 34, 0); place3d("lab-gl", close, P2W((x0+x1)/2-4, y0-9, 0), -30, 14); }
+      /* the pen-magnet label goes on the side away from the pull arrow */
+      let side=14; if(S.down[i] && F>0.01){ const a0=mw.clone().project(v.camera), a1=mw.clone().add(P2W(fx,fy,0).normalize().multiplyScalar(8)).project(v.camera); if(a1.x>a0.x) side=-14; }
+      place3d("lab-pm", close, mw, side, 10); place3d("lab-bm", close, P2W(hX, hY, -10), 34, 0); place3d("lab-gl", close, P2W((x0+x1)/2-4, y0-9, 0), -30, 14); }
     else { couple.visible=false; for(const id of ["lab-pm","lab-bm","lab-gl"]) $(id).hidden=true; }
     $("scene-t").textContent=`${S.t[i].toFixed(1)} s of writing`;
     if(S.cam==="line"){ const fx=followX(i); if(Sx.lastFollow!=null){ const d=fx-Sx.lastFollow; v.camera.position.x+=d; v.controls.target.x+=d; } Sx.lastFollow=fx; }
