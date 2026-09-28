@@ -118,15 +118,24 @@ You asked for inertial control of the pen body as well. The study (`opt_inertial
 
 ## 7. The optional guidance board
 
-A desk board under the paper that can physically steer the pen along whole letters, for practice (`guidance_board.md`).
-- **Leading option (CALC, provisional):**
-  - an XY belt carriage under a glass writing surface carries a permanent-magnet head;
-  - a 0.33 g ring magnet sits in the pen's nose;
-  - lateral force about 0.49 N on A4 and 0.57 N on A5, capped in software at 0.4 N;
-  - a magnet holds force with no power;
-  - effective latency about 10 ms (ASSUMPTION).
-- **Why it matters:** it is the only way to apply real guiding force over the whole page. The pen alone can only nudge within 3 mm.
-- **What it is for:** tracing and copying practice, dictation spelling practice, and "write big" practice. Published electromagnetic guidance halved drawing error (4.3 → 2.2 mm; LIT HAP-16).
+A desk board under the paper that can physically steer the pen along whole letters, for practice (DEC-031; [`guidance_board.md`](guidance_board.md)).
+
+- **How it works.** Under a 3 mm glass top, a quiet XY stage (like a 3D printer's) moves a strong permanent magnet. The pen carries one small magnet (6.35 mm, 0.75 g) in a keel under its fixed sleeve. The board pulls the pen, and so the hand, along the letter. The pen's nose still makes the fine ±3 mm corrections of the ink.
+- **Force and speed (CALC).**
+  - 1.2 N available in every direction on A4, capped at 0.4 N in software.
+  - No power to hold the force.
+  - About 25 Hz and 8 ms.
+  - Size: 300 × 420 × 57 mm, about 4 kg.
+- **What 0.4 N does to a hand (CALC).** A relaxed hand moves about 0.76 mm per 0.1 N; a lightly resisting one about 0.35 mm. So the board leads a relaxed hand and only nudges a firm one. **The writer is always in charge.**
+- **Practice results (SIM):**
+  - tracing error 1.49 → 0.63 mm with full guidance, and 0.085–0.19 mm with the nose correcting the ink as well;
+  - Parkinson's "write big" loops reach 0.93 of the target instead of 0.83;
+  - in dictation spelling practice it cannot turn a letter you are set on into another (a 'b' stays a 'b'), but with a relaxed hand it can **demonstrate** the right letter (94 % of a 'd' on the correct side).
+- **Limits.**
+  - While guiding, the pen is pulled down by about 1 N extra.
+  - It guides a moving pen, not a still one.
+  - Learning must be shown without the board: guidance fades, with unassisted catch letters (LIT HAP-01…06).
+- **Before building it:** test the guidance laws on people with a commercial haptic arm (3D Systems Touch, HAP-52).
 
 ## 8. Do we need optics, sensors, weights, electromagnets, custom mechanics?
 
@@ -134,12 +143,12 @@ A desk board under the paper that can physically steer the pen along whole lette
 |---|---|---|
 | Motion sensor (IMU) | Yes | Measures the shake; the tracker separates it from writing |
 | Optics (paper sensor) | Yes, in the bigger pen | Where the tip is on the page: needed for guidance and capture; helps the tracker |
-| Electromagnets (voice coils) | Yes | Move the nose, and so the ink tip, by up to 3 mm, fast enough to cancel shake |
+| Electromagnets (voice coils) | Yes, in the pen | Move the nose, and so the ink tip, by up to 3 mm, fast enough to cancel shake |
 | Custom mechanics | Yes | The flexure pivot, the nose, the skid ring and the fixed sleeve |
 | Force and position sensors | Yes | Pen-down, writing force, nose position |
 | Vibration motor | Yes | Cues |
 | Weights | Maybe | A heavier handle damps some shake for some people with essential tremor (LIT ACT-18, ACT-19) but not Parkinson's tremor (LIT ACT-32). The active inertial module adds a little (§6) |
-| Guidance board | Optional, for practice | Real guiding force over whole letters |
+| Guidance board (permanent magnet under the paper) | Optional, for practice | Real guiding force over whole letters; permanent magnets, not electromagnets (no holding power) |
 | AI in the phone app | Yes | Reads the writing, spots spelling, gives cues, keeps corrected notes |
 
 **Evidence levels for the benefits.**
