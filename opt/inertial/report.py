@@ -441,8 +441,8 @@ def make_figures(S: Dict, akf_params=None) -> List[str]:
             panels[f"{amp:g} mm tremor"] = ser
         files.append(FG.lines_panels("fig_in_calib", "Per-user tremor-band calibration of the tracker (Rev H-B nose, r_rot 0.5)", panels,
                                      "tremor frequency (Hz)", "ink error ratio", ylim=(0, 1.15), hline=1.0,
-                                     note="SIM, test seeds 200-203. The open-band tracker locks onto the second harmonic at 4-6 Hz; limiting the "
-                                          "search to 0.75-1.3 x the user's calibrated frequency (set 10 % high here) removes the lock."))
+                                     note="SIM, test seeds 200-203. At 4-6 Hz the open-band tracker's frequency estimate sits at 8-11 Hz; limiting the "
+                                          "search to 0.75-1.3 x the user's calibrated frequency (set 10 % high here) fixes the estimate and helps at 6 Hz, not at 4 Hz."))
     # 4. add-on dot plot
     sa = S["addon"]
     cats = {"nose (Rev H)": "nose", "nose + passive weight 27.8 g": "nose+weight", "nose + reaction mass, feed-forward": "nose+ff",

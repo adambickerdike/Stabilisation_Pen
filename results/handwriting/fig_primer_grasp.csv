@@ -28,6 +28,8 @@ lra,handle,94.0,97.0,8.0,8.0,"Gentle buzz cues (write bigger, slow down, check a
 usb,handle,150.0,153.5,,,Charging and on/off / mode button (side port so the rear cap stays free).
 rear_cap,handle,167.0,170.0,22.0,20.0,Closes the handle.
 optical,handle,14.0,20.0,,,Optical sensor beside the nose that sees the paper: page position for capture and the trac
+board_magnet,handle,11.91,15.09,6.35,6.35,Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N 
+board_keel,handle,11.41,15.59,,,Moulded bump under the fixed front sleeve holding the board magnet close to the paper.
 rm_frame,handle,151.0,169.0,20.0,20.0,"Houses the moving tungsten mass, its coils and flexures."
 rm_mass,inertial_mass,153.0,167.0,10.0,10.0,A heavy slug pushed sideways by coils: its reaction steadies the whole pen against the sha
 rm_coils,handle,153.0,167.0,19.0,19.0,Four flat coils facing magnets on the slug (2 axes).

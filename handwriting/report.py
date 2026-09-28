@@ -161,30 +161,47 @@ def fig_et_before_after(et: Dict, outdir: Path) -> None:
                     suptitle="Essential tremor: the same sentence, the same hand and tremor, with each pen")
 
 
-def fig_et_sensitivity(sens: Dict, outdir: Path) -> Dict:
+SENS_NAME = {"nominal": "This study", "open_loop_hand": "Drag not compensated", "stiff_grip_x2": "Grip twice as stiff",
+             "contact_gating": "Nose acts only in contact", "revH_lead_defaults": "Lead's first Rev H values"}
+DEV_SHORT = {"weighted": "weighted pen", "revH_off": "Rev H, nose held", "pencil_akf": "pencil + tracker",
+             "revH_akf_revh": "Rev H + re-tuned tracker", "revH_oracle": "Rev H, perfect knowledge"}
+
+
+def fig_et_sensitivity(sens: Dict, outdir: Path, et: Optional[Dict] = None) -> Dict:
     if not sens:
         return {}
     panels = []
     summary = {}
+    variants = [(k, v) for k, v in sens.items() if not k.startswith("_")]
+    if et:                                   # the nominal case: the same writers with seed 200 from the main grid
+        rows = [r for o in et["outs"] if o["writer"] in (0, 1, 2, 3, 4, 5) for r in o["rows"] if r["seed"] == 200]
+        nominal = {}
+        for case in ("10Hz_1mm", "6Hz_1mm"):
+            f0, amp = float(case.split("Hz")[0]), float(case.split("_")[1].rstrip("mm"))
+            sel = [r for r in rows if r["f0"] == f0 and abs(r["amp_mm"] - amp) < 1e-9]
+            for dv in DEV_SHORT:
+                v = [r["devices"][dv]["ink_err_um"] / r["devices"]["none"]["ink_err_um"] for r in sel if dv in r["devices"]]
+                if v:
+                    nominal.setdefault(dv, {})[case] = {"ink_err_ratio": float(np.mean(v))}
+        variants = [("nominal", {"aggregate": {"by_condition": nominal}})] + variants
     for case in ("10Hz_1mm", "6Hz_1mm"):
         labels, vals, cols = [], [], []
-        for vname, v in [("nominal", None)] + list(sens.items()):
-            if vname == "nominal" or vname.startswith("_"):
-                continue
+        for vname, v in variants:
             bc = v["aggregate"]["by_condition"]
-            for dv in ("weighted", "revH_off", "pencil_akf", "revH_akf_revh", "revH_oracle"):
+            for dv in DEV_SHORT:
                 c = bc.get(dv, {}).get(case)
                 if c is None:
                     continue
-                labels.append(f"{vname}: {dv}")
+                labels.append(f"{SENS_NAME.get(vname, vname)}: {DEV_SHORT[dv]}")
                 vals.append(c["ink_err_ratio"])
                 cols.append(DEV_COL[dv])
                 summary.setdefault(case, {}).setdefault(vname, {})[dv] = c["ink_err_ratio"]
-        panels.append({"title": f"Ink error relative to the ordinary pen, {case.replace('_', ', ')}", "labels": labels,
-                       "values": vals, "colors": cols, "xlabel": "ratio (1 = ordinary pen)", "ref": 1.0, "fmt": "{:.2f}"})
+        panels.append({"title": f"Ink error relative to the ordinary pen, {case.replace('Hz_', ' Hz, ').replace('mm', ' mm')}",
+                       "labels": labels, "values": vals, "colors": cols, "xlabel": "ratio (1 = ordinary pen)", "ref": 1.0,
+                       "fmt": "{:.2f}"})
     FG.bars_chart(outdir / "fig_et_sensitivity.png", panels, "SIMULATION (model HW1): sensitivity",
-                  "writers 0-5, seed 200; open-loop hand = P1 convention; stiff grip = 2x HAP-26; contact gating = P1 convention",
-                  ncols=2, size=(13.0, 7.5))
+                  "writers 0-5, seed 200. Drag not compensated and contact-only nose = P1 conventions; grip twice as stiff = 2x HAP-26",
+                  ncols=2, size=(13.0, 8.0))
     return summary
 
 
@@ -281,14 +298,15 @@ def fig_practice(pr: Dict, outdir: Path) -> None:
         if prof not in viz:
             continue
         v = viz[prof]
-        r = next((r for r in rows if r["profile"] == prof and r["seed"] == 200), None)
+        vs = v.get("seed", 200)
+        r = next((r for r in rows if r["profile"] == prof and r["seed"] == vs), None)
         metrics = {}
         for c in keys:
             if r and c in r["conds"]:
                 m = r["conds"][c]
                 metrics[c] = (f"ink vs target {_fmt_um(m['target_err_um'])}  ·  letters read {m['letters_read_ok']:.0%}\n"
                               f"device share of the ink motion {m['device_share']:.0%}")
-        cols.append({"title": f"{prof}-like learner (writer {writer}, seed 200); green = target letters",
+        cols.append({"title": f"{prof}-like learner (writer {writer}, seed {vs}); green = target letters",
                      "paths": {c: v[c] for c in keys if c in v}, "intended": v["intended"], "metrics": metrics,
                      "x_height": v.get("x_height_mm", 2.5), "target": [np.asarray(s) * 1e3 for letter in v["target"] for s in letter],
                      "show_intended": False})
@@ -325,11 +343,12 @@ def fig_spelling(pr: Dict, outdir: Path) -> Dict:
             viz, rows = o["viz"], o["rows"]
     if not viz or "dyslexia" not in viz:
         return {}
-    r = next((r for r in rows if r["profile"] == "dyslexia" and r["seed"] == 200), None)
+    vs = viz["dyslexia"].get("seed", 200)
+    r = next((r for r in rows if r["profile"] == "dyslexia" and r["seed"] == vs), None)
     sp = r["spelling"]
     ink = np.asarray(viz["dyslexia"]["none"])
     plotstyle.apply()
-    fig = plt.figure(figsize=(12.5, 5.2))
+    fig = plt.figure(figsize=(12.5, 5.6))
     ax = fig.add_axes([0.02, 0.50, 0.96, 0.40])
     FG.lined_panel(ax, ink[:, :2], ink[:, 2] > 0.5, viz["dyslexia"].get("x_height_mm", 2.5))
     ax.set_title("1. The ink stays exactly as written (the pen does not write for the user)", fontsize=10, loc="left")
@@ -368,16 +387,18 @@ def fig_crosscheck(cc: Dict, outdir: Path) -> Dict:
         return {}
     s = cc["summary"]
     labels, vals, cols = [], [], []
+    names = {"P1": "P1 (pencil model)", "HW1": "HW1, P1's conventions", "HW1_nominal": "HW1, this study"}
     for case, d in s.items():
         for model, col in (("P1", C[4]), ("HW1", C[0]), ("HW1_nominal", C[2])):
-            for k in ("oracle_band_ratio", "akf_band_ratio"):
-                labels.append(f"{case} {model} {k.split('_')[0]}")
+            for k, kl in (("oracle_band_ratio", "perfect knowledge"), ("akf_band_ratio", "tracker")):
+                labels.append(f"{case.replace('Hz_', ' Hz, ').replace('mm', ' mm')} | {names[model]} | {kl}")
                 vals.append(d[model][k])
                 cols.append(col)
-    FG.bars_chart(outdir / "fig_crosscheck.png", [{"title": "Pencil Rev P0: 3-15 Hz ink error ratio to the neutral pen - P1 vs HW1",
-                                                   "labels": labels, "values": vals, "colors": cols, "ref": 1.0}],
-                  "SIMULATION (P1 unmodified vs HW1)", "HW1 = P1 conventions (open-loop hand, contact gating); HW1_nominal = this study's conventions",
-                  ncols=1, size=(10.0, 7.0))
+    FG.bars_chart(outdir / "fig_crosscheck.png", [{"title": "Pencil Rev P0: 3-15 Hz ink error relative to its own neutral run, P1 against HW1",
+                                                   "labels": labels, "values": vals, "colors": cols, "ref": 1.0, "fmt": "{:.2f}",
+                                                   "xlabel": "ratio (1 = no correction)"}],
+                  "SIMULATION (P1 unmodified vs HW1)", "writers 0-5, seed 200; HW1 with P1's conventions = drag not compensated, nose only in contact",
+                  ncols=1, size=(11.0, 7.5))
     return s
 
 
@@ -445,7 +466,8 @@ def samples(et, pd, pr, outdir: Path) -> Dict:
             if not o.get("viz"):
                 continue
             for prof, v in o["viz"].items():
-                r = next((r for r in o["rows"] if r["profile"] == prof and r["seed"] == 200), None)
+                vs = v.get("seed", 200)
+                r = next((r for r in o["rows"] if r["profile"] == prof and r["seed"] == vs), None)
                 tgt = _target_path(v["target"])
                 for c in ("none", "cue", "nose_partial", "nose_full", "board_partial", "board_full", "nose_nogate"):
                     if c not in v:
@@ -453,7 +475,7 @@ def samples(et, pd, pr, outdir: Path) -> Dict:
                     m = r["conds"][c] if r else {}
                     panels.append({"id": f"practice_{prof}_{c}", "title": f"{prof}: {PRL[c]}",
                                    "condition": "guided_practice", "device": c,
-                                   "caption": f"{prof}-like learner (writer {o['writer']}) copying 'a big dog dug a deep pit by the pond'. "
+                                   "caption": f"{prof}-like learner (writer {o['writer']}, seed {vs}) copying 'a big dog dug a deep pit by the pond'. "
                                               "'intended' = the target copybook letters; 'hand_plan' = what the learner's hand does.",
                                    "evidence": "SIM", "intended": tgt, "hand_plan": _dec(v["intended"]), "ink": _dec(v[c]),
                                    "metrics": {k: (round(m[k], 4) if isinstance(m.get(k), float) else m.get(k)) for k in
@@ -507,7 +529,7 @@ def build(quick: bool = False, timing: Optional[Dict] = None, outdir: Path = RES
         out["et"] = {"aggregate": et["aggregate"], "grid": et.get("grid"), "headlines": et_headlines(et["aggregate"]),
                      "inputs": et.get("inputs")}          # the tracker and Rev H values these results used
     if sens:
-        out["et_sensitivity"] = {"summary": fig_et_sensitivity(sens, outdir),
+        out["et_sensitivity"] = {"summary": fig_et_sensitivity(sens, outdir, et),
                                  "aggregates": {k: v["aggregate"] for k, v in sens.items() if not k.startswith("_")},
                                  "inputs": sens.get("_inputs")}
     if pd:

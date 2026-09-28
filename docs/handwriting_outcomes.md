@@ -6,7 +6,21 @@
 
 **Inputs used.** Rev H: the final `results/revH/tip_params.json` (architecture B, ±3 mm, 0.837 N peak and 0.21 N continuous at the tip, 2.97 g moving mass, 80 Hz servo, 75 g pen). Board: the final `results/board/board_params.json` and the board study's own guidance law. Tracker: `results/opt/tracker_models/akf_ship.json` (as shipped) and `results/opt/inertial_tracker_revh.json` (re-tuned for Rev H). Section 7 lists what was assumed.
 
-<!-- SECTION1 -->
+## 1. Short answer
+
+![ET before and after](../results/handwriting/fig_et_before_after.png)
+
+<!--SHORT_ET-->
+
+- **Parkinson's micrographia (SIM, assumed responses).** Without help, letters shrink from 5.1 to 4.2 mm along a pangram.
+  - A vibration cue keeps them at 5.2 mm, *if* people respond as small studies suggest (LIT PDT-19). It costs about 11 % more writing time.
+  - Lines 1 cm apart halve the shrinkage.
+  - A fixed "size assist" in the nose only rescales the shrinking letters, and it enlarges the tremor and crowds the letters.
+  - An adaptive vertical size assist restores the size with little cost in the ink. But it hides the problem from the writer. It is the only size-assist variant worth testing, against lines and the cue.
+- **Poor handwriting (SIM).** Nose guidance brings the ink 35–61 % closer to the copybook letters while guidance is on. The device then causes 23–38 % of the ink's movement. Full guidance does not make letters more readable. The literature says guidance helps fluency more than shape, and its effects mostly vanish when it is switched off (LIT HAP-10, HAP-42, HAP-43). Handwriting programmes with fewer than 20 practice sessions did not work (LIT HAP-41). So a benefit must be shown in unassisted writing after such a programme.
+- **Dyslexia.** Dyslexia is mainly a phonological (sound–letter) difficulty (LIT HAP-47). The pen must not write for the user, and here it never turned a reversed or wrong letter into the right one (0 %). The benefit is in the app. With a known target it flags 100 % of misspelled words; in free writing its autocorrect repairs only 4 % (SIM).
+- **The guidance board** pushes the hand, not the tip. It gives 24–34 % closer letters during guidance, in line with the board study once the differences in task and sensing noise are allowed for (§5).
+- **Everything above is simulation** on synthetic writers. Section 8 lists the experiments that would test it, and `handwriting/score_recording.py` scores real recordings with the same definitions.
 
 ## 2. How a pen is held and how writing moves
 
@@ -160,9 +174,121 @@ One PD-like writer copying the pangram with each kind of help, on ruled lines 10
 7. **Letters stay readable** at these sizes (94–97 % letters, 88–92 % words, SIM). The app's reader normalises size, so micrographia at 4 mm does not make letters unreadable to it. The benefit to aim for is the writer's own size and comfort, not the app's reading. LIT PDT-38: kinematic measures separate PD from controls better than size.
 8. **The 75 g pen** puts 7 % more tremor into the ink than a 12 g pen at 4–6 Hz (124 against 116 µm, SIM; the grip effect of §3).
 
-<!-- SECTION5 -->
+## 5. Guided practice and spelling
 
-<!-- SECTION6 -->
+![Guided practice](../results/handwriting/fig_practice_before_after.png)
+
+The same learner copying "a big dog dug a deep pit by the pond" with each kind of guidance (SIM). Green = the target letters. Left: a learner with poorly formed letters. Right: a learner who reverses b/d and p/q and misspells one word (seed 201 is shown because seed 200 drew no reversal; every seed counts in the numbers below).
+
+**Set-up (SIM).**
+- The six test writers become learners with an error model (§7 item 15):
+  - *dysgraphia-like:* 60 % of letters malformed, plus size and baseline irregularity;
+  - *dyslexia-like:* normal letter shapes, 35 % of b/d and p/q reversed, and 'deap' for 'deep'.
+- **Target:** the copybook letter in the learner's size and slant, anchored where the learner first touches down in that letter. The app knows the text (copying or dictation).
+- **Cue:** a buzz when the app misreads a letter against the target, or when its ink is more than 0.3 x-height from the target. The ink is not changed.
+- **Nose guidance:** the nose pulls the ink toward the matching stroke of the target, within ±3 mm. Partial = gain 0.5, full = gain 1. A capture gate lets it act only within 2–3 mm of the target, and it lets go after 60 ms beyond 2.5 mm. "No gate" removes both: this is what "the pen writes for you" would look like.
+- **Board:** the final board file and the board study's own law (`board/control.py`):
+  - partial = no force inside a 1 mm band, then 0.10 N/mm;
+  - full = 0.20 N/mm plus a 0.1 N pull along the letter;
+  - cap 0.4 N, slew 8 N/s, and it yields after 0.3 s beyond 4 mm.
+  - The magnet sits on the handle, so the board pushes the hand. Its sensing noise is 0.18 mm. Its 1 N pull adds paper drag that the writer does not compensate.
+- **Passive hand:** the learner neither follows nor resists (an upper bound for being steered).
+- **Device share** = how much of the ink's movement the device caused, against the same hand without guidance.
+
+![Guided practice summary](../results/handwriting/fig_practice_summary.png)
+
+**Results** (SIM; 24 runs per learner type):
+
+| Guidance | Dysgraphia-like: distance to target | letters read | device share | Dyslexia-like: distance to target | letters read | reversed or wrong letters read as the target |
+|---|---|---|---|---|---|---|
+| None | 582 µm | 92 % | 0 % | 616 µm | 83 % | 0 % |
+| Cue on error (ink unchanged) | 582 µm | 92 % | 0 % | 616 µm | 83 % | 0 % |
+| Nose, partial | 377 µm (−35 %) | 94 % | 23 % | 463 µm (−25 %) | 84 % | 0 % |
+| Nose, full | 225 µm (−61 %) | 86 % | 38 % | 369 µm (−40 %) | 77 % | 0 % |
+| Nose, no gate | 97 µm (−83 %) | 85 % | 39 % | 108 µm (−82 %) | 77 % | 0 % |
+| Board, partial | 444 µm (−24 %) | 91 % | 27 % | 507 µm (−18 %) | 83 % | 0 % |
+| Board, full | 384 µm (−34 %) | 85 % | 25 % | 417 µm (−32 %) | 79 % | 0 % |
+
+**What the table says.**
+1. **Guidance brings the ink closer to the target, but the device then writes part of it.** Full nose guidance cuts the distance to the target by 61 %. The device then causes 38 % of the ink's movement (SIM). Partial guidance cuts it by 35 % with a 23 % device share.
+2. **Closer is not more readable.** Full guidance, from the nose or the board, *lowers* letter reading (92 → 85–86 %). With a passive hand, a strong pull makes hybrids of the learner's letter and the target (for example, a malformed 'a' becomes a hook). Partial nose guidance is the only kind that reads slightly better (94 %). A learner who actively follows would do better; one who resists, worse.
+3. **Nothing turns a wrong letter into the right one.** Reversed and wrong letters were read as the target 0 % of the time with every kind of guidance, even without the gate (SIM). The gate and the ±3 mm travel make sure the pen does not write for the user. The board study's supervisor also yields to a determined writer (SIM there: 0 % of a reversed bowl moved to the correct side).
+4. **The cue finds reversals and wrong letters, not poor shapes.** When the app knows the target, it flags 100 % of reversed and wrong letters (3 % false alarms). It flags only 24 % of malformed letters (4 % false alarms), because the app still reads most malformed letters (SIM).
+5. **Agreement with the board study.** The board study found tracing errors of 1.49 → 1.07 mm (partial, −28 %) → 0.63 mm (full, −58 %) (SIM, `docs/guidance_board.md` §5.3). Here the board gives −24 % and −34 %. Partial agrees. Full gains less here for three reasons:
+   - the errors here are letter-sized and change 3–7 times per second, while the board's force can change by only 8 N/s (50 ms from 0 to 0.4 N) with a bandwidth of about 25 Hz; the board study used smooth deviations 7–26 mm long;
+   - this study includes the board's 0.18 mm sensing noise, while the board study's guidance simulation senses the handle exactly (on tuning data, removing the noise gives −38 % instead of −32 %, and 87 % instead of 79 % of letters read);
+   - (both studies include the magnet's extra 1 N of pull on the page).
+   The board's "lead-through" mode, in which a relaxed hand is led through a letter (94 % success in the board study), was not simulated here. There the device writes the letter by design. It can serve as a demonstration, never as the learner's work.
+
+**What the literature says about guided practice.**
+- Guidance mainly improves **fluency** (fewer speed peaks, higher speed), not **shape** (LIT HAP-10, HAP-11).
+- Effects seen *during* guidance largely **vanish when guidance is off** (LIT HAP-43). Kinesthetic training did not improve legibility (LIT HAP-42). Trajectory-timed guidance improved shape with next-day retention, but path guidance did not (LIT HAP-44). Partial-then-full guidance beat either alone (LIT HAP-13, abstract only).
+- Handwriting interventions need **practice, at least 20 sessions** (LIT HAP-41). The pen cannot replace practice.
+- So the only valid test of guidance is **unassisted writing at retention** (EXP-HW4). In this model the learner does not learn, so it says nothing about learning.
+
+**Spelling help for dyslexia (SIM + CALC).**
+
+![Spelling help](../results/handwriting/fig_spelling.png)
+
+- Dyslexia is mainly a **phonological** difficulty. Children with dyslexia write as fast as their peers but pause more within words, and spelling explains their written output (LIT HAP-47, HAP-48). So spelling help belongs in the **app**, and the pen must not change the ink.
+- In the 24 dyslexia-like runs there were 78 misspelled words. When the app knows the target text (copying or dictation), it flags all 78 (100 %). It also flags 10 of 162 correct words (6 %) because it misreads them (SIM).
+- In **free writing** the app's lexicon correction repaired only 3 of the 78 (4 %) (SIM). It is tuned for letter-reading errors and changes a word only when it is confident. Real-word errors ('bog' for 'dog', 'bug' for 'dug', 'dig' for 'big') cannot be caught without knowing the target. A confusion model for b/d, p/q and sound-alike errors would be needed (app work, not pen work).
+- Spell checking has a large effect on error rates in adults with learning disabilities (LIT HAP-50: Hedges g −1.63), and smart pens a moderate one (g 0.45). A structured phonics programme (Orton-Gillingham) had no significant effect on spelling (LIT HAP-47). The app should flag gently, show and read the right spelling, and keep a corrected copy next to the untouched ink (EXP-HW5).
+
+## 6. What each function can do for each condition
+
+**Evidence labels:**
+- **SIM** = this study's simulation (synthetic writers).
+- **SIM (board study)** = `docs/guidance_board.md`.
+- **CALC** = a calculation.
+- **LIT** = published studies, with their ledger ids. "Analogue" means the same kind of device in another task, such as a spoon.
+- Nothing has been tested with people or with hardware.
+
+**Essential tremor**
+
+| Function | Expected benefit | Evidence | Must be tested |
+|---|---|---|---|
+| Tremor stabiliser (nose + tracker) | <!--ET_STAB--> | SIM (HW1, cross-checked with P1). Analogue: active spoons helped, but no more than a deeper, heavier spoon (LIT ACT-19) | EXP-HW2, then the EXP-B09 bench test |
+| Pen mass and 22 mm grip | <!--ET_MASS--> | SIM. LIT mixed: weighted spoons are liked (ACT-18, ACT-19); inertial loading reduced postural ET tremor (PDT-22) | EXP-HW1 |
+| Vibration cue | None expected | – | – |
+| Size assist | None: ET letters are normal in size (LIT PDT-06) | LIT | – |
+| Nose guidance | Only for tracing or copying practice; not a tremor treatment | – | – |
+| Guidance board | Cannot cancel tremor. A 0.4 N force at 8 Hz must change at 20 N/s, but the board slews at 8 N/s with about 25 Hz bandwidth (CALC). It could steady slow drift while tracing | CALC | – |
+| App AI | Reads the words that survive. Word errors 32 → 10 % at 7 % letter errors (CALC, DEC-020). Cannot rescue scribble: 5–9 % of words read at 2 mm tremor (SIM) | CALC + SIM | EXP-A03 (autocorrect on real notes) |
+
+**Parkinson's disease (micrographia)**
+
+| Function | Expected benefit | Evidence | Must be tested |
+|---|---|---|---|
+| Tremor stabiliser | Little. PD tremor while writing is small and 4–6 Hz, where the tracker does nothing (SIM) | SIM. LIT: gyroscopic spoon in PD inconsistent (ACT-31); weights no effect on PD tremor (ACT-32); a weighted pen made letter spacing more variable (PDT-21) | Not a PD claim |
+| Vibration cue "write bigger" | Keeps letters at their start size (5.2 against 4.2 mm) for +11 % time and +17 % jerk, **if** people respond as assumed | LIT, small and short-term: cues normalise size through longer movement time (PDT-19); 1 cm cues help and 0.6 cm cues harm (PDT-18). SIM with the assumed response | EXP-HW3 |
+| Lines ≥ 1 cm (paper or app) | Halves the shrinkage (4.85 mm at the end) | LIT: +31 % word length with lines (PDT-33); PDT-18. SIM with the assumed response | Baseline arm of EXP-HW3 |
+| Size assist, fixed gain | Rescales but does not stop the shrinking. +33 % tremor in the ink, 50 % of letters touching, jerk ×2.5 | SIM only (new function) | Not recommended |
+| Size assist, adaptive vertical | Restores the start size (5.2 mm) with jerk +25 % and tremor +5 %. Risks: hides the deficit (LIT PDT-35), visual adaptation (PDT-34), dependence | SIM only (new function) | EXP-HW3: agency, after-effect with the assist off, fluency |
+| Nose guidance | "Write big" practice with large targets; not simulated here | LIT: amplitude training enlarges writing but costs fluency (PDT-17) | EXP-HW3 extension |
+| Guidance board | "Write big" practice: loop height 0.83 → 0.93 of the target | SIM (board study) | EXP-G05, then a PD practice pilot |
+| App AI | Measures letter size, speed and jerk in every note (`score_recording.py` definitions); still reads 92 % of words at 4 mm letters (SIM) | SIM + CALC. LIT: speed and fluency separate PD from controls better than size (PDT-38) | Outcome measures of EXP-HW3 |
+
+**Poor handwriting (dysgraphia-like)**
+
+| Function | Expected benefit | Evidence | Must be tested |
+|---|---|---|---|
+| Tremor stabiliser | None (no tremor) | – | – |
+| Vibration cue on error | Flags 24 % of malformed letters (4 % false alarms); the ink is not changed | SIM | Arm of EXP-HW4 |
+| Size assist | None | – | – |
+| Nose guidance | During guidance: 35 % (partial) to 61 % (full) closer to the target. The device then causes 23–38 % of the ink's movement. Full guidance lowers readability (92 → 86 %). Learning: unknown | SIM. LIT: guidance improves fluency more than shape, and gains mostly vanish without it (HAP-10, HAP-11, HAP-13, HAP-42, HAP-43, HAP-44) | EXP-HW4: unassisted retention after ≥ 20 sessions (HAP-41) |
+| Guidance board | During guidance: 24 % (partial) to 34 % (full) closer; 25–27 % device share | SIM (this study and the board study). LIT: magnetic guidance halved the error during guidance (HAP-16) | Arm of EXP-HW4; EXP-G05 |
+| App AI | Letter-by-letter legibility feedback; a readable copy of notes | CALC | EXP-A03 |
+
+**Dyslexia**
+
+| Function | Expected benefit | Evidence | Must be tested |
+|---|---|---|---|
+| Tremor stabiliser, size assist | None | – | – |
+| Vibration cue (target known) | Flags 100 % of reversed and wrong letters (3 % false alarms) | SIM | EXP-HW5 |
+| Nose guidance | None, by design: it never turned a reversed or wrong letter into the right one (0 %), and it must not | SIM. LIT: dyslexia is mainly phonological (HAP-47) | – |
+| Guidance board | Lead-through can *demonstrate* a letter to a relaxed hand (94 % in the board study). The device then writes the letter | SIM (board study) | Demonstration only, with consent; never as the learner's work |
+| App AI (spelling) | With a known target (dictation, copying): flags 100 % of misspelled words (6 % false flags). Free writing: repairs 4 %; real-word errors are missed | SIM + CALC. LIT: spell checking g −1.63 on error rate (HAP-50); pauses and spelling drive output (HAP-48) | EXP-HW5 |
 
 ## 7. Assumptions
 
@@ -232,7 +358,7 @@ Order: EXP-HW1 and EXP-HW2's offline part first. They need no prototype and they
 
 ```
 python3 -m handwriting.run_study [--quick] [--workers 1] [--stages tuning et et_sens pd practice crosscheck figures]
-python3 -m pytest -q handwriting/tests          # 17 fast tests, about 10 s
+python3 -m pytest -q handwriting/tests          # 16 fast tests, about 10 s
 ```
 
 The stages cache their results in `results/handwriting/_cache/`. `--stages figures` rebuilds every figure, `outcomes.json`, `samples.json` and `evidence_rows.csv` from the caches in about a minute.

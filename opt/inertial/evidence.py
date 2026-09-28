@@ -194,7 +194,7 @@ def study_rows(out) -> List[Dict]:
         comparator="Rev H without correction; perfect knowledge (oracle)", key_quantitative_findings=(
             "Mean ink error ratio at 8-12 Hz, 1-2 mm: " + "; ".join(f"r_rot {rr}: causal {_f(bb[f'revh_r{rr}']['causal'])} (oracle {_f(bb[f'revh_r{rr}']['oracle'])})"
                                                                 for rr in (0.3, 0.5, 0.7)) +
-            f". No causal correction at 4-6 Hz (ratio ~1.0: the tracker locks onto the second harmonic, OPT-49). False correction on tremor-free "
+            f". No causal correction at 4-6 Hz (ratio ~1.0: the tracker's frequency estimate does not lock onto 4-6 Hz tremor, OPT-49). False correction on tremor-free "
             f"writing: Rev H tracker {_f(B['distortion']['revh']['lognormal_um'], 1)} um (lognormal) / {_f(B['distortion']['revh']['glyph_um'], 1)} um (glyph), "
             f"shipped {_f(B['distortion']['ship']['lognormal_um'], 1)} / {_f(B['distortion']['ship']['glyph_um'], 1)} um. Power {_f(out['power_battery']['P_total_W_typical'], 3)} W "
             f"typical -> {_f(out['power_battery']['life_h'], 0)} h on the {out['power_battery']['cell']}."),
@@ -286,12 +286,12 @@ def study_rows(out) -> List[Dict]:
             doi_or_url="results/opt/inertial_opt.json calibrated_band; results/opt/fig_in_calib.png", source_type="derived simulation", evidence_class="numerical simulation",
             task_or_setup="Rev H-B nose, Rev H tracker; band set from a calibration 10 % above the true tremor frequency; development on training seeds 300-303, test seeds 200-203",
             comparator="open-band Rev H tracker", key_quantitative_findings=(
-                "Open band: mean frequency estimate 8.0 Hz for 4 Hz tremor and 12.0 Hz for 6 Hz at 2 mm (second-harmonic lock), no correction. Calibrated band, r_rot 0.5: " +
+                "Open band: the frequency estimate sits at 8-11 Hz for 4-6 Hz tremor (8.0 Hz for 4 Hz at 2 mm, the second harmonic), no correction. Calibrated band, r_rot 0.5: " +
                 ", ".join(f"{a:g} mm {f:g} Hz {_f(v)}" for (a, f), v in sorted(lo.items()) if f <= 6.0) +
                 ". False correction with the band set for " + ", ".join(f"{k} Hz: {_f(v['lognormal'], 1)} / {_f(v['glyph'], 1)} um" for k, v in cb["distortion"].items())),
             units_and_conditions="ink error ratio; um lognormal / glyph", locator="calibrated_band", limitations="Calibration accuracy assumed (+10 %); tremor frequency drift within a session not modelled",
             relevance_to_design="Parkinson's rest and action tremor lie at 4-7 Hz", transferability="medium", transferability_reason="Simulated tremor with a fixed frequency",
-            design_implication="Offer the calibrated band only for tremor at about 5.5-7 Hz (below that it moves tremor-free writing by 35 um); test on recorded tremor (EXP-I07, proposed, with EXP-E01)", stream="OPT", **common))
+            design_implication="Offer the calibrated band only for tremor at about 5.5-7 Hz (below that it moves tremor-free writing by about 34 um); test on recorded tremor (EXP-I07, proposed, with EXP-E01)", stream="OPT", **common))
     try:
         from . import board_magnet as BM
         from . import geometry as GE

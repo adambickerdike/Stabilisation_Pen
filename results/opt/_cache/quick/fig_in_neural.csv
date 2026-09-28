@@ -1,0 +1,3 @@
+panel,series,iteration (-1 = after cloning the feed-forward),tip ratio (linear model)
+validation windows (seeds 316-317),ratio with / without policy,-1,0.954448
+validation windows (seeds 316-317),ratio with / without policy,3,0.952424

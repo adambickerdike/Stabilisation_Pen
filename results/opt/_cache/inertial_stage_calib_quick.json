@@ -1,0 +1,131 @@
+{
+  "band": [
+    0.75,
+    1.3
+  ],
+  "dev_rows": [
+    {
+      "seed": 300,
+      "f0": 4.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "writer": "lognormal",
+      "unmod_e_rms_um": 791.7109762517618,
+      "unmod_band_um": 651.7293622610068,
+      "unmod_int_band_um": 650.8991255020699,
+      "akf_f_est_mean": 4.396435575714493,
+      "akf": {
+        "ratio": 0.9933955376573578,
+        "band_ratio": 0.9882890497361412,
+        "e_rms_um": 786.4821509228506,
+        "q_sat_frac": 0.0,
+        "q_rms_um": 36.71948805929253,
+        "int_band_ratio": 0.9874582832389374
+      },
+      "cal_err": 1.1
+    },
+    {
+      "seed": 300,
+      "f0": 10.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "writer": "lognormal",
+      "unmod_e_rms_um": 979.3935167372538,
+      "unmod_band_um": 630.9680772868239,
+      "unmod_int_band_um": 623.8677943520063,
+      "akf_f_est_mean": 10.294521554061166,
+      "akf": {
+        "ratio": 0.7045897537146547,
+        "band_ratio": 0.3824393688624848,
+        "e_rms_um": 690.0706367476312,
+        "q_sat_frac": 0.0,
+        "q_rms_um": 480.8639243335645,
+        "int_band_ratio": 0.37294059903579346
+      },
+      "cal_err": 1.1
+    }
+  ],
+  "test_rows": [
+    {
+      "seed": 200,
+      "f0": 4.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "writer": "lognormal",
+      "unmod_e_rms_um": 941.4735747831883,
+      "unmod_band_um": 735.237569157604,
+      "unmod_int_band_um": 716.7598014843588,
+      "akf_f_est_mean": 4.369298675773649,
+      "akf": {
+        "ratio": 0.9942560770807304,
+        "band_ratio": 0.9919374858136654,
+        "e_rms_um": 936.0658231391044,
+        "q_sat_frac": 0.0,
+        "q_rms_um": 34.46732055603888,
+        "int_band_ratio": 0.9921901457402689,
+        "F_tip_rms_N": [
+          0.012153522006108392,
+          0.017596802584134742
+        ],
+        "F_tip_peak_N": [
+          0.09248096565809036,
+          0.03156065252239966
+        ],
+        "P_cu_W": 0.003626815299609468,
+        "P_total_W": 0.08062681529960947,
+        "tip_speed_peak_m_s": 0.007304352956239298
+      },
+      "r_rot": 0.5
+    },
+    {
+      "seed": 200,
+      "f0": 10.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "writer": "lognormal",
+      "unmod_e_rms_um": 1079.750130863056,
+      "unmod_band_um": 736.5466363098969,
+      "unmod_int_band_um": 735.6272442224105,
+      "akf_f_est_mean": 9.808136088895774,
+      "akf": {
+        "ratio": 0.6907521703433805,
+        "band_ratio": 0.36626641066053744,
+        "e_rms_um": 745.8397463222051,
+        "q_sat_frac": 0.0,
+        "q_rms_um": 523.7519207940494,
+        "int_band_ratio": 0.35870342851726966,
+        "F_tip_rms_N": [
+          0.012017143245055616,
+          0.015158187507815545
+        ],
+        "F_tip_peak_N": [
+          0.1119610330044786,
+          0.04495645260218189
+        ],
+        "P_cu_W": 0.0029672545942750687,
+        "P_total_W": 0.07996725459427506,
+        "tip_speed_peak_m_s": 0.10825426728657536
+      },
+      "r_rot": 0.5
+    }
+  ],
+  "distortion": [
+    {
+      "seed": 200,
+      "writer": "lognormal",
+      "distortion_um": 39.158328187341894,
+      "lag_ms": 0.0,
+      "amp_ratio": 0.9976538359581538,
+      "f_cal": 4.4
+    },
+    {
+      "seed": 200,
+      "writer": "lognormal",
+      "distortion_um": 2.411863250973313,
+      "lag_ms": 0.0,
+      "amp_ratio": 1.0001560927310422,
+      "f_cal": 11.0
+    }
+  ],
+  "label": "SIM (model H1, Rev H-B nose, Rev H tracker setting with a per-user calibrated frequency band)"
+}

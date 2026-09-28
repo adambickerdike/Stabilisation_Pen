@@ -383,7 +383,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     </div>
     <details class="data">
       <summary>Which data this page uses</summary>
-      <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json + provisional panels for the conditions not yet in it (micrographia_illustration, guided_sentence)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
+      <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
     </details>
     <nav class="toc" aria-label="On this page"><span>On this page</span>
       <a href="#pen">The pen in 3-D</a><a href="#scenes">How it works</a><a href="#grip">Holding a pen</a>
@@ -589,9 +589,9 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
         <figcaption>Where the bands overlap (about 4–6 Hz), shake and writing have the same rhythm. A simple filter cannot tell them apart; the pen's tracker has to learn which movement is yours.</figcaption>
       </figure>
       <div class="bandkey">
-        <div><span class="ln" style="--c:var(--accent)"></span><b>Handwriting movements</b> are mostly slower than 5 per second. <span class="tag lit"><i></i>Literature · CON-24</span></div>
-        <div><span class="ln" style="--c:var(--shake)"></span><b>Essential tremor</b>: 4 to 12 per second. <span class="tag lit"><i></i>Literature · PDT-07, PDT-31</span></div>
-        <div><span class="ln" style="--c:var(--t-lit)"></span><b>Parkinson's rest tremor</b>: 4 to 6 per second. It usually fades while writing. <span class="tag lit"><i></i>Literature · PDT-07, PDT-09</span></div>
+        <div><span class="ln" style="--c:var(--accent)"></span><span><b>Handwriting movements</b> are mostly slower than 5 per second.</span> <span class="tag lit"><i></i>Literature · CON-24</span></div>
+        <div><span class="ln" style="--c:var(--shake)"></span><span><b>Essential tremor</b>: 4 to 12 per second.</span> <span class="tag lit"><i></i>Literature · PDT-07, PDT-31</span></div>
+        <div><span class="ln" style="--c:var(--t-lit)"></span><span><b>Parkinson's rest tremor</b>: 4 to 6 per second. It usually fades while writing.</span> <span class="tag lit"><i></i>Literature · PDT-07, PDT-09</span></div>
         <p class="note">The average essential tremor is about 6 per second, and it gets slower with age. <span class="tag lit"><i></i>Literature · PDT-31</span> That puts most tremor right in the overlap, which is why telling shake from writing is the hardest part and still has to be tested on real writing.</p>
       </div>
     </div>
@@ -631,9 +631,9 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
             <rect x="32" y="8" width="5" height="8" class="sleevec"/><rect x="29" y="14" width="10" height="7" rx="1.5" class="magc"/>
           </g>
           <path class="garrow" d="M512 208 L 490 184" stroke-dasharray="3 3" stroke-width="1.6"/>
-          <path class="garrow" d="M494 176 l 44 0" marker-end="url(#ahg)"/>
-          <text class="sm" x="548" y="172">pulls the</text>
-          <text class="sm" x="548" y="187">sleeve magnet</text>
+          <path class="garrow" d="M494 176 l 36 0" marker-end="url(#ahg)"/>
+          <text class="sm" x="636" y="168" text-anchor="end">pulls the</text>
+          <text class="sm" x="636" y="190" text-anchor="end">sleeve magnet</text>
         </svg>
         </div>
         <figcaption>Left: the coil pushes the nose one way and the handle the other way. Your hand is far heavier than the nose, so the tip moves and your hand hardly does. Right: the board has the desk to push against. Its magnet, under the glass, pulls a small magnet in the pen's fixed sleeve, so it can lead the whole pen, and a relaxed hand, along a letter. It gives way if you push against it.</figcaption>
@@ -684,6 +684,8 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
 <tr data-part="refill"><td><span class="sw g-refill" aria-hidden="true"></span><b>Ink refill (D1 mini)</b><span class="where">Ink refill · z 3–67 mm · Ø2.35 × 64 mm</span><span class="pill move">moves with the nose</span></td><td>Standard replaceable refill; it slides along its axis on a soft constant-force spring so the ball stays on the paper while the nose tilts.</td><td>ISO 12757-2 D1 mini refill</td><td class="mono">DEC-004</td></tr>
 <tr data-part="front_sleeve"><td><span class="sw g-grip" aria-hidden="true"></span><b>Front sleeve (fixed grip)</b><span class="where">Finger sleeve · z 4.66–50 mm · Ø16–22 × 45.34 mm</span></td><td>Where the thumb, index and middle finger rest. It does not move; the nose moves inside it.</td><td>PEEK core + TPE overmould</td><td class="mono">AMF-24</td></tr>
 <tr data-part="carrier"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Moving nose (refill carrier)</b><span class="where">Moving nose · z 8–43.5 mm · Ø7 × 35.5 mm</span><span class="pill move">moves with the nose</span></td><td>Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to about 3 mm against the handle.</td><td>custom (Ti-6Al-4V tube 7/6 mm)</td><td class="mono">AMF-21</td></tr>
+<tr data-part="board_keel"><td><span class="sw g-grip" aria-hidden="true"></span><b>Keel for the board magnet (optional)</b><span class="where">Finger sleeve · z 11.41–15.59 mm · 6.29 × 7.35 × 4.17 mm</span><span class="pill opt">optional</span></td><td>Moulded bump under the fixed front sleeve holding the board magnet close to the paper.</td><td>PEEK / TPE, part of the sleeve moulding</td><td class="mono">AMF-24</td></tr>
+<tr data-part="board_magnet"><td><span class="sw g-magnet" aria-hidden="true"></span><b>Board magnet (optional)</b><span class="where">magnet · z 11.91–15.09 mm · Ø6.35 × 3.18 mm</span><span class="pill opt">optional</span></td><td>Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N sideways, about 1 N down while guiding). Magnetised along the pen axis. Fixed to the sleeve, not the nose.</td><td>K&amp;J D42-N52 NdFeB disc (6.35 x 3.17 mm)</td><td class="mono">AMF-91</td></tr>
 <tr data-part="optical"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Paper sensor (optional)</b><span class="where">Sensors · z 14–20 mm · 5 × 5 × 6 mm</span><span class="pill opt">optional</span></td><td>Optical sensor beside the nose that sees the paper: page position for capture and the tracker (1 kHz, 2 ms assumed).</td><td>to select (optical flow class)</td><td class="mono"><span class="muted">—</span></td></tr>
 <tr data-part="gimbal"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Flexure gimbal (2-axis)</b><span class="where">Pivot · z 43.5–46.5 mm · Ø17 × 3 mm</span></td><td>Laser-cut spring-steel cross flexures: the nose tilts in two directions with no friction or backlash; stiff along the pen.</td><td>custom (301 full-hard or 17-7PH 0.1 mm, laser-cut)</td><td class="mono">AMF-20</td></tr>
 <tr data-part="arm"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Rear arm</b><span class="where">Moving nose · z 46.5–75.75 mm · Ø5 × 29.25 mm</span><span class="pill move">moves with the nose</span></td><td>Carries the magnets behind the gimbal: the tip moves the opposite way, 1/lever times the magnet motion.</td><td>custom (aluminium 6061)</td><td class="mono"><span class="muted">—</span></td></tr>
@@ -795,8 +797,8 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div class="strong">Nothing on this page has been measured on a real pen or person yet.</div>
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
-    <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json + provisional panels for the conditions not yet in it (micrographia_illustration, guided_sentence)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 18:29 UTC from git 6da1c46-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:57:14+00:00</div>
+    <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
+    <div class="mono" id="provenance">Built 2026-09-28 18:40 UTC from git 7011045-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
   </footer>
 </div>
 

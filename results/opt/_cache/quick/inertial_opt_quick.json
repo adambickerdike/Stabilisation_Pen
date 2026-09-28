@@ -1,0 +1,322 @@
+{
+  "quick": true,
+  "summaries": {
+    "arch": {
+      "A_design": {
+        "arch": "A",
+        "travel_mm": 3.0,
+        "z_p_mm": 45.0,
+        "z_a_mm": 79.0,
+        "lever_tip_per_act": 1.3235294117647058,
+        "Km_tip": 0.3551111111111111,
+        "servo_hz": 80.0,
+        "servo_zeta": 0.7,
+        "handle_g": 66.41,
+        "nose_g": 7.881,
+        "total_g": 74.29,
+        "com_mm": 93.656,
+        "nose_inertia_about_pivot_g_mm2": 6022.263,
+        "moving_mass_at_tip_g": 2.974
+      },
+      "B_design": {
+        "arch": "B",
+        "travel_mm": 3.0,
+        "z_p_mm": 45.0,
+        "z_a_mm": 79.0,
+        "lever_tip_per_act": 1.3235294117647058,
+        "Km_tip": 0.3551111111111111,
+        "servo_hz": 80.0,
+        "servo_zeta": 0.7,
+        "handle_g": 67.07,
+        "nose_g": 7.881,
+        "total_g": 74.95,
+        "com_mm": 92.849,
+        "nose_inertia_about_pivot_g_mm2": 6022.263,
+        "moving_mass_at_tip_g": 2.974
+      },
+      "by_condition": [
+        {
+          "amp_mm": 0.3,
+          "f0": 6.0,
+          "A_oracle": 0.26833828968987433,
+          "A_causal_ship": 1.0005652953421054,
+          "A_P_cu_W": 0.8111753112103675,
+          "A_P_cu_no_bias_W": 4.256679865074927,
+          "A_N_std_N": 0.33885861325702155,
+          "B_oracle": 0.08916569640858003,
+          "B_causal_ship": 1.0029676129425573,
+          "B_causal_revh": 1.0054191214072397,
+          "B_P_cu_W": 0.003534106278555342,
+          "B_oracle_P_cu_W": 0.0036797953496744847
+        },
+        {
+          "amp_mm": 0.3,
+          "f0": 10.0,
+          "A_oracle": 0.7558857466579212,
+          "A_causal_ship": 0.8541234948609726,
+          "A_P_cu_W": 0.8094273190094324,
+          "A_P_cu_no_bias_W": 4.210735452836579,
+          "A_N_std_N": 0.3398198191627205,
+          "B_oracle": 0.09768783664602768,
+          "B_causal_ship": 0.9405504013356066,
+          "B_causal_revh": 0.8840268208993892,
+          "B_P_cu_W": 0.003665898759428851,
+          "B_oracle_P_cu_W": 0.0032824250917845867
+        }
+      ],
+      "ranges": {
+        "A_oracle": [
+          0.26833828968987433,
+          0.7558857466579212
+        ],
+        "A_causal_ship": [
+          0.8541234948609726,
+          1.0005652953421054
+        ],
+        "A_P_cu_W": [
+          0.8094273190094324,
+          0.8111753112103675
+        ],
+        "A_P_cu_no_bias_W": [
+          4.210735452836579,
+          4.256679865074927
+        ],
+        "A_N_std_N": [
+          0.33885861325702155,
+          0.3398198191627205
+        ],
+        "B_oracle": [
+          0.08916569640858003,
+          0.09768783664602768
+        ],
+        "B_causal_ship": [
+          0.9405504013356066,
+          1.0029676129425573
+        ],
+        "B_causal_revh": [
+          0.8840268208993892,
+          1.0054191214072397
+        ],
+        "B_P_cu_W": [
+          0.003534106278555342,
+          0.003665898759428851
+        ],
+        "B_oracle_P_cu_W": [
+          0.0032824250917845867,
+          0.0036797953496744847
+        ]
+      },
+      "label": "SIM (model H1, test seeds 200-203, r_rot 0.5); power CALC from the simulated forces"
+    },
+    "addon_decision": {
+      "include": true,
+      "as": "optional rear-cap module offered (Rev H standard build without it)",
+      "module": "Rear-cap reaction mass: WHA 19.8 g (d 10 x 14.0 mm), +/-2.8 mm, 2 axes, Km 0.9 N/sqrt(W)",
+      "added_mass_g": 27.8,
+      "pen_mass_with_module_g": 102.8,
+      "pen_mass_with_module_and_10440_g": 91.8,
+      "power_W": {
+        "copper_max_W": 0.011395083728037247,
+        "module_total_max_W": 0.023395083728037246,
+        "note": "copper loss max over all test conditions + 0.012 W driver/Hall (ASSUMPTION)"
+      },
+      "gain_band_8_12Hz_1_2mm": {
+        "0.5": {
+          "mean": 0.30360848199786317,
+          "seed_min": 0.30360848199786317,
+          "seed_max": 0.30360848199786317,
+          "frac_conditions_worse": 0.0
+        }
+      },
+      "gain_with_grip_calibration": {
+        "0.5": {
+          "mean": 0.30360848199786317,
+          "seed_min": 0.30360848199786317,
+          "seed_max": 0.30360848199786317,
+          "frac_conditions_worse": 0.0
+        }
+      },
+      "passive_weight_gain": {
+        "0.5": {
+          "mean": 0.18337599240806834,
+          "seed_min": 0.18337599240806834,
+          "seed_max": 0.18337599240806834,
+          "frac_conditions_worse": 0.0
+        }
+      },
+      "criteria": {
+        "measurable": true,
+        "mass_ok_30g": true,
+        "power_ok_0.5W": true,
+        "rule": "as used here (set after the grid, not pre-declared): >= 10 % further reduction of the ink error in the\n    8-12 Hz, 1-2 mm band on every test seed at r_rot 0.5 and 0.7, and no split where it is worse on average."
+      },
+      "label": "SIM + CALC"
+    },
+    "sweep": {
+      "rows": [
+        {
+          "travel_mm": 1.5,
+          "servo_hz": 80.0,
+          "oracle": 0.35650217940523327,
+          "causal": 0.5957157858748403,
+          "oracle_sat": 0.29313690896259703,
+          "causal_sat": 0.15487116131309567
+        },
+        {
+          "travel_mm": 3.0,
+          "servo_hz": 80.0,
+          "oracle": 0.20456285451723624,
+          "causal": 0.5437125683854139,
+          "oracle_sat": 0.025110649444494624,
+          "causal_sat": 0.0
+        }
+      ],
+      "seeds": [
+        300
+      ],
+      "label": "SIM (model H1, training seeds, r_rot 0.5, Rev H tracker setting)"
+    },
+    "calib": {
+      "band": [
+        0.75,
+        1.3
+      ],
+      "dev": [
+        {
+          "cal_err": 1.1,
+          "amp_mm": 1.0,
+          "f0": 4.0,
+          "causal": 0.9933955376573578,
+          "f_est": 4.396435575714493
+        },
+        {
+          "cal_err": 1.1,
+          "amp_mm": 1.0,
+          "f0": 10.0,
+          "causal": 0.7045897537146547,
+          "f_est": 10.294521554061166
+        }
+      ],
+      "test": [
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 4.0,
+          "causal": 0.9942560770807304,
+          "f_est": 4.369298675773649,
+          "P_cu_W": 0.003626815299609468
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 10.0,
+          "causal": 0.6907521703433805,
+          "f_est": 9.808136088895774,
+          "P_cu_W": 0.0029672545942750687
+        }
+      ],
+      "distortion": {
+        "4.40": {
+          "lognormal": 39.158328187341894,
+          "glyph": NaN
+        },
+        "11.00": {
+          "lognormal": 2.411863250973313,
+          "glyph": NaN
+        }
+      },
+      "label": "SIM (model H1, Rev H-B nose, Rev H tracker setting with a per-user calibrated frequency band)"
+    },
+    "neural": {
+      "train": {
+        "n_data": 32,
+        "n_val": 16,
+        "train_s": 48.59200143814087,
+        "best_it": 3,
+        "best_val": {
+          "ratio": 0.952424281241178,
+          "mean_ratio": 0.940157256683117,
+          "false_um": 3.235183114953299,
+          "F_rms_N": 0.1107779772109103,
+          "stroke_excess_um": 444.6185760885843
+        },
+        "imitation": {
+          "n_samples": 72000,
+          "rms_err_N": 0.018667844891438662,
+          "rms_ff_N": 0.07858897380787974
+        },
+        "seeds": [
+          300,
+          301
+        ],
+        "iters": 5,
+        "window_s": 1.0
+      },
+      "cost": {
+        "macs_per_tick": 182,
+        "params": 158,
+        "rate_Hz": 2000.0,
+        "tanh_per_tick": 12,
+        "mcu_load_pct_nrf54l15": 0.94375,
+        "note": "2 cycles per MAC and 20 cycles per tanh (table) on the 128 MHz Cortex-M33 (ASSUMPTION)"
+      },
+      "history_val": [
+        {
+          "it": -1,
+          "val": {
+            "ratio": 0.954447535263134,
+            "mean_ratio": 0.9415076905542296,
+            "false_um": 3.730915518017769,
+            "F_rms_N": 0.1061135867438355,
+            "stroke_excess_um": 394.497125400956
+          }
+        },
+        {
+          "it": 3,
+          "loss": 2.579175540836135,
+          "ratio": 0.9524768549638097,
+          "false_um": 14.679656397588424,
+          "F_rms_N": 0.16296981535284902,
+          "val": {
+            "ratio": 0.952424281241178,
+            "mean_ratio": 0.940157256683117,
+            "false_um": 3.235183114953299,
+            "F_rms_N": 0.1107779772109103,
+            "stroke_excess_um": 444.6185760885843
+          }
+        }
+      ],
+      "validation_h1": {
+        "rm_neutral": 0.8590291899474577,
+        "ff": 0.6087870032801733,
+        "nn": 0.657339928691674
+      },
+      "test_h1": {
+        "0.5": {
+          "nose": 0.6750763335309345,
+          "ff": 0.663148080266587,
+          "nn": 0.6811261194265281,
+          "nose+ff": 0.47011743267492434,
+          "nose+nn": 0.49385091347562177,
+          "nn_P_cu_W": 0.010650537397689742
+        }
+      },
+      "distortion_um": {
+        "lognormal": 11.769739852542543,
+        "glyph": NaN
+      },
+      "label": "SIM: policy trained by BPTT on the linear model (CALC), evaluated in the nonlinear model H1"
+    }
+  },
+  "figures": [
+    "results/opt/_cache/quick/fig_in_arch.png",
+    "results/opt/_cache/quick/fig_in_splits.png",
+    "results/opt/_cache/quick/fig_in_calib.png",
+    "results/opt/_cache/quick/fig_in_addon.png",
+    "results/opt/_cache/quick/fig_in_sweep.png",
+    "results/opt/_cache/quick/fig_in_tracker.png",
+    "results/opt/_cache/quick/fig_in_adjoint.png",
+    "results/opt/_cache/quick/fig_in_neural.png",
+    "results/opt/_cache/quick/fig_in_time.png"
+  ]
+}

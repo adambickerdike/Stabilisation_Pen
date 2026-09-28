@@ -1,0 +1,9 @@
+panel,series,tremor frequency (Hz),ink error ratio (lower is better)
+0.3 mm tremor,"B (skid carries load), perfect knowledge",6,0.0891657
+0.3 mm tremor,"B (skid carries load), perfect knowledge",10,0.0976878
+0.3 mm tremor,"B, causal (Rev H tracker)",6,1.00542
+0.3 mm tremor,"B, causal (Rev H tracker)",10,0.884027
+0.3 mm tremor,"A (nose carries load), perfect knowledge",6,0.268338
+0.3 mm tremor,"A (nose carries load), perfect knowledge",10,0.755886
+0.3 mm tremor,"A, causal (shipped tracker)",6,1.00057
+0.3 mm tremor,"A, causal (shipped tracker)",10,0.854123

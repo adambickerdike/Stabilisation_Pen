@@ -1,0 +1,30 @@
+{
+  "rows": [
+    {
+      "seed": 300,
+      "f0": 10.0,
+      "amp_mm": 2.0,
+      "travel_mm": 1.5,
+      "servo_hz": 80.0,
+      "oracle": 0.35650217940523327,
+      "oracle_sat": 0.29313690896259703,
+      "akf": 0.5957157858748403,
+      "akf_sat": 0.15487116131309567
+    },
+    {
+      "seed": 300,
+      "f0": 10.0,
+      "amp_mm": 2.0,
+      "travel_mm": 3.0,
+      "servo_hz": 80.0,
+      "oracle": 0.20456285451723624,
+      "oracle_sat": 0.025110649444494624,
+      "akf": 0.5437125683854139,
+      "akf_sat": 0.0
+    }
+  ],
+  "seeds": [
+    300
+  ],
+  "label": "SIM (model H1, training seeds, r_rot 0.5, Rev H tracker setting)"
+}

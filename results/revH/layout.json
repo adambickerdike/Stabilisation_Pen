@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "PROPOSED DESIGN (dimensioned concept; CALC masses; ASSUMPTION dimensions) - Rev H active-nose pen, architecture B",
-    "generated_utc": "2026-09-28T17:57:14+00:00",
-    "git_revision": "340a410-dirty",
+    "generated_utc": "2026-09-28T18:38:58+00:00",
+    "git_revision": "7011045-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",
@@ -13,7 +13,7 @@
     "scipy": "1.17.1",
     "script": "opt/inertial/geometry.py (also mechanics/cad/revH_pen.py)",
     "doc": "docs/opt_inertial.md",
-    "inertial_addon_recommended": true
+    "inertial_addon_recommended": false
   },
   "units": "mm",
   "axis": "z along the pen axis from the ball tip (z = 0) toward the back; x, y transverse",
@@ -46,7 +46,9 @@
     "total_g": 74.95,
     "com_mm": 92.85,
     "nose_inertia_about_pivot_g_mm2": 6022.26,
-    "moving_mass_at_tip_g": 2.97
+    "moving_mass_at_tip_g": 2.97,
+    "board_magnet_option_g": 1.16,
+    "total_with_board_magnet_g": 76.11
   },
   "components": [
     {
@@ -578,6 +580,48 @@
       ]
     },
     {
+      "id": "board_magnet",
+      "label": "Board magnet (optional)",
+      "group": "magnet",
+      "shape": "cylinder",
+      "z0": 11.91,
+      "z1": 15.09,
+      "moves_with": "handle",
+      "optional": true,
+      "function": "Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N sideways, about 1 N down while guiding). Magnetised along the pen axis. Fixed to the sleeve, not the nose.",
+      "part": "K&J D42-N52 NdFeB disc (6.35 x 3.17 mm)",
+      "ledger": "AMF-91",
+      "d0": 6.35,
+      "d1": 6.35,
+      "offset": [
+        -10.2,
+        0.0
+      ],
+      "mass_g": 0.75
+    },
+    {
+      "id": "board_keel",
+      "label": "Keel for the board magnet (optional)",
+      "group": "grip",
+      "shape": "box",
+      "z0": 11.41,
+      "z1": 15.59,
+      "moves_with": "handle",
+      "optional": true,
+      "function": "Moulded bump under the fixed front sleeve holding the board magnet close to the paper.",
+      "part": "PEEK / TPE, part of the sleeve moulding",
+      "ledger": "AMF-24",
+      "size": [
+        6.29,
+        7.35,
+        4.17
+      ],
+      "offset": [
+        -10.73,
+        0.0
+      ]
+    },
+    {
       "id": "rm_frame",
       "label": "Inertial module frame",
       "group": "inertial",
@@ -633,5 +677,73 @@
     "cell_radius_margin_mm": 2.95,
     "length_margin_mm": 0.0,
     "all_pass": true
+  },
+  "board_magnet_checks": {
+    "placement": {
+      "part": "K&J D42-N52 NdFeB disc",
+      "d": 6.35,
+      "h": 3.17,
+      "mass_g": 0.75,
+      "ledger": "AMF-91",
+      "z_c": 13.5,
+      "x_c": -10.2,
+      "Br_T": 1.45,
+      "source": "results/board/board_params.json pen_magnet"
+    },
+    "keel_wall_mm_ASSUMPTION": 0.5,
+    "paper_clearance_mm_by_tilt": {
+      "35": -2.7,
+      "40": -1.75,
+      "45": -0.79,
+      "50": 0.17,
+      "60": 2.1,
+      "75": 4.84
+    },
+    "min_tilt_deg_for_0.3mm_clearance": 51.0,
+    "wall_to_carrier_swing_mm": 1.12,
+    "added_mass_g": 1.16,
+    "added_mass_note": "magnet 0.75 g + keel 0.3 g (ASSUMPTION) + 10 % (the P0 wiring convention)",
+    "crosstalk": {
+      "pen_magnet_centre_world_mm": [
+        -16.49,
+        0.0,
+        3.79
+      ],
+      "observers_world_mm": {
+        "hall3d": [
+          -54.8,
+          0.0,
+          65.31
+        ],
+        "imu": [
+          -57.89,
+          0.0,
+          70.54
+        ]
+      },
+      "pen_magnet_field_uT": {
+        "hall3d": 60.302084690212304,
+        "imu": 47.357152072300195
+      },
+      "head_field_uT": {
+        "hall3d": {
+          "min": 237.68495993755175,
+          "max": 814.4785287835621,
+          "max_change_any_component": 658.5689679128195
+        },
+        "imu": {
+          "min": 203.83527986627868,
+          "max": 652.9425504053562,
+          "max_change_any_component": 510.474565811573
+        }
+      },
+      "hall_signal": {
+        "distance_mm": 2.0,
+        "slope_mT_per_mm_at_magnet": 15.988278562807771,
+        "magnet_motion_per_tip_motion": 0.85,
+        "apparent_tip_error_um_unshielded": 48.45968989283369
+      },
+      "label": "CALC (magpylib 5 dipole-exact cylinder fields; MFR Br 1.45 T N52 / 1.33 T N45; placement ASSUMPTION; no shielding counted)"
+    }
   }
 }

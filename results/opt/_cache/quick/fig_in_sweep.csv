@@ -1,0 +1,5 @@
+panel,series,usable tip travel radius (mm),"ink error ratio (mean, 6-12 Hz, 1-2 mm)"
+perfect knowledge,servo 80 Hz,1.5,0.356502
+perfect knowledge,servo 80 Hz,3,0.204563
+causal (Rev H tracker),servo 80 Hz,1.5,0.595716
+causal (Rev H tracker),servo 80 Hz,3,0.543713

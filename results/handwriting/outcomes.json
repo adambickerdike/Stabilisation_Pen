@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "SIMULATION + CALCULATION (model HW1, synthetic writers and tremor) + LITERATURE rows; nothing measured",
-    "generated_utc": "2026-09-28T18:30:35+00:00",
-    "git_revision": "6da1c46-dirty",
+    "generated_utc": "2026-09-28T18:32:54+00:00",
+    "git_revision": "7011045-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages figures",
@@ -150,7 +150,7 @@
       "tick_hz": 2000.0,
       "sources": {
         "file": "results/revH/tip_params.json",
-        "file_generated_utc": "2026-09-28T17:57:14+00:00",
+        "file_generated_utc": "2026-09-28T18:32:39+00:00",
         "evidence": "SIMULATION + CALCULATION (Rev H active nose, model H1; nothing measured)",
         "q_lim/q_stop": "PROPOSED; SIM: never at its limit with perfect knowledge of 2 mm tremor except peaks at 10-12 Hz (see sweep)",
         "m_tip": "CALC (parts in opt/inertial/revh.nose_parts: Ti carrier, D1 refill, Al arm, 4 NdFeB magnets)",
@@ -158,7 +158,7 @@
         "F_peak/F_cont": "CALC (adjoint design model opt/inertial/adjoint.py; magnet and copper data MFR AMF-28/AMF-29; leakage, fill and end-turn factors ASSUMPTION); peak = Km sqrt(3.7 V x 1.5 A), continuous = Km sqrt(0.35 W) per axis (ASSUMPTION thermal)",
         "servo": "ASSUMPTION (modelled in H1 as the stage's 2nd-order follower); sensitivity in the sweep",
         "latency": "ASSUMPTION built on MFR OPT-37 (fusion) and CALC for the 2nd-order servo",
-        "mass": "CALC from assumed parts +10 % wiring",
+        "mass": "CALC from assumed parts +10 % wiring; board magnet option = D42-N52 0.75 g + keel 0.3 g (ASSUMPTION) +10 %",
         "architecture": "B = a skid ring on the FIXED front sleeve carries the writing force; the refill carrier (the moving nose) tilts on a 2-axis flexure gimbal so the ball moves up to +/-3 mm; the refill slides axially on a soft constant-force spring so the ball stays on the paper. Chosen over A (rigid nose carrying the load) by simulation: A's ceiling with perfect knowledge is 0.15-0.77 of the ink error against 0.09-0.24 for B, A needs 0.41 W of copper loss with a bias spring (1.9 W without) against about 0.004 W for B, and a rigid nose must press the tip into the paper for tilt-plane corrections (0.38 N rms writing-force change).",
         "q_taper": "ASSUMPTION (10 % of the travel)",
         "slew": "ASSUMPTION (0.6 m/s, opt/inertial RevH default)",
@@ -10062,7 +10062,17 @@
         "deep"
       ],
       "app_corrected_free_writing": "a big dog dug a deap pit by the pond",
-      "free_writing_word_accuracy": 0.9
+      "free_writing_word_accuracy": 0.9,
+      "stats_all_runs": {
+        "misspelled_words": 78,
+        "flagged_with_target": 78,
+        "correct_words": 162,
+        "correct_words_flagged": 10,
+        "fixed_by_free_writing_lexicon": 3,
+        "flag_rate": 1.0,
+        "false_flag_rate": 0.06172839506172839,
+        "free_fix_rate": 0.038461538461538464
+      }
     }
   },
   "crosscheck": {

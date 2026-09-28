@@ -43,9 +43,25 @@ def _pool(fn, jobs, workers):
         return list(ex.map(fn, jobs))
 
 
+def _compact(o, sig: int = 6):
+    """Round floats to `sig` significant digits (the caches are committed; paths are in mm, metrics in um)."""
+    import numpy as np
+    if isinstance(o, dict):
+        return {k: _compact(v, sig) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_compact(v, sig) for v in o]
+    if isinstance(o, np.ndarray):
+        return _compact(o.tolist(), sig)
+    if isinstance(o, (float, np.floating)):
+        x = float(o)
+        return float(f"{x:.{sig}g}") if x == x and abs(x) != float("inf") else x
+    return o
+
+
 def _save(name, obj):
     CACHE.mkdir(parents=True, exist_ok=True)
-    (CACHE / f"{name}.json").write_text(json.dumps(obj, default=_default))
+    obj = json.loads(json.dumps(obj, default=_default))
+    (CACHE / f"{name}.json").write_text(json.dumps(_compact(obj), separators=(",", ":")))
 
 
 def _load(name):

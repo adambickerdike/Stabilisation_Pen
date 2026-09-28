@@ -95,7 +95,8 @@ async function run(browser, label, viewport) {
   const labels = await page.$$eval("#hero-labels .lab", l => l.filter(x => !x.hidden).length);
   check(`${label}: labels shown`, labels > 0, `${labels} labels`);
   await page.$eval("#explode", el => { el.value = "100"; el.dispatchEvent(new Event("input", { bubbles: true })); });
-  await page.waitForTimeout(1800);
+  /* the parts glide apart; wait for it (up to 8 s, a busy machine renders slowly) instead of a fixed pause */
+  await page.waitForFunction(() => window.__explainer.hero.explode > 0.9, null, { timeout: 8000 }).catch(() => {});
   const ex = await page.evaluate(() => window.__explainer.hero.explode);
   check(`${label}: "Take apart" separates the parts`, ex > 0.9, `explode ${ex.toFixed(2)}`);
   await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_exploded.png`) });
@@ -122,7 +123,9 @@ async function run(browser, label, viewport) {
     check(`${label}: scene ${k} plays and draws ink`, st.key === k && pressed === "true" && st.inkTriangles > 10 && (k !== "e" || st.board > 3),
       `${st.samples} samples, ${Math.round(st.inkTriangles)} ink triangles${st.fromData ? ", simulation data" : ""}${k === "e" ? `, ${st.board} board parts` : ""}`);
     if (k === "e") {
-      const bc = st.boardCheck || {};
+      /* read the board at a moment when the pen is on the paper and the board is pulling */
+      const bc = (await page.evaluate(() => { const S = window.__explainer.scenes, was = S.playing; S.playing = false; S.seek(S.S.T * 0.55);
+        const r = S.stats().boardCheck; S.playing = was; return r; })) || {};
       const r = bc.rms || [];
       check(`${label}: board pulls the sleeve magnet, the nose fixes the rest`,
         bc.onHandle === true && bc.headToMagnetMm != null && bc.headToMagnetMm < 5 && r.length === 3 && r[0] > r[1] && r[1] > r[2] && bc.maxPullN <= bc.capN + 1e-9,

@@ -1,0 +1,11 @@
+panel,series,tremor frequency (Hz),ink error ratio
+0.3 mm tremor,Rev H tracker (open band),6,1.00542
+0.3 mm tremor,Rev H tracker (open band),10,0.884027
+0.3 mm tremor,perfect knowledge,6,0.0891657
+0.3 mm tremor,perfect knowledge,10,0.0976878
+1 mm tremor,per-user calibrated band (+10 % error),4,0.994256
+1 mm tremor,per-user calibrated band (+10 % error),10,0.690752
+2 mm tremor,Rev H tracker (open band),6,1.03502
+2 mm tremor,Rev H tracker (open band),10,0.54676
+2 mm tremor,perfect knowledge,6,0.118639
+2 mm tremor,perfect knowledge,10,0.207409

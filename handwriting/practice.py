@@ -47,7 +47,8 @@ LABELS = {"none": "No guidance", "cue": "Vibration cue on error only", "nose_par
           "nose_full": "Nose guidance, full", "nose_nogate": "Nose guidance without the capture gate (the pen writes)",
           "board_partial": "Guidance board, partial (1 mm band, 0.10 N/mm)", "board_full": "Guidance board, full (0.20 N/mm + 0.1 N lead)"}
 PROFILES = ("dysgraphia", "dyslexia")
-VIZ = {"writer": 0, "seed": 200}
+VIZ = {"writer": 0, "seed": {"dysgraphia": 200, "dyslexia": 201}}   # shown paths; dyslexia: seed 201 because seed 200
+                                                                     # drew no reversal (every seed enters the metrics)
 FLAG_FRAC = 0.30        # cue: a letter is flagged if misread, or if its ink is > 0.30 x-height (RMS) from the target
 STROKE_MATCH = True     # guidance searches only the template stroke that matches the writer's current stroke (chosen on
                         # tuning writers 100-102, seeds 300-301: lower target error than nearest-point search at equal or
@@ -203,7 +204,7 @@ def writer_job(job: Dict) -> Dict:
             res = {}
             r_none = run_condition(su, "none", hand, pen, brd)
             ev_none = evaluate(su, r_none, r_none)
-            keep = job.get("viz") and seed == VIZ["seed"]
+            keep = job.get("viz") and seed == VIZ["seed"][profile]
             for cond in job.get("conds", CONDITIONS):
                 if cond in ("none", "cue"):
                     ev = dict(ev_none)
@@ -223,6 +224,7 @@ def writer_job(job: Dict) -> Dict:
                 viz[profile]["intended"] = MT.intended_path(su["scn"], hz=250.0).tolist()
                 viz[profile]["kinds"] = su["plan"]["kind"]
                 viz[profile]["x_height_mm"] = su["wr"].style.x_height_mm
+                viz[profile]["seed"] = seed
             rows.append({"writer": job["writer"], "seed": seed, "profile": profile, "conds": res, "spelling": sp,
                          "kinds": su["plan"]["kind"]})
     return {"writer": job["writer"], "rows": rows, "viz": viz, "elapsed_s": time.time() - t0,

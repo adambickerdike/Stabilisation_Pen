@@ -1,33 +1,35 @@
 column,row_key,row,metrics
 "dysgraphia-like learner (writer 0, seed 200); green = target letters",none,No guidance,"ink vs target 0.55 mm  ·  letters read 96%
 device share of the ink motion 0%"
-"dysgraphia-like learner (writer 0, seed 200); green = target letters",nose_partial,"Nose guidance, partial
-(0.5)","ink vs target 0.33 mm  ·  letters read 100%
+"dysgraphia-like learner (writer 0, seed 200); green = target letters",nose_partial,"Nose guidance,
+partial (0.5)","ink vs target 0.33 mm  ·  letters read 100%
 device share of the ink motion 23%"
-"dysgraphia-like learner (writer 0, seed 200); green = target letters",nose_full,"Nose guidance, full","ink vs target 0.16 mm  ·  letters read 89%
+"dysgraphia-like learner (writer 0, seed 200); green = target letters",nose_full,"Nose guidance,
+full","ink vs target 0.16 mm  ·  letters read 89%
 device share of the ink motion 38%"
-"dysgraphia-like learner (writer 0, seed 200); green = target letters",board_partial,"Guidance board, partial
-(1 mm band, 0.10 N/mm)","ink vs target 0.41 mm  ·  letters read 96%
+"dysgraphia-like learner (writer 0, seed 200); green = target letters",board_partial,"Board, partial
+(1 mm band)","ink vs target 0.41 mm  ·  letters read 96%
 device share of the ink motion 27%"
-"dysgraphia-like learner (writer 0, seed 200); green = target letters",board_full,"Guidance board, full
-(0.20 N/mm + 0.1 N lead)","ink vs target 0.36 mm  ·  letters read 78%
+"dysgraphia-like learner (writer 0, seed 200); green = target letters",board_full,"Board, full
+(0.20 N/mm + lead)","ink vs target 0.36 mm  ·  letters read 78%
 device share of the ink motion 26%"
-"dysgraphia-like learner (writer 0, seed 200); green = target letters",nose_nogate,"Nose guidance without the capture gate
+"dysgraphia-like learner (writer 0, seed 200); green = target letters",nose_nogate,"Nose, no gate
 (the pen writes)","ink vs target 93 µm  ·  letters read 93%
 device share of the ink motion 38%"
 "dyslexia-like learner (writer 0, seed 200); green = target letters",none,No guidance,"ink vs target 0.35 mm  ·  letters read 96%
 device share of the ink motion 0%"
-"dyslexia-like learner (writer 0, seed 200); green = target letters",nose_partial,"Nose guidance, partial
-(0.5)","ink vs target 0.19 mm  ·  letters read 93%
+"dyslexia-like learner (writer 0, seed 200); green = target letters",nose_partial,"Nose guidance,
+partial (0.5)","ink vs target 0.19 mm  ·  letters read 93%
 device share of the ink motion 19%"
-"dyslexia-like learner (writer 0, seed 200); green = target letters",nose_full,"Nose guidance, full","ink vs target 77 µm  ·  letters read 81%
+"dyslexia-like learner (writer 0, seed 200); green = target letters",nose_full,"Nose guidance,
+full","ink vs target 77 µm  ·  letters read 81%
 device share of the ink motion 33%"
-"dyslexia-like learner (writer 0, seed 200); green = target letters",board_partial,"Guidance board, partial
-(1 mm band, 0.10 N/mm)","ink vs target 0.34 mm  ·  letters read 89%
+"dyslexia-like learner (writer 0, seed 200); green = target letters",board_partial,"Board, partial
+(1 mm band)","ink vs target 0.34 mm  ·  letters read 89%
 device share of the ink motion 25%"
-"dyslexia-like learner (writer 0, seed 200); green = target letters",board_full,"Guidance board, full
-(0.20 N/mm + 0.1 N lead)","ink vs target 0.32 mm  ·  letters read 85%
+"dyslexia-like learner (writer 0, seed 200); green = target letters",board_full,"Board, full
+(0.20 N/mm + lead)","ink vs target 0.32 mm  ·  letters read 85%
 device share of the ink motion 24%"
-"dyslexia-like learner (writer 0, seed 200); green = target letters",nose_nogate,"Nose guidance without the capture gate
+"dyslexia-like learner (writer 0, seed 200); green = target letters",nose_nogate,"Nose, no gate
 (the pen writes)","ink vs target 77 µm  ·  letters read 81%
 device share of the ink motion 33%"
