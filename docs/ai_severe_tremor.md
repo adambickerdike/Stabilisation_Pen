@@ -265,6 +265,8 @@ Nothing here is measured. These experiments would turn the simulations into evid
 | **EXP-A03** (existing, extended) | Is the clean copy readable to people, and does it ever change a letter? | Blinded raters read the raw ink and the clean copy of recorded ET notes. Compare the recogniser's reading with the raters'. | Whether the clean copy is shown by default |
 | **EXP-A04** (proposed) | How far is a correctly predicted letter from what an ET writer intended? | Build style templates from the clean copy of each writer's own notes. Compare them with the same writer's slow, careful tracing of the same text. | Whether better templates could ever change the prior's result (here 535–938 µm at 1–2 mm: too far) |
 
+Criteria in `validation/acceptance_criteria.csv`: AC-W02-03 (the severe-tremor setting offline), AC-A03-04 and AC-A03-05 (the clean copy read by blinded readers, and no harm on tremor-free notes); AC-A02-01 already counts wrong letters under guidance with 10 % deliberately wrong templates. Decision: DEC-035.
+
 Order: EXP-W02's offline part and EXP-A03 first. They need recordings but no prototype, and they decide the two things that could help people with severe tremor: a severe-tremor mode and the clean copy.
 
 ## 9. Files and how to run
