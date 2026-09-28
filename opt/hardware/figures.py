@@ -177,9 +177,10 @@ def fig_stop_sweep(res):
     if not rows:
         return
     fig, axs = plt.subplots(1, 2, figsize=(9.0, 3.5))
-    sets = [("P02", rows, "-")]
+    src = res.get("robustness_studies_design", {}).get("stop_sweep", "P02")
+    sets = [(src, rows, "-")]
     so = res.get("static_optimum_studies", {}).get("stop_sweep")
-    if so:
+    if so and src != "P02s":
         sets.append(("P02s", [r for r in so["rows"] if r.get("feasible")], "--"))
     for key, rr, ls in sets:
         rr = sorted(rr, key=lambda r: r["q_lim_min_um"])

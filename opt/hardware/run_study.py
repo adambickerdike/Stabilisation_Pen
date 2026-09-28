@@ -771,6 +771,9 @@ def main(argv=None):
     ap.add_argument("--quick-p1", action="store_true")
     ap.add_argument("--no-step", action="store_true")
     ap.add_argument("--no-figures", action="store_true")
+    ap.add_argument("--no-robustness", action="store_true",
+                    help="do not compute the stop, firmware-clamp, Hall-position and leaf-gauge studies around the "
+                         "recommended design; use cached ones, else the static optimum's (labelled)")
     a = ap.parse_args(argv)
     t0 = time.time()
     os.makedirs(OUT, exist_ok=True)
@@ -845,10 +848,22 @@ def main(argv=None):
     par = S.repair_pareto(rec, force=a.force) or par
     fcs = S.step_fc_sweep(rec, force=a.force)
     fcs = S.repair_fc_sweep(rec, force=a.force) or fcs
-    stops = S.step_stop_sweep(rec, force=a.force)
-    fwc = S.step_firmware_clamp(rec, force=a.force)
-    hrear = S.step_hall_rear(rec, force=a.force)
-    gauge = S.step_leaf_gauge(rec, force=a.force)
+    robust_src = {}
+
+    def robustness(step, fn):
+        if not a.no_robustness:
+            robust_src[step] = "P02"
+            return fn(rec, force=a.force)
+        d = S._load(S._nm(step, rec))
+        if d and d.get("complete", True):
+            robust_src[step] = "P02"
+            return d
+        robust_src[step] = "P02s"
+        return S._load(S._nm(step, static))
+    stops = robustness("stop_sweep", S.step_stop_sweep)
+    fwc = robustness("firmware_clamp", S.step_firmware_clamp)
+    hrear = robustness("hall_rear", S.step_hall_rear)
+    gauge = robustness("leaf_gauge", S.step_leaf_gauge)
     ltol = S.leaf_tolerance(rec)
     strip = ("u", "power_cases_mW", "active")
     static_studies = {}
@@ -929,6 +944,7 @@ def main(argv=None):
                                   "decision": ring_decision, "note": "computed for the static-stroke optimum"},
         "leaf_gauge": [_strip(r, ("active",)) for r in gauge["rows"]],
         "leaf_tolerance": ltol,
+        "robustness_studies_design": robust_src,
         "static_optimum_studies": static_studies,
         "sensitivities": sens, "sensitivities_static_optimum": sens_static,
         "fe_verification": fe, "cad": cad, "p1_statics_check": statics,
