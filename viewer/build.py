@@ -135,6 +135,18 @@ def main():
             json.dump(stab_trace(a.inertial), f, separators=(",", ":"))
     elif os.path.exists(s_out):
         os.remove(s_out)
+    fig_dir = os.path.join(VIEW, "figures")
+    try:
+        from viewer import sections_extra as SX
+        figs = SX.gallery_files(ROOT)
+    except ImportError:
+        figs = []
+    if os.path.isdir(fig_dir):
+        shutil.rmtree(fig_dir)
+    if figs:
+        os.makedirs(fig_dir)
+        for name, src in figs:
+            shutil.copyfile(src, os.path.join(fig_dir, name))
     html = open(os.path.join(VIEW, "template.html"), encoding="utf-8").read()
     try:
         from viewer import sections

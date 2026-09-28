@@ -259,7 +259,7 @@ def render(root, variant="Q"):
         from viewer import sections_extra  # AI guidance, sim-to-real and inertial-helper tables, once those results exist
     except ImportError:
         sections_extra = None
-    parts = [forces(root), mechanisms(root)]
+    parts = [sections_extra.gallery(root) if sections_extra else "", forces(root), mechanisms(root)]
     if sections_extra:
         parts.append(sections_extra.inertial(root))
     parts += [effect(root), tails(root), power(root), sensor(root), packaging(root, variant), make_buy(root)]
