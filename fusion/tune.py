@@ -40,7 +40,17 @@ def _lu(rng, lo, hi):
     return float(math.exp(rng.uniform(math.log(lo), math.log(hi))))
 
 
+ALIAS = {"kfosclp": "kfosc", "akfx": "akf", "wflcx": "wflc"}     # search variants of the same estimator
+
+
 def sample(name: str, rng) -> Dict:
+    if name == "akfx":                      # AKF with the cross-track-only output option
+        p = sample("akf", rng)
+        p["xtrack"] = float(rng.random() < 0.5)
+        p["v_xt"] = _lu(rng, 1e-3, 20e-3)
+        return p
+    if name == "wflcx":
+        return sample("wflc", rng)
     if name == "akf":
         harm = float(rng.random() < 0.5)
         p = {"qj": _lu(rng, 1e-3, 1e2), "qt": _lu(rng, 1e-10, 1e-6), "qb": _lu(rng, 1e-9, 1e-3),
@@ -82,12 +92,12 @@ def sample(name: str, rng) -> Dict:
 
 
 LOG_KEYS = {"qj", "qt", "qh", "qb", "ra", "rp", "r", "tau_decay", "tau_w", "mu", "mu0", "hp_hz", "lp_hz", "tau_amp", "nis_hi",
-            "out_lp_hz", "sigma_t", "q_tb", "tb0"}
+            "out_lp_hz", "sigma_t", "q_tb", "tb0", "v_xt"}
 
 
 def perturb(p: Dict, rng, scale: float = 0.3) -> Dict:
     q = dict(p)
-    keys = [k for k in p if k not in ("harm", "w0_hz", "df")]
+    keys = [k for k in p if k not in ("harm", "w0_hz", "df", "xtrack")]
     for k in rng.choice(keys, size=max(1, len(keys) // 3), replace=False):
         v = q[k]
         if k in LOG_KEYS and v > 0:
@@ -170,7 +180,7 @@ def _hf_rms(dh, m, fs=2000.0, fc=150.0):
 
 def proxy(name: str, params: Dict, sensor_kw: Dict, fc_max: Optional[float] = None, seeds=TUNE_SEEDS,
           lam_hf: float = 8.0) -> Dict:
-    name = "kfosc" if name == "kfosclp" else name       # the same estimator, searched with its output low-pass
+    name = ALIAS.get(name, name)                        # the same estimator, searched with an extra option
     items, clean = load(sensor_kw, seeds)
     rr, hf = [], []
     for it in items:
@@ -269,3 +279,90 @@ def closed_loop_check(specs: Sequence[H.Spec], seeds=TUNE_SEEDS[:4], workers: in
                            "ratio_by_cond": {f"{f0:g}Hz_{a * 1e3:g}mm": float(np.mean([r["ratio"] for r in R if r["f0"] == f0 and abs(r["amp_mm"] - a * 1e3) < 1e-9]))
                                              for f0 in f0s for a in amps}}
     return out
+
+
+# ------------------------------------------------------------------ robust tuning: grid tuning seeds + aiguide tuning writers
+AI_TUNE = ((100, 5.0), (101, 7.0), (102, 9.0), (103, 6.0), (104, 8.0), (105, 4.5))
+
+
+def aiguide_items(sensor_kw: Dict, jobs=AI_TUNE) -> List[Dict]:
+    """Tremor run (streams, truth) and tremor-free run (streams) of aiguide TUNING writers (100-105, never 0-5), 0.3 mm."""
+    from . import aieval as AE
+    cfg = S.config(**sensor_kw)
+    out = []
+    for w, f0 in jobs:
+        su = AE.setup(w, f0)
+        r1 = S.record_from_result(su["neutral"], su["scn"])
+        r0 = S.record_from_result(su["clean"], su["scn0"])
+        st = S.make_streams(r1, cfg, 800_000 + 1000 * w + int(f0))
+        st0 = S.make_streams(r0, cfg, 810_000 + 1000 * w + int(f0))
+        d = S.truth_at(st.tick_t, r1, r0)
+        m = (np.interp(st.tick_t, r1.t, r1.contact) > 0.5) & (st.tick_t > 0.5)
+        m0 = (np.interp(st0.tick_t, r0.t, r0.contact) > 0.5) & (st0.tick_t > 0.5)
+        out.append({"writer": w, "f0": f0, "st": st, "d": d, "m": m, "st0": st0, "m0": m0,
+                    "templates": AE.context_templates(su)})
+    return out
+
+
+def proxy_robust(name: str, params: Dict, sensor_kw: Dict, ai: List[Dict], fc_max: Optional[float] = None,
+                 seeds=TUNE_SEEDS, lam_hf: float = 8.0) -> Dict:
+    """J = 0.5 RR_grid + 0.5 RR_aiguide + 0.5 FC_aiguide / RMS(d_aiguide) + 8 HF + 2 max(0, FC_grid / FC_max - 1)."""
+    g = proxy(name, params, sensor_kw, fc_max, seeds, lam_hf)
+    nm = ALIAS.get(name, name)
+    rr, fcr = [], []
+    for it in ai:
+        dh, _ = ES.run_estimator(nm, it["st"], params)
+        m = it["m"]
+        dn = float(np.sqrt(np.mean(np.sum(it["d"][m] ** 2, axis=1))))
+        rr.append(math.sqrt(np.sum((it["d"][m] - _clip(dh[m])) ** 2) / max(np.sum(it["d"][m] ** 2), 1e-30)))
+        dh0, _ = ES.run_estimator(nm, it["st0"], params)
+        fcr.append(float(np.sqrt(np.mean(np.sum(dh0[it["m0"]] ** 2, axis=1)))) / max(dn, 1e-12))
+    J = 0.5 * g["rr_mean"] + 0.5 * float(np.mean(rr)) + 0.5 * float(np.mean(fcr)) + lam_hf * g["hf_rel_mean"]
+    if fc_max is not None:
+        J += 2.0 * max(0.0, g["fc_um"] * 1e-6 / fc_max - 1.0)
+    if not np.isfinite(J):
+        J = 10.0
+    return dict(g, J=J, J_grid=g["J"], rr_ai_mean=float(np.mean(rr)), fc_ai_rel_mean=float(np.mean(fcr)),
+                rr_ai=[float(x) for x in rr])
+
+
+def _init_worker_robust(name, sensor_kw, fc_max, seeds, ai):
+    _W.update(name=name, sensor_kw=sensor_kw, fc_max=fc_max, seeds=seeds, ai=ai)
+    load(sensor_kw, seeds)
+
+
+def _eval_robust(p):
+    try:
+        r = proxy_robust(_W["name"], p, _W["sensor_kw"], _W["ai"], _W["fc_max"], _W["seeds"])
+    except Exception as exc:  # pragma: no cover
+        r = {"J": 10.0, "error": repr(exc)}
+    r["params"] = p
+    return r
+
+
+def search_robust(name: str, sensor_kw: Dict, n_random: int = 160, n_local: int = 80, workers: int = 2, seed: int = 31,
+                  fc_max: Optional[float] = None, start: Optional[List[Dict]] = None, log=print) -> Dict:
+    """As `search`, with the robust objective (grid tuning seeds + aiguide tuning writers)."""
+    rng = np.random.default_rng(seed)
+    ai = aiguide_items(sensor_kw)
+    for it in ai:
+        it.pop("templates", None)
+    cands = list(start or []) + [sample(name, rng) for _ in range(n_random)]
+    t0 = time.time()
+    with ProcessPoolExecutor(max_workers=workers, initializer=_init_worker_robust,
+                             initargs=(name, sensor_kw, fc_max, TUNE_SEEDS, ai)) as ex:
+        res = sorted(ex.map(_eval_robust, cands), key=lambda r: r["J"])
+        log(f"[robust {name} {sensor_kw}] random {len(cands)}: best J {res[0]['J']:.4f} rr_grid {res[0].get('rr_mean')} "
+            f"rr_ai {res[0].get('rr_ai_mean')} fc_ai {res[0].get('fc_ai_rel_mean')} ({time.time() - t0:.0f} s)")
+        rounds = 4
+        per = max(1, n_local // rounds)
+        for rd in range(rounds):
+            elite = res[:5]
+            local = [perturb(elite[i % len(elite)]["params"], rng, scale=0.3 / (1 + rd)) for i in range(per)]
+            res = sorted(res + list(ex.map(_eval_robust, local)), key=lambda r: r["J"])
+            log(f"[robust {name}] local round {rd + 1}: best J {res[0]['J']:.4f} rr_grid {res[0].get('rr_mean')} "
+                f"rr_ai {res[0].get('rr_ai_mean')} fc_ai {res[0].get('fc_ai_rel_mean')} ({time.time() - t0:.0f} s)")
+    return {"best": res[0], "top": res[:8], "n_evaluated": len(res), "elapsed_s": time.time() - t0,
+            "objective": "0.5 RR_grid + 0.5 RR_aiguide + 0.5 FC_aiguide/RMS(d_aiguide) + 8 HF/RMS(d) + 2 max(0, FC_grid/FC_max - 1); "
+                         "grid tuning seeds 5000-5007 (15 conditions each), aiguide tuning writers 100-105 at 4.5-9 Hz, 0.3 mm",
+            "aiguide_tuning": [list(x) for x in AI_TUNE], "fc_max_um": None if fc_max is None else fc_max * 1e6}

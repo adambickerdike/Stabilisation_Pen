@@ -1,0 +1,360 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (pencil model P1, synthetic handwriting and synthetic tremor; nothing measured)",
+    "generated_utc": "2026-09-28T09:44:10+00:00",
+    "git_revision": "68c63e0-dirty",
+    "parameters_version": "P0.1.2",
+    "parameters_sha256_16": "957eae6e98e9b8c8",
+    "command": "run_study.py --stages tune sensors --workers 1",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "tuning": [
+        5000,
+        5001,
+        5002,
+        5003,
+        5004,
+        5005,
+        5006,
+        5007
+      ],
+      "closed_loop_check": [
+        5000,
+        5001,
+        5002,
+        5003
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "model_version": "P1.0",
+    "script": "fusion/run_study.py",
+    "torch": "2.14.0+cpu",
+    "numba": "0.67.0",
+    "elapsed_s": 158.2
+  },
+  "method": "Parameter search for the conventional estimators on the tuning seeds only (SIMULATION).\n\nSeeds: fusion.TUNE_SEEDS (5000-5007), scenarios.handwriting as the test grid (same generator,\ndisjoint seeds), the full grid 4-12 Hz x 0.1/0.3/0.5 mm and the tremor-free writing of each seed.\nNever the test seeds 200-203.\n\nProxy objective (open loop, fast): for each tremor condition the residual ratio\n    RR = sqrt(sum |d - clip(d_hat)|^2 / sum |d|^2)   over in-contact ticks after 0.5 s,\nwith d the oracle's disturbance (p_H tremor run - p_H clean run), d_hat clipped to the 0.30 mm stage\nradius; J = mean RR + 8 mean(HF / |d|) + 2 max(0, FC / FC_max - 1), where HF is the RMS of d_hat above\n150 Hz (estimate jitter near the 192 Hz stage resonance dithers the pen's friction in P1 and shifts the\nhousing path: 10 um of 200-900 Hz jitter raised the band oracle's closed-loop ratio from 0.83 to 1.09),\nFC the RMS of d_hat on the tremor-free writing (false correction) and FC_max the frozen Kalman filter's\nFC on the same runs (matched distortion, as ml/ tunes its baselines).  Random search, then a local refinement around the best\ncandidates; the finalists are then checked in closed loop on the tuning seeds and the best closed-loop\nmean ratio with a distortion at or below the frozen filter's is kept.\n",
+  "searches": {
+    "akf_1k": {
+      "params": {
+        "qj": 0.02213,
+        "qt": 1.8138e-09,
+        "qb": 3.8906e-09,
+        "ra": 0.051489,
+        "rp": 5.7514e-12,
+        "tau_decay": 0.46569,
+        "tau_w": 0.15719,
+        "wmin_hz": 3.1017,
+        "horizon": 0.00015866,
+        "g": 0.90241,
+        "tau_amp": 0.25402,
+        "harm": 1.0,
+        "qh": 4.4075e-11,
+        "f_gate": 6.0421,
+        "f_gate_w": 2.2159,
+        "a_lo": 4.2333e-05,
+        "a_hi": 0.00016935,
+        "lp_hz": 20.646
+      },
+      "proxy": {
+        "J": 0.95873,
+        "rr_mean": 0.95746,
+        "hf_rel_mean": 0.0001588,
+        "fc_um": 8.5674
+      },
+      "n_evaluated": 342,
+      "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
+      "fc_max_um": 14.0
+    },
+    "akf_120": {
+      "params": {
+        "qj": 0.017854,
+        "qt": 2.3786e-10,
+        "qb": 1.9659e-05,
+        "ra": 0.03145,
+        "rp": 7.4814e-12,
+        "tau_decay": 0.33552,
+        "tau_w": 0.069161,
+        "wmin_hz": 2.9828,
+        "horizon": 0.00031261,
+        "g": 0.96917,
+        "tau_amp": 0.080623,
+        "harm": 1.0,
+        "lp_hz": 41.863,
+        "qh": 2.3429e-12,
+        "a_lo": 2.6442e-05,
+        "a_hi": 7.2658e-05
+      },
+      "proxy": {
+        "J": 0.96519,
+        "rr_mean": 0.96241,
+        "hf_rel_mean": 0.00034766,
+        "fc_um": 12.769
+      },
+      "n_evaluated": 342,
+      "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
+      "fc_max_um": 14.0
+    },
+    "bmflc_1k": {
+      "params": {
+        "mu": 0.010011,
+        "f_lo": 7.688,
+        "f_hi": 15.251,
+        "df": 0.25,
+        "hp_hz": 4.9848,
+        "lp_hz": 57.878,
+        "horizon": 0.00062273,
+        "g": 0.51224,
+        "tau_amp": 0.10214,
+        "out_lp_hz": 73.41,
+        "a_lo": 1.6524e-05,
+        "a_hi": 0.00013182
+      },
+      "proxy": {
+        "J": 0.98683,
+        "rr_mean": 0.98503,
+        "hf_rel_mean": 0.00022545,
+        "fc_um": 2.9521
+      },
+      "n_evaluated": 240,
+      "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
+      "fc_max_um": 14.0
+    },
+    "wflc_1k": {
+      "params": {
+        "mu": 0.0016457,
+        "mu0": 0.010792,
+        "hp_hz": 2.9163,
+        "lp_hz": 28.661,
+        "harm": 1.0,
+        "horizon": 0.00076184,
+        "g": 0.81566,
+        "tau_amp": 0.11717,
+        "w0_hz": 7.0,
+        "out_lp_hz": 27.187,
+        "f_gate": 6.9322,
+        "f_gate_w": 3.1538
+      },
+      "proxy": {
+        "J": 0.95494,
+        "rr_mean": 0.95479,
+        "hf_rel_mean": 1.8411e-05,
+        "fc_um": 11.692
+      },
+      "n_evaluated": 240,
+      "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
+      "fc_max_um": 14.0
+    },
+    "kfosc_1k": {
+      "params": {
+        "qj": 0.062114,
+        "qt": 4.4546e-10,
+        "r": 8.5893e-10,
+        "tau_decay": 0.25293,
+        "tau_w": 0.34642,
+        "horizon": 0.0025618,
+        "g": 0.63194,
+        "nis_hi": 26.556,
+        "f_gate": 6.8656,
+        "f_gate_w": 1.0967
+      },
+      "proxy": {
+        "J": 0.99254,
+        "rr_mean": 0.97817,
+        "hf_rel_mean": 0.0017952,
+        "fc_um": 11.573
+      },
+      "n_evaluated": 181,
+      "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
+      "fc_max_um": 14.0
+    },
+    "kfosclp_1k": {
+      "params": {
+        "qj": 3.7052,
+        "qt": 3.5074e-07,
+        "r": 2.0331e-11,
+        "tau_decay": 0.99916,
+        "tau_w": 0.25827,
+        "horizon": 0.002,
+        "g": 0.67719,
+        "nis_hi": 51.432,
+        "f_gate": 7.1714,
+        "f_gate_w": 1.2374,
+        "lp_hz": 23.849
+      },
+      "proxy": {
+        "J": 0.97754,
+        "rr_mean": 0.97702,
+        "hf_rel_mean": 6.4913e-05,
+        "fc_um": 6.5697
+      },
+      "n_evaluated": 104,
+      "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
+      "fc_max_um": 14.0
+    }
+  },
+  "closed_loop_on_tuning_seeds": {
+    "kfosc_port": {
+      "ratio_mean": 1.0275,
+      "band_ratio_mean": 0.85788,
+      "distortion_um": 23.946,
+      "q_sat_mean": 5.9213e-05,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.0602,
+        "4Hz_0.3mm": 0.99917,
+        "4Hz_0.5mm": 1.0047,
+        "6Hz_0.1mm": 1.0234,
+        "6Hz_0.3mm": 0.99974,
+        "6Hz_0.5mm": 0.99942,
+        "8Hz_0.1mm": 1.156,
+        "8Hz_0.3mm": 0.94956,
+        "8Hz_0.5mm": 0.89089,
+        "10Hz_0.1mm": 1.3687,
+        "10Hz_0.3mm": 0.91799,
+        "10Hz_0.5mm": 0.87283,
+        "12Hz_0.1mm": 1.3219,
+        "12Hz_0.3mm": 0.92911,
+        "12Hz_0.5mm": 0.9189
+      }
+    },
+    "kfosc_p1": {
+      "ratio_mean": 0.97832,
+      "band_ratio_mean": 0.90702,
+      "distortion_um": 16.363,
+      "q_sat_mean": 0.0,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.0418,
+        "4Hz_0.3mm": 1.0011,
+        "4Hz_0.5mm": 0.99579,
+        "6Hz_0.1mm": 1.0364,
+        "6Hz_0.3mm": 1.006,
+        "6Hz_0.5mm": 1.0045,
+        "8Hz_0.1mm": 0.97547,
+        "8Hz_0.3mm": 0.9391,
+        "8Hz_0.5mm": 0.93497,
+        "10Hz_0.1mm": 0.99453,
+        "10Hz_0.3mm": 0.93954,
+        "10Hz_0.5mm": 0.92293,
+        "12Hz_0.1mm": 0.99391,
+        "12Hz_0.3mm": 0.96307,
+        "12Hz_0.5mm": 0.92559
+      }
+    },
+    "kfosc_p1_lp": {
+      "ratio_mean": 0.96757,
+      "band_ratio_mean": 0.85726,
+      "distortion_um": 8.6006,
+      "q_sat_mean": 0.0040985,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 0.99959,
+        "4Hz_0.3mm": 1.0012,
+        "4Hz_0.5mm": 1.0054,
+        "6Hz_0.1mm": 1.0073,
+        "6Hz_0.3mm": 1.0074,
+        "6Hz_0.5mm": 1.0011,
+        "8Hz_0.1mm": 1.0024,
+        "8Hz_0.3mm": 0.91196,
+        "8Hz_0.5mm": 0.87391,
+        "10Hz_0.1mm": 1.0445,
+        "10Hz_0.3mm": 0.92266,
+        "10Hz_0.5mm": 0.85823,
+        "12Hz_0.1mm": 1.0515,
+        "12Hz_0.3mm": 0.94723,
+        "12Hz_0.5mm": 0.87915
+      }
+    },
+    "akf": {
+      "ratio_mean": 0.9418,
+      "band_ratio_mean": 0.7889,
+      "distortion_um": 11.942,
+      "q_sat_mean": 0.016721,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.0095,
+        "4Hz_0.3mm": 1.0023,
+        "4Hz_0.5mm": 1.0038,
+        "6Hz_0.1mm": 0.993,
+        "6Hz_0.3mm": 0.94847,
+        "6Hz_0.5mm": 0.91904,
+        "8Hz_0.1mm": 1.0243,
+        "8Hz_0.3mm": 0.89859,
+        "8Hz_0.5mm": 0.82051,
+        "10Hz_0.1mm": 1.0238,
+        "10Hz_0.3mm": 0.88989,
+        "10Hz_0.5mm": 0.822,
+        "12Hz_0.1mm": 1.0266,
+        "12Hz_0.3mm": 0.90933,
+        "12Hz_0.5mm": 0.83581
+      }
+    },
+    "akf_120": {
+      "ratio_mean": 0.95634,
+      "band_ratio_mean": 0.82942,
+      "distortion_um": 16.82,
+      "q_sat_mean": 0.011763,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.036,
+        "4Hz_0.3mm": 1.0027,
+        "4Hz_0.5mm": 0.9903,
+        "6Hz_0.1mm": 1.026,
+        "6Hz_0.3mm": 0.99148,
+        "6Hz_0.5mm": 0.95636,
+        "8Hz_0.1mm": 1.0132,
+        "8Hz_0.3mm": 0.90742,
+        "8Hz_0.5mm": 0.84954,
+        "10Hz_0.1mm": 1.0373,
+        "10Hz_0.3mm": 0.9009,
+        "10Hz_0.5mm": 0.82816,
+        "12Hz_0.1mm": 1.0345,
+        "12Hz_0.3mm": 0.92767,
+        "12Hz_0.5mm": 0.84357
+      }
+    },
+    "bmflc": {
+      "ratio_mean": 0.98488,
+      "band_ratio_mean": 0.94341,
+      "distortion_um": 3.3061,
+      "q_sat_mean": 8.1258e-05,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.0035,
+        "4Hz_0.3mm": 1.0011,
+        "4Hz_0.5mm": 1.0005,
+        "6Hz_0.1mm": 1.0033,
+        "6Hz_0.3mm": 1.0025,
+        "6Hz_0.5mm": 1.001,
+        "8Hz_0.1mm": 0.99203,
+        "8Hz_0.3mm": 0.93912,
+        "8Hz_0.5mm": 0.92196,
+        "10Hz_0.1mm": 0.99782,
+        "10Hz_0.3mm": 0.98976,
+        "10Hz_0.5mm": 0.95176,
+        "12Hz_0.1mm": 1.0049,
+        "12Hz_0.3mm": 1.0021,
+        "12Hz_0.5mm": 0.96195
+      }
+    },
+    "wflc": {
+      "ratio_mean": 0.96167,
+      "band_ratio_mean": 0.80532,
+      "distortion_um": 17.198,
+      "q_sat_mean": 0.011954,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.0645,
+        "4Hz_0.3mm": 1.0089,
+        "4Hz_0.5mm": 1.003,
+        "6Hz_0.1mm": 1.0433,
+        "6Hz_0.3mm": 0.9751,
+        "6Hz_0.5mm": 0.97219,
+        "8Hz_0.1mm": 1.0295,
+        "8Hz_0.3mm": 0.88373,
+        "8Hz_0.5mm": 0.82734,
+        "10Hz_0.1mm": 1.0898,
+        "10Hz_0.3mm": 0.89858,
+        "10Hz_0.5mm": 0.81616,
+        "12Hz_0.1mm": 1.0668,
+        "12Hz_0.3mm": 0.91539,
+        "12Hz_0.5mm": 0.83075
+      }
+    }
+  }
+}

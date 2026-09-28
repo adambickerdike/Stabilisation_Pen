@@ -135,10 +135,19 @@ def _sensor_cfg(rng, page: str = "1k") -> S.SensorConfig:
     return cfg
 
 
+GLYPH_EVERY = (2, 5, 8)      # i % 10 in GLYPH_EVERY: the pair uses an aiguide glyph writer (30 %), else sigma-lognormal
+GLYPH_TRAIN_BASE = 16000     # glyph-writer training seeds 16000 + i (validation 19000 + j)
+
+
 def _spec(i: int, kind: str):
-    base = TRAIN_SEEDS_BASE if kind == "train" else 0
-    seed = base + i if kind == "train" else VAL_SEEDS[i % len(VAL_SEEDS)] + 100 * (i // len(VAL_SEEDS))
+    glyph = (i % 10) in GLYPH_EVERY
+    if kind == "train":
+        seed = (GLYPH_TRAIN_BASE if glyph else TRAIN_SEEDS_BASE) + i
+    else:
+        seed = (19000 + i) if glyph else VAL_SEEDS[i % len(VAL_SEEDS)] + 100 * (i // len(VAL_SEEDS))
     spec = FD.draw_spec(seed)
+    if glyph:
+        spec.writer = "glyph"
     if (seed % 4) == 0:                     # 25 % nominal pen and hand (the test configuration), randomised tremor/writing
         spec.mu_skid = None
         spec.hand = {}

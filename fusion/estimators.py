@@ -229,11 +229,12 @@ def kfosc(st: Streams, params: Dict = None) -> Tuple[np.ndarray, Dict]:
 # ======================================================================================== AKF
 AKF_KEYS = ("qj", "qt", "qh", "qb", "ra", "rp", "tau_decay", "w0_hz", "tau_w", "wmin_hz", "wmax_hz",
             "f_gate", "f_gate_w", "a_lo", "a_hi", "tau_amp", "horizon", "tau_auth", "acc_gd", "gap_reset", "g", "use_pos",
-            "use_acc", "harm", "lp_hz")
+            "use_acc", "harm", "lp_hz", "xtrack", "v_xt")
 AKF_DEFAULTS = {"qj": 30.0, "qt": 1e-6, "qh": 2e-7, "qb": 1e-6, "ra": 1e-3, "rp": 1e-11, "tau_decay": 0.6,
                 "w0_hz": 7.0, "tau_w": 0.25, "wmin_hz": 3.0, "wmax_hz": 14.0, "f_gate": 0.0, "f_gate_w": 1.5,
                 "a_lo": 0.0, "a_hi": 0.0, "tau_amp": 0.2, "horizon": 1.5e-3, "tau_auth": 0.05, "acc_gd": 1.04e-3,
-                "gap_reset": 0.03, "g": 1.0, "use_pos": 1.0, "use_acc": 1.0, "harm": 1.0, "lp_hz": 60.0}
+                "gap_reset": 0.03, "g": 1.0, "use_pos": 1.0, "use_acc": 1.0, "harm": 1.0, "lp_hz": 60.0,
+                "xtrack": 0.0, "v_xt": 5e-3}
 NS = 8
 HIST = 512
 
@@ -347,7 +348,7 @@ def _akf_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, prm, out, o
     w = TWO_PI * prm[7]; tau_w = prm[8]; wmin = TWO_PI * prm[9]; wmax = TWO_PI * prm[10]
     fgate = prm[11]; fgw = prm[12]; a_lo = prm[13]; a_hi = prm[14]; tau_amp = prm[15]; hor = prm[16]
     tau_auth = prm[17]; acc_gd = prm[18]; gap_reset = prm[19]; gout = prm[20]; use_pos = prm[21] > 0.5
-    use_acc = prm[22] > 0.5; harm = prm[23]; lp_hz = prm[24]
+    use_acc = prm[22] > 0.5; harm = prm[23]; lp_hz = prm[24]; xtrack = prm[25] > 0.5; v_xt = prm[26]
     n = len(tick_t)
     Ts = tick_t[1] - tick_t[0]
     lb, la = _lp2_coef(lp_hz, Ts)
@@ -493,6 +494,16 @@ def _akf_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, prm, out, o
             c2 = math.cos(2 * w * dtp); s2_ = math.sin(2 * w * dtp)
             d0 = rd * (c * x[0, 3] + s * x[0, 4] + harm * (c2 * x[0, 5] + s2_ * x[0, 6]))
             d1 = rd * (c * x[1, 3] + s * x[1, 4] + harm * (c2 * x[1, 5] + s2_ * x[1, 6]))
+            if xtrack:
+                # cancel only across the stroke: remove the component along the intent velocity (the writing's
+                # own speed changes live there); full output when the pen is (nearly) still
+                vx = x[0, 1]; vy = x[1, 1]
+                sp = math.hypot(vx, vy)
+                if sp > 1e-9:
+                    tx = vx / sp; ty = vy / sp
+                    wgt = min(1.0, sp / v_xt)
+                    dl = tx * d0 + ty * d1
+                    d0 -= wgt * dl * tx; d1 -= wgt * dl * ty
         amp = math.sqrt(amp0 * amp0 + amp1 * amp1)
         amp_f = amp_f + (Ts / tau_amp) * (amp - amp_f)
         target = gout

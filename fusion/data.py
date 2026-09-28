@@ -161,9 +161,13 @@ class RandSpec:
     advance: float = 2.2e-3
     mu_skid: Optional[float] = None
     hand: Dict[str, float] = field(default_factory=dict)
+    writer: str = "lognormal"            # "lognormal" (stabpen sigma-lognormal) or "glyph" (aiguide glyph writer)
 
     def key(self) -> str:
-        return hashlib.sha1(repr(asdict(self)).encode()).hexdigest()[:16]
+        d = asdict(self)
+        if d["writer"] == "lognormal":   # keep the cache keys of specs made before the writer field existed
+            d.pop("writer")
+        return hashlib.sha1(repr(d).encode()).hexdigest()[:16]
 
 
 def draw_spec(seed: int, tremor: bool = True, duration: float = DURATION) -> RandSpec:
@@ -191,11 +195,36 @@ def nominal_spec(seed: int, f0: float, amp: float, duration: float = DURATION) -
     return RandSpec(seed=seed, tremor=amp > 0, duration=duration, f0=f0, amp=amp)
 
 
+GLYPH_TRAIN_LINES = None
+
+
+def glyph_handwriting(seed: int, duration: float) -> sg.Intended:
+    """The first `duration` seconds of a note line written by a random aiguide glyph writer (style and writer seeds
+    derived from `seed`; never the aiguide study sentence or its calibration sentence, never writers 0-5 or 100-105)."""
+    from aiguide.sentences import APP_NOTE_LINES, CALIB_SENTENCE, EXTRA_NOTE_LINES, GUIDE_SENTENCE
+    from aiguide.writer import SyntheticWriter, sample_style
+    lines = [x for x in APP_NOTE_LINES + EXTRA_NOTE_LINES if x not in (GUIDE_SENTENCE, CALIB_SENTENCE)]
+    rng = np.random.default_rng(seed + 555)
+    style = sample_style(rng)
+    text = lines[int(rng.integers(len(lines)))]
+    wr = SyntheticWriter(style, seed=seed + 20000).write(text, dt=DT, seed=seed + 30000)
+    it = wr.intended
+    n = int(round(duration / DT))
+    if len(it.t) >= n:
+        return sg.Intended(it.t[:n].copy(), it.xy[:n].copy(), it.pen_down[:n].copy(), it.lift[:n].copy(), it.features)
+    k = n - len(it.t)
+    return sg.Intended(np.arange(n) * DT, np.vstack([it.xy, np.repeat(it.xy[-1:], k, 0)]), np.r_[it.pen_down, np.zeros(k, bool)],
+                       np.r_[it.lift, np.full(k, it.lift[-1])], it.features)
+
+
 def build(spec: RandSpec):
     """(tremor scenario, clean scenario, PencilConfig) of one spec; both scenarios share the handwriting."""
     rng = np.random.default_rng(spec.seed)
-    it = fast_lognormal_handwriting(DT, spec.duration, rng, letter_height=spec.letter_height, slant_deg=spec.slant_deg,
-                                    advance=spec.advance, mu_shift=spec.mu_shift)
+    if spec.writer == "glyph":
+        it = glyph_handwriting(spec.seed, spec.duration)
+    else:
+        it = fast_lognormal_handwriting(DT, spec.duration, rng, letter_height=spec.letter_height, slant_deg=spec.slant_deg,
+                                        advance=spec.advance, mu_shift=spec.mu_shift)
     if spec.tremor and spec.amp > 0:
         tr = sg.TremorSpec(f0=spec.f0, amp_pk=spec.amp, f_jitter=spec.f_jitter, am_depth=spec.am_depth,
                            harmonic=spec.harmonic, ellipticity=spec.ellipticity, orientation=spec.orientation,

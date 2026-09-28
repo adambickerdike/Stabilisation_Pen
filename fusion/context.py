@@ -46,10 +46,11 @@ IBAX, IBAY, ITBX, ITBY = 14, 15, 16, 17
 CTX_KEYS = ("qj", "qt", "qh", "qb", "ra", "rp", "tau_decay", "w0_hz", "tau_w", "wmin_hz", "wmax_hz", "f_gate", "f_gate_w",
             "a_lo", "a_hi", "tau_amp", "horizon", "tau_auth", "acc_gd", "gap_reset", "g", "harm",
             "sigma_t", "q_tb", "tb0", "gate", "drop_um", "drop_s", "c_min", "t_rate", "win_back", "win_fwd", "use_tpl", "win_reacq",
-            "lp_hz")
+            "lp_hz", "tb_letter", "drop_gated_s", "tpl_mode", "xtrack", "v_xt")
 CTX_DEFAULTS = dict(AKF_DEFAULTS)
 CTX_DEFAULTS.update({"sigma_t": 60e-6, "q_tb": (100e-6) ** 2, "tb0": 300e-6, "gate": 4.0, "drop_um": 250.0, "drop_s": 0.06,
-                     "c_min": 0.5, "t_rate": 250.0, "win_back": 10.0, "win_fwd": 80.0, "use_tpl": 1.0, "win_reacq": 1500.0})
+                     "c_min": 0.5, "t_rate": 250.0, "win_back": 10.0, "win_fwd": 80.0, "use_tpl": 1.0, "win_reacq": 1500.0,
+                     "tb_letter": -1.0, "drop_gated_s": 0.0, "tpl_mode": 0.0, "xtrack": 0.0, "v_xt": 5e-3})
 
 
 # ------------------------------------------------------------------ template geometry for the pen
@@ -166,7 +167,7 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
     tau_auth = prm[17]; acc_gd = prm[18]; gap_reset = prm[19]; gout = prm[20]
     sig_t = prm[22]; q_tb = prm[23]; tb0 = prm[24]; gate = prm[25]; drop_m = prm[26] * 1e-6; drop_s = prm[27]
     c_min = prm[28]; t_rate = prm[29]; wb = int(prm[30]); wf = int(prm[31]); use_tpl = prm[32] > 0.5; wre = int(prm[33])
-    lp_hz = prm[34]
+    lp_hz = prm[34]; tb_letter = prm[35]; drop_gs = prm[36]; tpl_mode = int(prm[37]); xtrack = int(prm[38]); v_xt = prm[39]
     n = len(tick_t)
     Ts = tick_t[1] - tick_t[0]
     lb, la = _lp2_coef(lp_hz, Ts)
@@ -189,9 +190,11 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
     prog = -1; reacq = True
     cur_letter = -1
     bad_since = -1.0
+    gated_since = -1.0
     dropped_letter = -2
     last_tpl_t = -1.0
     n_tpl = 0; n_gated = 0; n_drop = 0
+    tpl_on = False
     for k in range(n):
         t = tick_t[k]
         while ic < nc and con_av[ic] <= t:
@@ -302,12 +305,18 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
                             if li != cur_letter:
                                 cur_letter = li
                                 bad_since = -1.0
-                                # a new letter: new placement offset
-                                for q in range(NC):
-                                    P[ITBX, q] = 0.0; P[q, ITBX] = 0.0; P[ITBY, q] = 0.0; P[q, ITBY] = 0.0
-                                P[ITBX, ITBX] = tb0 * tb0; P[ITBY, ITBY] = tb0 * tb0
-                                x[ITBX] = 0.0; x[ITBY] = 0.0
+                                gated_since = -1.0
+                                if tb_letter < 0.0:
+                                    # a new letter: new placement offset (reset)
+                                    for q in range(NC):
+                                        P[ITBX, q] = 0.0; P[q, ITBX] = 0.0; P[ITBY, q] = 0.0; P[q, ITBY] = 0.0
+                                    P[ITBX, ITBX] = tb0 * tb0; P[ITBY, ITBY] = tb0 * tb0
+                                    x[ITBX] = 0.0; x[ITBY] = 0.0
+                                else:
+                                    # a new letter: keep the common offset, add the letter's own placement uncertainty
+                                    P[ITBX, ITBX] += tb_letter * tb_letter; P[ITBY, ITBY] += tb_letter * tb_letter
                             cf = tconf[bj]
+                            tpl_on = cf >= c_min and li != dropped_letter and in_con
                             if cf >= c_min and li != dropped_letter:
                                 nx = tnrm[bj, 0]; ny = tnrm[bj, 1]
                                 resid = nx * (px - txy[bj, 0]) + ny * (py - txy[bj, 1])
@@ -323,13 +332,28 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
                                 if dropped_letter != li:
                                     for i in range(NC):
                                         H[i] = 0.0
-                                    H[IPX] = nx; H[IPY] = ny; H[ITBX] = -nx; H[ITBY] = -ny
-                                    z = nx * txy[bj, 0] + ny * txy[bj, 1]
+                                    if tpl_mode == 0:
+                                        # intent-referenced: n.T = n.p - n.b_T
+                                        H[IPX] = nx; H[IPY] = ny; H[ITBX] = -nx; H[ITBY] = -ny
+                                        z = nx * txy[bj, 0] + ny * txy[bj, 1]
+                                    else:
+                                        # tremor-referenced: the page point's cross-track distance from the template is
+                                        # tremor + template bias, n.(y_p - T) = n.c + n.b_T (the writing's own shape removed)
+                                        H[IC1X] = nx; H[IC1Y] = ny; H[IC2X] = nx * harm; H[IC2Y] = ny * harm
+                                        H[ITBX] = nx; H[ITBY] = ny
+                                        z = nx * (pos[ip, 0] - txy[bj, 0]) + ny * (pos[ip, 1] - txy[bj, 1])
                                     r = _ctx_update(x, P, H, z, sig_t * sig_t / max(cf, 1e-3), gate)
                                     if r < 0:
                                         n_gated += 1
+                                        # persistent gating also drops the letter's template (rule T5, innovation form)
+                                        if gated_since < 0:
+                                            gated_since = tp
+                                        elif drop_gs > 0 and tp - gated_since > drop_gs:
+                                            dropped_letter = li
+                                            n_drop += 1
                                     else:
                                         n_tpl += 1
+                                        gated_since = -1.0
                     # ---- re-apply the later accelerometer samples
                     for q in range(jj + 1, nh):
                         s2 = q % HISTC
@@ -383,6 +407,20 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
             c2 = math.cos(2 * w * dtp); s2_ = math.sin(2 * w * dtp)
             d0 = rd * (c * x[IC1X] + s * x[IS1X] + harm * (c2 * x[IC2X] + s2_ * x[IS2X]))
             d1 = rd * (c * x[IC1Y] + s * x[IS1Y] + harm * (c2 * x[IC2Y] + s2_ * x[IS2Y]))
+            if xtrack > 0:
+                # cancel only across the stroke; the stroke direction from the active template (xtrack 2) or from
+                # the intent velocity (xtrack 1, or no active template); full output when the pen is (nearly) still
+                vx = x[IVX]; vy = x[IVY]
+                sp = math.hypot(vx, vy)
+                tx = 0.0; ty = 0.0; wgt = 0.0
+                if xtrack == 2 and tpl_on and prog >= 0:
+                    tx = tnrm[prog, 1]; ty = -tnrm[prog, 0]
+                    wgt = min(1.0, sp / v_xt)
+                elif sp > 1e-9:
+                    tx = vx / sp; ty = vy / sp
+                    wgt = min(1.0, sp / v_xt)
+                dl = tx * d0 + ty * d1
+                d0 -= wgt * dl * tx; d1 -= wgt * dl * ty
         amp = math.sqrt(amp0 * amp0 + amp1 * amp1)
         amp_f = amp_f + (Ts / tau_amp) * (amp - amp_f)
         target = gout

@@ -234,48 +234,57 @@ def _flips(su: Dict, res_letters: List[Dict], neutral_letters: List[Dict], key: 
 
 # ------------------------------------------------------------------ tuning of the template parameters (writers 100-105 only)
 def tune_setup(job) -> Dict:
-    """Streams, truth and templates of one tuning scenario (no closed loop)."""
+    """Streams, truth and templates of one tuning scenario (no closed loop), plus the tremor-free run's streams."""
     su = setup(job["writer"], job["f0"])
     rec1 = S.record_from_result(su["neutral"], su["scn"])
     rec0 = S.record_from_result(su["clean"], su["scn0"])
     st = S.make_streams(rec1, S.config(**job["sensors"]), 700_000 + 1000 * job["writer"] + int(job["f0"]))
+    st0 = S.make_streams(rec0, S.config(**job["sensors"]), 710_000 + 1000 * job["writer"] + int(job["f0"]))
     d = S.truth_at(st.tick_t, rec1, rec0)
     con = np.interp(st.tick_t, rec1.t, rec1.contact) > 0.5
-    return {"st": st, "d": d, "m": con & (st.tick_t > 0.5), "tpl": context_templates(su), "writer": job["writer"], "f0": job["f0"]}
+    con0 = np.interp(st0.tick_t, rec0.t, rec0.contact) > 0.5
+    return {"st": st, "d": d, "m": con & (st.tick_t > 0.5), "st0": st0, "m0": con0 & (st0.tick_t > 0.5),
+            "tpl": context_templates(su), "writer": job["writer"], "f0": job["f0"]}
 
 
 def tune_score(items: List[Dict], base: Dict, cand: Dict) -> Dict:
-    """Open-loop band residual ratio with the AI templates, and the wrong-template penalty."""
-    from scipy.signal import butter, sosfiltfilt
-    sos = butter(4, [3.0, 15.0], btype="band", fs=2000.0, output="sos")
+    """Open-loop residual ratio (all band) with the AI templates, the false correction on the tremor-free writing
+    (relative to the tremor disturbance) and the wrong-template penalty."""
     p = dict(base)
     p.update(cand)
-    res = {"none": [], "ai_correct": [], "ai_predicted": [], "wrong_letter_full": []}
+    keys = ("none", "ai_correct", "ai_predicted", "wrong_letter_full")
+    res = {k: [] for k in keys}
+    fc = {k: [] for k in keys}
     for it in items:
-        db = sosfiltfilt(sos, it["d"], axis=0)
-        for key in res:
+        m = it["m"]
+        dn = float(np.sqrt(np.mean(np.sum(it["d"][m] ** 2, axis=1))))
+        for key in keys:
             tpl = None if key == "none" else it["tpl"][key]
             dh, _ = CX.estimate(it["st"], p, {"template": tpl})
-            e = sosfiltfilt(sos, dh, axis=0) - db
-            m = it["m"]
-            res[key].append(float(np.sqrt(np.sum(e[m] ** 2) / max(np.sum(db[m] ** 2), 1e-30))))
+            e = dh[m] - it["d"][m]
+            res[key].append(float(np.sqrt(np.sum(e ** 2) / max(np.sum(it["d"][m] ** 2), 1e-30))))
+            dh0, _ = CX.estimate(it["st0"], p, {"template": tpl})
+            fc[key].append(float(np.sqrt(np.mean(np.sum(dh0[it["m0"]] ** 2, axis=1)))) / max(dn, 1e-12))
     r = {k: float(np.mean(v)) for k, v in res.items()}
-    r["J"] = 0.5 * (r["ai_correct"] + r["ai_predicted"]) + 0.5 * max(0.0, r["wrong_letter_full"] - r["none"])
+    r.update({"fc_rel_" + k: float(np.mean(v)) for k, v in fc.items()})
+    ai = 0.5 * (r["ai_correct"] + r["ai_predicted"]) + 0.5 * 0.5 * (r["fc_rel_ai_correct"] + r["fc_rel_ai_predicted"])
+    wrong = r["wrong_letter_full"] + 0.5 * r["fc_rel_wrong_letter_full"]
+    none = r["none"] + 0.5 * r["fc_rel_none"]
+    r["J"] = ai + 0.5 * max(0.0, wrong - none)
     return r
 
 
 def tune_candidates():
-    """Template-noise, bias-drift and gate settings; with the AKF's frequency gate kept or switched off (the template is
-    meant to disambiguate writing from tremor exactly where the gate would otherwise block correction)."""
+    """Template settings: measurement form (intent-referenced 0 / tremor-referenced 1), template noise, gate, the
+    cross-track-only output (template direction) and the persistent-mismatch drop rule."""
     out = []
-    for sig in (30e-6, 60e-6, 120e-6):
-        for qtb in ((30e-6) ** 2, (100e-6) ** 2):
-            for gate in (3.0, 5.0):
-                for fg in (None, 0.0):
-                    c = {"sigma_t": sig, "q_tb": qtb, "gate": gate, "t_rate": 250.0}
-                    if fg is not None:
-                        c["f_gate"] = fg
-                    out.append(c)
+    for mode in (0.0, 1.0):
+        for sig in (20e-6, 60e-6, 150e-6):
+            for gate in (0.0, 4.0):
+                for xt in (0.0, 2.0):
+                    for drop in (250.0, 5000.0):
+                        out.append({"tpl_mode": mode, "sigma_t": sig, "gate": gate, "xtrack": xt, "drop_um": drop,
+                                    "q_tb": (30e-6) ** 2, "tb_letter": 150e-6, "t_rate": 500.0, "v_xt": 5e-3})
     return out
 
 

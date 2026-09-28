@@ -42,6 +42,9 @@ CACHE = os.path.join(BUILD, "cache")
 # keep numba caches (this package's estimators and the P1 core it calls) out of sim/ and stabpen/
 os.makedirs(os.path.join(BUILD, "numba_cache"), exist_ok=True)
 os.environ.setdefault("NUMBA_CACHE_DIR", os.path.join(BUILD, "numba_cache"))
+# one BLAS/OpenMP thread per process: the study runs in `--workers` processes (2 here) on a shared machine
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
