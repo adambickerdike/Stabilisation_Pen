@@ -1849,10 +1849,11 @@ function barRows(rows, mx, ref){
     `<b>${esc(r.txt)}</b>${r.sub?`<span class="bw">${esc(r.sub)}</span>`:""}</div>`).join(""); }
 function renderOutcomes(o){
   const el=$("outcomes"); if(!o || !o.bands || !Object.keys(o.bands).length){ el.hidden=true; return false; }
-  const order=["none","weighted","pencil_akf","revH_off","revH_akf","revH_akf_revh","revH_oracle"];
+  const order=["none","weighted","pencil_akf","revH_off","revH_akf","revH_akf_revh","ai_guide","clean_copy","revH_oracle"];
   const LAB={none:"Ordinary pen", weighted:"Weighted pen (60 g heavier)", pencil_akf:"Earlier slim design, with tracker", pencil_oracle:"Earlier slim design, knowing the shake",
-    revH_off:"New pen, stabiliser off", revH_akf:"New pen, first tracker", revH_akf_revh:"New pen, tracker tuned for it", revH_oracle:"New pen, knowing the shake exactly"};
-  const CLS={none:"b-before", revH_akf:"b-after", revH_akf_revh:"b-after", revH_oracle:"b-limit"};
+    revH_off:"New pen, stabiliser off", revH_akf:"New pen, first tracker", revH_akf_revh:"New pen, tracker tuned for it", revH_oracle:"New pen, knowing the shake exactly",
+    ai_guide:"New pen + AI guessing the next letter", clean_copy:"The app's clean copy (digital, not the ink)"};
+  const CLS={none:"b-before", revH_akf:"b-after", revH_akf_revh:"b-after", clean_copy:"b-after", revH_oracle:"b-limit"};
   const bands=Object.values(o.bands), all=bands.flatMap(b=>Object.values(b.devices).map(d=>d.ink_mm)).filter(x=>isFinite(x)), mx=Math.max(...all)*1.08;
   const pct=x=>Math.round(100*x), sim=tagHTML("SIMULATION (model HW1)");
   let h=`<h3>Shaky writing (tremor)</h3><div class="bands">`;
@@ -1868,6 +1869,8 @@ function renderOutcomes(o){
   if(F&&F.none&&F.revH_akf_revh) li.push(`<li>Fast shake: with the tracker tuned for it, the new pen ${cutWords(F.none.ink_mm, F.revH_akf_revh.ink_mm)} (${F.none.ink_mm.toFixed(2)} → ${F.revH_akf_revh.ink_mm.toFixed(2)} mm)${F.revH_akf_revh.words!=null&&F.none.words!=null?`, and the app reads ${pct(F.revH_akf_revh.words)} % of the words instead of ${pct(F.none.words)} %`:""}. ${sim}</li>`);
   if(S&&S.none&&S.revH_akf_revh) li.push(`<li>Slow shake, the most common kind in essential tremor: today's tracker ${cutWords(S.none.ink_mm, S.revH_akf_revh.ink_mm).replace("the wobble","it")} (${S.none.ink_mm.toFixed(2)} → ${S.revH_akf_revh.ink_mm.toFixed(2)} mm). ${sim}</li>`);
   if(F&&S&&F.revH_oracle&&S.revH_oracle&&F.none&&S.none) li.push(`<li>If the pen knew the shake exactly, the wobble would drop by about ${Math.round(100*(1-F.revH_oracle.ink_mm/F.none.ink_mm))} % (fast) and ${Math.round(100*(1-S.revH_oracle.ink_mm/S.none.ink_mm))} % (slow). The nose can reach far enough: telling shake from writing is what limits it. ${sim}</li>`);
+  if(F&&F.ai_guide&&F.revH_akf_revh) li.push(`<li>AI that guesses your next letter barely changes the ink (${F.revH_akf_revh.ink_mm.toFixed(2)} → ${F.ai_guide.ink_mm.toFixed(2)} mm): the guessed shape lands where the shaking tip lands. The pen does not use it. ${sim}</li>`);
+  if(F&&F.clean_copy&&F.revH_akf_revh&&F.clean_copy.words!=null&&F.revH_akf_revh.words!=null) li.push(`<li>The app's clean copy removes the shake from the recording after you write: the app reads ${pct(F.clean_copy.words)} % of the words (the ink: ${pct(F.revH_akf_revh.words)} %)${o.aiprior_6hz&&o.aiprior_6hz.clean_words!=null&&o.aiprior_6hz.tracker_words!=null?`, and ${pct(o.aiprior_6hz.clean_words)} % instead of ${pct(o.aiprior_6hz.tracker_words)} % with a slow shake of 6 a second`:""}. The paper still shows the pen's ink. ${sim}</li>`);
   if(F&&F.weighted&&F.none) li.push(`<li>Extra weight alone ${F.weighted.ink_mm>F.none.ink_mm*1.02?"makes the ink worse here":"changes little here"}: the weighted pen is at ${F.weighted.ink_mm.toFixed(2)} mm${F.revH_off?`, and the new pen with its stabiliser off at ${F.revH_off.ink_mm.toFixed(2)} mm`:""}. ${sim}</li>`);
   /* Parkinson's-like writing: letter height at the end of the line */
   let hp="", lp=[];

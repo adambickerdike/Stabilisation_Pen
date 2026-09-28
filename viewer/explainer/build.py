@@ -49,6 +49,7 @@ BOARD_FINAL = "results/board/layout.json"
 SAMPLES_FINAL = "results/handwriting/samples.json"
 AIPRIOR_SAMPLES = "results/aiprior/samples.json"          # AI help for severe tremor (same writer, sentence and tremor)
 AIPRIOR_MERGE = {"guide_ai_predicted": "ai_guide", "clean_tracker": "clean_copy"}
+AIPRIOR_JSON = "results/aiprior/aiprior.json"
 FUSION = "results/fusion/viz_fusion.json"
 GUIDED = "results/ai/viz_guided.json"
 GUIDANCE = "results/ai/guidance.json"
@@ -1163,12 +1164,35 @@ def build_outcomes():
                                                           for d, v in h[key].items() if isinstance(v, dict)}}
         if not bands:
             return None, None
+        ai_src = ""
+        if exists(AIPRIOR_JSON) and "high_f_1_2mm" in bands:
+            # the AI study's 8-10 Hz, 1-2 mm average is the same bucket, writers, seeds and tracker (835 -> 531 um in both)
+            try:
+                ah = (load(AIPRIOR_JSON).get("aggregate") or {}).get("headlines") or {}
+                fast, six = ah.get("8_10Hz_1_2mm") or {}, ah.get("6Hz_1_2mm") or {}
+                for src_key, dev in (("guide_ai_predicted", "ai_guide"), ("clean_tracker", "clean_copy")):
+                    v = fast.get(src_key)
+                    if isinstance(v, dict) and _num(v.get("ink_err_um")) is not None:
+                        bands["high_f_1_2mm"]["devices"][dev] = {"ink_mm": r3(v["ink_err_um"] / 1000), "words": v.get("word_acc_app"),
+                                                                "letters": v.get("recognition")}
+                if isinstance(six.get("clean_tracker"), dict) and isinstance(six.get("tracker"), dict):
+                    ai6 = {"clean_words": six["clean_tracker"].get("word_acc_app"), "tracker_words": six["tracker"].get("word_acc_app")}
+                else:
+                    ai6 = None
+                ai_src = f" + {AIPRIOR_JSON} (clean copy and AI guidance, fast shake)"
+            except (OSError, ValueError, TypeError, AttributeError) as ex:
+                warn(f"{AIPRIOR_JSON} could not be read ({ex})")
+                ai6 = None
+        else:
+            ai6 = None
         meta = dict(o.get("meta", {}))
         agg = et.get("aggregate") or {}
         out = {"meta": {k: meta.get(k) for k in ("evidence_status", "generated_utc", "git_revision", "script", "quick")},
                "writers": agg.get("writers"), "n_scenarios": agg.get("n_scenarios"), "bands": bands,
                "device_labels": DEVICE_LABEL, "text": (o.get("text") or {}).get("et", {}),
                "by_frequency_text": h.get("by_frequency_text", [])}
+        if ai6:
+            out["aiprior_6hz"] = ai6
         # Parkinson's-like writing and guided practice: averages over the study's runs (24 per kind of help)
         pdc = ((o.get("pd") or {}).get("aggregate") or {}).get("by_condition") or {}
         keep_pd = ("xh_start_mm", "xh_end_mm", "word_acc_app", "writing_time_s", "touching_frac", "tremor_in_ink_um",
@@ -1188,7 +1212,7 @@ def build_outcomes():
         if prac:
             out["practice"] = {"by_help": prac, "labels": PR_LABEL, "spelling_flagged_share": pra.get("spelling_flagged_share"),
                                "text": (o.get("text") or {}).get("practice", {})}
-        return out, {"file": "outcomes.json", "source": OUTCOMES, "status": "final", "modified": mtime_utc(OUTCOMES),
+        return out, {"file": "outcomes.json", "source": OUTCOMES + ai_src, "status": "final", "modified": mtime_utc(OUTCOMES),
                      "evidence": meta.get("evidence_status", "")}
     except (OSError, ValueError, TypeError, AttributeError) as ex:
         warn(f"{OUTCOMES} could not be summarised ({ex})")
