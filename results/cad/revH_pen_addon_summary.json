@@ -25,9 +25,9 @@
   "magnet_stroke_mm": 2.27,
   "lever_tip_per_magnet": 1.324,
   "tilt_deg": 50.0,
-  "front_opening_d": 12.93,
-  "skid_contact_radius": 5.5,
-  "ball_protrusion_mm": 4.16,
+  "front_opening_d": 12.64,
+  "skid_contact_radius": 6.75,
+  "ball_protrusion_mm": 5.21,
   "handle_od": 22.0,
   "length": 170.0,
   "grip_zone": {
@@ -51,7 +51,11 @@
    "moving_mass_at_tip_g": 2.97
   },
   "fit_checks": {
-   "carrier_clears_front_opening_mm": 0.498,
+   "carrier_clears_front_opening_mm": 0.501,
+   "skid_ring_wall_mm": 0.162,
+   "nozzle_above_paper_mm": 0.497,
+   "sleeve_front_above_paper_mm": 0.246,
+   "carrier_at_stop_mm": 0.113,
    "coil_radius_margin_mm": 0.505,
    "magnet_gap_mm": 2.77,
    "cell_radius_margin_mm": 2.95,
@@ -100,8 +104,8 @@
    "z1": 75.0,
    "moves_with": "nose",
    "optional": false,
-   "function": "Presses the refill onto the paper with about 0.15 N over 6 mm of axial travel (tilt and correction changes).",
-   "part": "custom (music-wire, long soft spring)",
+   "function": "Presses the refill onto the paper with about 0.15 N while the refill slides about 13.5 mm (tilt 35-75 deg and the tip's corrections).",
+   "part": "custom constant-force strip spring, about 0.15 N (to size with a spring supplier)",
    "ledger": "",
    "d0": 2.4,
    "d1": 2.4
@@ -111,7 +115,7 @@
    "label": "Moving nose (refill carrier)",
    "group": "moving_nose",
    "shape": "tube",
-   "z0": 8.0,
+   "z0": 10.21,
    "z1": 43.5,
    "moves_with": "nose",
    "optional": false,
@@ -127,8 +131,8 @@
    "label": "Nose nozzle",
    "group": "moving_nose",
    "shape": "cone",
-   "z0": 3.0,
-   "z1": 8.0,
+   "z0": 5.21,
+   "z1": 10.21,
    "moves_with": "nose",
    "optional": false,
    "function": "Front of the moving nose; guides the refill tip.",
@@ -278,32 +282,33 @@
    "label": "Skid ring (C-shaped heel)",
    "group": "structure",
    "shape": "tube",
-   "z0": 2.66,
-   "z1": 4.66,
+   "z0": 5.21,
+   "z1": 6.71,
    "moves_with": "handle",
    "optional": false,
-   "function": "Rests on the paper and carries the writing force; the ball moves inside its opening. Open at the front so the ink stays visible.",
-   "part": "custom (PTFE-coated POM, contact radius 5.5 mm)",
+   "function": "Rests on the paper and carries the writing force; the nose swings inside its lip. It is open on the top, away from the paper, so the ink stays visible.",
+   "part": "custom (PTFE-coated POM, contact radius 6.75 mm)",
    "ledger": "",
-   "d0": 15.93,
-   "d1": 15.93,
-   "d_in": 12.93
+   "d0": 13.5,
+   "d1": 13.5,
+   "d_in": 11.18,
+   "open_deg": 120.0
   },
   {
    "id": "front_sleeve",
    "label": "Front sleeve (fixed grip)",
    "group": "grip",
    "shape": "tube",
-   "z0": 4.66,
+   "z0": 6.71,
    "z1": 50.0,
    "moves_with": "handle",
    "optional": false,
    "function": "Where the thumb, index and middle finger rest. It does not move; the nose moves inside it.",
    "part": "PEEK core + TPE overmould",
    "ledger": "AMF-24",
-   "d0": 16.0,
+   "d0": 15.0,
    "d1": 22.0,
-   "d_in": 12.93
+   "d_in": 12.64
   },
   {
    "id": "gimbal",
@@ -584,7 +589,7 @@
     6.0
    ],
    "offset": [
-    -8.47,
+    -8.32,
     0.0
    ]
   },
@@ -621,12 +626,12 @@
    "part": "PEEK / TPE, part of the sleeve moulding",
    "ledger": "AMF-24",
    "size": [
-    6.29,
+    6.83,
     7.35,
     4.17
    ],
    "offset": [
-    -10.73,
+    -10.46,
     0.0
    ]
   },

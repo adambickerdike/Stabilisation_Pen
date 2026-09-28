@@ -1,9 +1,9 @@
 component,moves_with,z0_mm,z1_mm,d0_mm,d1_mm,function
 ball,nose,0.0,3.0,0.7,2.35,The point that touches the paper and writes.
 refill,nose,3.0,67.0,2.35,2.35,Standard replaceable refill; it slides along its axis on a soft constant-force spring so t
-refill_spring,nose,67.0,75.0,2.4,2.4,Presses the refill onto the paper with about 0.15 N over 6 mm of axial travel (tilt and co
-carrier,nose,8.0,43.5,7.0,7.0,Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to ab
-carrier_nozzle,nose,3.0,8.0,3.6,7.0,Front of the moving nose; guides the refill tip.
+refill_spring,nose,67.0,75.0,2.4,2.4,Presses the refill onto the paper with about 0.15 N while the refill slides about 13.5 mm 
+carrier,nose,10.21,43.5,7.0,7.0,Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to ab
+carrier_nozzle,nose,5.21,10.21,3.6,7.0,Front of the moving nose; guides the refill tip.
 arm,nose,46.5,75.75,5.0,5.0,"Carries the magnets behind the gimbal: the tip moves the opposite way, 1/lever times the m"
 magnet_hub,nose,75.75,82.25,,,Square hub on the arm carrying four magnets.
 magnet_x+,nose,75.75,82.25,,,"NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the"
@@ -11,8 +11,8 @@ magnet_x-,nose,75.75,82.25,,,"NdFeB magnet on the moving arm; the coil facing it
 magnet_y+,nose,75.75,82.25,,,"NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the"
 magnet_y-,nose,75.75,82.25,,,"NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the"
 hall_magnet,nose,82.75,83.75,1.0,1.0,Tiny magnet at the end of the arm read by the 3-D Hall sensor.
-skid_ring,handle,2.66,4.66,15.93,15.93,Rests on the paper and carries the writing force; the ball moves inside its opening. Open 
-front_sleeve,handle,4.66,50.0,16.0,22.0,"Where the thumb, index and middle finger rest. It does not move; the nose moves inside it."
+skid_ring,handle,5.21,6.71,13.5,13.5,Rests on the paper and carries the writing force; the nose swings inside its lip. It is op
+front_sleeve,handle,6.71,50.0,15.0,22.0,"Where the thumb, index and middle finger rest. It does not move; the nose moves inside it."
 gimbal,handle,43.5,46.5,17.0,17.0,Laser-cut spring-steel cross flexures: the nose tilts in two directions with no friction o
 shell,handle,50.0,170.0,22.0,22.0,"The body you hold: 22 mm thick, easier to grip than a pencil."
 back_ring,handle,71.98,86.02,22.0,22.0,Section of the shell over the coils made of soft iron: it closes the magnets' flux through

@@ -130,8 +130,8 @@ def fig_grasp(out: Path) -> None:
                 color=C[0], va="center", arrowprops=dict(arrowstyle="-", color=C[0], lw=0.8))
     lab = {"skid_ring": ("skid ring on the sleeve\ncarries the writing force", (-58, -7), -1),
            "coil_x+": ("voice coils and magnets\nmove the nose", (30, -2), +1),
-           "imu": ("motion sensor (IMU)", (30, 2), +1), "battery": ("battery", (30, 0), +1),
-           "lra": ("vibration motor (cues)", (30, 0), +1), "optical": ("paper-tracking sensor", (-78, 20), -1)}
+           "imu": ("motion sensor (IMU)", (30, -3), +1), "battery": ("battery", (30, 0), +1),
+           "lra": ("vibration motor (cues)", (30, 4), +1), "optical": ("paper-tracking sensor", (-78, 20), -1)}
     for cid, (txt, dxy, sd) in lab.items():
         c = next((c for c in L["components"] if c["id"] == cid), None)
         if c is None:

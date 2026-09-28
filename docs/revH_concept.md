@@ -87,13 +87,13 @@ From `results/revH/layout.json` (PROPOSED DESIGN; dimensions ASSUMPTION, masses 
 
 | Part | What it does | Part or process | Ledger |
 |---|---|---|---|
-| Ink refill (D1 mini) and ball tip | Standard replaceable refill. It slides along its axis on a soft constant-force spring (about 0.15 N) so the ball stays on the paper while the nose tilts | ISO 12757-2 D1 refill; music-wire spring | DEC-004 |
+| Ink refill (D1 mini) and ball tip | Standard replaceable refill. It slides along its axis on a soft constant-force spring (about 0.15 N) so the ball stays on the paper while the nose tilts and whatever the pen's tilt: about 13.5 mm of slide over 35–75° | ISO 12757-2 D1 refill; stainless constant-force strip spring (to size) | DEC-004, DEC-034 |
 | Moving nose | Thin titanium tube holding the refill; it tilts on the pivot so the tip moves up to about 3 mm against the handle | Ti-6Al-4V tube 7/6 mm, PEEK nozzle | AMF-21, AMF-24 |
 | Flexure pivot (2-axis) | Laser-cut spring-steel cross flexures at 45 mm from the tip: tilt in two directions with no friction or backlash; stiff along the pen | 301 full-hard or 17-7PH, 0.1 mm | AMF-20 |
 | Rear arm and magnets | Carry four NdFeB magnets behind the pivot; the tip moves the opposite way (lever 1.32) | aluminium arm, soft-iron hub, NdFeB N45 3 × 6.5 × 2.8 mm | AMF-28 |
 | Flat voice coils | Four fixed coils with a soft-iron return ring: current pushes the magnets sideways, tilting the nose (up to 0.84 N peak at the tip, 0.21 N continuous) | self-bonding 0.1 mm magnet wire | AMF-29, AMF-30 |
 | Position sensing | A small magnet on the arm read by a 3-D Hall sensor about 10 000 times a second | TMAG5273 or 2 × DRV5055; 1 mm magnet | OPT-45/46, AMF-72 |
-| Skid ring | A C-shaped heel on the fixed sleeve that rests on the paper and carries your writing force; open at the front so you see the ink | PTFE-coated POM | – |
+| Skid ring | A C-shaped heel on the fixed sleeve (13.5 mm across) that rests on the paper and carries your writing force; open on the top so you see the ink. The ball sits about 5 mm in front of it | PTFE-coated POM | DEC-034 |
 | Front sleeve | Where your fingers rest; it does not move | PEEK core, TPE overmould | AMF-24 |
 | Motion sensor (IMU) | Measures the shake about 2000 times a second for the tracker | LSM6DSV16X | OPT-37 |
 | Control board | Microcontroller with Bluetooth, two coil drivers with current sensing, charger; runs the tracker and the servo | nRF54L15 class, 2 × DRV8214 | AMF-44, AMF-37 |

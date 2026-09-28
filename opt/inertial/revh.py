@@ -51,7 +51,7 @@ class RevH:
     length: float = 0.170
     z_f: float = 0.032                # finger-pad zone centre
     z_w: float = 0.092                # thumb-index web
-    skid_r: float = 5.5e-3            # B: skid ring contact radius (lowest rim point)
+    skid_r: float = 6.75e-3           # B: skid ring contact radius (lowest rim point); front-end closure (front_end.py; the stage results used 5.5)
     mu_ball: float = 0.15             # A: ball friction carrying the full load (config nib.mu_nib, ASSUMPTION)
     bias: bool = True                 # static load bias (B: refill-spring component; A: N cos(theta) at nominal force)
     cell: str = "LIR14500"

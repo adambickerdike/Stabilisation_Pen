@@ -59,6 +59,12 @@ def solid(c):
         outer = cq.Solid.makeCone(ro0, ro1, h) if abs(ro0 - ro1) > 1e-6 else cq.Solid.makeCylinder(ro0, h)
         inner = cq.Solid.makeCylinder(ri, h)
         s = cq.Workplane("XY").add(outer.cut(inner))
+        if c.get("open_deg"):
+            # a C-shaped part (the skid ring): cut the opening, centred on +x (the side away from the paper)
+            half = math.radians(c["open_deg"]) / 2
+            Rw = 2.0 * max(ro0, ro1) + 1.0
+            pts = [(0.0, 0.0)] + [(Rw * math.cos(-half + 2 * half * k / 8), Rw * math.sin(-half + 2 * half * k / 8)) for k in range(9)]
+            s = s.cut(cq.Workplane("XY").polyline(pts).close().extrude(h))
     elif sh == "box":
         sx, sy, sz = c["size"]
         s = cq.Workplane("XY").box(sx, sy, h, centered=(True, True, False))
@@ -98,6 +104,8 @@ def drawing(geo, path_png, title="Rev H pen: active nose (architecture B), optio
         elif c["shape"] == "tube":
             r0, r1, ri = c["d0"] / 2, c.get("d1", c["d0"]) / 2, c["d_in"] / 2
             polys = [[(z0, ri), (z1, ri), (z1, r1), (z0, r0)], [(z0, -ri), (z1, -ri), (z1, -r1), (z0, -r0)]]
+            if c.get("open_deg"):
+                polys = polys[1:]                   # C-shaped: the +x side (away from the paper) is open
         else:
             sx = c["size"][0]
             ox = c.get("offset", [0, 0])[0]

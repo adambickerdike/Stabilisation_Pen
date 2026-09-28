@@ -59,7 +59,7 @@ All numbers come from `results/opt/inertial_opt.json` (provenance block: git rev
 ## 2. How the pen is held and what moves
 
 - **Held.** Tripod grip on the fixed front sleeve (finger pads at z 26–38 mm from the tip, web of the thumb at z ≈ 92 mm; the grip zone is z 20–45 mm). The pen rests at about 50° (35–75° allowed).
-- **What carries the writing force.** A C-shaped heel skid ring (contact radius 5.5 mm, open at the front so the writer sees the ink) on the fixed sleeve. The ball protrudes 4.2 mm ahead of the ring plane at 50°. The refill's constant-force spring sets the ink force (0.15 N, ASSUMPTION from the pencil study).
+- **What carries the writing force.** A C-shaped heel skid ring on the fixed sleeve (contact radius 6.75 mm, open on the top, away from the paper, so the writer sees the ink; sized in §8.6). The ball protrudes 5.2 mm ahead of the ring plane at 50°. The refill's constant-force spring sets the ink force (0.15 N, ASSUMPTION from the pencil study); the refill slides about 13.5 mm over 35–75° and the tip's corrections (§8.6).
 - **What moves.** The nose: a titanium refill carrier (Ø7 mm) with a PEEK nozzle, an aluminium rear arm and four NdFeB magnets (7.9 g in all). It tilts on a laser-cut cross-strip gimbal at z 45 mm. The magnets at z 79 mm move 2.27 mm when the ball moves 3 mm (lever 1.32). Four flat coils with a soft-iron return ring sit in the handle around the magnets.
 - **What it reacts against.** The coils push on the handle, so the reaction goes into the hand. The ball moves relative to the hand; the hand is hundreds of times heavier, so its motion changes little. Because the skid on the fixed sleeve rests on the paper, the ball can move across the paper without changing the writing force.
 - **The evaluated inertial module (rear cap, z 151–169 mm; not fitted as standard, §6).** A tungsten slug (Ø10 × 14 mm, 19.8 g, ASTM B777 non-magnetic grade, AMF-49) on flexures, moved sideways ±2.75 mm by four flat coils, with a 5 Hz centring loop. Its reaction pushes the handle, so it moves the **whole pen** against the shake. The nose then corrects what is left at the tip.
@@ -215,7 +215,7 @@ Wrist (rotational) tremor about a pivot 175 mm behind the grip:
 
 - **Reaction mass** (27.8 g added): leaves 0.00–0.44 of 0.3 mm tremor at 4–12 Hz and 0.00–0.81 of 1 mm, over the three splits.
 - **CMG** (two scissored pairs, 16 mm tungsten discs at 20 krpm on Faulhaber 0620 B motors, AMF-78): as strong on paper, but 81 g and 0.42 W (spin 0.09 W per rotor). Over the 30 g guide by a factor of 2.7, so it was not simulated further.
-- **Passive weight** (27.8 g in the cap): 0.69–1.00 at r_rot 0.3; up to 2.2× amplification at 10–12 Hz at r_rot 0.5–0.7.
+- **Passive weight** (27.8 g in the cap): 0.67–1.00 at r_rot 0.3; up to 2.3× amplification at 10–12 Hz at r_rot 0.5–0.7 (recomputed at the closed front end, §8.6; before: 0.69–1.00 and 2.2×).
 - **Wideband haptic actuators** (Actronika HFBA121238 / "Mark II-D", Alps AFT14A903A): unusable below their suspension resonance. They pass 0.4–3.5 % of the coil force at 4–12 Hz (CALC from AMF-74/75).
 
 ### 6.2 Time domain (SIM, test seeds, all three splits)
@@ -342,8 +342,8 @@ Make (custom):
 | Flexure gimbal (2-axis cross-strip) | 301 full-hard or 17-7PH, 0.1 mm, laser cut (AMF-20) | bending stiffness 0.025 N m/rad (ASSUMPTION) |
 | Four flat coils (nose) | self-bonding 0.1 mm magnet wire, IEC class 155 (AMF-29, AMF-30) | 1.43 mm thick |
 | Front sleeve | PEEK core + TPE overmould | fixed grip |
-| C-shaped heel skid ring | PTFE-coated POM | contact radius 5.5 mm |
-| Constant-force refill spring | music wire, long soft spring | 0.15 N (ASSUMPTION) |
+| C-shaped heel skid ring | PTFE-coated POM | contact radius 6.75 mm, lip bore Ø11.2, 1.5 mm long, 120° opening on top (§8.6) |
+| Constant-force refill spring | stainless constant-force strip spring (to size with a supplier) | 0.15 N (ASSUMPTION) over about 13.5 mm of refill slide (§8.6) |
 | Handle shell | PEEK or glass-filled nylon, 1 mm wall | Ø22 × 120 mm |
 | Module frame, flexures, four coils (optional) | aluminium; 17-7PH; magnet wire | z 151–169 mm |
 
@@ -392,11 +392,11 @@ Make (custom):
 
 | Pen tilt | 35° | 40° | 45° | 50° | 60° | 75° |
 |---|---|---|---|---|---|---|
-| Keel clearance (mm) | −2.7 | −1.8 | −0.8 | 0.17 | 2.1 | 4.8 |
+| Keel clearance (mm) | −2.3 | −1.5 | −0.65 | 0.17 | 1.8 | 4.2 |
 
 - So at this placement the keel rubs at the nominal 50° and hits the paper below about 49°. With the magnet fitted, the usable tilt is ≥ 51° (0.3 mm clearance). Options, for the board study to re-run its force model:
   - (a) keep it, and write at ≥ 52° in board mode;
-  - (b) move it 5.3 mm rearward (13.5 → 18.8 mm): clears 35°, but the magnet centre rises from 3.8 to 7.9 mm above the paper;
+  - (b) move it 4.5 mm rearward (13.5 → 18.0 mm): clears 35°, but the magnet centre rises from 3.8 to 7.2 mm above the paper;
   - (c) turn the disc to face the paper (radial magnetisation) at 15.8 mm, 8.6 mm off the axis: clears 35°, centre at 6.6 mm.
 - **Clash with the optional paper sensor.** The keel overlaps the place of the optional optical paper sensor (z 14–20 mm, paper side). If both are fitted, the paper sensor moves to the side.
 - **Crosstalk** (magpylib; no shielding counted, so an upper bound):
@@ -414,6 +414,35 @@ Make (custom):
   - The board's normal pull (about 1 N while guiding) adds to the writing force on the skid ring. In architecture B the skid carries it, not the nose actuator; skid friction rises by about 0.15 N (μ 0.15).
   - The board's force bandwidth (25 Hz) overlaps the tremor band. The IMU tracker would read board-driven handle motion as disturbance, and the nose would partly undo the guidance at 3–15 Hz. Either band-limit the board's command below about 3 Hz while the stabiliser runs, or send the board's force command to the pen so the tracker can exclude it.
   - Neither effect was simulated here.
+
+### 8.6 Front-end geometry closure (CALC, `opt/inertial/front_end.py`, added 2026-09-28)
+
+**Why.** H1 treats the skid ring as a contact point at radius R in a plane p = (R cos θ − r_b) / sin θ behind the ball; nothing in H1 checks whether the parts fit around that point. The first layout drew the ring as a Ø15.9 mm tube 1.5 mm ahead of its contact plane, so at 50° it sat 1.5–3 mm below the paper. With R = 5.5 mm, the nose swinging to its stop reaches the ring's plane at almost the ring's radius (no room for a wall), and a nozzle 1.5 mm ahead of the ring touches the paper at steep tilts.
+
+**Rules (ASSUMPTION, engineering judgement; no tolerance stack yet).** Over the writing tilts of REQ-RVH-002 (35–75°) and every direction of tip travel:
+- the ring's front outer edge is the only part of the handle on the paper (the sleeve's front edge sits above it);
+- the ring's lip is at least 1.0 mm thick and clears the nose by 0.3 mm at the stop;
+- the nozzle stays at least 0.3 mm above the paper within the usable travel;
+- the carrier's front end clears the sleeve bore at the usable travel (0.5 mm) and touches it no earlier than the stop.
+- Travel is set as an angle of the nose: 3.0 mm usable and 3.5 mm stop at the ball at 50°. At other tilts the ball's travel follows its distance from the gimbal.
+
+**Result (CALC, `results/revH/front_end.json`, figure `results/revH/fig_front_end.png`).** The smallest contact radius that passes, in 0.25 mm steps, is **6.75 mm**:
+
+| Quantity | Value |
+|---|---|
+| Ring: contact radius / lip bore / length | 6.75 mm / 5.59 mm radius / 1.5 mm; 120° opening on the top |
+| Ring lip wall | 1.16 mm |
+| Ball ahead of the ring plane at 50° | 5.2 mm (was 4.2 mm) |
+| Nozzle | front face in the ring plane (Ø3.6), 5 mm cone to the Ø7 carrier |
+| Nozzle above the paper, lowest over 35–75° | 0.80 mm within the usable travel; 0.73 mm at the stop |
+| Sleeve front edge above the paper (at 35°) | 0.25 mm |
+| Sleeve bore | Ø12.64 mm; the carrier touches it 0.11 mm before the stop |
+| Ball travel within the usable angle | at least 2.75 mm in every direction (REQ-RVH-002: ≥ 2.5 mm) |
+| Refill slide, tilt plus corrections | 13.5 mm over 35–75°; 10.5 mm over 40–70° |
+
+- **The refill spring is the new design item.** The first layout assumed 6 mm of slide. The refill must slide 13.5 mm at a near-constant 0.15 N. A long, preloaded wire spring does not fit behind the refill, so the proposal is a small stainless constant-force strip spring, to be sized with a spring supplier (ASSUMPTION). Limiting full function to 40–70° would cut the slide to 10.5 mm.
+- **Effect on the simulated results (SIM, `results/revH/front_end_sensitivity.json`).** H1 was run at the old and the new contact radius on test seeds 200–201, 8 and 10 Hz, 1 mm, r_rot 0.5 and 0.7. Largest change: perfect-knowledge ratio 0.0009, tracker ratio 0.004, ink error without correction 0.4 %, false correction 0.4 µm. The study's stage results (§4–§7) were computed at 5.5 mm and stand.
+- **What was regenerated at 6.75 mm:** `results/revH/layout.json`, `tip_params.json`, the CAD (the ring is cut as a C), the linear screen of §6.1, the time-domain replay figure and the board-magnet checks of §8.4 (the minimum tilt stays 51°).
 
 ### 8.5 Patents to clear (no legal assessment here)
 
@@ -478,7 +507,7 @@ Make (custom):
   - Found by the study's own test (`test_revh.py::test_masses_and_body_mod`); fixed by prefixing the Rev H parts.
   - The tracker tuning and every B, add-on, sweep, calibration and neural result were then re-run. The ink ratios moved by at most 0.015. That was enough to move one seed below the module rule's 10 % line at r_rot 0.7 (10.1 % → 6.8 %).
   - The architecture-A rows were not re-run: their moving nose lacked the 0.9 g refill.
-- **Skid ring detail.** The skid ring is drawn as a plain tube. A heel contact at 5.5 mm radius (as simulated) leaves little room for the tapered nozzle at full travel (rough CALC: about 0.3 mm); check in the detailed CAD.
+- **Skid ring detail (resolved in §8.6).** The first layout drew the ring as a plain tube ahead of its contact plane, and its 5.5 mm contact radius left no room for the ring's wall. The front end is now closed at 6.75 mm; the dynamics were computed at 5.5 mm and change by at most 0.004 in ratio at 6.75 mm (SIM).
 - **Seeds.** Four test seeds; distortion on four lognormal and four glyph writers.
 
 ### 9.6 Files, how to run, tests, run times

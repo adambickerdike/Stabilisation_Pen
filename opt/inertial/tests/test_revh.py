@@ -114,3 +114,35 @@ def test_board_magnet_keel_clearance_formula():
     # front-bottom corner of the keel sits exactly on the heel point -> zero height at every tilt
     for t in (35.0, 50.0, 75.0):
         assert BM.keel_clearance(t, geo, pm) == pytest.approx(0.0, abs=1e-9)
+
+
+def test_front_end_closes_over_writing_tilts():
+    """Front-end closure (CALC): at the design contact radius the ring lip, the nozzle and the sleeve front clear over 35-75 deg."""
+    from opt.inertial import front_end as FE
+    ru = FE.FrontRules()
+    d = RH.RevH()
+    c = FE.check(d.skid_r * 1e3, d, ru, n_theta=5, n_phi=12)
+    assert c["passes"]
+    assert c["ring_wall_mm"] >= ru.ring_wall_min
+    assert c["nozzle_clear_usable_min_mm"] >= ru.c_paper
+    assert c["ball_travel_usable_min_mm"] >= 2.5            # REQ-RVH-002
+    # the first layout's 5.5 mm contact radius leaves no wall for the ring
+    assert FE.check(5.5, d, ru, n_theta=3, n_phi=8)["ring_wall_mm"] < ru.ring_wall_min
+    # sizing returns the design value
+    assert FE.size_R(d, ru)["R_mm"] == pytest.approx(d.skid_r * 1e3)
+
+
+def test_front_end_pose_rest_and_slide():
+    """At rest the ball sits on the paper with no slide at the nominal tilt; the slide at other tilts is the protrusion change."""
+    from opt.inertial import front_end as FE
+    ru = FE.FrontRules()
+    d = RH.RevH()
+    R = d.skid_r * 1e3
+    dm = dict(FE.dims(R, d, ru), nozzle_r_front=ru.nozzle_r_front)
+    assert FE.pose(50.0, dm, 0.0, 0.0, ru)["slide"] == pytest.approx(0.0, abs=1e-9)
+    for t in (35.0, 75.0):
+        assert FE.pose(t, dm, 0.0, 0.0, ru)["slide"] == pytest.approx(FE.protrusion(t, R) - FE.protrusion(50.0, R), abs=1e-9)
+    # the layout's ring starts at the contact plane and its outer radius is the contact radius
+    g = GE.layout(d)
+    ring = [c for c in g["components"] if c["id"] == "skid_ring"][0]
+    assert ring["z0"] == pytest.approx(g["ball_protrusion_mm"], abs=0.01) and ring["d0"] / 2 == pytest.approx(R, abs=0.01)

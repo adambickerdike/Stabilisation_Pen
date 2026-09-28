@@ -1,0 +1,516 @@
+{
+  "meta": {
+    "evidence_status": "CALCULATION (front-end geometry closure of the Rev H nose; PROPOSED DESIGN; inputs ASSUMPTION)",
+    "generated_utc": "2026-09-28T19:45:57+00:00",
+    "git_revision": "d7ccd3b-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "front_end.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "opt/inertial/front_end.py",
+    "doc": "docs/opt_inertial.md section 8.6"
+  },
+  "rules": {
+    "theta_min": 35.0,
+    "theta_max": 75.0,
+    "theta_nom": 50.0,
+    "stop": 3.5,
+    "nozzle_r_front": 1.8,
+    "nozzle_len": 5.0,
+    "carrier_r": 3.5,
+    "ring_len": 1.5,
+    "ring_wall_min": 1.0,
+    "c_ring": 0.3,
+    "c_sleeve": 0.5,
+    "c_paper": 0.3,
+    "sleeve_step": 0.75,
+    "R_step": 0.25
+  },
+  "sizing": {
+    "R_mm": 6.75,
+    "tried": [
+      {
+        "R_mm": 5.5,
+        "ring_wall_mm": -0.1699212450948755,
+        "nozzle_clear_usable_min_mm": 0.4579373247294072,
+        "sleeve_front_clear_min_mm": 0.24600062130982525,
+        "passes": false
+      },
+      {
+        "R_mm": 5.75,
+        "ring_wall_mm": 0.0963945810669049,
+        "nozzle_clear_usable_min_mm": 0.5258088727048857,
+        "sleeve_front_clear_min_mm": 0.24600062130982525,
+        "passes": false
+      },
+      {
+        "R_mm": 6.0,
+        "ring_wall_mm": 0.3627104072286853,
+        "nozzle_clear_usable_min_mm": 0.5936804206803714,
+        "sleeve_front_clear_min_mm": 0.24600062130982525,
+        "passes": false
+      },
+      {
+        "R_mm": 6.25,
+        "ring_wall_mm": 0.6290262333904657,
+        "nozzle_clear_usable_min_mm": 0.6615519686558429,
+        "sleeve_front_clear_min_mm": 0.24600062130982525,
+        "passes": false
+      },
+      {
+        "R_mm": 6.5,
+        "ring_wall_mm": 0.8953420595522461,
+        "nozzle_clear_usable_min_mm": 0.7294235166313285,
+        "sleeve_front_clear_min_mm": 0.24600062130982525,
+        "passes": false
+      },
+      {
+        "R_mm": 6.75,
+        "ring_wall_mm": 1.1616578857140274,
+        "nozzle_clear_usable_min_mm": 0.7972950646068142,
+        "sleeve_front_clear_min_mm": 0.24600062130982525,
+        "passes": true
+      }
+    ]
+  },
+  "design": {
+    "R_mm": 6.75,
+    "dims": {
+      "R": 6.75,
+      "p50": 5.207,
+      "s_g": 39.793,
+      "alpha_u": 0.0667,
+      "alpha_s": 0.0778,
+      "ring_bore_r": 5.5883,
+      "ring_wall": 1.1617,
+      "carrier_front_s": 5.0,
+      "sleeve_bore_r": 6.3195,
+      "carrier_stop_clearance": 0.1134,
+      "sleeve_front_r": 7.5,
+      "nozzle_r_front": 1.8
+    },
+    "by_tilt": [
+      {
+        "theta_deg": 35.0,
+        "protrusion_mm": 9.02979266704189,
+        "nozzle_clear_rest_mm": 4.054802619230511,
+        "nozzle_clear_usable_mm": 2.0060679477838903,
+        "nozzle_clear_stop_mm": 1.6757542671371937,
+        "slide_min_mm": -0.32806249027992607,
+        "slide_max_mm": 9.088898800229032,
+        "ball_travel_usable_min_mm": 3.2596814363416993,
+        "ball_travel_usable_max_mm": 6.282085342242183,
+        "sleeve_front_clear_mm": 0.24600062130982525
+      },
+      {
+        "theta_deg": 37.5,
+        "protrusion_mm": 8.221833395581536,
+        "nozzle_clear_rest_mm": 3.927099034441614,
+        "nozzle_clear_usable_mm": 1.9539802789004632,
+        "nozzle_clear_stop_mm": 1.6368307452967308,
+        "slide_min_mm": -0.7302390360177,
+        "slide_max_mm": 7.707843881929939,
+        "ball_travel_usable_min_mm": 3.2057375443448755,
+        "ball_travel_usable_max_mm": 5.767865395769654,
+        "sleeve_front_clear_mm": 0.31812713829465455
+      },
+      {
+        "theta_deg": 40.0,
+        "protrusion_mm": 7.499833410609774,
+        "nozzle_clear_rest_mm": 3.791919993438942,
+        "nozzle_clear_usable_mm": 1.8981730974991748,
+        "nozzle_clear_stop_mm": 1.594791423101217,
+        "slide_min_mm": -1.0953207048750428,
+        "slide_max_mm": 6.4954949762433145,
+        "ball_travel_usable_min_mm": 3.1575327763735515,
+        "ball_travel_usable_max_mm": 5.336895926994316,
+        "sleeve_front_clear_mm": 0.38964808219057534
+      },
+      {
+        "theta_deg": 42.5,
+        "protrusion_mm": 6.84826685069479,
+        "nozzle_clear_rest_mm": 3.6495228172101157,
+        "nozzle_clear_usable_mm": 1.83875263572169,
+        "nozzle_clear_stop_mm": 1.5497163247898165,
+        "slide_min_mm": -1.4295484488206327,
+        "slide_max_mm": 5.418675643407418,
+        "ball_travel_usable_min_mm": 3.114030538849539,
+        "ball_travel_usable_max_mm": 4.971587431436745,
+        "sleeve_front_clear_mm": 0.46042730881589733
+      },
+      {
+        "theta_deg": 45.0,
+        "protrusion_mm": 6.255025253169419,
+        "nozzle_clear_rest_mm": 3.5001785668734122,
+        "nozzle_clear_usable_mm": 1.775832003794239,
+        "nozzle_clear_stop_mm": 1.5016912533740552,
+        "slide_min_mm": -1.7379059959910563,
+        "slide_max_mm": 4.452221659413382,
+        "ball_travel_usable_min_mm": 3.0744224029009404,
+        "ball_travel_usable_max_mm": 4.658947308317536,
+        "sleeve_front_clear_mm": 0.5303300858899105
+      },
+      {
+        "theta_deg": 47.5,
+        "protrusion_mm": 5.710515827899369,
+        "nozzle_clear_rest_mm": 3.344171527697519,
+        "nozzle_clear_usable_mm": 1.709530974715868,
+        "nozzle_clear_stop_mm": 1.4508076273069435,
+        "slide_min_mm": -2.0244277449389543,
+        "slide_max_mm": 3.576685161283116,
+        "ball_travel_usable_min_mm": 3.0380679000620407,
+        "ball_travel_usable_max_mm": 4.389185995857357,
+        "sleeve_front_clear_mm": 0.599223349503441
+      },
+      {
+        "theta_deg": 50.0,
+        "protrusion_mm": 5.207029959180343,
+        "nozzle_clear_rest_mm": 3.1817986679483674,
+        "nozzle_clear_usable_mm": 1.6399757562637447,
+        "nozzle_clear_stop_mm": 1.3971623064627394,
+        "slide_min_mm": -2.2924210489480714,
+        "slide_max_mm": 2.776784158290802,
+        "ball_travel_usable_min_mm": 3.0044523599185187,
+        "ball_travel_usable_max_mm": 4.154798261841602,
+        "sleeve_front_clear_mm": 0.6669759574135625
+      },
+      {
+        "theta_deg": 52.5,
+        "protrusion_mm": 4.738291823954389,
+        "nozzle_clear_rest_mm": 3.013369073593168,
+        "nozzle_clear_usable_mm": 1.567298750749444,
+        "nozzle_clear_stop_mm": 1.3408574077586763,
+        "slide_min_mm": -2.5446295179422194,
+        "slide_max_mm": 2.040329416621816,
+        "ball_travel_usable_min_mm": 2.972985472291238,
+        "ball_travel_usable_max_mm": 3.949941771078052,
+        "sleeve_front_clear_mm": 0.7334589386803123
+      },
+      {
+        "theta_deg": 55.0,
+        "protrusion_mm": 4.299129776849032,
+        "nozzle_clear_rest_mm": 2.8392033599376774,
+        "nozzle_clear_usable_mm": 1.4916383029836453,
+        "nozzle_clear_stop_mm": 1.2820001107695873,
+        "slide_min_mm": -2.783354915804253,
+        "slide_max_mm": 1.3574654433992848,
+        "ball_travel_usable_min_mm": 2.9416367016084277,
+        "ball_travel_usable_max_mm": 3.770007007703235,
+        "sleeve_front_clear_mm": 0.798545739170203
+      },
+      {
+        "theta_deg": 57.5,
+        "protrusion_mm": 3.885233093848623,
+        "nozzle_clear_rest_mm": 2.6596330613167822,
+        "nozzle_clear_usable_mm": 1.4131384369289535,
+        "nozzle_clear_stop_mm": 1.2207024537055275,
+        "slide_min_mm": -3.010549502576673,
+        "slide_max_mm": 0.720123120814101,
+        "ball_travel_usable_min_mm": 2.912480322802593,
+        "ball_travel_usable_max_mm": 3.6113135140202033,
+        "sleeve_front_clear_mm": 0.8621124624592107
+      },
+      {
+        "theta_deg": 60.0,
+        "protrusion_mm": 3.492969128597237,
+        "nozzle_clear_rest_mm": 2.4750000000000014,
+        "nozzle_clear_usable_mm": 1.3319485815420151,
+        "nozzle_clear_stop_mm": 1.1570811201406386,
+        "slide_min_mm": -3.227886963121641,
+        "slide_max_mm": 0.12161800455027816,
+        "ball_travel_usable_min_mm": 2.885187411637811,
+        "ball_travel_usable_max_mm": 3.470891409067711,
+        "sleeve_front_clear_mm": 0.9240381056766579
+      },
+      {
+        "theta_deg": 62.5,
+        "protrusion_mm": 3.119243909821067,
+        "nozzle_clear_rest_mm": 2.2856556355134146,
+        "nozzle_clear_usable_mm": 1.2482232863271037,
+        "nozzle_clear_stop_mm": 1.091257216899372,
+        "slide_min_mm": -3.436817614931101,
+        "slide_max_mm": -0.4436492185932437,
+        "ball_travel_usable_min_mm": 2.8594840655111646,
+        "ball_travel_usable_max_mm": 3.3463216566135614,
+        "sleeve_front_clear_mm": 0.9842047898410573
+      },
+      {
+        "theta_deg": 65.0,
+        "protrusion_mm": 2.7613944209093684,
+        "nozzle_clear_rest_mm": 2.0919603956164607,
+        "nozzle_clear_usable_mm": 1.1621219271423087,
+        "nozzle_clear_stop_mm": 1.023356043522739,
+        "slide_min_mm": -3.638611940768506,
+        "slide_max_mm": -0.9804194075644759,
+        "ball_travel_usable_min_mm": 2.835139691682132,
+        "ball_travel_usable_max_mm": 3.23561755142655,
+        "sleeve_front_clear_mm": 1.0424979842494504
+      },
+      {
+        "theta_deg": 67.5,
+        "protrusion_mm": 2.417104275916054,
+        "nozzle_clear_rest_mm": 1.894282990207195,
+        "nozzle_clear_usable_mm": 1.0738084028184929,
+        "nozzle_clear_stop_mm": 0.9535068537535025,
+        "slide_min_mm": -3.834395365880866,
+        "slide_max_mm": -1.4927488838893979,
+        "ball_travel_usable_min_mm": 2.8119580730170464,
+        "ball_travel_usable_max_mm": 3.137135607961582,
+        "sleeve_front_clear_mm": 1.0988067244931126
+      },
+      {
+        "theta_deg": 70.0,
+        "protrusion_mm": 2.0843368609302972,
+        "nozzle_clear_rest_mm": 1.6929997094620646,
+        "nozzle_clear_usable_mm": 0.9834508231686456,
+        "nozzle_clear_stop_mm": 0.8818426094943632,
+        "slide_min_mm": -4.025176418511947,
+        "slide_max_mm": -1.9841446318460854,
+        "ball_travel_usable_min_mm": 2.789770462247258,
+        "ball_travel_usable_max_mm": 3.049507743336001,
+        "sleeve_front_clear_mm": 1.1530238236846109
+      },
+      {
+        "theta_deg": 72.5,
+        "protrusion_mm": 1.7612816311338542,
+        "nozzle_clear_rest_mm": 1.488493707546155,
+        "nozzle_clear_usable_mm": 0.8912211889811914,
+        "nozzle_clear_stop_mm": 0.8084997277073924,
+        "slide_min_mm": -4.211869863793034,
+        "slide_max_mm": -2.4576707519091627,
+        "ball_travel_usable_min_mm": 2.768430175359796,
+        "ball_travel_usable_max_mm": 2.9715890988670495,
+        "sleeve_front_clear_mm": 1.2050460764941358
+      },
+      {
+        "theta_deg": 75.0,
+        "protrusion_mm": 1.4463103857665491,
+        "nozzle_clear_rest_mm": 1.2811542732574779,
+        "nozzle_clear_usable_mm": 0.7972950646068142,
+        "nozzle_clear_stop_mm": 0.7336178207365975,
+        "slide_min_mm": -4.395316011592598,
+        "slide_max_mm": -2.9160333547461974,
+        "ball_travel_usable_min_mm": 2.7478083042584576,
+        "ball_travel_usable_max_mm": 2.9024174954755892,
+        "sleeve_front_clear_mm": 1.254774455606712
+      }
+    ],
+    "ring_wall_mm": 1.1616578857140274,
+    "carrier_stop_clearance_mm": 0.1134114439908922,
+    "nozzle_clear_usable_min_mm": 0.7972950646068142,
+    "nozzle_clear_stop_min_mm": 0.7336178207365975,
+    "sleeve_front_clear_min_mm": 0.24600062130982525,
+    "ball_travel_usable_min_mm": 2.7478083042584576,
+    "refill_slide_mm": [
+      -4.395316011592598,
+      9.088898800229032
+    ],
+    "refill_slide_range_mm": 13.48421481182163,
+    "refill_slide_range_40_70_mm": 10.520671394755261,
+    "passes": true
+  },
+  "R5.5_with_this_front_end": {
+    "ring_wall_mm": -0.1699212450948755,
+    "nozzle_clear_usable_min_mm": 0.4579373247294072,
+    "nozzle_clear_stop_min_mm": 0.392063939383263,
+    "refill_slide_range_mm": 11.965532333248596
+  },
+  "note": "The skid contact radius is an input of the dynamics (H1 skid_geom).  The study's stage results were computed with 5.5 mm; see 'sensitivity' for the change at the closed design's radius.",
+  "sensitivity": {
+    "5.5": {
+      "rows": [
+        {
+          "r_rot": 0.5,
+          "seed": 200,
+          "f0": 8.0,
+          "unmod_um": 1105.9068633253482,
+          "oracle": 0.1286954567398306,
+          "akf": 0.7754188288715079
+        },
+        {
+          "r_rot": 0.5,
+          "seed": 200,
+          "f0": 10.0,
+          "unmod_um": 1079.750130863056,
+          "oracle": 0.16728953072768807,
+          "akf": 0.6750763335309345
+        },
+        {
+          "r_rot": 0.5,
+          "seed": 201,
+          "f0": 8.0,
+          "unmod_um": 925.2878140290424,
+          "oracle": 0.10813132658570954,
+          "akf": 0.8269735637127437
+        },
+        {
+          "r_rot": 0.5,
+          "seed": 201,
+          "f0": 10.0,
+          "unmod_um": 931.432428564924,
+          "oracle": 0.13587540895014516,
+          "akf": 0.762055929109269
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 200,
+          "f0": 8.0,
+          "unmod_um": 1035.6877013246085,
+          "oracle": 0.1251624203055323,
+          "akf": 0.7938102730838743
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 200,
+          "f0": 10.0,
+          "unmod_um": 980.4180770862129,
+          "oracle": 0.1531743640079073,
+          "akf": 0.7483335157112786
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 201,
+          "f0": 8.0,
+          "unmod_um": 882.459274020896,
+          "oracle": 0.10011268598001334,
+          "akf": 0.8528315122135883
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 201,
+          "f0": 10.0,
+          "unmod_um": 883.1975437447429,
+          "oracle": 0.11808596603362147,
+          "akf": 0.8204174113151624
+        }
+      ],
+      "distortion_um": [
+        15.621215341276208,
+        7.838106207049142
+      ],
+      "mean": {
+        "0.5": {
+          "unmod_um": 1010.5943091955927,
+          "oracle": 0.13499793075084335,
+          "akf": 0.7598811638061138
+        },
+        "0.7": {
+          "unmod_um": 945.4406490441152,
+          "oracle": 0.12413385908176859,
+          "akf": 0.8038481780809759
+        }
+      }
+    },
+    "6.75": {
+      "rows": [
+        {
+          "r_rot": 0.5,
+          "seed": 200,
+          "f0": 8.0,
+          "unmod_um": 1105.6254023633976,
+          "oracle": 0.12859093805565688,
+          "akf": 0.7759504667101618
+        },
+        {
+          "r_rot": 0.5,
+          "seed": 200,
+          "f0": 10.0,
+          "unmod_um": 1081.6252446972555,
+          "oracle": 0.16639719386641247,
+          "akf": 0.6788388618509061
+        },
+        {
+          "r_rot": 0.5,
+          "seed": 201,
+          "f0": 8.0,
+          "unmod_um": 925.2936129739556,
+          "oracle": 0.10813491822295326,
+          "akf": 0.8272103988345629
+        },
+        {
+          "r_rot": 0.5,
+          "seed": 201,
+          "f0": 10.0,
+          "unmod_um": 934.2178579259622,
+          "oracle": 0.13514979596165635,
+          "akf": 0.7643368652618067
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 200,
+          "f0": 8.0,
+          "unmod_um": 1036.3020696693018,
+          "oracle": 0.12512876413113114,
+          "akf": 0.794375889308625
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 200,
+          "f0": 10.0,
+          "unmod_um": 976.0837431217088,
+          "oracle": 0.15247638491342572,
+          "akf": 0.7518823204532268
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 201,
+          "f0": 8.0,
+          "unmod_um": 882.4434531325345,
+          "oracle": 0.10024600157755394,
+          "akf": 0.8521227153220993
+        },
+        {
+          "r_rot": 0.7,
+          "seed": 201,
+          "f0": 10.0,
+          "unmod_um": 880.6575348295414,
+          "oracle": 0.11742108372109575,
+          "akf": 0.8224351527098327
+        }
+      ],
+      "distortion_um": [
+        15.987479643859425,
+        7.7910940235535495
+      ],
+      "mean": {
+        "0.5": {
+          "unmod_um": 1011.6905294901427,
+          "oracle": 0.13456821152666973,
+          "akf": 0.7615841481643594
+        },
+        "0.7": {
+          "unmod_um": 943.8717001882717,
+          "oracle": 0.12381805858580164,
+          "akf": 0.805204019448446
+        }
+      }
+    },
+    "max_abs_change": {
+      "oracle_ratio": 0.0008923368612756,
+      "akf_ratio": 0.003762528319971592,
+      "unmod_rel": 0.00444053493877683,
+      "distortion_um": 0.3662643025832164
+    },
+    "conditions": {
+      "seeds": [
+        200,
+        201
+      ],
+      "f0_hz": [
+        8.0,
+        10.0
+      ],
+      "amp_mm": 1.0,
+      "r_rot": [
+        0.5,
+        0.7
+      ],
+      "tracker": "Rev H setting (results/opt/inertial_tracker_revh.json)",
+      "label": "SIMULATION (model H1, synthetic writing and tremor, test seeds 200-201; not used for any choice)"
+    }
+  }
+}

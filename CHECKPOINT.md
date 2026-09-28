@@ -219,7 +219,7 @@ The user chose a bigger grip, asked for inertial control of the whole pen and no
 - **Results (SIM).** With perfect knowledge of the tremor the nose leaves 0.17–0.18 of the ink error (words read 98–100 %). With the tracker: 0.64 / 0.70 / 0.76 at 8–12 Hz, 1–2 mm; words read at 10 Hz, 1 mm 54 → 87 %; nothing at 4–6 Hz (the tracker locks onto the second harmonic). The tracker is the limit, not the mechanism.
 - **Handwriting (SIM, `docs/handwriting_outcomes.md`).** Parkinson's: a vibration cue keeps the x-height at 5.2 mm instead of shrinking to 4.2 mm, if people respond as small studies suggest. Poor handwriting: partial nose guidance brings the ink 35 % closer with slightly better reading; full guidance reads worse. Dyslexia: no guidance turned a wrong letter into the right one (0 %); the app flags misspelt words when it knows the target.
 - **Guidance board (DEC-031).** CoreXY stage under 3 mm glass with a K&J D88-N52 magnet head; a D42-N52 disc (0.75 g) in the pen's keel, 16.5 mm behind the ball; 1.2 N available, 0.4 N cap; about 25 Hz. Open: the keel limits tilt to ≥ 51°; up to 48 µm crosstalk at the nose Hall; board commands below about 3 Hz; about 1 N extra normal pull.
-- **Open issue in the explainer and layout.** The skid ring is drawn as a full annulus about 1.5–3 mm below the paper at 50°; the contact geometry in the model is a 5.5 mm radius ring at z ≈ 4.62 mm. Reconcile `results/revH/layout.json` with `opt/inertial/geometry.py` before the CAD is released.
+- **Front end closed (DEC-034).** The first layout drew the skid ring about 1.5–3 mm below the paper, and its 5.5 mm contact radius left no room for the ring's wall. `opt/inertial/front_end.py` sizes it over 35–75°: contact radius 6.75 mm, nozzle face in the ring plane, refill slide about 13.5 mm on a constant-force strip spring (new design item). The dynamics change by at most 0.004 in ratio (SIM), so the study's results stand; layout, CAD and the explainer were regenerated.
 
 **Next for Rev H, in order.**
 1. EXP-I01: grip split r_rot on a Ø22 handle (decides where the inertial module acts, and whether it stays).
@@ -232,6 +232,7 @@ The user chose a bigger grip, asked for inertial control of the whole pen and no
 
 ```bash
 python3 -m opt.inertial.run_study          # about 35 min; --quick about 2 min
+python3 -m opt.inertial.front_end --sens   # front-end closure (CALC) and its H1 sensitivity check, about 1 min
 python3 mechanics/cad/revH_pen.py --addon
 python3 -m handwriting.run_study           # results/handwriting/_cache is regenerable and git-ignored
 python3 -m board.run_study

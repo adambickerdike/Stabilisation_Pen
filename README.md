@@ -16,7 +16,7 @@ This repository holds the research and development package: the audit of the sou
 | The verdict on the source report | [`docs/audit.md`](docs/audit.md), [`docs/corrections.csv`](docs/corrections.csv) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
-| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…033) |
+| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…034) |
 | What the simulations say | [`docs/sim_report.md`](docs/sim_report.md) |
 | What may be claimed for each feature | [`docs/features.md`](docs/features.md) |
 | The riskiest open questions | [`docs/research_questions.md`](docs/research_questions.md) |

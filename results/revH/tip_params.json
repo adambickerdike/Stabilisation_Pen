@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "SIMULATION + CALCULATION (Rev H active nose, model H1; nothing measured)",
-    "generated_utc": "2026-09-28T18:38:58+00:00",
-    "git_revision": "7011045-dirty",
+    "generated_utc": "2026-09-28T19:54:35+00:00",
+    "git_revision": "d7ccd3b-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",
@@ -146,12 +146,15 @@
   "geometry_mm": {
     "pivot_z": 45.0,
     "actuator_z": 79.0,
-    "front_opening_d": 12.93,
+    "front_opening_d": 12.64,
     "skid_ring": {
-      "contact_radius": 5.5,
-      "od": 15.93,
-      "ball_protrusion_at_50deg": 4.16,
-      "note": "C-shaped heel skid (open at the front for visibility) - feel and visibility ASSUMPTION, to test (EXP-H03 extension)"
+      "contact_radius": 6.75,
+      "od": 13.5,
+      "bore_d": 11.18,
+      "open_deg": 120.0,
+      "ball_protrusion_at_50deg": 5.21,
+      "front_end": "results/revH/front_end.json (closure over 35-75 deg, DEC-034)",
+      "note": "C-shaped heel skid (open on the top, away from the paper, for visibility) - feel and visibility ASSUMPTION, to test (EXP-H03 extension)"
     },
     "grip_zone_z": [
       20.0,

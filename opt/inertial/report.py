@@ -152,9 +152,12 @@ def write_tip_params(final=True, addon_decision: Optional[Dict] = None, calib: O
                                     "life_h_writing_continuously": round(cell.Wh / res["B_power_W"]["P_total_W"], 1) if res else None},
                         "label": "CALC on SIM forces; 0.065 W base electronics and 0.012 W drivers/Hall ASSUMPTION"},
         "geometry_mm": {"pivot_z": geo["pivot_z"], "actuator_z": geo["actuator_z"], "front_opening_d": geo["front_opening_d"],
-                        "skid_ring": {"contact_radius": geo["skid_contact_radius"], "od": round(geo["front_opening_d"] + 3.0, 2),
+                        "skid_ring": {"contact_radius": geo["skid_contact_radius"], "od": round(2 * geo["skid_contact_radius"], 2),
+                                      "bore_d": next(c["d_in"] for c in geo["components"] if c["id"] == "skid_ring"),
+                                      "open_deg": next(c.get("open_deg") for c in geo["components"] if c["id"] == "skid_ring"),
                                       "ball_protrusion_at_50deg": geo["ball_protrusion_mm"],
-                                      "note": "C-shaped heel skid (open at the front for visibility) - feel and visibility ASSUMPTION, to test (EXP-H03 extension)"},
+                                      "front_end": "results/revH/front_end.json (closure over 35-75 deg, DEC-034)",
+                                      "note": "C-shaped heel skid (open on the top, away from the paper, for visibility) - feel and visibility ASSUMPTION, to test (EXP-H03 extension)"},
                         "grip_zone_z": [geo["grip_zone"]["z0"], geo["grip_zone"]["z1"]], "finger_pads_z": geo["hand"]["finger_pads_z"],
                         "web_z": geo["hand"]["web_z"], "handle_od": geo["handle_od"], "length": geo["length"], "pen_tilt_deg": 50.0,
                         "tilt_range_deg": [35.0, 75.0], "label": "PROPOSED DESIGN (opt/inertial/geometry.py, mechanics/cad/revH_pen.py)"},
@@ -172,6 +175,19 @@ def write_tip_params(final=True, addon_decision: Optional[Dict] = None, calib: O
     path = os.path.join(REVH_DIR, "tip_params.json" if final else "tip_params_provisional.json")
     provenance.write_json(path, out)
     return out
+
+
+def _front_end_summary() -> Optional[Dict]:
+    """Front-end geometry closure (results/revH/front_end.json, python3 -m opt.inertial.front_end --sens)."""
+    p = os.path.join(REVH_DIR, "front_end.json")
+    if not os.path.exists(p):
+        return None
+    fe = json.load(open(p))
+    d = fe["design"]
+    return {"file": "results/revH/front_end.json", "label": "CALC (PROPOSED DESIGN; inputs ASSUMPTION)", "skid_contact_radius_mm": d["R_mm"],
+            "ring_wall_mm": d["ring_wall_mm"], "nozzle_clear_usable_min_mm": d["nozzle_clear_usable_min_mm"],
+            "ball_travel_usable_min_mm": d["ball_travel_usable_min_mm"], "refill_slide_range_mm": d["refill_slide_range_mm"],
+            "note": fe["note"], "sensitivity_max_abs_change": (fe.get("sensitivity") or {}).get("max_abs_change")}
 
 
 def write_layout(addon: Optional[Dict] = None, addon_recommended: bool = False):
@@ -667,6 +683,7 @@ def stage_report(quick=False):
         "replay": {"files": ["results/opt/viz_inertial_opt.json", "results/opt/viz_inertial_opt_1mm.json"], "metrics": viz_metrics},
         "figures": [os.path.relpath(f, ROOT) for f in figs],
         "interfaces": ["results/revH/tip_params.json", "results/revH/layout.json"],
+        "front_end": _front_end_summary(),
     }
     provenance.write_json(os.path.join(OPT, "inertial_opt.json"), out)
     rows = EVD.static_rows() + EVD.study_rows(out)

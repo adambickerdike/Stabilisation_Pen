@@ -12,6 +12,7 @@ import math
 from typing import Dict, List, Optional
 
 from . import catalog as CT
+from . import front_end as FE
 from .revh import RevH, masses, protrusion_centre
 
 
@@ -41,11 +42,13 @@ def layout(d: Optional[RevH] = None, addon: Optional[Dict] = None, theta_deg=50.
     s_mag = X / lam                                       # magnet stroke (mm)
     skid_r = d.skid_r * 1e3
     prot = protrusion_centre(theta_deg, r_ring=d.skid_r) * 1e3        # ball centre ahead of the skid-ring plane
-    z_skid = prot                                          # skid-ring contact plane
-    # front opening: the carrier's swing at its front end (z 8 mm) plus clearance
-    z_cf = 8.0
-    swing_front = X * (zp - z_cf) / zp
-    open_d = 7.0 + 2 * swing_front + 1.0
+    z_skid = prot                                          # skid-ring contact plane = the ring's front face
+    # front end closed over 35-75 deg (front_end.py): the nozzle's front face sits in the ring plane, the ring's lip clears the
+    # nose at the stop, and the sleeve bore clears the carrier's front end (its swing at the usable travel plus clearance)
+    ru = FE.FrontRules()
+    fe = FE.dims(skid_r, d, ru)
+    z_cf = z_skid + ru.nozzle_len
+    open_d = 2 * fe["sleeve_bore_r"]
     L = d.length * 1e3
     D = d.handle_od * 1e3
     cell = CT.CELLS[d.cell]
@@ -64,12 +67,12 @@ def layout(d: Optional[RevH] = None, addon: Optional[Dict] = None, theta_deg=50.
            function="Standard replaceable refill; it slides along its axis on a soft constant-force spring so the ball stays on the paper while the nose tilts.",
            part="ISO 12757-2 D1 mini refill", ledger="DEC-004", mass_g=0.84))
     A(comp("refill_spring", "Constant-force refill spring", "mechanism", "cylinder", 67.0, 75.0, "nose", 2.4, 2.4,
-           function="Presses the refill onto the paper with about 0.15 N over 6 mm of axial travel (tilt and correction changes).",
-           part="custom (music-wire, long soft spring)", ledger=""))
+           function="Presses the refill onto the paper with about 0.15 N while the refill slides about 13.5 mm (tilt 35-75 deg and the tip's corrections).",
+           part="custom constant-force strip spring, about 0.15 N (to size with a spring supplier)", ledger=""))
     A(comp("carrier", "Moving nose (refill carrier)", "moving_nose", "tube", z_cf, zp - 1.5, "nose", 7.0, 7.0, 6.0,
            function="Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to about 3 mm against the handle.",
            part="custom (Ti-6Al-4V tube 7/6 mm)", ledger="AMF-21"))
-    A(comp("carrier_nozzle", "Nose nozzle", "moving_nose", "cone", 3.0, z_cf, "nose", 3.6, 7.0,
+    A(comp("carrier_nozzle", "Nose nozzle", "moving_nose", "cone", z_skid, z_cf, "nose", 2 * ru.nozzle_r_front, 2 * ru.carrier_r,
            function="Front of the moving nose; guides the refill tip.", part="custom (PEEK)", ledger="AMF-24"))
     A(comp("arm", "Rear arm", "moving_nose", "cylinder", zp + 1.5, za - mag_l / 2, "nose", 5.0, 5.0,
            function="Carries the magnets behind the gimbal: the tip moves the opposite way, 1/lever times the magnet motion.",
@@ -85,10 +88,13 @@ def layout(d: Optional[RevH] = None, addon: Optional[Dict] = None, theta_deg=50.
     A(comp("hall_magnet", "Position magnet", "sensor", "cylinder", za + mag_l / 2 + 0.5, za + mag_l / 2 + 1.5, "nose", 1.0, 1.0,
            function="Tiny magnet at the end of the arm read by the 3-D Hall sensor.", part="supermagnete S-01-01-N", ledger="AMF-72"))
     # ---------------- handle (fixed)
-    A(comp("skid_ring", "Skid ring (C-shaped heel)", "structure", "tube", z_skid - 1.5, z_skid + 0.5, "handle", open_d + 3.0, open_d + 3.0,
-           open_d, function="Rests on the paper and carries the writing force; the ball moves inside its opening. Open at the front so the ink stays visible.",
-           part="custom (PTFE-coated POM, contact radius %.1f mm)" % skid_r, ledger=""))
-    A(comp("front_sleeve", "Front sleeve (fixed grip)", "grip", "tube", z_skid + 0.5, 50.0, "handle", 16.0, D, open_d,
+    ring = comp("skid_ring", "Skid ring (C-shaped heel)", "structure", "tube", z_skid, z_skid + ru.ring_len, "handle", 2 * skid_r, 2 * skid_r,
+                2 * fe["ring_bore_r"], function="Rests on the paper and carries the writing force; the nose swings inside its lip. It is open on the top, "
+                "away from the paper, so the ink stays visible.",
+                part="custom (PTFE-coated POM, contact radius %.2f mm)" % skid_r, ledger="")
+    ring["open_deg"] = 120.0                                # the C's opening, centred on the side away from the paper (+x)
+    A(ring)
+    A(comp("front_sleeve", "Front sleeve (fixed grip)", "grip", "tube", z_skid + ru.ring_len, 50.0, "handle", 2 * fe["sleeve_front_r"], D, open_d,
            function="Where the thumb, index and middle finger rest. It does not move; the nose moves inside it.",
            part="PEEK core + TPE overmould", ledger="AMF-24"))
     A(comp("gimbal", "Flexure gimbal (2-axis)", "mechanism", "tube", zp - 1.5, zp + 1.5, "handle", 17.0, 17.0, 5.5,
@@ -179,8 +185,15 @@ def fit_checks(d: RevH, g: Dict) -> Dict:
     X = g["tip_travel_mm"]
     zp = g["pivot_z"]
     # the carrier (d 7) swings X (zp - z)/zp; the front sleeve bore at the carrier front must clear it
-    sw = X * (zp - 8.0) / zp
+    z_cf = [c for c in g["components"] if c["id"] == "carrier"][0]["z0"]
+    sw = X * (zp - z_cf) / zp
     out["carrier_clears_front_opening_mm"] = round(g["front_opening_d"] / 2 - (3.5 + sw), 3)
+    # front end over the writing tilts 35-75 deg (front_end.py): ring lip, nozzle above the paper, sleeve front above the paper
+    fe = FE.check(g["skid_contact_radius"], d, FE.FrontRules(), n_theta=9, n_phi=24)
+    out["skid_ring_wall_mm"] = round(fe["ring_wall_mm"] - FE.FrontRules().ring_wall_min, 3)
+    out["nozzle_above_paper_mm"] = round(fe["nozzle_clear_usable_min_mm"] - FE.FrontRules().c_paper, 3)
+    out["sleeve_front_above_paper_mm"] = round(fe["sleeve_front_clear_min_mm"], 3)
+    out["carrier_at_stop_mm"] = round(fe["carrier_stop_clearance_mm"], 3)
     # the magnets + gap + coils fit inside the shell bore
     coil = [c for c in g["components"] if c["id"] == "coil_x+"][0]
     r_out = coil["offset"][0] + coil["size"][0] / 2
