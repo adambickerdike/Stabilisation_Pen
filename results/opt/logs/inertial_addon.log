@@ -1,0 +1,11 @@
+== stage addon
+[   49.5 s] addon r_rot 0.3 seed 200 (17 rows)
+[   99.8 s] addon r_rot 0.3 seed 201 (34 rows)
+[  149.0 s] addon r_rot 0.3 seed 202 (51 rows)
+[  197.9 s] addon r_rot 0.3 seed 203 (68 rows)
+[  236.2 s] addon r_rot 0.5 seed 200 (85 rows)
+[  276.4 s] addon r_rot 0.5 seed 201 (102 rows)
+[  318.7 s] addon r_rot 0.5 seed 202 (119 rows)
+[  358.9 s] addon r_rot 0.5 seed 203 (136 rows)
+[  401.2 s] addon r_rot 0.7 seed 200 (153 rows)
+[  441.4 s] addon r_rot 0.7 seed 201 (170 rows)

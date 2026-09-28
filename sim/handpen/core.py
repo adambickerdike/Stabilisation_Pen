@@ -65,7 +65,7 @@ NAMES = [
     "push_slv", "k_astop", "stg_src",
     "ctl_on", "cdec", "zib", "zis", "ilat", "acc_nd", "gyr_nd", "pos_nd", "iseed", "c_nx", "c_oA", "c_oB", "c_oC", "c_oD",
     "nn_h", "nn_oW1", "nn_ob1", "nn_oW2", "nn_ob2", "afc_on", "afc_mu", "afc_leak", "afc_ot", "afc_nf", "afc_f0",
-    "afc_df", "afc_o1", "afc_o2", "afc_umax", "ul1", "ul2", "ul3", "ul4", "ul5", "ul6", "ul7", "iaa_hz",
+    "afc_df", "afc_o1", "afc_o2", "afc_umax", "ul1", "ul2", "ul3", "ul4", "ul5", "ul6", "ul7", "iaa_hz", "afc_gate",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
@@ -332,8 +332,11 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
                     if mg > umx and mg > 0.0:
                         afU[2 * i] *= umx / mg
                         afU[2 * i + 1] *= umx / mg
-                ucmd[afc_o1] += afU[0] * c_ - afU[1] * s_
-                ucmd[afc_o2] += afU[2] * c_ - afU[3] * s_
+                gg = 1.0
+                if P[I_afc_gate] > 0.5:           # scale by the tracker's authority (external input e3, 0..1)
+                    gg = min(1.0, max(0.0, ev[3]))
+                ucmd[afc_o1] += gg * (afU[0] * c_ - afU[1] * s_)
+                ucmd[afc_o2] += gg * (afU[2] * c_ - afU[3] * s_)
             for o in range(NU):
                 if ul[o] > 0.0:
                     if ucmd[o] > ul[o]:

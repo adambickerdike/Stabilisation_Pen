@@ -1,0 +1,589 @@
+{
+  "meta": {
+    "evidence_status": "PROPOSED DESIGN (dimensioned concept; CALC masses; ASSUMPTION dimensions) - Rev H active-nose pen, architecture B",
+    "generated_utc": "2026-09-28T17:04:21+00:00",
+    "git_revision": "8d33233",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "-c",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "opt/inertial/geometry.py (also mechanics/cad/revH_pen.py)",
+    "doc": "docs/opt_inertial.md",
+    "inertial_addon_recommended": false
+  },
+  "units": "mm",
+  "axis": "z along the pen axis from the ball tip (z = 0) toward the back; x, y transverse",
+  "pivot_z": 45.0,
+  "actuator_z": 79.0,
+  "tip_travel_mm": 3.0,
+  "magnet_stroke_mm": 2.27,
+  "lever_tip_per_magnet": 1.324,
+  "tilt_deg": 50.0,
+  "front_opening_d": 12.93,
+  "skid_contact_radius": 5.5,
+  "ball_protrusion_mm": 4.16,
+  "handle_od": 22.0,
+  "length": 170.0,
+  "grip_zone": {
+    "z0": 20.0,
+    "z1": 45.0
+  },
+  "hand": {
+    "finger_pads_z": [
+      26.0,
+      32.0,
+      38.0
+    ],
+    "web_z": 92.0
+  },
+  "mass_g": {
+    "handle_g": 67.07,
+    "nose_g": 7.88,
+    "total_g": 74.95,
+    "com_mm": 92.85,
+    "nose_inertia_about_pivot_g_mm2": 6022.26,
+    "moving_mass_at_tip_g": 2.97
+  },
+  "components": [
+    {
+      "id": "ball",
+      "label": "Ball tip",
+      "group": "refill",
+      "shape": "cone",
+      "z0": 0.0,
+      "z1": 3.0,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "The point that touches the paper and writes.",
+      "part": "ISO 12757-2 D1 mini refill",
+      "ledger": "DEC-004",
+      "d0": 0.7,
+      "d1": 2.35
+    },
+    {
+      "id": "refill",
+      "label": "Ink refill (D1 mini)",
+      "group": "refill",
+      "shape": "cylinder",
+      "z0": 3.0,
+      "z1": 67.0,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Standard replaceable refill; it slides along its axis on a soft constant-force spring so the ball stays on the paper while the nose tilts.",
+      "part": "ISO 12757-2 D1 mini refill",
+      "ledger": "DEC-004",
+      "d0": 2.35,
+      "d1": 2.35,
+      "mass_g": 0.84
+    },
+    {
+      "id": "refill_spring",
+      "label": "Constant-force refill spring",
+      "group": "mechanism",
+      "shape": "cylinder",
+      "z0": 67.0,
+      "z1": 75.0,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Presses the refill onto the paper with about 0.15 N over 6 mm of axial travel (tilt and correction changes).",
+      "part": "custom (music-wire, long soft spring)",
+      "ledger": "",
+      "d0": 2.4,
+      "d1": 2.4
+    },
+    {
+      "id": "carrier",
+      "label": "Moving nose (refill carrier)",
+      "group": "moving_nose",
+      "shape": "tube",
+      "z0": 8.0,
+      "z1": 43.5,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to about 3 mm against the handle.",
+      "part": "custom (Ti-6Al-4V tube 7/6 mm)",
+      "ledger": "AMF-21",
+      "d0": 7.0,
+      "d1": 7.0,
+      "d_in": 6.0
+    },
+    {
+      "id": "carrier_nozzle",
+      "label": "Nose nozzle",
+      "group": "moving_nose",
+      "shape": "cone",
+      "z0": 3.0,
+      "z1": 8.0,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Front of the moving nose; guides the refill tip.",
+      "part": "custom (PEEK)",
+      "ledger": "AMF-24",
+      "d0": 3.6,
+      "d1": 7.0
+    },
+    {
+      "id": "arm",
+      "label": "Rear arm",
+      "group": "moving_nose",
+      "shape": "cylinder",
+      "z0": 46.5,
+      "z1": 75.75,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Carries the magnets behind the gimbal: the tip moves the opposite way, 1/lever times the magnet motion.",
+      "part": "custom (aluminium 6061)",
+      "ledger": "",
+      "d0": 5.0,
+      "d1": 5.0
+    },
+    {
+      "id": "magnet_hub",
+      "label": "Magnet hub",
+      "group": "moving_nose",
+      "shape": "box",
+      "z0": 75.75,
+      "z1": 82.25,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Square hub on the arm carrying four magnets.",
+      "part": "custom (soft iron)",
+      "ledger": "",
+      "size": [
+        5.0,
+        5.0,
+        6.5
+      ]
+    },
+    {
+      "id": "magnet_x+",
+      "label": "Actuator magnet (y-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 75.75,
+      "z1": 82.25,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+      "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+      "ledger": "AMF-28",
+      "size": [
+        2.8,
+        3.0,
+        6.5
+      ],
+      "offset": [
+        3.9,
+        0
+      ]
+    },
+    {
+      "id": "magnet_x-",
+      "label": "Actuator magnet (y-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 75.75,
+      "z1": 82.25,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+      "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+      "ledger": "AMF-28",
+      "size": [
+        2.8,
+        3.0,
+        6.5
+      ],
+      "offset": [
+        -3.9,
+        0
+      ]
+    },
+    {
+      "id": "magnet_y+",
+      "label": "Actuator magnet (x-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 75.75,
+      "z1": 82.25,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+      "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+      "ledger": "AMF-28",
+      "size": [
+        3.0,
+        2.8,
+        6.5
+      ],
+      "offset": [
+        0,
+        3.9
+      ]
+    },
+    {
+      "id": "magnet_y-",
+      "label": "Actuator magnet (x-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 75.75,
+      "z1": 82.25,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+      "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+      "ledger": "AMF-28",
+      "size": [
+        3.0,
+        2.8,
+        6.5
+      ],
+      "offset": [
+        0,
+        -3.9
+      ]
+    },
+    {
+      "id": "hall_magnet",
+      "label": "Position magnet",
+      "group": "sensor",
+      "shape": "cylinder",
+      "z0": 82.75,
+      "z1": 83.75,
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Tiny magnet at the end of the arm read by the 3-D Hall sensor.",
+      "part": "supermagnete S-01-01-N",
+      "ledger": "AMF-72",
+      "d0": 1.0,
+      "d1": 1.0
+    },
+    {
+      "id": "skid_ring",
+      "label": "Skid ring (C-shaped heel)",
+      "group": "structure",
+      "shape": "tube",
+      "z0": 2.66,
+      "z1": 4.66,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Rests on the paper and carries the writing force; the ball moves inside its opening. Open at the front so the ink stays visible.",
+      "part": "custom (PTFE-coated POM, contact radius 5.5 mm)",
+      "ledger": "",
+      "d0": 15.93,
+      "d1": 15.93,
+      "d_in": 12.93
+    },
+    {
+      "id": "front_sleeve",
+      "label": "Front sleeve (fixed grip)",
+      "group": "grip",
+      "shape": "tube",
+      "z0": 4.66,
+      "z1": 50.0,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Where the thumb, index and middle finger rest. It does not move; the nose moves inside it.",
+      "part": "PEEK core + TPE overmould",
+      "ledger": "AMF-24",
+      "d0": 16.0,
+      "d1": 22.0,
+      "d_in": 12.93
+    },
+    {
+      "id": "gimbal",
+      "label": "Flexure gimbal (2-axis)",
+      "group": "mechanism",
+      "shape": "tube",
+      "z0": 43.5,
+      "z1": 46.5,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Laser-cut spring-steel cross flexures: the nose tilts in two directions with no friction or backlash; stiff along the pen.",
+      "part": "custom (301 full-hard or 17-7PH 0.1 mm, laser-cut)",
+      "ledger": "AMF-20",
+      "d0": 17.0,
+      "d1": 17.0,
+      "d_in": 5.5
+    },
+    {
+      "id": "shell",
+      "label": "Handle shell",
+      "group": "structure",
+      "shape": "tube",
+      "z0": 50.0,
+      "z1": 170.0,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "The body you hold: 22 mm thick, easier to grip than a pencil.",
+      "part": "PEEK or glass-filled nylon, 1 mm wall",
+      "ledger": "AMF-24",
+      "d0": 22.0,
+      "d1": 22.0,
+      "d_in": 20.0
+    },
+    {
+      "id": "back_ring",
+      "label": "Soft-iron ring (flux return)",
+      "group": "actuator",
+      "shape": "tube",
+      "z0": 71.98,
+      "z1": 86.02,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Section of the shell over the coils made of soft iron: it closes the magnets' flux through the coils.",
+      "part": "custom (soft iron / 1010 steel, nickel plated)",
+      "ledger": "",
+      "d0": 22.0,
+      "d1": 22.0,
+      "d_in": 20.0
+    },
+    {
+      "id": "coil_x+",
+      "label": "Flat voice coil (y-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 72.98,
+      "z1": 85.02,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+      "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+      "ledger": "AMF-29/AMF-30",
+      "size": [
+        1.43,
+        8.53,
+        12.03
+      ],
+      "offset": [
+        8.78,
+        0
+      ]
+    },
+    {
+      "id": "coil_x-",
+      "label": "Flat voice coil (y-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 72.98,
+      "z1": 85.02,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+      "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+      "ledger": "AMF-29/AMF-30",
+      "size": [
+        1.43,
+        8.53,
+        12.03
+      ],
+      "offset": [
+        -8.78,
+        0
+      ]
+    },
+    {
+      "id": "coil_y+",
+      "label": "Flat voice coil (x-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 72.98,
+      "z1": 85.02,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+      "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+      "ledger": "AMF-29/AMF-30",
+      "size": [
+        8.53,
+        1.43,
+        12.03
+      ],
+      "offset": [
+        0,
+        8.78
+      ]
+    },
+    {
+      "id": "coil_y-",
+      "label": "Flat voice coil (x-force)",
+      "group": "actuator",
+      "shape": "box",
+      "z0": 72.98,
+      "z1": 85.02,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+      "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+      "ledger": "AMF-29/AMF-30",
+      "size": [
+        8.53,
+        1.43,
+        12.03
+      ],
+      "offset": [
+        0,
+        -8.78
+      ]
+    },
+    {
+      "id": "hall3d",
+      "label": "3-D Hall position sensor",
+      "group": "sensor",
+      "shape": "box",
+      "z0": 84.75,
+      "z1": 85.75,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Reads the nose position in x and y about 10 000 times a second for the position servo.",
+      "part": "TI TMAG5273 (3-D Hall, I2C) or DRV5055 x2",
+      "ledger": "OPT-45/OPT-46",
+      "size": [
+        2.9,
+        2.8,
+        1.0
+      ]
+    },
+    {
+      "id": "pcb",
+      "label": "Control board",
+      "group": "electronics",
+      "shape": "box",
+      "z0": 86.52,
+      "z1": 99.0,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "nRF54L15-class MCU with Bluetooth, two coil drivers with current sensing, charger and the IMU. Runs the tremor tracker and the servo.",
+      "part": "nRF54L15 + 2 x DRV8214 + charger",
+      "ledger": "AMF-44/AMF-37",
+      "size": [
+        1.0,
+        15.0,
+        12.48
+      ]
+    },
+    {
+      "id": "imu",
+      "label": "Motion sensor (IMU)",
+      "group": "sensor",
+      "shape": "box",
+      "z0": 90.0,
+      "z1": 92.5,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Accelerometer and gyroscope: measures the hand's shake about 2000 times a second (feeds the tracker).",
+      "part": "ST LSM6DSV16X",
+      "ledger": "OPT-37",
+      "size": [
+        2.5,
+        3.0,
+        0.83
+      ],
+      "offset": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "id": "battery",
+      "label": "Rechargeable cell",
+      "group": "power",
+      "shape": "cylinder",
+      "z0": 101.0,
+      "z1": 149.5,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "EEMB LIR14500, 750 mAh.",
+      "part": "EEMB LIR14500",
+      "ledger": "AMF-80",
+      "d0": 14.1,
+      "d1": 14.1
+    },
+    {
+      "id": "lra",
+      "label": "Vibration cue motor",
+      "group": "haptic",
+      "shape": "cylinder",
+      "z0": 150.5,
+      "z1": 153.5,
+      "moves_with": "handle",
+      "optional": true,
+      "function": "Gentle buzz cues (write bigger, slow down, check a word).",
+      "part": "coin LRA 8 mm",
+      "ledger": "AMF-45",
+      "d0": 8.0,
+      "d1": 8.0
+    },
+    {
+      "id": "usb",
+      "label": "USB-C port and button",
+      "group": "electronics",
+      "shape": "box",
+      "z0": 154.5,
+      "z1": 158.0,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Charging and on/off / mode button (side port so the rear cap stays free).",
+      "part": "USB-C receptacle (mid-mount)",
+      "ledger": "",
+      "size": [
+        8.4,
+        2.6,
+        3.5
+      ],
+      "offset": [
+        0.0,
+        9.0
+      ]
+    },
+    {
+      "id": "rear_cap",
+      "label": "Rear cap",
+      "group": "structure",
+      "shape": "cylinder",
+      "z0": 167.0,
+      "z1": 170.0,
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Closes the handle.",
+      "part": "custom (PEEK)",
+      "ledger": "AMF-24",
+      "d0": 22.0,
+      "d1": 20.0
+    },
+    {
+      "id": "optical",
+      "label": "Paper sensor (optional)",
+      "group": "sensor",
+      "shape": "box",
+      "z0": 14.0,
+      "z1": 20.0,
+      "moves_with": "handle",
+      "optional": true,
+      "function": "Optical sensor beside the nose that sees the paper: page position for capture and the tracker (1 kHz, 2 ms assumed).",
+      "part": "to select (optical flow class)",
+      "ledger": "",
+      "size": [
+        5.0,
+        5.0,
+        6.0
+      ],
+      "offset": [
+        -8.47,
+        0.0
+      ]
+    }
+  ],
+  "fit_checks": {
+    "carrier_clears_front_opening_mm": 0.498,
+    "coil_radius_margin_mm": 0.505,
+    "magnet_gap_mm": 2.77,
+    "cell_radius_margin_mm": 2.95,
+    "length_margin_mm": 0.0,
+    "all_pass": true
+  }
+}

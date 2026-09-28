@@ -50,7 +50,7 @@ def get(seed, tremor=None, writer="lognormal", duration=DUR):
             psi = sg.tremor(sc.t, spec, np.random.default_rng(seed + 3000))[:, 0]
         sc.psi_disp = psi
         sc.tremor_obj = tremor
-    if len(_C) > 400:
+    if len(_C) > 60:
         _C.clear()
     _C[k] = sc
     return sc

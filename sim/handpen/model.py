@@ -218,7 +218,7 @@ def _pack_extensions(Pv, s, cfg: Config, dt, t1, t2, info):
         assert tab.ndim == 2 and tab.shape[1] == 9 and tab.shape[0] >= 2
         s("afc_on", 1.0); s("afc_mu", afc["mu"]); s("afc_leak", afc.get("leak", 0.0)); s("afc_nf", tab.shape[0])
         s("afc_f0", afc["f0"]); s("afc_df", afc["df"]); s("afc_o1", afc["out"][0]); s("afc_o2", afc["out"][1])
-        s("afc_umax", afc.get("umax", 1.0))
+        s("afc_umax", afc.get("umax", 1.0)); s("afc_gate", 1.0 if afc.get("gate") else 0.0)
         put("afc_ot", tab)
     for i, u in enumerate(ctl.get("ulim", [0.0] * core.NU)):
         s(f"ul{i + 1}", u)

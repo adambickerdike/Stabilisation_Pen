@@ -195,6 +195,126 @@ def grid_A(seeds, f0s, amps, log=None):
     return {"design": RH.describe(dA), "servo": gains, "rows": rows}
 
 
+def stage_addon(quick=False, seeds=None):
+    """Rear-cap reaction mass (and the passive weight) on top of the Rev H nose, TEST seeds, all three grip splits."""
+    from opt.inertial import addon_eval as AE
+    seeds = seeds or (SC.SEEDS["test"][:1] if quick else SC.SEEDS["test"])
+    f0s = (6.0, 10.0) if quick else (4.0, 6.0, 8.0, 10.0, 12.0)
+    amps = (0.3e-3, 1.0e-3) if quick else (0.3e-3, 1.0e-3, 2.0e-3)
+    splits = (0.5,) if quick else (0.3, 0.5, 0.7)
+    prm = revh_tracker_params()
+    t0 = time.time()
+    rows, dist = [], []
+    for rr in splits:
+        ev = AE.AddonEval(r_rot=rr, akf_params=prm, afc_mu=0.005)
+        for seed in seeds:
+            for f0 in f0s:
+                for amp in amps:
+                    rows.append(ev.case(seed, f0, amp))
+            for f0, amp in ((8.0, 0.3e-3), (8.0, 1.0e-3)):
+                rows.append(ev.case(seed, f0, amp, kind="wrist", controllers=("ff", "ff_cal", "afc")))
+            print(f"[{time.time() - t0:7.1f} s] addon r_rot {rr} seed {seed} ({len(rows)} rows)", flush=True)
+        if rr == 0.5:
+            for s_ in seeds:
+                for c in ("ff", "afc"):
+                    dist.append({"seed": s_, "writer": "lognormal", "ctrl": c, "distortion_um": ev.distortion(s_, c)})
+            for s_ in (SC.SEEDS["glyph_test"][:1] if quick else SC.SEEDS["glyph_test"]):
+                for c in ("ff", "afc"):
+                    dist.append({"seed": s_, "writer": "glyph", "ctrl": c, "distortion_um": ev.distortion(s_, c, "glyph")})
+    rm = AE.default_rm()
+    out = {"rm": {"label": rm.label, "m_g": rm.m * 1e3, "added_fixed_g": rm.added_fixed * 1e3, "stroke_mm": rm.stroke[0] * 1e3,
+                  "F_max_N": rm.F_max[0], "Km": rm.Km, "f_centring_Hz": 5.0, "z_mm": rm.z * 1e3},
+           "rows": rows, "distortion": dist, "seeds": list(seeds)}
+    save_stage("addon" + ("_quick" if quick else ""), out)
+    return out
+
+
+def stage_sweep(quick=False):
+    """Travel and servo-bandwidth sensitivity of the Rev H-B nose on TRAINING seeds (oracle and Rev H tracker)."""
+    from dataclasses import replace as _rep
+    from sim.handpen import evaluate as HE
+    from sim.handpen import model as HM
+    from opt.inertial import tracker as TK
+    seeds = (300,) if quick else (300, 301, 302, 303)
+    conds = ((10.0, 2.0e-3),) if quick else ((6.0, 1.0e-3), (10.0, 1.0e-3), (12.0, 1.0e-3), (6.0, 2.0e-3), (10.0, 2.0e-3), (12.0, 2.0e-3))
+    travels = (1.5e-3, 3.0e-3) if quick else (1.0e-3, 1.5e-3, 2.0e-3, 3.0e-3, 4.0e-3)
+    servos = (80.0,) if quick else (30.0, 80.0, 150.0)
+    prm = revh_tracker_params()
+    d0 = RH.RevH()
+    base_cfg = RH.config_B(d0)
+    cache = {}
+    rows = []
+    t0 = time.time()
+    for seed in seeds:
+        sc0 = SC.get(seed)
+        ref = HM.run(sc0, base_cfg, rec_hz=TK.REC_HZ)
+        for f0, amp in conds:
+            sc = SC.get(seed, SC.tremor(f0, amp))
+            n = len(sc.t)
+            un = HM.run(sc, base_cfg, rec_hz=TK.REC_HZ)
+            mu = HE.compare(un, ref)
+            dh, info, _ = TK.estimate(un, sc, seed=seed + 7000, body="pen", params=prm)
+            est = TK.to_steps(dh, n)
+            clean = HM.clean_at_sim_rate(ref, n)
+            for X in travels:
+                for fs in servos:
+                    d = _rep(d0, travel=X, servo_hz=fs)
+                    cfg = RH.config_B(d)
+                    ro = HE.compare(HM.run(sc, cfg.replace(stage=True), clean=clean, rec_hz=TK.REC_HZ), ref)
+                    ra = HE.compare(HM.run(sc, cfg.replace(stage=True, stage_src=1), clean=est, rec_hz=TK.REC_HZ), ref)
+                    rows.append({"seed": seed, "f0": f0, "amp_mm": amp * 1e3, "travel_mm": X * 1e3, "servo_hz": fs,
+                                 "oracle": ro["e_rms_um"] / mu["e_rms_um"], "oracle_sat": ro["q_sat_frac"],
+                                 "akf": ra["e_rms_um"] / mu["e_rms_um"], "akf_sat": ra["q_sat_frac"]})
+        print(f"[{time.time() - t0:6.1f} s] sweep seed {seed}", flush=True)
+    out = {"rows": rows, "seeds": list(seeds), "label": "SIM (model H1, training seeds, r_rot 0.5, Rev H tracker setting)"}
+    save_stage("sweep" + ("_quick" if quick else ""), out)
+    return out
+
+
+def stage_tiers(quick=False):
+    """T0-T2 (secondary slim variants): frictionless linear-model bounds of the best cap reaction mass per tier at 0.3 mm,
+    4-12 Hz and the three grip splits (CALC).  T0 time-domain values are in results/pencil/inertial.json (study I1)."""
+    import math as _m
+    from sim.handpen import devices as DV
+    from sim.handpen import params as HP
+    from opt.inertial.linear_ext import LinearExt, ls_bound, tremor_direction
+    tiers = {  # moving mass (WHA d x L), lateral stroke, position, what it displaces (CALC / ASSUMPTION packaging)
+        "T0": {"d": 4.5e-3, "L": 18e-3, "stroke": 1.0e-3, "z": 0.151, "note": "5.15 g slug in the 7.9 mm bore, half the cell (study I1)"},
+        "T1": {"d": 6.0e-3, "L": 20e-3, "stroke": 1.4e-3, "z": 0.150, "note": "Ø11 x 166 mm: 10.2 g slug, bore 10.4 mm"},
+        "T2c": {"d": 9.0e-3, "L": 17e-3, "stroke": 2.0e-3, "z": 0.145, "note": "cap bulb Ø16: 19.5 g slug"},
+    }
+    out = {}
+    for tk, t in tiers.items():
+        m = DV.cylinder_mass(t["d"], t["L"])
+        k_c = m * (2 * _m.pi * 5.0) ** 2
+        dev = HP.Device(kind="rm", m=m, z=t["z"], stroke=(t["stroke"], t["stroke"], 0.0), F_max=(0.5, 0.5, 0.0), k_c=k_c,
+                        c_c=2 * 0.7 * _m.sqrt(k_c * m), added_fixed=1.5e-3, removed_cell_frac=0.5 if tk == "T0" else 0.0)
+        row = {"moving_mass_g": m * 1e3, "stroke_mm": t["stroke"] * 1e3, "mass_x_stroke_g_mm": m * t["stroke"] * 1e6, "note": t["note"]}
+        for rr in (0.3, 0.5, 0.7):
+            b0 = HP.Config(r_rot=rr)
+            lm0 = LinearExt(b0)
+            lm = LinearExt(b0.replace(device=dev))
+            vals = {}
+            for f in (4.0, 6.0, 8.0, 10.0, 12.0):
+                w = 2 * np.pi * f
+                umaj, umin = tremor_direction(0.6)
+                x0 = lm0.solve(w, lm0.exc_translation(umaj, w) * 3e-4 + lm0.exc_translation(umin, w) * (-0.4j * 3e-4))[0:2]
+                x1 = lm.solve(w, lm.exc_translation(umaj, w) * 3e-4 + lm.exc_translation(umin, w) * (-0.4j * 3e-4))[0:2]
+                gains, lims = [], []
+                for i, nm in enumerate(("F_t1", "F_t2")):
+                    X = lm.solve(w, lm.input_vector(nm).astype(complex))
+                    gains.append(X[0:2])
+                    lims.append(min(0.5, t["stroke"] / max(abs(X[lm.ir + i]), 1e-12)))
+                res, u = ls_bound(x1, gains, lims)
+                vals[f"{f:g}Hz"] = float(np.linalg.norm(res) / np.linalg.norm(np.abs(x0)))
+            row[f"r_rot_{rr}"] = vals
+        out[tk] = row
+    out["label"] = ("CALC: frictionless linear model, single frequency, optimally phased input limited by force (0.5 N) and stroke; "
+                    "optimistic (the time-domain oracle realised a quarter to a half of these gains in study I1)")
+    save_stage("tiers", out)
+    return out
+
+
 STAGES = ("nose_adjoint", "tracker", "grid", "sweep", "addon", "neural", "tiers", "report")
 
 

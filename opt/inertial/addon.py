@@ -111,7 +111,7 @@ def plant_tables(d: RH.RevH, dev: Device, r_rot=0.5, rho_w=0.3, f=np.arange(2.0,
 
 
 def afc_rm(d: RH.RevH, dev: Device, r_rot_model=0.5, mu=0.004, leak=2e-4, Ts=5e-4, z_imu=0.100, theta_deg=50.0, f_dd=150.0,
-           stroke_frac=0.7):
+           stroke_frac=0.7, gate=True):
     """Adaptive narrow-band feedback (phasor LMS) of the rear-cap reaction mass at the tracked frequency (e2 = AKF
     frequency).  Error = tip acceleration estimate (page x, y) = IMU acceleration - z_imu * (gyro rate derivative)
     projected on the page; the table is the inverse of G_acc from the linear model at the MODEL split r_rot_model (the
@@ -135,7 +135,7 @@ def afc_rm(d: RH.RevH, dev: Device, r_rot_model=0.5, mu=0.004, leak=2e-4, Ts=5e-
     blk = CL.embed(Ac, Bc, Cc, Dc, [CL.Y_ACC_B[0], CL.Y_ACC_B[1], CL.Y_GYR_B[0], CL.Y_GYR_B[1]], [CL.NU, CL.NU + 1], Ts)
     cap = np.minimum(dev.F_max[0], stroke_frac * dev.m * (2 * np.pi * f) ** 2 * dev.stroke[0])    # stroke-limited force
     afc = {"table": CL.afc_table(f, Ga, cap), "f0": float(f[0]), "df": float(f[1] - f[0]), "mu": mu, "leak": leak,
-           "out": (CL.U_DEV[0], CL.U_DEV[1]), "umax": float(dev.F_max[0])}
+           "out": (CL.U_DEV[0], CL.U_DEV[1]), "umax": float(dev.F_max[0]), "gate": gate}
     return [blk], afc
 
 
