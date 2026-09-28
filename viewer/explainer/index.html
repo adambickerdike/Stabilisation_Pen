@@ -383,7 +383,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     </div>
     <details class="data">
       <summary>Which data this page uses</summary>
-      <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
+      <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> replay.json: <code>results/opt/viz_inertial_opt_1mm.json + results/opt/viz_inertial_opt.json (+ averages from results/opt/inertial_opt.json)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
     </details>
     <nav class="toc" aria-label="On this page"><span>On this page</span>
       <a href="#pen">The pen in 3-D</a><a href="#scenes">How it works</a><a href="#grip">Holding a pen</a>
@@ -522,7 +522,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <span class="trk" id="scen-wrap" hidden><span class="note">Shake speed:</span><span class="seg" id="scen-seg" role="group" aria-label="Shake speed"></span></span>
           <span class="trk" id="q-wrap"><span class="note">Stabiliser:</span>
           <span class="seg" role="group" aria-label="Stabiliser quality">
-            <button data-trk="best" aria-pressed="true">Best case</button><button data-trk="today" aria-pressed="false">Today's tracker</button>
+            <button data-trk="best" aria-pressed="true">Best case</button><button data-trk="today" aria-pressed="false">Today's tracker</button><button data-trk="module" id="trk-module" aria-pressed="false">+ rear module</button>
           </span></span>
         </div>
         <p id="scene-text"></p>
@@ -797,8 +797,8 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div class="strong">Nothing on this page has been measured on a real pen or person yet.</div>
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
-    <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 18:40 UTC from git 7011045-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
+    <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json</code></li><li><span class="st final">final</span> replay.json: <code>results/opt/viz_inertial_opt_1mm.json + results/opt/viz_inertial_opt.json (+ averages from results/opt/inertial_opt.json)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
+    <div class="mono" id="provenance">Built 2026-09-28 18:56 UTC from git e3774ca-dirty · parameters v0.4.4 · layout generated 2026-09-28T18:38:58+00:00</div>
   </footer>
 </div>
 
@@ -858,7 +858,8 @@ const GROUPS = {
   electronics:{name:"Electronics", tok:"--g-elec", desc:"The control board with Bluetooth, the coil drivers, the charger and the charging port."},
   power:{name:"Battery", tok:"--g-power", desc:"Rechargeable lithium-ion cell."},
   haptic:{name:"Vibration motor", tok:"--g-haptic", desc:"Gives gentle buzz cues."},
-  inertial:{name:"Inertial module (optional)", tok:"--g-inertial", desc:"Optional moving weight or gyroscope in the back of the pen."},
+  inertial:{name:"Inertial module (optional; in the first prototype)", tok:"--g-inertial", desc:"A 19.8 g tungsten slug in the back of the pen, pushed sideways by coils: its reaction steadies the whole pen against the shake. Optional: it is fitted in the first prototype, and a measurement of how people grip the pen decides whether the product keeps it."},
+  magnet:{name:"Board magnet (optional)", tok:"--g-act", desc:"A small disc magnet in a keel under the fixed sleeve. Only for the guidance board: the board's magnet under the glass pulls it, so the board moves the whole pen, not the nose."},
   structure:{name:"Handle shell", tok:"--g-shell", desc:"The body of the pen that you hold."},
 };
 const GROUP_ORDER = ["moving_nose","refill","skid","grip","mechanism","actuator","sensor","electronics","power","haptic","inertial","structure"];
@@ -915,10 +916,13 @@ function partRadiusAt(lay, pred, z, dflt){ const cs=(lay.components||[]).filter(
   const t=clamp((z-s.z0)/((s.z1-s.z0)||1),0,1), d0=s.d0||2*dflt, d1=(s.d1==null?d0:s.d1); return (d0+(d1-d0)*t)/2; }
 function sleeveRadius(lay, z){ return partRadiusAt(lay, c=>c.group==="grip", z, 10); }
 function shellRadius(lay, z){ return partRadiusAt(lay, c=>c.group==="structure" && !/skid|cap/i.test(c.id||""), z, 10); }
+/* layout.json frame: x in the tilt plane, positive away from the paper; y lateral.  Pen-local frame here: y up (away
+   from the paper), x lateral.  So layout (x, y) -> pen-local (-y, x), and a box's two widths swap. */
+function layOff(c){ const off=c.offset||[0,0]; return [-(+off[1]||0), +off[0]||0]; }
 function partGeometry(c){
-  const z0=+c.z0, z1=+c.z1, off=c.offset||[0,0], ox=+off[0]||0, oy=+off[1]||0;
+  const z0=+c.z0, z1=+c.z1, [ox, oy]=layOff(c);
   let g;
-  if(c.shape==="box"){ const s=c.size||[2,2,z1-z0]; const L=(s[2]>0?s[2]:(z1-z0)); g=new THREE.BoxGeometry(s[0]||1, s[1]||1, L); g.translate(ox, oy, (z0+z1)/2); }
+  if(c.shape==="box"){ const s=c.size||[2,2,z1-z0]; const L=(s[2]>0?s[2]:(z1-z0)); g=new THREE.BoxGeometry(s[1]||1, s[0]||1, L); g.translate(ox, oy, (z0+z1)/2); }
   else if(c.shape==="tube"){ let ro0=(c.d0||2)/2, ro1=(c.d1||c.d0||2)/2, ri=(c.d_in||0)/2;
     if(c.group==="actuator"){ ro0+=0.18; ro1+=0.18; ri-=0.18; }       /* a flux ring flush with the shell: keep it just proud, no z-fighting */
     if(c.group==="grip"){ ri+=0.05; }
@@ -1109,11 +1113,11 @@ function initHero(lay){
   const zMid=((lay.length||170)/2)+2, penLen=lay.length||170;
   /* explode: stretch along the axis about the pivot; shell up, sleeve and skid down, sensors outward */
   for(const m of pen.parts){
-    const c=m.userData.comp, zc=(c.z0+c.z1)/2, off=c.offset||[0,0], g=m.userData.group;
+    const c=m.userData.comp, zc=(c.z0+c.z1)/2, off=layOff(c), g=m.userData.group;
     let ex=[0,0,0.62*(zc-pen.pivot)];
     if(g==="structure") ex=[0, 38, ex[2]*0.5];
     else if(g==="grip") ex=[0, -34, ex[2]];
-    else if(g==="skid") ex=[0, -34, ex[2]];
+    else if(g==="skid" || g==="magnet") ex=[0, -34, ex[2]];
     if(g==="sensor"){ const ox=+off[0]||0, oy=+off[1]||0, n=Math.hypot(ox,oy); if(n>0.1){ ex[0]+=16*ox/n; ex[1]+=16*oy/n; } else ex[1]+=16; }
     m.userData.ex=ex; m.userData.base=m.position.clone();
   }
@@ -1208,7 +1212,7 @@ function initHero(lay){
   /* labels: one per group (one per sensor) */
   const labelDefs=[];
   const byGroup={}; for(const m of pen.parts) (byGroup[m.userData.group]=byGroup[m.userData.group]||[]).push(m);
-  const PRI={moving_nose:10, skid:10, grip:9, mechanism:9, actuator:9, power:7, haptic:6, electronics:7, refill:6, inertial:5, structure:4};
+  const PRI={moving_nose:10, skid:10, grip:9, mechanism:9, actuator:9, power:7, haptic:6, electronics:7, refill:6, inertial:5, magnet:5, structure:4};
   for(const [g,ms] of Object.entries(byGroup)){
     if(g==="sensor"){ const seen={}; for(const m of ms){ const base=String(m.userData.comp.label||m.userData.id).replace(/\s*\([^)]*\)\s*$/,"");
         if(seen[base]){ seen[base].n++; continue; } const id=m.userData.id; const pri=/imu|motion/i.test(base+id)?8:6;
@@ -1455,13 +1459,17 @@ function buildSceneData(key, board, tip, trk, travel){
   return S;
 }
 
-function initScenes(lay, board, samples, tip){
+function initScenes(lay, board, samples, tip, replay){
   const vp=$("scene-vp"), v=makeView(vp); v.camera.fov=20; v.camera.updateProjectionMatrix();   /* a long lens: less distortion of the pen and fingers */
   const theta=+lay.tilt_deg||50, phi=-38, bs=penBasis(theta, phi), travel=+lay.tip_travel_mm||3;
   const pen=buildPen(lay), hand=buildHand(lay); pen.body.add(hand);
   setXrayParts(pen, true, {grip:0.42, structure:1});
   for(const m of pen.parts){ if(m.userData.group==="structure"){ solid(m.material); }
     if(m.userData.comp.optional && m.userData.group==="sensor") m.visible=false; }   /* keep the nose area clear in the scenes */
+  /* the board magnet and its keel (optional parts of layout.json) belong to scene (e) only */
+  const boardOnly=pen.parts.filter(m=>m.userData.group==="magnet" || /board_keel/i.test(m.userData.id||""));
+  for(const m of boardOnly) m.visible=false;
+  const rmMass=pen.parts.find(m=>/rm_mass|reaction_mass/i.test(m.userData.id||""));      /* the rear module's moving slug */
   v.scene.add(pen.root);
   const paper=makePaper(640, 640, 8); v.scene.add(paper);
   const inkG=new THREE.Group(); v.scene.add(inkG);
@@ -1470,7 +1478,9 @@ function initScenes(lay, board, samples, tip){
      with the handle and the hand, not with the nose */
   const pm=(board&&board.pen_magnet)||{d:6.35, h:3.17, pen_frame_mm:{along_axis_from_ball:13.5, off_axis_toward_paper:10.2}};
   let penMag;
-  if(pm.pen_frame_mm){ const z=+pm.pen_frame_mm.along_axis_from_ball||13.5, off=+pm.pen_frame_mm.off_axis_toward_paper||0, h=+pm.h||3, d=+pm.d||6;
+  const layMag=boardOnly.find(m=>m.userData.group==="magnet");
+  if(layMag){ penMag=layMag; solid(penMag.material); const c=layMag.userData.comp, o=layOff(c); penMag.userData.local=new THREE.Vector3(o[0], o[1], (c.z0+c.z1)/2); }
+  else if(pm.pen_frame_mm){ const z=+pm.pen_frame_mm.along_axis_from_ball||13.5, off=+pm.pen_frame_mm.off_axis_toward_paper||0, h=+pm.h||3, d=+pm.d||6;
     const geo=frustumGeo(d/2, d/2, z-h/2, z+h/2); geo.translate(0, -off, 0); penMag=new THREE.Mesh(geo, stdMat(css("--g-act"))); pen.body.add(penMag);
     const keel=new THREE.Mesh(new THREE.BoxGeometry(2.2, off, h+2.2), stdMat(css("--g-grip"))); keel.position.set(0, -off/2, z); penMag.add(keel);
     penMag.userData.local=new THREE.Vector3(0, -off, z); }
@@ -1523,8 +1533,49 @@ function initScenes(lay, board, samples, tip){
     const inkOf=v=>{ const m=(v.metrics||[]).find(x=>/^Ink off/i.test(x.name)); return m? m.value : null; };
     S.inkWhole=inkOf(V); S.inkBase=inkOf(base); S.scenTitle=p.title; return S;
   }
+  /* the mechanism study's replay (data/replay.json) drives scenes (a) and (b) when it is there: the handle's tip
+     (where the hand puts the tip), the pen axis, the nose (ink minus handle tip) and the rear module's slug */
+  const RP=(replay && Array.isArray(replay.scenarios) && replay.scenarios.length)? replay : null, HL=RP && RP.headline;
+  if(RP) Sx.scen=0;
+  const REPLAY_TEXT={
+    a:"This is the mechanism simulation (model H1): two and a half seconds of writing with a hand shake. The nose is held still, so the tip follows the hand, and the ink wobbles around the letters.",
+    b:"Same hand, same shake. The nose tilts against the shake inside the still sleeve. “Best case” is a pen that knows the shake exactly. “Today's tracker” is what the pen's motion sensor and tracker achieve in simulation now. “+ rear module” adds the moving weight in the back of the pen, fitted in the first prototype. What limits the pen is telling shake from writing, not the mechanism."};
+  function sceneFromReplay(key){
+    if((key!=="a" && key!=="b") || !RP) return null;
+    const sc=RP.scenarios[clamp(Sx.scen,0,RP.scenarios.length-1)], off=sc.cases.off;
+    const want = key==="a" ? "off" : ({today:"today", module:"module"}[Sx.trk] || "best");
+    const C=sc.cases[want] || sc.cases.best || off;
+    const rate=+sc.rate_hz||200, n=Math.min(off.ink.length, C.nib.length, C.ink.length, C.ref.length, C.axis.length);
+    const S={key, dt:1/rate, travel, T:(n-1)/rate, numbers:[], speed:0.25, ruling:8, cam:"tip", inkW:0.4, fromData:true, fromReplay:true,
+      theta0:+sc.theta_deg||50, simTag:"SIMULATION (model H1)", caseKey:want};
+    S.t=Float32Array.from({length:n}, (_,i)=>i/rate); newArrays(S); S.axis=new Float32Array(n*2); S.rm=Array.isArray(C.rm)? new Float32Array(n*2) : null;
+    for(let i=0;i<n;i++){ const R=C.ref[i], B=C.nib[i], Q=C.ink[i], A=C.axis[i];
+      S.intended[2*i]=R[0]; S.intended[2*i+1]=R[1]; S.hand[2*i]=B[0]; S.hand[2*i+1]=B[1]; S.nose[2*i]=Q[0]-B[0]; S.nose[2*i+1]=Q[1]-B[1];
+      S.down[i]=C.down[i]?1:0; S.lift[i]=C.lift? +C.lift[i] : 0;
+      S.axis[2*i]=Math.asin(clamp(A[2],-1,1))*180/Math.PI; S.axis[2*i+1]=Math.atan2(A[1],A[0])*180/Math.PI;
+      if(S.rm){ S.rm[2*i]=C.rm[i][0]; S.rm[2*i+1]=C.rm[i][1]; } }
+    if(key==="b"){ S.ghost=new Float32Array(n*2); for(let i=0;i<n;i++){ S.ghost[2*i]=off.ink[i][0]; S.ghost[2*i+1]=off.ink[i][1]; } S.ghostLabel="ink with the nose held still"; }
+    const sim=S.simTag, pc=x=>Math.round(100*x), what=`two and a half seconds of simulated writing, ${sc.title.toLowerCase()}`;
+    S.numbers=[["What you see", what, sim], ["Pen", C.label, "PROPOSED DESIGN"],
+      ["The letters you mean", "the ink the same pen writes with no shake", sim]];
+    if(key==="a"){ S.numbers.push(["Ink off the letters, this run", C.ink_err_mm!=null? `${C.ink_err_mm.toFixed(2)} mm on average` : "—", sim],
+                                  ["Tip travel", "0 mm: the nose is held still", "PROPOSED DESIGN"]); }
+    else {
+      if(C.ink_err_mm!=null && off.ink_err_mm!=null) S.numbers.push(["Ink off the letters, this run", `${C.ink_err_mm.toFixed(2)} mm, against ${off.ink_err_mm.toFixed(2)} mm with the nose held still (${pc(C.ratio!=null? C.ratio : C.ink_err_mm/off.ink_err_mm)} %)`, sim]);
+      if(HL && HL.causal) S.numbers.push(["Today's tracker, shakes of 1–2 mm at 8–12 per second", `the ink error falls to ${pc(HL.causal[0])}–${pc(HL.causal[1])} % of the nose held still: it removes about a quarter to a third`, sim]);
+      if(HL && HL.oracle) S.numbers.push(["If the pen knew the shake exactly", `${pc(HL.oracle[0])}–${pc(HL.oracle[1])} %: it would remove ${100-pc(HL.oracle[1])}–${100-pc(HL.oracle[0])} %`, sim]);
+      if(HL && HL.module) S.numbers.push(["Today's tracker + rear module (first prototype)", `${pc(HL.module[0])}–${pc(HL.module[1])} %`, sim]);
+      if(HL) S.numbers.push(["Ranges", "over three assumptions about how the hand holds the pen", "ASSUMPTION"]);
+      S.numbers.push(["Slower shakes, 4–6 per second", "today's tracker removes almost nothing", sim],
+                     ["What limits it", "telling shake from writing, not the mechanism or its 3 mm reach", sim],
+                     ["A handheld spoon stabiliser", "about 73 % less tremor", "LITERATURE ACT-16"],
+                     ["Tip travel", `up to ${fmt(travel)} mm`, "PROPOSED DESIGN"]); }
+    S.inkWhole=C.ink_err_mm; S.inkBase=off.ink_err_mm; S.scenTitle=sc.title; S.caseLabel=C.label; return S;
+  }
   function scenLabel(p){ const m=/(\d+(?:\.\d+)?)\s*times a second/.exec(p.title)||/(\d+(?:\.\d+)?)\s*Hz/.exec(p.title+" "+p.id); return m? `${m[1]} per second` : p.title; }
-  if(dataPanels.length>1){ $("scen-seg").innerHTML=dataPanels.map((p,i)=>`<button data-scen="${i}" aria-pressed="${i===Sx.scen}">${esc(scenLabel(p))}</button>`).join("");
+  const scenList = RP ? RP.scenarios.map(sc=>({title:sc.title, label:`${fmt(sc.f0_hz)} per second, ${fmt(sc.amp_mm)} mm`})) : dataPanels.map(p=>({title:p.title, label:scenLabel(p)}));
+  if(!RP || !RP.scenarios.some(sc=>sc.cases.module)) $("trk-module").hidden=true;
+  if(scenList.length>1){ $("scen-seg").innerHTML=scenList.map((p,i)=>`<button data-scen="${i}" aria-pressed="${i===Sx.scen}">${esc(p.label)}</button>`).join("");
     document.querySelectorAll("[data-scen]").forEach(b=>b.onclick=()=>{ Sx.scen=+b.dataset.scen; document.querySelectorAll("[data-scen]").forEach(x=>x.setAttribute("aria-pressed", String(x===b))); selectScene(Sx.key); }); }
   let ribbons=[], ghosts=[], S=null;
   function clearInk(){ while(inkG.children.length){ const o=inkG.children.pop(); o.geometry.dispose(); o.material.dispose(); } ribbons=[]; ghosts=[]; }
@@ -1601,6 +1652,7 @@ function initScenes(lay, board, samples, tip){
       boardDetail(); Sx.lastFollow=null; return; }
     if(Sx.view==="hand"){ const fx=c==="line"? followX(idxAt(Sx.t)) : cx; fitCamera(v, P2W(fx+34, cy-26, 30), narrow?100:92, P2W(-0.45, -0.9, 0.95)); Sx.lastFollow=c==="line"? fx : null; return; }
     if(c==="letter"){ fitCamera(v, P2W(cx+6, cy, 6), narrow?28:25, dir); }
+    else if(c==="tip"){ fitCamera(v, P2W(cx+3, cy, 2), narrow?24:21, dir); }       /* a short run of small writing: stay close to the tip */
     else if(c==="line"){ const fx=followX(idxAt(Sx.t)), R=S.camR||34; fitCamera(v, P2W(fx+R*0.24, cy, R*0.18), narrow?R*1.12:R, dir); Sx.lastFollow=fx; }
     else { fitCamera(v, P2W(cx+5, cy-1, 2), narrow?37:34, dir); }
     if(c!=="line") Sx.lastFollow=null;
@@ -1643,8 +1695,8 @@ function initScenes(lay, board, samples, tip){
   function readout(i){
     const el=$("pp-read"); let h="";
     if(S.fromData && S.inkWhole!=null){
-      h+=`<div class="row"><span>Ink off the letters, whole sentence:</span><b>${S.inkWhole.toFixed(2)} mm</b>${tagHTML("SIMULATION (model HW1)")}</div>`;
-      if(S.key==="b" && S.inkBase!=null) h+=`<div class="row"><span>With an ordinary pen:</span><b>${S.inkBase.toFixed(2)} mm</b></div>`; }
+      h+=`<div class="row"><span>Ink off the letters, ${S.fromReplay?"this run":"whole sentence"}:</span><b>${S.inkWhole.toFixed(2)} mm</b>${tagHTML(S.simTag||"SIMULATION (model HW1)")}</div>`;
+      if(S.key==="b" && S.inkBase!=null) h+=`<div class="row"><span>${S.fromReplay?"With the nose held still":"With an ordinary pen"}:</span><b>${S.inkBase.toFixed(2)} mm</b></div>`; }
     else if(S.key==="a"||S.key==="b"||S.key==="d"){ const r=rmsSoFar(S.ink, i);
       const lab=S.key==="d"? "Ink off the target letter, on average" : "Ink off the letters, on average";
       h+=`<div class="row"><span>${lab}:</span><b>${isNaN(r)?"—":r.toFixed(2)+" mm"}</b>${tagHTML(S.fromData?"SIMULATION":"ILLUSTRATION")}</div>`;
@@ -1671,11 +1723,11 @@ function initScenes(lay, board, samples, tip){
   }
   function selectScene(key, keepTime){
     v.resize();
-    Sx.key=key; S=sceneFromSamples(key) || buildSceneData(key, board, tip, Sx.trk, travel); Sx.S=S;
+    Sx.key=key; S=sceneFromReplay(key) || sceneFromSamples(key) || buildSceneData(key, board, tip, Sx.trk, travel); Sx.S=S;
     document.querySelectorAll(".scene-btn").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.scene===key)));
-    $("scene-chip").textContent=CAPTION[key]; $("scene-text").textContent=(S.fromData && DATA_TEXT[key]) || TEXT[key];
+    $("scene-chip").textContent=CAPTION[key]; $("scene-text").textContent=(S.fromReplay && REPLAY_TEXT[key]) || (S.fromData && DATA_TEXT[key]) || TEXT[key];
     $("scene-ill").textContent = S.fromData ? "Simulation" : "Illustration";
-    const showScen = S.fromData && dataPanels.length>1 && (key==="a"||key==="b");
+    const showScen = S.fromData && scenList.length>1 && (key==="a"||key==="b");
     $("scen-wrap").hidden=!showScen; $("q-wrap").hidden = key!=="b"; $("trk").hidden = !(showScen || key==="b");
     if(!Sx.userSpeed) setSpeed(S.speed, false);
     if(!Sx.userMag) setMag(1, false);
@@ -1687,7 +1739,7 @@ function initScenes(lay, board, samples, tip){
     if(key==="e") keyItems.push(`<span><span class="ln" style="--c:var(--good)"></span>pull on the sleeve magnet</span>`);
     $("scene-key").innerHTML=keyItems.join("");
     $("size-wrap").hidden = key!=="c";
-    penMag.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false; couple.visible=false;
+    penMag.visible = key==="e"; for(const m of boardOnly) m.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false; couple.visible=false;
     const vb=document.querySelectorAll("[data-view]");     /* in the board scene the two views are the magnets close up and the whole board */
     vb.forEach(b=>b.textContent = key==="e" ? (b.dataset.view==="tip" ? "Magnets close-up" : "Whole board") : (b.dataset.view==="tip" ? "Tip close-up" : "Whole hand"));
     if(paper.userData.spacing!==S.ruling) retexturePaper(paper, S.ruling);
@@ -1719,10 +1771,13 @@ function initScenes(lay, board, samples, tip){
     let hx=ix+mag*(S.hand[2*i]-ix), hy=iy+mag*(S.hand[2*i+1]-iy);
     const nx=mag*S.nose[2*i], ny=mag*S.nose[2*i+1];
     let buzzing=false; if(S.buzzAt!=null && Sx.t>=S.buzzAt && Sx.t<=S.buzzAt+S.buzzLen){ buzzing=true; const ph=Sx.t*TAU*9; hx+=0.35*Math.sin(ph*3.1); hy+=0.25*Math.cos(ph*2.3); }
+    /* the pen's own tilt from the replay (small changes of the axis, magnified with the motion) */
+    const bF = S.axis ? penBasis(S.theta0+mag*(S.axis[2*i]-S.theta0), phi+mag*S.axis[2*i+1]) : bs;
     /* nose tilt from the page offset; the handle rises a little so the tip stays on the paper */
-    const dxl=nx*bs.x[0]+ny*bs.x[1], alongH=nx*bs.h[0]+ny*bs.h[1], dyl=-alongH/Math.sin(bs.th), lift=-dyl*Math.cos(bs.th);
+    const dxl=nx*bF.x[0]+ny*bF.x[1], alongH=nx*bF.h[0]+ny*bF.h[1], dyl=-alongH/Math.sin(bF.th), lift=-dyl*Math.cos(bF.th);
     pen.setTip(dxl, dyl);
-    tmpM.copy(penMatrix(bs, hx, hy, lift+(S.lift? S.lift[i]:0))); pen.root.matrix.copy(tmpM); pen.root.matrixWorldNeedsUpdate=true;
+    tmpM.copy(penMatrix(bF, hx, hy, lift+(S.lift? S.lift[i]:0))); pen.root.matrix.copy(tmpM); pen.root.matrixWorldNeedsUpdate=true;
+    if(rmMass){ if(S.rm) rmMass.position.set(-mag*S.rm[2*i+1], mag*S.rm[2*i], 0); else rmMass.position.set(0,0,0); }
     for(const r of ribbons){ const {s,e}=r.userData; const k=clamp(i-s, 0, e-s-1); r.geometry.setDrawRange(0, k>0? k*6 : 0); }
     for(const r of ghosts){ const {s,e}=r.userData; const k=clamp(i-s, 0, e-s-1); r.geometry.setDrawRange(0, k>0? k*6 : 0); }
     if(lra){ const on=buzzing && (Math.floor(Sx.t*8)%2===0); lra.material.emissive.set(on? new THREE.Color(css("--g-haptic")).multiplyScalar(0.9) : 0x000000); }
@@ -1770,7 +1825,7 @@ function initScenes(lay, board, samples, tip){
   Sx.onTheme=function(){ v.scene.background=new THREE.Color(css("--scene-bg")); retexturePaper(paper);
     for(const m of pen.parts){ const nm=partMaterial(m.userData.comp); m.material.color.copy(nm.color); nm.dispose(); }
     for(const mt of hand.userData.mats) mt.color.set(css("--skin")); hand.userData.mats[1].color.multiplyScalar(0.9);
-    penMag.material.color.set(css("--g-act")); if(penMag.children[0]) penMag.children[0].material.color.set(css("--g-grip")); arrow.setColor(new THREE.Color(css("--good"))); couple.material.color.set(css("--good"));
+    penMag.material.color.set(css("--g-act")); if(penMag.children[0]) penMag.children[0].material.color.set(css("--g-grip")); if(layMag) solid(penMag.material); arrow.setColor(new THREE.Color(css("--good"))); couple.material.color.set(css("--good"));
     if(S){ if(S.key==="e") buildBoard(); buildInk(); frame(true); } };
   document.querySelectorAll(".scene-btn").forEach(b=>b.onclick=()=>selectScene(b.dataset.scene));
   $("play").onclick=()=>{ Sx.playing=!Sx.playing; $("play").textContent=Sx.playing?"Pause":"Play"; $("play").setAttribute("aria-label", Sx.playing?"Pause":"Play"); };
@@ -1794,8 +1849,18 @@ function condKey(c){ const toks=new Set(String(c||"").toLowerCase().split(/[^a-z
   const M=[["tremor",["tremor","et","shake","shaky","essential"]],["parkinsons",["pd","parkinson","parkinsons","micrographia"]],["board",["board"]],
     ["guided",["guided","practice","dysgraphia","guidance"]],["spelling",["spelling","dyslexia"]]];
   for(const [k,w] of M) if(w.some(x=>toks.has(x))) return k; return String(c||"other").toLowerCase(); }
-const COND_TITLE = {tremor:["Shaky writing (tremor)","The pen moves its tip against the shake."], parkinsons:["Small, shrinking writing (Parkinson's)","The pen buzzes when the letters shrink."],
-  guided:["Guided practice (letter shapes)","The pen nudges the tip toward the letter."], board:["Guidance board","The board pulls the pen along the letter."], spelling:["Spelling","The app flags words and shows the right spelling."]};
+const COND_TITLE = {tremor:["Shaky writing (tremor)","The pen moves its tip against the shake."], parkinsons:["Small, shrinking writing (Parkinson's)","A buzz, lined paper, or the nose bringing the size back."],
+  guided:["Guided practice (letter shapes)","The nose or the board guides the ink toward the copybook letters."], board:["Guidance board","The board pulls the pen along the letter."], spelling:["Spelling (dyslexia)","The app flags words and keeps a corrected copy; the ink is never changed."]};
+/* plain words for a change of an ink error: "roughly halves", "cuts by about 36 %", "makes it 5 % larger" */
+function cutWords(before, after){ const r=1-after/before, p=Math.round(100*Math.abs(r));
+  if(Math.abs(r)<0.05) return "barely changes the wobble";
+  if(r<0) return `makes the wobble about ${p} % larger`;
+  if(r>=0.45 && r<=0.55) return "roughly halves the wobble";
+  return `cuts the wobble by about ${p} %`; }
+function barRows(rows, mx, ref){
+  return rows.map(r=>`<div class="brow ${r.cls||"b-other"}" role="listitem"><span class="bl">${esc(r.label)}</span>`+
+    `<span class="bt" aria-hidden="true"><i style="width:${(100*r.v/mx).toFixed(1)}%"></i>${ref!=null?`<u style="left:${(100*ref/mx).toFixed(1)}%"></u>`:""}</span>`+
+    `<b>${esc(r.txt)}</b>${r.sub?`<span class="bw">${esc(r.sub)}</span>`:""}</div>`).join(""); }
 function renderOutcomes(o){
   const el=$("outcomes"); if(!o || !o.bands || !Object.keys(o.bands).length){ el.hidden=true; return false; }
   const order=["none","weighted","pencil_akf","revH_off","revH_akf","revH_akf_revh","revH_oracle"];
@@ -1803,26 +1868,61 @@ function renderOutcomes(o){
     revH_off:"New pen, stabiliser off", revH_akf:"New pen, first tracker", revH_akf_revh:"New pen, tracker tuned for it", revH_oracle:"New pen, knowing the shake exactly"};
   const CLS={none:"b-before", revH_akf:"b-after", revH_akf_revh:"b-after", revH_oracle:"b-limit"};
   const bands=Object.values(o.bands), all=bands.flatMap(b=>Object.values(b.devices).map(d=>d.ink_mm)).filter(x=>isFinite(x)), mx=Math.max(...all)*1.08;
-  const pct=x=>Math.round(100*x);
-  let h=`<div class="bands">`;
+  const pct=x=>Math.round(100*x), sim=tagHTML("SIMULATION (model HW1)");
+  let h=`<h3>Shaky writing (tremor)</h3><div class="bands">`;
   for(const b of bands){
     const ref=b.devices.none;
-    h+=`<div class="band"><h4>${esc(b.title)}</h4><div class="bars" role="list">`;
-    for(const k of order){ const d=b.devices[k]; if(!d || !isFinite(d.ink_mm)) continue;
-      h+=`<div class="brow ${CLS[k]||"b-other"}" role="listitem"><span class="bl">${esc(LAB[k]||k)}</span>`+
-         `<span class="bt" aria-hidden="true"><i style="width:${(100*d.ink_mm/mx).toFixed(1)}%"></i>${ref?`<u style="left:${(100*ref.ink_mm/mx).toFixed(1)}%"></u>`:""}</span>`+
-         `<b>${d.ink_mm.toFixed(2)} mm</b>`+(d.words!=null?`<span class="bw">words read right by the app: ${pct(d.words)} %</span>`:"")+`</div>`; }
-    h+=`</div><p class="note">Bar: how far the ink is from the letters, on average. Dashed line: the ordinary pen.</p></div>`;
+    const rows=order.filter(k=>b.devices[k] && isFinite(b.devices[k].ink_mm)).map(k=>({cls:CLS[k], label:LAB[k]||k, v:b.devices[k].ink_mm, txt:`${b.devices[k].ink_mm.toFixed(2)} mm`,
+      sub:b.devices[k].words!=null? `words read right by the app: ${pct(b.devices[k].words)} %` : ""}));
+    h+=`<div class="band"><h4>${esc(b.title)}</h4><div class="bars" role="list">${barRows(rows, mx, ref? ref.ink_mm : null)}</div><p class="note">Bar: how far the ink is from the letters, on average. Dashed line: the ordinary pen.</p></div>`;
   }
   h+=`</div>`;
-  const F=o.bands.high_f_1_2mm&&o.bands.high_f_1_2mm.devices, S=o.bands.low_f_1_2mm&&o.bands.low_f_1_2mm.devices, sim=tagHTML("SIMULATION (model HW1)");
+  const F=o.bands.high_f_1_2mm&&o.bands.high_f_1_2mm.devices, S=o.bands.low_f_1_2mm&&o.bands.low_f_1_2mm.devices;
   const li=[];
-  if(F&&F.none&&F.revH_akf_revh) li.push(`<li>Fast shake: with the tracker tuned for it, the new pen roughly halves the wobble (${F.none.ink_mm.toFixed(2)} → ${F.revH_akf_revh.ink_mm.toFixed(2)} mm), and the app reads ${pct(F.revH_akf_revh.words)} % of the words instead of ${pct(F.none.words)} %. ${sim}</li>`);
-  if(S&&S.none&&S.revH_akf_revh) li.push(`<li>Slow shake, the most common kind in essential tremor: today's tracker gives almost no gain (${S.none.ink_mm.toFixed(2)} → ${S.revH_akf_revh.ink_mm.toFixed(2)} mm). ${sim}</li>`);
+  if(F&&F.none&&F.revH_akf_revh) li.push(`<li>Fast shake: with the tracker tuned for it, the new pen ${cutWords(F.none.ink_mm, F.revH_akf_revh.ink_mm)} (${F.none.ink_mm.toFixed(2)} → ${F.revH_akf_revh.ink_mm.toFixed(2)} mm)${F.revH_akf_revh.words!=null&&F.none.words!=null?`, and the app reads ${pct(F.revH_akf_revh.words)} % of the words instead of ${pct(F.none.words)} %`:""}. ${sim}</li>`);
+  if(S&&S.none&&S.revH_akf_revh) li.push(`<li>Slow shake, the most common kind in essential tremor: today's tracker ${cutWords(S.none.ink_mm, S.revH_akf_revh.ink_mm).replace("the wobble","it")} (${S.none.ink_mm.toFixed(2)} → ${S.revH_akf_revh.ink_mm.toFixed(2)} mm). ${sim}</li>`);
   if(F&&S&&F.revH_oracle&&S.revH_oracle&&F.none&&S.none) li.push(`<li>If the pen knew the shake exactly, the wobble would drop by about ${Math.round(100*(1-F.revH_oracle.ink_mm/F.none.ink_mm))} % (fast) and ${Math.round(100*(1-S.revH_oracle.ink_mm/S.none.ink_mm))} % (slow). The nose can reach far enough: telling shake from writing is what limits it. ${sim}</li>`);
-  if(F&&F.weighted&&F.none) li.push(`<li>Extra weight alone makes the ink worse here: the weighted pen is at ${F.weighted.ink_mm.toFixed(2)} mm${F.revH_off?`, and the new pen with its stabiliser off at ${F.revH_off.ink_mm.toFixed(2)} mm`:""}. ${sim}</li>`);
+  if(F&&F.weighted&&F.none) li.push(`<li>Extra weight alone ${F.weighted.ink_mm>F.none.ink_mm*1.02?"makes the ink worse here":"changes little here"}: the weighted pen is at ${F.weighted.ink_mm.toFixed(2)} mm${F.revH_off?`, and the new pen with its stabiliser off at ${F.revH_off.ink_mm.toFixed(2)} mm`:""}. ${sim}</li>`);
+  /* Parkinson's-like writing: letter height at the end of the line */
+  let hp="", lp=[];
+  const P=o.pd && o.pd.by_help, PL=(o.pd&&o.pd.labels)||{};
+  if(P && P.pen_none){
+    const keys=["pen_none","cue","lines","size_adapt_y1.5","size_assist_1.35"].filter(k=>P[k] && isFinite(P[k].xh_end_mm));
+    const start=P.pen_none.xh_start_mm, mxp=Math.max(...keys.map(k=>P[k].xh_end_mm), start)*1.1;
+    const t0=P.pen_none.writing_time_s;
+    const rows=keys.map(k=>{ const d=P[k], sub=[];
+      if(d.writing_time_s && t0 && Math.abs(d.writing_time_s/t0-1)>=0.02) sub.push(`writing time ${d.writing_time_s>t0?"+":"−"}${Math.round(100*Math.abs(d.writing_time_s/t0-1))} %`);
+      if(d.touching_frac!=null) sub.push(`letters touching: ${pct(d.touching_frac)} %`);
+      return {cls:k==="pen_none"?"b-before":(k==="size_assist_1.35"?"b-other":"b-after"), label:PL[k]||k, v:d.xh_end_mm, txt:`${d.xh_end_mm.toFixed(2)} mm`, sub:sub.join(" · ")}; });
+    hp=`<div class="band"><h4>Small, shrinking writing (Parkinson's-like writers)</h4><div class="bars" role="list">${barRows(rows, mxp, start)}</div>`+
+       `<p class="note">Bar: height of the last letters of the line. Dashed line: the height the writers started at (${start.toFixed(1)} mm).</p></div>`;
+    const c=P.cue, L=P.lines, A=P["size_adapt_y1.5"], X=P["size_assist_1.35"];
+    lp.push(`<li>Without help, the letters shrink from ${start.toFixed(1)} to ${P.pen_none.xh_end_mm.toFixed(1)} mm along one line. ${sim}</li>`);
+    if(c) lp.push(`<li>A buzz keeps them at ${c.xh_end_mm.toFixed(1)} mm, if people respond as small studies suggest; writing takes ${Math.round(100*(c.writing_time_s/t0-1))} % longer. ${sim} ${tagHTML("ASSUMPTION")}</li>`);
+    if(L) lp.push(`<li>Paper with lines 1 cm apart: ${L.xh_end_mm.toFixed(2)} mm at the end of the line, the cheapest help. ${sim}</li>`);
+    if(A) lp.push(`<li>The nose can bring the size back (${A.xh_end_mm.toFixed(2)} mm) at little cost to the ink, but then the writer no longer sees the letters shrinking. It is new and needs testing against the buzz and the lines. ${sim}</li>`);
+    if(X) lp.push(`<li>A fixed enlargement by the nose only rescales the shrinking letters, and ${pct(X.touching_frac)} % of letters then touch their neighbours (${pct(P.pen_none.touching_frac)} % without). ${sim}</li>`);
+  }
+  /* guided practice: distance to the copybook letters */
+  let hg="", lg=[];
+  const G=o.practice && o.practice.by_help, GL=(o.practice&&o.practice.labels)||{};
+  if(G && G.dysgraphia && G.dysgraphia.none){
+    const D=G.dysgraphia, keys=["none","nose_partial","nose_full","board_full"].filter(k=>D[k] && isFinite(D[k].target_err_um));
+    const mxg=Math.max(...keys.map(k=>D[k].target_err_um/1000))*1.1;
+    const rows=keys.map(k=>{ const d=D[k], sub=[`letters read right: ${pct(d.letters_read_ok)} %`]; if(d.device_share>0.005) sub.push(`the pen or board made ${pct(d.device_share)} % of the movement`);
+      return {cls:k==="none"?"b-before":"b-after", label:GL[k]||k, v:d.target_err_um/1000, txt:`${(d.target_err_um/1000).toFixed(2)} mm`, sub:sub.join(" · ")}; });
+    hg=`<div class="band"><h4>Guided practice (learners with poorly formed letters)</h4><div class="bars" role="list">${barRows(rows, mxg, D.none.target_err_um/1000)}</div>`+
+       `<p class="note">Bar: how far the ink is from the copybook letters, on average, while the guidance is on. Dashed line: no guidance.</p></div>`;
+    const np=D.nose_partial, nf=D.nose_full, bf=D.board_full, n0=D.none;
+    if(np&&nf) lg.push(`<li>While it is on, nose guidance brings the ink ${Math.round(100*(1-np.target_err_um/n0.target_err_um))}–${Math.round(100*(1-nf.target_err_um/n0.target_err_um))} % closer to the copybook letters, but the pen then makes ${pct(np.device_share)}–${pct(nf.device_share)} % of the movement. ${sim}</li>`);
+    if(nf&&bf) lg.push(`<li>Closer is not easier to read: with full guidance the app reads ${pct(nf.letters_read_ok)} % (nose) and ${pct(bf.letters_read_ok)} % (board) of the letters, against ${pct(n0.letters_read_ok)} % without. Gentle nose guidance keeps them readable (${np?pct(np.letters_read_ok):"—"} %). ${sim}</li>`);
+    const Y=G.dyslexia;
+    if(Y && Y.none && Y.nose_full) lg.push(`<li>No kind of guidance turned a reversed or wrong letter into the right one (${pct(Y.nose_full.error_letters_read_as_target||0)} %). For dyslexia the help is in the app${o.practice.spelling_flagged_share!=null?`: when it knows the sentence it flags ${pct(o.practice.spelling_flagged_share)} % of the misspelled words`:""}. ${sim}</li>`);
+    lg.push(`<li>Whether practice with guidance makes writing better without it has not been tested; the published studies mostly found better fluency, not better letter shapes. ${tagHTML("LITERATURE HAP-10")}</li>`);
+  }
   const nw=o.writers? (Array.isArray(o.writers)? o.writers.length : o.writers) : null;
-  el.innerHTML=`<div class="callout"><b>The new pen, in simulation: averages over ${nw?nw+" simulated writers and ":""}shakes of 1 to 2 mm</b><ul>${li.join("")}</ul></div>`+h;
+  el.innerHTML=`<div class="callout"><b>The new pen, in simulation: averages over ${nw?nw+" simulated writers and ":""}shakes of 1 to 2 mm</b><ul>${li.join("")}</ul></div>`+h+
+    ((hp||hg)? `<div class="bands">${hp}${hg}</div>`+`<div class="bands"><div class="callout"><b>Parkinson's-like writing</b><ul>${lp.join("")}</ul></div><div class="callout"><b>Guided practice and spelling</b><ul>${lg.join("")}</ul></div></div>` : "");
   el.hidden=false; return true;
 }
 function renderNewPen(tip){
@@ -1839,7 +1939,7 @@ function renderResults(samples, manifest){
   const prov=!!(samples.meta && samples.meta.provisional);
   const ban=$("res-banner"); ban.hidden=false;
   ban.innerHTML = prov ? `<span class="st prov">provisional</span><span>The strips below: ${esc((samples.meta&&samples.meta.label)||(manifest&&manifest.provisional_label)||"earlier design")}.</span>`
-                       : `<span class="st final">new pen</span><span>One simulated writer, the same hand and shake for every pen: ${esc((samples.meta&&samples.meta.label)||"simulation of the new pen (Rev H)")}.</span>`;
+                       : `<span class="st final">new pen</span><span>In each panel, one simulated writer with the same hand for every pen or kind of help: ${esc((samples.meta&&samples.meta.label)||"simulation of the new pen (Rev H)")}. The averages above are over many runs.</span>`;
   const groups={}; for(const p of samples.panels){ const k=condKey(p.condition); (groups[k]=groups[k]||[]).push(p); }
   const order=["tremor","parkinsons","guided","board","spelling"].filter(k=>groups[k]).concat(Object.keys(groups).filter(k=>!(k in COND)));
   let html="";
@@ -1856,7 +1956,7 @@ function renderResults(samples, manifest){
 function bboxOf(strokesList){ let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; for(const S of strokesList) for(const s of (S||[])) for(const p of s){ if(p[0]<x0)x0=p[0]; if(p[0]>x1)x1=p[0]; if(p[1]<y0)y0=p[1]; if(p[1]>y1)y1=p[1]; } return [x0,x1,y0,y1]; }
 function pathD(strokes){ let d=""; for(const s of (strokes||[])){ if(!s.length) continue; d+="M"+s[0][0].toFixed(2)+" "+(-s[0][1]).toFixed(2); for(let i=1;i<s.length;i++) d+="L"+s[i][0].toFixed(2)+" "+(-s[i][1]).toFixed(2); } return d; }
 function panelHTML(p, prov){
-  const all=[p.intended].concat(p.variants.map(v=>v.ink)); const [x0,x1,y0,y1]=bboxOf(all);
+  const all=[p.intended].concat(p.variants.map(v=>v.ink), p.variants.map(v=>v.intended).filter(Boolean)); const [x0,x1,y0,y1]=bboxOf(all);
   const m=2.5, rule=+p.ruling_mm||8, X0=x0-m, Y0=Math.min(y0-m, -rule*0.35), W=(x1-x0)+2*m, Hh=Math.max(y1+m, rule*1.15)-Y0;
   const ev=p.evidence||"SIMULATION";
   let h=`<article class="rpanel"><header><h4>${esc(p.title)}</h4>${p.subtitle?`<p class="note">${esc(p.subtitle)}</p>`:""}<div class="tags">${tagHTML(ev)}${prov&&!/^ILL/i.test(ev)?'<span class="tag asm"><i></i>Earlier pencil design</span>':""}${!prov?'<span class="tag prop"><i></i>New pen: proposed design</span>':""}</div></header>`;
@@ -1868,17 +1968,18 @@ function panelHTML(p, prov){
     h+=`<div class="rvar"><div class="vlabel"><span class="ln" style="--c:var(${role==="before"?"--shake":(role==="other"?"--muted":"--accent")})"></span>${esc(v.label)}</div>`+
        `<div class="strip"><svg viewBox="${X0.toFixed(2)} ${(-(Y0+Hh)).toFixed(2)} ${W.toFixed(2)} ${Hh.toFixed(2)}" data-wmm="${W.toFixed(2)}" data-hmm="${Hh.toFixed(2)}" role="img" aria-label="${esc(v.label)}: ink compared with the intended writing">`+
        `<rect class="pp" x="${X0.toFixed(2)}" y="${(-(Y0+Hh)).toFixed(2)}" width="${W.toFixed(2)}" height="${Hh.toFixed(2)}"/>${lines}${cues}`+
-       `<path class="int" d="${pathD(p.intended)}" vector-effect="non-scaling-stroke"/><path class="ink ${role}" d="${pathD(v.ink)}" vector-effect="non-scaling-stroke"/></svg></div>`;
+       `<path class="int" d="${pathD(v.intended||p.intended)}" vector-effect="non-scaling-stroke"/><path class="ink ${role}" d="${pathD(v.ink)}" vector-effect="non-scaling-stroke"/></svg></div>`;
     const mets=(v.metrics||[]).map(mt=>{ const val = mt.value!=null ? `<b>${esc(fmtNum(mt.value))}${mt.unit?(mt.unit==="%"?" %":" "+esc(mt.unit)):""}</b>` : (mt.text? `<b>${esc(mt.text)}</b>`:"");
       return `<li><span class="mn">${esc(mt.name)}${val?":":""}</span>${val}${tagHTML(mt.evidence||ev)}${mt.note?`<span class="note">${esc(mt.note)}</span>`:""}</li>`; }).join("");
     if(mets) h+=`<ul class="mets">${mets}</ul>`;
     return h+`</div>`; };
   for(const v of keyV) h+=strip(v);
-  if(moreV.length) h+=`<details class="more"><summary>Show the other pens (${moreV.length}): ${esc(moreV.map(v=>v.label.split(",")[0].split(" (")[0]).join("; "))}</summary>${moreV.map(strip).join("")}</details>`;
+  const what = condKey(p.condition)==="tremor" ? "pens" : "kinds of help";
+  if(moreV.length) h+=`<details class="more"><summary>Show the other ${what} (${moreV.length}): ${esc(moreV.map(v=>v.label.split(",")[0].split(" (")[0]).join("; "))}</summary>${moreV.map(strip).join("")}</details>`;
   if(p.note) h+=`<p class="note">${esc(p.note)}</p>`;
   return h+`</article>`;
 }
-function fmtNum(v){ const a=Math.abs(v); return a>=100? v.toFixed(0) : a>=10 ? v.toFixed(a%1?1:0) : a>=1? v.toFixed(2).replace(/0$/,"") : v.toFixed(2); }
+function fmtNum(v){ if(Number.isInteger(v)) return String(v); const a=Math.abs(v); return a>=100? v.toFixed(0) : a>=10 ? v.toFixed(a%1?1:0) : a>=1? v.toFixed(2).replace(/0$/,"") : v.toFixed(2); }
 function applyZoom(z){ if(T.results) T.results.zoom=z;
   document.querySelectorAll("[data-zoom]").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.zoom===z)));
   document.querySelectorAll(".strip svg").forEach(s=>{ s.style.width=(z*+s.dataset.wmm)+"mm"; s.style.height=(z*+s.dataset.hmm)+"mm"; }); }
@@ -1925,9 +2026,9 @@ function renderSpec(lay, tip){
 
 async function main(){
   drawBands();
-  const [lay, board, samples, manifest, tip, outcomes]=await Promise.all([getJSON("data/layout.json"), getJSON("data/board.json"), getJSON("data/samples.json"),
-    getJSON("data/manifest.json"), getJSON("data/tip.json"), getJSON("data/outcomes.json")]);
-  T.data={layout:!!lay, board:!!board, samples:!!samples, tip:!!tip, outcomes:!!outcomes, manifest};
+  const [lay, board, samples, manifest, tip, outcomes, replay]=await Promise.all([getJSON("data/layout.json"), getJSON("data/board.json"), getJSON("data/samples.json"),
+    getJSON("data/manifest.json"), getJSON("data/tip.json"), getJSON("data/outcomes.json"), getJSON("data/replay.json")]);
+  T.data={layout:!!lay, board:!!board, samples:!!samples, tip:!!tip, outcomes:!!outcomes, replay:!!replay, manifest};
   if(!renderOutcomes(outcomes)) renderNewPen(tip);
   renderResults(samples, manifest);
   if(!lay){ $("hero-loading").textContent="Could not load data/layout.json."; $("scene-loading").textContent="Could not load data/layout.json."; T.ready=true; return; }
@@ -1937,7 +2038,7 @@ async function main(){
   const lf=(manifest&&manifest.files||[]).find(f=>f.file==="layout.json");
   $("hero-note").textContent = lf && lf.status==="final" ? "Layout: results/revH/layout.json (proposed design)" : "Layout: provisional (sizes are assumptions)";
   try{ const H=initHero(lay); views.push({v:H.v, owner:H}); }catch(e){ T.errors.push("hero: "+e.message); $("hero-loading").textContent="The 3-D pen could not be drawn ("+e.message+")."; }
-  try{ const Sx=initScenes(lay, board, samples, tip); views.push({v:Sx.v, owner:Sx}); }catch(e){ T.errors.push("scenes: "+e.message); $("scene-loading").textContent="The scenes could not be drawn ("+e.message+")."; }
+  try{ const Sx=initScenes(lay, board, samples, tip, replay); views.push({v:Sx.v, owner:Sx}); }catch(e){ T.errors.push("scenes: "+e.message); $("scene-loading").textContent="The scenes could not be drawn ("+e.message+")."; }
   requestAnimationFrame(loop);
   T.ready=true;
 }

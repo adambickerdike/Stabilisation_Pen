@@ -12,6 +12,10 @@ Every input has a final file and a provisional fallback.  The final file wins as
   data/outcomes.json <- results/handwriting/outcomes.json (optional: averages per pen, fast and slow shakes)
   data/tip.json      <- results/revH/tip_params.json      else tip_params_provisional.json (optional: headline numbers
                                                              of the Rev H tip study; the page hides them when absent)
+  data/replay.json   <- results/opt/viz_inertial_opt_1mm.json + viz_inertial_opt.json (optional: the mechanism study's
+                                                             replay that drives scenes a and b; + band averages from
+                                                             results/opt/inertial_opt.json).  Without it, scenes a and b
+                                                             use the handwriting panels, else an illustration
   data/manifest.json    which source each file came from (the page shows it)
 
 The page itself is viewer/explainer/template.html; build.py fills its <!--BUILD:...--> placeholders (component table,
@@ -737,64 +741,209 @@ def _plain_scenario(title: str) -> str:
     return t[:1].upper() + t[1:]
 
 
+def _txt(name, text, ev, note=""):
+    return {"name": name, "value": None, "text": text, "unit": "", "evidence": ev, "note": note}
+
+
+def _change(v, ref, closer=False):
+    """'x % less' / 'x % more' (or 'closer' / 'farther') of v against ref."""
+    ch = 100 * (v / ref - 1)
+    if abs(ch) < 0.5:
+        return "about the same"
+    return f"{abs(ch):.0f} % " + (("closer" if ch < 0 else "farther") if closer else ("less" if ch < 0 else "more"))
+
+
 def hw1_metrics(m: dict, ref: dict | None, ev: str) -> list:
+    """Tremor runs: ink error, change against the ordinary pen, words after the app, time at the travel limit."""
     out = []
-    if isinstance(m.get("ink_err_um"), (int, float)):
+    if _num(m.get("ink_err_um")) is not None:
         out.append(metric("Ink off the letters, on average", m["ink_err_um"] / 1000, "mm", ev, 2))
-        if ref and isinstance(ref.get("ink_err_um"), (int, float)) and ref is not m and ref["ink_err_um"] > 0:
-            ch = 100 * (m["ink_err_um"] / ref["ink_err_um"] - 1)
-            out.append({"name": "Compared with the ordinary pen", "value": None, "text": f"{abs(ch):.0f} % " + ("less" if ch < 0 else "more"),
-                        "unit": "", "evidence": ev, "note": ""})
-    if isinstance(m.get("word_acc_app"), (int, float)):
+        if ref and ref is not m and (_num(ref.get("ink_err_um")) or 0) > 0:
+            out.append(_txt("Compared with the ordinary pen", _change(m["ink_err_um"], ref["ink_err_um"]), ev))
+    if _num(m.get("word_acc_app")) is not None:
         out.append(metric("Words right after the app's spelling check", 100 * m["word_acc_app"], "%", ev, 0))
-    if isinstance(m.get("at_travel_limit"), (int, float)) and m["at_travel_limit"] > 0.01:
+    if (_num(m.get("at_travel_limit")) or 0) > 0.01:
         out.append(metric("Time with the tip at its limit", 100 * m["at_travel_limit"], "%", ev, 0))
     if m.get("app_words"):
-        out.append({"name": "The app read", "value": None, "text": f"“{m['app_words']}”", "unit": "", "evidence": ev, "note": ""})
+        out.append(_txt("The app read", f"“{m['app_words']}”", ev))
     return out
+
+
+def pd_metrics(m: dict, ref: dict | None, ev: str) -> list:
+    """Parkinson's-like runs: letter height first -> last, size kept, words, buzzes, time, crowding, shake in the ink."""
+    out = []
+    xs, xe = _num(m.get("xh_start_mm")), _num(m.get("xh_end_mm"))
+    if xs and xe:
+        out.append(_txt("Letter height, first letters → last letters", f"{xs:.1f} → {xe:.1f} mm", ev))
+        out.append(metric("Size kept at the end of the line", 100 * xe / xs, "%", ev, 0))
+    if _num(m.get("word_acc_app")) is not None:
+        out.append(metric("Words right after the app's spelling check", 100 * m["word_acc_app"], "%", ev, 0))
+    if (_num(m.get("n_cues")) or 0) > 0:
+        out.append(metric("Buzzes", m["n_cues"], "", ev, 0))
+    wt = _num(m.get("writing_time_s"))
+    if wt:
+        rt = _num((ref or {}).get("writing_time_s"))
+        out.append(_txt("Writing time", f"{wt:.0f} s" + (f" ({_change(wt, rt)} than the ordinary pen)" if rt and ref is not m and abs(wt / rt - 1) >= 0.005 else ""), ev))
+    if _num(m.get("touching_frac")) is not None:
+        out.append(metric("Letters touching their neighbours", 100 * m["touching_frac"], "%", ev, 0))
+    if _num(m.get("tremor_in_ink_um")) is not None:
+        out.append(metric("Shake left in the ink", m["tremor_in_ink_um"] / 1000, "mm", ev, 2))
+    return out
+
+
+def practice_metrics(m: dict, ref: dict | None, ev: str) -> list:
+    """Guided practice runs: distance to the copybook letters, change against no guidance, letters and words read,
+    the share of the ink's movement made by the device, what the app read."""
+    out = []
+    te = _num(m.get("target_err_um"))
+    if te is not None:
+        out.append(metric("Ink off the copybook letters, on average", te / 1000, "mm", ev, 2))
+        rt = _num((ref or {}).get("target_err_um"))
+        if rt and ref is not m:
+            out.append(_txt("Compared with no guidance", _change(te, rt, closer=True), ev))
+    if _num(m.get("letters_read_ok")) is not None:
+        out.append(metric("Letters the app reads correctly", 100 * m["letters_read_ok"], "%", ev, 0))
+    if _num(m.get("words_app")) is not None:
+        out.append(metric("Words right after the app's spelling check", 100 * m["words_app"], "%", ev, 0))
+    if (_num(m.get("device_share")) or 0) > 0.005:
+        out.append(metric("Share of the ink's movement made by the pen or the board", 100 * m["device_share"], "%", ev, 0))
+    if m.get("recognised"):
+        out.append(_txt("The app read", f"“{m['recognised']}”", ev))
+    return out
+
+
+def spelling_metrics(m: dict, ref: dict | None, ev: str) -> list:
+    out = []
+    if m.get("recognised"):
+        out.append(_txt("The app read", f"“{m['recognised']}”", ev))
+    fw = m.get("flagged_words")
+    if isinstance(fw, list):
+        out.append(_txt("Words the app flags (it knows the sentence)", ", ".join(fw) if fw else "none", ev))
+    if m.get("corrected_copy"):
+        out.append(_txt("Corrected copy the app keeps next to your ink", f"“{m['corrected_copy']}”", ev))
+    if m.get("free_writing_correction"):
+        out.append(_txt("In free writing (the app does not know the sentence) its correction gives",
+                        f"“{m['free_writing_correction']}”", ev))
+    return out
+
+
+PD_LABEL = {"pen_none": "Ordinary pen", "none": "Ordinary pen", "revH_off": "New pen, all help switched off",
+            "cue": "Buzz when the letters shrink (“write bigger”)", "lines": "Paper with lines 1 cm apart",
+            "size_assist_1.2": "Nose makes the ink 1.2 times larger", "size_assist_1.35": "Nose makes the ink 1.35 times larger",
+            "size_assist_1.5": "Nose makes the ink 1.5 times larger", "size_assist_y1.35": "Nose makes the ink 1.35 times taller only",
+            "size_adapt_y1.5": "Nose brings the letter height back (adaptive, up to 1.5 times)",
+            "cue_size_1.35": "Buzz, and the nose makes the ink 1.35 times larger"}
+PD_ORDER = ["pen_none", "none", "cue", "lines", "size_adapt_y1.5", "revH_off", "size_assist_1.2", "size_assist_1.35",
+            "size_assist_1.5", "size_assist_y1.35", "cue_size_1.35"]
+PD_KEY = {"pen_none", "none", "cue", "lines", "size_adapt_y1.5"}
+PR_LABEL = {"none": "No guidance", "cue": "Buzz on a wrong letter (the ink is not changed)",
+            "nose_partial": "Nose guidance, gentle (half strength)", "nose_full": "Nose guidance, full strength",
+            "nose_nogate": "Nose guidance with no limits (the pen would write for you)",
+            "board_partial": "Guidance board, gentle", "board_full": "Guidance board, full strength"}
+PR_ORDER = ["none", "cue", "nose_partial", "nose_full", "board_partial", "board_full", "nose_nogate"]
+PR_KEY = {"dysgraphia": {"none", "nose_partial", "nose_full", "board_full"},
+          "dyslexia": {"none", "cue", "nose_full", "board_full"}}
+
+
+def _cond_kind(cond: str) -> str:
+    c = cond.lower()
+    return ("parkinsons" if ("pd" in re.split(r"[^a-z]+", c) or "micrographia" in c or "parkinson" in c) else
+            "guided" if ("practice" in c or "guided" in c) else "spelling" if "spelling" in c else "tremor")
+
+
+def _pts3(a):
+    return [[r3(q[0]), r3(q[1]), int(q[2]) if len(q) > 2 else 1] for q in a if _is_pt(q)]
 
 
 def normalise_hw1(raw: dict):
     """results/handwriting/samples.json of the handwriting study (schema 'panels[{id, title, condition, device,
-    caption, evidence, intended [[x, y, pen_down]], ink [[...]], metrics}]'): one panel per device run.  Panels that
-    share a condition and a scenario (the id without its device) become one panel with one variant per device."""
+    caption, evidence, intended [[x, y, pen_down]], ink [[...]], metrics}]'): one panel per device run.  Runs that
+    share a condition and a scenario (the id without its device) become one panel with one variant per device.
+    Tremor, Parkinson's-like writing, guided practice and spelling each get their own labels and plain metrics."""
     meta = dict(raw.get("meta", {}))
-    rate = 50.0
-    mm = re.search(r"at\s+([\d.]+)\s*Hz", str(meta.get("schema", "")))
-    if mm:
-        rate = float(mm.group(1))
+    schema = str(meta.get("schema", ""))
+    mm = re.search(r"at\s+([\d.]+)\s*Hz", schema)
+    rate = float(mm.group(1)) if mm else 50.0
+    mpd = re.search(r"PD\s+([\d.]+)\s*Hz", schema)
+    rate_pd = float(mpd.group(1)) if mpd else rate
     groups: dict = {}
     for p in raw["panels"]:
         dev = str(p.get("device", "none"))
         pid = str(p.get("id", ""))
-        scen = re.sub(r"_+", "_", pid.replace(dev, "")).strip("_") or pid
+        scen = pid
+        for tok in (dev, dev.replace(".", "p")):
+            if tok and tok in scen:
+                scen = scen.replace(tok, "")
+                break
+        scen = re.sub(r"_+", "_", scen).strip("_") or pid
         groups.setdefault((str(p.get("condition", "other")), scen), []).append(p)
     panels = []
     for (cond, scen), ps in groups.items():
-        ps.sort(key=lambda q: DEVICE_ORDER.index(q.get("device")) if q.get("device") in DEVICE_ORDER else 99)
-        ref = next((q["metrics"] for q in ps if _device_role(str(q.get("device", ""))) == "before"), None)
+        kind = _cond_kind(cond)
+        learner = "dyslexia" if "dyslexia" in scen else "dysgraphia"
+        order = PD_ORDER if kind == "parkinsons" else PR_ORDER if kind == "guided" else DEVICE_ORDER
+        ps.sort(key=lambda q: order.index(q.get("device")) if q.get("device") in order else 99)
         first = ps[0]
         ev_raw = str(first.get("evidence", "SIM"))
-        ev = "SIMULATION" if ev_raw.upper().startswith("SIM") else ev_raw
-        prate = rate * (30 / 50 if "pd" in cond.lower() and "PD 30" in str(meta.get("schema", "")) else 1)
+        ev = "SIMULATION (model HW1)" if ev_raw.upper().startswith("SIM") else ev_raw
+        refp = next((q for q in ps if str(q.get("device")) in ("none", "pen_none", "ordinary")), None)
+        ref = (refp or {}).get("metrics")
         variants = []
         for q in ps:
             dev = str(q.get("device", "none"))
             ink = to_strokes(q.get("ink"))
             if not ink:
                 continue
-            label = DEVICE_LABEL.get(dev) or (q.get("title", dev).split(" - ")[0])
-            variants.append({"key": dev, "role": _device_role(dev), "label": label, "key_device": dev in KEY_DEVICES,
-                             "ink": ink, "points": [[r3(a[0]), r3(a[1]), int(a[2]) if len(a) > 2 else 1] for a in q["ink"] if _is_pt(a)],
-                             "metrics": hw1_metrics(q.get("metrics") or {}, ref, ev)})
+            m = q.get("metrics") or {}
+            if kind == "parkinsons":
+                role = "before" if dev in ("pen_none", "none") else "after" if dev in PD_KEY else "other"
+                label, key_dev, mets = PD_LABEL.get(dev, q.get("title", dev)), dev in PD_KEY, pd_metrics(m, ref, ev)
+            elif kind == "guided":
+                role = "before" if dev == "none" else "other" if dev == "nose_nogate" else "after"
+                label = PR_LABEL.get(dev) or str(q.get("title", dev)).split(": ", 1)[-1]
+                key_dev, mets = dev in PR_KEY[learner], practice_metrics(m, ref, ev)
+            elif kind == "spelling":
+                role, label, key_dev, mets = "after", "The app's spelling help", True, spelling_metrics(m, ref, ev)
+            else:
+                role = _device_role(dev)
+                label = DEVICE_LABEL.get(dev) or str(q.get("title", dev)).split(" - ")[0]
+                key_dev, mets = dev in KEY_DEVICES, hw1_metrics(m, ref, ev)
+            v = {"key": dev, "role": role, "label": label, "key_device": key_dev, "ink": ink, "metrics": mets}
+            if kind == "tremor":          # kept for the animated scenes (a, b) when the mechanism replay is absent
+                v["points"] = _pts3(q["ink"])
+            if kind == "parkinsons" and q.get("intended") and q.get("intended") != first.get("intended"):
+                v["intended"] = to_strokes(q["intended"]) or []      # the buzz and the lines change the writer's own plan
+            variants.append(v)
         if not variants:
             continue
         cap = re.sub(r"\s*\(seed \d+\)", "", str(first.get("caption", "")))
-        panels.append({"id": f"{cond}_{scen}", "condition": cond, "evidence": ev, "title": _plain_scenario(str(first.get("title", scen))),
-                       "subtitle": cap, "source": SAMPLES_FINAL, "provisional": False, "ruling_mm": 8, "rate_hz": prate,
-                       "intended": to_strokes(first.get("intended")) or [],
-                       "intended_points": [[r3(a[0]), r3(a[1]), int(a[2]) if len(a) > 2 else 1] for a in first.get("intended", []) if _is_pt(a)],
-                       "variants": variants, "note": ""})
+        note = ""
+        if kind == "parkinsons":
+            title = "Letters that shrink along the line"
+            cap = ("One simulated writer with Parkinson's-like writing copies a pangram: the letters start about 5 mm high "
+                   "and shrink along the line. Faint line: the writer's own plan, which shrinks. The buzz and the lines "
+                   "change the plan; the nose's size assist moves the ink.")
+            note = ("How writers respond to the buzz and to the lines is an assumption from small studies (PDT-19, PDT-18). "
+                    "The nose's size assist is new and untested; it can hide the shrinking from the writer.")
+        elif kind == "guided":
+            title = ("Copying a sentence: a learner who reverses b/d and p/q" if learner == "dyslexia" else
+                     "Copying a sentence: a learner with poorly formed letters")
+            cap = "One simulated learner copies “a big dog dug a deep pit by the pond”. Faint line: the copybook letters."
+            note = ("No kind of guidance turned a reversed or wrong letter into the right one: for dyslexia the help is in "
+                    "the app, which flags the words." if learner == "dyslexia" else
+                    "Closer to the copybook is not always easier to read. Whether practice with guidance improves writing "
+                    "without it still has to be tested.")
+        elif kind == "spelling":
+            title = "Spelling help: the ink is never changed"
+        else:
+            title = _plain_scenario(str(first.get("title", scen)))
+        panel = {"id": f"{cond}_{scen}", "condition": cond, "evidence": ev, "title": title, "subtitle": cap,
+                 "source": SAMPLES_FINAL, "provisional": False, "ruling_mm": 10 if kind == "parkinsons" else 8,
+                 "rate_hz": rate_pd if kind == "parkinsons" else rate, "intended": to_strokes(first.get("intended")) or [],
+                 "variants": variants, "note": note}
+        if kind == "tremor":
+            panel["intended_points"] = _pts3(first.get("intended", []))
+        panels.append(panel)
     if not panels:
         return None
     meta["provisional"] = False
@@ -956,6 +1105,25 @@ def build_outcomes():
                "writers": agg.get("writers"), "n_scenarios": agg.get("n_scenarios"), "bands": bands,
                "device_labels": DEVICE_LABEL, "text": (o.get("text") or {}).get("et", {}),
                "by_frequency_text": h.get("by_frequency_text", [])}
+        # Parkinson's-like writing and guided practice: averages over the study's runs (24 per kind of help)
+        pdc = ((o.get("pd") or {}).get("aggregate") or {}).get("by_condition") or {}
+        keep_pd = ("xh_start_mm", "xh_end_mm", "word_acc_app", "writing_time_s", "touching_frac", "tremor_in_ink_um",
+                   "norm_jerk_median", "n_cues", "n")
+        if pdc:
+            out["pd"] = {"by_help": {k: {kk: (round(vv, 4) if isinstance(vv, float) else vv) for kk, vv in v.items() if kk in keep_pd}
+                                     for k, v in pdc.items() if isinstance(v, dict)},
+                         "labels": PD_LABEL, "text": (o.get("text") or {}).get("pd", {})}
+        pra = (o.get("practice") or {}).get("aggregate") or {}
+        keep_pr = ("target_err_um", "letters_read_ok", "words_app", "device_share", "error_letters_read_as_target", "n")
+        prac = {}
+        for learner in ("dysgraphia", "dyslexia"):
+            d = pra.get(learner)
+            if isinstance(d, dict):
+                prac[learner] = {k: {kk: (round(vv, 4) if isinstance(vv, float) else vv) for kk, vv in v.items() if kk in keep_pr}
+                                 for k, v in d.items() if isinstance(v, dict) and v}
+        if prac:
+            out["practice"] = {"by_help": prac, "labels": PR_LABEL, "spelling_flagged_share": pra.get("spelling_flagged_share"),
+                               "text": (o.get("text") or {}).get("practice", {})}
         return out, {"file": "outcomes.json", "source": OUTCOMES, "status": "final", "modified": mtime_utc(OUTCOMES),
                      "evidence": meta.get("evidence_status", "")}
     except (OSError, ValueError, TypeError, AttributeError) as ex:
@@ -978,6 +1146,99 @@ def build_tip():
     return None, None
 
 
+# ------------------------------------------------------------------------------------------- mechanism replay (a, b)
+REPLAYS = ("results/opt/viz_inertial_opt_1mm.json", "results/opt/viz_inertial_opt.json")
+INERTIAL_OPT = "results/opt/inertial_opt.json"
+REPLAY_CASES = {  # replay case key -> (role in the scenes, plain label)
+    "unmodified": ("off", "New pen, nose held still"),
+    "nose_oracle": ("best", "New pen, if it knew the shake exactly"),
+    "nose": ("today", "New pen, today's tracker"),
+    "nose+reaction_mass": ("module", "New pen, today's tracker + rear module"),
+}
+
+
+def _mm2(p):
+    return [round(p[0] * 1000, 3), round(p[1] * 1000, 3)]
+
+
+def replay_headline():
+    """Band averages of the mechanism study (results/opt/inertial_opt.json), 8-12 Hz tremor of 1-2 mm at the hand,
+    over the three grip assumptions (r_rot 0.3 / 0.5 / 0.7): ink error ratio against the nose held still."""
+    if not exists(INERTIAL_OPT):
+        return None
+    try:
+        o = load(INERTIAL_OPT)
+        band = (o.get("rev_h_B") or {}).get("band_8_12Hz_1_2mm") or {}
+        causal = [band[k]["causal"] for k in ("revh_r0.3", "revh_r0.5", "revh_r0.7") if k in band]
+        oracle = [band[k]["oracle"] for k in ("revh_r0.3", "revh_r0.5", "revh_r0.7") if k in band]
+        split = ((o.get("inertial_module") or {}).get("by_split") or {})
+        module = [split[k]["band_8_12Hz_1_2mm"]["nose+ff"] for k in ("0.3", "0.5", "0.7")
+                  if k in split and "nose+ff" in (split[k].get("band_8_12Hz_1_2mm") or {})]
+        rng = lambda a: [round(min(a), 2), round(max(a), 2)] if a else None
+        return {"causal": rng(causal), "oracle": rng(oracle), "module": rng(module),
+                "label": (o.get("rev_h_B") or {}).get("label", "SIM (model H1)"), "source": INERTIAL_OPT,
+                "doc": "docs/opt_inertial.md"}
+    except (OSError, ValueError, KeyError, TypeError) as ex:
+        warn(f"{INERTIAL_OPT} could not be summarised ({ex})")
+        return None
+
+
+def build_replay():
+    """Scenes (a) and (b) replay the mechanism study (results/opt/viz_inertial_opt*.json): per case the handle's tip
+    ('nib', where the hand puts the tip), the ink, the pen axis, pen up/down and the rear module's slug, in mm and
+    rad, at the file's rate.  The tremor-free ink of the same pen ('ref_ink') is the letter the writer meant."""
+    scen = []
+    for src in REPLAYS:
+        if not exists(src):
+            continue
+        try:
+            v = load(src)
+            meta = v.get("meta") or {}
+            m = re.search(r"f0=([\d.]+).*?amp_pk=([\d.eE-]+)", str(meta.get("scenario", "")))
+            f0, amp = (float(m.group(1)), float(m.group(2)) * 1000) if m else (None, None)
+            t = v.get("t") or []
+            t0 = t[0] if t else 0.0
+            cases = {}
+            for c in v.get("cases") or []:
+                key = c.get("key")
+                if key not in REPLAY_CASES:
+                    continue
+                role, label = REPLAY_CASES[key]
+                dev = c.get("device") or {}
+                rm = dev.get("r_pen_frame_m")
+                met = c.get("metrics") or {}
+                cases[role] = {
+                    "key": key, "label": label, "study_label": c.get("label", ""), "description": c.get("description", ""),
+                    "nib": [_mm2(p) for p in c["nib"]], "lift": [round(max(0.0, p[2]) * 1000, 3) for p in c["nib"]],
+                    "ink": [_mm2(p) for p in c["ink"]], "ref": [_mm2(p) for p in c["ref_ink"]],
+                    "axis": [[round(a, 5) for a in p[:3]] for p in c["axis"]],
+                    "down": [1 if d else 0 for d in c["pen_down"]],
+                    "rm": [[round(q[0] * 1000, 3), round(q[1] * 1000, 3)] for q in rm] if isinstance(rm, list) else None,
+                    "ink_err_mm": round(met["ink_err_rms_um"] / 1000, 3) if _num(met.get("ink_err_rms_um")) is not None else None,
+                    "ratio": round(met["ratio_vs_unmodified"], 3) if _num(met.get("ratio_vs_unmodified")) is not None else None}
+            if "off" not in cases or len(cases) < 2:
+                warn(f"{src}: the replay cases were not found; scenes (a) and (b) keep the other data")
+                continue
+            scen.append({"id": os.path.splitext(os.path.basename(src))[0], "source": src, "f0_hz": f0, "amp_mm": amp,
+                         "title": (f"A shake of {amp:g} mm, {f0:g} times a second" if f0 else "Tremor"),
+                         "rate_hz": meta.get("rate_Hz", 200.0), "t0": t0, "n": len(t),
+                         "theta_deg": (meta.get("geometry_mm") or {}).get("theta_deg", 50.0), "cases": cases})
+        except (OSError, ValueError, KeyError, TypeError, IndexError) as ex:
+            warn(f"{src} could not be read ({ex})")
+    if not scen:
+        return None, None
+    scen.sort(key=lambda s: -(s["amp_mm"] or 0))            # the 1 mm shake first
+    first = load(scen[0]["source"]).get("meta", {})
+    out = {"meta": {"evidence_status": first.get("evidence_status", "SIMULATION (model H1)"),
+                    "generated_utc": first.get("generated_utc"), "git_revision": first.get("git_revision"),
+                    "model_version": first.get("model_version"), "doc": "docs/opt_inertial.md",
+                    "units": "mm, rad; page frame x along the line, y up the page; axis = unit vector of the pen axis"},
+           "headline": replay_headline(), "scenarios": scen}
+    return out, {"file": "replay.json", "source": " + ".join(s["source"] for s in scen) +
+                 (f" (+ averages from {INERTIAL_OPT})" if out["headline"] else ""), "status": "final",
+                 "modified": mtime_utc(scen[0]["source"]), "evidence": out["meta"]["evidence_status"]}
+
+
 # -------------------------------------------------------------------------------------------------------------- main
 def dump(obj, name):
     p = os.path.join(DATA, name)
@@ -993,13 +1254,14 @@ def main():
     samples, m_samp = build_samples()
     tip, m_tip = build_tip()
     outc, m_out = build_outcomes()
-    files = [m_lay, m_board, m_samp] + ([m_out] if m_out else []) + ([m_tip] if m_tip else [])
+    replay, m_rep = build_replay()
+    files = [m_lay, m_board, m_samp] + ([m_rep] if m_rep else []) + ([m_out] if m_out else []) + ([m_tip] if m_tip else [])
     manifest = {"built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 "git_revision": git_revision(), "files": files, "warnings": WARNINGS,
                 "provisional_label": PROVISIONAL_LABEL}
     sizes = {"layout.json": dump(lay, "layout.json"), "board.json": dump(board, "board.json"),
              "samples.json": dump(samples, "samples.json")}
-    for obj, name in ((tip, "tip.json"), (outc, "outcomes.json")):
+    for obj, name in ((tip, "tip.json"), (outc, "outcomes.json"), (replay, "replay.json")):
         path = os.path.join(DATA, name)
         if obj is not None:
             sizes[name] = dump(obj, name)

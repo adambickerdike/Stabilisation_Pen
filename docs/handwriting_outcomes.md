@@ -116,18 +116,21 @@ The same hand, the same sentence and the same tremor, written with each pen, at 
 
 | Variant | Weighted pen | Rev H, nose held | Rev H + re-tuned tracker | Rev H, perfect knowledge |
 |---|---|---|---|---|
-| 10 Hz, 1 mm: this study | 1.21 | 1.22 | 0.52 | 0.04 |
-| 10 Hz, 1 mm: the writer does not compensate paper drag (P1 convention) | 1.16 | 1.20 | 0.56 | 0.43 |
-| 10 Hz, 1 mm: grip twice as stiff (1150 N/m) | 1.02 | 1.02 | 0.48 | 0.03 |
-| 10 Hz, 1 mm: the nose acts only in contact (P1 convention) | 1.21 | 1.22 | 0.70 | 0.44 |
-| 10 Hz, 1 mm: the lead's first Rev H defaults (40 Hz, 1 N, 4 g, 85 g) | – | 1.25 | 0.55 | 0.06 |
-| 6 Hz, 1 mm: this study | 1.07 | 1.07 | 1.04 | 0.02 |
-| 6 Hz, 1 mm: grip twice as stiff | 0.99 | 0.99 | 0.95 | 0.01 |
-| 6 Hz, 1 mm: the nose acts only in contact | 1.07 | 1.07 | 1.05 | 0.38 |
+| 10 Hz, 1 mm: this study | 1.21 | 1.22 | 0.53 | 0.04 |
+| 10 Hz, 1 mm: the writer does not compensate paper drag (P1 convention) | 1.16 | 1.20 | 0.57 | 0.43 |
+| 10 Hz, 1 mm: grip twice as stiff (1150 N/m) | 1.02 | 1.02 | 0.45 | 0.03 |
+| 10 Hz, 1 mm: the nose acts only in contact (P1 convention) | 1.21 | 1.22 | 0.71 | 0.44 |
+| 10 Hz, 1 mm: the lead's first Rev H defaults (40 Hz, 1 N, 4 g, 85 g) | – | 1.25 | 0.57 | 0.06 |
+| 6 Hz, 1 mm: this study | 1.07 | 1.07 | 1.03 | 0.02 |
+| 6 Hz, 1 mm: the writer does not compensate paper drag | 1.05 | 1.09 | 1.06 | 0.48 |
+| 6 Hz, 1 mm: grip twice as stiff | 0.99 | 0.99 | 0.97 | 0.01 |
+| 6 Hz, 1 mm: the nose acts only in contact | 1.07 | 1.07 | 1.04 | 0.38 |
+| 6 Hz, 1 mm: the lead's first Rev H defaults | – | 1.08 | 1.05 | 0.03 |
 
-- **Start before touchdown.** If the nose acts only while the tip touches the paper, the limit falls from 0.04 to 0.44 (10 Hz, 1 mm). Each stroke then begins with a burst of uncorrected tremor. Starting while the tip hovers within 2 mm fixes this. This is rule T7 of `docs/ai_guidance.md` §7.3, which had not been tested before (SIM).
-- **Paper drag.** If the writer does not compensate the paper drag, the drag bends the letters. That error is not tremor, so even perfect tremor knowledge leaves 43 % (SIM). The tracker result hardly changes (0.52 → 0.56).
-- **Rev H parameters.** The final Rev H values and the lead's first defaults give the same answer (0.52 against 0.55).
+- **Start before touchdown.** If the nose acts only while the tip touches the paper, the limit worsens from 0.04 to 0.44 and the tracker result from 0.53 to 0.71 (10 Hz, 1 mm). Each stroke then begins with a burst of uncorrected tremor. Starting while the tip hovers within 2 mm fixes this. This is rule T7 of `docs/ai_guidance.md` §7.3, which had not been tested before (SIM).
+- **Paper drag.** If the writer does not compensate the paper drag, the drag bends the letters. That error is not tremor, so even perfect tremor knowledge leaves 43 % (SIM). The tracker result hardly changes (0.53 → 0.57).
+- **Rev H parameters.** The final Rev H values and the lead's first defaults give nearly the same answer (0.53 against 0.57).
+- **Grip.** A grip twice as stiff removes the weight penalty (1.02) and helps the tracker a little (0.45).
 
 **Why a new model (HW1), and a check against P1.** Model M1 has no input for an external tremor estimate, and it models Rev A's axial suspension. So this study built HW1: a 2-D page-plane model with the HAP-26 hand, a grip, a lumped pen, paper friction and a force-limited nose module (`handwriting/plant.py`). HW1 was checked against the unmodified pencil model P1 on the pencil (SIM; 3–15 Hz ink error relative to each pen's own neutral run; writers 0–5, seed 200):
 
