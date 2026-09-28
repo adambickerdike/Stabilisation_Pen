@@ -4,7 +4,8 @@ r"""Adjoint (reverse-mode autodiff) design optimisation on differentiable models
    magnet face width w and length l, magnet thickness t_m, coil thickness t_c, usable tip travel X.
    Model (CALC; inputs ASSUMPTION unless marked):
      lever lambda = z_p / L_b (tip motion per magnet motion), magnet stroke s = X / lambda
-     gap flux B_g = eta_leak B_r t_m / (t_m + t_c + g0)     (B_r 1.33 T N45, AMF-28; eta_leak 0.55; g0 0.5 mm)
+     gap flux B_g = eta_leak B_r t_m / (t_m + t_c + g0 + s) (B_r 1.33 T N45, AMF-28; eta_leak 0.55; g0 0.5 mm; the gap
+                  must also clear the other axis's magnet stroke s)
      Km per axis = sqrt(2) eta_end B_g sqrt(k_fill V_active / rho_Cu), V_active = 2 w l t_c   (k_fill 0.6, eta_end 0.8,
                   rho_Cu AMF-29; two magnets per axis, push-pull)
      calibration check: the same formula gives 0.7-1.0 N/sqrt(W) for the 15.9 mm Moticont volumes (AMF-02, AMF-73)
@@ -41,7 +42,7 @@ def _sp(x, lo, hi):
     return lo + (hi - lo) * torch.sigmoid(x)
 
 
-NOSE_BOUNDS = {"z_p": (0.030, 0.075), "L_b": (0.015, 0.060), "w": (3e-3, 8e-3), "l": (5e-3, 16e-3), "t_m": (1.5e-3, 5e-3),
+NOSE_BOUNDS = {"z_p": (0.030, 0.075), "L_b": (0.015, 0.060), "w": (3e-3, 10e-3), "l": (5e-3, 16e-3), "t_m": (1.5e-3, 5e-3),
                "t_c": (0.8e-3, 3.5e-3), "X": (2.0e-3, 4.0e-3)}
 
 
@@ -50,7 +51,7 @@ def nose_model(v: Dict[str, torch.Tensor], eta_leak=0.55, eta_end=0.8, k_fill=0.
     z_p, L_b, w, l, t_m, t_c, X = (v[k] for k in ("z_p", "L_b", "w", "l", "t_m", "t_c", "X"))
     lam = z_p / L_b
     s = X / lam
-    Bg = eta_leak * BR * t_m / (t_m + t_c + g0)
+    Bg = eta_leak * BR * t_m / (t_m + t_c + g0 + s)          # the gap also takes the other axis's stroke s
     V_act = 2 * w * l * t_c
     Km = math.sqrt(2) * eta_end * Bg * torch.sqrt(k_fill * V_act / RES_CU)
     R_axis = None
@@ -75,7 +76,7 @@ def nose_model(v: Dict[str, torch.Tensor], eta_leak=0.55, eta_end=0.8, k_fill=0.
     mass = m_mag + m_cu + m_fe + m_arm + 0.6e-3
     # constraints (penalties): stroke within the coil, peak force within the drive (F_pk <= Km sqrt(V_bus I_peak)),
     # travel at least X_min, the arm swing fits a 19 mm bore: s + t_m + t_c + 2.5 mm (arm radius) <= 9.5 mm
-    c_stroke = torch.relu(s - (l - 2e-3) / 2) / 1e-3
+    c_stroke = torch.relu(s - (l - 2e-3) / 2) / 1e-3 + torch.relu(s - (w + 1e-3)) / 1e-3
     c_peak = torch.relu(F_pk_act - Km * math.sqrt(V_bus * I_peak)) / 0.1
     c_trav = torch.relu(X_min - X) / 1e-3
     c_bore = torch.relu(s + t_m + t_c + 2.5e-3 + 0.5e-3 - 9.5e-3) / 1e-3
@@ -133,5 +134,6 @@ def nose_grad_check(v0=None, eps=1e-7):
         fp = nose_model({kk: torch.tensor([vv], dtype=DT) for kk, vv in vp.items()})
         fm = nose_model({kk: torch.tensor([vv], dtype=DT) for kk, vv in vm.items()})
         fd = ((fp["P"] + fp["mass"]) - (fm["P"] + fm["mass"])).item() / (2 * eps * max(abs(v0[k]), 1e-3))
-        out[k] = (float(x[k].grad.item()), fd)
+        gk = x[k].grad
+        out[k] = (0.0 if gk is None else float(gk.item()), fd)
     return out

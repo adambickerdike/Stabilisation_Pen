@@ -213,7 +213,9 @@ def _pack_extensions(Pv, s, cfg: Config, dt, t1, t2, info):
     afc = ctl.get("afc")
     if afc is not None:
         tab = np.asarray(afc["table"], float)
-        assert tab.ndim == 2 and tab.shape[1] == 8 and tab.shape[0] >= 2
+        if tab.shape[1] == 8:                      # no per-frequency cap given
+            tab = np.column_stack([tab, np.zeros(len(tab))])
+        assert tab.ndim == 2 and tab.shape[1] == 9 and tab.shape[0] >= 2
         s("afc_on", 1.0); s("afc_mu", afc["mu"]); s("afc_leak", afc.get("leak", 0.0)); s("afc_nf", tab.shape[0])
         s("afc_f0", afc["f0"]); s("afc_df", afc["df"]); s("afc_o1", afc["out"][0]); s("afc_o2", afc["out"][1])
         s("afc_umax", afc.get("umax", 1.0))

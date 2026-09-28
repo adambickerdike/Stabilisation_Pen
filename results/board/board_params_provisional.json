@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "evidence_status": "CALC (magpylib 5.2.3 magnetostatics; analytic estimates) - PROVISIONAL; nothing built or measured",
+    "generated_utc": "2026-09-28T16:54:44+00:00",
+    "git_revision": "11cd816",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "-",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "note": "Early interface file for the handwriting-outcomes study. Superseded by results/board/board_params.json when that exists. Leading option may be refined (see docs/guidance_board.md).",
+    "magpylib": "5.2.3"
+  },
+  "status": "PROVISIONAL: CALC and ASSUMPTION only; every value is a hypothesis until the bench force map (EXP-G01) and latency test (EXP-G02) exist",
+  "leading_option": {
+    "name": "Magnetic carriage board (architecture i): XY belt stage under a glass writing surface carrying a permanent-magnet head",
+    "head_magnet": "NdFeB cylinder 12 mm dia x 12 mm, N52 class, Br 1.45 T (ASSUMPTION: catalogue grade to verify), axis vertical; force vector set by the head's offset from the pen magnet; spring-retracted Z-lift sets the guidance level and is the power-off state",
+    "pen_magnet": {
+      "part": "NdFeB ring 5 mm OD x 2.5 mm ID x 3 mm, axially magnetised, N45 class (Br 1.35 T ASSUMPTION)",
+      "mass_g": 0.33,
+      "centre_along_axis_from_ball_mm": 6.0,
+      "centre_height_at_50deg_mm": 4.6,
+      "note": "Sits on the moving nose of Rev H around the refill; the nose cone must be >= 6 mm diameter from 4.5 to 7.5 mm behind the ball (clears the paper down to 35 deg tilt)."
+    },
+    "variant_under_evaluation": "rotating diametric (horizontal-dipole) head: same lateral force, no systematic normal pull, needs a 3rd (rotary) axis"
+  },
+  "writing_surface_stack_mm": {
+    "paper_and_underlay": 0.2,
+    "cover_glass_A4": 2.0,
+    "cover_glass_A5": 1.5,
+    "running_clearance": 0.5,
+    "design_gap_A4": 2.7,
+    "design_gap_A5": 2.2,
+    "definition": "gap = paper top surface (where the ball writes) to the top face of the head magnet",
+    "status": "CALC (plate deflection under 10 N hand load: 2 mm glass A4 ~0.15 mm) and ASSUMPTION"
+  },
+  "max_lateral_force_N": {
+    "A4_design_gap_2p7mm": 0.49,
+    "A5_design_gap_2p2mm": 0.57,
+    "direction": "isotropic value = weakest direction; best direction ~1.4x",
+    "status": "CALC magpylib, pen at 50 deg altitude"
+  },
+  "software_force_cap_N": {
+    "value": 0.4,
+    "status": "ASSUMPTION (safety margin below the magnetic breakaway)"
+  },
+  "continuous_lateral_force_N": {
+    "value": 0.4,
+    "status": "CALC: a permanent magnet holds force with no power; limited by the software cap, not heat"
+  },
+  "normal_pull_N": {
+    "at_zero_lateral_force_A4": 1.1,
+    "at_max_lateral_force_A4": [
+      0.35,
+      0.6
+    ],
+    "status": "CALC magpylib (axial head); diametric variant: 0 when the force is across the pen azimuth, up to 0.8 x lateral force along it",
+    "note": "Adds to the writer's own normal force (1 N nominal) and so to paper friction (mu_eff 0.15)"
+  },
+  "offset_to_force_slope_N_per_mm": {
+    "value": 0.12,
+    "range": [
+      0.08,
+      0.2
+    ],
+    "status": "CALC (near zero lateral force, gap 2.5-3 mm)"
+  },
+  "force_bandwidth_Hz": {
+    "value": 20,
+    "range": [
+      10,
+      30
+    ],
+    "status": "ASSUMPTION pending stage model: force follows head position; CoreXY belt stage class, belt resonance ~40-70 Hz"
+  },
+  "latency_ms": {
+    "sense_to_command": 2,
+    "command_to_force_effective": 8,
+    "total_effective": 10,
+    "range_total": [
+      5,
+      20
+    ],
+    "status": "ASSUMPTION (1 kHz loop, 1 kHz magnetic sensing, stage lag); Langerak et al. measured ~20 ms total on a slower stage (LIT HAP-16)"
+  },
+  "position_sensing": {
+    "primary": "3-axis Hall sensor ring on the carriage measuring the pen magnet relative to the head, plus stage position",
+    "rate_Hz": 1000,
+    "noise_rms_mm": 0.05,
+    "accuracy_mm": 0.4,
+    "status": "ASSUMPTION pending the sensing calculation (docs/guidance_board.md section 4)"
+  },
+  "workspace_mm": {
+    "A4": [
+      210,
+      297
+    ],
+    "A5": [
+      148,
+      210
+    ],
+    "board_frame": "x right, y away from the writer, origin front-left corner on the writing surface"
+  },
+  "suggested_simulation_model": "F_board = sat_cap(F_cmd) through a first-order lag tau = 8 ms plus 2 ms dead time; normal pull as tabulated; force applied at the pen nose (magnet 6 mm up the axis)",
+  "force_vs_gap_table": [
+    {
+      "gap_mm": 0.5,
+      "lateral_force_isotropic_N": 0.925,
+      "lateral_force_best_direction_N": 1.271,
+      "normal_pull_at_zero_lateral_N": 2.09,
+      "diametric_variant_lateral_N": 0.885,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.713
+    },
+    {
+      "gap_mm": 1.0,
+      "lateral_force_isotropic_N": 0.814,
+      "lateral_force_best_direction_N": 1.1,
+      "normal_pull_at_zero_lateral_N": 1.81,
+      "diametric_variant_lateral_N": 0.777,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.623
+    },
+    {
+      "gap_mm": 1.5,
+      "lateral_force_isotropic_N": 0.681,
+      "lateral_force_best_direction_N": 0.953,
+      "normal_pull_at_zero_lateral_N": 1.57,
+      "diametric_variant_lateral_N": 0.682,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.545
+    },
+    {
+      "gap_mm": 2.0,
+      "lateral_force_isotropic_N": 0.607,
+      "lateral_force_best_direction_N": 0.829,
+      "normal_pull_at_zero_lateral_N": 1.37,
+      "diametric_variant_lateral_N": 0.599,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.478
+    },
+    {
+      "gap_mm": 2.5,
+      "lateral_force_isotropic_N": 0.521,
+      "lateral_force_best_direction_N": 0.722,
+      "normal_pull_at_zero_lateral_N": 1.2,
+      "diametric_variant_lateral_N": 0.526,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.419
+    },
+    {
+      "gap_mm": 3.0,
+      "lateral_force_isotropic_N": 0.45,
+      "lateral_force_best_direction_N": 0.631,
+      "normal_pull_at_zero_lateral_N": 1.05,
+      "diametric_variant_lateral_N": 0.462,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.368
+    },
+    {
+      "gap_mm": 4.0,
+      "lateral_force_isotropic_N": 0.34,
+      "lateral_force_best_direction_N": 0.487,
+      "normal_pull_at_zero_lateral_N": 0.81,
+      "diametric_variant_lateral_N": 0.36,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.287
+    },
+    {
+      "gap_mm": 5.0,
+      "lateral_force_isotropic_N": 0.261,
+      "lateral_force_best_direction_N": 0.379,
+      "normal_pull_at_zero_lateral_N": 0.63,
+      "diametric_variant_lateral_N": 0.282,
+      "diametric_variant_normal_N_when_force_along_pen_azimuth": 0.225
+    }
+  ],
+  "force_vs_gap_note": "Pen at 50 deg altitude, azimuth -90 deg (rear toward the writer); isotropic = min over 36 directions of the best achievable force along that direction with <5% sideways component; head offsets searched on a 1 mm grid within +/-14 mm"
+}

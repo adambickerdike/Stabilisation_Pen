@@ -35,12 +35,16 @@ class RevH:
     """Design variables of the Rev H active nose (defaults = first cut, ASSUMPTION; optimised in the study)."""
     arch: str = "B"
     travel: float = 3.0e-3            # usable tip travel radius (m)
-    z_p: float = 0.050                # gimbal position
-    z_a: float = 0.080                # actuator (magnet) position
+    z_p: float = 0.045                # gimbal position (adjoint design, opt/inertial/adjoint.py, mu_mass 5 W/kg)
+    z_a: float = 0.079                # actuator (magnet) position
     servo_hz: float = 80.0            # tip position-servo bandwidth
     servo_zeta: float = 0.7
     slew: float = 0.6                 # tip reference slew limit (m/s)
-    Km_act: float = 1.0               # N/sqrt(W) per axis at the actuator (ASSUMPTION, see catalog / docs)
+    Km_act: float = 0.47              # N/sqrt(W) per axis at the actuator (CALC, adjoint design model; ASSUMPTION inputs)
+    mag_w: float = 3.0e-3             # magnet face width (4 magnets, 2 per axis; at the search's lower bound)
+    mag_l: float = 6.5e-3             # magnet length along the pen
+    mag_t: float = 2.8e-3             # magnet thickness
+    coil_t: float = 1.43e-3           # coil thickness
     F_peak_act: float = 1.2           # N per axis at the actuator
     k_r: float = 0.025                # gimbal bending stiffness (N m/rad)
     handle_od: float = 22.0e-3
@@ -79,13 +83,24 @@ def nose_parts(d: RevH) -> List[Tuple[str, float, float, float, float]]:
     Lt = zp - 0.004
     m_tube = 4.5e3 * math.pi / 4 * (0.007 ** 2 - 0.006 ** 2) * Lt          # Ti-6Al-4V 4.42 g/cm3 (AMF-21) rounded
     m_arm = CT.RHO_AL * math.pi / 4 * 0.005 ** 2 * max(za - zp, 0.005)
-    m_mag = 4 * 7.5e3 * 0.004 * 0.004 * 0.006
+    m_mag = 4 * 7.5e3 * d.mag_w * d.mag_l * d.mag_t
     return [("nose_tube", m_tube, 0.004 + Lt / 2, Lt, _tube_r2(0.007, 0.006)),
             ("refill_D1", 0.84e-3, 0.0345, 0.067, 1.175e-3 ** 2 / 4),
             ("nose_tip_guide", 0.4e-3, 0.004, 0.006, 0.0025 ** 2 / 4),
             ("rear_arm", m_arm, zp + (za - zp) / 2, za - zp, 0.0025 ** 2 / 4),
-            ("magnets", m_mag, za, 0.006, 0.004 ** 2),
+            ("magnets", m_mag, za, d.mag_l, 0.004 ** 2),
             ("magnet_clamp", 0.6e-3, za, 0.006, 0.004 ** 2)]
+
+
+def coil_mass(d: RevH):
+    """Copper of the four flat coils (fill 0.6, +40 % end turns) plus the soft-iron back ring that forms the shell over the
+    coil zone (OD 22 / ID 20 mm, magnet length + 2 x stroke + 3 mm long); CALC."""
+    s_mag = d.travel / d.lever
+    V_act = 2 * (d.mag_w + 2 * s_mag + 1e-3) * d.mag_l * d.coil_t
+    m_cu = CT.RHO_CU * 0.6 * V_act * 1.4 * 2
+    Lr = d.mag_l + 2 * s_mag + 3e-3
+    m_fe = 7.8e3 * math.pi / 4 * (d.handle_od ** 2 - (d.handle_od - 2e-3) ** 2) * Lr
+    return m_cu + m_fe
 
 
 def handle_parts(d: RevH) -> List[Tuple[str, float, float, float, float]]:
@@ -100,8 +115,8 @@ def handle_parts(d: RevH) -> List[Tuple[str, float, float, float, float]]:
     parts = [("front_sleeve", m_front, 0.034, 0.032, _tube_r2(do, 0.013)),
              ("shell", m_shell, (z0s + z1s) / 2, z1s - z0s, _tube_r2(do, do - 2 * wall)),
              ("gimbal_mount", 2.0e-3, d.z_p, 0.004, _tube_r2(0.017, 0.010)),
-             # coils (4 x 1.5 g copper) and back iron (2 x 3 g) at the magnets
-             ("coils_backiron", 12.0e-3, d.z_a, 0.012, _tube_r2(0.019, 0.012)),
+             # coils and back iron at the magnets (adjoint design model: copper + 1 mm soft-iron yokes, +50 % frames)
+             ("coils_backiron", coil_mass(d), d.z_a, 0.012, _tube_r2(0.019, 0.012)),
              ("hall_flex", 0.5e-3, d.z_a - 0.006, 0.004, 0.006 ** 2),
              ("pcb", 5.0e-3, 0.092, 0.016, 0.007 ** 2 / 3),
              ("cell", cell.m, 0.102 + cell.L / 2, cell.L, (cell.d / 2) ** 2 / 4 * 2),

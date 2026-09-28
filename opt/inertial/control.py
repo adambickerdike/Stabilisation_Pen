@@ -167,13 +167,15 @@ def fit_inverse_filter(freqs, G, band=(3.0, 15.0), order=4, f_poles=(2.0, 25.0),
 
 
 # ------------------------------------------------------------------ narrow-band (AFC) inverse-plant table
-def afc_table(freqs, G):
-    """Rows of Ginv(jw) (2x2 complex) as (re, im) x 4 = 8 floats per frequency, for the core's AFC block."""
+def afc_table(freqs, G, umax=None):
+    """Rows of Ginv(jw) (2x2 complex) as (re, im) x 4 = 8 floats per frequency, plus the amplitude cap at that frequency
+    (0 = none), for the core's AFC block."""
     tab = []
     for i in range(len(freqs)):
         Gi = np.linalg.pinv(G[i])
+        cap = 0.0 if umax is None else float(umax[i])
         tab.append([Gi[0, 0].real, Gi[0, 0].imag, Gi[0, 1].real, Gi[0, 1].imag, Gi[1, 0].real, Gi[1, 0].imag, Gi[1, 1].real,
-                    Gi[1, 1].imag])
+                    Gi[1, 1].imag, cap])
     return np.array(tab)
 
 

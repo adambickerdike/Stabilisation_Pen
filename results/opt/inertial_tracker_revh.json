@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (model H1 Rev H-B, training seeds only)",
+    "generated_utc": "2026-09-28T16:58:39+00:00",
+    "git_revision": "11cd816-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "-",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "train": [
+        300,
+        301
+      ],
+      "glyph_train": [
+        330,
+        331
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "opt/inertial/tracker_tune.py",
+    "rule": "lowest mean 3-15 Hz ratio with lognormal distortion <= 15 um and glyph distortion <= 30 um (training data)"
+  },
+  "label": "revh",
+  "params": {
+    "qj": 0.0275258,
+    "qt": 1.05149e-10,
+    "qh": 3.51935e-11,
+    "qb": 1.98082e-06,
+    "ra": 0.0747106,
+    "rp": 1.15629e-09,
+    "tau_decay": 0.208485,
+    "w0_hz": 6.26123,
+    "tau_w": 0.124095,
+    "wmin_hz": 3.58047,
+    "wmax_hz": 16.0,
+    "f_gate": 3.0,
+    "f_gate_w": 1.5022709328141104,
+    "tau_amp": 1.72993,
+    "horizon": 6.75657e-05,
+    "tau_auth": 0.115546,
+    "g": 2.4620192113421524,
+    "lp_hz": 45.697241839605724,
+    "cap_k": 6.0,
+    "v_slow": 0.027894805502834408,
+    "tau_ref": 0.349354,
+    "a_lo": 1.3721545329296515e-05,
+    "a_hi": 0.0001474523809293008,
+    "harm": 0.5860741613342281,
+    "xtrack": 0.0,
+    "v_xt": 0.00704628
+  },
+  "changed": {
+    "g": 2.4620192113421524,
+    "f_gate": 3.0,
+    "f_gate_w": 1.5022709328141104,
+    "a_lo": 1.3721545329296515e-05,
+    "a_hi": 0.0001474523809293008,
+    "cap_k": 6.0,
+    "v_slow": 0.027894805502834408,
+    "harm": 0.5860741613342281,
+    "lp_hz": 45.697241839605724,
+    "wmax_hz": 16.0
+  },
+  "training": {
+    "band_ratio": 0.7117482051351675,
+    "ratio": 0.8773848087096829,
+    "dist_lognormal_um": 10.010093064603153,
+    "dist_glyph_um": 23.71860787262115,
+    "false_corr_um": 16.86435046861215,
+    "t_eval_s": 2.8954873085021973
+  },
+  "ship_on_training": {
+    "band_ratio": 0.8510636116050206,
+    "ratio": 0.9495911629623628,
+    "dist_lognormal_um": 3.027589477886333,
+    "dist_glyph_um": 11.108915738825234,
+    "false_corr_um": 7.068252608355783,
+    "t_eval_s": 26.56810212135315
+  },
+  "at_bounds": [
+    "f_gate",
+    "cap_k",
+    "wmax_hz"
+  ],
+  "n_evals": 51
+}

@@ -36,7 +36,7 @@ opt/inertial/tests/test_h1_regression.py):
          ilat ticks; external inputs from uff columns 3-6 (tracker estimate, frequency); a linear block
          x+ = A x + B [y; e; u_applied], [u; eps] = C x + D [y; e]; an optional tanh MLP on [x; y; e] added to u;
          an optional adaptive narrow-band block (phasor LMS on eps at the external frequency with a table of the
-         inverse plant); commands u (device 3, pivot 2, stage 2) clipped to ul1..ul7.  uff columns 7-8 carry a
+         inverse plant and a frequency-dependent amplitude cap: 9 values per frequency); commands u (device 3, pivot 2, stage 2) clipped to ul1..ul7.  uff columns 7-8 carry a
          pivot feed-forward.
 """
 from __future__ import annotations
@@ -176,7 +176,7 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
     tick = 0
     afU = np.zeros(4)            # complex phasor gains of the two narrow-band outputs (re, im, re, im)
     afph = 0.0
-    yraw = np.zeros(NY); gtab = np.zeros(8); dvec = np.zeros(3); dvel = np.zeros(3)
+    yraw = np.zeros(NY); gtab = np.zeros(9); dvec = np.zeros(3); dvel = np.zeros(3)
     nn_prev = 0.0
     # IMU anti-aliasing: 2nd-order low-pass (Butterworth damping) on the 8 inertial channels at the simulation rate
     w_aa = 2.0 * math.pi * (P[I_iaa_hz] if P[I_iaa_hz] > 0.0 else 400.0)
@@ -316,8 +316,8 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
                 if j0 < 0:
                     j0 = 0
                 wg = xg - j0
-                for i in range(8):
-                    gtab[i] = (1.0 - wg) * P[afc_ot + 8 * j0 + i] + wg * P[afc_ot + 8 * (j0 + 1) + i]
+                for i in range(9):
+                    gtab[i] = (1.0 - wg) * P[afc_ot + 9 * j0 + i] + wg * P[afc_ot + 9 * (j0 + 1) + i]
                 d0r = gtab[0] * E0r - gtab[1] * E0i + gtab[2] * E1r - gtab[3] * E1i
                 d0i = gtab[0] * E0i + gtab[1] * E0r + gtab[2] * E1i + gtab[3] * E1r
                 d1r = gtab[4] * E0r - gtab[5] * E0i + gtab[6] * E1r - gtab[7] * E1i
@@ -326,11 +326,12 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
                 afU[1] = (1.0 - afc_leak) * afU[1] - afc_mu * d0i
                 afU[2] = (1.0 - afc_leak) * afU[2] - afc_mu * d1r
                 afU[3] = (1.0 - afc_leak) * afU[3] - afc_mu * d1i
+                umx = min(afc_umax, gtab[8]) if gtab[8] > 0.0 else afc_umax
                 for i in range(2):
                     mg = math.hypot(afU[2 * i], afU[2 * i + 1])
-                    if mg > afc_umax and mg > 0.0:
-                        afU[2 * i] *= afc_umax / mg
-                        afU[2 * i + 1] *= afc_umax / mg
+                    if mg > umx and mg > 0.0:
+                        afU[2 * i] *= umx / mg
+                        afU[2 * i + 1] *= umx / mg
                 ucmd[afc_o1] += afU[0] * c_ - afU[1] * s_
                 ucmd[afc_o2] += afU[2] * c_ - afU[3] * s_
             for o in range(NU):

@@ -1,0 +1,33 @@
+id,label,group,shape,z0_mm,z1_mm,d0_mm,d1_mm,d_in_mm,size_mm,offset_mm,moves_with,optional,part,ledger
+ball,Ball tip,refill,cone,0.0,3.0,0.7,2.35,,,,nose,False,ISO 12757-2 D1 mini refill,DEC-004
+refill,Ink refill (D1 mini),refill,cylinder,3.0,67.0,2.35,2.35,,,,nose,False,ISO 12757-2 D1 mini refill,DEC-004
+refill_spring,Constant-force refill spring,mechanism,cylinder,67.0,75.0,2.4,2.4,,,,nose,False,"custom (music-wire, long soft spring)",
+carrier,Moving nose (refill carrier),moving_nose,tube,8.0,43.5,7.0,7.0,6.0,,,nose,False,custom (Ti-6Al-4V tube 7/6 mm),AMF-21
+carrier_nozzle,Nose nozzle,moving_nose,cone,3.0,8.0,3.6,7.0,,,,nose,False,custom (PEEK),AMF-24
+arm,Rear arm,moving_nose,cylinder,46.5,75.75,5.0,5.0,,,,nose,False,custom (aluminium 6061),
+magnet_hub,Magnet hub,moving_nose,box,75.75,82.25,,,,"[5.0, 5.0, 6.5]",,nose,False,custom (soft iron),
+magnet_x+,Actuator magnet (y-force),actuator,box,75.75,82.25,,,,"[2.8, 3.0, 6.5]","[3.9, 0]",nose,False,NdFeB N45 block 3.0 x 6.5 x 2.8 mm,AMF-28
+magnet_x-,Actuator magnet (y-force),actuator,box,75.75,82.25,,,,"[2.8, 3.0, 6.5]","[-3.9, 0]",nose,False,NdFeB N45 block 3.0 x 6.5 x 2.8 mm,AMF-28
+magnet_y+,Actuator magnet (x-force),actuator,box,75.75,82.25,,,,"[3.0, 2.8, 6.5]","[0, 3.9]",nose,False,NdFeB N45 block 3.0 x 6.5 x 2.8 mm,AMF-28
+magnet_y-,Actuator magnet (x-force),actuator,box,75.75,82.25,,,,"[3.0, 2.8, 6.5]","[0, -3.9]",nose,False,NdFeB N45 block 3.0 x 6.5 x 2.8 mm,AMF-28
+hall_magnet,Position magnet,sensor,cylinder,82.75,83.75,1.0,1.0,,,,nose,False,supermagnete S-01-01-N,AMF-72
+skid_ring,Skid ring (C-shaped heel),structure,tube,2.66,4.66,15.93,15.93,12.93,,,handle,False,"custom (PTFE-coated POM, contact radius 5.5 mm)",
+front_sleeve,Front sleeve (fixed grip),grip,tube,4.66,50.0,16.0,22.0,12.93,,,handle,False,PEEK core + TPE overmould,AMF-24
+gimbal,Flexure gimbal (2-axis),mechanism,tube,43.5,46.5,17.0,17.0,5.5,,,handle,False,"custom (301 full-hard or 17-7PH 0.1 mm, laser-cut)",AMF-20
+shell,Handle shell,structure,tube,50.0,170.0,22.0,22.0,20.0,,,handle,False,"PEEK or glass-filled nylon, 1 mm wall",AMF-24
+back_ring,Soft-iron ring (flux return),actuator,tube,71.98,86.02,22.0,22.0,20.0,,,handle,False,"custom (soft iron / 1010 steel, nickel plated)",
+coil_x+,Flat voice coil (y-force),actuator,box,72.98,85.02,,,,"[1.43, 8.53, 12.03]","[8.78, 0]",handle,False,"custom (self-bonding 0.1 mm magnet wire, IEC class 155)",AMF-29/AMF-30
+coil_x-,Flat voice coil (y-force),actuator,box,72.98,85.02,,,,"[1.43, 8.53, 12.03]","[-8.78, 0]",handle,False,"custom (self-bonding 0.1 mm magnet wire, IEC class 155)",AMF-29/AMF-30
+coil_y+,Flat voice coil (x-force),actuator,box,72.98,85.02,,,,"[8.53, 1.43, 12.03]","[0, 8.78]",handle,False,"custom (self-bonding 0.1 mm magnet wire, IEC class 155)",AMF-29/AMF-30
+coil_y-,Flat voice coil (x-force),actuator,box,72.98,85.02,,,,"[8.53, 1.43, 12.03]","[0, -8.78]",handle,False,"custom (self-bonding 0.1 mm magnet wire, IEC class 155)",AMF-29/AMF-30
+hall3d,3-D Hall position sensor,sensor,box,84.75,85.75,,,,"[2.9, 2.8, 1.0]",,handle,False,"TI TMAG5273 (3-D Hall, I2C) or DRV5055 x2",OPT-45/OPT-46
+pcb,Control board,electronics,box,86.52,99.0,,,,"[1.0, 15.0, 12.48]",,handle,False,nRF54L15 + 2 x DRV8214 + charger,AMF-44/AMF-37
+imu,Motion sensor (IMU),sensor,box,90.0,92.5,,,,"[2.5, 3.0, 0.83]","[1.0, 0.0]",handle,False,ST LSM6DSV16X,OPT-37
+battery,Rechargeable cell,power,cylinder,101.0,149.5,14.1,14.1,,,,handle,False,EEMB LIR14500,AMF-80
+lra,Vibration cue motor,haptic,cylinder,94.0,97.0,8.0,8.0,,,,handle,True,coin LRA 8 mm,AMF-45
+usb,USB-C port and button,electronics,box,150.0,153.5,,,,"[8.4, 2.6, 3.5]","[0.0, 9.0]",handle,False,USB-C receptacle (mid-mount),
+rear_cap,Rear cap,structure,cylinder,167.0,170.0,22.0,20.0,,,,handle,False,custom (PEEK),AMF-24
+optical,Paper sensor (optional),sensor,box,14.0,20.0,,,,"[5.0, 5.0, 6.0]","[-8.47, 0.0]",handle,True,to select (optical flow class),
+rm_frame,Inertial module frame,inertial,tube,151.0,169.0,20.0,20.0,19.0,,,handle,True,custom (aluminium),
+rm_mass,Tungsten reaction mass,inertial,cylinder,153.0,167.0,10.0,10.0,,,,inertial_mass,True,Tungsten heavy alloy ASTM B777 class 3 (non-magnetic grade),AMF-49
+rm_coils,Reaction-mass coils,inertial,tube,153.0,167.0,19.0,19.0,16.0,,,handle,True,custom,

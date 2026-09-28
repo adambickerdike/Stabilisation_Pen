@@ -110,7 +110,8 @@ def plant_tables(d: RH.RevH, dev: Device, r_rot=0.5, rho_w=0.3, f=np.arange(2.0,
     return f, Gt, Ga
 
 
-def afc_rm(d: RH.RevH, dev: Device, r_rot_model=0.5, mu=0.004, leak=2e-4, Ts=5e-4, z_imu=0.100, theta_deg=50.0, f_dd=150.0):
+def afc_rm(d: RH.RevH, dev: Device, r_rot_model=0.5, mu=0.004, leak=2e-4, Ts=5e-4, z_imu=0.100, theta_deg=50.0, f_dd=150.0,
+           stroke_frac=0.7):
     """Adaptive narrow-band feedback (phasor LMS) of the rear-cap reaction mass at the tracked frequency (e2 = AKF
     frequency).  Error = tip acceleration estimate (page x, y) = IMU acceleration - z_imu * (gyro rate derivative)
     projected on the page; the table is the inverse of G_acc from the linear model at the MODEL split r_rot_model (the
@@ -132,7 +133,8 @@ def afc_rm(d: RH.RevH, dev: Device, r_rot_model=0.5, mu=0.004, leak=2e-4, Ts=5e-
         Cc[j, 0] = z_imu * wd * t1[j]
         Cc[j, 1] = z_imu * wd * t2[j]
     blk = CL.embed(Ac, Bc, Cc, Dc, [CL.Y_ACC_B[0], CL.Y_ACC_B[1], CL.Y_GYR_B[0], CL.Y_GYR_B[1]], [CL.NU, CL.NU + 1], Ts)
-    afc = {"table": CL.afc_table(f, Ga), "f0": float(f[0]), "df": float(f[1] - f[0]), "mu": mu, "leak": leak,
+    cap = np.minimum(dev.F_max[0], stroke_frac * dev.m * (2 * np.pi * f) ** 2 * dev.stroke[0])    # stroke-limited force
+    afc = {"table": CL.afc_table(f, Ga, cap), "f0": float(f[0]), "df": float(f[1] - f[0]), "mu": mu, "leak": leak,
            "out": (CL.U_DEV[0], CL.U_DEV[1]), "umax": float(dev.F_max[0])}
     return [blk], afc
 
@@ -145,3 +147,25 @@ def ff_rm(d: RH.RevH, dev: Device, r_rot_model=0.5, Ts=5e-4, order=5):
     (Ac, Bc, Cc, Dc), info = CL.fit_inverse_filter(f, Gt, band=(3.0, 15.0), order=order, f_poles=(2.0, 30.0))
     blk = CL.embed(Ac, Bc, Cc, Dc, [CL.E_EST[0], CL.E_EST[1]], [CL.U_DEV[0], CL.U_DEV[1]], Ts)
     return [blk], info
+
+
+def ff_phasor(dh_ticks, f_ticks, d: RH.RevH, dev: Device, r_rot_model=0.5, Ts=5e-4, stroke_frac=0.7, gain=1.0):
+    """Tracker-driven feed-forward of the reaction mass (task 4a), computed causally from the AKF output: with the
+    analytic signal z(t) = e(t) + j e(t - T/4) (quarter-period delay at the tracked frequency f(t)), the force is
+    u = Re{H(jw) z} = Re(H) e(t) - Im(H) e(t - T/4) with H = -G_tip(jw)^-1 from the linear model at the MODEL split,
+    capped at the stroke-limited force.  Inputs at the 2 kHz ticks; returns (n_ticks, 2) forces on t1, t2."""
+    f, Gt, Ga = plant_tables(d, dev, r_rot=r_rot_model)
+    H = np.array([-np.linalg.pinv(G) for G in Gt])
+    e = np.asarray(dh_ticks, float)
+    fq = np.clip(np.asarray(f_ticks, float), f[0], f[-1])
+    n = len(e)
+    kq = np.clip(np.round(1.0 / (4.0 * fq * Ts)).astype(int), 1, None)
+    idx = np.clip(np.arange(n) - kq, 0, None)
+    eq = e[idx]
+    Hr = np.stack([np.interp(fq, f, H[:, i, j].real) for i in range(2) for j in range(2)], axis=1).reshape(n, 2, 2)
+    Hi = np.stack([np.interp(fq, f, H[:, i, j].imag) for i in range(2) for j in range(2)], axis=1).reshape(n, 2, 2)
+    u = np.einsum("nij,nj->ni", Hr, e) - np.einsum("nij,nj->ni", Hi, eq)
+    cap = np.minimum(dev.F_max[0], stroke_frac * dev.m * (2 * np.pi * fq) ** 2 * dev.stroke[0])
+    mag = np.max(np.abs(u), axis=1)
+    sc = np.where(mag > cap, cap / np.maximum(mag, 1e-12), 1.0)
+    return gain * u * sc[:, None]
