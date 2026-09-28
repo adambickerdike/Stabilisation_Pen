@@ -18,7 +18,7 @@ The 3-D explainer page is built by `python3 viewer/explainer/build.py`.
 ## 1. The answer in plain words
 
 **What changed, and why.**
-- You chose a bigger grip. The pen is now about as thick as a marker: 22 mm across, 170 mm long, about 75 g (CALC). The slim pencil moved only its ink refill, by ±0.3 mm. That covers small tremor only and cannot change a letter's shape.
+- You chose a bigger grip. The pen is now about as thick as a marker: 22 mm across, 170 mm long, about 75 g, or 103 g with the inertial module (CALC). The slim pencil moved only its ink refill, by ±0.3 mm. That covers small tremor only and cannot change a letter's shape.
 - In Rev H the whole front of the pen, the **nose** holding the ink refill, tilts inside the handle. The ink tip moves up to **3 mm** in any direction: ten times more.
 - Your fingers hold a soft **sleeve that does not move**. A ring at the front of the sleeve rests on the paper and takes your writing pressure. So the moving tip only has to steer, not push. This is why it needs little power: about 0.08 W in total, so the battery lasts about 27 h of continuous writing (CALC).
 
@@ -47,7 +47,9 @@ The 3-D explainer page is built by `python3 viewer/explainer/build.py`.
 
 **How much better (SIM, pencil-and-hand model H1, test seeds; `results/opt/inertial_opt.json`).**
 - With perfect knowledge of the shake, the mechanism leaves **9–24 %** of the tremor in the ink, for tremor up to 2 mm (a 76–91 % cut).
-- With today's tracker on synthetic writing, it leaves **60–80 %** at 8–12 Hz and 1–2 mm (a 20–40 % cut).
+- With today's tracker on synthetic writing, it leaves **64–76 %** at 8–12 Hz and 1–2 mm (a 24–36 % cut). How much depends on how the grip gives, which is not yet measured.
+- With the rear inertial module as well, it leaves 59–63 %.
+- It barely changes 0.3 mm tremor (leaves 89–96 %). It does nothing at 4–6 Hz, where the tracker cannot yet separate tremor from writing.
 - The gap between the two is the hard part: telling shake from writing, not the mechanism. It will only be settled on real writing (EXP-E01).
 - The before/after writing samples for each condition are in [`handwriting_outcomes.md`](handwriting_outcomes.md) and on the explainer page.
 
@@ -86,16 +88,16 @@ From `results/revH/layout.json` (PROPOSED DESIGN; dimensions ASSUMPTION, masses 
 | Battery | 750 mAh Li-ion, AA-sized | EEMB LIR14500 | AMF-80 |
 | Vibration motor | Gentle cues: write bigger, slow down, check a word | coin LRA 8 mm | AMF-45 |
 | Paper sensor (recommended) | Sees the paper beside the tip: where the tip is on the page, for guidance and for saving your writing; also helps the tracker | optical-flow class, to select | – |
-| Inertial module (optional) | A moving weight or gyroscope pair in the rear that pushes the pen body against the shake (§6) | see `opt_inertial.md` | – |
+| Inertial module (first prototype) | A 19.8 g tungsten weight in the rear cap, moved ±2.75 mm by flat voice coils: pushes the whole pen against the shake (§6) | ASTM B777 tungsten alloy, custom coils | AMF-49 |
 
 ## 4. How the tip moves: two ways were compared
 
 | | A: the nose carries the writing force (no ring) | **B: a ring on the fixed sleeve carries it (chosen)** |
 |---|---|---|
 | What moves | The rigid nose with the refill | The nose with the refill, which slides on a soft spring |
-| Correction with perfect knowledge (SIM) | leaves 15–79 % | **leaves 9–24 %** |
-| Coil power (SIM, CALC) | 1.9 W, or 0.41 W with a bias spring | **about 4 mW of coil power; about 0.08 W in total** |
-| Side effect | Tilting a rigid nose pushes the tip into and out of the paper: the writing force swings by ±0.38 N (SIM) | The refill slides along its axis, so the writing force stays set by its spring |
+| Correction with perfect knowledge (SIM) | leaves 15–77 % | **leaves 9–24 %** |
+| Coil power (SIM, CALC) | 1.7–2.8 W, or 0.31–1.0 W with a bias spring | **about 4 mW of coil power; about 0.08 W in total** |
+| Side effect | Tilting a rigid nose pushes the tip into and out of the paper: the writing force swings by 0.31–0.71 N rms (SIM) | The refill slides along its axis, so the writing force stays set by its spring |
 | Feel | Like a normal pen | A ring touches the paper (like some technical pens); feel and visibility must be tested (ASSUMPTION) |
 
 Source: `results/revH/tip_params.json`, `results/opt/inertial_opt.json`.
@@ -112,9 +114,21 @@ Source: `results/revH/tip_params.json`, `results/opt/inertial_opt.json`.
   - *Capture*: record the writing for the app.
 - **Safety.** Travel and force limits; authority scaled by the tracker's confidence; the pen yields to the hand; guidance is always partial and never draws a letter the user did not start.
 
-## 6. The optional inertial module
+## 6. The inertial module: fitted in the first prototype
 
-You asked for inertial control of the pen body as well. The study (`opt_inertial.md`) sizes a reaction mass or gyroscope pair for the rear of the handle. It reports honestly how much it adds on top of the moving nose, and how that depends on how the grip gives: sliding versus tilting (r_rot), which has never been measured (EXP-I01). Its numbers are in `opt_inertial.md` §1; this section will carry them once final.
+You asked for inertial control of the pen body as well as the moving tip. The study (`opt_inertial.md` §6) sized the best module that fits the handle, and the first prototype carries it (DEC-033).
+- **What it is.** A 19.8 g tungsten slug in the rear cap, moved ±2.75 mm sideways on two axes by flat voice coils: 27.8 g added in all, at most 0.05 W.
+- **What it does.** Its reaction pushes the whole pen against the shake, while the nose keeps correcting the tip.
+- **What it adds** on top of the nose at 8–12 Hz and 1–2 mm (SIM):
+  - 17 % further reduction if the grip gives mostly by tilting (r_rot 0.5–0.7);
+  - 6 % if it gives mostly by sliding (r_rot 0.3), or 15 % after a grip calibration.
+  - How the grip gives has never been measured (EXP-I01). The product keeps the module if the bench confirms at least 10 % (EXP-I06).
+- **Cost.** The pen weighs 103 g with it and the 14500 cell, or 92 g with a smaller 10440 cell (about 7–9 h of writing).
+- **What does not work (SIM, CALC):**
+  - A plain weight of the same mass makes 38–42 % of the 8–12 Hz cases worse: it moves the hand–pen resonance into the tremor band. This matches the mixed evidence for weighted utensils (LIT ACT-18, ACT-19, ACT-32).
+  - A gyroscope pair (CMG) would need 81 g and 0.42 W.
+  - Wideband haptic actuators cannot serve as the moving weight at 4–12 Hz: their spring returns the force (MFR AMF-74, AMF-75).
+  - A learned (neural) controller for the weight matched, but did not beat, the model-based one.
 
 ## 7. The optional guidance board
 
@@ -147,7 +161,7 @@ A desk board under the paper that can physically steer the pen along whole lette
 | Custom mechanics | Yes | The flexure pivot, the nose, the skid ring and the fixed sleeve |
 | Force and position sensors | Yes | Pen-down, writing force, nose position |
 | Vibration motor | Yes | Cues |
-| Weights | Maybe | A heavier handle damps some shake for some people with essential tremor (LIT ACT-18, ACT-19) but not Parkinson's tremor (LIT ACT-32). The active inertial module adds a little (§6) |
+| Weights | Only as an active module | A plain heavier handle made the ink worse in 38–42 % of simulated 8–12 Hz cases (resonance); the active tungsten module adds 6–17 % on top of the nose (§6, DEC-033) |
 | Guidance board (permanent magnet under the paper) | Optional, for practice | Real guiding force over whole letters; permanent magnets, not electromagnets (no holding power) |
 | AI in the phone app | Yes | Reads the writing, spots spelling, gives cues, keeps corrected notes |
 
