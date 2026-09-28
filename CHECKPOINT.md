@@ -158,7 +158,7 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
   - passive pivots trade writing for tremor (net 0.93–1.25);
   - a grip sleeve would hold 0.74 N (2.1 W).
 
-  Nothing inertial goes in the pen (DEC-024). The grip's slide/tilt split r_rot is unmeasured (EXP-I01).
+  The study recommended nothing inertial in the pen (DEC-024); at the user's direction that is reopened (see below). The grip's slide/tilt split r_rot is unmeasured (EXP-I01).
 - **Sensing and estimation.** `fusion/` (25 tests); `sim/pencil` gained `Controller(mode="external")` and filtered housing acceleration. The acceleration-domain Kalman filter with gyroscope compensation, on the P1 test grid:
   - mean tremor-band ratio 0.78, against 0.85 for the frozen filter;
   - personalised by a 20 s calibration: 0.58–0.71 at 8–12 Hz, 0.3 mm;
@@ -179,6 +179,13 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
 - Servo retune (DEC-027, proposed; defaults unchanged): tracking 19.3 → 12.5 µm at 136 → 117 mW, margins kept.
 - Open: bounce (1.7 against 1.2 contact transitions per pen-down), the axial sensor's latency, tilt changes during a run (P1 has constant θ). Validation: AC-Q08-01 split to tail ink; AC-Q08-04…07; 272 criteria.
 
+**Added 2026-09-28: tracker optimisation** (`docs/opt_tracker.md`, `opt/tracker/`, 15 tests).
+- The AKF was made differentiable (matches the numba filter to 1e-13) with a hand-written adjoint (2e-11 against autograd, 40× faster). Gradient descent on the random search's own robust objective gives the proposed default (DEC-028): tremor-band ratio 0.86 against 0.91, 0.67 against 0.79 at 8–12 Hz, sharp-writer shift 18 against 21 µm (SIM, test seeds).
+- The adjoint sweep maps the trade-off: no setting has both the smooth-writing benefit (0.78) and ≤ 30 µm on sharp writers. The band-target GRU and the AKF + learned gate are not shipped; per-writer gradient tuning stays an option (about 2 %).
+- Next: EXP-E01 on recorded writing through `opt/tracker/realdata.py`.
+
+**Added 2026-09-28: inertial control of the pen body, at the user's direction.** DEC-024 is reopened: the user wants active inertial control and movement of the pen, not only the nib stage. Study `opt/inertial` (docs/opt_inertial.md) in progress: reaction-mass, gyroscope and grip-pivot modules with causal and learned control, combined with the nib stage, over envelope tiers and grip splits.
+
 **Resume.**
 
 ```bash
@@ -188,6 +195,7 @@ python3 -m sim.pencil.run_study
 python3 -m sim.pencil.diag_touchdown_tails
 python3 -m sim.handpen.run_study
 python3 -m fusion.run_study --workers 2
+python3 -m opt.tracker.run_study
 python3 -m opt.touchdown.run_study
 bash aiguide/run_all.sh
 bash s2r/run_all.sh

@@ -2,6 +2,8 @@
 
 **Status: proposed design and first study (2026-09-28).** Every number below is a calculation (CALC), a simulation on the pencil model P1 with synthetic handwriting and synthetic tremor (SIM), a manufacturer statement with its ledger id (MFR), literature with its ledger id (LIT) or an assumption (ASSUMPTION). **No person was recorded and no hardware was measured.** Numerical targets are hypotheses until the experiments of §11 are run. Code: [`fusion/`](../fusion/__init__.py). Results: `results/fusion/`. Ledger rows: `results/fusion/evidence_rows.csv` (ids ACT-40…, OPT-37…, EML-31…, PDT-32), merged into `docs/evidence.csv`. The inertial and pivot mechanisms are a separate study ([`docs/inertial_stabilisation.md`](inertial_stabilisation.md): the nib stage stays the only physical corrector, DEC-024); this page covers what decides the stage's command: sensing, estimation and the AI.
 
+**Updates (2026-09-28).** The tracker's settings were re-optimised by adjoint gradients and the learned trackers retrained on the tremor band ([`opt_tracker.md`](opt_tracker.md), DEC-028: proposed default 0.86 against 0.91 below). At the user's direction DEC-024 is reopened: the pen will also have active inertial control of its body, optimised in `opt/inertial` (docs/opt_inertial.md, in progress).
+
 ## 1. Short answer
 
 - **The accelerometer now drives the tremor tracker directly. It helps, but modestly.**

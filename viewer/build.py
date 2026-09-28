@@ -8,6 +8,8 @@ Inputs (all generated elsewhere in the repository):
   results/pencil/inertial_viz.json                            (sim/handpen, hand-pen model H1: cap devices)
   results/fusion/viz_fusion.json                              (fusion/viz.py, pencil model P1: accelerometer tracker)
   results/opt/viz_touchdown.json                              (opt/touchdown, pencil model P1: touchdown feed-forward)
+  results/opt/viz_tracker.json                                (opt/tracker, pencil model P1: tuned trackers; merged into the
+                                                              tracker group when it replays the same scenario)
   results/pencil/*.json, results/ai/*.json, results/s2r/*.json (numbers for the tables, via viewer/sections.py)
 The page itself is viewer/template.html; the tables are rendered into it here so
 they are readable without running any script.
@@ -93,6 +95,35 @@ def load_version():
     return sp_params.load(os.path.join(ROOT, "config", "pencil.yaml")).version()
 
 
+TRACKER_LABELS = {"akf_prev_best": "Accelerometer tracker tuned on smooth writing (random search)",
+                  "rep_robust": "Accelerometer tracker, re-optimised by adjoint gradients (proposed default)"}
+
+
+def merge_trackers(fus: dict, trk: dict) -> bool:
+    """Put the tuned trackers of opt/tracker into the tracker group of fusion/viz when both replay the same scenario
+    (same seed, tremor and model): cases already present (same key) are kept once, the tremor-band limit goes after the
+    physical limit and the rest are appended.  Returns False (nothing merged) when the scenarios differ."""
+    fm, tm = fus.get("meta", {}), trk.get("meta", {})
+    if fm.get("scenario") != tm.get("scenario") or fm.get("model_version") != tm.get("model_version"):
+        return False
+    have = {c["key"] for c in fus["cases"]}
+    for c in trk["cases"]:
+        if c["key"] in have:
+            continue
+        c = dict(c, source="opt/tracker")
+        c["label"] = TRACKER_LABELS.get(c["key"], c["label"].replace(" (this study)", ""))
+        if c["key"] == "oracle_band" and "oracle" in have:
+            i = next(k for k, x in enumerate(fus["cases"]) if x["key"] == "oracle") + 1
+            fus["cases"].insert(i, c)
+        else:
+            fus["cases"].append(c)
+    group = fm.get("case_group", "")
+    if group.startswith("Accelerometer tremor tracker"):
+        fm["case_group"] = "Tremor trackers" + group[len("Accelerometer tremor tracker"):]
+    fm["merged_from"] = {k: tm.get(k) for k in ("script", "git_revision", "generated_utc", "command") if k in tm}
+    return True
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--variant", default="L", choices=("L", "Q"))
@@ -101,6 +132,7 @@ def main():
     ap.add_argument("--inertial", default=os.path.join(ROOT, "results", "pencil", "inertial_viz.json"))
     ap.add_argument("--fusion", default=os.path.join(ROOT, "results", "fusion", "viz_fusion.json"))
     ap.add_argument("--touchdown", default=os.path.join(ROOT, "results", "opt", "viz_touchdown.json"))
+    ap.add_argument("--tracker", default=os.path.join(ROOT, "results", "opt", "viz_tracker.json"))
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True)
     cad = os.path.join(ROOT, "results", "cad", f"pencil_revP{a.variant}")
@@ -133,11 +165,17 @@ def main():
         elif os.path.exists(out_p):
             os.remove(out_p)
     f_out = os.path.join(DATA, "viz_fusion.json")
-    if os.path.exists(a.fusion):
-        with open(f_out, "w") as f:
-            json.dump(load(a.fusion), f, separators=(",", ":"))
-    elif os.path.exists(f_out):
-        os.remove(f_out)
+    t_out = os.path.join(DATA, "viz_tracker.json")
+    fus = load(a.fusion) if os.path.exists(a.fusion) else None
+    trk = load(a.tracker) if os.path.exists(a.tracker) else None
+    if fus is not None and trk is not None and merge_trackers(fus, trk):
+        trk = {"merged_into": "viz_fusion.json", "cases": []}   # keeps the page's request for it from failing
+    for obj, out_p in ((fus, f_out), (trk, t_out)):
+        if obj is not None:
+            with open(out_p, "w") as f:
+                json.dump(obj, f, separators=(",", ":"))
+        elif os.path.exists(out_p):
+            os.remove(out_p)
     s_out = os.path.join(DATA, "viz_inertial.json")
     if os.path.exists(a.inertial):
         with open(s_out, "w") as f:

@@ -1,0 +1,18 @@
+series,lambda_fc,band_ratio_test_grid,distortion_grid_um,distortion_glyph_um
+chain A,0.01,0.826251,17.4242,101.133
+chain A,0.03,0.839841,22.1846,92.0239
+chain A,0.1,0.864898,20.2799,78.1724
+chain A,0.3,0.885346,17.6878,66.1342
+chain A,1.0,0.912643,10.5781,52.6664
+chain B,0.01,0.907243,0.503757,25.9018
+chain B,0.03,0.87991,2.09051,24.0694
+chain B,0.1,0.888473,2.77265,16.9108
+chain B,0.3,0.913018,2.7505,7.42874
+chain B,1.0,0.918383,0.674923,5.70257
+"AKF, random search, grid writing",,0.775236,20.697,146.197
+"AKF, random search, robust",,0.909548,5.22536,20.5663
+"GRU, whole-disturbance target",,0.80781,7.0991,25.1794
+"GRU, tremor-band target",,0.795901,14.4928,57.0756
+AKF + learned gate,,0.872976,5.48334,52.6817
+adjoint on the random search's grid objective,,0.765709,24.8162,154.256
+adjoint on the random search's robust objective (ship),,0.862634,7.1547,17.8863

@@ -1,0 +1,167 @@
+series,measure,lambda_fc,iteration_or_epoch,value
+AKF chain A,objective,0.01,0,0.999925
+AKF chain A,objective,0.01,5,0.973498
+AKF chain A,objective,0.01,10,0.96499
+AKF chain A,objective,0.01,15,0.957971
+AKF chain A,objective,0.01,20,0.957297
+AKF chain A,objective,0.01,25,0.949406
+AKF chain A,objective,0.01,30,0.93879
+AKF chain A,objective,0.01,35,0.937498
+AKF chain A,objective,0.01,40,0.932724
+AKF chain A,objective,0.03,40,0.945359
+AKF chain A,objective,0.03,45,0.94237
+AKF chain A,objective,0.03,50,0.942168
+AKF chain A,objective,0.03,55,0.942468
+AKF chain A,objective,0.03,60,0.941358
+AKF chain A,objective,0.03,65,0.943531
+AKF chain A,objective,0.1,65,0.982975
+AKF chain A,objective,0.1,70,0.977765
+AKF chain A,objective,0.1,75,0.975368
+AKF chain A,objective,0.1,80,0.975646
+AKF chain A,objective,0.3,80,1.07961
+AKF chain A,objective,0.3,85,1.06607
+AKF chain A,objective,0.3,90,1.05777
+AKF chain A,objective,0.3,95,1.05513
+AKF chain A,objective,1.0,95,1.35416
+AKF chain A,objective,1.0,100,1.29883
+AKF chain A,objective,1.0,105,1.27256
+AKF chain A,objective,1.0,110,1.26002
+AKF chain B,objective,0.01,0,0.923107
+AKF chain B,objective,0.01,5,0.916234
+AKF chain B,objective,0.01,10,0.913024
+AKF chain B,objective,0.01,15,0.903319
+AKF chain B,objective,0.01,20,0.894478
+AKF chain B,objective,0.01,25,0.901911
+AKF chain B,objective,0.01,30,0.9092
+AKF chain B,objective,0.01,35,0.917401
+AKF chain B,objective,0.01,40,0.922678
+AKF chain B,objective,0.03,40,0.897774
+AKF chain B,objective,0.03,45,0.903591
+AKF chain B,objective,0.03,50,0.906122
+AKF chain B,objective,0.03,55,0.908211
+AKF chain B,objective,0.03,60,0.909835
+AKF chain B,objective,0.03,65,0.910753
+AKF chain B,objective,0.1,65,0.909307
+AKF chain B,objective,0.1,70,0.913398
+AKF chain B,objective,0.1,75,0.914778
+AKF chain B,objective,0.1,80,0.915404
+AKF chain B,objective,0.3,80,0.94226
+AKF chain B,objective,0.3,85,0.928443
+AKF chain B,objective,0.3,90,0.928465
+AKF chain B,objective,0.3,95,0.928367
+AKF chain B,objective,1.0,95,0.951622
+AKF chain B,objective,1.0,100,0.941579
+AKF chain B,objective,1.0,105,0.944258
+AKF chain B,objective,1.0,110,0.945192
+"GRU, tremor-band target",rr_band val,,0,0.985262
+"GRU, tremor-band target",rr_band val,,1,0.921238
+"GRU, tremor-band target",rr_band val,,2,0.869996
+"GRU, tremor-band target",rr_band val,,3,0.813653
+"GRU, tremor-band target",rr_band val,,4,0.796019
+"GRU, tremor-band target",rr_band val,,5,0.801337
+"GRU, tremor-band target",rr_band val,,6,0.78105
+"GRU, tremor-band target",rr_band val,,7,0.774808
+"GRU, tremor-band target",rr_band val,,8,0.769729
+"GRU, tremor-band target",rr_band val,,9,0.770593
+"GRU, tremor-band target",rr_band val,,10,0.759694
+"GRU, tremor-band target",rr_band val,,11,0.759656
+"GRU, tremor-band target",rr_band val,,12,0.758754
+"GRU, tremor-band target",rr_band val,,13,0.757995
+"GRU, tremor-band target",rr_band tune_grid,,0,0.986816
+"GRU, tremor-band target",rr_band tune_grid,,1,0.906347
+"GRU, tremor-band target",rr_band tune_grid,,2,0.841282
+"GRU, tremor-band target",rr_band tune_grid,,3,0.792463
+"GRU, tremor-band target",rr_band tune_grid,,4,0.799012
+"GRU, tremor-band target",rr_band tune_grid,,5,0.834707
+"GRU, tremor-band target",rr_band tune_grid,,6,0.785239
+"GRU, tremor-band target",rr_band tune_grid,,7,0.770976
+"GRU, tremor-band target",rr_band tune_grid,,8,0.785094
+"GRU, tremor-band target",rr_band tune_grid,,9,0.75619
+"GRU, tremor-band target",rr_band tune_grid,,10,0.731228
+"GRU, tremor-band target",rr_band tune_grid,,11,0.739247
+"GRU, tremor-band target",rr_band tune_grid,,12,0.727961
+"GRU, tremor-band target",rr_band tune_grid,,13,0.726524
+AKF + learned gate,rr_band val,,0,0.907173
+AKF + learned gate,rr_band val,,1,0.906909
+AKF + learned gate,rr_band val,,2,0.905743
+AKF + learned gate,rr_band val,,3,0.903621
+AKF + learned gate,rr_band val,,4,0.89964
+AKF + learned gate,rr_band val,,5,0.894697
+AKF + learned gate,rr_band val,,6,0.892496
+AKF + learned gate,rr_band val,,7,0.891172
+AKF + learned gate,rr_band val,,8,0.890026
+AKF + learned gate,rr_band val,,9,0.889374
+AKF + learned gate,rr_band val,,10,0.889206
+AKF + learned gate,rr_band val,,11,0.888978
+AKF + learned gate,rr_band val,,12,0.888899
+AKF + learned gate,rr_band val,,13,0.888889
+AKF + learned gate,rr_band tune_grid,,0,0.774523
+AKF + learned gate,rr_band tune_grid,,1,0.775822
+AKF + learned gate,rr_band tune_grid,,2,0.782214
+AKF + learned gate,rr_band tune_grid,,3,0.795303
+AKF + learned gate,rr_band tune_grid,,4,0.812379
+AKF + learned gate,rr_band tune_grid,,5,0.823094
+AKF + learned gate,rr_band tune_grid,,6,0.847747
+AKF + learned gate,rr_band tune_grid,,7,0.857224
+AKF + learned gate,rr_band tune_grid,,8,0.835381
+AKF + learned gate,rr_band tune_grid,,9,0.857845
+AKF + learned gate,rr_band tune_grid,,10,0.86459
+AKF + learned gate,rr_band tune_grid,,11,0.863886
+AKF + learned gate,rr_band tune_grid,,12,0.863544
+AKF + learned gate,rr_band tune_grid,,13,0.863615
+"GRU, tremor-band target",fc_w_um val,,0,5.2157
+"GRU, tremor-band target",fc_w_um val,,1,40.5855
+"GRU, tremor-band target",fc_w_um val,,2,43.617
+"GRU, tremor-band target",fc_w_um val,,3,47.28
+"GRU, tremor-band target",fc_w_um val,,4,41.7452
+"GRU, tremor-band target",fc_w_um val,,5,34.2719
+"GRU, tremor-band target",fc_w_um val,,6,35.0879
+"GRU, tremor-band target",fc_w_um val,,7,38.3184
+"GRU, tremor-band target",fc_w_um val,,8,30.4524
+"GRU, tremor-band target",fc_w_um val,,9,34.8636
+"GRU, tremor-band target",fc_w_um val,,10,35.0575
+"GRU, tremor-band target",fc_w_um val,,11,31.4949
+"GRU, tremor-band target",fc_w_um val,,12,33.4006
+"GRU, tremor-band target",fc_w_um val,,13,33.5723
+"GRU, tremor-band target",fc_w_um tune_grid,,0,3.42065
+"GRU, tremor-band target",fc_w_um tune_grid,,1,32.3236
+"GRU, tremor-band target",fc_w_um tune_grid,,2,20.2395
+"GRU, tremor-band target",fc_w_um tune_grid,,3,19.3185
+"GRU, tremor-band target",fc_w_um tune_grid,,4,17.8447
+"GRU, tremor-band target",fc_w_um tune_grid,,5,12.3276
+"GRU, tremor-band target",fc_w_um tune_grid,,6,14.7843
+"GRU, tremor-band target",fc_w_um tune_grid,,7,15.6072
+"GRU, tremor-band target",fc_w_um tune_grid,,8,10.8769
+"GRU, tremor-band target",fc_w_um tune_grid,,9,14.1131
+"GRU, tremor-band target",fc_w_um tune_grid,,10,12.5069
+"GRU, tremor-band target",fc_w_um tune_grid,,11,11.8027
+"GRU, tremor-band target",fc_w_um tune_grid,,12,12.8819
+"GRU, tremor-band target",fc_w_um tune_grid,,13,12.8829
+AKF + learned gate,fc_w_um val,,0,62.2884
+AKF + learned gate,fc_w_um val,,1,61.7649
+AKF + learned gate,fc_w_um val,,2,59.259
+AKF + learned gate,fc_w_um val,,3,54.1296
+AKF + learned gate,fc_w_um val,,4,46.2284
+AKF + learned gate,fc_w_um val,,5,39.0212
+AKF + learned gate,fc_w_um val,,6,30.8634
+AKF + learned gate,fc_w_um val,,7,26.6974
+AKF + learned gate,fc_w_um val,,8,30.1256
+AKF + learned gate,fc_w_um val,,9,24.4919
+AKF + learned gate,fc_w_um val,,10,22.72
+AKF + learned gate,fc_w_um val,,11,22.4277
+AKF + learned gate,fc_w_um val,,12,22.3457
+AKF + learned gate,fc_w_um val,,13,22.3185
+AKF + learned gate,fc_w_um tune_grid,,0,13.4712
+AKF + learned gate,fc_w_um tune_grid,,1,13.3778
+AKF + learned gate,fc_w_um tune_grid,,2,12.8614
+AKF + learned gate,fc_w_um tune_grid,,3,11.6431
+AKF + learned gate,fc_w_um tune_grid,,4,9.4456
+AKF + learned gate,fc_w_um tune_grid,,5,6.94583
+AKF + learned gate,fc_w_um tune_grid,,6,4.56831
+AKF + learned gate,fc_w_um tune_grid,,7,3.45773
+AKF + learned gate,fc_w_um tune_grid,,8,3.29004
+AKF + learned gate,fc_w_um tune_grid,,9,2.72288
+AKF + learned gate,fc_w_um tune_grid,,10,2.5097
+AKF + learned gate,fc_w_um tune_grid,,11,2.43268
+AKF + learned gate,fc_w_um tune_grid,,12,2.40726
+AKF + learned gate,fc_w_um tune_grid,,13,2.40314

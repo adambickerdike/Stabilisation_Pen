@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (pencil model P1, synthetic handwriting and synthetic tremor, fusion/ sensor models; nothing measured)",
+    "generated_utc": "2026-09-28T16:00:52+00:00",
+    "git_revision": "9d309a0-dirty",
+    "parameters_version": "P0.1.2",
+    "parameters_sha256_16": "957eae6e98e9b8c8",
+    "command": "run_study.py --stages report",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "selection": [
+        5000,
+        5001,
+        5002,
+        5003
+      ],
+      "test": [
+        200,
+        201,
+        202,
+        203
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "model_version": "P1.0",
+    "script": "opt/tracker/run_study.py",
+    "torch": "2.14.0+cpu",
+    "numba": "0.67.0",
+    "source_digest": {
+      "sim/pencil/*.py": "6dc5f22de0cdd05c",
+      "fusion/*.py": "ed234905a1156252",
+      "config/*.yaml": "10bb168f31e46c83"
+    }
+  },
+  "label": "rep_robust",
+  "estimator": "akf",
+  "title": "Accelerometer Kalman filter, robust settings re-optimised by backpropagation (this study)",
+  "note": "The same Kalman filter as the robust set, with the random search's own robust objective (tuning writing plus sharp glyph writers) minimised by gradient through the filter (its adjoint) instead of by random search.",
+  "rule": "Pre-declared: lowest tuning-grid band ratio among the points whose closed-loop distortion is <= 14 um on the\n    tuning seeds' writing and <= 30 um on the tuning glyph writers' tremor-free writing, and whose aiguide\n    writing-only path RMS is not worse than no correction.",
+  "params": {
+    "qj": 0.0275258,
+    "qt": 1.05149e-10,
+    "qh": 3.51935e-11,
+    "qb": 1.98082e-06,
+    "ra": 0.0747106,
+    "rp": 1.15629e-09,
+    "tau_decay": 0.208485,
+    "w0_hz": 6.26123,
+    "tau_w": 0.124095,
+    "wmin_hz": 3.58047,
+    "wmax_hz": 14.1691,
+    "f_gate": 5.88066,
+    "f_gate_w": 2.0972,
+    "tau_amp": 1.72993,
+    "horizon": 6.75657e-05,
+    "tau_auth": 0.115546,
+    "g": 2.0,
+    "lp_hz": 36.1652,
+    "cap_k": 2.43403,
+    "v_slow": 0.0152575,
+    "tau_ref": 0.349354,
+    "a_lo": 2.35605e-05,
+    "a_hi": 0.000132898,
+    "harm": 0.0,
+    "xtrack": 0.0,
+    "v_xt": 0.00704628
+  },
+  "sensors": {
+    "page": "1k",
+    "comp": "gyro"
+  },
+  "test_summary": {
+    "label": "rep_robust",
+    "name": "AKF, random search's robust objective re-optimised by the adjoint (ship)",
+    "grid_band_ratio": 0.862634,
+    "grid_ratio": 0.953136,
+    "grid_path_um": 241.853,
+    "grid_intent_err_um": 559.092,
+    "grid_distortion_um": 7.1547,
+    "grid_residual_ratio_low": 0.999674,
+    "grid_q_sat": 0.026219,
+    "grid_P_rail_mW": 134.756,
+    "ai_path_wo_um": 193.096,
+    "ai_path_wo_sd": 22.9358,
+    "ai_recognition_wo": 0.9375,
+    "ai_ratio": 0.973252,
+    "ai_band_ratio": 0.952428,
+    "ai_distortion_um": 17.8863,
+    "ai_false_correction_um": 16.6368
+  }
+}

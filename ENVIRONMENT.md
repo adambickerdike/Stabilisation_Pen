@@ -4,7 +4,7 @@ All results in `results/` were produced on Linux x86_64 (Ubuntu 24.04 container)
 
 | Tool | Version | Used for | Install |
 |---|---|---|---|
-| Python | 3.11.15 | everything in `stabpen/`, `sim/`, `analysis/`, `mechanics/`, `ml/`, `app/` | `python3.11 -m pip install -r requirements.txt` |
+| Python | 3.11.15 | everything in `stabpen/`, `sim/`, `analysis/`, `mechanics/`, `ml/`, `app/`, `aiguide/`, `s2r/`, `fusion/`, `opt/`, `viewer/` | `python3.11 -m pip install -r requirements.txt` |
 | KiCad | 8.0.9 (symbol/footprint libraries 20231120) | schematic generation, ERC, netlist, BOM and PDF export (`electronics/`) | KiCad 8 PPA (`ppa:kicad/kicad-8.0-releases`) |
 | ngspice | 42 | drive-stage transient (`electronics/spice/`) | `apt install ngspice` |
 | GCC | 13.3.0 | host firmware tests (`firmware/`) | `apt install build-essential` |

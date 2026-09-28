@@ -46,12 +46,14 @@ This repository holds the research and development package: the audit of the sou
    - The skid causes touchdown and lift tails: about 1.1 mm of extra ink per stroke. A tilt-adaptive front stop cuts this to 0.33 mm. A stage feed-forward in firmware, tuned by adjoint gradients and Bayesian search, then brings the ink at the transitions to 0.005–0.008 mm per stroke; bounce is its open risk (`docs/opt_touchdown.md`, DEC-026).
    - Paper capture needs a ≥ 120 Hz page sensor that does not yet exist at this size.
    - AI helps as a digital autocorrect (word errors 32 % → 10 %). Physical guidance toward AI-predicted letters does not help free writing: a correct prediction is already about 300 µm off, beyond break-even. Guidance toward known templates does help.
-   - Weights, gyroscopes or a motorised grip do not help at this size: the best that fits leaves 0.85–0.97 of the ink error with perfect knowledge, against 0.18–0.43 for the nib stage (`docs/inertial_stabilisation.md`, DEC-024).
-   - The accelerometer now drives the tremor tracker directly, with gyroscope compensation. It leaves 0.78 of the tremor-band error on average, against 0.85 before, and 0.58–0.71 at 8–12 Hz once calibrated per writer. Separating tremor from writing is still the limit (`docs/sensor_fusion_ai.md`, DEC-025).
+   - Weights, gyroscopes or a motorised grip inside the 20 g pencil leave 0.85–0.97 of the ink error with perfect knowledge, against 0.18–0.43 for the nib stage (`docs/inertial_stabilisation.md`). At the user's direction the pen will also have active inertial control of its body; DEC-024 is reopened and the optimisation study `opt/inertial` treats size, mass and battery as trade-offs (in progress).
+   - The accelerometer now drives the tremor tracker directly, with gyroscope compensation. It leaves 0.78 of the tremor-band error on average, against 0.85 before, and 0.58–0.71 at 8–12 Hz once calibrated per writer. Separating tremor from writing is still the limit (`docs/sensor_fusion_ai.md`, DEC-025). Re-optimising its settings with exact adjoint gradients gives 0.86 instead of 0.91 for the default set, and 0.67 instead of 0.79 at 8–12 Hz; learned trackers were not better at equal false correction (`docs/opt_tracker.md`, DEC-028).
 6. **The simulator can be calibrated from the planned bench work, and the twin experiments say how well** (`docs/sim_to_real.md`, DEC-023).
    - On 15 blind simulated plants the protocol experiments recover every model parameter to ≤ 1.6 % in about 1.5 h of bench time per build.
    - The calibrated twin then predicts the oracle ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated.
    - The same work found that the frozen tremor estimator degrades on randomised plants (median ratio 0.88 at 9 Hz), and that the existing Monte Carlo lets the controller see true plant values.
+
+**Where the simulations are, and what the optimisation studies found:** [`docs/optimisation.md`](docs/optimisation.md). The 3D replay page is `viewer/index.html` (`python3 viewer/build.py --variant Q`).
 
 ## Completion table
 
@@ -79,6 +81,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Pencil | AI prediction and guidance (text predictor, style templates, stroke continuation, closed loop on P1 and M1, deployment and ICD proposal) and app autocorrect | executed (synthetic data) · people pending (EXP-A02/A03) | `docs/ai_guidance.md`, `aiguide/`, `results/ai/` |
 | Pencil | Inertial and pivot stabilisation study: hand-pen model H1 with pen tilt in a two-zone grip; weights, gyroscopes, CMGs, reaction wheels, grip sleeve, passive pivots | executed (simulation, calculation) · grip measurement pending (EXP-I01) | `docs/inertial_stabilisation.md`, `sim/handpen/`, `results/pencil/inertial*.json` |
 | Pencil | Sensing and AI estimation: IMU parts and lever arm, acceleration-domain Kalman, WFLC/BMFLC, learned GRU, template prior, 20 s personal calibration, closed loop on P1 | executed (simulation) · real data pending (EXP-H01/E01) | `docs/sensor_fusion_ai.md`, `fusion/`, `results/fusion/` |
+| Pencil | Tracker optimisation: differentiable accelerometer Kalman filter (PyTorch, and a hand-written numba adjoint), tuning of all 23 settings by backpropagation through time, Pareto front against false correction, learned trackers on the tremor band, per-writer gradient tuning; recorded-data pipeline | executed (simulation) · real writing pending (EXP-E01) | `docs/opt_tracker.md`, `opt/tracker/`, `results/opt/tracker.json` |
 | Pencil | Touchdown and lift optimisation: stage feed-forward, stop margin and servo retune; adjoint gradients of a differentiable reduced model (torch), ParEGO Bayesian optimisation and CMA-ES on P1; faster slide-sensor option | executed (simulation) · bench pending (EXP-Q08) | `docs/opt_touchdown.md`, `opt/touchdown/`, `results/opt/` |
 | Pencil | 3D replay page of the simulated pencil with generated tables | executed | `viewer/` (`python3 viewer/build.py`) |
 | 4 Simulation | Sim-to-real: virtual bench with instrument models, blind identification of 15 plants in protocol order, bench-time study, calibrated-twin prediction gap, model-form diagnostics, piezo hysteresis identification, domain randomisation, hardware-in-the-loop specification; 22 tests | executed (twin experiments) · bench pending | `docs/sim_to_real.md`, `validation/sim_to_real.md`, `s2r/`, `results/s2r/` |
@@ -113,6 +116,7 @@ bash s2r/run_all.sh                                   # sim-to-real twin experim
 python3 -m sim.handpen.run_study                      # weights, gyroscopes and pivots (about 5 min); tests: python3 -m pytest sim/handpen/tests -q
 python3 -m fusion.run_study --workers 2               # accelerometer tracker and AI estimation (tests: python3 -m pytest fusion/tests -q)
 python3 -m fusion.viz                                 # 3D replay of the tracker
+python3 -m opt.tracker.run_study                      # tracker tuned by adjoint and learned trackers (3-4 h on 2 cores); tests: python3 -m pytest opt/tracker/tests -q
 python3 -m opt.touchdown.run_study                    # touchdown feed-forward and servo optimisation (about 1.5 h on 2 processes; --quick smoke run); tests: python3 -m pytest opt/touchdown/tests -q
 python3 viewer/build.py                               # 3D replay page from the results
 ```

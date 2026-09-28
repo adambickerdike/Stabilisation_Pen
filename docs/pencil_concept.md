@@ -9,7 +9,9 @@ Detailed reports:
 - [`sim_to_real.md`](sim_to_real.md): calibration and twin experiments;
 - [`inertial_stabilisation.md`](inertial_stabilisation.md): weights, gyroscopes and pivots in the cap, the grip and at the paper;
 - [`sensor_fusion_ai.md`](sensor_fusion_ai.md): the accelerometer, the tremor tracker and AI in the estimator;
-- [`opt_touchdown.md`](opt_touchdown.md): touchdown and lift feed-forward, stop margin and servo tuning, optimised by adjoint gradients and Bayesian search.
+- [`optimisation.md`](optimisation.md): where every simulation is, and what the optimisation studies found (entry page);
+- [`opt_touchdown.md`](opt_touchdown.md): touchdown and lift feed-forward, stop margin and servo tuning, optimised by adjoint gradients and Bayesian search;
+- [`opt_tracker.md`](opt_tracker.md): the tremor tracker tuned by exact adjoint gradients, and learned trackers.
 
 3D replay: `viewer/` (build with `python3 viewer/build.py`).
 
@@ -33,12 +35,13 @@ The short answer, with the numbers behind it in the sections below:
 6. **Recording on paper needs a new sensor.** Nothing off the shelf fits the nose. The simulation sets the requirement: a page sensor of ≥ 120 Hz with ≤ 10 ms latency, fused with the IMU. The chip-scale camera that does fit runs at 30 fps and loses most of the guided-mode benefit (§5).
 7. **Sim-to-real is ready before the hardware.** A calibration pipeline follows the bench protocols. On 15 blind simulated plants it recovers every model parameter to ≤ 1.6 % in about 1.5 h of bench time per build. The calibrated twin then predicts the physical-limit ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated. The same work found that the frozen tremor estimator is fragile across plants, and that the existing Monte Carlo lets the simulated controller see true plant values (§8).
 
-8. **Weights and gyroscopes in the cap do not help; the nib stage stays the only physical corrector.** A hand–pen model with the pen tilting in the grip tested moving and tuned masses, gyroscopes, control-moment gyroscopes and reaction wheels in the cap, a motorised grip sleeve and passive pivots. With perfect knowledge of the tremor:
+8. **Inside the 20 g pencil, weights and gyroscopes in the cap help little; the user wants inertial control of the pen body anyway, so it is now being optimised over larger envelopes.** A hand–pen model with the pen tilting in the grip tested moving and tuned masses, gyroscopes, control-moment gyroscopes and reaction wheels in the cap, a motorised grip sleeve and passive pivots. With perfect knowledge of the tremor:
    - the best that fits the 20 g target leaves 0.85–0.97 of the ink error at 0.3 mm and takes half the cell;
    - the strongest (gyroscope pairs) leaves 0.87–0.92, at 25 g and 0.34 W;
    - the stage alone leaves 0.18–0.43.
 
    The grip passes about 0.17 N of tremor force and a cap device can push back with 2–30 mN (SIM, CALC, §11, DEC-024).
+   At the user's direction, active inertial control of the pen body is now part of the design (DEC-024 reopened). Its optimisation over larger envelopes is in progress (`opt/inertial`).
 9. **The accelerometer now drives the tremor tracker, and AI helps most by personalising it.**
    - A Kalman filter reading the 6-axis IMU directly, with gyroscope compensation of the pen's rotation, leaves 0.78 of the tremor-band ink error, against 0.85 for the previous filter.
    - Set by a 20 s calibration per writer, it leaves 0.58–0.71 at 8–12 Hz (0.3 mm).
@@ -391,7 +394,7 @@ Why:
 - **Cap devices lack force.** The grip passes about 0.17 N of tremor force at the nib, while a few grams moving ±1 mm in the cap push with 2–30 mN.
 - **A gyroscope resists only rotation,** and the pen tilts just 0.8–2.2 mrad in the grip.
 - **Passive pivots cannot choose what they filter.** Handwriting strokes (3–7 Hz) and tremor (4–12 Hz) share frequencies, so every passive filter shrinks and delays the letters about as much as it removes tremor.
-- **Recommendation (DEC-024).** Nothing inertial in the cap. Skid friction stays near 0.1–0.15. If a user group's tremor saturates the stage, give the stage more travel.
+- **Recommendation (DEC-024, reopened 2026-09-28).** The study recommended nothing inertial in the cap, with skid friction near 0.1–0.15 and more stage travel for users whose tremor saturates the stage. **At the user's direction the pen will now have active inertial control of its body as well.** These numbers are the pencil-envelope data point; `opt/inertial` ([`opt_inertial.md`](opt_inertial.md), in progress) optimises the modules, their control with the nib stage, and the envelope they need.
 - **What to measure.** The grip's split between sliding and tilting (EXP-I01) could reopen the cap line, but only if tilting dominates (r_rot ≥ 0.6). Resting the hand on the paper is the one cheap "pivot" worth testing (EXP-I03).
 
 ### 11.2 Sensing: what the accelerometer does
@@ -410,7 +413,8 @@ Ink error left in the tremor band, as a fraction of no correction (pencil model 
 |---|---|---|---|
 | Previous filter (Kalman on the page position, frozen) | 0.58 / 0.49 / 0.54 | 0.85 (adds error at 0.1 mm: 0.93–1.09) | 34 / 123 µm |
 | AKF tuned on smooth writing | 0.61 / 0.56 / 0.57 | 0.78 | 21 / 146 µm |
-| AKF robust setting (default) | 0.90 / 0.82 / 0.77 | 0.91 | 5 / 21 µm |
+| AKF robust setting (previous default) | 0.90 / 0.82 / 0.77 | 0.91 | 5 / 21 µm |
+| **AKF robust objective re-optimised by the adjoint (proposed default, DEC-028)** | **0.85 / 0.72 / 0.64** | **0.86** | 7 / 18 µm |
 | **AKF set by a 20 s calibration** | **0.71 / 0.61 / 0.58** | **0.80** | 20 µm / not tested |
 | Perfect knowledge of the tremor band (limit) | 0.18 / 0.19 / 0.25 | 0.26 | – |
 
@@ -418,6 +422,7 @@ Ink error left in the tremor band, as a fraction of no correction (pencil model 
 - **Writing that looks like tremor is the main risk.** Sharper writers (the aiguide glyph writers, 3–4× more intended motion in 3–15 Hz) made the smooth-tuned filters move tremor-free ink by 123–146 µm. The robust setting keeps it to 21 µm by learning the tremor amplitude only during slow motion, and gives up most of the gain. Real writing of the target groups (EXP-H01) decides which setting ships.
 - **In this model most of the "disturbance" is friction, not tremor.** The tremor makes the skid and nib slide more freely, so the pen follows the hand differently. That slow part (316 µm below 3 Hz, against 173 µm in 3–15 Hz) cannot be told from writing. Cancelling it moves the ink away from the intended letters: with perfect knowledge of the whole disturbance the ink is 283 µm from the intended path, against 258 µm uncorrected and 225 µm with perfect tremor-band knowledge. Friction under vibration is therefore the biggest open model question (EXP-B01/B02).
 - **The learned network** (GRU, trained on the simulator) reaches 0.69 on the headline ratio, but moves the ink further from the intended letters (282 µm). It learned the simulated pen's friction behaviour. It stays behind the ICD §5 guard (DEC-016).
+- **Optimised by the adjoint (added 2026-09-28, [`opt_tracker.md`](opt_tracker.md)).** The filter was rewritten so its exact gradient (backpropagation through time) could tune all 23 settings. The robust objective's new optimum gives 0.86 instead of 0.91 overall and 0.67 instead of 0.79 at 8–12 Hz and 0.3–0.5 mm, while moving sharp writers' tremor-free ink less (18 against 21 µm). The adjoint also mapped the trade-off: no setting has both the smooth-writing set's 0.78 and a small shift on sharp writers. A GRU retrained on the tremor band fixes the drift problem (path 241 µm) but still shifts sharp writing by 57 µm; it is not shipped (DEC-028).
 
 ### 11.4 AI and physical help together
 

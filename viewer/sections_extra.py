@@ -251,6 +251,146 @@ def fusion(root):
 
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Where the simulations are, and the optimisation studies (opt/)
+WHERE_ROWS = [
+    ("Pencil model P1", "The pencil writing on paper: hand, nose skid, spring-loaded refill, two-axis piezo stage with its Hall "
+     "servo, sensors, paper contact and friction, in 25 µs steps", "sim/pencil/",
+     "Replay groups: pencil model, tremor trackers, touchdown and lift"),
+    ("Hand–pen model H1", "Pen tilt in a two-zone grip, with weights and gyroscopes in the cap", "sim/handpen/",
+     "Replay group: weights and gyroscopes"),
+    ("Sensors and trackers", "6-axis IMU and page sensor models; Kalman trackers, learned network, 20 s calibration", "fusion/, opt/tracker/",
+     "Replay group: tremor trackers; gallery"),
+    ("AI guidance", "Letter prediction, style templates, guided writing, autocorrect", "aiguide/", "Replay group: AI guidance; gallery"),
+    ("Design models", "Loads, stroke, resonance, stress and fit of the stage; CAD of the pencil", "sim/pencil/design.py, analysis/, "
+     "mechanics/cad/, opt/hardware/", "Gallery; tables below"),
+    ("Twin experiments", "A virtual bench that calibrates the simulator before hardware exists", "s2r/", "Gallery"),
+    ("Rev A model M1", "The earlier, larger voice-coil pen", "sim/pensim/", "docs/sim_report.md"),
+]
+
+
+def where(root):
+    rows = [[_e(a), _e(b), f"<code>{_e(c)}</code>", _e(d)] for a, b, c, d in WHERE_ROWS]
+    lede = ("Every simulation is Python in the repository and re-runs with one command (README.md, “Reproduce”). "
+            "This page replays their recorded runs in 3D and shows their charts. Nothing here is a measurement.")
+    return _section("Where the simulations are", _tags("SIM", "CALC"), lede,
+                    _table(["Model", "What it simulates", "Code", "On this page"], rows), "README.md; CHECKPOINT.md")
+
+
+def _f(v, nd=2, unit=""):
+    if v is None:
+        return "—"
+    return f"{v:.{nd}f}" + (f" {unit}" if unit else "")
+
+
+def touchdown_opt(root):
+    d = _load(root, "results/opt/touchdown.json")
+    sv = _load(root, "results/opt/servo.json")
+    if not d or "validation_test_seeds" not in d:
+        return ""
+    pt = d["validation_test_seeds"]["per_theta"]
+    confs = [("tilt_range_stop", "Tilt-range front stop (P0.1.2)"), ("adaptive_0.30mm", "Adaptive stop alone, 0.30 mm margin"),
+             ("adaptive_ff", "Adaptive stop 0.31 mm + optimised feed-forward"),
+             ("adaptive_ff_tuned_servo", "… + optimised servo")]
+    rows = []
+    for key, lab in confs:
+        cells = [_e(lab)]
+        tails = []
+        for th in ("35", "50", "75"):
+            v = pt.get(th, {}).get(key, {}).get("extra_tr_mm")
+            tails.append("—" if v is None else f"{v:.3f}")
+        v50 = pt.get("50", {}).get(key, {})
+        cells += [" / ".join(tails) + " mm", _f(v50.get("extra_in_mm"), 2, "mm"), _f(v50.get("oracle_ratio"), 2),
+                  _f(v50.get("oracle_P_rail_classB_mW"), 0, "mW")]
+        rows.append(cells)
+    lede = ("Ink the pencil draws at touchdown and lift that a rigid pen would not (within 30 ms of a transition), per stroke, on the "
+            "test seeds. The feed-forward uses sensors the pen already has: it pre-positions the stage in the air, cancels the measured "
+            "refill slide, switches the load bias at contact and detects contact early from the Hall sensor. Its structure was chosen with "
+            "adjoint gradients of a differentiable reduced model; its 11 parameters and the stop margin by Bayesian optimisation on P1. "
+            "The open risk is bounce: 1.7 contact transitions per pen-down against 1.2.")
+    t1 = _section("Optimised: touchdown and lift", _tags("SIM"), lede,
+                  _table(["Pen", "Tail ink per stroke, 35° / 50° / 75°", "In-stroke extra ink, 50°", "Correction left, 6 Hz 0.3 mm, 50°",
+                          "Drive power, 50°"], rows, (1, 2, 3, 4)),
+                  "results/opt/touchdown.json (opt/touchdown/; docs/opt_touchdown.md; DEC-026)")
+    if not sv or "recommended" not in sv:
+        return t1
+    rec = sv["recommended"].get("hall_1.0um", {})
+    base = sv.get("search", {}).get("hall_1.0um", {}).get("default", {})
+    tg = sv.get("test_grid", {}).get("hall_1.0um", {})
+    rows2 = []
+    for lab, blk, x, tgk in (("P0.1.2 servo", base, base.get("x", {}), "default"),
+                             ("Optimised servo", rec, rec.get("x", {}), "tuned")):
+        r = blk.get("res", {})
+        g = tg.get(tgk, {})
+        rows2.append([_e(lab), f"{x.get('servo_bw', float('nan')):.0f} Hz / {x.get('servo_zeta', float('nan')):.2f} / "
+                      f"{x.get('d_filt_hz', float('nan')):.0f} Hz / {x.get('ff_ref', float('nan')):.2f}",
+                      _f(r.get("track_um"), 1, "µm"), _f(r.get("P_rail_classB_mW"), 0, "mW"),
+                      f"{_f(r.get('pm'), 1)}° / {_f(r.get('pm_tol20'), 1)}°", _f(g.get("mean_ratio"), 3)])
+    lede2 = ("The stage's position servo, tuned by Bayesian optimisation for tracking against drive power, with every candidate held to "
+             "the loop-margin rule (phase margin ≥ 45°, gain margin ≥ 10 dB, and no worse than today's at ±20 % stage stiffness). "
+             "Proposed only: it must be re-run on the stage once it is identified on the bench.")
+    t2 = _section("Optimised: nib servo", _tags("SIM", "CALC"), lede2,
+                  _table(["Servo", "Integral corner / damping / derivative filter / feed-forward", "Tracking error", "Drive power",
+                          "Phase margin, nominal / ±20 %", "Correction left, test grid mean"], rows2, (2, 3, 4, 5)),
+                  "results/opt/servo.json (opt/touchdown/servo.py; DEC-027)")
+    return t1 + t2
+
+
+TRACKER_ROWS = [("oracle_band", "Limit: perfect knowledge of the 3–15 Hz tremor (not causal)"),
+                ("kfosc_internal", "Old tracker: Kalman on the page position, frozen"),
+                ("akf_grid", "Accelerometer tracker, random search on smooth writing"),
+                ("akf_robust", "Accelerometer tracker, random search, robust (previous default)"),
+                ("rep_robust", "Accelerometer tracker, robust objective optimised by backpropagation (proposed default)"),
+                ("rep_grid", "Accelerometer tracker, smooth-writing objective optimised by backpropagation"),
+                ("gru_old", "Learned network, whole-disturbance target (earlier)"),
+                ("gru_band", "Learned network, tremor-band target"),
+                ("hybrid", "Accelerometer tracker + learned authority gate")]
+
+
+def tracker_opt(root):
+    d = _load(root, "results/opt/tracker.json")
+    if not d or "test" not in d or "grid_summary" not in d["test"]:
+        return ""
+    G, A = d["test"]["grid_summary"], d["test"].get("aiguide_summary", {})
+    CS = (_load(root, "results/fusion/context.json") or {}).get("summary", {})   # sharp-writer shift of trackers not re-run here
+    ship = (d.get("summary") or {}).get("ship")
+    rows = []
+    for key, lab in TRACKER_ROWS:
+        v = G.get(key)
+        if not v:
+            continue
+        bc = v.get("by_condition", {})
+        hi = [bc.get(f"{f}Hz_{a}mm", {}).get("band_ratio", {}).get("mean") for f in (8, 10, 12) for a in ("0.3", "0.5")]
+        hi = [x for x in hi if x is not None]
+        dg = v.get("distortion_um_mean")
+        ds = (A.get(key, {}).get("distortion_um") or {}).get("mean") if key in A else None
+        if ds is None and key in CS:
+            ds = (CS[key].get("distortion_um") or {}).get("mean")
+        dist = "—" if dg is None else f"{dg:.0f} / " + ("—" if ds is None else f"{ds:.0f}") + " µm"
+        name = _e(lab) if key != ship else f"<b>{_e(lab)}</b>"
+        rows.append([name, _f(v.get("band_ratio_mean"), 2), "—" if not hi else f"{sum(hi) / len(hi):.2f}", dist,
+                     _f(v.get("path_um_mean"), 0, "µm")])
+    lede = ("The tracker decides what the stage cancels. It was rewritten so that its exact gradient (backpropagation through "
+            "time, the discrete adjoint of the filter) could tune all 23 settings on simulated writing, and to train learned trackers on "
+            "the right target. Tremor-band error left as a fraction of no correction on the test grid (lower is better); "
+            "“moves tremor-free writing”: on smooth grid writing / on sharper glyph writers. The gain is modest; no setting found "
+            "both the smooth-writing set's benefit and a small shift on sharp writers.")
+    return _section("Optimised: tremor tracker", _tags("SIM"), lede,
+                    _table(["Tracker", "Error left, 3–15 Hz, mean", "Error left, 8–12 Hz at 0.3–0.5 mm", "Moves tremor-free writing",
+                            "Path to the intended letters"], rows, (1, 2, 3, 4)),
+                    "results/opt/tracker.json (opt/tracker/; docs/opt_tracker.md)")
+
+
+def optimisation(root):
+    """Optimisation studies: hardware (opt/hardware), tracker (opt/tracker), touchdown and servo (opt/touchdown)."""
+    parts = []
+    for fn in ("hardware_opt", "tracker_opt", "touchdown_opt"):
+        f = globals().get(fn)
+        if f is not None:
+            parts.append(f(root))
+    return "".join(parts)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Simulation gallery: charts generated by the studies (copied into viewer/figures/ by viewer/build.py)
 # (file under the repository root, title, one-line caption, evidence tags, source)
 GALLERY = [
@@ -289,10 +429,12 @@ GALLERY = [
      ("SIM",), "s2r/"),
 ]
 GALLERY_OPT = [   # optimisation studies (shown when their figures exist)
-    ("results/opt/fig_hw_pareto.png", "Hardware optimisation: the trade-off",
-     "Worst-case stroke against drive power and mass for the designs the optimiser explored.", ("CALC", "SIM"), "opt/hardware/"),
     ("results/opt/fig_tr_ratio_vs_frequency.png", "Tracker optimisation: before and after",
-     "Tremor-band error left by the trackers tuned by backpropagation through time, against the earlier sets.", ("SIM",), "opt/tracker/"),
+     "Tremor-band error left against tremor frequency: the tracker settings re-optimised by adjoint gradients (proposed), the earlier sets, "
+     "the retrained learned trackers and the limit with perfect knowledge.", ("SIM",), "opt/tracker/"),
+    ("results/opt/fig_tr_pareto.png", "Tracker optimisation: the trade-off",
+     "Tremor removed against how far each tracker moves tremor-free writing (smooth / sharp writers). The adjoint sweeps trace the front; "
+     "no setting gets both the smooth-writing benefit and a small shift on sharp writing.", ("SIM",), "opt/tracker/"),
     ("results/opt/fig_td_tails.png", "Touchdown tails: before and after",
      "Extra ink at touchdown and lift, extra ink within strokes, and missing ink, with the tilt-range stop, the adaptive stop, "
      "and the stage feed-forward tuned by Bayesian optimisation.", ("SIM",), "opt/touchdown/"),

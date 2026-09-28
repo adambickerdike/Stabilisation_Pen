@@ -2,6 +2,8 @@
 
 **Status: calculation and simulation. Nothing here has been built or measured.** Every number carries a label:
 
+> **Update 2026-09-28, at the user's direction.** The user wants "properly inertial control and movement of the pen as best as we can, not just the nib moving". DEC-024 is reopened: the pen will have active inertial control of its body alongside the nib stage. The recommendation in §1 ("add nothing inertial") no longer stands as the product decision. Its numbers remain the data point for the 20 g pencil envelope. The optimisation study `opt/inertial` ([`opt_inertial.md`](opt_inertial.md), in progress) sets the module, its control with the nib stage, and the envelope it needs.
+
 | Label | Meaning |
 |---|---|
 | CALC | calculation from labelled inputs |
