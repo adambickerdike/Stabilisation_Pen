@@ -49,6 +49,19 @@ def ink_stats(r, tree):
             "path_rms_all_um": float(np.sqrt(np.mean(d_all ** 2)) * 1e6)}
 
 
+def ink_vs_rigid(r, rigid, tol=0.2e-3):
+    """Extra ink (drawn where the rigid pen drew nothing: tails and bridges) and missing ink (rigid-pen
+    ink the pencil did not draw), in mm, with a 0.2 mm nearest-point tolerance."""
+    def ink(res):
+        C = np.column_stack([res["Cx"], res["Cy"]]); n = res["contact"] > 0
+        return C, n, np.r_[0.0, np.linalg.norm(np.diff(C, axis=0), axis=1)]
+    C, n, s = ink(r)
+    Cr, nr, sr = ink(rigid)
+    d_extra, _ = cKDTree(Cr[nr]).query(C[n])
+    d_miss, _ = cKDTree(C[n]).query(Cr[nr])
+    return float(s[n][d_extra > tol].sum() * 1e3), float(sr[nr][d_miss > tol].sum() * 1e3)
+
+
 def main():
     rows = []
     for seed in SEEDS:
@@ -66,6 +79,7 @@ def main():
             orc = M.run(M.with_disturbance(sc1, d_clean), M.Controller(mode="oracle"), cfg, seed=seed + 1)
             e_n = M_eval(neu, ref); e_o = M_eval(orc, ref)
             st0, sto = ink_stats(ref, tree), ink_stats(orc, tree)
+            st0["extra_ink_mm"], st0["missing_ink_mm"] = ink_vs_rigid(ref, rigid)
             rows.append({"seed": seed, "margin_mm": None if mg is None else mg * 1e3, "strokes_rigid": n_strokes,
                          "no_tremor": st0, "oracle_6Hz_0.3mm": sto,
                          "oracle_ratio": e_o / e_n if e_n > 0 else float("nan"),
@@ -78,6 +92,8 @@ def main():
         summ[key] = {
             "tail_fraction_no_tremor": float(np.mean([r["no_tremor"]["tail_mm"] / r["no_tremor"]["ink_mm"] for r in rs])),
             "tail_mm_per_pen_down": float(np.mean([r["no_tremor"]["tail_mm"] / max(r["no_tremor"]["pen_downs"], 1) for r in rs])),
+            "extra_ink_mm_per_stroke": float(np.mean([r["no_tremor"]["extra_ink_mm"] / r["strokes_rigid"] for r in rs])),
+            "missing_ink_mm_per_stroke": float(np.mean([r["no_tremor"]["missing_ink_mm"] / r["strokes_rigid"] for r in rs])),
             "pen_downs_vs_rigid": float(np.mean([r["no_tremor"]["pen_downs"] / max(r["strokes_rigid"], 1) for r in rs])),
             "path_rms_all_um_no_tremor": float(np.mean([r["no_tremor"]["path_rms_all_um"] for r in rs])),
             "oracle_ratio": float(np.mean([r["oracle_ratio"] for r in rs])),
@@ -88,7 +104,11 @@ def main():
                                seeds={"handwriting": list(SEEDS)})
     provenance.write_json(OUT, {"meta": meta, "summary": summ, "rows": rows,
                                 "note": ("margin = front stop beyond the protrusion the tilt needs; the refill must also slide q cot(theta) "
-                                         "while the stage corrects, so small margins lose contact during correction")})
+                                         "while the stage corrects, so small margins lose contact during correction. tail_mm_per_pen_down "
+                                         "counts the touchdown and lift tails of one pen-down together, divided by the registered pen-downs "
+                                         "(bounces add pen-downs with the tilt-range stop; short lifts merge with the adaptive stop); "
+                                         "extra_ink_mm_per_stroke and missing_ink_mm_per_stroke compare with a rigid pen on the same writing "
+                                         "(0.2 mm tolerance) and divide by its stroke count")})
 
 
 def M_eval(res, ref):

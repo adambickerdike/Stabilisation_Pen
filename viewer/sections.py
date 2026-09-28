@@ -206,16 +206,18 @@ def tails(root):
     d = _load(root, "results/pencil/touchdown_tails.json")
     if not d:
         return ""
-    lab = {"tilt_range_stop": "Stop set for the whole tilt range (current CAD)", "adaptive_0.30mm": "Tilt-adaptive stop, 0.30 mm margin",
-           "adaptive_0.20mm": "Tilt-adaptive stop, 0.20 mm margin", "adaptive_0.10mm": "Tilt-adaptive stop, 0.10 mm margin"}
-    rows = [[lab[k], f"{100 * v['tail_fraction_no_tremor']:.1f} %", f"{v['tail_mm_per_pen_down']:.2f} mm", f"{v['oracle_ratio']:.2f}"]
+    lab = {"tilt_range_stop": "Whole tilt range (current CAD)", "adaptive_0.30mm": "Tilt-adaptive, 0.30 mm margin",
+           "adaptive_0.20mm": "Tilt-adaptive, 0.20 mm margin", "adaptive_0.10mm": "Tilt-adaptive, 0.10 mm margin"}
+    rows = [[lab[k], f"{v['extra_ink_mm_per_stroke']:.2f}", f"{v['missing_ink_mm_per_stroke']:.2f}", f"{v['oracle_ratio']:.2f}"]
             for k, v in d["summary"].items() if k in lab]
     lede = ("With the skid, a light spring pushes the refill out whenever the pen is lifted. If its front stop allows for every "
             "tilt, the ball lands first and slides while the refill retracts, drawing a tail at every touchdown and lift. "
             "A stop that follows the pen's tilt, set by a slow trim motor from the IMU, cuts the tails; the margin must still "
-            "leave the refill room to slide while the stage corrects.")
+            "leave the refill room to slide while the stage corrects. Ink is compared with a rigid pen on the same writing "
+            "(0.2 mm tolerance). The error ratio is the ink error with perfect disturbance knowledge divided by the "
+            "error with no correction; lower is better.")
     return _section("Touchdown tails and a tilt-adaptive stop", _tags("SIM"), lede,
-                    _table(["Front stop", "Tail ink, share of all ink", "Tail per touchdown", "Correction ratio, perfect intent"], rows, (1, 2, 3)),
+                    _table(["Front stop", "Extra ink per stroke, mm", "Missing ink per stroke, mm", "Error ratio"], rows, (1, 2, 3)),
                     "results/pencil/touchdown_tails.json (sim/pencil/diag_touchdown_tails.py)")
 
 

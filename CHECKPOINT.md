@@ -125,7 +125,7 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
 - **Simulated effect, pencil model P1.**
   - Oracle ratio: 0.19–0.26 at 0.1 mm tremor; 0.20–0.46 at 0.3 mm, with 16–65 % of the time at the travel limit.
   - Kalman: 0.85–0.92, and only at 8–12 Hz.
-- **Touchdown tails.** 0.87 mm per touchdown with the tilt-range front stop; 0.29 mm with a tilt-adaptive stop at 0.3 mm margin (oracle ratio 0.24 → 0.30).
+- **Touchdown tails.** About 1.1 mm of extra ink per stroke against a rigid pen with the tilt-range front stop; 0.33 mm with a tilt-adaptive stop at 0.3 mm margin (oracle ratio 0.24 → 0.30).
 - **Page sensor for guided mode.** ≥ 120 Hz at ≤ 10 ms is needed (guided/neutral 0.42), against 0.76 at 30 Hz. No fitting part was found.
 - **AI.**
   - Digital autocorrect: word errors 32 % → 10 % at 7 % recognition errors; ≤ 0.1 % of correct words changed.

@@ -43,7 +43,7 @@ This repository holds the research and development package: the audit of the sou
    - A nose skid carries the user's force and a light spring sets the nib force. The stage then holds 0.17 N instead of 0.76 N.
    - Four custom 2.6 mm piezo plates fit the 7.9 mm bore. They give ±277 µm of stroke under load at zero static power, in 12.2 g of CAD before wiring. A voice coil that fits would need 2.4 W.
    - The stroke margin is thin (±162 µm at −20 % tolerance). Tremor estimation is the same open problem as in Rev A.
-   - The skid causes touchdown tails. A tilt-adaptive front stop cuts them from 0.87 to 0.29 mm.
+   - The skid causes touchdown and lift tails: about 1.1 mm of extra ink per stroke. A tilt-adaptive front stop cuts this to 0.33 mm.
    - Paper capture needs a ≥ 120 Hz page sensor that does not yet exist at this size.
    - AI helps as a digital autocorrect (word errors 32 % → 10 %). Physical guidance toward AI-predicted letters does not help free writing: a correct prediction is already about 300 µm off, beyond break-even. Guidance toward known templates does help.
 6. **The simulator can be calibrated from the planned bench work, and the twin experiments say how well** (`docs/sim_to_real.md`, DEC-023).

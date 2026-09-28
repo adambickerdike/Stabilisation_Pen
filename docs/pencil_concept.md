@@ -181,21 +181,25 @@ What the table shows:
 - **Wrong predictions are safe.** The stage reaches its 0.40 mm stop and no further, and the ink moves at most 0.51 mm from the unguided run. 2.2 % of letters newly read as the wrong letter at full authority, and 0.3 % when gated. The next word is not disturbed.
 - **Micrographia is not restored physically**, in line with COR-10 and DEC-002.
 
-**Touchdown and lift tails: a finding for the mechanism.** The AI rerun on P1 showed a tail of about 0.87 mm at every touchdown and lift (SIM).
-- **Cause.** The refill's front stop covers the whole tilt range. At 50° the unloaded refill therefore stands 1.34 mm proud of where it writes. The ball lands first and slides by about 1.34 × cos 50° ≈ 0.86 mm while the refill retracts, and does the same in reverse at lift.
-- **Size.** This distorts letters more than the tremor does: unguided recognition is 0.79 with the tails and 0.93 without.
+**Touchdown and lift tails: a finding for the mechanism.** The AI rerun on P1 showed that the pen draws a tail each time the nib lands and each time it lifts (SIM).
+- **Cause.** The refill's front stop covers the whole tilt range. At 50° the unloaded refill therefore stands 1.34 mm proud of where it writes. The ball lands first and slides by up to 1.34 × cos 50° ≈ 0.86 mm while the refill retracts, and does the same in reverse at lift.
+- **Size.** Measured against a rigid pen on the same writing, this adds about **1.1 mm of ink per stroke**. It distorts letters more than the tremor does: unguided recognition is 0.79 with the tails and 0.93 without.
 - **Mitigation tested:** a front stop that follows the tilt, at the protrusion the current tilt needs plus a margin (`sim/pencil/diag_touchdown_tails.py`, `results/pencil/touchdown_tails.json`; SIM, 4 seeds; tilt constant, so tracking is perfect):
 
-| Front stop | Tail ink (share of all ink) | Tail per touchdown | Correction ratio, perfect intent, 6 Hz 0.3 mm |
+| Front stop | Extra ink per stroke, against a rigid pen | Missing ink per stroke | Correction ratio, perfect intent, 6 Hz 0.3 mm |
 |---|---|---|---|
-| Tilt-range stop (P0.1.2) | 13.4 % | 0.87 mm | 0.24 |
-| Tilt-adaptive, 0.30 mm margin | 2.9 % | 0.29 mm | 0.30 |
-| Tilt-adaptive, 0.20 mm margin | 2.3 % | 0.19 mm | 0.45 |
-| Tilt-adaptive, 0.10 mm margin | 2.0 % | 0.21 mm | 0.69 |
+| Tilt-range stop (P0.1.2) | 1.15 mm | 0.01 mm | 0.24 |
+| Tilt-adaptive, 0.30 mm margin | 0.33 mm | 0.01 mm | 0.30 |
+| Tilt-adaptive, 0.20 mm margin | 0.28 mm | 0.01 mm | 0.45 |
+| Tilt-adaptive, 0.10 mm margin | 0.31 mm | 0.09 mm | 0.69 |
 
-- **The margin cannot be small.** The refill must also slide q·cot θ while the stage corrects in the tilt plane (±0.25 mm at 50°). About **0.3 mm** is the working margin: it cuts the tails about threefold and keeps most of the correction.
+"Extra" is ink more than 0.2 mm from anything the rigid pen drew, divided by the rigid pen's stroke count. It includes short bridges where a quick lift no longer leaves the paper, which is why fewer pen-downs are registered with the adaptive stop. "Missing" is rigid-pen ink the pencil did not draw.
+
+- **The margin cannot be small.** The refill must also slide q·cot θ while the stage corrects in the tilt plane (±0.25 mm at 50°). About **0.3 mm** is the working margin:
+  - it cuts the extra ink about 3.5-fold and keeps most of the correction;
+  - at 0.1 mm the pen starts to lose ink.
 - **How to build it.** A slow trim actuator can set the stop from the IMU's tilt. A SQUIGGLE-class screw motor fits (2.8 × 2.8 × 6 mm, holds with power off; AMF-15). It was rejected as the tremor actuator because 1 M cycles last 35 h at 8 Hz, but tilt tracking uses only a few cycles a minute.
-- **Remaining.** A 0.29 mm tail per touchdown is still visible. Two firmware options could remove it: stage compensation of the axial slide during touchdown (Rev A's M1 has one; P1 does not) and an ink-aware touchdown profile. Both are untested. Fewer pen-down events are registered with the adaptive stop (0.88 of the rigid pen's count); whether stroke starts are lost needs checking.
+- **Remaining.** About 0.3 mm of extra ink per stroke is still visible. Two firmware options could remove it: stage compensation of the axial slide during touchdown (Rev A's M1 has one; P1 does not) and an ink-aware touchdown profile. Both are untested.
 
 **Digital autocorrect** (CALC; injected recognition errors; threshold 0.9):
 - At a character error rate of about 7 %, word error falls from **32 % to 10 %** on held-out sentences and from **30 % to 16 %** on note-like lines.
@@ -317,7 +321,7 @@ What the twin experiments also found:
 6. EXP-Q03: cell pulse discharge.
 7. EXP-Q06: loaded 1-axis rig (PL128.10, D1 refill, skid nose) on the stage-A rig, with the EXP-B09 cancellation protocol.
 8. EXP-Q07: 2-axis demonstrator in a 7.9 mm bore. It gates Rev P1.
-9. EXP-Q08 (new): touchdown and lift tails. Measure the ink at pen-down and pen-up on the EXP-Q06 rig with the tilt-range stop, then with a tilt-adaptive stop (a SQUIGGLE-class trim motor driven by the IMU tilt) at 0.2–0.4 mm margin. Include stroke-start loss and the correction ratio.
+9. EXP-Q08 (new): touchdown and lift tails. Measure the ink at pen-down and pen-up on the EXP-Q06 rig with the tilt-range stop, then with a tilt-adaptive stop (a SQUIGGLE-class trim motor driven by the IMU tilt) at 0.2–0.4 mm margin. Compare with a rigid reference pen on the same robot paths (extra and missing ink per stroke) and include the correction ratio.
 10. The claims studies: EXP-H01/E01 (separability), EXP-H02 (form factor), EXP-H06.
 
 ## 10. Open risks
@@ -327,7 +331,7 @@ What the twin experiments also found:
    - large tremor saturates the stage even with perfect intent.
 
    The pencil suits small tremor and guided writing.
-2. **Touchdown and lift tails.** With the tilt-range front stop, every touchdown and lift draws a tail of about 0.87 mm (SIM, P1). That is 13 % of the ink, and it matters more for legibility than the tremor. A tilt-adaptive stop with a 0.3 mm margin cuts the tail to 0.29 mm, at a small cost in correction. It needs a slow trim actuator and firmware, and the remaining tail is still visible (§6).
+2. **Touchdown and lift tails.** With the tilt-range front stop, the ball slides up to 0.86 mm at every touchdown and lift. That adds about 1.1 mm of ink per stroke against a rigid pen (SIM, P1), and it matters more for legibility than the tremor. A tilt-adaptive stop with a 0.3 mm margin cuts it to 0.33 mm, at a small cost in correction. It needs a slow trim actuator and firmware, and what remains is still visible (§6).
 3. **Intent separation.** It is unchanged from Rev A. The Kalman estimator helps only at 8 Hz and above with tremor of 0.3 mm or more (ratio 0.85–0.92), and it adds error on small tremor. Free-writing tremor cancellation still waits on EXP-H01/E01. Guided writing toward a *known* template (tracing, copying, drawing aids) is the credible first use; AI-predicted templates did not help on free writing (§6).
 4. **Drop survival.** Without snubbers and a compliant nose the plates fracture in a sideways 1 m drop. The PICMA material and diced-edge strength are unknown (EXP-Q04).
 5. **Driver.** No catalogue part is both low-power and rated for 2–2.6 µF. Until one is qualified, assist time is under 1.5 h.

@@ -419,21 +419,21 @@ The numba cache for this package goes to `sim/pencil/build/`, never `sim/pensim/
 
 ## 12. Addendum: touchdown and lift tails (lead, after the AI-guidance rerun on P1)
 
-The AI-guidance study reran its closed-loop cases on model P1 (`docs/ai_guidance.md` §4). It found that P1 draws an ink tail of about 0.87 mm at every touchdown and lift.
+The AI-guidance study reran its closed-loop cases on model P1 (`docs/ai_guidance.md` §4). It found that P1 draws an ink tail at every touchdown and lift: up to 0.86 mm of ball slide per event, about 1.1 mm of extra ink per stroke against a rigid pen.
 - **Cause.** The front stop (`design.protrusion_budget`) serves the whole tilt range, at a ball-centre protrusion of 2.06 mm. At 50° the unloaded refill stands 1.34 mm proud of its working point (P1 `s_min` −1.343 mm). The ball lands first and slides about 1.34 × cos 50° along the page while the refill retracts.
 - **Mitigation tested:** a tilt-adaptive front stop at the working protrusion plus a margin (`python3 -m sim.pencil.diag_touchdown_tails`, `results/pencil/touchdown_tails.json`; SIM, seeds 200–203, tilt constant):
 
-| Front stop | Tail ink | Tail per touchdown | Oracle ratio, 6 Hz 0.3 mm |
+| Front stop | Extra ink per stroke (vs rigid pen) | Missing ink per stroke | Oracle ratio, 6 Hz 0.3 mm |
 |---|---|---|---|
-| Tilt-range (P0.1.2) | 13.4 % | 0.87 mm | 0.24 |
-| Adaptive, 0.30 mm margin | 2.9 % | 0.29 mm | 0.30 |
-| Adaptive, 0.20 mm margin | 2.3 % | 0.19 mm | 0.45 |
-| Adaptive, 0.10 mm margin | 2.0 % | 0.21 mm | 0.69 |
+| Tilt-range (P0.1.2) | 1.15 mm | 0.01 mm | 0.24 |
+| Adaptive, 0.30 mm margin | 0.33 mm | 0.01 mm | 0.30 |
+| Adaptive, 0.20 mm margin | 0.28 mm | 0.01 mm | 0.45 |
+| Adaptive, 0.10 mm margin | 0.31 mm | 0.09 mm | 0.69 |
 
 - **Why the margin cannot shrink.** It must cover the slide q·cot θ that the stage needs in the tilt plane (±0.25 mm at 50° for ±0.30 mm), or correction loses contact.
 - **Proposed hardware.** A SQUIGGLE-class trim motor (AMF-15) sets the stop from the IMU tilt. It cycles only with tilt changes, so its 1 M-cycle life is not the limit it is for tremor.
 - **Open.**
-  - A 0.29 mm tail remains.
+  - About 0.33 mm of extra ink per stroke remains, and at a 0.1 mm margin the pen starts to lose ink (0.09 mm per stroke).
   - Stage compensation of the axial slide during touchdown (M1 `axial_comp`) is not in P1.
   - The adaptive runs register fewer pen-downs than the rigid pen (0.88 of its count), so stroke-start loss needs checking.
   - All of this is EXP-Q08 (new).

@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "simulation (pencil model P1, synthetic handwriting; tilt constant, so the adaptive stop tracks it perfectly)",
-    "generated_utc": "2026-09-27T23:12:51+00:00",
-    "git_revision": "e9c747a-dirty",
+    "generated_utc": "2026-09-28T00:30:02+00:00",
+    "git_revision": "b6c3361-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "diag_touchdown_tails.py",
@@ -23,6 +23,8 @@
     "tilt_range_stop": {
       "tail_fraction_no_tremor": 0.1337669793353975,
       "tail_mm_per_pen_down": 0.8657309075978062,
+      "extra_ink_mm_per_stroke": 1.1491345156112298,
+      "missing_ink_mm_per_stroke": 0.011143956271978525,
       "pen_downs_vs_rigid": 1.375,
       "path_rms_all_um_no_tremor": 295.84597869300194,
       "oracle_ratio": 0.2393060805272707,
@@ -31,6 +33,8 @@
     "adaptive_0.30mm": {
       "tail_fraction_no_tremor": 0.029029113130945326,
       "tail_mm_per_pen_down": 0.2851336408205431,
+      "extra_ink_mm_per_stroke": 0.3313833579583674,
+      "missing_ink_mm_per_stroke": 0.012722008875301732,
       "pen_downs_vs_rigid": 0.875,
       "path_rms_all_um_no_tremor": 275.9068596567271,
       "oracle_ratio": 0.295587762568101,
@@ -39,6 +43,8 @@
     "adaptive_0.20mm": {
       "tail_fraction_no_tremor": 0.022743057119221692,
       "tail_mm_per_pen_down": 0.186891598169653,
+      "extra_ink_mm_per_stroke": 0.28242387616519377,
+      "missing_ink_mm_per_stroke": 0.01353462878509198,
       "pen_downs_vs_rigid": 0.9583333333333334,
       "path_rms_all_um_no_tremor": 275.8524260126775,
       "oracle_ratio": 0.45002582609352987,
@@ -47,6 +53,8 @@
     "adaptive_0.10mm": {
       "tail_fraction_no_tremor": 0.019866971783481128,
       "tail_mm_per_pen_down": 0.21441713078034882,
+      "extra_ink_mm_per_stroke": 0.3104464803410992,
+      "missing_ink_mm_per_stroke": 0.08953130077411105,
       "pen_downs_vs_rigid": 0.75,
       "path_rms_all_um_no_tremor": 273.09751671979006,
       "oracle_ratio": 0.6859251370800369,
@@ -62,7 +70,9 @@
         "ink_mm": 37.91145807858123,
         "tail_mm": 5.148136244661088,
         "pen_downs": 6,
-        "path_rms_all_um": 291.9507262363607
+        "path_rms_all_um": 291.9507262363607,
+        "extra_ink_mm": 5.042180074759874,
+        "missing_ink_mm": 0.1309930526180708
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 40.15499088438619,
@@ -81,7 +91,9 @@
         "ink_mm": 33.99877251315946,
         "tail_mm": 1.0071680576146247,
         "pen_downs": 4,
-        "path_rms_all_um": 265.1577871714691
+        "path_rms_all_um": 265.1577871714691,
+        "extra_ink_mm": 1.3919332243078797,
+        "missing_ink_mm": 0.13935594697453732
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 37.140199889449306,
@@ -100,7 +112,9 @@
         "ink_mm": 33.80502846855774,
         "tail_mm": 0.7979858992302424,
         "pen_downs": 4,
-        "path_rms_all_um": 265.2074226875624
+        "path_rms_all_um": 265.2074226875624,
+        "extra_ink_mm": 1.2194097826169878,
+        "missing_ink_mm": 0.1550992216143418
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 37.97199615721115,
@@ -119,7 +133,9 @@
         "ink_mm": 33.65357819317451,
         "tail_mm": 0.6770604419771753,
         "pen_downs": 4,
-        "path_rms_all_um": 264.00483838654907
+        "path_rms_all_um": 264.00483838654907,
+        "extra_ink_mm": 2.3017664458656393,
+        "missing_ink_mm": 0.9064253942508753
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 38.845818723239475,
@@ -138,7 +154,9 @@
         "ink_mm": 38.24362342613279,
         "tail_mm": 5.044440690731756,
         "pen_downs": 6,
-        "path_rms_all_um": 299.54394264112045
+        "path_rms_all_um": 299.54394264112045,
+        "extra_ink_mm": 4.85407971449945,
+        "missing_ink_mm": 0.0473102477335856
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 39.669786566593146,
@@ -157,7 +175,9 @@
         "ink_mm": 34.39194888863381,
         "tail_mm": 0.9478911464774585,
         "pen_downs": 5,
-        "path_rms_all_um": 281.0907034007596
+        "path_rms_all_um": 281.0907034007596,
+        "extra_ink_mm": 1.4614603167023108,
+        "missing_ink_mm": 0.06419619503029039
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 36.72437056300297,
@@ -176,7 +196,9 @@
         "ink_mm": 34.18656900902321,
         "tail_mm": 0.7573458049995856,
         "pen_downs": 4,
-        "path_rms_all_um": 281.04200711220176
+        "path_rms_all_um": 281.04200711220176,
+        "extra_ink_mm": 1.2270684356849932,
+        "missing_ink_mm": 0.05361847270426697
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 38.26539642941205,
@@ -195,7 +217,9 @@
         "ink_mm": 34.108828335738266,
         "tail_mm": 0.6644437409931937,
         "pen_downs": 3,
-        "path_rms_all_um": 278.5104272543618
+        "path_rms_all_um": 278.5104272543618,
+        "extra_ink_mm": 1.1332955071044761,
+        "missing_ink_mm": 0.09511987019200242
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 39.28003504734862,
@@ -214,7 +238,9 @@
         "ink_mm": 41.16460077410039,
         "tail_mm": 5.5843938607553785,
         "pen_downs": 6,
-        "path_rms_all_um": 294.3616275415185
+        "path_rms_all_um": 294.3616275415185,
+        "extra_ink_mm": 5.3475986886456495,
+        "missing_ink_mm": 0.0
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 42.71359985942677,
@@ -233,7 +259,9 @@
         "ink_mm": 37.012224199782146,
         "tail_mm": 1.0732213674476079,
         "pen_downs": 3,
-        "path_rms_all_um": 278.0681253019914
+        "path_rms_all_um": 278.0681253019914,
+        "extra_ink_mm": 1.3392147563368548,
+        "missing_ink_mm": 0.0
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 38.94764991735114,
@@ -252,7 +280,9 @@
         "ink_mm": 36.766542169053785,
         "tail_mm": 0.8176401294994836,
         "pen_downs": 5,
-        "path_rms_all_um": 277.97066282931286
+        "path_rms_all_um": 277.97066282931286,
+        "extra_ink_mm": 1.096661704623977,
+        "missing_ink_mm": 0.0
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 39.74123742439758,
@@ -271,7 +301,9 @@
         "ink_mm": 36.49155944963886,
         "tail_mm": 0.6984916780243127,
         "pen_downs": 3,
-        "path_rms_all_um": 273.75107832149234
+        "path_rms_all_um": 273.75107832149234,
+        "extra_ink_mm": 0.12681666715642037,
+        "missing_ink_mm": 0.0
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 39.694300362983114,
@@ -290,7 +322,9 @@
         "ink_mm": 37.96613570962428,
         "tail_mm": 5.000570986199127,
         "pen_downs": 6,
-        "path_rms_all_um": 297.52761835300794
+        "path_rms_all_um": 297.52761835300794,
+        "extra_ink_mm": 4.924826668089921,
+        "missing_ink_mm": 0.0
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 41.10547654502647,
@@ -309,7 +343,9 @@
         "ink_mm": 34.21656290259064,
         "tail_mm": 1.0242715913014653,
         "pen_downs": 3,
-        "path_rms_all_um": 279.3108227526882
+        "path_rms_all_um": 279.3108227526882,
+        "extra_ink_mm": 1.555930348765784,
+        "missing_ink_mm": 0.0
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 37.21667035569053,
@@ -328,7 +364,9 @@
         "ink_mm": 33.986193974439416,
         "tail_mm": 0.7808217628850331,
         "pen_downs": 4,
-        "path_rms_all_um": 279.18961142163295
+        "path_rms_all_um": 279.18961142163295,
+        "extra_ink_mm": 1.341195997258468,
+        "missing_ink_mm": 0.007836366242862883
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 38.73383342070849,
@@ -347,7 +385,9 @@
         "ink_mm": 33.88038567098267,
         "tail_mm": 0.702274818863798,
         "pen_downs": 3,
-        "path_rms_all_um": 276.123722916757
+        "path_rms_all_um": 276.123722916757,
+        "extra_ink_mm": 1.4475372877165247,
+        "missing_ink_mm": 0.43095554794289903
       },
       "oracle_6Hz_0.3mm": {
         "ink_mm": 38.66012993553932,
@@ -359,5 +399,5 @@
       "oracle_lost_contact_frac": 0.0044
     }
   ],
-  "note": "margin = front stop beyond the protrusion the tilt needs; the refill must also slide q cot(theta) while the stage corrects, so small margins lose contact during correction"
+  "note": "margin = front stop beyond the protrusion the tilt needs; the refill must also slide q cot(theta) while the stage corrects, so small margins lose contact during correction. tail_mm_per_pen_down counts the touchdown and lift tails of one pen-down together, divided by the registered pen-downs (bounces add pen-downs with the tilt-range stop; short lifts merge with the adaptive stop); extra_ink_mm_per_stroke and missing_ink_mm_per_stroke compare with a rigid pen on the same writing (0.2 mm tolerance) and divide by its stroke count"
 }

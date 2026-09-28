@@ -12,6 +12,7 @@ Contents:
 - §4–§9 Studies EXP-H01…H06
 - §10 Ethics, regulatory and data-protection notes
 - §11 Sample-size summary
+- §12 EXP-A02: guidance acceptance with people (pencil concept). It follows §10–§11 so that existing references to those sections stay valid.
 
 ---
 
@@ -73,6 +74,7 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-H04 | Does practice with fading guidance, error amplification or fading cues improve **unassisted** writing, with retention and transfer? | H04-A novices 72 (3 × 24); H04-B PD with micrographia: feasibility 36 (3 × 12), then efficacy 102 (3 × 34) | Parallel randomised controlled trials, assessor-blinded | H04-A: unassisted shape error at 7 days; H04-B: unassisted letter height at 6-week retention | **LI** | Stage C (home use for H04-B); G-S, G-C |
 | EXP-H05 | What ink distortions and quality changes can people perceive? | 30 raters (+ 10 writers judging their own writing); H05b haptic 16 | Psychophysics, 2AFC adaptive staircases, blinded stimuli | 75 %-correct thresholds (10th percentile across raters) | sets REQ-CTRL-005 and REQ-MECH-005 | Stage A onward |
 | EXP-H06 | While active, does the pen reduce tremor in the deposited ink compared with sham and off? | 42 with action/essential tremor (+ 12 healthy for device burden) | Randomised 3-period crossover (ON / NEUTRAL / OFF), participant, operator and assessor blinded | H06-F: ink tremor amplitude in free writing; or H06-G: path distance in guided tasks. GM ratio ON/NEUTRAL | **IA** | Stage C (a pilot of 10 at Stage B); G-S |
+| EXP-A02 (§12) | Do people's letters sit close enough to a personal template for AI-template guidance to help, and do people accept known- and AI-template guidance? | 60 (20 healthy, 20 ET, 20 PD) | A02-P: passive measurement; A02-G: within-subject, counterbalanced guidance conditions, reader-blinded | Legibility with gated AI templates vs none; template distance | **IA** (A02-G); measurement (A02-P) | A02-P with the passive pen (Stage A); A02-G after a G-S-equivalent gate for the build; DEC-020 |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3.
 
@@ -861,10 +863,10 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (9 rows fo
 
 These notes are for planning. The project lead must confirm each item with the institution's ethics office, a regulatory adviser and a data-protection officer for the jurisdiction where the studies run.
 
-- **Ethics approval is required before any participant is enrolled.** That includes EXP-B06 (bench, participants), H01 (passive pen), H02 and H03 (non-active mock-ups), H05 (raters) and H04/H06 (active investigational device).
+- **Ethics approval is required before any participant is enrolled.** That includes EXP-B06 (bench, participants), H01 (passive pen), H02 and H03 (non-active mock-ups), H05 (raters), H04/H06 (active investigational device) and A02 (the passive part as H01; the guided part with an active device, handled like H04/H06 below).
 - **Investigational device.**
   - A pen intended to compensate for a disability (tremor) is likely to be a **medical device** by intended purpose. For example, the EU MDR definition covers "alleviation of, or compensation for, … a disability".
-  - H04 and H06 are therefore likely to be **clinical investigations of a medical device**: EU MDR Art. 62 ff. / UK MDR 2002 / US 21 CFR 812 (an IRB significant or non-significant risk determination).
+  - H04, H06 and the guided part of A02 (A02-G) are therefore likely to be **clinical investigations of a medical device**: EU MDR Art. 62 ff. / UK MDR 2002 / US 21 CFR 812 (an IRB significant or non-significant risk determination).
   - They follow **ISO 14155** (good clinical practice for device investigations). The device's risk file follows **ISO 14971**; firmware follows an **IEC 62304**-style process; usability follows **IEC 62366-1** (H02 and H03 serve as formative evaluations).
   - Electrical and thermal safety: **IEC 60601-1** or **IEC 62368-1**, as determined. Touch temperature ≤ 43 °C (AMF-34/35). The IEC 62368-1 table is still to be verified (AMF notes).
   - Skin-contact materials: **ISO 10993-1** evaluation for intact skin, limited or prolonged contact, or materials with a documented history of safe use.
@@ -879,7 +881,7 @@ These notes are for planning. The project lead must confirm each item with the i
   - Data minimisation: standard prompts; no personal content in free writing; video framed on hands only; no signatures (a pseudo-signature task instead).
   - Access-controlled storage in the approved jurisdiction; retention periods per `records/README.md`; participants' rights explained.
   - Optional consents as in §3.3, including model training. Withdrawal is honoured for data not yet incorporated into a released model, as stated in the consent.
-- **Registration and transparency.** H04 and H06 are registered prospectively on a trial registry; H01, H02, H03 and H05 are pre-registered on OSF. Results are published per group, including null results.
+- **Registration and transparency.** H04, H06 and A02-G are registered prospectively on a trial registry; H01, H02, H03, H05 and A02-P are pre-registered on OSF. Results are published per group, including null results.
 - **Participant burden and accessibility.** Sessions ≤ 90 min with breaks; large-print materials; travel reimbursement; home visits for H04-B where needed.
 
 ---
@@ -897,5 +899,104 @@ These notes are for planning. The project lead must confirm each item with the i
 | EXP-H04-B | feasibility 36 (3 × 12); efficacy 102 (3 × 34) | δ 10 %, σ 15 %, ANCOVA ρ 0.6, α 0.025 per comparison, power 0.8 → 29 per arm (t) + 15 % |
 | EXP-H05 | 30 raters (+ 16 haptic) | ±0.37 SD precision on the mean log-threshold; 10th percentile from a log-normal fit |
 | EXP-H06 | 42 (+ 12 healthy) | Paired, δ = ln(1/0.7), σ_D = 2δ (COR-09) → 34 (t) + 15 %, rounded to 6 Williams sequences |
+| EXP-A02 | 60 (20 per group) | Paired legibility, σ_D 8 points, δ 4 points → 34 (t); agency non-inferiority, σ_D 1.0, margin 0.5 → 34 (t); ≈ 9000 AI-guided letters keep the upper bound of a 0.3 % misread excess below 1 % |
 
 All assumed variances are replaced by pilot or internal-pilot estimates before the full studies. Every re-estimation rule is pre-registered.
+
+---
+
+## 12. EXP-A02: Guidance acceptance with people (pencil concept)
+
+### Question and what it gates
+
+Does physical guidance toward a template help people write, and do they accept it?
+
+- **Known templates** (copying set text, tracing) are the credible use. In simulation an oracle template cut the pencil model P1's letter path error by 12 % (21 % on the writing alone), and the circle of the feature course from 348 to 174 µm.
+- **AI-predicted templates** on free writing: the app predicts letters two ahead and draws them in the user's style. In simulation a correctly predicted letter in the user's style lay about 300 µm from what the writer meant, beyond the break-even template error of 265 µm on P1 (233–334 µm on M1). AI templates therefore gave no net benefit, while wrong templates stayed bounded by the travel (`docs/ai_guidance.md` §3.2, §4).
+
+All of this comes from synthetic writers (glyph fonts, synthetic tremor). The break-even has to be compared with real within-writer variability.
+
+- **Requirement:** REQ-PNC-007: guidance is limited to the travel and scaled by the calibrated confidence, and makes no more than 1 % of letters read as another letter when gated.
+- **Decision:** DEC-020 (revisit trigger "EXP-A02: people's letters against personal templates").
+- **Claim type:** the guided conditions are immediate assistance (IA, §1 rule R1); the template distance is a measurement. No lasting-improvement claim comes from this study.
+
+### Two parts
+
+| Part | Device | What it measures | Needs |
+|---|---|---|---|
+| **A02-P (passive)** | The EXP-H01 instrumented passive pen, no actuation. It can run inside EXP-H01 sessions under the same consent. | Within-writer letter variability: how far each unguided letter lies from the participant's personal template (AC-A02-02) | Ethics as for H01 |
+| **A02-G (guided)** | A pencil build (Rev P1) that has passed a safety gate equivalent to G-S. The Rev A pen after G-S, with q_lim set to 0.30 mm, may substitute: the simulated order of the conditions was the same on P1 and on Rev A (`docs/ai_guidance.md` §4.2). | Legibility, misreads, agency, "fighting", deviation and fatigue under the guidance conditions (AC-A02-01, AC-A02-03) | A G-S-equivalent gate for the build; ethics as a device investigation (§10) |
+
+**Pre-specified adaptive rule.** If the lower 95 % bound of the healthy adults' template distance in A02-P exceeds 265 µm, A02-G drops its plain AI-template arm and keeps the arm with deliberately wrong templates, which AC-A02-01 needs. AC-A02-03 is then not tested, and DEC-020 stands.
+
+### Population
+
+- Healthy adults, ET and PD (§3.1 groups; inclusion and exclusion as §3.2), **20 per group**. `docs/ai_guidance.md` §9 proposes 12–20.
+- ET and PD participants are not screened on tremor amplitude. Their amplitude (§3.6 method) is recorded as a covariate.
+- A02-P may also use the sentence copying of EXP-H01 participants, if their consent covers it.
+
+### Design (A02-G)
+
+- One session of about 90 min with breaks. Style calibration by a pangram, as in `docs/ai_guidance.md` §3.2.
+- **Task C, copying known text:** no guidance vs known-template guidance (the template is the known text in the participant's calibrated style).
+- **Task D, dictated sentences (free writing):**
+  - no guidance;
+  - AI-template guidance, gated (c_min 0.5, c_full 0.8; `config/pencil.yaml` `ai.*`);
+  - the same, with 10 % of the templates replaced by the most likely wrong letter.
+- Condition order is counterbalanced within each task (Williams designs). The same sentences are written in every condition of a task, in different orders, so that letters can be paired by position.
+- Participants are told that "the pen may help in some blocks". The operator sees only coded conditions. Readers and the ink analysis are blinded (§3.5).
+- Firmware: the guided core with the template rules T1–T8 as implemented at the time (`docs/ai_guidance.md` §7.3; T5–T7 are untested in simulation).
+
+### Outcomes
+
+- **Primary (IA):** legibility of Task D with gated AI templates vs no guidance: naive readers' transcription, % of words correct (§3.6). Recogniser CER is secondary.
+- **Key secondary:**
+  - letters newly read as another letter under gated AI guidance (AC-A02-01);
+  - template distance from A02-P (AC-A02-02);
+  - agency and perceived control ("the pen did what I intended", 7-point item; §3.6).
+- **Secondary:**
+  - path distance to the participant's own unguided letters;
+  - in Task C, path distance to the known template (M-path);
+  - "fighting": axial force rising during guidance, and the time at the soft limit;
+  - maximum stage displacement;
+  - Borg CR10 fatigue; preference.
+
+### Sample size
+
+- **Legibility (paired):** σ_D 8 percentage points (assumption), δ 4 points, two-sided α 0.05, power 0.8 → n = 34 (exact t), pooled over the groups.
+- **Agency non-inferiority:** σ_D 1.0 point, margin 0.5, one-sided α 0.025, power 0.8 → n = 34.
+- **Misreads:** ≥ 150 AI-guided letters per participant give about 9000 letters. With 4 % discordant letter pairs and a design effect of 2, a true excess of 0.3 % has an upper 95 % bound of about 0.8 % (CALCULATION), below the 1 % limit.
+- **Enrolment: 60** (20 per group). This covers the above with attrition; per-group results are descriptive.
+
+### Analysis
+
+- Mixed models with the participant as a random effect: legibility ~ condition + order + group; agency likewise.
+- Misreads are paired by letter position: excess = (misread only when guided − misread only when unguided) / AI-guided letters, with a cluster bootstrap by participant for the upper bound.
+- Template distance, per participant: the RMS over letters of the distance between each unguided letter and the personal template (own exemplars, estimated style, anchored at touchdown; `aiguide/template.py`). For the tremor groups the tremor band is first removed by a zero-phase band-stop at f_pk ± 1.5 Hz (§3.6). Median per group with a bootstrap CI.
+- Results are reported per group (R5, REQ-USR-001).
+
+### Adverse events and stopping
+
+As §3.4. In addition, a participant who finds the nib motion distressing stops; every stage-at-stop event is logged; any unexpected motion is reported as a device deficiency.
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-A02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-A02-01 | REQ-PNC-007 | Letters newly read as a different letter under confidence-gated AI-template guidance (including the 10 % deliberately wrong templates): misread when guided but read correctly in the same participant's unguided copy of the same sentence, minus the reverse, over all AI-guided letters (blinded readers); upper 95 % bound | ≤ 1 % | requirement | REQ-PNC-007 (≤ 1 % of letters when gated); prediction 0.3 % gated and 2.2 % at full authority for letters under wrong templates (pencil model P1, results/ai/guidance.json safety.flips; SIMULATION, synthetic writers) | DEC-020 (AI-template guidance); REQ-PNC-007; template rules T1-T8 |
+| AC-A02-02 | — | Template distance (EXP-A02-P): RMS distance between each unguided letter and the participant's personal template for it (own exemplars, estimated style, anchored at touchdown, as aiguide/template.py); median over healthy participants (reported per group; tremor groups with the tremor band removed) | ≤ 265 µm | hypothesis | break-even template error of guidance on the pencil model P1 (265 µm; 233-334 µm on M1; results/ai/guidance.json breakeven; SIMULATION); synthetic writers give 239 µm (clean ink) to about 300 µm (6 Hz 0.3 mm tremor) (results/ai/style_templates.json) -> expected FAIL for tremor groups | DEC-020 revisit trigger (people's letters against personal templates); AI arms of EXP-A02-G |
+| AC-A02-03 | — | Decision rule for AI-template guidance (dictated free writing, gated vs no guidance): legibility (blinded transcription, % words correct) improves with the 95 % CI of the paired difference excluding zero, AND agency ('the pen did what I intended', 7-point) is not reduced (lower 95 % bound of the paired difference ≥ -0.5 point) | both met | hypothesis | docs/ai_guidance.md s9 decision rule; -0.5-point non-inferiority margin engineering judgement. Prediction: no net benefit (P1 gated AI guidance +2.5 % path error, recognition 0.78 vs 0.79 unguided; results/ai/guidance.json; SIMULATION) -> expected FAIL | DEC-020 (keep or drop AI-template guidance) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-A02).
+<!-- AC-TABLE:EXP-A02:END -->
+
+### What changes which decision
+
+| Result | Consequence |
+|---|---|
+| Template distance ≤ 265 µm (AC-A02-02 passes) | AI templates could help in principle; A02-G decides. |
+| Template distance above 265 µm (expected with tremor) | Physical guidance toward AI templates is not pursued for free writing; DEC-020 stands. |
+| AC-A02-03 fails | Ship known-template guidance and digital correction only (DEC-020). |
+| AC-A02-03 and AC-A02-01 pass | AI-template guidance may be offered as a gated option. Any claim needs an H06-type crossover first, and the freedom-to-operate review of PAT-01 comes before any guided-letter feature (`docs/ai_guidance.md` §8). |
+| AC-A02-01 fails | REQ-PNC-007 is not met. Tighten c_min, the T3 corridor and the T5 drop rule, and re-test before any AI-template guidance. |

@@ -12,9 +12,9 @@ Executed results will live only in [`records/`](records/README.md).
 
 | File | Content |
 |---|---|
-| [`bench_protocols.md`](bench_protocols.md) | 23 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01. Each gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
-| [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
-| [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 221 rows, 29 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
+| [`bench_protocols.md`](bench_protocols.md) | 32 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01, A03, and the pencil-class Q01–Q08 (§0.11 holds their conventions; the A03 and Q sections are compact: purpose and gates, set-up, procedure, measurands with uncertainty, criteria, decision rule). Each of the others gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
+| [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. §12: EXP-A02, guidance acceptance with people (pencil concept). The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
+| [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 256 rows, 39 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
 | [`prototype_stages.md`](prototype_stages.md) | Stages A (bench rig with commercial actuators), B (tethered Rev A pen), C (untethered pen), D (product-form candidates, DEC-008). Gates G-A, G-B, G-S (safety before any participant), G-C, G-D and the claim gates C-IA, C-LI, C-CAP, each defined by criterion ids. Also: what each stage may and may not claim, a mermaid dependency graph, and the mapping to the phases of `docs/plan.md`. |
 | [`records/README.md`](records/README.md) | How executed records are stored: layout, naming, mandatory `record.yaml` metadata, write-once raw data with SHA-256 manifests, verdict files, retention, human-data rules. |
 | [`check_criteria.py`](check_criteria.py) | Checks the CSV (unique ids, requirement ids exist in `docs/requirements.csv`, status and direction vocabulary, coverage) and regenerates the criteria tables embedded in the two protocol documents. Edit the CSV, then run `python3 validation/check_criteria.py`; add `--check` to only check. |
@@ -30,6 +30,7 @@ Executed results will live only in [`records/`](records/README.md).
   - EXP-Enn: estimation;
   - EXP-Cnn: capture and recognition;
   - EXP-Ann: AI;
+  - EXP-Qnn: pencil-class concept (Rev P0) components and stages;
   - EXP-Hnn: human studies.
 
   The ids used in `docs/` for B01–B10, S01, S02, M02, M03, E01, E02, H01–H05 are kept. EXP-H06 is the immediate-assistance crossover that `docs/features.md` calls "immediate-assistance crossover study".
@@ -38,9 +39,9 @@ Executed results will live only in [`records/`](records/README.md).
 
   | Status | Meaning | Rows |
   |---|---|---|
-  | `requirement` | The threshold is copied from `docs/requirements.csv`; `requirement_id` is set | 77 |
-  | `derived` | The threshold is computed from a requirement, literature value, simulation result or design rule (ICD, decision log), or chosen to protect another criterion (metrology qualification). The derivation is in `basis` | 35 |
-  | `hypothesis` | A prediction or proposed pass line about the device or the world, often engineering judgement, that the experiment tests | 109 |
+  | `requirement` | The threshold is copied from `docs/requirements.csv`; `requirement_id` is set | 86 |
+  | `derived` | The threshold is computed from a requirement, literature value, simulation result or design rule (ICD, decision log), or chosen to protect another criterion (metrology qualification). The derivation is in `basis` | 39 |
+  | `hypothesis` | A prediction or proposed pass line about the device or the world, often engineering judgement, that the experiment tests. Thresholds taken from twin experiments (`sim_to_real.md`) say in `basis` that they are proposed design values, not measurements | 131 |
 
 - **`direction`:** `<=`, `>=`, `<`, `>`, `=`, `within` (inclusive interval) or `pass/fail` (a conformity check described in `metric`).
 - **Decision rules:** simple acceptance when TUR ≥ 4, otherwise guarded acceptance. Safety criteria always use guarded acceptance (`bench_protocols.md` §0.5).
@@ -48,17 +49,17 @@ Executed results will live only in [`records/`](records/README.md).
 
 ## 3. Coverage
 
-- **Experiments:** 29 (23 bench or offline, 6 human-participant).
-- **Criteria:** 221.
-- **Requirements:** all 53 requirements in `docs/requirements.csv` have at least one criterion.
+- **Experiments:** 39 (32 bench or offline, 7 human-participant).
+- **Criteria:** 256.
+- **Requirements:** all 61 requirements in `docs/requirements.csv` have at least one criterion, including REQ-PNC-001…008.
 - **Model validation:** the physics.md model-validation table is covered for every model:
   - P-1…P-4: AC-B04-05, AC-B06-03;
-  - P-5…P-9: AC-B01-03, AC-B02-01;
-  - P-10…P-12: AC-B05-01, AC-B05-03;
+  - P-5…P-9: AC-B01-03, AC-B02-01, AC-B02-04, AC-B02-05;
+  - P-10…P-12: AC-B05-01, AC-B05-03, AC-B05-15;
   - P-13: AC-B06-01;
   - P-14…P-16: AC-B03-01, AC-B03-04;
   - P-18: AC-B07-04, AC-B07-05;
-  - P-19…P-24: AC-B09-03.
+  - P-19…P-24: AC-B09-03, with AC-B09-16…18.
 - **Decision revisit triggers:** every trigger in `docs/decisions.md` that names an experiment has a protocol:
   - DEC-003: B01, B03;
   - DEC-004: B08;
@@ -73,7 +74,12 @@ Executed results will live only in [`records/`](records/README.md).
   - DEC-013: C01;
   - DEC-015: F01, F02;
   - DEC-016: E01, E02;
-  - DEC-018: H02 (visibility of the writing point).
+  - DEC-018: H02 (visibility of the writing point);
+  - DEC-019: Q02, Q04, Q06, Q07, H03;
+  - DEC-020: A02, A03;
+  - DEC-021: S01 (AC-S01-08);
+  - DEC-022: Q08;
+  - DEC-023: B03, B05, B01/B02 through `s2r`, judged in B09 (AC-B09-03, -16…18).
 
 ## 4. The three most decision-critical experiments
 
@@ -111,6 +117,10 @@ Stating these in advance keeps the plan honest. Each will be measured, not assum
 | AC-C02-08, AC-S02-06 | The ICD lacks the uncertainty and nib-offset fields |
 | AC-E01-08 (REQ-ML-001: no spikes > 100 µm) | The synthetic TCN shows 125 µm corner spikes (REQ-CTRL-005 current estimate) |
 | AC-B04-03, AC-B05-12, AC-F01-03/04, AC-F02-05 (class 5) | Requirement text conflicts with the design (§6). AC-F02-01 is also flagged, but 40 kHz meets "≥ 20 kHz" |
+| AC-Q07-01 (REQ-PNC-003, pencil) | Loaded stroke ±277 µm at 50°, ±162 µm at −20 % part tolerance and ±48 µm at 35°, against ±0.30 mm. The ±0.30 mm needs F_c ≤ 0.14 N at 50°, below the 0.15 N design value (EXP-Q02) |
+| AC-Q08-01 (REQ-PNC-006) | Extra ink 0.33 mm per stroke against a rigid pen with the adaptive stop at 0.30 mm margin (1.15 mm with the tilt-range stop), against 0.1 mm (SIM) |
+| AC-Q05-01 and AC-P01-05 with 2 × DRV2700 | 255 mW of drive power against a 68 mW budget; 0.83 h of assist against 2 h. A charge-recovery driver is predicted to pass (32 mW, 2.7 h) |
+| AC-A02-02 (tremor groups), AC-A02-03 | A personal template lies about 300 µm from intent, beyond the 265 µm break-even; AI templates gave no net legibility gain (SIM, synthetic writers) |
 
 ## 6. Issues found in existing documents (for the project lead)
 
@@ -276,3 +286,14 @@ Status of each item above after the consistency pass. Parameters moved to v0.4.2
 - **Designs still to be written:** the EXP-H01 instrumented passive pen, and the stage lock (or mass-matched rigid replica) for the OFF condition of EXP-H06.
 - **Assumed variances are placeholders.** Every sample size in `human_study_plan.md` §11 and `bench_protocols.md` §0.7 is replaced by pilot or internal-pilot estimates under pre-registered rules.
 - **Engineering-judgement thresholds** (labelled so in `basis`) should be reviewed by the project lead before pre-registration. Those tied to perception (EXP-B08 margins, feature distortion) are replaced by EXP-H05 results when available.
+- **Sim-to-real proposals not applied here** (`docs/sim_to_real.md` §8; items 1–11 are applied):
+  - 12. Split `sim/pensim/core.py` into a plant step and a controller tick, as the hardware-in-the-loop plan needs ([`sim_to_real.md`](sim_to_real.md) §7). The `s2r` shim then becomes unnecessary.
+  - 13. The `sim/run_sweeps.py` Monte Carlo and `results/sim/mc_sensitivity.json` regenerate the firmware for every sample. Evaluate them under fixed firmware, or label the file: under fixed firmware K_f and k_tip rank 2nd and 3rd for the Kalman ratio at 9 Hz, where the Monte Carlo ranks them last.
+  - 14. Choose estimator sets on randomised plants under fixed firmware (DEC-009, DEC-023).
+  - 15. An HDF5 converter for the `s2r-bench-1` layout needs h5py in `requirements.txt`.
+- **Gate lists in `prototype_stages.md`** (not edited here) do not yet name the new criteria. Candidates: AC-B02-04/05 and AC-B05-15 for G-B's model rows (next to AC-B02-01); AC-B09-16…18 for G-B and G-C (next to AC-B09-03); AC-Q07-01…03 and AC-Q04-03 for a Rev P1 gate.
+- **Pencil builds have no stage gates.** `prototype_stages.md` defines G-S, G-B and G-C for Rev A builds only. A pencil safety gate equivalent to G-S is needed before EXP-A02-G, together with a pencil fault-injection set (the Rev A EXP-F01 current and coil criteria do not apply to a piezo stage).
+
+## 8. Changelog
+
+- **2026-09-28.** Pencil and AI experiments: compact protocols EXP-Q01…Q08 and A03 (`bench_protocols.md` §0.11, §25–§33) and EXP-A02 (`human_study_plan.md` §12); 29 criteria, which cover REQ-PNC-001…008 (AC-M03-07, AC-S01-08 and AC-P01-05 sit in existing experiments). Sim-to-real items 1–11 of `docs/sim_to_real.md` §8 applied: EXP-B05 shaped chirps with an amplitude ladder, static stiffness at ±0.03 N, float32 logging and the IV estimator; EXP-B03 0.2 s holds and back-EMF as a required K_f route; EXP-B02 quarter-decade speeds; F/T calibration at the test angles (B01, B02, R1); AC-B09-03 rewritten (re-parameterisation list, simulant as set) with G7–G9 as AC-B09-16…18; AC-B02-01 replaced by mean-removed R² with AC-B02-04 (G4) and AC-B02-05 (pre-sliding drift); AC-B02-02 judged only when the Stribeck dip is resolved; new AC-B05-15 (model-form diagnostics); AC-B03-01 and AC-B05-03 metrics follow the protocol changes (and the stale v0.4.1 config notes of EXP-B05 now read v0.4.2). Items 12–15 are listed as open (§7). `docs/requirements.csv`: REQ-PNC-002 and REQ-PNC-005 verification now also name EXP-Q06 and EXP-Q03. 221 → 256 criteria, 29 → 39 experiments.
