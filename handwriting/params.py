@@ -178,7 +178,7 @@ class Board:
     bias: float = 0.0            # m, systematic sensing error (accuracy 0.4 mm quoted; applied as a constant offset in a sensitivity)
     normal_pull: float = 1.1     # N at zero lateral force (adds to the writing force)
     K: float = 400.0             # N/m, guidance spring toward the template (ASSUMPTION; cap reached at 1 mm error)
-    D: float = 0.0               # N s/m
+    D: float = 4.0               # N s/m on the (30 Hz filtered) error rate; chosen on tuning writers
     sources: Dict[str, str] = field(default_factory=dict)
 
 
@@ -187,14 +187,27 @@ def board() -> Board:
     if d is None:
         return Board(F_cap=0.4, F_max=0.4, tau=0.010, dead=0.010, noise=0.5e-3, normal_pull=0.0,
                      sources={"all": "ASSUMPTION (lead's defaults: 0.4 N, 20 ms, 0.5 mm noise; HAP-16 488 mN)", "file": "none"})
-    return Board(F_cap=d["software_cap_N"]["value"] if "software_cap_N" in d else 0.4,
-                 F_max=d["max_lateral_force_N"]["A4_design_gap_2p7mm"], tau=0.008, dead=0.002,
-                 noise=d["position_sensing"]["noise_rms_mm"] * 1e-3, bias=0.0,
-                 normal_pull=d["normal_pull_N"]["at_zero_lateral_force_A4"],
-                 sources={"file": path, "evidence": d.get("status", d["meta"]["evidence_status"]),
-                          "tau/dead": d.get("suggested_simulation_model", ""),
-                          "noise": d["position_sensing"]["status"], "F_cap": d["software_cap_N"]["status"],
-                          "K": "ASSUMPTION: 400 N/m guidance spring, cap reached at 1 mm error (full); 200 N/m (partial)"})
+    def g(*keys, default=None):
+        x = d
+        for k in keys:
+            if not isinstance(x, dict) or k not in x:
+                return default
+            x = x[k]
+        return x
+    cap = g("software_force_cap_N", "value", default=g("software_cap_N", "value", default=0.4))
+    lat = g("latency_ms", default={}) or {}
+    dead = float(lat.get("sense_to_command", 2.0)) * 1e-3
+    tau = float(lat.get("command_to_force_effective", 8.0)) * 1e-3
+    fmax = g("max_lateral_force_N", "A4_design_gap_2p7mm", default=cap)
+    return Board(F_cap=float(cap), F_max=float(fmax), tau=tau, dead=dead,
+                 noise=float(g("position_sensing", "noise_rms_mm", default=0.5)) * 1e-3, bias=0.0,
+                 normal_pull=float(g("normal_pull_N", "at_zero_lateral_force_A4", default=0.0)),
+                 sources={"file": path, "evidence": str(d.get("status", g("meta", "evidence_status", default=""))),
+                          "tau/dead": str(d.get("suggested_simulation_model", "")) + f" (used: lag {tau * 1e3:.0f} ms, dead {dead * 1e3:.0f} ms)",
+                          "noise": str(g("position_sensing", "status", default="")),
+                          "F_cap": str(g("software_force_cap_N", "status", default="ASSUMPTION")),
+                          "K": "ASSUMPTION: 400 N/m guidance spring, cap reached at 1 mm error (full); 200 N/m (partial)",
+                          "D": "4 N s/m (full), 2 N s/m (partial): chosen on tuning writers 100-102, seeds 300-301"})
 
 
 # ------------------------------------------------------------------ trackers

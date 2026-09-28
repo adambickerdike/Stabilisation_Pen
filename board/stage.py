@@ -157,7 +157,7 @@ def plate_deflection(x_mm, y_mm, load_xy_mm, load_N: float, a_mm: float, b_mm: f
     return 4 * load_N / (a * b * D * math.pi ** 4) * w * 1e3
 
 
-def cover_check(t_mm: float = None, span=(250.0, 330.0), load_N: float = 10.0) -> dict:
+def cover_check(t_mm: float = None, span=(294.0, 357.0), load_N: float = 10.0) -> dict:
     t_mm = P.STACK["glass_mm"].value if t_mm is None else t_mm
     a, b = span
     w_c = float(plate_deflection(a / 2, b / 2, (a / 2, b / 2), load_N, a, b, t_mm))
@@ -185,7 +185,8 @@ def summary() -> dict:
         "latency": latency_budget(),
         "demand": handwriting_demand(),
         "power": power_budget(),
-        "cover": cover_check(),
-        "cover_1p1mm_A5": cover_check(1.1, (180.0, 245.0)),
-        "cover_1p5mm_A5": cover_check(1.5, (180.0, 245.0)),
+        "cover_A4_3mm": cover_check(),
+        "cover_A4_2mm": cover_check(2.0),
+        "cover_A5_2mm": cover_check(2.0, (202.0, 270.0)),
+        "cover_A5_1p5mm": cover_check(1.5, (202.0, 270.0)),
     }

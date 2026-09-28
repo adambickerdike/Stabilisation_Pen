@@ -328,7 +328,8 @@ def stage_neural(quick=False):
     t0 = time.time()
     log = lambda s: print(f"[{time.time() - t0:7.1f} s] {s}", flush=True)  # noqa: E731
     seeds = (300, 301) if quick else tuple(range(300, 312))
-    pol, hist, info = NN.train(seeds=seeds, akf_params=prm, iters=6 if quick else 120, win=1.0, batch=6 if quick else 12, log=log)
+    pol, hist, info = NN.train(seeds=seeds, val_seeds=(316,) if quick else (316, 317), akf_params=prm, iters=4 if quick else 60,
+                               win=1.0, batch=6 if quick else 12, log=log)
     blocks, cost = NN.export(pol)
     rm = AE.default_rm()
     spec = CL.ctl_spec([(blocks["A"], blocks["B"], blocks["C"], blocks["D"])], Ts=NN.TS, imu=dict(seed=5, lat_ticks=3),

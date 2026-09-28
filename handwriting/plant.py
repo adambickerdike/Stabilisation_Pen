@@ -61,6 +61,7 @@ NAMES = [
     "ps_lat_ticks", "ps_noise", "ps_every",
     # board
     "use_board", "Kb", "Db", "F_cap", "b_tau", "b_dead_ticks", "b_noise", "b_every", "b_bias_x", "b_bias_y",
+    "stroke_match",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
@@ -86,6 +87,7 @@ I_sad = IDX["sa_adapt"]; I_satau = IDX["sa_tau_amp"]; I_satcal = IDX["sa_t_cal"]
 I_pslat = IDX["ps_lat_ticks"]; I_psn = IDX["ps_noise"]; I_pse = IDX["ps_every"]
 I_bd = IDX["use_board"]; I_Kb = IDX["Kb"]; I_Db = IDX["Db"]; I_Fcap = IDX["F_cap"]; I_btau = IDX["b_tau"]
 I_bdead = IDX["b_dead_ticks"]; I_bn = IDX["b_noise"]; I_bev = IDX["b_every"]; I_bbx = IDX["b_bias_x"]; I_bby = IDX["b_bias_y"]
+I_smatch = IDX["stroke_match"]
 
 
 @njit(cache=True)
@@ -103,10 +105,12 @@ def _lugre(z0, z1, v0, v1, N, mu_k, mu_s, v_s, x_pre, dt):
 
 
 @njit(cache=True)
-def _nearest(tm, tdown, px, py, prog, win_back, win_fwd):
-    m = tm.shape[0]
+def _nearest(tm, tdown, px, py, prog, win_back, win_fwd, lo=0, hi=-1):
+    m = tm.shape[0] if hi < 0 else hi
     best = 1e30; bj = prog
-    j0 = max(0, prog - win_back); j1 = min(m, prog + win_fwd)
+    j0 = max(lo, prog - win_back); j1 = min(m, prog + win_fwd)
+    if j0 >= j1:
+        j0 = lo; j1 = min(m, lo + win_fwd)
     for j in range(j0, j1):
         if tdown[j] < 0.5:
             continue
@@ -118,7 +122,7 @@ def _nearest(tm, tdown, px, py, prog, win_back, win_fwd):
 
 
 @njit(cache=True)
-def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, btmpl, btdown, seed, rec):
+def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmpl, btdown, btss, btse, seed, rec):
     np.random.seed(seed)
     dt = P[I_dt]; n = int(P[I_n]); rdec = int(P[I_rec]); tdec = int(P[I_tick])
     Kg = P[I_Kg]; Cg = P[I_Cg]; Mh = P[I_Mh]; ka = P[I_ka]; ba = P[I_ba]; wc = P[I_wc]
@@ -133,6 +137,10 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, btmpl, btdown,
     pslat = int(P[I_pslat]); psn = P[I_psn]; pse = int(P[I_pse])
     use_bd = P[I_bd] > 0.5; Kb = P[I_Kb]; Db = P[I_Db]; Fcap = P[I_Fcap]; btau = P[I_btau]
     bdead = int(P[I_bdead]); bn = P[I_bn]; bev = int(P[I_bev]); bbx = P[I_bbx]; bby = P[I_bby]
+    smatch = P[I_smatch] > 0.5
+    cur_s = -1; cur_sb = -1; was_con_b = 0
+    be0 = 0.0; be1 = 0.0; bed0 = 0.0; bed1 = 0.0           # board error and its filtered rate
+    alpha_bd = 1.0 - math.exp(-2.0 * math.pi * 30.0 * dt * tdec)
     Ts = dt * tdec
     # state
     pH0 = pref[0, 0]; pH1 = pref[0, 1]; vH0 = 0.0; vH1 = 0.0; aH0 = 0.0; aH1 = 0.0
@@ -187,7 +195,17 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, btmpl, btdown,
                 if con_s:
                     if was_con == 0:
                         dropped = 0; over_t = 0.0
-                    bj, dist = _nearest(tmpl, tdown, ps0, ps1, prog, 20, 4000 if reacq == 1 else 200)
+                        if smatch:
+                            cur_s += 1
+                            if cur_s < tss.shape[0]:
+                                prog = tss[cur_s]
+                    if smatch:
+                        if cur_s < tss.shape[0]:
+                            bj, dist = _nearest(tmpl, tdown, ps0, ps1, prog, 20, 400, tss[cur_s], tse[cur_s])
+                        else:
+                            bj, dist = prog, 1e3
+                    else:
+                        bj, dist = _nearest(tmpl, tdown, ps0, ps1, prog, 20, 4000 if reacq == 1 else 200)
                     reacq = 0
                     prog = bj
                     if dist > dd_:
@@ -238,15 +256,33 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, btmpl, btdown,
                     bs1 = pH1 + q1 + bby + bn * np.random.standard_normal()
                 f0 = 0.0; f1 = 0.0
                 if con_s:
-                    bj, bdist = _nearest(btmpl, btdown, bs0, bs1, progb, 20, 4000 if reacqb == 1 else 200)
+                    if smatch and was_con_b == 0:
+                        cur_sb += 1
+                        if cur_sb < btss.shape[0]:
+                            progb = btss[cur_sb]
+                    if smatch:
+                        if cur_sb < btss.shape[0]:
+                            bj, bdist = _nearest(btmpl, btdown, bs0, bs1, progb, 20, 400, btss[cur_sb], btse[cur_sb])
+                        else:
+                            bj, bdist = progb, 1e3
+                    else:
+                        bj, bdist = _nearest(btmpl, btdown, bs0, bs1, progb, 20, 4000 if reacqb == 1 else 200)
                     reacqb = 0
                     progb = bj
-                    f0 = Kb * (btmpl[progb, 0] - bs0); f1 = Kb * (btmpl[progb, 1] - bs1)
+                    e0 = btmpl[progb, 0] - bs0; e1 = btmpl[progb, 1] - bs1
+                    if was_con_b == 0:
+                        be0 = e0; be1 = e1; bed0 = 0.0; bed1 = 0.0
+                    bed0 += alpha_bd * ((e0 - be0) / Ts - bed0); bed1 += alpha_bd * ((e1 - be1) / Ts - bed1)
+                    be0 = e0; be1 = e1
+                    f0 = Kb * e0 + Db * bed0; f1 = Kb * e1 + Db * bed1
+                    if bdist > 1.0:
+                        f0 = 0.0; f1 = 0.0
                     fm = math.sqrt(f0 * f0 + f1 * f1)
                     if fm > Fcap:
                         f0 *= Fcap / fm; f1 *= Fcap / fm
                 else:
                     reacqb = 1
+                was_con_b = 1 if con_s else 0
                 rb_bF[j, 0] = f0; rb_bF[j, 1] = f1
                 jb = (tick - bdead) % RB if tick >= bdead else 0
                 Fbc0 = rb_bF[jb, 0] if tick >= bdead else 0.0
@@ -349,6 +385,7 @@ class Controls:
     board_gain: float = 1.0                 # multiplies Board.K
     board_tmpl: Optional[np.ndarray] = None
     board_tmpl_down: Optional[np.ndarray] = None
+    stroke_match: bool = False              # search only the template stroke matching the writer's current stroke
     tau_auth: float = 0.05
     gating: str = "hover"                   # authority on while the pen is in contact ("contact", P1 convention) or
     hover_max: float = 2.0e-3               # within hover_max of the paper ("hover": T7 of docs/ai_guidance.md 7.3)
@@ -436,6 +473,16 @@ class Result:
         return self.rec[:, RIDX["contact"]]
 
 
+def stroke_ranges(tdown: np.ndarray):
+    """Start (inclusive) and end (exclusive) sample of every pen-down run of a template track."""
+    d = np.diff(np.r_[0, (np.asarray(tdown) > 0.5).astype(np.int8), 0])
+    a = np.flatnonzero(d == 1).astype(np.int64)
+    b = np.flatnonzero(d == -1).astype(np.int64)
+    if len(a) == 0:
+        return np.zeros(1, np.int64), np.zeros(1, np.int64)
+    return np.ascontiguousarray(a), np.ascontiguousarray(b)
+
+
 def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Controls, rec_hz: float = 4000.0,
                  inner_hz: Optional[float] = None, page_sensor=(1000.0, 2e-3, 3e-6), contact_latency: float = 1e-3):
     dt = scn.dt
@@ -480,9 +527,10 @@ def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Con
     s("ps_lat_ticks", int(round(lat / Ts))); s("ps_noise", noise); s("ps_every", max(1, int(round(1.0 / (rate * Ts)))))
     b = ctl.board
     if b is not None:
-        s("use_board", 1.0); s("Kb", b.K * ctl.board_gain); s("Db", b.D); s("F_cap", b.F_cap); s("b_tau", b.tau)
+        s("use_board", 1.0); s("Kb", b.K * ctl.board_gain); s("Db", b.D * ctl.board_gain); s("F_cap", b.F_cap); s("b_tau", b.tau)
         s("b_dead_ticks", int(round(b.dead / Ts))); s("b_noise", b.noise); s("b_every", max(1, int(round(1.0 / (1000.0 * Ts)))))
         s("b_bias_x", b.bias); s("b_bias_y", 0.0)
+    s("stroke_match", 1.0 if ctl.stroke_match else 0.0)
     info = {"tick_decim": tick_decim, "Ts": Ts, "N_ball": Nb, "N_skid": P[IDX["N_skid"]], "inner_hz": f_in,
             "pen": pen.key, "writer_comp": hand.writer_comp}
     return P, info
@@ -509,6 +557,8 @@ def run(scn: Scenario, pen: Pen, hand: Optional[Hand] = None, writing: Optional[
     else:
         active = scn.down
     gsa = np.ones(1) if ctl.size_gain_track is None else np.ascontiguousarray(ctl.size_gain_track, dtype=np.float64)
-    m = simulate(P, scn.pref, scn.vref, scn.down, active, qext, gsa, tm, td, bt, btd, seed, rec)
+    tss, tse = stroke_ranges(td)
+    btss, btse = stroke_ranges(btd)
+    m = simulate(P, scn.pref, scn.vref, scn.down, active, qext, gsa, tm, td, tss, tse, bt, btd, btss, btse, seed, rec)
     info.update({"n_ticks": nt, "rec_hz": rec_hz})
     return Result(rec[:m], info)
