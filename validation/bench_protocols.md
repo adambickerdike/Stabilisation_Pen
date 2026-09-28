@@ -3254,7 +3254,8 @@ Rev H moves the whole nose, and so the ball, by up to ±3 mm relative to the han
 - **Why this experiment gates everything:** it decides whether the nose is strong, fast and frugal enough, and whether the writing force stays undisturbed.
 - **Predictions (CALC, SIM; `results/revH/tip_params.json`, `docs/opt_inertial.md`):**
   - Km 0.47 N/√W at the magnets;
-  - ±3.0 mm usable travel;
+  - ±3.0 mm usable travel at 50°, at least 2.75 mm in every direction over 35–75° (front end, DEC-034);
+  - only the skid ring on the paper at every tilt and correction, the nozzle at least 0.8 mm above it, and about 13.5 mm of refill slide at 0.15 N (DEC-034, `results/revH/front_end.json`);
   - an 80 Hz servo (ASSUMPTION);
   - about 0.004 W of coil loss;
   - no writing-force change;
@@ -3270,7 +3271,7 @@ Rev H moves the whole nose, and so the ball, by up to ±3 mm relative to the han
 ### Procedure
 
 1. **Km map.** Map Km (force per √W) and the gimbal stiffness over the magnet stroke, both axes.
-2. **Travel.** Measure the travel with the skid ring on paper at θ 35/50/75°, in 8 directions.
+2. **Travel and front end.** Measure the travel with the skid ring on paper at θ 35/50/75°, in 8 directions. At each tilt and direction, with the nose at its usable travel, check from a side camera and with a feeler gauge that only the ring touches the paper, and log the ball's normal force on the force plate over the refill's full slide.
 3. **Bandwidth.** Measure the closed-loop frequency response with the real Hall noise.
 4. **Tremor rig.** Inject 1 mm tremor at 8, 10 and 12 Hz through the shaker while a writing robot draws letters. The nose is driven from the rig reference (ORACLE). Record power and the paper-normal force. Scan the ink.
 5. **Weigh and measure** the built pen.
@@ -3291,14 +3292,15 @@ Rev H moves the whole nose, and so the ball, by up to ±3 mm relative to the han
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-I05-01 | REQ-RVH-003 | Nose force constant per axis at the magnets, mapped over the ±2.3 mm magnet stroke (force gauge and coil current, both axes) | ≥ 0.40 N/√W | requirement | REQ-RVH-003; prediction 0.47 N/√W (adjoint design, results/revH/tip_params.json; CALCULATION) | DEC-032 |
-| AC-I05-02 | REQ-RVH-002 | Usable ball travel relative to the handle with the skid ring on paper, 8 directions, θ 35/50/75°, ≥ ±2.5 mm, with cross-coupling between axes ≤ 10 % (both) | both met | requirement | REQ-RVH-002; prediction ±3.0 mm usable, 3.5 mm stop (PROPOSED DESIGN, CALC) | DEC-032 |
+| AC-I05-02 | REQ-RVH-002 | Usable ball travel relative to the handle with the skid ring on paper, 8 directions, θ 35/50/75°, ≥ ±2.5 mm, with cross-coupling between axes ≤ 10 % (both) | both met | requirement | REQ-RVH-002; prediction ±3.0 mm usable at 50° and ≥ 2.75 mm in every direction over 35-75°, 3.5 mm stop (PROPOSED DESIGN, CALC, results/revH/front_end.json) | DEC-032; DEC-034 |
 | AC-I05-03 | REQ-RVH-003 | Closed-loop nose bandwidth (-3 dB of tip position over reference) with the real Hall noise, and phase margin | ≥ 60 Hz and 45° | requirement | REQ-RVH-003; 80 Hz servo assumed in SIM (results/revH/tip_params.json; ASSUMPTION) | DEC-032 |
 | AC-I05-04 | REQ-RVH-004 | Coil plus driver power while the nose corrects 1 mm, 10 Hz injected tremor during writing on the tremor rig | ≤ 0.1 W | requirement | REQ-RVH-004; prediction about 0.004 W coil loss, 0.081 W total with electronics (CALC on SIM forces) | DEC-032 |
 | AC-I05-05 | REQ-RVH-005 | Change of the paper-normal writing force caused by the nose (force plate under the paper) while correcting 1 mm, 10 Hz tremor | ≤ 0.05 N RMS | requirement | REQ-RVH-005; architecture B: no change by construction (SIM); architecture A predicted 0.31-0.71 N RMS | DEC-032 (B over A) |
 | AC-I05-06 | — | Ink-error ratio on the tremor rig (1 mm injected tremor at 8, 10, 12 Hz; ORACLE nose command from the rig reference) against the nose held | ≤ 0.3 | hypothesis | prediction 0.17-0.18 with perfect knowledge at 8-12 Hz, 1-2 mm (results/opt/inertial_opt.json; SIMULATION); 0.3 engineering judgement for rig losses | DEC-032 |
 | AC-I05-07 | REQ-RVH-001 | Built Rev H prototype: grip diameter, length and mass, weighed without and with the rear inertial module | ≤ 24 mm, 175 mm, 80 g / 110 g | requirement | REQ-RVH-001; prediction Ø22 x 170 mm, 75.0 g / 103 g (CALC, results/revH/tip_params.json) | DEC-029; DEC-033 |
+| AC-I05-08 | REQ-RVH-002 | Front end at θ 35/50/75° with the nose at its usable travel in 8 directions: only the skid ring touches the paper (side camera, feeler gauge), and the ball normal force stays 0.15 N ± 20 % over the refill's full slide (force plate) | both met | derived | DEC-034; prediction nozzle ≥ 0.80 mm above the paper, sleeve front ≥ 0.25 mm, refill slide 13.5 mm (results/revH/front_end.json; CALCULATION); ±20 % engineering judgement | DEC-034 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-I05).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows for EXP-I05).
 <!-- AC-TABLE:EXP-I05:END -->
 
 ### Decision rule
@@ -3308,6 +3310,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows fo
 | All pass | Build the Rev H prototype with this nose (DEC-032 accepted for the prototype). |
 | Km or bandwidth short | Re-run the adjoint actuator design (`opt/inertial/adjoint.py`) with the measured losses; consider larger magnets. |
 | Normal force disturbed | Check the refill's constant-force spring and the skid-ring contact before considering architecture A. |
+| Nozzle or sleeve touches the paper, or the ink force varies by more than 20 % over the slide | Restrict full function to 40–70° (10.5 mm of slide) or rework the refill drive; re-run `python3 -m opt.inertial.front_end` with the measured parts (DEC-034). |
 
 ---
 
