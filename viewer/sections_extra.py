@@ -269,6 +269,8 @@ WHERE_ROWS = [
     ("Handwriting model HW1", "Letters and words with tremor, shrinking letters, poor letter shapes and spelling errors, read by the "
      "app's recogniser", "handwriting/", "Gallery; the 3-D explainer"),
     ("Guidance board", "A magnet moved under the paper: forces, stage, sensing, guided practice", "board/", "Gallery"),
+    ("AI help for severe tremor", "Letter prediction as a tracker input and as nose guidance, a severe-tremor tracker setting, the "
+     "app's clean copy, on model HW1", "aiprior/", "Gallery"),
     ("Rev A model M1", "The earlier, larger voice-coil pen", "sim/pensim/", "docs/sim_report.md"),
 ]
 EXPLAINER_URL = "https://claude.ai/artifact/VSMxtB8vpbTQjtoAjzqbez"
@@ -521,6 +523,12 @@ GALLERY_REVH = [   # the bigger-grip pen (Rev H), its handwriting outcomes and t
     ("results/handwriting/fig_practice_before_after.png", "Guided practice and spelling",
      "A learner copying words with each kind of guidance. Guidance moves the ink toward the letters but never turns a wrong "
      "letter into the right one.", ("SIM",), "handwriting/"),
+    ("results/aiprior/fig_before_after.png", "Severe tremor: AI help and the app's clean copy",
+     "The same sentence, hand and tremor with the tracker alone, with AI letter prediction as a tracker input and as guidance "
+     "of the nose, the app's digital clean copy, and perfect knowledge. The AI rows look like the tracker's.", ("SIM",), "aiprior/"),
+    ("results/aiprior/fig_summary.png", "Severe tremor: ink error and words read",
+     "Against tremor frequency for each tremor size: the ordinary pen, the tracker, the AI variants, the rejected severe-tremor "
+     "setting, the clean copy and perfect knowledge.", ("SIM",), "aiprior/"),
     ("results/board/fig_guidance_sim.png", "Guidance board: guided tracing",
      "Three tasks with the board's magnet pulling the pen: tracing 8 mm letters, 'write big' loops, and a reversed letter ('d' asked, "
      "'b' intended) with full guidance and with lead-through.", ("SIM",), "board/"),
