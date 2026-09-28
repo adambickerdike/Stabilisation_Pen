@@ -15,3 +15,14 @@
 [  243.7 s]   B r_rot 0.3 seed 200 done (24 rows)
 [  259.9 s]   B r_rot 0.3 seed 201 done (48 rows)
 [  276.3 s]   B r_rot 0.3 seed 202 done (72 rows)
+[  292.6 s]   B r_rot 0.3 seed 203 done (96 rows)
+[  309.8 s]   B r_rot 0.5 seed 200 done (120 rows)
+[  328.4 s]   B r_rot 0.5 seed 201 done (144 rows)
+[  345.1 s]   B r_rot 0.5 seed 202 done (168 rows)
+[  362.5 s]   B r_rot 0.5 seed 203 done (192 rows)
+[  380.1 s]   B r_rot 0.7 seed 200 done (216 rows)
+[  397.1 s]   B r_rot 0.7 seed 201 done (240 rows)
+[  413.3 s]   B r_rot 0.7 seed 202 done (264 rows)
+[  428.6 s]   B r_rot 0.7 seed 203 done (288 rows)
+[  430.5 s] tracker revh done
+== stage grid done in 430.6 s

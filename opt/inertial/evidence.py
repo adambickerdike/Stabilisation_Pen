@@ -201,7 +201,7 @@ def study_rows(out) -> List[Dict]:
         units_and_conditions="ratios of RMS ink deviation; um RMS detrended distortion; W; h continuous writing",
         locator="results/opt/inertial_opt.json", limitations="As ACT-62; base electronics power 0.065 W ASSUMPTION; tracker sees H1's true rotation through fusion's sensor models",
         relevance_to_design="Headline performance of the Rev H pen", transferability="medium", transferability_reason="Simulated tremor and grip",
-        design_implication="Expect roughly 25-40 % less tremor in the ink at 8-12 Hz and >= 1 mm, little at small amplitude; the estimator, not the mechanism, is the limit",
+        design_implication="Expect 15-48 % less tremor in the ink at 8-12 Hz and 1-2 mm (25-35 % on average), little at 0.3 mm and none at 4-6 Hz; the estimator, not the mechanism, is the limit",
         stream="ACT", **common))
     dec = out["choice"]["inertial_module"]
     g = dec["gain_band_8_12Hz_1_2mm"]; gw = dec["passive_weight_gain"]; gc = dec["gain_with_grip_calibration"]

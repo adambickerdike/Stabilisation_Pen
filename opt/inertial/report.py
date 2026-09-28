@@ -64,6 +64,16 @@ def power_final(F_rms_axes, d: Optional[RH.RevH] = None):
 
 
 # ------------------------------------------------------------------ interface files for the other agents
+def _tracker_changes() -> str:
+    p = os.path.join(OPT, "inertial_tracker_revh.json")
+    if not os.path.exists(p):
+        return "n/a"
+    from . import tracker as TK
+    ship = TK.ship_params()
+    ch = json.load(open(p))["changed"]
+    return ", ".join(f"{k} {ship.get(k, float('nan')):.3g} -> {v:.3g}" for k, v in ch.items())
+
+
 def write_tip_params(final=True, addon_decision: Optional[Dict] = None, calib: Optional[Dict] = None):
     d = RH.RevH()
     ms = RH.masses(d)
@@ -152,7 +162,7 @@ def write_tip_params(final=True, addon_decision: Optional[Dict] = None, calib: O
                    "com_mm_from_tip": round(ms["com_mm"], 1), "label": "CALC from assumed parts +10 % wiring"},
         "inertial_addon": addon_decision or {"status": "evaluated in docs/opt_inertial.md; see layout.json 'optional' components"},
         "tracker": {"default": "results/opt/tracker_models/akf_ship.json (shipped)", "rev_h_setting": "results/opt/inertial_tracker_revh.json",
-                    "note": "the Rev H setting opens the frequency gate and the amplitude cap for the larger travel; chosen on training seeds by a pre-declared false-correction rule",
+                    "note": "Rev H setting chosen by ParEGO on training seeds by a pre-declared false-correction rule; changed from the shipped set: " + _tracker_changes(),
                     "per_user_band": ({"search_band_x_f_cal": calib["band"], "how": "20-30 s calibration at first use sets f_cal; the frequency search is limited to the band (opt/inertial/run_study.calibrated_params)",
                                        "result_r_rot_0.5": [r for r in calib["test"] if r["r_rot"] == 0.5], "distortion_um": calib["distortion"],
                                        "label": "SIM (test seeds, +10 % calibration error)"} if calib else None)},
@@ -253,9 +263,13 @@ def summarise_addon(ad) -> Dict:
               "0.3mm": dict(kind="trans", amp_mm=0.3), "4_6Hz": dict(kind="trans", f0=(4.0, 6.0)), "wrist_8Hz": dict(kind="wrist")}
     cfgs = ("nose", "nose+weight", "nose+ff", "nose+ff_cal", "nose+afc", "weight", "rm_neutral", "ilc", "ff", "afc")
     for rr in SPLITS:
+        if not _sel(rows, r_rot=rr):
+            continue
         d = {}
         for gname, flt in groups.items():
             rs = _sel(rows, r_rot=rr, **flt)
+            if not rs:
+                continue
             g = {c: _mean(rs, lambda r, c=c: r.get(c)) for c in cfgs}
             seeds = sorted(set(r["seed"] for r in rs))
             for c in ("nose+ff", "nose+ff_cal", "nose+afc", "nose+weight"):
@@ -290,11 +304,12 @@ def addon_decision(sa: Dict, d: Optional[RH.RevH] = None) -> Dict:
     d = d or RH.RevH()
     rm = sa["rm"]
     m_add = rm["m_g"] + rm["added_fixed_g"]
-    g = {rr: sa["by_split"][str(rr)]["band_8_12Hz_1_2mm"]["gain_nose+ff"] for rr in SPLITS}
-    gc = {rr: sa["by_split"][str(rr)]["band_8_12Hz_1_2mm"]["gain_nose+ff_cal"] for rr in SPLITS}
-    gw = {rr: sa["by_split"][str(rr)]["band_8_12Hz_1_2mm"]["gain_nose+weight"] for rr in SPLITS}
-    P = max(sa["by_split"][str(rr)]["all_translational"]["ff_P_cu_W_max"] for rr in SPLITS)
-    measurable = all(g[rr]["seed_min"] >= 0.10 for rr in (0.5, 0.7)) and all(g[rr]["mean"] > 0 for rr in SPLITS)
+    splits = [rr for rr in SPLITS if str(rr) in sa["by_split"]]
+    g = {rr: sa["by_split"][str(rr)]["band_8_12Hz_1_2mm"]["gain_nose+ff"] for rr in splits}
+    gc = {rr: sa["by_split"][str(rr)]["band_8_12Hz_1_2mm"]["gain_nose+ff_cal"] for rr in splits}
+    gw = {rr: sa["by_split"][str(rr)]["band_8_12Hz_1_2mm"]["gain_nose+weight"] for rr in splits}
+    P = max(sa["by_split"][str(rr)]["all_translational"]["ff_P_cu_W_max"] for rr in splits)
+    measurable = all(g[rr]["seed_min"] >= 0.10 for rr in (0.5, 0.7) if rr in g) and all(g[rr]["mean"] > 0 for rr in splits)
     ok_mass = m_add <= 30.0
     P_mod = P + 0.012
     ok_power = P_mod <= 0.5
@@ -304,9 +319,9 @@ def addon_decision(sa: Dict, d: Optional[RH.RevH] = None) -> Dict:
             "module": rm["label"], "added_mass_g": m_add, "pen_mass_with_module_g": round(total, 1),
             "pen_mass_with_module_and_10440_g": round(cell10440, 1),
             "power_W": {"copper_max_W": P, "module_total_max_W": P_mod, "note": "copper loss max over all test conditions + 0.012 W driver/Hall (ASSUMPTION)"},
-            "gain_band_8_12Hz_1_2mm": {str(rr): g[rr] for rr in SPLITS},
-            "gain_with_grip_calibration": {str(rr): gc[rr] for rr in SPLITS},
-            "passive_weight_gain": {str(rr): gw[rr] for rr in SPLITS},
+            "gain_band_8_12Hz_1_2mm": {str(rr): g[rr] for rr in splits},
+            "gain_with_grip_calibration": {str(rr): gc[rr] for rr in splits},
+            "passive_weight_gain": {str(rr): gw[rr] for rr in splits},
             "criteria": {"measurable": measurable, "mass_ok_30g": ok_mass, "power_ok_0.5W": ok_power,
                          "rule": addon_decision.__doc__.split("'Measurable'")[1].strip()},
             "label": "SIM + CALC"}
@@ -376,8 +391,10 @@ def make_figures(S: Dict, akf_params=None) -> List[str]:
                                         "A, causal (shipped tracker)": (x, [r["A_causal_ship"] for r in rs])}
     files.append(FG.lines_panels("fig_in_arch", "Rev H active nose: architecture B vs A (ink error with / without correction)", panels,
                                  "tremor frequency (Hz)", "ink error ratio (lower is better)", ylim=(0, 1.15), hline=1.0,
-                                 note="SIM, model H1, test seeds 200-203, grip split r_rot 0.5. A also needs 0.31-1.0 W of coil power with a bias spring "
-                                      "(1.7-2.9 W without) and changes the writing force by 0.3-0.7 N rms; B needs about 0.002 W."))
+                                 note=("SIM, model H1, test seeds 200-203, grip split r_rot 0.5. A also needs {0:.2f}-{1:.2f} W of coil power with a bias spring "
+                                       "({2:.1f}-{3:.1f} W without) and changes the writing force by {4:.2f}-{5:.2f} N rms; B needs about {6:.3f} W.").format(
+                                           *S["arch"]["ranges"]["A_P_cu_W"], *S["arch"]["ranges"]["A_P_cu_no_bias_W"], *S["arch"]["ranges"]["A_N_std_N"],
+                                           float(np.mean([r["B_P_cu_W"] for r in ar])))))
     # 2. grip split, causal (Rev H tracker) and oracle
     sm = S["B"]["summary"]
     panels = {}
@@ -420,11 +437,11 @@ def make_figures(S: Dict, akf_params=None) -> List[str]:
             "nose + reaction mass, FF after grip calibration": "nose+ff_cal", "nose + reaction mass, adaptive (AFC)": "nose+afc",
             "reaction mass alone, perfect knowledge": "ilc"}
     panels = {}
-    for rr in SPLITS:
+    for rr in [x for x in SPLITS if str(x) in sa["by_split"]]:
         b = sa["by_split"][str(rr)]
-        panels[f"r_rot {rr}"] = {"8-12 Hz, 1-2 mm tremor": {k: b["band_8_12Hz_1_2mm"][v] for k, v in cats.items()},
-                                 "all translational conditions": {k: b["all_translational"][v] for k, v in cats.items()},
-                                 "wrist tremor 8 Hz": {k: b["wrist_8Hz"][v] for k, v in cats.items() if v != "ilc"}}
+        panels[f"r_rot {rr}"] = {"8-12 Hz, 1-2 mm tremor": {k: b.get("band_8_12Hz_1_2mm", {}).get(v, np.nan) for k, v in cats.items()},
+                                 "all translational conditions": {k: b.get("all_translational", {}).get(v, np.nan) for k, v in cats.items()},
+                                 "wrist tremor 8 Hz": {k: b.get("wrist_8Hz", {}).get(v, np.nan) for k, v in cats.items() if v != "ilc"}}
     files.append(FG.dots_panels("fig_in_addon", "Rear-cap inertial module on top of the active nose (mean ink error ratio)", panels,
                                 "ink error ratio", xlim=(0.2, 1.1),
                                 note="SIM, test seeds 200-203. Ratio = ink error / ink error of Rev H without the module and without correction (lower is better). "
@@ -541,22 +558,37 @@ FIRMWARE = {
 
 
 def stage_report(quick=False):
+    """Assemble everything.  With --quick the quick-stage caches are used and the outputs go to results/opt/_cache/quick/
+    (the final results, interface files, replay and evidence rows are left untouched)."""
     from . import evidence as EVD
+    from . import figures as FG
+
+    def st(name):
+        if quick:
+            q = _stage(name + "_quick")
+            if q is not None:
+                return q
+        return _stage(name)
+
+    qdir = os.path.join(CACHE, "quick")
+    if quick:
+        os.makedirs(qdir, exist_ok=True)
+        FG.OUT = qdir
     S: Dict = {}
-    grid = _stage("grid")
+    grid = st("grid")
     S["arch"] = summarise_arch(grid)
     S["B"] = summarise_B(grid)
-    ad = _stage("addon")
+    ad = st("addon")
     S["addon"] = summarise_addon(ad)
     S["addon_decision"] = addon_decision(S["addon"])
-    sw = _stage("sweep")
+    sw = st("sweep")
     S["sweep"] = summarise_sweep(sw) if sw else None
-    cb = _stage("calib")
+    cb = st("calib")
     S["calib"] = summarise_calib(cb) if cb else None
-    nn = _stage("neural")
+    nn = st("neural")
     S["neural"] = summarise_neural(nn) if nn else None
     S["tiers"] = _stage("tiers")
-    S["adjoint"] = _stage("nose_adjoint")
+    S["adjoint"] = st("nose_adjoint")
     trk_path = os.path.join(OPT, "inertial_tracker_revh.json")
     S["tracker"] = json.load(open(trk_path)) if os.path.exists(trk_path) else None
     logp = os.path.join(CACHE, "inertial_tracker_parego.jsonl")
@@ -579,6 +611,11 @@ def stage_report(quick=False):
     S["screen"] = screen
     # figures
     figs = make_figures(S, akf_params=prm)
+    if quick:
+        out = {"quick": True, "summaries": {k: S[k] for k in ("arch", "addon_decision", "sweep", "calib", "neural") if S.get(k)},
+               "figures": [os.path.relpath(f, ROOT) for f in figs]}
+        provenance.write_json(os.path.join(qdir, "inertial_opt_quick.json"), out)
+        return out
     # interface files and replay
     dec = S["addon_decision"]
     addon_geo = None

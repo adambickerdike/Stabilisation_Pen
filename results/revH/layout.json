@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "PROPOSED DESIGN (dimensioned concept; CALC masses; ASSUMPTION dimensions) - Rev H active-nose pen, architecture B",
-    "generated_utc": "2026-09-28T17:47:37+00:00",
-    "git_revision": "cf9f4d8-dirty",
+    "generated_utc": "2026-09-28T17:57:14+00:00",
+    "git_revision": "340a410-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",

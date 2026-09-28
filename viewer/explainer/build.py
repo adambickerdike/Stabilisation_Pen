@@ -311,7 +311,9 @@ def panel_tremor_fusion():
         mets = [metric("Average distance of the ink from the intended line", m["ink_err_rms_um"] / 1000, "mm",
                        "SIMULATION", 2)]
         if role == "after":
-            mets.append(metric("Less wobble than pen off", 100 * (1 - m["ink_err_rms_um"] / ref), "%", "SIMULATION", 0))
+            ch = 100 * (m["ink_err_rms_um"] / ref - 1)
+            mets.append({"name": "Compared with pen off", "value": None, "text": f"{abs(ch):.0f} % " + ("less wobble" if ch < 0 else "more wobble"),
+                         "unit": "", "evidence": "SIMULATION", "note": ""})
         variants.append({"key": key, "role": role, "label": label,
                          "ink": strokes_from([p[:2] for p in c["nib"]], c["contact"]), "metrics": mets})
     return {
@@ -348,8 +350,9 @@ def panel_guided():
         mets = [metric("Average distance of the ink from the letter shapes", m["path_rms_um"] / 1000, "mm",
                        "SIMULATION", 2)]
         if role == "after":
-            mets.append(metric("Closer to the letter shapes than without guidance", 100 * (1 - m["path_rms_um"] / ref),
-                               "%", "SIMULATION", 0))
+            ch = 100 * (m["path_rms_um"] / ref - 1)
+            mets.append({"name": "Compared with no guidance", "value": None, "text": f"{abs(ch):.0f} % " + ("closer" if ch < 0 else "farther"),
+                         "unit": "", "evidence": "SIMULATION", "note": ""})
         mets.append(metric("Letters the app recognises", 100 * m["recognition_accuracy"], "%", "SIMULATION", 0))
         variants.append({"key": key, "role": role, "label": label, "ink": strokes_from(c["ink"], flags),
                          "metrics": mets})

@@ -9,8 +9,8 @@ from handwriting import score_recording as SR
 from handwriting import writers as W
 
 
-def _trace(size_factors=None, f0=0.0, amp=0.0):
-    wr = W.writer(1).write("minimum minimum", dt=1e-3, seed=1, size_factors=size_factors)
+def _trace(size_factors=None, f0=0.0, amp=0.0, text="minimum minimum"):
+    wr = W.writer(1).write(text, dt=1e-3, seed=1, size_factors=size_factors)
     t = np.arange(len(wr.intended.xy)) * 1e-3
     xy = wr.intended.xy.copy()
     if amp:
@@ -27,14 +27,17 @@ def _csv(path, t, xy, down):
 
 
 def test_tremor_frequency_and_band(tmp_path):
-    t, xy, d, _ = _trace()
+    t, xy, d, _ = _trace(text=W.ET_SENTENCE)                               # not a periodic text: see tremor_peak
     _csv(tmp_path / "clean.csv", t[::10], xy[::10], d[::10])              # 100 Hz, like a tablet
-    t, xy, d, _ = _trace(f0=8.0, amp=0.5e-3)
+    t, xy, d, _ = _trace(f0=8.0, amp=0.5e-3, text=W.ET_SENTENCE)
     _csv(tmp_path / "trem.csv", t[::10], xy[::10], d[::10])
     clean = SR.score(SR.load(str(tmp_path / "clean.csv")))
     trem = SR.score(SR.load(str(tmp_path / "trem.csv")))
-    assert abs(trem["tremor_peak_hz"] - 8.0) < 1.0
-    assert trem["tremor_band_rms_um"] > 1.5 * clean["tremor_band_rms_um"]
+    assert abs(trem["tremor_peak_hz"] - 8.0) < 0.5 and trem["tremor_peak_detected"]
+    assert 0.6 * 395 < trem["tremor_amp_rms_um"] < 1.1 * 395             # 0.5 mm x and 0.25 mm y sine: 395 um RMS
+    assert not clean["tremor_peak_detected"]
+    known = SR.score(SR.load(str(tmp_path / "trem.csv")), tremor_hz=8.0)
+    assert abs(known["tremor_amp_rms_um"] - trem["tremor_amp_rms_um"]) < 1.0
     assert trem["fluency"] and clean["fluency"]
 
 

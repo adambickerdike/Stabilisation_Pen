@@ -62,7 +62,7 @@ def stage_nose_adjoint(quick=False):
     res = [AJ.nose_optimise(mu_mass=mu, n_start=2 if quick else 4, iters=200 if quick else 400) for mu in (0.5, 2.0, 5.0, 10.0, 20.0)]
     out = {"front": res, "grad_check": AJ.nose_grad_check(), "chosen_mu": 5.0,
            "label": "CALCULATION (differentiable actuator model; inputs ASSUMPTION; gradients by autograd, checked by central differences)"}
-    save_stage("nose_adjoint", out)
+    save_stage("nose_adjoint" + ("_quick" if quick else ""), out)
     return out
 
 
@@ -83,7 +83,7 @@ def stage_tracker(quick=False):
                           np.isclose(v, TT.SPACE.hi[TT.SPACE.names.index(k)])]})
     out = {"n_evals": len(rows), "selected": best, "ship_on_training": x0["res"],
            "front": [{"x": r["x"], "f": r["f"]} for r in rows]}
-    save_stage("tracker", out)
+    save_stage("tracker" + ("_quick" if quick else ""), out)
     return out
 
 

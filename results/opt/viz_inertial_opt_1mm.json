@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "SIMULATION (hand-pen model H1 with the Rev H handle; synthetic handwriting and tremor; nothing measured)",
-    "generated_utc": "2026-09-28T17:47:41+00:00",
-    "git_revision": "cf9f4d8-dirty",
+    "generated_utc": "2026-09-28T17:57:17+00:00",
+    "git_revision": "340a410-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",

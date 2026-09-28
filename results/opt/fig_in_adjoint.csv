@@ -1,7 +1,7 @@
 point,moving + magnet mass of the actuator set (g),copper loss for the design tip force (mW)
-evaluation,15.0755,6.55065
-evaluation,9.49862,12.1668
-evaluation,7.52579,18.1162
-evaluation,6.83443,23.1185
-evaluation,6.15722,32.8336
+optimum for another mass weight,15.0755,6.55065
+optimum for another mass weight,9.49862,12.1668
+optimum for another mass weight,7.52579,18.1162
+optimum for another mass weight,6.83443,23.1185
+optimum for another mass weight,6.15722,32.8336
 chosen (mass weight 5),7.52579,18.1162

@@ -53,6 +53,19 @@ def _load(name):
     return json.loads(p.read_text()) if p.exists() else None
 
 
+def _tuned(quick: bool) -> dict:
+    """Choices made on tuning data (writers >= 100, seeds >= 300) that the final stages use."""
+    tu = (_load("tuning_quick") if quick else None) or _load("tuning") or {}
+    out = {}
+    tau = (tu.get("size_tau") or {}).get("chosen")
+    if tau is not None:
+        out["tau_sa"] = float(tau)
+    D = (tu.get("guidance") or {}).get("board_D_chosen")
+    if D is not None:
+        out["board_D"] = float(D)
+    return out
+
+
 def _default(o):
     import numpy as np
     if isinstance(o, (np.floating,)):
@@ -138,15 +151,19 @@ def main(argv=None):
         log["et_sens_s"] = time.time() - t0
     if "pd" in args.stages:
         t0 = time.time()
-        jobs = [{"writer": w, "seeds": list(seeds), "viz": w == PD.VIZ["writer"]} for w in writers]
+        tuned = _tuned(q)
+        jobs = [{"writer": w, "seeds": list(seeds), "viz": w == PD.VIZ["writer"],
+                 "tau_sa": tuned.get("tau_sa", PD.TAU_SA_DEFAULT)} for w in writers]
         outs = _pool(_pd_job, jobs, args.workers)
-        _save("pd" + tag, {"outs": outs, "aggregate": PD.aggregate(outs)})
+        _save("pd" + tag, {"outs": outs, "aggregate": PD.aggregate(outs), "tau_sa": jobs[0]["tau_sa"]})
         log["pd_s"] = time.time() - t0
     if "practice" in args.stages:
         t0 = time.time()
-        jobs = [{"writer": w, "seeds": list(seeds), "viz": w == PRC.VIZ["writer"]} for w in writers]
+        tuned = _tuned(q)
+        jobs = [{"writer": w, "seeds": list(seeds), "viz": w == PRC.VIZ["writer"], "board_D": tuned.get("board_D")}
+                for w in writers]
         outs = _pool(_pr_job, jobs, args.workers)
-        _save("practice" + tag, {"outs": outs, "aggregate": PRC.aggregate(outs)})
+        _save("practice" + tag, {"outs": outs, "aggregate": PRC.aggregate(outs), "board": outs[0].get("board")})
         log["practice_s"] = time.time() - t0
     if "crosscheck" in args.stages:
         t0 = time.time()

@@ -1,4 +1,4 @@
-panel,series,category,ink error ratio (vs Rev H without correction)
+panel,series,category,ink error ratio
 r_rot 0.3,"8-12 Hz, 1-2 mm tremor",nose (Rev H),0.648001
 r_rot 0.3,"8-12 Hz, 1-2 mm tremor",nose + passive weight 27.8 g,0.57697
 r_rot 0.3,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, feed-forward",0.609974

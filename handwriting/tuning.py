@@ -7,7 +7,8 @@ Each check states its rule before its result; the test writers 0-5 and seeds 200
                   oracle ink error; the tracker case is reported)
   stroke_match    guidance search restricted to the matching template stroke vs the nearest-point search of the M1/P1
                   guided core (rule: lower target error without lower letter recognition, averaged over both learners)
-  board_damping   D of the board law at K = 400 N/m, among 0, 2, 4, 8 N s/m (rule: highest mean letter recognition)
+  board_damping   D of the board law at K = 400 N/m, among 0, 2, 4, 8 N s/m (rule: highest mean letter recognition),
+                  with the board parameter file in use (the final results/board/board_params.json when it exists)
   size_tau        size-assist anchor time constant among 0.2, 0.4, 0.8 s (rule: highest recognition at x1.35; ties to
                   the longer constant); the default 0.4 s was set before this check
 """
@@ -92,7 +93,9 @@ def guidance_checks(writers=(100, 101, 102), seeds=(300, 301)) -> Dict:
                     summ[f"nose_g{g:g}_stroke"]["letters_read_ok"] >= summ[f"nose_g{g:g}_nearest"]["letters_read_ok"] - 0.01
                     for g in (0.5, 1.0))
     bestD = max((0.0, 2.0, 4.0, 8.0), key=lambda D: summ[f"board_K400_D{D:g}"]["letters_read_ok"])
-    return {"summary": summ, "stroke_match_chosen": sm_better, "board_D_chosen": bestD}
+    b = PR.board()
+    return {"summary": summ, "stroke_match_chosen": sm_better, "board_D_chosen": bestD,
+            "board_used": {k: v for k, v in vars(b).items() if k not in ("D",)}}
 
 
 def size_tau(writers=(100, 101, 102), seeds=(300,)) -> Dict:

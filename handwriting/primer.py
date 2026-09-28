@@ -346,7 +346,7 @@ def fig_forces(out: Path) -> List[List]:
         ("Push needed to move a relaxed hand 3 mm at 6 Hz", F_move_6, "CALC from HAP-26 impedance (grip + arm)"),
         ("Push needed to move it 3 mm slowly", F_move_static, "CALC HAP-26: grip 575 N/m in series with arm 170 N/m"),
         ("Rev H nose actuator (peak, at the tip)", rev.F_peak, "CALC results/revH/tip_params.json"),
-        ("Guidance board on the pen magnet (cap)", brd.F_cap, "CALC board_params_provisional.json; LIT HAP-16: 0.488 N"),
+        ("Guidance board on the pen magnet (cap)", brd.F_cap, f"CALC {brd.sources.get('file', 'board file')} (software cap); LIT HAP-16: 0.488 N"),
         ("Paper drag on the ball", 0.15, "ASSUMPTION mu 0.15 x 1 N (CON-13: 0.09-0.165)"),
         ("Inertial weight inside a pen (5 g, +-1 mm)", 0.013, "CALC docs/inertial_stabilisation.md 3.1 (2-30 mN)"),
     ]

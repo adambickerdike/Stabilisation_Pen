@@ -136,8 +136,9 @@ def _cad_names():
 
 def body_mod(parts, wiring=0.10):
     """Replace every P0 CAD part by `parts`; H1 multiplies the CAD parts by (1 + wiring), so the new parts get the same factor
-    here (pen_body applies it only to the CAD list)."""
-    return {"remove": _cad_names(), "add": [(n, m * (1 + wiring), z, L, r2) for n, m, z, L, r2 in parts]}
+    here (pen_body applies it only to the CAD list).  The new parts are prefixed 'revh_': H1 adds before it removes, and a
+    Rev H part named like a P0 CAD part (pcb, skid_ring, refill_D1) would otherwise be removed with it."""
+    return {"remove": _cad_names(), "add": [("revh_" + n, m * (1 + wiring), z, L, r2) for n, m, z, L, r2 in parts]}
 
 
 def masses(d: RevH) -> Dict[str, float]:

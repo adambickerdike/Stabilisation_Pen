@@ -167,9 +167,9 @@ def drawing(geo, path_png, title="Rev H pen: active nose (architecture B) with o
         axc.tick_params(labelsize=7)
     handles = [Rectangle((0, 0), 1, 1, color=v) for v in COLORS.values()]
     fig.legend(handles, list(COLORS), loc="upper right", ncol=6, fontsize=7.5, frameon=False, bbox_to_anchor=(0.98, 0.99))
-    fig.text(0.01, 0.005, "PROPOSED DESIGN (dimensioned concept; ASSUMPTION dimensions, CALC masses). Dashed: moving nose at ±full travel.",
+    fig.text(0.01, -0.03, "PROPOSED DESIGN (dimensioned concept; ASSUMPTION dimensions, CALC masses). Dashed: moving nose at ±full travel.",
              fontsize=7.5)
-    fig.savefig(path_png, dpi=130)
+    fig.savefig(path_png, dpi=130, bbox_inches="tight", facecolor="white")
     plt.close(fig)
 
 

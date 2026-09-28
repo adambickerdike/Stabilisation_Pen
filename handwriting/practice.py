@@ -13,9 +13,9 @@ Guidance (Rev H; no tremor in this study):
   nose_partial   the nose pulls toward the template, gain 0.5, within +-3 mm, capture 2 mm, dropped after 60 ms beyond 2.5 mm
   nose_full      the same with gain 1.0
   nose_nogate    gain 1.0 with no capture gate and no drop rule: what "the pen writes for you" would look like
-  board_partial  the guidance board pulls the pen magnet toward the template, 200 N/m + 2 N s/m, capped at 0.4 N
-  board_full     400 N/m + 4 N s/m on the error rate, capped at 0.4 N (the cap is reached at 1 mm error); the damping
-                 was chosen on tuning writers 100-102 (seeds 300-301) by letter recognition
+  board_partial  the guidance board pulls the pen magnet (on the fixed front sleeve) toward the template, half of full
+  board_full     400 N/m + D on the error rate, capped at 0.4 N (the cap is reached at 1 mm error); D is chosen on
+                 tuning writers 100-102 (seeds 300-301) by letter recognition (tuning.guidance_checks, final board file)
 Every guidance law searches only the template stroke that matches the writer's current stroke (stroke counting at
 touchdown), chosen on the same tuning writers against the nearest-point search of the M1/P1 guided core.
 The hand is passive to guidance (the HAP-26 impedance; no voluntary following or resisting): an upper bound for
@@ -169,7 +169,7 @@ def writer_job(job: Dict) -> Dict:
     t0 = time.time()
     hand = PR.Hand.from_config()
     pen = PR.rev_h()
-    brd = PR.board()
+    brd = PR.board(D=job.get("board_D"))
     rows, viz = [], {}
     for profile in job.get("profiles", PROFILES):
         for seed in job["seeds"]:
@@ -199,7 +199,8 @@ def writer_job(job: Dict) -> Dict:
                 viz[profile]["x_height_mm"] = su["wr"].style.x_height_mm
             rows.append({"writer": job["writer"], "seed": seed, "profile": profile, "conds": res, "spelling": sp,
                          "kinds": su["plan"]["kind"]})
-    return {"writer": job["writer"], "rows": rows, "viz": viz, "elapsed_s": time.time() - t0}
+    return {"writer": job["writer"], "rows": rows, "viz": viz, "elapsed_s": time.time() - t0,
+            "board": {k: v for k, v in vars(brd).items()}}
 
 
 def aggregate(outs: List[Dict]) -> Dict:

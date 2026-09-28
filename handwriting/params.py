@@ -171,22 +171,35 @@ def rev_h_lead() -> Pen:
 @dataclass
 class Board:
     F_cap: float = 0.4           # N, software cap
-    F_max: float = 0.49          # N, magnetic maximum (A4)
+    F_max: float = 0.49          # N, magnetic maximum at the selected Z-lift
     tau: float = 0.008           # s, first-order force lag
-    dead: float = 0.002          # s, dead time
-    noise: float = 0.05e-3       # m RMS, pen position sensing
-    bias: float = 0.0            # m, systematic sensing error (accuracy 0.4 mm quoted; applied as a constant offset in a sensitivity)
-    normal_pull: float = 1.1     # N at zero lateral force (adds to the writing force)
+    dead: float = 0.002          # s, dead time (sensing + compute)
+    noise: float = 0.05e-3       # m RMS, pen position sensing at 1 kHz
+    bias: float = 0.0            # m, constant sensing offset (cancels: the template is anchored at the board's own
+                                 # sensed touchdown of each letter; ASSUMPTION that it is constant over one letter)
+    normal_pull: float = 1.1     # N pulling the pen onto the page while guiding (adds skid or ball friction)
+    on_handle: bool = False      # pen magnet on the fixed front sleeve (force on the handle) instead of on the nose
     K: float = 400.0             # N/m, guidance spring toward the template (ASSUMPTION; cap reached at 1 mm error)
     D: float = 4.0               # N s/m on the (30 Hz filtered) error rate; chosen on tuning writers
     sources: Dict[str, str] = field(default_factory=dict)
 
 
-def board() -> Board:
+def _num(x, default=None):
+    """A number, or the 'value' of a {value: ...} record."""
+    if isinstance(x, (int, float)):
+        return float(x)
+    if isinstance(x, dict) and isinstance(x.get("value"), (int, float)):
+        return float(x["value"])
+    return default
+
+
+def board(D: Optional[float] = None) -> Board:
+    """The guidance board from results/board/board_params.json (final format, 17:5x UTC) or the provisional file."""
     d, path = _load_first(BOARD_DIR / "board_params.json", BOARD_DIR / "board_params_provisional.json")
     if d is None:
         return Board(F_cap=0.4, F_max=0.4, tau=0.010, dead=0.010, noise=0.5e-3, normal_pull=0.0,
                      sources={"all": "ASSUMPTION (lead's defaults: 0.4 N, 20 ms, 0.5 mm noise; HAP-16 488 mN)", "file": "none"})
+
     def g(*keys, default=None):
         x = d
         for k in keys:
@@ -194,20 +207,45 @@ def board() -> Board:
                 return default
             x = x[k]
         return x
-    cap = g("software_force_cap_N", "value", default=g("software_cap_N", "value", default=0.4))
+    cap = _num(g("software_force_cap_N"), _num(g("software_cap_N"), 0.4))
     lat = g("latency_ms", default={}) or {}
-    dead = float(lat.get("sense_to_command", 2.0)) * 1e-3
-    tau = float(lat.get("command_to_force_effective", 8.0)) * 1e-3
-    fmax = g("max_lateral_force_N", "A4_design_gap_2p7mm", default=cap)
-    return Board(F_cap=float(cap), F_max=float(fmax), tau=tau, dead=dead,
-                 noise=float(g("position_sensing", "noise_rms_mm", default=0.5)) * 1e-3, bias=0.0,
-                 normal_pull=float(g("normal_pull_N", "at_zero_lateral_force_A4", default=0.0)),
-                 sources={"file": path, "evidence": str(d.get("status", g("meta", "evidence_status", default=""))),
-                          "tau/dead": str(d.get("suggested_simulation_model", "")) + f" (used: lag {tau * 1e3:.0f} ms, dead {dead * 1e3:.0f} ms)",
-                          "noise": str(g("position_sensing", "status", default="")),
-                          "F_cap": str(g("software_force_cap_N", "status", default="ASSUMPTION")),
-                          "K": "ASSUMPTION: 400 N/m guidance spring, cap reached at 1 mm error (full); 200 N/m (partial)",
-                          "D": "4 N s/m (full), 2 N s/m (partial): chosen on tuning writers 100-102, seeds 300-301"})
+    if "stage_equivalent_delay_ms" in lat:                       # final format: conversion/compute terms + stage lag
+        tau = float(lat["stage_equivalent_delay_ms"]) * 1e-3
+        dead = sum(float(v) for k, v in lat.items() if k.endswith("_ms") and isinstance(v, (int, float))
+                   and k not in ("stage_equivalent_delay_ms", "total_effective_ms")) * 1e-3
+    else:                                                        # provisional format
+        dead = float(lat.get("sense_to_command", 2.0)) * 1e-3
+        tau = float(lat.get("command_to_force_effective", 8.0)) * 1e-3
+    ps = g("position_sensing", default={}) or {}
+    noise = float(ps.get("ball_noise_rms_mm", ps.get("noise_rms_mm", 0.5))) * 1e-3
+    # normal pull while guiding: at the Z-lift whose isotropic lateral capability matches the cap
+    lv = g("guidance_level_by_zlift", default=None)
+    pull = None
+    if isinstance(lv, list) and lv:
+        pts = sorted((float(e["lateral_isotropic_N"]), float(e["normal_pull_at_zero_lateral_N"])) for e in lv)
+        xs, ys = [p_[0] for p_ in pts], [p_[1] for p_ in pts]
+        pull = float(__import__("numpy").interp(cap, xs, ys))
+    if pull is None:
+        pull = _num(g("normal_pull_N", "at_zero_lateral_force_A4"), 0.0)
+    fmax = _num(g("max_lateral_force_N", "at_design_gap_isotropic"), _num(g("max_lateral_force_N", "A4_design_gap_2p7mm"), cap))
+    loc = str(g("pen_magnet", "location", default="")) + " " + str(g("suggested_simulation_model", "acts_on", default=""))
+    on_handle = ("handle" in loc.lower() or "fixed front sleeve" in loc.lower()) and "not on the handle" not in loc.lower()
+    b = Board(F_cap=float(cap), F_max=float(fmax), tau=tau, dead=dead, noise=noise, bias=0.0, normal_pull=float(pull),
+              on_handle=bool(on_handle),
+              sources={"file": path, "file_generated_utc": str(g("meta", "generated_utc", default="")),
+                       "evidence": str(d.get("status", g("meta", "evidence_status", default=""))),
+                       "tau/dead": f"lag {tau * 1e3:.2f} ms, dead {dead * 1e3:.2f} ms (latency_ms of the board file)",
+                       "noise": f"{noise * 1e3:.2f} mm RMS at 1 kHz ({ps.get('label', ps.get('status', ''))})",
+                       "bias": "0: a constant offset cancels because each letter's template is anchored at the board's own sensed "
+                               "touchdown (the board file quotes up to 0.4 mm); ASSUMPTION: constant over one letter",
+                       "normal_pull": f"{pull:.2f} N while guiding (interpolated in guidance_level_by_zlift at the cap); adds skid friction",
+                       "acts_on": "handle (pen magnet on the fixed front sleeve)" if on_handle else "nose",
+                       "F_cap": f"{cap:g} N software cap (board file)",
+                       "K": "ASSUMPTION: 400 N/m guidance spring, cap reached at 1 mm error (full); 200 N/m (partial)",
+                       "D": "N s/m on the error rate: chosen on tuning writers 100-102, seeds 300-301 (tuning.guidance_checks)"})
+    if D is not None:
+        b.D = float(D)
+    return b
 
 
 # ------------------------------------------------------------------ trackers

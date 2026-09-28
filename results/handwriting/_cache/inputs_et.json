@@ -1,0 +1,73 @@
+{
+ "recorded_utc": "2026-09-28T18:00:38Z",
+ "note": "inputs of the ET stage (run 17:37-17:57 UTC); the tracker file was unchanged since 16:58:39 and the Rev H values used were identical across tip_params.json versions 17:04, 17:47 and 17:57",
+ "files": {
+  "results/opt/inertial_tracker_revh.json": {
+   "sha256_16": "fc5630b1e330adcd",
+   "mtime_utc": "2026-09-28T16:58:39Z",
+   "generated_utc": "2026-09-28T16:58:39+00:00"
+  },
+  "results/opt/tracker_models/akf_ship.json": {
+   "sha256_16": "c4b4e76f6ff9be16",
+   "mtime_utc": "2026-09-28T16:00:52Z",
+   "generated_utc": "2026-09-28T16:00:52+00:00"
+  },
+  "results/revH/tip_params.json": {
+   "sha256_16": "d3b69f0e8e060d69",
+   "mtime_utc": "2026-09-28T17:57:14Z",
+   "generated_utc": "2026-09-28T17:57:14+00:00"
+  },
+  "results/board/board_params.json": {
+   "sha256_16": "dc9ada994d7e585b",
+   "mtime_utc": "2026-09-28T17:56:11Z",
+   "generated_utc": "2026-09-28T17:53:58+00:00"
+  },
+  "config/parameters.yaml": {
+   "sha256_16": "a9d3d0016461d690",
+   "mtime_utc": "2026-09-27T04:48:22Z"
+  }
+ },
+ "tracker_revh_params_used": {
+  "qj": 0.0275258,
+  "qt": 1.05149e-10,
+  "qh": 3.51935e-11,
+  "qb": 1.98082e-06,
+  "ra": 0.0747106,
+  "rp": 1.15629e-09,
+  "tau_decay": 0.208485,
+  "w0_hz": 6.26123,
+  "tau_w": 0.124095,
+  "wmin_hz": 3.58047,
+  "wmax_hz": 16.0,
+  "f_gate": 3.0,
+  "f_gate_w": 1.5022709328141104,
+  "tau_amp": 1.72993,
+  "horizon": 6.75657e-05,
+  "tau_auth": 0.115546,
+  "g": 2.4620192113421524,
+  "lp_hz": 45.697241839605724,
+  "cap_k": 6.0,
+  "v_slow": 0.027894805502834408,
+  "tau_ref": 0.349354,
+  "a_lo": 1.3721545329296515e-05,
+  "a_hi": 0.0001474523809293008,
+  "harm": 0.5860741613342281,
+  "xtrack": 0.0,
+  "v_xt": 0.00704628
+ },
+ "tracker_revh_meta_used": {
+  "generated_utc": "2026-09-28T16:58:39+00:00",
+  "evidence_status": "SIMULATION (model H1 Rev H-B, training seeds only)",
+  "seeds": {
+   "train": [
+    300,
+    301
+   ],
+   "glyph_train": [
+    330,
+    331
+   ]
+  },
+  "git_revision": "11cd816-dirty"
+ }
+}

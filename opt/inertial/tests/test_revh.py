@@ -31,7 +31,7 @@ def test_masses_and_body_mod():
     assert ms["moving_mass_at_tip_g"] == pytest.approx(ms["nose_inertia_about_pivot_g_mm2"] * 1e-9 / d.z_p ** 2 * 1e3, rel=1e-9)
     # removing every CAD part leaves only the Rev H parts
     names = [p[0] for p in body.parts]
-    assert "barrel" not in names and "cell" in names
+    assert "barrel" not in names and "revh_cell" in names and "revh_pcb" in names and "revh_refill_D1" in names
 
 
 def test_geometry_fit_checks_pass():

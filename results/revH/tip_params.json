@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "SIMULATION + CALCULATION (Rev H active nose, model H1; nothing measured)",
-    "generated_utc": "2026-09-28T17:47:37+00:00",
-    "git_revision": "cf9f4d8-dirty",
+    "generated_utc": "2026-09-28T17:57:14+00:00",
+    "git_revision": "340a410-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",
@@ -26,32 +26,49 @@
     "doc": "docs/opt_inertial.md"
   },
   "architecture": "B",
-  "architecture_note": "B = a skid ring on the FIXED front sleeve carries the writing force; the refill carrier (the moving nose) tilts on a 2-axis flexure gimbal so the ball moves up to +/-3 mm; the refill slides axially on a soft constant-force spring so the ball stays on the paper. Chosen over A (rigid nose carrying the load) by simulation: A's ceiling with perfect knowledge is 0.15-0.79 of the ink error against 0.09-0.24 for B, A needs 0.41 W of copper loss with a bias spring (1.9 W without) against about 0.002 W for B, and a rigid nose must press the tip into the paper for tilt-plane corrections (0.38 N rms writing-force change).",
+  "architecture_note": "B = a skid ring on the FIXED front sleeve carries the writing force; the refill carrier (the moving nose) tilts on a 2-axis flexure gimbal so the ball moves up to +/-3 mm; the refill slides axially on a soft constant-force spring so the ball stays on the paper. Chosen over A (rigid nose carrying the load) by simulation: A's ceiling with perfect knowledge is 0.15-0.77 of the ink error against 0.09-0.24 for B, A needs 0.41 W of copper loss with a bias spring (1.9 W without) against about 0.004 W for B, and a rigid nose must press the tip into the paper for tilt-plane corrections (0.38 N rms writing-force change).",
   "results_summary": {
     "B_oracle_ratio_range": [
-      0.08647215247826937,
-      0.242607713633066
+      0.0861764239913991,
+      0.24028988760908584
     ],
     "B_revh_tracker_ratio_8_12Hz_1_2mm": [
-      0.6033301972817469,
-      0.803814232584424
+      0.6087290466151287,
+      0.8066412305211077
     ],
     "A_oracle_ratio_range": [
-      0.14634756240328015,
-      0.7934178264390883
+      0.15323784652513542,
+      0.7742170699819148
     ],
     "A_P_cu_with_bias_W": 0.41403567736937025,
     "A_P_cu_without_bias_W": 1.9001368129621037,
     "A_writing_force_std_N": 0.37917148713657584,
     "B_tip_force_rms_N": [
-      0.012399033348606108,
-      0.019031321293495128
+      0.012260845763427985,
+      0.018973238670887058
     ],
     "B_power_W": {
-      "P_cu_W": 0.004091286733440569,
-      "P_total_W": 0.08109128673344057
+      "P_cu_W": 0.004046759216019608,
+      "P_total_W": 0.0810467592160196
     },
-    "B_P_cu_W_mean": 0.0017989544008937095,
+    "B_P_cu_W_mean": 0.004097780383209615,
+    "A_design_point": {
+      "arch": "A",
+      "travel_mm": 3.0,
+      "z_p_mm": 38.0,
+      "z_a_mm": 70.0,
+      "lever_tip_per_act": 1.1874999999999998,
+      "Km_tip": 0.5389473684210527,
+      "servo_hz": 80.0,
+      "servo_zeta": 0.7,
+      "handle_g": 61.666,
+      "nose_g": 7.248,
+      "total_g": 68.914,
+      "com_mm": 93.45,
+      "nose_inertia_about_pivot_g_mm2": 4578.996,
+      "moving_mass_at_tip_g": 3.171
+    },
+    "note": "ranges are means over test seeds per condition; B over 0.1-2 mm, 4-12 Hz and the three splits, A at r_rot 0.5 and 0.3-2 mm",
     "label": "SIM (model H1, test seeds 200-203, first use; see results/opt/inertial_opt.json)"
   },
   "tip_travel_mm": {
@@ -117,7 +134,7 @@
   "power_model": {
     "formula": "P_total = 0.065 + 0.012 + (F_tip_rms_t1^2 + F_tip_rms_t2^2) / Km_tip^2   [W]; F_tip = m_eff q'' + k_s q + ball loads - bias",
     "Km_tip_N_per_sqrtW": 0.3551,
-    "typical_W": 0.08109128673344057,
+    "typical_W": 0.0810467592160196,
     "battery": {
       "part": "EEMB LIR14500",
       "ledger": "AMF-80",

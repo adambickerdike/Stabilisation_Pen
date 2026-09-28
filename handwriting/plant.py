@@ -27,8 +27,9 @@ Controller terms (summed, times the contact authority g_eff that ramps with tau_
          (full inside capture, fading to 0 at 1.5 capture) and a drop rule (distance > drop_d for > drop_t: off until the
          next touchdown); gain g_guide
   size   band-limited size assist: (G - 1) (p_hat - LP_tau(p_hat)) per axis (x gain, y gain)
-Board (optional): F = sat_cap(K (T_near - x_tip_hat)) from the board's own pen sensing (1 kHz, noise, dead time) through a
-first-order lag, applied to the tip (the pen magnet sits on the nose).
+Board (optional): F = sat_cap(K e + D de/dt), e = T_near - x_tip_hat from the board's own pen sensing (1 kHz, noise, dead
+time), through a first-order lag; applied to the handle when the pen magnet sits on the fixed front sleeve (final board
+file) or to the nose (provisional file).  The magnet's normal pull adds to the skid (or ball) normal force.
 """
 from __future__ import annotations
 
@@ -61,7 +62,7 @@ NAMES = [
     "ps_lat_ticks", "ps_noise", "ps_every",
     # board
     "use_board", "Kb", "Db", "F_cap", "b_tau", "b_dead_ticks", "b_noise", "b_every", "b_bias_x", "b_bias_y",
-    "stroke_match",
+    "stroke_match", "b_on_handle",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
@@ -87,7 +88,7 @@ I_sad = IDX["sa_adapt"]; I_satau = IDX["sa_tau_amp"]; I_satcal = IDX["sa_t_cal"]
 I_pslat = IDX["ps_lat_ticks"]; I_psn = IDX["ps_noise"]; I_pse = IDX["ps_every"]
 I_bd = IDX["use_board"]; I_Kb = IDX["Kb"]; I_Db = IDX["Db"]; I_Fcap = IDX["F_cap"]; I_btau = IDX["b_tau"]
 I_bdead = IDX["b_dead_ticks"]; I_bn = IDX["b_noise"]; I_bev = IDX["b_every"]; I_bbx = IDX["b_bias_x"]; I_bby = IDX["b_bias_y"]
-I_smatch = IDX["stroke_match"]
+I_smatch = IDX["stroke_match"]; I_bonh = IDX["b_on_handle"]
 
 
 @njit(cache=True)
@@ -138,6 +139,7 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmp
     use_bd = P[I_bd] > 0.5; Kb = P[I_Kb]; Db = P[I_Db]; Fcap = P[I_Fcap]; btau = P[I_btau]
     bdead = int(P[I_bdead]); bn = P[I_bn]; bev = int(P[I_bev]); bbx = P[I_bbx]; bby = P[I_bby]
     smatch = P[I_smatch] > 0.5
+    bonh = 1.0 if P[I_bonh] > 0.5 else 0.0                # board force on the handle (1) or on the nose (0)
     cur_s = -1; cur_sb = -1; was_con_b = 0
     be0 = 0.0; be1 = 0.0; bed0 = 0.0; bed1 = 0.0           # board error and its filtered rate
     alpha_bd = 1.0 - math.exp(-2.0 * math.pi * 30.0 * dt * tdec)
@@ -341,10 +343,10 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmp
             if fm > Fpk:
                 Fa0 *= Fpk / fm; Fa1 *= Fpk / fm
                 satf = 1.0
-            aH0 = (Fg0 + Fs0 + Fw0 - Fa0 - Fsu0) / mH
-            aH1 = (Fg1 + Fs1 + Fw1 - Fa1 - Fsu1) / mH
-            aq0 = (Fa0 + Fsu0 + Fb0 + FB0) / mt - aH0
-            aq1 = (Fa1 + Fsu1 + Fb1 + FB1) / mt - aH1
+            aH0 = (Fg0 + Fs0 + Fw0 - Fa0 - Fsu0 + bonh * FB0) / mH
+            aH1 = (Fg1 + Fs1 + Fw1 - Fa1 - Fsu1 + bonh * FB1) / mH
+            aq0 = (Fa0 + Fsu0 + Fb0 + (1.0 - bonh) * FB0) / mt - aH0
+            aq1 = (Fa1 + Fsu1 + Fb1 + (1.0 - bonh) * FB1) / mt - aH1
         # ------------------------------------------------ integrate (semi-implicit Euler)
         vM0 += aM0 * dt; vM1 += aM1 * dt; dM0 += vM0 * dt; dM1 += vM1 * dt
         vH0 += aH0 * dt; vH1 += aH1 * dt; pH0 += vH0 * dt; pH1 += vH1 * dt
@@ -509,7 +511,13 @@ def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Con
     w_in = 2.0 * math.pi * f_in
     s("Kp_in", max(m_t, 1e-6) * w_in ** 2); s("Kd_in", 2.0 * 0.7 * max(m_t, 1e-6) * w_in)
     Nb = pen.ball_normal(writing)
-    s("N_ball", Nb); s("N_skid", max(writing.N - Nb, 0.0) if pen.skid else 0.0)
+    Nsk = max(writing.N - Nb, 0.0) if pen.skid else 0.0
+    if ctl.board is not None and ctl.board.normal_pull > 0:     # the board magnet pulls the pen onto the page
+        if pen.skid:
+            Nsk += ctl.board.normal_pull
+        else:
+            Nb += ctl.board.normal_pull
+    s("N_ball", Nb); s("N_skid", Nsk)
     s("mu_b", writing.mu_ball); s("mu_s_b", writing.mu_ball * writing.ms_ratio)
     s("mu_k_skid", writing.mu_skid); s("mu_s_skid", writing.mu_skid * writing.ms_ratio)
     s("v_s", writing.v_s); s("x_pre", writing.x_pre)
@@ -529,7 +537,7 @@ def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Con
     if b is not None:
         s("use_board", 1.0); s("Kb", b.K * ctl.board_gain); s("Db", b.D * ctl.board_gain); s("F_cap", b.F_cap); s("b_tau", b.tau)
         s("b_dead_ticks", int(round(b.dead / Ts))); s("b_noise", b.noise); s("b_every", max(1, int(round(1.0 / (1000.0 * Ts)))))
-        s("b_bias_x", b.bias); s("b_bias_y", 0.0)
+        s("b_bias_x", b.bias); s("b_bias_y", 0.0); s("b_on_handle", 1.0 if b.on_handle else 0.0)
     s("stroke_match", 1.0 if ctl.stroke_match else 0.0)
     info = {"tick_decim": tick_decim, "Ts": Ts, "N_ball": Nb, "N_skid": P[IDX["N_skid"]], "inner_hz": f_in,
             "pen": pen.key, "writer_comp": hand.writer_comp}

@@ -242,6 +242,13 @@ svg.dg .coilc{fill:var(--g-act)}
 svg.dg .magc{fill:color-mix(in srgb,var(--g-act) 60%,var(--ink))}
 svg.dg .pivc{fill:var(--g-pivot)}
 svg.dg .lead{stroke:var(--muted);stroke-width:1.2;fill:none}
+svg.dg .paperline{stroke:var(--rule);stroke-width:2}
+svg.dg .hs{fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg.dg .hs.o{stroke:color-mix(in srgb,var(--skin) 62%,var(--ink))}
+svg.dg .hs.n{stroke:var(--skin)} svg.dg .hs.f{stroke:color-mix(in srgb,var(--skin) 84%,var(--ink))}
+svg.dg .he.n{fill:var(--skin);stroke:color-mix(in srgb,var(--skin) 62%,var(--ink))} svg.dg .he.f{fill:color-mix(in srgb,var(--skin) 84%,var(--ink));stroke:color-mix(in srgb,var(--skin) 62%,var(--ink))}
+svg.dg .dot{fill:var(--panel);stroke:var(--ink);stroke-width:1.3}
+@media (max-width:560px){svg.dg{min-width:540px}}
 svg.dg .arrow{stroke:var(--accent);stroke-width:2.6;fill:none}
 svg.dg .arrowh{fill:var(--accent)}
 svg.dg .sarrow{stroke:var(--shake);stroke-width:2.6;fill:none}
@@ -530,49 +537,14 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div class="cols2">
       <figure class="diag">
         <div class="svgwrap">
-        <svg class="dg" viewBox="0 0 640 420" role="img" aria-labelledby="gripsvg-t">
-          <title id="gripsvg-t">Side view of a right hand holding the pen in a tripod grip</title>
+        <svg class="dg" id="gripsvg" viewBox="0 0 640 440" role="img" aria-labelledby="gripsvg-t">
+          <title id="gripsvg-t">Side view of a right hand holding the pen in a tripod grip, drawn from the same model as the 3-D view</title>
           <defs>
             <marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="arrowh"/></marker>
-            <marker id="ahs" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="sarrowh"/></marker>
           </defs>
-          <rect x="0" y="352" width="640" height="68" class="desk"/>
-          <rect x="20" y="346" width="600" height="8" class="paper"/>
-          <path class="skin2" d="M636 300 C 560 296, 500 300, 452 312 C 430 318, 420 330, 424 344 L 636 344 Z"/>
-          <path class="skin" d="M470 322 C 470 290, 440 250, 392 226 C 356 208, 318 214, 300 236 C 286 254, 290 282, 300 300 C 312 322, 330 342, 360 346 L 452 346 C 466 344, 472 334, 470 322 Z"/>
-          <path class="skin2" d="M300 300 C 286 318, 282 336, 300 344 C 318 350, 330 342, 336 330 Z"/>
-          <path class="skin2" d="M330 322 C 318 338, 322 350, 342 350 C 360 350, 366 338, 360 326 Z"/>
-          <g transform="translate(168 344) rotate(-50)">
-            <path class="nosec" d="M0 0 L 36 -5 L 36 5 Z"/>
-            <rect x="4" y="-12" width="6" height="24" rx="2" class="skidc"/>
-            <rect x="10" y="-10.5" width="86" height="21" rx="4" class="sleevec"/>
-            <rect x="96" y="-11" width="232" height="22" rx="6" class="shellc"/>
-            <rect x="86" y="-6" width="6" height="12" class="pivc"/>
-            <rect x="140" y="-7" width="22" height="14" class="coilc"/>
-          </g>
-          <path class="skin2" d="M232 288 C 220 300, 206 314, 196 318 C 186 322, 182 312, 190 304 C 206 290, 226 276, 244 268 Z"/>
-          <path class="skin" d="M216 262 C 226 238, 250 216, 284 204 C 310 196, 330 204, 332 222 C 318 222, 300 226, 284 234 C 262 246, 244 262, 236 276 C 228 282, 214 276, 216 262 Z"/>
-          <path class="skin" d="M226 300 C 248 290, 272 282, 298 280 C 320 278, 330 292, 318 302 C 300 306, 274 312, 250 318 C 236 322, 222 314, 226 300 Z"/>
-          <g>
-            <line class="lead" x1="224" y1="262" x2="150" y2="200"/><text class="lbl" x="40" y="196">Index finger</text>
-            <line class="lead" x1="232" y1="310" x2="120" y2="300"/><text class="lbl" x="28" y="304">Thumb</text>
-            <line class="lead" x1="198" y1="316" x2="120" y2="330"/><text class="lbl" x="12" y="336">Middle finger</text>
-            <text class="sm" x="40" y="222">The three fingers hold the soft sleeve.</text>
-            <text class="sm" x="40" y="240">It stays still; only the nose moves.</text>
-            <line class="lead" x1="300" y1="232" x2="330" y2="150"/><text class="lbl" x="300" y="142">Pen rests in the web</text>
-            <text class="sm" x="300" y="124">between thumb and index</text>
-            <line class="lead" x1="440" y1="346" x2="470" y2="388"/><text class="lbl" x="440" y="404">Hand rests on the paper</text>
-            <line class="lead" x1="176" y1="338" x2="190" y2="384"/><text class="lbl" x="120" y="402">Ring rests on the paper</text>
-          </g>
-          <path class="arrow" d="M150 262 L 186 218" marker-start="url(#ah)" marker-end="url(#ah)"/>
-          <text class="lbl" x="44" y="112"><tspan font-weight="600">Fingers:</tspan> small up-down</text><text class="lbl" x="44" y="130">strokes and loops</text>
-          <line class="lead" x1="120" y1="136" x2="160" y2="236"/>
-          <path class="arrow" d="M488 238 A 60 60 0 0 1 520 300" marker-start="url(#ah)" marker-end="url(#ah)"/>
-          <text class="lbl" x="468" y="206"><tspan font-weight="600">Wrist:</tspan> strokes</text><text class="lbl" x="468" y="224">and slant</text>
-          <path class="arrow" d="M520 380 L 620 380" marker-start="url(#ah)" marker-end="url(#ah)"/>
-          <text class="lbl" x="506" y="372"><tspan font-weight="600">Arm:</tspan> along the line</text>
-          <path class="sarrow" d="M560 262 q 6 -10 12 0 t 12 0 t 12 0 t 12 0"/>
-          <text class="lbl" x="522" y="248" style="fill:var(--shake)">Shake starts here</text>
+          <rect x="0" y="368" width="640" height="72" class="desk"/>
+          <line x1="0" x2="640" y1="368" y2="368" class="paperline"/>
+          <g id="grip-fig"></g>
         </svg>
         </div>
         <figcaption>Schematic side view, right hand. The pen sits at about 50° to the paper. <span class="tag asm"><i></i>Assumption</span>
@@ -645,12 +617,12 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <rect x="344" y="196" width="280" height="10" class="paper"/>
           <rect x="344" y="206" width="280" height="30" rx="3" class="shellc"/>
           <rect x="452" y="210" width="44" height="14" rx="3" class="coilc"/>
-          <text class="sm" x="506" y="252">magnet on a carriage</text>
+          <text class="sm" x="620" y="252" text-anchor="end">magnet on a carriage</text>
           <g transform="translate(470 194) rotate(-50)">
             <path class="nosec" d="M0 0 L 30 -5 L 30 5 Z"/><rect x="30" y="-9" width="46" height="18" rx="4" class="sleevec"/><rect x="76" y="-7" width="110" height="14" rx="5" class="shellc"/>
           </g>
-          <path class="garrow" d="M470 186 l 34 0" marker-end="url(#ahg)"/>
-          <text class="sm" x="440" y="176">the board pulls the pen along</text>
+          <path class="garrow" d="M478 188 l 40 0" marker-end="url(#ahg)"/>
+          <text class="sm" x="620" y="176" text-anchor="end">the board pulls the pen along</text>
         </svg>
         </div>
         <figcaption>Left: the coil pushes the nose one way and the handle the other way. Your hand is far heavier than the nose, so the tip moves and your hand hardly does. Right: the board has the desk to push against, so it can pull the pen, and your hand, along a letter.</figcaption>
@@ -811,7 +783,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
     <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json + provisional panels for the conditions not yet in it (micrographia_illustration, guided_sentence)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 17:52 UTC from git cf9f4d8-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:47:37+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-28 18:00 UTC from git 340a410-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:57:14+00:00</div>
   </footer>
 </div>
 
@@ -978,44 +950,92 @@ function setXrayParts(pen, on, opac){
 }
 
 /* ---------- the hand: stylised right hand in a tripod grip (pen-local mm; tilt 50 deg) ---------- */
-function buildHand(lay){
-  const g=new THREE.Group();
-  const mat=stdMat(css("--skin"), {roughness:0.7, metalness:0});
-  const mat2=stdMat(css("--skin"), {roughness:0.7, metalness:0}); mat2.color.multiplyScalar(0.9);
-  g.userData.mats=[mat, mat2];
+function handSkeleton(lay){
   const hz=(lay.hand&&lay.hand.finger_pads_z)||[26,32,38], webZ=(lay.hand&&lay.hand.web_z)||92, dz=webZ-92;
   const [zMid, zIdx, zTh]=[hz[0], hz[1], hz[2]];
   const surf=(z, psiDeg, extra)=>{ const r=sleeveRadius(lay,z)+extra, p=psiDeg*Math.PI/180; return [r*Math.sin(p), r*Math.cos(p), z]; };
   const add=(p, d)=>[p[0]+d[0], p[1]+d[1], p[2]+d[2]];
   const K=(x,y,z)=>[x, y, z+dz];      /* joints behind the fingertips move with the web */
-  /* knuckle row, palm and wrist (the finger bases end inside these, so no knuckle balls show) */
-  const iMcp=K(16.2, 16.0, 96.0), mMcp=K(27.2,-0.3,89.0), rMcp=K(33.6,-14.5,80.1), lMcp=K(34.6,-28.1,70.6), wrist=K(-0.6,-68.3,107);
+  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+  const iMcp=K(16.2,16.0,96.0), mMcp=K(27.2,-0.3,89.0), rMcp=K(33.6,-14.5,80.1), lMcp=K(34.6,-28.1,70.6), wrist=K(-0.6,-68.3,107);
   const mcpC=[(iMcp[0]+lMcp[0])/2+4, (iMcp[1]+lMcp[1])/2, (iMcp[2]+lMcp[2])/2];
   const v=[iMcp[0]-lMcp[0], iMcp[1]-lMcp[1], iMcp[2]-lMcp[2]], u=[wrist[0]-mcpC[0], wrist[1]-mcpC[1], wrist[2]-mcpC[2]];
-  const n=[u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]];
-  const vv=[n[1]*u[2]-n[2]*u[1], n[2]*u[0]-n[0]*u[2], n[0]*u[1]-n[1]*u[0]];   /* width axis, made orthogonal to the length axis */
-  g.add(ellipsoidM(mcpC, [[v,34],[u,11],[n,12]], mat));                                         /* knuckle bar */
-  g.add(ellipsoidM([mcpC[0]+0.45*u[0], mcpC[1]+0.45*u[1], mcpC[2]+0.45*u[2]], [[u,38],[vv,33],[n,14]], mat));   /* palm */
-  /* index finger: pad on top of the sleeve, arching up to its knuckle beside the web */
-  const iPad=surf(zIdx, 8, 7.2);
-  g.add(limb([add(iPad,[0,-1.2,-4.5]), iPad, add(iPad,[-0.4,3.4,14]), add(iPad,[3.5,11.2,30]), iMcp], [5.6, 7.0, 7.3, 8.1, 8.8], mat, [true,false]));
-  /* thumb: pad on the near side of the sleeve, back to its base under the pen */
-  const tPad=surf(zTh, -96, 7.6), tMcp=K(-15.1,-24.1,72.5), tCmc=K(-7.6,-46.3,96.3);
-  g.add(limb([add(tPad,[0.4,0.4,-5]), tPad, add(tPad,[0.6,-2.1,20]), tMcp, tCmc, K(2,-58,104)], [6.0, 7.6, 8.2, 10.2, 12.5, 14], mat, [true,false]));
-  /* middle finger: under the sleeve on the far side */
-  const mPad=surf(zMid, 124, 6.8);
-  g.add(limb([add(mPad,[-0.8,0.5,-4.5]), mPad, add(mPad,[10.4,1.2,6.8]), K(34.0,-5.1,51.4), mMcp], [5.6, 6.8, 7.2, 7.8, 8.6], mat2, [true,false]));
-  /* web between thumb and index: the handle rests on it at web_z */
-  const rS=shellRadius(lay, webZ);
-  g.add(limb([tMcp, K(-5,-(rS+8.5),86), K(2,-(rS+6.8),92), K(13,-(rS+2.2),94), K(rS+8.6,2,96), iMcp], [9.8, 8.2, 6.6, 6.5, 7.4, 8.6], mat, [false,false]));
-  /* the curled ring and little fingers and the heel of the hand rest on the paper */
-  g.add(limb([rMcp, K(47.0,-19.3,50.2), K(39.9,-18.9,31.6), K(29.0,-18.9,25.1)], [8.4, 7.8, 7.0, 6.2], mat2, [false,true]));
-  g.add(limb([lMcp, K(47.2,-32.8,49.7), K(39.8,-31.9,36.0)], [7.6, 7.0, 5.8], mat2, [false,true]));
-  g.add(ellipsoidM(K(22,-56,76), [[u,24],[vv,16],[n,14]], mat2));
-  /* wrist and forearm, running back toward the writer and resting on the desk */
-  g.add(limb([K(10,-52,98), wrist, K(-6,-125,154), K(-11.6,-183.1,200.8)], [20, 22, 26, 30], mat, [false,true]));
-  g.userData.pads={index:iPad, thumb:tPad, middle:mPad};
+  const n=cross(u,v), vv=cross(n,u);
+  const iPad=surf(zIdx, 8, 7.2), tPad=surf(zTh, -96, 7.6), mPad=surf(zMid, 124, 6.8);
+  const tMcp=K(-15.1,-24.1,72.5), tCmc=K(-7.6,-46.3,96.3), rS=shellRadius(lay, webZ), web=K(2,-(rS+6.8),92);
+  return {
+    blobs:[{name:"heel", c:K(22,-56,76), axes:[[u,24],[vv,16],[n,14]], far:true},
+           {name:"knuckles", c:mcpC, axes:[[v,34],[u,11],[n,12]], far:false},
+           {name:"palm", c:[mcpC[0]+0.45*u[0], mcpC[1]+0.45*u[1], mcpC[2]+0.45*u[2]], axes:[[u,38],[vv,33],[n,14]], far:false}],
+    limbs:[{name:"little", pts:[lMcp, K(47.2,-32.8,49.7), K(39.8,-31.9,36.0)], r:[7.6,7.0,5.8], far:true, caps:[false,true]},
+           {name:"ring", pts:[rMcp, K(47.0,-19.3,50.2), K(39.9,-18.9,31.6), K(29.0,-18.9,25.1)], r:[8.4,7.8,7.0,6.2], far:true, caps:[false,true]},
+           {name:"middle", pts:[add(mPad,[-0.8,0.5,-4.5]), mPad, add(mPad,[10.4,1.2,6.8]), K(34.0,-5.1,51.4), mMcp], r:[5.6,6.8,7.2,7.8,8.6], far:true, caps:[true,false]},
+           {name:"forearm", pts:[K(10,-52,98), wrist, K(-6,-125,154), K(-11.6,-183.1,200.8)], r:[20,22,26,30], far:false, caps:[false,true]},
+           {name:"web", pts:[tMcp, K(-5,-(rS+8.5),86), web, K(13,-(rS+2.2),94), K(rS+8.6,2,96), iMcp], r:[9.8,8.2,6.6,6.5,7.4,8.6], far:false, caps:[false,false]},
+           {name:"index", pts:[add(iPad,[0,-1.2,-4.5]), iPad, add(iPad,[-0.4,3.4,14]), add(iPad,[3.5,11.2,30]), iMcp], r:[5.6,7.0,7.3,8.1,8.8], far:false, caps:[true,false], front:true},
+           {name:"thumb", pts:[add(tPad,[0.4,0.4,-5]), tPad, add(tPad,[0.6,-2.1,20]), tMcp, tCmc, K(2,-58,104)], r:[6.0,7.6,8.2,10.2,12.5,14], far:false, caps:[true,false], front:true}],
+    marks:{index:iPad, thumb:tPad, middle:mPad, web, ringTip:K(29.0,-18.9,25.1), heel:K(22,-56,76), wrist}
+  };
+}
+function buildHand(lay){
+  const g=new THREE.Group();
+  const mat=stdMat(css("--skin"), {roughness:0.7, metalness:0});
+  const mat2=stdMat(css("--skin"), {roughness:0.7, metalness:0}); mat2.color.multiplyScalar(0.9);
+  g.userData.mats=[mat, mat2];
+  const sk=handSkeleton(lay);
+  for(const b of sk.blobs) g.add(ellipsoidM(b.c, b.axes, b.far?mat2:mat));
+  for(const L of sk.limbs) g.add(limb(L.pts, L.r, L.far?mat2:mat, L.caps));
+  g.userData.pads={index:sk.marks.index, thumb:sk.marks.thumb, middle:sk.marks.middle};
   return g;
+}
+
+/* ---------- the grip diagram: the same hand and pen, seen side-on in the pen's tilt plane ---------- */
+function drawGrip(lay){
+  const host=document.getElementById("grip-fig"); if(!host) return;
+  const th=(+lay.tilt_deg||50), c=Math.cos(th*Math.PI/180), sn=Math.sin(th*Math.PI/180), S=1.9, ox=218, oy=368;
+  const scr=p=>[ox+S*(p[2]*c-p[1]*sn), oy-S*(p[2]*sn+p[1]*c)];              /* pen-local -> diagram px */
+  const f=x=>x.toFixed(2), sk=handSkeleton(lay);
+  const limbSVG=L=>{ const q=L.pts.map(p=>[p[2], -p[1]]); let o="", w="";
+    for(let k=0;k<q.length-1;k++){ const sw=L.r[k]+L.r[k+1], seg=`x1="${f(q[k][0])}" y1="${f(q[k][1])}" x2="${f(q[k+1][0])}" y2="${f(q[k+1][1])}"`;
+      o+=`<line class="hs o" ${seg} stroke-width="${f(sw+1.1)}"/>`; w+=`<line class="hs ${L.far?"f":"n"}" ${seg} stroke-width="${f(sw)}"/>`; }
+    return o+w; };
+  const blobSVG=b=>{ let m00=0,m01=0,m11=0; for(const [d,sl] of b.axes){ const L=Math.hypot(...d)||1, a=d[2]/L, bb=-d[1]/L; m00+=sl*sl*a*a; m01+=sl*sl*a*bb; m11+=sl*sl*bb*bb; }
+    const tr=m00+m11, det=m00*m11-m01*m01, l1=tr/2+Math.sqrt(Math.max(0,tr*tr/4-det)), l2=tr/2-Math.sqrt(Math.max(0,tr*tr/4-det)), ang=Math.atan2(l1-m00, m01)*180/Math.PI;
+    return `<ellipse class="he ${b.far?"f":"n"}" cx="${f(b.c[2])}" cy="${f(-b.c[1])}" rx="${f(Math.sqrt(l1))}" ry="${f(Math.sqrt(Math.max(l2,1)))}" transform="rotate(${f(isFinite(ang)?ang:0)} ${f(b.c[2])} ${f(-b.c[1])})" stroke-width="0.55"/>`; };
+  /* the pen, from the layout */
+  const comp=id=>(lay.components||[]).find(x=>x.id===id);
+  const grip=(lay.components||[]).find(x=>x.group==="grip"), shell=(lay.components||[]).filter(x=>x.group==="structure" && !/skid|cap/i.test(x.id||"")).sort((a,b)=>(b.z1-b.z0)-(a.z1-a.z0))[0];
+  const skid=(lay.components||[]).find(x=>/skid/i.test(x.id||""));
+  let pen="";
+  if(shell){ const r=(shell.d0||20)/2; pen+=`<rect class="shellc" x="${shell.z0}" y="${-r}" width="${shell.z1-shell.z0}" height="${2*r}" rx="3" stroke-width="0.5"/>`; }
+  if(grip){ const r0=(grip.d0||16)/2, r1=(grip.d1||grip.d0||20)/2; pen+=`<path class="sleevec" d="M${grip.z0} ${-r0} L${grip.z1} ${-r1} L${grip.z1} ${r1} L${grip.z0} ${r0} Z"/>`; }
+  const z0n=skid? skid.z0 : 4; pen+=`<path class="nosec" d="M0 -0.5 L${z0n+2} -3.4 L${z0n+2} 3.4 L0 0.5 Z"/>`;
+  if(skid){ const r=(skid.d0||16)/2; pen+=`<rect class="skidc" x="${skid.z0}" y="${-r}" width="${skid.z1-skid.z0}" height="${2*r}" rx="0.8"/>`; }
+  const back=sk.limbs.filter(L=>!L.front).map(limbSVG).join("")+sk.blobs.map(blobSVG).join("");
+  const front=sk.limbs.filter(L=>L.front).map(limbSVG).join("");
+  const TR=`translate(${ox} ${oy}) rotate(${-th}) scale(${S})`;
+  /* labels: left column for the fingers, the rest where the drawing leaves room; every label kept inside the frame */
+  const M=sk.marks, P=k=>scr(M[k]), tw=(t,px)=>t.length*px, cx=(x,t,px)=>Math.min(x, 632-tw(t,px));
+  const lead=(x1,y1,x2,y2)=>`<line class="lead" x1="${f(x1)}" y1="${f(y1)}" x2="${f(x2)}" y2="${f(y2)}"/><circle class="dot" cx="${f(x2)}" cy="${f(y2)}" r="3"/>`;
+  const sleeveMid=scr([0,sleeveRadius(lay,30)*0.2,30]), skidP=skid? scr([0,-4,(skid.z0+skid.z1)/2]) : scr([0,-4,3]);
+  const fa=scr([0,36,34]), fb=scr([0,36,62]);
+  let lab=`<text class="lbl" x="12" y="84"><tspan font-weight="600">Fingers:</tspan> small up-down</text><text class="lbl" x="12" y="102">strokes and loops</text>`+
+    `<path class="arrow" d="M${f(fa[0])} ${f(fa[1])} L${f(fb[0])} ${f(fb[1])}" marker-start="url(#ah)" marker-end="url(#ah)"/>`+lead(110, 108, (fa[0]+fb[0])/2, (fa[1]+fb[1])/2);
+  const rows=[["Index finger","index",170],["Thumb","thumb",200],["Middle finger","middle",230]];
+  for(const [t,k,y] of rows){ const q=P(k); lab+=`<text class="lbl" x="12" y="${y}">${t}</text>`+lead(12+tw(t,7.6)+6, y-5, q[0], q[1]); }
+  lab+=`<text class="lbl" x="12" y="262">Soft sleeve: stays still</text>`+lead(178, 257, sleeveMid[0], sleeveMid[1]);
+  lab+=`<text class="lbl" x="12" y="294">Skid ring on the paper</text>`+lead(172, 289, skidP[0], skidP[1]);
+  const w=P("web"), wt1="Pen rests in the web", wt2="between thumb and index";
+  lab+=`<text class="lbl" x="${f(cx(470,wt1,7.4))}" y="150">${wt1}</text><text class="sm" x="${f(cx(470,wt2,6.4))}" y="168">${wt2}</text>`+lead(cx(470,wt1,7.4), 162, w[0], w[1]);
+  const wr=P("wrist"), wl="Wrist: strokes and slant", sl="most of the shake";
+  lab+=`<path class="arrow" d="M${f(wr[0]+22)} ${f(wr[1]-54)} A 58 58 0 0 1 ${f(wr[0]+56)} ${f(wr[1]+4)}" marker-start="url(#ah)" marker-end="url(#ah)"/>`+
+    `<text class="lbl" x="${f(cx(wr[0]+20,wl,7.6))}" y="${f(wr[1]-70)}"><tspan font-weight="600">Wrist:</tspan> strokes and slant</text>`;
+  lab+=`<path class="sarrow" d="M${f(wr[0]+74)} ${f(wr[1]-22)} q 5 -9 10 0 t 10 0 t 10 0 t 10 0"/><text class="lbl" x="${f(cx(wr[0]+70,sl,7.6))}" y="${f(wr[1]-34)}" style="fill:var(--shake)">${sl}</text>`;
+  lab+=`<path class="arrow" d="M480 426 L630 426" marker-start="url(#ah)" marker-end="url(#ah)"/><text class="lbl" x="480" y="410"><tspan font-weight="600">Arm:</tspan> along the line</text>`;
+  const rt=P("ringTip"), he=P("heel");
+  lab+=`<text class="sm" x="40" y="424">ring finger on the paper</text>`+lead(150, 412, rt[0], rt[1]);
+  lab+=`<text class="sm" x="262" y="400">heel of the hand on the paper</text>`+lead(330, 388, he[0], he[1]);
+  host.innerHTML=`<g transform="${TR}">${back}<g>${pen}</g>${front}</g>${lab}`;
 }
 
 /* ---------- paper texture ---------- */
@@ -1289,11 +1309,11 @@ const GLYPH = {
   e:[[0.58,0.55],[0.4,0.98],[0.12,0.6],[0.26,0.02],[0.75,0.18]],
   l:[[1.02,1.72],[0.78,2.45],[0.45,1.95],[0.42,0],[0.78,0.12]],
   o:[[0.62,0.92],[0.3,0.98],[0.08,0.45],[0.32,0.0],[0.62,0.38],[0.6,0.95],[0.95,0.86]],
-  a:[[0.72,0.86],[0.5,1.0],[0.25,0.96],[0.08,0.72],[0.04,0.4],[0.16,0.1],[0.38,0.0],[0.6,0.12],[0.74,0.45],[0.78,0.9],[0.78,0.98],[0.76,0.3],[0.84,0.02],[1.12,0.18]],
+  a:[[0.84,0.82],[0.6,1.0],[0.26,0.95],[0.04,0.62],[0.06,0.2],[0.34,0.0],[0.66,0.14],[0.84,0.5],[0.9,0.97],[0.88,0.42],[0.9,0.08],[1.02,0.0],[1.24,0.16]],
 };
 const ADV = {h:1.25, e:0.72, l:0.62, o:1.02, a:1.2};
-function wordTargets(word, u, slant, x0, sizeFn){
-  const out=[[x0, 0]]; let x=x0/u;
+function wordTargets(word, u, slant, x0, sizeFn, noLead){
+  const out=noLead? [] : [[x0, 0]]; let x=x0/u;
   [...word].forEach((ch,i)=>{ const g=GLYPH[ch]; if(!g) { x+=0.6; return; } const k=sizeFn? sizeFn(i):1;
     for(const p of g){ const px=x+p[0]*k, py=p[1]*k; out.push([(px+slant*py)*u, py*u]); }
     x+=ADV[ch]*k; });
@@ -1366,7 +1386,7 @@ function buildSceneData(key, board, tip, trk, travel){
                ["“Write big” cues brought the size back toward normal", "", "LITERATURE PDT-19"]];
   }
   else if(key==="d"){
-    const u3=9, tgt=wordTargets("a", u3, 0.22, -6, null), path=strokesPath(tgt, {base:0.1, per:0.02, overlap:0.5});
+    const u3=9, tgt=wordTargets("a", u3, 0.18, -6, null, true), path=strokesPath(tgt, {base:0.1, per:0.02, overlap:0.5});
     S.T=path.T+0.4; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T; S.ghost=new Float32Array(n*2);
     for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), s=t/TT;
       const ex=2.6*Math.sin(TAU*(0.9*s)+0.3)+1.1*Math.sin(TAU*2.3*s+1.2), ey=-2.4*Math.sin(TAU*(1.1*s)+1.0)+0.9*Math.sin(TAU*2.9*s);
@@ -1380,7 +1400,7 @@ function buildSceneData(key, board, tip, trk, travel){
                ["Guidance made practice writing smoother; better letter shapes were not shown", "", "LITERATURE HAP-10"]];
   }
   else if(key==="e"){
-    const u4=16, tgt=wordTargets("a", u4, 0.22, -12, null), path=strokesPath(tgt, {base:0.2, per:0.035, overlap:0.5});
+    const u4=16, tgt=wordTargets("a", u4, 0.18, -12, null, true), path=strokesPath(tgt, {base:0.2, per:0.035, overlap:0.5});
     S.T=path.T+0.6; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T, lead=0.05; S.carriage=new Float32Array(n*2);
     for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), q=path.at(Math.min(TT, t+lead)), s=t/TT;
       const wx=0.45*Math.sin(TAU*1.7*s+0.5), wy=0.4*Math.sin(TAU*2.2*s+1.4);
@@ -1441,7 +1461,7 @@ function initScenes(lay, board, samples, tip){
                                        : (p.variants.find(v=>v.role==="limit") || p.variants.find(v=>v.role==="after"))) || base;
     if(!V.points) return null;
     const rate=+p.rate_hz||50, n=Math.min(p.intended_points.length, base.points.length, V.points.length), nUse=Math.min(n, Math.round(8.5*rate));
-    const S={key, dt:1/rate, travel, T:(nUse-1)/rate, numbers:[], speed:0.5, ruling:p.ruling_mm||8, cam:"line", camR:20, fromData:true};
+    const S={key, dt:1/rate, travel, T:(nUse-1)/rate, numbers:[], speed:0.5, ruling:p.ruling_mm||8, cam:"line", camR:27, inkW:0.32, fromData:true};
     S.t=Float32Array.from({length:nUse}, (_,i)=>i/rate); newArrays(S);
     for(let i=0;i<nUse;i++){ const I=p.intended_points[i], B=base.points[i], Q=V.points[i];
       S.intended[2*i]=I[0]; S.intended[2*i+1]=I[1]; S.hand[2*i]=B[0]; S.hand[2*i+1]=B[1]; S.nose[2*i]=Q[0]-B[0]; S.nose[2*i+1]=Q[1]-B[1];
@@ -1478,8 +1498,9 @@ function initScenes(lay, board, samples, tip){
     for(const [s,e] of rs){ const pts=[]; for(let i=s;i<e;i+=2) pts.push(P2W(S.intended[2*i], S.intended[2*i+1], 0.04));
       const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), lineMat.clone()); l.computeLineDistances(); inkG.add(l); }
     if(S.intendedFaint){ for(const [s,e] of rs){ const r=ribbon(S.intended, s, e, 2.0, css("--intended"), 0.03, 1, null); r.material.opacity=0.3; inkG.add(r); } }
-    for(const [s,e] of rs){ const r=ribbon(S.ink, s, e, 0.55, css(S.key==="a"?"--shake":"--accent"), 0.07, mag, S.intended); r.geometry.setDrawRange(0,0); inkG.add(r); ribbons.push(r); }
-    if(S.ghost){ for(const [s,e] of rs){ const r=ribbon(S.ghost, s, e, 0.45, css("--shake"), 0.055, mag, S.intended); r.material.opacity=0.6; r.geometry.setDrawRange(0,0); inkG.add(r); ghosts.push(r); } }
+    const iw=S.inkW||0.55;
+    for(const [s,e] of rs){ const r=ribbon(S.ink, s, e, iw, css(S.key==="a"?"--shake":"--accent"), 0.07, mag, S.intended); r.geometry.setDrawRange(0,0); inkG.add(r); ribbons.push(r); }
+    if(S.ghost){ for(const [s,e] of rs){ const r=ribbon(S.ghost, s, e, iw*0.8, css("--shake"), 0.055, mag, S.intended); r.material.opacity=0.6; r.geometry.setDrawRange(0,0); inkG.add(r); ghosts.push(r); } }
     prepPaper();
   }
   /* ---- board (scene e) ---- */
@@ -1648,6 +1669,9 @@ function initScenes(lay, board, samples, tip){
   }
   Sx.update=function(dt){ if(!S || !Sx.playing) return false; Sx.t+=dt*Sx.speed; if(Sx.t>S.T+1.2) Sx.t=0; frame(); return true; };
   Sx.seek=function(t){ Sx.t=t; frame(true); };
+  Sx.stats=function(){ return {key:Sx.key, samples:S? S.t.length : 0, fromData:!!(S&&S.fromData), mag:Sx.mag, view:Sx.view,
+    inkTriangles:ribbons.reduce((a,r)=>a+(r.geometry.drawRange.count===Infinity? 0 : r.geometry.drawRange.count),0)/3,
+    board:boardG.visible? boardParts.length : 0}; };
   Sx.onResize=function(){ if(S){ prepPaper(); setCamera(); frame(true); } };
   Sx.onTheme=function(){ v.scene.background=new THREE.Color(css("--scene-bg")); retexturePaper(paper);
     for(const m of pen.parts){ const nm=partMaterial(m.userData.comp); m.material.color.copy(nm.color); nm.dispose(); }
@@ -1812,8 +1836,9 @@ async function main(){
   T.data={layout:!!lay, board:!!board, samples:!!samples, tip:!!tip, outcomes:!!outcomes, manifest};
   if(!renderOutcomes(outcomes)) renderNewPen(tip);
   renderResults(samples, manifest);
-  if(!window.THREE || !THREE.OrbitControls){ $("hero-loading").textContent="The 3-D view needs three.js, which could not load."; $("scene-loading").textContent="The scenes need three.js, which could not load."; T.ready=true; return; }
   if(!lay){ $("hero-loading").textContent="Could not load data/layout.json."; $("scene-loading").textContent="Could not load data/layout.json."; T.ready=true; return; }
+  try{ drawGrip(lay); }catch(e){ T.errors.push("grip: "+e.message); }
+  if(!window.THREE || !THREE.OrbitControls){ $("hero-loading").textContent="The 3-D view needs three.js, which could not load."; $("scene-loading").textContent="The scenes need three.js, which could not load."; T.ready=true; return; }
   renderSpec(lay, tip);
   const lf=(manifest&&manifest.files||[]).find(f=>f.file==="layout.json");
   $("hero-note").textContent = lf && lf.status==="final" ? "Layout: results/revH/layout.json (proposed design)" : "Layout: provisional (sizes are assumptions)";
