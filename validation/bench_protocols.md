@@ -19,7 +19,9 @@ Contents:
 - §26–§33 Pencil-class protocols (Rev P0): EXP-Q01…Q08
 - §34 Pointers to the human-participant protocols
 - §35 EXP-I01: grip compliance split (translation vs tilt), run inside EXP-B06 sessions
-- §36 EXP-I04 (conditional): nib stage plus an inertial helper on the loaded rig
+- §36 EXP-I04 (conditional): nib stage plus an inertial helper on the loaded rig (superseded by EXP-I06 for Rev H)
+- §37–§39 Rev H (bigger grip, DEC-029): EXP-I05 active nose on the bench, EXP-I06 rear inertial module on a hand simulant, EXP-I07 tracker on recorded tremor writing
+- §40 Guidance board (DEC-031): EXP-G01…G06
 
 ---
 
@@ -169,7 +171,11 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-Q07 | Two-axis Q stage in a 7.9 mm bore | A | R5, R2 | REQ-PNC-003, DEC-019, Rev P1 build | Q04, Q05, Q06 |
 | EXP-Q08 | Touchdown and lift tails; tilt-adaptive front stop | A | R2, R3 | REQ-PNC-006, DEC-022 | Q06 |
 | EXP-I01 | Grip compliance split: translation vs tilt of a pen grasp (participants) | A | R6 + second stinger | DEC-024, hand-pen model H1 | B06 session, ethics |
-| EXP-I04 | Nib stage plus an inertial helper on the loaded rig (only if EXP-I01 finds r_rot ≥ 0.6) | A | R2, R3 | DEC-024 | I01, Q06 |
+| EXP-I04 | Nib stage plus an inertial helper on the loaded rig (only if EXP-I01 finds r_rot ≥ 0.6); superseded by EXP-I06 for Rev H | A | R2, R3 | DEC-024 | I01, Q06 |
+| EXP-I05 | Rev H active nose on the bench: force constant, travel, bandwidth, power, writing-force change | A | R2 with a 2-axis shaker, R3 | REQ-RVH-001…005, DEC-032 | nose prototype |
+| EXP-I06 | Rev H rear inertial module on a hand simulant with the nose on | A | EXP-I05 rig + EXP-I01 compliance | DEC-033 | I01, I05 |
+| EXP-I07 | Rev H tracker on recorded tremor writing (offline replay) | C | compute | REQ-RVH-006, DEC-028, DEC-032 | E01 recordings |
+| EXP-G01…G06 | Guidance board: force map, stage and latency, localisation, noise and heat, hand simulant, safety | A | board prototype, 3-axis load cell | REQ-RVH-007, DEC-031 | board prototype |
 | EXP-H01…H06, A02, I02, I03 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, DEC-002/008/009/016/020/024 | ethics |
 
 ---
@@ -3235,3 +3241,202 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 |---|---|
 | Reduction ≥ 25 % | Re-open DEC-024 for a larger form factor only; the pencil envelope still has no room (mass, power, cell). |
 | Reduction < 25 % | Close the helper line. |
+
+**Superseded for Rev H (2026-09-28).** The user chose a bigger grip (DEC-029) and asked for inertial control (DEC-033). The Rev H module is tested in EXP-I06 instead.
+
+---
+
+## 37. EXP-I05: Rev H active nose on the bench
+
+### Purpose and what it gates
+
+Rev H moves the whole nose, and so the ball, by up to ±3 mm relative to the handle (DEC-032, architecture B). A skid ring on the fixed sleeve carries the writing force.
+- **Why this experiment gates everything:** it decides whether the nose is strong, fast and frugal enough, and whether the writing force stays undisturbed.
+- **Predictions (CALC, SIM; `results/revH/tip_params.json`, `docs/opt_inertial.md`):**
+  - Km 0.47 N/√W at the magnets;
+  - ±3.0 mm usable travel;
+  - an 80 Hz servo (ASSUMPTION);
+  - about 0.004 W of coil loss;
+  - no writing-force change;
+  - with perfect knowledge of the disturbance, ink-error ratio 0.17–0.18 at 8–12 Hz and 1–2 mm.
+
+### Set-up
+
+- The nose, gimbal, magnets, coils, Hall sensor and skid ring in a rigid Ø22 mm handle clamped to a 2-axis shaker (R2).
+- A force plate under the paper, and R3 scans.
+- A force gauge on the ball for the Km map.
+- A coil-current and supply-power logger.
+
+### Procedure
+
+1. **Km map.** Map Km (force per √W) and the gimbal stiffness over the magnet stroke, both axes.
+2. **Travel.** Measure the travel with the skid ring on paper at θ 35/50/75°, in 8 directions.
+3. **Bandwidth.** Measure the closed-loop frequency response with the real Hall noise.
+4. **Tremor rig.** Inject 1 mm tremor at 8, 10 and 12 Hz through the shaker while a writing robot draws letters. The nose is driven from the rig reference (ORACLE). Record power and the paper-normal force. Scan the ink.
+5. **Weigh and measure** the built pen.
+
+### Measurands
+
+- Km (N/√W).
+- Travel and cross-coupling.
+- −3 dB bandwidth and phase margin.
+- Power (W).
+- RMS change of the normal force (N).
+- Ink-error ratio against the nose held.
+- Mass and envelope.
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I05-01 | REQ-RVH-003 | Nose force constant per axis at the magnets, mapped over the ±2.3 mm magnet stroke (force gauge and coil current, both axes) | ≥ 0.40 N/√W | requirement | REQ-RVH-003; prediction 0.47 N/√W (adjoint design, results/revH/tip_params.json; CALCULATION) | DEC-032 |
+| AC-I05-02 | REQ-RVH-002 | Usable ball travel relative to the handle with the skid ring on paper, 8 directions, θ 35/50/75°, ≥ ±2.5 mm, with cross-coupling between axes ≤ 10 % (both) | both met | requirement | REQ-RVH-002; prediction ±3.0 mm usable, 3.5 mm stop (PROPOSED DESIGN, CALC) | DEC-032 |
+| AC-I05-03 | REQ-RVH-003 | Closed-loop nose bandwidth (-3 dB of tip position over reference) with the real Hall noise, and phase margin | ≥ 60 Hz and 45° | requirement | REQ-RVH-003; 80 Hz servo assumed in SIM (results/revH/tip_params.json; ASSUMPTION) | DEC-032 |
+| AC-I05-04 | REQ-RVH-004 | Coil plus driver power while the nose corrects 1 mm, 10 Hz injected tremor during writing on the tremor rig | ≤ 0.1 W | requirement | REQ-RVH-004; prediction about 0.004 W coil loss, 0.081 W total with electronics (CALC on SIM forces) | DEC-032 |
+| AC-I05-05 | REQ-RVH-005 | Change of the paper-normal writing force caused by the nose (force plate under the paper) while correcting 1 mm, 10 Hz tremor | ≤ 0.05 N RMS | requirement | REQ-RVH-005; architecture B: no change by construction (SIM); architecture A predicted 0.31-0.71 N RMS | DEC-032 (B over A) |
+| AC-I05-06 | — | Ink-error ratio on the tremor rig (1 mm injected tremor at 8, 10, 12 Hz; ORACLE nose command from the rig reference) against the nose held | ≤ 0.3 | hypothesis | prediction 0.17-0.18 with perfect knowledge at 8-12 Hz, 1-2 mm (results/opt/inertial_opt.json; SIMULATION); 0.3 engineering judgement for rig losses | DEC-032 |
+| AC-I05-07 | REQ-RVH-001 | Built Rev H prototype: grip diameter, length and mass, weighed without and with the rear inertial module | ≤ 24 mm, 175 mm, 80 g / 110 g | requirement | REQ-RVH-001; prediction Ø22 x 170 mm, 75.0 g / 103 g (CALC, results/revH/tip_params.json) | DEC-029; DEC-033 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-I05).
+<!-- AC-TABLE:EXP-I05:END -->
+
+### Decision rule
+
+| Result | Consequence |
+|---|---|
+| All pass | Build the Rev H prototype with this nose (DEC-032 accepted for the prototype). |
+| Km or bandwidth short | Re-run the adjoint actuator design (`opt/inertial/adjoint.py`) with the measured losses; consider larger magnets. |
+| Normal force disturbed | Check the refill's constant-force spring and the skid-ring contact before considering architecture A. |
+
+---
+
+## 38. EXP-I06: Rev H rear inertial module on a hand simulant
+
+### Purpose and what it gates
+
+DEC-033 fits the rear-cap module (19.8 g tungsten, ±2.75 mm, 2 axes) in the first Rev H prototype at the user's request. The product keeps it only if it adds at least 10 % reduction on top of the nose at the grip split that EXP-I01 measures.
+- **Predictions (SIM):** 6 / 17 / 17 % at r_rot 0.3 / 0.5 / 0.7 (15 % at 0.3 after a grip calibration), at ≤ 0.051 W.
+
+### Set-up
+
+The EXP-I05 rig with the module in the cap and a hand simulant set to the EXP-I01 two-zone compliance.
+
+### Procedure
+
+Inject 1 mm tremor at 10 Hz; causal control (IMU tracker, Rev H setting). Run the nose alone, then the nose with the module, 10 seeds each. Log the module's stroke, end-stop impacts (accelerometer and sound) and power.
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I06:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I06-01 | — | Further relative reduction of the ink-error ratio when the rear inertial module is on, with the nose on (causal), hand simulant with the EXP-I01 grip split, 10 Hz, 1 mm | ≥ 10 % | hypothesis | DEC-033 product rule; prediction 6 / 17 / 17 % at r_rot 0.3 / 0.5 / 0.7 (15 % at 0.3 after a grip calibration) (results/opt/inertial_opt.json; SIMULATION) | DEC-033 (keep the module in the product) |
+| AC-I06-02 | REQ-RVH-004 | Module electrical power and end-stop impacts during 60 s of 10 Hz, 1 mm tremor writing | ≤ 0.051 W and 0 impacts | derived | REQ-RVH-004; prediction ≤ 0.051 W, stroke ±2.75 mm with a 5 Hz centring loop (CALC, SIM) | DEC-033 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-I06).
+<!-- AC-TABLE:EXP-I06:END -->
+
+---
+
+## 39. EXP-I07: Rev H tracker on recorded tremor writing
+
+### Purpose and what it gates
+
+The mechanism can remove 76–91 % of tremor up to 2 mm; the tracker decides how much the writer gets. This is an offline replay of the EXP-E01 recordings through the Rev H tracker setting (ParEGO, `results/opt/inertial_tracker_revh.json`) and the nose model.
+- **Predictions (SIM, synthetic writers):** 0.64–0.76 at 8–12 Hz, 1–2 mm, with 10–13 µm false correction; nothing at 4–6 Hz.
+
+### Procedure
+
+`opt/tracker/realdata.py` format for the recordings. Replay through `opt/inertial` with the Rev H nose limits. Report by tremor frequency, amplitude and writer group.
+
+### Acceptance criteria
+
+<!-- AC-TABLE:EXP-I07:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-I07-01 | REQ-RVH-006 | Offline replay of recorded tremor writing (8-12 Hz, ≥ 1 mm at the tip) through the Rev H tracker setting and the nose model: ink-error ratio against the nose held, and false correction on tremor-free recorded writing | ≤ 0.8 and 15 µm RMS | requirement | REQ-RVH-006; prediction 0.64-0.76 with 10-13 µm on synthetic writers (results/opt/inertial_opt.json; SIMULATION) | DEC-032; DEC-028 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-I07).
+<!-- AC-TABLE:EXP-I07:END -->
+
+---
+
+## 40. Guidance board: EXP-G01…G06
+
+### Purpose and what it gates
+
+The optional desk board (DEC-031) steers the pen along whole letters with a permanent magnet under 3 mm glass. It is capped at 0.4 N and always yields to the writer.
+- These bench tests check the board's physics and safety before any participant uses it.
+- Work with people (EXP-G07) is in `human_study_plan.md`.
+- Methods and predictions: `docs/guidance_board.md` §8, `results/board/board.json`.
+
+### EXP-G01: Force map
+
+A D42 magnet in a Rev H sleeve dummy on a 3-axis load cell, above the D88 head on a manual XY/Z stage, with glass and paper in between. Grid ±16 mm at 0.5 mm; gaps 3.7, 5, 8 and 11 mm; tilts 35/50/75°.
+
+<!-- AC-TABLE:EXP-G01:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-G01-01 | — | Lateral force on the pen magnet (Rev H sleeve dummy) against head offset, gap (3.7-11 mm) and tilt (35/50/75°), and normal pull, 3-axis load cell | within ±15 % of the prediction (lateral), ±20 % (normal pull) | hypothesis | prediction results/board/fig_force_vs_gap.csv and fig_force_cuts.csv (magpylib; CALCULATION): 1.20 N every direction at the A4 gap | DEC-031 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G01).
+<!-- AC-TABLE:EXP-G01:END -->
+
+### EXP-G02: Stage and latency
+
+- Chirps and steps on the stage, measured with a laser displacement sensor.
+- Timestamps from a Hall-ring sample to the step output (GPIO and scope).
+- Replay of recorded writing trajectories.
+
+<!-- AC-TABLE:EXP-G02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-G02-01 | — | Board head position bandwidth ≥ 15 Hz, effective latency from Hall-ring sample to force ≤ 12 ms, and tracking error on replayed writing trajectories ≤ 0.2 mm RMS (all three) | all three met | hypothesis | prediction about 25 Hz and 8 ms effective (belt stiffness ASSUMPTION; docs/guidance_board.md); pass lines proposed by the board study | DEC-031 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G02).
+<!-- AC-TABLE:EXP-G02:END -->
+
+### EXP-G03: Localisation
+
+A pen dummy on a calibrated XY stage, at 3 tilts and 4 azimuths, first with the head fixed and then with it moving.
+
+<!-- AC-TABLE:EXP-G03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-G03-01 | — | Ball position error of the Hall-ring localisation after one calibration, offsets ≤ 12 mm, 3 tilts x 4 azimuths, head fixed and moving | ≤ 0.3 mm RMS and 0.6 mm max | hypothesis | prediction about 0.18 mm noise at the ball; a dipole fit leaves up to 0.8 mm bias without the calibration table (CALC) | DEC-031 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G03).
+<!-- AC-TABLE:EXP-G03:END -->
+
+### EXP-G04: Noise and heat
+
+A sound level meter at 0.5 m (A-weighted) during a tracing replay; thermocouples on the motors, drivers and glass after 30 min. Targets from the board study: ≤ 35 dB(A), glass ≤ 5 K above ambient, motor case ≤ 60 °C (ASSUMPTION; recorded, no criterion yet).
+
+### EXP-G05: Hand simulant
+
+A two-stage spring–mass–damper hand at the HAP-26 nominal and a stiff-arm setting holds a Rev H dummy pen. A second stage drives it along "intended" paths with 1.5 mm RMS errors. The supervisor must yield within 0.5 s when the simulant is stiffened.
+
+<!-- AC-TABLE:EXP-G05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-G05-01 | — | Ink-error reduction with full guidance on the hand simulant (HAP-26 nominal, relaxed setting) against no guidance, on paths with 1.5 mm RMS error | ≥ 40 % | hypothesis | prediction 1.49 -> 0.63 mm (58 %) with full guidance (results/board/board.json; SIMULATION) | DEC-031 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G05).
+<!-- AC-TABLE:EXP-G05:END -->
+
+### EXP-G06: Safety (a gate before any participant)
+
+- A load cell under fault injection: sensor dropout, a wrong template, a stall, BLE loss.
+- Stop-button timing.
+- Motion on power loss.
+- A 100 N lean on the glass.
+- A field map with a gaussmeter.
+
+<!-- AC-TABLE:EXP-G06:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-G06-01 | REQ-RVH-007 | Board lateral force under fault injection (sensor dropout, wrong template, stall, BLE loss); stop latency; motion on power loss | ≤ 0.44 N; 50 ms; none | requirement | REQ-RVH-007 (0.4 N cap with 10 % margin); proposed by the board study | DEC-031 (safety gate before any participant) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G06).
+<!-- AC-TABLE:EXP-G06:END -->
