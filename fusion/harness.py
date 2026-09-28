@@ -83,14 +83,19 @@ def signal_metrics(dhat: np.ndarray, tick_t: np.ndarray, rec1: S.Record, rec0: S
         return {}
     fs = 1.0 / float(tick_t[1] - tick_t[0])
     sos = butter(4, BAND, btype="band", fs=fs, output="sos")
+    sos_lo = butter(4, BAND[0], fs=fs, output="sos")
     db = sosfiltfilt(sos, d, axis=0)
+    dl = sosfiltfilt(sos_lo, d, axis=0)
     e = d - dhat
     eb = sosfiltfilt(sos, e, axis=0)
+    el = sosfiltfilt(sos_lo, e, axis=0)
 
     def r(x):
         return float(np.sqrt(np.mean(np.sum(x[m] ** 2, axis=1))))
-    return {"d_rms_um": r(d) * 1e6, "d_band_rms_um": r(db) * 1e6, "dhat_rms_um": r(dhat) * 1e6,
-            "residual_ratio": r(e) / max(r(d), 1e-12), "residual_ratio_band": r(eb) / max(r(db), 1e-12)}
+    # residual below 3 Hz: < 1 means the estimator also predicts part of the slow (friction) shift of the housing
+    return {"d_rms_um": r(d) * 1e6, "d_band_rms_um": r(db) * 1e6, "d_low_rms_um": r(dl) * 1e6, "dhat_rms_um": r(dhat) * 1e6,
+            "residual_ratio": r(e) / max(r(d), 1e-12), "residual_ratio_band": r(eb) / max(r(db), 1e-12),
+            "residual_ratio_low": r(el) / max(r(dl), 1e-12)}
 
 
 def band_oracle_steps(rec1: S.Record, rec0: S.Record, t_sim: np.ndarray) -> np.ndarray:

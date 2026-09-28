@@ -9,11 +9,15 @@ Proxy objective (open loop, fast): for each tremor condition the residual ratio
 with d the oracle's disturbance (p_H tremor run - p_H clean run), d_hat clipped to the 0.30 mm stage
 radius; J = mean RR + 8 mean(HF / |d|) + 2 max(0, FC / FC_max - 1), where HF is the RMS of d_hat above
 150 Hz (estimate jitter near the 192 Hz stage resonance dithers the pen's friction in P1 and shifts the
-housing path: 10 um of 200-900 Hz jitter raised the band oracle's closed-loop ratio from 0.83 to 1.09),
+housing path; results/fusion/sensors.json jitter_check quantifies it on tuning seeds),
 FC the RMS of d_hat on the tremor-free writing (false correction) and FC_max the frozen Kalman filter's
 FC on the same runs (matched distortion, as ml/ tunes its baselines).  Random search, then a local refinement around the best
-candidates; the finalists are then checked in closed loop on the tuning seeds and the best closed-loop
-mean ratio with a distortion at or below the frozen filter's is kept.
+candidates; the best candidate is then checked in closed loop on tuning seeds 5000-5003
+(results/fusion/tuning.json).
+
+Robust variant (`search_robust`): the same search with the aiguide TUNING writers 100-105 (glyph
+handwriting, about 3x the tremor-band writing content of the grid's sigma-lognormal writing) added:
+J = 0.5 RR_grid + 0.5 RR_aiguide + HF and false-correction hinges on both (30 um on the glyph writing).
 """
 from __future__ import annotations
 
@@ -40,7 +44,7 @@ def _lu(rng, lo, hi):
     return float(math.exp(rng.uniform(math.log(lo), math.log(hi))))
 
 
-ALIAS = {"kfosclp": "kfosc", "akfx": "akf", "wflcx": "wflc"}     # search variants of the same estimator
+ALIAS = {"kfosclp": "kfosc", "akfx": "akf", "akfc": "akf", "wflcx": "wflc"}     # search variants of the same estimator
 
 
 def sample(name: str, rng) -> Dict:
@@ -48,6 +52,12 @@ def sample(name: str, rng) -> Dict:
         p = sample("akf", rng)
         p["xtrack"] = float(rng.random() < 0.5)
         p["v_xt"] = _lu(rng, 1e-3, 20e-3)
+        return p
+    if name == "akfc":                      # AKF with the slow-motion amplitude reference cap (and the cross-track option)
+        p = sample("akfx", rng)
+        p["cap_k"] = float(rng.uniform(0.8, 3.0))
+        p["v_slow"] = _lu(rng, 1e-3, 20e-3)
+        p["tau_ref"] = _lu(rng, 0.2, 2.0)
         return p
     if name == "wflcx":
         return sample("wflc", rng)
@@ -92,7 +102,7 @@ def sample(name: str, rng) -> Dict:
 
 
 LOG_KEYS = {"qj", "qt", "qh", "qb", "ra", "rp", "r", "tau_decay", "tau_w", "mu", "mu0", "hp_hz", "lp_hz", "tau_amp", "nis_hi",
-            "out_lp_hz", "sigma_t", "q_tb", "tb0", "v_xt"}
+            "out_lp_hz", "sigma_t", "q_tb", "tb0", "v_xt", "v_slow", "tau_ref"}
 
 
 def perturb(p: Dict, rng, scale: float = 0.3) -> Dict:
@@ -304,25 +314,31 @@ def aiguide_items(sensor_kw: Dict, jobs=AI_TUNE) -> List[Dict]:
     return out
 
 
+FC_AI_MAX = 30e-6      # ASSUMPTION: distortion allowed on tremor-free glyph writing (about 1 % of a 2-3 mm x-height)
+
+
 def proxy_robust(name: str, params: Dict, sensor_kw: Dict, ai: List[Dict], fc_max: Optional[float] = None,
-                 seeds=TUNE_SEEDS, lam_hf: float = 8.0) -> Dict:
-    """J = 0.5 RR_grid + 0.5 RR_aiguide + 0.5 FC_aiguide / RMS(d_aiguide) + 8 HF + 2 max(0, FC_grid / FC_max - 1)."""
+                 seeds=TUNE_SEEDS, lam_hf: float = 8.0, fc_ai_max: float = FC_AI_MAX) -> Dict:
+    """J = 0.5 RR_grid + 0.5 RR_aiguide + 8 HF + 2 max(0, FC_grid / FC_max - 1) + 2 max(0, FC_aiguide / FC_ai_max - 1)."""
     g = proxy(name, params, sensor_kw, fc_max, seeds, lam_hf)
     nm = ALIAS.get(name, name)
-    rr, fcr = [], []
+    rr, fcr, fca = [], [], []
     for it in ai:
         dh, _ = ES.run_estimator(nm, it["st"], params)
         m = it["m"]
         dn = float(np.sqrt(np.mean(np.sum(it["d"][m] ** 2, axis=1))))
         rr.append(math.sqrt(np.sum((it["d"][m] - _clip(dh[m])) ** 2) / max(np.sum(it["d"][m] ** 2), 1e-30)))
         dh0, _ = ES.run_estimator(nm, it["st0"], params)
-        fcr.append(float(np.sqrt(np.mean(np.sum(dh0[it["m0"]] ** 2, axis=1)))) / max(dn, 1e-12))
-    J = 0.5 * g["rr_mean"] + 0.5 * float(np.mean(rr)) + 0.5 * float(np.mean(fcr)) + lam_hf * g["hf_rel_mean"]
+        fc_ = float(np.sqrt(np.mean(np.sum(dh0[it["m0"]] ** 2, axis=1))))
+        fca.append(fc_)
+        fcr.append(fc_ / max(dn, 1e-12))
+    fc_ai = float(np.mean(fca))
+    J = 0.5 * g["rr_mean"] + 0.5 * float(np.mean(rr)) + lam_hf * g["hf_rel_mean"] + 2.0 * max(0.0, fc_ai / fc_ai_max - 1.0)
     if fc_max is not None:
         J += 2.0 * max(0.0, g["fc_um"] * 1e-6 / fc_max - 1.0)
     if not np.isfinite(J):
         J = 10.0
-    return dict(g, J=J, J_grid=g["J"], rr_ai_mean=float(np.mean(rr)), fc_ai_rel_mean=float(np.mean(fcr)),
+    return dict(g, J=J, J_grid=g["J"], rr_ai_mean=float(np.mean(rr)), fc_ai_rel_mean=float(np.mean(fcr)), fc_ai_um=fc_ai * 1e6,
                 rr_ai=[float(x) for x in rr])
 
 
@@ -353,7 +369,7 @@ def search_robust(name: str, sensor_kw: Dict, n_random: int = 160, n_local: int 
                              initargs=(name, sensor_kw, fc_max, TUNE_SEEDS, ai)) as ex:
         res = sorted(ex.map(_eval_robust, cands), key=lambda r: r["J"])
         log(f"[robust {name} {sensor_kw}] random {len(cands)}: best J {res[0]['J']:.4f} rr_grid {res[0].get('rr_mean')} "
-            f"rr_ai {res[0].get('rr_ai_mean')} fc_ai {res[0].get('fc_ai_rel_mean')} ({time.time() - t0:.0f} s)")
+            f"rr_ai {res[0].get('rr_ai_mean')} fc_ai_um {res[0].get('fc_ai_um')} fc_grid_um {res[0].get('fc_um')} ({time.time() - t0:.0f} s)")
         rounds = 4
         per = max(1, n_local // rounds)
         for rd in range(rounds):
@@ -361,8 +377,8 @@ def search_robust(name: str, sensor_kw: Dict, n_random: int = 160, n_local: int 
             local = [perturb(elite[i % len(elite)]["params"], rng, scale=0.3 / (1 + rd)) for i in range(per)]
             res = sorted(res + list(ex.map(_eval_robust, local)), key=lambda r: r["J"])
             log(f"[robust {name}] local round {rd + 1}: best J {res[0]['J']:.4f} rr_grid {res[0].get('rr_mean')} "
-                f"rr_ai {res[0].get('rr_ai_mean')} fc_ai {res[0].get('fc_ai_rel_mean')} ({time.time() - t0:.0f} s)")
+                f"rr_ai {res[0].get('rr_ai_mean')} fc_ai_um {res[0].get('fc_ai_um')} fc_grid_um {res[0].get('fc_um')} ({time.time() - t0:.0f} s)")
     return {"best": res[0], "top": res[:8], "n_evaluated": len(res), "elapsed_s": time.time() - t0,
-            "objective": "0.5 RR_grid + 0.5 RR_aiguide + 0.5 FC_aiguide/RMS(d_aiguide) + 8 HF/RMS(d) + 2 max(0, FC_grid/FC_max - 1); "
+            "objective": "0.5 RR_grid + 0.5 RR_aiguide + 8 HF/RMS(d) + 2 max(0, FC_grid/FC_max - 1) + 2 max(0, FC_aiguide/30 um - 1); "
                          "grid tuning seeds 5000-5007 (15 conditions each), aiguide tuning writers 100-105 at 4.5-9 Hz, 0.3 mm",
             "aiguide_tuning": [list(x) for x in AI_TUNE], "fc_max_um": None if fc_max is None else fc_max * 1e6}

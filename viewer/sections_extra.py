@@ -1,7 +1,7 @@
-"""AI-guidance, sim-to-real and inertial-helper tables for viewer/index.html (rendered at build time).
+"""AI-guidance, sim-to-real, inertial-helper and sensor-fusion tables for viewer/index.html (rendered at build time).
 
-Reads results/ai/*.json (aiguide, app/penapp/autocorrect.py), results/s2r/*.json (s2r) and
-results/pencil/inertial.json (sim/handpen).  Missing inputs skip the section.
+Reads results/ai/*.json (aiguide, app/penapp/autocorrect.py), results/s2r/*.json (s2r),
+results/pencil/inertial.json (sim/handpen) and results/fusion/*.json (fusion).  Missing inputs skip the section.
 """
 from __future__ import annotations
 
@@ -178,4 +178,73 @@ def inertial(root):
                   _table(["Option", "Tremor in the ink", "Net error against the intended writing", "Letter size", "Drag felt"],
                          rows2, (1, 2, 3, 4)),
                   "results/pencil/inertial.json passive (docs/inertial_stabilisation.md §5.6)")
+    return t1 + t2
+
+
+FUSION_ROWS = [("kfosc_internal", "Old tracker: Kalman on the page position, frozen"),
+               ("akf", "Accelerometer tracker (Kalman on the IMU), tuned on smooth writing"),
+               ("akf_robust", "Accelerometer tracker, robust setting (default)"),
+               ("akf_personal", "Accelerometer tracker, set by a 20 s calibration"),
+               ("wflc", "Adaptive oscillator on the accelerometer (WFLC)"),
+               ("gru", "Learned network (GRU) trained on the simulator"),
+               ("oracle_band", "Perfect knowledge of the tremor band (a limit)")]
+
+
+def fusion(root):
+    g = _load(root, "results/fusion/grid.json")
+    c = _load(root, "results/fusion/context.json")
+    if not g or "summary" not in g:
+        return ""
+    S, D = g["summary"], g.get("distortion_um", {})
+    CS = (c or {}).get("summary", {})
+    rows = []
+    for key, lab in FUSION_ROWS:
+        v = S.get(key)
+        if not v:
+            continue
+        br = v.get("band_ratio", {})
+        cells = []
+        for f in ("8", "10", "12"):
+            x = br.get(f"{f}Hz_0.3mm")
+            m = x.get("mean") if isinstance(x, dict) else x
+            cells.append("—" if m is None else f"{m:.2f}")
+        o = v.get("overall", {})
+        d_grid = D.get(key, {}).get("mean")
+        d_sharp = CS.get(key, {}).get("distortion_um", {}).get("mean") if key in CS else None
+        dist = "—" if d_grid is None else f"{d_grid:.0f}" + (f" / {d_sharp:.0f}" if d_sharp is not None else " / —") + " µm"
+        rows.append([lab, " / ".join(cells), f"{o.get('band_ratio_mean', float('nan')):.2f}", dist,
+                     f"{o.get('P_rail_classB_mW_mean', float('nan')):.0f} mW"])
+    lede = ("Tremor-band ink error left, as a fraction of no correction (lower is better), on the pencil model with synthetic "
+            "handwriting. The accelerometer is fast and quiet enough; what limits every tracker is that handwriting strokes "
+            "share the tremor's frequencies. \"Moves tremor-free writing\" is how far each tracker shifts ink when there is no tremor: "
+            "on smooth test writing / on sharper glyph writers. The learned network's gain is mostly the simulated pen's friction "
+            "drift, not tremor: it moved the ink further from the intended letters.")
+    t1 = _section("Telling tremor from writing: the accelerometer tracker", _tags("SIM"), lede,
+                  _table(["Tracker", "Error left, 0.3 mm at 8 / 10 / 12 Hz", "Mean, 4–12 Hz and 0.1–0.5 mm",
+                          "Moves tremor-free writing", "Drive power"], rows, (1, 2, 3, 4)),
+                  "results/fusion/grid.json, context.json (fusion/; docs/sensor_fusion_ai.md)")
+    if not CS:
+        return t1
+    ctx = [("neutral_no_tremor", "Writing without tremor"), ("neutral", "Tremor, no correction"),
+           ("oracle_disturbance", "Tremor, perfect knowledge of the disturbance"),
+           ("pull_oracle", "Pull toward the true letters (tracing, copying)"),
+           ("pull_ai_correct", "Pull toward correctly predicted letters in the writer's style"),
+           ("pull_wrong_letter_full", "Pull toward a wrong letter at full confidence"),
+           ("ctx_ai_predicted", "Predicted letters as a hint inside the tracker"),
+           ("ctx_wrong_letter_full", "A wrong letter as a hint inside the tracker")]
+    flips = {"pull_wrong_letter_full": "9 of 624", "ctx_wrong_letter_full": "1 of 624"}
+    rows2 = []
+    for key, lab in ctx:
+        v = CS.get(key)
+        if not v:
+            continue
+        pr = v.get("wo_path_rms_um", {}).get("mean")
+        rows2.append([lab, "—" if pr is None else f"{pr:.0f} µm", flips.get(key, "—")])
+    lede2 = ("Distance of the ink from the letters the writer intended (writing strokes only), 6 synthetic writers, 0.3 mm tremor at "
+             "4–10 Hz. The app's letter prediction helps only when the letters are known in advance; as a hint to the tracker it "
+             "changes nothing, because a predicted letter in the writer's style is off by about as much as the tremor, at the same "
+             "frequencies.")
+    t2 = _section("AI letter prediction and the pen", _tags("SIM"), lede2,
+                  _table(["Case", "Distance from the intended letters", "Letters newly misread (wrong-letter cases)"], rows2, (1, 2)),
+                  "results/fusion/context.json (fusion/aieval.py; docs/sensor_fusion_ai.md §6.2)")
     return t1 + t2

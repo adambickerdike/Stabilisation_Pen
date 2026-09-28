@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "SIMULATION (pencil model P1, synthetic handwriting and synthetic tremor; nothing measured)",
-    "generated_utc": "2026-09-28T09:44:10+00:00",
-    "git_revision": "68c63e0-dirty",
+    "generated_utc": "2026-09-28T10:37:29+00:00",
+    "git_revision": "87c3ca0-dirty",
     "parameters_version": "P0.1.2",
     "parameters_sha256_16": "957eae6e98e9b8c8",
-    "command": "run_study.py --stages tune sensors --workers 1",
+    "command": "run_study.py --stages tune sensors learned context --workers 2",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": {
@@ -32,9 +32,9 @@
     "script": "fusion/run_study.py",
     "torch": "2.14.0+cpu",
     "numba": "0.67.0",
-    "elapsed_s": 158.2
+    "elapsed_s": 84.1
   },
-  "method": "Parameter search for the conventional estimators on the tuning seeds only (SIMULATION).\n\nSeeds: fusion.TUNE_SEEDS (5000-5007), scenarios.handwriting as the test grid (same generator,\ndisjoint seeds), the full grid 4-12 Hz x 0.1/0.3/0.5 mm and the tremor-free writing of each seed.\nNever the test seeds 200-203.\n\nProxy objective (open loop, fast): for each tremor condition the residual ratio\n    RR = sqrt(sum |d - clip(d_hat)|^2 / sum |d|^2)   over in-contact ticks after 0.5 s,\nwith d the oracle's disturbance (p_H tremor run - p_H clean run), d_hat clipped to the 0.30 mm stage\nradius; J = mean RR + 8 mean(HF / |d|) + 2 max(0, FC / FC_max - 1), where HF is the RMS of d_hat above\n150 Hz (estimate jitter near the 192 Hz stage resonance dithers the pen's friction in P1 and shifts the\nhousing path: 10 um of 200-900 Hz jitter raised the band oracle's closed-loop ratio from 0.83 to 1.09),\nFC the RMS of d_hat on the tremor-free writing (false correction) and FC_max the frozen Kalman filter's\nFC on the same runs (matched distortion, as ml/ tunes its baselines).  Random search, then a local refinement around the best\ncandidates; the finalists are then checked in closed loop on the tuning seeds and the best closed-loop\nmean ratio with a distortion at or below the frozen filter's is kept.\n",
+  "method": "Parameter search for the conventional estimators on the tuning seeds only (SIMULATION).\n\nSeeds: fusion.TUNE_SEEDS (5000-5007), scenarios.handwriting as the test grid (same generator,\ndisjoint seeds), the full grid 4-12 Hz x 0.1/0.3/0.5 mm and the tremor-free writing of each seed.\nNever the test seeds 200-203.\n\nProxy objective (open loop, fast): for each tremor condition the residual ratio\n    RR = sqrt(sum |d - clip(d_hat)|^2 / sum |d|^2)   over in-contact ticks after 0.5 s,\nwith d the oracle's disturbance (p_H tremor run - p_H clean run), d_hat clipped to the 0.30 mm stage\nradius; J = mean RR + 8 mean(HF / |d|) + 2 max(0, FC / FC_max - 1), where HF is the RMS of d_hat above\n150 Hz (estimate jitter near the 192 Hz stage resonance dithers the pen's friction in P1 and shifts the\nhousing path; results/fusion/sensors.json jitter_check quantifies it on tuning seeds),\nFC the RMS of d_hat on the tremor-free writing (false correction) and FC_max the frozen Kalman filter's\nFC on the same runs (matched distortion, as ml/ tunes its baselines).  Random search, then a local refinement around the best\ncandidates; the best candidate is then checked in closed loop on tuning seeds 5000-5003\n(results/fusion/tuning.json).\n\nRobust variant (`search_robust`): the same search with the aiguide TUNING writers 100-105 (glyph\nhandwriting, about 3x the tremor-band writing content of the grid's sigma-lognormal writing) added:\nJ = 0.5 RR_grid + 0.5 RR_aiguide + HF and false-correction hinges on both (30 um on the glyph writing).\n",
   "searches": {
     "akf_1k": {
       "params": {
@@ -192,6 +192,72 @@
       "n_evaluated": 104,
       "objective": "mean residual ratio (open loop, clipped at 0.30 mm) + 8 mean(RMS above 150 Hz / RMS d) + 2 max(0, FC/FC_max - 1)",
       "fc_max_um": 14.0
+    },
+    "akf_robust_1k": {
+      "params": {
+        "qj": 0.017265,
+        "qt": 1.5594e-10,
+        "qb": 4.1492e-06,
+        "ra": 0.072107,
+        "rp": 5.3124e-10,
+        "tau_decay": 0.15348,
+        "tau_w": 0.30214,
+        "wmin_hz": 3.794,
+        "horizon": 0.00092549,
+        "g": 1.1367,
+        "tau_amp": 1.0507,
+        "harm": 0.0,
+        "lp_hz": 56.473,
+        "qh": 3.5194e-11,
+        "f_gate": 6.3034,
+        "f_gate_w": 2.0494,
+        "a_lo": 5.5143e-06,
+        "a_hi": 0.00016359,
+        "xtrack": 0.0,
+        "v_xt": 0.0070463,
+        "cap_k": 3.0,
+        "v_slow": 0.0097998,
+        "tau_ref": 0.55629
+      },
+      "search": "akfc",
+      "proxy": {
+        "J": 0.99104,
+        "rr_mean": 0.98158,
+        "rr_ai_mean": 0.99862,
+        "fc_ai_rel_mean": 0.096484,
+        "fc_ai_um": 20.93,
+        "hf_rel_mean": 0.0001174,
+        "fc_um": 2.4455
+      },
+      "n_evaluated": 226,
+      "objective": "0.5 RR_grid + 0.5 RR_aiguide + 8 HF/RMS(d) + 2 max(0, FC_grid/FC_max - 1) + 2 max(0, FC_aiguide/30 um - 1); grid tuning seeds 5000-5007 (15 conditions each), aiguide tuning writers 100-105 at 4.5-9 Hz, 0.3 mm",
+      "fc_max_um": 14.0,
+      "aiguide_tuning": [
+        [
+          100,
+          5.0
+        ],
+        [
+          101,
+          7.0
+        ],
+        [
+          102,
+          9.0
+        ],
+        [
+          103,
+          6.0
+        ],
+        [
+          104,
+          8.0
+        ],
+        [
+          105,
+          4.5
+        ]
+      ]
     }
   },
   "closed_loop_on_tuning_seeds": {
@@ -310,6 +376,29 @@
         "12Hz_0.5mm": 0.84357
       }
     },
+    "akf_robust": {
+      "ratio_mean": 0.97604,
+      "band_ratio_mean": 0.9238,
+      "distortion_um": 4.493,
+      "q_sat_mean": 6.2218e-05,
+      "ratio_by_cond": {
+        "4Hz_0.1mm": 1.0021,
+        "4Hz_0.3mm": 1.0014,
+        "4Hz_0.5mm": 0.99931,
+        "6Hz_0.1mm": 0.99707,
+        "6Hz_0.3mm": 0.99513,
+        "6Hz_0.5mm": 0.99652,
+        "8Hz_0.1mm": 0.99047,
+        "8Hz_0.3mm": 0.9629,
+        "8Hz_0.5mm": 0.95685,
+        "10Hz_0.1mm": 0.98645,
+        "10Hz_0.3mm": 0.96844,
+        "10Hz_0.5mm": 0.91916,
+        "12Hz_0.1mm": 0.99168,
+        "12Hz_0.3mm": 0.9739,
+        "12Hz_0.5mm": 0.89921
+      }
+    },
     "bmflc": {
       "ratio_mean": 0.98488,
       "band_ratio_mean": 0.94341,
@@ -355,6 +444,42 @@
         "12Hz_0.3mm": 0.91539,
         "12Hz_0.5mm": 0.83075
       }
+    }
+  },
+  "robust_searches": {
+    "akfx": {
+      "feeds": "akf_robust_1k",
+      "chosen": false,
+      "J": 0.9913,
+      "rr_mean": 0.97757,
+      "rr_ai_mean": 1.0027,
+      "fc_ai_um": 29.475,
+      "fc_um": 3.1176,
+      "rr_ai": [
+        1.0162,
+        1.0138,
+        0.97767,
+        1.02,
+        0.98052,
+        1.0082
+      ]
+    },
+    "akfc": {
+      "feeds": "akf_robust_1k",
+      "chosen": true,
+      "J": 0.99104,
+      "rr_mean": 0.98158,
+      "rr_ai_mean": 0.99862,
+      "fc_ai_um": 20.93,
+      "fc_um": 2.4455,
+      "rr_ai": [
+        1.0089,
+        1.0053,
+        0.97769,
+        1.0123,
+        0.98333,
+        1.0042
+      ]
     }
   }
 }

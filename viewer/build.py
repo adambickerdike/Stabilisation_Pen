@@ -6,6 +6,7 @@ Inputs (all generated elsewhere in the repository):
   results/pencil/viz_trace.json                               (sim/pencil, pencil model)
   results/ai/viz_guided.json                                  (aiguide, M1 guided mode)
   results/pencil/inertial_viz.json                            (sim/handpen, hand-pen model H1: cap devices)
+  results/fusion/viz_fusion.json                              (fusion/viz.py, pencil model P1: accelerometer tracker)
   results/pencil/*.json, results/ai/*.json, results/s2r/*.json (numbers for the tables, via viewer/sections.py)
 The page itself is viewer/template.html; the tables are rendered into it here so
 they are readable without running any script.
@@ -97,6 +98,7 @@ def main():
     ap.add_argument("--trace", default=os.path.join(ROOT, "results", "pencil", "viz_trace.json"))
     ap.add_argument("--guided", default=os.path.join(ROOT, "results", "ai", "viz_guided.json"))
     ap.add_argument("--inertial", default=os.path.join(ROOT, "results", "pencil", "inertial_viz.json"))
+    ap.add_argument("--fusion", default=os.path.join(ROOT, "results", "fusion", "viz_fusion.json"))
     a = ap.parse_args()
     os.makedirs(DATA, exist_ok=True)
     cad = os.path.join(ROOT, "results", "cad", f"pencil_revP{a.variant}")
@@ -121,6 +123,12 @@ def main():
         shutil.copyfile(a.guided, g_out)
     elif os.path.exists(g_out):
         os.remove(g_out)
+    f_out = os.path.join(DATA, "viz_fusion.json")
+    if os.path.exists(a.fusion):
+        with open(f_out, "w") as f:
+            json.dump(load(a.fusion), f, separators=(",", ":"))
+    elif os.path.exists(f_out):
+        os.remove(f_out)
     s_out = os.path.join(DATA, "viz_inertial.json")
     if os.path.exists(a.inertial):
         with open(s_out, "w") as f:

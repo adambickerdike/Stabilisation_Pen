@@ -3,10 +3,13 @@
 Calibration task (about 20 s, known templates): an Archimedean spiral (3 turns to 5 mm radius), a
 slow circle and back-and-forth lines, drawn by the writer with his or her tremor (a different
 random realisation of the same tremor process; seeds test_seed + fusion.CALIB_SEED_OFFSET).  The pen
-records its sensor streams as in use; the phone (offline) knows the shapes but not the writer's timing
-along them, so it matches each page-sensor sample to the shape (progress-constrained nearest point),
-smooths the progress (the shapes are drawn slowly) and takes the residual, page path minus shape,
-band-passed 3-15 Hz: the tremor as the page sensor sees it (`page_label`).  No simulator truth is used.
+records its sensor streams as in use; the phone (offline) knows the shapes and their order but not the
+writer's timing, so it matches each page-sensor sample to the shape (forward-only nearest point),
+smooths the progress (the shapes are drawn slowly) and band-passes the residual, page path minus shape,
+3-15 Hz per stroke between reversals (the pen's friction lag changes at each reversal).  The cross-track
+part is the label for the choice; frequency and amplitude come from the 2-D residual on the curved
+strokes and the cross-track part on the straight ones (`page_label`, `tremor_from_calibration`).  No
+simulator truth is used; on tuning seeds the label matches the true tremor-band disturbance to ~5 um.
 From it the phone estimates the tremor frequency (spectral peak), its amplitude and its 2nd-harmonic
 share, then chooses, among a small family of AKF parameter sets built around the population set,
 the one whose tremor-band output best matches that label on the calibration recording itself.  The family: frequency window f_hat +- {1.5, 3} Hz (the tracker cannot wander into the
@@ -85,65 +88,132 @@ def page_label(st: S.Streams, shape: np.ndarray, fs_prog: float = 1.5) -> Dict:
 
     shape: the known calibration shapes (dense polyline in drawing order, page frame, registered only up to an
     offset).  Each valid in-contact page sample is matched to the shape by a nearest-point search constrained to
-    move forward (re-acquired globally at each touchdown); the matched progress is smoothed with a zero-phase
-    `fs_prog` low-pass (the shapes take 0.9-6 s each); the residual page - shape(progress) minus its segment mean
-    is band-passed 3-15 Hz per contact segment.  Returns the sample indices used, the label (m) and the segments."""
+    move forward (at each touchdown within the next 3 s of the drawing order); the matched progress is smoothed
+    with a zero-phase `fs_prog` low-pass (the shapes take 0.9-6 s each).  Only the CROSS-TRACK component of
+    page - shape(progress) is the label: along the stroke, the pen's friction lag changes at every reversal.
+    Each stroke between reversals is band-passed 3-15 Hz on its own after removing its mean; samples where the
+    shape pauses or turns sharply (dwells, reversals) are left out.  The 2-D residual of curved strokes is kept
+    for the frequency estimate (label2d)."""
     fs = float(st.meta.get("page_rate", 1.0 / np.median(np.diff(st.pos_t))))
     con = np.interp(st.pos_t, st.con_t, st.con) > 0.5
     ok = (st.pos_ok > 0.5) & con
     segs = _segments(ok, int(0.6 * fs))
     sos = butter(4, [3.0, 15.0], btype="band", fs=fs, output="sos")
     sos_p = butter(2, fs_prog, fs=fs, output="sos")
-    lab = np.full((len(st.pos_t), 2), np.nan)
+    # tangent and speed of the shape along its own sample index (1 sample per ms of the intended path)
+    tg = np.gradient(shape, axis=0)
+    tg = sosfiltfilt(butter(2, 0.05, output="sos"), tg, axis=0)          # smooth over about 10 samples
+    sp = np.linalg.norm(tg, axis=1)
+    nrm = np.column_stack([-tg[:, 1], tg[:, 0]]) / np.maximum(sp, 1e-15)[:, None]
+    moving = sp > 0.3 * np.median(sp[sp > 0])
+    # sharp corners (the line reversals): the cross-track direction is undefined there; leave +-80 samples out
+    lag = 15
+    t_a = tg[np.clip(np.arange(len(shape)) - lag, 0, len(shape) - 1)]
+    t_b = tg[np.clip(np.arange(len(shape)) + lag, 0, len(shape) - 1)]
+    cosang = np.sum(t_a * t_b, axis=1) / np.maximum(np.linalg.norm(t_a, axis=1) * np.linalg.norm(t_b, axis=1), 1e-30)
+    corner = cosang < math.cos(math.radians(30.0))
+    corner = np.convolve(corner.astype(float), np.ones(161), mode="same") > 0
+    moving &= ~corner
+    lab = np.full(len(st.pos_t), np.nan)
+    prog = np.full(len(st.pos_t), -1.0)
+    n_at = np.zeros((len(st.pos_t), 2))
+    good = np.zeros(len(st.pos_t), bool)
     tree = cKDTree(shape)
+    k_done = 0                                        # the shapes are drawn in a known order: progress never goes back
+    subs, curved = [], []
+    lab2 = np.full((len(st.pos_t), 2), np.nan)
     for a, b in segs:
         P = st.pos[a:b]
         _, j0 = tree.query(P)
         P = P - np.median(P - shape[j0], axis=0)          # registration offset (the phone knows the shape, not its place)
         k = np.empty(b - a)
-        _, k0 = tree.query(P[0])
-        kp = int(k0)
+        w0 = slice(k_done, min(len(shape), k_done + 3000))
+        kp = k_done + int(np.argmin(np.sum((shape[w0] - P[0]) ** 2, axis=1)))
         for j in range(b - a):
             lo, hi = max(0, kp - 20), min(len(shape), kp + 400)
             kk = lo + int(np.argmin(np.sum((shape[lo:hi] - P[j]) ** 2, axis=1)))
             k[j] = kk
             kp = kk
+        k_done = int(k[-1])
         ks = sosfiltfilt(sos_p, k, padlen=min(3 * 6, len(k) - 1))
         ks = np.clip(ks, 0, len(shape) - 1)
         i = np.floor(ks).astype(int)
         f = (ks - i)[:, None]
         i2 = np.minimum(i + 1, len(shape) - 1)
         T = shape[i] * (1 - f) + shape[i2] * f
-        r = P - T
-        r = r - r.mean(axis=0)
-        lab[a:b] = sosfiltfilt(sos, r, axis=0)
+        n_ = nrm[np.rint(ks).astype(int)]
+        x = np.sum((P - T) * n_, axis=1)
+        n_at[a:b] = n_
+        prog[a:b] = ks
+        good[a:b] = moving[np.rint(ks).astype(int)]
+        # each stroke between reversals separately: the pen's friction lag changes at every reversal, so its level
+        # is removed per stroke, and the band-pass never runs across a reversal
+        for a2, b2 in _segments(good[a:b], int(0.4 * fs)):
+            xs = x[a2:b2]
+            lab[a + a2:a + b2] = sosfiltfilt(sos, xs - xs.mean(), padlen=min(3 * 13, len(xs) - 1))
+            subs.append((a + a2, a + b2))
+            # on curved strokes (spiral, circle) the projection on a turning normal shifts the tremor line by the
+            # turning rate, so the frequency is estimated there from the full 2-D residual; the lag along such a
+            # stroke turns slowly with it (below 0.5 Hz here) and the band-pass removes it
+            ang = np.unwrap(np.arctan2(n_[a2:b2, 1], n_[a2:b2, 0]))
+            if np.ptp(ang) > math.radians(20.0):
+                r2 = (P - T)[a2:b2]
+                lab2[a + a2:a + b2] = sosfiltfilt(sos, r2 - r2.mean(axis=0), axis=0, padlen=min(3 * 13, len(xs) - 1))
+                curved.append((a + a2, a + b2))
     use = np.zeros(len(st.pos_t), bool)
-    edge = int(0.15 * fs)
-    for a, b in segs:
+    edge = int(0.1 * fs)
+    for a, b in subs:
         use[a + edge:b - edge] = True
-    use &= st.pos_t > 1.0
-    return {"label": lab, "use": use, "segments": segs, "fs": fs, "sos": sos}
+    use &= good & (st.pos_t > 1.0)
+    return {"label": lab, "use": use, "segments": subs, "fs": fs, "sos": sos, "normal": n_at, "progress": prog,
+            "label2d": lab2, "curved": curved}
 
 
 def band_at_page(dh: np.ndarray, st: S.Streams, pl: Dict) -> np.ndarray:
-    """The estimator output at the page-sample times, band-passed per contact segment like the label."""
-    out = np.full((len(st.pos_t), 2), np.nan)
+    """The estimator output at the page-sample times, projected on the same normals and band-passed like the label."""
+    out = np.full(len(st.pos_t), np.nan)
     x = np.column_stack([np.interp(st.pos_t, st.tick_t, dh[:, 0]), np.interp(st.pos_t, st.tick_t, dh[:, 1])])
+    xn = np.sum(x * pl["normal"], axis=1)
     for a, b in pl["segments"]:
-        out[a:b] = sosfiltfilt(pl["sos"], x[a:b] - x[a:b].mean(axis=0), axis=0)
+        out[a:b] = sosfiltfilt(pl["sos"], xn[a:b] - xn[a:b].mean(), padlen=min(3 * 13, b - a - 1))
     return out
 
 
 def tremor_from_calibration(pl: Dict) -> Dict:
-    """Frequency, amplitude and harmonic share of the page-sensor tremor label (phone, offline)."""
+    """Frequency, amplitude and harmonic share of the page-sensor tremor label (phone, offline).  The label is the
+    cross-track component, so the 2-D amplitude is taken as sqrt(2) times its RMS (isotropic tremor, ASSUMPTION)."""
     m = pl["use"]
     rb = pl["label"][m]
     fs = pl["fs"]
-    f, P = welch(rb, fs=fs, nperseg=min(4096, len(rb)), axis=0)
-    Ps = P.sum(axis=1)
+    # average of per-stroke periodograms (Hann window, zero-padded to 0.06 Hz bins): the strokes are 0.4-3 s long,
+    # so one Welch estimate over the concatenated label would smear the peak across the gaps
+    nfft = 16384
+    Ps = np.zeros(nfft // 2 + 1)
+    curved = set(map(tuple, pl.get("curved", [])))
+
+    def add(x):
+        nonlocal Ps
+        w = np.hanning(len(x))
+        Ps = Ps + np.abs(np.fft.rfft((x - x.mean()) * w, nfft)) ** 2 / np.sum(w ** 2) * len(x)
+    a2d = []
+    for a, b in pl["segments"]:
+        mm = m[a:b]
+        if mm.sum() < 200:
+            continue
+        if (a, b) in curved:                               # full 2-D residual (see page_label)
+            X = pl["label2d"][a:b][mm]
+            add(X[:, 0]); add(X[:, 1])
+            a2d.append(X)
+        else:                                              # straight strokes: the cross-track component
+            add(pl["label"][a:b][mm])
+    f = np.fft.rfftfreq(nfft, 1.0 / fs)
     band = (f >= 3.0) & (f <= 14.5)
     f_hat = float(f[band][np.argmax(Ps[band])])
-    amp_rms = float(np.sqrt(np.mean(np.sum(rb ** 2, axis=1))))
+    if a2d:
+        X = np.vstack(a2d)
+        amp_rms = float(np.sqrt(np.mean(np.sum(X ** 2, axis=1))))
+    else:
+        amp_rms = float(np.sqrt(2.0 * np.mean(rb ** 2)))
     h = (f > 1.8 * f_hat) & (f < 2.2 * f_hat)
     f1 = (f > 0.8 * f_hat) & (f < 1.2 * f_hat)
     harm = float(np.sqrt(Ps[h].sum() / max(Ps[f1].sum(), 1e-30))) if h.any() else 0.0

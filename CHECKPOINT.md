@@ -150,6 +150,30 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
 9. Freedom to operate: the template pipeline is close to PAT-01 claim 15; attorney review.
 10. Simulator: split `core.simulate` into a plant step and a controller tick. Redo the Monte Carlo and the estimator selection under fixed firmware on randomised plants (`docs/sim_to_real.md` §8, items 12–14).
 
+**Added 2026-09-28: accelerometer, AI and inertial help** (`docs/pencil_concept.md` §11).
+- **Inertial helpers.** Hand–pen model H1 (`sim/handpen/`, 21 tests), with perfect knowledge of the tremor at 0.3 mm:
+  - the best cap device within 20 g (a 5.15 g tungsten slug on 3 axes) leaves 0.85–0.97 of the ink error and takes half the cell;
+  - gyroscope pairs leave 0.87–0.92, at 25 g and 0.34 W;
+  - the stage alone leaves 0.18–0.43;
+  - passive pivots trade writing for tremor (net 0.93–1.25);
+  - a grip sleeve would hold 0.74 N (2.1 W).
+
+  Nothing inertial goes in the pen (DEC-024). The grip's slide/tilt split r_rot is unmeasured (EXP-I01).
+- **Sensing and estimation.** `fusion/` (25 tests); `sim/pencil` gained `Controller(mode="external")` and filtered housing acceleration. The acceleration-domain Kalman filter with gyroscope compensation, on the P1 test grid:
+  - mean tremor-band ratio 0.78, against 0.85 for the frozen filter;
+  - personalised by a 20 s calibration: 0.58–0.71 at 8–12 Hz, 0.3 mm;
+  - robust set: 5 µm distortion, 21 µm on sharp writers (the frozen filter moved them 123 µm);
+  - perfect tremor-band knowledge would give 0.26.
+
+  The template prior changed nothing. The GRU's gain is simulated friction drift. In P1 most of the tremor-induced error is a friction drift (316 against 173 µm) (DEC-025; DEC-020 and DEC-021 updated).
+- **Validation.** EXP-I01…I04 and 12 criteria: 268 criteria, 43 experiments.
+- **Next.**
+  - EXP-B06 + I01: grip split.
+  - EXP-H01 + I02: record raw IMU (proposed ICD 0x07), ρ, and the target groups' normal writing.
+  - EXP-E01: AKF sets and calibration on real writing.
+  - EXP-B01/B02 with superimposed vibration.
+  - EXP-S01: IMU latency.
+
 **Resume.**
 
 ```bash
@@ -157,6 +181,8 @@ python3 mechanics/cad/pencil_revP.py --variant Q
 python3 analysis/pencil_mechanisms.py
 python3 -m sim.pencil.run_study
 python3 -m sim.pencil.diag_touchdown_tails
+python3 -m sim.handpen.run_study
+python3 -m fusion.run_study --workers 2
 bash aiguide/run_all.sh
 bash s2r/run_all.sh
 python3 viewer/build.py

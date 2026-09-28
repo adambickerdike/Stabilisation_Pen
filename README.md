@@ -46,6 +46,8 @@ This repository holds the research and development package: the audit of the sou
    - The skid causes touchdown and lift tails: about 1.1 mm of extra ink per stroke. A tilt-adaptive front stop cuts this to 0.33 mm.
    - Paper capture needs a ≥ 120 Hz page sensor that does not yet exist at this size.
    - AI helps as a digital autocorrect (word errors 32 % → 10 %). Physical guidance toward AI-predicted letters does not help free writing: a correct prediction is already about 300 µm off, beyond break-even. Guidance toward known templates does help.
+   - Weights, gyroscopes or a motorised grip do not help at this size: the best that fits leaves 0.85–0.97 of the ink error with perfect knowledge, against 0.18–0.43 for the nib stage (`docs/inertial_stabilisation.md`, DEC-024).
+   - The accelerometer now drives the tremor tracker directly, with gyroscope compensation. It leaves 0.78 of the tremor-band error on average, against 0.85 before, and 0.58–0.71 at 8–12 Hz once calibrated per writer. Separating tremor from writing is still the limit (`docs/sensor_fusion_ai.md`, DEC-025).
 6. **The simulator can be calibrated from the planned bench work, and the twin experiments say how well** (`docs/sim_to_real.md`, DEC-023).
    - On 15 blind simulated plants the protocol experiments recover every model parameter to ≤ 1.6 % in about 1.5 h of bench time per build.
    - The calibrated twin then predicts the oracle ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated.
@@ -75,6 +77,8 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | 7 Validation | 29 experiments (23 bench/offline, 6 human) with procedures, equipment, uncertainty and decision rules; 221 acceptance criteria (77 requirement, 35 derived, 109 hypothesis; checker passes); prototype stages A–D with gates; human study plan separating immediate assistance from lasting improvement; review of 33 document inconsistencies, now resolved or recorded | drafted · hardware and participants pending | `validation/README.md` |
 | Pencil | Pencil-class concept: CAD (Q and L layouts, fit checks, STEP, drawings), mechanism study (forces, 12 mechanisms, drive power, drop), pencil model P1 (skid, spring-loaded refill, piezo stage; exact match with M1 when locked), page-sensor rate study, touchdown tails | executed (design, calculation, simulation) · hardware pending | `docs/pencil_concept.md`, `docs/pencil_mechanisms.md`, `mechanics/cad/pencil_revP.py`, `sim/pencil/`, `results/pencil/` |
 | Pencil | AI prediction and guidance (text predictor, style templates, stroke continuation, closed loop on P1 and M1, deployment and ICD proposal) and app autocorrect | executed (synthetic data) · people pending (EXP-A02/A03) | `docs/ai_guidance.md`, `aiguide/`, `results/ai/` |
+| Pencil | Inertial and pivot stabilisation study: hand-pen model H1 with pen tilt in a two-zone grip; weights, gyroscopes, CMGs, reaction wheels, grip sleeve, passive pivots | executed (simulation, calculation) · grip measurement pending (EXP-I01) | `docs/inertial_stabilisation.md`, `sim/handpen/`, `results/pencil/inertial*.json` |
+| Pencil | Sensing and AI estimation: IMU parts and lever arm, acceleration-domain Kalman, WFLC/BMFLC, learned GRU, template prior, 20 s personal calibration, closed loop on P1 | executed (simulation) · real data pending (EXP-H01/E01) | `docs/sensor_fusion_ai.md`, `fusion/`, `results/fusion/` |
 | Pencil | 3D replay page of the simulated pencil with generated tables | executed | `viewer/` (`python3 viewer/build.py`) |
 | 4 Simulation | Sim-to-real: virtual bench with instrument models, blind identification of 15 plants in protocol order, bench-time study, calibrated-twin prediction gap, model-form diagnostics, piezo hysteresis identification, domain randomisation, hardware-in-the-loop specification; 22 tests | executed (twin experiments) · bench pending | `docs/sim_to_real.md`, `validation/sim_to_real.md`, `s2r/`, `results/s2r/` |
 | — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
@@ -105,6 +109,9 @@ python3 -m sim.pencil.run_study                       # pencil model P1 (about 9
 python3 -m sim.pencil.diag_touchdown_tails            # touchdown tails and the tilt-adaptive stop
 bash aiguide/run_all.sh                               # AI prediction, guidance and autocorrect (about 15 min)
 bash s2r/run_all.sh                                   # sim-to-real twin experiments (about 30 min on 2 processes)
+python3 -m sim.handpen.run_study                      # weights, gyroscopes and pivots (about 5 min); tests: python3 -m pytest sim/handpen/tests -q
+python3 -m fusion.run_study --workers 2               # accelerometer tracker and AI estimation (tests: python3 -m pytest fusion/tests -q)
+python3 -m fusion.viz                                 # 3D replay of the tracker
 python3 viewer/build.py                               # 3D replay page from the results
 ```
 

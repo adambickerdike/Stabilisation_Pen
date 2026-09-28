@@ -205,6 +205,15 @@ def template_spectrum(su: Dict, cond: str, rate: float = 1000.0, nfft: int = 256
     return f, acc / max(cnt, 1)
 
 
+def writing_band_um(it, band=(3.0, 15.0)) -> float:
+    """RMS of the intended pen-down motion in the tremor band (how much the writing itself looks like tremor)."""
+    from scipy.signal import butter, sosfiltfilt
+    fs = 1.0 / float(it.t[1] - it.t[0])
+    x = sosfiltfilt(butter(4, band, btype="band", fs=fs, output="sos"), np.asarray(it.xy), axis=0)
+    m = np.asarray(it.pen_down, bool)
+    return float(np.sqrt(np.mean(np.sum(x[m] ** 2, axis=1))) * 1e6)
+
+
 # ------------------------------------------------------------------ closed loop
 def _metrics(su: Dict, res, neutral_arr=None) -> Dict:
     arr = G.arrays(res)
@@ -275,16 +284,16 @@ def tune_score(items: List[Dict], base: Dict, cand: Dict) -> Dict:
 
 
 def tune_candidates():
-    """Template settings: measurement form (intent-referenced 0 / tremor-referenced 1), template noise, gate, the
-    cross-track-only output (template direction) and the persistent-mismatch drop rule."""
+    """Template settings: measurement form (intent-referenced 0 / tremor-referenced 1), template noise, innovation gate
+    and the cross-track-only output (template direction); the persistent-mismatch drop rule (T5) is always on."""
     out = []
     for mode in (0.0, 1.0):
         for sig in (20e-6, 60e-6, 150e-6):
             for gate in (0.0, 4.0):
                 for xt in (0.0, 2.0):
-                    for drop in (250.0, 5000.0):
-                        out.append({"tpl_mode": mode, "sigma_t": sig, "gate": gate, "xtrack": xt, "drop_um": drop,
-                                    "q_tb": (30e-6) ** 2, "tb_letter": 150e-6, "t_rate": 500.0, "v_xt": 5e-3})
+                    # the drop rule (T5, 250 um for 60 ms) stays on: it is the safety rule for wrong letters
+                    out.append({"tpl_mode": mode, "sigma_t": sig, "gate": gate, "xtrack": xt, "drop_um": 250.0,
+                                "q_tb": (30e-6) ** 2, "tb_letter": 150e-6, "t_rate": 500.0, "v_xt": 5e-3})
     return out
 
 
@@ -305,6 +314,8 @@ def scenario(job: Dict) -> Dict:
     rows["neutral_no_tremor"] = _metrics(su, su["clean"])
     rows["oracle_disturbance"] = _metrics(su, prun(M.with_disturbance(scn, M.housing_disturbance(scn, su["clean"])), "oracle", S_), na)
     rows["kfosc_internal"] = _metrics(su, M.run(scn, M.kalman_controller(q_lim=Q_LIM), M.PencilConfig(), seed=S_, rec_hz=REC_HZ), na)
+    rows["kfosc_internal"]["distortion_um"] = E.compare(M.run(su["scn0"], M.kalman_controller(q_lim=Q_LIM), M.PencilConfig(), seed=S_,
+                                                              rec_hz=REC_HZ), su["clean"])["e_rms_um"]
     # the old template pull (guided core), as aiguide
     tr = su["tracks"]
     rows["pull_oracle"] = _metrics(su, prun(scn, "guided", S_), na)
@@ -326,8 +337,10 @@ def scenario(job: Dict) -> Dict:
         rows[name]["splice_max_housing_jump_um"] = info["max_housing_jump_um"]
         rows[name]["_letters"] = cm["letters"]
         rows[name]["_letters_wo"] = cmw["letters"]
-    # external estimators: sensor streams from the neutral tremor run
+    # external estimators: sensor streams from the neutral tremor run; distortion: the same estimator (and template) on the
+    # tremor-free writing, injected into the tremor-free scenario, against the tremor-free neutral run
     rec1 = S.record_from_result(neutral, scn)
+    rec0 = S.record_from_result(su["clean"], su["scn0"])
     tpls = context_templates(su)
     for label, (name, params, skw, tpl_key) in job["specs"].items():
         st = S.make_streams(rec1, S.config(**skw), 500_000 + 1000 * job["writer"] + int(job["f0"]))
@@ -339,6 +352,13 @@ def scenario(job: Dict) -> Dict:
         for k in ("template_updates", "template_gated", "template_dropped_letters"):
             if k in info:
                 r[k] = info[k]
+        st0 = S.make_streams(rec0, S.config(**skw), 510_000 + 1000 * job["writer"] + int(job["f0"]))
+        dh0, _ = ES.run_estimator(name, st0, params, extra)
+        res0 = M.run(M.with_estimate(su["scn0"], S.expand_to_steps(dh0, len(su["scn0"].t), rec0.sdec)),
+                     M.Controller(mode="external", **CFG["ctrl"]), M.PencilConfig(), seed=S_, rec_hz=REC_HZ)
+        con0 = np.interp(st0.tick_t, rec0.t, rec0.contact) > 0.5
+        r["distortion_um"] = E.compare(res0, su["clean"])["e_rms_um"]
+        r["false_correction_um"] = float(np.sqrt(np.mean(np.sum(dh0[con0] ** 2, axis=1))) * 1e6) if con0.any() else float("nan")
         rows[label] = r
     # wrong-letter flips against the neutral run
     nl, nlw = rows["neutral"]["_letters"], rows["neutral"]["_letters_wo"]
@@ -350,6 +370,6 @@ def scenario(job: Dict) -> Dict:
         rows[lab].pop("_letters", None)
         rows[lab].pop("_letters_wo", None)
     te = {c: template_error_signal(su, c) for c in ("oracle", "ai_correct", "ai_predicted", "wrong_letter")}
-    return {"writer": job["writer"], "f0": job["f0"], "rows": rows, "template_error": te,
+    return {"writer": job["writer"], "f0": job["f0"], "rows": rows, "template_error": te, "writing_band_um": writing_band_um(su["wr"].intended),
             "prediction_accuracy": float(np.mean([p["correct"] for p in su["preds"]])),
             "elapsed_s": time.time() - t0}

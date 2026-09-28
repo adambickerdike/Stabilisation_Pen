@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (pencil model P1, synthetic handwriting and synthetic tremor; nothing measured)",
+    "generated_utc": "2026-09-28T10:39:52+00:00",
+    "git_revision": "87c3ca0-dirty",
+    "parameters_version": "P0.1.2",
+    "parameters_sha256_16": "957eae6e98e9b8c8",
+    "command": "run_study.py --stages tune sensors learned context --workers 2",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "train": "6000+i sigma-lognormal, 16000+i glyph writers (i % 10 in 2, 5, 8); tremor stream seed + 1000",
+      "val": "9000-9011 and 9100-9111 sigma-lognormal, 19000+j glyph writers"
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "model_version": "P1.0",
+    "script": "fusion/run_study.py",
+    "torch": "2.14.0+cpu",
+    "numba": "0.67.0"
+  },
+  "models": {
+    "gru48_1k": {
+      "name": "gru48_1k",
+      "hidden": 48,
+      "n_in": 7,
+      "net_hz": 1000.0,
+      "horizon_s": 0.002,
+      "lp_hz": 60.0,
+      "target_horizon_s": 0.0057513,
+      "page": "1k",
+      "acc_scale": 1.0,
+      "pos_scale": 1e-05,
+      "out_scale": 0.0001,
+      "lambda_fc": 4.0,
+      "n_train_pairs": 400,
+      "n_val_pairs": 24,
+      "best_epoch": 10,
+      "history": [
+        {
+          "epoch": 0,
+          "train_loss": 2.7836,
+          "val_rr": 0.94702,
+          "val_fc_um": 27.712,
+          "score": 1.164,
+          "elapsed_s": 292.66
+        },
+        {
+          "epoch": 1,
+          "train_loss": 2.4586,
+          "val_rr": 0.80795,
+          "val_fc_um": 27.913,
+          "score": 1.041,
+          "elapsed_s": 367.31
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.8504,
+          "val_rr": 0.74935,
+          "val_fc_um": 23.166,
+          "score": 0.74935,
+          "elapsed_s": 442.7
+        },
+        {
+          "epoch": 3,
+          "train_loss": 1.6218,
+          "val_rr": 0.72959,
+          "val_fc_um": 21.148,
+          "score": 0.72959,
+          "elapsed_s": 515.54
+        },
+        {
+          "epoch": 4,
+          "train_loss": 1.4934,
+          "val_rr": 0.70705,
+          "val_fc_um": 24.267,
+          "score": 0.70705,
+          "elapsed_s": 588.49
+        },
+        {
+          "epoch": 5,
+          "train_loss": 1.3734,
+          "val_rr": 0.68351,
+          "val_fc_um": 20.789,
+          "score": 0.68351,
+          "elapsed_s": 660.78
+        },
+        {
+          "epoch": 6,
+          "train_loss": 1.2677,
+          "val_rr": 0.66424,
+          "val_fc_um": 25.63,
+          "score": 0.71461,
+          "elapsed_s": 730.25
+        },
+        {
+          "epoch": 7,
+          "train_loss": 1.2768,
+          "val_rr": 0.64989,
+          "val_fc_um": 16.456,
+          "score": 0.64989,
+          "elapsed_s": 799.38
+        },
+        {
+          "epoch": 8,
+          "train_loss": 1.1913,
+          "val_rr": 0.65196,
+          "val_fc_um": 16.51,
+          "score": 0.65196,
+          "elapsed_s": 867.81
+        },
+        {
+          "epoch": 9,
+          "train_loss": 1.0903,
+          "val_rr": 0.63901,
+          "val_fc_um": 15.634,
+          "score": 0.63901,
+          "elapsed_s": 937.37
+        },
+        {
+          "epoch": 10,
+          "train_loss": 1.1,
+          "val_rr": 0.6382,
+          "val_fc_um": 16.02,
+          "score": 0.6382,
+          "elapsed_s": 1008.3
+        },
+        {
+          "epoch": 11,
+          "train_loss": 1.0919,
+          "val_rr": 0.63882,
+          "val_fc_um": 15.629,
+          "score": 0.63882,
+          "elapsed_s": 1078.6
+        }
+      ],
+      "train_seeds": "6000..6399",
+      "val_seeds": [
+        9000,
+        9001,
+        9002,
+        9003,
+        9004,
+        9005,
+        9006,
+        9007,
+        9008,
+        9009,
+        9010,
+        9011
+      ],
+      "data_s": 197.99,
+      "total_s": 1078.6,
+      "threads": 2,
+      "macs_per_step": 8304,
+      "params": 8306,
+      "seq": 1500,
+      "batch": 32,
+      "lr": 0.003,
+      "init": null,
+      "glyph_fraction": 0.3,
+      "glyph_train_seeds": "16000+i for i % 10 in (2, 5, 8)"
+    }
+  }
+}

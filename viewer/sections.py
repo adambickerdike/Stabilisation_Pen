@@ -264,7 +264,7 @@ def render(root, variant="Q"):
         parts.append(sections_extra.inertial(root))
     parts += [effect(root), tails(root), power(root), sensor(root), packaging(root, variant), make_buy(root)]
     if sections_extra:
-        parts += [sections_extra.ai(root), sections_extra.s2r(root)]
+        parts += [sections_extra.fusion(root), sections_extra.ai(root), sections_extra.s2r(root)]
     body = [p for p in parts if p]
     if not body:
         return ""

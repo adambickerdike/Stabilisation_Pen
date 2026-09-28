@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "evidence_status": "CALCULATION (datasheet values labelled MFR with ledger ids; assumptions labelled)",
+    "generated_utc": "2026-09-28T10:54:35+00:00",
+    "git_revision": "87c3ca0-dirty",
+    "parameters_version": "P0.1.2",
+    "parameters_sha256_16": "957eae6e98e9b8c8",
+    "command": "run_study.py --stages grid budget figures evidence --workers 2",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "model_version": "P1.0",
+    "script": "fusion/run_study.py",
+    "torch": "2.14.0+cpu",
+    "numba": "0.67.0"
+  },
+  "p1_default_page_1kHz": {
+    "kfosc": {
+      "mac_per_tick": 670,
+      "mac_per_s": 1340000.0,
+      "ram_bytes": 304,
+      "note": "two 5-state filters at 2 kHz plus the IMU increment buffer",
+      "cpu_fraction_f32": 0.020938,
+      "compute_per_tick_us_f32": 10.469
+    },
+    "akf": {
+      "mac_per_s_dense": 8940800.0,
+      "mac_per_s_structured": 3825900.0,
+      "mac_per_tick_structured": 1913.0,
+      "ram_bytes": 2288,
+      "history_snapshots": 6,
+      "note": "8 states x 2 axes, shared covariance, rollback history for the delayed page sensor",
+      "cpu_fraction_f32": 0.05978,
+      "compute_per_tick_us_f32": 29.89,
+      "worst_tick_us_f32": 51.14
+    },
+    "context": {
+      "mac_per_s_dense": 83596000.0,
+      "mac_per_s_structured": 16676000.0,
+      "ram_bytes": 41576,
+      "template_rate_hz": 500.0,
+      "note": "18 joint states; plus a template buffer of about 2000 points (2 letters at 20 um) in int16 pairs would be 8 kB, counted as float here",
+      "cpu_fraction_f32": 0.26056,
+      "compute_per_tick_us_f32": 130.28,
+      "worst_tick_us_f32": 215.64,
+      "worst_tick_note": "above the 500 us tick when rollback_samples is large (120 Hz page sensor): re-apply the stored gains to the state only (about 60 MAC per sample) and update the covariance once per page sample, or run the rollback in a lower-priority thread (proposal, not simulated)"
+    },
+    "bmflc": {
+      "mac_per_s": 1473600.0,
+      "ram_bytes": 584,
+      "note": "23 basis frequencies x (sin, cos) x 2 axes",
+      "cpu_fraction_f32": 0.023025,
+      "compute_per_tick_us_f32": 11.512
+    },
+    "wflc": {
+      "mac_per_s": 195200.0,
+      "ram_bytes": 96,
+      "note": "fundamental + harmonic, adaptive frequency",
+      "cpu_fraction_f32": 0.00305,
+      "compute_per_tick_us_f32": 1.525
+    },
+    "gru": {
+      "mac_per_step": 8304,
+      "mac_per_s": 8304000.0,
+      "params": 8306,
+      "weights_bytes_int8": 8306,
+      "weights_bytes_f32": 33224,
+      "ram_bytes": 796,
+      "note": "GRU(7 -> 48) + linear head at 1 kHz",
+      "cpu_fraction_f32": 0.12975,
+      "compute_per_tick_us_f32": 64.875,
+      "compute_per_step_us_f32": 129.75,
+      "compute_per_step_us_int8_cmsis": 136.78,
+      "cpu_fraction_int8_cmsis": 0.13678
+    },
+    "_assumptions": {
+      "f_clk_hz": 128000000.0,
+      "float32_cycles_per_mac": 2.0,
+      "int8_cmsis_nn": "0.5 MAC/cycle + 300 cycles per layer call (ml/budget.py convention)",
+      "acc_rate_hz": 1920.0,
+      "page_rate_hz": 1000.0,
+      "rollback_samples": 4.0,
+      "label": "CALCULATION; ASSUMPTION for the cycle model; to be profiled on the target"
+    }
+  },
+  "page_120Hz_10ms": {
+    "kfosc": {
+      "mac_per_tick": 670,
+      "mac_per_s": 1340000.0,
+      "ram_bytes": 304,
+      "note": "two 5-state filters at 2 kHz plus the IMU increment buffer",
+      "cpu_fraction_f32": 0.020938,
+      "compute_per_tick_us_f32": 10.469
+    },
+    "akf": {
+      "mac_per_s_dense": 6097900.0,
+      "mac_per_s_structured": 2469100.0,
+      "mac_per_tick_structured": 1234.6,
+      "ram_bytes": 7208,
+      "history_snapshots": 21,
+      "note": "8 states x 2 axes, shared covariance, rollback history for the delayed page sensor",
+      "cpu_fraction_f32": 0.03858,
+      "compute_per_tick_us_f32": 19.29,
+      "worst_tick_us_f32": 186.14
+    },
+    "context": {
+      "mac_per_s_dense": 58292000.0,
+      "mac_per_s_structured": 10815000.0,
+      "ram_bytes": 62096,
+      "template_rate_hz": 500.0,
+      "note": "18 joint states; plus a template buffer of about 2000 points (2 letters at 20 um) in int16 pairs would be 8 kB, counted as float here",
+      "cpu_fraction_f32": 0.16899,
+      "compute_per_tick_us_f32": 84.493,
+      "worst_tick_us_f32": 772.51,
+      "worst_tick_note": "above the 500 us tick when rollback_samples is large (120 Hz page sensor): re-apply the stored gains to the state only (about 60 MAC per sample) and update the covariance once per page sample, or run the rollback in a lower-priority thread (proposal, not simulated)"
+    },
+    "bmflc": {
+      "mac_per_s": 1473600.0,
+      "ram_bytes": 584,
+      "note": "23 basis frequencies x (sin, cos) x 2 axes",
+      "cpu_fraction_f32": 0.023025,
+      "compute_per_tick_us_f32": 11.512
+    },
+    "wflc": {
+      "mac_per_s": 195200.0,
+      "ram_bytes": 96,
+      "note": "fundamental + harmonic, adaptive frequency",
+      "cpu_fraction_f32": 0.00305,
+      "compute_per_tick_us_f32": 1.525
+    },
+    "gru": {
+      "mac_per_step": 8304,
+      "mac_per_s": 8304000.0,
+      "params": 8306,
+      "weights_bytes_int8": 8306,
+      "weights_bytes_f32": 33224,
+      "ram_bytes": 796,
+      "note": "GRU(7 -> 48) + linear head at 1 kHz",
+      "cpu_fraction_f32": 0.12975,
+      "compute_per_tick_us_f32": 64.875,
+      "compute_per_step_us_f32": 129.75,
+      "compute_per_step_us_int8_cmsis": 136.78,
+      "cpu_fraction_int8_cmsis": 0.13678
+    },
+    "_assumptions": {
+      "f_clk_hz": 128000000.0,
+      "float32_cycles_per_mac": 2.0,
+      "int8_cmsis_nn": "0.5 MAC/cycle + 300 cycles per layer call (ml/budget.py convention)",
+      "acc_rate_hz": 1920.0,
+      "page_rate_hz": 120.0,
+      "rollback_samples": 19.0,
+      "label": "CALCULATION; ASSUMPTION for the cycle model; to be profiled on the target"
+    }
+  }
+}

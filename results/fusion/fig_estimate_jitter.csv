@@ -1,0 +1,6 @@
+case,ratio_mean,P_rail_classB_mW_mean
+tremor-band oracle,0.82334,138.19
++ 10 um jitter 20-200 Hz,0.83208,143.68
++ 5 um jitter 200-900 Hz,0.96063,606.18
++ 10 um jitter 200-900 Hz,1.036,1136.0
++ 20 um drift 0.2-3 Hz,0.82892,138.21

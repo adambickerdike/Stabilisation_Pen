@@ -13,7 +13,9 @@ LABELS = {"oracle": "oracle (physical limit)", "oracle_band": "tremor-band oracl
           "kfosc_internal": "frozen Kalman (core)", "kfosc_port": "frozen Kalman (external port)",
           "kfosc_p1": "Kalman, retuned on P1", "akf": "acceleration Kalman (AKF)", "akf_120": "AKF, 120 Hz page sensor",
           "kfosc_port_120": "frozen Kalman, 120 Hz page sensor", "bmflc": "BMFLC on acceleration", "wflc": "WFLC on acceleration",
-          "gru": "learned GRU", "gru_120": "learned GRU, 120 Hz page", "akf_personal": "AKF, personalised", "neutral": "no correction"}
+          "gru": "learned GRU", "gru_120": "learned GRU, 120 Hz page", "akf_personal": "AKF, personalised", "neutral": "no correction",
+          "akf_robust": "AKF, robust tuning", "wflc_robust": "WFLC, robust tuning", "kfosc_p1_lp": "Kalman, retuned + low-pass",
+          "kfosc_port_matched": "frozen Kalman (port, core IMU)"}
 
 
 def _load(name):
@@ -33,7 +35,7 @@ def fig_ratio(grid):
     import matplotlib.pyplot as plt
     plotstyle.apply()
     S = plotstyle.SERIES
-    series = [k for k in ("oracle", "oracle_band", "kfosc_internal", "akf", "gru", "akf_personal") if k in grid["summary"]]
+    series = [k for k in ("oracle", "oracle_band", "kfosc_internal", "akf", "akf_robust", "gru", "akf_personal") if k in grid["summary"]]
     fig, axs = plt.subplots(1, 3, figsize=(10.2, 3.7), sharey=True)
     rows = []
     for ax, amp in zip(axs, (0.1, 0.3, 0.5)):
@@ -65,12 +67,13 @@ def fig_overview(grid):
     import matplotlib.pyplot as plt
     plotstyle.apply()
     S = plotstyle.SERIES
-    labs = [k for k in ("oracle", "oracle_band", "kfosc_internal", "kfosc_port", "kfosc_p1", "bmflc", "wflc", "akf", "akf_personal",
-                        "gru", "kfosc_port_120", "akf_120", "gru_120") if k in grid["summary"] and "overall" in grid["summary"][k]]
+    labs = [k for k in ("oracle", "oracle_band", "kfosc_internal", "kfosc_port", "kfosc_p1", "kfosc_p1_lp", "bmflc", "wflc", "wflc_robust",
+                        "akf", "akf_robust", "akf_personal", "gru", "kfosc_port_120", "akf_120", "gru_120")
+            if k in grid["summary"] and "overall" in grid["summary"][k]]
     r = [grid["summary"][k]["overall"]["ratio_mean"] for k in labs]
     b = [grid["summary"][k]["overall"]["band_ratio_mean"] for k in labs]
     dist = [grid["distortion_um"].get(k, {}).get("mean", np.nan) for k in labs]
-    fig, axs = plt.subplots(1, 3, figsize=(11.5, 4.6), sharey=True)
+    fig, axs = plt.subplots(1, 3, figsize=(11.5, 1.2 + 0.33 * len(labs)), sharey=True)
     y = np.arange(len(labs))[::-1]
     for ax, vals, title in ((axs[0], r, "Ink error ratio, mean of 60 conditions"), (axs[1], b, "3-15 Hz band ratio, mean"),
                             (axs[2], dist, "Distortion on tremor-free writing (um)")):
@@ -122,7 +125,7 @@ def fig_leverarm(sens):
     axs[1].set_xticks(x)
     axs[1].set_xticklabels(["none", "nose only", "dual", "gyro", "ideal"], fontsize=8)
     axs[1].axhline(1.0, color=plotstyle.MUTED, lw=1.0)
-    axs[1].set_ylabel("AKF ink error ratio (4/8/12 Hz, 0.3 mm)")
+    axs[1].set_ylabel("AKF ink error ratio (4/8/12 Hz, 0.3 mm, tuning seeds)")
     axs[1].set_title("Closed loop at rho = 0.5", loc="left", fontsize=9.5)
     axs[1].legend(fontsize=7.5)
     plotstyle.stamp(fig, "simulation", "P1 housing motion + kinematic pen rotation (ASSUMPTION); IMU 100 mm, nose 17 mm from the nib")
@@ -208,16 +211,18 @@ def fig_context(ctx):
     S = plotstyle.SERIES
     cases = [("neutral", "no correction"), ("neutral_no_tremor", "no tremor"), ("oracle_disturbance", "disturbance oracle"),
              ("kfosc_internal", "frozen Kalman"), ("pull_oracle", "pull: oracle tpl"), ("pull_ai_correct", "pull: AI correct"),
-             ("pull_ai_predicted", "pull: AI predicted"), ("akf", "AKF, no template"), ("gru", "GRU, no template"),
+             ("pull_ai_predicted", "pull: AI predicted"), ("akf", "AKF (grid tuning)"), ("akf_robust", "AKF (robust tuning)"),
+             ("wflc", "WFLC"), ("gru", "GRU, no template"), ("ctx_none", "prior: none (same filter)"),
              ("ctx_oracle", "prior: oracle tpl"), ("ctx_ai_correct", "prior: AI correct"), ("ctx_ai_predicted", "prior: AI predicted"),
              ("ctx_wrong_letter_gated", "prior: wrong, gated"), ("ctx_wrong_letter_full", "prior: wrong, full")]
     cases = [c for c in cases if c[0] in ctx["summary"]]
-    fig, axs = plt.subplots(1, 3, figsize=(12.5, 5.2), sharey=True)
+    fig, axs = plt.subplots(1, 4, figsize=(15.5, 5.4), sharey=True)
     y = np.arange(len(cases))[::-1]
     rows = []
-    for ax, key, title in ((axs[0], "wo_path_rms_um", "Path distance to intended, writing only (um)"),
-                           (axs[1], "ratio", "Ink error ratio vs no correction"),
-                           (axs[2], "wo_recognition_accuracy", "Recognition, writing only")):
+    for ax, key, title in ((axs[0], "wo_path_rms_um", "Path distance to intended,\nwriting only (um)"),
+                           (axs[1], "ratio", "Ink error ratio\nvs no correction"),
+                           (axs[2], "wo_recognition_accuracy", "Recognition,\nwriting only"),
+                           (axs[3], "distortion_um", "Distortion on the same writing\nwithout tremor (um)")):
         v = [ctx["summary"][c].get(key, {}).get("mean", np.nan) for c, _ in cases]
         sd = [ctx["summary"][c].get(key, {}).get("sd", np.nan) for c, _ in cases]
         ax.barh(y, v, xerr=sd, color=S[0], height=0.62, error_kw={"lw": 0.7, "ecolor": plotstyle.INK2, "capsize": 1.5})
@@ -249,7 +254,7 @@ def fig_jitter(sens):
         ax.set_title(title, loc="left", fontsize=9.5)
     axs[0].set_yticks(y)
     axs[0].set_yticklabels(labs, fontsize=8)
-    plotstyle.stamp(fig, "simulation", "tremor-band oracle plus band-limited jitter, seeds 200-201, 8 Hz 0.3 mm")
+    plotstyle.stamp(fig, "simulation", "tremor-band oracle plus band-limited jitter, tuning seeds 5000-5001, 8 Hz 0.3 mm")
     fig.tight_layout()
     fig.savefig(os.path.join(RESULTS, "fig_estimate_jitter.png"))
     plt.close(fig)

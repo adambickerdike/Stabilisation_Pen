@@ -229,12 +229,12 @@ def kfosc(st: Streams, params: Dict = None) -> Tuple[np.ndarray, Dict]:
 # ======================================================================================== AKF
 AKF_KEYS = ("qj", "qt", "qh", "qb", "ra", "rp", "tau_decay", "w0_hz", "tau_w", "wmin_hz", "wmax_hz",
             "f_gate", "f_gate_w", "a_lo", "a_hi", "tau_amp", "horizon", "tau_auth", "acc_gd", "gap_reset", "g", "use_pos",
-            "use_acc", "harm", "lp_hz", "xtrack", "v_xt")
+            "use_acc", "harm", "lp_hz", "xtrack", "v_xt", "cap_k", "v_slow", "tau_ref")
 AKF_DEFAULTS = {"qj": 30.0, "qt": 1e-6, "qh": 2e-7, "qb": 1e-6, "ra": 1e-3, "rp": 1e-11, "tau_decay": 0.6,
                 "w0_hz": 7.0, "tau_w": 0.25, "wmin_hz": 3.0, "wmax_hz": 14.0, "f_gate": 0.0, "f_gate_w": 1.5,
                 "a_lo": 0.0, "a_hi": 0.0, "tau_amp": 0.2, "horizon": 1.5e-3, "tau_auth": 0.05, "acc_gd": 1.04e-3,
                 "gap_reset": 0.03, "g": 1.0, "use_pos": 1.0, "use_acc": 1.0, "harm": 1.0, "lp_hz": 60.0,
-                "xtrack": 0.0, "v_xt": 5e-3}
+                "xtrack": 0.0, "v_xt": 5e-3, "cap_k": 0.0, "v_slow": 3e-3, "tau_ref": 0.5}
 NS = 8
 HIST = 512
 
@@ -349,6 +349,8 @@ def _akf_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, prm, out, o
     fgate = prm[11]; fgw = prm[12]; a_lo = prm[13]; a_hi = prm[14]; tau_amp = prm[15]; hor = prm[16]
     tau_auth = prm[17]; acc_gd = prm[18]; gap_reset = prm[19]; gout = prm[20]; use_pos = prm[21] > 0.5
     use_acc = prm[22] > 0.5; harm = prm[23]; lp_hz = prm[24]; xtrack = prm[25] > 0.5; v_xt = prm[26]
+    cap_k = prm[27]; v_slow = prm[28]; tau_ref = prm[29]
+    a_ref = 0.0
     n = len(tick_t)
     Ts = tick_t[1] - tick_t[0]
     lb, la = _lp2_coef(lp_hz, Ts)
@@ -506,6 +508,17 @@ def _akf_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, prm, out, o
                     d0 -= wgt * dl * tx; d1 -= wgt * dl * ty
         amp = math.sqrt(amp0 * amp0 + amp1 * amp1)
         amp_f = amp_f + (Ts / tau_amp) * (amp - amp_f)
+        if cap_k > 0.0 and started:
+            # tremor amplitude reference, learned only while the intended motion is slow (pauses, slow strokes): writing
+            # that the filter mistakes for tremor appears during fast strokes and cannot raise it
+            sp_i = math.hypot(x[0, 1], x[1, 1])
+            wv = max(0.0, 1.0 - sp_i / v_slow)
+            a_ref = a_ref + wv * (Ts / tau_ref) * (amp - a_ref)
+            mag = math.hypot(d0, d1)
+            lim = cap_k * a_ref
+            if mag > lim:
+                sc_ = lim / mag if mag > 1e-15 else 0.0
+                d0 *= sc_; d1 *= sc_
         target = gout
         if fgate > 0.0:
             f_tr = w / TWO_PI

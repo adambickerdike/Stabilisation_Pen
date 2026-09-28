@@ -160,14 +160,16 @@ def rows():
         participants_or_bench="none (simulation)", comparator="no compensation; nose only; nose + board (rigid-body extrapolation); board 6-axis with gyroscope (attitude and lever arm); translation-only reference",
         key_quantitative_findings=(f"Tremor-band error of the nib acceleration estimate relative to the truth, mean over 4-12 Hz at rho 0.5: none {_fmt(olm('none', 0.5))}, "
                                    f"nose only {_fmt(olm('nose', 0.5))}, dual {_fmt(olm('dual', 0.5))}, gyro {_fmt(olm('gyro', 0.5))}, reference {_fmt(olm('ideal', 0.5))}; "
-                                   f"at rho 1.0: none {_fmt(olm('none', 1.0))}, gyro {_fmt(olm('gyro', 1.0))}. Closed-loop AKF ratio (4/8/12 Hz, 0.3 mm, rho 0.5) with the 120 Hz page sensor: "
-                                   f"none {_fmt(clm('120_none_rho0.5'))}, gyro {_fmt(clm('120_gyro_rho0.5'))}, dual {_fmt(clm('120_dual_rho0.5'))}; with the 1 kHz page sensor none {_fmt(clm('1k_none_rho0.5'))}, gyro {_fmt(clm('1k_gyro_rho0.5'))}"),
-        units_and_conditions="ratio of RMS values, 3-15 Hz band; seeds 5000 (open loop), 200-201 (closed loop)",
+                                   f"at rho 1.0: none {_fmt(olm('none', 1.0))}, nose {_fmt(olm('nose', 1.0))}, gyro {_fmt(olm('gyro', 1.0))}. Closed-loop AKF ratio (4/8/12 Hz, 0.3 mm) with the 1 kHz page sensor: "
+                                   f"rho 0.5 none {_fmt(clm('1k_none_rho0.5'), 3)}, gyro {_fmt(clm('1k_gyro_rho0.5'), 3)}, reference {_fmt(clm('1k_ideal_rho0.5'), 3)}; rho 1.0 none {_fmt(clm('1k_none_rho1'), 3)}, gyro {_fmt(clm('1k_gyro_rho1'), 3)}; "
+                                   f"with the 120 Hz / 10 ms page sensor: rho 1.0 none {_fmt(clm('120_none_rho1'), 3)}, gyro {_fmt(clm('120_gyro_rho1'), 3)}, nose {_fmt(clm('120_nose_rho1'), 3)}. "
+                                   "The closed-loop effect is small because the AKF leans on the page sensor; it grows with rotation and with a slower page sensor"),
+        units_and_conditions="ratio of RMS values, 3-15 Hz band; tuning seeds 5000 (open loop) and 5000-5001 (closed loop)",
         locator="results/fusion/sensors.json leverarm_open_loop, leverarm_closed_loop",
         limitations="The rotation ratio rho and its phase are ASSUMPTIONS (no measurement of pen rotation during writing tremor); roll about the barrel and centripetal terms neglected; rigid pen",
         relevance_to_design="Decides the sensor set: a 6-axis IMU (gyroscope) or a second accelerometer in the nose",
         transferability="medium", transferability_reason="Kinematic model on a simulated pen",
-        design_implication="Ship the 6-axis IMU with gyroscope compensation of attitude and lever arm; a nose accelerometer is the gyroscope-free alternative; never use the board accelerometer uncompensated",
+        design_implication="Ship the 6-axis IMU with gyroscope compensation of attitude and lever arm (a nose accelerometer is the gyroscope-free alternative); never feed the board accelerometer to the estimator uncompensated; measure rho in EXP-I02",
         retrieved=RETRIEVED, search_query="n/a (derived)", stream="OPT", lead_verification="")
     G = _j("grid.json")
     def gm(lab, key="ratio_mean"):
@@ -180,23 +182,30 @@ def rows():
         evidence_class="numerical simulation", access_level="full text",
         task_or_setup="P1 grid 4-12 Hz x 0.1/0.3/0.5 mm x seeds 200-203, harness convention of sim/pencil/run_study.py; causal estimators on sensor models (page sensor 1 kHz/2 ms or 120 Hz/10 ms, LSM6DSV16X-class IMU with gyroscope compensation) injected through Controller(mode='external')",
         participants_or_bench="none (simulation)", comparator="no correction; oracle; tremor-band oracle; frozen Kalman (core)",
-        key_quantitative_findings=(f"Mean ink error ratio over the 60 conditions: oracle {_fmt(gm('oracle'))}, tremor-band oracle {_fmt(gm('oracle_band'))}, frozen Kalman {_fmt(gm('kfosc_internal'))}, "
-                                   f"AKF {_fmt(gm('akf'))}, AKF 120 Hz page {_fmt(gm('akf_120'))}, BMFLC {_fmt(gm('bmflc'))}, WFLC {_fmt(gm('wflc'))}, GRU {_fmt(gm('gru'))}, personalised AKF {_fmt(gm('akf_personal'))}; "
-                                   f"band (3-15 Hz) ratio AKF {_fmt(gm('akf', 'band_ratio_mean'))} vs frozen {_fmt(gm('kfosc_internal', 'band_ratio_mean'))}; distortion AKF {_fmt(dm('akf'), 0)} um, frozen {_fmt(dm('kfosc_internal'), 0)} um, GRU {_fmt(dm('gru'), 0)} um"),
+        key_quantitative_findings=(f"Mean ink error ratio over the 60 conditions: oracle {_fmt(gm('oracle'))}, tremor-band oracle {_fmt(gm('oracle_band'))}, frozen Kalman (core) {_fmt(gm('kfosc_internal'))}, "
+                                   f"AKF grid-tuned {_fmt(gm('akf'))}, AKF robust {_fmt(gm('akf_robust'))}, AKF 120 Hz page {_fmt(gm('akf_120'))}, frozen Kalman 120 Hz page {_fmt(gm('kfosc_port_120'))}, "
+                                   f"BMFLC {_fmt(gm('bmflc'))}, WFLC {_fmt(gm('wflc'))}, GRU {_fmt(gm('gru'))}, personalised AKF {_fmt(gm('akf_personal'))}; "
+                                   f"band (3-15 Hz) ratio AKF {_fmt(gm('akf', 'band_ratio_mean'))}, robust {_fmt(gm('akf_robust', 'band_ratio_mean'))}, frozen {_fmt(gm('kfosc_internal', 'band_ratio_mean'))}, GRU {_fmt(gm('gru', 'band_ratio_mean'))}; "
+                                   f"distortion AKF {_fmt(dm('akf'), 0)} um, robust {_fmt(dm('akf_robust'), 0)} um, frozen {_fmt(dm('kfosc_internal'), 0)} um, GRU {_fmt(dm('gru'), 0)} um"),
         units_and_conditions="ratio of ink-error RMS against the tremor-free neutral pen; distortion in um RMS", locator="results/fusion/grid.json summary",
         limitations="Synthetic handwriting and tremor; one simulator; the pen rotation and friction parameters are assumptions; open-loop hand",
         relevance_to_design="Sets the achievable free-writing benefit with realistic sensing",
         transferability="low", transferability_reason="Simulation only; the friction-dither part of the target depends on the LuGre parameters (EXP-B02)",
-        design_implication="See docs/sensor_fusion_ai.md: ship the AKF (6-axis IMU + page sensor) as the default estimator; the learned model stays behind the guard until EXP-E01",
+        design_implication="Replace the frozen filter by the robust AKF (6-axis IMU + page sensor, output low-pass); keep the page sensor near 1 kHz; the learned model stays behind the ICD s5 guard until EXP-E01 (docs/sensor_fusion_ai.md)",
         retrieved=RETRIEVED, search_query="n/a (derived)", stream="ACT", lead_verification="")
+    FCs = (S or {}).get("friction_control", {}).get("summary", {})
+    def fcm(lab, k):
+        return FCs.get(lab, {}).get(k)
     add(id="ACT-41", topic="In P1 most of the oracle's disturbance is a tremor-induced friction (dither) shift of the housing path, not tremor-band motion (this study)",
-        citation="This ledger's simulation: fusion/harness.py (tremor-band oracle), results/fusion/grid.json",
-        year="2026", doi_or_url="results/fusion/grid.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
-        task_or_setup="The oracle's disturbance d = p_H(tremor) - p_H(clean) split into < 3 Hz and 3-15 Hz; the true 3-15 Hz part injected as an external estimate (zero-phase, not causal); frictionless-skid control",
-        participants_or_bench="none (simulation)", comparator="full oracle",
-        key_quantitative_findings=(f"Mean ink error ratio: oracle {_fmt(gm('oracle'))}, tremor-band oracle {_fmt(gm('oracle_band'))}. With the skid friction set to zero (and nib friction 0.02) the < 3 Hz part of d nearly vanishes "
-                                   "(seed 200, 6 Hz 0.3 mm: 247 -> 15 um RMS) and the two oracles coincide (0.18 vs 0.18)"),
-        units_and_conditions="um RMS in contact; ratios as ACT-40", locator="results/fusion/grid.json (oracle, oracle_band); docs/sensor_fusion_ai.md s3",
+        citation="This ledger's simulation: fusion/harness.py (tremor-band oracle), fusion/run_study.py friction control; results/fusion/grid.json, results/fusion/sensors.json",
+        year="2026", doi_or_url="results/fusion/grid.json; results/fusion/sensors.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
+        task_or_setup="The oracle's disturbance d = p_H(tremor) - p_H(clean) split into < 3 Hz and 3-15 Hz; the true 3-15 Hz part injected as an external estimate (zero-phase, not causal); control with near-frictionless skid and nib (mu_skid 0, mu_nib 0.02) on tuning seeds 5000-5001 at 6 and 10 Hz, 0.3 mm",
+        participants_or_bench="none (simulation)", comparator="full oracle; nominal friction",
+        key_quantitative_findings=(f"Test grid mean ink error ratio: oracle {_fmt(gm('oracle'))}, tremor-band oracle {_fmt(gm('oracle_band'))}. Control (tuning seeds): nominal friction d below 3 Hz "
+                                   f"{_fmt(fcm('nominal', 'd_below_3Hz_um'), 0)} um vs 3-15 Hz {_fmt(fcm('nominal', 'd_3_15Hz_um'), 0)} um, oracle {_fmt(fcm('nominal', 'oracle_ratio'))}, tremor-band oracle "
+                                   f"{_fmt(fcm('nominal', 'oracle_band_ratio'))}; near-frictionless: below 3 Hz {_fmt(fcm('frictionless', 'd_below_3Hz_um'), 0)} um vs {_fmt(fcm('frictionless', 'd_3_15Hz_um'), 0)} um, "
+                                   f"oracle {_fmt(fcm('frictionless', 'oracle_ratio'))}, tremor-band oracle {_fmt(fcm('frictionless', 'oracle_band_ratio'))}"),
+        units_and_conditions="um RMS in contact after 0.5 s; ratios as ACT-40", locator="results/fusion/grid.json (oracle, oracle_band); results/fusion/sensors.json friction_control; docs/sensor_fusion_ai.md s3",
         limitations="LuGre friction parameters of skid and nib are assumptions; the open-loop hand does not adapt to friction",
         relevance_to_design="No tremor-band estimator can reach the harness 'physical limit': its target includes re-creating the pen's tremor-free stick-slip",
         transferability="low", transferability_reason="Depends on the friction model",
@@ -208,7 +217,7 @@ def rows():
     add(id="ACT-42", topic="Estimate jitter near the stage resonance dithers the pen's friction and costs cancellation and power (this study)",
         citation="This ledger's simulation: fusion/run_study.py jitter check, results/fusion/sensors.json jitter_check",
         year="2026", doi_or_url="results/fusion/sensors.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
-        task_or_setup="Tremor-band oracle plus band-limited random jitter, seeds 200-201, 8 Hz 0.3 mm, P1 (stage first resonance 192 Hz)",
+        task_or_setup="Tremor-band oracle plus band-limited random jitter, tuning seeds 5000-5001, 8 Hz 0.3 mm, P1 (stage first resonance 192 Hz)",
         participants_or_bench="none (simulation)", comparator="tremor-band oracle without jitter",
         key_quantitative_findings=(f"Ratio {_fmt(jm('tremor-band oracle'))} without jitter; {_fmt(jm('+ 10 um jitter 20-200 Hz'))} with 10 um RMS at 20-200 Hz; "
                                    f"{_fmt(jm('+ 5 um jitter 200-900 Hz'))} with 5 um and {_fmt(jm('+ 10 um jitter 200-900 Hz'))} with 10 um at 200-900 Hz; class-B rail power "
@@ -225,32 +234,73 @@ def rows():
     te = (C or {}).get("template_error", {})
     def tem(c, k):
         return te.get(c, {}).get(k, {}).get("mean")
-    add(id="ACT-43", topic="AI + physical: the phone's letter template as an intent prior inside the tremor estimator (this study)",
+    ct = (C or {}).get("context_tuning", {}).get("template_params", {}) or {}
+    form = {0.0: "intent-referenced", 1.0: "tremor-referenced"}.get(float(ct.get("tpl_mode", 0.0)), "n/a")
+    fl = (C or {}).get("summary", {})
+    def flips(lab):
+        v = fl.get(lab, {})
+        return f"{v.get('flips_newly_read_as_wrong_letter_total', 'n/a')}/{v.get('flips_n_letters_total', 'n/a')}"
+    add(id="ACT-43", topic="AI + physical: the phone's letter template as an intent prior inside the tremor estimator instead of a pull target (this study)",
         citation="This ledger's simulation: fusion/context.py, fusion/aieval.py, results/fusion/context.json",
-        year="2026", doi_or_url="results/fusion/context.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
-        task_or_setup="aiguide writers 0-5, 'return library books by friday', 0.3 mm tremor 4-10 Hz, P1 (pencil_P1); templates oracle / AI-correct / AI-predicted (confidence-gated) / wrong letter; template as a cross-track pseudo-measurement with a template-bias state, confidence-scaled noise, gating and a drop rule",
-        participants_or_bench="none (simulation)", comparator="no correction; frozen Kalman; the old template pull (guided mode); AKF without template",
+        year="2026", doi_or_url="results/fusion/context.json; docs/sensor_fusion_ai.md s5.e", source_type="derived simulation",
+        evidence_class="numerical simulation", access_level="full text",
+        task_or_setup=("aiguide writers 0-5, 'return library books by friday', 0.3 mm tremor at 4, 6, 8, 10 Hz, P1 (pencil_P1, q_lim 0.30 mm); templates: oracle (the true letters), "
+                       "AI-correct, AI-predicted (confidence-gated), wrong letter (gated and at full confidence); template as a cross-track measurement "
+                       f"({form}) with a template-bias state, confidence-scaled noise, innovation gate and drop rule; parameters tuned on writers 100-102"),
+        participants_or_bench="none (simulation)", comparator="no correction; disturbance oracle; frozen Kalman; the old template pull (guided mode); AKF without template",
         key_quantitative_findings=(f"Template error (AI-correct): total {_fmt(tem('ai_correct', 'total'), 0)} um, after per-letter offset {_fmt(tem('ai_correct', 'after_offset'), 0)} um, "
-                                   f"after per-letter affine {_fmt(tem('ai_correct', 'after_affine'), 0)} um, 3-15 Hz along the stroke {_fmt(tem('ai_correct', 'band_3_15Hz_rms_um'), 0)} um. "
-                                   f"Path RMS to intended (writing only): no correction {_fmt(cs('neutral'), 0)}, pull AI-correct {_fmt(cs('pull_ai_correct'), 0)}, "
-                                   f"AKF {_fmt(cs('akf'), 0)}, prior AI-correct {_fmt(cs('ctx_ai_correct'), 0)}, prior AI-predicted {_fmt(cs('ctx_ai_predicted'), 0)}, prior wrong letter full {_fmt(cs('ctx_wrong_letter_full'), 0)} um"),
-        units_and_conditions="um RMS; mean over 24 scenarios", locator="results/fusion/context.json summary, template_error",
-        limitations="Synthetic glyph writers and templates; one sentence; open-loop hand; pen anchoring emulated from the neutral run",
+                                   f"after per-letter affine {_fmt(tem('ai_correct', 'after_affine'), 0)} um; along the written stroke {_fmt(tem('ai_correct', 'band_3_15Hz_rms_um'), 0)} um RMS in 3-15 Hz "
+                                   f"vs {_fmt(tem('ai_correct', 'below_3Hz_rms_um'), 0)} um below 3 Hz (the low-frequency hypothesis does not hold for these writers). "
+                                   f"Path RMS to intended, writing only (um): no correction {_fmt(cs('neutral'), 0)}, no tremor {_fmt(cs('neutral_no_tremor'), 0)}, disturbance oracle {_fmt(cs('oracle_disturbance'), 0)}, "
+                                   f"frozen Kalman {_fmt(cs('kfosc_internal'), 0)}, pull AI-correct {_fmt(cs('pull_ai_correct'), 0)}, robust AKF {_fmt(cs('akf_robust'), 0)}, "
+                                   f"prior oracle {_fmt(cs('ctx_oracle'), 0)}, prior AI-correct {_fmt(cs('ctx_ai_correct'), 0)}, prior AI-predicted {_fmt(cs('ctx_ai_predicted'), 0)}, "
+                                   f"prior wrong letter full {_fmt(cs('ctx_wrong_letter_full'), 0)}; letters newly read as the wrong letter: prior wrong-full {flips('ctx_wrong_letter_full')}, "
+                                   f"pull wrong-full {flips('pull_wrong_letter_full')}"),
+        units_and_conditions="um RMS; mean over 24 scenarios (6 writers x 4 frequencies)", locator="results/fusion/context.json summary, template_error",
+        limitations="Synthetic glyph writers and templates; one sentence; open-loop hand; pen anchoring emulated from the neutral run's touchdowns",
         relevance_to_design="Decides how the phone's predictions should reach the pen",
-        transferability="low", transferability_reason="Simulation on synthetic writers",
-        design_implication="Send templates to the pen as priors for the estimator (record 0x06), never as pull targets; keep confidence gating and the drop rule",
+        transferability="low", transferability_reason="Simulation on synthetic writers; real template error spectra unknown (EXP-A04)",
+        design_implication=("Never send templates as pull targets in free writing; as estimator priors (record 0x06 PRIOR flag, confidence gating, drop rule) they are safe "
+                            "but showed no measurable benefit here, because the AI template's own error along the stroke is as large as the tremor in the 3-15 Hz band; "
+                            "keep the prior off by default until EXP-A04 / EXP-E01 show real templates accurate enough"),
         retrieved=RETRIEVED, search_query="n/a (derived)", stream="ACT", lead_verification="")
     P = (G or {}).get("summary", {}).get("akf_personal", {}).get("overall", {})
     add(id="ACT-44", topic="Per-writer calibration of the tremor estimator from a 20 s known-template task (this study)",
         citation="This ledger's simulation: fusion/personal.py, results/fusion/grid.json (akf_personal)",
         year="2026", doi_or_url="results/fusion/grid.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
-        task_or_setup="Spiral, circle and lines with the writer's tremor (independent realisation), page sensor minus the known template band-passed 3-15 Hz; frequency, amplitude, harmonic; choice among 12 AKF variants around the population set",
+        task_or_setup=("20 s calibration task (spiral, circle, lines) with the writer's tremor (independent realisation, seed + 40000); the phone matches the "
+                       "page-sensor path to the known shapes in drawing order (timing unknown), band-passes the residual 3-15 Hz per stroke; frequency and "
+                       "amplitude from the 2-D residual of curved strokes; choice among 12 AKF variants around the population (robust) set by their fit to the "
+                       "cross-track label on the calibration recording"),
         participants_or_bench="none (simulation)", comparator="population AKF parameters",
-        key_quantitative_findings=f"Mean ink error ratio over the 60 test conditions: personalised {_fmt(P.get('ratio_mean'))} vs population {_fmt(gm('akf'))}; distortion {_fmt(dm('akf_personal'), 0)} vs {_fmt(dm('akf'), 0)} um",
+        key_quantitative_findings=(f"Mean ink error ratio over the 60 test conditions: personalised {_fmt(P.get('ratio_mean'))} vs population (robust AKF) {_fmt(gm('akf_robust'))} "
+                                   f"and grid-tuned AKF {_fmt(gm('akf'))}; band ratio {_fmt(P.get('band_ratio_mean'))} vs {_fmt(gm('akf_robust', 'band_ratio_mean'))}; "
+                                   f"distortion {_fmt(dm('akf_personal'), 0)} vs {_fmt(dm('akf_robust'), 0)} um"),
         units_and_conditions="as ACT-40", locator="results/fusion/grid.json summary akf_personal",
         limitations="The calibration tremor has the same frequency and amplitude as the test tremor (stationary writer); day-to-day variability not modelled",
         relevance_to_design="CAL_USER content and the calibration task", transferability="low", transferability_reason="Simulation; real tremor varies within and between sessions",
         design_implication="Add a 20 s calibration (spiral + lines) that sets the estimator's frequency window and amplitude gate; re-run it when the tracked frequency drifts",
+        retrieved=RETRIEVED, search_query="n/a (derived)", stream="ACT", lead_verification="")
+    Tj = _j("tuning.json") or {}
+    srch = Tj.get("searches", {})
+    def cr(lab, key="ratio"):
+        return (C or {}).get("summary", {}).get(lab, {}).get(key, {}).get("mean")
+    add(id="ACT-45", topic="Tremor estimators tuned on smooth synthetic handwriting misread sharper letters as tremor (writing-style dependence, this study)",
+        citation="This ledger's simulation: fusion/tune.py (search and search_robust), results/fusion/tuning.json, grid.json, context.json",
+        year="2026", doi_or_url="results/fusion/tuning.json; results/fusion/context.json", source_type="derived simulation", evidence_class="numerical simulation",
+        access_level="full text",
+        task_or_setup=("The AKF tuned on the P1 grid's sigma-lognormal writing (tuning seeds) and a robust AKF tuned on the grid plus aiguide glyph writers 100-105 "
+                       "(about 3x the grid writing's 3-15 Hz content), both run on the P1 test grid and on aiguide test writers 0-5"),
+        participants_or_bench="none (simulation)", comparator="no correction; frozen Kalman",
+        key_quantitative_findings=(f"P1 grid mean ratio: grid-tuned AKF {_fmt(gm('akf'))}, robust AKF {_fmt(gm('akf_robust'))}, frozen Kalman {_fmt(gm('kfosc_internal'))}; "
+                                   f"aiguide writers ink ratio vs no correction: grid-tuned AKF {_fmt(cr('akf'))}, robust AKF {_fmt(cr('akf_robust'))}, WFLC {_fmt(cr('wflc'))}, "
+                                   f"GRU {_fmt(cr('gru'))}, frozen Kalman {_fmt(cr('kfosc_internal'))}; false correction on tremor-free glyph writing (tuning writers): "
+                                   f"robust AKF {_fmt((srch.get('akf_robust_1k', {}).get('proxy', {}) or {}).get('fc_ai_um'), 0)} um"),
+        units_and_conditions="ratios of ink-error RMS against the tremor-free neutral pen; um RMS", locator="results/fusion/grid.json, context.json, tuning.json",
+        limitations="Both writing generators are synthetic; the real tremor-band content of PD/ET handwriting at the users' own speed is unknown",
+        relevance_to_design="An estimator that separates tremor from writing by frequency and dynamics alone is only as good as its writing model",
+        transferability="medium", transferability_reason="The mechanism (writing content in the tremor band) is generic; its size is not",
+        design_implication="Tune and validate on writing as sharp and fast as the users' (EXP-H01 must record normal-speed writing); keep the frequency and amplitude gates; prefer the robust set",
         retrieved=RETRIEVED, search_query="n/a (derived)", stream="ACT", lead_verification="")
     B = _j("budget.json")
     def bm(k, key):
@@ -273,11 +323,13 @@ def rows():
     add(id="EML-32", topic="Learned GRU tremor estimator trained on P1 runs with IMU + page-sensor inputs (this study)",
         citation="This ledger's simulation: fusion/learned.py, results/fusion/learned.json and results/fusion/model/",
         year="2026", doi_or_url="results/fusion/learned.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
-        task_or_setup=f"GRU({mi.get('n_in', 7)} -> {mi.get('hidden', 48)}) + linear head at 1 kHz; {mi.get('n_train_pairs', 'n/a')} domain-randomised P1 run pairs (hand impedance, tremor 3-14 Hz 0.05-0.6 mm, tilt, force, friction, writing), false-correction penalty",
+        task_or_setup=f"GRU({mi.get('n_in', 7)} -> {mi.get('hidden', 48)}) + linear head at 1 kHz; {mi.get('n_train_pairs', 'n/a')} domain-randomised P1 run pairs (hand impedance, tremor 3-14 Hz 0.05-0.6 mm, tilt, force, friction; 70 % sigma-lognormal and 30 % glyph-writer handwriting), false-correction penalty",
         participants_or_bench="none (simulation)", comparator="AKF; frozen Kalman",
-        key_quantitative_findings=f"Mean ink error ratio {_fmt(gm('gru'))} (AKF {_fmt(gm('akf'))}); distortion {_fmt(dm('gru'), 0)} um; {mi.get('macs_per_step', 'n/a')} MAC per step, {mi.get('params', 'n/a')} parameters; training {_fmt((mi.get('total_s') or 0) / 60, 0)} min on 2 threads",
+        key_quantitative_findings=(f"P1 grid mean ink error ratio {_fmt(gm('gru'))} (grid-tuned AKF {_fmt(gm('akf'))}, robust AKF {_fmt(gm('akf_robust'))}); band ratio {_fmt(gm('gru', 'band_ratio_mean'))}; "
+                                   f"distortion {_fmt(dm('gru'), 0)} um; aiguide writers path RMS writing only {_fmt(cs('gru'), 0)} um (no correction {_fmt(cs('neutral'), 0)}); "
+                                   f"{mi.get('macs_per_step', 'n/a')} MAC per step, {mi.get('params', 'n/a')} parameters; training {_fmt((mi.get('total_s') or 0) / 60, 0)} min on 2 threads"),
         units_and_conditions="as ACT-40", locator="results/fusion/learned.json; results/fusion/grid.json",
-        limitations="Trained and tested on the same generators (sigma-lognormal handwriting, synthetic tremor, P1); the aiguide glyph writers are the only out-of-distribution check",
+        limitations="Trained and tested on the same generators (sigma-lognormal and glyph handwriting, synthetic tremor, P1) with different seeds and writers; no out-of-distribution test",
         relevance_to_design="Whether a learned estimator should ship", transferability="low", transferability_reason="Generator-specific (ml/README.md c.4)",
         design_implication="Keep behind the ICD s5 guard; decide on EXP-E01 real data",
         retrieved=RETRIEVED, search_query="n/a (derived)", stream="EML", lead_verification="")

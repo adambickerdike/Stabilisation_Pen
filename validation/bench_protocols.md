@@ -1384,6 +1384,7 @@ This experiment selects and characterises the near-nib optical motion sensor tha
    - Rest records of 10 s for noise.
 5. **Interference.** The actuated nib (rig module or Rev A) moves ±0.5 mm at 10 Hz in view; fresh ink lines are crossed.
 6. **Roll coverage.** The full 3-module nose on the rotary stage, continuous roll at 30°/s during writing motion; log the valid flags (`opt_valid`, ICD §4.2).
+7. **IMU latency (pencil sensing, `docs/sensor_fusion_ai.md` §4).** The same piezo step and sine drive move the pen body with its IMU. Measure the accelerometer's and the gyroscope's group delay and the FIFO read latency at 3.84 and 7.68 kHz, from the capacitive reference to the sample's arrival in the firmware (AC-S01-09). The acceleration-domain Kalman filter compensates 1.04 ms of filter delay plus 0.35 ms of read latency (ASSUMPTION); the LSM6DSV16X datasheet states no latency, the BMI323 states 0.39–0.63 ms of group delay (OPT-40).
 
 ### Sample size
 
@@ -1418,8 +1419,9 @@ This experiment selects and characterises the near-nib optical motion sensor tha
 | AC-S01-06 | — | Median translation error per 10 ms window on matte paper at θ 55°, 10-100 mm/s | ≤ 24 µm | hypothesis | DeltaPen median on a Wacom surface (OPT-02): at least published state of the art, now on paper | DEC-005 |
 | AC-S01-07 | — | Relative increase of per-sample noise with the actuated nib moving (±0.5 mm, 10 Hz) and fresh ink in the field of view | ≤ 10 % | hypothesis | engineering judgement (OPT notes s2.5 item 4: effect unknown) | optics placement |
 | AC-S01-08 | REQ-PNC-004 | Candidate chip-scale page sensor that fits inside the pencil nose (8.9 mm envelope): page-referenced position rate / latency from paper motion to the position available to the fusion (step method as AC-S01-01, median of ≥ 200 events; 99th percentile reported) | ≥ 120 Hz / ≤ 10 ms | requirement | REQ-PNC-004 and DEC-021; guided path error 0.42 of no correction at 120 Hz / 10 ms vs 0.76 at 30 Hz (results/sim/page_sensor_rate.json; SIMULATION, latency modelled as one frame + 2 ms). No part found that fits and meets it (OPT-05 too large, OPT-36 30 fps) | DEC-021 (paper capture for the pencil vs tablet fallback) |
+| AC-S01-09 | — | IMU latency: accelerometer and gyroscope group delay plus FIFO read latency at the chosen ODR (3.84 or 7.68 kHz), from the capacitive reference to the sample's arrival in the firmware, 99th percentile of ≥ 200 steps | ≤ 1.5 ms | hypothesis | the acceleration-domain Kalman filter compensates 1.04 ms filter delay + 0.35 ms read latency (ASSUMPTION, docs/sensor_fusion_ai.md s4.2); LSM6DSV16X states no latency (OPT-37); BMI323 states 0.39-0.63 ms group delay (OPT-40) | AKF delay compensation (DEC-025) |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows for EXP-S01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (9 rows for EXP-S01).
 <!-- AC-TABLE:EXP-S01:END -->
 
 ### What changes which decision
@@ -2089,7 +2091,8 @@ Four causal estimators, plus a learned predictor, are compared at **matched fals
 - BMFLC (ACT-09/10);
 - a least-squares autoregressive h-step predictor (AR-LS), global and f_est-scheduled (`ml/baselines.py`); REQ-ML-001 names it "scheduled least-squares";
 - WFLC as a legacy baseline;
-- a learned streaming TCN (`ml/`), within the ICD §5 budget.
+- a learned streaming TCN (`ml/`), within the ICD §5 budget;
+- from the pencil sensing study (`docs/sensor_fusion_ai.md`, `fusion/`): the acceleration-domain Kalman filter (AKF) in its grid-tuned and robust sets, the per-user AKF set chosen by the 20 s calibration, the IMU-input GRU and the template prior. They run unchanged on recorded streams converted to `fusion.sensors.Streams`. Report the 3–15 Hz band residual and the false correction on tremor-free writing, including the fastest-writing quartile (AC-E01-09), next to the all-band ratio: in simulation the estimators tuned on smooth writing moved sharp writers' tremor-free ink by 123–146 µm.
 
 The data are the EXP-H01 recordings.
 
@@ -2173,8 +2176,9 @@ The true disturbance d is not directly observable in real writing. Three benchma
 | AC-E01-06 | REQ-CTRL-007 | Per-user gate calibration: \|f_gate from a 60 s calibration - offline-optimal f_gate\| in ≥ 80 % of test participants | ≤ 1 Hz | hypothesis | engineering judgement; REQ-CTRL-007 (per-user threshold from calibration) | CAL_USER procedure |
 | AC-E01-07 | REQ-CTRL-005 | False correction on healthy-control writing at the deployed gain (no-tremor ticks) | ≤ 25 µm RMS | derived | derived: half the REQ-CTRL-005 50 µm budget; equals the ml/common.py FC headline | estimator tuning |
 | AC-E01-08 | REQ-ML-001 | Largest false-correction excursion (spike) of the learned predictor on the feature course (corners, dots, hatching, fast strokes) at the deployed gain | ≤ 100 µm | requirement | REQ-ML-001 (no false-correction spikes above 100 µm) and REQ-CTRL-005 corner/dot limit; synthetic result 125 µm corner spikes (REQ-CTRL-005 current estimate) -> currently failing | DEC-016; REQ-ML-001 |
+| AC-E01-09 | REQ-CTRL-005 | False correction of the chosen causal estimator at its deployed gain on the tremor-free writing of the fastest-writing quartile of healthy participants (tremor-band content of intended motion highest) | ≤ 25 µm RMS | derived | derived from AC-E01-07 (half the REQ-CTRL-005 50 µm budget); simulation on sharp glyph writers: frozen Kalman 123 µm and grid-tuned AKF 146 µm (fail), robust AKF 21 µm (results/fusion/context.json; SIMULATION) | DEC-025 (which AKF set ships) |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (8 rows for EXP-E01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (9 rows for EXP-E01).
 <!-- AC-TABLE:EXP-E01:END -->
 
 ### What changes which decision
@@ -2902,6 +2906,7 @@ This is the first loaded test of the pencil mechanism. One catalogue bender (PL1
 3. **Nib-force band.** Writing strokes at user force 0.5, 1 and 2 N and θ 35–75°, with the stage moving at 6 Hz and 0.3 mm; axial force logged at 2 kHz.
 4. **Resonance and tracking.** Open-loop FRF; closed-loop tracking at 1–50 Hz.
 5. **Cancellation** by the EXP-B09 method on the actuated axis: NEUTRAL, ORACLE and KF-ASR; 6 and 10 Hz; 0.1 and 0.3 mm peak; θ 50°; 10 seeds per primary cell; paired blocks; ink scanned blind.
+6. **Command jitter** (`docs/sensor_fusion_ai.md` §3.3). Repeat the ORACLE cell at 8 Hz and 0.3 mm with 5 µm RMS of 200–900 Hz noise added to the stage command, and log the rail power (AC-Q06-05). In simulation this took the tremor-band oracle from 0.82 to 0.96 and the rail power from 138 to 606 mW, which is why every estimator ends in an output low-pass.
 
 ### Measurands and uncertainty
 
@@ -2921,8 +2926,9 @@ This is the first loaded test of the pencil mechanism. One catalogue bender (PL1
 | AC-Q06-01 | REQ-PNC-003 | Load line of the loaded 1-axis rig (PL128.10, D1 refill, skid nose): \|measured - predicted\| / predicted nib stroke under transverse load (static probe 0-0.3 N, lifted; contact load at θ 35-75° on 3 papers), predicted from the EXP-Q04 plate data and the as-built lever and leaf | ≤ 15 % | hypothesis | docs/pencil_mechanisms.md s4.1 load line q = (F_b - \|F\|)/(k_b + k_par) (CALCULATION; PL128.10 ±349 µm under the 0.170 N design load, results/pencil/mechanisms.json b_candidates); ±15 % engineering judgement, as the physics.md stiffness band | DEC-019 (the Q-stage sizing rests on the load line); go-ahead for EXP-Q07 |
 | AC-Q06-02 | REQ-PNC-002 | Axial nib force at the refill during writing strokes behind the skid nose, user force 0.5, 1 and 2 N, θ 35-75°, stage moving: range about the spring setting F_c | within F_c ± 0.03 N | hypothesis | REQ-PNC-002 (writing force carried by the skid, nib force set by the spring); band ±0.031 N with PTFE-lined bores (mu_b 0.08), ±0.12 N if the Ti collar bore is left bare (docs/pencil_mechanisms.md s2.1; config/pencil.yaml nib.bushing_mu, assumption; CALCULATION) | collar liner (DEC-019 CAD); modulation case of EXP-Q02 |
 | AC-Q06-03 | — | ORACLE residual ratio (M-ratio, EXP-B09 method) of the loaded 1-axis rig along its actuated axis, 6 and 10 Hz, 0.1 and 0.3 mm peak, θ 50°, user force 1 N; mean over 10 seeds per cell | ≤ 0.5 | hypothesis | ≥ 6 dB, as AC-B09-02. Prediction for the Q stage 0.21 / 0.25 at 6 / 10 Hz and 0.1 mm, 0.24 / 0.40 at 0.3 mm (P1, results/pencil/sim_metrics.json; SIMULATION); to be regenerated for the PL128.10 rig (s0.2) | DEC-019 (go-ahead for the two-axis demonstrator EXP-Q07) |
+| AC-Q06-05 | — | Increase of the ORACLE residual ratio when 5 µm RMS of 200-900 Hz noise is added to the stage command (8 Hz, 0.3 mm, θ 50°) | ≥ 0.05 | hypothesis | simulation: tremor-band oracle 0.82 -> 0.96 and rail power 138 -> 606 mW (results/fusion/sensors.json jitter_check; SIMULATION); a pass confirms the output low-pass rule of every estimator | estimator output filtering (DEC-025) |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-Q06).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-Q06).
 <!-- AC-TABLE:EXP-Q06:END -->
 
 ### Decision rule and what changes

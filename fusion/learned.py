@@ -19,9 +19,12 @@ user force 0.5-2 N, hand impedance over config/parameters.yaml `hand` ranges, sk
 0.06-0.2, handwriting size, slant and speed) with randomised tremor (3-14 Hz, 0.05-0.6 mm peak,
 harmonic 0-0.4, amplitude and frequency drift, ellipticity, orientation, onset), plus the same
 writing without tremor (false-correction penalty: loss weight LAMBDA_FC on d_hat^2 there); 25 % of
-the pairs use the nominal pen and hand.  Sensor noise, IMU bias and the pen-rotation parameters
-(rho_t, rho_w, psi) are re-drawn per augmentation.  Seeds: training 6000 + i, validation 9000-9011;
-never the test seeds 200-203 or the aiguide writers.
+the pairs use the nominal pen and hand.  70 % of the pairs use sigma-lognormal handwriting (the
+test grid's generator, other seeds), 30 % the first 5 s of a note line by a random aiguide glyph
+writer (sharper, faster letters: about 3x the tremor-band content of the grid's writing; never the
+aiguide study sentence, never writers 0-5 or 100-105).  Sensor noise, IMU bias and the pen-rotation
+parameters (rho_t, rho_w, psi) are re-drawn per augmentation.  Seeds: training 6000 + i (glyph
+16000 + i), validation 9000-9011 and 9100-9111 (glyph 19000 + j); never the test seeds 200-203.
 """
 from __future__ import annotations
 
@@ -190,7 +193,8 @@ def dataset(n: int, kind: str, n_aug: int = 2, page: str = "1k", h: float = H_DE
 # ------------------------------------------------------------------ training
 def train(n_train: int = 400, n_val: int = 24, hidden: int = 48, epochs: int = 14, seq: int = 1500, batch: int = 32,
           lr: float = 3e-3, page: str = "1k", h: float = H_DEFAULT, threads: int = 2, max_minutes: float = 40.0,
-          seed: int = 7, workers: int = 2, tag: str = "", log=print) -> Dict:
+          seed: int = 7, workers: int = 2, tag: str = "", log=print, init: Optional[str] = None) -> Dict:
+    """Train (or, with `init` = a saved model name, fine-tune) the GRU; saves results/fusion/model/gru{hidden}_{page}{tag}."""
     import torch
     torch.set_num_threads(threads)
     torch.manual_seed(seed)
@@ -201,6 +205,8 @@ def train(n_train: int = 400, n_val: int = 24, hidden: int = 48, epochs: int = 1
     t_data = time.time() - t0
     log(f"[learned] data: {len(tr)} train sequences, {len(va)} val sequences, {t_data:.0f} s")
     model = build_model(hidden)
+    if init:
+        model.load_state_dict(torch.load(os.path.join(MODEL_DIR, init + ".pt"), map_location="cpu"))
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-5)
     K = min(x[0].shape[0] for x in tr)
     steps_per_epoch = max(1, (max(1, K // seq) * len(tr)) // batch)
@@ -272,7 +278,8 @@ def train(n_train: int = 400, n_val: int = 24, hidden: int = 48, epochs: int = 1
            "acc_scale": ACC_S, "pos_scale": POS_S, "out_scale": OUT_S, "lambda_fc": LAMBDA_FC, "n_train_pairs": n_train,
            "n_val_pairs": n_val, "best_epoch": best[2], "history": hist, "train_seeds": f"{TRAIN_SEEDS_BASE}..{TRAIN_SEEDS_BASE + n_train - 1}",
            "val_seeds": list(VAL_SEEDS), "data_s": t_data, "total_s": time.time() - t0, "threads": threads,
-           "macs_per_step": macs_per_step(hidden), "params": n_params(hidden), "seq": seq, "batch": batch, "lr": lr}
+           "macs_per_step": macs_per_step(hidden), "params": n_params(hidden), "seq": seq, "batch": batch, "lr": lr,
+           "init": init, "glyph_fraction": len(GLYPH_EVERY) / 10.0, "glyph_train_seeds": f"{GLYPH_TRAIN_BASE}+i for i % 10 in {GLYPH_EVERY}"}
     with open(os.path.join(MODEL_DIR, name + ".json"), "w") as f:
         json.dump(cfg, f, indent=1)
     return cfg

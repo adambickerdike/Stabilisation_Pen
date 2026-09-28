@@ -981,6 +981,10 @@ All of this comes from synthetic writers (glyph fonts, synthetic tremor). The br
 - Template distance, per participant: the RMS over letters of the distance between each unguided letter and the personal template (own exemplars, estimated style, anchored at touchdown; `aiguide/template.py`). For the tremor groups the tremor band is first removed by a zero-phase band-stop at f_pk ± 1.5 Hz (§3.6). Median per group with a bootstrap CI.
 - Results are reported per group (R5, REQ-USR-001).
 
+### Template error spectrum (A02-P data; `docs/sensor_fusion_ai.md` §5.e, §6.2)
+
+The same unguided letters and personal templates also give the cross-track template error **along the stroke**, split into below 3 Hz and 3–15 Hz (`fusion.aieval.template_error_signal`). A template can help the pen's tremor estimate only if its error in the tremor band is well below the tremor (AC-A02-04). In simulation a correctly predicted letter in the writer's style carried 165 µm in 3–15 Hz, so the template prior made no difference and ships off by default (DEC-020).
+
 ### Adverse events and stopping
 
 As §3.4. In addition, a participant who finds the nib motion distressing stops; every stage-at-stop event is logged; any unexpected motion is reported as a device deficiency.
@@ -993,8 +997,9 @@ As §3.4. In addition, a participant who finds the nib motion distressing stops;
 | AC-A02-01 | REQ-PNC-007 | Letters newly read as a different letter under confidence-gated AI-template guidance (including the 10 % deliberately wrong templates): misread when guided but read correctly in the same participant's unguided copy of the same sentence, minus the reverse, over all AI-guided letters (blinded readers); upper 95 % bound | ≤ 1 % | requirement | REQ-PNC-007 (≤ 1 % of letters when gated); prediction 0.3 % gated and 2.2 % at full authority for letters under wrong templates (pencil model P1, results/ai/guidance.json safety.flips; SIMULATION, synthetic writers) | DEC-020 (AI-template guidance); REQ-PNC-007; template rules T1-T8 |
 | AC-A02-02 | — | Template distance (EXP-A02-P): RMS distance between each unguided letter and the participant's personal template for it (own exemplars, estimated style, anchored at touchdown, as aiguide/template.py); median over healthy participants (reported per group; tremor groups with the tremor band removed) | ≤ 265 µm | hypothesis | break-even template error of guidance on the pencil model P1 (265 µm; 233-334 µm on M1; results/ai/guidance.json breakeven; SIMULATION); synthetic writers give 239 µm (clean ink) to about 300 µm (6 Hz 0.3 mm tremor) (results/ai/style_templates.json) -> expected FAIL for tremor groups | DEC-020 revisit trigger (people's letters against personal templates); AI arms of EXP-A02-G |
 | AC-A02-03 | — | Decision rule for AI-template guidance (dictated free writing, gated vs no guidance): legibility (blinded transcription, % words correct) improves with the 95 % CI of the paired difference excluding zero, AND agency ('the pen did what I intended', 7-point) is not reduced (lower 95 % bound of the paired difference ≥ -0.5 point) | both met | hypothesis | docs/ai_guidance.md s9 decision rule; -0.5-point non-inferiority margin engineering judgement. Prediction: no net benefit (P1 gated AI guidance +2.5 % path error, recognition 0.78 vs 0.79 unguided; results/ai/guidance.json; SIMULATION) -> expected FAIL | DEC-020 (keep or drop AI-template guidance) |
+| AC-A02-04 | — | Template error in the tremor band (EXP-A02-P): cross-track distance between each unguided letter and its correctly predicted personal template, along the stroke, 3-15 Hz part, RMS; median over healthy participants | ≤ 50 µm | hypothesis | a prior must know the intended path better than the tremor moves it (0.1 mm tremor about 71 µm RMS; engineering judgement); simulation: 165 µm for correctly predicted letters in the writer's style (results/fusion/context.json template_error; SIMULATION) -> expected FAIL | DEC-020 (template prior stays off by default) |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-A02).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-A02).
 <!-- AC-TABLE:EXP-A02:END -->
 
 ### What changes which decision

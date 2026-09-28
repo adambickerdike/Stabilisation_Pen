@@ -31,8 +31,8 @@ def kf_structured(blocks, n_meas_scalar: int, nnz_h: int = 4) -> int:
     return fp + n_meas_scalar * (2 * n * nnz_h + 2 * n * n // 2 + 2 * n)
 
 
-def estimator_costs(acc_rate: float = 1920.0, page_rate: float = 1000.0, rollback_samples: float = 2.0,
-                    gru_hidden: int = 48, bmflc_basis: int = 23) -> Dict[str, Dict]:
+def estimator_costs(acc_rate: float = 1920.0, page_rate: float = 1000.0, rollback_samples: float = 4.0,
+                    gru_hidden: int = 48, bmflc_basis: int = 23, tpl_rate: float = 500.0) -> Dict[str, Dict]:
     out = {}
     tick_rate = 1.0 / TICK_S
     # frozen Kalman oscillator (core mode 3): 5 states per axis, one update per tick per axis
@@ -56,10 +56,11 @@ def estimator_costs(acc_rate: float = 1920.0, page_rate: float = 1000.0, rollbac
     per_acc_cs = kf_structured((3, 3, 2, 2, 2, 2, 1, 1, 1, 1), 2)
     per_page_c = 2 * (3 * 324 + 36) + rollback_samples * per_acc_c
     per_page_cs = 2 * (3 * 324 + 36) + rollback_samples * per_acc_cs
-    tpl = 250.0 * (3 * 324 + 36 + 2 * 80)           # template update + nearest point search over ~80 points
+    tpl = tpl_rate * (3 * 324 + 36 + 2 * 90)        # template update + nearest-point search over ~90 points
     out["context"] = {"mac_per_s_dense": per_acc_c * acc_rate + per_page_c * page_rate + tpl,
                       "mac_per_s_structured": per_acc_cs * acc_rate + per_page_cs * page_rate + tpl,
                       "ram_bytes": 4 * (18 + 324) * (1 + hist) + 2 * 4 * 2 * 2000,
+                      "template_rate_hz": tpl_rate,
                       "note": "18 joint states; plus a template buffer of about 2000 points (2 letters at 20 um) in int16 pairs would be 8 kB, counted as float here"}
     # BMFLC and WFLC on acceleration (2 axes, pre-filter biquads, recursive sin/cos: 4 MAC per basis frequency)
     nb = bmflc_basis

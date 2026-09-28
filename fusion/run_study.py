@@ -14,7 +14,7 @@ Stages (each writes its own file in results/fusion/ with provenance metadata):
   budget    MCU cost per estimator (CALC)
   figures   figures from the JSON files
 Evidence status: SIMULATION and CALCULATION on synthetic signals; nothing measured.
-Runtime here (2 processes): about 1.5-2 h in total with training, 40 min without (see results/fusion/*.json).
+Runtime here (2 processes): about 25 min for the GRU training, 40-50 min for the rest (see results/fusion/*.json), plus about 45 min for `--retune`.
 """
 from __future__ import annotations
 
@@ -64,7 +64,9 @@ def _write(name, obj):
 
 def _r4(x):
     if isinstance(x, float):
-        return float(f"{x:.5g}") if math.isfinite(x) and x != 0.0 else x
+        if not math.isfinite(x):
+            return None                      # strict JSON: NaN / inf become null
+        return float(f"{x:.5g}") if x != 0.0 else x
     if isinstance(x, dict):
         return {str(k): _r4(v) for k, v in x.items()}
     if isinstance(x, (list, tuple)):
@@ -83,7 +85,9 @@ def _load(name):
 
 # ================================================================== tuned parameters
 SEARCHES = (("akf", "1k", 220, 120), ("akf", "120", 220, 120), ("bmflc", "1k", 160, 80), ("wflc", "1k", 160, 80), ("kfosc", "1k", 120, 60),
-            ("kfosclp", "1k", 120, 60))
+            ("kfosclp", "1k", 60, 40))
+# robust variants: the same estimators tuned on the grid tuning seeds AND the aiguide tuning writers 100-105 (tune.search_robust)
+ROBUST = (("akfx", "akf_robust_1k", 160, 80), ("akfc", "akf_robust_1k", 140, 80), ("wflcx", "wflc_robust_1k", 120, 60))
 
 
 def run_searches(workers: int = 2):
@@ -95,6 +99,9 @@ def run_searches(workers: int = 2):
         start = [{}] if name.startswith("kfosc") else []
         r = TU.search(name, {"page": page, "comp": "gyro"}, n_random=nr, n_local=nl, workers=workers, fc_max=14e-6, start=start, seed=21)
         json.dump(r, open(os.path.join(TUNE_DIR, f"v2_{name}_{page}.json"), "w"), indent=1, default=float)
+    for name, _, nr, nl in ROBUST:
+        r = TU.search_robust(name, {"page": "1k", "comp": "gyro"}, n_random=nr, n_local=nl, workers=workers, fc_max=14e-6, seed=31)
+        json.dump(r, open(os.path.join(TUNE_DIR, f"v2_{name}_robust_1k.json"), "w"), indent=1, default=float)
 
 
 def tuned() -> Dict:
@@ -110,6 +117,19 @@ def tuned() -> Dict:
             r = json.load(open(p))
             out[f"{name}_{page}"] = {"params": r["best"]["params"], "proxy": {k: r["best"].get(k) for k in ("J", "rr_mean", "hf_rel_mean", "fc_um")},
                                      "n_evaluated": r["n_evaluated"], "objective": r["objective"], "fc_max_um": r.get("fc_max_um")}
+    for name, key, _, _ in ROBUST:
+        # several searches may feed one key (the AKF without and with the amplitude cap): the lowest objective wins
+        p = os.path.join(TUNE_DIR, f"v2_{name}_robust_1k.json")
+        if not os.path.exists(p) and key in committed and key not in out:
+            out[key] = committed[key]
+        elif os.path.exists(p):
+            r = json.load(open(p))
+            if key in out and out[key].get("proxy", {}).get("J", 1e9) <= r["best"]["J"]:
+                continue
+            out[key] = {"params": r["best"]["params"], "search": name,
+                        "proxy": {k: r["best"].get(k) for k in ("J", "rr_mean", "rr_ai_mean", "fc_ai_rel_mean", "fc_ai_um", "hf_rel_mean", "fc_um")},
+                        "n_evaluated": r["n_evaluated"], "objective": r["objective"], "fc_max_um": r.get("fc_max_um"),
+                        "aiguide_tuning": r.get("aiguide_tuning")}
     p = os.path.join(TUNE_DIR, "context.json")
     if os.path.exists(p):
         out["context"] = json.load(open(p))
@@ -135,17 +155,26 @@ def specs(T: Dict, with_learned=True, with_personal=True) -> List[H.Spec]:
         sp.append(H.Spec("akf", "akf", T["akf_1k"]["params"], SK_1K))
     if "akf_120" in T:
         sp.append(H.Spec("akf_120", "akf", T["akf_120"]["params"], SK_120))
+    if "akf_robust_1k" in T:
+        sp.append(H.Spec("akf_robust", "akf", T["akf_robust_1k"]["params"], SK_1K))
     for n in ("bmflc", "wflc"):
         if f"{n}_1k" in T:
             sp.append(H.Spec(n, n, T[f"{n}_1k"]["params"], SK_1K))
+    if "wflc_robust_1k" in T:
+        sp.append(H.Spec("wflc_robust", "wflc", T["wflc_robust_1k"]["params"], SK_1K))
     if with_learned:
         from fusion import learned as L
         for name, sk, lab in (("gru48_1k", SK_1K, "gru"), ("gru48_mix", SK_120, "gru_120")):
             if os.path.exists(os.path.join(L.MODEL_DIR, name + ".pt")):
                 sp.append(H.Spec(lab, "learned", {"model": name, "lp_hz": 60.0}, sk))
     if with_personal and "akf_1k" in T:
-        sp.append(H.Spec("akf_personal", "akf", T["akf_1k"]["params"], SK_1K))
+        sp.append(H.Spec("akf_personal", "akf", population(T), SK_1K))
     return sp
+
+
+def population(T: Dict) -> Dict:
+    """The population parameter set the personal calibration starts from (the robust AKF when it exists)."""
+    return dict(T["akf_robust_1k"]["params"] if "akf_robust_1k" in T else T["akf_1k"]["params"])
 
 
 def stage_tune(workers: int):
@@ -153,11 +182,18 @@ def stage_tune(workers: int):
     from fusion import tune as TU
     T = tuned()
     t0 = time.time()
-    sp = [s for s in specs(T, with_learned=False, with_personal=False) if s.label in ("kfosc_port", "kfosc_p1", "kfosc_p1_lp", "akf", "akf_120", "bmflc", "wflc")]
+    sp = [s for s in specs(T, with_learned=False, with_personal=False)
+          if s.label in ("kfosc_port", "kfosc_p1", "kfosc_p1_lp", "akf", "akf_120", "akf_robust", "bmflc", "wflc", "wflc_robust")]
     cl = TU.closed_loop_check(sp, seeds=TUNE_SEEDS[:4], workers=workers)
     out = {"meta": _meta(EVIDENCE_SIM, {"tuning": list(TUNE_SEEDS), "closed_loop_check": list(TUNE_SEEDS[:4])},
                          {"elapsed_s": round(time.time() - t0, 1)}),
-           "method": TU.__doc__, "searches": T, "closed_loop_on_tuning_seeds": cl}
+           "method": TU.__doc__, "searches": T, "closed_loop_on_tuning_seeds": cl, "robust_searches": {}}
+    for name, key, _, _ in ROBUST:
+        p = os.path.join(TUNE_DIR, f"v2_{name}_robust_1k.json")
+        if os.path.exists(p):
+            b = json.load(open(p))["best"]
+            out["robust_searches"][name] = {"feeds": key, "chosen": T.get(key, {}).get("search") == name,
+                                            **{k: b.get(k) for k in ("J", "rr_mean", "rr_ai_mean", "fc_ai_um", "fc_um", "rr_ai")}}
     _write("tuning.json", out)
     return out
 
@@ -173,10 +209,10 @@ def _grid_case(args):
     for s in sp:
         if s.label == "akf_personal":
             from fusion import personal as PS
-            r = PS.personalise(seed, f0, amp, T["akf_1k"]["params"], SK_1K)
+            r = PS.personalise(seed, f0, amp, population(T), SK_1K)
             s.params = r["params"]
             pers = {k: r[k] for k in ("calibration", "calib_band_rr", "calib_band_rr_population")}
-    it = ("akf", "gru") if (seed == TEST_SEEDS[0] and abs(amp - 0.3e-3) < 1e-9) else ()
+    it = ("akf", "akf_robust", "gru") if (seed == TEST_SEEDS[0] and abs(amp - 0.3e-3) < 1e-9) else ()
     rows = H.case(seed, f0, amp, sp, iterate=it)
     for r in rows:
         if r["label"] == "akf_personal":
@@ -194,11 +230,22 @@ def _personal_dist(args):
     """Distortion of the personal set: calibrated on each tremor condition's calibration task, applied to clean writing."""
     seed, f0, amp, T = args
     from fusion import personal as PS
-    r = PS.personalise(seed, f0, amp, T["akf_1k"]["params"], SK_1K)
+    r = PS.personalise(seed, f0, amp, population(T), SK_1K)
     sp = H.Spec("akf_personal", "akf", r["params"], SK_1K)
     d = [x for x in H.distortion(seed, [sp]) if x["label"] == "akf_personal"][0]
     d.update({"f0": f0, "amp_mm": amp * 1e3})
     return d
+
+
+def _writing_band(seed: int) -> float:
+    """3-15 Hz RMS of the intended pen-down motion of a grid scenario (compare aieval.writing_band_um)."""
+    from scipy.signal import butter, sosfiltfilt
+    sc = FD.clean_scenario(seed)
+    fs = 1.0 / float(sc.t[1] - sc.t[0])
+    x = sosfiltfilt(butter(4, (3.0, 15.0), btype="band", fs=fs, output="sos"), np.asarray(sc.intended), axis=0)
+    fp = np.asarray(sc.fpush, float).reshape(len(sc.t))
+    pd = fp > 0.5 * fp.max()                     # pen down (scenarios._assemble: fpush = N0 x down fraction)
+    return float(np.sqrt(np.mean(np.sum(x[pd] ** 2, axis=1))) * 1e6)
 
 
 def stage_grid(workers: int, seeds=TEST_SEEDS, f0s=H.F0S, amps=H.AMPS):
@@ -216,7 +263,7 @@ def stage_grid(workers: int, seeds=TEST_SEEDS, f0s=H.F0S, amps=H.AMPS):
     summ = {}
     for lab in labels:
         for key in ("ratio", "band_ratio", "q_sat_frac", "P_rail_classB_mW", "P_rail_recovery_mW", "e_rms_um", "path_um",
-                    "intent_err_um", "residual_ratio", "residual_ratio_band", "housing_vs_neutral_rms_um"):
+                    "intent_err_um", "residual_ratio", "residual_ratio_band", "residual_ratio_low", "housing_vs_neutral_rms_um"):
             a = H.aggregate([r for r in rows if r["label"] == lab], ("f0", "amp_mm"), (key,))
             if a:
                 summ.setdefault(lab, {})[key] = {f"{f:g}Hz_{amp:g}mm": v[key] for (f, amp), v in sorted(a.items()) if key in v}
@@ -227,6 +274,8 @@ def stage_grid(workers: int, seeds=TEST_SEEDS, f0s=H.F0S, amps=H.AMPS):
                                     "intent_err_um_mean": float(np.mean([r.get("intent_err_um", np.nan) for r in R])),
                                     "path_um_mean": float(np.mean([r.get("path_um", np.nan) for r in R])),
                                     "q_sat_mean": float(np.mean([r["q_sat_frac"] for r in R])),
+                                    "residual_ratio_band_mean": float(np.mean([r.get("residual_ratio_band", np.nan) for r in R])),
+                                    "residual_ratio_low_mean": float(np.mean([r.get("residual_ratio_low", np.nan) for r in R])),
                                     "P_rail_classB_mW_mean": float(np.mean([r["P_rail_classB_mW"] for r in R])),
                                     "n": len(R)}
     dsum = {}
@@ -259,6 +308,7 @@ def stage_grid(workers: int, seeds=TEST_SEEDS, f0s=H.F0S, amps=H.AMPS):
                         "residual_ratio": "open-loop RMS(d - d_hat)/RMS(d) at the ticks in contact (signal level)",
                         "intent_err_um": "time-aligned RMS distance of the ink from the intended hand path (scenario.intended), static offset removed; not a harness metric",
                         "path_um": "nearest-point (timing-free) RMS distance of the ink from the intended hand path"},
+           "writing_band_um": {str(sd): _writing_band(sd) for sd in seeds},
            "summary": summ, "distortion_um": dsum, "iteration": iteration, "rows": rows, "distortion_rows": dist + pdist,
            "tuned_params": {k: v.get("params") for k, v in T.items() if isinstance(v, dict) and "params" in v}}
     _write("grid.json", out)
@@ -366,18 +416,37 @@ def stage_sensors(workers: int):
                 m = t_a > 0.5
                 ol.append({"f0": f0, "comp": comp, "rho": rho,
                            "band_error_rel": float(np.sqrt(np.mean(e[m] ** 2)) / np.sqrt(np.mean(tb[m] ** 2)))})
+    # rotation phase (psi_t, relative to the hand tremor) and board distance (78-120 mm), rho = 0.5, 8 Hz
+    olp = []
+    r1, _ = FD.test_pair_records(TUNE_SEEDS[0], 8.0, 0.3e-3)
+    for comp in ("none", "nose", "gyro", "dual"):
+        for psi in (-90.0, 0.0, 90.0, 180.0):
+            for rb in (0.078, 0.100, 0.120):
+                cfg = S.config(comp=comp, rho_t=0.5, rho_w=0.5, psi_t=math.radians(psi))
+                cfg.r_board = rb
+                t_a = np.arange(0.0, r1.t[-1], 1.0 / cfg.acc.odr)
+                est, tru = S.nib_acceleration(r1, cfg, np.random.default_rng(5), t_a, return_truth=True)
+                sos = butter(4, [3.0, 15.0], btype="band", fs=cfg.acc.odr, output="sos")
+                e = sosfiltfilt(sos, est[:, :2] - tru[:, :2], axis=0)
+                tb = sosfiltfilt(sos, tru[:, :2], axis=0)
+                m = t_a > 0.5
+                olp.append({"comp": comp, "psi_deg": psi, "r_board_m": rb,
+                            "band_error_rel": float(np.sqrt(np.mean(e[m] ** 2)) / np.sqrt(np.mean(tb[m] ** 2)))})
     out["leverarm_open_loop"] = {"rows": ol, "definition": "RMS of (estimate - true nib acceleration) / RMS(true), both band-passed 3-15 Hz; "
                                  "seed 5000 (tuning), 0.3 mm tremor; rho_t = rho_w = rho",
-                                 "geometry": {"r_board_m": 0.100, "r_nose_m": 0.017, "r_ref_m": 0.100, "theta_deg": 50.0}}
+                                 "geometry": {"r_board_m": 0.100, "r_nose_m": 0.017, "r_ref_m": 0.100, "theta_deg": 50.0},
+                                 "phase_and_distance": {"rows": olp, "setup": "rho 0.5, 8 Hz 0.3 mm, seed 5000; rotation phase psi_t relative to the hand tremor; board IMU at 78/100/120 mm"}}
     T = tuned()
-    jobs = [(s, f0, T, comp, rho, page) for page in ("1k", "120") for s in TEST_SEEDS[:2] for f0 in (4.0, 8.0, 12.0)
+    # design studies (compensation, IMU noise, estimate jitter) on tuning seeds, so no design choice is made on the test seeds
+    DS = TUNE_SEEDS[:2]
+    jobs = [(s, f0, T, comp, rho, page) for page in ("1k", "120") for s in DS for f0 in (4.0, 8.0, 12.0)
             for comp in ("ideal", "none", "nose", "gyro", "dual") for rho in (0.0, 0.5, 1.0) if f"akf_{page}" in T]
     aa_jobs = [(s, f0, aa, pg) for s in TEST_SEEDS for f0 in H.F0S for aa in (0.0, 1.0) for pg in ("1k", "120")]
     jit_cases = [("tremor-band oracle", None, 0.0), ("+ 10 um jitter 20-200 Hz", (20.0, 200.0), 10e-6),
                  ("+ 5 um jitter 200-900 Hz", (200.0, 900.0), 5e-6), ("+ 10 um jitter 200-900 Hz", (200.0, 900.0), 10e-6),
                  ("+ 20 um drift 0.2-3 Hz", (0.2, 3.0), 20e-6)]
-    jit_jobs = [(s, lab, b, r) for s in TEST_SEEDS[:2] for lab, b, r in jit_cases]
-    nz_jobs = [(s, f0, T, part, page) for page in ("1k", "120") for s in TEST_SEEDS[:2] for f0 in (4.0, 8.0, 12.0)
+    jit_jobs = [(s, lab, b, r) for s in DS for lab, b, r in jit_cases]
+    nz_jobs = [(s, f0, T, part, page) for page in ("1k", "120") for s in DS for f0 in (4.0, 8.0, 12.0)
                for part in ("LSM6DSV16X", "BMI323") if f"akf_{page}" in T]
     with ProcessPoolExecutor(max_workers=workers) as ex:
         cl = [r for rr in ex.map(_lever_closed, jobs) for r in rr]
@@ -393,13 +462,13 @@ def stage_sensors(workers: int):
                                                                   "band_ratio_mean": float(np.mean([r["band_ratio"] for r in nz if r["page"] == page and r["part"] == part]))}
                                                 for page in ("1k", "120") for part in ("LSM6DSV16X", "BMI323")
                                                 if any(r["page"] == page and r["part"] == part for r in nz)},
-                                    "rows": nz, "setup": "AKF (gyro-compensated, rho 0.5) with the LSM6DSV16X (60 ug/sqrt(Hz)) or BMI323 (180 ug/sqrt(Hz)) noise; seeds 200-201, 4/8/12 Hz, 0.3 mm"}
+                                    "rows": nz, "setup": "AKF (gyro-compensated, rho 0.5) with the LSM6DSV16X (60 ug/sqrt(Hz)) or BMI323 (180 ug/sqrt(Hz)) noise; tuning seeds 5000-5001, 4/8/12 Hz, 0.3 mm"}
     out["jitter_check"] = {"rows": jit, "summary": {lab: {"ratio_mean": float(np.mean([r["ratio"] for r in jit if r["label"] == lab])),
                                                          "P_rail_classB_mW_mean": float(np.mean([r["P_rail_classB_mW"] for r in jit if r["label"] == lab])),
                                                          "housing_vs_neutral_um_mean": float(np.mean([r["housing_vs_neutral_um"] for r in jit if r["label"] == lab]))}
                                                    for lab, _, _ in jit_cases},
                            "setup": "tremor-band oracle (true disturbance 3-15 Hz, zero-phase) plus band-limited Gaussian jitter of the stated RMS, "
-                                    "seeds 200-201, 8 Hz 0.3 mm; the stage's first resonance is 192 Hz (config/pencil.yaml)"}
+                                    "tuning seeds 5000-5001, 8 Hz 0.3 mm; the stage's first resonance is 192 Hz (config/pencil.yaml)"}
     cls = {}
     for page in ("1k", "120"):
         for comp in ("ideal", "none", "nose", "gyro", "dual"):
@@ -410,7 +479,7 @@ def stage_sensors(workers: int):
                     cls[f"{page}_{comp}_rho{rho:g}"] = {"ratio_mean": float(np.mean(R)), "ratio_sd": float(np.std(R)),
                                                         "band_ratio_mean": float(np.mean(B)), "n": len(R)}
     out["leverarm_closed_loop"] = {"summary": cls, "rows": cl,
-                                   "setup": "AKF tuned with the gyroscope-compensated IMU, run with each compensation; seeds 200-201, 4/8/12 Hz, 0.3 mm"}
+                                   "setup": "AKF tuned with the gyroscope-compensated IMU, run with each compensation; tuning seeds 5000-5001, 4/8/12 Hz, 0.3 mm"}
     aas = {}
     for pg in ("1k", "120"):
         for a_ in (0.0, 1.0):
@@ -418,8 +487,9 @@ def stage_sensors(workers: int):
             aas[f"{pg}_imu_aa{int(a_)}"] = {"kfosc_internal_ratio_mean": float(np.mean(R)), "n": len(R)}
     out["imu_aa_check"] = {"summary": aas, "rows": aa, "setup": "internal kfosc (core mode 3), seeds 200-203, 4-12 Hz, 0.3 mm; "
                            "page sensor 1 kHz / 2 ms or 120 Hz / 10 ms (sensing.opt_rate / opt_delay overrides)"}
-    out["meta"] = _meta(EVIDENCE_CALC + "; " + EVIDENCE_SIM, {"open_loop": TUNE_SEEDS[0], "closed_loop": list(TEST_SEEDS[:2]),
-                                                              "imu_aa": list(TEST_SEEDS)}, {"elapsed_s": round(time.time() - t0, 1)})
+    out["meta"] = _meta(EVIDENCE_CALC + "; " + EVIDENCE_SIM, {"open_loop": TUNE_SEEDS[0], "design_studies_closed_loop": list(DS),
+                                                              "friction_control": list(TUNE_SEEDS[:2]), "imu_aa_check": list(TEST_SEEDS)},
+                        {"elapsed_s": round(time.time() - t0, 1)})
     _write("sensors.json", out)
     return out
 
@@ -434,7 +504,7 @@ def stage_context(workers: int, writers=None, f0s=None):
     from fusion import aieval as AE
     T = tuned()
     t0 = time.time()
-    base = dict(T["akf_1k"]["params"])
+    base = population(T)
     ctx = T.get("context")
     if ctx is None:
         # tune the template parameters on writers 100-105 (open loop), then store them
@@ -452,15 +522,24 @@ def stage_context(workers: int, writers=None, f0s=None):
         k = int(np.argmin([s["J"] for s in scores]))
         ctx = {"params": dict(base, **cands[k]), "template_params": cands[k], "score": scores[k],
                "all": [dict(c, **s) for c, s in zip(cands, scores)], "writers": list(fusion.AIGUIDE_TUNE_WRITERS[:3]), "f0": [5.0, 8.0],
-               "objective": "mean band residual ratio with AI-correct and AI-predicted templates + 0.5 max(0, wrong-full - no-template)"}
+               "base": "akf_robust" if "akf_robust_1k" in T else "akf",
+               "objective": "open loop on writers 100-102 at 5 and 8 Hz: mean over the AI-correct and AI-predicted templates of "
+                            "(residual ratio + 0.5 false correction on the tremor-free writing / RMS disturbance) "
+                            "+ 0.5 max(0, the same for the full-confidence wrong-letter template - no template)"}
         os.makedirs(TUNE_DIR, exist_ok=True)
         json.dump(ctx, open(os.path.join(TUNE_DIR, "context.json"), "w"), indent=1, default=float)
     cp = ctx["params"]
-    sp = {"akf": ("akf", base, SK_1K, None), "ctx_none": ("context", cp, SK_1K, None),
+    sp = {"akf": ("akf", dict(T["akf_1k"]["params"]), SK_1K, None), "ctx_none": ("context", cp, SK_1K, None),
           "ctx_oracle": ("context", cp, SK_1K, "oracle"), "ctx_ai_correct": ("context", cp, SK_1K, "ai_correct"),
           "ctx_ai_predicted": ("context", cp, SK_1K, "ai_predicted"),
           "ctx_wrong_letter_gated": ("context", cp, SK_1K, "wrong_letter_gated"),
           "ctx_wrong_letter_full": ("context", cp, SK_1K, "wrong_letter_full")}
+    if "akf_robust_1k" in T:
+        sp["akf_robust"] = ("akf", dict(T["akf_robust_1k"]["params"]), SK_1K, None)
+    if "wflc_1k" in T:
+        sp["wflc"] = ("wflc", dict(T["wflc_1k"]["params"]), SK_1K, None)
+    if "wflc_robust_1k" in T:
+        sp["wflc_robust"] = ("wflc", dict(T["wflc_robust_1k"]["params"]), SK_1K, None)
     from fusion import learned as L
     if os.path.exists(os.path.join(L.MODEL_DIR, "gru48_1k.pt")):
         sp["gru"] = ("learned", {"model": "gru48_1k", "lp_hz": 60.0}, SK_1K, None)
@@ -505,6 +584,8 @@ def stage_context(workers: int, writers=None, f0s=None):
                      "c_min": AE.C_MIN, "c_full": AE.C_FULL},
            "template_error": te, "template_error_spectrum_writer0": spec, "summary": summ, "path_by_f0": by_f0,
            "prediction_accuracy_mean": float(np.mean([o["prediction_accuracy"] for o in outs])),
+           "writing_band_um_mean": float(np.mean([o["writing_band_um"] for o in outs])),
+           "writing_band_um_by_writer": {str(w): float(np.mean([o["writing_band_um"] for o in outs if o["writer"] == w])) for w in writers},
            "scenarios": [{"writer": o["writer"], "f0": o["f0"], "rows": o["rows"], "template_error": o["template_error"]} for o in outs],
            "context_tuning": {k: v for k, v in ctx.items() if k != "all"}, "context_tuning_all": ctx.get("all")}
     _write("context.json", out)
@@ -518,10 +599,12 @@ def stage_learned(retrain: bool, workers: int, minutes: float):
     for name, kw in (("gru48_1k", dict(page="1k", tag="")),):
         p = os.path.join(L.MODEL_DIR, name + ".json")
         if retrain or not os.path.exists(p):
-            L.train(n_train=kw.get("n_train", 360), n_val=24, hidden=48, epochs=12, page=kw["page"], tag=kw["tag"],
+            L.train(n_train=kw.get("n_train", 400), n_val=24, hidden=48, epochs=12, page=kw["page"], tag=kw["tag"],
                     workers=workers, max_minutes=minutes)
         info[name] = json.load(open(p))
-    out = {"meta": _meta(EVIDENCE_SIM, {"train": f"{fusion.TRAIN_SEEDS_BASE}+i (tremor stream +1000)", "val": list(fusion.VAL_SEEDS)}),
+    out = {"meta": _meta(EVIDENCE_SIM, {"train": f"{fusion.TRAIN_SEEDS_BASE}+i sigma-lognormal, 16000+i glyph writers (i % 10 in 2, 5, 8); "
+                                                 "tremor stream seed + 1000",
+                                        "val": "9000-9011 and 9100-9111 sigma-lognormal, 19000+j glyph writers"}),
            "models": info}
     _write("learned.json", out)
     return out
@@ -530,8 +613,11 @@ def stage_learned(retrain: bool, workers: int, minutes: float):
 # ================================================================== budget
 def stage_budget():
     from fusion import budget as B
-    out = {"meta": _meta(EVIDENCE_CALC, None), "p1_default_page_1kHz": B.estimator_costs(page_rate=1000.0, rollback_samples=2.0),
-           "page_120Hz_10ms": B.estimator_costs(page_rate=120.0, rollback_samples=17.0)}
+    ctx = tuned().get("context") or {}
+    tr = float((ctx.get("params") or {}).get("t_rate", 500.0))
+    out = {"meta": _meta(EVIDENCE_CALC, None),
+           "p1_default_page_1kHz": B.estimator_costs(page_rate=1000.0, rollback_samples=4.0, tpl_rate=tr),
+           "page_120Hz_10ms": B.estimator_costs(page_rate=120.0, rollback_samples=19.0, tpl_rate=tr)}
     _write("budget.json", out)
     return out
 
@@ -543,7 +629,7 @@ def main(argv=None):
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--retrain", action="store_true")
     ap.add_argument("--retune", action="store_true", help="re-run the parameter searches on the tuning seeds first")
-    ap.add_argument("--train-minutes", type=float, default=45.0)
+    ap.add_argument("--train-minutes", type=float, default=40.0)
     ap.add_argument("--quick", action="store_true", help="grid on seed 200 at 6 and 10 Hz only (smoke run)")
     a = ap.parse_args(argv)
     t0 = time.time()

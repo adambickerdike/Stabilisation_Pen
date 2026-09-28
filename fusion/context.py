@@ -46,11 +46,12 @@ IBAX, IBAY, ITBX, ITBY = 14, 15, 16, 17
 CTX_KEYS = ("qj", "qt", "qh", "qb", "ra", "rp", "tau_decay", "w0_hz", "tau_w", "wmin_hz", "wmax_hz", "f_gate", "f_gate_w",
             "a_lo", "a_hi", "tau_amp", "horizon", "tau_auth", "acc_gd", "gap_reset", "g", "harm",
             "sigma_t", "q_tb", "tb0", "gate", "drop_um", "drop_s", "c_min", "t_rate", "win_back", "win_fwd", "use_tpl", "win_reacq",
-            "lp_hz", "tb_letter", "drop_gated_s", "tpl_mode", "xtrack", "v_xt")
+            "lp_hz", "tb_letter", "drop_gated_s", "tpl_mode", "xtrack", "v_xt", "cap_k", "v_slow", "tau_ref")
 CTX_DEFAULTS = dict(AKF_DEFAULTS)
 CTX_DEFAULTS.update({"sigma_t": 60e-6, "q_tb": (100e-6) ** 2, "tb0": 300e-6, "gate": 4.0, "drop_um": 250.0, "drop_s": 0.06,
                      "c_min": 0.5, "t_rate": 250.0, "win_back": 10.0, "win_fwd": 80.0, "use_tpl": 1.0, "win_reacq": 1500.0,
-                     "tb_letter": -1.0, "drop_gated_s": 0.0, "tpl_mode": 0.0, "xtrack": 0.0, "v_xt": 5e-3})
+                     "tb_letter": -1.0, "drop_gated_s": 0.0, "tpl_mode": 0.0, "xtrack": 0.0, "v_xt": 5e-3,
+                     "cap_k": 0.0, "v_slow": 3e-3, "tau_ref": 0.5})
 
 
 # ------------------------------------------------------------------ template geometry for the pen
@@ -168,6 +169,8 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
     sig_t = prm[22]; q_tb = prm[23]; tb0 = prm[24]; gate = prm[25]; drop_m = prm[26] * 1e-6; drop_s = prm[27]
     c_min = prm[28]; t_rate = prm[29]; wb = int(prm[30]); wf = int(prm[31]); use_tpl = prm[32] > 0.5; wre = int(prm[33])
     lp_hz = prm[34]; tb_letter = prm[35]; drop_gs = prm[36]; tpl_mode = int(prm[37]); xtrack = int(prm[38]); v_xt = prm[39]
+    cap_k = prm[40]; v_slow = prm[41]; tau_ref = prm[42]
+    a_ref = 0.0
     n = len(tick_t)
     Ts = tick_t[1] - tick_t[0]
     lb, la = _lp2_coef(lp_hz, Ts)
@@ -423,6 +426,16 @@ def _ctx_run(tick_t, acc_t, acc_av, acc, pos_t, pos_av, pos, pos_ok, con_av, con
                 d0 -= wgt * dl * tx; d1 -= wgt * dl * ty
         amp = math.sqrt(amp0 * amp0 + amp1 * amp1)
         amp_f = amp_f + (Ts / tau_amp) * (amp - amp_f)
+        if cap_k > 0.0 and started:
+            # tremor amplitude reference learned only while the intended motion is slow (as fusion.estimators.akf)
+            sp_i = math.hypot(x[IVX], x[IVY])
+            wv = max(0.0, 1.0 - sp_i / v_slow)
+            a_ref = a_ref + wv * (Ts / tau_ref) * (amp - a_ref)
+            mag = math.hypot(d0, d1)
+            lim = cap_k * a_ref
+            if mag > lim:
+                sc_ = lim / mag if mag > 1e-15 else 0.0
+                d0 *= sc_; d1 *= sc_
         target = gout
         if fgate > 0.0:
             target *= min(1.0, max(0.0, (w / TWO_PI - (fgate - 0.5 * fgw)) / max(fgw, 1e-9)))
