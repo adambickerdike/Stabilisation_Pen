@@ -1,0 +1,52 @@
+panel,series,category,ink error ratio (vs Rev H without correction)
+r_rot 0.3,"8-12 Hz, 1-2 mm tremor",nose (Rev H),0.648001
+r_rot 0.3,"8-12 Hz, 1-2 mm tremor",nose + passive weight 27.8 g,0.57697
+r_rot 0.3,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, feed-forward",0.609974
+r_rot 0.3,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, FF after grip calibration",0.563994
+r_rot 0.3,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, adaptive (AFC)",0.61078
+r_rot 0.3,"8-12 Hz, 1-2 mm tremor","reaction mass alone, perfect knowledge",0.659145
+r_rot 0.3,all translational conditions,nose (Rev H),0.831974
+r_rot 0.3,all translational conditions,nose + passive weight 27.8 g,0.77204
+r_rot 0.3,all translational conditions,"nose + reaction mass, feed-forward",0.774363
+r_rot 0.3,all translational conditions,"nose + reaction mass, FF after grip calibration",0.725532
+r_rot 0.3,all translational conditions,"nose + reaction mass, adaptive (AFC)",0.763089
+r_rot 0.3,all translational conditions,"reaction mass alone, perfect knowledge",0.643092
+r_rot 0.3,wrist tremor 8 Hz,nose (Rev H),0.820397
+r_rot 0.3,wrist tremor 8 Hz,nose + passive weight 27.8 g,0.805217
+r_rot 0.3,wrist tremor 8 Hz,"nose + reaction mass, feed-forward",0.729394
+r_rot 0.3,wrist tremor 8 Hz,"nose + reaction mass, FF after grip calibration",0.675403
+r_rot 0.3,wrist tremor 8 Hz,"nose + reaction mass, adaptive (AFC)",0.68636
+r_rot 0.5,"8-12 Hz, 1-2 mm tremor",nose (Rev H),0.705353
+r_rot 0.5,"8-12 Hz, 1-2 mm tremor",nose + passive weight 27.8 g,0.631613
+r_rot 0.5,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, feed-forward",0.572949
+r_rot 0.5,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, FF after grip calibration",0.572949
+r_rot 0.5,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, adaptive (AFC)",0.61649
+r_rot 0.5,"8-12 Hz, 1-2 mm tremor","reaction mass alone, perfect knowledge",0.659037
+r_rot 0.5,all translational conditions,nose (Rev H),0.870114
+r_rot 0.5,all translational conditions,nose + passive weight 27.8 g,0.796637
+r_rot 0.5,all translational conditions,"nose + reaction mass, feed-forward",0.740845
+r_rot 0.5,all translational conditions,"nose + reaction mass, FF after grip calibration",0.740845
+r_rot 0.5,all translational conditions,"nose + reaction mass, adaptive (AFC)",0.76373
+r_rot 0.5,all translational conditions,"reaction mass alone, perfect knowledge",0.623533
+r_rot 0.5,wrist tremor 8 Hz,nose (Rev H),0.85697
+r_rot 0.5,wrist tremor 8 Hz,nose + passive weight 27.8 g,0.728503
+r_rot 0.5,wrist tremor 8 Hz,"nose + reaction mass, feed-forward",0.681456
+r_rot 0.5,wrist tremor 8 Hz,"nose + reaction mass, FF after grip calibration",0.681456
+r_rot 0.5,wrist tremor 8 Hz,"nose + reaction mass, adaptive (AFC)",0.692906
+r_rot 0.7,"8-12 Hz, 1-2 mm tremor",nose (Rev H),0.759865
+r_rot 0.7,"8-12 Hz, 1-2 mm tremor",nose + passive weight 27.8 g,0.71019
+r_rot 0.7,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, feed-forward",0.618281
+r_rot 0.7,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, FF after grip calibration",0.639455
+r_rot 0.7,"8-12 Hz, 1-2 mm tremor","nose + reaction mass, adaptive (AFC)",0.651983
+r_rot 0.7,"8-12 Hz, 1-2 mm tremor","reaction mass alone, perfect knowledge",0.766314
+r_rot 0.7,all translational conditions,nose (Rev H),0.895156
+r_rot 0.7,all translational conditions,nose + passive weight 27.8 g,0.835649
+r_rot 0.7,all translational conditions,"nose + reaction mass, feed-forward",0.767473
+r_rot 0.7,all translational conditions,"nose + reaction mass, FF after grip calibration",0.777869
+r_rot 0.7,all translational conditions,"nose + reaction mass, adaptive (AFC)",0.792978
+r_rot 0.7,all translational conditions,"reaction mass alone, perfect knowledge",0.664644
+r_rot 0.7,wrist tremor 8 Hz,nose (Rev H),0.877181
+r_rot 0.7,wrist tremor 8 Hz,nose + passive weight 27.8 g,0.602516
+r_rot 0.7,wrist tremor 8 Hz,"nose + reaction mass, feed-forward",0.647059
+r_rot 0.7,wrist tremor 8 Hz,"nose + reaction mass, FF after grip calibration",0.67749
+r_rot 0.7,wrist tremor 8 Hz,"nose + reaction mass, adaptive (AFC)",0.71153

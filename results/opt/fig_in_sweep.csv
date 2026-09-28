@@ -1,0 +1,31 @@
+panel,series,usable tip travel radius (mm),"ink error ratio (mean, 6-12 Hz, 1-2 mm)"
+perfect knowledge,servo 30 Hz,1,0.460263
+perfect knowledge,servo 30 Hz,1.5,0.411006
+perfect knowledge,servo 30 Hz,2,0.401294
+perfect knowledge,servo 30 Hz,3,0.400193
+perfect knowledge,servo 30 Hz,4,0.399315
+perfect knowledge,servo 80 Hz,1,0.336713
+perfect knowledge,servo 80 Hz,1.5,0.221611
+perfect knowledge,servo 80 Hz,2,0.179505
+perfect knowledge,servo 80 Hz,3,0.162153
+perfect knowledge,servo 80 Hz,4,0.161173
+perfect knowledge,servo 150 Hz,1,0.315026
+perfect knowledge,servo 150 Hz,1.5,0.178482
+perfect knowledge,servo 150 Hz,2,0.122466
+perfect knowledge,servo 150 Hz,3,0.0964308
+perfect knowledge,servo 150 Hz,4,0.0948792
+causal (Rev H tracker),servo 30 Hz,1,0.875455
+causal (Rev H tracker),servo 30 Hz,1.5,0.87389
+causal (Rev H tracker),servo 30 Hz,2,0.872949
+causal (Rev H tracker),servo 30 Hz,3,0.869963
+causal (Rev H tracker),servo 30 Hz,4,0.866705
+causal (Rev H tracker),servo 80 Hz,1,0.805921
+causal (Rev H tracker),servo 80 Hz,1.5,0.793213
+causal (Rev H tracker),servo 80 Hz,2,0.790043
+causal (Rev H tracker),servo 80 Hz,3,0.787023
+causal (Rev H tracker),servo 80 Hz,4,0.784345
+causal (Rev H tracker),servo 150 Hz,1,0.794971
+causal (Rev H tracker),servo 150 Hz,1.5,0.7797
+causal (Rev H tracker),servo 150 Hz,2,0.776018
+causal (Rev H tracker),servo 150 Hz,3,0.773247
+causal (Rev H tracker),servo 150 Hz,4,0.770739

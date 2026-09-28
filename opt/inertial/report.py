@@ -83,12 +83,14 @@ def write_tip_params(final=True, addon_decision: Optional[Dict] = None, calib: O
         res = {"B_oracle_ratio_range": [min(B_or), max(B_or)],
                "B_revh_tracker_ratio_8_12Hz_1_2mm": [min(r["akf_ratio"] for r in rv if r["f0"] >= 8 and r["amp_mm"] >= 1),
                                                     max(r["akf_ratio"] for r in rv if r["f0"] >= 8 and r["amp_mm"] >= 1)],
-               "A_oracle_ratio_range": [min(r["oracle"]["ratio"] for r in A), max(r["oracle"]["ratio"] for r in A)],
+               "A_oracle_ratio_range": summarise_arch(grid)["ranges"]["A_oracle"],
                "A_P_cu_with_bias_W": float(np.mean([r["akf"]["P_cu_W"] for r in A])),
                "A_P_cu_without_bias_W": float(np.mean([r["akf"]["P_cu_no_bias_W"] for r in A])),
                "A_writing_force_std_N": float(np.mean([r["akf"]["N_std_N"] for r in A])),
                "B_tip_force_rms_N": np.mean(Fr, axis=0).tolist(), "B_power_W": pw,
                "B_P_cu_W_mean": float(np.mean([r["akf"]["P_cu_W"] for tag in ("revh",) for r in grid["rows"][tag]])),
+               "A_design_point": grid["A"]["design"],
+               "note": "ranges are means over test seeds per condition; B over 0.1-2 mm, 4-12 Hz and the three splits, A at r_rot 0.5 and 0.3-2 mm",
                "label": "SIM (model H1, test seeds 200-203, first use; see results/opt/inertial_opt.json)"}
     cell = CT.CELLS[d.cell]
     out = {
@@ -424,9 +426,9 @@ def make_figures(S: Dict, akf_params=None) -> List[str]:
                                  "all translational conditions": {k: b["all_translational"][v] for k, v in cats.items()},
                                  "wrist tremor 8 Hz": {k: b["wrist_8Hz"][v] for k, v in cats.items() if v != "ilc"}}
     files.append(FG.dots_panels("fig_in_addon", "Rear-cap inertial module on top of the active nose (mean ink error ratio)", panels,
-                                "ink error ratio (vs Rev H without correction)", xlim=(0.2, 1.1),
-                                note="SIM, test seeds 200-203. Reaction mass: 19.8 g tungsten, +/-2.75 mm, 5 Hz centring, +8 g coils/frame. "
-                                     "Passive weight: the same 27.8 g fixed in the cap."))
+                                "ink error ratio", xlim=(0.2, 1.1),
+                                note="SIM, test seeds 200-203. Ratio = ink error / ink error of Rev H without the module and without correction (lower is better). "
+                                     "Reaction mass: 19.8 g tungsten, +/-2.75 mm, 5 Hz centring, +8 g coils/frame. Passive weight: the same 27.8 g fixed in the cap."))
     # 5. sweep
     sw = S["sweep"]["rows"]
     panels = {}
@@ -459,7 +461,7 @@ def make_figures(S: Dict, akf_params=None) -> List[str]:
                                       {"chosen (mass weight 5)": (ch["out"]["mass"] * 1e3, ch["out"]["P"] * 1e3)},
                                       "moving + magnet mass of the actuator set (g)", "copper loss for the design tip force (mW)",
                                       note="CALC: differentiable magnet-coil model (opt/inertial/adjoint.py), gradients by autograd checked by central "
-                                           "differences; one point per mass weight 0.5-20."))
+                                           "differences; one point per mass weight 0.5-20.", muted_label="optimum for another mass weight"))
     # 8. neural training curve
     if S.get("neural"):
         hv = S["neural"]["history_val"]
@@ -505,7 +507,7 @@ def time_example(akf_params=None, seed=200, f0=10.0, amp=1.0e-3, t0=2.0, t1=3.0)
            "nose + rear reaction mass": (rnR.ink()[k, 0] - refR.ink()[k, 0]) * 1e3}
     return FG.time_series("fig_in_time", f"Ink deviation from the tremor-free line (page x), {f0:g} Hz / {amp * 1e3:g} mm hand tremor",
                           t[k], ser, "deviation (mm)",
-                          note=f"SIM, model H1, test seed {seed}, r_rot 0.5, Rev H tracker setting (causal). Pen-down gaps show as flat stretches.")
+                          note=f"SIM, model H1, test seed {seed}, r_rot 0.5, Rev H tracker setting (causal); 1 s of a 5 s run.")
 
 
 # ================================================================== bill of materials and firmware sketch

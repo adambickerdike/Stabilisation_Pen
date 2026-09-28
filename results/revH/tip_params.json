@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "SIMULATION + CALCULATION (Rev H active nose, model H1; nothing measured)",
-    "generated_utc": "2026-09-28T17:04:21+00:00",
-    "git_revision": "8d33233",
+    "generated_utc": "2026-09-28T17:47:37+00:00",
+    "git_revision": "cf9f4d8-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "-c",
+    "command": "run_study.py --stages report",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": {
@@ -26,7 +26,7 @@
     "doc": "docs/opt_inertial.md"
   },
   "architecture": "B",
-  "architecture_note": "B = a skid ring on the FIXED front sleeve carries the writing force; the refill carrier (the moving nose) tilts on a 2-axis flexure gimbal so the ball moves up to +/-3 mm; the refill slides axially on a soft constant-force spring so the ball stays on the paper. Chosen over A (rigid nose carrying the load) by simulation: A's ceiling with perfect knowledge is 0.15-0.77 of the ink error against 0.08-0.24 for B, A needs 0.41 W of copper loss with a bias spring (1.9 W without) against about 0.004 W for B, and a rigid nose must press the tip into the paper for tilt-plane corrections (0.38 N rms writing-force change).",
+  "architecture_note": "B = a skid ring on the FIXED front sleeve carries the writing force; the refill carrier (the moving nose) tilts on a 2-axis flexure gimbal so the ball moves up to +/-3 mm; the refill slides axially on a soft constant-force spring so the ball stays on the paper. Chosen over A (rigid nose carrying the load) by simulation: A's ceiling with perfect knowledge is 0.15-0.79 of the ink error against 0.09-0.24 for B, A needs 0.41 W of copper loss with a bias spring (1.9 W without) against about 0.002 W for B, and a rigid nose must press the tip into the paper for tilt-plane corrections (0.38 N rms writing-force change).",
   "results_summary": {
     "B_oracle_ratio_range": [
       0.08647215247826937,
@@ -51,6 +51,7 @@
       "P_cu_W": 0.004091286733440569,
       "P_total_W": 0.08109128673344057
     },
+    "B_P_cu_W_mean": 0.0017989544008937095,
     "label": "SIM (model H1, test seeds 200-203, first use; see results/opt/inertial_opt.json)"
   },
   "tip_travel_mm": {
@@ -162,11 +163,240 @@
     "label": "CALC from assumed parts +10 % wiring"
   },
   "inertial_addon": {
-    "status": "evaluated in docs/opt_inertial.md; see layout.json 'optional' components"
+    "include": true,
+    "as": "optional rear-cap module (Rev H standard build without it)",
+    "module": "Rear-cap reaction mass: WHA 19.8 g (d 10 x 14.0 mm), +/-2.8 mm, 2 axes, Km 0.9 N/sqrt(W)",
+    "added_mass_g": 27.8,
+    "pen_mass_with_module_g": 102.8,
+    "pen_mass_with_module_and_10440_g": 91.8,
+    "power_W": {
+      "copper_max_W": 0.040988300846539746,
+      "module_total_max_W": 0.05298830084653974,
+      "note": "copper loss max over all test conditions + 0.012 W driver/Hall (ASSUMPTION)"
+    },
+    "gain_band_8_12Hz_1_2mm": {
+      "0.3": {
+        "mean": 0.05359916176140829,
+        "seed_min": 0.007523796910896108,
+        "seed_max": 0.11171709286181601,
+        "frac_conditions_worse": 0.16666666666666666
+      },
+      "0.5": {
+        "mean": 0.18794405779738144,
+        "seed_min": 0.17099012375846614,
+        "seed_max": 0.20874110289311099,
+        "frac_conditions_worse": 0.041666666666666664
+      },
+      "0.7": {
+        "mean": 0.18414614856165817,
+        "seed_min": 0.10114212908991721,
+        "seed_max": 0.2452077483703247,
+        "frac_conditions_worse": 0.08333333333333333
+      }
+    },
+    "gain_with_grip_calibration": {
+      "0.3": {
+        "mean": 0.1269887623259479,
+        "seed_min": 0.09103183635132867,
+        "seed_max": 0.1538507457261515,
+        "frac_conditions_worse": 0.0
+      },
+      "0.5": {
+        "mean": 0.18794405779738144,
+        "seed_min": 0.17099012375846614,
+        "seed_max": 0.20874110289311099,
+        "frac_conditions_worse": 0.041666666666666664
+      },
+      "0.7": {
+        "mean": 0.1555490965508042,
+        "seed_min": 0.11483180053983567,
+        "seed_max": 0.18061910201299705,
+        "frac_conditions_worse": 0.08333333333333333
+      }
+    },
+    "passive_weight_gain": {
+      "0.3": {
+        "mean": 0.11483232688912834,
+        "seed_min": 0.07192989226323487,
+        "seed_max": 0.171568523706352,
+        "frac_conditions_worse": 0.16666666666666666
+      },
+      "0.5": {
+        "mean": 0.10595509454536545,
+        "seed_min": 0.05794270810733595,
+        "seed_max": 0.17015588517985983,
+        "frac_conditions_worse": 0.3333333333333333
+      },
+      "0.7": {
+        "mean": 0.06159195539644448,
+        "seed_min": 0.01962411356401798,
+        "seed_max": 0.08614330084543993,
+        "frac_conditions_worse": 0.3333333333333333
+      }
+    },
+    "criteria": {
+      "measurable": true,
+      "mass_ok_30g": true,
+      "power_ok_0.5W": true,
+      "rule": "as used here (set after the grid, not pre-declared): >= 10 % further reduction of the ink error in the\n    8-12 Hz, 1-2 mm band on every test seed at r_rot 0.5 and 0.7, and no split where it is worse on average."
+    },
+    "label": "SIM + CALC"
   },
   "tracker": {
     "default": "results/opt/tracker_models/akf_ship.json (shipped)",
     "rev_h_setting": "results/opt/inertial_tracker_revh.json",
-    "note": "the Rev H setting opens the frequency gate and the amplitude cap for the larger travel; chosen on training seeds by a pre-declared false-correction rule"
+    "note": "the Rev H setting opens the frequency gate and the amplitude cap for the larger travel; chosen on training seeds by a pre-declared false-correction rule",
+    "per_user_band": {
+      "search_band_x_f_cal": [
+        0.75,
+        1.3
+      ],
+      "how": "20-30 s calibration at first use sets f_cal; the frequency search is limited to the band (opt/inertial/run_study.calibrated_params)",
+      "result_r_rot_0.5": [
+        {
+          "r_rot": 0.5,
+          "amp_mm": 0.3,
+          "f0": 4.0,
+          "causal": 1.015589455847694,
+          "f_est": 5.133782027734087,
+          "P_cu_W": 0.0043564872016548534
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 0.3,
+          "f0": 6.0,
+          "causal": 0.982810108297333,
+          "f_est": 6.282297744916603,
+          "P_cu_W": 0.004275947373490737
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 0.3,
+          "f0": 8.0,
+          "causal": 0.9540619854278233,
+          "f_est": 8.088949524348669,
+          "P_cu_W": 0.004335886593057833
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 0.3,
+          "f0": 10.0,
+          "causal": 0.9318009849788406,
+          "f_est": 10.05010571518283,
+          "P_cu_W": 0.004276103727527875
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 0.3,
+          "f0": 12.0,
+          "causal": 0.9446480694197429,
+          "f_est": 12.04500770019201,
+          "P_cu_W": 0.004165518732243723
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 4.0,
+          "causal": 0.9977148315933603,
+          "f_est": 4.643130653560952,
+          "P_cu_W": 0.004016610227451495
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 6.0,
+          "causal": 0.9392125676707266,
+          "f_est": 6.035876413020149,
+          "P_cu_W": 0.00401559251688352
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 8.0,
+          "causal": 0.8116578113240698,
+          "f_est": 8.030757567416504,
+          "P_cu_W": 0.004085897958716016
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 10.0,
+          "causal": 0.7556404023972385,
+          "f_est": 10.032674132652376,
+          "P_cu_W": 0.0036482844851911497
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 1.0,
+          "f0": 12.0,
+          "causal": 0.744447428533504,
+          "f_est": 12.031427298806731,
+          "P_cu_W": 0.0031988135331179014
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 2.0,
+          "f0": 4.0,
+          "causal": 0.9924982736992237,
+          "f_est": 4.448402757281013,
+          "P_cu_W": 0.003911780012466321
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 2.0,
+          "f0": 6.0,
+          "causal": 0.8764661734270199,
+          "f_est": 6.024234849684855,
+          "P_cu_W": 0.003974923549132781
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 2.0,
+          "f0": 8.0,
+          "causal": 0.7104082023107318,
+          "f_est": 8.030019948349473,
+          "P_cu_W": 0.00393431410764806
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 2.0,
+          "f0": 10.0,
+          "causal": 0.6238806958329618,
+          "f_est": 10.028689774133836,
+          "P_cu_W": 0.0030596998408583074
+        },
+        {
+          "r_rot": 0.5,
+          "amp_mm": 2.0,
+          "f0": 12.0,
+          "causal": 0.6485046527328586,
+          "f_est": 12.026575175070723,
+          "P_cu_W": 0.0032243575253165496
+        }
+      ],
+      "distortion_um": {
+        "4.40": {
+          "lognormal": 35.28785758913122,
+          "glyph": 5.458711656308432
+        },
+        "6.60": {
+          "lognormal": 16.403656772023986,
+          "glyph": 6.365533988001464
+        },
+        "8.80": {
+          "lognormal": 7.722087158633599,
+          "glyph": 7.620636999960448
+        },
+        "11.00": {
+          "lognormal": 3.323084437333614,
+          "glyph": 14.721395651149226
+        },
+        "13.20": {
+          "lognormal": 1.4350618949091232,
+          "glyph": 17.872100336601928
+        }
+      },
+      "label": "SIM (test seeds, +10 % calibration error)"
+    }
   }
 }

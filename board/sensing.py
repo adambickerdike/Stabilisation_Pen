@@ -108,6 +108,20 @@ def localise_mc(offsets_mm=((0, 0), (6, 0), (0, 10), (-12, 4), (8, -8), (15, 0))
             if draw == 0:
                 fit_bias = {"magnet_xy_mm": float(np.hypot(*e)), "ball_xy_mm": float(np.hypot(*eb)),
                             "az_deg": float(math.degrees(az_fit - az0))}
+                # the same noise-free fit with the exact disc model (what a calibrated table or the
+                # closed-form cylinder field would give on the MCU)
+                def resid_exact(p):
+                    pm = M.PenMagnet(d_mm=pen.d_mm, h_mm=pen.h_mm, Br_T=pen.Br_T, alt_deg=math.degrees(p[3]),
+                                     az_deg=math.degrees(p[4]), height_mm=p[2], behind_mm=pen.behind_mm, mesh=10)
+                    model = M.pen_field_at(sens, pm, p[:3]) + p[5] * Bh
+                    return ((model - meas) / sig).ravel()
+                q0 = np.r_[sol.x[:5], sol.x[6]]
+                sol2 = least_squares(resid_exact, q0, method="lm", xtol=1e-10, ftol=1e-10, max_nfev=200)
+                u2 = _unit(sol2.x[3], sol2.x[4])
+                az2 = math.atan2(u2[1], u2[0])
+                ball2 = sol2.x[:2] - lever * np.array([math.cos(az2), math.sin(az2)])
+                fit_bias["exact_model_magnet_xy_mm"] = float(np.hypot(*(sol2.x[:2] - c_true[:2])))
+                fit_bias["exact_model_ball_xy_mm"] = float(np.hypot(*(ball2 - ball_true)))
             else:
                 errs.append(e)
                 errs_ball.append(eb)
@@ -134,6 +148,8 @@ def localise_mc(offsets_mm=((0, 0), (6, 0), (0, 10), (-12, 4), (8, -8), (15, 0))
             "ball_noise_rms_mm_median": float(np.median([r["ball_xy_noise_rms_mm"] for r in rows])),
             "ball_total_rms_mm_max": float(max(r["ball_xy_total_rms_mm"] for r in rows)),
             "dipole_bias_ball_mm_max": float(max(r["dipole_model_bias"]["ball_xy_mm"] for r in rows)),
+            "exact_model_bias_ball_mm_max": float(max(r["dipole_model_bias"]["exact_model_ball_xy_mm"] for r in rows)),
+            "ball_noise_rms_mm_max": float(max(r["ball_xy_noise_rms_mm"] for r in rows)),
         },
         "label": "CALC (Monte Carlo; MFR noise AMF-95; calibration residual and scale error ASSUMPTION)",
     }

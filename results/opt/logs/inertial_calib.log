@@ -1,3 +1,7 @@
 == stage calib
 [   43.7 s] calib training, error x1.0 (60 rows)
 [   84.5 s] calib training, error x1.1 (120 rows)
+[  126.1 s] calib test r_rot 0.3 (60 rows)
+[  179.5 s] calib test r_rot 0.5 (120 rows)
+[  220.9 s] calib test r_rot 0.7 (180 rows)
+== stage calib done in 221.0 s

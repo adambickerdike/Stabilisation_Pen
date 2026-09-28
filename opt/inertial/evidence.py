@@ -236,7 +236,7 @@ def study_rows(out) -> List[Dict]:
             f"copper {_f(1e3 * ch[0]['out']['P'], 1)} mW for the design force, actuator mass {_f(1e3 * ch[0]['out']['mass'], 1)} g" if ch else "see file"),
         units_and_conditions="CALC; NdFeB N45 from the AMF-28 grade table (Br 1.33 T), copper (AMF-29); leakage, fill and end-turn factors ASSUMPTION", locator="adjoint_nose.front",
         limitations="Lumped magnetic model (no FEM); thermal limits assumed", relevance_to_design="Actuator dimensions in layout.json",
-        transferability="low", transferability_reason="Model-level sizing; verify by FEM and a coil bench test", design_implication="Build the flat coils and magnets to the chosen sizes; measure Km first (EXP-H05)",
+        transferability="low", transferability_reason="Model-level sizing; verify by FEM and a coil bench test", design_implication="Build the flat coils and magnets to the chosen sizes; measure Km first (EXP-I05, proposed)",
         stream="ACT", **common))
     sw = out.get("sweep") or {"rows": []}
     s80 = {r["travel_mm"]: r for r in sw["rows"] if r["servo_hz"] == 80.0}
@@ -289,7 +289,7 @@ def study_rows(out) -> List[Dict]:
                 ". False correction with the band set for " + ", ".join(f"{k} Hz: {_f(v['lognormal'], 1)} / {_f(v['glyph'], 1)} um" for k, v in cb["distortion"].items())),
             units_and_conditions="ink error ratio; um lognormal / glyph", locator="calibrated_band", limitations="Calibration accuracy assumed (+10 %); tremor frequency drift within a session not modelled",
             relevance_to_design="Parkinson's rest and action tremor lie at 4-7 Hz", transferability="medium", transferability_reason="Simulated tremor with a fixed frequency",
-            design_implication="Add a first-use calibration of the tremor frequency and limit the tracker's search band; test in EXP-H04", stream="OPT", **common))
+            design_implication="Offer the calibrated band only for tremor at about 5.5-7 Hz (below that it moves tremor-free writing by 35 um); test on recorded tremor (EXP-I07, proposed, with EXP-E01)", stream="OPT", **common))
     tiers = out.get("tiers_T0_T2")
     if tiers:
         rows.append(_row(id="ACT-68", topic="Slim tiers T0-T2 with a cap reaction mass: linear bounds (this study)",

@@ -135,14 +135,14 @@ def dots_panels(name, title, panels: Dict[str, Dict[str, Dict[str, float]]], xla
     return _save(fig, name, ["panel", "series", "category", xlabel], rows)
 
 
-def scatter_front(name, title, pts, highlight: Dict[str, tuple], xlabel, ylabel, note=None):
+def scatter_front(name, title, pts, highlight: Dict[str, tuple], xlabel, ylabel, note=None, muted_label="evaluations"):
     """pts: list of (x, y) evaluations (muted); highlight: {label: (x, y)} in palette order with direct labels."""
     _style()
     fig, ax = plt.subplots(figsize=(4.6, 3.3))
     _grid(ax)
     pts = np.asarray(pts)
-    ax.scatter(pts[:, 0], pts[:, 1], s=16, color="#9aa4ae", label="evaluations", zorder=2)
-    rows = [["evaluation", x, y] for x, y in pts]
+    ax.scatter(pts[:, 0], pts[:, 1], s=16, color="#9aa4ae", label=muted_label, zorder=2)
+    rows = [[muted_label, x, y] for x, y in pts]
     for i, (k, (x, y)) in enumerate(highlight.items()):
         ax.scatter([x], [y], s=60, color=PAL[i], label=k, edgecolor="white", linewidth=1.0, zorder=4)
         ax.annotate(k, (x, y), xytext=(6, 4), textcoords="offset points", fontsize=7.5, color=INK)

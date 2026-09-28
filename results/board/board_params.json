@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "CALCULATION + SIMULATION (magpylib 5.2 magnetostatics, linear dynamics, plate theory, closed-loop guidance simulation on synthetic paths with the HAP-26 hand model); PROPOSED DESIGN; nothing built or measured",
-    "generated_utc": "2026-09-28T17:42:29+00:00",
-    "git_revision": "6b3095c-dirty",
+    "generated_utc": "2026-09-28T17:49:58+00:00",
+    "git_revision": "cf9f4d8-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py",
@@ -50,9 +50,9 @@
     "A5": 2.7
   },
   "max_lateral_force_N": {
-    "at_design_gap_isotropic": 1.2039772979820171,
+    "at_design_gap_isotropic": 1.204169473043423,
     "at_design_gap_best_direction": 1.6639267227386514,
-    "A5_gap_2p7mm_isotropic": 1.5530625745287254,
+    "A5_gap_2p7mm_isotropic": 1.617824033935743,
     "label": "CALC magpylib (physical limit with the head fully raised)"
   },
   "software_force_cap_N": 0.4,
@@ -63,17 +63,17 @@
   "guidance_level_by_zlift": [
     {
       "gap_mm": 3.7,
-      "lateral_isotropic_N": 1.2039772979820171,
-      "normal_pull_at_zero_lateral_N": 2.7540978344949787
+      "lateral_isotropic_N": 1.204169473043423,
+      "normal_pull_at_zero_lateral_N": 2.7710113885369005
     },
     {
       "gap_mm": 4.0,
       "lateral_isotropic_N": 1.1052691706952198,
-      "normal_pull_at_zero_lateral_N": 2.5536861143010143
+      "normal_pull_at_zero_lateral_N": 2.5696751740367305
     },
     {
       "gap_mm": 5.0,
-      "lateral_isotropic_N": 0.8410216847145119,
+      "lateral_isotropic_N": 0.8437143186520641,
       "normal_pull_at_zero_lateral_N": 1.9991144218580448
     },
     {
@@ -84,27 +84,27 @@
     {
       "gap_mm": 8.0,
       "lateral_isotropic_N": 0.4106095565256807,
-      "normal_pull_at_zero_lateral_N": 1.018782024981598
+      "normal_pull_at_zero_lateral_N": 1.0100318222130122
     },
     {
       "gap_mm": 11.0,
-      "lateral_isotropic_N": 0.22175910682008787,
+      "lateral_isotropic_N": 0.22217051575523272,
       "normal_pull_at_zero_lateral_N": 0.5562257452477453
     },
     {
       "gap_mm": 15.7,
-      "lateral_isotropic_N": 0.09905006238092438,
-      "normal_pull_at_zero_lateral_N": 0.2500148636829196
+      "lateral_isotropic_N": 0.0990822453114934,
+      "normal_pull_at_zero_lateral_N": 0.25212270669038134
     },
     {
       "gap_mm": 20.0,
-      "lateral_isotropic_N": 0.05319032161109873,
-      "normal_pull_at_zero_lateral_N": 0.1365055158538983
+      "lateral_isotropic_N": 0.05239724655043393,
+      "normal_pull_at_zero_lateral_N": 0.13574394209098226
     }
   ],
   "normal_pull_N": {
     "operating": "about 2.2-2.5 x the lateral capability set by the Z-lift (e.g. ~1.0 N while a 0.4 N capability is selected); ~0.25 N with the head retracted",
-    "at_design_gap_fully_raised": 2.7540978344949787,
+    "at_design_gap_fully_raised": 2.7710113885369005,
     "bounded_normal_option": {
       "abs_Fz_le_0.3N": {
         "isotropic_N": 0.7073696101542428,
@@ -129,8 +129,8 @@
     "label": "CALC"
   },
   "offset_to_force_slope_N_per_mm": {
-    "at_design_gap": 0.3479829466662485,
-    "at_0.4N_capability": 0.1070380953409411
+    "at_design_gap": 0.3493323824570851,
+    "at_0.4N_capability": 0.10502834851096396
   },
   "force_bandwidth_Hz": {
     "value": 24.9,
@@ -186,78 +186,78 @@
   "force_vs_gap_table": [
     {
       "gap_mm": 0.5,
-      "lateral_isotropic_N": 2.6616635251018104,
+      "lateral_isotropic_N": 3.366035910184686,
       "lateral_best_direction_N": 3.978581636689041,
       "normal_pull_at_zero_lateral_N": 6.5367100340918505,
       "slope_at_zero_N_per_mm": 0.9195274342589308
     },
     {
       "gap_mm": 1.0,
-      "lateral_isotropic_N": 2.3404776760765107,
-      "lateral_best_direction_N": 3.4305658564340447,
-      "normal_pull_at_zero_lateral_N": 5.679116274724759,
-      "slope_at_zero_N_per_mm": 0.7950267735697761
+      "lateral_isotropic_N": 2.8181073098732847,
+      "lateral_best_direction_N": 3.4475844438578087,
+      "normal_pull_at_zero_lateral_N": 5.6311662321638805,
+      "slope_at_zero_N_per_mm": 0.7518470748070236
     },
     {
       "gap_mm": 1.5,
-      "lateral_isotropic_N": 2.060514018005063,
-      "lateral_best_direction_N": 2.976057425514056,
-      "normal_pull_at_zero_lateral_N": 4.939881316394582,
-      "slope_at_zero_N_per_mm": 0.6822398512842193
+      "lateral_isotropic_N": 2.378975174151304,
+      "lateral_best_direction_N": 2.9967520012387308,
+      "normal_pull_at_zero_lateral_N": 4.925980127380024,
+      "slope_at_zero_N_per_mm": 0.6581153932304916
     },
     {
       "gap_mm": 2.0,
-      "lateral_isotropic_N": 1.9380245553939761,
-      "lateral_best_direction_N": 2.6011270429532365,
-      "normal_pull_at_zero_lateral_N": 4.306038445877886,
-      "slope_at_zero_N_per_mm": 0.5841571759137858
+      "lateral_isotropic_N": 2.0138975971357276,
+      "lateral_best_direction_N": 2.61001546042296,
+      "normal_pull_at_zero_lateral_N": 4.310633286557934,
+      "slope_at_zero_N_per_mm": 0.5718418870182183
     },
     {
       "gap_mm": 2.2,
-      "lateral_isotropic_N": 1.835996710753311,
-      "lateral_best_direction_N": 2.4654661602835244,
-      "normal_pull_at_zero_lateral_N": 4.0787639055737515,
-      "slope_at_zero_N_per_mm": 0.549010843501493
+      "lateral_isotropic_N": 1.8899841929711727,
+      "lateral_best_direction_N": 2.47127366433474,
+      "normal_pull_at_zero_lateral_N": 4.087833472744162,
+      "slope_at_zero_N_per_mm": 0.5399604088150665
     },
     {
       "gap_mm": 2.5,
-      "lateral_isotropic_N": 1.572610817976067,
-      "lateral_best_direction_N": 2.2760827931748646,
-      "normal_pull_at_zero_lateral_N": 3.7631692803090515,
-      "slope_at_zero_N_per_mm": 0.5004010709337348
+      "lateral_isotropic_N": 1.7202901230335177,
+      "lateral_best_direction_N": 2.2785635682720695,
+      "normal_pull_at_zero_lateral_N": 3.776750593486847,
+      "slope_at_zero_N_per_mm": 0.49509556907480246
     },
     {
       "gap_mm": 2.7,
-      "lateral_isotropic_N": 1.5530625745287254,
-      "lateral_best_direction_N": 2.1586667072650463,
-      "normal_pull_at_zero_lateral_N": 3.5684137344796016,
-      "slope_at_zero_N_per_mm": 0.47057215198325875
+      "lateral_isotropic_N": 1.617824033935743,
+      "lateral_best_direction_N": 2.159619529333482,
+      "normal_pull_at_zero_lateral_N": 3.5838658594566666,
+      "slope_at_zero_N_per_mm": 0.4671474036812635
     },
     {
       "gap_mm": 3.0,
-      "lateral_isotropic_N": 1.4704093267652154,
+      "lateral_isotropic_N": 1.4749290833355355,
       "lateral_best_direction_N": 1.9948588721230633,
-      "normal_pull_at_zero_lateral_N": 3.2977592998014345,
-      "slope_at_zero_N_per_mm": 0.4294008062862775
+      "normal_pull_at_zero_lateral_N": 3.314758388734633,
+      "slope_at_zero_N_per_mm": 0.42808508104829207
     },
     {
       "gap_mm": 3.7,
-      "lateral_isotropic_N": 1.2039772979820171,
+      "lateral_isotropic_N": 1.204169473043423,
       "lateral_best_direction_N": 1.6639267227386514,
-      "normal_pull_at_zero_lateral_N": 2.7540978344949787,
-      "slope_at_zero_N_per_mm": 0.3479829466662485
+      "normal_pull_at_zero_lateral_N": 2.7710113885369005,
+      "slope_at_zero_N_per_mm": 0.3493323824570851
     },
     {
       "gap_mm": 4.0,
       "lateral_isotropic_N": 1.1052691706952198,
       "lateral_best_direction_N": 1.5414289417686353,
-      "normal_pull_at_zero_lateral_N": 2.5536861143010143,
-      "slope_at_zero_N_per_mm": 0.31849803320965986
+      "normal_pull_at_zero_lateral_N": 2.5696751740367305,
+      "slope_at_zero_N_per_mm": 0.320373549401635
     },
     {
       "gap_mm": 5.0,
-      "lateral_isotropic_N": 0.8410216847145119,
-      "lateral_best_direction_N": 1.2016162714230845,
+      "lateral_isotropic_N": 0.8437143186520641,
+      "lateral_best_direction_N": 1.201731708859151,
       "normal_pull_at_zero_lateral_N": 1.9991144218580448,
       "slope_at_zero_N_per_mm": 0.23876241691723118
     }

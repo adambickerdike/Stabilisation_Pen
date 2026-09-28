@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "proposed design (concept geometry)",
-    "generated_utc": "2026-09-28T17:43:35+00:00",
-    "git_revision": "6b3095c-dirty",
+    "generated_utc": "2026-09-28T17:52:11+00:00",
+    "git_revision": "cf9f4d8-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "guidance_board.py",

@@ -43,7 +43,7 @@ def strokes(xy: np.ndarray, down: np.ndarray) -> List[np.ndarray]:
 
 
 def lined_panel(ax, ink_mm: np.ndarray, down: np.ndarray, x_height: float, title: str = "", spacing: float = 8.0,
-                color: str = INK, width_mm: float = 0.45, xlim=None, ylim=(-6.0, 10.0), intended=None, target=None,
+                color: str = INK, width_mm: float = 0.35, xlim=None, ylim=(-6.0, 10.0), intended=None, target=None,
                 baseline: float = 0.0):
     """Ink on ruled paper; ink_mm (n, 2) in mm, down (n,) pen-down flags; axes in mm with equal aspect."""
     ax.set_facecolor("white")
@@ -81,7 +81,7 @@ def mm_axes(fig, x_mm, y_mm, w_mm, h_mm, W_mm, H_mm):
 
 
 def before_after(out: Path, columns: List[Dict], row_keys: List[str], row_labels: Dict[str, str], status: str, note: str,
-                 panel_h: float = 16.0, text_h: float = 6.5, col_gap: float = 8.0, suptitle: str = "",
+                 panel_h: float = 16.0, text_h: float = 8.5, col_gap: float = 8.0, suptitle: str = "",
                  ylim=(-6.0, 10.0), spacing: float = 8.0):
     """columns: [{"title", "paths": {key: [[x, y, d], ...]}, "intended": [[x, y, d]...], "metrics": {key: str},
     "x_height": float, "target": optional strokes}].  One row per key; metrics printed under each panel."""
@@ -92,17 +92,18 @@ def before_after(out: Path, columns: List[Dict], row_keys: List[str], row_labels
     col_w = [b - a for a, b in widths]
     left = 38.0
     W_mm = left + sum(col_w) + col_gap * (len(columns) - 1) + 6.0
-    row_h = panel_h + text_h + 5.0
-    top = 14.0
+    row_h = panel_h + text_h + 4.0
+    top = 20.0
     H_mm = top + row_h * len(row_keys) + 8.0
     fig = plt.figure(figsize=(W_mm * MM, H_mm * MM))
     fig.patch.set_facecolor(plotstyle.SURFACE)
     if suptitle:
-        fig.text(2.0 / W_mm, 1 - 4.0 / H_mm, suptitle, fontsize=9, color=INK, va="top", fontweight="bold")
+        fig.text(2.0 / W_mm, 1 - 3.0 / H_mm, suptitle, fontsize=9, color=INK, va="top", fontweight="bold")
+    fig.text(2.0 / W_mm, 1 - 8.5 / H_mm, note, fontsize=6.2, color=MUTED, va="top")
     x = left
     csv_rows = []
     for ci, col in enumerate(columns):
-        fig.text((x + 1) / W_mm, 1 - 10.0 / H_mm, col["title"], fontsize=7.5, color=INK, va="top")
+        fig.text((x + 1) / W_mm, 1 - 14.5 / H_mm, col["title"], fontsize=7.5, color=INK, va="top")
         for ri, key in enumerate(row_keys):
             y = top + ri * row_h
             if key not in col["paths"]:
@@ -114,7 +115,8 @@ def before_after(out: Path, columns: List[Dict], row_keys: List[str], row_labels
                         intended=intended, target=col.get("target"),
                         color=INK if key != "intended" else INK2)
             txt = col.get("metrics", {}).get(key, "")
-            fig.text((x + 0.5) / W_mm, 1 - (y + 4.0 + panel_h + 1.0) / H_mm, txt, fontsize=6.3, color=INK2, va="top")
+            fig.text((x + 0.5) / W_mm, 1 - (y + 4.0 + panel_h + 0.8) / H_mm, txt, fontsize=6.2, color=INK2, va="top",
+                     linespacing=1.25)
             csv_rows.append([col["title"], key, row_labels.get(key, key), txt])
             if ci == 0:
                 fig.text(2.0 / W_mm, 1 - (y + 4.0 + panel_h * 0.45) / H_mm, row_labels.get(key, key), fontsize=7.2,
@@ -126,7 +128,6 @@ def before_after(out: Path, columns: List[Dict], row_keys: List[str], row_labels
     ax.set_xlim(0, 10)
     ax.axis("off")
     fig.text((W_mm - 21.0) / W_mm, 5.0 / H_mm, "10 mm", fontsize=6.5, color=INK2, ha="right")
-    fig.text(2.0 / W_mm, 2.0 / H_mm, note, fontsize=6.0, color=MUTED)
     plotstyle.stamp(fig, status, "true scale when printed at 100 %")
     fig.savefig(out, dpi=300)
     plt.close(fig)

@@ -105,7 +105,7 @@ def _grid_B(ev_by_split, seeds, f0s, amps, wrist, controllers, log=None):
     return rows
 
 
-def stage_grid(quick=False, seeds=None):
+def stage_grid(quick=False, seeds=None, reuse_A=True):
     """Test grid (first use of the test seeds): Rev H-B nose with the oracle, the shipped AKF and the Rev H AKF setting."""
     from opt.inertial.evaluate import RevHEval
     seeds = seeds or (SC.SEEDS["test"][:1] if quick else SC.SEEDS["test"])
@@ -137,7 +137,14 @@ def stage_grid(quick=False, seeds=None):
                 dist.append(ev.distortion(s, "glyph"))
         out["distortion"][tag] = dist
         log(f"tracker {tag} done")
-    out["A"] = grid_A(seeds, f0s, amps=(0.3e-3, 1.0e-3, 2.0e-3) if not quick else (0.3e-3,), log=log)
+    prev = load_stage("grid")
+    if reuse_A and prev is not None and "A" in prev and not quick:
+        # architecture A keeps its own earlier actuator design point (Km_tip 0.54 N/sqrt(W), pivot 38 mm): re-using B's final
+        # actuator (Km_tip 0.36) would only raise A's power; A's rows were computed on the same test seeds and conditions
+        out["A"] = prev["A"]
+        out["A"]["note"] = "architecture A evaluated at its earlier actuator design point (see design); not re-run for the final B actuator"
+    else:
+        out["A"] = grid_A(seeds, f0s, amps=(0.3e-3, 1.0e-3, 2.0e-3) if not quick else (0.3e-3,), log=log)
     save_stage("grid" + ("_quick" if quick else ""), out)
     return out
 

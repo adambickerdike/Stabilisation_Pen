@@ -151,7 +151,7 @@ def rev_h(source: str = "auto") -> Pen:
               servo_hz=d["servo"]["bandwidth_Hz"], servo_zeta=d["servo"]["damping"], latency=extra_lat, slew=0.6,
               F_peak=d["actuator"]["force_limit_at_tip_N"]["peak"], F_cont=d["actuator"]["force_limit_at_tip_N"]["continuous"],
               skid=d.get("architecture", "B") == "B", F_c=0.15, r_imu=0.0935,
-              sources={"file": path, "evidence": d["meta"]["evidence_status"],
+              sources={"file": path, "file_generated_utc": d["meta"].get("generated_utc", ""), "evidence": d["meta"]["evidence_status"],
                        "q_lim/q_stop": d["tip_travel_mm"]["label"], "m_tip": d["moving_mass_at_tip_g"]["label"],
                        "k_tip": d["suspension_stiffness_N_per_m"]["label"], "F_peak/F_cont": d["actuator"]["label"],
                        "servo": d["servo"]["label"], "latency": d["latency_ms"]["label"], "mass": d["mass_g"]["label"],

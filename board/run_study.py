@@ -66,7 +66,7 @@ def workspace_map(gap_mm, pen, travel_design, travel_page, paper, step=(10.0, 11
     az = math.radians(pen.az_deg)
     lever = pen.behind_mm * np.array([math.cos(az), math.sin(az)])
     out = {}
-    for name, trav in (("design", travel_design), ("page_only", travel_page)):
+    for name, trav in (("design", travel_design), ("no_margin", travel_page)):
         Fm = np.full(X.shape, np.nan)
         for i in range(X.shape[0]):
             for j in range(X.shape[1]):
@@ -86,6 +86,11 @@ def workspace_map(gap_mm, pen, travel_design, travel_page, paper, step=(10.0, 11
                 Fm[i, j] = max(0.0, M.lateral_capability(F[ok], offs[ok], n_dir=24)["lateral_isotropic_N"])
         out[name] = Fm
     return X, Y, out
+
+
+def _in_guided(X, Y):
+    gx, gy, gw, gh = L.G["guided"]
+    return (X >= gx - 1e-9) & (X <= gx + gw + 1e-9) & (Y >= gy - 1e-9) & (Y <= gy + gh + 1e-9)
 
 
 def main(argv=None):
@@ -213,17 +218,19 @@ def main(argv=None):
     # ------------------------------------------------------------------ workspace map
     _log("workspace force map", t0)
     trav = L.travel()
-    x0, y0, w, h = L.G["paper"]
-    page = {"x": [x0, x0 + w], "y": [y0, y0 + h]}
-    X, Y, maps = workspace_map(design_gap, pen, trav, page, L.G["paper"],
+    gx0, gy0, gw, gh = L.G["guided"]
+    lev = P.PEN["pen_magnet_behind_ball_mm"].value
+    no_margin = {"x": [gx0, gx0 + gw], "y": [gy0 - lev, gy0 + gh - lev]}   # head can only reach the magnet's own path
+    X, Y, maps = workspace_map(design_gap, pen, trav, no_margin, L.G["paper"],
                                step=(21.0, 27.0) if a.quick else (10.0, 11.0))
     # ------------------------------------------------------------------ figures
     _log("figures", t0)
     a5_gap = round(P.STACK["paper_mm"].value + P.STACK["glass_mm_A5"].value + P.STACK["clearance_mm"].value, 2)
     figs = [FG.force_vs_gap(RESULTS, rows, diam, zrows, design_gaps=(("A4", design_gap), ("A5", a5_gap)),
                             zlift=(design_gap, design_gap + P.HEAD["zlift_travel_mm"].value)),
-            FG.force_vs_position(RESULTS, X, Y, maps["design"], maps["page_only"], L.G["paper"], trav),
-            FG.force_cuts(RESULTS, cut_x, cut_y),
+            FG.force_vs_position(RESULTS, X, Y, maps["design"], maps["no_margin"], L.G["paper"], trav,
+                                 guided=L.G["guided"], gap_mm=design_gap),
+            FG.force_cuts(RESULTS, cut_x, cut_y, gap_mm=design_gap),
             FG.hand_deflection(RESULTS, freqs, curves)]
     tr_off, tr_full = examples[("tracing", "off")], examples[("tracing", "full")]
     wb_off, wb_full = examples[("write_big", "off")], examples[("write_big", "full")]
@@ -306,9 +313,11 @@ def main(argv=None):
            "simulation": sim, "architectures": arch,
            "pantograph": {"A5": panto_a5, "A4": panto_a4},
            "bom": B.BOM, "custom_parts": B.CUSTOM, "evidence_rows": n_rows,
-           "workspace": {"travel": trav, "paper": L.G["paper"],
+           "workspace": {"travel": trav, "paper": L.G["paper"], "guided_area": L.G["guided"],
+                         "min_isotropic_N_on_guided_area_design": float(np.nanmin(np.where(_in_guided(X, Y), maps["design"], np.nan))),
+                         "min_isotropic_N_on_guided_area_no_margin_travel": float(np.nanmin(np.where(_in_guided(X, Y), maps["no_margin"], np.nan))),
                          "min_isotropic_N_on_page_design": float(np.nanmin(maps["design"])),
-                         "min_isotropic_N_on_page_page_only_travel": float(np.nanmin(maps["page_only"])),
+                         "min_isotropic_N_on_page_no_margin_travel": float(np.nanmin(maps["no_margin"])),
                          "median_isotropic_N_design": float(np.nanmedian(maps["design"]))},
            "figures": [os.path.relpath(p, REPO_ROOT) for p in figs]}
     provenance.write_json(os.path.join(RESULTS, "board.json"), out)

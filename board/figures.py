@@ -82,34 +82,40 @@ def force_vs_gap(out_dir, rows, diam_rows, zlift_rows, design_gaps=(("A4", 3.7),
     return p
 
 
-def force_vs_position(out_dir, X, Y, F_margin, F_nomargin, paper, travel, status="CALC (magpylib; plate theory)"):
-    fig, axs = plt.subplots(1, 2, figsize=(10.5, 6.2), sharey=True)
+def force_vs_position(out_dir, X, Y, F_margin, F_nomargin, paper, travel, guided=None, gap_mm=3.7,
+                      status="CALC (magpylib; plate theory)"):
+    fig, axs = plt.subplots(1, 2, figsize=(10.5, 6.4), sharey=True)
     vmax = float(np.nanmax(F_margin))
     cmap = plt.matplotlib.colors.LinearSegmentedColormap.from_list("seq", ps.SEQ_BLUE)
-    for ax, F, title in ((axs[0], F_margin, "Head travel = page + 12 mm (design)"),
-                         (axs[1], F_nomargin, "Head travel = page only")):
-        im = ax.pcolormesh(X, Y, F, cmap=cmap, vmin=0.0, vmax=vmax, shading="auto")
+    for ax, F, title in ((axs[0], F_margin, "Design: head reaches 12 mm beyond\nthe guided area"),
+                         (axs[1], F_nomargin, "Without the 12 mm margin")):
+        im = ax.pcolormesh(X, Y, F, cmap=cmap, vmin=0.0, vmax=vmax, shading="nearest")
         x0, y0, w, h = paper
-        ax.plot([x0, x0 + w, x0 + w, x0, x0], [y0, y0, y0 + h, y0 + h, y0], color=ps.INK, lw=1.2)
+        ax.plot([x0, x0 + w, x0 + w, x0, x0], [y0, y0, y0 + h, y0 + h, y0], color=ps.INK, lw=1.2, label="A4 paper")
+        if guided is not None:
+            gx, gy, gw, gh = guided
+            ax.plot([gx, gx + gw, gx + gw, gx, gx], [gy, gy, gy + gh, gy + gh, gy], color=ps.SERIES[1], lw=1.4, ls="--",
+                    label="guided area (15 mm margins)")
         ax.set_aspect("equal")
         ax.set_title(title, loc="left", fontsize=10)
         ax.set_xlabel("x (mm), board frame")
         ax.grid(False)
     axs[0].set_ylabel("y (mm), away from the writer")
+    axs[1].legend(loc="upper right", bbox_to_anchor=(1.0, 1.13), ncol=2, fontsize=8)
     cb = fig.colorbar(im, ax=axs, fraction=0.03, pad=0.02)
     cb.set_label("lateral force available in every direction (N)")
-    fig.suptitle("Force available over an A4 page (pen at 50 deg, 10 N hand load at the pen)", x=0.02, ha="left", fontsize=11)
-    ps.stamp(fig, status, "gap 2.7 mm minus glass sag; weakest direction")
+    fig.suptitle("Force available at the pen over an A4 page (pen at 50 deg, rear toward the writer)", x=0.02, ha="left", fontsize=11)
+    ps.stamp(fig, status, f"head fully raised: gap {gap_mm:g} mm minus the glass sag under a 10 N hand load; weakest direction")
     p = os.path.join(out_dir, "fig_force_vs_position.png")
     fig.savefig(p)
     plt.close(fig)
     rows = [[float(x), float(y), float(a), float(b)] for x, y, a, b in zip(X.ravel(), Y.ravel(), F_margin.ravel(), F_nomargin.ravel())]
     _csv(os.path.join(out_dir, "fig_force_vs_position.csv"),
-         ["x_mm", "y_mm", "lateral_isotropic_N_travel_page_plus_12mm", "lateral_isotropic_N_travel_page_only"], rows)
+         ["x_mm", "y_mm", "lateral_isotropic_N_design_travel", "lateral_isotropic_N_travel_without_margin"], rows)
     return p
 
 
-def force_cuts(out_dir, cut_x, cut_y, status="CALC (magpylib)"):
+def force_cuts(out_dir, cut_x, cut_y, gap_mm=3.7, status="CALC (magpylib)"):
     """cut_x/cut_y: (offsets, F (n,3)) for head offsets across / along the pen azimuth."""
     fig, axs = plt.subplots(1, 2, figsize=(11.0, 4.2))
     ox, Fx = cut_x
@@ -127,8 +133,8 @@ def force_cuts(out_dir, cut_x, cut_y, status="CALC (magpylib)"):
     axs[1].set_xlabel("head offset from the pen magnet (mm)")
     axs[1].set_ylabel("normal pull on the pen, down positive (N)")
     axs[1].set_title("Normal pull", loc="left")
-    axs[1].legend(loc="upper right")
-    ps.stamp(fig, status, "design gap 2.7 mm; pen at 50 deg, rear toward the writer (-y)")
+    axs[1].legend(loc="upper left", fontsize=8)
+    ps.stamp(fig, status, f"head fully raised, gap {gap_mm:g} mm; pen at 50 deg, rear toward the writer (-y)")
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     p = os.path.join(out_dir, "fig_force_cuts.png")
     fig.savefig(p)
@@ -167,7 +173,7 @@ def guidance_examples(out_dir, panels, status="SIMULATION (synthetic paths, HAP-
              "ink_off": dict(color=ps.SERIES[1], lw=1.8),
              "ink_guided": dict(color=ps.SERIES[0], lw=1.8),
              "ink_lead": dict(color=ps.SERIES[2], lw=1.8)}
-    fig, axs = plt.subplots(1, len(panels), figsize=(4.6 * len(panels), 5.6))
+    fig, axs = plt.subplots(1, len(panels), figsize=(4.8 * len(panels), 4.8), gridspec_kw={"width_ratios": [1.3, 1.3, 0.8]})
     rows = []
     for ax, (title, series) in zip(np.atleast_1d(axs), panels):
         seen = set()
@@ -177,7 +183,11 @@ def guidance_examples(out_dir, panels, status="SIMULATION (synthetic paths, HAP-
             seen.add(label)
             for x, y in xy[::5]:
                 rows.append([title, label, float(x), float(y)])
-        ax.set_aspect("equal", adjustable="datalim")
+        allxy = np.vstack([xy for _, _, xy in series])
+        pad = 1.5
+        ax.set_xlim(allxy[:, 0].min() - pad, allxy[:, 0].max() + pad)
+        ax.set_ylim(allxy[:, 1].min() - pad, allxy[:, 1].max() + pad)
+        ax.set_aspect("equal", adjustable="box")
         ax.set_title(title, loc="left", fontsize=10)
         ax.set_xlabel("x (mm)")
         ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=7.5)

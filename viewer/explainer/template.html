@@ -275,7 +275,26 @@ svg.dg .overlap{fill:var(--shake-soft);stroke:var(--shake);stroke-dasharray:4 3}
 .strip svg .rl{stroke:var(--paper-line);stroke-width:1}
 .strip svg .int{fill:none;stroke:var(--intended);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
 .strip svg .ink{fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.strip svg .ink.before{stroke:var(--shake)} .strip svg .ink.after{stroke:var(--accent)}
+.strip svg .ink.before{stroke:var(--shake)} .strip svg .ink.after,.strip svg .ink.limit{stroke:var(--accent)} .strip svg .ink.other{stroke:var(--muted)}
+details.more{border-top:1px solid var(--rule);padding-top:10px}
+details.more summary{cursor:pointer;font-weight:600;color:var(--accent)}
+details.more[open] summary{margin-bottom:6px}
+.outc{display:grid;gap:16px}
+.outc .bands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.outc .bands{grid-template-columns:1fr}}
+.band{background:var(--panel);border:1px solid var(--rule);padding:12px 14px;display:grid;gap:8px;align-content:start}
+.band h4{font-size:19px}
+.bars{display:grid;gap:7px}
+.brow{display:grid;grid-template-columns:minmax(120px,200px) minmax(0,1fr) auto;gap:4px 10px;align-items:center;font-size:15px}
+.brow .bl{line-height:1.2}
+.brow .bt{position:relative;height:16px;background:var(--panel-2);border-radius:2px}
+.brow .bt i{position:absolute;left:0;top:0;bottom:0;border-radius:0 3px 3px 0;background:var(--c)}
+.brow .bt u{position:absolute;top:-3px;bottom:-3px;border-left:2px dashed var(--shake);opacity:.7}
+.brow b{font-family:var(--mono);font-weight:500;font-size:14px;white-space:nowrap}
+.brow .bw{grid-column:2 / 4;font-size:13.5px;color:var(--muted);margin-top:-4px}
+.brow.b-before{--c:var(--shake)} .brow.b-after{--c:var(--accent)} .brow.b-limit{--c:color-mix(in srgb,var(--accent) 55%,var(--panel))} .brow.b-other{--c:var(--faint)}
+@media (max-width:520px){.brow{grid-template-columns:minmax(0,1fr) auto}.brow .bl{grid-column:1 / 3}.brow .bw{grid-column:1 / 3}}
+.outc ul{margin:0;padding-left:20px;display:grid;gap:6px}
 .strip svg .cue{stroke:var(--g-haptic);stroke-width:1.5;stroke-dasharray:3 3}
 .mets{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15.5px;margin:0;padding:0;list-style:none}
 .mets li{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
@@ -478,15 +497,19 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <span class="seg" role="group" aria-label="Speed">
             <button data-speed="0.25" aria-pressed="true">¼ speed</button><button data-speed="0.5" aria-pressed="false">½</button><button data-speed="1" aria-pressed="false">Real speed</button>
           </span>
+          <span class="seg" role="group" aria-label="3-D view">
+            <button data-view="tip" aria-pressed="true">Tip close-up</button><button data-view="hand" aria-pressed="false">Whole hand</button>
+          </span>
           <span class="seg" role="group" aria-label="Motion size in the 3-D view">
             <button data-mag="1" aria-pressed="true">True size</button><button data-mag="3" aria-pressed="false">Motion ×3</button>
           </span>
         </div>
         <div class="trk" id="trk" hidden>
-          <span class="note">Stabiliser quality:</span>
+          <span class="trk" id="scen-wrap" hidden><span class="note">Shake speed:</span><span class="seg" id="scen-seg" role="group" aria-label="Shake speed"></span></span>
+          <span class="trk" id="q-wrap"><span class="note">Stabiliser:</span>
           <span class="seg" role="group" aria-label="Stabiliser quality">
             <button data-trk="best" aria-pressed="true">Best case</button><button data-trk="today" aria-pressed="false">Today's tracker</button>
-          </span>
+          </span></span>
         </div>
         <p id="scene-text"></p>
         <div class="key" id="scene-key"></div>
@@ -648,6 +671,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
       <h2 id="results-h">How much better is the writing?</h2>
       <p>Each strip is shown at about real size on lined paper. The faint grey line is what the writer meant; the bold line is the ink.</p>
     </div>
+    <div class="outc" id="outcomes" hidden></div>
     <div class="callout newpen" id="newpen" hidden></div>
     <div class="banner" id="res-banner" hidden></div>
     <div class="res-controls">
@@ -1234,7 +1258,7 @@ const GLYPH = {
   e:[[0.58,0.55],[0.4,0.98],[0.12,0.6],[0.26,0.02],[0.75,0.18]],
   l:[[1.02,1.72],[0.78,2.45],[0.45,1.95],[0.42,0],[0.78,0.12]],
   o:[[0.62,0.92],[0.3,0.98],[0.08,0.45],[0.32,0.0],[0.62,0.38],[0.6,0.95],[0.95,0.86]],
-  a:[[0.78,0.82],[0.38,0.98],[0.06,0.5],[0.26,0.0],[0.66,0.35],[0.8,0.95],[0.74,0.2],[0.9,0.0],[1.18,0.2]],
+  a:[[0.72,0.86],[0.5,1.0],[0.25,0.96],[0.08,0.72],[0.04,0.4],[0.16,0.1],[0.38,0.0],[0.6,0.12],[0.74,0.45],[0.78,0.9],[0.78,0.98],[0.76,0.3],[0.84,0.02],[1.12,0.18]],
 };
 const ADV = {h:1.25, e:0.72, l:0.62, o:1.02, a:1.2};
 function wordTargets(word, u, slant, x0, sizeFn){
@@ -1293,7 +1317,7 @@ function buildSceneData(key, board, tip, trk, travel){
     } else S.numbers.push(["Tip travel", "0 mm: the nose is held still", "PROPOSED DESIGN"]);
   }
   else if(key==="c"){
-    const u2=4.2, nL=15, drop=0.36, size=L=> L>=9 ? Math.min(1, 0.72+0.13*(L-8)) : 1-drop*L/(nL-1);
+    const u2=4.4, size=L=> L<=8 ? 1-0.04*L : Math.min(1, 0.68+0.12*(L-8));      /* 100 % down to 68 %, a buzz, then back */
     const words=[]; let x0=-30; const sizes=[];
     for(let w=0; w<3; w++){ const li=w*5, f=i=>size(li+i); for(let i=0;i<5;i++) sizes.push(f(i));
       words.push({word:"hello", u:u2, slant, x0, sizeFn:f});
@@ -1301,17 +1325,17 @@ function buildSceneData(key, board, tip, trk, travel){
     const path=writeWords(words, {per:0.010}); S.T=path.T+0.3; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length;
     for(let i=0;i<n;i++){ const tt=Math.min(S.t[i], path.T), p=path.at(tt); S.intended[2*i]=p[0]; S.intended[2*i+1]=p[1]; S.hand[2*i]=p[0]; S.hand[2*i+1]=p[1];
       S.down[i]=path.down(S.t[i])?1:0; S.lift[i]=S.t[i]<=path.T? path.lift(tt) : 2.2; }
-    S.sizes=sizes; const nLet=sizes.length, kb=sizes.findIndex(s=>s<0.8);
+    S.sizes=sizes; const nLet=sizes.length, kb=sizes.findIndex(s=>s<0.72);
     S.buzzAt= kb>=0 ? path.T*(kb+0.4)/nLet : null; S.buzzLen=0.9; S.writeT=path.T;
     S.ruling=10; S.cam="line"; S.speed=1;
-    S.numbers=[["Letters", "shrink by about a third over the line, then recover", "ILLUSTRATION"],
-               ["Buzz", "when the letters drop below 80 % of their starting size", "ASSUMPTION"],
+    S.numbers=[["Letters", "shrink by about a third over the line, then recover (drawn larger than life so it is easy to see)", "ILLUSTRATION"],
+               ["Buzz", "when the letters drop below 72 % of their starting size (a setting to choose with users)", "ASSUMPTION"],
                ["People with shrinking writing lost about 23 % of stroke length by the end of a task", "", "LITERATURE PDT-05"],
                ["Lines about 1 cm apart helped; narrower lines made writing smaller", "", "LITERATURE PDT-18"],
                ["“Write big” cues brought the size back toward normal", "", "LITERATURE PDT-19"]];
   }
   else if(key==="d"){
-    const u3=9, tgt=wordTargets("a", u3, 0.22, -6, null), path=strokesPath(tgt, {base:0.12, per:0.02, overlap:0.38});
+    const u3=9, tgt=wordTargets("a", u3, 0.22, -6, null), path=strokesPath(tgt, {base:0.1, per:0.02, overlap:0.5});
     S.T=path.T+0.4; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T; S.ghost=new Float32Array(n*2);
     for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), s=t/TT;
       const ex=2.6*Math.sin(TAU*(0.9*s)+0.3)+1.1*Math.sin(TAU*2.3*s+1.2), ey=-2.4*Math.sin(TAU*(1.1*s)+1.0)+0.9*Math.sin(TAU*2.9*s);
@@ -1325,15 +1349,15 @@ function buildSceneData(key, board, tip, trk, travel){
                ["Guidance made practice writing smoother; better letter shapes were not shown", "", "LITERATURE HAP-10"]];
   }
   else if(key==="e"){
-    const u4=16, tgt=wordTargets("a", u4, 0.22, -12, null), path=strokesPath(tgt, {base:0.25, per:0.035, overlap:0.35});
+    const u4=16, tgt=wordTargets("a", u4, 0.22, -12, null), path=strokesPath(tgt, {base:0.2, per:0.035, overlap:0.5});
     S.T=path.T+0.6; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T, lead=0.05; S.carriage=new Float32Array(n*2);
     for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), q=path.at(Math.min(TT, t+lead)), s=t/TT;
       const wx=0.45*Math.sin(TAU*1.7*s+0.5), wy=0.4*Math.sin(TAU*2.2*s+1.4);
       S.intended[2*i]=p[0]; S.intended[2*i+1]=p[1]; S.hand[2*i]=p[0]+wx; S.hand[2*i+1]=p[1]+wy; S.carriage[2*i]=q[0]; S.carriage[2*i+1]=q[1]; S.down[i]=S.t[i]<=TT?1:0; }
     S.ruling=10; S.cam="board"; S.speed=1; S.intendedFaint=true;
-    const nums=(board&&board.numbers)||[], pull=nums.find(x=>typeof x.value==="number");
+    const nums=(board&&(board.explainer_numbers||board.numbers))||[], pull=nums.find(x=>typeof x.value==="number");
     S.numbers=[["Practice letter", "about 16 mm high", "ASSUMPTION"]];
-    for(const x of nums) S.numbers.push([x.label, x.value==null? "" : `${x.value} ${x.unit||""}`.trim(), x.evidence||"ASSUMPTION"]);
+    for(const x of nums) S.numbers.push([x.label, x.value!=null? `${x.value} ${x.unit||""}`.trim() : (x.text||""), x.evidence||"ASSUMPTION"]);
     if(!pull) S.numbers.push(["Pull on the pen", "not yet calculated", "ASSUMPTION"]);
     S.numbers.push(["Board", "sizes and parts are a proposal", "PROPOSED DESIGN"]);
   }
@@ -1352,11 +1376,15 @@ function initScenes(lay, board, samples, tip){
   const inkG=new THREE.Group(); v.scene.add(inkG);
   const boardG=new THREE.Group(); boardG.position.y=-0.3; v.scene.add(boardG);
   const pm=(board&&board.pen_magnet)||{z0:5, z1:8, d:5, d_in:2.6};
-  const penMag=new THREE.Mesh(tubeGeo((pm.d||5)/2, (pm.d||5)/2, (pm.d_in||0)/2, pm.z0, pm.z1), stdMat(css("--g-act"))); penMag.visible=false;
-  (pm.moves_with==="handle" ? pen.body : pen.nose).add(penMag);
+  let penMag;
+  if(pm.pen_frame_mm){ const z=+pm.pen_frame_mm.along_axis_from_ball||13.5, off=+pm.pen_frame_mm.off_axis_toward_paper||0, h=+pm.h||3, d=+pm.d||6;
+    const geo=frustumGeo(d/2, d/2, z-h/2, z+h/2); geo.translate(0, -off, 0); penMag=new THREE.Mesh(geo, stdMat(css("--g-act"))); pen.body.add(penMag); penMag.userData.z=z; penMag.userData.off=off; }
+  else { penMag=new THREE.Mesh(tubeGeo((pm.d||5)/2, (pm.d||5)/2, (pm.d_in||0)/2, pm.z0, pm.z1), stdMat(css("--g-act")));
+    (pm.moves_with==="handle" ? pen.body : pen.nose).add(penMag); penMag.userData.z=((pm.z0||5)+(pm.z1||8))/2; penMag.userData.off=0; }
+  penMag.visible=false;
   const arrow=new THREE.ArrowHelper(new THREE.Vector3(1,0,0), new THREE.Vector3(), 10, new THREE.Color(css("--good")), 3.5, 2.2); arrow.visible=false; v.scene.add(arrow);
   const lra=pen.parts.find(m=>m.userData.group==="haptic");
-  const Sx={v, pen, hand, bs, paper, inkG, key:"a", S:null, t:0, playing:!REDUCED, speed:0.25, mag:1, userMag:false, samples, board, trk:"best"};
+  const Sx={v, pen, hand, bs, paper, inkG, key:"a", S:null, t:0, playing:!REDUCED, speed:0.25, mag:1, userMag:false, samples, board, trk:"best", view:"tip"};
   T.scenes=Sx;
   const CAPTION={a:"Shaky hand, pen off", b:"Stabiliser on", c:"Write bigger", d:"Guided practice", e:"Guidance board"};
   const TEXT={
@@ -1364,27 +1392,40 @@ function initScenes(lay, board, samples, tip){
     b:"The hand shakes exactly as before. The motion sensor feels the shake and the coils tilt the nose the other way, inside the still sleeve. The ring on the paper moves with your hand; the tip inside it stays near the letters. The coral line shows the ink with the pen off.",
     c:"No tremor here: the letters slowly get smaller along the line, as happens in Parkinson's. When they drop below the set size, the vibration motor buzzes once. The writer makes the next letters bigger. The pen does not move the tip in this mode.",
     d:"The target letter is shown faintly. The writer's hand drifts off the letter. The nose moves the tip toward the target, by up to 3 mm, so the ink lands closer. The hand still does the writing.",
-    e:"The board sits under the paper. A magnet on a moving carriage travels along the letter, just ahead of the pen, and pulls the magnet in the pen. Because the board rests on the desk, it can pull the pen and your hand along the whole letter. This is for practice at a desk."};
+    e:"The board sits under the paper. A magnet on a moving carriage travels along the letter, just ahead of the pen, and pulls a small magnet in the pen. Because the board rests on the desk, it can pull the pen and your hand along the whole letter. This is for practice at a desk."};
+  /* the handwriting study's runs (final data only): the same simulated hand and shake for every pen, so the
+     ordinary pen's ink is where the hand puts the tip, and the new pen's ink minus it is what the nose adds */
+  function tremorPanels(){ if(!samples || !samples.meta || samples.meta.provisional) return [];
+    return (samples.panels||[]).filter(p=>!p.provisional && condKey(p.condition)==="tremor" && Array.isArray(p.intended_points) && (p.variants||[]).some(v=>v.role==="before" && Array.isArray(v.points))); }
+  const dataPanels=tremorPanels();
+  Sx.scen=Math.max(0, dataPanels.findIndex(p=>/10\s*times|10\s*Hz|10Hz/i.test(p.title+" "+p.id)));
+  const DATA_TEXT={
+    a:"This is the handwriting simulation. The same simulated hand and shake is used for every pen. With an ordinary pen, the tip follows the hand and the ink wobbles around the letters.",
+    b:"Same hand, same shake. The new pen's nose moves against the shake inside the still sleeve. Choose the shake speed and the stabiliser: “Best case” is a pen that knows the shake exactly; “Today's tracker” is what the pen's motion sensor and tracker achieve in simulation now."};
   function sceneFromSamples(key){
-    /* final data only: use a time-aligned panel of the matching condition when one exists */
-    if(!samples || !samples.meta || samples.meta.provisional) return null;
-    const want={a:"tremor", b:"tremor", c:"parkinsons", d:"guided", e:"board"}[key];
-    const p=(samples.panels||[]).find(x=>condKey(x.condition)===want); if(!p) return null;
-    const before=p.variants.find(x=>x.role==="before"), after=p.variants.find(x=>x.role==="after");
-    const V=(key==="a")? before : (after||before); if(!V || !V.series || !V.series.ink_points) return null;
-    const ip=V.series.ink_points, n=ip.length, hnd=V.series.hand, nose=V.series.nose, tt=V.series.t;
-    if(!tt || tt.length!==n) return null;
-    const S={key, dt:(tt[n-1]-tt[0])/Math.max(1,n-1), travel, T:tt[n-1]-tt[0], numbers:[], speed:key<"c"?0.25:1, ruling:p.ruling_mm||8, cam:"close", fromData:true};
-    S.t=Float32Array.from(tt, x=>x-tt[0]); newArrays(S);
-    const ref=(p.series&&p.series.ink_points)||null;
-    for(let i=0;i<n;i++){ const q=ip[i]; S.down[i]=q && (!V.series.pen_down || V.series.pen_down[i]) ? 1:0;
-      const qq=q||(i?[S.hand[2*i-2],S.hand[2*i-1]]:[0,0]);
-      const hh=hnd && hnd[i] ? hnd[i] : qq, nn=nose && nose[i] ? nose[i] : [qq[0]-hh[0], qq[1]-hh[1]];
-      S.hand[2*i]=hh[0]; S.hand[2*i+1]=hh[1]; S.nose[2*i]=nn[0]; S.nose[2*i+1]=nn[1];
-      const r=ref&&ref[i]? ref[i] : qq; S.intended[2*i]=r[0]; S.intended[2*i+1]=r[1]; }
-    S.numbers=(V.metrics||[]).map(m=>[m.name, m.value!=null? `${m.value} ${m.unit||""}` : (m.text||""), m.evidence]);
-    return S;
+    if((key!=="a" && key!=="b") || !dataPanels.length) return null;
+    const p=dataPanels[clamp(Sx.scen,0,dataPanels.length-1)], base=p.variants.find(v=>v.role==="before" && v.points);
+    let V=base;
+    if(key==="b") V=(Sx.trk==="today" ? (p.variants.find(v=>v.key==="revH_akf_revh") || p.variants.find(v=>v.role==="after"))
+                                       : (p.variants.find(v=>v.role==="limit") || p.variants.find(v=>v.role==="after"))) || base;
+    if(!V.points) return null;
+    const rate=+p.rate_hz||50, n=Math.min(p.intended_points.length, base.points.length, V.points.length), nUse=Math.min(n, Math.round(8.5*rate));
+    const S={key, dt:1/rate, travel, T:(nUse-1)/rate, numbers:[], speed:0.5, ruling:p.ruling_mm||8, cam:"line", camR:20, fromData:true};
+    S.t=Float32Array.from({length:nUse}, (_,i)=>i/rate); newArrays(S);
+    for(let i=0;i<nUse;i++){ const I=p.intended_points[i], B=base.points[i], Q=V.points[i];
+      S.intended[2*i]=I[0]; S.intended[2*i+1]=I[1]; S.hand[2*i]=B[0]; S.hand[2*i+1]=B[1]; S.nose[2*i]=Q[0]-B[0]; S.nose[2*i+1]=Q[1]-B[1];
+      S.down[i]=(Q[2]&&I[2])?1:0; }
+    if(key==="b"){ S.ghost=new Float32Array(S.hand); S.ghostLabel="ink with an ordinary pen"; }
+    const sim="SIMULATION (model HW1)";
+    S.numbers=[["What you see", `the first words of “return library books by friday”, ${p.title.toLowerCase()}`, sim],
+               ["Pen", V.label, key==="b"? "PROPOSED DESIGN" : sim]];
+    for(const m of (V.metrics||[])) S.numbers.push([m.name, m.value!=null? `${fmtNum(m.value)}${m.unit==="%"?" %":(m.unit?" "+m.unit:"")}` : (m.text||""), m.evidence||sim]);
+    const inkOf=v=>{ const m=(v.metrics||[]).find(x=>/^Ink off/i.test(x.name)); return m? m.value : null; };
+    S.inkWhole=inkOf(V); S.inkBase=inkOf(base); S.scenTitle=p.title; return S;
   }
+  function scenLabel(p){ const m=/(\d+(?:\.\d+)?)\s*times a second/.exec(p.title)||/(\d+(?:\.\d+)?)\s*Hz/.exec(p.title+" "+p.id); return m? `${m[1]} per second` : p.title; }
+  if(dataPanels.length>1){ $("scen-seg").innerHTML=dataPanels.map((p,i)=>`<button data-scen="${i}" aria-pressed="${i===Sx.scen}">${esc(scenLabel(p))}</button>`).join("");
+    document.querySelectorAll("[data-scen]").forEach(b=>b.onclick=()=>{ Sx.scen=+b.dataset.scen; document.querySelectorAll("[data-scen]").forEach(x=>x.setAttribute("aria-pressed", String(x===b))); selectScene(Sx.key); }); }
   let ribbons=[], ghosts=[], S=null;
   function clearInk(){ while(inkG.children.length){ const o=inkG.children.pop(); o.geometry.dispose(); o.material.dispose(); } ribbons=[]; ghosts=[]; }
   function ribbon(xy, s, e, width, color, h, mag, base){
@@ -1415,17 +1456,26 @@ function initScenes(lay, board, samples, tip){
   function buildBoard(){
     while(boardG.children.length){ const o=boardG.children.pop(); o.traverse(x=>{ if(x.geometry) x.geometry.dispose(); }); } boardParts.length=0;
     const b=board; if(!b || !Array.isArray(b.components)) return;
-    const col={case:css("--g-shell"), surface:css("--panel-2"), mechanism:css("--g-refill"), magnet:css("--g-act"), drive:css("--g-elec"), electronics:css("--g-elec")};
+    /* two schemas: the provisional board (centres in the page frame, 'moves') and the board study's layout
+       (board frame from the front-left corner, boxes by corner + size, parts that 'move_with' the carriage) */
+    const pa=b.paper_area, ref= pa ? [pa.x0+pa.w/2, pa.y0+pa.h/2] : [0,0], W=(b.board_outer_mm&&b.board_outer_mm[0])||300;
+    const col={case:css("--g-shell"), structure:css("--g-shell"), surface:css("--panel-2"), mechanism:css("--g-refill"), magnet:css("--g-act"),
+      drive:css("--g-elec"), actuator:css("--g-elec"), electronics:css("--g-elec"), sensor:css("--g-sensor"), power:css("--g-power")};
     for(const c of b.components){
-      let geo=null; const ctr=c.center||[0,0,0];
-      if(c.shape==="box"){ const s=c.size||[10,10,10]; geo=new THREE.BoxGeometry(s[0], s[2], s[1]); }
-      else if(c.shape==="cylinder"){ const r=(c.d||6)/2, L=c.length||10; geo=new THREE.CylinderGeometry(r, r, L, 40);
-        if(c.axis==="x") geo.rotateZ(Math.PI/2); else if(c.axis==="y") geo.rotateX(Math.PI/2); }
-      if(!geo) continue;
-      const surf=c.role==="surface"||c.id==="top";
-      const mat=stdMat(col[c.role]||css("--g-other"), {}); if(surf) glassy(mat, 0.3);
-      const m=new THREE.Mesh(geo, mat); const p=P2W(ctr[0], ctr[1], ctr[2]); m.position.copy(p);
-      m.userData={c, base:p.clone(), moves:c.moves||"none"}; boardG.add(m); boardParts.push(m);
+      if(/^paper$|paper_stop|arm_rest|housing/i.test(c.id||"")) continue;
+      let geo=null, ctr=null; const role=c.role||c.group;
+      if(c.shape==="box"){ const s=c.size||[10,10,10]; geo=new THREE.BoxGeometry(s[0], s[2], s[1]);
+        ctr = c.center ? c.center : [c.x0+s[0]/2, c.y0+s[1]/2, c.z0+s[2]/2]; }
+      else if(c.shape==="cylinder"||c.shape==="tube"){ const r=(c.d||6)/2, L=c.length||c.h||10;
+        geo = c.shape==="tube" ? new THREE.CylinderGeometry(r, r, L, 48, 1, true) : new THREE.CylinderGeometry(r, r, L, 40);
+        if(c.axis==="x") geo.rotateZ(Math.PI/2); else if(c.axis==="y") geo.rotateX(Math.PI/2); ctr=c.center; }
+      if(!geo || !ctr) continue;
+      const surf=role==="surface"||c.id==="top"||/glass/i.test(c.id||"");
+      const mat=stdMat(col[role]||css("--g-other"), {}); if(surf) glassy(mat, 0.25); if(c.shape==="tube") mat.side=THREE.DoubleSide;
+      const m=new THREE.Mesh(geo, mat); const p=P2W(ctr[0]-ref[0], ctr[1]-ref[1], ctr[2]); m.position.copy(p);
+      let moves=c.moves||"none";
+      if(c.moves_with==="carriage"){ const sx=(c.size&&c.size[0])||0, cx=ctr[0]; moves = (sx>100 || cx<30 || cx>W-30) ? "y" : "xy"; }
+      m.userData={c, base:p.clone(), moves}; boardG.add(m); boardParts.push(m);
     }
   }
   function placeBoard(cx, cy){ for(const m of boardParts){ const b=m.userData.base; if(m.userData.moves==="xy") m.position.set(b.x+cx, b.y, b.z-cy); else if(m.userData.moves==="y") m.position.set(b.x, b.y, b.z-cy); } }
@@ -1439,10 +1489,11 @@ function initScenes(lay, board, samples, tip){
   function setCamera(){
     v.resize(); const c=S.cam, narrow=v.w<560; const [x0,x1,y0,y1]=S.bounds; const cx=(x0+x1)/2, cy=(y0+y1)/2;
     const dir=P2W(-0.3, -0.6, 1.3);       /* from above and a little to the left: letters on the left, the pen and hand come in from the right */
-    if(c==="board"){ fitCamera(v, P2W(cx+12, cy+2, 8), narrow?66:58, P2W(-0.3, -1.0, 1.35)); }
+    if(Sx.view==="hand"){ const fx=c==="line"? followX(idxAt(Sx.t)) : cx; fitCamera(v, P2W(fx+34, cy-26, 30), narrow?100:92, P2W(-0.45, -0.9, 0.95)); Sx.lastFollow=c==="line"? fx : null; return; }
+    if(c==="board"){ fitCamera(v, P2W(cx+18, cy-4, 6), narrow?84:76, P2W(-0.35, -1.0, 1.4)); }
     else if(c==="letter"){ fitCamera(v, P2W(cx+6, cy, 6), narrow?28:25, dir); }
-    else if(c==="line"){ const fx=followX(idxAt(Sx.t)); fitCamera(v, P2W(fx+8, cy, 6), narrow?38:34, dir); Sx.lastFollow=fx; }
-    else { fitCamera(v, P2W(cx+6, cy, 6), narrow?37:34, dir); }
+    else if(c==="line"){ const fx=followX(idxAt(Sx.t)), R=S.camR||34; fitCamera(v, P2W(fx+R*0.24, cy, R*0.18), narrow?R*1.12:R, dir); Sx.lastFollow=fx; }
+    else { fitCamera(v, P2W(cx+5, cy-1, 2), narrow?37:34, dir); }
     if(c!=="line") Sx.lastFollow=null;
   }
   /* ---- the 2-D paper panel ---- */
@@ -1468,7 +1519,12 @@ function initScenes(lay, board, samples, tip){
     path(S.intended, css("--intended"), Math.max(2, 0.9*scale), 0.45, n);
     if(S.ghost) path(S.ghost, css("--shake"), Math.max(1.2, 0.28*scale), 0.75, i);
     path(S.ink, css(S.key==="a"?"--shake":"--accent"), Math.max(1.6, 0.42*scale), 1, i);
-    if(S.carriage){ const cxp=X(S.carriage[2*i]), cyp=Y(S.carriage[2*i+1]); g.save(); g.fillStyle=css("--g-act"); g.globalAlpha=0.25; g.beginPath(); g.arc(cxp, cyp, 6*scale, 0, TAU); g.fill(); g.restore(); }
+    if(S.carriage){ const cxp=X(S.carriage[2*i]), cyp=Y(S.carriage[2*i+1]); g.save(); g.fillStyle=css("--g-act"); g.globalAlpha=0.22; g.beginPath(); g.arc(cxp, cyp, 6.35*scale, 0, TAU); g.fill();
+      const hxp=X(S.hand[2*i]), hyp=Y(S.hand[2*i+1]), ax=cxp-hxp, ay=cyp-hyp, L=Math.hypot(ax,ay);
+      if(L>1 && S.down[i]){ const ux=ax/L, uy=ay/L, len=Math.max(18, Math.min(46, L*3)); g.globalAlpha=1; g.strokeStyle=css("--good"); g.fillStyle=css("--good"); g.lineWidth=3;
+        g.beginPath(); g.moveTo(hxp, hyp); g.lineTo(hxp+ux*len, hyp+uy*len); g.stroke();
+        g.beginPath(); g.moveTo(hxp+ux*(len+9), hyp+uy*(len+9)); g.lineTo(hxp+ux*len-uy*6, hyp+uy*len+ux*6); g.lineTo(hxp+ux*len+uy*6, hyp+uy*len-ux*6); g.closePath(); g.fill(); }
+      g.restore(); }
     const hx=X(S.hand[2*i]), hy=Y(S.hand[2*i+1]), tx=X(S.ink[2*i]), ty=Y(S.ink[2*i+1]);
     g.save(); g.strokeStyle=css("--g-skid"); g.globalAlpha=0.5; g.lineWidth=Math.max(1.5, 0.35*scale); g.beginPath(); g.arc(hx, hy, Math.max(4, (travel)*scale), 0, TAU); g.stroke(); g.restore();
     g.fillStyle=css(S.key==="a"?"--shake":"--accent"); g.beginPath(); g.arc(tx, ty, Math.max(2.5, 0.5*scale), 0, TAU); g.fill();
@@ -1476,7 +1532,10 @@ function initScenes(lay, board, samples, tip){
   function rmsSoFar(arr, i){ let s=0, n=0; for(let k=0;k<=i;k++){ if(!S.down[k]) continue; const dx=arr[2*k]-S.intended[2*k], dy=arr[2*k+1]-S.intended[2*k+1]; s+=dx*dx+dy*dy; n++; } return n? Math.sqrt(s/n) : NaN; }
   function readout(i){
     const el=$("pp-read"); let h="";
-    if(S.key==="a"||S.key==="b"||S.key==="d"){ const r=rmsSoFar(S.ink, i);
+    if(S.fromData && S.inkWhole!=null){
+      h+=`<div class="row"><span>Ink off the letters, whole sentence:</span><b>${S.inkWhole.toFixed(2)} mm</b>${tagHTML("SIMULATION (model HW1)")}</div>`;
+      if(S.key==="b" && S.inkBase!=null) h+=`<div class="row"><span>With an ordinary pen:</span><b>${S.inkBase.toFixed(2)} mm</b></div>`; }
+    else if(S.key==="a"||S.key==="b"||S.key==="d"){ const r=rmsSoFar(S.ink, i);
       const lab=S.key==="d"? "Ink off the target letter, on average" : "Ink off the letters, on average";
       h+=`<div class="row"><span>${lab}:</span><b>${isNaN(r)?"—":r.toFixed(2)+" mm"}</b>${tagHTML(S.fromData?"SIMULATION":"ILLUSTRATION")}</div>`;
       if(S.ghost){ const g=rmsSoFar(S.ghost, i); h+=`<div class="row"><span>${S.key==="d"?"Your hand alone":"With the pen off"}:</span><b>${isNaN(g)?"—":g.toFixed(2)+" mm"}</b></div>`; } }
@@ -1499,9 +1558,10 @@ function initScenes(lay, board, samples, tip){
     v.resize();
     Sx.key=key; S=sceneFromSamples(key) || buildSceneData(key, board, tip, Sx.trk, travel); Sx.S=S;
     document.querySelectorAll(".scene-btn").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.scene===key)));
-    $("scene-chip").textContent=CAPTION[key]; $("scene-text").textContent=TEXT[key];
+    $("scene-chip").textContent=CAPTION[key]; $("scene-text").textContent=(S.fromData && DATA_TEXT[key]) || TEXT[key];
     $("scene-ill").textContent = S.fromData ? "Simulation" : "Illustration";
-    $("trk").hidden = key!=="b" || !!S.fromData;
+    const showScen = S.fromData && dataPanels.length>1 && (key==="a"||key==="b");
+    $("scen-wrap").hidden=!showScen; $("q-wrap").hidden = key!=="b"; $("trk").hidden = !(showScen || key==="b");
     if(!Sx.userSpeed) setSpeed(S.speed, false);
     if(!Sx.userMag) setMag(1, false);
     $("scene-nums").innerHTML=S.numbers.map(r=>`<li><span>${esc(r[0])}${r[1]?": <b>"+esc(r[1])+"</b>":""}</span>${tagHTML(r[2])}</li>`).join("");
@@ -1513,7 +1573,8 @@ function initScenes(lay, board, samples, tip){
     $("size-wrap").hidden = key!=="c";
     penMag.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false;
     if(paper.userData.spacing!==S.ruling) retexturePaper(paper, S.ruling);
-    if(key==="e"){ glassy(paper.material, 0.6); buildBoard(); } else { paper.material.transparent=true; paper.material.opacity=1; paper.material.depthWrite=true; paper.material.polygonOffset=false; paper.material.needsUpdate=true; }
+    if(key==="e"){ glassy(paper.material, 0.72); paper.scale.set(210/640, 297/640, 1); buildBoard(); }
+    else { paper.scale.set(1,1,1); paper.material.transparent=true; paper.material.opacity=1; paper.material.depthWrite=true; paper.material.polygonOffset=false; paper.material.needsUpdate=true; }
     computeFollow(); buildInk(); if(!keepTime) Sx.t=0; setCamera(); v.dirty=true; frame(true);
   }
   function setSpeed(s, user){ Sx.speed=s; if(user) Sx.userSpeed=true; document.querySelectorAll("[data-speed]").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.speed===s)));
@@ -1521,8 +1582,9 @@ function initScenes(lay, board, samples, tip){
   function setMag(m, user){ const changed=m!==Sx.mag; Sx.mag=m; if(user) Sx.userMag=true; document.querySelectorAll("[data-mag]").forEach(b=>b.setAttribute("aria-pressed", String(+b.dataset.mag===m)));
     $("scene-mag").textContent = m===1 ? "True size" : `3-D motion magnified ×${m}`; $("scene-mag").classList.toggle("warnchip", m!==1);
     if(changed && S) buildInk(); v.dirty=true; }
+  function setView(k){ Sx.view=k; document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.view===k))); if(S){ setCamera(); frame(true); } }
   function setTrk(k){ Sx.trk=k; document.querySelectorAll("[data-trk]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.trk===k))); if(Sx.key==="b") selectScene("b", true); }
-  Sx.selectScene=selectScene; Sx.setMag=setMag; Sx.setSpeed=setSpeed; Sx.setTrk=setTrk;
+  Sx.selectScene=selectScene; Sx.setMag=setMag; Sx.setSpeed=setSpeed; Sx.setTrk=setTrk; Sx.setView=setView;
   /* per-frame pose */
   const tmpM=new THREE.Matrix4();
   function idxAt(t){ return clamp(Math.round(t/S.dt), 0, S.t.length-1); }
@@ -1543,10 +1605,11 @@ function initScenes(lay, board, samples, tip){
     const bz=$("buzz"); if(buzzing && lra){ const lc=lra.userData.comp; pen.body.updateMatrixWorld(true); const c=new THREE.Vector3(0,0,(lc.z0+lc.z1)/2).applyMatrix4(pen.body.matrixWorld).project(v.camera);
         bz.hidden=false; bz.style.left=clamp((c.x+1)/2*v.w, 90, v.w-90)+"px"; bz.style.top=clamp((1-c.y)/2*v.h, 60, v.h-10)+"px"; } else bz.hidden=true;
     if(S.key==="c" && S.sizes){ const k=clamp(Math.floor(Sx.t/S.writeT*S.sizes.length), 0, S.sizes.length-1), sz=S.sizes[k];
-      $("size-val").textContent=Math.round(sz*100)+" %"; $("size-fill").style.width=clamp(sz*100/1.1,0,100)+"%"; $("size-thr").style.left=(80/1.1)+"%"; }
+      $("size-val").textContent=Math.round(sz*100)+" %"; $("size-fill").style.width=clamp(sz*100/1.1,0,100)+"%"; $("size-thr").style.left=(72/1.1)+"%"; }
     if(S.key==="e" && S.carriage){ const cx=S.carriage[2*i], cy=S.carriage[2*i+1]; placeBoard(cx, cy);
-      const dx=cx-hx, dy=cy-hy, L=Math.hypot(dx,dy); if(S.down[i] && L>0.05){ arrow.visible=true; arrow.position.copy(P2W(hx, hy, 4)); arrow.setDirection(P2W(dx,dy,0).normalize());
-        arrow.setLength(Math.min(22, 5+L*8), 3.2, 2.2); } else arrow.visible=false; }
+      const dx=cx-hx, dy=cy-hy, L=Math.hypot(dx,dy); if(S.down[i] && L>0.05){ arrow.visible=true;
+        arrow.position.copy(P2W(hx+dx/L*4, hy+dy/L*4, 1.2)); arrow.setDirection(P2W(dx,dy,0).normalize());
+        arrow.setLength(Math.min(18, 7+L*5), 3.4, 2.6); } else arrow.visible=false; }
     $("scene-t").textContent=`${S.t[i].toFixed(1)} s of writing`;
     if(S.cam==="line"){ const fx=followX(i); if(Sx.lastFollow!=null){ const d=fx-Sx.lastFollow; v.camera.position.x+=d; v.controls.target.x+=d; } Sx.lastFollow=fx; }
     const now=performance.now(); if(force || now-last2d>33){ last2d=now; drawPaper(ppZ, i, S.ppScale, followX(i)); drawPaper(ppT, i, MM, followX(i)); drawDial(i); readout(i); }
@@ -1566,6 +1629,7 @@ function initScenes(lay, board, samples, tip){
   document.querySelectorAll("[data-speed]").forEach(b=>b.onclick=()=>setSpeed(+b.dataset.speed, true));
   document.querySelectorAll("[data-mag]").forEach(b=>b.onclick=()=>setMag(+b.dataset.mag, true));
   document.querySelectorAll("[data-trk]").forEach(b=>b.onclick=()=>setTrk(b.dataset.trk));
+  document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>setView(b.dataset.view));
   if(!Sx.playing){ $("play").textContent="Play"; $("play").setAttribute("aria-label","Play"); }
   v.scene.background=new THREE.Color(css("--scene-bg"));
   $("scene-loading").hidden=true;
@@ -1577,9 +1641,41 @@ function initScenes(lay, board, samples, tip){
 /* ================================================================================================ RESULTS */
 const COND = {tremor:["tremor","essential_tremor","et","shake","shaky"], parkinsons:["parkinsons","parkinson","pd","micrographia","small_writing"],
   guided:["guided","practice","dysgraphia","guidance","poor_handwriting","handwriting"], board:["board","guidance_board"], spelling:["spelling","dyslexia"]};
-function condKey(c){ const s=String(c||"").toLowerCase().replace(/[^a-z_]/g,""); for(const [k,al] of Object.entries(COND)) if(al.includes(s)||s.startsWith(k)) return k; return s||"other"; }
+function condKey(c){ const toks=new Set(String(c||"").toLowerCase().split(/[^a-z]+/).filter(Boolean));
+  const M=[["tremor",["tremor","et","shake","shaky","essential"]],["parkinsons",["pd","parkinson","parkinsons","micrographia"]],["board",["board"]],
+    ["guided",["guided","practice","dysgraphia","guidance"]],["spelling",["spelling","dyslexia"]]];
+  for(const [k,w] of M) if(w.some(x=>toks.has(x))) return k; return String(c||"other").toLowerCase(); }
 const COND_TITLE = {tremor:["Shaky writing (tremor)","The pen moves its tip against the shake."], parkinsons:["Small, shrinking writing (Parkinson's)","The pen buzzes when the letters shrink."],
   guided:["Guided practice (letter shapes)","The pen nudges the tip toward the letter."], board:["Guidance board","The board pulls the pen along the letter."], spelling:["Spelling","The app flags words and shows the right spelling."]};
+function renderOutcomes(o){
+  const el=$("outcomes"); if(!o || !o.bands || !Object.keys(o.bands).length){ el.hidden=true; return false; }
+  const order=["none","weighted","pencil_akf","revH_off","revH_akf","revH_akf_revh","revH_oracle"];
+  const LAB={none:"Ordinary pen", weighted:"Weighted pen (60 g heavier)", pencil_akf:"Earlier slim design, with tracker", pencil_oracle:"Earlier slim design, knowing the shake",
+    revH_off:"New pen, stabiliser off", revH_akf:"New pen, first tracker", revH_akf_revh:"New pen, tracker tuned for it", revH_oracle:"New pen, knowing the shake exactly"};
+  const CLS={none:"b-before", revH_akf:"b-after", revH_akf_revh:"b-after", revH_oracle:"b-limit"};
+  const bands=Object.values(o.bands), all=bands.flatMap(b=>Object.values(b.devices).map(d=>d.ink_mm)).filter(x=>isFinite(x)), mx=Math.max(...all)*1.08;
+  const pct=x=>Math.round(100*x);
+  let h=`<div class="bands">`;
+  for(const b of bands){
+    const ref=b.devices.none;
+    h+=`<div class="band"><h4>${esc(b.title)}</h4><div class="bars" role="list">`;
+    for(const k of order){ const d=b.devices[k]; if(!d || !isFinite(d.ink_mm)) continue;
+      h+=`<div class="brow ${CLS[k]||"b-other"}" role="listitem"><span class="bl">${esc(LAB[k]||k)}</span>`+
+         `<span class="bt" aria-hidden="true"><i style="width:${(100*d.ink_mm/mx).toFixed(1)}%"></i>${ref?`<u style="left:${(100*ref.ink_mm/mx).toFixed(1)}%"></u>`:""}</span>`+
+         `<b>${d.ink_mm.toFixed(2)} mm</b>`+(d.words!=null?`<span class="bw">words read right by the app: ${pct(d.words)} %</span>`:"")+`</div>`; }
+    h+=`</div><p class="note">Bar: how far the ink is from the letters, on average. Dashed line: the ordinary pen.</p></div>`;
+  }
+  h+=`</div>`;
+  const F=o.bands.high_f_1_2mm&&o.bands.high_f_1_2mm.devices, S=o.bands.low_f_1_2mm&&o.bands.low_f_1_2mm.devices, sim=tagHTML("SIMULATION (model HW1)");
+  const li=[];
+  if(F&&F.none&&F.revH_akf_revh) li.push(`<li>Fast shake: with the tracker tuned for it, the new pen roughly halves the wobble (${F.none.ink_mm.toFixed(2)} → ${F.revH_akf_revh.ink_mm.toFixed(2)} mm), and the app reads ${pct(F.revH_akf_revh.words)} % of the words instead of ${pct(F.none.words)} %. ${sim}</li>`);
+  if(S&&S.none&&S.revH_akf_revh) li.push(`<li>Slow shake, the most common kind in essential tremor: today's tracker gives almost no gain (${S.none.ink_mm.toFixed(2)} → ${S.revH_akf_revh.ink_mm.toFixed(2)} mm). ${sim}</li>`);
+  if(F&&S&&F.revH_oracle&&S.revH_oracle&&F.none&&S.none) li.push(`<li>If the pen knew the shake exactly, the wobble would drop by about ${Math.round(100*(1-F.revH_oracle.ink_mm/F.none.ink_mm))} % (fast) and ${Math.round(100*(1-S.revH_oracle.ink_mm/S.none.ink_mm))} % (slow). The nose can reach far enough: telling shake from writing is what limits it. ${sim}</li>`);
+  if(F&&F.weighted&&F.none) li.push(`<li>Extra weight alone makes the ink worse here: the weighted pen is at ${F.weighted.ink_mm.toFixed(2)} mm${F.revH_off?`, and the new pen with its stabiliser off at ${F.revH_off.ink_mm.toFixed(2)} mm`:""}. ${sim}</li>`);
+  const nw=o.writers? (Array.isArray(o.writers)? o.writers.length : o.writers) : null;
+  el.innerHTML=`<div class="callout"><b>The new pen, in simulation: averages over ${nw?nw+" simulated writers and ":""}shakes of 1 to 2 mm</b><ul>${li.join("")}</ul></div>`+h;
+  el.hidden=false; return true;
+}
 function renderNewPen(tip){
   const el=$("newpen"), tn=tipNumbers(tip); if(!tn){ el.hidden=true; return; }
   el.hidden=false;
@@ -1594,14 +1690,15 @@ function renderResults(samples, manifest){
   const prov=!!(samples.meta && samples.meta.provisional);
   const ban=$("res-banner"); ban.hidden=false;
   ban.innerHTML = prov ? `<span class="st prov">provisional</span><span>The strips below: ${esc((samples.meta&&samples.meta.label)||(manifest&&manifest.provisional_label)||"earlier design")}.</span>`
-                       : `<span class="st final">new pen</span><span>${esc((samples.meta&&samples.meta.label)||"Simulation of the new pen (Rev H)")}.</span>`;
+                       : `<span class="st final">new pen</span><span>One simulated writer, the same hand and shake for every pen: ${esc((samples.meta&&samples.meta.label)||"simulation of the new pen (Rev H)")}.</span>`;
   const groups={}; for(const p of samples.panels){ const k=condKey(p.condition); (groups[k]=groups[k]||[]).push(p); }
   const order=["tremor","parkinsons","guided","board","spelling"].filter(k=>groups[k]).concat(Object.keys(groups).filter(k=>!(k in COND)));
   let html="";
   for(const k of order){
     const [title, sub]=COND_TITLE[k]||[k.replace(/_/g," "), ""];
     html+=`<div class="rgroup"><h3>${esc(title)} <small>${esc(sub)}</small></h3>`;
-    for(const p of groups[k]) html+=panelHTML(p, prov);
+    if(!prov && groups[k].every(p=>p.provisional)) html+=`<p class="note">The new pen's results for this group are not ready yet. Shown: ${esc(groups[k].some(p=>/^ILL/i.test(p.evidence||""))?"an illustration":"the earlier pencil design")}, clearly labelled.</p>`;
+    for(const p of groups[k]) html+=panelHTML(p, prov || !!p.provisional);
     html+=`</div>`;
   }
   body.innerHTML=html; T.results.panels=samples.panels.length;
@@ -1613,20 +1710,22 @@ function panelHTML(p, prov){
   const all=[p.intended].concat(p.variants.map(v=>v.ink)); const [x0,x1,y0,y1]=bboxOf(all);
   const m=2.5, rule=+p.ruling_mm||8, X0=x0-m, Y0=Math.min(y0-m, -rule*0.35), W=(x1-x0)+2*m, Hh=Math.max(y1+m, rule*1.15)-Y0;
   const ev=p.evidence||"SIMULATION";
-  let h=`<article class="rpanel"><header><h4>${esc(p.title)}</h4>${p.subtitle?`<p class="note">${esc(p.subtitle)}</p>`:""}<div class="tags">${tagHTML(ev)}${prov&&!/^ILL/i.test(ev)?'<span class="tag asm"><i></i>Earlier pencil design</span>':""}</div></header>`;
-  for(const v of p.variants){
-    const role=v.role==="before"?"before":"after";
+  let h=`<article class="rpanel"><header><h4>${esc(p.title)}</h4>${p.subtitle?`<p class="note">${esc(p.subtitle)}</p>`:""}<div class="tags">${tagHTML(ev)}${prov&&!/^ILL/i.test(ev)?'<span class="tag asm"><i></i>Earlier pencil design</span>':""}${!prov?'<span class="tag prop"><i></i>New pen: proposed design</span>':""}</div></header>`;
+  const keyV=p.variants.filter(v=>v.key_device!==false), moreV=p.variants.filter(v=>v.key_device===false);
+  const strip=v=>{ let h="";
+    const role=["before","after","limit","other"].includes(v.role)? v.role : "after";
     let lines=""; for(let y=Math.ceil(Y0/rule)*rule; y<=Y0+Hh; y+=rule) lines+=`<line class="rl" x1="${X0.toFixed(2)}" x2="${(X0+W).toFixed(2)}" y1="${(-y).toFixed(2)}" y2="${(-y).toFixed(2)}" vector-effect="non-scaling-stroke"/>`;
     let cues=""; for(const cx of (v.cue_x||[])) cues+=`<line class="cue" x1="${cx}" x2="${cx}" y1="${(-(Y0+Hh)).toFixed(2)}" y2="${(-Y0).toFixed(2)}" vector-effect="non-scaling-stroke"/><text x="${(cx+0.8).toFixed(2)}" y="${(-(Y0+Hh)+3.2).toFixed(2)}" font-size="2.6" fill="var(--g-haptic)" font-family="var(--display)">buzz</text>`;
-    h+=`<div class="rvar"><div class="vlabel"><span class="ln" style="--c:var(${role==="before"?"--shake":"--accent"})"></span>${esc(v.label)}</div>`+
+    h+=`<div class="rvar"><div class="vlabel"><span class="ln" style="--c:var(${role==="before"?"--shake":(role==="other"?"--muted":"--accent")})"></span>${esc(v.label)}</div>`+
        `<div class="strip"><svg viewBox="${X0.toFixed(2)} ${(-(Y0+Hh)).toFixed(2)} ${W.toFixed(2)} ${Hh.toFixed(2)}" data-wmm="${W.toFixed(2)}" data-hmm="${Hh.toFixed(2)}" role="img" aria-label="${esc(v.label)}: ink compared with the intended writing">`+
        `<rect class="pp" x="${X0.toFixed(2)}" y="${(-(Y0+Hh)).toFixed(2)}" width="${W.toFixed(2)}" height="${Hh.toFixed(2)}"/>${lines}${cues}`+
        `<path class="int" d="${pathD(p.intended)}" vector-effect="non-scaling-stroke"/><path class="ink ${role}" d="${pathD(v.ink)}" vector-effect="non-scaling-stroke"/></svg></div>`;
     const mets=(v.metrics||[]).map(mt=>{ const val = mt.value!=null ? `<b>${esc(fmtNum(mt.value))}${mt.unit?(mt.unit==="%"?" %":" "+esc(mt.unit)):""}</b>` : (mt.text? `<b>${esc(mt.text)}</b>`:"");
       return `<li><span class="mn">${esc(mt.name)}${val?":":""}</span>${val}${tagHTML(mt.evidence||ev)}${mt.note?`<span class="note">${esc(mt.note)}</span>`:""}</li>`; }).join("");
     if(mets) h+=`<ul class="mets">${mets}</ul>`;
-    h+=`</div>`;
-  }
+    return h+`</div>`; };
+  for(const v of keyV) h+=strip(v);
+  if(moreV.length) h+=`<details class="more"><summary>Show the other pens (${moreV.length}): ${esc(moreV.map(v=>v.label.split(",")[0].split(" (")[0]).join("; "))}</summary>${moreV.map(strip).join("")}</details>`;
   if(p.note) h+=`<p class="note">${esc(p.note)}</p>`;
   return h+`</article>`;
 }
@@ -1677,9 +1776,10 @@ function renderSpec(lay, tip){
 
 async function main(){
   drawBands();
-  const [lay, board, samples, manifest, tip]=await Promise.all([getJSON("data/layout.json"), getJSON("data/board.json"), getJSON("data/samples.json"), getJSON("data/manifest.json"), getJSON("data/tip.json")]);
-  T.data={layout:!!lay, board:!!board, samples:!!samples, tip:!!tip, manifest};
-  renderNewPen(tip);
+  const [lay, board, samples, manifest, tip, outcomes]=await Promise.all([getJSON("data/layout.json"), getJSON("data/board.json"), getJSON("data/samples.json"),
+    getJSON("data/manifest.json"), getJSON("data/tip.json"), getJSON("data/outcomes.json")]);
+  T.data={layout:!!lay, board:!!board, samples:!!samples, tip:!!tip, outcomes:!!outcomes, manifest};
+  if(!renderOutcomes(outcomes)) renderNewPen(tip);
   renderResults(samples, manifest);
   if(!window.THREE || !THREE.OrbitControls){ $("hero-loading").textContent="The 3-D view needs three.js, which could not load."; $("scene-loading").textContent="The scenes need three.js, which could not load."; T.ready=true; return; }
   if(!lay){ $("hero-loading").textContent="Could not load data/layout.json."; $("scene-loading").textContent="Could not load data/layout.json."; T.ready=true; return; }

@@ -9,6 +9,7 @@ Every input has a final file and a provisional fallback.  The final file wins as
                                                              design (results/fusion/viz_fusion.json,
                                                              results/ai/viz_guided.json) plus an illustration of
                                                              shrinking letters (not a result)
+  data/outcomes.json <- results/handwriting/outcomes.json (optional: averages per pen, fast and slow shakes)
   data/tip.json      <- results/revH/tip_params.json      else tip_params_provisional.json (optional: headline numbers
                                                              of the Rev H tip study; the page hides them when absent)
   data/manifest.json    which source each file came from (the page shows it)
@@ -30,6 +31,7 @@ import html
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 
@@ -208,13 +210,48 @@ def provisional_board() -> dict:
     }
 
 
+def board_numbers(bp) -> list:
+    """Plain-language headline numbers of the board study (results/board/board_params*.json), each with its label."""
+    if not bp:
+        return []
+    out = []
+    mf = bp.get("max_lateral_force_N") or {}
+    iso = mf.get("at_design_gap_isotropic", mf.get("A4_design_gap_2p7mm"))
+    if isinstance(iso, (int, float)):
+        out.append({"label": "Largest pull on the pen, magnet fully raised", "value": round(iso, 2), "unit": "N",
+                    "evidence": "CALCULATION"})
+    cap = bp.get("software_force_cap_N")
+    cap = cap.get("value") if isinstance(cap, dict) else cap
+    if isinstance(cap, (int, float)):
+        out.append({"label": "Pull limit chosen for safety", "value": cap, "unit": "N", "evidence": "ASSUMPTION"})
+    bw = (bp.get("force_bandwidth_Hz") or {}).get("value")
+    if isinstance(bw, (int, float)):
+        out.append({"label": "How quickly the pull can change", "value": round(bw), "unit": "times a second",
+                    "evidence": "CALCULATION"})
+    sh = (bp.get("sim_headlines") or {}).get("tracing_full_vs_off_ink_rms_mm")
+    if isinstance(sh, list) and len(sh) == 2 and all(isinstance(x, (int, float)) for x in sh):
+        # board/run_study.py writes [board off, full guidance] (relaxed hand, nose locked)
+        out.append({"label": "Tracing a letter, ink off the letter: board off, then full guidance", "value": None,
+                    "text": f"{sh[0]:.2f} mm, then {sh[1]:.2f} mm", "unit": "", "evidence": "SIMULATION"})
+    pm = bp.get("pen_magnet") or (bp.get("leading_option") or {}).get("pen_magnet") or {}
+    if "sleeve" in str(pm.get("location", "")):
+        out.append({"label": "The board pulls a small magnet under the fixed sleeve, so it steers the whole pen", "value": None,
+                    "unit": "", "evidence": "PROPOSED DESIGN"})
+    return out
+
+
 def build_board():
     if exists(BOARD_FINAL):
         b = load(BOARD_FINAL)
         if isinstance(b, dict) and isinstance(b.get("components"), list) and b["components"]:
             b.setdefault("meta", {}).setdefault("provisional", False)
-            return b, {"file": "board.json", "source": BOARD_FINAL, "status": "final", "modified": mtime_utc(BOARD_FINAL),
-                       "evidence": b["meta"].get("evidence_status", "")}
+            bp, bp_src = board_params()
+            nums = board_numbers(bp)
+            if nums:
+                b["explainer_numbers"] = nums          # added by the explainer build; the layout itself is unchanged
+                b["explainer_numbers_source"] = bp_src
+            return b, {"file": "board.json", "source": BOARD_FINAL + (f" (+ numbers from {bp_src})" if nums else ""),
+                       "status": "final", "modified": mtime_utc(BOARD_FINAL), "evidence": b["meta"].get("evidence_status", "")}
         warn(f"{BOARD_FINAL} has no 'components' list the page can draw; using the provisional board")
     b = provisional_board()
     return b, {"file": "board.json", "source": "viewer/explainer/build.py (provisional board)", "status": "provisional",
@@ -451,6 +488,8 @@ def to_strokes(v, down=None):
         out = [[[r3(p[0]), r3(p[1])] for p in s if _is_pt(p)] for s in v if s]
         return [s for s in out if len(s) >= 2] or None
     if _is_pt(v[0]) or v[0] is None:
+        if down is None and all(_is_pt(p) and len(p) >= 3 and p[2] in (0, 1, True, False) for p in v):
+            down = [p[2] for p in v]                       # [[x, y, pen_down], ...]
         if down is not None and len(down) == len(v):
             pts = [p if _is_pt(p) else [math.nan, math.nan] for p in v]
             flags = [bool(d) and _is_pt(p) for d, p in zip(down, v)]
@@ -567,7 +606,104 @@ def normalise_panel(p, i):
     return out
 
 
+DEVICE_ORDER = ["none", "ordinary", "weighted", "pencil_off", "pencil_akf", "pencil_oracle", "revH_off", "revH_akf",
+                "revH_akf_revh", "revH_board", "revH_oracle"]
+DEVICE_LABEL = {"none": "Ordinary pen", "ordinary": "Ordinary pen", "weighted": "Weighted pen (60 g heavier)",
+                "pencil_akf": "Earlier slim design (tip moves ±0.3 mm), with tracker",
+                "pencil_oracle": "Earlier slim design, if it knew the shake exactly",
+                "revH_off": "New pen, stabiliser switched off",
+                "revH_akf": "New pen, tracker as first tuned (for the slim design)",
+                "revH_akf_revh": "New pen, tracker tuned for it (today's best)",
+                "revH_oracle": "New pen, if it knew the shake exactly (the limit)"}
+KEY_DEVICES = {"none", "ordinary", "revH_akf_revh", "revH_oracle"}
+
+
+def _device_role(dev: str) -> str:
+    d = dev.lower()
+    if d in ("none", "ordinary", "off", "baseline"):
+        return "before"
+    if d.startswith("revh") and not d.endswith("_off"):
+        return "limit" if "oracle" in d else "after"
+    return "other"
+
+
+def _plain_scenario(title: str) -> str:
+    t = title.split(" - ", 1)[1] if " - " in title else title
+    m = re.search(r"tremor\s+([\d.]+)\s*mm\s+at\s+([\d.]+)\s*Hz", t, re.I)
+    if m:
+        return f"A shake of {m.group(1)} mm, {m.group(2)} times a second"
+    return t[:1].upper() + t[1:]
+
+
+def hw1_metrics(m: dict, ref: dict | None, ev: str) -> list:
+    out = []
+    if isinstance(m.get("ink_err_um"), (int, float)):
+        out.append(metric("Ink off the letters, on average", m["ink_err_um"] / 1000, "mm", ev, 2))
+        if ref and isinstance(ref.get("ink_err_um"), (int, float)) and ref is not m and ref["ink_err_um"] > 0:
+            ch = 100 * (m["ink_err_um"] / ref["ink_err_um"] - 1)
+            out.append({"name": "Compared with the ordinary pen", "value": None, "text": f"{abs(ch):.0f} % " + ("less" if ch < 0 else "more"),
+                        "unit": "", "evidence": ev, "note": ""})
+    if isinstance(m.get("word_acc_app"), (int, float)):
+        out.append(metric("Words right after the app's spelling check", 100 * m["word_acc_app"], "%", ev, 0))
+    if isinstance(m.get("at_travel_limit"), (int, float)) and m["at_travel_limit"] > 0.01:
+        out.append(metric("Time with the tip at its limit", 100 * m["at_travel_limit"], "%", ev, 0))
+    if m.get("app_words"):
+        out.append({"name": "The app read", "value": None, "text": f"“{m['app_words']}”", "unit": "", "evidence": ev, "note": ""})
+    return out
+
+
+def normalise_hw1(raw: dict):
+    """results/handwriting/samples.json of the handwriting study (schema 'panels[{id, title, condition, device,
+    caption, evidence, intended [[x, y, pen_down]], ink [[...]], metrics}]'): one panel per device run.  Panels that
+    share a condition and a scenario (the id without its device) become one panel with one variant per device."""
+    meta = dict(raw.get("meta", {}))
+    rate = 50.0
+    mm = re.search(r"at\s+([\d.]+)\s*Hz", str(meta.get("schema", "")))
+    if mm:
+        rate = float(mm.group(1))
+    groups: dict = {}
+    for p in raw["panels"]:
+        dev = str(p.get("device", "none"))
+        pid = str(p.get("id", ""))
+        scen = re.sub(r"_+", "_", pid.replace(dev, "")).strip("_") or pid
+        groups.setdefault((str(p.get("condition", "other")), scen), []).append(p)
+    panels = []
+    for (cond, scen), ps in groups.items():
+        ps.sort(key=lambda q: DEVICE_ORDER.index(q.get("device")) if q.get("device") in DEVICE_ORDER else 99)
+        ref = next((q["metrics"] for q in ps if _device_role(str(q.get("device", ""))) == "before"), None)
+        first = ps[0]
+        ev_raw = str(first.get("evidence", "SIM"))
+        ev = "SIMULATION" if ev_raw.upper().startswith("SIM") else ev_raw
+        prate = rate * (30 / 50 if "pd" in cond.lower() and "PD 30" in str(meta.get("schema", "")) else 1)
+        variants = []
+        for q in ps:
+            dev = str(q.get("device", "none"))
+            ink = to_strokes(q.get("ink"))
+            if not ink:
+                continue
+            label = DEVICE_LABEL.get(dev) or (q.get("title", dev).split(" - ")[0])
+            variants.append({"key": dev, "role": _device_role(dev), "label": label, "key_device": dev in KEY_DEVICES,
+                             "ink": ink, "points": [[r3(a[0]), r3(a[1]), int(a[2]) if len(a) > 2 else 1] for a in q["ink"] if _is_pt(a)],
+                             "metrics": hw1_metrics(q.get("metrics") or {}, ref, ev)})
+        if not variants:
+            continue
+        cap = re.sub(r"\s*\(seed \d+\)", "", str(first.get("caption", "")))
+        panels.append({"id": f"{cond}_{scen}", "condition": cond, "evidence": ev, "title": _plain_scenario(str(first.get("title", scen))),
+                       "subtitle": cap, "source": SAMPLES_FINAL, "provisional": False, "ruling_mm": 8, "rate_hz": prate,
+                       "intended": to_strokes(first.get("intended")) or [],
+                       "intended_points": [[r3(a[0]), r3(a[1]), int(a[2]) if len(a) > 2 else 1] for a in first.get("intended", []) if _is_pt(a)],
+                       "variants": variants, "note": ""})
+    if not panels:
+        return None
+    meta["provisional"] = False
+    meta["label"] = "simulation of the new pen and of other pens on the same simulated hand and tremor (model HW1); nothing measured"
+    return {"meta": meta, "units": "mm", "panels": panels}
+
+
 def normalise_samples(raw):
+    if isinstance(raw, dict) and isinstance(raw.get("panels"), list) and raw["panels"] and all(
+            isinstance(p, dict) and "device" in p and "ink" in p and "variants" not in p for p in raw["panels"]):
+        return normalise_hw1(raw)
     panels_raw = None
     if isinstance(raw, list):
         panels_raw = raw
@@ -587,16 +723,36 @@ def normalise_samples(raw):
     return {"meta": meta, "units": "mm", "panels": panels}
 
 
+def cond_key(c) -> str:
+    """Condition name -> page group (tremor, parkinsons, guided, board, spelling), by its words."""
+    toks = set(re.split(r"[^a-z]+", str(c).lower()))
+    for key, words in (("tremor", {"tremor", "et", "shake", "shaky", "essential"}),
+                       ("parkinsons", {"pd", "parkinson", "parkinsons", "micrographia"}),
+                       ("board", {"board"}),
+                       ("guided", {"guided", "practice", "dysgraphia", "guidance"}),
+                       ("spelling", {"spelling", "dyslexia"})):
+        if toks & words:
+            return key
+    return str(c).lower()
+
+
 def build_samples():
     if exists(SAMPLES_FINAL):
         try:
             s = normalise_samples(load(SAMPLES_FINAL))
-        except (OSError, ValueError) as ex:
+        except (OSError, ValueError, KeyError, TypeError) as ex:
             s = None
             warn(f"{SAMPLES_FINAL} could not be read ({ex})")
         if s:
-            return s, {"file": "samples.json", "source": SAMPLES_FINAL, "status": "final",
-                       "modified": mtime_utc(SAMPLES_FINAL), "evidence": s["meta"].get("evidence_status", ""),
+            covered = {cond_key(p["condition"]) for p in s["panels"]}
+            kept = []
+            for p in provisional_samples()["panels"]:      # conditions the study has not covered yet stay visible
+                if cond_key(p["condition"]) not in covered:
+                    s["panels"].append(p)
+                    kept.append(p["id"])
+            s["meta"]["provisional_panels"] = kept
+            return s, {"file": "samples.json", "source": SAMPLES_FINAL + (f" + provisional panels for the conditions not yet in it ({', '.join(kept)})" if kept else ""),
+                       "status": "final", "modified": mtime_utc(SAMPLES_FINAL), "evidence": s["meta"].get("evidence_status", ""),
                        "panels": len(s["panels"])}
         warn(f"{SAMPLES_FINAL} exists but no panel could be read from it; using the provisional panels")
     s = provisional_samples()
@@ -649,7 +805,7 @@ def component_rows(lay: dict) -> str:
 
 def status_html(manifest: dict) -> str:
     names = {"layout.json": "Pen layout", "board.json": "Guidance board", "samples.json": "Handwriting results",
-             "tip.json": "Tip study headline numbers"}
+             "tip.json": "Tip study headline numbers", "outcomes.json": "Handwriting study averages"}
     items = []
     for m in manifest["files"]:
         st = m["status"]
@@ -668,6 +824,41 @@ def provenance_html(manifest: dict, lay: dict) -> str:
     if meta.get("generated_utc"):
         bits.append(f"layout generated {e(meta['generated_utc'])}")
     return " · ".join(bits)
+
+
+# ------------------------------------------------------------------------------------------- handwriting outcomes
+OUTCOMES = "results/handwriting/outcomes.json"
+
+
+def build_outcomes():
+    """Headline averages of the handwriting study (results/handwriting/outcomes.json), slimmed for the page:
+    ink error and words read by the app for each pen, for fast (8-10 Hz) and slow (4-6 Hz) shakes of 1-2 mm."""
+    if not exists(OUTCOMES):
+        return None, None
+    try:
+        o = load(OUTCOMES)
+        et = o.get("et") or {}
+        h = et.get("headlines") or {}
+        bands = {}
+        for key, title in (("high_f_1_2mm", "Fast shake: 8 to 10 times a second, 1 to 2 mm"),
+                           ("low_f_1_2mm", "Slow shake: 4 to 6 times a second, 1 to 2 mm")):
+            if isinstance(h.get(key), dict):
+                bands[key] = {"title": title, "devices": {d: {"ink_mm": r3(v.get("ink", float("nan")) / 1000),
+                                                               "words": v.get("words"), "letters": v.get("letters")}
+                                                          for d, v in h[key].items() if isinstance(v, dict)}}
+        if not bands:
+            return None, None
+        meta = dict(o.get("meta", {}))
+        agg = et.get("aggregate") or {}
+        out = {"meta": {k: meta.get(k) for k in ("evidence_status", "generated_utc", "git_revision", "script", "quick")},
+               "writers": agg.get("writers"), "n_scenarios": agg.get("n_scenarios"), "bands": bands,
+               "device_labels": DEVICE_LABEL, "text": (o.get("text") or {}).get("et", {}),
+               "by_frequency_text": h.get("by_frequency_text", [])}
+        return out, {"file": "outcomes.json", "source": OUTCOMES, "status": "final", "modified": mtime_utc(OUTCOMES),
+                     "evidence": meta.get("evidence_status", "")}
+    except (OSError, ValueError, TypeError, AttributeError) as ex:
+        warn(f"{OUTCOMES} could not be summarised ({ex})")
+        return None, None
 
 
 # ---------------------------------------------------------------------------------------------------- tip study file
@@ -699,17 +890,19 @@ def main():
     board, m_board = build_board()
     samples, m_samp = build_samples()
     tip, m_tip = build_tip()
-    files = [m_lay, m_board, m_samp] + ([m_tip] if m_tip else [])
+    outc, m_out = build_outcomes()
+    files = [m_lay, m_board, m_samp] + ([m_out] if m_out else []) + ([m_tip] if m_tip else [])
     manifest = {"built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 "git_revision": git_revision(), "files": files, "warnings": WARNINGS,
                 "provisional_label": PROVISIONAL_LABEL}
     sizes = {"layout.json": dump(lay, "layout.json"), "board.json": dump(board, "board.json"),
              "samples.json": dump(samples, "samples.json")}
-    tip_path = os.path.join(DATA, "tip.json")
-    if tip is not None:
-        sizes["tip.json"] = dump(tip, "tip.json")
-    elif os.path.exists(tip_path):
-        os.remove(tip_path)
+    for obj, name in ((tip, "tip.json"), (outc, "outcomes.json")):
+        path = os.path.join(DATA, name)
+        if obj is not None:
+            sizes[name] = dump(obj, name)
+        elif os.path.exists(path):
+            os.remove(path)
     sizes["manifest.json"] = dump(manifest, "manifest.json")
     with open(os.path.join(HERE, "template.html"), encoding="utf-8") as f:
         page = f.read()

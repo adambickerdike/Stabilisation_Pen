@@ -173,8 +173,8 @@ def stiffness_at_zero(head: Head, pen: PenMagnet, gap_mm: float, zero_offset_mm,
     return float(0.5 * (kx + ky))
 
 
-def force_vs_gap(gaps_mm, head: Head = None, pen: PenMagnet = None, half_mm: float = 16.0,
-                 step_mm: float = 1.0) -> list:
+def force_vs_gap(gaps_mm, head: Head = None, pen: PenMagnet = None, half_mm: float = 15.0,
+                 step_mm: float = 0.5) -> list:
     head = head or Head()
     pen = pen or PenMagnet()
     offs = offset_grid(half_mm, step_mm)
