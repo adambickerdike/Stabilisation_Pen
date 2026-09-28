@@ -839,6 +839,16 @@ function gColor(g){ return css(gInfo(g).tok) || "#888888"; }
 /* ---------- geometry helpers (pen-local: axis +Z) ---------- */
 function along(geo){ geo.rotateX(Math.PI/2); return geo; }   /* three builds along +Y */
 function frustumGeo(r0, r1, z0, z1, seg){ const g=along(new THREE.CylinderGeometry(Math.max(r1,0.05), Math.max(r0,0.05), Math.max(z1-z0,0.1), seg||48)); g.translate(0,0,(z0+z1)/2); return g; }
+/* a C-shaped ring (the skid ring): a partial annulus with closed ends, built in the pen-local frame (x lateral, y up away
+   from the paper, z along the axis); the opening of openDeg is centred on +y */
+function cRingGeo(ro0, ro1, ri, z0, z1, openDeg){
+  const half=openDeg*Math.PI/360, a0=Math.PI/2+half, a1=Math.PI/2-half+2*Math.PI, n=48, P=[], I=[];
+  const prof=[[ri,z0],[ro0,z0],[ro1,z1],[ri,z1]];
+  for(let i=0;i<=n;i++){ const a=a0+(a1-a0)*i/n, c=Math.cos(a), s=Math.sin(a); for(const [r,z] of prof) P.push(r*c, r*s, z); }
+  for(let i=0;i<n;i++) for(let j=0;j<4;j++){ const j1=(j+1)%4, A=i*4+j, B=(i+1)*4+j, C=(i+1)*4+j1, D=i*4+j1; I.push(A,B,D, B,C,D); }
+  const e=n*4; I.push(0,1,2, 0,2,3, e,e+2,e+1, e,e+3,e+2);
+  const g=new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(P,3)); g.setIndex(I); g.computeVertexNormals();
+  return g; }
 function tubeGeo(ro0, ro1, ri, z0, z1){ const pts=[[ri,z0],[ro0,z0],[ro1,z1],[ri,z1],[ri,z0]].map(p=>new THREE.Vector2(p[0],p[1]));
   return along(new THREE.LatheGeometry(pts, 56)); }
 /* smooth limb: a tube of varying radius swept along a Catmull-Rom curve through the joints */
@@ -895,13 +905,14 @@ function partGeometry(c){
   else if(c.shape==="tube"){ let ro0=(c.d0||2)/2, ro1=(c.d1||c.d0||2)/2, ri=(c.d_in||0)/2;
     if(c.group==="actuator"){ ro0+=0.18; ro1+=0.18; ri-=0.18; }       /* a flux ring flush with the shell: keep it just proud, no z-fighting */
     if(c.group==="grip"){ ri+=0.05; }
-    ri=Math.max(0.01, Math.min(ri, Math.min(ro0,ro1)-0.2)); g=tubeGeo(ro0, ro1, ri, z0, z1); g.translate(ox,oy,0); }
+    ri=Math.max(0.01, Math.min(ri, Math.min(ro0,ro1)-0.2));
+    g=(+c.open_deg>0)? cRingGeo(ro0, ro1, ri, z0, z1, +c.open_deg) : tubeGeo(ro0, ro1, ri, z0, z1); g.translate(ox,oy,0); }
   else { let r0=(c.d0||2)/2, r1=(c.d1==null?(c.d0||2):c.d1)/2; if(/cap/i.test(c.id||"")){ r0-=0.12; r1-=0.12; } g=frustumGeo(r0, r1, z0, z1); g.translate(ox,oy,0); }
   return g;
 }
 function partMaterial(c){
   const g=dgroup(c);
-  if(g==="skid") return stdMat(css("--g-skid"), {roughness:0.4});
+  if(g==="skid") return stdMat(css("--g-skid"), {roughness:0.4, side:THREE.DoubleSide});
   if(g==="structure") return stdMat(css("--shell"), {roughness:0.35, side:THREE.DoubleSide});
   if(g==="grip") return stdMat(css("--g-grip"), {roughness:0.9, side:THREE.DoubleSide});
   if(g==="refill") return stdMat(c.id==="ball"?"#2b3035":css("--g-refill"), {roughness:0.3, metalness:0.55});
@@ -998,7 +1009,8 @@ function drawGrip(lay){
   if(shell){ const r=(shell.d0||20)/2; pen+=`<rect class="shellc" x="${shell.z0}" y="${-r}" width="${shell.z1-shell.z0}" height="${2*r}" rx="3" stroke-width="0.5"/>`; }
   if(grip){ const r0=(grip.d0||16)/2, r1=(grip.d1||grip.d0||20)/2; pen+=`<path class="sleevec" d="M${grip.z0} ${-r0} L${grip.z1} ${-r1} L${grip.z1} ${r1} L${grip.z0} ${r0} Z"/>`; }
   const z0n=skid? skid.z0 : 4; pen+=`<path class="nosec" d="M0 -0.5 L${z0n+2} -3.4 L${z0n+2} 3.4 L0 0.5 Z"/>`;
-  if(skid){ const r=(skid.d0||16)/2; pen+=`<rect class="skidc" x="${skid.z0}" y="${-r}" width="${skid.z1-skid.z0}" height="${2*r}" rx="0.8"/>`; }
+  if(skid){ const r=(skid.d0||16)/2, top=(+skid.open_deg>0)? r*Math.cos(skid.open_deg*Math.PI/360) : r;   /* a C open on the top: its side view stops at r cos(open/2) */
+    pen+=`<rect class="skidc" x="${skid.z0}" y="${-top}" width="${skid.z1-skid.z0}" height="${r+top}" rx="0.8"/>`; }
   const back=sk.limbs.filter(L=>!L.front).map(limbSVG).join("")+sk.blobs.map(blobSVG).join("");
   const front=sk.limbs.filter(L=>L.front).map(limbSVG).join("");
   const TR=`translate(${ox} ${oy}) rotate(${-th}) scale(${S})`;
