@@ -47,6 +47,8 @@ LAYOUT_FINAL = "results/revH/layout.json"
 LAYOUT_PROV = "results/revH/layout_provisional.json"
 BOARD_FINAL = "results/board/layout.json"
 SAMPLES_FINAL = "results/handwriting/samples.json"
+AIPRIOR_SAMPLES = "results/aiprior/samples.json"          # AI help for severe tremor (same writer, sentence and tremor)
+AIPRIOR_MERGE = {"guide_ai_predicted": "ai_guide", "clean_tracker": "clean_copy"}
 FUSION = "results/fusion/viz_fusion.json"
 GUIDED = "results/ai/viz_guided.json"
 GUIDANCE = "results/ai/guidance.json"
@@ -713,15 +715,17 @@ def normalise_panel(p, i):
 
 
 DEVICE_ORDER = ["none", "ordinary", "weighted", "pencil_off", "pencil_akf", "pencil_oracle", "revH_off", "revH_akf",
-                "revH_akf_revh", "revH_board", "revH_oracle"]
+                "revH_akf_revh", "ai_guide", "revH_board", "clean_copy", "revH_oracle"]
 DEVICE_LABEL = {"none": "Ordinary pen", "ordinary": "Ordinary pen", "weighted": "Weighted pen (60 g heavier)",
                 "pencil_akf": "Earlier slim design (tip moves ±0.3 mm), with tracker",
                 "pencil_oracle": "Earlier slim design, if it knew the shake exactly",
                 "revH_off": "New pen, stabiliser switched off",
                 "revH_akf": "New pen, tracker as first tuned (for the slim design)",
                 "revH_akf_revh": "New pen, tracker tuned for it (today's best)",
-                "revH_oracle": "New pen, if it knew the shake exactly (the limit)"}
-KEY_DEVICES = {"none", "ordinary", "revH_akf_revh", "revH_oracle"}
+                "revH_oracle": "New pen, if it knew the shake exactly (the limit)",
+                "ai_guide": "New pen + AI letter prediction steering the tip (no better)",
+                "clean_copy": "The app's clean copy of the same writing (digital; the paper keeps the ink above)"}
+KEY_DEVICES = {"none", "ordinary", "revH_akf_revh", "clean_copy", "revH_oracle"}
 
 
 def _device_role(dev: str) -> str:
@@ -730,6 +734,8 @@ def _device_role(dev: str) -> str:
         return "before"
     if d.startswith("revh") and not d.endswith("_off"):
         return "limit" if "oracle" in d else "after"
+    if d in ("ai_guide", "clean_copy"):
+        return "after"
     return "other"
 
 
@@ -908,6 +914,10 @@ def normalise_hw1(raw: dict):
                 role = _device_role(dev)
                 label = DEVICE_LABEL.get(dev) or str(q.get("title", dev)).split(" - ")[0]
                 key_dev, mets = dev in KEY_DEVICES, hw1_metrics(m, ref, ev)
+                if dev == "clean_copy":         # a digital copy made by the app after writing, not ink
+                    for x in mets:
+                        if isinstance(x, dict) and str(x.get("name", "")).startswith("Ink off the letters"):
+                            x["name"] = "Copy off the letters, on average (digital)"
             v = {"key": dev, "role": role, "label": label, "key_device": key_dev, "ink": ink, "metrics": mets}
             if kind == "tremor":          # kept for the animated scenes (a, b) when the mechanism replay is absent
                 v["points"] = _pts3(q["ink"])
@@ -987,10 +997,37 @@ def cond_key(c) -> str:
     return str(c).lower()
 
 
+def merge_aiprior(raw: dict) -> list:
+    """Add the AI study's clean copy and AI-guidance runs to the handwriting study's tremor panels: the same writer,
+    sentence, seed and tremor (results/aiprior/samples.json; its tracker run equals the handwriting study's to 0.01 mm)."""
+    if not exists(AIPRIOR_SAMPLES) or not isinstance(raw, dict) or not isinstance(raw.get("panels"), list):
+        return []
+    try:
+        ai = load(AIPRIOR_SAMPLES)
+    except (OSError, ValueError) as ex:
+        warn(f"{AIPRIOR_SAMPLES} could not be read ({ex})")
+        return []
+    have = {str(p.get("id", "")) for p in raw["panels"]}
+    added = []
+    for q in ai.get("panels", []):
+        dev = str(q.get("device", ""))
+        if dev not in AIPRIOR_MERGE:
+            continue
+        scen = str(q.get("id", "")).replace(f"aiprior_{dev}_", "", 1)
+        if f"et_revH_akf_revh_{scen}" not in have:          # only where the handwriting study has the same scenario
+            continue
+        new = AIPRIOR_MERGE[dev]
+        raw["panels"].append(dict(q, id=f"et_{new}_{scen}", condition="et_tremor", device=new))
+        added.append(f"et_{new}_{scen}")
+    return added
+
+
 def build_samples():
     if exists(SAMPLES_FINAL):
         try:
-            s = normalise_samples(load(SAMPLES_FINAL))
+            raw = load(SAMPLES_FINAL)
+            ai_added = merge_aiprior(raw)
+            s = normalise_samples(raw)
         except (OSError, ValueError, KeyError, TypeError) as ex:
             s = None
             warn(f"{SAMPLES_FINAL} could not be read ({ex})")
@@ -1002,7 +1039,8 @@ def build_samples():
                     s["panels"].append(p)
                     kept.append(p["id"])
             s["meta"]["provisional_panels"] = kept
-            return s, {"file": "samples.json", "source": SAMPLES_FINAL + (f" + provisional panels for the conditions not yet in it ({', '.join(kept)})" if kept else ""),
+            src = SAMPLES_FINAL + (f" + {AIPRIOR_SAMPLES} (clean copy and AI guidance, {len(ai_added)} runs)" if ai_added else "")
+            return s, {"file": "samples.json", "source": src + (f" + provisional panels for the conditions not yet in it ({', '.join(kept)})" if kept else ""),
                        "status": "final", "modified": mtime_utc(SAMPLES_FINAL), "evidence": s["meta"].get("evidence_status", ""),
                        "panels": len(s["panels"])}
         warn(f"{SAMPLES_FINAL} exists but no panel could be read from it; using the provisional panels")

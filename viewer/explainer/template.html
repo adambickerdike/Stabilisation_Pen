@@ -371,7 +371,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
       </div>
       <div class="job" role="listitem">
         <h3><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="3" y="4" width="20" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11h7M7 16h5M17 14l2 2 4-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Spelling help</h3>
-        <p>The app reads your writing, flags a misspelt word with a buzz, and shows and reads the right spelling.</p>
+        <p>The app reads your writing, flags a misspelt word with a buzz, and shows and reads the right spelling. For strong shake it also keeps a clean copy of your notes, next to the ink.</p>
       </div>
     </div>
     <div class="nomeas">
@@ -736,6 +736,8 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
         <h3>What it cannot do</h3>
         <ul>
           <li>It cannot write for you or fix spelling on the paper. The app can flag a word and show the right spelling.</li>
+          <li>AI that guesses your next letter does not steady the ink: the guessed shape lands where the shaking tip lands. In simulation it removed almost none of the leftover shake, so the pen does not use it. <span class="tag sim"><i></i>Simulation</span></li>
+          <li>With strong shake the paper still shows shaky ink. The app's clean copy removes the shake from the recording after you write: in simulation the app read 97&nbsp;% of the words at 1–2&nbsp;mm shake, against 30–59&nbsp;% in the ink. <span class="tag sim"><i></i>Simulation</span></li>
           <li>It cannot push your hand. Only the desk board can pull the pen along a letter, and it cannot overpower you: it pulls at most 0.4&nbsp;N and gives way if you push against it. <span class="tag asm"><i></i>Assumption</span></li>
           <li>It cannot move the tip more than about 3&nbsp;mm. <span class="tag prop"><i></i>Proposed design</span> A bigger shake is only partly corrected.</li>
           <li>It cannot perfectly tell shake from writing when both have the same rhythm, about 4–6 per second. <span class="tag lit"><i></i>Literature · CON-24, PDT-31</span></li>
@@ -755,6 +757,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <li>Measure how people hold and turn the pen while writing. This decides whether the product keeps the rear inertial module that is fitted in the first prototype.</li>
           <li>Check magnet safety for people with implants (pacemakers, deep-brain stimulators) before any board or pen trial.</li>
           <li>Test the spelling help with dyslexic writers: the cues must help, not distract.</li>
+          <li>Ask people to read the app's clean copy of real shaky notes, and check that it never changes a letter.</li>
         </ul>
       </div>
     </div>

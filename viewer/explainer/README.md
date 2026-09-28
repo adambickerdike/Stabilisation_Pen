@@ -31,7 +31,7 @@ and any warning. The page shows the same list under "Where the data comes from".
 |---|---|---|
 | `data/layout.json` | `results/revH/layout.json` | `results/revH/layout_provisional.json` |
 | `data/board.json` | `results/board/layout.json` (+ plain-language numbers and the scene-(e) physics from `results/board/board_params.json` and `results/board/board.json`) | a provisional board defined in `build.py` (every size an ASSUMPTION) |
-| `data/samples.json` | `results/handwriting/samples.json` | panels from `results/fusion/viz_fusion.json` and `results/ai/viz_guided.json` (earlier pencil design, labelled) + a drawn illustration of shrinking letters |
+| `data/samples.json` | `results/handwriting/samples.json`, plus the clean copy and AI-guidance runs of `results/aiprior/samples.json` added to the matching tremor panels (same writer, sentence and tremor) | panels from `results/fusion/viz_fusion.json` and `results/ai/viz_guided.json` (earlier pencil design, labelled) + a drawn illustration of shrinking letters |
 | `data/replay.json` | `results/opt/viz_inertial_opt_1mm.json` + `viz_inertial_opt.json` (+ band averages from `results/opt/inertial_opt.json`) | none: scenes (a) and (b) then use the tremor panels of `samples.json`, else an illustration |
 | `data/outcomes.json` | `results/handwriting/outcomes.json` (slimmed: tremor bands, Parkinson's and practice averages) | none: the page shows the tip-study numbers instead |
 | `data/tip.json` | `results/revH/tip_params.json` | `results/revH/tip_params_provisional.json` |
