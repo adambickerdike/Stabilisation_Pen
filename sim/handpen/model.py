@@ -130,6 +130,8 @@ def pack(cfg: Config, n_steps: int, dt: float = DT, rec_hz: float = REC_HZ, trem
         s(f"nw{c}", axis[j]); s(f"P{c}", P[j])
     s("skid_on", 1.0 if cfg.skid else 0.0); s("k_sk", cfg.k_sk); s("c_sk", cfg.c_sk)
     s("p_nom", protrusion_centre(cfg.theta_deg)); s("r_ring", CONTACT["r_ring"]); s("r_b", r_b)
+    if getattr(cfg, "skid_geom", None) is not None:       # extension (opt/inertial): e.g. a rigid nose whose ball carries the load
+        s("p_nom", cfg.skid_geom[0]); s("r_ring", cfg.skid_geom[1])
     mu = max(cfg.mu_skid, 1e-6)
     s("mu_sk", mu); s("mus_sk", mu * cfg.ms_ratio); s("vs", cfg.v_s)
     s("sg0_sk", mu * cfg.ms_ratio / CONTACT["presliding"] if cfg.mu_skid > 0 else 0.0)
@@ -147,7 +149,7 @@ def pack(cfg: Config, n_steps: int, dt: float = DT, rec_hz: float = REC_HZ, trem
     s("cmg1", dv.axes[0]); s("cmg2", dv.axes[1]); s("tau_g", 1.0 / (2 * math.pi * 100.0)); s("tau_c", 0.5)
     s("stage_on", 1.0 if cfg.stage else 0.0); s("qlim", cfg.q_lim); s("qtap", cfg.q_taper); s("qstop", cfg.q_stop)
     s("ws", 2 * math.pi * cfg.stage_hz); s("zs", cfg.stage_zeta); s("sdec", round(1.0 / (cfg.stage_rate * dt)))
-    s("slew", 0.08); s("atau", 0.05)
+    s("slew", getattr(cfg, "stage_slew", 0.08)); s("atau", 0.05)
     s("lock_rot", 1.0 if cfg.lock_rotation else 0.0); s("m_pen", body.m)
     s("vc_on", 1.0 if cfg.voluntary else 0.0); s("vc_ki", 2 * math.pi * cfg.vc_hz); s("vc_delay", round(cfg.vc_delay / dt))
     info = {"model_version": MODEL_VERSION, "pen": body.summary(), "grip": g.summary(), "rotation_lever_m": lever,

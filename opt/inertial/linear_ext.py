@@ -83,7 +83,8 @@ class LinearExt:
         D[gb + 3:gb + 5, gb + 3:gb + 5] += beta * kap * np.eye(2)
         self.gb = gb
         # paper at the skid point of the pen
-        self.s_skid = protrusion_centre(cfg.theta_deg) * a + CONTACT["r_ring"] * t1
+        sg = getattr(cfg, "skid_geom", None)
+        self.s_skid = (protrusion_centre(cfg.theta_deg) * a + CONTACT["r_ring"] * t1) if sg is None else (sg[0] * a + sg[1] * t1)
         Js = np.zeros((3, nd)); Js[:, 0:5] = self.point_jac(self.s_skid)
         self.J_skid = Js
         if contact:

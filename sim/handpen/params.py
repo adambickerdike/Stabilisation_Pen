@@ -316,6 +316,8 @@ class Config:
     stage_src: int = 0               # stage command: 0 oracle (clean reference), 1 external estimate (run(clean=...)), 2 controller
     ctl: Optional[dict] = None       # in-loop controller spec (opt/inertial/control.py builds it)
     body_mod: Optional[dict] = None  # envelope tiers: {"remove": [part names], "add": [(name, m, z, L, r2)]} applied to the CAD pen
+    skid_geom: Optional[Tuple[float, float]] = None   # (p_nom, r_ring) override of the skid contact point (m); (0, 0) puts it at the ball
+    stage_slew: float = 0.08         # stage reference slew limit (m/s); 0.08 is the P1 value (large-travel stages need more)
 
     def replace(self, **kw):
         return replace(self, **kw)
@@ -342,10 +344,10 @@ def pen_with_device(cfg: Config) -> PenBody:
     body = pen_body(cfg.wiring)
     bm = getattr(cfg, "body_mod", None)
     if bm:
-        for name in bm.get("remove", ()):
-            body = body.remove(name)
         for name, m_, z_, L_, r2_ in bm.get("add", ()):
             body = body.add(name, m_, z_, L_, r2_)
+        for name in bm.get("remove", ()):
+            body = body.remove(name)
     dv = cfg.device
     if dv.removed_cell_frac > 0:
         f = 1.0 - dv.removed_cell_frac

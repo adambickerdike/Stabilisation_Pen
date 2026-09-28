@@ -1,0 +1,127 @@
+{
+ "meta": {
+  "evidence_status": "PROVISIONAL first cut (CALCULATION + ASSUMPTION); replaced by results/revH/tip_params.json after the H1 simulations",
+  "generated_utc": "2026-09-28T16:40:20+00:00",
+  "git_revision": "bf472d4",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "-",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "opt/inertial (first cut, 2026-09-28)",
+  "note": "All values referred to the ball tip unless stated. Nothing measured."
+ },
+ "architecture": "B",
+ "architecture_note": "B = skid ring on the FIXED front sleeve carries the writing load; the refill carrier (nose inner) moves on a 2-axis flexure gimbal inside the handle. Provisional choice because (1) actuators carry only the refill spring and ball friction (0.13 N + 0.03 N) instead of N cos(theta) + friction (0.64 + 0.15 N at 1 N, 50 deg) for A, and (2) a pure 2-axis rotation moves the tip perpendicular to the pen axis: a rigid nose (A) must push the tip into or out of the paper by delta cos(theta) for tilt-plane corrections (0.37 N of writing-force change per mm against the 575 N/m grip, CALC), while B's refill slides axially on its soft spring. A is being simulated for the comparison (model H1 with the grip-sleeve extension).",
+ "tip_travel_mm": {
+  "usable_radius": 3.0,
+  "mechanical_stop_radius": 3.5,
+  "label": "ASSUMPTION (to be optimised 1.5-4 mm)"
+ },
+ "refill_axial_slide_mm": {
+  "value": 6.0,
+  "note": "B: the refill slides axially by delta*cot(theta) (2.5 mm for 3 mm at 50 deg) plus the tilt-dependent protrusion change; constant-force spring F_c 0.15 N (P0 value)",
+  "label": "CALC + ASSUMPTION"
+ },
+ "moving_mass_at_tip_g": {
+  "value": 2.62,
+  "total_moving_g": 9.84,
+  "inertia_about_pivot_g_mm2": 6540,
+  "label": "CALC from assumed parts (nose tube 4 g, D1 refill 0.84 g, rear arm 1 g, 4 NdFeB magnets 4 g at z 80 mm)"
+ },
+ "suspension_stiffness_N_per_m": {
+  "value": 10.0,
+  "pivot_bending_Nm_per_rad": 0.025,
+  "label": "ASSUMPTION (laser-cut cross-strip gimbal, spring steel AMF-20 / BeCu AMF-18)"
+ },
+ "actuator": {
+  "type": "2-axis moving-magnet voice coil (magnets on the nose's rear arm, coils and back iron in the handle)",
+  "Km_actuator_N_per_sqrtW_per_axis": 1.0,
+  "Km_at_tip_N_per_sqrtW_per_axis": 0.6,
+  "lever_tip_per_actuator": 1.667,
+  "force_limit_at_tip_N": {
+   "peak": 0.72,
+   "continuous": 0.355
+  },
+  "label": "ASSUMPTION: Km scaled from catalogue voice coils of similar volume (Moticont LVCM-016-013-01 0.85 N/sqrt(W), AMF-02; LVCM-016-010-01 0.82, AMF-73); peak 1.2 N and 0.35 W continuous per axis at the actuator (ASSUMPTION)"
+ },
+ "static_tip_load_N": {
+  "B": {
+   "refill_spring_transverse": 0.126,
+   "ball_friction": 0.029
+  },
+  "A": {
+   "normal_force_transverse": 0.643,
+   "ball_friction": 0.15
+  },
+  "bias": "B: a fixed magnetic or spring bias cancels the 0.13 N refill-spring component (constant in the handle frame if the grip fixes the roll); A: bias spring plus slow zero-power trim (SQUIGGLE class, AMF-15) for N cos(theta) that varies with force and tilt",
+  "label": "CALC (1 N writing force, 50 deg, mu_ball 0.15, F_c 0.15 N; config values = ASSUMPTION)"
+ },
+ "servo": {
+  "type": "PID position loop on Hall sensing, 10 kHz inner rate",
+  "bandwidth_Hz": 80.0,
+  "damping": 0.7,
+  "hall_sensor": "TMAG5273 / DRV5055 class (OPT-45/OPT-46, hardware-study rows)",
+  "label": "ASSUMPTION (to be optimised)"
+ },
+ "latency_ms": {
+  "imu_to_estimate": 1.4,
+  "controller_tick": 0.5,
+  "current_loop": 0.1,
+  "label": "ASSUMPTION built on MFR OPT-37 (docs/sensor_fusion_ai.md 4.x)"
+ },
+ "power_model": {
+  "formula": "P_total = 0.065 + 0.012 + sum_axes (F_tip_rms_axis^2 + F_tip_static_residual_axis^2) / Km_tip^2  [W]",
+  "Km_tip_N_per_sqrtW": 0.6,
+  "examples_W": {
+   "B_with_bias_0.03N_rms": 0.082,
+   "B_without_bias": 0.1234,
+   "A_without_bias": 1.287,
+   "A_with_bias_residual_0.25N": 0.251
+  },
+  "terms": "0.065 W base electronics (config, ASSUMPTION); 0.012 W two coil drivers + Hall sensors (ASSUMPTION); copper loss per axis",
+  "label": "CALC"
+ },
+ "geometry_mm": {
+  "pivot_z": 50.0,
+  "actuator_z": 80.0,
+  "front_opening_d": 13.0,
+  "skid_ring": {
+   "contact_radius": 5.5,
+   "od": 14.0,
+   "note": "C-shaped heel skid (open at the front for visibility), ASSUMPTION"
+  },
+  "grip_zone_z": [
+   20.0,
+   45.0
+  ],
+  "finger_pads_z": [
+   26.0,
+   32.0,
+   38.0
+  ],
+  "web_z": 92.0,
+  "handle_od": 22.0,
+  "length": 170.0,
+  "pen_tilt_deg": 50.0,
+  "tilt_range_deg": [
+   35.0,
+   75.0
+  ],
+  "label": "ASSUMPTION (lead's provisional layout, pivot moved from 58 to 50 mm to lower the lever and the copper loss)"
+ },
+ "mass_g": {
+  "pen_without_inertial_module": 85.0,
+  "inertial_module_budget": 30.0,
+  "label": "CALC from assumed parts; see final file"
+ },
+ "cell": {
+  "part": "EEMB LIR14500 750 mAh, 14.1 x 48.5 mm, 20 g",
+  "ledger": "AMF-80 (proposed row)",
+  "usable_Wh": 2.22,
+  "label": "MFR + ASSUMPTION 80 % usable"
+ }
+}
