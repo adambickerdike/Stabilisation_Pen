@@ -83,24 +83,24 @@ The same hand, the same sentence and the same tremor, written with each pen, at 
 |---|---|---|---|---|---|---|
 | 4 Hz, 0.3 mm | 167 µm · 98 % | 179 (+7 %) · 98 % | 168 (+1 %) · 98 % | 181 (+8 %) · 98 % | 181 (+9 %) · 98 % | 3 (−98 %) · 100 % |
 | 4 Hz, 1 mm | 516 µm · 50 % | 554 (+7 %) · 42 % | 518 (+0 %) · 49 % | 557 (+8 %) · 42 % | 557 (+8 %) · 43 % | 7 (−99 %) · 100 % |
-| 4 Hz, 2 mm | 1054 µm · 7 % | 1141 (+8 %) · 5 % | 1057 (+0 %) · 8 % | 1146 (+9 %) · 5 % | 1145 (+9 %) · 5 % | 59 (−95 %) · 100 % |
-| 6 Hz, 0.3 mm | 171 µm · 99 % | 183 (+7 %) · 98 % | 172 (+1 %) · 100 % | 185 (+8 %) · 98 % | 185 (+8 %) · 98 % | 4 (−98 %) · 100 % |
-| 6 Hz, 1 mm | 534 µm · 50 % | 570 (+7 %) · 44 % | 525 (−2 %) · 52 % | 565 (+6 %) · 44 % | 553 (+4 %) · 48 % | 12 (−98 %) · 100 % |
-| 6 Hz, 2 mm | 1110 µm · 9 % | 1204 (+8 %) · 8 % | 1068 (−4 %) · 10 % | 1172 (+6 %) · 9 % | 1111 (+0 %) · 8 % | 81 (−93 %) · 99 % |
-| 8 Hz, 0.3 mm | 167 µm · 98 % | 190 (+14 %) · 98 % | 157 (−6 %) · 98 % | 178 (+7 %) · 98 % | 175 (+5 %) · 98 % | 7 (−96 %) · 100 % |
-| 8 Hz, 1 mm | 551 µm · 56 % | 627 (+14 %) · 36 % | 436 (−21 %) · 68 % | 500 (−9 %) · 60 % | 438 (−20 %) · 69 % | 24 (−96 %) · 100 % |
-| 8 Hz, 2 mm | 1124 µm · 8 % | 1308 (+16 %) · 5 % | 976 (−13 %) · 18 % | 1170 (+4 %) · 6 % | 871 (−22 %) · 19 % | 143 (−87 %) · 99 % |
-| 10 Hz, 0.3 mm | 174 µm · 98 % | 211 (+21 %) · 98 % | 130 (−26 %) · 98 % | 139 (−20 %) · 99 % | 131 (−25 %) · 99 % | 7 (−96 %) · 100 % |
-| 10 Hz, 1 mm | 551 µm · 54 % | 669 (+21 %) · 38 % | 410 (−26 %) · 73 % | 396 (−28 %) · 76 % | 287 (−48 %) · 88 % | 23 (−96 %) · 100 % |
-| 10 Hz, 2 mm | 1113 µm · 8 % | 1396 (+25 %) · 5 % | 952 (−15 %) · 15 % | 1035 (−7 %) · 18 % | 544 (−51 %) · 55 % | 126 (−89 %) · 98 % |
+| 4 Hz, 2 mm | 1054 µm · 7 % | 1141 (+8 %) · 5 % | 1057 (+0 %) · 8 % | 1146 (+9 %) · 5 % | 1146 (+9 %) · 6 % | 59 (−95 %) · 100 % |
+| 6 Hz, 0.3 mm | 171 µm · 99 % | 183 (+7 %) · 98 % | 172 (+1 %) · 100 % | 185 (+8 %) · 98 % | 185 (+9 %) · 98 % | 4 (−98 %) · 100 % |
+| 6 Hz, 1 mm | 534 µm · 50 % | 570 (+7 %) · 44 % | 525 (−2 %) · 52 % | 565 (+6 %) · 44 % | 550 (+3 %) · 49 % | 12 (−98 %) · 100 % |
+| 6 Hz, 2 mm | 1110 µm · 9 % | 1204 (+8 %) · 8 % | 1068 (−4 %) · 10 % | 1172 (+6 %) · 9 % | 1087 (−2 %) · 11 % | 81 (−93 %) · 99 % |
+| 8 Hz, 0.3 mm | 167 µm · 98 % | 190 (+14 %) · 98 % | 157 (−6 %) · 98 % | 178 (+7 %) · 98 % | 173 (+4 %) · 98 % | 7 (−96 %) · 100 % |
+| 8 Hz, 1 mm | 551 µm · 56 % | 627 (+14 %) · 36 % | 436 (−21 %) · 68 % | 500 (−9 %) · 60 % | 430 (−22 %) · 69 % | 24 (−96 %) · 100 % |
+| 8 Hz, 2 mm | 1124 µm · 8 % | 1308 (+16 %) · 5 % | 976 (−13 %) · 18 % | 1170 (+4 %) · 6 % | 848 (−25 %) · 24 % | 143 (−87 %) · 99 % |
+| 10 Hz, 0.3 mm | 174 µm · 98 % | 211 (+21 %) · 98 % | 130 (−26 %) · 98 % | 139 (−20 %) · 99 % | 129 (−26 %) · 99 % | 7 (−96 %) · 100 % |
+| 10 Hz, 1 mm | 551 µm · 54 % | 669 (+21 %) · 38 % | 410 (−26 %) · 73 % | 396 (−28 %) · 76 % | 291 (−47 %) · 87 % | 23 (−96 %) · 100 % |
+| 10 Hz, 2 mm | 1113 µm · 8 % | 1396 (+25 %) · 5 % | 952 (−15 %) · 15 % | 1035 (−7 %) · 18 % | 556 (−50 %) · 56 % | 126 (−89 %) · 98 % |
 
 **What the table says.**
 1. **The mechanism is big enough.** With perfect knowledge of the tremor, Rev H removes 87–99 % of the ink error at every frequency up to 2 mm, and the app reads 98–100 % of the words (SIM). The nose is at its travel limit at most 14 % of the time (10 Hz, 2 mm). The pencil's ±0.3 mm stage is at its limit 94–100 % of the time at 1–2 mm, even with perfect knowledge. It then removes only 16–33 % of the error (SIM).
-2. **The tracker is the limit, not the nose.** With the tracker re-tuned for Rev H, the error falls by 48–51 % at 10 Hz (1–2 mm) and by 20–22 % at 8 Hz (SIM). The words the app reads at 10 Hz rise from 54 % to 88 % (1 mm) and from 8 % to 55 % (2 mm). The tracker as shipped (tuned on the pencil) does about half as well.
-3. **Below about 6 Hz the tracker does nothing useful.** At 4–6 Hz, Rev H with its tracker is 0–9 % *worse* than an ordinary pen (SIM). The tracker's frequency gate keeps it off there (it cannot tell a slow tremor from the writing), and the heavier handle adds a little tremor. This matches DEC-009 (frequency-gated authority). Older ET patients and PD patients often have tremor in this band (LIT PDT-31, PDT-05/06).
+2. **The tracker is the limit, not the nose.** With the tracker re-tuned for Rev H, the error falls by 47–50 % at 10 Hz (1–2 mm) and by 22–25 % at 8 Hz (SIM). The words the app reads at 10 Hz rise from 54 % to 87 % (1 mm) and from 8 % to 56 % (2 mm). The tracker as shipped (tuned on the pencil) does about half as well.
+3. **At 6 Hz and below the tracker does nothing useful.** At 4–6 Hz, Rev H with its tracker is between 2 % better and 9 % *worse* than an ordinary pen (SIM). The tracker cannot tell a 4–6 Hz tremor from the writing strokes in the same band (§2), and the heavier handle adds a little tremor. The shipped tracker's frequency gate (5.9 Hz) keeps it off there on purpose. This matches DEC-009 (frequency-gated authority). Older ET patients and PD patients often have tremor in this band (LIT PDT-31, PDT-05/06).
 4. **Weight does not help in this model.** The +60 g pen and the 75 g Rev H handle with the nose held make the ink 7–26 % worse, most at 8–10 Hz (SIM). The cause is the finger grip: a 75 g pen on the grip's 575 N/m springiness (LIT HAP-26) resonates near 14 Hz and amplifies 8–10 Hz tremor. With a grip twice as stiff, the penalty disappears (table below). People report that weighted utensils help some of them (LIT ACT-19: weighted spoon 81 % successful transfers against 74 % for a normal spoon; LIT PDT-22: inertial loading reduced postural ET tremor), but not consistently (LIT ACT-32: no effect of weights on PD postural tremor). The model has no reflex or brain response to the load. This needs a measurement (EXP-HW1).
-5. **The tracker barely touches clean writing.** On tremor-free writing, the tracker moves the ink by 22 µm RMS (as shipped) and 30 µm (re-tuned) (SIM). Letters and words are still read as before (99 % and 100 %). The re-tuned tracker is above the 25 µm false-correction bound of AC-E01-09.
-6. **The nose works easily.** The actuator force is about 0.035 N RMS, well below the 0.21 N continuous rating, and never hits the force limit (SIM).
+5. **The tracker barely touches clean writing.** On tremor-free writing, the tracker moves the ink by 22 µm RMS (as shipped) and 26 µm (re-tuned) (SIM). Letters and words are still read as before (99 % and 100 %). The re-tuned tracker is just above the 25 µm false-correction bound of AC-E01-09.
+6. **The nose works easily.** The actuator force is at most 0.05 N RMS, well below the 0.21 N continuous rating, and never hits the force limit (SIM).
 
 **How robust these numbers are** (SIM; ratio of ink error to the ordinary pen; writers 0–5, seed 200):
 
