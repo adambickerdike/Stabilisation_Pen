@@ -79,6 +79,8 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-A02 (§12) | Do people's letters sit close enough to a personal template for AI-template guidance to help, and do people accept known- and AI-template guidance? | 60 (20 healthy, 20 ET, 20 PD) | A02-P: passive measurement; A02-G: within-subject, counterbalanced guidance conditions, reader-blinded | Legibility with gated AI templates vs none; template distance | **IA** (A02-G); measurement (A02-P) | A02-P with the passive pen (Stage A); A02-G after a G-S-equivalent gate for the build; DEC-020 |
 | EXP-I02 (§13) | How much of the tremor at the nib comes from wrist or forearm rotation rather than hand translation, and about which pivot? | EXP-H01 participants (80) | Measurement inside EXP-H01 sessions; hand-dorsum IMU plus the pen's IMU and a page reference | Rotational share of nib tremor-band variance; pivot distance | none (measurement) | Stage A; DEC-024, H1 tremor model |
 | EXP-I03 (§14) | Do passive nose and grip options (skid friction, soft sleeve, hand resting, heavier cap) improve writing on balance? | 20 ET (EXP-H03-T cohort) + 12 healthy | Within-subject, randomised, participant- and reader-blinded, non-active prototypes | Legibility and in-band ink tremor against the unmodified pencil | device burden; passive effect | Stage A–B; DEC-024 |
+| EXP-W01…W05 (§15) | Rev H (bigger grip, DEC-029): does the 75 g pen add tremor; does the nose cut ink tremor in ET; do cues or a size assist help PD micrographia; does guided practice improve unassisted writing; does the app's spelling help reduce errors in dyslexia? | 20 ET; 20 PD with micrographia; poor-handwriting cohort; dyslexia cohort | crossovers and practice trials (§15) | tip tremor; ink tremor and words read; letter-height trend; unassisted legibility at retention; unassisted spelling errors | IA, LI, device burden | Rev H prototype after EXP-I05; ethics |
+| EXP-G07 (§15) | Does practice with the guidance board improve unassisted writing, and is its extra downward pull acceptable? | adults (Touch arm, then board), later children with dysgraphia or dyslexia and PD | phases A–C (§15) | unassisted retention error; acceptance of the pull | LI | after EXP-G06 safety gate; ethics |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3.
 
@@ -1097,3 +1099,90 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 ### Decision
 
 Adopt a passive option only if legibility improves (AC-I03-01) with no loss of letter size beyond AC-I03-03. The prediction is that none will, except possibly hand resting, which the model cannot evaluate.
+
+---
+
+## 15. Rev H outcome studies: EXP-W01…W05 and EXP-G07
+
+The user chose a bigger grip (DEC-029). Rev H moves its whole nose, and so the ink tip, by up to ±3 mm (DEC-032). It gives cues and practice modes, and has an optional desk guidance board (DEC-031). The predictions come from `docs/handwriting_outcomes.md` and `results/handwriting/outcomes.json` (model HW1, SIMULATION; the writers' responses to cues are ASSUMPTION ranges).
+- Every study scores recordings with the same definitions as the simulations: `python3 -m handwriting.score_recording trace.csv`, from a tablet (≥ 100 Hz, ≤ 0.05 mm) or the pen's own page sensor.
+- The ids are EXP-HW1…HW5 in `docs/handwriting_outcomes.md` §8.
+
+### EXP-W01: Does a 75 g, 22 mm pen transmit more tremor than a 12 g pen?
+- **Design.** 20 people with ET; randomised crossover: an ordinary 12 g pen, the 75 g Rev H dummy with the nose locked, and a 72 g weighted pen.
+- **Tasks.** Spiral, line and a copied sentence on a tablet. Grip stiffness is measured with a small shaker on the barrel (as HAP-26).
+- **Decision.** If the Rev H dummy is worse by more than 10 %, reduce its mass or move it forward.
+
+<!-- AC-TABLE:EXP-W01:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W01-01 | REQ-RVH-001 | Tremor amplitude at the tip (handwriting.score_recording) with the 75 g Rev H dummy (nose locked) relative to an ordinary 12 g pen, ET participants, 8-10 Hz tremor, copied sentence and spiral | ≤ 1.10 | hypothesis | REQ-RVH-001 (mass); prediction +14 to +26 % at 8-10 Hz with the HAP-26 575 N/m grip and no change with a grip twice as stiff (results/handwriting/outcomes.json; SIMULATION) -> uncertain; 10 % engineering judgement | Rev H mass and mass distribution |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-W01).
+<!-- AC-TABLE:EXP-W01:END -->
+
+### EXP-W02: Does the nose cut ink tremor in essential tremor?
+- **Design.** The offline part extends EXP-E01 on EXP-H01 recordings. Then a blinded crossover with Rev H (nose off against nose on) in ET writers with tremor above 7.5 Hz.
+- **What it decides.** The ET claim and the frequency gate.
+
+<!-- AC-TABLE:EXP-W02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W02-01 | REQ-RVH-006 | Tremor amplitude in the ink with the Rev H nose on against nose off (blinded crossover), ET writers with tremor above 7.5 Hz, relative reduction | ≥ 30 % | hypothesis | REQ-RVH-006; prediction 47-50 % less ink error at 10 Hz and 22-25 % at 8 Hz with the re-tuned tracker (results/handwriting/outcomes.json; SIMULATION) | ET claim; DEC-032; DEC-009 frequency gate |
+| AC-W02-02 | REQ-RVH-006 | False correction of the Rev H nose on tremor-free writing of healthy controls (ink moved against nose off), RMS | ≤ 25 µm | derived | derived from AC-E01-09 / REQ-CTRL-005; prediction 22 µm (shipped tracker) and 26 µm (re-tuned) (results/handwriting/outcomes.json; SIMULATION) -> marginal | DEC-028 / Rev H tracker setting |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W02).
+<!-- AC-TABLE:EXP-W02:END -->
+
+### EXP-W03: Cues or a size assist for Parkinson's micrographia?
+- **Design.** 20 people with PD and progressive micrographia. Within-subject order: plain paper, 1 cm lines, the vibration cue at > 10 % shrinkage, the adaptive vertical size assist, then the pen switched off (after-effect). Copy 3 pangrams in each condition.
+- **Measurands.** Letter-height trend, normalised jerk (PDT-17) and sense of agency.
+
+<!-- AC-TABLE:EXP-W03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W03-01 | — | Letter-height change from the first to the last quarter of copied pangrams with the vibration cue at > 10 % shrinkage, PD participants with progressive micrographia | ≥ -5 % | hypothesis | prediction +2 % with the cue (5.1 -> 5.2 mm) against -18 % without help (5.1 -> 4.2 mm), assuming the response ranges of LIT PDT-19, PDT-18, PDT-33 (results/handwriting/outcomes.json; SIMULATION with ASSUMPTION responses) | Rev H write-bigger cue |
+| AC-W03-02 | — | Adaptive vertical size assist against 1 cm lines and the cue: larger end-of-task letter height with no increase of normalised jerk over 10 % and no loss of sense of agency (all three) | all three met | hypothesis | only size-assist variant worth testing (fixed gain: still shrinks 18 %, tremor +33 %, jerk x2.5); adaptive assist jerk +25 % predicted (SIMULATION) -> expected FAIL on jerk; LIT PDT-17, PDT-34, PDT-35 | Rev H size-assist mode (build or drop) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W03).
+<!-- AC-TABLE:EXP-W03:END -->
+
+### EXP-W04: Does guided practice improve unassisted handwriting?
+- **Design.** Children or adults with poor handwriting (BHK-type screening), at least 20 sessions (HAP-41).
+- **Arms.** Practice alone; with a vibration cue on errors; with partial nose guidance; with the board's partial guidance, if built. Guidance fades over the sessions.
+- **Outcome.** Unassisted legibility and speed at 1 day and 4 weeks.
+
+<!-- AC-TABLE:EXP-W04:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W04-01 | — | Unassisted legibility at 4-week retention (BHK-like, blinded) after ≥ 20 practice sessions with partial nose guidance, minus practice alone | ≥ 0 points (non-inferior) and a positive point estimate | hypothesis | LIT HAP-41 (≥ 20 sessions), HAP-42/43/44 (guidance effects mostly vanish when off), HAP-10 (fluency more than shape); SIM: partial nose guidance 35 % closer while on, letters read 94 % (results/handwriting/outcomes.json) -> uncertain | Rev H practice mode; DEC-031 board value |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-W04).
+<!-- AC-TABLE:EXP-W04:END -->
+
+### EXP-W05: Does the app's spelling help reduce spelling errors in dyslexia?
+- **Design.** Dictation practice, 4–6 weeks. The app knows the target words, flags wrong words with a gentle buzz, shows and reads the right spelling, and keeps a corrected copy. The comparison is the same app without flags.
+- The pen never changes the ink.
+
+<!-- AC-TABLE:EXP-W05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W05-01 | — | Spelling errors in unassisted dictation after 4-6 weeks of dictation practice with the app flagging wrong words (buzz, show and read the right spelling), relative to the same app without flags, participants with dyslexia | ≥ 20 % | hypothesis | the app flags 100 % of misspelt words with a known target at 6 % false flags (SIMULATION, results/handwriting/outcomes.json); effect on learning unknown; LIT HAP-47, HAP-48, HAP-50; 20 % engineering judgement | Rev H spelling mode in the app |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-W05).
+<!-- AC-TABLE:EXP-W05:END -->
+
+### EXP-G07: Guidance board with people
+- **Phase A:** the 3D Systems Touch arm (HAP-52) with a pen adapter, comparing partial, full and lead-through guidance on adults.
+- **Phase B:** the board prototype with adults.
+- **Phase C:** children with dysgraphia or dyslexia, and people with PD.
+
+Assisted and **unassisted** error, retention after 1 day and 1 week, legibility, speed, fluency, letter size (PD) and comfort with the downward pull. Only after the EXP-G06 safety gate.
+
+<!-- AC-TABLE:EXP-G07:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-G07-01 | REQ-RVH-007 | Guidance board practice: unassisted retention error after 1 week relative to practice without guidance, adults (phase B), and the share of participants rating the extra downward pull acceptable | retention not worse; ≥ 70 % acceptable | hypothesis | REQ-RVH-007; board study: guided accuracy is not learning (LIT HAP-01...06); normal pull about 1.0 N while guiding (CALC, docs/guidance_board.md); 70 % engineering judgement | DEC-031 (build the board beyond the prototype) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G07).
+<!-- AC-TABLE:EXP-G07:END -->

@@ -45,13 +45,25 @@ The 3-D explainer page is built by `python3 viewer/explainer/build.py`.
 | Poor handwriting (dysgraphia) | Guided practice | The nose nudges letter shapes within 3 mm; the board guides whole letters. The evidence shows fluency improves more than shape (LIT HAP-10…14) |
 | Dyslexia (spelling) | The app's AI | It recognises each word, flags a misspelling with a gentle buzz, then shows and reads the right spelling; it keeps a corrected copy of your notes. Guided practice of letter shapes when the word is known |
 
-**How much better (SIM, pencil-and-hand model H1, test seeds; `results/opt/inertial_opt.json`).**
-- With perfect knowledge of the shake, the mechanism leaves **9–24 %** of the tremor in the ink, for tremor up to 2 mm (a 76–91 % cut).
-- With today's tracker on synthetic writing, it leaves **64–76 %** at 8–12 Hz and 1–2 mm (a 24–36 % cut). How much depends on how the grip gives, which is not yet measured.
-- With the rear inertial module as well, it leaves 59–63 %.
-- It barely changes 0.3 mm tremor (leaves 89–96 %). It does nothing at 4–6 Hz, where the tracker cannot yet separate tremor from writing.
-- The gap between the two is the hard part: telling shake from writing, not the mechanism. It will only be settled on real writing (EXP-E01).
-- The before/after writing samples for each condition are in [`handwriting_outcomes.md`](handwriting_outcomes.md) and on the explainer page.
+**How much better (SIM; synthetic writers and tremor; test writers and seeds only).** Sources: `results/handwriting/outcomes.json` (model HW1, [`handwriting_outcomes.md`](handwriting_outcomes.md)) and `results/opt/inertial_opt.json` (model H1, [`opt_inertial.md`](opt_inertial.md)).
+
+| Condition | What the pen does | Result in simulation |
+|---|---|---|
+| Essential tremor, 10 Hz | Stabiliser (nose + tracker) | Ink error 47–50 % lower; the app reads 87 % of words instead of 54 % at 1 mm |
+| Essential tremor, 8 Hz | Stabiliser | Ink error 22–25 % lower |
+| Essential tremor, 8–10 Hz, 1–2 mm, average | Stabiliser | Ink error 835 → 531 µm; words read 31 % → 59 % |
+| Tremor at 4–6 Hz (typical of Parkinson's) | Stabiliser | No benefit: the tracker cannot yet separate it from writing |
+| Any tremor, perfect knowledge (the mechanism's limit) | Stabiliser | Ink error 87–99 % lower; 98–100 % of words read |
+| Parkinson's shrinking letters | "Write bigger" buzz | Letters stay 5.1 → 5.2 mm instead of shrinking to 4.2 mm, if people respond as studies suggest; +11 % writing time |
+| Poor handwriting, practice | Nose guidance (partial) | Ink 35 % closer to the target letters while guided; the device makes 23–38 % of the ink's movement |
+| Poor handwriting, practice | Board guidance | Ink 24–34 % closer (partial–full) |
+| Dyslexia, letter reversals (b/d) | Any guidance | 0 % turned into the right letter: guidance cannot override a letter you are set on |
+| Dyslexia, spelling | App AI (known target) | Flags all 78 misspelt words (6 % false flags); read-back and practice follow |
+
+- **The tracker, not the mechanism, is the limit.** With perfect knowledge of the shake the ±3 mm nose would clean almost everything. With today's tracker it helps most at 8–12 Hz.
+- **Weight is not the answer.** A heavier pen made tremor in the ink 14–26 % worse at 8–10 Hz in the model, because the pen rocks on the finger grip. Keep the pen as light as possible.
+- **Tremor-free writing is barely disturbed:** the nose moves clean ink by 22–26 µm.
+- **Learning is shown only without guidance.** Guidance makes letters closer while it is on; the evidence says the effect mostly fades when it is off (LIT HAP-42…44). Full guidance even made letters slightly less readable (92 → 86 %); partial guidance did not (94 %).
 
 ## 2. How you hold a pen, and what the pen changes
 

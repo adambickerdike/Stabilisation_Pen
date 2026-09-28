@@ -6,8 +6,9 @@
 
 **Inputs used.**
 - Rev H: the final `results/revH/tip_params.json` (generated 17:57 UTC; architecture B, ±3 mm, 0.837 N peak and 0.21 N continuous at the tip, 2.97 g moving mass, 80 Hz servo, 75 g pen). Its values did not change between the 17:04, 17:47 and 17:57 versions.
-- Board: the final `results/board/board_params.json` (17:54 UTC) and the board study's own guidance law (`board/params.py`). The provisional board file is not used any more.
-- Tracker: `results/opt/tracker_models/akf_ship.json` (as shipped) and `results/opt/inertial_tracker_revh.json` (re-tuned for Rev H; the version generated 18:03 UTC, sha256 29dc0eb5…). The ET numbers were first run with the 16:58 version; the re-run moved no result by more than 5 points.
+- Board: the final `results/board/board_params.json` (17:54 UTC) and the board study's own guidance law (`board/params.py`).
+- The provisional files (`tip_params_provisional.json`, `board_params_provisional.json`) were used only during development. Every final number uses the final files.
+- Tracker: `results/opt/tracker_models/akf_ship.json` (as shipped) and `results/opt/inertial_tracker_revh.json` (re-tuned for Rev H; the version generated 18:03 UTC, sha256 29dc0eb5…). The ET study was first run with the 16:58 version. The re-run with the 18:03 version changed no number in the ET table by more than 5 percentage points.
 - `outcomes.json` records the hash of every input file. Section 7 lists what was assumed.
 
 ## 1. Short answer
@@ -17,8 +18,8 @@
 - **Essential tremor (SIM).**
   - **The ±3 mm nose is big enough.** With perfect knowledge of the tremor, Rev H removes 87–99 % of the ink error for tremor up to 2 mm at the hand. The app then reads 98–100 % of the words. The pencil's ±0.3 mm stage is too small: it sits at its limit 94–100 % of the time at 1–2 mm.
   - **The tracker limits the benefit.** With today's causal tracker (accelerometer + page sensor, re-tuned for Rev H), the ink error falls by 47–50 % at 10 Hz and by 22–25 % at 8 Hz (1–2 mm). At 10 Hz, 1 mm, the app then reads 87 % of words instead of 54 %. Over 8–10 Hz and 1–2 mm, the error falls from 835 to 531 µm on average, and the words read rise from 31 % to 59 %.
-  - **At 4–6 Hz there is no benefit** (−2 to +9 %). Tracking slow tremor during writing is the main open problem (EXP-HW2).
-  - **Weight does not help in this model.** The 75 g Rev H and a pen with 60 g added put 7–26 % more 8–10 Hz tremor into the ink, because the pen rocks on the finger grip. With a stiffer grip the effect disappears. The literature on weights is mixed (EXP-HW1).
+  - **At 4–6 Hz there is no benefit** (−2 to +9 %). Tracking slow tremor during writing is the main open problem (EXP-W02).
+  - **Weight does not help in this model.** The 75 g Rev H and a pen with 60 g added put 14–26 % more tremor into the ink at 8–10 Hz (7–9 % at 4–6 Hz), because the pen rocks on the finger grip. With a stiffer grip the effect disappears. The literature on weights is mixed (EXP-W01).
 
 - **Parkinson's micrographia (SIM, assumed responses).** Without help, letters shrink from 5.1 to 4.2 mm along a pangram.
   - A vibration cue keeps them at 5.2 mm, *if* people respond as small studies suggest (LIT PDT-19). It costs about 11 % more writing time.
@@ -106,7 +107,7 @@ The same hand, the same sentence and the same tremor, written with each pen, at 
 1. **The mechanism is big enough.** With perfect knowledge of the tremor, Rev H removes 87–99 % of the ink error at every frequency up to 2 mm, and the app reads 98–100 % of the words (SIM). The nose is at its travel limit at most 14 % of the time (10 Hz, 2 mm). The pencil's ±0.3 mm stage is at its limit 94–100 % of the time at 1–2 mm, even with perfect knowledge. It then removes only 16–33 % of the error (SIM).
 2. **The tracker is the limit, not the nose.** With the tracker re-tuned for Rev H, the error falls by 47–50 % at 10 Hz (1–2 mm) and by 22–25 % at 8 Hz (SIM). The words the app reads at 10 Hz rise from 54 % to 87 % (1 mm) and from 8 % to 56 % (2 mm). The tracker as shipped (tuned on the pencil) does about half as well.
 3. **At 6 Hz and below the tracker does nothing useful.** At 4–6 Hz, Rev H with its tracker is between 2 % better and 9 % *worse* than an ordinary pen (SIM). The tracker cannot tell a 4–6 Hz tremor from the writing strokes in the same band (§2), and the heavier handle adds a little tremor. The shipped tracker's frequency gate (centred at 5.9 Hz) holds it back there on purpose. This matches DEC-009 (frequency-gated authority). Older ET patients and PD patients often have tremor in this band (LIT PDT-31, PDT-05/06).
-4. **Weight does not help in this model.** The +60 g pen and the 75 g Rev H handle with the nose held make the ink 7–26 % worse, most at 8–10 Hz (SIM). The cause is the finger grip: a 75 g pen on the grip's 575 N/m springiness (LIT HAP-26) resonates near 14 Hz and amplifies 8–10 Hz tremor. With a grip twice as stiff, the penalty disappears (table below). People report that weighted utensils help some of them (LIT ACT-19: weighted spoon 81 % successful transfers against 74 % for a normal spoon; LIT PDT-22: inertial loading reduced postural ET tremor), but not consistently (LIT ACT-32: no effect of weights on PD postural tremor). The model has no reflex or brain response to the load. This needs a measurement (EXP-HW1).
+4. **Weight does not help in this model.** The +60 g pen and the 75 g Rev H handle with the nose held make the ink 7–26 % worse, most at 8–10 Hz (SIM). The cause is the finger grip: a 75 g pen on the grip's 575 N/m springiness (LIT HAP-26) resonates near 14 Hz and amplifies 8–10 Hz tremor. With a grip twice as stiff, the penalty disappears (table below). People report that weighted utensils help some of them (LIT ACT-19: weighted spoon 81 % successful transfers against 74 % for a normal spoon; LIT PDT-22: inertial loading reduced postural ET tremor), but not consistently (LIT ACT-32: no effect of weights on PD postural tremor). The model has no reflex or brain response to the load. This needs a measurement (EXP-W01).
 5. **The tracker barely touches clean writing.** On tremor-free writing, the tracker moves the ink by 22 µm RMS (as shipped) and 26 µm (re-tuned) (SIM). Letters and words are still read as before (99 % and 100 %). The re-tuned tracker is just above the 25 µm false-correction bound of AC-E01-09.
 6. **The nose works easily.** The actuator force is at most 0.05 N RMS, well below the 0.21 N continuous rating, and never hits the force limit (SIM).
 
@@ -181,7 +182,7 @@ One PD-like writer copying the pangram with each kind of help, on ruled lines 10
 3. **Lines ≥ 1 cm** halve the shrinkage in this model (4.85 mm at the end). This is the cheapest help, and the literature supports it best (LIT PDT-18, PDT-33). The app can print or show the lines.
 4. **A fixed size gain is the wrong tool.** It makes every letter larger, but the letters still shrink by 18 %. Only the scale changes. Horizontal gain crowds the letters (50 % of neighbours touch, against 12 %). The nose also enlarges the tremor (+33 %) and makes the ink less smooth (jerk ×2.5). A vertical-only gain avoids the crowding but still enlarges tremor and jerk.
 5. **The adaptive vertical assist** restores the start size (5.1 → 5.2 mm) with little cost in the ink: jerk +25 %, tremor +5 %, no crowding, no extra time, and the nose moves only 0.28 mm RMS (SIM). It does as well as the cue, without relying on the writer's response.
-6. **But it hides the problem from the writer.** The writer sees normal-sized letters while moving small. PD patients with progressive micrographia already have altered motor awareness (LIT PDT-35). Visual feedback changes PD writing size (LIT PDT-34), so the writer may shrink the movement further. The model cannot show this. The adaptive assist is the only size-assist variant worth testing, and only against lines and the cue, for agency, after-effects and fluency (EXP-HW3).
+6. **But it hides the problem from the writer.** The writer sees normal-sized letters while moving small. PD patients with progressive micrographia already have altered motor awareness (LIT PDT-35). Visual feedback changes PD writing size (LIT PDT-34), so the writer may shrink the movement further. The model cannot show this. The adaptive assist is the only size-assist variant worth testing, and only against lines and the cue, for agency, after-effects and fluency (EXP-W03).
 7. **Letters stay readable** at these sizes (94–97 % letters, 88–92 % words, SIM). The app's reader normalises size, so micrographia at 4 mm does not make letters unreadable to it. The benefit to aim for is the writer's own size and comfort, not the app's reading. LIT PDT-38: kinematic measures separate PD from controls better than size.
 8. **The 75 g pen** puts 7 % more tremor into the ink than a 12 g pen at 4–6 Hz (124 against 116 µm, SIM; the grip effect of §3).
 
@@ -235,7 +236,7 @@ The same learner copying "a big dog dug a deep pit by the pond" with each kind o
 - Guidance mainly improves **fluency** (fewer speed peaks, higher speed), not **shape** (LIT HAP-10, HAP-11).
 - Effects seen *during* guidance largely **vanish when guidance is off** (LIT HAP-43). Kinesthetic training did not improve legibility (LIT HAP-42). Trajectory-timed guidance improved shape with next-day retention, but path guidance did not (LIT HAP-44). Partial-then-full guidance beat either alone (LIT HAP-13, abstract only).
 - Handwriting interventions need **practice, at least 20 sessions** (LIT HAP-41). The pen cannot replace practice.
-- So the only valid test of guidance is **unassisted writing at retention** (EXP-HW4). In this model the learner does not learn, so it says nothing about learning.
+- So the only valid test of guidance is **unassisted writing at retention** (EXP-W04). In this model the learner does not learn, so it says nothing about learning.
 
 **Spelling help for dyslexia (SIM + CALC).**
 
@@ -244,7 +245,7 @@ The same learner copying "a big dog dug a deep pit by the pond" with each kind o
 - Dyslexia is mainly a **phonological** difficulty. Children with dyslexia write as fast as their peers but pause more within words, and spelling explains their written output (LIT HAP-47, HAP-48). So spelling help belongs in the **app**, and the pen must not change the ink.
 - In the 24 dyslexia-like runs there were 78 misspelled words. When the app knows the target text (copying or dictation), it flags all 78 (100 %). It also flags 10 of 162 correct words (6 %) because it misreads them (SIM).
 - In **free writing** the app's lexicon correction repaired only 3 of the 78 (4 %) (SIM). It is tuned for letter-reading errors and changes a word only when it is confident. Real-word errors ('bog' for 'dog', 'bug' for 'dug', 'dig' for 'big') cannot be caught without knowing the target. A confusion model for b/d, p/q and sound-alike errors would be needed (app work, not pen work).
-- Spell checking has a large effect on error rates in adults with learning disabilities (LIT HAP-50: Hedges g −1.63), and smart pens a moderate one (g 0.45). A structured phonics programme (Orton-Gillingham) had no significant effect on spelling (LIT HAP-47). The app should flag gently, show and read the right spelling, and keep a corrected copy next to the untouched ink (EXP-HW5).
+- Spell checking has a large effect on error rates in adults with learning disabilities (LIT HAP-50: Hedges g −1.63), and smart pens a moderate one (g 0.45). A structured phonics programme (Orton-Gillingham) had no significant effect on spelling (LIT HAP-47). The app should flag gently, show and read the right spelling, and keep a corrected copy next to the untouched ink (EXP-W05).
 
 ## 6. What each function can do for each condition
 
@@ -259,8 +260,8 @@ The same learner copying "a big dog dug a deep pit by the pond" with each kind o
 
 | Function | Expected benefit | Evidence | Must be tested |
 |---|---|---|---|
-| Tremor stabiliser (nose + tracker) | At 8–10 Hz, 1–2 mm: 22–50 % less ink error. Words read at 10 Hz, 1 mm: 54 → 87 %. At 4–6 Hz: none (−2 to +9 %). The mechanism's limit, with perfect tremor knowledge: 87–99 % less | SIM (HW1, cross-checked with P1). Analogue: active spoons helped, but no more than a deeper, heavier spoon (LIT ACT-19) | EXP-HW2, then the EXP-B09 bench test |
-| Pen mass and 22 mm grip | In the model, 75 g puts 7–26 % more tremor into the ink than 12 g (worst at 8–10 Hz). With a grip twice as stiff: no change | SIM. LIT mixed: weighted spoons are liked (ACT-18, ACT-19); inertial loading reduced postural ET tremor (PDT-22) | EXP-HW1 |
+| Tremor stabiliser (nose + tracker) | At 8–10 Hz, 1–2 mm: 22–50 % less ink error. Words read at 10 Hz, 1 mm: 54 → 87 %. At 4–6 Hz: none (−2 to +9 %). The mechanism's limit, with perfect tremor knowledge: 87–99 % less | SIM (HW1, cross-checked with P1). Analogue: active spoons helped, but no more than a deeper, heavier spoon (LIT ACT-19) | EXP-W02, then the EXP-B09 bench test |
+| Pen mass and 22 mm grip | In the model, 75 g puts 7–26 % more tremor into the ink than 12 g (worst at 8–10 Hz). With a grip twice as stiff: no change | SIM. LIT mixed: weighted spoons are liked (ACT-18, ACT-19); inertial loading reduced postural ET tremor (PDT-22) | EXP-W01 |
 | Vibration cue | None expected | – | – |
 | Size assist | None: ET letters are normal in size (LIT PDT-06) | LIT | – |
 | Nose guidance | Only for tracing or copying practice; not a tremor treatment | – | – |
@@ -272,23 +273,23 @@ The same learner copying "a big dog dug a deep pit by the pond" with each kind o
 | Function | Expected benefit | Evidence | Must be tested |
 |---|---|---|---|
 | Tremor stabiliser | Little. PD tremor while writing is small and 4–6 Hz, where the tracker does nothing (SIM) | SIM. LIT: gyroscopic spoon in PD inconsistent (ACT-31); weights no effect on PD tremor (ACT-32); a weighted pen made letter spacing more variable (PDT-21) | Not a PD claim |
-| Vibration cue "write bigger" | Keeps letters at their start size (5.2 against 4.2 mm) for +11 % time and +17 % jerk, **if** people respond as assumed | LIT, small and short-term: cues normalise size through longer movement time (PDT-19); 1 cm cues help and 0.6 cm cues harm (PDT-18). SIM with the assumed response | EXP-HW3 |
-| Lines ≥ 1 cm (paper or app) | Halves the shrinkage (4.85 mm at the end) | LIT: +31 % word length with lines (PDT-33); PDT-18. SIM with the assumed response | Baseline arm of EXP-HW3 |
+| Vibration cue "write bigger" | Keeps letters at their start size (5.2 against 4.2 mm) for +11 % time and +17 % jerk, **if** people respond as assumed | LIT, small and short-term: cues normalise size through longer movement time (PDT-19); 1 cm cues help and 0.6 cm cues harm (PDT-18). SIM with the assumed response | EXP-W03 |
+| Lines ≥ 1 cm (paper or app) | Halves the shrinkage (4.85 mm at the end) | LIT: +31 % word length with lines (PDT-33); PDT-18. SIM with the assumed response | Baseline arm of EXP-W03 |
 | Size assist, fixed gain | Rescales but does not stop the shrinking. +33 % tremor in the ink, 50 % of letters touching, jerk ×2.5 | SIM only (new function) | Not recommended |
-| Size assist, adaptive vertical | Restores the start size (5.2 mm) with jerk +25 % and tremor +5 %. Risks: hides the deficit (LIT PDT-35), visual adaptation (PDT-34), dependence | SIM only (new function) | EXP-HW3: agency, after-effect with the assist off, fluency |
-| Nose guidance | "Write big" practice with large targets; not simulated here | LIT: amplitude training enlarges writing but costs fluency (PDT-17) | EXP-HW3 extension |
+| Size assist, adaptive vertical | Restores the start size (5.2 mm) with jerk +25 % and tremor +5 %. Risks: hides the deficit (LIT PDT-35), visual adaptation (PDT-34), dependence | SIM only (new function) | EXP-W03: agency, after-effect with the assist off, fluency |
+| Nose guidance | "Write big" practice with large targets; not simulated here | LIT: amplitude training enlarges writing but costs fluency (PDT-17) | EXP-W03 extension |
 | Guidance board | "Write big" practice: loop height 0.83 → 0.93 of the target | SIM (board study) | EXP-G05, then a PD practice pilot |
-| App AI | Measures letter size, speed and jerk in every note (`score_recording.py` definitions); still reads 92 % of words at 4 mm letters (SIM) | SIM + CALC. LIT: speed and fluency separate PD from controls better than size (PDT-38) | Outcome measures of EXP-HW3 |
+| App AI | Measures letter size, speed and jerk in every note (`score_recording.py` definitions); still reads 92 % of words at 4 mm letters (SIM) | SIM + CALC. LIT: speed and fluency separate PD from controls better than size (PDT-38) | Outcome measures of EXP-W03 |
 
 **Poor handwriting (dysgraphia-like)**
 
 | Function | Expected benefit | Evidence | Must be tested |
 |---|---|---|---|
 | Tremor stabiliser | None (no tremor) | – | – |
-| Vibration cue on error | Flags 24 % of malformed letters (4 % false alarms); the ink is not changed | SIM | Arm of EXP-HW4 |
+| Vibration cue on error | Flags 24 % of malformed letters (4 % false alarms); the ink is not changed | SIM | Arm of EXP-W04 |
 | Size assist | None | – | – |
-| Nose guidance | During guidance: 35 % (partial) to 61 % (full) closer to the target. The device then causes 23–38 % of the ink's movement. Full guidance lowers readability (92 → 86 %). Learning: unknown | SIM. LIT: guidance improves fluency more than shape, and gains mostly vanish without it (HAP-10, HAP-11, HAP-13, HAP-42, HAP-43, HAP-44) | EXP-HW4: unassisted retention after ≥ 20 sessions (HAP-41) |
-| Guidance board | During guidance: 24 % (partial) to 34 % (full) closer; 25–27 % device share | SIM (this study and the board study). LIT: magnetic guidance halved the error during guidance (HAP-16) | Arm of EXP-HW4; EXP-G05 |
+| Nose guidance | During guidance: 35 % (partial) to 61 % (full) closer to the target. The device then causes 23–38 % of the ink's movement. Full guidance lowers readability (92 → 86 %). Learning: unknown | SIM. LIT: guidance improves fluency more than shape, and gains mostly vanish without it (HAP-10, HAP-11, HAP-13, HAP-42, HAP-43, HAP-44) | EXP-W04: unassisted retention after ≥ 20 sessions (HAP-41) |
+| Guidance board | During guidance: 24 % (partial) to 34 % (full) closer; 25–27 % device share | SIM (this study and the board study). LIT: magnetic guidance halved the error during guidance (HAP-16) | Arm of EXP-W04; EXP-G05 |
 | App AI | Letter-by-letter legibility feedback; a readable copy of notes | CALC | EXP-A03 |
 
 **Dyslexia**
@@ -296,10 +297,10 @@ The same learner copying "a big dog dug a deep pit by the pond" with each kind o
 | Function | Expected benefit | Evidence | Must be tested |
 |---|---|---|---|
 | Tremor stabiliser, size assist | None | – | – |
-| Vibration cue (target known) | Flags 100 % of reversed and wrong letters (3 % false alarms) | SIM | EXP-HW5 |
+| Vibration cue (target known) | Flags 100 % of reversed and wrong letters (3 % false alarms) | SIM | EXP-W05 |
 | Nose guidance | None, by design: it never turned a reversed or wrong letter into the right one (0 %), and it must not | SIM. LIT: dyslexia is mainly phonological (HAP-47) | – |
 | Guidance board | Lead-through can *demonstrate* a letter to a relaxed hand (94 % in the board study). The device then writes the letter | SIM (board study) | Demonstration only, with consent; never as the learner's work |
-| App AI (spelling) | With a known target (dictation, copying): flags 100 % of misspelled words (6 % false flags). Free writing: repairs 4 %; real-word errors are missed | SIM + CALC. LIT: spell checking g −1.63 on error rate (HAP-50); pauses and spelling drive output (HAP-48) | EXP-HW5 |
+| App AI (spelling) | With a known target (dictation, copying): flags 100 % of misspelled words (6 % false flags). Free writing: repairs 4 %; real-word errors are missed | SIM + CALC. LIT: spell checking g −1.63 on error rate (HAP-50); pauses and spelling drive output (HAP-48) | EXP-W05 |
 
 ## 7. Assumptions
 
@@ -336,6 +337,8 @@ Each item says what was assumed and which way it pushes the results.
 
 ## 8. Experiments needed
 
+(Validation ids EXP-W01…W05, `validation/human_study_plan.md` §15; the code comments call them EXP-HW1…HW5.)
+
 Nothing above has been measured. These experiments would turn the simulations into evidence. Each one uses the same outcome definitions as the simulations, through one script:
 
 ```
@@ -355,17 +358,17 @@ python3 -m handwriting.score_recording trace.csv [--units mm] [--target target.c
 
 | Id | Question | Protocol (short) | Primary outcome and decision | Needs |
 |---|---|---|---|---|
-| **EXP-HW1** | Does a 75 g, 22 mm pen transmit more or less tremor than a 12 g pen? | 20 people with ET, crossover in random order: ordinary 12 g pen, 75 g Rev H dummy with the nose locked, and a 72 g weighted pen. Trace a spiral and a line, copy a sentence, all on a tablet. Measure grip stiffness with a small shaker on the barrel (as in HAP-26). | Tremor amplitude at the tip (score_recording) against the 12 g pen. The model predicts +14 to +26 % at 8–10 Hz and +7 to +9 % at 4–6 Hz with a 575 N/m grip, and no change with a stiff grip. If the 75 g pen is worse by more than 10 %, reduce Rev H's mass or move it forward. | Tablet; dummy pens; ethics approval |
-| **EXP-HW2** | Can the tracker separate tremor from writing on real recordings, and at which frequencies? | Extends EXP-E01 on EXP-H01 recordings (instrumented pen: IMU ≥ 1.9 kHz, page sensor, contact). Run the shipped and re-tuned trackers offline. Then a blinded crossover with Rev H, nose off against nose on, in ET writers with tremor above 7.5 Hz. | Tremor amplitude in the ink, and words read by the app. Success: ≥ 30 % less tremor at ≥ 8 Hz, and ≤ 25 µm false correction on controls (AC-E01-09). This decides the ET claim and the frequency gate (DEC-009). | EXP-H01 data; Rev H prototype after the EXP-B09 bench test |
-| **EXP-HW3** | Is a size assist better than lines or a vibration cue for PD micrographia, and does it cost agency or fluency? | 20 people with PD and progressive micrographia (LIT PDT-05). Within-subject order: plain paper, 1 cm lines, vibration cue at > 10 % shrinkage, adaptive vertical size assist, then the pen switched off (after-effect). Copy 3 pangrams in each condition. | Letter-height trend and x-height at the end (score_recording). Normalised jerk (LIT PDT-17). Sense of agency (as EXP-A02). After-effect with the assist off: does the writer's own movement shrink further? Build the size assist only if it beats lines and cue on size with no loss of fluency or agency. | Rev H prototype with Hall-sensed nose position; ethics |
-| **EXP-HW4** | Does practice with guidance improve *unassisted* handwriting more than practice alone? | Children or adults with poor handwriting (BHK-type screening, LIT HAP-49). At least 20 sessions (LIT HAP-41). Arms: practice alone; practice with a vibration cue on errors; practice with partial nose guidance; practice with the board's partial guidance (if built). Guidance fades over the sessions. | Unassisted legibility and speed (BHK-like) at 1 day and 4 weeks after the last session (LIT HAP-42, HAP-43, HAP-44: guidance effects mostly vanish when guidance is off). Keep physical guidance only if it adds to practice at retention. | Rev H; board (optional); ethics |
-| **EXP-HW5** | Does the app's spelling help reduce spelling errors in people with dyslexia? | Dictation practice, 4–6 weeks. The app knows the target words, flags wrong words with a gentle buzz, shows and reads the right spelling, and keeps a corrected copy. Comparison: the same app without flags. | Spelling errors in unassisted dictation, and pauses within words (LIT HAP-48). The pen never changes the ink. Compare with standard spelling support (LIT HAP-47, HAP-50). | App; the pen as a capture device only; ethics |
+| **EXP-W01** | Does a 75 g, 22 mm pen transmit more or less tremor than a 12 g pen? | 20 people with ET, crossover in random order: ordinary 12 g pen, 75 g Rev H dummy with the nose locked, and a 72 g weighted pen. Trace a spiral and a line, copy a sentence, all on a tablet. Measure grip stiffness with a small shaker on the barrel (as in HAP-26). | Tremor amplitude at the tip (score_recording) against the 12 g pen. The model predicts +14 to +26 % at 8–10 Hz and +7 to +9 % at 4–6 Hz with a 575 N/m grip, and no change with a stiff grip. If the 75 g pen is worse by more than 10 %, reduce Rev H's mass or move it forward. | Tablet; dummy pens; ethics approval |
+| **EXP-W02** | Can the tracker separate tremor from writing on real recordings, and at which frequencies? | Extends EXP-E01 on EXP-H01 recordings (instrumented pen: IMU ≥ 1.9 kHz, page sensor, contact). Run the shipped and re-tuned trackers offline. Then a blinded crossover with Rev H, nose off against nose on, in ET writers with tremor above 7.5 Hz. | Tremor amplitude in the ink, and words read by the app. Success: ≥ 30 % less tremor at ≥ 8 Hz, and ≤ 25 µm false correction on controls (AC-E01-09). This decides the ET claim and the frequency gate (DEC-009). | EXP-H01 data; Rev H prototype after the EXP-B09 bench test |
+| **EXP-W03** | Is a size assist better than lines or a vibration cue for PD micrographia, and does it cost agency or fluency? | 20 people with PD and progressive micrographia (LIT PDT-05). Within-subject order: plain paper, 1 cm lines, vibration cue at > 10 % shrinkage, adaptive vertical size assist, then the pen switched off (after-effect). Copy 3 pangrams in each condition. | Letter-height trend and x-height at the end (score_recording). Normalised jerk (LIT PDT-17). Sense of agency (as EXP-A02). After-effect with the assist off: does the writer's own movement shrink further? Build the size assist only if it beats lines and cue on size with no loss of fluency or agency. | Rev H prototype with Hall-sensed nose position; ethics |
+| **EXP-W04** | Does practice with guidance improve *unassisted* handwriting more than practice alone? | Children or adults with poor handwriting (BHK-type screening, LIT HAP-49). At least 20 sessions (LIT HAP-41). Arms: practice alone; practice with a vibration cue on errors; practice with partial nose guidance; practice with the board's partial guidance (if built). Guidance fades over the sessions. | Unassisted legibility and speed (BHK-like) at 1 day and 4 weeks after the last session (LIT HAP-42, HAP-43, HAP-44: guidance effects mostly vanish when guidance is off). Keep physical guidance only if it adds to practice at retention. | Rev H; board (optional); ethics |
+| **EXP-W05** | Does the app's spelling help reduce spelling errors in people with dyslexia? | Dictation practice, 4–6 weeks. The app knows the target words, flags wrong words with a gentle buzz, shows and reads the right spelling, and keeps a corrected copy. Comparison: the same app without flags. | Spelling errors in unassisted dictation, and pauses within words (LIT HAP-48). The pen never changes the ink. Compare with standard spelling support (LIT HAP-47, HAP-50). | App; the pen as a capture device only; ethics |
 
-Order: EXP-HW1 and EXP-HW2's offline part first. They need no prototype and they decide whether the ET benefit is real. EXP-HW3 needs a prototype. EXP-HW4 and EXP-HW5 need months.
+Order: EXP-W01 and EXP-W02's offline part first. They need no prototype and they decide whether the ET benefit is real. EXP-W03 needs a prototype. EXP-W04 and EXP-W05 need months.
 
 ## 9. Files and how to run
 
-**Run everything** (about 55 minutes on one core; `--quick` takes about 6 minutes on 2 writers and 1 seed):
+**Run everything** (about 45 minutes on one core: ET 14 min, PD 17 min, the rest 14 min). `--quick` (2 writers, 1 seed) takes about 5 minutes and writes to `handwriting/build/quick/` (git-ignored), so it never overwrites the published results:
 
 ```
 python3 -m handwriting.run_study [--quick] [--workers 1] [--stages tuning et et_sens pd practice crosscheck figures]

@@ -14,3 +14,6 @@ ml/runs/
 .ipynb_checkpoints/
 electronics/spice/*_out.csv
 electronics/spice/*.log
+
+# regenerable stage caches of the handwriting study (python3 -m handwriting.run_study)
+results/handwriting/_cache/
