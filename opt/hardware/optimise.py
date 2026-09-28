@@ -304,7 +304,7 @@ def sensitivities(opts: MD.Options, x: dict, cal=None, quantities=("q_wc", "usab
         row = {}
         for (k, v), gr in zip(xt.items(), grads):
             gval = 0.0 if gr is None else float(gr[0])
-            row[k] = {"d_dx": gval, "elasticity": gval * float(v[0]) / y if y != 0 else float("nan")}
+            row[k] = {"d_dx": gval, "elasticity": gval * float(v[0].detach()) / y if y != 0 else float("nan")}
         res[qn] = {"value": y, "grad": row}
     return res
 

@@ -12,6 +12,9 @@ Detailed reports:
 - [`optimisation.md`](optimisation.md): where every simulation is, and what the optimisation studies found (entry page);
 - [`opt_touchdown.md`](opt_touchdown.md): touchdown and lift feed-forward, stop margin and servo tuning, optimised by adjoint gradients and Bayesian search;
 - [`opt_tracker.md`](opt_tracker.md): the tremor tracker tuned by exact adjoint gradients, and learned trackers.
+- [`opt_hardware.md`](opt_hardware.md): the slim pencil's nib stage re-optimised with real parts (P0.2, DEC-030).
+
+**Update 2026-09-28: the user chose a bigger grip (DEC-029).** The primary concept is now **Rev H**: a handle of about Ø22 mm whose whole front section tilts to move the tip about ±3 mm. This pencil (Rev P0, with the optimised P0.2 stage) remains the slim variant. The tracker, touchdown and AI work carries over.
 
 3D replay: `viewer/` (build with `python3 viewer/build.py`).
 

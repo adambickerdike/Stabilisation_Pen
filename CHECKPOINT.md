@@ -184,6 +184,8 @@ The request was for an Apple-Pencil-class version (Ø8.9 × 166 mm) that still c
 - The adjoint sweep maps the trade-off: no setting has both the smooth-writing benefit (0.78) and ≤ 30 µm on sharp writers. The band-target GRU and the AKF + learned gate are not shipped; per-writer gradient tuning stays an option (about 2 %).
 - Next: EXP-E01 on recorded writing through `opt/tracker/realdata.py`.
 
+**Added 2026-09-28: slim pencil hardware optimisation** (`docs/opt_hardware.md`, `opt/hardware/`, 14 tests). P0.2 (DEC-030, proposed): custom PICMA-class plates 3.23 × 39.8 × 0.96 mm, C17200 leaves 38 µm, gimbal at 65.5 mm, LT8365 charge-recovery drive, 2 × DRV5055A4. Worst-case stroke 0 → 212 µm, resonance 192 → 213 Hz, assist life 0.50 → 2.73 h, mass 14.6 g (CALC); P1 worst corner 0.375 → 0.281 (SIM). It is now the slim variant: the user chose a bigger grip (DEC-029, Rev H).
+
 **Added 2026-09-28: inertial control of the pen body, at the user's direction.** DEC-024 is reopened: the user wants active inertial control and movement of the pen, not only the nib stage. Study `opt/inertial` (docs/opt_inertial.md) in progress: reaction-mass, gyroscope and grip-pivot modules with causal and learned control, combined with the nib stage, over envelope tiers and grip splits.
 
 **Resume.**
@@ -195,6 +197,7 @@ python3 -m sim.pencil.run_study
 python3 -m sim.pencil.diag_touchdown_tails
 python3 -m sim.handpen.run_study
 python3 -m fusion.run_study --workers 2
+python3 -m opt.hardware.run_study
 python3 -m opt.tracker.run_study
 python3 -m opt.touchdown.run_study
 bash aiguide/run_all.sh

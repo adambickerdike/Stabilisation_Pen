@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-28T16:01:03+00:00",
-    "git_revision": "9d309a0-dirty",
+    "generated_utc": "2026-09-28T16:43:40+00:00",
+    "git_revision": "bf472d4-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "pencil_revP.py --variant Q --overlay /home/user/Stabilisation_Pen/results/opt/pencil_P02b_cad_overlay.yaml --tag pencil_revPQ_P02b --out /home/user/Stabilisation_Pen/results/opt/cad --no-step",

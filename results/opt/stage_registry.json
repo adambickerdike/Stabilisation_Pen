@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "proposed design (opt/hardware optimisation; CALCULATION)",
-    "generated_utc": "2026-09-28T16:01:10+00:00",
-    "git_revision": "9d309a0-dirty",
+    "generated_utc": "2026-09-28T16:43:59+00:00",
+    "git_revision": "bf472d4-dirty",
     "parameters_version": "P0.1.2",
     "parameters_sha256_16": "957eae6e98e9b8c8",
-    "command": "run_study.py",
+    "command": "run_study.py --no-robustness",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
@@ -15,25 +15,25 @@
   },
   "stages": {
     "P02": {
-      "label": "P0.2 recommended: Q-PIC251-s2-C17200-recovery_lt8365-drv5055a4_x2-ic",
+      "label": "P0.2 recommended (= P02c): Q-PIC252-s1-C17200-recovery_lt8365-drv5055a4_x2-ic",
       "fit": "opt/hardware fit constraints; CAD rebuild all_ok",
       "plates_per_axis": 2,
       "axes": 2,
       "bender": {
-        "w": 0.002834675854643226,
-        "t": 0.0012012155385298761,
-        "L_free": 0.03311917747076871,
-        "L_total": 0.03661917747076871,
-        "delta_f": 0.000755314682641819,
-        "F_b": 0.42557034775991176,
-        "C_half": 1.9229813654149404e-06,
+        "w": 0.0032260570483800596,
+        "t": 0.0009598302067940316,
+        "L_free": 0.036290151431491724,
+        "L_total": 0.03979015143149173,
+        "delta_f": 0.0005276602770601654,
+        "F_b": 0.4568441722812573,
+        "C_half": 9.09042239803233e-07,
         "V_full": 60.0,
-        "fr": 258.57161204488324
+        "fr": 321.0999930267941
       },
       "leaf": {
-        "t": 4.656121912255041e-05,
-        "w": 0.0015530890347829449,
-        "L": 0.009,
+        "t": 3.780079713047137e-05,
+        "w": 0.001550042936297298,
+        "L": 0.006327705719738033,
         "E": 131000000000.0,
         "G": 50400000000.0,
         "Cb_over_K": 5.0
@@ -41,13 +41,13 @@
       "k_gimbal_nib": 2.0,
       "cad": {
         "z_gimbal": 65.5,
-        "collar_z0": 15.3808,
+        "collar_z0": 14.8821,
         "collar_L": 3.0,
-        "z_plate_tip": 27.3808,
+        "z_plate_tip": 24.2098,
         "nib_travel": 0.4,
         "refill_L": 67.0,
         "ball_d": 0.7,
-        "plate_d": 2.532,
+        "plate_d": 2.5841,
         "parts": [
           [
             "barrel",
@@ -107,85 +107,85 @@
             "hall_3d_nose",
             "fixed",
             0.003,
-            16.88
+            16.38
           ],
           [
             "optical_sensor",
             "fixed",
             0.004,
-            13.38
+            12.88
           ],
           [
             "snubber_1",
             "fixed",
-            0.013,
-            34.0
+            0.014,
+            31.47
           ],
           [
             "snubber_2",
             "fixed",
-            0.015,
-            40.63
+            0.016,
+            38.73
           ],
           [
             "snubber_3",
             "fixed",
-            0.016,
-            47.25
+            0.017,
+            45.98
           ],
           [
             "snubber_4",
             "fixed",
-            0.017,
-            53.88
+            0.018,
+            53.24
           ],
           [
             "bender_x_neg",
             "bender",
-            1.013,
-            45.69
+            0.961,
+            44.1
           ],
           [
             "bender_x_pos",
             "bender",
-            1.013,
-            45.69
+            0.961,
+            44.1
           ],
           [
             "bender_y_neg",
             "bender",
-            1.013,
-            45.69
+            0.961,
+            44.1
           ],
           [
             "bender_y_pos",
             "bender",
-            1.013,
-            45.69
+            0.961,
+            44.1
           ],
           [
             "leaf_x_neg",
             "leaf",
-            0.005,
-            22.88
+            0.003,
+            21.05
           ],
           [
             "leaf_x_pos",
             "leaf",
-            0.005,
-            22.88
+            0.003,
+            21.05
           ],
           [
             "leaf_y_neg",
             "leaf",
-            0.005,
-            22.88
+            0.003,
+            21.05
           ],
           [
             "leaf_y_pos",
             "leaf",
-            0.005,
-            22.88
+            0.003,
+            21.05
           ],
           [
             "refill_D1",
@@ -197,19 +197,19 @@
             "collar",
             "moving",
             0.091,
-            16.88
+            16.38
           ],
           [
             "collar_liner",
             "moving",
             0.005,
-            16.88
+            16.38
           ],
           [
             "collar_magnet",
             "moving",
             0.004,
-            16.88
+            16.38
           ],
           [
             "gimbal_hub",
@@ -236,13 +236,13 @@
             72.5
           ]
         ],
-        "mass_total_g": 13.5,
+        "mass_total_g": 13.29,
         "source": "results/opt/cad/pencil_revPQ_P02_summary.json"
       },
       "options": {
         "topology": "Q",
-        "ceramic": "PIC251",
-        "stack": 2,
+        "ceramic": "PIC252",
+        "stack": 1,
         "leaf_mat": "C17200",
         "driver": "recovery_lt8365",
         "hall": "drv5055a4_x2",
@@ -280,21 +280,21 @@
         "hall_location": "nose"
       },
       "design_SI": {
-        "w": 0.002834675854643226,
-        "t": 0.0006006077692649381,
-        "Lf": 0.03311917747076871,
+        "w": 0.0032260570483800596,
+        "t": 0.0009598302067940316,
+        "Lf": 0.036290151431491724,
         "Lc": 0.0035,
-        "d": 0.002531971020667661,
+        "d": 0.0025841134296645365,
         "zg": 0.0655,
-        "zc0": 0.0153808225292589,
-        "leaf_t": 4.656121912255041e-05,
-        "leaf_w": 0.0015530890347829449,
-        "leaf_L": 0.009,
+        "zc0": 0.014882142844858528,
+        "leaf_t": 3.780079713047137e-05,
+        "leaf_w": 0.001550042936297298,
+        "leaf_L": 0.006327705719738033,
         "Fc": 0.15,
         "r_ring": 0.0014,
-        "V": 58.047498768153474,
+        "V": 58.41876532531262,
         "L_cell": 0.04,
-        "q_stop": 0.0003999999523576803,
+        "q_stop": 0.0004000008711782299,
         "n2": 1.0
       },
       "status": "PROPOSED DESIGN (opt/hardware); plates scaled from AMF-11/AMF-53 (CALC, EXP-Q04 to confirm)"

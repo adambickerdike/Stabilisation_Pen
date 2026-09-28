@@ -1,8 +1,8 @@
 {
   "meta": {
     "evidence_status": "proposed design (CAD concept, nominal geometry)",
-    "generated_utc": "2026-09-28T15:48:59+00:00",
-    "git_revision": "9d309a0-dirty",
+    "generated_utc": "2026-09-28T16:43:59+00:00",
+    "git_revision": "bf472d4-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "pencil_revP.py --variant Q --overlay /home/user/Stabilisation_Pen/results/opt/pencil_P0.2_proposed.yaml --tag pencil_revPQ_P02 --out /home/user/Stabilisation_Pen/results/opt/cad",
@@ -18,7 +18,7 @@
   "units": "mm",
   "frame": "origin at the ball centre in contact at 50 deg tilt; z along the barrel toward the cap",
   "gimbal_z": 65.5,
-  "lever": 1.3472043966169744,
+  "lever": 1.3335260668717515,
   "primitives": [
     {
       "name": "barrel",
@@ -158,9 +158,9 @@
         1.5
       ],
       "center": [
-        3.1469111450381675,
+        3.1499566412213738,
         0,
-        16.8808
+        16.3821
       ]
     },
     {
@@ -181,8 +181,8 @@
       "color": "metal",
       "r_out": 2.0,
       "r_in": 1.195,
-      "z0": 15.3808,
-      "z1": 18.3808
+      "z0": 14.8821,
+      "z1": 17.8821
     },
     {
       "name": "collar_magnet",
@@ -197,7 +197,7 @@
       "center": [
         2.0,
         0,
-        16.8808
+        16.3821
       ]
     },
     {
@@ -217,8 +217,8 @@
       "color": "snubber",
       "r_out": 3.9000000000000004,
       "r_in": 3.0,
-      "z0": 33.75,
-      "z1": 34.25
+      "z0": 31.22,
+      "z1": 31.72
     },
     {
       "name": "snubber_2",
@@ -227,8 +227,8 @@
       "color": "snubber",
       "r_out": 3.9000000000000004,
       "r_in": 3.0,
-      "z0": 40.38,
-      "z1": 40.88
+      "z0": 38.48,
+      "z1": 38.98
     },
     {
       "name": "snubber_3",
@@ -237,8 +237,8 @@
       "color": "snubber",
       "r_out": 3.9000000000000004,
       "r_in": 3.0,
-      "z0": 47.0,
-      "z1": 47.5
+      "z0": 45.73,
+      "z1": 46.23
     },
     {
       "name": "snubber_4",
@@ -247,8 +247,8 @@
       "color": "snubber",
       "r_out": 3.9000000000000004,
       "r_in": 3.0,
-      "z0": 53.63,
-      "z1": 54.13
+      "z0": 52.99,
+      "z1": 53.49
     },
     {
       "name": "bender_x_neg",
@@ -256,15 +256,15 @@
       "type": "plate",
       "color": "piezo",
       "size": [
-        1.2512,
-        2.8347,
-        36.6192
+        0.9598000000000004,
+        3.2261,
+        39.7902
       ],
       "root_z": 64.0,
-      "tip_z": 27.3808,
+      "tip_z": 24.2098,
       "clamp_z": 60.5,
       "center_xy": [
-        -2.532,
+        -2.5841,
         0.0
       ],
       "drive_axis": [
@@ -279,15 +279,15 @@
       "type": "plate",
       "color": "piezo",
       "size": [
-        1.2512000000000003,
-        2.8347,
-        36.6192
+        0.9598000000000004,
+        3.2261,
+        39.7902
       ],
       "root_z": 64.0,
-      "tip_z": 27.3808,
+      "tip_z": 24.2098,
       "clamp_z": 60.5,
       "center_xy": [
-        2.532,
+        2.5841,
         0.0
       ],
       "drive_axis": [
@@ -302,16 +302,16 @@
       "type": "plate",
       "color": "piezo",
       "size": [
-        2.8347,
-        1.2512,
-        36.6192
+        3.2261,
+        0.9598000000000004,
+        39.7902
       ],
       "root_z": 64.0,
-      "tip_z": 27.3808,
+      "tip_z": 24.2098,
       "clamp_z": 60.5,
       "center_xy": [
         0.0,
-        -2.532
+        -2.5841
       ],
       "drive_axis": [
         0,
@@ -325,16 +325,16 @@
       "type": "plate",
       "color": "piezo",
       "size": [
-        2.8347,
-        1.2512000000000003,
-        36.6192
+        3.2261,
+        0.9598000000000004,
+        39.7902
       ],
       "root_z": 64.0,
-      "tip_z": 27.3808,
+      "tip_z": 24.2098,
       "clamp_z": 60.5,
       "center_xy": [
         0.0,
-        2.532
+        2.5841
       ],
       "drive_axis": [
         0,

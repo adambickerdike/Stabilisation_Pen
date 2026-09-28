@@ -335,6 +335,29 @@ def touchdown_opt(root):
     return t1 + t2
 
 
+def hardware_opt(root):
+    h = _load(root, "results/opt/hardware.json")
+    if not h or "recommended" not in h:
+        return ""
+    r, c = h["recommended"], h.get("model_checks", {}).get("current_design", {})
+    rows = []
+    for lab, k, nd, unit in (("Worst-case usable stroke (−20 % parts, 35°)", "usable_wc_um", 0, "µm"),
+                             ("Loaded stroke, typical writing (50°)", "q_nom_um", 0, "µm"),
+                             ("Force the stage can push with, at the nib", "F_b_nib_N", 2, "N"),
+                             ("First resonance", "f1_Hz", 0, "Hz"),
+                             ("Battery life with assist on (worst 0.3 mm case)", "life_assist_h", 2, "h"),
+                             ("Pen mass including 10 %", "mass_with_margin_g", 1, "g")):
+        a, b = c.get(k), r.get(k)
+        fa = "—" if a is None else (f"{max(a, 0):.{nd}f} {unit}" + (" (raw negative)" if (k == "usable_wc_um" and a < 0) else ""))
+        rows.append([_e(lab), fa, "—" if b is None else f"<b>{b:.{nd}f} {unit}</b>"])
+    lede = ("The slim pencil (now the secondary option) re-optimised with a differentiable copy of its design model: exact gradients "
+            "(the adjoint) through the plate, leaf, lever, load, resonance, stress and fit equations, with Bayesian optimisation and CMA-ES "
+            "over real parts, and the finalists ranked in the pencil model P1. Proposed; the plates are custom and must be quoted and tested.")
+    return _section("Optimised: slim pencil hardware (P0.2)", _tags("CALC", "SIM"), lede,
+                    _table(["Quantity", "Current pencil (P0.1.2)", "Optimised (P0.2)"], rows, (1, 2)),
+                    "results/opt/hardware.json (opt/hardware/; docs/opt_hardware.md; DEC-030)")
+
+
 TRACKER_ROWS = [("oracle_band", "Limit: perfect knowledge of the 3–15 Hz tremor (not causal)"),
                 ("kfosc_internal", "Old tracker: Kalman on the page position, frozen"),
                 ("akf_grid", "Accelerometer tracker, random search on smooth writing"),
@@ -429,6 +452,11 @@ GALLERY = [
      ("SIM",), "s2r/"),
 ]
 GALLERY_OPT = [   # optimisation studies (shown when their figures exist)
+    ("results/opt/fig_hw_validation.png", "Slim pencil hardware: before and after",
+     "Error left with perfect tremor knowledge, and time at the travel limit, for the current and optimised pencil stages in the pencil model. "
+     "The optimised plates help most with small tremor; with larger tremor the ±0.3 mm travel limit decides.", ("SIM",), "opt/hardware/"),
+    ("results/opt/fig_hw_pareto.png", "Slim pencil hardware: the trade-off",
+     "Worst-case stroke against battery power and pen mass for the designs the optimiser kept.", ("CALC",), "opt/hardware/"),
     ("results/opt/fig_tr_ratio_vs_frequency.png", "Tracker optimisation: before and after",
      "Tremor-band error left against tremor frequency: the tracker settings re-optimised by adjoint gradients (proposed), the earlier sets, "
      "the retrained learned trackers and the limit with perfect knowledge.", ("SIM",), "opt/tracker/"),

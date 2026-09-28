@@ -31,7 +31,7 @@
 |---|---|---|---|
 | Touchdown and lift | Stage feed-forward law (11 parameters), front-stop margin, stage servo (5 parameters) | Adjoint gradients of a differentiable reduced model (PyTorch, backpropagation through time) to choose the law's structure; ParEGO Bayesian optimisation and CMA-ES on the full pencil model P1; loop-margin constraints by calculation | [`opt_touchdown.md`](opt_touchdown.md) |
 | Tremor tracker | All 23 settings of the accelerometer Kalman filter; learned trackers; per-writer tuning | The filter rewritten in PyTorch and differentiated exactly (a hand-written numba adjoint, 40× faster than autograd); Adam on domain-randomised writers; GRU and learned-gate training on the tremor band; Pareto sweep against false correction | [`opt_tracker.md`](opt_tracker.md) |
-| Nib-stage hardware | Plate geometry and count, leaves, lever, nib force, driver and cell, from real catalogue parts | Differentiable design model (PyTorch reverse-mode = adjoint of the design equations), Bayesian optimisation over discrete part choices, checks on P1 | in progress (`opt/hardware/`) |
+| Slim pencil nib-stage hardware (now the secondary variant) | Plate geometry and count, leaves, lever, nib force, driver and Hall sensors, from real catalogue parts or supplier-standard custom plates | Differentiable copy of the design model (PyTorch; exact against `design.py` and the CAD), adjoint gradients with Bayesian optimisation and CMA-ES over discrete part choices; finalists ranked in P1 | [`opt_hardware.md`](opt_hardware.md) |
 | Inertial control of the pen body | Reaction-mass, gyroscope (CMG) and grip-pivot modules with their control, combined with the nib stage, over envelope tiers | Differentiable hand–pen dynamics, causal and learned controllers trained by backpropagation through time, Bayesian optimisation over real parts | in progress (`opt/inertial/`); added at the user's direction (DEC-024 reopened) |
 
 **Why these methods.** The simulators have friction, contact and saturation, so their exact gradients are rough. Each study used gradients (the adjoint) where they are exact and smooth: a reduced model, the filter recursion or the design equations. It then used Bayesian optimisation or CMA-ES on the full simulator, and judged every result on test seeds that were never used for tuning.
@@ -65,9 +65,21 @@ Ink at touchdown and lift that a rigid pen would not draw, per stroke (test seed
 - The adjoint found better optima of the same objectives, and mapped the trade-off. No setting has both the smooth-writing benefit and a small shift on sharp writing: telling tremor from writing remains the limit, not the sensor or the optimiser.
 - The learned trackers were not better at equal false correction and are not shipped.
 
-### 3.3 Nib-stage hardware
+### 3.3 Slim pencil hardware (DEC-030; proposed)
 
-In progress.
+| | Current pencil (P0.1.2) | Optimised (P0.2) |
+|---|---|---|
+| Worst-case usable stroke (−20 % parts, 35°) | 0 µm | 212 µm |
+| Loaded stroke in typical writing (50°) | 277 µm | 477 µm (servo capped at 300) |
+| Force at the nib | 0.33 N | 0.64 N |
+| First resonance | 192 Hz | 213 Hz |
+| Battery life with assist (worst 0.3 mm case) | 0.50 h | 2.73 h |
+| Mass including 10 % | 13.4 g | 14.6 g |
+
+- CALC, from the differentiable design model; P1 confirms the loaded stroke to 0.00 % and the resonance to 0.1 %.
+- In P1, the worst corner's error left with perfect knowledge falls from 0.375 to 0.281 (SIM). At 0.3–0.5 mm tremor both designs are held by the same ±0.30 mm servo limit.
+- Five changes: custom PICMA-class plates, thicker C17200 leaves, the gimbal 3.5 mm further back, an LT8365 charge-recovery drive, and two DRV5055A4 Hall sensors.
+- This matters for the slim variant only. The bigger-grip pen (Rev H, DEC-029) moves the whole tip by about ±3 mm instead.
 
 ### 3.4 Inertial control of the pen body
 

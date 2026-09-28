@@ -200,9 +200,10 @@ def fig_stop_sweep(res):
         axs[1].plot([r["stop_drive_frac"] for r in fw], [r["usable_wc_um"] for r in fw], color=S[0],
                     **plotstyle.marker_kw(S[0]) | {"linestyle": "-"})
         axs[1].invert_xaxis()
-        axs[1].set_xlabel("Drive allowed while pinned at a stop (fraction of full; 1 = no firmware clamp)")
+        src_fw = res.get("robustness_studies_design", {}).get("firmware_clamp", "P02")
+        axs[1].set_xlabel("Drive while pinned at a stop (1 = no firmware clamp)")
         axs[1].set_ylabel("Worst-case usable stroke (um)")
-        axs[1].set_title("A firmware stop clamp relieves the plate stress limit", loc="left", fontsize=9)
+        axs[1].set_title(f"Firmware stop clamp ({LAB[src_fw]})", loc="left", fontsize=9)
     plotstyle.stamp(fig, "calculation", "each point re-optimised; not measured")
     fig.tight_layout()
     _save(fig, "fig_hw_stop_sweep.png")
@@ -312,7 +313,7 @@ def fig_section(res):
     fig.suptitle("Bender station in the 7.9 mm bore (dashed: tips at the stops; green disc: refill)", x=0.01, ha="left",
                  fontsize=9.5)
     plotstyle.stamp(fig, "proposed design", "fit formulas of mechanics/cad/pencil_revP.py")
-    fig.tight_layout(rect=(0, 0.02, 1, 0.94))
+    fig.tight_layout(rect=(0, 0.06, 1, 0.94))
     _save(fig, "fig_hw_section.png")
 
 
