@@ -35,6 +35,13 @@ def _sha(a) -> str:
     return hashlib.sha256(np.ascontiguousarray(np.asarray(a, dtype=np.float64)).tobytes()).hexdigest()
 
 
+def _orig(rec):
+    """The channels that existed before the extension (appended channels are excluded; they are checked to be zero)."""
+    from sim.handpen import core
+    n0 = getattr(core, "NREC_ORIG", rec.shape[1])
+    return rec[:, :n0]
+
+
 def _uff(n, amp, f=8.0, cols=3, dt=HM.DT):
     t = np.arange(n) * dt
     u = np.zeros((n, 3))
@@ -81,7 +88,8 @@ def compute():
         clean = HM.clean_at_sim_rate(ref, n) if use_clean else None
         uff = _uff(n, amp) if amp > 0 else None
         r = HM.run(sc, cfg, uff=uff, clean=clean)
-        out[name] = {"rec_sha256": _sha(r.rec), "shape": list(r.rec.shape),
+        out[name] = {"rec_sha256": _sha(_orig(r.rec)), "shape": list(_orig(r.rec).shape),
+                     "appended_all_zero": bool(not np.any(r.rec[:, _orig(r.rec).shape[1]:])),
                      "ink_rms_um": float(np.sqrt(np.mean(np.sum((r.ink() - ref.ink()[:len(r.ink())]) ** 2, axis=1))) * 1e6)}
     # ILC oracle (model.py path): two iterations, reaction mass and CMG
     tr = HM.Tremor(f0=10.0, amp_trans=0.3e-3)
@@ -90,7 +98,7 @@ def compute():
         cfg = HP.Config(device=dv)
         ref = HM.run(sc0, cfg)
         res, u, hist = HM.ilc_oracle(sc, cfg, ref, n_iter=2, stage_cfg=cfg.replace(stage=True))
-        out[name] = {"rec_sha256": _sha(res.rec), "u_sha256": _sha(u), "hist": [float(h) for h in hist]}
+        out[name] = {"rec_sha256": _sha(_orig(res.rec)), "u_sha256": _sha(u), "hist": [float(h) for h in hist]}
     # linear model
     for name, cfg in (("lin_none", HP.Config()), ("lin_rm", HP.Config(device=DV.rm_slug(axes=3))),
                       ("lin_gyro", HP.Config(device=DV.gyro_rotor(30000.0), r_rot=0.3))):

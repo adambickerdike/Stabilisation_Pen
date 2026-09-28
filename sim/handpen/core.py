@@ -19,6 +19,25 @@ State (page frame {P}, stabpen/frames.py conventions; small tilts, exact transla
   nib stage (optional): kinematic oracle stage as model P1's limits (0.30 mm soft limit with taper, 0.40 mm
          stop, 2 kHz reference with slew limit and contact-gated authority, second-order follower).
 Integration: semi-implicit Euler at dt (25 us).  Every output is a SIMULATION result.
+
+Extensions (opt/inertial, 2026-09-28; all off by default, and the default path is bit for bit the original: see
+opt/inertial/tests/test_h1_regression.py):
+  grip sleeve (slv_on): a second rigid body (the handle held by the fingers, 5 DOF, same small-angle coordinates as the
+         pen).  The grip zones then act on the sleeve instead of the pen; the sleeve carries the pen through an
+         actuated 2-DOF pivot: a stiff flexure pivot at z_p (translation springs, bending stiffness k_pr) and a
+         2-axis actuator at z_a acting on the transverse relative displacement (act_ty 0: force actuator (voice
+         coil) with a suspension spring, force limit and stops; act_ty 1: position actuator (piezo) = stiffness k_a
+         towards a commanded displacement limited to the free stroke).  The push force can be routed through the
+         sleeve (push_slv: applied at the sleeve's z = 0, no static couple), so the pivot carries the writing load.
+  stage command source (stg_src): 0 oracle (clean reference, as before), 1 external estimate passed in `clean`,
+         2 controller output.
+  in-loop controller (ctl_on), run every cdec steps: measurements (body IMU acceleration at z_ib and tilt rates,
+         sleeve IMU, device and pivot displacements, stage position, contact) with white noise and a latency of
+         ilat ticks; external inputs from uff columns 3-6 (tracker estimate, frequency); a linear block
+         x+ = A x + B [y; e; u_applied], [u; eps] = C x + D [y; e]; an optional tanh MLP on [x; y; e] added to u;
+         an optional adaptive narrow-band block (phasor LMS on eps at the external frequency with a table of the
+         inverse plant); commands u (device 3, pivot 2, stage 2) clipped to ul1..ul7.  uff columns 7-8 carry a
+         pivot feed-forward.
 """
 from __future__ import annotations
 
@@ -40,16 +59,33 @@ NAMES = [
     "H", "dmax", "ratemax", "cmg1", "cmg2", "tau_g", "tau_c",
     "stage_on", "qlim", "qtap", "qstop", "ws", "zs", "sdec", "slew", "atau", "lock_rot", "m_pen",
     "vc_on", "vc_ki", "vc_delay",
+    # ---- extensions (opt/inertial); zero = off
+    "slv_on", "Si00", "Si01", "Si02", "Si03", "Si04", "Si11", "Si12", "Si13", "Si14", "Si22", "Si23", "Si24", "Si33",
+    "Si34", "Si44", "zp", "kpt", "kpa", "kpr", "bpv", "za", "kas", "cas", "act_ty", "astr", "afm", "apre1", "apre2",
+    "push_slv", "k_astop", "stg_src",
+    "ctl_on", "cdec", "zib", "zis", "ilat", "acc_nd", "gyr_nd", "pos_nd", "iseed", "c_nx", "c_oA", "c_oB", "c_oC", "c_oD",
+    "nn_h", "nn_oW1", "nn_ob1", "nn_oW2", "nn_ob2", "afc_on", "afc_mu", "afc_leak", "afc_ot", "afc_nf", "afc_f0",
+    "afc_df", "afc_o1", "afc_o2", "afc_umax", "ul1", "ul2", "ul3", "ul4", "ul5", "ul6", "ul7", "iaa_hz",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
 KINDS = {"none": 0, "rm": 1, "tmd": 2, "cmg": 3, "gyro": 4, "mass": 0}
+# controller I/O sizes (extension): measurements, external inputs, commands, narrow-band error channels
+NY = 16      # 0-1 body IMU acc (page x, y) at z_ib; 2-3 body tilt rates; 4-5 sleeve IMU acc at z_is; 6-7 sleeve tilt rates;
+             # 8-10 device (reaction mass r1..r3 | CMG gimbal angles); 11-12 pivot relative displacement at z_a; 13-14 stage q; 15 contact
+NE = 4       # uff columns 3-6: tracker estimate x, y (m), tracker frequency (Hz), spare
+NU = 7       # 0-2 device (force t1, t2, a | CMG torque cmd 1, 2), 3-4 pivot (force or displacement), 5-6 stage (disturbance to cancel, page x, y)
+NEPS = 2     # narrow-band error channels (outputs NU, NU+1 of the linear block)
 REC = [
     "t", "bx", "by", "bz", "ix", "iy", "contact", "skid_contact", "Ns", "Nn", "fsx", "fsy", "fnx", "fny",
     "b1", "b2", "dMx", "dMy", "dMz", "gfx", "gfy", "gfz", "cpx", "cpy", "cpz", "hfx", "hfy", "hfz",
     "r1", "r2", "r3", "Fd1", "Fd2", "Fd3", "dl1", "dl2", "dr1", "dr2", "ddl1", "ddl2", "tq1", "tq2",
     "q1", "q2", "qr1", "qr2", "sat", "Fgx", "Fgy", "Fgz", "psi", "vbx", "vby", "Fvx", "Fvy", "cx", "cy",
+    # ---- extensions (appended; zero when unused)
+    "sx", "sy", "sz", "sb1", "sb2", "pd1", "pd2", "pf1", "pf2", "u1", "u2", "u3", "u4", "u5", "u6", "u7",
+    "ia1", "ia2", "fp1", "fp2", "fpa", "eps1", "eps2", "afa1", "afa2",
 ]
+NREC_ORIG = 57
 RIDX = {n: i for i, n in enumerate(REC)}
 NREC = len(REC)
 
@@ -106,6 +142,47 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
     sdec = int(P[I_sdec]); slew = P[I_slew]; atau = P[I_atau]
     lock_rot = P[I_lock_rot] > 0.5; m_pen = P[I_m_pen]
     vc_on = P[I_vc_on] > 0.5; vc_ki = P[I_vc_ki]; vc_dl = int(P[I_vc_delay])
+    # ---------------- extensions (opt/inertial): grip sleeve + actuated pivot, stage command source, in-loop controller
+    slv_on = P[I_slv_on] > 0.5
+    Si = np.zeros((5, 5))
+    Si[0, 0] = P[I_Si00]; Si[0, 1] = P[I_Si01]; Si[0, 2] = P[I_Si02]; Si[0, 3] = P[I_Si03]; Si[0, 4] = P[I_Si04]
+    Si[1, 1] = P[I_Si11]; Si[1, 2] = P[I_Si12]; Si[1, 3] = P[I_Si13]; Si[1, 4] = P[I_Si14]
+    Si[2, 2] = P[I_Si22]; Si[2, 3] = P[I_Si23]; Si[2, 4] = P[I_Si24]
+    Si[3, 3] = P[I_Si33]; Si[3, 4] = P[I_Si34]; Si[4, 4] = P[I_Si44]
+    for i in range(5):
+        for j in range(i):
+            Si[i, j] = Si[j, i]
+    zp_ = P[I_zp]; kpt = P[I_kpt]; kpa = P[I_kpa]; kpr = P[I_kpr]; bpv = P[I_bpv]; za_ = P[I_za]; kas = P[I_kas]
+    cas = P[I_cas]; act_ty = int(P[I_act_ty]); astr = P[I_astr]; afm = P[I_afm]; apre = np.array([P[I_apre1], P[I_apre2]])
+    push_slv = P[I_push_slv] > 0.5; k_astop = P[I_k_astop]; stg_src = int(P[I_stg_src])
+    ctl_on = P[I_ctl_on] > 0.5; cdec = max(int(P[I_cdec]), 1); zib = P[I_zib]; zis = P[I_zis]; ilat = int(P[I_ilat])
+    Tc = cdec * dt
+    sa_n = P[I_acc_nd] * math.sqrt(0.5 / Tc); sg_n = P[I_gyr_nd] * math.sqrt(0.5 / Tc); sp_n = P[I_pos_nd] * math.sqrt(0.5 / Tc)
+    nx = int(P[I_c_nx]); oA = int(P[I_c_oA]); oB = int(P[I_c_oB]); oC = int(P[I_c_oC]); oD = int(P[I_c_oD])
+    NI = NY + NE + NU
+    NO = NU + NEPS
+    nnh = int(P[I_nn_h]); oW1 = int(P[I_nn_oW1]); ob1 = int(P[I_nn_ob1]); oW2 = int(P[I_nn_oW2]); ob2 = int(P[I_nn_ob2])
+    afc_on = P[I_afc_on] > 0.5; afc_mu = P[I_afc_mu]; afc_leak = P[I_afc_leak]; afc_ot = int(P[I_afc_ot])
+    afc_nf = int(P[I_afc_nf]); afc_f0 = P[I_afc_f0]; afc_df = P[I_afc_df]; afc_o1 = int(P[I_afc_o1]); afc_o2 = int(P[I_afc_o2])
+    afc_umax = P[I_afc_umax]
+    ul = np.array([P[I_ul1], P[I_ul2], P[I_ul3], P[I_ul4], P[I_ul5], P[I_ul6], P[I_ul7]])
+    ncol = uff.shape[1]
+    ps_ = np.zeros(3); vs_ = np.zeros(3); bs_ = np.zeros(2); bds_ = np.zeros(2); Qs = np.zeros(5); accs = np.zeros(5)
+    pdel = np.zeros(2); pfor = np.zeros(2); fpv = np.zeros(3)
+    ucmd = np.zeros(NU); uapp = np.zeros(NU); yv = np.zeros(NY); ev = np.zeros(NE); epsv = np.zeros(NEPS)
+    xc = np.zeros(max(nx, 1)); xn = np.zeros(max(nx, 1)); hbuf = np.zeros(max(nnh, 1))
+    YB = 64
+    ybuf = np.zeros((YB, NY))
+    tick = 0
+    afU = np.zeros(4)            # complex phasor gains of the two narrow-band outputs (re, im, re, im)
+    afph = 0.0
+    yraw = np.zeros(NY); gtab = np.zeros(8); dvec = np.zeros(3); dvel = np.zeros(3)
+    nn_prev = 0.0
+    # IMU anti-aliasing: 2nd-order low-pass (Butterworth damping) on the 8 inertial channels at the simulation rate
+    w_aa = 2.0 * math.pi * (P[I_iaa_hz] if P[I_iaa_hz] > 0.0 else 400.0)
+    aa_x = np.zeros(8); aa_v = np.zeros(8); aa_in = np.zeros(8)
+    if ctl_on:
+        np.random.seed(int(P[I_iseed]))
     VB = 16384
     vbuf = np.zeros((VB, 2))
     corr = np.zeros(2); corr_d = np.zeros(2)
@@ -120,6 +197,9 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
     p = np.array([pref[0, 0], pref[0, 1], z0 + pref[0, 2]])
     v = np.zeros(3)
     b = np.zeros(2); bd = np.zeros(2)
+    if slv_on:
+        for j in range(3):
+            ps_[j] = p[j]
     dM = np.zeros(3); vM = np.zeros(3)
     zsk = np.zeros(2); znb = np.zeros(2)
     U = np.zeros(3); W = np.zeros(3)
@@ -145,8 +225,145 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
         bh2 = -ps * (nw[0] * t1[0] + nw[1] * t1[1] + nw[2] * t1[2])
         bhd1 = psd * (nw[0] * t2[0] + nw[1] * t2[1] + nw[2] * t2[2])
         bhd2 = -psd * (nw[0] * t1[0] + nw[1] * t1[1] + nw[2] * t1[2])
+        # ---------------- in-loop controller tick (extension; off by default)
+        if ctl_on:
+            for j in range(2):
+                aa_in[j] = acc[j] + zib * (acc[3] * t1[j] + acc[4] * t2[j])
+                aa_in[4 + j] = accs[j] + zis * (accs[3] * t1[j] + accs[4] * t2[j])
+            aa_in[2] = bd[0]; aa_in[3] = bd[1]; aa_in[6] = bds_[0]; aa_in[7] = bds_[1]
+            for j in range(8):
+                aa_v[j] += (w_aa * w_aa * (aa_in[j] - aa_x[j]) - 1.41421356 * w_aa * aa_v[j]) * dt
+                aa_x[j] += aa_v[j] * dt
+        if ctl_on and k % cdec == 0:
+            for j in range(2):
+                yraw[j] = aa_x[j] + sa_n * np.random.standard_normal()
+            yraw[2] = aa_x[2] + sg_n * np.random.standard_normal()
+            yraw[3] = aa_x[3] + sg_n * np.random.standard_normal()
+            if slv_on:
+                for j in range(2):
+                    yraw[4 + j] = aa_x[4 + j] + sa_n * np.random.standard_normal()
+                yraw[6] = aa_x[6] + sg_n * np.random.standard_normal()
+                yraw[7] = aa_x[7] + sg_n * np.random.standard_normal()
+                yraw[11] = pdel[0] + sp_n * np.random.standard_normal()
+                yraw[12] = pdel[1] + sp_n * np.random.standard_normal()
+            if kind == 1 or kind == 2:
+                pxm = p[0] + z_d * (a[0] + b[0] * t1[0] + b[1] * t2[0])
+                pym = p[1] + z_d * (a[1] + b[0] * t1[1] + b[1] * t2[1])
+                pzm = p[2] + z_d * (a[2] + b[0] * t1[2] + b[1] * t2[2])
+                for i in range(3):
+                    yraw[8 + i] = ((U[0] - pxm) * E[i, 0] + (U[1] - pym) * E[i, 1] + (U[2] - pzm) * E[i, 2]
+                                   + sp_n * np.random.standard_normal())
+            elif kind == 3:
+                yraw[8] = dl[0]
+                yraw[9] = dl[1]
+            yraw[13] = q[0] + sp_n * np.random.standard_normal()
+            yraw[14] = q[1] + sp_n * np.random.standard_normal()
+            yraw[15] = 1.0 if nn_prev > 0.0 else 0.0
+            for j in range(NY):
+                ybuf[tick % YB, j] = yraw[j]
+            for j in range(NY):
+                yv[j] = ybuf[(tick - ilat) % YB, j] if tick >= ilat else 0.0
+            for j in range(NE):
+                ev[j] = uff[k, 3 + j] if ncol >= 3 + NE else 0.0
+            # linear block outputs
+            for o in range(NO):
+                s_ = 0.0
+                for j in range(nx):
+                    s_ += P[oC + o * nx + j] * xc[j]
+                for j in range(NY):
+                    s_ += P[oD + o * (NY + NE) + j] * yv[j]
+                for j in range(NE):
+                    s_ += P[oD + o * (NY + NE) + NY + j] * ev[j]
+                if o < NU:
+                    ucmd[o] = s_
+                else:
+                    epsv[o - NU] = s_
+            # neural policy on [x; y; e]
+            if nnh > 0:
+                nin = nx + NY + NE
+                for hh in range(nnh):
+                    s_ = P[ob1 + hh]
+                    for j in range(nx):
+                        s_ += P[oW1 + hh * nin + j] * xc[j]
+                    for j in range(NY):
+                        s_ += P[oW1 + hh * nin + nx + j] * yv[j]
+                    for j in range(NE):
+                        s_ += P[oW1 + hh * nin + nx + NY + j] * ev[j]
+                    hbuf[hh] = math.tanh(s_)
+                for o in range(NU):
+                    s_ = P[ob2 + o]
+                    for hh in range(nnh):
+                        s_ += P[oW2 + o * nnh + hh] * hbuf[hh]
+                    ucmd[o] += s_
+            # adaptive narrow-band block: phasor LMS at the external (tracked) frequency
+            if afc_on:
+                f_ = ev[2]
+                fmax_ = afc_f0 + afc_df * (afc_nf - 1)
+                if f_ < afc_f0:
+                    f_ = afc_f0
+                elif f_ > fmax_:
+                    f_ = fmax_
+                afph += 2.0 * math.pi * f_ * Tc
+                if afph > math.pi:
+                    afph -= 2.0 * math.pi
+                c_ = math.cos(afph); s_ = math.sin(afph)
+                E0r = 2.0 * epsv[0] * c_; E0i = -2.0 * epsv[0] * s_
+                E1r = 2.0 * epsv[1] * c_; E1i = -2.0 * epsv[1] * s_
+                xg = (f_ - afc_f0) / afc_df
+                j0 = int(math.floor(xg))
+                if j0 > afc_nf - 2:
+                    j0 = afc_nf - 2
+                if j0 < 0:
+                    j0 = 0
+                wg = xg - j0
+                for i in range(8):
+                    gtab[i] = (1.0 - wg) * P[afc_ot + 8 * j0 + i] + wg * P[afc_ot + 8 * (j0 + 1) + i]
+                d0r = gtab[0] * E0r - gtab[1] * E0i + gtab[2] * E1r - gtab[3] * E1i
+                d0i = gtab[0] * E0i + gtab[1] * E0r + gtab[2] * E1i + gtab[3] * E1r
+                d1r = gtab[4] * E0r - gtab[5] * E0i + gtab[6] * E1r - gtab[7] * E1i
+                d1i = gtab[4] * E0i + gtab[5] * E0r + gtab[6] * E1i + gtab[7] * E1r
+                afU[0] = (1.0 - afc_leak) * afU[0] - afc_mu * d0r
+                afU[1] = (1.0 - afc_leak) * afU[1] - afc_mu * d0i
+                afU[2] = (1.0 - afc_leak) * afU[2] - afc_mu * d1r
+                afU[3] = (1.0 - afc_leak) * afU[3] - afc_mu * d1i
+                for i in range(2):
+                    mg = math.hypot(afU[2 * i], afU[2 * i + 1])
+                    if mg > afc_umax and mg > 0.0:
+                        afU[2 * i] *= afc_umax / mg
+                        afU[2 * i + 1] *= afc_umax / mg
+                ucmd[afc_o1] += afU[0] * c_ - afU[1] * s_
+                ucmd[afc_o2] += afU[2] * c_ - afU[3] * s_
+            for o in range(NU):
+                if ul[o] > 0.0:
+                    if ucmd[o] > ul[o]:
+                        ucmd[o] = ul[o]
+                    elif ucmd[o] < -ul[o]:
+                        ucmd[o] = -ul[o]
+                uapp[o] = ucmd[o]
+            # linear block state update with the applied (clipped) commands
+            for i in range(nx):
+                s_ = 0.0
+                for j in range(nx):
+                    s_ += P[oA + i * nx + j] * xc[j]
+                for j in range(NY):
+                    s_ += P[oB + i * NI + j] * yv[j]
+                for j in range(NE):
+                    s_ += P[oB + i * NI + NY + j] * ev[j]
+                for j in range(NU):
+                    s_ += P[oB + i * NI + NY + NE + j] * uapp[j]
+                xn[i] = s_
+            for i in range(nx):
+                xc[i] = xn[i]
+            tick += 1
         for j in range(5):
             Q[j] = 0.0
+        # grip body: the pen, or the sleeve when there is one (extension)
+        if slv_on:
+            gp = ps_; gv = vs_; gb = bs_; gbd = bds_; Qg = Qs
+            for j in range(5):
+                Qs[j] = 0.0
+        else:
+            gp = p; gv = v; gb = b; gbd = bd; Qg = Q
         Fg = np.zeros(3)
         # ---------------- grip zones
         for zone in range(2):
@@ -157,12 +374,12 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
             s0 = z * a[0]; s1 = z * a[1]; s2 = z * a[2]
             rx = s0 - Pv[0]; ry = s1 - Pv[1]; rz = s2 - Pv[2]
             wx = nw[1] * rz - nw[2] * ry; wy = nw[2] * rx - nw[0] * rz; wz = nw[0] * ry - nw[1] * rx   # nw x (s - P)
-            dx = (p[0] - hx) + z * (b[0] * t1[0] + b[1] * t2[0]) - ps * wx
-            dy = (p[1] - hy) + z * (b[0] * t1[1] + b[1] * t2[1]) - ps * wy
-            dz = (p[2] - hz) + z * (b[0] * t1[2] + b[1] * t2[2]) - ps * wz
-            ex = (v[0] - hvx) + z * (bd[0] * t1[0] + bd[1] * t2[0]) - psd * wx
-            ey = (v[1] - hvy) + z * (bd[0] * t1[1] + bd[1] * t2[1]) - psd * wy
-            ez = (v[2] - hvz) + z * (bd[0] * t1[2] + bd[1] * t2[2]) - psd * wz
+            dx = (gp[0] - hx) + z * (gb[0] * t1[0] + gb[1] * t2[0]) - ps * wx
+            dy = (gp[1] - hy) + z * (gb[0] * t1[1] + gb[1] * t2[1]) - ps * wy
+            dz = (gp[2] - hz) + z * (gb[0] * t1[2] + gb[1] * t2[2]) - ps * wz
+            ex = (gv[0] - hvx) + z * (gbd[0] * t1[0] + gbd[1] * t2[0]) - psd * wx
+            ey = (gv[1] - hvy) + z * (gbd[0] * t1[1] + gbd[1] * t2[1]) - psd * wy
+            ez = (gv[2] - hvz) + z * (gbd[0] * t1[2] + gbd[1] * t2[2]) - psd * wz
             # K = kt (I - a a^T) + kx a a^T
             da = dx * a[0] + dy * a[1] + dz * a[2]
             ea = ex * a[0] + ey * a[1] + ez * a[2]
@@ -170,14 +387,17 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
             fy = -(kt * (dy - da * a[1]) + kx * da * a[1]) - bg * (kt * (ey - ea * a[1]) + kx * ea * a[1])
             fz = -(kt * (dz - da * a[2]) + kx * da * a[2]) - bg * (kt * (ez - ea * a[2]) + kx * ea * a[2])
             Fg[0] += fx; Fg[1] += fy; Fg[2] += fz
-            Q[0] += fx; Q[1] += fy; Q[2] += fz
-            Q[3] += z * (fx * t1[0] + fy * t1[1] + fz * t1[2])
-            Q[4] += z * (fx * t2[0] + fy * t2[1] + fz * t2[2])
+            Qg[0] += fx; Qg[1] += fy; Qg[2] += fz
+            Qg[3] += z * (fx * t1[0] + fy * t1[1] + fz * t1[2])
+            Qg[4] += z * (fx * t2[0] + fy * t2[1] + fz * t2[2])
         # tilt stiffness of the pads relative to the hand frame
-        Q[3] += -kap * (b[0] - bh1) - bg * kap * (bd[0] - bhd1)
-        Q[4] += -kap * (b[1] - bh2) - bg * kap * (bd[1] - bhd2)
-        # push force at the ball centre (external, as model P1)
-        Q[2] += -fpush[k]
+        Qg[3] += -kap * (gb[0] - bh1) - bg * kap * (gbd[0] - bhd1)
+        Qg[4] += -kap * (gb[1] - bh2) - bg * kap * (gbd[1] - bhd2)
+        # push force at the ball centre (external, as model P1); with a sleeve it can pass through the pivot
+        if slv_on and push_slv:
+            Qs[2] += -fpush[k]
+        else:
+            Q[2] += -fpush[k]
         # ---------------- paper: skid ring point s = p_nom a + r_ring t1; phi x s = p_nom (b1 t1 + b2 t2) - r_ring b1 a
         Ns = 0.0; fsx = 0.0; fsy = 0.0
         sz = p[2] - r_b + p_nom * (b[0] * t1[2] + b[1] * t2[2]) - r_ring * b[0] * a[2]
@@ -239,6 +459,8 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
                 else:
                     if kind == 1:
                         fi = uff[k, i] - kc * ri - cc * ui
+                        if ctl_on:
+                            fi += ucmd[i]
                         if fi > Fm[i]:
                             fi = Fm[i]
                         elif fi < -Fm[i]:
@@ -266,7 +488,10 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
                     tq[i] = 0.0
                     continue
                 cd = math.cos(dl[i])
-                rc = uff[k, i] / (2.0 * H * max(cd, 0.2)) - dl[i] / tau_c
+                tcmd = uff[k, i]
+                if ctl_on:
+                    tcmd = tcmd + ucmd[i]
+                rc = tcmd / (2.0 * H * max(cd, 0.2)) - dl[i] / tau_c
                 if rc > ratemax:
                     rc = ratemax
                 elif rc < -ratemax:
@@ -286,6 +511,71 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
         elif kind == 4:
             Q[3] += -H * bd[1]
             Q[4] += H * bd[0]
+        # ---------------- actuated pivot between the sleeve and the pen (extension)
+        if slv_on:
+            dbx = b[0] - bs_[0]; dby = b[1] - bs_[1]; dbdx = bd[0] - bds_[0]; dbdy = bd[1] - bds_[1]
+            for j in range(3):
+                dvec[j] = (p[j] - ps_[j]) + zp_ * (dbx * t1[j] + dby * t2[j])
+                dvel[j] = (v[j] - vs_[j]) + zp_ * (dbdx * t1[j] + dbdy * t2[j])
+            dpa = dvec[0] * a[0] + dvec[1] * a[1] + dvec[2] * a[2]
+            dva = dvel[0] * a[0] + dvel[1] * a[1] + dvel[2] * a[2]
+            for j in range(3):
+                fpv[j] = (-(kpt * (dvec[j] - dpa * a[j]) + kpa * dpa * a[j])
+                          - bpv * (kpt * (dvel[j] - dva * a[j]) + kpa * dva * a[j]))
+            fp_t1 = fpv[0] * t1[0] + fpv[1] * t1[1] + fpv[2] * t1[2]
+            fp_t2 = fpv[0] * t2[0] + fpv[1] * t2[1] + fpv[2] * t2[2]
+            for j in range(3):
+                Q[j] += fpv[j]
+                Qs[j] -= fpv[j]
+            Q[3] += zp_ * fp_t1; Q[4] += zp_ * fp_t2
+            Qs[3] -= zp_ * fp_t1; Qs[4] -= zp_ * fp_t2
+            # bending stiffness of the pivot flexure
+            tb1 = -kpr * dbx - bpv * kpr * dbdx
+            tb2 = -kpr * dby - bpv * kpr * dbdy
+            Q[3] += tb1; Q[4] += tb2; Qs[3] -= tb1; Qs[4] -= tb2
+            # 2-axis actuator at z_a on the transverse relative displacement
+            for i in range(2):
+                if i == 0:
+                    di = ((p[0] - ps_[0]) * t1[0] + (p[1] - ps_[1]) * t1[1] + (p[2] - ps_[2]) * t1[2]) + za_ * dbx
+                    dvi = ((v[0] - vs_[0]) * t1[0] + (v[1] - vs_[1]) * t1[1] + (v[2] - vs_[2]) * t1[2]) + za_ * dbdx
+                else:
+                    di = ((p[0] - ps_[0]) * t2[0] + (p[1] - ps_[1]) * t2[1] + (p[2] - ps_[2]) * t2[2]) + za_ * dby
+                    dvi = ((v[0] - vs_[0]) * t2[0] + (v[1] - vs_[1]) * t2[1] + (v[2] - vs_[2]) * t2[2]) + za_ * dbdy
+                cmd = 0.0
+                if ctl_on:
+                    cmd += ucmd[3 + i]
+                if ncol >= 9:
+                    cmd += uff[k, 7 + i]
+                if act_ty == 0:
+                    if cmd > afm:
+                        cmd = afm
+                    elif cmd < -afm:
+                        cmd = -afm
+                    fa = cmd + apre[i] - kas * di - cas * dvi
+                    lim = astr
+                else:
+                    if cmd > astr:
+                        cmd = astr
+                    elif cmd < -astr:
+                        cmd = -astr
+                    fa = kas * (cmd - di) - cas * dvi + apre[i]
+                    lim = 1.5 * astr
+                if di > lim:
+                    fa += -k_astop * (di - lim)
+                elif di < -lim:
+                    fa += -k_astop * (di + lim)
+                pdel[i] = di
+                pfor[i] = fa
+                if i == 0:
+                    for j in range(3):
+                        Q[j] += fa * t1[j]
+                        Qs[j] -= fa * t1[j]
+                    Q[3] += za_ * fa; Qs[3] -= za_ * fa
+                else:
+                    for j in range(3):
+                        Q[j] += fa * t2[j]
+                        Qs[j] -= fa * t2[j]
+                    Q[4] += za_ * fa; Qs[4] -= za_ * fa
         # ---------------- pen and hand accelerations
         if lock_rot:
             for i in range(3):
@@ -308,12 +598,29 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
         b[0] += bd[0] * dt; b[1] += bd[1] * dt
         vM[0] += aMx * dt; vM[1] += aMy * dt; vM[2] += aMz * dt
         dM[0] += vM[0] * dt; dM[1] += vM[1] * dt; dM[2] += vM[2] * dt
+        if slv_on:
+            for i in range(5):
+                s_ = 0.0
+                for j in range(5):
+                    s_ += Si[i, j] * Qs[j]
+                accs[i] = s_
+            for j in range(3):
+                vs_[j] += accs[j] * dt
+                ps_[j] += vs_[j] * dt
+            bds_[0] += accs[3] * dt; bds_[1] += accs[4] * dt
+            bs_[0] += bds_[0] * dt; bs_[1] += bds_[1] * dt
+        nn_prev = Nn
         # ---------------- nib stage (kinematic oracle as model P1: 2 kHz reference, contact-gated authority)
         if stage_on:
             if k % sdec == 0:
                 in_c = 1.0 if Nn > 0.0 else 0.0
                 g_eff = g_eff + alpha_a * (in_c - g_eff)
-                ex_ = p[0] - clean[k, 0]; ey_ = p[1] - clean[k, 1]
+                if stg_src == 0:
+                    ex_ = p[0] - clean[k, 0]; ey_ = p[1] - clean[k, 1]
+                elif stg_src == 1:
+                    ex_ = clean[k, 0]; ey_ = clean[k, 1]          # external disturbance estimate (extension)
+                else:
+                    ex_ = ucmd[5]; ey_ = ucmd[6]                  # in-loop controller output (extension)
                 # inverse Jacobian for azimuth frame (h, t2): q1 = sin(th) e.h, q2 = e.t2
                 hxv = a[0] * P[I_cos_th] + t1[0] * sth; hyv = a[1] * P[I_cos_th] + t1[1] * sth
                 eh = ex_ * hxv + ey_ * hyv
@@ -387,5 +694,16 @@ def simulate(P, pref, vref, fpush, psi, psid, uff, clean, intended, rec):
             r[R_Fgx] = Fg[0]; r[R_Fgy] = Fg[1]; r[R_Fgz] = Fg[2]
             r[R_psi] = ps; r[R_vbx] = v[0]; r[R_vby] = v[1]; r[R_Fvx] = Fvx; r[R_Fvy] = Fvy
             r[R_cx] = corr[0]; r[R_cy] = corr[1]
+            if slv_on:
+                r[R_sx] = ps_[0]; r[R_sy] = ps_[1]; r[R_sz] = ps_[2]; r[R_sb1] = bs_[0]; r[R_sb2] = bs_[1]
+                r[R_pd1] = pdel[0]; r[R_pd2] = pdel[1]; r[R_pf1] = pfor[0]; r[R_pf2] = pfor[1]
+                r[R_fp1] = fpv[0] * t1[0] + fpv[1] * t1[1] + fpv[2] * t1[2]
+                r[R_fp2] = fpv[0] * t2[0] + fpv[1] * t2[1] + fpv[2] * t2[2]
+                r[R_fpa] = fpv[0] * a[0] + fpv[1] * a[1] + fpv[2] * a[2]
+            if ctl_on:
+                r[R_u1] = ucmd[0]; r[R_u2] = ucmd[1]; r[R_u3] = ucmd[2]; r[R_u4] = ucmd[3]; r[R_u5] = ucmd[4]
+                r[R_u6] = ucmd[5]; r[R_u7] = ucmd[6]; r[R_ia1] = yv[0]; r[R_ia2] = yv[1]
+                r[R_eps1] = epsv[0]; r[R_eps2] = epsv[1]
+                r[R_afa1] = math.hypot(afU[0], afU[1]); r[R_afa2] = math.hypot(afU[2], afU[3])
             rec_i += 1
     return rec_i

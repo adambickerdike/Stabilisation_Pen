@@ -31,3 +31,5 @@ def test_default_outputs_bit_for_bit(now, name):
     for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
         if key in base:
             assert got[key] == base[key], f"{name}: {key} changed"
+    if "appended_all_zero" in got:
+        assert got["appended_all_zero"], f"{name}: an appended (extension) channel is non-zero in a default run"

@@ -233,6 +233,40 @@ class Device:
 
 
 @dataclass
+class Sleeve:
+    """Grip sleeve (handle) held by the fingers, carrying the pen body through an actuated 2-DOF pivot (extension added by
+    opt/inertial; PROPOSED DESIGN, all values set by the caller).  The pen body keeps the paper contacts, the nib stage
+    and any cap device; the grip zones act on the sleeve.  Pivot: flexure at z_p (translational stiffness k_pt, axial
+    k_pa, bending k_pr; stiffness-proportional damping beta_p).  Actuator at z_a acting on the transverse relative
+    displacement: act 'vcm' (force = command + preload - k_a d - c_a d', |command| <= F_max, stops at +/-stroke) or
+    'piezo' (force = k_a (command - d) - c_a d' + preload, |command| <= stroke = free stroke, crash stop at 1.5 stroke).
+    push_on_sleeve routes the writing push through the sleeve (applied at the sleeve's z = 0: the pivot carries the
+    paper's transverse reaction; no static couple on the hand)."""
+    m: float = 8.0e-3
+    z_g: float = 0.050
+    J_g: float = 6.0e-6
+    z_p: float = 0.015
+    k_pt: float = 5.0e4
+    k_pa: float = 1.0e5
+    k_pr: float = 0.02
+    beta_p: float = 1.0e-4
+    z_a: float = 0.075
+    act: str = "piezo"
+    k_a: float = 1000.0
+    c_a: float = 0.05
+    stroke: float = 1.0e-3
+    F_max: float = 1.0
+    preload: Tuple[float, float] = (0.0, 0.0)
+    push_on_sleeve: bool = True
+    k_stop: float = 2.0e4
+    label: str = ""
+
+    @property
+    def J_nib(self):
+        return self.J_g + self.m * self.z_g ** 2
+
+
+@dataclass
 class Config:
     theta_deg: float = 50.0
     phi_deg: float = 0.0
@@ -277,6 +311,11 @@ class Config:
     vc_hz: float = 1.0               # ASSUMPTION: loop crossover ~ integral gain 2 pi f (eye-hand loop 0.5-2 Hz, ACT-02)
     vc_delay: float = 0.12           # ASSUMPTION: visual-motor delay (s)
     label: str = ""
+    # ---- extensions (opt/inertial); defaults leave the model exactly as before
+    sleeve: Optional[Sleeve] = None  # grip sleeve with an actuated pivot
+    stage_src: int = 0               # stage command: 0 oracle (clean reference), 1 external estimate (run(clean=...)), 2 controller
+    ctl: Optional[dict] = None       # in-loop controller spec (opt/inertial/control.py builds it)
+    body_mod: Optional[dict] = None  # envelope tiers: {"remove": [part names], "add": [(name, m, z, L, r2)]} applied to the CAD pen
 
     def replace(self, **kw):
         return replace(self, **kw)
@@ -301,6 +340,12 @@ def protrusion_centre(theta_deg, r_ring=CONTACT["r_ring"], r_b=CONTACT["r_b"]):
 def pen_with_device(cfg: Config) -> PenBody:
     """Pen body carrying the device's fixed parts (the moving mass of rm/tmd is a separate body)."""
     body = pen_body(cfg.wiring)
+    bm = getattr(cfg, "body_mod", None)
+    if bm:
+        for name in bm.get("remove", ()):
+            body = body.remove(name)
+        for name, m_, z_, L_, r2_ in bm.get("add", ()):
+            body = body.add(name, m_, z_, L_, r2_)
     dv = cfg.device
     if dv.removed_cell_frac > 0:
         f = 1.0 - dv.removed_cell_frac

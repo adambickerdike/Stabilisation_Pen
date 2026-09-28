@@ -1,0 +1,420 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (PROVISIONAL layout by the lead; dimensions to be set by opt/inertial Rev H study)",
+    "generated_utc": "2026-09-28T16:35:29+00:00",
+    "git_revision": "7091a35-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "-",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "note": "Provisional reference layout for the 3-D explainer and the handwriting study. Not CAD-checked; every dimension is an ASSUMPTION until results/revH/layout.json exists."
+  },
+  "units": "mm",
+  "axis": "z along the pen axis from the ball tip (z = 0) toward the back; x, y transverse",
+  "pivot_z": 58.0,
+  "tip_travel_mm": 3.0,
+  "tilt_deg": 50.0,
+  "front_opening_d": 13.0,
+  "grip_zone": {
+    "z0": 20.0,
+    "z1": 45.0
+  },
+  "hand": {
+    "finger_pads_z": [
+      26.0,
+      32.0,
+      38.0
+    ],
+    "web_z": 92.0
+  },
+  "components": [
+    {
+      "id": "refill",
+      "label": "Ink refill (D1 mini)",
+      "group": "refill",
+      "shape": "cylinder",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Standard replaceable ink refill; its ball tip makes the ink.",
+      "part": "ISO 12757-2 D1 refill",
+      "ledger": "",
+      "z0": 1.0,
+      "z1": 67.0,
+      "d0": 2.35,
+      "d1": 2.35
+    },
+    {
+      "id": "ball",
+      "label": "Ball tip",
+      "group": "refill",
+      "shape": "cone",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "The point that touches the paper.",
+      "part": "ISO 12757-2 D1 refill",
+      "ledger": "",
+      "z0": 0.0,
+      "z1": 3.0,
+      "d0": 0.7,
+      "d1": 2.35
+    },
+    {
+      "id": "nose",
+      "label": "Active nose",
+      "group": "moving_nose",
+      "shape": "cone",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "The front of the pen, holding the refill. It tilts on the pivot so the tip moves up to about \u00b13 mm against the handle, opposite to the hand's shake or toward a guide path.",
+      "part": "custom",
+      "ledger": "",
+      "z0": 2.0,
+      "z1": 34.0,
+      "d0": 4.0,
+      "d1": 9.0
+    },
+    {
+      "id": "nose_carrier",
+      "label": "Nose carrier tube",
+      "group": "moving_nose",
+      "shape": "tube",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Stiff tube joining the nose to the pivot and the magnets.",
+      "part": "custom",
+      "ledger": "",
+      "z0": 34.0,
+      "z1": 80.0,
+      "d0": 9.0,
+      "d1": 7.0,
+      "d_in": 4.0
+    },
+    {
+      "id": "force_sensor",
+      "label": "Writing-force sensor",
+      "group": "sensor",
+      "shape": "cylinder",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Measures how hard the tip presses: pen-down detection and pressure.",
+      "part": "thin-film or strain-gauge load cell (to select)",
+      "ledger": "",
+      "z0": 68.0,
+      "z1": 70.0,
+      "d0": 6.0,
+      "d1": 6.0
+    },
+    {
+      "id": "magnet_x",
+      "label": "Actuator magnet (x)",
+      "group": "actuator",
+      "shape": "box",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Moving magnet on the nose's rear lever; the coil pushes it to tilt the nose sideways.",
+      "part": "NdFeB N52 block (to select)",
+      "ledger": "",
+      "z0": 74.0,
+      "z1": 80.0,
+      "size": [
+        3.0,
+        6.0,
+        6.0
+      ],
+      "offset": [
+        5.0,
+        0.0
+      ]
+    },
+    {
+      "id": "magnet_y",
+      "label": "Actuator magnet (y)",
+      "group": "actuator",
+      "shape": "box",
+      "moves_with": "nose",
+      "optional": false,
+      "function": "Moving magnet for the other axis.",
+      "part": "NdFeB N52 block (to select)",
+      "ledger": "",
+      "z0": 74.0,
+      "z1": 80.0,
+      "size": [
+        6.0,
+        3.0,
+        6.0
+      ],
+      "offset": [
+        0.0,
+        5.0
+      ]
+    },
+    {
+      "id": "gimbal",
+      "label": "Flexure pivot (2-axis)",
+      "group": "mechanism",
+      "shape": "cylinder",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "A thin spring-steel cross flexure: lets the nose tilt in two directions with no friction or backlash, and carries the writing force along the pen.",
+      "part": "custom (spring steel, laser-cut)",
+      "ledger": "",
+      "z0": 57.0,
+      "z1": 59.0,
+      "d0": 17.0,
+      "d1": 17.0
+    },
+    {
+      "id": "coil_x",
+      "label": "Voice coil (x)",
+      "group": "actuator",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Electromagnet coil fixed in the handle; current through it pushes the magnet, moving the tip left-right.",
+      "part": "custom-wound or catalogue voice coil (to select)",
+      "ledger": "",
+      "z0": 72.0,
+      "z1": 82.0,
+      "size": [
+        4.0,
+        10.0,
+        10.0
+      ],
+      "offset": [
+        8.5,
+        0.0
+      ]
+    },
+    {
+      "id": "coil_y",
+      "label": "Voice coil (y)",
+      "group": "actuator",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Second coil for the other direction (toward and away from the writer).",
+      "part": "custom-wound or catalogue voice coil (to select)",
+      "ledger": "",
+      "z0": 72.0,
+      "z1": 82.0,
+      "size": [
+        10.0,
+        4.0,
+        10.0
+      ],
+      "offset": [
+        0.0,
+        8.5
+      ]
+    },
+    {
+      "id": "hall_x",
+      "label": "Position sensor (x)",
+      "group": "sensor",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Hall sensor reading the magnet: tells the controller where the tip is.",
+      "part": "linear Hall sensor (to select)",
+      "ledger": "",
+      "z0": 70.0,
+      "z1": 71.0,
+      "size": [
+        2.0,
+        2.0,
+        1.0
+      ],
+      "offset": [
+        7.0,
+        0.0
+      ]
+    },
+    {
+      "id": "hall_y",
+      "label": "Position sensor (y)",
+      "group": "sensor",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Hall sensor for the other axis.",
+      "part": "linear Hall sensor (to select)",
+      "ledger": "",
+      "z0": 70.0,
+      "z1": 71.0,
+      "size": [
+        2.0,
+        2.0,
+        1.0
+      ],
+      "offset": [
+        0.0,
+        7.0
+      ]
+    },
+    {
+      "id": "shell",
+      "label": "Handle shell",
+      "group": "structure",
+      "shape": "tube",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "The body you hold: about 22 mm thick, easier to grip than a pencil.",
+      "part": "custom",
+      "ledger": "",
+      "z0": 18.0,
+      "z1": 172.0,
+      "d0": 14.0,
+      "d1": 20.0,
+      "d_in": 12.0
+    },
+    {
+      "id": "sleeve",
+      "label": "Soft finger sleeve",
+      "group": "grip",
+      "shape": "tube",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Where the thumb, index and middle finger rest. It does not move; the nose moves inside it.",
+      "part": "TPE overmould",
+      "ledger": "",
+      "z0": 18.0,
+      "z1": 50.0,
+      "d0": 15.0,
+      "d1": 22.0,
+      "d_in": 13.0
+    },
+    {
+      "id": "optical",
+      "label": "Paper-tracking camera",
+      "group": "sensor",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "A tiny optical sensor beside the tip that watches the paper: it knows where the tip is on the page, for guidance and for saving your writing.",
+      "part": "optical-flow / mouse-type sensor (to select)",
+      "ledger": "",
+      "z0": 20.0,
+      "z1": 26.0,
+      "size": [
+        5.0,
+        5.0,
+        6.0
+      ],
+      "offset": [
+        0.0,
+        -7.0
+      ]
+    },
+    {
+      "id": "imu",
+      "label": "Motion sensor (IMU)",
+      "group": "sensor",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Accelerometer and gyroscope: measures the hand's shake about 2000 times a second.",
+      "part": "LSM6DSV16X class 6-axis IMU",
+      "ledger": "OPT-37",
+      "z0": 92.0,
+      "z1": 95.0,
+      "size": [
+        3.0,
+        2.5,
+        1.0
+      ],
+      "offset": [
+        0.0,
+        3.0
+      ]
+    },
+    {
+      "id": "pcb",
+      "label": "Control board",
+      "group": "electronics",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Microcontroller with Bluetooth, the two coil drivers and the charger. Runs the tremor tracker and the control loop.",
+      "part": "nRF54L15-class MCU + H-bridge drivers",
+      "ledger": "AMF-44",
+      "z0": 84.0,
+      "z1": 100.0,
+      "size": [
+        1.0,
+        14.0,
+        16.0
+      ],
+      "offset": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "battery",
+      "label": "Rechargeable battery",
+      "group": "power",
+      "shape": "cylinder",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Li-ion cell (14500 class, AA-sized) for a day of writing.",
+      "part": "14500 Li-ion (to verify)",
+      "ledger": "",
+      "z0": 102.0,
+      "z1": 152.0,
+      "d0": 14.2,
+      "d1": 14.2
+    },
+    {
+      "id": "lra",
+      "label": "Vibration motor",
+      "group": "haptic",
+      "shape": "cylinder",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "Gives a gentle buzz as a cue: 'write bigger', 'check this word', or 'slow down'.",
+      "part": "coin LRA (to select)",
+      "ledger": "AMF-45",
+      "z0": 154.0,
+      "z1": 157.0,
+      "d0": 8.0,
+      "d1": 8.0
+    },
+    {
+      "id": "inertial",
+      "label": "Inertial module (optional)",
+      "group": "inertial",
+      "shape": "cylinder",
+      "moves_with": "handle",
+      "optional": true,
+      "function": "Optional spinning or sliding weight in the back of the pen that pushes the pen body against the shake (being optimised).",
+      "part": "reaction mass or gyroscope pair (study in progress)",
+      "ledger": "",
+      "z0": 158.0,
+      "z1": 170.0,
+      "d0": 17.0,
+      "d1": 17.0
+    },
+    {
+      "id": "usb",
+      "label": "Charging port and button",
+      "group": "electronics",
+      "shape": "box",
+      "moves_with": "handle",
+      "optional": false,
+      "function": "USB-C charging and an on/off / mode button.",
+      "part": "USB-C receptacle",
+      "ledger": "",
+      "z0": 170.0,
+      "z1": 173.0,
+      "size": [
+        8.0,
+        3.0,
+        3.0
+      ]
+    }
+  ]
+}

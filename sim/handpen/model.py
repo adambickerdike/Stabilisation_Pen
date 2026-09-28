@@ -152,7 +152,73 @@ def pack(cfg: Config, n_steps: int, dt: float = DT, rec_hz: float = REC_HZ, trem
     s("vc_on", 1.0 if cfg.voluntary else 0.0); s("vc_ki", 2 * math.pi * cfg.vc_hz); s("vc_delay", round(cfg.vc_delay / dt))
     info = {"model_version": MODEL_VERSION, "pen": body.summary(), "grip": g.summary(), "rotation_lever_m": lever,
             "N_nib0": N_nib0, "N_skid0": N_sk0}
+    Pv = _pack_extensions(Pv, s, cfg, dt, t1, t2, info)
     return Pv, info, lever
+
+
+def _pack_extensions(Pv, s, cfg: Config, dt, t1, t2, info):
+    """Grip sleeve + actuated pivot, stage command source and in-loop controller (opt/inertial extension).  With the
+    defaults (no sleeve, stage_src 0, no controller) nothing is written, so the parameter vector is the original one
+    followed by zeros."""
+    sl = getattr(cfg, "sleeve", None)
+    if sl is not None:
+        s("slv_on", 1.0)
+        Sinv = np.linalg.inv(mass_matrix(sl, t1, t2))
+        for i in range(5):
+            for j in range(i, 5):
+                s(f"Si{i}{j}", Sinv[i, j])
+        s("zp", sl.z_p); s("kpt", sl.k_pt); s("kpa", sl.k_pa); s("kpr", sl.k_pr); s("bpv", sl.beta_p); s("za", sl.z_a)
+        s("kas", sl.k_a); s("cas", sl.c_a); s("act_ty", {"vcm": 0, "piezo": 1}[sl.act]); s("astr", sl.stroke)
+        s("afm", sl.F_max); s("apre1", sl.preload[0]); s("apre2", sl.preload[1])
+        s("push_slv", 1.0 if sl.push_on_sleeve else 0.0); s("k_astop", sl.k_stop)
+        info["sleeve"] = {"mass_g": sl.m * 1e3, "com_mm": sl.z_g * 1e3, "z_p_mm": sl.z_p * 1e3, "z_a_mm": sl.z_a * 1e3,
+                          "act": sl.act, "label": sl.label}
+    if getattr(cfg, "stage_src", 0):
+        s("stg_src", cfg.stage_src)
+    ctl = getattr(cfg, "ctl", None)
+    if ctl is None:
+        return Pv
+    NI, NO, NYE = core.NY + core.NE + core.NU, core.NU + core.NEPS, core.NY + core.NE
+    s("ctl_on", 1.0)
+    s("cdec", max(1, round(ctl.get("Ts", 5e-4) / dt)))
+    imu = ctl.get("imu", {})
+    s("zib", imu.get("z_b", 0.100)); s("zis", imu.get("z_s", 0.050)); s("ilat", imu.get("lat_ticks", 3))
+    s("acc_nd", imu.get("acc_nd", 60e-6 * 9.80665)); s("gyr_nd", imu.get("gyr_nd", math.radians(2.8e-3)))
+    s("pos_nd", imu.get("pos_nd", 0.0)); s("iseed", imu.get("seed", 1)); s("iaa_hz", imu.get("aa_hz", 400.0))
+    A = np.asarray(ctl.get("A", np.zeros((0, 0))), float)
+    nx = A.shape[0]
+    B = np.asarray(ctl.get("B", np.zeros((nx, NI))), float).reshape(nx, NI)
+    C = np.asarray(ctl.get("C", np.zeros((NO, nx))), float).reshape(NO, nx)
+    D = np.asarray(ctl.get("D", np.zeros((NO, NYE))), float).reshape(NO, NYE)
+    blocks = []
+    off = [len(Pv)]
+
+    def put(name, arr):
+        s(name, off[0])
+        a_ = np.ascontiguousarray(np.asarray(arr, float).ravel())
+        blocks.append(a_)
+        off[0] += len(a_)
+
+    s("c_nx", nx)
+    put("c_oA", A); put("c_oB", B); put("c_oC", C); put("c_oD", D)
+    nn = ctl.get("nn")
+    if nn is not None:
+        W1 = np.asarray(nn["W1"], float)
+        s("nn_h", W1.shape[0])
+        assert W1.shape[1] == nx + NYE, "MLP input must be [x; y; e]"
+        put("nn_oW1", W1); put("nn_ob1", nn["b1"]); put("nn_oW2", np.asarray(nn["W2"], float).reshape(core.NU, W1.shape[0]))
+        put("nn_ob2", nn["b2"])
+    afc = ctl.get("afc")
+    if afc is not None:
+        tab = np.asarray(afc["table"], float)
+        assert tab.ndim == 2 and tab.shape[1] == 8 and tab.shape[0] >= 2
+        s("afc_on", 1.0); s("afc_mu", afc["mu"]); s("afc_leak", afc.get("leak", 0.0)); s("afc_nf", tab.shape[0])
+        s("afc_f0", afc["f0"]); s("afc_df", afc["df"]); s("afc_o1", afc["out"][0]); s("afc_o2", afc["out"][1])
+        s("afc_umax", afc.get("umax", 1.0))
+        put("afc_ot", tab)
+    for i, u in enumerate(ctl.get("ulim", [0.0] * core.NU)):
+        s(f"ul{i + 1}", u)
+    return np.concatenate([Pv] + blocks) if blocks else Pv
 
 
 class Result:
