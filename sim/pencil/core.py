@@ -20,6 +20,8 @@ Driver: V follows the command through a first-order lag with a slew limit, clamp
 charge-recovery stage (sim/pencil/power.py conventions).
 Hysteresis: Bouc-Wen on the normalised drive (optional).
 Control: outer loop (estimator, page-to-stage reference) at the stage rate as in model M1;
+mode 7 (external) cancels a disturbance estimate the harness computes outside the core and
+passes per simulation step in place of dtrue (the estimator must be causal; see model.py);
 inner piezo servo (feedforward + integral + damping) at servo_decim.
 Estimators _kf_step and the fusion/gate/guided logic are copied from sim/pensim/core.py
 (model M1) so both simulators run the same estimator.
@@ -139,6 +141,8 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     odec = int(P[I_opt_decim]); od = int(P[I_opt_delay]); on_ = P[I_opt_noise]; olift = P[I_opt_lift_max]
     idec = int(P[I_imu_decim]); idl = int(P[I_imu_delay]); inz = P[I_imu_noise]; ibx = P[I_imu_bias_x]; iby = P[I_imu_bias_y]
     adec = int(P[I_ax_decim]); adl = int(P[I_ax_delay]); anz = P[I_ax_noise]; cthr = P[I_contact_thr]
+    w_aa = 2.0 * math.pi * max(P[I_acc_aa_hz], 1.0); imu_aa = P[I_imu_aa] > 0.5
+    aa_q1 = 0.5411961001461969; aa_q2 = 1.3065629648763766   # Butterworth order 4: two biquads
     sdec = int(P[I_stage_decim]); vdec = int(P[I_servo_decim])
     Ki = P[I_Ki]; Kp = P[I_Kp]; Kd = P[I_Kd]; dfilt = P[I_d_filt]; ffr = P[I_ff_ref]; ffb = P[I_ff_bias]
     Fb0 = P[I_F_bias0]; Fb1 = P[I_F_bias1]
@@ -173,6 +177,7 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
     a_meas = np.zeros(2)
     s_meas = s
     pimu = np.zeros(2); vimu = np.zeros(2)
+    aa1 = np.zeros(3); aa1d = np.zeros(3); aa2 = np.zeros(3); aa2d = np.zeros(3)   # anti-aliasing filter states
     rb_pimu = np.zeros((1024, 2)); tick = 0
     xk = np.zeros((2, 5)); Pk = np.zeros((2, 5, 5))
     for axx in range(2):
@@ -258,6 +263,11 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
                     target_g = 0.0
             elif mode == 4:   # oracle: true housing deviation from its clean (tremor-free) path
                 dhat[0] = pH[0] - dtrue[k, 0]; dhat[1] = pH[1] - dtrue[k, 1]
+                corr0 = -dhat[0]; corr1 = -dhat[1]
+                target_g = g_as if in_contact else 0.0
+                conf = 1.0
+            elif mode == 7:   # external: the harness supplies a causal disturbance estimate per step in dtrue
+                dhat[0] = dtrue[k, 0]; dhat[1] = dtrue[k, 1]
                 corr0 = -dhat[0]; corr1 = -dhat[1]
                 target_g = g_as if in_contact else 0.0
                 conf = 1.0
@@ -463,11 +473,20 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
         if not lock_ax:
             sd += sdd * dt
             s += sd * dt
+        # anti-aliasing low-pass on the housing acceleration (two state-variable biquads, semi-implicit)
+        for j in range(3):
+            aa1d[j] += (w_aa * w_aa * (aH[j] - aa1[j]) - (w_aa / aa_q1) * aa1d[j]) * dt
+            aa1[j] += aa1d[j] * dt
+            aa2d[j] += (w_aa * w_aa * (aa1[j] - aa2[j]) - (w_aa / aa_q2) * aa2d[j]) * dt
+            aa2[j] += aa2d[j] * dt
         # ring buffers
         kk = k % RB
         rb_q[kk, 0] = q[0]; rb_q[kk, 1] = q[1]
         rb_pH[kk, 0] = pH[0]; rb_pH[kk, 1] = pH[1]; rb_pH[kk, 2] = pH[2]
-        rb_aH[kk, 0] = aH[0]; rb_aH[kk, 1] = aH[1]
+        if imu_aa:
+            rb_aH[kk, 0] = aa2[0]; rb_aH[kk, 1] = aa2[1]
+        else:
+            rb_aH[kk, 0] = aH[0]; rb_aH[kk, 1] = aH[1]
         rb_s[kk] = s
         rb_ok[kk] = opt_ok[k]
         # sensors
@@ -519,5 +538,6 @@ def simulate(P, pref, vref, fpush, dtrue, tmpl, opt_ok, seed, rec):
             r[R_west] = wkf / (2 * math.pi)
             r[R_i1] = cur[0]; r[R_i2] = cur[1]
             r[R_incontact] = 1.0 if in_contact else 0.0
+            r[R_aHx] = aa2[0]; r[R_aHy] = aa2[1]; r[R_aHz] = aa2[2]
             rec_i += 1
     return rec_i

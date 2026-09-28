@@ -164,3 +164,37 @@ def test_A1_load_formulas():
     b = D.protrusion_budget(1.4e-3)
     assert b["tilt_range_simple"] == pytest.approx(1.4e-3 * (1 / math.tan(35 * D2R) - 1 / math.tan(75 * D2R)), rel=1e-9)
     assert b["tilt_range_simple"] == pytest.approx(1.62e-3, abs=0.01e-3)
+
+
+# ---------------------------------------------------------------- external-estimate mode (harness hook)
+def test_external_mode_zero_estimate_is_neutral_and_oracle_estimate_matches_oracle():
+    sc0 = scenarios.handwriting(seed=12, duration=3.0)
+    sc1 = scenarios.handwriting(seed=12, duration=3.0, tremor=sg.TremorSpec(f0=6.0, amp_pk=3e-4))
+    cfg = M.PencilConfig()
+    ref = M.run(sc0, M.Controller(mode="neutral"), cfg, seed=12)
+    rn = M.run(sc1, M.Controller(mode="neutral"), cfg, seed=12)
+    # a zero estimate commands nothing: identical to NEUTRAL (same noise draws)
+    rz = M.run(M.with_estimate(sc1, np.zeros((len(sc1.t), 2))), M.Controller(mode="external"), cfg, seed=12)
+    assert np.max(np.abs(rz.ink() - rn.ink())) < 1e-12
+    # recorded housing acceleration (after the 4th-order 400 Hz anti-aliasing low-pass, group delay
+    # (1/Q1 + 1/Q2)/w = 1.04 ms) is the second derivative of the recorded housing path in the writing band
+    from scipy.signal import butter, sosfiltfilt
+    t, pH, aH = rn["t"], rn.xy("pHx"), rn.xy("aHx")
+    fs = 1.0 / np.median(np.diff(t))
+    sos = butter(4, 50.0, fs=fs, output="sos")
+    acc_fd = sosfiltfilt(sos, np.gradient(np.gradient(pH[:, 0], t), t))
+    tau = (1 / 0.5411961001461969 + 1 / 1.3065629648763766) / (2 * math.pi * 400.0)
+    acc_rec = np.interp(t, t - tau, sosfiltfilt(sos, aH[:, 0]))
+    band = slice(400, -400)
+    assert np.corrcoef(acc_fd[band], acc_rec[band])[0, 1] > 0.99
+    # the oracle's disturbance taken from the NEUTRAL housing path, injected as an external estimate,
+    # reproduces the oracle closely (the stage's reaction on the housing is small)
+    clean = M.housing_disturbance(sc1, ref)
+    pHn = np.column_stack([np.interp(sc1.t, t, pH[:, 0]), np.interp(sc1.t, t, pH[:, 1])])
+    ro = M.run(M.with_disturbance(sc1, clean), M.Controller(mode="oracle"), cfg, seed=12)
+    rx = M.run(M.with_estimate(sc1, pHn - clean), M.Controller(mode="external"), cfg, seed=12)
+    base = E.compare(rn, ref)["e_rms_um"]
+    r_o, r_x = E.compare(ro, ref)["e_rms_um"] / base, E.compare(rx, ref)["e_rms_um"] / base
+    assert r_x == pytest.approx(r_o, abs=0.03)
+    with pytest.raises(ValueError):
+        M.with_estimate(sc1, np.zeros((10, 2)))

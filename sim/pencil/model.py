@@ -6,6 +6,9 @@ run():          one scenario -> named recorded channels.
 references(), housing_disturbance(), with_disturbance(): the harness conventions of
                 sim/pensim/bench.py and harness.py (neutral clean reference; the oracle gets the
                 clean housing path as its disturbance reference).
+with_estimate(): scenario for mode "external", where an estimator outside the core supplies
+                the disturbance estimate per step (recorded aHx/aHy/aHz give the true housing
+                acceleration for external sensor models).
 Scenarios are the M1 builders (sim/pensim/scenarios.py).  Evidence status: SIMULATION.
 """
 from __future__ import annotations
@@ -201,6 +204,9 @@ def build_params(scn, ctrl: Controller, cfg: Optional[PencilConfig] = None, dt: 
     setp("imu_bias_x", b); setp("imu_bias_y", -0.5 * b)
     setp("ax_decim", round(1.0 / (g("sensing.force_rate") * dt))); setp("ax_delay", steps(1e-3))
     setp("ax_noise", ov.get("sensing.axial_noise", 2e-6)); setp("contact_thr", ov.get("contact_thr", 0.1e-3))
+    # anti-aliasing low-pass of the recorded housing acceleration; the internal IMU keeps raw samples (P1.0) unless
+    # overrides imu_aa = 1 (the raw housing acceleration carries 1-20 kHz contact content that folds into 0-2 kHz)
+    setp("acc_aa_hz", ov.get("acc_aa_hz", 400.0)); setp("imu_aa", ov.get("imu_aa", 0.0))
     # controller
     setp("mode", MODES[ctrl.mode])
     f_stage = g("control.f_stage")
@@ -294,3 +300,16 @@ def with_disturbance(scn, d):
     s2 = copy.copy(scn)
     s2.dtrue = d
     return s2
+
+
+def with_estimate(scn, dhat):
+    """Scenario for Controller(mode="external"): dhat (n x 2, page frame, m) is the housing
+    disturbance estimate at every simulation step, which the stage cancels (within its travel,
+    gated by nib contact like the oracle).  The estimate must be causal: dhat[k] may use only
+    sensor samples available before t[k] (sensor delays included).  Harnesses that compute it
+    from a neutral run of the same scenario should report how far the controlled run's housing
+    path departs from that run (the stage's reaction on the housing is small but not zero)."""
+    dhat = np.asarray(dhat, dtype=np.float64)
+    if dhat.shape != (len(scn.t), 2):
+        raise ValueError(f"dhat must have shape ({len(scn.t)}, 2), got {dhat.shape}")
+    return with_disturbance(scn, np.ascontiguousarray(dhat))

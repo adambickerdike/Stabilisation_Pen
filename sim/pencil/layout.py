@@ -24,6 +24,9 @@ NAMES = [
     "hall_noise", "hall_delay", "opt_decim", "opt_delay", "opt_noise", "opt_lift_max",
     "imu_decim", "imu_delay", "imu_noise", "imu_bias_x", "imu_bias_y",
     "ax_decim", "ax_delay", "ax_noise", "contact_thr",
+    # anti-aliasing low-pass on the housing acceleration (4th-order Butterworth): the recorded aH channels
+    # always pass through it; the internal IMU uses it only if imu_aa > 0.5 (legacy P1.0: raw samples)
+    "acc_aa_hz", "imu_aa",
     # controller: outer (estimator) and inner (piezo servo) rates, gains, limits
     "mode", "stage_decim", "servo_decim", "Ki", "Kp", "Kd", "d_filt", "ff_ref", "ff_bias", "F_bias0", "F_bias1",
     "g_assist", "q_lim", "q_taper", "slew", "authority_tau", "horizon",
@@ -36,13 +39,14 @@ NAMES = [
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
 
-MODES = {"locked": 0, "neutral": 1, "kfosc": 3, "oracle": 4, "open": 5, "guided": 6}
+MODES = {"locked": 0, "neutral": 1, "kfosc": 3, "oracle": 4, "open": 5, "guided": 6, "external": 7}
 
 REC = [
     "t", "pHx", "pHy", "pHz", "q1", "q2", "qr1", "qr2", "s",
     "Nn", "fnx", "fny", "Ns", "fsx", "fsy", "Cx", "Cy", "Cz",
     "V1", "V2", "Fa1", "Fa2", "contact", "skid_contact", "dhx", "dhy", "conf", "vsat", "stop",
     "PrailB", "PrailR", "Fhx", "Fhy", "Fhz", "west", "i1", "i2", "incontact",
+    "aHx", "aHy", "aHz",   # true housing acceleration (page frame) after the acc_aa_hz anti-aliasing low-pass
 ]
 RIDX = {n: i for i, n in enumerate(REC)}
 NREC = len(REC)
