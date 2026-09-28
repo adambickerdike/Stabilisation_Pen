@@ -108,7 +108,7 @@ def simulate(pol, Ad, Bd, Ctip, Crm, batch, burn=400):
         e = batch["e"][:, t, :]
         lp = a_lp[None, :, None] * lp + (1 - a_lp)[None, :, None] * e[:, None, :]
         r_tot = (x + xw) @ Cr.T
-        z = torch.cat([e, lp.reshape(Bsz, 4), batch["f"][:, t:t + 1], batch["g"][:, t:t + 1], r_tot], dim=1)
+        z = torch.cat([e, lp.reshape(Bsz, 4), batch["f"][:, t, :], batch["g"][:, t, :], r_tot], dim=1)
         u = pol(z)
         d = batch["d"][:, t, :]; w = batch["w"][:, t, :]
         hd = torch.cat([d, torch.zeros(Bsz, 1, dtype=torch.float64), (d - d_prev) / TS, torch.zeros(Bsz, 1, dtype=torch.float64)], 1)

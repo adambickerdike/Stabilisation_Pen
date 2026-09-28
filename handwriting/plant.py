@@ -57,6 +57,7 @@ NAMES = [
     "tau_auth",
     # controller switches and gains
     "use_ext", "use_guide", "g_guide", "capture", "drop_d", "drop_t", "use_size", "G_x", "G_y", "tau_sa",
+    "sa_adapt", "sa_tau_amp", "sa_t_cal",
     "ps_lat_ticks", "ps_noise", "ps_every",
     # board
     "use_board", "Kb", "Db", "F_cap", "b_tau", "b_dead_ticks", "b_noise", "b_every", "b_bias_x", "b_bias_y",
@@ -81,6 +82,7 @@ I_muss = IDX["mu_s_skid"]; I_vs = IDX["v_s"]; I_xpre = IDX["x_pre"]; I_clat = ID
 I_tauA = IDX["tau_auth"]
 I_ext = IDX["use_ext"]; I_gd = IDX["use_guide"]; I_gg = IDX["g_guide"]; I_cap = IDX["capture"]; I_dd = IDX["drop_d"]
 I_dtm = IDX["drop_t"]; I_sa = IDX["use_size"]; I_Gx = IDX["G_x"]; I_Gy = IDX["G_y"]; I_tsa = IDX["tau_sa"]
+I_sad = IDX["sa_adapt"]; I_satau = IDX["sa_tau_amp"]; I_satcal = IDX["sa_t_cal"]
 I_pslat = IDX["ps_lat_ticks"]; I_psn = IDX["ps_noise"]; I_pse = IDX["ps_every"]
 I_bd = IDX["use_board"]; I_Kb = IDX["Kb"]; I_Db = IDX["Db"]; I_Fcap = IDX["F_cap"]; I_btau = IDX["b_tau"]
 I_bdead = IDX["b_dead_ticks"]; I_bn = IDX["b_noise"]; I_bev = IDX["b_every"]; I_bbx = IDX["b_bias_x"]; I_bby = IDX["b_bias_y"]
@@ -116,7 +118,7 @@ def _nearest(tm, tdown, px, py, prog, win_back, win_fwd):
 
 
 @njit(cache=True)
-def simulate(P, pref, vref, down, qext, tmpl, tdown, btmpl, btdown, seed, rec):
+def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, btmpl, btdown, seed, rec):
     np.random.seed(seed)
     dt = P[I_dt]; n = int(P[I_n]); rdec = int(P[I_rec]); tdec = int(P[I_tick])
     Kg = P[I_Kg]; Cg = P[I_Cg]; Mh = P[I_Mh]; ka = P[I_ka]; ba = P[I_ba]; wc = P[I_wc]
@@ -127,6 +129,7 @@ def simulate(P, pref, vref, down, qext, tmpl, tdown, btmpl, btdown, seed, rec):
     vs = P[I_vs]; xpre = P[I_xpre]; clat = int(P[I_clat]); tauA = P[I_tauA]
     use_ext = P[I_ext] > 0.5; use_gd = P[I_gd] > 0.5; gg = P[I_gg]; cap = P[I_cap]; dd_ = P[I_dd]; dtm = P[I_dtm]
     use_sa = P[I_sa] > 0.5; Gx = P[I_Gx]; Gy = P[I_Gy]; tsa = P[I_tsa]
+    sa_ad = P[I_sad] > 0.5; sa_ta = P[I_satau]; sa_tc = P[I_satcal]
     pslat = int(P[I_pslat]); psn = P[I_psn]; pse = int(P[I_pse])
     use_bd = P[I_bd] > 0.5; Kb = P[I_Kb]; Db = P[I_Db]; Fcap = P[I_Fcap]; btau = P[I_btau]
     bdead = int(P[I_bdead]); bn = P[I_bn]; bev = int(P[I_bev]); bbx = P[I_bbx]; bby = P[I_bby]
@@ -144,10 +147,11 @@ def simulate(P, pref, vref, down, qext, tmpl, tdown, btmpl, btdown, seed, rec):
     g_eff = 0.0
     qc0 = 0.0; qc1 = 0.0                                 # slew-limited command
     rb_cmd = np.zeros((RB, 2)); rb_pH = np.zeros((RB, 2)); rb_tip = np.zeros((RB, 2)); rb_con = np.zeros(RB)
-    rb_bF = np.zeros((RB, 2))
+    rb_bF = np.zeros((RB, 2)); rb_act = np.zeros(RB)
     ps0 = pH0; ps1 = pH1                                 # page-sensor sample (held)
     bs0 = pH0; bs1 = pH1                                 # board sensing sample (held)
     an0 = pH0; an1 = pH1                                 # size-assist anchor
+    g_sa = 1.0                                           # size-assist gain (per-tick schedule when sa_adapt)
     prog = 0; progb = 0; reacq = 1; reacqb = 1
     over_t = 0.0; dropped = 0; was_con = 0
     gate = 0.0; dist = 0.0
@@ -165,14 +169,16 @@ def simulate(P, pref, vref, down, qext, tmpl, tdown, btmpl, btdown, seed, rec):
             rb_pH[j, 0] = pH0; rb_pH[j, 1] = pH1
             rb_tip[j, 0] = pH0 + q0; rb_tip[j, 1] = pH1 + q1
             rb_con[j] = 1.0 if con else 0.0
+            rb_act[j] = active[k]
             jc = (tick - clat) % RB if tick >= clat else 0
             con_s = rb_con[jc] > 0.5 if tick >= clat else False
+            act_s = rb_act[jc] > 0.5 if tick >= clat else False
             # page sensor (handle), 1 kHz with latency and noise
             if tick % pse == 0:
                 jp = (tick - pslat) % RB if tick >= pslat else 0
                 ps0 = rb_pH[jp, 0] + psn * np.random.standard_normal()
                 ps1 = rb_pH[jp, 1] + psn * np.random.standard_normal()
-            target = 1.0 if con_s else 0.0
+            target = 1.0 if act_s else 0.0
             g_eff = g_eff + alpha_a * (target - g_eff)
             c0 = 0.0; c1 = 0.0
             if use_ext and tick < nt:
@@ -203,7 +209,13 @@ def simulate(P, pref, vref, down, qext, tmpl, tdown, btmpl, btdown, seed, rec):
                     reacq = 1
             if use_sa:
                 an0 += alpha_sa * (ps0 - an0); an1 += alpha_sa * (ps1 - an1)
-                c0 += (Gx - 1.0) * (ps0 - an0); c1 += (Gy - 1.0) * (ps1 - an1)
+                if con_s:
+                    if sa_ad:
+                        # per-letter gain from the app (letter sizes measured on the unassisted hand path), per tick
+                        g_sa = gsa[tick] if tick < gsa.shape[0] else gsa[gsa.shape[0] - 1]
+                        c0 += (g_sa - 1.0) * (ps0 - an0) * (Gx > 1.0); c1 += (g_sa - 1.0) * (ps1 - an1)
+                    else:
+                        c0 += (Gx - 1.0) * (ps0 - an0); c1 += (Gy - 1.0) * (ps1 - an1)
             was_con = 1 if con_s else 0
             c0 *= g_eff; c1 *= g_eff
             # soft limit (radial tanh taper), slew limit
@@ -313,7 +325,7 @@ def simulate(P, pref, vref, down, qext, tmpl, tdown, btmpl, btdown, seed, rec):
             rec[nrec, 19] = Fs0; rec[nrec, 20] = Fs1; rec[nrec, 21] = FB0; rec[nrec, 22] = FB1
             rec[nrec, 23] = Fg0; rec[nrec, 24] = Fg1
             rec[nrec, 25] = 1.0 if con else 0.0; rec[nrec, 26] = g_eff; rec[nrec, 27] = gate
-            rec[nrec, 28] = satf; rec[nrec, 29] = stopf; rec[nrec, 30] = prog; rec[nrec, 31] = dist
+            rec[nrec, 28] = satf; rec[nrec, 29] = stopf; rec[nrec, 30] = prog; rec[nrec, 31] = dist if use_gd else g_sa
             nrec += 1
     return nrec
 
@@ -331,11 +343,15 @@ class Controls:
     drop_t: float = 0.06
     size_gain: tuple = (1.0, 1.0)           # (G_x, G_y); 1 = off
     tau_sa: float = 0.4
+    size_gain_track: Optional[np.ndarray] = None   # (n_ticks,) time-varying gain (adaptive size assist); x gain applied
+                                                   # only if size_gain[0] > 1
     board: Optional[Board] = None
     board_gain: float = 1.0                 # multiplies Board.K
     board_tmpl: Optional[np.ndarray] = None
     board_tmpl_down: Optional[np.ndarray] = None
     tau_auth: float = 0.05
+    gating: str = "hover"                   # authority on while the pen is in contact ("contact", P1 convention) or
+    hover_max: float = 2.0e-3               # within hover_max of the paper ("hover": T7 of docs/ai_guidance.md 7.3)
 
 
 @dataclass
@@ -457,6 +473,9 @@ def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Con
     s("g_guide", ctl.g_guide); s("capture", ctl.capture); s("drop_d", ctl.drop_d); s("drop_t", ctl.drop_t)
     s("use_size", 1.0 if (ctl.size_gain[0] != 1.0 or ctl.size_gain[1] != 1.0) else 0.0)
     s("G_x", ctl.size_gain[0]); s("G_y", ctl.size_gain[1]); s("tau_sa", ctl.tau_sa)
+    s("sa_adapt", 1.0 if ctl.size_gain_track is not None else 0.0); s("sa_tau_amp", 0.0); s("sa_t_cal", 0.0)
+    if ctl.size_gain_track is not None:
+        s("use_size", 1.0)
     rate, lat, noise = page_sensor
     s("ps_lat_ticks", int(round(lat / Ts))); s("ps_noise", noise); s("ps_every", max(1, int(round(1.0 / (rate * Ts)))))
     b = ctl.board
@@ -484,6 +503,12 @@ def run(scn: Scenario, pen: Pen, hand: Optional[Hand] = None, writing: Optional[
     td = np.zeros(1) if ctl.tmpl_down is None else np.ascontiguousarray(ctl.tmpl_down, dtype=np.float64)
     bt = tm if ctl.board_tmpl is None else np.ascontiguousarray(ctl.board_tmpl, dtype=np.float64)
     btd = td if ctl.board_tmpl_down is None else np.ascontiguousarray(ctl.board_tmpl_down, dtype=np.float64)
-    m = simulate(P, scn.pref, scn.vref, scn.down, qext, tm, td, bt, btd, seed, rec)
+    lift = scn.meta.get("lift")
+    if ctl.gating == "hover" and lift is not None:
+        active = np.ascontiguousarray(((scn.down > 0.5) | (np.asarray(lift) < ctl.hover_max)).astype(np.float64))
+    else:
+        active = scn.down
+    gsa = np.ones(1) if ctl.size_gain_track is None else np.ascontiguousarray(ctl.size_gain_track, dtype=np.float64)
+    m = simulate(P, scn.pref, scn.vref, scn.down, active, qext, gsa, tm, td, bt, btd, seed, rec)
     info.update({"n_ticks": nt, "rec_hz": rec_hz})
     return Result(rec[:m], info)

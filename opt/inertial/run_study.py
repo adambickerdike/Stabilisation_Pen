@@ -315,6 +315,54 @@ def stage_tiers(quick=False):
     return out
 
 
+def stage_neural(quick=False):
+    """BPTT-trained neural controller of the rear-cap reaction mass (task 4d): trained on the differentiable linear model with
+    tracker outputs from H1 runs on TRAINING seeds 300-311, checked in H1 on validation seeds 316-319, then evaluated once on
+    the TEST seeds at the three grip splits against the feed-forward controller (SIM)."""
+    import torch
+    from opt.inertial import addon_eval as AE
+    from opt.inertial import control as CL
+    from opt.inertial import neural as NN
+    torch.manual_seed(0)
+    prm = revh_tracker_params()
+    t0 = time.time()
+    log = lambda s: print(f"[{time.time() - t0:7.1f} s] {s}", flush=True)  # noqa: E731
+    seeds = (300, 301) if quick else tuple(range(300, 312))
+    pol, hist, info = NN.train(seeds=seeds, akf_params=prm, iters=6 if quick else 120, win=1.0, batch=6 if quick else 12, log=log)
+    blocks, cost = NN.export(pol)
+    rm = AE.default_rm()
+    spec = CL.ctl_spec([(blocks["A"], blocks["B"], blocks["C"], blocks["D"])], Ts=NN.TS, imu=dict(seed=5, lat_ticks=3),
+                       ulim=[rm.F_max[0], rm.F_max[1], 0, 0, 0, 0, 0], nn=blocks["nn"])
+    conds = ((10.0, 1.0e-3),) if quick else ((6.0, 1.0e-3), (8.0, 0.3e-3), (8.0, 1.0e-3), (10.0, 1.0e-3), (10.0, 2.0e-3),
+                                             (12.0, 1.0e-3))
+    val_rows, test_rows = [], []
+    ev = AE.AddonEval(r_rot=0.5, akf_params=prm, nn_spec=spec)
+    for seed in ((316,) if quick else (316, 317, 318, 319)):
+        for f0, amp in conds:
+            val_rows.append(ev.case(seed, f0, amp, controllers=("ff", "nn"), with_nose=False))
+    log(f"validation done ({len(val_rows)} rows)")
+    for rr in ((0.5,) if quick else (0.3, 0.5, 0.7)):
+        ev = AE.AddonEval(r_rot=rr, akf_params=prm, nn_spec=spec)
+        for seed in (SC.SEEDS["test"][:1] if quick else SC.SEEDS["test"]):
+            for f0, amp in conds:
+                test_rows.append(ev.case(seed, f0, amp, controllers=("ff", "nn")))
+        log(f"test r_rot {rr} done ({len(test_rows)} rows)")
+    ev = AE.AddonEval(r_rot=0.5, akf_params=prm, nn_spec=spec)
+    dist = [{"seed": s_, "writer": w_, "ctrl": "nn", "distortion_um": ev.distortion(s_, "nn", w_)}
+            for s_, w_ in ([(200, "lognormal")] if quick else [(s, "lognormal") for s in SC.SEEDS["test"]] +
+                           [(s, "glyph") for s in SC.SEEDS["glyph_test"]])]
+    W = {k: np.asarray(v).tolist() for k, v in blocks["nn"].items()}
+    out = {"history": hist, "train": {**info, "seeds": list(seeds), "iters": len(hist), "window_s": 1.0},
+           "cost": {**cost, "rate_Hz": 1.0 / NN.TS, "tanh_per_tick": NN.H,
+                    "mcu_load_pct_nrf54l15": 100 * (cost["macs_per_tick"] * 2 + NN.H * 20) / NN.TS / 128e6,
+                    "note": "2 cycles per MAC and 20 cycles per tanh (table) on the 128 MHz Cortex-M33 (ASSUMPTION)"},
+           "weights": W, "lti": {k: np.asarray(blocks[k]).tolist() for k in ("A", "B")},
+           "val_rows": val_rows, "test_rows": test_rows, "distortion": dist,
+           "label": "SIM: policy trained by BPTT on the linear model (CALC), evaluated in the nonlinear model H1"}
+    save_stage("neural" + ("_quick" if quick else ""), out)
+    return out
+
+
 STAGES = ("nose_adjoint", "tracker", "grid", "sweep", "addon", "neural", "tiers", "report")
 
 
