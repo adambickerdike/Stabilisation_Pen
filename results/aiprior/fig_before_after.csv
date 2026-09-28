@@ -1,0 +1,58 @@
+column,row_key,row,metrics
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",none,Ordinary pen,"ink error 0.60 mm  ·  letters read 73%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",tracker,"Rev H + tracker
+(handwriting study)","ink error 0.60 mm  ·  letters read 69%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",prior_ai_predicted,"Rev H + tracker
++ AI prior","ink error 0.60 mm  ·  letters read 69%
+words read by the app 3/5  ·  AI share 1%  ·  wrong letters 0"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",guide_ai_predicted,"Rev H + tracker
++ AI guidance","ink error 0.60 mm  ·  letters read 69%
+words read by the app 3/5  ·  AI share 0%  ·  wrong letters 0"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",clean_tracker,"Digital clean copy
+(app only, not ink)","ink error 0.19 mm  ·  letters read 92%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",oracle,"Rev H, perfect
+knowledge (limit)","ink error 13 µm  ·  letters read 100%
+words read by the app 5/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",none,Ordinary pen,"ink error 1.16 mm  ·  letters read 38%
+words read by the app 1/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",tracker,"Rev H + tracker
+(handwriting study)","ink error 0.82 mm  ·  letters read 42%
+words read by the app 1/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",prior_ai_predicted,"Rev H + tracker
++ AI prior","ink error 0.81 mm  ·  letters read 38%
+words read by the app 1/5  ·  AI share 1%  ·  wrong letters 0"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",guide_ai_predicted,"Rev H + tracker
++ AI guidance","ink error 0.81 mm  ·  letters read 42%
+words read by the app 1/5  ·  AI share 2%  ·  wrong letters 0"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",clean_tracker,"Digital clean copy
+(app only, not ink)","ink error 0.21 mm  ·  letters read 96%
+words read by the app 5/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",oracle,"Rev H, perfect
+knowledge (limit)","ink error 0.11 mm  ·  letters read 100%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",none,Ordinary pen,"ink error 0.59 mm  ·  letters read 73%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",tracker,"Rev H + tracker
+(handwriting study)","ink error 0.33 mm  ·  letters read 88%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",prior_ai_predicted,"Rev H + tracker
++ AI prior","ink error 0.33 mm  ·  letters read 88%
+words read by the app 5/5  ·  AI share 1%  ·  wrong letters 0"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",guide_ai_predicted,"Rev H + tracker
++ AI guidance","ink error 0.32 mm  ·  letters read 88%
+words read by the app 5/5  ·  AI share 4%  ·  wrong letters 0"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",clean_tracker,"Digital clean copy
+(app only, not ink)","ink error 0.15 mm  ·  letters read 96%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",oracle,"Rev H, perfect
+knowledge (limit)","ink error 25 µm  ·  letters read 100%
+words read by the app 5/5"

@@ -1,0 +1,33 @@
+panel,label,value
+"Wrong letters introduced, 1-2 mm (per 1000 letters)","AI prior, correct letters",0.8012820512820513
+"Wrong letters introduced, 1-2 mm (per 1000 letters)","AI prior, predicted letters (gated)",0.2670940170940171
+"Wrong letters introduced, 1-2 mm (per 1000 letters)","AI prior, wrong letter at full confidence",0.8012820512820513
+"Wrong letters introduced, 1-2 mm (per 1000 letters)","AI guidance, correct letters",2.6709401709401708
+"Wrong letters introduced, 1-2 mm (per 1000 letters)","AI guidance, predicted letters (gated)",0.5341880341880342
+"Wrong letters introduced, 1-2 mm (per 1000 letters)","AI guidance, wrong letter at full confidence",2.1367521367521367
+"Letters broken, 1-2 mm (per 1000 letters)","AI prior, correct letters",8.547008547008547
+"Letters broken, 1-2 mm (per 1000 letters)","AI prior, predicted letters (gated)",2.6709401709401708
+"Letters broken, 1-2 mm (per 1000 letters)","AI prior, wrong letter at full confidence",7.478632478632479
+"Letters broken, 1-2 mm (per 1000 letters)","AI guidance, correct letters",11.217948717948717
+"Letters broken, 1-2 mm (per 1000 letters)","AI guidance, predicted letters (gated)",1.3354700854700854
+"Letters broken, 1-2 mm (per 1000 letters)","AI guidance, wrong letter at full confidence",13.087606837606838
+"AI share of the ink path, 1-2 mm","AI prior, correct letters",0.031588677567937824
+"AI share of the ink path, 1-2 mm","AI prior, predicted letters (gated)",0.00832496581640972
+"AI share of the ink path, 1-2 mm","AI prior, wrong letter at full confidence",0.033439739375232445
+"AI share of the ink path, 1-2 mm","AI guidance, correct letters",0.07536400078905714
+"AI share of the ink path, 1-2 mm","AI guidance, predicted letters (gated)",0.011812263285407817
+"AI share of the ink path, 1-2 mm","AI guidance, wrong letter at full confidence",0.05376338249685913
+Ink error at 0.3 mm (µm),Rev H + tracker,162.4333275153739
+Ink error at 0.3 mm (µm),"AI prior, correct letters",161.81602246659082
+Ink error at 0.3 mm (µm),"AI prior, predicted letters (gated)",162.32457458920658
+Ink error at 0.3 mm (µm),"AI prior, wrong letter at full confidence",161.90754839256826
+Ink error at 0.3 mm (µm),"AI guidance, correct letters",162.42748307844488
+Ink error at 0.3 mm (µm),"AI guidance, predicted letters (gated)",162.433287863797
+Ink error at 0.3 mm (µm),"AI guidance, wrong letter at full confidence",162.4330117910672
+False correction on tremor-free writing (µm),Rev H tracker (as in the handwriting study),26.285821255809953
+False correction on tremor-free writing (µm),"AI prior, correct letters",26.05271875587898
+False correction on tremor-free writing (µm),"AI prior, predicted letters (gated)",26.328862253698748
+False correction on tremor-free writing (µm),"AI prior, wrong letter at full confidence",24.334881426497173
+False correction on tremor-free writing (µm),"AI guidance, correct letters",26.285821255809953
+False correction on tremor-free writing (µm),"AI guidance, predicted letters (gated)",26.285821255809953
+False correction on tremor-free writing (µm),"AI guidance, wrong letter at full confidence",26.285821255809953

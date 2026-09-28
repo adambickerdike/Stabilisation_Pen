@@ -34,7 +34,7 @@ LABELS = {
     "clean_revH_off": "Digital clean copy, nose held", "clean_bs_tracker": "Digital clean copy (band-stop) of the tracker's ink",
 }
 COL = {"none": plotstyle.MUTED, "tracker": C[1], "tracker_rt": C[0], "tracker_sev": C[4], "prior_ai_predicted": C[6], "guide_ai_predicted": C[3],
-       "clean_tracker": C[5], "clean_tracker_rt": C[5], "oracle": C[2], "prior_ai_correct": C[6], "guide_ai_correct": C[3],
+       "clean_tracker": C[0], "clean_tracker_rt": C[0], "oracle": C[2], "prior_ai_correct": C[6], "guide_ai_correct": C[3],
        "prior_wrong_full": C[7], "guide_wrong_full": C[7], "clean_revH_off": C[4], "guide_oracle": C[3], "prior_oracle": C[6]}
 KEYS = ("ink_err_um", "recognition", "word_acc_app", "device_share", "ai_share", "at_travel_limit", "q_rms_mm",
         "ink_err_ratio")
@@ -214,9 +214,9 @@ def fig_summary(agg: Dict, test: Dict, od: Path) -> None:
                            "ylabel": ylab, "series": series, "xticks": f0s,
                            "ylim": (0, 1.05) if key == "word_acc_app" else None})
     FG.lines_chart(od / "fig_summary.png", panels, STATUS,
-                   f"aiguide test writers {min(agg['writers'])}-{max(agg['writers'])}, seeds {min(agg['seeds'])}-{max(agg['seeds'])}; "
-                   f"each point = mean of {agg['n_scenarios'] // max(len(f0s) * len(agg['amps_mm']), 1)} runs; dashed = limit or digital copy",
-                   ncols=3, size=(13.0, 3.9))
+                   f"writers {min(agg['writers'])}-{max(agg['writers'])}, seeds {min(agg['seeds'])}-{max(agg['seeds'])}; "
+                   f"mean of {agg['n_scenarios'] // max(len(f0s) * len(agg['amps_mm']), 1)} runs per point",
+                   ncols=3, size=(13.0, 4.3))
 
 
 def fig_safety(agg: Dict, test: Dict, od: Path) -> None:
@@ -237,9 +237,9 @@ def fig_safety(agg: Dict, test: Dict, od: Path) -> None:
         {"title": "Letters broken, 1-2 mm (per 1000 letters)", "labels": lab,
          "values": [per1000(hi[v], "broken") for v in vs], "colors": [COL.get(v) for v in vs], "fmt": "{:.1f}",
          "xlabel": "read correctly with the tracker alone, not with the AI"},
-        {"title": "AI share of the ink motion, 1-2 mm", "labels": lab,
+        {"title": "AI share of the ink path, 1-2 mm", "labels": lab,
          "values": [hi[v].get("ai_share") for v in vs], "colors": [COL.get(v) for v in vs], "fmt": "{:.0%}",
-         "xlabel": "share of the ink path the AI moved (vs the tracker alone)"},
+         "xlabel": "moved by the AI, vs the tracker alone"},
         {"title": "Ink error at 0.3 mm (µm)", "labels": [LABELS[bk].split(" (")[0]] + lab,
          "values": [lo[bk]["ink_err_um"]] + [lo[v]["ink_err_um"] for v in vs], "colors": [COL.get(bk)] + [COL.get(v) for v in vs],
          "fmt": "{:.0f}", "ref": lo[bk]["ink_err_um"], "xlabel": "dashed = the tracker underneath"},
@@ -254,7 +254,7 @@ def fig_safety(agg: Dict, test: Dict, od: Path) -> None:
         panels[-1]["values"] = [free[v]["false_correction_um"] for v in ("tracker",) + tuple(vs) if v in free]
         panels[-1]["colors"] = [COL.get(v) for v in ("tracker",) + tuple(vs) if v in free]
     FG.bars_chart(od / "fig_safety.png", panels, STATUS,
-                  f"test writers 0-5, seeds 200-203, 6/8/10 Hz; {agg['n_scenarios']} scenarios", ncols=3, size=(14.0, 3.6),
+                  f"test writers 0-5, seeds 200-203, 6/8/10 Hz; {agg['n_scenarios']} scenarios", ncols=3, size=(15.5, 3.8),
                   share_labels=False)
 
 

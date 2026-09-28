@@ -1,0 +1,127 @@
+panel,series,x,y
+"Ink error, tremor 0.3 mm at the hand",Ordinary pen (12 g),6.0,0.170565619244739
+"Ink error, tremor 0.3 mm at the hand",Ordinary pen (12 g),8.0,0.16733055537945912
+"Ink error, tremor 0.3 mm at the hand",Ordinary pen (12 g),10.0,0.17436751844652745
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker (as in the handwriting study),6.0,0.18520512015093632
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker (as in the handwriting study),8.0,0.17299725137392133
+"Ink error, tremor 0.3 mm at the hand",Rev H + tracker (as in the handwriting study),10.0,0.129097611021264
+"Ink error, tremor 0.3 mm at the hand","+ AI prior, predicted letters (gated)",6.0,0.18513777340734747
+"Ink error, tremor 0.3 mm at the hand","+ AI prior, predicted letters (gated)",8.0,0.17276629102013397
+"Ink error, tremor 0.3 mm at the hand","+ AI prior, predicted letters (gated)",10.0,0.12906965934013828
+"Ink error, tremor 0.3 mm at the hand","+ AI guidance, predicted letters (gated)",6.0,0.18520512015093632
+"Ink error, tremor 0.3 mm at the hand","+ AI guidance, predicted letters (gated)",8.0,0.17299725137392133
+"Ink error, tremor 0.3 mm at the hand","+ AI guidance, predicted letters (gated)",10.0,0.1290974920665334
+"Ink error, tremor 0.3 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),6.0,0.21653367976022603
+"Ink error, tremor 0.3 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),8.0,0.19944646954192605
+"Ink error, tremor 0.3 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),10.0,0.18264163216773954
+"Ink error, tremor 0.3 mm at the hand",Digital clean copy of the tracker's ink,6.0,0.18523367481567046
+"Ink error, tremor 0.3 mm at the hand",Digital clean copy of the tracker's ink,8.0,0.1347073805512345
+"Ink error, tremor 0.3 mm at the hand",Digital clean copy of the tracker's ink,10.0,0.1266853118960893
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.0036566527433507024
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.00672292061885575
+"Ink error, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.0067380250573808205
+"Ink error, tremor 1 mm at the hand",Ordinary pen (12 g),6.0,0.5336330835037248
+"Ink error, tremor 1 mm at the hand",Ordinary pen (12 g),8.0,0.5505565949744858
+"Ink error, tremor 1 mm at the hand",Ordinary pen (12 g),10.0,0.5510244650113901
+"Ink error, tremor 1 mm at the hand",Rev H + tracker (as in the handwriting study),6.0,0.5495060926737623
+"Ink error, tremor 1 mm at the hand",Rev H + tracker (as in the handwriting study),8.0,0.4297847163575045
+"Ink error, tremor 1 mm at the hand",Rev H + tracker (as in the handwriting study),10.0,0.29125612291488545
+"Ink error, tremor 1 mm at the hand","+ AI prior, predicted letters (gated)",6.0,0.548787423127386
+"Ink error, tremor 1 mm at the hand","+ AI prior, predicted letters (gated)",8.0,0.4285915898896007
+"Ink error, tremor 1 mm at the hand","+ AI prior, predicted letters (gated)",10.0,0.2905597412070072
+"Ink error, tremor 1 mm at the hand","+ AI guidance, predicted letters (gated)",6.0,0.5495060926737623
+"Ink error, tremor 1 mm at the hand","+ AI guidance, predicted letters (gated)",8.0,0.42871488754145
+"Ink error, tremor 1 mm at the hand","+ AI guidance, predicted letters (gated)",10.0,0.28606689267087215
+"Ink error, tremor 1 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),6.0,0.31139772378593306
+"Ink error, tremor 1 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),8.0,0.25082040903490777
+"Ink error, tremor 1 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),10.0,0.21261355068658494
+"Ink error, tremor 1 mm at the hand",Digital clean copy of the tracker's ink,6.0,0.17861760687003259
+"Ink error, tremor 1 mm at the hand",Digital clean copy of the tracker's ink,8.0,0.15251630553897397
+"Ink error, tremor 1 mm at the hand",Digital clean copy of the tracker's ink,10.0,0.15782365771876025
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.011565598293384952
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.0236116730912871
+"Ink error, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.022582243192717604
+"Ink error, tremor 2 mm at the hand",Ordinary pen (12 g),6.0,1.1096412450564257
+"Ink error, tremor 2 mm at the hand",Ordinary pen (12 g),8.0,1.1236812212589378
+"Ink error, tremor 2 mm at the hand",Ordinary pen (12 g),10.0,1.1131904126411793
+"Ink error, tremor 2 mm at the hand",Rev H + tracker (as in the handwriting study),6.0,1.0873188502309874
+"Ink error, tremor 2 mm at the hand",Rev H + tracker (as in the handwriting study),8.0,0.8475065144299911
+"Ink error, tremor 2 mm at the hand",Rev H + tracker (as in the handwriting study),10.0,0.5557350341952937
+"Ink error, tremor 2 mm at the hand","+ AI prior, predicted letters (gated)",6.0,1.083820201370236
+"Ink error, tremor 2 mm at the hand","+ AI prior, predicted letters (gated)",8.0,0.8452625724909264
+"Ink error, tremor 2 mm at the hand","+ AI prior, predicted letters (gated)",10.0,0.5546388067139902
+"Ink error, tremor 2 mm at the hand","+ AI guidance, predicted letters (gated)",6.0,1.0871512348768364
+"Ink error, tremor 2 mm at the hand","+ AI guidance, predicted letters (gated)",8.0,0.8395244521964905
+"Ink error, tremor 2 mm at the hand","+ AI guidance, predicted letters (gated)",10.0,0.5482128313886698
+"Ink error, tremor 2 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),6.0,0.4747188543314848
+"Ink error, tremor 2 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),8.0,0.3642158872120345
+"Ink error, tremor 2 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),10.0,0.2982372103151585
+"Ink error, tremor 2 mm at the hand",Digital clean copy of the tracker's ink,6.0,0.22742459648494795
+"Ink error, tremor 2 mm at the hand",Digital clean copy of the tracker's ink,8.0,0.2114164607590626
+"Ink error, tremor 2 mm at the hand",Digital clean copy of the tracker's ink,10.0,0.2350935323074375
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.08098140189476526
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.14314050728802166
+"Ink error, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.12602709402641665
+"Words read by the app, tremor 0.3 mm at the hand",Ordinary pen (12 g),6.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand",Ordinary pen (12 g),8.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Ordinary pen (12 g),10.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker (as in the handwriting study),6.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker (as in the handwriting study),8.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + tracker (as in the handwriting study),10.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand","+ AI prior, predicted letters (gated)",6.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand","+ AI prior, predicted letters (gated)",8.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand","+ AI prior, predicted letters (gated)",10.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand","+ AI guidance, predicted letters (gated)",6.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand","+ AI guidance, predicted letters (gated)",8.0,0.975
+"Words read by the app, tremor 0.3 mm at the hand","+ AI guidance, predicted letters (gated)",10.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),6.0,0.9499999999999998
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),8.0,0.9833333333333334
+"Words read by the app, tremor 0.3 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),10.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand",Digital clean copy of the tracker's ink,6.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand",Digital clean copy of the tracker's ink,8.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand",Digital clean copy of the tracker's ink,10.0,0.9916666666666667
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",6.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",8.0,1.0
+"Words read by the app, tremor 0.3 mm at the hand","Rev H, perfect knowledge (limit)",10.0,1.0
+"Words read by the app, tremor 1 mm at the hand",Ordinary pen (12 g),6.0,0.5
+"Words read by the app, tremor 1 mm at the hand",Ordinary pen (12 g),8.0,0.5583333333333333
+"Words read by the app, tremor 1 mm at the hand",Ordinary pen (12 g),10.0,0.5416666666666666
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker (as in the handwriting study),6.0,0.4916666666666667
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker (as in the handwriting study),8.0,0.6916666666666668
+"Words read by the app, tremor 1 mm at the hand",Rev H + tracker (as in the handwriting study),10.0,0.8666666666666667
+"Words read by the app, tremor 1 mm at the hand","+ AI prior, predicted letters (gated)",6.0,0.46666666666666673
+"Words read by the app, tremor 1 mm at the hand","+ AI prior, predicted letters (gated)",8.0,0.6999999999999998
+"Words read by the app, tremor 1 mm at the hand","+ AI prior, predicted letters (gated)",10.0,0.8666666666666667
+"Words read by the app, tremor 1 mm at the hand","+ AI guidance, predicted letters (gated)",6.0,0.4916666666666667
+"Words read by the app, tremor 1 mm at the hand","+ AI guidance, predicted letters (gated)",8.0,0.6916666666666668
+"Words read by the app, tremor 1 mm at the hand","+ AI guidance, predicted letters (gated)",10.0,0.8666666666666667
+"Words read by the app, tremor 1 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),6.0,0.7916666666666666
+"Words read by the app, tremor 1 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),8.0,0.9249999999999999
+"Words read by the app, tremor 1 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),10.0,0.9333333333333332
+"Words read by the app, tremor 1 mm at the hand",Digital clean copy of the tracker's ink,6.0,0.9833333333333334
+"Words read by the app, tremor 1 mm at the hand",Digital clean copy of the tracker's ink,8.0,0.9833333333333334
+"Words read by the app, tremor 1 mm at the hand",Digital clean copy of the tracker's ink,10.0,0.975
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",6.0,1.0
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",8.0,1.0
+"Words read by the app, tremor 1 mm at the hand","Rev H, perfect knowledge (limit)",10.0,1.0
+"Words read by the app, tremor 2 mm at the hand",Ordinary pen (12 g),6.0,0.09166666666666667
+"Words read by the app, tremor 2 mm at the hand",Ordinary pen (12 g),8.0,0.08333333333333333
+"Words read by the app, tremor 2 mm at the hand",Ordinary pen (12 g),10.0,0.075
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker (as in the handwriting study),6.0,0.10833333333333335
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker (as in the handwriting study),8.0,0.2416666666666667
+"Words read by the app, tremor 2 mm at the hand",Rev H + tracker (as in the handwriting study),10.0,0.5583333333333333
+"Words read by the app, tremor 2 mm at the hand","+ AI prior, predicted letters (gated)",6.0,0.10833333333333335
+"Words read by the app, tremor 2 mm at the hand","+ AI prior, predicted letters (gated)",8.0,0.25
+"Words read by the app, tremor 2 mm at the hand","+ AI prior, predicted letters (gated)",10.0,0.55
+"Words read by the app, tremor 2 mm at the hand","+ AI guidance, predicted letters (gated)",6.0,0.10833333333333335
+"Words read by the app, tremor 2 mm at the hand","+ AI guidance, predicted letters (gated)",8.0,0.2416666666666667
+"Words read by the app, tremor 2 mm at the hand","+ AI guidance, predicted letters (gated)",10.0,0.5833333333333334
+"Words read by the app, tremor 2 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),6.0,0.5
+"Words read by the app, tremor 2 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),8.0,0.7833333333333333
+"Words read by the app, tremor 2 mm at the hand",Rev H + severe-tremor tracker setting (rejected by the rules; information),10.0,0.8833333333333334
+"Words read by the app, tremor 2 mm at the hand",Digital clean copy of the tracker's ink,6.0,0.9583333333333334
+"Words read by the app, tremor 2 mm at the hand",Digital clean copy of the tracker's ink,8.0,0.9833333333333334
+"Words read by the app, tremor 2 mm at the hand",Digital clean copy of the tracker's ink,10.0,0.9416666666666665
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",6.0,0.9916666666666667
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",8.0,0.9916666666666667
+"Words read by the app, tremor 2 mm at the hand","Rev H, perfect knowledge (limit)",10.0,0.9833333333333334

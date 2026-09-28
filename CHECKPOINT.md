@@ -7,14 +7,14 @@ Use this file to resume work without losing assumptions. Branch: `claude/pensive
 | Area | Ran here | Not run or not possible here |
 |---|---|---|
 | Audit | Recalculation of all 37 report numbers (all reproduce); 28 corrections with severity | — |
-| Evidence | 384 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
+| Evidence | 391 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
 | Simulation | M1 coupled model, 12 tests passing; estimator tuning on seeds 100–105; nominal benchmark; 12-seed × 9 f × 3 amplitude grid; 160-sample Monte Carlo + rank sensitivity; failure cases F1–F7; design sweeps; κ_s comparison; guided-mode evaluation; contact-feedforward diagnosis; frequency-gate diagnostic | Validation against hardware (all EXP-B*) |
 | Mechanics | CAD Rev A and A.1 (interference-free at full travel); flexure calculation; tolerance stacks S1–S6; mass budget; stage-A rig CAD with platen-clearance check; drawings | Physical parts; FEM of flexures and actuator |
 | Electronics | KiCad 8 schematic generated deterministically; ERC (0 errors, 1 accepted warning); netlist cross-check pass (102 nets / 492 pins); BOM; drive/sense calculations with the winding headroom assessment; ngspice transient incl. coil short; placement study | PCB layout (DEC-014 open); datasheet checks behind 45 VERIFY and 3 SELECT BOM lines |
 | Firmware | C control core with safety, logging, calibration and ML guard; parameters generated from the YAML with a freshness check; 60 test cases (1120 checks) on host (ASan/UBSan) and emulated Cortex-M33; nRF5340 image links (32.3 kB flash, 29.4 kB RAM) | Execution on nRF5340 hardware; cycle-accurate timing; register-level drivers (VERIFY); IMU, optics, USB, flash and BLE drivers |
 | ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines; causal TCN; int8 C export without f_est, bit-exact on 20 000 windows (16.2 k MAC, 7.3 kB weights); 22 tests | Any real-data training (no recordings exist) |
 | App | ICD log reader with CRC and resync; immutable note store with provenance; search with stroke citations; grounded assistant with refusal rules; capture-fidelity analysis; 137 tests | On-device recogniser (adapter specified only) |
-| Validation | 57 experiments with criteria (42 bench/offline, 15 human); 296 acceptance criteria generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
+| Validation | 57 experiments with criteria (42 bench/offline, 15 human); 299 acceptance criteria generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
 
 ## 2. Numbers the next session must not lose
 
@@ -219,12 +219,13 @@ The user chose a bigger grip, asked for inertial control of the whole pen and no
 - **Results (SIM).** With perfect knowledge of the tremor the nose leaves 0.17–0.18 of the ink error (words read 98–100 %). With the tracker: 0.64 / 0.70 / 0.76 at 8–12 Hz, 1–2 mm; words read at 10 Hz, 1 mm 54 → 87 %; nothing at 4–6 Hz (the tracker locks onto the second harmonic). The tracker is the limit, not the mechanism.
 - **Handwriting (SIM, `docs/handwriting_outcomes.md`).** Parkinson's: a vibration cue keeps the x-height at 5.2 mm instead of shrinking to 4.2 mm, if people respond as small studies suggest. Poor handwriting: partial nose guidance brings the ink 35 % closer with slightly better reading; full guidance reads worse. Dyslexia: no guidance turned a wrong letter into the right one (0 %); the app flags misspelt words when it knows the target.
 - **Guidance board (DEC-031).** CoreXY stage under 3 mm glass with a K&J D88-N52 magnet head; a D42-N52 disc (0.75 g) in the pen's keel, 16.5 mm behind the ball; 1.2 N available, 0.4 N cap; about 25 Hz. Open: the keel limits tilt to ≥ 51°; up to 48 µm crosstalk at the nose Hall; board commands below about 3 Hz; about 1 N extra normal pull.
+- **AI help for severe tremor (DEC-035, `docs/ai_severe_tremor.md`).** Letter prediction does not steer free writing: as a tracker prior it closed 0 % of the gap at 1–2 mm, as nose guidance 1 % (SIM). The app's clean copy reads 97 % of words at 1–2 mm (digital only). A severe-tremor tracker setting closes 55 % of the gap but moves tremor-free writing by 263 µm: test it offline on recordings (AC-W02-03).
 - **Front end closed (DEC-034).** The first layout drew the skid ring about 1.5–3 mm below the paper, and its 5.5 mm contact radius left no room for the ring's wall. `opt/inertial/front_end.py` sizes it over 35–75°: contact radius 6.75 mm, nozzle face in the ring plane, refill slide about 13.5 mm on a constant-force strip spring (new design item). The dynamics change by at most 0.004 in ratio (SIM), so the study's results stand; layout, CAD and the explainer were regenerated.
 
 **Next for Rev H, in order.**
 1. EXP-I01: grip split r_rot on a Ø22 handle (decides where the inertial module acts, and whether it stays).
 2. EXP-I05: the active nose on the bench (stroke, force, bandwidth, Hall, writing force unchanged).
-3. EXP-H01 recordings, then EXP-I07 / EXP-W02: the tracker on real tremor writing (decides the stabiliser claim and whether 4–6 Hz is reachable).
+3. EXP-H01 recordings, then EXP-I07 / EXP-W02: the tracker on real tremor writing (decides the stabiliser claim and whether 4–6 Hz is reachable), with the severe-tremor setting offline (AC-W02-03); EXP-A03 with the clean copy on the same recordings (AC-A03-04/05).
 4. EXP-I06: the inertial module on a hand simulant with the nose on.
 5. EXP-W01…W05 and EXP-G01…G07 as the prototype and the board become available.
 
@@ -236,6 +237,7 @@ python3 -m opt.inertial.front_end --sens   # front-end closure (CALC) and its H1
 python3 mechanics/cad/revH_pen.py --addon
 python3 -m handwriting.run_study           # results/handwriting/_cache is regenerable and git-ignored
 python3 -m board.run_study
+python3 -m aiprior.run_study               # about 20 min; --quick about 5 min
 python3 mechanics/cad/guidance_board.py
 python3 viewer/explainer/build.py          # smoke test: viewer/explainer/smoke_test.js (Playwright; see its README)
 python3 validation/check_criteria.py

@@ -40,7 +40,7 @@ def rows(doc: Dict) -> List[Dict[str, str]]:
     bk = "tracker_rt" if (doc.get("config") or {}).get("base") else "tracker"
     t1 = _g(doc, "tuning", "t1", "selection") or {}
     t2 = _g(doc, "tuning", "t2", "selection") or {}
-    base_cfg = (doc.get("config") or {}).get("base")
+    sev_cfg = (doc.get("config") or {}).get("sev")
 
     def ink(g, v):
         return _f(_g(g, v, "ink_err_um"))
@@ -85,18 +85,20 @@ def rows(doc: Dict) -> List[Dict[str, str]]:
              relevance_to_design="Whether AI templates may steer the ink when tremor is large",
              design_implication="Guidance toward known text (tracing, copying) is the case with a clear benefit; free-writing guidance needs agency and flip tests (EXP-A02)",
              stream="ACT"),
-        dict(common, id="ACT-78", topic="Rev H accelerometer tracker re-tuned for severe tremor, without AI (this study)",
-             citation="This ledger's simulation: aiprior/tuning.py stage T0 (tuning writers 100-103, seed 300); test grid in results/aiprior/aiprior.json",
-             task_or_setup=setup + f"; candidates vary the tremor-state process noise, output gain and damping of the Rev H AKF; chosen {base_cfg}",
+        dict(common, id="ACT-78", topic="A severe-tremor setting of the Rev H accelerometer tracker, without AI (this study; rejected by its safety rules)",
+             citation="This ledger's simulation: aiprior/tuning.py stage T0 (tuning writers 100-103, seed 300); test grid variant tracker_sev in results/aiprior/aiprior.json",
+             task_or_setup=setup + f"; the Rev H AKF with more tremor-state process noise and output gain {sev_cfg}; the T0 candidate with the lowest 1-2 mm ink error on tuning data",
              comparator="The Rev H tracker of results/opt/inertial_tracker_revh.json (handwriting study)",
-             key_quantitative_findings=(f"8-10 Hz, 1-2 mm: ink error {ink(hf, 'tracker')} -> {ink(hf, bk)} um; 6 Hz, 1-2 mm: {ink(six, 'tracker')} -> {ink(six, bk)} um; "
-                                        f"0.3 mm: {ink(lo, 'tracker')} -> {ink(lo, bk)} um; false correction on tremor-free writing "
-                                        f"{_f(_g(free, 'tracker', 'false_correction_um'))} -> {_f(_g(free, bk, 'false_correction_um'))} um"),
+             key_quantitative_findings=(f"8-10 Hz, 1-2 mm: ink error {ink(hf, 'tracker')} -> {ink(hf, 'tracker_sev')} um, words {pct(hf, 'tracker', 'word_acc_app')} -> {pct(hf, 'tracker_sev', 'word_acc_app')}; "
+                                        f"6 Hz, 1-2 mm: {ink(six, 'tracker')} -> {ink(six, 'tracker_sev')} um, words {pct(six, 'tracker', 'word_acc_app')} -> {pct(six, 'tracker_sev', 'word_acc_app')}; "
+                                        f"0.3 mm: {ink(lo, 'tracker')} -> {ink(lo, 'tracker_sev')} um; false correction on tremor-free writing "
+                                        f"{_f(_g(free, 'tracker', 'false_correction_um'))} -> {_f(_g(free, 'tracker_sev', 'false_correction_um'))} um. "
+                                        "On tuning data every such candidate failed the false-correction (<= 30 um) and 0.3 mm rules"),
              units_and_conditions="As ACT-76; false correction = RMS ink displacement vs the nose held on tremor-free writing",
-             locator="aiprior.json aggregate.headlines, aggregate.tremor_free, tuning.t0",
+             locator="aiprior.json aggregate.headlines (tracker_sev), aggregate.tremor_free, tuning.t0",
              limitations="Tuned on 4 synthetic writers and one seed; the setting trades tremor removal against false correction on real writing, which is unmeasured",
-             relevance_to_design="The largest lever in this study is the tracker's own setting, not the AI",
-             design_implication="Offer a severe-tremor tracker setting chosen by the 20 s calibration; confirm on recorded ET writing (EXP-E01/HW2)",
+             relevance_to_design="The largest lever in this study is the tracker's own setting, not the AI; its cost is moving the writer's own strokes",
+             design_implication="Test a severe-tremor mode, switched on only by the 20 s calibration for large tremor, on recorded ET writing (EXP-W02); not adopted",
              stream="ACT"),
         dict(common, id="ACT-79", topic="Digital clean copy of the recorded tip path (non-causal, app only), severe tremor (this study)",
              citation="This ledger's simulation: aiprior/cleancopy.py (non-causal Wiener smoother, zero-phase band-stop); results/aiprior/aiprior.json",

@@ -38,6 +38,7 @@
 | Slim pencil nib-stage hardware (now the secondary variant) | Plate geometry and count, leaves, lever, nib force, driver and Hall sensors, from real catalogue parts or supplier-standard custom plates | Differentiable copy of the design model (PyTorch; exact against `design.py` and the CAD), adjoint gradients with Bayesian optimisation and CMA-ES over discrete part choices; finalists ranked in P1 | [`opt_hardware.md`](opt_hardware.md) |
 | Rev H: moving nose and inertial control of the pen body | The nose actuator (pivot, arm, magnets, coils, travel; 7 variables); the tracker for ±3 mm travel (10 settings); the rear reaction mass, a gyroscope pair and a passive weight with their control; tip design A against B | Adjoint (autograd) design of the actuator, checked against finite differences; ParEGO multi-objective Bayesian optimisation of the tracker; a neural reaction-mass controller trained by backpropagation through time; linear screens, then time-domain tests in H1 | [`opt_inertial.md`](opt_inertial.md); added at the user's direction (DEC-024 superseded by DEC-032, DEC-033) |
 | Guidance board | Magnet sizes and gap, stage and sensing for a board that moves a magnet under the paper | Force maps (magpylib, checked by a dipole model); architecture comparison by calculation; Monte Carlo of the Hall ring; closed-loop guidance simulations | [`guidance_board.md`](guidance_board.md) (DEC-031) |
+| AI help for severe tremor | Letter prediction as a tracker prior and as nose guidance; a more aggressive tracker setting; the app's clean copy | Settings chosen on tuning writers with rules fixed before the test (twelve tracker settings, four prior and four guidance settings); safety rules on wrong letters, small tremor and false correction | [`ai_severe_tremor.md`](ai_severe_tremor.md) (DEC-035) |
 | Handwriting outcomes | What each function changes in the ink, per condition | Tracker settings re-tuned on training writers only; results on test writers, cross-checked against P1; legibility scored by the app's recogniser | [`handwriting_outcomes.md`](handwriting_outcomes.md) |
 
 **Why these methods.** The simulators have friction, contact and saturation, so their exact gradients are rough. Each study used gradients (the adjoint) where they are exact and smooth: a reduced model, the filter recursion or the design equations. It then used Bayesian optimisation or CMA-ES on the full simulator, and judged every result on test seeds that were never used for tuning.
@@ -127,6 +128,24 @@ Guidance changes the ink only while it is on. Whether it teaches is a human-stud
 - Tracing error 1.49 → 1.07 mm (partial guidance) and → 0.63 mm (full) for a relaxed writer; with the nose also correcting, 0.085–0.19 mm (SIM).
 - Open issues: the pen magnet's keel limits tilt to ≥ 51°; up to 48 µm crosstalk into the nose's Hall sensor; board commands must stay below about 3 Hz.
 
+### 3.7 AI help for severe tremor (DEC-035; SIM, model HW1)
+
+At 8–10 Hz and 1–2 mm (test writers 0–5, seeds 200–203):
+
+| Variant | Ink error | Words read | Share of the tracker's gap closed |
+|---|---|---|---|
+| Ordinary pen | 835 µm | 31 % | – |
+| Rev H with its tracker | 531 µm | 59 % | – |
+| + AI prior, predicted letters | 530 µm | 59 % | 0 % |
+| + AI guidance, predicted letters | 526 µm | 60 % | 1 % |
+| + guidance toward a known text (copying) | 475 µm | 65 % | 12 % |
+| Severe-tremor tracker setting (rejected: moves clean writing 263 µm) | 281 µm | 88 % | 55 % |
+| The app's digital clean copy (not the ink) | 189 µm | 97 % | 76 % |
+| Perfect knowledge (the mechanism's limit) | 79 µm | 99 % | 100 % |
+
+- A correct predicted letter is 535–938 µm off at 1–2 mm tremor because it is placed where the shaking tip lands, and only 6 of 26 letters reach the confidence gate.
+- No AI variant changed anything at 0.3 mm or on tremor-free writing. A wrong prediction at full confidence made 3–8 of 3744 letters read wrongly, so guidance toward predicted letters is not used.
+
 ## 4. What must be measured first
 
 | Question | Experiment |
@@ -136,5 +155,6 @@ Guidance changes the ink only while it is on. Whether it teaches is a human-stud
 | How the grip splits between translation and tilt (decides where inertial devices act) | EXP-I01, then the module on a hand simulant (EXP-I06) |
 | Can the tracker separate tremor from writing on real recordings, and at which frequencies? | EXP-W02 (extends EXP-E01) |
 | Does guided practice improve unassisted handwriting? | EXP-W04 (at least 20 sessions, retention tests) |
+| Is the clean copy readable to people, and is a severe-tremor setting worth its false correction? | EXP-A03 (AC-A03-04/05), EXP-W02 offline (AC-W02-03) |
 | Stage stiffness and damping, then the servo retune | EXP-Q04 / Q07 |
 | Friction under vibration (the largest model uncertainty for the tremor error) | EXP-B01 / B02 with superimposed vibration |

@@ -61,6 +61,7 @@ This repository holds the research and development package: the audit of the sou
    - With perfect knowledge of the tremor the nose removes 87–99 % of the ink error up to 2 mm, and the app reads 98–100 % of words. With today's accelerometer tracker: 22–50 % at 8–10 Hz (words read at 10 Hz, 1 mm: 54 → 87 %), and nothing at 4–6 Hz. **The tracker, not the mechanism, is the limit** (`docs/opt_inertial.md`, `docs/handwriting_outcomes.md`).
    - Parkinson's shrinking letters: a "write bigger" vibration cue kept letters at 5.2 mm instead of 4.2 mm, if people respond as small studies suggest. Poor handwriting: guidance brings the ink 24–61 % closer to the target letters while it is on (partial nose guidance 35 %, reading slightly better; full guidance reads worse); lasting benefit needs a human study (EXP-W04). Dyslexia: guidance never turned a wrong letter into the right one; the help is the app's spelling check, read-back and clean copy.
    - An optional desk board moves a permanent magnet under the paper to pull the pen along whole letters (0.4 N cap; `docs/guidance_board.md`, DEC-031).
+   - AI letter prediction does not close the tracker's gap at 1–2 mm tremor: a correct predicted letter is 0.5–0.9 mm off because it is placed where the shaking tip lands; as a tracker input it closed 0 %, as nose guidance 1 %. The app's digital clean copy makes 97 % of words readable at 1–2 mm, against 30–59 % in the ink (`docs/ai_severe_tremor.md`, DEC-035).
 
 **Where the simulations are, and what the optimisation studies found:** [`docs/optimisation.md`](docs/optimisation.md). The 3D replay page is `viewer/index.html` (`python3 viewer/build.py --variant Q`); the Rev H explainer is `viewer/explainer/index.html` (`python3 viewer/explainer/build.py`).
 
@@ -71,7 +72,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Brief area | Deliverable | State | Evidence |
 |---|---|---|---|
 | 1 Research | Audit and recalculation of the report (37/37 numbers reproduce; 28 corrections) | executed | `analysis/audit_recalc.py` → `results/audit/` |
-| 1 Research | Evidence ledger (384 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
+| 1 Research | Evidence ledger (391 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
 | 1 Research | Ranked research questions with decisive experiments | drafted | `docs/research_questions.md` |
 | 2 Mechanics | Parametric CAD (Rev A, Rev A.1) with interference checks, STEP, drawings | executed | `mechanics/cad/`, `results/cad/` |
 | 2 Mechanics | Flexures, tolerance stacks (S1–S6), mass/CoM budget, configuration trade | executed | `mechanics/`, `results/mechanics/`, `results/trade/` |
@@ -85,7 +86,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | 5 ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines tuned on validation; causal TCN; int8 quantisation (no loss); C export bit-exact with the Python reference, also on emulated Cortex-M33; MCU budget (exported model without f_est: 16.2 k MAC, 7.3 kB weights, 0.58 kB RAM); model and dataset cards; 22 tests | executed (synthetic only) · real data pending (EXP-H01) | `ml/README.md`, `results/ml/` |
 | 6 Firmware | C control core: 40 kHz current loop, 2 kHz stage task, Kalman and band-pass estimators, guided mode, Jacobian with tilt-dependent γ, two-node thermal governor, safety state machine, ML guard (ICD §5 v1.2), calibration records, ICD log writer. Parameters generated from the YAML with a freshness check; golden vectors and replays from the simulator; 60 test cases (1120 checks) pass on host (ASan/UBSan) and on emulated Cortex-M33; nRF5340 image builds (32.3 kB flash). Register-level drivers are stubs marked VERIFY | executed (host, emulator, build) · hardware pending | `firmware/README.md`, `results/firmware/` |
 | 6 Product | ICD log reader/writer with CRC and resync (parses the firmware's golden log with zero issues); immutable content-addressed note store with provenance-carrying derived layers; segmentation; SVG rendering; recogniser interface (on-device adapter specified); FTS5 search with stroke citations; grounded assistant that refuses unsupported, uncited or clinical answers; capture-fidelity analysis; digital autocorrect as a derived layer; 147 tests | executed (synthetic data) · real recogniser pending | `app/README.md`, `results/app/` |
-| 7 Validation | 57 experiments with criteria (42 bench/offline, 15 human) with procedures, equipment, uncertainty and decision rules; 296 acceptance criteria (94 requirement, 43 derived, 159 hypothesis; checker passes); prototype stages A–D with gates; human study plan separating immediate assistance from lasting improvement; review of 33 document inconsistencies, now resolved or recorded | drafted · hardware and participants pending | `validation/README.md` |
+| 7 Validation | 57 experiments with criteria (42 bench/offline, 15 human) with procedures, equipment, uncertainty and decision rules; 299 acceptance criteria (94 requirement, 43 derived, 162 hypothesis; checker passes); prototype stages A–D with gates; human study plan separating immediate assistance from lasting improvement; review of 33 document inconsistencies, now resolved or recorded | drafted · hardware and participants pending | `validation/README.md` |
 | Pencil | Pencil-class concept: CAD (Q and L layouts, fit checks, STEP, drawings), mechanism study (forces, 12 mechanisms, drive power, drop), pencil model P1 (skid, spring-loaded refill, piezo stage; exact match with M1 when locked), page-sensor rate study, touchdown tails | executed (design, calculation, simulation) · hardware pending | `docs/pencil_concept.md`, `docs/pencil_mechanisms.md`, `mechanics/cad/pencil_revP.py`, `sim/pencil/`, `results/pencil/` |
 | Pencil | AI prediction and guidance (text predictor, style templates, stroke continuation, closed loop on P1 and M1, deployment and ICD proposal) and app autocorrect | executed (synthetic data) · people pending (EXP-A02/A03) | `docs/ai_guidance.md`, `aiguide/`, `results/ai/` |
 | Pencil | Inertial and pivot stabilisation study: hand-pen model H1 with pen tilt in a two-zone grip; weights, gyroscopes, CMGs, reaction wheels, grip sleeve, passive pivots | executed (simulation, calculation) · grip measurement pending (EXP-I01) | `docs/inertial_stabilisation.md`, `sim/handpen/`, `results/pencil/inertial*.json` |
@@ -98,6 +99,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Rev H | Handwriting outcomes per condition (essential tremor, Parkinson's micrographia, poor handwriting, dyslexia) in model HW1, cross-checked against P1; scorer for real recordings | executed (simulation) · people pending (EXP-W01…W05) | `docs/handwriting_outcomes.md`, `handwriting/`, `results/handwriting/` |
 | Rev H | Guidance board: architecture comparison, magnet force maps, stage, Hall sensing, guidance control, CAD, BOM | executed (calculation, simulation) · hardware pending (EXP-G01…G07) | `docs/guidance_board.md`, `board/`, `mechanics/cad/guidance_board.py`, `results/board/` |
 | Rev H | 3-D explainer: components, how it moves, before/after writing, evidence level of every number; smoke test | executed | `viewer/explainer/` (`python3 viewer/explainer/build.py`) |
+| Rev H | AI help for severe tremor: letter prediction as a tracker prior and as nose guidance, a severe-tremor tracker setting, the app's digital clean copy; safety (wrong letters, agency, false correction); rules fixed on tuning writers | executed (simulation) · recordings pending (EXP-W02, EXP-A03) | `docs/ai_severe_tremor.md`, `aiprior/`, `results/aiprior/` |
 | 4 Simulation | Sim-to-real: virtual bench with instrument models, blind identification of 15 plants in protocol order, bench-time study, calibrated-twin prediction gap, model-form diagnostics, piezo hysteresis identification, domain randomisation, hardware-in-the-loop specification; 22 tests | executed (twin experiments) · bench pending | `docs/sim_to_real.md`, `validation/sim_to_real.md`, `s2r/`, `results/s2r/` |
 | — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
 | — | Interfaces, decisions, plan with effort ranges (100–174 pw) and quotation list, environment lock | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md`, `requirements.txt` |
@@ -143,6 +145,8 @@ python3 -m opt.inertial.run_study                     # nose, tracker, inertial 
 python3 mechanics/cad/revH_pen.py [--addon]           # Rev H CAD, fit checks, STEP (--addon: with the inertial module)
 python3 -m handwriting.run_study                      # before/after writing per condition (--quick smoke run); tests: python3 -m pytest -q handwriting/tests
 python3 -m board.run_study                            # guidance board (about 2-3 min); tests: python3 -m pytest -q board/tests
+python3 -m aiprior.run_study                          # AI help for severe tremor (about 20 min; --quick about 5 min); tests: python3 -m pytest -q aiprior/tests
+python3 -m opt.inertial.front_end --sens              # Rev H front-end closure and its sensitivity check (about 1 min)
 python3 mechanics/cad/guidance_board.py               # board CAD and drawing
 python3 viewer/explainer/build.py                     # 3-D explainer page from the results
 ```
@@ -167,6 +171,7 @@ Firmware, ML and app have their own build and test commands in their READMEs.
 | `fusion/` | Sensor models and tremor trackers |
 | `opt/` | Optimisation studies: touchdown, tracker, slim hardware, Rev H inertial |
 | `handwriting/` | Handwriting outcomes model HW1 and the recording scorer |
+| `aiprior/` | AI help for severe tremor: tracker prior, guidance, clean copy |
 | `board/` | Guidance board study |
 | `s2r/` | Sim-to-real: virtual bench, identification, calibrated twin |
 | `viewer/` | 3D replay page; `viewer/explainer/` the Rev H 3-D explainer |

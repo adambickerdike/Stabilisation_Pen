@@ -59,8 +59,11 @@ The 3-D explainer page is built by `python3 viewer/explainer/build.py`.
 | Poor handwriting, practice | Board guidance | Ink 24–34 % closer (partial–full) |
 | Dyslexia, letter reversals (b/d) | Any guidance | 0 % turned into the right letter: guidance cannot override a letter you are set on |
 | Dyslexia, spelling | App AI (known target) | Flags all 78 misspelt words (6 % false flags); read-back and practice follow |
+| Severe tremor (1–2 mm), notes | The app's clean copy (digital) | 97 % of words readable in the app's copy at 6–10 Hz; the paper keeps the pen's ink (30–59 % of words) |
+| Severe tremor, AI letter prediction steering the tip | — | Closes 0–1 % of the tracker's gap; not used (DEC-035) |
 
 - **The tracker, not the mechanism, is the limit.** With perfect knowledge of the shake the ±3 mm nose would clean almost everything. With today's tracker it helps most at 8–12 Hz.
+- **AI letter prediction does not fix that (SIM, [`ai_severe_tremor.md`](ai_severe_tremor.md)).** A predicted letter shape lands where the shaking tip lands, so at 1–2 mm tremor even a correct prediction is 0.5–0.9 mm off. As extra input to the tracker it closed 0 % of the gap; as guidance of the nose, 1 %. The app's clean copy, which removes the tremor after writing, made 97 % of words readable.
 - **Weight is not the answer.** A heavier pen made tremor in the ink 14–26 % worse at 8–10 Hz in the model, because the pen rocks on the finger grip. Keep the pen as light as possible.
 - **Tremor-free writing is barely disturbed:** the nose moves clean ink by 22–26 µm.
 - **Learning is shown only without guidance.** Guidance makes letters closer while it is on; the evidence says the effect mostly fades when it is off (LIT HAP-42…44). Full guidance even made letters slightly less readable (92 → 86 %); partial guidance did not (94 %).
@@ -123,7 +126,8 @@ Source: `results/revH/tip_params.json`, `results/opt/inertial_opt.json`.
   - *Steady*: cancel shake.
   - *Write bigger*: cue when letter size falls; the practice programme follows the Parkinson's cueing evidence (lines ≥ 1 cm, "write big" cues: LIT PDT-18, PDT-19).
   - *Guided practice*: when the app knows the target text (copying, dictation), the nose nudges toward the letter shape, with limited force.
-  - *Capture*: record the writing for the app.
+  - *Capture*: record the writing for the app. The app keeps the ink as written and can show a clean copy with the tremor removed, marked as a digital copy (DEC-035).
+  - *Severe tremor* (to test, not adopted): a more aggressive tracker setting chosen by the 20 s calibration. It halved the ink error at 1–2 mm in simulation, but it also moved tremor-free strokes by about 0.26 mm (DEC-035, EXP-W02).
 - **Safety.** Travel and force limits; authority scaled by the tracker's confidence; the pen yields to the hand; guidance is always partial and never draws a letter the user did not start.
 
 ## 6. The inertial module: fitted in the first prototype

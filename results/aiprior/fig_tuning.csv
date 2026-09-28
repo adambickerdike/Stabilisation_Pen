@@ -1,0 +1,35 @@
+panel,label,value
+"T0: ink error at 1-2 mm (µm), tuning data",Rev H set,631.1636441768983
+"T0: ink error at 1-2 mm (µm), tuning data","qt 2e-09, g 0.8",508.57335307683815
+"T0: ink error at 1-2 mm (µm), tuning data","qt 2e-09, g 1",416.78713904022015
+"T0: ink error at 1-2 mm (µm), tuning data","qt 2e-09, g 1.2",354.57745604407415
+"T0: ink error at 1-2 mm (µm), tuning data","qt 5e-09, g 0.8",461.185540214363
+"T0: ink error at 1-2 mm (µm), tuning data","qt 5e-09, g 1",371.284879436061
+"T0: ink error at 1-2 mm (µm), tuning data","qt 5e-09, g 1.2",326.06647806094816
+"T0: ink error at 1-2 mm (µm), tuning data","qt 1e-08, g 0.8",443.21677343333414
+"T0: ink error at 1-2 mm (µm), tuning data","qt 1e-08, g 1",360.46051508452456
+"T0: ink error at 1-2 mm (µm), tuning data","qt 1e-08, g 1.2",332.3460874259907
+"T0: ink error at 1-2 mm (µm), tuning data","qt 2e-08, g 0.8",436.861934122622
+"T0: ink error at 1-2 mm (µm), tuning data","qt 2e-08, g 1",364.3147535091326
+"T0: ink error at 1-2 mm (µm), tuning data","qt 2e-08, g 1.2",353.4623332318951
+"T0: false correction, tremor-free (µm)",Rev H set,33.526184984032795
+"T0: false correction, tremor-free (µm)","qt 2e-09, g 0.8",150.4989312450423
+"T0: false correction, tremor-free (µm)","qt 2e-09, g 1",188.14440257824882
+"T0: false correction, tremor-free (µm)","qt 2e-09, g 1.2",225.7896838427235
+"T0: false correction, tremor-free (µm)","qt 5e-09, g 0.8",190.8641010093375
+"T0: false correction, tremor-free (µm)","qt 5e-09, g 1",238.60218009782847
+"T0: false correction, tremor-free (µm)","qt 5e-09, g 1.2",286.3389026257327
+"T0: false correction, tremor-free (µm)","qt 1e-08, g 0.8",227.72532005115374
+"T0: false correction, tremor-free (µm)","qt 1e-08, g 1",284.6815676020656
+"T0: false correction, tremor-free (µm)","qt 1e-08, g 1.2",341.6388507526061
+"T0: false correction, tremor-free (µm)","qt 2e-08, g 0.8",271.14140199146834
+"T0: false correction, tremor-free (µm)","qt 2e-08, g 1",338.94704258862095
+"T0: false correction, tremor-free (µm)","qt 2e-08, g 1.2",406.75355361915285
+"T1 prior: gain vs the tracker, 1-2 mm","form 0, σ 100 µm, drop 2000",0.007081974717516593
+"T1 prior: gain vs the tracker, 1-2 mm","form 0, σ 300 µm, drop 2000",-0.0019951499821582175
+"T1 prior: gain vs the tracker, 1-2 mm","form 1, σ 100 µm, drop 2000",0.009260122168466833
+"T1 prior: gain vs the tracker, 1-2 mm","form 1, σ 300 µm, drop 2000",-0.0017160576943018313
+"T2 guidance: gain vs the tracker, 1-2 mm","g 0.5, capture 1.2 mm",0.023826607326717486
+"T2 guidance: gain vs the tracker, 1-2 mm","g 0.5, capture 2.0 mm",0.04042268883455391
+"T2 guidance: gain vs the tracker, 1-2 mm","g 1, capture 1.2 mm",0.028543555776545437
+"T2 guidance: gain vs the tracker, 1-2 mm","g 1, capture 2.0 mm",0.0387690235917878

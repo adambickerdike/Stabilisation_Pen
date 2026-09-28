@@ -1124,14 +1124,16 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 ### EXP-W02: Does the nose cut ink tremor in essential tremor?
 - **Design.** The offline part extends EXP-E01 on EXP-H01 recordings. Then a blinded crossover with Rev H (nose off against nose on) in ET writers with tremor above 7.5 Hz.
 - **What it decides.** The ET claim and the frequency gate.
+- **Severe-tremor setting (DEC-035).** In the offline part, also run the more aggressive tracker setting of `docs/ai_severe_tremor.md` on the same recordings. It is kept as a per-user mode, chosen by the 20 s calibration, only if AC-W02-03 passes; the simulation predicts that its false correction fails.
 
 <!-- AC-TABLE:EXP-W02:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-W02-01 | REQ-RVH-006 | Tremor amplitude in the ink with the Rev H nose on against nose off (blinded crossover), ET writers with tremor above 7.5 Hz, relative reduction | ≥ 30 % | hypothesis | REQ-RVH-006; prediction 47-50 % less ink error at 10 Hz and 22-25 % at 8 Hz with the re-tuned tracker (results/handwriting/outcomes.json; SIMULATION) | ET claim; DEC-032; DEC-009 frequency gate |
 | AC-W02-02 | REQ-RVH-006 | False correction of the Rev H nose on tremor-free writing of healthy controls (ink moved against nose off), RMS | ≤ 25 µm | derived | derived from AC-E01-09 / REQ-CTRL-005; prediction 22 µm (shipped tracker) and 26 µm (re-tuned) (results/handwriting/outcomes.json; SIMULATION) -> marginal | DEC-028 / Rev H tracker setting |
+| AC-W02-03 | — | Severe-tremor tracker setting (DEC-035) run offline on EXP-H01 recordings: ink-error ratio against the pen held for writers with 1-2 mm tremor, AND false correction on the tremor-free writing of healthy controls (both) | both met (0.6; 25 µm) | hypothesis | DEC-035; prediction ratio 0.34 at 8-10 Hz and 0.48 at 6 Hz but false correction 263 µm (results/aiprior/aiprior.json; SIMULATION) -> predicted to fail the 25 µm bound of AC-E01-09; 0.6 engineering judgement | DEC-035 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W02).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-W02).
 <!-- AC-TABLE:EXP-W02:END -->
 
 ### EXP-W03: Cues or a size assist for Parkinson's micrographia?
