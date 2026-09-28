@@ -43,6 +43,10 @@ the 2 x floor margin, and the running-median writing floor (in place of a power-
 of writing as a line), were set, also before any test run, after a unit test showed that the first version cut writing
 detail when there is no tremor line.  The T1/T2 tuning runs learnt the templates' style from the first version's clean
 copy (tremor-laden tracks, where both versions apply the same kind of cleaning); the test runs use the final version.
+A smoke run on test writer 0's tremor-free writing then showed the detector taking the writing's 3-4 Hz stroke rhythm
+for a tremor line (a structural bug).  The fix was set on tuning writers 100-103 only (seed 300 and their tremor-free
+writing): search band 4.5-13.5 Hz (tremor-free writing reads 1.0-1.5 there, 1-2 mm tremor 5-47), threshold 3 (twice the
+largest tremor-free value), notch never below 3 Hz.
 """
 from __future__ import annotations
 

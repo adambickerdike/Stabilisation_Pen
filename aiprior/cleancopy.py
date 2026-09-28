@@ -22,7 +22,11 @@ from typing import Dict, Optional, Tuple
 import numpy as np
 from scipy.signal import butter, sosfiltfilt, welch
 
-F_BAND = (3.5, 13.5)          # where the app looks for a tremor peak (Hz)
+F_BAND = (4.5, 13.5)          # where the app looks for a tremor line (Hz).  Tuning writers 100-103: the glyph writers'
+                              # stroke rhythm makes a 3-4 Hz bump (peak-to-floor 3.3-5.2) that a 3.5 Hz edge mistook
+                              # for tremor; above 4.5 Hz tremor-free writing reads 1.0-1.5 and 1-2 mm tremor 5-47.
+                              # A 4 Hz tremor (not in this study's grid) would need another cue (e.g. the IMU at rest).
+F_NOTCH_MIN = 3.0             # the notch never reaches into the writing's core band below this (Hz)
 LOW_HZ = 1.5                  # the slow part (along the line) is kept untouched
 
 
@@ -82,7 +86,7 @@ def bandstop_clean(t: np.ndarray, xy: np.ndarray, down: np.ndarray, f_hat: Optio
     fh = info["f_hat"]
     y = xy.copy()
     for k in ((1, 2) if harmonic else (1,)):
-        lo, hi = k * fh - half_width, k * fh + half_width
+        lo, hi = max(k * fh - half_width, F_NOTCH_MIN), k * fh + half_width
         if hi >= 0.45 * fs or lo <= 0.5:
             continue
         sos = butter(order, [lo, hi], btype="bandstop", fs=fs, output="sos")
@@ -100,7 +104,7 @@ def wiener_clean(t: np.ndarray, xy: np.ndarray, down: np.ndarray, f_hat: Optiona
     f, P = spectrum(t, xy)
     info = tremor_peak(t, xy) if f_hat is None else {"f_hat": float(f_hat), "peak_ratio": float("nan")}
     fh = info["f_hat"]
-    bands = [(fh - half_width, fh + half_width), (2 * fh - half_width, 2 * fh + half_width)]
+    bands = [(max(fh - half_width, F_NOTCH_MIN), fh + half_width), (2 * fh - half_width, 2 * fh + half_width)]
     floor = writing_floor(f, P, excl=bands)
     ratio = info["peak_ratio"] if f_hat is None else float(np.max(P / np.maximum(floor, 1e-30)))
     info["applied"] = bool(ratio >= min_ratio)
