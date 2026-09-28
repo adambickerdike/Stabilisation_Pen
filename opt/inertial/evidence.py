@@ -223,7 +223,9 @@ def study_rows(out) -> List[Dict]:
         units_and_conditions="relative change of the RMS ink deviation; test seeds 200-203", locator="results/opt/inertial_opt.json inertial_module.by_split",
         limitations="Actuator constant Km 0.9 N/sqrt(W) and centring ASSUMPTIONS; end-stop impacts at >= 1 mm, >= 8 Hz; the 'measurable' criterion was set after the grid",
         relevance_to_design="Whether the rear-cap module earns its 28 g", transferability="medium", transferability_reason="Model-to-model; grip unmeasured",
-        design_implication="Offer the module as an option for large (>= 1 mm) tremor; do not add passive weight (it amplifies 10-12 Hz at r_rot 0.5-0.7)",
+        design_implication=(("Offer the module as an option for large (>= 1 mm) tremor" if dec["include"] else
+                             "Do not fit the module in the standard Rev H (the post-hoc rule of >= 10 % on every seed at r_rot 0.5 and 0.7 is not met, and it takes the pen over 100 g); re-test on the bench (EXP-I06) if EXP-I01 finds r_rot >= 0.5")
+                            + "; do not add passive weight (it amplifies 10-12 Hz at r_rot 0.5-0.7)"),
         stream="ACT", **common))
     adj = out.get("adjoint_nose") or {}
     ch = [r for r in adj.get("front", []) if r.get("mu_mass") == adj.get("chosen_mu")]

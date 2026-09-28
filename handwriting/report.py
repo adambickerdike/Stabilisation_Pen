@@ -83,8 +83,8 @@ def fig_et(et: Dict, outdir: Path) -> List[Dict]:
     f0s = sorted({float(k.split("Hz")[0]) for dv in bc.values() for k in dv})
     amps = sorted({float(k.split("_")[1].rstrip("mm")) for dv in bc.values() for k in dv})
     panels = []
-    for key, lab, ylab, scale in (("ink_err_um", "Ink error vs the intended letters", "mm (RMS)", 1e-3),
-                                  ("word_acc_app", "Words read correctly by the app", "share of words", 1.0)):
+    for key, lab, ylab, scale in (("ink_err_um", "Ink error", "mm (RMS) from the intended letters", 1e-3),
+                                  ("word_acc_app", "Words read by the app", "share of words", 1.0)):
         for a in amps:
             series = []
             for dv in ("none", "weighted", "pencil_akf", "revH_akf", "revH_akf_revh", "revH_oracle"):
@@ -94,11 +94,14 @@ def fig_et(et: Dict, outdir: Path) -> List[Dict]:
                 if any(v is None for v in y):
                     continue
                 series.append({"label": _et_label(dv), "y": [v * scale for v in y], "color": DEV_COL[dv], "ls": DEV_LS.get(dv, "-")})
-            panels.append({"title": f"{lab}: tremor {a:g} mm at the hand", "x": f0s, "xlabel": "tremor frequency (Hz)",
+            panels.append({"title": f"{lab}, tremor {a:g} mm at the hand", "x": f0s, "xlabel": "tremor frequency (Hz)",
                            "ylabel": ylab, "series": series, "xticks": f0s,
                            "ylim": (0, 1.05) if key == "word_acc_app" else None})
+    grid = et.get("grid") or {}
+    sd = grid.get("seeds", [200, 201, 202, 203])
     FG.lines_chart(outdir / "fig_et_summary.png", panels, "SIMULATION (model HW1)",
-                   f"aiguide test writers {agg['writers']}, seeds 200-203; mean of {agg['n_scenarios']} scenarios",
+                   f"aiguide test writers {min(agg['writers'])}-{max(agg['writers'])}, seeds {min(sd)}-{max(sd)}; "
+                   f"each point = mean of {agg['n_scenarios'] // max(len(f0s) * len(amps), 1)} runs",
                    ncols=3, size=(13.0, 3.9))
     return panels
 
@@ -152,7 +155,7 @@ def fig_et_sensitivity(sens: Dict, outdir: Path) -> Dict:
     for case in ("10Hz_1mm", "6Hz_1mm"):
         labels, vals, cols = [], [], []
         for vname, v in [("nominal", None)] + list(sens.items()):
-            if vname == "nominal":
+            if vname == "nominal" or vname.startswith("_"):
                 continue
             bc = v["aggregate"]["by_condition"]
             for dv in ("weighted", "revH_off", "pencil_akf", "revH_akf_revh", "revH_oracle"):
@@ -256,7 +259,7 @@ def fig_practice(pr: Dict, outdir: Path) -> None:
     if not viz:
         return
     cols = []
-    keys = ["none", "nose_partial", "nose_full", "board_full", "nose_nogate"]
+    keys = ["none", "nose_partial", "nose_full", "board_partial", "board_full", "nose_nogate"]
     for prof in ("dysgraphia", "dyslexia"):
         if prof not in viz:
             continue
@@ -474,10 +477,12 @@ def build(quick: bool = False, timing: Optional[Dict] = None, outdir: Path = RES
     if et:
         fig_et_before_after(et, outdir)
         fig_et(et, outdir)
-        out["et"] = {"aggregate": et["aggregate"], "grid": et.get("grid"), "headlines": et_headlines(et["aggregate"])}
+        out["et"] = {"aggregate": et["aggregate"], "grid": et.get("grid"), "headlines": et_headlines(et["aggregate"]),
+                     "inputs": et.get("inputs")}          # the tracker and Rev H values these results used
     if sens:
         out["et_sensitivity"] = {"summary": fig_et_sensitivity(sens, outdir),
-                                 "aggregates": {k: v["aggregate"] for k, v in sens.items()}}
+                                 "aggregates": {k: v["aggregate"] for k, v in sens.items() if not k.startswith("_")},
+                                 "inputs": sens.get("_inputs")}
     if pd:
         fig_pd_before_after(pd, outdir)
         fig_pd(pd, outdir)

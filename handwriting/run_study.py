@@ -53,6 +53,26 @@ def _load(name):
     return json.loads(p.read_text()) if p.exists() else None
 
 
+def _inputs() -> dict:
+    """One snapshot of the device and tracker inputs for a whole stage (other studies may rewrite these files)."""
+    import hashlib
+    from . import params as PR
+    from . import REPO_ROOT
+    files = {}
+    for rel in ("results/opt/inertial_tracker_revh.json", "results/opt/tracker_models/akf_ship.json",
+                "results/revH/tip_params.json", "results/board/board_params.json", "config/parameters.yaml"):
+        p = REPO_ROOT / rel
+        if p.exists():
+            b = p.read_bytes()
+            gen = None
+            try:
+                gen = json.loads(b).get("meta", {}).get("generated_utc")
+            except Exception:
+                pass
+            files[rel] = {"sha256_16": hashlib.sha256(b).hexdigest()[:16], "generated_utc": gen}
+    return {"files": files, "trackers": {"ship": PR.akf_ship(), "revh": PR.akf_revh()}, "revh_pen": PR.rev_h()}
+
+
 def _tuned(quick: bool) -> dict:
     """Choices made on tuning data (writers >= 100, seeds >= 300) that the final stages use."""
     tu = (_load("tuning_quick") if quick else None) or _load("tuning") or {}
@@ -121,18 +141,23 @@ def main(argv=None):
         t0 = time.time()
         f0s = (6.0, 10.0) if q else ET.F0S
         amps = (0.3e-3, 1.0e-3, 2.0e-3)
-        jobs = [{"writer": w, "seeds": list(seeds), "f0s": list(f0s), "amps": list(amps), "viz": w == ET.VIZ["writer"]}
-                for w in writers]
+        inp = _inputs()
+        jobs = [{"writer": w, "seeds": list(seeds), "f0s": list(f0s), "amps": list(amps), "viz": w == ET.VIZ["writer"],
+                 "trackers": inp["trackers"], "revh_pen_nominal": inp["revh_pen"]} for w in writers]
         outs = _pool(_et_job, jobs, args.workers)
         _save("et" + tag, {"outs": outs, "aggregate": ET.aggregate(outs), "grid": {"writers": list(writers),
                                                                                  "seeds": list(seeds), "f0s": list(f0s),
-                                                                                 "amps_mm": [a * 1e3 for a in amps]}})
+                                                                                 "amps_mm": [a * 1e3 for a in amps]},
+                           "inputs": {"files": inp["files"], "trackers": inp["trackers"],
+                                      "revh_pen": inp["revh_pen"].describe()}})
         log["et_s"] = time.time() - t0
     if "et_sens" in args.stages:
         t0 = time.time()
         from . import params as PR
         sw = writers[:2] if q else writers
-        base = {"seeds": [seeds[0]], "f0s": [6.0, 10.0], "amps": [0.3e-3, 1.0e-3], "distortion": False}
+        inp = _inputs()
+        base = {"seeds": [seeds[0]], "f0s": [6.0, 10.0], "amps": [0.3e-3, 1.0e-3], "distortion": False,
+                "trackers": inp["trackers"], "revh_pen_nominal": inp["revh_pen"]}
         variants = {
             "open_loop_hand": {"hand": {"writer_comp": "none"}},
             "stiff_grip_x2": {"hand": {"K_grip": 1150.0, "C_grip": 2.6}},
@@ -144,6 +169,7 @@ def main(argv=None):
             jobs = [dict(base, writer=w, **v) for w in sw]
             outs = _pool(_et_job, jobs, args.workers)
             res[name] = {"aggregate": ET.aggregate(outs), "variant": {k: (str(x) if k == "revh_pen" else x) for k, x in v.items()}}
+        res["_inputs"] = {"files": inp["files"]}
         _save("et_sens" + tag, res)
         log["et_sens_s"] = time.time() - t0
     if "pd" in args.stages:

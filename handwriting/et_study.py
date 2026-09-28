@@ -178,8 +178,8 @@ def writer_job(job: Dict) -> Dict:
     """One writer: every (f0, amp, seed) in the job, the tremor-free distortion check, and kept paths for figures."""
     t0 = time.time()
     hand = PR.Hand.from_config(**job.get("hand", {}))
-    pens = pens_default(job.get("revh_pen"))
-    trk = trackers_default()
+    pens = pens_default(job.get("revh_pen") or job.get("revh_pen_nominal"))
+    trk = job.get("trackers") or trackers_default()          # the stage passes one snapshot to every writer
     su = WriterSetup(job["writer"], hand, pens, ctl_kw=job.get("ctl", {}))
     rows = []
     viz = {}

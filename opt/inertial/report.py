@@ -324,7 +324,10 @@ def addon_decision(sa: Dict, d: Optional[RH.RevH] = None) -> Dict:
     ok_power = P_mod <= 0.5
     total = RH.masses(d)["total_g"] + m_add
     cell10440 = total - (CT.CELLS["LIR14500"].m - CT.CELLS["LIR10440"].m) * 1e3
-    return {"include": bool(measurable and ok_mass and ok_power), "as": "optional rear-cap module (Rev H standard build without it)",
+    inc = bool(measurable and ok_mass and ok_power)
+    return {"include": inc,
+            "as": ("optional rear-cap module offered (Rev H standard build without it)" if inc else
+                   "not included in Rev H by the rule below; kept as an evaluated option (CAD variant, optional components in layout.json)"),
             "module": rm["label"], "added_mass_g": m_add, "pen_mass_with_module_g": round(total, 1),
             "pen_mass_with_module_and_10440_g": round(cell10440, 1),
             "power_W": {"copper_max_W": P, "module_total_max_W": P_mod, "note": "copper loss max over all test conditions + 0.012 W driver/Hall (ASSUMPTION)"},
@@ -627,13 +630,12 @@ def stage_report(quick=False):
         return out
     # interface files and replay
     dec = S["addon_decision"]
-    addon_geo = None
-    if dec["include"]:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("revH_pen", os.path.join(ROOT, "mechanics", "cad", "revH_pen.py"))
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        addon_geo = mod.default_addon()
+    # the evaluated rear-cap module stays in layout.json as optional components either way; meta says whether it is recommended
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("revH_pen", os.path.join(ROOT, "mechanics", "cad", "revH_pen.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    addon_geo = mod.default_addon()
     tip = write_tip_params(final=True, addon_decision=dec, calib=S["calib"])
     lay = write_layout(addon=addon_geo, addon_recommended=dec["include"])
     from . import viz as VZ

@@ -19,8 +19,9 @@ Interventions
                   and, 0.2 s later, sets G = start size / median of the last 3 letters; a design variant, untested
   cue_size        cue plus size assist 1.35
 Metrics: per-letter x-height (start = first 5 letters, end = last 5), recognition, words read by the app, fluency
-(normalised jerk, speed peaks per stroke, speed; PDT-17), the tremor in the ink (3-15 Hz), writing time, and
-letter crowding (horizontal overlap of neighbouring letters' ink within words).
+(normalised jerk, speed peaks per stroke, speed; PDT-17), the tremor in the ink (3-15 Hz, from paired runs with and
+without tremor), writing time, and letter crowding (share of neighbouring letters within a word whose inks come within
+0.15 mm).  The size-assist anchor time constant tau_sa is chosen on tuning writers (tuning.size_tau; run_study passes it).
 """
 from __future__ import annotations
 

@@ -239,6 +239,7 @@ svg.dg .sleevec{fill:var(--g-grip);stroke:none}
 svg.dg .skidc{fill:var(--g-skid)}
 svg.dg .nosec{fill:var(--g-nose)}
 svg.dg .coilc{fill:var(--g-act)}
+svg.dg .glassc{fill:color-mix(in srgb,var(--accent) 14%,var(--panel));stroke:var(--rule);stroke-width:1}
 svg.dg .magc{fill:color-mix(in srgb,var(--g-act) 60%,var(--ink))}
 svg.dg .pivc{fill:var(--g-pivot)}
 svg.dg .lead{stroke:var(--muted);stroke-width:1.2;fill:none}
@@ -463,7 +464,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
       <button class="scene-btn" data-scene="b" aria-pressed="false"><span class="k">b</span><b>Stabiliser on</b><span>The hand still shakes. The nose tilts the other way, so the ink stays near the letters.</span></button>
       <button class="scene-btn" data-scene="c" aria-pressed="false"><span class="k">c</span><b>Write bigger</b><span>For Parkinson's: the letters start to shrink, the pen buzzes, the letters recover.</span></button>
       <button class="scene-btn" data-scene="d" aria-pressed="false"><span class="k">d</span><b>Guided practice</b><span>The target letter is shown faintly. The nose nudges the tip toward it.</span></button>
-      <button class="scene-btn" data-scene="e" aria-pressed="false"><span class="k">e</span><b>Guidance board</b><span>A magnet under the paper moves along the letter and pulls the pen with it.</span></button>
+      <button class="scene-btn" data-scene="e" aria-pressed="false"><span class="k">e</span><b>Guidance board</b><span>A magnet under the glass leads the pen's sleeve along the letter. The nose makes the last small corrections.</span></button>
     </div>
     <div class="scene-grid">
       <div class="viewport" id="scene-vp">
@@ -592,7 +593,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
       <figure class="diag">
         <div class="svgwrap">
         <svg class="dg" viewBox="0 0 640 260" role="img" aria-labelledby="push-t">
-          <title id="push-t">Left: inside the pen the coil pushes the nose one way and the handle the other way. Right: the board under the paper pulls the pen.</title>
+          <title id="push-t">Left: inside the pen the coil pushes the nose one way and the handle the other way. Right: a magnet under the glass pulls a small magnet in the pen's sleeve, so the whole pen moves.</title>
           <defs>
             <marker id="ahg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="garrowh"/></marker>
           </defs>
@@ -614,18 +615,22 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
           <path class="arrow" d="M44 214 l -22 10" marker-end="url(#ah)"/>
           <text class="sm" x="16" y="248">tip moves</text>
           <text class="ttl" x="352" y="24">Under the paper</text>
-          <rect x="344" y="196" width="280" height="10" class="paper"/>
-          <rect x="344" y="206" width="280" height="30" rx="3" class="shellc"/>
-          <rect x="452" y="210" width="44" height="14" rx="3" class="coilc"/>
-          <text class="sm" x="620" y="252" text-anchor="end">magnet on a carriage</text>
-          <g transform="translate(470 194) rotate(-50)">
-            <path class="nosec" d="M0 0 L 30 -5 L 30 5 Z"/><rect x="30" y="-9" width="46" height="18" rx="4" class="sleevec"/><rect x="76" y="-7" width="110" height="14" rx="5" class="shellc"/>
+          <rect x="344" y="194" width="280" height="4" class="paper"/>
+          <rect x="344" y="198" width="280" height="6" class="glassc"/>
+          <rect x="344" y="204" width="280" height="32" rx="3" class="shellc"/>
+          <rect x="494" y="208" width="36" height="14" rx="3" class="coilc"/>
+          <text class="sm" x="620" y="252" text-anchor="end">magnet on a moving carriage, under glass</text>
+          <g transform="translate(450 194) rotate(-50)">
+            <path class="nosec" d="M0 0 L 30 -5 L 30 5 Z"/><rect x="26" y="-9" width="50" height="18" rx="4" class="sleevec"/><rect x="76" y="-7" width="110" height="14" rx="5" class="shellc"/>
+            <rect x="32" y="8" width="5" height="8" class="sleevec"/><rect x="29" y="14" width="10" height="7" rx="1.5" class="magc"/>
           </g>
-          <path class="garrow" d="M478 188 l 40 0" marker-end="url(#ahg)"/>
-          <text class="sm" x="620" y="176" text-anchor="end">the board pulls the pen along</text>
+          <path class="garrow" d="M512 208 L 490 184" stroke-dasharray="3 3" stroke-width="1.6"/>
+          <path class="garrow" d="M494 176 l 44 0" marker-end="url(#ahg)"/>
+          <text class="sm" x="548" y="172">pulls the</text>
+          <text class="sm" x="548" y="187">sleeve magnet</text>
         </svg>
         </div>
-        <figcaption>Left: the coil pushes the nose one way and the handle the other way. Your hand is far heavier than the nose, so the tip moves and your hand hardly does. Right: the board has the desk to push against, so it can pull the pen, and your hand, along a letter.</figcaption>
+        <figcaption>Left: the coil pushes the nose one way and the handle the other way. Your hand is far heavier than the nose, so the tip moves and your hand hardly does. Right: the board has the desk to push against. Its magnet, under the glass, pulls a small magnet in the pen's fixed sleeve, so it can lead the whole pen, and a relaxed hand, along a letter. It gives way if you push against it.</figcaption>
       </figure>
       <div style="display:grid;gap:14px;align-content:start">
         <h3>Why the fingers hold a sleeve that stays still</h3>
@@ -719,6 +724,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
         </tbody>
       </table>
     </div>
+    <p class="note">Guidance board: the board study since chose a permanent magnet moved by a small motorised carriage under 3&nbsp;mm glass, instead of an electromagnet. It pulls a 6.35&nbsp;mm magnet under the pen's fixed sleeve; a safety setting limits the pull to 0.4&nbsp;N. <span class="tag prop"><i></i>Proposed design</span> <span class="tag asm"><i></i>Assumption</span></p>
   </section>
 
   <!-- ===================================================================== 6. who it helps -->
@@ -783,7 +789,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>).</div>
     <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revH/layout.json</code></li><li><span class="st final">final</span> Guidance board: <code>results/board/layout.json (+ numbers from results/board/board_params.json, results/board/board.json)</code></li><li><span class="st final">final</span> Handwriting results: <code>results/handwriting/samples.json + provisional panels for the conditions not yet in it (micrographia_illustration, guided_sentence)</code></li><li><span class="st final">final</span> Handwriting study averages: <code>results/handwriting/outcomes.json</code></li><li><span class="st final">final</span> Tip study headline numbers: <code>results/revH/tip_params.json</code></li></ul>
-    <div class="mono" id="provenance">Built 2026-09-28 18:11 UTC from git 004f9bc-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:57:14+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-28 18:21 UTC from git 2277880-dirty · parameters v0.4.4 · layout generated 2026-09-28T17:57:14+00:00</div>
   </footer>
 </div>
 
@@ -1341,6 +1347,14 @@ function tipNumbers(tip){
   return {best:[o[0],o[1]], today:[k[0],k[1]], txtBest:`${pc(o[0])}–${pc(o[1])} %`, txtToday:`${pc(k[0])}–${pc(k[1])} %`,
     label:r.label||"SIMULATION (model H1)"};
 }
+/* scene (e): how hard the board pulls and how far a relaxed hand gives, from the board study when data/board.json
+   carries it (explainer_physics, written by build.py from results/board); otherwise the study's published values */
+function boardPhysics(board){
+  const P={cap:0.4, mmPerN:7.6, lead:0.1, slope:0.105, keep:0.42, fix:0.865};
+  const ph=board && board.explainer_physics;
+  if(ph) for(const k in P) if(typeof ph[k]==="number" && isFinite(ph[k]) && ph[k]>0) P[k]=ph[k];
+  return P;
+}
 function buildSceneData(key, board, tip, trk, travel){
   const dt=1/200, TR=6.0, W=TAU*TR, shakeAmp=1.5;
   const S={key, dt, travel:travel||3, numbers:[], speed:0.25, ruling:8, cam:"close"};
@@ -1400,16 +1414,33 @@ function buildSceneData(key, board, tip, trk, travel){
                ["Guidance made practice writing smoother; better letter shapes were not shown", "", "LITERATURE HAP-10"]];
   }
   else if(key==="e"){
+    /* The board pulls a magnet under the FIXED sleeve, so it leads the whole pen and a relaxed hand along the letter
+       (the gross path); the nose then makes the last small corrections of the ink.  Three paths:
+         ghost = where a relaxed hand would go without the board (drifting off the letter),
+         hand  = the sleeve, led by the board,
+         ink   = hand + nose.
+       Drawn as an illustration, sized like the board study's tracing run (SIMULATION: 1.49 -> 0.63 -> 0.085 mm).
+       Pull = what it takes to hold a relaxed hand on the led path (0.76 mm per 0.1 N, CALCULATION) plus a small
+       pull along the letter, never above the 0.4 N limit. */
     const u4=16, tgt=wordTargets("a", u4, 0.18, -12, null, true), path=strokesPath(tgt, {base:0.2, per:0.035, overlap:0.5});
-    S.T=path.T+0.6; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T, lead=0.05; S.carriage=new Float32Array(n*2);
-    for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), q=path.at(Math.min(TT, t+lead)), s=t/TT;
-      const wx=0.45*Math.sin(TAU*1.7*s+0.5), wy=0.4*Math.sin(TAU*2.2*s+1.4);
-      S.intended[2*i]=p[0]; S.intended[2*i+1]=p[1]; S.hand[2*i]=p[0]+wx; S.hand[2*i+1]=p[1]+wy; S.carriage[2*i]=q[0]; S.carriage[2*i+1]=q[1]; S.down[i]=S.t[i]<=TT?1:0; }
-    S.ruling=10; S.cam="board"; S.speed=1; S.intendedFaint=true;
-    const nums=(board&&(board.explainer_numbers||board.numbers))||[], pull=nums.find(x=>typeof x.value==="number");
+    S.T=path.T+0.6; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T;
+    const P=boardPhysics(board); S.phys=P;
+    S.ghost=new Float32Array(n*2); S.force=new Float32Array(n*2);
+    for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), s=t/TT, on=S.t[i]<=TT;
+      const dx=0.55*(2.6*Math.sin(TAU*0.9*s+0.3)+1.1*Math.sin(TAU*2.3*s+1.2)), dy=0.55*(-2.4*Math.sin(TAU*1.1*s+1.0)+0.9*Math.sin(TAU*2.9*s));
+      const hx=p[0]+P.keep*dx, hy=p[1]+P.keep*dy;
+      let nx=P.fix*(p[0]-hx), ny=P.fix*(p[1]-hy); const r=Math.hypot(nx,ny); if(r>S.travel){ nx*=S.travel/r; ny*=S.travel/r; }
+      const q1=path.at(Math.min(TT, t+0.02)), q0=path.at(Math.max(0, t-0.02)); let tx=q1[0]-q0[0], ty=q1[1]-q0[1]; const tl=Math.hypot(tx,ty);
+      if(tl>1e-4){ tx/=tl; ty/=tl; } else { tx=0; ty=0; }
+      let fx=(hx-(p[0]+dx))/P.mmPerN+P.lead*tx, fy=(hy-(p[1]+dy))/P.mmPerN+P.lead*ty; const F=Math.hypot(fx,fy); if(F>P.cap){ fx*=P.cap/F; fy*=P.cap/F; }
+      S.intended[2*i]=p[0]; S.intended[2*i+1]=p[1]; S.hand[2*i]=hx; S.hand[2*i+1]=hy; S.nose[2*i]=nx; S.nose[2*i+1]=ny;
+      S.ghost[2*i]=p[0]+dx; S.ghost[2*i+1]=p[1]+dy; S.force[2*i]=on? fx : 0; S.force[2*i+1]=on? fy : 0; S.down[i]=on?1:0; }
+    S.ghostLabel="your hand without the board"; S.handPath=true; S.intendedFaint=true;
+    S.ruling=10; S.cam="board"; S.speed=0.5;
+    const nums=(board&&(board.explainer_numbers||board.numbers))||[];
     S.numbers=[["Practice letter", "about 16 mm high", "ASSUMPTION"]];
     for(const x of nums) S.numbers.push([x.label, x.value!=null? `${x.value} ${x.unit||""}`.trim() : (x.text||""), x.evidence||"ASSUMPTION"]);
-    if(!pull) S.numbers.push(["Pull on the pen", "not yet calculated", "ASSUMPTION"]);
+    if(!nums.length) S.numbers.push(["Pull on the pen", "not yet calculated", "ASSUMPTION"]);
     S.numbers.push(["Board", "sizes and parts are a proposal", "PROPOSED DESIGN"]);
   }
   return S;
@@ -1426,14 +1457,23 @@ function initScenes(lay, board, samples, tip){
   const paper=makePaper(640, 640, 8); v.scene.add(paper);
   const inkG=new THREE.Group(); v.scene.add(inkG);
   const boardG=new THREE.Group(); boardG.position.y=-0.3; v.scene.add(boardG);
-  const pm=(board&&board.pen_magnet)||{z0:5, z1:8, d:5, d_in:2.6};
+  /* the pen's magnet for the board: a disc in a small keel under the FIXED front sleeve (board study), so it moves
+     with the handle and the hand, not with the nose */
+  const pm=(board&&board.pen_magnet)||{d:6.35, h:3.17, pen_frame_mm:{along_axis_from_ball:13.5, off_axis_toward_paper:10.2}};
   let penMag;
   if(pm.pen_frame_mm){ const z=+pm.pen_frame_mm.along_axis_from_ball||13.5, off=+pm.pen_frame_mm.off_axis_toward_paper||0, h=+pm.h||3, d=+pm.d||6;
-    const geo=frustumGeo(d/2, d/2, z-h/2, z+h/2); geo.translate(0, -off, 0); penMag=new THREE.Mesh(geo, stdMat(css("--g-act"))); pen.body.add(penMag); penMag.userData.z=z; penMag.userData.off=off; }
+    const geo=frustumGeo(d/2, d/2, z-h/2, z+h/2); geo.translate(0, -off, 0); penMag=new THREE.Mesh(geo, stdMat(css("--g-act"))); pen.body.add(penMag);
+    const keel=new THREE.Mesh(new THREE.BoxGeometry(2.2, off, h+2.2), stdMat(css("--g-grip"))); keel.position.set(0, -off/2, z); penMag.add(keel);
+    penMag.userData.local=new THREE.Vector3(0, -off, z); }
   else { penMag=new THREE.Mesh(tubeGeo((pm.d||5)/2, (pm.d||5)/2, (pm.d_in||0)/2, pm.z0, pm.z1), stdMat(css("--g-act")));
-    (pm.moves_with==="handle" ? pen.body : pen.nose).add(penMag); penMag.userData.z=((pm.z0||5)+(pm.z1||8))/2; penMag.userData.off=0; }
+    (pm.moves_with==="handle" ? pen.body : pen.nose).add(penMag); penMag.userData.local=new THREE.Vector3(0, 0, ((pm.z0||5)+(pm.z1||8))/2); }
   penMag.visible=false;
   const arrow=new THREE.ArrowHelper(new THREE.Vector3(1,0,0), new THREE.Vector3(), 10, new THREE.Color(css("--good")), 3.5, 2.2); arrow.visible=false; v.scene.add(arrow);
+  for(const m of [arrow.line.material, arrow.cone.material]){ m.depthTest=false; m.transparent=true; m.opacity=1; }   /* the pull stays visible through the fingers and the paper */
+  arrow.renderOrder=6; arrow.line.renderOrder=6; arrow.cone.renderOrder=6;
+  const couple=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(0,1,0)]),
+    new THREE.LineDashedMaterial({color:new THREE.Color(css("--good")), dashSize:0.8, gapSize:0.6, transparent:true, opacity:0.95, depthTest:false}));
+  couple.renderOrder=5; couple.visible=false; v.scene.add(couple);
   const lra=pen.parts.find(m=>m.userData.group==="haptic");
   const Sx={v, pen, hand, bs, paper, inkG, key:"a", S:null, t:0, playing:!REDUCED, speed:0.25, mag:1, userMag:false, samples, board, trk:"best", view:"tip"};
   T.scenes=Sx;
@@ -1443,7 +1483,7 @@ function initScenes(lay, board, samples, tip){
     b:"The hand shakes exactly as before. The motion sensor feels the shake and the coils tilt the nose the other way, inside the still sleeve. The ring on the paper moves with your hand; the tip inside it stays near the letters. The coral line shows the ink with the pen off.",
     c:"No tremor here: the letters slowly get smaller along the line, as happens in Parkinson's. When they drop below the set size, the vibration motor buzzes once. The writer makes the next letters bigger. The pen does not move the tip in this mode.",
     d:"The target letter is shown faintly. The writer's hand drifts off the letter. The nose moves the tip toward the target, by up to 3 mm, so the ink lands closer. The hand still does the writing.",
-    e:"The board sits under the paper. A magnet on a moving carriage travels along the letter, just ahead of the pen, and pulls a small magnet in the pen. Because the board rests on the desk, it can pull the pen and your hand along the whole letter. This is for practice at a desk."};
+    e:"A magnet under the glass moves along the letter and gently pulls a small magnet in the pen's sleeve; it can lead a relaxed hand, but it gives way if you push against it. The pull moves the whole pen and your hand along the letter. The nose then makes the last small corrections, up to 3 mm, so the ink lands on the letter. For learning, the nose can be held still, so you see your own writing. This is for practice at a desk."};
   /* the handwriting study's runs (final data only): the same simulated hand and shake for every pen, so the
      ordinary pen's ink is where the hand puts the tip, and the new pen's ink minus it is what the nose adds */
   function tremorPanels(){ if(!samples || !samples.meta || samples.meta.provisional) return [];
@@ -1527,23 +1567,31 @@ function initScenes(lay, board, samples, tip){
       const m=new THREE.Mesh(geo, mat); const p=P2W(ctr[0]-ref[0], ctr[1]-ref[1], ctr[2]); m.position.copy(p);
       let moves=c.moves||"none";
       if(c.moves_with==="carriage"){ const sx=(c.size&&c.size[0])||0, cx=ctr[0]; moves = (sx>100 || cx<30 || cx>W-30) ? "y" : "xy"; }
-      m.userData={c, base:p.clone(), moves}; boardG.add(m); boardParts.push(m);
+      /* in the magnets close-up only the magnets, the sensor ring and the glass are shown; the whole board shows everything */
+      const key=surf || role==="magnet" || /head_magnet|head_cup|hall_ring|^magnet$/i.test(c.id||"");
+      if(/hall_ring/i.test(c.id||"")) glassy(mat, 0.55);
+      m.userData={c, base:p.clone(), moves, key}; boardG.add(m); boardParts.push(m);
     }
+    boardDetail();
   }
+  function boardDetail(){ for(const m of boardParts) m.visible = Sx.view==="hand" || m.userData.key; }
   function placeBoard(cx, cy){ for(const m of boardParts){ const b=m.userData.base; if(m.userData.moves==="xy") m.position.set(b.x+cx, b.y, b.z-cy); else if(m.userData.moves==="y") m.position.set(b.x, b.y, b.z-cy); } }
   /* ---- camera: centred on the letters; along a long line it follows the writing, never the shake ---- */
   function computeFollow(){ const n=S.t.length, f=new Float32Array(n), a=Math.exp(-S.dt/0.6); let y=S.intended[0];
     for(let i=0;i<n;i++){ y=a*y+(1-a)*S.intended[2*i]; f[i]=y; } let z=f[n-1]; for(let i=n-1;i>=0;i--){ z=a*z+(1-a)*f[i]; f[i]=z; } S.follow=f; }
   function followX(i){ return S && S.follow ? S.follow[i] : 0; }
   function sceneBounds(){ let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; const n=S.t.length;
-    for(let i=0;i<n;i++){ if(!S.down[i]) continue; for(const arr of [S.intended, S.hand]){ const x=arr[2*i], y=arr[2*i+1]; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; } }
+    for(let i=0;i<n;i++){ if(!S.down[i]) continue; for(const arr of (S.ghost? [S.intended, S.hand, S.ghost] : [S.intended, S.hand])){ const x=arr[2*i], y=arr[2*i+1]; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y; } }
     return [x0,x1,y0,y1]; }
   function setCamera(){
     v.resize(); const c=S.cam, narrow=v.w<560; const [x0,x1,y0,y1]=S.bounds; const cx=(x0+x1)/2, cy=(y0+y1)/2;
     const dir=P2W(-0.3, -0.6, 1.3);       /* from above and a little to the left: letters on the left, the pen and hand come in from the right */
+    if(c==="board"){ const hh=bs.h;       /* the pen's rear points along hh; its sleeve magnet is 16.5 mm back along hh */
+      if(Sx.view==="hand") fitCamera(v, P2W(cx+10, cy-30, -20), narrow?185:165, P2W(-0.5, -1.0, 0.9));
+      else fitCamera(v, P2W(cx+7*hh[0], cy+7*hh[1], 3), narrow?34:30, P2W(hh[1], -hh[0], 0.45));   /* side-on to the pen, from the writer's left */
+      boardDetail(); Sx.lastFollow=null; return; }
     if(Sx.view==="hand"){ const fx=c==="line"? followX(idxAt(Sx.t)) : cx; fitCamera(v, P2W(fx+34, cy-26, 30), narrow?100:92, P2W(-0.45, -0.9, 0.95)); Sx.lastFollow=c==="line"? fx : null; return; }
-    if(c==="board"){ fitCamera(v, P2W(cx+18, cy-4, 6), narrow?84:76, P2W(-0.35, -1.0, 1.4)); }
-    else if(c==="letter"){ fitCamera(v, P2W(cx+6, cy, 6), narrow?28:25, dir); }
+    if(c==="letter"){ fitCamera(v, P2W(cx+6, cy, 6), narrow?28:25, dir); }
     else if(c==="line"){ const fx=followX(idxAt(Sx.t)), R=S.camR||34; fitCamera(v, P2W(fx+R*0.24, cy, R*0.18), narrow?R*1.12:R, dir); Sx.lastFollow=fx; }
     else { fitCamera(v, P2W(cx+5, cy-1, 2), narrow?37:34, dir); }
     if(c!=="line") Sx.lastFollow=null;
@@ -1569,16 +1617,17 @@ function initScenes(lay, board, samples, tip){
       g.restore(); };
     const n=S.t.length-1;
     path(S.intended, css("--intended"), Math.max(2, 0.9*scale), 0.45, n);
-    if(S.ghost) path(S.ghost, css("--shake"), Math.max(1.2, 0.28*scale), 0.75, i);
+    if(S.ghost) path(S.ghost, css("--shake"), Math.max(1.2, 0.28*scale), 0.75, i, S.handPath? [Math.max(3, 0.9*scale), Math.max(3, 0.7*scale)] : null);
+    if(S.handPath) path(S.hand, css("--g-skid"), Math.max(1.2, 0.26*scale), 0.55, i);
     path(S.ink, css(S.key==="a"?"--shake":"--accent"), Math.max(1.6, 0.42*scale), 1, i);
-    if(S.carriage){ const cxp=X(S.carriage[2*i]), cyp=Y(S.carriage[2*i+1]); g.save(); g.fillStyle=css("--g-act"); g.globalAlpha=0.22; g.beginPath(); g.arc(cxp, cyp, 6.35*scale, 0, TAU); g.fill();
-      const hxp=X(S.hand[2*i]), hyp=Y(S.hand[2*i+1]), ax=cxp-hxp, ay=cyp-hyp, L=Math.hypot(ax,ay);
-      if(L>1 && S.down[i]){ const ux=ax/L, uy=ay/L, len=Math.max(18, Math.min(46, L*3)); g.globalAlpha=1; g.strokeStyle=css("--good"); g.fillStyle=css("--good"); g.lineWidth=3;
-        g.beginPath(); g.moveTo(hxp, hyp); g.lineTo(hxp+ux*len, hyp+uy*len); g.stroke();
-        g.beginPath(); g.moveTo(hxp+ux*(len+9), hyp+uy*(len+9)); g.lineTo(hxp+ux*len-uy*6, hyp+uy*len+ux*6); g.lineTo(hxp+ux*len+uy*6, hyp+uy*len-ux*6); g.closePath(); g.fill(); }
-      g.restore(); }
     const hx=X(S.hand[2*i]), hy=Y(S.hand[2*i+1]), tx=X(S.ink[2*i]), ty=Y(S.ink[2*i+1]);
     g.save(); g.strokeStyle=css("--g-skid"); g.globalAlpha=0.5; g.lineWidth=Math.max(1.5, 0.35*scale); g.beginPath(); g.arc(hx, hy, Math.max(4, (travel)*scale), 0, TAU); g.stroke(); g.restore();
+    if(S.force && S.down[i]){ const fx=S.force[2*i], fy=S.force[2*i+1], F=Math.hypot(fx,fy);
+      /* the pull acts on the sleeve (the ring moves with it), not on the tip: draw it from the ring's centre */
+      if(F>0.01){ const ux=fx/F, uy=-fy/F, r0=Math.max(4, travel*scale)+3, len=Math.max(10, 150*F*Math.min(1, scale/MM/2.5)); g.save(); g.globalAlpha=1; g.strokeStyle=css("--good"); g.fillStyle=css("--good"); g.lineWidth=scale>MM*1.5? 3 : 2;
+        const x0=hx+ux*r0, y0=hy+uy*r0, x1=x0+ux*len, y1=y0+uy*len, ah=scale>MM*1.5? 8 : 5;
+        g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
+        g.beginPath(); g.moveTo(x1+ux*ah, y1+uy*ah); g.lineTo(x1-uy*ah*0.7, y1+ux*ah*0.7); g.lineTo(x1+uy*ah*0.7, y1-ux*ah*0.7); g.closePath(); g.fill(); g.restore(); } }
     g.fillStyle=css(S.key==="a"?"--shake":"--accent"); g.beginPath(); g.arc(tx, ty, Math.max(2.5, 0.5*scale), 0, TAU); g.fill();
   }
   function rmsSoFar(arr, i){ let s=0, n=0; for(let k=0;k<=i;k++){ if(!S.down[k]) continue; const dx=arr[2*k]-S.intended[2*k], dy=arr[2*k+1]-S.intended[2*k+1]; s+=dx*dx+dy*dy; n++; } return n? Math.sqrt(s/n) : NaN; }
@@ -1592,7 +1641,12 @@ function initScenes(lay, board, samples, tip){
       h+=`<div class="row"><span>${lab}:</span><b>${isNaN(r)?"—":r.toFixed(2)+" mm"}</b>${tagHTML(S.fromData?"SIMULATION":"ILLUSTRATION")}</div>`;
       if(S.ghost){ const g=rmsSoFar(S.ghost, i); h+=`<div class="row"><span>${S.key==="d"?"Your hand alone":"With the pen off"}:</span><b>${isNaN(g)?"—":g.toFixed(2)+" mm"}</b></div>`; } }
     else if(S.key==="c"){ h+=`<div class="row"><span>Guide lines:</span><b>1 cm apart</b>${tagHTML("LITERATURE PDT-18")}</div>`; }
-    else if(S.key==="e"){ const dx=S.carriage[2*i]-S.hand[2*i], dy=S.carriage[2*i+1]-S.hand[2*i+1]; h+=`<div class="row"><span>Magnet ahead of the pen:</span><b>${Math.hypot(dx,dy).toFixed(1)} mm</b>${tagHTML("ILLUSTRATION")}</div>`; }
+    else if(S.key==="e" && S.force){ const f=x=>isNaN(x)? "—" : x.toFixed(2)+" mm", F=Math.hypot(S.force[2*i], S.force[2*i+1]);
+      h+=`<div class="row"><span>Off the letter, on average:</span>${tagHTML("ILLUSTRATION")}</div>`;
+      h+=`<div class="row"><span class="ln dash" style="--c:var(--shake)"></span><span>your hand without the board</span><b>${f(rmsSoFar(S.ghost, i))}</b></div>`;
+      h+=`<div class="row"><span class="ln" style="--c:var(--g-skid)"></span><span>the sleeve, led by the board</span><b>${f(rmsSoFar(S.hand, i))}</b></div>`;
+      h+=`<div class="row"><span class="ln" style="--c:var(--accent)"></span><span>the ink, nose correcting</span><b>${f(rmsSoFar(S.ink, i))}</b></div>`;
+      h+=`<div class="row"><span class="ln" style="--c:var(--good)"></span><span>Pull on the sleeve now:</span><b>${(S.down[i]? F : 0).toFixed(2)} N</b><span class="note">limit ${fmt(S.phys.cap)} N</span></div>`; }
     if(el.innerHTML!==h) el.innerHTML=h;
   }
   /* ---- dial: the ring (moves with the hand) and the tip inside it, seen from above ---- */
@@ -1619,13 +1673,16 @@ function initScenes(lay, board, samples, tip){
     $("scene-nums").innerHTML=S.numbers.map(r=>`<li><span>${esc(r[0])}${r[1]?": <b>"+esc(r[1])+"</b>":""}</span>${tagHTML(r[2])}</li>`).join("");
     const keyItems=[`<span><span class="ln dash" style="--c:var(--intended)"></span>the letters you mean</span>`];
     keyItems.push(`<span><span class="ln" style="--c:var(${key==="a"?"--shake":"--accent"})"></span>ink</span>`);
-    if(S.ghost) keyItems.push(`<span><span class="ln" style="--c:var(--shake)"></span>${esc(S.ghostLabel)}</span>`);
-    if(key==="e") keyItems.push(`<span><span class="ln" style="--c:var(--good)"></span>pull from the board</span>`);
+    if(S.ghost) keyItems.push(`<span><span class="ln${S.handPath?" dash":""}" style="--c:var(--shake)"></span>${esc(S.ghostLabel)}</span>`);
+    if(S.handPath) keyItems.push(`<span><span class="ln" style="--c:var(--g-skid)"></span>the pen's sleeve and your hand, led by the board</span>`);
+    if(key==="e") keyItems.push(`<span><span class="ln" style="--c:var(--good)"></span>pull on the sleeve magnet</span>`);
     $("scene-key").innerHTML=keyItems.join("");
     $("size-wrap").hidden = key!=="c";
-    penMag.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false;
+    penMag.visible = key==="e"; boardG.visible = key==="e"; arrow.visible=false; couple.visible=false;
+    const vb=document.querySelectorAll("[data-view]");     /* in the board scene the two views are the magnets close up and the whole board */
+    vb.forEach(b=>b.textContent = key==="e" ? (b.dataset.view==="tip" ? "Magnets close-up" : "Whole board") : (b.dataset.view==="tip" ? "Tip close-up" : "Whole hand"));
     if(paper.userData.spacing!==S.ruling) retexturePaper(paper, S.ruling);
-    if(key==="e"){ glassy(paper.material, 0.72); paper.scale.set(210/640, 297/640, 1); buildBoard(); }
+    if(key==="e"){ glassy(paper.material, 0.5); paper.scale.set(210/640, 297/640, 1); buildBoard(); }
     else { paper.scale.set(1,1,1); paper.material.transparent=true; paper.material.opacity=1; paper.material.depthWrite=true; paper.material.polygonOffset=false; paper.material.needsUpdate=true; }
     computeFollow(); buildInk(); if(!keepTime) Sx.t=0; setCamera(); v.dirty=true; frame(true);
   }
@@ -1658,10 +1715,19 @@ function initScenes(lay, board, samples, tip){
         bz.hidden=false; bz.style.left=clamp((c.x+1)/2*v.w, 90, v.w-90)+"px"; bz.style.top=clamp((1-c.y)/2*v.h, 60, v.h-10)+"px"; } else bz.hidden=true;
     if(S.key==="c" && S.sizes){ const k=clamp(Math.floor(Sx.t/S.writeT*S.sizes.length), 0, S.sizes.length-1), sz=S.sizes[k];
       $("size-val").textContent=Math.round(sz*100)+" %"; $("size-fill").style.width=clamp(sz*100/1.1,0,100)+"%"; $("size-thr").style.left=(72/1.1)+"%"; }
-    if(S.key==="e" && S.carriage){ const cx=S.carriage[2*i], cy=S.carriage[2*i+1]; placeBoard(cx, cy);
-      const dx=cx-hx, dy=cy-hy, L=Math.hypot(dx,dy); if(S.down[i] && L>0.05){ arrow.visible=true;
-        arrow.position.copy(P2W(hx+dx/L*4, hy+dy/L*4, 1.2)); arrow.setDirection(P2W(dx,dy,0).normalize());
-        arrow.setLength(Math.min(18, 7+L*5), 3.4, 2.6); } else arrow.visible=false; }
+    if(S.key==="e" && S.force){
+      /* the board's head sits under the pen's sleeve magnet, a little ahead of it in the direction of the pull
+         (head offset = pull / slope); the arrow is the pull on the sleeve magnet */
+      const fx=S.force[2*i], fy=S.force[2*i+1], F=Math.hypot(fx,fy), P=S.phys;
+      pen.root.updateMatrixWorld(true);
+      const mw=penMag.userData.local.clone().applyMatrix4(penMag.parent.matrixWorld), mX=mw.x, mY=-mw.z;
+      const hX=mX+fx/P.slope, hY=mY+fy/P.slope; placeBoard(hX, hY);
+      const cp=couple.geometry.attributes.position; const top=P2W(hX, hY, -3.8);
+      cp.setXYZ(0, top.x, top.y, top.z); cp.setXYZ(1, mw.x, mw.y, mw.z); cp.needsUpdate=true; couple.computeLineDistances(); couple.visible=true;
+      if(S.down[i] && F>0.01){ const d=P2W(fx,fy,0).normalize(); arrow.visible=true;
+        arrow.position.copy(mw.clone().add(d.clone().multiplyScalar(4.2))); arrow.setDirection(d); arrow.setLength(5+48*F, 3.0, 2.2); }
+      else arrow.visible=false; }
+    else couple.visible=false;
     $("scene-t").textContent=`${S.t[i].toFixed(1)} s of writing`;
     if(S.cam==="line"){ const fx=followX(i); if(Sx.lastFollow!=null){ const d=fx-Sx.lastFollow; v.camera.position.x+=d; v.controls.target.x+=d; } Sx.lastFollow=fx; }
     const now=performance.now(); if(force || now-last2d>33){ last2d=now; drawPaper(ppZ, i, S.ppScale, followX(i)); drawPaper(ppT, i, MM, followX(i)); drawDial(i); readout(i); }
@@ -1676,7 +1742,7 @@ function initScenes(lay, board, samples, tip){
   Sx.onTheme=function(){ v.scene.background=new THREE.Color(css("--scene-bg")); retexturePaper(paper);
     for(const m of pen.parts){ const nm=partMaterial(m.userData.comp); m.material.color.copy(nm.color); nm.dispose(); }
     for(const mt of hand.userData.mats) mt.color.set(css("--skin")); hand.userData.mats[1].color.multiplyScalar(0.9);
-    penMag.material.color.set(css("--g-act")); arrow.setColor(new THREE.Color(css("--good")));
+    penMag.material.color.set(css("--g-act")); if(penMag.children[0]) penMag.children[0].material.color.set(css("--g-grip")); arrow.setColor(new THREE.Color(css("--good"))); couple.material.color.set(css("--good"));
     if(S){ if(S.key==="e") buildBoard(); buildInk(); frame(true); } };
   document.querySelectorAll(".scene-btn").forEach(b=>b.onclick=()=>selectScene(b.dataset.scene));
   $("play").onclick=()=>{ Sx.playing=!Sx.playing; $("play").textContent=Sx.playing?"Pause":"Play"; $("play").setAttribute("aria-label", Sx.playing?"Pause":"Play"); };
