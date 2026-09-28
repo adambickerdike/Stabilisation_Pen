@@ -463,7 +463,7 @@ footer .strong{color:var(--ink);font-size:17px;font-weight:600}
       <button class="scene-btn" data-scene="b" aria-pressed="false"><span class="k">b</span><b>Stabiliser on</b><span>The hand still shakes. The nose tilts the other way, so the ink stays near the letters.</span></button>
       <button class="scene-btn" data-scene="c" aria-pressed="false"><span class="k">c</span><b>Write bigger</b><span>For Parkinson's: the letters start to shrink, the pen buzzes, the letters recover.</span></button>
       <button class="scene-btn" data-scene="d" aria-pressed="false"><span class="k">d</span><b>Guided practice</b><span>The target letter is shown faintly. The nose nudges the tip toward it.</span></button>
-      <button class="scene-btn" data-scene="e" aria-pressed="false"><span class="k">e</span><b>Guidance board</b><span>A magnet under the paper moves along the letter and pulls the pen with it.</span></button>
+      <button class="scene-btn" data-scene="e" aria-pressed="false"><span class="k">e</span><b>Guidance board</b><span>A magnet under the glass leads the pen's sleeve along the letter. The nose makes the last small corrections.</span></button>
     </div>
     <div class="scene-grid">
       <div class="viewport" id="scene-vp">
@@ -1310,6 +1310,14 @@ function tipNumbers(tip){
   return {best:[o[0],o[1]], today:[k[0],k[1]], txtBest:`${pc(o[0])}–${pc(o[1])} %`, txtToday:`${pc(k[0])}–${pc(k[1])} %`,
     label:r.label||"SIMULATION (model H1)"};
 }
+/* scene (e): how hard the board pulls and how far a relaxed hand gives, from the board study when data/board.json
+   carries it (explainer_physics, written by build.py from results/board); otherwise the study's published values */
+function boardPhysics(board){
+  const P={cap:0.4, mmPerN:7.6, lead:0.1, slope:0.105, keep:0.42, fix:0.865};
+  const ph=board && board.explainer_physics;
+  if(ph) for(const k in P) if(typeof ph[k]==="number" && isFinite(ph[k]) && ph[k]>0) P[k]=ph[k];
+  return P;
+}
 function buildSceneData(key, board, tip, trk, travel){
   const dt=1/200, TR=6.0, W=TAU*TR, shakeAmp=1.5;
   const S={key, dt, travel:travel||3, numbers:[], speed:0.25, ruling:8, cam:"close"};
@@ -1369,16 +1377,33 @@ function buildSceneData(key, board, tip, trk, travel){
                ["Guidance made practice writing smoother; better letter shapes were not shown", "", "LITERATURE HAP-10"]];
   }
   else if(key==="e"){
+    /* The board pulls a magnet under the FIXED sleeve, so it leads the whole pen and a relaxed hand along the letter
+       (the gross path); the nose then makes the last small corrections of the ink.  Three paths:
+         ghost = where a relaxed hand would go without the board (drifting off the letter),
+         hand  = the sleeve, led by the board,
+         ink   = hand + nose.
+       Drawn as an illustration, sized like the board study's tracing run (SIMULATION: 1.49 -> 0.63 -> 0.085 mm).
+       Pull = what it takes to hold a relaxed hand on the led path (0.76 mm per 0.1 N, CALCULATION) plus a small
+       pull along the letter, never above the 0.4 N limit. */
     const u4=16, tgt=wordTargets("a", u4, 0.18, -12, null, true), path=strokesPath(tgt, {base:0.2, per:0.035, overlap:0.5});
-    S.T=path.T+0.6; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T, lead=0.05; S.carriage=new Float32Array(n*2);
-    for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), q=path.at(Math.min(TT, t+lead)), s=t/TT;
-      const wx=0.45*Math.sin(TAU*1.7*s+0.5), wy=0.4*Math.sin(TAU*2.2*s+1.4);
-      S.intended[2*i]=p[0]; S.intended[2*i+1]=p[1]; S.hand[2*i]=p[0]+wx; S.hand[2*i+1]=p[1]+wy; S.carriage[2*i]=q[0]; S.carriage[2*i+1]=q[1]; S.down[i]=S.t[i]<=TT?1:0; }
-    S.ruling=10; S.cam="board"; S.speed=1; S.intendedFaint=true;
-    const nums=(board&&(board.explainer_numbers||board.numbers))||[], pull=nums.find(x=>typeof x.value==="number");
+    S.T=path.T+0.6; S.t=sampleScene(S, dt); newArrays(S); const n=S.t.length, TT=path.T;
+    const P=boardPhysics(board); S.phys=P;
+    S.ghost=new Float32Array(n*2); S.force=new Float32Array(n*2);
+    for(let i=0;i<n;i++){ const t=Math.min(S.t[i], TT), p=path.at(t), s=t/TT, on=S.t[i]<=TT;
+      const dx=0.55*(2.6*Math.sin(TAU*0.9*s+0.3)+1.1*Math.sin(TAU*2.3*s+1.2)), dy=0.55*(-2.4*Math.sin(TAU*1.1*s+1.0)+0.9*Math.sin(TAU*2.9*s));
+      const hx=p[0]+P.keep*dx, hy=p[1]+P.keep*dy;
+      let nx=P.fix*(p[0]-hx), ny=P.fix*(p[1]-hy); const r=Math.hypot(nx,ny); if(r>S.travel){ nx*=S.travel/r; ny*=S.travel/r; }
+      const q1=path.at(Math.min(TT, t+0.02)), q0=path.at(Math.max(0, t-0.02)); let tx=q1[0]-q0[0], ty=q1[1]-q0[1]; const tl=Math.hypot(tx,ty);
+      if(tl>1e-4){ tx/=tl; ty/=tl; } else { tx=0; ty=0; }
+      let fx=(hx-(p[0]+dx))/P.mmPerN+P.lead*tx, fy=(hy-(p[1]+dy))/P.mmPerN+P.lead*ty; const F=Math.hypot(fx,fy); if(F>P.cap){ fx*=P.cap/F; fy*=P.cap/F; }
+      S.intended[2*i]=p[0]; S.intended[2*i+1]=p[1]; S.hand[2*i]=hx; S.hand[2*i+1]=hy; S.nose[2*i]=nx; S.nose[2*i+1]=ny;
+      S.ghost[2*i]=p[0]+dx; S.ghost[2*i+1]=p[1]+dy; S.force[2*i]=on? fx : 0; S.force[2*i+1]=on? fy : 0; S.down[i]=on?1:0; }
+    S.ghostLabel="your hand without the board"; S.handPath=true; S.intendedFaint=true;
+    S.ruling=10; S.cam="board"; S.speed=0.5;
+    const nums=(board&&(board.explainer_numbers||board.numbers))||[];
     S.numbers=[["Practice letter", "about 16 mm high", "ASSUMPTION"]];
     for(const x of nums) S.numbers.push([x.label, x.value!=null? `${x.value} ${x.unit||""}`.trim() : (x.text||""), x.evidence||"ASSUMPTION"]);
-    if(!pull) S.numbers.push(["Pull on the pen", "not yet calculated", "ASSUMPTION"]);
+    if(!nums.length) S.numbers.push(["Pull on the pen", "not yet calculated", "ASSUMPTION"]);
     S.numbers.push(["Board", "sizes and parts are a proposal", "PROPOSED DESIGN"]);
   }
   return S;
@@ -1412,7 +1437,7 @@ function initScenes(lay, board, samples, tip){
     b:"The hand shakes exactly as before. The motion sensor feels the shake and the coils tilt the nose the other way, inside the still sleeve. The ring on the paper moves with your hand; the tip inside it stays near the letters. The coral line shows the ink with the pen off.",
     c:"No tremor here: the letters slowly get smaller along the line, as happens in Parkinson's. When they drop below the set size, the vibration motor buzzes once. The writer makes the next letters bigger. The pen does not move the tip in this mode.",
     d:"The target letter is shown faintly. The writer's hand drifts off the letter. The nose moves the tip toward the target, by up to 3 mm, so the ink lands closer. The hand still does the writing.",
-    e:"The board sits under the paper. A magnet on a moving carriage travels along the letter, just ahead of the pen, and pulls a small magnet in the pen. Because the board rests on the desk, it can pull the pen and your hand along the whole letter. This is for practice at a desk."};
+    e:"A magnet under the glass moves along the letter and gently pulls a small magnet in the pen's sleeve; it can lead a relaxed hand, but it gives way if you push against it. The pull moves the whole pen and your hand along the letter. The nose then makes the last small corrections, up to 3 mm, so the ink lands on the letter. For learning, the nose can be held still, so you see your own writing. This is for practice at a desk."};
   /* the handwriting study's runs (final data only): the same simulated hand and shake for every pen, so the
      ordinary pen's ink is where the hand puts the tip, and the new pen's ink minus it is what the nose adds */
   function tremorPanels(){ if(!samples || !samples.meta || samples.meta.provisional) return [];

@@ -32,7 +32,7 @@ FIG = os.path.join(ROOT, "results", "opt")
 COLORS = {"structure": (0.70, 0.72, 0.75), "grip": (0.35, 0.55, 0.85), "moving_nose": (0.95, 0.55, 0.15),
           "refill": (0.20, 0.20, 0.25), "actuator": (0.80, 0.20, 0.25), "mechanism": (0.55, 0.35, 0.75),
           "sensor": (0.15, 0.65, 0.45), "electronics": (0.20, 0.45, 0.30), "power": (0.95, 0.80, 0.20),
-          "haptic": (0.50, 0.50, 0.50), "inertial": (0.30, 0.30, 0.35)}
+          "haptic": (0.50, 0.50, 0.50), "inertial": (0.30, 0.30, 0.35), "magnet": (0.80, 0.25, 0.60)}
 
 
 def default_addon():
@@ -77,7 +77,7 @@ def build_assembly(geo):
     return asm
 
 
-def drawing(geo, path_png, title="Rev H pen: active nose (architecture B) with optional rear-cap inertial module"):
+def drawing(geo, path_png, title="Rev H pen: active nose (architecture B), optional rear-cap inertial module and board magnet"):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -92,7 +92,8 @@ def drawing(geo, path_png, title="Rev H pen: active nose (architecture B) with o
         col = COLORS.get(c["group"], (0.6, 0.6, 0.6))
         if c["shape"] in ("cylinder", "cone"):
             r0, r1 = c["d0"] / 2, c.get("d1", c["d0"]) / 2
-            pts = [(z0, -r0), (z1, -r1), (z1, r1), (z0, r0)]
+            ox = c.get("offset", [0.0, 0.0])[0]
+            pts = [(z0, ox - r0), (z1, ox - r1), (z1, ox + r1), (z0, ox + r0)]
             polys = [pts]
         elif c["shape"] == "tube":
             r0, r1, ri = c["d0"] / 2, c.get("d1", c["d0"]) / 2, c["d_in"] / 2
@@ -115,8 +116,12 @@ def drawing(geo, path_png, title="Rev H pen: active nose (architecture B) with o
             if c.get("moves_with") == "nose":
                 outline(c, dx=dx, fill=False, ls="--", lw=0.9)
     # paper line at the tilt through the ball and the skid contact
-    th = math.radians(geo["tilt_deg"])
-    ax.plot([-6, 20], [math.tan(th) * 6 * 0 - 0.35, -0.35], color="none")
+    zr, rr = geo["ball_protrusion_mm"], geo["skid_contact_radius"]
+    for tdeg, lsty in ((50.0, "-"), (35.0, ":")):
+        th = math.radians(tdeg)
+        zz = [zr - 2.0, zr + 9.0]
+        ax.plot(zz, [-rr - (z - zr) * math.tan(th) for z in zz], color="0.35", lw=0.9, ls=lsty)
+        ax.text(zz[1] + 0.3, -rr - (zz[1] - zr) * math.tan(th), f"paper at {tdeg:.0f}°", fontsize=7, color="0.3", va="center")
     # hand zones
     for zf in geo["hand"]["finger_pads_z"]:
         ax.add_patch(Rectangle((zf - 2.5, geo["handle_od"] / 2 + 0.5), 5, 2.0, color=(0.9, 0.7, 0.6), alpha=0.9))
@@ -129,6 +134,12 @@ def drawing(geo, path_png, title="Rev H pen: active nose (architecture B) with o
     ax.text(zp, -geo["handle_od"] / 2 - 3.5, f"gimbal z {zp:.0f}", color="C4", ha="center", fontsize=8)
     ax.axvline(geo["actuator_z"], color="C3", lw=0.6, ls=":")
     ax.text(geo["actuator_z"], -geo["handle_od"] / 2 - 3.5, f"magnets/coils z {geo['actuator_z']:.0f}", color="C3", ha="center", fontsize=8)
+    bm = [c for c in geo["components"] if c["id"] == "board_magnet"]
+    if bm:
+        c = bm[0]
+        zc = 0.5 * (c["z0"] + c["z1"])
+        ax.annotate("board magnet in keel (optional)", xy=(zc + 1.5, c["offset"][0] - 2.0), xytext=(20.0, -12.4), fontsize=7.5,
+                    color=COLORS["magnet"], arrowprops=dict(arrowstyle="-", color=COLORS["magnet"], lw=0.8))
     labels = {"skid_ring": "skid ring", "front_sleeve": "fixed front sleeve (grip)", "carrier": "moving nose", "gimbal": "gimbal",
               "arm": "rear arm", "coil_x+": "coils", "pcb": "board + IMU", "battery": "Li-ion cell", "rm_mass": "tungsten reaction mass"}
     for c in geo["components"]:

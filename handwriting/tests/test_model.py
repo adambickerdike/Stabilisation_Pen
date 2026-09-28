@@ -126,3 +126,33 @@ def test_rev_h_parameters_are_labelled():
     assert 0 < p.q_lim < p.q_stop and p.F_peak > 0 and p.servo_hz > 0
     assert p.sources, "every Rev H value needs a source label"
     assert PR.servo_group_delay(p) > p.latency
+
+
+def test_board_law_band_cap_handle_and_yield(word):
+    """The board study's law: nothing inside the partial band, capped force on the handle (not the nose), and the
+    supervisor yields to a writer who keeps writing elsewhere."""
+    from aiguide.template import LetterTemplate, build_track
+    wr, s_raw = word
+    pen = PR.rev_h()
+    brd = PR.board()
+    s0 = PL.with_hand_path(s_raw, PL.adapted_path(s_raw.intended, s_raw.dt, pen, HAND))
+    r0 = PL.run(s0, pen, HAND)
+
+    def run(shift, mode):
+        letters = [LetterTemplate(L.char, [p + np.array([shift, 0.0]) for p in L.polylines], 1.0, "t", k) for k, L in enumerate(wr.letters)]
+        trk = build_track(letters, speed=wr.style.speed_mm_s * 1e-3, air_speed=wr.style.air_speed_mm_s * 1e-3, dt=5e-4)
+        ctl = PL.Controls(board=brd, board_mode=mode, board_tmpl=trk.xy, board_tmpl_down=trk.pen_down.astype(float), stroke_match=True)
+        r = PL.run(s0, pen, HAND, ctl=ctl)
+        F = np.hypot(r["FBx"], r["FBy"])
+        return r, F
+    r, F = run(0.5e-3, "partial")
+    assert F.max() < 0.02                                    # inside the 1 mm band (sensing noise can cross it briefly)
+    r, F = run(0.5e-3, "full")
+    assert 0.05 < F.max() <= brd.F_cap + 1e-9
+    assert np.hypot(r["qx"], r["qy"]).max() < 0.05e-3      # the nose is not loaded: the magnet is on the handle
+    c = (r.contact > 0.5) & (r0.contact > 0.5)
+    assert np.mean(r.ink[c, 0] - r0.ink[c, 0]) > 0.05e-3    # the ink moves toward the shifted template
+    r, F = run(10e-3, "full")
+    c = np.flatnonzero(r.contact > 0.5)
+    late = c[c > c[0] + int(0.8 * (c[-1] - c[0]))]
+    assert F[late].mean() < 0.2 * brd.F_cap                  # yielded to a writer 10 mm away

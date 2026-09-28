@@ -56,3 +56,38 @@
 == stage grid
 [   18.7 s]   B r_rot 0.3 seed 200 done (24 rows)
 [   37.0 s]   B r_rot 0.3 seed 201 done (48 rows)
+[   55.7 s]   B r_rot 0.3 seed 202 done (72 rows)
+[   73.9 s]   B r_rot 0.3 seed 203 done (96 rows)
+[   91.8 s]   B r_rot 0.5 seed 200 done (120 rows)
+[  110.7 s]   B r_rot 0.5 seed 201 done (144 rows)
+[  129.1 s]   B r_rot 0.5 seed 202 done (168 rows)
+[  146.8 s]   B r_rot 0.5 seed 203 done (192 rows)
+[  165.0 s]   B r_rot 0.7 seed 200 done (216 rows)
+[  183.5 s]   B r_rot 0.7 seed 201 done (240 rows)
+[  202.7 s]   B r_rot 0.7 seed 202 done (264 rows)
+[  220.7 s]   B r_rot 0.7 seed 203 done (288 rows)
+[  222.9 s] tracker ship done
+[  238.1 s]   B r_rot 0.3 seed 200 done (24 rows)
+[  253.9 s]   B r_rot 0.3 seed 201 done (48 rows)
+[  270.0 s]   B r_rot 0.3 seed 202 done (72 rows)
+[  286.2 s]   B r_rot 0.3 seed 203 done (96 rows)
+[  302.2 s]   B r_rot 0.5 seed 200 done (120 rows)
+[  318.1 s]   B r_rot 0.5 seed 201 done (144 rows)
+[  334.3 s]   B r_rot 0.5 seed 202 done (168 rows)
+[  350.9 s]   B r_rot 0.5 seed 203 done (192 rows)
+[  367.2 s]   B r_rot 0.7 seed 200 done (216 rows)
+[  383.3 s]   B r_rot 0.7 seed 201 done (240 rows)
+[  400.5 s]   B r_rot 0.7 seed 202 done (264 rows)
+[  416.5 s]   B r_rot 0.7 seed 203 done (288 rows)
+[  418.8 s] tracker revh done
+== stage grid done in 418.8 s
+== stage sweep
+[  16.1 s] sweep seed 300
+[  32.6 s] sweep seed 301
+[  50.2 s] sweep seed 302
+[  66.8 s] sweep seed 303
+== stage sweep done in 66.8 s
+== stage addon
+[   46.2 s] addon r_rot 0.3 seed 200 (17 rows)
+[   92.8 s] addon r_rot 0.3 seed 201 (34 rows)
+[  140.3 s] addon r_rot 0.3 seed 202 (51 rows)

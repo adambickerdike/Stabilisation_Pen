@@ -290,6 +290,31 @@ def study_rows(out) -> List[Dict]:
             units_and_conditions="ink error ratio; um lognormal / glyph", locator="calibrated_band", limitations="Calibration accuracy assumed (+10 %); tremor frequency drift within a session not modelled",
             relevance_to_design="Parkinson's rest and action tremor lie at 4-7 Hz", transferability="medium", transferability_reason="Simulated tremor with a fixed frequency",
             design_implication="Offer the calibrated band only for tremor at about 5.5-7 Hz (below that it moves tremor-free writing by 35 um); test on recorded tremor (EXP-I07, proposed, with EXP-E01)", stream="OPT", **common))
+    try:
+        from . import board_magnet as BM
+        from . import geometry as GE
+        from . import revh as RH
+        bm = BM.summary(GE.layout(RH.RevH()))
+        cl = bm["paper_clearance_mm_by_tilt"]; ct = bm["crosstalk"]
+        rows.append(_row(id="ACT-69", topic="Guidance-board pen magnet on the Rev H sleeve: fit, paper clearance and magnetic crosstalk (this study)",
+            citation="This ledger's calculation: opt/inertial/board_magnet.py (magpylib 5), placement from results/board/board_params.json",
+            doi_or_url="results/revH/layout.json board_magnet_checks", source_type="derived calculation", evidence_class="calculation",
+            task_or_setup="K&J D42-N52 (AMF-91) in a keel with 0.5 mm walls under the fixed front sleeve, 13.5 mm along the axis, 10.2 mm off it toward the paper; paper plane through the skid-ring heel; board head D88-N52 (AMF-90) 3.7 mm below the surface, +/-24 mm around the pen, raised or retracted 12 mm",
+            comparator="alternative placements (rearward; radial disc)", key_quantitative_findings=(
+                "Keel clearance above the paper: " + ", ".join(f"{k} deg {v:+.2f} mm" for k, v in cl.items()) +
+                f"; usable tilt >= {bm['min_tilt_deg_for_0.3mm_clearance']:.0f} deg. Wall to the carrier swing {bm['wall_to_carrier_swing_mm']:.1f} mm. "
+                f"Pen-magnet field {ct['pen_magnet_field_uT']['hall3d']:.0f} uT at the nose Hall sensor (static), {ct['pen_magnet_field_uT']['imu']:.0f} uT at the IMU; "
+                f"board head {ct['head_field_uT']['hall3d']['min']:.0f}-{ct['head_field_uT']['hall3d']['max']:.0f} uT at the Hall sensor, changing by up to "
+                f"{ct['head_field_uT']['hall3d']['max_change_any_component']:.0f} uT -> up to {ct['hall_signal']['apparent_tip_error_um_unshielded']:.0f} um apparent tip error "
+                f"(unshielded). Added mass {bm['added_mass_g']:.2f} g."),
+            units_and_conditions="mm, uT, um; CALC", locator="layout.json board_magnet_checks",
+            limitations="No soft-iron shielding modelled; keel wall and placement ASSUMPTION; board forces on the pen not simulated in H1",
+            relevance_to_design="Integration of the optional guidance board with the Rev H pen", transferability="medium",
+            transferability_reason="Magnetostatics of catalogue magnets; geometry proposed",
+            design_implication="Move the magnet (rearward or radial) or restrict board-mode tilt to >= 52 deg; calibrate the static offset; check the head-field error on the nose Hall sensor (EXP-I05/EXP-G03)",
+            stream="ACT", **common))
+    except Exception:
+        pass
     tiers = out.get("tiers_T0_T2")
     if tiers:
         rows.append(_row(id="ACT-68", topic="Slim tiers T0-T2 with a cap reaction mass: linear bounds (this study)",

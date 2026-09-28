@@ -159,7 +159,8 @@ def write_tip_params(final=True, addon_decision: Optional[Dict] = None, calib: O
                         "web_z": geo["hand"]["web_z"], "handle_od": geo["handle_od"], "length": geo["length"], "pen_tilt_deg": 50.0,
                         "tilt_range_deg": [35.0, 75.0], "label": "PROPOSED DESIGN (opt/inertial/geometry.py, mechanics/cad/revH_pen.py)"},
         "mass_g": {"pen_without_inertial_module": round(ms["total_g"], 2), "handle": round(ms["handle_g"], 2), "moving_nose": round(ms["nose_g"], 2),
-                   "com_mm_from_tip": round(ms["com_mm"], 1), "label": "CALC from assumed parts +10 % wiring"},
+                   "com_mm_from_tip": round(ms["com_mm"], 1), "board_magnet_option": 1.16,
+                   "label": "CALC from assumed parts +10 % wiring; board magnet option = D42-N52 0.75 g + keel 0.3 g (ASSUMPTION) +10 %"},
         "inertial_addon": addon_decision or {"status": "evaluated in docs/opt_inertial.md; see layout.json 'optional' components"},
         "tracker": {"default": "results/opt/tracker_models/akf_ship.json (shipped)", "rev_h_setting": "results/opt/inertial_tracker_revh.json",
                     "note": "Rev H setting chosen by ParEGO on training seeds by a pre-declared false-correction rule; changed from the shipped set: " + _tracker_changes(),
@@ -180,6 +181,14 @@ def write_layout(addon: Optional[Dict] = None, addon_recommended: bool = False):
                                extra={"script": "opt/inertial/geometry.py (also mechanics/cad/revH_pen.py)", "doc": "docs/opt_inertial.md",
                                       "inertial_addon_recommended": addon_recommended})
     out = {"meta": meta, **{k: v for k, v in geo.items()}}
+    try:
+        from . import board_magnet as BM
+        bm = BM.summary(geo)
+        out["board_magnet_checks"] = bm
+        out["mass_g"] = dict(out["mass_g"], board_magnet_option_g=bm["added_mass_g"],
+                             total_with_board_magnet_g=round(out["mass_g"]["total_g"] + bm["added_mass_g"], 2))
+    except Exception as e:              # the board study's file or magpylib missing
+        out["board_magnet_checks"] = {"error": str(e)}
     os.makedirs(REVH_DIR, exist_ok=True)
     provenance.write_json(os.path.join(REVH_DIR, "layout.json"), out)
     return out

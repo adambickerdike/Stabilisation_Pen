@@ -179,8 +179,17 @@ class Board:
                                  # sensed touchdown of each letter; ASSUMPTION that it is constant over one letter)
     normal_pull: float = 1.1     # N pulling the pen onto the page while guiding (adds skid or ball friction)
     on_handle: bool = False      # pen magnet on the fixed front sleeve (force on the handle) instead of on the nose
-    K: float = 400.0             # N/m, guidance spring toward the template (ASSUMPTION; cap reached at 1 mm error)
-    D: float = 4.0               # N s/m on the (30 Hz filtered) error rate; chosen on tuning writers
+    # guidance law of the board study (board/params.py CONTROL; ASSUMPTION values there)
+    K_full: float = 200.0        # N/m (0.20 N/mm), no band, plus the lead force
+    K_partial: float = 100.0     # N/m (0.10 N/mm) beyond the band
+    band: float = 1.0e-3         # m, partial-guidance dead band
+    D: float = 2.0               # N s/m on the growth of the error (30 Hz filtered here: the sensing is noisy)
+    lead: float = 0.10           # N along the template while the pen moves forward (> 3 mm/s), full guidance only
+    slew: float = 8.0            # N/s force slew limit
+    over_d: float = 4.0e-3       # m: error that counts as the writer overriding ...
+    over_t: float = 0.30         # s: ... for this long -> the supervisor fades the force
+    fade: float = 0.30           # s, fade time
+    restore: float = 0.50        # s, restore time once the error is within 1 mm
     sources: Dict[str, str] = field(default_factory=dict)
 
 
@@ -193,8 +202,23 @@ def _num(x, default=None):
     return default
 
 
-def board(D: Optional[float] = None) -> Board:
-    """The guidance board from results/board/board_params.json (final format, 17:5x UTC) or the provisional file."""
+def _board_control() -> Dict[str, float]:
+    """The board study's guidance-law constants (board/params.py CONTROL), if that package is importable."""
+    try:
+        import importlib
+        bp = importlib.import_module("board.params")
+        c = bp.CONTROL
+        return {"K_full": c["full_gain_N_per_mm"].value * 1e3, "K_partial": c["partial_gain_N_per_mm"].value * 1e3,
+                "band": c["partial_deadband_mm"].value * 1e-3, "D": c["damping_N_s_per_m"].value,
+                "lead": c["lead_force_N"].value, "slew": c["slew_N_per_s"].value,
+                "over_d": c["override_error_mm"].value * 1e-3, "over_t": c["override_time_s"].value}
+    except Exception:
+        return {}
+
+
+def board() -> Board:
+    """The guidance board from results/board/board_params.json (final format) or the provisional file, with the
+    board study's guidance law (board/params.py CONTROL)."""
     d, path = _load_first(BOARD_DIR / "board_params.json", BOARD_DIR / "board_params_provisional.json")
     if d is None:
         return Board(F_cap=0.4, F_max=0.4, tau=0.010, dead=0.010, noise=0.5e-3, normal_pull=0.0,
@@ -241,10 +265,12 @@ def board(D: Optional[float] = None) -> Board:
                        "normal_pull": f"{pull:.2f} N while guiding (interpolated in guidance_level_by_zlift at the cap); adds skid friction",
                        "acts_on": "handle (pen magnet on the fixed front sleeve)" if on_handle else "nose",
                        "F_cap": f"{cap:g} N software cap (board file)",
-                       "K": "ASSUMPTION: 400 N/m guidance spring, cap reached at 1 mm error (full); 200 N/m (partial)",
-                       "D": "N s/m on the error rate: chosen on tuning writers 100-102, seeds 300-301 (tuning.guidance_checks)"})
-    if D is not None:
-        b.D = float(D)
+                       "law": "board study (board/control.py; docs/guidance_board.md 5.1, 5.4): partial 1 mm band + 0.10 N/mm; "
+                              "full 0.20 N/mm + 0.1 N lead; 2 N s/m; yield at 4 mm for 0.3 s; slew 8 N/s (ASSUMPTION values)"})
+    ctl = _board_control()
+    for k, v in ctl.items():
+        setattr(b, k, float(v))
+    b.sources["law_source"] = "board/params.py CONTROL" if ctl else "defaults copied from board/params.py (package not importable)"
     return b
 
 

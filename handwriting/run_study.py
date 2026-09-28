@@ -60,9 +60,6 @@ def _tuned(quick: bool) -> dict:
     tau = (tu.get("size_tau") or {}).get("chosen")
     if tau is not None:
         out["tau_sa"] = float(tau)
-    D = (tu.get("guidance") or {}).get("board_D_chosen")
-    if D is not None:
-        out["board_D"] = float(D)
     return out
 
 
@@ -159,9 +156,7 @@ def main(argv=None):
         log["pd_s"] = time.time() - t0
     if "practice" in args.stages:
         t0 = time.time()
-        tuned = _tuned(q)
-        jobs = [{"writer": w, "seeds": list(seeds), "viz": w == PRC.VIZ["writer"], "board_D": tuned.get("board_D")}
-                for w in writers]
+        jobs = [{"writer": w, "seeds": list(seeds), "viz": w == PRC.VIZ["writer"]} for w in writers]
         outs = _pool(_pr_job, jobs, args.workers)
         _save("practice" + tag, {"outs": outs, "aggregate": PRC.aggregate(outs), "board": outs[0].get("board")})
         log["practice_s"] = time.time() - t0

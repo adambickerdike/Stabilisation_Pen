@@ -27,9 +27,13 @@ Controller terms (summed, times the contact authority g_eff that ramps with tau_
          (full inside capture, fading to 0 at 1.5 capture) and a drop rule (distance > drop_d for > drop_t: off until the
          next touchdown); gain g_guide
   size   band-limited size assist: (G - 1) (p_hat - LP_tau(p_hat)) per axis (x gain, y gain)
-Board (optional): F = sat_cap(K e + D de/dt), e = T_near - x_tip_hat from the board's own pen sensing (1 kHz, noise, dead
-time), through a first-order lag; applied to the handle when the pen magnet sits on the fixed front sleeve (final board
-file) or to the nose (provisional file).  The magnet's normal pull adds to the skid (or ball) normal force.
+Board (optional): the board study's law (board/control.py, docs/guidance_board.md 5.1 and 5.4): partial = no force inside
+a 1 mm band, 0.10 N/mm beyond it, 2 N s/m on the error growth; full = 0.20 N/mm with no band plus a 0.1 N pull along the
+template while the pen moves forward; supervisor: yield (fade over 0.3 s) when the error stays above 4 mm for 0.3 s,
+restore within 1 mm; cap 0.4 N; slew 8 N/s.  The error comes from the board's own sensing (1 kHz, noise) of the handle's
+gross position (the pen reports its nose deflection), through the dead time and a first-order lag; the force acts on the
+handle when the pen magnet sits on the fixed front sleeve (final board file).  The magnet's normal pull adds skid drag
+that the writer does not compensate (the writer compensates only the drag of the writing load).
 """
 from __future__ import annotations
 
@@ -63,6 +67,8 @@ NAMES = [
     # board
     "use_board", "Kb", "Db", "F_cap", "b_tau", "b_dead_ticks", "b_noise", "b_every", "b_bias_x", "b_bias_y",
     "stroke_match", "b_on_handle",
+    # board law of the board study (board/control.py): mode 1 partial (band), 2 full (+ lead); supervisor
+    "b_mode", "b_band", "b_lead", "b_slew", "b_over_d", "b_over_t", "b_fade", "b_rest", "wc_skid_frac",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
@@ -89,6 +95,8 @@ I_pslat = IDX["ps_lat_ticks"]; I_psn = IDX["ps_noise"]; I_pse = IDX["ps_every"]
 I_bd = IDX["use_board"]; I_Kb = IDX["Kb"]; I_Db = IDX["Db"]; I_Fcap = IDX["F_cap"]; I_btau = IDX["b_tau"]
 I_bdead = IDX["b_dead_ticks"]; I_bn = IDX["b_noise"]; I_bev = IDX["b_every"]; I_bbx = IDX["b_bias_x"]; I_bby = IDX["b_bias_y"]
 I_smatch = IDX["stroke_match"]; I_bonh = IDX["b_on_handle"]
+I_bmode = IDX["b_mode"]; I_bband = IDX["b_band"]; I_blead = IDX["b_lead"]; I_bslew = IDX["b_slew"]
+I_bovd = IDX["b_over_d"]; I_bovt = IDX["b_over_t"]; I_bfade = IDX["b_fade"]; I_brest = IDX["b_rest"]; I_wcs = IDX["wc_skid_frac"]
 
 
 @njit(cache=True)
@@ -140,8 +148,10 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmp
     bdead = int(P[I_bdead]); bn = P[I_bn]; bev = int(P[I_bev]); bbx = P[I_bbx]; bby = P[I_bby]
     smatch = P[I_smatch] > 0.5
     bonh = 1.0 if P[I_bonh] > 0.5 else 0.0                # board force on the handle (1) or on the nose (0)
+    bmode = int(P[I_bmode]); bband = P[I_bband]; blead = P[I_blead]; bslew = P[I_bslew]
+    bovd = P[I_bovd]; bovt = P[I_bovt]; bfade = P[I_bfade]; brest = P[I_brest]; wcs = P[I_wcs]
+    bg = 1.0; bt_over = 0.0; bfp0 = 0.0; bfp1 = 0.0; br_prev = 0.0; brd = 0.0   # supervisor, slew, |e| rate
     cur_s = -1; cur_sb = -1; was_con_b = 0
-    be0 = 0.0; be1 = 0.0; bed0 = 0.0; bed1 = 0.0           # board error and its filtered rate
     alpha_bd = 1.0 - math.exp(-2.0 * math.pi * 30.0 * dt * tdec)
     Ts = dt * tdec
     # state
@@ -253,9 +263,9 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmp
             rb_cmd[j, 0] = qc0; rb_cmd[j, 1] = qc1
             # board
             if use_bd:
-                if tick % bev == 0:
-                    bs0 = pH0 + q0 + bbx + bn * np.random.standard_normal()
-                    bs1 = pH1 + q1 + bby + bn * np.random.standard_normal()
+                if tick % bev == 0:                          # handle's gross error (pen reports q) or the tip
+                    bs0 = pH0 + (1.0 - bonh) * q0 + bbx + bn * np.random.standard_normal()
+                    bs1 = pH1 + (1.0 - bonh) * q1 + bby + bn * np.random.standard_normal()
                 f0 = 0.0; f1 = 0.0
                 if con_s:
                     if smatch and was_con_b == 0:
@@ -271,19 +281,55 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmp
                         bj, bdist = _nearest(btmpl, btdown, bs0, bs1, progb, 20, 4000 if reacqb == 1 else 200)
                     reacqb = 0
                     progb = bj
-                    e0 = btmpl[progb, 0] - bs0; e1 = btmpl[progb, 1] - bs1
+                    blo = 0; bhi = btmpl.shape[0]
+                    if smatch and cur_sb < btss.shape[0]:
+                        blo = btss[cur_sb]; bhi = btse[cur_sb]
+                    e0 = btmpl[progb, 0] - bs0; e1 = btmpl[progb, 1] - bs1      # toward the template
+                    rr = math.sqrt(e0 * e0 + e1 * e1)
                     if was_con_b == 0:
-                        be0 = e0; be1 = e1; bed0 = 0.0; bed1 = 0.0
-                    bed0 += alpha_bd * ((e0 - be0) / Ts - bed0); bed1 += alpha_bd * ((e1 - be1) / Ts - bed1)
-                    be0 = e0; be1 = e1
-                    f0 = Kb * e0 + Db * bed0; f1 = Kb * e1 + Db * bed1
+                        br_prev = rr; brd = 0.0
+                    brd += alpha_bd * ((rr - br_prev) / Ts - brd)                # |e| rate, 30 Hz filtered
+                    br_prev = rr
+                    u0 = e0 / rr if rr > 1e-12 else 0.0
+                    u1 = e1 / rr if rr > 1e-12 else 0.0
+                    ja = progb - 1 if progb - 1 >= blo else blo
+                    jb2 = progb + 1 if progb + 1 < bhi else bhi - 1
+                    tx = btmpl[jb2, 0] - btmpl[ja, 0]; ty = btmpl[jb2, 1] - btmpl[ja, 1]
+                    tn = math.sqrt(tx * tx + ty * ty)
+                    if tn > 0.0:
+                        tx /= tn; ty /= tn
+                    if bmode == 1:                                               # partial: band, spring, damping
+                        mag = rr - bband
+                        if mag > 0.0:
+                            fm_ = Kb * mag + Db * brd
+                            f0 = fm_ * u0; f1 = fm_ * u1
+                    else:                                                        # full: spring + damping + lead
+                        f0 = Kb * e0 + Db * brd * u0; f1 = Kb * e1 + Db * brd * u1
+                        if vH0 * tx + vH1 * ty > 3e-3:
+                            f0 += blead * tx; f1 += blead * ty
+                    # supervisor: yield when the writer keeps deviating, restore slowly near the path
+                    if rr > bovd:
+                        bt_over += Ts
+                    else:
+                        bt_over = max(0.0, bt_over - Ts)
+                    if bt_over > bovt:
+                        bg = max(0.0, bg - Ts / bfade)
+                    elif rr < 1e-3:
+                        bg = min(1.0, bg + Ts / brest)
+                    f0 *= bg; f1 *= bg
                     if bdist > 1.0:
                         f0 = 0.0; f1 = 0.0
                     fm = math.sqrt(f0 * f0 + f1 * f1)
                     if fm > Fcap:
                         f0 *= Fcap / fm; f1 *= Fcap / fm
+                    d0_ = f0 - bfp0; d1_ = f1 - bfp1                             # force slew limit
+                    dn_ = math.sqrt(d0_ * d0_ + d1_ * d1_)
+                    if dn_ > bslew * Ts:
+                        f0 = bfp0 + d0_ * bslew * Ts / dn_; f1 = bfp1 + d1_ * bslew * Ts / dn_
+                    bfp0 = f0; bfp1 = f1
                 else:
                     reacqb = 1
+                    bfp0 = 0.0; bfp1 = 0.0
                 was_con_b = 1 if con_s else 0
                 rb_bF[j, 0] = f0; rb_bF[j, 1] = f1
                 jb = (tick - bdead) % RB if tick >= bdead else 0
@@ -312,8 +358,8 @@ def simulate(P, pref, vref, down, active, qext, gsa, tmpl, tdown, tss, tse, btmp
         else:
             zb0 = 0.0; zb1 = 0.0; zs0 = 0.0; zs1 = 0.0
         Fw0 = 0.0; Fw1 = 0.0
-        if wc > 0.5:
-            Fw0 = -(Fb0 + Fs0); Fw1 = -(Fb1 + Fs1)
+        if wc > 0.5:                                     # the extra skid drag of a board magnet is not compensated
+            Fw0 = -(Fb0 + wcs * Fs0); Fw1 = -(Fb1 + wcs * Fs1)
         if use_bd:
             FB0 += alpha_b * (Fbc0 - FB0); FB1 += alpha_b * (Fbc1 - FB1)
         aM0 = (-Fg0 - ka * dM0 - ba * vM0) / Mh
@@ -384,7 +430,7 @@ class Controls:
     size_gain_track: Optional[np.ndarray] = None   # (n_ticks,) time-varying gain (adaptive size assist); x gain applied
                                                    # only if size_gain[0] > 1
     board: Optional[Board] = None
-    board_gain: float = 1.0                 # multiplies Board.K
+    board_mode: str = "full"                # "partial" (1 mm band, 0.10 N/mm) or "full" (0.20 N/mm + 0.1 N lead)
     board_tmpl: Optional[np.ndarray] = None
     board_tmpl_down: Optional[np.ndarray] = None
     stroke_match: bool = False              # search only the template stroke matching the writer's current stroke
@@ -512,12 +558,13 @@ def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Con
     s("Kp_in", max(m_t, 1e-6) * w_in ** 2); s("Kd_in", 2.0 * 0.7 * max(m_t, 1e-6) * w_in)
     Nb = pen.ball_normal(writing)
     Nsk = max(writing.N - Nb, 0.0) if pen.skid else 0.0
+    Nsk_w = Nsk                                                  # the share the writer's drag compensation covers
     if ctl.board is not None and ctl.board.normal_pull > 0:     # the board magnet pulls the pen onto the page
         if pen.skid:
             Nsk += ctl.board.normal_pull
         else:
-            Nb += ctl.board.normal_pull
-    s("N_ball", Nb); s("N_skid", Nsk)
+            Nb += ctl.board.normal_pull                          # (non-skid pens: compensated with the ball drag)
+    s("N_ball", Nb); s("N_skid", Nsk); s("wc_skid_frac", Nsk_w / Nsk if Nsk > 0 else 1.0)
     s("mu_b", writing.mu_ball); s("mu_s_b", writing.mu_ball * writing.ms_ratio)
     s("mu_k_skid", writing.mu_skid); s("mu_s_skid", writing.mu_skid * writing.ms_ratio)
     s("v_s", writing.v_s); s("x_pre", writing.x_pre)
@@ -535,7 +582,10 @@ def build_params(scn: Scenario, pen: Pen, hand: Hand, writing: Writing, ctl: Con
     s("ps_lat_ticks", int(round(lat / Ts))); s("ps_noise", noise); s("ps_every", max(1, int(round(1.0 / (rate * Ts)))))
     b = ctl.board
     if b is not None:
-        s("use_board", 1.0); s("Kb", b.K * ctl.board_gain); s("Db", b.D * ctl.board_gain); s("F_cap", b.F_cap); s("b_tau", b.tau)
+        partial = ctl.board_mode == "partial"
+        s("use_board", 1.0); s("Kb", b.K_partial if partial else b.K_full); s("Db", b.D); s("F_cap", b.F_cap); s("b_tau", b.tau)
+        s("b_mode", 1.0 if partial else 2.0); s("b_band", b.band); s("b_lead", b.lead); s("b_slew", b.slew)
+        s("b_over_d", b.over_d); s("b_over_t", b.over_t); s("b_fade", b.fade); s("b_rest", b.restore)
         s("b_dead_ticks", int(round(b.dead / Ts))); s("b_noise", b.noise); s("b_every", max(1, int(round(1.0 / (1000.0 * Ts)))))
         s("b_bias_x", b.bias); s("b_bias_y", 0.0); s("b_on_handle", 1.0 if b.on_handle else 0.0)
     s("stroke_match", 1.0 if ctl.stroke_match else 0.0)

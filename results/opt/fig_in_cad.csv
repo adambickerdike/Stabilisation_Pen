@@ -28,3 +28,5 @@ lra,Vibration cue motor,haptic,cylinder,150.5,153.5,8.0,8.0,,,,handle,True,coin 
 usb,USB-C port and button,electronics,box,154.5,158.0,,,,"[8.4, 2.6, 3.5]","[0.0, 9.0]",handle,False,USB-C receptacle (mid-mount),
 rear_cap,Rear cap,structure,cylinder,167.0,170.0,22.0,20.0,,,,handle,False,custom (PEEK),AMF-24
 optical,Paper sensor (optional),sensor,box,14.0,20.0,,,,"[5.0, 5.0, 6.0]","[-8.47, 0.0]",handle,True,to select (optical flow class),
+board_magnet,Board magnet (optional),magnet,cylinder,11.91,15.09,6.35,6.35,,,"[-10.2, 0.0]",handle,True,K&J D42-N52 NdFeB disc (6.35 x 3.17 mm),AMF-91
+board_keel,Keel for the board magnet (optional),grip,box,11.41,15.59,,,,"[6.29, 7.35, 4.17]","[-10.73, 0.0]",handle,True,"PEEK / TPE, part of the sleeve moulding",AMF-24

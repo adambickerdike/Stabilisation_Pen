@@ -7,8 +7,9 @@ Each check states its rule before its result; the test writers 0-5 and seeds 200
                   oracle ink error; the tracker case is reported)
   stroke_match    guidance search restricted to the matching template stroke vs the nearest-point search of the M1/P1
                   guided core (rule: lower target error without lower letter recognition, averaged over both learners)
-  board_damping   D of the board law at K = 400 N/m, among 0, 2, 4, 8 N s/m (rule: highest mean letter recognition),
-                  with the board parameter file in use (the final results/board/board_params.json when it exists)
+  board_noise     no choice: the board law and its constants are the board study's (board/control.py); reported here
+                  with the final board file's sensing noise (0.18 mm RMS at 1 kHz) and without noise (the board study's
+                  own guidance simulation senses the handle exactly), to explain differences between the two studies
   size_tau        size-assist anchor time constant among 0.2, 0.4, 0.8 s (rule: highest recognition at x1.35; ties to
                   the longer constant); the default 0.4 s was set before this check
 """
@@ -81,21 +82,25 @@ def guidance_checks(writers=(100, 101, 102), seeds=(300, 301)) -> Dict:
                         ctl = PL.Controls(tmpl=trk.xy, tmpl_down=trk.pen_down.astype(float), g_guide=g, stroke_match=sm)
                         ev = PRC.evaluate(su, PL.run(su["scn"], pen, hand, ctl=ctl, seed=su["seed"]), rn)
                         out.setdefault(f"nose_g{g:g}_{'stroke' if sm else 'nearest'}", []).append((ev["target_err_um"], ev["letters_read_ok"]))
-                for D in (0.0, 2.0, 4.0, 8.0):
-                    b = PR.board()
-                    b.K, b.D = 400.0, D
-                    ctl = PL.Controls(board=b, board_tmpl=trk.xy, board_tmpl_down=trk.pen_down.astype(float), stroke_match=True)
-                    ev = PRC.evaluate(su, PL.run(su["scn"], pen, hand, ctl=ctl, seed=su["seed"]), rn)
-                    out.setdefault(f"board_K400_D{D:g}", []).append((ev["target_err_um"], ev["letters_read_ok"]))
+                ev = PRC.evaluate(su, rn, rn)
+                out.setdefault("none", []).append((ev["target_err_um"], ev["letters_read_ok"]))
+                for mode in ("partial", "full"):
+                    for noise in (None, 0.0):
+                        b = PR.board()
+                        if noise is not None:
+                            b.noise = noise
+                        ctl = PL.Controls(board=b, board_mode=mode, board_tmpl=trk.xy, board_tmpl_down=trk.pen_down.astype(float),
+                                          stroke_match=True)
+                        ev = PRC.evaluate(su, PL.run(su["scn"], pen, hand, ctl=ctl, seed=su["seed"]), rn)
+                        out.setdefault(f"board_{mode}_{'noise0' if noise == 0.0 else 'nominal'}", []).append(
+                            (ev["target_err_um"], ev["letters_read_ok"]))
     summ = {k: {"target_err_um": float(np.mean([v[0] for v in vals])), "letters_read_ok": float(np.mean([v[1] for v in vals]))}
             for k, vals in out.items()}
     sm_better = all(summ[f"nose_g{g:g}_stroke"]["target_err_um"] < summ[f"nose_g{g:g}_nearest"]["target_err_um"] and
                     summ[f"nose_g{g:g}_stroke"]["letters_read_ok"] >= summ[f"nose_g{g:g}_nearest"]["letters_read_ok"] - 0.01
                     for g in (0.5, 1.0))
-    bestD = max((0.0, 2.0, 4.0, 8.0), key=lambda D: summ[f"board_K400_D{D:g}"]["letters_read_ok"])
     b = PR.board()
-    return {"summary": summ, "stroke_match_chosen": sm_better, "board_D_chosen": bestD,
-            "board_used": {k: v for k, v in vars(b).items() if k not in ("D",)}}
+    return {"summary": summ, "stroke_match_chosen": sm_better, "board_used": {k: v for k, v in vars(b).items()}}
 
 
 def size_tau(writers=(100, 101, 102), seeds=(300,)) -> Dict:

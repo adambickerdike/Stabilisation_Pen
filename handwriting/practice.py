@@ -13,9 +13,11 @@ Guidance (Rev H; no tremor in this study):
   nose_partial   the nose pulls toward the template, gain 0.5, within +-3 mm, capture 2 mm, dropped after 60 ms beyond 2.5 mm
   nose_full      the same with gain 1.0
   nose_nogate    gain 1.0 with no capture gate and no drop rule: what "the pen writes for you" would look like
-  board_partial  the guidance board pulls the pen magnet (on the fixed front sleeve) toward the template, half of full
-  board_full     400 N/m + D on the error rate, capped at 0.4 N (the cap is reached at 1 mm error); D is chosen on
-                 tuning writers 100-102 (seeds 300-301) by letter recognition (tuning.guidance_checks, final board file)
+  board_partial  the guidance board (final board file; its magnet sits on the fixed front sleeve, so it pushes the
+                 handle and hand, not the nose) with the board study's partial law: no force inside a 1 mm band,
+                 0.10 N/mm beyond it
+  board_full     the board study's full law: 0.20 N/mm with no band plus a 0.1 N pull along the template while the pen
+                 moves forward; both with 2 N s/m, cap 0.4 N, slew 8 N/s and the yield rule (4 mm for 0.3 s)
 Every guidance law searches only the template stroke that matches the writer's current stroke (stroke counting at
 touchdown), chosen on the same tuning writers against the nearest-point search of the M1/P1 guided core.
 The hand is passive to guidance (the HAP-26 impedance; no voluntary following or resisting): an upper bound for
@@ -43,7 +45,7 @@ from aiguide.template import LetterTemplate, build_track  # noqa: E402
 CONDITIONS = ["none", "cue", "nose_partial", "nose_full", "nose_nogate", "board_partial", "board_full"]
 LABELS = {"none": "No guidance", "cue": "Vibration cue on error only", "nose_partial": "Nose guidance, partial (0.5)",
           "nose_full": "Nose guidance, full", "nose_nogate": "Nose guidance without the capture gate (the pen writes)",
-          "board_partial": "Guidance board, partial (200 N/m)", "board_full": "Guidance board, full (400 N/m, 0.4 N cap)"}
+          "board_partial": "Guidance board, partial (1 mm band, 0.10 N/mm)", "board_full": "Guidance board, full (0.20 N/mm + 0.1 N lead)"}
 PROFILES = ("dysgraphia", "dyslexia")
 VIZ = {"writer": 0, "seed": 200}
 FLAG_FRAC = 0.30        # cue: a letter is flagged if misread, or if its ink is > 0.30 x-height (RMS) from the target
@@ -90,7 +92,7 @@ def run_condition(su: Dict, cond: str, hand: PR.Hand, pen: PR.Pen, brd: PR.Board
             ctl.capture = 10e-3
             ctl.drop_d = 1.0
     elif cond.startswith("board"):
-        ctl = PL.Controls(board=brd, board_gain=0.5 if cond == "board_partial" else 1.0,
+        ctl = PL.Controls(board=brd, board_mode="partial" if cond == "board_partial" else "full",
                           board_tmpl=trk.xy, board_tmpl_down=trk.pen_down.astype(float), stroke_match=STROKE_MATCH)
     return PL.run(scn, pen, hand, ctl=ctl, seed=su["seed"])
 
@@ -169,7 +171,7 @@ def writer_job(job: Dict) -> Dict:
     t0 = time.time()
     hand = PR.Hand.from_config()
     pen = PR.rev_h()
-    brd = PR.board(D=job.get("board_D"))
+    brd = PR.board()
     rows, viz = [], {}
     for profile in job.get("profiles", PROFILES):
         for seed in job["seeds"]:

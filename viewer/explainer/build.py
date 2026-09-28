@@ -49,6 +49,7 @@ GUIDANCE = "results/ai/guidance.json"
 TIP_FINAL = "results/revH/tip_params.json"
 TIP_PROV = "results/revH/tip_params_provisional.json"
 BOARD_PARAMS = ("results/board/board_params.json", "results/board/board_params_provisional.json")
+BOARD_STUDY = "results/board/board.json"      # the full board study (tracing simulation, hand model); optional
 
 PROVISIONAL_LABEL = "earlier pencil design (±0.3 mm), simulation; the new pen's results are being computed"
 
@@ -176,14 +177,15 @@ def provisional_board() -> dict:
         {"label": "Shape error when copying letters: lower with the magnetic pull than without", "value": None,
          "unit": "", "evidence": "LITERATURE HAP-15"},
     ]
-    pen_magnet = {"z0": 5.0, "z1": 8.0, "d": 5.0, "d_in": 2.5, "moves_with": "nose", "label": "Magnet ring in the pen's nose",
-                  "function": "A small magnet near the tip that the board's magnet pulls on."}
+    # the board study placed the pen's magnet in a keel under the FIXED front sleeve (it moves with the handle, not
+    # the nose); the same place is assumed here until the study's files exist
+    pen_magnet = {"d": 6.35, "h": 3.17, "moves_with": "handle", "label": "Magnet in a keel under the fixed sleeve",
+                  "pen_frame_mm": {"along_axis_from_ball": 13.5, "off_axis_toward_paper": 10.2},
+                  "function": "A small magnet under the sleeve that the board's magnet pulls on, so the board moves the whole pen."}
     if bp:
-        lo = bp.get("leading_option", {})
-        pm = lo.get("pen_magnet", {})
-        zc = pm.get("centre_along_axis_from_ball_mm")
-        if isinstance(zc, (int, float)):
-            pen_magnet.update({"z0": zc - 1.5, "z1": zc + 1.5, "d": 5.0, "d_in": 2.5})
+        pm = bp.get("pen_magnet") or {}
+        if isinstance(pm.get("pen_frame_mm"), dict):
+            pen_magnet.update({k: pm[k] for k in ("d", "h", "pen_frame_mm", "location") if k in pm})
         mf = (bp.get("max_lateral_force_N") or {})
         cap = (bp.get("software_force_cap_N") or {})
         nums = []
@@ -210,33 +212,120 @@ def provisional_board() -> dict:
     }
 
 
-def board_numbers(bp) -> list:
-    """Plain-language headline numbers of the board study (results/board/board_params*.json), each with its label."""
-    if not bp:
+def _num(x):
+    return x if isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) else None
+
+
+def _study_tracing(study, mode, nose="locked", hand="relaxed"):
+    """Ink error (RMS, mm) of one tracing run of the board study (results/board/board.json simulation.tracing)."""
+    for r in ((study or {}).get("simulation") or {}).get("tracing") or []:
+        if r.get("mode") == mode and r.get("nose") == nose and r.get("hand") == hand:
+            return _num(r.get("ink_rms_mm"))
+    return None
+
+
+def _study_deflection(study, case):
+    """Hand movement (mm) under a steady 0.1 N pull (results/board/board.json hand.deflection_per_0p1N)."""
+    for r in ((study or {}).get("hand") or {}).get("deflection_per_0p1N") or []:
+        if r.get("case") == case:
+            return _num(r.get("deflection_mm_at_0Hz"))
+    return None
+
+
+def _param(study, group, key):
+    v = (((study or {}).get("params") or {}).get(group) or {}).get(key)
+    return _num(v.get("value")) if isinstance(v, dict) else _num(v)
+
+
+def board_numbers(bp, study=None) -> list:
+    """Plain-language numbers of the board study for scene (e), each with its evidence label.
+
+    bp    = results/board/board_params.json (headline parameters)
+    study = results/board/board.json (the full study: tracing simulation, hand model, control settings); optional.
+    Labels follow the study: the 0.4 N cap and the give-way rule are settings (ASSUMPTION / PROPOSED DESIGN), the
+    hand movement per 0.1 N is CALCULATION (HAP-26 hand model), the tracing errors are SIMULATION."""
+    if not bp and not study:
         return []
+    bp = bp or {}
     out = []
-    mf = bp.get("max_lateral_force_N") or {}
-    iso = mf.get("at_design_gap_isotropic", mf.get("A4_design_gap_2p7mm"))
-    if isinstance(iso, (int, float)):
-        out.append({"label": "Largest pull on the pen, magnet fully raised", "value": round(iso, 2), "unit": "N",
-                    "evidence": "CALCULATION"})
+
+    def add(label, text, evidence):
+        out.append({"label": label, "value": None, "unit": "", "text": text, "evidence": evidence})
+
+    pm = bp.get("pen_magnet") or {}
+    at = pm.get("board_frame_at_50deg_mm") or {}
+    d, behind, high = _num(pm.get("d")), _num(at.get("behind_ball_along_azimuth")), _num(at.get("height_above_paper"))
+    if "sleeve" in str(pm.get("location", "")) and d and behind and high:
+        add("What the board pulls", f"a {d:g} mm magnet in a small keel under the fixed sleeve, about {behind:g} mm "
+            f"behind the ball and {high:g} mm above the paper, so it moves the whole pen, not the nose", "PROPOSED DESIGN")
     cap = bp.get("software_force_cap_N")
-    cap = cap.get("value") if isinstance(cap, dict) else cap
-    if isinstance(cap, (int, float)):
-        out.append({"label": "Pull limit chosen for safety", "value": cap, "unit": "N", "evidence": "ASSUMPTION"})
-    bw = (bp.get("force_bandwidth_Hz") or {}).get("value")
-    if isinstance(bw, (int, float)):
-        out.append({"label": "How quickly the pull can change", "value": round(bw), "unit": "times a second",
-                    "evidence": "CALCULATION"})
-    sh = (bp.get("sim_headlines") or {}).get("tracing_full_vs_off_ink_rms_mm")
-    if isinstance(sh, list) and len(sh) == 2 and all(isinstance(x, (int, float)) for x in sh):
+    cap = _num(cap.get("value")) if isinstance(cap, dict) else _num(cap)
+    if cap is None:
+        cap = _param(study, "control", "force_cap_N")
+    if cap:
+        add("Pull limit", f"{cap:g} N, about the weight of {10 * round(cap / 9.81 * 100):g} g (a safety setting)",
+            "ASSUMPTION")
+    mf = bp.get("max_lateral_force_N") or {}
+    iso = _num(mf.get("at_design_gap_isotropic", mf.get("A4_design_gap_2p7mm")))
+    if iso:
+        add("Strongest pull the magnets could give", f"{iso:.1f} N; the limit keeps it gentle", "CALCULATION")
+    rel, res = _study_deflection(study, "relaxed"), _study_deflection(study, "lightly_resisting")
+    if rel:
+        t = f"about {rel:.2f} mm for every 0.1 N of steady pull"
+        if cap:
+            t += f", so about {rel * cap / 0.1:.0f} mm at the limit"
+        if res:
+            t += f"; {res:.2f} mm per 0.1 N if you resist a little"
+        add("How far a relaxed hand moves", t, "CALCULATION")
+    off, full = _study_tracing(study, "off"), _study_tracing(study, "full")
+    if off is None or full is None:
+        sh = (bp.get("sim_headlines") or {}).get("tracing_full_vs_off_ink_rms_mm")
         # board/run_study.py writes [board off, full guidance] (relaxed hand, nose locked)
-        out.append({"label": "Tracing a letter, ink off the letter: board off, then full guidance", "value": None,
-                    "text": f"{sh[0]:.2f} mm, then {sh[1]:.2f} mm", "unit": "", "evidence": "SIMULATION"})
-    pm = bp.get("pen_magnet") or (bp.get("leading_option") or {}).get("pen_magnet") or {}
-    if "sleeve" in str(pm.get("location", "")):
-        out.append({"label": "The board pulls a small magnet under the fixed sleeve, so it steers the whole pen", "value": None,
-                    "unit": "", "evidence": "PROPOSED DESIGN"})
+        if isinstance(sh, list) and len(sh) == 2 and all(_num(x) is not None for x in sh):
+            off, full = sh
+    if off is not None and full is not None:
+        add("Tracing a letter, ink off the letter (relaxed writer)", f"board off {off:.2f} mm, full guidance {full:.2f} mm",
+            "SIMULATION")
+    both, nose_only = _study_tracing(study, "full", "assist"), _study_tracing(study, "off", "assist")
+    if both is not None:
+        add("With the nose also correcting the ink", f"{both:.3f} mm" + (f" (the nose alone: {nose_only:.2f} mm)"
+                                                                        if nose_only is not None else ""), "SIMULATION")
+    oe, ot = _param(study, "control", "override_error_mm"), _param(study, "control", "override_time_s")
+    if oe and ot:
+        add("If you push against it", f"the pull fades away when the pen stays more than {oe:g} mm off the letter "
+            f"for {ot:g} s, and comes back slowly", "ASSUMPTION")
+    return out
+
+
+def board_physics(bp, study) -> dict:
+    """The few numbers scene (e) needs to draw the pull (the page falls back to the study's published values):
+    cap     pull limit, N (software cap, ASSUMPTION)
+    mmPerN  how far a relaxed hand moves per newton of steady pull (HAP-26 hand model, CALCULATION)
+    lead    small pull along the letter in full guidance, N (ASSUMPTION)
+    slope   pull per mm of head offset at the 0.4 N setting, N/mm (CALCULATION)
+    keep    share of the hand's drift left with full guidance (SIMULATION: full / off, nose held still)
+    fix     share of the remaining error the nose removes (SIMULATION: 1 - (full, nose assisting) / (full, nose still))"""
+    bp = bp or {}
+    out = {}
+    cap = bp.get("software_force_cap_N")
+    cap = _num(cap.get("value")) if isinstance(cap, dict) else _num(cap)
+    cap = cap or _param(study, "control", "force_cap_N")
+    if cap:
+        out["cap"] = cap
+    rel = _study_deflection(study, "relaxed")
+    if rel:
+        out["mmPerN"] = round(rel / 0.1, 3)
+    lead = _param(study, "control", "lead_force_N")
+    if lead:
+        out["lead"] = lead
+    slope = _num((bp.get("offset_to_force_slope_N_per_mm") or {}).get("at_0.4N_capability"))
+    if slope:
+        out["slope"] = round(slope, 4)
+    off, full, both = _study_tracing(study, "off"), _study_tracing(study, "full"), _study_tracing(study, "full", "assist")
+    if off and full:
+        out["keep"] = round(full / off, 3)
+    if full and both is not None:
+        out["fix"] = round(1 - both / full, 3)
     return out
 
 
@@ -246,11 +335,21 @@ def build_board():
         if isinstance(b, dict) and isinstance(b.get("components"), list) and b["components"]:
             b.setdefault("meta", {}).setdefault("provisional", False)
             bp, bp_src = board_params()
-            nums = board_numbers(bp)
+            study = None
+            if exists(BOARD_STUDY):
+                try:
+                    study = load(BOARD_STUDY)
+                except (OSError, ValueError) as e:
+                    warn(f"{BOARD_STUDY} could not be read ({e}); scene (e) shows the headline numbers only")
+            nums = board_numbers(bp, study)
+            srcs = ", ".join(s for s in (bp_src, BOARD_STUDY if study else None) if s)
             if nums:
                 b["explainer_numbers"] = nums          # added by the explainer build; the layout itself is unchanged
-                b["explainer_numbers_source"] = bp_src
-            return b, {"file": "board.json", "source": BOARD_FINAL + (f" (+ numbers from {bp_src})" if nums else ""),
+                b["explainer_numbers_source"] = srcs
+            phys = board_physics(bp, study)
+            if phys:
+                b["explainer_physics"] = phys          # sizes scene (e)'s illustration like the study's tracing run
+            return b, {"file": "board.json", "source": BOARD_FINAL + (f" (+ numbers from {srcs})" if nums else ""),
                        "status": "final", "modified": mtime_utc(BOARD_FINAL), "evidence": b["meta"].get("evidence_status", "")}
         warn(f"{BOARD_FINAL} has no 'components' list the page can draw; using the provisional board")
     b = provisional_board()

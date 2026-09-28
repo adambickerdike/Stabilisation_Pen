@@ -589,6 +589,48 @@
    ]
   },
   {
+   "id": "board_magnet",
+   "label": "Board magnet (optional)",
+   "group": "magnet",
+   "shape": "cylinder",
+   "z0": 11.91,
+   "z1": 15.09,
+   "moves_with": "handle",
+   "optional": true,
+   "function": "Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N sideways, about 1 N down while guiding). Magnetised along the pen axis. Fixed to the sleeve, not the nose.",
+   "part": "K&J D42-N52 NdFeB disc (6.35 x 3.17 mm)",
+   "ledger": "AMF-91",
+   "d0": 6.35,
+   "d1": 6.35,
+   "offset": [
+    -10.2,
+    0.0
+   ],
+   "mass_g": 0.75
+  },
+  {
+   "id": "board_keel",
+   "label": "Keel for the board magnet (optional)",
+   "group": "grip",
+   "shape": "box",
+   "z0": 11.41,
+   "z1": 15.59,
+   "moves_with": "handle",
+   "optional": true,
+   "function": "Moulded bump under the fixed front sleeve holding the board magnet close to the paper.",
+   "part": "PEEK / TPE, part of the sleeve moulding",
+   "ledger": "AMF-24",
+   "size": [
+    6.29,
+    7.35,
+    4.17
+   ],
+   "offset": [
+    -10.73,
+    0.0
+   ]
+  },
+  {
    "id": "rm_frame",
    "label": "Inertial module frame",
    "group": "inertial",

@@ -41,7 +41,7 @@ def test_geometry_fit_checks_pass():
     assert len(ids) == len(set(ids))
     for c in g["components"]:
         assert c["group"] in ("structure", "grip", "moving_nose", "refill", "actuator", "mechanism", "sensor", "electronics", "power",
-                              "haptic", "inertial")
+                              "haptic", "inertial", "magnet")
         assert c["moves_with"] in ("nose", "handle", "inertial_mass")
         assert c["z1"] > c["z0"]
 
@@ -104,3 +104,13 @@ def test_catalogue_units():
     assert CT.VCAS["LVCM-016-010-01"].Km == pytest.approx(1.1 / math.sqrt(1.8))
     assert CT.CELLS["LIR14500"].Wh == pytest.approx(0.75 * 3.7 * 0.8)
     assert CT.below_resonance_transmission(8.0, 65.0) == pytest.approx(0.0154, abs=5e-4)
+
+
+def test_board_magnet_keel_clearance_formula():
+    """The keel's paper clearance uses the plane through the skid-ring heel: at the heel itself the height is zero."""
+    from opt.inertial import board_magnet as BM
+    geo = GE.layout(RH.RevH())
+    pm = dict(BM.placement(), z_c=geo["ball_protrusion_mm"] + 1.585 + 0.5, x_c=-geo["skid_contact_radius"] + 3.175 + 0.5, h=3.17, d=6.35)
+    # front-bottom corner of the keel sits exactly on the heel point -> zero height at every tilt
+    for t in (35.0, 50.0, 75.0):
+        assert BM.keel_clearance(t, geo, pm) == pytest.approx(0.0, abs=1e-9)

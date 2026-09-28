@@ -1,10 +1,10 @@
 """Rev H component layout (single source for the CAD script, results/revH/layout.json and the replay's geometry).
 
-Units mm; z along the pen axis from the ball tip (z = 0) toward the back; x, y transverse (x in the tilt plane, toward
-the paper side; y lateral).  Every dimension is a PROPOSED DESIGN (ASSUMPTION) derived from the design variables in
+Units mm; z along the pen axis from the ball tip (z = 0) toward the back; x, y transverse (x in the tilt plane, positive away
+from the paper, i.e. on the finger-pad side, so the paper side is -x; y lateral).  Every dimension is a PROPOSED DESIGN (ASSUMPTION) derived from the design variables in
 opt/inertial/revh.RevH (adjoint-optimised actuator) and catalogue parts (ledger ids).  Masses are CALC.
 Groups (for the 3-D explainer): structure | grip | moving_nose | refill | actuator | mechanism | sensor | electronics |
-power | haptic | inertial.  moves_with: nose | handle | inertial_mass.
+power | haptic | inertial | magnet (the guidance board's pen magnet).  moves_with: nose | handle | inertial_mass.
 """
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ def comp(id_, label, group, shape, z0, z1, moves="handle", d0=None, d1=None, d_i
     return c
 
 
-def layout(d: Optional[RevH] = None, addon: Optional[Dict] = None, theta_deg=50.0) -> Dict:
+def layout(d: Optional[RevH] = None, addon: Optional[Dict] = None, theta_deg=50.0, board_magnet=True) -> Dict:
     d = d or RevH()
     zp, za = d.z_p * 1e3, d.z_a * 1e3
     X = d.travel * 1e3
@@ -133,6 +133,24 @@ def layout(d: Optional[RevH] = None, addon: Optional[Dict] = None, theta_deg=50.
     A(comp("optical", "Paper sensor (optional)", "sensor", "box", 14.0, 20.0, "handle", size=[5.0, 5.0, 6.0], offset=[-(open_d / 2 + 2.0), 0.0],
            optional=True, function="Optical sensor beside the nose that sees the paper: page position for capture and the tracker (1 kHz, 2 ms assumed).",
            part="to select (optical flow class)", ledger=""))
+    if board_magnet:
+        # the guidance board's pen magnet (board study, results/board/board_params.json): in a keel under the FIXED front sleeve
+        from .board_magnet import placement
+        pm = placement() if board_magnet is True else board_magnet
+        bz0, bz1 = pm["z_c"] - pm["h"] / 2, pm["z_c"] + pm["h"] / 2
+        A(comp("board_magnet", "Board magnet (optional)", "magnet", "cylinder", bz0, bz1, "handle", pm["d"], pm["d"],
+               offset=[pm["x_c"], 0.0], optional=True,
+               function="Lets the optional guidance board under the paper pull the pen along a letter (about 0.4 N sideways, about 1 N "
+                        "down while guiding). Magnetised along the pen axis. Fixed to the sleeve, not the nose.",
+               part=f"{pm['part']} ({pm['d']} x {pm['h']} mm)", ledger=pm["ledger"], mass_g=pm["mass_g"]))
+        # keel: from inside the sleeve wall to 0.5 mm beyond the magnet (0.5 mm walls, ASSUMPTION)
+        fs = [c for c in comps if c["id"] == "front_sleeve"][0]
+        r_sl = (fs["d0"] + (fs["d1"] - fs["d0"]) * (pm["z_c"] - fs["z0"]) / (fs["z1"] - fs["z0"])) / 2
+        x_in, x_out = r_sl - 1.0, abs(pm["x_c"]) + pm["d"] / 2 + 0.5
+        A(comp("board_keel", "Keel for the board magnet (optional)", "grip", "box", bz0 - 0.5, bz1 + 0.5, "handle",
+               size=[x_out - x_in, pm["d"] + 1.0, bz1 - bz0 + 1.0], offset=[-(x_in + x_out) / 2, 0.0], optional=True,
+               function="Moulded bump under the fixed front sleeve holding the board magnet close to the paper.",
+               part="PEEK / TPE, part of the sleeve moulding", ledger="AMF-24"))
     if addon:
         z0 = addon["z0"]; z1 = addon["z1"]
         A(comp("rm_frame", "Inertial module frame", "inertial", "tube", z0, z1, "handle", addon["frame_d"], addon["frame_d"], addon["frame_d"] - 1.0,
