@@ -1,0 +1,18 @@
+cad_parameters_mm:
+  plate_w: 2.8347
+  plate_t: 1.2512
+  plate_free: 33.1192
+  plate_clamp: 3.5
+  plate_d: 2.532
+  collar_z0: 15.3808
+  z_plate_tip: 27.3808
+  z_gimbal: 65.5
+  leaf_t: 0.0466
+  leaf_w: 1.5531
+  tip_sweep: 0.3469
+  nib_travel: 0.4
+  skid_r: 1.4
+  batt_L: 40.0
+  L_total: 166.0
+  n_plates: 4
+  hall_gap_extra: 0.1

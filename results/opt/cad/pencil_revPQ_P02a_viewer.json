@@ -1,0 +1,346 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (CAD concept, nominal geometry)",
+    "generated_utc": "2026-09-28T16:00:56+00:00",
+    "git_revision": "9d309a0-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "pencil_revP.py --variant Q --overlay /home/user/Stabilisation_Pen/results/opt/pencil_P02a_cad_overlay.yaml --tag pencil_revPQ_P02a --out /home/user/Stabilisation_Pen/results/opt/cad --no-step",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "pencil_params": "P0.1.2",
+    "overlay": "results/opt/pencil_P02a_cad_overlay.yaml"
+  },
+  "units": "mm",
+  "frame": "origin at the ball centre in contact at 50 deg tilt; z along the barrel toward the cap",
+  "gimbal_z": 65.4998,
+  "lever": 1.4550337657721701,
+  "primitives": [
+    {
+      "name": "barrel",
+      "group": "housing",
+      "type": "lathe",
+      "color": "barrel",
+      "opacity": 0.28,
+      "profile": [
+        [
+          2.2373,
+          1.9836327339208806
+        ],
+        [
+          4.45,
+          19.98363273392088
+        ],
+        [
+          4.45,
+          161.0
+        ]
+      ]
+    },
+    {
+      "name": "rear_cap",
+      "group": "housing",
+      "type": "lathe",
+      "color": "cap",
+      "opacity": 0.9,
+      "profile": [
+        [
+          4.45,
+          161.0
+        ],
+        [
+          4.45,
+          165.0
+        ],
+        [
+          3.45,
+          166.0
+        ],
+        [
+          0.01,
+          166.0
+        ]
+      ]
+    },
+    {
+      "name": "skid_ring",
+      "group": "housing",
+      "type": "tube",
+      "color": "skid",
+      "r_out": 2.2373,
+      "r_in": 1.7373,
+      "z0": 1.5836327339208804,
+      "z1": 1.9836327339208806
+    },
+    {
+      "name": "clamp_block",
+      "group": "housing",
+      "type": "tube",
+      "color": "metal",
+      "r_out": 3.9000000000000004,
+      "r_in": 1.625,
+      "z0": 60.499700000000004,
+      "z1": 63.999700000000004
+    },
+    {
+      "name": "gimbal_flexure",
+      "group": "housing",
+      "type": "tube",
+      "color": "metal",
+      "r_out": 3.9000000000000004,
+      "r_in": 1.9,
+      "z0": 65.3998,
+      "z1": 65.59979999999999
+    },
+    {
+      "name": "bulkhead",
+      "group": "housing",
+      "type": "tube",
+      "color": "cap",
+      "r_out": 3.9000000000000004,
+      "r_in": 0.01,
+      "z0": 77.0,
+      "z1": 77.8
+    },
+    {
+      "name": "pcb",
+      "group": "housing",
+      "type": "box",
+      "color": "pcb",
+      "size": [
+        5.5,
+        0.6,
+        42.0
+      ],
+      "center": [
+        0,
+        0,
+        99.0
+      ]
+    },
+    {
+      "name": "pcb_components",
+      "group": "housing",
+      "type": "box",
+      "color": "chip",
+      "size": [
+        4.9,
+        2.6,
+        36.0
+      ],
+      "center": [
+        0,
+        0,
+        99.0
+      ]
+    },
+    {
+      "name": "battery",
+      "group": "housing",
+      "type": "cylinder",
+      "color": "battery",
+      "r": 3.25,
+      "z0": 121.0,
+      "z1": 161.0
+    },
+    {
+      "name": "hall_3d_nose",
+      "group": "housing",
+      "type": "box",
+      "color": "chip",
+      "size": [
+        0.6,
+        1.5,
+        1.5
+      ],
+      "center": [
+        3.193772090907147,
+        0,
+        20.4838
+      ]
+    },
+    {
+      "name": "refill_D1",
+      "group": "nib",
+      "type": "refill",
+      "color": "refill",
+      "r": 1.175,
+      "L": 67.0,
+      "cone_L": 5.0,
+      "ball_r": 0.35,
+      "socket_r": 0.5
+    },
+    {
+      "name": "collar",
+      "group": "nib",
+      "type": "tube",
+      "color": "metal",
+      "r_out": 2.0,
+      "r_in": 1.195,
+      "z0": 18.9838,
+      "z1": 21.9838
+    },
+    {
+      "name": "collar_magnet",
+      "group": "nib",
+      "type": "box",
+      "color": "magnet",
+      "size": [
+        0.6,
+        1.0,
+        1.0
+      ],
+      "center": [
+        2.0,
+        0,
+        20.4838
+      ]
+    },
+    {
+      "name": "nib_spring",
+      "group": "housing",
+      "type": "spring",
+      "color": "metal",
+      "r": 1.2,
+      "z0": 68.0,
+      "z1": 77.0,
+      "turns": 12
+    },
+    {
+      "name": "snubber_1",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 35.77,
+      "z1": 36.27
+    },
+    {
+      "name": "snubber_2",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 41.89,
+      "z1": 42.39
+    },
+    {
+      "name": "snubber_3",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 48.01,
+      "z1": 48.51
+    },
+    {
+      "name": "snubber_4",
+      "group": "housing",
+      "type": "tube",
+      "color": "snubber",
+      "r_out": 3.9000000000000004,
+      "r_in": 3.0,
+      "z0": 54.13,
+      "z1": 54.63
+    },
+    {
+      "name": "bender_x_neg",
+      "group": "bender",
+      "type": "plate",
+      "color": "piezo",
+      "size": [
+        1.1383,
+        2.8994,
+        34.0961
+      ],
+      "root_z": 63.999700000000004,
+      "tip_z": 29.9036,
+      "clamp_z": 60.499700000000004,
+      "center_xy": [
+        -2.5412,
+        0.0
+      ],
+      "drive_axis": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "bender_x_pos",
+      "group": "bender",
+      "type": "plate",
+      "color": "piezo",
+      "size": [
+        1.1383,
+        2.8994,
+        34.0961
+      ],
+      "root_z": 63.999700000000004,
+      "tip_z": 29.9036,
+      "clamp_z": 60.499700000000004,
+      "center_xy": [
+        2.5412,
+        0.0
+      ],
+      "drive_axis": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "name": "bender_y_neg",
+      "group": "bender",
+      "type": "plate",
+      "color": "piezo",
+      "size": [
+        2.8994,
+        1.1383,
+        34.0961
+      ],
+      "root_z": 63.999700000000004,
+      "tip_z": 29.9036,
+      "clamp_z": 60.499700000000004,
+      "center_xy": [
+        0.0,
+        -2.5412
+      ],
+      "drive_axis": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "name": "bender_y_pos",
+      "group": "bender",
+      "type": "plate",
+      "color": "piezo",
+      "size": [
+        2.8994,
+        1.1383,
+        34.0961
+      ],
+      "root_z": 63.999700000000004,
+      "tip_z": 29.9036,
+      "clamp_z": 60.499700000000004,
+      "center_xy": [
+        0.0,
+        2.5412
+      ],
+      "drive_axis": [
+        0,
+        1,
+        0
+      ]
+    }
+  ]
+}

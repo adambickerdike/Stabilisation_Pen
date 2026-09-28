@@ -1,0 +1,1444 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (opt/hardware optimisation; CALCULATION)",
+    "generated_utc": "2026-09-28T16:01:10+00:00",
+    "git_revision": "9d309a0-dirty",
+    "parameters_version": "P0.1.2",
+    "parameters_sha256_16": "957eae6e98e9b8c8",
+    "command": "run_study.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "opt/hardware/run_study.py"
+  },
+  "stages": {
+    "P02": {
+      "label": "P0.2 recommended: Q-PIC251-s2-C17200-recovery_lt8365-drv5055a4_x2-ic",
+      "fit": "opt/hardware fit constraints; CAD rebuild all_ok",
+      "plates_per_axis": 2,
+      "axes": 2,
+      "bender": {
+        "w": 0.002834675854643226,
+        "t": 0.0012012155385298761,
+        "L_free": 0.03311917747076871,
+        "L_total": 0.03661917747076871,
+        "delta_f": 0.000755314682641819,
+        "F_b": 0.42557034775991176,
+        "C_half": 1.9229813654149404e-06,
+        "V_full": 60.0,
+        "fr": 258.57161204488324
+      },
+      "leaf": {
+        "t": 4.656121912255041e-05,
+        "w": 0.0015530890347829449,
+        "L": 0.009,
+        "E": 131000000000.0,
+        "G": 50400000000.0,
+        "Cb_over_K": 5.0
+      },
+      "k_gimbal_nib": 2.0,
+      "cad": {
+        "z_gimbal": 65.5,
+        "collar_z0": 15.3808,
+        "collar_L": 3.0,
+        "z_plate_tip": 27.3808,
+        "nib_travel": 0.4,
+        "refill_L": 67.0,
+        "ball_d": 0.7,
+        "plate_d": 2.532,
+        "parts": [
+          [
+            "barrel",
+            "fixed",
+            2.723,
+            84.97
+          ],
+          [
+            "skid_ring",
+            "fixed",
+            0.003,
+            1.37
+          ],
+          [
+            "rear_cap",
+            "fixed",
+            0.123,
+            163.99
+          ],
+          [
+            "clamp_block",
+            "fixed",
+            0.612,
+            62.25
+          ],
+          [
+            "bulkhead",
+            "fixed",
+            0.046,
+            77.4
+          ],
+          [
+            "battery",
+            "fixed",
+            3.451,
+            141.0
+          ],
+          [
+            "gimbal_flexure",
+            "fixed",
+            0.029,
+            65.5
+          ],
+          [
+            "pcb",
+            "fixed",
+            0.333,
+            99.0
+          ],
+          [
+            "pcb_components_envelope",
+            "fixed",
+            1.004,
+            99.0
+          ],
+          [
+            "hall_3d_nose",
+            "fixed",
+            0.003,
+            16.88
+          ],
+          [
+            "optical_sensor",
+            "fixed",
+            0.004,
+            13.38
+          ],
+          [
+            "snubber_1",
+            "fixed",
+            0.013,
+            34.0
+          ],
+          [
+            "snubber_2",
+            "fixed",
+            0.015,
+            40.63
+          ],
+          [
+            "snubber_3",
+            "fixed",
+            0.016,
+            47.25
+          ],
+          [
+            "snubber_4",
+            "fixed",
+            0.017,
+            53.88
+          ],
+          [
+            "bender_x_neg",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "bender_x_pos",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "bender_y_neg",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "bender_y_pos",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "leaf_x_neg",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "leaf_x_pos",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "leaf_y_neg",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "leaf_y_pos",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "refill_D1",
+            "moving",
+            0.84,
+            34.7
+          ],
+          [
+            "collar",
+            "moving",
+            0.091,
+            16.88
+          ],
+          [
+            "collar_liner",
+            "moving",
+            0.005,
+            16.88
+          ],
+          [
+            "collar_magnet",
+            "moving",
+            0.004,
+            16.88
+          ],
+          [
+            "gimbal_hub",
+            "moving",
+            0.016,
+            65.5
+          ],
+          [
+            "rear_plug",
+            "moving",
+            0.005,
+            67.5
+          ],
+          [
+            "axial_magnet",
+            "moving",
+            0.004,
+            67.55
+          ],
+          [
+            "nib_spring",
+            "moving",
+            0.075,
+            72.5
+          ]
+        ],
+        "mass_total_g": 13.5,
+        "source": "results/opt/cad/pencil_revPQ_P02_summary.json"
+      },
+      "options": {
+        "topology": "Q",
+        "ceramic": "PIC251",
+        "stack": 2,
+        "leaf_mat": "C17200",
+        "driver": "recovery_lt8365",
+        "hall": "drv5055a4_x2",
+        "clamp_electroded": false,
+        "sweep_mode": "derived",
+        "sweep_margin": 5e-05,
+        "theta_wc": 35.0,
+        "mu_wc": 0.15,
+        "tol_wc": -0.2,
+        "theta_nom": 50.0,
+        "mu_nom": 0.15,
+        "servo_margin": 0.0001,
+        "q_lim_min": 0.0003,
+        "k_gimbal_nib": 2.0,
+        "leaf_design_convention": true,
+        "hinge_frac": 0.1,
+        "lever_eff": 0.95,
+        "k_bond_gap": 5e-05,
+        "P_fail_max": 0.0001,
+        "stop_drive_frac": 1.0,
+        "f1_min": 150.0,
+        "mass_max_g": 20.0,
+        "life_min_h": 2.0,
+        "rec_life_min_h": 4.0,
+        "p_el_W": 0.065,
+        "hall_budget_W": 0.003,
+        "power_cases": [
+          "4Hz_0.3mm",
+          "6Hz_0.3mm",
+          "8Hz_0.3mm",
+          "10Hz_0.3mm",
+          "12Hz_0.3mm"
+        ],
+        "hall_gap_extra": 0.0001,
+        "hall_location": "nose"
+      },
+      "design_SI": {
+        "w": 0.002834675854643226,
+        "t": 0.0006006077692649381,
+        "Lf": 0.03311917747076871,
+        "Lc": 0.0035,
+        "d": 0.002531971020667661,
+        "zg": 0.0655,
+        "zc0": 0.0153808225292589,
+        "leaf_t": 4.656121912255041e-05,
+        "leaf_w": 0.0015530890347829449,
+        "leaf_L": 0.009,
+        "Fc": 0.15,
+        "r_ring": 0.0014,
+        "V": 58.047498768153474,
+        "L_cell": 0.04,
+        "q_stop": 0.0003999999523576803,
+        "n2": 1.0
+      },
+      "status": "PROPOSED DESIGN (opt/hardware); plates scaled from AMF-11/AMF-53 (CALC, EXP-Q04 to confirm)"
+    },
+    "P02a": {
+      "label": "P0.2a: soft limit 0.40 mm (stops 0.50 mm), skid ring free: Q-PIC251-s2-C17200-recovery_lt8365-drv5055a4_x2-ic",
+      "fit": "opt/hardware fit constraints; CAD rebuild all_ok",
+      "plates_per_axis": 2,
+      "axes": 2,
+      "bender": {
+        "w": 0.0028993994317201297,
+        "t": 0.0010882674254505224,
+        "L_free": 0.03059608450944025,
+        "L_total": 0.03409608450944025,
+        "delta_f": 0.0007115179447069024,
+        "F_b": 0.38673998188695013,
+        "C_half": 1.6461928785287457e-06,
+        "V_full": 60.0,
+        "fr": 274.48771537633706
+      },
+      "leaf": {
+        "t": 4.090413805130914e-05,
+        "w": 0.0015049488661614443,
+        "L": 0.007919808609332444,
+        "E": 131000000000.0,
+        "G": 50400000000.0,
+        "Cb_over_K": 5.0
+      },
+      "k_gimbal_nib": 2.0,
+      "cad": {
+        "z_gimbal": 65.4998,
+        "collar_z0": 18.9838,
+        "collar_L": 3.0,
+        "z_plate_tip": 29.9036,
+        "nib_travel": 0.5002,
+        "refill_L": 67.0,
+        "ball_d": 0.7,
+        "plate_d": 2.5412,
+        "parts": [
+          [
+            "barrel",
+            "fixed",
+            2.734,
+            84.66
+          ],
+          [
+            "skid_ring",
+            "fixed",
+            0.004,
+            1.78
+          ],
+          [
+            "rear_cap",
+            "fixed",
+            0.123,
+            163.99
+          ],
+          [
+            "clamp_block",
+            "fixed",
+            0.612,
+            62.25
+          ],
+          [
+            "bulkhead",
+            "fixed",
+            0.046,
+            77.4
+          ],
+          [
+            "battery",
+            "fixed",
+            3.451,
+            141.0
+          ],
+          [
+            "gimbal_flexure",
+            "fixed",
+            0.029,
+            65.5
+          ],
+          [
+            "pcb",
+            "fixed",
+            0.333,
+            99.0
+          ],
+          [
+            "pcb_components_envelope",
+            "fixed",
+            1.004,
+            99.0
+          ],
+          [
+            "hall_3d_nose",
+            "fixed",
+            0.003,
+            20.48
+          ],
+          [
+            "optical_sensor",
+            "fixed",
+            0.004,
+            16.98
+          ],
+          [
+            "snubber_1",
+            "fixed",
+            0.013,
+            36.02
+          ],
+          [
+            "snubber_2",
+            "fixed",
+            0.015,
+            42.14
+          ],
+          [
+            "snubber_3",
+            "fixed",
+            0.017,
+            48.26
+          ],
+          [
+            "snubber_4",
+            "fixed",
+            0.018,
+            54.38
+          ],
+          [
+            "bender_x_neg",
+            "bender",
+            0.878,
+            46.95
+          ],
+          [
+            "bender_x_pos",
+            "bender",
+            0.878,
+            46.95
+          ],
+          [
+            "bender_y_neg",
+            "bender",
+            0.878,
+            46.95
+          ],
+          [
+            "bender_y_pos",
+            "bender",
+            0.878,
+            46.95
+          ],
+          [
+            "leaf_x_neg",
+            "leaf",
+            0.004,
+            25.94
+          ],
+          [
+            "leaf_x_pos",
+            "leaf",
+            0.004,
+            25.94
+          ],
+          [
+            "leaf_y_neg",
+            "leaf",
+            0.004,
+            25.94
+          ],
+          [
+            "leaf_y_pos",
+            "leaf",
+            0.004,
+            25.94
+          ],
+          [
+            "refill_D1",
+            "moving",
+            0.84,
+            34.7
+          ],
+          [
+            "collar",
+            "moving",
+            0.091,
+            20.48
+          ],
+          [
+            "collar_liner",
+            "moving",
+            0.005,
+            20.48
+          ],
+          [
+            "collar_magnet",
+            "moving",
+            0.004,
+            20.48
+          ],
+          [
+            "gimbal_hub",
+            "moving",
+            0.016,
+            65.5
+          ],
+          [
+            "rear_plug",
+            "moving",
+            0.005,
+            67.5
+          ],
+          [
+            "axial_magnet",
+            "moving",
+            0.004,
+            67.55
+          ],
+          [
+            "nib_spring",
+            "moving",
+            0.075,
+            72.5
+          ]
+        ],
+        "mass_total_g": 12.97,
+        "source": "results/opt/cad/pencil_revPQ_P02a_summary.json"
+      },
+      "options": {
+        "topology": "Q",
+        "ceramic": "PIC251",
+        "stack": 2,
+        "leaf_mat": "C17200",
+        "driver": "recovery_lt8365",
+        "hall": "drv5055a4_x2",
+        "clamp_electroded": false,
+        "sweep_mode": "derived",
+        "sweep_margin": 5e-05,
+        "theta_wc": 35.0,
+        "mu_wc": 0.15,
+        "tol_wc": -0.2,
+        "theta_nom": 50.0,
+        "mu_nom": 0.15,
+        "servo_margin": 0.0001,
+        "q_lim_min": 0.0004,
+        "k_gimbal_nib": 2.0,
+        "leaf_design_convention": true,
+        "hinge_frac": 0.1,
+        "lever_eff": 0.95,
+        "k_bond_gap": 5e-05,
+        "P_fail_max": 0.0001,
+        "stop_drive_frac": 1.0,
+        "f1_min": 150.0,
+        "mass_max_g": 20.0,
+        "life_min_h": 2.0,
+        "rec_life_min_h": 4.0,
+        "p_el_W": 0.065,
+        "hall_budget_W": 0.003,
+        "power_cases": [
+          "4Hz_0.3mm",
+          "6Hz_0.3mm",
+          "8Hz_0.3mm",
+          "10Hz_0.3mm",
+          "12Hz_0.3mm"
+        ],
+        "hall_gap_extra": 0.0001,
+        "hall_location": "nose"
+      },
+      "design_SI": {
+        "w": 0.0028993994317201297,
+        "t": 0.0005441337127252612,
+        "Lf": 0.03059608450944025,
+        "Lc": 0.0035,
+        "d": 0.002541245205517267,
+        "zg": 0.06549976257393127,
+        "zc0": 0.01898382006221347,
+        "leaf_t": 4.090413805130914e-05,
+        "leaf_w": 0.0015049488661614443,
+        "leaf_L": 0.007919808609332444,
+        "Fc": 0.15,
+        "r_ring": 0.0018873319648912098,
+        "V": 54.17101786283172,
+        "L_cell": 0.04,
+        "q_stop": 0.0005001700354873577,
+        "n2": 1.0
+      },
+      "status": "PROPOSED DESIGN (opt/hardware); plates scaled from AMF-11/AMF-53 (CALC, EXP-Q04 to confirm)"
+    },
+    "P02b": {
+      "label": "P0.2b: catalogue plate thickness 0.67 mm, one plate per position, PIC252 (custom width and length only): Q-PIC252-s1-C17200-recovery_lt8365-drv5055a4_x2-ic",
+      "fit": "opt/hardware fit constraints; CAD rebuild all_ok",
+      "plates_per_axis": 2,
+      "axes": 2,
+      "bender": {
+        "w": 0.0036024573413744646,
+        "t": 0.00067,
+        "L_free": 0.02866992021888855,
+        "L_total": 0.03216992021888855,
+        "delta_f": 0.00047179074797301727,
+        "F_b": 0.3146429226205888,
+        "C_half": 5.597949299141207e-07,
+        "V_full": 60.0,
+        "fr": 359.124700966424
+      },
+      "leaf": {
+        "t": 3.1823642181423574e-05,
+        "w": 0.001550032945056112,
+        "L": 0.005811446226821159,
+        "E": 131000000000.0,
+        "G": 50400000000.0,
+        "Cb_over_K": 5.0
+      },
+      "k_gimbal_nib": 2.0,
+      "cad": {
+        "z_gimbal": 65.5,
+        "collar_z0": 14.8822,
+        "collar_L": 3.0,
+        "z_plate_tip": 23.6937,
+        "nib_travel": 0.4,
+        "refill_L": 67.0,
+        "ball_d": 0.7,
+        "plate_d": 2.6274,
+        "parts": [
+          [
+            "barrel",
+            "fixed",
+            2.723,
+            84.97
+          ],
+          [
+            "skid_ring",
+            "fixed",
+            0.003,
+            1.37
+          ],
+          [
+            "rear_cap",
+            "fixed",
+            0.123,
+            163.99
+          ],
+          [
+            "clamp_block",
+            "fixed",
+            0.612,
+            54.11
+          ],
+          [
+            "bulkhead",
+            "fixed",
+            0.046,
+            77.4
+          ],
+          [
+            "battery",
+            "fixed",
+            3.451,
+            141.0
+          ],
+          [
+            "gimbal_flexure",
+            "fixed",
+            0.029,
+            65.5
+          ],
+          [
+            "pcb",
+            "fixed",
+            0.333,
+            99.0
+          ],
+          [
+            "pcb_components_envelope",
+            "fixed",
+            1.004,
+            99.0
+          ],
+          [
+            "hall_3d_nose",
+            "fixed",
+            0.003,
+            16.38
+          ],
+          [
+            "optical_sensor",
+            "fixed",
+            0.004,
+            12.88
+          ],
+          [
+            "snubber_1",
+            "fixed",
+            0.015,
+            29.43
+          ],
+          [
+            "snubber_2",
+            "fixed",
+            0.017,
+            35.16
+          ],
+          [
+            "snubber_3",
+            "fixed",
+            0.019,
+            40.9
+          ],
+          [
+            "snubber_4",
+            "fixed",
+            0.02,
+            46.63
+          ],
+          [
+            "bender_x_neg",
+            "bender",
+            0.606,
+            39.78
+          ],
+          [
+            "bender_x_pos",
+            "bender",
+            0.606,
+            39.78
+          ],
+          [
+            "bender_y_neg",
+            "bender",
+            0.606,
+            39.78
+          ],
+          [
+            "bender_y_pos",
+            "bender",
+            0.606,
+            39.78
+          ],
+          [
+            "leaf_x_neg",
+            "leaf",
+            0.002,
+            20.79
+          ],
+          [
+            "leaf_x_pos",
+            "leaf",
+            0.002,
+            20.79
+          ],
+          [
+            "leaf_y_neg",
+            "leaf",
+            0.002,
+            20.79
+          ],
+          [
+            "leaf_y_pos",
+            "leaf",
+            0.002,
+            20.79
+          ],
+          [
+            "refill_D1",
+            "moving",
+            0.84,
+            34.7
+          ],
+          [
+            "collar",
+            "moving",
+            0.091,
+            16.38
+          ],
+          [
+            "collar_liner",
+            "moving",
+            0.005,
+            16.38
+          ],
+          [
+            "collar_magnet",
+            "moving",
+            0.004,
+            16.38
+          ],
+          [
+            "gimbal_hub",
+            "moving",
+            0.016,
+            65.5
+          ],
+          [
+            "rear_plug",
+            "moving",
+            0.005,
+            67.5
+          ],
+          [
+            "axial_magnet",
+            "moving",
+            0.004,
+            67.55
+          ],
+          [
+            "nib_spring",
+            "moving",
+            0.075,
+            72.5
+          ]
+        ],
+        "mass_total_g": 11.87,
+        "source": "results/opt/cad/pencil_revPQ_P02b_summary.json"
+      },
+      "options": {
+        "topology": "Q",
+        "ceramic": "PIC252",
+        "stack": 1,
+        "leaf_mat": "C17200",
+        "driver": "recovery_lt8365",
+        "hall": "drv5055a4_x2",
+        "clamp_electroded": false,
+        "sweep_mode": "derived",
+        "sweep_margin": 5e-05,
+        "theta_wc": 35.0,
+        "mu_wc": 0.15,
+        "tol_wc": -0.2,
+        "theta_nom": 50.0,
+        "mu_nom": 0.15,
+        "servo_margin": 0.0001,
+        "q_lim_min": 0.0003,
+        "k_gimbal_nib": 2.0,
+        "leaf_design_convention": true,
+        "hinge_frac": 0.1,
+        "lever_eff": 0.95,
+        "k_bond_gap": 5e-05,
+        "P_fail_max": 0.0001,
+        "stop_drive_frac": 1.0,
+        "f1_min": 150.0,
+        "mass_max_g": 20.0,
+        "life_min_h": 2.0,
+        "rec_life_min_h": 4.0,
+        "p_el_W": 0.065,
+        "hall_budget_W": 0.003,
+        "power_cases": [
+          "4Hz_0.3mm",
+          "6Hz_0.3mm",
+          "8Hz_0.3mm",
+          "10Hz_0.3mm",
+          "12Hz_0.3mm"
+        ],
+        "hall_gap_extra": 0.0001,
+        "hall_location": "nose"
+      },
+      "design_SI": {
+        "w": 0.0036024573413744646,
+        "t": 0.00067,
+        "Lf": 0.02866992021888855,
+        "Lc": 0.0035,
+        "d": 0.0026274062969470725,
+        "zg": 0.0655,
+        "zc0": 0.014882207637917451,
+        "leaf_t": 3.1823642181423574e-05,
+        "leaf_w": 0.001550032945056112,
+        "leaf_L": 0.005811446226821159,
+        "Fc": 0.15,
+        "r_ring": 0.0014,
+        "V": 60.0,
+        "L_cell": 0.04,
+        "q_stop": 0.0004000141415322057,
+        "n2": 1.0
+      },
+      "status": "PROPOSED DESIGN (opt/hardware); plates scaled from AMF-11/AMF-53 (CALC, EXP-Q04 to confirm)"
+    },
+    "P02c": {
+      "label": "P0.2c: one plate per position (PIC252, custom thickness): no stacked plates: Q-PIC252-s1-C17200-recovery_lt8365-drv5055a4_x2-ic",
+      "fit": "opt/hardware fit constraints; CAD rebuild all_ok",
+      "plates_per_axis": 2,
+      "axes": 2,
+      "bender": {
+        "w": 0.0032260570483800596,
+        "t": 0.0009598302067940316,
+        "L_free": 0.036290151431491724,
+        "L_total": 0.03979015143149173,
+        "delta_f": 0.0005276602770601654,
+        "F_b": 0.4568441722812573,
+        "C_half": 9.09042239803233e-07,
+        "V_full": 60.0,
+        "fr": 321.0999930267941
+      },
+      "leaf": {
+        "t": 3.780079713047137e-05,
+        "w": 0.001550042936297298,
+        "L": 0.006327705719738033,
+        "E": 131000000000.0,
+        "G": 50400000000.0,
+        "Cb_over_K": 5.0
+      },
+      "k_gimbal_nib": 2.0,
+      "cad": {
+        "z_gimbal": 65.5,
+        "collar_z0": 14.8821,
+        "collar_L": 3.0,
+        "z_plate_tip": 24.2098,
+        "nib_travel": 0.4,
+        "refill_L": 67.0,
+        "ball_d": 0.7,
+        "plate_d": 2.5841,
+        "parts": [
+          [
+            "barrel",
+            "fixed",
+            2.723,
+            84.97
+          ],
+          [
+            "skid_ring",
+            "fixed",
+            0.003,
+            1.37
+          ],
+          [
+            "rear_cap",
+            "fixed",
+            0.123,
+            163.99
+          ],
+          [
+            "clamp_block",
+            "fixed",
+            0.612,
+            62.25
+          ],
+          [
+            "bulkhead",
+            "fixed",
+            0.046,
+            77.4
+          ],
+          [
+            "battery",
+            "fixed",
+            3.451,
+            141.0
+          ],
+          [
+            "gimbal_flexure",
+            "fixed",
+            0.029,
+            65.5
+          ],
+          [
+            "pcb",
+            "fixed",
+            0.333,
+            99.0
+          ],
+          [
+            "pcb_components_envelope",
+            "fixed",
+            1.004,
+            99.0
+          ],
+          [
+            "hall_3d_nose",
+            "fixed",
+            0.003,
+            16.38
+          ],
+          [
+            "optical_sensor",
+            "fixed",
+            0.004,
+            12.88
+          ],
+          [
+            "snubber_1",
+            "fixed",
+            0.014,
+            31.47
+          ],
+          [
+            "snubber_2",
+            "fixed",
+            0.016,
+            38.73
+          ],
+          [
+            "snubber_3",
+            "fixed",
+            0.017,
+            45.98
+          ],
+          [
+            "snubber_4",
+            "fixed",
+            0.018,
+            53.24
+          ],
+          [
+            "bender_x_neg",
+            "bender",
+            0.961,
+            44.1
+          ],
+          [
+            "bender_x_pos",
+            "bender",
+            0.961,
+            44.1
+          ],
+          [
+            "bender_y_neg",
+            "bender",
+            0.961,
+            44.1
+          ],
+          [
+            "bender_y_pos",
+            "bender",
+            0.961,
+            44.1
+          ],
+          [
+            "leaf_x_neg",
+            "leaf",
+            0.003,
+            21.05
+          ],
+          [
+            "leaf_x_pos",
+            "leaf",
+            0.003,
+            21.05
+          ],
+          [
+            "leaf_y_neg",
+            "leaf",
+            0.003,
+            21.05
+          ],
+          [
+            "leaf_y_pos",
+            "leaf",
+            0.003,
+            21.05
+          ],
+          [
+            "refill_D1",
+            "moving",
+            0.84,
+            34.7
+          ],
+          [
+            "collar",
+            "moving",
+            0.091,
+            16.38
+          ],
+          [
+            "collar_liner",
+            "moving",
+            0.005,
+            16.38
+          ],
+          [
+            "collar_magnet",
+            "moving",
+            0.004,
+            16.38
+          ],
+          [
+            "gimbal_hub",
+            "moving",
+            0.016,
+            65.5
+          ],
+          [
+            "rear_plug",
+            "moving",
+            0.005,
+            67.5
+          ],
+          [
+            "axial_magnet",
+            "moving",
+            0.004,
+            67.55
+          ],
+          [
+            "nib_spring",
+            "moving",
+            0.075,
+            72.5
+          ]
+        ],
+        "mass_total_g": 13.29,
+        "source": "results/opt/cad/pencil_revPQ_P02c_summary.json"
+      },
+      "options": {
+        "topology": "Q",
+        "ceramic": "PIC252",
+        "stack": 1,
+        "leaf_mat": "C17200",
+        "driver": "recovery_lt8365",
+        "hall": "drv5055a4_x2",
+        "clamp_electroded": false,
+        "sweep_mode": "derived",
+        "sweep_margin": 5e-05,
+        "theta_wc": 35.0,
+        "mu_wc": 0.15,
+        "tol_wc": -0.2,
+        "theta_nom": 50.0,
+        "mu_nom": 0.15,
+        "servo_margin": 0.0001,
+        "q_lim_min": 0.0003,
+        "k_gimbal_nib": 2.0,
+        "leaf_design_convention": true,
+        "hinge_frac": 0.1,
+        "lever_eff": 0.95,
+        "k_bond_gap": 5e-05,
+        "P_fail_max": 0.0001,
+        "stop_drive_frac": 1.0,
+        "f1_min": 150.0,
+        "mass_max_g": 20.0,
+        "life_min_h": 2.0,
+        "rec_life_min_h": 4.0,
+        "p_el_W": 0.065,
+        "hall_budget_W": 0.003,
+        "power_cases": [
+          "4Hz_0.3mm",
+          "6Hz_0.3mm",
+          "8Hz_0.3mm",
+          "10Hz_0.3mm",
+          "12Hz_0.3mm"
+        ],
+        "hall_gap_extra": 0.0001,
+        "hall_location": "nose"
+      },
+      "design_SI": {
+        "w": 0.0032260570483800596,
+        "t": 0.0009598302067940316,
+        "Lf": 0.036290151431491724,
+        "Lc": 0.0035,
+        "d": 0.0025841134296645365,
+        "zg": 0.0655,
+        "zc0": 0.014882142844858528,
+        "leaf_t": 3.780079713047137e-05,
+        "leaf_w": 0.001550042936297298,
+        "leaf_L": 0.006327705719738033,
+        "Fc": 0.15,
+        "r_ring": 0.0014,
+        "V": 58.41876532531262,
+        "L_cell": 0.04,
+        "q_stop": 0.0004000008711782299,
+        "n2": 1.0
+      },
+      "status": "PROPOSED DESIGN (opt/hardware); plates scaled from AMF-11/AMF-53 (CALC, EXP-Q04 to confirm)"
+    },
+    "P02s": {
+      "label": "P0.2s: static-stroke optimum (two plates per position): Q-PIC251-s2-C17200-recovery_lt8365-drv5055a4_x2-ic",
+      "fit": "opt/hardware fit constraints; CAD rebuild all_ok",
+      "plates_per_axis": 2,
+      "axes": 2,
+      "bender": {
+        "w": 0.002834675854643226,
+        "t": 0.0012012155385298761,
+        "L_free": 0.03311917747076871,
+        "L_total": 0.03661917747076871,
+        "delta_f": 0.000755314682641819,
+        "F_b": 0.42557034775991176,
+        "C_half": 1.9229813654149404e-06,
+        "V_full": 60.0,
+        "fr": 258.57161204488324
+      },
+      "leaf": {
+        "t": 4.656121912255041e-05,
+        "w": 0.0015530890347829449,
+        "L": 0.009,
+        "E": 131000000000.0,
+        "G": 50400000000.0,
+        "Cb_over_K": 5.0
+      },
+      "k_gimbal_nib": 2.0,
+      "cad": {
+        "z_gimbal": 65.5,
+        "collar_z0": 15.3808,
+        "collar_L": 3.0,
+        "z_plate_tip": 27.3808,
+        "nib_travel": 0.4,
+        "refill_L": 67.0,
+        "ball_d": 0.7,
+        "plate_d": 2.532,
+        "parts": [
+          [
+            "barrel",
+            "fixed",
+            2.723,
+            84.97
+          ],
+          [
+            "skid_ring",
+            "fixed",
+            0.003,
+            1.37
+          ],
+          [
+            "rear_cap",
+            "fixed",
+            0.123,
+            163.99
+          ],
+          [
+            "clamp_block",
+            "fixed",
+            0.612,
+            62.25
+          ],
+          [
+            "bulkhead",
+            "fixed",
+            0.046,
+            77.4
+          ],
+          [
+            "battery",
+            "fixed",
+            3.451,
+            141.0
+          ],
+          [
+            "gimbal_flexure",
+            "fixed",
+            0.029,
+            65.5
+          ],
+          [
+            "pcb",
+            "fixed",
+            0.333,
+            99.0
+          ],
+          [
+            "pcb_components_envelope",
+            "fixed",
+            1.004,
+            99.0
+          ],
+          [
+            "hall_3d_nose",
+            "fixed",
+            0.003,
+            16.88
+          ],
+          [
+            "optical_sensor",
+            "fixed",
+            0.004,
+            13.38
+          ],
+          [
+            "snubber_1",
+            "fixed",
+            0.013,
+            34.0
+          ],
+          [
+            "snubber_2",
+            "fixed",
+            0.015,
+            40.63
+          ],
+          [
+            "snubber_3",
+            "fixed",
+            0.016,
+            47.25
+          ],
+          [
+            "snubber_4",
+            "fixed",
+            0.017,
+            53.88
+          ],
+          [
+            "bender_x_neg",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "bender_x_pos",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "bender_y_neg",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "bender_y_pos",
+            "bender",
+            1.013,
+            45.69
+          ],
+          [
+            "leaf_x_neg",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "leaf_x_pos",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "leaf_y_neg",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "leaf_y_pos",
+            "leaf",
+            0.005,
+            22.88
+          ],
+          [
+            "refill_D1",
+            "moving",
+            0.84,
+            34.7
+          ],
+          [
+            "collar",
+            "moving",
+            0.091,
+            16.88
+          ],
+          [
+            "collar_liner",
+            "moving",
+            0.005,
+            16.88
+          ],
+          [
+            "collar_magnet",
+            "moving",
+            0.004,
+            16.88
+          ],
+          [
+            "gimbal_hub",
+            "moving",
+            0.016,
+            65.5
+          ],
+          [
+            "rear_plug",
+            "moving",
+            0.005,
+            67.5
+          ],
+          [
+            "axial_magnet",
+            "moving",
+            0.004,
+            67.55
+          ],
+          [
+            "nib_spring",
+            "moving",
+            0.075,
+            72.5
+          ]
+        ],
+        "mass_total_g": 13.5,
+        "source": "results/opt/cad/pencil_revPQ_P02s_summary.json"
+      },
+      "options": {
+        "topology": "Q",
+        "ceramic": "PIC251",
+        "stack": 2,
+        "leaf_mat": "C17200",
+        "driver": "recovery_lt8365",
+        "hall": "drv5055a4_x2",
+        "clamp_electroded": false,
+        "sweep_mode": "derived",
+        "sweep_margin": 5e-05,
+        "theta_wc": 35.0,
+        "mu_wc": 0.15,
+        "tol_wc": -0.2,
+        "theta_nom": 50.0,
+        "mu_nom": 0.15,
+        "servo_margin": 0.0001,
+        "q_lim_min": 0.0003,
+        "k_gimbal_nib": 2.0,
+        "leaf_design_convention": true,
+        "hinge_frac": 0.1,
+        "lever_eff": 0.95,
+        "k_bond_gap": 5e-05,
+        "P_fail_max": 0.0001,
+        "stop_drive_frac": 1.0,
+        "f1_min": 150.0,
+        "mass_max_g": 20.0,
+        "life_min_h": 2.0,
+        "rec_life_min_h": 4.0,
+        "p_el_W": 0.065,
+        "hall_budget_W": 0.003,
+        "power_cases": [
+          "4Hz_0.3mm",
+          "6Hz_0.3mm",
+          "8Hz_0.3mm",
+          "10Hz_0.3mm",
+          "12Hz_0.3mm"
+        ],
+        "hall_gap_extra": 0.0001,
+        "hall_location": "nose"
+      },
+      "design_SI": {
+        "w": 0.002834675854643226,
+        "t": 0.0006006077692649381,
+        "Lf": 0.03311917747076871,
+        "Lc": 0.0035,
+        "d": 0.002531971020667661,
+        "zg": 0.0655,
+        "zc0": 0.0153808225292589,
+        "leaf_t": 4.656121912255041e-05,
+        "leaf_w": 0.0015530890347829449,
+        "leaf_L": 0.009,
+        "Fc": 0.15,
+        "r_ring": 0.0014,
+        "V": 58.047498768153474,
+        "L_cell": 0.04,
+        "q_stop": 0.0003999999523576803,
+        "n2": 1.0
+      },
+      "status": "PROPOSED DESIGN (opt/hardware); plates scaled from AMF-11/AMF-53 (CALC, EXP-Q04 to confirm)"
+    }
+  },
+  "usage": "PencilConfig(stage_key=<key>, pen_mass=cad.mass_total_g*1.1e-3, V_rail=options V); Controller(q_lim=nib_travel - 0.1 mm); opt.hardware.p1_harness.pencil_config() fills pen_mass"
+}

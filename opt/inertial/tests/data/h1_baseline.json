@@ -1,0 +1,179 @@
+{
+ "note": "SHA-256 of sim/handpen outputs recorded BEFORE opt/inertial extended sim/handpen; see h1_regression_cases.py",
+ "git_revision": "9d309a0",
+ "sim_handpen_modified_at_recording": false,
+ "numpy": "2.4.6",
+ "cases": {
+  "none_clean": {
+   "rec_sha256": "a7049251486825c22f4bb539c6a46f0674dc6b3d7daf5bc1555b4273a37f6d77",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 0.0
+  },
+  "none_tremor": {
+   "rec_sha256": "1c7f575026bc27aa4b282d825d7254e02db09cbc3b9b1389389050c4c9f3761b",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 191.68387497433332
+  },
+  "stage": {
+   "rec_sha256": "e74a6ea2aded2b5abcf8c06c4c85c2387018355455a7973a16fac3400c10a2f4",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 26.60638612791446
+  },
+  "rm_slug3_uff": {
+   "rec_sha256": "acd0893bd29befdfb2af33c96e6c64ce2b8ea76ab32228f48aefe2ecedf71c5f",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 271.4263731416922
+  },
+  "rm_slug3_uff_stage": {
+   "rec_sha256": "64268d217f6831e06a7a199e8d83fad98151aa41512bc88b67b6b32f1da33406",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 55.41730307408077
+  },
+  "rm_cell": {
+   "rec_sha256": "8d4b787718fbc5bad5264e108135719c0589c7dd08dd7116b2e15c5e8b1ad9e8",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 190.78305785576654
+  },
+  "cmg_2ax_uff": {
+   "rec_sha256": "e46c69d2beea0d5c736fad438a34844a2c6c16dc0d86c7aaad22c3369913f549",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 168.9387300989916
+  },
+  "cmg_lat_stage": {
+   "rec_sha256": "ef183bf323677a034227c1353b54644cebe7b9f286d1e3e2e69be917b128092d",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 24.300780247877803
+  },
+  "tmd_8": {
+   "rec_sha256": "21ddfca36bee9d53fc0e288f009fcb0053ea8930844520482e5d7075db20c6b3",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 181.2413376510448
+  },
+  "gyro_30k": {
+   "rec_sha256": "ad011f589d3e3cfb02ee870c0a52f4f34293abe43e4c5c43ea17f2d955977f54",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 186.47232734667537
+  },
+  "cap_10g": {
+   "rec_sha256": "6b6cc11e7ac7ee64d3aa1f14a1e847cdd02b4b091d93e46352e41f2c7503f794",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 178.41832753870162
+  },
+  "locked": {
+   "rec_sha256": "7db5ce531e2ba9bc367816c64bb087b6a58140adb27613ab22be50937d66f2f1",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 193.48400801454733
+  },
+  "rot_yaw_stage": {
+   "rec_sha256": "4bd7ec2bf09732b85ec6279904229f48af1a193bdd568e615590844a3ffe5cc2",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 66.32020413746802
+  },
+  "rot_pitch": {
+   "rec_sha256": "22b6fc4d5f21f391064ed7caa9486bf97737ea3129d9b58fe2c21cf2c42adfb1",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 37.038916090766506
+  },
+  "voluntary": {
+   "rec_sha256": "eec9c9fa803403d08a7cafabc6b3e1627f7e625253fe91e3bcace8469f2e1b47",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 164.7535722739925
+  },
+  "visc_soft": {
+   "rec_sha256": "1c0f2d5125f8c77b30db871fc83e98e6893545b922510eb284ca218d2bac41e0",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 83.42454688069
+  },
+  "split_0.7_0.1_mu": {
+   "rec_sha256": "9312dfeb198ce0a0c87ee28ee7e3d549ac777cbb5ec15ffafd71b2b6a3ba5fdb",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 252.94723086556994
+  },
+  "tilt35": {
+   "rec_sha256": "91bf89c724979f1166fb83464ab33e4f29f106afeaae72901ed1d6a22dda3f58",
+   "shape": [
+    3000,
+    57
+   ],
+   "ink_rms_um": 194.33067808216018
+  },
+  "ilc_rm": {
+   "rec_sha256": "37cd21bea6b5700395d43bdc051496aa53efce3ac3ed33565415a2ceb968dbab",
+   "u_sha256": "b03dd9a113573623f51c2f38c45a45381c46eb9c0f08d6e8ce742abf17099a1f",
+   "hist": [
+    0.00017093651412516085,
+    0.0001527318941040003,
+    0.00015452452996223172
+   ]
+  },
+  "ilc_cmg": {
+   "rec_sha256": "2846d649d88689547f00613d5fca202f9f00ab1ade976b58fdb4d2f18a82b784",
+   "u_sha256": "61166892910f039ec049188317f08ffc2b212a0f31caf7a7e29589aba4275789",
+   "hist": [
+    0.00015642207715632378,
+    0.00013316223990966056,
+    0.0001319476089957434
+   ]
+  },
+  "lin_none": {
+   "frf_sha256": "94430b6d21539cfee6835c3e324d7a9aa7e65c9add9f79ac22e4103ad886180a"
+  },
+  "lin_rm": {
+   "frf_sha256": "291eff2904ed6fc65ab20fa2039df1215bcccd751a9e11ecc844d9e63f192684"
+  },
+  "lin_gyro": {
+   "frf_sha256": "94b941d51be8f07efb7a0d0fc087c3848858acc8190bbe275df02bf6fd761a22"
+  }
+ }
+}

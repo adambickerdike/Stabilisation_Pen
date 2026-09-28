@@ -25,6 +25,14 @@ Architecture (docs/pencil_concept.md):
 Outputs (results/cad/): pencil_revP{L,Q}_assembly.step, _summary.json (mass,
 centre of mass, fit checks) and _viewer.json (primitives for the 3-D page).
 Run: python3 mechanics/cad/pencil_revP.py [--variant L|Q]
+Overlay (rebuild a proposed design without editing config/pencil.yaml):
+     python3 mechanics/cad/pencil_revP.py --variant Q --overlay results/opt/pencil_P0.2_proposed.yaml \
+         --tag pencil_revPQ_P02 --out results/opt/cad [--no-step]
+     The overlay file (YAML or JSON) holds primary CAD parameters in mm, either at the top level
+     or under "cad_parameters_mm" (e.g. plate_w, plate_t, plate_free, plate_clamp, plate_d,
+     collar_z0, z_plate_tip, z_gimbal, leaf_t, leaf_w, tip_sweep, nib_travel, skid_r, batt_L).
+     Derived quantities (lever, clamp positions, ...) are recomputed; without --overlay the
+     outputs are unchanged.
 """
 from __future__ import annotations
 
@@ -45,7 +53,21 @@ OUT = os.path.join(ROOT, "results", "cad")
 PENCIL = os.path.join(ROOT, "config", "pencil.yaml")
 
 
-def parameters(variant: str) -> dict:
+DERIVED = ("r_bore", "z_skid", "plate_L", "z_clamp0", "z_clamp1", "z_spring0", "z_bulkhead", "z_pcb0",
+           "z_batt0", "z_cap0", "lever")
+OPTIONAL = {"hall_gap_extra": 0.0}   # overlay-only parameters (mm); absent from the default parameter set
+
+
+def load_overlay(path: str) -> dict:
+    """CAD parameter overlay (mm) from a YAML or JSON file: top-level mapping or 'cad_parameters_mm'."""
+    import yaml
+    with open(path, "r", encoding="utf-8") as f:
+        d = yaml.safe_load(f)          # JSON is valid YAML
+    d = d.get("cad_parameters_mm", d)
+    return {k: (v.get("value") if isinstance(v, dict) else v) for k, v in d.items()}
+
+
+def parameters(variant: str, overlay: dict | None = None) -> dict:
     pc = sp_params.load(PENCIL)
     mm = 1e3
     P = dict(
@@ -72,6 +94,12 @@ def parameters(variant: str) -> dict:
     # plate width, number and mid-plane offset from the axis; the Q plates sit further out so the
     # snubber frames keep a web between the refill hole and the plate windows
     P["plate_w"], P["n_plates"], P["plate_d"] = {"L": (3.5, 2, 2.15), "Q": (2.6, 4, 2.55)}[variant]
+    if overlay:
+        bad = sorted(k for k in overlay if k in DERIVED or (k not in P and k not in OPTIONAL))
+        if bad:
+            raise KeyError(f"overlay keys are not primary CAD parameters: {bad}")
+        for k, v in overlay.items():
+            P[k] = tuple(v) if isinstance(v, list) else v
     P["r_bore"] = P["od"] / 2 - P["wall"]
     P["z_skid"] = P["skid_r"] / math.tan(math.radians(P["theta_design"]))     # ring plane above the ball, in contact
     P["plate_L"] = P["plate_free"] + P["plate_clamp"]
@@ -256,7 +284,7 @@ def pcb(P):
 def hall_nose(P):
     zc = P["collar_z0"] + P["collar_L"] / 2
     sweep = P["nib_travel"] / P["lever"]                          # collar travel at the nib stops
-    x0 = P["collar_od"] / 2 + 0.3 + sweep + 0.15                  # sensor face beyond the magnet's swept position
+    x0 = P["collar_od"] / 2 + 0.3 + sweep + 0.15 + P.get("hall_gap_extra", 0.0)   # sensor face beyond the swept magnet
     return box(0.6, 1.5, 1.5, x0 + 0.3, 0.0, zc), x0
 
 
@@ -458,9 +486,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--variant", default="L", choices=("L", "Q"))
     ap.add_argument("--no-step", action="store_true")
+    ap.add_argument("--overlay", default=None, help="YAML/JSON file of primary CAD parameters (mm) to override")
+    ap.add_argument("--tag", default=None, help="output file stem (default pencil_revP<variant>)")
+    ap.add_argument("--out", default=None, help="output directory (default results/cad)")
     a = ap.parse_args()
-    P = parameters(a.variant)
-    tag = f"pencil_revP{a.variant}"
+    ov = load_overlay(a.overlay) if a.overlay else None
+    P = parameters(a.variant, ov)
+    tag = a.tag or f"pencil_revP{a.variant}"
+    OUT = a.out or globals()["OUT"]
     os.makedirs(OUT, exist_ok=True)
     fixed, benders, lvs, moving, pl = build(P)
     rows = mass_table({"fixed": fixed, "bender": benders, "leaf": lvs, "moving": moving})
@@ -492,8 +525,11 @@ def main():
                  "(AMF-11). Fit checks use nominal dimensions and rigid parts. The nose must be compliant so a "
                  "1 m drop pulse lasts >= 2 ms (analysis/pencil_mechanisms.py s4.6); not modelled here."),
     }
-    meta = provenance.metadata("proposed design (CAD concept, nominal geometry)",
-                               extra={"cadquery": cq.__version__, "pencil_params": sp_params.load(PENCIL).version()})
+    extra = {"cadquery": cq.__version__, "pencil_params": sp_params.load(PENCIL).version()}
+    if ov:
+        summary["overlay"] = {"file": os.path.relpath(os.path.abspath(a.overlay), ROOT), "parameters_mm": ov}
+        extra["overlay"] = summary["overlay"]["file"]
+    meta = provenance.metadata("proposed design (CAD concept, nominal geometry)", extra=extra)
     provenance.write_json(os.path.join(OUT, f"{tag}_summary.json"), {"meta": meta, "summary": summary, "parts": rows})
     provenance.write_json(os.path.join(OUT, f"{tag}_viewer.json"),
                           {"meta": meta, "units": "mm", "frame": "origin at the ball centre in contact at 50 deg tilt; z along the barrel toward the cap",

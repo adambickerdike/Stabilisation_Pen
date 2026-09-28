@@ -138,11 +138,13 @@ def cad(variant: str = "Q") -> dict:
     return fb
 
 
-def nib_assembly(variant: str = "Q") -> dict:
+def nib_assembly(variant: str = "Q", cad_dict: dict | None = None) -> dict:
     """Rotational inertia of the nib assembly about the rear gimbal and its lever factors.
     The refill is a uniform rod (length refill_L); other parts are point masses at their CoM.
-    The nib spring bears on the bulkhead and is excluded from the rotating mass."""
-    c = cad(variant)
+    The nib spring bears on the bulkhead and is excluded from the rotating mass.
+    cad_dict: optional geometry in the format returned by cad() (used by registered stages);
+    None reads the CAD summary of the variant, as before."""
+    c = cad(variant) if cad_dict is None else cad_dict
     zg = c["z_gimbal"] * 1e-3
     J = 0.0
     m_rot = 0.0
@@ -385,7 +387,11 @@ def stage(key: str = "Q26", V_rail: float = PICMA_V, leaf: Leaf = RECOMMENDED_LE
           k_gimbal_nib: float = 2.0, variant_cad: str | None = None, tol: float = 0.0) -> Stage:
     """Build a stage variant.  tol = -0.2 applies the AMF-11 -20 % tolerance to stroke and force.
     k_gimbal_nib: ASSUMPTION (cross-strip gimbal about 0.8 N/m at the nib by beam theory; 2 N/m
-    with margin; the CAD gimbal is an envelope only)."""
+    with margin; the CAD gimbal is an envelope only).
+    Keys outside STAGE_VARIANTS are looked up in the registry of custom stage specifications
+    (register_stage(), results/opt/stage_registry.json written by opt/hardware)."""
+    if key not in STAGE_VARIANTS:
+        return _registered_stage(key, V_rail, leaf, k_gimbal_nib, variant_cad, tol)
     label, w, ppa, axes, fit = STAGE_VARIANTS[key]
     b = picma_width(w, key)
     if tol:
@@ -393,6 +399,12 @@ def stage(key: str = "Q26", V_rail: float = PICMA_V, leaf: Leaf = RECOMMENDED_LE
                    b.C_half, b.fr_datasheet)
     b = b.scaled(V_rail)
     nib = nib_assembly(variant_cad or ("L" if key.startswith("L") else "Q"))
+    return _reduce_stage(key, label, b, ppa, axes, fit, leaf, k_gimbal_nib, nib, V_rail)
+
+
+def _reduce_stage(key, label, b, ppa, axes, fit, leaf, k_gimbal_nib, nib, V_rail) -> Stage:
+    """Reduction of a bender set, its leaves and the nib assembly to collar and nib quantities
+    (shared by the catalogue variants and the registered custom stages)."""
     n = nib["n_lever"]
     k_col = ppa * b.k
     F_b_col = ppa * b.F_b
@@ -404,6 +416,74 @@ def stage(key: str = "Q26", V_rail: float = PICMA_V, leaf: Leaf = RECOMMENDED_LE
     C_axis = ppa * 2.0 * b.C_half               # centre electrodes of the axis' plates, both halves in parallel
     return Stage(key, label, b, ppa, axes, fit, n, k_col, F_b_col, k_leaf_series, k_par_col, m_col,
                  m_part_col, C_axis, V_rail, nib)
+
+
+# --------------------------------------------------------------------------------------
+# Registry of custom stage specifications (opt/hardware)
+# --------------------------------------------------------------------------------------
+# A registered stage is a fully specified bender set (explicit plate numbers, typically scaled
+# from AMF-11 by opt/hardware), its decoupling leaf, and the geometry of its nib assembly (same
+# keys as cad()).  It is reduced exactly like the catalogue variants above, so the pencil
+# simulator runs it with PencilConfig(stage_key=<key>).  Entries come from register_stage()
+# (this process) and from STAGE_REGISTRY_FILE (written by `python3 -m opt.hardware.run_study`);
+# the in-process entries win.  Evidence status: PROPOSED DESIGN / CALCULATION, as the entry says.
+STAGE_REGISTRY_FILE = os.path.join(ROOT, "results", "opt", "stage_registry.json")
+_STAGE_REGISTRY: dict = {}
+
+
+def register_stage(key: str, spec: dict) -> None:
+    """Register a custom stage.  spec: {"label", "fit", "plates_per_axis", "axes",
+    "bender": {"w", "t", "L_free", "L_total", "delta_f", "F_b", "C_half", "fr", "V_full"} (SI units,
+    values at V_full, nominal tolerance), "leaf": {"t", "w", "L", "E", "G", "Cb_over_K"} (optional,
+    default RECOMMENDED_LEAF), "k_gimbal_nib" (optional), "cad": {cad()-format dict, lengths in mm,
+    masses in g} (optional, default the Q CAD)}."""
+    if key in STAGE_VARIANTS:
+        raise ValueError(f"{key!r} is a built-in stage variant")
+    for req in ("plates_per_axis", "axes", "bender"):
+        if req not in spec:
+            raise ValueError(f"stage spec for {key!r} lacks {req!r}")
+    _STAGE_REGISTRY[key] = dict(spec)
+
+
+def registered_stages() -> dict:
+    """All registered stage specifications (file entries overlaid by in-process entries)."""
+    out = {}
+    if os.path.exists(STAGE_REGISTRY_FILE):
+        try:
+            with open(STAGE_REGISTRY_FILE, encoding="utf-8") as f:
+                out.update(json.load(f).get("stages", {}))
+        except (OSError, ValueError):
+            pass
+    out.update(_STAGE_REGISTRY)
+    return out
+
+
+def _registered_stage(key, V_rail, leaf, k_gimbal_nib, variant_cad, tol) -> Stage:
+    reg = registered_stages()
+    if key not in reg:
+        raise KeyError(f"unknown stage key {key!r}: neither in STAGE_VARIANTS nor registered "
+                       f"(register_stage() or {os.path.relpath(STAGE_REGISTRY_FILE, ROOT)})")
+    s = reg[key]
+    bd = s["bender"]
+    V_full = bd.get("V_full", PICMA_V)
+    b = Bender(bd.get("name", key), bd["w"], bd["t"], bd["L_free"], bd["L_total"], bd["delta_f"], bd["F_b"],
+               bd["C_half"], bd.get("fr", float("nan")), V_full)
+    if tol:
+        b = Bender(b.name, b.w, b.t, b.L_free, b.L_total, b.delta_f * (1 + tol), b.F_b * (1 + tol),
+                   b.C_half, b.fr_datasheet, V_full)
+    b = b.scaled(V_rail)
+    if leaf is RECOMMENDED_LEAF and s.get("leaf"):
+        leaf = Leaf(**s["leaf"])
+    if k_gimbal_nib == 2.0 and "k_gimbal_nib" in s:
+        k_gimbal_nib = s["k_gimbal_nib"]
+    cd = s.get("cad")
+    if cd is not None:
+        cd = dict(cd)
+        cd["parts"] = [tuple(p) for p in cd["parts"]]
+        cd.setdefault("source", f"stage registry ({key})")
+    nib = nib_assembly(variant_cad or "Q", cad_dict=cd)
+    return _reduce_stage(key, s.get("label", key), b, int(s["plates_per_axis"]), int(s["axes"]),
+                         s.get("fit", ""), leaf, k_gimbal_nib, nib, V_rail)
 
 
 # --------------------------------------------------------------------------------------
