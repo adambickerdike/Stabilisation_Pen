@@ -7,9 +7,10 @@ derived digital layer that cites the original strokes (DEC-020 conventions), nev
 
 Methods (all zero-phase; the tremor frequency is estimated from the recording itself, no simulator truth):
   bandstop   Butterworth band-stop around the tremor peak f_hat (and 2 f_hat), filtfilt
-  wiener     non-causal Wiener smoother: the writing's spectrum is a robust power-law floor fitted to the recording's
-             own spectrum outside the tremor band; the tremor's spectrum is the excess above that floor near f_hat
-             and 2 f_hat; gain H = S_w / (S_w + beta S_d) applied by FFT to the recording minus its < 1.5 Hz part.
+  wiener     non-causal Wiener smoother: the writing's spectrum is the running median (+-3 Hz) of the recording's
+             own log spectrum, which follows the writing's slope but not narrow lines; the tremor's spectrum is the excess above twice that floor near
+             f_hat and 2 f_hat; gain H = S_w / (S_w + beta S_d) applied by FFT to the recording minus its < 1.5 Hz
+             part; nothing is changed unless the recording shows a clear line (peak-to-floor >= 3).
              With a stationary model this equals the steady-state forward-backward (RTS) Kalman smoother of an
              intent + tremor-oscillator model, without having to choose its noise levels.
 """
@@ -44,22 +45,15 @@ def spectrum(t: np.ndarray, xy: np.ndarray, nperseg_s: float = 2.0) -> Tuple[np.
     return f, P.sum(axis=1)
 
 
-def writing_floor(f: np.ndarray, P: np.ndarray, excl=(), fit=(2.0, 30.0), iters: int = 4) -> np.ndarray:
-    """Robust power-law fit log P = a + b log f over `fit`, excluding the `excl` bands and positive outliers."""
-    m = (f >= fit[0]) & (f <= fit[1]) & (P > 0)
-    for lo, hi in excl:
-        m &= ~((f >= lo) & (f <= hi))
-    lf, lp = np.log(f[m]), np.log(P[m])
-    keep = np.ones(len(lf), bool)
-    a = b = 0.0
-    for _ in range(iters):
-        if keep.sum() < 4:
-            break
-        b, a = np.polyfit(lf[keep], lp[keep], 1)
-        r = lp - (a + b * lf)
-        keep = r < 0.5                                   # peaks (tremor, writing rhythm) do not pull the floor up
-    ff = np.maximum(f, 1e-3)
-    return np.exp(a + b * np.log(ff))
+def writing_floor(f: np.ndarray, P: np.ndarray, excl=(), half_window_hz: float = 3.0) -> np.ndarray:
+    """The writing's smooth spectrum: running median of log P over +-half_window_hz.  A running median follows any
+    monotonic slope or knee of the writing's spectrum exactly, but removes narrow lines (tremor, its harmonic).
+    `excl` is kept for the interface: excluded bands are filled by the median of their surroundings anyway."""
+    from scipy.ndimage import median_filter
+    df = float(f[1] - f[0])
+    k = max(3, 2 * int(round(half_window_hz / df)) + 1)
+    lp = np.log(np.maximum(P, 1e-300))
+    return np.exp(median_filter(lp, size=k, mode="nearest"))
 
 
 def tremor_peak(t: np.ndarray, xy: np.ndarray, band=F_BAND) -> Dict[str, float]:
@@ -76,7 +70,7 @@ def tremor_peak(t: np.ndarray, xy: np.ndarray, band=F_BAND) -> Dict[str, float]:
         y0, y1, y2 = np.log(r[i - 1:i + 2])
         den = y0 - 2 * y1 + y2
         if abs(den) > 1e-12:
-            fh = float(f[i] + 0.5 * (y0 - y2) / den * (f[1] - f[0]))
+            fh = float(f[i] + float(np.clip(0.5 * (y0 - y2) / den, -0.5, 0.5)) * (f[1] - f[0]))
     return {"f_hat": fh, "peak_ratio": float(r[i])}
 
 
@@ -97,9 +91,11 @@ def bandstop_clean(t: np.ndarray, xy: np.ndarray, down: np.ndarray, f_hat: Optio
 
 
 def wiener_clean(t: np.ndarray, xy: np.ndarray, down: np.ndarray, f_hat: Optional[float] = None, beta: float = 2.0,
-                 half_width: float = 2.0, h_min: float = 0.0, min_ratio: float = 1.5) -> Tuple[np.ndarray, Dict]:
-    """Non-causal Wiener smoother (see the module docstring).  No correction if the recording shows no tremor line
-    (peak-to-floor ratio below min_ratio): clean writing is returned unchanged."""
+                 half_width: float = 2.0, h_min: float = 0.0, min_ratio: float = 3.0, margin: float = 2.0) -> Tuple[np.ndarray, Dict]:
+    """Non-causal Wiener smoother (see the module docstring).  No correction if the recording shows no clear tremor
+    line (peak-to-floor ratio below min_ratio; clean glyph writing reads 1.6-2.2 on the scorer's definition): clean
+    writing is returned unchanged.  Only the excess above `margin` x the writing floor counts as tremor, so the writing's
+    own spectral bumps are kept."""
     fs = _fs(t)
     f, P = spectrum(t, xy)
     info = tremor_peak(t, xy) if f_hat is None else {"f_hat": float(f_hat), "peak_ratio": float("nan")}
@@ -110,7 +106,7 @@ def wiener_clean(t: np.ndarray, xy: np.ndarray, down: np.ndarray, f_hat: Optiona
     info["applied"] = bool(ratio >= min_ratio)
     if not info["applied"]:
         return xy.copy(), info
-    excess = np.maximum(P - floor, 0.0)
+    excess = np.maximum(P - margin * floor, 0.0)
     inb = np.zeros_like(f, bool)
     for lo, hi in bands:
         inb |= (f >= lo) & (f <= hi)
