@@ -11,7 +11,7 @@ Options (PROPOSED DESIGN variants of the Rev J front end):
   clear_ring      the ring's top part transparent too (sapphire; PMMA or PC would haze on paper)
   no_front        ring and sleeve fully removed: the upper bound, only the nose, the refill and the heel pod block
 Eye positions (ASSUMPTION range; no writing-posture source with eye angles could be opened, see the doc): elevation
-40-75 deg above the paper, azimuth 0-60 deg to the left of the pen's back direction (right-handed), and mirrored for
+40-70 deg above the paper, azimuth 0-60 deg to the left of the pen's back direction (right-handed), and mirrored for
 left-handed writers; the fresh ink trails at 120 deg from the pen's back direction (Rev J's assumption).
 All CALC; nothing measured (EXP-J08 with people).
 """

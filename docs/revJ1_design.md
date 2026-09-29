@@ -26,7 +26,7 @@ Rev J passed all its geometric fit checks, but six loads and budgets failed. Rev
 | P5 ink visibility | Ink hidden at 50–75° for the assumed eye | A clear front-sleeve window, 15 mm long, over the top 240° | Ink visible within 1 mm in 47 % of tilt × eye cases (Rev J 22 %) (CALC) |
 | P6 heel-motor detent | Up to 0.080 mN·m, 7 × the motor friction | Motors and their gears 10 mm further back | 0.0073 mN·m, 0.66 × the friction (CALC, free space) |
 
-**The big caveat.** Every battery and heat number rests on the nose-coil power of study N's model. The running whole-pen simulation (sim2j) has reported 1.3–2.4 W in some tremor runs (unconfirmed). If the coil power doubles, steady writing at 1 mm tremor lasts 4.9–5.3 h and the web reaches 42.1 °C. At five times, 2.0–2.1 h and 63.8 °C. Section 4.6 and section 5.5 show this.
+**The big caveat.** Every battery and heat number rests on the nose-coil power of study N's model. The running whole-pen simulation (sim2j) has reported 1.3–2.4 W in some tremor runs (unconfirmed). If the coil power doubles, steady writing at 1 mm tremor lasts 4.9–5.3 h and the web reaches 42.1 °C. At five times, 2.0–2.1 h and 63.8 °C. Section 4.6 and section 5.4 show this.
 
 **Two findings that change earlier proposals.**
 - Putting the gimbal strips in tension (Rev J's proposal) does not work. A tensioned strip bends in a short layer at its clamp. The strain there grows with the square root of the tension, and it fails fatigue even with 10 mm wide strips (section 3.2).

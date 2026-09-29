@@ -510,4 +510,4 @@ def shock_check(s: Strip, g_levels=(50.0, 100.0, 200.0, 500.0, 1000.0)) -> Dict:
             "stops": stops,
             "proposal": "axial stops on the nose at the gimbal: a rear stop that engages after the strips shorten by <= 5 um "
                         "beyond their loaded position (buckled strips then stay elastic) and a front stop at <= 20 um; the "
-                        "cap-to-plate clearance (0.5 mm) is not a stop (PROPOSED DESIGN; EXP-J10 drop test)"}
+                        "cap-to-plate clearance (0.5 mm) is not a stop (PROPOSED DESIGN; EXP-J11 drop test)"}

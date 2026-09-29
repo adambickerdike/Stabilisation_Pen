@@ -27,7 +27,7 @@ Contents:
 - §43 Rev J nose v2 and autowrite (DEC-036, DEC-039, DEC-041): EXP-N01…N08 (N09 and N10 are in `human_study_plan.md` §18)
 - §44 Simulator v2 validation (DEC-040): EXP-V01…V06, with the Rev H refill front stop (REQ-RVH-008) in EXP-V02
 - §45 Rev J control stack (DEC-042): EXP-L01, L02, L04, L05 (L03, L06, L07 and L08 are in `human_study_plan.md` §19)
-- §46 Rev J integrated layout (DEC-044): EXP-J01…J07 (J08 and J09 are in `human_study_plan.md` §20); the per-mode battery of REQ-RVJ-I01 is AC-P01-06 in EXP-P01 (§18)
+- §46 Rev J integrated layout (DEC-044): EXP-J01…J07, and Rev J.1 (DEC-045): EXP-J10…J14, J16 and the wear part of EXP-J15 (J08, J09 and J15's writers are in `human_study_plan.md` §20); the per-mode battery of REQ-RVJ-I01 is AC-P01-06 in EXP-P01 (§18)
 
 ---
 
@@ -160,7 +160,7 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-F02 | Firmware robustness | B, C | R7 | REQ-CTRL-001/004, REQ-SAF-001/003/004, REQ-SNS-003, DEC-010/015/016, G-S | F01 |
 | EXP-M02 | Flexure fatigue coupons | A | R8 | REQ-MECH-006/007, DEC-007 | coupons |
 | EXP-M03 | Mass, centre of mass and balance of built pens | B, C, D | — | REQ-FORM-001…004, REQ-PNC-001 | pens built |
-| EXP-P01 | Power and runtime | C (and D) | R7, R2 | REQ-PWR-001, REQ-ACT-002, REQ-PNC-005, REQ-RVJ-I01, DEC-008, DEC-044 | P02 |
+| EXP-P01 | Power and runtime | C (and D) | R7, R2 | REQ-PWR-001, REQ-ACT-002, REQ-PNC-005, REQ-RVJ-I01, DEC-008, DEC-044, DEC-045 | P02 |
 | EXP-P02 | Charging and battery safety pre-compliance | C | R7 | REQ-PWR-002/003, REQ-THM-001, G-C | cell samples |
 | EXP-E01 | Estimator bake-off on recorded writing at matched false correction | offline, after H01 | compute | DEC-009, DEC-016, REQ-ML-001, REQ-CTRL-007, REQ-DATA-001 | H01 |
 | EXP-E02 | Closed-loop replay of recorded tremor on the B09 rig | B | R2, R7 | REQ-ML-002, REQ-CTRL-005, REQ-SAF-003, DEC-016 | E01, B09 |
@@ -187,12 +187,12 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-D03 | Heel drive: holding the sheet | A | load cell, 3 desk types | REQ-DRV-011 | heel pod |
 | EXP-D04 | Heel drive: geometry, roll, preload and steering | A | R5 (tilt–roll fixture), load cell | REQ-DRV-004/006/007/008, DEC-036/037/044 (front end) | printed heel, 0620 B motors |
 | EXP-D05 | Heel drive: slip detection | A | linear stage, page-sensor board, encoder, high-speed camera | REQ-DRV-005, DEC-037 | D01, D02 |
-| EXP-D06 | Heel drive: noise, heat, power and runtime | A | R7, sound level meter | REQ-DRV-009/010, REQ-THM-001 | D04; N04 and N08 power logs |
+| EXP-D06 | Heel drive: noise, heat, power and runtime | A | R7, sound level meter | REQ-DRV-009/010, REQ-THM-001, REQ-RVJ-I01 | D04; N04, N08 and J12 power logs |
 | EXP-D07 | Heel drive: force cap, stall and lift safety (gate before D08, D09, D11) | A | 3-axis load cell, R7 | REQ-DRV-001/002/013, DEC-037 | D04, D05 |
 | EXP-D10 | Heel drive: ink smear and wheel track | A | R3, microscope camera | REQ-DRV-012 | D01 |
 | EXP-D12 | Heel drive: durability, cleaning and replacement | A | rolling rig, R1 | REQ-DRV-012 | D01 |
 | EXP-D13 | Driven-ball fallback: roller drag and wear | A | bench ball drive, force sensor | DEC-037 (ball as the bench alternative) | rollers made |
-| EXP-K01 | End-cap: reaction-mass actuator against its model; envelope, power, permeability | A | R4 (6-axis F/T) | REQ-EC-001/008/009, DEC-038 | end-cap prototype |
+| EXP-K01 | End-cap: reaction-mass actuator against its model; envelope, power, permeability | A | R4 (6-axis F/T) | REQ-EC-001/008/009, DEC-038, DEC-045 | end-cap prototype |
 | EXP-K02 | End-cap: tremor on top of the nose on a hand–pen rig (extends I06) | A | EXP-I06 rig, R3 | REQ-EC-002/003, DEC-038 | K01; I01 or K08 |
 | EXP-K04 | End-cap: can inertia steer the ink? (rig, then 6 healthy writers) | A | EXP-K02 rig | REQ-EC-004, DEC-038 | K02; K06 for a rotor |
 | EXP-K06 | End-cap rotor safety (only if a rotor is kept) | A | containment enclosure, drop rig, sound level meter | REQ-EC-007, DEC-038 | CMG research module |
@@ -201,7 +201,7 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-N01 | Nose v2 magnetics coupons, and Rev H's force constant | A | R4 | REQ-RVJ-N02, REQ-RVH-003, DEC-036, DEC-041 | coupons built |
 | EXP-N02 | Nose v2: travel and front-end closure over 35–75° | A | R5 (tilt jig), side camera | REQ-RVJ-N01, DEC-036, DEC-044 | nose prototype; J01 (gimbal load) |
 | EXP-N03 | Nose v2: servo bandwidth and parasitic modes | A | R5, laser vibrometer | REQ-RVJ-N02, DEC-036 | N01, N02 |
-| EXP-N04 | Nose v2: heat at the autowrite duty | A | R4 instruments, IR camera | REQ-RVJ-N03, DEC-036 | N01, N03 |
+| EXP-N04 | Nose v2: heat at the autowrite duty | A | R4 instruments, IR camera | REQ-RVJ-N03, DEC-036, DEC-045 | N01, N03 |
 | EXP-N05 | Pen lift; strokes kept separate at 50–70° | A | R7, high-speed camera, writing robot | REQ-RVJ-N04, DEC-036, DEC-041 | pen-lift module |
 | EXP-N06 | Refill force element fatigue | A | R8 | REQ-RVJ-N05, DEC-036, DEC-041 | candidate springs; J06 cycles the drum's spring |
 | EXP-N07 | Page sensor under the pen | A | R5 motion stage | REQ-RVJ-N06, DEC-036, DEC-037 (slip), DEC-044 | sensor board; J04 (height band) |
@@ -212,18 +212,25 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-V04 | Simulator v2: pen-grasp impedance while writing (participants) | A | R6 | DEC-040 | I01 or B06 sessions; ethics |
 | EXP-V05 | Simulator v2: device effect on a bench against the frozen model | A | R2, R3 | DEC-040, REQ-SIM-001…005 | V01, V02, V04; frozen firmware |
 | EXP-V06 | Simulator v2: population prediction against people | offline, after a human study | compute | DEC-040 | V05; W02 or D09 data |
-| EXP-L01 | Control stack: the tremor-line gate on real tremor-free writing; causality of the stack | offline, after H01; then A | compute; bench pen | REQ-CTRL-009/010, DEC-042 | H01 recordings |
+| EXP-L01 | Control stack: the tremor-line gate on real tremor-free writing; causality of the stack; the gate on the low-power page sensor's stream and on the IMU alone | offline, after H01; then A | compute; bench pen | REQ-CTRL-009/010, DEC-042, DEC-045 | H01 recordings; J10 (the low-power die's stream) |
 | EXP-L02 | Control stack: gated tracker against the Rev H tracker on real writing and on the bench | offline, after H01; then A | compute; R2 (EXP-I05 tremor rig), R3 | REQ-CTRL-011, DEC-042 | L01 |
 | EXP-L04 | Control stack: learned estimator against REQ-ML-001 on real data; MCU timing; shadow mode | offline, after H01; then A | compute; R7 | REQ-ML-001, REQ-ML-003, DEC-042 | H01 recordings; E01 protocol |
 | EXP-L05 | Control stack: RL arbiter in the sim2 closed loop, then on the bench | offline; then A | compute (sim2); EXP-V05 rig | REQ-ML-004, DEC-042 | V05 (REQ-SIM-005) |
-| EXP-J01 | Integrated layout: axial magnetic pull on the gimbal, and centring | A | x-y-z stage over a ±50 N load cell | REQ-RVJ-I02, DEC-044, DEC-036 | C1S cap and plate dummy |
-| EXP-J02 | Integrated layout: heel-motor cogging from the C1S magnets | A | torque sensor; plate dummy and cap | REQ-RVJ-I03, DEC-044, DEC-037 | 0620 B motor |
+| EXP-J01 | Integrated layout: axial magnetic pull on the gimbal, and centring | A | x-y-z stage over a ±50 N load cell | REQ-RVJ-I02, DEC-044, DEC-045, DEC-036 | C1S cap and plate dummy |
+| EXP-J02 | Integrated layout: heel-motor cogging from the C1S magnets, at the Rev J.1 place | A | torque sensor (0.001 mN·m); plate dummy with a 1.5 mm back iron, and cap | REQ-RVJ-I03, REQ-RVJ-I04, DEC-044, DEC-045, DEC-037 | 0620 B motor |
 | EXP-J03 | Integrated layout: nose Hall sensors among the magnets, motors, brake and coils | A | R5 (2-axis micrometre stage) | REQ-RVJ-I04, DEC-044 | board, J02 set-up |
 | EXP-J04 | Integrated layout: page-sensor working band over tilt, roll and height | A | tilt–roll–height stage, encoder stage | REQ-RVJ-N06, REQ-DRV-005, DEC-044 | folded optics; EXP-D01 papers |
-| EXP-J05 | Integrated layout: heat at the web, without and with the aluminium spreader | A | heater in a PEEK shell, IR camera, thermocouples | REQ-RVJ-N03, DEC-044 | printed and moulded shell |
-| EXP-J06 | Integrated layout: ink-force drum, spring and front stop | A | linear stage, R8, R3 | REQ-RVJ-N05, DEC-041, DEC-044 | drum module |
+| EXP-J05 | Integrated layout: heat at the web, bare and with the graphite sheet (DEC-045) | A | heater in a PEEK shell, IR camera, thermocouples | REQ-RVJ-N03, DEC-044, DEC-045 | printed and moulded shell |
+| EXP-J06 | Integrated layout: ink-force drum, spring and front stop | A | linear stage, R8, R3 | REQ-RVJ-N05, REQ-RVJ-N09, DEC-041, DEC-044, DEC-045 | drum module |
 | EXP-J07 | Integrated layout: field outside the pen | A | gaussmeter on a scanning stage | REQ-RVJ-I05, DEC-044 | magnetic mock-up |
-| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-CTRL-012/013, REQ-APP-003/004, DEC-002/008/009/016/020/024/031/035…039/042…044 | ethics |
+| EXP-J10 | Rev J.1: a low-power page sensor (PMW3610 class) in every mode | A | EXP-J04 stage, encoder, current probe | REQ-RVJ-N06, REQ-RVJ-I07, REQ-DRV-005, DEC-042, DEC-045 | folded optics; EXP-D01 papers |
+| EXP-J11 | Rev J.1: the 75 µm gimbal under the pull, fatigue and drops | A | load frame with a rotary stage, R8, drop rig | REQ-RVJ-I02, DEC-045 | J01 (measured pull) |
+| EXP-J12 | Rev J.1: electronics power, then the pen's power per mode | A; then C | R7 | REQ-RVJ-I01, DEC-045 | main board and firmware loop; P01 set-up |
+| EXP-J13 | Rev J.1: heat with the graphite sheet | A | EXP-J05 shell, IR camera, thermocouples, hand phantom | REQ-RVJ-N03, REQ-THM-001, DEC-045 | J05 |
+| EXP-J14 | Rev J.1: K_m and pull with the 1.5 mm back iron | A | R4, EXP-J01 stage, Hall probe | REQ-RVJ-N02, DEC-045 | N01 and J01 coupons |
+| EXP-J15 (wear part) | Rev J.1: wear of the clear window (the writers are in `human_study_plan.md` §20) | A | Taber abraser or steel wool, haze meter | REQ-RVJ-I06, DEC-045 | coated PC coupons |
+| EXP-J16 | Rev J.1: the 29.6 g end-cap on top of the nose (EXP-K02 repeated) | A | EXP-K02 rig (EXP-I06), R3 | REQ-EC-002/003, DEC-038, DEC-045 | K01; I01 or K08 |
+| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-CTRL-012/013, REQ-APP-003/004, DEC-002/008/009/016/020/024/031/035…039/042…045 | ethics |
 
 ---
 
@@ -968,8 +975,8 @@ CSV at 1 Hz (temperatures, power) plus IR image sequences (radiometric, lossless
 <!-- AC-TABLE:EXP-B07:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-B07-01 | REQ-THM-001 | Maximum temperature of continuously held surfaces (grip 0-40 mm and actuator bulge) with a 33 °C hand phantom, 25 °C ambient, steady state at the design-point average copper loss (0.31 W) | ≤ 41 °C | requirement | REQ-THM-001 design target; design-point loss from results/thermal/thermal.json (config B design) | G-S (human use); thermal governor limits |
-| AC-B07-02 | REQ-THM-001 | Maximum held-surface temperature during the 30-min duty-cycle replay including the 2-s 1.4 N transient every 5 min, 25 °C ambient | ≤ 43 °C | requirement | REQ-THM-001 absolute limit (ECMA-287 Table 5.2; IEC 60601-1 Table 24; AMF-34, AMF-35) | G-S |
+| AC-B07-01 | REQ-THM-001 | Maximum temperature of continuously held surfaces (grip 0-40 mm and actuator bulge) with a 33 °C hand phantom, 25 °C ambient, steady state at the design-point average copper loss (0.31 W), referred to the rated 30 °C room (measured - room + 30 °C, ECMA-287 B.5) | ≤ 41 °C | requirement | REQ-THM-001 design target (DEC-045: 41 °C in a rated 30 °C room; was 41 °C at 25 °C ambient); design-point loss from results/thermal/thermal.json (config B design) | G-S (human use); thermal governor limits |
+| AC-B07-02 | REQ-THM-001 | Maximum held-surface temperature during the 30-min duty-cycle replay including the 2-s 1.4 N transient every 5 min, 25 °C ambient, referred to the rated 30 °C room (measured - room + 30 °C, ECMA-287 B.5) | ≤ 43 °C | requirement | REQ-THM-001 absolute limit in a rated 30 °C room (DEC-045; was 43 °C at 25 °C ambient) (ECMA-287 Table 5.2 and B.5; IEC 60601-1 Table 24; AMF-34, AMF-35) | G-S |
 | AC-B07-03 | REQ-THM-002 | Coil hot-spot temperature (resistance method and thermocouple) at the design-point load and after the 2-s high-load pulse | ≤ 120 °C | requirement | REQ-THM-002 | G-S; thermal governor |
 | AC-B07-04 | — | Thermal model P-18: steady-state coil temperature rise per watt vs analysis/thermal.py for the as-built geometry | within prediction ± 15 % | hypothesis | docs/physics.md (steady rise within ±15 %) | thermal model validation; governor design |
 | AC-B07-05 | — | Thermal model P-18: dominant coil time constant | within prediction ± 25 % | hypothesis | docs/physics.md (time constant within ±25 %) | thermal model validation |
@@ -1993,7 +2000,7 @@ Average copper loss while writing at 65 % duty: B 0.33 W (0.50 W in contact), D 
 
 **Pencil builds** (Rev P, DEC-019) run the same runtime procedure with the pencil's modes against REQ-PNC-005: ≥ 2 h of assisted writing and ≥ 4 h of recording (AC-P01-05). With the 90 mAh cell, P1 predicts 4.1 h of recording and 0.83 h of assist with 2 × DRV2700, or 2.7 h with a charge-recovery driver (`results/pencil/sim_metrics.json`, SIMULATION). The driver and cell behind these numbers are qualified in EXP-Q05 and EXP-Q03.
 
-**Rev J builds** (DEC-044) run the same runtime procedure per mode against REQ-RVJ-I01: ≥ 8 h in the steady and guide modes, with the page sensor duty-cycled in the steady modes, and ≥ 5 h in lead-through and autowrite at ≤ 1 mm tremor (AC-P01-06). With 2.22 Wh usable (MFR AMF-80) the integrated design predicts: steady 8.5–11.0 h without tremor, and 7.8–8.2 h at 1 mm tremor with the page sensor gated (6.1–7.3 h without); guide 8.0–10.5 h; lead-through 5.9–6.9 h; autowrite 5.3–6.1 h at 1 mm tremor (CALC, `results/revJ/budgets.json`). The electronics and the page sensor take 115–165 mW before anything moves. The gating assumes that tremor correction does not need the page sensor, but DEC-042's tremor-line detector runs on it: log the gate's behaviour with the sensor duty-cycled.
+**Rev J.1 builds** (DEC-045) run the same runtime procedure per mode against REQ-RVJ-I01, with the page sensor on in every mode (AC-P01-06): ≥ 8 h in the steady modes up to 1 mm tremor and in guide, ≥ 7.5 h in lead-through, ≥ 6 h in autowrite up to 1 mm tremor and ≥ 3.5 h at 2 mm. The end-cap row (≥ 8 h at its measured duty, ≥ 6 h at its design power) is AC-K01-05. With 2.22 Wh usable (MFR AMF-80) the Rev J.1 design predicts: steady 8.5–9.7 h at 1 mm tremor (14.8–18.9 h without); guide 12.1–16.1 h; lead-through 7.5–8.8 h; autowrite 6.5–7.4 h at 1 mm and 3.8–4.1 h at 2 mm (CALC, `results/revJ1/budgets.json`). The electronics, counted from datasheets, take 34–60 mW (EXP-J12) and the low-power page sensor 1.3–1.9 mW (EXP-J10). Every figure rests on study N's nose-coil power: at 2 × it, steady writing at 1 mm tremor lasts 4.9–5.3 h. Rev J (DEC-044) had predicted 6.1–7.3 h there.
 
 ### Hypotheses
 
@@ -2031,7 +2038,7 @@ Average copper loss while writing at 65 % duty: B 0.33 W (0.50 W in contact), D 
 | AC-P01-03 | — | Electronics supply power excluding actuators in writing mode | within 115 mW ± 20 % | hypothesis | results/electronics/drive_sense.json (31 mA at 3.7 V; optics 15 mA placeholder). Note: config electrical.p_electronics_active is 60 mW | power budget; optics selection |
 | AC-P01-04 | — | Median pen-down duty across participants in EXP-H06 free-writing sessions | within 0.5-0.8 | hypothesis | results/trade/config_trade.json duty_down 0.65 (assumption) | runtime budget |
 | AC-P01-05 | REQ-PNC-005 | Pencil builds (Rev P): runtime from full charge to the cut-off with scripted handwriting and tremor assist on (6 Hz, 0.3 mm disturbance, as the P1 battery runs) / recording only; minimum of 3 cells x 3 repeats, 25 °C | ≥ 2 h / 4 h | requirement | REQ-PNC-005; prediction with the 90 mAh cell: assist 0.83 h with 2 x DRV2700, 2.7 h with a charge-recovery driver; recording 4.1 h (results/pencil/sim_metrics.json battery; SIMULATION) -> expected FAIL with DRV2700, marginal for recording; proposed P0.2 (DEC-030): assist 2.73 h in the worst 0.3 mm case (results/opt/hardware.json; CALCULATION) -> expected PASS | product driver and cell (DEC-019); REQ-PNC-005; DEC-030 |
-| AC-P01-06 | REQ-RVJ-I01 | Rev J builds (DEC-044): runtime from full charge to the cut-off in each mode (scripted writing on R2): steady and guide modes, with the page sensor duty-cycled in the steady modes; lead-through and autowrite at ≤ 1 mm tremor; minimum of 3 cells x 3 repeats, 25 °C | ≥ 8 h (steady, guide) / 5 h (lead-through, autowrite) | requirement | REQ-RVJ-I01; prediction (2.22 Wh usable): steady 8.5-11.0 h without tremor and 7.8-8.2 h at 1 mm tremor with the page sensor gated (6.1-7.3 h without gating); guide 8.0-10.5 h; lead-through 5.9-6.9 h; autowrite 5.3-6.1 h at 1 mm (CALC, results/revJ/budgets.json) -> steady at 1 mm tremor marginal | DEC-044 (revisit if 8 h is not reached in the steady modes with the page sensor duty-cycled) |
+| AC-P01-06 | REQ-RVJ-I01 | Rev J.1 builds (DEC-045): runtime from full charge to the cut-off in each mode (scripted writing on R2), the page sensor on in every mode: steady up to 1 mm rms tremor, guide, lead-through, autowrite up to 1 mm and at 2 mm tremor; minimum of 3 cells x 3 repeats, 25 °C (the end-cap row is AC-K01-05) | ≥ 8 h (steady, guide) / 7.5 h (lead-through) / 6 h (autowrite to 1 mm) / 3.5 h (autowrite at 2 mm) | requirement | REQ-RVJ-I01 (DEC-045; was 8 h steady and guide and 5 h lead-through and autowrite, with the page sensor duty-cycled); prediction (2.22 Wh usable, 23 °C): steady 8.5-9.7 h at 1 mm tremor (14.8-18.9 h without); guide 12.1-16.1 h; lead-through 7.5-8.8 h; autowrite 6.5-7.4 h at 1 mm and 3.8-4.1 h at 2 mm (CALC, results/revJ1/budgets.json) -> lead-through marginal (7.55 h at the pessimistic end); every figure rests on study N's nose-coil power (at 2 x it, steady at 1 mm tremor lasts 4.9-5.3 h) | DEC-045 (revisit if EXP-N01, N04 or the whole-pen simulation confirm a nose-coil power ≥ 2 x study N's model) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-P01).
 <!-- AC-TABLE:EXP-P01:END -->
@@ -3174,8 +3181,9 @@ The following are specified in [`human_study_plan.md`](human_study_plan.md), wit
 | EXP-L06 | Text prediction in the app on users' own notes | **Immediate assistance** (app) |
 | EXP-L07 | Handwriting synthesis in the user's style, judged by people | Measurement only |
 | EXP-L08 | Guidance that fades across sessions against fixed guidance; unassisted retention | **Lasting improvement** |
-| EXP-J08 | Can writers see the ink? Printed Rev H and Rev J fronts on dummy pens | Device burden |
-| EXP-J09 | Mass and balance: 87 g and 129 g dummies (with EXP-K03) | Device burden |
+| EXP-J08 | Can writers see the ink? Printed Rev H and Rev J fronts on dummy pens (superseded for Rev J.1 by EXP-J15) | Device burden |
+| EXP-J09 | Mass and balance: 84 g and 113 g dummies of the Rev J.1 pen (with EXP-K03) | Device burden |
+| EXP-J15 | The clear window: can writers see the ink through the Rev J.1 front? (its wear test on coupons is in §46) | Device burden |
 
 EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3.
 
@@ -3626,7 +3634,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows fo
 <!-- AC-TABLE:EXP-D05:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-D05-01 | REQ-DRV-005 | Time from the start of an imposed gross wheel slip (lowered preload or raised command, six papers; high-speed camera reference) to the slip flag and the lowered command, page sensor in its Rev J place beside the wheel, at 0 and ±20° of pen roll; every imposed slip (≥ 29 per paper) | ≤ 50 ms | requirement | REQ-DRV-005; paper sensor against wheel odometry at 1 kHz (MFR AMF-109 class sensor); detection rule ASSUMPTION (docs/grounded_drive.md s2.2); the page sensor's lens stays in its band only within about ±1.5° of roll (CALC, DEC-044) -> at risk with the pen rolled | DEC-037 (revisit if slip detection is unreliable); DEC-044 |
+| AC-D05-01 | REQ-DRV-005 | Time from the start of an imposed gross wheel slip (lowered preload or raised command, six papers; high-speed camera reference) to the slip flag and the lowered command, page sensor in its Rev J place beside the wheel, at 0 and ±20° of pen roll; every imposed slip (≥ 29 per paper) | ≤ 50 ms | requirement | REQ-DRV-005; paper sensor against wheel odometry at 1 kHz (MFR AMF-109 class sensor; DEC-045 fits a PMW3610-class die, MFR OPT-61, whose rate on paper EXP-J10 measures); detection rule ASSUMPTION (docs/grounded_drive.md s2.2); the page sensor's lens stays in its band only within about ±1.5° of roll (CALC, DEC-044) -> at risk with the pen rolled | DEC-037 (revisit if slip detection is unreliable); DEC-044 |
 | AC-D05-02 | REQ-DRV-005 | False slip flags per 10 s of replayed normal writing motion without true sliding (camera reference), six papers, at 0 and ±20° of pen roll; simple rule and model-based detector reported separately | < 1 per 10 s | requirement | REQ-DRV-005; SIM: true sliding < 0.1 % of contact time, yet the simple rule raised 3-40 false flags per sentence (docs/grounded_drive.md s5.1) -> the simple rule is predicted to FAIL; a model-based detector using the tyre deflection is needed; page-sensor dropouts with the pen rolled beyond about ±1.5° (CALC, DEC-044) add flags | DEC-037 (revisit if slip detection is unreliable); DEC-044 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-D05).
@@ -3638,27 +3646,27 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 - **Purpose and gates.** Check the power budget, heat and noise. Gates REQ-DRV-009, REQ-DRV-010 and REQ-THM-001 for the drive.
 - **Predictions.**
-  - Drive power 0–1 mW steer-only, 6 mW when guiding with a push, 84 mW while leading (SIM). Paper sensor 30–80 mW (CALC, MFR AMF-109). Drivers and Hall sensors 10–20 mW (ASSUMPTION).
+  - Drive power 0–1 mW steer-only, 6 mW when guiding with a push, 84 mW while leading (SIM). Paper sensor 30–80 mW for a PMW3360-class die (CALC, MFR AMF-109); DEC-045 uses a PMW3610-class die at 1.3–1.9 mW, counted under REQ-RVJ-I07. Drivers and Hall sensors 10–20 mW (ASSUMPTION).
   - Winding rise 5–11 K at 146 K/W (CALC).
-  - On the Rev J layout (DEC-044): heel drive 11–26 mW guiding and 103–113 mW leading (with the fourth mesh and the motor drivers), so 0.14–0.19 W with the page sensor while leading. Pen runtime 8.0–10.5 h guiding and 5.9–6.9 h in lead-through (CALC). Round 1 had 12–18 h and 8–10 h on the Rev H base load.
+  - On the Rev J.1 layout (DEC-045): heel drive 0–2 mW in the steady mode (drivers asleep), 11–26 mW guiding and 103–113 mW leading (with the fourth mesh and the motor drivers). Pen runtime 12.1–16.1 h guiding and 7.5–8.8 h in lead-through (CALC). Rev J (DEC-044) had 0.14–0.19 W with its page sensor while leading, and 8.0–10.5 h and 5.9–6.9 h.
   - Noise not modelled.
 - **Set-up.** The bench drive in a handle. Recorded drive commands from the SIM tasks. A sound level meter at 30 cm in a quiet room (A-weighted). Thermocouples on the windings and on the sleeve. Supply current logging (R7).
-- **Procedure.** Replay each mode (steer-only guidance, guidance with a push, lead-through, autowrite) for 30 min. Log power, winding and surface temperatures and sound level (background subtracted). Compute the runtime with the measured base load of the Rev J pen (EXP-N04 and EXP-N08 power logs).
+- **Procedure.** Replay each mode (steer-only guidance, guidance with a push, lead-through, autowrite) for 30 min. Log power, winding and surface temperatures and sound level (background subtracted). Compute the runtime with the measured base load of the Rev J.1 pen (EXP-N04, EXP-N08 and EXP-J12 power logs).
 - **Measurands.** Mean electrical power per mode; winding rise; surface temperature; dB(A); runtime.
 
 <!-- AC-TABLE:EXP-D06:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-D06-01 | REQ-DRV-009 | Mean electrical power of the heel drive (motors, drivers and paper sensor) while replaying the recorded SIM drive commands of each mode for 30 min (steer-only guidance, steered and driven guidance, lead-through, autowrite) | ≤ 0.15 W | requirement | REQ-DRV-009; prediction on the Rev J layout (DEC-044): heel drive 11-26 mW guiding and 103-113 mW leading (84 mW SIM / 0.9 for the fourth gear mesh, plus 10-20 mW of motor drivers, ASSUMPTION); page sensor 34-80 mW (MFR AMF-109; supply ASSUMPTION); so 0.14-0.19 W while leading (CALC) -> at risk at the high end | DEC-037; DEC-044 |
+| AC-D06-01 | REQ-DRV-009 | Mean electrical power of the heel drive (motors and drivers; the page sensor is REQ-RVJ-I07's) while replaying the recorded SIM drive commands of each mode for 30 min (steer-only guidance, steered and driven guidance, lead-through, autowrite) | ≤ 0.15 W | requirement | REQ-DRV-009 (DEC-045: the heel drive itself; was with the paper sensor); prediction on the Rev J.1 layout: 0-2 mW in the steady mode with the drivers asleep, 11-26 mW guiding and 103-113 mW leading (84 mW SIM / 0.9 for the fourth gear mesh, plus 10-20 mW of motor drivers, ASSUMPTION) (CALC, results/revJ1/budgets.json); with the PMW3610-class page sensor 0.105-0.115 W | DEC-037; DEC-044; DEC-045 |
 | AC-D06-02 | REQ-DRV-009 | Winding temperature rise of the two 0620 B motors (thermocouples) after 30 min of the lead-through replay | < 10 K | requirement | REQ-DRV-009; prediction 5-11 K at 0.10-0.15 N RMS with 146 K/W (MFR AMF-100 Rth x 1.5 enclosed, ASSUMPTION; CALC) -> marginal | DEC-037 |
-| AC-D06-03 | REQ-THM-001 | Handle surface temperature over the motor pocket after 30 min of the lead-through replay, referred to 25 °C ambient; guarded acceptance | ≤ 41 °C | requirement | REQ-THM-001 design target (AMF-34, AMF-35); pass line of the drive study; the motors sit at z 50-70 mm, behind the finger pads at z 26-38 mm (docs/grounded_drive.md s4.4) | DEC-037; safety before EXP-D08 |
+| AC-D06-03 | REQ-THM-001 | Handle surface temperature over the motor pocket after 30 min of the lead-through replay, referred to the rated 30 °C room (measured - room + 30 °C, ECMA-287 B.5); guarded acceptance | ≤ 41 °C | requirement | REQ-THM-001 design target (AMF-34, AMF-35; DEC-045: 41 °C in a rated 30 °C room, was referred to 25 °C); in the Rev J layout the motors sit under the cell (Rev J.1 moves them 10 mm further back), and the surface over them reached at most 27.0 °C in a 23 °C room (CALC, docs/revJ_design.md s6.4); study D had them at z 50-70 mm, behind the finger pads at z 26-38 mm (docs/grounded_drive.md s4.4) | DEC-037; safety before EXP-D08 |
 | AC-D06-04 | REQ-DRV-010 | A-weighted sound level of the heel drive at 30 cm in a quiet room while guiding (steer-only and steered and driven replays), background subtracted | ≤ 35 dB(A) | requirement | REQ-DRV-010 (ASSUMPTION threshold, quiet classroom); noise not modelled | DEC-037 |
-| AC-D06-05 | REQ-DRV-009 | Writing time per charge with assistance on: 2.22 Wh usable (MFR AMF-80) divided by the measured heel-drive power plus the measured base load of the Rev J pen (nose, electronics, page sensor, pen lift; EXP-N04, EXP-N08 and EXP-P01 power logs), guidance and lead-through | ≥ 8 h | requirement | REQ-DRV-009; prediction on the Rev J layout (DEC-044): 8.0-10.5 h guiding and 5.9-6.9 h in lead-through (CALC, results/revJ/budgets.json) -> FAILS in lead-through; REQ-RVJ-I01 proposes ≥ 5 h there | DEC-037; DEC-044; Rev J power budget |
+| AC-D06-05 | REQ-RVJ-I01 | Writing time per charge with assistance on: 2.22 Wh usable (MFR AMF-80) divided by the measured heel-drive power plus the measured base load of the Rev J.1 pen (nose, electronics, page sensor, pen lift; EXP-N04, EXP-N08, EXP-J12 and EXP-P01 power logs), guide and lead-through modes | ≥ 8 h (guide) / 7.5 h (lead-through) | requirement | REQ-RVJ-I01 (DEC-045 moved the hours here from REQ-DRV-009); prediction on the Rev J.1 layout: 12.1-16.1 h guiding and 7.5-8.8 h in lead-through (CALC, results/revJ1/budgets.json) -> lead-through marginal (7.55 h at the pessimistic end); every figure rests on study N's nose-coil power | DEC-037; DEC-045; Rev J power budget |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-D06).
 <!-- AC-TABLE:EXP-D06:END -->
 
-- **Decision rule.** Power over 0.15 W: review the page sensor and the drivers. Surface over 41 °C: move or derate the motors (guarded acceptance, §0.5). Noise over 35 dB(A): better gear finish or a speed limit. Runtime under 8 h: the lead balances the Rev J power budget (DEC-036, DEC-037).
+- **Decision rule.** Power over 0.15 W: review the motors and the drivers. Surface over 41 °C, referred to the rated 30 °C room: move or derate the motors (guarded acceptance, §0.5). Noise over 35 dB(A): better gear finish or a speed limit. Runtime under the targets of REQ-RVJ-I01: revisit the power budget (DEC-045).
 
 ### EXP-D07: Force cap, stall and lift safety
 
@@ -3755,10 +3763,10 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 ### Purpose and what it gates
 
-DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc coils push a 30.4 g tungsten slug (non-magnetic grade) by ±4 mm in two axes, on two 5 Hz flexures. The end-cap is Ø26 × 24 mm, sits behind the cell in place of the rear cap (z 141.7–165.7 in the Rev J layout, DEC-044, so the pen is 165.7 mm) and weighs 43 g. The tracker's feed-forward drives it on top of the nose (gain 0.75).
+DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc coils push a 30.4 g tungsten slug (non-magnetic grade) by ±4 mm in two axes, on two 5 Hz flexures. The end-cap is Ø26 × 24 mm, sits behind the cell in place of the rear cap (z 141.7–165.7 in the Rev J layout, DEC-044, so the pen is 165.7 mm) and weighs 43 g. The tracker's feed-forward drives it on top of the nose (gain 0.75). DEC-045 (Rev J.1) makes it lighter: a 9 mm tungsten slug (17.3 g), 29.6 g and Ø26 × 21 mm, so the pen with it is 161.9 mm and 112.7 g. It runs only while a tremor line is detected, and EXP-J16 (§46) repeats EXP-K02 with it.
 - **Inertia steadies and cues; it does not write.** Cues are played only in pauses, and only after EXP-K05. No rotor goes in the product; a CMG end-cap stays a research module for torque-pulse cues.
 - **What it gates.** DEC-038 is revisited if EXP-K02 gives less than 10 % further reduction at the measured grip split, or the fixed weight comes within 5 points; if EXP-K01 misses the force model by more than 20 %; if EXP-I01 or K08 find r_rot outside 0.3–0.7; if writers reject the back-heavy pen (EXP-K03). Requirements: REQ-EC-001…009.
-- **Predictions** come from `docs/inertial_endcap.md` and `results/endcap/endcap_study.json` (H1 with the causal Rev H tracker; test seeds 200–203; grip splits r_rot 0.3 / 0.5 / 0.7; CALC and SIM). They were run on the **Rev H** pen and nose (75 g, Ø22 mm), not on the Rev J pen (DEC-044: 87.0 g, Ø24 mm).
+- **Predictions** come from `docs/inertial_endcap.md` and `results/endcap/endcap_study.json` (H1 with the causal Rev H tracker; test seeds 200–203; grip splits r_rot 0.3 / 0.5 / 0.7; CALC and SIM). They were run on the **Rev H** pen and nose (75 g, Ø22 mm), not on the Rev J pen (Ø24 mm; 87.0 g in DEC-044, 84.3 g in Rev J.1, DEC-045). The Rev J.1 end-cap family ran on the same Rev H model (EXP-J16).
 - Work with people (EXP-K03, K05) is in [`human_study_plan.md`](human_study_plan.md) §17. EXP-K04 and EXP-K08 include participants; they are covered by the same ethics approval as EXP-B06 and EXP-I01.
 
 ### EXP-K01: Reaction-mass actuator against its model
@@ -3767,13 +3775,13 @@ DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc co
 - **Predictions.**
   - K_m 0.735 N/√W; 0.52 N per axis at 0.5 W; ±4.0 mm stroke on 5 Hz flexures (CALC).
   - Power: 1.0 W peak and 0.145 W average in the design model; 0.029 W average in the test runs, drivers included (CALC, SIM).
-  - End-cap Ø26 × 24 mm, 43.3 g. Rev J pen (DEC-044): 87.0 g base and 129.2 g with the end-cap, centre of mass 108.1 mm from the tip (CALC). REQ-EC-001 now allows 120 g for the base pen and a provisional 130 g with the end-cap.
-  - With the end-cap active: 4.3–6.6 h at 1 mm tremor and 5.5–9.6 h without tremor on the Rev J base load (CALC, DEC-044); 9.8–20 h on the Rev H base load of 0.081 W.
+  - End-cap Ø26 × 24 mm, 43.3 g (study K). Rev J.1 end-cap (DEC-045): Ø26 × 21 mm, 29.6 g, K_m 0.598 N/√W, 0.082 W average in the design model and 0.028 W in the SIM test runs. Rev J.1 pen: 84.3 g base and 112.7 g with the end-cap, centre of mass 102.5 mm from the tip (CALC); REQ-EC-001 allows 120 g with the end-cap fitted (Rev J had 129.2 g).
+  - With the end-cap active only while a tremor line is detected, on the Rev J.1 base load: 7.7–8.6 h at 1 mm tremor at the SIM power and 6.4–7.1 h at the design power (CALC, DEC-045). Rev J had 4.3–6.6 h, and the Rev H base load of 0.081 W gave 9.8–20 h.
   - ET95NM relative permeability ≤ 1.05 (MFR AMF-49).
 - **Set-up.** The end-cap clamped to a 6-axis load cell (ATI Nano17 class, R4). Coil current and slug position (Hall) logged. A permeability meter. A balance.
 - **Procedure.**
   1. Incoming inspection: permeability of every tungsten part that sits within 20 mm of a Hall sensor or coil.
-  2. Weigh and measure the end-cap, and the pen with every Rev J module fitted.
+  2. Weigh and measure the end-cap, and the Rev J.1 pen with the end-cap fitted.
   3. Drive each axis with sines of 1–15 Hz at 0.1–1 W.
   4. Drive the slug to ±4 mm and check for contact.
   5. Log the power during the EXP-K02 tremor runs with the nose on.
@@ -3783,16 +3791,16 @@ DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc co
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-K01-01 | — | Net force on the housing per axis (end-cap clamped to a 6-axis load cell), sines 1-15 Hz at 0.1-1 W, against the model (endcap/design.py; rm_coil_cap in endcap/sim.py) | within ±20 % of the model | hypothesis | pass line of study K; DEC-038 is revisited if EXP-K01 misses the force model by more than 20 %; model net push about 0.9 x m x omega^2 x X at the slug's limit (CALC) | DEC-038 |
-| AC-K01-02 | — | Coil force constant K_m per axis (force and current) and slug stroke: ±4 mm reached in both axes without contact (both) | both met (K_m ≥ 90 % of 0.735 N/√W; ±4 mm without contact) | hypothesis | pass line of study K; design K_m 0.735 N/√W, 0.52 N per axis at 0.5 W, ±4.0 mm on two 5 Hz flexures (CALC, docs/inertial_endcap.md s9.1); in the test runs the slug reached its stops in 39 of 180 cases (SIM): soft end-stops | DEC-038 |
-| AC-K01-03 | REQ-EC-001 | Built end-cap: diameter, length and mass; peak and average electrical power (drivers included) logged during the EXP-K02 tremor runs | ≤ 26 mm, 45 mm, 45 g; 1 W peak, 0.3 W average | requirement | REQ-EC-001; prediction Ø26 x 24 mm, 43.3 g; 1.0 W peak and 0.145 W average (design model), 0.029 W average in the test runs (CALC, SIM; results/endcap/endcap_study.json) | DEC-038 |
-| AC-K01-04 | REQ-EC-001 | Rev J pen as built, weighed and measured: the base pen, and the pen with the end-cap fitted | ≤ 175 mm; 120 g (base) and 130 g (end-cap fitted, provisional) | requirement | REQ-EC-001 (DEC-044 limits; was 120 g with every module); prediction 144.7 mm and 87.0 g base, 165.7 mm and 129.2 g with the end-cap (CALC, DEC-044): 9.2 g over 120 g, 0.8 g under 130 g, and 131.3 g with the 0.5 mm aluminium spreader of REQ-RVJ-N03 -> marginal | DEC-038 (detachable end-cap); DEC-044; Rev J envelope |
-| AC-K01-05 | REQ-EC-008 | Writing time per charge with the end-cap active: 2.22 Wh usable (MFR AMF-80) divided by the end-cap's measured mean power in the EXP-K02 runs plus the measured base load of the pen it is fitted to, nose on | ≥ 8 h | requirement | REQ-EC-008; prediction with the Rev J base load (DEC-044), the end-cap drawing 29-145 mW: 4.3-6.6 h at 1 mm tremor and 5.5-9.6 h without tremor (CALC) -> predicted to FAIL; proposal: run the end-cap only while tremor is detected. On the Rev H base: 9.8-20 h | DEC-038; DEC-044; Rev J power budget |
+| AC-K01-02 | — | Coil force constant K_m per axis (force and current) and slug stroke: ±4 mm reached in both axes without contact (both) | both met (K_m ≥ 90 % of the design value: 0.598 N/√W for the Rev J.1 end-cap, 0.735 for study K's; ±4 mm without contact) | hypothesis | pass line of study K; design K_m 0.735 N/√W, 0.52 N per axis at 0.5 W, ±4.0 mm on two 5 Hz flexures (CALC, docs/inertial_endcap.md s9.1); in the test runs the slug reached its stops in 39 of 180 cases (SIM): soft end-stops; the Rev J.1 end-cap (DEC-045, 9 mm slug): K_m 0.598 N/√W, 0.42 N, ±4.0 mm on 5 Hz flexures (CALC, results/revJ1/sim_params.json) | DEC-038 |
+| AC-K01-03 | REQ-EC-001 | Built end-cap: diameter, length and mass; peak and average electrical power (drivers included) logged during the EXP-K02 tremor runs | ≤ 26 mm, 45 mm, 45 g; 1 W peak, 0.3 W average | requirement | REQ-EC-001; prediction for the Rev J.1 end-cap (DEC-045): Ø26 x 21 mm, 29.6 g; 0.082 W average in the design model and 0.028 W in the SIM test runs; peak not recomputed (CALC, SIM; results/revJ1/endcap.json); study K's end-cap Ø26 x 24 mm, 43.3 g, 1.0 W peak and 0.145 W average (results/endcap/endcap_study.json) | DEC-038 |
+| AC-K01-04 | REQ-EC-001 | Rev J.1 pen as built, weighed and measured, with the end-cap fitted | ≤ 175 mm and 120 g | requirement | REQ-EC-001 (DEC-045: ≤ 120 g with the end-cap fitted; was 120 g base and a provisional 130 g with the end-cap); prediction 143.9 mm and 84.3 g base, 161.9 mm and 112.7 g with the 29.6 g end-cap (CALC, results/revJ1/budgets.json): 7.3 g under 120 g | DEC-038 (detachable end-cap); DEC-045; Rev J envelope |
+| AC-K01-05 | REQ-EC-008 | Writing time per charge in the steady mode at 1 mm tremor with the end-cap active only while a tremor line is detected: 2.22 Wh usable (MFR AMF-80) divided by the measured base load of the Rev J.1 pen plus (a) the end-cap's measured mean power at its measured duty (EXP-K02 or EXP-J16 runs) and (b) its design power (both) | both met (≥ 8 h at the measured duty; ≥ 6 h at the design power) | requirement | REQ-EC-008, folded into REQ-RVJ-I01 as its end-cap row (DEC-045; was ≥ 8 h with the end-cap active); prediction on the Rev J.1 base load: 7.7-8.6 h at the SIM power of 27.6 mW (8.6 h only with the typical electronics) and 6.4-7.1 h at the design power of 82 mW (CALC, SIM; results/revJ1/budgets.json) -> the 8 h part is marginal | DEC-038; DEC-045; Rev J power budget |
 | AC-K01-06 | REQ-EC-009 | Relative magnetic permeability of every tungsten part within 20 mm of a Hall sensor or coil (incoming inspection, permeability meter) | ≤ 1.05 | derived | REQ-EC-009 made measurable: ET95NM relative permeability ≤ 1.05 (MFR AMF-49); INERMET grades paramagnetic (MFR AMF-125) | DEC-038; Hall sensor bias |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-K01).
 <!-- AC-TABLE:EXP-K01:END -->
 
-- **Decision rule.** Force model missed by more than 20 %: re-fit `endcap/design.py` and re-run study K (DEC-038 revisit). Pen with the end-cap over the provisional 130 g (129.2 g predicted; 131.3 g with the heat spreader of EXP-J05): the end-cap stays detachable, and EXP-J09 and EXP-K03 set the limit (DEC-038, DEC-044). Runtime under 8 h (as predicted): run the end-cap only while tremor is detected, and log its duty. A magnetic tungsten part: reject it.
+- **Decision rule.** Force model missed by more than 20 %: re-fit `endcap/design.py` and re-run study K (DEC-038 revisit). Pen with the end-cap over 120 g (112.7 g predicted): the end-cap stays detachable (DEC-038, DEC-045). Runtime under the end-cap row of REQ-RVJ-I01: log the end-cap's duty and revisit the power budget (DEC-045). A magnetic tungsten part: reject it.
 
 ### EXP-K02: Tremor on top of the nose, on a bench (extends EXP-I06)
 
@@ -3803,6 +3811,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
   - At 4–6 Hz: +8 to +12 %.
   - The fixed weight makes 29–42 % of the hard cases worse than the nose alone at r_rot 0.5–0.7; the moving slug 4–12 %.
   - The slug reached its stops in 39 of 180 test cases: soft end-stops are needed.
+  - The Rev J.1 end-cap (29.6 g, DEC-045) is tested the same way in EXP-J16 (§46): +5.6 / +16.8 / +18.3 % (SIM).
 - **Set-up.** The EXP-I06 rig. The nose (Rev H, as simulated, or nose v2 once built) and the end-cap on a hand–pen rig with an HAP-26-like spring–mass hand. Three grip-split settings, one of them nearest the value that EXP-I01 or EXP-K08 measures. A shaker injecting 4–12 Hz at 0.3–2 mm. Writing on paper by a 2-axis stage. R3 scans or a digitiser.
 - **Procedure.** Four configurations in random order: nose alone; nose and the same mass fixed; nose and the active end-cap (causal tracker, gain 0.75); nose and the end-cap switched off. 10 seeds per condition. Log slug stroke, stop impacts and power.
 - **Measurands.** RMS ink error against the tremor-free trace; further reduction against the nose alone; stroke; stop impacts.
@@ -3879,14 +3888,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 - **Purpose and gates.** Measure r_rot on the Rev J pen with the method of EXP-I01 (§35). Every end-cap result is given at r_rot 0.3, 0.5 and 0.7. Gates DEC-038 and the grip-split setting of EXP-K02.
 - **Predictions.** Unknown. The study assumed 0.3–0.7 (H1 grip calibrated to HAP-26; split ASSUMPTION).
-- **Set-up.** An instrumented pen with a 6-axis load cell between the front and rear grip zones (R6 with a second stinger, as EXP-I01), with and without the 45 g end-cap. 20 writers.
+- **Set-up.** An instrumented pen with a 6-axis load cell between the front and rear grip zones (R6 with a second stinger, as EXP-I01), with and without the end-cap (29.6 g in Rev J.1, DEC-045; study K's was 45 g). 20 writers.
 - **Procedure.** As EXP-I01, once with and once without the end-cap, in random order.
 - **Measurands.** Rotational stiffness about the grip; r_rot with its 95 % interval.
 
 <!-- AC-TABLE:EXP-K08:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-K08-01 | — | Grip split r_rot (rotational share of the grip compliance about the grip, EXP-I01 method) with and without the 45 g end-cap, 20 writers: median with its 95 % interval | within 0.3-0.7 | hypothesis | DEC-038 revisit trigger (r_rot outside 0.3-0.7); study K reported every result at r_rot 0.3 / 0.5 / 0.7 (split ASSUMPTION; H1 grip calibrated to HAP-26) | DEC-038; grip-split setting of EXP-K02; weight mode |
+| AC-K08-01 | — | Grip split r_rot (rotational share of the grip compliance about the grip, EXP-I01 method) with and without the end-cap (the 29.6 g Rev J.1 end-cap, DEC-045), 20 writers: median with its 95 % interval | within 0.3-0.7 | hypothesis | DEC-038 revisit trigger (r_rot outside 0.3-0.7); study K reported every result at r_rot 0.3 / 0.5 / 0.7 (split ASSUMPTION; H1 grip calibrated to HAP-26) | DEC-038; grip-split setting of EXP-K02; weight mode |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-K08).
 <!-- AC-TABLE:EXP-K08:END -->
@@ -3916,7 +3925,7 @@ DEC-036 keeps architecture B: the skid ring on the fixed sleeve carries the writ
   - C1S spherical-gap unit: 0.66 N/√W per axis at the magnets, 0.099 N/√W at the tip; gap flux 0.75 T (image method, an upper bound; CALC).
   - Rev H radial unit: 0.47 N/√W by the lumped adjoint model, against 0.19 N/√W and 0.12 T by the image method (CALC).
   - A large-stroke Lorentz actuator in the literature varied by 21.6–30.9 % over ±5 mm (LIT AMF-143).
-- **Set-up.** Two coupons on R4. One Rev H radial unit: 3.0 × 6.5 × 2.8 mm N45 magnets, 1.43 mm coil, 2.77 mm gap. One C1S unit in the recommended geometry: a machined spherical Hiperco or 1010 cap and plate, 0.2 mm self-bonding wire, with the Rev J bottom flat and notch for the drive shafts and 2.37 mm of back iron (DEC-044; the notch's effect on K_m is not computed). A 0–2 N load cell (0.5 mN resolution), a bench supply, a gaussmeter, a micro-ohmmeter at 20 °C.
+- **Set-up.** Two coupons on R4. One Rev H radial unit: 3.0 × 6.5 × 2.8 mm N45 magnets, 1.43 mm coil, 2.77 mm gap. One C1S unit in the recommended geometry: a machined spherical Hiperco or 1010 cap and plate, 0.2 mm self-bonding wire, with the Rev J bottom flat and notch for the drive shafts and 2.37 mm of back iron (DEC-044; the notch's effect on K_m is not computed), and a second plate with the 1.5 mm back iron of DEC-045 (compared in EXP-J14). A 0–2 N load cell (0.5 mN resolution), a bench supply, a gaussmeter, a micro-ohmmeter at 20 °C.
 - **Procedure.**
   1. Coil resistance at 20 °C.
   2. Gaussmeter map of the gap.
@@ -3976,22 +3985,22 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 ### EXP-N04: Heat at the autowrite duty
 
 - **Purpose and gates.** Gates REQ-RVJ-N03 and DEC-036 (revisit above 20 K or 41 °C).
-- **Predictions.** 0.182 W of coil loss while autowriting 3 mm letters with 1 mm rms tremor, and 18.2 K at 100 K/W (thermal resistance ASSUMPTION; CALC). With 2 mm tremor the coil loss is 0.38 W, about twice the design point (SIM). Rev J (DEC-044): 16.6 K at 1 mm tremor; the web over the coil plate 38.5 °C in a 23 °C room, 45.5 °C in a 30 °C room, and 37.2 °C there with a 0.5 mm aluminium spreader (CALC, fin model).
-- **Set-up.** The nose in its handle in a 30 °C room (REQ-RVJ-N03), and at 23 °C for comparison, without and with the 0.5 mm aluminium spreader. Thermocouples on the coil and on the shell at the web over the coil plate; coil-resistance thermometry; an IR camera (R4 instruments).
+- **Predictions.** 0.182 W of coil loss while autowriting 3 mm letters with 1 mm rms tremor, and 18.2 K at 100 K/W (thermal resistance ASSUMPTION; CALC). With 2 mm tremor the coil loss is 0.38 W, about twice the design point (SIM). Rev J (DEC-044): 16.6 K at 1 mm tremor and the web over the coil plate at 45.5 °C in a 30 °C room. Rev J.1 (DEC-045), with the 0.1 mm graphite sheet in the shell wall: 8.7 K and the web at 35.9 °C in a 30 °C room; autowrite with 2 mm tremor 20.0 K and 43.7 °C (CALC, fin model). At 2 × study N's coil power the web reaches 42.3 °C at 1 mm tremor.
+- **Set-up.** The nose in its handle with the graphite sheet in the wall (DEC-045), in a 30 °C room (REQ-RVJ-N03), and at 23 °C for comparison. Thermocouples on the coil and on the shell at the web over the coil plate; coil-resistance thermometry; an IR camera (R4 instruments).
 - **Procedure.**
   1. Drive the coils for 30 min with the recorded HW1 force histories of the test grid (1 mm tremor).
   2. From cold, drive them with the 2 mm histories until the coil reaches 20 K. This gives the thermal time constant for the firmware's duty limit.
-- **Measurands.** Coil rise; grip surface temperature; thermal time constant.
+- **Measurands.** Coil rise; web surface temperature; coil loss at the duty; thermal time constant.
 
 <!-- AC-TABLE:EXP-N04:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-N04-01 | REQ-RVJ-N03 | Coil temperature rise (thermocouple and coil resistance) and skin-side surface temperature at the web over the coil plate after 30 min of the recorded HW1 force histories (autowrite, 1 mm tremor) in the handle in a 30 °C room, without and with the 0.5 mm aluminium spreader; guarded acceptance | ≤ 20 K and 41 °C | requirement | REQ-RVJ-N03 (DEC-044: the web over the coil plate in a 30 °C room; was the grip surface, tested at 23 °C); prediction coil rise 16.6 K; web 45.5 °C without and 37.2 °C with the spreader (38.5 °C without it in a 23 °C room) (CALC, fin model, 100 K/W ASSUMPTION) -> fails without the spreader; limit 41 °C (IEC 60601-1, LIT AMF-34, AMF-35) | DEC-036 (revisit above 20 K or 41 °C); DEC-044 |
+| AC-N04-01 | REQ-RVJ-N03 | Coil temperature rise (thermocouple and coil resistance) and skin-side surface temperature at the web over the coil plate after 30 min of the recorded HW1 force histories (autowrite, 1 mm tremor) in the handle with the 0.1 mm graphite sheet in its wall (DEC-045), in a 30 °C room; guarded acceptance | ≤ 20 K and 43 °C | requirement | REQ-RVJ-N03 (DEC-045: held surfaces ≤ 43 °C absolute in a rated 30 °C room, 41 °C design target; was 41 °C, DEC-044); prediction coil rise 8.7 K and web 35.9 °C with the sheet (CALC, fin model, results/revJ1/budgets.json); 42.3 °C at 2 x study N's coil power; limits LIT AMF-35 (ECMA-287) and AMF-34 (IEC 60601-1) | DEC-036 (revisit above 20 K or 41 °C); DEC-045 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-N04).
 <!-- AC-TABLE:EXP-N04:END -->
 
-- **Decision rule.** Above 20 K or 41 °C: revisit DEC-036 (a duty limit, or the coarse–fine C3, which halves the coil loss in the model). Safety-related: guarded acceptance (§0.5). The 2 mm time constant sets how long a text may run with severe tremor.
+- **Decision rule.** Above 20 K or 43 °C: fail (REQ-RVJ-N03). Above 41 °C, the design target: revisit DEC-036 (a duty limit, or the coarse–fine C3, which halves the coil loss in the model). A coil loss well above study N's model: revisit DEC-045's battery and heat targets. Safety-related: guarded acceptance (§0.5). The 2 mm time constant sets how long a text may run with severe tremor.
 
 ### EXP-N05: Pen lift
 
@@ -4041,15 +4050,15 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 ### EXP-N07: Page sensor under the pen
 
 - **Purpose and gates.** Gates REQ-RVJ-N06, DEC-036, and the slip detection of DEC-037.
-- **Predictions.** The SIM assumed 1 kHz, 2 ms and 3 µm of noise (fusion study model, ASSUMPTION). With a 120 Hz, 10 ms sensor autowrite still read every word, but the ink error rose from 30 to 72 µm (SIM). A PMW3360-class sensor reports at up to 12 000 frames/s with its lens 2.4 mm above the surface (MFR OPT-54). In its Rev J place the lens stays in its 2.2–2.6 mm band only within about ±1.5° of roll (1.59–4.11 mm at ±20°; CALC, DEC-044).
-- **Set-up.** The page sensor in its Rev J place (DEC-044): folded optics beside the heel wheel, the window 24° round from the bottom, a PMW3360-class die. The pen swept by a motion stage (R5) with 1 mm tremor added; ground truth from the stage encoders. Lined, grid and glossy paper. Tilts 35–75° and pen roll up to ±20°. EXP-J04 measures the sensor's height band first.
+- **Predictions.** The SIM assumed 1 kHz, 2 ms and 3 µm of noise (fusion study model, ASSUMPTION). With a 120 Hz, 10 ms sensor autowrite still read every word, but the ink error rose from 30 to 72 µm (SIM). A PMW3360-class sensor reports at up to 12 000 frames/s with its lens 2.4 mm above the surface (MFR OPT-54). DEC-045's PMW3610-class die draws 1.3–1.9 mW; its frame rate and accuracy on paper are not stated (MFR OPT-61). In its Rev J place the lens stays in its 2.2–2.6 mm band only within about ±1.5° of roll (1.59–4.11 mm at ±20°; CALC, DEC-044).
+- **Set-up.** The page sensor in its Rev J place (DEC-044): folded optics beside the heel wheel, the window 24° round from the bottom, a PMW3610-class die (DEC-045; EXP-J10 checks it first) or, for autowrite if EXP-J10 fails, a PMW3360-class die. The pen swept by a motion stage (R5) with 1 mm tremor added; ground truth from the stage encoders. Lined, grid and glossy paper. Tilts 35–75° and pen roll up to ±20°. EXP-J04 measures the sensor's height band first.
 - **Procedure.** Sweeps at 5–30 mm/s with tremor at 4–12 Hz, on each paper and tilt. Latency by cross-correlation with the encoders.
 - **Measurands.** Position error (µm rms); report rate; latency; drop-outs.
 
 <!-- AC-TABLE:EXP-N07:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-N07-01 | REQ-RVJ-N06 | Page sensor in its Rev J place (folded optics beside the heel wheel, DEC-044) against the motion-stage encoders, 1 mm tremor added, θ 35-75° and pen roll up to ±20°, lined, grid and glossy paper: report rate, latency (cross-correlation), position error and drop-outs (all) | all met (≥ 1 kHz; ≤ 2 ms; ≤ 10 µm RMS; no drop-out) | requirement | REQ-RVJ-N06 (roll ±20° added by DEC-044); SIM assumed 1 kHz, 2 ms, 3 µm noise (fusion study model, ASSUMPTION); with 120 Hz and 10 ms the autowrite ink error rose from 30 to 72 µm (SIM); the lens stays in its 2.2-2.6 mm band (MFR OPT-54) only within about ±1.5° of roll (CALC) -> predicted to FAIL at larger roll | DEC-036 (revisit if no 1 kHz page position); DEC-037 (slip detection); DEC-044 |
+| AC-N07-01 | REQ-RVJ-N06 | Page sensor in its Rev J place (folded optics beside the heel wheel, DEC-044) against the motion-stage encoders, 1 mm tremor added, θ 35-75° and pen roll up to ±20°, lined, grid and glossy paper: report rate, latency (cross-correlation), position error and drop-outs (all) | all met (≥ 1 kHz; ≤ 2 ms; ≤ 10 µm RMS; no drop-out) | requirement | REQ-RVJ-N06 (roll ±20° added by DEC-044); SIM assumed 1 kHz, 2 ms, 3 µm noise (fusion study model, ASSUMPTION); with 120 Hz and 10 ms the autowrite ink error rose from 30 to 72 µm (SIM); the lens stays in its 2.2-2.6 mm band (MFR OPT-54) only within about ±1.5° of roll (CALC) -> predicted to FAIL at larger roll; DEC-045 fits a PMW3610-class die (MFR OPT-61), whose rate and accuracy on paper EXP-J10 measures first | DEC-036 (revisit if no 1 kHz page position); DEC-037 (slip detection); DEC-044 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-N07).
 <!-- AC-TABLE:EXP-N07:END -->
@@ -4226,25 +4235,27 @@ DEC-042 sets the Rev J control stack.
 - **Default estimator.** A causal tremor-line detector on the page sensor looks at the last 4 s every 50 ms (peak-to-floor ratio in 4.5–13.5 Hz, hysteresis 5/2.5, amplitude gate 0.15–0.35 mm; its state kept across lines). It opens a listening fixed-lag Kalman estimate at lag 0 only while a tremor line is present. Otherwise the Rev H tracker runs.
 - **Successor in shadow mode.** A causal TCN (34 k parameters, int8) logs its estimate beside the default. It drives the nose only after REQ-ML-001 passes on held-out real recordings.
 - **No delayed ink; RL offline only; one arbitration law.** The ink never trails the hand. RL designs the arbitration offline; no RL policy drives the nose. Every assistance uses α = α_max × c_conf × c_need × c_agree, slew-limited, with the hand-back rules.
-- **What it gates.** DEC-042 is revisited if EXP-L01 or EXP-L02 fail, if EXP-L04 passes (then the TCN may take over), or if EXP-L05 passes its rules. Requirements: REQ-CTRL-009, REQ-CTRL-010, REQ-CTRL-011, REQ-ML-003 and REQ-ML-004.
+- **What it gates.** DEC-042 is revisited if EXP-L01 or EXP-L02 fail, if EXP-L04 passes (then the TCN may take over), or if EXP-L05 passes its rules. DEC-045 is revisited if EXP-L01 shows that the detector needs the 1 kHz page-sensor stream. Requirements: REQ-CTRL-009, REQ-CTRL-010, REQ-CTRL-011, REQ-ML-003 and REQ-ML-004.
 - **Predictions** come from `docs/ai_control_v2.md` and `results/ai2/ai2.json` (model HW1; test writers 0–5, seeds 200–203; rules R1–R4 fixed on tuning seeds 300–301; SIM and CALC). The learned models and RL policies were trained and tested inside one simulator family.
 - **Data.** EXP-L01, L02 and L04 replay the EXP-H01 recordings (instrumented passive pen, tip camera as the reference), with the participant splits of REQ-DATA-001 and the EXP-E01 protocol.
 - The studies with people (EXP-L03, L06, L07, L08) are in [`human_study_plan.md`](human_study_plan.md) §19.
 
 ### EXP-L01: Does the tremor-line gate stay shut on real tremor-free writing?
 
-- **Purpose and gates.** Check the gate on real writing: shut on tremor-free writing, open on real tremor. Check that the stack is causal. Gates REQ-CTRL-009, REQ-CTRL-010 and DEC-042.
+- **Purpose and gates.** Check the gate on real writing: shut on tremor-free writing, open on real tremor. Check that the stack is causal. For DEC-045, check the gate on the low-power page sensor's stream at 250 Hz, and on the IMU alone as the fallback. Gates REQ-CTRL-009, REQ-CTRL-010, DEC-042 and DEC-045.
 - **Predictions (SIM).**
   - The gate never opened on the tremor-free writing of any tuning or test writer. Tremor-free writing moved 26.3 µm, the same as with the Rev H tracker.
   - At 1–2 mm it was open for 51–73 % of a 20 s recording, because it needs about 4.5 s to open (4 s window + 0.5 s). Once open on tuning data, it stayed open for 95 % of the detector's updates.
   - At 0.3 mm it was open for 0.1–12.9 % of the time.
+  - The detector already works on a 250 Hz grid (a Welch spectrum of the last 4 s every 50 ms). No prediction exists for the low-power die's stream or for an IMU-only gate. The IMU carries the tremor estimate: without the page sensor the listening smoother's residual was 421 µm, against 412 µm with it (SIM, study L).
 - **Set-up.** Offline: the EXP-H01 recordings of ET, PD and control writers. The Rev J estimator stack as firmware code, run in a replay harness. Then the bench pen with recorded hand motion.
 - **Procedure.**
   1. Test the causality of the stack build: change sensor samples after their availability time and check that no earlier command changes.
   2. Replay every recording, keeping the detector's state across lines within a session, as the firmware does.
   3. Log the gate, the detector's ratio and amplitude, and the commanded correction.
-  4. Repeat on the bench pen.
-- **Measurands.** Gate-open share of tremor-free writing time per writer; time to open after tremor onset; open share at 1–2 mm after the first 5 s; tremor-free writing moved (the commanded correction on the controls' writing), judged against the absolute 25 µm bound on these real recordings (`README.md` §2), with the difference to the Rev H tracker alone reported.
+  4. Replay again with the detector on the low-power die's stream at 250 Hz (recorded with the die where available, otherwise the 1 kHz stream reduced to 250 Hz and to the die's 7.9 µm counts), and a third time on the IMU alone (DEC-045).
+  5. Repeat on the bench pen.
+- **Measurands.** Gate-open share of tremor-free writing time per writer; time to open after tremor onset; open share at 1–2 mm after the first 5 s; tremor-free writing moved (the commanded correction on the controls' writing), judged against the absolute 25 µm bound on these real recordings (`README.md` §2), with the difference to the Rev H tracker alone reported. For DEC-045: the agreement of the 250 Hz and IMU-only gates with the 1 kHz gate per 50 ms decision, and their openings on tremor-free writing.
 
 <!-- AC-TABLE:EXP-L01:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -4253,11 +4264,13 @@ DEC-042 sets the Rev J control stack.
 | AC-L01-02 | REQ-CTRL-010 | Tremor-free writing moved by the gated stack on the controls' real recordings (commanded correction, every control writer, RMS); the difference to the Rev H tracker alone is reported | ≤ 25 µm | derived | false-correction convention (validation/README.md s2): on real recordings the absolute bound of AC-E01-09 applies; REQ-CTRL-010's relative bound (Rev H + 2 µm) is for simulation on synthetic writers, which carry about ten times the measured 8-12 Hz content (DEC-040); SIM 26.3 µm with both trackers on synthetic writers | DEC-042 |
 | AC-L01-03 | — | Gate-open share of pen-down time after the first 5 s of writing, writers with 1-2 mm tremor at the tip | ≥ 80 % | hypothesis | pass line of study L; SIM: open for 51-73 % of a whole 20 s recording because the detector needs about 4.5 s to open, and for 95 % of its updates at 1-2 mm once open on tuning data (docs/ai_control_v2.md s3.4, s4.1) | DEC-042 |
 | AC-L01-04 | REQ-CTRL-009 | Causality test of the estimator stack used in the replay (firmware build): changing any sensor sample after its availability time (acquisition + latency) changes no earlier nose command, and every estimator output at a tick uses only samples available at that tick | conforms (bit-exact) | requirement | REQ-CTRL-009; study L found and fixed two look-ahead leaks before its test (docs/ai_control_v2.md s13 item 3); unit tests in ai2/tests | DEC-042 |
+| AC-L01-05 | — | Tremor-line gate computed on the low-power page sensor's stream at 250 Hz (DEC-045) against the gate on the 1 kHz page-sensor stream, per 50 ms decision on the EXP-H01 recordings (all writers), and its openings on the controls' tremor-free writing (both) | both met (≥ 95 % of decisions agree; never open on tremor-free writing) | hypothesis | pass line of the Rev J.1 study (docs/revJ1_design.md s4.2); the detector already works on a 250 Hz grid (DEC-042); no prediction for the low-power die's stream (EXP-J10) | DEC-045 (revisit if the detector needs the 1 kHz stream) |
+| AC-L01-06 | — | IMU-only tremor-line detector (the fallback pre-detector for a gated PMW3360-class die): tremor lines found by the 1 kHz page-sensor gate that it misses, and its openings on the controls' tremor-free writing (both) | both met (no line missed; never open on tremor-free writing) | hypothesis | pass line of the Rev J.1 study, needed only if EXP-J10 shows the low-power die cannot serve the detector; the IMU carries the tremor estimate (listening-smoother residual 421 µm without the page sensor against 412 µm with it; SIM, study L); no prediction for an IMU-only gate | DEC-045 (fallback: a PMW3360-class die gated by an IMU pre-detector) |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-L01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-L01).
 <!-- AC-TABLE:EXP-L01:END -->
 
-- **Decision rule.** The gate opens on real tremor-free writing: revisit DEC-042 (re-tune the thresholds on training participants only, or keep the Rev H tracker). It opens too little on real tremor: re-tune the detector; the 20 s calibration can arm its band.
+- **Decision rule.** The gate opens on real tremor-free writing: revisit DEC-042 (re-tune the thresholds on training participants only, or keep the Rev H tracker). It opens too little on real tremor: re-tune the detector; the 20 s calibration can arm its band. The 250 Hz gate disagrees with the 1 kHz gate: revisit DEC-045 (a PMW3360-class die, gated by the IMU-only detector if that one misses no line).
 
 ### EXP-L02: Does the gated tracker beat the Rev H tracker on real writing?
 
@@ -4333,7 +4346,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 ---
 
-## 46. Rev J integrated layout: EXP-J01…J07
+## 46. Rev J integrated layout: EXP-J01…J07, and Rev J.1: EXP-J10…J16
 
 ### Purpose and what it gates
 
@@ -4344,51 +4357,54 @@ DEC-044 joins the round-1 designs into one Ø24 mm pen.
 - **What it gates.** DEC-044 is revisited if detailed CAD loses the 0.04–0.14 mm margins, if an EXP-J test fails (gimbal axial load, motor cogging, nose sensing near the magnets, stray field, ink visibility, heat), or if the battery cannot reach 8 h in the steady modes with the page sensor duty-cycled (EXP-P01, AC-P01-06). Requirements: REQ-RVJ-I01…I06, and the updated REQ-RVJ-N03, N05, N06 and REQ-EC-001.
 - **Predictions** come from `docs/revJ_design.md` and `results/revJ/` (CALC on the round-1 designs; 38 of 38 fit checks pass). No new closed-loop simulation was run; SIM numbers are quoted from the round-1 studies. The magnetic fields are free-space calculations without iron or motor housings, so the stray fields are upper bounds.
 - **Mock-ups** are printed from `results/revJ/revJ_pen_assembly.step` and `revJ_pen_assembly_no_endcap.step`.
-- Work with people (EXP-J08 ink visibility, EXP-J09 mass and balance) is in [`human_study_plan.md`](human_study_plan.md) §20.
+- Work with people (EXP-J08 ink visibility, EXP-J09 mass and balance, and EXP-J15's writers) is in [`human_study_plan.md`](human_study_plan.md) §20. The Rev J.1 fixes (DEC-045) and their tests follow EXP-J07.
 
 ### EXP-J01: Axial pull and centring of the actuator
 
-- **Purpose and gates.** Measure the magnet cap's axial pull on the gimbal and the effect of an off-centre sphere, before a nose is built for EXP-N02…N05. Gates REQ-RVJ-I02, DEC-044 and the gimbal of DEC-036.
+- **Purpose and gates.** Measure the magnet cap's axial pull on the gimbal and the effect of an off-centre sphere, before a nose is built for EXP-N02…N05. Gates REQ-RVJ-I02, DEC-044, DEC-045 (revisited above 27 N) and the gimbal of DEC-036. The gimbal itself is tested in EXP-J11.
 - **Predictions (CALC).**
   - The cap pulls toward the coil plate's iron with 16.5 N (image method with ideal iron, an upper bound; a cruder uniform-gap estimate gives 36 N).
-  - Study N's cross strips buckle at 14.5 N each. In compression each 45° strip would carry 11.7 N: a safety factor of only 1.24.
-  - An axial offset of the spheres' centre gives a negative stiffness of 29 % of the gimbal's 2.8 mN·m/rad at 0.05 mm (59 % at 0.1 mm). A sideways offset costs 2 / 12 / 48 mW of holding power at 0.02 / 0.05 / 0.1 mm.
-- **Set-up.** The C1S cap and a Hiperco plate dummy on an x-y-z stage over a load cell (±50 N, 0.01 N resolution). Then the built gimbal, with the strips arranged in tension or with a jewel thrust pivot.
+  - The pull depends on where the iron face is taken: 12.4–22.2 N (CALC, DEC-045); Rev J.1 designs the gimbal for 22.2 N. Study N's 50 µm strips buckle at 16.4 N in compression by a co-rotational beam model, a safety factor of about 1.0 (Rev J's 1.24 used Euler buckling per strip). DEC-045's 75 µm strips buckle at 55.3 N.
+  - An axial offset of the spheres' centre changes the pivot stiffness by 0.83 mN·m/rad at 0.05 mm (its sign follows the offset): 29 % of study N's 2.8 mN·m/rad, but 3.6 % of the 75 µm pivot's 22.7. A sideways offset costs 2 / 12 / 48 mW of holding power at 0.02 / 0.05 / 0.1 mm.
+- **Set-up.** The C1S cap and a Hiperco plate dummy on an x-y-z stage over a load cell (±50 N, 0.01 N resolution). Then the assembled nose with the 75 µm gimbal (DEC-045), the coil plate seated on a shim chosen after measuring the unpowered nose's stiffness.
 - **Procedure.**
   1. Pull against gap (0.6–1.2 mm) and tilt (±5.3°).
   2. Torque against axial and sideways offsets of 0–0.1 mm.
-  3. Load the built gimbal axially up to 2 × the measured pull; check for buckling.
-  4. Measure the centring of the spheres on the pivot in the assembled nose.
-- **Measurands.** Axial pull; offset torque; buckling load; centring error.
+  3. Measure the centring of the spheres on the pivot in the assembled nose. The gimbal's buckling, fatigue and drops are EXP-J11.
+- **Measurands.** Axial pull; offset torque; centring error.
 
 <!-- AC-TABLE:EXP-J01:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-J01-01 | — | Axial pull of the C1S magnet cap on a Hiperco plate dummy (x-y-z stage over a load cell, ±50 N, 0.01 N resolution) over gaps 0.6-1.2 mm and tilt ±5.3°, and the torque from axial and sideways offsets of 0-0.1 mm, against revj magnetics.axial_pull | within ±20 % of the prediction | hypothesis | pass line of the integrated design study; prediction 16.5 N at the design gap (image method with ideal iron, an upper bound; a cruder uniform-gap estimate gives 36 N) (CALC, results/revJ/magnetics.json) | DEC-044; DEC-036 |
-| AC-J01-02 | REQ-RVJ-I02 | Built gimbal (strips in tension, or a thrust pivot): axial load carried without buckling, as a multiple of the pull measured in AC-J01-01; and the offset of the spheres' centre from the pivot, axially and sideways (both) | both met (≥ 2 x the measured pull; ≤ 0.05 mm) | requirement | REQ-RVJ-I02; study N's strips buckle at 14.5 N each in compression, a safety factor of 1.24 per 45° strip against 16.5 N (CALC); an axial offset of 0.05 mm adds a negative stiffness of 29 % of the gimbal's (CALC) | DEC-044 (revisit if a J test fails); DEC-036 |
+| AC-J01-01 | — | Axial pull of the C1S magnet cap on a Hiperco plate dummy (x-y-z stage over a load cell, ±50 N, 0.01 N resolution) over gaps 0.6-1.2 mm and tilt ±5.3°, and the torque from axial and sideways offsets of 0-0.1 mm, against revj magnetics.axial_pull | within ±20 % of the prediction | hypothesis | pass line of the integrated design study; prediction 16.5 N at the design gap, 12.4-22.2 N by where the iron face is taken (image method with ideal iron, an upper bound; a cruder uniform-gap estimate gives 36 N) (CALC, results/revJ/magnetics.json, results/revJ1/magnetics.json); DEC-045 designs the gimbal for 22.2 N | DEC-044; DEC-045 (revisit above 27 N: 100 µm x 5 mm strips); DEC-036 |
+| AC-J01-02 | REQ-RVJ-I02 | Offset of the spheres' centre from the pivot in the assembled nose, axially and sideways (the coil plate seated on a shim chosen after measuring the unpowered nose's stiffness); the buckling, fatigue and drop parts of REQ-RVJ-I02 are AC-J11-01 and AC-J11-02 | ≤ 0.05 mm | requirement | REQ-RVJ-I02 (DEC-045); an axial offset of 0.05 mm changes the pivot stiffness by 0.83 mN m/rad (its sign follows the offset), 3.6 % of the 75 µm pivot's 22.7, and a sideways one a steady 0.83 mN m that the coils hold with 12 mW (CALC, results/revJ1/magnetics.json) | DEC-045; DEC-044; DEC-036 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J01).
 <!-- AC-TABLE:EXP-J01:END -->
 
-- **Decision rule.** Gimbal short of 2 × the pull: strips in tension or a thrust pivot before any nose is built (DEC-044). Pull outside ±20 % of the model: update `revj/magnetics.py` and the design's heat and power numbers.
+- **Decision rule.** Pull above 27 N: 100 µm × 5 mm strips (DEC-045 revisit; strips in tension and thrust pivots were rejected). Pull outside ±20 % of the model: update `revj/magnetics.py` and the design's heat and power numbers. Centre off by more than 0.05 mm: re-shim the plate.
 
 ### EXP-J02: Heel-motor cogging from the C1S magnets
 
-- **Purpose and gates.** Measure the detent that the actuator's magnets add at the heel motors. Gates REQ-RVJ-I03 and DEC-044, and DEC-037's drive.
-- **Predictions (CALC).** Up to 0.080 mN·m at a motor's rotor (7.3 × its 0.011 mN·m friction torque, 29 % of its rated torque; MFR AMF-100). Through the 2:1 crown that is up to 0.16 N at the tyre, against a 0.03 N backdrive. This is a free-space bound that ignores the plate's 2.37 mm back iron and the motor's own housing.
-- **Set-up.** A Faulhaber 0620 B at its Rev J place, 2.7 mm behind the plate dummy and the cap; a torque sensor or a calibrated current method on the motor; a 0.2 mm soft-iron cup.
-- **Procedure.** Cogging torque against rotor angle, with the cap in place and removed, without and with the cup; then the motor turning the wheel on paper, with the heading logged.
-- **Measurands.** Added detent torque; heading ripple.
+- **Purpose and gates.** Measure the detent that the actuator's magnets add at the heel motors, at their Rev J.1 place (re-specified for DEC-045). Gates REQ-RVJ-I03, REQ-RVJ-I04 (the motors' field at the nose Hall sensors), DEC-045 and DEC-037's drive.
+- **Predictions (CALC, free space).** Only the transverse field turns a rotor. At the Rev J.1 place (the motors and gears 10 mm further back): 0.0073 mN·m, 0.66 × the motor's 0.011 mN·m friction torque. At Rev J's place: 0.062 mN·m, 5.6 × (Rev J's bound of 0.080 counted the axial field too), or 0.12 N at the tyre against a 0.03 N backdrive. The housing is black-anodised aluminium and does not shield (MFR AMF-155). The plate's back iron lies between the cap and the motors, so free space is an upper bound. A soft-iron cup does not fit. Moving the motors back also lowers their ripple at the nose Hall sensors from 15.4 to 10.2 µm.
+- **Set-up.** A Faulhaber 0620 B at its Rev J.1 place, and at Rev J's for comparison, behind a C1S cap and a coil-plate dummy with a 1.5 mm Hiperco back iron; the cap at rest and at its stops in four directions. A torque sensor with 0.001 mN·m resolution on the motor shaft.
+- **Procedure.**
+  1. Unpowered, turn the shaft slowly: cogging torque against rotor angle at each cap position, with the cap in place and removed; log the motor's own Hall signals.
+  2. No-load current and speed (iron near the rotor would add loss).
+  3. With the rotor turning, the motor's field at the nose Hall sensors' place (for EXP-J03).
+  4. The same with a 0.1 mm low-carbon steel cup, if a later layout finds room.
+- **Measurands.** Added detent torque at each cap position; no-load current and speed; the motor's field at the nose Hall sensors.
 
 <!-- AC-TABLE:EXP-J02:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-J02-01 | REQ-RVJ-I03 | Detent torque added at a Faulhaber 0620 B at its Rev J place behind the plate dummy and the C1S cap, against rotor angle, without and with a 0.2 mm soft-iron cup | ≤ 0.011 mN m | requirement | REQ-RVJ-I03 (the motor's friction torque, MFR AMF-100); prediction up to 0.080 mN m, a free-space bound that ignores the plate's back iron and the motor housing (CALC, results/revJ/magnetics.json) -> may fail without the cup | DEC-044; DEC-037 (cogging) |
+| AC-J02-01 | REQ-RVJ-I03 | Detent torque added at a Faulhaber 0620 B at its Rev J.1 place (10 mm further back than Rev J's, DEC-045), behind a C1S cap and a coil-plate dummy with a 1.5 mm Hiperco back iron, against rotor angle (torque sensor with 0.001 mN m resolution, unpowered, turned slowly), with the cap at rest and at its stops in four directions; largest over the cap positions | ≤ 0.011 mN m | requirement | REQ-RVJ-I03 (the motor's friction torque, MFR AMF-100, AMF-155); prediction 0.0073 mN m at the Rev J.1 place (0.66 x the friction) and 0.062 mN m at Rev J's, from the transverse field only (CALC, free space, an upper bound: the plate's back iron lies between; the aluminium housing does not shield, MFR AMF-155; rotor magnet ASSUMPTION; results/revJ1/magnetics.json) -> predicted to pass; a soft-iron cup does not fit | DEC-045 (revisit above the friction torque: motors 15 mm back); DEC-037 (cogging) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-J02).
 <!-- AC-TABLE:EXP-J02:END -->
 
-- **Decision rule.** Above the friction torque without the cup: fit the cup and repeat. Still above with the cup: revisit DEC-037's motor place (DEC-044).
+- **Decision rule.** Above the friction torque at any cap position: move the motors 15 mm back (0.0024 mN·m, CALC) and repeat (DEC-045 revisit).
 
 ### EXP-J03: Nose position sensing near the magnets
 
@@ -4396,9 +4412,9 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 - **Predictions (CALC).**
   - Noise 5.6 µm (x) and 6.1 µm (y) rms at the tip (MFR OPT-46); a 3-D Hall would give 24 / 49 µm at full rate (MFR OPT-53).
   - The cap's own field: 2.8 µm in y, a fixed map of the nose position that can be calibrated out.
-  - Unshielded heel motors: up to 15.4 µm in x, turning with the rotor. The Earth's field: 16.8 µm in x, slow.
+  - Unshielded heel motors: 10.2 µm in x at their Rev J.1 place (15.4 µm at Rev J's), turning with the rotor: just over 10 µm until it is subtracted by rotor angle. The Earth's field: 16.8 µm in x, slow.
   - Not computed: the pen-lift brake's field when it switches, and the coils' own fields.
-- **Set-up.** The board with two DRV5055-A4 sensors over the carrier's 2 × 2 × 1 mm magnet on a 2-axis micrometre stage (R5), with the cap, plate and coils, the two heel motors and the pen-lift brake at their Rev J places.
+- **Set-up.** The board with two DRV5055-A4 sensors over the carrier's 2 × 2 × 1 mm magnet on a 2-axis micrometre stage (R5), with the cap, plate and coils, the two heel motors and the pen-lift brake at their Rev J.1 places (DEC-045: the motors 10 mm further back).
 - **Procedure.**
   1. Map the sensor outputs against the magnet position and fit the calibration, including the cap's field map.
   2. Measure the error at fixed positions with the motors running at lead-through speeds, the brake switching, and coil currents stepped from 0 to 1.5 A.
@@ -4408,7 +4424,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 <!-- AC-TABLE:EXP-J03:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-J03-01 | REQ-RVJ-I04 | Nose position error at the tip from the two DRV5055-A4 sensors over the carrier magnet on a 2-axis micrometre stage, over the servo band, with the heel motors running, the pen-lift brake switching and coil currents of 0-1.5 A, after calibration of the cap's field map | ≤ 10 µm RMS | requirement | REQ-RVJ-I04; prediction 5.6-6.1 µm of noise; unshielded heel motors up to 15.4 µm of ripple, to subtract by rotor angle or shield; brake and coil fields not computed (CALC, results/revJ/magnetics.json) | DEC-044 |
+| AC-J03-01 | REQ-RVJ-I04 | Nose position error at the tip from the two DRV5055-A4 sensors over the carrier magnet on a 2-axis micrometre stage, over the servo band, with the heel motors running, the pen-lift brake switching and coil currents of 0-1.5 A, after calibration of the cap's field map | ≤ 10 µm RMS | requirement | REQ-RVJ-I04; prediction 5.6-6.1 µm of noise; unshielded heel motors 10.2 µm of ripple at their Rev J.1 place (15.4 µm at Rev J's), to subtract by rotor angle or shield; brake and coil fields not computed (CALC, results/revJ/magnetics.json, results/revJ1/magnetics.json) | DEC-044 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-J03).
 <!-- AC-TABLE:EXP-J03:END -->
@@ -4422,7 +4438,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
   - The lens sits 2.23–2.45 mm above the paper over 35–75° with no roll: inside the lens's 2.2–2.6 mm reference band (MFR OPT-54).
   - With ±5° of roll it spans 2.06–2.74 mm; with ±20°, 1.59–4.11 mm. The band holds only within about ±1.5° of roll.
   - A writer pressing less than the wheel's 0.55 N preload lifts the ring by up to 0.32 mm (height up to 2.71 mm).
-- **Set-up.** The optical-flow die with the folded optics on a tilt, roll and height stage over the six EXP-D01 papers; an encoder stage as the reference.
+- **Set-up.** The optical-flow die with the folded optics on a tilt, roll and height stage over the six EXP-D01 papers; an encoder stage as the reference. Both candidate dies: the PMW3610 class (DEC-045) and the PMW3360 class (the autowrite fallback); both have the same 2.2–2.6 mm lens plane (MFR OPT-61, OPT-54).
 - **Procedure.** Heights 1.5–4.2 mm, roll 0–20° and tilt 35–75°, at writing speeds; log position error and dropouts at each point.
 - **Measurands.** Usable height band; position error; dropouts.
 
@@ -4439,25 +4455,25 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 ### EXP-J05: Heat at the web
 
-- **Purpose and gates.** Measure the skin temperature at the thumb–index web, which lies over the coil plate. Gates REQ-RVJ-N03, the spreader, and DEC-044. It complements EXP-N04, which runs the real coils.
-- **Predictions (CALC).** The fin model of the PEEK shell gives 93.5 K/W from the plate to the skin. At 1 mm tremor (0.168 W) the web reaches 38.7 °C in a 23 °C room and 45.7 °C in a 30 °C room. A 0.5 mm aluminium spreader over z 82–102 halves the resistance to 43.3 K/W: 37.3 °C in a 30 °C room, for 2.1 g more.
-- **Set-up.** A PEEK shell with a heater in place of the coil plate (0.06–0.38 W), without and with the spreader; 23 °C and 30 °C rooms; still air; an IR camera and thermocouples.
+- **Purpose and gates.** Measure the skin temperature at the thumb–index web, which lies over the coil plate. Gates REQ-RVJ-N03, the spreader, DEC-044 and DEC-045. It complements EXP-N04, which runs the real coils; EXP-J13 extends it over power, room and a hand phantom.
+- **Predictions (CALC).** Rev J (DEC-044): the fin model gave 93.5 K/W from the plate to the skin, and the web 45.7 °C in a 30 °C room at 1 mm tremor. Rev J's 0.5 mm aluminium sleeve inside the bore does not fit: it would hit the swinging magnet cap and the motors. Rev J.1 (DEC-045): a 0.1 mm graphite sheet, 30 mm long, in a recess of the shell wall (+0.21 g). At 0.17 W the web rises 5.9 K with it and 17.8 K bare: 35.9 °C and 47.8 °C in a 30 °C room. Every spreader is nearly isothermal, so its length, not its material, sets the result.
+- **Set-up.** A PEEK shell with a heater in place of the coil plate (0.06–0.38 W), bare and with the graphite sheet; 23 °C and 30 °C rooms; still air; an IR camera and thermocouples.
 - **Procedure.** 30 min at each power, room and shell; read the web and the other held surfaces.
 - **Measurands.** Web surface temperature; the plate-to-skin resistance.
 
 <!-- AC-TABLE:EXP-J05:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-J05-01 | REQ-RVJ-N03 | Web surface temperature over the coil plate: PEEK shell with a heater in place of the plate at 0.17 W, still air, 30 min, in a 30 °C room, without and with the 0.5 mm aluminium spreader (IR camera and thermocouples); guarded acceptance | ≤ 41 °C | requirement | REQ-RVJ-N03 (DEC-044: the web, a 30 °C room); prediction at 0.168 W: 45.7 °C without and 37.3 °C with the spreader (CALC, fin model 93.5 and 43.3 K/W) -> fails without the spreader, which adds 2.1 g | DEC-044 (heat); DEC-036 |
+| AC-J05-01 | REQ-RVJ-N03 | Web surface temperature over the coil plate: PEEK shell with a heater in place of the plate at 0.17 W, still air, 30 min, in a 30 °C room, with the 0.1 mm graphite sheet in the shell wall (DEC-045; the bare shell as the baseline) (IR camera and thermocouples); guarded acceptance | ≤ 43 °C | requirement | REQ-RVJ-N03 (DEC-045: held surfaces ≤ 43 °C absolute in a rated 30 °C room, 41 °C design target; was 41 °C, DEC-044); prediction at 0.17 W: web rise 5.9 K with the sheet (35.9 °C) and 17.8 K bare (47.8 °C) (CALC, fin model, docs/revJ1_design.md s5.2); Rev J's 0.5 mm aluminium sleeve inside the bore does not fit (it would hit the magnet cap and the motors) | DEC-045 (heat); DEC-036 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-J05).
 <!-- AC-TABLE:EXP-J05:END -->
 
-- **Decision rule.** Fails without the spreader (as predicted): fit the spreader and count its 2.1 g in the mass budget (it takes the pen with the end-cap to 131.3 g, over the provisional 130 g of REQ-EC-001). Fails with it: limit the coil duty in warm rooms. Safety-related: guarded acceptance (§0.5).
+- **Decision rule.** Above 43 °C with the sheet: a longer sheet (40 mm gives 27 K/W) or a lower cap on the coil loss in warm rooms (DEC-045). Safety-related: guarded acceptance (§0.5).
 
 ### EXP-J06: Ink-force drum, spring and front stop
 
-- **Purpose and gates.** Test the fatigue-rated ink-force spring and the front stop that follows the nose (DEC-041 items 2 and 4). Gates REQ-RVJ-N05 and DEC-044. The drum's spiral spring is also a candidate in EXP-N06: run its cycling here once, and keep EXP-N06 for the other candidates and the stock spring.
+- **Purpose and gates.** Test the fatigue-rated ink-force spring and the front stop that follows the nose (DEC-041 items 2 and 4). Gates REQ-RVJ-N05, REQ-RVJ-N09 (the front stop, DEC-045) and DEC-044. The drum's spiral spring is also a candidate in EXP-N06: run its cycling here once, and keep EXP-N06 for the other candidates and the stock spring.
 - **Predictions (CALC).**
   - A 301 full-hard strip, 38 µm × 2.6 × 139 mm, gives 0.12–0.18 N along the refill over the 27.4 mm tendon travel, and 0.19–0.21 N normal at the ball at every tilt.
   - Goodman safety factor 1.73 at 10⁸ small cycles (±1.3 mm) and 1.30 at full travel (fatigue strength LIT AMF-20 with 0.8 ASSUMPTION).
@@ -4466,14 +4482,14 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 - **Procedure.**
   1. Force against travel over 27.4 mm.
   2. 10⁸ cycles at ±1.3 mm and 10⁵ full-travel cycles (ASSUMPTION); re-measure the force at every decade.
-  3. Pen lifts at 30 mm/s at 35/50/75°; measure the ink tail on R3 scans.
-- **Measurands.** Force against travel; fracture; ink tail.
+  3. Pen lifts at 30 mm/s at 35/50/75°; log the slide at which the brake locks (slide Hall) and measure the ink tail on R3 scans.
+- **Measurands.** Force against travel; fracture; slide at which the brake locks; ink tail.
 
 <!-- AC-TABLE:EXP-J06:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-J06-01 | REQ-RVJ-N05 | Ink-force drum with the 38 µm spiral spring and the tendon loop on a linear stage: force along the refill over the 27.4 mm tendon travel, and fracture after 1e8 cycles at ±1.3 mm and 1e5 full-travel cycles (both) | both met (0.12-0.18 N; no fracture) | requirement | REQ-RVJ-N05 (0.15 N ± 20 % along the refill); prediction 0.12-0.18 N; Goodman safety factor 1.73 at 1e8 small cycles and 1.30 at full travel (CALC, results/revJ/refill.json; fatigue strength LIT AMF-20 with 0.8 ASSUMPTION; 1e5 full cycles ASSUMPTION) | DEC-044; DEC-041 item 2 |
-| AC-J06-02 | — | Front stop by the drum brake (it locks when the slide runs 0.3 mm past the ball's contact): ink tail after a pen lift at 30 mm/s, at 35/50/75° | ≤ 0.5 mm | hypothesis | pass line of the integrated design study; prediction 0.33 mm (detection 7.7 ms and brake 3 ms, both ASSUMPTION; CALC, docs/revJ_design.md s5.3); a 0.5° tilt error moves the computed contact by 0.17 mm (CALC) | DEC-041 item 4; DEC-044 |
+| AC-J06-02 | REQ-RVJ-N09 | Front stop by the drum brake: slide beyond the ball's contact position at which the brake locks (slide Hall), and the ink tail after a pen lift at 30 mm/s, at 35/50/75° (both) | both met (≤ 0.3 mm; ≤ 0.5 mm) | requirement | REQ-RVJ-N09 (DEC-045; was a pass line of the integrated design study); rule 0.3 mm past the computed contact, and a 0.5° tilt error moves the computed contact by 0.17 mm -> at risk from the tilt estimate; prediction 0.33 mm of ink tail (detection 7.7 ms and brake 3 ms, both ASSUMPTION; CALC, docs/revJ_design.md s5.3) | DEC-041 item 4; DEC-044; DEC-045 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J06).
 <!-- AC-TABLE:EXP-J06:END -->
@@ -4498,3 +4514,170 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 <!-- AC-TABLE:EXP-J07:END -->
 
 - **Decision rule.** The measurement replaces the model where they differ by more than 30 %. The manual states the measured distance at the limit set from ISO 14117.
+
+### Rev J.1 fixes (DEC-045): what changes and what it gates
+
+DEC-045 keeps the Rev J layout and fixes the loads and budgets that Rev J failed (`docs/revJ1_design.md` §1).
+- **Gimbal.** Study N's cross strips stay in compression, but 75 µm thick (301 full-hard). Axial shock stops engage within 5 µm behind and 20 µm in front. The sphere centre sits on the pivot within 0.05 mm. Strips in tension and thrust pivots are not used.
+- **Magnetics.** The coil plate's back iron is 1.5 mm (Rev J: 2.37 mm). The heel motors and their gears sit 10 mm further back.
+- **Power.** A PMW3610-class page sensor stays on in every mode, because DEC-042's detector runs on it. A PMW3360-class die stays the fallback for autowrite until EXP-J10. The electronics are counted from datasheets (34–60 mW; duty cycles ASSUMED). The heel drivers sleep in the steady mode. The end-cap runs only while a tremor line is detected. The cell stays the LIR14500. One set of battery targets is in REQ-RVJ-I01.
+- **Heat.** A 0.1 mm graphite sheet, 30 mm long, sits in the shell wall over the coil plate and the web. One skin rule: held surfaces ≤ 43 °C in a rated 30 °C room, with 41 °C as the design target (REQ-THM-001, REQ-RVJ-N03).
+- **Mass and view.** A 29.6 g end-cap with a 9 mm tungsten slug: the pen is 84.3 g, and 112.7 g with the end-cap. The first 15 mm of the front sleeve are clear hard-coated PC over the top 240°.
+- **What it gates.** DEC-045 is revisited if:
+  - EXP-J01 measures a pull above 27 N (then 100 µm × 5 mm strips);
+  - EXP-J10 shows that the low-power die cannot give autowrite's 1 kHz and 10 µm;
+  - EXP-L01 shows that the detector needs the 1 kHz stream;
+  - EXP-N01, EXP-N04 or the whole-pen simulation confirm a nose-coil power ≥ 2 × study N's model;
+  - EXP-J02 measures a detent above the motor friction;
+  - EXP-J16 gives less than 10 % further reduction with the 29.6 g end-cap at the measured grip split.
+- **Requirements.** REQ-RVJ-I01 (with REQ-EC-008 folded in), I02, I06, I07; REQ-RVJ-N03 and N09; REQ-THM-001; REQ-EC-001; REQ-DRV-009.
+- **Predictions** come from `docs/revJ1_design.md` and `results/revJ1/`: CALC (a co-rotational beam model of the pivot, magpylib with ideal iron, the fin model, ray casting, datasheet budgets; 44 of 44 fit checks) and SIM (study K's model H1 for the end-cap family). Mock-ups are printed from `results/revJ1/revJ1_pen_assembly.step` and `revJ1_pen_assembly_no_endcap.step`.
+- **The big caveat.** Every battery and heat prediction rests on study N's nose-coil power. The whole-pen simulation has reported 1.3–2.4 W in some tremor runs (unconfirmed). At 2 × study N's power, steady writing at 1 mm tremor lasts 4.9–5.3 h and the web reaches 42.1 °C; at 5 ×, 2.0–2.1 h and 63.8 °C. EXP-N01 (K_m), EXP-N04 (heat at the duty), EXP-J12 and EXP-P01 measure the parts of it.
+- EXP-J02 above is re-specified for Rev J.1. EXP-J15's writers are in [`human_study_plan.md`](human_study_plan.md) §20, where EXP-J15 supersedes EXP-J08 for Rev J.1.
+
+### EXP-J10: Can a low-power page sensor serve every mode?
+
+- **Purpose and gates.** Test the PMW3610-class die in the folded optics, and its power. Gates REQ-RVJ-N06 (autowrite), REQ-RVJ-I07, the slip detection of REQ-DRV-005, DEC-042's detector and DEC-045.
+- **Predictions.**
+  - 0.60 mA at 1.8 V; 1.3–1.9 mW with its polling and the regulator (MFR OPT-61; × 1.5 ASSUMPTION; CALC).
+  - 3200 cpi (7.9 µm counts), 24–30 in/s and 10 g, with the same 2.2–2.6 mm lens plane as the PMW3360 (MFR OPT-61). Its frame rate and its accuracy on paper are not stated: no prediction.
+  - What the modes need: autowrite 1 kHz, ≤ 2 ms and ≤ 10 µm (REQ-RVJ-N06); the detector a 250 Hz grid (DEC-042); guide and lead-through ≥ 120 Hz and ≤ 10 ms.
+- **Set-up.** The die with the folded optics on the EXP-J04 stage; the six EXP-D01 papers; lens heights 2.0–2.8 mm, tilt 35–75°, roll 0–5°; polled at 1 kHz; the encoder as ground truth; a current probe on the sensor's supply. A PMW3360-class die as the reference.
+- **Procedure.** Writing sweeps with 1 mm of tremor added, at each paper, height, tilt and roll. Latency by cross-correlation with the encoder. Supply current at the polling of each mode.
+- **Measurands.** Report rate; latency; position error; dropouts; power.
+
+<!-- AC-TABLE:EXP-J10:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J10-01 | REQ-RVJ-N06 | PMW3610-class die with the folded optics, polled at 1 kHz on the EXP-J04 stage, six EXP-D01 papers, lens 2.0-2.8 mm above the paper, tilt 35-75°, roll 0-5°, 1 mm tremor added, against the encoder: report rate, latency and position error (all); the roll range of REQ-RVJ-N06 is tested in EXP-J04 | all met (≥ 1 kHz; ≤ 2 ms; ≤ 10 µm RMS) | requirement | REQ-RVJ-N06 (autowrite's needs); the die's frame rate and accuracy on paper are not stated (MFR OPT-61: 3200 cpi, so 7.9 µm counts; 24-30 in/s; the PMW3360's 2.2-2.6 mm lens plane): no prediction; a PMW3360-class die stays the autowrite fallback (DEC-045) | DEC-045 (revisit if the low-power die cannot give autowrite's 1 kHz and 10 µm) |
+| AC-J10-02 | — | Same set-up at the needs of DEC-042's detector and the slip detector: report rate and position error (both) | both met (≥ 250 Hz; ≤ 50 µm RMS) | hypothesis | pass line of the Rev J.1 study; the detector works every 50 ms on a 250 Hz grid (DEC-042); guide and lead-through need ≥ 120 Hz and ≤ 10 ms (CHECKPOINT s7); 50 µm engineering judgement; no prediction | DEC-045 (the page sensor on in every mode); DEC-042; DEC-037 (slip detection) |
+| AC-J10-03 | REQ-RVJ-I07 | Page-sensor power from the cell (current probe on its supply, regulator included) at the polling each mode uses, the sensor on in every mode | ≤ 3 mW | requirement | REQ-RVJ-I07; prediction 1.3-1.9 mW (0.60 mA at 1.8 V, MFR OPT-61, x 1.5 for polling and the regulator, ASSUMPTION; CALC, results/revJ1/budgets.json); a PMW3360-class die takes 34-80 mW (MFR AMF-109) | DEC-045 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-J10).
+<!-- AC-TABLE:EXP-J10:END -->
+
+- **Decision rule.** Meets autowrite's line: one low-power die for every mode (DEC-045). Meets only the detector's line: the PMW3360-class die for autowrite. Meets neither: the steady mode needs EXP-L01 to back an IMU pre-detector (DEC-045 revisit).
+
+### EXP-J11: The 75 µm gimbal under the pull, and shock
+
+- **Purpose and gates.** Test the gimbal that DEC-045 chose: buckling, stiffness under the pull, fatigue and drops. Gates REQ-RVJ-I02 and DEC-045.
+- **Predictions (CALC, `revj1/gimbal.py`).**
+  - Buckling 55.3 N (study N's 50 µm strips: 16.4 N).
+  - Pivot stiffness 9.4 mN·m/rad unloaded; 19.5, 22.7 and 26.3 mN·m/rad at 12, 16.5 and 22.2 N of axial preload.
+  - Goodman safety factor 2.0 at 16.5 N and 1.7 at 22.2 N (1.0 at the crude 36 N), taking full-travel tilt as fully reversed (material LIT AMF-20).
+  - A tail-first drop buckles the pivot above 222 g. Buckled strips stay elastic if the rear stop engages within 5 µm of the loaded position (peak strain 0.0045 against 0.0054 at yield), but not at 10 µm.
+- **Set-up.** The gimbal (75 µm × 2.55 × 3.8 mm strips crossing at mid-length) with its axial stops; a load frame with a rotary stage and a torque sensor; R8 for the cycling; a 1 m drop rig onto hardwood.
+- **Procedure.**
+  1. Rotational stiffness at 0, 12, 16.5 and 22 N of axial preload.
+  2. Axial load from 0 to 60 N until buckling, on a spare gimbal.
+  3. At the pull measured in EXP-J01: 10⁸ tilt cycles of ±0.017 rad about offsets of ±0.086 rad, then 10⁵ full-travel cycles. Stiffness and rest position at every decade.
+  4. 1 m drops with the stops fitted, tip-first and tail-first. Stiffness and rest position after each.
+- **Measurands.** Stiffness against preload; buckling load; fracture; rest position and stiffness after the drops.
+
+<!-- AC-TABLE:EXP-J11:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J11-01 | REQ-RVJ-I02 | 75 µm gimbal (301 full-hard, 2.55 x 3.8 mm strips crossing at mid-length) on a load frame: axial load at buckling as a multiple of the pull measured in EXP-J01, and the Goodman fatigue safety factor at full-travel tilt under the measured pull, recomputed with the measured strip thickness and pull (both) | both met (≥ 2 x the measured pull; ≥ 1.5) | requirement | REQ-RVJ-I02 (DEC-045); prediction buckling 55.3 N against a 12.4-22.2 N pull; safety factor 2.0 at 16.5 N and 1.7 at 22.2 N (1.0 at the crude 36 N) (CALC, revj1/gimbal.py, results/revJ1/gimbal.json; material LIT AMF-20); study N's 50 µm strips buckle at 16.4 N | DEC-045 (revisit if EXP-J01 measures a pull above 27 N: 100 µm x 5 mm strips) |
+| AC-J11-02 | REQ-RVJ-I02 | Fatigue and shock at the pull measured in EXP-J01: 1e8 tilt cycles of ±0.017 rad about ±0.086 rad offsets and 1e5 full-travel cycles; then 1 m drops onto hardwood, tip-first and tail-first, with the axial stops fitted: fracture, and permanent set of the strips (rest position and stiffness before and after) (all) | all met (no fracture; no permanent set) | requirement | REQ-RVJ-I02 (DEC-045: axial stops so that a 1 m drop leaves the strips elastic); a tail-first drop buckles the pivot above 222 g; buckled strips stay elastic if the rear stop engages within 5 µm of the loaded position (peak strain 0.0045 against 0.0054 at yield) but not at 10 µm; the front stop within 20 µm (CALC; the stops are not yet designed) | DEC-045 |
+| AC-J11-03 | — | Pivot rotational stiffness at 0, 12, 16.5 and 22 N of axial preload against revj1 gimbal.json | within ±20 % of the prediction | hypothesis | pass line of the Rev J.1 study; prediction 9.4 / 19.5 / 22.7 / 26.3 mN m/rad (CALC, co-rotational beam model matching the closed form E b t^3 / (6 L)); the stiffness under the pull costs +3.1 mW of coil power at 1 mm tremor | DEC-045; the nose's coil-power model |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-J11).
+<!-- AC-TABLE:EXP-J11:END -->
+
+- **Decision rule.** Buckling below 2 × the measured pull, a fracture, or a strip that takes a set in a drop: 100 µm × 5 mm strips or tighter stops (DEC-045 revisit). Stiffness off by more than 20 %: update `revj1/gimbal.py` and the coil-power numbers.
+
+### EXP-J12: Electronics power
+
+- **Purpose and gates.** Replace the electronics budget, counted from datasheets with assumed duty cycles, by a measurement. Gates REQ-RVJ-I01 through the base load, and DEC-045.
+- **Predictions (CALC; duty cycles ASSUMPTION).**
+  - nRF54L15 7.9–14.1 mW (CPU at 50–80 %, radio at 3–10 %; MFR OPT-60). The TCN in shadow mode alone takes 28 % of the core (DEC-042).
+  - IMU 1.4 mW (MFR OPT-37); two DRV5055 Hall sensors 14.8–29.6 mW (MFR OPT-46); two DRV8214 coil drivers 9.6–14.1 mW (MFR AMF-37); charger, fuel gauge and regulators 0.5–1.0 mW.
+  - Total 34.2–60.2 mW (Rev J assumed 77 mW). The page sensor adds 1.3–1.9 mW (EXP-J10).
+  - Per-mode totals of the whole pen: 117–150 mW steady without tremor, 230–263 mW at 1 mm tremor, 254–294 mW in lead-through, 539–579 mW in autowrite at 2 mm (`docs/revJ1_design.md` §4.4).
+- **Set-up.** The main board (nRF54L15, 2 × DRV5055, 2 × DRV8214, LSM6DSV16X) and the page sensor, running the firmware loop at 2 kHz with the TCN in shadow mode and a BLE log link; the coils and motors on dummy loads; an SMU at 3.7 V (R7). Then the built pen on the EXP-P01 set-up.
+- **Procedure.** 10 min in each mode on dummy loads, with the page sensor's current logged apart. Then scripted writing with the built pen in each mode and tremor level.
+- **Measurands.** Base electronics power per mode; per-mode total power of the pen.
+
+<!-- AC-TABLE:EXP-J12:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J12-01 | — | Base electronics power from the cell at 3.7 V (nRF54L15, 2 x DRV5055, 2 x DRV8214, LSM6DSV16X; the page sensor logged apart) running the firmware loop at 2 kHz with the TCN in shadow mode and a BLE log link, coils and motors on dummy loads, in each mode | ≤ 60 mW | hypothesis | pass line of the Rev J.1 study; prediction 34.2-60.2 mW from datasheets (MFR OPT-60, OPT-37, OPT-46, AMF-37) with a CPU duty of 50-80 % and a radio duty of 3-10 % (ASSUMPTION) -> at the limit at the pessimistic end; Rev J assumed 77 mW | DEC-045 (electronics budget; REQ-RVJ-I01) |
+| AC-J12-02 | — | Per-mode total power of the built Rev J.1 pen (EXP-P01 set-up, scripted writing: steady at 0, 0.3 and 1 mm tremor, guide, lead-through, autowrite at 0, 1 and 2 mm) against docs/revJ1_design.md s4.4 | within ±15 % of the prediction | hypothesis | pass line of the Rev J.1 study; prediction 117-150 mW (steady, no tremor) to 539-579 mW (autowrite at 2 mm) (CALC, results/revJ1/budgets.json); every row rests on study N's nose-coil power, and the whole-pen simulation has reported 1.3-2.4 W in some tremor runs (unconfirmed) | DEC-045 (revisit if the nose-coil power is ≥ 2 x study N's model) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J12).
+<!-- AC-TABLE:EXP-J12:END -->
+
+- **Decision rule.** Base above 60 mW: lower the CPU or radio duty, and re-count the battery per mode (REQ-RVJ-I01). Per-mode totals off by more than 15 %: update `revj1/power.py`. A nose-coil power ≥ 2 × study N's model: revisit DEC-045.
+
+### EXP-J13: Heat with the graphite spreader
+
+- **Purpose and gates.** Check the spreader that DEC-045 chose, and the model behind the skin rule. Gates REQ-RVJ-N03, REQ-THM-001 and DEC-045. It uses EXP-J05's heated shell.
+- **Predictions (CALC, fin model).**
+  - The 0.1 mm graphite sheet (z 80–110, in a 0.1 mm recess of the shell wall; 600–800 W/mK in plane, MFR AMF-158) cuts the resistance from 99.6 to 32.9 K/W.
+  - In a 30 °C room the web reaches 35.9 °C at 1 mm tremor (0.18 W) and 43.7 °C in autowrite with 2 mm tremor (0.42 W).
+  - The coils may dissipate 0.395 W for 43 °C and 0.334 W for 41 °C. No heat into the hand is counted, so the model is conservative.
+- **Set-up.** EXP-J05's PEEK shell with a heater in place of the coil plate (0.06–0.42 W) and the graphite sheet in its wall; 23 °C and 30 °C rooms; still air; with and without a 33 °C hand phantom; an IR camera and thermocouples.
+- **Procedure.** 30 min at each power, room and phantom condition; read the web and the other held surfaces.
+- **Measurands.** Web temperature; web rise per watt; other held surfaces.
+
+<!-- AC-TABLE:EXP-J13:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J13-01 | REQ-RVJ-N03 | Web surface temperature over the coil plate, PEEK shell with the 0.1 x 30 mm graphite sheet in its wall and a heater in place of the plate, still air, 30 min, 30 °C room: at 0.18 W (1 mm tremor) and at 0.39 W (the proposed firmware cap on the coil loss) (both); guarded acceptance | both met (≤ 41 °C at 0.18 W; ≤ 43 °C at 0.39 W) | derived | REQ-RVJ-N03 and REQ-THM-001 (DEC-045: 43 °C absolute in a rated 30 °C room, 41 °C design target), applied at the coil loss of 1 mm tremor and at the cap; prediction 35.9 °C at 0.18 W, and 43 °C is reached at 0.395 W (41 °C at 0.334 W) (CALC, fin model, docs/revJ1_design.md s5.3) -> at the limit at the cap | DEC-045 (heat); DEC-036 |
+| AC-J13-02 | — | Web rise per watt with the graphite sheet (0.06-0.42 W, 23 and 30 °C rooms), without and with a 33 °C hand phantom, against the fin model | within ±20 % of the prediction | hypothesis | prediction 32.9 K/W from the spreader to the room with the sheet, 99.6 K/W bare (CALC, fin model; no heat into the hand counted, so the phantom should lower the rise); ±20 % engineering judgement, as AC-J01-01 | DEC-045; the thermal model behind REQ-RVJ-N03 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J13).
+<!-- AC-TABLE:EXP-J13:END -->
+
+- **Decision rule.** Above 41 °C at 0.18 W or above 43 °C at 0.39 W: a lower firmware cap on the coil loss, or a longer sheet (40 mm gives 27 K/W) (DEC-045). Safety-related: guarded acceptance (§0.5).
+
+### EXP-J14: K_m and pull with the 1.5 mm back iron
+
+- **Purpose and gates.** Check that the thinner back iron costs no force. Gates DEC-045 (the plate) and, through K_m, REQ-RVJ-N02.
+- **Predictions (CALC, ideal iron; crowding factor 1.5 ASSUMPTION).** Each pole passes 2.35 × 10⁻⁵ Wb, half through each return path: about 1.24 T mean in 1.5 mm of Hiperco and 1.9 T at the crowded peak, against 2.4 T at saturation (MFR AMF-140). The thinner plate saves 2.7 g. Ideal iron does not saturate: if the real plate does, flux, pull and K_m fall together.
+- **Set-up.** The EXP-N01 and EXP-J01 coupons with a 2.37 mm and a 1.5 mm Hiperco plate; the R4 force map; the EXP-J01 load-cell stage for the pull; a Hall probe at the plate rim.
+- **Procedure.** Force map per axis over the stroke with each plate; axial pull over the gap; field at the plate rim.
+- **Measurands.** K_m with the thin plate as a fraction of the thick plate's; pull; rim field.
+
+<!-- AC-TABLE:EXP-J14:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J14-01 | — | Force constant K_m of the C1S coupon with the 1.5 mm Hiperco back iron as a fraction of that with the 2.37 mm plate (same coupon, R4 force map, both axes, lowest point of the map) | ≥ 0.97 | hypothesis | pass line of the Rev J.1 study; prediction no loss: about 1.24 T mean and 1.9 T at the crowded peak in 1.5 mm, against 2.4 T saturation (CALC, magpylib with ideal iron, crowding factor 1.5 ASSUMPTION; MFR AMF-140); protects REQ-RVJ-N02 (≥ 0.85 x the design K_m) | DEC-045 (the 1.5 mm plate); DEC-036 |
+| AC-J14-02 | — | Axial pull of the cap on the 1.5 mm plate over the gap (EXP-J01 stage) against revj1 magnetics.json | within ±20 % of the prediction | hypothesis | pass line of the Rev J.1 study; prediction 16.5 N at the design gap, 12.4-22.2 N by where the iron face is taken (ideal iron does not model the thickness, so saturation would lower the pull together with K_m) (CALC, results/revJ1/magnetics.json) | DEC-045 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J14).
+<!-- AC-TABLE:EXP-J14:END -->
+
+- **Decision rule.** K_m below 0.97 × the thick plate's: go back to the 2.37 mm plate (+2.9 g with the wiring allowance). Pull outside ±20 %: update `revj1/magnetics.py`.
+
+### EXP-J15 (wear part): Does the clear window stay clear?
+
+- **Purpose and gates.** Check that the hard-coated PC window survives hands, pockets and cleaning. Gates DEC-045 (the window) and, through the view, REQ-RVJ-I06. The writers' part of EXP-J15 is in [`human_study_plan.md`](human_study_plan.md) §20, with the criteria table of the whole experiment.
+- **Predictions (LIT, a secondary source).** PC transmits 88–90 % of light. Uncoated it scratches at HB–2H; hard-coated, about like PMMA (2H–4H) (LIT AMF-159). Paper would haze PC or PMMA on the ring, so the ring stays PEEK. No prediction of haze.
+- **Set-up.** Coupons of PC with the chosen hard coat; uncoated PC and PMMA as references; a Taber abraser or a steel-wool rig; a pocket-key tumble test; common cleaners; a haze meter.
+- **Procedure.** Haze and transmission before and after the abrasion cycles, the key test and wiping with the cleaners.
+- **Measurands.** Haze (%); transmission.
+- **Criterion.** AC-J15-03, in the table of EXP-J15 (`human_study_plan.md` §20).
+- **Decision rule.** Haze above 5 %: another hard coat (DEC-045 revisit).
+
+### EXP-J16: The light end-cap on top of the nose
+
+- **Purpose and gates.** Repeat EXP-K02 with the Rev J.1 end-cap. Gates REQ-EC-002, REQ-EC-003 and DEC-045 (revisited below 10 % at the measured grip split).
+- **Predictions (SIM, study K's model H1 on the Rev H pen and tracker; test seeds 200–203).**
+  - The 31.6 g member of the end-cap family, 29.6 g in Rev J.1's packaging (9 mm tungsten slug, 17.3 g): +5.6 / +16.8 / +18.3 % further reduction at grip splits 0.3 / 0.5 / 0.7. Study K's 45 g end-cap gave +8.0 / +18.2 / +19.5 %.
+  - The same mass fixed: +12.6 / +11.1 / +6.7 %. So the moving slug adds −7.0 / +5.7 / +11.6 points.
+  - Rule R-T1 passes, by 0.6 points at split 0.3. End-cap power 28 mW in the test runs.
+- **Set-up.** EXP-K02's rig and conditions, with the 29.6 g end-cap and a fixed dummy of the same mass. The grip-split setting nearest the value that EXP-I01 or EXP-K08 measures.
+- **Procedure.** As EXP-K02: nose alone; nose and the same mass fixed; nose and the active end-cap. 10 seeds per condition, in random order.
+- **Measurands.** RMS ink error; further reduction against the nose alone; the difference to the fixed mass; stroke; stop impacts; power.
+
+<!-- AC-TABLE:EXP-J16:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J16-01 | REQ-EC-002 | Further reduction of the RMS ink error with the 29.6 g Rev J.1 end-cap (9 mm tungsten slug, DEC-045) on top of the nose, EXP-K02's rig and conditions (8-12 Hz, 1-2 mm), at the grip-split setting nearest the measured split (EXP-I01 or EXP-K08); 10 seeds | ≥ 10 % | requirement | REQ-EC-002 (rule R-T1); prediction +5.6 / +16.8 / +18.3 % at r_rot 0.3 / 0.5 / 0.7 (SIM, study K's model H1 on the Rev H pen, test seeds 200-203; results/revJ1/endcap.json) -> FAILS if the measured split is 0.3 | DEC-045 (revisit if below 10 % at the measured split); DEC-038 |
+| AC-J16-02 | REQ-EC-003 | Further reduction with the 29.6 g active end-cap minus that with the same mass fixed, same rig and conditions, at the measured grip split | ≥ 5 points | requirement | REQ-EC-003; prediction -7.0 / +5.7 / +11.6 points at r_rot 0.3 / 0.5 / 0.7 (the same mass fixed +12.6 / +11.1 / +6.7 %; SIM, results/revJ1/endcap.json) -> FAILS at r_rot 0.3 and passes by 0.7 points at 0.5 | DEC-045; DEC-038 (fit the weight or nothing if the weight comes within 5 points) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J16).
+<!-- AC-TABLE:EXP-J16:END -->
+
+- **Decision rule.** Below 10 % at the measured split, or the fixed mass within 5 points: revisit DEC-045 (a heavier end-cap costs the 120 g limit) and DEC-038 (fit the weight or nothing).

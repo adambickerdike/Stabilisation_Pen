@@ -168,5 +168,10 @@ def test_evidence_rows_have_the_ledger_header_and_ids_in_range():
         rng = {"AMF": (155, 179), "OPT": (60, 69), "ACT": (105, 119), "CON": (70, 74), "HAP": (110, 114),
                "PDT": (59, 62), "PAT": (45, 49)}[pre]
         assert rng[0] <= int(num) <= rng[1]
-    ledger = {r["id"] for r in csv.DictReader(open(REPO_ROOT / "docs" / "evidence.csv", encoding="utf-8"))}
-    assert not (set(ids) & ledger)
+    # An id already in the ledger must be this study's own row, merged by the lead unchanged (same citation and URL);
+    # any other clash is an id collision.
+    ledger = {r["id"]: r for r in csv.DictReader(open(REPO_ROOT / "docs" / "evidence.csv", encoding="utf-8", newline=""))}
+    for r in EV.ROWS:
+        if r["id"] in ledger:
+            assert ledger[r["id"]]["citation"] == r["citation"]
+            assert ledger[r["id"]]["doi_or_url"] == r["doi_or_url"]

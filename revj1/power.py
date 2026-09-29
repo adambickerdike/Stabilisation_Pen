@@ -183,10 +183,12 @@ def cells() -> Dict:
 
 def targets_proposal() -> Dict:
     return {"REQ-RVJ-I01 (revised)": "Battery, continuous writing on the LIR14500 at 23 degC: >= 8 h in the steady modes up to "
-                                     "1 mm rms tremor (end-cap fitted and active while tremor is detected included), >= 8 h in "
-                                     "guide and lead-through; >= 6 h in autowrite up to 1 mm tremor; autowrite with 2 mm tremor "
-                                     "is for short texts (>= 3 h). The page sensor stays on in every mode (DEC-042's detector).",
+                                     "1 mm rms tremor and in guide; with the end-cap fitted and active while tremor is detected, "
+                                     ">= 8 h at the end-cap's measured duty and >= 6 h at its design power; >= 7.5 h in "
+                                     "lead-through; >= 6 h in autowrite up to 1 mm tremor; autowrite with 2 mm tremor is for "
+                                     "short texts (>= 3.5 h). The page sensor stays on in every mode (DEC-042's detector). "
+                                     "As adopted in DEC-045 and docs/revJ1_design.md s4.7.",
             "REQ-DRV-009": "keep the heel drive's own <= 0.15 W; the pen-level hours move to REQ-RVJ-I01",
-            "REQ-EC-008": "replace by REQ-RVJ-I01's end-cap clause (>= 8 h in the steady modes with the end-cap active while "
-                          "tremor is detected)",
+            "REQ-EC-008": "fold into REQ-RVJ-I01's end-cap clause (>= 8 h at the end-cap's measured duty, >= 6 h at its "
+                          "design power)",
             "label": "PROPOSED (reconciles REQ-DRV-009, REQ-EC-008 and REQ-RVJ-I01; the lead edits requirements.csv)"}

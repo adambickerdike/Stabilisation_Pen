@@ -1,8 +1,8 @@
 {
  "meta": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured (parameters for sim2)",
-  "generated_utc": "2026-09-29T16:19:41+00:00",
-  "git_revision": "b1694a3-dirty",
+  "generated_utc": "2026-09-29T17:04:04+00:00",
+  "git_revision": "4831cdc-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py",
@@ -17,8 +17,8 @@
  },
  "stabpen.provenance": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured (parameters for sim2)",
-  "generated_utc": "2026-09-29T16:19:41+00:00",
-  "git_revision": "b1694a3-dirty",
+  "generated_utc": "2026-09-29T17:04:04+00:00",
+  "git_revision": "4831cdc-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py",
