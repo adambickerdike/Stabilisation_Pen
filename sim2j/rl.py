@@ -169,8 +169,11 @@ N_OBS = 19
 class RevJTremorEnv(gym.Env):
     metadata = {"render_modes": []}
 
-    def __init__(self, seed: int = 0, writers=None, episode_s: float = 2.5, settle_s: float = 0.3, dt: float = DT_TRAIN,
+    def __init__(self, seed: int = 0, writers=None, episode_s: float = 5.0, settle_s: float = 3.0, dt: float = DT_TRAIN,
                  p_free: float = 1.0 / 3.0, log_path: Optional[str] = None, guard: Optional[GuardParams] = None):
+        """Each episode: the pen rests on the paper for settle_s (tremor on; the model-based tracker runs, the policy's
+        action is 0: the test's 4 s rest before writing, shortened to 3 s, enough for the guarded detector's 2.5 s) and
+        then writes episode_s of a training writer's sentence while the policy acts (250 Hz)."""
         super().__init__()
         self.guard = guard or frozen_guard()
         self.det = frozen_det()
@@ -198,18 +201,19 @@ class RevJTremorEnv(gym.Env):
         wr = WV.writer(w, "v2")
         written = wr.write(WV.ET_SENTENCE, dt=TK.SIM_DT, seed=2000 + w)
         it = written.intended
-        # start at a pen lift, keep episode + settle seconds
-        up = np.flatnonzero(~it.pen_down[:-1] & it.pen_down[1:])
-        T = self.episode_s + self.settle_s
-        cand = [k for k in up if it.t[k] + T < it.t[-1] and it.t[k] > 0.2]
-        k0 = int(rng.choice(cand)) if cand else 0
-        k0 = max(k0 - int(0.05 / TK.SIM_DT), 0)
-        k1 = k0 + int(round(T / TK.SIM_DT))
-        sl = slice(k0, k1)
+        # the pen rests on the paper at a touchdown for settle_s, then the writing from that touchdown (episode_s)
+        up = np.flatnonzero(~it.pen_down[:-1] & it.pen_down[1:]) + 1
+        cand = [k for k in up if it.t[k] + self.episode_s < it.t[-1] and it.t[k] > 0.2]
+        k0 = int(rng.choice(cand)) if cand else int(np.argmax(it.pen_down))
+        k1 = k0 + int(round(self.episode_s / TK.SIM_DT))
+        n_pre = int(round(self.settle_s / TK.SIM_DT))
         from stabpen import signals as sg
         from sim.pensim import scenarios as PS
-        t = it.t[sl] - it.t[k0]
-        itx = sg.Intended(t, it.xy[sl] - it.xy[k0], it.pen_down[sl], it.lift[sl], [])
+        xy = np.vstack([np.repeat(it.xy[k0:k0 + 1], n_pre, 0), it.xy[k0:k1]]) - it.xy[k0]
+        down = np.r_[np.ones(n_pre, bool), it.pen_down[k0:k1]]
+        lift = np.r_[np.zeros(n_pre), it.lift[k0:k1]]
+        t = np.arange(len(xy)) * TK.SIM_DT
+        itx = sg.Intended(t, xy, down, lift, [])
         self._shared = {"p": p, "w": w, "pm": pm, "itx": itx, "k0": k0, "ref": None,
                         "seed": int(rng.integers(1 << 20)), "fw_seed": int(rng.integers(1 << 20))}
 

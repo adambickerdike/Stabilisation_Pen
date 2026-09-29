@@ -155,9 +155,11 @@ def stage_tune(quick: bool = False) -> None:
 # ------------------------------------------------------------------------------------------------ ET
 ET_F0 = (4.0, 8.0, 12.0)
 ET_AMP = (0.3e-3, 1.0e-3, 2.0e-3)
-ET_FULL = ("none", "nose", "nose_wheel", "oracle")        # 12 cases per cell (6 writers x 2 seeds)
-ET_HALF = ("nose_wheel_ec",)                              # 6 cases per cell (the first seed of each writer)
-ET_NOGUARD_AMP = (1.0e-3,)
+# every controller on the first test seed of each writer (6 cases per cell); 'none', 'nose' and 'oracle' also on the
+# second seed when the stage is run with second_seed=True (12 cases per cell)
+ET_CTL = ("none", "nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "oracle", "tcn")
+ET_SECOND = ("none", "nose", "oracle")
+ET_CLEAN = ("nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "tcn")
 
 
 def et_seeds(w: int) -> List[int]:
@@ -165,14 +167,32 @@ def et_seeds(w: int) -> List[int]:
     return [TEST_SEEDS[w % 4], TEST_SEEDS[(w + 2) % 4]]
 
 
+def _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, pol=None):
+    if ctl == "tcn":
+        return LR.run_case(su, f0, amp, seed, r_none)
+    if pol is not None:
+        return ET.run_case(su, "rl", f0, amp, seed, ref_none=r_none if amp > 0 else None, policy=pol)
+    if amp <= 0:
+        return ET.run_case(su, ctl, 0.0, 0.0, seed)
+    return ET.run_case(su, ctl, f0, amp, seed, ref_none=r_none)
+
+
 def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows_name: str = "et",
-             writers=TEST_WRITERS, include_model_based: bool = True, first_seed_only: bool = False) -> Dict:
+             writers=TEST_WRITERS, include_model_based: bool = True, first_seed_only: bool = False,
+             second_seed: bool = False) -> Dict:
     """The ET test grid.  controllers_extra: {'rl': policy} adds RL cases."""
     from . import et as ET
+    from . import learned_replay as LR
     rows = Rows(rows_name)
     pens = ET.PenModels()
     f0s, amps = (ET_F0, ET_AMP) if not quick else ((8.0,), (1.0e-3,))
     ws = writers if not quick else writers[:1]
+    extra = dict(controllers_extra or {})
+    ctl_all = (list(ET_CTL) if include_model_based else ["none"]) + list(extra.keys())
+    if not LR.available():
+        ctl_all = [c for c in ctl_all if c != "tcn"]
+    clean_all = (list(ET_CLEAN) if include_model_based else []) + list(extra.keys())
+    clean_all = [c for c in clean_all if c in ctl_all]
     t0 = time.time()
     for w in ws:
         setups = {}
@@ -181,67 +201,43 @@ def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows
             if pen not in setups:
                 setups[pen] = ET.WriterSetup(w, pens, pen=pen, log=log)
             return setups[pen]
-        seeds = et_seeds(w) if not (quick or first_seed_only) else et_seeds(w)[:1]
-        # tremor-free writing (false correction against the device-off pen with the same seed)
-        clean_ctl = (list(ET_FULL[1:3]) + list(ET_HALF) + ["nose_noguard"] if include_model_based else [])
-        clean_ctl += list((controllers_extra or {}).keys())
+        seeds = et_seeds(w)[:1] if (quick or first_seed_only or not second_seed) else et_seeds(w)
         for si, seed in enumerate(seeds):
-            for ctl in clean_ctl:
+            ctls_here = ctl_all if si == 0 else [c for c in ctl_all if c in ET_SECOND]
+            # tremor-free writing (false correction against the device-off pen with the same seed)
+            for ctl in [c for c in clean_all if c in ctls_here]:
                 key = f"clean|{w}|{seed}|{ctl}"
-                if rows.has(key) or (ctl in ET_HALF + ("nose_noguard",) and si > 0):
+                if rows.has(key):
                     continue
-                pen = ET.PEN_OF.get(ctl, "base")
-                su = su_for(pen)
-                pol = (controllers_extra or {}).get(ctl)
-                m = ET.run_case(su, "rl" if pol is not None else ctl, 0.0, 0.0, seed, ref_none=su.clean_ref(seed),
-                                policy=pol)
+                su = su_for(ET.PEN_OF.get(ctl, "base"))
+                ref = su.clean_ref(seed)
+                m = _run_ctl(ET, LR, su, ctl, 0.0, 0.0, seed, ref, extra.get(ctl))
                 m.update({"kind": "clean", "ctl": ctl})
                 rows.put(key, m)
                 log(f"[{rows_name}] w{w} s{seed} clean {ctl}: moved {m['moved_vs_clean_um']:.1f} um, "
                     f"P {m['P_total_W']:.2f} W")
-        for f0 in f0s:
-            for amp in amps:
-                for si, seed in enumerate(seeds):
-                    ref = {}
+            for f0 in f0s:
+                for amp in amps:
+                    cell = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|"
                     for pen in ("base", "endcap"):
-                        need = [c for c in (list(ET_FULL) + list(ET_HALF) + ["nose_noguard"] + list((controllers_extra or {}).keys()))
-                                if ET.PEN_OF.get(c, "base") == pen]
-                        if not need:
-                            continue
-                        todo = []
-                        for ctl in need:
-                            if ctl in ("none",) and pen != "base":
-                                continue
-                            if ctl in ET_FULL and not include_model_based:
-                                continue
-                            if ctl in ET_HALF and (si > 0 or not include_model_based):
-                                continue
-                            if ctl == "nose_noguard" and (si > 0 or amp not in ET_NOGUARD_AMP or not include_model_based):
-                                continue
-                            key = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|{ctl}"
-                            if not rows.has(key):
-                                todo.append((ctl, key))
-                        if not todo:
+                        todo = [c for c in ctls_here if c != "none" and ET.PEN_OF.get(c, "base") == pen
+                                and not rows.has(cell + c)]
+                        if not todo and (pen != "base" or rows.has(cell + "none")):
                             continue
                         su = su_for(pen)
-                        rn = ET.run_case(su, "none", f0, amp, seed, keep=True)
+                        rn = ET.run_case(su, "none", f0, amp, seed, keep=True, record=True)
                         r_none = rn.pop("_r")
-                        rn.update({"kind": "tremor", "ctl": "none" if pen == "base" else "none_endcap_pen"})
-                        k_none = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|{'none' if pen == 'base' else 'none_endcap_pen'}"
-                        rows.put(k_none, rn)
-                        for ctl, key in todo:
-                            if ctl == "none":
-                                continue
-                            pol = (controllers_extra or {}).get(ctl)
-                            m = ET.run_case(su, "rl" if pol is not None else ctl, f0, amp, seed, ref_none=r_none,
-                                            policy=pol)
+                        nk = "none" if pen == "base" else "none_endcap_pen"
+                        rows.put(cell + nk, dict(rn, kind="tremor", ctl=nk))
+                        for ctl in todo:
+                            m = _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, extra.get(ctl))
                             m.update({"kind": "tremor", "ctl": ctl, "none_ink_err_um": rn["ink_err_um"],
                                       "ratio": m["ink_err_um"] / max(rn["ink_err_um"], 1e-9)})
-                            rows.put(key, m)
-                    done = [r for k, r in rows.rows.items() if k.startswith(f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|")]
+                            rows.put(cell + ctl, m)
+                    done = [r for k, r in rows.rows.items() if k.startswith(cell)]
                     log(f"[{rows_name}] w{w} s{seed} {f0:g} Hz {amp * 1e3:g} mm: " + ", ".join(
                         f"{r['ctl']} {r['ink_err_um']:.0f}" for r in done) + f"  ({time.time() - t0:.0f} s)")
-        rows.save()
+            rows.save()
     rows.save()
     return summarise_et(rows.values(), rows_name, quick)
 
@@ -703,7 +699,7 @@ def stage_power(quick: bool = False) -> Dict:
 
 # ------------------------------------------------------------------------------------------------ RL
 RL_DIR = os.path.join(BUILD, "rl")
-RL_STEPS = int(os.environ.get("SIM2J_RL_STEPS", "1000000"))
+RL_STEPS = int(os.environ.get("SIM2J_RL_STEPS", "600000"))
 RL_SEL_CELLS = ((8.0, 0.3e-3), (6.0, 1.0e-3), (8.0, 1.0e-3), (10.0, 1.0e-3), (8.0, 2.0e-3))
 
 
@@ -728,7 +724,7 @@ def _checkpoints(d: str) -> List[str]:
     return cks
 
 
-def stage_rl_select(quick: bool = False, last_n: int = 4) -> Dict:
+def stage_rl_select(quick: bool = False, last_n: int = 3) -> Dict:
     """Checkpoint selection on the tuning writers 100-103 (seed 300 + i for writer 100 + i) with the rule frozen in
     results/sim2j/rules.json (S1 false correction, S2 no worse than the model-based tracker at 0.3 mm, then the lowest
     ink error at 1-2 mm)."""
@@ -821,7 +817,6 @@ def stage_rl_test(quick: bool = False) -> Dict:
         write_result("rl_test", {"adopted": False, "reason": "no checkpoint passed S1 and S2 on the tuning writers"})
         return {}
     pol = RL.Policy(RL.load(os.path.join(RL_DIR, ck)))
-    global ET_FULL, ET_HALF
     body = stage_et(quick=quick, controllers_extra={"rl": pol}, rows_name="et_rl", include_model_based=False,
                     first_seed_only=True)
     return body

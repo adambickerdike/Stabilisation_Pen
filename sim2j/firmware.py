@@ -123,6 +123,7 @@ class FWConfig:
                                         # the guarded tracker as the fallback)
     seed: int = 0
     imu_noise: float = 1.0              # IMU noise scale (DR: 0.5-2 x the datasheet densities)
+    record_streams: bool = False        # keep the sensor samples (for learned estimators run on the record: replay)
     label: str = ""
 
 
@@ -143,6 +144,7 @@ class Firmware:
         self.t2 = t2[:2].copy()
         self.reach = fw.reach if fw.reach is not None else cfg.geom.travel
         self.sens = OnlineSensors(pm, self.Ts, seed=fw.seed + 11, noise_scale=fw.imu_noise)
+        self.streams = {"acc": [], "pos": [], "con": []}
         nz = cfg.nose
         self.gd = 2.0 * nz.servo_zeta / (TWO_PI * nz.servo_hz) + 0.5 * self.Ts      # servo group delay + tick hold
         self.tracker = None
@@ -546,6 +548,13 @@ class Firmware:
     def tick(self, t: float):
         fw = self.fw
         r = self.sens.read(t)
+        if self.fw.record_streams:
+            S_ = self.streams
+            S_["acc"].append((r["acc_t"], r["acc_av"], r["acc"][0], r["acc"][1]))
+            if "page" in r:
+                p_ = r["page"]
+                S_["pos"].append((p_[0], p_[1], p_[2][0], p_[2][1], 1.0 if p_[3] else 0.0))
+            S_["con"].append((t, t + self.pm.cfg.sensors.slide_latency, 1.0 if r["contact"] else 0.0))
         # page samples: queue with their availability; the controllers use the latest available one
         page_new = []
         if "page" in r:

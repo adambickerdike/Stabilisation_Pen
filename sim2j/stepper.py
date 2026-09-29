@@ -193,6 +193,9 @@ class RevJStepper(S.Stepper):
         res.info["energy"] = dict(self.energy)
         res.info["wheel_energy_pos_J"] = float(self.wheel.energy_pos)
         res.info["wheel_kP"] = float(self.wheel.wp.kP_copper)
+        if self.fw.fw.record_streams:
+            res.info["streams"] = self.fw.streams
+            res.info["n_ticks"] = int(self.fw.k)
         res.info["guard_events"] = list(self.fw.tracker.events) if self.fw.tracker is not None else []
         if self.fw.aw is not None:
             res.info["aw_tau"] = np.array(self.fw.aw["tau_log"])

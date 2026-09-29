@@ -514,10 +514,13 @@ def frozen_det() -> DetParams:
 
 
 # ================================================================================================ ai2's gated listening
-def listening_params() -> Dict:
+def listening_params(lp_hz: float = 64.13) -> Dict:
     """ai2's listening tremor model (DEC-042; ai2/delayed.TREMOR_DEFAULTS updated with results/ai2/ai2.json
     test_settings.tremor) in fusion's AKF parameter format, with the AKF's own output gates off (the detector and the
-    amplitude gate decide) and a negligible output low-pass (the forward filter's prediction is used directly)."""
+    amplitude gate decide).  Output through the Rev H tracker's 2nd-order output low-pass (64 Hz, its delay added to the
+    prediction horizon, as the Rev H tracker does): unfiltered, the listening prediction carries 15-200 Hz content
+    (p99 command speed 0.33 m/s at 10 Hz x 1 mm in sim2) that the C1S nose's 80 Hz servo cannot follow (the ink then
+    moved 1.6x more than with the device off on tuning writer 100); ai2's HW1 nose model did not expose this."""
     import json
     import os
     from ai2 import delayed as DL
@@ -531,7 +534,7 @@ def listening_params() -> Dict:
     out = {k: float(p[k]) for k in ("qj", "qt", "qh", "qb", "ra", "rp", "tau_decay", "w0_hz", "tau_w", "wmin_hz",
                                     "wmax_hz", "harm", "gap_reset")}
     out.update({"f_gate": 0.0, "a_lo": 0.0, "a_hi": 0.0, "g": 1.0, "cap_k": 0.0, "xtrack": 0.0, "horizon": 0.0,
-                "lp_hz": 1000.0, "tau_auth": 0.05, "tau_amp": 0.3})
+                "lp_hz": float(lp_hz), "tau_auth": 0.05, "tau_amp": 0.3})
     return out
 
 
@@ -599,12 +602,12 @@ class GatedListening:
         self.g_listen = g
         o = self.last
         fo = self.fb.last
-        o[0] = g * ol[5] + (1.0 - g) * d_fb[0]
-        o[1] = g * ol[6] + (1.0 - g) * d_fb[1]
+        o[0] = g * ol[0] + (1.0 - g) * d_fb[0]
+        o[1] = g * ol[1] + (1.0 - g) * d_fb[1]
         o[2] = ol[2] if g > 0.5 else fo[2]
         o[3] = g + (1.0 - g) * fo[3]
         o[4] = ol[4] if g > 0.5 else fo[4]
-        o[5] = ol[5]; o[6] = ol[6]                     # ungated listening estimate (for an arbiter)
+        o[5] = ol[0]; o[6] = ol[1]                     # ungated (detector-free) listening estimate (for an arbiter)
         self.d_fb = d_fb
         return o[0:2]
 

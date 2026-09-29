@@ -103,22 +103,9 @@ def tune_guard(writers=TUNE_WRITERS, seeds=(300,), f0s=None, amps=None, log=prin
                         ", ".join(f"{r['variant']} {r['ratio']:.3f}" for r in rows[-len(variants):]))
         if cache_path:
             json.dump(rows, open(cache_path, "w"), default=float)
-    summ = {}
-    for vname in variants:
-        cl = [r["moved_um"] for r in rows if r.get("variant") == vname and r["kind"] == "clean"]
-        r03 = [r["ratio"] for r in rows if r.get("variant") == vname and r["kind"] == "tremor" and abs(r["amp_mm"] - 0.3) < 1e-6]
-        r12 = [r["ratio"] for r in rows if r.get("variant") == vname and r["kind"] == "tremor" and r["amp_mm"] > 0.5]
-        summ[vname] = {"false_correction_um_mean": float(np.mean(cl)), "false_correction_um_max": float(np.max(cl)),
-                       "ratio_0p3": float(np.mean(r03)), "ratio_1_2mm": float(np.mean(r12)),
-                       "R1": bool(np.mean(cl) <= 25.0), "R2": bool(np.mean(r03) <= 1.02)}
-    passing = [v for v in summ if summ[v]["R1"] and summ[v]["R2"]]
-    if passing:
-        chosen = min(passing, key=lambda v: summ[v]["ratio_1_2mm"])
-    else:
-        chosen = min(summ, key=lambda v: summ[v]["false_correction_um_mean"])
-    return {"rows": rows, "summary": summ, "chosen": chosen, "chosen_params": asdict(GUARD_VARIANTS[chosen]),
-            "chosen_det_params": asdict(det_for(chosen)), "chosen_tracker": tracker_for(chosen),
-            "rules": __doc__, "elapsed_s": time.time() - t0}
+    out = summarise(rows, variants)
+    out.update({"rows": rows, "rules": __doc__, "elapsed_s": time.time() - t0})
+    return out
 
 
 RL_SELECTION_RULE = """RL checkpoint selection (fixed before any test run): each saved PPO checkpoint is run deterministically on the
@@ -155,3 +142,29 @@ def freeze(result: Dict, path: str = None, extra: Dict = None) -> Dict:
         out.update(extra)
     PV.write_json(path, out)
     return out
+
+
+def summarise(rows: List[Dict], variants=TUNE_SET) -> Dict:
+    """The rule applied to the tuning rows: R1 (mean false correction <= 25 um), R2 (mean ratio at 0.3 mm <= 1.02);
+    the lowest mean ratio at 1-2 mm among the variants passing both; if none passes, the smallest false correction,
+    ties broken by the lowest mean ratio at 1-2 mm (tie-break added before the rows were summarised)."""
+    summ = {}
+    for vname in variants:
+        cl = [r["moved_um"] for r in rows if r.get("variant") == vname and r["kind"] == "clean"]
+        r03 = [r["ratio"] for r in rows if r.get("variant") == vname and r["kind"] == "tremor" and abs(r["amp_mm"] - 0.3) < 1e-6]
+        r12 = [r["ratio"] for r in rows if r.get("variant") == vname and r["kind"] == "tremor" and r["amp_mm"] > 0.5]
+        if not cl or not r12:
+            continue
+        summ[vname] = {"false_correction_um_mean": float(np.mean(cl)), "false_correction_um_max": float(np.max(cl)),
+                       "ratio_0p3": float(np.mean(r03)) if r03 else None, "ratio_1_2mm": float(np.mean(r12)),
+                       "n_clean": len(cl), "n_tremor": len(r03) + len(r12),
+                       "R1": bool(np.mean(cl) <= 25.0), "R2": bool(r03 and np.mean(r03) <= 1.02)}
+    passing = [v for v in summ if summ[v]["R1"] and summ[v]["R2"]]
+    if passing:
+        chosen = min(passing, key=lambda v: summ[v]["ratio_1_2mm"])
+        how = "passes R1 and R2, lowest ratio at 1-2 mm"
+    else:
+        chosen = min(summ, key=lambda v: (round(summ[v]["false_correction_um_mean"], 1), summ[v]["ratio_1_2mm"]))
+        how = "none passes R1 and R2: smallest false correction, then the lowest ratio at 1-2 mm"
+    return {"summary": summ, "chosen": chosen, "chosen_how": how, "chosen_params": asdict(GUARD_VARIANTS[chosen]),
+            "chosen_det_params": asdict(det_for(chosen)), "chosen_tracker": tracker_for(chosen)}

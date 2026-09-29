@@ -20,6 +20,7 @@ Contents:
 - §17 Rev J inertial end-cap with people (DEC-038): EXP-K03 (user crossover), EXP-K05 (cue perception)
 - §18 Rev J nose v2 with people (DEC-036, DEC-039): EXP-N09 (autowrite), EXP-N10 (delayed ink)
 - §19 Rev J AI and control with people (DEC-042, DEC-043): EXP-L03 (ink lag; shares sessions with EXP-N10), EXP-L06 (text prediction in the app), EXP-L07 (style synthesis), EXP-L08 (guidance that fades across sessions)
+- §20 Rev J integrated layout with people (DEC-044): EXP-J08 (ink visibility), EXP-J09 (mass and balance, with EXP-K03)
 
 ---
 
@@ -97,6 +98,8 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-L06 (§19) | Does better text prediction save writing effort in the app? | 20 adults + 10 ET | Within-subject, counterbalanced: old n-gram against the mixture; offline scoring on own notes | Top-3 accuracy on own notes; accepted completions per 100 words; words per minute | IA (app) | ethics |
 | EXP-L07 (§19) | Does synthesis from the 20 s calibration look like the user's writing? | 20 writers + 5 raters | Two-alternative forced choice and reading | Legibility; own-style choice rate | none (measurement) | ethics |
 | EXP-L08 (§19) | Does guidance that fades across sessions help learning more than fixed guidance? | children with dysgraphia, or adults learning an unfamiliar script (n from a pilot, §11 rule) | Randomised: fixed partial guidance against session-level fading, 5 sessions; retention after 1 day and 1 week | Unassisted retention distance to the target letters | LI | after the bench gates of the build used; ethics |
+| EXP-J08 (§20) | Can writers see the fresh ink behind the ball with the larger Rev J front? | 10 right- and left-handed writers | Within-subject: printed Rev H and Rev J fronts on dummy pens, video from the eye | Distance behind the ball at which the ink first shows; ratings | device burden | unpowered dummies; ethics |
+| EXP-J09 (§20) | Do writers accept the Rev J masses and balance (87 g base, 129 g with the end-cap)? | 10 writers (with EXP-K03) | Within-subject: two dummies, 10 min each | Comfort, fatigue and acceptance | device burden | unpowered dummies; ethics |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii).
 
@@ -1282,7 +1285,7 @@ The end-cap (DEC-038) holds a 30 g tungsten slug that coils push by ±4 mm again
 ### EXP-K03: Does the end-cap help people?
 - **Design.** Randomised crossover. 12 writers with ET, and a PD group. Blinded housings of equal look and mass: nose alone, nose + the same weight fixed, nose + active end-cap. Archimedes spirals, lines and a sentence.
 - **Measurands.** Tip tremor amplitude (pen IMU, 4–12 Hz band); spiral rating; legibility; preference; fatigue.
-- **Predictions (SIM, CALC).** Further reduction at 8–12 Hz, 1–2 mm: +8 / +18 / +20 % at r_rot 0.3 / 0.5 / 0.7; the same weight fixed +17 / +12 / +4 %; at 4–6 Hz +8 to +12 %. The end-cap adds about 43 g and moves the balance point 24 mm back (CALC).
+- **Predictions (SIM, CALC).** Further reduction at 8–12 Hz, 1–2 mm: +8 / +18 / +20 % at r_rot 0.3 / 0.5 / 0.7; the same weight fixed +17 / +12 / +4 %; at 4–6 Hz +8 to +12 %. On the Rev J pen the end-cap takes 87.0 g to 129.2 g and moves the centre of mass from 86.1 to 108.1 mm from the tip, 16 mm behind the web (CALC, DEC-044). EXP-J09 (§20) tries the same masses as dummies.
 - **Claim type.** IA and device burden.
 - **Decision.** Pass: keep the end-cap as a detachable option. Active not 5 points better than the weight: fit the weight or nothing (DEC-038). Back-heavy pen rejected: revisit DEC-038.
 
@@ -1292,7 +1295,7 @@ The end-cap (DEC-038) holds a 30 g tungsten slug that coils push by ±4 mm again
 | AC-K03-01 | REQ-EC-002 | Tip tremor amplitude (pen IMU, 4-12 Hz band) with nose + active end-cap relative to nose alone, blinded housings, ET participants, spirals, lines and a sentence; reduction | ≥ 10 % | hypothesis | pass line of study K; REQ-EC-002; SIM +8 / +18 / +20 % at 8-12 Hz depending on the unmeasured grip split, +8 to +12 % at 4-6 Hz (results/endcap/endcap_study.json) | DEC-038 (keep the end-cap as a product option) |
 | AC-K03-02 | REQ-EC-003 | Tremor reduction with the active end-cap minus that with the same weight fixed (blinded housings of equal mass), ET participants | ≥ 5 points | hypothesis | REQ-EC-003; prediction depends on the grip split: -9 / +6 / +16 points at r_rot 0.3 / 0.5 / 0.7 (SIM) | DEC-038 |
 | AC-K03-03 | — | Legibility of the copied sentence (blinded readers, % words correct) with nose + active end-cap relative to nose alone | no loss | hypothesis | pass line of study K; false correction on tremor-free writing 11 µm (lognormal writers) and 20-23 µm (glyph writers) with the device (SIM) | DEC-038 |
-| AC-K03-04 | — | Participants who accept the back-heavy pen with the end-cap for a writing session (preference and fatigue questionnaire) | ≥ 70 % | hypothesis | DEC-038 revisit trigger (writers reject the back-heavy pen); the end-cap adds about 43 g and moves the balance point 24 mm back (CALC; about 115 g on the Rev H pen, 134-136 g with every Rev J module); 70 % engineering judgement, as AC-G07-01 | DEC-038 |
+| AC-K03-04 | — | Participants who accept the back-heavy pen with the end-cap for a writing session (preference and fatigue questionnaire) | ≥ 70 % | hypothesis | DEC-038 revisit trigger (writers reject the back-heavy pen); on the Rev J pen the end-cap takes 87.0 to 129.2 g and moves the centre of mass from 86.1 to 108.1 mm from the tip, 16 mm behind the web (CALC, DEC-044); EXP-J09 tries the same masses as dummies; 70 % engineering judgement, as AC-G07-01 | DEC-038 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-K03).
 <!-- AC-TABLE:EXP-K03:END -->
@@ -1446,3 +1449,40 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-L08).
 <!-- AC-TABLE:EXP-L08:END -->
+
+---
+
+## 20. Rev J integrated layout with people: EXP-J08, J09
+
+DEC-044 joins the Rev J designs into one Ø24 mm pen. Its front is bigger than Rev H's, and with the end-cap it is heavier and back-heavy. These two studies use unpowered, printed dummies (from `results/revJ/revJ_pen_assembly.step` and `revJ_pen_assembly_no_endcap.step`), so they need no safety gate beyond §3. The bench protocols are in `bench_protocols.md` §46. The predictions come from `docs/revJ_design.md` and `results/revJ/` (CALCULATION).
+
+### EXP-J08: Can writers see the ink?
+- **Design.** 10 right- and left-handed writers. Printed fronts on dummy pens: Rev H; Rev J; Rev J with the C opening carried 10 mm into the sleeve (the chosen design); Rev J with a clear front sleeve. Randomised order; each writer copies lines at their own tilt; video from the eye (head-mounted camera); ratings.
+- **Measurands.** How far behind the ball the fresh ink first shows (from the eye video); the writer's own tilt; visibility ratings.
+- **Predictions (CALC, eye position ASSUMPTION).** From an eye 55° above the paper and 30° to the left of the pen's back direction, the Rev J front with the C opening shows the ink from 0.5 mm at 35° (88 % of directions) but not within 6 mm at 50–75°. Rev H showed it from 5 mm at 50°. Seen from the side, 0.5 mm at 35° and 50°. Real writers move their heads.
+- **Claim type.** Device burden.
+- **Decision.** Rev J no worse than Rev H: keep the front (DEC-044). Worse: consider the clear front sleeve, a wider opening, or a smaller ring (DEC-044 revisit).
+
+<!-- AC-TABLE:EXP-J08:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J08-01 | REQ-RVJ-I06 | Writers (10, right- and left-handed) who see the fresh ink within 3 mm behind the ball at their own tilt with the Rev J front (C opening carried 10 mm into the sleeve), from video at the eye | > 50 % | derived | REQ-RVJ-I06 ('most writers', read as more than half); prediction from the assumed eye: from 0.5 mm at 35°, not within 6 mm at 50-75° (CALC) -> may fail at 50-75°, though real writers move their heads | DEC-044 (ink visibility) |
+| AC-J08-02 | — | Visibility rating of the Rev J front with the C opening against the Rev H front, paired per writer | no worse than Rev H | hypothesis | pass line of the integrated design study; from the assumed eye Rev H showed the ink from 5 mm at 50° and Rev J not within 6 mm (CALC) | DEC-044 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-J08).
+<!-- AC-TABLE:EXP-J08:END -->
+
+### EXP-J09: Mass and balance
+- **Design.** 10 writers, together with EXP-K03 where possible. Dummies of 87 g (centre of mass 86 mm from the tip, the base pen) and 129 g (108 mm, with the end-cap). 10 min of writing with each, in random order.
+- **Measurands.** Comfort and fatigue ratings (§3.6); acceptance of each dummy for a writing session.
+- **Predictions (CALC).** The base pen is 87.0 g with its centre of mass 6 mm in front of the thumb–index web. With the end-cap it is 129.2 g, 16 mm behind the web. The Rev H pen was 75 g, and a Rev H study declined a 28 g module partly because it took the pen over 100 g (DEC-024).
+- **Claim type.** Device burden.
+- **Decision.** Sets the provisional 130 g limit with the end-cap in REQ-EC-001 (with EXP-K03). Not accepted: a lighter slug (study K re-runs its benefit), or no end-cap (DEC-038).
+
+<!-- AC-TABLE:EXP-J09:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J09-01 | REQ-EC-001 | Writers (10) who rate the 129 g dummy (centre of mass 108 mm from the tip) acceptable for writing after 10 min, with the 87 g dummy (86 mm) as the comparison (comfort and fatigue ratings, with EXP-K03) | ≥ 70 % | hypothesis | sets the provisional 130 g limit with the end-cap in REQ-EC-001 (DEC-044); prediction 129.2 g with the centre of mass 16 mm behind the web (CALC); 70 % engineering judgement, as AC-K03-04 | REQ-EC-001 limit with the end-cap; DEC-038 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-J09).
+<!-- AC-TABLE:EXP-J09:END -->
