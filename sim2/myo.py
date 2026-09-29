@@ -1,22 +1,25 @@
-r"""Muscle-based check: end-point stiffness and damping of the MyoSuite arm (MyoArm, 63 Hill-type muscles, 38 joints)
-holding a pen, at several co-contraction levels (a virtual EXP-I01).
+r"""Muscle-based check: pen-point impedance of the MyoSuite arm (MyoArm, 63 Hill-type muscles, 38 joints) holding a
+pen, at several co-contraction levels (a virtual EXP-I01 / EXP-V04).
 
-Procedure (every step SIM with MyoSuite 2.12.2's myoarm.xml; the model is read-only, a copy is extended with MjSpec):
-  1. writing posture (ASSUMPTION: shoulder elevation 20 deg, plane of elevation 52 deg, elbow 92 deg, forearm
-     semi-pronated, wrist slightly extended); thumb, index and middle fingers closed by IK around a 22 mm pen
-     (the three distal phalanges 11 mm from a common axis), ring and little finger flexed;
-  2. a light pen body (5 g) welded to the three distal phalanges (stiff welds: the finger pads' skin compliance,
-     4.4 kN/m per HAP-31, is left out); the measurement point is on the pen 40 mm ahead of the pads' centre (HAP-26
-     measured at the stylus point about 4 cm ahead of the fingers);
-  3. every muscle activation held at the co-contraction level c (0 ... 0.3) (activation dynamics bypassed: act and ctrl
-     set to c); gravity off (forearm supported on the desk); the net joint torque of the posture balanced by a constant
-     applied torque, then settled;
-  4. static stiffness: +- 0.1 N steps along page x, y, z at the pen point (displacement after 1.5 s) -> 3x3 compliance;
-  5. dynamic impedance: random-phase multisine force (0.5-20 Hz) per axis, H1 FRF estimate, fit of a mass-spring-
-     damper (the HAP-26 arm part: M, b2, k2) to the point compliance.
-Caveats (stated in the report): Hill-type models have no short-range stiffness (history-dependent stiffness of
-cross-bridges), so small-perturbation stiffness at co-contraction is underestimated (De Groote et al.; Cui et al.);
-MyoArm has joint damping 0.05-1.05 N m s/rad as a model parameter (not muscle-derived); no reflexes; rigid pad welds.
+Procedure (every step SIM with MyoSuite 2.12.2's myoarm.xml; the model file is read-only, a copy is extended with
+MjSpec):
+  1. writing posture (ASSUMPTION: plane of elevation 0.9 rad, shoulder elevation 0.35 rad, elbow 1.6 rad, forearm
+     semi-pronated, wrist slightly extended); the shoulder-girdle joint couplings (equality constraints) are set
+     exactly; thumb, index and middle fingers closed by IK around a 22 mm pen (the three distal phalanges 11 mm from
+     a common axis), ring and little fingers flexed;
+  2. a light pen body (5 g) welded to the three distal phalanges (stiff welds: the finger pads' skin compliance is left
+     out); the measurement point is on the pen 40 mm ahead of the pads' centre (HAP-26 measured at a stylus point
+     about 4 cm ahead of the fingers);
+  3. every muscle activation held at the co-contraction level c (0 ... 0.3); gravity off (forearm supported); the
+     posture's net smooth generalized force balanced by a constant applied torque (qacc = 0 at the posture);
+  4. linearisation of MuJoCo's discrete dynamics (mjd_transitionFD) about the posture, input matrix of a force at the
+     pen point by finite differences of one step; driving-point compliance C(j w) at 0.05-30 Hz in the page axes
+     (modal form); static stiffness from the lowest frequency; spectral radius and divergent modes;
+  5. HAP-26's structure (grasp spring k1 || b1 in series with arm mass M and arm spring k2 || b2) fitted per axis over
+     1-20 Hz; |Z| at 1, 4, 8, 12 Hz against HAP-26 (nominal, mapped axes) and H1.
+Caveats (stated in the report): Hill-type models have no short-range stiffness (LIT HAP-101), so small-perturbation
+stiffness at co-contraction is underestimated and the constant-activation posture can be unstable; MyoArm has joint
+damping 0.05-1.05 N m s/rad as a model parameter (not muscle-derived); no reflexes; rigid pad welds.
 """
 from __future__ import annotations
 

@@ -17,11 +17,15 @@ measurement of hardware or people):
              and tremor torques at the wrist and forearm;
   tremor     tremor.py: narrow-band torque (or displacement) generators with frequency and amplitude wander,
              harmonics; ET, PD (rest, re-emergent) and physiological profiles;
-  paper      MuJoCo soft contacts with Coulomb friction (elliptic cones) or the H1 contact law (penalty normal and
-             LuGre friction) for the verification against H1;
+  paper      the H1 contact law by default (compliant penalty normal force and LuGre friction at the skid ring's
+             lowest point and the ball, numba kernel), or MuJoCo's soft contacts with Coulomb friction (elliptic
+             cones) for coarse RL runs and geometry-rich plug-ins;
   sensors    IMU (LSM6DSV16X class through fusion's reading models), nose Hall position, page sensor (optical flow,
              1 kHz, 2 ms), writing force, refill slide;
-  interfaces a Gymnasium environment (env.py) with domain randomisation; run_study.py (--quick).
+  checks     verify.py (contact closed forms, convergence, energy, gyroscope, sensors), h1compare.py (against H1),
+             validate.py (literature), myo.py (MyoSuite MyoArm impedance);
+  interfaces a Gymnasium environment (env.py) with domain randomisation; run_study.py (--quick); report in
+             docs/sim_v2.md and results/sim2/.
 
 Evidence labels used throughout: SIM, CALC, LIT (ledger id), MFR (ledger id), ASSUMPTION, PROPOSED DESIGN.
 """
