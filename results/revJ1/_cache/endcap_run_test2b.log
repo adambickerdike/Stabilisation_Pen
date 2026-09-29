@@ -7,3 +7,38 @@
 [ 174.2s] test L_s 7.5 mm split 0.3: 60 rows
 [ 278.0s] test L_s 7.5 mm split 0.5: 120 rows
 [ 404.5s] test L_s 7.5 mm split 0.7: 180 rows
+[ 520.1s] test L_s 5 mm split 0.3: 60 rows
+[ 640.0s] test L_s 5 mm split 0.5: 120 rows
+[ 749.8s] test L_s 5 mm split 0.7: 180 rows
+{
+ "lrm_9": {
+  "pass": true,
+  "r0.3": 0.05614429545388572,
+  "r0.5": 0.16797743472367097,
+  "r0.7": 0.18282806187123649,
+  "any_split_worse_on_average": false,
+  "P_avg_W": 0.08208246180796464,
+  "P_act_W_mean_SIM": 0.027575065351782554,
+  "mass_g": 31.566189312132682
+ },
+ "lrm_7.5": {
+  "pass": true,
+  "r0.3": 0.052038678934760496,
+  "r0.5": 0.17433202908562362,
+  "r0.7": 0.17088612806706618,
+  "any_split_worse_on_average": false,
+  "P_avg_W": 0.07519773592780851,
+  "P_act_W_mean_SIM": 0.028719613792581842,
+  "mass_g": 27.997001627072674
+ },
+ "lrm_5": {
+  "pass": false,
+  "r0.3": 0.041594672855094265,
+  "r0.5": 0.15546515781386303,
+  "r0.7": 0.13359484732281982,
+  "any_split_worse_on_average": false,
+  "P_avg_W": 0.06362094564986268,
+  "P_act_W_mean_SIM": 0.030944738625909837,
+  "mass_g": 22.048355485305994
+ }
+}

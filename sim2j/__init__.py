@@ -11,12 +11,15 @@ Modules
 writers     writer model v2: the aiguide glyph writers re-timed by the two-thirds power law, fitted to adult phrase
             speed (LIT CON-20), the velocity spectrum (LIT CON-25, CON-24) and the power law (LIT CON-27); the v1
             writers are kept for comparison
-revj        the Rev J pen in sim2: C1S nose (+-6 mm, DEC-036), refill front stop that follows the nose, pen lift,
-            heel wheel (DEC-037), optional reaction-mass end-cap (DEC-038); parameters from round 1
+revj        the Rev J pen in sim2: C1S nose (+-6.57 mm, DEC-036/044), refill front stop that follows the nose, pen
+            lift, heel wheel (DEC-037), optional reaction-mass end-cap (DEC-038); parameters read from the lead's
+            results/revJ/sim_params.json and layout.json (round-1 assembly kept as source='round1')
 wheel       the steered and driven heel wheel: tyre bristle law, steering servo, rolling degree of freedom (numba,
             every physics step), after drive/plant.py (HW1-D)
 akf_online  the project's AKF tremor tracker (fusion/estimators.py) ported to a tick-by-tick form, bit-exact against
-            the batch version, with a frequency-runaway guard and a running spectral tremor-line detector
+            the batch version, with a frequency-runaway guard, a running spectral tremor-line detector, and ai2's
+            gated listening tracker (DEC-042) online
+learned_replay  ai2's causal TCN run on the pen's own sensor record and replayed as the nose command
 sensing     the pen's own sensors, online: IMU (fusion noise models, firmware compensation), page sensor, refill
             slide, wheel load and heading
 firmware    the controllers: tremor cancellation, coordinated nose + wheel, end-cap feed-forward, template guidance,
@@ -26,7 +29,9 @@ tasks       scenarios: ET, PD 'write big' loops, dysgraphia tracing, dyslexia le
 metrics     ink error, letters and words read by the app's recogniser, device share, force on the hand, power
 rl          Gymnasium environment on the Rev J pen with domain randomisation; PPO (Stable-Baselines3)
 verify      overlap checks against round 1 (nose2 autowrite in HW1, drive tasks in HW1-D)
-run_study   one command: python3 -m sim2j.run_study [--quick] [--stages ...]
+tuning      the rules fixed on tuning writers before any test run (results/sim2j/rules.json)
+report      figures with CSV twins, samples.json (handwriting schema), the viewer replay
+run_study   one command: python3 -m sim2j.run_study [--quick] [--stages ...]; every stage resumes from its caches
 """
 from __future__ import annotations
 
