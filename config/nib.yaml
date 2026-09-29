@@ -5,7 +5,7 @@
 # in bnib/labels.py or the design, re-run, and bump the version.
 schema: bnib-nib-interface/1
 version: bnib-0.1
-generated_utc: '2026-09-29T19:19:23Z'
+generated_utc: '2026-09-29T19:39:31Z'
 status: PROPOSED DESIGN (study B, balanced two-axis nib). Nothing here was built or measured.
 design:
   id: B1
@@ -13,12 +13,36 @@ design:
   candidate: c_counterface
   grip: pen24
   optimiser_point:
-    w: 0.005120275187158268
-    t_m: 0.0035
-    t_c: 0.0008
-    wire_d: 0.00012840231678730877
-    wire_L: 0.026801041139863813
-    travel: 0.0010586959658821008
+    w:
+      value: 5.12028
+      unit: mm
+      status: PROPOSED DESIGN
+      source: bnib/optimise.py (CMA-ES + gradient polish)
+    t_m:
+      value: 3.5
+      unit: mm
+      status: PROPOSED DESIGN
+      source: bnib/optimise.py (CMA-ES + gradient polish)
+    t_c:
+      value: 0.8
+      unit: mm
+      status: PROPOSED DESIGN
+      source: bnib/optimise.py (CMA-ES + gradient polish)
+    wire_d:
+      value: 0.128402
+      unit: mm
+      status: PROPOSED DESIGN
+      source: bnib/optimise.py (CMA-ES + gradient polish)
+    wire_L:
+      value: 26.801
+      unit: mm
+      status: PROPOSED DESIGN
+      source: bnib/optimise.py (CMA-ES + gradient polish)
+    travel:
+      value: 1.0587
+      unit: mm
+      status: PROPOSED DESIGN
+      source: bnib/optimise.py (CMA-ES + gradient polish)
   doc: docs/balanced_nib.md
   results: results/bnib/bnib.json
 frames:
@@ -889,10 +913,15 @@ counter_face:
     status: PROPOSED DESIGN
     source: balance.py
   follower_gap:
-    value: 0.15
+    value: 0.25
     unit: mm along the face normal
     status: PROPOSED DESIGN
-    source: tuned in bnib/sim.py (results/bnib/rules.json)
+    source: tuned in bnib/sim.py on tuning writers (results/bnib/rules.json)
+  servo_inner_bandwidth:
+    value: 100.0
+    unit: Hz
+    status: PROPOSED DESIGN
+    source: filtered servo, tuned (results/bnib/rules.json)
   follower_time_constant:
     value: 0.3
     unit: s

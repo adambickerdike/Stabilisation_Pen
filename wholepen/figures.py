@@ -188,7 +188,7 @@ def system(d: Dict, name: str = "fig_w_system",
     zp = d["z_p_mm"]
     rb = d["barrel_od_mm"] / 2
     rc = d["collar_od_mm"] / 2
-    zf, zr = d["z_front_mm"], d["z_rear_mm"]
+    zf, zr = d["z_front_mm"], d.get("z_end_mm", d["z_rear_mm"])
     L = d["length_mm"]
     phi = math.radians(d["swing_deg"])
     ax.plot([-40, 200], [0, 0], color=GREY, linewidth=1.5)
@@ -207,22 +207,23 @@ def system(d: Dict, name: str = "fig_w_system",
     ax.add_patch(Polygon([P(zf - 0.5, -rc), P(9.5, -11.6), P(9.5, 11.6), P(zf - 0.5, rc)], closed=True, facecolor="none",
                          edgecolor=SLOT[2], linewidth=1.2, linestyle="--"))
     ax.add_patch(Circle(P(zp), 1.8, color=INK))
-    for z, lab in ((32, "finger pads hold the collar"), (92, "thumb-index web rests on the collar")):
+    for z, lab, dxy in ((32, "finger pads\nhold the collar", (-30, 6)), (92, "thumb-index web\nrests on the collar", (-34, 8))):
         c = P(z, rc + 4)
-        ax.add_patch(Ellipse(c, 16, 7, angle=math.degrees(th), facecolor="#f3e3d3", edgecolor=GREY, linewidth=0.8))
-        ax.text(c[0] - 18, c[1] + 6, lab, fontsize=7, color=INK2)
+        ax.add_patch(Ellipse(c, 14, 6, angle=math.degrees(th), facecolor="#f3e3d3", edgecolor=GREY, linewidth=0.8))
+        ax.text(c[0] + dxy[0], c[1] + dxy[1], lab, fontsize=7, color=INK2)
 
     def label(xy, txt, xyt):
         ax.annotate(txt, xy=xy, xytext=xyt, fontsize=8, color=INK, arrowprops=dict(arrowstyle="-", color=GREY, lw=0.8))
-    label((0, 0.3), f"ink point: the whole inner pen swings it\n+-{d['travel_mm']:.0f} mm across the page (tilt plane x 1.3)", (-42, 42))
-    label(P(zp), f"2-axis flexure pivot, {zp:.0f} mm from the tip", (8, 112))
-    label(P(zr - 3, -rc), f"two motors (geared or voice coil) swing the pen\nand push back on the collar and hand (Liftware principle)", (95, 18))
-    label(P(zf + 8, rc), f"collar {d['collar_od_mm']:.1f} mm across, skid ring on the paper\ncarries the writing force", (-40, 88))
-    label(P(L, 0), f"inner pen {d['barrel_od_mm']:.0f} mm across: refill, small fine nib,\ncell and board move together", (120, 150))
-    ax.add_patch(FancyArrowPatch(P(L + 6, -8), P(L + 6, 8), connectionstyle="arc3,rad=0.5", arrowstyle="<->",
-                                 mutation_scale=10, color=SLOT[0], linewidth=1.2))
-    ax.set_xlim(-45, 210)
-    ax.set_ylim(-12, 175)
+    label((0, 0.3), f"ink point: the whole inner pen swings it\n+-{d['travel_mm']:.0f} mm (x 1.3 across the page in the\ntilt plane)", (-95, 22))
+    label(P(zp), f"2-axis flexure pivot,\n{zp:.0f} mm from the tip", (40, 20))
+    label(P(zf + 1, -rc), f"skid ring on the collar carries\nthe writing force", (25, -9))
+    label(P(75, -rc), f"collar {d['collar_od_mm']:.1f} mm across,\n{zr:.0f} mm long", (80, 38))
+    label(P(60, 0), f"inner pen {d['barrel_od_mm']:.0f} mm across, {L:.0f} mm long:\nrefill, small fine nib, cell and board\nswing together", (-100, 75))
+    label(P(95, 0), "coil plate in the collar's rear wall pushes on magnets\non the pen's end face: it swings the pen and pushes\nback on the collar and hand (Liftware principle)", (75, 95))
+    ax.add_patch(Polygon([P(93, -rc + 0.8), P(97, -rc + 0.8), P(97, rc - 0.8), P(93, rc - 0.8)], closed=True, facecolor="#dff2ea",
+                         edgecolor=SLOT[2], linewidth=1.0))
+    ax.set_xlim(-100, 175)
+    ax.set_ylim(-14, 118)
     ax.set_aspect("equal")
     ax.axis("off")
     ax.set_title("The recommended pen: the whole inner pen swings inside a collar the hand holds", loc="left")
@@ -272,9 +273,9 @@ def fig_writing():
             if not os.path.exists(fn):
                 continue
             z = np.load(fn)
-            t0 = 4.3
-            m = z["t"] > t0
-            mi = z["it_t"] > t0
+            t0, t1 = 4.3, 7.6                                     # the first two words ("return library")
+            m = (z["t"] > t0) & (z["t"] < t1)
+            mi = (z["it_t"] > t0) & (z["it_t"] < t1)
             ink = np.column_stack([z["ink"][m] * 1e3, z["contact"][m]])
             it = np.column_stack([z["it_xy"][mi] * 1e3, z["it_down"][mi]])
             samples.append({"row": i, "col": j, "title": f"{RS.CLASS_LABEL[c]} - {RS.LABELS[dn]}", "intended": it.tolist(),
@@ -404,9 +405,9 @@ def all_figures() -> Dict:
         except Exception as e:                                   # a missing input skips that figure only
             out[nm] = f"skipped: {type(e).__name__}: {e}"
     g = K.COLLAR_V2
-    mm = K.collar_masses("geared")
+    mm = K.collar_masses("coil")
     d = {"z_p_mm": 50.0, "barrel_od_mm": g["barrel_od"] * 1e3, "collar_od_mm": 21.7, "z_front_mm": g["z_front_v2"] * 1e3,
-         "z_rear_mm": g["z_rear"] * 1e3, "length_mm": g["length"] * 1e3, "travel_mm": 4.0, "swing_deg": math.degrees(4.0 / 50.0),
-         "total_g": round(mm["total_g"], 1)}
+         "z_rear_mm": g["z_rear"] * 1e3, "z_end_mm": g["z_end_wall"] * 1e3, "length_mm": g["length"] * 1e3, "travel_mm": 4.0,
+         "swing_deg": math.degrees(4.0 / 50.0), "total_g": round(mm["total_g"], 1)}
     out["system"] = system(d)
     return out

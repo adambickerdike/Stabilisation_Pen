@@ -1,0 +1,16 @@
+id,group,shape,z0_mm,z1_mm,d0_mm,d_in_mm,mass_g,part,ledger
+collar_sleeve,collar,tube,11.5,100.0,21.72,20.12,8.47,"custom (PA12-CF, 1.2 mm wall, or aluminium 0.8 mm)",
+collar_skid_ring,collar,tube,10.0,11.5,22.72,19.22,0.3,custom (PTFE-coated POM ring),
+collar_pivot,collar,box,48.5,51.5,,,1.5,custom cross-strip flexure (titanium or spring steel),
+collar_coil_plate,collar,tube,93.0,97.0,20.12,2.0,5.5,custom flat coils on a steel back plate (Rev J C1S actuator principle),
+collar_end_wall,collar,tube,97.0,100.0,21.72,0.0,0.5,custom,
+collar_load_cell,collar,box,12.0,14.0,,,1.0,custom strain flexure,
+inner_barrel,inner_pen,tube,4.0,92.0,12.0,11.0,4.48,custom (aluminium tube 12 x 0.5 mm),
+fine_nib,inner_pen,tube,3.0,38.0,6.0,2.6,6.0,"study B (bnib/), not designed here",
+inner_board,inner_pen,box,40.0,56.0,,,3.0,custom,
+inner_cell,inner_pen,cylinder,58.0,86.0,10.0,,5.0,10280 Li-ion (ASSUMPTION about 0.3 Wh),
+inner_magnets,inner_pen,cylinder,89.0,92.0,12.0,,2.4,N52 segments (ASSUMPTION),
+gt_housing,gyro_tail,tube,141.72,205.7,28.6,27.0,100,PROPOSED DESIGN (designs.cmg_design),"AMF-49,AMF-121,AMF-126"
+swung inner pen inside the sleeve bore at z 11.5 mm,fit,,,,,,,1.002,pass
+swung inner pen inside the sleeve bore at z 92.0 mm,fit,,,,,,,0.723,pass
+"end-face magnets to coil plate, axial gap at full swing",fit,,,,,,,0.521,pass

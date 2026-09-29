@@ -33,12 +33,14 @@ def fit_checks(lp):
     bore = sleeve["d_in"] / 2
     rb = barrel["d0"] / 2
     out = []
-    for z in (sleeve["z0"], sleeve["z1"]):
+    for z in (sleeve["z0"], min(sleeve["z1"], barrel["z1"])):
         # barrel surface at z, swung by phi about the pivot: its offset from the axis grows as |z - zp| sin(phi)
         off = abs(z - zp) * math.sin(phi) + rb * math.cos(phi)
-        out.append({"check": f"barrel inside the sleeve bore at z {z:.1f} mm", "margin_mm": round(bore - off, 3), "pass": bore - off >= 0.0})
-    tail = abs(barrel["z1"] - zp) * math.sin(phi)
-    out.append({"check": "tail swing behind the web (free air, informative)", "margin_mm": round(tail, 2), "pass": True})
+        out.append({"check": f"swung inner pen inside the sleeve bore at z {z:.1f} mm", "margin_mm": round(bore - off, 3),
+                    "pass": bore - off >= 0.0})
+    if "collar_coil_plate" in comp:
+        gap = comp["collar_coil_plate"]["z0"] - (barrel["z1"] + rb * math.sin(phi))
+        out.append({"check": "end-face magnets to coil plate, axial gap at full swing", "margin_mm": round(gap, 3), "pass": gap >= 0.3})
     return out
 
 

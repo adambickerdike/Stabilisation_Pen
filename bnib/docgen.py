@@ -225,7 +225,10 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
           f"{f(B1.get('tremor_left_ratio_oracle_mean'), 2)}); readable words out of 10 go from "
           f"{f(B1.get('words_per10_off'), 1)} to {f(B1.get('words_per10_nib'), 1)}; tremor-free writing moves by "
           f"{f(B1.get('clean_moved_um_mean'), 1)} um; the nib draws {f(B1.get('P_nib_mW_tremor_mean'), 1)} mW (the same nib "
-          f"unbalanced: {f(B2.get('P_nib_mW_tremor_mean'), 1)} mW). The nib is not the bottleneck; the tracker is. SIM.")
+          f"unbalanced: {f(B2.get('P_nib_mW_tremor_mean'), 1)} mW"
+          + (f"; the Rev J C1S nose drew {f(_c1s_ref_P(sim), 2)} W in the same ET cells, sim2j" if _c1s_ref_P(sim) else "")
+          + "). With perfect knowledge the same nib removes most of the tremor up to its +-1 mm reach; beyond that it "
+          "saturates, which is why large tremor is study W's collar's job. The nib is not the bottleneck; the tracker is. SIM.")
     else:
         A("- **In simulation:** the sim2 runs had not finished when this page was generated (section 6).")
     A(f"- **Slim 12-16 mm core:** magnet-and-coil nibs around a D1 refill do not fit (they run out of force or of travel). "
@@ -550,6 +553,16 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       f"degC; the long-arm gimbal (a): {f(cards.get('pen24|a_long_arm', {}).get('T_coil_C'), 1)} / "
       f"{f(cards.get('pen24|a_long_arm', {}).get('T_skin_C'), 1)} degC with the governor cutting its authority to "
       f"{f(cards.get('pen24|a_long_arm', {}).get('governor_min'), 2)}.")
+    ths = [(k, v.get("thermal_35deg")) for k, v in (sim.get("cards") or {}).items() if v.get("thermal_35deg")]
+    if ths:
+        A("")
+        A("The long thermal run (SIM + CALC): writer 0 writes the full sentence at 35 deg with 2 mm ET tremor, nib on; the "
+          "simulated mean power drives the two-node model with the governor for 30 min, and the run is repeated from that "
+          "hot state with the governor in the servo loop: " + "; ".join(
+              f"{k}: {f(t['P_nib_mean_W'] * 1e3, 1)} mW -> after 30 min coil {f(t['T_after_30min'][0], 1)} degC, skin "
+              f"{f(t['T_after_30min'][1], 1)} degC, governor authority {f(t['gov_min_hot'], 2)} (ink error {f(t['ink_err_cold_um'], 0)} "
+              f"-> {f(t['ink_err_hot_um'], 0)} um cold -> hot, words {f(t['words_cold'] * 10, 0)} -> {f(t['words_hot'] * 10, 0)} of 10)"
+              for k, t in ths) + ".")
     A("")
     A("![thermal](../results/bnib/fig_thermal.png)")
     A("")
@@ -570,6 +583,12 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
     with open(path, "w") as fh:
         fh.write(text)
     return str(path)
+
+
+def _c1s_ref_P(sim: Dict):
+    cells = ((sim or {}).get("sim2j_revJ_reference") or {}).get("cells") or {}
+    P = [v["P_nose_W"] for v in cells.values() if v.get("P_nose_W")]
+    return sum(P) / len(P) if P else None
 
 
 def _grad_err(opt: Dict) -> str:

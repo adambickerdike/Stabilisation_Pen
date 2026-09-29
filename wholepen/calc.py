@@ -65,7 +65,9 @@ COLLAR_V2 = {
     "z_front_v1": 20.0e-3,       # sleeve front (just ahead of the finger pads at 26-38 mm) when no skid ring is on it
     "z_front_v2": 10.0e-3,       # sleeve front when it carries the skid ring (V2)
     "z_rear": 97.0e-3,           # sleeve rear, past the thumb-index web (92 mm, results/revJ/layout.json hand)
-    "length": 0.145,             # inner barrel length (the Rev J length)
+    "length": 0.092,             # inner pen length: it ends inside the collar, its end face carrying the actuator's
+                                 # magnets (the tail no longer swings in the air)
+    "z_end_wall": 100.0e-3,      # the collar's rear wall carrying the two-axis coil plate
 }
 
 
@@ -95,31 +97,40 @@ def collar_geometry(z_ps=(0.040, 0.045, 0.050, 0.056, 0.060), travels=(2e-3, 3e-
 
 
 def collar_masses(actuator: str = "coil") -> Dict:
-    """Mass budget of the compact collar and its inner barrel (PROPOSED DESIGN; CALC from volumes; catalogue parts
-    labelled).  actuator 'coil': two moving-magnet voice coils at the sleeve's rear (lever 41-47 mm from the pivot);
-    'geared': two Faulhaber 0824 B motors with 06/1 planetary gearheads at the gimbal (MFR AMF-120, AMF-103)."""
+    """Mass budget of the compact collar and its inner pen (PROPOSED DESIGN; CALC from volumes; catalogue parts
+    labelled).  actuator 'coil' (recommended): moving magnets on the inner pen's end face (12 mm) sliding over a two-axis
+    coil plate in the collar's rear wall, on a gap that stays constant as the pen tilts (the Rev J C1S actuator's
+    principle, at a 40-42 mm lever instead of 11.5 mm); 'geared': two Faulhaber 0824 B motors with 06/1 heads (MFR
+    AMF-120, AMF-103) - they are 8 mm across (the series name) and do not fit beside a swinging 12 mm pen inside a
+    21.7 mm collar: kept only as a mass comparison."""
     g = COLLAR_V2
-    od = 21.6e-3
-    L_s = g["z_rear"] - g["z_front_v2"]
+    od = 21.7e-3
+    L_s = g["z_end_wall"] - g["z_front_v2"]
     sleeve_al = DS.RHO_AL * math.pi * od * g["wall"] * L_s
     sleeve_pa = 1150.0 * math.pi * od * 1.2e-3 * L_s              # PA12-CF 1.15 g/cm3, 1.2 mm wall (ASSUMPTION)
     parts = {"sleeve_PA12CF_1.2mm": sleeve_pa * 1e3, "gimbal_cross_flexure": 1.5, "skid_ring_V2": 0.3,
              "load_cell_and_wiring": 1.0, "board_share": 1.5}
     if actuator == "coil":
-        parts.update({"coils_2x_on_sleeve": 2 * 2.5, "magnets_2x_on_barrel_moving": 2 * 1.2, "back_iron": 1.5})
+        parts.update({"coil_plate_2_axis": 4.0, "back_iron": 1.5, "magnets_on_end_face_moving": 2.4})
     else:
         parts.update({"motor_0824B_2x": 2 * 5.2, "gearhead_06_1_2x": 2 * 2.5, "output_gears_2x": 2 * 0.5})
-    moving = {"barrel_tube_al_0.5mm": DS.RHO_AL * math.pi * g["barrel_od"] * 0.5e-3 * g["length"] * 1e3,
-              "refill_and_fine_nib_stage": 6.0, "cell_10280_Li_ion": 5.0, "board_and_sensors": 3.0, "end_caps": 1.0}
+    L = g["length"]
+    tube = DS.RHO_AL * math.pi * g["barrel_od"] * 0.5e-3 * (L - 0.004) * 1e3
+    moving = {"barrel_tube_al_0.5mm": tube, "refill_and_fine_nib_stage": 6.0, "cell_10280_Li_ion": 5.0,
+              "board_and_sensors": 3.0, "end_caps": 1.0}
+    zpos = {"barrel_tube_al_0.5mm": 0.048, "refill_and_fine_nib_stage": 0.020, "cell_10280_Li_ion": 0.072,
+            "board_and_sensors": 0.038, "end_caps": 0.050, "magnets_on_end_face_moving": 0.091}
     m_col = sum(v for k, v in parts.items() if "moving" not in k)
-    m_mov = sum(moving.values()) + sum(v for k, v in parts.items() if "moving" in k)
-    zg = 0.068                                                     # ASSUMPTION: the cell sits behind the pivot
-    Jt = m_mov * 1e-3 * g["length"] ** 2 / 12 * 0.9
+    mv = dict(moving)
+    mv.update({k: v for k, v in parts.items() if "moving" in k})
+    m_mov = sum(mv.values())
+    zg = sum(mv[k] * zpos.get(k, 0.05) for k in mv) / m_mov          # CALC from the placement (ASSUMPTION positions)
+    Jt = sum(mv[k] * 1e-3 * (zpos.get(k, 0.05) - zg) ** 2 for k in mv) + mv["barrel_tube_al_0.5mm"] * 1e-3 * L ** 2 / 12
     return {"actuator": actuator, "collar_parts_g": parts, "moving_parts_g": moving, "collar_g": m_col, "barrel_g": m_mov,
             "total_g": m_col + m_mov, "barrel_zg_mm": zg * 1e3, "barrel_Jt_kgm2": Jt,
             "sleeve_al_g": sleeve_al * 1e3,
-            "label": "PROPOSED DESIGN masses (CALC from volumes; MFR AMF-120 0824 B 5.2 g, AMF-103 06/1 gearhead; cell "
-                     "and board ASSUMPTION)"}
+            "label": "PROPOSED DESIGN masses (CALC from volumes and placements; MFR AMF-120 0824 B 5.2 g, AMF-103 06/1 "
+                     "gearhead; magnets, coil plate, cell and board ASSUMPTION)"}
 
 
 def compact_pen(actuator: str = "coil") -> Dict:
@@ -194,7 +205,7 @@ def collar_control(pen: Optional[Dict] = None, pen_name: str = "revJ", z_p: floa
 
 
 def collar_power(ctrl: Dict, amps=(2e-3, 4e-3, 6e-3, 8e-3), f: float = 6.0, Km_coil_lin: float = 0.656,
-                 lever: float = 0.044, Km_geared: float = 0.042, N: float = 1.0, theta_deg: float = 50.0,
+                 lever: float = 0.041, Km_geared: float = 0.042, N: float = 1.0, theta_deg: float = 50.0,
                  F_c: float = 0.15, z_p: float = 0.050) -> List[Dict]:
     """Copper power of the collar's two actuators for a tremor amplitude at f (nominal grip, web on the collar), plus
     the static moment of the chosen load path (CALC).  Km: moving-magnet coil like the Rev J nose's (0.656 N/sqrt(W),
@@ -350,7 +361,7 @@ def reaction_mass(m: float = 0.030, X: float = 4e-3, f_tunes=(0.0, 5.0, 8.0), ze
 
 def run_all() -> Dict:
     ctrl_revj = collar_control()
-    ctrl_compact = collar_control(pen=compact_pen("coil"), pen_name="compact 12 mm barrel", m_c=collar_masses("coil")["collar_g"] * 1e-3)
+    ctrl_compact = collar_control(pen=compact_pen("coil"), pen_name="compact 12 mm inner pen", m_c=collar_masses("coil")["collar_g"] * 1e-3)
     return {"nose_static": nose_static(), "collar_geometry": collar_geometry(), "collar_masses": {a: collar_masses(a) for a in ("coil", "geared")},
             "collar_control_revJ": ctrl_revj, "collar_control_compact": ctrl_compact,
             "collar_power_revJ": collar_power(ctrl_revj), "collar_power_compact": collar_power(ctrl_compact),

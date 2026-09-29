@@ -2,7 +2,7 @@ id,label,group,shape,z0_mm,z1_mm,d0_mm,d1_mm,d_in_mm,size_mm,offset_mm,moves_wit
 ball,Ball tip,refill,cone,0.0,3.0,0.7,1.6,,,"[0.0, 0.0]",nib,0.0,D1 refill tip,CON-22
 refill,Ink refill (D1 mini),refill,cylinder,3.0,67.0,2.35,2.35,,,"[0.0, 0.0]",nib,0.84,ISO 12757-1 type D refill,CON-22
 bnib_refill_end,Refill end cap with rolling ball,refill,cylinder,67.0,71.0,3.2,3.2,,,"[0.0, 0.0]",nib,0.5,PEEK cap + 3 mm Si3N4 ball (ASSUMPTION),AMF-24
-bnib_carrier,Nib carrier (titanium tube with two bushings),moving_nib,tube,9.0,36.915,3.2,3.2,2.5,,"[0.0, 0.0]",nib,0.65,Ti-6Al-4V tube 4.0/2.5 mm + PTFE liners,AMF-21
+bnib_carrier,Nib carrier (titanium tube with two bushings),moving_nib,tube,9.0,36.915,3.2,3.2,2.5,,"[0.0, 0.0]",nib,0.65,Ti-6Al-4V tube 3.2/2.5 mm (EI about 0.37 N m^2) + two rolling guide stations (friction <= 0.01),AMF-21
 bnib_coils,"Moving coils (two flat layers, x and y)",actuator,tube,31.2,32.8,19.99971715728752,19.99971715728752,3.3,,"[0.0, 0.0]",nib,1.448,self-bonding 0.10 mm wire on a 0.1 mm polyimide former (or a 4-layer flex coil),AMF-29
 bnib_carrier_flange,"Carrier flange (wire clamps, Hall magnet)",moving_nib,tube,34.915,36.415,12.6,12.6,2.6,,"[0.0, 0.0]",nib,0.25,"Ti-6Al-4V ring, laser-welded wire ends",AMF-21
 bnib_hall_magnet,Nib position magnet,sensor,box,36.415,37.415,,,,"[1.0, 1.0, 1.0]","[6.7, 0.0]",nib,0.05,N52 1 mm cube,AMF-139

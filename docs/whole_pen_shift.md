@@ -155,8 +155,22 @@ excluded by design (stress margin ≥ 3, over-speed trip, balance grade G1, ASSU
 experiment only.
 
 With perfect knowledge the linear model says a 100 g pair would pass the review's gate by a wide margin (42–86 %
-better than the same 100 g locked, CALC, `tail_gate`). In the closed loop it does not (§4.5): the causal laws cannot phase
-a torque this large against a grip whose response changes with the writer.
+better than the same 100 g locked, CALC, `tail_gate`; the conditions are hand-path tremor of 3 and 8 mm at 5–9 Hz). In the
+closed loop (SIM, §4.3): the 100 g tail, locked, makes the pen harder to correct (its mass moves the pen's rocking into the
+tremor band and the ball leaves the paper more often); the rate-damping law recovers that, which passes the gate against
+the locked tail but gives nothing against having no tail. The phasor feed-forward and the adaptive law did worse than
+damping (the grip's response at the tail changes with the writer, so a large torque cannot be phased reliably).
+
+What gyroscopic tremor devices show (LIT): they are worn on the hand or forearm, where they have a large lever and the
+limb's own inertia to work with — the GyroGlove (about 580 g, rotor up to 10 000 rpm) reported the writing task 48 %
+better than no device and 40 % better than placebo in a small study (ACT-25, ACT-61, ACT-81); a 145 g gyroscope glove
+reduced a 4–7 Hz swept tremor on a bench by more than half (ACT-27); a hand-held gyroscope patent claims about 92 % less
+angular velocity (ACT-28); a low-cost glove prototype 43–72 % (PDT-42, with its own table implying the lower numbers);
+parameter studies ask for as much flywheel inertia and speed as the design allows (ACT-82). Haptic CMG devices at hand
+scale use 13–138 g flywheels at 6 600–20 000 rpm in 0.2–0.8 kg devices (HAP-82, HAP-83, HAP-87), and scissored pairs for
+the body are kilogram-scale (PAT-37, PAT-38). Study K found spin gave nothing over the same mass not spinning on the Rev J
+end-cap (ACT-88). None of this transfers to a pen held in the fingers, where the device must twist the pen *against the
+grip* and within about 100 g.
 
 #### 3c Tuned and reaction masses
 
@@ -190,11 +204,12 @@ air behind the web.
 
 **Why V2 (skid ring on the collar) and not V1 (the whole pen, skid ring included, swinging).** In V1 the writing force
 passes through the pivot to the tip: its moment N z_p cos θ = 32 mN·m at 1 N must be held by the motors (0.59–1.24 W,
-CALC), and tilting the pen presses the skid ring into the paper or lifts it (SIM: with V1 the ink was laid only 44–65 % of
-the time under correction). In V2 the skid ring carries the writing force and the ball only its 0.15 N refill spring: the
+CALC), and tilting the pen presses the skid ring into the paper or lifts it (SIM, development runs of V1 on tuning writer
+100: the ink was laid only 44–64 % of the time under correction). In V2 the skid ring carries the writing force and the ball only its 0.15 N refill spring: the
 moment is F_c cot θ z_p = 6.3 mN·m (0.02–0.05 W, CALC). The refill's front stop must follow the paper while the skid ring is
 loaded (a load cell tells), bounded to 3 mm, and lift with the pen otherwise, so strokes do not join (PROPOSED DESIGN;
-SIM: ink laid 97 % of the time under correction with this stop, 70 % without it).
+SIM: with a ±0.05 rad, 6 Hz swing the ball stayed on the paper 99.8 % of the time with this stop and 70 % with a stop that
+follows only the pivot angle, development runs; `verification.json` repeats the first).
 
 **Geometry** (CALC, `calc.collar_geometry`, PROPOSED DESIGN; 12 mm barrel, 0.8 mm wall, 0.3 mm running gap):
 
@@ -241,11 +256,17 @@ nib is commanded on what the collar leaves *at the ink* (§4.1).
 
 #### 3e Paper-grounded force
 
-The heel wheel stays retracted by default (the review; SIM in sim2j: with it on, clean writing moved 0.42 mm). As bounds
-(SIM, tuning writer 100, ET 3 mm at 6 Hz): an ideal omni-directional heel pushing 0.37 N anywhere removed 15 % of the tip
-tremor; a hand-rest sled carrying 2 N of the hand's weight onto a braked element removed 54 % only with perfect knowledge
-of the tremor, and nothing causally. The paper's friction (μN of 0.3–1.4 N) is smaller than the force the hand's tremor
-drives through the grip (575 N/m × 3 mm ≈ 1.7 N), so paper grounding can only trim (CALC).
+The heel wheel stays retracted by default (the review; DEC-048). The whole-pen simulation study found its present tremor
+mode helps only where the tremor is large or slow (4 Hz × 2 mm: 0.73 of the device-off ink error, where the nose alone
+does nothing) but doubles the error of 0.3 mm tremor, moves tremor-free writing 0.40 mm and is felt at 167 mN rms (SIM,
+sim2j, `docs/revJ_simulation.md` §6, §8.2). In this study's development runs (SIM, tuning writer 100, ET 3 mm at 6 Hz,
+an earlier firmware configuration; not part of the frozen campaign) an idealised omni-directional heel pushing 0.37 N in
+any direction removed about 15 % of the tip tremor, and a hand-rest sled carrying 2 N of the hand's weight onto a braked
+element removed about half only with perfect knowledge of the tremor and nothing causally. The reason is simple (CALC):
+the paper can push back with at most its friction, μN ≈ 0.3–1.4 N, while the hand's tremor drives the pen through the grip
+with about 575 N/m × 3 mm ≈ 1.7 N at 3 mm and 4.6 N at 8 mm. Paper grounding can trim tremor; it cannot hold the ink still
+against a large one. An amplitude-gated paper force (on only above about 2 mm of detected tremor) is worth one experiment
+(EXP-W17).
 
 #### 3f Write only when in reach
 
@@ -300,6 +321,30 @@ before any test run:
 
 <!-- W:rules -->
 <!-- /W:rules -->
+
+The tuning cases (SIM, tuning writer 100, seed 300, five words; "Ink laid" = coverage; the collar's pivot has its hard
+stop at 0.12 rad):
+
+<!-- W:tuning -->
+<!-- /W:tuning -->
+
+What the tuning showed (SIM, writer 100 only):
+
+- **The estimator matters more than any mechanism.** On this writer the pens with nothing moving leave about 3.3 mm
+  (the 3 mm class) and 10.6 mm (the 8 mm class) at the tip (the collar pen locked). With sim2j's guarded tracker (G4) the
+  Rev J nose left 3.12 mm and 11.06 mm; with the gated listening estimate 1.08 mm and 5.39 mm (but only 70 % of the ink
+  laid at 8 mm). The
+  listening estimate with the Rev H tracker as its fallback moved tremor-free writing by 135 µm (rule 25 µm); with the
+  guarded tracker as its fallback, 5 µm and the same tremor results — that is the frozen choice.
+- **The collar adds reach where the nose runs out.** At 3 mm it stays almost still (the nose covers it; same result). At
+  8 mm it lowered the tremor left from 5.39 to 3.97 mm, but the pivot reached its hard stops (0.174 rad against 0.12) and
+  less ink was laid (62 % against 70 %). The gentler setting (gain 0.5, share ≤ 0.6, reference ≤ 65 % of the range) was
+  chosen; none avoided the stops at 8 mm.
+- **The gyroscopic tail passes the gate only by curing its own harm.** The 100 g tail, locked, made the pen worse to
+  correct (2.44 mm left with the nose, 64 % of the ink laid, against 1.08 mm and 94 % without a tail); its rate-damping
+  law brought it back to 1.20 mm (82 % laid): 51 % better than the same mass locked (passes G5), still no better than no
+  tail at all.
+- **Write only when in reach** at 8 mm ET: 2.5 mm left instead of 3.6 mm, but only a third of the letters' ink laid.
 
 #### 4.4 Test results
 

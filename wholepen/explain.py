@@ -28,7 +28,7 @@ Z0_TAIL = 141.72          # mm: the Rev J rear cap's front face (results/revJ/la
 
 def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float = 4.0) -> Dict:
     g = K.COLLAR_V2
-    mm = K.collar_masses("geared")
+    mm = K.collar_masses("coil")
     geo = next(r for r in K.collar_geometry()["rows"] if r["z_p_mm"] == z_p and r["travel_mm"] == travel and r["path"] == "V2")
     od = round(geo["collar_od_mm"], 2)
     wall = g["wall"] * 1e3
@@ -37,7 +37,7 @@ def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float =
     cp, mv = mm["collar_parts_g"], mm["moving_parts_g"]
     comps = [
         {"id": "collar_sleeve", "label": "Collar (what the hand holds)", "group": "collar", "shape": "tube", "z0": z_front + 1.5,
-         "z1": z_rear, "d0": od, "d1": od, "d_in": round(od - 2 * wall, 2), "moves_with": "collar", "optional": False,
+         "z1": g["z_end_wall"] * 1e3, "d0": od, "d1": od, "d_in": round(od - 2 * wall, 2), "moves_with": "collar", "optional": False,
          "function": "The fingers hold it and the thumb-index web rests on it. It does not swing: the pen inside it does.",
          "part": "custom (PA12-CF, 1.2 mm wall, or aluminium 0.8 mm)", "ledger": "", "mass_g": round(cp["sleeve_PA12CF_1.2mm"], 2)},
         {"id": "collar_skid_ring", "label": "Skid ring on the collar", "group": "collar", "shape": "tube", "z0": z_front,
@@ -48,33 +48,36 @@ def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float =
          "size": [round(od - 2 * wall - 0.6, 2), round(od - 2 * wall - 0.6, 2), 3.0], "moves_with": "collar", "optional": False,
          "function": f"Holds the inner pen {z_p:.0f} mm behind the tip and lets it tilt +-{geo['swing_deg']:.1f} deg each way: +-{travel:.0f} mm at the tip.",
          "part": "custom cross-strip flexure (titanium or spring steel)", "ledger": "", "mass_g": cp["gimbal_cross_flexure"]},
-        {"id": "collar_motor_1", "label": "Swing motor (tilt plane)", "group": "collar", "shape": "cylinder", "z0": z_rear - 14.0,
-         "z1": z_rear - 2.0, "d0": 3.2, "d1": 3.2, "offset": [round(-(od / 2 - wall - 1.8), 2), 0.0], "moves_with": "collar", "optional": False,
-         "function": "Swings the inner pen in the tilt plane and pushes back on the collar and the hand (the Liftware principle).",
-         "part": "Faulhaber 0824 B + 06/1 planetary head (MFR AMF-120, AMF-103: 25 mN m continuous; the compact pen needs about 10 mN m at 8 mm tremor, CALC); a moving-magnet voice coil at the sleeve's rear is the backlash-free alternative",
-         "ledger": "AMF-120,AMF-103", "mass_g": round((cp.get("motor_0824B_2x", 0) + cp.get("gearhead_06_1_2x", 0) + cp.get("output_gears_2x", 0)) / 2, 2)},
-        {"id": "collar_motor_2", "label": "Swing motor (sideways)", "group": "collar", "shape": "cylinder", "z0": z_rear - 14.0,
-         "z1": z_rear - 2.0, "d0": 3.2, "d1": 3.2, "offset": [0.0, round(od / 2 - wall - 1.8, 2)], "moves_with": "collar", "optional": False,
-         "function": "Swings the inner pen sideways.", "part": "as collar_motor_1", "ledger": "AMF-120,AMF-103",
-         "mass_g": round((cp.get("motor_0824B_2x", 0) + cp.get("gearhead_06_1_2x", 0) + cp.get("output_gears_2x", 0)) / 2, 2)},
+        {"id": "collar_coil_plate", "label": "Two-axis coil plate (collar's rear wall)", "group": "collar", "shape": "tube",
+         "z0": 93.0, "z1": 97.0, "d0": round(od - 2 * wall, 2), "d1": round(od - 2 * wall, 2), "d_in": 2.0, "moves_with": "collar",
+         "optional": False,
+         "function": "Pushes on the magnets of the inner pen's end face, 42 mm behind the pivot, to swing the pen; the push-back goes into the collar and the hand (the Liftware principle). A long lever: the static load costs about 0.05 W.",
+         "part": "custom flat coils on a steel back plate (Rev J C1S actuator principle)", "ledger": "", "mass_g": cp["coil_plate_2_axis"] + cp["back_iron"]},
+        {"id": "collar_end_wall", "label": "Collar end wall", "group": "collar", "shape": "tube", "z0": 97.0, "z1": g["z_end_wall"] * 1e3,
+         "d0": od, "d1": od, "d_in": 0.0, "moves_with": "collar", "optional": False, "function": "Closes the collar; charging contacts and the switch.",
+         "part": "custom", "ledger": "", "mass_g": 0.5},
         {"id": "collar_load_cell", "label": "Skid load cell", "group": "collar", "shape": "box", "z0": z_front + 2.0, "z1": z_front + 4.0,
          "size": [2.0, 4.0, 1.0], "offset": [round(-(od / 2 - wall - 0.8), 2), 0.0], "moves_with": "collar", "optional": False,
-         "function": "Measures the writing force: it tells the pen it is on the paper (the refill may then follow the paper) and the motors how much to hold.",
+         "function": "Measures the writing force: it tells the pen it is on the paper (the refill may then follow the paper) and the actuator how much to hold.",
          "part": "custom strain flexure", "ledger": "", "mass_g": cp["load_cell_and_wiring"]},
         {"id": "inner_barrel", "label": "Inner pen (swings)", "group": "inner_pen", "shape": "tube", "z0": 4.0, "z1": L, "d0": zb, "d1": zb,
          "d_in": zb - 1.0, "moves_with": "inner_pen", "optional": False,
-         "function": "Everything that writes: refill, small fine nib, cell and board. The collar's motors swing all of it.",
+         "function": "Everything that writes: refill, small fine nib, cell and board. The collar's actuator swings all of it; balanced about the pivot.",
          "part": "custom (aluminium tube 12 x 0.5 mm)", "ledger": "", "mass_g": round(mv["barrel_tube_al_0.5mm"], 2)},
-        {"id": "fine_nib", "label": "Small fine nib (+-1 mm)", "group": "inner_pen", "shape": "tube", "z0": 3.0, "z1": 40.0, "d0": 6.0,
+        {"id": "fine_nib", "label": "Small fine nib (+-1 mm)", "group": "inner_pen", "shape": "tube", "z0": 3.0, "z1": 38.0, "d0": 6.0,
          "d1": 6.0, "d_in": 2.6, "moves_with": "inner_pen", "optional": False,
-         "function": "Study B's balanced nib: it trims the last millimetre quickly; the collar re-centres it and takes the large swings.",
+         "function": "Study B's balanced nib: it trims the last millimetre quickly; the collar takes the large swings.",
          "part": "study B (bnib/), not designed here", "ledger": "", "mass_g": mv["refill_and_fine_nib_stage"]},
-        {"id": "inner_cell", "label": "Li-ion cell 10280", "group": "inner_pen", "shape": "cylinder", "z0": 100.0, "z1": 128.0, "d0": 10.0,
-         "d1": 10.0, "moves_with": "inner_pen", "optional": False, "function": "Power; sits behind the pivot to balance the pen about it.",
+        {"id": "inner_board", "label": "Board and IMU", "group": "inner_pen", "shape": "box", "z0": 40.0, "z1": 56.0,
+         "size": [9.0, 3.0, 16.0], "moves_with": "inner_pen", "optional": False,
+         "function": "Estimates the tremor and drives the actuator and the nib.", "part": "custom", "ledger": "", "mass_g": mv["board_and_sensors"]},
+        {"id": "inner_cell", "label": "Li-ion cell 10280", "group": "inner_pen", "shape": "cylinder", "z0": 58.0, "z1": 86.0, "d0": 10.0,
+         "d1": 10.0, "moves_with": "inner_pen", "optional": False, "function": "Power; behind the pivot, balancing the nib in front.",
          "part": "10280 Li-ion (ASSUMPTION about 0.3 Wh)", "ledger": "", "mass_g": mv["cell_10280_Li_ion"]},
-        {"id": "inner_board", "label": "Board, IMU and page sensor link", "group": "inner_pen", "shape": "box", "z0": 60.0, "z1": 95.0,
-         "size": [9.0, 3.0, 35.0], "moves_with": "inner_pen", "optional": False,
-         "function": "Estimates the tremor and drives the motors and the nib.", "part": "custom", "ledger": "", "mass_g": mv["board_and_sensors"]},
+        {"id": "inner_magnets", "label": "Actuator magnets (inner pen's end face)", "group": "inner_pen", "shape": "cylinder",
+         "z0": L - 3.0, "z1": L, "d0": zb, "d1": zb, "moves_with": "inner_pen", "optional": False,
+         "function": "Four magnet poles facing the coil plate; they slide over it as the pen tilts.", "part": "N52 segments (ASSUMPTION)",
+         "ledger": "", "mass_g": cp["magnets_on_end_face_moving"]},
     ]
     # the optional gyro tail (study W's CMG turret pair), kept as a separate optional group
     d = DS.cmg_design(100, mode="turret")
@@ -89,7 +92,7 @@ def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float =
     return {"meta": {"evidence_status": "PROPOSED DESIGN (study W's recommended whole-pen collar, the review's option B with the V2 load path; CALC masses from volumes and catalogue parts; ASSUMPTION dimensions; nothing built or measured)",
                      "concept": "the hand holds a collar that rests on the paper; the whole inner pen swings in it on a 2-axis pivot, driven by two motors that push back on the collar and hand; a small fine nib (study B) trims the rest",
                      "replaces": ["front_sleeve", "shell", "gimbal", "carrier", "magnet_cap", "coil_plate"],
-                     "replaces_note": "a new architecture, not a Rev J add-on: the 24 mm shell becomes a 21.7 mm collar around a 12 mm swinging pen; Rev J's own nose can sit in the inner pen instead of the fine nib only if the barrel grows to 24 mm (then the collar is about 33 mm)",
+                     "replaces_note": "a new architecture, not a Rev J add-on: the 24 mm shell becomes a 100 mm long, 21.7 mm collar around a 92 mm, 12 mm swinging pen; Rev J's own nose can sit in the inner pen instead of the fine nib only if the inner pen grows to 24 mm (then the collar is about 33 mm across); two geared 0824 motors (8 mm across) do not fit beside the swinging pen, so the actuator is a coil plate in the collar's rear wall",
                      "collar_geometry": geo, "masses": {"collar_g": round(mm["collar_g"], 1), "inner_pen_g": round(mm["barrel_g"], 1), "total_g": round(mm["total_g"], 1)},
                      "source": "wholepen/explain.py; wholepen/calc.py; docs/whole_pen_shift.md", "stabpen.provenance": prov},
             "units": "mm",

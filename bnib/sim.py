@@ -85,6 +85,8 @@ PD_KW = {"f_jitter": 0.15, "am_depth": 0.45, "ellipticity": 0.6, "harmonic": 0.2
 CELLS = (("ET", 4.0, 1.0e-3), ("ET", 6.0, 2.0e-3), ("ET", 8.0, 0.3e-3), ("ET", 8.0, 1.0e-3), ("ET", 8.0, 2.0e-3),
          ("ET", 12.0, 1.0e-3), ("PD", 4.5, 1.0e-3), ("PD", 5.5, 2.0e-3), ("PD", 5.0, 0.3e-3))
 TUNE_CELLS = (("ET", 8.0, 1.0e-3), ("PD", 5.0, 1.0e-3))
+# travel variant (B1w, +-1.5 mm) against B1 (+-1.0 mm): the cells where the handle's tremor reaches beyond +-1 mm
+TRAVEL_CELLS = (("ET", 8.0, 1.0e-3), ("ET", 8.0, 2.0e-3), ("ET", 6.0, 2.0e-3), ("PD", 5.5, 2.0e-3))
 
 
 # ================================================================================================ design parameters
@@ -135,11 +137,16 @@ def sim_designs(use_opt: bool = True) -> Dict[str, SimDesign]:
     d2 = copy.deepcopy(d1)
     d2.key, d2.title, d2.balance, d2.balance_mass = "f_translation", "(f) the same nib without the balance", BL.NoBalance(), 0.0
     d3 = CD.make("h_piezo", CD.slim(14e-3))
-    out = {}
-    for nm, d, cf, fam, grip, title in (
-            ("B1", d1, True, "translation", "pen24", "translation nib + counter-face (24 mm)"),
+    todo = [("B1", d1, True, "translation", "pen24", "translation nib + counter-face (24 mm)"),
             ("B2", d2, False, "translation", "pen24", "the same nib, no balance (24 mm)"),
-            ("B3", d3, False, "piezo", "slim14", "piezo bender fine stage (14 mm slim core)")):
+            ("B3", d3, False, "piezo", "slim14", "piezo bender fine stage (14 mm slim core)")]
+    # the travel variant (stage_travel only): the optimiser's counter-face point at the 1.5 mm travel floor
+    xw = _opt_point("pen24_c", 1.5) if use_opt else None
+    if xw:
+        todo.append(("B1w", OP.build("c_counterface", "pen24", xw), True, "translation", "pen24",
+                     "the counter-face nib at +-1.5 mm (24 mm; travel variant)"))
+    out = {}
+    for nm, d, cf, fam, grip, title in todo:
         ev = CD.evaluate(d, detail=False, fast=True)
         out[nm] = SimDesign(name=nm, title=title, key=d.key, grip=grip, family=fam, design=d, ev=ev, counterface=cf,
                             F_s=d.F_s)
@@ -1062,6 +1069,57 @@ def stage_ideal(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, 
         rows.save()
 
 
+def stage_travel(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, log=print) -> None:
+    """Does B1's +-1.0 mm reach limit the correction?  B1w (the optimiser's counter-face point at the 1.5 mm travel
+    floor, the same frozen rules) on writers 0-2 (their test seeds) in TRAVEL_CELLS with none / tracker / perfect
+    knowledge, compared case by case with B1's test rows.  Added after the test grid had started (diagnosis of one
+    case, SIM: in ET 8 Hz 1 mm the handle's tremor at the tip exceeds B1's reach 11 % of the time, p95 1.29 mm); it
+    changes no rule and no B1 result."""
+    if "B1w" not in designs:
+        log("[sim] travel: no B1w design (the optimiser cache has no 1.5 mm point)")
+        return
+    pens = Pens({"B1w": designs["B1w"]})
+    for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:3]):
+        seed = TEST_SEEDS[w % len(TEST_SEEDS)]
+        su = Setup(w, pens, "B1w", log=log)
+        run_clean(su, rows, "travel", seed, log=log)
+        for kind, f0, amp in (TRAVEL_CELLS[:1] if quick else TRAVEL_CELLS):
+            run_cell(su, rows, "travel", kind, f0, amp, seed, ctls=("none", "nose", "oracle"), log=log)
+        rows.save()
+
+
+def _travel_summary(rows: Rows) -> Dict:
+    tv = [r for k, r in rows.rows.items() if k.startswith("travel|B1w|") and r.get("kind") in ("ET", "PD")
+          and r.get("ctl") in ("nose", "oracle")]
+    if not tv:
+        return {}
+    comp: Dict = {}
+    for r in tv:
+        k1 = f"test|B1|{r['kind']}|{r['f0']:g}|{r['amp_mm']:g}|{r['w']}|{r['seed']}|deltapen|{r['ctl']}"
+        b = rows.rows.get(k1)
+        if b is None:
+            continue
+        cell = f"{r['kind']} {r['f0']:g} Hz {r['amp_mm']:g} mm"
+        comp.setdefault(cell, {}).setdefault(r["ctl"], []).append(
+            (b["ratio"], r["ratio"], b["P_nib_W"], r["P_nib_W"], b["words_app"], r["words_app"], b["ink_err_um"], r["ink_err_um"]))
+    out = {"cells": {}}
+    for cell, v in comp.items():
+        out["cells"][cell] = {}
+        for ctl, L in v.items():
+            A_ = np.array(L)
+            out["cells"][cell][ctl] = {"ratio_B1": float(A_[:, 0].mean()), "ratio_B1w": float(A_[:, 1].mean()),
+                                       "P_B1_mW": float(1e3 * A_[:, 2].mean()), "P_B1w_mW": float(1e3 * A_[:, 3].mean()),
+                                       "words10_B1": float(10 * A_[:, 4].mean()), "words10_B1w": float(10 * A_[:, 5].mean()),
+                                       "ink_B1_um": float(A_[:, 6].mean()), "ink_B1w_um": float(A_[:, 7].mean()), "n": len(L)}
+    cl = [r for k, r in rows.rows.items() if k.startswith("travel|B1w|clean|")]
+    if cl:
+        out["clean_moved_um_B1w"] = float(np.mean([r["moved_vs_clean_um"] for r in cl]))
+        out["clean_P_mW_B1w"] = float(1e3 * np.mean([r["P_nib_W"] for r in cl]))
+    out["label"] = ("SIMULATION (sim2; writers 0-2, their test seeds; B1w = the optimiser's counter-face point at the "
+                    "1.5 mm travel floor, same frozen rules; compared case by case with B1)")
+    return out
+
+
 def stage_thermal(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, log=print) -> Dict:
     """Long thermal run with the governor: writer 0 writes the full sentence ('return library books by friday') at
     35 deg tilt (the largest static load) with ET 8 Hz 2 mm tremor, nib on, B1 and B2; the two-node model and governor
@@ -1204,10 +1262,11 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
                             "ratio_ideal": float(P_[:, 2].mean()), "ratio_deltapen": float(P_[:, 3].mean()),
                             "label": "SIMULATION: the ideal page sensor (3 um white) is a BOUND, not a prediction"}
     out["sim2j_revJ_reference"] = _sim2j_reference(CELLS)
+    out["travel"] = _travel_summary(rows)
     return out
 
 
-def run_all(quick: bool = False, stages=("tune", "test", "ideal", "thermal"), log=print) -> Dict:
+def run_all(quick: bool = False, stages=("tune", "test", "ideal", "thermal", "travel"), log=print) -> Dict:
     t0 = time.time()
     designs = sim_designs()
     rows = Rows(BUILD / ("sim_rows_quick.json" if quick else "sim_rows.json"))
@@ -1224,6 +1283,8 @@ def run_all(quick: bool = False, stages=("tune", "test", "ideal", "thermal"), lo
         stage_test(designs, rows, quick=quick, log=log)
     if "ideal" in stages:
         stage_ideal(designs, rows, quick=quick, log=log)
+    if "travel" in stages:
+        stage_travel(designs, rows, quick=quick, log=log)
     rows.save()
     summ = summarise(rows, designs)
     summ["designs"] = {k: {"title": sd.title, "key": sd.key, "grip": sd.grip, "family": sd.family, "counterface": sd.counterface,

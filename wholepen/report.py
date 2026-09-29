@@ -84,6 +84,48 @@ def blocks() -> Dict[str, str]:
             L.append(f"| {RS.CLASS_LABEL.get(r['class'], r['class'])} | {RS.LABELS.get(r['design'], r['design'])} | {_fmt(r.get('tip_tremor_mm'), '{:.2f}')} | "
                      f"{_fmt(5 * r['words_app'] if r.get('words_app') is not None else None, '{:.0f}')} | {_fmt(r.get('coverage'), '{:.2f}')} | {_fmt(r.get('ink_err_um'), '{:.0f}')} |")
         out["arm"] = "\n".join(L)
+    tune = RS.Rows("tune").values()
+    if tune:
+        keep = [("h1|g1|w100|s300|ET_moderate|collar_locked", "collar pen, locked (device-off reference)"),
+                ("tr_nose|h1|g1|w100|s300|ET_moderate|nose", "Rev J nose, guarded tracker (sim2j G4)"),
+                ("tr_nose_gl|h1|g1|w100|s300|ET_moderate|nose", "Rev J nose, gated listening (fallback Rev H as built)"),
+                ("tr_nose_glg|h1|g1|w100|s300|ET_moderate|nose", "Rev J nose, gated listening + guarded fallback"),
+                ("cpg_g0.75_f0.9|h1|g1|w100|s300|ET_moderate|collar_nose", "collar + nose, gain 0.75, reference cap 0.9"),
+                ("cpg_g0.5_f0.65|h1|g1|w100|s300|ET_moderate|collar_nose", "collar + nose, gain 0.5, cap 0.65"),
+                ("cpg_g0.5_s0.6_f0.65|h1|g1|w100|s300|ET_moderate|collar_nose", "collar + nose, gain 0.5, share <= 0.6, cap 0.65"),
+                ("h1|g1|w100|s300|ET_moderate|collar_oracle", "collar alone, perfect knowledge"),
+                ("h1|g1|w100|s300|PD_severe|collar_locked", "collar pen, locked (device-off reference)"),
+                ("tr_nose|h1|g1|w100|s300|PD_severe|nose", "Rev J nose, guarded tracker"),
+                ("tr_nose_gl|h1|g1|w100|s300|PD_severe|nose", "Rev J nose, gated listening"),
+                ("tr_nose_glg|h1|g1|w100|s300|PD_severe|nose", "Rev J nose, gated listening + guarded fallback"),
+                ("cpg_g0.75_f0.9|h1|g1|w100|s300|PD_severe|collar_nose", "collar + nose, gain 0.75, cap 0.9"),
+                ("cpg_g0.5_f0.65|h1|g1|w100|s300|PD_severe|collar_nose", "collar + nose, gain 0.5, cap 0.65"),
+                ("cpg_g0.5_s0.6_f0.65|h1|g1|w100|s300|PD_severe|collar_nose", "collar + nose, gain 0.5, share <= 0.6, cap 0.65"),
+                ("h1|g1|w100|s300|PD_severe|collar_oracle", "collar alone, perfect knowledge"),
+                ("h1|g1|w100|s300|ET_moderate|gt_locked", "gyro tail 100 g locked, nose held"),
+                ("g|h1|g1|w100|s300|ET_moderate|gt_locked_nose", "gyro tail locked + nose (gated listening + guarded)"),
+                ("cmgg_damp|h1|g1|w100|s300|ET_moderate|gt_nose", "gyro tail, rate-damping law + nose"),
+                ("cmgg_afc|h1|g1|w100|s300|ET_moderate|gt_nose", "gyro tail, adaptive cancellation + nose"),
+                ("cmgg_ff|h1|g1|w100|s300|ET_moderate|gt_nose", "gyro tail, phasor feed-forward + nose"),
+                ("h1|g1|w100|s300|ET_moderate|gt_oracle", "gyro tail alone, perfect knowledge"),
+                ("g|h1|g1|w100|s300|ET_severe|nose", "Rev J nose (gated listening + guarded)"),
+                ("gmg0.3|h1|g1|w100|s300|ET_severe|nose_gate", "nose + write only when in reach, margin 0.3 mm"),
+                ("gmg1.0|h1|g1|w100|s300|ET_severe|nose_gate", "nose + write only when in reach, margin 1.0 mm"),
+                ("tr_nose|h1|g1|w100|s300|clean|nose", "tremor-free writing, guarded tracker"),
+                ("tr_nose_gl|h1|g1|w100|s300|clean|nose", "tremor-free writing, gated listening"),
+                ("tr_nose_glg|h1|g1|w100|s300|clean|nose", "tremor-free writing, gated listening + guarded")]
+        d = {r["key"]: r for r in tune}
+        L = ["| Case | Class | Tremor left (mm) | Ink error (µm) | Words read (of 5) | Ink laid | Pivot peak (rad) | Clean writing moved (µm) |",
+             "|---|---|---|---|---|---|---|---|"]
+        for k, lab in keep:
+            r = d.get(k)
+            if r is None:
+                continue
+            L.append(f"| {lab} | {RS.CLASS_LABEL.get(r['class'], r['class'])} | {_fmt(r.get('tip_tremor_mm'), '{:.2f}')} | {_fmt(r.get('ink_err_um'), '{:.0f}')} | "
+                     f"{_fmt(5 * r['words_app'] if r.get('words_app') is not None else None, '{:.0f}')} | {_fmt(r.get('coverage'), '{:.2f}')} | "
+                     f"{_fmt(r.get('pivot_peak_rad'), '{:.3f}') if r.get('pivot_peak_rad') else '–'} | "
+                     f"{_fmt(r.get('moved_vs_clean_um'), '{:.0f}') if r['class'] == 'clean' else '–'} |")
+        out["tuning"] = "\n".join(L)
     rules = _load("rules.json")
     if rules:
         out["rules"] = "```json\n" + json.dumps({"rules": rules["rules"], "evidence": rules.get("evidence"), "frozen_utc": rules.get("frozen_utc")}, indent=1) + "\n```"

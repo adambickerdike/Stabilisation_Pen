@@ -410,7 +410,7 @@ def stage_freeze(quick=False):
     # the tracker: lower mean ink error of the nose over ET 3 mm and PD 8 mm, unless its false correction on
     # tremor-free writing exceeds sim2j's 25 um rule by more than the other's
     trk = {}
-    for tr_ in ("nose", "nose_gl"):
+    for tr_ in TRACKERS:
         v = [r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"tr_{tr_}|", cls, "nose")]
         clean = [r.get("moved_vs_clean_um", float("nan")) for r in rows if r["key"].startswith(f"tr_{tr_}|") and r["class"] == "clean"]
         trk[tr_] = {"ink_um": float(np.mean(v)) if v else float("inf"), "clean_moved_um": float(np.mean(clean)) if clean else float("nan")}
