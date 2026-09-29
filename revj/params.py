@@ -179,10 +179,10 @@ RHO = {  # g/cm3
 }
 
 SPRING = {  # the ink-force spiral spring (301 full hard strip) in the pen-lift drum
-    "E_GPa": V(200.0, "GPa", "MFR", "AMF-20 (301 full hard)"),
-    "UTS_MPa": V(1460.0, "MPa", "MFR", "AMF-20"),
-    "yield_MPa": V(1080.0, "MPa", "MFR", "AMF-20"),
-    "fatigue_MPa": V(540.0, "MPa", "MFR", "AMF-20 (fatigue strength as listed; cycle count of the listing not stated)"),
+    "E_GPa": V(200.0, "GPa", "LIT", "AMF-20 (301 full hard; aggregated database, low provenance)"),
+    "UTS_MPa": V(1460.0, "MPa", "LIT", "AMF-20"),
+    "yield_MPa": V(1080.0, "MPa", "LIT", "AMF-20"),
+    "fatigue_MPa": V(540.0, "MPa", "LIT", "AMF-20 (fatigue strength as listed; cycle count of the listing not stated)"),
     "knockdown_1e8": V(0.8, "-", "ASSUMPTION", "extra factor on the fatigue strength for 1e8 cycles, thin-strip surface and size"),
     "sigma_static_frac": V(0.55, "-", "ASSUMPTION", "peak stress <= 0.55 x UTS"),
     "force_tol": V(0.20, "-", "ASSUMPTION", "REQ-RVJ-N05 proposed: 0.15 N +-20 %"),
