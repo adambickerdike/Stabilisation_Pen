@@ -61,16 +61,18 @@ def layout(des: Dict, handle_od: float = 24.0, length: float = 175.0, axial: boo
                     f"{fe['refill_slide_range_mm']:.0f} mm over 35-75 deg tilt and the tip's travel (CALC, front-end closure).",
            part="ISO 12757-2 D1 mini refill", ledger="DEC-004", mass_g=0.84))
     A(comp("refill_spring", "Refill holder (tendon end)", "mechanism", "cylinder", 67.0, 67.0 + DS.HOLDER_L * 1e3, "nose",
-           3.2, 3.2, function=f"Holds the refill's end.  A thin tendon from the ink-force drum (in the pen-lift module) runs forward "
-                              f"beside the refill over a small pulley and back to this holder, so it pulls the refill toward the "
-                              f"paper (about 0.15 N) wherever it has slid; its rearmost position is {z_end:.0f} mm from the tip.",
-           part="custom (holder + tendon; ASSUMPTION 0.5 g with the pulley)", ledger="AMF-144", mass_g=DS.M_REAR * 1e3))
+           3.2, 3.2, function=f"Holds the refill's end.  A closed tendon loop (a capstan drive) from the ink-force drum in the "
+                              f"pen-lift module runs forward beside the refill over a small pulley to this holder and back, so the "
+                              f"drum moves the refill either way wherever it has slid; its rearmost position is {z_end:.0f} mm from "
+                              f"the tip.", part="custom (holder + tendon loop + pulley; ASSUMPTION 0.5 g)", ledger="PAT-41",
+           mass_g=DS.M_REAR * 1e3))
     lift_z1 = min(zp - 1.5, z_end + 0.5) if z_end < zp - 1.5 else zp - 1.5
     A(comp("refill_lift", "Pen lift and ink-force drum" if axial else "Ink-force drum", "mechanism", "tube", lift_z1 - 7.0, lift_z1,
            "nose", 5.6, 5.6, 3.6,
            function=("Annular module around the refill's path just in front of the gimbal: a drum with a fatigue-rated spiral spring "
-                     "sets the ink force through the tendon; for a pen-up an electro-permanent brake locks the drum and a bistable latch "
-                     "moves it 0.5 mm, lifting the ball; neither needs power to hold.  Near the pivot it adds almost nothing at the tip.")
+                     "sets the ink force through the tendon loop; for a pen-up an electro-permanent brake locks the drum and a bistable "
+                     "latch turns it a little, pulling the refill back 0.5 mm; neither needs power to hold.  Near the pivot it adds "
+                     "almost nothing at the tip.")
                     if axial else "Drum with a fatigue-rated spiral spring that sets the ink force through the tendon.",
            part="custom (drum + spiral spring + electro-permanent brake + bistable reluctance latch, about 2 g; ASSUMPTION)",
            ledger="PAT-41", mass_g=DS.M_LIFT * 1e3 if axial else 0.8))

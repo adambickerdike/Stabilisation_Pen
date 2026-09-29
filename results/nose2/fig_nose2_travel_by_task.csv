@@ -1,0 +1,17 @@
+task,travel_mm,basis
+"tremor cancellation, 0.3 mm at the hand",0.66951,"peak of the tremor model (30 % AM, 15 % harmonic), 4-12 Hz, tuning seeds"
+"tremor cancellation, 1 mm at the hand",2.1834,"peak of the tremor model (30 % AM, 15 % harmonic), 4-12 Hz, tuning seeds"
+"tremor cancellation, 2 mm at the hand",4.59238,"peak of the tremor model (30 % AM, 15 % harmonic), 4-12 Hz, tuning seeds"
+"guided shaping, dysgraphia-like learner, 3 mm letters",2.238,p99 distance of the learner's letters to the copybook letters
+"autowrite, 2.5 mm x-height, no tremor",4.07227,"planner minimum reach, worst tuning writer, nominal sweep speed"
+"autowrite, 3 mm x-height, no tremor",4.9502,"planner minimum reach, worst tuning writer, nominal sweep speed"
+"autowrite, 3.5 mm x-height, no tremor",5.7373,"planner minimum reach, worst tuning writer, nominal sweep speed"
+"autowrite, 4 mm x-height, no tremor",6.52441,"planner minimum reach, worst tuning writer, nominal sweep speed"
+delayed ink 50ms,2.84761,"p99 of |p(t) - p(t - tau)| on inked samples, synthetic writers (20-34 mm/s)"
+delayed ink 50ms at adult phrase speed,3.8056,the same paths rescaled to 30.5 mm/s mean (LIT CON-20)
+delayed ink 100ms,4.53262,"p99 of |p(t) - p(t - tau)| on inked samples, synthetic writers (20-34 mm/s)"
+delayed ink 100ms at adult phrase speed,5.2626,the same paths rescaled to 30.5 mm/s mean (LIT CON-20)
+delayed ink 150ms,5.26743,"p99 of |p(t) - p(t - tau)| on inked samples, synthetic writers (20-34 mm/s)"
+delayed ink 150ms at adult phrase speed,7.72811,the same paths rescaled to 30.5 mm/s mean (LIT CON-20)
+delayed ink 200ms,6.68863,"p99 of |p(t) - p(t - tau)| on inked samples, synthetic writers (20-34 mm/s)"
+delayed ink 200ms at adult phrase speed,9.14955,the same paths rescaled to 30.5 mm/s mean (LIT CON-20)

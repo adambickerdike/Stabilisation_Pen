@@ -184,7 +184,7 @@ def fig_delayed(agg: Dict, od: Path) -> None:
             ser.append({"label": "Rev H tracker (as built)", "y": [tr] * len(lags), "color": S[1], "ls": "-."})
         panels.append({"title": title, "x": lags, "xlabel": "ink lag behind the hand (ms)", "ylabel": yl, "series": ser, "xticks": lags})
     FG.lines_chart(od / "fig_delayed_ink.png", panels, STATUS,
-                   "Test writers 0-5 x seeds 200-203 x 6/8/10 Hz. 0 ms = the causal gated tracker; 25 ms = the chosen +-3 mm setting, 50 and 100 ms = +-6 mm.")
+                   "Test grid. 0 ms = gated tracker; 25 ms = chosen +-3 mm setting; 50, 100 ms = +-6 mm.")
 
 
 def _fmt_um(v):
@@ -198,8 +198,10 @@ def fig_before_after(test: Dict, od: Path) -> None:
             viz, rows, writer = o["viz"], o["rows"], o["writer"]
     if viz is None:
         return
-    keys = ["intended", "none", "tracker", "gated", "delayed_3mm", "delayed_6mm", "lag_100_6mm", "limit_100_6mm", "clean_copy", "oracle"]
+    keys = ["intended", "none", "tracker", "gated", "delayed_3mm", "delayed_6mm", "lag_100_6mm", "limit_100_6mm", "learned_tcn",
+            "rl_arbiter", "clean_copy", "oracle"]
     labels = {"intended": "Intended", "none": "Ordinary pen", "tracker": "Rev H + tracker\n(as built)",
+              "learned_tcn": "Learned TCN\n(causal, 0 ms)", "rl_arbiter": "RL arbiter\n(causal, 0 ms)",
               "gated": "Gated listening\ntracker (0 ms)", "delayed_3mm": "Delayed ink,\n+-3 mm nose", "delayed_6mm": "Delayed ink,\n+-6 mm nose",
               "lag_100_6mm": "Delayed ink 100 ms\n(catch-up), +-6 mm", "limit_100_6mm": "Delayed ink 100 ms\n(Z-refill limit)",
               "clean_copy": "App clean copy\n(digital, not ink)", "oracle": "Perfect knowledge\n(limit)"}
@@ -218,6 +220,13 @@ def fig_before_after(test: Dict, od: Path) -> None:
                 txt += f"  ·  mean lag {m['lag_mean_ms']:.0f} ms"
             metrics[dv] = txt
         paths = {k: viz[case][k] for k in keys if k in viz[case]}
+        extra = (test.get("_viz_extra") or {}).get(case) or {}
+        for k, pth in extra.get("paths", {}).items():
+            if k in keys and k not in paths:
+                paths[k] = pth
+                m = extra["metrics"][k]
+                nw = len(str(m.get("recognised_words", "")).split()) or 5
+                metrics[k] = f"ink error {_fmt_um(m.get('ink_err_um'))}  ·  letters read {m.get('recognition', 0):.0%}\nwords read by the app {round((m.get('word_acc_app') or 0) * nw)}/{nw}"
         paths["intended"] = viz["intended"]
         metrics["intended"] = "what the writer meant to write\n(the same hand without tremor)"
         cols.append({"title": f"hand tremor {amp:g} mm peak at {f0:g} Hz (writer {writer}, seed 200)", "paths": paths,
@@ -448,19 +457,24 @@ def _dec(path, hz_in: float = 50.0, hz_out: float = 50.0, nd: int = 2, max_pts: 
 
 def samples(test: Dict, od: Path) -> Dict:
     panels = []
-    keys = ["none", "tracker", "gated", "delayed_3mm", "delayed_6mm", "lag_100_6mm", "limit_100_6mm", "clean_copy", "oracle",
-            "oracle_delayed_100_6mm"]
+    keys = ["none", "tracker", "gated", "delayed_3mm", "delayed_6mm", "lag_100_6mm", "limit_100_6mm", "learned_tcn", "rl_arbiter",
+            "clean_copy", "oracle", "oracle_delayed_100_6mm"]
     for o in test["outs"]:
         if not o.get("viz"):
             continue
-        v = o["viz"]
+        v = {k: (dict(vv) if isinstance(vv, dict) else vv) for k, vv in o["viz"].items()}
+        for case, ex in (test.get("_viz_extra") or {}).items():
+            if case in v:
+                for k, pth in ex.get("paths", {}).items():
+                    v[case].setdefault(k, pth)
+        rows_extra = {case: ex.get("metrics", {}) for case, ex in (test.get("_viz_extra") or {}).items()}
         for case in [k for k in v if "Hz_" in k]:
             f0 = float(case.split("Hz")[0]); amp = float(case.split("_")[1].rstrip("mm"))
             r = next((r for r in o["rows"] if r["f0"] == f0 and abs(r["amp_mm"] - amp) < 1e-9 and r["seed"] == 200), None)
             for dv in keys:
                 if dv not in v[case]:
                     continue
-                m = r["variants"].get(dv, {}) if r else {}
+                m = (r["variants"].get(dv) if r else None) or rows_extra.get(case, {}).get(dv, {})
                 digital = dv == "clean_copy"
                 lagged = dv.startswith(("delayed", "lag_", "limit_", "oracle_delayed"))
                 panels.append({"id": f"ai2_{dv}_{case}".replace(".", "p"), "title": f"{LABELS[dv]} - tremor {amp:g} mm at {f0:g} Hz",
@@ -549,7 +563,10 @@ def tuning_summary(d01, d2, d2b, cl) -> Dict:
 def build(quick: bool = False) -> Dict:
     from . import evidence as EV
     od = C.out_dir(quick)
-    L = {k: C.load(k, quick) for k in ("d01", "d2", "d2b", "learn_data", "learn", "rl", "cl", "test", "text", "synth", "shared")}
+    L = {k: C.load(k, quick) for k in ("d01", "d2", "d2b", "learn_data", "learn", "rl", "cl", "test", "viz", "ablation", "text", "synth",
+                                       "shared")}
+    if L["test"] is not None and L["viz"]:
+        L["test"]["_viz_extra"] = L["viz"]
     agg = aggregate(L["test"]) if L["test"] else None
     if agg:
         fig_delayed(agg, od)
@@ -581,6 +598,7 @@ def build(quick: bool = False) -> Dict:
            "test_candidates": L["test"].get("candidates") if L["test"] else None,
            "aggregate": agg,
            "lag_kinematics_calc": kin,
+           "sensor_ablation": ({k: v for k, v in L["ablation"].items() if k != "rows"} if L["ablation"] else None),
            "learn": learn_summary(L["learn"], quick),
            "rl": rl_summary(L["rl"]),
            "text": ({k: v for k, v in L["text"].items()} if L["text"] else None),

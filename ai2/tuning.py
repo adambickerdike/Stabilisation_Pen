@@ -269,3 +269,36 @@ def select_d2(outs: List[Dict], cands: List[Dict]) -> Dict:
     causal = min(ok0p, key=lambda k: table[k]["J_ink_1_2mm_um"]) if ok0p else (ok0[0] if ok0 else None)
     return {"rule": "D2: R1-R4 against the Rev H tracker; lowest mean ink error at 1-2 mm", "table": table,
             "chosen": chosen, "causal_gated": causal, "causal_passes": bool(ok0p)}
+
+
+# ------------------------------------------------------------------ sensor ablation of the listening smoother (information)
+def sensor_ablation_job(job: Dict) -> Dict:
+    """Open-loop residual of the chosen fixed-lag RTS smoother (D0) with both sensors, the page sensor only and the IMU
+    only, on one tuning writer (seed 300).  Information for the multi-sensor question; no choice depends on it."""
+    wr = CO.Writer(job["writer"])
+    rows = []
+    for f0, amp in conditions():
+        sc = scenario(wr, f0, amp, TUNE_SEEDS[0])
+        delta = PR.servo_group_delay(sc.pen)
+        r = {"writer": wr.w, "f0": f0, "amp_mm": amp * 1e3, "res": {}}
+        for name, ua, up in (("imu+page", 1.0, 1.0), ("page_only", 0.0, 1.0), ("imu_only", 1.0, 0.0)):
+            p = dict(DL.TREMOR_DEFAULTS); p.update(job["tremor"]); p.update({"use_acc": ua, "use_pos": up})
+            out = SM.rts_fixed_lag(sc.streams, p, D0_LAGS, delta, out_every=8)
+            r["res"][name] = residual_um(sc, out["t"], out["tremor"], D0_LAGS)
+        rows.append(r)
+    return {"writer": wr.w, "rows": rows}
+
+
+def sensor_ablation(quick: bool, workers: int = 1) -> Dict:
+    d01 = C.load("d01", quick) or C.load("d01", False)
+    writers = TUNE_WRITERS[:1] if quick else TUNE_WRITERS
+    outs = C.jmap(sensor_ablation_job, [{"writer": w, "tremor": d01["chosen_tremor"]} for w in writers], workers)
+    rows = [r for o in outs for r in o["rows"]]
+    summ = {}
+    for name in ("imu+page", "page_only", "imu_only"):
+        big = [r["res"][name] for r in rows if r["amp_mm"] >= 1.0]
+        summ[name] = {"res_1_2mm_by_lag_um": [float(np.nanmean([b[i] for b in big])) for i in range(len(D0_LAGS))],
+                      "res_0p3mm_um": float(np.nanmean([np.nanmean(r["res"][name][:3]) for r in rows if 0 < r["amp_mm"] < 0.5])),
+                      "tremor_free_leak_um": float(np.nanmean([r["res"][name][0] for r in rows if r["amp_mm"] == 0]))}
+    return {"lags_s": list(D0_LAGS), "summary": summ, "rows": rows, "writers": list(writers),
+            "note": "ungated listening smoother, open loop, tuning seed 300; tremor-free 'leak' = its output there"}

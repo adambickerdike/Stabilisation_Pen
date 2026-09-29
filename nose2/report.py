@@ -161,6 +161,25 @@ def autowrite_table(test: Dict, axial_W: Dict[str, float]) -> List[Dict]:
     return out
 
 
+def fallback_table(fb: Optional[Dict]) -> List[Dict]:
+    """POST HOC re-runs of the failed test plans with a slower sweep (SIM), per design, x-height and tremor amplitude."""
+    if not fb:
+        return []
+    rows = fb["rows"]
+    out = []
+    for d, h in sorted({(x["design"], x["h_mm"]) for x in rows}):
+        for a in sorted({x["amp_mm"] for x in rows}):
+            sub = [x for x in rows if x["design"] == d and x["h_mm"] == h and abs(x["amp_mm"] - a) < 1e-9]
+            if not sub:
+                continue
+            g = _agg(sub, ("ink_err_um", "letters_read", "target_letters_read", "words_read_app", "letters_per_s", "P_coil_W",
+                           "at_travel_limit"))
+            g.update({"design": d, "h_mm": h, "tremor_mm": a, "writers": sorted({x["w"] for x in sub}),
+                      "speed_used": sorted({x.get("speed_used") for x in sub if x.get("speed_used") is not None})})
+            out.append(g)
+    return out
+
+
 def by_frequency(test: Dict, design: str = "revJ", h: float = 2.5) -> List[Dict]:
     rows = [x for x in test["rows"] if x["design"] == design and x["h_mm"] == h]
     out = []
@@ -250,6 +269,8 @@ def build(data: Dict, quick: bool = False) -> Dict:
                          "table": autowrite_table(te, {k: (v["axial_W"] if v.get("axial") else 0.0)
                                                        for k, v in ch["hw1_designs"].items()}),
                          "by_frequency_revJ_2p5": by_frequency(te),
+                         "fallback_post_hoc": {"table": fallback_table(data.get("fallback")),
+                                               "label": (data.get("fallback") or {}).get("label")},
                          "label": te["label"]},
            "limits": li,
            "sensitivity": {"summary": se["summary"], "label": se["label"]},

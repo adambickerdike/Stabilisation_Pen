@@ -1,0 +1,23 @@
+id,label,group,shape,z0_mm,z1_mm,d0_mm,d1_mm,d_in_mm,size_mm,offset_mm,moves_with,optional,mass_g,part,ledger
+ball,Ball tip,refill,cone,0.0,3.0,0.7,2.35,,,,nose,False,,ISO 12757-2 D1 mini refill,DEC-004
+refill,Ink refill (D1 mini),refill,cylinder,3.0,67.0,2.35,2.35,,,,nose,False,0.84,ISO 12757-2 D1 mini refill,DEC-004
+refill_spring,Refill holder (tendon end),mechanism,cylinder,67.0,73.0,3.2,3.2,,,,nose,False,0.5,custom (holder + tendon loop + pulley; ASSUMPTION 0.5 g),PAT-41
+refill_lift,Pen lift and ink-force drum,mechanism,tube,67.98,74.98,5.6,5.6,3.6,,,nose,False,2.0,"custom (drum + spiral spring + electro-permanent brake + bistable reluctance latch, about 2 g; ASSUMPTION)",PAT-41
+carrier,Moving nose (refill carrier),moving_nose,tube,12.93,74.98,7.0,7.0,6.0,,,nose,False,2.8,custom (Ti-6Al-4V tube 7/6 mm),AMF-21
+carrier_nozzle,Nose nozzle,moving_nose,cone,7.93,12.93,3.6,7.0,,,,nose,False,0.4,custom (PEEK),AMF-24
+arm,Short rear arm,moving_nose,tube,77.98,86.99,5.0,5.0,3.6,,,nose,False,0.23,custom (aluminium 6061 tube 5/3.6 mm; the refill holder may enter it),
+magnet_cap,Magnet cap (2 x 2 checkerboard on soft iron),actuator,cylinder,82.28,87.99,18.89,18.89,,,,nose,False,9.75,NdFeB N52 segments 6.3 x 6.3 x 3.3 mm on a spherical soft-iron cap (custom),AMF-139
+coil_plate,Two-layer spherical coil plate,actuator,cylinder,88.76,90.66,21.99,21.99,,,,handle,False,,custom (bonded coils on a formed plate),AMF-29/AMF-30
+hall_magnet,Position magnet,sensor,cylinder,91.16,92.16,1.0,1.0,,,,nose,False,,supermagnete S-01-01-N,AMF-72
+hall3d,3-D Hall position sensor,sensor,box,93.16,94.16,,,,"[3.0, 3.0, 1.0]",,handle,False,,"TI TMAG5170 (3-D Hall, SPI) or TMAG5273",OPT-53/OPT-45
+skid_ring,Skid ring (C-shaped heel),structure,tube,7.93,9.43,20.0,20.0,17.48,,,handle,False,0.1,"custom (PTFE-coated POM, contact radius 10.00 mm)",DEC-034
+front_sleeve,Front sleeve (fixed grip),grip,tube,9.43,50.0,21.5,24.0,18.79,,,handle,False,6.29,PEEK core + TPE overmould,AMF-24
+optical,Paper sensor (required for autowrite),sensor,box,14.0,20.0,,,,"[5.0, 5.0, 6.0]","[-12.39, 0.0]",handle,False,1.0,"optical-flow sensor, to select (PMW3360 class needs a flat window 2.4 mm from the paper; ASSUMPTION)",OPT-54
+gimbal,Flexure gimbal (2-axis),mechanism,tube,74.98,77.98,21.0,21.0,5.5,,,handle,False,2.0,"custom (301FH 0.050 mm, laser-cut)",AMF-20
+shell,Handle shell,structure,tube,50.0,175.0,24.0,24.0,22.0,,,handle,False,11.74,"PEEK or glass-filled nylon, 1 mm wall",AMF-24
+pcb,Control board,electronics,box,95.66,111.66,,,,"[1.0, 15.0, 16.0]",,handle,False,5.0,nRF54L15 + 2 x DRV8214 + lift driver + charger,AMF-44/AMF-37
+imu,Motion sensor (IMU),sensor,box,99.66,102.16,,,,"[2.5, 3.0, 0.83]","[1.0, 0.0]",handle,False,,ST LSM6DSV16X,OPT-37
+battery,Rechargeable cell,power,cylinder,112.66,161.16,14.1,14.1,,,,handle,False,20.0,EEMB LIR14500,AMF-80
+lra,Vibration cue motor,haptic,cylinder,162.16,165.16,8.0,8.0,,,,handle,True,1.0,coin LRA 8 mm,AMF-45
+usb,USB-C port and button,electronics,box,166.16,169.66,,,,"[8.4, 2.6, 3.5]","[0.0, 10.0]",handle,False,,USB-C receptacle (mid-mount),
+rear_cap,Rear cap,structure,cylinder,172.0,175.0,24.0,22.0,,,,handle,False,3.0,custom (PEEK),AMF-24

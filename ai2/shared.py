@@ -71,13 +71,15 @@ def _guide(tick_t, pos_t, pos_av, pos, pos_ok, con_av, con, tm, tdown, tss, tse,
             in_con = con[ic] > 0.5
             ic += 1
         c0 = 0.0; c1 = 0.0; g = 0.0
-        if in_con and have:
-            if not was:
-                cur += 1
-                dropped = 0; over = 0.0
-                if cur < ns:
-                    prog = tss[cur]
+        # a touchdown is counted from the contact sensor alone (the page sensor is invalid while the pen is lifted and
+        # its first valid sample can arrive after contact; counting touchdowns only with a valid sample skipped strokes)
+        if in_con and not was:
+            cur += 1
+            dropped = 0; over = 0.0
             if cur < ns:
+                prog = tss[cur]
+        if in_con and have:
+            if 0 <= cur < ns:
                 lo = tss[cur]; hi = tse[cur]
                 j0 = max(lo, prog - 20); j1 = min(hi, prog + 400)
                 best = 1e30; bj = prog

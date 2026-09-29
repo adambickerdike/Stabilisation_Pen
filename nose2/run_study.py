@@ -10,6 +10,7 @@ Stages (each caches its JSON in nose2/build/cache/<stage>.json, or <stage>_quick
   choose       the fixed selection rule (choose.py) -> recommended design; HW1 pens for it and for Rev H (CALC)
   tuning       autowrite settings on tuning writers 100-103 and seeds 300-303 (SIM)
   test         the test grid: writers 0-5, seeds 200-203, no tremor and 0.3/1/2 mm at 4/8/12 Hz (SIM)
+  fallback     POST HOC: failed test plans re-run with a slower sweep for that line (SIM; reported separately)
   limits       largest letter size and fastest sweep per reach (CALC, planner; test writers)
   sensitivity  one factor at a time on the recommended design (SIM, test writers, seed 200)
   layout       results/nose2/layout.json in the Rev H schema (PROPOSED DESIGN)
@@ -48,8 +49,8 @@ from nose2 import BUILD_DIR, RESULTS_DIR, TEST_SEEDS, TEST_WRITERS, TUNE_SEEDS, 
 ensure_paths()
 from stabpen import provenance  # noqa: E402
 
-STAGES = ("tasks", "frontend", "magnetics", "optimise", "choose", "tuning", "test", "limits", "sensitivity", "layout", "cad",
-          "figures", "report", "evidence")
+STAGES = ("tasks", "frontend", "magnetics", "optimise", "choose", "tuning", "test", "fallback", "limits", "sensitivity", "layout",
+          "cad", "figures", "report", "evidence")
 Q = {"quick": False}
 
 
@@ -350,6 +351,21 @@ def limits_quick_revh(ds, st):
     return {"revH_plan_reach_mm": R, "revH_h_mm": h if h > 0 else 0.75, "limits": lim}
 
 
+# ------------------------------------------------------------------ fallback (post hoc)
+def stage_fallback():
+    """POST HOC: the test cases whose plan failed at the tuned speed, re-run with the pen slowing the sweep for that line
+    (evaluate.fallback).  Reported beside the frozen-rule results, never mixed with them."""
+    from nose2 import evaluate as EV
+    t0 = time.time()
+    ds = designs_from_choose(load("choose"))
+    st = settings_from_tuning()
+    te = load("test")
+    rows = EV.fallback(ds, st, te["rows"], progress=lambda *a: log("fallback", *a))
+    save("fallback", {"rows": rows, "speeds_tried": [1.0, 0.8, 0.6],
+                      "label": "SIM, POST HOC (not a frozen rule): failed test plans re-run with a slower sweep for that line",
+                      "elapsed_s": time.time() - t0})
+
+
 # ------------------------------------------------------------------ limits
 def stage_limits():
     from nose2 import evaluate as EV
@@ -443,7 +459,7 @@ def stage_figures():
 def stage_report():
     from nose2 import report as RP
     data = {s: load(s) for s in ("tasks", "frontend", "magnetics", "optimise", "choose", "tuning", "test", "limits", "sensitivity")}
-    for s in ("layout", "cad", "figures"):
+    for s in ("fallback", "layout", "cad", "figures"):
         try:
             data[s] = load(s)
         except SystemExit:

@@ -130,33 +130,45 @@ def designs(best: List[Dict], rec: Dict, out: str) -> str:
 # ------------------------------------------------------------------ Pareto fronts
 def pareto(fronts: Dict, out: str) -> str:
     """Non-dominated designs of every candidate (maximise travel and force per sqrt(W), minimise added mass and power),
-    as small multiples: power against travel, marker size by added mass."""
+    as small multiples: coil loss against added mass, one colour per guaranteed travel (the travel constraint is active,
+    so every design sits at a whole-mm travel)."""
     kinds = [k for k in KIND_ORDER if k in fronts]
     n = len(kinds)
     ncol = 3
     nrow = int(math.ceil(n / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(11.0, 3.3 * nrow), sharex=True, sharey=True, squeeze=False)
+    fig, axes = plt.subplots(nrow, ncol, figsize=(11.0, 3.4 * nrow), sharex=True, sharey=True, squeeze=False)
+    travels = sorted({round(r["X_min_mm"]) for k in kinds for r in fronts[k]["front4"]})
+    col = {x: PS.SERIES[i] for i, x in enumerate(travels[:3])}
     rows = []
     for i, k in enumerate(kinds):
         ax = axes[i // ncol, i % ncol]
         F = fronts[k]["front4"]
-        x = [r["X_min_mm"] for r in F]; y = [r["P_autowrite_W"] for r in F]; m = [r["mass_added_g"] for r in F]
-        if F:
-            ax.scatter(x, y, s=[max(6.0, 1.2 * v) for v in m], color=PS.SERIES[0], edgecolor=PS.SURFACE, linewidth=0.6, alpha=0.8)
+        for x in travels[:3]:
+            sub = [r for r in F if round(r["X_min_mm"]) == x]
+            if sub:
+                ax.plot([r["mass_added_g"] for r in sub], [r["P_autowrite_W"] for r in sub], color=col[x], marker="o", ms=5,
+                        mec=PS.SURFACE, mew=0.6, ls="none", alpha=0.85, label=f"{x:g} mm guaranteed travel")
         ax.axhline(0.2, color=PS.INK2, lw=1.0, ls="--")
         ax.set_title(f"{KIND_LABEL[k]} ({len(F)} designs)", fontsize=9)
         ax.set_ylim(0.0, 0.3)
         if i % ncol == 0:
             ax.set_ylabel("coil loss, autowrite + 1 mm tremor (W)")
-        if i // ncol == nrow - 1:
-            ax.set_xlabel("guaranteed travel (mm)")
+        if i // ncol == nrow - 1 or (i + ncol) >= n:
+            ax.set_xlabel("added mass (g)")
+            ax.tick_params(labelbottom=True)
         for r in F:
             rows.append([k, r["X_min_mm"], r["Km_tip"], r["mass_added_g"], r["P_autowrite_W"], r.get("bore")])
     for j in range(n, nrow * ncol):
         axes[j // ncol, j % ncol].set_visible(False)
-    fig.suptitle("Pareto fronts (travel, force per \u221aW, added mass, power): marker area \u221d added mass; dashed: coil 20 K above ambient",
+    hl = {}
+    for ax in axes.ravel():
+        for hnd, lab in zip(*ax.get_legend_handles_labels()):
+            hl.setdefault(lab, hnd)
+    labs = sorted(hl, key=lambda t: float(t.split()[0]))
+    fig.legend([hl[t] for t in labs], labs, loc="lower center", ncol=len(labs), bbox_to_anchor=(0.5, -0.03))
+    fig.suptitle("Pareto fronts (travel, force per \u221aW, added mass, power), both handles; dashed: coil 20 K above ambient",
                  fontsize=10)
-    fig.tight_layout()
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
     p = os.path.join(out, "fig_nose2_pareto.png")
     _save(fig, p, "CALCULATION (design models, optimised)")
     _csv(p.replace(".png", ".csv"), ["candidate", "X_min_mm", "Km_tip_N_per_sqrtW", "mass_added_g", "P_autowrite_W", "handle_bore"], rows)
@@ -242,6 +254,11 @@ def autowrite_example(designs_hw1: Dict, st, out: str, w: int = 0, seed: int = 2
 def autowrite_grid(summary: List[Dict], out: str) -> str:
     groups = sorted({(r["design"], r["h_mm"]) for r in summary}, key=lambda g: (["revJ", "revJ_noaxial", "revH"].index(g[0])
                                                                                 if g[0] in ("revJ", "revJ_noaxial", "revH") else 9, g[1]))
+    # a design whose plans all failed has no ink to show: it is named in the title instead of the legend
+    empty = [g for g in groups if all(r.get("ink_err_um") is None for r in summary if (r["design"], r["h_mm"]) == g)]
+    groups = [g for g in groups if g not in empty]
+    nfail = sum(r["plan_fail"] for r in summary if (r["design"], r["h_mm"]) in groups)
+    ntot = sum(r["n"] for r in summary if (r["design"], r["h_mm"]) in groups)
     amps = sorted({r["amp_mm"] for r in summary})
     fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.0))
     rows = []
@@ -275,7 +292,10 @@ def autowrite_grid(summary: List[Dict], out: str) -> str:
         ax.set_xlabel("hand tremor amplitude (mm peak; mean of 4, 8, 12 Hz)")
         ax.set_xticks(amps)
     fig.legend(*axes[0].get_legend_handles_labels(), loc="lower center", ncol=len(groups), bbox_to_anchor=(0.5, -0.08))
-    fig.suptitle("Autowrite on the test writers 0-5 and seeds 200-203", fontsize=10.5)
+    note = f"; {nfail} of {ntot} cases had no plan at the tuned speed (not averaged)" if nfail else ""
+    if empty:
+        note += "; no plan fitted for " + ", ".join(f"{DESIGN_LABEL.get(d, d)} at {h:g} mm" for d, h in empty)
+    fig.suptitle("Autowrite on the test writers 0-5 and seeds 200-203" + note, fontsize=10)
     fig.tight_layout()
     p = os.path.join(out, "fig_nose2_autowrite_grid.png")
     _save(fig, p, "SIMULATION (HW1, synthetic writers and tremor)")
@@ -299,10 +319,16 @@ def size_speed(limits: Dict, out: str) -> str:
     axes[1].set_ylim(bottom=0.0)
     axes[1].set_xlabel("plan reach of the nose (mm)")
     axes[1].set_ylabel("letters per second, fastest sweep at 2.5 mm")
+    notes = []
     for k, v in limits["by_design"].items():
+        if v["largest_x_height_mm"] <= 0:
+            notes.append(f"{DESIGN_LABEL.get(k, k)} (plan reach {v['reach_mm']:.1f} mm): no size fits every test writer")
+            continue
         axes[0].annotate(DESIGN_LABEL.get(k, k), (v["reach_mm"], v["largest_x_height_mm"]), textcoords="offset points", xytext=(6, -12),
                          fontsize=8, color=PS.INK2)
         axes[0].plot([v["reach_mm"]], [v["largest_x_height_mm"]], marker="o", ms=11, mfc="none", mec=PS.INK, ls="none")
+    for n_, t in enumerate(notes):
+        axes[0].text(0.35, 0.08 + 0.07 * n_, t, transform=axes[0].transAxes, fontsize=8, color=PS.INK2, va="bottom")
     fig.suptitle("What the reach buys (planner, test writers, seed 200)", fontsize=10.5)
     fig.tight_layout()
     p = os.path.join(out, "fig_nose2_size_speed.png")

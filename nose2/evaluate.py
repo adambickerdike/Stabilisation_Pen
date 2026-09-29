@@ -131,3 +131,29 @@ def sensitivity(design: AW.NoseDesign, st: AW.AWSettings, writers=TEST_WRITERS, 
     return rows
 
 
+
+
+def fallback(designs: Dict[str, AW.NoseDesign], st: AW.AWSettings, rows: List[Dict], speeds=(1.0, 0.8, 0.6),
+             progress: Optional[Callable] = None) -> List[Dict]:
+    """POST HOC (not one of the frozen tuning rules; reported separately).  For every test case whose plan failed at the
+    tuned sweep speed, the pen slows the sweep for that line: the fastest factor in `speeds` (x planner.line_speed) whose
+    plan fits the reach is used and the case is run (SIM, same writers, seeds, tremor and sensor seeds)."""
+    out = []
+    for r in rows:
+        if r.get("plan_ok"):
+            continue
+        d = designs[r["design"]]
+        f0, amp = r["f0"], r["amp_mm"] * 1e-3
+        res = {"plan_ok": False, "design": r["design"], "w": r["w"], "seed": r["seed"], "h_mm": r["h_mm"], "f0": f0,
+               "amp_mm": r["amp_mm"], "speed_used": None}
+        for sp in speeds:
+            c = AW.build(r["w"], r["seed"], r["h_mm"], f0, amp, d, replace(st, speed=sp))
+            if c.plan.ok:
+                res = AW.run(c, sensor_seed(r["w"], r["seed"], f0, amp))
+                res["design"] = r["design"]
+                res["speed_used"] = sp
+                break
+        out.append(res)
+        if progress:
+            progress(r["design"], r["h_mm"], r["w"], r["seed"], f0, amp, res.get("speed_used"), res.get("ink_err_um"))
+    return out

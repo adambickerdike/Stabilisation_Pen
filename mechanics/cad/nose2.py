@@ -96,7 +96,7 @@ def main(argv=None):
     png = os.path.join(out, "drawing_nose2.png")
     act = {"gimbal_sphere": "spherical-gap checkerboard actuator", "gimbal_radial": "pole-pair magnets in a radial gap",
            "gimbal_axial": "flat axial-gap checkerboard actuator", "coarse_fine": "coarse-fine stages"}.get(des["kind"], des["kind"])
-    RC.drawing(geo, png, title=f"Rev J nose v2 (PROPOSED DESIGN): short-arm gimbal, +-{geo['tip_travel_min_35_75_mm']:.1f} mm "
+    RC.drawing(geo, png, title=f"Rev J nose v2 (PROPOSED DESIGN): short-arm gimbal, \u00b1{geo['tip_travel_min_35_75_mm']:.1f} mm "
                               f"guaranteed over 35-75 deg, {act}, pen lift, Ø{geo['handle_od']:.0f} mm handle")
     component_csv(geo, png.replace(".png", ".csv"))
     front_end_figure(geo, os.path.join(out, "fig_nose2_front_end.png"))

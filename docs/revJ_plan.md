@@ -34,11 +34,11 @@
    - A driven or steered rolling element at the skid can push sideways with up to μ·N: about 0.3–0.8 N for μ 0.3–0.8 (ASSUMPTION, to measure).
    - That is as strong as the desk board's cap (0.4 N) and 10–100 times what an inertial mass gives at writing frequencies.
    - A relaxed hand gives way about 0.35 mm per 0.1 N (CALC from LIT HAP-26, `docs/guidance_board.md`), so 0.5 N moves it about 1.7 mm.
-   - A steered wheel (the "cobot" principle: steer, don't push) can channel the writer's own motion along a path with almost no power, and it cannot push on its own.
+   - A steered wheel (the "cobot" principle: steer, don't push; LIT PAT-27) can channel the writer's own motion along a path with almost no power, and it cannot push on its own.
 
 **The strongest self-contained lever is therefore the paper, used as ground through the skid.** The nose adds fine, fast correction, and inertia adds tremor damping and perceptual cues.
 
-**"Writing for you" inside the nose's reach.** With ±5–8 mm of tip travel, the nose could draw letters of 3–4 mm height on its own while the hand only sweeps along the line. Prior art: position-correcting handheld tools, and an actuated-nib pen that scribes predefined characters (LIT PAT-27).
+**"Writing for you" inside the nose's reach.** With ±5–8 mm of tip travel, the nose could draw letters of 3–4 mm height on its own while the hand only sweeps along the line. Prior art: position-correcting handheld tools, and an actuated-nib pen that scribes predefined characters (LIT PAT-01).
 
 **Delayed ink (algorithm idea).** The nose can let the ink trail the hand by a fixed delay: at 30 mm/s, 150 ms is 4.5 mm, within a ±5–6 mm nose. The pen could then clean each stroke with 150 ms of look-ahead, like the app's clean copy but on paper. Whether writers accept ink that trails the hand is a human question.
 

@@ -28,7 +28,7 @@ from handwriting import metrics as MT  # noqa: E402
 
 VIZ = {"writer": 0, "seed": 200, "cases": [(6.0, 1.0e-3), (8.0, 2.0e-3), (10.0, 1.0e-3)]}
 VIZ_VARIANTS = ("none", "tracker", "gated", "delayed_3mm", "delayed_6mm", "lag_100_6mm", "limit_100_6mm", "clean_copy",
-                "oracle", "oracle_delayed_100_6mm")
+                "oracle", "oracle_delayed_100_6mm", "learned_tcn", "learned_hybrid", "rl_arbiter")
 
 
 def settings(quick: bool) -> Dict:
@@ -236,4 +236,22 @@ def run(quick: bool, workers: int):
     out = {"outs": outs, "settings": S, "writers": list(writers), "seeds": list(seeds), "model_params": mp,
            "candidates": {"learned": sorted(cands["learned"]), **cands["info"]}}
     C.save("test", out, quick)
+    return out
+
+
+def viz_extra(quick: bool, keys=("learned_tcn", "learned_hybrid", "rl_arbiter")) -> Dict:
+    """Re-run the three strip cases (writer 0, seed 200) and keep the ink of variants that the first test run did not
+    keep for the figures (same settings and models; deterministic, so the metrics equal the test grid's rows)."""
+    S = settings(quick)
+    mp = SLD.model_params(quick)
+    cands = CA.load(quick)
+    wr = CO.Writer(VIZ["writer"])
+    out = {}
+    for f0, amp in VIZ["cases"]:
+        sc = CO.make_scenario(wr, f0, amp, VIZ["seed"])
+        ctx = CA.calibration(wr, f0, amp, VIZ["seed"], mp["det"]) if "ctx" in cands["learned"] else None
+        ev = scenario_job(sc, S, keep=True, cands=cands, mp=mp, ctx=ctx)
+        runs = ev.pop("_runs")
+        out[f"{f0:g}Hz_{amp * 1e3:g}mm"] = {"paths": {k: MT.decimate_path(runs[k], hz=50.0).tolist() for k in keys if k in runs},
+                                            "metrics": {k: ev["variants"][k] for k in keys if k in ev["variants"]}}
     return out

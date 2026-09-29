@@ -9,6 +9,8 @@ Stages (each caches its output in ai2/build/cache/ or ai2/build/quick/, git-igno
   rl         task 3: Gymnasium environments (replay backend on HW1 sensor streams), SB3 PPO and SAC
   cl         tasks 2 + 3: closed-loop check of the learned and RL candidates on tuning writers (rules R1-R4)
   test       tasks 1-3 on the test grid: writers 0-5 x seeds 200-203 x 6/8/10 Hz x 0.3/1/2 mm + tremor-free writing
+  viz        the figure strips of variants the test run did not keep (writer 0, seed 200; same settings)
+  ablation   information: the listening smoother with IMU + page sensor, page sensor only, IMU only (open loop, tuning)
   text       task 4: next-letter and next-word prediction (corpora, n-gram, small transformer)
   synth      task 5: sigma-lognormal extraction and synthesis in the writer's style
   shared     task 6: arbitration (policy blending by confidence, assistance as needed) in HW1
@@ -30,7 +32,7 @@ for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMBA_
 from . import TUNE_SEEDS, TUNE_WRITERS  # noqa: E402
 from . import common as C  # noqa: E402
 
-STAGES = ("d01", "d2", "d2b", "learn_data", "learn", "rl", "cl", "test", "text", "synth", "shared", "report")
+STAGES = ("d01", "d2", "d2b", "learn_data", "learn", "rl", "cl", "test", "viz", "ablation", "text", "synth", "shared", "report")
 
 
 def stage_d01(quick: bool, workers: int):
@@ -88,8 +90,15 @@ def main(argv=None):
         elif st in ("d2", "d2b"):
             stage_d2(a.quick, a.workers, st)
         else:
-            mod = __import__("ai2.report" if st == "report" else f"ai2.stage_{st}", fromlist=["run"])
-            mod.run(a.quick, a.workers)
+            if st == "viz":
+                from . import stage_test as ST
+                C.save("viz", ST.viz_extra(a.quick), a.quick)
+            elif st == "ablation":
+                from . import tuning as TU
+                C.save("ablation", TU.sensor_ablation(a.quick, a.workers), a.quick)
+            else:
+                mod = __import__("ai2.report" if st == "report" else f"ai2.stage_{st}", fromlist=["run"])
+                mod.run(a.quick, a.workers)
         C.log(f"[{st}] {time.time() - t:.0f} s")
     C.log(f"total {time.time() - t_all:.0f} s")
 
