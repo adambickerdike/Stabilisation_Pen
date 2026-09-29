@@ -1,6 +1,6 @@
 # Rev J: a pen that acts at the tip, the heel and the tail
 
-**Status: proposed design, studied in calculation and simulation only (round 1 complete; round 2 integration running).** Nothing has been built or measured on a pen or a person. Labels:
+**Status: proposed design, studied in calculation and simulation only (round 1 complete; round 2: integrated layout done, whole-pen simulation running).** Nothing has been built or measured on a pen or a person. Labels:
 - **SIM**: an executed simulation on synthetic writers and synthetic tremor;
 - **CALC**: a calculation;
 - **LIT**: published literature, with its ledger id in `docs/evidence.csv`;
@@ -51,12 +51,22 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 |---|---|---|
 | Moving nose v2 | Refill carrier on a 2-axis flexure gimbal 76.5 mm behind the ball; a 2 × 2 magnet checkerboard on a spherical iron cap faces a spherical coil plate (0.77 mm gap at every tilt); the ball moves 6.6 × as far as the magnets | DEC-036 |
 | Pen lift | A drum at the gimbal with a fatigue-rated spiral spring sets the 0.15 N ink force through a tendon; an electro-permanent brake and latch lift the ball 0.5 mm with no holding power (so strokes do not join) | DEC-036, DEC-041 |
-| Heel wheel | 2 mm wheel with an O-ring tyre in a slot at the bottom of the skid ring, steered through its contact point, driven through a 2:1 bevel; two Faulhaber 0620 B motors and thin shafts; 0.55 N sprung preload | DEC-037 |
+| Heel wheel | 2 mm wheel with an O-ring tyre in a slot at the bottom of the skid ring (wheel at 12.0 mm from the axis), steered through its contact point, driven through a 2:1 bevel; two Faulhaber 0620 B motors under the cell and two 80 mm shafts in grooves of the bottom wall; 0.55 N sprung preload; 0.37 N continuous, 0.60 N peak at the tyre | DEC-037, DEC-044 |
 | Page sensor | Optical sensor at the front: required for autowrite (1 kHz), slip detection and the tremor-line detector | DEC-036, DEC-037, DEC-042 |
 | Motion sensor, board, battery | As Rev H (IMU LSM6DSV16X, nRF54L15, 14500 cell), with more drivers | revH_concept.md |
-| End-cap (detachable) | 30.4 g tungsten slug pushed ±4 mm on two axes by arc coils on 5 Hz flexures, behind the cell; pen length 175 mm | DEC-038 |
+| End-cap (detachable) | 30.4 g tungsten slug pushed ±4 mm on two axes by arc coils on 5 Hz flexures; it replaces the rear cap (pen 165.7 mm with it, 144.7 mm without) | DEC-038, DEC-044 |
 
-**Open integration items (round 2, `revj/`):** the bigger nose and the heel wheel both widen the front (skid contact radius 10 mm for the nose alone; the wheel's pod must sit outside the nose's swing), and the drive motors must move away from the new gimbal; the mass with every module is about 134–136 g against a 120 g target (so the end-cap stays detachable); the battery life per mode must be recomputed with the nose v2 coil loss (0.16–0.18 W at 1 mm of tremor).
+**Integrated layout (round 2, `docs/revJ_design.md`, DEC-044; CALC):** one Ø24 mm pen. The skid ring's contact radius is 11.65 mm and the sleeve front Ø23.3 mm, flush with the ring; the ball sits 9.3 mm ahead of the ring at 50°; the refill slides 26.6 mm. The board lies on top, the cell behind the coil plate, the heel motors under the cell. All 38 fit checks pass.
+
+| Budget (CALC) | Base pen | With the end-cap |
+|---|---|---|
+| Length | 144.7 mm | 165.7 mm |
+| Mass (target ≤ 120 g) | 87.0 g | 129.2 g (over) |
+| Battery, steady with 1 mm of tremor (target ≥ 8 h) | 6.1–7.3 h (7.8–8.2 h with the page sensor off) | 4.3–6.6 h |
+| Battery, guide / autowrite | 8.0–10.5 h / 5.3–6.1 h | 5.3–9.2 h / 3.9–5.7 h |
+| Skin over the coils, 23 °C / 30 °C room | 38.7 / 45.7 °C (37.3 °C at 23 °C with a 0.5 mm aluminium spreader) | as base |
+
+**Problems the integration found (CALC):** the page sensor and base electronics take 115–165 mW before anything moves, so the 8 h target fails in the assisted modes unless the page sensor is duty-cycled; the nose magnets pull the gimbal axially with 16.5 N, above the strips' 14.5 N buckling load (the strips must work in tension, or a thrust pivot is added); the cap's field could put a 0.16 N detent on the heel wheel through its motors; the skin over the coils gets warm in a hot room (a spreader is needed); and for an assumed eye position the ink near the ball is hidden at 50–75° of tilt, as it already is in Rev H.
 
 ## 4. Modes
 
