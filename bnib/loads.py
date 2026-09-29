@@ -96,6 +96,7 @@ class Duty:
     paper: float = 1.0
     slide_friction: bool = True      # the refill's axial slide friction h_sl (+-h_sl cot th across the pen, sign with
                                      # the slide direction: the nib's motion makes the refill slide, ds = cot th dq)
+    h_sl: Optional[float] = None     # override of the slide friction (N); None: labels.CONTACT slide_friction
     label: str = "ASSUMPTION duty (Rev H / study N 1 mm rms at 8 Hz; CON-20 writing speed; 70 % contact)"
 
 
@@ -106,7 +107,7 @@ def loads_at(nib: NibModel, theta: float, phi: float, F_s: float, duty: Duty, ba
     Q_mean = st["mean_sliding"]
     sig_fric = st["rms_about_mean"]
     if duty.slide_friction:
-        h_sl = val(CONTACT["slide_friction"])
+        h_sl = val(CONTACT["slide_friction"]) if duty.h_sl is None else duty.h_sl
         sig_sl = h_sl / math.tan(theta) * np.abs(np.array([math.cos(phi), math.sin(phi)]))
         sig_fric = np.sqrt(sig_fric ** 2 + sig_sl ** 2)
     G = gravity_load(nib, theta, phi)
@@ -239,6 +240,20 @@ def reconcile_c1s(F_s: float = 0.15) -> Dict:
                 "(about 1.1 W of 2.25 W, docs/revJ_simulation.md section 8.1; SIM)."],
             "sim2j": sim2j_power(),
             "label": "CALC (this module) + CALC (study N's model, read-only) + SIM (sim2j, quoted)"}
+
+
+def guide_loads(theta: float, F_s: float, counterface: bool, z1: float = 9e-3, z2: float = 38e-3, L_end: float = 70e-3) -> Dict:
+    """Normal loads on the refill's two guide bushings (z1, z2 from the ball) from the static lateral forces (CALC):
+    spring along the pen (no balance): the paper's F_s cot(th) at the ball -> sum|R| = P (1 + 2 z1 / s); counter-face:
+    the paper's and the face's parallel pushes form a couple P L_end -> sum|R| = 2 P L_end / s (s = z2 - z1).  The guide's
+    friction mu_g sum|R| is the refill's slide friction h, and h cot(th) acts across the pen (see contact.py)."""
+    P = F_s / math.tan(theta)
+    s = z2 - z1
+    if counterface:
+        R = 2 * P * L_end / s
+    else:
+        R = P * (1 + 2 * z1 / s)
+    return {"P_N": P, "sum_R_N": R, "couple_Nm": P * L_end if counterface else 0.0}
 
 
 def load_catalogue() -> List[Dict]:

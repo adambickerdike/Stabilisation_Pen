@@ -196,6 +196,9 @@ def requirements(res: Dict) -> List[Dict]:
          "5-60 mm/s", "UNKNOWN (no source gives it)", "EXP-B20 (EXP-T02)", "G1"),
         ("REQ-BNIB-015", "Face orientation sensing", "IMU tilt error <= 1 deg and roll error <= 2 deg (1 sigma) while writing",
          "ASSUMPTION", "EXP-B28", "G2"),
+        ("REQ-BNIB-016", "Refill guide friction", "guide friction coefficient <= 0.01 (a ball or roller guide): the counter-face's "
+         "couple loads the two bushings with 0.6-0.75 N, and the slide friction acts across the pen as h cot(theta)",
+         "ASSUMPTION mu_g 0.005", "EXP-B22", "G2"),
     ]
     return [{"id": a, "title": b, "requirement": c, "status_now": d, "verified_by": e, "gate": f} for a, b, c, d, e, f in R]
 
@@ -350,6 +353,7 @@ def assemble(S: Dict) -> Dict:
         rec["keeper_pull_N"] = None
     from . import loads as LD
     rec["sim2j_power"] = LD.sim2j_power()
+    rec["guide_friction"] = guide_friction(d, ev)
     res = {"cards": cards, "recommended": rec, "bq_residual_mN": cf.get("residual_contact_mean_N", float("nan")) * 1e3,
            "bq_ratio": cf.get("balance_ratio_mean", float("nan"))}
     res["decision"] = decision_draft(res)
@@ -357,6 +361,40 @@ def assemble(S: Dict) -> Dict:
     res["experiments"] = experiments()
     res["bom"] = bom(res)
     return res
+
+
+def guide_friction(d, ev: Dict) -> Dict:
+    """The refill guide under the counter-face's couple (CALC): bushing loads, the slide friction h = mu_g sum|R| and its
+    lateral effect h cot(th), for a ball/roller guide (mu_g 0.005), PTFE-lined sleeves (0.05) and bare metal (0.1)
+    (ASSUMPTION coefficients); B1's continuous power recomputed with the 35 deg h."""
+    from dataclasses import replace as _rp
+    from . import candidates as CD
+    from . import loads as LD
+    geo_z1, geo_z2 = 9e-3, d.z_act + 6.4e-3            # the carrier's front bushing and its flange (layout.py)
+    rows = []
+    for th in (35.0, 50.0, 75.0):
+        t = th * D2R
+        cf = LD.guide_loads(t, d.F_s, True, geo_z1, geo_z2)
+        sp = LD.guide_loads(t, d.F_s, False, geo_z1, geo_z2)
+        row = {"theta_deg": th, "P_static_N": cf["P_N"], "sum_R_counterface_N": cf["sum_R_N"], "sum_R_spring_N": sp["sum_R_N"],
+               "couple_mNm": cf["couple_Nm"] * 1e3}
+        for mu in (0.005, 0.05, 0.1):
+            row[f"h_cf_mu{mu:g}_N"] = mu * cf["sum_R_N"]
+            row[f"lateral_cf_mu{mu:g}_N"] = mu * cf["sum_R_N"] / math.tan(t)
+            row[f"h_spring_mu{mu:g}_N"] = mu * sp["sum_R_N"]
+        rows.append(row)
+    P = {}
+    for mu in (0.005, 0.05, 0.1):
+        h35 = mu * rows[0]["sum_R_counterface_N"]
+        r = CD.evaluate(d, _rp(CD.DUTY_A, h_sl=h35), detail=False, fast=True)
+        P[f"{mu:g}"] = {"h_35deg_N": h35, "P_cont_W": r["P_cont_W"], "P_35deg_W": r["P_mean_W_by_theta"][35.0],
+                        "stuck_offset_hold_35deg_W": (h35 / math.tan(35 * D2R) / ev["Km_tip"]) ** 2}
+    k_tilt = (ev.get("flexure") or {}).get("k_tilt_Nm_rad")
+    tilt = {f"{r['theta_deg']:g}": {"tilt_mrad": r["couple_mNm"] * 1e-3 / k_tilt * 1e3 if k_tilt else None,
+                                    "ball_offset_mm": r["couple_mNm"] * 1e-3 / k_tilt * geo_z2 * 1e3 if k_tilt else None}
+            for r in rows}
+    return {"rows": rows, "P_B1": P, "k_tilt_Nm_rad": k_tilt, "couple_tilt": tilt, "bushings_z_mm": [geo_z1 * 1e3, geo_z2 * 1e3],
+            "label": "CALC (statics of the refill on two bushings; friction coefficients ASSUMPTION)"}
 
 
 def write_all(S: Dict, quick: bool = False, log=print) -> Dict:
