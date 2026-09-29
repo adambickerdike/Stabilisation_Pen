@@ -601,7 +601,7 @@ Code (new package `endcap/` and the CAD script `mechanics/cad/endcap.py`; nothin
 
 Commands (from the repository root):
 - Full study: `python3 -m endcap.run_study` (one process; about 76 min on one shared core in this run).
-- Quick check: `python3 -m endcap.run_study --quick` (a few minutes; writes only to `results/endcap/_cache/quick/`).
+- Quick check: `python3 -m endcap.run_study --quick` (about 2.5 min; writes only to `results/endcap/_cache/quick/`).
 - Tests: `python3 -m pytest -q endcap/tests`.
 - Drawing and STEP: `python3 mechanics/cad/endcap.py` (needs CadQuery 2.x).
 
