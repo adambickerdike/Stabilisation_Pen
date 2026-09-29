@@ -136,144 +136,31 @@ def agg(rows: List[Dict], keys=("ink_err_um", "letters_read", "words_app"), by=(
 
 # ------------------------------------------------------------------------------------------------ tune
 def stage_tune(quick: bool = False) -> None:
+    """Tune and freeze the tracker rule.  The freeze of this study merged two passes on the same writers, seed and
+    cells (sim2j/build/tune_guard.json: G3/G4; tune_guard_gl.json: GL/GLG after their output low-pass fix;
+    sim2j/build/freeze_rules.py).  An existing rules.json is never overwritten unless SIM2J_REFREEZE=1."""
     from . import tuning as TU
     t0 = time.time()
-    if os.path.exists(os.path.join(BUILD, "tune_guard.json")) and not quick:
-        res = json.load(open(os.path.join(BUILD, "tune_guard.json")))
-    else:
-        res = TU.tune_guard(writers=TUNE_WRITERS[:1] if quick else TUNE_WRITERS,
-                            f0s=(8.0,) if quick else (6.0, 8.0, 10.0),
-                            amps=(1e-3,) if quick else (0.3e-3, 1e-3, 2e-3), log=log)
     if quick:
+        res = TU.tune_guard(writers=TUNE_WRITERS[:1], cells=((8.0, 1e-3),), log=log)
         log(f"[tune] quick: chosen {res['chosen']} {res['summary']}")
         return
-    TU.freeze(res, extra={"tuning_rows_file": "sim2j/build/tune_guard_rows.json",
+    if os.path.exists(os.path.join(RESULTS, "rules.json")) and os.environ.get("SIM2J_REFREEZE") != "1":
+        log("[tune] results/sim2j/rules.json exists (frozen before the test runs): not re-frozen")
+        return
+    pa = os.path.join(BUILD, "tune_guard.json")
+    pb = os.path.join(BUILD, "tune_guard_gl.json")
+    if os.path.exists(pa) and os.path.exists(pb):
+        a, b = json.load(open(pa)), json.load(open(pb))
+        rows = [r for r in a["rows"] if r.get("variant") not in ("GL_ai2", "GLG_ai2_guarded")]
+        rows += [r for r in b["rows"] if r.get("variant") in ("GL_ai2", "GLG_ai2_guarded")]
+        res = TU.summarise(rows, TU.TUNE_SET)
+        res.update({"rows": rows, "elapsed_s": a.get("elapsed_s", 0) + b.get("elapsed_s", 0)})
+    else:
+        res = TU.tune_guard(log=log)
+    TU.freeze(res, extra={"tuning_rows_files": ["sim2j/build/tune_guard_rows.json", "sim2j/build/tune_guard_gl_rows.json"],
                           "tuning_wall_s": res.get("elapsed_s")})
     log(f"[tune] frozen {res['chosen']} in {time.time() - t0:.0f} s")
-
-
-# ------------------------------------------------------------------------------------------------ ET
-ET_F0 = (4.0, 8.0, 12.0)
-ET_AMP = (0.3e-3, 1.0e-3, 2.0e-3)
-# every controller on the first test seed of each writer (6 cases per cell; the TCN replay at 0.3 and 1 mm only);
-# 'none', 'nose' and 'oracle' also on the second seed when the stage is run with second_seed=True (12 cases per cell)
-ET_CTL = ("none", "nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "oracle", "tcn")
-ET_SECOND = ("none", "nose", "oracle")
-ET_CLEAN = ("nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "tcn")
-
-
-def et_seeds(w: int) -> List[int]:
-    """Two of the test seeds per writer, rotating (each seed three times per cell)."""
-    return [TEST_SEEDS[w % 4], TEST_SEEDS[(w + 2) % 4]]
-
-
-def _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, pol=None):
-    if ctl == "tcn":
-        return LR.run_case(su, f0, amp, seed, r_none)
-    if pol is not None:
-        return ET.run_case(su, "rl", f0, amp, seed, ref_none=r_none if amp > 0 else None, policy=pol)
-    if amp <= 0:
-        return ET.run_case(su, ctl, 0.0, 0.0, seed)
-    return ET.run_case(su, ctl, f0, amp, seed, ref_none=r_none)
-
-
-def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows_name: str = "et",
-             writers=TEST_WRITERS, include_model_based: bool = True, first_seed_only: bool = False,
-             second_seed: bool = False, only_second: bool = False) -> Dict:
-    """The ET test grid.  controllers_extra: {'rl': policy} adds RL cases."""
-    from . import et as ET
-    from . import learned_replay as LR
-    rows = Rows(rows_name)
-    pens = ET.PenModels()
-    f0s, amps = (ET_F0, ET_AMP) if not quick else ((8.0,), (1.0e-3,))
-    ws = writers if not quick else writers[:1]
-    extra = dict(controllers_extra or {})
-    ctl_all = (list(ET_CTL) if include_model_based else ["none"]) + list(extra.keys())
-    if not LR.available():
-        ctl_all = [c for c in ctl_all if c != "tcn"]
-    clean_all = (list(ET_CLEAN) if include_model_based else []) + list(extra.keys())
-    clean_all = [c for c in clean_all if c in ctl_all]
-    t0 = time.time()
-    for w in ws:
-        setups = {}
-
-        def su_for(pen):
-            if pen not in setups:
-                setups[pen] = ET.WriterSetup(w, pens, pen=pen, log=log)
-            return setups[pen]
-        seeds = et_seeds(w)[:1] if (quick or first_seed_only or not second_seed) else et_seeds(w)
-        for si, seed in enumerate(seeds):
-            if only_second and si == 0:
-                continue
-            ctls_here = ctl_all if si == 0 else [c for c in ctl_all if c in ET_SECOND]
-            # tremor-free writing (false correction against the device-off pen with the same seed)
-            for ctl in [c for c in clean_all if c in ctls_here]:
-                key = f"clean|{w}|{seed}|{ctl}"
-                if rows.has(key):
-                    continue
-                su = su_for(ET.PEN_OF.get(ctl, "base"))
-                ref = su.clean_ref(seed)
-                m = _run_ctl(ET, LR, su, ctl, 0.0, 0.0, seed, ref, extra.get(ctl))
-                m.update({"kind": "clean", "ctl": ctl})
-                rows.put(key, m)
-                log(f"[{rows_name}] w{w} s{seed} clean {ctl}: moved {m['moved_vs_clean_um']:.1f} um, "
-                    f"P {m['P_total_W']:.2f} W")
-            for f0 in f0s:
-                for amp in amps:
-                    cell = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|"
-                    for pen in ("base", "endcap"):
-                        todo = [c for c in ctls_here if c != "none" and ET.PEN_OF.get(c, "base") == pen
-                                and not rows.has(cell + c) and not (c == "tcn" and amp > 1.5e-3)]
-                        if not todo and (pen != "base" or rows.has(cell + "none")):
-                            continue
-                        su = su_for(pen)
-                        rn = ET.run_case(su, "none", f0, amp, seed, keep=True, record=True)
-                        r_none = rn.pop("_r")
-                        nk = "none" if pen == "base" else "none_endcap_pen"
-                        rows.put(cell + nk, dict(rn, kind="tremor", ctl=nk))
-                        for ctl in todo:
-                            m = _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, extra.get(ctl))
-                            m.update({"kind": "tremor", "ctl": ctl, "none_ink_err_um": rn["ink_err_um"],
-                                      "ratio": m["ink_err_um"] / max(rn["ink_err_um"], 1e-9)})
-                            rows.put(cell + ctl, m)
-                    done = [r for k, r in rows.rows.items() if k.startswith(cell)]
-                    log(f"[{rows_name}] w{w} s{seed} {f0:g} Hz {amp * 1e3:g} mm: " + ", ".join(
-                        f"{r['ctl']} {r['ink_err_um']:.0f}" for r in done) + f"  ({time.time() - t0:.0f} s)")
-            rows.save()
-    rows.save()
-    return summarise_et(rows.values(), rows_name, quick)
-
-
-def summarise_et(rows: List[Dict], name: str = "et", quick: bool = False) -> Dict:
-    tr = [r for r in rows if r.get("kind") == "tremor"]
-    cl = [r for r in rows if r.get("kind") == "clean"]
-    keys = ("ink_err_um", "ratio", "letters_read", "words_app", "ink_err_intended_um", "device_share", "felt_rms_N",
-            "felt_p95_N", "P_total_W", "P_nose_W", "P_wheel_W", "P_endcap_W", "battery_h", "wheel_F_rms_N",
-            "wheel_slide_share", "f_est_median", "f_at_bound_share", "guard_events")
-    by_cell = agg(tr, keys, by=("f0", "amp_mm", "ctl"))
-    by_amp = agg(tr, keys, by=("amp_mm", "ctl"))
-    by_ctl = agg(tr, keys, by=("ctl",))
-    clean = agg(cl, ("moved_vs_clean_um", "P_total_W", "P_nose_W", "letters_read", "words_app"), by=("ctl",))
-    clean_max = {}
-    for r in cl:
-        clean_max[r["ctl"]] = max(clean_max.get(r["ctl"], 0.0), float(r.get("moved_vs_clean_um") or 0.0))
-    body = {"what": "Essential tremor with the Rev J pen (H1 hand, v2 writers, 'return library'), test writers 0-5, "
-                    "seeds 200-203 (two per writer and cell), tremor 4/8/12 Hz x 0.3/1/2 mm (stabpen tremor model)",
-            "labels": {"ink_err_um": "SIM: rms distance of the in-contact ink to the writer's clean-ink letters "
-                                     "(letter-wise nearest point)",
-                       "ratio": "SIM: ink error / ink error of the device-off pen in the same case",
-                       "letters_read": "SIM: share of letters the app's recogniser reads as the intended letter",
-                       "words_app": "SIM: share of words the app reads correctly after its autocorrect",
-                       "device_share": "SIM: share of the ink motion that comes from the device (authorship)",
-                       "felt_rms_N": "SIM: rms change of the grip force on the hand against the device-off run",
-                       "P_total_W": "CALC on SIM: mean electrical power incl. 0.077 W electronics",
-                       "moved_vs_clean_um": "SIM: false correction, rms ink moved on tremor-free writing against the "
-                                            "device-off pen with the same seed (rule <= 25 um)"},
-            "by_cell": by_cell, "by_amp": by_amp, "by_ctl": by_ctl, "clean": clean, "clean_max_um": clean_max,
-            "n_rows": len(rows), "quick": quick}
-    if not quick:
-        write_result(name, body, seeds=list(TEST_SEEDS))
-    return body
 
 
 # ------------------------------------------------------------------------------------------------ writers
@@ -701,7 +588,7 @@ def stage_power(quick: bool = False) -> Dict:
 
 # ------------------------------------------------------------------------------------------------ RL
 RL_DIR = os.path.join(BUILD, "rl")
-RL_STEPS = int(os.environ.get("SIM2J_RL_STEPS", "600000"))
+RL_STEPS = int(os.environ.get("SIM2J_RL_STEPS", "400000"))
 RL_SEL_CELLS = ((8.0, 0.3e-3), (6.0, 1.0e-3), (8.0, 1.0e-3), (10.0, 1.0e-3), (8.0, 2.0e-3))
 
 
@@ -710,7 +597,7 @@ def stage_rl_train(quick: bool = False) -> Dict:
     steps = 5000 if quick else RL_STEPS
     out = os.path.join(BUILD, "rl_quick") if quick else RL_DIR
     t0 = time.time()
-    stats = RL.train(steps, out, seed=0, ckpt_every=2500 if quick else 100_000, log=log)
+    stats = RL.train(steps, out, seed=0, ckpt_every=2500 if quick else 50_000, log=log)
     stats["wall_s_total"] = time.time() - t0
     json.dump(stats, open(os.path.join(out, "train_stats.json"), "w"), indent=1, default=_default)
     log(f"[rl_train] {steps} steps in {stats['wall_s_total'] / 60:.1f} min ({stats})")

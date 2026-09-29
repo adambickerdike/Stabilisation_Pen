@@ -306,7 +306,7 @@ svg.chartsvg .lbl.s{fill:var(--ink)} svg.chartsvg .hit{fill:transparent;cursor:d
 @media (max-width:700px){.modes{grid-template-columns:1fr}.modes .mode,.modes .mode:nth-child(n+4){grid-column:auto}}
 .mode{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;display:grid;gap:9px;align-content:start;min-width:0}
 .mode h3{font-size:22px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
-.mode .mini{width:100%;height:auto;max-width:280px;display:block}
+.mode .mini{width:100%;height:auto;max-width:300px;display:block}
 .mode dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;margin:0;font-size:15px;align-items:baseline}
 .mode dt{font-family:var(--display);font-weight:600;letter-spacing:.04em;font-size:15px}
 .mode dd{margin:0}
@@ -316,7 +316,7 @@ svg.chartsvg .lbl.s{fill:var(--ink)} svg.chartsvg .hit{fill:transparent;cursor:d
 .mini .mp-body{fill:var(--g-shell);stroke:var(--muted);stroke-width:1}
 .mini .mp-sleeve{fill:var(--g-grip)}
 .mini .mp-paper{stroke:var(--rule);stroke-width:2}
-.mini .mp-lab{font-family:var(--display);font-weight:600;font-size:13px;fill:var(--muted);letter-spacing:.04em}
+.mini .mp-lab{font-family:var(--display);font-weight:700;font-size:15px;fill:var(--muted);letter-spacing:.04em}
 .pill{display:inline-block;font-family:var(--display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:12.5px;padding:0 7px;
   border-radius:3px;border:1px solid currentColor;white-space:nowrap;margin:4px 6px 0 0}
 .pill.yes{color:var(--good)} .pill.maybe{color:var(--t-prop)} .pill.opt{color:var(--muted)} .pill.move{color:var(--g-nose)} .pill.prop{color:var(--t-prop)}
@@ -611,7 +611,6 @@ svg.dg .overlap{fill:var(--shake-soft);stroke:var(--shake);stroke-dasharray:4 3}
           <circle cx="70" cy="104" r="6" class="wheelc"/>
           <path class="ar w" d="M80 101 l 40 0" marker-end="url(#ahw)"/><text class="sm" x="128" y="105">push from the paper</text>
           <path class="ar w" d="M160 48 l 40 0" marker-end="url(#ahw)"/><text class="sm" x="160" y="36">pen and hand move</text>
-          <text class="sm" x="296" y="128" text-anchor="end">about 1 N of writing force presses it down</text>
         </svg>
         <p>The paper is always under the pen while you write, pressed by about 1&nbsp;N. <span class="tag lit"><i></i>Literature · CON-01</span> A wheel that grips it can push with friction × load: about 0.3–0.6&nbsp;N. A relaxed hand moves about 1.7&nbsp;mm under 0.5&nbsp;N. Lift the pen and the push is gone, so you can always get away.</p>
         <p class="verdict">The strong push, from inside the pen.</p>
@@ -619,7 +618,7 @@ svg.dg .overlap{fill:var(--shake-soft);stroke:var(--shake);stroke-dasharray:4 3}
       </article>
       <article class="push c-tail">
         <h3><span class="anum">3</span>Tail: pushes against a weight</h3>
-        <svg class="pic" viewBox="0 0 300 130" role="img" aria-labelledby="pic3-t">
+        <svg class="pic" viewBox="0 0 300 142" role="img" aria-labelledby="pic3-t">
           <title id="pic3-t">In the end-cap, coils push the tungsten weight one way; the pen is pushed the other way, and every push must be paid back.</title>
           <defs><marker id="ahs" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah s"/></marker>
             <marker id="ahk2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah k"/></marker></defs>
@@ -633,7 +632,7 @@ svg.dg .overlap{fill:var(--shake-soft);stroke:var(--shake);stroke-dasharray:4 3}
           </g>
           <path class="ar s" d="M269.3 67.7 l 4.7 17.4" marker-end="url(#ahs)"/><text class="sm" x="296" y="102" text-anchor="end">weight moves</text>
           <path class="ar k" d="M203.8 44.7 l -4.7 -17.4" marker-end="url(#ahk2)"/><text class="sm" x="196" y="14" text-anchor="end">the pen moves the other way</text>
-          <text class="sm" x="62" y="130">push = m × (2πf)² × stroke</text>
+          <text class="sm" x="296" y="138" text-anchor="end">push = m × (2πf)² × stroke</text>
         </svg>
         <p>Push a weight one way and the pen goes the other way. The push grows with the square of the speed: tiny at writing speed, strong at tremor speed. So it can calm a shake and give a short cue. It cannot write: at writing speeds the 45&nbsp;g end-cap moves the ink at most 0.21&nbsp;mm, and even a gyroscope only 1.06&nbsp;mm, while half a letter is 2&nbsp;mm.</p>
         <p class="verdict">Calming and cues, never writing.</p>
@@ -1091,7 +1090,7 @@ svg.dg .overlap{fill:var(--shake-soft);stroke:var(--shake);stroke-dasharray:4 3}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>). The plain-words account is <code>docs/revJ_concept.md</code>.</div>
     <ul class="status"><li><span class="st final">final</span> Pen layout: <code>results/revJ/layout.json</code></li><li><span class="st final">final</span> Numbers in the text, tables and charts: <code>results/revJ/budgets.json, results/revJ/revJ.json + results/ai2/ai2.json + results/nose2/nose2.json + results/drive/ + results/endcap/endcap_study.json</code></li><li><span class="st final">final</span> Handwriting strips: <code>results/ai2/samples.json + results/nose2/fig_nose2_autowrite_example.csv + results/drive/tasks.json</code></li><li><span class="st prov">pending</span> Whole-pen simulation (sim2j): <code>results/sim2j/</code> is still being computed; rebuild to add its strips and replay</li></ul>
-    <div class="mono" id="provenance">Built 2026-09-29 14:17 UTC from git e923ffd-dirty · parameters v0.4.4 · layout generated 2026-09-29T13:28:08+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-29 15:34 UTC from git 2088c52-dirty · parameters v0.4.4 · layout generated 2026-09-29T13:28:08+00:00</div>
   </footer>
 </div>
 
@@ -2321,19 +2320,19 @@ function drawMinis(){
   document.querySelectorAll(".mode").forEach(card=>{
     const svg=card.querySelector("svg.mini"); if(!svg) return;
     const st={tip:card.dataset.tip, heel:card.dataset.heel, tail:card.dataset.tail};
-    const P={tip:[20,58], heel:[40,62], tail:[236,14]};
+    const P={tip:[16,57], heel:[42,60], tail:[240,14]};
     const dot=(k)=>{ const s=st[k], [cx,cy]=P[k], c=col[k];
-      if(s==="on"||s==="drive") return `<circle cx="${cx}" cy="${cy}" r="7" fill="${c}" stroke="var(--panel)" stroke-width="2"/>`+(s==="drive"? `<path d="M${cx+10} ${cy} l 16 0" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/><path d="M${cx+26} ${cy} l -5 -4 l 0 8 z" fill="${c}"/>` : "");
-      if(s==="part") return `<circle cx="${cx}" cy="${cy}" r="6" fill="var(--panel)" stroke="${c}" stroke-width="2.4"/><path d="M${cx-6} ${cy} a6 6 0 0 1 12 0 z" fill="${c}"/>`;
-      return `<circle cx="${cx}" cy="${cy}" r="5.5" fill="var(--panel)" stroke="var(--faint)" stroke-width="1.6" stroke-dasharray="2 2"/>`; };
+      if(s==="on"||s==="drive") return `<circle cx="${cx}" cy="${cy}" r="8.5" fill="${c}" stroke="var(--panel)" stroke-width="2.5"/>`+(s==="drive"? `<path d="M${cx+12} ${cy+2} l 18 0" stroke="${c}" stroke-width="3" stroke-linecap="round"/><path d="M${cx+32} ${cy+2} l -6 -5 l 0 10 z" fill="${c}"/>` : "");
+      if(s==="part") return `<circle cx="${cx}" cy="${cy}" r="7.5" fill="var(--panel)" stroke="${c}" stroke-width="2.6"/><path d="M${cx-7.5} ${cy} a7.5 7.5 0 0 1 15 0 z" fill="${c}"/>`;
+      return `<circle cx="${cx}" cy="${cy}" r="7" fill="var(--panel)" stroke="var(--faint)" stroke-width="1.8" stroke-dasharray="2.5 2"/>`; };
     const on=k=>st[k]&&st[k]!=="off";
-    let s=`<line class="mp-paper" x1="4" y1="66" x2="256" y2="66"/>`;
-    s+=`<g transform="rotate(-11.4 24 56)"><rect class="mp-body" x="24" y="50" width="206" height="13" rx="4"/><rect class="mp-sleeve" x="24" y="49" width="58" height="15" rx="4"/>`+
-       `<rect x="228" y="48.5" width="22" height="16" rx="3" fill="none" stroke="${on("tail")?col.tail:"var(--faint)"}" stroke-width="1.6"${on("tail")?"":' stroke-dasharray="3 2"'}/></g>`;
-    s+=`<path d="M14 62 L 26 54 L 28 60 Z" fill="${on("tip")?col.tip:"var(--faint)"}"/>`;
+    let s=`<line class="mp-paper" x1="2" y1="68" x2="258" y2="68"/>`;
+    s+=`<g transform="rotate(-11.2 22 56)"><rect class="mp-body" x="22" y="47" width="206" height="18" rx="5"/><rect class="mp-sleeve" x="22" y="46" width="60" height="20" rx="5"/>`+
+       `<rect x="227" y="45" width="24" height="22" rx="4" fill="none" stroke="${on("tail")?col.tail:"var(--faint)"}" stroke-width="2"${on("tail")?"":' stroke-dasharray="3 2"'}/></g>`;
+    s+=`<path d="M8 64 L 23 52 L 26 60 Z" fill="${on("tip")?col.tip:"var(--faint)"}"/>`;
     s+=dot("tip")+dot("heel")+dot("tail");
-    s+=`<text class="mp-lab" x="${P.tip[0]-6}" y="${P.tip[1]-12}" text-anchor="middle">1</text><text class="mp-lab" x="${P.heel[0]+2}" y="${P.heel[1]-12}" text-anchor="middle">2</text><text class="mp-lab" x="${P.tail[0]}" y="${P.tail[1]+22}" text-anchor="middle">3</text>`;
-    if(card.dataset.rec) s+=`<circle cx="130" cy="20" r="5" fill="var(--shake)"/><text class="mp-lab" x="140" y="24">records</text>`;
+    s+=`<text class="mp-lab" x="${P.tip[0]}" y="${P.tip[1]-13}" text-anchor="middle">1</text><text class="mp-lab" x="${P.heel[0]}" y="${P.heel[1]-13}" text-anchor="middle">2</text><text class="mp-lab" x="${P.tail[0]}" y="${P.tail[1]+26}" text-anchor="middle">3</text>`;
+    if(card.dataset.rec) s+=`<circle cx="124" cy="18" r="5.5" fill="var(--shake)"/><text class="mp-lab" x="134" y="23">records</text>`;
     svg.innerHTML=s; });
   T.minis=document.querySelectorAll(".mode svg.mini circle").length;
 }

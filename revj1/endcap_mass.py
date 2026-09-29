@@ -160,7 +160,8 @@ def test_stage(tune: Dict, quick: bool = False, log=print, members: Optional[Seq
     ch = tune["chosen"]
     keys = list(members) if members is not None else [k for k in (ch.get("L_s_mm"), ch.get("fallback_L_s_mm")) if k is not None]
     old = _load(tag, quick)
-    if old is not None and old.get("members_tested") == [float(k) for k in keys]:
+    if old is not None and old.get("members_tested") == [float(k) for k in keys] and \
+            all(f"lrm_{k:g}" in old.get("verdicts", {}) for k in keys):
         return old
     seeds = TEST_SEEDS[:1] if quick else TEST_SEEDS
     f0s = (10.0,) if quick else TEST_F
@@ -169,8 +170,13 @@ def test_stage(tune: Dict, quick: bool = False, log=print, members: Optional[Seq
     out = {"members_tested": [float(k) for k in keys], "seeds": list(seeds), "rows": {}, "verdicts": {}, "summary": {},
            "rule_R_T1": "study K's R-T1 (endcap/run_study.RULES) via endcap/report.rule_RT1; passive weight = the same total "
                         "mass fixed in the end-cap (nose + passive)"}
+    if old is not None and old.get("members_tested") == [float(k) for k in keys]:
+        for key in ("rows", "verdicts", "summary"):          # resume after an interruption: keep the finished members
+            out[key].update(old.get(key, {}))
     t0 = time.time()
     for L in keys:
+        if f"lrm_{L:g}" in out["verdicts"]:
+            continue
         s = member(L)
         dev = S.h1_device(s)
         wdev = S.weight_device(s["mass_g"] * 1e-3)

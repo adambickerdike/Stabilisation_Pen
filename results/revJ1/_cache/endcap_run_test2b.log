@@ -1,0 +1,9 @@
+{
+ "L_s_mm": 14.98,
+ "fallback_L_s_mm": null,
+ "mass_g": 44.9961681400344,
+ "rule": "lightest member with tuning further reduction (8-12 Hz x 1-2 mm) >= 12 % at split 0.5 and >= 6 % at splits 0.3 and 0.7 (R-T1's 10 % / 5 % plus a 2-point / 1-point allowance for tuning-to-test shrinkage)"
+}
+[ 174.2s] test L_s 7.5 mm split 0.3: 60 rows
+[ 278.0s] test L_s 7.5 mm split 0.5: 120 rows
+[ 404.5s] test L_s 7.5 mm split 0.7: 180 rows

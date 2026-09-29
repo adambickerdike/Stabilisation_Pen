@@ -235,25 +235,87 @@ sim2 is 3-D with the H1 contact law and the pen's mass properties.
   model-based tracker at 0.3 mm); among those, the lowest ink error at 1–2 mm; otherwise RL is not adopted.
 - **Results** (pending).
 
-## 8. Power: the static ball load (CALC and SIM)
+## 8. Why the nose uses 1.3–2.7 W, and why some runs moved clean writing
 
-- The refill spring (0.15 N, along the nose) presses the ball on the paper. At tilt θ the paper pushes back with a side
-  component F_c·cot θ at the ball: 0.126 N at 50° (CALC).
-- The C1S gimbal is soft (0.0028 N·m/rad), so the coils hold it: 9.6 mN·m at 50°. With Km 0.656 N/√W on the 11.5 mm
-  magnet arm this costs 1.62 W while the ball is on the paper (CALC). sim2 applies it as a contact-gated bias current
-  (sim2's H1 convention).
-- Rev H's longer arm needed about 0.13 W for the same load (CALC). The lead's budget has 0.06 W for "writing without
-  tremor" (`results/revJ/budgets.json`): the load is missing there.
-- sim2, tremor-free writing, writer 0 (4 s rest + 7.5 s of writing): nose copper loss 2.25 W mean, 2.68 W while the ball
-  is on the paper, 1.20 W while lifted; coil current 1.0 A rms in contact; coil temperature 25 → 61.5 °C in 11.5 s (SIM).
-  The static load alone needs 0.81 A; the rest is ball friction and the servo's work against the handle's motion.
-- **Heat (CALC on the SIM power).** With the coil's 100 K/W and 0.5 J/K (ASSUMPTION, as Rev H), 2.68 W would settle
-  268 K above ambient. The coil would pass 120 °C after about 22 s of continuous writing. The lead's thermal check
-  (16.8 K at 1 mm tremor, DEC-044) did not include this load.
-- **Battery.** At 2.3 W total the 2.22 Wh cell lasts about 1 h (CALC), against 5.3–11 h in the lead's budget.
-- (pending: sensitivity to the spring force, Km and tilt from `results/sim2j/power.json`)
+The integrated budget (`results/revJ/budgets.json`, study N's duty model) gives the nose 64–376 mW. sim2 gives
+1.3–2.7 W. The budget's model counts the nose's inertia, its flexure, ball drag and gravity. It leaves out the two
+largest terms below.
 
-## 9. Checks (pending)
+### 8.1 Where the nose's power goes (SIM, writer 0, tremor-free writing, nose held; `hall1` check in §12)
+
+| Run (4 s rest on the paper + 7.5 s of writing) | Nose copper loss, mean | While the ball is on the paper | While lifted |
+|---|---|---|---|
+| Nominal Rev J pen | 2.25 W | 2.68 W | 1.20 W |
+| The same without Hall-sensor noise | 1.51 W | 2.01 W | 0.31 W |
+| Refill spring 0.075 N instead of 0.15 N | 1.32 W | 1.28 W | 1.38 W |
+| Km 0.7× (the lead's lower bound) with the 0.075 N spring | 2.43 W | – | – |
+
+- **About 1.1 W: the refill spring's side load at the ball (real physics, a design problem).**
+  - The spring (0.15 N, along the nose) presses the ball on the paper. At tilt θ the paper pushes back with a side
+    component F_c·cot θ: 0.126 N at 50° (CALC).
+  - The C1S gimbal is soft (0.0028 N·m/rad), so the coils must hold the resulting 9.6 mN·m. With Km 0.656 N/√W on the
+    11.5 mm magnet arm that is 0.81 A and 1.62 W while the ball is on the paper (CALC); about 1.1 W over a run with
+    70 % pen-down time. It scales with F_c² (0.41 W at 0.075 N) and with cot²θ (3.9 W at 35°, 0.3 W at 75°).
+  - The servo holds this load by feedback whether or not sim2's feed-forward bias is on (the same 2.25 W either way).
+  - Rev H's 34 mm magnet arm needed about 0.13 W for the same load (CALC). This is a consequence of the C1S nose's short
+    arm, not of the simulator.
+- **About 0.7 W: the servo reacting to the Hall-sensor noise (mostly a modelling artefact).** sim2's nose servo reads
+  the position sensor at 10 kHz with the lead's 5.9 µm rms noise and no filter; its derivative action turns the noise
+  into coil current. A real servo would filter the position signal. Worth a firmware requirement, not a hardware
+  change (REQ-RVJ-C04 in §10).
+- **About 0.4 W: the rest** – ball friction and stick-slip on the paper, and the servo holding the nose against the
+  handle's own writing motion (real, and about what the budget assumed plus friction).
+- **Km.** Power goes with 1/Km². The image-method Km is an upper bound; at 0.7× (the lead's randomisation range) the
+  same run needs about twice the power.
+
+**Spring force and Km (writer 0, seed 200; `results/sim2j/power.json`):**
+
+| Refill spring, Km | Static load at 35° / 50° / 75° (CALC) | Nose power, tremor-free (SIM) | Tremor-free ink to intended letters, letters read (SIM) | 8 Hz × 1 mm: device off → tracker G4 (SIM) |
+|---|---|---|---|---|
+| 0.15 N, 1.0× (nominal) | 4.7 / 1.6 / 0.17 W | 2.24 W | 97 µm, 100 % | 441 → 377 µm (0.85) |
+| 0.15 N, 0.7× | 9.6 / 3.3 / 0.34 W | 4.21 W | 421 µm, 62 % | 795 → 806 µm (1.01) |
+| 0.075 N, 1.0× | 1.2 / 0.41 / 0.04 W | 1.32 W | 82 µm, 100 % | 451 → 287 µm (0.64) |
+| 0.075 N, 0.7× | 2.4 / 0.83 / 0.09 W | 2.43 W | 84 µm, 100 % | 454 → 291 µm (0.64) |
+
+- **At 0.7× Km the nominal spring overloads the nose.** The static load then needs 1.16 A of the 1.5 A limit (CALC);
+  with the noise and friction currents the coil saturates, the nose sags, tremor-free writing degrades (62 % of
+  letters read) and the tracker no longer helps (SIM, one writer).
+- **Halving the spring force helps twice**: power 2.24 → 1.32 W, and the tracker removes more tremor (0.85 → 0.64),
+  likely because the nose has current to spare and less ball friction to drag (not isolated; SIM, one writer, to
+  confirm on more writers). Ink laydown at 0.075 N is untested (EXP-Q02).
+- **Heat (CALC on the SIM power).** The coil's 100 K/W and 0.5 J/K (ASSUMPTION, as Rev H): at 2.68 W the coil would
+  settle 268 K above ambient and pass 120 °C after about 22 s of continuous writing (sim2: 25 → 61.5 °C in 11.5 s). Even
+  the static load alone (1.62 W) would settle 162 K above ambient. The lead's thermal check (16.8 K at 1 mm tremor,
+  DEC-044) did not include it.
+- **Battery.** At 2.3 W the 2.22 Wh cell lasts about 1 h (CALC), against 5.3–11 h in the budget.
+- The ET results of §6 are short runs (about 12 s): the coil stays below 120 °C (61.5 °C at the end, writer 0). Over
+  minutes of writing the coil limit would cut the nose's authority; that is not simulated. (pending: current-limit
+  share in the tremor runs)
+
+### 8.2 Why some runs moved tremor-free writing (the false-correction check)
+
+"Moved" is the rms distance between the ink with the controller on and the ink of the device-off pen, same writer,
+same seed, no tremor (rule ≤ 25 µm). SIM, test writers:
+
+| Controller | Moved | Cause | Artefact or real? |
+|---|---|---|---|
+| Chosen tracker G4 | 0 µm | its detector gate stays closed on tremor-free writing | – |
+| ai2's gated listening (GL) | 36–85 µm | its fallback, the Rev H tracker as built, locks onto the writing's own 8–12 Hz content | real for that tracker on these writers (§3); v2 writers exaggerate it |
+| TCN (replayed) | 131–155 µm | the network, trained on HW1 streams of Rev H, reads sim2's Rev J sensor signals as tremor | real for the TCN as trained (domain shift); retraining needed |
+| Nose + heel wheel (± end-cap) | 420–427 µm | the wheel, not the tracker: in its tremor mode it steers after the pen with a lag and its tyre resists sideways motion (1500 N/m), so fast turns in the letters are pulled out of shape | real in the model; the writer learned the pen with the wheel retracted. A writer who has learned the wheel is tested in §6.1 |
+
+- The hand model matters in one way: sim2's ball stick-slip and the H1 grip amplify any small difference between two
+  runs (that is why "moved" is measured against the same seed). It does not create the differences above.
+
+## 9. Checks
+
+- **Code.** The online AKF equals fusion's batch AKF bit for bit (maximum difference 0.0 on a synthetic record; test in
+  `sim2j/tests`). The Rev J handle's mass properties match the lead's budget within 0.1 % (test). 8 fast tests pass.
+- **Step size** (pending: `dt_check.json`, 25 µs against 50 µs).
+- **Determinism.** Two runs with the device off and the same seed give identical ink (0.0 µm; test). This is the basis
+  of the false-correction measure.
+- **Replay validity (TCN).** The nose's action changes the handle's motion by less than 1 % (handle-tip deviation 690–696 µm
+  across device off, tracker and perfect knowledge; tuning writer 100, 10 Hz × 1 mm; SIM).
 
 ## 10. Proposed decisions, requirements and experiments
 
@@ -262,7 +324,8 @@ Proposals only; the lead decides. Identifiers are the next free ones in the ledg
 **Proposed decisions**
 
 - **DEC-045 (proposed): carry the ball's static side load passively, or re-size the C1S actuator for it.** Until then the
-  Rev J nose cannot write for more than about 20–30 s without passing its coil limit (CALC on SIM). Options, in order of
+  Rev J nose cannot write for more than about 45 s (static load alone, CALC) or 22 s (sim2's full 2.68 W, CALC on SIM)
+  without passing its 120 °C coil limit. Options, in order of
   expected power: (a) a bias element that loads the nose against F_c·cot θ only while the refill is extended (a spring
   or magnet acting through the refill slide, so it vanishes when the ball lifts); (b) a longer actuator arm or a higher
   Km (Rev H's 34 mm arm needs about 0.13 W, CALC); (c) a lower refill spring force (power ∝ F_c², §8), limited by ink
@@ -285,6 +348,8 @@ Proposals only; the lead decides. Identifiers are the next free ones in the ledg
   (the project rule), checked in sim2 against the device-off pen with the same noise.
 - **REQ-RVJ-C03:** The tremor-line detector shall not open on the tremor-free writing of the tuning writers of every
   writer model in use (v1 and v2), with its input restricted to page samples taken while the ball is on the paper.
+- **REQ-RVJ-C04:** The nose servo's position-sensor noise shall add ≤ 50 mW of coil loss (filter the Hall signal to the
+  servo's bandwidth); in sim2 the unfiltered 5.9 µm rms at 10 kHz adds about 0.7 W (SIM).
 
 **Proposed experiments** (equipment and data missing here; executable files in `sim2j/`)
 
@@ -314,4 +379,34 @@ Proposals only; the lead decides. Identifiers are the next free ones in the ledg
 - Delayed ink was not re-run in sim2 (ai2: not worth its cost).
 - sim2 results rank concepts only (COU-1) until EXP-V01/V02/V04 and EXP-V05.
 
-## 12. Files and reproduction (pending)
+## 12. Files and reproduction
+
+**Code** (`sim2j/`, this study; sim2 and every other package unchanged):
+
+| File | What it holds |
+|---|---|
+| `writers.py` | writer model v2 (power-law timing, fit, kinematics) |
+| `revj.py` | the Rev J pen in sim2 from the lead's `results/revJ/sim_params.json` and `layout.json` (round-1 assembly kept as `source="round1"`) |
+| `wheel.py` | heel wheel kernel (pod, bristle tyre, steering servo, rolling, drive), every physics step |
+| `sensing.py` | the pen's sensors online (IMU with lever arm, page sensor, refill slide) |
+| `akf_online.py` | the fusion AKF tick by tick (bit-exact), runaway guard, tremor-line detector, ai2's gated listening tracker |
+| `firmware.py` | controllers: tremor, template guidance, wheel modes, lead-through, end-cap feed-forward, autowrite, pen lift, supervisor |
+| `stepper.py` | sim2's stepper with the devices and the firmware in the loop; relaxed writer |
+| `tasks.py`, `et.py`, `guided.py` | scenarios, metrics, ET cases, tracing, loops, lead-through |
+| `learned_replay.py` | ai2's TCN on the pen's own sensor record |
+| `rl.py` | Gymnasium environment with domain randomisation; PPO training (resumable) |
+| `tuning.py` | the rules fixed on tuning writers; `results/sim2j/rules.json` |
+| `run_study.py` | every stage; rows cached in `sim2j/build/*_rows.json`, adapted hand paths in `sim2j/build/setups/` |
+| `report.py` | figures with CSV twins, `samples.json`, the viewer replay |
+| `tests/test_sim2j.py` | fast checks (8 tests, about 5 s with a warm numba cache) |
+
+**Results** (`results/sim2j/`, each JSON with `stabpen.provenance` and the pen-parameter version): `writer_fit.json`,
+`writers.json`, `writer_cmp.json`, `rules.json`, `verify.json`, `et.json`, `et_wheel.json`, `et_rl.json`,
+`rl_select.json`, `guided.json`, `autowrite.json`, `dr.json`, `arm.json`, `dt_check.json`, `power.json`; figures
+`fig_*.png` with `fig_*.csv`; `samples.json` (the handwriting study's schema: before/after strips); `viz_sim2j.json`
+(sim2's viewer replay format).
+
+**Reproduce:** `python3 -m sim2j.run_study --stages tune et writer_cmp verify guided autowrite rl_train rl_select
+rl_test dr arm dt power et_wheel et2 report` (add `--quick` for a smoke run); `pytest sim2j/tests -q`.
+Dependencies as the repository (MuJoCo 3.6, numba, SciPy, Stable-Baselines3 with PyTorch for RL, ai2's trained TCN in
+`ai2/build/models/tcn.pt` for the replay).

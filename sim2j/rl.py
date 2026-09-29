@@ -325,24 +325,49 @@ class _EnvPolicy(Policy):
 
 
 # ------------------------------------------------------------------------------------------------ training
-def train(total_steps: int, out_dir: str, seed: int = 0, ckpt_every: int = 100_000, log=print, n_steps: int = 2500,
+def train(total_steps: int, out_dir: str, seed: int = 0, ckpt_every: int = 50_000, log=print, n_steps: int = 2500,
           lr: float = 3e-4) -> Dict:
+    """PPO training; resumable: when checkpoints exist in out_dir the latest is loaded and training continues to
+    total_steps (the environment's random stream restarts from a new seed; compute is accumulated in train_log.json)."""
+    import glob
     import torch
     from stable_baselines3 import PPO
-    from stable_baselines3.common.callbacks import CheckpointCallback
+    from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback
     torch.set_num_threads(1)
     os.makedirs(out_dir, exist_ok=True)
-    env = RevJTremorEnv(seed=seed)
-    model = PPO("MlpPolicy", env, n_steps=n_steps, batch_size=500, n_epochs=5, learning_rate=lr, gamma=0.9,
-                gae_lambda=0.9, clip_range=0.2, ent_coef=0.0, seed=seed, verbose=0,
-                policy_kwargs={"net_arch": [64, 64], "activation_fn": torch.nn.Tanh, "log_std_init": -1.0})
-    cb = CheckpointCallback(save_freq=ckpt_every, save_path=out_dir, name_prefix="ppo_revj")
+    logp = os.path.join(out_dir, "train_log.json")
+    prev = json.load(open(logp)) if os.path.exists(logp) else {"segments": [], "episodes": []}
+    cks = sorted(glob.glob(os.path.join(out_dir, "ppo_revj_*_steps.zip")), key=lambda p: int(p.split("_")[-2]))
+    done = int(cks[-1].split("_")[-2]) if cks else 0
+    env = RevJTremorEnv(seed=seed + 1000 * len(prev["segments"]))
+    if done > 0:
+        model = PPO.load(cks[-1], env=env, device="cpu")
+        log(f"[rl] resuming from {os.path.basename(cks[-1])}")
+    else:
+        model = PPO("MlpPolicy", env, n_steps=n_steps, batch_size=500, n_epochs=5, learning_rate=lr, gamma=0.9,
+                    gae_lambda=0.9, clip_range=0.2, ent_coef=0.0, seed=seed, verbose=0,
+                    policy_kwargs={"net_arch": [64, 64], "activation_fn": torch.nn.Tanh, "log_std_init": -1.0})
     t0 = time.time()
-    model.learn(total_timesteps=total_steps, callback=cb, progress_bar=False)
+
+    class _Log(BaseCallback):
+        def _on_rollout_end(self):
+            seg = {"start_steps": done, "steps": int(self.model.num_timesteps), "wall_s": time.time() - t0,
+                   "env": dict(env.stats)}
+            json.dump({"segments": prev["segments"] + [seg], "episodes": prev["episodes"] + env.ep_log},
+                      open(logp, "w"), indent=1)
+
+        def _on_step(self):
+            return True
+    cb = [CheckpointCallback(save_freq=ckpt_every, save_path=out_dir, name_prefix="ppo_revj"), _Log()]
+    remaining = max(0, total_steps - done)
+    if remaining > 0:
+        model.learn(total_timesteps=remaining, callback=cb, progress_bar=False, reset_num_timesteps=(done == 0))
     model.save(os.path.join(out_dir, "ppo_revj_final"))
-    stats = dict(env.stats)
-    stats["train_wall_s"] = time.time() - t0
-    json.dump({"stats": stats, "episodes": env.ep_log}, open(os.path.join(out_dir, "train_log.json"), "w"), indent=1)
+    seg = {"start_steps": done, "steps": int(model.num_timesteps), "wall_s": time.time() - t0, "env": dict(env.stats)}
+    out = {"segments": prev["segments"] + [seg], "episodes": prev["episodes"] + env.ep_log}
+    json.dump(out, open(logp, "w"), indent=1)
+    stats = {"total_steps": int(model.num_timesteps), "wall_s_all_segments": float(sum(s["wall_s"] for s in out["segments"])),
+             "episodes": len(out["episodes"]), "segments": len(out["segments"])}
     return stats
 
 

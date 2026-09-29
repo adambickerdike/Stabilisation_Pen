@@ -170,7 +170,8 @@ class WriterSetup:
         pm = self.pm
         key = f"{self.w}|{self.version}|{self.text}|{self.pen}|{pm.cfg.label}|{pm.m.opt.timestep}|{n_adapt}|{self.pre_s}|" \
               f"{'' if self.adapt_ctl == 'none' else self.adapt_ctl}|" \
-              f"{(pm.info.get('revj') or {}).get('lead')}|{pm.cfg.hand}|{pm.cfg.hand_model}|{pm.cfg.contact}|{pm.cfg.refill}"
+              f"{(pm.info.get('revj') or {}).get('lead')}|{pm.cfg.hand}|{pm.cfg.hand_model}|{pm.cfg.contact}|{pm.cfg.refill}" \
+              f"{'' if pm.cfg.nose.Km_act > 0.6 and pm.cfg.nose.k_r > 0.0027 else '|' + str(pm.cfg.nose)}"
         h = hashlib.sha256(key.encode()).hexdigest()[:16]
         d = os.path.join(BUILD, "setups")
         os.makedirs(d, exist_ok=True)

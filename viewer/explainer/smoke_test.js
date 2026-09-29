@@ -58,6 +58,9 @@ const SECTIONS = [["top", "header.top"], ["pen", "#pen"], ["how", "#how"], ["mod
 const results = [];
 function check(name, ok, detail) { results.push({ name, ok: !!ok, detail: detail || "" }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? "  (" + detail + ")" : ""}`); }
 const noScroll = page => page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
+/* scroll without Playwright's frame-stability wait: with software WebGL a frame of the playing scene can take a second */
+const show = (page, sel) => page.$eval(sel, el => el.scrollIntoView({ block: "start" }));
+const pauseScenes = (page, on) => page.evaluate(p => { const S = window.__explainer.scenes; if (S) S.playing = !p; }, on);
 
 async function run(browser, label, viewport) {
   const page = await browser.newPage({ viewport, deviceScaleFactor: 1 });
@@ -78,16 +81,18 @@ async function run(browser, label, viewport) {
   const ov = await noScroll(page);
   check(`${label}: no horizontal page scroll`, ov[0] <= ov[1], `scrollWidth ${ov[0]} / viewport ${ov[1]}`);
 
-  /* sections */
+  /* sections (the scenes are paused while the screenshots are taken) */
+  await pauseScenes(page, true);
   for (const [name, sel] of SECTIONS) {
     const el = await page.$(sel);
     if (!el) { check(`${label}: section ${name} present`, false); continue; }
-    await el.scrollIntoViewIfNeeded(); await page.waitForTimeout(name === "how" ? 1500 : 500);
-    await el.screenshot({ path: path.join(SHOTS, `${label}_${name}.png`) });
+    await show(page, sel); await page.waitForTimeout(name === "how" ? 1500 : 600);
+    await el.screenshot({ path: path.join(SHOTS, `${label}_${name}.png`), timeout: 60000 });
   }
+  await pauseScenes(page, false);
 
   /* hero: legend, picking, pins, explode, end-cap, pad */
-  await (await page.$("#pen")).scrollIntoViewIfNeeded(); await page.waitForTimeout(400);
+  await show(page, "#pen"); await page.waitForTimeout(400);
   const nLegend = await page.$$eval("#legend li", l => l.length);
   check(`${label}: legend lists the part groups`, nLegend >= 10, `${nLegend} groups`);
   await page.click("#legend li[data-group='power'] button.pick").catch(() => {});
@@ -109,7 +114,7 @@ async function run(browser, label, viewport) {
   await page.waitForFunction(() => window.__explainer.hero.explode > 0.9, null, { timeout: 8000 }).catch(() => {});
   const ex = await page.evaluate(() => window.__explainer.hero.explode);
   check(`${label}: "Take apart" separates the parts`, ex > 0.9, `explode ${ex.toFixed(2)}`);
-  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_exploded.png`) });
+  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_exploded.png`), timeout: 60000 });
   await page.$eval("#explode", el => { el.value = "0"; el.dispatchEvent(new Event("input", { bubbles: true })); });
   await page.waitForFunction(() => window.__explainer.hero.explode < 0.02, null, { timeout: 8000 }).catch(() => {});
   await page.click("#xray"); await page.waitForTimeout(300);
@@ -120,7 +125,7 @@ async function run(browser, label, viewport) {
   await page.click("#endcap"); await page.waitForTimeout(300);
   const ec0 = await page.evaluate(() => { const P = window.__explainer.hero.pen; return { on: P.endcap, ec: P.parts.filter(m => m.userData.group === "inertial").some(m => m.visible),
     cap: P.parts.filter(m => m.userData.comp.replaced_by_endcap).every(m => m.visible), len: P.length(), pressed: document.getElementById("endcap").getAttribute("aria-pressed") }; });
-  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_no_endcap.png`) });
+  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_no_endcap.png`), timeout: 60000 });
   await page.click("#endcap"); await page.waitForTimeout(300);
   const ec1 = await page.evaluate(() => { const P = window.__explainer.hero.pen; return { on: P.endcap, ec: P.parts.filter(m => m.userData.group === "inertial").every(m => m.visible), len: P.length() }; });
   check(`${label}: end-cap toggle (off: rear cap on; on: end-cap back)`, ec0.on === false && !ec0.ec && ec0.cap && ec0.pressed === "false" && ec1.on === true && ec1.ec && ec1.len > ec0.len,
@@ -134,10 +139,10 @@ async function run(browser, label, viewport) {
     moved.tip > 3 && Math.abs(moved.z - rest.z) > 0.05 && Math.abs(moved.psi - rest.psi) > 0.3,
     `tip ${moved.tip.toFixed(2)} mm; refill slid ${(moved.z - rest.z).toFixed(2)} mm; wheel turned ${(Math.abs(moved.psi - rest.psi) * 180 / Math.PI).toFixed(0)}°; "${moved.read}"`);
   await page.click("#cam-tip"); await page.waitForTimeout(700);
-  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_tip_heel.png`) });
+  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_tip_heel.png`), timeout: 60000 });
   const pinsTip = await page.evaluate(() => window.__explainer.hero.pinsShown());
   await page.click("#cam-tail"); await page.waitForTimeout(700);
-  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_tail.png`) });
+  await (await page.$("#hero-vp")).screenshot({ path: path.join(SHOTS, `${label}_pen_tail.png`), timeout: 60000 });
   const pinsTail = await page.evaluate(() => window.__explainer.hero.pinsShown());
   check(`${label}: camera views (tip and heel; tail)`, pinsTip.includes("heel") && pinsTip.includes("tip") && pinsTail.join() === "tail", `tip view pins ${pinsTip.join("+")}; tail view pins ${pinsTail.join("+")}`);
   await page.click("#cam-side"); await page.evaluate(() => window.__explainer.hero.padSet(0, 0));
@@ -149,7 +154,7 @@ async function run(browser, label, viewport) {
     `${ph.p ? ph.p.points : 0} points, ${ph.p ? ph.p.traction : 0} friction values, ${ph.minis} mode marks`);
 
   /* scenes */
-  await (await page.$(".scene-grid")).scrollIntoViewIfNeeded();
+  await show(page, "#how .scene-row"); await page.waitForTimeout(400);
   for (const k of ["a", "b", "c", "d", "e", "f"]) {
     await page.click(`.scene-btn[data-scene='${k}']`);
     await page.waitForTimeout(250);
@@ -169,12 +174,12 @@ async function run(browser, label, viewport) {
       const ar = await page.evaluate(() => { const S = window.__explainer.scenes, was = S.playing; S.playing = false; S.seek(S.S.T * 0.4); const r = S.stats(); S.playing = was; return r; });
       await page.click("[data-writer='b']"); await page.waitForTimeout(250);
       const bs = await page.evaluate(() => { const S = window.__explainer.scenes, was = S.playing; S.playing = false; S.seek(S.S.T * 0.5); const r = S.stats(); S.playing = was; return r; });
-      await (await page.$(".scene-grid")).screenshot({ path: path.join(SHOTS, `${label}_scene_e_setonb.png`) });
+      await (await page.$(".scene-grid")).screenshot({ path: path.join(SHOTS, `${label}_scene_e_setonb.png`), timeout: 60000 });
       check(`${label}: scene e, the wheel pushes; a writer set on a 'b' keeps it`, ar.arrow && bs.bset && bs.arrow && bs.inkTriangles > 10, `push arrow ${ar.arrow}; 'b' writer ${bs.bset}`);
       await page.click("[data-writer='relaxed']"); await page.waitForTimeout(200);
       await page.evaluate(() => { const S = window.__explainer.scenes; S.seek(S.S.T * 0.8); });
     }
-    await (await page.$(".scene-grid")).screenshot({ path: path.join(SHOTS, `${label}_scene_${k}.png`) });
+    await (await page.$(".scene-grid")).screenshot({ path: path.join(SHOTS, `${label}_scene_${k}.png`), timeout: 60000 });
   }
   await page.click(".scene-btn[data-scene='b']"); await page.waitForTimeout(200);
   const trkBtns = await page.$$eval("[data-trk]", l => l.map(b => b.dataset.trk));
@@ -197,8 +202,8 @@ async function run(browser, label, viewport) {
   const panels = await page.$$eval("#results-body .rpanel", l => l.length);
   const conds = await page.$$eval("#results-body .rgroup", l => l.map(g => g.dataset.cond));
   check(`${label}: handwriting strips render (tremor, autowrite, heel)`, panels >= 4 && ["tremor", "autowrite", "heel"].every(c => conds.includes(c)), `${panels} panels; groups ${conds.join(", ")}`);
-  await (await page.$("#results-body")).scrollIntoViewIfNeeded(); await page.waitForTimeout(300);
-  await (await page.$("#results-body")).screenshot({ path: path.join(SHOTS, `${label}_strips.png`) });
+  await show(page, "#results-body"); await page.waitForTimeout(300);
+  await (await page.$("#results-body")).screenshot({ path: path.join(SHOTS, `${label}_strips.png`), timeout: 60000 });
   const w1 = await page.$eval(".strip svg", s => s.getBoundingClientRect().width);
   await page.click("[data-zoom='3']"); await page.waitForTimeout(200);
   const w3 = await page.$eval(".strip svg", s => s.getBoundingClientRect().width);
@@ -226,8 +231,9 @@ async function run(browser, label, viewport) {
     await p.goto(URL, { waitUntil: "load" });
     await p.waitForFunction(() => window.__explainer && window.__explainer.ready, null, { timeout: 60000 });
     await p.waitForTimeout(1500);
+    await pauseScenes(p, true);
     for (const [name, sel] of [["top", "header.top"], ["pen", "#pen"], ["how", "#how"], ["modes", "#modes"], ["results", "#results"]]) {
-      const el = await p.$(sel); await el.scrollIntoViewIfNeeded(); await p.waitForTimeout(500); await el.screenshot({ path: path.join(SHOTS, `dark_${name}.png`) }); }
+      const el = await p.$(sel); await show(p, sel); await p.waitForTimeout(600); await el.screenshot({ path: path.join(SHOTS, `dark_${name}.png`), timeout: 60000 }); }
     check("dark theme: no page errors", derr.length === 0, derr.slice(0, 3).join(" | "));
     await ctx.close();
   } catch (e) { check("test run", false, e.message); }
