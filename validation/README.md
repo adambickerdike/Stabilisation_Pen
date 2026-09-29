@@ -338,7 +338,7 @@ Status of each item above after the consistency pass. Parameters moved to v0.4.2
   - False-correction bounds disagree. REQ-CTRL-010 is relative (the Rev H tracker + 2 µm), and on study L's writers the Rev H tracker itself moves tremor-free writing by 26.3 µm. REQ-RVH-006 (15 µm), REQ-ML-001 and AC-E01-09 (25 µm) are absolute. One definition is needed.
   - REQ-ML-003 (≤ 2 ms per 2 ms step, ≤ 64 kB of weights) is looser than REQ-ML-002 (≤ 1 ms per 4 ms step, ≤ 64 kB of RAM). The TCN's predicted 0.56 ms per 2 ms step meets the first and slightly misses the second.
   - DEC-042 sets one arbitration law for all assistance, but the yield rules still differ by device: the nose drops within 60 ms beyond 2.5 mm (REQ-CTRL-013), the heel drive within 0.1 s after 0.3 s beyond 4 mm (REQ-DRV-002), the board within 0.5 s (REQ-RVH-007).
-  - The ledger holds the same three delayed-ink papers twice: HAP-90 = OPT-50 (Annett 2014), HAP-91 = OPT-51 (Tamada 1995), HAP-92 = OPT-52 (Morikiyo 1990). EXP-L03 and EXP-N10 cite both.
+  - Resolved: the three delayed-ink papers that studies L and N both entered are kept once in the ledger, as HAP-90 (Annett 2014), HAP-91 (Tamada 1995) and HAP-92 (Morikiyo 1990); OPT-50…52 were removed and every citation now uses the HAP ids.
   - EXP-L05's bench part trains a policy in sim2 for bench use (COU-2), so it waits for EXP-V05 (REQ-SIM-005). Study L names "the tremor-generating rig (EXP-I07)" for EXP-L02, but EXP-I07 is an offline replay; the protocol uses the EXP-I05 tremor rig.
   - Autowritten ink on paper cannot carry the synthetic label of REQ-APP-004; the label lives in the app and the stroke record (AC-L07-03).
 

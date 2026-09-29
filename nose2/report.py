@@ -329,7 +329,7 @@ def evidence_numbers(doc: Dict) -> Dict[str, str]:
     if d100:
         R["amf154_impl"] = (f"Delayed ink of 100 ms needs {d100['synthetic_p99_mm']:.1f}-{d100['adult_speed_p99_mm']:.1f} mm; "
                             f"{d100['inked_share_lifted_before_finish'] * 100:.0f} % of its ink is laid after the hand lifts, so it needs the pen lift; "
-                            "whether writers accept trailing ink is untested (OPT-50-52)")
+                            "whether writers accept trailing ink is untested (HAP-90–92)")
     lay = doc.get("layout") or {}
     R["act103_impl"] = (f"Recommended {h['mechanism']} ({h['handle_od_mm']:g} mm handle): build the actuator coupon and measure Km before "
                         "the nose (EXP-N01); a flat-coil version (C1) is the fallback")

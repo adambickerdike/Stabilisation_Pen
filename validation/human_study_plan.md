@@ -1347,8 +1347,8 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 - **Design.** Delayed ink at 0/50/100/150 ms, first on a tablet (no hardware needed), then with the nose and the pen lift. Randomised order within each participant; copied sentences.
 - **Measurands.** Writing errors (duplicated or inserted strokes); change of letter size; preference.
 - **Predictions.**
-  - People notice 50–61 ms of inking latency (LIT OPT-50).
-  - Delayed visual feedback raised duplicated strokes (LIT OPT-51) and caused inserted strokes and larger letters (LIT OPT-52); both abstracts only.
+  - People notice 50–61 ms of inking latency (LIT HAP-90).
+  - Delayed visual feedback raised duplicated strokes (LIT HAP-91) and caused inserted strokes and larger letters (LIT HAP-92); both abstracts only.
   - 100 ms of delayed ink needs about 4.5–5.3 mm of travel, and 40–55 % of the ink is laid after the hand has lifted, so it needs the pen lift (CALC).
 - **Claim type.** Device burden.
 - **Decision.** Fail (as expected): delayed ink stays off (DEC-039, DEC-042). Pass, together with EXP-L03 and a refill that holds contact on its own: delayed ink may be reconsidered, with the pen lift (DEC-042 revisit).
@@ -1356,8 +1356,8 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 <!-- AC-TABLE:EXP-N10:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-N10-01 | — | Writing errors (duplicated or inserted strokes) with delayed ink at 50, 100 and 150 ms relative to 0 ms, copied sentences, tablet then pen; ratio of error rates at each delay | ≤ 1.0 | hypothesis | pass line of the nose v2 study (no increase over 0 ms); delayed visual feedback raised duplicated and inserted strokes (LIT OPT-51, OPT-52, abstracts only); inking latency is noticed from 50-61 ms (LIT OPT-50) -> may fail at ≥ 100 ms | DEC-039; DEC-042 (no delayed ink; reconsidered only with EXP-L03) |
-| AC-N10-02 | — | Users who accept a delay of 100 ms or more (preference after the delayed-ink blocks) | ≥ 50 % | hypothesis | pass line of the nose v2 study; 100-200 ms of delay will be seen (LIT OPT-50); 40-55 % of delayed ink is laid after the hand lifts, so the pen lift is needed (CALC) | DEC-042 (delayed ink only if revived, with EXP-L03 and the pen lift) |
+| AC-N10-01 | — | Writing errors (duplicated or inserted strokes) with delayed ink at 50, 100 and 150 ms relative to 0 ms, copied sentences, tablet then pen; ratio of error rates at each delay | ≤ 1.0 | hypothesis | pass line of the nose v2 study (no increase over 0 ms); delayed visual feedback raised duplicated and inserted strokes (LIT HAP-91, HAP-92, abstracts only); inking latency is noticed from 50-61 ms (LIT HAP-90) -> may fail at ≥ 100 ms | DEC-039; DEC-042 (no delayed ink; reconsidered only with EXP-L03) |
+| AC-N10-02 | — | Users who accept a delay of 100 ms or more (preference after the delayed-ink blocks) | ≥ 50 % | hypothesis | pass line of the nose v2 study; 100-200 ms of delay will be seen (LIT HAP-90); 40-55 % of delayed ink is laid after the hand lifts, so the pen lift is needed (CALC) | DEC-042 (delayed ink only if revived, with EXP-L03 and the pen lift) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-N10).
 <!-- AC-TABLE:EXP-N10:END -->
@@ -1372,7 +1372,7 @@ Study L sets the Rev J control stack (DEC-042) and the app's AI (DEC-043). The p
 
 ### EXP-L03: Ink lag: is it noticed, and does it cause errors? (conditional; shares sessions with EXP-N10)
 - **Status.** DEC-042 does not adopt delayed ink. This test is needed only before any revival, which would also need a refill that holds contact on its own (study L).
-- **Overlap with EXP-N10 (§18).** Both test delayed ink on a tablet first, then with the nose. Run them as one session design: the tablet, the copy task and the lags are shared (EXP-N10: 0/50/100/150 ms; EXP-L03: 0/12/25/50/100 ms), and each shared block is run once and scored for both. EXP-L03 adds the just-noticeable-difference staircase and the pen-side lag limits of REQ-CTRL-012. The ledger holds the same three papers twice: HAP-90 = OPT-50, HAP-91 = OPT-51, HAP-92 = OPT-52.
+- **Overlap with EXP-N10 (§18).** Both test delayed ink on a tablet first, then with the nose. Run them as one session design: the tablet, the copy task and the lags are shared (EXP-N10: 0/50/100/150 ms; EXP-L03: 0/12/25/50/100 ms), and each shared block is run once and scored for both. EXP-L03 adds the just-noticeable-difference staircase and the pen-side lag limits of REQ-CTRL-012. The three delayed-ink papers are in the ledger once, as HAP-90, HAP-91 and HAP-92.
 - **Design.** 12 controls and 12 people with ET or PD. A tablet with controlled inking latency (0, 12, 25, 50, 100 ms) and a stylus; then the ±6 mm bench nose. A staircase against 7 ms while writing words (the method of HAP-90). A copy task scored for added strokes and letters (HAP-91).
 - **Measurands.** Just-noticeable lag (ms); added strokes or letters per 100 letters; letter size; writing time; in the pen part, the lag, its return to 0 and the hand–ink distance.
 - **Predictions.**
@@ -1385,8 +1385,8 @@ Study L sets the Rev J control stack (DEC-042) and the app's AI (DEC-043). The p
 <!-- AC-TABLE:EXP-L03:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-L03-01 | — | Just-noticeable inking lag while writing words (staircase against 7 ms, tablet with controlled latency), median over participants (12 controls + 12 with ET or PD) | ≥ 25 ms | hypothesis | pass line of study L (the lag that would be used); people noticed added inking latency above a median of 50 ms (range 32-87 ms, n = 12) and 59 ms with the hand visible (LIT HAP-90 = OPT-50) | DEC-042 (delayed ink reconsidered only if EXP-L03 passes and a refill holds contact on its own) |
-| AC-L03-02 | — | Added strokes or letters per 100 letters in the copy task at a 25 ms lag, minus at 0 ms | < 1 per 100 letters | hypothesis | pass line of study L; delayed visual feedback made writers repeat strokes and letters, more with longer delays (LIT HAP-91 = OPT-51, HAP-92 = OPT-52; abstracts only) | DEC-042 |
+| AC-L03-01 | — | Just-noticeable inking lag while writing words (staircase against 7 ms, tablet with controlled latency), median over participants (12 controls + 12 with ET or PD) | ≥ 25 ms | hypothesis | pass line of study L (the lag that would be used); people noticed added inking latency above a median of 50 ms (range 32-87 ms, n = 12) and 59 ms with the hand visible (LIT HAP-90) | DEC-042 (delayed ink reconsidered only if EXP-L03 passes and a refill holds contact on its own) |
+| AC-L03-02 | — | Added strokes or letters per 100 letters in the copy task at a 25 ms lag, minus at 0 ms | < 1 per 100 letters | hypothesis | pass line of study L; delayed visual feedback made writers repeat strokes and letters, more with longer delays (LIT HAP-91, HAP-92; abstracts only) | DEC-042 |
 | AC-L03-03 | REQ-CTRL-012 | Only if delayed ink is revived, bench-nose part (±6 mm nose): ink lag while writing, time for the lag to return to 0 after the hand stops or lifts, and share of pen-down time with the hand-ink distance inside the usable nose travel (all) | all met (≤ 25 ms; ≤ 5 ms; ≥ 99 %) | requirement | REQ-CTRL-012; SIM: mean lag 15 ms at ≤ 25 ms; the command exceeded 3 mm for 3.5 % of pen-down time at 25 ms (so a ±3 mm nose fails) and 6 mm for at most 0.65 % at any lag (docs/ai_control_v2.md s3.5) | DEC-042 (no delayed ink); DEC-036 (nose travel) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-L03).
