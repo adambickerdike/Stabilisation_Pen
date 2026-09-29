@@ -29,6 +29,7 @@ Contents:
 - §45 Rev J control stack (DEC-042): EXP-L01, L02, L04, L05 (L03, L06, L07 and L08 are in `human_study_plan.md` §19)
 - §46 Rev J integrated layout (DEC-044): EXP-J01…J07; Rev J.1 (DEC-045): EXP-J10…J14, J16 and the wear part of EXP-J15; the nib's static load (DEC-046): EXP-J17 (J08, J09, J18 and J15's writers are in `human_study_plan.md` §20); the per-mode battery of REQ-RVJ-I01 is AC-P01-06 in EXP-P01 (§18)
 - §47 Measurement rigs R9–R14 (study M; DEC-058, DEC-059): EXP-T01…T17, where the existing experiments now run, and which proposed criteria were kept under existing ids
+- §48 Real recorded data (study R; DEC-054, DEC-055): EXP-R02, R04…R07 (R01 and R03 are in `human_study_plan.md` §21)
 
 ---
 
@@ -195,7 +196,7 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-D10 | Heel drive: ink smear and wheel track | A | R3, microscope camera | REQ-DRV-012 | D01 |
 | EXP-D12 | Heel drive: durability, cleaning and replacement | A | rolling rig, R1 | REQ-DRV-012 | D01 |
 | EXP-D13 | Driven-ball fallback: roller drag and wear | A | bench ball drive, force sensor | DEC-037 (ball as the bench alternative) | rollers made |
-| EXP-K01 | End-cap: reaction-mass actuator against its model; envelope, power, permeability | A | R4 (6-axis F/T); R12 for the force constant (EXP-T07) | REQ-EC-001/008/009, DEC-038, DEC-045 | end-cap prototype |
+| EXP-K01 | End-cap: reaction-mass actuator against its model; envelope, power, permeability | A | R12: a clamp fixture with a 6-axis F/T (net force); the force constant in EXP-T07 | REQ-EC-001/008/009, DEC-038, DEC-045 | end-cap prototype |
 | EXP-K02 | End-cap: tremor on top of the nose on a hand–pen rig (extends I06) | A | R14 (EXP-T16), R3 | REQ-EC-002/003, DEC-038 | K01; I01 or K08 |
 | EXP-K04 | End-cap: can inertia steer the ink? (rig, then 6 healthy writers) | A | EXP-K02 rig | REQ-EC-004, DEC-038 | K02; K06 for a rotor |
 | EXP-K06 | End-cap rotor safety (only if a rotor is kept) | A | containment enclosure, drop rig, sound level meter | REQ-EC-007, DEC-038 | CMG research module |
@@ -252,7 +253,12 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-T15 | Rig R13: long thermal run with the governor | A | R13 in a 30 °C chamber | G4, REQ-RVJ-N03, REQ-THM-001/002 | T13 |
 | EXP-T16 | Rig R14: collar and tail on a grip simulant (none, same mass locked, unpowered, active) | A | R14 on the R13 stage, R3 | G5, REQ-EC-002/003 | T17 |
 | EXP-T17 | Rig R14: grip simulant qualification | A | R14 | G5 (validity of T16), inputs of REQ-SIM-005 | R14 built |
-| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15, J18 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-RVJ-C02, REQ-CTRL-012/013, REQ-APP-003/004, DEC-002/008/009/016/020/024/031/035…039/042…045/048 | ethics |
+| EXP-R02 | Real data: every tracker on real inputs, as results cards; DEC-055's line at the severe class | offline; then on H01/R01 recordings | compute (realdata, HW1); the EXP-L01, L02, L04 replay harness | REQ-DATA-002/003/004/007/008, DEC-054, DEC-055, DEC-042, DEC-047 | realdata library; H01/R01 recordings (later) |
+| EXP-R04 | Real data: children's handwriting with and without dysgraphia (DiaGraMo) | offline | compute | REQ-DATA-006, study S | the data set downloaded |
+| EXP-R05 | Real data: a tracker trained on real inputs; does it keep clean writing still? | offline | compute (realdata, HW1) | REQ-ML-001, REQ-DATA-005, DEC-042, DEC-055 | realdata tuning split; R01 training participants (later) |
+| EXP-R06 | Real data: get the missing data sets (IAM-OnDB, PaHaW, OnHW) | offline | — | REQ-DATA-006 | registration and agreements |
+| EXP-R07 | Real data: the page sensor's window error on paper against a fine reference; the page model refitted | A | R10 (inside EXP-T04, T05) | REQ-DATA-007, REQ-RVJ-C05, DEC-059 | T04, T05 |
+| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15, J18, R01, R03 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-RVJ-C02, REQ-CTRL-012/013, REQ-APP-003/004, REQ-DATA-004/008/009, DEC-002/008/009/016/020/024/031/035…039/042…045/048/054/055 | ethics |
 
 ---
 
@@ -3244,8 +3250,10 @@ The following are specified in [`human_study_plan.md`](human_study_plan.md), wit
 | EXP-J09 | Mass and balance: 84 g and 113 g dummies of the Rev J.1 pen (with EXP-K03) | Device burden |
 | EXP-J15 | The clear window: can writers see the ink through the Rev J.1 front? (its wear test on coupons is in §46) | Device burden |
 | EXP-J18 | The heel wheel on writing: distortion, and adaptation over 10 minutes (DEC-048) | Device burden |
+| EXP-R01 | Patients' own writing and tremor at the pen tip, with ink and the pen's IMU (the recording part of EXP-H01, in its sessions) | Measurement only |
+| EXP-R03 | A blinded panel of readers against the AI reader's "words you can read" | Measurement only (the reader's validity) |
 
-EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), EXP-V03 (inside EXP-H01 sessions), and EXP-V04 and EXP-V07 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3.
+EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), EXP-V03 (inside EXP-H01 sessions), and EXP-V04 and EXP-V07 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3, and so do EXP-R02 and R05 (§48).
 
 ---
 
@@ -3839,14 +3847,14 @@ DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc co
 ### EXP-K01: Reaction-mass actuator against its model
 
 - **Purpose and gates.** Check the actuator, the envelope, the power and the slug's material before any tremor test. Gates REQ-EC-001, REQ-EC-008, REQ-EC-009 and DEC-038.
-- **Rig (study M).** The force-constant part runs on R12 in EXP-T07 (§47; `docs/measurement_rig.md` §5.3); the net force on the housing stays with EXP-T16.
+- **Rig (study M).** The force-constant part runs on R12 in EXP-T07 (§47; `docs/measurement_rig.md` §5.3). The net force on the housing (AC-K01-01) stays this experiment's own bench test, on a clamp fixture at R12; EXP-T16 does not measure it (the lead's decision, `prototype_stages.md` §0).
 - **Predictions.**
   - K_m 0.735 N/√W; 0.52 N per axis at 0.5 W; ±4.0 mm stroke on 5 Hz flexures (CALC).
   - Power: 1.0 W peak and 0.145 W average in the design model; 0.029 W average in the test runs, drivers included (CALC, SIM).
   - End-cap Ø26 × 24 mm, 43.3 g (study K). Rev J.1 end-cap (DEC-045): Ø26 × 21 mm, 29.6 g, K_m 0.598 N/√W, 0.082 W average in the design model and 0.028 W in the SIM test runs. Rev J.1 pen: 84.3 g base and 112.7 g with the end-cap, centre of mass 102.5 mm from the tip (CALC); REQ-EC-001 allows 120 g with the end-cap fitted (Rev J had 129.2 g).
   - With the end-cap active only while a tremor line is detected, on the Rev J.1 base load: 7.7–8.6 h at 1 mm tremor at the SIM power and 6.4–7.1 h at the design power (CALC, DEC-045). Rev J had 4.3–6.6 h, and the Rev H base load of 0.081 W gave 9.8–20 h.
   - ET95NM relative permeability ≤ 1.05 (MFR AMF-49).
-- **Set-up.** The end-cap clamped to a 6-axis load cell (ATI Nano17 class, R4). Coil current and slug position (Hall) logged. A permeability meter. A balance.
+- **Set-up.** The end-cap clamped to a 6-axis load cell (ATI Nano17 class) on a clamp fixture at R12. Coil current and slug position (Hall) logged. A permeability meter. A balance.
 - **Procedure.**
   1. Incoming inspection: permeability of every tungsten part that sits within 20 mm of a Hall sensor or coil.
   2. Weigh and measure the end-cap, and the Rev J.1 pen with the end-cap fitted.
@@ -4309,6 +4317,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 - **Purpose and gates.** Measure the speed, stroke times and spectrum of small real handwriting, and refit sim2's v2 writers to them. Gates DEC-040's writer model and, through the detector's tuning writers, REQ-RVJ-C03.
 - **Rig (study M).** Runs on R11's tablet protocol once AC-T06-04 shows a median pen report rate of at least 200 Hz, coalesced samples included. The recorder's CSV goes through `rig.tablet.load_recording` into `sim2j/writers.kinematics` (§47; `docs/measurement_rig.md` §4.2).
+- **Real writing now (study R).** UNIPEN hpb2 (14 adults, a ballpoint on paper, 100 samples/s, letters about 3–6 mm, 2.4 % of the velocity energy at 8–12 Hz) can refit sim2's writers below about 12 Hz now (`realdata.library.writing("tuning", ...)`; `docs/real_data.md`). This experiment's recordings (≥ 200 Hz, small writing) are still needed above that band and for small letters.
 - **Predictions (LIT, CALC).**
   - The literature's target: 1.3–1.7 % of the velocity energy at 8–12 Hz, with 50 % and 90 % of it below 3.1 and 4.9 Hz (LIT CON-25). Mean speed 30.5 mm/s (LIT CON-20); median stroke 90–150 ms (LIT CON-24).
   - CON-25 recorded large characters, about 14 mm. At 3.65 mm and 30 mm/s the v2 writers carry 10.1–12.2 % at 8–12 Hz (v1: 17.3 %), so the target may not hold for small letters (CALC, `docs/revJ_simulation.md` §3).
@@ -4350,6 +4359,7 @@ DEC-042 sets the Rev J control stack.
   - At 0.3 mm it was open for 0.1–12.9 % of the time.
   - The detector already works on a 250 Hz grid (a Welch spectrum of the last 4 s every 50 ms). No prediction exists for the low-power die's stream or for an IMU-only gate. The IMU carries the tremor estimate: without the page sensor the listening smoother's residual was 421 µm, against 412 µm with it (SIM, study L).
   - sim2 (DEC-047; v2 writers, test writers 0–4): ai2's gated listening tracker moved tremor-free writing by 59 µm (36–85): its fallback, the Rev H tracker as built, locks onto the writing's own 8–12 Hz content. The guarded tracker G4, with a stricter detector threshold and ball-on-paper input, moved it by 0 µm.
+  - Real inputs (study R, HW1; `docs/real_data.md`): the gate was open 28 % (PD) and 4 % (ET) of the time at 1 mm, against 62 % and 28 % with model tremor, and 21–42 % at the severe size (1.72 mm), because real tremor wanders about twice as much as the model. Real tremor-free writing moved 25 µm, with the gate shut 99.8 % of the time.
 - **Set-up.** Offline: the EXP-H01 recordings of ET, PD and control writers. The Rev J estimator stack as firmware code, run in a replay harness. Then the bench pen with recorded hand motion.
 - **Procedure.**
   1. SIM gate (REQ-RVJ-C03): run the detector build in sim2 on the tremor-free writing of the tuning writers of writer models v1 and v2; it must never open. Check that its input takes page samples only while the ball is on the paper.
@@ -4365,7 +4375,7 @@ DEC-042 sets the Rev J control stack.
 |---|---|---|---|---|---|---|
 | AC-L01-01 | REQ-CTRL-010 | Gate-open share of tremor-free writing time for every control writer (EXP-H01 recordings replayed offline through the Rev J estimator stack, detector state kept across lines; tip camera as reference) | ≤ 1 % | requirement | REQ-CTRL-010 (closed ≥ 99 %); SIM: never open on the tremor-free writing of any tuning or test writer (results/ai2/ai2.json) | DEC-042 (revisit if the gate fails on real writing) |
 | AC-L01-02 | REQ-CTRL-010 | Tremor-free writing moved by the gated stack on the controls' real recordings (commanded correction, every control writer, RMS); the difference to the Rev H tracker alone is reported | ≤ 25 µm | derived | false-correction convention (validation/README.md s2): on real recordings the absolute bound of AC-E01-09 applies; REQ-CTRL-010's relative bound (Rev H + 2 µm) is for simulation on synthetic writers, which carry about ten times the measured 8-12 Hz content (DEC-040); SIM 26.3 µm with both trackers on synthetic writers; in sim2 false correction is measured against the device-off pen with the same noise (REQ-RVJ-C02): ai2's gated listening tracker moved tremor-free v2 writing by 59 µm (36-85) and the guarded tracker G4 by 0 µm (SIM, test writers 0-4, DEC-047) | DEC-042; DEC-047 |
-| AC-L01-03 | — | Gate-open share of pen-down time after the first 5 s of writing, writers with 1-2 mm tremor at the tip | ≥ 80 % | hypothesis | pass line of study L; SIM: open for 51-73 % of a whole 20 s recording because the detector needs about 4.5 s to open, and for 95 % of its updates at 1-2 mm once open on tuning data (docs/ai_control_v2.md s3.4, s4.1) | DEC-042 |
+| AC-L01-03 | — | Gate-open share of pen-down time after the first 5 s of writing, writers with 1-2 mm tremor at the tip | ≥ 80 % | hypothesis | pass line of study L; SIM: open for 51-73 % of a whole 20 s recording because the detector needs about 4.5 s to open, and for 95 % of its updates at 1-2 mm once open on tuning data (docs/ai_control_v2.md s3.4, s4.1); with real tremor (study R, HW1 with real inputs, whole notes) the gate was open 28 % (PD) and 4 % (ET) of the time at 1 mm, against 62 % and 28 % with model tremor, and 21-42 % at the severe size, because real tremor wanders (docs/real_data.md) -> predicted to FAIL on real tremor until the detector is re-tuned on real data | DEC-042 |
 | AC-L01-04 | REQ-CTRL-009 | Causality test of the estimator stack used in the replay (firmware build): changing any sensor sample after its availability time (acquisition + latency) changes no earlier nose command, and every estimator output at a tick uses only samples available at that tick | conforms (bit-exact) | requirement | REQ-CTRL-009; study L found and fixed two look-ahead leaks before its test (docs/ai_control_v2.md s13 item 3); unit tests in ai2/tests | DEC-042 |
 | AC-L01-05 | — | Tremor-line gate computed on the low-power page sensor's stream at 250 Hz (DEC-045) against the gate on the 1 kHz page-sensor stream, per 50 ms decision on the EXP-H01 recordings (all writers), and its openings on the controls' tremor-free writing (both) | both met (≥ 95 % of decisions agree; never open on tremor-free writing) | hypothesis | pass line of the Rev J.1 study (docs/revJ1_design.md s4.2); the detector already works on a 250 Hz grid (DEC-042); no prediction for the low-power die's stream (EXP-J10) | DEC-045 (revisit if the detector needs the 1 kHz stream) |
 | AC-L01-06 | — | IMU-only tremor-line detector (the fallback pre-detector for a gated PMW3360-class die): tremor lines found by the 1 kHz page-sensor gate that it misses, and its openings on the controls' tremor-free writing (both) | both met (no line missed; never open on tremor-free writing) | hypothesis | pass line of the Rev J.1 study, needed only if EXP-J10 shows the low-power die cannot serve the detector; the IMU carries the tremor estimate (listening-smoother residual 421 µm without the page sensor against 412 µm with it; SIM, study L); no prediction for an IMU-only gate | DEC-045 (fallback: a PMW3360-class die gated by an IMU pre-detector) |
@@ -4381,6 +4391,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows fo
 - **Purpose and gates.** Compare the default with the Rev H tracker, offline on real writing and in closed loop on the bench, with G4, sim2's default (DEC-047), as a third arm. Check the nose command's band limit, and keep any controller that fails the sim2 false-correction gate off the bench. Gates REQ-CTRL-011, REQ-RVJ-C01, REQ-RVJ-C02, DEC-042, DEC-047 and DEC-048.
 - **Predictions (SIM).** At 1–2 mm and 6–10 Hz: 430 against 627 µm (0.69; paired −197 µm, 95 % CI −206 to −188). At 6 Hz, where the Rev H tracker does nothing: 818 → 540 µm. Letters read 64 → 78 %, words 49 → 74 %. 0.3 mm tremor unchanged (161 against 162 µm).
 - **Predictions (sim2, DEC-047; v2 writers, test writers 0–4).** G4: 0.63 of the device-off ink error at 8–12 Hz × 1–2 mm (0.59–0.68), 1.02 at 0.3 mm, 0 µm on tremor-free writing. ai2's gated listening tracker: 0.67, 1.14 and 59 µm. The heel wheel in its tremor mode moved tremor-free writing by 0.40 mm (DEC-048). Without the 64 Hz output filter the listening prediction made the ink 1.6 × worse than the device-off pen (SIM).
+- **Predictions (real inputs, study R; SIM).** At the severe class (1.72 mm) the gated tracker left 0.96 × and the Rev H tracker 1.06 × the ordinary pen's tip tremor, and both read 0.4 of 10 words; at 1 mm, 1.03–1.04 × against 1.08 ×. The Rev H tracker made the tip tremor larger than an ordinary pen's in 56 % of the severe notes (`docs/real_data.md`). EXP-R02 scores the same replays as results cards.
 - **Set-up.** Offline: the EXP-H01 recordings, paired per writer, with the tip camera as the intended path. Bench: the Rev J pen in closed loop on the EXP-I05 tremor rig (R2 with a 2-axis shaker) with recorded hand paths; R3 scans.
 - **Procedure.**
   1. Before the bench: the SIM gate on the firmware under test (every controller in it moves tremor-free writing by ≤ 25 µm against the device-off pen in sim2, REQ-RVJ-C02), and a review of the nose command's band limit (REQ-RVJ-C01).
@@ -4391,7 +4402,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows fo
 <!-- AC-TABLE:EXP-L02:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-L02-01 | REQ-CTRL-011 | Ink error against the tip-camera intent with the gated tracker relative to the Rev H tracker at 1-2 mm tremor, 6-10 Hz (EXP-H01 recordings replayed offline, paired per writer); geometric mean ratio, with the paired 95 % upper bound below 1 | ≤ 0.8 | requirement | REQ-CTRL-011; SIM 430 against 627 µm (0.69), paired -197 µm (95 % CI -206 to -188); 6 Hz 818 -> 540 µm (results/ai2/ai2.json) | DEC-042 (revisit if it fails) |
+| AC-L02-01 | REQ-CTRL-011 | Ink error against the tip-camera intent with the gated tracker relative to the Rev H tracker at 1-2 mm tremor, 6-10 Hz (EXP-H01 recordings replayed offline, paired per writer); geometric mean ratio, with the paired 95 % upper bound below 1 | ≤ 0.8 | requirement | REQ-CTRL-011; SIM 430 against 627 µm (0.69), paired -197 µm (95 % CI -206 to -188); 6 Hz 818 -> 540 µm (results/ai2/ai2.json); with real inputs (study R, SIM) the gated tracker left 0.96 x and the Rev H tracker 1.06 x of the ordinary pen's tip tremor at the severe class (a ratio of about 0.9), and 1.03-1.04 x against 1.08 x at 1 mm (docs/real_data.md) -> predicted to FAIL on real tremor | DEC-042 (revisit if it fails) |
 | AC-L02-02 | REQ-CTRL-011 | Letters read by the app with the gated tracker minus with the Rev H tracker at every tremor condition, and ink error at 0.3 mm relative to the Rev H tracker (both) | both met (≥ -1 point; ≤ 1.02) | requirement | REQ-CTRL-011; SIM letters 78 against 64 % at 1-2 mm; 0.3 mm 161 against 162 µm | DEC-042 |
 | AC-L02-03 | — | Closed loop on the bench pen with the EXP-I05 tremor rig (R2 with a 2-axis shaker), 1-2 mm at 6-10 Hz, 10 seeds: ink error with the gated tracker relative to the Rev H tracker (R3 scans) | ≤ 0.8 | hypothesis | pass line of study L; SIM 0.69, model to model only | DEC-042 |
 | AC-L02-04 | REQ-RVJ-C01 | Firmware under test (review), checked on the EXP-L02 bench runs: the nose command passes the Rev H tracker's 64 Hz second-order output filter or an equivalent band limit no wider than the nose servo's measured bandwidth (EXP-N03), and the filter's delay is counted inside the prediction horizon (both) | conforms | requirement | REQ-RVJ-C01 (DEC-047); without the filter the listening prediction carried 15-200 Hz, the C1S nose missed its command by 890 µm rms, and the ink moved 1.6 x the device-off pen's (SIM, tuning writer 100; docs/revJ_simulation.md s4.1) | DEC-047; DEC-042 |
@@ -4408,6 +4419,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows fo
 - **Predictions.**
   - SIM: 278 µm at 1–2 mm (−152 µm against the gated tracker, 95 % CI −164 to −141), 307 µm at 6 Hz, 127 µm at 0.3 mm. Tremor-free writing moved 19.3 µm on average, but 34.8 µm for the worst writer, above REQ-ML-001's 25 µm. The 20 s calibration as an extra input did not help (290 µm).
   - CALC: 33 248 multiply-accumulates per 2 ms step; 33 kB of int8 weights and about 16 kB of history; about 0.56 ms per step on a 128 MHz Cortex-M33 (28 % of one core; MCU model ASSUMPTION, LIT EML-13).
+  - Real inputs (study R, SIM): trained on synthetic writers, the TCN moved clean real writing 172 µm (93–286) and left 0.71 × the ordinary pen's tip tremor at the severe class. EXP-R05 retrains it on real inputs first (AC-R05-01).
 - **Set-up.** EXP-H01 recordings with the Hall and grip-force channels, split by participant (REQ-DATA-001); only recordings whose consent covers model training (`human_study_plan.md` §3.3, item iii). The gated model-based stack as the conventional comparator (EXP-E01 protocol). The pen MCU on R7 for timing.
 - **Procedure.**
   1. Train on synthetic data plus the training participants, then freeze.
@@ -4419,7 +4431,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows fo
 <!-- AC-TABLE:EXP-L04:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-L04-01 | REQ-ML-001 | Learned estimator (TCN trained on synthetic data and the EXP-H01 training participants) on held-out participants against the gated model-based stack as the conventional comparator: residual-ratio reduction in each of the 4-8 Hz and 8-12 Hz bands (paired bootstrap), false correction on tremor-free writing, and spikes (all, as REQ-ML-001) | all met (≥ 0.10 with the 95 % upper bound below 0; ≤ 25 µm RMS; no spike > 100 µm) | requirement | REQ-ML-001 as written, with the DEC-042 default as the comparator; SIM: 278 against 430 µm at 1-2 mm (paired -152 µm, 95 % CI -164 to -141); tremor-free writing 19.3 µm on average but 34.8 µm for the worst writer (docs/ai_control_v2.md s4.5) -> may fail on that writer | DEC-042 (the TCN drives the nose only if this passes) |
+| AC-L04-01 | REQ-ML-001 | Learned estimator (TCN trained on synthetic data and the EXP-H01 training participants) on held-out participants against the gated model-based stack as the conventional comparator: residual-ratio reduction in each of the 4-8 Hz and 8-12 Hz bands (paired bootstrap), false correction on tremor-free writing, and spikes (all, as REQ-ML-001) | all met (≥ 0.10 with the 95 % upper bound below 0; ≤ 25 µm RMS; no spike > 100 µm) | requirement | REQ-ML-001 as written, with the DEC-042 default as the comparator; SIM: 278 against 430 µm at 1-2 mm (paired -152 µm, 95 % CI -164 to -141); tremor-free writing 19.3 µm on average but 34.8 µm for the worst writer (docs/ai_control_v2.md s4.5) -> may fail on that writer; with real inputs (study R, SIM) the TCN as built moved clean real writing 172 µm (93-286) -> FAILS the 25 µm part until it is retrained on real inputs (EXP-R05, AC-R05-01) | DEC-042 (the TCN drives the nose only if this passes) |
 | AC-L04-02 | REQ-ML-003 | Int8 TCN on the pen MCU (128 MHz Cortex-M33 class; logic analyser, worst case over 1e5 steps): time per 2 ms step, weight memory, and causality (test of AC-L01-04) (all) | all met (≤ 2 ms per 2 ms step; ≤ 64 kB of weights; causal) | requirement | REQ-ML-003; prediction about 0.56 ms per step (28 % of one core) and 33 kB of int8 weights plus about 16 kB of history (CALC; MCU model ASSUMPTION, LIT EML-13); REQ-ML-002 allows ≤ 1 ms per 4 ms step | DEC-042 (TCN in shadow mode) |
 | AC-L04-03 | REQ-ML-003 | Shadow mode (firmware review and logs): the TCN's estimate is computed and logged beside the default, and never reaches the nose command until AC-L04-01 passes | conforms | requirement | REQ-ML-003; DEC-042 | DEC-042 |
 
@@ -4883,7 +4895,7 @@ From `results/rig/experiment_merge_map.csv` (42 rows), with three more parts nam
 | EXP-J03 | R12 | EXP-T09 | AC-J03-01 also needs the heel motors and the brake |
 | EXP-J11 | R12, R8 | the stiffness against preload (step 1) in EXP-T08 | fatigue and drops stay on R8 |
 | EXP-J14 | R12 | EXP-T07 (K_m) and EXP-T08 (pull) | |
-| EXP-K01 | R12 | the force-constant part in EXP-T07 | the net force on the housing stays with EXP-T16 |
+| EXP-K01 | R12 | the force-constant part in EXP-T07 | the net force on the housing stays its own test, on a clamp fixture at R12, not in EXP-T16 (the lead, `prototype_stages.md` §0) |
 | EXP-B07 | R12, R13 | the coupon part in EXP-T08; the pen part in EXP-T15 | |
 | EXP-I05 | R13, R12 | bandwidth and tremor rig (procedure 3–4) in EXP-T10; K_m in EXP-T07 | |
 | EXP-N03 | R13, R12 | the closed loop in EXP-T10; the modes in EXP-T08 | |
@@ -4928,7 +4940,7 @@ From `results/rig/experiment_merge_map.csv` (42 rows), with three more parts nam
 ### Open items
 
 - No rig exists (the spec is `docs/measurement_rig.md`). The DAQ firmware is written but not compiled for its board or run; its bring-up comes first (spec §1.3; §11 items 1 and 3).
-- EXP-B01 on R9: the 4 N level needs a larger in-line cell than the 250 g LSB200 at most tilts, and the spec names no sensor for the indentation of Part 1 (AC-B01-08).
+- EXP-B01 on R9: the 4 N level needs a larger in-line cell than the 250 g LSB200 at most tilts, and the spec names no sensor for the indentation of Part 1 (AC-B01-08). Both are open for the rig design, to be specified before R9 is built (`prototype_stages.md` §0).
 - Friction at the lowest ink forces has a TUR of 1.4 on the K3D40 plate: guarded acceptance, or a finer tangential stage (spec §11 item 6).
 - The LM13 encoders' sub-divisional error is unknown, so page-sensing verdicts on LM13 truth are guarded until it is qualified; the camera truth rests on assumed centroid noise and distortion (spec §11 items 4–5).
 - The excess-power method needs a variant for sentence copying (spec §11 item 7).
@@ -5245,3 +5257,125 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-T17).
 <!-- AC-TABLE:EXP-T17:END -->
+
+---
+
+## 48. Real recorded data: EXP-R02, R04…R07 (study R; DEC-054, DEC-055)
+
+### Purpose and what it gates
+
+Study R (`docs/real_data.md`) tests the pens in simulation (model HW1) on real recorded inputs. The writing is real handwriting on paper (UNIPEN hpb2: 14 adults with a ballpoint on paper forms). The tremor is real: Parkinson's at the pen tip from spirals on a tablet (UCI), essential tremor from the hand (Zenodo). The page sensor has DeltaPen-class errors. Test writers, texts and patients were set aside before anything was tuned. **Nothing was measured on a person or on hardware.**
+- **DEC-054.** Real recorded inputs and the results card are the standard test. Every claimed benefit is reported on held-out real inputs as a results card: words read by a literal reader out of 10 with 95 % writer-bootstrap intervals, tremor left at the tip in mm, and how much clean writing changed. Tremor classes are named in mm at the tip: mild 0.03–0.16 mm, moderate 0.16–0.51 mm, severe above 0.51 mm (typically 1.7 mm).
+- **DEC-055.** No legibility claim at severe tremor until a causal tracker passes on real inputs: at least 2 more readable words out of 10 than the ordinary pen at the severe class, with the 95 % interval above 0, and ≤ 25 µm of change to clean real writing (AC-R02-01). Until then the help for severe tremor is autowrite of accepted text (DEC-049) and the app's clean copy.
+- **What the study found (SIM with real inputs).** At the severe class (1.72 mm), readable words out of 10: ordinary pen 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2. The same Rev J nose with perfect knowledge of the tremor gives 7.0, and the same notes without tremor 6.8. So the nose is big enough; the tremor estimate is the limit. Real tremor wanders about twice as much as the model, so the gate opens only 21–42 % of the time at the severe size. The TCN moved clean real writing by 172 µm. A realistic page sensor changed the results by at most 0.1 word.
+- **Requirements.** REQ-DATA-002…009 (study R's), with REQ-ML-001, REQ-CTRL-009…011 and REQ-RVJ-C05.
+- **Studies with people.** EXP-R01 (patients' own writing, the recording part of EXP-H01) and EXP-R03 (a human panel against the AI reader) are in [`human_study_plan.md`](human_study_plan.md) §21.
+- **One run, several scorings.** EXP-R02 shares the replay runs of EXP-L01, L02 and L04 on the EXP-H01/R01 recordings and scores them as results cards. EXP-R05's model enters EXP-L04 for REQ-ML-001. EXP-R07 runs inside EXP-T04 and T05 on rig R10 (§47).
+- **Data rules.** Splits as REQ-DATA-001; licences as REQ-DATA-006; the library's zero-phase tremor extraction is an input only (REQ-DATA-005).
+
+### EXP-R02: Do the trackers leave real clean writing alone and remove real tremor?
+
+- **Purpose and gates.** Score every tracker on real inputs as a results card (DEC-054), and apply DEC-055's line at the severe class. Gates DEC-055 (a legibility claim at severe tremor), the tracker choice with EXP-L01 and L02 (DEC-042, DEC-047), and REQ-DATA-002, 003, 004, 007 and 008.
+- **Predictions (SIM with real inputs; `results/realdata/realdata.json`).**
+  - Severe class, 1.72 mm (PD and ET pooled), readable words out of 10: ordinary pen 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2; perfect knowledge 7.0; the same notes without tremor 6.8. Tremor left at the tip: Rev H 1.06 ×, Rev J gated 0.96 ×, TCN 0.71 × the ordinary pen's. So every tracker as built fails DEC-055's line.
+  - Moderate class, 0.24 mm: 5.7 of 10 with an ordinary pen and 5.5 with Rev J; the gate stays shut (under 1 % of the time).
+  - Clean real writing moved: Rev H and Rev J gated 25 µm (14–42); TCN 172 µm (93–286).
+  - The Rev H tracker made the tip tremor larger than an ordinary pen's in 56 % of the severe notes and in every moderate and mild note, as the pure-delay limit predicts (review s9).
+- **Set-up.** Now: the realdata test split (UNIPEN hpb2 test writers and texts; UCI and Zenodo test patients at DEC-054's classes), model HW1, with the DeltaPen-class page sensor and the ideal sensor as a labelled bound (`python3 -m realdata.run`). Later: the EXP-H01/R01 recordings, replayed through the same trackers in the harness of EXP-L01, L02 and L04 (the same runs), with the recorded sensor streams.
+- **Procedure.**
+  1. Check the clean writing before use (REQ-DATA-003).
+  2. Run each tracker on the test split at every class: Rev H, Rev J gated, G4 (DEC-047) and the TCN, as built and as re-tuned (EXP-R05; EXP-L01 for the detector), with perfect knowledge as the mechanism's limit.
+  3. Score the results card per class and population: literal words read with the clean-ink ceiling, tremor left at the tip in mm, clean writing changed, all with 95 % intervals over writers; the ideal-sensor rows as a bound.
+  4. Repeat on the recordings when they exist.
+- **Measurands.** Readable words out of 10; tremor left at the tip (peak, √2 × RMS of the major axis in f0 ± 2 Hz); clean writing changed (µm); gate-open share; the same with the ideal sensor.
+
+<!-- AC-TABLE:EXP-R02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R02-01 | REQ-DATA-002 | Severe tremor class (DEC-054: above 0.51 mm at the tip, representative 1.72 mm), PD and ET pooled, on the real-input test split (realdata: UNIPEN hpb2 test writers and texts, UCI and Zenodo test patients; model HW1; the measured-error page sensor), and on the EXP-H01/R01 recordings when they exist: readable words out of 10 (literal reader) with the causal tracker under test minus with the ordinary pen, with its 95 % writer-bootstrap interval; and clean real writing changed by that tracker (the same notes without tremor; mean over the test writers, as the results card, the worst writer reported) (both) | both met (≥ 2 more words, with the 95 % interval above 0; ≤ 25 µm) | derived | DEC-055's pass line, from the decision log, so derived; REQ-DATA-002 (DEC-054); SIM with real inputs at 1.72 mm, readable words out of 10: ordinary pen 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2, perfect knowledge 7.0, the same notes without tremor 6.8; clean real writing moved 25 µm (14-42) by Rev H and Rev J gated and 172 µm (93-286) by the TCN (docs/real_data.md; results/realdata/realdata.json) -> every tracker as built FAILS | DEC-055 (a legibility claim at the severe class only after a pass; until then autowrite of accepted text, DEC-049, and the app's clean copy); DEC-042 (tracker choice, with EXP-L01 and L02) |
+| AC-R02-02 | REQ-DATA-002 | Every tracker results card of EXP-R02 and of the tracker studies it scores (document review): the result on real inputs (test writers, texts and subjects only) reported next to the synthetic one, and results on synthetic writers or tremor labelled as model-input results | conforms | requirement | REQ-DATA-002 (DEC-054); the bridge at 1 mm: Rev J gated left 0.68 x the ordinary pen's tip tremor with synthetic inputs and 1.04 x with real writing, real tremor and the DeltaPen-class sensor (SIM, docs/real_data.md) | DEC-054 |
+| AC-R02-03 | REQ-DATA-003 | Clean writing used for 'clean writing changed' (the UNIPEN hpb2 test notes now; the controls' EXP-H01/R01 recordings later), checked with sim2j.writers.kinematics before use: share of pen-down velocity energy at 8-12 Hz | ≤ 2.5 % | requirement | REQ-DATA-003; UNIPEN hpb2 2.4 % (passes) and UCI letters 1.3 %; BRUSH 35.6 % and the synthetic writers 10.1-17.3 % fail, and on BRUSH the trackers moved clean ink by 160-880 µm (CALC on DATA, SIM; docs/real_data.md); real writing on paper 1.3-1.7 % (LIT CON-25) | validity of every 'clean writing changed' result (AC-R02-01, AC-R05-01) |
+| AC-R02-04 | REQ-DATA-004 | Results cards of EXP-R02 and every claim that cites them (document review): the tremor class named in mm at the tip (peak = sqrt(2) x RMS of the major axis in f0 ± 2 Hz; DEC-054's classes) with the population; peak-to-peak values (EXP-H01, REQ-USR-002) labelled as such | conforms | requirement | REQ-DATA-004 (DEC-054); the round-4 plan's 0.3-1 / 2-4 / 5-10 mm classes are replaced; REQ-USR-002's 1 mm p-p is about 0.5 mm peak (human_study_plan.md s3.6: A_pp = 2 sqrt(2) A_rms) | DEC-054 |
+| AC-R02-05 | REQ-DATA-007 | Every tracker results card of EXP-R02 (review): results with the measured-error page-sensor model (the DeltaPen-class model until EXP-R07 replaces it), and the ideal sensor only as a labelled bound | conforms | requirement | REQ-DATA-007 (DEC-054; review R14); with the DeltaPen-class model the results changed by at most 0.1 word and 0.01 mm against the ideal sensor (SIM, docs/real_data.md) | DEC-054 |
+| AC-R02-06 | REQ-DATA-008 | Words read in every results card of EXP-R02 (review): a literal reader (no lexicon, no spelling correction, greedy decoding), with the clean-ink ceiling of the same notes and a 95 % interval over writers | conforms | requirement | REQ-DATA-008 (review s13; DEC-054); TrOCR base, literal, chosen on the tuning notes, reads 6.8 of 10 words of the clean real test notes (SIM); EXP-R03 checks it against people (AC-R03-01) | DEC-054; DEC-055 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-R02).
+<!-- AC-TABLE:EXP-R02:END -->
+
+- **Decision rule.** A causal tracker passes AC-R02-01: a legibility claim is allowed at the severe class (DEC-055), and that tracker becomes the candidate default (DEC-042 revisit, with EXP-L01 and L02). None passes: no legibility claim at severe tremor; the help stays autowrite of accepted text (DEC-049) and the app's clean copy.
+
+### EXP-R04: Poor handwriting and dyslexia inputs
+
+- **Purpose and gates.** Bring children's handwriting, with and without dysgraphia, into the library for study S and the practice functions (spelling help, guided practice). Gates REQ-DATA-006 for the new source.
+- **Set-up.** DiaGraMo (CC BY 4.0; 276 Czech children, 161 with dysgraphia; 1.36 GB; LIT CON-85) through the library's loaders.
+- **Procedure.** Record the licence and attribution in the source registry. Split the children by participant, stratified by dysgraphia, before any use (REQ-DATA-001). Measure the kinematics with `sim2j.writers.kinematics` (speed, stroke time, velocity spectrum, 8–12 Hz share), and report them against the adult writers.
+- **Measurands.** Kinematics per group; the share of pen-down velocity energy at 8–12 Hz, which decides whether its writing may also serve as clean writing (REQ-DATA-003).
+- **Predictions.** None: the set was found late and is not yet used.
+
+<!-- AC-TABLE:EXP-R04:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R04-01 | REQ-DATA-006 | DiaGraMo in the library (review and the source registry test): its licence (CC BY 4.0) and attribution recorded, with what may go into results/, and the children split by participant, stratified by dysgraphia, before any use (REQ-DATA-001) | conforms | requirement | REQ-DATA-006; DiaGraMo: CC BY 4.0, 276 Czech children, 161 with dysgraphia (LIT CON-85; found late, not yet used); realdata/tests checks that every source has a licence and a redistribution rule | study S and the practice functions' use of children's writing |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-R04).
+<!-- AC-TABLE:EXP-R04:END -->
+
+- **Decision rule.** Loaded under its licence: study S and the practice studies with children (EXP-W05, EXP-L08, EXP-G07) may use it as input.
+
+### EXP-R05: Does a tracker trained on real inputs keep clean writing still?
+
+- **Purpose and gates.** Retrain the TCN on real inputs, and check that it leaves clean real writing alone, before any test on people's recordings. Gates the TCN's entry to EXP-L04 (REQ-ML-001) and EXP-R02 (DEC-055), and REQ-DATA-005.
+- **Predictions (SIM).** As built (trained on synthetic writers) the TCN moved clean real writing 172 µm (93–286), against 17 µm on the synthetic writers, and left 0.71 × the ordinary pen's tip tremor at the severe class; 1.1 mm of tremor still made the words unreadable. No prediction for the retrained model.
+- **Set-up.** The realdata tuning split: UNIPEN hpb2 tuning writers (5) and texts (81) with the UCI and Zenodo tuning patients' tremor; later the EXP-R01 training participants whose consent covers model training (`human_study_plan.md` §3.3, item iii). The DeltaPen-class page sensor. The test is writer-disjoint, on the test split.
+- **Procedure.**
+  1. Build the training inputs from the simulated sensor streams only: the zero-phase tremor extraction drives the simulated hand, never the model (REQ-DATA-005).
+  2. Retrain the TCN, then freeze it.
+  3. Test on the test split in HW1: the results card, with clean writing changed per test writer.
+  4. Hand the frozen model to EXP-R02 (DEC-055's line) and EXP-L04 (REQ-ML-001 on the held-out EXP-H01/R01 participants).
+- **Measurands.** Clean writing changed; tremor left at the tip; words read; the spread over writers.
+- The gated tracker's detector is re-tuned on real data in EXP-L01 (study R's open issue 5).
+
+<!-- AC-TABLE:EXP-R05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R05-01 | REQ-ML-001 | TCN retrained on the realdata tuning split (UNIPEN hpb2 tuning writers and texts with the UCI and Zenodo tuning patients' tremor; later the EXP-R01 training participants), frozen, on the test split in HW1 with the DeltaPen-class page sensor: clean real writing changed (the same notes without tremor; mean over the test writers, the worst writer reported) | ≤ 25 µm | derived | REQ-ML-001's false-correction limit (≤ 25 µm RMS on tremor-free writing) applied in simulation on real inputs, as the entry check to EXP-L04, so derived; as built (trained on synthetic writers) the TCN moved clean real writing 172 µm (93-286), against 17 µm on the synthetic writers (SIM, docs/real_data.md): no prediction for the retrained model | the TCN's entry to EXP-L04 and EXP-R02; DEC-042 (shadow mode until REQ-ML-001 passes); DEC-055 |
+| AC-R05-02 | REQ-DATA-005 | Training and test pipeline of the retrained TCN, and every tracker replay of EXP-R02 (code review, and a test that no controller or estimator input is read from the library's tremor or writing arrays): only simulated or recorded sensor streams reach a controller or estimator | conforms | requirement | REQ-DATA-005; the library's tremor extraction is zero-phase (it uses future samples) and marked for inputs and statistics only (realdata/dsp.py); REQ-CTRL-009 is the command-side rule (AC-L01-04) | DEC-054; DEC-042 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-R05).
+<!-- AC-TABLE:EXP-R05:END -->
+
+- **Decision rule.** Pass: the model enters EXP-L04 and EXP-R02. Fail: the TCN stays in shadow mode (DEC-042) until more real training data exist (EXP-R01, EXP-R06).
+
+### EXP-R06: Get the missing data sets
+
+- **Purpose and gates.** Obtain the real-writing sets that need registration, an agreement or permission, for larger test sets. Gates REQ-DATA-006.
+- **Procedure.** Request IAM-OnDB (registration; English sentences with timing), PaHaW (Parkinson's handwriting; a licence agreement) and OnHW (no licence stated, so permission first; right-handed writers only, and its time stamps are the tablet's processing times, LIT EML-82). Record each licence in the registry before any use.
+- **Measurands.** Licence obtained and recorded, per set.
+
+<!-- AC-TABLE:EXP-R06:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R06-01 | REQ-DATA-006 | IAM-OnDB, PaHaW and OnHW (review): used only after the registration, licence agreement or permission is obtained and recorded in the source registry; results from research-only or non-commercial sources hold statistics only | conforms | requirement | REQ-DATA-006; IAM-OnDB needs registration, PaHaW a licence agreement, and OnHW states no licence (LIT EML-82); UNIPEN, BRUSH, PADS and NewHandPD are already held to statistics only (docs/real_data.md) | larger real-writing test sets (DEC-054) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-R06).
+<!-- AC-TABLE:EXP-R06:END -->
+
+- **Decision rule.** Obtained: the set joins the library under its licence, for a larger test split. Refused: it stays out.
+
+### EXP-R07: Is DeltaPen's window error the sensor's or the reference's?
+
+- **Purpose and gates.** Measure a pen-tip optical-flow sensor on paper against a finer reference than DeltaPen's Wacom, and replace the pessimistic DeltaPen-class page model with the measured one. Gates REQ-DATA-007 and, through the model, every tracker results card.
+- **Runs inside EXP-T04 and EXP-T05 on rig R10** (§47): the same sessions and records, no separate runs, with EXP-J10's addition. R10's truth is 0.38 µm per 10 ms window with the Zaber stages and 2.6 µm with the LM13 encoders (`docs/measurement_rig.md` §3.4), far finer than a Wacom's (about ±0.4 mm class, MFR AMF-98), so the error it measures is the sensor's. The window error uses DeltaPen's own metric, with the vector metric beside it (DEC-059), as AC-J10-04.
+- **Predictions.** The DeltaPen-class model gives all of DeltaPen's error (median 23.6 µm, mean 68.3 µm per 10 ms window, on a Wacom surface, LIT OPT-02) to the sensor, so it is pessimistic. No measurement on paper exists.
+- **Procedure.** From EXP-T04's records of the die chosen for the pen: fit the library's page model (`realdata/sensors.py`: window error against movement and its spread, drift, scale error, dropouts; latency from EXP-T05) on half of the runs, and check it on the other half. Then re-run EXP-R02 with it, keeping the DeltaPen-class model as the pessimistic bound.
+- **Measurands.** Window error (median and mean) per movement class; latency; dropouts; the refitted model's parameters.
+
+<!-- AC-TABLE:EXP-R07:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R07-01 | REQ-DATA-007 | Page model of the realdata library refitted on half of the EXP-T04 records of the chosen die on paper (window error against movement and its spread; drift, scale error and dropouts; latency from EXP-T05): the 10 ms window error it predicts on the other half, by DeltaPen's metric (DEC-059), median and mean | within ±20 % of the measured values | hypothesis | engineering judgement: with the DeltaPen-class model the trackers' results changed by at most 0.1 word against the ideal sensor (SIM); that model gives all of DeltaPen's error (LIT OPT-02, on a Wacom surface) to the sensor and reproduced 27 and 76 µm against 23.6 and 68.3 µm on the clean test notes (CALC); R10's truth is 0.38-2.6 µm per window (docs/measurement_rig.md s3.4) | REQ-DATA-007 (the measured model replaces the DeltaPen-class one in every tracker simulation) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-R07).
+<!-- AC-TABLE:EXP-R07:END -->
+
+- **Decision rule.** Pass: the measured model replaces the DeltaPen-class one in every tracker simulation (REQ-DATA-007). Fail: a richer model, such as sim2j's held-and-walking model from EXP-J10's addition.

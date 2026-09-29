@@ -21,6 +21,7 @@ Contents:
 - §18 Rev J nose v2 with people (DEC-036, DEC-039): EXP-N09 (autowrite), EXP-N10 (delayed ink)
 - §19 Rev J AI and control with people (DEC-042, DEC-043): EXP-L03 (ink lag; shares sessions with EXP-N10), EXP-L06 (text prediction in the app), EXP-L07 (style synthesis), EXP-L08 (guidance that fades across sessions)
 - §20 Rev J integrated layout with people (DEC-044, DEC-045, DEC-048): EXP-J08 (ink visibility; superseded for Rev J.1 by EXP-J15), EXP-J09 (mass and balance, with EXP-K03), EXP-J15 (the clear window), EXP-J18 (the heel wheel on writing)
+- §21 Real recorded data with people (study R; DEC-054, DEC-055): EXP-R01 (patients' own writing and tremor, the recording part of EXP-H01), EXP-R03 (a reading panel against the AI reader)
 
 ---
 
@@ -102,8 +103,10 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-J09 (§20) | Do writers accept the Rev J.1 masses and balance (84 g base, 113 g with the end-cap)? | 10 writers (with EXP-K03) | Within-subject: two dummies, 10 min each | Comfort, fatigue and acceptance | device burden | unpowered dummies; ethics |
 | EXP-J15 (§20) | Can writers see the fresh ink through the clear window of the Rev J.1 front? | 10 right- and 10 left-handed writers | Within-subject: printed Rev J.1 and Rev J fronts on dummy pens, eye tracking or video from the eye | Distance behind the ball at which the ink first shows; ratings | device burden | unpowered dummies; ethics |
 | EXP-J18 (§20) | Does the heel wheel distort writers' own writing, and do they adapt within 10 minutes? | healthy writers (n from a pilot, §11 rule) | Within-subject: wheel retracted, free and in its tremor mode, 10 min each | Distortion against their own writing with the wheel retracted, and its change over 10 min | device burden | EXP-D07 safety gate; ethics |
+| EXP-R01 (§21) | What do ET and PD patients' own writing and tremor look like at the pen tip, with ink? | EXP-H01's participants (ET, PD, older and healthy adults) | The recording part of EXP-H01, in its sessions (the retest is the second session): ink and hover over a digitiser, the pen's IMU, REQ-DATA-009 | Tip tremor per participant in DEC-054's classes (zero-to-peak mm); writing kinematics | none (measurement) | with EXP-H01; ethics |
+| EXP-R03 (§21) | Does the AI reader's "words you can read" match people? | naive readers (n from a pilot, §11 rule) | Blinded literal transcription of study R's rendered test-case ink, and EXP-R01 ink with consent | Tracker-minus-ordinary-pen words, panel against the AI reader | none (the reader's validity) | ethics |
 
-EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii).
+EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii). The same holds for EXP-R02 and R05 (`bench_protocols.md` §48); R05 also trains a model.
 
 ---
 
@@ -239,6 +242,8 @@ It is research question rank 2. The census sets the addressable population and t
 
 There is no assistance and no intervention: the pen is passive.
 
+**EXP-R01** (§21) is this study's recording part, not a separate visit: the same participants and sessions, with the retest as its second session. It adds REQ-DATA-009's recording rules (the ink path and hover over a digitiser at ≥ 200 points/s and ≤ 0.05 mm; the IMU's acquisition and availability time stamps; handedness, grip, posture, medication state and device configuration), and reports the tip tremor also in DEC-054's classes (zero-to-peak mm; the peak-to-peak values here are about twice as large for a steady tremor, REQ-DATA-004).
+
 ### Population
 
 - **ET: n = 20**, extendable to 40 by the adaptive rule below. Stratified by self-reported writing difficulty (yes/no). Usual medication, with the time of the last dose, caffeine and alcohol recorded.
@@ -254,9 +259,9 @@ There is no assistance and no intervention: the pen is passive.
 
 **The instrumented passive pen (to be built; no actuator):**
 
-- the Rev A form: Ø15 mm, 150 mm, 30–35 g, CoM about 75 mm from the tip, so that grip and mass match the future device;
+- R11's recording pen (`docs/measurement_rig.md` §4.1): the Ø24 mm body first, the Rev J grip, with its mass and centre of mass set by tungsten slugs to the Rev J.1 base pen (84.3 g, 86 mm from the tip, CALC); the 14 mm slim body becomes a second arm once study B's slim core is chosen. Grip size changes how tremor reaches the nib, so the census uses the grip being designed (the lead's decision, `prototype_stages.md` §0; the Rev A form of Ø15 mm is dropped);
 - a D1 refill rigidly mounted on a 0–5 N axial load cell;
-- a 6-axis IMU at ≥ 1 kHz;
+- a 6-axis IMU at ≥ 1 kHz (1.92 kHz in R11's pen), with acquisition and availability time stamps (REQ-DATA-009);
 - the optical module(s) selected in EXP-S01;
 - a ≤ 3 g marker cluster on the tail for motion capture;
 - a USB tether through a medical-grade isolator;
@@ -265,7 +270,7 @@ There is no assistance and no intervention: the pen is passive.
 **References:**
 
 - optical motion capture (≥ 250 Hz, ≤ 0.05 mm accuracy in a 0.3 m volume). The nib position comes from the rigid-body transform calibrated with a pivot procedure;
-- paper on an EMR digitiser for timing;
+- paper on an EMR digitiser that records the ink path and hover at ≥ 200 points/s and ≤ 0.05 mm (REQ-DATA-009; R11's tablet protocol, AC-T06-04);
 - 4800 dpi scans of every page (bench rig R3);
 - the reference chain must agree with the scanned ink to ≤ 50 µm RMS (AC-H01-08; PDT notes §2.7 require ≥ 200 Hz and 0.05 mm).
 
@@ -1525,3 +1530,44 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-J18).
 <!-- AC-TABLE:EXP-J18:END -->
+
+---
+
+## 21. Real recorded data with people: EXP-R01, R03 (study R; DEC-054, DEC-055)
+
+Study R (`docs/real_data.md`) tested the pens in simulation on real handwriting of healthy adults and real tremor of patients, composed in the model's hand. Two questions need people: what patients' own writing and tremor look like with the pen (EXP-R01), and whether the AI reader's "words you can read" match what people read (EXP-R03). The offline and bench parts (EXP-R02, R04…R07) are in `bench_protocols.md` §48.
+- **DEC-054.** Real recorded inputs and the results card are the standard test. Tremor classes are named in mm at the tip (peak = √2 × RMS of the major axis in f0 ± 2 Hz): mild 0.03–0.16 mm, moderate 0.16–0.51 mm, severe above 0.51 mm, typically 1.7 mm. These are zero-to-peak values; EXP-H01 and REQ-USR-002 use peak-to-peak, about twice as large for a steady tremor (REQ-DATA-004).
+- **DEC-055.** No legibility claim at severe tremor until a causal tracker passes on real inputs (AC-R02-01).
+- **Ethics.** Both studies are covered by EXP-H01's approval and the common elements of §3. EXP-R01's recordings are EXP-H01's. Showing a participant's ink to a reading panel (EXP-R03) needs the optional consent of §3.3.
+
+### EXP-R01: Patients' own writing and tremor at the pen tip, with ink (the recording part of EXP-H01)
+- **Relation to EXP-H01.** Not a separate visit. EXP-R01 is the recording part of EXP-H01 (§4): the same participants (ET, PD, older and healthy adults), the same sessions and tasks, with EXP-H01's retest as the second session. It adds REQ-DATA-009's recording rules and reports the tip tremor in DEC-054's classes beside EXP-H01's peak-to-peak values.
+- **Design.** Sentences on ruled paper over a digitiser that records the ink path and hover at ≥ 200 points/s (R11's tablet protocol, `bench_protocols.md` §47), with the instrumented pen's IMU (R11's Ø24 mm recording pen first). Handedness, grip, posture, medication state and device configuration are recorded. Participant- and session-level splits are fixed before any analysis (REQ-DATA-001, REQ-DATA-009).
+- **Measurands.** Writing speed, stroke times, letter size (micrographia) and velocity spectrum; each participant's tip tremor in DEC-054's convention and its class; the pen's IMU spectra; the controls' tremor-free writing checked against REQ-DATA-003 before it serves as clean writing.
+- **Predictions (CALC on recorded data).** PD tip tremor while drawing spirals is mostly 0.1–0.3 mm. DEC-054's boundaries are the median (0.16 mm) and 90th percentile (0.51 mm) of 24 tuning PD patients' spirals; on 25 test patients the shares were 60/24/16 % against 50/40/10. Spirals on a tablet are a floor: patients who could not draw are missing (LIT PDT-82). No open recording of ET at the pen tip exists, so ET's sizes here are the first. The composed inputs use healthy writers' letters; patients write slower and smaller, and adapt to their tremor.
+- **Claim type.** None (measurement).
+- **Decision.** The recordings replace the composed inputs in EXP-R02 and in the tracker studies (EXP-L01, L02, L04). Class boundaries in writing outside AC-R01-02: revisit DEC-054's classes.
+
+<!-- AC-TABLE:EXP-R01:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R01-01 | REQ-DATA-009 | EXP-R01/H01 recordings (protocol and data review before any analysis): ink on paper over a digitiser with hover tracked, at the stated rate and resolution; the pen's IMU with acquisition and availability time stamps; handedness, grip, posture, medication state and device configuration recorded; participant- and session-level splits fixed before analysis (all) | all met (≥ 200 points/s; ≤ 0.05 mm; conforms) | requirement | REQ-DATA-009 (DEC-054; independent review s11); R11's tablet recorder logs every pen sample with time stamps, and AC-T06-04 must show a median ≥ 200 Hz; the tablet reports 0.01 mm but is accurate to about ±0.25 mm (LIT CON-101), so AC-H01-08 registers the chain per stroke | DEC-054 (the recordings replace the composed inputs); EXP-R02, EXP-L01, L02, L04 |
+| AC-R01-02 | REQ-DATA-004 | Median and 90th percentile of the PD participants' tip tremor during sentence copying (EXP-R01, DEC-054's convention: peak = sqrt(2) x RMS of the major axis in f0 ± 2 Hz, by the realdata tremor-library method on pen-down runs), each with a 95 % bootstrap interval over participants | both intervals include DEC-054's boundaries (0.16 mm; 0.51 mm) | hypothesis | DEC-054's classes are the median (0.16 mm) and 90th percentile (0.51 mm) of 24 tuning PD patients' tip tremor while drawing spirals, checked on 25 test patients (60/24/16 % against 50/40/10; CALC on DATA, UCI); spirals on a tablet are a floor (patients who could not draw are missing, LIT PDT-82) and writing is not spirals: no prediction for writing | DEC-054 (the classes move if a census in writing gives other boundaries) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-R01).
+<!-- AC-TABLE:EXP-R01:END -->
+
+### EXP-R03: Does the AI reader's "words you can read" match people?
+- **Design.** A blinded panel of naive readers (n from a pilot, §11 rule) transcribes the rendered ink of study R's test cases (every pen and class) and, with consent, EXP-R01 ink. Each note is read by several readers, in random order, blind to pen and class. Scoring is literal, as the AI reader's: exact words, no correction.
+- **Measurands.** Words read out of 10 per note by the panel (the median reader) and by the AI reader (TrOCR base, literal); the tracker-minus-ordinary-pen difference in words, panel against reader; the clean-ink ceiling for each.
+- **Predictions (SIM).** The AI reader reads 6.8 of 10 words of the clean real test notes, and 0.3–0.7 of 10 at the severe class with an ordinary pen. Its decoder has a language prior from its training text, and the test phrases include rare words. No prediction for people. UNIPEN writing is for research use only: the panel may see it, and results hold statistics only (REQ-DATA-006).
+- **Claim type.** None (the reader's validity).
+- **Decision.** Within AC-R03-01: the reader's words stand for people in DEC-055 and in the results cards. Outside: DEC-055 is judged by the panel, and the results cards report the panel's reads.
+
+<!-- AC-TABLE:EXP-R03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-R03-01 | REQ-DATA-008 | Tracker-minus-ordinary-pen difference in words read out of 10, the literal AI reader (TrOCR base) against the blinded human panel (literal scoring, median reader), paired per note, on study R's test cases at the severe and moderate classes: the 95 % interval of the mean difference between reader and panel | within ±1 word | derived | made to protect AC-R02-01: half of DEC-055's +2-word line, so the reader alone cannot flip DEC-055's verdict (derived); REQ-DATA-008 (a literal reader); the reader reads 6.8 of 10 words of the clean real test notes, and its decoder has a language prior from its training text (SIM, docs/real_data.md); no measurement with people | DEC-055 (judged by the reader or by the panel); DEC-054 (the results card) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-R03).
+<!-- AC-TABLE:EXP-R03:END -->
