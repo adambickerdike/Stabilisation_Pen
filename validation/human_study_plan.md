@@ -15,6 +15,10 @@ Contents:
 - §12 EXP-A02: guidance acceptance with people (pencil concept). It follows §10–§11 so that existing references to those sections stay valid.
 - §13 EXP-I02: rotational share of writing tremor (inside EXP-H01 sessions)
 - §14 EXP-I03: passive nose and grip options on writers (extends EXP-H03)
+- §15 Rev H outcome studies: EXP-W01…W05, and EXP-G07 (the guidance board with people)
+- §16 Rev J heel drive with people (DEC-037): EXP-D08 (guided writing), EXP-D09 (tremor), EXP-D11 (lead-through and autowrite with relaxed hands)
+- §17 Rev J inertial end-cap with people (DEC-038): EXP-K03 (user crossover), EXP-K05 (cue perception)
+- §18 Rev J nose v2 with people (DEC-036, DEC-039): EXP-N09 (autowrite), EXP-N10 (delayed ink)
 
 ---
 
@@ -81,8 +85,15 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-I03 (§14) | Do passive nose and grip options (skid friction, soft sleeve, hand resting, heavier cap) improve writing on balance? | 20 ET (EXP-H03-T cohort) + 12 healthy | Within-subject, randomised, participant- and reader-blinded, non-active prototypes | Legibility and in-band ink tremor against the unmodified pencil | device burden; passive effect | Stage A–B; DEC-024 |
 | EXP-W01…W05 (§15) | Rev H (bigger grip, DEC-029): does the 75 g pen add tremor; does the nose cut ink tremor in ET; do cues or a size assist help PD micrographia; does guided practice improve unassisted writing; does the app's spelling help reduce errors in dyslexia? | 20 ET; 20 PD with micrographia; poor-handwriting cohort; dyslexia cohort | crossovers and practice trials (§15) | tip tremor; ink tremor and words read; letter-height trend; unassisted legibility at retention; unassisted spelling errors | IA, LI, device burden | Rev H prototype after EXP-I05; ethics |
 | EXP-G07 (§15) | Does practice with the guidance board improve unassisted writing, and is its extra downward pull acceptable? | adults (Touch arm, then board), later children with dysgraphia or dyslexia and PD | phases A–C (§15) | unassisted retention error; acceptance of the pull | LI | after EXP-G06 safety gate; ethics |
+| EXP-D08 (§16) | Does the heel drive guide tracing, loops and reversed letters as well as the desk board, does every writer overpower it, and is unassisted retention no worse? | 12 adults, then children with dysgraphia | Randomised crossover (none, nose, board, heel steer-only, heel steered and driven), resist block, retention block after 1 day | Target error against the board with felt force at the 95th percentile; unassisted retention | IA; LI (retention block) | after the EXP-D07 safety gate; ethics |
+| EXP-D09 (§16) | Does the heel's constraint and damping cut ink tremor without bending clean writing? | ≥ 8 ET + controls | Within-subject: none, nose, heel steer + brake, heel + nose; copying and free writing | Ink error; distortion of clean writing | IA | after EXP-D07 |
+| EXP-D11 (§16) | Can the drive lead a relaxed hand through a sentence, and do people accept it? | 8 | Mode switched on by the participant; lead speeds 4–10 mm/s; practice sentence | Letters read at the lead speed; comfort | IA (the device writes) | after EXP-D07 |
+| EXP-K03 (§17) | Does the active end-cap cut tremor more than the nose alone and more than the same weight, and is the back-heavy pen accepted? | 12 ET (+ a PD group) | Blinded crossover: nose, nose + weight, nose + active end-cap | Tip tremor amplitude (4–12 Hz); legibility; preference | IA; device burden | after EXP-K01, K02 |
+| EXP-K05 (§17) | Do people with ET and PD name the direction of an end-cap cue? | ET, PD with tremor, matched controls (n from a pilot, §11 rule) | Psychophysics: 8 directions, at rest and while writing | Direction named correctly; ink jitter during the cue | none (measurement) | after EXP-K01; K06 for rotor pulses |
+| EXP-N09 (§18) | Do people control and accept autowrite, and is its ink as legible as their own writing? | healthy adults, then ET (n from a pilot, §11 rule) | Autowrite switched on by the user; copy a known sentence at 2.5 and 3 mm | Legibility against the person's own writing; mode errors | IA (the device writes) | after EXP-N04, N05, N08; ethics |
+| EXP-N10 (§18) | Do writers accept ink that trails the hand? | adults (n from a pilot, §11 rule) | Within-subject: 0/50/100/150 ms delay, tablet then pen | Writing errors; acceptance of ≥ 100 ms | device burden | tablet: ethics only; pen: after EXP-N05 |
 
-EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3.
+EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44).
 
 ---
 
@@ -1188,3 +1199,159 @@ Assisted and **unassisted** error, retention after 1 day and 1 week, legibility,
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-G07).
 <!-- AC-TABLE:EXP-G07:END -->
+
+---
+
+## 16. Rev J heel drive with people: EXP-D08, D09, D11
+
+The heel drive (DEC-037) uses the paper as ground. A small steered wheel at the heel guides the pen along a letter. By default it only steers, so it cannot move the pen on its own. In an explicit lead-through or autowrite mode its motor can lead a relaxed hand (DEC-039), and it never starts a stroke. The bench protocols are in `bench_protocols.md` §41. The predictions come from `docs/grounded_drive.md` and `results/drive/` (model HW1-D, synthetic writers, SIMULATION; the relaxed-writer model and the tyre friction are ASSUMPTIONS).
+- **Safety.** Only after the EXP-D07 safety gate (force cap, release, stall, lift) on the exact build. Inclusion and exclusion as §3.2, including the rule on active implants for the actuated pen.
+- **Claims.** Guidance while the drive is on is immediate assistance. Practice followed by an unassisted retention test is lasting improvement (§1). The two are never mixed.
+
+### EXP-D08: Guided writing with people (tracing, loops, reversed letters, resist)
+- **Design.** n = 12 adults, then children with dysgraphia (ethics approval for children). Randomised crossover: none, nose alone, desk board, heel steer-only, heel steered and driven. Tasks: tracing, "write big" loops, b–d reversal. A "resist" block: the participant writes their own letter against the template. An unassisted retention block after 1 day.
+- **Measurands.** Target error; letters read by the app; felt force (instrumented handle); yields; mode logs; preference; retention.
+- **Predictions (SIM).**
+  - Tracing, dysgraphia-like: heel steer-only 372 µm, desk board 384 µm, nothing on 582 µm. Dyslexia-like: 491 µm against the board's 416 µm (the heel is worse here).
+  - Every full guide lowers the letters read (92 % → 84–90 %).
+  - Felt change 0.24–0.26 N at the 95th percentile (0.32 N for a lightly resisting hand).
+  - Loops stay at 0.99 of the target height (board 0.91).
+  - A writer set on 'b' kept 'b' under every device.
+  - Guided accuracy did not transfer to unassisted writing in a virtual-fixture study; error amplification did (LIT HAP-67).
+- **Decision.** Pass: DEC-037 can be adopted (together with EXP-D01, D05 and D07). Heel worse than the board: keep the board for tracing. Retention worse than none: use guidance only with fading and catch trials. Not accepted: revisit DEC-037.
+
+<!-- AC-TABLE:EXP-D08:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-D08-01 | — | Target error with the heel drive (steer-only, and steered and driven) relative to the desk board (full law), tracing, adults then children with dysgraphia, geometric mean ratio over participants, with the felt force (instrumented handle) at the 95th percentile (both) | both met (ratio ≤ 1.0; felt force ≤ 0.5 N) | hypothesis | pass line of the drive study; SIM: steer-only 372 µm against the board's 384 µm (dysgraphia-like) but 491 against 416 µm (dyslexia-like); felt change p95 0.24-0.26 N, 0.32 N for a resisting hand (docs/grounded_drive.md s5.1, s5.2) -> uncertain | DEC-037 (heel against board, DEC-031) |
+| AC-D08-02 | REQ-DRV-002 | Resist block: participants who overpower the drive in every trial (write their own letter against the template, e.g. 'b' against a 'd' template) | all participants | derived | REQ-DRV-002 made measurable with people; SIM: a writer set on 'b' kept 'b' under every device, felt change p95 0.46 N (docs/grounded_drive.md s5.3) | DEC-037 |
+| AC-D08-03 | — | Unassisted retention block after 1 day: target error after practice with the heel drive relative to practice with none (unassisted; lasting-improvement endpoint) | not worse than none | hypothesis | pass line of the drive study; guided accuracy did not transfer to unassisted writing in a virtual-fixture study, error amplification did (LIT HAP-67); guidance effects mostly vanish when off (HAP-42/43/44) | DEC-037; heel practice mode (fading, catch trials) |
+| AC-D08-04 | — | Participants who rate the heel guidance acceptable (comfort and preference questionnaire at the end of the crossover) | ≥ 70 % | hypothesis | DEC-037 revisit trigger (guidance with people not accepted); 70 % engineering judgement, as AC-G07-01 | DEC-037 |
+| AC-D08-05 | REQ-DRV-003 | Mode logs of every session: the drive motor pushed only in lead-through or autowrite blocks the participant had switched on, and never before a pen-down (no stroke started by the drive) | no push outside the mode; no stroke started | requirement | REQ-DRV-003; DEC-039 (assistance modes never start a stroke); met by the mode logic in SIM | DEC-037; DEC-039 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-D08).
+<!-- AC-TABLE:EXP-D08:END -->
+
+### EXP-D09: Tremor: constraint and damping
+- **Design.** People with ET (n ≥ 8): copying and free writing with none, nose, heel steer + brake, and heel + nose. Controls without tremor, for false correction.
+- **Measurands.** Ink error; words read; distortion of clean writing.
+- **Predictions (SIM; 6 ET writers, 1 mm at 4–10 Hz).**
+  - Wheel steer + brake: 0.74 of the error with nothing on, but it bends clean writing by 186 µm.
+  - Wheel steered along a known text: 0.73, with 68 µm on clean writing.
+  - The nose's tracker: 0.77 with 18 µm (0.42 at 10 Hz, nothing at 4 Hz).
+  - Ball damper + nose: 0.62 with 95 µm.
+  - The heel helps at 4–6 Hz, where the tracker does nothing.
+- **Decision.** As predicted (free writing fails, known text passes): offer the heel's tremor mode only for copying, tracing and dictation practice. If 4–6 Hz tremor matters more and EXP-D13 passes, reconsider the driven ball (`docs/grounded_drive.md` §6).
+
+<!-- AC-TABLE:EXP-D09:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-D09-01 | — | Free writing, ET participants (n ≥ 8): ink error with the heel's steer + brake mode relative to none, AND distortion of the tremor-free writing of controls by the same mode (ink moved against the same pen off) (both) | both met (0.8; 100 µm RMS) | hypothesis | pass line of the drive study (-20 % with ≤ 100 µm on clean writing); SIM: 0.74 at 1 mm, 4-10 Hz, but 186 µm on clean writing (166 µm for an adapted writer) (docs/grounded_drive.md s5.5) -> expected FAIL on distortion | DEC-037 (heel tremor mode; wheel or ball) |
+| AC-D09-02 | — | Copying a known text, ET participants: ink error with the wheel steered along the writer's own letters relative to none, AND distortion of the controls' tremor-free copying (both) | both met (0.8; 100 µm RMS) | hypothesis | pass line of the drive study; SIM: 0.73 with 68 µm on clean writing, and 0.69-0.70 at 4-6 Hz where the nose's tracker does nothing (docs/grounded_drive.md s5.5) | DEC-037 (heel tremor mode for copying, tracing and dictation) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-D09).
+<!-- AC-TABLE:EXP-D09:END -->
+
+### EXP-D11: Lead-through and autowrite with relaxed hands
+- **Design.** n = 8. The participant switches the mode on and is asked to keep the hand relaxed. Lead speeds 4–10 mm/s. The practice sentence. A comfort questionnaire.
+- **Measurands.** Letters read; pen speed; force; comfort.
+- **Predictions (SIM).** Wheel lead + nose: 76 % of letters and 60 % of words read at 7.2 mm/s, force up to 0.49 N. A relaxed hand led through a 'd' drew 93 % of the bowl. The relaxed-writer model (the aim follows the hand, τ 0.25 s) is an ASSUMPTION: real people may resist, over-help or tire.
+- **Claim type.** IA; here the device writes, so no claim is made about the user's own writing.
+- **Decision.** Pass: keep lead-through and gross-scale autowrite as explicit modes (DEC-037, DEC-039). Fail: the drive's lead stays a demonstration; the nose's autowrite (EXP-N09) does not need it.
+
+<!-- AC-TABLE:EXP-D11:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-D11-01 | — | Lead-through of a relaxed hand through the practice sentence by the heel drive with the nose, mode switched on by the participant: letters read by the app's recogniser, pen speed, and discomfort reported (all three) | all three met (≥ 70 % of letters; ≥ 5 mm/s; no discomfort) | hypothesis | pass line of the drive study; SIM: wheel lead + nose 76 % of letters and 60 % of words at 7.2 mm/s, force up to 0.49 N (relaxed-writer model, ASSUMPTION; docs/grounded_drive.md s5.4) | DEC-037; DEC-039 (lead-through and autowrite modes) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-D11).
+<!-- AC-TABLE:EXP-D11:END -->
+
+---
+
+## 17. Rev J inertial end-cap with people: EXP-K03, K05
+
+The end-cap (DEC-038) holds a 30 g tungsten slug that coils push by ±4 mm against the tremor, on top of the nose. It may also play short cues, but only in pauses and only after EXP-K05. It never writes or steers. The bench protocols are in `bench_protocols.md` §42. The predictions come from `docs/inertial_endcap.md` and `results/endcap/endcap_study.json` (H1 on the Rev H pen, SIMULATION; literature for the cues).
+- **Safety.** Only after EXP-K01 and EXP-K02 on the exact build; for CMG pulses in EXP-K05, also after EXP-K06. Inclusion and exclusion as §3.2, including the rule on active implants (NdFeB tiles on the slug, and the nose magnets).
+
+### EXP-K03: Does the end-cap help people?
+- **Design.** Randomised crossover. 12 writers with ET, and a PD group. Blinded housings of equal look and mass: nose alone, nose + the same weight fixed, nose + active end-cap. Archimedes spirals, lines and a sentence.
+- **Measurands.** Tip tremor amplitude (pen IMU, 4–12 Hz band); spiral rating; legibility; preference; fatigue.
+- **Predictions (SIM, CALC).** Further reduction at 8–12 Hz, 1–2 mm: +8 / +18 / +20 % at r_rot 0.3 / 0.5 / 0.7; the same weight fixed +17 / +12 / +4 %; at 4–6 Hz +8 to +12 %. The end-cap adds about 43 g and moves the balance point 24 mm back (CALC).
+- **Claim type.** IA and device burden.
+- **Decision.** Pass: keep the end-cap as a detachable option. Active not 5 points better than the weight: fit the weight or nothing (DEC-038). Back-heavy pen rejected: revisit DEC-038.
+
+<!-- AC-TABLE:EXP-K03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-K03-01 | REQ-EC-002 | Tip tremor amplitude (pen IMU, 4-12 Hz band) with nose + active end-cap relative to nose alone, blinded housings, ET participants, spirals, lines and a sentence; reduction | ≥ 10 % | hypothesis | pass line of study K; REQ-EC-002; SIM +8 / +18 / +20 % at 8-12 Hz depending on the unmeasured grip split, +8 to +12 % at 4-6 Hz (results/endcap/endcap_study.json) | DEC-038 (keep the end-cap as a product option) |
+| AC-K03-02 | REQ-EC-003 | Tremor reduction with the active end-cap minus that with the same weight fixed (blinded housings of equal mass), ET participants | ≥ 5 points | hypothesis | REQ-EC-003; prediction depends on the grip split: -9 / +6 / +16 points at r_rot 0.3 / 0.5 / 0.7 (SIM) | DEC-038 |
+| AC-K03-03 | — | Legibility of the copied sentence (blinded readers, % words correct) with nose + active end-cap relative to nose alone | no loss | hypothesis | pass line of study K; false correction on tremor-free writing 11 µm (lognormal writers) and 20-23 µm (glyph writers) with the device (SIM) | DEC-038 |
+| AC-K03-04 | — | Participants who accept the back-heavy pen with the end-cap for a writing session (preference and fatigue questionnaire) | ≥ 70 % | hypothesis | DEC-038 revisit trigger (writers reject the back-heavy pen); the end-cap adds about 43 g and moves the balance point 24 mm back (CALC; about 115 g on the Rev H pen, 134-136 g with every Rev J module); 70 % engineering judgement, as AC-G07-01 | DEC-038 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-K03).
+<!-- AC-TABLE:EXP-K03:END -->
+
+### EXP-K05: Is a cue felt, and felt correctly, by people with tremor?
+- **Design.** The pen with the end-cap playing asymmetric vibration (40 Hz + 80 Hz, phase 0 and −180°) and, with the research module, CMG pulses. Eight directions. ET, PD with tremor, and matched controls. At rest and while writing.
+- **Measurands.** Direction named correctly (%); detection threshold (m/s² at the grip); reaction time; ink jitter during the cue.
+- **Predictions.**
+  - Healthy adults named cue directions 93–99 % of the time with hand-held devices (LIT HAP-82, HAP-84, HAP-85).
+  - Sides with tremor were near chance in the only patient study found (LIT PDT-39, preprint).
+  - A 0.5 N, 40 + 80 Hz cue shakes the ink by 186 µm RMS while writing (SIM).
+  - People need at least 0.33 s to act on a cue, while a stroke lasts 0.09–0.15 s (LIT HAP-84, CON-24). Cues can steer drift, size and line direction, not strokes.
+- **Claim type.** Measurement.
+- **Decision.** Named correctly in the patient groups and the ink within 30 µm: a cue mode while writing. Named correctly but the ink shakes (as predicted): cues only in pauses or with the pen lifted. Not named correctly in a group: no directional cue for that group.
+
+<!-- AC-TABLE:EXP-K05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-K05-01 | REQ-EC-006 | Direction of end-cap cues (asymmetric 40 + 80 Hz vibration, phase 0 and -180°; CMG pulses with the research module) named correctly, 8 directions, at rest and while writing, in each patient group (ET; PD with tremor) | ≥ 90 % | requirement | REQ-EC-006; healthy adults 93-99 % with hand-held devices (LIT HAP-82, HAP-84, HAP-85); sides with tremor near chance in the only patient study (LIT PDT-39, preprint) -> uncertain; matched controls as reference | DEC-038 (cue mode only after EXP-K05) |
+| AC-K05-02 | REQ-EC-005 | Ink jitter during a cue given while writing (ball on the paper), at the cue level used in AC-K05-01 | ≤ 30 µm RMS | requirement | REQ-EC-005 (rule R-C1); prediction 186 µm RMS at 0.5 N, 40 + 80 Hz (116-239 µm over the grip splits); 76 µm at 0.25 N; 31 µm at 75 Hz (SIM) -> predicted to FAIL: cues only in pauses or with the pen lifted | DEC-038 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-K05).
+<!-- AC-TABLE:EXP-K05:END -->
+
+---
+
+## 18. Rev J nose v2 with people: EXP-N09 (autowrite) and EXP-N10 (delayed ink)
+
+The nose v2 (DEC-036) moves the ball 6 mm in every direction. In an explicit autowrite mode (DEC-039) the pen draws a known text in the user's own style while the user sweeps the pen along the line. It waits when the user slows, lifts the ball when the text leaves its reach, and never pushes the hand with the nose. The bench protocols are in `bench_protocols.md` §43. The predictions come from `docs/nose_v2.md` and `results/nose2/nose2.json` (HW1 on synthetic writers, SIMULATION).
+- **Safety.** Only after EXP-N04 (heat), EXP-N05 (pen lift) and EXP-N08 (bench autowrite, with the SIM gate) on the exact build. Inclusion and exclusion as §3.2, including the rule on active implants (N52 magnets).
+- **Freedom to operate.** Autowrite with a pen lift is close to claim 1 of PAT-01. Attorney review comes before any product claim (DEC-036).
+
+### EXP-N09: Autowrite with people
+- **Design.** Healthy adults first, then people with ET (ethics approval). The user switches autowrite on and copies a known sentence at 2.5 and 3 mm x-height. The same person also writes the sentence by hand. Questionnaires on control and trust (users were frustrated when a tool disobeyed, LIT HAP-62).
+- **Measurands.** Legibility by blinded readers; sweep speed chosen; perceived pull; mode errors; mode logs.
+- **Predictions (SIM).** 99.2 % of letters and every word read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters per second at a 9.5 mm/s sweep. One of six test writers needed a slower sweep; the pen now sets the speed per line (DEC-039). An uneven sweep (±30 %) and a drifting hand (±1 mm) were tolerated.
+- **Claim type.** IA; the device writes, so no claim is made about the user's own writing.
+- **Decision.** Pass: autowrite stays an explicit mode (DEC-039). Legibility worse than the person's own writing, mode errors, or reports of the pen "taking over": revisit DEC-039.
+
+<!-- AC-TABLE:EXP-N09:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-N09-01 | — | Legibility of the autowritten sentence minus that of the same person's own handwritten sentence (blinded readers, % words correct), 2.5 and 3 mm letters, healthy adults then people with ET | ≥ 0 points | hypothesis | pass line of the nose v2 study; SIM: 99.2 % of letters and every word read with up to 1 mm tremor, 98 % of words at 2 mm (synthetic writers, docs/nose_v2.md s5.3) | DEC-039 (revisit if users do not accept or control it) |
+| AC-N09-02 | REQ-RVJ-N07 | Mode conformity: the pen drew letters only in the autowrite mode the participant switched on (logs), never pushed the hand with the nose, and no participant reports the pen 'taking over' outside the mode (questionnaire) (all) | all met | requirement | REQ-RVJ-N07; DEC-039; users were frustrated when a handheld tool disobeyed (LIT HAP-62) | DEC-039 |
+| AC-N09-03 | — | Participants who complete the sentence in autowrite without a mode error and rate it acceptable (control and trust questionnaire) | ≥ 70 % | hypothesis | DEC-039 revisit trigger (users do not accept or control it); 70 % engineering judgement, as AC-G07-01 | DEC-039 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-N09).
+<!-- AC-TABLE:EXP-N09:END -->
+
+### EXP-N10: Delayed ink acceptance
+- **Design.** Delayed ink at 0/50/100/150 ms, first on a tablet (no hardware needed), then with the nose and the pen lift. Randomised order within each participant; copied sentences.
+- **Measurands.** Writing errors (duplicated or inserted strokes); change of letter size; preference.
+- **Predictions.**
+  - People notice 50–61 ms of inking latency (LIT OPT-50).
+  - Delayed visual feedback raised duplicated strokes (LIT OPT-51) and caused inserted strokes and larger letters (LIT OPT-52); both abstracts only.
+  - 100 ms of delayed ink needs about 4.5–5.3 mm of travel, and 40–55 % of the ink is laid after the hand has lifted, so it needs the pen lift (CALC).
+- **Claim type.** Device burden.
+- **Decision.** Fail (as expected): delayed ink stays off (DEC-039 keeps it out of the default). Pass: a delayed-ink mode may be designed, with the pen lift.
+
+<!-- AC-TABLE:EXP-N10:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-N10-01 | — | Writing errors (duplicated or inserted strokes) with delayed ink at 50, 100 and 150 ms relative to 0 ms, copied sentences, tablet then pen; ratio of error rates at each delay | ≤ 1.0 | hypothesis | pass line of the nose v2 study (no increase over 0 ms); delayed visual feedback raised duplicated and inserted strokes (LIT OPT-51, OPT-52, abstracts only); inking latency is noticed from 50-61 ms (LIT OPT-50) -> may fail at ≥ 100 ms | DEC-039 (delayed ink not the default) |
+| AC-N10-02 | — | Users who accept a delay of 100 ms or more (preference after the delayed-ink blocks) | ≥ 50 % | hypothesis | pass line of the nose v2 study; 100-200 ms of delay will be seen (LIT OPT-50); 40-55 % of delayed ink is laid after the hand lifts, so the pen lift is needed (CALC) | DEC-039; delayed-ink mode with the pen lift |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-N10).
+<!-- AC-TABLE:EXP-N10:END -->
