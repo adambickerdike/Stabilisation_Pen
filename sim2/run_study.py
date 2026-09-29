@@ -202,6 +202,13 @@ def stage_native(quick=False):
     settings = [("h1", None), ("mujoco", {})]
     if not quick:
         settings.append(("mujoco_stiff", {"solref": (5e-4, 1.0), "solimp": (0.99, 0.999, 1e-4, 0.5, 2.0), "impratio": 10.0}))
+        # reuse an earlier run of this stage made when the stiff setting was the native default (its label says so)
+        old = load_stage("native")
+        if old and "solref 0.5 ms" in old.get("label", "") and not any(r["contact"] == "mujoco_stiff" for r in old["rows"]):
+            for r in old["rows"]:
+                rows.append(dict(r, contact="mujoco_stiff" if r["contact"] == "mujoco" else r["contact"], reused=True))
+            settings = [("mujoco", {})]
+            log("  native: reusing the earlier h1 and stiff-setting rows; running the new default setting")
     for model, kw in settings:
         cfg = P.h1_check_config(0.5)
         if kw is not None:
