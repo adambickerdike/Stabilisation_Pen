@@ -181,6 +181,8 @@ SENSORS = {
     "page_idle_drift": V(0.04375e-3, "m/s", "LIT", "OPT-02 (idle drift per axis)"),
     "page_mdape_writing": V((0.010, 0.014), "-", "LIT", "OPT-75 (DeltaPen Fig. 7, X / Y MdAPE at 2.5-5 cm/s, read from the bar chart)"),
     "page_ideal_noise": V(3e-6, "m rms", "ASSUMPTION", "the earlier studies' ideal page sensor: kept only as a labelled bound"),
+    "page_lift_max": V(2e-3, "m", "MFR", "OPT-54 (PMW3360 with the LM19-LSI lens: lift cut-off 2-3 mm; the lower bound, as "
+                                        "Rev J's revj/simparams.py); sim2's default 0.8 mm was used in a first run by mistake"),
     "imu": V("LSM6DSV16X class", "-", "MFR", "OPT-37 (60 ug/sqrt(Hz), 2.8 mdps/sqrt(Hz))"),
     "tilt_err_sd": V(1.0 * D2R, "rad", "ASSUMPTION", "IMU gravity-direction error while writing (tremor accelerations averaged "
                                                    "over 0.2 s); OPT-19 gives the drift scale; to measure in EXP-B28"),

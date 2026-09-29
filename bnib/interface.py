@@ -192,6 +192,7 @@ def build_interface(d=None, x=None, ev: Optional[Dict] = None, km: Optional[Dict
                 "held_error_lognormal": ({"median_um": cal["median_m"] * 1e6, "log_sd": cal["sigma"], "status": "CALC",
                                           "source": "Monte Carlo fit (bnib/sim.deltapen_calibration)"} if cal else None),
                 "rate": L(val(SENSORS["page_rate"]), "Hz", "LIT", "OPT-01"),
+                "lift_cutoff": L(val(SENSORS["page_lift_max"]) * 1e3, "mm", "MFR", SENSORS["page_lift_max"].source),
                 "latency": L(val(SENSORS["page_latency"]) * 1e3, "ms", "ASSUMPTION", SENSORS["page_latency"].source),
                 "ideal_bound_noise": L(val(SENSORS["page_ideal_noise"]) * 1e6, "um rms", "ASSUMPTION", "a labelled bound only"),
             },

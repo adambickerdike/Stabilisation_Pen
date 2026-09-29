@@ -85,6 +85,9 @@ PD_KW = {"f_jitter": 0.15, "am_depth": 0.45, "ellipticity": 0.6, "harmonic": 0.2
 CELLS = (("ET", 4.0, 1.0e-3), ("ET", 6.0, 2.0e-3), ("ET", 8.0, 0.3e-3), ("ET", 8.0, 1.0e-3), ("ET", 8.0, 2.0e-3),
          ("ET", 12.0, 1.0e-3), ("PD", 4.5, 1.0e-3), ("PD", 5.5, 2.0e-3), ("PD", 5.0, 0.3e-3))
 TUNE_CELLS = (("ET", 8.0, 1.0e-3), ("PD", 5.0, 1.0e-3))
+# the slim piezo stage (B3) runs on writers 0-2 only (compute; the four cores are shared)
+WRITERS_FOR = {"B3": TEST_WRITERS[:3]}
+ROWS_LIFT08 = BUILD / "sim_rows_lift08.json"     # the first grid, run with sim2's default 0.8 mm page lift cut-off
 # travel variant (B1w, +-1.5 mm) against B1 (+-1.0 mm): the cells where the handle's tremor reaches beyond +-1 mm
 TRAVEL_CELLS = (("ET", 8.0, 1.0e-3), ("ET", 8.0, 2.0e-3), ("ET", 6.0, 2.0e-3), ("PD", 5.5, 2.0e-3))
 
@@ -247,7 +250,7 @@ def config(sd: SimDesign, theta_deg: float = 50.0, dt: float = DT) -> P.Config:
     refill = P.Refill(F_c=F_c, L_ref=1.0, slide_range=(-0.3e-3, 12e-3), frictionloss=val(CONTACT["slide_friction"]),
                       front_stop="nose_adaptive")
     sensors = P.Sensors(hall_noise=nose.hall_noise, page_rate=val(SENSORS["page_rate"]), page_latency=val(SENSORS["page_latency"]),
-                        page_noise=val(SENSORS["page_ideal_noise"]))
+                        page_noise=val(SENSORS["page_ideal_noise"]), page_lift_max=val(SENSORS["page_lift_max"]))
     contact = P.Contact(mu_ball=0.15)
     return P.Config(geom=geom, nose=nose, refill=refill, sensors=sensors, contact=contact, hand=P.HandH1(r_rot=0.5),
                     N0=1.0, dt=dt, record_hz=2000.0, hand_model="h1", gravity=False,
@@ -1057,6 +1060,8 @@ def stage_test(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, n
     cells = CELLS[3:4] if quick else CELLS
     for w in ws:                                  # writers outer: partial results cover every design
         for name in names:
+            if w not in WRITERS_FOR.get(name, ws):
+                continue
             seed = TEST_SEEDS[w % len(TEST_SEEDS)]
             if _done(rows, "test", name, w, seed, cells, ("nose", "oracle") if name in ("B1", "B3") else ("nose",)):
                 continue
@@ -1115,7 +1120,7 @@ def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1"
     test seed against the set-up's), the nib's page gain and lag, and sim2's contact gate (the servo fades the command
     when the ball lifts; the H1 writer's ball chatters in short lifts)."""
     kind, f0, amp = cell
-    key = f"diag4|{name}|{kind}|{f0:g}|{amp * 1e3:g}|{w}"
+    key = f"diag5|{name}|{kind}|{f0:g}|{amp * 1e3:g}|{w}"
     if rows.has(key):
         return rows.rows[key]
     sd = designs[name]
@@ -1184,7 +1189,12 @@ def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1"
                 "ink_oracle_um": rms(e_or, m), "clip_residual_um": rms(clip_res, m), "floor_um": rms(e_fl, m),
                 "n_samples": int(m.sum())}
 
+    tz = ro["tipz"][:n]
+    up = (~co) & (t >= su.case_pre_s)
     row = {"design": name, "w": w, "seed": seed, "cell": f"{kind} {f0:g} Hz {amp * 1e3:g} mm", "reach_mm": reach * 1e3,
+           "page_lift_max_mm": float(su.pm.cfg.sensors.page_lift_max * 1e3),
+           "handle_lift_up_median_mm": float(np.median(tz[up] - tz[0]) * 1e3) if up.any() else None,
+           "handle_lift_up_p90_mm": float(np.percentile(tz[up] - tz[0], 90) * 1e3) if up.any() else None,
            "writing": block(cw), "all_contact": block(c), "page_gain_xy": gains, "lag_ms_xy": [1e3 * x for x in lags],
            "preview_ms": gd * 1e3, "command_error_unclipped_um": rms(err, m2), "gated_share": float(np.mean(g_eff[m2] < 0.5)),
            "gated_share_of_command_error": float(np.sum(err[low] ** 2) / max(np.sum(err[m2] ** 2), 1e-30)),
@@ -1200,6 +1210,34 @@ def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1"
         f"changed by {wr['handle_change_um']:.0f} um; mu {wr['mu_ball_none']:.3f}/{wr['mu_ball_oracle']:.3f}; beyond reach "
         f"{100 * wr['share_beyond_reach']:.1f} %; gain {gains[0]:.3f}/{gains[1]:.3f}; lag {1e3 * lags[0]:.1f}/{1e3 * lags[1]:.1f} ms")
     return row
+
+
+def _lift_sensitivity(rows: Rows) -> Dict:
+    """The first test grid ran with sim2's default page lift cut-off (0.8 mm) instead of the sensor's 2 mm (OPT-54): the
+    firmware then lost the page at every pen lift between strokes (the H1 writer lifts the handle about 1.2-1.6 mm) and
+    faded its authority back in over 50 ms after each touchdown.  Case by case (same keys), what that cost."""
+    if not os.path.exists(ROWS_LIFT08):
+        return {}
+    try:
+        old = json.load(open(ROWS_LIFT08))
+    except Exception:
+        return {}
+    acc: Dict = {}
+    for k, r in rows.rows.items():
+        if not k.startswith("test|") or r.get("ctl") not in ("nose", "oracle") or r.get("kind") not in ("ET", "PD"):
+            continue
+        o = old.get(k)
+        if not o or o.get("ratio") is None or r.get("ratio") is None:
+            continue
+        a = acc.setdefault(r["design"], {}).setdefault(r["ctl"], {"old": [], "new": [], "w_old": [], "w_new": []})
+        a["old"].append(o["ratio"]); a["new"].append(r["ratio"])
+        a["w_old"].append(o["words_app"]); a["w_new"].append(r["words_app"])
+    out = {"designs": {}, "label": "SIMULATION (the same cases with a 0.8 mm and a 2 mm page lift cut-off)"}
+    for dsg, v in acc.items():
+        out["designs"][dsg] = {ctl: {"ratio_lift08": float(np.mean(x["old"])), "ratio_lift2": float(np.mean(x["new"])),
+                                     "words10_lift08": float(10 * np.mean(x["w_old"])), "words10_lift2": float(10 * np.mean(x["w_new"])),
+                                     "n": len(x["new"])} for ctl, x in v.items()}
+    return out
 
 
 def _travel_summary(rows: Rows) -> Dict:
@@ -1378,7 +1416,8 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
                             "label": "SIMULATION: the ideal page sensor (3 um white) is a BOUND, not a prediction"}
     out["sim2j_revJ_reference"] = _sim2j_reference(CELLS)
     out["travel"] = _travel_summary(rows)
-    out["oracle_diagnosis"] = {r["design"]: r for k, r in rows.rows.items() if k.startswith("diag4|")}
+    out["lift_cutoff_sensitivity"] = _lift_sensitivity(rows)
+    out["oracle_diagnosis"] = {r["design"]: r for k, r in rows.rows.items() if k.startswith("diag5|")}
     return out
 
 

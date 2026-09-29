@@ -434,8 +434,8 @@ def facts_ai3() -> dict | None:
         sp = d["spell"]["test"]["score"]
         own = d["words"]["spelling_v2"]["independent"]["test"]
         pt = d["predict"]["test"]
-        top3 = [v["personalised (chosen)"]["after1_top3"] for v in pt.values()
-                if isinstance(v, dict) and isinstance(v.get("personalised (chosen)"), dict)]
+        top3 = [v["personalised (chosen)"]["after1_top3"] for k, v in pt.items()          # the test journals only (the
+                if str(k).isdigit() and isinstance(v, dict) and isinstance(v.get("personalised (chosen)"), dict)]   # app note lines are another test)
         return {"pause_fixed_of10": cues["pause_offer"]["fixed_on_paper_per_10_errors"],
                 "lift_fixed_of10": cues["tick_lift"]["fixed_on_paper_per_10_errors"],
                 "caught_known": sp["detection_rate"], "fa_known": sp["fa_per_100_correct"],
@@ -454,7 +454,7 @@ def facts_wholepen() -> dict | None:
     try:
         sm = load(WHOLEPEN_SUMMARY)
         rows = [r for r in (sm.get("tail_and_collar_vs_locked_test") or []) + (sm.get("tail_and_collar_vs_locked_grips") or [])
-                if str(r.get("active", "")).startswith("collar") and isinstance(r.get("gain_vs_locked"), (int, float))]
+                if r.get("active") == "collar_nose" and isinstance(r.get("gain_vs_locked"), (int, float))]   # the causal collar, not its perfect-knowledge limit
         g = [r["gain_vs_locked"] for r in rows]
         return {"collar_gain": [min(g), max(g)] if g else None, "n": len(g),
                 "label": "SIMULATION (study W, the collar carrying the Rev J pen)", "source": WHOLEPEN_SUMMARY}

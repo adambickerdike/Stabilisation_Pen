@@ -514,7 +514,8 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       "scale error, OPT-75). The ideal 3 um sensor appears only as a labelled bound. Rules (servo bandwidth, face gap) were "
       "chosen on tuning writers 100-101 / seed 300 and frozen in `results/bnib/rules.json` before the test writers 0-5 "
       "(seeds 200-203) ran. Tasks: tremor-free writing (false correction), ET 4-12 Hz and PD 4.5-5.5 Hz tremor at "
-      "0.3-2 mm, a thermal run at 35 deg with 2 mm tremor. Idealisations: the face is massless with a 5 um engagement "
+      "0.3-2 mm, a thermal run at 35 deg with 2 mm tremor. The page sensor loses the page above 2 mm of lift (MFR OPT-54, "
+      "as Rev J's parameters). Idealisations: the face is massless with a 5 um engagement "
       "ramp; the carrier cannot tilt (virtual pivot), so the couple's static 0.1-0.17 mm offset is not in these runs; the "
       "refill's slide friction is 10 mN (conservative for a rolling guide, optimistic for PTFE at 35 deg); gravity acts on "
       "the nib only (sim2's H1 convention for the rest of the pen); controllers: 'none' (nib held centred), the project's "
@@ -672,32 +673,46 @@ def sim_analysis_md(sim: Dict, cards: Dict) -> str:
     dw = dd.get("B1w") or {}
     ref = F["ref"].get(d.get("cell", ""), {}) if d else {}
     if d and d.get("writing"):
-        wr, al = d["writing"], d["all_contact"]
+        wr = d["writing"]
         gx, gy = (d.get("page_gain_xy") or [None, None])[:2]
         lx, ly = (d.get("lag_ms_xy") or [None, None])[:2]
-        L.append(f"Why perfect knowledge leaves more with B1 than with the Rev J nose (one case taken apart: {d['cell']}, "
-                 f"writer {d['w']}, seed {d['seed']}; SIM, `sim.oracle_diagnosis`). The nib reproduces the commanded page "
-                 f"offset with gain {f(gx, 3)} / {f(gy, 3)} (x / y) and a {f(lx, 1)} / {f(ly, 1)} ms lag (the oracle previews "
-                 f"{f(d.get('preview_ms'), 1)} ms). While the letters are written, the handle's tremor at its tip point is "
-                 f"{f((wr.get('handle_tremor_rms_um') or 0) * 1e-3, 2)} mm rms (95th percentile {f(wr.get('handle_tremor_p95_mm'), 2)} mm) "
-                 f"and passes B1's +-{f(d['reach_mm'], 2)} mm reach {f(100 * (wr.get('share_beyond_reach') or 0), 1)} % of the "
-                 f"time; of the {f(wr.get('ink_oracle_um'), 0)} um left (rms deviation of the ink from the tremor-free run; "
-                 f"{f(wr.get('ink_none_um'), 0)} um with the nib held centred) the clipped peaks are {f(wr.get('clip_residual_um'), 0)} um "
-                 f"and the seed-to-seed floor {f(wr.get('floor_um'), 0)} um"
-                 + (f"; the +-1.5 mm variant in the same case clips {f((dw.get('writing') or {}).get('clip_residual_um'), 0)} um "
-                    f"and leaves {f((dw.get('writing') or {}).get('ink_oracle_um'), 0)} um" if dw.get("writing") else "")
-                 + f". Over all contact, including the 4 s on the paper before writing, the reach clips more "
-                 f"({f(al.get('clip_residual_um'), 0)} of {f(al.get('ink_oracle_um'), 0)} um; beyond the reach "
-                 f"{f(100 * (al.get('share_beyond_reach') or 0), 1)} % of the time). The rest is mostly sim2's contact gate: "
-                 f"the H1 writer's ball makes {d['lifts_under_5ms']} lifts shorter than 5 ms in this run ({d['lifts']} in all), "
-                 f"and the servo fades the command back in after each touchdown ({f(100 * d['gated_share'], 1)} % of the samples "
-                 f"inside the reach, a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms after a touchdown, "
-                 f"{f(100 * d['gated_share_of_command_error'], 0)} % of the command error there). The Rev J nose shares the gate; "
-                 f"its +-3 mm reach never clips"
+        ww = dw.get("writing") or {}
+        gain_w = ((wr["ink_oracle_um"] - ww["ink_oracle_um"]) / wr["ink_oracle_um"]
+                  if ww.get("ink_oracle_um") and wr.get("ink_oracle_um") else None)
+        L.append(f"One case taken apart ({d['cell']}, writer {d['w']}, seed {d['seed']}; SIM, `sim.oracle_diagnosis`). The nib "
+                 f"reproduces the commanded page offset with gain {f(gx, 3)} / {f(gy, 3)} (x / y) and a {f(lx, 1)} / {f(ly, 1)} ms "
+                 f"lag (the oracle previews {f(d.get('preview_ms'), 1)} ms). While the letters are written the handle's tremor at "
+                 f"its tip point is {f((wr.get('handle_tremor_rms_um') or 0) * 1e-3, 2)} mm rms (95th percentile "
+                 f"{f(wr.get('handle_tremor_p95_mm'), 2)} mm) and passes B1's +-{f(d['reach_mm'], 2)} mm reach "
+                 f"{f(100 * (wr.get('share_beyond_reach') or 0), 1)} % of the time. Of the {f(wr.get('ink_oracle_um'), 0)} um left "
+                 f"(rms deviation of the ink from the tremor-free run; {f(wr.get('ink_none_um'), 0)} um with the nib held centred) "
+                 f"the clipped peaks account for {f(wr.get('clip_residual_um'), 0)} um and the seed-to-seed floor for "
+                 f"{f(wr.get('floor_um'), 0)} um (in quadrature)"
+                 + (f"; the +-1.5 mm variant clips {f(ww.get('clip_residual_um'), 0)} um and leaves {f(ww.get('ink_oracle_um'), 0)} um, "
+                    f"{f(100 * gain_w, 0)} % less" if gain_w is not None else "")
+                 + f". The command falls below half its intended size in {f(100 * d['gated_share'], 1)} % of the samples inside "
+                 f"the reach (a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms after a touchdown: the firmware fades "
+                 f"its authority back in over 50 ms whenever the page sensor has lost the page). The pen-up handle lift in this "
+                 f"run is {f(d.get('handle_lift_up_median_mm'), 2)} mm median ({f(d.get('handle_lift_up_p90_mm'), 2)} mm at the "
+                 f"90th percentile) against the sensor's {f(d.get('page_lift_max_mm'), 1)} mm cut-off. The Rev J nose's +-3 mm "
+                 f"never clips"
                  + (f" (its perfect-knowledge ratio in this cell: {f(ref.get('ratio_oracle'), 2)}, B1's: "
-                    f"{f((F['by'].get(d['cell']) or {}).get('ratio_oracle'), 2)})" if ref else "")
-                 + ". So at 1 mm the reach costs little on the letters and the gate, the lag and the floor set B1's limit; at "
-                   "2 mm the reach dominates (the travel variant below).")
+                    f"{f((F['by'].get(d['cell']) or {}).get('ratio_oracle'), 2)})" if ref else "") + ".")
+        L.append("")
+    ls = ((sim or {}).get("lift_cutoff_sensitivity") or {}).get("designs") or {}
+    if ls.get("B1"):
+        b = ls["B1"]
+        n_, o_ = b.get("nose") or {}, b.get("oracle") or {}
+        L.append(f"The page sensor's lift range matters (SIM, the same {n_.get('n')} cases run twice). A first run of the whole "
+                 f"grid used sim2's default page lift cut-off, 0.8 mm, instead of the sensor's 2 mm (MFR OPT-54, as Rev J's "
+                 f"parameters). The H1 writer lifts the handle by more than 0.8 mm between strokes, so the firmware lost the page "
+                 f"at every lift and faded its authority back in over 50 ms after each touchdown, at the start of every stroke. "
+                 f"With the 0.8 mm cut-off B1's tracker left {f(n_.get('ratio_lift08'), 2)} of the tremor (2 mm: "
+                 f"{f(n_.get('ratio_lift2'), 2)}) and perfect knowledge {f(o_.get('ratio_lift08'), 2)} ("
+                 f"{f(o_.get('ratio_lift2'), 2)}); readable words out of 10 with the tracker {f(n_.get('words10_lift08'), 1)} "
+                 f"({f(n_.get('words10_lift2'), 1)}). The rules were re-tuned and the grid re-run with 2 mm; the first grid is "
+                 f"kept in `bnib/build/sim_rows_lift08.json`. A page sensor that keeps the page through the lifts between strokes "
+                 f"is part of the nib's performance (REQ-BNIB-017).")
         L.append("")
     tv = F["travel"]
     if tv:

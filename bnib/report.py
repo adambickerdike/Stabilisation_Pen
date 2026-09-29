@@ -200,6 +200,10 @@ def requirements(res: Dict) -> List[Dict]:
     face_now = ("CALC (design rule)" + (f"; SIM: face engaged {100 * b1['face_engaged_in_contact_mean']:.1f} % of the contact "
                 f"time, {100 * b1['face_engaged_penup_mean']:.1f} % of the pen-up time" if b1.get("face_engaged_in_contact_mean")
                 is not None and b1.get("face_engaged_penup_mean") is not None else "; SIM face engagement"))
+    ls = (((res.get("sim") or {}).get("lift_cutoff_sensitivity") or {}).get("designs") or {}).get("B1") or {}
+    lift_now = (f"SIM: with a 0.8 mm cut-off B1's tracker left {ls['nose']['ratio_lift08']:.2f} of the tremor instead of "
+                f"{ls['nose']['ratio_lift2']:.2f}, perfect knowledge {ls['oracle']['ratio_lift08']:.2f} instead of "
+                f"{ls['oracle']['ratio_lift2']:.2f}" if ls.get("nose") and ls.get("oracle") else "MFR OPT-54: 2-3 mm")
     skin_now = (f"SIM + CALC: B1 {th['T_after_30min'][1]:.1f} degC skin, {th['T_after_30min'][0]:.1f} degC coil after 30 min "
                 f"({1e3 * th['P_nib_mean_W']:.0f} mW)" if th else "CALC/SIM (bnib.json thermal)")
     R = [
@@ -237,6 +241,8 @@ def requirements(res: Dict) -> List[Dict]:
         ("REQ-BNIB-016", "Refill guide friction", "guide friction coefficient <= 0.01 (a ball or roller guide): the counter-face's "
          "couple loads the two bushings with 0.6-0.75 N, and the slide friction acts across the pen as h cot(theta)",
          "ASSUMPTION mu_g 0.005", "EXP-B22", "G2"),
+        ("REQ-BNIB-017", "Page sensor lift range (with the page sensor's own requirements)", "keeps the page through the lifts "
+         "between strokes: lift cut-off >= 2 mm above the writing height (OPT-54 class)", lift_now, "EXP-B32", "G4"),
     ]
     return [{"id": a, "title": b, "requirement": c, "status_now": d, "verified_by": e, "gate": f} for a, b, c, d, e, f in R]
 
@@ -272,7 +278,8 @@ def experiments() -> List[Dict]:
          "whether the no-motor variant c'' is good enough"),
         ("EXP-B31", "G3 (slim branch)", "Piezo bender stage coupon: force-travel line, loaded resonance, drive power with a "
          "charge-recovery driver", "pencil rig (EXP-Q04 / EXP-Q05)", "the slim core's feasibility"),
-        ("EXP-B32", "G4", "Page sensor on paper with the nib moving: DeltaPen-style window errors, scale, drift",
+        ("EXP-B32", "G4", "Page sensor on paper with the nib moving: DeltaPen-style window errors, scale, drift, and the lift "
+         "height at which it loses and regains the page (REQ-BNIB-017)",
          "rig R10 (EXP-T04)", "replace the DeltaPen-calibrated model in sim2"),
     ]
     return [{"id": a, "gate": b, "what": c, "rig": d, "decides": e} for a, b, c, d, e in E]
