@@ -100,6 +100,12 @@ def tcn_cost(cfg: Dict, n_params: int, fs: float = 250.0) -> Dict:
                  f"{layers} layer calls, {n_params} weights, {hist} B of activation history", int8_cycles_per_s=int8_cyc)
 
 
+def ai2_tcn_cost() -> Dict:
+    """ai2's TCN (33 800 parameters, 33 248 MAC per 2 ms step at 500 Hz; ai2 build info), int8 CMSIS-NN."""
+    cfg = {"ch": 32, "k": 3, "dil": [1, 2, 4, 8, 16, 32, 64, 128], "n_in": 7, "n_out": 8}
+    return tcn_cost(cfg, 33800, fs=500.0)
+
+
 def g4_cost() -> Dict:
     a = akf_cost(True)
     d = detector_cost()
@@ -116,7 +122,7 @@ def table() -> Dict:
             "epll": epll_cost(True), "epll_fundamental_only": epll_cost(False), "wflc": wflc_cost(),
             "bmflc_19": bmflc_cost(19), "bmflc_kf_19": bmflc_kf_cost(19), "bmflc_kf_37": bmflc_kf_cost(37),
             "akf": akf_cost(True), "akf_imu_only": akf_cost(False), "g4": g4_cost(), "detector": detector_cost(),
-            "fir_128": fir_cost(128), "authority": authority_cost()}
+            "fir_128": fir_cost(128), "authority": authority_cost(), "ai2_tcn": ai2_tcn_cost()}
 
 
 def chosen(fr: Dict) -> Dict:
@@ -144,6 +150,10 @@ def chosen(fr: Dict) -> Dict:
         from .learned import MODEL_DIR
         info = json.loads((MODEL_DIR / "net_net_main.json").read_text())
         parts["TCN (int8)"] = tcn_cost(info["cfg"], int(info["params"]))
+        if d.get("auth"):
+            parts["soft authority"] = authority_cost()
+    elif fam == "ai2tcn":
+        parts["ai2's TCN (int8)"] = ai2_tcn_cost()
         if d.get("auth"):
             parts["soft authority"] = authority_cost()
     else:

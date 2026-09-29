@@ -9,6 +9,8 @@ Finalists (the best setting of each family that the searches found; tuning split
                 gate retuned like the binary gate (fallback chosen among G4, the Rev H tracker and none)
   net           the TCN trained on real tuning inputs (cross-fitted: each tuning case scored by the fold model that never
                 saw its writer or patients), with its own soft amplitude authority if the search found one
+  ai2tcn        ai2's TCN as built (trained on synthetic writers; R's 'Rev J + AI' row) with a soft amplitude authority
+                tuned on the tuning split
 Rule (tune.py): pass T2-T4 in the full plant; the lowest J (severe broadband ratio); within 0.02 the cheaper MCU design.
 The full-plant re-run covers the three finalists with the best surrogate tuning score (compute budget); the others keep
 their surrogate numbers (the surrogate matched the full plant to 0.05 % on average, 0.3 % at most).
@@ -59,6 +61,10 @@ def finalists() -> Dict[str, Dict]:
         d = SR.listening_design()
         d.update({"auth": b, "name": "listen_conf"})
         out["listen_conf"] = d
+    p = TU.TUNE_DIR / "auth_ai2tcn.json"
+    if p.exists():
+        out["ai2tcn"] = {"family": "ai2tcn", "params": {}, "auth": json.loads(p.read_text())["best"]["params"],
+                         "name": "ai2tcn"}
     p = TU.TUNE_DIR / "auth_net_main.json"
     from .learned import MODEL_DIR
     if (MODEL_DIR / "net_net_main.json").exists():
@@ -138,7 +144,7 @@ def surrogate_scores() -> Dict[str, Dict]:
     """Each finalist's best surrogate summary from its search file (tuning split)."""
     out = {}
     for name, stem in (("joint_akf", "joint_akf"), ("gate_listen", "gate_s2_gate_listen"), ("glg", "gate_s2_glg"),
-                       ("listen_conf", "auth_s2_listen_conf"), ("net", "auth_net_main")):
+                       ("listen_conf", "auth_s2_listen_conf"), ("net", "auth_net_main"), ("ai2tcn", "auth_ai2tcn")):
         p = TU.TUNE_DIR / f"{stem}.json"
         if p.exists():
             b = json.loads(p.read_text())["best"]
@@ -164,6 +170,11 @@ def choose(summ: Dict[str, Dict], cost: Dict[str, float]) -> Dict:
     return {"table": table, "chosen": chosen, "why": why}
 
 
+def LE_MODEL_DIR():
+    from .learned import MODEL_DIR
+    return MODEL_DIR
+
+
 def g4_design() -> Dict:
     return {"family": "g4", "params": {}, "name": "g4",
             "note": "sim2j's guarded tracker G4 as frozen in results/sim2j/rules.json (guard G4_gate_r8, detector r_on 8 / "
@@ -185,15 +196,19 @@ def run(log=print, designs: Optional[Dict[str, Dict]] = None, costs: Optional[Di
     top = {k: fin[k] for k in ranked[:3]}
     summ = full_eval(top, log=log)
     t = MC.table()
-    cost = {"joint_akf": t["akf"]["cpu_share_128MHz"] + t["authority"]["cpu_share_128MHz"],
+    cost = {"ai2tcn": t["ai2_tcn"]["cpu_share_128MHz"] + t["authority"]["cpu_share_128MHz"],
+            "joint_akf": t["akf"]["cpu_share_128MHz"] + t["authority"]["cpu_share_128MHz"],
             "gate_listen": t["akf"]["cpu_share_128MHz"] + t["detector"]["cpu_share_128MHz"],
             "listen_conf": t["akf"]["cpu_share_128MHz"] + t["detector"]["cpu_share_128MHz"],
             "glg": 2 * t["akf"]["cpu_share_128MHz"] + 2 * t["detector"]["cpu_share_128MHz"],
-            "net": 0.07}
+            "net": MC.tcn_cost(json.loads((LE_MODEL_DIR() / "net_net_main.json").read_text())["cfg"],
+                               int(json.loads((LE_MODEL_DIR() / "net_net_main.json").read_text())["params"]))["cpu_share_128MHz"]
+            + t["authority"]["cpu_share_128MHz"]}
     cost.update(costs or {})
     ch = choose(summ, cost)
     chosen = dict(fin[ch["chosen"]])
-    info = {k: v for k, v in fin.items() if k != ch["chosen"]}
+    # information rows of the test (compute budget): the other full-plant finalists and study W's GLG
+    info = {k: v for k, v in fin.items() if k != ch["chosen"] and (k in top or k == "glg")}
     # the 'perfect gate' bound: the strongest raw estimator of the tuning split (stage 1, lowest J) with no gate at
     # all; at the severe class a perfect tremor detector (or a perfect RL arbiter) could not do better with it
     from . import search as SR
