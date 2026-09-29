@@ -372,3 +372,52 @@ def run_all(log=print, with_runs: bool = True) -> None:
     if with_runs:
         samples(log)
         replay(log)
+
+
+# ------------------------------------------------------------------------------------------------ tables for the doc
+def _f(v, nd=0, pct=False):
+    if v is None or (isinstance(v, float) and math.isnan(v)):
+        return "–"
+    return f"{100 * v:.{nd}f} %" if pct else f"{v:.{nd}f}"
+
+
+def md_et() -> str:
+    et = _load("et")
+    if not et:
+        return ""
+    rl = _load("et_rl")
+    cells = dict(et["by_cell"])
+    if rl:
+        cells.update({k: v for k, v in rl["by_cell"].items() if k.endswith("|rl") or k.endswith("|none")
+                      and k.replace("|none", "|rl") in rl["by_cell"] and False})
+        cells.update({k: v for k, v in rl["by_cell"].items() if k.endswith("|rl")})
+    ctls = [c for c in ("none", "nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "tcn", "rl", "oracle")
+            if any(k.endswith("|" + c) for k in cells)]
+    out = ["| Tremor | " + " | ".join(CTL_LABEL.get(c, c) for c in ctls) + " |",
+           "|---|" + "---|" * len(ctls)]
+    for f0 in sorted({float(k.split("|")[0]) for k in cells}):
+        for amp in sorted({float(k.split("|")[1]) for k in cells}):
+            row = []
+            for c in ctls:
+                v = cells.get(f"{f0:g}|{amp:g}|{c}")
+                if not v:
+                    row.append("–")
+                elif c == "none":
+                    row.append(f"{v['ink_err_um']:.0f} µm, {100 * v['letters_read']:.0f} %")
+                else:
+                    row.append(f"{v.get('ratio', float('nan')):.2f}, {100 * v['letters_read']:.0f} %")
+            out.append(f"| {f0:g} Hz, {amp:g} mm | " + " | ".join(row) + " |")
+    return "\n".join(out)
+
+
+def print_all() -> None:
+    for name in ("rules", "writers", "writer_cmp", "verify", "et", "et_rl", "guided", "autowrite", "dr", "arm", "dt_check",
+                 "power", "rl_select", "rl_test"):
+        d = _load(name)
+        if d is None:
+            print(f"## {name}: (missing)")
+            continue
+        d = {k: v for k, v in d.items() if k not in ("stabpen.provenance", "meta", "rows", "draws")}
+        print(f"## {name}")
+        print(json.dumps(d, indent=1, default=str)[:6000])
+    print(md_et())

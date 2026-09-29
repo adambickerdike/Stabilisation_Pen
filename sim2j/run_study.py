@@ -155,8 +155,8 @@ def stage_tune(quick: bool = False) -> None:
 # ------------------------------------------------------------------------------------------------ ET
 ET_F0 = (4.0, 8.0, 12.0)
 ET_AMP = (0.3e-3, 1.0e-3, 2.0e-3)
-# every controller on the first test seed of each writer (6 cases per cell); 'none', 'nose' and 'oracle' also on the
-# second seed when the stage is run with second_seed=True (12 cases per cell)
+# every controller on the first test seed of each writer (6 cases per cell; the TCN replay at 0.3 and 1 mm only);
+# 'none', 'nose' and 'oracle' also on the second seed when the stage is run with second_seed=True (12 cases per cell)
 ET_CTL = ("none", "nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "oracle", "tcn")
 ET_SECOND = ("none", "nose", "oracle")
 ET_CLEAN = ("nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "tcn")
@@ -221,7 +221,7 @@ def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows
                     cell = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|"
                     for pen in ("base", "endcap"):
                         todo = [c for c in ctls_here if c != "none" and ET.PEN_OF.get(c, "base") == pen
-                                and not rows.has(cell + c)]
+                                and not rows.has(cell + c) and not (c == "tcn" and amp > 1.5e-3)]
                         if not todo and (pen != "base" or rows.has(cell + "none")):
                             continue
                         su = su_for(pen)
@@ -308,12 +308,12 @@ def stage_writers(quick: bool = False) -> Dict:
 # ------------------------------------------------------------------------------------------------ writer comparison
 def stage_writer_cmp(quick: bool = False) -> Dict:
     """How tremor separation changes with the writer refit: the same pen, tremor and controllers on the v1 and the v2
-    writers (test writers 0-5, the first test seed of each writer, 8 Hz and 12 Hz x 1 mm, and tremor-free writing)."""
+    writers (test writers 0-2, the first test seed of each writer, 8 Hz x 1 mm, and tremor-free writing)."""
     from . import et as ET
     rows = Rows("writer_cmp")
     pens = ET.PenModels()
     ctls = ("nose", "nose_noguard", "nose_gl", "oracle")
-    ws = TEST_WRITERS if not quick else TEST_WRITERS[:1]
+    ws = TEST_WRITERS[:3] if not quick else TEST_WRITERS[:1]
     for ver in ("v1", "v2"):
         for w in ws:
             seed = et_seeds(w)[0]
@@ -326,7 +326,7 @@ def stage_writer_cmp(quick: bool = False) -> Dict:
                 m = ET.run_case(su, ctl, 0.0, 0.0, seed, ref_none=su.clean_ref(seed))
                 m.update({"kind": "clean", "ctl": ctl, "writer_model": ver})
                 rows.put(key, m)
-            for f0 in (8.0, 12.0):
+            for f0 in (8.0,):
                 amp = 1.0e-3
                 keys = [f"{ver}|{f0:g}|{w}|{seed}|{c}" for c in ("none",) + ctls]
                 if all(rows.has(k) for k in keys):
@@ -561,7 +561,7 @@ def stage_autowrite(quick: bool = False) -> Dict:
 
 
 # ------------------------------------------------------------------------------------------------ DR population
-def stage_dr(quick: bool = False, n: int = 24) -> Dict:
+def stage_dr(quick: bool = False, n: int = 12) -> Dict:
     """The main controllers over sim2's domain randomisation mapped onto Rev J (rl.sample_dr: hand, grip, tremor,
     friction, sensors, tolerances, posture and the lead's Rev J factors); test writers 0-5 in turn, test seeds; no
     re-adaptation per draw (the nominal pen's adapted hand path; the clean reference is re-run on the drawn pen)."""
@@ -822,13 +822,48 @@ def stage_rl_test(quick: bool = False) -> Dict:
     return body
 
 
+def stage_arm(quick: bool = False) -> Dict:
+    """The main controllers with sim2's articulated 'arm' hand (forearm-wrist-hand chain, writer controller, ET tremor
+    as joint torques calibrated to the lifted tip): writers 0-2, their first test seed, 8 Hz x 1 mm, and tremor-free."""
+    from . import et as ET
+    rows = Rows("arm")
+    pens = ET.PenModels(hand_model="arm")
+    ws = TEST_WRITERS[:3] if not quick else TEST_WRITERS[:1]
+    for w in ws:
+        seed = et_seeds(w)[0]
+        keys = {c: f"{w}|{c}" for c in ("none", "nose", "nose_wheel", "oracle", "clean_nose")}
+        if all(rows.has(k) for k in keys.values()):
+            continue
+        su = ET.WriterSetup(w, pens, log=log)
+        rn = ET.run_case_arm(su, "none", 8.0, 1.0e-3, seed, keep=True)
+        r_none = rn.pop("_r")
+        rows.put(keys["none"], dict(rn, ctl="none", clean_floor_um=su.clean_floor["ink_to_intended_um"]))
+        for c in ("nose", "nose_wheel", "oracle"):
+            m = ET.run_case_arm(su, c, 8.0, 1.0e-3, seed, ref_none=r_none)
+            rows.put(keys[c], dict(m, ratio=m["ink_err_um"] / max(rn["ink_err_um"], 1e-9)))
+        mc = ET.run_case_arm(su, "nose", 0.0, 0.0, seed)
+        rows.put(keys["clean_nose"], dict(mc, ctl="clean_nose"))
+        log(f"[arm] w{w}: none {rn['ink_err_um']:.0f} um; " + ", ".join(
+            f"{c} {rows.get(keys[c])['ratio']:.3f}" for c in ("nose", "nose_wheel", "oracle")) +
+            f"; clean moved {mc['moved_vs_clean_um']:.1f} um")
+        rows.save()
+    R = rows.values()
+    body = {"what": "sim2 'arm' hand (articulated forearm-wrist-hand, writer controller), ET tremor as joint torques "
+                    "calibrated to 1 mm peak at the lifted tip, 8 Hz; writers 0-2",
+            "by_ctl": agg(R, ("ink_err_um", "ratio", "letters_read", "words_app", "moved_vs_clean_um", "P_total_W",
+                              "felt_rms_N", "clean_floor_um"), by=("ctl",))}
+    if not quick:
+        write_result("arm", body, seeds=[et_seeds(w)[0] for w in ws])
+    return body
+
+
 def stage_report(quick: bool = False) -> None:
     from . import report as RP
     RP.run_all(log=log, with_runs=not quick)
 
 
 # ------------------------------------------------------------------------------------------------ main
-STAGES: Dict[str, Callable] = {"report": stage_report, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
+STAGES: Dict[str, Callable] = {"report": stage_report, "arm": stage_arm, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
                                "tune": stage_tune, "writers": stage_writers, "writer_cmp": stage_writer_cmp,
                                "verify": stage_verify, "et": stage_et, "guided": stage_guided,
                                "autowrite": stage_autowrite, "dr": stage_dr, "dt": stage_dt, "power": stage_power}
@@ -843,6 +878,7 @@ def main(argv=None) -> int:
         if s not in STAGES:
             log(f"unknown stage {s}; known: {list(STAGES)}")
             return 2
+    failed = []
     for s in a.stages:
         t0 = time.time()
         log(f"=== stage {s} ===")
@@ -851,9 +887,12 @@ def main(argv=None) -> int:
         except Exception:
             traceback.print_exc()
             log(f"stage {s} failed")
-            return 1
+            failed.append(s)
+            continue
         log(f"=== stage {s} done in {time.time() - t0:.0f} s ===")
-    return 0
+    if failed:
+        log(f"failed stages: {failed}")
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":

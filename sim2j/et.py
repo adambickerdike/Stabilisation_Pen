@@ -120,7 +120,7 @@ def clean_letters(written, r) -> List[List[np.ndarray]]:
             A, B = np.flatnonzero(d == 1), np.flatnonzero(d == -1)
             for a, b in zip(A, B):
                 if b - a >= 3:
-                    polys.append(ink[idx[a]:idx[b]])
+                    polys.append(ink[idx[a]:idx[b - 1] + 1])
         if not polys:
             polys = [np.asarray(p) for p in L.polylines]
         out.append(polys)
@@ -264,6 +264,49 @@ def run_case(su: WriterSetup, ctl_name: str, f0: float, amp: float, seed: int, r
     m = su.metrics(r, ref_none=ref_none, clean_ref=su.clean_ref(seed) if amp <= 0 else None)
     m.update({"w": su.w, "seed": seed, "f0": f0, "amp_mm": amp * 1e3, "ctl": ctl_name, "mu": mu, "wall_s": el,
               "writer": su.version, "pen": su.pen})
+    if keep:
+        m["_r"] = r
+    return m
+
+
+# ------------------------------------------------------------------------------------------------ the 'arm' hand model
+_ARM_CAL = {}
+
+
+def arm_tremor(pm, scn, f0: float, amp: float, seed: int):
+    """ET tremor as torques at the forearm and wrist of sim2's articulated 'arm' hand (sim2.tremor ET profile: channel
+    shares and phases, frequency and amplitude wander), calibrated so that the lifted pen tip moves amp peak at f0
+    (sim2.tremor.calibrate on the linearised arm, CALC)."""
+    from sim2 import tremor as TR
+    p = TR.profile("ET", f0=f0, amp_tip=amp)
+    key = (id(pm), round(f0, 3), round(amp, 6))
+    if key not in _ARM_CAL:
+        _ARM_CAL[key] = TR.calibrate(pm, p, f0)
+    dt = float(pm.m.opt.timestep)
+    n = int(round(float(scn.t[-1]) / dt)) + 4
+    t = np.arange(n) * dt
+    return TR.torques(t, p, _ARM_CAL[key]["A0"], np.random.default_rng(10_000 + seed))
+
+
+def run_case_arm(su: WriterSetup, ctl_name: str, f0: float, amp: float, seed: int, ref_none=None, keep: bool = False,
+                 record: bool = False) -> Dict:
+    """run_case for the 'arm' hand model: the tremor enters as joint torques, the hand path carries no tremor."""
+    case = su.case
+    scn = case.scenario()
+    tq = arm_tremor(su.pm, scn, f0, amp, seed) if amp > 0 else None
+    fw = controller(ctl_name, seed=seed * 7 + su.w)
+    if record:
+        fw = replace(fw, record_streams=True)
+    task = {}
+    if ctl_name == "oracle":
+        gd = 2 * su.pm.cfg.nose.servo_zeta / (2 * math.pi * su.pm.cfg.nose.servo_hz) + 0.25e-3
+        task["oracle_d"] = oracle_table(ref_none, su.clean, int(len(case.t) * SIM_DT / 0.5e-3) + 10, gd)
+    mu = mu_for(su.w, seed, f0, amp)
+    t0 = time.time()
+    r = ST.run(su.pm, scn, fw, task, mu=mu, seed=seed, arm_tremor=tq)
+    m = su.metrics(r, ref_none=ref_none, clean_ref=su.clean_ref(seed) if amp <= 0 else None)
+    m.update({"w": su.w, "seed": seed, "f0": f0, "amp_mm": amp * 1e3, "ctl": ctl_name, "mu": mu, "wall_s": time.time() - t0,
+              "writer": su.version, "pen": su.pen, "hand_model": "arm"})
     if keep:
         m["_r"] = r
     return m
