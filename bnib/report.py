@@ -127,8 +127,11 @@ def decision_draft(res: Dict) -> Dict:
             f"(b': {rec['bepm_hold_max_mW']:.0f} mW holding at worst, CALC); the same nib unbalanced (f) holds "
             f"{rec['f_hold_max_mW']:.0f} mW at 35 deg and so meets REQ-RVJ-N10 only above about "
             f"{rec['f_theta_ok_deg']:.0f} deg or with a lower ink force.",
-            "Large tremor (> 1 mm) is not the nib's job: it goes to study W's collar / whole-pen shifting (candidate g "
-            "couples a +-0.5 mm counter-face nib to W's collar).",
+            f"Reach: B1 gives up the Rev J nose's +-6 mm for +-{rec['travel_mm']:.2f} mm (the same architecture at +-1.5 mm "
+            "costs about twice the power and stays the option if G4 targets study R's severe class, typically 1.7 mm peak "
+            "at the tip). With no whole-pen actuator now (DEC-051) tremor beyond the nib's reach stays uncorrected in the "
+            "first prototype; candidate g (a +-0.5 mm counter-face nib under study W's collar) waits with the collar's bench "
+            "experiment (EXP-W11).",
             "Slim core (12-16 mm): voice coils around a D1 refill do not fit (candidates a-g infeasible at 14 mm); the "
             "piezo bender stage (h, h') is the slim branch, a trade study, not the first prototype.",
             "Freeze the refill spring force only after gate G1 measures the minimum reliable ink force (EXP-B20 / EXP-T02). "
@@ -163,7 +166,11 @@ def decision_draft(res: Dict) -> Dict:
             "The sim2 ranking reverses when the page sensor is measured on paper (EXP-T04 / EXP-B32).",
         ],
         "supersedes_or_affects": ["DEC-036 (C1S nose)", "DEC-041 (the nose's Km and stiffness claims)", "DEC-044 / DEC-045 "
-                                  "(Rev J / J.1 battery and heat claims stay suspended until the B1 numbers are measured)"],
+                                  "(Rev J / J.1 battery and heat claims stay suspended until the B1 numbers are measured)",
+                                  "DEC-046 (resolved: the mechanism)", "DEC-051 (the moving nose stays the part that shifts "
+                                  "the ink: B1 is its balanced form)", "DEC-052 (the estimate, not the nib, limits the "
+                                  "simulated benefit)", "DEC-053 (judged against the same nib held centred, power with the "
+                                  "static load; three grips still to run)"],
     }
 
 

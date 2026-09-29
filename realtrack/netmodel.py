@@ -323,34 +323,56 @@ MAX_EPOCHS_F0 = 10
 
 def cross_fit(log=print, tag: str = "net_main", cfg: Optional[Dict] = None, max_epochs: int = MAX_EPOCHS_F0) -> Dict:
     """Fold 0 first, with fold 0's data as validation, for up to max_epochs; the epoch count with the lowest fold-0
-    validation loss is then used for folds 1-4 and for the model on all folds (rule fixed before training)."""
+    validation loss is then used for folds 1-4 and for the model on all folds (rule fixed before training).
+    Resumable: a model whose files exist is not trained again (every model's seed is fixed, so a resumed run gives the
+    same models); the fold-0 choice is read back from fold 0's saved history and the run's log."""
+    import re
     paths = all_train_paths()
     data = load_arrays(paths)
     info = {"n_cases": len(data), "rule": cross_fit.__doc__, "cfg": cfg}
     t0 = time.time()
-    tr0 = [d for d in data if d["fold"] != 0]
-    va0 = [d for d in data if d["fold"] == 0]
-    r0 = train(tr0, max_epochs, seed=0, val=va0, log=log, cfg=cfg)
-    vl = [h["val_loss"] for h in r0["history"]]
-    n_ep = int(np.argmin(vl)) + 1
-    info["fold0_val_loss"] = vl
-    info["epochs"] = n_ep
-    log(f"[net] {tag}: fold-0 validation chooses {n_ep} epochs ({time.time() - t0:.0f} s)")
-    if n_ep == max_epochs:
-        m0 = r0
+    f0 = MODEL_DIR / f"net_{tag}_f0.json"
+    if f0.exists():
+        h0 = json.loads(f0.read_text())
+        n_ep = len(h0["history"])
+        vl = []
+        lg = BUILD_DIR / "logs" / "learn_part1.log"          # the first run's log (the container restarted)
+        if not lg.exists():
+            lg = BUILD_DIR / "logs" / "learn.log"
+        if lg.exists():
+            for line in lg.read_text().splitlines():
+                m = re.search(r"epoch (\d+): train [0-9.]+, val ([0-9.]+)", line)
+                if m:
+                    vl.append(float(m.group(2)))
+        info["fold0_val_loss"] = vl[:max_epochs]
+        info["epochs"] = n_ep
+        info["resumed"] = True
+        log(f"[net] {tag}: fold 0 on disk, {n_ep} epochs (fold-0 validation, logged)")
     else:
-        m0 = train(tr0, n_ep, seed=0, log=log, cfg=cfg)
-    save(m0["model"], f"{tag}_f0", {"cfg": m0["cfg"], "params": m0["params"], "history": m0["history"], "fold": 0})
+        tr0 = [d for d in data if d["fold"] != 0]
+        va0 = [d for d in data if d["fold"] == 0]
+        r0 = train(tr0, max_epochs, seed=0, val=va0, log=log, cfg=cfg)
+        vl = [h["val_loss"] for h in r0["history"]]
+        n_ep = int(np.argmin(vl)) + 1
+        info["fold0_val_loss"] = vl
+        info["epochs"] = n_ep
+        log(f"[net] {tag}: fold-0 validation chooses {n_ep} epochs ({time.time() - t0:.0f} s)")
+        m0 = r0 if n_ep == max_epochs else train(tr0, n_ep, seed=0, log=log, cfg=cfg)
+        save(m0["model"], f"{tag}_f0", {"cfg": m0["cfg"], "params": m0["params"], "history": m0["history"], "fold": 0})
     for f in range(1, C.N_FOLDS):
+        if (MODEL_DIR / f"net_{tag}_f{f}.pt").exists():
+            continue
         tr = [d for d in data if d["fold"] != f]
         m = train(tr, n_ep, seed=f, log=log, cfg=cfg)
         save(m["model"], f"{tag}_f{f}", {"cfg": m["cfg"], "params": m["params"], "history": m["history"], "fold": f})
-    m = train(data, n_ep, seed=99, log=log, cfg=cfg)
-    save(m["model"], tag, {"cfg": m["cfg"], "params": m["params"], "history": m["history"], "fold": None})
-    info.update({"params": m["params"], "cfg": m["cfg"], "macs_per_step": macs_per_step(m["cfg"]),
-                 "elapsed_s": time.time() - t0})
+    if not (MODEL_DIR / f"net_{tag}.pt").exists():
+        m = train(data, n_ep, seed=99, log=log, cfg=cfg)
+        save(m["model"], tag, {"cfg": m["cfg"], "params": m["params"], "history": m["history"], "fold": None})
+    fin = json.loads((MODEL_DIR / f"net_{tag}.json").read_text())
+    info.update({"params": fin["params"], "cfg": fin["cfg"], "macs_per_step": macs_per_step(fin["cfg"]),
+                 "elapsed_s_this_run": time.time() - t0})
     (MODEL_DIR / f"{tag}_crossfit.json").write_text(json.dumps(info, default=float))
-    log(f"[net] {tag}: 6 models in {time.time() - t0:.0f} s; {m['params']} parameters")
+    log(f"[net] {tag}: 6 models ready ({time.time() - t0:.0f} s this run); {fin['params']} parameters")
     return info
 
 

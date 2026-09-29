@@ -222,8 +222,15 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       f"{f(rec['f_theta_ok_deg'], 0)} deg. A scheduled bias spring with a clutch that lets go at every lift (b'): "
       f"{f(rec['bepm_hold_max_mW'], 0)} mW holding at worst; without the clutch it pushes the nib over whenever the pen is "
       f"lifted. A longer lever like Rev H: {f(rec['a_P_cont_mW'], 0)} mW and only about +-{f(rec.get('a_travel_mm'), 1)} mm "
-      f"once the magnets are 30 % weaker. A lower ink force helps in proportion, but nobody knows yet how low it can go. A bent "
-      f"tip needs a custom short cartridge. (Sections 2 and 3.)")
+      f"once the magnets are 30 % weaker. Study W's collar carries the same load on a long lever (its actuator 42 mm behind "
+      f"a pivot 50 mm from the tip): 0.16 / 0.055 / 0.006 W at 35 / 50 / 75 deg (DEC-051, study W's numbers), inside the "
+      f"0.1 W limit only above about 42 deg (CALC: the holding heat scales with cot^2(tilt)). A lower ink force helps in "
+      f"proportion, but nobody knows yet how low it can go. A bent tip needs a custom short cartridge. (Sections 2 and 3.)")
+    A(f"- **What B1 gives up: reach.** The Rev J nose reaches +-6 mm; B1 reaches +-{f(rec['travel_mm'], 2)} mm (the same "
+      f"design built for +-1.5 mm costs about twice the power, section 3). Study R's real recordings put tremor at the tip "
+      f"lower than the plan assumed (severe class typically 1.7 mm peak, moderate 0.24 mm, mild 0.10 mm; docs/real_data.md), "
+      f"so B1 covers the mild and moderate classes and part of the severe one. With no whole-pen actuator now (DEC-051), "
+      f"tremor beyond the nib's reach stays uncorrected in the first prototype.")
     if B1:
         F = sim_findings(sim)
         by, ref, tv = F["by"], F["ref"], F["travel"]
@@ -351,10 +358,11 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       "G1 sets the power and thermal budget, not the architecture); a moving coil has no negative stiffness and no pull on "
       "the suspension; unpowered it writes like a normal pen; its parts are ordinary (wires, flat coils, magnets, a face on a "
       "flexure, three small screw motors). The steeper tip (e) is as frugal but needs a custom short cartridge; the slide-cam "
-      "variant (c') saves a motor if its cam can be made; (g) is the same nib at +-0.5 mm for use with study W's collar. The "
-      "knee of B1's front lies between +-0.75 and +-1.25 mm: beyond that the coils must reach further and the power climbs. "
-      "Fallbacks in order: the EPM-clutched bias (b'), then the unbalanced nib (f) only with a lower ink force or at tilts "
-      "above about 50 deg. (a), (b) without a clutch and (d) alone do not solve the problem.")
+      "variant (c') saves a motor if its cam can be made; (g), the same nib at +-0.5 mm under study W's collar, waits with "
+      "the collar's bench experiment (DEC-051). The knee of B1's front lies between +-0.75 and +-1.25 mm: beyond that the "
+      "coils must reach further and the power climbs. Fallbacks in order: the EPM-clutched bias (b'), then the unbalanced "
+      "nib (f) only with a lower ink force or at tilts above about 50 deg. (a), (b) without a clutch and (d) alone do not "
+      "solve the problem." + _travel_option_md(opt, sim))
     A("")
     A("## 4. The recommended nib (B1) for the first prototype")
     A("")
@@ -694,8 +702,8 @@ def sim_analysis_md(sim: Dict, cards: Dict) -> str:
                  f"the reach (a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms after a touchdown: the firmware fades "
                  f"its authority back in over 50 ms whenever the page sensor has lost the page). The pen-up handle lift in this "
                  f"run is {f(d.get('handle_lift_up_median_mm'), 2)} mm median ({f(d.get('handle_lift_up_p90_mm'), 2)} mm at the "
-                 f"90th percentile) against the sensor's {f(d.get('page_lift_max_mm'), 1)} mm cut-off. The Rev J nose's +-3 mm "
-                 f"never clips"
+                 f"90th percentile) against the sensor's {f(d.get('page_lift_max_mm'), 1)} mm cut-off. The Rev J nose's +-6 mm "
+                 f"(its usable tip travel, sim2j/revj.py) never clips"
                  + (f" (its perfect-knowledge ratio in this cell: {f(ref.get('ratio_oracle'), 2)}, B1's: "
                     f"{f((F['by'].get(d['cell']) or {}).get('ratio_oracle'), 2)})" if ref else "") + ".")
         L.append("")
@@ -749,6 +757,31 @@ def _grad_err(opt: Dict) -> str:
     return f"{max(errs):.0e} (relative, worst of {len(errs)} checks)" if errs else "-"
 
 
+def _travel_option_md(opt: Dict, sim: Dict) -> str:
+    """The travel is DEC-050's open parameter: the +-1.5 mm point on the same front (CALC) and what the simulation says."""
+    b15 = None
+    for r in ((opt.get("problems") or {}).get("pen24_c") or {}).get("runs", []):
+        if abs(r["eps_T_mm"] - 1.5) < 1e-6 and r["feasible"]:
+            b15 = r["best"]
+    if not b15:
+        return ""
+    out = (f" The travel is the one parameter to settle before the build: the same architecture at the +-1.5 mm floor draws "
+           f"{mw(b15['P_cont_W'])} / {mw(b15.get('P_cont_km070_W'))} mW (Km x 0.85 / 0.7) with {f(b15['m_eff_g'])} g moving "
+           f"(CALC)")
+    tv = (((sim or {}).get("travel") or {}).get("cells") or {})
+    c2 = [(k, v["oracle"]) for k, v in tv.items() if v.get("oracle") and k.endswith("2 mm")]
+    c2n = [(k, v["nose"]) for k, v in tv.items() if v.get("nose") and k.endswith("2 mm")]
+    if c2:
+        o1 = sum(v["ratio_B1"] for _, v in c2) / len(c2)
+        o15 = sum(v["ratio_B1w"] for _, v in c2) / len(c2)
+        n1 = sum(v["ratio_B1"] for _, v in c2n) / len(c2n) if c2n else None
+        n15 = sum(v["ratio_B1w"] for _, v in c2n) / len(c2n) if c2n else None
+        out += (f"; in the 2 mm cells it leaves {o15:.2f} of the tremor with perfect knowledge against {o1:.2f} at +-1.0 mm, "
+                f"and {f(n15, 2)} against {f(n1, 2)} with today's tracker (SIM, section 5.3)")
+    return out + (". Build +-1.0 mm for the demonstrator (G3-G4 test the balance and the power); choose +-1.5 mm if G4's "
+                  "tremor set includes study R's severe class and a better estimate (DEC-052) is on the way.")
+
+
 def _front_table(opt: Dict) -> str:
     L = ["| problem | travel floor (mm) | feasible | continuous power (mW, Km x 0.85 / x 0.7) | travel at Km x 0.7 (mm) | pen mass (g) | "
          "moving mass (g) | skin (degC) |", "|---|---|---|---|---|---|---|---|"]
@@ -793,9 +826,18 @@ def open_issues(res: Dict, S: Dict) -> List[str]:
         "The piezo slim branch's packaging (several plates around a 2.35 mm refill in a 10-13 mm bore) was checked only by a "
         "width rule; no CAD.",
         "sim2 is not calibrated to hardware; the page sensor model is calibrated to DeltaPen on a Wacom tablet, not paper.",
-        "The tracker, not the nib, limits the simulated benefit; improving it is another study's job (ai2, sim2j).",
+        "The tracker, not the nib, limits the simulated benefit (as DEC-052 records for the programme): the estimator is "
+        "study E's; B1's mechanism limit is what a better estimate can use.",
+        "Reach: B1 has +-1.06 mm (a +-1.5 mm build of the same architecture costs about twice the power); the Rev J nose "
+        "has +-6 mm. Study R's real tremor is smaller than the plan assumed (severe class typically 1.7 mm peak at the tip, "
+        "moderate 0.24 mm; docs/real_data.md), so B1 covers the mild and moderate classes and part of the severe one; with "
+        "no whole-pen actuator now (DEC-051), tremor beyond the nib's reach stays uncorrected in the first prototype.",
+        "DEC-053 asks devices to be judged at three grip strengths: these runs used one (sim2's H1 writer, r_rot 0.5); the "
+        "power includes the nib's static load, and the baseline is the same nib held centred.",
+        "The Rev J reference (sim2j) is read from sim2j/build/et_rows.json at report time; sim2j's own runs set it.",
         "Squiggle motors are sold only in volume (AMF-15): a micro-stepper lead-screw fallback needs its own layout.",
-        "Study W's collar (candidate g) was taken read-only; the combined coarse/fine controller was not simulated here.",
+        "Study W's collar (candidate g) was taken read-only and DEC-051 keeps it a bench experiment (EXP-W11); the combined "
+        "coarse/fine controller was not simulated here.",
         "The IMU-scheduled face assumes a horizontal page: on a 10 deg writing slope it leaves about 34 mN across the pen "
         "(7 mW); a slope setting or the paper-referenced slide cam (c') is needed for sloped desks.",
         "The face schedule must follow the pen's tilt wobble while writing (about +-2.5 deg, LIT CON-02): with a 0.2 s "
