@@ -240,7 +240,7 @@ def tuned_mass(m: float = 40e-3, f_tune: float = 5.0, zeta: float = 0.08, z: flo
     R = 1.0
     K_f = Km * math.sqrt(R) if active else 1e-6
     rm = PL.ReactionMass(name="tm", m=m, z=z, stroke=(stroke, stroke, 0.0), k_c=k, c_c=c, K_f=K_f, R20=R,
-                         I_max=(Km * math.sqrt(1.0) / K_f) if active else 0.0, fixed_mass=fixed_mass,
+                         I_max=(Km * math.sqrt(1.0) / K_f) if active else 1e-6, fixed_mass=fixed_mass,
                          label="PROPOSED DESIGN (designs.py tuned mass; ASSUMPTION flexure and damping)")
     return rm
 

@@ -75,7 +75,7 @@ button,input,select{font:inherit;color:inherit}
 .tag.asm i{background:var(--t-asm)} .tag.prop i{background:var(--t-prop)} .tag.meas i{background:var(--t-meas)}
 .tag.ill i{background:transparent;border:1.5px dashed var(--t-ill)} .tag.mfr i{background:var(--t-prop);border-radius:1px}
 .tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.tags .tag{max-width:100%;white-space:normal}
+.tags .tag{max-width:100%;white-space:normal;overflow-wrap:anywhere}
 @media (max-width:520px){.tag{white-space:normal}}
 
 /* ---------- header ---------- */
@@ -482,7 +482,7 @@ header.top .lede b{font-weight:600}
 #cutsvg .ghost{fill:none;stroke:var(--muted);stroke-width:.6;stroke-dasharray:1.4 1}
 #cutsvg .target{stroke:var(--g-nose);stroke-width:.6}
 #cutsvg .halo{fill:none;stroke:var(--g-drive);stroke-width:.7;opacity:.9}
-#cutsvg .arr{fill:none;stroke-width:1.5;stroke-linecap:round}
+#cutsvg .arr{fill:none;stroke-width:1.8;stroke-linecap:round}
 #cutsvg .arr.k{stroke:var(--ink)} #cutsvg .arr.n{stroke:var(--g-nose)} #cutsvg .arr.w{stroke:var(--g-drive)} #cutsvg .arr.s{stroke:var(--g-inertial)} #cutsvg .arr.c{stroke:var(--g-act)}
 #cutsvg .ahd.k{fill:var(--ink)} #cutsvg .ahd.n{fill:var(--g-nose)} #cutsvg .ahd.w{fill:var(--g-drive)} #cutsvg .ahd.s{fill:var(--g-inertial)} #cutsvg .ahd.c{fill:var(--g-act)}
 #cutsvg .lead{stroke:var(--muted);stroke-width:.35;fill:none}
@@ -492,11 +492,11 @@ header.top .lede b{font-weight:600}
 #cutsvg .badge text{font-size:3.6px;font-weight:700;fill:var(--panel);font-family:var(--display)}
 #cutsvg .scale text{font-size:3.2px;fill:var(--muted);font-family:var(--mono)}
 #cutsvg .scale line{stroke:var(--muted);stroke-width:.4}
-@media (max-width:640px){ #cutsvg .ltxt{display:none} #cutsvg .badge circle{r:3.6px} #cutsvg .badge text{font-size:4.6px} }
+@media (max-width:640px){ #cutsvg .ltxt{display:none} #cutsvg .badge circle{r:4.4px} #cutsvg .badge text{font-size:5.6px;transform:translateY(.55px)} }
 .cut-inset{position:absolute;left:1.2%;top:1.6%;width:36%;background:var(--panel);border:1px solid var(--rule);box-shadow:0 1px 4px rgb(0 0 0 / .1);display:grid}
 .cut-inset svg{display:block;width:100%;height:auto;background:var(--paper)}
 .cut-inset span{font-size:12.5px;color:var(--muted);padding:2px 6px;line-height:1.25}
-@media (max-width:640px){.cut-inset{width:44%}.cut-inset span{font-size:11px}}
+@media (max-width:640px){.cut-inset{position:static;width:auto;border-width:1px 0 0;box-shadow:none}.cut-inset span{font-size:13px}}
 #cutinset .rl{stroke:var(--paper-line);stroke-width:.25}
 #cutinset .path0{fill:none;stroke:var(--intended);stroke-width:.5;stroke-dasharray:1 .8;stroke-linecap:round}
 #cutinset .handp{fill:none;stroke:var(--muted);stroke-width:.25;opacity:.8}
@@ -1323,7 +1323,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>). The plain-words account is <code>docs/revJ_concept.md</code>.</div>
     <div>What changed from Rev H is under <a href="#d-changes">Details</a>. The step-by-step simulation replay of the earlier designs: <a href="https://claude.ai/artifact/NQYQ6ivjq1r3ro41484SFf" target="_blank" rel="noopener">Detailed simulation replay</a>.</div>
-    <div class="mono" id="provenance">Built 2026-09-29 16:24 UTC from git b1694a3-dirty · parameters v0.4.4 · layout generated 2026-09-29T13:28:08+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-29 16:25 UTC from git 1211575-dirty · parameters v0.4.4 · layout generated 2026-09-29T13:28:08+00:00</div>
   </footer>
 </div>
 
@@ -1807,7 +1807,7 @@ function initHero(lay, F){
     const sh=(H.shake && e<0.02)? CUTCFG.shakeMM*CUTCFG.mag*Math.sin(TAU*CUTCFG.showHz*H.shakeT) : 0; H.shakeS=sh;
     pen.root.matrix.copy(pen.rootFor(p.b, p.tip[0]+sh*bs.h[0], p.tip[1]+sh*bs.h[1], p.tip[2])); pen.root.matrixWorldNeedsUpdate=true;
     for(const m of pen.parts){ const ex=m.userData.ex, b=m.userData.base; m.position.set(b.x+ex[0]*e, b.y+ex[1]*e, b.z+ex[2]*e); }
-    const hOp=clamp(1-e*5,0,1); hand.visible=H.showHand && hOp>0.02;
+    const hOp=clamp(1-e*5,0,1)*(H.colorMode==="moves"? 0.55 : 1); hand.visible=H.showHand && hOp>0.02;
     for(const mt of hand.userData.mats){ if(hOp<1){ mt.transparent=true; mt.opacity=hOp; mt.depthWrite=false; } else { mt.transparent=false; mt.opacity=1; mt.depthWrite=true; } mt.needsUpdate=true; }
     if(H.shake){ pen.setTipPage(0, -sh, 0); pen.setSteer(0); pen.setSpin(-sh/pen.H.wheelR);
       pen.slug.position.set(0, clamp(CUTCFG.slugK*sh*Math.sin(pen.H.th), -CUTCFG.slugMax, CUTCFG.slugMax), 0); }
@@ -1817,7 +1817,7 @@ function initHero(lay, F){
     v.dirty=true;
   }
   H.applyPose=applyPose;
-  function setXray(on){ H.xray=on; $("xray").setAttribute("aria-pressed", String(on)); setXrayParts(pen, on); v.dirty=true; }
+  function setXray(on){ H.xray=on; $("xray").setAttribute("aria-pressed", String(on)); setXrayParts(pen, on, H.colorMode==="moves"? {grip:0.2, structure:0.12} : null); v.dirty=true; }
   function setEndcap(on){ pen.setEndcap(on); $("endcap").setAttribute("aria-pressed", String(!!on));
     const li=document.querySelector(`#legend li[data-group="inertial"]`); if(li) li.classList.toggle("off", !on);
     if(H.cam==="side"||H.cam==="top"||H.cam==="tail") setCam(H.cam); applyPose(); drawLabels(); }
@@ -1848,6 +1848,10 @@ function initHero(lay, F){
       if(!col){ const nm=partMaterial(c); col=nm.color.clone(); nm.dispose(); }
       m.material.color.copy(col); }
     for(const d of labelDefs){ const tok= H.colorMode==="moves"? moveCat(d.mesh.userData.comp).tok : gInfo(d.group).tok; d.el.style.setProperty("--c", `var(${tok})`); }
+    for(const m of pen.parts){ const id=m.userData.comp.id||"";
+      if(/^ec_(coils|flexure_front|flexure_rear|board)$/.test(id)){ if(H.colorMode==="moves") glassy(m.material, 0.3); else solid(m.material); } }
+    if(H.xray) setXrayParts(pen, true, H.colorMode==="moves"? {grip:0.2, structure:0.12} : null);
+    applyPose();
     $("col-moves").setAttribute("aria-pressed", String(H.colorMode==="moves")); $("col-groups").setAttribute("aria-pressed", String(H.colorMode!=="moves"));
     $("movekey-wrap").hidden=H.colorMode!=="moves"; $("legend-wrap").hidden=H.colorMode==="moves";
     v.dirty=true; }
@@ -2620,7 +2624,7 @@ function drawMinis(){
    weight slides across the pen axis.  The heel wheel is drawn in the page frame at its contact with the paper.
    Which parts move is read from the layout (moves_with: nose / drive / inertial_mass), so a new layout redraws itself. */
 const CUTCFG = {
-  shakeMM:2, shakeHz:6, mag:2, showHz:0.5,     /* the shake: 2 mm at 6 Hz, drawn 2x bigger and 12x slower */
+  shakeMM:2, shakeHz:6, mag:3, showHz:0.5,     /* the shake: 2 mm at 6 Hz, drawn 3x bigger and 12x slower */
   slugK:1.6, slugMax:5.2,                     /* the tail weight moves 1.6x the handle's cross-axis shake the other way (drawing) */
   writeSpeed:0.5,                             /* autowrite replay: half speed, true size */
   heelSpeed:14, heelShow:0.5, loopH:10, loops:5 /* heel: 10 mm loops at 14 mm/s, shown at half speed */
@@ -2703,7 +2707,7 @@ function initCutaway(lay, F, samples){
   const wheel=el("ellipse", {class:"heel", cx:f2(contactX), cy:f2(-wr), rx:f2(wr), ry:f2(wr)}, gWheel);
   if(!hasWheel) gWheel.setAttribute("hidden", "");
   /* where an ordinary pen's tip would be: fixed to the handle */
-  const ghost=el("circle", {class:"ghost", cx:0, cy:-0.8, r:1.9}, gBody);
+  const ghost=el("circle", {class:"ghost", cx:0, cy:-1.1, r:2.3}, gBody);
   /* the ball's contact marker (page frame, drawn over the body) */
   const ballMark=el("circle", {class:"ballc", cx:0, cy:-0.35, r:0.75}, gOver);
   const gArrows=el("g", {}, gOver), gLabels=el("g", {}, gOver);
@@ -2769,8 +2773,8 @@ function initCutaway(lay, F, samples){
   const handAt=st=>pFixed(116, 16.5, st), worldX=st=>[st.bx+(st.follow||0), 0];
   const LABELS={
     shake:[
-      {n:1, c:"k", text:["Your hand and the handle shake"], tx:[-32, 98], arrow:{at:handAt, pt:worldX, k:0.8, min:2.5, max:10}},
-      {n:2, c:"n", text:["The inner pen swings", "the other way"], tx:[-32, 36], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.8, min:2.5, max:8}},
+      {n:1, c:"k", text:["Your hand and the handle shake"], tx:[-32, 98], arrow:{at:handAt, pt:worldX, k:0.6, min:2.5, max:12}},
+      {n:2, c:"n", text:["The inner pen swings", "the other way"], tx:[-32, 36], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.6, min:2.5, max:10}},
       {n:3, c:"n", text:["The ball stays on the line"], tx:[-32, -10.6], anchor:st=>[st.ballX, 0.8]},
       {n:4, c:"p", text:["Pivot, "+fmt(P,1)+" mm behind the ball"], tx:[-32, 66], anchor:st=>pFixed(P, 0, st)},
       {n:5, c:"c", text:["Coils push the magnets"], tx:[-32, 82], anchor:st=>pFixed(90.5, 8, st), arrow:{at:st=>pInner(85, st), pt:st=>pInner(85, st), rel:true, k:2.6, min:2, max:5}},
@@ -2785,10 +2789,10 @@ function initCutaway(lay, F, samples){
       {n:2, c:"w", text:["The 2 mm wheel grips the paper"], tx:[30, -10.6], anchor:st=>[st.bx+contactX, 2*wr]},
       {n:3, c:"w", text:["Two tiny motors turn it", "through two thin shafts"], tx:[-32, 36], anchor:st=>pFixed(46, -10.7, st)}],
     tail:[
-      {n:1, c:"k", text:["Your hand and the handle shake"], tx:[-32, 98], arrow:{at:handAt, pt:worldX, k:0.8, min:2.5, max:10}},
+      {n:1, c:"k", text:["Your hand and the handle shake"], tx:[-32, 98], arrow:{at:handAt, pt:worldX, k:0.6, min:2.5, max:12}},
       {n:2, c:"s", text:["Coils push the tail weight", "the other way"], tx:[-32, 132], anchor:slugAt, arrow:{at:slugAt, pt:slugAt, rel:true, k:0.5, min:2, max:8}},
       {n:3, c:"k", text:["Its push-back steadies", "the whole pen a little"], tx:[-32, 116], arrow:{at:st=>pFixed(152, 18, st), pt:slugAt, rel:true, flip:true, k:0.5, min:2, max:8}},
-      {n:4, c:"n", text:["The inner pen still keeps", "the ball on the line"], tx:[-32, 36], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.8, min:2.5, max:8}}]
+      {n:4, c:"n", text:["The inner pen still keeps", "the ball on the line"], tx:[-32, 36], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.6, min:2.5, max:10}}]
   };
   const EPS=0.02;
   function velOf(A){ const s1=stateAt(X.mode, X.t), s2=stateAt(X.mode, X.t+EPS), p1=A.pt(s1), p2=A.pt(s2);
@@ -2799,7 +2803,7 @@ function initCutaway(lay, F, samples){
       text:"Your hand shakes, and the handle you hold shakes with it. Coils fixed in the handle push the magnets at the back of the inner pen, so the whole inner pen swings the other way about its pivot and the ball stays on the line. The tail weight swings against the shake too.",
       honest:"This drawing is the ideal case. In the simulations the pen took away about half of the wobble in the ink, not all of it.",
       speed:`a ${CUTCFG.shakeMM} mm shake, ${CUTCFG.shakeHz} times a second, drawn ${CUTCFG.mag}× bigger and ${Math.round(CUTCFG.shakeHz/CUTCFG.showHz)}× slower`,
-      tags:["ILLUSTRATION (to scale from the layout)", "PROPOSED DESIGN", "SIMULATION (model HW1): about half the wobble removed"]},
+      tags:["ILLUSTRATION (to scale from the layout)", "PROPOSED DESIGN", "SIMULATION (model HW1, about half the wobble removed)"]},
     write:{title:"Writes for you",
       text:"A mode you turn on. You sweep the pen along the line; the inner pen draws the letters of a text you chose, in your own style, and the ball lifts between strokes. It waits when you slow down.",
       honest:"The motion is replayed from a simulation of the Rev J inner pen: a 1 mm shake, 2.5 mm letters. It has not been tried with people.",
@@ -2814,15 +2818,15 @@ function initCutaway(lay, F, samples){
       text:"Coils in the end-cap push a 30 g tungsten weight from side to side, the other way to the shake. Its push-back steadies the whole pen, on top of what the inner pen does.",
       honest:"The effect is modest: a further 8–20 % less shake in the ink in the simulations, depending on how you hold the pen. At writing speed its push is far too weak to move letters (at most about 0.2 mm).",
       speed:`a ${CUTCFG.shakeMM} mm shake, ${CUTCFG.shakeHz} times a second, drawn ${CUTCFG.mag}× bigger and ${Math.round(CUTCFG.shakeHz/CUTCFG.showHz)}× slower`,
-      tags:["ILLUSTRATION", "SIMULATION (model H1): 8–20 %", "CALCULATION: at most about 0.2 mm", "PROPOSED DESIGN"]}
+      tags:["ILLUSTRATION", "SIMULATION (model H1, 8–20 % less shake)", "CALCULATION: at most about 0.2 mm at writing speed", "PROPOSED DESIGN"]}
   };
   if(F && F.endcap && Array.isArray(F.endcap.moving) && F.endcap.moving.every(x=>x!=null)){
     const mv=F.endcap.moving, r=`${pc(Math.min(...mv))}–${pc(Math.max(...mv))} %`;
-    TXT.tail.honest=TXT.tail.honest.replace("8–20 %", r); TXT.tail.tags[1]=`SIMULATION (model H1): ${r}`; }
+    TXT.tail.honest=TXT.tail.honest.replace("8–20 %", r); TXT.tail.tags[1]=`SIMULATION (model H1, ${r} less shake)`; }
   if(F && F.ai2 && F.ai2.none && F.ai2.gated && F.ai2.none.ink_um>0){
     const k=F.ai2.gated.ink_um/F.ai2.none.ink_um; const word= k>0.4 && k<0.6 ? "about half" : `${pc(1-k)} %`;
     TXT.shake.honest=`This drawing is the ideal case. In the simulations the pen took away ${word} of the wobble in the ink, not all of it.`;
-    TXT.shake.tags[2]=`SIMULATION (model HW1): ${word} of the wobble removed`; }
+    TXT.shake.tags[2]=`SIMULATION (model HW1, ${word} of the wobble removed)`; }
   if(!W){ TXT.write.text+=" (The simulation data for this replay is missing, so the pen stays still.)"; }
 
   const X={mode:"shake", t:0, playing:!REDUCED, visible:true, st:null, drawn:null};
@@ -2833,16 +2837,18 @@ function initCutaway(lay, F, samples){
       const g=el("g", {"data-n":L.n}, gLabels), col=COLS[L.c], tx=L.tx;
       const lead=el("path", {class:"lead"}, g);
       const t=el("text", {class:"ltxt"+(L.small?"":" b"), x:f2(tx[0]+5.2), y:f2(-tx[1]+1.35)}, g);
-      L.text.forEach((s,i)=>{ const sp=el("tspan", {x:f2(tx[0]+5.2), dy:i? "4.6" : "0"}, t); sp.textContent=s; });
+      let first=null; L.text.forEach((s,i)=>{ const sp=el("tspan", {x:f2(tx[0]+5.2), dy:i? "4.6" : "0"}, t); sp.textContent=s; if(!i) first=sp; });
       const bd=el("g", {class:"badge", transform:`translate(${f2(tx[0]+2.2)} ${f2(-tx[1])})`}, g);
       el("circle", {r:2.3, style:`fill:${col}`}, bd); const bt=el("text", {"text-anchor":"middle", y:1.25}, bd); bt.textContent=String(L.n);
       const arr= L.arrow? el("path", {class:`arr ${L.c==="p"?"k":L.c}`, "marker-end":`url(#cah-${L.c==="p"?"k":L.c})`}, gArrows) : null;
-      labelEls.push({L, lead, arr});
+      labelEls.push({L, lead, arr, first, w:null});
     }
     $("cut-key").innerHTML=LABELS[X.mode].map(L=>`<li><span class="bn" style="--c:${COLS[L.c]}">${L.n}</span><span>${esc(L.text.join(" "))}</span></li>`).join("");
   }
   function drawLabels(st){
-    for(const E of labelEls){ const L=E.L, bx=L.tx[0]+2.2, by=L.tx[1];
+    for(const E of labelEls){ const L=E.L, by=L.tx[1];
+      if(E.w==null){ let w=0; try{ w=E.first.getComputedTextLength(); }catch(_){ w=0; } E.w=w||0; }
+      const bx= E.w>0.5? L.tx[0]+5.2+E.w+1.2 : L.tx[0]+4.8;
       let end=L.anchor? L.anchor(st) : null;
       if(L.arrow){ const A=L.arrow, c=A.at(st), v=velOf(A), sp=Math.hypot(v[0], v[1]);
         const len=clamp(A.k*sp, A.min, A.max), ux= sp>1e-6? v[0]/sp : 1, uy= sp>1e-6? v[1]/sp : 0;
@@ -2925,6 +2931,7 @@ function initCutaway(lay, F, samples){
   $("cut-play").onclick=()=>setPlaying(!X.playing);
   $("cut-scrub").addEventListener("input", e=>{ setPlaying(false); X.t=MODES[X.mode].T*(+e.target.value)/1000; render(); });
   if("IntersectionObserver" in window) new IntersectionObserver(es=>{ for(const e of es) X.visible=e.isIntersecting; }, {rootMargin:"120px"}).observe($("cutwrap"));
+  window.addEventListener("resize", ()=>{ for(const E of labelEls) E.w=null; if(!X.playing) render(); });
   X.update=function(dt){ if(!X.playing || !X.visible) return false; const M=MODES[X.mode]; X.t+=dt*M.rate; if(X.t>M.T) X.t-=M.T*Math.floor(X.t/M.T); render(); return true; };
   X.setMode=setMode; X.setPlaying=setPlaying; X.render=render;
   X.seek=u=>{ X.t=MODES[X.mode].T*clamp(u,0,1); render(); };
