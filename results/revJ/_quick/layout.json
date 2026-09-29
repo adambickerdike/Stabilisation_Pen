@@ -1,8 +1,8 @@
 {
  "meta": {
   "evidence_status": "PROPOSED DESIGN (Rev J integrated pen; dimensions CALC or ASSUMPTION; masses CALC); nothing built",
-  "generated_utc": "2026-09-29T13:17:24+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:31:50+00:00",
+  "git_revision": "b45bee0-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --quick --no-figures",
@@ -59,8 +59,8 @@
  },
  "stabpen.provenance": {
   "evidence_status": "PROPOSED DESIGN (Rev J integrated pen; dimensions CALC or ASSUMPTION; masses CALC); nothing built",
-  "generated_utc": "2026-09-29T13:17:24+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:31:50+00:00",
+  "git_revision": "b45bee0-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --quick --no-figures",
@@ -304,14 +304,14 @@
    "z1": 87.99,
    "moves_with": "nose",
    "optional": false,
-   "function": "Four N52 poles on a spherical Hiperco cap centred on the gimbal; tilting slides the poles along the coils at a constant 0.77 mm gap.  Its rim is flattened at the bottom (to 9.0 mm radius) where the drive shafts pass; the poles end 6.3 mm from the axis there, so the flat costs no pole area.",
+   "function": "Four N52 poles on a spherical Hiperco cap centred on the gimbal; tilting slides the poles along the coils at a constant 0.77 mm gap.  Its rim is flattened at the bottom (to 8.8 mm radius) where the drive shafts pass; the poles end 6.3 mm from the axis there, so the flat costs no pole area.",
    "part": "NdFeB N52 segments 6.3 x 6.3 x 3.3 mm on a Hiperco 50A cap (custom)",
    "ledger": "AMF-139; AMF-140",
    "d0": 18.89,
    "d1": 18.89,
    "mass_g": 9.75,
    "notch": {
-    "flat_at_bottom_radius_mm": 9.0
+    "flat_at_bottom_radius_mm": 8.8
    }
   },
   {
@@ -323,14 +323,14 @@
    "z1": 92.22,
    "moves_with": "handle",
    "optional": false,
-   "function": "x and y coil layers (0.55 mm) on a Hiperco plate concentric with the cap; the plate's rim is notched at the bottom (r > 10.2 mm, +-10 deg) for the drive shafts.  Its back iron is drawn at study N's model thickness (2.37 mm; study N's layout drew 0.8 mm).",
+   "function": "x and y coil layers (0.55 mm) on a Hiperco plate concentric with the cap; the plate's rim is notched at the bottom (r > 9.90 mm, +-10 deg) for the drive shafts.  Its back iron is drawn at study N's model thickness (2.37 mm; study N's layout drew 0.8 mm).",
    "part": "custom (bonded 0.20 mm wire coils on a formed Hiperco 50A plate)",
    "ledger": "AMF-29; AMF-30; AMF-140",
    "d0": 22.0,
    "d1": 22.0,
    "mass_g": 8.71,
    "notch": {
-    "bottom_rim_radius_mm": 10.2,
+    "bottom_rim_radius_mm": 9.9,
     "half_angle_deg": 10.0
    }
   },
@@ -351,7 +351,7 @@
    "d_in": 5.5,
    "mass_g": 2.0,
    "notch": {
-    "bottom_rim_radius_mm": 10.2
+    "bottom_rim_radius_mm": 9.9
    }
   },
   {
@@ -664,7 +664,7 @@
    "z1": 19.82,
    "moves_with": "handle",
    "optional": false,
-   "function": "Leaf spring in the sleeve's bottom wall between the shafts: presses the pod down with 0.55 N over 0.54 mm of travel.",
+   "function": "Leaf spring in the sleeve's bottom wall between the shafts: presses the pod down with 0.55 N over 0.75 mm of travel.",
    "part": "custom (17-7PH leaf 0.1 mm)",
    "ledger": "AMF-20",
    "size": [
@@ -673,7 +673,7 @@
     5.0
    ],
    "offset": [
-    -11.3,
+    -11.2,
     0.0
    ],
    "mass_g": 0.01
@@ -696,7 +696,7 @@
     1.0
    ],
    "offset": [
-    -10.6,
+    -10.5,
     0.0
    ],
    "mass_g": 0.02
@@ -720,7 +720,7 @@
    ],
    "offset": [
     -10.2,
-    -2.6
+    -3.0
    ],
    "mass_g": 0.02
   },
@@ -739,7 +739,7 @@
    "d0": 0.8,
    "d1": 0.8,
    "offset": [
-    -10.88,
+    -10.68,
     1.6
    ],
    "mass_g": 0.37
@@ -759,7 +759,7 @@
    "d0": 0.8,
    "d1": 0.8,
    "offset": [
-    -10.88,
+    -10.68,
     -1.6
    ],
    "mass_g": 0.37
@@ -1083,10 +1083,13 @@
   "board_underside_to_nose_mm": 0.152,
   "hall_to_magnet_at_stop_mm": 0.254,
   "cap_rim_in_bore_at_stop_mm": 0.194,
-  "shaft_to_cap_flat_at_stop_mm": 0.133,
-  "shaft_to_plate_notch_mm": 0.297,
-  "shaft_to_gimbal_notch_mm": 0.297,
-  "shaft_liner_skin_mm": 0.203,
+  "shaft_to_cap_flat_at_stop_mm": 0.136,
+  "shaft_to_plate_notch_mm": 0.1,
+  "shaft_to_gimbal_notch_mm": 0.1,
+  "shaft_liner_skin_mm": 0.068,
+  "preload_flexure_skin_mm": 0.036,
+  "preload_flexure_to_load_sensor_mm": 0.15,
+  "steer_sensor_to_steering_shaft_mm": 0.15,
   "shafts_to_page_sensor_mm": 1.4,
   "shafts_to_preload_flexure_mm": 0.1,
   "cap_to_gimbal_mm": 3.998,

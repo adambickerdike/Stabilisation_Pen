@@ -26,11 +26,11 @@ lra,Vibration cue motor,haptic,box,115.72,123.72,,,,"[3.0, 8.0, 8.0]","[-8.6, 0.
 drive_wheel,Heel wheel with O-ring tyre,drive,cylinder,9.58,10.58,2.0,2.0,,,"[-11.36, 0.0]",drive,False,0.01,custom brass hub + NBR O-ring 0.6 mm cord; axle d 0.3 mm in jewel bearings,AMF-111; AMF-112
 drive_fork,Steering fork and crown,drive,cylinder,10.73,11.73,3.0,3.0,,,"[-10.39, 0.0]",drive,False,0.08,"custom (hardened steel fork, brass crown module 0.1)",
 drive_pod,Heel pod (sprung),drive,box,10.82,14.82,,,,"[2.1, 4.0, 4.0]","[-10.75, 0.0]",drive,False,0.07,"custom (PEEK housing, jewel bearings)",
-drive_spring,Preload flexure,drive,box,14.82,19.82,,,,"[0.3, 2.0, 5.0]","[-11.3, 0.0]",handle,False,0.01,custom (17-7PH leaf 0.1 mm),AMF-20
-drive_load_sensor,Wheel-load sensor,drive,box,18.32,19.32,,,,"[0.8, 1.5, 1.0]","[-10.6, 0.0]",handle,False,0.02,DRV5055 class + 1 mm magnet,OPT-46; AMF-72
-drive_steer_sensor,Steering-angle sensor,drive,box,12.02,13.02,,,,"[0.8, 1.5, 1.0]","[-10.2, -2.6]",drive,False,0.02,TMAG5273 class + d 1 mm magnet,OPT-45
-drive_shaft_drive,Drive shaft,drive,cylinder,12.82,92.72,0.8,0.8,,,"[-10.88, 1.6]",drive,False,0.37,"custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)",
-drive_shaft_steering,Steering shaft,drive,cylinder,12.82,92.72,0.8,0.8,,,"[-10.88, -1.6]",drive,False,0.37,"custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)",
+drive_spring,Preload flexure,drive,box,14.82,19.82,,,,"[0.3, 2.0, 5.0]","[-11.2, 0.0]",handle,False,0.01,custom (17-7PH leaf 0.1 mm),AMF-20
+drive_load_sensor,Wheel-load sensor,drive,box,18.32,19.32,,,,"[0.8, 1.5, 1.0]","[-10.5, 0.0]",handle,False,0.02,DRV5055 class + 1 mm magnet,OPT-46; AMF-72
+drive_steer_sensor,Steering-angle sensor,drive,box,12.02,13.02,,,,"[0.8, 1.5, 1.0]","[-10.2, -3.0]",drive,False,0.02,TMAG5273 class + d 1 mm magnet,OPT-45
+drive_shaft_drive,Drive shaft,drive,cylinder,12.82,92.72,0.8,0.8,,,"[-10.68, 1.6]",drive,False,0.37,"custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)",
+drive_shaft_steering,Steering shaft,drive,cylinder,12.82,92.72,0.8,0.8,,,"[-10.68, -1.6]",drive,False,0.37,"custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)",
 drive_transfer,Transfer gears,drive,box,92.72,94.72,,,,"[6.4, 10.0, 2.0]","[-7.7, 0.0]",handle,False,0.25,"module 0.1 brass gears, idler about d 3 mm (ASSUMPTION)",
 drive_motor,Wheel drive motor,drive,cylinder,94.92,114.92,6.0,6.0,,,"[-7.2, 3.2]",handle,False,2.5,"Faulhaber 0620 B brushless DC, 6 x 20 mm",AMF-100
 steer_motor,Steering motor,drive,cylinder,94.92,114.92,6.0,6.0,,,"[-7.2, -3.2]",handle,False,2.5,"Faulhaber 0620 B brushless DC, 6 x 20 mm",AMF-100

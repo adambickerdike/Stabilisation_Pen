@@ -55,6 +55,36 @@ class Res:
         return self.r.xy(base)
 
 
+def preroll(written, pre_s: float):
+    """The same writing preceded by pre_s seconds of the pen resting on the paper at the first touchdown (the writer
+    has placed the pen; tremor, when present, acts from the start).  The approach before the first touchdown is dropped;
+    letter windows, spans and features are shifted.  The rest's ink is not scored (it lies outside every letter)."""
+    import copy
+    it = written.intended
+    dt = float(it.t[1] - it.t[0])
+    k0 = int(np.flatnonzero(it.pen_down)[0])
+    n_pre = int(round(pre_s / dt))
+    xy = np.vstack([np.repeat(it.xy[k0:k0 + 1], n_pre, 0), it.xy[k0:]])
+    down = np.r_[np.ones(n_pre, bool), it.pen_down[k0:]]
+    lift = np.r_[np.zeros(n_pre), it.lift[k0:]]
+    t = np.arange(len(xy)) * dt
+    shift_t = n_pre * dt - float(it.t[k0])
+    shift_k = n_pre - k0
+    feats = [(f[0], f[1] + shift_t, f[2] + shift_t) + tuple(f[3:]) for f in it.features]
+    out = copy.copy(written)
+    out.intended = sg.Intended(t, xy, down, lift, feats)
+    out.letters = []
+    for L in written.letters:
+        L2 = copy.copy(L)
+        L2.span = (L.span[0] + shift_k, L.span[1] + shift_k)
+        L2.strokes = [(a + shift_k, b + shift_k) for a, b in L.strokes]
+        L2.t0 = L.t0 + shift_t
+        L2.t1 = L.t1 + shift_t
+        out.letters.append(L2)
+    out.meta = dict(written.meta, preroll_s=pre_s)
+    return out
+
+
 @dataclass
 class WriterCase:
     w: int
@@ -62,10 +92,13 @@ class WriterCase:
     text: str = WV.ET_SENTENCE
     write_kw: Dict = field(default_factory=dict)
     N0: float = 1.0
+    pre_s: float = 0.0              # the pen rests on the paper this long before writing (preroll)
 
     def __post_init__(self):
         wr = WV.writer(self.w, self.version)
         self.written = wr.write(self.text, dt=SIM_DT, seed=2000 + self.w, **self.write_kw)
+        if self.pre_s > 0:
+            self.written = preroll(self.written, self.pre_s)
         self.rec = MT.recognizer_for(self.written)
         it = self.written.intended
         self.t = it.t

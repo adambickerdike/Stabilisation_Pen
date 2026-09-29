@@ -1,8 +1,8 @@
 {
  "meta": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)",
-  "generated_utc": "2026-09-29T13:11:14+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:28:08+00:00",
+  "git_revision": "4e02e83-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py",
@@ -17,8 +17,8 @@
  },
  "stabpen.provenance": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)",
-  "generated_utc": "2026-09-29T13:11:14+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:28:08+00:00",
+  "git_revision": "4e02e83-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py",
@@ -46,8 +46,8 @@
    },
    "com_base_m": {
     "value": [
-     0.0005452259300654638,
-     0.00015085422321571128,
+     0.0005476369152163501,
+     0.00015072648890308155,
      0.0898189414018841
     ],
     "unit": "m",
@@ -57,19 +57,19 @@
    "inertia_base_kg_m2": {
     "value": [
      [
-      8.485648981691916e-05,
-      6.173298404598434e-08,
-      -9.796372085270796e-07
+      8.485654175082942e-05,
+      6.166346172760657e-08,
+      -9.733696943602262e-07
      ],
      [
-      6.173298404598434e-08,
-      8.57647819964986e-05,
-      1.7357493820150094e-07
+      6.166346172760657e-08,
+      8.576101933398e-05,
+      1.7289470751716434e-07
      ],
      [
-      -9.796372085270796e-07,
-      1.7357493820150094e-07,
-      4.998879307558197e-06
+      -9.733696943602262e-07,
+      1.7289470751716434e-07,
+      4.995168578949861e-06
      ]
     ],
     "unit": "kg m^2",
@@ -84,8 +84,8 @@
    },
    "com_with_endcap_m": {
     "value": [
-     0.0004656746671295033,
-     0.00012884381741092458,
+     0.0004677338771664478,
+     0.0001287347201904242,
      0.09944592261535794
     ],
     "unit": "m",
@@ -95,19 +95,19 @@
    "inertia_with_endcap_kg_m2": {
     "value": [
      [
-      0.0001298220659000759,
-      6.09062236805435e-08,
-      -6.18026133441272e-07
+      0.00012982211744676702,
+      6.083374858049641e-08,
+      -6.101595776948612e-07
      ],
      [
-      6.09062236805435e-08,
-      0.00013073311745433612,
-      2.736262285568918e-07
+      6.083374858049641e-08,
+      0.0001307293812771769,
+      2.728612804378765e-07
      ],
      [
-      -6.18026133441272e-07,
-      2.736262285568918e-07,
-      6.134515170167356e-06
+      -6.101595776948612e-07,
+      2.728612804378765e-07,
+      6.130830539699284e-06
      ]
     ],
     "unit": "kg m^2",

@@ -43,7 +43,10 @@ D_HANDLE = 24.0
 BORE_R = 11.0                        # 1 mm PEEK wall (Rev H / study N)
 CELL_OFFSET_X = 3.0                  # mm: the cell's axis lifted toward the top (+x) to free the bottom for the motors
 MOTOR_XY = (-7.2, 3.2)               # mm: motor axes (x, +-y), under the lifted cell
-SHAFT_XY = (-10.88, 1.6)             # mm: drive shafts at r 11.0, +-8.4 deg either side of the bottom
+SHAFT_R = 10.8                       # mm: drive-shaft axes from the pen axis (the sleeve's front skin sets it)
+SHAFT_XY = (-math.sqrt(SHAFT_R ** 2 - 1.6 ** 2), 1.6)   # mm: +-8.5 deg either side of the bottom
+CAP_FLAT_R = 8.8                     # mm: the magnet cap's flat at the bottom (the poles end at 6.3 mm)
+NOTCH_R = 9.9                        # mm: coil-plate and gimbal-frame notches at the bottom (+-10 deg)
 LINER_D = 1.0                        # mm, PTFE liner around each 0.8 mm shaft (ASSUMPTION; study D used 1.2)
 BOARD_Z = (50.0, 72.0)               # mm, main board along the top of the mid-section
 BOARD_X = (7.0, 8.0)                 # mm, its FR4 (x away from the paper); components to x 6.4 below and 9.2 above
@@ -149,26 +152,26 @@ def build(fe: Optional[Dict] = None, quick: bool = False) -> Dict:
     cap = comp("magnet_cap", "Magnet cap (2 x 2 checkerboard, spherical face)", "actuator", "cylinder", cap_front, za, "nose",
                2 * nd["r_disc"], 2 * nd["r_disc"],
                function="Four N52 poles on a spherical Hiperco cap centred on the gimbal; tilting slides the poles along the coils "
-                        "at a constant 0.77 mm gap.  Its rim is flattened at the bottom (to 9.0 mm radius) where the drive "
-                        "shafts pass; the poles end 6.3 mm from the axis there, so the flat costs no pole area.",
+                        f"at a constant 0.77 mm gap.  Its rim is flattened at the bottom (to {CAP_FLAT_R:.1f} mm radius) where the "
+                        "drive shafts pass; the poles end 6.3 mm from the axis there, so the flat costs no pole area.",
                part=f"NdFeB N52 segments {nd['w']:.1f} x {nd['w']:.1f} x {nd['t_m']:.1f} mm on a Hiperco 50A cap (custom)",
                ledger="AMF-139; AMF-140", mass_g=nd["m_act_move_g"])
-    cap["notch"] = {"flat_at_bottom_radius_mm": 9.0}
+    cap["notch"] = {"flat_at_bottom_radius_mm": CAP_FLAT_R}
     A(cap)
     plate = comp("coil_plate", "Two-layer spherical coil plate and back iron", "actuator", "cylinder", z_plate0, z_plate1, "handle",
                  2 * BORE_R, 2 * BORE_R,
                  function="x and y coil layers (0.55 mm) on a Hiperco plate concentric with the cap; the plate's rim is notched "
-                          "at the bottom (r > 10.2 mm, +-10 deg) for the drive shafts.  Its back iron is drawn at study N's "
-                          f"model thickness ({t_bi:.2f} mm; study N's layout drew 0.8 mm).",
+                          f"at the bottom (r > {NOTCH_R:.2f} mm, +-10 deg) for the drive shafts.  Its back iron is drawn at "
+                          f"study N's model thickness ({t_bi:.2f} mm; study N's layout drew 0.8 mm).",
                  part="custom (bonded 0.20 mm wire coils on a formed Hiperco 50A plate)", ledger="AMF-29; AMF-30; AMF-140",
                  mass_g=nd["m_act_stat_g"])
-    plate["notch"] = {"bottom_rim_radius_mm": 10.2, "half_angle_deg": 10.0}
+    plate["notch"] = {"bottom_rim_radius_mm": NOTCH_R, "half_angle_deg": 10.0}
     A(plate)
     gim = comp("gimbal", "Flexure gimbal (2-axis)", "mechanism", "tube", zp - 1.5, zp + 1.5, "handle", 21.0, 21.0, 5.5,
                function=f"Cross-strip flexures: the nose tilts +-{math.degrees(nz.alpha_u):.1f} deg (usable) in two directions; "
                         "its frame is notched at the bottom for the shafts.", part="custom (301 FH 0.050 mm strips, laser cut)",
                ledger="AMF-20", mass_g=2.0)
-    gim["notch"] = {"bottom_rim_radius_mm": 10.2}
+    gim["notch"] = {"bottom_rim_radius_mm": NOTCH_R}
     A(gim)
     # ------------------------------------------------------------------ skid, grip, structure
     ring_m = _tube(2 * R_s, 2 * dm["ring_bore_r"], RU.ring_len, _rho("POM")) * 240.0 / 360.0
@@ -252,13 +255,14 @@ def build(fe: Optional[Dict] = None, quick: bool = False) -> Dict:
            function="Bearing block for the fork and the two bevel pinions; hangs on the preload flexure (0.55 N).",
            part="custom (PEEK housing, jewel bearings)", ledger="", mass_g=0.075))
     A(comp("drive_spring", "Preload flexure", "drive", "box", z_s0 + 4.0, z_s0 + 9.0, "handle", size=[0.3, 2.0, 5.0],
-           offset=[-11.3, 0.0], function="Leaf spring in the sleeve's bottom wall between the shafts: presses the pod down with "
-           "0.55 N over 0.54 mm of travel.", part="custom (17-7PH leaf 0.1 mm)", ledger="AMF-20", mass_g=0.01))
+           offset=[-11.2, 0.0], function="Leaf spring in the sleeve's bottom wall between the shafts: presses the pod down with "
+           f"0.55 N over {fe['spring_travel_mm']:.2f} mm of travel.", part="custom (17-7PH leaf 0.1 mm)", ledger="AMF-20",
+           mass_g=0.01))
     A(comp("drive_load_sensor", "Wheel-load sensor", "drive", "box", z_s0 + 7.5, z_s0 + 8.5, "handle", size=[0.8, 1.5, 1.0],
-           offset=[-10.6, 0.0], function="Linear Hall reading the flexure's bend (the wheel's load).",
+           offset=[-10.5, 0.0], function="Linear Hall reading the flexure's bend (the wheel's load).",
            part="DRV5055 class + 1 mm magnet", ledger="OPT-46; AMF-72", mass_g=0.02))
     A(comp("drive_steer_sensor", "Steering-angle sensor", "drive", "box", z_s0 + 1.2, z_s0 + 2.2, "drive", size=[0.8, 1.5, 1.0],
-           offset=[-10.2, -2.6], function="3-D Hall reading a diametric magnet on the fork (heading at the wheel).",
+           offset=[-10.2, -3.0], function="3-D Hall reading a diametric magnet on the fork (heading at the wheel).",
            part="TMAG5273 class + d 1 mm magnet", ledger="OPT-45", mass_g=0.02))
     z_sh0 = z_s0 + 2.0
     for name, sgn in (("drive_shaft_drive", 1.0), ("drive_shaft_steering", -1.0)):
@@ -381,10 +385,24 @@ def fit_checks(geo: Dict, fe: Dict, nz: FR.NoseGeo, nd: Dict, rf: Dict, ps: Dict
     # actuator: cap and plate in the bore; the shafts past the flattened cap, the notched plate and gimbal
     liner_in = math.hypot(*SHAFT_XY) - LINER_D / 2
     out["cap_rim_in_bore_at_stop_mm"] = round(BORE_R - (nd["r_disc"] + nz.alpha_s * nd["L_b"]) - 0.3, 3)
-    out["shaft_to_cap_flat_at_stop_mm"] = round(liner_in - (9.0 + nz.alpha_s * nd["L_b"]) - 0.3, 3)
-    out["shaft_to_plate_notch_mm"] = round(liner_in - 10.2, 3)
-    out["shaft_to_gimbal_notch_mm"] = round(liner_in - 10.2, 3)
-    out["shaft_liner_skin_mm"] = round(D_HANDLE / 2 - (math.hypot(*SHAFT_XY) + LINER_D / 2) - 0.3, 3)
+    out["shaft_to_cap_flat_at_stop_mm"] = round(liner_in - (CAP_FLAT_R + nz.alpha_s * nd["L_b"]) - 0.3, 3)
+    out["shaft_to_plate_notch_mm"] = round(liner_in - NOTCH_R - 0.3, 3)
+    out["shaft_to_gimbal_notch_mm"] = round(liner_in - NOTCH_R - 0.3, 3)
+    # skin outside the shaft grooves: the shell (r 12) and the tapered front sleeve at the shafts' front end
+    sl = _c(geo, "front_sleeve")
+    sh = _c(geo, "drive_shaft_drive")
+
+    def r_sleeve(z: float) -> float:
+        return sl["d0"] / 2 + (sl["d1"] - sl["d0"]) / 2 * (z - sl["z0"]) / (sl["z1"] - sl["z0"])
+    liner_out = math.hypot(*SHAFT_XY) + LINER_D / 2
+    out["shaft_liner_skin_mm"] = round(min(D_HANDLE / 2, r_sleeve(sh["z0"])) - liner_out - 0.3, 3)
+    fl = _c(geo, "drive_spring")
+    out["preload_flexure_skin_mm"] = round(r_sleeve(fl["z0"]) - (abs(fl["offset"][0]) + fl["size"][0] / 2) - 0.3, 3)
+    ls = _c(geo, "drive_load_sensor")
+    out["preload_flexure_to_load_sensor_mm"] = round((abs(fl["offset"][0]) - fl["size"][0] / 2)
+                                                     - (abs(ls["offset"][0]) + ls["size"][0] / 2), 3)
+    st = _c(geo, "drive_steer_sensor")                          # static parts: gap >= 0
+    out["steer_sensor_to_steering_shaft_mm"] = round(abs(st["offset"][1]) - st["size"][1] / 2 - (SHAFT_XY[1] + LINER_D / 2), 3)
     out["shafts_to_page_sensor_mm"] = round((_c(geo, "page_sensor")["offset"][1] - 1.5) - (SHAFT_XY[1] + LINER_D / 2), 3)
     out["shafts_to_preload_flexure_mm"] = round((SHAFT_XY[1] - LINER_D / 2) - 1.0, 3)
     out["cap_to_gimbal_mm"] = round(nd["cap_front"] - (nd["z_p"] + 1.5) - 0.3, 3)

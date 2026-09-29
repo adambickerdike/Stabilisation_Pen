@@ -1,8 +1,8 @@
 {
  "meta": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
-  "generated_utc": "2026-09-29T13:17:24+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:31:51+00:00",
+  "git_revision": "b45bee0-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --quick --no-figures",
@@ -17,8 +17,8 @@
  },
  "stabpen.provenance": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
-  "generated_utc": "2026-09-29T13:17:24+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:31:51+00:00",
+  "git_revision": "b45bee0-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --quick --no-figures",

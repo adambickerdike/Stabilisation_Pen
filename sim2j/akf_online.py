@@ -323,6 +323,8 @@ class DetParams:
     t_on: float = 0.5
     t_off: float = 1.0
     ramp: float = 0.2
+    margin: float = 2.0             # line amplitude: excess over margin x floor within half_width of f and 2f (ai2)
+    half_width: float = 1.5
     label: str = "ai2/smoothers.DET_DEFAULTS (tuned by study L on tuning writers; algorithm re-implemented online)"
 
 
@@ -342,6 +344,7 @@ class LineDetector:
         self.gate = 0.0
         self.f_line = 0.0
         self.ratio = 0.0
+        self.amp = 0.0
         self.t_first = None
         self.n_on = max(1, int(round(self.p.t_on / self.p.every)))
         self.n_off = max(1, int(round(self.p.t_off / self.p.every)))
@@ -387,6 +390,9 @@ class LineDetector:
                 fh = float(f[k] + float(np.clip(0.5 * (y0 - y2) / den, -0.5, 0.5)) * (f[1] - f[0]))
         self.f_line = fh
         self.ratio = float(r[k])
+        exc = np.maximum(Pw - p.margin * fl, 0.0)
+        inb = (np.abs(f - fh) <= p.half_width) | (np.abs(f - 2 * fh) <= p.half_width)
+        self.amp = math.sqrt(2.0 * float(np.sum(exc[inb])) * float(f[1] - f[0]))
         if not self.state:
             self.c_on = self.c_on + 1 if self.ratio > p.r_on else 0
             if self.c_on >= self.n_on:
@@ -505,3 +511,111 @@ def frozen_det() -> DetParams:
         return DetParams(**d["guard"]["det_params"])
     except Exception:
         return DetParams()
+
+
+# ================================================================================================ ai2's gated listening
+def listening_params() -> Dict:
+    """ai2's listening tremor model (DEC-042; ai2/delayed.TREMOR_DEFAULTS updated with results/ai2/ai2.json
+    test_settings.tremor) in fusion's AKF parameter format, with the AKF's own output gates off (the detector and the
+    amplitude gate decide) and a negligible output low-pass (the forward filter's prediction is used directly)."""
+    import json
+    import os
+    from ai2 import delayed as DL
+    p = dict(DL.TREMOR_DEFAULTS)
+    try:
+        from . import ROOT as _R
+        d = json.load(open(os.path.join(_R, "results", "ai2", "ai2.json")))
+        p.update(d["test_settings"]["tremor"])
+    except Exception:
+        pass
+    out = {k: float(p[k]) for k in ("qj", "qt", "qh", "qb", "ra", "rp", "tau_decay", "w0_hz", "tau_w", "wmin_hz",
+                                    "wmax_hz", "harm", "gap_reset")}
+    out.update({"f_gate": 0.0, "a_lo": 0.0, "a_hi": 0.0, "g": 1.0, "cap_k": 0.0, "xtrack": 0.0, "horizon": 0.0,
+                "lp_hz": 1000.0, "tau_auth": 0.05, "tau_amp": 0.3})
+    return out
+
+
+def listening_det() -> DetParams:
+    """ai2's detector for the gated tracker (ai2/delayed.DET_DEFAULTS + test_settings.det: 4 s before the first update)."""
+    from ai2 import delayed as DL
+    d = DL.DET_DEFAULTS
+    return DetParams(win=d["win"], seg=d["seg"], every=d["every"], min_win=d["min_win"], r_on=d["r_on"],
+                     r_off=d["r_off"], t_on=d["t_on"], t_off=d["t_off"], ramp=d["ramp"])
+
+
+class GatedListening:
+    """ai2's gated listening tracker (DEC-042), online in the firmware: the tremor-line detector's hysteresis gate x an
+    amplitude gate on the detector's line amplitude (fades in between amp_lo 0.15 mm and amp_hi 0.35 mm) weights the
+    listening estimate (a second AKF instance with ai2's listening tremor model, its prediction to t + the servo delay);
+    the complement goes to the fallback tracker: the Rev H tracker as built (ai2's definition) or the guarded tracker.
+    Same interface as GuardedTracker (feed_acc, feed_pos, step, last, det, det_gate, events, n_lock)."""
+
+    def __init__(self, revh_params: Dict, Ts: float = 0.5e-3, horizon_extra: float = 0.0,
+                 fallback_guard: Optional[GuardParams] = None, fallback_det: Optional[DetParams] = None,
+                 det: Optional[DetParams] = None, amp_lo: float = 0.15e-3, amp_hi: float = 0.35e-3,
+                 listen: Optional[Dict] = None):
+        g = fallback_guard or GuardParams(on=False, use_det_gate=False, lock_hz=0.0)
+        self.fb = GuardedTracker(revh_params, Ts=Ts, horizon_extra=horizon_extra, guard=g, det=fallback_det or det)
+        lp = dict(listen or listening_params())
+        lp["acc_gd"] = float(revh_params.get("acc_gd", lp.get("acc_gd", 1.04e-3)))
+        self.listen = AKFOnline(lp, Ts=Ts, horizon_extra=horizon_extra)
+        self.det = LineDetector(det or listening_det())
+        self.amp_lo, self.amp_hi = amp_lo, amp_hi
+        self.Ts = Ts
+        self.last = np.zeros(7)
+        self.det_gate = 0.0
+        self.g_listen = 0.0
+        self.events = self.fb.events
+
+    @property
+    def n_lock(self):
+        return self.fb.n_lock
+
+    @property
+    def akf(self):
+        return self.fb.akf
+
+    def feed_acc(self, t_acq, t_av, y):
+        self.fb.feed_acc(t_acq, t_av, y)
+        self.listen.feed_acc(t_acq, t_av, y)
+
+    def feed_pos(self, t_acq, t_av, y, ok, ok_det=None):
+        self.fb.feed_pos(t_acq, t_av, y, ok, ok_det=ok_det)
+        self.listen.feed_pos(t_acq, t_av, y, ok)
+        self.det.push(t_acq, y, ok if ok_det is None else ok_det)
+
+    def weight(self) -> float:
+        g = self.det.gate
+        if self.amp_hi > self.amp_lo:
+            g *= min(1.0, max(0.0, (self.det.amp - self.amp_lo) / (self.amp_hi - self.amp_lo)))
+        return g
+
+    def step(self, t: float) -> np.ndarray:
+        d_fb = self.fb.step(t)
+        self.det.update(t)
+        self.det_gate = self.det.gate
+        ol = self.listen.tick(t)
+        g = self.weight()
+        self.g_listen = g
+        o = self.last
+        fo = self.fb.last
+        o[0] = g * ol[5] + (1.0 - g) * d_fb[0]
+        o[1] = g * ol[6] + (1.0 - g) * d_fb[1]
+        o[2] = ol[2] if g > 0.5 else fo[2]
+        o[3] = g + (1.0 - g) * fo[3]
+        o[4] = ol[4] if g > 0.5 else fo[4]
+        o[5] = ol[5]; o[6] = ol[6]                     # ungated listening estimate (for an arbiter)
+        self.d_fb = d_fb
+        return o[0:2]
+
+
+def frozen_tracker() -> str:
+    """The tracker family frozen in results/sim2j/rules.json ('guarded' | 'gl' | 'glg'), else 'guarded'."""
+    import json
+    import os
+    from . import RESULTS
+    try:
+        d = json.load(open(os.path.join(RESULTS, "rules.json")))
+        return str(d["guard"].get("tracker", "guarded"))
+    except Exception:
+        return "guarded"

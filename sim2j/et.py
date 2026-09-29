@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import copy
 import math
+import os
 import time
 from dataclasses import dataclass, field, replace
 from typing import Dict, List, Optional
@@ -30,12 +31,12 @@ from typing import Dict, List, Optional
 import numpy as np
 from scipy.signal import butter, sosfiltfilt
 
-from . import ROOT  # noqa: F401
+from . import BUILD, ROOT  # noqa: F401
 from . import revj as RJ
 from . import stepper as ST
 from . import tasks as TK
 from . import writers as WV
-from .akf_online import DetParams, GuardParams, frozen_det, frozen_guard
+from .akf_online import DetParams, GuardParams, frozen_det, frozen_guard, frozen_tracker
 from .firmware import FWConfig
 from handwriting import metrics as MT  # noqa: E402
 
@@ -60,24 +61,30 @@ def controller(name: str, guard: Optional[GuardParams] = None, policy=None, seed
 def _controller(name, g, akf, policy, seed) -> FWConfig:
     if name == "none":
         return FWConfig(seed=seed)
-    if name == "nose":
-        return FWConfig(nose="tremor", akf=akf, guard=g, seed=seed)
+    if name == "nose":                # the frozen default tracker (results/sim2j/rules.json)
+        return FWConfig(nose="tremor", akf=akf, guard=g, tracker=frozen_tracker(), seed=seed)
+    if name == "nose_guarded":
+        return FWConfig(nose="tremor", akf=akf, guard=g, tracker="guarded", seed=seed)
+    if name == "nose_gl":             # ai2's gated listening tracker, fallback the Rev H tracker as built (DEC-042)
+        return FWConfig(nose="tremor", akf=akf, guard=g, tracker="gl", seed=seed)
+    if name == "nose_glg":            # gated listening with the guarded tracker as the fallback
+        return FWConfig(nose="tremor", akf=akf, guard=g, tracker="glg", seed=seed)
     if name == "nose_noguard":
         return FWConfig(nose="tremor", akf=akf, guard=replace(g, on=False), seed=seed)
     if name == "nose_wheel":
-        return FWConfig(nose="tremor", wheel="tremor", akf=akf, guard=g, seed=seed)
+        return FWConfig(nose="tremor", wheel="tremor", akf=akf, guard=g, tracker=frozen_tracker(), seed=seed)
     if name == "wheel_only":
         return FWConfig(wheel="tremor", akf=akf, guard=g, seed=seed)
     if name == "nose_freewheel":
-        return FWConfig(nose="tremor", wheel="free", akf=akf, guard=g, seed=seed)
+        return FWConfig(nose="tremor", wheel="free", akf=akf, guard=g, tracker=frozen_tracker(), seed=seed)
     if name == "nose_wheel_ec":
-        return FWConfig(nose="tremor", wheel="tremor", endcap="ff", akf=akf, guard=g, seed=seed)
+        return FWConfig(nose="tremor", wheel="tremor", endcap="ff", akf=akf, guard=g, tracker=frozen_tracker(), seed=seed)
     if name == "nose_ec":
-        return FWConfig(nose="tremor", endcap="ff", akf=akf, guard=g, seed=seed)
+        return FWConfig(nose="tremor", endcap="ff", akf=akf, guard=g, tracker=frozen_tracker(), seed=seed)
     if name == "oracle":
         return FWConfig(nose="oracle", seed=seed)
     if name == "rl":
-        return FWConfig(nose="tremor", akf=akf, guard=g, policy=policy, seed=seed)
+        return FWConfig(nose="tremor", akf=akf, guard=g, tracker=frozen_tracker(), policy=policy, seed=seed)
     raise KeyError(name)
 
 
@@ -120,14 +127,27 @@ def clean_letters(written, r) -> List[List[np.ndarray]]:
     return out
 
 
+ET_PRE_S = 4.0          # s the pen rests on the paper before writing (tremor detectors need 2-4 s of signal; a
+                        # pen picked up and placed before writing has that time) - ASSUMPTION, stated with the results
+
+
 class WriterSetup:
     def __init__(self, w: int, pens: PenModels, version: str = "v2", text: str = ET_TEXT, pen: str = "base",
-                 n_adapt: int = 3, log=None):
+                 n_adapt: int = 3, log=None, pre_s: float = ET_PRE_S):
         self.w, self.version, self.text, self.pen = w, version, text, pen
+        self.pre_s = pre_s
         self.pm = pens.get(pen)
-        self.case = TK.WriterCase(w, version=version, text=text)
+        self.case = TK.WriterCase(w, version=version, text=text, pre_s=pre_s)
         t0 = time.time()
-        self.adapt_hist = self._adapt(n_adapt)
+        cache = self._cache_path(n_adapt)
+        if cache and os.path.exists(cache):
+            z = np.load(cache)
+            self.case.hand_path = z["hand_path"]
+            self.adapt_hist = [float(v) for v in z["adapt_hist"]]
+        else:
+            self.adapt_hist = self._adapt(n_adapt)
+            if cache:
+                np.savez(cache, hand_path=self.case.hand_path, adapt_hist=np.array(self.adapt_hist))
         self.clean = ST.run(self.pm, self.case.scenario(), controller("none"))
         self.ref_polys = clean_letters(self.case.written, self.clean)
         rows = MT.letter_rows(self.case.written, TK.Res(self.clean), self.case.rec)
@@ -140,6 +160,17 @@ class WriterSetup:
         if log:
             log(f"[setup] writer {w} {version} pen {pen}: adaptation {['%.0f' % h for h in self.adapt_hist]} um, "
                 f"clean floor {self.clean_floor['ink_to_intended_um']:.0f} um, {self.setup_s:.0f} s")
+
+    def _cache_path(self, n_adapt: int) -> Optional[str]:
+        """The adapted hand path depends on the writer, the text, the pen model and the step: cached per key."""
+        import hashlib
+        pm = self.pm
+        key = f"{self.w}|{self.version}|{self.text}|{self.pen}|{pm.cfg.label}|{pm.m.opt.timestep}|{n_adapt}|{self.pre_s}|" \
+              f"{(pm.info.get('revj') or {}).get('lead')}|{pm.cfg.hand}|{pm.cfg.hand_model}|{pm.cfg.contact}|{pm.cfg.refill}"
+        h = hashlib.sha256(key.encode()).hexdigest()[:16]
+        d = os.path.join(BUILD, "setups")
+        os.makedirs(d, exist_ok=True)
+        return os.path.join(d, f"setup_w{self.w}_{self.version}_{self.pen}_{h}.npz")
 
     def _adapt(self, n_iter):
         case = self.case

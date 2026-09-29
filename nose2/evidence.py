@@ -28,6 +28,9 @@ def _r(**kw) -> Dict[str, str]:
     return row
 
 
+SHARED_WITH_OTHER_STUDIES = {"HAP-62", "HAP-90", "HAP-91", "HAP-92"}
+
+
 def rows(results: Dict = None) -> List[Dict[str, str]]:
     R = results or {}
     out = [
@@ -392,6 +395,8 @@ def rows(results: Dict = None) -> List[Dict[str, str]]:
            transferability_reason="Same principle", design_implication="Expired prior art supporting novelty/FTO arguments for autowrite with page-sensor navigation",
            search_query="WebSearch: patent hand-held printer navigation sensor prints image while moved freehand", stream="PAT"),
     ]
+    # the same sources were read by studies D and L; the ledger keeps their rows under these ids (lead, 2026-09-29)
+    out = [r for r in out if r["id"] not in SHARED_WITH_OTHER_STUDIES]
     return out
 
 

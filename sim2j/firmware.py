@@ -39,7 +39,7 @@ from typing import Dict, List, Optional
 import numpy as np
 
 from . import ROOT  # noqa: F401
-from .akf_online import DetParams, GuardParams, GuardedTracker
+from .akf_online import DetParams, GatedListening, GuardParams, GuardedTracker
 from .sensing import OnlineSensors
 from handwriting.plant import _nearest  # noqa: E402
 
@@ -116,6 +116,11 @@ class FWConfig:
     lift_stroke: float = 0.5e-3
     reach: Optional[float] = None       # page-plane clip of the nose command (default: the usable travel)
     policy: Optional[object] = None     # an RL policy object with .act(obs) -> action (rl.py)
+    min_lift_s: float = 0.04            # a touchdown starts a new template stroke only after the ball was off the
+                                        # paper this long (sim2's touchdown bounces: ASSUMPTION 40 ms)
+    tracker: str = "guarded"            # 'guarded' (Rev H AKF + guard + detector gate) | 'gl' (ai2's gated listening,
+                                        # fallback the Rev H tracker as built, DEC-042) | 'glg' (gated listening with
+                                        # the guarded tracker as the fallback)
     seed: int = 0
     imu_noise: float = 1.0              # IMU noise scale (DR: 0.5-2 x the datasheet densities)
     label: str = ""
@@ -144,7 +149,14 @@ class Firmware:
         if fw.nose == "tremor" or fw.endcap == "ff" or (fw.policy is not None):
             p = dict(fw.akf or {})
             p["acc_gd"] = 0.5 * self.Ts                    # the online IMU's block average (sensing.py)
-            self.tracker = GuardedTracker(p, Ts=self.Ts, horizon_extra=self.gd, guard=fw.guard, det=fw.det)
+            if fw.tracker == "guarded":
+                self.tracker = GuardedTracker(p, Ts=self.Ts, horizon_extra=self.gd, guard=fw.guard, det=fw.det)
+            elif fw.tracker in ("gl", "glg"):
+                self.tracker = GatedListening(p, Ts=self.Ts, horizon_extra=self.gd,
+                                              fallback_guard=fw.guard if fw.tracker == "glg" else None,
+                                              fallback_det=fw.det)
+            else:
+                raise KeyError(fw.tracker)
         self.wheel = wheel
         self.g_auth = 0.0
         self.a_auth = 1.0 - math.exp(-self.Ts / fw.tau_auth)
@@ -159,6 +171,9 @@ class Firmware:
         self.page_q = []
         self.contact = False
         self.was_con = False
+        self.up_s = 1.0                  # time the ball has been off the paper (slide sensor)
+        self.up_s_prev = 1.0
+        self.up_w = 1.0
         self.d_hat = np.zeros(2)
         self.q_page = np.zeros(2)
         self.log = {"q": [], "dhat": [], "f": [], "g": [], "det": [], "wheel_cmd": [], "ec": [], "lift": []}
@@ -198,10 +213,24 @@ class Firmware:
         self.dropped = False
         self.gate_g = 0.0
 
+    def _pick_stroke(self, px, py, cur):
+        """The template stroke a touchdown starts: among the current one and the next three, the one whose start is
+        nearest to the touchdown point (sim2 starts with the ball on the paper and bounces at touchdown, so counting
+        touchdowns - HW1's rule - can skip a stroke)."""
+        n = len(self.tss)
+        best = min(cur + 1, n - 1)
+        bd = 1e9
+        for s in range(max(cur, 0), min(cur + 4, n)):
+            a = int(self.tss[s])
+            d = math.hypot(self.tmpl[a, 0] - px, self.tmpl[a, 1] - py)
+            if d < bd:
+                best, bd = s, d
+        return best
+
     def _template_progress(self, px, py, new_stroke):
         """Stroke-matched nearest template sample (HW1 _nearest with stroke matching)."""
         if new_stroke:
-            self.cur_s += 1
+            self.cur_s = self._pick_stroke(px, py, self.cur_s)
             self.dropped = False
             self.over_tn = 0.0
             if self.cur_s < len(self.tss):
@@ -272,9 +301,9 @@ class Firmware:
             con = False                      # no page position yet: the wheel waits (free)
         if con:
             if mode in ("path", "lead") and self.tmpl is not None:
-                new = not self.was_con_w
+                new = (not self.was_con_w) and self.up_w >= fw.min_lift_s
                 if new:
-                    self.cur_sd += 1
+                    self.cur_sd = self._pick_stroke(self.ps[0], self.ps[1], self.cur_sd)
                     if self.cur_sd < len(self.tss):
                         self.progd = int(self.tss[self.cur_sd])
                 if 0 <= self.cur_sd < len(self.tss):
@@ -346,6 +375,7 @@ class Firmware:
             self.gy = 1.0
             self.t_ov = 0.0
         self.was_con_w = con
+        self.up_w = 0.0 if con else self.up_w + self.Ts
         # force cap from the traction estimate, slew
         self.capd = min(g.F_cap, g.k_safe * self.muh * max(N_meas, 0.0))
         if has_long:
@@ -539,6 +569,8 @@ class Firmware:
             self.d_hat = self.tracker.step(t).copy()
         self.was_con = self.contact
         self.contact = r["contact"]
+        self.up_s_prev = self.up_s
+        self.up_s = 0.0 if self.contact else self.up_s + self.Ts
         # nose authority: hover gating by the page sensor's validity
         target = 1.0 if self.ps_valid else 0.0
         self.g_auth += self.a_auth * (target - self.g_auth)
@@ -551,7 +583,7 @@ class Firmware:
             k = min(int(round((t + self.gd) / self.Ts)), len(dtab) - 1)
             x = -self.g_auth * dtab[k]
         elif mode in ("guide", "detail") and self.tmpl is not None and self.ps is not None:
-            new = self.contact and not self.was_con
+            new = self.contact and not self.was_con and self.up_s_prev >= fw.min_lift_s
             if self.contact:
                 j, dist = self._template_progress(self.ps[0], self.ps[1], new)
                 if mode == "guide":

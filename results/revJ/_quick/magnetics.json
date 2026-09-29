@@ -1,8 +1,8 @@
 {
  "meta": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (magpylib, free space unless stated)",
-  "generated_utc": "2026-09-29T13:17:24+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:31:51+00:00",
+  "git_revision": "b45bee0-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --quick --no-figures",
@@ -17,8 +17,8 @@
  },
  "stabpen.provenance": {
   "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (magpylib, free space unless stated)",
-  "generated_utc": "2026-09-29T13:17:24+00:00",
-  "git_revision": "61f71cd-dirty",
+  "generated_utc": "2026-09-29T13:31:51+00:00",
+  "git_revision": "b45bee0-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --quick --no-figures",
@@ -158,11 +158,11 @@
    "label": "CALC (magpylib, free space; DRV5055 noise from the OPT-46 CALC; TMAG5170 noise MFR OPT-53; Earth field 25-65 uT, 50 uT used, ASSUMPTION)"
   },
   "pod_crosstalk": {
-   "steer_magnet_at_load_sensor_pp_mT": 0.27055868417421197,
+   "steer_magnet_at_load_sensor_pp_mT": 0.28094955939697025,
    "load_signal_slope_mT_per_mm": 91.50035214560218,
-   "false_deflection_um_amplitude": 1.4784570650814481,
-   "false_load_mN_amplitude": 1.5058358996199936,
-   "load_magnet_at_steer_sensor_mT": 0.2593458669003162,
+   "false_deflection_um_amplitude": 1.5352375854789193,
+   "false_load_mN_amplitude": 1.5636679111359364,
+   "load_magnet_at_steer_sensor_mT": 0.24246063410797075,
    "note": "the crosstalk is a fixed function of the heading: calibrate it out (a heading-indexed table) or place the load magnet and sensor 90 deg around the fork",
    "label": "CALC (magpylib; magnet sizes and positions ASSUMPTION, AMF-72 class magnets)"
   },

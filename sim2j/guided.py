@@ -291,6 +291,7 @@ def run_loops(lc: LoopsCase, ctl: str) -> Dict:
 
 # ================================================================================================ lead-through (dyslexia)
 RELAXED = {"tau": 0.25, "tau_air": 0.05}       # drive/params.RELAX_TAU_S (ASSUMPTION, board lead-through model)
+LEAD_WORDS = (3, 4, 5)                          # "dug a deep": the learner's error word and its neighbours (compute)
 
 
 class LeadCase:
@@ -303,11 +304,21 @@ class LeadCase:
     'lead' (driven wheel lead mode along the target), 'lead_nose' (+ nose guidance on the template), 'relaxed_none'
     (relaxed writer, nothing on: the pen stays where the writer puts it down)."""
 
-    def __init__(self, w: int, seed: int, pm, lead_speed: float = 8.0, version: str = "v2", n_adapt: int = 3, log=None):
+    def __init__(self, w: int, seed: int, pm, lead_speed: float = 8.0, version: str = "v2", n_adapt: int = 3, log=None,
+                 words: Optional[tuple] = None):
         from aiguide.writer import Path as APath
         self.w, self.seed, self.pm = w, seed, pm
         self.gc = GuidedCase(w, seed, "dyslexia", pm, n_adapt=n_adapt, version=version, log=log)
-        self.tl = self.gc.tl
+        tw = PRACTICE.split(" ")
+        word_of = [wi for wi, wd in enumerate(tw) for _ in wd]
+        self.sel = [i for i in range(len(self.gc.tl)) if words is None or word_of[i] in words]
+        self.words = tuple(sorted(set(word_of[i] for i in self.sel)))
+        self.subtext = " ".join(tw[i] for i in self.words)
+        self.word_local = {wi: k for k, wi in enumerate(self.words)}
+        self.word_of = word_of
+        self.tl = [self.gc.tl[i] for i in self.sel]
+        self.track = build_track(self.tl, speed=self.gc.v_target, air_speed=self.gc.written.style.air_speed_mm_s * 1e-3,
+                                 dt=0.5e-3)
         strokes = [np.asarray(s, float) for t in self.tl for s in t.strokes]
         self.owner = [i for i, t in enumerate(self.tl) for _ in t.strokes]
         first = strokes[0][0]
@@ -328,7 +339,23 @@ class LeadCase:
         self.n_strokes = len(strokes)
 
     def task(self):
-        return self.gc.task()
+        return {"template": {"xy": self.track.xy, "down": self.track.pen_down.astype(float)}}
+
+    def writer_alone(self) -> Dict:
+        """The learner writing by themselves (adapted hand path, nothing on), scored on the same letters and words."""
+        gc = self.gc
+        rows = MT.letter_rows(gc.written, TK.Res(gc.none), gc.rec, targets=gc.targets,
+                              target_polys=[t.strokes for t in gc.tl])
+        sub = []
+        for i in self.sel:
+            r = dict(rows[i])
+            r["word_index"] = self.word_local[self.word_of[i]]
+            sub.append(r)
+        s = MT.summary(sub)
+        wd = MT.words(sub, self.subtext)
+        return {"target_err_um": s.get("path_rms_um"), "letters_read": s.get("recognition_accuracy"),
+                "words_letters": wd["word_accuracy_letters"], "words_app": wd.get("word_accuracy_app"),
+                "recognised": " ".join(wd["recognised"]), "coverage": coverage(self.tl, gc.none)}
 
     def scenario(self):
         it = self.it
@@ -344,35 +371,49 @@ class LeadCase:
         in order, scored against the target letters (aiguide letter_metrics, the app's recogniser, words)."""
         from aiguide.metrics import letter_metrics
         gc = self.gc
-        c = r["contact"] > 0.5
-        d = np.diff(np.r_[0, c.astype(np.int8), 0])
-        A, B = np.flatnonzero(d == 1), np.flatnonzero(d == -1)
-        keep = (B - A) >= 20                       # >= 10 ms at 2 kHz: ignore bounces
-        A, B = A[keep], B[keep]
+        A, B = pen_down_runs(r)
         ink = r.ink()
         q = np.column_stack([r["qpx"], r["qpy"]]) if "qpx" in r.idx else None
-        words = PRACTICE.split(" ")
-        word_of = []
-        for wi_, wd in enumerate(words):
-            word_of += [wi_] * len(wd)
         rows = []
         for i, t in enumerate(self.tl):
+            gi = self.sel[i]
+            wl = self.word_local[self.word_of[gi]]
             idx = [j for j, o in enumerate(self.owner) if o == i]
             if not idx or idx[-1] >= len(A):
-                rows.append({"char": gc.targets[i], "missing": True, "word_index": word_of[i]})
+                rows.append({"char": gc.targets[gi], "missing": True, "word_index": wl})
                 continue
             a, b = A[idx[0]], B[idx[-1]]
-            lm = letter_metrics(ink[a:b], r["contact"][a:b], t.strokes, gc.targets[i], gc.rec,
+            lm = letter_metrics(ink[a:b], r["contact"][a:b], t.strokes, gc.targets[gi], gc.rec,
                                 q=q[a:b] if q is not None else None)
-            lm["word_index"] = word_of[i]
+            lm["word_index"] = wl
             rows.append(lm)
         s = MT.summary(rows)
-        wd = MT.words(rows, PRACTICE)
+        wd = MT.words(rows, self.subtext)
         return {"target_err_um": s.get("path_rms_um"), "target_p95_um": s.get("path_p95_um"),
                 "letters_read": s.get("recognition_accuracy"), "words_letters": wd["word_accuracy_letters"],
                 "words_app": wd.get("word_accuracy_app"), "recognised": " ".join(wd["recognised"]),
                 "n_strokes_done": int(len(A)), "n_strokes_target": int(self.n_strokes),
                 "coverage": coverage(self.tl, r)}
+
+
+def pen_down_runs(r, min_gap_s: float = 0.04, min_len_s: float = 0.01):
+    """Pen-down runs of a record (index ranges), with touchdown bounces merged: gaps shorter than min_gap_s join the
+    runs around them (sim2's ball bounces at touchdown; the firmware's stroke counter uses the same 40 ms)."""
+    c = r["contact"] > 0.5
+    t = r["t"]
+    dt = float(t[1] - t[0]) if len(t) > 1 else 5e-4
+    d = np.diff(np.r_[0, c.astype(np.int8), 0])
+    A, B = list(np.flatnonzero(d == 1)), list(np.flatnonzero(d == -1))
+    i = 0
+    while i + 1 < len(A):
+        if (A[i + 1] - B[i]) * dt < min_gap_s:
+            B[i] = B[i + 1]
+            del A[i + 1], B[i + 1]
+        else:
+            i += 1
+    A, B = np.array(A, int), np.array(B, int)
+    keep = (B - A) * dt >= min_len_s
+    return A[keep], B[keep]
 
 
 LEAD_CTL = {"relaxed_none": FWConfig(), "lead": FWConfig(wheel="lead"),
@@ -385,9 +426,8 @@ def run_lead(lc: LeadCase, ctl: str, ref=None, keep: bool = False) -> Dict:
     t0 = time.time()
     mu = mu_case(lc.w, lc.seed, tag=9)
     if ctl == "writer_alone":
-        gc = lc.gc
-        m = gc.metrics(gc.none)
-        m.update({"w": lc.w, "seed": lc.seed, "ctl": ctl, "mu": mu, "wall_s": 0.0})
+        m = lc.writer_alone()
+        m.update({"w": lc.w, "seed": lc.seed, "ctl": ctl, "mu": mu, "wall_s": 0.0, "words_used": lc.subtext})
         return m
     fw = replace(LEAD_CTL[ctl], seed=lc.seed * 17 + lc.w)
     r = ST.run(lc.pm, lc.scenario(), fw, lc.task(), mu=mu, seed=lc.seed, relaxed=RELAXED)
