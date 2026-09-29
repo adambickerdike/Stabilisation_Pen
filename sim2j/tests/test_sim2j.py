@@ -145,3 +145,12 @@ def test_results_carry_provenance():
         if fn.endswith(".json") and fn not in ("samples.json",):
             d = json.load(open(os.path.join(RESULTS, fn)))
             assert "stabpen.provenance" in d or "meta" in d, fn
+
+
+def test_deltapen_page_error_model():
+    """The DeltaPen-like page error (sensing.py, ASSUMPTION on LIT OPT-02): lognormal magnitude with median 23.6 um and
+    mean 68.3 um per 10 ms window."""
+    import math
+    from sim2j import sensing as SE
+    assert abs(SE.DP_MEDIAN - 23.6e-6) < 1e-12
+    assert abs(SE.DP_MEDIAN * math.exp(0.5 * SE.DP_SIGMA ** 2) - 68.3e-6) < 1e-9

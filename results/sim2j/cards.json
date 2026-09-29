@@ -1,0 +1,361 @@
+{
+  "cards": [
+    {
+      "id": "et_mild",
+      "who": "Essential tremor, mild (0.3 mm, 4\u201312 Hz)",
+      "what": "the nose stays out of the way (tremor below what it acts on)",
+      "words": [
+        10.0,
+        10.0
+      ],
+      "letters": [
+        9.835164835164836,
+        9.780219780219781
+      ],
+      "err_mm": [
+        0.1270153216280664,
+        0.12843901380633557
+      ],
+      "err_kind": "rms_to_clean_ink",
+      "moved_clean_mm": 0.0,
+      "words_before_label": null,
+      "n": 14
+    },
+    {
+      "id": "et_moderate",
+      "who": "Essential tremor, moderate (1 mm, 8\u201312 Hz)",
+      "what": "the nose cancels the tremor it detects",
+      "words": [
+        10.0,
+        10.0
+      ],
+      "letters": [
+        9.134615384615385,
+        9.711538461538463
+      ],
+      "err_mm": [
+        0.41340605343398035,
+        0.28427241129995606
+      ],
+      "err_kind": "rms_to_clean_ink",
+      "moved_clean_mm": 0.0,
+      "words_before_label": null,
+      "n": 8
+    },
+    {
+      "id": "et_strong",
+      "who": "Essential tremor, strong (2 mm, 8\u201312 Hz)",
+      "what": "the nose cancels the tremor it detects",
+      "words": [
+        3.75,
+        10.0
+      ],
+      "letters": [
+        5.76923076923077,
+        8.75
+      ],
+      "err_mm": [
+        0.9589485867861349,
+        0.553037185077992
+      ],
+      "err_kind": "rms_to_clean_ink",
+      "moved_clean_mm": 0.0,
+      "words_before_label": null,
+      "n": 8
+    },
+    {
+      "id": "slow_4hz",
+      "who": "Slow tremor (4 Hz, 1\u20132 mm)",
+      "what": "nothing: the detector listens from 4.5 Hz up (4 Hz overlaps the writing's own rhythm)",
+      "words": [
+        5.5,
+        5.5
+      ],
+      "letters": [
+        6.615384615384616,
+        6.615384615384616
+      ],
+      "err_mm": [
+        0.675160008880069,
+        0.6754469988007121
+      ],
+      "err_kind": "rms_to_clean_ink",
+      "moved_clean_mm": 0.0,
+      "words_before_label": null,
+      "n": 10
+    },
+    {
+      "id": "severe_through",
+      "who": "Severe tremor (3 mm, 5 and 8 Hz), writing through it",
+      "what": "the nose cancels what it can",
+      "words": [
+        0.4166666666666667,
+        3.75
+      ],
+      "letters": [
+        4.038461538461538,
+        5.897435897435898
+      ],
+      "err_mm": [
+        1.4654934705025406,
+        1.1512191256261106
+      ],
+      "err_kind": "rms_to_clean_ink",
+      "moved_clean_mm": 0.0,
+      "words_before_label": null,
+      "n": 12
+    },
+    {
+      "id": "severe_autowrite",
+      "who": "Severe tremor (3 mm, 5 and 8 Hz), known text",
+      "what": "the pen writes the text itself (autowrite, 2.5 mm letters) while the hand sweeps",
+      "words": [
+        0.4166666666666667,
+        8.833333333333334
+      ],
+      "letters": [
+        4.038461538461538,
+        8.493589743589743
+      ],
+      "err_mm": [
+        1.4654934705025406,
+        0.07524823447485621
+      ],
+      "err_kind": "rms_to_planned_letters_after",
+      "moved_clean_mm": null,
+      "words_before_label": null,
+      "n": 12
+    },
+    {
+      "id": "loops_relaxed",
+      "who": "Parkinson's, writing shrinks (five 10 mm loops), relaxed hand",
+      "what": "the driven heel wheel pushes the pen along the template",
+      "words": [
+        null,
+        null
+      ],
+      "letters": [
+        null,
+        null
+      ],
+      "last_loop_mm": [
+        6.590487433671585,
+        8.64153668784541
+      ],
+      "loop_heights_mm": [
+        [
+          8.074283914745532,
+          7.793615257237001,
+          7.387013931982803,
+          6.9891964610279675,
+          6.590487433671585
+        ],
+        [
+          10.210660989153833,
+          9.853939420907334,
+          9.662985424246072,
+          9.330944197224026,
+          8.64153668784541
+        ]
+      ],
+      "err_mm": [
+        null,
+        null
+      ],
+      "err_kind": "last_loop_height_mm",
+      "moved_clean_mm": null,
+      "words_before_label": null,
+      "n": 2
+    },
+    {
+      "id": "loops_resisting",
+      "who": "Parkinson's, writing shrinks (five 10 mm loops), lightly resisting hand",
+      "what": "the driven heel wheel pushes the pen along the template",
+      "words": [
+        null,
+        null
+      ],
+      "letters": [
+        null,
+        null
+      ],
+      "last_loop_mm": [
+        6.587326385340784,
+        7.4084860635638385
+      ],
+      "loop_heights_mm": [
+        [
+          8.399817725354502,
+          7.790596129930576,
+          7.387129923503824,
+          6.989450344433585,
+          6.587326385340784
+        ],
+        [
+          10.589065506206989,
+          9.359504341021557,
+          8.840273887944713,
+          8.141111345460876,
+          7.408486063563838
+        ]
+      ],
+      "err_mm": [
+        null,
+        null
+      ],
+      "err_kind": "last_loop_height_mm",
+      "moved_clean_mm": null,
+      "words_before_label": null,
+      "n": 2
+    },
+    {
+      "id": "tracing",
+      "who": "Dysgraphia (badly formed letters), copying a sentence",
+      "what": "the nose pulls the ink half-way toward the copybook letter",
+      "words": [
+        9.666666666666666,
+        9.666666666666666
+      ],
+      "letters": [
+        9.62962962962963,
+        9.691358024691358
+      ],
+      "err_mm": [
+        0.8325644283943219,
+        0.6404137966354455
+      ],
+      "err_kind": "mean_to_copybook",
+      "moved_clean_mm": null,
+      "words_before_label": null,
+      "n": 6
+    },
+    {
+      "id": "lead",
+      "who": "Dyslexia, led through the right spelling (hand relaxed)",
+      "what": "the driven heel wheel pushes the pen along the right letters",
+      "words": [
+        5.833333333333332,
+        6.666666666666666
+      ],
+      "letters": [
+        7.5,
+        7.5
+      ],
+      "err_mm": [
+        0.6979897906119926,
+        0.5036472274066208
+      ],
+      "err_kind": "mean_to_right_letters",
+      "moved_clean_mm": null,
+      "words_before_label": "writing alone",
+      "n": 4
+    },
+    {
+      "id": "autowrite_no_tremor",
+      "who": "Dyslexia, or anyone: a known text, no tremor",
+      "what": "the pen writes it (autowrite)",
+      "words": [
+        null,
+        10.0
+      ],
+      "letters": [
+        null,
+        9.807692307692307
+      ],
+      "err_mm": [
+        null,
+        0.04451918655990861
+      ],
+      "err_kind": "rms_to_planned_letters_after",
+      "moved_clean_mm": null,
+      "words_before_label": null,
+      "n": 6
+    },
+    {
+      "id": "no_tremor",
+      "who": "Anyone, no tremor",
+      "what": "should change nothing",
+      "words": [
+        null,
+        null
+      ],
+      "letters": [
+        null,
+        null
+      ],
+      "err_mm": [
+        null,
+        null
+      ],
+      "err_kind": null,
+      "moved_clean_mm": 0.0,
+      "moved_clean_wheel_mm": 0.4033947998056644,
+      "words_before_label": null,
+      "n": 5
+    }
+  ],
+  "coverage": {
+    "writer 0": {
+      "seeds": [
+        200
+      ],
+      "cells": 9,
+      "complete": true
+    },
+    "writer 1": {
+      "seeds": [
+        201
+      ],
+      "cells": 9,
+      "complete": true
+    },
+    "writer 2": {
+      "seeds": [
+        202
+      ],
+      "cells": 9,
+      "complete": true
+    },
+    "writer 3": {
+      "seeds": [
+        203
+      ],
+      "cells": 9,
+      "complete": true
+    },
+    "writer 4": {
+      "seeds": [
+        200
+      ],
+      "cells": 4,
+      "complete": false
+    }
+  },
+  "unfinished": [
+    "writer 4",
+    "writer 5"
+  ],
+  "writing_time_per_charge": "suspended (the nose's static ball load, docs/revJ_simulation.md 8.1)",
+  "units": {
+    "words": "readable words out of 10 (after the app's autocorrect)",
+    "letters": "letters read out of 10",
+    "err_mm": "mm; rms to the same writer's tremor-free ink (rms_to_clean_ink), to the planned letters (autowrite; the 'before' is the ordinary pen's error to the clean ink), or the mean distance to the copybook or right letters",
+    "last_loop_mm": "height of the last of five 10 mm loops, mm"
+  },
+  "meta": {
+    "evidence_status": "SIMULATION (sim2) - ranks concepts (COU-1) until EXP-V01/V02/V04 calibrate and EXP-V05 validates",
+    "generated_utc": "2026-09-29T19:10:29+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "-c",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "sim2j/report.py",
+    "version": "sim2j-0.1",
+    "source": "sim2j/build/*_rows.json (et, et2, autowrite, guided)"
+  }
+}

@@ -77,6 +77,8 @@ ENDCAP_STEER = "results/endcap/fig_ek_steer.csv"
 SIM2J_SAMPLES = "results/sim2j/samples.json"
 SIM2J_REPLAY = "results/sim2j/viz_sim2j.json"
 SIM2J_ET = "results/sim2j/et.json"
+SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
+SIM2J_PARTIAL: list = []      # coverage notes when the study finished with parts still to run
 SIM2J_PENDING: list = []      # why whole-pen results were left out (a partial summary of a run in progress)
 SIM_PARAMS = "results/revJ/sim_params.json"                 # inputs of the static nib load (refill spring, Km, coil)
 REVJ1_ENDCAP = "results/revJ1/endcap.json"                  # Rev J.1's lighter end-cap (the current tail design)
@@ -330,36 +332,58 @@ def facts_endcap() -> dict:
 
 
 def facts_sim2j() -> dict | None:
-    """Headline numbers of the whole-pen simulation (results/sim2j/et.json), when it exists: mean ink error, ratio to
-    the device-off pen, words read, per controller and tremor size.  Keys follow sim2j/run_study.summarise_et."""
-    if not exists(SIM2J_ET):
+    """Headline numbers of the whole-pen simulation: the results cards (results/sim2j/cards.json, one per condition)
+    and the tremor grid (results/sim2j/et.json: mean ink error, ratio to the device-off pen, words read, per controller
+    and tremor size; keys follow sim2j/run_study.summarise_et).  A study that finished with parts still to run is
+    shown with its coverage stated; a quick check is not shown."""
+    if not exists(SIM2J_ET) and not exists(SIM2J_CARDS):
         return None
+    out = {"label": SIM_SIM2, "detail": "sim2 ranks designs until it is calibrated (EXP-V01, V02, V04) and validated (EXP-V05)",
+           "source": SIM2J_ET, "rows": [], "clean_moved_um": {}}
     try:
-        et = load(SIM2J_ET)
-        left = [str(x) for x in (et.get("unfinished") or [])]
-        if left or et.get("quick"):
-            # a summary written while the study is still running (or a quick check): not quoted until it is complete
-            who = (", ".join(left[:-1]) + " and " + left[-1]) if len(left) > 1 else "".join(left)
-            SIM2J_PENDING.append(f"{SIM2J_ET} is a partial summary, with {who} not finished" if left
-                                 else f"{SIM2J_ET} is a quick check, not the study")
-            warn(f"{SIM2J_ET} is from a run still in progress ({', '.join(left) or 'quick'}); not shown until the study finishes")
-            return None
-        by = et.get("by_amp") or {}
-        rows = []
-        for key, v in by.items():
-            parts = str(key).split("|")
-            if len(parts) != 2 or not isinstance(v, dict):
-                continue
-            amp, ctl = parts
-            rows.append({"amp_mm": _num(float(amp)) if re.match(r"^[\d.eE+-]+$", amp) else amp, "ctl": ctl,
-                         "ink_um": _num(v.get("ink_err_um")), "ratio": _num(v.get("ratio")), "words": _num(v.get("words_app")),
-                         "letters": _num(v.get("letters_read")), "n": v.get("n")})
-        clean = {k: _num((v or {}).get("moved_vs_clean_um")) for k, v in (et.get("clean") or {}).items()}
-        prov = et.get("stabpen.provenance") or {}
-        return {"rows": rows, "clean_moved_um": clean, "what": et.get("what", ""), "generated_utc": prov.get("generated_utc"),
-                "label": SIM_SIM2, "detail": "sim2 ranks designs until it is calibrated (EXP-V01, V02, V04) and validated (EXP-V05)",
-                "source": SIM2J_ET}
-    except (OSError, ValueError, TypeError, AttributeError) as ex:
+        if exists(SIM2J_ET):
+            et = load(SIM2J_ET)
+            if et.get("quick"):
+                SIM2J_PENDING.append(f"{SIM2J_ET} is a quick check, not the study")
+                warn(f"{SIM2J_ET} is a quick check; not shown")
+                return None
+            left = [str(x) for x in (et.get("unfinished") or [])]
+            cov = et.get("coverage") or {}
+            done = sum(1 for v in cov.values() if isinstance(v, dict) and v.get("complete"))
+            if left:
+                who = (", ".join(left[:-1]) + " and " + left[-1]) if len(left) > 1 else "".join(left)
+                out["partial_note"] = f"{done} of {done + len(left)} test writers so far"
+                SIM2J_PARTIAL.append(f"the tremor grid covers {done} of {done + len(left)} test writers ({who} still to run)")
+            by = et.get("by_amp") or {}
+            for key, v in by.items():
+                parts = str(key).split("|")
+                if len(parts) != 2 or not isinstance(v, dict):
+                    continue
+                amp, ctl = parts
+                out["rows"].append({"amp_mm": _num(float(amp)) if re.match(r"^[\d.eE+-]+$", amp) else amp, "ctl": ctl,
+                                    "ink_um": _num(v.get("ink_err_um")), "ratio": _num(v.get("ratio")),
+                                    "words": _num(v.get("words_app")), "letters": _num(v.get("letters_read")), "n": v.get("n")})
+            out["clean_moved_um"] = {k: _num((v or {}).get("moved_vs_clean_um")) for k, v in (et.get("clean") or {}).items()}
+
+            def cell_ratio(ctl, sel):
+                vs = [(v["ratio"], v.get("n") or 1) for k, v in (et.get("by_cell") or {}).items()
+                      if len(k.split("|")) == 3 and k.split("|")[2] == ctl and sel(float(k.split("|")[0]), float(k.split("|")[1]))
+                      and isinstance(v, dict) and _num(v.get("ratio")) is not None]
+                return sum(r * n for r, n in vs) / sum(n for _, n in vs) if vs else None
+            fast = lambda f0, amp: f0 >= 8 and amp >= 1.0
+            slow = lambda f0, amp: f0 < 5 and amp >= 1.0
+            out["ratio_fast"] = cell_ratio("nose", fast)
+            out["ratio_fast_limit"] = cell_ratio("oracle", fast)
+            out["ratio_slow"] = cell_ratio("nose", slow)
+            out["ratio_slow_limit"] = cell_ratio("oracle", slow)
+            out["ratio_fast_ec"] = cell_ratio("nose_wheel_ec", fast)
+            out["ratio_fast_wheel"] = cell_ratio("nose_wheel", fast)
+            out["what"] = et.get("what", "")
+            out["generated_utc"] = (et.get("stabpen.provenance") or {}).get("generated_utc")
+        if exists(SIM2J_CARDS):
+            out["cards"] = {c["id"]: c for c in (load(SIM2J_CARDS).get("cards") or []) if isinstance(c, dict) and c.get("id")}
+        return out
+    except (OSError, ValueError, TypeError, AttributeError, KeyError, ZeroDivisionError) as ex:
         warn(f"{SIM2J_ET} could not be read ({ex})")
         return None
 
@@ -484,7 +508,7 @@ def build_facts(lay: dict):
     s2 = facts_sim2j()
     if s2:
         facts["sim2j"] = s2
-        srcs.append(SIM2J_ET)
+        srcs.append(SIM2J_ET + (f" + {SIM2J_CARDS}" if s2.get("cards") else ""))
     return facts, {"file": "pen.json", "source": " + ".join(srcs), "status": "final" if all(
         facts.get(k) for k in ("pen", "ai2", "nose2", "drive", "endcap", "endcap_j1", "sideload", "known")) else "provisional",
         "modified": mtime_utc(BUDGETS) if exists(BUDGETS) else "",
@@ -550,7 +574,7 @@ def _plain_shake(scen: str) -> str:
 
 
 AI2_LABEL = {"none": "Ordinary pen", "tracker": "Rev H tracker (as built)",
-             "gated": "Gated tracker: the Rev J default",
+             "gated": "Gated listening tracker (the earlier default; the physics simulation replaced it with the guarded tracker)",
              "learned_tcn": "Learned estimator (shadow mode: logged, not yet steering)",
              "clean_copy": "The app's clean copy (digital, made after writing; the paper keeps the ink)",
              "oracle": "If the pen knew the shake exactly (the limit)",
@@ -1069,6 +1093,8 @@ def status_html(manifest: dict) -> str:
         why = f": {e('; '.join(SIM2J_PENDING))}, so its numbers are not shown yet" if SIM2J_PENDING else ""
         items.append('<li><span class="st prov">pending</span> Whole-pen simulation (sim2j): '
                      f'<code>results/sim2j/</code> is still being computed{why}. Rebuild to add its results, strips and replay.</li>')
+    for note in SIM2J_PARTIAL:
+        items.append(f'<li><span class="st prov">partial</span> Whole-pen simulation (sim2j): {e(note)}; rebuild when it has run.</li>')
     return "<ul class=\"status\">" + "".join(items) + "</ul>"
 
 
@@ -1362,6 +1388,20 @@ def loops_strokes(first, last, n=8, h0=10.0):
     return [pts]
 
 
+def loops_from_heights(heights, h0=10.0):
+    """Cursive practice loops of the given heights (mm): the heights come from the simulation, the loop shapes are
+    drawn (an illustration)."""
+    pts, x = [], 0.0
+    for i, hh in enumerate(heights):
+        w, r = 0.5 * h0, 0.17 * hh
+        for j in range(0 if i == 0 else 1, 41):
+            s_ = j / 40
+            px, py = x + w * s_ - r * math.sin(2 * math.pi * s_), hh * (1 - math.cos(2 * math.pi * s_)) / 2
+            pts.append([round(px + 0.3 * py, 3), round(py, 3)])
+        x += w
+    return [pts]
+
+
 def _panel(samples, pid):
     return next((p for p in (samples.get("panels") or []) if p.get("id") == pid), None)
 
@@ -1374,6 +1414,12 @@ def pic_pair(samples, spec):
     """(before svg, after svg) for a picture spec: from a strip panel, or the loops illustration."""
     x0, x1 = spec["x"]
     y0, y1 = spec.get("y", (-3.4, 7.6))
+    if spec.get("kind") == "loops_h":
+        tgt = (f'<line class="tgt" x1="{x0:.2f}" x2="{x1:.2f}" y1="-10" y2="-10"/>'
+               f'<text class="lbl" x="{x0 + 0.8:.2f}" y="-10.6">target height</text>')
+        b = thumb_svg([("ink before", loops_from_heights(spec["before"]))], x0, x1, y0, y1, spec["cap"][0], ruled=(0.0,), extra=tgt)
+        a = thumb_svg([("ink after", loops_from_heights(spec["after"]))], x0, x1, y0, y1, spec["cap"][1], ruled=(0.0,), extra=tgt)
+        return b, a
     if spec.get("kind") == "loops":
         tgt = (f'<line class="tgt" x1="{x0:.2f}" x2="{x1:.2f}" y1="-10" y2="-10"/>'
                f'<text class="lbl" x="{x0 + 0.8:.2f}" y="-10.6">target height</text>')
@@ -1395,9 +1441,152 @@ def _pc(x):
     return None if x is None else round(100 * x)
 
 
+def simple_rows_revj(f: dict) -> list:
+    """The rows of "How much better?" from the whole-pen physics simulation of Rev J (results/sim2j/cards.json): one
+    row per condition, one number each.  Rows the physics simulation did not cover (the app's clean copy) come from
+    the earlier studies, labelled as such."""
+    s2 = f.get("sim2j") or {}
+    C = s2.get("cards") or {}
+    a, j1 = f.get("ai2") or {}, f.get("endcap_j1") or {}
+    part = s2.get("partial_note")
+    src = SIM2J_CARDS
+    ev_note = "Physics simulation of the whole Rev J pen, with simulated writers and simulated shakes."
+    rows = []
+
+    def pc10(x):                      # words or letters out of 10 -> per cent
+        return None if x is None else round(10 * x)
+
+    def pooled(ids, i, key="words"):
+        cs = [C[k] for k in ids if k in C and C[k].get(key) and C[k][key][i] is not None]
+        n = sum(c["n"] for c in cs)
+        return sum(c[key][i] * c["n"] for c in cs) / n if n else None
+    fast = [k for k in ("et_moderate", "et_strong") if k in C]
+    if fast:
+        n = sum(C[k]["n"] for k in fast)
+        rf = s2.get("ratio_fast")
+        rows.append({
+            "id": "tremor", "mech": ["tip"], "who": "A shaky hand", "sub": "Essential tremor: a fast shake of 1–2 mm, 8–12 times a second",
+            "help": "The inner pen tilts against the shake, so the ball stays on the letters.",
+            "pic": {"panel": "sim2j_8Hz_2mm", "before": "none", "after": "nose", "x": (-1.5, 40.0),
+                    "cap": ("Ordinary pen", "With the inner pen"),
+                    "note": "One simulated writer writing “return library” with a 2 mm shake, 8 times a second. Grey: what the writer meant."},
+            "num": {"label": "Words read correctly", "b": pc10(pooled(fast, 0)), "a": pc10(pooled(fast, 1)), "unit": "%",
+                    "sub": (f"shake left at the tip: {rf:.2f} of the ordinary pen's; " if rf is not None else "")
+                           + f"average of {n} simulated cases" + (f" ({part})" if part else "")},
+            "verdict": "Clearly better for fast shakes.",
+            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    if "slow_4hz" in C:
+        c = C["slow_4hz"]
+        lim = s2.get("ratio_slow_limit")
+        rows.append({
+            "id": "slow", "mech": ["tip"], "who": "A slow shake", "sub": "Parkinson's-type tremor: 1–2 mm, 4 times a second",
+            "help": "The inner pen could cancel it, but the pen cannot yet tell a slow shake from the writing itself, so it stays still.",
+            "pic": None, "nopic": "No picture: the ink is the same with and without the pen.",
+            "num": {"label": "Words read correctly", "b": pc10(c["words"][0]), "a": pc10(c["words"][1]), "unit": "%",
+                    "sub": (f"if the pen knew the shake exactly it would remove about {5 * round((100 - 100 * lim) / 5)} % of it: "
+                            "telling shake from writing is the missing piece" if lim is not None else "")
+                           + f"; {c['n']} simulated cases"},
+            "verdict": "No help yet. This is the biggest open gap.",
+            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    if "severe_autowrite" in C:
+        c, t = C["severe_autowrite"], C.get("severe_through")
+        rows.append({
+            "id": "autowrite", "mech": ["tip"], "who": "Too shaky to write", "sub": "A severe shake of 3 mm: autowrite, a mode you turn on",
+            "help": "You sweep the pen along the line; the inner pen writes a text you chose: typed, spoken, or a suggestion you accepted.",
+            "pic": {"panel": "sim2j_5Hz_3mm", "before": "none", "after": "autowrite", "x": (-1.5, 40.0), "intended": False,
+                    "cap": ("Ordinary pen", "The pen writes it"),
+                    "note": "One simulated writer with a 3 mm shake, 5 times a second. The pen writes “return library” in 2.5 mm letters."},
+            "num": {"label": "Words read correctly", "b": pc10(c["words"][0]), "a": pc10(c["words"][1]), "unit": "%",
+                    "sub": (f"writing through the shake with the inner pen instead: {pc10(t['words'][1])} %; " if t else "")
+                           + f"{c['n']} simulated cases (6 writers, 2 shake speeds)"},
+            "verdict": "Readable. It writes only text you chose.",
+            "status": "Suspended as a hardware claim: the current inner pen would overheat (see Known problems).",
+            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    if "loops_relaxed" in C:
+        c, r2 = C["loops_relaxed"], C.get("loops_resisting")
+        hb, ha = (c.get("loop_heights_mm") or [[], []])
+        rows.append({
+            "id": "loops", "mech": ["heel"], "who": "Writing that gets smaller", "sub": "Parkinson's: big practice loops that shrink",
+            "help": "For practice, the driven heel wheel pushes the pen along the loops.",
+            "pic": ({"kind": "loops_h", "before": hb, "after": ha, "x": (-1.5, 30.0), "y": (-1.2, 13.6),
+                     "cap": ("Nothing on", "Heel wheel pushing"),
+                     "note": "Loop heights from the simulation (average of 2 runs, relaxed hand); the loop shapes are drawn.",
+                     "ill": True} if hb and ha else None),
+            "nopic": "No picture.",
+            "num": {"label": "Size of the last loop, against the target", "b": round(10 * c["last_loop_mm"][0]),
+                    "a": round(10 * c["last_loop_mm"][1]), "unit": "%",
+                    "sub": "relaxed hand" + (f" ({round(10 * r2['last_loop_mm'][1])} % with a lightly resisting hand)" if r2 else "")
+                           + f"; {c['n']} simulated runs each"},
+            "verdict": "Better: the loops stay bigger. The pen pushes your hand to do it.",
+            "ev": [SIM_SIM2, "ILLUSTRATION (the loop shapes)"], "src": src, "ev_note": ev_note})
+    if "tracing" in C:
+        c = C["tracing"]
+        rows.append({
+            "id": "tracing", "mech": ["tip"], "who": "Poorly formed letters", "sub": "Copying practice (dysgraphia-like writers)",
+            "help": "The inner pen pulls the ink half-way toward the copybook letter.",
+            "pic": None, "nopic": "No writing pictures were saved from this run.",
+            "num": {"label": "Distance to the copybook letters", "b": f"{c['err_mm'][0]:.2f}", "a": f"{c['err_mm'][1]:.2f}", "unit": "mm",
+                    "sub": f"words read stay at {pc10(c['words'][1])} %; {c['n']} simulated writers. Pulling harder got closer "
+                           "(0.27 mm) but only 63 % of words were read"},
+            "verdict": "A little closer, and just as readable.",
+            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    if "lead" in C:
+        c = C["lead"]
+        aw0 = C.get("autowrite_no_tremor")
+        rows.append({
+            "id": "lead", "mech": ["heel", "tip"], "who": "A word you cannot spell", "sub": "Dyslexia: the pen leads your hand through the right spelling",
+            "help": "The driven heel wheel pushes a relaxed hand along the right letters.",
+            "pic": None, "nopic": "No writing pictures were saved from this run.",
+            "num": {"label": "Words read correctly", "b": pc10(c["words"][0]), "a": pc10(c["words"][1]), "unit": "%",
+                    "sub": f"{c['n']} simulated learners; the letters came out distorted and slow"
+                           + (f". When the pen writes the right spelling itself (autowrite), {pc10(aw0['words'][1])} % are read" if aw0 else "")},
+            "verdict": "Little help. The app's spelling help (being built) and autowrite do better.",
+            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    rec = s2.get("ratio_fast_ec")
+    rw = s2.get("ratio_fast_wheel")
+    if rec is not None and rw is not None:
+        mv = j1.get("moving") or []
+        h1 = f"; the simpler model had given {_pc(min(mv))}–{_pc(max(mv))} % less" if len(mv) == 3 and None not in mv else ""
+        rows.append({
+            "id": "tail", "mech": ["tail"], "who": "A fast shake, with the tail weight on", "sub": "The optional end-cap",
+            "help": "A weight in the end-cap is pushed against the shake, on top of the inner pen and the heel wheel.",
+            "pic": None, "nopic": "No writing pictures for this comparison.",
+            "num": {"label": "Shake left in the ink", "text": "no better",
+                    "sub": f"{rec:.2f} of the ordinary pen's with it, {rw:.2f} without, in the physics simulation{h1}"},
+            "verdict": "No gain here. It stays optional and must beat a plain weight of the same mass.",
+            "ev": [SIM_SIM2], "src": SIM2J_ET, "ev_note": ev_note})
+    if a.get("gated") and a.get("clean_copy"):
+        rows.append({
+            "id": "clean", "mech": ["app"], "who": "Notes you must read later", "sub": "A strong shake",
+            "help": "The app keeps a clean copy of what you wrote, clearly labelled as a copy. The paper keeps your ink.",
+            "pic": {"panel": "ai2_8Hz_2mm", "before": "gated", "after": "clean_copy", "x": (25.5, 65.0),
+                    "cap": ("Your ink, with the inner pen", "The app's clean copy (digital)"),
+                    "note": "One simulated writer with a 2 mm shake, 8 times a second (earlier, simpler model)."},
+            "num": {"label": "Words read correctly", "b": _pc(a["gated"]["words"]), "a": _pc(a["clean_copy"]["words"]), "unit": "%",
+                    "sub": "the ink → the app's copy; 6 simulated writers, shakes of 1–2 mm"},
+            "verdict": "Readable in the app; the paper still shows the shaky ink.",
+            "ev": [a.get("label", "SIMULATION")], "src": "results/ai2/ai2.json",
+            "ev_note": "From the earlier, simpler hand–pen model (HW1), not the physics simulation."})
+    if "no_tremor" in C:
+        c = C["no_tremor"]
+        rows.append({
+            "id": "normal", "mech": ["tip"], "who": "Normal writing", "sub": "No tremor",
+            "help": "The pen should change nothing when there is no shake.",
+            "pic": None, "nopic": "No picture: the ink is the same with and without the pen.",
+            "num": {"label": "Change to the writing", "text": f"{c['moved_clean_mm']:.0f} mm",
+                    "sub": f"with the inner pen ({c['n']} simulated writers). The heel wheel, switched on, changed it by "
+                           f"{c['moved_clean_wheel_mm']:.2f} mm, so it stays tucked away"},
+            "verdict": "Leaves normal writing alone.",
+            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    return rows
+
+
 def simple_rows(f: dict) -> list:
     """The rows of "How much better?" (condition, picture, one number, evidence).  Each number is read from pen.json's
-    facts (built from the results files named in the evidence detail)."""
+    facts (built from the results files named in the evidence detail).  With the whole-pen physics simulation's
+    results cards present, the rows come from it (simple_rows_revj)."""
+    if (f.get("sim2j") or {}).get("cards"):
+        return simple_rows_revj(f)
     a, n2, d, ec = f.get("ai2") or {}, f.get("nose2") or {}, f.get("drive") or {}, f.get("endcap") or {}
     rows = []
     if a.get("none") and a.get("gated"):
@@ -1540,7 +1729,7 @@ def sim2j_row(f: dict, samples: dict):
 
 def simple_results_html(f: dict, samples: dict) -> str:
     rows = simple_rows(f)
-    r2 = sim2j_row(f, samples)
+    r2 = None if (f.get("sim2j") or {}).get("cards") else sim2j_row(f, samples)
     if r2:
         rows.insert(1, r2)
     out = []

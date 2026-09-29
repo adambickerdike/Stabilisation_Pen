@@ -14,10 +14,24 @@ PROPOSED DESIGN.
 synthetic writers and synthetic tremor; not evidence of benefit to people). "Ordinary pen" is the Rev J pen with every
 device off.
 
-(CARDS)
+| Who (tremor at the hand, peak) | What Rev J does | Readable words out of 10: ordinary pen → Rev J | Error left at the tip, mm rms: ordinary pen → Rev J | Tremor-free writing changed | Writing time per charge | Cases |
+|---|---|---|---|---|---|---|
+| Essential tremor, mild (0.3 mm, 4–12 Hz) | the nose stays out of the way (tremor below what it acts on) | 10 → 10 (letters 9.8 → 9.8 of 10) | 0.13 → 0.13 | 0.00 mm | suspended | 14 |
+| Essential tremor, moderate (1 mm, 8–12 Hz) | the nose cancels the tremor it detects | 10 → 10 (letters 9.1 → 9.7 of 10) | 0.41 → 0.28 | 0.00 mm | suspended | 8 |
+| Essential tremor, strong (2 mm, 8–12 Hz) | the nose cancels the tremor it detects | 3.8 → 10 (letters 5.8 → 8.8 of 10) | 0.96 → 0.55 | 0.00 mm | suspended | 8 |
+| Slow tremor (4 Hz, 1–2 mm) | nothing: the detector listens from 4.5 Hz up (4 Hz overlaps the writing's own rhythm) | 5.5 → 5.5 (letters 6.6 → 6.6 of 10) | 0.68 → 0.68 | 0.00 mm | suspended | 10 |
+| Severe tremor (3 mm, 5 and 8 Hz), writing through it | the nose cancels what it can | 0.4 → 3.8 (letters 4.0 → 5.9) | 1.47 → 1.15 | 0.00 mm | suspended | 12 |
+| Severe tremor (3 mm, 5 and 8 Hz), known text | the pen writes the text itself (autowrite, 2.5 mm letters) while the hand sweeps | 0.4 → 8.8 (letters 4.0 → 8.5) | 1.47 → 0.08 (to the planned letters) | not applicable (the pen writes) | suspended | 12 |
+| Parkinson's, writing shrinks (five 10 mm loops), relaxed hand | the driven heel wheel pushes the pen along the template | not scored (loops) | last loop 6.6 → 8.6 mm high (target 10) | – | suspended | 2 |
+| Parkinson's, writing shrinks (five 10 mm loops), lightly resisting hand | the driven heel wheel pushes the pen along the template | not scored (loops) | last loop 6.6 → 7.4 mm high (target 10) | – | suspended | 2 |
+| Dysgraphia (badly formed letters), copying a sentence | the nose pulls the ink half-way toward the copybook letter | 9.7 → 9.7 (letters 9.6 → 9.7) | to the copybook letters: 0.83 → 0.64 | – | suspended | 6 |
+| Dyslexia, led through the right spelling (hand relaxed) | the driven heel wheel pushes the pen along the right letters | 5.8 (writing alone) → 6.7 (letters 7.5 → 7.5) | to the right letters: 0.70 → 0.50 | – | suspended | 4 |
+| Dyslexia, or anyone: a known text, no tremor | the pen writes it (autowrite) | – → 10 (letters 9.8) | 0.04 (to the planned letters) | not applicable (the pen writes) | suspended | 6 |
+| Anyone, no tremor | should change nothing | – | – | 0.00 mm (nose); 0.40 mm with the heel wheel on | suspended | 5 |
 
-- **Readable words:** the share of words the app reads correctly after its autocorrect, out of 10. The tremor text has
-  2 words per case ("return library"); the autowrite text 5; letters read (out of 10) are in brackets.
+- **Readable words:** the share of words the app reads correctly after its autocorrect, out of 10. Words per case:
+  2 in the tremor text ("return library"), 5 in the autowrite text, 9 in the tracing text, 3 in the lead-through text.
+  Letters read (out of 10) are in brackets. "Cases" counts simulated writer–seed–tremor combinations.
 - **Left at the tip:** the rms distance between the ink and the same writer's tremor-free ink, in mm. The tremor at
   the hand is given as a peak; the hand and the paper absorb part of it (2 mm peak leaves 0.96 mm rms with the
   ordinary pen).
@@ -28,8 +42,11 @@ device off.
 
 ![Before and after, as handwriting: the same hand, text and tremor with an ordinary pen and with Rev J](../results/sim2j/fig_handwriting.png)
 
-*The ink only, at true scale on 8 mm ruled lines (SIM, test writer 0, seed 200; tremor at 8 Hz, severe at 5 Hz). The
-ordinary pen is the Rev J pen with every device off.*
+*The ink only, at true scale on 8 mm ruled lines, 0.3 mm line (SIM, test writer 0, seed 200; tremor at 8 Hz, severe
+at 5 Hz). The first line is the same simulated writer with no tremor: the writer model's own letters are crude print,
+a limit of the synthetic writers (§11), not of the pen. The ordinary pen is the Rev J pen with every device off. The
+labels give what the app's recogniser reads. More: `fig_et.png`, `fig_autowrite.png`, `fig_guided.png`,
+`fig_power.png` (each with a CSV twin).*
 
 **What to do** (recommendations; the lead decides, §10):
 
@@ -37,15 +54,25 @@ ordinary pen is the Rev J pen with every device off.*
   ordinary pen's error), and it never moved tremor-free writing (0 mm, 5 writers).
 - **Keep the heel wheel retracted by default** until its controller is redesigned. Switched on in its tremor mode it
   moved tremor-free writing by 0.40 mm (up to 0.50 mm; the rule is 0.025 mm), doubled the error at 0.3 mm tremor and
-  pushed on the hand 8× harder. Use it for guidance and lead-through only.
+  pushed on the hand 8× harder. Deploy it only where it helped: Parkinson's "write big" practice and lead-through.
 - **Filter the nose servo's position signal.** About 0.7 W of the nose's 2.3 W is the servo reacting to its own
-  sensor noise (SIM). A filter to the servo's bandwidth removes most of it (REQ-RVJ-C04).
+  sensor noise: without that noise the simulated nose drew 0.74 W less (SIM). A filter to the servo's bandwidth should
+  recover most of it (not simulated; REQ-RVJ-C04).
 - **Carry the ball's static side load passively.** It is the largest real power item (1.6 W at 50°, CALC; the
   balanced-nib study takes it up).
 - **For severe tremor (3 mm), let the pen write a known text (autowrite):** 8.8 of 10 words readable, against 0.4
   with the ordinary pen and 3.8 writing through with the nose.
-(GUIDED_BULLETS)
-(PAGE_BULLET)
+- **Parkinson's small writing: only the driven heel wheel keeps the loops big to the end** (last loop 6.6 → 8.6 mm of
+  10 with a relaxed hand, 7.4 mm with a lightly resisting one). The hand feels it (0.25–0.31 N rms).
+- **Dysgraphia: a gentle nose helps.** Pulling the ink half-way toward the copybook letter brings it 23 % closer
+  without making it harder to read. Stronger guidance (nose + wheel) gets closer still (0.27 mm) but the app then reads
+  fewer words (6.3 of 10).
+- **Dyslexia: prefer autowrite of the known text (10 of 10 words) to lead-through.** Lead-through by the driven wheel
+  barely helped (5.8 → 6.7 words of 10): the letters came out distorted, and slowly (8 mm/s).
+- **Page sensing: measure drift on paper before trusting the guidance and autowrite numbers.** They assume a 3 µm
+  page sensor. With a DeltaPen-like error (LIT OPT-02: 68 µm mean, 24 µm median per 10 ms, on a tablet) autowrite
+  stayed readable with 2–4× the ink error, but if the errors add up over a word the letters drift apart (7 of 10
+  words). The tremor tracker did not depend on it (§6.7; 2 writers).
 
 **What did not work, or was not done:**
 
@@ -53,7 +80,8 @@ ordinary pen is the Rev J pen with every device off.*
   nose would remove 90 % of it, so the gap is in estimation.
 - **ai2's gated listening tracker and ai2's TCN** both move tremor-free writing in sim2 (59 and 150 µm; rule 25 µm).
   The end-cap added nothing.
-- **RL** was not trained (time); there is no RL-versus-model-based answer (§7). (RL_BULLET)
+- **RL** was not trained (time); there is no RL-versus-model-based answer (§7). The environment runs (a 5 000-step
+  smoke run); the full run would take about 2.4 CPU hours.
 - **Unfinished:** ET writers 4–5 and the second seed, the wheel with a writer who has learned it, the domain
   randomisation population (§11).
 - **Writer model v2** (§3): speed and the speed–curvature law now match the literature; the 8–12 Hz content of
@@ -67,7 +95,7 @@ ordinary pen is the Rev J pen with every device off.*
   1.6 W of coil current to hold that, all the time the ball touches the paper (CALC). The budget's duty model left it
   out. At this power the coil would pass its 120 °C limit within about 45 s of continuous writing (CALC).
 - About a third is mostly a simulator artefact: sim2's nose servo reacts to the position sensor's noise because the
-  signal is not filtered (0.7 W, SIM). A filtered servo would not pay this.
+  signal is not filtered (0.7 W, SIM). A filtered servo should not pay most of this (not simulated).
 - The rest is ball friction and holding the nose steady while the hand moves (0.4 W, SIM).
 - If the magnets are weaker than the image-method estimate (0.7×, the lead's range), the power doubles, the nose sags
   under the load and tremor-free writing degrades (62 % of letters read, one writer, SIM). Halving the spring force to
@@ -86,8 +114,8 @@ Rev H tracker, locks onto fast writing. The hand model and the ball's stick-slip
   a subset, sim2's articulated 'arm' hand. Step 50 µs (sim2 §5.3: 0.66 µm against 12.5 µs; 25 µs check in §9).
 - **Pen.** The lead's Rev J integration, read at run time from `results/revJ/sim_params.json` and
   `results/revJ/layout.json` (CALC on a PROPOSED DESIGN). Each result file records the version used (`pen_source`:
-  generation time and SHA-256). The file changed during the study (last 13:28 UTC); the changes (heel-drive force
-  0.369 N continuous / 0.603 N peak, Hall noise) do not touch the nose-only runs, and every wheel run used the last file.
+  generation time and SHA-256). Every result file of this study used the same version: generated 13:28:08 UTC,
+  SHA-256 prefix e4d769dd72035480 (the lead's late change: heel-drive force 0.369 N continuous / 0.603 N peak).
 
 | Part | Value used (label) |
 |---|---|
@@ -103,7 +131,8 @@ Rev H tracker, locks onto fast writing. The hand model and the ball's stick-slip
 
 - **Writers.** The v2 writers of §3 (the v1 writers of the handwriting study for comparison). Test writers 0–5, test
   seeds 200–203. Every rule was fixed first on tuning writers 100–103, seed 300 (`results/sim2j/rules.json`, frozen
-  14:02 UTC before any test run). RL trained on writers 1000–1399 only.
+  14:02 UTC before any test run). RL would train on writers 1000–1399 only (not run, §7). Which test writers each
+  stage ran is stated with its results (the ET grid is incomplete, §6.1).
 - **Tremor.** The project's tremor model on the hand path (H1), 4–12 Hz, 0.3–2 mm peak (severe: 3 mm); for the 'arm'
   hand, sim2's ET torque profile at the forearm and wrist, calibrated to the peak at the lifted tip.
 - **Start of each ET run.** The pen rests on the paper for 4 s before writing, tremor on (ASSUMPTION: a person places
@@ -265,7 +294,7 @@ sim2 is 3-D with the H1 contact law and the pen's mass properties.
 - Differences: the nose's fine correction removes less in sim2 (228 against 87 µm). In sim2 the nose also fights the
   ball's stick-slip and the static ball load. Area-coverage agrees (0.86 against 0.87).
 
-## 6. Outcomes per condition (test writers 0–5, seeds 200–203; SIM)
+## 6. Outcomes per condition (SIM; the test writers and seeds of each run are stated with it)
 
 ### 6.1 Essential tremor
 
@@ -357,23 +386,71 @@ A micrographia-like writer draws five loops against a 10 mm template; the writer
 target (drive study task b). Hands: relaxed (HAP-26 nominal arm) and lightly resisting (the HAP-26 upper 95 % CI arm).
 Test seeds 200–201.
 
-(LOOPS)
+| Hand (2 seeds each) | Controller | Height of all loops, % of target | Last loop, % of target | Felt force rms | Wheel force rms |
+|---|---|---|---|---|---|
+| Relaxed | Nothing on | 79 % | 66 % | – | – |
+| Relaxed | Wheel steers along the template | 102 % | 55 % | 234 mN | 302 mN |
+| Relaxed | Wheel steers + nose guides | 100 % | 55 % | 227 mN | 295 mN |
+| Relaxed | **Driven wheel pushes along the template (lead mode)** | 100 % | **86 %** | 248 mN | 286 mN |
+| Relaxed | Nose guides alone | 96 % | 66 % | 4 mN | – |
+| Resisting | Nothing on | 81 % | 66 % | – | – |
+| Resisting | Wheel steers along the template | 97 % | 68 % | 311 mN | 379 mN |
+| Resisting | Wheel steers + nose guides | 101 % | 68 % | 310 mN | 379 mN |
+| Resisting | **Driven wheel pushes along the template** | 95 % | **74 %** | 306 mN | 353 mN |
+| Resisting | Nose guides alone | 96 % | 66 % | 16 mN | – |
+
+SIM, `results/sim2j/guided.json`. Power 2.7–2.9 W in every row (the static load, §8.1).
+
+- **Only the driven wheel keeps the last loop big:** 66 % → 86 % of the target with a relaxed hand, 74 % with a lightly
+  resisting one. Steering alone makes the first loops bigger (the height of all loops reaches 100 %) but not the last
+  one. The nose alone does not: likely because its guidance lets go when the ink is more than 2.5 mm from the template
+  for 60 ms (HW1's capture law, §4.2), and the last loops are 3–4 mm too small (not isolated).
+- The hand feels it: 0.25–0.31 N rms of changed grip force with the wheel on.
+- The "ink to template" distance of the drive study's metric is not reported: in this setup the ink and the template
+  are offset by 7–10 mm (a registration difference between the two frames, not fixed), so it does not measure the fit.
 
 ### 6.4 Dysgraphia tracing
 
 Dysgraphia-like v2 learners copy "a big dog dug a deep pit by the pond" (the handwriting study's error model); the
 template is the copybook letter anchored at the learner's touchdown. Test writers 0–5, seed 200.
 
-(TRACING)
+| Controller (6 writers) | Distance to the copybook letters | Letters read | Words read (after autocorrect) | Area covered | Device share | Felt force rms |
+|---|---|---|---|---|---|---|
+| Nothing on | 833 µm | 96 % | 97 % | 0.57 | – | – |
+| **Nose pulls half-way (gain 0.5)** | 640 µm | 97 % | 97 % | 0.72 | 0.24 | 7 mN |
+| Nose pulls fully | 594 µm | 88 % | 85 % | 0.85 | 0.39 | 18 mN |
+| Wheel steers along the template | 521 µm | 81 % | 70 % | 0.75 | 0.33 | 136 mN |
+| Wheel + nose | 273 µm | 72 % | 63 % | 0.86 | 0.43 | 134 mN |
+
+SIM, `results/sim2j/guided.json` (9 words per case; power 2.3–2.4 W in every row).
+
+- **More guidance brings the ink closer to the copybook letters (833 → 273 µm) and the app reads fewer of them
+  (97 % → 63 % of words).** The app's recogniser was built on each learner's own writing (§5), so letters pushed toward
+  the copybook shape read worse to it. A reader trained on copybook letters might score them higher (not tested).
+- **The half-way nose is the setting to prefer:** 23 % closer to the copybook letters with no loss of readability, and
+  almost nothing felt at the hand (7 mN).
+- The wheel pushes on the hand (0.13 N rms) and costs readability.
 
 ### 6.5 Dyslexia: lead-through, and autowrite of a known text
 
-- Lead-through: a dyslexia-like learner (who writes "deep" as "daep") relaxes the hand; the pen goes down at each
-  stroke of the correct letters of "dug a deep", and the driven heel wheel pushes it along (with the nose adding the
-  detail). Test writers 0–3, seed 200.
+- Lead-through: a dyslexia-like learner (who misspells "deep" with a vowel substitution; the app reads "deap")
+  relaxes the hand; the pen goes down at each stroke of the correct letters of "dug a deep", and the driven heel
+  wheel pushes it along (with the nose adding the detail). Test writers 0–3, seed 200.
 - Autowrite: the pen writes a known text itself (§6.2).
 
-(LEAD)
+| Controller (4 writers, "dug a deep") | Distance to the right letters | Letters read | Words read (after autocorrect) | Pen speed | Felt force rms |
+|---|---|---|---|---|---|
+| The learner writes alone (misspells "deep") | 698 µm | 75 % | 58 % | – | – |
+| Hand relaxed, device off | 222 µm (few strokes) | 3 % | 0 % | 3.7 mm/s | – |
+| **Driven wheel leads** | 504 µm | 75 % | 67 % | 7.8 mm/s | 120 mN |
+| Driven wheel leads + nose adds the detail | 454 µm | 72 % | 50 % | 8.7 mm/s | 120 mN |
+
+SIM, `results/sim2j/guided.json` (3 words per case; power 2.6–2.8 W).
+
+- **Lead-through moves the pen along the right letters (698 → 504 µm) but the letters come out distorted**: the app
+  read "dug a dobb", "dug a dwwp", "dug a deep". Words read rise only from 5.8 to 6.7 of 10; the nose's detail does
+  not help (5.0). It is slow (8 mm/s against the writers' 31 mm/s).
+- **Autowrite of a known text does what lead-through was meant to do:** 10 of 10 words read with no tremor (§6.2).
 
 ### 6.6 The other hand model and the domain randomisation
 
@@ -381,7 +458,15 @@ template is the copybook letter anchored at the learner's touchdown. Test writer
   joint torques calibrated to 1 mm peak at the lifted tip; 8 Hz; writers 0–1, first test seed; SIM,
   `results/sim2j/arm.json`):
 
-(ARM_TABLE)
+| 8 Hz × 1 mm, writers 0–1 | Ordinary pen | Nose, chosen tracker | Nose + heel wheel | Limit: perfect knowledge |
+|---|---|---|---|---|
+| 'Arm' hand: ink error (ratio) · letters read | 430 µm · 85 % | 0.63 · 85 % | 0.70 · 81 % | 0.13 · 96 % |
+| H1 hand, the same writers and seeds (§6.1) | 441 / 439 µm | 0.85 / 0.60 | – | 0.13 / 0.13 |
+| 'Arm' hand: tremor-free writing moved | – | 0 µm | – | – |
+
+  The ranking holds with the other hand model: the chosen tracker helps about as much (0.63 against 0.73 with the H1
+  hand for these two writers), the wheel adds nothing, perfect knowledge reaches 0.13, and tremor-free writing is not
+  moved. Two writers only.
 
 - **Domain randomisation population: not run** (§11). Every result above is for the nominal Rev J pen; the spread
   over the lead's tolerances (Km 0.7–1.0, spring 0.12–0.18 N, friction, sensors) is not known. §8.1 shows the two
@@ -402,7 +487,25 @@ template is the copybook letter anchored at the learner's touchdown. Test writer
   reckoning with no correction would (far more drift than DeltaPen showed: an upper bound). Test writers 0–1, first
   seed, the chosen tracker; autowrite of the known text.
 
-(PAGE_TABLE)
+| Writers 0–1 (2 cases per cell) | sim2's 3 µm white noise | DeltaPen-like, held | DeltaPen-like, adding up |
+|---|---|---|---|
+| ET, tremor-free writing moved (chosen tracker) | 0 µm | 0 µm | 0 µm |
+| ET, 8 Hz × 0.3 mm: ratio to the ordinary pen | 0.98 | 0.98 | 1.00 |
+| ET, 8 Hz × 1 mm: ratio to the ordinary pen | 0.73 | 0.62 | 0.65 |
+| Autowrite, no tremor: ink error · letters · words | 49 µm · 96 % · 100 % | 114 µm · 94 % · 100 % | 2.24 mm · 75 % · 70 % |
+| Autowrite, 8 Hz × 1 mm: ink error · letters · words | 62 µm · 98 % · 100 % | 196 µm · 90 % · 100 % | 2.13 mm · 76 % · 70 % |
+
+- **The tremor tracker does not depend on the 3 µm figure** (2 writers): no false correction in any model, and no loss
+  at 0.3 or 1 mm. Why it is robust was not analysed (it fuses the page samples with the IMU, and its detector gate
+  stayed shut on tremor-free writing). Writer 0's 1 mm ratio changed 0.86 → 0.64 between models: small differences
+  move sim2's stick-slip; this is not a real gain.
+- **Autowrite and guidance do depend on it.** They place the ink by the measured position, so the page error goes
+  straight into the ink. With DeltaPen-like errors that do not add up, autowrite's ink error rose 2–4× (to
+  114–235 µm) and the text stayed readable (10 of 10 words). If the errors add up (dead reckoning), the letters drift
+  apart by 1.5–3 mm and 7 of 10 words are read. Tracing and lead-through (not re-run) use the page position the same
+  way as autowrite.
+- So the property that matters is **drift over a word**, more than the noise per sample (REQ-RVJ-C05). The 3 µm
+  figure makes the autowrite, tracing and lead-through ink errors of §6.2–6.5 optimistic by up to 2–4×.
 
 ## 7. RL in the physics simulator (`sim2j/rl.py`; ai2's EXP-L05 in closed loop)
 
@@ -424,7 +527,11 @@ template is the copybook letter anchored at the learner's touchdown. Test writer
   and as a hard rule in selection.
 - **Training: NOT DONE.** Planned: Stable-Baselines3 PPO, MLP 64-64 tanh, 400 000 steps, one process, resumable
   (`python3 -m sim2j.run_study --stages rl_train rl_select rl_test`). When the lead cut the study to one process and a
-  hand-back within hours, the remaining time went to the conditions the user asked about. (RL_SMOKE)
+  hand-back within hours, the remaining time went to the conditions the user asked about. A smoke run checked the
+  environment: 5 000 PPO steps (4 episodes, 48 s of simulated writing) took 74 s on one CPU core, 68 steps/s
+  (`sim2j/build/rl_quick/`). At that rate the planned 400 000 steps take about 1.6 CPU hours, and checkpoint
+  selection and the test about 0.8 more (estimate): about 2.4 CPU hours in all. The untrained policy moved tremor-free
+  writing by 28 and 76 µm in its two tremor-free episodes (random exploration; the reward penalises exactly this).
 - **Selection** (rule frozen in `results/sim2j/rules.json` before any test run): the last checkpoints on tuning writers
   100–103, seeds 300–303; pass S1 (false correction ≤ 25 µm mean, every case ≤ 50 µm) and S2 (no worse than the
   model-based tracker at 0.3 mm); among those, the lowest ink error at 1–2 mm; otherwise RL is not adopted. Not run.
@@ -438,12 +545,13 @@ The integrated budget (`results/revJ/budgets.json`, study N's duty model) gives 
 1.3–2.7 W. The budget's model counts the nose's inertia, its flexure, ball drag and gravity. It leaves out the two
 largest terms below.
 
-### 8.1 Where the nose's power goes (SIM, writer 0, tremor-free writing, nose held; `hall1` check in §12)
+### 8.1 Where the nose's power goes (SIM, writer 0, tremor-free writing, nose held; `results/sim2j/power_split.json`)
 
 | Run (4 s rest on the paper + 7.5 s of writing) | Nose copper loss, mean | While the ball is on the paper | While lifted |
 |---|---|---|---|
 | Nominal Rev J pen | 2.25 W | 2.68 W | 1.20 W |
 | The same without Hall-sensor noise | 1.51 W | 2.01 W | 0.31 W |
+| The same without sim2's feed-forward bias current (the servo's feedback holds the load instead) | 2.25 W | 2.68 W | 1.20 W |
 | Refill spring 0.075 N instead of 0.15 N | 1.32 W | 1.28 W | 1.38 W |
 | Km 0.7× (the lead's lower bound) with the 0.075 N spring | 2.43 W | – | – |
 
@@ -464,6 +572,9 @@ largest terms below.
   handle's own writing motion (real, and about what the budget assumed plus friction).
 - **Km.** Power goes with 1/Km². The image-method Km is an upper bound; at 0.7× (the lead's randomisation range) the
   same run needs about twice the power.
+- **For reuse** (the balanced-nib study): `results/sim2j/power_split.json` holds this breakdown (SIM) with the static
+  load at 35 / 50 / 75° (CALC); `results/sim2j/power.json` the static load over tilt, spring force and Km (CALC) and the
+  four spring/Km runs below (SIM). `python3 -m sim2j.run_study --stages power_split` re-runs it in about a minute.
 
 **Spring force and Km (writer 0, seed 200; `results/sim2j/power.json`):**
 
@@ -507,7 +618,7 @@ same seed, no tremor (rule ≤ 25 µm). SIM, test writers 0–4 (range over the 
 ## 9. Checks
 
 - **Code.** The online AKF equals fusion's batch AKF bit for bit (maximum difference 0.0 on a synthetic record; test in
-  `sim2j/tests`). The Rev J handle's mass properties match the lead's budget within 0.1 % (test). 8 fast tests pass.
+  `sim2j/tests`). The Rev J handle's mass properties match the lead's budget within 0.1 % (test). 9 fast tests pass (about 5 s).
 - **Step size** (`dt_check.json`; writers 0–1, 8 Hz × 1 mm): 25 µs against the test's 50 µs changes the device-off
   ink error by 0.15 µm (439.9 → 439.8 µm), the tracker's ratio by less than 0.001 (0.729 both), the limit's by 0.001
   (0.130 → 0.129) and the nose power by 2 % (2.27 → 2.22 W) (SIM). 50 µs is adequate for these rankings.
@@ -535,11 +646,11 @@ DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's ear
   refines DEC-042 for sim2. Test writers (§6.1): 0.63 of the ordinary pen's ink error at 8–12 Hz × 1–2 mm, 1.02 at
   0.3 mm, 0 µm on tremor-free writing (5 writers). ai2's gated listening tracker as built failed the false-correction
   rule (59 µm) and the 0.3 mm rule (1.14); the TCN stays in shadow mode until retrained on sim2 and real recordings.
-- **DEC-048 (proposed): the heel wheel is retracted by default.** It is deployed for guidance (tracing, loops) and
-  lead-through only, until a redesigned tremor-mode controller moves tremor-free writing by ≤ 25 µm in sim2
-  (REQ-RVJ-C02). In its present tremor mode it moved tremor-free writing by 0.40 mm (max 0.50 mm), doubled the error at
-  0.3 mm and pushed on the hand 8× more (167 against 21 mN rms); it gained only at 2 mm (0.54 against 0.59 at
-  8–12 Hz) and at 4 Hz (0.73, where the nose does nothing).
+- **DEC-048 (proposed): the heel wheel is retracted by default.** It is deployed for Parkinson's "write big" practice
+  (driven, §6.3) and lead-through only (in tracing it cost readability, §6.4), until a redesigned tremor-mode
+  controller moves tremor-free writing by ≤ 25 µm in sim2 (REQ-RVJ-C02). In its present tremor mode it moved tremor-free writing by 0.40 mm (max 0.50 mm), doubled the error at
+  0.3 mm and pushed on the hand 8× more (167 against 21 mN rms); it gained only at 8 Hz × 2 mm (0.54 against
+  0.59; 0.57 for both at 12 Hz) and at 4 Hz (0.73, where the nose does nothing).
 - **DEC-049 (proposed): autowrite is the severe-tremor mode for a known text, up to 3 mm.** 88 % of words read at
   3 mm, against 4 % with the ordinary pen and 38 % writing through with the nose (SIM, §6.2). Beyond 3 mm the nose's
   travel runs out (peak 6.55 of 6.57 mm).
@@ -557,7 +668,11 @@ DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's ear
   writer model in use (v1 and v2), with its input restricted to page samples taken while the ball is on the paper.
 - **REQ-RVJ-C04 (filtered nose servo):** The nose servo's position-sensor noise shall add ≤ 50 mW of coil loss: filter
   the Hall signal to the servo's bandwidth. In sim2 the unfiltered 5.9 µm rms at 10 kHz adds about 0.7 W (SIM).
-- **REQ-RVJ-C05 (page sensor):** (PAGE_REQ)
+- **REQ-RVJ-C05 (page sensor):** On paper at writing speeds, the page sensor's position error shall not accumulate by
+  more than 0.1 mm over 2 s of writing (about one word; ASSUMPTION target), and its error per 10 ms window shall be no
+  worse than DeltaPen's (median 24 µm, mean 68 µm; LIT OPT-02). Basis (SIM, writers 0–1, §6.7): with DeltaPen-like
+  errors that do not add up, autowrite stayed readable with 2–4× the ink error; with errors that add up the letters
+  drifted 1.5–3 mm apart and 7 of 10 words were read. The tremor tracker was insensitive. Verified by EXP-J10.
 
 **Proposed experiments** (equipment and data missing here; executable files in `sim2j/`)
 
@@ -588,7 +703,7 @@ DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's ear
   with practice (EXP-J18).
 - **RL:** not trained (§7).
 - **Domain randomisation population** (`dr`, 8 draws): not run; the results hold for the nominal pen only.
-- **'Arm' hand:** (ARM_STATUS)
+- **'Arm' hand:** two writers at one tremor (8 Hz × 1 mm) and tremor-free (§6.6), not the full grid.
 - **Current limit:** how often the coil hit 1.5 A in the tremor runs was not checked.
 
 **Open issues:**
@@ -596,7 +711,8 @@ DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's ear
 - **How realistic is this?** The pen's mechanics are detailed (3-D contact, stick-slip, the lead's masses and
   sensors). The people are not: the writers are synthetic (print-like glyph letters re-timed to measured speeds), the
   tremor is a model, the hand is a lumped spring–mass (or sim2's simple arm), and the writer does not adapt to the pen
-  during writing. The first real check is the recorded-data study now starting and EXP-V05.
+  during writing. Even without tremor the simulated letters look crude (first line of the handwriting figure, §1).
+  The first real check is the recorded-data study now starting and EXP-V05.
 - **Page sensing.** Every tremor, guidance and autowrite result uses sim2's page sensor: 3 µm rms white noise at
   1 kHz (ASSUMPTION). A measured research pen (DeltaPen, LIT OPT-02) had 68.3 µm mean and 23.6 µm median error per
   10 ms window, on a tablet, not paper. §6.7 shows what a DeltaPen-like error does. EXP-J10 (the lead's) measures the
@@ -633,7 +749,7 @@ DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's ear
 | `tuning.py` | the rules fixed on tuning writers; `results/sim2j/rules.json` |
 | `run_study.py` | every stage; rows cached in `sim2j/build/*_rows.json`, adapted hand paths in `sim2j/build/setups/` |
 | `report.py` | figures with CSV twins, `samples.json`, the viewer replay |
-| `tests/test_sim2j.py` | fast checks (8 tests, about 5 s with a warm numba cache) |
+| `tests/test_sim2j.py` | fast checks (9 tests, about 5 s with a warm numba cache) |
 
 **Results** (`results/sim2j/`, each JSON with `stabpen.provenance` and the pen-parameter version): `writer_fit.json`,
 `writers.json`, `writer_cmp.json`, `rules.json`, `verify.json`, `et.json` (with its coverage), `autowrite.json`
@@ -644,8 +760,16 @@ Not produced (not run): `et_wheel.json`, `et_rl.json`, `rl_select.json`, `rl_tes
 
 **Reproduce:** `python3 -m sim2j.run_study --stages <stage>`, one stage per process (rows are cached in
 `sim2j/build/*_rows.json`, so a stopped stage resumes). Stages: tune, writers, writer_cmp, verify, et, autowrite,
-guided, page_noise, power, power_split, dt, arm, report; not yet run: et2, et_wheel, dr, rl_train, rl_select,
-rl_test. Run the ET grid one writer per process (`SIM2J_WRITERS=5 python3 -m sim2j.run_study --stages et`); the
+guided, page_noise, power, power_split, dt, arm, report, handwriting; not yet run: et2, et_wheel, dr, rl_train (a
+5 000-step smoke run only), rl_select, rl_test. Run the ET grid one writer per process (`SIM2J_WRITERS=5 python3 -m sim2j.run_study --stages et`); the
 whole grid in one process grew to 11.5 GB. `--quick` gives a smoke run; `pytest sim2j/tests -q` the fast checks.
 Dependencies as the repository (MuJoCo 3.6, numba, SciPy, Stable-Baselines3 with PyTorch for RL, ai2's trained TCN in
 `ai2/build/models/tcn.pt` for the replay).
+
+**Compute used** (from the stage logs; one CPU core per process, one or two processes at a time, one after the lead's
+instruction): tuning 44 min, ET grid 79 min (then stopped), writer comparison 12 min, verification 17 min, power 4 min,
+step check 9 min, autowrite and severe tremor 23 min, guided tasks 49 min, page sensing 11 min, 'arm' hand 8 min,
+report and figures 6 min, power split 1 min, RL smoke run 1 min: about 4.4 CPU hours logged, plus writer fitting,
+memory tests and debugging runs that were not logged (roughly another half hour). Finishing the ET grid (writers
+4–5, about 20 min each) and the second seed, the domain randomisation (8 draws) and RL (about 2.4 CPU hours) would add
+roughly 5 CPU hours (estimate).

@@ -1,0 +1,12 @@
+panel,device,ink_err_um,letters_read,words_app,recognised
+revj_none_clean,none,36.8975,1,1,return library
+revj_none_8Hz_1mm,none,440.606,0.9231,1,return ljbrary
+revj_nose_8Hz_1mm,nose,377.055,0.9231,1,return lrbrary
+revj_nose_wheel_8Hz_1mm,nose_wheel,362.319,0.8462,1,refurn lrbrary
+revj_oracle_8Hz_1mm,oracle,56.1816,1,1,return library
+revj_none_8Hz_2mm,none,1096.73,0.3077,0,pefuvu cjbpqpy
+revj_nose_8Hz_2mm,nose,596.046,0.8462,1,refurn ljbrary
+revj_nose_wheel_8Hz_2mm,nose_wheel,561.734,0.7692,1,rerurn zrbrary
+revj_oracle_8Hz_2mm,oracle,112.189,1,1,return library
+revj_none_5Hz_3mm,none,1314.11,0.3846,0,fefuva ljbwapu
+revj_autowrite_5Hz_3mm,autowrite,61.2595,0.8462,1,return llbjary

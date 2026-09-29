@@ -1,0 +1,8 @@
+panel,label,app_reads,letters_read,words_app,ink_err_um
+revj_none_clean,No tremor (the simulated writer's own letters),return library,1,1,36.8975
+revj_none_8Hz_1mm,"Ordinary pen, tremor 1 mm",return ljbrary,0.9231,1,440.606
+revj_nose_8Hz_1mm,"Rev J, tremor 1 mm",return lrbrary,0.9231,1,377.055
+revj_none_8Hz_2mm,"Ordinary pen, tremor 2 mm",pefuvu cjbpqpy,0.3077,0,1096.73
+revj_nose_8Hz_2mm,"Rev J, tremor 2 mm",refurn ljbrary,0.8462,1,596.046
+revj_none_5Hz_3mm,"Ordinary pen, severe tremor 3 mm",fefuva ljbwapu,0.3846,0,1314.11
+revj_autowrite_5Hz_3mm,"Rev J writes it (autowrite), severe tremor 3 mm",return llbjary,0.8462,1,61.2595

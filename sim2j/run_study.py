@@ -1093,8 +1093,14 @@ def stage_report(quick: bool = False) -> None:
     RP.run_all(log=log, with_runs=not quick)
 
 
+def stage_handwriting(quick: bool = False) -> None:
+    """Add the tremor-free panel to results/sim2j/samples.json and redraw fig_handwriting / fig_before_after."""
+    from . import report as RP
+    RP.add_clean_panel(log=log)
+
+
 # ------------------------------------------------------------------------------------------------ main
-STAGES: Dict[str, Callable] = {"report": stage_report, "page_noise": stage_page_noise, "power_split": stage_power_split, "arm": stage_arm, "et2": stage_et2, "et_wheel": stage_et_wheel, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
+STAGES: Dict[str, Callable] = {"report": stage_report, "handwriting": stage_handwriting, "page_noise": stage_page_noise, "power_split": stage_power_split, "arm": stage_arm, "et2": stage_et2, "et_wheel": stage_et_wheel, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
                                "tune": stage_tune, "writers": stage_writers, "writer_cmp": stage_writer_cmp,
                                "verify": stage_verify, "et": stage_et, "guided": stage_guided,
                                "autowrite": stage_autowrite, "dr": stage_dr, "dt": stage_dt, "power": stage_power}

@@ -20,13 +20,16 @@ akf_online  the project's AKF tremor tracker (fusion/estimators.py) ported to a 
             the batch version, with a frequency-runaway guard, a running spectral tremor-line detector, and ai2's
             gated listening tracker (DEC-042) online
 learned_replay  ai2's causal TCN run on the pen's own sensor record and replayed as the nose command
-sensing     the pen's own sensors, online: IMU (fusion noise models, firmware compensation), page sensor, refill
-            slide, wheel load and heading
+sensing     the pen's own sensors, online: IMU (fusion noise models, firmware compensation), page sensor (sim2's
+            white noise, or a DeltaPen-like error model: LIT OPT-02, ASSUMPTION), refill slide, wheel load and heading
 firmware    the controllers: tremor cancellation, coordinated nose + wheel, end-cap feed-forward, template guidance,
             lead-through, autowrite (nose2 planner), pen lift, supervisor (force caps, lateral release, yield)
 stepper     sim2's stepper with the Rev J devices and the firmware in the loop
-tasks       scenarios: ET, PD 'write big' loops, dysgraphia tracing, dyslexia lead-through and autowrite, severe tremor
-metrics     ink error, letters and words read by the app's recogniser, device share, force on the hand, power
+tasks       scenarios and metrics: ink error, letters and words read by the app's recogniser, device share, force on
+            the hand, power; autowrite of a known text
+et          essential-tremor cases (writer adaptation cached in build/setups), the controllers by name, the 'arm' hand
+guided      PD 'write big' loops, dysgraphia tracing, dyslexia lead-through (relaxed writer)
+plant_frf   linear frequency responses of the pen model (the end-cap controller's internal model)
 rl          Gymnasium environment on the Rev J pen with domain randomisation; PPO (Stable-Baselines3)
 verify      overlap checks against round 1 (nose2 autowrite in HW1, drive tasks in HW1-D)
 tuning      the rules fixed on tuning writers before any test run (results/sim2j/rules.json)

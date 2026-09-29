@@ -1,0 +1,113 @@
+{
+  "stabpen.provenance": {
+    "evidence_status": "SIMULATION (sim2, MuJoCo 3.6; synthetic writers and tremor; Rev J PROPOSED DESIGN parameters). sim2 ranks concepts (context of use COU-1) until EXP-V01/V02/V04 calibrate and EXP-V05 validates it; not evidence of benefit to people",
+    "generated_utc": "2026-09-29T18:52:30+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages arm",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": [
+      200,
+      201
+    ],
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "package": "sim2j-0.1",
+    "stage": "arm",
+    "pen_source": {
+      "file": "results/revJ/sim_params.json",
+      "generated_utc": "2026-09-29T13:28:08+00:00",
+      "sha256_16": "e4d769dd72035480",
+      "layout_generated_utc": "2026-09-29T13:28:08+00:00",
+      "label": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)"
+    }
+  },
+  "what": "sim2 'arm' hand (articulated forearm-wrist-hand, writer controller), ET tremor as joint torques calibrated to 1 mm peak at the lifted tip, 8 Hz; writers 0-1",
+  "by_ctl": {
+    "none": {
+      "n": 2,
+      "ink_err_um": 430.37536576622284,
+      "ink_err_um_sd": 25.08638668382315,
+      "letters_read": 0.8461538461538461,
+      "letters_read_sd": 0.0,
+      "words_app": 0.75,
+      "words_app_sd": 0.25,
+      "moved_vs_clean_um": 703.7869228369377,
+      "moved_vs_clean_um_sd": 73.92267189323354,
+      "P_total_W": 2.2124579396690525,
+      "P_total_W_sd": 0.07051269847161423,
+      "clean_floor_um": 122.32821513222945,
+      "clean_floor_um_sd": 2.4543575951853853
+    },
+    "nose": {
+      "n": 2,
+      "ink_err_um": 269.49895342361697,
+      "ink_err_um_sd": 2.2538860024612575,
+      "ratio": 0.6286362825764598,
+      "ratio_sd": 0.041879950165284396,
+      "letters_read": 0.8461538461538461,
+      "letters_read_sd": 0.0,
+      "words_app": 0.75,
+      "words_app_sd": 0.25,
+      "moved_vs_clean_um": 548.0139466054793,
+      "moved_vs_clean_um_sd": 49.539970198923214,
+      "P_total_W": 2.2192217967617003,
+      "P_total_W_sd": 0.07621813454986226,
+      "felt_rms_N": 0.010689523116189759,
+      "felt_rms_N_sd": 0.0011591470826293124
+    },
+    "nose_wheel": {
+      "n": 2,
+      "ink_err_um": 301.0658524916438,
+      "ink_err_um_sd": 16.34885791959678,
+      "ratio": 0.7041492228084056,
+      "ratio_sd": 0.07903198071182788,
+      "letters_read": 0.8076923076923077,
+      "letters_read_sd": 0.038461538461538436,
+      "words_app": 0.75,
+      "words_app_sd": 0.25,
+      "moved_vs_clean_um": 699.4273611989606,
+      "moved_vs_clean_um_sd": 20.364926664493566,
+      "P_total_W": 2.1602280164754144,
+      "P_total_W_sd": 0.0855361584709029,
+      "felt_rms_N": 0.14674582873220185,
+      "felt_rms_N_sd": 0.013009306239493201
+    },
+    "oracle": {
+      "n": 2,
+      "ink_err_um": 54.74975376433808,
+      "ink_err_um_sd": 2.5585165482146195,
+      "ratio": 0.12729995903355684,
+      "ratio_sd": 0.0014754084444529997,
+      "letters_read": 0.9615384615384616,
+      "letters_read_sd": 0.038461538461538436,
+      "words_app": 1.0,
+      "words_app_sd": 0.0,
+      "moved_vs_clean_um": 61.938114408805575,
+      "moved_vs_clean_um_sd": 5.987355845550468,
+      "P_total_W": 2.2041210023679305,
+      "P_total_W_sd": 0.08088322526478442,
+      "felt_rms_N": 0.015711385288376793,
+      "felt_rms_N_sd": 0.0012998271554005708
+    },
+    "clean_nose": {
+      "n": 2,
+      "ink_err_um": 19.179960564693893,
+      "ink_err_um_sd": 0.4409766911905866,
+      "letters_read": 0.8846153846153846,
+      "letters_read_sd": 0.03846153846153849,
+      "words_app": 1.0,
+      "words_app_sd": 0.0,
+      "moved_vs_clean_um": 0.0,
+      "moved_vs_clean_um_sd": 0.0,
+      "P_total_W": 2.1802915551257103,
+      "P_total_W_sd": 0.08611657115151217
+    }
+  },
+  "writers": [
+    0,
+    1
+  ]
+}

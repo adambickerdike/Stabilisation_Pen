@@ -1,0 +1,105 @@
+{
+  "stabpen.provenance": {
+    "evidence_status": "SIMULATION (sim2, MuJoCo 3.6; synthetic writers and tremor; Rev J PROPOSED DESIGN parameters). sim2 ranks concepts (context of use COU-1) until EXP-V01/V02/V04 calibrate and EXP-V05 validates it; not evidence of benefit to people",
+    "generated_utc": "2026-09-29T18:55:19+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages power_split",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": [
+      200
+    ],
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "package": "sim2j-0.1",
+    "stage": "power_split",
+    "pen_source": {
+      "file": "results/revJ/sim_params.json",
+      "generated_utc": "2026-09-29T13:28:08+00:00",
+      "sha256_16": "e4d769dd72035480",
+      "layout_generated_utc": "2026-09-29T13:28:08+00:00",
+      "label": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)"
+    }
+  },
+  "what": "SIM: the nose's copper loss in tremor-free writing (writer 0 v2, seed 200, 4 s rest + 7.5 s writing, nose held centred, H1 hand, 50 us step) for the nominal Rev J pen and three variants; CALC: the static side load F_c cot(theta) at the ball held by the coils (nominal spring, Km 1.0)",
+  "labels": {
+    "P_cu_mean_W": "SIM: mean nose copper loss over the run",
+    "P_cu_ball_on_paper_W": "SIM: mean while the ball touches the paper",
+    "P_cu_lifted_W": "SIM: mean while the ball is lifted",
+    "calc": "CALC: static load only (results/sim2j/power.json)"
+  },
+  "reading": {
+    "static_side_load_W": "about 1.1 W over a run with ~70 % pen-down (1.62 W while on paper at 50 deg, CALC): real, a design problem (DEC-046)",
+    "hall_noise_W": "nominal minus no_hall_noise: the servo reacting to unfiltered Hall noise, mostly a modelling artefact (REQ-RVJ-C04)",
+    "rest_W": "friction, stick-slip and holding the nose against the handle's writing motion"
+  },
+  "sim": {
+    "nominal": {
+      "P_cu_mean_W": 2.24876123171239,
+      "P_cu_ball_on_paper_W": 2.682275946626393,
+      "P_cu_lifted_W": 1.2005951831342185,
+      "I_rms_ball_on_paper_A": 1.0039295934622918,
+      "ball_on_paper_share": 0.7074169243499847,
+      "T_coil_end_C": 61.468133855872594,
+      "sim_s": 11.48
+    },
+    "no_hall_noise": {
+      "P_cu_mean_W": 1.5090883304486868,
+      "P_cu_ball_on_paper_W": 2.0057449389244013,
+      "P_cu_lifted_W": 0.3072444344247165,
+      "I_rms_ball_on_paper_A": 0.8690973774393341,
+      "ball_on_paper_share": 0.7075911327903837,
+      "T_coil_end_C": 54.75792282687108,
+      "sim_s": 11.48
+    },
+    "no_bias_current": {
+      "P_cu_mean_W": 2.249667544625401,
+      "P_cu_ball_on_paper_W": 2.6841181862083867,
+      "P_cu_lifted_W": 1.1996805104067592,
+      "I_rms_ball_on_paper_A": 1.0042590552872739,
+      "ball_on_paper_share": 0.7073298201297853,
+      "T_coil_end_C": 61.47030280503493,
+      "sim_s": 11.48
+    },
+    "F_c_0.075": {
+      "P_cu_mean_W": 1.316061923926466,
+      "P_cu_ball_on_paper_W": 1.2811630417786348,
+      "P_cu_lifted_W": 1.3822751216519917,
+      "I_rms_ball_on_paper_A": 0.7050800062326185,
+      "ball_on_paper_share": 0.6548495274596055,
+      "T_coil_end_C": 43.072441468169394,
+      "sim_s": 11.48
+    }
+  },
+  "calc": [
+    {
+      "theta_deg": 35.0,
+      "F_c_N": 0.15,
+      "km_scale": 1.0,
+      "torque_mNm": 16.38371393334554,
+      "P_static_W": 4.705339869690434,
+      "I_static_A": 1.3811481518801914,
+      "label": "CALC: F_c cot(theta) at the ball held by the coils, z_p F_c cot(theta) / (Km (z_a - z_p)) squared"
+    },
+    {
+      "theta_deg": 50.0,
+      "F_c_N": 0.15,
+      "km_scale": 1.0,
+      "torque_mNm": 9.626150968865756,
+      "P_static_W": 1.6243201151083924,
+      "I_static_A": 0.8114851537604817,
+      "label": "CALC: F_c cot(theta) at the ball held by the coils, z_p F_c cot(theta) / (Km (z_a - z_p)) squared"
+    },
+    {
+      "theta_deg": 75.0,
+      "F_c_N": 0.15,
+      "km_scale": 1.0,
+      "torque_mNm": 3.07391313556984,
+      "P_static_W": 0.16563399123443662,
+      "I_static_A": 0.25913107757525367,
+      "label": "CALC: F_c cot(theta) at the ball held by the coils, z_p F_c cot(theta) / (Km (z_a - z_p)) squared"
+    }
+  ]
+}
