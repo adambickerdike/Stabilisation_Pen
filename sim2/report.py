@@ -318,16 +318,16 @@ def replay(out_dir, seed=300, f0=8.0, amp=1.0e-3, window=(1.0, 3.5), rate=200.0,
 def build(quick=False, log=print):
     out_dir = os.path.join(OUT, "_quick_report") if quick else OUT
     os.makedirs(out_dir, exist_ok=True)
-    st = {n: _load(n, quick) for n in ("h1check", "diagnose", "streams", "contact", "convergence", "energy", "gyro", "sensors",
-                                       "native", "frontstop", "arm", "myo", "validate", "env", "plugins")}
+    st = {n: _load(n, quick) for n in ("h1check", "diagnose", "streams", "attrib", "contact", "convergence", "energy", "gyro",
+                                       "sensors", "native", "frontstop", "arm", "myo", "validate", "env", "plugins")}
     if st["env"]:
         from . import env as E            # the DR table as it stands in env.py (it may have changed after the env stage)
         st["env"]["dr"] = {k: {"low": v[0], "high": v[1], "scale": v[2], "source": v[3]} for k, v in E.DR.items()}
     avail = [k for k, v in st.items() if v is not None]
     log(f"  report: stages available {avail}")
     # ---- verification.json
-    ver = {k: _strip(st[k]) for k in ("h1check", "diagnose", "streams", "contact", "convergence", "energy", "gyro", "sensors",
-                                      "native", "frontstop") if st[k]}
+    ver = {k: _strip(st[k]) for k in ("h1check", "diagnose", "streams", "attrib", "contact", "convergence", "energy", "gyro",
+                                      "sensors", "native", "frontstop") if st[k]}
     _write(os.path.join(out_dir, "verification.json"), ver)
     if st["myo"]:
         _write(os.path.join(out_dir, "myo_impedance.json"), _strip(st["myo"]))
@@ -385,6 +385,8 @@ def summary(st: Dict) -> Dict:
         s["diagnose"] = _strip(st["diagnose"])
     if st.get("streams"):
         s["streams"] = _strip(st["streams"])
+    if st.get("attrib"):
+        s["attrib"] = _strip(st["attrib"])
     if st["convergence"]:
         s["convergence"] = {k: [{kk: r.get(kk) for kk in ("dt_us", "integrator", "unmod_e_rms_um", "oracle_ratio", "ink_path_diff_um",
                                                           "observed_order", "wall_s")} for r in v["rows"]]

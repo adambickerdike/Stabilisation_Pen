@@ -1,0 +1,63 @@
+{
+  "rows": [
+    {
+      "seed": 202,
+      "f0": 12.0,
+      "amp_mm": 2.0,
+      "kind": "trans",
+      "h1": 0.24403324382819983,
+      "s2_modelled": 0.2837863253305183,
+      "s2_refill_Fc_0.45N": 0.2562742688694347,
+      "s2_nose_refill_mass_x0.1": 0.289600692951896
+    },
+    {
+      "seed": 203,
+      "f0": 12.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "h1": 0.22032999804561956,
+      "s2_modelled": 0.25421803118797637,
+      "s2_refill_Fc_0.45N": 0.2459114917330288,
+      "s2_nose_refill_mass_x0.1": 0.2545839196867555
+    },
+    {
+      "seed": 200,
+      "f0": 12.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "h1": 0.21796287956415428,
+      "s2_modelled": 0.25067753885521626,
+      "s2_refill_Fc_0.45N": 0.2482926824647323,
+      "s2_nose_refill_mass_x0.1": 0.25081222459949787
+    }
+  ],
+  "variants": {
+    "refill_Fc_0.45N": {
+      "refill": {
+        "F_c": 0.45
+      }
+    },
+    "nose_refill_mass_x0.1": {
+      "nose": {
+        "mass_scale": 0.1
+      }
+    }
+  },
+  "label": "SIM: worst oracle cases of h1check (r_rot 0.5, test seeds) with a 0.45 N refill spring and with a 10x lighter nose and refill",
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T11:11:07+00:00",
+    "git_revision": "e0976ec-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages attrib",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "attrib",
+    "quick": false,
+    "script": "sim2/run_study.py"
+  }
+}

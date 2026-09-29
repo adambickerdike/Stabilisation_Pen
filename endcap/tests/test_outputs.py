@@ -55,3 +55,32 @@ def test_layout_schema_cmg():
         if c["shape"] in ("cylinder", "tube"):
             assert c["d0"] <= 26.0 + 1e-9
     assert abs(sum(c["mass_g"] for c in parts) - sum(d["parts_g"].values())) < 0.05
+
+
+def test_layout_compact_behind_the_cell():
+    """The compact reaction-mass end-cap stays behind the Rev H cell (z >= 151, except the moved USB port at 147-150.5),
+    inside the Rev J length and bore, and the pen estimate adds up."""
+    d = {"class": "LRM2", "x": {"d_s": 0.0117, "L_s": 0.0150, "t_c": 0.00068}, "X": 0.0040, "moving_mass_g": 30.4,
+         "parts_g": {"slug_g": 28.7, "magnets_g": 1.6, "copper_g": 2.6, "frame_g": 5.9, "shell_g": 4.6, "electronics_g": 1.5}}
+    parts = LY.lrm_parts_compact(d)
+    for c in parts:
+        if c["id"] == "ec_usb_moved":
+            assert c["z0"] >= 147.0 - 1e-9 and c["z1"] <= 150.5 + 1e-9
+            continue
+        assert 151.0 - 1e-9 <= c["z0"] < c["z1"] <= 175.0 + 1e-9
+        if c["shape"] in ("cylinder", "tube"):
+            assert c["d0"] <= 26.0 + 1e-9
+        else:
+            r = (c["offset"][0] ** 2 + c["offset"][1] ** 2) ** 0.5
+            half = max(c["size"][0], c["size"][1]) / 2
+            assert r + half <= 12.0 + 1e-6, c["id"]
+    by = {c["id"]: c for c in parts}
+    ring_in = by["ec_coils"]["d_in"] / 2
+    assert by["ec_flexure_front"]["d0"] / 2 < ring_in                      # the flexures nest inside the coil ring
+    mag_out = max(abs(by["ec_magnet_x+"]["offset"][0]) + by["ec_magnet_x+"]["size"][0] / 2, 0)
+    assert mag_out + d["X"] * 1e3 < ring_in                               # the magnets clear the coils at full stroke
+    est = LY.pen_estimate(parts)
+    added = sum(c.get("mass_g", 0.0) for c in parts)
+    assert abs(est["total_g"] - (est["was"]["total_g"] - est["removed_g"] + added)) < 1e-9
+    assert 0.0 < est["removed_g"] < 5.0 and est["total_g"] <= est["limit_g"]
+    assert est["balance_point_z_mm"] > est["was"]["balance_point_z_mm"]

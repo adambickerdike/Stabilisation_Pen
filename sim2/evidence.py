@@ -363,9 +363,12 @@ PRIMARY: List[Dict[str, str]] = [
 
 def _f(x, n=3):
     try:
-        return f"{float(x):.{n}g}"
+        v = float(x)
     except Exception:
         return str(x)
+    if v != 0 and 1e3 <= abs(v) < 1e6:
+        return f"{v:.0f}"
+    return f"{v:.{n}g}"
 
 
 def derived(st: Dict) -> List[Dict[str, str]]:
@@ -373,15 +376,31 @@ def derived(st: Dict) -> List[Dict[str, str]]:
     rows = []
     loc = "results/sim2/verification.json; docs/sim_v2.md"
     if st.get("h1check"):
-        s = st["h1check"]["splits"]["0.5"]["summary"]
+        sp = st["h1check"]["splits"]
+        s = sp["0.5"]["summary"]
+        n_or = sum(round(v["summary"]["oracle"]["pass_frac"] * len(v["rows"])) for v in sp.values())
+        n_ak = sum(round(v["summary"]["akf"]["pass_frac"] * len(v["rows"])) for v in sp.values())
+        n_all = sum(len(v["rows"]) for v in sp.values())
+        umax = max(v["summary"]["unmod_rel"]["max_abs"] for v in sp.values())
+        diag = ""
+        if st.get("attrib"):
+            a = st["attrib"]["rows"]
+            diag += ("; oracle gap at 12 Hz: unchanged with an idealised actuator or a 10x lighter nose, reduced by a 0.45 N "
+                     "refill spring (" + ", ".join(f"seed {r['seed']} {r['amp_mm']:g} mm {_f(r['s2_modelled'])} to {_f(r['s2_refill_Fc_0.45N'])} (H1 {_f(r['h1'])})" for r in a) + ")")
+        if st.get("streams"):
+            ps = st["streams"]["per_noise_seed"]
+            diag += (f"; causal differences come from the tracker: on near-identical inputs (acceleration correlation "
+                     f"{_f(min(st['streams']['acc_corr_x_y']), 4)}) H1's AKF locked at 7.8 Hz on {sum(p['f_est_h1_Hz'] < 10 for p in ps)} of {len(ps)} "
+                     f"noise seeds and sim2's on {sum(p['f_est_sim2_Hz'] < 10 for p in ps)} of {len(ps)} (otherwise at its 14.7 Hz bound)")
         rows.append(_r(id="CON-66", topic="Simulator v2 reproduces model H1 (Rev H-B) in the linear regime",
                        citation="This ledger's simulation: sim2/h1compare.py, sim2/run_study.py stage h1check (study V, Rev J)", year=2026,
                        doi_or_url="results/sim2/verification.json", source_type="derived simulation", evidence_class="numerical simulation",
                        access_level="full text", task_or_setup="Same scenarios, metrics and tracker as opt/inertial (H1); MuJoCo pen with dynamic nose, refill and grip joints",
                        participants_or_bench="Synthetic writing, test seeds 200-203; 40 cases at r_rot 0.5, 8 each at 0.3 and 0.7", comparator="H1 (opt.inertial.evaluate)",
-                       key_quantitative_findings=(f"r_rot 0.5: unmodified ink error within {_f(100 * s['unmod_rel']['max_abs'], 2)} % (tolerance 10 %); "
-                                                  f"oracle ratio difference mean {_f(s['oracle']['mean'], 2)}, max {_f(s['oracle']['max_abs'], 2)}, pass {_f(100 * s['oracle']['pass_frac'], 3)} % at +/-0.03; "
-                                                  f"causal AKF difference mean {_f(s['akf']['mean'], 2)}, rms {_f(s['akf']['rms'], 2)}, pass {_f(100 * s['akf']['pass_frac'], 3)} % at +/-0.05"),
+                       key_quantitative_findings=(f"{n_all} cases (r_rot 0.3, 0.5, 0.7): unmodified ink error within {_f(100 * umax, 2)} % "
+                                                  f"(tolerance 10 %); oracle ratio within +/-0.03 in {n_or} of {n_all}, causal ratio within +/-0.05 in "
+                                                  f"{n_ak} of {n_all}; r_rot 0.5: oracle difference mean {_f(s['oracle']['mean'], 2)}, max {_f(s['oracle']['max_abs'], 2)}; "
+                                                  f"causal difference mean {_f(s['akf']['mean'], 2)}, rms {_f(s['akf']['rms'], 2)}" + diag),
                        units_and_conditions="Ink error ratio (with correction / without)", locator=loc,
                        limitations="Linear regime; H1 is itself a model; tolerances set by study V", relevance_to_design="sim2 can replace H1 for the Rev J studies",
                        transferability="high", transferability_reason="Code-to-code verification", design_implication="Use sim2 for D, K, N, L; H1 remains the fast reference",
@@ -408,7 +427,7 @@ def derived(st: Dict) -> List[Dict[str, str]]:
                 dd = [(c_ - h1r[(a, b)][0], e / h1r[(a, b)][1] - 1) for a, b, c_, e in pair(model) if (a, b) in h1r]
                 if dd:
                     extra += (f"; Rev H cases with native contact ({'2 ms' if model == 'mujoco' else '0.5 ms stiff'}) against the H1 law: "
-                              f"oracle ratio {_f(min(x[0] for x in dd), 2)} to {_f(max(x[0] for x in dd), 2)}, unmodified error "
+                              f"oracle ratio higher by {_f(min(x[0] for x in dd), 2)} to {_f(max(x[0] for x in dd), 2)}, unmodified error "
                               f"{_f(100 * min(x[1] for x in dd), 2)} to {_f(100 * max(x[1] for x in dd), 2)} %")
         rows.append(_r(id="CON-67", topic="Pen-on-paper contact in sim2: native MuJoCo contact versus the H1 law; refill front stop",
                        citation="This ledger's simulation: sim2/verify.py (native_block_tests, pen_sliding, lugre_tests)", year=2026,
@@ -537,7 +556,9 @@ def derived(st: Dict) -> List[Dict[str, str]]:
                        source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
                        task_or_setup="Pen's own sensors in, nose (and plug-in) commands out; 25 DR factors", participants_or_bench="One core of a shared 4-core machine",
                        comparator="Real time",
-                       key_quantitative_findings=f"{_f(sp['env_steps_per_s'])} env steps/s at {_f(sp['control_hz'])} Hz control ({_f(sp['sim_seconds_per_wall_second'])} simulated s per wall s) with the H1 contact law; obs {sp['obs_dim']}, act {sp['act_dim']}",
+                       key_quantitative_findings=(f"{_f(sp['env_steps_per_s'])} env steps/s at {_f(sp['control_hz'])} Hz control ({_f(sp['sim_seconds_per_wall_second'])} simulated s per wall s) with the H1 contact law"
+                                                  + (f", {_f(e['speed'][1]['env_steps_per_s'])} with native contacts" if len(e["speed"]) > 1 else "")
+                                                  + f"; obs {sp['obs_dim']}, act {sp['act_dim']}; passes the Gymnasium environment checker; DR over {len(e.get('dr', {})) or 25} factors"),
                        units_and_conditions="steps/s under load from other studies", locator="results/sim2/env_benchmark.json",
                        limitations="Speed measured under shared load", relevance_to_design="Budget for RL training (study L)", transferability="high",
                        transferability_reason="Same code", design_implication="Train with parallel workers or the 50 us step; keep the 25 us H1 law for evaluation",

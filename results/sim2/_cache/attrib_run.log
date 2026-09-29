@@ -1,0 +1,6 @@
+=== stage attrib
+  attrib 202 12 Hz 2 mm: H1 0.244, sim2 0.284, refill_Fc_0.45N 0.256, nose_refill_mass_x0.1 0.290
+  attrib 203 12 Hz 1 mm: H1 0.220, sim2 0.254, refill_Fc_0.45N 0.246, nose_refill_mass_x0.1 0.255
+  attrib 200 12 Hz 1 mm: H1 0.218, sim2 0.251, refill_Fc_0.45N 0.248, nose_refill_mass_x0.1 0.251
+=== stage attrib done in 79 s
+all done in 79 s

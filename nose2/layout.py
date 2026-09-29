@@ -60,18 +60,20 @@ def layout(des: Dict, handle_od: float = 24.0, length: float = 175.0, axial: boo
            function=f"Standard replaceable refill.  It slides along the nose so the ball stays on the paper: about "
                     f"{fe['refill_slide_range_mm']:.0f} mm over 35-75 deg tilt and the tip's travel (CALC, front-end closure).",
            part="ISO 12757-2 D1 mini refill", ledger="DEC-004", mass_g=0.84))
-    A(comp("refill_spring", "Refill holder and ink-force spring", "mechanism", "cylinder", 67.0, 67.0 + DS.HOLDER_L * 1e3, "nose",
-           3.2, 3.2, function=f"Holds the refill's end and presses the ball onto the paper (about 0.15 N) while the refill slides; its "
-                              f"rearmost position is {z_end:.0f} mm from the tip.  Needs a fatigue-rated spring (not a stock "
-                              f"constant-force strip: MFR AMF-144 rates 2 500-25 000 cycles).",
-           part="custom (holder + long soft spring or magnetic spring, to design; ASSUMPTION 0.5 g)", ledger="AMF-144",
-           mass_g=DS.M_REAR * 1e3))
-    if axial:
-        A(comp("refill_lift", "Pen lift: brake and latch", "mechanism", "cylinder", zp - 8.5, zp - 1.5, "nose", 5.6, 5.6,
-               function="The pen's own pen-up/down, inside the carrier just in front of the gimbal: an electro-permanent brake clamps "
-                        "the refill and a bistable latch moves the clamp back 0.5 mm, lifting the ball; neither needs power to hold.",
-               part="custom (electro-permanent brake + bistable reluctance latch, about 2 g; ASSUMPTION)", ledger="PAT-41",
-               mass_g=DS.M_LIFT * 1e3))
+    A(comp("refill_spring", "Refill holder (tendon end)", "mechanism", "cylinder", 67.0, 67.0 + DS.HOLDER_L * 1e3, "nose",
+           3.2, 3.2, function=f"Holds the refill's end.  A thin tendon from the ink-force drum (in the pen-lift module) runs forward "
+                              f"beside the refill over a small pulley and back to this holder, so it pulls the refill toward the "
+                              f"paper (about 0.15 N) wherever it has slid; its rearmost position is {z_end:.0f} mm from the tip.",
+           part="custom (holder + tendon; ASSUMPTION 0.5 g with the pulley)", ledger="AMF-144", mass_g=DS.M_REAR * 1e3))
+    lift_z1 = min(zp - 1.5, z_end + 0.5) if z_end < zp - 1.5 else zp - 1.5
+    A(comp("refill_lift", "Pen lift and ink-force drum" if axial else "Ink-force drum", "mechanism", "tube", lift_z1 - 7.0, lift_z1,
+           "nose", 5.6, 5.6, 3.6,
+           function=("Annular module around the refill's path just in front of the gimbal: a drum with a fatigue-rated spiral spring "
+                     "sets the ink force through the tendon; for a pen-up an electro-permanent brake locks the drum and a bistable latch "
+                     "moves it 0.5 mm, lifting the ball; neither needs power to hold.  Near the pivot it adds almost nothing at the tip.")
+                    if axial else "Drum with a fatigue-rated spiral spring that sets the ink force through the tendon.",
+           part="custom (drum + spiral spring + electro-permanent brake + bistable reluctance latch, about 2 g; ASSUMPTION)",
+           ledger="PAT-41", mass_g=DS.M_LIFT * 1e3 if axial else 0.8))
     A(comp("carrier", "Moving nose (refill carrier)", "moving_nose", "tube", z_cf, zp - 1.5, "nose", 7.0, 7.0, 6.0,
            function=f"Thin titanium tube holding the refill; it tilts on the gimbal so the ball moves at least {Xmin:.1f} mm in every "
                     f"direction over 35-75 deg of pen tilt.", part="custom (Ti-6Al-4V tube 7/6 mm)", ledger="AMF-21",
@@ -80,11 +82,11 @@ def layout(des: Dict, handle_od: float = 24.0, length: float = 175.0, axial: boo
            function="Front of the moving nose; guides the refill tip.", part="custom (PEEK)", ledger="AMF-24", mass_g=0.4))
     hub = max(2 * w, 2 * DS.R_CH * 1e3 + 1.5) if kind == "gimbal_radial" else 5.0
     arm_z1 = za - (l / 2 if kind == "gimbal_radial" else 1.0)
-    A(comp("arm", "Short rear arm", "moving_nose", "tube", zp + 1.5, max(arm_z1, zp + 2.0), "nose", 5.0, 5.0, 3.0,
+    A(comp("arm", "Short rear arm", "moving_nose", "tube", zp + 1.5, max(arm_z1, zp + 2.0), "nose", 5.0, 5.0, 3.6,
            function="Carries the magnets just behind the gimbal: a short arm keeps the magnets' stroke (and the magnet-coil gap) "
                     "small; the tip moves the opposite way, about " f"{zp / Lb:.1f} x the magnets' motion.",
-           part="custom (aluminium 6061 tube 5/3 mm; the refill passes through)", ledger="",
-           mass_g=_tube_mass(5.0, 3.0, max(arm_z1, zp + 2.0) - zp - 1.5, RHO["Al"])))
+           part="custom (aluminium 6061 tube 5/3.6 mm; the refill holder may enter it)", ledger="",
+           mass_g=_tube_mass(5.0, 3.6, max(arm_z1, zp + 2.0) - zp - 1.5, RHO["Al"])))
     act_checks = {}
     channel_from = None
     if kind == "gimbal_radial":

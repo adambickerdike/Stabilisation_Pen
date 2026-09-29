@@ -1,0 +1,50 @@
+=== stage contact (quick)
+  native block 'stiff (0.5 ms, impratio 10)': k 7.86e+06 vs 7.86e+06 N/m, creep 0.148 um/s (closed form 0.148), mu_slide 0.1200/0.1200, gliding 0.02 um (pred 1.26) (0 s)
+  LuGre: {"presliding_stiffness_N_per_m": {"measured": 15521.871447867352, "closed_form": 15599.999999999998}, "stick_slip": {"F_max_N": 0.15375846187610986, "F_min_N": 0.08763901199475284, "mu_s_N": 0.156, "mu_k_N": 0.12, "F_min_analytic_N": 0.08399999999999999, "period_s": 0.45635000000000003, "period_analytic_s": 0.39141592653589796}, "sliding_20mm_s": {"F_N": 0.11999999999999995, "mu_k_N": 0.12}}
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [1, 0]: Ns 2.040 N cv 2.965, mu_app 1.550, flicker 0
+=== stage contact done in 1 s
+=== stage energy (quick)
+  energy implicitfast conservative: E0 6.833e-05 J, dE -1.465e-08, W_damp -7.290e-16, W_act +0.000e+00, residual -2.14e-04
+  energy implicitfast damped: E0 6.833e-05 J, dE -6.676e-05, W_damp -6.678e-05, W_act +0.000e+00, residual +1.91e-04
+  energy implicitfast actuated: E0 6.833e-05 J, dE -6.769e-07, W_damp -7.398e-16, W_act -6.547e-07, residual -1.86e-04
+=== stage energy done in 0 s
+=== stage gyro (quick)
+  gyro: max relative error 1.25e-04
+=== stage gyro done in 0 s
+=== stage sensors (quick)
+  sensors: {"imu": {"raw_reading": {"odr_Hz": 3840.0000000002183, "acc_nd_ug_per_rtHz_x_y": [59.42331747582262, 57.94063983671018]}, "compensated": {"odr_Hz": 3840.0000000002183, "acc_nd_ug_per_rtHz_x_y": [281.8301686165704, 333.5955123681812]}, "odr_fusion_Hz": 3840.0, "acc_nd_fusion_ug_per_rtHz": 59.99999999999999, "note": "pen held still on the paper; 20-200 Hz band; 'raw' = accelerometer reading rotated to the page (fusion's reading model: its noise density should come back); 'compensated' adds the firmware's lever-arm term r x d(omega)/dt, which differentiates gyro noise (dominant above ~50 Hz)"}, "
+=== stage sensors done in 4 s
+=== stage myo (quick)
+MyoSuite:> Registering Myo Envs
+  MyoArm c = 0.00: unstable modes 0 (max growth 0.00 /s); two-mass fit 1-20 Hz x: k1 1 b1 166.08 M 0.516 k2 71 b2 9.0 (rms 0.05) y: k1 1730 b1 63.98 M 0.486 k2 22 b2 14.0 (rms 0.08) z: k1 112 b1 63.41 M 0.226 k2 12 b2 7.0 (rms 0.10) (2 s)
+  MyoArm c = 0.02: unstable modes 7 (max growth 0.98 /s); two-mass fit 1-20 Hz x: k1 1 b1 160.38 M 0.542 k2 88 b2 10.0 (rms 0.04) y: k1 416 b1 59.49 M 0.798 k2 20 b2 21.7 (rms 0.08) z: k1 2023 b1 63.37 M 0.214 k2 13 b2 7.2 (rms 0.08) (2 s)
+  |Z| 4 Hz axis x (HAP-26 X 139, H1 234 N/m): c 0.00: 329, c 0.02: 341
+  |Z| 4 Hz axis y (HAP-26 Z 356, H1 234 N/m): c 0.00: 480, c 0.02: 584
+  |Z| 4 Hz axis z (HAP-26 Y 177, H1 234 N/m): c 0.00: 228, c 0.02: 239
+  |Z| 8 Hz axis x (HAP-26 X 607, H1 584 N/m): c 0.00: 1289, c 0.02: 1337
+  |Z| 8 Hz axis y (HAP-26 Z 669, H1 584 N/m): c 0.00: 1382, c 0.02: 1686
+  |Z| 8 Hz axis z (HAP-26 Y 759, H1 584 N/m): c 0.00: 657, c 0.02: 698
+  |Z| 12 Hz axis x (HAP-26 X 532, H1 746 N/m): c 0.00: 2698, c 0.02: 2808
+  |Z| 12 Hz axis y (HAP-26 Z 881, H1 746 N/m): c 0.00: 2473, c 0.02: 2896
+  |Z| 12 Hz axis z (HAP-26 Y 802, H1 746 N/m): c 0.00: 1188, c 0.02: 1263
+=== stage myo done in 3 s
+=== stage env (quick)
+  env speed h1: 1166 steps/s at 1000 Hz (1.166 sim s per wall s), reset 0.5 s
+  rollout zero: 1000 steps, return -58067.0, ink error rms 762.0169230716045 um
+  rollout random: 1000 steps, return -65867.7, ink error rms 812.3954931514986 um
+  env with reaction mass: act 4, obs 18
+=== stage env done in 7 s
+=== stage plugins (quick)
+  reaction mass: stroke p-p 4.10 mm (free slug 4.00 mm)
+  passive rotor: {'0rpm': {'unmod_e_rms_um': 802.4618302582709, 'unmod_band_um': 437.15500083737305}, '20000rpm': {'unmod_e_rms_um': 813.1572486656531, 'unmod_band_um': 445.29654839667984}}
+  CMG: {'gimbal_peak_rad': 0.498427570662748, 'spin_change_rel': 2.737204130021098e-09, 'torque_expected_mNm': 6.065368216530694}
+  heel drive: {'tau_Nm': 0.0002, 'traction_expected_N': 0.13333333333333333, 'heel_N_mean': 0.2870999091068469, 'heel_ft_mean': 0.13469670383586857, 'mu_heel': 0.6, 'N_skid_mean': 0.4954979088009367, 'tip_dx_mm': 0.37002414028636244, 'tip_dy_mm': 0.0, 'describe': {'name': 'heel', 'kind': 'ball', 'z': 0.012, 'r_mount': 0.0072, 'radius': 0.0015, 'm': 0.0003, 'mu': 0.6, 'k_susp': 300.0, 'preload': 0.3, 'travel': 0.001, 'tau_max': 0.0002, 'omega_max': 200.0, 'steer_kp': 0.002, 'fixed_mass': 0.003, 'label': 'ASSUMPTION (study D hands over the drive element; mu 0.3-0.8 in the Rev J plan)', 'plugin': 'heel'}}
+  multi-plane nose: {'F_N': 0.1, 'k_lat_N_per_m': 50.0, 'static_F_over_k_mm': 2.0, 'lifted': {'slide_before_mm': 0.03550274482401839, 'slide_after_mm': 2.031951200502277, 'ink_dx_mm': 1.5273625250699634}, 'on_paper': {'slide_before_mm': -0.4147606146639419, 'slide_after_mm': -0.3987701327554393, 'ink_dx_mm': 0.014840732582793108}, 'describe': {'name': 'mpn', 'travel_pivot': 0.003, 'k_lat': 50.0, 'c_lat': 0.05, 'm_carrier': 0.003, 'K_f2': 0.74, 'I_max2': 1.5, 'R20': 2.47, 'fixed_mass': 0.004, 'label': 'ASSUMPTION placeholder for study N (nose v2, +-5-8 mm tip travel)', 'plugin': 'mpn'}}
+=== stage plugins done in 21 s
+=== stage report (quick)
+  report: stages available ['h1check', 'diagnose', 'streams', 'attrib', 'contact', 'convergence', 'energy', 'gyro', 'sensors', 'native', 'frontstop', 'arm', 'myo', 'validate', 'env', 'plugins']
+  evidence rows: 41
+  report written to /home/user/Stabilisation_Pen/results/sim2/_quick_report
+=== stage report done in 3 s
+all done in 39 s
+exit 0

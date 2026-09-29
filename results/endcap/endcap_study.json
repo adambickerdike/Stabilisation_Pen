@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "CALCULATION + SIMULATION (model H1 and a linear hand-pen model; synthetic writing and tremor)",
-    "generated_utc": "2026-09-29T10:53:48+00:00",
-    "git_revision": "9ba0e9c-dirty",
+    "generated_utc": "2026-09-29T11:14:10+00:00",
+    "git_revision": "e0976ec-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --stages budgets,compact,report",
+    "command": "run_study.py --stages report",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": {
@@ -5818,7 +5818,7 @@
     },
     "gyro": {
       "setup": "passive rotor along the pen axis: the largest that fits 45 g, with and without spin, and massless rotors 1-30x its momentum",
-      "findings": "Spin lowered the ink error by -0.7 % against the same mass not spinning (4-12 Hz, 1 mm, r_rot 0.5; negative = raised it); useful by rule R-G1: False.",
+      "findings": "Spin raised the ink error by 0.7 % against the same mass not spinning (4-12 Hz, 1 mm, r_rot 0.5); rule R-G1 (>= 10 % lower) failed.",
       "units": "ink error ratio",
       "implication": "Gyroscopic stiffening is not useful at pen scale (rule R-G1 failed)",
       "relevance": "Decides whether a passive gyroscope is worth fitting (rule R-G1)",
@@ -5826,7 +5826,7 @@
     },
     "cue": {
       "setup": "asymmetric 40/75 Hz force at the end-cap (5 g vibrator) in H1 while writing; literature channel table",
-      "findings": "Ink jitter at 0.5 N: 186 um RMS, 171 um with the nose cancelling it; R-C1 usable while writing: False.",
+      "findings": "Ink jitter at 0.5 N: 186 um RMS, 171 um with the nose cancelling it; rule R-C1 (<= 30 um while writing) failed.",
       "units": "um RMS",
       "implication": "A 0.5 N cue shakes the ink beyond 30 um RMS even with the nose cancelling it: cue only in pauses or pen-up (rule R-C1)",
       "relevance": "Decides when pseudo-force cues may be used while writing (rule R-C1)",
@@ -5835,7 +5835,8 @@
     "recommendation": {
       "setup": "rule R-D1 applied to the test results",
       "findings": "Fit the reaction-mass end-cap for tremor (rule R-T1 passed: 8/18/20 % at r_rot 0.3/0.5/0.7; rule R-T2: the CMG end-cap was within 2 points at r_rot 0.5 (19.6 % against 18.2 %), so the tie went to the lower average power (0.145 W against 0.204 W)).",
-      "implication": "Fit the reaction-mass end-cap for tremor (rule R-T1 passed: 8/18/20 % at r_rot 0.3/0.5/0.7; rule R-T2: the CMG end-cap was within 2 points at r_rot 0.5 (19.6 % against 18.2 %), so the tie went to the lower average power (0.145 W against 0.204 W)).",
+      "units": "relative change of the RMS ink error (8-12 Hz, 1-2 mm, test seeds); W",
+      "implication": "Carry the reaction-mass end-cap into Rev J as a tremor steadier on top of the nose, not as a writing device. The same mass fixed gives 17/12/4 % at r_rot 0.3/0.5/0.7, so the motion adds -9/+6/+16 points: measure the grip split before building (EXP-K08).",
       "relevance": "Which end-cap to carry into the Rev J architecture",
       "limitations": "Rests on the simulations above; nothing measured"
     }

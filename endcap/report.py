@@ -381,7 +381,7 @@ def fig_cue(cue, outdir):
                        markeredgecolor=PS.SURFACE, markeredgewidth=1.6, label="nose cancels the cue" if nc else "no cancellation")
             for r in b:
                 rows.append(["jitter_40Hz", nc, r["F0_N"], r["ink_jitter_um"]])
-    ax[1].axhline(30.0, color=PS.MUTED, linewidth=0.8)
+    ax[1].axhline(30.0, color=PS.MUTED, linewidth=0.8, linestyle="--", label="rule R-C1 limit while writing, 30 um")
     ax[1].set_xlabel("cue force amplitude (N)"); ax[1].set_ylabel("ink jitter during the cue (um RMS)"); ax[1].set_title("The cue shakes the ink (40 Hz)")
     ax[1].legend()
     PS.stamp(fig, "SIMULATION + CALCULATION", "linear model and H1; a pseudo-force is a percept, not a force")
@@ -538,6 +538,33 @@ def _impl_steer(ss):
     return txt + f"Largest tip shift at 1-3 Hz: {rows[best]['max_peak_1_3Hz_mm']:.2f} mm ({best}, verdict '{rows[best]['verdict']}')."
 
 
+def _gyro_finding(g):
+    """Plain sentence for rule R-G1 (spin against the same mass not spinning)."""
+    red = g.get("spin_vs_nospin_reduction", float("nan"))
+    if red != red:
+        return "Rule R-G1 not evaluated."
+    how = "lowered" if red >= 0 else "raised"
+    return (f"Spin {how} the ink error by {abs(red) * 100:.1f} % against the same mass not spinning (4-12 Hz, 1 mm, r_rot 0.5); "
+            f"rule R-G1 (>= 10 % lower) {'passed' if g.get('useful') else 'failed'}.")
+
+
+def _impl_recommend(ts, rec):
+    """What the recommendation means, with the fixed-weight comparator (computed from the test summary)."""
+    ch = rec.get("choice")
+    txt = rec.get("text", "")
+    try:
+        wk = "weight_" + ch
+        dev = [ts[ch][r]["8-12Hz_1-2mm"]["further_reduction_mean"] * 100 for r in ("0.3", "0.5", "0.7")]
+        wt = [ts[wk][r]["8-12Hz_1-2mm"]["further_reduction_mean"] * 100 for r in ("0.3", "0.5", "0.7")]
+    except (KeyError, TypeError):
+        return txt
+    gain = [a - b for a, b in zip(dev, wt)]
+    name = {"lrm": "reaction-mass", "cmg": "CMG"}.get(ch, ch)
+    return (f"Carry the {name} end-cap into Rev J as a tremor steadier on top of the nose, not as a writing device. The same mass fixed "
+            f"gives {wt[0]:.0f}/{wt[1]:.0f}/{wt[2]:.0f} % at r_rot 0.3/0.5/0.7, so the motion adds {gain[0]:+.0f}/{gain[1]:+.0f}/{gain[2]:+.0f} "
+            f"points: measure the grip split before building (EXP-K08).")
+
+
 def headline(sc, opt, tune, test, steer, gyro, cue, ts, ss, gs, cs, rec):
     """Plain summaries used by the evidence rows and the doc (numbers only from the stage caches)."""
     h = {}
@@ -585,18 +612,19 @@ def headline(sc, opt, tune, test, steer, gyro, cue, ts, ss, gs, cs, rec):
     if gs:
         g = gs.get("R-G1", {})
         h["gyro"] = {"setup": "passive rotor along the pen axis: the largest that fits 45 g, with and without spin, and massless rotors 1-30x its momentum",
-                     "findings": f"Spin lowered the ink error by {g.get('spin_vs_nospin_reduction', float('nan')) * 100:.1f} % against the same mass not spinning "
-                                 f"(4-12 Hz, 1 mm, r_rot 0.5; negative = raised it); useful by rule R-G1: {g.get('useful')}.", "units": "ink error ratio",
+                     "findings": _gyro_finding(g), "units": "ink error ratio",
                      "implication": ("Gyroscopic stiffening is not useful at pen scale (rule R-G1 failed)" if not g.get("useful")
                                      else "Gyroscopic stiffening passed rule R-G1 at pen scale")}
     if cs:
         h["cue"] = {"setup": "asymmetric 40/75 Hz force at the end-cap (5 g vibrator) in H1 while writing; literature channel table",
                     "findings": f"Ink jitter at 0.5 N: {cs['jitter_um_0.5N_write']:.0f} um RMS, {cs['jitter_um_0.5N_write_nose_cancel']:.0f} um with the nose cancelling it; "
-                                f"R-C1 usable while writing: {cs['R-C1']['usable_while_writing']}.", "units": "um RMS",
+                                f"rule R-C1 (<= 30 um while writing) {'passed' if cs['R-C1']['usable_while_writing'] else 'failed'}.", "units": "um RMS",
                     "implication": ("A 0.5 N cue is usable while writing (rule R-C1)" if cs["R-C1"]["usable_while_writing"] else
                                     ("A 0.5 N cue is usable while writing only with the nose cancelling it (rule R-C1)" if cs["R-C1"]["usable_with_nose_cancel"]
                                      else "A 0.5 N cue shakes the ink beyond 30 um RMS even with the nose cancelling it: cue only in pauses or pen-up (rule R-C1)"))}
-    h["recommendation"] = {"setup": "rule R-D1 applied to the test results", "findings": rec.get("text", ""), "implication": rec.get("text", "")}
+    h["recommendation"] = {"setup": "rule R-D1 applied to the test results", "findings": rec.get("text", ""),
+                           "units": "relative change of the RMS ink error (8-12 Hz, 1-2 mm, test seeds); W",
+                           "implication": _impl_recommend(ts, rec)}
     extra = {"scaling": ("Sets what any end-cap device can do at writing (1-5 Hz) and tremor (4-12 Hz) frequencies",
                          "Closed-form single-frequency limits; linear model with the relaxed HAP-26 hand and no paper friction"),
              "optimise": ("Chooses the end-cap design in each device class and the arrangement of the CMG",

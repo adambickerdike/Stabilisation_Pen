@@ -145,8 +145,9 @@ FE_BACK = [2.68409, 0.71302, -0.00241, 0.00082, 14.31574, -10.26169]     # backw
 # the refill and its channel (ASSUMPTION unless noted): the D1 refill (67 mm, DEC-004) reaches back to its end plus its
 # backward slide (FE_BACK) plus a 6 mm holder; the moving nose must carry it there.  Behind the actuator it runs in a
 # thin titanium channel tube (4.0 / 3.4 mm) that swings with the nose; through an axial-gap actuator it needs a central
-# hole (the pole units move outward by the hole).  The pen lift (brake + latch, 2 g) sits just behind the gimbal and
-# the refill spring and holder (0.5 g) at the refill's rear end.
+# hole (the pole units move outward by the hole).  The pen lift and ink-force drum (2 g; an annular module around the
+# refill's path, pulling the holder by a tendon over a pulley) sits within 5 mm of the gimbal (modelled 5 mm behind it),
+# and the refill holder and pulley (0.5 g) at the refill's rear end.
 REFILL_L = 0.067
 HOLDER_L = 0.006
 R_CH = 2.0e-3

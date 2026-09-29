@@ -127,6 +127,10 @@ def build(cfg: Optional[P.Config] = None) -> PenModel:
     H = P.rigid_props(hp)
     N = P.rigid_props(npar)
     RF = P.rigid_props(rfp)
+    if nz.mass_scale != 1.0:                     # diagnostic: lighter or heavier nose and refill
+        for dct in (N, RF):
+            for k in ("m", "J_t", "J_a"):
+                dct[k] *= nz.mass_scale
     info: Dict = {"grip": gp, "handle": H, "nose": N, "refill": RF, "theta_deg": g.theta_deg,
                   "p_nom": g.p_nom(), "contact_model": c.model, "hand_model": cfg.hand_model}
     beta = gp["beta"]

@@ -1,0 +1,264 @@
+{
+  "label": "SIM: Gymnasium environment (env.py) on one core of a shared 4-core machine (load from other studies)",
+  "speed": [
+    {
+      "contact": "h1",
+      "control_hz": 1000.0,
+      "env_steps_per_s": 477.98213622814075,
+      "sim_seconds_per_wall_second": 0.47798213622814073,
+      "reset_s": 1.2247252464294434,
+      "obs_dim": 16,
+      "act_dim": 2
+    },
+    {
+      "contact": "mujoco",
+      "control_hz": 1000.0,
+      "env_steps_per_s": 223.41928066656152,
+      "sim_seconds_per_wall_second": 0.22341928066656153,
+      "reset_s": 3.394141674041748,
+      "obs_dim": 16,
+      "act_dim": 2
+    }
+  ],
+  "dr": {
+    "k_nib": {
+      "low": 230.0,
+      "high": 1040.0,
+      "scale": "log",
+      "source": "LIT HAP-26 95 % CI 228-1043 N/m"
+    },
+    "b_nib": {
+      "low": 0.4,
+      "high": 4.6,
+      "scale": "log",
+      "source": "LIT HAP-26 0.3-4.6 N s/m"
+    },
+    "r_rot": {
+      "low": 0.3,
+      "high": 0.7,
+      "scale": "lin",
+      "source": "ASSUMPTION (EXP-I01)"
+    },
+    "rho_w": {
+      "low": 0.15,
+      "high": 0.5,
+      "scale": "lin",
+      "source": "ASSUMPTION (EXP-I01)"
+    },
+    "M": {
+      "low": 0.12,
+      "high": 0.57,
+      "scale": "log",
+      "source": "LIT HAP-26 hand mass CI 0.14-0.57 kg (X)"
+    },
+    "k_arm": {
+      "low": 63.0,
+      "high": 533.0,
+      "scale": "log",
+      "source": "LIT HAP-26 k2 63-533 N/m"
+    },
+    "b_arm": {
+      "low": 3.7,
+      "high": 60.0,
+      "scale": "log",
+      "source": "LIT HAP-26 b2 3.7-27.6 N s/m, upper end widened to the MyoArm arm-part damping at co-contraction 0.3 (SIM, fore-aft b2 57.6 N s/m, results/sim2/myo_impedance.json)"
+    },
+    "f0": {
+      "low": 4.0,
+      "high": 12.0,
+      "scale": "lin",
+      "source": "LIT PDT-07, HAP (tremor 4-12 Hz)"
+    },
+    "amp": {
+      "low": 0.0001,
+      "high": 0.002,
+      "scale": "log",
+      "source": "ASSUMPTION within PDT-13/PDT-15 scales (0.1-2 mm at the pen)"
+    },
+    "f_jitter": {
+      "low": 0.1,
+      "high": 0.6,
+      "scale": "lin",
+      "source": "ASSUMPTION (stabpen default 0.3 Hz)"
+    },
+    "am_depth": {
+      "low": 0.1,
+      "high": 0.5,
+      "scale": "lin",
+      "source": "ASSUMPTION (stabpen default 0.3)"
+    },
+    "mu_ball": {
+      "low": 0.09,
+      "high": 0.2,
+      "scale": "lin",
+      "source": "LIT CON-13 0.09-0.165 + margin"
+    },
+    "mu_skid": {
+      "low": 0.05,
+      "high": 0.25,
+      "scale": "lin",
+      "source": "ASSUMPTION (EXP-Q01 range)"
+    },
+    "ms_ratio": {
+      "low": 1.0,
+      "high": 1.5,
+      "scale": "lin",
+      "source": "ASSUMPTION (config 1.3)"
+    },
+    "v_s": {
+      "low": 0.0005,
+      "high": 0.005,
+      "scale": "log",
+      "source": "ASSUMPTION (s2r: unidentifiable without a dip)"
+    },
+    "presliding": {
+      "low": 3e-06,
+      "high": 3e-05,
+      "scale": "log",
+      "source": "ASSUMPTION (s2r 3-30 um)"
+    },
+    "imu_noise": {
+      "low": 0.5,
+      "high": 2.0,
+      "scale": "log",
+      "source": "MFR OPT-37 x (0.5-2)"
+    },
+    "page_latency": {
+      "low": 0.001,
+      "high": 0.01,
+      "scale": "log",
+      "source": "ASSUMPTION (proposed requirement <= 10 ms)"
+    },
+    "hall_noise": {
+      "low": 2e-06,
+      "high": 1e-05,
+      "scale": "log",
+      "source": "ASSUMPTION from MFR OPT-45"
+    },
+    "mass_scale": {
+      "low": 0.9,
+      "high": 1.1,
+      "scale": "lin",
+      "source": "ASSUMPTION part tolerance"
+    },
+    "k_r": {
+      "low": 0.02,
+      "high": 0.03,
+      "scale": "lin",
+      "source": "ASSUMPTION gimbal +-20 %"
+    },
+    "Km": {
+      "low": 0.42,
+      "high": 0.52,
+      "scale": "lin",
+      "source": "ASSUMPTION Km +-10 %"
+    },
+    "F_c": {
+      "low": 0.1,
+      "high": 0.2,
+      "scale": "lin",
+      "source": "ASSUMPTION refill spring (EXP-Q02)"
+    },
+    "theta": {
+      "low": 40.0,
+      "high": 60.0,
+      "scale": "lin",
+      "source": "LIT CON-02 about 50 deg"
+    },
+    "N0": {
+      "low": 0.6,
+      "high": 2.0,
+      "scale": "log",
+      "source": "LIT CON-01 per-subject means 0.56-2.08 N"
+    }
+  },
+  "rollouts": [
+    {
+      "policy": "zero",
+      "steps": 2000,
+      "return": -71570.96960477106,
+      "ink_err_rms_um": 667.3605217505061,
+      "obs_finite": true,
+      "params": {
+        "k_nib": 632.448321572651,
+        "b_nib": 1.5702667942721054,
+        "r_rot": 0.45191488775838273,
+        "rho_w": 0.23812478808018106,
+        "M": 0.3880800456379405,
+        "k_arm": 371.7251171671726,
+        "b_arm": 14.006595104090849,
+        "f0": 9.560169343161665,
+        "amp": 0.00046832563325542603,
+        "f_jitter": 0.37804440629193325,
+        "am_depth": 0.21981191693646301,
+        "mu_ball": 0.14026080602147842,
+        "mu_skid": 0.2312325760667278,
+        "ms_ratio": 1.4633292820290633,
+        "v_s": 0.0011431639073111988,
+        "presliding": 7.832979680651328e-06,
+        "imu_noise": 1.025219757370246,
+        "page_latency": 0.0012709042394454153,
+        "hall_noise": 2.0176089318703978e-06,
+        "mass_scale": 0.9825705672944222,
+        "k_r": 0.0279598982434124,
+        "Km": 0.48432890641383697,
+        "F_c": 0.18782875840719243,
+        "theta": 42.01524801845325,
+        "N0": 1.090639520985761
+      }
+    },
+    {
+      "policy": "random",
+      "steps": 2000,
+      "return": -90341.54350037544,
+      "ink_err_rms_um": 750.241397672253,
+      "obs_finite": true,
+      "params": {
+        "k_nib": 632.448321572651,
+        "b_nib": 1.5702667942721054,
+        "r_rot": 0.45191488775838273,
+        "rho_w": 0.23812478808018106,
+        "M": 0.3880800456379405,
+        "k_arm": 371.7251171671726,
+        "b_arm": 14.006595104090849,
+        "f0": 9.560169343161665,
+        "amp": 0.00046832563325542603,
+        "f_jitter": 0.37804440629193325,
+        "am_depth": 0.21981191693646301,
+        "mu_ball": 0.14026080602147842,
+        "mu_skid": 0.2312325760667278,
+        "ms_ratio": 1.4633292820290633,
+        "v_s": 0.0011431639073111988,
+        "presliding": 7.832979680651328e-06,
+        "imu_noise": 1.025219757370246,
+        "page_latency": 0.0012709042394454153,
+        "hall_noise": 2.0176089318703978e-06,
+        "mass_scale": 0.9825705672944222,
+        "k_r": 0.0279598982434124,
+        "Km": 0.48432890641383697,
+        "F_c": 0.18782875840719243,
+        "theta": 42.01524801845325,
+        "N0": 1.090639520985761
+      }
+    }
+  ],
+  "plugin_env": {
+    "act_dim": 4,
+    "obs_dim": 18,
+    "obs_finite": true
+  },
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T11:13:11+00:00",
+    "git_revision": "e0976ec-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages report",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "sim2/run_study.py --stages report"
+  }
+}

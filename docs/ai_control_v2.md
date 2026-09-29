@@ -141,3 +141,20 @@ python3 -m pytest -q ai2/tests          # 18 tests, about 30 s on one core
 | **EXP-L06** | Does better prediction save writing effort in the app? | 20 adults (and 10 with ET) write notes in the app with next-word completion from NG0 vs the mixture model (within-subject, counterbalanced); offline scoring on their own notes | Top-1/top-3 next-word accuracy on own notes; accepted completions per 100 words; words per minute | Accepted completions ≥ 10 per 100 words and no loss in words per minute |
 | **EXP-L07** | Does synthesis from a 20 s calibration look like the user's writing? | 20 writers write the calibration pangram; the app synthesises 10 words in their style; the writer and 5 raters judge own vs synthetic (2AFC) and legibility | Legibility (recogniser and raters); own-style identification | Legibility ≥ 95 %; writers pick the synthetic word as "mine" ≥ 60 % of the time against another writer's |
 | **EXP-L08** | Does assistance-as-needed fade help without hurting learning? | Guided practice (dysgraphia-like children or adults learning an unfamiliar script) with fixed partial vs AAN guidance; retention test without guidance after 1 day | Retention error vs target; device share over sessions | Retention error with AAN ≤ fixed guidance; device share falls over sessions |
+
+## Closed-loop tuning check of the task 2–3 candidates (SIM; stage cl; tuning writers 100–103, seeds 300 and 301)
+
+Rev H tracker on the same runs: 617 µm at 1–2 mm (6–10 Hz), tremor-free writing moved 33.5 µm.
+
+| Candidate (lag 0, ±3 mm nose) | Ink error 1–2 mm | Tremor-free moved | Ink error 0.3 mm | Letters read 1–2 mm | Words read 1–2 mm | R1 R2 R3 R4 |
+|---|---|---|---|---|---|---|
+| Learned TCN (**adopted by the rules**) | 281 µm | 21.3 µm | 129 µm | 83.1 % | 78.7 % | ✓ ✓ ✓ ✓ |
+| Learned TCN + 20 s calibration | 293 µm | 21.1 µm | 155 µm | 83.5 % | 81.2 % | ✓ ✓ ✓ ✓ |
+| Hybrid Kalman–network | 255 µm | 51.3 µm | 145 µm | 86.3 % | 82.1 % | ✗ ✓ ✓ ✓ |
+| RL arbiter (PPO, false-correction-weighted reward) | 297 µm | 60.9 µm | 168 µm | 87.0 % | 85.8 % | ✗ ✗ ✗ ✓ |
+| Residual RL on the command | 383 µm | 166.9 µm | 154 µm | 77.6 % | 72.1 % | ✗ ✗ ✗ ✗ |
+| Gated listening tracker (model-based) | 419 µm | 33.5 µm | 166 µm | 76.4 % | 73.3 % | ✓ ✓ ✓ ✓ |
+| Learned transformer (under-trained) | 492 µm | 62.3 µm | 171 µm | 61.9 % | 44.6 % | ✗ ✗ ✗ ✗ |
+
+- The hybrid and the RL arbiter fail on one writer's tremor-free writing (writer 101: 123 and 128 µm moved, against the tracker's 34 µm). Both lean on the listening smoother, which reads that writer's writing rhythm as tremor. The RL arbiter's mean weight on that writing was only 0.043 in replay (rule RL1 passed): it opens rarely but fully. The closed-loop check caught what the replay rule missed.
+- The learned TCN moves tremor-free writing less than the Rev H tracker on 3 of 4 writers (13.8, 16.6, 18.4 µm) and slightly more on writer 101 (36.4 against 33.6 µm).

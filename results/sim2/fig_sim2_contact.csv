@@ -1,0 +1,31 @@
+test,setting,quantity,value
+native_block,"stiff (0.5 ms, impratio 10)",creep_um_s,0.148321
+native_block,"stiff (0.5 ms, impratio 10)",gliding_gap_um,0.0249431
+native_block,MuJoCo default (20 ms),creep_um_s,497.587
+native_block,MuJoCo default (20 ms),gliding_gap_um,74.4146
+native_block,"sim2 default (2 ms, impratio 1)",creep_um_s,30.4899
+native_block,"sim2 default (2 ms, impratio 1)",gliding_gap_um,2.11614
+pen_sliding,"0.5 ms/10 (1, 0)",Ns_cv,2.95105
+pen_sliding,"0.5 ms/10 (1, 0)",mu_apparent,1.03603
+pen_sliding,"0.5 ms/10 (-1, 0)",Ns_cv,2.67925
+pen_sliding,"0.5 ms/10 (-1, 0)",mu_apparent,0.552091
+pen_sliding,"0.5 ms/10 (0, 1)",Ns_cv,2.55132
+pen_sliding,"0.5 ms/10 (0, 1)",mu_apparent,1.71437
+pen_sliding,"20 ms/1 (1, 0)",Ns_cv,0.000758127
+pen_sliding,"20 ms/1 (1, 0)",mu_apparent,0.12
+pen_sliding,"20 ms/1 (-1, 0)",Ns_cv,0.00138105
+pen_sliding,"20 ms/1 (-1, 0)",mu_apparent,0.12
+pen_sliding,"20 ms/1 (0, 1)",Ns_cv,0.000695884
+pen_sliding,"20 ms/1 (0, 1)",mu_apparent,0.12
+pen_sliding,"2 ms/1 (1, 0)",Ns_cv,0.236388
+pen_sliding,"2 ms/1 (1, 0)",mu_apparent,0.12
+pen_sliding,"2 ms/1 (-1, 0)",Ns_cv,0.296377
+pen_sliding,"2 ms/1 (-1, 0)",mu_apparent,0.12
+pen_sliding,"2 ms/1 (0, 1)",Ns_cv,0.26755
+pen_sliding,"2 ms/1 (0, 1)",mu_apparent,0.12
+pen_sliding,"0.5 ms/10/ns (1, 0)",Ns_cv,2.72644
+pen_sliding,"0.5 ms/10/ns (1, 0)",mu_apparent,0.582549
+pen_sliding,"0.5 ms/10/ns (-1, 0)",Ns_cv,2.94584
+pen_sliding,"0.5 ms/10/ns (-1, 0)",mu_apparent,0.607737
+pen_sliding,"0.5 ms/10/ns (0, 1)",Ns_cv,2.61691
+pen_sliding,"0.5 ms/10/ns (0, 1)",mu_apparent,1.72323

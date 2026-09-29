@@ -1,13 +1,13 @@
 {
   "meta": {
     "evidence_status": "PROPOSED DESIGN (dimensions from endcap/optimise.py; part masses CALC and ASSUMPTION); not built",
-    "generated_utc": "2026-09-29T10:53:48+00:00",
-    "git_revision": "9ba0e9c-dirty",
+    "generated_utc": "2026-09-29T11:14:10+00:00",
+    "git_revision": "e0976ec-dirty",
     "script": "endcap/layout.py",
     "doc": "docs/inertial_endcap.md",
     "design_class": "LRM2",
     "choice": "lrm",
-    "mass_total_g": 43.32251606976099,
+    "mass_total_g": 43.32251606976098,
     "replaces": [
       "rear_cap",
       "rm_frame",
@@ -44,6 +44,37 @@
           "nose_mean": 0.7054869472947883
         }
       }
+    },
+    "changes_to_other_revH_parts": {
+      "shell": {
+        "z1_mm": 151.0,
+        "was_z1_mm": 170.0,
+        "note": "the Rev H handle shell (22 mm across) now ends where the 26 mm end-cap shell starts"
+      },
+      "usb": {
+        "z0_mm": 147.0,
+        "z1_mm": 150.5,
+        "was_mm": [
+          150.0,
+          153.5
+        ],
+        "note": "drawn here as ec_usb_moved (same part, same 9 mm offset)"
+      },
+      "length_mm": {
+        "now": 175.0,
+        "was": 170.0
+      }
+    },
+    "pen_estimate": {
+      "label": "CALC (Rev H total 74.95 g, balance point z 92.85 mm, results/revH/layout.json; minus the Rev H shell behind z 151 and the rear cap, taken as a solid PEEK disc (ASSUMPTION); plus the end-cap parts)",
+      "removed_g": 2.9803504106442964,
+      "total_g": 115.29216565911666,
+      "balance_point_z_mm": 117.20987827234217,
+      "was": {
+        "total_g": 74.95,
+        "balance_point_z_mm": 92.85
+      },
+      "limit_g": 120.0
     }
   },
   "units": "mm",
@@ -200,29 +231,6 @@
     {
       "group": "endcap",
       "optional": true,
-      "moves_with": "handle",
-      "offset": [
-        11.662104796964776,
-        0.0
-      ],
-      "id": "ec_coil_x+",
-      "label": "Flat coil",
-      "shape": "box",
-      "z0": 152.0001743547871,
-      "z1": 171.9998256452129,
-      "size": [
-        0.67579040607045,
-        8.0,
-        19.999651290425803
-      ],
-      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
-      "part": "self-bonding magnet wire, IEC class 155",
-      "ledger": "AMF-29/AMF-30",
-      "mass_g": 0.6603197359731311
-    },
-    {
-      "group": "endcap",
-      "optional": true,
       "moves_with": "inertial_mass",
       "offset": [
         -6.324383948716649,
@@ -246,29 +254,6 @@
     {
       "group": "endcap",
       "optional": true,
-      "moves_with": "handle",
-      "offset": [
-        -11.662104796964776,
-        0.0
-      ],
-      "id": "ec_coil_x-",
-      "label": "Flat coil",
-      "shape": "box",
-      "z0": 152.0001743547871,
-      "z1": 171.9998256452129,
-      "size": [
-        0.67579040607045,
-        8.0,
-        19.999651290425803
-      ],
-      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
-      "part": "self-bonding magnet wire, IEC class 155",
-      "ledger": "AMF-29/AMF-30",
-      "mass_g": 0.6603197359731311
-    },
-    {
-      "group": "endcap",
-      "optional": true,
       "moves_with": "inertial_mass",
       "offset": [
         0.0,
@@ -288,29 +273,6 @@
       "part": "NdFeB N45 tile 1 mm thick",
       "ledger": "AMF-28",
       "mass_g": 0.411701441061927
-    },
-    {
-      "group": "endcap",
-      "optional": true,
-      "moves_with": "handle",
-      "offset": [
-        0.0,
-        11.662104796964776
-      ],
-      "id": "ec_coil_y+",
-      "label": "Flat coil",
-      "shape": "box",
-      "z0": 152.0001743547871,
-      "z1": 171.9998256452129,
-      "size": [
-        8.0,
-        0.67579040607045,
-        19.999651290425803
-      ],
-      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
-      "part": "self-bonding magnet wire, IEC class 155",
-      "ledger": "AMF-29/AMF-30",
-      "mass_g": 0.6603197359731311
     },
     {
       "group": "endcap",
@@ -341,22 +303,20 @@
       "moves_with": "handle",
       "offset": [
         0.0,
-        -11.662104796964776
+        0.0
       ],
-      "id": "ec_coil_y-",
-      "label": "Flat coil",
-      "shape": "box",
+      "id": "ec_coils",
+      "label": "Drive coils (4, arc-shaped)",
+      "shape": "tube",
       "z0": 152.0001743547871,
       "z1": 171.9998256452129,
-      "size": [
-        8.0,
-        0.67579040607045,
-        19.999651290425803
-      ],
-      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
-      "part": "self-bonding magnet wire, IEC class 155",
+      "d0": 24.0,
+      "d1": 24.0,
+      "d_in": 22.6484191878591,
+      "function": "Four arc-shaped coils bonded to the bore, one per side (x+, x-, y+, y-): current through a coil pushes the facing slug magnet sideways. Drawn as one ring; the gaps between the coils hold the flexure tabs.",
+      "part": "self-bonding magnet wire, IEC class 155, wound on an arc former (ASSUMPTION)",
       "ledger": "AMF-29/AMF-30",
-      "mass_g": 0.6603197359731311
+      "mass_g": 2.6412789438925244
     },
     {
       "group": "endcap",

@@ -27,41 +27,40 @@ def r(x, nd=3):
 
 
 def revh_in_model(duty: Dict) -> Dict:
-    """Rev H's nose with this study's inertia and duty models (CALC): z_p 45 mm, magnets at 79 mm, 3.0 x 6.5 x 2.8 mm
-    blocks, 1.43 mm coils, 3 mm nominal travel, gimbal k_r 0.025 N m/rad (301 full hard 0.1 mm, b/L_f 0.75).  The force
-    constant is taken two ways: as Rev H states it (0.355 N/sqrt(W) at the tip) and recalibrated by the image calculation
-    with Rev H's own coil rule (designs.revh_as_designed: 0.140).  This study's constant-force rule (the coil legs stay
-    over the poles over the whole stroke) cannot be met by Rev H's 3 mm poles with a 2.3-2.6 mm stroke; that is reported
-    as a finding, not used here."""
+    """Rev H's nose under this study's design duties (CALC).  Rev H's own numbers are used for what Rev H states
+    (results/revH/tip_params.json via handwriting.params.rev_h: moving mass at the tip 2.97 g, suspension 12.35 N/m,
+    3 mm usable travel, 45 mm pivot, magnets at 79 mm moving 2.27 mm); the force constant is taken two ways: as Rev H
+    states it (0.355 N/sqrt(W) at the tip) and recalibrated by this study's image calculation with Rev H's own coil rule
+    (designs.revh_as_designed: 0.140).  The guaranteed travel and front end come from nose2/frontend.py."""
     import torch
     from . import designs as DS
-    from . import optimise as OP
+    from . import frontend as FEN
+    from handwriting import params as PR
+    p = PR.rev_h()
     d = DS.Duty(**{k: v for k, v in duty.items() if k in DS.Duty.__dataclass_fields__})
-    v = {"z_p": 0.045, "L_b": 0.034, "w": 3.0e-3, "l": 6.5e-3, "t_m": 2.8e-3, "t_c": 1.43e-3, "b_f": 3.0e-3, "L_f": 4.0e-3, "X": 3.0e-3}
-    parts = DS.Parts(grade="N42SH", flexure="301FH", t_flex=100e-6, wire=0.10e-3, iron="1010", bore="22")
-    d = replace(d, x_min=2.0e-3)
+    m, k = p.m_tip, p.k_tip
     with torch.no_grad():
-        out = DS.evaluate("gimbal_radial", {k: torch.tensor(val, dtype=DS.DT) for k, val in v.items()}, parts, d)
-    s = OP.summary("gimbal_radial", v, parts, out)
-    o = DS.to_float(out)
+        Ftr, Faw, Fpk_need = DS.duty_forces(torch.tensor(m, dtype=DS.DT), torch.tensor(k, dtype=DS.DT),
+                                            torch.zeros((), dtype=DS.DT), replace(d, x_min=3.0e-3))
+    Ftr, Faw = float(Ftr), float(Faw)
+    fe = FEN.check(6.75, FEN.Nose(z_p=45.0, travel=3.0))
     rh = DS.revh_as_designed(1.33)
-    res = {"X_min_mm": s["X_min_mm"], "X_nom_mm": s["X_nom_mm"], "m_eff_tip_g": s["m_eff_tip_g"], "k_tip_N_m": s["k_tip_N_m"],
-           "F_aw_rms_N": o["F_aw_rms"], "F_tr_rms_N": o["F_tr_rms"], "servo_hz_max": s["servo_hz_max"], "front_R_mm": s["front_R_mm"],
-           "refill_slide_mm": s["refill_slide_mm"], "z_p_mm": 45.0, "z_a_mm": 79.0, "stroke_act_mm": s["stroke_act_mm"],
-           "gap_mm": 2.77, "r_act_mm": 10.0, "mass_added_g": None,
-           "constant_force_rule": {"pole_width_mm": 3.0, "stroke_at_stop_mm": s["stroke_act_mm"], "met": False}}
+    res = {"X_min_mm": fe["ball_travel_usable_min_mm"], "X_nom_mm": 3.0, "m_eff_tip_g": m * 1e3, "k_tip_N_m": k,
+           "F_aw_rms_N": Faw, "F_tr_rms_N": Ftr, "servo_hz_max": None, "front_R_mm": 6.75, "refill_slide_mm": fe["refill_slide_range_mm"],
+           "z_p_mm": 45.0, "z_a_mm": 79.0, "stroke_act_mm": 2.27, "gap_mm": 2.77, "r_act_mm": 10.0, "mass_added_g": None,
+           "constant_force_rule": {"pole_width_mm": 3.0, "stroke_at_usable_travel_mm": 2.27, "met": False}}
     for tag, Km in (("stated", 0.355), ("images", rh["Km_tip_images"])):
         res[f"Km_tip_{tag}"] = Km
-        res[f"P_tremor_W_{tag}"] = 2 * (o["F_tr_rms"] / Km) ** 2
-        res[f"P_autowrite_W_{tag}"] = 2 * (o["F_aw_rms"] / Km) ** 2
+        res[f"P_tremor_W_{tag}"] = 2 * (Ftr / Km) ** 2
+        res[f"P_autowrite_W_{tag}"] = 2 * (Faw / Km) ** 2
         res[f"F_pk_tip_N_{tag}"] = Km * math.sqrt(DS.V_BUS * DS.I_PEAK)
     res["Km_tip"] = res["Km_tip_images"]
     res["P_tremor_W"] = res["P_tremor_W_images"]
     res["P_autowrite_W"] = res["P_autowrite_W_images"]
     res["F_pk_tip_N"] = res["F_pk_tip_N_images"]
     res["dT_coil_K"] = res["P_autowrite_W"] * DS.R_TH_COIL
-    res["label"] = ("CALC (Rev H geometry, this study's inertia and duties; Km as recalibrated by the image method, Rev H's coil rule; "
-                    "Rev H states 0.47 N/sqrt(W) at the magnets, 0.355 at the tip)")
+    res["label"] = ("CALC (Rev H's stated moving mass 2.97 g and suspension 12.35 N/m under this study's duties; Km as recalibrated "
+                    "by the image method with Rev H's coil rule, 0.140 N/sqrt(W) at the tip; with Rev H's stated 0.355 see *_stated)")
     return res
 
 

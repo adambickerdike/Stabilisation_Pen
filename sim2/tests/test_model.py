@@ -64,3 +64,17 @@ def test_from_identified_maps_s2r_names():
     assert abs(cfg.nose.k_r - 20.0 * cfg.geom.z_p ** 2) < 1e-12
     assert cfg.contact.mu_ball == 0.2 and cfg.hand.k_nib == 700.0 and cfg.sensors.page_latency == 3e-3
     assert "unknown.name" in cfg.label
+
+
+def test_identified_values_from_s2r_file():
+    import os
+    path = os.path.join(sim2.ROOT, "results", "s2r", "c1_identification.json")
+    if not os.path.exists(path):
+        pytest.skip("s2r results not present")
+    vals, u95 = P.identified_values(path)
+    assert "actuator.Kf" in vals and vals["actuator.Kf"] > 0
+    cfg = P.from_identified(vals)
+    B.build(cfg)
+    rng = P.dr_ranges_from_identified(vals, u95)
+    for k, (lo, hi) in rng.items():
+        assert lo <= hi

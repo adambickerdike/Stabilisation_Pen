@@ -6,6 +6,7 @@ their CSV twins, the evidence rows and the replay):
   h1check     reproduce H1 (opt/inertial Rev H-B) on its test seeds: oracle and causal ratios        (SIM, ~45 min)
   diagnose    attribution of the largest H1 differences (idealised nose actuators; tracker noise seeds) (SIM, ~20 min)
   streams     the causal tracker's inputs from both models on the worst causal case                  (SIM, ~5 min)
+  attrib      oracle gap at 12 Hz: stronger refill spring, lighter nose (attribution)               (SIM, ~10 min)
   contact     MuJoCo soft contact: stiffness, creep, sliding force, gliding, slip onset, pen sliding;
               the H1 law (LuGre): breakaway, pre-sliding stiffness, stick-slip                       (SIM, ~5 min)
   convergence timestep and integrator convergence of the Rev H case (training seed 300)              (SIM, ~20 min)
@@ -122,6 +123,43 @@ def stage_diagnose(quick=False):
     return out
 
 
+ATTRIB_VARIANTS = {"refill_Fc_0.45N": {"refill": {"F_c": 0.45}}, "nose_refill_mass_x0.1": {"nose": {"mass_scale": 0.1}}}
+
+
+def stage_attrib(quick=False):
+    """Attribution of the oracle gap at 12 Hz: the worst oracle cases of h1check rerun with a stronger refill spring
+    (0.45 N instead of 0.15 N: the ball follows the paper better) and with a 10x lighter nose and refill (removes the
+    reaction of the nose's inertia on the handle).  Together with the idealised actuators of stage diagnose."""
+    from dataclasses import replace
+    from sim.handpen import evaluate as HE
+    from sim2 import builder as B, h1compare as HC, params as P, sim as S
+    h1 = load_stage("h1check", quick=quick) or load_stage("h1check", quick=False)
+    rows = sorted(h1["splits"]["0.5"]["rows"], key=lambda r: -abs(r["d_oracle"]))[:1 if quick else 3]
+    out = {"rows": [], "variants": ATTRIB_VARIANTS}
+    for r in rows:
+        sc, sc0 = HC.scenario(r["seed"], r["f0"], r["amp_mm"] * 1e-3, r["kind"])
+        res = {"seed": r["seed"], "f0": r["f0"], "amp_mm": r["amp_mm"], "kind": r["kind"], "h1": r["h1_oracle"],
+               "s2_modelled": r["s2_oracle"]}
+        for vname, kw in ATTRIB_VARIANTS.items():
+            cfg = P.h1_check_config(0.5)
+            if "refill" in kw:
+                cfg = cfg.replace(refill=replace(cfg.refill, **kw["refill"]))
+            if "nose" in kw:
+                cfg = cfg.replace(nose=replace(cfg.nose, **kw["nose"]))
+            pm = B.build(cfg)
+            ref = S.run(pm, sc0)
+            un = S.run(pm, sc)
+            n_ticks = int(math.ceil(len(sc.t) / 20))
+            orc = S.run(pm, sc, S.RunOptions(source="oracle", clean=S.clean_ticks(ref, n_ticks)))
+            res[f"s2_{vname}"] = HE.compare(orc, ref)["e_rms_um"] / HE.compare(un, ref)["e_rms_um"]
+        out["rows"].append(res)
+        log(f"  attrib {r['seed']} {r['f0']:g} Hz {r['amp_mm']:g} mm: H1 {res['h1']:.3f}, sim2 {res['s2_modelled']:.3f}, "
+            + ", ".join(f"{v} {res['s2_' + v]:.3f}" for v in ATTRIB_VARIANTS))
+    out["label"] = ("SIM: worst oracle cases of h1check (r_rot 0.5, test seeds) with a 0.45 N refill spring and with a 10x "
+                    "lighter nose and refill")
+    save_stage("attrib", out)
+
+
 def stage_streams(quick=False):
     from sim2 import h1compare as HC
     out = HC.stream_comparison(noise_seeds=(0, 1) if quick else (0, 1, 2, 3, 4), log=log)
@@ -133,9 +171,9 @@ def stage_streams(quick=False):
 
 # ============================================================================================ verification
 CONTACT_SETTINGS = [
-    {"name": "sim2 native default", "solref": (5e-4, 1.0), "solimp": (0.99, 0.999, 1e-4, 0.5, 2.0), "impratio": 10.0},
-    {"name": "MuJoCo default", "solref": (0.02, 1.0), "solimp": (0.9, 0.95, 0.001, 0.5, 2.0), "impratio": 1.0},
-    {"name": "intermediate", "solref": (2e-3, 1.0), "solimp": (0.95, 0.99, 1e-4, 0.5, 2.0), "impratio": 1.0},
+    {"name": "stiff (0.5 ms, impratio 10)", "solref": (5e-4, 1.0), "solimp": (0.99, 0.999, 1e-4, 0.5, 2.0), "impratio": 10.0},
+    {"name": "MuJoCo default (20 ms)", "solref": (0.02, 1.0), "solimp": (0.9, 0.95, 0.001, 0.5, 2.0), "impratio": 1.0},
+    {"name": "sim2 default (2 ms, impratio 1)", "solref": (2e-3, 1.0), "solimp": (0.95, 0.99, 1e-4, 0.5, 2.0), "impratio": 1.0},
 ]
 
 
@@ -480,7 +518,7 @@ def stage_report(quick=False):
 
 
 STAGES = {"h1check": stage_h1check, "diagnose": stage_diagnose, "contact": stage_contact, "convergence": stage_convergence,
-          "frontstop": stage_frontstop, "streams": stage_streams,
+          "frontstop": stage_frontstop, "streams": stage_streams, "attrib": stage_attrib,
           "energy": stage_energy, "gyro": stage_gyro, "sensors": stage_sensors, "native": stage_native, "arm": stage_arm,
           "myo": stage_myo, "validate": stage_validate, "env": stage_env, "plugins": stage_plugins, "report": stage_report}
 QUICK_DEFAULT = ["contact", "energy", "gyro", "sensors", "myo", "env", "plugins", "report"]

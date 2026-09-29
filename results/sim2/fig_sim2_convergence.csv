@@ -1,0 +1,12 @@
+contact,integrator,dt_us,unmod_e_rms_um,oracle_ratio,ink_path_diff_vs_finest_um,observed_order
+h1_contact,implicitfast,12.5,1110.64,0.142027,0,
+h1_contact,implicitfast,25,1110.53,0.141734,0.215705,
+h1_contact,implicitfast,50,1110.3,0.141149,0.659567,1.07222
+h1_contact,implicitfast,100,1103.18,0.139689,71.3381,7.29645
+native_contact,implicitfast,12.5,1108.85,0.146155,0,
+native_contact,implicitfast,25,1108.61,0.145839,0.659792,
+native_contact,implicitfast,50,1108.38,0.145165,2.34539,1.59897
+native_contact,implicitfast,100,1099.02,0.143847,71.5746,5.16346
+h1_contact,RK4,25,1110.87,0.141767,,
+h1_contact,Euler,25,1110.87,0.141767,,
+h1_contact,implicit,25,1110.53,0.141734,,

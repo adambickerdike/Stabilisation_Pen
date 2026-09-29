@@ -47,7 +47,6 @@ def lrm_parts(d: Dict) -> List[Dict]:
     z0, z1 = ZC - Ls / 2, ZC + Ls / 2
     Lmag = min(Ls, 12.0)
     Lcoil = Lmag + 2 * X
-    r_coil = ds / 2 + X + 1.0 + DS.CLEAR * 1e3 + tc / 2
     parts = shell_parts(d)
     # the spring plates sit beyond the coil ends (no radial clash with the coils) and hold the slug by short axles
     half = max(Ls, Lcoil) / 2
@@ -68,11 +67,19 @@ def lrm_parts(d: Dict) -> List[Dict]:
                         size=[1.0 if ox else 3.0, 3.0 if ox else 1.0, Lmag], offset=[ox * (ds / 2 + 0.5), oy * (ds / 2 + 0.5)], moves_with="inertial_mass",
                         function="NdFeB tile on the slug; the facing coil pushes it sideways.", part="NdFeB N45 tile 1 mm thick", ledger="AMF-28",
                         mass_g=d["parts_g"]["magnets_g"] / 4))
-        parts.append(_p(id=f"ec_coil_{ax}", label="Flat coil", shape="box", z0=ZC - Lcoil / 2, z1=ZC + Lcoil / 2,
-                        size=[tc if ox else 8.0, 8.0 if ox else tc, Lcoil], offset=[ox * r_coil, oy * r_coil],
-                        function="Fixed flat coil with a back iron: current through it pushes the facing magnet.",
-                        part="self-bonding magnet wire, IEC class 155", ledger="AMF-29/AMF-30", mass_g=d["parts_g"]["copper_g"] / 4))
+    parts.append(coil_ring(ZC - Lcoil / 2, ZC + Lcoil / 2, tc, d["parts_g"]["copper_g"]))
     return parts
+
+
+def coil_ring(z0, z1, tc, copper_g) -> Dict:
+    """The four drive coils as one thin ring lining the bore (as rm_coils in the Rev H layout).  The design model
+    (endcap/design.lrm2) takes the coil layer as tc thick at the bore; flat 8 mm boxes at that radius would cut into the
+    shell wall at their corners, so the coils are arc-shaped and the layout draws them as one tube."""
+    return _p(id="ec_coils", label="Drive coils (4, arc-shaped)", shape="tube", z0=z0, z1=z1, d0=P.D_IN * 1e3, d1=P.D_IN * 1e3,
+              d_in=P.D_IN * 1e3 - 2 * tc, function="Four arc-shaped coils bonded to the bore, one per side (x+, x-, y+, y-): current "
+                                                    "through a coil pushes the facing slug magnet sideways. Drawn as one ring; the gaps "
+                                                    "between the coils hold the flexure tabs.",
+              part="self-bonding magnet wire, IEC class 155, wound on an arc former (ASSUMPTION)", ledger="AMF-29/AMF-30", mass_g=copper_g)
 
 
 # Proposed compact packaging (PROPOSED DESIGN, CALC geometry): the reaction-mass end-cap sits behind the Rev H cell, in the
@@ -119,10 +126,7 @@ def lrm_parts_compact(d: Dict) -> List[Dict]:
                         size=[1.0 if ox else 3.0, 3.0 if ox else 1.0, Lmag], offset=[ox * (ds / 2 + 0.5), oy * (ds / 2 + 0.5)], moves_with="inertial_mass",
                         function="NdFeB tile on the slug; the facing coil pushes it sideways.", part="NdFeB N45 tile 1 mm thick", ledger="AMF-28",
                         mass_g=pg["magnets_g"] / 4))
-        parts.append(_p(id=f"ec_coil_{ax}", label="Flat coil", shape="box", z0=zc - Lcoil / 2, z1=zc + Lcoil / 2,
-                        size=[tc if ox else 8.0, 8.0 if ox else tc, Lcoil], offset=[ox * r_coil, oy * r_coil],
-                        function="Fixed flat coil with a back iron: current through it pushes the facing magnet.",
-                        part="self-bonding magnet wire, IEC class 155", ledger="AMF-29/AMF-30", mass_g=pg["copper_g"] / 4))
+    parts.append(coil_ring(zc - Lcoil / 2, zc + Lcoil / 2, tc, pg["copper_g"]))
     u0, u1 = C["usb_z"]
     parts.append(_p(id="ec_usb_moved", label="USB-C port and button (moved)", shape="box", z0=u0, z1=u1, size=[8.4, 2.6, u1 - u0], offset=[0.0, 9.0],
                     optional=False, function="The Rev H side port, moved 3 mm forward beside the cell's rear end (the cell is 14.1 mm across, the "
@@ -171,6 +175,35 @@ def cmg_parts(d: Dict) -> List[Dict]:
     return parts
 
 
+REVH_PEN = dict(total_g=74.95, com_mm=92.85)      # results/revH/layout.json, mass_g (standard Rev H, no optional parts)
+
+
+def pen_estimate(parts: List[Dict]) -> Dict:
+    """Mass and balance point of the Rev H pen with the compact end-cap (CALC): the Rev H total minus the shell segment
+    behind z 151 and the rear cap (solid PEEK disc, ASSUMPTION), plus the end-cap parts."""
+    rho = P.RHO_PEEK * 1e-6                                                   # kg/m3 -> g/mm3
+    try:
+        import json
+        import os
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "results", "revH", "layout.json")) as fh:
+            mg = json.load(fh)["mass_g"]
+        REVH_PEN.update(total_g=float(mg["total_g"]), com_mm=float(mg["com_mm"]))
+    except (OSError, KeyError, ValueError):
+        pass
+    shell_cut = rho * math.pi / 4 * (22.0 ** 2 - 20.0 ** 2) * (170.0 - COMPACT["z0"])
+    cap = rho * math.pi / 4 * 21.0 ** 2 * 3.0
+    m = REVH_PEN["total_g"] - shell_cut - cap
+    mz = REVH_PEN["total_g"] * REVH_PEN["com_mm"] - shell_cut * 0.5 * (COMPACT["z0"] + 170.0) - cap * 168.5
+    for p in parts:
+        mp = p.get("mass_g", 0.0)
+        m += mp
+        mz += mp * 0.5 * (p["z0"] + p["z1"])
+    return {"label": "CALC (Rev H total 74.95 g, balance point z 92.85 mm, results/revH/layout.json; minus the Rev H shell behind "
+                     "z 151 and the rear cap, taken as a solid PEEK disc (ASSUMPTION); plus the end-cap parts)",
+            "removed_g": shell_cut + cap, "total_g": m, "balance_point_z_mm": mz / m,
+            "was": {"total_g": REVH_PEN["total_g"], "balance_point_z_mm": REVH_PEN["com_mm"]}, "limit_g": 120.0}
+
+
 def write(path, res: Dict):
     rec = res.get("recommendation", {})
     choice = rec.get("choice") or res.get("layout_choice") or "lrm"
@@ -205,6 +238,13 @@ def write(path, res: Dict):
     else:
         meta.update({"rotor_speed_rpm": None, "spin_axis": None, "moving_mass_g": d["moving_mass_g"], "stroke_mm": d["X"] * 1e3,
                      "packaging": "compact (PROPOSED DESIGN): flexures nested inside the coil ring, end-cap z 151-175 mm, slug centre z 162 mm",
-                     "packaging_check": res.get("compact_packaging")})
+                     "packaging_check": res.get("compact_packaging"),
+                     "changes_to_other_revH_parts": {
+                         "shell": {"z1_mm": COMPACT["z0"], "was_z1_mm": 170.0,
+                                   "note": "the Rev H handle shell (22 mm across) now ends where the 26 mm end-cap shell starts"},
+                         "usb": {"z0_mm": COMPACT["usb_z"][0], "z1_mm": COMPACT["usb_z"][1], "was_mm": [150.0, 153.5],
+                                 "note": "drawn here as ec_usb_moved (same part, same 9 mm offset)"},
+                         "length_mm": {"now": COMPACT["z1"], "was": 170.0}},
+                     "pen_estimate": pen_estimate(parts)})
     provenance.write_json(path, {"meta": meta, "units": "mm", "components": parts})
     return parts

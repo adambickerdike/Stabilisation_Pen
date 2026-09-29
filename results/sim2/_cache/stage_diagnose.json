@@ -1,0 +1,163 @@
+{
+  "oracle": [
+    {
+      "seed": 202,
+      "f0": 12.0,
+      "amp_mm": 2.0,
+      "kind": "trans",
+      "h1": 0.24403324382819983,
+      "s2_modelled": 0.2837863253305183,
+      "s2_no_delay_400Hz": 0.283799820632245,
+      "s2_no_delay_400Hz_n_eval": 10615,
+      "s2_ideal_2kHz": 0.2832526020331825,
+      "s2_ideal_2kHz_n_eval": 10524
+    },
+    {
+      "seed": 203,
+      "f0": 12.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "h1": 0.22032999804561956,
+      "s2_modelled": 0.25421803118797637,
+      "s2_no_delay_400Hz": 0.25421982883352384,
+      "s2_no_delay_400Hz_n_eval": 13316,
+      "s2_ideal_2kHz": 0.2537985795748488,
+      "s2_ideal_2kHz_n_eval": 13311
+    },
+    {
+      "seed": 200,
+      "f0": 12.0,
+      "amp_mm": 1.0,
+      "kind": "trans",
+      "h1": 0.21796287956415428,
+      "s2_modelled": 0.25067753885521626,
+      "s2_no_delay_400Hz": 0.25062855601385575,
+      "s2_no_delay_400Hz_n_eval": 11959,
+      "s2_ideal_2kHz": 0.25025229867202947,
+      "s2_ideal_2kHz_n_eval": 11954
+    }
+  ],
+  "causal": [
+    {
+      "seed": 201,
+      "f0": 8.0,
+      "amp_mm": 2.0,
+      "kind": "trans",
+      "h1_seeds": [
+        0.749637870988166,
+        0.7468072765712771,
+        0.7471132774511234,
+        0.7531522910966068,
+        0.7434676366434801
+      ],
+      "s2_seeds": [
+        1.054158342614776,
+        1.0538829811301058,
+        0.7053856651700219,
+        1.057013858760403,
+        1.0537873149399728
+      ],
+      "h1_mean": 0.7480356705501306,
+      "s2_mean": 0.9848456325230558,
+      "h1_range": [
+        0.7434676366434801,
+        0.7531522910966068
+      ],
+      "s2_range": [
+        0.7053856651700219,
+        1.057013858760403
+      ]
+    },
+    {
+      "seed": 203,
+      "f0": 8.0,
+      "amp_mm": 1.0,
+      "kind": "wrist",
+      "h1_seeds": [
+        0.7886083679944222,
+        0.7895467177430573,
+        0.7889437780890765,
+        0.7889782806852496,
+        0.7893128752063107
+      ],
+      "s2_seeds": [
+        0.8540390786048431,
+        0.7871230808080023,
+        0.8625947940728687,
+        0.8089046385774099,
+        0.8174791322136538
+      ],
+      "h1_mean": 0.7890780039436233,
+      "s2_mean": 0.8260281448553556,
+      "h1_range": [
+        0.7886083679944222,
+        0.7895467177430573
+      ],
+      "s2_range": [
+        0.7871230808080023,
+        0.8625947940728687
+      ]
+    },
+    {
+      "seed": 200,
+      "f0": 8.0,
+      "amp_mm": 2.0,
+      "kind": "trans",
+      "h1_seeds": [
+        0.7251480727100572,
+        0.7364087409400902,
+        0.7217140690318951,
+        0.7283446332319814,
+        0.71896028463236
+      ],
+      "s2_seeds": [
+        0.6614962044968216,
+        1.0475394341590192,
+        1.0502136321835487,
+        0.6698159087460066,
+        1.043341786575243
+      ],
+      "h1_mean": 0.7261151601092768,
+      "s2_mean": 0.8944813932321278,
+      "h1_range": [
+        0.71896028463236,
+        0.7364087409400902
+      ],
+      "s2_range": [
+        0.6614962044968216,
+        1.0502136321835487
+      ]
+    }
+  ],
+  "oracle_variants": {
+    "no_delay_400Hz": {
+      "inner_hz": 400.0,
+      "servo_rate": 40000.0,
+      "hall_delay": 0.0,
+      "L_ind": 1e-08
+    },
+    "ideal_2kHz": {
+      "inner_hz": 2000.0,
+      "servo_rate": 40000.0,
+      "hall_delay": 0.0,
+      "L_ind": 1e-08
+    }
+  },
+  "label": "SIM: the largest sim2-H1 differences of stage h1check (r_rot 0.5): oracle cases rerun with idealised nose actuators (every-step servo, no Hall delay, no coil lag; 400 Hz and 2 kHz inner loops), causal cases rerun with five sensor-noise seeds in both models",
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T11:08:25+00:00",
+    "git_revision": "e0976ec-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages h1check,diagnose",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "diagnose",
+    "quick": false,
+    "script": "sim2/run_study.py"
+  }
+}

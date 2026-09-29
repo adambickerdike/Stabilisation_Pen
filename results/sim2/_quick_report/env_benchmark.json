@@ -4,9 +4,9 @@
     {
       "contact": "h1",
       "control_hz": 1000.0,
-      "env_steps_per_s": 305.13726908115524,
-      "sim_seconds_per_wall_second": 0.30513726908115524,
-      "reset_s": 1.8341355323791504,
+      "env_steps_per_s": 1165.5765767768614,
+      "sim_seconds_per_wall_second": 1.1655765767768613,
+      "reset_s": 0.5259904861450195,
       "obs_dim": 16,
       "act_dim": 2
     }
@@ -167,8 +167,8 @@
     {
       "policy": "zero",
       "steps": 1000,
-      "return": -59763.06377332093,
-      "ink_err_rms_um": 773.0657395934768,
+      "return": -58066.97910475161,
+      "ink_err_rms_um": 762.0169230716045,
       "obs_finite": true,
       "params": {
         "k_nib": 632.448321572651,
@@ -177,7 +177,7 @@
         "rho_w": 0.23812478808018106,
         "M": 0.3880800456379405,
         "k_arm": 371.7251171671726,
-        "b_arm": 9.664814822995973,
+        "b_arm": 14.006595104090849,
         "f0": 9.560169343161665,
         "amp": 0.00046832563325542603,
         "f_jitter": 0.37804440629193325,
@@ -201,8 +201,8 @@
     {
       "policy": "random",
       "steps": 1000,
-      "return": -67070.66594853692,
-      "ink_err_rms_um": 819.780635057704,
+      "return": -65867.69148672701,
+      "ink_err_rms_um": 812.3954931514986,
       "obs_finite": true,
       "params": {
         "k_nib": 632.448321572651,
@@ -211,7 +211,7 @@
         "rho_w": 0.23812478808018106,
         "M": 0.3880800456379405,
         "k_arm": 371.7251171671726,
-        "b_arm": 9.664814822995973,
+        "b_arm": 14.006595104090849,
         "f0": 9.560169343161665,
         "amp": 0.00046832563325542603,
         "f_jitter": 0.37804440629193325,
@@ -240,11 +240,11 @@
   },
   "meta": {
     "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
-    "generated_utc": "2026-09-29T00:44:05+00:00",
-    "git_revision": "3f005eb",
+    "generated_utc": "2026-09-29T11:14:27+00:00",
+    "git_revision": "e0976ec-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "-c",
+    "command": "run_study.py --quick",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,

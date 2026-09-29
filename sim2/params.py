@@ -224,6 +224,7 @@ class Nose:
     bias: bool = True                   # static load bias (refill spring transverse component), H1 convention
     hall_noise: float = 0.0             # tip-referred Hall noise (m rms), 0 in the H1 check
     hall_delay: float = 50e-6
+    mass_scale: float = 1.0             # diagnostic only: scales the nose and refill mass and inertia
 
     @property
     def K_f(self) -> float:
@@ -380,6 +381,43 @@ def from_identified(values: Dict[str, float], base: Optional["Config"] = None) -
     return cfg.replace(nose=replace(cfg.nose, **groups["nose"]), contact=replace(cfg.contact, **groups["contact"]),
                        hand=replace(cfg.hand, **groups["hand"]), sensors=replace(cfg.sensors, **groups["sensors"]),
                        label=(cfg.label + " | " if cfg.label else "") + "identified" + (f" (ignored: {', '.join(unknown)})" if unknown else ""))
+
+
+# s2r names -> sim2 Gymnasium DR keys (env.DR), for narrowing the randomisation to identified intervals
+S2R_DR_MAP = {"writing.mu_eff": "mu_ball", "writing.mu_static_ratio": "ms_ratio", "writing.stribeck_speed": "v_s",
+              "friction.x_presliding": "presliding", "hand.grip_stiffness": "k_nib", "hand.grip_damping": "b_nib",
+              "hand.mass": "M", "hand.arm_stiffness": "k_arm", "hand.arm_damping": "b_arm", "sensing.opt_delay": "page_latency",
+              "sensing.hall_noise_tip": "hall_noise", "skid.mu": "mu_skid"}
+
+
+def identified_values(path: str, truth_id: Optional[str] = None) -> Tuple[Dict[str, float], Dict[str, float]]:
+    """(values, U95) from an s2r identification file (results/s2r/c1_identification.json style: per_truth[*].estimates
+    {name: {value, U95}}), or from a flat {'values': {...}} / {'estimates': {...}} JSON of a bench identification."""
+    import json
+    o = json.load(open(path))
+    est = None
+    if "per_truth" in o:
+        pts = o["per_truth"]
+        pt = next((p for p in pts if truth_id is None or p.get("id") == truth_id), pts[0])
+        est = pt["estimates"]
+    elif "estimates" in o:
+        est = o["estimates"]
+    if est is not None:
+        vals = {k: float(v["value"]) for k, v in est.items() if isinstance(v, dict) and "value" in v}
+        u95 = {k: float(v.get("U95", float("nan"))) for k, v in est.items() if isinstance(v, dict) and "value" in v}
+        return vals, u95
+    vals = {k: float(v) for k, v in o["values"].items()}
+    return vals, {k: float("nan") for k in vals}
+
+
+def dr_ranges_from_identified(values: Dict[str, float], u95: Dict[str, float], widen: float = 1.0) -> Dict[str, Tuple[float, float]]:
+    """Identified intervals (value +- widen*U95) on the Gymnasium DR keys, for SimOpt-style narrowing (docs/sim_v2.md 8.4)."""
+    out = {}
+    for k, key in S2R_DR_MAP.items():
+        if k in values and k in u95 and math.isfinite(u95[k]):
+            v, u = values[k], widen * u95[k]
+            out[key] = (max(v - u, 0.0), v + u)
+    return out
 
 
 # ================================================================================ configuration of one case

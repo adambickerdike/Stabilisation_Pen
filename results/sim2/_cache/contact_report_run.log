@@ -1,0 +1,25 @@
+=== stage contact
+  native block 'stiff (0.5 ms, impratio 10)': k 7.86e+06 vs 7.86e+06 N/m, creep 0.148 um/s (closed form 0.148), mu_slide 0.1200/0.1200, gliding 0.02 um (pred 1.26) (0 s)
+  native block 'MuJoCo default (20 ms)': k 1.22e+03 vs 449 N/m, creep 498 um/s (closed form 621), mu_slide 0.1200/0.1200, gliding 74.41 um (pred 48.06) (0 s)
+  native block 'sim2 default (2 ms, impratio 1)': k 9.53e+04 vs 9.21e+04 N/m, creep 30.5 um/s (closed form 30.7), mu_slide 0.1200/0.1200, gliding 2.12 um (pred 4.86) (0 s)
+  LuGre: {"presliding_stiffness_N_per_m": {"measured": 15521.871447867352, "closed_form": 15599.999999999998}, "stick_slip": {"F_max_N": 0.15375846187610986, "F_min_N": 0.08763901199475284, "mu_s_N": 0.156, "mu_k_N": 0.12, "F_min_analytic_N": 0.08399999999999999, "period_s": 0.45635000000000003, "period_analytic_s": 0.39141592653589796}, "sliding_20mm_s": {"F_N": 0.11999999999999995, "mu_k_N": 0.12}}
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [1, 0]: Ns 2.703 N cv 2.951, mu_app 1.036, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [-1, 0]: Ns 3.769 N cv 2.679, mu_app 0.552, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [0, 1]: Ns 1.318 N cv 2.551, mu_app 1.714, flicker 0
+  pen sliding solref [0.02, 1.0] impratio 1.0 noslip 0 dir [1, 0]: Ns 0.995 N cv 0.001, mu_app 0.120, flicker 0
+  pen sliding solref [0.02, 1.0] impratio 1.0 noslip 0 dir [-1, 0]: Ns 0.988 N cv 0.001, mu_app 0.120, flicker 0
+  pen sliding solref [0.02, 1.0] impratio 1.0 noslip 0 dir [0, 1]: Ns 0.992 N cv 0.001, mu_app 0.120, flicker 0
+  pen sliding solref [0.002, 1.0] impratio 1.0 noslip 0 dir [1, 0]: Ns 0.805 N cv 0.236, mu_app 0.120, flicker 0
+  pen sliding solref [0.002, 1.0] impratio 1.0 noslip 0 dir [-1, 0]: Ns 0.851 N cv 0.296, mu_app 0.120, flicker 0
+  pen sliding solref [0.002, 1.0] impratio 1.0 noslip 0 dir [0, 1]: Ns 0.826 N cv 0.268, mu_app 0.120, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 10 dir [1, 0]: Ns 3.709 N cv 2.726, mu_app 0.583, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 10 dir [-1, 0]: Ns 2.947 N cv 2.946, mu_app 0.608, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 10 dir [0, 1]: Ns 1.421 N cv 2.617, mu_app 1.723, flicker 0
+=== stage contact done in 10 s
+=== stage report
+  report: stages available ['h1check', 'diagnose', 'streams', 'attrib', 'contact', 'convergence', 'energy', 'gyro', 'sensors', 'native', 'frontstop', 'arm', 'myo', 'validate', 'env', 'plugins']
+  evidence rows: 41
+  replay: unmodified 1026 um (1.000), oracle 138 um (0.134), causal 778 um (0.758)
+  report written to /home/user/Stabilisation_Pen/results/sim2
+=== stage report done in 23 s
+all done in 34 s

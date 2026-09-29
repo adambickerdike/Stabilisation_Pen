@@ -25,19 +25,19 @@ Labels used for every number:
 
 | Check | Result | Label |
 |---|---|---|
-| Reproduces H1 (Rev H-B, H1's test seeds, 56 cases) | Unmodified ink error within 3.1 % of H1 in every case (tolerance 10 %). Perfect-knowledge ("oracle") ratio within ±0.03 of H1 in 52 of 56 cases; worst +0.037. Causal-tracker ratio within ±0.05 in 50 of 56 cases; the misses come from the tracker's frequency lock, not the plant (§5.1) | SIM, `results/sim2/verification.json` |
+| Reproduces H1 (Rev H-B, H1's test seeds, 56 cases) | Unmodified ink error within 3.1 % of H1 in every case (tolerance 10 %). Perfect-knowledge ("oracle") ratio within ±0.03 of H1 in 52 of 56 cases; worst +0.040. Causal-tracker ratio within ±0.05 in 50 of 56 cases; the misses come from the tracker's frequency lock, not the plant (§5.1) | SIM, `results/sim2/verification.json` |
 | Time step | Ink path at 25 µs within 0.22 µm rms of the 12.5 µs solution; oracle ratio changes by 0.0003; first-order convergence (observed order 1.07); 50 µs within 0.66 µm; 100 µs breaks down (71 µm) | SIM |
 | Energy balance | Residual ≤ 6.8 × 10⁻⁴ of the energy scale in conservative, damped and actuated tests, for all four MuJoCo integrators | SIM |
 | Gyroscopic torque | Rotor reaction torque equals h × ω within 1.3 × 10⁻⁴ (relative) | SIM |
 | Contact closed forms | MuJoCo contact stiffness and stick creep match their closed forms within 0.3 % (stiff setting); H1 law pre-sliding stiffness within 0.5 % | SIM |
 | Sensor models | Accelerometer noise density 58.5–59.6 µg/√Hz against fusion's 60 µg/√Hz (MFR OPT-37); page-sensor latency 2.0 ms at 1 kHz as set | SIM |
-| Gym speed (one core, shared machine) | 478 environment steps/s at 1 kHz control with the H1 law (0.48 simulated s per wall-clock s, about 52 µs per 25 µs physics step); 223 steps/s with native contacts; measured on one core while the other studies loaded the machine (load average 7–9 on 4 cores) | SIM |
+| Gym speed (one core, shared machine) | 478 environment steps/s at 1 kHz control with the H1 law (0.48 simulated s per wall-clock s, about 52 µs per 25 µs physics step) and 223 steps/s with native contacts, measured while the other studies loaded the machine (load average 7–9 on 4 cores); 1166 steps/s (1.17× real time) in the `--quick` run on a lighter load | SIM |
 
 **What we found on the way** (details in §5–§7; each is a finding about the model or the design, not a measurement):
 
-1. **Front stop.** When the nose tilts, the ball rises or falls by about q·z_p·cot θ. A refill front stop fixed 0.3 mm beyond contact lifted the ball off the paper for 27–37 % of the pen-down time once the nose corrected; a stop that follows the nose, or one about 3 mm further out, kept contact. H1 assumed an ideal refill and did not see this (§5.8).
+1. **Front stop.** When the nose tilts, the ball rises or falls by about q·z_p·cot θ. A refill front stop fixed 0.3 mm beyond contact lifted the ball off the paper for 27–37 % of the pen-down time once the nose corrected; a stop that follows the nose, or one about 3 mm further out, kept contact. H1 assumed an ideal refill and did not see this (§5.8). The same refill (0.92 g on a 0.15 N spring) also explains part of sim2's larger perfect-knowledge residual at 12 Hz (§5.1).
 2. **Native contacts chatter.** MuJoCo's stiff soft contact (0.5 ms, impratio 10) creeps least in stick but chatters when the pen slides (normal-force variation 2.6–3.0 times the mean). A softer setting slides cleanly but creeps about 30 µm/s in stick. H1's law is therefore the default for ink studies (§5.2).
-3. **Causal ratio is bistable.** The largest sim2–H1 differences in the causal ratio are the tracker locking onto the tremor or not, on nearly identical inputs (§5.1).
+3. **Causal ratio is bistable.** The largest sim2–H1 differences in the causal ratio come from the Rev H tracker, not the plant: on nearly identical inputs its frequency estimate either locks at 7.8 Hz or runs away to its 14.7 Hz bound (§5.1).
 4. **MyoSuite arm.** With constant co-contraction the Hill-type MyoArm cannot hold the pen-grasp posture on its own (7 slowly diverging modes). Its pen-point impedance at 8 Hz is 1.1–5.6 times HAP-26's (§7.3).
 5. **Synthetic writers.** The synthetic writers used by every simulator differ from measured writing. The sigma-lognormal writer is about half as fast as adults writing a phrase on paper (14.5 against 30.5 mm/s, LIT CON-20) with longer strokes and little 4–12 Hz content; the aiguide glyph writer has about ten times more 8–12 Hz content than recorded characters (14 % against 1.3–1.7 % of velocity energy, LIT CON-25) and nearly constant speed along curves (§6).
 6. **Passive rotor.** A 1.2 mN·m·s rotor spinning passively in the end cap did not lower the ink error with a translational hand tremor (+1.3 %, one case, §5.9).
@@ -141,7 +141,7 @@ res = S.run(pm, SC.get(300, SC.tremor(8.0, 1e-3)))         # recorded channels, 
   - action: nose tip reference (t₁, t₂) scaled to the travel (through the servo's soft limit, slew limit and force limits), then each plug-in's commands;
   - reward: −(e/0.1 mm)² per tick while the ball touches the paper, e = ink deviation from the tremor-free ink of the same plant and writing, minus small action-rate and saturation penalties;
   - episode: 3 s of sigma-lognormal writing with a sampled tremor at 1 kHz control; domain randomisation per episode (table in §7.4).
-- **Study.** `python3 -m sim2.run_study [--quick] [--stages ...]`. Stages: h1check, diagnose, contact, convergence, frontstop, energy, gyro, sensors, native, arm, myo, validate, env, plugins, report.
+- **Study.** `python3 -m sim2.run_study [--quick] [--stages ...]`. Stages: h1check, diagnose, streams, attrib, contact, convergence, frontstop, energy, gyro, sensors, native, arm, myo, validate, env, plugins, report. `--quick` runs a reduced set (contact, energy, gyro, sensors, myo, env, plugins, report) into `results/sim2/_cache/quick/` and `results/sim2/_quick_report/`.
 - **Tests.** `python3 -m pytest sim2/tests -q` (fast, about 25 s on the shared machine: model, contact kernel against its Python reference, closed forms, energy, gyroscope, tremor, sensors, Gymnasium checker, plug-ins, the s2r adapter); `--runslow` adds MyoArm, one H1 case, a Stable-Baselines3 PPO smoke run and a quick stage.
 
 ## 5. Verification (code and calculation verification, ASME V&V 40 sense)
@@ -152,26 +152,41 @@ res = S.run(pm, SC.get(300, SC.tremor(8.0, 1e-3)))         # recorded channels, 
 
 **Tolerances.** Written into `sim2/h1compare.py` before the grid ran, after one debugging case (seed 200, 10 Hz, 1 mm): unmodified ink error within ±10 %; oracle ratio within ±0.03; causal ratio within ±0.05.
 
+**Two runs.** The grid was run twice. The first run (kept in `results/sim2/_cache/stale/`) used an earlier revision of sim2's stepping code (reference follower every step, Python contact loop). The final code moved sim2's oracle ratios by +0.0012 on average (at most 0.0023), the causal ratios by +0.0006 on average and the unmodified error by less than 0.1 %. The tables below are the final run.
+
 | Grip split r_rot | Cases | Unmodified: max difference | Oracle: mean / rms / max difference, pass | Causal: mean / rms / max difference, pass |
 |---|---|---|---|---|
-| 0.5 | 40 (4 seeds × 4, 8, 12 Hz × 0.3, 1, 2 mm; + 4 wrist) | 1.5 % | +0.006 / 0.013 / 0.037; 37 of 40 | +0.011 / 0.053 / 0.304; 37 of 40 |
-| 0.3 | 8 (2 seeds × 8, 12 Hz × 1, 2 mm) | 1.1 % | −0.001 / 0.014 / 0.030; 7 of 8 | −0.002 / 0.032 / 0.070; 7 of 8 |
-| 0.7 | 8 | 3.1 % | +0.010 / 0.013 / 0.021; 8 of 8 | +0.053 / 0.112 / 0.273; 6 of 8 |
+| 0.5 | 40 (4 seeds × 4, 8, 12 Hz × 0.3, 1, 2 mm; + 4 wrist) | 1.5 % | +0.007 / 0.014 / 0.040; 36 of 40 | +0.011 / 0.053 / 0.305; 37 of 40 |
+| 0.3 | 8 (2 seeds × 8, 12 Hz × 1, 2 mm) | 1.2 % | +0.000 / 0.014 / 0.029; 8 of 8 | −0.001 / 0.032 / 0.070; 7 of 8 |
+| 0.7 | 8 | 3.1 % | +0.011 / 0.015 / 0.023; 8 of 8 | +0.053 / 0.112 / 0.273; 6 of 8 |
 
 Means over seeds, r_rot 0.5 (SIM; "published" = `results/opt/inertial_opt.json`):
 
 | Tremor | Oracle: published / H1 rerun / sim2 | Causal: published / H1 rerun / sim2 |
 |---|---|---|
-| 4 Hz, 0.3 / 1 / 2 mm | 0.086 / 0.086 / 0.086; 0.087 / 0.087 / 0.085; 0.096 / 0.096 / 0.096 | 1.004 / 1.004 / 1.001; 1.001 / 1.001 / 1.001; 1.004 / 1.004 / 1.002 |
-| 8 Hz, 0.3 / 1 / 2 mm | 0.097 / 0.097 / 0.096; 0.123 / 0.123 / 0.127; 0.158 / 0.158 / 0.164 | 0.953 / 0.953 / 0.969; 0.799 / 0.799 / 0.811; 0.724 / 0.723 / 0.769 |
-| 12 Hz, 0.3 / 1 / 2 mm | 0.099 / 0.100 / 0.103; 0.205 / 0.204 / 0.231; 0.241 / 0.240 / 0.265 | 0.931 / 0.933 / 0.933; 0.732 / 0.736 / 0.746; 0.641 / 0.646 / 0.648 |
-| Wrist rotation, 8 Hz 1 mm | 0.128 / 0.129 / 0.129 | 0.785 / 0.784 / 0.808 |
+| 4 Hz, 0.3 / 1 / 2 mm | 0.086 / 0.086 / 0.086; 0.087 / 0.087 / 0.085; 0.096 / 0.096 / 0.097 | 1.004 / 1.004 / 1.001; 1.001 / 1.001 / 1.001; 1.004 / 1.004 / 1.002 |
+| 8 Hz, 0.3 / 1 / 2 mm | 0.097 / 0.097 / 0.097; 0.123 / 0.123 / 0.128; 0.158 / 0.158 / 0.165 | 0.953 / 0.953 / 0.975; 0.799 / 0.799 / 0.811; 0.724 / 0.723 / 0.769 |
+| 12 Hz, 0.3 / 1 / 2 mm | 0.099 / 0.100 / 0.104; 0.205 / 0.204 / 0.233; 0.241 / 0.240 / 0.267 | 0.931 / 0.933 / 0.933; 0.732 / 0.736 / 0.747; 0.641 / 0.646 / 0.649 |
+| Wrist rotation, 8 Hz 1 mm | 0.128 / 0.129 / 0.130 | 0.785 / 0.784 / 0.808 |
 
 What the differences mean:
 
 - **Unmodified ink error** agrees within 3.1 % everywhere (SIM). sim2's plant (MuJoCo rigid bodies, grip joints, dynamic nose and sliding refill) reproduces H1's.
-- **Oracle** misses are all at 12 Hz, 1–2 mm (+0.031 to +0.037, r_rot 0.5). sim2's nose and refill are dynamic bodies with a finite-bandwidth servo; H1's stage is kinematic. [[DIAG_ORACLE]]
-- **Causal** misses are the tracker's frequency lock. For seed 201, 8 Hz, 2 mm (H1 0.750, sim2 1.054) H1's AKF settled at 7.75 Hz and sim2's at 14.5 Hz on streams that correlate at 0.97. [[DIAG_CAUSAL]]
+- **Oracle** misses are all at 12 Hz, 1–2 mm (+0.031 to +0.040, r_rot 0.5). In sim2 the nose and the refill are dynamic bodies driven by a modelled actuator; in H1 the stage is kinematic and the ball force is constant.
+
+Attribution on the three worst cases (SIM, stages `diagnose` and `attrib`; "idealised actuator" = servo every step, no Hall delay, no coil lag):
+
+| Case (test seed) | H1 | sim2 as modelled | Idealised actuator, 400 Hz | Idealised actuator, 2 kHz | Nose and refill 10× lighter | Refill spring 0.45 N (not 0.15 N) |
+|---|---|---|---|---|---|---|
+| 202, 12 Hz, 2 mm | 0.244 | 0.284 | 0.284 | 0.283 | 0.290 | 0.256 |
+| 203, 12 Hz, 1 mm | 0.220 | 0.254 | 0.254 | 0.254 | 0.255 | 0.246 |
+| 200, 12 Hz, 1 mm | 0.218 | 0.251 | 0.251 | 0.250 | 0.251 | 0.248 |
+
+  - The nose actuator's bandwidth and delays, and the reaction of the nose's inertia on the handle, do not explain the gap.
+  - A 3× stronger refill spring removes 70 % of the gap at 2 mm and 10–25 % at 1 mm. The 0.92 g refill on a 0.15 N constant-force spring does not keep the ball planted during fast corrections; H1's constant ball force ignored this.
+  - The rest of the gap at 1 mm (+0.026 to +0.030) is not attributed. Remaining differences: sim2's refill slides along the tilting nose axis (second-order geometry), and its ball contact is a penalty contact rather than H1's constant force.
+
+- **Causal** misses are the tracker's frequency lock. Rerunning the tracker with five sensor-noise seeds on the three worst cases (stage `diagnose`): H1's causal ratio stays within 0.72–0.79 on every seed; sim2's jumps between 0.66–0.86 and about 1.05 (seed 201, 8 Hz, 2 mm: 1.054, 1.054, 0.705, 1.057, 1.054). On test seed 200, 8 Hz, 2 mm the tracker's inputs from the two models are nearly the same (stage `streams`): page-frame acceleration band power within 1.1 % below 100 Hz and 10 % lower in sim2 at 100–400 Hz; correlation 0.996 and 0.9995; page-sensor positions correlate at 0.999999. Yet H1's AKF settles at 7.82 Hz on 5 of 5 noise seeds and sim2's on 2 of 5; on the other 3 its frequency estimate runs away to 14.6 Hz, next to the tracker's 14.73 Hz upper bound (SIM). The Rev H tracker sits on a knife edge in this condition: the difference is the tracker's, not the plant's.
 
 ### 5.2 Paper contact (SIM, `verification.json` → `contact`; figure `fig_sim2_contact.png`)
 
@@ -481,8 +496,8 @@ Sources: LIT CON-63 (FDA guidance, full text), CON-64 (ASME V&V 40 scope; standa
 
 ## 10. Open issues
 
-1. **Oracle gap at 12 Hz.** [[OPEN_ORACLE]]
-2. **Causal comparisons need many tracker-noise seeds.** The AKF's frequency lock makes single-seed differences large. Compare trackers over ≥ 5 noise seeds.
+1. **Oracle gap at 12 Hz.** The refill spring (0.15 N, EXP-Q02) sets how well the ball follows the paper during fast corrections. 0.45 N removed most of the 2 mm gap to H1, but the ink quality at 0.45 N on the ball is unknown, and part of the 1 mm gap is not attributed. Nose and refill redesigns (study N) should be judged in sim2, which models the refill.
+2. **Causal comparisons need many tracker-noise seeds.** The AKF's frequency lock makes single-seed differences large. Compare trackers over ≥ 5 noise seeds. The Rev H AKF's frequency estimate can run away to its upper bound (14.73 Hz) at 8 Hz, 2 mm on nearly identical inputs (§5.1); a guard against this belongs to study L.
 3. **Front stop.** The Rev H refill needs a stop that follows the nose (as modelled) or a fixed margin of about travel × cot θ_min + 0.3 mm (2.8 mm at 50°, 4.6 mm at 35°, CALC). A fixed 0.3 mm stop lost the ink for 27–37 % of the pen-down time (§5.8). A mechanism has not been designed.
 4. **Native contacts** still chatter at stiff settings; a physically parameterised compliant contact (LIT CON-56) would remove the trade-off.
 5. **Arm fit anisotropy.** The fitted arm matches H1's tip impedance only to 0.227 rms relative error, with two stiffness multipliers at their bound. The chain's masses and geometry are ASSUMPTION and were not fitted. Refit masses and stiffnesses to measured pen-grasp impedance (EXP-V04).
@@ -539,6 +554,8 @@ Sources: LIT CON-63 (FDA guidance, full text), CON-64 (ASME V&V 40 scope; standa
 | `results/sim2/fig_sim2_*.png` + `.csv` | Figures with their data |
 | `results/sim2/evidence_rows.csv` | Proposed ledger rows (23 columns) |
 | `results/sim2/viz_sim2.json` | Replay in the viewer's format (seed 300, 8 Hz, 1 mm: unmodified, oracle, causal) |
+| `results/sim2/_cache/stage_*.json` | Raw stage outputs with provenance (the report reads these); logs of the runs |
+| `results/sim2/_cache/stale/` | The superseded first H1-check run and its diagnosis (earlier stepping code, §5.1) |
 
 ## 13. Sources opened by this study
 

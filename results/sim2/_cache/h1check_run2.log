@@ -37,3 +37,34 @@ h1check: r_rot 0.5, 40 cases
   H1 check seed 203 12 Hz 1 mm trans: unmod -0.011, oracle 0.220/0.254, akf 0.755/0.775  (524 s)
   H1 check seed 203 12 Hz 2 mm trans: unmod -0.015, oracle 0.243/0.267, akf 0.701/0.672  (536 s)
   H1 check seed 200 8 Hz 1 mm wrist: unmod +0.001, oracle 0.123/0.124, akf 0.797/0.782  (553 s)
+  H1 check seed 201 8 Hz 1 mm wrist: unmod +0.003, oracle 0.123/0.124, akf 0.794/0.821  (570 s)
+  H1 check seed 202 8 Hz 1 mm wrist: unmod +0.002, oracle 0.142/0.143, akf 0.756/0.776  (587 s)
+  H1 check seed 203 8 Hz 1 mm wrist: unmod +0.001, oracle 0.127/0.128, akf 0.789/0.854  (604 s)
+h1check: r_rot 0.3, 8 cases
+  H1 check seed 200 8 Hz 1 mm trans: unmod +0.000, oracle 0.132/0.138, akf 0.743/0.743  (16 s)
+  H1 check seed 200 8 Hz 2 mm trans: unmod -0.004, oracle 0.161/0.146, akf 0.712/0.642  (29 s)
+  H1 check seed 200 12 Hz 1 mm trans: unmod -0.009, oracle 0.199/0.212, akf 0.592/0.596  (41 s)
+  H1 check seed 200 12 Hz 2 mm trans: unmod -0.003, oracle 0.234/0.206, akf 0.459/0.435  (54 s)
+  H1 check seed 201 8 Hz 1 mm trans: unmod +0.003, oracle 0.116/0.118, akf 0.794/0.831  (72 s)
+  H1 check seed 201 8 Hz 2 mm trans: unmod -0.003, oracle 0.145/0.153, akf 0.733/0.771  (85 s)
+  H1 check seed 201 12 Hz 1 mm trans: unmod -0.004, oracle 0.172/0.180, akf 0.687/0.693  (97 s)
+  H1 check seed 201 12 Hz 2 mm trans: unmod -0.011, oracle 0.219/0.224, akf 0.542/0.539  (110 s)
+h1check: r_rot 0.7, 8 cases
+  H1 check seed 200 8 Hz 1 mm trans: unmod +0.001, oracle 0.125/0.132, akf 0.794/0.782  (16 s)
+  H1 check seed 200 8 Hz 2 mm trans: unmod -0.007, oracle 0.162/0.171, akf 0.719/0.671  (28 s)
+  H1 check seed 200 12 Hz 1 mm trans: unmod -0.001, oracle 0.218/0.238, akf 0.683/0.690  (42 s)
+  H1 check seed 200 12 Hz 2 mm trans: unmod +0.031, oracle 0.200/0.195, akf 0.674/0.704  (54 s)
+  H1 check seed 201 8 Hz 1 mm trans: unmod +0.007, oracle 0.100/0.101, akf 0.852/0.998  (71 s)
+  H1 check seed 201 8 Hz 2 mm trans: unmod -0.003, oracle 0.139/0.154, akf 0.770/1.042  (83 s)
+  H1 check seed 201 12 Hz 1 mm trans: unmod +0.002, oracle 0.186/0.207, akf 0.816/0.824  (95 s)
+  H1 check seed 201 12 Hz 2 mm trans: unmod -0.022, oracle 0.223/0.245, akf 0.670/0.695  (107 s)
+=== stage h1check done in 822 s
+=== stage diagnose
+  oracle diag 202 12.0 Hz 2.0 mm: H1 0.244, sim2 modelled nose 0.284, no_delay_400Hz 0.284, ideal_2kHz 0.283
+  oracle diag 203 12.0 Hz 1.0 mm: H1 0.220, sim2 modelled nose 0.254, no_delay_400Hz 0.254, ideal_2kHz 0.254
+  oracle diag 200 12.0 Hz 1.0 mm: H1 0.218, sim2 modelled nose 0.251, no_delay_400Hz 0.251, ideal_2kHz 0.250
+  causal diag 201 8.0 Hz 2.0 mm: H1 [0.75  0.747 0.747 0.753 0.743] | sim2 [1.054 1.054 0.705 1.057 1.054]
+  causal diag 203 8.0 Hz 1.0 mm: H1 [0.789 0.79  0.789 0.789 0.789] | sim2 [0.854 0.787 0.863 0.809 0.817]
+  causal diag 200 8.0 Hz 2.0 mm: H1 [0.725 0.736 0.722 0.728 0.719] | sim2 [0.661 1.048 1.05  0.67  1.043]
+=== stage diagnose done in 191 s
+all done in 1013 s

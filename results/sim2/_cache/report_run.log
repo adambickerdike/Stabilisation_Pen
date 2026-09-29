@@ -1,0 +1,7 @@
+=== stage report
+  report: stages available ['h1check', 'diagnose', 'streams', 'attrib', 'contact', 'convergence', 'energy', 'gyro', 'sensors', 'native', 'frontstop', 'arm', 'myo', 'validate', 'env', 'plugins']
+  evidence rows: 41
+  replay: unmodified 1026 um (1.000), oracle 138 um (0.134), causal 778 um (0.758)
+  report written to /home/user/Stabilisation_Pen/results/sim2
+=== stage report done in 23 s
+all done in 23 s
