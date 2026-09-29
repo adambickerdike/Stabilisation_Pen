@@ -40,6 +40,12 @@ from stabpen import signals as sg  # noqa: E402
 NET_HZ = 500.0
 LAGS = (0.0, 0.025, 0.05, 0.1)
 DATA_DIR = BUILD_DIR / "learn_data"
+
+
+def set_quick(quick: bool) -> None:
+    """--quick runs keep their own training data and tuning arrays (built with the quick run's tuning choices)."""
+    global DATA_DIR
+    DATA_DIR = BUILD_DIR / ("learn_data_quick" if quick else "learn_data")
 STUDY_TEXT = W.ET_SENTENCE
 
 

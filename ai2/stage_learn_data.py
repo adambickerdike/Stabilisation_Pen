@@ -36,6 +36,7 @@ def model_params(quick: bool):
 
 
 def _train_job(job):
+    DA.set_quick(job.get("quick", False))
     return DA.save_sample(job["i"], "train", job["mp"])
 
 
@@ -59,6 +60,7 @@ def tuning_arrays(w: int, mp, seed: int = TUNE_SEEDS[0]):
 
 
 def _tune_job(job):
+    DA.set_quick(job.get("quick", False))
     arrs = tuning_arrays(job["w"], job["mp"])
     p = DA.DATA_DIR / f"tune_w{job['w']}.npz"
     DA.DATA_DIR.mkdir(parents=True, exist_ok=True)
@@ -84,11 +86,12 @@ def load_tuning(writers=TUNE_WRITERS):
 
 
 def run(quick: bool, workers: int):
+    DA.set_quick(quick)
     mp = model_params(quick)
     n = N_TRAIN_QUICK if quick else N_TRAIN
     C.log(f"[learn_data] {n} training samples")
-    C.jmap(_train_job, [{"i": i, "mp": mp} for i in range(n)], workers)
+    C.jmap(_train_job, [{"i": i, "mp": mp, "quick": quick} for i in range(n)], workers)
     writers = TUNE_WRITERS[:1] if quick else TUNE_WRITERS
     C.log(f"[learn_data] tuning arrays for writers {writers}")
-    C.jmap(_tune_job, [{"w": w, "mp": mp} for w in writers], workers)
+    C.jmap(_tune_job, [{"w": w, "mp": mp, "quick": quick} for w in writers], workers)
     C.save("learn_data", {"n_train": n, "tuning_writers": list(writers), "model_params": mp}, quick)

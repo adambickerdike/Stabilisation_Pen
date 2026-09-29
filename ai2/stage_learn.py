@@ -88,6 +88,7 @@ def references(tune: List[Dict], mp: Dict) -> Dict:
 
 
 def run(quick: bool, workers: int):
+    DA.set_quick(quick)
     n = SLD.N_TRAIN_QUICK if quick else SLD.N_TRAIN
     mp = SLD.model_params(quick)
     train_raw = DA.load_set("train", n)

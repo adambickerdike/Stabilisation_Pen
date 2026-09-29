@@ -1,0 +1,61 @@
+panel,label,value
+"Ink error, 1-2 mm tremor (um RMS)",Rev H tracker,626.851221800404
+"Ink error, 1-2 mm tremor (um RMS)",gated tracker,430.25919438966986
+"Ink error, 1-2 mm tremor (um RMS)",TCN,278.3641828864903
+"Ink error, 1-2 mm tremor (um RMS)",TCN + calibration,289.65756939277384
+"Ink error, 1-2 mm tremor (um RMS)",transformer,489.31382236219685
+"Ink error, 1-2 mm tremor (um RMS)",hybrid,255.79471880400558
+"Ink error, 1-2 mm tremor (um RMS)",RL arbiter,297.89839888528536
+"Ink error, 1-2 mm tremor (um RMS)",residual RL,394.05882779392294
+"Ink error, 1-2 mm tremor (um RMS)","delayed, 3 mm",412.3340564312809
+"Ink error, 1-2 mm tremor (um RMS)",perfect (limit),67.98475296443219
+"Ink error, 0.3 mm tremor (um RMS)",Rev H tracker,162.4333275153739
+"Ink error, 0.3 mm tremor (um RMS)",gated tracker,160.6761793578629
+"Ink error, 0.3 mm tremor (um RMS)",TCN,127.44232138227946
+"Ink error, 0.3 mm tremor (um RMS)",TCN + calibration,152.22276626176787
+"Ink error, 0.3 mm tremor (um RMS)",transformer,169.85847968941482
+"Ink error, 0.3 mm tremor (um RMS)",hybrid,143.63802425931428
+"Ink error, 0.3 mm tremor (um RMS)",RL arbiter,160.8244797308064
+"Ink error, 0.3 mm tremor (um RMS)",residual RL,153.62517853458934
+"Ink error, 0.3 mm tremor (um RMS)","delayed, 3 mm",160.10763733659
+"Ink error, 0.3 mm tremor (um RMS)",perfect (limit),5.705866139862425
+Tremor-free writing moved (um RMS),Rev H tracker,26.285821255809953
+Tremor-free writing moved (um RMS),gated tracker,26.285821255809953
+Tremor-free writing moved (um RMS),TCN,19.286721872718406
+Tremor-free writing moved (um RMS),TCN + calibration,20.87660290418908
+Tremor-free writing moved (um RMS),transformer,52.994996921884024
+Tremor-free writing moved (um RMS),hybrid,27.770647755247207
+Tremor-free writing moved (um RMS),RL arbiter,30.66091932175917
+Tremor-free writing moved (um RMS),residual RL,164.78009405842354
+Tremor-free writing moved (um RMS),"delayed, 3 mm",26.285821255809953
+Tremor-free writing moved (um RMS),perfect (limit),
+"Letters read, 1-2 mm tremor",Rev H tracker,0.642094017094017
+"Letters read, 1-2 mm tremor",gated tracker,0.7793803418803419
+"Letters read, 1-2 mm tremor",TCN,0.8555021367521367
+"Letters read, 1-2 mm tremor",TCN + calibration,0.8661858974358974
+"Letters read, 1-2 mm tremor",transformer,0.6474358974358974
+"Letters read, 1-2 mm tremor",hybrid,0.8870192307692307
+"Letters read, 1-2 mm tremor",RL arbiter,0.8774038461538463
+"Letters read, 1-2 mm tremor",residual RL,0.8074252136752137
+"Letters read, 1-2 mm tremor","delayed, 3 mm",0.7895299145299145
+"Letters read, 1-2 mm tremor",perfect (limit),0.981570512820513
+"Words read by the app, 1-2 mm tremor",Rev H tracker,0.4930555555555556
+"Words read by the app, 1-2 mm tremor",gated tracker,0.7388888888888889
+"Words read by the app, 1-2 mm tremor",TCN,0.811111111111111
+"Words read by the app, 1-2 mm tremor",TCN + calibration,0.8402777777777778
+"Words read by the app, 1-2 mm tremor",transformer,0.5069444444444444
+"Words read by the app, 1-2 mm tremor",hybrid,0.8666666666666667
+"Words read by the app, 1-2 mm tremor",RL arbiter,0.8861111111111111
+"Words read by the app, 1-2 mm tremor",residual RL,0.7694444444444444
+"Words read by the app, 1-2 mm tremor","delayed, 3 mm",0.7333333333333333
+"Words read by the app, 1-2 mm tremor",perfect (limit),0.9944444444444444
+"Ink error, 6 Hz 1-2 mm (um RMS)",Rev H tracker,818.4124714523749
+"Ink error, 6 Hz 1-2 mm (um RMS)",gated tracker,539.9094351130907
+"Ink error, 6 Hz 1-2 mm (um RMS)",TCN,306.8333159340685
+"Ink error, 6 Hz 1-2 mm (um RMS)",TCN + calibration,311.5721833215351
+"Ink error, 6 Hz 1-2 mm (um RMS)",transformer,593.0183578468158
+"Ink error, 6 Hz 1-2 mm (um RMS)",hybrid,292.61411417130967
+"Ink error, 6 Hz 1-2 mm (um RMS)",RL arbiter,333.07743263121455
+"Ink error, 6 Hz 1-2 mm (um RMS)",residual RL,481.3279525577487
+"Ink error, 6 Hz 1-2 mm (um RMS)","delayed, 3 mm",524.6914706090525
+"Ink error, 6 Hz 1-2 mm (um RMS)",perfect (limit),46.273500094075104

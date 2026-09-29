@@ -1,0 +1,85 @@
+column,row_key,row,metrics
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",none,Ordinary pen,"ink error 597 um  ·  letters read 73%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",tracker,"Rev H + tracker
+(as built)","ink error 600 um  ·  letters read 69%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",gated,"Gated listening
+tracker (0 ms)","ink error 500 um  ·  letters read 69%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",delayed_3mm,"Delayed ink,
++-3 mm nose","ink error 493 um  ·  letters read 73%
+words read by the app 3/5  ·  mean lag 10 ms"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",delayed_6mm,"Delayed ink,
++-6 mm nose","ink error 495 um  ·  letters read 65%
+words read by the app 2/5  ·  mean lag 18 ms"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",lag_100_6mm,"Delayed ink 100 ms
+(catch-up), +-6 mm","ink error 495 um  ·  letters read 69%
+words read by the app 2/5  ·  mean lag 32 ms"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",limit_100_6mm,"Delayed ink 100 ms
+(Z-refill limit)","ink error 513 um  ·  letters read 62%
+words read by the app 2/5  ·  mean lag 100 ms"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",clean_copy,"App clean copy
+(digital, not ink)","ink error 186 um  ·  letters read 92%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",oracle,"Perfect knowledge
+(limit)","ink error 13 um  ·  letters read 100%
+words read by the app 5/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",none,Ordinary pen,"ink error 1160 um  ·  letters read 38%
+words read by the app 1/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",tracker,"Rev H + tracker
+(as built)","ink error 818 um  ·  letters read 42%
+words read by the app 1/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",gated,"Gated listening
+tracker (0 ms)","ink error 577 um  ·  letters read 69%
+words read by the app 3/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",delayed_3mm,"Delayed ink,
++-3 mm nose","ink error 556 um  ·  letters read 69%
+words read by the app 4/5  ·  mean lag 16 ms"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",delayed_6mm,"Delayed ink,
++-6 mm nose","ink error 548 um  ·  letters read 77%
+words read by the app 3/5  ·  mean lag 30 ms"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",lag_100_6mm,"Delayed ink 100 ms
+(catch-up), +-6 mm","ink error 547 um  ·  letters read 65%
+words read by the app 2/5  ·  mean lag 53 ms"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",limit_100_6mm,"Delayed ink 100 ms
+(Z-refill limit)","ink error 567 um  ·  letters read 77%
+words read by the app 3/5  ·  mean lag 100 ms"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",clean_copy,"App clean copy
+(digital, not ink)","ink error 214 um  ·  letters read 96%
+words read by the app 5/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",oracle,"Perfect knowledge
+(limit)","ink error 111 um  ·  letters read 100%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",intended,Intended,"what the writer meant to write
+(the same hand without tremor)"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",none,Ordinary pen,"ink error 586 um  ·  letters read 73%
+words read by the app 3/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",tracker,"Rev H + tracker
+(as built)","ink error 327 um  ·  letters read 88%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",gated,"Gated listening
+tracker (0 ms)","ink error 265 um  ·  letters read 92%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",delayed_3mm,"Delayed ink,
++-3 mm nose","ink error 253 um  ·  letters read 92%
+words read by the app 5/5  ·  mean lag 15 ms"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",delayed_6mm,"Delayed ink,
++-6 mm nose","ink error 249 um  ·  letters read 88%
+words read by the app 4/5  ·  mean lag 28 ms"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",lag_100_6mm,"Delayed ink 100 ms
+(catch-up), +-6 mm","ink error 249 um  ·  letters read 81%
+words read by the app 4/5  ·  mean lag 49 ms"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",limit_100_6mm,"Delayed ink 100 ms
+(Z-refill limit)","ink error 287 um  ·  letters read 85%
+words read by the app 4/5  ·  mean lag 100 ms"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",clean_copy,"App clean copy
+(digital, not ink)","ink error 148 um  ·  letters read 96%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",oracle,"Perfect knowledge
+(limit)","ink error 25 um  ·  letters read 100%
+words read by the app 5/5"

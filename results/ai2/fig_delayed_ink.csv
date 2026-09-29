@@ -1,0 +1,89 @@
+panel,series,x,y
+"Ink error, 1-2 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",0,430.25919438966986
+"Ink error, 1-2 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",25,412.3340564312809
+"Ink error, 1-2 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",50,407.614223545536
+"Ink error, 1-2 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",100,407.3073198913578
+"Ink error, 1-2 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",0,430.25919438966986
+"Ink error, 1-2 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",25,nan
+"Ink error, 1-2 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",50,nan
+"Ink error, 1-2 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",100,413.4798897928708
+"Ink error, 1-2 mm tremor (um RMS)",Perfect knowledge + lag (limit),0,67.98475296443219
+"Ink error, 1-2 mm tremor (um RMS)",Perfect knowledge + lag (limit),25,nan
+"Ink error, 1-2 mm tremor (um RMS)",Perfect knowledge + lag (limit),50,nan
+"Ink error, 1-2 mm tremor (um RMS)",Perfect knowledge + lag (limit),100,31.345138219502587
+"Ink error, 1-2 mm tremor (um RMS)",Rev H tracker (as built),0,626.851221800404
+"Ink error, 1-2 mm tremor (um RMS)",Rev H tracker (as built),25,626.851221800404
+"Ink error, 1-2 mm tremor (um RMS)",Rev H tracker (as built),50,626.851221800404
+"Ink error, 1-2 mm tremor (um RMS)",Rev H tracker (as built),100,626.851221800404
+"Letters read, 1-2 mm tremor","Catch-up lag, RTS smoother + detector",0,0.7793803418803419
+"Letters read, 1-2 mm tremor","Catch-up lag, RTS smoother + detector",25,0.7895299145299145
+"Letters read, 1-2 mm tremor","Catch-up lag, RTS smoother + detector",50,0.7868589743589742
+"Letters read, 1-2 mm tremor","Catch-up lag, RTS smoother + detector",100,0.6786858974358974
+"Letters read, 1-2 mm tremor","Z-refill contact delay (limit policy), +-6 mm",0,0.7793803418803419
+"Letters read, 1-2 mm tremor","Z-refill contact delay (limit policy), +-6 mm",25,nan
+"Letters read, 1-2 mm tremor","Z-refill contact delay (limit policy), +-6 mm",50,nan
+"Letters read, 1-2 mm tremor","Z-refill contact delay (limit policy), +-6 mm",100,0.7841880341880342
+"Letters read, 1-2 mm tremor",Perfect knowledge + lag (limit),0,0.981570512820513
+"Letters read, 1-2 mm tremor",Perfect knowledge + lag (limit),25,nan
+"Letters read, 1-2 mm tremor",Perfect knowledge + lag (limit),50,nan
+"Letters read, 1-2 mm tremor",Perfect knowledge + lag (limit),100,0.9658119658119657
+"Letters read, 1-2 mm tremor",Rev H tracker (as built),0,0.642094017094017
+"Letters read, 1-2 mm tremor",Rev H tracker (as built),25,0.642094017094017
+"Letters read, 1-2 mm tremor",Rev H tracker (as built),50,0.642094017094017
+"Letters read, 1-2 mm tremor",Rev H tracker (as built),100,0.642094017094017
+"Intended path covered by ink (0.3 mm), 1-2 mm","Catch-up lag, RTS smoother + detector",0,0.8545636441584178
+"Intended path covered by ink (0.3 mm), 1-2 mm","Catch-up lag, RTS smoother + detector",25,0.8539012116423534
+"Intended path covered by ink (0.3 mm), 1-2 mm","Catch-up lag, RTS smoother + detector",50,0.8532161389693569
+"Intended path covered by ink (0.3 mm), 1-2 mm","Catch-up lag, RTS smoother + detector",100,0.7740394031965425
+"Intended path covered by ink (0.3 mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",0,0.8545636441584178
+"Intended path covered by ink (0.3 mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",25,nan
+"Intended path covered by ink (0.3 mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",50,nan
+"Intended path covered by ink (0.3 mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",100,0.8320025443509043
+"Intended path covered by ink (0.3 mm), 1-2 mm",Perfect knowledge + lag (limit),0,0.99913786723085
+"Intended path covered by ink (0.3 mm), 1-2 mm",Perfect knowledge + lag (limit),25,nan
+"Intended path covered by ink (0.3 mm), 1-2 mm",Perfect knowledge + lag (limit),50,nan
+"Intended path covered by ink (0.3 mm), 1-2 mm",Perfect knowledge + lag (limit),100,0.9885596087941345
+"Intended path covered by ink (0.3 mm), 1-2 mm",Rev H tracker (as built),0,0.695886900670611
+"Intended path covered by ink (0.3 mm), 1-2 mm",Rev H tracker (as built),25,0.695886900670611
+"Intended path covered by ink (0.3 mm), 1-2 mm",Rev H tracker (as built),50,0.695886900670611
+"Intended path covered by ink (0.3 mm), 1-2 mm",Rev H tracker (as built),100,0.695886900670611
+"Nose travel needed, p95 (mm), 1-2 mm","Catch-up lag, RTS smoother + detector",0,2.120150346034462
+"Nose travel needed, p95 (mm), 1-2 mm","Catch-up lag, RTS smoother + detector",25,2.4589735122265193
+"Nose travel needed, p95 (mm), 1-2 mm","Catch-up lag, RTS smoother + detector",50,3.0251667604851082
+"Nose travel needed, p95 (mm), 1-2 mm","Catch-up lag, RTS smoother + detector",100,3.799064842339052
+"Nose travel needed, p95 (mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",0,2.120150346034462
+"Nose travel needed, p95 (mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",25,nan
+"Nose travel needed, p95 (mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",50,nan
+"Nose travel needed, p95 (mm), 1-2 mm","Z-refill contact delay (limit policy), +-6 mm",100,4.303909312440366
+"Nose travel needed, p95 (mm), 1-2 mm",Perfect knowledge + lag (limit),0,nan
+"Nose travel needed, p95 (mm), 1-2 mm",Perfect knowledge + lag (limit),25,nan
+"Nose travel needed, p95 (mm), 1-2 mm",Perfect knowledge + lag (limit),50,nan
+"Nose travel needed, p95 (mm), 1-2 mm",Perfect knowledge + lag (limit),100,3.881315312317961
+"Ink error, 0.3 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",0,160.6761793578629
+"Ink error, 0.3 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",25,160.10763733659
+"Ink error, 0.3 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",50,159.9660566756839
+"Ink error, 0.3 mm tremor (um RMS)","Catch-up lag, RTS smoother + detector",100,159.90825201870456
+"Ink error, 0.3 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",0,160.6761793578629
+"Ink error, 0.3 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",25,nan
+"Ink error, 0.3 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",50,nan
+"Ink error, 0.3 mm tremor (um RMS)","Z-refill contact delay (limit policy), +-6 mm",100,176.95226543494005
+"Ink error, 0.3 mm tremor (um RMS)",Perfect knowledge + lag (limit),0,5.705866139862425
+"Ink error, 0.3 mm tremor (um RMS)",Perfect knowledge + lag (limit),25,nan
+"Ink error, 0.3 mm tremor (um RMS)",Perfect knowledge + lag (limit),50,nan
+"Ink error, 0.3 mm tremor (um RMS)",Perfect knowledge + lag (limit),100,13.188469804619896
+"Ink error, 0.3 mm tremor (um RMS)",Rev H tracker (as built),0,162.4333275153739
+"Ink error, 0.3 mm tremor (um RMS)",Rev H tracker (as built),25,162.4333275153739
+"Ink error, 0.3 mm tremor (um RMS)",Rev H tracker (as built),50,162.4333275153739
+"Ink error, 0.3 mm tremor (um RMS)",Rev H tracker (as built),100,162.4333275153739
+Tremor-free writing moved (um RMS),"Catch-up lag, RTS smoother + detector",0,26.285821255809953
+Tremor-free writing moved (um RMS),"Catch-up lag, RTS smoother + detector",25,26.285821255809953
+Tremor-free writing moved (um RMS),"Catch-up lag, RTS smoother + detector",50,26.285821255809953
+Tremor-free writing moved (um RMS),"Catch-up lag, RTS smoother + detector",100,26.285821255809953
+Tremor-free writing moved (um RMS),"Z-refill contact delay (limit policy), +-6 mm",0,26.285821255809953
+Tremor-free writing moved (um RMS),"Z-refill contact delay (limit policy), +-6 mm",25,nan
+Tremor-free writing moved (um RMS),"Z-refill contact delay (limit policy), +-6 mm",50,nan
+Tremor-free writing moved (um RMS),"Z-refill contact delay (limit policy), +-6 mm",100,nan
+Tremor-free writing moved (um RMS),Rev H tracker (as built),0,26.285821255809953
+Tremor-free writing moved (um RMS),Rev H tracker (as built),25,26.285821255809953
+Tremor-free writing moved (um RMS),Rev H tracker (as built),50,26.285821255809953
+Tremor-free writing moved (um RMS),Rev H tracker (as built),100,26.285821255809953

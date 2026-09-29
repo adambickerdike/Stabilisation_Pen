@@ -1,0 +1,22 @@
+panel,label,value
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","  50 ms, amp gate 0.00 mm, nose 6",392.5189927927529
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","  25 ms, amp gate 0.00 mm, nose 6",392.59416687857356
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","  25 ms, amp gate 0.00 mm, nose 3",398.48709869300257
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","  50 ms, amp gate 0.00 mm, nose 3",398.71778647432797
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 50 ms, amp gate 0.15 mm, nose 6",401.8940354751832
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 25 ms, amp gate 0.15 mm, nose 6",401.9166600316644
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 50 ms, amp gate 0.25 mm, nose 6",406.32978319210133
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 25 ms, amp gate 0.25 mm, nose 6",406.4614559537211
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 25 ms, amp gate 0.15 mm, nose 3",407.8062839865958
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 50 ms, amp gate 0.15 mm, nose 3",408.10773056192664
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 25 ms, amp gate 0.25 mm, nose 3",412.35130101782335
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 50 ms, amp gate 0.25 mm, nose 3",412.56692046657525
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 25 ms, amp gate 0.35 mm, nose 6",416.1787026031183
+"D2b: ink error 1-2 mm (um), tuning seed 300 (* = passes R1-R4)","* 50 ms, amp gate 0.35 mm, nose 6",416.2948238702279
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",  hybrid,255.01495247758487
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",* TCN,281.1409354346252
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",* TCN + calibration,292.5453563046247
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",  RL arbiter,296.72192840362993
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",  residual RL,383.23596580612366
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",* gated tracker,418.6544454308885
+"cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",  transformer,492.11804443263446

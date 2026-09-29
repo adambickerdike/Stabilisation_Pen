@@ -1,0 +1,49 @@
+panel,series,x,y
+"Hand-ink distance over the lag, p95 (mm)",writer 0,25.0,1.2278847532661803
+"Hand-ink distance over the lag, p95 (mm)",writer 0,50.0,2.1889608348734577
+"Hand-ink distance over the lag, p95 (mm)",writer 0,100.0,3.3986497773109217
+"Hand-ink distance over the lag, p95 (mm)",writer 0,250.0,4.652571152482262
+"Hand-ink distance over the lag, p95 (mm)",writer 1,25.0,1.236515633112093
+"Hand-ink distance over the lag, p95 (mm)",writer 1,50.0,2.239977908053296
+"Hand-ink distance over the lag, p95 (mm)",writer 1,100.0,3.508828404373219
+"Hand-ink distance over the lag, p95 (mm)",writer 1,250.0,4.861171750271502
+"Hand-ink distance over the lag, p95 (mm)",writer 2,25.0,1.0533425231343128
+"Hand-ink distance over the lag, p95 (mm)",writer 2,50.0,1.8598482191793606
+"Hand-ink distance over the lag, p95 (mm)",writer 2,100.0,2.9017158771646328
+"Hand-ink distance over the lag, p95 (mm)",writer 2,250.0,4.108317244058438
+"Hand-ink distance over the lag, p95 (mm)",writer 3,25.0,1.2946673857156439
+"Hand-ink distance over the lag, p95 (mm)",writer 3,50.0,2.092712973405355
+"Hand-ink distance over the lag, p95 (mm)",writer 3,100.0,3.042820019254394
+"Hand-ink distance over the lag, p95 (mm)",writer 3,250.0,3.3273767119903024
+"Hand-ink distance over the lag, p95 (mm)",writer 4,25.0,1.4445096381244027
+"Hand-ink distance over the lag, p95 (mm)",writer 4,50.0,2.5569419466049648
+"Hand-ink distance over the lag, p95 (mm)",writer 4,100.0,3.917552398905763
+"Hand-ink distance over the lag, p95 (mm)",writer 4,250.0,5.544083826956417
+"Hand-ink distance over the lag, p95 (mm)",writer 5,25.0,0.9670198710260648
+"Hand-ink distance over the lag, p95 (mm)",writer 5,50.0,1.798795284424136
+"Hand-ink distance over the lag, p95 (mm)",writer 5,100.0,3.1259860028252997
+"Hand-ink distance over the lag, p95 (mm)",writer 5,250.0,5.671029991902151
+Pen-down time with the full lag inside the stroke,writer 0,25.0,0.9009009009009009
+Pen-down time with the full lag inside the stroke,writer 0,50.0,0.8018018018018018
+Pen-down time with the full lag inside the stroke,writer 0,100.0,0.6036036036036037
+Pen-down time with the full lag inside the stroke,writer 0,250.0,0.2045045045045045
+Pen-down time with the full lag inside the stroke,writer 1,25.0,0.8981387165478285
+Pen-down time with the full lag inside the stroke,writer 1,50.0,0.796277433095657
+Pen-down time with the full lag inside the stroke,writer 1,100.0,0.592554866191314
+Pen-down time with the full lag inside the stroke,writer 1,250.0,0.18909158255394018
+Pen-down time with the full lag inside the stroke,writer 2,25.0,0.8979213066072754
+Pen-down time with the full lag inside the stroke,writer 2,50.0,0.7958426132145509
+Pen-down time with the full lag inside the stroke,writer 2,100.0,0.5916852264291017
+Pen-down time with the full lag inside the stroke,writer 2,250.0,0.2056421677802524
+Pen-down time with the full lag inside the stroke,writer 3,25.0,0.8688602765855985
+Pen-down time with the full lag inside the stroke,writer 3,50.0,0.737720553171197
+Pen-down time with the full lag inside the stroke,writer 3,100.0,0.47615641392465424
+Pen-down time with the full lag inside the stroke,writer 3,250.0,0.08679065331425846
+Pen-down time with the full lag inside the stroke,writer 4,25.0,0.9051397033459814
+Pen-down time with the full lag inside the stroke,writer 4,50.0,0.8102794066919627
+Pen-down time with the full lag inside the stroke,writer 4,100.0,0.6205588133839255
+Pen-down time with the full lag inside the stroke,writer 4,250.0,0.2536219385995171
+Pen-down time with the full lag inside the stroke,writer 5,25.0,0.9220466302884275
+Pen-down time with the full lag inside the stroke,writer 5,50.0,0.844093260576855
+Pen-down time with the full lag inside the stroke,writer 5,100.0,0.6881865211537098
+Pen-down time with the full lag inside the stroke,writer 5,250.0,0.2912621359223301

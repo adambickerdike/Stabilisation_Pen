@@ -342,7 +342,9 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   f"gated {_f(t('gated', 'recognition_1_2mm'), '{:.3f}')}, delayed 3 mm {_f(t('delayed_3mm', 'recognition_1_2mm'), '{:.3f}')}, "
                   f"delayed 6 mm {_f(t('delayed_6mm', 'recognition_1_2mm'), '{:.3f}')}; paired delayed 3 mm - gated ink "
                   f"{_f(_g(pr, 'delayed_3mm-gated:ink_err_um', 'mean'), '{:+.0f}')} um (95 % CI {_f((_g(pr, 'delayed_3mm-gated:ink_err_um', 'ci95') or [None])[0], '{:+.0f}')} to "
-                  f"{_f((_g(pr, 'delayed_3mm-gated:ink_err_um', 'ci95') or [None, None])[1], '{:+.0f}')}). Chosen lags on seed 300: {d2b}; seed-301 confirmation: {conf_txt}",
+                  f"{_f((_g(pr, 'delayed_3mm-gated:ink_err_um', 'ci95') or [None, None])[1], '{:+.0f}')}). Chosen on tuning seed 300: "
+                  + "; ".join(f"{k}: lag <= {1e3 * float(v.split('lam_max')[1].split('_')[0]):.0f} ms" for k, v in d2b.items() if v)
+                  + f"; seed-301 confirmation (R1R2R3R4): {conf_txt}; not adopted (R3 failed on seed 301)",
                   "um RMS ink error; share of letters read", "ai2.json aggregate.summary, aggregate.paired, tuning.d2b",
                   "Model HW1 replay convention; a +-6 mm nose is an assumption (same servo)", "Whether a small ink lag buys a cleaner line",
                   "Adopt the causal gated tracker; keep delayed ink as an option only if EXP-L01/L02 show writers accept the lag", "CON",

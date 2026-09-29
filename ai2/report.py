@@ -377,7 +377,7 @@ def fig_tuning(d2b: Optional[Dict], cl: Optional[Dict], od: Path) -> None:
     panels = []
     if d2b:
         tab = d2b["selection"]["table"]
-        ks = sorted(tab, key=lambda k: tab[k]["J_ink_1_2mm_um"])[:14]
+        ks = sorted(tab, key=lambda k: tab[k]["J_ink_1_2mm_um"])
 
         def short(k):
             lam = k.split("lam_max")[1].split("_")[0]
@@ -390,13 +390,13 @@ def fig_tuning(d2b: Optional[Dict], cl: Optional[Dict], od: Path) -> None:
     if cl:
         tab = cl["table"]
         ks = sorted(tab, key=lambda k: tab[k]["J_ink_1_2mm_um"])
-        panels.append({"title": "cl: learned and RL candidates, ink error 1-2 mm (um), tuning seeds 300-301 (* = passes R1-R4)",
+        panels.append({"title": "cl: ink error 1-2 mm (um), seeds 300-301 (* = passes R1-R4)",
                        "labels": [("* " if tab[k]["passes"] else "  ") + SHORT.get(k, k) for k in ks],
                        "values": [tab[k]["J_ink_1_2mm_um"] for k in ks], "colors": [S[0] if tab[k]["passes"] else plotstyle.MUTED for k in ks],
                        "fmt": "{:.0f}", "ref": tab[ks[0]]["tracker_J_ink_1_2mm_um"]})
     if panels:
         FG.bars_chart(od / "fig_tuning.png", panels, "SIMULATION (model HW1), tuning writers 100-103",
-                      "dashed line: the Rev H tracker on the same runs", ncols=2, size=(13.0, 5.2), share_labels=False)
+                      "dashed line: the Rev H tracker on the same runs", ncols=2, size=(13.0, 6.4), share_labels=False)
 
 
 # ------------------------------------------------------------------ kinematics of a lagging ink (CALC)
@@ -507,6 +507,8 @@ def learn_summary(learn: Optional[Dict], quick: bool = False) -> Optional[Dict]:
     try:            # recomputed from the tuning arrays (the stage's own Rev H reference repeated dh(t) at every lag;
         from . import stage_learn as SL        # corrected to dh(t - lag) after the stage ran; model scores unchanged)
         from . import stage_learn_data as SLD
+        from . import data as DA
+        DA.set_quick(quick)
         tune = SLD.load_tuning()
         if tune:
             ref = SL.references(tune, SLD.model_params(quick))

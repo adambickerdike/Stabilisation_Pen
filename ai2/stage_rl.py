@@ -122,6 +122,7 @@ def _train(algo: str, make_env, budget: int, n_eval: int, evaluate, name: str, o
 
 
 def run(quick: bool, workers: int):
+    DA.set_quick(quick)
     n = SLD.N_TRAIN_QUICK if quick else SLD.N_TRAIN
     mp = SLD.model_params(quick)
     ag = tuple(mp["amp_gate"])
