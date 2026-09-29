@@ -1,0 +1,311 @@
+"""The tremor library: every recording's tremor parameters, the severity classes and the tremor-only waveforms.
+
+What each source contributes (details in docs/real_data.md):
+  uci_spiral  PD and control pen-tip DISPLACEMENT while drawing (the only calibrated tip data): the severity
+              classes in mm at the tip and the PD waveforms of the generator (2-D, real)
+  zenodo_et   ET hand acceleration (a.u.), rest and posture: the ET waveforms of the generator (1-axis, real; made
+              2-D by a documented construction; amplitude set by the class)
+  newhandpd   PD and healthy pen ACCELERATION (derived gravity calibration): acceleration spectra
+  pads        ET, PD and healthy WRIST acceleration (g) in rest, postural and kinetic tasks: rest/action behaviour,
+              wrist amplitude (a lower bound of the tip's; statistics only)
+
+Rules, fixed before any simulation used the library (the simulation outcomes never feed back into them):
+  * detection: a recording has a tremor line when its line ratio (dsp.tremor_params) is at least the 95th percentile
+    of the control recordings of the same source (and condition, for PADS); Zenodo ET has no controls and uses the
+    UCI control threshold (both are unit-free spectral contrasts; ASSUMPTION);
+  * tip amplitude of a UCI recording = the background-corrected major-axis peak amplitude ('amp_excess');
+  * a subject's tip amplitude = the median over its recordings with a line; severity classes = tertiles of the
+    detected PD subjects' tip amplitudes (mild / moderate / severe), 'none' below detection;
+  * split: subjects of each source are sorted by amplitude and assigned alternately (seeded coin per pair) to
+    'tuning' and 'test', so both splits span the severities; controls likewise;
+  * a recording's waveform enters the generator when it has a line, its background share in f0 +- 1.5 Hz is at most
+    0.35 and it lasts at least 6 s (UCI) or 20 s (Zenodo, posture condition only: the action-tremor proxy).
+Waveforms are extracted with ZERO-PHASE filters (dsp.bandpass, dsp.acc_to_disp): simulation inputs only.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import math
+import random
+import time
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import numpy as np
+
+from . import CACHE_DIR
+from . import dsp as D
+from . import loaders as L
+
+VERSION = "tremorlib-1"
+WAVE_FS = 1000.0
+BG_MAX = 0.35
+MIN_S = {"uci_spiral": 6.0, "zenodo_et": 20.0}
+PLAN_CLASSES_MM = {"mild": (0.3, 1.0), "moderate": (2.0, 4.0), "severe": (5.0, 10.0)}   # docs/round4_plan.md s6 (ASSUMPTION)
+LIB_JSON = CACHE_DIR / "tremorlib.json"
+WAVE_NPZ = CACHE_DIR / "tremor_waveforms.npz"
+
+
+def _params_row(r: L.TremorRec) -> Dict:
+    p = D.tremor_params(r.x, r.fs)
+    row = {"rid": r.rid, "source": r.source, "subject": r.subject, "group": r.group, "task": r.task,
+           "condition": r.condition, "quantity": r.quantity, "units": r.units, "fs": r.fs,
+           "duration_s": round(r.duration, 3), "calib": r.calib}
+    row.update({k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in p.items() if not k.startswith("_")})
+    row["meta"] = {k: v for k, v in r.meta.items() if k not in ("gyro",) and not isinstance(v, np.ndarray)}
+    if r.quantity == "displacement":
+        row["amp_tip_mm"] = row["amp_excess"] * 1e3 if r.source == "uci_spiral" else None
+    elif r.units == "m/s2":
+        lo, hi = D.tremor_band_for(p["f0"])
+        dp = D.tremor_params(D.acc_to_disp(r.x, r.fs, lo, hi), r.fs)
+        key = "amp_wrist_mm" if r.source == "pads" else "amp_sensor_mm"
+        row[key] = dp["amp_excess"] * 1e3
+        row["disp_ellipticity"] = dp["ellipticity"]
+        if r.source == "pads":
+            g = r.meta.get("gyro")
+            if g is not None:
+                pg = D.tremor_params(g, r.fs)
+                row["gyro_line_ratio"] = pg["line_ratio"]
+                row["gyro_amp_deg"] = math.degrees(pg["amp_excess"]) / (2 * math.pi * max(pg["f0"], 0.5))
+    return row
+
+
+def _dedupe(recs: List[L.TremorRec]) -> Tuple[List[L.TremorRec], List[Dict]]:
+    seen, keep, dups = {}, [], []
+    for r in recs:
+        h = hashlib.sha1(np.round(np.asarray(r.x) * 1e9).astype(np.int64).tobytes()).hexdigest()
+        if h in seen:
+            dups.append({"rid": r.rid, "same_as": seen[h]})
+            continue
+        seen[h] = r.rid
+        keep.append(r)
+    return keep, dups
+
+
+def _split_subjects(amp_by_subject: Dict[str, float], seed: int) -> Dict[str, str]:
+    """Sorted by amplitude, assigned alternately in pairs with a seeded coin: both splits span the severities."""
+    subs = sorted(amp_by_subject, key=lambda s: (-amp_by_subject[s], s))
+    rng = random.Random(seed)
+    out = {}
+    for i in range(0, len(subs), 2):
+        pair = subs[i:i + 2]
+        first = "tuning" if rng.random() < 0.5 else "test"
+        other = "test" if first == "tuning" else "tuning"
+        out[pair[0]] = first
+        if len(pair) > 1:
+            out[pair[1]] = other
+    return out
+
+
+def _waveform(r: L.TremorRec, row: Dict) -> np.ndarray:
+    """Tremor-only waveform at WAVE_FS, normalised to unit major-axis median envelope (ZERO-PHASE extraction)."""
+    lo, hi = D.tremor_band_for(row["f0"])
+    if r.quantity == "displacement":
+        w = D.bandpass(r.x, r.fs, lo, hi)
+    else:
+        w = D.acc_to_disp(r.x, r.fs, lo, hi)
+        w = w[:, None] if w.ndim == 1 else w
+    trim = int(0.5 * r.fs)
+    w = w[trim:len(w) - trim]
+    if r.fs != WAVE_FS:
+        t = np.arange(len(w)) / r.fs
+        _, w = D.uniform(t, w, WAVE_FS)
+    pp = D.tremor_params(w, WAVE_FS)
+    return (w / max(pp["amp_median"], 1e-30)).astype(np.float32)
+
+
+def build(quick: bool = False, log=print, sources: Sequence[str] = ("uci_spiral", "zenodo_et", "newhandpd", "pads")) -> Dict:
+    t0 = time.time()
+    rows: List[Dict] = []
+    dups_all: List[Dict] = []
+    waves: Dict[str, np.ndarray] = {}
+    recs_by_source: Dict[str, List[L.TremorRec]] = {}
+    extra: Dict = {}
+    if "uci_spiral" in sources:
+        recs, dups = _dedupe(L.uci_spiral_records())
+        recs_by_source["uci_spiral"] = recs
+        dups_all += dups
+    if "zenodo_et" in sources:
+        recs_by_source["zenodo_et"] = L.zenodo_et_records()
+    if "newhandpd" in sources:
+        cal = L.newhandpd_gravity(max_files=60 if quick else 400)
+        extra["newhandpd_calibration"] = cal
+        tasks = ("spiral", "meander", "circle")
+        recs = L.newhandpd_records(cal, tasks=tasks)
+        if quick:
+            recs = recs[::6]
+        recs, dups = _dedupe(recs)
+        dups_all += dups
+        recs_by_source["newhandpd"] = recs
+    if "pads" in sources:
+        recs = L.pads_records()
+        if quick:
+            recs = recs[::10]
+        recs_by_source["pads"] = recs
+    for src, recs in recs_by_source.items():
+        log(f"[tremorlib] {src}: {len(recs)} recordings")
+        for r in recs:
+            rows.append(_params_row(r))
+    # ---------------------------------------------------------------- detection thresholds (controls, 95th percentile)
+    thr: Dict[str, float] = {}
+    for src in recs_by_source:
+        ctl = [x for x in rows if x["source"] == src and x["group"] == "control"]
+        if src == "pads":
+            for cond in ("rest", "postural", "kinetic"):
+                v = [x["line_ratio"] for x in ctl if x["condition"] == cond]
+                if v:
+                    thr[f"pads/{cond}"] = float(np.percentile(v, 95))
+        elif ctl:
+            thr[src] = float(np.percentile([x["line_ratio"] for x in ctl], 95))
+    if "zenodo_et" in recs_by_source:
+        thr["zenodo_et"] = thr.get("uci_spiral", 5.0)
+    for x in rows:
+        key = f"pads/{x['condition']}" if x["source"] == "pads" else x["source"]
+        x["threshold"] = thr.get(key)
+        x["detected"] = bool(x["threshold"] is not None and x["line_ratio"] >= x["threshold"] and 3.0 <= x["f0"] <= 12.0)
+    # ---------------------------------------------------------------- severity classes (UCI PD tip amplitude, subjects)
+    pd_sub: Dict[str, List[float]] = {}
+    for x in rows:
+        if x["source"] == "uci_spiral" and x["group"] == "PD" and x["detected"]:
+            pd_sub.setdefault(x["subject"], []).append(x["amp_tip_mm"])
+    sub_amp = {s: float(np.median(v)) for s, v in pd_sub.items()}
+    classes = {}
+    if sub_amp:
+        a = np.array(sorted(sub_amp.values()))
+        q1, q2 = np.percentile(a, [100 / 3, 200 / 3])
+        ctl_amp = [x["amp_excess"] * 1e3 for x in rows if x["source"] == "uci_spiral" and x["group"] == "control"]
+        classes = {
+            "none": {"range_mm": [0.0, float(a.min())], "representative_mm": float(np.median(ctl_amp)) if ctl_amp else 0.03,
+                     "definition": "no tremor line above the controls' 95th percentile; representative = median "
+                                   "background-corrected amplitude of the control recordings (sensor and pixel noise "
+                                   "included)"},
+            "mild": {"range_mm": [float(a.min()), float(q1)], "n_subjects": int(np.sum(a < q1))},
+            "moderate": {"range_mm": [float(q1), float(q2)], "n_subjects": int(np.sum((a >= q1) & (a < q2)))},
+            "severe": {"range_mm": [float(q2), float(a.max())], "n_subjects": int(np.sum(a >= q2))},
+        }
+        for k in ("mild", "moderate", "severe"):
+            lo_, hi_ = classes[k]["range_mm"]
+            sel = a[(a >= lo_) & (a <= hi_)]
+            classes[k]["representative_mm"] = float(np.median(sel)) if len(sel) else float(np.sqrt(lo_ * hi_))
+            classes[k]["definition"] = ("tertile of the peak (major semi-axis) tremor amplitude at the pen tip of PD "
+                                        "subjects with a tremor line while drawing spirals on a tablet (DATA uci_spiral; "
+                                        "subject = median over its recordings)")
+        classes["_n_pd_subjects_with_line"] = int(len(a))
+        classes["_n_pd_subjects"] = int(len({x["subject"] for x in rows if x["source"] == "uci_spiral" and x["group"] == "PD"}))
+        classes["_quantiles_mm"] = {"p10": float(np.percentile(a, 10)), "p50": float(np.percentile(a, 50)),
+                                    "p90": float(np.percentile(a, 90)), "max": float(a.max())}
+        classes["_plan_assumption_mm"] = PLAN_CLASSES_MM
+    # ---------------------------------------------------------------- splits (subject level, per source)
+    split: Dict[Tuple[str, str], str] = {}
+    for src in recs_by_source:
+        amp = {}
+        for x in rows:
+            if x["source"] != src:
+                continue
+            a_ = x.get("amp_tip_mm") or x.get("amp_wrist_mm") or x.get("amp_sensor_mm") or x.get("line_ratio") or 0.0
+            key = f"{x['group']}:{x['subject']}"
+            amp[key] = max(amp.get(key, 0.0), float(a_) if x["detected"] or x["group"] == "control" else 0.0)
+        for grp in {k.split(":")[0] for k in amp}:
+            sub = {k: v for k, v in amp.items() if k.startswith(grp + ":")}
+            seed = int(hashlib.sha1(f"{src}/{grp}".encode()).hexdigest()[:8], 16)
+            for k, v in _split_subjects(sub, seed).items():
+                split[(src, k.split(":", 1)[1])] = v
+    for x in rows:
+        x["split"] = split.get((x["source"], x["subject"]), "test")
+        if x["source"] == "uci_spiral" and x["group"] == "PD":
+            s_amp = sub_amp.get(x["subject"])
+            x["subject_amp_tip_mm"] = s_amp
+            x["class"] = _class_of(s_amp, classes) if s_amp is not None else "none"
+    # ---------------------------------------------------------------- generator waveforms
+    for src in ("uci_spiral", "zenodo_et"):
+        for r in recs_by_source.get(src, []):
+            x = next(z for z in rows if z["rid"] == r.rid)
+            ok = (x["detected"] and x["background_share"] <= BG_MAX and x["duration_s"] >= MIN_S[src]
+                  and (src != "zenodo_et" or x["condition"] == "postural") and x["group"] in ("PD", "ET"))
+            x["generator"] = bool(ok)
+            if ok:
+                waves[r.rid] = _waveform(r, x)
+    # ellipticity and orientation of real 2-D tip tremor (for the ET construction)
+    e2 = [x for x in rows if x["source"] == "uci_spiral" and x.get("generator")]
+    shape = {"ellipticity_median": float(np.median([x["ellipticity"] for x in e2])) if e2 else 0.4,
+             "ellipticity_iqr": [float(np.percentile([x["ellipticity"] for x in e2], 25)),
+                                 float(np.percentile([x["ellipticity"] for x in e2], 75))] if e2 else [0.3, 0.5],
+             "n": len(e2), "label": "DATA uci_spiral (PD, tip, 2-D), recordings in the generator"}
+    lib = {"version": VERSION, "rows": rows, "thresholds": thr, "classes": classes, "duplicates": dups_all,
+           "shape_2d": shape, "extra": extra, "elapsed_s": time.time() - t0, "quick": quick,
+           "rules": __doc__.split("Rules, fixed")[1].split("Waveforms are")[0].strip()}
+    CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    tag = "_quick" if quick else ""
+    (CACHE_DIR / f"tremorlib{tag}.json").write_text(json.dumps(lib, default=_jd))
+    np.savez_compressed(CACHE_DIR / f"tremor_waveforms{tag}.npz", **{k.replace("/", "|"): v for k, v in waves.items()})
+    log(f"[tremorlib] {len(rows)} rows, {len(waves)} generator waveforms, {len(dups_all)} duplicates removed, "
+        f"{time.time() - t0:.0f} s")
+    return lib
+
+
+def _class_of(a_mm: float, classes: Dict) -> str:
+    for k in ("mild", "moderate", "severe"):
+        lo, hi = classes[k]["range_mm"]
+        if lo <= a_mm <= hi + 1e-12:
+            return k
+    return "severe" if a_mm > classes["severe"]["range_mm"][0] else "none"
+
+
+def _jd(o):
+    if isinstance(o, (np.floating,)):
+        return float(o)
+    if isinstance(o, (np.integer,)):
+        return int(o)
+    if isinstance(o, np.bool_):
+        return bool(o)
+    if isinstance(o, np.ndarray):
+        return o.tolist()
+    return str(o)
+
+
+_LIB: Dict[str, Dict] = {}
+_WAV: Dict[str, Dict[str, np.ndarray]] = {}
+
+
+def load(quick: bool = False) -> Dict:
+    tag = "_quick" if quick else ""
+    if tag not in _LIB:
+        p = CACHE_DIR / f"tremorlib{tag}.json"
+        if not p.exists():
+            if quick and (CACHE_DIR / "tremorlib.json").exists():
+                return load(False)
+            raise FileNotFoundError(f"{p}: run python3 -m realdata.run --stages tremor")
+        _LIB[tag] = json.loads(p.read_text())
+    return _LIB[tag]
+
+
+def waveforms(quick: bool = False) -> Dict[str, np.ndarray]:
+    tag = "_quick" if quick else ""
+    if tag not in _WAV:
+        p = CACHE_DIR / f"tremor_waveforms{tag}.npz"
+        if not p.exists() and quick:
+            return waveforms(False)
+        z = np.load(p)
+        _WAV[tag] = {k.replace("|", "/"): z[k] for k in z.files}
+    return _WAV[tag]
+
+
+def summary(lib: Dict) -> Dict:
+    """Per source and group: counts, detection share and parameter medians (the committed statistics)."""
+    out = {}
+    rows = lib["rows"]
+    for src in sorted({x["source"] for x in rows}):
+        for grp in sorted({x["group"] for x in rows if x["source"] == src}):
+            for cond in sorted({x["condition"] for x in rows if x["source"] == src and x["group"] == grp}):
+                sel = [x for x in rows if x["source"] == src and x["group"] == grp and x["condition"] == cond]
+                det = [x for x in sel if x["detected"]]
+                e = {"n_recordings": len(sel), "n_subjects": len({x["subject"] for x in sel}),
+                     "detected_share": len(det) / max(len(sel), 1)}
+                for k in ("f0", "env_cv", "f_sd", "harmonic_excess", "ellipticity", "line_ratio", "amp_tip_mm",
+                          "amp_sensor_mm", "amp_wrist_mm"):
+                    v = [x[k] for x in det if x.get(k) is not None and np.isfinite(x[k])]
+                    if v:
+                        e[k] = {"median": float(np.median(v)), "p25": float(np.percentile(v, 25)),
+                                "p75": float(np.percentile(v, 75)), "n": len(v)}
+                out[f"{src}/{grp}/{cond}"] = e
+    return out
