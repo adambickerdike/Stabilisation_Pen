@@ -10,6 +10,7 @@ This repository holds the research and development package: the audit of the sou
 
 | If you want… | Read |
 |---|---|
+| **On your computer:** open `START_HERE.html` for one-click links to the claims register, the explainer, the spelling prototype and the latest studies | `START_HERE.html` |
 | **The current design, Rev J:** a pen that acts at the tip (a ±6 mm moving nose), the heel (a wheel that uses the paper as ground) and the tail (a detachable reaction-mass end-cap); what each can do, whether it can write for you, what to test first | [`docs/revJ_concept.md`](docs/revJ_concept.md); plan [`docs/revJ_plan.md`](docs/revJ_plan.md); integrated design [`docs/revJ_design.md`](docs/revJ_design.md); the 3-D explainer [`viewer/explainer/`](viewer/explainer/build.py) |
 | The Rev J studies | tip [`docs/nose_v2.md`](docs/nose_v2.md), heel [`docs/grounded_drive.md`](docs/grounded_drive.md), tail [`docs/inertial_endcap.md`](docs/inertial_endcap.md), algorithms and AI [`docs/ai_control_v2.md`](docs/ai_control_v2.md), physics simulator [`docs/sim_v2.md`](docs/sim_v2.md) |
 | The previous design, Rev H (bigger grip, ±3 mm nose): what is inside, how much it helps each condition | [`docs/revH_concept.md`](docs/revH_concept.md) |

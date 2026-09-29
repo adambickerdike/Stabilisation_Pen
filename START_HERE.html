@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stabilisation Pen: start here</title>
+<style>
+  :root { --bg:#f6f7f5; --panel:#ffffff; --ink:#1d2327; --muted:#5a646b; --rule:#dde2e0; --accent:#1f5fae; --warn:#8a5a00; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#121517; --panel:#1b1f22; --ink:#e7ecef; --muted:#a3adb3; --rule:#2c3337; --accent:#7fb2f0; --warn:#e3b35c; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:880px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:1.7rem; margin:0 0 4px; }
+  h2 { font-size:1.15rem; margin:28px 0 8px; }
+  p { margin:6px 0; }
+  .lede { color:var(--muted); }
+  .card { background:var(--panel); border:1px solid var(--rule); border-radius:10px; padding:14px 16px; margin:10px 0; }
+  .card b a { font-size:1.05rem; }
+  a { color:var(--accent); }
+  ul { margin:6px 0 6px 20px; padding:0; }
+  li { margin:4px 0; }
+  code { font:0.9em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background:var(--bg); border:1px solid var(--rule); border-radius:4px; padding:0 4px; }
+  .note { color:var(--warn); }
+  .small { color:var(--muted); font-size:0.92rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Stabilisation Pen</h1>
+  <p class="lede">An actively stabilising pen for essential tremor, Parkinson's, poor handwriting and dyslexia, with AI note capture. Everything here is design, calculation and simulation: nothing has been built or tested on people yet.</p>
+
+  <h2>1. Read this first</h2>
+  <div class="card"><b><a href="docs/claims_register.md">Claims register</a></b>: every headline number, whether it still stands, and what would change it. The one place to check before quoting a number.</div>
+  <div class="card"><b><a href="README.md">README</a></b>: the whole programme, the key conclusions and how to run everything.</div>
+  <div class="card"><b><a href="docs/revJ_concept.md">The current pen (Rev J) in plain words</a></b>: what moves, how much better the writing is, and what is not solved yet.</div>
+
+  <h2>2. Pages to look at</h2>
+  <div class="card"><b><a href="ai3/demo/index.html">Spelling pen prototype</a></b>: try the spell checker, word completion and the pen's writing plan. It works by double-clicking; it needs no internet.</div>
+  <div class="card"><b><a href="viewer/explainer/index.html">How the pen works (explainer)</a></b>: the three moving parts, animations, results per condition and the known problems.
+    <p class="small">This page loads its data files, which browsers block when a page is opened straight from the disk. Either use the online copy (<a href="https://claude.ai/artifact/VSMxtB8vpbTQjtoAjzqbez">claude.ai link</a>, needs your Claude login) or serve the folder: open a terminal in this folder, run <code>python -m http.server 8000</code>, then open <code>http://localhost:8000/START_HERE.html</code>.</p></div>
+  <div class="card"><b><a href="viewer/index.html">Simulation replay and gallery</a></b>: step-by-step replays of the simulations and the figures (same note about serving the folder).</div>
+
+  <h2>3. The latest studies (29 September 2026)</h2>
+  <ul>
+    <li><a href="docs/revJ_simulation.md">Whole pen in the physics simulator</a>: results per condition on simulated writers and tremor; why the nose uses too much power.</li>
+    <li><a href="docs/real_data.md">Real recorded handwriting and tremor</a>: on real tremor no tracker helps yet; with perfect knowledge of the tremor the same pen would make 7 of 10 words readable.</li>
+    <li><a href="docs/spelling_and_clarity.md">Spelling help, word completion and clearer writing</a>: the spell checker, the physical cues, and why close tracing and shape assist do not make letters clearer.</li>
+    <li><a href="docs/measurement_rig.md">Measurement rigs</a>: the six bench rigs to build first, with CAD, software and parts.</li>
+    <li><a href="docs/reviews/2026-09-29_review_response.md">Response to the independent review</a>, with the <a href="docs/reviews/2026-09-29_independent_review.pdf">review itself</a>.</li>
+    <li><a href="docs/decisions.md">Decision log</a> and <a href="validation/README.md">validation plan</a> (requirements, experiments, pass/fail criteria).</li>
+  </ul>
+  <p class="small note">Still running when this was written: the balanced nib (study B), shifting the whole pen (study W) and tremor estimation on real data (study E). Their results arrive in later versions.</p>
+
+  <h2>4. Keep this folder up to date</h2>
+  <p>The same files are on GitHub: <a href="https://github.com/adambickerdike/Stabilisation_Pen/tree/claude/pensive-shannon-wzm6ls">github.com/adambickerdike/Stabilisation_Pen</a>, branch <code>claude/pensive-shannon-wzm6ls</code>.</p>
+  <ul>
+    <li>First time: <code>git clone -b claude/pensive-shannon-wzm6ls https://github.com/adambickerdike/Stabilisation_Pen.git</code></li>
+    <li>Later: open a terminal in the folder and run <code>git pull</code>.</li>
+  </ul>
+  <p class="small">Markdown files (.md) open in any text editor, in VS Code (with its preview), or read nicely on GitHub.</p>
+</main>
+</body>
+</html>
