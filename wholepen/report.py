@@ -185,6 +185,12 @@ def fill_tokens(txt: str) -> str:
     test rows."""
     s = _load("summary.json") or {}
     head = {(r["class"], r["design"]): r for r in s.get("headline", {}).get("rows", []) + s.get("headline_real", {}).get("rows", [])}
+    for r in (s.get("light_compare") or {}).get("rows", []):
+        for c in (s.get("light_compare") or {}).get("classes", []):
+            v = r.get(c)
+            if v and (c, r["design"]) not in head:
+                head[(c, r["design"])] = {"tip_mm": v["tip_mm"], "words10": v["words"], "coverage": v["coverage"],
+                                          "P_devices_W": v.get("P_devices_W"), "pivot_peak_rad": v.get("pivot_peak_rad")}
     test = RS.Rows("test").values()
 
     def rep(m):

@@ -315,3 +315,61 @@ def estimate(st, tag: str, fold, case=None) -> np.ndarray:
     out[:, 0] = Yh[kk, 2 * p]
     out[:, 1] = Yh[kk, 2 * p + 1]
     return out
+
+
+# ------------------------------------------------------------------ the cross-fitting driver (fixed rule)
+MAX_EPOCHS_F0 = 14
+
+
+def cross_fit(log=print, tag: str = "net_main", cfg: Optional[Dict] = None, max_epochs: int = MAX_EPOCHS_F0) -> Dict:
+    """Fold 0 first, with fold 0's data as validation, for up to max_epochs; the epoch count with the lowest fold-0
+    validation loss is then used for folds 1-4 and for the model on all folds (rule fixed before training)."""
+    paths = all_train_paths()
+    data = load_arrays(paths)
+    info = {"n_cases": len(data), "rule": cross_fit.__doc__, "cfg": cfg}
+    t0 = time.time()
+    tr0 = [d for d in data if d["fold"] != 0]
+    va0 = [d for d in data if d["fold"] == 0]
+    r0 = train(tr0, max_epochs, seed=0, val=va0, log=log, cfg=cfg)
+    vl = [h["val_loss"] for h in r0["history"]]
+    n_ep = int(np.argmin(vl)) + 1
+    info["fold0_val_loss"] = vl
+    info["epochs"] = n_ep
+    log(f"[net] {tag}: fold-0 validation chooses {n_ep} epochs ({time.time() - t0:.0f} s)")
+    if n_ep == max_epochs:
+        m0 = r0
+    else:
+        m0 = train(tr0, n_ep, seed=0, log=log, cfg=cfg)
+    save(m0["model"], f"{tag}_f0", {"cfg": m0["cfg"], "params": m0["params"], "history": m0["history"], "fold": 0})
+    for f in range(1, C.N_FOLDS):
+        tr = [d for d in data if d["fold"] != f]
+        m = train(tr, n_ep, seed=f, log=log, cfg=cfg)
+        save(m["model"], f"{tag}_f{f}", {"cfg": m["cfg"], "params": m["params"], "history": m["history"], "fold": f})
+    m = train(data, n_ep, seed=99, log=log, cfg=cfg)
+    save(m["model"], tag, {"cfg": m["cfg"], "params": m["params"], "history": m["history"], "fold": None})
+    info.update({"params": m["params"], "cfg": m["cfg"], "macs_per_step": macs_per_step(m["cfg"]),
+                 "elapsed_s": time.time() - t0})
+    (MODEL_DIR / f"{tag}_crossfit.json").write_text(json.dumps(info, default=float))
+    log(f"[net] {tag}: 6 models in {time.time() - t0:.0f} s; {m['params']} parameters")
+    return info
+
+
+def int8_check(tag: str, data: List[Dict]) -> Dict:
+    """Per-channel symmetric int8 quantisation of the weights (activations float): the output difference against the
+    float model on the given arrays (RMS, um) and the float output's RMS."""
+    torch = _torch()
+    model, info = load(tag)
+    import copy
+    q = copy.deepcopy(model)
+    with torch.no_grad():
+        for name, p in q.named_parameters():
+            if p.dim() >= 2:
+                s = p.abs().amax(dim=tuple(range(1, p.dim())), keepdim=True).clamp(min=1e-12) / 127.0
+                p.copy_(torch.round(p / s).clamp(-127, 127) * s)
+    num = den = 0.0
+    for d in data:
+        a = predict(model, d["X"]); b = predict(q, d["X"])
+        num += float(np.sum((a - b) ** 2)); den += float(np.sum(a ** 2))
+    n = sum(len(d["X"]) * N_OUT for d in data)
+    return {"rms_diff_um": math.sqrt(num / n) * OUT_SCALE * 1e6, "rms_out_um": math.sqrt(den / n) * OUT_SCALE * 1e6,
+            "label": "CALC: weights per-channel int8, activations float (CMSIS-NN would also quantise activations)"}

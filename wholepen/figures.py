@@ -114,7 +114,7 @@ def writing(samples: List[Dict], name: str = "fig_w_writing",
     plt = _mpl()
     rows_ = sorted({s["row"] for s in samples})
     cols_ = sorted({s["col"] for s in samples})
-    fig, axs = plt.subplots(len(rows_), len(cols_), figsize=(4.3 * len(cols_), 1.25 * len(rows_) + 0.4), squeeze=False)
+    fig, axs = plt.subplots(len(rows_), len(cols_), figsize=(4.3 * len(cols_), 1.6 * len(rows_) + 0.5), squeeze=False)
     out = []
     for s in samples:
         ax = axs[rows_.index(s["row"]), cols_.index(s["col"])]
@@ -272,20 +272,24 @@ def fig_writing():
         return None
     samples = []
     cls_rows = ["ET_moderate", "ET_severe", "PD_severe"]
-    des = ["none", "nose", "collar_nose", "collar_nose_oracle"]
+    des = ["none", "nose", "collar_nose", "nose_oracle"]
+    rows = {r["key"]: r for r in RS.Rows("test").values()}
     for i, c in enumerate(cls_rows):
         for j, dn in enumerate(des):
             fn = os.path.join(d, f"h1_g1_w0_s200_{c}_{dn}.npz")
             if not os.path.exists(fn):
                 continue
+            rr = rows.get(f"h1|g1|w0|s200|{c}|{dn}", {})
+            cap = (f"tremor left {rr['tip_tremor_mm']:.1f} mm; {5 * rr['words_app']:.0f} of 5 words read; ink laid "
+                   f"{100 * rr['coverage']:.0f} %") if rr.get("tip_tremor_mm") is not None else ""
             z = np.load(fn)
             t0, t1 = 4.3, 7.6                                     # the first two words ("return library")
             m = (z["t"] > t0) & (z["t"] < t1)
             mi = (z["it_t"] > t0) & (z["it_t"] < t1)
             ink = np.column_stack([z["ink"][m] * 1e3, z["contact"][m]])
             it = np.column_stack([z["it_xy"][mi] * 1e3, z["it_down"][mi]])
-            samples.append({"row": i, "col": j, "title": f"{RS.CLASS_LABEL[c]} - {RS.LABELS[dn]}", "intended": it.tolist(),
-                            "ink": ink.tolist(), "caption": ""})
+            samples.append({"row": i, "col": j, "title": f"{RS.CLASS_LABEL[c]}\n{RS.LABELS[dn]}", "intended": it.tolist(),
+                            "ink": ink.tolist(), "caption": cap})
     if not samples:
         return None
     return writing(samples)
