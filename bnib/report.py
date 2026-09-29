@@ -250,7 +250,9 @@ def bom(res: Dict) -> List[Dict]:
     B = [
         ("refill", "ISO 12757-1 type D1 ballpoint refill (brand chosen in G1)", 1, "LIT CON-22", "any compliant D1"),
         ("refill end cap", "PEEK cap with a 3 mm Si3N4 ball (rolls on the face)", 1, "ASSUMPTION; AMF-24", "custom"),
-        ("carrier", "Ti-6Al-4V tube 3.2/2.5 mm, two PTFE-lined bushings, the coils' hub and the wire flange", 1, "AMF-21", "custom"),
+        ("carrier", "Ti-6Al-4V tube 3.2/2.5 mm with a rolling guide for the refill at two stations (friction <= 0.01, "
+         "REQ-BNIB-016; e.g. three miniature rollers per station), the coils' hub and the wire flange", 1, "AMF-21; ASSUMPTION",
+         "custom"),
         ("suspension wires", f"Ti-6Al-4V (grade 5) wire {wd:.3f} mm, free length {wl:.1f} mm, laser-welded clamps (0.1 mm edge "
          "radius)", 4, "AMF-20; AMF-21", "custom from wire stock"),
         ("moving coils", f"two flat layers {tc:.2f} mm, self-bonding 0.10 mm magnet wire on a 0.1 mm polyimide former, "

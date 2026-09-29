@@ -229,7 +229,11 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
         A("- **In simulation:** the sim2 runs had not finished when this page was generated (section 6).")
     A(f"- **Slim 12-16 mm core:** magnet-and-coil nibs around a D1 refill do not fit (they run out of force or of travel). "
       f"Piezo benders do: " + (f"+-{f(pz_best['travel_mm'], 2)} mm with {mw(pz_best['P_cont_W'])} mW at {f(pz_best['od_mm'], 0)} mm "
-      f"(with the counter-face; CALC)" if pz_best else "see the slim cards") + ". That is a separate branch, not the first prototype.")
+      f"(with the counter-face; CALC)" if pz_best else "see the slim cards") + ". That is a separate branch, not the first prototype."
+      + (f" In simulation the slim piezo stage (B3, +-{f(B3.get('travel_mm'), 2) if B3.get('travel_mm') else '0.3'} mm) leaves "
+         f"{f(B3.get('tremor_left_ratio_mean'), 2)} of the tremor ink error with the tracker and "
+         f"{f(B3.get('tremor_left_ratio_oracle_mean'), 2)} with perfect knowledge, at {f(B3.get('P_nib_mW_tremor_mean'), 0)} mW of "
+         "drive power (SIM)." if B3 else ""))
     A("- **Not proven:** the lowest ink force that still writes (no source gives it; 0.15 N is 4.6 x below the lowest maker's "
       "test load found), the real magnet strength, that the face mechanism behaves as modelled, the friction numbers, the "
       "wire fatigue with real clamps, and every tremor result (simulated). Nothing was built or measured.")
@@ -251,7 +255,8 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       "nib; the two forces are offset along the pen, and that couple goes into the carrier's bushings and the wires' tilt "
       "stiffness, not the coils. When the nib moves, the refill translates parallel to the paper, so its end slides along the "
       "face and the face does not move. When the ball lifts, the refill moves forward, the face lands on a stop set a small "
-      "gap (0.15 mm) beyond its writing position and leaves the refill: nothing is held in the air. The stop and the face's "
+      f"gap ({f(((sim.get('rules') or {}).get('chosen') or {}).get('face_gap_mm', 0.15), 2)} mm) beyond its writing position "
+      "and leaves the refill: nothing is held in the air. The stop and the face's "
       "orientation are set slowly (seconds) by three small screw motors with no holding power, from the pen's motion sensor "
       "and the refill-slide sensor. CALC statics; PROPOSED DESIGN.")
     A("")
@@ -439,6 +444,25 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
         A("- Drops: " + "; ".join(f"{f(r['g'], 0)} g -> wire stress {f(r['wire_stress_MPa'], 0)} MPa (stop engaged: {r['stop_engaged']})"
                                    for r in sh["rows"]) + f"; buckled wires stay elastic behind {f(sh.get('stop_axial_um'), 0)} um stops: "
           f"{sh.get('buckled_elastic')}.")
+    gf = rec.get("guide_friction") or {}
+    if gf.get("rows"):
+        r35 = gf["rows"][0]
+        P = gf.get("P_B1", {})
+        ct = gf.get("couple_tilt", {})
+        A(f"- The counter-face moves the static load, it does not delete it: the paper's and the face's pushes are parallel but "
+          f"70 mm apart, a couple of {f(r35['couple_mNm'], 1)} mN m at 35 deg (N taken as F_s / sin(theta), conservative). "
+          f"Inside the carrier it loads the two refill bushings with {f(r35['sum_R_counterface_N'], 2)} N in all "
+          f"(the spring-along-the-pen design: {f(r35['sum_R_spring_N'], 2)} N), so the refill's slide friction h = mu_g "
+          f"sum|R| grows, and h cot(theta) acts across the pen. With a ball or roller guide (mu_g 0.005, ASSUMPTION) h = "
+          f"{f(r35['h_cf_mu0.005_N'] * 1e3, 1)} mN and B1 stays at {mw(P.get('0.005', {}).get('P_cont_W'))} mW; PTFE-lined "
+          f"sleeves (0.05) give {f(r35['h_cf_mu0.05_N'] * 1e3, 0)} mN, {mw(P.get('0.05', {}).get('P_cont_W'))} mW and up to "
+          f"{mw(P.get('0.05', {}).get('stuck_offset_hold_35deg_W'), 0)} mW of steady holding while the refill sticks; bare "
+          f"metal (0.1) gives {mw(P.get('0.1', {}).get('P_cont_W'))} mW and {mw(P.get('0.1', {}).get('stuck_offset_hold_35deg_W'), 0)} "
+          "mW stuck, which breaks REQ-RVJ-N10 at 35 deg. Hence REQ-BNIB-016 (a low-friction guide). The same couple tilts "
+          f"the carrier on the wires' tilt stiffness ({f(gf.get('k_tilt_Nm_rad'), 1)} N m/rad): "
+          + ", ".join(f"{k} deg {f(v['tilt_mrad'], 1)} mrad = {f(v['ball_offset_mm'], 2)} mm at the ball" for k, v in ct.items())
+          + ": a slow, tilt-dependent offset that costs no current; the firmware can feed it forward from the IMU tilt, or "
+          "the wires can sit on a larger circle (the tilt stiffness grows with its square). CALC.")
     if km.get("Km0"):
         A(f"- Actuator (magpylib map over the +-{f(rec['x'].get('travel', 0) * 1e3 + 0.2, 2)} mm stroke, iron images): Km "
           f"{f(km['Km0'], 3)} N/sqrt(W) at the centre, {f(km['Km_min'], 3)}-{f(km['Km_max'], 3)} over the stroke (variation "
@@ -457,7 +481,11 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       "scale error, OPT-75). The ideal 3 um sensor appears only as a labelled bound. Rules (servo bandwidth, face gap) were "
       "chosen on tuning writers 100-101 / seed 300 and frozen in `results/bnib/rules.json` before the test writers 0-5 "
       "(seeds 200-203) ran. Tasks: tremor-free writing (false correction), ET 4-12 Hz and PD 4.5-5.5 Hz tremor at "
-      "0.3-2 mm, a thermal run at 35 deg with 2 mm tremor.")
+      "0.3-2 mm, a thermal run at 35 deg with 2 mm tremor. Idealisations: the face is massless with a 5 um engagement "
+      "ramp; the carrier cannot tilt (virtual pivot), so the couple's static 0.1-0.17 mm offset is not in these runs; the "
+      "refill's slide friction is 10 mN (conservative for a rolling guide, optimistic for PTFE at 35 deg); gravity acts on "
+      "the nib only (sim2's H1 convention for the rest of the pen); controllers: 'none' (nib held centred), the project's "
+      "frozen guarded tracker (sim2j), and perfect knowledge of the handle's tremor (the mechanism's limit).")
     A("")
     A(sim_md(sim))
     A(by_cell_md(sim))
@@ -586,6 +614,9 @@ def open_issues(res: Dict, S: Dict) -> List[str]:
         "The tracker, not the nib, limits the simulated benefit; improving it is another study's job (ai2, sim2j).",
         "Squiggle motors are sold only in volume (AMF-15): a micro-stepper lead-screw fallback needs its own layout.",
         "Study W's collar (candidate g) was taken read-only; the combined coarse/fine controller was not simulated here.",
+        "The counter-face's couple loads the refill guide (about 1 N in all at 35 deg); with PTFE sleeves the slide "
+        "friction doubles B1's power and with bare metal it breaks REQ-RVJ-N10 at 35 deg: the guide must roll (REQ-BNIB-016, "
+        "EXP-B22). The couple also tilts the carrier by up to 4.5 mrad (0.17 mm at the ball, static): a feed-forward item.",
         "The 0.13 mm wires are soft (3.8 N/m) and buckle sideways at 0.08 N of compression for all four: any assembly "
         "preload dominates their stiffness (0.3 N of tension triples it, tolerance Monte Carlo). Proposed: assemble with a "
         "set tension of about 0.1 N and keep the 20 um axial stops; EXP-B25 checks both.",

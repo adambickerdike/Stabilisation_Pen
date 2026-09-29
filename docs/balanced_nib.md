@@ -1,6 +1,4 @@
-# The balanced two-axis nib (study B, round 4)
-
-## The answer in plain words
+# The answer in plain words: the balanced two-axis nib (study B, round 4)
 
 - **The review is right, and the load is bigger than the budget said.** The Rev J C1S nose holds the ball on the paper with its coils. The refill spring pushes the ball along the tilted pen; the paper pushes back straight up, so part of its push acts across the pen (0.15 N x cot(tilt): 0.21 N at 35 deg). The C1S lever (ball 76.5 mm, magnets 11.5 mm from the pivot) multiplies it by 6.65, and the coils burn 4.72 / 1.63 / 0.17 W at 35 / 50 / 75 deg just holding still (CALC, the review's numbers reproduced). Study N's duty model counted the ball's drag but not this sideways part (details in section 5.1).
 - **Balance it with the spring, not with current.** Let the ink spring push the refill from its back end through a small face that is kept parallel to the paper. The face's push and the paper's push are then parallel and opposite: there is nothing left across the pen for the nib to hold, at any tilt. Because the spring's own force does the balancing, it follows the actual ink force (a new refill, another ink) without calibration, and a stop lets the face go when the ball lifts, so nothing is held in the air (the figure below).
@@ -834,6 +832,7 @@ Affects: DEC-036 (C1S nose); DEC-041 (the nose's Km and stiffness claims); DEC-0
 | REQ-BNIB-013 | Interface | the nib's physical interface lives in config/nib.yaml (versioned); simulators and other studies read it | PROPOSED | - | all |
 | REQ-BNIB-014 | Minimum ink force known before F_s is frozen | per tip type and paper (six papers), 35-75 deg, 5-60 mm/s | UNKNOWN (no source gives it) | EXP-B20 (EXP-T02) | G1 |
 | REQ-BNIB-015 | Face orientation sensing | IMU tilt error <= 1 deg and roll error <= 2 deg (1 sigma) while writing | ASSUMPTION | EXP-B28 | G2 |
+| REQ-BNIB-016 | Refill guide friction | guide friction coefficient <= 0.01 (a ball or roller guide): the counter-face's couple loads the two bushings with 0.6-0.75 N, and the slide friction acts across the pen as h cot(theta) | ASSUMPTION mu_g 0.005 | EXP-B22 | G2 |
 
 ### Experiments (proposed; mapped to gates G1-G4 and to study M's rig experiments)
 
@@ -892,6 +891,7 @@ B1's nonlinear flexure and magnetics checks (CALC):
 - Loaded eigenmodes of refill + carrier (planar beam with the ink force's geometric stiffness): ball free 6, 362, 2445, 5229 Hz; ball stuck on the paper 109, 568, 2509, 5235 Hz. The first parasitic mode sets the bandwidth (mode / 3).
 - Tolerances (Monte Carlo, wire diameter +-2 %, length +-0.05 mm, modulus +-4 %, Kt 1.3-2.5, preload 0-0.3 N; ASSUMPTION ranges): stiffness p5/p50/p95 4.4 / 10.3 / 16.2 N/m; Goodman SF p1/p5/p50 1.62 / 1.77 / 2.49.
 - Drops: 100 g -> wire stress 66 MPa (stop engaged: False); 500 g -> wire stress 85 MPa (stop engaged: True); 2000 g -> wire stress 85 MPa (stop engaged: True); buckled wires stay elastic behind 20 um stops: True.
+- The counter-face moves the static load, it does not delete it: the paper's and the face's pushes are parallel but 70 mm apart, a couple of 15.0 mN m at 35 deg (N taken as F_s / sin(theta), conservative). Inside the carrier it loads the two refill bushings with 1.02 N in all (the spring-along-the-pen design: 0.35 N), so the refill's slide friction h = mu_g sum|R| grows, and h cot(theta) acts across the pen. With a ball or roller guide (mu_g 0.005, ASSUMPTION) h = 5.1 mN and B1 stays at 7.3 mW; PTFE-lined sleeves (0.05) give 51 mN, 16.2 mW and up to 33 mW of steady holding while the refill sticks; bare metal (0.1) gives 43.0 mW and 133 mW stuck, which breaks REQ-RVJ-N10 at 35 deg. Hence REQ-BNIB-016 (a low-friction guide). The same couple tilts the carrier on the wires' tilt stiffness (3.3 N m/rad): 35 deg 4.5 mrad = 0.17 mm at the ball, 50 deg 2.6 mrad = 0.10 mm at the ball, 75 deg 0.8 mrad = 0.03 mm at the ball: a slow, tilt-dependent offset that costs no current; the firmware can feed it forward from the IMU tilt, or the wires can sit on a larger circle (the tilt stiffness grows with its square). CALC.
 - Actuator (magpylib map over the +-1.26 mm stroke, iron images): Km 0.397 N/sqrt(W) at the centre, 0.312-0.397 over the stroke (variation 22 %), cross-coupling up to 27.5 %; no negative stiffness (moving coil); keeper pull 9.1 N between two handle-fixed parts.
 
 ### 5.3 Simulation
@@ -942,6 +942,9 @@ Two-node model (CALC): B1 at 35 deg (its largest load) in a 30 degC room for 30 
 - The tracker, not the nib, limits the simulated benefit; improving it is another study's job (ai2, sim2j).
 - Squiggle motors are sold only in volume (AMF-15): a micro-stepper lead-screw fallback needs its own layout.
 - Study W's collar (candidate g) was taken read-only; the combined coarse/fine controller was not simulated here.
+- The counter-face's couple loads the refill guide (about 1 N in all at 35 deg); with PTFE sleeves the slide friction doubles B1's power and with bare metal it breaks REQ-RVJ-N10 at 35 deg: the guide must roll (REQ-BNIB-016, EXP-B22). The couple also tilts the carrier by up to 4.5 mrad (0.17 mm at the ball, static): a feed-forward item.
+- The 0.13 mm wires are soft (3.8 N/m) and buckle sideways at 0.08 N of compression for all four: any assembly preload dominates their stiffness (0.3 N of tension triples it, tolerance Monte Carlo). Proposed: assemble with a set tension of about 0.1 N and keep the 20 um axial stops; EXP-B25 checks both.
+- The actuator's cross-coupling reaches 27 % at the stroke corners (magpylib): the firmware needs the measured force map (EXP-B23), not a diagonal Km.
 
 ### 5.8 Files
 

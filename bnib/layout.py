@@ -65,8 +65,9 @@ def geometry(d, ev: Dict) -> Dict:
     L_car = z_w0 - 9.0
     add(id="bnib_carrier", label="Nib carrier (titanium tube with two bushings)", group="moving_nib", shape="tube", z0=9.0,
         z1=z_w0 + 1.0, d0=3.2, d1=3.2, d_in=2.5, moves_with="nib",
-        function="Carries the refill sideways (two PTFE-lined bushings at its ends) and the moving coils; the refill "
-                 "slides in it freely along the pen.", part="Ti-6Al-4V tube 4.0/2.5 mm + PTFE liners", ledger="AMF-21",
+        function="Carries the refill sideways (a rolling guide at each end: the counter-face's couple loads them with about "
+                 "1 N) and the moving coils; the refill slides in it freely along the pen.",
+        part="Ti-6Al-4V tube 3.2/2.5 mm (EI about 0.37 N m^2) + two rolling guide stations (friction <= 0.01)", ledger="AMF-21",
         mass_g=(0.30 + 0.35) * 1.0)
     add(id="bnib_coils", label="Moving coils (two flat layers, x and y)", group="actuator", shape="tube", z0=zc0, z1=zc1,
         d0=2 * r_out - 0.8, d1=2 * r_out - 0.8, d_in=3.3, moves_with="nib",
