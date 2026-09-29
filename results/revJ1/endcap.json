@@ -1,0 +1,1723 @@
+{
+ "meta": {
+  "evidence_status": "SIMULATION (study K's model H1, read-only) and CALCULATION",
+  "generated_utc": "2026-09-29T16:19:42+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "SIMULATION (study K's model H1, read-only) and CALCULATION",
+  "generated_utc": "2026-09-29T16:19:42+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "endcap": {
+  "family": {
+   "14.98": {
+    "mass_g": 44.9961681400344,
+    "slug_g": 28.739549250926448,
+    "moving_mass_g": 30.386355015174157,
+    "Km": 0.7352892639448494,
+    "F_act_N": 0.5199280246690683,
+    "P_avg_W_design": 0.14464910580970067,
+    "L_s_mm": 14.98157876588641,
+    "tune_further_reduction": {
+     "0.3": 0.06031295739427722,
+     "0.5": 0.20174457287689926,
+     "0.7": 0.19171572830130335
+    },
+    "tune_P_act_W": {
+     "0.3": 0.051882722425944085,
+     "0.5": 0.04230851404970221,
+     "0.7": 0.047761532102415516
+    },
+    "tune_stroke_pk_mm_max": {
+     "0.3": 4.063485393316636,
+     "0.5": 4.057794578213148,
+     "0.7": 4.063493719627355
+    }
+   },
+   "11": {
+    "mass_g": 36.32510622554602,
+    "slug_g": 21.101583931864496,
+    "moving_mass_g": 22.611155882424896,
+    "Km": 0.6915252790144055,
+    "F_act_N": 0.4889822141530055,
+    "P_avg_W_design": 0.09122426380880191,
+    "L_s_mm": 11.0,
+    "tune_further_reduction": {
+     "0.3": 0.04512179854487583,
+     "0.5": 0.1939417368311307,
+     "0.7": 0.1854861522522211
+    },
+    "tune_P_act_W": {
+     "0.3": 0.048752052808993605,
+     "0.5": 0.03828746907932984,
+     "0.7": 0.04157521184974478
+    },
+    "tune_stroke_pk_mm_max": {
+     "0.3": 4.072524333094759,
+     "0.5": 4.059693789849577,
+     "0.7": 4.065749042520114
+    }
+   },
+   "9": {
+    "mass_g": 31.566189312132682,
+    "slug_g": 17.264932307889133,
+    "moving_mass_g": 18.500036631074916,
+    "Km": 0.5981508076892856,
+    "F_act_N": 0.4229564922893044,
+    "P_avg_W_design": 0.08208246180796464,
+    "L_s_mm": 9.000000000000002,
+    "tune_further_reduction": {
+     "0.3": 0.03951288478960712,
+     "0.5": 0.18642090482507379,
+     "0.7": 0.18861789444854724
+    },
+    "tune_P_act_W": {
+     "0.3": 0.053081776664363256,
+     "0.5": 0.04096903101810164,
+     "0.7": 0.043347504469535
+    },
+    "tune_stroke_pk_mm_max": {
+     "0.3": 4.07358037154478,
+     "0.5": 4.072675335818334,
+     "0.7": 4.070194227012085
+    }
+   },
+   "7.5": {
+    "mass_g": 27.997001627072674,
+    "slug_g": 14.38744358990761,
+    "moving_mass_g": 15.416697192562427,
+    "Km": 0.5220216200541297,
+    "F_act_N": 0.3691250274662625,
+    "P_avg_W_design": 0.07519773592780851,
+    "L_s_mm": 7.5,
+    "tune_further_reduction": {
+     "0.3": 0.036904210026083954,
+     "0.5": 0.17660862711497827,
+     "0.7": 0.18059689601604623
+    },
+    "tune_P_act_W": {
+     "0.3": 0.056534674467587996,
+     "0.5": 0.04335971757488255,
+     "0.7": 0.0451008462582978
+    },
+    "tune_stroke_pk_mm_max": {
+     "0.3": 4.071582491039895,
+     "0.5": 4.068344190489246,
+     "0.7": 4.070427096933397
+    }
+   },
+   "6": {
+    "mass_g": 24.427813942012662,
+    "slug_g": 11.509954871926087,
+    "moving_mass_g": 12.333357754049942,
+    "Km": 0.4394210239867573,
+    "F_act_N": 0.3107175858569727,
+    "P_avg_W_design": 0.06827045374505378,
+    "L_s_mm": 6.0,
+    "tune_further_reduction": {
+     "0.3": 0.03282902357981611,
+     "0.5": 0.16318929525367123,
+     "0.7": 0.16899503983471953
+    },
+    "tune_P_act_W": {
+     "0.3": 0.060144964957842266,
+     "0.5": 0.046067816574688863,
+     "0.7": 0.04749862469887208
+    },
+    "tune_stroke_pk_mm_max": {
+     "0.3": 4.067754444137124,
+     "0.5": 4.071688545713205,
+     "0.7": 4.071797231195292
+    }
+   },
+   "5": {
+    "mass_g": 22.048355485305994,
+    "slug_g": 9.591629059938407,
+    "moving_mass_g": 10.277798128374952,
+    "Km": 0.38000765343686443,
+    "F_act_N": 0.2687059886479943,
+    "P_avg_W_design": 0.06362094564986268,
+    "L_s_mm": 5.0,
+    "tune_further_reduction": {
+     "0.3": 0.030581956246067184,
+     "0.5": 0.1517100383045952,
+     "0.7": 0.15661300420087526
+    },
+    "tune_P_act_W": {
+     "0.3": 0.062403026607642964,
+     "0.5": 0.047934258828653355,
+     "0.7": 0.04957069570189295
+    },
+    "tune_stroke_pk_mm_max": {
+     "0.3": 4.074683722080002,
+     "0.5": 4.071599792874177,
+     "0.7": 4.07946538717599
+    }
+   }
+  },
+  "chosen_by_rule": {
+   "L_s_mm": 14.98,
+   "fallback_L_s_mm": null,
+   "mass_g": 44.9961681400344,
+   "rule": "lightest member with tuning further reduction (8-12 Hz x 1-2 mm) >= 12 % at split 0.5 and >= 6 % at splits 0.3 and 0.7 (R-T1's 10 % / 5 % plus a 2-point / 1-point allowance for tuning-to-test shrinkage)"
+  },
+  "rule": {
+   "split_0.5_min": 0.12,
+   "split_0.3_0.7_min": 0.06,
+   "text": "lightest member with tuning further reduction (8-12 Hz x 1-2 mm) >= 12 % at split 0.5 and >= 6 % at splits 0.3 and 0.7 (R-T1's 10 % / 5 % plus a 2-point / 1-point allowance for tuning-to-test shrinkage)"
+  },
+  "gain": 0.75,
+  "test": {
+   "verdicts": {
+    "lrm_14.98": {
+     "pass": true,
+     "r0.3": 0.07959640791372578,
+     "r0.5": 0.18226696073128487,
+     "r0.7": 0.19506814533027514,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.14464910580970067,
+     "P_act_W_mean_SIM": 0.028940766312347942,
+     "mass_g": 44.9961681400344
+    },
+    "lrm_9": {
+     "pass": true,
+     "r0.3": 0.05614429545388572,
+     "r0.5": 0.16797743472367097,
+     "r0.7": 0.18282806187123649,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.08208246180796464,
+     "P_act_W_mean_SIM": 0.027575065351782554,
+     "mass_g": 31.566189312132682
+    },
+    "lrm_7.5": {
+     "pass": true,
+     "r0.3": 0.052038678934760496,
+     "r0.5": 0.17433202908562362,
+     "r0.7": 0.17088612806706618,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.07519773592780851,
+     "P_act_W_mean_SIM": 0.028719613792581842,
+     "mass_g": 27.997001627072674
+    },
+    "lrm_5": {
+     "pass": false,
+     "r0.3": 0.041594672855094265,
+     "r0.5": 0.15546515781386303,
+     "r0.7": 0.13359484732281982,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.06362094564986268,
+     "P_act_W_mean_SIM": 0.030944738625909837,
+     "mass_g": 22.048355485305994
+    }
+   },
+   "summary": {
+    "lrm_14.98": {
+     "lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.5956464591088801,
+        "device_alone": 0.8208982837020523,
+        "passive": 0.8438106531625609,
+        "nose+passive": 0.5836014791520115,
+        "further_reduction_mean": 0.07959640791372578,
+        "further_reduction_seed_min": 0.04150742299705732,
+        "further_reduction_seed_max": 0.11437625883914493,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": 0.05424151351279696,
+        "P_act_W_max": 0.09780372554687823,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.821034822802285,
+        "device_alone": 0.8484805355741589,
+        "passive": 0.8821661908501708,
+        "nose+passive": 0.8360268719116017,
+        "further_reduction_mean": 0.12516157207586703,
+        "further_reduction_seed_min": 0.1146803103557265,
+        "further_reduction_seed_max": 0.13534604369222483,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013002505010969629,
+        "P_act_W_max": 0.014562838659604333,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9110455405325428,
+        "device_alone": 0.9177435112835483,
+        "passive": 0.9301876947122536,
+        "nose+passive": 0.9282005999376247,
+        "further_reduction_mean": 0.08181681392421086,
+        "further_reduction_seed_min": 0.06266326296457424,
+        "further_reduction_seed_max": 0.09330190239882181,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.017122296285192712,
+        "P_act_W_max": 0.03772723418653276,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7551756408926971,
+        "device_alone": 0.8569183531433958,
+        "passive": 0.8819172769707115,
+        "nose+passive": 0.7613496615310041,
+        "further_reduction_mean": 0.09409041537558792,
+        "further_reduction_seed_min": 0.07510906049362073,
+        "further_reduction_seed_max": 0.10529689223821583,
+        "frac_conditions_worse": 0.016666666666666666,
+        "P_act_W_mean": 0.0312337842630778,
+        "P_act_W_max": 0.09780372554687823,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.5786129042866867,
+        "device_alone": 0.7000997156145843,
+        "passive": 0.9568446391525679,
+        "nose+passive": 0.6210974790331455,
+        "further_reduction_mean": 0.18226696073128487,
+        "further_reduction_seed_min": 0.10901706324417271,
+        "further_reduction_seed_max": 0.2356836933242683,
+        "frac_conditions_worse": 0.125,
+        "P_act_W_mean": 0.0444026600271176,
+        "P_act_W_max": 0.07632814358320564,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.7938742585395435,
+        "device_alone": 0.8117091264430266,
+        "passive": 0.9064367598879987,
+        "nose+passive": 0.858852822741331,
+        "further_reduction_mean": 0.17689985676345105,
+        "further_reduction_seed_min": 0.16502495324277672,
+        "further_reduction_seed_max": 0.1871099038416081,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013204977506441428,
+        "P_act_W_max": 0.016575799668568,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.8873109644987217,
+        "device_alone": 0.8894260728433051,
+        "passive": 0.9069344136015506,
+        "nose+passive": 0.906911192883937,
+        "further_reduction_mean": 0.11835490200122593,
+        "further_reduction_seed_min": 0.10068874365846757,
+        "further_reduction_seed_max": 0.12858339650997438,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.01799984980410391,
+        "P_act_W_max": 0.047418088370539443,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.7340522877330823,
+        "device_alone": 0.7898446321330936,
+        "passive": 0.9306455319588881,
+        "nose+passive": 0.7801468659753978,
+        "further_reduction_mean": 0.16215614061208547,
+        "further_reduction_seed_min": 0.1369164334476976,
+        "further_reduction_seed_max": 0.18793294954404668,
+        "frac_conditions_worse": 0.05,
+        "P_act_W_mean": 0.0277054327925097,
+        "P_act_W_max": 0.07632814358320564,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.6120917357433822,
+        "device_alone": 0.7538452496534979,
+        "passive": 1.0949633655183493,
+        "nose+passive": 0.6888613655208115,
+        "further_reduction_mean": 0.19506814533027514,
+        "further_reduction_seed_min": 0.11715082952326733,
+        "further_reduction_seed_max": 0.25455627035507317,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": 0.044045526300247995,
+        "P_act_W_max": 0.0901422765935937,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.8361333727798014,
+        "device_alone": 0.8594359488930656,
+        "passive": 0.9662213472841371,
+        "nose+passive": 0.9144068301209834,
+        "further_reduction_mean": 0.1472366042578975,
+        "further_reduction_seed_min": 0.13010076364005183,
+        "further_reduction_seed_max": 0.1628402045363858,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013405166355341938,
+        "P_act_W_max": 0.018325781812042512,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.8724623581939536,
+        "device_alone": 0.8695638607976764,
+        "passive": 0.8771360280854266,
+        "nose+passive": 0.8760357721473594,
+        "further_reduction_mean": 0.12489611162418596,
+        "further_reduction_seed_min": 0.1144206876637736,
+        "further_reduction_seed_max": 0.13345087009344797,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.018647887794873443,
+        "P_act_W_max": 0.05085833057675848,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.7594672217745985,
+        "device_alone": 0.8229536174042563,
+        "passive": 0.9980294355507277,
+        "nose+passive": 0.8177226392810503,
+        "further_reduction_mean": 0.1562435696418872,
+        "further_reduction_seed_min": 0.1354311212601854,
+        "further_reduction_seed_max": 0.1749317431331942,
+        "frac_conditions_worse": 0.016666666666666666,
+        "P_act_W_mean": 0.027883081881456336,
+        "P_act_W_max": 0.0901422765935937,
+        "n": 60
+       }
+      }
+     },
+     "weight_lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.5420853160327952,
+        "device_alone": 0.7407393638203218,
+        "passive": 0.7407393638203218,
+        "nose+passive": 0.5420853160327952,
+        "further_reduction_mean": 0.1715331210571133,
+        "further_reduction_seed_min": 0.14039635130948647,
+        "further_reduction_seed_max": 0.21059998106113786,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8138288728486052,
+        "device_alone": 0.8437531956846114,
+        "passive": 0.8437531956846114,
+        "nose+passive": 0.8138288728486052,
+        "further_reduction_mean": 0.13643884480441879,
+        "further_reduction_seed_min": 0.1288581090359931,
+        "further_reduction_seed_max": 0.14457241059189438,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9656586962764587,
+        "device_alone": 0.9649903181792506,
+        "passive": 0.9649903181792506,
+        "nose+passive": 0.9656586962764587,
+        "further_reduction_mean": 0.02570476373894263,
+        "further_reduction_seed_min": 0.015346435106087705,
+        "further_reduction_seed_max": 0.04026549136078498,
+        "frac_conditions_worse": 0.125,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7460565016402195,
+        "device_alone": 0.8354457371272187,
+        "passive": 0.8354457371272187,
+        "nose+passive": 0.7460565016402195,
+        "further_reduction_mean": 0.11933162150684083,
+        "further_reduction_seed_min": 0.10704722254149515,
+        "further_reduction_seed_max": 0.1321229027572545,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.6175018096971467,
+        "device_alone": 0.9842339938060368,
+        "passive": 0.9842339938060368,
+        "nose+passive": 0.6175018096971467,
+        "further_reduction_mean": 0.12452707017170746,
+        "further_reduction_seed_min": 0.0788756273958194,
+        "further_reduction_seed_max": 0.18295209385127018,
+        "frac_conditions_worse": 0.2916666666666667,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.8517356148715305,
+        "device_alone": 0.9093111206538348,
+        "passive": 0.9093111206538348,
+        "nose+passive": 0.8517356148715305,
+        "further_reduction_mean": 0.11476221946622138,
+        "further_reduction_seed_min": 0.10342544254233788,
+        "further_reduction_seed_max": 0.1213928475464235,
+        "frac_conditions_worse": 0.2,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.926554498264044,
+        "device_alone": 0.9292727048546393,
+        "passive": 0.9292727048546393,
+        "nose+passive": 0.926554498264044,
+        "further_reduction_mean": 0.07947350998046951,
+        "further_reduction_seed_min": 0.057942796180838786,
+        "further_reduction_seed_max": 0.09907659139948027,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.7801767885516068,
+        "device_alone": 0.9476433428221751,
+        "passive": 0.9476433428221751,
+        "nose+passive": 0.7801767885516068,
+        "further_reduction_mean": 0.10718570502026087,
+        "further_reduction_seed_min": 0.08701956781106288,
+        "further_reduction_seed_max": 0.13802416707696663,
+        "frac_conditions_worse": 0.18333333333333332,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.728821370186103,
+        "device_alone": 1.2687133975759437,
+        "passive": 1.2687133975759437,
+        "nose+passive": 0.728821370186103,
+        "further_reduction_mean": 0.03903851978085863,
+        "further_reduction_seed_min": -0.0034798732735460414,
+        "further_reduction_seed_max": 0.07219333313371697,
+        "frac_conditions_worse": 0.4166666666666667,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.923760492406233,
+        "device_alone": 0.9970284161445464,
+        "passive": 0.9970284161445464,
+        "nose+passive": 0.923760492406233,
+        "further_reduction_mean": 0.05526017511818304,
+        "further_reduction_seed_min": 0.030168644530736487,
+        "further_reduction_seed_max": 0.06429905977386874,
+        "frac_conditions_worse": 0.3,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.8501847698951531,
+        "device_alone": 0.8566107392596516,
+        "passive": 0.8566107392596516,
+        "nose+passive": 0.8501847698951531,
+        "further_reduction_mean": 0.14816330800585784,
+        "further_reduction_seed_min": 0.12140313708286121,
+        "further_reduction_seed_max": 0.1716446868534313,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.8294670960770532,
+        "device_alone": 1.0725330792165997,
+        "passive": 1.0725330792165997,
+        "nose+passive": 0.8294670960770532,
+        "further_reduction_mean": 0.06949537419537524,
+        "further_reduction_seed_min": 0.05704234018093661,
+        "further_reduction_seed_max": 0.08365634797691997,
+        "frac_conditions_worse": 0.2833333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      }
+     }
+    }
+   },
+   "members_tested": [
+    14.98
+   ]
+  },
+  "studyK_45g": {
+   "verdict": {
+    "pass": true,
+    "r0.3": 0.07959640791372578,
+    "r0.5": 0.18226696073128487,
+    "r0.7": 0.19506814533027514,
+    "any_split_worse_on_average": false,
+    "P_avg_W": 0.14464910580970067
+   },
+   "design_mass_g": 44.9961681400344,
+   "slug_g": 28.739549250926448,
+   "label": "SIM (study K, test seeds 200-203)"
+  },
+  "label": "SIM (study K's model H1 and tracker cascade, read-only; tuning seeds 300-303 for the choice, test seeds 200-203 for the verdict; synthetic writing and tremor; Rev H pen)",
+  "test_j1m2": {
+   "verdicts": {
+    "lrm_9": {
+     "pass": true,
+     "r0.3": 0.05614429545388572,
+     "r0.5": 0.16797743472367097,
+     "r0.7": 0.18282806187123649,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.08208246180796464,
+     "P_act_W_mean_SIM": 0.027575065351782554,
+     "mass_g": 31.566189312132682
+    },
+    "lrm_7.5": {
+     "pass": true,
+     "r0.3": 0.052038678934760496,
+     "r0.5": 0.17433202908562362,
+     "r0.7": 0.17088612806706618,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.07519773592780851,
+     "P_act_W_mean_SIM": 0.028719613792581842,
+     "mass_g": 27.997001627072674
+    },
+    "lrm_5": {
+     "pass": false,
+     "r0.3": 0.041594672855094265,
+     "r0.5": 0.15546515781386303,
+     "r0.7": 0.13359484732281982,
+     "any_split_worse_on_average": false,
+     "P_avg_W": 0.06362094564986268,
+     "P_act_W_mean_SIM": 0.030944738625909837,
+     "mass_g": 22.048355485305994
+    }
+   },
+   "summary": {
+    "lrm_9": {
+     "lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.6112662355698159,
+        "device_alone": 0.8448925459026744,
+        "passive": 0.8735323118859455,
+        "nose+passive": 0.5907216056089629,
+        "further_reduction_mean": 0.05614429545388572,
+        "further_reduction_seed_min": 0.026706973045049192,
+        "further_reduction_seed_max": 0.07306174928568591,
+        "frac_conditions_worse": 0.20833333333333334,
+        "P_act_W_mean": 0.05447148941676555,
+        "P_act_W_max": 0.09414348947494391,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8474255152755852,
+        "device_alone": 0.8761946285621512,
+        "passive": 0.911618333406896,
+        "nose+passive": 0.8636595804354432,
+        "further_reduction_mean": 0.09717408797840402,
+        "further_reduction_seed_min": 0.08644272014915114,
+        "further_reduction_seed_max": 0.10868827652259146,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013126745049551067,
+        "P_act_W_max": 0.015712994542900222,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9366287521755939,
+        "device_alone": 0.9435371841857437,
+        "passive": 0.9544916087901886,
+        "nose+passive": 0.9531971656834256,
+        "further_reduction_mean": 0.056077745468351536,
+        "further_reduction_seed_min": 0.04350315662241192,
+        "further_reduction_seed_max": 0.0634189194391307,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.015930501765285286,
+        "P_act_W_max": 0.031354153392814506,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7763159975160661,
+        "device_alone": 0.8820117337498764,
+        "passive": 0.9092734494990034,
+        "nose+passive": 0.7793376196343407,
+        "further_reduction_mean": 0.06922582199221579,
+        "further_reduction_seed_min": 0.05608855589915329,
+        "further_reduction_seed_max": 0.07491659244976348,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": 0.030907032517113093,
+        "P_act_W_max": 0.09414348947494391,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.5893502107719857,
+        "device_alone": 0.7334386733589261,
+        "passive": 0.9295615997264409,
+        "nose+passive": 0.6242000693390732,
+        "further_reduction_mean": 0.16797743472367097,
+        "further_reduction_seed_min": 0.09519857503176442,
+        "further_reduction_seed_max": 0.21891986533426802,
+        "frac_conditions_worse": 0.125,
+        "P_act_W_mean": 0.04263236127730368,
+        "P_act_W_max": 0.06737111377295052,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.8137172403254951,
+        "device_alone": 0.8285609475558683,
+        "passive": 0.9144937253604903,
+        "nose+passive": 0.8730792530426517,
+        "further_reduction_mean": 0.15690655505560816,
+        "further_reduction_seed_min": 0.14509494760374492,
+        "further_reduction_seed_max": 0.1680222273278059,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013116963762321668,
+        "P_act_W_max": 0.016638035663134987,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.9149641948974433,
+        "device_alone": 0.9227148326810674,
+        "passive": 0.9390965096088838,
+        "nose+passive": 0.941389805707575,
+        "further_reduction_mean": 0.09079593725730788,
+        "further_reduction_seed_min": 0.07601740556523855,
+        "further_reduction_seed_max": 0.10740508907069703,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.016570981777525688,
+        "P_act_W_max": 0.040831461997230624,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.7504473663233217,
+        "device_alone": 0.8167151997782902,
+        "passive": 0.9299035027658195,
+        "nose+passive": 0.7944424927030332,
+        "further_reduction_mean": 0.14429301917266674,
+        "further_reduction_seed_min": 0.11787609136563673,
+        "further_reduction_seed_max": 0.1683433175332239,
+        "frac_conditions_worse": 0.05,
+        "P_act_W_mean": 0.02641642105350602,
+        "P_act_W_max": 0.06737111377295052,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.6210921682443512,
+        "device_alone": 0.787497953168968,
+        "passive": 1.073588232426537,
+        "nose+passive": 0.6839812596674827,
+        "further_reduction_mean": 0.18282806187123649,
+        "further_reduction_seed_min": 0.09583218809233214,
+        "further_reduction_seed_max": 0.2485376719816075,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": 0.03918770496871761,
+        "P_act_W_max": 0.06950562576792532,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.8568659256198392,
+        "device_alone": 0.8768566182196376,
+        "passive": 0.9655347133214714,
+        "nose+passive": 0.9218884630578419,
+        "further_reduction_mean": 0.126212653358232,
+        "further_reduction_seed_min": 0.11701588278529056,
+        "further_reduction_seed_max": 0.1460655886404983,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.01339404814721302,
+        "P_act_W_max": 0.01918459286307488,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.9046486992347962,
+        "device_alone": 0.9010603410769528,
+        "passive": 0.9097748322248759,
+        "nose+passive": 0.9094348549627623,
+        "further_reduction_mean": 0.09286672781931915,
+        "further_reduction_seed_min": 0.08232405333540481,
+        "further_reduction_seed_max": 0.10361647271489823,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.017258083167102214,
+        "P_act_W_max": 0.045848965602339684,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.777841461833438,
+        "device_alone": 0.8499502938761552,
+        "passive": 0.9975597267038786,
+        "nose+passive": 0.8267665462118147,
+        "further_reduction_mean": 0.1365140379356698,
+        "further_reduction_seed_min": 0.11315088638832188,
+        "further_reduction_seed_max": 0.1559722388920853,
+        "frac_conditions_worse": 0.03333333333333333,
+        "P_act_W_mean": 0.025401742484728537,
+        "P_act_W_max": 0.06950562576792532,
+        "n": 60
+       }
+      }
+     },
+     "weight_lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.5707367626623,
+        "device_alone": 0.7887281256118674,
+        "passive": 0.7887281256118674,
+        "nose+passive": 0.5707367626623,
+        "further_reduction_mean": 0.12581968421923748,
+        "further_reduction_seed_min": 0.09889091037015495,
+        "further_reduction_seed_max": 0.14104761945013525,
+        "frac_conditions_worse": 0.125,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8468889520754844,
+        "device_alone": 0.878363260026395,
+        "passive": 0.878363260026395,
+        "nose+passive": 0.8468889520754844,
+        "further_reduction_mean": 0.1004366074114057,
+        "further_reduction_seed_min": 0.09622534995917831,
+        "further_reduction_seed_max": 0.10385189707206446,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9635657466292856,
+        "device_alone": 0.9743969756490897,
+        "passive": 0.9743969756490897,
+        "nose+passive": 0.9635657466292856,
+        "further_reduction_mean": 0.028729390160016504,
+        "further_reduction_seed_min": 0.02017615518003535,
+        "further_reduction_seed_max": 0.036927278539523746,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7659946903179257,
+        "device_alone": 0.8686111527034268,
+        "passive": 0.8686111527034268,
+        "nose+passive": 0.7659946903179257,
+        "further_reduction_mean": 0.09196524113076229,
+        "further_reduction_seed_min": 0.0778825301263279,
+        "further_reduction_seed_max": 0.10034300570898823,
+        "frac_conditions_worse": 0.06666666666666667,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.629009442521379,
+        "device_alone": 0.9470774786310509,
+        "passive": 0.9470774786310509,
+        "nose+passive": 0.629009442521379,
+        "further_reduction_mean": 0.11141186042381268,
+        "further_reduction_seed_min": 0.05613704584930033,
+        "further_reduction_seed_max": 0.17613435230963856,
+        "frac_conditions_worse": 0.375,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.863609466435098,
+        "device_alone": 0.9079479399556989,
+        "passive": 0.9079479399556989,
+        "nose+passive": 0.863609466435098,
+        "further_reduction_mean": 0.10384523263186325,
+        "further_reduction_seed_min": 0.0933673303375151,
+        "further_reduction_seed_max": 0.11822990055520474,
+        "frac_conditions_worse": 0.2,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.9624324665480435,
+        "device_alone": 0.9618973465981323,
+        "passive": 0.9618973465981323,
+        "nose+passive": 0.9624324665480435,
+        "further_reduction_mean": 0.04400217282022906,
+        "further_reduction_seed_min": 0.031481361848593105,
+        "further_reduction_seed_max": 0.055672796162205475,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.7974116223054787,
+        "device_alone": 0.9398309016100731,
+        "passive": 0.9398309016100731,
+        "nose+passive": 0.7974116223054787,
+        "further_reduction_mean": 0.08975044356683594,
+        "further_reduction_seed_min": 0.0650091550180986,
+        "further_reduction_seed_max": 0.11917826599639422,
+        "frac_conditions_worse": 0.23333333333333334,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.7081716610575182,
+        "device_alone": 1.2001255566012012,
+        "passive": 1.2001255566012012,
+        "nose+passive": 0.7081716610575182,
+        "further_reduction_mean": 0.0671728250551633,
+        "further_reduction_seed_min": 0.029389035332498276,
+        "further_reduction_seed_max": 0.10138874645764662,
+        "frac_conditions_worse": 0.375,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.9241436140481607,
+        "device_alone": 0.9847124769668593,
+        "passive": 0.9847124769668593,
+        "nose+passive": 0.9241436140481607,
+        "further_reduction_mean": 0.05580399870350668,
+        "further_reduction_seed_min": 0.037450532852242716,
+        "further_reduction_seed_max": 0.06440243950949176,
+        "frac_conditions_worse": 0.35,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.9120007107700574,
+        "device_alone": 0.9157796268441066,
+        "passive": 0.9157796268441066,
+        "nose+passive": 0.9120007107700574,
+        "further_reduction_mean": 0.08592023147851074,
+        "further_reduction_seed_min": 0.06571310206033844,
+        "further_reduction_seed_max": 0.10657325940693428,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.8369774427608484,
+        "device_alone": 1.0557423190124662,
+        "passive": 1.0557423190124662,
+        "nose+passive": 0.8369774427608484,
+        "further_reduction_mean": 0.06506760325685305,
+        "further_reduction_seed_min": 0.05504255352933545,
+        "further_reduction_seed_max": 0.07910297282130199,
+        "frac_conditions_worse": 0.2833333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      }
+     }
+    },
+    "lrm_7.5": {
+     "lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.6140150811046775,
+        "device_alone": 0.8528225184513748,
+        "passive": 0.8813904106526392,
+        "nose+passive": 0.5969915775221348,
+        "further_reduction_mean": 0.052038678934760496,
+        "further_reduction_seed_min": 0.02417799744686694,
+        "further_reduction_seed_max": 0.06839605545226213,
+        "frac_conditions_worse": 0.20833333333333334,
+        "P_act_W_mean": 0.05801049195440506,
+        "P_act_W_max": 0.096390521876171,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8552077853270875,
+        "device_alone": 0.8847329278333266,
+        "passive": 0.9203472009946332,
+        "nose+passive": 0.8718845673594571,
+        "further_reduction_mean": 0.08888220848284833,
+        "further_reduction_seed_min": 0.07876237453916461,
+        "further_reduction_seed_max": 0.10084989006704966,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013400575732403334,
+        "P_act_W_max": 0.017025402636952666,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9428316925966422,
+        "device_alone": 0.9502753089497417,
+        "passive": 0.9606708905903174,
+        "nose+passive": 0.9596652853333657,
+        "further_reduction_mean": 0.049894743372413654,
+        "further_reduction_seed_min": 0.040606750466332296,
+        "further_reduction_seed_max": 0.056198273036912126,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.016123628367220897,
+        "P_act_W_max": 0.032018984422394633,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7813531674840415,
+        "device_alone": 0.8896066941611538,
+        "passive": 0.9167546229975677,
+        "nose+passive": 0.7861228301866012,
+        "further_reduction_mean": 0.06348430062189556,
+        "further_reduction_seed_min": 0.05231579242445527,
+        "further_reduction_seed_max": 0.06822305753963732,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": 0.03249203033735348,
+        "P_act_W_max": 0.096390521876171,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.5847089846832684,
+        "device_alone": 0.7462296358546453,
+        "passive": 0.9225264751589165,
+        "nose+passive": 0.6271654683444421,
+        "further_reduction_mean": 0.17433202908562362,
+        "further_reduction_seed_min": 0.13808980740997326,
+        "further_reduction_seed_max": 0.21316320208158915,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": 0.04528778625207295,
+        "P_act_W_max": 0.0713122750552319,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.8198551850763085,
+        "device_alone": 0.8339143073663056,
+        "passive": 0.9164225842253788,
+        "nose+passive": 0.8771574249869551,
+        "further_reduction_mean": 0.15068169529916922,
+        "further_reduction_seed_min": 0.13856409449975068,
+        "further_reduction_seed_max": 0.16136377505648572,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013245519271515729,
+        "P_act_W_max": 0.017402424120758646,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.9237635272774186,
+        "device_alone": 0.9316235063184605,
+        "passive": 0.9475864522573504,
+        "nose+passive": 0.9507795939369972,
+        "further_reduction_mean": 0.082064194826518,
+        "further_reduction_seed_min": 0.06813257997786017,
+        "further_reduction_seed_max": 0.09851072436689422,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.016665394475485016,
+        "P_act_W_max": 0.04028721736723193,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.7526673779318824,
+        "device_alone": 0.8257595140405525,
+        "passive": 0.9297019174173043,
+        "nose+passive": 0.799238240896937,
+        "further_reduction_mean": 0.14274686195022862,
+        "further_reduction_seed_min": 0.1308464898683985,
+        "further_reduction_seed_max": 0.16179914668785977,
+        "frac_conditions_worse": 0.03333333333333333,
+        "P_act_W_mean": 0.02756024835761731,
+        "P_act_W_max": 0.0713122750552319,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.6306651002484752,
+        "device_alone": 0.8050100361861418,
+        "passive": 1.0662294442673887,
+        "nose+passive": 0.6835868118369385,
+        "further_reduction_mean": 0.17088612806706618,
+        "further_reduction_seed_min": 0.08635152251116508,
+        "further_reduction_seed_max": 0.2426451432988617,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": 0.04056235106127077,
+        "P_act_W_max": 0.07075644584954376,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.8633260193179805,
+        "device_alone": 0.8825266714405778,
+        "passive": 0.9655544165559304,
+        "nose+passive": 0.923979385420599,
+        "further_reduction_mean": 0.11967566909629887,
+        "further_reduction_seed_min": 0.10935526738633854,
+        "further_reduction_seed_max": 0.13930097416576306,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013605672378554774,
+        "P_act_W_max": 0.020681043474719316,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.9151398663999686,
+        "device_alone": 0.9112047826988473,
+        "passive": 0.9203277182880165,
+        "nose+passive": 0.9204811402613305,
+        "further_reduction_mean": 0.0824502470787725,
+        "further_reduction_seed_min": 0.07098217333855383,
+        "further_reduction_seed_max": 0.09278316635028845,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.017464730409869667,
+        "P_act_W_max": 0.047266085332339405,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.7862235071321636,
+        "device_alone": 0.8611570896508717,
+        "passive": 0.9971785235696645,
+        "nose+passive": 0.8300059080119944,
+        "further_reduction_mean": 0.12717906617383973,
+        "further_reduction_seed_min": 0.10421617889262376,
+        "further_reduction_seed_max": 0.14957822214292296,
+        "frac_conditions_worse": 0.03333333333333333,
+        "P_act_W_mean": 0.026106562682774736,
+        "P_act_W_max": 0.07075644584954376,
+        "n": 60
+       }
+      }
+     },
+     "weight_lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.5817459263291636,
+        "device_alone": 0.8069469731187131,
+        "passive": 0.8069469731187131,
+        "nose+passive": 0.5817459263291636,
+        "further_reduction_mean": 0.10786852761215304,
+        "further_reduction_seed_min": 0.07993458671081762,
+        "further_reduction_seed_max": 0.12438269443108106,
+        "frac_conditions_worse": 0.16666666666666666,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8574803857459568,
+        "device_alone": 0.8909621012682036,
+        "passive": 0.8909621012682036,
+        "nose+passive": 0.8574803857459568,
+        "further_reduction_mean": 0.08861780201873079,
+        "further_reduction_seed_min": 0.08429132317583236,
+        "further_reduction_seed_max": 0.09327626818700199,
+        "frac_conditions_worse": 0.05,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9647961508198438,
+        "device_alone": 0.9763185372453762,
+        "passive": 0.9763185372453762,
+        "nose+passive": 0.9647961508198438,
+        "further_reduction_mean": 0.02746125007490072,
+        "further_reduction_seed_min": 0.018871284592820243,
+        "further_reduction_seed_max": 0.035329373242232585,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7742272557459834,
+        "device_alone": 0.8806029170792293,
+        "passive": 0.8806029170792293,
+        "nose+passive": 0.7742272557459834,
+        "further_reduction_mean": 0.08053233900865475,
+        "further_reduction_seed_min": 0.06547961051116899,
+        "further_reduction_seed_max": 0.08912998438192901,
+        "frac_conditions_worse": 0.1,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.6359016755242758,
+        "device_alone": 0.9437477948297643,
+        "passive": 0.9437477948297643,
+        "nose+passive": 0.6359016755242758,
+        "further_reduction_mean": 0.10270524812083304,
+        "further_reduction_seed_min": 0.039819770327348215,
+        "further_reduction_seed_max": 0.16247487158498106,
+        "frac_conditions_worse": 0.375,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.8681748344329516,
+        "device_alone": 0.9087714340618744,
+        "passive": 0.9087714340618744,
+        "nose+passive": 0.8681748344329516,
+        "further_reduction_mean": 0.09940829918319166,
+        "further_reduction_seed_min": 0.08971987642088415,
+        "further_reduction_seed_max": 0.11452186046118078,
+        "frac_conditions_worse": 0.1,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.9706768819711771,
+        "device_alone": 0.9688263817343769,
+        "passive": 0.9688263817343769,
+        "nose+passive": 0.9706768819711771,
+        "further_reduction_mean": 0.035851095424406995,
+        "further_reduction_seed_min": 0.025555597173487394,
+        "further_reduction_seed_max": 0.04455599553650186,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.8037921307360015,
+        "device_alone": 0.9403609453016878,
+        "passive": 0.9403609453016878,
+        "nose+passive": 0.8037921307360015,
+        "further_reduction_mean": 0.08271662467217096,
+        "further_reduction_seed_min": 0.05568571028681613,
+        "further_reduction_seed_max": 0.10847429058532448,
+        "frac_conditions_worse": 0.2,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.7069236361659952,
+        "device_alone": 1.1809605992626147,
+        "passive": 1.1809605992626147,
+        "nose+passive": 0.7069236361659952,
+        "further_reduction_mean": 0.06930912864548033,
+        "further_reduction_seed_min": 0.0415704773597263,
+        "further_reduction_seed_max": 0.09732571803496748,
+        "frac_conditions_worse": 0.3333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.926033646546716,
+        "device_alone": 0.9817103301302952,
+        "passive": 0.9817103301302952,
+        "nose+passive": 0.926033646546716,
+        "further_reduction_mean": 0.05413572815649511,
+        "further_reduction_seed_min": 0.03691245945365531,
+        "further_reduction_seed_max": 0.06423243966696905,
+        "frac_conditions_worse": 0.3,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.927797497148752,
+        "device_alone": 0.9303009874869635,
+        "passive": 0.9303009874869635,
+        "nose+passive": 0.927797497148752,
+        "further_reduction_mean": 0.06998106041747443,
+        "further_reduction_seed_min": 0.052148993607587436,
+        "further_reduction_seed_max": 0.08817563915796316,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.8409047597547131,
+        "device_alone": 1.0504371950340685,
+        "passive": 1.0504371950340685,
+        "nose+passive": 0.8409047597547131,
+        "further_reduction_mean": 0.061498156783580366,
+        "further_reduction_seed_min": 0.056477743248120583,
+        "further_reduction_seed_max": 0.0718826263599797,
+        "frac_conditions_worse": 0.23333333333333334,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      }
+     }
+    },
+    "lrm_5": {
+     "lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.6205008737450292,
+        "device_alone": 0.8750596518985505,
+        "passive": 0.8994036340485878,
+        "nose+passive": 0.6097486406491567,
+        "further_reduction_mean": 0.041594672855094265,
+        "further_reduction_seed_min": 0.019435709700127923,
+        "further_reduction_seed_max": 0.057215496808182574,
+        "frac_conditions_worse": 0.125,
+        "P_act_W_mean": 0.06389231182060333,
+        "P_act_W_max": 0.09703822001105508,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8687012401569563,
+        "device_alone": 0.8996229344720483,
+        "passive": 0.9370033845528105,
+        "nose+passive": 0.8873137685430457,
+        "further_reduction_mean": 0.07442593523471805,
+        "further_reduction_seed_min": 0.064694620694869,
+        "further_reduction_seed_max": 0.0864226517618046,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.014490109837661727,
+        "P_act_W_max": 0.022233449286333404,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9539393437645877,
+        "device_alone": 0.9614981804618474,
+        "passive": 0.9708209016642481,
+        "nose+passive": 0.9705265819609358,
+        "further_reduction_mean": 0.03867925879213966,
+        "further_reduction_seed_min": 0.03147197281484535,
+        "further_reduction_seed_max": 0.04388494490963087,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.01676311451707549,
+        "P_act_W_max": 0.03598223389213602,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.79111805073033,
+        "device_alone": 0.9061618804230201,
+        "passive": 0.9318423000179081,
+        "nose+passive": 0.7988461988953117,
+        "further_reduction_mean": 0.05177280803909077,
+        "further_reduction_seed_min": 0.04364599675857939,
+        "further_reduction_seed_max": 0.05664092705855043,
+        "frac_conditions_worse": 0.05,
+        "P_act_W_mean": 0.0354642910512057,
+        "P_act_W_max": 0.09703822001105508,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.5983241308103074,
+        "device_alone": 0.774777337657059,
+        "passive": 0.9095445277731752,
+        "nose+passive": 0.6268304278641276,
+        "further_reduction_mean": 0.15546515781386303,
+        "further_reduction_seed_min": 0.1256933799919548,
+        "further_reduction_seed_max": 0.19549316833654343,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": 0.04888713559772349,
+        "P_act_W_max": 0.07315833542598807,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.8278639897830775,
+        "device_alone": 0.8407586775424332,
+        "passive": 0.9204121826140399,
+        "nose+passive": 0.8832501921893353,
+        "further_reduction_mean": 0.14264200074002847,
+        "further_reduction_seed_min": 0.12929033853005104,
+        "further_reduction_seed_max": 0.15636651770482204,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.013743823668796961,
+        "P_act_W_max": 0.02008679357980004,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.9383981594975447,
+        "device_alone": 0.9471274973151775,
+        "passive": 0.9618919833144058,
+        "nose+passive": 0.9664552067561439,
+        "further_reduction_mean": 0.06753973387353905,
+        "further_reduction_seed_min": 0.058427108308924225,
+        "further_reduction_seed_max": 0.08151719591980838,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.017227229371710003,
+        "P_act_W_max": 0.039861250749446187,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.7641044395049944,
+        "device_alone": 0.8431382684676901,
+        "passive": 0.929070691766388,
+        "nose+passive": 0.8048485477511426,
+        "further_reduction_mean": 0.12922678639246057,
+        "further_reduction_seed_min": 0.11708928933336642,
+        "further_reduction_seed_max": 0.14883700661781332,
+        "frac_conditions_worse": 0.03333333333333333,
+        "P_act_W_mean": 0.02939174365761754,
+        "P_act_W_max": 0.07315833542598807,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.6612460949633726,
+        "device_alone": 0.8491886226147868,
+        "passive": 1.0558381810955622,
+        "nose+passive": 0.6927486422913091,
+        "further_reduction_mean": 0.13359484732281982,
+        "further_reduction_seed_min": 0.055636632163391764,
+        "further_reduction_seed_max": 0.19850254988388996,
+        "frac_conditions_worse": 0.16666666666666666,
+        "P_act_W_mean": 0.04394120846476396,
+        "P_act_W_max": 0.07264378231977198,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.8749727492944812,
+        "device_alone": 0.8917988519473681,
+        "passive": 0.9657702145054413,
+        "nose+passive": 0.9271374736317041,
+        "further_reduction_mean": 0.10791629411599354,
+        "further_reduction_seed_min": 0.10032434335746658,
+        "further_reduction_seed_max": 0.12555017508718203,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.014418544091358825,
+        "P_act_W_max": 0.026358676838742198,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.9342226788650656,
+        "device_alone": 0.929664588454552,
+        "passive": 0.9394885770180981,
+        "nose+passive": 0.9409891138307668,
+        "further_reduction_mean": 0.06345667359066633,
+        "further_reduction_seed_min": 0.050136806157306237,
+        "further_reduction_seed_max": 0.07424157968175128,
+        "frac_conditions_worse": 0.0,
+        "P_act_W_mean": 0.018083557310438005,
+        "P_act_W_max": 0.045602775019225036,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.8066410818328438,
+        "device_alone": 0.8860652114672845,
+        "passive": 0.997614691514664,
+        "nose+passive": 0.8396802607450607,
+        "further_reduction_mean": 0.10405783335636988,
+        "further_reduction_seed_min": 0.08280599491731779,
+        "further_reduction_seed_max": 0.1265420807283563,
+        "frac_conditions_worse": 0.06666666666666667,
+        "P_act_W_mean": 0.027978181168906276,
+        "P_act_W_max": 0.07264378231977198,
+        "n": 60
+       }
+      }
+     },
+     "weight_lrm": {
+      "0.3": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.6444941277969588,
+        "nose+device": 0.6041642408870903,
+        "device_alone": 0.849628135838065,
+        "passive": 0.849628135838065,
+        "nose+passive": 0.6041642408870903,
+        "further_reduction_mean": 0.07049906662500906,
+        "further_reduction_seed_min": 0.04472063737036317,
+        "further_reduction_seed_max": 0.0864131503668699,
+        "frac_conditions_worse": 0.16666666666666666,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9367078654468406,
+        "nose+device": 0.8781535903266422,
+        "device_alone": 0.9183253132443971,
+        "passive": 0.9183253132443971,
+        "nose+passive": 0.8781535903266422,
+        "further_reduction_mean": 0.06538719475579687,
+        "further_reduction_seed_min": 0.05973535292654601,
+        "further_reduction_seed_max": 0.07076575917239225,
+        "frac_conditions_worse": 0.15,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9922250959448323,
+        "nose+device": 0.9752960661824154,
+        "device_alone": 0.9799869491757368,
+        "passive": 0.9799869491757368,
+        "nose+passive": 0.9752960661824154,
+        "further_reduction_mean": 0.016369584212189286,
+        "further_reduction_seed_min": -0.0055079688222746115,
+        "further_reduction_seed_max": 0.024161687811134275,
+        "frac_conditions_worse": 0.125,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8335455155258662,
+        "nose+device": 0.7939448342440494,
+        "device_alone": 0.9077140779324021,
+        "passive": 0.9077140779324021,
+        "nose+passive": 0.7939448342440494,
+        "further_reduction_mean": 0.053746966997369125,
+        "further_reduction_seed_min": 0.03353391327236059,
+        "further_reduction_seed_max": 0.0645200964780161,
+        "frac_conditions_worse": 0.15,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.5": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7054869472947883,
+        "nose+device": 0.6366518486081918,
+        "device_alone": 0.9251113985529272,
+        "passive": 0.9251113985529272,
+        "nose+passive": 0.6366518486081918,
+        "further_reduction_mean": 0.10297173893250476,
+        "further_reduction_seed_min": 0.0691833033041578,
+        "further_reduction_seed_max": 0.1467813091530981,
+        "frac_conditions_worse": 0.3333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9622564511058886,
+        "nose+device": 0.8769793946489942,
+        "device_alone": 0.9117445175426271,
+        "passive": 0.9117445175426271,
+        "nose+passive": 0.8769793946489942,
+        "further_reduction_mean": 0.090614950816265,
+        "further_reduction_seed_min": 0.0814749522092034,
+        "further_reduction_seed_max": 0.10570880993222975,
+        "frac_conditions_worse": 0.05,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 1.0070502573045432,
+        "nose+device": 0.9821707945874641,
+        "device_alone": 0.9784006822698662,
+        "passive": 0.9784006822698662,
+        "nose+passive": 0.9821707945874641,
+        "further_reduction_mean": 0.024493701415352714,
+        "further_reduction_seed_min": 0.017033178758203704,
+        "further_reduction_seed_max": 0.030801709796296928,
+        "frac_conditions_worse": 0.041666666666666664,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8716558708127207,
+        "nose+device": 0.8098935791648268,
+        "device_alone": 0.9360845765895723,
+        "passive": 0.9360845765895723,
+        "nose+passive": 0.8098935791648268,
+        "further_reduction_mean": 0.07706841784741995,
+        "further_reduction_seed_min": 0.06227499741656635,
+        "further_reduction_seed_max": 0.09462384064127798,
+        "frac_conditions_worse": 0.16666666666666666,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      },
+      "0.7": {
+       "8-12Hz_1-2mm": {
+        "nose": 0.7647379062603609,
+        "nose+device": 0.7185509717794551,
+        "device_alone": 1.1393587694452896,
+        "passive": 1.1393587694452896,
+        "nose+passive": 0.7185509717794551,
+        "further_reduction_mean": 0.05469509991953884,
+        "further_reduction_seed_min": 0.011713323992885957,
+        "further_reduction_seed_max": 0.10356557731531603,
+        "frac_conditions_worse": 0.375,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "0.3mm_4-12Hz": {
+        "nose": 0.9802633415886802,
+        "nose+device": 0.9286494646705709,
+        "device_alone": 0.9766572773680476,
+        "passive": 0.9766572773680476,
+        "nose+passive": 0.9286494646705709,
+        "further_reduction_mean": 0.05193538480250174,
+        "further_reduction_seed_min": 0.03937860283908583,
+        "further_reduction_seed_max": 0.06472503957802363,
+        "frac_conditions_worse": 0.25,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 20
+       },
+       "4-6Hz_all": {
+        "nose": 0.9978992436437694,
+        "nose+device": 0.9512833614042743,
+        "device_alone": 0.9516831059576859,
+        "passive": 0.9516831059576859,
+        "nose+passive": 0.9512833614042743,
+        "further_reduction_mean": 0.04626673597728385,
+        "further_reduction_seed_min": 0.03240106813687751,
+        "further_reduction_seed_max": 0.05932995648316802,
+        "frac_conditions_worse": 0.08333333333333333,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 24
+       },
+       "all_trans": {
+        "nose": 0.8978176500344565,
+        "nose+device": 0.8521761035707366,
+        "device_alone": 1.037126369527899,
+        "passive": 1.037126369527899,
+        "nose+passive": 0.8521761035707366,
+        "further_reduction_mean": 0.04905753800754419,
+        "further_reduction_seed_min": 0.03952178389202409,
+        "further_reduction_seed_max": 0.06696944473023685,
+        "frac_conditions_worse": 0.25,
+        "P_act_W_mean": "nan",
+        "P_act_W_max": null,
+        "n": 60
+       }
+      }
+     }
+    }
+   },
+   "members_tested": [
+    9.0,
+    7.5,
+    5.0
+   ],
+   "rule": {
+    "members_mm": [
+     9.0,
+     7.5,
+     5.0
+    ],
+    "text": "heaviest tested member (L_s 9.0 / 7.5 / 5.0 mm) that keeps the pen with the end-cap <= 120 g and passes the split-0.5 part of R-T1 (>= 10 %) with no split worse on average on TEST seeds; splits 0.3 and 0.7 reported against R-T1's 5 %"
+   }
+  },
+  "cache": "full"
+ }
+}

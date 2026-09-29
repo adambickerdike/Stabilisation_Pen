@@ -256,16 +256,20 @@ The user asked for far more physical effect on the writing: more advanced tip ma
   - *V, simulator v2 (DEC-040):* MuJoCo 3.6 with the H1 contact law at 25 µs; on H1's 56 test cases the uncorrected ink error is within 3.1 % in every case, the perfect-knowledge ratio within ±0.03 in 52 and the tracker ratio within ±0.05 in 50 (misses: the Rev H tracker's frequency lock); convergence, energy and gyroscope checks; MyoSuite impedance; Gymnasium environment with domain randomisation. Synthetic writers are at half adult speed with about ten times the measured 8–12 Hz content: refit on recordings (EXP-V03). Context of use COU-1 (ranking designs) until EXP-V01/V02/V04/V05.
 - **Rev H corrections (DEC-041).** The nose actuator's force constant is 0.19 N/√W by an image-method model, not 0.47 (REQ-RVH-003/004 and AC-I05-01/04 marked contested); the ink-force spring needs a fatigue rating; a free refill follows lifts; the refill's front stop must follow the nose (REQ-RVH-008).
 - **Round 2 integration (DEC-044; CALC).** Ø24 mm; contact radius 11.65 mm, wheel at 12.0 mm; sleeve front Ø23.3 mm; 144.7 mm and 87.0 g, or 165.7 mm and 129.2 g with the end-cap (target ≤ 120 g); refill slide 26.6 mm; 38 fit checks pass.
+- **Round 3, Rev J.1 fixes (DEC-045; CALC, `docs/revJ1_design.md`, `revj1/`, `results/revJ1/`).** 143.9 / 161.9 mm, 84.3 / 112.7 g (base / with end-cap); 44 fit checks pass.
+  - Gimbal: study N's 50 µm strips buckle at 16.4 N under a 12.4–22.2 N magnet pull; strips in tension fail fatigue; 75 µm strips in compression with shock stops: buckling 55.3 N, Goodman factor 2.0.
+  - Battery: the tremor-line detector (DEC-042) needs the page sensor, so it stays on as a PMW3610-class die (1.3–1.9 mW; 1 kHz accuracy on paper unknown, EXP-J10; PMW3360 fallback for autowrite). Electronics 34–60 mW from datasheets. Steady 1 mm tremor 8.5–9.7 h; lead-through 7.5–8.8 h; autowrite 6.5–7.4 h (1 mm), 3.8–4.1 h (2 mm).
+  - Heat: 0.1 mm graphite sheet in the shell wall; web 35.9 °C at 1 mm tremor in a 30 °C room (limit 43 °C, AMF-35).
+  - End-cap: 9 mm tungsten slug, 29.6 g, 21 mm; +5.6 / 16.8 / 18.3 % at splits 0.3 / 0.5 / 0.7 (SIM, H1).
+  - Clear 15 mm PC window over the top 240° of the sleeve; heel motors 10 mm further back (detent 0.66 × friction, free space).
 - **Open problems (the next session must not lose these).**
-  1. Battery: the page sensor and base electronics take 115–165 mW before anything moves; steady mode 6.1–7.3 h (target 8 h) unless the page sensor is duty-cycled.
-  2. The nose magnets pull the gimbal axially with 16.5 N, above the strips' 14.5 N buckling load: tension-only strips or a thrust pivot.
-  3. Mass 129.2 g with the end-cap; the end-cap stays detachable and optional.
-  4. The nose's magnet cap, 2.7 mm in front of the heel motors, could put a detent of up to 0.16 N on the heel wheel through the motors' rotor magnets (measure in EXP-J02; a soft-iron cup if needed); skin over the coils 45.7 °C in a 30 °C room without a spreader.
-  5. Ink near the ball is hidden at 50–75° of tilt for the assumed eye position (as in Rev H).
-  6. The TCN may fail REQ-ML-001 (34.8 µm on the worst writer); text prediction latency 74–115 ms against 20 ms.
-  7. Autowrite with a pen lift needs a freedom-to-operate review against an actuated-nib pen that scribes predefined characters (LIT PAT-01).
-  8. The synthetic writers are unrealistic (above); every tremor-separation result waits on EXP-H01 recordings.
-- **Round 2 running.** Whole-pen closed loop in simulator v2 (`sim2j/`): writer refit, the gated tracker, nose and heel wheel coordinated, controllers compared (including RL with domain randomisation), outcomes per condition. The 3-D explainer is being updated to Rev J.
+  1. **Nose-coil power.** Every Rev J.1 battery and heat number rests on study N's coil-power model. The whole-pen simulation (sim2j) logged 1.3–2.4 W in some tremor runs (unconfirmed): at 2 × the model, 4.9–5.3 h and 42.1 °C; at 5 ×, 2.0–2.1 h and 63.8 °C.
+  2. Low-power page sensor accuracy at 1 kHz on paper (EXP-J10) and the detector on its stream (EXP-L01 extension).
+  3. The pull's size (12.4–22.2 N, ideal iron; EXP-J01) and the shock stops (not designed).
+  4. The TCN may fail REQ-ML-001 (34.8 µm on the worst writer).
+  5. Autowrite with a pen lift needs a freedom-to-operate review against an actuated-nib pen that scribes predefined characters (LIT PAT-01).
+  6. The synthetic writers are unrealistic; every tremor-separation result waits on EXP-H01 recordings (round 4 study R brings in public recordings meanwhile).
+- **Running.** Round 2: the whole-pen closed loop in simulator v2 (`sim2j/`). Round 4 (`docs/round4_plan.md`): study W, shifting and pivoting the whole pen against large tremor (`wholepen/`); study R, real recorded handwriting and tremor (`realdata/`); study S, physical spell checker, prediction and shape assist (`ai3/`). The 3-D explainer is being rebuilt around a simple view.
 
 **Next for Rev J, in order (from `docs/revJ_concept.md` §7).**
 1. EXP-N01 magnetics coupons: nose v2 and Rev H force constants.

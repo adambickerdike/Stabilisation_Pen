@@ -157,6 +157,34 @@ def pull_variants(nd: Optional[Dict] = None, quick: bool = False) -> Dict:
             "label": "CALC (magpylib + images, ideal iron: upper bounds of the pull; Km ratios from the mean coil field)"}
 
 
+# --------------------------------------------------------------------------------------------------- back iron
+def back_iron_flux(nd: Optional[Dict] = None, thicknesses=(2.37, 1.8, 1.5, 1.3, 1.0), crowding: float = 1.5,
+                   B_sat: float = 2.4, n: int = 121) -> Dict:
+    """Flux a pole sends into the plate's iron (ideal-iron image field at the face, one quadrant), and the mean and
+    crowded flux density in the plate when it returns to the two neighbouring poles through a section t x w (CALC).
+    crowding: peak / mean near the checkerboard's centre (ASSUMPTION).  Saturation 2.4 T: Hiperco 50A (MFR AMF-140)."""
+    from nose2 import magnetics as NM
+    nd = nd or RPA.nose_design()
+    w, t_m, t_c = nd["w"], nd["t_m"], nd["t_c"]
+    D = t_m + CLEAR + 2 * t_c
+    col = NM._images(_checker(nd), D, axis=2, n=3)
+    xs = np.linspace(0.0, 16.0, n)
+    X, Y = np.meshgrid(xs, xs, indexing="ij")
+    P = np.stack([X.ravel(), Y.ravel(), np.full(X.size, D - 1e-3)], axis=1)
+    B = col.getB(P)[:, 2]
+    phi = float(np.sum(B) * (xs[1] - xs[0]) ** 2 * 1e-6)
+    rows = []
+    for t in thicknesses:
+        Bm = phi / 2.0 / (t * 1e-3 * w * 1e-3)
+        rows.append({"t_mm": t, "B_mean_T": Bm, "B_peak_T_est": crowding * Bm, "margin_to_sat": B_sat / (crowding * Bm),
+                     "plate_mass_g": math.pi * 11.0 ** 2 * t * RPA.RHO["Hiperco"].value * 1e-3})
+    return {"flux_per_pole_Wb": phi, "rows": rows, "crowding": crowding, "B_sat_T": B_sat,
+            "chosen_t_mm": 1.5, "studyN_rule_t_mm": nd["t_bi"],
+            "note": "study N sized the iron as B_gap w / B_sat + 0.3 mm (one path, gap flux): about twice what two return "
+                    "paths need; the cap's own iron is kept (it counterweights the nose)",
+            "label": "CALC (magpylib + images, ideal iron; crowding factor ASSUMPTION; EXP-J14 confirms Km)"}
+
+
 # --------------------------------------------------------------------------------------------------- repelling ring
 def ring_pair(r_in: float, r_out: float, t: float, gap: float, Br: float = 1.33):
     """Two coaxial axially magnetised rings in repulsion across `gap` (SI, metres): the handle ring below z = 0 and the
@@ -302,7 +330,7 @@ def detent(geo: Dict, quick: bool = False) -> Dict:
 def summary(geo: Dict, F_pull: float, k_pivot_Nm_rad: float, quick: bool = False) -> Dict:
     nd = RPA.nose_design()
     pv = pull_variants(nd, quick)
-    return {"pull_variants": pv, "revJ_pull": RMG.axial_pull(n=81 if quick else 161),
+    return {"pull_variants": pv, "revJ_pull": RMG.axial_pull(n=81 if quick else 161), "back_iron": back_iron_flux(nd),
             "ring": ring_options(F_pull, quick),
             "centring": centring(F_pull, k_pivot_Nm_rad, nd["z_a"] - nd["z_p"], nd["Km_act"]),
             "detent": detent(geo, quick)}

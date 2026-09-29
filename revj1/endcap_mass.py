@@ -12,9 +12,12 @@ sim/handpen through opt/inertial; synthetic writing and tremor; the Rev H pen an
   rule J1-M1 (fixed here before any test run): choose the LIGHTEST member whose tuning further reduction is
              >= 12 % at split 0.5 (R-T1's 10 % plus a 2-point allowance for tuning-to-test shrinkage: study K's 45 g
              design fell from 20.2 % on tuning to 18.2 % on test) and >= 6 % at splits 0.3 and 0.7 (R-T1's 5 % + 1 point).
-  stage 2    TEST seeds 200-203, study K's full test grid (4-12 Hz x 0.3 / 1 / 2 mm, three splits) for the chosen member
-             and the next heavier one (fallback), with R-T1 exactly as study K's report.rule_RT1 applies it; plus the same
-             total mass fixed (passive weight), for DEC-038's revisit trigger ("the fixed weight comes within 5 points").
+  stage 2    TEST seeds 200-203, study K's full test grid (4-12 Hz x 0.3 / 1 / 2 mm, three splits) for rule J1-M1's
+             choice, with R-T1 exactly as study K's report.rule_RT1 applies it; plus the same total mass fixed (passive
+             weight), for DEC-038's revisit trigger ("the fixed weight comes within 5 points").
+  rule J1-M2 (written after stage 1, before any test run of a lighter member; see RULE_J1_M2 below): test the 31.6,
+             28.0 and 22.0 g members and take the heaviest that keeps the pen with the end-cap <= 120 g and passes the
+             split-0.5 part of R-T1; report splits 0.3 and 0.7 as they fall.
 Results are cached in results/revJ1/_cache/ (JSON rows) so python3 -m revj1.run reuses them.
 
 Limits: study K's pen is Rev H (75 g, Rev H nose +-3 mm, Rev H tracker), not Rev J.1; the ratios rank end-cap masses
@@ -81,11 +84,6 @@ def _save(name: str, obj: Dict, quick: bool) -> None:
     obj.setdefault("meta", provenance.metadata("SIMULATION (study K model H1 via endcap/sim.py, read-only; synthetic writing "
                                                "and tremor)", extra={"script": "revj1/endcap_mass.py"}))
     provenance.write_json(str(p), obj)
-
-
-def _eval(s: Dict, split: float, seed: int, f0: float, a: float, active: bool = True, ev=None):
-    from endcap import sim as S
-    return ev.case(seed, f0, a, active=active)
 
 
 def tune_stage(quick: bool = False, log=print, family: Sequence[float] = L_S_FAMILY_MM) -> Dict:

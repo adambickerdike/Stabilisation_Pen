@@ -1,0 +1,762 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured (magpylib; ideal iron where iron appears)",
+  "generated_utc": "2026-09-29T16:19:41+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured (magpylib; ideal iron where iron appears)",
+  "generated_utc": "2026-09-29T16:19:41+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "magnetics": {
+  "pull_variants": {
+   "rows": {
+    "revJ": {
+     "D_mm": 4.937237199854557,
+     "pull_N": 16.502007147601198,
+     "B_face_max_T": 0.7231303723633259,
+     "B_coil_T": 0.6347522184300421,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.0,
+     "air_core": false,
+     "Km_ratio": 1.0,
+     "coil_power_ratio": 1.0,
+     "pull_used_N": 16.502007147601198,
+     "F_per_Km2_ratio": 1.0
+    },
+    "spacer_0.1mm": {
+     "D_mm": 5.037237199854556,
+     "pull_N": 14.855547259254003,
+     "B_face_max_T": 0.6888910815036092,
+     "B_coil_T": 0.6109505648056733,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.1,
+     "air_core": false,
+     "Km_ratio": 0.9625024490922799,
+     "coil_power_ratio": 1.079434547204862,
+     "pull_used_N": 14.855547259254003,
+     "F_per_Km2_ratio": 0.9717357886131008
+    },
+    "spacer_0.25mm": {
+     "D_mm": 5.187237199854557,
+     "pull_N": 12.71577108940788,
+     "B_face_max_T": 0.6400963075238787,
+     "B_coil_T": 0.5801508263885709,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.25,
+     "air_core": false,
+     "Km_ratio": 0.9139799902133164,
+     "coil_power_ratio": 1.1970895078850077,
+     "pull_used_N": 12.71577108940788,
+     "F_per_Km2_ratio": 0.9224281640194546
+    },
+    "spacer_0.5mm": {
+     "D_mm": 5.437237199854557,
+     "pull_N": 9.863865913162412,
+     "B_face_max_T": 0.5654363796902518,
+     "B_coil_T": 0.539491747741611,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.5,
+     "air_core": false,
+     "Km_ratio": 0.8499249503624539,
+     "coil_power_ratio": 1.3843274889585369,
+     "pull_used_N": 9.863865913162412,
+     "F_per_Km2_ratio": 0.8274642356446167
+    },
+    "spacer_0.75mm": {
+     "D_mm": 5.687237199854557,
+     "pull_N": 7.697928669329445,
+     "B_face_max_T": 0.4987255350189687,
+     "B_coil_T": 0.5090632879140302,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.75,
+     "air_core": false,
+     "Km_ratio": 0.8019874104152273,
+     "coil_power_ratio": 1.5547655117389212,
+     "pull_used_N": 7.697928669329445,
+     "F_per_Km2_ratio": 0.7252738348643545
+    },
+    "spacer_1mm": {
+     "D_mm": 5.937237199854557,
+     "pull_N": 6.041313893042623,
+     "B_face_max_T": 0.439477199173856,
+     "B_coil_T": 0.48616225910836924,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 1.0,
+     "air_core": false,
+     "Km_ratio": 0.7659087199581809,
+     "coil_power_ratio": 1.7046921918109876,
+     "pull_used_N": 6.041313893042623,
+     "F_per_Km2_ratio": 0.6240804848545981
+    },
+    "air_core": {
+     "B_coil_T": 0.4085221877761601,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.0,
+     "air_core": true,
+     "pull_from_plate_N": 0.0,
+     "can_face_mm": 5.437237199854557,
+     "pull_from_cell_can_N_upper": 9.863865913162412,
+     "Km_ratio": 0.6435931626778308,
+     "coil_power_ratio": 2.414221741592535,
+     "pull_used_N": 9.863865913162412,
+     "F_per_Km2_ratio": 1.4430704901962086
+    },
+    "air_core_thick_coil": {
+     "B_coil_T": 0.2522816791126895,
+     "t_coil_mm": 3.464525250229629,
+     "spacer_mm": 0.0,
+     "air_core": true,
+     "pull_from_plate_N": 0.0,
+     "can_face_mm": 7.804611117406537,
+     "pull_from_cell_can_N_upper": 1.1524052753496847,
+     "Km_ratio": 0.7062689009727684,
+     "coil_power_ratio": 2.00474820409674,
+     "pull_used_N": 1.1524052753496847,
+     "F_per_Km2_ratio": 0.14000008517053167
+    },
+    "air_core_can_moved_up": {
+     "B_coil_T": 0.4085221877761601,
+     "t_coil_mm": 1.0971513326776476,
+     "spacer_mm": 0.0,
+     "air_core": true,
+     "pull_from_plate_N": 0.0,
+     "can_face_mm": 4.987237199854556,
+     "pull_from_cell_can_N_upper": 15.654842308762074,
+     "Km_ratio": 0.6435931626778308,
+     "coil_power_ratio": 2.414221741592535,
+     "pull_used_N": 15.654842308762074,
+     "F_per_Km2_ratio": 2.2902826501629536
+    }
+   },
+   "D_conventions": {
+    "nose2_flux_convention": {
+     "D_mm": 4.662949366685145,
+     "pull_N": 22.159760066433325
+    },
+    "revj_pull_convention": {
+     "D_mm": 4.937237199854557,
+     "pull_N": 16.502007147601198
+    },
+    "revj_layout_iron_face": {
+     "D_mm": 5.211525033023968,
+     "pull_N": 12.402393369078316
+    }
+   },
+   "t_bi_mm": 2.3673739175519817,
+   "note": "coil power at the same force scales as 1 / Km^2; a thinner back iron is not modelled (ideal iron does not saturate): real saturation lowers flux, pull and Km together, so F / Km^2 stays near 1",
+   "label": "CALC (magpylib + images, ideal iron: upper bounds of the pull; Km ratios from the mean coil field)"
+  },
+  "revJ_pull": {
+   "F_axial_N_images": 16.502007147601198,
+   "B_max_at_plate_T": 0.7231303723633259,
+   "F_axial_N_lumped_Bgap": 35.98436715590479,
+   "gimbal_strip_buckling_N": 14.5,
+   "strip_force_if_one_strip_per_axis_carries_it_N": 11.668681157257682,
+   "torque_from_eccentricity_mNm_per_0.1mm": 1.6502007147601199,
+   "negative_stiffness_Nm_per_rad_per_0.1mm": 0.00165020071476012,
+   "gimbal_bending_stiffness_Nm_per_rad": 0.0028,
+   "label": "CALC (magpylib + images, ideal iron: upper bound); eccentricity = offset of the spheres' centre from the flexure's pivot (tolerance, ASSUMPTION 0.1 mm)",
+   "lateral_offset_0.02mm": {
+    "torque_mNm": 0.33004014295202394,
+    "coil_force_N": 0.028684710832691567,
+    "hold_power_W": 0.0019092581403807873,
+    "axial_offset_negative_k_share_of_flexure": 0.11787147962572284
+   },
+   "lateral_offset_0.05mm": {
+    "torque_mNm": 0.8251003573800599,
+    "coil_force_N": 0.07171177708172893,
+    "hold_power_W": 0.011932863377379926,
+    "axial_offset_negative_k_share_of_flexure": 0.2946786990643071
+   },
+   "lateral_offset_0.1mm": {
+    "torque_mNm": 1.6502007147601199,
+    "coil_force_N": 0.14342355416345787,
+    "hold_power_W": 0.047731453509519704,
+    "axial_offset_negative_k_share_of_flexure": 0.5893573981286142
+   },
+   "offset_note": "hold power = (F e / (arm Km))^2 with arm = actuator - pivot and Km at the magnets (study N, an upper bound: a lower Km raises it); the servo holds either offset, at a cost in power"
+  },
+  "back_iron": {
+   "flux_per_pole_Wb": 2.3467957214813287e-05,
+   "rows": [
+    {
+     "t_mm": 2.37,
+     "B_mean_T": 0.7829639532348227,
+     "B_peak_T_est": 1.174445929852234,
+     "margin_to_sat": 2.0435168099241166,
+     "plate_mass_g": 7.315425945191953
+    },
+    {
+     "t_mm": 1.8,
+     "B_mean_T": 1.03090253842585,
+     "B_peak_T_est": 1.5463538076387748,
+     "margin_to_sat": 1.5520380834866707,
+     "plate_mass_g": 5.556019705209079
+    },
+    {
+     "t_mm": 1.5,
+     "B_mean_T": 1.23708304611102,
+     "B_peak_T_est": 1.85562456916653,
+     "margin_to_sat": 1.2933650695722254,
+     "plate_mass_g": 4.630016421007565
+    },
+    {
+     "t_mm": 1.3,
+     "B_mean_T": 1.4274035147434845,
+     "B_peak_T_est": 2.141105272115227,
+     "margin_to_sat": 1.120916393629262,
+     "plate_mass_g": 4.012680898206557
+    },
+    {
+     "t_mm": 1.0,
+     "B_mean_T": 1.85562456916653,
+     "B_peak_T_est": 2.7834368537497953,
+     "margin_to_sat": 0.8622433797148169,
+     "plate_mass_g": 3.0866776140050436
+    }
+   ],
+   "crowding": 1.5,
+   "B_sat_T": 2.4,
+   "chosen_t_mm": 1.5,
+   "studyN_rule_t_mm": 2.3673739175519817,
+   "note": "study N sized the iron as B_gap w / B_sat + 0.3 mm (one path, gap flux): about twice what two return paths need; the cap's own iron is kept (it counterweights the nose)",
+   "label": "CALC (magpylib + images, ideal iron; crowding factor ASSUMPTION; EXP-J14 confirms Km)"
+  },
+  "ring": {
+   "rows": [
+    {
+     "geometry_mm": {
+      "r_in": 3.0,
+      "r_out": 9.0,
+      "t": 1.0,
+      "gap": 0.5
+     },
+     "Fz_N": 10.942077181862375,
+     "tilt_stiffness_Nm_per_rad": 0.2889382990222598,
+     "lateral_stiffness_N_per_m": -4777.169828789371,
+     "share_of_pull": 0.6631561928401439
+    },
+    {
+     "geometry_mm": {
+      "r_in": 3.0,
+      "r_out": 9.0,
+      "t": 1.5,
+      "gap": 1.0
+     },
+     "Fz_N": 13.360461637282171,
+     "tilt_stiffness_Nm_per_rad": 0.24226308038867145,
+     "lateral_stiffness_N_per_m": -4092.8154713985614,
+     "share_of_pull": 0.809724947714071
+    },
+    {
+     "geometry_mm": {
+      "r_in": 6.0,
+      "r_out": 9.5,
+      "t": 1.0,
+      "gap": 0.4
+     },
+     "Fz_N": 15.473907820077082,
+     "tilt_stiffness_Nm_per_rad": 0.6156815692216638,
+     "lateral_stiffness_N_per_m": -9070.13806069425,
+     "share_of_pull": 0.9378125951561868
+    }
+   ],
+   "target_N": 16.5,
+   "label": "CALC (magpylib getFT on meshed ring magnets, SI; N45 rings, ASSUMPTION sizes)"
+  },
+  "centring": {
+   "F_N": 16.5,
+   "k_pivot_Nm_rad": 0.02275711536481365,
+   "rows": [
+    {
+     "offset_mm": 0.02,
+     "axial_dk_Nm_per_rad": 0.00033,
+     "axial_dk_share_of_pivot": 0.014500959137827979,
+     "lateral_torque_mNm": 0.33,
+     "lateral_coil_force_N": 0.028681221896586773,
+     "lateral_hold_power_W": 0.0019087937205307308
+    },
+    {
+     "offset_mm": 0.05,
+     "axial_dk_Nm_per_rad": 0.0008250000000000001,
+     "axial_dk_share_of_pivot": 0.036252397844569954,
+     "lateral_torque_mNm": 0.8250000000000001,
+     "lateral_coil_force_N": 0.07170305474146693,
+     "lateral_hold_power_W": 0.011929960753317068
+    },
+    {
+     "offset_mm": 0.1,
+     "axial_dk_Nm_per_rad": 0.0016500000000000002,
+     "axial_dk_share_of_pivot": 0.07250479568913991,
+     "lateral_torque_mNm": 1.6500000000000001,
+     "lateral_coil_force_N": 0.14340610948293386,
+     "lateral_hold_power_W": 0.04771984301326827
+    }
+   ],
+   "proposal": "sphere centre on the pivot within 0.05 mm both ways; the coil plate seats on a shim set after a measurement of the unpowered nose's stiffness (EXP-J01 set-up)",
+   "label": "CALC (Km at the magnets from study N: an upper bound, so the hold power is a lower bound)"
+  },
+  "detent": {
+   "rotor_moment_Am2": 0.05625,
+   "rotor_magnet": "d 2.5 x 12 mm NdFeB, diametric, Br 1.2 T",
+   "positions": {
+    "rest": {
+     "B_perp_vector_mean_mT": 0.9228119033900674,
+     "B_abs_mean_mT": 1.4029881414899936,
+     "B_front_mT": 18.371379266777765,
+     "z_mid_mm": 104.92,
+     "torque_amp_mNm": 0.051908169565691296,
+     "revJ_style_bound_mNm": 0.07891808295881214
+    },
+    "stop_toward_paper": {
+     "B_perp_vector_mean_mT": 0.9078837059990944,
+     "B_abs_mean_mT": 1.4148804584795838,
+     "B_front_mT": 20.993595174041918,
+     "z_mid_mm": 104.92,
+     "torque_amp_mNm": 0.05106845846244906,
+     "revJ_style_bound_mNm": 0.07958702578947659
+    },
+    "stop_side": {
+     "B_perp_vector_mean_mT": 1.1041458674588438,
+     "B_abs_mean_mT": 1.3528921728128454,
+     "B_front_mT": 17.798472352278935,
+     "z_mid_mm": 104.92,
+     "torque_amp_mNm": 0.062108205044559966,
+     "revJ_style_bound_mNm": 0.07610018472072255
+    },
+    "stop_diag": {
+     "B_perp_vector_mean_mT": 1.0464441885758906,
+     "B_abs_mean_mT": 1.374009078472387,
+     "B_front_mT": 19.850292675828957,
+     "z_mid_mm": 104.92,
+     "torque_amp_mNm": 0.05886248560739385,
+     "revJ_style_bound_mNm": 0.07728801066407177
+    }
+   },
+   "worst_torque_amp_mNm": 0.062108205044559966,
+   "to_friction": 5.646200458596361,
+   "to_rated": 0.2218150180162856,
+   "at_tyre_N": 0.12421641008911993,
+   "revJ_bound_mNm": 0.08,
+   "moving_back": [
+    {
+     "moved_back_mm": 0.0,
+     "torque_amp_mNm": 0.062108205044559966,
+     "to_friction": 5.646200458596361
+    },
+    {
+     "moved_back_mm": 5.0,
+     "torque_amp_mNm": 0.017699699609193386,
+     "to_friction": 1.6090636008357624
+    },
+    {
+     "moved_back_mm": 10.0,
+     "torque_amp_mNm": 0.006103301426847166,
+     "to_friction": 0.5548455842588333
+    },
+    {
+     "moved_back_mm": 15.0,
+     "torque_amp_mNm": 0.0024380499665093798,
+     "to_friction": 0.22164090604630726
+    },
+    {
+     "moved_back_mm": 20.0,
+     "torque_amp_mNm": 0.0010923701849328577,
+     "to_friction": 0.09930638044844162
+    }
+   ],
+   "cups": [
+    {
+     "mu_r": 500.0,
+     "t_mm": 0.1,
+     "shielding_factor_transverse": 8.431159320477505,
+     "torque_amp_mNm": 0.007366508291891989,
+     "to_friction": 0.6696825719901809,
+     "wall_flux_density_T_est": 0.6717950455693413,
+     "mass_g_two_cups_8mm": 0.30381261844994056
+    },
+    {
+     "mu_r": 500.0,
+     "t_mm": 0.2,
+     "shielding_factor_transverse": 15.21632006920415,
+     "torque_amp_mNm": 0.0040816836634672855,
+     "to_friction": 0.3710621512242987,
+     "wall_flux_density_T_est": 0.33589752278467067,
+     "mass_g_two_cups_8mm": 0.6076252368998811
+    },
+    {
+     "mu_r": 2000.0,
+     "t_mm": 0.1,
+     "shielding_factor_transverse": 30.814057047750236,
+     "torque_amp_mNm": 0.0020155802576828988,
+     "to_friction": 0.18323456888026354,
+     "wall_flux_density_T_est": 0.6717950455693413,
+     "mass_g_two_cups_8mm": 0.30381261844994056
+    },
+    {
+     "mu_r": 2000.0,
+     "t_mm": 0.2,
+     "shielding_factor_transverse": 58.03634645328719,
+     "torque_amp_mNm": 0.001070160491487006,
+     "to_friction": 0.09728731740790963,
+     "wall_flux_density_T_est": 0.33589752278467067,
+     "mass_g_two_cups_8mm": 0.6076252368998811
+    },
+    {
+     "mu_r": 20000.0,
+     "t_mm": 0.1,
+     "shielding_factor_transverse": 299.40909165518826,
+     "torque_amp_mNm": 0.00020743593556633315,
+     "to_friction": 0.018857812324212107,
+     "wall_flux_density_T_est": 0.6717950455693413,
+     "mass_g_two_cups_8mm": 0.30381261844994056
+    },
+    {
+     "mu_r": 20000.0,
+     "t_mm": 0.2,
+     "shielding_factor_transverse": 571.8771640570933,
+     "torque_amp_mNm": 0.00010860410057982206,
+     "to_friction": 0.009873100052711097,
+     "wall_flux_density_T_est": 0.33589752278467067,
+     "mass_g_two_cups_8mm": 0.6076252368998811
+    }
+   ],
+   "housing": "aluminium, black anodized (MFR, Faulhaber 0620 B datasheet, edition 2026-07-28): the housing does not shield; whether the stator has an iron return ring is not stated",
+   "plate_between": "the coil plate's 2.37 mm back iron lies between the cap and the motor fronts (motors at 24 deg from the bottom, outside the +-10 deg notch): free space is an upper bound; an infinite ideal plane would be a lower bound of zero",
+   "label": "CALC (magpylib free space; rotor magnet d 2.5 x 12 mm Br 1.2 T ASSUMPTION; mu_r ASSUMPTION range)"
+  },
+  "detent_revJ1_position": {
+   "rotor_moment_Am2": 0.05625,
+   "rotor_magnet": "d 2.5 x 12 mm NdFeB, diametric, Br 1.2 T",
+   "positions": {
+    "rest": {
+     "B_perp_vector_mean_mT": 0.12122988235035154,
+     "B_abs_mean_mT": 0.14965885567253262,
+     "B_front_mT": 1.0628487752958726,
+     "z_mid_mm": 114.053,
+     "torque_amp_mNm": 0.0068191808822072745,
+     "revJ_style_bound_mNm": 0.00841831063157996
+    },
+    "stop_toward_paper": {
+     "B_perp_vector_mean_mT": 0.1139488486178306,
+     "B_abs_mean_mT": 0.14038794993640402,
+     "B_front_mT": 1.041567648811522,
+     "z_mid_mm": 114.053,
+     "torque_amp_mNm": 0.006409622734752971,
+     "revJ_style_bound_mNm": 0.007896822183922727
+    },
+    "stop_side": {
+     "B_perp_vector_mean_mT": 0.12899855771938362,
+     "B_abs_mean_mT": 0.14343102598154142,
+     "B_front_mT": 1.0206493915710693,
+     "z_mid_mm": 114.053,
+     "torque_amp_mNm": 0.007256168871715329,
+     "revJ_style_bound_mNm": 0.008067995211461705
+    },
+    "stop_diag": {
+     "B_perp_vector_mean_mT": 0.12070169616310271,
+     "B_abs_mean_mT": 0.1381919766451815,
+     "B_front_mT": 1.015609767137602,
+     "z_mid_mm": 114.053,
+     "torque_amp_mNm": 0.006789470409174527,
+     "revJ_style_bound_mNm": 0.007773298686291461
+    }
+   },
+   "worst_torque_amp_mNm": 0.007256168871715329,
+   "to_friction": 0.6596517156104845,
+   "to_rated": 0.025914888827554744,
+   "at_tyre_N": 0.014512337743430657,
+   "revJ_bound_mNm": 0.08,
+   "moving_back": [
+    {
+     "moved_back_mm": 0.0,
+     "torque_amp_mNm": 0.007256168871715329,
+     "to_friction": 0.6596517156104845
+    },
+    {
+     "moved_back_mm": 5.0,
+     "torque_amp_mNm": 0.002832915600833884,
+     "to_friction": 0.25753778189398946
+    },
+    {
+     "moved_back_mm": 10.0,
+     "torque_amp_mNm": 0.0012466609043031128,
+     "to_friction": 0.11333280948210117
+    },
+    {
+     "moved_back_mm": 15.0,
+     "torque_amp_mNm": 0.0006042077294305794,
+     "to_friction": 0.054927975402779945
+    },
+    {
+     "moved_back_mm": 20.0,
+     "torque_amp_mNm": 0.0003182675955767437,
+     "to_friction": 0.028933417779703974
+    }
+   ],
+   "cups": [
+    {
+     "mu_r": 500.0,
+     "t_mm": 0.1,
+     "shielding_factor_transverse": 8.431159320477505,
+     "torque_amp_mNm": 0.0008606371432326782,
+     "to_friction": 0.07823974029387984,
+     "wall_flux_density_T_est": 0.033330164761968706,
+     "mass_g_two_cups_8mm": 0.30381261844994056
+    },
+    {
+     "mu_r": 500.0,
+     "t_mm": 0.2,
+     "shielding_factor_transverse": 15.21632006920415,
+     "torque_amp_mNm": 0.000476867523732027,
+     "to_friction": 0.043351593066547914,
+     "wall_flux_density_T_est": 0.016665082380984353,
+     "mass_g_two_cups_8mm": 0.6076252368998811
+    },
+    {
+     "mu_r": 2000.0,
+     "t_mm": 0.1,
+     "shielding_factor_transverse": 30.814057047750236,
+     "torque_amp_mNm": 0.00023548242480602238,
+     "to_friction": 0.021407493164183854,
+     "wall_flux_density_T_est": 0.033330164761968706,
+     "mass_g_two_cups_8mm": 0.30381261844994056
+    },
+    {
+     "mu_r": 2000.0,
+     "t_mm": 0.2,
+     "shielding_factor_transverse": 58.03634645328719,
+     "torque_amp_mNm": 0.00012502800943122323,
+     "to_friction": 0.011366182675565748,
+     "wall_flux_density_T_est": 0.016665082380984353,
+     "mass_g_two_cups_8mm": 0.6076252368998811
+    },
+    {
+     "mu_r": 20000.0,
+     "t_mm": 0.1,
+     "shielding_factor_transverse": 299.40909165518826,
+     "torque_amp_mNm": 2.4234965049330662e-05,
+     "to_friction": 0.002203178640848242,
+     "wall_flux_density_T_est": 0.033330164761968706,
+     "mass_g_two_cups_8mm": 0.30381261844994056
+    },
+    {
+     "mu_r": 20000.0,
+     "t_mm": 0.2,
+     "shielding_factor_transverse": 571.8771640570933,
+     "torque_amp_mNm": 1.2688334712016774e-05,
+     "to_friction": 0.001153484973819707,
+     "wall_flux_density_T_est": 0.016665082380984353,
+     "mass_g_two_cups_8mm": 0.6076252368998811
+    }
+   ],
+   "housing": "aluminium, black anodized (MFR, Faulhaber 0620 B datasheet, edition 2026-07-28): the housing does not shield; whether the stator has an iron return ring is not stated",
+   "plate_between": "the coil plate's 2.37 mm back iron lies between the cap and the motor fronts (motors at 24 deg from the bottom, outside the +-10 deg notch): free space is an upper bound; an infinite ideal plane would be a lower bound of zero",
+   "label": "CALC (magpylib free space; rotor magnet d 2.5 x 12 mm Br 1.2 T ASSUMPTION; mu_r ASSUMPTION range)"
+  },
+  "nose_hall_revJ1": {
+   "sensors_xyz_mm": [
+    [
+     6.8,
+     1.2,
+     63.0
+    ],
+    [
+     6.8,
+     -1.2,
+     63.0
+    ]
+   ],
+   "magnet_motion_per_tip_motion": 0.17625021266847027,
+   "slope_mT_per_mm_magnet": {
+    "x": 16.874920935894092,
+    "y": 15.538887368226305
+   },
+   "max_field_mT": {
+    "usable": 84.27938360140911,
+    "stop": 94.49298912296875
+   },
+   "range_mT": {
+    "DRV5055_A4": 169.0,
+    "DRV5055_A3": 85.0
+   },
+   "package_to_magnet_at_stop_mm": 0.5676705348934687,
+   "tip_noise_um_rms": {
+    "DRV5055_A4_pair": {
+     "x": 5.610810599270249,
+     "y": 6.093228106059021
+    },
+    "TMAG5170_CONV_AVG_000_20kSPS": {
+     "x": 24.26826689800428,
+     "y": 48.538954898139124
+    },
+    "TMAG5170_CONV_AVG_101": {
+     "x": 4.160274325372162,
+     "y": 8.320963696823851
+    }
+   },
+   "disturbance_equiv_tip_error_um": {
+    "c1s_cap_over_stroke_x_y": [
+     0.0,
+     2.7902765614890566
+    ],
+    "motors_unshielded_x_y": [
+     10.156813274460225,
+     0.2557801219553272
+    ],
+    "endcap_tiles_x_y": [
+     0.2904586075190393,
+     0.0
+    ],
+    "earth_50uT_x_y": [
+     16.81119585888708,
+     0.0
+    ]
+   },
+   "notes": [
+    "the C1S cap's field at the sensors is a fixed function of the nose position: calibrate it (a map)",
+    "the y channel is a gradiometer: uniform fields (Earth, distant motors) cancel; the x channel sees them",
+    "the Earth's field changes only as the pen turns (slow): a slow offset in x, removed by the page sensor's absolute position in autowrite"
+   ],
+   "label": "CALC (magpylib, free space; DRV5055 noise from the OPT-46 CALC; TMAG5170 noise MFR OPT-53; Earth field 25-65 uT, 50 uT used, ASSUMPTION)"
+  },
+  "outside_revJ1": {
+   "by_distance_from_surface_mm": {
+    "5": {
+     "all": {
+      "B_max_mT": 13.318056382096445,
+      "at_z_mm": 113.42627118644069
+     },
+     "c1s_cap": {
+      "B_max_mT": 4.221601413038197,
+      "at_z_mm": 89.47796610169492
+     },
+     "motors": {
+      "B_max_mT": 13.237012212262767,
+      "at_z_mm": 113.42627118644069
+     },
+     "endcap_tiles": {
+      "B_max_mT": 2.583633660759471,
+      "at_z_mm": 151.0593220338983
+     }
+    },
+    "10": {
+     "all": {
+      "B_max_mT": 5.281892511043336,
+      "at_z_mm": 113.42627118644069
+     },
+     "c1s_cap": {
+      "B_max_mT": 1.054742435910231,
+      "at_z_mm": 82.63559322033899
+     },
+     "motors": {
+      "B_max_mT": 5.237910567281365,
+      "at_z_mm": 113.42627118644069
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.7425326610993042,
+      "at_z_mm": 151.0593220338983
+     }
+    },
+    "20": {
+     "all": {
+      "B_max_mT": 1.3517373158427028,
+      "at_z_mm": 113.42627118644069
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.1516822017553689,
+      "at_z_mm": 92.89915254237289
+     },
+     "motors": {
+      "B_max_mT": 1.3282804941620312,
+      "at_z_mm": 113.42627118644069
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.13343643914996994,
+      "at_z_mm": 151.0593220338983
+     }
+    },
+    "30": {
+     "all": {
+      "B_max_mT": 0.5162022013652763,
+      "at_z_mm": 113.42627118644069
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.03801546977250427,
+      "at_z_mm": 96.32033898305085
+     },
+     "motors": {
+      "B_max_mT": 0.5058354436313357,
+      "at_z_mm": 113.42627118644069
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.040758013897522226,
+      "at_z_mm": 151.0593220338983
+     }
+    },
+    "50": {
+     "all": {
+      "B_max_mT": 0.1355116842688019,
+      "at_z_mm": 113.42627118644069
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.005338945791893626,
+      "at_z_mm": 72.37203389830509
+     },
+     "motors": {
+      "B_max_mT": 0.13375505269720261,
+      "at_z_mm": 113.42627118644069
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.007912354526626853,
+      "at_z_mm": 151.0593220338983
+     }
+    },
+    "100": {
+     "all": {
+      "B_max_mT": 0.01950513931175873,
+      "at_z_mm": 113.42627118644069
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.0002748412618810352,
+      "at_z_mm": 62.10847457627119
+     },
+     "motors": {
+      "B_max_mT": 0.019430402317237857,
+      "at_z_mm": 113.42627118644069
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.0007056924341418183,
+      "at_z_mm": 151.0593220338983
+     }
+    }
+   },
+   "threshold_note": "ASSUMPTION 1 mT (10 G) static field: the level commonly used for implanted cardiac devices' magnet mode; the applicable limit (ISO 14117 and the implant makers' guidance) was not opened here and must be checked",
+   "label": "CALC (magpylib, free space: every iron and housing ignored, an upper bound)"
+  }
+ }
+}

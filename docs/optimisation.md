@@ -161,7 +161,7 @@ At 8–10 Hz and 1–2 mm (test writers 0–5, seeds 200–203):
 | Essential tremor, 1–2 mm, 6–10 Hz | Nose + gated listening tracker | Ink error 830 → 430 µm (Rev H's tracker 627); words read 31 → 74 % (Rev H 49 %); clean writing moved 26 µm |
 | Tremor at 6 Hz, 1–2 mm | Gated tracker | 822 → 540 µm (Rev H did nothing here) |
 | Same, learned estimator (shadow mode only) | Causal TCN | 278 µm, 81 % of words |
-| Tremor, on top of the nose | 30.4 g reaction-mass end-cap | A further 8 / 18 / 20 % at grip splits 0.3 / 0.5 / 0.7 |
+| Tremor, on top of the nose | Reaction-mass end-cap (Rev J.1, 29.6 g) | A further 5.6 / 16.8 / 18.3 % at grip splits 0.3 / 0.5 / 0.7 (the first 43 g design: 8 / 18 / 20 %) |
 | Writing a known text for you | Autowrite with the ±6 mm nose | 99.2 % of letters and 100 % of words read up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters/s |
 | Parkinson's "write big" loops | Heel wheel, steer only | 0.99 of the target height (0.78 with nothing) |
 | Tracing and copying | Heel wheel + nose | 582 → 76 µm from the target, but letters read 92 → 79 % (closer to the template is not more legible) |

@@ -1,0 +1,436 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T16:07:02+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --quick",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": true
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T16:07:02+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --quick",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": true
+ },
+ "length_mm": {
+  "base": 143.85,
+  "with_endcap": 161.85,
+  "revJ": [
+   144.72,
+   165.72
+  ]
+ },
+ "mass_g": {
+  "base": 84.3073,
+  "with_endcap": 112.72729999999999,
+  "com_base_mm": 85.96818475920827,
+  "com_with_endcap_mm": 102.47675625114769,
+  "revJ": [
+   86.99900000000001,
+   129.156
+  ]
+ },
+ "hours_LIR14500_x1": {
+  "steady_no_tremor": [
+   14.80867738490522,
+   18.929763287184162
+  ],
+  "steady_0.3mm": [
+   13.887710426822656,
+   17.450485229003004
+  ],
+  "steady_1mm": [
+   8.458706849818364,
+   9.659944126343335
+  ],
+  "guide": [
+   12.074827151813738,
+   16.061689288258208
+  ],
+  "lead": [
+   7.546274268233231,
+   8.755723459470191
+  ],
+  "autowrite_no_tremor": [
+   8.517117168214979,
+   10.09021635625661
+  ],
+  "autowrite_1mm": [
+   6.4787366390962475,
+   7.350435329907465
+  ],
+  "autowrite_2mm": [
+   3.8320443397249724,
+   4.121118043242481
+  ]
+ },
+ "hours_LIR14500_x1_with_endcap": {
+  "steady_no_tremor": [
+   14.80867738490522,
+   18.929763287184162
+  ],
+  "steady_0.3mm": [
+   9.175979466306408,
+   14.341811791415482
+  ],
+  "steady_1mm": [
+   6.443487363287703,
+   8.625041724117068
+  ],
+  "guide": [
+   12.074827151813738,
+   16.061689288258208
+  ],
+  "lead": [
+   7.546274268233231,
+   8.755723459470191
+  ],
+  "autowrite_no_tremor": [
+   8.517117168214979,
+   10.09021635625661
+  ],
+  "autowrite_1mm": [
+   6.4787366390962475,
+   7.350435329907465
+  ],
+  "autowrite_2mm": [
+   3.8320443397249724,
+   4.121118043242481
+  ]
+ },
+ "hours_LIR14500_x2": {
+  "steady_no_tremor": [
+   10.211705865917535,
+   12.01551655127114
+  ],
+  "steady_0.3mm": [
+   9.334991437238461,
+   10.819851142658358
+  ],
+  "steady_1mm": [
+   4.899769202883748,
+   5.280106124730413
+  ],
+  "guide": [
+   8.479273143325495,
+   10.26929498335244
+  ],
+  "lead": [
+   5.596518178192387,
+   6.235276616148715
+  ],
+  "autowrite_no_tremor": [
+   6.113313193621658,
+   6.883605630138417
+  ],
+  "autowrite_1mm": [
+   4.141507839268608,
+   4.48122564220912
+  ],
+  "autowrite_2mm": [
+   2.0811790130000936,
+   2.163602289888559
+  ]
+ },
+ "hours_LIR14500_x5": {
+  "steady_no_tremor": [
+   5.159425587129704,
+   5.582883371324967
+  ],
+  "steady_0.3mm": [
+   4.571027018046457,
+   4.900324850085202
+  ],
+  "steady_1mm": [
+   1.9967335511880153,
+   2.057118633941417
+  ],
+  "guide": [
+   4.355779599310213,
+   4.784161164388217
+  ],
+  "lead": [
+   3.0473389477946373,
+   3.22736346164482
+  ],
+  "autowrite_no_tremor": [
+   3.1943773347138897,
+   3.3927593405490426
+  ],
+  "autowrite_1mm": [
+   1.841396840604289,
+   1.905628423107897
+  ],
+  "autowrite_2mm": [
+   0.707500288298918,
+   0.7167830533093602
+  ]
+ },
+ "hours_ICR14650_x1": {
+  "steady_no_tremor": [
+   21.719393497860988,
+   27.76365282120344
+  ],
+  "steady_0.3mm": [
+   20.368641959339897,
+   25.59404500253774
+  ],
+  "steady_1mm": [
+   12.406103379733601,
+   14.167918051970224
+  ],
+  "guide": [
+   17.709746489326815,
+   23.557144289445375
+  ],
+  "lead": [
+   11.067868926742072,
+   12.841727740556282
+  ],
+  "autowrite_no_tremor": [
+   12.491771846715302,
+   14.79898398917636
+  ],
+  "autowrite_1mm": [
+   9.502147070674496,
+   10.780638483864282
+  ],
+  "autowrite_2mm": [
+   5.620331698263293,
+   6.044306463422305
+  ]
+ },
+ "electronics_W": [
+  0.034152941176470594,
+  0.06015411764705883
+ ],
+ "page_options_W": {
+  "PMW3360_1kHz": [
+   0.034411111111111115,
+   0.07992
+  ],
+  "PMW3360_gated": [
+   0.003441111111111112,
+   0.023976
+  ],
+  "PMW3610_class": [
+   0.0012705882352941178,
+   0.0019058823529411765
+  ]
+ },
+ "web_C_room30_x1": {
+  "steady_no_tremor": 32.16607767851819,
+  "steady_0.3mm": 32.49308273166883,
+  "steady_1mm": 35.86784232302361,
+  "guide": 32.49308273166883,
+  "lead": 33.24955784047205,
+  "autowrite_no_tremor": 33.24955784047205,
+  "autowrite_1mm": 35.94704665952559,
+  "autowrite_2mm": 43.73171188959805
+ },
+ "web_C_room30_by_factor": {
+  "x1": {
+   "steady_no_tremor": 32.16607767851819,
+   "steady_0.3mm": 32.49308273166883,
+   "steady_1mm": 35.86784232302361,
+   "guide": 32.49308273166883,
+   "lead": 33.24955784047205,
+   "autowrite_no_tremor": 33.24955784047205,
+   "autowrite_1mm": 35.94704665952559,
+   "autowrite_2mm": 43.73171188959805
+  },
+  "x2": {
+   "steady_no_tremor": 34.38588144060347,
+   "steady_0.3mm": 35.05746997347357,
+   "steady_1mm": 42.138283823362784,
+   "guide": 35.05746997347357,
+   "lead": 36.62077803848442,
+   "autowrite_no_tremor": 36.62077803848442,
+   "autowrite_1mm": 42.30781756795618,
+   "autowrite_2mm": 59.76306270600761
+  },
+  "x5": {
+   "steady_no_tremor": 41.38825255819262,
+   "steady_0.3mm": 43.210107544012246,
+   "steady_1mm": 63.806041464131575,
+   "guide": 43.210107544012246,
+   "lead": 47.53565964404889,
+   "autowrite_no_tremor": 47.53565964404889,
+   "autowrite_1mm": 64.33202314971163,
+   "autowrite_2mm": 127.88805279656616
+  }
+ },
+ "spreader": {
+  "chosen": {
+   "material": "PGS_graphite",
+   "t_mm": 0.1,
+   "L_mm": 30.0,
+   "z_mm": [
+    80.0,
+    110.0
+   ],
+   "placement": "laminated in a 0.1 mm recess of the shell's inner wall (bore unchanged), insulated from the plate by the shell's own PEEK (0.9 mm); covers the plate (z 88.8-91.4) and the web (z about 92)",
+   "label": "PROPOSED DESIGN"
+  },
+  "R_K_W": 32.893066613121285,
+  "mass_g": 0.20734511513692636,
+  "bare_R_K_W": 99.59529805200216
+ },
+ "gimbal": {
+  "buckling_N": {
+   "studyN_50um_beam": 16.596832275390625,
+   "studyN_euler_per_strip_x2cos45": 20.54028590613937,
+   "chosen_75um_beam": 56.025848388671875,
+   "alt_100um_L5_beam": 76.70717239379883
+  },
+  "chosen": {
+   "t_um": 75.0,
+   "b_mm": 2.5500000000000003,
+   "L_mm": 3.8,
+   "alpha_deg": 45.0,
+   "lambda": 0.5,
+   "load_path": "compression (study N's arrangement)",
+   "label": "PROPOSED DESIGN"
+  },
+  "k_pull_mNm_rad": 22.75711536481365,
+  "k_unloaded_mNm_rad": 9.43667921111756,
+  "goodman_SF": 2.030358742596806
+ },
+ "pull_N": {
+  "nose2_flux_convention": 22.159760139734026,
+  "revj_pull_convention": 16.502007234700102,
+  "revj_layout_iron_face": 12.402393562233781
+ },
+ "detent_mNm": {
+  "revJ_position": 0.062108205044559966,
+  "revJ1_position": 0.007256168871715329,
+  "friction": 0.011
+ },
+ "endcap": {
+  "member": {
+   "L_s_mm": 9.0,
+   "L_coil_mm": 16.999651290425803,
+   "L_shell_mm": 20.999651290425803,
+   "stroke_mm": 3.999825645212901,
+   "design_mass_g": 31.566189312132682,
+   "slug_g": 17.264932307889133,
+   "Km": 0.5981508076892856,
+   "F_act_N": 0.4229564922893044,
+   "moving_mass_g": 18.500036631074916,
+   "P_avg_W_design": 0.08208246180796464
+  },
+  "verdicts_test": {
+   "lrm_14.98": {
+    "pass": true,
+    "r0.3": 0.07959640791372578,
+    "r0.5": 0.18226696073128487,
+    "r0.7": 0.19506814533027514,
+    "any_split_worse_on_average": false,
+    "P_avg_W": 0.14464910580970067,
+    "P_act_W_mean_SIM": 0.028940766312347942,
+    "mass_g": 44.9961681400344
+   },
+   "lrm_9": {
+    "pass": true,
+    "r0.3": 0.05614429545388572,
+    "r0.5": 0.16797743472367097,
+    "r0.7": 0.18282806187123649,
+    "any_split_worse_on_average": false,
+    "P_avg_W": 0.08208246180796464,
+    "P_act_W_mean_SIM": 0.027575065351782554,
+    "mass_g": 31.566189312132682
+   },
+   "lrm_7.5": {
+    "pass": true,
+    "r0.3": 0.052038678934760496,
+    "r0.5": 0.17433202908562362,
+    "r0.7": 0.17088612806706618,
+    "any_split_worse_on_average": false,
+    "P_avg_W": 0.07519773592780851,
+    "P_act_W_mean_SIM": 0.028719613792581842,
+    "mass_g": 27.997001627072674
+   },
+   "lrm_5": {
+    "pass": false,
+    "r0.3": 0.041594672855094265,
+    "r0.5": 0.15546515781386303,
+    "r0.7": 0.13359484732281982,
+    "any_split_worse_on_average": false,
+    "P_avg_W": 0.06362094564986268,
+    "P_act_W_mean_SIM": 0.030944738625909837,
+    "mass_g": 22.048355485305994
+   }
+  }
+ },
+ "visibility": {
+  "revJ": {
+   "within_1mm": 0.0,
+   "within_3mm": 0.0
+  },
+  "open_150": {
+   "within_1mm": 0.0,
+   "within_3mm": 0.0
+  },
+  "open_180": {
+   "within_1mm": 0.0,
+   "within_3mm": 0.0
+  },
+  "clear_sleeve_10": {
+   "within_1mm": 0.0,
+   "within_3mm": 0.0
+  },
+  "clear_sleeve_20": {
+   "within_1mm": 0.0,
+   "within_3mm": 1.0
+  },
+  "clear_sleeve_20_ring": {
+   "within_1mm": 0.0,
+   "within_3mm": 1.0
+  },
+  "no_front": {
+   "within_1mm": 1.0,
+   "within_3mm": 1.0
+  },
+  "clear_sleeve_15_w120": {
+   "within_1mm": 0.0,
+   "within_3mm": 1.0
+  },
+  "clear_sleeve_15_w120_ring": {
+   "within_1mm": 0.0,
+   "within_3mm": 1.0
+  },
+  "clear_sleeve_30_w120_ring": {
+   "within_1mm": 1.0,
+   "within_3mm": 1.0
+  }
+ },
+ "fit_checks_all_pass": true,
+ "changes": [
+  "coil plate back iron 2.37 -> 1.50 mm (-2.68 g; the parts behind move -0.87 mm)",
+  "gimbal strips 50 -> 75 um (buckling 16.4 -> 55 N, CALC beam model)",
+  "heel motors and transfer gears +10 mm (motors z 104.1-124.1); shafts 89.0 mm; LRA to z 92.5-100.5",
+  "graphite spreader 0.1 x 30 mm in the shell wall (+0.21 g; Rev J's 0.5 mm Al sleeve: +2.1 g, and inside the bore it would hit the cap and the motors)",
+  "front sleeve: first 15 mm clear over the top 240 deg (hard-coated PC)",
+  "page sensor: PMW3610-class die, on in every mode",
+  "end-cap: slug L 9 mm (17.3 g), shell 21.0 mm, 29.6 g"
+ ]
+}

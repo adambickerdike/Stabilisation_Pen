@@ -1,21 +1,27 @@
 r"""P1, the structural half: can the C1S gimbal carry the magnet cap's axial pull?
 
 Question.  The magnet cap pulls toward the coil plate's back iron with F = 16.5 N (revj.magnetics.axial_pull: image
-method, ideal iron, an upper bound; a cruder uniform-gap estimate gives 36 N).  Study N's cross-strip gimbal (301 full-hard
-steel, t 50 um, b 2.55 mm, L 3.80 mm, strips at +-45 deg, crossing at mid-length) buckles at 14.5 N per strip; in
-compression each strip carries F / (2 cos 45 deg) = 11.7 N.
+method, ideal iron, an upper bound for its iron face; 12.4-22.2 N across the three face positions in Rev J's code,
+revj1.magnetics).  Study N's cross-strip gimbal (301 full-hard steel, t 50 um, b 2.55 mm, L 3.80 mm, strips at +-45 deg,
+crossing at mid-length) was credited with 14.5 N per strip (Euler, clamped-clamped, half length); the pull puts
+F / (2 cos 45 deg) = 11.7 N on each strip in compression.
 
 What this module computes (CALC; beam theory, no FEM of the real part):
-  1. A geometrically non-linear (co-rotational) beam model of one cross-strip pivot: two strips from the fixed frame to a
-     rigid moving body, an axial dead load F through the pivot (tension > 0), the body's rotation imposed and its
-     translation free.  It gives the pivot's rotational stiffness k(F) and its buckling load, for any crossing point
-     lambda (fraction of the strip length from the fixed end to the crossing).  Checked against the closed forms:
-     k0 = E b t^3 / (6 L) at lambda 0.5, and the load term k_F = F L f(lambda) / cos(alpha) with
-     f = 1.2 lambda^2 - 1.2 lambda + 2/15 derived here (second-order kinematics of a strip bent with the body rotating
-     about the crossing point; f = 0 at lambda = 0.1273, Wittrick's classic 12.7 % crossing).
-  2. The strip design in tension: stress, strain at the usable and stop angles, Goodman safety factor on 10^8 cycles.
-  3. Thrust pivots (a ball or jewel carrying F at the gimbal): Hertz pressure, friction torque, its size at the ball,
-     the dead band it puts into a servo, wear per Archard.
+  1. A geometrically non-linear (co-rotational, Crisfield) beam model of one cross-strip pivot: two strips from the fixed
+     frame to a rigid moving body, an axial dead load F through the pivot (tension > 0), the body's rotation imposed and
+     its translation free.  It gives the pivot's rotational stiffness k(F), the strips' peak strain and the pivot's
+     buckling load, for any crossing point lambda (fraction of the strip length from the fixed end).  Checked against
+     the closed forms derived here: k0 = 2 (EI/L)(c0^2 + c0 c1 + c1^2/3) (= E b t^3 / (6 L) at lambda 0.5) and the
+     small-load term k_F = F L f(lambda) / cos(alpha), f = 1.2 lambda^2 - 1.2 lambda + 2/15 (f = 0 at lambda = 0.1273,
+     Wittrick's classic 12.7 % crossing).
+  2. Designs: study N's strips; the same in tension; tension with a near-end crossing (narrow and 10 mm wide); the
+     Rev J.1 choice, 75 um strips in compression; 100 um x 5 mm as the fallback.  Stresses, strain at the usable and
+     stop tilts, Goodman safety factor (full-travel tilt fully reversed; a compressive mean ignored).
+  3. Thrust pivots (a ball or jewel carrying F): Hertz pressure, friction torque, its size at the ball, the dead band it
+     puts into the servo, rolling resistance, Archard wear.
+  4. Shock: the drop loads on the 18.1 g nose, the stop gap that keeps buckled strips elastic.
+Result: tension fails (negative stiffness at mid-length crossing; boundary-layer bending strain ~ phi sqrt(3 sigma / E)
+at a near-end crossing); 75 um strips in compression buckle at 55 N and keep a safety factor of 2.0.
 Frames: y along the pen axis from the fixed frame toward the moving body; x across; the pivot at the origin.
 """
 from __future__ import annotations
@@ -42,7 +48,6 @@ F_REFILL = 0.15          # N, ASSUMPTION (REQ-RVJ-N05): the ink force also reach
 Z_PIVOT_TO_TIP = 76.48   # mm, CALC study N (gimbal to ball)
 ALPHA_USABLE = 0.0859    # rad, CALC revj.frontend.close (6.0 mm guaranteed over 35-75 deg)
 ALPHA_STOP = 0.0925      # rad, CALC revj (usable + 0.5 mm at the ball)
-K_SERVO_TIP = None       # computed from the 80 Hz servo on the tip-equivalent mass (below)
 SERVO_HZ = 80.0          # Hz, ASSUMPTION (Rev H, study N)
 M_TIP_G = 2.10           # g, CALC study N (moving mass at the tip)
 NOSE_MASS_G = 18.1       # g, CALC revj (the tilting nose)
@@ -365,7 +370,7 @@ def thrust_pivot_options(F: float = F_PULL_IMAGES) -> Dict:
     k_servo = M_TIP_G * 1e-3 * (2 * math.pi * SERVO_HZ) ** 2
     rows = []
     p_allow = 2.5e9                         # Pa, ASSUMPTION: static contact-pressure limit for hardened steel on sapphire
-    for R in (0.25e-3, 0.5e-3, 1.0e-3, 2.0e-3):
+    for R in (0.25e-3, 0.5e-3, 1.0e-3, 2.0e-3, 3.0e-3):
         hz = hertz_sphere_flat(F, R)
         for mu, kind in ((0.10, "sliding, lubricated steel on sapphire (mu 0.10, ASSUMPTION)"),
                          (0.15, "sliding, dry (mu 0.15, ASSUMPTION)")):
@@ -402,11 +407,33 @@ def thrust_pivot_options(F: float = F_PULL_IMAGES) -> Dict:
 
 # --------------------------------------------------------------------------------------------------- the choice
 def chosen_strip() -> Strip:
-    """Rev J.1 gimbal strips (PROPOSED DESIGN): tension, crossing moved to Wittrick's point, longer strips so the
-    peak strain at the usable angle does not exceed study N's value."""
-    lam = 0.13
-    L = 5.0e-3
-    return Strip(t=50e-6, b=2.55e-3, L=L, alpha_deg=45.0, lam=lam)
+    """Rev J.1 gimbal strips (PROPOSED DESIGN): study N's cross-strip geometry and load path (the pull compresses the
+    strips), one stock step thicker: 75 um instead of 50 um."""
+    return Strip(t=75e-6, b=2.55e-3, L=3.80e-3, alpha_deg=45.0, lam=0.5)
+
+
+TENSION_NEAR_END = Strip(t=50e-6, b=2.55e-3, L=5.0e-3, alpha_deg=45.0, lam=0.06)
+
+
+def curves(quick: bool = False) -> Dict:
+    """Stiffness and peak strain at the usable tilt against the axial load, for the three designs of the figure (CALC)."""
+    n = 12 if quick else 16
+    loads = [-16.0, -12.0, -8.0, -4.0, 0.0, 4.0, 8.0, 12.0, 16.5, 25.0, 36.0] if not quick else [-8.0, 0.0, 16.5]
+    out = {}
+    for key, st, lo in (("studyN_50um", STUDY_N, -16.0), ("tension_near_end", TENSION_NEAR_END, 0.0),
+                        ("chosen_75um", chosen_strip(), -36.0)):
+        cp = CrossPivot(st, n)
+        rows = []
+        Fs = sorted(set([F for F in loads if F >= lo] + ([-25.0, -36.0] if key == "chosen_75um" and not quick else [])))
+        for F in Fs:
+            try:
+                k = cp.stiffness(F)
+                e = cp.peak_strain(F, ALPHA_USABLE)["bending_strain"]
+            except np.linalg.LinAlgError:
+                continue
+            rows.append({"F_N": F, "k_mNm_rad": k * 1e3, "strain_usable": e})
+        out[key] = rows
+    return out
 
 
 def summary(quick: bool = False) -> Dict:
@@ -415,60 +442,72 @@ def summary(quick: bool = False) -> Dict:
     s1 = chosen_strip()
     lam_w = wittrick_lambda()
     loads = [-10.0, -5.0, 0.0, 5.0, 10.0, 16.5, 25.0, 36.0] if not quick else [-5.0, 0.0, 16.5]
+    Fp = F_PULL_IMAGES
     out = {
         "inputs": {"E_Pa": E_301FH, "UTS_Pa": UTS_301FH, "yield_Pa": YIELD_301FH, "fatigue_Pa": FATIGUE_301FH,
                    "labels": "LIT AMF-20 (301 full hard, aggregated database); FAT_SF 1.5 ASSUMPTION (study N)",
-                   "F_pull_N": {"images_upper_bound": F_PULL_IMAGES, "lumped": F_PULL_LUMPED},
+                   "F_pull_N": {"images_upper_bound": Fp, "lumped": F_PULL_LUMPED},
                    "alpha_usable_rad": ALPHA_USABLE, "alpha_stop_rad": ALPHA_STOP},
-        "wittrick_lambda": lam_w,
+        "wittrick_lambda_closed_form": lam_w,
         "check_closed_vs_beam": {
             "k0_studyN_closed_mNm_rad": k_elastic_closed(sN) * 1e3,
             "k0_studyN_nose2_formula_mNm_rad": sN.E * sN.b * sN.t ** 3 / (6 * sN.L) * 1e3,
-            "k0_studyN_beam_mNm_rad": CrossPivot(sN, n).stiffness(0.0) * 1e3},
-        "studyN_strips": {"euler_per_strip_N": euler_strip(sN),
-                          "pivot_buckling_beam_N": buckling_load(sN, n=12 if quick else 16),
-                          "compression_SF": euler_strip(sN) / (F_PULL_IMAGES / (2 * math.cos(math.radians(45)))),
-                          "stiffness_vs_load": stiffness_vs_load(sN, loads, n=12 if quick else 16)},
-        "lambda_scan_F16.5": lambda_scan(sN, F_PULL_IMAGES, [0.0, 0.05, 0.1, lam_w, 0.2, 0.3, 0.5] if not quick else [lam_w, 0.5],
-                                         n=12 if quick else 16),
+            "k0_studyN_beam_mNm_rad": CrossPivot(sN, n).stiffness(0.0) * 1e3,
+            "k0_lambda_wittrick_closed_mNm_rad": k_elastic_closed(replace(sN, lam=lam_w)) * 1e3,
+            "k0_lambda_wittrick_beam_mNm_rad": CrossPivot(replace(sN, lam=lam_w), n).stiffness(0.0) * 1e3},
+        "buckling_N": {"studyN_50um_beam": buckling_load(sN, n=12 if quick else 24),
+                       "studyN_euler_per_strip_x2cos45": 2 * math.cos(math.radians(45)) * euler_strip(sN),
+                       "chosen_75um_beam": buckling_load(s1, n=12 if quick else 24),
+                       "alt_100um_L5_beam": buckling_load(replace(sN, t=100e-6, L=5e-3), n=12, F_hi=150.0)},
+        "stiffness_vs_load_studyN": stiffness_vs_load(sN, loads, n=12 if quick else 16),
+        "lambda_scan_F16.5_tension": lambda_scan(sN, Fp, [0.0, 0.04, 0.06, 0.08, 0.1, lam_w, 0.2, 0.5] if not quick else [0.06, 0.5],
+                                                 n=12 if quick else 16),
         "options": {
-            "A_studyN_compression": design_row(sN, -F_PULL_IMAGES, n),
-            "B_tension_mid_length": design_row(sN, F_PULL_IMAGES, n),
-            "B_tension_mid_length_36N": design_row(sN, F_PULL_LUMPED, n),
-            "C_tension_wittrick_chosen": design_row(s1, F_PULL_IMAGES, n),
-            "C_tension_wittrick_chosen_36N": design_row(s1, F_PULL_LUMPED, n),
-            "C_tension_wittrick_chosen_0N": design_row(s1, 0.0, n),
-            "C_tension_wittrick_L3.8": design_row(replace(s1, L=3.8e-3), F_PULL_IMAGES, n),
+            "A_studyN_50um_compression": design_row(sN, -min(Fp, 16.0), n),
+            "B_tension_mid_length": design_row(sN, Fp, n),
+            "B2_tension_near_end_b2.55": design_row(TENSION_NEAR_END, Fp, n),
+            "B3_tension_near_end_b10": design_row(replace(TENSION_NEAR_END, b=10e-3), Fp, n),
+            "C_chosen_75um_compression": design_row(s1, -Fp, n),
+            "C_chosen_75um_compression_22N": design_row(s1, -22.2, n),
+            "C_chosen_75um_compression_36N": design_row(s1, -F_PULL_LUMPED, n),
+            "C2_100um_L5_compression": design_row(replace(sN, t=100e-6, L=5e-3), -Fp, n),
         },
-        "chosen_stiffness_vs_load": stiffness_vs_load(s1, loads, n=12 if quick else 16),
-        "thrust_pivot": thrust_pivot_options(F_PULL_IMAGES),
+        "curves": curves(quick),
+        "thrust_pivot": thrust_pivot_options(Fp),
         "shock": shock_check(s1),
-        "label": "CALC (co-rotational beam model and closed forms derived here; material LIT AMF-20; loads CALC revj.magnetics)"}
+        "chosen": {"t_um": s1.t * 1e6, "b_mm": s1.b * 1e3, "L_mm": s1.L * 1e3, "alpha_deg": s1.alpha_deg, "lambda": s1.lam,
+                   "load_path": "compression (study N's arrangement)", "label": "PROPOSED DESIGN"},
+        "label": "CALC (co-rotational beam model and closed forms derived here; material LIT AMF-20; loads CALC revj1.magnetics)"}
     return out
 
 
-def shock_check(s: Strip, g_levels=(50.0, 100.0, 500.0, 1000.0)) -> Dict:
-    """Axial shock on the 18.1 g nose (drop): net strip load = pull +- m a (CALC).  In compression past the buckling load the
-    strips need a stop; in tension past yield as well.  The stop gap that keeps a buckled strip elastic is estimated from a
-    clamped-clamped buckled shape: w0 = (2/pi) sqrt(L delta), peak strain = (t/2) (2 pi / L)^2 w0 / 2 (CALC)."""
+def shock_check(s: Strip, g_levels=(50.0, 100.0, 200.0, 500.0, 1000.0)) -> Dict:
+    """Axial shock on the 18.1 g nose (a drop): net load on the pivot = pull +- m a (CALC).  The pull compresses the strips
+    (study N's arrangement); a tail-first drop adds compression, a tip-first drop takes it away.  Past the buckling load
+    a stop must carry the rest; a buckled clamped-clamped strip with end shortening delta has an amplitude
+    w0 = (2 / pi) sqrt(L delta) and a peak strain (t / 2)(2 pi / L)^2 w0 / 2 (CALC)."""
     m = NOSE_MASS_G * 1e-3
+    P_b = buckling_load(s, n=12)
     rows = []
-    P_cr = euler_strip(s)
     for g in g_levels:
         Fi = m * 9.81 * g
-        for sign, what in ((1, "tail-first (more tension)"), (-1, "tip-first (toward compression)")):
-            Fnet = F_PULL_IMAGES + sign * Fi
-            fs = Fnet / (2 * math.cos(math.radians(s.alpha_deg)))
-            rows.append({"g": g, "case": what, "net_axial_N": Fnet, "strip_force_N": fs,
-                         "strip_stress_MPa": fs / s.A / 1e6, "buckles": fs < -P_cr, "yields": fs / s.A > YIELD_301FH})
+        for sign, what in ((1, "tail-first (more compression)"), (-1, "tip-first (toward tension)")):
+            Fcomp = F_PULL_IMAGES + sign * Fi                     # compression positive here
+            fs = Fcomp / (2 * math.cos(math.radians(s.alpha_deg)))
+            rows.append({"g": g, "case": what, "net_compression_N": Fcomp, "strip_force_N": fs,
+                         "strip_stress_MPa": fs / s.A / 1e6, "buckles": Fcomp > P_b, "yields_in_tension": -fs / s.A > YIELD_301FH})
     stops = []
-    for delta in (10e-6, 20e-6, 30e-6, 50e-6):
+    for delta in (2e-6, 5e-6, 10e-6, 20e-6):
         w0 = 2 / math.pi * math.sqrt(s.L * delta)
         eps = s.t / 2 * (2 * math.pi / s.L) ** 2 * w0 / 2
         stops.append({"stop_gap_um": delta * 1e6, "buckled_amplitude_um": w0 * 1e6, "peak_strain": eps,
                       "elastic": eps * s.E < YIELD_301FH})
     k_ax = 2 * s.E * s.A / s.L * math.cos(math.radians(s.alpha_deg)) ** 2
-    return {"rows": rows, "euler_per_strip_N": P_cr, "axial_stiffness_N_per_um": k_ax * 1e-6,
-            "tension_to_yield_axial_N": YIELD_301FH * s.A * 2 * math.cos(math.radians(s.alpha_deg)),
+    g_buckle = (P_b - F_PULL_IMAGES) / (m * 9.81)
+    return {"rows": rows, "pivot_buckling_N": P_b, "g_at_buckling_tail_first": g_buckle,
+            "axial_stiffness_N_per_um": k_ax * 1e-6,
+            "compression_travel_to_buckling_um": (P_b - F_PULL_IMAGES) / k_ax * 1e6,
             "stops": stops,
-            "proposal": "axial stops on both sides of the nose at <= 20 um beyond the magnetic preload position (PROPOSED DESIGN)"}
+            "proposal": "axial stops on the nose at the gimbal: a rear stop that engages after the strips shorten by <= 5 um "
+                        "beyond their loaded position (buckled strips then stay elastic) and a front stop at <= 20 um; the "
+                        "cap-to-plate clearance (0.5 mm) is not a stop (PROPOSED DESIGN; EXP-J10 drop test)"}

@@ -1,0 +1,804 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured (parameters for sim2)",
+  "generated_utc": "2026-09-29T16:19:41+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured (parameters for sim2)",
+  "generated_utc": "2026-09-29T16:19:41+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "sim_params": {
+  "frames": {
+   "pen": "z from the ball tip at 50 deg (nose centred) toward the back; x in the tilt plane away from the paper; y lateral; metres",
+   "gimbal_z": 0.07647953416058942
+  },
+  "handle": {
+   "mass_base_kg": {
+    "value": 0.0662013,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revj/budgets.py (layout parts, +10 % wiring)",
+    "note": "handle = every part except the moving nose (and the end-cap slug)"
+   },
+   "com_base_m": {
+    "value": [
+     0.0005699034611102804,
+     0.00015685492580961398,
+     0.08985284938437763
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/budgets.py"
+   },
+   "inertia_base_kg_m2": {
+    "value": [
+     [
+      8.43835473802786e-05,
+      6.189467754016917e-08,
+      -7.142693355489167e-07
+     ],
+     [
+      6.189467754016917e-08,
+      8.528724852108125e-05,
+      1.775384580073776e-07
+     ],
+     [
+      -7.142693355489167e-07,
+      1.775384580073776e-07,
+      4.845612703724245e-06
+     ]
+    ],
+    "unit": "kg m^2",
+    "label": "CALC",
+    "source": "revj/budgets.py (about the handle's centre of mass)"
+   },
+   "mass_with_endcap_kg": {
+    "value": 0.07612030000000002,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revj/budgets.py (end-cap fitted, its slug excluded)"
+   },
+   "com_with_endcap_m": {
+    "value": [
+     0.0004956411101900545,
+     0.00013641564733717543,
+     0.0981463892016978
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/budgets.py"
+   },
+   "inertia_with_endcap_kg_m2": {
+    "value": [
+     [
+      0.00012009146242590756,
+      6.112353728821353e-08,
+      -4.01367762582124e-07
+     ],
+     [
+      6.112353728821353e-08,
+      0.00012099775312120985,
+      2.636585754704304e-07
+     ],
+     [
+      -4.01367762582124e-07,
+      2.636585754704304e-07,
+      5.807122780059891e-06
+     ]
+    ],
+    "unit": "kg m^2",
+    "label": "CALC",
+    "source": "revj/budgets.py"
+   },
+   "finger_pads_z_m": {
+    "value": [
+     0.026000000000000002,
+     0.032,
+     0.038
+    ],
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "Rev H hand model (unchanged)"
+   },
+   "web_z_m": {
+    "value": 0.092,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "Rev H hand model"
+   }
+  },
+  "skid_ring": {
+   "contact_radius_m": {
+    "value": 0.01165,
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/frontend.close (heel pod + C1S nose)"
+   },
+   "ring_plane_z_m": {
+    "value": 0.00932,
+    "unit": "m",
+    "label": "CALC",
+    "source": "p(50 deg) = (R cos 50 - r_b) / sin 50"
+   },
+   "open_deg_top": {
+    "value": 120.0,
+    "unit": "deg",
+    "label": "ASSUMPTION",
+    "source": "DEC-034"
+   },
+   "tube_radius_m": {
+    "value": 0.0006,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "sim2 native C ring (31 capsules)"
+   },
+   "mu": {
+    "value": 0.12,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "sim2 / HW1 skid friction (EXP-Q01)"
+   }
+  },
+  "nose": {
+   "joint": {
+    "value": "two hinges (x, y) at the gimbal, axes perpendicular to the pen axis",
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "study N C1S"
+   },
+   "mass_kg": {
+    "value": 0.018106,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revj/budgets.nose_about_pivot (layout parts, +10 %)"
+   },
+   "com_z_m": {
+    "value": 0.0717646142162819,
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/budgets.nose_about_pivot"
+   },
+   "inertia_about_pivot_kg_m2": {
+    "value": 8.940823219372918e-06,
+    "unit": "kg m^2",
+    "label": "CALC",
+    "source": "revj/budgets.nose_about_pivot",
+    "note": "study N's design model gives 2.10 g at the tip (its carrier ran from 4 mm); the layout gives 1.53 g"
+   },
+   "m_eff_tip_kg_layout": {
+    "value": 0.001528557391356745,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "I / z_p^2 (layout)"
+   },
+   "m_eff_tip_kg_studyN": {
+    "value": 0.00209874491469222,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "results/nose2/nose2.json (conservative; used for power)"
+   },
+   "flexure_k_Nm_per_rad": {
+    "value": 0.02275711536481365,
+    "unit": "N m/rad",
+    "label": "CALC",
+    "source": "revj1/gimbal.py (75 um strips in compression under the 16.5 N pull; beam model)",
+    "note": "unloaded 0.0094 N m/rad; the stiffness rises with the pull (compression stiffens a mid-length cross-strip pivot)"
+   },
+   "magnetic_negative_k_Nm_per_rad": {
+    "value": [
+     0.0,
+     0.00082510035738006
+    ],
+    "unit": "N m/rad",
+    "label": "CALC",
+    "source": "revj1/magnetics.centring: F e_p with the sphere centre within 0.05 mm"
+   },
+   "axial_magnetic_pull_N": {
+    "value": 16.502007147601198,
+    "unit": "N",
+    "label": "CALC",
+    "source": "image method, ideal iron (upper bound for the stated iron face)",
+    "note": "the face position is uncertain: 12.4-22.2 N across the three conventions in revj1/magnetics.py"
+   },
+   "damping_ratio": {
+    "value": 0.02,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "sim2 nose structural damping"
+   },
+   "usable_angle_rad": {
+    "value": 0.08591740161184919,
+    "unit": "rad",
+    "label": "CALC",
+    "source": "revj/frontend.close (6.0 mm guaranteed over 35-75 deg)"
+   },
+   "stop_angle_rad": {
+    "value": 0.0924550983367026,
+    "unit": "rad",
+    "label": "CALC",
+    "source": "usable + 0.5 mm at the ball"
+   },
+   "actuator_z_m": {
+    "value": 0.08798532011314927,
+    "unit": "m",
+    "label": "CALC",
+    "source": "study N (magnet face)"
+   },
+   "Km_act_N_per_sqrtW": {
+    "value": 0.6564749377709854,
+    "unit": "N/sqrt(W)",
+    "label": "CALC",
+    "source": "study N (image-method magnetics: upper bound; EXP-N01)"
+   },
+   "Km_tip_N_per_sqrtW": {
+    "value": 0.09876184786053872,
+    "unit": "N/sqrt(W)",
+    "label": "CALC",
+    "source": "study N"
+   },
+   "coil_R_ohm": {
+    "value": 2.466666666666667,
+    "unit": "ohm",
+    "label": "ASSUMPTION",
+    "source": "3.7 V / 1.5 A drive (study N V_BUS, I_PEAK)"
+   },
+   "K_f_N_per_A": {
+    "value": 1.0310349404067258,
+    "unit": "N/A",
+    "label": "CALC",
+    "source": "Km sqrt(R) at the magnets"
+   },
+   "coil_L_H": {
+    "value": 0.0001,
+    "unit": "H",
+    "label": "ASSUMPTION",
+    "source": "sim2 value"
+   },
+   "coil_Rth_K_W": {
+    "value": 47.893066613121285,
+    "unit": "K/W",
+    "label": "CALC",
+    "source": "revj1/thermal.py (15 K/W inside + the shell with the graphite spreader)"
+   },
+   "coil_Cth_J_K": {
+    "value": 0.5,
+    "unit": "J/K",
+    "label": "ASSUMPTION",
+    "source": "sim2 value"
+   },
+   "I_max_A": {
+    "value": 1.5,
+    "unit": "A",
+    "label": "ASSUMPTION",
+    "source": "study N"
+   },
+   "V_bus_V": {
+    "value": 3.7,
+    "unit": "V",
+    "label": "ASSUMPTION",
+    "source": "study N"
+   },
+   "servo_hz": {
+    "value": 80.0,
+    "unit": "Hz",
+    "label": "ASSUMPTION",
+    "source": "Rev H / study N"
+   },
+   "servo_zeta": {
+    "value": 0.7,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "Rev H"
+   },
+   "slew_m_s": {
+    "value": 0.6,
+    "unit": "m/s",
+    "label": "ASSUMPTION",
+    "source": "Rev H"
+   },
+   "latency_s": {
+    "value": 0.0006,
+    "unit": "s",
+    "label": "ASSUMPTION",
+    "source": "study N"
+   },
+   "first_parasitic_mode_hz": {
+    "value": 787.5937599463858,
+    "unit": "Hz",
+    "label": "CALC",
+    "source": "study N (carrier bending)"
+   },
+   "flexure_k_unloaded_Nm_per_rad": {
+    "value": 0.00943667921111756,
+    "unit": "N m/rad",
+    "label": "CALC",
+    "source": "revj1/gimbal.py"
+   },
+   "gimbal_buckling_axial_N": {
+    "value": 55.274505615234375,
+    "unit": "N",
+    "label": "CALC",
+    "source": "revj1/gimbal.py (beam model of the 75 um pivot)"
+   },
+   "coil_power_sensitivity": {
+    "value": [
+     1.0,
+     2.0,
+     5.0
+    ],
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "sensitivity of the nose-coil power: x1 = study N's duty model (CALC) and SIM autowrite values; x2 and x5 bracket the unconfirmed sim2j closed-loop report of 1.3-2.4 W in some tremor runs (lead note, 2026-09-29)"
+   }
+  },
+  "refill": {
+   "joint": {
+    "value": "slide along the nose axis",
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "architecture B"
+   },
+   "moving_mass_kg": {
+    "value": 0.00174,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "refill 0.84 g + holder 0.5 g + drum rotor reflected 0.3 g + spring 0.1 g (ASSUMPTION masses)"
+   },
+   "slide_range_m": {
+    "value": [
+     -0.007883571290713974,
+     0.018728166580002592
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/frontend.close (relative to the 50 deg rest)"
+   },
+   "spring_force_N": {
+    "value": 0.15,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "REQ-RVJ-N05 proposed"
+   },
+   "spring_force_range_N": {
+    "value": [
+     0.12,
+     0.18
+    ],
+    "unit": "N",
+    "label": "CALC",
+    "source": "spiral spring +-20 % over the tendon travel"
+   },
+   "spring_gradient_N_per_m": {
+    "value": -2.1888433445183657,
+    "unit": "N/m",
+    "label": "CALC",
+    "source": "force falls as the refill extends (lowest at 35 deg)"
+   },
+   "friction_hysteresis_N": {
+    "value": 0.01,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "tendon over two pulleys and the capstan (EXP-N06)"
+   },
+   "front_stop": {
+    "value": {
+     "type": "follows the nose (software brake)",
+     "margin_m": 0.0003,
+     "brake_engage_s": 0.003,
+     "detect": "slide exceeds the contact position by the margin",
+     "release": "pen-down detected"
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "revj/refill.front_stop; sim2 s5.8 margin 0.3 mm"
+   },
+   "hard_stop_extension_m": {
+    "value": 0.019028166580002594,
+    "unit": "m",
+    "label": "CALC",
+    "source": "largest geometric extension + 0.3 mm"
+   },
+   "pen_lift": {
+    "value": {
+     "stroke_m": 0.0005,
+     "switch_s": 0.005,
+     "command_to_contact_s": 0.008,
+     "holding_power_W": 0.0,
+     "energy_per_cycle_J": 0.017
+    },
+    "unit": "-",
+    "label": "CALC/ASSUMPTION",
+    "source": "study N axial_dof"
+   },
+   "slide_sensor": {
+    "value": {
+     "rate_hz": 1000.0,
+     "noise_m": 2e-06,
+     "delay_s": 0.001
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "sim2 refill-slide Hall"
+   }
+  },
+  "heel_wheel": {
+   "contact_point_m": {
+    "value": [
+     -0.012,
+     0.0,
+     0.00932
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/frontend.close (ring plane, bottom)"
+   },
+   "radius_m": {
+    "value": 0.001,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "steer_axis": {
+    "value": [
+     0.6427876096865394,
+     0.0,
+     0.766044443118978
+    ],
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "paper normal at 50 deg through the contact (study D)"
+   },
+   "protrusion_beyond_ring_m": {
+    "value": 0.00035,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "preload_N": {
+    "value": 0.55,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "spring_travel_m": {
+    "value": 0.0007476710493443755,
+    "unit": "m",
+    "label": "CALC",
+    "source": "revj/frontend.check (tilt and +-20 deg roll)"
+   },
+   "spring_rate_N_per_m": {
+    "value": 200.0,
+    "unit": "N/m",
+    "label": "ASSUMPTION",
+    "source": "a soft preloaded leaf (+-10 % load over the travel)"
+   },
+   "mu_range": {
+    "value": [
+     0.6,
+     1.2
+    ],
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study D (EXP-D01)"
+   },
+   "k_lat_N_per_m": {
+    "value": 1500.0,
+    "unit": "N/m",
+    "label": "CALC",
+    "source": "study D"
+   },
+   "rolling_coef": {
+    "value": 0.078,
+    "unit": "-",
+    "label": "CALC",
+    "source": "study D (Persson, LIT AMF-112)"
+   },
+   "reflected_mass_kg": {
+    "value": 0.0038,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "study D"
+   },
+   "backdrive_N": {
+    "value": 0.03,
+    "unit": "N",
+    "label": "CALC",
+    "source": "study D"
+   },
+   "F_cap_N": {
+    "value": 0.5,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "study D supervisor (and 0.8 mu_hat N)"
+   },
+   "F_cont_N": {
+    "value": 0.369,
+    "unit": "N",
+    "label": "CALC",
+    "source": "study D 0.41 N x 0.9 for the Rev J idler mesh (motors under the cell)"
+   },
+   "F_peak_N": {
+    "value": 0.6030000000000001,
+    "unit": "N",
+    "label": "CALC",
+    "source": "study D 0.67 N x 0.9 for the Rev J idler mesh"
+   },
+   "steer_servo": {
+    "value": {
+     "bandwidth_hz": 40.0,
+     "rate_rad_s": 500.0
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "motor": {
+    "value": {
+     "d_mm": 6.0,
+     "l_mm": 20.0,
+     "mass_g": 2.5,
+     "rated_mNm": 0.28,
+     "stall_mNm": 0.732,
+     "friction_mNm": 0.011,
+     "kt_mNm_A": 1.09,
+     "R_ohm": 8.8,
+     "J_gcm2": 0.0095,
+     "Rth_K_W": 97.5
+    },
+    "unit": "-",
+    "label": "MFR",
+    "source": "AMF-100"
+   },
+   "drive_ratio": {
+    "value": 2.0,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study D (spur 1:1 via idler, 40 deg bevel 1:1, axle bevel 2:1)"
+   },
+   "drive_efficiency": {
+    "value": 0.6561,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "0.9 per mesh; Rev J adds the idler mesh (study D: 3 meshes)"
+   },
+   "steer_ratio": {
+    "value": 2.0,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study D (crown 2:1)"
+   },
+   "shaft_length_m": {
+    "value": 0.08903299999999999,
+    "unit": "m",
+    "label": "CALC",
+    "source": "Rev J.1 layout (motors and gears 10 mm back)"
+   },
+   "shaft_torsion_Nm_per_rad": {
+    "value": 0.03613256744438522,
+    "unit": "N m/rad",
+    "label": "CALC",
+    "source": "G 80 GPa steel (ASSUMPTION), d 0.8 mm"
+   },
+   "magnetic_detent_torque_bound_Nm": {
+    "value": 6.103301426847166e-06,
+    "unit": "N m",
+    "label": "CALC",
+    "source": "revj1/magnetics.detent (motors 10 mm back; free space, vector-averaged transverse field; an upper bound)"
+   }
+  },
+  "endcap": {
+   "optional": true,
+   "slug_mass_kg": {
+    "value": 0.018501000000000004,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "study K's LRM family, slug 9 mm (rule J1-M2, revj1/endcap_mass.py)"
+   },
+   "slug_centre_z_m": {
+    "value": 0.15034999999999998,
+    "unit": "m",
+    "label": "CALC",
+    "source": "Rev J.1 layout"
+   },
+   "stroke_m": {
+    "value": 0.003999825645212901,
+    "unit": "m",
+    "label": "CALC",
+    "source": "study K design model (endcap.design.lrm2)"
+   },
+   "flexure_k_N_per_m": {
+    "value": 18.259755102455426,
+    "unit": "N/m",
+    "label": "CALC",
+    "source": "m (2 pi 5 Hz)^2 per axis"
+   },
+   "damping_ratio": {
+    "value": 0.05,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "spiral flexures in air"
+   },
+   "Km_N_per_sqrtW": {
+    "value": 0.5981508076892856,
+    "unit": "N/sqrt(W)",
+    "label": "CALC",
+    "source": "study K design model"
+   },
+   "P_peak_W": {
+    "value": 1.0,
+    "unit": "W",
+    "label": "CALC",
+    "source": "study K"
+   },
+   "feedforward_gain": {
+    "value": 0.75,
+    "unit": "-",
+    "label": "SIM",
+    "source": "study K rule (tuning seeds)"
+   },
+   "F_act_N": {
+    "value": 0.4229564922893044,
+    "unit": "N",
+    "label": "CALC",
+    "source": "study K design model (0.5 W per axis)"
+   },
+   "test_verdict_SIM": {
+    "value": {
+     "r0.3": 0.05614429545388572,
+     "r0.5": 0.16797743472367097,
+     "r0.7": 0.18282806187123649,
+     "pass": true,
+     "P_act_W_mean_SIM": 0.027575065351782554
+    },
+    "unit": "-",
+    "label": "SIM",
+    "source": "revj1/endcap_mass.py (study K's H1 cascade, test seeds 200-203, Rev H pen)"
+   }
+  },
+  "sensors": {
+   "imu_position_m": {
+    "value": [
+     0.00842,
+     0.0,
+     0.05625
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "layout (on the main board; Rev H r_imu 92-93.5 mm)"
+   },
+   "imu_model": {
+    "value": "LSM6DSV16X",
+    "unit": "-",
+    "label": "MFR",
+    "source": "OPT-37 (sim2 sensor model unchanged)"
+   },
+   "nose_position_noise_m": {
+    "value": [
+     5.610810599270249e-06,
+     6.093228106059021e-06
+    ],
+    "unit": "m rms at the tip",
+    "label": "CALC",
+    "source": "revj/magnetics.nose_hall (two DRV5055-A4 on the board; OPT-46)"
+   },
+   "nose_position_delay_s": {
+    "value": 5e-05,
+    "unit": "s",
+    "label": "ASSUMPTION",
+    "source": "sim2"
+   },
+   "page_sensor": {
+    "value": {
+     "window_m": [
+      0.011066772775696133,
+      24.0,
+      0.011218618151949017
+     ],
+     "window_note": "[radius m, azimuth deg from the bottom, z m]",
+     "rate_hz": 1000.0,
+     "latency_s": 0.002,
+     "noise_m": 3e-06,
+     "valid_height_m": [
+      0.0022,
+      0.0026
+     ],
+     "lift_cutoff_m": [
+      0.002,
+      0.003
+     ],
+     "part": "PMW3610 class",
+     "quantisation_m": 7.9375e-06,
+     "on_in_modes": [
+      "steady",
+      "guide",
+      "lead",
+      "autowrite"
+     ]
+    },
+    "unit": "-",
+    "label": "ASSUMPTION / MFR",
+    "source": "OPT-61 (PMW3610: 3200 cpi, 24-30 in/s, lens plane 2.2-2.6 mm); 1 kHz and 2 ms kept as the requirement (REQ-RVJ-N06); noise unmeasured (EXP-J10)"
+   }
+  },
+  "domain_randomisation_added": {
+   "tyre_mu": [
+    0.6,
+    1.2
+   ],
+   "wheel_preload_N": [
+    0.5,
+    0.6
+   ],
+   "refill_spring_N": [
+    0.12,
+    0.18
+   ],
+   "nose_negative_k_Nm_per_rad": [
+    0.0,
+    0.00165020071476012
+   ],
+   "Km_scale": [
+    0.7,
+    1.0
+   ],
+   "motor_detent_Nm": [
+    0.0,
+    6.103301426847166e-06
+   ],
+   "pen_roll_deg": [
+    -20.0,
+    20.0
+   ],
+   "note": "ranges ASSUMPTION; Km_scale 0.7-1.0 because the image-method magnetics is an upper bound; Rev J.1: pull, flexure and detent ranges from revj1 (CALC); the coil-power factor is a reporting sensitivity, not a plant parameter",
+   "axial_pull_N": [
+    12.402393369078316,
+    22.159760066433325
+   ],
+   "nose_flexure_k_Nm_per_rad": [
+    0.00943667921111756,
+    0.027308538437776378
+   ],
+   "nose_coil_power_factor": [
+    1.0,
+    2.0,
+    5.0
+   ]
+  },
+  "revJ1": {
+   "changes": [
+    "coil plate back iron 2.37 -> 1.50 mm (-2.68 g; the parts behind move -0.87 mm)",
+    "gimbal strips 50 -> 75 um (buckling 16.4 -> 55 N, CALC beam model)",
+    "heel motors and transfer gears +10 mm (motors z 104.1-124.1); shafts 89.0 mm; LRA to z 92.5-100.5",
+    "graphite spreader 0.1 x 30 mm in the shell wall (+0.21 g; Rev J's 0.5 mm Al sleeve: +2.1 g, and inside the bore it would hit the cap and the motors)",
+    "front sleeve: first 15 mm clear over the top 240 deg (hard-coated PC)",
+    "page sensor: PMW3610-class die, on in every mode",
+    "end-cap: slug L 9 mm (17.3 g), shell 21.0 mm, 29.6 g"
+   ],
+   "label": "PROPOSED DESIGN; entries not listed here are Rev J's builder on the Rev J.1 layout"
+  }
+ }
+}

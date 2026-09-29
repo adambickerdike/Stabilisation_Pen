@@ -1,0 +1,883 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T16:19:41+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J.1, design iteration round 3); inputs from Rev J (revj/), the round-1 studies (labelled), datasheets (MFR) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T16:19:41+00:00",
+  "git_revision": "b1694a3-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj1/run.py",
+  "doc": "docs/revJ1_design.md",
+  "quick": false
+ },
+ "gimbal": {
+  "inputs": {
+   "E_Pa": 200000000000.0,
+   "UTS_Pa": 1460000000.0,
+   "yield_Pa": 1080000000.0,
+   "fatigue_Pa": 540000000.0,
+   "labels": "LIT AMF-20 (301 full hard, aggregated database); FAT_SF 1.5 ASSUMPTION (study N)",
+   "F_pull_N": {
+    "images_upper_bound": 16.5,
+    "lumped": 36.0
+   },
+   "alpha_usable_rad": 0.0859,
+   "alpha_stop_rad": 0.0925
+  },
+  "wittrick_lambda_closed_form": 0.12732200375003505,
+  "check_closed_vs_beam": {
+   "k0_studyN_closed_mNm_rad": 2.7960526315789482,
+   "k0_studyN_nose2_formula_mNm_rad": 2.7960526315789482,
+   "k0_studyN_beam_mNm_rad": 2.796053097674163,
+   "k0_lambda_wittrick_closed_mNm_rad": 7.4561403508771935,
+   "k0_lambda_wittrick_beam_mNm_rad": 7.455333873001245
+  },
+  "buckling_N": {
+   "studyN_50um_beam": 16.374053955078125,
+   "studyN_euler_per_strip_x2cos45": 20.54028590613937,
+   "chosen_75um_beam": 55.274505615234375,
+   "alt_100um_L5_beam": 76.70717239379883
+  },
+  "stiffness_vs_load_studyN": [
+   {
+    "F_N": -10.0,
+    "k_beam_mNm_rad": 9.100746226875918,
+    "k_closed_mNm_rad": 11.752738526608551
+   },
+   {
+    "F_N": -5.0,
+    "k_beam_mNm_rad": 6.818721616574118,
+    "k_closed_mNm_rad": 7.274395579093749
+   },
+   {
+    "F_N": 0.0,
+    "k_beam_mNm_rad": 2.7960530986849905,
+    "k_closed_mNm_rad": 2.7960526315789482
+   },
+   {
+    "F_N": 5.0,
+    "k_beam_mNm_rad": -1.982285132180127,
+    "k_closed_mNm_rad": -1.6822903159358524
+   },
+   {
+    "F_N": 10.0,
+    "k_beam_mNm_rad": -7.16678385702601,
+    "k_closed_mNm_rad": -6.160633263450653
+   },
+   {
+    "F_N": 16.5,
+    "k_beam_mNm_rad": -14.265877199632007,
+    "k_closed_mNm_rad": -11.982479095219896
+   },
+   {
+    "F_N": 25.0,
+    "k_beam_mNm_rad": -23.922669741750997,
+    "k_closed_mNm_rad": -19.595662105995054
+   },
+   {
+    "F_N": 36.0,
+    "k_beam_mNm_rad": -36.79954069830237,
+    "k_closed_mNm_rad": -29.44801659052762
+   }
+  ],
+  "lambda_scan_F16.5_tension": [
+   {
+    "lambda": 0.0,
+    "f_lambda": 0.13333333333333333,
+    "k0_closed_mNm_rad": 11.184210526315793,
+    "k_closed_mNm_rad": 23.007035907754865,
+    "k_beam_mNm_rad": 19.850411651762144,
+    "k_beam_F0_mNm_rad": 11.182757419884517,
+    "curvature_peak_factor": 4.0
+   },
+   {
+    "lambda": 0.04,
+    "f_lambda": 0.08725333333333332,
+    "k0_closed_mNm_rad": 9.895789473684212,
+    "k_closed_mNm_rad": 17.632646403297944,
+    "k_beam_mNm_rad": 14.60954722771038,
+    "k_beam_F0_mNm_rad": 9.89455996067105,
+    "curvature_peak_factor": 3.76
+   },
+   {
+    "lambda": 0.06,
+    "f_lambda": 0.06565333333333334,
+    "k0_closed_mNm_rad": 9.291842105263166,
+    "k_closed_mNm_rad": 15.113401323083767,
+    "k_beam_mNm_rad": 12.152912312486144,
+    "k_beam_F0_mNm_rad": 9.290717344022225,
+    "curvature_peak_factor": 3.64
+   },
+   {
+    "lambda": 0.08,
+    "f_lambda": 0.045013333333333336,
+    "k0_closed_mNm_rad": 8.714736842105264,
+    "k_closed_mNm_rad": 12.706122690879097,
+    "k_beam_mNm_rad": 9.805475610752948,
+    "k_beam_F0_mNm_rad": 8.713712165988781,
+    "curvature_peak_factor": 3.52
+   },
+   {
+    "lambda": 0.1,
+    "f_lambda": 0.025333333333333333,
+    "k0_closed_mNm_rad": 8.164473684210531,
+    "k_closed_mNm_rad": 10.410810506683955,
+    "k_beam_mNm_rad": 7.567237139631852,
+    "k_beam_F0_mNm_rad": 8.163544426525302,
+    "curvature_peak_factor": 3.4
+   },
+   {
+    "lambda": 0.12732200375003505,
+    "f_lambda": 0.0,
+    "k0_closed_mNm_rad": 7.4561403508771935,
+    "k_closed_mNm_rad": 7.4561403508771935,
+    "k_beam_mNm_rad": 4.686061549088592,
+    "k_beam_F0_mNm_rad": 7.455333870740325,
+    "curvature_peak_factor": 3.23606797749979
+   },
+   {
+    "lambda": 0.2,
+    "f_lambda": -0.05866666666666667,
+    "k0_closed_mNm_rad": 5.815789473684212,
+    "k_closed_mNm_rad": 0.6137463058510191,
+    "k_beam_mNm_rad": -1.9859809692444361,
+    "k_beam_F0_mNm_rad": 5.8152672153931135,
+    "curvature_peak_factor": 2.8
+   },
+   {
+    "lambda": 0.5,
+    "f_lambda": -0.16666666666666666,
+    "k0_closed_mNm_rad": 2.7960526315789482,
+    "k_closed_mNm_rad": -11.982479095219896,
+    "k_beam_mNm_rad": -14.265877199632007,
+    "k_beam_F0_mNm_rad": 2.7960530986849905,
+    "curvature_peak_factor": 1.0
+   }
+  ],
+  "options": {
+   "A_studyN_50um_compression": {
+    "t_um": 50.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 3.8,
+    "alpha_deg": 45.0,
+    "lambda": 0.5,
+    "F_N": -16.0,
+    "k0_closed_mNm_rad": 2.7960526315789482,
+    "kF_closed_mNm_rad": 14.330697432047362,
+    "k_closed_mNm_rad": 17.126750063626307,
+    "axial_span_mm": 2.6870057685088806,
+    "span_ahead_of_pivot_mm": null,
+    "strip_force_N": -11.31370849898476,
+    "axial_stress_MPa": -88.7349686194883,
+    "bending_strain_usable_closed": 0.0005651315789473684,
+    "bending_strain_stop_closed": 0.0006085526315789474,
+    "bending_stress_usable_MPa_closed": 113.02631578947368,
+    "k_beam_model_mNm_rad": 1.904270299068494,
+    "k_beam_model_at_usable_mNm_rad": -1.1381277847712914,
+    "bending_strain_usable_beam": 0.00511472768670263,
+    "bending_strain_stop_beam": 0.005592273522225409,
+    "axial_stress_MPa_beam": 92.79031224220634,
+    "M_hold_usable_mNm": 0.07821358155757525,
+    "goodman_SF_1e8": 0.527887341298641,
+    "static_SF_stop": 0.8946398599139053,
+    "tip_stiffness_N_m": 0.3255613459032713
+   },
+   "B_tension_mid_length": {
+    "t_um": 50.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 3.8,
+    "alpha_deg": 45.0,
+    "lambda": 0.5,
+    "F_N": 16.5,
+    "k0_closed_mNm_rad": 2.7960526315789482,
+    "kF_closed_mNm_rad": -14.778531726798844,
+    "k_closed_mNm_rad": -11.982479095219896,
+    "axial_span_mm": 2.6870057685088806,
+    "span_ahead_of_pivot_mm": 1.3435028842544403,
+    "strip_force_N": 11.667261889578034,
+    "axial_stress_MPa": 91.50793638884731,
+    "bending_strain_usable_closed": 0.0005651315789473684,
+    "bending_strain_stop_closed": 0.0006085526315789474,
+    "bending_stress_usable_MPa_closed": 113.02631578947368,
+    "k_beam_model_mNm_rad": -14.250731679232548,
+    "k_beam_model_at_usable_mNm_rad": -14.074990960095002,
+    "bending_strain_usable_beam": 0.001696177196412295,
+    "bending_strain_stop_beam": 0.0018304938606078932,
+    "axial_stress_MPa_beam": 95.18334026198676,
+    "M_hold_usable_mNm": -1.2191006104951043,
+    "goodman_SF_1e8": 1.4474074825253096,
+    "static_SF_stop": 2.3601052605097324,
+    "tip_stiffness_N_m": -2.436359684792026
+   },
+   "B2_tension_near_end_b2.55": {
+    "t_um": 50.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 5.0,
+    "alpha_deg": 45.0,
+    "lambda": 0.06,
+    "F_N": 16.5,
+    "k0_closed_mNm_rad": 7.061800000000005,
+    "kF_closed_mNm_rad": 7.659946339237632,
+    "k_closed_mNm_rad": 14.721746339237638,
+    "axial_span_mm": 3.535533905932738,
+    "span_ahead_of_pivot_mm": 0.21213203435596426,
+    "strip_force_N": 11.667261889578034,
+    "axial_stress_MPa": 91.50793638884731,
+    "bending_strain_usable_closed": 0.00156338,
+    "bending_strain_stop_closed": 0.0016835,
+    "bending_stress_usable_MPa_closed": 312.676,
+    "k_beam_model_mNm_rad": 9.521254840657269,
+    "k_beam_model_at_usable_mNm_rad": 9.464333194685427,
+    "bending_strain_usable_beam": 0.003626714055938658,
+    "bending_strain_stop_beam": 0.003912833268610501,
+    "axial_stress_MPa_beam": 99.76807174437614,
+    "M_hold_usable_mNm": 0.8162600287143302,
+    "goodman_SF_1e8": 0.7112860700923469,
+    "static_SF_stop": 1.2355924908684441,
+    "tip_stiffness_N_m": 1.6277902050610744
+   },
+   "B3_tension_near_end_b10": {
+    "t_um": 50.0,
+    "b_mm": 10.0,
+    "L_mm": 5.0,
+    "alpha_deg": 45.0,
+    "lambda": 0.06,
+    "F_N": 16.5,
+    "k0_closed_mNm_rad": 27.693333333333353,
+    "kF_closed_mNm_rad": 7.659946339237632,
+    "k_closed_mNm_rad": 35.353279672570984,
+    "axial_span_mm": 3.535533905932738,
+    "span_ahead_of_pivot_mm": 0.21213203435596426,
+    "strip_force_N": 11.667261889578034,
+    "axial_stress_MPa": 23.33452377915606,
+    "bending_strain_usable_closed": 0.00156338,
+    "bending_strain_stop_closed": 0.0016835,
+    "bending_stress_usable_MPa_closed": 312.676,
+    "k_beam_model_mNm_rad": 33.156895723730436,
+    "k_beam_model_at_usable_mNm_rad": 32.97068765034206,
+    "bending_strain_usable_beam": 0.0022759529817235127,
+    "bending_strain_stop_beam": 0.002454987200532079,
+    "axial_stress_MPa_beam": 26.049915925231698,
+    "M_hold_usable_mNm": 2.8428522541449848,
+    "goodman_SF_1e8": 1.164241804164405,
+    "static_SF_stop": 2.0998111644491875,
+    "tip_stiffness_N_m": 5.668629922481311
+   },
+   "C_chosen_75um_compression": {
+    "t_um": 75.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 3.8,
+    "alpha_deg": 45.0,
+    "lambda": 0.5,
+    "F_N": -16.5,
+    "k0_closed_mNm_rad": 9.436677631578947,
+    "kF_closed_mNm_rad": 14.778531726798844,
+    "k_closed_mNm_rad": 24.21520935837779,
+    "axial_span_mm": 2.6870057685088806,
+    "span_ahead_of_pivot_mm": null,
+    "strip_force_N": -11.667261889578034,
+    "axial_stress_MPa": -61.005290925898215,
+    "bending_strain_usable_closed": 0.0008476973684210526,
+    "bending_strain_stop_closed": 0.000912828947368421,
+    "bending_stress_usable_MPa_closed": 169.53947368421052,
+    "k_beam_model_mNm_rad": 22.744648505619725,
+    "k_beam_model_at_usable_mNm_rad": 22.64204071945994,
+    "bending_strain_usable_beam": 0.0013273601287789902,
+    "bending_strain_stop_beam": 0.0014314734601013528,
+    "axial_stress_MPa_beam": 63.56917567219036,
+    "M_hold_usable_mNm": 1.9508263588496364,
+    "goodman_SF_1e8": 2.0341126281107083,
+    "static_SF_stop": 3.1097035791314713,
+    "tip_stiffness_N_m": 3.8885122470316102
+   },
+   "C_chosen_75um_compression_22N": {
+    "t_um": 75.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 3.8,
+    "alpha_deg": 45.0,
+    "lambda": 0.5,
+    "F_N": -22.2,
+    "k0_closed_mNm_rad": 9.436677631578947,
+    "kF_closed_mNm_rad": 19.88384268696571,
+    "k_closed_mNm_rad": 29.32052031854466,
+    "axial_span_mm": 2.6870057685088806,
+    "span_ahead_of_pivot_mm": null,
+    "strip_force_N": -15.697770542341354,
+    "axial_stress_MPa": -82.07984597302669,
+    "bending_strain_usable_closed": 0.0008476973684210526,
+    "bending_strain_stop_closed": 0.000912828947368421,
+    "bending_stress_usable_MPa_closed": 169.53947368421052,
+    "k_beam_model_mNm_rad": 26.346959934128297,
+    "k_beam_model_at_usable_mNm_rad": 26.18987395097824,
+    "bending_strain_usable_beam": 0.0015858404931429688,
+    "bending_strain_stop_beam": 0.0017113714098468966,
+    "axial_stress_MPa_beam": 85.5286927866758,
+    "M_hold_usable_mNm": 2.2587040256560775,
+    "goodman_SF_1e8": 1.7025671949193861,
+    "static_SF_stop": 2.5450441715664875,
+    "tip_stiffness_N_m": 4.504377209900415
+   },
+   "C_chosen_75um_compression_36N": {
+    "t_um": 75.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 3.8,
+    "alpha_deg": 45.0,
+    "lambda": 0.5,
+    "F_N": -36.0,
+    "k0_closed_mNm_rad": 9.436677631578947,
+    "kF_closed_mNm_rad": 32.24406922210657,
+    "k_closed_mNm_rad": 41.68074685368551,
+    "axial_span_mm": 2.6870057685088806,
+    "span_ahead_of_pivot_mm": null,
+    "strip_force_N": -25.45584412271571,
+    "axial_stress_MPa": -133.10245292923247,
+    "bending_strain_usable_closed": 0.0008476973684210526,
+    "bending_strain_stop_closed": 0.000912828947368421,
+    "bending_stress_usable_MPa_closed": 169.53947368421052,
+    "k_beam_model_mNm_rad": 30.788922616460138,
+    "k_beam_model_at_usable_mNm_rad": 30.31398767853674,
+    "bending_strain_usable_beam": 0.0026442877298957133,
+    "bending_strain_stop_beam": 0.0028604846868393505,
+    "axial_stress_MPa_beam": 138.75427118713432,
+    "M_hold_usable_mNm": 2.6311393866657786,
+    "goodman_SF_1e8": 1.0210689137473266,
+    "static_SF_stop": 1.531481755174225,
+    "tip_stiffness_N_m": 5.263792167965696
+   },
+   "C2_100um_L5_compression": {
+    "t_um": 100.0,
+    "b_mm": 2.5500000000000003,
+    "L_mm": 5.0,
+    "alpha_deg": 45.0,
+    "lambda": 0.5,
+    "F_N": -16.5,
+    "k0_closed_mNm_rad": 17.000000000000004,
+    "kF_closed_mNm_rad": 19.445436482630058,
+    "k_closed_mNm_rad": 36.44543648263006,
+    "axial_span_mm": 3.535533905932738,
+    "span_ahead_of_pivot_mm": null,
+    "strip_force_N": -11.667261889578034,
+    "axial_stress_MPa": -45.753968194423656,
+    "bending_strain_usable_closed": 0.0008590000000000001,
+    "bending_strain_stop_closed": 0.000925,
+    "bending_stress_usable_MPa_closed": 171.8,
+    "k_beam_model_mNm_rad": 35.1412628686477,
+    "k_beam_model_at_usable_mNm_rad": 35.02379440495536,
+    "bending_strain_usable_beam": 0.0011817446589767607,
+    "bending_strain_stop_beam": 0.0012738666598461873,
+    "axial_stress_MPa_beam": 47.683788308812076,
+    "M_hold_usable_mNm": 3.01526979052354,
+    "goodman_SF_1e8": 2.2847575231165873,
+    "static_SF_stop": 3.593683500340414,
+    "tip_stiffness_N_m": 6.007884932015155
+   }
+  },
+  "curves": {
+   "studyN_50um": [
+    {
+     "F_N": -16.0,
+     "k_mNm_rad": 2.1451815183404066,
+     "strain_usable": 0.00504383535234813
+    },
+    {
+     "F_N": -12.0,
+     "k_mNm_rad": 8.882988224535413,
+     "strain_usable": 0.0021572946510121094
+    },
+    {
+     "F_N": -8.0,
+     "k_mNm_rad": 8.523360558807918,
+     "strain_usable": 0.00124439003585427
+    },
+    {
+     "F_N": -4.0,
+     "k_mNm_rad": 6.105163194127654,
+     "strain_usable": 0.0008108087570731561
+    },
+    {
+     "F_N": 0.0,
+     "k_mNm_rad": 2.7960530986849905,
+     "strain_usable": 0.0005890831678696478
+    },
+    {
+     "F_N": 4.0,
+     "k_mNm_rad": -0.9869368341274667,
+     "strain_usable": 0.0009324818934926271
+    },
+    {
+     "F_N": 8.0,
+     "k_mNm_rad": -5.056665523069163,
+     "strain_usable": 0.0012139203700002148
+    },
+    {
+     "F_N": 12.0,
+     "k_mNm_rad": -9.316020721141424,
+     "strain_usable": 0.0014549615172152475
+    },
+    {
+     "F_N": 16.5,
+     "k_mNm_rad": -14.265877199632007,
+     "strain_usable": 0.0016928040593015355
+    },
+    {
+     "F_N": 25.0,
+     "k_mNm_rad": -23.922669741750997,
+     "strain_usable": 0.0020779165790980833
+    },
+    {
+     "F_N": 36.0,
+     "k_mNm_rad": -36.79954069830237,
+     "strain_usable": 0.002497573985912458
+    }
+   ],
+   "tension_near_end": [
+    {
+     "F_N": 0.0,
+     "k_mNm_rad": 7.061306116693548,
+     "strain_usable": 0.0015798064210984979
+    },
+    {
+     "F_N": 4.0,
+     "k_mNm_rad": 8.394554646139634,
+     "strain_usable": 0.0022433737950122786
+    },
+    {
+     "F_N": 8.0,
+     "k_mNm_rad": 9.084287733657474,
+     "strain_usable": 0.0027594458836744887
+    },
+    {
+     "F_N": 12.0,
+     "k_mNm_rad": 9.399154760667255,
+     "strain_usable": 0.003191265064688728
+    },
+    {
+     "F_N": 16.5,
+     "k_mNm_rad": 9.460801003702798,
+     "strain_usable": 0.0036119980830447446
+    },
+    {
+     "F_N": 25.0,
+     "k_mNm_rad": 9.029375657451439,
+     "strain_usable": 0.004285848775681158
+    },
+    {
+     "F_N": 36.0,
+     "k_mNm_rad": 7.801330460671022,
+     "strain_usable": 0.0050111868780834765
+    }
+   ],
+   "chosen_75um": [
+    {
+     "F_N": -36.0,
+     "k_mNm_rad": 30.863666429409864,
+     "strain_usable": 0.00264083697866896
+    },
+    {
+     "F_N": -25.0,
+     "k_mNm_rad": 27.85474398940659,
+     "strain_usable": 0.0017413942519205856
+    },
+    {
+     "F_N": -16.0,
+     "k_mNm_rad": 22.409231788247336,
+     "strain_usable": 0.0013084577199649389
+    },
+    {
+     "F_N": -12.0,
+     "k_mNm_rad": 19.47581020776582,
+     "strain_usable": 0.0011651464938336317
+    },
+    {
+     "F_N": -8.0,
+     "k_mNm_rad": 16.31042320507344,
+     "strain_usable": 0.0010432308162687794
+    },
+    {
+     "F_N": -4.0,
+     "k_mNm_rad": 12.953593119178512,
+     "strain_usable": 0.0009385560092302331
+    },
+    {
+     "F_N": 0.0,
+     "k_mNm_rad": 9.43667920806727,
+     "strain_usable": 0.0008836169994903936
+    },
+    {
+     "F_N": 4.0,
+     "k_mNm_rad": 5.784342672539165,
+     "strain_usable": 0.0010511672890026204
+    },
+    {
+     "F_N": 8.0,
+     "k_mNm_rad": 2.0162555980390584,
+     "strain_usable": 0.0012075936285081098
+    },
+    {
+     "F_N": 12.0,
+     "k_mNm_rad": -1.851688612345715,
+     "strain_usable": 0.0013544889967298823
+    },
+    {
+     "F_N": 16.5,
+     "k_mNm_rad": -6.306405901954063,
+     "strain_usable": 0.0015099521135424872
+    },
+    {
+     "F_N": 25.0,
+     "k_mNm_rad": -14.969753060509962,
+     "strain_usable": 0.0017801835443280228
+    },
+    {
+     "F_N": 36.0,
+     "k_mNm_rad": -26.563693037449593,
+     "strain_usable": 0.0020942300460775796
+    }
+   ]
+  },
+  "thrust_pivot": {
+   "F_N": 16.5,
+   "k_servo_tip_N_m": 530.589932602564,
+   "sliding": [
+    {
+     "R_mm": 0.25,
+     "kind": "sliding, lubricated steel on sapphire (mu 0.10, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 0.25,
+      "a_um": 27.43830867976603,
+      "p0_GPa": 10.464311408941956,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 0.41250000000000003,
+     "friction_at_tip_mN": 5.393566945606695,
+     "dead_band_um": 10.165226692393205
+    },
+    {
+     "R_mm": 0.25,
+     "kind": "sliding, dry (mu 0.15, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 0.25,
+      "a_um": 27.43830867976603,
+      "p0_GPa": 10.464311408941956,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 0.61875,
+     "friction_at_tip_mN": 8.090350418410042,
+     "dead_band_um": 15.247840038589807
+    },
+    {
+     "R_mm": 0.5,
+     "kind": "sliding, lubricated steel on sapphire (mu 0.10, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 0.5,
+      "a_um": 34.57010267915043,
+      "p0_GPa": 6.592103108390524,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 0.8250000000000001,
+     "friction_at_tip_mN": 10.78713389121339,
+     "dead_band_um": 20.33045338478641
+    },
+    {
+     "R_mm": 0.5,
+     "kind": "sliding, dry (mu 0.15, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 0.5,
+      "a_um": 34.57010267915043,
+      "p0_GPa": 6.592103108390524,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 1.2375,
+     "friction_at_tip_mN": 16.180700836820083,
+     "dead_band_um": 30.495680077179614
+    },
+    {
+     "R_mm": 1.0,
+     "kind": "sliding, lubricated steel on sapphire (mu 0.10, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 1.0,
+      "a_um": 43.55560006248877,
+      "p0_GPa": 4.152764734669324,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 1.6500000000000001,
+     "friction_at_tip_mN": 21.57426778242678,
+     "dead_band_um": 40.66090676957282
+    },
+    {
+     "R_mm": 1.0,
+     "kind": "sliding, dry (mu 0.15, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 1.0,
+      "a_um": 43.55560006248877,
+      "p0_GPa": 4.152764734669324,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 2.475,
+     "friction_at_tip_mN": 32.36140167364017,
+     "dead_band_um": 60.99136015435923
+    },
+    {
+     "R_mm": 2.0,
+     "kind": "sliding, lubricated steel on sapphire (mu 0.10, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 2.0,
+      "a_um": 54.876617359532055,
+      "p0_GPa": 2.61607785223549,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 3.3000000000000003,
+     "friction_at_tip_mN": 43.14853556485356,
+     "dead_band_um": 81.32181353914564
+    },
+    {
+     "R_mm": 2.0,
+     "kind": "sliding, dry (mu 0.15, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 2.0,
+      "a_um": 54.876617359532055,
+      "p0_GPa": 2.61607785223549,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": false,
+     "friction_torque_mNm": 4.95,
+     "friction_at_tip_mN": 64.72280334728033,
+     "dead_band_um": 121.98272030871846
+    },
+    {
+     "R_mm": 3.0,
+     "kind": "sliding, lubricated steel on sapphire (mu 0.10, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 3.0,
+      "a_um": 62.81804547460575,
+      "p0_GPa": 1.9964410513881978,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": true,
+     "friction_torque_mNm": 4.95,
+     "friction_at_tip_mN": 64.72280334728033,
+     "dead_band_um": 121.98272030871846
+    },
+    {
+     "R_mm": 3.0,
+     "kind": "sliding, dry (mu 0.15, ASSUMPTION)",
+     "hertz": {
+      "R_mm": 3.0,
+      "a_um": 62.81804547460575,
+      "p0_GPa": 1.9964410513881978,
+      "E_star_GPa": 149.76599063962558
+     },
+     "pressure_ok": true,
+     "friction_torque_mNm": 7.425,
+     "friction_at_tip_mN": 97.08420502092049,
+     "dead_band_um": 182.97408046307766
+    }
+   ],
+   "rolling": [
+    {
+     "delta_r_um": 1.0,
+     "friction_torque_mNm": 0.016499999999999997,
+     "friction_at_tip_mN": 0.21574267782426773,
+     "dead_band_um": 0.4066090676957281
+    },
+    {
+     "delta_r_um": 5.0,
+     "friction_torque_mNm": 0.08250000000000002,
+     "friction_at_tip_mN": 1.078713389121339,
+     "dead_band_um": 2.0330453384786407
+    },
+    {
+     "delta_r_um": 20.0,
+     "friction_torque_mNm": 0.33000000000000007,
+     "friction_at_tip_mN": 4.314853556485356,
+     "dead_band_um": 8.132181353914563
+    }
+   ],
+   "wear": [
+    {
+     "k_wear": 1e-07,
+     "R_mm": 1.0,
+     "cycles": 100000000.0,
+     "volume_mm3": 0.0016026598924088462,
+     "depth_um_over_contact": 268.9078578935107
+    },
+    {
+     "k_wear": 1e-06,
+     "R_mm": 1.0,
+     "cycles": 100000000.0,
+     "volume_mm3": 0.01602659892408846,
+     "depth_um_over_contact": 2689.078578935107
+    }
+   ],
+   "duty_force_at_tip_mN": {
+    "tremor_1mm_inertia": 22.26,
+    "ball_drag_rms": 16.087522929726642
+   },
+   "geometry_note": "the refill holder passes the gimbal's centre (its rear end reaches z 80.4 mm at full retraction, revj/refill.py), so no pivot can sit ON the axis at z 76.5: a thrust pivot must be split into two or four off-axis pivots (at the gimbal's axis ends), each at a radius r from the axis",
+   "label": "CALC (Hertz; friction, rolling resistance, wear coefficient and pressure limit ASSUMPTION ranges)"
+  },
+  "shock": {
+   "rows": [
+    {
+     "g": 50.0,
+     "case": "tail-first (more compression)",
+     "net_compression_N": 25.37805,
+     "strip_force_N": 17.944991248291263,
+     "strip_stress_MPa": 93.83001959890858,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 50.0,
+     "case": "tip-first (toward tension)",
+     "net_compression_N": 7.621949999999998,
+     "strip_force_N": 5.3895325308648045,
+     "strip_stress_MPa": 28.180562252887867,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 100.0,
+     "case": "tail-first (more compression)",
+     "net_compression_N": 34.2561,
+     "strip_force_N": 24.22272060700449,
+     "strip_stress_MPa": 126.6547482719189,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 100.0,
+     "case": "tip-first (toward tension)",
+     "net_compression_N": -1.2561000000000035,
+     "strip_force_N": -0.8881968278484248,
+     "strip_stress_MPa": -4.644166420122483,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 200.0,
+     "case": "tail-first (more compression)",
+     "net_compression_N": 52.01220000000001,
+     "strip_force_N": 36.77817932443095,
+     "strip_stress_MPa": 192.30420561793963,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 200.0,
+     "case": "tip-first (toward tension)",
+     "net_compression_N": -19.012200000000007,
+     "strip_force_N": -13.443655545274883,
+     "strip_stress_MPa": -70.29362376614317,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 500.0,
+     "case": "tail-first (more compression)",
+     "net_compression_N": 105.28050000000002,
+     "strip_force_N": 74.44455547671032,
+     "strip_stress_MPa": 389.2525776560017,
+     "buckles": true,
+     "yields_in_tension": false
+    },
+    {
+     "g": 500.0,
+     "case": "tip-first (toward tension)",
+     "net_compression_N": -72.28050000000002,
+     "strip_force_N": -51.110031697554255,
+     "strip_stress_MPa": -267.24199580420526,
+     "buckles": false,
+     "yields_in_tension": false
+    },
+    {
+     "g": 1000.0,
+     "case": "tail-first (more compression)",
+     "net_compression_N": 194.06100000000004,
+     "strip_force_N": 137.22184906384263,
+     "strip_stress_MPa": 717.4998643861053,
+     "buckles": true,
+     "yields_in_tension": false
+    },
+    {
+     "g": 1000.0,
+     "case": "tip-first (toward tension)",
+     "net_compression_N": -161.06100000000004,
+     "strip_force_N": -113.88732528468655,
+     "strip_stress_MPa": -595.4892825343088,
+     "buckles": false,
+     "yields_in_tension": false
+    }
+   ],
+   "pivot_buckling_N": 56.025848388671875,
+   "g_at_buckling_tail_first": 222.60433534769385,
+   "axial_stiffness_N_per_um": 10.065789473684212,
+   "compression_travel_to_buckling_um": 3.9267509510314538,
+   "stops": [
+    {
+     "stop_gap_um": 2.0,
+     "buckled_amplitude_um": 55.499225064203095,
+     "peak_strain": 0.00284498993741711,
+     "elastic": true
+    },
+    {
+     "stop_gap_um": 5.0,
+     "buckled_amplitude_um": 87.75197978859322,
+     "peak_strain": 0.004498324061248982,
+     "elastic": true
+    },
+    {
+     "stop_gap_um": 10.0,
+     "buckled_amplitude_um": 124.10003994211826,
+     "peak_strain": 0.006361590895367531,
+     "elastic": false
+    },
+    {
+     "stop_gap_um": 20.0,
+     "buckled_amplitude_um": 175.50395957718644,
+     "peak_strain": 0.008996648122497964,
+     "elastic": false
+    }
+   ],
+   "proposal": "axial stops on the nose at the gimbal: a rear stop that engages after the strips shorten by <= 5 um beyond their loaded position (buckled strips then stay elastic) and a front stop at <= 20 um; the cap-to-plate clearance (0.5 mm) is not a stop (PROPOSED DESIGN; EXP-J10 drop test)"
+  },
+  "chosen": {
+   "t_um": 75.0,
+   "b_mm": 2.5500000000000003,
+   "L_mm": 3.8,
+   "alpha_deg": 45.0,
+   "lambda": 0.5,
+   "load_path": "compression (study N's arrangement)",
+   "label": "PROPOSED DESIGN"
+  },
+  "label": "CALC (co-rotational beam model and closed forms derived here; material LIT AMF-20; loads CALC revj1.magnetics)"
+ }
+}

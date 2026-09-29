@@ -1,13 +1,13 @@
 # Rev J: a pen that acts at the tip, the heel and the tail
 
-**Status: proposed design, studied in calculation and simulation only (round 1 complete; round 2: integrated layout done, whole-pen simulation running).** Nothing has been built or measured on a pen or a person. Labels:
+**Status: proposed design, studied in calculation and simulation only (round 1 complete; round 2: integrated layout done, whole-pen simulation running; round 3: Rev J.1 fixes done; round 4 running: shifting the whole pen against large tremor, real recorded data, spelling AI — `round4_plan.md`).** Nothing has been built or measured on a pen or a person. Labels:
 - **SIM**: an executed simulation on synthetic writers and synthetic tremor;
 - **CALC**: a calculation;
 - **LIT**: published literature, with its ledger id in `docs/evidence.csv`;
 - **MFR**: a manufacturer statement, with its ledger id;
 - **ASSUMPTION**: an input nobody has measured.
 
-Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisions.md`](decisions.md). Detailed reports: [`nose_v2.md`](nose_v2.md) (tip), [`grounded_drive.md`](grounded_drive.md) (heel), [`inertial_endcap.md`](inertial_endcap.md) (tail), [`ai_control_v2.md`](ai_control_v2.md) (algorithms and AI), [`sim_v2.md`](sim_v2.md) (the physics simulator).
+Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-045 in [`decisions.md`](decisions.md). Detailed reports: [`nose_v2.md`](nose_v2.md) (tip), [`grounded_drive.md`](grounded_drive.md) (heel), [`inertial_endcap.md`](inertial_endcap.md) (tail), [`ai_control_v2.md`](ai_control_v2.md) (algorithms and AI), [`sim_v2.md`](sim_v2.md) (the physics simulator).
 
 ## 1. The answer in plain words
 
@@ -17,7 +17,7 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 |---|---|---|
 | **Tip** | A stronger moving nose: the ink tip moves ±6 mm (Rev H: ±2.75 mm guaranteed) | Cancels tremor up to 2 mm; draws whole letters of 2.5 mm by itself while you sweep the pen along the line ("autowrite", a mode you turn on) |
 | **Heel** | A 2 mm wheel under the front ring that grips the paper | Uses the paper as ground: 0.3–0.6 N on the hand. By default it only steers (it keeps your hand on the letter's path and cannot move the pen by itself); in a mode you turn on, it leads a relaxed hand |
-| **Tail** | A moving tungsten weight in a detachable end-cap | Adds 8–20 % more tremor reduction on top of the nose; gives short cues in pauses. It cannot steer letters |
+| **Tail** | A moving tungsten weight in a detachable end-cap | Adds 6–18 % more tremor reduction on top of the nose (Rev J.1's 29.6 g end-cap); gives short cues in pauses. It cannot steer letters |
 
 **Why the paper, not inertia, gives the strong push (CALC).** A pen held in the hand can push only against a mass inside it, against the hand itself, or against the paper.
 - A moving mass gives F = m (2πf)² X. At handwriting frequencies (below about 5 Hz, LIT CON-24) that is tiny: the best 45 g end-cap moves the ink at most 0.21 mm, a gyroscope at most 1.06 mm, against the 2 mm needed (SIM, `inertial_endcap.md`).
@@ -33,7 +33,7 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 | Essential tremor, 1–2 mm, 6–10 Hz | Nose + **gated tracker** (new default) | Ink error 830 → 430 µm (ordinary pen → Rev J); Rev H's tracker 627 µm. Words read 31 % → 74 % (Rev H 49 %). Clean writing moved 26 µm, as before | `ai_control_v2.md` |
 | Tremor at 6 Hz, 1–2 mm (where Rev H did nothing) | Gated tracker | 822 → 540 µm | `ai_control_v2.md` |
 | Same, a learned estimator (candidate, shadow mode) | Causal TCN | 278 µm and 81 % of words; waits for real recordings | `ai_control_v2.md` |
-| Tremor, on top of the nose | Tungsten end-cap | A further 8 / 18 / 20 % at grip splits 0.3 / 0.5 / 0.7 (8–12 Hz, 1–2 mm); the same mass fixed gives 17 / 12 / 4 %, better at split 0.3, but it worsens 29–42 % of the hard cases (the moving slug 4–12 %) | `inertial_endcap.md` |
+| Tremor, on top of the nose | Tungsten end-cap | Rev J.1's 29.6 g end-cap: a further 5.6 / 16.8 / 18.3 % at grip splits 0.3 / 0.5 / 0.7 (8–12 Hz, 1–2 mm; `revJ1_design.md`). The first 43 g design: 8 / 18 / 20 %; the same mass fixed gives 17 / 12 / 4 %, better at split 0.3, but it worsens 29–42 % of the hard cases (the moving slug 4–12 %) | `inertial_endcap.md` |
 | Writing for you (known text) | Autowrite with the ±6 mm nose | 99.2 % of letters and 100 % of words read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters/s | `nose_v2.md` |
 | Parkinson's "write big" loops | Heel wheel, steer only | Loop height 0.99 of the target (0.78 with nothing; 0.93–0.94 for a resisting hand) | `grounded_drive.md` |
 | Tracing and copying (poor handwriting) | Heel wheel + nose | Distance to the target 582 → 76 µm while guided, but letters read fell from 92 % to 79 %: ink closer to a template is not more legible (as with Rev H's full guidance). Steer only: 372 µm, 86 % | `grounded_drive.md` |
@@ -45,7 +45,7 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 - *Helps:* the tremor-line detector that switches the listening tracker on (above); the learned estimator in shadow mode; the clean copy; spelling help; letter shapes in your own style for autowrite (96 % legible from 1–3 of your letters, on synthetic writers); prediction as word completion in the app.
 - *Does not help:* guessing your next letter and steering the tip toward it (0–1 % of the gap closed); letting the ink trail the hand for look-ahead smoothing (−4 % at 25 ms; longer lags lose stroke ends); reinforcement learning driving the nose directly (it read more words but moved clean writing too much). RL is used offline to design how the pen shares control (DEC-042).
 
-## 3. What is inside (proposed design; integration round 2 running)
+## 3. What is inside (proposed design; Rev J.1)
 
 | Part | What it does | Study |
 |---|---|---|
@@ -54,19 +54,29 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 | Heel wheel | 2 mm wheel with an O-ring tyre in a slot at the bottom of the skid ring (wheel at 12.0 mm from the axis), steered through its contact point, driven through a 2:1 bevel; two Faulhaber 0620 B motors under the cell and two 80 mm shafts in grooves of the bottom wall; 0.55 N sprung preload; 0.37 N continuous, 0.60 N peak at the tyre | DEC-037, DEC-044 |
 | Page sensor | Optical sensor at the front: required for autowrite (1 kHz), slip detection and the tremor-line detector | DEC-036, DEC-037, DEC-042 |
 | Motion sensor, board, battery | As Rev H (IMU LSM6DSV16X, nRF54L15, 14500 cell), with more drivers | revH_concept.md |
-| End-cap (detachable) | 30.4 g tungsten slug pushed ±4 mm on two axes by arc coils on 5 Hz flexures; it replaces the rear cap (pen 165.7 mm with it, 144.7 mm without) | DEC-038, DEC-044 |
+| End-cap (detachable) | A tungsten slug pushed ±4 mm on two axes by arc coils on 5 Hz flexures; it replaces the rear cap. Rev J.1: 9 mm slug, 29.6 g end-cap, 21 mm long (pen 161.9 mm with it, 143.9 mm without); Rev J: 43.3 g | DEC-038, DEC-044, DEC-045 |
 
 **Integrated layout (round 2, `docs/revJ_design.md`, DEC-044; CALC):** one Ø24 mm pen. The skid ring's contact radius is 11.65 mm and the sleeve front Ø23.3 mm, flush with the ring; the ball sits 9.3 mm ahead of the ring at 50°; the refill slides 26.6 mm. The board lies on top, the cell behind the coil plate, the heel motors under the cell. All 38 fit checks pass.
 
+**Rev J.1 fixes (round 3, `docs/revJ1_design.md`, DEC-045; CALC unless stated).** The first integration found six problems. Rev J.1 fixes five and states the limit of the sixth:
+
+| Problem found in the integrated layout | Rev J.1 fix | Result |
+|---|---|---|
+| The nose magnets pull the gimbal with 12–22 N; its 50 µm strips buckle at about 16 N | 75 µm strips, still in compression, with shock stops (strips in tension fail fatigue) | Buckling 55 N; fatigue safety factor 2.0 |
+| Battery 6.1–7.3 h at 1 mm tremor (target 8 h) | Electronics counted from datasheets; a low-power page sensor left on (the tremor detector needs it); heel drivers asleep in steady mode | 8.5–9.7 h at 1 mm tremor; lead-through 7.5–8.8 h; autowrite 6.5–7.4 h |
+| Skin at the web 45.7 °C in a 30 °C room | 0.1 mm graphite sheet in the shell wall (0.2 g) | 35.9 °C (limit 43 °C) |
+| 129.2 g with the end-cap (target 120 g) | Lighter end-cap (9 mm tungsten slug, 29.6 g) and a thinner back iron | 112.7 g; the end-cap still adds 5.6 / 16.8 / 18.3 % (SIM) |
+| Ink hidden near the ball at 50–75° | A clear 15 mm window in the front sleeve | Ink seen within 1 mm in 47 % of tilt × eye cases (was 22 %; eye range assumed) |
+| The nose magnets drag on the heel motors (detent) | Motors 10 mm further back | 0.66 × the motor's own friction (free-space bound) |
+
 | Budget (CALC) | Base pen | With the end-cap |
 |---|---|---|
-| Length | 144.7 mm | 165.7 mm |
-| Mass (target ≤ 120 g) | 87.0 g | 129.2 g (over) |
-| Battery, steady with 1 mm of tremor (target ≥ 8 h) | 6.1–7.3 h (7.8–8.2 h with the page sensor off) | 4.3–6.6 h |
-| Battery, guide / autowrite | 8.0–10.5 h / 5.3–6.1 h | 5.3–9.2 h / 3.9–5.7 h |
-| Skin over the coils, 23 °C / 30 °C room | 38.7 / 45.7 °C (37.3 °C at 23 °C with a 0.5 mm aluminium spreader) | as base |
+| Length | 143.9 mm | 161.9 mm |
+| Mass (target ≤ 120 g) | 84.3 g | 112.7 g |
+| Battery, steady with 1 mm of tremor (target ≥ 8 h) | 8.5–9.7 h | 6.4–8.6 h |
+| Skin at the web, 1 mm tremor, 30 °C room (limit 43 °C) | 35.9 °C | as base |
 
-**Problems the integration found (CALC):** the page sensor and base electronics take 115–165 mW before anything moves, so the 8 h target fails in the assisted modes unless the page sensor is duty-cycled; the nose magnets pull the gimbal axially with 16.5 N, above the strips' 14.5 N buckling load (the strips must work in tension, or a thrust pivot is added); the nose's magnet cap, 2.7 mm in front of the heel motors, could put a detent of up to 0.16 N on the heel wheel through the motors' rotor magnets; the skin over the coils gets warm in a hot room (a spreader is needed); and for an assumed eye position the ink near the ball is hidden at 50–75° of tilt, as it already is in Rev H.
+**The big caveat.** Every battery and heat number rests on the nose-coil power of study N's model. The whole-pen physics simulation (round 2, running) has reported 1.3–2.4 W in some tremor runs, unconfirmed; at 2 × the model's power, steady writing at 1 mm tremor lasts about 5 h and the web reaches 42 °C, and at 5 × about 2 h and 64 °C (CALC). That would be a nose-design problem, and it is being checked first.
 
 ## 4. Modes
 
