@@ -477,7 +477,7 @@ def estimate(design: Dict, st, case=None, sensor: str = "deltapen", horizon: Opt
         au = design["auth"]
         conf = None
         if "r_lo" in au:                  # the soft line confidence (search.conf_ratio's detector settings)
-            conf = conf_from_ratio(det_ratio(st, DET_CONF_DEFAULTS)["ratio"], au["r_lo"], au["r_hi"])
+            conf = conf_from_ratio(_ratio_cached(st), au["r_lo"], au["r_hi"])
         d, g, A = authority(d, Ts, au, conf)
         info = dict(info or {})
         info["auth_g"] = g
@@ -554,3 +554,18 @@ def det_ratio_imu(st, p: Optional[Dict] = None) -> Dict:
     return {"ratio": np.where(ok, det["ratio"][kk], 0.0), "amp": np.where(ok, det["amp"][kk], 0.0),
             "f": np.where(ok, det["f_hat"][kk], 0.0), "t_up": det["t"], "ratio_up": det["ratio"],
             "amp_up": det["amp"], "params": det["params"]}
+
+
+_RATIO: Dict = {}
+
+
+def _ratio_cached(st) -> np.ndarray:
+    """det_ratio(st, DET_CONF_DEFAULTS)['ratio'], memoised on a fingerprint of the page and contact streams (the
+    horizon sweeps evaluate one stream many times; the detector does not depend on the horizon)."""
+    key = (len(st.pos), float(st.pos[0, 0]), float(st.pos[-1, 1]), float(st.pos_av[-1]), float(np.sum(st.pos_ok)),
+           len(st.con), float(st.tick_t[-1]))
+    if key not in _RATIO:
+        if len(_RATIO) > 8:
+            _RATIO.clear()
+        _RATIO[key] = det_ratio(st, DET_CONF_DEFAULTS)["ratio"]
+    return _RATIO[key]

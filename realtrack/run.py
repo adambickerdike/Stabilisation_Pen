@@ -9,7 +9,7 @@ Stages (each resumes from realtrack/build; the container may restart; ONE proces
   learn    the FIR (linear) and the TCN trained on real tuning inputs, cross-fitted by fold (learned.py, netmodel.py),
            the soft authority on the learned outputs (and on ai2's TCN), then study W's GLG (chain_after.py)
   freeze   the finalists re-run in the full HW1 plant on the tuning cases; the choice by tune.py's rules; writes
-           results/realtrack/frozen.json (test.py refuses to run without it)
+           results/realtrack/frozen.json (test.py refuses to run without it); then the analyses (post.py)
   test     the one test run on R's test split (test.py) and the CC BY before/after picture runs
   sim2     one confirmation in sim2 (sim2j's ET grid, one writer) if time allows (sim2check.py)
   report   results/realtrack/*.json with stabpen.provenance, figures with CSV twins, evidence_rows.csv
@@ -50,8 +50,8 @@ def stage_learn(quick: bool):
 
 
 def stage_freeze(quick: bool):
-    from . import freeze as FZ
-    FZ.run(log=log)
+    from . import post
+    post.main()
 
 
 def stage_test(quick: bool):

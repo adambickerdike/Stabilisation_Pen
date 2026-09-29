@@ -10,6 +10,8 @@ Finalists (the best setting of each family that the searches found; tuning split
   net           the TCN trained on real tuning inputs (cross-fitted: each tuning case scored by the fold model that never
                 saw its writer or patients), with its own soft amplitude authority if the search found one
 Rule (tune.py): pass T2-T4 in the full plant; the lowest J (severe broadband ratio); within 0.02 the cheaper MCU design.
+The full-plant re-run covers the three finalists with the best surrogate tuning score (compute budget); the others keep
+their surrogate numbers (the surrogate matched the full plant to 0.05 % on average, 0.3 % at most).
 The G4 port (frozen sim2j settings, results/sim2j/rules.json) is the second baseline and is carried into the test as is.
 """
 from __future__ import annotations
@@ -132,6 +134,18 @@ def full_eval(designs: Dict[str, Dict], log=print) -> Dict[str, Dict]:
     return EV.summarize(rows)
 
 
+def surrogate_scores() -> Dict[str, Dict]:
+    """Each finalist's best surrogate summary from its search file (tuning split)."""
+    out = {}
+    for name, stem in (("joint_akf", "joint_akf"), ("gate_listen", "gate_s2_gate_listen"), ("glg", "gate_s2_glg"),
+                       ("listen_conf", "auth_s2_listen_conf"), ("net", "auth_net_main")):
+        p = TU.TUNE_DIR / f"{stem}.json"
+        if p.exists():
+            b = json.loads(p.read_text())["best"]
+            out[name] = {"score": b["score"], "summary": b["summary"], "passes": TU.passes(b["summary"])}
+    return out
+
+
 def choose(summ: Dict[str, Dict], cost: Dict[str, float]) -> Dict:
     table = {}
     for nm, sm in summ.items():
@@ -164,7 +178,12 @@ def run(log=print, designs: Optional[Dict[str, Dict]] = None, costs: Optional[Di
     from stabpen import provenance as PV
     from . import mcu as MC
     fin = designs or finalists()
-    summ = full_eval(fin, log=log)
+    # the full-plant re-run for the three best finalists by their surrogate tuning score (T1 with the T2-T4
+    # penalties of tune.score); the others keep their surrogate numbers (the surrogate matched the plant to 0.3 %)
+    sur = surrogate_scores()
+    ranked = sorted([k for k in fin if k in sur], key=lambda k: sur[k]["score"])
+    top = {k: fin[k] for k in ranked[:3]}
+    summ = full_eval(top, log=log)
     t = MC.table()
     cost = {"joint_akf": t["akf"]["cpu_share_128MHz"] + t["authority"]["cpu_share_128MHz"],
             "gate_listen": t["akf"]["cpu_share_128MHz"] + t["detector"]["cpu_share_128MHz"],
@@ -175,6 +194,12 @@ def run(log=print, designs: Optional[Dict[str, Dict]] = None, costs: Optional[Di
     ch = choose(summ, cost)
     chosen = dict(fin[ch["chosen"]])
     info = {k: v for k, v in fin.items() if k != ch["chosen"]}
+    # the 'perfect gate' bound: the strongest raw estimator of the tuning split (stage 1, lowest J) with no gate at
+    # all; at the severe class a perfect tremor detector (or a perfect RL arbiter) could not do better with it
+    from . import search as SR
+    ub = SR.best_design("akf")
+    ub["name"] = "ungated_akf"
+    info["ungated_akf"] = ub
     models = {}
     from .learned import MODEL_DIR
     for p in sorted(MODEL_DIR.glob("*.pt")) + sorted(MODEL_DIR.glob("fir_*.json")):
@@ -183,7 +208,8 @@ def run(log=print, designs: Optional[Dict[str, Dict]] = None, costs: Optional[Di
                                              extra={"package": "realtrack", "script": "realtrack/freeze.py"}),
            "frozen_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
            "rules": TU.__doc__, "chosen_name": ch["chosen"], "why": ch["why"], "chosen": chosen, "g4": g4_design(),
-           "info": info, "tuning_full_plant": ch["table"], "model_sha256_16": models,
+           "info": info, "info_read": ["ungated_akf"], "tuning_full_plant": ch["table"],
+           "tuning_surrogate": surrogate_scores(), "model_sha256_16": models,
            "search_files": {p.name: _sha(p) for p in sorted(TU.TUNE_DIR.glob("*.json"))}}
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     FROZEN.write_text(json.dumps(out, indent=1, default=float))

@@ -117,3 +117,44 @@ def table() -> Dict:
             "bmflc_19": bmflc_cost(19), "bmflc_kf_19": bmflc_kf_cost(19), "bmflc_kf_37": bmflc_kf_cost(37),
             "akf": akf_cost(True), "akf_imu_only": akf_cost(False), "g4": g4_cost(), "detector": detector_cost(),
             "fir_128": fir_cost(128), "authority": authority_cost()}
+
+
+def chosen(fr: Dict) -> Dict:
+    """The frozen design's cost per 1 kHz step, from its parts (CALC)."""
+    d = fr["chosen"]
+    fam = d["family"]
+    parts = {}
+    if fam == "akf":
+        parts["AKF (listening model, page sensor with roll-back)"] = akf_cost(float((d.get("params") or {}).get("use_pos", 1.0)) > 0.5)
+        if d.get("auth"):
+            parts["soft authority"] = authority_cost()
+            if "r_lo" in d["auth"]:
+                parts["line detector (continuous confidence)"] = detector_cost()
+    elif fam == "gatefast":
+        parts["AKF (listening model)"] = akf_cost(True)
+        parts["line detector (gate)"] = detector_cost()
+        fb = d["params"]["gate"].get("fallback")
+        if fb == "revh":
+            parts["Rev H tracker (fallback)"] = akf_cost(True)
+        elif fb == "g4":
+            parts["G4 (fallback)"] = {"cpu_share_128MHz": g4_cost()["cpu_share_128MHz"], "ram_bytes": g4_cost()["ram_bytes"],
+                                      "mac_per_1ms_step": g4_cost()["akf"]["mac_per_1ms_step"] + g4_cost()["detector"]["mac_per_1ms_step"]}
+    elif fam == "net":
+        import json
+        from .learned import MODEL_DIR
+        info = json.loads((MODEL_DIR / "net_net_main.json").read_text())
+        parts["TCN (int8)"] = tcn_cost(info["cfg"], int(info["params"]))
+        if d.get("auth"):
+            parts["soft authority"] = authority_cost()
+    else:
+        parts[fam] = {"cpu_share_128MHz": float("nan"), "ram_bytes": 0, "mac_per_1ms_step": float("nan")}
+    cpu = sum(p["cpu_share_128MHz"] for p in parts.values())
+    ram = sum(p["ram_bytes"] for p in parts.values())
+    mac = sum(p.get("mac_per_1ms_step", 0.0) for p in parts.values())
+    return {"design": fr.get("chosen_name"), "parts": parts, "cpu_share_128MHz": cpu, "ram_bytes": ram,
+            "mac_per_1ms_step": mac, "us_per_1ms_step": cpu * 1000.0,
+            "summary": (f"{fr.get('chosen_name')}: about {mac:.0f} multiply-accumulates per 1 ms step, {100 * cpu:.1f} % of a "
+                        f"128 MHz Cortex-M33 (2 cycles per MAC, ASSUMPTION), {ram / 1024:.1f} kB RAM "
+                        f"({100 * ram / (256 * 1024):.1f} % of the nRF54L15's 256 KB, {100 * ram / (512 * 1024):.1f} % of the "
+                        f"nRF5340's 512 KB)"),
+            "label": "CALCULATION (operation counts; cycle model ASSUMPTION, to be profiled)"}
