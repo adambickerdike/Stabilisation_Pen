@@ -225,6 +225,19 @@ def collar_power(ctrl: Dict, amps=(2e-3, 4e-3, 6e-3, 8e-3), f: float = 6.0, Km_c
     return out
 
 
+def collar_static(thetas=(35.0, 50.0, 75.0), F_c: float = 0.15, z_p: float = 0.050, Km_coil_lin: float = 0.656,
+                  lever: float = 0.041, Km_geared: float = 0.042) -> Dict:
+    """The V2 collar's holding power while the ball is on the paper: the refill spring's side load F_c cot(theta) at the
+    ball, times the pivot-to-tip distance, held by the actuator (CALC; the Rev J nose's equivalent in nose_static)."""
+    rows = []
+    for th in thetas:
+        Ms = F_c / math.tan(math.radians(th)) * z_p
+        rows.append({"theta_deg": th, "moment_mNm": Ms * 1e3, "P_coil_W": (Ms / (Km_coil_lin * lever)) ** 2,
+                     "P_geared_W": (Ms / Km_geared) ** 2, "P_revJ_nose_W": nose_static((th,))["rows"][0]["P_W"]})
+    return {"rows": rows, "Km_coil_Nm_sqrtW": Km_coil_lin * lever, "Km_geared_Nm_sqrtW": Km_geared,
+            "formula": "P = (F_c cot(theta) z_p / Km)^2; coil Km = 0.656 N/sqrt(W) (the lead's C1S value) x the 41 mm lever"}
+
+
 # ------------------------------------------------------------------------------------------------ tail modules vs locked
 def _tmd_ceiling(m, z, f, A, r_rot, gs, X_max, F_max, k=None, c=None):
     """Active reaction mass on a flexure (k, c) at z: perfect-knowledge ceiling within the stroke X_max and the coil
@@ -365,4 +378,5 @@ def run_all() -> Dict:
     return {"nose_static": nose_static(), "collar_geometry": collar_geometry(), "collar_masses": {a: collar_masses(a) for a in ("coil", "geared")},
             "collar_control_revJ": ctrl_revj, "collar_control_compact": ctrl_compact,
             "collar_power_revJ": collar_power(ctrl_revj), "collar_power_compact": collar_power(ctrl_compact),
+            "collar_static": collar_static(),
             "tail_gate": tail_gate(), "cmg_sizing": cmg_sizing(), "reaction_mass": reaction_mass()}

@@ -65,6 +65,28 @@ def headline(R, classes=None) -> Dict:
     return {"rows": rows, "classes": classes, "designs": HEAD_DESIGNS}
 
 
+STROKE_DESIGNS = ["none", "nose", "nose_gate", "collar_locked_nose", "collar_nose", "nose_oracle", "light_locked_nose", "light_nose"]
+
+
+def strokes_from_traces() -> List[Dict]:
+    """Coverage, missing strokes and completion time from the saved records (writer 0; writer 1 at ET 8 mm), with the
+    writer's intended strokes (cases.strokes_from_trace).  Supersedes the per-row fields missing_strokes,
+    missing_stroke_rate, autowrite_extra_s and completion_time_ratio of the simulation rows, which were computed on the
+    device-off reference's contact before contact flicker (< 40 ms) was merged and so counted flicker as strokes."""
+    from . import BUILD
+    from . import cases as CS
+    out = []
+    d = os.path.join(BUILD, "traces")
+    for w, seed in ((0, 200), (1, 201)):
+        for c in ("ET_moderate", "PD_moderate", "ET_severe", "PD_severe"):
+            for dn in STROKE_DESIGNS:
+                fn = os.path.join(d, f"h1_g1_w{w}_s{seed}_{c}_{dn}.npz")
+                if os.path.exists(fn):
+                    m = CS.strokes_from_trace(fn)
+                    out.append({"w": w, "class": c, "design": dn, **{k: (round(v, 3) if isinstance(v, float) else v) for k, v in m.items()}})
+    return out
+
+
 def cards(R) -> List[Dict]:
     """One results card per population and mode (review section 13)."""
     pops = {"essential tremor": ["ET_mild", "ET_moderate", "ET_severe", "ET_moderate_9Hz"],
@@ -77,26 +99,25 @@ def cards(R) -> List[Dict]:
         for mode, d in modes.items():
             rr = [r for r in R if r.get("class") in cl and r.get("design") == d and r.get("hand_model", "h1") == "h1"
                   and float(r.get("grip", 1.0)) == 1.0]
-            r0 = [r for r in R if r.get("class") in cl and r.get("design") == "none" and r.get("hand_model", "h1") == "h1"
-                  and float(r.get("grip", 1.0)) == 1.0]
+            pairs = {(r.get("class"), r.get("w")) for r in rr}
+            r0 = [r for r in R if (r.get("class"), r.get("w")) in pairs and r.get("design") == "none"
+                  and r.get("hand_model", "h1") == "h1" and float(r.get("grip", 1.0)) == 1.0]
             if not rr:
                 continue
             words = float(np.nansum([5.0 * r.get("words_app", 0.0) for r in rr]))
             words0 = float(np.nansum([5.0 * r.get("words_app", 0.0) for r in r0]))
             nw = 5 * len(rr)
             T = float(np.nansum([r.get("task_time_s", float("nan")) for r in rr]))
-            T_aw = float(np.nansum([r.get("autowrite_extra_s", 0.0) for r in rr])) if d == "nose_gate" else 0.0
             clean = [r for r in R if r.get("class") == "clean" and r.get("design") == d]
             out.append({
                 "population": pop, "mode": mode, "design": d, "cases": len(rr),
+                "classes": sorted({c for c, _ in pairs}), "writers": sorted({int(w) for _, w in pairs}),
                 "readable_words": f"{words:.0f} of {nw} (no help: {words0:.0f} of {5 * len(r0)})",
                 "useful_words_per_min": round(60.0 * words / T, 1) if T > 0 else None,
-                "useful_words_per_min_with_completion": round(60.0 * words / (T + T_aw), 1) if d == "nose_gate" and T > 0 else None,
                 "tremor_left_mm_mean": round(float(np.nanmean([r["tip_tremor_mm"] for r in rr])), 2),
                 "tremor_no_help_mm_mean": round(float(np.nanmean([r["tip_tremor_mm"] for r in r0])), 2) if r0 else None,
                 "clean_writing_changed_um": round(float(np.nanmean([c["moved_vs_clean_um"] for c in clean])), 0) if clean else None,
                 "coverage": round(float(np.nanmean([r.get("coverage", float("nan")) for r in rr])), 3),
-                "missing_stroke_rate": round(float(np.nanmean([r.get("missing_stroke_rate", float("nan")) for r in rr])), 3),
                 "power_W_nose": round(float(np.nanmean([r.get("P_nose_W", float("nan")) for r in rr])), 2),
                 "power_W_other_devices": round(float(np.nanmean([r.get("P_devices_W", float("nan")) for r in rr])), 2),
                 "felt_grip_force_change_rms_N": round(float(np.nanmean([r.get("felt_rms_N", float("nan")) for r in rr])), 2),
@@ -104,7 +125,7 @@ def cards(R) -> List[Dict]:
     return out
 
 
-def gate_vs_locked(R, pairs=(("gt_nose", "gt_locked_nose"), ("collar_nose", "collar_locked_nose"), ("collar_nose", "collar_locked"),
+def gate_vs_locked(R, pairs=(("gt_nose", "gt_locked_nose"), ("collar_nose", "collar_locked_nose"), ("light_nose", "light_locked_nose"),
                              ("collar_oracle", "collar_locked"), ("nose", "none"))) -> List[Dict]:
     out = []
     for act, lock in pairs:
@@ -150,7 +171,7 @@ def collar_increment(R) -> List[Dict]:
 
 
 LIGHT_DESIGNS = ["none", "nose", "nose_oracle", "collar_locked", "collar_locked_nose", "collar_nose", "collar_nose_oracle",
-                 "light_locked", "light_locked_nose", "light_nose", "light_fine", "light_nose_oracle"]
+                 "light_locked", "light_locked_nose", "light_nose", "light_fine", "light_fine_t", "light_nose_oracle"]
 
 
 def compare(R, designs: List[str], classes: List[str]) -> List[Dict]:
@@ -216,13 +237,16 @@ def build() -> Dict:
     tune = _rows("tune")
     body = {"conventions": __doc__.split("Conventions")[1].split("Evidence status")[0].strip(),
             "headline": headline(test), "headline_real": headline(real, [c[0] for c in RS.CLASSES_REAL]), "cards": cards(test),
-            "tail_and_collar_vs_locked_test": gate_vs_locked(test),
+            "tail_and_collar_vs_locked_test": gate_vs_locked(test + light),
             "collar_increment": collar_increment(test + real),
+            "strokes_from_traces": strokes_from_traces(),
+            "note_on_row_stroke_fields": strokes_from_traces.__doc__.split("Supersedes")[1].strip(),
             "light_compare": {"classes": ["ET_moderate", "PD_severe"],
                               "rows": compare(test + light, LIGHT_DESIGNS, ["ET_moderate", "PD_severe"])} if light else None,
             "tail_and_collar_vs_locked_grips": gate_vs_locked(grips + tune_frozen_grip1(tune, _rules_body())),
             "arm": [{k: r.get(k) for k in ("class", "design", "tip_tremor_mm", "words_app", "coverage", "ink_err_um")} for r in arm],
-            "n_rows": {"test": len(test), "grips": len(grips), "arm": len(arm), "tune": len(tune)}}
+            "n_rows": {"test": len(test), "real": len(real), "light": len(light), "grips": len(grips), "arm": len(arm),
+                       "tune": len(tune)}}
     try:
         body["rules"] = json.load(open(os.path.join(RESULTS, "rules.json")))["rules"]
     except Exception:
@@ -248,7 +272,8 @@ def table_md(head: Dict, key: str = "tip_mm", fmt: str = "{:.1f}") -> str:
             if r is None or r.get(key) is None:
                 cells.append("–")
                 continue
-            cell = fmt.format(r[key])
+            v = r[key]
+            cell = (f"{v:.2f}" if v < 1 else f"{v:.1f}") if key == "tip_mm" and fmt == "{:.1f}" else fmt.format(v)
             if r.get("n_writers", 2) < 2:
                 one = True
                 cell += f" of {r.get('words_of', 5)}*" if key == "words10" else "*"

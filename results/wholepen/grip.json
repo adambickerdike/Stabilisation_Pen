@@ -12,7 +12,7 @@
       1639.6395853651902
     ],
     "three_pads_N_m": 5753.26563392674,
-    "label": "CALC from LIT HAP-31 (k = 1.48 n^0.35 N/mm) and LIT CON-75 (thumb/index/middle forces on paper)"
+    "label": "CALC from LIT HAP-31 (k = 1.48 n^0.35 N/mm) and LIT CON-04 (thumb/index/middle forces on paper)"
   },
   "splits": [
     {
@@ -438,14 +438,14 @@
     ],
     "src": "HAP-26"
   },
-  "label": "CALC on LIT (HAP-26, HAP-31, HAP-32, HAP-115, CON-02, CON-05, CON-07, CON-75) and ASSUMPTION splits",
+  "label": "CALC on LIT (HAP-26, HAP-31, HAP-32, HAP-115, CON-02, CON-04, CON-05, CON-07) and ASSUMPTION splits",
   "stabpen.provenance": {
     "evidence_status": "CALCULATION on LIT and ASSUMPTION",
-    "generated_utc": "2026-09-29T17:48:39+00:00",
-    "git_revision": "52d471b-dirty",
+    "generated_utc": "2026-09-29T22:17:31+00:00",
+    "git_revision": "ad29a1f-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --stages targets grip calc",
+    "command": "run_study.py --stages light2 real calc targets realdata grip optimise summary figures",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,

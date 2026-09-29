@@ -5,7 +5,7 @@
 # in bnib/labels.py or the design, re-run, and bump the version.
 schema: bnib-nib-interface/1
 version: bnib-0.1
-generated_utc: '2026-09-29T19:39:31Z'
+generated_utc: '2026-09-29T22:36:39Z'
 status: PROPOSED DESIGN (study B, balanced two-axis nib). Nothing here was built or measured.
 design:
   id: B1
@@ -1022,3 +1022,39 @@ c1s_reference:
     unit: W
     status: CALC
     source: the review's section 4, reproduced (bnib/contact.review_static_power)
+simulated:
+  note: headline SIMULATION numbers for this nib (sim2, synthetic writers and tremor, DeltaPen-calibrated page sensor, the
+    frozen tracker); results, not interface parameters
+  tremor_left_ratio_tracker:
+    value: 0.867239
+    unit: '1'
+    status: SIM
+    source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
+    note: mean over the ET/PD cells
+  tremor_left_ratio_perfect_knowledge:
+    value: 0.396446
+    unit: '1'
+    status: SIM
+    source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
+    note: the mechanism's limit
+  nib_power_while_correcting:
+    value: 16.2744
+    unit: mW
+    status: SIM
+    source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
+  nib_power_tremor_free:
+    value: 12.8326
+    unit: mW
+    status: SIM
+    source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
+  clean_writing_moved:
+    value: 0.0
+    unit: um
+    status: SIM
+    source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
+    note: false correction
+  n_writers:
+    value: 6
+    unit: '1'
+    status: SIM
+    source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)

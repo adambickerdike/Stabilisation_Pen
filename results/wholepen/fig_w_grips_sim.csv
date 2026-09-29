@@ -1,0 +1,8 @@
+series,x,y
+collar + nose vs collar locked + nose,0.5,-2.0
+collar + nose vs collar locked + nose,1.0,-4.7
+collar + nose vs collar locked + nose,2.0,-2.7
+gyro tail + nose vs tail locked + nose,0.5,15.299999999999999
+gyro tail + nose vs tail locked + nose,1.0,50.9
+gyro tail + nose vs tail locked + nose,2.0,-14.099999999999998
+"collar alone, perfect knowledge, vs the pen locked",1.0,63.800000000000004

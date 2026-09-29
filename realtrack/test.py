@@ -48,10 +48,19 @@ def new_designs(fr: Dict) -> Dict[str, Dict]:
 
 
 def ocr_plan(fr: Dict) -> Dict[str, set]:
-    info = {f"revJ_info_{k}|deltapen" for k in (fr.get("info") or {})}
+    """Reading budget (one process; the reader costs about 5 s per line): the chosen design everywhere; G4 and the
+    information rows marked 'read' (fr['info_read']) at the severe class and on the clean notes; the rest by tip
+    tremor only."""
+    info = {f"revJ_info_{k}|deltapen" for k in (fr.get("info_read") or [])}
     return {"severe": {"revJ_new|deltapen", "revJ_g4|deltapen"} | info,
             "moderate": {"revJ_new|deltapen"}, "mild": {"revJ_new|deltapen"},
             "clean": {"revJ_new|deltapen", "revJ_g4|deltapen"} | info}
+
+
+def sensors_of(name: str):
+    """The chosen design runs with both page sensors (the ideal one as R's labelled bound); the others with the
+    headline DeltaPen-class sensor only (compute budget)."""
+    return ("ideal", "deltapen") if name == "revJ_new" else ("deltapen",)
 
 
 def _run_design(name: str, design: Dict, sJ, wr, f0: float, clean: bool, read: bool, out: Dict, keep: Optional[Dict],
@@ -102,6 +111,8 @@ def run_case(wr, tremor, f0: float, amp: float, case_key: str, designs: Dict[str
         if sensor == "ideal" and not clean:
             out["revJ_held"] = H.measures(wr, sJ.neutral, sJ.scn, sJ.pen, False, f0)
         for name, dz in designs.items():
+            if sensor not in sensors_of(name):
+                continue
             k = name if sensor == "ideal" else f"{name}|{sensor}"
             _run_design(name, dz, sJ, wr, f0, clean, k in read_keys, out, runs, sensor)
     if keep:
@@ -117,7 +128,8 @@ def run(log=print, quick: bool = False) -> List[Dict]:
     fr = load_frozen()
     designs = new_designs(fr)
     plan = ocr_plan(fr)
-    TEST_DIR.mkdir(parents=True, exist_ok=True)
+    tdir = TEST_DIR if not quick else CACHE_DIR.parent / "quick" / "test"
+    tdir.mkdir(parents=True, exist_ok=True)
     OC.reader_choice(log=log)
     H.ai2_models()
     H.page_model(False, log)
@@ -130,7 +142,7 @@ def run(log=print, quick: bool = False) -> List[Dict]:
         todo = [("clean", None, None)] + [(cls, kind, cls) for cls in classes for kind in P["real"]["kinds"]]
         for tag, kind, cls in todo:
             name = f"clean_real_w{i}" if kind is None else f"real_w{i}_{kind}_{cls}"
-            p = TEST_DIR / f"{name}.json"
+            p = tdir / f"{name}.json"
             if p.exists():
                 res = json.loads(p.read_text())
             else:
@@ -213,3 +225,47 @@ def dec055(ag: Dict, dev: str = "revJ_new|deltapen") -> Dict:
             "passes_words": ok_words, "passes_clean": ok_clean, "passes": ok_words and ok_clean,
             "rule": "DEC-055: severe class, PD and ET pooled, >= 2 more readable words out of 10 than the ordinary pen "
                     "with the 95 % writer-bootstrap interval above 0, and <= 25 um of clean-writing change"}
+
+
+# ------------------------------------------------------------------ the before/after pictures (CC BY cases of R)
+R_PIC = REPO_ROOT / "realdata" / "build" / "cache" / "pictures_v2"
+PIC_IDS = ("ct_PD_severe", "ct_ET_severe", "ct_PD_moderate", "ct_ET_moderate")
+
+
+def picture_runs(log=print, ids: Sequence[str] = PIC_IDS) -> List[Dict]:
+    """R's committed picture cases (CC BY letters and tremor, test split; realdata/report.picture_cases) with the
+    frozen design added on the same writer, tremor, scenario and sensor draws (R's case key 'picture:<id>')."""
+    from realdata import hw1 as H
+    from realdata import library as RL
+    from realdata import ocr as OC
+    from handwriting import metrics as MT
+    fr = load_frozen()
+    dz = fr["chosen"]
+    out = []
+    pdir = TEST_DIR / "pictures"
+    pdir.mkdir(parents=True, exist_ok=True)
+    for pid in ids:
+        p = pdir / f"{pid}.json"
+        if p.exists():
+            out.append(json.loads(p.read_text()))
+            continue
+        r = json.loads((R_PIC / f"{pid}.json").read_text())
+        pc = r["case"]
+        OC.reader_choice(log=log)
+        wr_ = RL.writing("test", seed=pc["seed"], source=pc["source"])
+        wr = H.Writer(wr_, 900_000 + int(hashlib.sha1(pc["id"].encode()).hexdigest()[:5], 16))
+        dr = RL.tremor_for(wr_, pc["class"], seed=pc["seed"], kind=pc["kind"], split="test", amp_mm=pc["amp_mm"])
+        assert dr.meta["rid"] == r["tremor"]["rid"]
+        res = run_case(wr, dr.d, dr.meta["f0"], pc["amp_mm"] * 1e-3, f"picture:{pc['id']}", {"revJ_new": dz},
+                       {"revJ_new|deltapen"}, keep=True)
+        runs = res.pop("_runs")
+        merged = dict(r)
+        merged["devices"] = dict(r["devices"])
+        merged["devices"].update({k: v for k, v in res.items() if not k.startswith("_")})
+        merged["paths"] = dict(r["paths"])
+        merged["paths"]["revJ_new|deltapen"] = MT.decimate_path(runs["revJ_new|deltapen"], hz=50.0).round(3).tolist()
+        p.write_text(json.dumps(merged, default=H._jd))
+        log(f"[pictures] {pid}: none {r['devices']['none']['words_read']}, new "
+            f"{merged['devices']['revJ_new|deltapen'].get('words_read')} of {r['devices']['none']['words_total']}")
+        out.append(merged)
+    return out

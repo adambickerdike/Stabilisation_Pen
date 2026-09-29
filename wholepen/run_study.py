@@ -17,6 +17,8 @@ row per case in wholepen/build/rows/<stage>.jsonl and resume from it, so a kille
   limits     the collar against the same pen with the collar locked and the nose working, and the nose's own
              perfect-knowledge limit, on the test writers (comparators; rows added to the test rows)        ~15 min
   light      the collar with a light (24 g) inner pen, the review's design point, on the test writers        ~20 min
+  light2     the light collar with a +-1 mm nib: its law re-tuned on tuning writer 100 (rules_light.json), then
+             the test writers                                                                               ~10 min
   real       study R's real tremor classes (recorded PD tremor, test split) at 0.24 and 1.72 mm, test
              writers 0-1                                                                                    ~15 min
   summary    the one-number table, results cards, ratios explained                                          seconds
@@ -143,6 +145,11 @@ def designs(rules: Dict) -> Dict[str, tuple]:
         "light_fine": ("collar_light", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 0.8e-3, "alloc_share_max": cmax,
                                             "collar_frac": cfrac}, 1.0e-3, None),
         "light_nose_oracle": ("collar_light", "oracle", {"collar": "oracle"}, None, 0.5),
+        # the compact design's law re-tuned for a +-1 mm nib on tuning writer 100 (rules_light.json, frozen before its
+        # test runs): the main rules cap the collar at gain 0.5 and share 0.6, chosen for the collar with Rev J's nose
+        "light_fine_t": ("collar_light", tr, {"collar": claw, "collar_gain": rules.get("lf_gain", cg), "alloc_reach": 0.8e-3,
+                                              "alloc_share_max": rules.get("lf_share_max", cmax),
+                                              "collar_frac": rules.get("lf_frac", cfrac)}, 1.0e-3, None),
         "gt_locked": ("gt100", "none", {}, None, None),
         "gt_locked_nose": ("gt100", tr, {}, None, None),
         "gt_nose": ("gt100", tr, {"cmg": law}, None, None),
@@ -168,6 +175,7 @@ LABELS = {
     "light_nose": "light collar pen: collar + Rev J nose",
     "light_fine": "light collar pen: collar + small fine nib (±1 mm)",
     "light_nose_oracle": "light collar pen: collar + Rev J nose, perfect tremor knowledge (limit)",
+    "light_fine_t": "light collar pen: collar + small fine nib (±1 mm), law re-tuned for the fine nib",
     "gt_locked": "gyro tail 100 g, locked, nose held",
     "gt_locked_nose": "gyro tail 100 g locked + Rev J nose (same mass, no gyro action)",
     "gt_nose": "gyro tail 100 g active + Rev J nose",
@@ -314,11 +322,21 @@ def stage_realdata(quick=False):
         except Exception as e:                                   # the data are outside the repository
             body[name] = {"error": f"{type(e).__name__}: {e}", "how_to_get": RD.__doc__}
     try:
-        body["summary"] = {"uci_pd_tremor_peak_mm_max": body["uci"].get("pd_peak_mm_max"),
-                           "newhandpd_share_with_line": body["newhandpd"].get("share_with_line"),
-                           "newhandpd_lines": body["newhandpd"].get("lines_summary")}
-    except Exception:
-        pass
+        u, n = body["uci"], body["newhandpd"]
+        ab = n.get("above_rows", [])
+        body["summary"] = {
+            "uci_pd_tremor_peak_mm_median": u["parkinson"]["amp_pk_mm_median"],
+            "uci_pd_tremor_peak_mm_max": u["parkinson"]["amp_pk_mm_max"],
+            "uci_control_peak_mm_max": u["control"]["amp_pk_mm_max"],
+            "uci_pd_share_above_control_p95": u.get("pd_share_above"),
+            "newhandpd_patients_with_line": n.get("patients_above"),
+            "newhandpd_patients": n.get("patients", {}).get("n_persons"),
+            "newhandpd_share_with_line": n.get("patients_share_above"),
+            "newhandpd_line_f_Hz": [round(r["f_Hz"], 2) for r in ab],
+            "newhandpd_line_disp_pk_mm_at_sensor": [round(r["disp_pk_mm_at_sensor"], 2) for r in ab],
+            "label": "REAL DATA, CALC (see uci.label and newhandpd.label for the assumptions)"}
+    except Exception as e:
+        body["summary"] = {"error": f"{type(e).__name__}: {e}"}
     write_json("realdata.json", body)
     return body
 
@@ -543,9 +561,12 @@ def stage_grips(quick=False):
     bench = Bench()
     w, seed = 100, 300
     cls = ("ET_moderate", "ET", 6.0, 3e-3)
-    grips = (0.5, 2.0) if not quick else (0.5,)
+    grips = (0.5, 1.0, 2.0) if not quick else (0.5,)
     for g in grips:
-        for dn in ("collar_locked", "collar_nose", "gt_locked_nose", "gt_nose"):
+        # grip 1 x: the other designs come from the tune stage's frozen rows (summary.tune_frozen_grip1); the collar's
+        # same-mass comparator (collar locked, nose working) is run here at every grip
+        dns = ("collar_locked_nose",) if g == 1.0 else ("collar_locked", "collar_locked_nose", "collar_nose", "gt_locked_nose", "gt_nose")
+        for dn in dns:
             try:
                 run_design(bench, rows, rules, w, seed, cls, dn, grip=g)
             except Exception as e:
@@ -656,6 +677,56 @@ def stage_light(quick=False):
     return body
 
 
+LIGHT_FINE_VARIANTS = {"g1.0_s1.0_f0.9": {"lf_gain": 1.0, "lf_share_max": 1.0, "lf_frac": 0.9},
+                       "g0.75_s1.0_f0.9": {"lf_gain": 0.75, "lf_share_max": 1.0, "lf_frac": 0.9}}
+
+
+def stage_light2(quick=False):
+    """The compact design's law (collar + +-1 mm nib, light inner pen) re-tuned on tuning writer 100, seed 300, ET 3 mm
+    (the main rules were chosen for the collar with Rev J's nose and cap the collar at gain 0.5, share 0.6), frozen in
+    results/wholepen/rules_light.json, then run on the test writers (ET 3 mm, PD 8 mm)."""
+    rules = load_rules()
+    bench = Bench()
+    import gc
+    tr_rows = Rows("light_tune")
+    cls_t = next(c for c in CLASSES if c[0] == "ET_moderate")
+    res = {}
+    for tag, lf in LIGHT_FINE_VARIANTS.items():
+        rl = dict(rules, **lf)
+        r = run_design(bench, tr_rows, rl, 100, 300, cls_t, "light_fine_t", key_prefix=f"lf_{tag}|")
+        res[tag] = {"ink_um": r.get("ink_err_um"), "tip_mm": r.get("tip_tremor_mm"), "coverage": r.get("coverage"),
+                    "pivot_peak_rad": r.get("pivot_peak_rad")}
+    ok = {k: v for k, v in res.items() if (v.get("coverage") or 0) >= 0.9 * max((x.get("coverage") or 0) for x in res.values())}
+    best = min(ok, key=lambda k: ok[k]["ink_um"] if ok[k]["ink_um"] is not None else float("inf"))
+    body = {"rules": LIGHT_FINE_VARIANTS[best], "chosen": best, "evidence": res,
+            "frozen_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "note": "chosen on tuning writer 100, seed 300, ET 3 mm only, by ink error among variants keeping >= 90 % of the "
+                    "best coverage, before the test runs of light_fine_t",
+            "stabpen.provenance": provenance("SIMULATION (tuning writer) -> frozen rule for the light collar with a fine nib", seeds=[300])}
+    write_json("rules_light.json", body)
+    log(f"[light2] frozen {best}: {res}")
+    bench.su.clear()
+    gc.collect()
+    rows = Rows("light")
+    rl = dict(rules, **LIGHT_FINE_VARIANTS[best])
+    ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
+    for w, seed in ws:
+        for cls in [c for c in CLASSES if c[0] in ("ET_moderate", "PD_severe")]:
+            for dn in ("light_locked", "light_fine_t"):
+                try:
+                    run_design(bench, rows, rl, w, seed, cls, dn)
+                except Exception as e:
+                    log(f"[light2] FAILED w{w} {cls[0]} {dn}: {e}\n{traceback.format_exc()}")
+            bench.refs.clear()
+            gc.collect()
+        bench.su.clear()
+        gc.collect()
+    body = {"rows": rows.values(), "rules_light": LIGHT_FINE_VARIANTS[best],
+            "stabpen.provenance": provenance("SIMULATION (test writers and seeds; rules frozen before)", seeds=[s for _, s in ws])}
+    write_json("light.json", body)
+    return body
+
+
 def stage_summary(quick=False):
     from . import summary as SM
     body = SM.build()
@@ -672,8 +743,8 @@ def stage_figures(quick=False):
     return out
 
 
-STAGES = ["targets", "realdata", "grip", "calc", "optimise", "verify", "tune", "freeze", "test", "limits", "light", "real",
-          "grips", "arm", "summary", "figures"]
+STAGES = ["targets", "realdata", "grip", "calc", "optimise", "verify", "tune", "freeze", "test", "limits", "light", "light2",
+          "real", "grips", "arm", "summary", "figures"]
 FN = {s: globals()["stage_" + s] for s in STAGES}
 
 

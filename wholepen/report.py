@@ -1,6 +1,7 @@
-r"""Fills the generated parts of docs/whole_pen_shift.md from the result files (between <!-- W:name --> and
-<!-- /W:name --> markers), so every number in those parts comes from results/wholepen/*.json.
-Usage: python3 -m wholepen.report
+r"""Writes docs/whole_pen_shift.md from wholepen/doc_template.md and the result files: the generated tables between
+<!-- W:name --> and <!-- /W:name --> markers, the «class|design|key|decimals» values from summary.json's headline and
+the «NAME» values computed in named_values(), so every result number in the text comes from results/wholepen/*.json.
+Usage: python3 -m wholepen.report   (edit the template, not the document)
 """
 from __future__ import annotations
 
@@ -38,15 +39,29 @@ def blocks() -> Dict[str, str]:
         out["table_real_words"] = SM.table_md(hr, "words10", "{:.0f}")
     cards = s.get("cards")
     if cards:
-        lines = ["| Population | Mode | Readable words | Useful words / min | Tremor left at the tip (mm; no help) | Clean writing changed (µm) | Ink laid (coverage) | Missing strokes | Nose power (W) | Other devices (W) |",
-                 "|---|---|---|---|---|---|---|---|---|---|"]
+        lines = ["| Population | Mode | Classes and writers | Readable words | Useful words / min | Tremor left at the tip (mm; no help) | Clean writing changed (µm) | Ink laid (coverage) | Nose power (W) | Other devices (W) | Felt grip-force change (N rms) |",
+                 "|---|---|---|---|---|---|---|---|---|---|---|"]
         for c in cards:
-            lines.append(f"| {c['population']} | {c['mode']} | {c['readable_words']} | {_fmt(c['useful_words_per_min'])} | "
+            cw = ", ".join(RS.CLASS_LABEL.get(x, x).split(" (")[0] for x in c.get("classes", [])) + f"; writers {', '.join(str(w) for w in c.get('writers', []))}"
+            lines.append(f"| {c['population']} | {c['mode']} | {cw} | {c['readable_words']} | {_fmt(c['useful_words_per_min'])} | "
                          f"{_fmt(c['tremor_left_mm_mean'], '{:.2f}')} ({_fmt(c['tremor_no_help_mm_mean'], '{:.2f}')}) | "
                          f"{_fmt(c['clean_writing_changed_um'], '{:.0f}')} | {_fmt(c['coverage'], '{:.2f}')} | "
-                         f"{_fmt(100 * c['missing_stroke_rate'] if c['missing_stroke_rate'] is not None else None, '{:.0f} %')} | "
-                         f"{_fmt(c['power_W_nose'], '{:.2f}')} | {_fmt(c['power_W_other_devices'], '{:.2f}')} |")
+                         f"{_fmt(c['power_W_nose'], '{:.2f}')} | {_fmt(c['power_W_other_devices'], '{:.2f}')} | "
+                         f"{_fmt(c.get('felt_grip_force_change_rms_N'), '{:.2f}')} |")
+        lines += ["", "Missing strokes and completion time are in §3f (from the saved records). Felt grip-force change: "
+                  "'–' where the device-off run was not in memory for the comparison."]
         out["cards"] = "\n".join(lines)
+    st = s.get("strokes_from_traces")
+    if st:
+        L = ["| Writer | Tremor class | Pen and mode | Ink laid (of the intended strokes) | Strokes less than half inked | Lost pieces | Completion if the lost ink were re-traced (s added to the writing time) |",
+             "|---|---|---|---|---|---|---|"]
+        for r in st:
+            if r["class"] not in ("ET_severe", "PD_severe"):
+                continue
+            L.append(f"| {r['w']} | {RS.CLASS_LABEL.get(r['class'], r['class'])} | {RS.LABELS.get(r['design'], r['design'])} | "
+                     f"{100 * r['coverage_intended']:.0f} % | {r['missing_strokes']} of {r['n_strokes']} | {r['lost_pieces']} | "
+                     f"+{r['completion_extra_s']:.1f} (× {r['completion_time_ratio']:.2f}) |")
+        out["strokes"] = "\n".join(L)
     g = s.get("tail_and_collar_vs_locked_grips", []) + s.get("tail_and_collar_vs_locked_test", [])
     if g:
         lines = ["| Active device | Compared with | Tremor class | Grip (x nominal) | Writers | Tip tremor active (mm) | Tip tremor locked (mm) | Improvement over locked | Passes the 10 % gate |",
@@ -60,7 +75,7 @@ def blocks() -> Dict[str, str]:
         out["gate_sim"] = "\n".join(lines)
     inc = s.get("collar_increment")
     if inc:
-        L = ["| Tremor class | Rev J nose (its own pen) | Collar pen, collar locked + nose | Collar + nose | Collar's gain over locked | Nose, perfect knowledge | Collar + nose, perfect knowledge | Collar's gain, perfect knowledge |",
+        L = ["| Tremor class | Rev J nose (its own pen) | Collar pen, collar locked + nose | Collar + nose | Collar's gain over locked | Nose, perfect knowledge | Collar + nose, perfect knowledge | Perfect knowledge: collar + nose / nose alone |",
              "|---|---|---|---|---|---|---|---|"]
 
         def cell(r, d):
@@ -69,15 +84,37 @@ def blocks() -> Dict[str, str]:
                 return "–"
             star = "*" if len(v["writers"]) < 2 else ""
             return f"{v['tip_mm']:.2f} mm, {v['words']:.0f} of {v['words_of']} words, ink laid {100 * v['coverage']:.0f} %{star}"
+        def pct(g):
+            if g is None:
+                return "–"
+            v = int(round(100 * g))
+            return f"{v} %" if v != 0 else "0 %"
         for r in inc:
             g1 = r.get("collar_gain_vs_locked")
             g2 = r.get("oracle_collar_gain")
+            rt = "–" if g2 is None else f"× {1 - g2:.1f}" + (" (worse)" if g2 < -0.05 else "")
             L.append(f"| {r['class_label']} | {cell(r, 'nose')} | {cell(r, 'collar_locked_nose')} | {cell(r, 'collar_nose')} | "
-                     f"{'–' if g1 is None else f'{100 * g1:.0f} %'} | {cell(r, 'nose_oracle')} | {cell(r, 'collar_nose_oracle')} | "
-                     f"{'–' if g2 is None else f'{100 * g2:.0f} %'} |")
+                     f"{pct(g1)} | {cell(r, 'nose_oracle')} | {cell(r, 'collar_nose_oracle')} | {rt} |")
         if any("*" in x for x in L):
             L += ["", "\\* test writer 0 only."]
         out["collar_increment"] = "\n".join(L)
+    calc = _load("calc.json")
+    if calc and "collar_control_compact" in calc:
+        L = ["| Inner pen | Web rests on | Ink moved / ideal lever | Error of the controller's model | Loop margin (gain 0.75) | Actuator torque per mm of tip tremor |",
+             "|---|---|---|---|---|---|"]
+        for key, pen in (("collar_control_compact", "compact 12 mm barrel (22 g)"), ("collar_control_revJ", "Rev J pen as the inner pen (87 g)")):
+            rows = calc[key]["rows"]
+            for web in (True, False):
+                rr = [r for r in rows if r["web_on_collar"] == web]
+                ph = max(rr, key=lambda r: max(abs(x) for x in r["model_phase_err_deg"]))
+                phv = max(abs(x) for x in ph["model_phase_err_deg"])
+                L.append(f"| {pen} | {'the collar (saddle)' if web else 'the moving barrel'} | "
+                         f"{min(r['transmission_min'] for r in rr):.2f}–{max(r['transmission_max'] for r in rr):.2f} | "
+                         f"gain {min(min(r['model_gain_ratio']) for r in rr):.2f}–{max(max(r['model_gain_ratio']) for r in rr):.2f}, "
+                         f"phase ≤ {phv:.0f}° ({ph['f']:g} Hz, grip {ph['grip_scale']:g} ×) | "
+                         f"≥ {min(r['loop_margin_g0.75'] for r in rr):.2f} | "
+                         f"{min(r['torque_mNm_per_mm_tip'] for r in rr):.1f}–{max(r['torque_mNm_per_mm_tip'] for r in rr):.1f} mN·m |")
+        out["collar_control"] = "\n".join(L)
     lc = s.get("light_compare")
     if lc and lc.get("rows"):
         cls = lc["classes"]
@@ -208,8 +245,131 @@ def fill_tokens(txt: str) -> str:
     return TOKEN.sub(rep, txt)
 
 
-def fill_doc(path: str = DOC) -> str:
-    txt = fill_tokens(open(path).read())
+NAMED = re.compile(r"«([A-Z][A-Z0-9_]+)»")
+
+
+def named_values() -> Dict[str, str]:
+    """Values the text names in capitals (computed here from the result files, so the text never carries a typed number)."""
+    s = _load("summary.json") or {}
+    calc = _load("calc.json") or {}
+    rl = _load("rules_light.json")
+    out: Dict[str, str] = {}
+    lc = {(c, r["design"]): r.get(c) for r in (s.get("light_compare") or {}).get("rows", [])
+          for c in (s.get("light_compare") or {}).get("classes", []) if r.get(c)}
+    a, b = lc.get(("PD_severe", "light_nose")), lc.get(("PD_severe", "light_locked_nose"))
+    if a and b:
+        out["LIGHT_GAIN_PD8"] = f"{100 * (1 - a['tip_mm'] / b['tip_mm']):.0f}"
+        out["LIGHT_COV_LOSS"] = f"{100 * (b['coverage'] - a['coverage']):.0f}"
+    mm = (calc.get("collar_masses") or {})
+    if "coil" in mm:
+        c = mm["coil"]
+        out.update(M_COLLAR=f"{c['collar_g']:.1f}", M_INNER=f"{c['barrel_g']:.1f}", M_TOTAL=f"{c['total_g']:.1f}",
+                   ZG_INNER=f"{c['barrel_zg_mm']:.1f}",
+                   ZG_DIFF=(f"{abs(c['barrel_zg_mm'] - 50.0):.1f} mm " + ("behind" if c["barrel_zg_mm"] > 50.0 else "in front of")))
+    if "geared" in mm:
+        out["M_GEARED"] = f"{mm['geared']['total_g']:.1f}"
+    pw = [r for r in calc.get("collar_power_compact", []) if r["path"] == "V2" and r["actuator"] == "coil"]
+    r8 = next((r for r in pw if abs(r["A_mm"] - 8.0) < 1e-6), None)
+    if r8:
+        out["CALC_SWING_W"] = f"{r8['P_tremor_W']:.2f}"
+        out["CALC_HOLD_W"] = f"{r8['P_static_W']:.2f}"
+    if r8:
+        out["CALC_TAU8"] = f"{r8['tau_peak_mNm']:.1f}"
+    for key, tag in (("collar_control_compact", "CMP"), ("collar_control_revJ", "RVJ")):
+        rows = (calc.get(key) or {}).get("rows", [])
+        for web, wt in ((True, "C"), (False, "B")):
+            rr = [r for r in rows if r["web_on_collar"] == web]
+            if not rr:
+                continue
+            out[f"{tag}{wt}_TMIN"] = f"{min(r['transmission_min'] for r in rr):.2f}"
+            out[f"{tag}{wt}_TMAX"] = f"{max(r['transmission_max'] for r in rr):.2f}"
+            out[f"{tag}{wt}_PH"] = f"{max(max(abs(x) for x in r['model_phase_err_deg']) for r in rr):.0f}"
+            out[f"{tag}{wt}_MARGIN"] = f"{min(r['loop_margin_g0.75'] for r in rr):.2f}"
+            out[f"{tag}{wt}_TQMIN"] = f"{min(r['torque_mNm_per_mm_tip'] for r in rr):.1f}"
+            out[f"{tag}{wt}_TQMAX"] = f"{max(r['torque_mNm_per_mm_tip'] for r in rr):.1f}"
+    st = {(r["w"], r["class"], r["design"]): r for r in (s.get("strokes_from_traces") or [])}
+    mod = [r["missing_strokes"] for r in (s.get("strokes_from_traces") or []) if r["class"] in ("ET_moderate", "PD_moderate")]
+    if mod:
+        out["MOD_MISS_MAX"] = f"{max(mod)}"
+    for tag, key in (("GATE_ET", (0, "ET_severe", "nose_gate")), ("GATE_PD", (0, "PD_severe", "nose_gate")),
+                     ("NOSE_ET", (0, "ET_severe", "nose")), ("NOSE_PD", (0, "PD_severe", "nose"))):
+        r = st.get(key)
+        if r:
+            out[f"{tag}_MISS"] = f"{r['missing_strokes']}"
+            out[f"{tag}_EXTRA"] = f"{r['completion_extra_s']:.0f}"
+            out["TASK_S"] = f"{r['task_time_s']:.1f}"
+    gr = s.get("tail_and_collar_vs_locked_grips", []) + s.get("tail_and_collar_vs_locked_test", [])
+    gt = {(r["grip"], tuple(r.get("writers", []))): r for r in gr if r["active"] == "gt_nose" and r["locked"] == "gt_locked_nose"}
+    for (g, ws), r in gt.items():
+        tag = "GT_TEST" if ws and min(ws) < 100 else f"GT_G{g:g}".replace(".", "")
+        out[tag] = f"{100 * r['gain_vs_locked']:.0f}"
+    col = [r for r in gr if r["active"] == "collar_nose" and r["locked"] == "collar_locked_nose"]
+    if col:
+        out["COL_GMIN"] = f"{100 * min(r['gain_vs_locked'] for r in col):.0f}"
+        out["COL_GMAX"] = f"{100 * max(r['gain_vs_locked'] for r in col):.0f}"
+    op = _load("optimise.json") or {}
+    cd = op.get("collar_design")
+    if cd:
+        b, n0 = cd["best"], cd["nominal"]
+        gz = cd["gradient_check_zp"]
+        out.update(OPT_ZP=f"{b['z_p_mm']:.0f}", OPT_ZG=f"{b['z_g_mm']:.0f}", OPT_KS=f"{b['K_s']:.1f}", OPT_CS=f"{b['C_s']:.3f}",
+                   OPT_TRAVEL=f"{b['travel_mm']:.1f}", OPT_TRAVEL0=f"{n0['travel_mm']:.1f}",
+                   OPT_GAIN=f"{100 * (1 - b['f'] / n0['f']):.0f}", OPT_EVALS=f"{cd['cmaes']['evals']}",
+                   OPT_GRAD=f"{gz['d_dzp_autograd']:.4g} against {gz['d_dzp_fd']:.4g}")
+    cb = op.get("combo_100g")
+    if cb:
+        b, n0 = cb["best"], cb["nominal"]
+        out.update(CMB_RO=f"{b['r_o_mm']:.1f}", CMB_RPM=f"{b['rpm']:.0f}", CMB_DMAX=f"{b['delta_max']:.2f}",
+                   CMB_TQ=f"{b['tau_g_max_mNm']:.0f}", CMB_H=f"{b['h_mNms']:.1f}", CMB_E=f"{b['E_J']:.1f}", CMB_E0=f"{n0['E_J']:.1f}",
+                   CMB_GAIN=f"{100 * (1 - b['f'] / n0['f']):.1f}", CMB_EVALS=f"{cb['cmaes']['evals']}")
+        gc = cb.get("gradient_check", {})
+        k = next(iter(gc), None)
+        if k:
+            out["CMB_GRAD"] = f"{gc[k]['d_dm_autograd']:.4g} against {gc[k]['d_dm_fd']:.4g}"
+    cs = calc.get("collar_static")
+    if cs:
+        for r in cs["rows"]:
+            out[f"HOLD{r['theta_deg']:.0f}"] = f"{r['P_coil_W']:.2f}" if r["P_coil_W"] >= 0.01 else f"{r['P_coil_W']:.3f}"
+            out[f"HOLDM{r['theta_deg']:.0f}"] = f"{r['moment_mNm']:.1f}"
+    if rl:
+        r = rl["rules"]
+        out["LF_RULE"] = f"gain {r['lf_gain']:g}, collar share up to {r['lf_share_max']:g}, reference up to {100 * r['lf_frac']:.0f} % of the range"
+        t3, t8 = lc.get(("ET_moderate", "light_fine_t")), lc.get(("PD_severe", "light_fine_t"))
+        n3 = next((x for x in s.get("headline", {}).get("rows", []) if x["class"] == "ET_moderate" and x["design"] == "nose"), None)
+        n8 = next((x for x in s.get("headline", {}).get("rows", []) if x["class"] == "PD_severe" and x["design"] == "nose"), None)
+        if t3 and t8 and n3 and n8:
+            ev = rl.get("evidence", {})
+            covs = [v.get("coverage") for v in ev.values() if v.get("coverage") is not None]
+            tips = [v.get("tip_mm") for v in ev.values() if v.get("tip_mm") is not None]
+            lk3 = lc.get(("ET_moderate", "light_locked"))
+            out["LF_PARAGRAPH"] = (
+                f"Giving the collar the gains it needs to take most of the tremor made the loop unstable: on the tuning writer "
+                f"({len(ev)} settings with gain 0.75-1 and no share cap) only {100 * min(covs):.0f}-{100 * max(covs):.0f} % of the "
+                f"ink was laid and " + (f"{min(tips):.1f}-{max(tips):.1f}" if round(min(tips), 1) != round(max(tips), 1) else f"{min(tips):.1f}")
+                + f" mm of tremor was left. The less bad setting, frozen before its "
+                f"test runs (`rules_light.json`: {out['LF_RULE']}), left {t3['tip_mm']:.2f} mm at 3 mm ET (ink laid "
+                f"{100 * t3['coverage']:.0f} %) and {t8['tip_mm']:.2f} mm at 8 mm PD ({100 * t8['coverage']:.0f} %) on the test "
+                f"writers — worse than the same pen with nothing moving"
+                + (f" ({lk3['tip_mm']:.2f} mm at 3 mm ET)" if lk3 else "")
+                + f" and far worse than the Rev J nose ({n3['tip_mm']:.2f} and {n8['tip_mm']:.2f} mm). This study found no causal "
+                f"law with which the collar can be the main corrector; with perfect knowledge it can (above).")
+    return out
+
+
+def fill_named(txt: str) -> str:
+    vals = named_values()
+    return NAMED.sub(lambda m: vals.get(m.group(1), m.group(0)), txt)
+
+
+TEMPLATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "doc_template.md")
+
+
+def fill_doc(path: str = DOC, template: str = TEMPLATE) -> str:
+    """Write the document from its template (wholepen/doc_template.md: the text with «class|design|key» and «NAME»
+    placeholders and empty generated blocks), so every number in the text comes from the result files; without the
+    template, refresh the generated blocks of the document in place."""
+    src = template if template and os.path.exists(template) else path
+    txt = fill_named(fill_tokens(open(src).read()))
     for name, body in blocks().items():
         pat = re.compile(rf"(<!-- W:{name} -->)(.*?)(<!-- /W:{name} -->)", re.S)
         txt = pat.sub(lambda m: m.group(1) + "\n" + body + "\n" + m.group(3), txt)

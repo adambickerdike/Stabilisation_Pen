@@ -116,6 +116,45 @@ def test_ink_completeness_counts_missing_strokes():
     assert abs(m["coverage"] - 0.5) < 0.02
 
 
+def test_strokes_from_trace_merges_contact_flicker(tmp_path):
+    """The reported stroke metric: the writer's intended strokes; contact flicker shorter than 40 ms is not a lost
+    stroke, a stroke inked less than half is."""
+    from wholepen import cases as CS
+    t = np.arange(0, 10, 0.004)
+    down = ((t > 5) & (t < 6)) | ((t > 7) & (t < 8))
+    c = down.copy()
+    for k in range(20):                                        # 12 ms flicker every 50 ms in the first stroke
+        c[(t > 5.0 + 0.05 * k) & (t < 5.012 + 0.05 * k)] = False
+    c[(t > 7) & (t < 7.7)] = False                             # the second stroke 70 % lost
+    xy = np.column_stack([t * 1e-3, 0 * t])
+    fn = tmp_path / "trace.npz"
+    np.savez(fn, t=t, ink=xy, contact=c.astype(float), it_t=t, it_xy=xy, it_down=down.astype(float))
+    m = CS.strokes_from_trace(str(fn), t0=4.0)
+    assert m["n_strokes"] == 2 and m["missing_strokes"] == 1 and m["lost_pieces"] == 1
+    assert abs(m["coverage_intended"] - 0.65) < 0.02
+
+
+def test_lin_gradient_in_the_pivot_position():
+    """lin.py's Jacobians are differentiable in the collar's pivot position (optimise.py's gradient check)."""
+    import torch
+    from wholepen import calc as K, lin as L
+
+    def resid(zp):
+        mdl = L.Model(hand=L.HandP(r_rot=0.5), pen=dict(K.compact_pen("coil")), c_paper=1.0,
+                      collar=L.Collar(z_p=float(zp.detach()), K_c=4.02, c_c=0.035, m=0.02, z_cm=0.056, J=1.2e-5,
+                                      skid_on_collar=True))
+        asm = L.Assembly(mdl, par={"z_p": zp})
+        w = 2 * math.pi * 6.0
+        d = asm.ink(asm.solve(w, asm.exc_tremor(w, L.tremor_dirs() * 3e-3)))
+        return torch.sqrt((torch.abs(d) ** 2).sum())
+    z = torch.tensor(0.05, requires_grad=True)
+    v = resid(z)
+    v.backward()
+    e = 1e-5
+    fd = (resid(torch.tensor(0.05 + e)) - resid(torch.tensor(0.05 - e))) / (2 * e)
+    assert abs(float(z.grad) - float(fd)) <= 1e-4 * max(abs(float(fd)), 1e-12) + 1e-12
+
+
 # ----------------------------------------------------------------------------- the simulator model
 def test_collar_hinges_on_t1_t2_and_skid_on_collar():
     from wholepen import cases as CS, devices as DV

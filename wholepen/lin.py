@@ -191,12 +191,20 @@ class Assembly:
         v = self.par.get(name, default)
         return v if torch.is_tensor(v) else torch.tensor(float(v))
 
-    def J(self, body: str, P: np.ndarray, torch_ok=False):
-        """3 x n point Jacobian of the material point P (page frame, at rest) of a body (origin at the ball)."""
+    def J(self, body: str, P, torch_ok=False):
+        """3 x n point Jacobian of the material point P (page frame, at rest) of a body (origin at the ball).  P may be
+        a torch vector (then the Jacobian is differentiable with respect to it, e.g. the collar's pivot position)."""
         Jm = torch.zeros(3, self.n)
         i = self.bodies[body]
         Jm[:, i:i + 3] = torch.eye(3)
-        Jm[:, i + 3:i + 6] = torch.tensor(-skew(P))
+        if torch.is_tensor(P):
+            z0 = torch.zeros((), dtype=P.dtype)
+            Sk = torch.stack([torch.stack([z0, -P[2], P[1]]), torch.stack([P[2], z0, -P[0]]),
+                              torch.stack([-P[1], P[0], z0])])
+            Jm = Jm.to(P.dtype) if Jm.dtype != P.dtype else Jm
+            Jm[:, i + 3:i + 6] = -Sk
+        else:
+            Jm[:, i + 3:i + 6] = torch.tensor(-skew(P))
         return Jm
 
     def Jrot(self, body: str):
@@ -255,8 +263,8 @@ class Assembly:
         c = self.mdl.collar
         a = self.a
         self.add_rigid("collar", torch.tensor(c.m), c.z_cm, torch.tensor(c.J), torch.tensor(c.J))
-        zp = self.g("z_p", c.z_p)
-        Pp = (zp * torch.tensor(a)).detach().numpy() if torch.is_tensor(zp) else c.z_p * a
+        zp = self.par.get("z_p")
+        Pp = zp * torch.tensor(a, dtype=zp.dtype) if torch.is_tensor(zp) else c.z_p * a
         # translational constraint at the pivot (penalty), both bodies' material point at the pivot
         Jd = self.J("pen", Pp) - self.J("collar", Pp)
         self.add_spring(Jd, 1e6 * torch.eye(3), 5.0 * torch.eye(3))

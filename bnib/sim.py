@@ -779,6 +779,7 @@ class Setup:
     def __init__(self, w: int, pens: Pens, name: str, theta: float = 50.0, text: str = TEXT, pre_s: float = PRE_S,
                  n_adapt: int = 3, log=print):
         self.w, self.name, self.theta, self.text = w, name, theta, text
+        self.case_pre_s = pre_s
         self.sd = pens.designs[name]
         self.pm = pens.get(name, theta)
         self.case = TK.WriterCase(w, version="v2", text=text, pre_s=pre_s)
@@ -1107,11 +1108,14 @@ def stage_travel(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False,
 def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1", w: int = 0,
                      cell=("ET", 8.0, 1.0e-3), log=print) -> Dict:
     """One case, taken apart: why perfect knowledge of the tremor still leaves part of it (SIM).  The oracle commands
-    -d(t + preview), d = the handle's tremor at its tip point; the ink residual splits into (1) the command clipped at
-    the nib's page-plane reach, (2) the firmware's contact gate (sim2's servo fades the command when the ball lifts;
-    the H1 writer's ball chatters in short lifts) and (3) the floor between runs with different seeds."""
+    -d(t + preview), d = the handle's tremor at its tip point (tremor run minus the set-up's tremor-free run, both with
+    the nib held centred).  Reported on the writing phase (the letters, which the ink metric scores) and on all contact
+    after 0.5 s (including the 4 s on the paper before writing): the handle's tremor and how often it passes the nib's
+    page-plane reach, the ink residual, the part the reach clips, the seed-to-seed floor (a tremor-free run with the
+    test seed against the set-up's), the nib's page gain and lag, and sim2's contact gate (the servo fades the command
+    when the ball lifts; the H1 writer's ball chatters in short lifts)."""
     kind, f0, amp = cell
-    key = f"diag|{name}|{kind}|{f0:g}|{amp * 1e3:g}|{w}"
+    key = f"diag4|{name}|{kind}|{f0:g}|{amp * 1e3:g}|{w}"
     if rows.has(key):
         return rows.rows[key]
     sd = designs[name]
@@ -1122,20 +1126,25 @@ def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1"
     t0 = time.time()
     rn = su.run("none", seed, env, tremor=tr)
     ro = su.run("oracle", seed, env, tremor=tr, ref_none=rn)
+    rf = su.clean_ref(seed, env)
     cl = su.clean
-    n = min(len(rn["t"]), len(ro["t"]), len(cl["t"]))
+    n = min(len(rn["t"]), len(ro["t"]), len(cl["t"]), len(rf["t"]))
     t = rn["t"][:n]
     dt = float(t[1] - t[0])
     co = ro["contact"][:n] > 0.5
     c = (rn["contact"][:n] > 0.5) & co & (t > 0.5)
+    pdn = np.interp(t, su.case.t, np.asarray(su.case.written.intended.pen_down, dtype=float)) > 0.5
+    cw = c & pdn & (t >= su.case_pre_s)                     # the letters: pen down after the time on the paper before writing
     d = rn.ball()[:n] - cl.ball()[:n]
+    e_none = rn.ink()[:n] - cl.ink()[:n]
     e_or = ro.ink()[:n] - cl.ink()[:n]
+    e_fl = rf.ink()[:n] - cl.ink()[:n]
     dink = ro.ink()[:n] - rn.ink()[:n]
     qp = np.column_stack([ro["qpx"][:n], ro["qpy"][:n]])
     reach = float(su.pm.cfg.geom.travel)
     r = np.hypot(d[:, 0], d[:, 1])
     clip_res = d * (1.0 - np.where(r > reach, reach / np.maximum(r, 1e-12), 1.0))[:, None]
-    rms = lambda v, m=c: float(np.sqrt(np.mean(np.sum(v[m] ** 2, axis=1))) * 1e6)          # um
+    rms = lambda v, m: float(np.sqrt(np.mean(np.sum(v[m] ** 2, axis=1))) * 1e6) if m.any() else None      # um
     gains, lags = [], []
     for j in (0, 1):
         gains.append(float(np.sum(dink[c, j] * qp[c, j]) / np.sum(qp[c, j] ** 2)))
@@ -1163,21 +1172,33 @@ def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1"
         since[i] = t[i] - last
     low = m2 & (g_eff < 0.5)
     err = qp + ds
-    row = {"design": name, "w": w, "seed": seed, "cell": f"{kind} {f0:g} Hz {amp * 1e3:g} mm",
-           "reach_mm": reach * 1e3, "handle_tremor_rms_um": rms(d), "handle_tremor_p95_mm": float(np.percentile(r[c], 95) * 1e3),
-           "share_beyond_reach": float(np.mean(r[c] > reach)), "ink_none_um": rms(rn.ink()[:n] - cl.ink()[:n]),
-           "ink_oracle_um": rms(e_or), "clip_residual_um": rms(clip_res), "page_gain_xy": gains, "lag_ms_xy": [1e3 * x for x in lags],
+
+    dh = ro.ball()[:n] - rn.ball()[:n]                      # how the correction changed the handle's own motion
+    mu_n, mu_o = rn["mu_b"][:n], ro["mu_b"][:n]
+
+    def block(m):
+        return {"handle_tremor_rms_um": rms(d, m), "handle_tremor_p95_mm": float(np.percentile(r[m], 95) * 1e3) if m.any() else None,
+                "handle_change_um": rms(dh, m), "mu_ball_none": float(np.mean(mu_n[m])) if m.any() else None,
+                "mu_ball_oracle": float(np.mean(mu_o[m])) if m.any() else None,
+                "share_beyond_reach": float(np.mean(r[m] > reach)) if m.any() else None, "ink_none_um": rms(e_none, m),
+                "ink_oracle_um": rms(e_or, m), "clip_residual_um": rms(clip_res, m), "floor_um": rms(e_fl, m),
+                "n_samples": int(m.sum())}
+
+    row = {"design": name, "w": w, "seed": seed, "cell": f"{kind} {f0:g} Hz {amp * 1e3:g} mm", "reach_mm": reach * 1e3,
+           "writing": block(cw), "all_contact": block(c), "page_gain_xy": gains, "lag_ms_xy": [1e3 * x for x in lags],
            "preview_ms": gd * 1e3, "command_error_unclipped_um": rms(err, m2), "gated_share": float(np.mean(g_eff[m2] < 0.5)),
            "gated_share_of_command_error": float(np.sum(err[low] ** 2) / max(np.sum(err[m2] ** 2), 1e-30)),
            "gated_ms_after_touchdown_median": float(np.median(since[low]) * 1e3) if low.any() else None,
            "lifts": int(len(durs)), "lifts_under_5ms": int(np.sum(durs < 5e-3)), "lifts_over_50ms": int(np.sum(durs >= 0.05)),
            "wall_s": time.time() - t0,
-           "label": "SIMULATION (sim2; one case: writer 0, its test seed; B1 with perfect knowledge of the tremor)"}
+           "label": f"SIMULATION (sim2; one case: writer {w}, its test seed; {name} with perfect knowledge of the tremor)"}
     rows.put(key, row)
     rows.save()
-    log(f"[sim] oracle diagnosis {name} {row['cell']}: ink none {row['ink_none_um']:.0f} -> oracle {row['ink_oracle_um']:.0f} um; "
-        f"clipped at the reach {row['clip_residual_um']:.0f} um; beyond reach {100 * row['share_beyond_reach']:.1f} %; "
-        f"gain {gains[0]:.3f}/{gains[1]:.3f}; lag {1e3 * lags[0]:.1f}/{1e3 * lags[1]:.1f} ms")
+    wr = row["writing"]
+    log(f"[sim] oracle diagnosis {name} {row['cell']} (writing phase): ink none {wr['ink_none_um']:.0f} -> oracle "
+        f"{wr['ink_oracle_um']:.0f} um; clipped {wr['clip_residual_um']:.0f} um; floor {wr['floor_um']:.0f} um; handle motion "
+        f"changed by {wr['handle_change_um']:.0f} um; mu {wr['mu_ball_none']:.3f}/{wr['mu_ball_oracle']:.3f}; beyond reach "
+        f"{100 * wr['share_beyond_reach']:.1f} %; gain {gains[0]:.3f}/{gains[1]:.3f}; lag {1e3 * lags[0]:.1f}/{1e3 * lags[1]:.1f} ms")
     return row
 
 
@@ -1357,8 +1378,7 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
                             "label": "SIMULATION: the ideal page sensor (3 um white) is a BOUND, not a prediction"}
     out["sim2j_revJ_reference"] = _sim2j_reference(CELLS)
     out["travel"] = _travel_summary(rows)
-    dg = [r for k, r in rows.rows.items() if k.startswith("diag|")]
-    out["oracle_diagnosis"] = dg[0] if dg else {}
+    out["oracle_diagnosis"] = {r["design"]: r for k, r in rows.rows.items() if k.startswith("diag4|")}
     return out
 
 
@@ -1382,7 +1402,9 @@ def run_all(quick: bool = False, stages=("tune", "test", "ideal", "thermal", "tr
     if "travel" in stages:
         stage_travel(designs, rows, quick=quick, log=log)
         if not quick:
-            oracle_diagnosis(designs, rows, log=log)
+            for nm in ("B1", "B1w"):
+                if nm in designs:
+                    oracle_diagnosis(designs, rows, name=nm, log=log)
     rows.save()
     summ = summarise(rows, designs)
     summ["designs"] = {k: {"title": sd.title, "key": sd.key, "grip": sd.grip, "family": sd.family, "counterface": sd.counterface,

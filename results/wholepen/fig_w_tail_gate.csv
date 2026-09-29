@@ -1,0 +1,13 @@
+series,x,y
+CMG pair 100 g,0.5,74.66267638263857
+CMG pair 100 g,1.0,83.62865291073545
+CMG pair 100 g,2.0,45.77284014966464
+CMG pair 60 g,0.5,80.21921523887299
+CMG pair 60 g,1.0,59.0791383392904
+CMG pair 60 g,2.0,55.47902940169202
+reaction mass 30 g (active),0.5,43.57634263266169
+reaction mass 30 g (active),1.0,18.566065340368365
+reaction mass 30 g (active),2.0,12.408193805769574
+tuned mass 40 g (tuned to f),0.5,-30.990460190638892
+tuned mass 40 g (tuned to f),1.0,-54.57256490967468
+tuned mass 40 g (tuned to f),2.0,-3.543036206888628

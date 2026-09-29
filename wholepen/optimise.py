@@ -300,13 +300,15 @@ def _collar_eval(x: np.ndarray, detail: bool = False, fine_reach: float = 1.0e-3
     followed by the small fine nib (+-1 mm, perfect within its reach); objective = mean residual / tremor over 5-9 Hz,
     3-8 mm, grip 0.5-2 x and split 0.3-0.7 + a power penalty (motor torque^2)."""
     from . import calc as K
-    zp = float(np.clip(x[0], 0.035, 0.070))
+    # bounds from the layout (PROPOSED DESIGN): the pivot 40-60 mm from the tip (calc.collar_geometry's range), the
+    # inner pen's centre of mass 40-60 mm (a 92 mm inner pen whose cell and board can move along it)
+    zp = float(np.clip(x[0], 0.040, 0.060))
     Ks = float(np.clip(math.exp(x[1]), 0.5, 40.0))
     Cs = float(np.clip(math.exp(x[2]), 0.002, 0.3))
-    zg = float(np.clip(x[3], 0.045, 0.100))
-    pen = K.compact_pen("geared")
+    zg = float(np.clip(x[3], 0.040, 0.060))
+    pen = K.compact_pen("coil")
     pen = dict(pen, z_g=zg)
-    mc = K.collar_masses("geared")["collar_g"] * 1e-3
+    mc = K.collar_masses("coil")["collar_g"] * 1e-3
     g = K.COLLAR_V2
     # travel that keeps the sleeve at 22 mm: the larger clearance end sets it
     lever = max(zp - g["z_front_v2"], g["z_rear"] - zp)
@@ -347,7 +349,7 @@ def _collar_eval(x: np.ndarray, detail: bool = False, fine_reach: float = 1.0e-3
 
 def optimise_collar(evals: int = 120, seed: int = 0) -> Dict:
     from endcap.cmaes import cmaes
-    x0 = np.array([0.050, math.log(4.0), math.log(0.035), 0.068])
+    x0 = np.array([0.050, math.log(4.0), math.log(0.035), 0.050])
     res = cmaes(lambda x: _collar_eval(x), x0, sigma0=0.25, max_evals=evals, seed=seed)
     f_best, det = _collar_eval(res["x"], detail=True)
     f_nom, det_nom = _collar_eval(x0, detail=True)
@@ -356,7 +358,7 @@ def optimise_collar(evals: int = 120, seed: int = 0) -> Dict:
     from . import calc as K
 
     def resid(zp_t):
-        pen = K.compact_pen("geared")
+        pen = K.compact_pen("coil")
         mdl = L.Model(hand=L.HandP(r_rot=0.5), pen=dict(pen), c_paper=1.0,
                       collar=L.Collar(z_p=float(zp_t.detach()), K_c=0.02 + det["K_s"], c_c=1e-4 + det["C_s"], m=0.02, z_cm=0.056,
                                       J=1.2e-5, skid_on_collar=True))

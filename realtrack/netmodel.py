@@ -1,7 +1,7 @@
 """A small causal network tremor estimator trained on REAL tuning inputs (SIMULATION; PROPOSED DESIGN).
 
 Training data (tuning split only; built by build_train_set, fixed rule):
-  notes     tuning note seeds 10-39 of realdata.library.writing('tuning', seed): 6 notes per tuning writer (writer
+  notes     tuning note seeds 10-29 of realdata.library.writing('tuning', seed): 4 notes per tuning writer (writer
             seed % 5), plus the 10 selection notes of cases.py (seeds 0-9) for the folds they do not score
   tremor    per training note, 5 draws: kind PD or ET (alternating), a TUNING-split waveform of the note's fold, a tip
             amplitude log-uniform in 0.05-3.5 mm (the data classes' span), a random start; and the same note without
@@ -36,12 +36,12 @@ from . import learned as LE
 
 TRAIN_DIR = BUILD_DIR / "train"
 MODEL_DIR = LE.MODEL_DIR
-N_TRAIN_PER_WRITER = 6
+N_TRAIN_PER_WRITER = 4
 TRAIN_SEED0 = 10
 DRAWS_PER_NOTE = 5
 AMP_RANGE_MM = (0.05, 3.5)
 A_FLOOR = 0.3e-3
-LAMBDA_CLEAN = 1.0
+LAMBDA_CLEAN = 10.0       # fixed before training: the clean penalty must weigh like a severe residual (tune.py T2)
 N_IN = 3
 N_OUT = 2 * LE.N_PH
 IN_SCALE = np.array([1.0, 1.0, 1.0], np.float32)     # m/s^2, m/s^2, flag

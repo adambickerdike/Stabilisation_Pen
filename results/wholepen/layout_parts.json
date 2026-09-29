@@ -1,6 +1,6 @@
 {
   "meta": {
-    "evidence_status": "PROPOSED DESIGN (study W's recommended whole-pen collar, the review's option B with the V2 load path; CALC masses from volumes and catalogue parts; ASSUMPTION dimensions; nothing built or measured)",
+    "evidence_status": "PROPOSED DESIGN (study W's whole-pen collar, the review's option B with the V2 load path: the reference design for shifting the whole pen, a bench experiment, not adopted for the product (proposed DEC-051); CALC masses from volumes and catalogue parts; ASSUMPTION dimensions; nothing built or measured)",
     "concept": "the hand holds a collar that rests on the paper; the whole inner pen swings in it on a 2-axis pivot, driven by two motors that push back on the collar and hand; a small fine nib (study B) trims the rest",
     "replaces": [
       "front_sleeve",
@@ -31,11 +31,11 @@
     "source": "wholepen/explain.py; wholepen/calc.py; docs/whole_pen_shift.md",
     "stabpen.provenance": {
       "evidence_status": "PROPOSED DESIGN (layout; CALC masses)",
-      "generated_utc": "2026-09-29T19:37:57+00:00",
-      "git_revision": "af5f29a-dirty",
+      "generated_utc": "2026-09-29T22:43:21+00:00",
+      "git_revision": "ad29a1f-dirty",
       "parameters_version": "0.4.4",
       "parameters_sha256_16": "a9d3d0016461d690",
-      "command": "-c",
+      "command": "run_study.py --stages summary figures",
       "python": "3.11.15",
       "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
       "seeds": null,
@@ -96,7 +96,7 @@
       ],
       "moves_with": "collar",
       "optional": false,
-      "function": "Holds the inner pen 50 mm behind the tip and lets it tilt +-4.6 deg each way: +-4 mm at the tip.",
+      "function": "Holds the inner pen 50 mm behind the tip and lets it tilt \u00b14.6\u00b0 each way: \u00b14 mm at the tip.",
       "part": "custom cross-strip flexure (titanium or spring steel)",
       "ledger": "",
       "mass_g": 1.5
@@ -177,7 +177,7 @@
     },
     {
       "id": "fine_nib",
-      "label": "Small fine nib (+-1 mm)",
+      "label": "Small fine nib (\u00b11 mm)",
       "group": "inner_pen",
       "shape": "tube",
       "z0": 3.0,
@@ -255,7 +255,7 @@
       "d_in": 27.0,
       "moves_with": "inner_pen",
       "optional": true,
-      "function": "Two 27 g tungsten rotors at 25000 rpm storing 18 J: an experiment for the review's gate G5, not part of the recommended pen.",
+      "function": "Two 27 g tungsten rotors at 25000 rpm storing 18 J: an experiment for the review's gate G5, not part of any pen.",
       "part": "PROPOSED DESIGN (designs.cmg_design)",
       "ledger": "AMF-49,AMF-121,AMF-126",
       "mass_g": 100

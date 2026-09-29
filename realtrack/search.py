@@ -128,8 +128,7 @@ import numpy as np  # noqa: E402
 
 DET_CONFIGS = {   # detector windows and bands searched (ai2's own first; fixed before the runs)
     "ai2": {"win": 4.0, "seg": 2.0, "band_lo": 4.5, "band_hi": 13.5},
-    "wide": {"win": 4.0, "seg": 2.0, "band_lo": 3.5, "band_hi": 12.0},
-    "short": {"win": 2.0, "seg": 1.0, "band_lo": 3.5, "band_hi": 12.0},
+    "wide_short": {"win": 2.0, "seg": 1.0, "band_lo": 3.5, "band_hi": 12.0},
 }
 GATE_SPACE = {"det": ("choice", tuple(DET_CONFIGS)), "r_on": ("log", 1.5, 10.0), "r_off_frac": ("lin", 0.3, 0.9),
               "t_on": ("log", 0.05, 1.0), "t_off": ("log", 0.1, 2.0), "ramp": ("log", 0.05, 0.5),
@@ -226,4 +225,135 @@ def gate_search(D_design: Dict, n_random: int = 60, n_local: int = 30, seed: int
            "elapsed_s": time.time() - t0}
     TU.TUNE_DIR.mkdir(parents=True, exist_ok=True)
     (TU.TUNE_DIR / f"gate_{tag}.json").write_text(json.dumps(out, default=float))
+    return out
+
+
+# ======================================================================================== stage 2 driver
+def listening_design() -> Dict:
+    """ai2's listening estimate (the D of R's gated tracker) in fusion's AKF form (sim2j.akf_online.listening_params)."""
+    return {"family": "akf", "params": _listen()}
+
+
+def conf_ratio(case, st):
+    return E.det_ratio(st, E.DET_CONF_DEFAULTS)["ratio"]
+
+
+CONF_SPACE = {"r_lo": ("log", 1.0, 6.0), "r_hi": ("log", 2.0, 20.0)}
+
+
+def stage2(log=print) -> Dict:
+    out = {}
+    for fam in ("akf", "wflc", "epll"):
+        tag = f"s2_{fam}_amp"
+        prev = TU.TUNE_DIR / f"auth_{tag}.json"
+        if prev.exists():
+            out[tag] = json.loads(prev.read_text())
+            log(f"[stage2] {tag}: cached")
+            continue
+        out[tag] = TU.auth_search(best_design(fam), n_random=50, n_local=24, seed=31, log=log, tag=tag)
+    for tag, D in (("s2_gate_akf", best_design("akf")), ("s2_gate_listen", listening_design())):
+        prev = TU.TUNE_DIR / f"gate_{tag}.json"
+        if prev.exists():
+            out[tag] = json.loads(prev.read_text())
+            log(f"[stage2] {tag}: cached")
+            continue
+        out[tag] = gate_search(D, n_random=40, n_local=24, seed=37, tag=tag, log=log)
+    tag = "s2_akf_conf"
+    prev = TU.TUNE_DIR / f"auth_{tag}.json"
+    if prev.exists():
+        out[tag] = json.loads(prev.read_text())
+    else:
+        out[tag] = TU.auth_search(best_design("akf"), n_random=50, n_local=24, seed=41, log=log, tag=tag,
+                                  conf_fn=conf_ratio, conf_space=CONF_SPACE)
+    return out
+
+
+# ======================================================================================== joint search (estimator + authority)
+JOINT_RAW_SPACE = {"qt": ("log", 1e-10, 1e-7), "qh_ratio": ("log", 0.1, 1.0), "qj": ("log", 3e-3, 3.0),
+                   "ra": ("log", 0.02, 0.5), "tau_decay": ("log", 0.1, 3.0), "tau_w": ("log", 0.1, 1.0),
+                   "harm": ("lin", 0.0, 1.0), "lp_hz": ("log", 30.0, 100.0), "use_pos": ("choice", (1,)),
+                   "hx": ("lin", -0.001, 0.002)}
+LISTEN_P = {"qt": 1e-9, "qh_ratio": 0.3333, "qj": 0.0275, "ra": 0.075, "tau_decay": 2.0, "tau_w": 0.4, "harm": 0.88,
+            "lp_hz": 64.13, "use_pos": 1, "hx": 0.0}
+
+
+def joint_akf(n_outer: int = 14, n_inner: int = 16, n_inner_local: int = 8, seed: int = 53, tag: str = "joint_akf",
+              log=print) -> Dict:
+    """Nested search under T2-T4: outer = the AKF's leakage/capture parameters (the listening set first, then random
+    draws in JOINT_RAW_SPACE), inner = the soft authority (tune.AUTH_SPACE) on that estimator's cached raw outputs."""
+    import time
+    from . import cases as C
+    from . import evaluate as EV
+    from . import servo as SV
+    rng = np.random.default_rng(seed)
+    pp = SV.pen_params()
+    specs = C.tuning_specs()
+    t0 = time.time()
+    lights = []
+    streams = []
+    for s in specs:
+        case = C.load_case(s)
+        lights.append(TU._light(case))
+        streams.append(case.streams("deltapen"))
+        del case
+    log(f"[joint] {tag}: {len(specs)} cases loaded in {time.time() - t0:.0f} s")
+    outer = [dict(LISTEN_P)] + [TU.sample(JOINT_RAW_SPACE, rng) for _ in range(n_outer - 1)]
+    hist = []
+    for oi, rp in enumerate(outer):
+        des = akf_design(rp)
+        raws = [E.raw_estimate("akf", st, des["params"])[0] for st in streams]
+
+        def run(plist):
+            for p in plist:
+                if p["a_hi"] <= p["a_lo"]:
+                    p["a_hi"] = p["a_lo"] * 1.5
+                rows = []
+                for s, d, lc in zip(specs, raws, lights):
+                    dh, g, A = E.authority(d, float(lc.meta["Ts"]), p)
+                    m = SV.fast_measures(lc, -dh, pp)
+                    m.update({"design": "x", "case": s["id"], "level": s["level"], "kind": s.get("kind")})
+                    rows.append(m)
+                sm = EV.summarize(rows)["x"]
+                hist.append({"raw": dict(rp), "auth": dict(p), "summary": sm, "score": TU.score(sm, True),
+                             "outer": oi})
+        n0 = len(hist)
+        run([TU.sample(TU.AUTH_SPACE, rng) for _ in range(n_inner)])
+        best = sorted(hist[n0:], key=lambda h: h["score"])[:2]
+        run([TU.perturb(b["auth"], TU.AUTH_SPACE, rng, 0.25) for b in best for _ in range(n_inner_local // 2)])
+        bo = min(hist[n0:], key=lambda h: h["score"])
+        log(f"[joint] {tag} outer {oi}: best {bo['score']:.3f} severe_bb {bo['summary']['severe_bb']:.3f} ratio "
+            f"{bo['summary']['severe_ratio']:.3f} clean {bo['summary']['clean_um_mean']:.1f}/{bo['summary']['clean_um_max']:.1f} "
+            f"um ({time.time() - t0:.0f} s)")
+    best = min(hist, key=lambda h: h["score"])
+    out = {"tag": tag, "best": best, "history": hist, "elapsed_s": time.time() - t0,
+           "rule": "tune.py T1-T4; outer 0 = ai2's listening set (sim2j.akf_online.listening_params)"}
+    TU.TUNE_DIR.mkdir(parents=True, exist_ok=True)
+    (TU.TUNE_DIR / f"{tag}.json").write_text(json.dumps(out, default=float))
+    return out
+
+
+def joint_design(tag: str = "joint_akf") -> Dict:
+    d = json.loads((TU.TUNE_DIR / f"{tag}.json").read_text())["best"]
+    des = akf_design(d["raw"])
+    des["auth"] = d["auth"]
+    des["name"] = tag
+    return des
+
+
+def stage2b(log=print) -> Dict:
+    """After stage 2's amplitude-only searches: the retuned binary gate and the soft line confidence on ai2's listening
+    estimate (R's gated structure), then the joint AKF search."""
+    out = {}
+    tag = "s2_gate_listen"
+    p = TU.TUNE_DIR / f"gate_{tag}.json"
+    out[tag] = json.loads(p.read_text()) if p.exists() else gate_search(listening_design(), n_random=40, n_local=24,
+                                                                         seed=37, tag=tag, log=log)
+    tag = "s2_listen_conf"
+    p = TU.TUNE_DIR / f"auth_{tag}.json"
+    out[tag] = json.loads(p.read_text()) if p.exists() else TU.auth_search(
+        listening_design(), n_random=40, n_local=24, seed=41, log=log, tag=tag, conf_fn=conf_ratio,
+        conf_space=CONF_SPACE)
+    tag = "joint_akf"
+    p = TU.TUNE_DIR / f"{tag}.json"
+    out[tag] = json.loads(p.read_text()) if p.exists() else joint_akf(log=log)
     return out

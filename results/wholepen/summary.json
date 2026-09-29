@@ -9,6 +9,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 1.09,
         "words10": 8.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.986,
@@ -18,9 +19,10 @@
         "class": "ET_mild",
         "class_label": "ET mild (1 mm, 6 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 0.85,
         "words10": 8.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.78,
         "coverage": 0.977,
@@ -33,6 +35,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 3.7,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.974,
@@ -42,9 +45,10 @@
         "class": "ET_moderate",
         "class_label": "ET moderate (3 mm, 6 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 1.15,
         "words10": 9.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.311,
         "coverage": 0.941,
@@ -57,6 +61,7 @@
         "design_label": "whole-pen collar + Rev J nose",
         "tip_mm": 1.1,
         "words10": 8.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.297,
         "coverage": 0.934,
@@ -69,6 +74,7 @@
         "design_label": "gyro tail 100 g active + Rev J nose",
         "tip_mm": 1.1,
         "words10": 3.0,
+        "words_of": 5,
         "n_writers": 1,
         "ratio_vs_none": 0.299,
         "coverage": 0.807,
@@ -77,14 +83,67 @@
       {
         "class": "ET_moderate",
         "class_label": "ET moderate (3 mm, 6 Hz)",
+        "design": "nose_oracle",
+        "design_label": "Rev J nose, perfect tremor knowledge (limit)",
+        "tip_mm": 0.24,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.064,
+        "coverage": 0.947,
+        "ink_err_um": 134.0
+      },
+      {
+        "class": "ET_moderate",
+        "class_label": "ET moderate (3 mm, 6 Hz)",
         "design": "collar_nose_oracle",
         "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
         "tip_mm": 0.66,
         "words10": 9.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.178,
         "coverage": 0.93,
         "ink_err_um": 348.0
+      },
+      {
+        "class": "ET_moderate",
+        "class_label": "ET moderate (3 mm, 6 Hz)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 3.39,
+        "words10": 0.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.916,
+        "coverage": 0.974,
+        "ink_err_um": 1711.0
+      },
+      {
+        "class": "ET_moderate",
+        "class_label": "ET moderate (3 mm, 6 Hz)",
+        "design": "collar_locked_nose",
+        "design_label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "tip_mm": 1.1,
+        "words10": 7.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.297,
+        "coverage": 0.935,
+        "ink_err_um": 672.0
+      },
+      {
+        "class": "ET_moderate",
+        "class_label": "ET moderate (3 mm, 6 Hz)",
+        "design": "gt_locked_nose",
+        "design_label": "gyro tail 100 g locked + Rev J nose (same mass, no gyro action)",
+        "tip_mm": 1.21,
+        "words10": 3.0,
+        "words_of": 5,
+        "n_writers": 1,
+        "ratio_vs_none": 0.328,
+        "coverage": 0.613,
+        "ink_err_um": 644.0
       },
       {
         "class": "ET_severe",
@@ -93,6 +152,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 8.83,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.903,
@@ -102,9 +162,10 @@
         "class": "ET_severe",
         "class_label": "ET severe (8 mm, 6 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 3.22,
         "words10": 1.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.365,
         "coverage": 0.71,
@@ -117,6 +178,7 @@
         "design_label": "Rev J nose + write only when in reach",
         "tip_mm": 2.87,
         "words10": 0.0,
+        "words_of": 5,
         "n_writers": 1,
         "ratio_vs_none": 0.325,
         "coverage": 0.477,
@@ -129,6 +191,7 @@
         "design_label": "whole-pen collar + Rev J nose",
         "tip_mm": 3.21,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.364,
         "coverage": 0.526,
@@ -137,14 +200,54 @@
       {
         "class": "ET_severe",
         "class_label": "ET severe (8 mm, 6 Hz)",
+        "design": "nose_oracle",
+        "design_label": "Rev J nose, perfect tremor knowledge (limit)",
+        "tip_mm": 2.18,
+        "words10": 6.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.247,
+        "coverage": 0.694,
+        "ink_err_um": 1028.0
+      },
+      {
+        "class": "ET_severe",
+        "class_label": "ET severe (8 mm, 6 Hz)",
         "design": "collar_nose_oracle",
         "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
         "tip_mm": 3.3,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.373,
         "coverage": 0.505,
         "ink_err_um": 2537.0
+      },
+      {
+        "class": "ET_severe",
+        "class_label": "ET severe (8 mm, 6 Hz)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 7.95,
+        "words10": 0.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.9,
+        "coverage": 0.794,
+        "ink_err_um": 4621.0
+      },
+      {
+        "class": "ET_severe",
+        "class_label": "ET severe (8 mm, 6 Hz)",
+        "design": "collar_locked_nose",
+        "design_label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "tip_mm": 3.32,
+        "words10": 2.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.376,
+        "coverage": 0.604,
+        "ink_err_um": 2296.0
       },
       {
         "class": "ET_moderate_9Hz",
@@ -153,6 +256,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 3.95,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.782,
@@ -162,9 +266,10 @@
         "class": "ET_moderate_9Hz",
         "class_label": "ET moderate, fast (3 mm, 9 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 1.23,
         "words10": 7.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.311,
         "coverage": 0.707,
@@ -177,6 +282,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 1.03,
         "words10": 6.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.987,
@@ -186,9 +292,10 @@
         "class": "PD_mild",
         "class_label": "PD action mild (1 mm, 5 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 0.98,
         "words10": 7.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.954,
         "coverage": 0.984,
@@ -201,6 +308,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 3.47,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.978,
@@ -210,9 +318,10 @@
         "class": "PD_moderate",
         "class_label": "PD action moderate (3 mm, 5 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 1.4,
         "words10": 5.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.403,
         "coverage": 0.963,
@@ -225,6 +334,7 @@
         "design_label": "whole-pen collar + Rev J nose",
         "tip_mm": 1.36,
         "words10": 6.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.393,
         "coverage": 0.953,
@@ -233,14 +343,54 @@
       {
         "class": "PD_moderate",
         "class_label": "PD action moderate (3 mm, 5 Hz)",
+        "design": "nose_oracle",
+        "design_label": "Rev J nose, perfect tremor knowledge (limit)",
+        "tip_mm": 0.14,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.04,
+        "coverage": 0.969,
+        "ink_err_um": 104.0
+      },
+      {
+        "class": "PD_moderate",
+        "class_label": "PD action moderate (3 mm, 5 Hz)",
         "design": "collar_nose_oracle",
         "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
         "tip_mm": 0.6,
         "words10": 9.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.174,
         "coverage": 0.948,
         "ink_err_um": 341.0
+      },
+      {
+        "class": "PD_moderate",
+        "class_label": "PD action moderate (3 mm, 5 Hz)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 3.29,
+        "words10": 0.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.946,
+        "coverage": 0.98,
+        "ink_err_um": 1584.0
+      },
+      {
+        "class": "PD_moderate",
+        "class_label": "PD action moderate (3 mm, 5 Hz)",
+        "design": "collar_locked_nose",
+        "design_label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "tip_mm": 1.36,
+        "words10": 5.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.391,
+        "coverage": 0.957,
+        "ink_err_um": 771.0
       },
       {
         "class": "PD_severe",
@@ -249,6 +399,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 8.72,
         "words10": 0.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.951,
@@ -258,9 +409,10 @@
         "class": "PD_severe",
         "class_label": "PD action severe (8 mm, 5 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 3.35,
         "words10": 2.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.384,
         "coverage": 0.742,
@@ -273,6 +425,7 @@
         "design_label": "Rev J nose + write only when in reach",
         "tip_mm": 3.13,
         "words10": 0.0,
+        "words_of": 5,
         "n_writers": 1,
         "ratio_vs_none": 0.359,
         "coverage": 0.391,
@@ -285,6 +438,7 @@
         "design_label": "whole-pen collar + Rev J nose",
         "tip_mm": 3.24,
         "words10": 1.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.371,
         "coverage": 0.674,
@@ -294,9 +448,10 @@
         "class": "PD_severe",
         "class_label": "PD action severe (8 mm, 5 Hz)",
         "design": "collar_fine",
-        "design_label": "whole-pen collar + small fine nib (+-1 mm)",
+        "design_label": "whole-pen collar + small fine nib (\u00b11 mm)",
         "tip_mm": 5.5,
         "words10": 0.0,
+        "words_of": 5,
         "n_writers": 1,
         "ratio_vs_none": 0.631,
         "coverage": 0.796,
@@ -307,12 +462,13 @@
         "class_label": "PD action severe (8 mm, 5 Hz)",
         "design": "nose_oracle",
         "design_label": "Rev J nose, perfect tremor knowledge (limit)",
-        "tip_mm": 2.48,
-        "words10": 0.0,
-        "n_writers": 1,
-        "ratio_vs_none": 0.284,
-        "coverage": 0.694,
-        "ink_err_um": 1245.0
+        "tip_mm": 1.97,
+        "words10": 4.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.226,
+        "coverage": 0.723,
+        "ink_err_um": 914.0
       },
       {
         "class": "PD_severe",
@@ -321,10 +477,37 @@
         "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
         "tip_mm": 2.36,
         "words10": 1.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.27,
         "coverage": 0.68,
         "ink_err_um": 1423.0
+      },
+      {
+        "class": "PD_severe",
+        "class_label": "PD action severe (8 mm, 5 Hz)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 8.09,
+        "words10": 0.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.927,
+        "coverage": 0.917,
+        "ink_err_um": 4603.0
+      },
+      {
+        "class": "PD_severe",
+        "class_label": "PD action severe (8 mm, 5 Hz)",
+        "design": "collar_locked_nose",
+        "design_label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "tip_mm": 3.41,
+        "words10": 1.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.391,
+        "coverage": 0.708,
+        "ink_err_um": 2068.0
       },
       {
         "class": "PD_reemergent_severe",
@@ -333,6 +516,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 1.71,
         "words10": 2.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.983,
@@ -342,9 +526,10 @@
         "class": "PD_reemergent_severe",
         "class_label": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 1.29,
         "words10": 3.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.757,
         "coverage": 0.977,
@@ -357,6 +542,7 @@
         "design_label": "whole-pen collar + Rev J nose",
         "tip_mm": 1.25,
         "words10": 3.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.735,
         "coverage": 0.977,
@@ -365,14 +551,54 @@
       {
         "class": "PD_reemergent_severe",
         "class_label": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
+        "design": "nose_oracle",
+        "design_label": "Rev J nose, perfect tremor knowledge (limit)",
+        "tip_mm": 0.06,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.035,
+        "coverage": 0.981,
+        "ink_err_um": 68.0
+      },
+      {
+        "class": "PD_reemergent_severe",
+        "class_label": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
         "design": "collar_nose_oracle",
         "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
         "tip_mm": 0.22,
         "words10": 9.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.131,
         "coverage": 0.975,
         "ink_err_um": 158.0
+      },
+      {
+        "class": "PD_reemergent_severe",
+        "class_label": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 1.6,
+        "words10": 2.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.939,
+        "coverage": 0.982,
+        "ink_err_um": 839.0
+      },
+      {
+        "class": "PD_reemergent_severe",
+        "class_label": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
+        "design": "collar_locked_nose",
+        "design_label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "tip_mm": 1.25,
+        "words10": 3.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.736,
+        "coverage": 0.977,
+        "ink_err_um": 687.0
       },
       {
         "class": "PD_recorded_moderate",
@@ -381,6 +607,7 @@
         "design_label": "Rev J pen, nothing moving (no help)",
         "tip_mm": 5.1,
         "words10": 3.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 1.0,
         "coverage": 0.983,
@@ -390,9 +617,10 @@
         "class": "PD_recorded_moderate",
         "class_label": "PD recorded patient waveform (3 mm, 5.4 Hz)",
         "design": "nose",
-        "design_label": "Rev J moving nose (+-6.57 mm), as built",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
         "tip_mm": 3.59,
         "words10": 3.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.704,
         "coverage": 0.934,
@@ -405,6 +633,7 @@
         "design_label": "whole-pen collar + Rev J nose",
         "tip_mm": 3.3,
         "words10": 3.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.647,
         "coverage": 0.95,
@@ -417,10 +646,24 @@
         "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
         "tip_mm": 1.13,
         "words10": 9.0,
+        "words_of": 10,
         "n_writers": 2,
         "ratio_vs_none": 0.221,
         "coverage": 0.942,
         "ink_err_um": 583.0
+      },
+      {
+        "class": "PD_recorded_moderate",
+        "class_label": "PD recorded patient waveform (3 mm, 5.4 Hz)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 4.75,
+        "words10": 3.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.932,
+        "coverage": 0.981,
+        "ink_err_um": 3173.0
       }
     ],
     "classes": [
@@ -446,7 +689,151 @@
     ]
   },
   "headline_real": {
-    "rows": [],
+    "rows": [
+      {
+        "class": "REAL_PD_moderate",
+        "class_label": "Real PD, moderate class (0.24 mm, study R)",
+        "design": "none",
+        "design_label": "Rev J pen, nothing moving (no help)",
+        "tip_mm": 0.26,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 1.0,
+        "coverage": 0.992,
+        "ink_err_um": 154.0
+      },
+      {
+        "class": "REAL_PD_moderate",
+        "class_label": "Real PD, moderate class (0.24 mm, study R)",
+        "design": "nose",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
+        "tip_mm": 0.26,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 1.0,
+        "coverage": 0.992,
+        "ink_err_um": 154.0
+      },
+      {
+        "class": "REAL_PD_moderate",
+        "class_label": "Real PD, moderate class (0.24 mm, study R)",
+        "design": "collar_nose",
+        "design_label": "whole-pen collar + Rev J nose",
+        "tip_mm": 0.24,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.902,
+        "coverage": 0.991,
+        "ink_err_um": 146.0
+      },
+      {
+        "class": "REAL_PD_moderate",
+        "class_label": "Real PD, moderate class (0.24 mm, study R)",
+        "design": "collar_nose_oracle",
+        "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
+        "tip_mm": 0.04,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.136,
+        "coverage": 0.991,
+        "ink_err_um": 62.0
+      },
+      {
+        "class": "REAL_PD_moderate",
+        "class_label": "Real PD, moderate class (0.24 mm, study R)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 0.24,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.902,
+        "coverage": 0.991,
+        "ink_err_um": 146.0
+      },
+      {
+        "class": "REAL_PD_severe",
+        "class_label": "Real PD, severe class (1.72 mm, study R)",
+        "design": "none",
+        "design_label": "Rev J pen, nothing moving (no help)",
+        "tip_mm": 2.29,
+        "words10": 3.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 1.0,
+        "coverage": 0.978,
+        "ink_err_um": 1258.0
+      },
+      {
+        "class": "REAL_PD_severe",
+        "class_label": "Real PD, severe class (1.72 mm, study R)",
+        "design": "nose",
+        "design_label": "Rev J moving nose (\u00b16.57 mm), as built",
+        "tip_mm": 1.6,
+        "words10": 5.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.701,
+        "coverage": 0.963,
+        "ink_err_um": 954.0
+      },
+      {
+        "class": "REAL_PD_severe",
+        "class_label": "Real PD, severe class (1.72 mm, study R)",
+        "design": "collar_nose",
+        "design_label": "whole-pen collar + Rev J nose",
+        "tip_mm": 1.37,
+        "words10": 7.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.601,
+        "coverage": 0.965,
+        "ink_err_um": 812.0
+      },
+      {
+        "class": "REAL_PD_severe",
+        "class_label": "Real PD, severe class (1.72 mm, study R)",
+        "design": "collar_nose_oracle",
+        "design_label": "collar + Rev J nose, perfect tremor knowledge (limit)",
+        "tip_mm": 0.24,
+        "words10": 10.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.106,
+        "coverage": 0.971,
+        "ink_err_um": 175.0
+      },
+      {
+        "class": "REAL_PD_severe",
+        "class_label": "Real PD, severe class (1.72 mm, study R)",
+        "design": "collar_locked",
+        "design_label": "collar pen, collar locked, nose held",
+        "tip_mm": 1.83,
+        "words10": 4.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.802,
+        "coverage": 0.977,
+        "ink_err_um": 1021.0
+      },
+      {
+        "class": "REAL_PD_severe",
+        "class_label": "Real PD, severe class (1.72 mm, study R)",
+        "design": "collar_locked_nose",
+        "design_label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "tip_mm": 1.37,
+        "words10": 7.0,
+        "words_of": 10,
+        "n_writers": 2,
+        "ratio_vs_none": 0.601,
+        "coverage": 0.965,
+        "ink_err_um": 812.0
+      }
+    ],
     "classes": [
       "REAL_PD_moderate",
       "REAL_PD_severe"
@@ -468,14 +855,22 @@
       "mode": "stabilise: Rev J nose",
       "design": "nose",
       "cases": 8,
+      "classes": [
+        "ET_mild",
+        "ET_moderate",
+        "ET_moderate_9Hz",
+        "ET_severe"
+      ],
+      "writers": [
+        0,
+        1
+      ],
       "readable_words": "25 of 40 (no help: 8 of 40)",
       "useful_words_per_min": 11.3,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 1.61,
       "tremor_no_help_mm_mean": 4.39,
       "clean_writing_changed_um": 5.0,
       "coverage": 0.834,
-      "missing_stroke_rate": 0.611,
       "power_W_nose": 2.26,
       "power_W_other_devices": 0.0,
       "felt_grip_force_change_rms_N": 0.03
@@ -485,14 +880,20 @@
       "mode": "stabilise: collar + nose",
       "design": "collar_nose",
       "cases": 4,
-      "readable_words": "8 of 20 (no help: 8 of 40)",
+      "classes": [
+        "ET_moderate",
+        "ET_severe"
+      ],
+      "writers": [
+        0,
+        1
+      ],
+      "readable_words": "8 of 20 (no help: 0 of 20)",
       "useful_words_per_min": 7.2,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 2.16,
-      "tremor_no_help_mm_mean": 4.39,
+      "tremor_no_help_mm_mean": 6.27,
       "clean_writing_changed_um": 8.0,
       "coverage": 0.73,
-      "missing_stroke_rate": 0.587,
       "power_W_nose": 2.47,
       "power_W_other_devices": 1.17,
       "felt_grip_force_change_rms_N": NaN
@@ -502,14 +903,18 @@
       "mode": "write only when in reach (Rev J nose)",
       "design": "nose_gate",
       "cases": 1,
-      "readable_words": "0 of 5 (no help: 8 of 40)",
+      "classes": [
+        "ET_severe"
+      ],
+      "writers": [
+        0
+      ],
+      "readable_words": "0 of 5 (no help: 0 of 5)",
       "useful_words_per_min": 0.0,
-      "useful_words_per_min_with_completion": 0.0,
       "tremor_left_mm_mean": 2.87,
-      "tremor_no_help_mm_mean": 4.39,
+      "tremor_no_help_mm_mean": 8.3,
       "clean_writing_changed_um": null,
       "coverage": 0.477,
-      "missing_stroke_rate": 0.797,
       "power_W_nose": 2.18,
       "power_W_other_devices": 0.13,
       "felt_grip_force_change_rms_N": 0.03
@@ -519,14 +924,22 @@
       "mode": "stabilise: Rev J nose",
       "design": "nose",
       "cases": 8,
+      "classes": [
+        "PD_mild",
+        "PD_moderate",
+        "PD_recorded_moderate",
+        "PD_severe"
+      ],
+      "writers": [
+        0,
+        1
+      ],
       "readable_words": "17 of 40 (no help: 9 of 40)",
       "useful_words_per_min": 7.7,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 2.33,
       "tremor_no_help_mm_mean": 4.58,
       "clean_writing_changed_um": 5.0,
       "coverage": 0.906,
-      "missing_stroke_rate": 0.56,
       "power_W_nose": 2.19,
       "power_W_other_devices": 0.0,
       "felt_grip_force_change_rms_N": 0.02
@@ -536,14 +949,21 @@
       "mode": "stabilise: collar + nose",
       "design": "collar_nose",
       "cases": 6,
-      "readable_words": "10 of 30 (no help: 9 of 40)",
+      "classes": [
+        "PD_moderate",
+        "PD_recorded_moderate",
+        "PD_severe"
+      ],
+      "writers": [
+        0,
+        1
+      ],
+      "readable_words": "10 of 30 (no help: 3 of 30)",
       "useful_words_per_min": 6.0,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 2.63,
-      "tremor_no_help_mm_mean": 4.58,
+      "tremor_no_help_mm_mean": 5.77,
       "clean_writing_changed_um": 8.0,
       "coverage": 0.859,
-      "missing_stroke_rate": 0.571,
       "power_W_nose": 2.35,
       "power_W_other_devices": 0.5,
       "felt_grip_force_change_rms_N": NaN
@@ -553,14 +973,18 @@
       "mode": "stabilise: collar + small fine nib",
       "design": "collar_fine",
       "cases": 1,
-      "readable_words": "0 of 5 (no help: 9 of 40)",
+      "classes": [
+        "PD_severe"
+      ],
+      "writers": [
+        0
+      ],
+      "readable_words": "0 of 5 (no help: 0 of 5)",
       "useful_words_per_min": 0.0,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 5.5,
-      "tremor_no_help_mm_mean": 4.58,
+      "tremor_no_help_mm_mean": 9.66,
       "clean_writing_changed_um": 8.0,
       "coverage": 0.796,
-      "missing_stroke_rate": 0.596,
       "power_W_nose": 2.43,
       "power_W_other_devices": 1.15,
       "felt_grip_force_change_rms_N": 0.22
@@ -570,14 +994,18 @@
       "mode": "write only when in reach (Rev J nose)",
       "design": "nose_gate",
       "cases": 1,
-      "readable_words": "0 of 5 (no help: 9 of 40)",
+      "classes": [
+        "PD_severe"
+      ],
+      "writers": [
+        0
+      ],
+      "readable_words": "0 of 5 (no help: 0 of 5)",
       "useful_words_per_min": 0.0,
-      "useful_words_per_min_with_completion": 0.0,
       "tremor_left_mm_mean": 3.13,
-      "tremor_no_help_mm_mean": 4.58,
+      "tremor_no_help_mm_mean": 9.66,
       "clean_writing_changed_um": null,
       "coverage": 0.391,
-      "missing_stroke_rate": 0.834,
       "power_W_nose": 2.03,
       "power_W_other_devices": 0.12,
       "felt_grip_force_change_rms_N": 0.03
@@ -587,14 +1015,19 @@
       "mode": "stabilise: Rev J nose",
       "design": "nose",
       "cases": 2,
+      "classes": [
+        "PD_reemergent_severe"
+      ],
+      "writers": [
+        0,
+        1
+      ],
       "readable_words": "3 of 10 (no help: 2 of 10)",
       "useful_words_per_min": 5.4,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 1.29,
       "tremor_no_help_mm_mean": 1.71,
       "clean_writing_changed_um": 5.0,
       "coverage": 0.977,
-      "missing_stroke_rate": 0.593,
       "power_W_nose": 2.25,
       "power_W_other_devices": 0.0,
       "felt_grip_force_change_rms_N": 0.02
@@ -604,14 +1037,19 @@
       "mode": "stabilise: collar + nose",
       "design": "collar_nose",
       "cases": 2,
+      "classes": [
+        "PD_reemergent_severe"
+      ],
+      "writers": [
+        0,
+        1
+      ],
       "readable_words": "3 of 10 (no help: 2 of 10)",
       "useful_words_per_min": 5.4,
-      "useful_words_per_min_with_completion": null,
       "tremor_left_mm_mean": 1.25,
       "tremor_no_help_mm_mean": 1.71,
       "clean_writing_changed_um": 8.0,
       "coverage": 0.977,
-      "missing_stroke_rate": 0.624,
       "power_W_nose": 2.24,
       "power_W_other_devices": 0.27,
       "felt_grip_force_change_rms_N": NaN
@@ -623,6 +1061,9 @@
       "locked": "gt_locked_nose",
       "class": "ET_moderate",
       "grip": 1.0,
+      "writers": [
+        0
+      ],
       "tip_active_mm": 1.104,
       "tip_locked_mm": 1.214,
       "gain_vs_locked": 0.091,
@@ -630,62 +1071,100 @@
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
       "class": "ET_moderate",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.099,
-      "tip_locked_mm": 3.389,
-      "gain_vs_locked": 0.676,
-      "passes_10pc_gate": true
+      "tip_locked_mm": 1.099,
+      "gain_vs_locked": -0.0,
+      "passes_10pc_gate": false
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
       "class": "ET_severe",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 3.211,
-      "tip_locked_mm": 7.948,
-      "gain_vs_locked": 0.596,
-      "passes_10pc_gate": true
+      "tip_locked_mm": 3.319,
+      "gain_vs_locked": 0.033,
+      "passes_10pc_gate": false
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
       "class": "PD_moderate",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.364,
-      "tip_locked_mm": 3.286,
-      "gain_vs_locked": 0.585,
-      "passes_10pc_gate": true
+      "tip_locked_mm": 1.36,
+      "gain_vs_locked": -0.003,
+      "passes_10pc_gate": false
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
-      "class": "PD_recorded_moderate",
-      "grip": 1.0,
-      "tip_active_mm": 3.302,
-      "tip_locked_mm": 4.755,
-      "gain_vs_locked": 0.305,
-      "passes_10pc_gate": true
-    },
-    {
-      "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
       "class": "PD_reemergent_severe",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.254,
-      "tip_locked_mm": 1.602,
-      "gain_vs_locked": 0.217,
-      "passes_10pc_gate": true
+      "tip_locked_mm": 1.255,
+      "gain_vs_locked": 0.0,
+      "passes_10pc_gate": false
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
       "class": "PD_severe",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 3.235,
-      "tip_locked_mm": 8.088,
-      "gain_vs_locked": 0.6,
+      "tip_locked_mm": 3.414,
+      "gain_vs_locked": 0.052,
+      "passes_10pc_gate": false
+    },
+    {
+      "active": "light_nose",
+      "locked": "light_locked_nose",
+      "class": "ET_moderate",
+      "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
+      "tip_active_mm": 1.171,
+      "tip_locked_mm": 1.171,
+      "gain_vs_locked": 0.0,
+      "passes_10pc_gate": false
+    },
+    {
+      "active": "light_nose",
+      "locked": "light_locked_nose",
+      "class": "PD_severe",
+      "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
+      "tip_active_mm": 2.79,
+      "tip_locked_mm": 3.376,
+      "gain_vs_locked": 0.174,
       "passes_10pc_gate": true
     },
     {
@@ -693,6 +1172,10 @@
       "locked": "none",
       "class": "ET_mild",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 0.848,
       "tip_locked_mm": 1.086,
       "gain_vs_locked": 0.22,
@@ -703,6 +1186,10 @@
       "locked": "none",
       "class": "ET_moderate",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.149,
       "tip_locked_mm": 3.698,
       "gain_vs_locked": 0.689,
@@ -713,6 +1200,10 @@
       "locked": "none",
       "class": "ET_moderate_9Hz",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.228,
       "tip_locked_mm": 3.951,
       "gain_vs_locked": 0.689,
@@ -723,6 +1214,10 @@
       "locked": "none",
       "class": "ET_severe",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 3.223,
       "tip_locked_mm": 8.833,
       "gain_vs_locked": 0.635,
@@ -733,6 +1228,10 @@
       "locked": "none",
       "class": "PD_mild",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 0.983,
       "tip_locked_mm": 1.03,
       "gain_vs_locked": 0.046,
@@ -743,6 +1242,10 @@
       "locked": "none",
       "class": "PD_moderate",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.402,
       "tip_locked_mm": 3.475,
       "gain_vs_locked": 0.597,
@@ -753,6 +1256,10 @@
       "locked": "none",
       "class": "PD_recorded_moderate",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 3.593,
       "tip_locked_mm": 5.104,
       "gain_vs_locked": 0.296,
@@ -763,6 +1270,10 @@
       "locked": "none",
       "class": "PD_reemergent_severe",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 1.291,
       "tip_locked_mm": 1.706,
       "gain_vs_locked": 0.243,
@@ -773,18 +1284,1297 @@
       "locked": "none",
       "class": "PD_severe",
       "grip": 1.0,
+      "writers": [
+        0,
+        1
+      ],
       "tip_active_mm": 3.352,
       "tip_locked_mm": 8.72,
       "gain_vs_locked": 0.616,
       "passes_10pc_gate": true
     }
   ],
+  "collar_increment": [
+    {
+      "class": "ET_mild",
+      "class_label": "ET mild (1 mm, 6 Hz)",
+      "nose": {
+        "tip_mm": 0.848,
+        "words": 8.0,
+        "words_of": 10,
+        "coverage": 0.977,
+        "writers": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "class": "ET_moderate",
+      "class_label": "ET moderate (3 mm, 6 Hz)",
+      "nose": {
+        "tip_mm": 1.149,
+        "words": 9.0,
+        "words_of": 10,
+        "coverage": 0.941,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_locked_nose": {
+        "tip_mm": 1.099,
+        "words": 7.0,
+        "words_of": 10,
+        "coverage": 0.935,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 1.099,
+        "words": 8.0,
+        "words_of": 10,
+        "coverage": 0.934,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "nose_oracle": {
+        "tip_mm": 0.237,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.947,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 0.66,
+        "words": 9.0,
+        "words_of": 10,
+        "coverage": 0.93,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_gain_vs_locked": 0.0,
+      "oracle_collar_gain": -1.785
+    },
+    {
+      "class": "ET_severe",
+      "class_label": "ET severe (8 mm, 6 Hz)",
+      "nose": {
+        "tip_mm": 3.223,
+        "words": 1.0,
+        "words_of": 10,
+        "coverage": 0.71,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_locked_nose": {
+        "tip_mm": 3.319,
+        "words": 2.0,
+        "words_of": 10,
+        "coverage": 0.604,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 3.211,
+        "words": 0.0,
+        "words_of": 10,
+        "coverage": 0.526,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "nose_oracle": {
+        "tip_mm": 2.185,
+        "words": 6.0,
+        "words_of": 10,
+        "coverage": 0.694,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 3.296,
+        "words": 0.0,
+        "words_of": 10,
+        "coverage": 0.505,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_gain_vs_locked": 0.033,
+      "oracle_collar_gain": -0.508
+    },
+    {
+      "class": "ET_moderate_9Hz",
+      "class_label": "ET moderate, fast (3 mm, 9 Hz)",
+      "nose": {
+        "tip_mm": 1.228,
+        "words": 7.0,
+        "words_of": 10,
+        "coverage": 0.707,
+        "writers": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "class": "PD_mild",
+      "class_label": "PD action mild (1 mm, 5 Hz)",
+      "nose": {
+        "tip_mm": 0.983,
+        "words": 7.0,
+        "words_of": 10,
+        "coverage": 0.984,
+        "writers": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "class": "PD_moderate",
+      "class_label": "PD action moderate (3 mm, 5 Hz)",
+      "nose": {
+        "tip_mm": 1.402,
+        "words": 5.0,
+        "words_of": 10,
+        "coverage": 0.963,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_locked_nose": {
+        "tip_mm": 1.36,
+        "words": 5.0,
+        "words_of": 10,
+        "coverage": 0.957,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 1.364,
+        "words": 6.0,
+        "words_of": 10,
+        "coverage": 0.953,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "nose_oracle": {
+        "tip_mm": 0.14,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.969,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 0.603,
+        "words": 9.0,
+        "words_of": 10,
+        "coverage": 0.948,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_gain_vs_locked": -0.003,
+      "oracle_collar_gain": -3.307
+    },
+    {
+      "class": "PD_severe",
+      "class_label": "PD action severe (8 mm, 5 Hz)",
+      "nose": {
+        "tip_mm": 3.352,
+        "words": 2.0,
+        "words_of": 10,
+        "coverage": 0.742,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_locked_nose": {
+        "tip_mm": 3.414,
+        "words": 1.0,
+        "words_of": 10,
+        "coverage": 0.708,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 3.235,
+        "words": 1.0,
+        "words_of": 10,
+        "coverage": 0.674,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "nose_oracle": {
+        "tip_mm": 1.969,
+        "words": 4.0,
+        "words_of": 10,
+        "coverage": 0.723,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 2.357,
+        "words": 1.0,
+        "words_of": 10,
+        "coverage": 0.68,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_gain_vs_locked": 0.052,
+      "oracle_collar_gain": -0.197
+    },
+    {
+      "class": "PD_reemergent_severe",
+      "class_label": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
+      "nose": {
+        "tip_mm": 1.291,
+        "words": 3.0,
+        "words_of": 10,
+        "coverage": 0.977,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_locked_nose": {
+        "tip_mm": 1.255,
+        "words": 3.0,
+        "words_of": 10,
+        "coverage": 0.977,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 1.254,
+        "words": 3.0,
+        "words_of": 10,
+        "coverage": 0.977,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "nose_oracle": {
+        "tip_mm": 0.059,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.981,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 0.223,
+        "words": 9.0,
+        "words_of": 10,
+        "coverage": 0.975,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_gain_vs_locked": 0.001,
+      "oracle_collar_gain": -2.78
+    },
+    {
+      "class": "PD_recorded_moderate",
+      "class_label": "PD recorded patient waveform (3 mm, 5.4 Hz)",
+      "nose": {
+        "tip_mm": 3.593,
+        "words": 3.0,
+        "words_of": 10,
+        "coverage": 0.934,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 3.302,
+        "words": 3.0,
+        "words_of": 10,
+        "coverage": 0.95,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 1.126,
+        "words": 9.0,
+        "words_of": 10,
+        "coverage": 0.942,
+        "writers": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "class": "REAL_PD_moderate",
+      "class_label": "Real PD, moderate class (0.24 mm, study R)",
+      "nose": {
+        "tip_mm": 0.261,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.992,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 0.235,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.991,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 0.035,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.991,
+        "writers": [
+          0,
+          1
+        ]
+      }
+    },
+    {
+      "class": "REAL_PD_severe",
+      "class_label": "Real PD, severe class (1.72 mm, study R)",
+      "nose": {
+        "tip_mm": 1.604,
+        "words": 5.0,
+        "words_of": 10,
+        "coverage": 0.963,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_locked_nose": {
+        "tip_mm": 1.375,
+        "words": 7.0,
+        "words_of": 10,
+        "coverage": 0.965,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose": {
+        "tip_mm": 1.375,
+        "words": 7.0,
+        "words_of": 10,
+        "coverage": 0.965,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_nose_oracle": {
+        "tip_mm": 0.242,
+        "words": 10.0,
+        "words_of": 10,
+        "coverage": 0.971,
+        "writers": [
+          0,
+          1
+        ]
+      },
+      "collar_gain_vs_locked": 0.0
+    }
+  ],
+  "strokes_from_traces": [
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "none",
+      "coverage_intended": 0.962,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 1.393,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.04,
+      "completion_time_ratio": 1.003
+    },
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "nose",
+      "coverage_intended": 0.959,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 1.897,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.054,
+      "completion_time_ratio": 1.003
+    },
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "collar_locked_nose",
+      "coverage_intended": 0.949,
+      "n_strokes": 42,
+      "missing_strokes": 1,
+      "missing_stroke_rate": 0.024,
+      "lost_pieces": 3,
+      "ink_lost_mm": 6.113,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.774,
+      "completion_time_ratio": 1.049
+    },
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "collar_nose",
+      "coverage_intended": 0.951,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 3,
+      "ink_lost_mm": 5.858,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.767,
+      "completion_time_ratio": 1.049
+    },
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "nose_oracle",
+      "coverage_intended": 0.966,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 1.529,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.044,
+      "completion_time_ratio": 1.003
+    },
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "light_locked_nose",
+      "coverage_intended": 0.97,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 0.545,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.016,
+      "completion_time_ratio": 1.001
+    },
+    {
+      "w": 0,
+      "class": "ET_moderate",
+      "design": "light_nose",
+      "coverage_intended": 0.967,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 1,
+      "ink_lost_mm": 1.893,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.254,
+      "completion_time_ratio": 1.016
+    },
+    {
+      "w": 0,
+      "class": "PD_moderate",
+      "design": "none",
+      "coverage_intended": 0.961,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 1.177,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.033,
+      "completion_time_ratio": 1.002
+    },
+    {
+      "w": 0,
+      "class": "PD_moderate",
+      "design": "nose",
+      "coverage_intended": 0.968,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 0.84,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.024,
+      "completion_time_ratio": 1.002
+    },
+    {
+      "w": 0,
+      "class": "PD_moderate",
+      "design": "collar_locked_nose",
+      "coverage_intended": 0.957,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 2,
+      "ink_lost_mm": 4.283,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.522,
+      "completion_time_ratio": 1.033
+    },
+    {
+      "w": 0,
+      "class": "PD_moderate",
+      "design": "collar_nose",
+      "coverage_intended": 0.956,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 2,
+      "ink_lost_mm": 4.234,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.521,
+      "completion_time_ratio": 1.033
+    },
+    {
+      "w": 0,
+      "class": "PD_moderate",
+      "design": "nose_oracle",
+      "coverage_intended": 0.966,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 0.969,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.028,
+      "completion_time_ratio": 1.002
+    },
+    {
+      "w": 0,
+      "class": "ET_severe",
+      "design": "none",
+      "coverage_intended": 0.964,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 2.417,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.069,
+      "completion_time_ratio": 1.004
+    },
+    {
+      "w": 0,
+      "class": "ET_severe",
+      "design": "nose",
+      "coverage_intended": 0.803,
+      "n_strokes": 42,
+      "missing_strokes": 1,
+      "missing_stroke_rate": 0.024,
+      "lost_pieces": 29,
+      "ink_lost_mm": 53.417,
+      "task_time_s": 15.696,
+      "completion_extra_s": 7.32,
+      "completion_time_ratio": 1.466
+    },
+    {
+      "w": 0,
+      "class": "ET_severe",
+      "design": "nose_gate",
+      "coverage_intended": 0.552,
+      "n_strokes": 42,
+      "missing_strokes": 20,
+      "missing_stroke_rate": 0.476,
+      "lost_pieces": 57,
+      "ink_lost_mm": 126.488,
+      "task_time_s": 15.696,
+      "completion_extra_s": 15.0,
+      "completion_time_ratio": 1.956
+    },
+    {
+      "w": 0,
+      "class": "ET_severe",
+      "design": "collar_locked_nose",
+      "coverage_intended": 0.711,
+      "n_strokes": 42,
+      "missing_strokes": 6,
+      "missing_stroke_rate": 0.143,
+      "lost_pieces": 29,
+      "ink_lost_mm": 84.812,
+      "task_time_s": 15.696,
+      "completion_extra_s": 8.214,
+      "completion_time_ratio": 1.523
+    },
+    {
+      "w": 0,
+      "class": "ET_severe",
+      "design": "collar_nose",
+      "coverage_intended": 0.651,
+      "n_strokes": 42,
+      "missing_strokes": 9,
+      "missing_stroke_rate": 0.214,
+      "lost_pieces": 39,
+      "ink_lost_mm": 101.776,
+      "task_time_s": 15.696,
+      "completion_extra_s": 10.697,
+      "completion_time_ratio": 1.681
+    },
+    {
+      "w": 0,
+      "class": "ET_severe",
+      "design": "nose_oracle",
+      "coverage_intended": 0.802,
+      "n_strokes": 42,
+      "missing_strokes": 1,
+      "missing_stroke_rate": 0.024,
+      "lost_pieces": 28,
+      "ink_lost_mm": 53.695,
+      "task_time_s": 15.696,
+      "completion_extra_s": 7.128,
+      "completion_time_ratio": 1.454
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "none",
+      "coverage_intended": 0.963,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 2.571,
+      "task_time_s": 15.696,
+      "completion_extra_s": 0.073,
+      "completion_time_ratio": 1.005
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "nose",
+      "coverage_intended": 0.755,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 29,
+      "ink_lost_mm": 67.26,
+      "task_time_s": 15.696,
+      "completion_extra_s": 7.714,
+      "completion_time_ratio": 1.491
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "nose_gate",
+      "coverage_intended": 0.424,
+      "n_strokes": 42,
+      "missing_strokes": 27,
+      "missing_stroke_rate": 0.643,
+      "lost_pieces": 68,
+      "ink_lost_mm": 168.6,
+      "task_time_s": 15.696,
+      "completion_extra_s": 18.399,
+      "completion_time_ratio": 2.172
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "collar_locked_nose",
+      "coverage_intended": 0.739,
+      "n_strokes": 42,
+      "missing_strokes": 7,
+      "missing_stroke_rate": 0.167,
+      "lost_pieces": 24,
+      "ink_lost_mm": 69.376,
+      "task_time_s": 15.696,
+      "completion_extra_s": 6.775,
+      "completion_time_ratio": 1.432
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "collar_nose",
+      "coverage_intended": 0.686,
+      "n_strokes": 42,
+      "missing_strokes": 9,
+      "missing_stroke_rate": 0.214,
+      "lost_pieces": 36,
+      "ink_lost_mm": 88.147,
+      "task_time_s": 15.696,
+      "completion_extra_s": 9.709,
+      "completion_time_ratio": 1.619
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "nose_oracle",
+      "coverage_intended": 0.735,
+      "n_strokes": 42,
+      "missing_strokes": 1,
+      "missing_stroke_rate": 0.024,
+      "lost_pieces": 31,
+      "ink_lost_mm": 74.785,
+      "task_time_s": 15.696,
+      "completion_extra_s": 8.329,
+      "completion_time_ratio": 1.531
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "light_locked_nose",
+      "coverage_intended": 0.898,
+      "n_strokes": 42,
+      "missing_strokes": 2,
+      "missing_stroke_rate": 0.048,
+      "lost_pieces": 10,
+      "ink_lost_mm": 22.653,
+      "task_time_s": 15.696,
+      "completion_extra_s": 2.645,
+      "completion_time_ratio": 1.168
+    },
+    {
+      "w": 0,
+      "class": "PD_severe",
+      "design": "light_nose",
+      "coverage_intended": 0.689,
+      "n_strokes": 42,
+      "missing_strokes": 11,
+      "missing_stroke_rate": 0.262,
+      "lost_pieces": 27,
+      "ink_lost_mm": 88.228,
+      "task_time_s": 15.696,
+      "completion_extra_s": 7.911,
+      "completion_time_ratio": 1.504
+    },
+    {
+      "w": 1,
+      "class": "ET_severe",
+      "design": "none",
+      "coverage_intended": 0.963,
+      "n_strokes": 42,
+      "missing_strokes": 0,
+      "missing_stroke_rate": 0.0,
+      "lost_pieces": 0,
+      "ink_lost_mm": 2.016,
+      "task_time_s": 17.444,
+      "completion_extra_s": 0.062,
+      "completion_time_ratio": 1.004
+    },
+    {
+      "w": 1,
+      "class": "ET_severe",
+      "design": "nose",
+      "coverage_intended": 0.714,
+      "n_strokes": 42,
+      "missing_strokes": 2,
+      "missing_stroke_rate": 0.048,
+      "lost_pieces": 40,
+      "ink_lost_mm": 72.042,
+      "task_time_s": 17.444,
+      "completion_extra_s": 10.202,
+      "completion_time_ratio": 1.585
+    },
+    {
+      "w": 1,
+      "class": "ET_severe",
+      "design": "collar_locked_nose",
+      "coverage_intended": 0.677,
+      "n_strokes": 42,
+      "missing_strokes": 8,
+      "missing_stroke_rate": 0.19,
+      "lost_pieces": 37,
+      "ink_lost_mm": 80.887,
+      "task_time_s": 17.444,
+      "completion_extra_s": 9.873,
+      "completion_time_ratio": 1.566
+    },
+    {
+      "w": 1,
+      "class": "ET_severe",
+      "design": "collar_nose",
+      "coverage_intended": 0.613,
+      "n_strokes": 42,
+      "missing_strokes": 13,
+      "missing_stroke_rate": 0.31,
+      "lost_pieces": 38,
+      "ink_lost_mm": 102.686,
+      "task_time_s": 17.444,
+      "completion_extra_s": 10.739,
+      "completion_time_ratio": 1.616
+    },
+    {
+      "w": 1,
+      "class": "ET_severe",
+      "design": "nose_oracle",
+      "coverage_intended": 0.707,
+      "n_strokes": 42,
+      "missing_strokes": 1,
+      "missing_stroke_rate": 0.024,
+      "lost_pieces": 40,
+      "ink_lost_mm": 74.432,
+      "task_time_s": 17.444,
+      "completion_extra_s": 10.276,
+      "completion_time_ratio": 1.589
+    }
+  ],
+  "note_on_row_stroke_fields": "the per-row fields missing_strokes,\n    missing_stroke_rate, autowrite_extra_s and completion_time_ratio of the simulation rows, which were computed on the\n    device-off reference's contact before contact flicker (< 40 ms) was merged and so counted flicker as strokes.",
+  "light_compare": {
+    "classes": [
+      "ET_moderate",
+      "PD_severe"
+    ],
+    "rows": [
+      {
+        "design": "none",
+        "label": "Rev J pen, nothing moving (no help)",
+        "ET_moderate": {
+          "tip_mm": 3.698,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.974,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0,
+          "P_devices_W": 0.0,
+          "felt_rms_N": null
+        },
+        "PD_severe": {
+          "tip_mm": 8.72,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.951,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0,
+          "P_devices_W": 0.0,
+          "felt_rms_N": null
+        }
+      },
+      {
+        "design": "nose",
+        "label": "Rev J moving nose (\u00b16.57 mm), as built",
+        "ET_moderate": {
+          "tip_mm": 1.149,
+          "words": 9.0,
+          "words_of": 10,
+          "coverage": 0.941,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0,
+          "P_devices_W": 0.0,
+          "felt_rms_N": 0.029
+        },
+        "PD_severe": {
+          "tip_mm": 3.352,
+          "words": 2.0,
+          "words_of": 10,
+          "coverage": 0.742,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0,
+          "P_devices_W": 0.0,
+          "felt_rms_N": 0.032
+        }
+      },
+      {
+        "design": "nose_oracle",
+        "label": "Rev J nose, perfect tremor knowledge (limit)",
+        "ET_moderate": {
+          "tip_mm": 0.237,
+          "words": 10.0,
+          "words_of": 10,
+          "coverage": 0.947,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0,
+          "P_devices_W": 0.0,
+          "felt_rms_N": 0.029
+        },
+        "PD_severe": {
+          "tip_mm": 1.969,
+          "words": 4.0,
+          "words_of": 10,
+          "coverage": 0.723,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0,
+          "P_devices_W": 0.0,
+          "felt_rms_N": 0.034
+        }
+      },
+      {
+        "design": "collar_locked",
+        "label": "collar pen, collar locked, nose held",
+        "ET_moderate": {
+          "tip_mm": 3.389,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.974,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.01618950881064508,
+          "P_devices_W": 0.32,
+          "felt_rms_N": null
+        },
+        "PD_severe": {
+          "tip_mm": 8.088,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.917,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.02719023649977195,
+          "P_devices_W": 0.7,
+          "felt_rms_N": null
+        }
+      },
+      {
+        "design": "collar_locked_nose",
+        "label": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "ET_moderate": {
+          "tip_mm": 1.099,
+          "words": 7.0,
+          "words_of": 10,
+          "coverage": 0.935,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.01685663193938209,
+          "P_devices_W": 0.34,
+          "felt_rms_N": null
+        },
+        "PD_severe": {
+          "tip_mm": 3.414,
+          "words": 1.0,
+          "words_of": 10,
+          "coverage": 0.708,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.030256675634335043,
+          "P_devices_W": 0.73,
+          "felt_rms_N": null
+        }
+      },
+      {
+        "design": "collar_nose",
+        "label": "whole-pen collar + Rev J nose",
+        "ET_moderate": {
+          "tip_mm": 1.099,
+          "words": 8.0,
+          "words_of": 10,
+          "coverage": 0.934,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.021746979598128695,
+          "P_devices_W": 0.34,
+          "felt_rms_N": null
+        },
+        "PD_severe": {
+          "tip_mm": 3.235,
+          "words": 1.0,
+          "words_of": 10,
+          "coverage": 0.674,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.10876769428871237,
+          "P_devices_W": 0.97,
+          "felt_rms_N": null
+        }
+      },
+      {
+        "design": "collar_nose_oracle",
+        "label": "collar + Rev J nose, perfect tremor knowledge (limit)",
+        "ET_moderate": {
+          "tip_mm": 0.66,
+          "words": 9.0,
+          "words_of": 10,
+          "coverage": 0.93,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.06404575571309776,
+          "P_devices_W": 0.55,
+          "felt_rms_N": 0.115
+        },
+        "PD_severe": {
+          "tip_mm": 2.357,
+          "words": 1.0,
+          "words_of": 10,
+          "coverage": 0.68,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.15243009376438213,
+          "P_devices_W": 1.44,
+          "felt_rms_N": 0.239
+        }
+      },
+      {
+        "design": "light_locked",
+        "label": "light collar pen (24 g inner pen), collar locked, nose held",
+        "ET_moderate": {
+          "tip_mm": 3.962,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.981,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.00414358230822637,
+          "P_devices_W": 0.07,
+          "felt_rms_N": null
+        },
+        "PD_severe": {
+          "tip_mm": 9.145,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.968,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.004866735140384526,
+          "P_devices_W": 0.07,
+          "felt_rms_N": null
+        }
+      },
+      {
+        "design": "light_locked_nose",
+        "label": "light collar pen, collar locked + Rev J nose (same mass, no collar action)",
+        "ET_moderate": {
+          "tip_mm": 1.171,
+          "words": 9.0,
+          "words_of": 10,
+          "coverage": 0.967,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.0047700815031880535,
+          "P_devices_W": 0.06,
+          "felt_rms_N": 0.027
+        },
+        "PD_severe": {
+          "tip_mm": 3.376,
+          "words": 1.0,
+          "words_of": 10,
+          "coverage": 0.874,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.006249301199575549,
+          "P_devices_W": 0.08,
+          "felt_rms_N": 0.027
+        }
+      },
+      {
+        "design": "light_nose",
+        "label": "light collar pen: collar + Rev J nose",
+        "ET_moderate": {
+          "tip_mm": 1.171,
+          "words": 7.0,
+          "words_of": 10,
+          "coverage": 0.964,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.018023921969841764,
+          "P_devices_W": 0.07,
+          "felt_rms_N": 0.027
+        },
+        "PD_severe": {
+          "tip_mm": 2.79,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.701,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.06697528485486046,
+          "P_devices_W": 0.15,
+          "felt_rms_N": 0.096
+        }
+      },
+      {
+        "design": "light_fine",
+        "label": "light collar pen: collar + small fine nib (\u00b11 mm)",
+        "ET_moderate": {
+          "tip_mm": 3.284,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.939,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.05192014052082186,
+          "P_devices_W": 0.18,
+          "felt_rms_N": 0.174
+        },
+        "PD_severe": {
+          "tip_mm": 6.817,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.932,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.06585091238174831,
+          "P_devices_W": 0.16,
+          "felt_rms_N": 0.161
+        }
+      },
+      {
+        "design": "light_fine_t",
+        "label": "light collar pen: collar + small fine nib (\u00b11 mm), law re-tuned for the fine nib",
+        "ET_moderate": {
+          "tip_mm": 4.944,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.324,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.10852707832436423,
+          "P_devices_W": 2.61,
+          "felt_rms_N": null
+        },
+        "PD_severe": {
+          "tip_mm": 9.577,
+          "words": 0.0,
+          "words_of": 10,
+          "coverage": 0.236,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.11624488145273175,
+          "P_devices_W": 2.71,
+          "felt_rms_N": null
+        }
+      },
+      {
+        "design": "light_nose_oracle",
+        "label": "light collar pen: collar + Rev J nose, perfect tremor knowledge (limit)",
+        "ET_moderate": {
+          "tip_mm": 0.232,
+          "words": 10.0,
+          "words_of": 10,
+          "coverage": 0.955,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.07061861269470093,
+          "P_devices_W": 0.07,
+          "felt_rms_N": 0.037
+        },
+        "PD_severe": {
+          "tip_mm": 1.364,
+          "words": 3.0,
+          "words_of": 10,
+          "coverage": 0.649,
+          "writers": [
+            0,
+            1
+          ],
+          "pivot_peak_rad": 0.14652384741841332,
+          "P_devices_W": 0.15,
+          "felt_rms_N": 0.049
+        }
+      }
+    ]
+  },
   "tail_and_collar_vs_locked_grips": [
     {
       "active": "gt_nose",
       "locked": "gt_locked_nose",
       "class": "ET_moderate",
       "grip": 0.5,
+      "writers": [
+        100
+      ],
       "tip_active_mm": 1.873,
       "tip_locked_mm": 2.21,
       "gain_vs_locked": 0.153,
@@ -794,7 +2584,23 @@
       "active": "gt_nose",
       "locked": "gt_locked_nose",
       "class": "ET_moderate",
+      "grip": 1.0,
+      "writers": [
+        100
+      ],
+      "tip_active_mm": 1.2,
+      "tip_locked_mm": 2.444,
+      "gain_vs_locked": 0.509,
+      "passes_10pc_gate": true
+    },
+    {
+      "active": "gt_nose",
+      "locked": "gt_locked_nose",
+      "class": "ET_moderate",
       "grip": 2.0,
+      "writers": [
+        100
+      ],
       "tip_active_mm": 2.471,
       "tip_locked_mm": 2.166,
       "gain_vs_locked": -0.141,
@@ -802,22 +2608,54 @@
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
       "class": "ET_moderate",
       "grip": 0.5,
+      "writers": [
+        100
+      ],
       "tip_active_mm": 1.57,
-      "tip_locked_mm": 3.432,
-      "gain_vs_locked": 0.543,
-      "passes_10pc_gate": true
+      "tip_locked_mm": 1.538,
+      "gain_vs_locked": -0.02,
+      "passes_10pc_gate": false
     },
     {
       "active": "collar_nose",
-      "locked": "collar_locked",
+      "locked": "collar_locked_nose",
+      "class": "ET_moderate",
+      "grip": 1.0,
+      "writers": [
+        100
+      ],
+      "tip_active_mm": 1.131,
+      "tip_locked_mm": 1.081,
+      "gain_vs_locked": -0.047,
+      "passes_10pc_gate": false
+    },
+    {
+      "active": "collar_nose",
+      "locked": "collar_locked_nose",
       "class": "ET_moderate",
       "grip": 2.0,
+      "writers": [
+        100
+      ],
       "tip_active_mm": 1.002,
-      "tip_locked_mm": 3.273,
-      "gain_vs_locked": 0.694,
+      "tip_locked_mm": 0.976,
+      "gain_vs_locked": -0.027,
+      "passes_10pc_gate": false
+    },
+    {
+      "active": "collar_oracle",
+      "locked": "collar_locked",
+      "class": "ET_moderate",
+      "grip": 1.0,
+      "writers": [
+        100
+      ],
+      "tip_active_mm": 1.198,
+      "tip_locked_mm": 3.312,
+      "gain_vs_locked": 0.638,
       "passes_10pc_gate": true
     }
   ],
@@ -848,8 +2686,10 @@
     }
   ],
   "n_rows": {
-    "test": 84,
-    "grips": 8,
+    "test": 103,
+    "real": 22,
+    "light": 24,
+    "grips": 11,
     "arm": 3,
     "tune": 41
   },
@@ -898,11 +2738,11 @@
   },
   "stabpen.provenance": {
     "evidence_status": "SIMULATION + CALCULATION (aggregates of test.json, grips.json, arm.json, calc.json)",
-    "generated_utc": "2026-09-29T21:18:05+00:00",
-    "git_revision": "6a931b2-dirty",
+    "generated_utc": "2026-09-29T22:43:15+00:00",
+    "git_revision": "ad29a1f-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --stages test grips arm verify summary",
+    "command": "run_study.py --stages summary figures",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,

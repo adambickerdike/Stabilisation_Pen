@@ -70,7 +70,7 @@ def headline(table: List[Dict], designs: List[str], colors: Dict[str, str], name
         if r["class"] not in classes:
             classes.append(r["class"])
     nC, nD = len(classes), len(designs)
-    fig, axs = plt.subplots(1, 2, figsize=(10.5, 0.55 * nC * nD / 2 + 1.6), sharey=True)
+    fig, axs = plt.subplots(1, 2, figsize=(10.5, 0.42 * nC * nD / 2 + 1.6), sharey=True)
     h = 0.8 / nD
     rows = []
     for j, dz in enumerate(designs):
@@ -87,7 +87,7 @@ def headline(table: List[Dict], designs: List[str], colors: Dict[str, str], name
         axs[0].barh(ys, tips, height=h * 0.9, color=colors[dz], label=dz, edgecolor=SURF, linewidth=1.0)
         axs[1].barh(ys, words, height=h * 0.9, color=colors[dz], edgecolor=SURF, linewidth=1.0)
         for y, v in zip(ys, tips):
-            axs[0].text(v + 0.05, y, f"{v:.1f}", va="center", fontsize=7, color=INK2)
+            axs[0].text(v + 0.05, y, f"{v:.2f}" if v < 1 else f"{v:.1f}", va="center", fontsize=7, color=INK2)
         for y, v in zip(ys, words):
             axs[1].text(v + 0.1, y, f"{v:.0f}", va="center", fontsize=7, color=INK2)
     axs[0].set_yticks(range(nC))
@@ -100,9 +100,10 @@ def headline(table: List[Dict], designs: List[str], colors: Dict[str, str], name
     axs[1].set_title("How many words the app can read")
     for ax in axs:
         _grid(ax, "x")
-    axs[0].legend(loc="lower right", fontsize=8)
+    h_, l_ = axs[0].get_legend_handles_labels()
     _evidence(fig, evidence)
     fig.tight_layout()
+    fig.legend(h_, l_, loc="lower center", ncol=2, bbox_to_anchor=(0.5, 1.0), fontsize=8, frameon=False)
     return save(fig, name, ["class", "design", "tip_tremor_mm", "words_readable_of_10"], rows)
 
 
@@ -114,7 +115,7 @@ def writing(samples: List[Dict], name: str = "fig_w_writing",
     plt = _mpl()
     rows_ = sorted({s["row"] for s in samples})
     cols_ = sorted({s["col"] for s in samples})
-    fig, axs = plt.subplots(len(rows_), len(cols_), figsize=(4.3 * len(cols_), 1.6 * len(rows_) + 0.5), squeeze=False)
+    fig, axs = plt.subplots(len(rows_), len(cols_), figsize=(4.6 * len(cols_), 2.5 * len(rows_) + 0.5), squeeze=False)
     out = []
     for s in samples:
         ax = axs[rows_.index(s["row"]), cols_.index(s["col"])]
@@ -131,11 +132,11 @@ def writing(samples: List[Dict], name: str = "fig_w_writing",
         for yl in (-2.0, 6.0):
             ax.axhline(yl, color="#9ec5f4", linewidth=0.6)
         ax.set_aspect("equal")
-        ax.set_xlim(-3, max(np.nanmax(it[:, 0]) - x0 + 3, 20))
-        ax.set_ylim(-9, 12)
+        ax.set_xlim(-4, max(np.nanmax(it[:, 0]) - x0 + 4, 20))
+        ax.set_ylim(-13, 15)
         ax.axis("off")
         ax.set_title(s["title"], fontsize=8, loc="left", color=INK)
-        ax.text(0, -8.5, s.get("caption", ""), fontsize=7, color=INK2)
+        ax.text(0.0, -0.02, s.get("caption", ""), fontsize=7, color=INK2, transform=ax.transAxes, va="top")
         out.append([s["row"], s["col"], s["title"], s.get("caption", "")])
     _evidence(fig, evidence)
     fig.tight_layout()
@@ -152,7 +153,6 @@ def lines(series: Dict[str, Dict], xlabel: str, ylabel: str, title: str, name: s
     for i, (lab, v) in enumerate(series.items()):
         c = (colors or {}).get(lab, SLOT[i % len(SLOT)])
         ax.plot(v["x"], v["y"], color=c, linewidth=2.0, marker="o", markersize=4, label=lab)
-        ax.text(v["x"][-1], v["y"][-1], "  " + lab, fontsize=7, color=INK2, va="center")
         rows += [[lab, x, y] for x, y in zip(v["x"], v["y"])]
     for hl in (hlines or []):
         ax.axhline(hl[0], color=MUTED, linewidth=1.0, linestyle="--")
@@ -163,9 +163,10 @@ def lines(series: Dict[str, Dict], xlabel: str, ylabel: str, title: str, name: s
         ax.set_ylim(*ylim)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(title)
+    nrow = (len(series) + 1) // 2
+    ax.set_title(title, pad=10 + 13 * nrow)
     _grid(ax)
-    ax.legend(fontsize=7, loc="best")
+    ax.legend(fontsize=7, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False)
     _evidence(fig, evidence)
     fig.tight_layout()
     return save(fig, name, ["series", "x", "y"], rows)
@@ -174,7 +175,7 @@ def lines(series: Dict[str, Dict], xlabel: str, ylabel: str, title: str, name: s
 # ------------------------------------------------------------------------------------------------ the system picture
 def system(d: Dict, name: str = "fig_w_system",
            evidence: str = "PROPOSED DESIGN (sizes CALC: wholepen/calc.py collar_geometry, collar_masses); an illustration, not a drawing for manufacture"):
-    """A labelled side view of the recommended pen (the V2 collar): what the hand holds, what moves, what pushes."""
+    """A labelled side view of the whole-pen collar (V2): what the hand holds, what moves, what pushes."""
     plt = _mpl()
     from matplotlib.patches import FancyArrowPatch, Polygon, Circle, Ellipse
     fig, ax = plt.subplots(figsize=(11, 4.6))
@@ -226,7 +227,7 @@ def system(d: Dict, name: str = "fig_w_system",
     ax.set_ylim(-14, 118)
     ax.set_aspect("equal")
     ax.axis("off")
-    ax.set_title("The recommended pen: the whole inner pen swings inside a collar the hand holds", loc="left")
+    ax.set_title("The whole-pen collar: the whole inner pen swings inside a collar the hand holds", loc="left")
     _evidence(fig, evidence)
     fig.tight_layout()
     return save(fig, name, ["item", "value"], [[k, v] for k, v in d.items()])
@@ -250,7 +251,7 @@ def fig_headline():
     s = _load("summary.json")
     if not s:
         return None
-    ds = ["none", "nose", "collar_nose", "collar_nose_oracle"]
+    ds = ["none", "nose", "collar_nose", "nose_oracle"]
     rr = [r for r in s["headline"]["rows"] + (s.get("headline_real") or {}).get("rows", [])
           if r["design"] in ds and r.get("n_writers", 2) >= 2]
     order = [c[0] for c in RS.CLASSES] + [c[0] for c in RS.CLASSES_REAL]
@@ -260,7 +261,7 @@ def fig_headline():
     colors = {RS.LABELS[d]: DESIGN_COLORS[d] for d in ds}
     return headline(rows, [RS.LABELS[d] for d in ds], colors,
                     evidence="SIMULATION (sim2, H1 hand, two synthetic test writers; synthetic tremor, a recorded NewHandPD waveform, and "
-                             "study R's recorded PD tremor for the two 'Real PD' rows); nothing measured; the perfect-knowledge bars are a limit, not a result")
+                             "study R's recorded PD tremor for the two 'Real PD' rows); nothing measured; the perfect-knowledge bars (Rev J nose) are a limit, not a result")
 
 
 def fig_writing():
@@ -283,7 +284,7 @@ def fig_writing():
             cap = (f"tremor left {rr['tip_tremor_mm']:.1f} mm; {5 * rr['words_app']:.0f} of 5 words read; ink laid "
                    f"{100 * rr['coverage']:.0f} %") if rr.get("tip_tremor_mm") is not None else ""
             z = np.load(fn)
-            t0, t1 = 4.3, 7.6                                     # the first two words ("return library")
+            t0, t1 = 4.2, 11.4                                    # the first two words ("return library")
             m = (z["t"] > t0) & (z["t"] < t1)
             mi = (z["it_t"] > t0) & (z["it_t"] < t1)
             ink = np.column_stack([z["ink"][m] * 1e3, z["contact"][m]])
@@ -343,9 +344,14 @@ def fig_cmg_energy():
     for i, r in enumerate(rows):
         x, y = r["E_J_total"], r["tip_tremor_cancellable_5Hz_mm"]
         ax.plot([x], [y], "o", color=SLOT[i % len(SLOT)], markersize=7)
-        ax.text(x * 1.05, y, "  " + r["name"].split(",")[0].replace("study W turret pair", "W pair"), fontsize=7, color=INK2, va="center")
+        ax.text(x * 1.05, y, "  " + r["name"].replace("study W turret pair, ", "W pair, ").replace("study W pair, ", "W pair, "), fontsize=7, color=INK2, va="center")
         out.append([r["name"], x, y, r["h_Nms"]])
     ax.set_xscale("log")
+    from matplotlib.ticker import FixedLocator, NullLocator
+    ax.xaxis.set_major_locator(FixedLocator([1, 2, 5, 10, 20]))
+    ax.xaxis.set_minor_locator(NullLocator())
+    ax.set_xticklabels(["1", "2", "5", "10", "20"])
+    ax.set_xlim(1.0, 40.0)
     ax.set_xlabel("energy stored in the spinning rotors (J)")
     ax.set_ylabel("largest tip tremor it could cancel at 5 Hz (mm)")
     ax.set_title("Gyroscopes: what they could do against what they store")
@@ -361,48 +367,67 @@ def fig_grips():
     if not s:
         return None
     rr = s.get("tail_and_collar_vs_locked_grips", [])
-    series = {}
-    for act in ("collar_nose", "collar_oracle", "gt_nose"):
-        v = sorted([r for r in rr if r["active"] == act], key=lambda r: r["grip"])
+    series, cols = {}, {}
+    for act, lock, lab, col in (("collar_nose", "collar_locked_nose", "collar + nose vs collar locked + nose", DESIGN_COLORS["collar_nose"]),
+                                ("gt_nose", "gt_locked_nose", "gyro tail + nose vs tail locked + nose", DESIGN_COLORS["gt_nose"]),
+                                ("collar_oracle", "collar_locked", "collar alone, perfect knowledge, vs the pen locked", DESIGN_COLORS["collar_oracle"])):
+        v = sorted([r for r in rr if r["active"] == act and r["locked"] == lock], key=lambda r: r["grip"])
         if v:
-            series[RS.LABELS[act]] = {"x": [r["grip"] for r in v], "y": [100 * r["gain_vs_locked"] for r in v]}
+            series[lab] = {"x": [r["grip"] for r in v], "y": [100 * r["gain_vs_locked"] for r in v]}
+            cols[lab] = col
     if not series:
         return None
     return lines(series, "grip stiffness (x nominal)", "improvement over the same pen locked (%)",
-                 "In the simulator: collar and gyro tail against the same mass locked", "fig_w_grips_sim",
-                 "SIMULATION (tuning writer 100, ET 6 Hz 3 mm, seed 300)", hlines=[(10.0, "gate 10 %")],
-                 colors={RS.LABELS[k]: DESIGN_COLORS[k] for k in ("collar_nose", "collar_oracle", "gt_nose")})
+                 "In the simulator: each device against the same mass locked", "fig_w_grips_sim",
+                 "SIMULATION (tuning writer 100, ET 6 Hz 3 mm, seed 300); the nose works in both arms of the first two comparisons",
+                 hlines=[(10.0, "gate 10 %")], colors=cols)
 
 
 def fig_gate():
+    """Write only when in reach (writer 0, 8 mm): the tremor left in the ink that is laid, the ink laid and the strokes
+    lost, from the test rows and the saved records (summary.strokes_from_traces)."""
     from . import run_study as RS
     s = _load("summary.json")
-    if not s:
+    if not s or not s.get("strokes_from_traces"):
         return None
-    rows = [r for r in s["headline"]["rows"] if r["design"] in ("nose", "nose_gate")]
+    st = {(r["w"], r["class"], r["design"]): r for r in s["strokes_from_traces"]}
+    rows = {r["key"]: r for r in RS.Rows("test").values()}
+    cls = ["ET_severe", "PD_severe"]
+    des = ["none", "nose", "nose_gate"]
     plt = _mpl()
-    fig, axs = plt.subplots(1, 2, figsize=(10, 3.6))
+    fig, axs = plt.subplots(1, 3, figsize=(12, 3.2))
     out = []
-    cls = [c for c in s["headline"]["classes"] if any(r["class"] == c for r in rows)]
-    for j, dn in enumerate(("nose", "nose_gate")):
-        rr = [next((r for r in rows if r["class"] == c and r["design"] == dn), None) for c in cls]
-        ys = np.arange(len(cls)) + (j - 0.5) * 0.4
-        axs[0].barh(ys, [r["ink_err_um"] if r else 0 for r in rr], height=0.38, color=DESIGN_COLORS[dn], label=RS.LABELS[dn])
-        axs[1].barh(ys, [100 * (r["coverage"] or 0) if r else 0 for r in rr], height=0.38, color=DESIGN_COLORS[dn])
-        out += [[c, dn, r["ink_err_um"] if r else None, r["coverage"] if r else None] for c, r in zip(cls, rr)]
+    h = 0.26
+    for j, dn in enumerate(des):
+        ys = np.arange(len(cls)) + (j - 1) * h
+        tip = [rows.get(f"h1|g1|w0|s200|{c}|{dn}", {}).get("tip_tremor_mm", np.nan) for c in cls]
+        cov = [100 * st.get((0, c, dn), {}).get("coverage_intended", np.nan) for c in cls]
+        miss = [st.get((0, c, dn), {}).get("missing_strokes", np.nan) for c in cls]
+        for k, (ax, vals, f) in enumerate(((axs[0], tip, "{:.1f}"), (axs[1], cov, "{:.0f} %"), (axs[2], miss, "{:.0f}"))):
+            ax.barh(ys, vals, height=h * 0.9, color=DESIGN_COLORS[dn], edgecolor=SURF, linewidth=1.0, label=RS.LABELS[dn] if k == 0 else None)
+            for y, v in zip(ys, vals):
+                if np.isfinite(v):
+                    ax.text(v, y, " " + f.format(v), va="center", fontsize=7, color=INK2)
+        out += [[c, dn, t_, c_, m_] for c, t_, c_, m_ in zip(cls, tip, cov, miss)]
     for ax in axs:
         ax.set_yticks(range(len(cls)))
-        ax.set_yticklabels([RS.CLASS_LABEL[c] for c in cls], fontsize=7)
+        ax.set_yticklabels([RS.CLASS_LABEL[c] for c in cls], fontsize=8)
         ax.invert_yaxis()
         _grid(ax, "x")
-    axs[0].set_xlabel("ink error while inking (um)")
-    axs[1].set_xlabel("share of the letters' ink laid (%)")
-    axs[0].set_title("Writing only when in reach: the error drops...")
-    axs[1].set_title("...because ink goes missing")
-    axs[0].legend(fontsize=7, loc="lower right")
-    _evidence(fig, "SIMULATION (test writers 0-1); coverage = share of the tremor-free run's inked samples also inked")
+    for ax in axs[1:]:
+        ax.set_yticklabels([])
+    axs[0].set_xlabel("tremor left in the ink laid (mm)")
+    axs[1].set_xlabel("ink laid (% of the intended strokes)")
+    axs[2].set_xlabel("strokes less than half inked (of 42)")
+    axs[0].set_title("The ink that is laid shakes less...")
+    axs[1].set_title("...because less ink is laid...")
+    axs[2].set_title("...and whole strokes go missing")
+    axs[1].set_xlim(0, 110)
+    h_, l_ = axs[0].get_legend_handles_labels()
+    _evidence(fig, "SIMULATION (test writer 0, one seed); strokes = the writer's intended pen-down segments; contact flicker under 40 ms merged")
     fig.tight_layout()
-    return save(fig, "fig_w_gate", ["class", "design", "ink_err_um", "coverage"], out)
+    fig.legend(h_, l_, loc="lower center", ncol=3, bbox_to_anchor=(0.5, 1.0), fontsize=8, frameon=False)
+    return save(fig, "fig_w_gate", ["class", "design", "tip_tremor_mm", "ink_laid_pct_of_intended", "strokes_less_than_half_inked"], out)
 
 
 def all_figures() -> Dict:

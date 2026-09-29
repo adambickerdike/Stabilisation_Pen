@@ -1,0 +1,36 @@
+class,design,tip_tremor_mm,words_readable_of_10
+"ET mild (1 mm, 6 Hz)","Rev J pen, nothing moving (no help)",1.09,8.0
+"ET moderate (3 mm, 6 Hz)","Rev J pen, nothing moving (no help)",3.7,0.0
+"ET severe (8 mm, 6 Hz)","Rev J pen, nothing moving (no help)",8.83,0.0
+"ET moderate, fast (3 mm, 9 Hz)","Rev J pen, nothing moving (no help)",3.95,0.0
+"PD action mild (1 mm, 5 Hz)","Rev J pen, nothing moving (no help)",1.03,6.0
+"PD action moderate (3 mm, 5 Hz)","Rev J pen, nothing moving (no help)",3.47,0.0
+"PD action severe (8 mm, 5 Hz)","Rev J pen, nothing moving (no help)",8.72,0.0
+"PD re-emergent severe (8 mm, 5 Hz, in pauses)","Rev J pen, nothing moving (no help)",1.71,2.0
+"PD recorded patient waveform (3 mm, 5.4 Hz)","Rev J pen, nothing moving (no help)",5.1,3.0
+"Real PD, moderate class (0.24 mm, study R)","Rev J pen, nothing moving (no help)",0.26,10.0
+"Real PD, severe class (1.72 mm, study R)","Rev J pen, nothing moving (no help)",2.29,3.0
+"ET mild (1 mm, 6 Hz)","Rev J moving nose (±6.57 mm), as built",0.85,8.0
+"ET moderate (3 mm, 6 Hz)","Rev J moving nose (±6.57 mm), as built",1.15,9.0
+"ET severe (8 mm, 6 Hz)","Rev J moving nose (±6.57 mm), as built",3.22,1.0
+"ET moderate, fast (3 mm, 9 Hz)","Rev J moving nose (±6.57 mm), as built",1.23,7.0
+"PD action mild (1 mm, 5 Hz)","Rev J moving nose (±6.57 mm), as built",0.98,7.0
+"PD action moderate (3 mm, 5 Hz)","Rev J moving nose (±6.57 mm), as built",1.4,5.0
+"PD action severe (8 mm, 5 Hz)","Rev J moving nose (±6.57 mm), as built",3.35,2.0
+"PD re-emergent severe (8 mm, 5 Hz, in pauses)","Rev J moving nose (±6.57 mm), as built",1.29,3.0
+"PD recorded patient waveform (3 mm, 5.4 Hz)","Rev J moving nose (±6.57 mm), as built",3.59,3.0
+"Real PD, moderate class (0.24 mm, study R)","Rev J moving nose (±6.57 mm), as built",0.26,10.0
+"Real PD, severe class (1.72 mm, study R)","Rev J moving nose (±6.57 mm), as built",1.6,5.0
+"ET moderate (3 mm, 6 Hz)",whole-pen collar + Rev J nose,1.1,8.0
+"ET severe (8 mm, 6 Hz)",whole-pen collar + Rev J nose,3.21,0.0
+"PD action moderate (3 mm, 5 Hz)",whole-pen collar + Rev J nose,1.36,6.0
+"PD action severe (8 mm, 5 Hz)",whole-pen collar + Rev J nose,3.24,1.0
+"PD re-emergent severe (8 mm, 5 Hz, in pauses)",whole-pen collar + Rev J nose,1.25,3.0
+"PD recorded patient waveform (3 mm, 5.4 Hz)",whole-pen collar + Rev J nose,3.3,3.0
+"Real PD, moderate class (0.24 mm, study R)",whole-pen collar + Rev J nose,0.24,10.0
+"Real PD, severe class (1.72 mm, study R)",whole-pen collar + Rev J nose,1.37,7.0
+"ET moderate (3 mm, 6 Hz)","Rev J nose, perfect tremor knowledge (limit)",0.24,10.0
+"ET severe (8 mm, 6 Hz)","Rev J nose, perfect tremor knowledge (limit)",2.18,6.0
+"PD action moderate (3 mm, 5 Hz)","Rev J nose, perfect tremor knowledge (limit)",0.14,10.0
+"PD action severe (8 mm, 5 Hz)","Rev J nose, perfect tremor knowledge (limit)",1.97,4.0
+"PD re-emergent severe (8 mm, 5 Hz, in pauses)","Rev J nose, perfect tremor knowledge (limit)",0.06,10.0

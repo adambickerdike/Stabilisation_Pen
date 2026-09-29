@@ -210,6 +210,13 @@ def _derived() -> List[Dict]:
         itx = [f"{r['class']}: collar+nose vs collar locked+nose {100 * r['collar_gain_vs_locked']:.0f} %"
                + (f", with perfect knowledge collar+nose vs nose {100 * r['oracle_collar_gain']:.0f} %" if r.get("oracle_collar_gain") is not None else "")
                for r in inc if r.get("collar_gain_vs_locked") is not None]
+        lcmp = summ.get("light_compare") or {}
+        for r in lcmp.get("rows", []):
+            if r["design"].startswith("light_"):
+                for c in lcmp.get("classes", []):
+                    v = r.get(c)
+                    if v:
+                        itx.append(f"light (24 g) inner pen {r['design']} {c}: {v['tip_mm']:.2f} mm, ink laid {100 * v['coverage']:.0f} %")
         R.append(dict(id="ACT-132", topic="Whole-pen collar (V2) with the Rev J nose in the closed loop, test writers",
                       citation="This ledger's simulation: wholepen/run_study.py stages test and limits (results/wholepen/test.json, summary.json)", year="2026",
                       doi_or_url="results/wholepen/summary.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",

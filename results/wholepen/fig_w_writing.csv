@@ -1,0 +1,25 @@
+row,col,title,caption
+0,0,"ET moderate (3 mm, 6 Hz)
+Rev J pen, nothing moving (no help)",tremor left 3.8 mm; 0 of 5 words read; ink laid 97 %
+0,1,"ET moderate (3 mm, 6 Hz)
+Rev J moving nose (±6.57 mm), as built",tremor left 1.0 mm; 5 of 5 words read; ink laid 94 %
+0,2,"ET moderate (3 mm, 6 Hz)
+whole-pen collar + Rev J nose",tremor left 1.0 mm; 5 of 5 words read; ink laid 93 %
+0,3,"ET moderate (3 mm, 6 Hz)
+Rev J nose, perfect tremor knowledge (limit)",tremor left 0.2 mm; 5 of 5 words read; ink laid 94 %
+1,0,"ET severe (8 mm, 6 Hz)
+Rev J pen, nothing moving (no help)",tremor left 8.3 mm; 0 of 5 words read; ink laid 92 %
+1,1,"ET severe (8 mm, 6 Hz)
+Rev J moving nose (±6.57 mm), as built",tremor left 3.0 mm; 1 of 5 words read; ink laid 74 %
+1,2,"ET severe (8 mm, 6 Hz)
+whole-pen collar + Rev J nose",tremor left 2.7 mm; 0 of 5 words read; ink laid 57 %
+1,3,"ET severe (8 mm, 6 Hz)
+Rev J nose, perfect tremor knowledge (limit)",tremor left 1.9 mm; 4 of 5 words read; ink laid 73 %
+2,0,"PD action severe (8 mm, 5 Hz)
+Rev J pen, nothing moving (no help)",tremor left 9.7 mm; 0 of 5 words read; ink laid 95 %
+2,1,"PD action severe (8 mm, 5 Hz)
+Rev J moving nose (±6.57 mm), as built",tremor left 3.6 mm; 0 of 5 words read; ink laid 71 %
+2,2,"PD action severe (8 mm, 5 Hz)
+whole-pen collar + Rev J nose",tremor left 3.3 mm; 0 of 5 words read; ink laid 61 %
+2,3,"PD action severe (8 mm, 5 Hz)
+Rev J nose, perfect tremor knowledge (limit)",tremor left 2.5 mm; 0 of 5 words read; ink laid 69 %

@@ -47,10 +47,12 @@ def servo_delay(pen=None) -> float:
     return PR.servo_group_delay(pen or H.revj_pen())
 
 
-def acc_blocks(st, m: int = 2, acc_gd: float = ACC_GD):
+def acc_blocks(st, m: int = 2, acc_gd: Optional[float] = None):
     """Pairs of accelerometer samples averaged (the FIFO read of fusion's AKF): acquisition time (minus the anti-
-    aliasing group delay), availability time, values."""
+    aliasing group delay; the module's ACC_GD unless given, read at call time so a simulator without the filter can
+    set it), availability time, values."""
     from fusion import estimators as ES
+    acc_gd = ACC_GD if acc_gd is None else acc_gd
     ta, tav, y = ES._block_average(st.acc_t, st.acc_av, st.acc, m)
     return np.ascontiguousarray(ta - acc_gd), np.ascontiguousarray(tav), np.ascontiguousarray(y, dtype=np.float64)
 
@@ -422,7 +424,46 @@ def raw_estimate(name: str, st, p: Optional[Dict] = None, horizon: Optional[floa
     if name in ("fir", "net"):
         from . import learned as LE
         return LE.estimate(name, st, p, horizon, case=case)
+    if name == "gatefast":
+        return gatefast(st, p, case=case, sensor=sensor, horizon=horizon)
+    if name == "ai2tcn":
+        return ai2_tcn(st)
     raise KeyError(name)
+
+
+def ai2_tcn(st):
+    """ai2's causal TCN (trained on synthetic writers; R's 'Rev J + AI' row) at lag 0: its 500 Hz outputs held and
+    linearly extrapolated to the ticks (ai2.candidates.commands at lag 0, which is what R ran)."""
+    from realdata import hw1 as H
+    from ai2 import data as DA
+    from ai2 import learned as L2
+    from fusion import learned as FL
+    M = H.ai2_models()
+    X, tk = FL.features(st, DA.NET_HZ)
+    Y = L2.predict(M["tcn"], L2.make_inputs("tcn", X))
+    return np.ascontiguousarray(L2.hold_extrapolate(tk, Y[:, 0, :], st.tick_t)), {"tcn_info": "ai2 build/models tcn"}
+
+
+def gatefast(st, p: Dict, case=None, sensor: str = "deltapen", horizon: Optional[float] = None):
+    """The retuned binary gate exactly as tuned (search.gate_search): D = the listening AKF (or p['D']), ai2's detector
+    on the page track with the chosen window and band, the hysteresis gate x the amplitude gate on the line amplitude
+    (search.hyst_gate), d = gain g D + (1 - g) fb, fb = the Rev H tracker as built or nothing."""
+    from ai2 import smoothers as SM
+    from . import search as SR
+    Dd = p.get("D") or SR.listening_design()
+    D, _ = raw_estimate(Dd["family"], st, Dd.get("params"), horizon=horizon, case=case, sensor=sensor)
+    g_p = p["gate"]
+    dp = dict(SM.DET_DEFAULTS)
+    dp.update(SR.DET_CONFIGS[g_p["det"]])
+    det = SM.detector(st, dp)
+    gu = SR.hyst_gate(det["t"], det["ratio"], det["amp"], g_p)
+    k = np.searchsorted(det["t"], st.tick_t, side="right") - 1
+    g = np.where(k >= 0, gu[np.clip(k, 0, len(gu) - 1)], 0.0)[:, None]
+    d = g_p["gain"] * g * D
+    if g_p["fallback"] == "revh":
+        fb, _ = raw_estimate("revh", st, None, horizon=horizon)
+        d = d + (1.0 - g) * fb
+    return d, {"det_gate": g[:, 0], "gate_open": float(np.mean(g > 0.5))}
 
 
 def estimate(design: Dict, st, case=None, sensor: str = "deltapen", horizon: Optional[float] = None):
@@ -430,7 +471,11 @@ def estimate(design: Dict, st, case=None, sensor: str = "deltapen", horizon: Opt
     d, info = raw_estimate(design["family"], st, design.get("params"), horizon=horizon, case=case, sensor=sensor)
     if design.get("auth"):
         Ts = float(st.tick_t[1] - st.tick_t[0])
-        d, g, A = authority(d, Ts, design["auth"])
+        au = design["auth"]
+        conf = None
+        if "r_lo" in au:                  # the soft line confidence (search.conf_ratio's detector settings)
+            conf = conf_from_ratio(det_ratio(st, DET_CONF_DEFAULTS)["ratio"], au["r_lo"], au["r_hi"])
+        d, g, A = authority(d, Ts, au, conf)
         info = dict(info or {})
         info["auth_g"] = g
         info["auth_A"] = A
@@ -469,3 +514,40 @@ def det_ratio(st, p: Optional[Dict] = None, contact_only: bool = True) -> Dict:
 
 def conf_from_ratio(ratio: np.ndarray, r_lo: float, r_hi: float) -> np.ndarray:
     return np.clip((ratio - r_lo) / max(r_hi - r_lo, 1e-9), 0.0, 1.0)
+
+
+def imu_track(st, fs: float = 1000.0, hp_hz: float = 0.5, leak_s: float = 2.0):
+    """A position-like track from the accelerometer alone (causal): each 1 ms grid point takes the newest available
+    acceleration pair, high-passed at hp_hz (2nd order), integrated twice with leaky integrators (time constant
+    leak_s).  Its tremor band is the handle's, without the page sensor's error; its slow part is not a position."""
+    from scipy.signal import butter, lfilter
+    from fusion import sensors as S
+    ta, tav, y = acc_blocks(st)
+    tg = np.arange(float(tav[0]), float(st.tick_t[-1]), 1.0 / fs)
+    j = np.searchsorted(tav, tg, side="right") - 1
+    a = y[np.clip(j, 0, len(y) - 1)]
+    b, aa = butter(2, hp_hz, btype="high", fs=fs)
+    a = lfilter(b, aa, a, axis=0)
+    lam = math.exp(-1.0 / (fs * leak_s))
+    v = lfilter([1.0 / fs], [1.0, -lam], a, axis=0)
+    x = lfilter([1.0 / fs], [1.0, -lam], v, axis=0)
+    jc = np.searchsorted(st.con_av, tg, side="right") - 1
+    ok = np.where(jc >= 0, st.con[np.maximum(jc, 0)], 0.0)
+    return S.Streams(tick_t=st.tick_t, acc_t=st.acc_t, acc_av=st.acc_av, acc=st.acc, pos_t=tg, pos_av=tg.copy(),
+                     pos=np.ascontiguousarray(x), pos_ok=ok.astype(np.float64), con_t=st.con_t, con_av=st.con_av,
+                     con=st.con, meta=st.meta)
+
+
+def det_ratio_imu(st, p: Optional[Dict] = None) -> Dict:
+    """ai2's detector on the IMU track (imu_track), samples with the ball on the paper only."""
+    from ai2 import smoothers as SM
+    q = dict(DET_CONF_DEFAULTS)
+    q.update(p or {})
+    it = imu_track(st)
+    det = SM.detector(it, q)
+    k = np.searchsorted(det["t"], st.tick_t, side="right") - 1
+    ok = k >= 0
+    kk = np.clip(k, 0, len(det["t"]) - 1)
+    return {"ratio": np.where(ok, det["ratio"][kk], 0.0), "amp": np.where(ok, det["amp"][kk], 0.0),
+            "f": np.where(ok, det["f_hat"][kk], 0.0), "t_up": det["t"], "ratio_up": det["ratio"],
+            "amp_up": det["amp"], "params": det["params"]}

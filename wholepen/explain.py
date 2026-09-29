@@ -1,5 +1,6 @@
 r"""Explainer outputs: layout_parts.json (the explainer's pen-layout schema, as results/drive/layout_parts.json) for the
-recommended whole-pen collar (the review's option B, study W's V2 load path) with the gyroscopic tail as an optional,
+whole-pen collar (the review's option B, study W's V2 load path; the reference design for shifting the whole pen, a bench
+experiment, not adopted for the product: proposed DEC-051) with the gyroscopic tail as an optional,
 separate group, and animation.json keyframes (time, part, position, angle) sampled from a SIMULATION run so the 3-D
 explainer can show the whole pen moving.
 
@@ -86,10 +87,10 @@ def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float =
     comps.append({"id": "gt_housing", "label": "Optional gyro tail (bench experiment only)", "group": "gyro_tail", "shape": "tube",
                   "z0": z0, "z1": round(z1, 2), "d0": round(d["od_mm"], 2), "d1": round(d["od_mm"], 2), "d_in": round(d["od_mm"] - 1.6, 2),
                   "moves_with": "inner_pen", "optional": True,
-                  "function": f"Two {d['rotor_g']:.0f} g tungsten rotors at {d['rpm']:.0f} rpm storing {d['E_stored_J']:.0f} J: an experiment for the review's gate G5, not part of the recommended pen.",
+                  "function": f"Two {d['rotor_g']:.0f} g tungsten rotors at {d['rpm']:.0f} rpm storing {d['E_stored_J']:.0f} J: an experiment for the review's gate G5, not part of any pen.",
                   "part": "PROPOSED DESIGN (designs.cmg_design)", "ledger": "AMF-49,AMF-121,AMF-126",
                   "mass_g": round(d["total_g"], 1)})
-    return {"meta": {"evidence_status": "PROPOSED DESIGN (study W's recommended whole-pen collar, the review's option B with the V2 load path; CALC masses from volumes and catalogue parts; ASSUMPTION dimensions; nothing built or measured)",
+    return {"meta": {"evidence_status": "PROPOSED DESIGN (study W's whole-pen collar, the review's option B with the V2 load path: the reference design for shifting the whole pen, a bench experiment, not adopted for the product (proposed DEC-051); CALC masses from volumes and catalogue parts; ASSUMPTION dimensions; nothing built or measured)",
                      "concept": "the hand holds a collar that rests on the paper; the whole inner pen swings in it on a 2-axis pivot, driven by two motors that push back on the collar and hand; a small fine nib (study B) trims the rest",
                      "replaces": ["front_sleeve", "shell", "gimbal", "carrier", "magnet_cap", "coil_plate"],
                      "replaces_note": "a new architecture, not a Rev J add-on: the 24 mm shell becomes a 100 mm long, 21.7 mm collar around a 92 mm, 12 mm swinging pen; Rev J's own nose can sit in the inner pen instead of the fine nib only if the inner pen grows to 24 mm (then the collar is about 33 mm across); two geared 0824 motors (8 mm across) do not fit beside the swinging pen, so the actuator is a coil plate in the collar's rear wall",
@@ -135,7 +136,7 @@ def write_all() -> Dict:
     write_json("layout_parts.json", lp)
     out = {"layout_parts": os.path.join(RESULTS, "layout_parts.json")}
     d = os.path.join(BUILD, "traces")
-    anim = {"meta": {"evidence_status": "SIMULATION (sim2 + sim2j firmware; the recommended collar with the Rev J nose on test writer 0; synthetic writer and tremor; nothing measured)",
+    anim = {"meta": {"evidence_status": "SIMULATION (sim2 + sim2j firmware; the whole-pen collar carrying the Rev J pen, with the Rev J nose, on test writer 0; synthetic writer and tremor; nothing measured)",
                      "frame": __doc__.split("Animation frame:")[1].split("Evidence status")[0].strip(),
                      "parts": ["hand", "collar", "pivot", "inner_pen", "nose", "ink"], "stabpen.provenance": provenance("SIMULATION")},
             "clips": []}

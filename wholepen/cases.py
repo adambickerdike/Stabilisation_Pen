@@ -305,13 +305,66 @@ def coverage(r, ref, t0: float = PRE_S) -> float:
     return float(c.sum() / max(c_ref.sum(), 1))
 
 
+def _close_gaps(c: np.ndarray, n_gap: int) -> np.ndarray:
+    """Boolean contact with gaps shorter than n_gap samples filled (contact flicker is not a lifted stroke)."""
+    c = np.asarray(c, bool).copy()
+    if n_gap <= 0 or not c.any():
+        return c
+    edges = np.flatnonzero(np.diff(np.r_[0, c.astype(int), 0]))
+    starts, ends = edges[0::2], edges[1::2]
+    for e, s2 in zip(ends[:-1], starts[1:]):
+        if s2 - e < n_gap:
+            c[e:s2] = True
+    return c
+
+
+def _segments(c: np.ndarray, n_min: int = 1):
+    edges = np.flatnonzero(np.diff(np.r_[0, np.asarray(c, bool).astype(int), 0]))
+    return [(a, b) for a, b in zip(edges[0::2], edges[1::2]) if b - a >= n_min]
+
+
+def strokes_from_trace(path: str, t0: float = PRE_S, gap_s: float = 0.04, miss_share: float = 0.5,
+                       t_reposition: float = 0.2) -> Dict:
+    """Coverage, missing strokes and completion time from a saved trace (SIM record at 250 Hz), with the writer's
+    intended pen-down segments as the strokes (gaps shorter than 40 ms merged, strokes shorter than 40 ms dropped) and
+    the run's contact with its flicker (gaps < 40 ms) closed.  Completion time: the lost ink re-traced afterwards at the
+    writer's own mean inked speed plus 0.2 s per lost piece (ASSUMPTION), as in ink_completeness."""
+    z = np.load(path)
+    t = z["t"]
+    n = min(len(t), len(z["it_t"]))
+    t = t[:n]
+    dt = float(t[1] - t[0])
+    ng = max(1, int(round(gap_s / dt)))
+    m = t > t0
+    down = _close_gaps(z["it_down"][:n] > 0.5, ng) & m
+    c = _close_gaps(z["contact"][:n] > 0.5, ng)
+    xy = z["it_xy"][:n]
+    step = np.r_[0.0, np.hypot(*np.diff(xy, axis=0).T)]
+    segs = _segments(down, ng)
+    miss = sum(1 for a, b in segs if float(np.mean(c[a:b])) < miss_share)
+    lost = down & ~c
+    lost_pieces = len(_segments(lost, ng))
+    lost_mm = float(np.sum(step[lost])) * 1e3
+    ink_mm = float(np.sum(step[down])) * 1e3
+    v = ink_mm / max(float(np.sum(down)) * dt, 1e-9)
+    T_task = float(t[-1] - t0)
+    extra = lost_mm / max(v, 1e-9) + t_reposition * lost_pieces
+    return {"coverage_intended": float(np.sum(down & c) / max(down.sum(), 1)), "n_strokes": len(segs), "missing_strokes": miss,
+            "missing_stroke_rate": miss / max(len(segs), 1), "lost_pieces": lost_pieces, "ink_lost_mm": lost_mm,
+            "task_time_s": T_task, "completion_extra_s": extra, "completion_time_ratio": (T_task + extra) / max(T_task, 1e-9)}
+
+
 def ink_completeness(r, ref, t0: float = PRE_S, miss_share: float = 0.5, t_reposition: float = 0.2) -> Dict:
     """What an ink gate costs (the review's section 13: coverage, missing strokes and completion time must accompany
     the error).  Strokes are the reference run's (tremor-free, device off) contiguous pen-down segments after t0; a
     stroke is missing when less than half of it is inked in r.  ink_lost_mm: the reference ink path not laid.
     Completion time: the writer model does not wait for the pen (the task time is unchanged); if the pen re-traced the
     lost ink afterwards ('autowrite' completion, ASSUMPTION: at the writer's own mean inked speed plus 0.2 s to
-    reposition per lost segment), the task would take autowrite_extra_s longer (SIM on the record, CALC for the time)."""
+    reposition per lost segment), the task would take autowrite_extra_s longer (SIM on the record, CALC for the time).
+    NOTE: the reference's contact flickers (sub-40 ms gaps), which splits its strokes into hundreds of pieces, so
+    missing_strokes, missing_stroke_rate, lost_segments, autowrite_extra_s and completion_time_ratio from this function
+    overstate the loss (kept unchanged so every row of the campaign uses one definition); the reported stroke metrics
+    come from strokes_from_trace (the writer's intended strokes, flicker merged).  coverage is unaffected."""
     n = min(len(r["t"]), len(ref["t"]))
     t = ref["t"][:n]
     m = t > t0

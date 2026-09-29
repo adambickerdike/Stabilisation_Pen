@@ -667,26 +667,37 @@ def sim_analysis_md(sim: Dict, cards: Dict) -> str:
                 f"{f(B3.get('P_nib_mW_tremor_mean'), 0)} mW of drive power (the pencil study's recovery-driver convention)."
                 if B3 else ""))
     L.append("")
-    d = F["diag"]
+    dd = F["diag"] or {}
+    d = dd.get("B1") or {}
+    dw = dd.get("B1w") or {}
     ref = F["ref"].get(d.get("cell", ""), {}) if d else {}
-    if d:
+    if d and d.get("writing"):
+        wr, al = d["writing"], d["all_contact"]
         gx, gy = (d.get("page_gain_xy") or [None, None])[:2]
         lx, ly = (d.get("lag_ms_xy") or [None, None])[:2]
         L.append(f"Why perfect knowledge leaves more with B1 than with the Rev J nose (one case taken apart: {d['cell']}, "
-                 f"writer {d['w']}, seed {d['seed']}; SIM, `sim.oracle_diagnosis`): the nib reproduces the commanded page "
+                 f"writer {d['w']}, seed {d['seed']}; SIM, `sim.oracle_diagnosis`). The nib reproduces the commanded page "
                  f"offset with gain {f(gx, 3)} / {f(gy, 3)} (x / y) and a {f(lx, 1)} / {f(ly, 1)} ms lag (the oracle previews "
-                 f"{f(d.get('preview_ms'), 1)} ms). The handle's tremor at its tip point is {f(d['handle_tremor_rms_um'] * 1e-3, 2)} mm "
-                 f"rms with a 95th percentile of {f(d['handle_tremor_p95_mm'], 2)} mm, beyond B1's +-{f(d['reach_mm'], 2)} mm "
-                 f"reach {f(100 * d['share_beyond_reach'], 1)} % of the time: the clipped peaks alone are "
-                 f"{f(d['clip_residual_um'], 0)} um of the {f(d['ink_oracle_um'], 0)} um left (rms of the ink's "
-                 f"deviation from the tremor-free run; {f(d['ink_none_um'], 0)} um with the nib held centred). Most of the "
-                 f"rest is sim2's contact gate: the H1 writer's ball makes {d['lifts_under_5ms']} lifts shorter than 5 ms in this "
-                 f"run ({d['lifts']} in all), and the servo fades the command back in after each touchdown "
-                 f"({f(100 * d['gated_share'], 1)} % of the samples inside the reach, a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms "
-                 f"after a touchdown, {f(100 * d['gated_share_of_command_error'], 0)} % of the command error there). The Rev J "
-                 f"nose shares the gate but its +-3 mm reach does not clip"
+                 f"{f(d.get('preview_ms'), 1)} ms). While the letters are written, the handle's tremor at its tip point is "
+                 f"{f((wr.get('handle_tremor_rms_um') or 0) * 1e-3, 2)} mm rms (95th percentile {f(wr.get('handle_tremor_p95_mm'), 2)} mm) "
+                 f"and passes B1's +-{f(d['reach_mm'], 2)} mm reach {f(100 * (wr.get('share_beyond_reach') or 0), 1)} % of the "
+                 f"time; of the {f(wr.get('ink_oracle_um'), 0)} um left (rms deviation of the ink from the tremor-free run; "
+                 f"{f(wr.get('ink_none_um'), 0)} um with the nib held centred) the clipped peaks are {f(wr.get('clip_residual_um'), 0)} um "
+                 f"and the seed-to-seed floor {f(wr.get('floor_um'), 0)} um"
+                 + (f"; the +-1.5 mm variant in the same case clips {f((dw.get('writing') or {}).get('clip_residual_um'), 0)} um "
+                    f"and leaves {f((dw.get('writing') or {}).get('ink_oracle_um'), 0)} um" if dw.get("writing") else "")
+                 + f". Over all contact, including the 4 s on the paper before writing, the reach clips more "
+                 f"({f(al.get('clip_residual_um'), 0)} of {f(al.get('ink_oracle_um'), 0)} um; beyond the reach "
+                 f"{f(100 * (al.get('share_beyond_reach') or 0), 1)} % of the time). The rest is mostly sim2's contact gate: "
+                 f"the H1 writer's ball makes {d['lifts_under_5ms']} lifts shorter than 5 ms in this run ({d['lifts']} in all), "
+                 f"and the servo fades the command back in after each touchdown ({f(100 * d['gated_share'], 1)} % of the samples "
+                 f"inside the reach, a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms after a touchdown, "
+                 f"{f(100 * d['gated_share_of_command_error'], 0)} % of the command error there). The Rev J nose shares the gate; "
+                 f"its +-3 mm reach never clips"
                  + (f" (its perfect-knowledge ratio in this cell: {f(ref.get('ratio_oracle'), 2)}, B1's: "
-                    f"{f((F['by'].get(d['cell']) or {}).get('ratio_oracle'), 2)})" if ref else "") + ".")
+                    f"{f((F['by'].get(d['cell']) or {}).get('ratio_oracle'), 2)})" if ref else "")
+                 + ". So at 1 mm the reach costs little on the letters and the gate, the lag and the floor set B1's limit; at "
+                   "2 mm the reach dominates (the travel variant below).")
         L.append("")
     tv = F["travel"]
     if tv:

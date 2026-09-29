@@ -87,7 +87,7 @@
     {
       "what": "rest tremor / action tremor at baseline, 3 cohorts (PPMI 423, BioFIND 118, PDBP 873)",
       "value": "58.2 % / 39.0 %",
-      "src": "PDT-64"
+      "src": "PDT-08"
     },
     {
       "what": "any tremor at least once over 7 years (PPMI, de novo, 397)",
@@ -213,11 +213,11 @@
   "label": "LIT (ledger ids) + REAL DATA (realdata.py) + CALC; the class values are ASSUMPTION to be measured (EXP-W10)",
   "stabpen.provenance": {
     "evidence_status": "LITERATURE + REAL DATA + CALC (class values ASSUMPTION)",
-    "generated_utc": "2026-09-29T17:48:39+00:00",
-    "git_revision": "52d471b-dirty",
+    "generated_utc": "2026-09-29T22:16:32+00:00",
+    "git_revision": "ad29a1f-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --stages targets grip calc",
+    "command": "run_study.py --stages light2 real calc targets realdata grip optimise summary figures",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
