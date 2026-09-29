@@ -171,4 +171,4 @@ By frequency (ratio, 1 mm):
 | ball damper + nose | 0.88 | 0.76 | 0.52 | 0.34 |
 | wheel on known text | 0.69 | 0.70 | 0.74 | 0.78 |
 
-Writer adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: ball_brake 0.71; ball_damp 0.73; wheel_tremor_brake 0.76
+Writer adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: heel ball, brake 0.71; heel ball, damper 0.73; wheel: steer + brake 0.76

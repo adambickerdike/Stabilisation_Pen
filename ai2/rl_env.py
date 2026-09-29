@@ -86,9 +86,11 @@ class GateEnv(gym.Env):
     """Shared-control arbitration environment (see the module docstring).  Observation = features + previous w."""
     metadata = {"render_modes": []}
 
-    def __init__(self, backend, episode_s: float = 4.0, seed: int = 0, w_max: float = 1.0, deterministic_start: bool = False):
+    def __init__(self, backend, episode_s: float = 4.0, seed: int = 0, w_max: float = 1.0, deterministic_start: bool = False,
+                 fc_weight: float = 1.0):
         super().__init__()
         self.backend = backend
+        self.fc_weight = fc_weight          # reward weight on tremor-free episodes (false correction), as the supervised
         self.n_dec = int(round(episode_s * 500 / DECIM))
         self.w_max = w_max
         self.rng = np.random.default_rng(seed)
@@ -136,6 +138,8 @@ class GateEnv(gym.Env):
             e = np.sum((d - (w * dl + (1 - w) * dr)) ** 2, axis=1)
             e0 = np.sum((d - dr) ** 2, axis=1)
             r = float(np.mean(e0 - e)) / NORM
+            if self.fc_weight != 1.0 and float(self.ep.get("spec", {}).get("amp", 1.0)) <= 0.0:
+                r *= self.fc_weight                       # training signal only; the policy never sees the label
         r -= 0.02 * abs(w - self.w_prev)                  # smoothness (a jumping arbitration is felt)
         self.w_prev = w
         self.j += 1
@@ -196,9 +200,10 @@ class ResidualEnv(gym.Env):
     against the model-based stack b (normalised by (0.3 mm)^2) minus a small action cost."""
     metadata = {"render_modes": []}
 
-    def __init__(self, backend, episode_s: float = 4.0, seed: int = 0, amp_gate=(0.0, 0.0)):
+    def __init__(self, backend, episode_s: float = 4.0, seed: int = 0, amp_gate=(0.0, 0.0), fc_weight: float = 1.0):
         super().__init__()
         self.backend = backend
+        self.fc_weight = fc_weight
         self.n_steps = int(round(episode_s * 500))
         self.rng = np.random.default_rng(seed)
         self.amp_gate = tuple(amp_gate)
@@ -236,6 +241,8 @@ class ResidualEnv(gym.Env):
             e0 = float(np.sum((d - self.b[k]) ** 2))
             e = float(np.sum((d - self.b[k] - RES_SCALE * a) ** 2))
             r = (e0 - e) / NORM
+            if self.fc_weight != 1.0 and float(self.ep.get("spec", {}).get("amp", 1.0)) <= 0.0:
+                r *= self.fc_weight
         r -= 0.002 * float(np.sum(a * a))
         self.a_prev = a
         self.k += 1

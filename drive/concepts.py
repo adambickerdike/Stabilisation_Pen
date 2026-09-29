@@ -180,10 +180,10 @@ def concepts(heading: Optional[Dict] = None) -> List[Row]:
         f"{t_roll['P_per_N2_W'] * F_TYP_RMS ** 2 * 2:.3f} (2 motors, {F_TYP_RMS} N RMS)",
         f"{2 * t_roll['mass_g'] + 1.5:.1f}", f"ball d 2 mm with rollers: heel contact radius >= {pod_b:.2f} mm (Rev H 6.75)",
         "negligible (< 1 K winding rise)", "gearhead whine (not quantified; EXP-D06)", "high (2 precision micromotors)",
-        "contact survives roll of +/-20 deg with 0.5 mm spring travel; force map rotates with roll (IMU corrects)",
+        "contact survives roll of +/-20 deg with about 0.5 mm spring travel; force map rotates with roll (IMU corrects)",
         f"reflected mass {t_roll['m_reflected_g']:.0f} g per axis; back-drive {t_roll['F_backdrive_N']:.2f} N plus the "
         f"orthogonal roller's axial slip about {scrub_drag_smooth:.2f} N with smooth rollers -> retract when off",
-        "force <= mu_max x P = 0.6 N by physics; lift = zero force; current cap; slip detection",
+        f"force <= mu_max x P = {hi:.2f} N by physics; lift = zero force; current cap; slip detection",
         "Strong and holonomic, but the ball drive slips inside itself (LIT AMF-117), wears and collects ink and paper dust "
         "like old mouse balls (PAT-33); second choice",
         "CALC; MFR AMF-100, AMF-103; LIT AMF-117, AMF-118; ASSUMPTION roller friction", "AMF-100,AMF-103,AMF-117,AMF-118",

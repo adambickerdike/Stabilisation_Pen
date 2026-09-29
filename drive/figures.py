@@ -74,7 +74,10 @@ def _get(cell: Dict, k: str) -> float:
 
 def _save(fig, out: Path, name: str, status: str, extra: str = "") -> Path:
     ps.stamp(fig, status, extra)
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", UserWarning)        # equal-aspect ink panels are not tight-layout compatible
+        fig.tight_layout(rect=(0, 0.03, 1, 1))
     p = out / f"{name}.png"
     fig.savefig(p)
     plt.close(fig)
@@ -99,7 +102,7 @@ def fig_geometry(design: Dict, out: Path) -> Path:
     if ch:
         ax.plot([ch["r_e_mm"]], [ch["R_d_mm"]], **ps.marker_kw(ps.SERIES[0]))
         ax.annotate(f"chosen: 2 mm wheel, {ch['R_d_mm']:.2f} mm", xy=(ch["r_e_mm"], ch["R_d_mm"]),
-                    xytext=(ch["r_e_mm"] + 0.12, ch["R_d_mm"] + 0.9), fontsize=8, color=ps.INK2,
+                    xytext=(1.45, 7.6), fontsize=8, color=ps.INK2,
                     arrowprops=dict(arrowstyle="-", color=ps.INK2, lw=0.7))
     ax.set_xlabel("element radius r_e (mm)")
     ax.set_ylabel("heel contact radius needed (mm)")
@@ -118,7 +121,7 @@ def fig_geometry(design: Dict, out: Path) -> Path:
     ax.set_xlabel("element radius r_e (mm)")
     ax.set_ylabel("mm")
     ax.set_title("What the bigger heel costs the front end", loc="left")
-    ax.legend(loc="center left", fontsize=7.5, bbox_to_anchor=(0.0, 0.62))
+    ax.legend(loc="upper left", fontsize=7.5)
     p = _save(fig, out, "fig_heel_geometry", CALC_STAMP, "drive/geometry.py; opt/inertial/front_end.py method")
     _csv(out / "fig_heel_geometry.csv",
          ["r_e_mm", "R_element_alone_mm", "R_wheel_pod_mm", "R_ball_pod_mm", "sleeve_front_d_mm_wheel_pod",
@@ -291,7 +294,7 @@ def fig_loops_reversal(tasks: Dict, out: Path) -> Optional[Path]:
     axs[0].set_xticklabels([lab(c) for c in conds], rotation=25, ha="right", fontsize=8)
     axs[0].set_ylabel("loop height / 10 mm target")
     axs[0].set_title("(b) 'write big': loops shrinking 0.8 -> 0.6", loc="left")
-    axs[0].legend(fontsize=7.5)
+    axs[0].legend(fontsize=7.5, loc="lower center", ncol=2, framealpha=0.9)
     cells = rv.get("set on b", {})
     cs = [c for c in ["board_full", "ball_full", "wheel_path", "sd_full"] if c in cells]
     xx = np.arange(len(cs))
@@ -336,8 +339,8 @@ def fig_autowrite(tasks: Dict, out: Path) -> Optional[Path]:
     conds = [c for c in order if c in ag]
     paths = aw.get("paths_first_case", {})
     show = [c for c in ["writer_alone", "relaxed_nose", "board_lead+nose", "ball_lead+nose", "sd_lead+nose"] if c in paths]
-    fig = plt.figure(figsize=(15, 6.2 + 1.35 * len(show)))
-    gs = fig.add_gridspec(1 + len(show), 3, height_ratios=[4.2] + [1.0] * len(show))
+    fig = plt.figure(figsize=(15, 6.0 + 0.95 * len(show)))
+    gs = fig.add_gridspec(1 + len(show), 3, height_ratios=[4.2] + [0.75] * len(show), hspace=0.55)
     ax = fig.add_subplot(gs[0, 0])
     _bars(ax, conds, ag, "letters_read_ok", scale=100, color=ps.SERIES[2], ylabel="letters read as target (%)")
     ax.set_title("(e) autowrite: letters read", loc="left")
@@ -423,30 +426,34 @@ def fig_tremor(tasks: Dict, out: Path) -> Optional[Path]:
 
 # ============================================================================== all
 def make_all(design: Optional[Dict], tasks: Optional[Dict], rules: Optional[Dict], out: Path, quick: bool = False) -> List[str]:
-    figs = []
-    sfx = "_quick" if quick else ""
+    """Every figure with its CSV twin.  A --quick run draws into a temporary folder and copies the results as *_quick
+    files, so it never touches the full figures of the same name."""
+    import shutil
+    import tempfile
     o = Path(out)
+    figs: List[str] = []
+    jobs = []
     if design:
-        for f in (fig_geometry, fig_capacity, fig_design_pareto):
+        jobs += [(f, design) for f in (fig_geometry, fig_capacity, fig_design_pareto)]
+    if tasks:
+        jobs += [(f, tasks) for f in (fig_practice, fig_feel, fig_loops_reversal, fig_autowrite, fig_tremor)]
+    with tempfile.TemporaryDirectory() as td:
+        for f, data in jobs:
             try:
-                p = f(design, o)
+                p = f(data, Path(td) if quick else o)
             except KeyError as e:          # a design file from an older run
                 print(f"  skip {f.__name__}: missing {e}")
                 p = None
-            if p:
-                figs.append(str(p))
-    if tasks:
-        for f in (fig_practice, fig_feel, fig_loops_reversal, fig_autowrite, fig_tremor):
-            p = f(tasks, o)
-            if p:
-                if sfx:
-                    q = p.with_name(p.stem + sfx + p.suffix)
-                    p.rename(q)
-                    c = p.with_suffix(".csv")
-                    if c.exists():
-                        c.rename(c.with_name(c.stem + sfx + ".csv"))
-                    p = q
-                figs.append(str(p))
+            if not p:
+                continue
+            if quick:
+                dst = o / (p.stem + "_quick" + p.suffix)
+                shutil.copyfile(p, dst)
+                c = p.with_suffix(".csv")
+                if c.exists():
+                    shutil.copyfile(c, o / (p.stem + "_quick.csv"))
+                p = dst
+            figs.append(str(p))
     return figs
 
 
@@ -655,5 +662,6 @@ def markdown_tables(design: Optional[Dict], tasks: Optional[Dict]) -> str:
                     ad = {k: v for k, v in bc["8Hz_1mm"].items() if "(adapted" in k}
                     if ad:
                         L.append("\nWriter adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: " +
-                                 "; ".join(f"{k.replace(' (adapted writer)', '')} {_f(v.get('ratio'))}" for k, v in ad.items()))
+                                 "; ".join(f"{lab(k.replace(' (adapted writer)', ''))} {_f(v.get('ratio'))}"
+                                           for k, v in ad.items()))
     return "\n".join(L) + "\n"

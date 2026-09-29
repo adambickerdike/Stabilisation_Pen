@@ -1265,8 +1265,8 @@
   ],
   "meta": {
     "evidence_status": "SIMULATION (model HW1-D: HW1 + a friction-limited heel drive; synthetic writers, tremor and writing forces; nothing measured); CALCULATION (contact mechanics, catalogue arithmetic, geometry; PROPOSED DESIGN; nothing measured)",
-    "generated_utc": "2026-09-29T01:05:19+00:00",
-    "git_revision": "0eec4f0-dirty",
+    "generated_utc": "2026-09-29T10:56:59+00:00",
+    "git_revision": "9ba0e9c-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",
@@ -1281,8 +1281,8 @@
   },
   "stabpen.provenance": {
     "evidence_status": "SIMULATION (model HW1-D: HW1 + a friction-limited heel drive; synthetic writers, tremor and writing forces; nothing measured); CALCULATION (contact mechanics, catalogue arithmetic, geometry; PROPOSED DESIGN; nothing measured)",
-    "generated_utc": "2026-09-29T01:05:19+00:00",
-    "git_revision": "0eec4f0-dirty",
+    "generated_utc": "2026-09-29T10:56:59+00:00",
+    "git_revision": "9ba0e9c-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",

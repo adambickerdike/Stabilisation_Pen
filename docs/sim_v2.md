@@ -248,7 +248,17 @@ The residual is the midpoint power estimate's own error; the integrators do not 
 
 ### 5.7 Native against H1 contact on the Rev H cases (SIM, `verification.json` → `native`)
 
-[[NATIVE_TABLE]]
+Model-form check of the paper contact on training seeds 300–301, tremor 1 mm, H1 hand, Rev H-B (SIM):
+
+| Seed, tremor | H1 law: unmodified / oracle ratio | Native, 2 ms (sim2 default): unmodified / oracle | Native, 0.5 ms stiff: unmodified / oracle |
+|---|---|---|---|
+| 300, 8 Hz | 1026 µm / 0.134 | 1017 µm / 0.139 | 1013 µm / 0.138 |
+| 300, 12 Hz | 824 µm / 0.259 | 820 µm / 0.266 | 813 µm / 0.266 |
+| 301, 8 Hz | 874 µm / 0.095 | 856 µm / 0.100 | 853 µm / 0.099 |
+| 301, 12 Hz | 759 µm / 0.174 | 748 µm / 0.183 | 743 µm / 0.183 |
+
+- Both native settings lower the unmodified ink error by 0.4–2.4 % and raise the oracle ratio by 0.003–0.009 against the H1 law.
+- On these writing cases the contact law is a small model-form effect, even though the stiff native setting chatters when the pen is dragged at constant speed (§5.2).
 
 ### 5.8 Refill front stop: a design interaction (SIM, `verification.json` → `frontstop`)
 

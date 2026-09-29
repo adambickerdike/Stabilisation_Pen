@@ -1,0 +1,69 @@
+{
+  "seed": 200,
+  "f0": 8.0,
+  "amp_mm": 2.0,
+  "akf_f_max_Hz": 14.732557997489636,
+  "per_noise_seed": [
+    {
+      "noise_seed": 7200,
+      "f_est_h1_Hz": 7.818299987177202,
+      "f_est_sim2_Hz": 7.818604697092006
+    },
+    {
+      "noise_seed": 8200,
+      "f_est_h1_Hz": 7.818825083658737,
+      "f_est_sim2_Hz": 14.61166920647527
+    },
+    {
+      "noise_seed": 9200,
+      "f_est_h1_Hz": 7.819434289413524,
+      "f_est_sim2_Hz": 14.610315137001246
+    },
+    {
+      "noise_seed": 10200,
+      "f_est_h1_Hz": 7.818742841558809,
+      "f_est_sim2_Hz": 7.819065180083091
+    },
+    {
+      "noise_seed": 11200,
+      "f_est_h1_Hz": 7.8192053425679955,
+      "f_est_sim2_Hz": 14.619670044212704
+    }
+  ],
+  "acc_band_power_sim2_over_h1": {
+    "1-4 Hz": 0.9999946750334903,
+    "4-7 Hz": 0.9992160951564466,
+    "7-9 Hz": 0.9996750650031407,
+    "9-12 Hz": 1.0003855137838311,
+    "12-16 Hz": 0.9921735821823944,
+    "16-30 Hz": 0.989892645177406,
+    "30-100 Hz": 0.9891490551905101,
+    "100-400 Hz": 0.8950285976368432,
+    "400-1900 Hz": 0.9667764636471722
+  },
+  "acc_corr_x_y": [
+    0.9960212701753656,
+    0.9994885740293948
+  ],
+  "page_corr_x_y": [
+    0.9999992031507466,
+    0.9999973955961245
+  ],
+  "label": "SIM: the causal tracker's input streams of both models on the case with the largest causal difference (test seed 200, 8 Hz, 2 mm), and the AKF's settled frequency per sensor-noise seed",
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T10:53:54+00:00",
+    "git_revision": "9ba0e9c-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages streams",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "streams",
+    "quick": false,
+    "script": "sim2/run_study.py"
+  }
+}

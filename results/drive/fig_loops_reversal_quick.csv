@@ -1,0 +1,60 @@
+task,writer,cond,metric,value
+loops,relaxed,none,loop_height_ratio_ink,0.7768052370315507
+loops,relaxed,board_full,loop_height_ratio_ink,0.9076869925843656
+loops,relaxed,ball_full,loop_height_ratio_ink,0.9542932084570636
+loops,relaxed,ballsmooth_full,loop_height_ratio_ink,0.9508465411688827
+loops,relaxed,wheel_path,loop_height_ratio_ink,0.9955366746609451
+loops,relaxed,sd_path,loop_height_ratio_ink,0.9953482634603251
+loops,relaxed,sd_full,loop_height_ratio_ink,0.9953482634603251
+loops,lightly_resisting,none,loop_height_ratio_ink,0.7768043289101851
+loops,lightly_resisting,board_full,loop_height_ratio_ink,0.868587512916784
+loops,lightly_resisting,ball_full,loop_height_ratio_ink,0.8990345856527249
+loops,lightly_resisting,ballsmooth_full,loop_height_ratio_ink,0.8939593265494935
+loops,lightly_resisting,wheel_path,loop_height_ratio_ink,0.9497305384958962
+loops,lightly_resisting,sd_path,loop_height_ratio_ink,0.938081312587788
+loops,lightly_resisting,sd_full,loop_height_ratio_ink,0.938081312587788
+reversal,set on b,ball_full,bowl_correct_side,0.0
+reversal,set on b,ball_full,bowl_coverage,0.10557768924302789
+reversal,set on b,ball_full,felt_p95_N,0.2804907689814615
+reversal,set on b,ball_full,F_max_N,0.30670041364339024
+reversal,set on b,board_full,bowl_correct_side,0.0
+reversal,set on b,board_full,bowl_coverage,0.08764940239043825
+reversal,set on b,board_full,felt_p95_N,0.48132740968199594
+reversal,set on b,board_full,F_max_N,0.39988792039575377
+reversal,set on b,none,bowl_correct_side,0.0
+reversal,set on b,none,bowl_coverage,0.09163346613545817
+reversal,set on b,none,felt_p95_N,
+reversal,set on b,none,F_max_N,0.0
+reversal,set on b,sd_full,bowl_correct_side,0.0
+reversal,set on b,sd_full,bowl_coverage,0.09163346613545817
+reversal,set on b,sd_full,felt_p95_N,0.5165570612736887
+reversal,set on b,sd_full,F_max_N,0.5095923983700537
+reversal,set on b,wheel_path,bowl_correct_side,0.0
+reversal,set on b,wheel_path,bowl_coverage,0.09362549800796813
+reversal,set on b,wheel_path,felt_p95_N,0.5163271677978191
+reversal,set on b,wheel_path,F_max_N,0.5090327788308371
+reversal,relaxed (lead-through),ball_lead,bowl_correct_side,0.930458342741025
+reversal,relaxed (lead-through),ball_lead,bowl_coverage,0.2350597609561753
+reversal,relaxed (lead-through),ball_lead,bowl_to_template_rms_mm,0.33148826557782807
+reversal,relaxed (lead-through),ball_lead,felt_p95_N,0.23396772292599222
+reversal,relaxed (lead-through),ball_lead,F_max_N,0.23712022956338316
+reversal,relaxed (lead-through),board_lead,bowl_correct_side,0.4766312937457665
+reversal,relaxed (lead-through),board_lead,bowl_coverage,0.448207171314741
+reversal,relaxed (lead-through),board_lead,bowl_to_template_rms_mm,0.11860245255851314
+reversal,relaxed (lead-through),board_lead,felt_p95_N,0.19026375630090048
+reversal,relaxed (lead-through),board_lead,F_max_N,0.31170627571260856
+reversal,relaxed (lead-through),none,bowl_correct_side,0.0
+reversal,relaxed (lead-through),none,bowl_coverage,0.03386454183266932
+reversal,relaxed (lead-through),none,bowl_to_template_rms_mm,0.012626112161550386
+reversal,relaxed (lead-through),none,felt_p95_N,
+reversal,relaxed (lead-through),none,F_max_N,0.0
+reversal,relaxed (lead-through),sd_lead,bowl_correct_side,0.9289907428313389
+reversal,relaxed (lead-through),sd_lead,bowl_coverage,0.9402390438247012
+reversal,relaxed (lead-through),sd_lead,bowl_to_template_rms_mm,0.11536983871793405
+reversal,relaxed (lead-through),sd_lead,felt_p95_N,0.29616267188489825
+reversal,relaxed (lead-through),sd_lead,F_max_N,0.35400759077580624
+reversal,relaxed (lead-through),wheel_path,bowl_correct_side,0.0
+reversal,relaxed (lead-through),wheel_path,bowl_coverage,0.03386454183266932
+reversal,relaxed (lead-through),wheel_path,bowl_to_template_rms_mm,0.014421898643525301
+reversal,relaxed (lead-through),wheel_path,felt_p95_N,0.0015251549970932746
+reversal,relaxed (lead-through),wheel_path,F_max_N,0.05269589212420965

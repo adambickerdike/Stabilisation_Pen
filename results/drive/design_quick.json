@@ -1,0 +1,3746 @@
+{
+  "params": {
+    "writing": {
+      "N_mean": {
+        "value": 1.01,
+        "unit": "N",
+        "label": "LIT",
+        "source": "CON-01 (Schomaker & Plamondon 1990: mean of 16 subject means 1.01 N)"
+      },
+      "N_between_sd": {
+        "value": 0.43,
+        "unit": "N",
+        "label": "LIT",
+        "source": "CON-01 between-subject SD 0.43 N; subject means 0.56-2.08 N"
+      },
+      "N_min_writer": {
+        "value": 0.45,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "clip of the per-writer mean below CON-01's lowest subject mean 0.56 N",
+        "note": "children with handwriting difficulty 0.77 +/- 0.36 N (CON-04)"
+      },
+      "N_max_writer": {
+        "value": 2.2,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "clip above CON-01's highest subject mean 2.08 N"
+      },
+      "N_within_sd": {
+        "value": 0.18,
+        "unit": "N",
+        "label": "LIT",
+        "source": "CON-01 within-word SD 0.11-0.25 N, mean 0.18 N"
+      },
+      "N_fluct_hz": {
+        "value": 1.5,
+        "unit": "Hz",
+        "label": "LIT",
+        "source": "CON-04: 1.3-1.6 force fluctuations per second (digit forces)",
+        "note": "used as the corner of the band-limited within-word variation (ASSUMPTION transfer to tip force)"
+      },
+      "N_floor": {
+        "value": 0.15,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "lowest instantaneous writing force while the pen is down"
+      },
+      "F_c_refill": {
+        "value": 0.15,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "Rev H refill constant-force spring (HW1 Pen.F_c; pencil study)"
+      },
+      "theta_deg": {
+        "value": 50.0,
+        "unit": "deg",
+        "label": "LIT",
+        "source": "CON-02 pen angle about 50 deg (HW1 Writing.theta_deg)"
+      },
+      "theta_range_deg": {
+        "value": [
+          35.0,
+          75.0
+        ],
+        "unit": "deg",
+        "label": "ASSUMPTION",
+        "source": "REQ-RVH-002 writing tilts (front_end.py rules)"
+      }
+    },
+    "contact": {
+      "mu_drive_range": {
+        "value": [
+          0.6,
+          1.2
+        ],
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "elastomer tyre on paper; paper-feed rollers (polyurethane, JIS-A 43-75) measure 1.30-2.20 new and 1.05-1.52 after 300 000 sheets on PPC paper (AMF-111); a general-purpose tyre on mixed papers, with paper dust and ink, is taken lower",
+        "note": "EXP-D01 measures it on 6 papers"
+      },
+      "mu_hat_init": {
+        "value": 0.6,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "the controller's starting traction estimate (lower end of the range)"
+      },
+      "mu_static_ratio": {
+        "value": 1.1,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "static/kinetic for the rubber tyre (rubber has little stick-slip gap)"
+      },
+      "k_lat": {
+        "value": 1500.0,
+        "unit": "N/m",
+        "label": "CALC",
+        "source": "tyre tangential stiffness: Mindlin 8aG/(2-nu) in series with O-ring shear G A/h (contact.tyre_stiffness; G, a, A, h ASSUMPTION)",
+        "note": "range 700-3000 N/m; EXP-D02"
+      },
+      "v_stribeck": {
+        "value": 0.002,
+        "unit": "m/s",
+        "label": "ASSUMPTION",
+        "source": "HW1 Writing.v_s"
+      },
+      "tan_delta": {
+        "value": 0.12,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "polyurethane / NBR tyre loss factor at 10-100 Hz (typical range 0.05-0.3)"
+      },
+      "E_tyre": {
+        "value": 8000000.0,
+        "unit": "Pa",
+        "label": "ASSUMPTION",
+        "source": "tyre Young's modulus (Shore A about 75-80)"
+      },
+      "mu_skid": {
+        "value": 0.12,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "HW1 Writing.mu_skid (PTFE-coated POM skid on paper)"
+      },
+      "mu_paper_desk": {
+        "value": [
+          0.25,
+          0.5
+        ],
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "paper on a desk; paper-to-paper COF methods have 12-13 % repeatability and 24-27 % reproducibility between labs (AMF-113), so any value must be measured",
+        "note": "EXP-D03"
+      }
+    },
+    "control": {
+      "tick_hz": {
+        "value": 2000.0,
+        "unit": "Hz",
+        "label": "ASSUMPTION",
+        "source": "as the Rev H controller (HW1 Pen.tick_hz)"
+      },
+      "F_cap": {
+        "value": 0.5,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "software cap on the heel force; handwriting-guidance devices used 0.43-0.49 N (LIT HAP-15, HAP-16, HAP-51), the board 0.4 N; ISO/TS 15066 hand limit is 140 N quasi-static (LIT HAP-70)",
+        "note": "EXP-D07"
+      },
+      "k_safe": {
+        "value": 0.8,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "command at most 0.8 x the estimated traction mu_hat x N_d (slip margin)"
+      },
+      "mu_hat0": {
+        "value": 0.8,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "the controller's starting traction estimate; it does not know the paper (test cases draw the true mu from 0.6-1.2); the slip rule lowers it",
+        "note": "EXP-D01"
+      },
+      "slew_N_s": {
+        "value": 20.0,
+        "unit": "N/s",
+        "label": "ASSUMPTION",
+        "source": "force rate limit (the board uses 8 N/s at 25 Hz; the heel motor is faster)"
+      },
+      "yield_err_mm": {
+        "value": 4.0,
+        "unit": "mm",
+        "label": "ASSUMPTION",
+        "source": "board rule (docs/guidance_board.md 5.4)"
+      },
+      "yield_time_s": {
+        "value": 0.3,
+        "unit": "s",
+        "label": "ASSUMPTION",
+        "source": "board rule; LIT HAP-22/23 advise yielding to a persistent writer"
+      },
+      "slip_rule": {
+        "value": "travel > 1.5 x 1.2 N_d / k_lat + 8 mm/s x 4 ms",
+        "unit": "m",
+        "label": "ASSUMPTION",
+        "source": "slip flag: the heel's travel over the element surface (optical sensor minus element odometry, integrated with a 50 ms leak) exceeds what the tyre can deflect elastically; on each new flag mu_hat drops by 10 % (floor 0.3), and it recovers toward its start over about 2 s without slip",
+        "note": "EXP-D05"
+      },
+      "slip_v_mm_s": {
+        "value": 8.0,
+        "unit": "mm/s",
+        "label": "ASSUMPTION",
+        "source": "sensor-noise margin of the slip rule (x 4 ms)"
+      },
+      "slip_t_s": {
+        "value": 0.05,
+        "unit": "s",
+        "label": "ASSUMPTION",
+        "source": "leak time of the relative-travel integrator"
+      },
+      "k_fc": {
+        "value": 0.7,
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "share of the modelled rolling resistance and reflected-inertia force that the drive compensates (feed-forward); 1.0 would be perfect knowledge"
+      },
+      "steer_law": {
+        "value": "pure pursuit or Stanley (chosen in tuning)",
+        "unit": "-",
+        "label": "ASSUMPTION",
+        "source": "steered wheel path laws: pure pursuit on a look-ahead point, or Stanley (tangent L_t ahead plus atan(k e / v)); results/drive/rules.json records which one the tuning chose"
+      },
+      "N_sense_noise": {
+        "value": 0.01,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "normal-load sensing noise (Hall on the preload spring, OPT-45 class)"
+      },
+      "F_lat_noise": {
+        "value": 0.005,
+        "unit": "N",
+        "label": "ASSUMPTION",
+        "source": "lateral-force sensing noise (Hall on the wheel mount deflection)"
+      },
+      "page_sensor": {
+        "value": [
+          1000.0,
+          0.002,
+          3e-06
+        ],
+        "unit": "Hz, s, m",
+        "label": "ASSUMPTION",
+        "source": "HW1 page sensor (rate, latency, noise)"
+      },
+      "motor_tau_s": {
+        "value": 0.0005,
+        "unit": "s",
+        "label": "CALC",
+        "source": "current-loop time constant: L/R of the 6 mm motors 0.004-0.02 ms plus the 2 kHz tick (AMF-100, AMF-101); the tick dominates"
+      }
+    },
+    "hand_cases": {
+      "relaxed": {
+        "k_arm": 170.0,
+        "b_arm": 11.0,
+        "label": "LIT HAP-26 nominal (config hand.*)"
+      },
+      "lightly_resisting": {
+        "k_arm": 533.0,
+        "b_arm": 27.6,
+        "label": "LIT HAP-26 upper 95 % CI arm (ASSUMPTION: co-contraction)"
+      }
+    },
+    "relax_tau_s": {
+      "value": 0.25,
+      "unit": "s",
+      "label": "ASSUMPTION",
+      "source": "board/control.py lead-through: the relaxed writer's anchor follows the hand"
+    },
+    "board_ref": {
+      "value": 0.4,
+      "unit": "N",
+      "label": "SIM/CALC",
+      "source": "docs/guidance_board.md: cap 0.4 N, 25 Hz, 8 ms; +1 N normal pull"
+    }
+  },
+  "catalog": {
+    "motors": {
+      "fh0620B": {
+        "key": "fh0620B",
+        "label": "Faulhaber 0620 B (6 V) brushless",
+        "kind": "bldc",
+        "d_mm": 6.0,
+        "l_mm": 20.0,
+        "mass_g": 2.5,
+        "V_nom": 6.0,
+        "n0_rpm": 48600,
+        "tau_cont_mNm": 0.28,
+        "tau_stall_mNm": 0.732,
+        "kt_mNm_A": 1.09,
+        "R_ohm": 8.8,
+        "J_gcm2": 0.0095,
+        "tau_fric_mNm": 0.011,
+        "Rth_K_W": 97.5,
+        "T_max_C": 125.0,
+        "ledger": "AMF-100",
+        "label_ev": "MFR",
+        "note": "eshop.faulhaber.com series 0620 B, variant 0620K006B; static friction torque 0.011 mNm (MFR)"
+      },
+      "mxDCX6M": {
+        "key": "mxDCX6M",
+        "label": "maxon DCX 6 M (3 V) coreless DC",
+        "kind": "dc",
+        "d_mm": 6.0,
+        "l_mm": 15.7,
+        "mass_g": 2.4,
+        "V_nom": 3.0,
+        "n0_rpm": 17500,
+        "tau_cont_mNm": 0.332,
+        "tau_stall_mNm": 0.524,
+        "kt_mNm_A": 1.56,
+        "R_ohm": 9.0,
+        "J_gcm2": 0.0183,
+        "tau_fric_mNm": 0.01,
+        "Rth_K_W": 125.0,
+        "T_max_C": 100.0,
+        "ledger": "AMF-101",
+        "label_ev": "MFR",
+        "note": "maxon catalogue 2020/21 p.75; length 15.7 mm and friction torque ASSUMPTION (not in the extract read)"
+      },
+      "mxDCX8M": {
+        "key": "mxDCX8M",
+        "label": "maxon DCX 8 M (4.2 V) coreless DC",
+        "kind": "dc",
+        "d_mm": 8.0,
+        "l_mm": 16.7,
+        "mass_g": 4.3,
+        "V_nom": 4.2,
+        "n0_rpm": 11700,
+        "tau_cont_mNm": 0.649,
+        "tau_stall_mNm": 1.14,
+        "kt_mNm_A": 3.36,
+        "R_ohm": 12.0,
+        "J_gcm2": 0.0379,
+        "tau_fric_mNm": 0.015,
+        "Rth_K_W": 117.9,
+        "T_max_C": 100.0,
+        "ledger": "AMF-101",
+        "label_ev": "MFR",
+        "note": "maxon catalogue 2020/21 p.76; length and mass ASSUMPTION (not in the extract read)"
+      },
+      "orbBMN04": {
+        "key": "orbBMN04",
+        "label": "Orbray (Namiki) BMN04-08 4 mm brushless",
+        "kind": "bldc",
+        "d_mm": 4.0,
+        "l_mm": 8.0,
+        "mass_g": 0.7,
+        "V_nom": 3.0,
+        "n0_rpm": 37600,
+        "tau_cont_mNm": 0.01,
+        "tau_stall_mNm": 0.04,
+        "kt_mNm_A": 0.52,
+        "R_ohm": 30.5,
+        "J_gcm2": 0.0006,
+        "tau_fric_mNm": 0.002,
+        "Rth_K_W": 150.0,
+        "T_max_C": 100.0,
+        "ledger": "AMF-104",
+        "label_ev": "MFR",
+        "note": "orbray.com BMN04-08; length 8 mm, rotor inertia, friction, thermal resistance and T_max ASSUMPTION"
+      },
+      "fhAM0820": {
+        "key": "fhAM0820",
+        "label": "Faulhaber AM0820 stepper (20 steps/rev)",
+        "kind": "stepper",
+        "d_mm": 8.0,
+        "l_mm": 12.0,
+        "mass_g": 3.3,
+        "V_nom": 3.0,
+        "n0_rpm": 15000,
+        "tau_cont_mNm": 0.65,
+        "tau_stall_mNm": 1.0,
+        "kt_mNm_A": 2.0,
+        "R_ohm": 18.0,
+        "J_gcm2": 0.0275,
+        "tau_fric_mNm": 0.13,
+        "Rth_K_W": 69.39999999999999,
+        "T_max_C": 130.0,
+        "ledger": "AMF-105",
+        "label_ev": "MFR",
+        "note": "EN_AM0820_FPS (2026): holding 0.65 mNm nominal, 1 mNm boosted; residual torque 0.13 mNm; kt and n0 stand-ins for the torque-speed curve (ASSUMPTION: 0.6 mNm up to about 6000 rpm on the 2.5x-voltage curve)"
+      }
+    },
+    "gearheads": {
+      "GP6A_3.9": {
+        "key": "GP6A_3.9",
+        "label": "maxon GP 6 A 3.9:1",
+        "d_mm": 6.0,
+        "ratio": 3.9,
+        "eta": 0.88,
+        "tau_cont_mNm": 2.0,
+        "tau_int_mNm": 5.0,
+        "l_mm": 5.3,
+        "mass_g": 1.7,
+        "backlash_deg": 1.8,
+        "ledger": "AMF-102",
+        "label_ev": "MFR",
+        "note": ""
+      },
+      "GP6A_15": {
+        "key": "GP6A_15",
+        "label": "maxon GP 6 A 15:1",
+        "d_mm": 6.0,
+        "ratio": 15.0,
+        "eta": 0.77,
+        "tau_cont_mNm": 5.0,
+        "tau_int_mNm": 10.0,
+        "l_mm": 7.8,
+        "mass_g": 2.1,
+        "backlash_deg": 2.0,
+        "ledger": "AMF-102",
+        "label_ev": "MFR",
+        "note": ""
+      },
+      "GP6A_57": {
+        "key": "GP6A_57",
+        "label": "maxon GP 6 A 57:1",
+        "d_mm": 6.0,
+        "ratio": 57.0,
+        "eta": 0.68,
+        "tau_cont_mNm": 10.0,
+        "tau_int_mNm": 20.0,
+        "l_mm": 10.4,
+        "mass_g": 2.5,
+        "backlash_deg": 2.2,
+        "ledger": "AMF-102",
+        "label_ev": "MFR",
+        "note": ""
+      },
+      "FH06_4": {
+        "key": "FH06_4",
+        "label": "Faulhaber 06/1 4:1",
+        "d_mm": 6.0,
+        "ratio": 4.0,
+        "eta": 0.9,
+        "tau_cont_mNm": 25.0,
+        "tau_int_mNm": 35.0,
+        "l_mm": 9.2,
+        "mass_g": 2.0,
+        "backlash_deg": 2.0,
+        "ledger": "AMF-103",
+        "label_ev": "MFR",
+        "note": "efficiency, length and mass of the 1-stage version ASSUMPTION (series: 25 mNm cont., L 9.2-22.7 mm)"
+      },
+      "FH06_16": {
+        "key": "FH06_16",
+        "label": "Faulhaber 06/1 16:1",
+        "d_mm": 6.0,
+        "ratio": 16.0,
+        "eta": 0.81,
+        "tau_cont_mNm": 25.0,
+        "tau_int_mNm": 35.0,
+        "l_mm": 11.9,
+        "mass_g": 2.5,
+        "backlash_deg": 2.2,
+        "ledger": "AMF-103",
+        "label_ev": "MFR",
+        "note": "efficiency, length and mass ASSUMPTION (0.9 per stage)"
+      },
+      "FH06_64": {
+        "key": "FH06_64",
+        "label": "Faulhaber 06/1 64:1",
+        "d_mm": 6.0,
+        "ratio": 64.0,
+        "eta": 0.73,
+        "tau_cont_mNm": 25.0,
+        "tau_int_mNm": 35.0,
+        "l_mm": 14.6,
+        "mass_g": 3.0,
+        "backlash_deg": 2.4,
+        "ledger": "AMF-103",
+        "label_ev": "MFR",
+        "note": "efficiency, length and mass ASSUMPTION (0.9 per stage)"
+      },
+      "SPG04_100": {
+        "key": "SPG04_100",
+        "label": "Orbray SPG04 about 100:1",
+        "d_mm": 4.0,
+        "ratio": 100.0,
+        "eta": 0.6,
+        "tau_cont_mNm": 3.0,
+        "tau_int_mNm": 5.0,
+        "l_mm": 10.0,
+        "mass_g": 0.8,
+        "backlash_deg": 3.0,
+        "ledger": "AMF-104",
+        "label_ev": "MFR",
+        "note": "SPG04 data not opened: every value ASSUMPTION"
+      }
+    },
+    "paths": {
+      "WHEEL_PATH": {
+        "key": "WHEEL_PATH",
+        "label": "transfer spur 1:1 + 40 deg bevel 1:1 + axle bevel 2:1",
+        "d_mm": 3.0,
+        "ratio": 2.0,
+        "eta": 0.7290000000000001,
+        "tau_cont_mNm": 2.0,
+        "tau_int_mNm": 4.0,
+        "l_mm": 0.0,
+        "mass_g": 0.15,
+        "backlash_deg": 1.5,
+        "ledger": "",
+        "label_ev": "ASSUMPTION",
+        "note": "three meshes at 0.9 each"
+      },
+      "STEER_PATH": {
+        "key": "STEER_PATH",
+        "label": "transfer spur 1:1 + crown 2:1 on the fork",
+        "d_mm": 3.0,
+        "ratio": 2.0,
+        "eta": 0.81,
+        "tau_cont_mNm": 2.0,
+        "tau_int_mNm": 4.0,
+        "l_mm": 0.0,
+        "mass_g": 0.1,
+        "backlash_deg": 1.0,
+        "ledger": "",
+        "label_ev": "ASSUMPTION",
+        "note": "two meshes at 0.9 each; steering angle read at the fork"
+      },
+      "BALL_PATH": {
+        "key": "BALL_PATH",
+        "label": "transfer spur 1:1 + roller bevel 1:1",
+        "d_mm": 3.0,
+        "ratio": 1.0,
+        "eta": 0.81,
+        "tau_cont_mNm": 2.0,
+        "tau_int_mNm": 4.0,
+        "l_mm": 0.0,
+        "mass_g": 0.1,
+        "backlash_deg": 1.5,
+        "ledger": "",
+        "label_ev": "ASSUMPTION",
+        "note": "two meshes at 0.9 each, per roller"
+      }
+    },
+    "parts": {
+      "squiggle": {
+        "key": "squiggle",
+        "label": "New Scale SQL-RV-1.8 SQUIGGLE piezo linear motor",
+        "values": {
+          "size_mm": 2.8,
+          "length_mm": 6.0,
+          "mass_g": 0.16,
+          "stall_N": 0.33,
+          "speed_mm_s_at_0.15N": 7.0,
+          "power_W_moving": 0.34,
+          "hold_power_W": 0.0,
+          "travel_mm": 6.0
+        },
+        "ledger": "AMF-106",
+        "label_ev": "MFR",
+        "note": ""
+      },
+      "twusm4": {
+        "key": "twusm4",
+        "label": "Micro travelling-wave ultrasonic motor, 4.12 mm PZT stator (research device)",
+        "values": {
+          "d_mm": 4.12,
+          "n_max_rpm": 30.0,
+          "stall_mNm": 0.501,
+          "preload_N": 0.323
+        },
+        "ledger": "AMF-107",
+        "label_ev": "LIT",
+        "note": ""
+      },
+      "mrf132dg": {
+        "key": "mrf132dg",
+        "label": "LORD MRF-132DG magnetorheological fluid",
+        "values": {
+          "viscosity_Pa_s_40C": 0.112,
+          "density_g_cm3": 3.05,
+          "yield_kPa_max_plot": 50.0
+        },
+        "ledger": "AMF-108",
+        "label_ev": "MFR",
+        "note": "yield stress read from the datasheet plot (approximate)"
+      },
+      "pmw3360": {
+        "key": "pmw3360",
+        "label": "PixArt PMW3360 optical navigation sensor (paper velocity, slip detection)",
+        "values": {
+          "speed_ips_typ": 250.0,
+          "accel_g": 50.0,
+          "cpi_max": 12000.0,
+          "fps_max": 12000.0,
+          "run_mA": 16.3,
+          "report_Hz": 1000.0
+        },
+        "ledger": "AMF-109",
+        "label_ev": "MFR",
+        "note": ""
+      },
+      "vinci_omni": {
+        "key": "vinci_omni",
+        "label": "Vinci micro omni wheel (smallest commercial omni-wheel found)",
+        "values": {
+          "d_mm": 11.5,
+          "width_mm": 7.5,
+          "n_rollers": 6.0
+        },
+        "ledger": "AMF-110",
+        "label_ev": "MFR",
+        "note": "pre-launch product page"
+      }
+    }
+  },
+  "geometry": {
+    "sizes": [
+      {
+        "r_e_mm": 0.75,
+        "R_d_mm": 7.122347236664161,
+        "sleeve_front_d_mm": 15.744694473328321,
+        "ball_ahead_50_mm": 5.51946638813512,
+        "refill_slide_mm": 13.936596591235208
+      },
+      {
+        "r_e_mm": 1.0,
+        "R_d_mm": 7.606336908979018,
+        "sleeve_front_d_mm": 16.712673817958034,
+        "ball_ahead_50_mm": 5.92558194366813,
+        "refill_slide_mm": 14.524617899359107
+      },
+      {
+        "r_e_mm": 1.25,
+        "R_d_mm": 8.114941853775381,
+        "sleeve_front_d_mm": 17.729883707550762,
+        "ball_ahead_50_mm": 6.352352165261698,
+        "refill_slide_mm": 15.14254543390139
+      },
+      {
+        "r_e_mm": 1.5,
+        "R_d_mm": 8.59893152609024,
+        "sleeve_front_d_mm": 18.69786305218048,
+        "ball_ahead_50_mm": 6.758467720794709,
+        "refill_slide_mm": 15.730566742025296
+      },
+      {
+        "r_e_mm": 2.0,
+        "R_d_mm": 9.591526143201458,
+        "sleeve_front_d_mm": 20.683052286402916,
+        "ball_ahead_50_mm": 7.591353497921285,
+        "refill_slide_mm": 16.93651558469147
+      },
+      {
+        "r_e_mm": 2.5,
+        "R_d_mm": 10.584120760312677,
+        "sleeve_front_d_mm": 22.668241520625354,
+        "ball_ahead_50_mm": 8.424239275047864,
+        "refill_slide_mm": 18.14246442735766
+      },
+      {
+        "r_e_mm": 3.0,
+        "R_d_mm": 11.42902374253487,
+        "sleeve_front_d_mm": 24.35804748506974,
+        "ball_ahead_50_mm": 9.13319705581109,
+        "refill_slide_mm": 19.168975911513634
+      }
+    ],
+    "heel_1p0": {
+      "r_e_mm": 1.0,
+      "R_d_mm": 7.75,
+      "R_skid_mm": 7.4,
+      "delta_mm": 0.35,
+      "spring_travel_mm": 0.4749155163217492,
+      "roll_tolerance_deg": 19.999999999999993,
+      "protrusion_by_tilt": [
+        {
+          "theta_deg": 35.0,
+          "protrusion_mm": 0.3207773892120788
+        },
+        {
+          "theta_deg": 40.0,
+          "protrusion_mm": 0.2833078020794343
+        },
+        {
+          "theta_deg": 50.0,
+          "protrusion_mm": 0.22497566339028877
+        },
+        {
+          "theta_deg": 60.0,
+          "protrusion_mm": 0.190192246987792
+        },
+        {
+          "theta_deg": 75.0,
+          "protrusion_mm": 0.18427887874923232
+        }
+      ],
+      "requirement": {
+        "r_e_mm": 1.0,
+        "R_d_mm": 7.606336908979018,
+        "env_max_mm": 5.363549299292479,
+        "centre_radial_mm": 6.963549299292478,
+        "centre_axial_mm": 0.766044443118978
+      },
+      "front_end": {
+        "R_mm": 7.4,
+        "ball_ahead_50_mm": 5.752444719445577,
+        "ball_ahead_35_mm": 9.958088871424266,
+        "ball_ahead_75_mm": 1.6204773608467786,
+        "refill_slide_range_mm": 14.273929700679616,
+        "sleeve_front_d_mm": 16.3
+      },
+      "front_end_revH": {
+        "R_mm": 6.75,
+        "ball_ahead_50_mm": 5.207029959180343,
+        "ball_ahead_35_mm": 9.02979266704189,
+        "ball_ahead_75_mm": 1.4463103857665491,
+        "refill_slide_range_mm": 13.48421481182163,
+        "sleeve_front_d_mm": 15.0
+      }
+    },
+    "heel_1p25": {
+      "r_e_mm": 1.25,
+      "R_d_mm": 8.25,
+      "R_skid_mm": 7.9,
+      "delta_mm": 0.35,
+      "spring_travel_mm": 0.5070044025597052,
+      "roll_tolerance_deg": 19.999999999999975,
+      "protrusion_by_tilt": [
+        {
+          "theta_deg": 35.0,
+          "protrusion_mm": 0.3292959326398117
+        },
+        {
+          "theta_deg": 40.0,
+          "protrusion_mm": 0.28710586382638226
+        },
+        {
+          "theta_deg": 50.0,
+          "protrusion_mm": 0.22497566339028877
+        },
+        {
+          "theta_deg": 60.0,
+          "protrusion_mm": 0.19399030873474
+        },
+        {
+          "theta_deg": 75.0,
+          "protrusion_mm": 0.20770193199006984
+        }
+      ],
+      "requirement": {
+        "r_e_mm": 1.25,
+        "R_d_mm": 8.114941853775381,
+        "env_max_mm": 5.461457341667206,
+        "centre_radial_mm": 7.311457341667207,
+        "centre_axial_mm": 0.9575555538987225
+      },
+      "front_end": {
+        "R_mm": 7.9,
+        "ball_ahead_50_mm": 6.171994535034215,
+        "ball_ahead_35_mm": 10.672162874795323,
+        "ball_ahead_75_mm": 1.75445195706234,
+        "refill_slide_range_mm": 14.881402692108836,
+        "sleeve_front_d_mm": 17.3
+      },
+      "front_end_revH": {
+        "R_mm": 6.75,
+        "ball_ahead_50_mm": 5.207029959180343,
+        "ball_ahead_35_mm": 9.02979266704189,
+        "ball_ahead_75_mm": 1.4463103857665491,
+        "refill_slide_range_mm": 13.48421481182163,
+        "sleeve_front_d_mm": 15.0
+      }
+    },
+    "heel_1p5": {
+      "r_e_mm": 1.5,
+      "R_d_mm": 8.75,
+      "R_skid_mm": 8.4,
+      "delta_mm": 0.35,
+      "spring_travel_mm": 0.5390932887976613,
+      "roll_tolerance_deg": 19.999999999999975,
+      "protrusion_by_tilt": [
+        {
+          "theta_deg": 35.0,
+          "protrusion_mm": 0.33781447606754467
+        },
+        {
+          "theta_deg": 40.0,
+          "protrusion_mm": 0.2909039255733303
+        },
+        {
+          "theta_deg": 50.0,
+          "protrusion_mm": 0.22497566339028877
+        },
+        {
+          "theta_deg": 60.0,
+          "protrusion_mm": 0.197788370481688
+        },
+        {
+          "theta_deg": 75.0,
+          "protrusion_mm": 0.23112498523090735
+        }
+      ],
+      "requirement": {
+        "r_e_mm": 1.5,
+        "R_d_mm": 8.59893152609024,
+        "env_max_mm": 5.534750111560429,
+        "centre_radial_mm": 7.634750111560431,
+        "centre_axial_mm": 1.149066664678467
+      },
+      "front_end": {
+        "R_mm": 8.4,
+        "ball_ahead_50_mm": 6.591544350622856,
+        "ball_ahead_35_mm": 11.38623687816638,
+        "ball_ahead_75_mm": 1.8884265532779014,
+        "refill_slide_range_mm": 15.488875683538062,
+        "sleeve_front_d_mm": 18.3
+      },
+      "front_end_revH": {
+        "R_mm": 6.75,
+        "ball_ahead_50_mm": 5.207029959180343,
+        "ball_ahead_35_mm": 9.02979266704189,
+        "ball_ahead_75_mm": 1.4463103857665491,
+        "refill_slide_range_mm": 13.48421481182163,
+        "sleeve_front_d_mm": 15.0
+      }
+    },
+    "roll_tolerance": [
+      {
+        "R_s_mm": 7.25,
+        "travel_mm": 0.25,
+        "roll_deg": 14.835111581975733
+      },
+      {
+        "R_s_mm": 7.25,
+        "travel_mm": 0.5,
+        "roll_deg": 20.69354123118598
+      },
+      {
+        "R_s_mm": 7.25,
+        "travel_mm": 0.75,
+        "roll_deg": 25.007833234685126
+      },
+      {
+        "R_s_mm": 7.25,
+        "travel_mm": 1.0,
+        "roll_deg": 28.503510117080133
+      },
+      {
+        "R_s_mm": 7.25,
+        "travel_mm": 1.5,
+        "roll_deg": 34.047732369991536
+      },
+      {
+        "R_s_mm": 8.0,
+        "travel_mm": 0.25,
+        "roll_deg": 14.141110233931645
+      },
+      {
+        "R_s_mm": 8.0,
+        "travel_mm": 0.5,
+        "roll_deg": 19.749922795642572
+      },
+      {
+        "R_s_mm": 8.0,
+        "travel_mm": 0.75,
+        "roll_deg": 23.895508186161493
+      },
+      {
+        "R_s_mm": 8.0,
+        "travel_mm": 1.0,
+        "roll_deg": 27.266044450732828
+      },
+      {
+        "R_s_mm": 8.0,
+        "travel_mm": 1.5,
+        "roll_deg": 32.63689750355374
+      }
+    ],
+    "pods": [
+      {
+        "r_e_mm": 0.75,
+        "R_bare_mm": 7.122347236664161,
+        "R_wheel_pod_mm": 8.13958518440668,
+        "R_ball_pod_mm": 8.05457229142684,
+        "front_end": {
+          "R_mm": 8.13958518440668,
+          "ball_ahead_50_mm": 6.373030374905403,
+          "ball_ahead_35_mm": 11.014325978350664,
+          "ball_ahead_75_mm": 1.8186486137425715,
+          "refill_slide_range_mm": 15.17248574945613,
+          "sleeve_front_d_mm": 17.77917036881336
+        }
+      },
+      {
+        "r_e_mm": 1.0,
+        "R_bare_mm": 7.606336908979018,
+        "R_wheel_pod_mm": 8.675794616071908,
+        "R_ball_pod_mm": 8.47299863988162,
+        "front_end": {
+          "R_mm": 8.675794616071908,
+          "ball_ahead_50_mm": 6.8229635112494735,
+          "ball_ahead_35_mm": 11.780112409379681,
+          "ball_ahead_75_mm": 1.9623254979312204,
+          "refill_slide_range_mm": 15.823951244428606,
+          "sleeve_front_d_mm": 18.851589232143816
+        }
+      },
+      {
+        "r_e_mm": 1.25,
+        "R_bare_mm": 8.114941853775381,
+        "R_wheel_pod_mm": 9.21200404773713,
+        "R_ball_pod_mm": 8.891424988336398,
+        "front_end": {
+          "R_mm": 9.21200404773713,
+          "ball_ahead_50_mm": 7.27289664759354,
+          "ball_ahead_35_mm": 12.54589884040869,
+          "ball_ahead_75_mm": 2.106002382119868,
+          "refill_slide_range_mm": 16.47541673940107,
+          "sleeve_front_d_mm": 19.92400809547426
+        }
+      },
+      {
+        "r_e_mm": 1.5,
+        "R_bare_mm": 8.59893152609024,
+        "R_wheel_pod_mm": 9.748213479402356,
+        "R_ball_pod_mm": 9.309851336791176,
+        "front_end": {
+          "R_mm": 9.748213479402356,
+          "ball_ahead_50_mm": 7.72282978393761,
+          "ball_ahead_35_mm": 13.311685271437705,
+          "ball_ahead_75_mm": 2.2496792663085166,
+          "refill_slide_range_mm": 17.126882234373554,
+          "sleeve_front_d_mm": 20.99642695880471
+        }
+      },
+      {
+        "r_e_mm": 2.0,
+        "R_bare_mm": 9.591526143201458,
+        "R_wheel_pod_mm": 10.820632342732804,
+        "R_ball_pod_mm": 10.146704033700736,
+        "front_end": {
+          "R_mm": 10.820632342732804,
+          "ball_ahead_50_mm": 8.622696056625747,
+          "ball_ahead_35_mm": 14.843258133495727,
+          "ball_ahead_75_mm": 2.5370330346858125,
+          "refill_slide_range_mm": 18.429813224318487,
+          "sleeve_front_d_mm": 23.141264685465607
+        }
+      }
+    ],
+    "chosen_heel": {
+      "r_e_mm": 1.0,
+      "R_d_mm": 8.75,
+      "R_skid_mm": 8.4,
+      "delta_mm": 0.35,
+      "spring_travel_mm": 0.5390932887976613,
+      "roll_tolerance_deg": 19.999999999999975,
+      "protrusion_by_tilt": [
+        {
+          "theta_deg": 35.0,
+          "protrusion_mm": 0.3207773892120788
+        },
+        {
+          "theta_deg": 40.0,
+          "protrusion_mm": 0.2833078020794343
+        },
+        {
+          "theta_deg": 50.0,
+          "protrusion_mm": 0.22497566339028877
+        },
+        {
+          "theta_deg": 60.0,
+          "protrusion_mm": 0.190192246987792
+        },
+        {
+          "theta_deg": 75.0,
+          "protrusion_mm": 0.18427887874923232
+        }
+      ],
+      "front_end": {
+        "R_mm": 8.4,
+        "ball_ahead_50_mm": 6.591544350622856,
+        "ball_ahead_35_mm": 11.38623687816638,
+        "ball_ahead_75_mm": 1.8884265532779014,
+        "refill_slide_range_mm": 15.488875683538062,
+        "sleeve_front_d_mm": 18.3
+      },
+      "front_end_revH": {
+        "R_mm": 6.75,
+        "ball_ahead_50_mm": 5.207029959180343,
+        "ball_ahead_35_mm": 9.02979266704189,
+        "ball_ahead_75_mm": 1.4463103857665491,
+        "refill_slide_range_mm": 13.48421481182163,
+        "sleeve_front_d_mm": 15.0
+      }
+    }
+  },
+  "capacity": [
+    {
+      "P_N": 0.3,
+      "mu": 0.6,
+      "cap_mean_N": 0.1786398211452061,
+      "cap_p10_N": 0.18,
+      "cap_p50_N": 0.18,
+      "share_full": 0.937,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.3,
+      "mu": 0.9,
+      "cap_mean_N": 0.2679597317178092,
+      "cap_p10_N": 0.27,
+      "cap_p50_N": 0.27,
+      "share_full": 0.937,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.3,
+      "mu": 1.2,
+      "cap_mean_N": 0.3572796422904122,
+      "cap_p10_N": 0.36,
+      "cap_p50_N": 0.36,
+      "share_full": 0.937,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.4,
+      "mu": 0.6,
+      "cap_mean_N": 0.23239303339288234,
+      "cap_p10_N": 0.20844529455641309,
+      "cap_p50_N": 0.24,
+      "share_full": 0.854,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.4,
+      "mu": 0.9,
+      "cap_mean_N": 0.34858955008932346,
+      "cap_p10_N": 0.31266794183461966,
+      "cap_p50_N": 0.36000000000000004,
+      "share_full": 0.854,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.4,
+      "mu": 1.2,
+      "cap_mean_N": 0.4647860667857647,
+      "cap_p10_N": 0.41689058911282617,
+      "cap_p50_N": 0.48,
+      "share_full": 0.854,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.5,
+      "mu": 0.6,
+      "cap_mean_N": 0.28080663092892155,
+      "cap_p10_N": 0.20844529455641309,
+      "cap_p50_N": 0.3,
+      "share_full": 0.756,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.5,
+      "mu": 0.9,
+      "cap_mean_N": 0.4212099463933825,
+      "cap_p10_N": 0.31266794183461966,
+      "cap_p50_N": 0.45,
+      "share_full": 0.756,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.5,
+      "mu": 1.2,
+      "cap_mean_N": 0.5616132618578431,
+      "cap_p10_N": 0.41689058911282617,
+      "cap_p50_N": 0.6,
+      "share_full": 0.756,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.55,
+      "mu": 0.6,
+      "cap_mean_N": 0.30250324862234,
+      "cap_p10_N": 0.20844529455641309,
+      "cap_p50_N": 0.33,
+      "share_full": 0.695,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.55,
+      "mu": 0.9,
+      "cap_mean_N": 0.4537548729335101,
+      "cap_p10_N": 0.31266794183461966,
+      "cap_p50_N": 0.49500000000000005,
+      "share_full": 0.695,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.55,
+      "mu": 1.2,
+      "cap_mean_N": 0.60500649724468,
+      "cap_p10_N": 0.41689058911282617,
+      "cap_p50_N": 0.66,
+      "share_full": 0.695,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.6,
+      "mu": 0.6,
+      "cap_mean_N": 0.322411357592809,
+      "cap_p10_N": 0.20844529455641309,
+      "cap_p50_N": 0.36,
+      "share_full": 0.636,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.6,
+      "mu": 0.9,
+      "cap_mean_N": 0.48361703638921355,
+      "cap_p10_N": 0.31266794183461966,
+      "cap_p50_N": 0.54,
+      "share_full": 0.636,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.6,
+      "mu": 1.2,
+      "cap_mean_N": 0.644822715185618,
+      "cap_p10_N": 0.41689058911282617,
+      "cap_p50_N": 0.72,
+      "share_full": 0.636,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.8,
+      "mu": 0.6,
+      "cap_mean_N": 0.3842923915944234,
+      "cap_p10_N": 0.20844529455641309,
+      "cap_p50_N": 0.4309731188175794,
+      "share_full": 0.404,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.8,
+      "mu": 0.9,
+      "cap_mean_N": 0.5764385873916351,
+      "cap_p10_N": 0.31266794183461966,
+      "cap_p50_N": 0.6464596782263691,
+      "share_full": 0.404,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    },
+    {
+      "P_N": 0.8,
+      "mu": 1.2,
+      "cap_mean_N": 0.7685847831888468,
+      "cap_p10_N": 0.41689058911282617,
+      "cap_p50_N": 0.8619462376351588,
+      "share_full": 0.404,
+      "writer_mean_force_p10_p50_p90_N": [
+        0.5432199176605303,
+        0.9140996247624742,
+        1.5712107249409064
+      ]
+    }
+  ],
+  "tyre": [
+    {
+      "r_mm": 1.0,
+      "N": 0.2,
+      "a_mm": 0.19748815580237528,
+      "p_MPa": 1.6322926100379438,
+      "mu_rr": 0.05729347061233182,
+      "F_rr_mN": 11.458694122466365,
+      "k_t_N_per_mm": 1.7077227170174232
+    },
+    {
+      "r_mm": 1.0,
+      "N": 0.3,
+      "a_mm": 0.22606750468257036,
+      "p_MPa": 1.868508598724986,
+      "mu_rr": 0.065584651815247,
+      "F_rr_mN": 19.675395544574098,
+      "k_t_N_per_mm": 2.056779297577253
+    },
+    {
+      "r_mm": 1.0,
+      "N": 0.4,
+      "a_mm": 0.2488194846003309,
+      "p_MPa": 2.056559818974649,
+      "mu_rr": 0.0721852496460102,
+      "F_rr_mN": 28.87409985840408,
+      "k_t_N_per_mm": 2.3408993526687545
+    },
+    {
+      "r_mm": 1.0,
+      "N": 0.5,
+      "a_mm": 0.2680326645894035,
+      "p_MPa": 2.2153619080623375,
+      "mu_rr": 0.07775920297298804,
+      "F_rr_mN": 38.87960148649402,
+      "k_t_N_per_mm": 2.5843652555503667
+    },
+    {
+      "r_mm": 1.0,
+      "N": 0.6,
+      "a_mm": 0.27,
+      "p_MPa": 2.6198344541875773,
+      "mu_rr": 0.09195618934198396,
+      "F_rr_mN": 55.17371360519037,
+      "k_t_N_per_mm": 2.609457568129354
+    },
+    {
+      "r_mm": 1.5,
+      "N": 0.2,
+      "a_mm": 0.2260675046825704,
+      "p_MPa": 1.2456723991499905,
+      "mu_rr": 0.04372310121016467,
+      "F_rr_mN": 8.744620242032935,
+      "k_t_N_per_mm": 1.742818002938596
+    },
+    {
+      "r_mm": 1.5,
+      "N": 0.3,
+      "a_mm": 0.2587826923886304,
+      "p_MPa": 1.4259389368625732,
+      "mu_rr": 0.05005045668387632,
+      "F_rr_mN": 15.015137005162895,
+      "k_t_N_per_mm": 2.1176235516408046
+    },
+    {
+      "r_mm": 1.5,
+      "N": 0.4,
+      "a_mm": 0.28482720784677823,
+      "p_MPa": 1.5694488769621215,
+      "mu_rr": 0.055087655581370465,
+      "F_rr_mN": 22.035062232548185,
+      "k_t_N_per_mm": 2.424900786304538
+    },
+    {
+      "r_mm": 1.5,
+      "N": 0.5,
+      "a_mm": 0.30682080862501027,
+      "p_MPa": 1.6906375523793886,
+      "mu_rr": 0.059341378088516535,
+      "F_rr_mN": 29.670689044258268,
+      "k_t_N_per_mm": 2.689529473350606
+    },
+    {
+      "r_mm": 1.5,
+      "N": 0.6,
+      "a_mm": 0.32604576148890513,
+      "p_MPa": 1.7965704824178725,
+      "mu_rr": 0.06305962393286732,
+      "F_rr_mN": 37.83577435972039,
+      "k_t_N_per_mm": 2.9242022873274967
+    },
+    {
+      "r_mm": 2.0,
+      "N": 0.2,
+      "a_mm": 0.24137234615140757,
+      "p_MPa": 1.092710457335025,
+      "mu_rr": 0.038354137052459374,
+      "F_rr_mN": 7.670827410491874,
+      "k_t_N_per_mm": 1.826794119916417
+    },
+    {
+      "r_mm": 2.0,
+      "N": 0.3,
+      "a_mm": 0.27630236239802913,
+      "p_MPa": 1.250841223498368,
+      "mu_rr": 0.04390452694479271,
+      "F_rr_mN": 13.171358083437811,
+      "k_t_N_per_mm": 2.222614426110302
+    },
+    {
+      "r_mm": 2.0,
+      "N": 0.4,
+      "a_mm": 0.30411009977867015,
+      "p_MPa": 1.376728906636652,
+      "mu_rr": 0.048323184622946484,
+      "F_rr_mN": 19.329273849178595,
+      "k_t_N_per_mm": 2.5474929056873132
+    },
+    {
+      "r_mm": 2.0,
+      "N": 0.5,
+      "a_mm": 0.3275926742761122,
+      "p_MPa": 1.4830362576138343,
+      "mu_rr": 0.05205457264224559,
+      "F_rr_mN": 26.027286321122794,
+      "k_t_N_per_mm": 2.8275059925343253
+    },
+    {
+      "r_mm": 2.0,
+      "N": 0.6,
+      "a_mm": 0.3481191625209586,
+      "p_MPa": 1.5759611875618518,
+      "mu_rr": 0.055316237683421,
+      "F_rr_mN": 33.1897426100526,
+      "k_t_N_per_mm": 3.07597454131559
+    }
+  ],
+  "paper_hold": [
+    {
+      "hold_N": 0.15,
+      "slides": true,
+      "margin_N": -0.15,
+      "F_drive_N": 0.3,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 0.3,
+      "slides": false,
+      "margin_N": 0.0,
+      "F_drive_N": 0.3,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.4,
+      "slides": false,
+      "margin_N": 0.10000000000000003,
+      "F_drive_N": 0.3,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 0.8,
+      "slides": false,
+      "margin_N": 0.5,
+      "F_drive_N": 0.3,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.9,
+      "slides": false,
+      "margin_N": 0.6000000000000001,
+      "F_drive_N": 0.3,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 1.8,
+      "slides": false,
+      "margin_N": 1.5,
+      "F_drive_N": 0.3,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.25,
+      "slides": true,
+      "margin_N": -0.04999999999999999,
+      "F_drive_N": 0.3,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 0.5,
+      "slides": false,
+      "margin_N": 0.2,
+      "F_drive_N": 0.3,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.5,
+      "slides": false,
+      "margin_N": 0.2,
+      "F_drive_N": 0.3,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 1.0,
+      "slides": false,
+      "margin_N": 0.7,
+      "F_drive_N": 0.3,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 1.0,
+      "slides": false,
+      "margin_N": 0.7,
+      "F_drive_N": 0.3,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 2.0,
+      "slides": false,
+      "margin_N": 1.7,
+      "F_drive_N": 0.3,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.15,
+      "slides": true,
+      "margin_N": -0.35,
+      "F_drive_N": 0.5,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 0.3,
+      "slides": true,
+      "margin_N": -0.2,
+      "F_drive_N": 0.5,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.4,
+      "slides": true,
+      "margin_N": -0.09999999999999998,
+      "F_drive_N": 0.5,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 0.8,
+      "slides": false,
+      "margin_N": 0.30000000000000004,
+      "F_drive_N": 0.5,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.9,
+      "slides": false,
+      "margin_N": 0.4,
+      "F_drive_N": 0.5,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 1.8,
+      "slides": false,
+      "margin_N": 1.3,
+      "F_drive_N": 0.5,
+      "N_total_N": 0.6,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.25,
+      "slides": true,
+      "margin_N": -0.25,
+      "F_drive_N": 0.5,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 0.5,
+      "slides": false,
+      "margin_N": 0.0,
+      "F_drive_N": 0.5,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 0.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 0.5,
+      "slides": false,
+      "margin_N": 0.0,
+      "F_drive_N": 0.5,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 1.0,
+      "slides": false,
+      "margin_N": 0.5,
+      "F_drive_N": 0.5,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 1.0,
+      "mu_pd": 0.5
+    },
+    {
+      "hold_N": 1.0,
+      "slides": false,
+      "margin_N": 0.5,
+      "F_drive_N": 0.5,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.25
+    },
+    {
+      "hold_N": 2.0,
+      "slides": false,
+      "margin_N": 1.5,
+      "F_drive_N": 0.5,
+      "N_total_N": 1.0,
+      "N_hand_rest_N": 3.0,
+      "mu_pd": 0.5
+    }
+  ],
+  "heading_rates": {
+    "letters": {
+      "writers": [
+        100,
+        101,
+        102
+      ],
+      "smooth_mm": 0.0,
+      "n": 25682,
+      "rate_rad_s_p50_p90_p99": [
+        5.1514348342607263e-11,
+        70.6158957138902,
+        283.2001313653908
+      ],
+      "time_share_rate_above_20_rad_s": 0.18725177166887313,
+      "speed_mm_s_p50_p90_p99": [
+        12.53848254557335,
+        55.57688466427464,
+        71.23012643672519
+      ],
+      "corners_over_20deg": 189,
+      "corner_turn_deg_median": 71.78020336750646,
+      "corner_dwell_ms_median": 15.0,
+      "label": "CALC on synthetic tuning writers (aiguide glyph writers; not human data)"
+    },
+    "smoothed_2mm": {
+      "writers": [
+        100,
+        101,
+        102
+      ],
+      "smooth_mm": 2.0,
+      "n": 36742,
+      "rate_rad_s_p50_p90_p99": [
+        8.032525425158532,
+        22.640873672047015,
+        40.46726903758406
+      ],
+      "time_share_rate_above_20_rad_s": 0.13379783354199554,
+      "speed_mm_s_p50_p90_p99": [
+        9.94825290977101,
+        19.635972167517558,
+        28.40402045724235
+      ],
+      "corners_over_20deg": 71,
+      "corner_turn_deg_median": 51.39166468249612,
+      "corner_dwell_ms_median": 37.0,
+      "label": "CALC on synthetic tuning writers (aiguide glyph writers; not human data)"
+    }
+  },
+  "concepts": [
+    {
+      "key": "ball",
+      "name": "Driven ball (trackball in reverse)",
+      "principle": "Two rollers turn a rubber-coated ball about two axes; the ball pushes on the paper in any direction",
+      "actuators": "2 motors (Faulhaber 0620 B) on shafts to 2 rollers r 0.40 mm (bevel 1:1), 1 idler, preload spring",
+      "force_any_dir_N": "0.33-0.66",
+      "force_note": "traction-limited (mu 0.6-1.2 x P 0.55 N); motor limit 0.57 N continuous",
+      "speed_m_s": "1.26",
+      "bandwidth": "motor current loop about 1 kHz; the force at once in any direction (no steering)",
+      "power_W": "0.081 (2 motors, 0.15 N RMS)",
+      "mass_g": "6.7",
+      "size": "ball d 2 mm with rollers: heel contact radius >= 8.03 mm (Rev H 6.75)",
+      "heat": "negligible (< 1 K winding rise)",
+      "noise": "gearhead whine (not quantified; EXP-D06)",
+      "cost_class": "high (2 precision micromotors)",
+      "roll": "contact survives roll of +/-20 deg with about 0.5 mm spring travel; force map rotates with roll (IMU corrects)",
+      "off_feel": "reflected mass 6 g per axis; back-drive 0.03 N plus the orthogonal roller's axial slip about 0.22 N with smooth rollers -> retract when off",
+      "safety": "force <= mu_max x P = 0.66 N by physics; lift = zero force; current cap; slip detection",
+      "verdict": "Strong and holonomic, but the ball drive slips inside itself (LIT AMF-117), wears and collects ink and paper dust like old mouse balls (PAT-33); second choice",
+      "labels": "CALC; MFR AMF-100, AMF-103; LIT AMF-117, AMF-118; ASSUMPTION roller friction",
+      "ledger": "AMF-100,AMF-103,AMF-117,AMF-118",
+      "numbers": {
+        "train": {
+          "motor": "fh0620B",
+          "gear": "BALL_PATH",
+          "ratio": 1.0,
+          "r_out_mm": 0.4,
+          "F_cont_N": 0.5670000000000001,
+          "F_peak_N": 0.9280482954545454,
+          "v_noload_m_s": 1.2553804243744813,
+          "m_reflected_g": 5.9375,
+          "F_backdrive_N": 0.033950617283950615,
+          "b_short_N_s_m": 0.6834950284090909,
+          "P_per_N2_W": 1.8062573243702436,
+          "mass_g": 2.6,
+          "length_mm": 20.0,
+          "d_mm": 6.0,
+          "Rth_K_W": 97.5,
+          "T_max_C": 125.0,
+          "ledger": ",AMF-100"
+        },
+        "roller_preload_N": 0.7499999999999999,
+        "axial_scrub_drag_N": 0.22499999999999995,
+        "R_d_mm": 8.026080233220972
+      }
+    },
+    {
+      "key": "omni",
+      "name": "Two micro omni-wheels",
+      "principle": "Two omni-wheels at +/-45 deg to the pen push along their rims and roll freely along their axles",
+      "actuators": "2 motors (maxon DCX 6 M + GP 6 A 3.9:1) + 2 custom omni-wheels d 6 mm (smallest commercial found: 11.5 mm, AMF-110)",
+      "force_any_dir_N": "0.17-0.47",
+      "force_note": "each wheel carries about half the heel load, so along one wheel's axis only half the traction pushes (0.5-0.71 x mu P, CALC)",
+      "speed_m_s": "1.74",
+      "bandwidth": "as the ball",
+      "power_W": "0.127",
+      "mass_g": "9.2",
+      "size": "6 mm wheels: heel contact radius >= 11.4 mm; 11.5 mm commercial wheels: >= 16 mm (does not fit)",
+      "heat": "negligible",
+      "noise": "gearhead whine",
+      "cost_class": "high (2 micromotors + custom omni-wheels)",
+      "roll": "two contacts side by side: roll unloads one wheel",
+      "off_feel": "reflected mass 3 g per wheel; the rollers clog with paper dust (ASSUMPTION)",
+      "safety": "as the ball",
+      "verdict": "Reject: half the traction of one contact, larger, fragile rollers",
+      "labels": "CALC; MFR AMF-101, AMF-102, AMF-110",
+      "ledger": "AMF-101,AMF-102,AMF-110",
+      "numbers": {
+        "train": {
+          "motor": "mxDCX6M",
+          "gear": "GP6A_3.9",
+          "ratio": 3.9,
+          "r_out_mm": 3.0,
+          "F_cont_N": 0.37980800000000003,
+          "F_peak_N": 0.7336853333333335,
+          "v_noload_m_s": 1.7386164471789667,
+          "m_reflected_g": 3.0927,
+          "F_backdrive_N": 0.014772727272727272,
+          "b_short_N_s_m": 0.40213888000000014,
+          "P_per_N2_W": 2.8257989786106634,
+          "mass_g": 4.1,
+          "length_mm": 21.0,
+          "d_mm": 6.0,
+          "Rth_K_W": 125.0,
+          "T_max_C": 100.0,
+          "ledger": "AMF-101,AMF-102"
+        },
+        "R_d_6mm": 11.42902374253487,
+        "R_d_11p5mm": 15.669838148812099
+      }
+    },
+    {
+      "key": "steer",
+      "name": "Steered wheel, steer only (cobot)",
+      "principle": "A free-rolling wheel is steered; it rolls along its heading and grips across it, so the writer's own motion is channelled along the letter (LIT HAP-60)",
+      "actuators": "1 steering motor (Faulhaber 0620 B, transfer gears, crown 2:1 on the fork) + Hall angle sensor at the fork; free wheel d 2 mm with an O-ring tyre",
+      "force_any_dir_N": "0.33-0.66 across the path (constraint); 0 along it",
+      "force_note": "cannot push; the across-path force is a reaction, up to mu x P; along the path only rolling resistance 46 mN (CALC, Persson AMF-112)",
+      "speed_m_s": "steering 1569 rad/s no-load (needed: p90 71, p99 283 rad/s on synthetic letters)",
+      "bandwidth": "steering servo about 30-50 Hz (ASSUMPTION); the across-path grip acts at once (mechanical)",
+      "power_W": "about 0.005-0.02 (steering only; power is supplied by the writer)",
+      "mass_g": "3.8",
+      "size": "wheel d 2 mm with steering ring: heel contact radius >= 8.68 mm",
+      "heat": "negligible",
+      "noise": "one small motor, intermittent",
+      "cost_class": "medium (1 micromotor)",
+      "roll": "heading map changes with roll and tilt (IMU corrects); contact survives +/-20 deg",
+      "off_feel": "when not guiding, the wheel must follow the writer's direction (free mode, LIT HAP-60 eq. 2) or retract",
+      "safety": "intrinsically passive: cannot move the pen by itself (LIT HAP-60, PAT-27); across-path force <= mu_max P",
+      "verdict": "Best guidance per watt and the safest; cannot lead a still or relaxed hand",
+      "labels": "CALC; LIT HAP-60, AMF-112; MFR AMF-100, AMF-103",
+      "ledger": "HAP-60,AMF-112,AMF-100,AMF-103",
+      "numbers": {
+        "steer_train": {
+          "motor": "fh0620B",
+          "gear": "STEER_PATH",
+          "ratio": 2.0,
+          "r_out_mm": 1000.0,
+          "F_cont_N": 0.0004536000000000001,
+          "F_peak_N": 0.0007424386363636364,
+          "v_noload_m_s": 1569.2255304681016,
+          "m_reflected_g": 3.8e-06,
+          "F_backdrive_N": 2.716049382716049e-05,
+          "b_short_N_s_m": 4.374368181818182e-07,
+          "P_per_N2_W": 2822277.069328505,
+          "mass_g": 2.6,
+          "length_mm": 20.0,
+          "d_mm": 6.0,
+          "Rth_K_W": 97.5,
+          "T_max_C": 125.0,
+          "ledger": ",AMF-100"
+        },
+        "steer_train_alt": {
+          "motor": "mxDCX6M",
+          "gear": "GP6A_3.9",
+          "ratio": 3.9,
+          "r_out_mm": 1000.0,
+          "F_cont_N": 0.0011394240000000002,
+          "F_peak_N": 0.0022010560000000007,
+          "v_noload_m_s": 579.5388157263222,
+          "m_reflected_g": 2.78343e-05,
+          "F_backdrive_N": 4.431818181818182e-05,
+          "b_short_N_s_m": 3.619249920000001e-06,
+          "P_per_N2_W": 313977.6642900737,
+          "mass_g": 4.1,
+          "length_mm": 21.0,
+          "d_mm": 6.0,
+          "Rth_K_W": 125.0,
+          "T_max_C": 100.0,
+          "ledger": "AMF-101,AMF-102"
+        },
+        "scrub_torque_mNm": 0.1188,
+        "rolling_resistance_N": 0.046361245459916926,
+        "R_d_mm": 8.675794616071908
+      }
+    },
+    {
+      "key": "steer_brake",
+      "name": "Steered wheel with an axle brake",
+      "principle": "As 3, plus a brake on the wheel: along-path damping (dissipative only)",
+      "actuators": "steering motor + a hub-train motor used as a generator (short-circuit or PWM braking) or a friction brake",
+      "force_any_dir_N": "0.33-0.66 across; along the path up to mu x P as braking only",
+      "force_note": "motor braking 0.4 N s/m at full short (Faulhaber 0620 B, 2:1, r 1.0 mm); more with a higher ratio",
+      "speed_m_s": "as 3",
+      "bandwidth": "as 3",
+      "power_W": "< 0.02 (braking recovers energy)",
+      "mass_g": "6.8",
+      "size": "as 3 plus the hub train",
+      "heat": "negligible",
+      "noise": "as 3",
+      "cost_class": "high (2 micromotors)",
+      "roll": "as 3",
+      "off_feel": "as 3",
+      "safety": "passive (can only resist)",
+      "verdict": "Good for tremor: across-path constraint plus along-path damping",
+      "labels": "CALC; MFR AMF-100, AMF-103",
+      "ledger": "AMF-100,AMF-103",
+      "numbers": {
+        "hub_train": {
+          "motor": "fh0620B",
+          "gear": "WHEEL_PATH",
+          "ratio": 2.0,
+          "r_out_mm": 1.0,
+          "F_cont_N": 0.4082400000000001,
+          "F_peak_N": 0.6681947727272728,
+          "v_noload_m_s": 1.5692255304681018,
+          "m_reflected_g": 3.8000000000000003,
+          "F_backdrive_N": 0.030178326474622763,
+          "b_short_N_s_m": 0.3936931363636364,
+          "P_per_N2_W": 3.4842926781833383,
+          "mass_g": 2.65,
+          "length_mm": 20.0,
+          "d_mm": 6.0,
+          "Rth_K_W": 97.5,
+          "T_max_C": 125.0,
+          "ledger": ",AMF-100"
+        }
+      }
+    },
+    {
+      "key": "steer_drive",
+      "name": "Steered and driven wheel (powered cobot)",
+      "principle": "As 3, and a motor turns the wheel: it pushes along its heading, holds across it, and can lead a relaxed hand",
+      "actuators": "steering motor + drive motor (both Faulhaber 0620 B) in the handle; two 0.8 mm shafts in a keel to the heel pod; crown 2:1 for steering, bevels 2:1 to the axle",
+      "force_any_dir_N": "0.33-0.66 in any direction after steering",
+      "force_note": "traction-limited; motor limit 0.41 N continuous, 0.67 N peak (0620 B at 3.7 V, 2:1, three meshes, r 1.0 mm)",
+      "speed_m_s": "1.57",
+      "bandwidth": "drive: current loop about 1 kHz; direction: steering servo about 30-50 Hz",
+      "power_W": "0.078 drive + steering",
+      "mass_g": "7.2",
+      "size": "wheel d 2 mm with steering ring: heel contact radius >= 8.68 mm",
+      "heat": "negligible",
+      "noise": "two small motors",
+      "cost_class": "high (2 micromotors, watch-scale bevel)",
+      "roll": "as 3",
+      "off_feel": "reflected mass along the heading 3.8 g; back-drive 30 mN (so it can stay down and follow the writer)",
+      "safety": "force <= mu_max x P by physics; current cap; slip detection; lift = zero",
+      "verdict": "Recommended: the strongest guidance, can lead a relaxed hand ('writes for you' at gross scale), low power",
+      "labels": "CALC; LIT HAP-60; MFR AMF-100, AMF-103",
+      "ledger": "HAP-60,AMF-100,AMF-103",
+      "numbers": {
+        "drive_train": {
+          "motor": "fh0620B",
+          "gear": "WHEEL_PATH",
+          "ratio": 2.0,
+          "r_out_mm": 1.0,
+          "F_cont_N": 0.4082400000000001,
+          "F_peak_N": 0.6681947727272728,
+          "v_noload_m_s": 1.5692255304681018,
+          "m_reflected_g": 3.8000000000000003,
+          "F_backdrive_N": 0.030178326474622763,
+          "b_short_N_s_m": 0.3936931363636364,
+          "P_per_N2_W": 3.4842926781833383,
+          "mass_g": 2.65,
+          "length_mm": 20.0,
+          "d_mm": 6.0,
+          "Rth_K_W": 97.5,
+          "T_max_C": 125.0,
+          "ledger": ",AMF-100"
+        },
+        "drive_train_4mm": {
+          "motor": "orbBMN04",
+          "gear": "SPG04_100",
+          "ratio": 100.0,
+          "r_out_mm": 1.5,
+          "F_cont_N": 0.39999999999999997,
+          "F_peak_N": 2.4000000000000004,
+          "v_noload_m_s": 0.07284306166123533,
+          "m_reflected_g": 266.66666666666663,
+          "F_backdrive_N": 0.2222222222222222,
+          "b_short_N_s_m": 23.641530054644814,
+          "P_per_N2_W": 0.07049741124260354,
+          "mass_g": 1.5,
+          "length_mm": 18.0,
+          "d_mm": 4.0,
+          "Rth_K_W": 150.0,
+          "T_max_C": 100.0,
+          "ledger": "AMF-104"
+        }
+      }
+    },
+    {
+      "key": "brake_ball",
+      "name": "Braked ball (variable damping)",
+      "principle": "A ball rolls with the pen; an electromagnetic, MR or piezo brake slows it: resistance in every direction, never a push",
+      "actuators": "1 brake (solenoid pad as the Reflective Haptics stylus, HAP-68; or MR fluid AMF-108; or a SQUIGGLE-pressed pad AMF-106)",
+      "force_any_dir_N": "0-0.66 opposing motion only",
+      "force_note": "isotropic: it cannot tell writing from tremor, so it resists both",
+      "speed_m_s": "n/a (passive)",
+      "bandwidth": "solenoid 5-20 ms (ASSUMPTION); SQUIGGLE 7 mm/s is too slow to modulate at tremor rates",
+      "power_W": "0.02-0.3 (solenoid holding current, ASSUMPTION)",
+      "mass_g": "3-6 (ASSUMPTION)",
+      "size": "ball d 2 mm: heel contact radius >= 7.6 mm plus the brake",
+      "heat": "coil heat near the fingers if held on",
+      "noise": "quiet",
+      "cost_class": "low-medium",
+      "roll": "roll-invariant ball, contact as the ball",
+      "off_feel": "a free ball: light",
+      "safety": "passive; brake force <= mu P",
+      "verdict": "Tremor damping only; weak for guidance; roll-invariant",
+      "labels": "CALC; LIT HAP-68; MFR AMF-106, AMF-108",
+      "ledger": "HAP-68,AMF-106,AMF-108",
+      "numbers": {}
+    },
+    {
+      "key": "friction_pad",
+      "name": "Controllable friction pads",
+      "principle": "Electroadhesion pulls the paper to a heel pad; or ultrasonic vibration lowers the pad's friction; or a steered anisotropic (scale-like) pad",
+      "actuators": "high-voltage electrode pad; or a piezo pad; or a pad on a steering motor",
+      "force_any_dir_N": "electroadhesion 0.014-0.072 extra friction",
+      "force_note": "a 24 mm2 pad at 1-5 kPa on paper adds 0.024-0.120 N of normal force (dielectric targets: pre-contact pressure 1-100 x below release, AMF-114); ultrasonic squeeze films need a smooth, airtight contact (AMF-115; paper is porous); anisotropic pads (AMF-116) slide with 3-6 x the drag of a rolling wheel (ASSUMPTION ratio)",
+      "speed_m_s": "n/a",
+      "bandwidth": "fast (electrostatic ms)",
+      "power_W": "0.01-0.1 (400-2000 V converter; ASSUMPTION)",
+      "mass_g": "1-3",
+      "size": "a pad on the heel",
+      "heat": "none",
+      "noise": "ultrasonic silent; HV none",
+      "cost_class": "low",
+      "roll": "pad under the heel",
+      "off_feel": "none",
+      "safety": "high voltage at the fingertips (EA)",
+      "verdict": "Reject: too weak (EA), unlikely on paper (ultrasonic), draggy (anisotropic)",
+      "labels": "CALC; LIT AMF-114, AMF-115, AMF-116",
+      "ledger": "AMF-114,AMF-115,AMF-116",
+      "numbers": {
+        "ea_normal_N": [
+          0.024,
+          0.12000000000000001
+        ]
+      }
+    },
+    {
+      "key": "others",
+      "name": "Others considered",
+      "principle": "(a) piezo 'walking' foot with the paper as the slider; (b) 4 mm brushless hub (Orbray BMN04) driving the wheel directly; (c) asymmetric-vibration pseudo-force (study K); (d) desk board",
+      "actuators": "-",
+      "force_any_dir_N": "(b) 0.40 N continuous at r 1.5 mm with an assumed 100:1 head",
+      "force_note": "(a) paper compliance absorbs the micrometre vibration (ASSUMPTION); (b) too weak and slow: 73 mm/s no-load; (c) no net force; (d) 0.4 N cap, grounded, separate device",
+      "speed_m_s": "-",
+      "bandwidth": "-",
+      "power_W": "-",
+      "mass_g": "-",
+      "size": "-",
+      "heat": "-",
+      "noise": "-",
+      "cost_class": "-",
+      "roll": "-",
+      "off_feel": "-",
+      "safety": "-",
+      "verdict": "Keep the board for practice at a desk; the others are not pursued",
+      "labels": "CALC; MFR AMF-104, AMF-107",
+      "ledger": "AMF-104,AMF-107",
+      "numbers": {
+        "orbray_train": {
+          "motor": "orbBMN04",
+          "gear": "SPG04_100",
+          "ratio": 100.0,
+          "r_out_mm": 1.5,
+          "F_cont_N": 0.39999999999999997,
+          "F_peak_N": 2.4000000000000004,
+          "v_noload_m_s": 0.07284306166123533,
+          "m_reflected_g": 266.66666666666663,
+          "F_backdrive_N": 0.2222222222222222,
+          "b_short_N_s_m": 23.641530054644814,
+          "P_per_N2_W": 0.07049741124260354,
+          "mass_g": 1.5,
+          "length_mm": 18.0,
+          "d_mm": 4.0,
+          "Rth_K_W": 150.0,
+          "T_max_C": 100.0,
+          "ledger": "AMF-104"
+        }
+      }
+    }
+  ],
+  "design_opt": {
+    "grad_check": {
+      "wheel": {
+        "grad_autograd": [
+          1.7781867245798344,
+          0.6618777644968489,
+          -1.225707806041155,
+          0.0
+        ],
+        "grad_fd": [
+          1.7781867244770488,
+          0.6618777644851193,
+          -1.2257078059185744,
+          0.0
+        ],
+        "max_rel_err": 1.0000802127177319e-10
+      },
+      "ball": {
+        "grad_autograd": [
+          1.9369298810848568,
+          1.8822384553857832,
+          -1.3579131212955882,
+          -0.3273592920553591
+        ],
+        "grad_fd": [
+          1.9369298804861046,
+          1.8822384553196514,
+          -1.357913121058374,
+          -0.32735929234029015
+        ],
+        "max_rel_err": 8.703925179401674e-10
+      }
+    },
+    "runs": {
+      "wheel/fh0620B": {
+        "motor": "fh0620B",
+        "concept": "wheel",
+        "J": 0.0333690547642226,
+        "x": [
+          -0.0027766632617861548,
+          0.621955743884222,
+          0.5701788126522089,
+          -0.6767546398992854
+        ],
+        "terms": {
+          "r_e_mm": 0.9972271881021769,
+          "G": 1.8625671864528386,
+          "P_N": 0.5701788126522089,
+          "r_r_mm": 0.5082638177642645,
+          "eta": 0.9538302117022714,
+          "F_mot_N": 0.4988235429086155,
+          "v_max_m_s": 1.680341385404811,
+          "m_r_g": 3.31405170178621,
+          "F_bd_N": 0.021539689971503295,
+          "P_cu_W": 0.052509075481737784,
+          "F_use_mean_N": 0.31164806551559937,
+          "F_use_p10_N": 0.21600456728545486,
+          "share_full": 0.6818783649057437,
+          "F_rr_N": 0.046406679241319394,
+          "R_d_mm": 8.670052318479168,
+          "dR_mm": 1.9200523184791685,
+          "scrub_N": 0.0,
+          "mass_g": 7.3589169869416695,
+          "mu_rr": 0.08138969427056912
+        },
+        "weights": {},
+        "snapped": {
+          "G_continuous": 1.8625671864528386,
+          "options": [
+            {
+              "gear": "bevel 2:1 only",
+              "ratio": 2.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 0.03905119797874397,
+              "terms": {
+                "r_e_mm": 0.9975101300699789,
+                "G": 2.0,
+                "P_N": 0.5701822297931327,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.9486832980505138,
+                "F_mot_N": 0.5325887235561385,
+                "v_max_m_s": 1.5653183630063678,
+                "m_r_g": 3.818993920581052,
+                "F_bd_N": 0.023247920472688584,
+                "P_cu_W": 0.04606216250952989,
+                "F_use_mean_N": 0.31165029886810197,
+                "F_use_p10_N": 0.21600456792009057,
+                "share_full": 0.6818744937699546,
+                "F_rr_N": 0.04639827413557515,
+                "R_d_mm": 8.670659229000105,
+                "dR_mm": 1.9206592290001048,
+                "scrub_N": 0.0,
+                "mass_g": 7.4,
+                "mu_rr": 0.08137446540978463
+              }
+            },
+            {
+              "gear": "GP6A_3.9 + bevel 1:1",
+              "ratio": 3.9,
+              "eta_catalogue_with_bevel": 0.792,
+              "J": 0.31124414249004156,
+              "terms": {
+                "r_e_mm": 1.00500576195963,
+                "G": 3.8999999999999995,
+                "P_N": 0.5701860796226766,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.9017334405116193,
+                "F_mot_N": 0.9797883298884432,
+                "v_max_m_s": 0.8087593332997944,
+                "m_r_g": 14.305917492127154,
+                "F_bd_N": 0.04733807188825052,
+                "P_cu_W": 0.013610175720336818,
+                "F_use_mean_N": 0.31165200094200585,
+                "F_use_p10_N": 0.21600456802343995,
+                "share_full": 0.6818701324556765,
+                "F_rr_N": 0.04616770061315323,
+                "R_d_mm": 8.686737359403406,
+                "dR_mm": 1.9367373594034056,
+                "scrub_N": 0.0,
+                "mass_g": 7.785389649589955,
+                "mu_rr": 0.08096953304034522
+              }
+            },
+            {
+              "gear": "FH06_4 + bevel 1:1",
+              "ratio": 4.0,
+              "eta_catalogue_with_bevel": 0.81,
+              "J": 0.32982609372885524,
+              "terms": {
+                "r_e_mm": 0.9992971250602798,
+                "G": 4.0,
+                "P_N": 0.5701944569275126,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.9,
+                "F_mot_N": 1.0087089962749523,
+                "v_max_m_s": 0.7840612805839832,
+                "m_r_g": 15.221389947211518,
+                "F_bd_N": 0.048923275833441235,
+                "P_cu_W": 0.012840929712345506,
+                "F_use_mean_N": 0.31165542852863853,
+                "F_use_p10_N": 0.21600456804090018,
+                "share_full": 0.681860642136529,
+                "F_rr_N": 0.04634426815963546,
+                "R_d_mm": 8.6744923332543,
+                "dR_mm": 1.9244923332542996,
+                "scrub_N": 0.0,
+                "mass_g": 7.8,
+                "mu_rr": 0.0812780054182938
+              }
+            },
+            {
+              "gear": "bevel 1:1 only",
+              "ratio": 1.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 2.6161180825070613,
+              "terms": {
+                "r_e_mm": 0.9789886276877968,
+                "G": 1.0,
+                "P_N": 0.4954543882683303,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 1.0,
+                "F_mot_N": 0.2860094510610527,
+                "v_max_m_s": 3.0725078972112434,
+                "m_r_g": 0.9912160177478627,
+                "F_bd_N": 0.011236085577398497,
+                "P_cu_W": 0.15972301082579157,
+                "F_use_mean_N": 0.2648082707514934,
+                "F_use_p10_N": 0.21574974290740134,
+                "share_full": 0.7649326723045906,
+                "F_rr_N": 0.03895665029909114,
+                "R_d_mm": 8.630930606390324,
+                "dR_mm": 1.880930606390324,
+                "scrub_N": 0.0,
+                "mass_g": 7.0,
+                "mu_rr": 0.07862812646639196
+              }
+            },
+            {
+              "gear": "GP6A_15 + bevel 1:1",
+              "ratio": 15.0,
+              "eta_catalogue_with_bevel": 0.6930000000000001,
+              "J": 2.974418513585791,
+              "terms": {
+                "r_e_mm": 1.6819018256314962,
+                "G": 15.0,
+                "P_N": 0.5731124052281148,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.8139828321832204,
+                "F_mot_N": 2.0326560344186038,
+                "v_max_m_s": 0.3519044379362471,
+                "m_r_g": 75.56224271200777,
+                "F_bd_N": 0.12052247928050751,
+                "P_cu_W": 0.0031622810808058528,
+                "F_use_mean_N": 0.3128464026972266,
+                "F_use_p10_N": 0.21600457361855402,
+                "share_full": 0.6785539397762,
+                "F_rr_N": 0.03307742909611635,
+                "R_d_mm": 10.13867941597956,
+                "dR_mm": 3.38867941597956,
+                "scrub_N": 0.0,
+                "mass_g": 8.562756238243407,
+                "mu_rr": 0.05771543033159543
+              }
+            },
+            {
+              "gear": "FH06_16 + bevel 1:1",
+              "ratio": 16.0,
+              "eta_catalogue_with_bevel": 0.7290000000000001,
+              "J": 3.218239168279096,
+              "terms": {
+                "r_e_mm": 1.733850162041353,
+                "G": 15.999999999999998,
+                "P_N": 0.5731841696849791,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.81,
+                "F_mot_N": 2.092914416392027,
+                "v_max_m_s": 0.3401002425351933,
+                "m_r_g": 80.8984952950276,
+                "F_bd_N": 0.12531875901056183,
+                "P_cu_W": 0.002982808129466148,
+                "F_use_mean_N": 0.3128756205925623,
+                "F_use_p10_N": 0.21600457374380372,
+                "share_full": 0.6784725885292362,
+                "F_rr_N": 0.03274919365121197,
+                "R_d_mm": 10.250108597578702,
+                "dR_mm": 3.500108597578702,
+                "scrub_N": 0.0,
+                "mass_g": 8.6,
+                "mu_rr": 0.057135551509056616
+              }
+            },
+            {
+              "gear": "GP6A_57 + bevel 1:1",
+              "ratio": 57.0,
+              "eta_catalogue_with_bevel": 0.6120000000000001,
+              "J": 13.167958632460449,
+              "terms": {
+                "r_e_mm": 3.0229503627525087,
+                "G": 57.00000000000001,
+                "P_N": 0.5743758094771553,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.735446008269832,
+                "F_mot_N": 3.8828683515990288,
+                "v_max_m_s": 0.16644529426558052,
+                "m_r_g": 337.76238647994734,
+                "F_bd_N": 0.28202378029439085,
+                "P_cu_W": 0.000866608461077736,
+                "F_use_mean_N": 0.3133602669830686,
+                "F_use_p10_N": 0.21600457574663312,
+                "share_full": 0.6771215931346589,
+                "F_rr_N": 0.027285383663090773,
+                "R_d_mm": 13.015228528104132,
+                "dR_mm": 6.2652285281041316,
+                "scrub_N": 0.0,
+                "mass_g": 9.333156005665897,
+                "mu_rr": 0.047504409504864425
+              }
+            },
+            {
+              "gear": "FH06_64 + bevel 1:1",
+              "ratio": 64.0,
+              "eta_catalogue_with_bevel": 0.657,
+              "J": 15.100706333197197,
+              "terms": {
+                "r_e_mm": 3.0522792589774337,
+                "G": 63.99999999999998,
+                "P_N": 0.5743946276493113,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.7290000000000001,
+                "F_mot_N": 4.279975353361525,
+                "v_max_m_s": 0.14967857935330156,
+                "m_r_g": 417.67167326311863,
+                "F_bd_N": 0.31638862805477913,
+                "P_cu_W": 0.0007132564716616643,
+                "F_use_mean_N": 0.31336791267241115,
+                "F_use_p10_N": 0.21600457577712703,
+                "share_full": 0.6771002559586057,
+                "F_rr_N": 0.0271988966185782,
+                "R_d_mm": 13.078139010506597,
+                "dR_mm": 6.328139010506597,
+                "scrub_N": 0.0,
+                "mass_g": 9.4,
+                "mu_rr": 0.04735228240188923
+              }
+            }
+          ],
+          "chosen": {
+            "gear": "bevel 2:1 only",
+            "ratio": 2.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 0.03905119797874397,
+            "terms": {
+              "r_e_mm": 0.9975101300699789,
+              "G": 2.0,
+              "P_N": 0.5701822297931327,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.9486832980505138,
+              "F_mot_N": 0.5325887235561385,
+              "v_max_m_s": 1.5653183630063678,
+              "m_r_g": 3.818993920581052,
+              "F_bd_N": 0.023247920472688584,
+              "P_cu_W": 0.04606216250952989,
+              "F_use_mean_N": 0.31165029886810197,
+              "F_use_p10_N": 0.21600456792009057,
+              "share_full": 0.6818744937699546,
+              "F_rr_N": 0.04639827413557515,
+              "R_d_mm": 8.670659229000105,
+              "dR_mm": 1.9206592290001048,
+              "scrub_N": 0.0,
+              "mass_g": 7.4,
+              "mu_rr": 0.08137446540978463
+            }
+          },
+          "note": "ratio = gearhead x a 1:1 bevel at the heel (a 2:1 bevel doubles it); CALC"
+        },
+        "fits_layout": true
+      },
+      "wheel/mxDCX6M": {
+        "motor": "mxDCX6M",
+        "concept": "wheel",
+        "J": -0.0034321665004871547,
+        "x": [
+          -0.00277387471202933,
+          0.43427886692505874,
+          0.5701786326415591,
+          -0.6767546398992854
+        ],
+        "terms": {
+          "r_e_mm": 0.997229968923687,
+          "G": 1.5438493366092392,
+          "P_N": 0.5701786326415591,
+          "r_r_mm": 0.5082638177642645,
+          "eta": 0.9675328844161355,
+          "F_mot_N": 0.4972942210284733,
+          "v_max_m_s": 1.4599485194701551,
+          "m_r_g": 4.386016667409785,
+          "F_bd_N": 0.016000879671966076,
+          "P_cu_W": 0.037087296253814135,
+          "F_use_mean_N": 0.3116478994147665,
+          "F_use_p10_N": 0.2160045672156146,
+          "share_full": 0.6818785688321821,
+          "F_rr_N": 0.0464065734351985,
+          "R_d_mm": 8.670058283341309,
+          "dR_mm": 1.9200582833413087,
+          "scrub_N": 0.0,
+          "mass_g": 7.050612787070264,
+          "mu_rr": 0.08138953439942713
+        },
+        "weights": {},
+        "snapped": {
+          "G_continuous": 1.5438493366092392,
+          "options": [
+            {
+              "gear": "bevel 2:1 only",
+              "ratio": 2.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 0.05304685063429693,
+              "terms": {
+                "r_e_mm": 0.9980656058318925,
+                "G": 2.0,
+                "P_N": 0.5701862168020443,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.9486832980505138,
+                "F_mot_N": 0.6311465962004522,
+                "v_max_m_s": 1.127914630480929,
+                "m_r_g": 7.348401914773678,
+                "F_bd_N": 0.02112271071621326,
+                "P_cu_W": 0.023024569007594826,
+                "F_use_mean_N": 0.3116520567265142,
+                "F_use_p10_N": 0.21600456802346826,
+                "share_full": 0.6818699770507151,
+                "F_rr_N": 0.046381489586798795,
+                "R_d_mm": 8.671850724509408,
+                "dR_mm": 1.921850724509408,
+                "scrub_N": 0.0,
+                "mass_g": 7.2,
+                "mu_rr": 0.08134445944157467
+              }
+            },
+            {
+              "gear": "GP6A_3.9 + bevel 1:1",
+              "ratio": 3.9,
+              "eta_catalogue_with_bevel": 0.792,
+              "J": 0.5376235726926475,
+              "terms": {
+                "r_e_mm": 1.042440516522423,
+                "G": 3.8999999999999995,
+                "P_N": 0.5704727021255553,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.9017334405116193,
+                "F_mot_N": 1.120029814909185,
+                "v_max_m_s": 0.6041347424105408,
+                "m_r_g": 25.61401964538633,
+                "F_bd_N": 0.04148920839100734,
+                "P_cu_W": 0.007311270144734454,
+                "F_use_mean_N": 0.3117692458005643,
+                "F_use_p10_N": 0.21600456861586903,
+                "share_full": 0.6815454186565251,
+                "F_rr_N": 0.04508590248934616,
+                "R_d_mm": 8.767034907940598,
+                "dR_mm": 2.017034907940598,
+                "scrub_N": 0.0,
+                "mass_g": 7.585389649589954,
+                "mu_rr": 0.07903253270727616
+              }
+            },
+            {
+              "gear": "FH06_4 + bevel 1:1",
+              "ratio": 4.0,
+              "eta_catalogue_with_bevel": 0.81,
+              "J": 0.568954041126571,
+              "terms": {
+                "r_e_mm": 1.0541784184298593,
+                "G": 4.0,
+                "P_N": 0.5705451171090241,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.9,
+                "F_mot_N": 1.1337739220465022,
+                "v_max_m_s": 0.5956638793765608,
+                "m_r_g": 26.347707323630246,
+                "F_bd_N": 0.04216026781371791,
+                "P_cu_W": 0.007135083684428926,
+                "F_use_mean_N": 0.3117988587804984,
+                "F_use_p10_N": 0.21600456876394056,
+                "share_full": 0.681463376547181,
+                "F_rr_N": 0.04475817557668156,
+                "R_d_mm": 8.792212707532048,
+                "dR_mm": 2.042212707532048,
+                "scrub_N": 0.0,
+                "mass_g": 7.6,
+                "mu_rr": 0.07844809154352789
+              }
+            },
+            {
+              "gear": "bevel 1:1 only",
+              "ratio": 1.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 1.3893955523849155,
+              "terms": {
+                "r_e_mm": 0.981970643790994,
+                "G": 1.0,
+                "P_N": 0.5584912067322751,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 1.0,
+                "F_mot_N": 0.33809564684976884,
+                "v_max_m_s": 2.2194514055245227,
+                "m_r_g": 1.8978158980470434,
+                "F_bd_N": 0.010183603820776169,
+                "P_cu_W": 0.08023665964687211,
+                "F_use_mean_N": 0.29953234504347365,
+                "F_use_p10_N": 0.21599338763873804,
+                "share_full": 0.6950976251212083,
+                "F_rr_N": 0.045609073363485006,
+                "R_d_mm": 8.637327030931681,
+                "dR_mm": 1.8873270309316812,
+                "scrub_N": 0.0,
+                "mass_g": 6.8,
+                "mu_rr": 0.08166480118880136
+              }
+            },
+            {
+              "gear": "GP6A_15 + bevel 1:1",
+              "ratio": 15.0,
+              "eta_catalogue_with_bevel": 0.6930000000000001,
+              "J": 4.122529186454376,
+              "terms": {
+                "r_e_mm": 1.9373737819405938,
+                "G": 15.0,
+                "P_N": 0.5734399590704462,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.8139828321832204,
+                "F_mot_N": 2.09233475855757,
+                "v_max_m_s": 0.29192365987332025,
+                "m_r_g": 109.70003632601733,
+                "F_bd_N": 0.09511797494350872,
+                "P_cu_W": 0.0020950271657356693,
+                "F_use_mean_N": 0.31297973311219823,
+                "F_use_p10_N": 0.21600457418586885,
+                "share_full": 0.6781826195262862,
+                "F_rr_N": 0.031578513309109046,
+                "R_d_mm": 10.686666762262574,
+                "dR_mm": 3.9366667622625737,
+                "scrub_N": 0.0,
+                "mass_g": 8.362756238243406,
+                "mu_rr": 0.05506856090094984
+              }
+            },
+            {
+              "gear": "FH06_16 + bevel 1:1",
+              "ratio": 16.0,
+              "eta_catalogue_with_bevel": 0.7290000000000001,
+              "J": 4.448621006006038,
+              "terms": {
+                "r_e_mm": 1.998393803841834,
+                "G": 15.999999999999998,
+                "P_N": 0.5735097605068683,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.81,
+                "F_mot_N": 2.153089141753837,
+                "v_max_m_s": 0.282298277243121,
+                "m_r_g": 117.30834455238552,
+                "F_bd_N": 0.09884481417916001,
+                "P_cu_W": 0.0019784632002061925,
+                "F_use_mean_N": 0.3130081362544232,
+                "F_use_p10_N": 0.2160045743053287,
+                "share_full": 0.6781034883759581,
+                "F_rr_N": 0.03125884610350354,
+                "R_d_mm": 10.817554709240735,
+                "dR_mm": 4.067554709240735,
+                "scrub_N": 0.0,
+                "mass_g": 8.4,
+                "mu_rr": 0.05450447098908474
+              }
+            },
+            {
+              "gear": "GP6A_57 + bevel 1:1",
+              "ratio": 57.0,
+              "eta_catalogue_with_bevel": 0.6120000000000001,
+              "J": 21.857504521013013,
+              "terms": {
+                "r_e_mm": 3.271070468222169,
+                "G": 57.00000000000001,
+                "P_N": 0.5745278031334731,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.735446008269832,
+                "F_mot_N": 4.254747916837917,
+                "v_max_m_s": 0.1297066314160036,
+                "m_r_g": 555.6751824000643,
+                "F_bd_N": 0.23693769564763845,
+                "P_cu_W": 0.0005066456633034554,
+                "F_use_mean_N": 0.31342201402361625,
+                "F_use_p10_N": 0.21600457599195005,
+                "share_full": 0.6769492514226773,
+                "F_rr_N": 0.026586651910745062,
+                "R_d_mm": 13.547446154336551,
+                "dR_mm": 6.797446154336551,
+                "scrub_N": 0.0,
+                "mass_g": 9.133156005665896,
+                "mu_rr": 0.04627565761959915
+              }
+            },
+            {
+              "gear": "FH06_64 + bevel 1:1",
+              "ratio": 64.0,
+              "eta_catalogue_with_bevel": 0.657,
+              "J": 28.510016022439654,
+              "terms": {
+                "r_e_mm": 3.3677923767677833,
+                "G": 63.99999999999998,
+                "P_N": 0.574582951849583,
+                "r_r_mm": 0.5082638177642645,
+                "eta": 0.7290000000000001,
+                "F_mot_N": 4.599390421705932,
+                "v_max_m_s": 0.11893576534393964,
+                "m_r_g": 660.8766665721294,
+                "F_bd_N": 0.26067965413936794,
+                "P_cu_W": 0.00043356223394104353,
+                "F_use_mean_N": 0.31344441415688756,
+                "F_use_p10_N": 0.2160045760804081,
+                "share_full": 0.6768867184932151,
+                "F_rr_N": 0.02633302556582496,
+                "R_d_mm": 13.754914648166896,
+                "dR_mm": 7.004914648166896,
+                "scrub_N": 0.0,
+                "mass_g": 9.2,
+                "mu_rr": 0.04582980661201125
+              }
+            }
+          ],
+          "chosen": {
+            "gear": "bevel 2:1 only",
+            "ratio": 2.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 0.05304685063429693,
+            "terms": {
+              "r_e_mm": 0.9980656058318925,
+              "G": 2.0,
+              "P_N": 0.5701862168020443,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.9486832980505138,
+              "F_mot_N": 0.6311465962004522,
+              "v_max_m_s": 1.127914630480929,
+              "m_r_g": 7.348401914773678,
+              "F_bd_N": 0.02112271071621326,
+              "P_cu_W": 0.023024569007594826,
+              "F_use_mean_N": 0.3116520567265142,
+              "F_use_p10_N": 0.21600456802346826,
+              "share_full": 0.6818699770507151,
+              "F_rr_N": 0.046381489586798795,
+              "R_d_mm": 8.671850724509408,
+              "dR_mm": 1.921850724509408,
+              "scrub_N": 0.0,
+              "mass_g": 7.2,
+              "mu_rr": 0.08134445944157467
+            }
+          },
+          "note": "ratio = gearhead x a 1:1 bevel at the heel (a 2:1 bevel doubles it); CALC"
+        },
+        "fits_layout": true
+      },
+      "ball/fh0620B": {
+        "motor": "fh0620B",
+        "concept": "ball",
+        "J": 0.8465155658853999,
+        "x": [
+          -0.0014750329402552743,
+          0.11473323875464284,
+          0.5735047644401857,
+          -0.8033917917596994
+        ],
+        "terms": {
+          "r_e_mm": 0.9985260543861525,
+          "G": 1.1215742051301825,
+          "P_N": 0.5735047644401857,
+          "r_r_mm": 0.4478075155163418,
+          "eta": 0.9913180044886132,
+          "F_mot_N": 0.6951966325473486,
+          "v_max_m_s": 1.2530797924372192,
+          "m_r_g": 5.959322300493539,
+          "F_bd_N": 0.027791777593181032,
+          "P_cu_W": 0.027034163592252528,
+          "F_use_mean_N": 0.31300610338987356,
+          "F_use_p10_N": 0.21600457429678946,
+          "share_full": 0.6781091522570726,
+          "F_rr_N": 0.03128085798791156,
+          "R_d_mm": 8.131382412221443,
+          "dR_mm": 1.381382412221443,
+          "scrub_N": 0.22499999999999995,
+          "mass_g": 7.066210029830581,
+          "mu_rr": 0.054543327148198484
+        },
+        "weights": {},
+        "snapped": {
+          "G_continuous": 1.1215742051301825,
+          "options": [
+            {
+              "gear": "bevel 1:1 only",
+              "ratio": 1.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 0.800960323422428,
+              "terms": {
+                "r_e_mm": 0.9986711622614515,
+                "G": 1.0,
+                "P_N": 0.5735056028049578,
+                "r_r_mm": 0.3962045388713124,
+                "eta": 1.0,
+                "F_mot_N": 0.7067056848910666,
+                "v_max_m_s": 1.2434685553684097,
+                "m_r_g": 6.051802025567395,
+                "F_bd_N": 0.027763437620720467,
+                "P_cu_W": 0.02616080401582476,
+                "F_use_mean_N": 0.313006444518543,
+                "F_use_p10_N": 0.21600457429822437,
+                "share_full": 0.6781082018301166,
+                "F_rr_N": 0.03127788878584716,
+                "R_d_mm": 8.016292670003052,
+                "dR_mm": 1.2662926700030521,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.0,
+                "mu_rr": 0.054538070130213515
+              }
+            },
+            {
+              "gear": "bevel 2:1 only",
+              "ratio": 2.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 1.125970335006626,
+              "terms": {
+                "r_e_mm": 0.9981987598539834,
+                "G": 2.0,
+                "P_N": 0.5735034819994531,
+                "r_r_mm": 0.5649841036680702,
+                "eta": 0.9486832980505138,
+                "F_mot_N": 0.9403143264724598,
+                "v_max_m_s": 0.8865874797845723,
+                "m_r_g": 11.904499446441154,
+                "F_bd_N": 0.041045466631734355,
+                "P_cu_W": 0.014776859739810364,
+                "F_use_mean_N": 0.31300558158132924,
+                "F_use_p10_N": 0.216004574294604,
+                "share_full": 0.6781106061182404,
+                "F_rr_N": 0.031287602014674294,
+                "R_d_mm": 8.392724195693704,
+                "dR_mm": 1.6427241956937042,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.4,
+                "mu_rr": 0.054555208462891476
+              }
+            },
+            {
+              "gear": "GP6A_3.9 + bevel 1:1",
+              "ratio": 3.9,
+              "eta_catalogue_with_bevel": 0.792,
+              "J": 1.7193920091860397,
+              "terms": {
+                "r_e_mm": 0.9975390736944225,
+                "G": 3.8999999999999995,
+                "P_N": 0.5735005177234515,
+                "r_r_mm": 0.8006761419125714,
+                "eta": 0.9017334405116193,
+                "F_mot_N": 1.229826724556269,
+                "v_max_m_s": 0.6443289453979015,
+                "m_r_g": 22.539228357246337,
+                "F_bd_N": 0.059418574523912596,
+                "P_cu_W": 0.008638541116954123,
+                "F_use_mean_N": 0.31300437543243614,
+                "F_use_p10_N": 0.21600457428953912,
+                "share_full": 0.6781139666197052,
+                "F_rr_N": 0.031301178722198154,
+                "R_d_mm": 8.91839158653906,
+                "dR_mm": 2.1683915865390606,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.785389649589955,
+                "mu_rr": 0.05457916384530962
+              }
+            },
+            {
+              "gear": "FH06_4 + bevel 1:1",
+              "ratio": 4.0,
+              "eta_catalogue_with_bevel": 0.81,
+              "J": 1.7498555703807994,
+              "terms": {
+                "r_e_mm": 0.9975099986756167,
+                "G": 4.0,
+                "P_N": 0.5735003870044543,
+                "r_r_mm": 0.8110638922501887,
+                "eta": 0.9,
+                "F_mot_N": 1.2428120763746966,
+                "v_max_m_s": 0.6363710832799128,
+                "m_r_g": 23.106462023237043,
+                "F_bd_N": 0.06027748165838474,
+                "P_cu_W": 0.008458966943523601,
+                "F_use_mean_N": 0.3130043222434002,
+                "F_use_p10_N": 0.21600457428931574,
+                "share_full": 0.6781141148114549,
+                "F_rr_N": 0.03130177744242949,
+                "R_d_mm": 8.941559536962153,
+                "dR_mm": 2.1915595369621528,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.8,
+                "mu_rr": 0.054580220260926134
+              }
+            },
+            {
+              "gear": "GP6A_15 + bevel 1:1",
+              "ratio": 15.0,
+              "eta_catalogue_with_bevel": 0.6930000000000001,
+              "J": 6.493397432843844,
+              "terms": {
+                "r_e_mm": 0.9969301439468343,
+                "G": 15.0,
+                "P_N": 0.5734977786879777,
+                "r_r_mm": 1.0182314745739922,
+                "eta": 0.8139828321832204,
+                "F_mot_N": 3.35751543783289,
+                "v_max_m_s": 0.21304464344369203,
+                "m_r_g": 206.16412190199765,
+                "F_bd_N": 0.19907750152422693,
+                "P_cu_W": 0.0011590234437834392,
+                "F_use_mean_N": 0.3130032609274492,
+                "F_use_p10_N": 0.21600457428485834,
+                "share_full": 0.6781170717716984,
+                "F_rr_N": 0.031313723959092085,
+                "R_d_mm": 9.403608406639872,
+                "dR_mm": 2.653608406639872,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 8.562756238243407,
+                "mu_rr": 0.05460129946925027
+              }
+            },
+            {
+              "gear": "FH06_16 + bevel 1:1",
+              "ratio": 16.0,
+              "eta_catalogue_with_bevel": 0.7290000000000001,
+              "J": 7.131178022271351,
+              "terms": {
+                "r_e_mm": 0.9969224268251218,
+                "G": 15.999999999999998,
+                "P_N": 0.5734977439727327,
+                "r_r_mm": 1.0209879886151016,
+                "eta": 0.81,
+                "F_mot_N": 3.5542043985475402,
+                "v_max_m_s": 0.20027005225451164,
+                "m_r_g": 233.30406447269476,
+                "F_bd_N": 0.21281734265259505,
+                "P_cu_W": 0.0010342926942699226,
+                "F_use_mean_N": 0.3130032468018915,
+                "F_use_p10_N": 0.21600457428479897,
+                "share_full": 0.6781171111271882,
+                "F_rr_N": 0.03131388303008465,
+                "R_d_mm": 9.409756297060005,
+                "dR_mm": 2.659756297060005,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 8.6,
+                "mu_rr": 0.05460158014426904
+              }
+            },
+            {
+              "gear": "GP6A_57 + bevel 1:1",
+              "ratio": 57.0,
+              "eta_catalogue_with_bevel": 0.6120000000000001,
+              "J": 90.06129762237009,
+              "terms": {
+                "r_e_mm": 0.9962406749684034,
+                "G": 57.00000000000001,
+                "P_N": 0.5734946739901304,
+                "r_r_mm": 1.2645627262651569,
+                "eta": 0.735446008269832,
+                "F_mot_N": 9.282037219817061,
+                "v_max_m_s": 0.06962751280468875,
+                "m_r_g": 1930.1566768359671,
+                "F_bd_N": 0.6741807829997664,
+                "P_cu_W": 0.00015164973158404707,
+                "F_use_mean_N": 0.31300199762940045,
+                "F_use_p10_N": 0.21600457427955166,
+                "share_full": 0.6781205914607394,
+                "F_rr_N": 0.03132794370221343,
+                "R_d_mm": 9.953004583099732,
+                "dR_mm": 3.203004583099732,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 9.333156005665897,
+                "mu_rr": 0.054626389961474286
+              }
+            },
+            {
+              "gear": "FH06_64 + bevel 1:1",
+              "ratio": 64.0,
+              "eta_catalogue_with_bevel": 0.657,
+              "J": 106.79402854809615,
+              "terms": {
+                "r_e_mm": 0.9961706118418298,
+                "G": 63.99999999999998,
+                "P_N": 0.573494358292036,
+                "r_r_mm": 1.2895947539814152,
+                "eta": 0.7290000000000001,
+                "F_mot_N": 10.130066022421383,
+                "v_max_m_s": 0.06323953162204277,
+                "m_r_g": 2339.7908469058207,
+                "F_bd_N": 0.748844894263462,
+                "P_cu_W": 0.00012732207426943001,
+                "F_use_mean_N": 0.31300186917183426,
+                "F_use_p10_N": 0.21600457427901198,
+                "share_full": 0.6781209493566772,
+                "F_rr_N": 0.03132938960415537,
+                "R_d_mm": 10.008833879371686,
+                "dR_mm": 3.258833879371686,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 9.4,
+                "mu_rr": 0.054628941246187036
+              }
+            }
+          ],
+          "chosen": {
+            "gear": "bevel 1:1 only",
+            "ratio": 1.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 0.800960323422428,
+            "terms": {
+              "r_e_mm": 0.9986711622614515,
+              "G": 1.0,
+              "P_N": 0.5735056028049578,
+              "r_r_mm": 0.3962045388713124,
+              "eta": 1.0,
+              "F_mot_N": 0.7067056848910666,
+              "v_max_m_s": 1.2434685553684097,
+              "m_r_g": 6.051802025567395,
+              "F_bd_N": 0.027763437620720467,
+              "P_cu_W": 0.02616080401582476,
+              "F_use_mean_N": 0.313006444518543,
+              "F_use_p10_N": 0.21600457429822437,
+              "share_full": 0.6781082018301166,
+              "F_rr_N": 0.03127788878584716,
+              "R_d_mm": 8.016292670003052,
+              "dR_mm": 1.2662926700030521,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 7.0,
+              "mu_rr": 0.054538070130213515
+            }
+          },
+          "note": "ratio = gearhead x a 1:1 bevel at the heel (a 2:1 bevel doubles it); CALC"
+        },
+        "fits_layout": true
+      },
+      "ball/mxDCX6M": {
+        "motor": "mxDCX6M",
+        "concept": "ball",
+        "J": 1.2806001875162312,
+        "x": [
+          -0.002236662065706975,
+          0.6724783894983674,
+          0.5735013483948012,
+          -0.32930493160153235
+        ],
+        "terms": {
+          "r_e_mm": 0.9977658373990577,
+          "G": 1.9590866887179497,
+          "P_N": 0.5735013483948012,
+          "r_r_mm": 0.7194236083034313,
+          "eta": 0.9501747178803158,
+          "F_mot_N": 0.8590343351676907,
+          "v_max_m_s": 0.8300001437480246,
+          "m_r_g": 13.570286807781041,
+          "F_bd_N": 0.028659294669836785,
+          "P_cu_W": 0.012428850176010057,
+          "F_use_mean_N": 0.3130047134290051,
+          "F_use_p10_N": 0.21600457429095854,
+          "share_full": 0.6781130249153237,
+          "F_rr_N": 0.03129649640667203,
+          "R_d_mm": 8.73717177636419,
+          "dR_mm": 1.9871717763641907,
+          "scrub_N": 0.22499999999999995,
+          "mass_g": 7.188072495053716,
+          "mu_rr": 0.05457092035488531
+        },
+        "weights": {},
+        "snapped": {
+          "G_continuous": 1.9590866887179497,
+          "options": [
+            {
+              "gear": "bevel 1:1 only",
+              "ratio": 1.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 0.8618375151538052,
+              "terms": {
+                "r_e_mm": 0.9985303035787766,
+                "G": 1.0,
+                "P_N": 0.5735049728426245,
+                "r_r_mm": 0.44653009997078563,
+                "eta": 1.0,
+                "F_mot_N": 0.7435109078239547,
+                "v_max_m_s": 1.009247948760579,
+                "m_r_g": 9.178032916582215,
+                "F_bd_N": 0.02239490686216731,
+                "P_cu_W": 0.016591181320444508,
+                "F_use_mean_N": 0.31300618819514814,
+                "F_use_p10_N": 0.21600457429715067,
+                "share_full": 0.6781089159980005,
+                "F_rr_N": 0.031280784401070905,
+                "R_d_mm": 8.128534501625577,
+                "dR_mm": 1.3785345016255768,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 6.8,
+                "mu_rr": 0.05454317901730674
+              }
+            },
+            {
+              "gear": "bevel 2:1 only",
+              "ratio": 2.0,
+              "eta_catalogue_with_bevel": 0.9,
+              "J": 1.2803018624740494,
+              "terms": {
+                "r_e_mm": 0.9979503350603647,
+                "G": 2.0,
+                "P_N": 0.5735023661706953,
+                "r_r_mm": 0.6537418825985342,
+                "eta": 0.9486832980505138,
+                "F_mot_N": 0.9635694555803477,
+                "v_max_m_s": 0.7387941530421092,
+                "m_r_g": 17.127676924375777,
+                "F_bd_N": 0.03224797374766893,
+                "P_cu_W": 0.009878385009788172,
+                "F_use_mean_N": 0.31300512755696147,
+                "F_use_p10_N": 0.21600457429269757,
+                "share_full": 0.6781118710965547,
+                "F_rr_N": 0.03129271300683506,
+                "R_d_mm": 8.590681968498775,
+                "dR_mm": 1.8406819684987745,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.2,
+                "mu_rr": 0.05456422650141465
+              }
+            },
+            {
+              "gear": "GP6A_3.9 + bevel 1:1",
+              "ratio": 3.9,
+              "eta_catalogue_with_bevel": 0.792,
+              "J": 2.04246415984583,
+              "terms": {
+                "r_e_mm": 0.9971932988898712,
+                "G": 3.8999999999999995,
+                "P_N": 0.5734989634785073,
+                "r_r_mm": 0.9242117417469347,
+                "eta": 0.9017334405116193,
+                "F_mot_N": 1.2633084022147647,
+                "v_max_m_s": 0.5356165782923802,
+                "m_r_g": 32.58647173661057,
+                "F_bd_N": 0.046796669931370286,
+                "P_cu_W": 0.005746894558994486,
+                "F_use_mean_N": 0.31300374301564604,
+                "F_use_p10_N": 0.21600457428688313,
+                "share_full": 0.678115728614903,
+                "F_rr_N": 0.03130830092003776,
+                "R_d_mm": 9.193914825146043,
+                "dR_mm": 2.4439148251460434,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.585389649589954,
+                "mu_rr": 0.05459173061122905
+              }
+            },
+            {
+              "gear": "FH06_4 + bevel 1:1",
+              "ratio": 4.0,
+              "eta_catalogue_with_bevel": 0.81,
+              "J": 2.0817648737368444,
+              "terms": {
+                "r_e_mm": 0.9971596361450269,
+                "G": 4.0,
+                "P_N": 0.5734988120353404,
+                "r_r_mm": 0.9362389443239338,
+                "eta": 0.9,
+                "F_mot_N": 1.2765971841334418,
+                "v_max_m_s": 0.5290221388045959,
+                "m_r_g": 33.40393790785073,
+                "F_bd_N": 0.04747126223908381,
+                "P_cu_W": 0.005627872293546558,
+                "F_use_mean_N": 0.3130036813938671,
+                "F_use_p10_N": 0.21600457428662428,
+                "share_full": 0.6781159003008967,
+                "F_rr_N": 0.031308994509365015,
+                "R_d_mm": 9.220739271470766,
+                "dR_mm": 2.470739271470766,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 7.6,
+                "mu_rr": 0.05459295442696694
+              }
+            },
+            {
+              "gear": "GP6A_15 + bevel 1:1",
+              "ratio": 15.0,
+              "eta_catalogue_with_bevel": 0.6930000000000001,
+              "J": 10.159861791720852,
+              "terms": {
+                "r_e_mm": 0.9968837844449635,
+                "G": 15.0,
+                "P_N": 0.5734975707467213,
+                "r_r_mm": 1.0347949264434824,
+                "eta": 0.8139828321832204,
+                "F_mot_N": 3.91733125152101,
+                "v_max_m_s": 0.15592299480957225,
+                "m_r_g": 384.5253945048725,
+                "F_bd_N": 0.17808269652054673,
+                "P_cu_W": 0.0005976836886966221,
+                "F_use_mean_N": 0.313003176316592,
+                "F_use_p10_N": 0.21600457428450293,
+                "share_full": 0.6781173075076079,
+                "F_rr_N": 0.031314679630322396,
+                "R_d_mm": 9.44055011576205,
+                "dR_mm": 2.6905501157620506,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 8.362756238243406,
+                "mu_rr": 0.05460298565789771
+              }
+            },
+            {
+              "gear": "FH06_16 + bevel 1:1",
+              "ratio": 16.0,
+              "eta_catalogue_with_bevel": 0.7290000000000001,
+              "J": 11.313082498742641,
+              "terms": {
+                "r_e_mm": 0.9968514859671881,
+                "G": 15.999999999999998,
+                "P_N": 0.5734974253737396,
+                "r_r_mm": 1.0463343628884356,
+                "eta": 0.81,
+                "F_mot_N": 4.112184548849394,
+                "v_max_m_s": 0.14780789827101673,
+                "m_r_g": 427.9076772787422,
+                "F_bd_N": 0.18878369210033522,
+                "P_cu_W": 0.0005423839185358155,
+                "F_use_mean_N": 0.31300311716461593,
+                "F_use_p10_N": 0.2160045742842545,
+                "share_full": 0.6781174723119927,
+                "F_rr_N": 0.03131534545004389,
+                "R_d_mm": 9.466286688564725,
+                "dR_mm": 2.7162866885647254,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 8.4,
+                "mu_rr": 0.054604160480121
+              }
+            },
+            {
+              "gear": "GP6A_57 + bevel 1:1",
+              "ratio": 57.0,
+              "eta_catalogue_with_bevel": 0.6120000000000001,
+              "J": 141.106381314936,
+              "terms": {
+                "r_e_mm": 0.9960245126042568,
+                "G": 57.00000000000001,
+                "P_N": 0.5734937005294474,
+                "r_r_mm": 1.3417943031680364,
+                "eta": 0.735446008269832,
+                "F_mot_N": 10.372364994871623,
+                "v_max_m_s": 0.05320570767516991,
+                "m_r_g": 3302.3942066971567,
+                "F_bd_N": 0.5776145398826769,
+                "P_cu_W": 8.525039827087082e-05,
+                "F_use_mean_N": 0.3130016015279946,
+                "F_use_p10_N": 0.2160045742778876,
+                "share_full": 0.6781216950391505,
+                "F_rr_N": 0.03133240526019858,
+                "R_d_mm": 10.125255301680086,
+                "dR_mm": 3.3752553016800864,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 9.133156005665896,
+                "mu_rr": 0.05463426229664355
+              }
+            },
+            {
+              "gear": "FH06_64 + bevel 1:1",
+              "ratio": 64.0,
+              "eta_catalogue_with_bevel": 0.657,
+              "J": 164.09693507238038,
+              "terms": {
+                "r_e_mm": 0.9959266776602101,
+                "G": 63.99999999999998,
+                "P_N": 0.5734932595234916,
+                "r_r_mm": 1.3767486412042018,
+                "eta": 0.7290000000000001,
+                "F_mot_N": 11.250994943021356,
+                "v_max_m_s": 0.04862076844683744,
+                "m_r_g": 3954.5923750798265,
+                "F_bd_N": 0.6376726482338412,
+                "P_cu_W": 7.245529671379563e-05,
+                "F_use_mean_N": 0.3130014220823436,
+                "F_use_p10_N": 0.21600457427713365,
+                "share_full": 0.6781221949921455,
+                "F_rr_N": 0.031334425060166864,
+                "R_d_mm": 10.203214471494583,
+                "dR_mm": 3.453214471494583,
+                "scrub_N": 0.22499999999999995,
+                "mass_g": 9.2,
+                "mu_rr": 0.05463782623391641
+              }
+            }
+          ],
+          "chosen": {
+            "gear": "bevel 1:1 only",
+            "ratio": 1.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 0.8618375151538052,
+            "terms": {
+              "r_e_mm": 0.9985303035787766,
+              "G": 1.0,
+              "P_N": 0.5735049728426245,
+              "r_r_mm": 0.44653009997078563,
+              "eta": 1.0,
+              "F_mot_N": 0.7435109078239547,
+              "v_max_m_s": 1.009247948760579,
+              "m_r_g": 9.178032916582215,
+              "F_bd_N": 0.02239490686216731,
+              "P_cu_W": 0.016591181320444508,
+              "F_use_mean_N": 0.31300618819514814,
+              "F_use_p10_N": 0.21600457429715067,
+              "share_full": 0.6781089159980005,
+              "F_rr_N": 0.031280784401070905,
+              "R_d_mm": 8.128534501625577,
+              "dR_mm": 1.3785345016255768,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 6.8,
+              "mu_rr": 0.05454317901730674
+            }
+          },
+          "note": "ratio = gearhead x a 1:1 bevel at the heel (a 2:1 bevel doubles it); CALC"
+        },
+        "fits_layout": true
+      }
+    },
+    "pareto": {},
+    "best_wheel": {
+      "motor": "fh0620B",
+      "concept": "wheel",
+      "J": 0.0333690547642226,
+      "x": [
+        -0.0027766632617861548,
+        0.621955743884222,
+        0.5701788126522089,
+        -0.6767546398992854
+      ],
+      "terms": {
+        "r_e_mm": 0.9972271881021769,
+        "G": 1.8625671864528386,
+        "P_N": 0.5701788126522089,
+        "r_r_mm": 0.5082638177642645,
+        "eta": 0.9538302117022714,
+        "F_mot_N": 0.4988235429086155,
+        "v_max_m_s": 1.680341385404811,
+        "m_r_g": 3.31405170178621,
+        "F_bd_N": 0.021539689971503295,
+        "P_cu_W": 0.052509075481737784,
+        "F_use_mean_N": 0.31164806551559937,
+        "F_use_p10_N": 0.21600456728545486,
+        "share_full": 0.6818783649057437,
+        "F_rr_N": 0.046406679241319394,
+        "R_d_mm": 8.670052318479168,
+        "dR_mm": 1.9200523184791685,
+        "scrub_N": 0.0,
+        "mass_g": 7.3589169869416695,
+        "mu_rr": 0.08138969427056912
+      },
+      "weights": {},
+      "snapped": {
+        "G_continuous": 1.8625671864528386,
+        "options": [
+          {
+            "gear": "bevel 2:1 only",
+            "ratio": 2.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 0.03905119797874397,
+            "terms": {
+              "r_e_mm": 0.9975101300699789,
+              "G": 2.0,
+              "P_N": 0.5701822297931327,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.9486832980505138,
+              "F_mot_N": 0.5325887235561385,
+              "v_max_m_s": 1.5653183630063678,
+              "m_r_g": 3.818993920581052,
+              "F_bd_N": 0.023247920472688584,
+              "P_cu_W": 0.04606216250952989,
+              "F_use_mean_N": 0.31165029886810197,
+              "F_use_p10_N": 0.21600456792009057,
+              "share_full": 0.6818744937699546,
+              "F_rr_N": 0.04639827413557515,
+              "R_d_mm": 8.670659229000105,
+              "dR_mm": 1.9206592290001048,
+              "scrub_N": 0.0,
+              "mass_g": 7.4,
+              "mu_rr": 0.08137446540978463
+            }
+          },
+          {
+            "gear": "GP6A_3.9 + bevel 1:1",
+            "ratio": 3.9,
+            "eta_catalogue_with_bevel": 0.792,
+            "J": 0.31124414249004156,
+            "terms": {
+              "r_e_mm": 1.00500576195963,
+              "G": 3.8999999999999995,
+              "P_N": 0.5701860796226766,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.9017334405116193,
+              "F_mot_N": 0.9797883298884432,
+              "v_max_m_s": 0.8087593332997944,
+              "m_r_g": 14.305917492127154,
+              "F_bd_N": 0.04733807188825052,
+              "P_cu_W": 0.013610175720336818,
+              "F_use_mean_N": 0.31165200094200585,
+              "F_use_p10_N": 0.21600456802343995,
+              "share_full": 0.6818701324556765,
+              "F_rr_N": 0.04616770061315323,
+              "R_d_mm": 8.686737359403406,
+              "dR_mm": 1.9367373594034056,
+              "scrub_N": 0.0,
+              "mass_g": 7.785389649589955,
+              "mu_rr": 0.08096953304034522
+            }
+          },
+          {
+            "gear": "FH06_4 + bevel 1:1",
+            "ratio": 4.0,
+            "eta_catalogue_with_bevel": 0.81,
+            "J": 0.32982609372885524,
+            "terms": {
+              "r_e_mm": 0.9992971250602798,
+              "G": 4.0,
+              "P_N": 0.5701944569275126,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.9,
+              "F_mot_N": 1.0087089962749523,
+              "v_max_m_s": 0.7840612805839832,
+              "m_r_g": 15.221389947211518,
+              "F_bd_N": 0.048923275833441235,
+              "P_cu_W": 0.012840929712345506,
+              "F_use_mean_N": 0.31165542852863853,
+              "F_use_p10_N": 0.21600456804090018,
+              "share_full": 0.681860642136529,
+              "F_rr_N": 0.04634426815963546,
+              "R_d_mm": 8.6744923332543,
+              "dR_mm": 1.9244923332542996,
+              "scrub_N": 0.0,
+              "mass_g": 7.8,
+              "mu_rr": 0.0812780054182938
+            }
+          },
+          {
+            "gear": "bevel 1:1 only",
+            "ratio": 1.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 2.6161180825070613,
+            "terms": {
+              "r_e_mm": 0.9789886276877968,
+              "G": 1.0,
+              "P_N": 0.4954543882683303,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 1.0,
+              "F_mot_N": 0.2860094510610527,
+              "v_max_m_s": 3.0725078972112434,
+              "m_r_g": 0.9912160177478627,
+              "F_bd_N": 0.011236085577398497,
+              "P_cu_W": 0.15972301082579157,
+              "F_use_mean_N": 0.2648082707514934,
+              "F_use_p10_N": 0.21574974290740134,
+              "share_full": 0.7649326723045906,
+              "F_rr_N": 0.03895665029909114,
+              "R_d_mm": 8.630930606390324,
+              "dR_mm": 1.880930606390324,
+              "scrub_N": 0.0,
+              "mass_g": 7.0,
+              "mu_rr": 0.07862812646639196
+            }
+          },
+          {
+            "gear": "GP6A_15 + bevel 1:1",
+            "ratio": 15.0,
+            "eta_catalogue_with_bevel": 0.6930000000000001,
+            "J": 2.974418513585791,
+            "terms": {
+              "r_e_mm": 1.6819018256314962,
+              "G": 15.0,
+              "P_N": 0.5731124052281148,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.8139828321832204,
+              "F_mot_N": 2.0326560344186038,
+              "v_max_m_s": 0.3519044379362471,
+              "m_r_g": 75.56224271200777,
+              "F_bd_N": 0.12052247928050751,
+              "P_cu_W": 0.0031622810808058528,
+              "F_use_mean_N": 0.3128464026972266,
+              "F_use_p10_N": 0.21600457361855402,
+              "share_full": 0.6785539397762,
+              "F_rr_N": 0.03307742909611635,
+              "R_d_mm": 10.13867941597956,
+              "dR_mm": 3.38867941597956,
+              "scrub_N": 0.0,
+              "mass_g": 8.562756238243407,
+              "mu_rr": 0.05771543033159543
+            }
+          },
+          {
+            "gear": "FH06_16 + bevel 1:1",
+            "ratio": 16.0,
+            "eta_catalogue_with_bevel": 0.7290000000000001,
+            "J": 3.218239168279096,
+            "terms": {
+              "r_e_mm": 1.733850162041353,
+              "G": 15.999999999999998,
+              "P_N": 0.5731841696849791,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.81,
+              "F_mot_N": 2.092914416392027,
+              "v_max_m_s": 0.3401002425351933,
+              "m_r_g": 80.8984952950276,
+              "F_bd_N": 0.12531875901056183,
+              "P_cu_W": 0.002982808129466148,
+              "F_use_mean_N": 0.3128756205925623,
+              "F_use_p10_N": 0.21600457374380372,
+              "share_full": 0.6784725885292362,
+              "F_rr_N": 0.03274919365121197,
+              "R_d_mm": 10.250108597578702,
+              "dR_mm": 3.500108597578702,
+              "scrub_N": 0.0,
+              "mass_g": 8.6,
+              "mu_rr": 0.057135551509056616
+            }
+          },
+          {
+            "gear": "GP6A_57 + bevel 1:1",
+            "ratio": 57.0,
+            "eta_catalogue_with_bevel": 0.6120000000000001,
+            "J": 13.167958632460449,
+            "terms": {
+              "r_e_mm": 3.0229503627525087,
+              "G": 57.00000000000001,
+              "P_N": 0.5743758094771553,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.735446008269832,
+              "F_mot_N": 3.8828683515990288,
+              "v_max_m_s": 0.16644529426558052,
+              "m_r_g": 337.76238647994734,
+              "F_bd_N": 0.28202378029439085,
+              "P_cu_W": 0.000866608461077736,
+              "F_use_mean_N": 0.3133602669830686,
+              "F_use_p10_N": 0.21600457574663312,
+              "share_full": 0.6771215931346589,
+              "F_rr_N": 0.027285383663090773,
+              "R_d_mm": 13.015228528104132,
+              "dR_mm": 6.2652285281041316,
+              "scrub_N": 0.0,
+              "mass_g": 9.333156005665897,
+              "mu_rr": 0.047504409504864425
+            }
+          },
+          {
+            "gear": "FH06_64 + bevel 1:1",
+            "ratio": 64.0,
+            "eta_catalogue_with_bevel": 0.657,
+            "J": 15.100706333197197,
+            "terms": {
+              "r_e_mm": 3.0522792589774337,
+              "G": 63.99999999999998,
+              "P_N": 0.5743946276493113,
+              "r_r_mm": 0.5082638177642645,
+              "eta": 0.7290000000000001,
+              "F_mot_N": 4.279975353361525,
+              "v_max_m_s": 0.14967857935330156,
+              "m_r_g": 417.67167326311863,
+              "F_bd_N": 0.31638862805477913,
+              "P_cu_W": 0.0007132564716616643,
+              "F_use_mean_N": 0.31336791267241115,
+              "F_use_p10_N": 0.21600457577712703,
+              "share_full": 0.6771002559586057,
+              "F_rr_N": 0.0271988966185782,
+              "R_d_mm": 13.078139010506597,
+              "dR_mm": 6.328139010506597,
+              "scrub_N": 0.0,
+              "mass_g": 9.4,
+              "mu_rr": 0.04735228240188923
+            }
+          }
+        ],
+        "chosen": {
+          "gear": "bevel 2:1 only",
+          "ratio": 2.0,
+          "eta_catalogue_with_bevel": 0.9,
+          "J": 0.03905119797874397,
+          "terms": {
+            "r_e_mm": 0.9975101300699789,
+            "G": 2.0,
+            "P_N": 0.5701822297931327,
+            "r_r_mm": 0.5082638177642645,
+            "eta": 0.9486832980505138,
+            "F_mot_N": 0.5325887235561385,
+            "v_max_m_s": 1.5653183630063678,
+            "m_r_g": 3.818993920581052,
+            "F_bd_N": 0.023247920472688584,
+            "P_cu_W": 0.04606216250952989,
+            "F_use_mean_N": 0.31165029886810197,
+            "F_use_p10_N": 0.21600456792009057,
+            "share_full": 0.6818744937699546,
+            "F_rr_N": 0.04639827413557515,
+            "R_d_mm": 8.670659229000105,
+            "dR_mm": 1.9206592290001048,
+            "scrub_N": 0.0,
+            "mass_g": 7.4,
+            "mu_rr": 0.08137446540978463
+          }
+        },
+        "note": "ratio = gearhead x a 1:1 bevel at the heel (a 2:1 bevel doubles it); CALC"
+      },
+      "fits_layout": true
+    },
+    "best_ball": {
+      "motor": "fh0620B",
+      "concept": "ball",
+      "J": 0.8465155658853999,
+      "x": [
+        -0.0014750329402552743,
+        0.11473323875464284,
+        0.5735047644401857,
+        -0.8033917917596994
+      ],
+      "terms": {
+        "r_e_mm": 0.9985260543861525,
+        "G": 1.1215742051301825,
+        "P_N": 0.5735047644401857,
+        "r_r_mm": 0.4478075155163418,
+        "eta": 0.9913180044886132,
+        "F_mot_N": 0.6951966325473486,
+        "v_max_m_s": 1.2530797924372192,
+        "m_r_g": 5.959322300493539,
+        "F_bd_N": 0.027791777593181032,
+        "P_cu_W": 0.027034163592252528,
+        "F_use_mean_N": 0.31300610338987356,
+        "F_use_p10_N": 0.21600457429678946,
+        "share_full": 0.6781091522570726,
+        "F_rr_N": 0.03128085798791156,
+        "R_d_mm": 8.131382412221443,
+        "dR_mm": 1.381382412221443,
+        "scrub_N": 0.22499999999999995,
+        "mass_g": 7.066210029830581,
+        "mu_rr": 0.054543327148198484
+      },
+      "weights": {},
+      "snapped": {
+        "G_continuous": 1.1215742051301825,
+        "options": [
+          {
+            "gear": "bevel 1:1 only",
+            "ratio": 1.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 0.800960323422428,
+            "terms": {
+              "r_e_mm": 0.9986711622614515,
+              "G": 1.0,
+              "P_N": 0.5735056028049578,
+              "r_r_mm": 0.3962045388713124,
+              "eta": 1.0,
+              "F_mot_N": 0.7067056848910666,
+              "v_max_m_s": 1.2434685553684097,
+              "m_r_g": 6.051802025567395,
+              "F_bd_N": 0.027763437620720467,
+              "P_cu_W": 0.02616080401582476,
+              "F_use_mean_N": 0.313006444518543,
+              "F_use_p10_N": 0.21600457429822437,
+              "share_full": 0.6781082018301166,
+              "F_rr_N": 0.03127788878584716,
+              "R_d_mm": 8.016292670003052,
+              "dR_mm": 1.2662926700030521,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 7.0,
+              "mu_rr": 0.054538070130213515
+            }
+          },
+          {
+            "gear": "bevel 2:1 only",
+            "ratio": 2.0,
+            "eta_catalogue_with_bevel": 0.9,
+            "J": 1.125970335006626,
+            "terms": {
+              "r_e_mm": 0.9981987598539834,
+              "G": 2.0,
+              "P_N": 0.5735034819994531,
+              "r_r_mm": 0.5649841036680702,
+              "eta": 0.9486832980505138,
+              "F_mot_N": 0.9403143264724598,
+              "v_max_m_s": 0.8865874797845723,
+              "m_r_g": 11.904499446441154,
+              "F_bd_N": 0.041045466631734355,
+              "P_cu_W": 0.014776859739810364,
+              "F_use_mean_N": 0.31300558158132924,
+              "F_use_p10_N": 0.216004574294604,
+              "share_full": 0.6781106061182404,
+              "F_rr_N": 0.031287602014674294,
+              "R_d_mm": 8.392724195693704,
+              "dR_mm": 1.6427241956937042,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 7.4,
+              "mu_rr": 0.054555208462891476
+            }
+          },
+          {
+            "gear": "GP6A_3.9 + bevel 1:1",
+            "ratio": 3.9,
+            "eta_catalogue_with_bevel": 0.792,
+            "J": 1.7193920091860397,
+            "terms": {
+              "r_e_mm": 0.9975390736944225,
+              "G": 3.8999999999999995,
+              "P_N": 0.5735005177234515,
+              "r_r_mm": 0.8006761419125714,
+              "eta": 0.9017334405116193,
+              "F_mot_N": 1.229826724556269,
+              "v_max_m_s": 0.6443289453979015,
+              "m_r_g": 22.539228357246337,
+              "F_bd_N": 0.059418574523912596,
+              "P_cu_W": 0.008638541116954123,
+              "F_use_mean_N": 0.31300437543243614,
+              "F_use_p10_N": 0.21600457428953912,
+              "share_full": 0.6781139666197052,
+              "F_rr_N": 0.031301178722198154,
+              "R_d_mm": 8.91839158653906,
+              "dR_mm": 2.1683915865390606,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 7.785389649589955,
+              "mu_rr": 0.05457916384530962
+            }
+          },
+          {
+            "gear": "FH06_4 + bevel 1:1",
+            "ratio": 4.0,
+            "eta_catalogue_with_bevel": 0.81,
+            "J": 1.7498555703807994,
+            "terms": {
+              "r_e_mm": 0.9975099986756167,
+              "G": 4.0,
+              "P_N": 0.5735003870044543,
+              "r_r_mm": 0.8110638922501887,
+              "eta": 0.9,
+              "F_mot_N": 1.2428120763746966,
+              "v_max_m_s": 0.6363710832799128,
+              "m_r_g": 23.106462023237043,
+              "F_bd_N": 0.06027748165838474,
+              "P_cu_W": 0.008458966943523601,
+              "F_use_mean_N": 0.3130043222434002,
+              "F_use_p10_N": 0.21600457428931574,
+              "share_full": 0.6781141148114549,
+              "F_rr_N": 0.03130177744242949,
+              "R_d_mm": 8.941559536962153,
+              "dR_mm": 2.1915595369621528,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 7.8,
+              "mu_rr": 0.054580220260926134
+            }
+          },
+          {
+            "gear": "GP6A_15 + bevel 1:1",
+            "ratio": 15.0,
+            "eta_catalogue_with_bevel": 0.6930000000000001,
+            "J": 6.493397432843844,
+            "terms": {
+              "r_e_mm": 0.9969301439468343,
+              "G": 15.0,
+              "P_N": 0.5734977786879777,
+              "r_r_mm": 1.0182314745739922,
+              "eta": 0.8139828321832204,
+              "F_mot_N": 3.35751543783289,
+              "v_max_m_s": 0.21304464344369203,
+              "m_r_g": 206.16412190199765,
+              "F_bd_N": 0.19907750152422693,
+              "P_cu_W": 0.0011590234437834392,
+              "F_use_mean_N": 0.3130032609274492,
+              "F_use_p10_N": 0.21600457428485834,
+              "share_full": 0.6781170717716984,
+              "F_rr_N": 0.031313723959092085,
+              "R_d_mm": 9.403608406639872,
+              "dR_mm": 2.653608406639872,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 8.562756238243407,
+              "mu_rr": 0.05460129946925027
+            }
+          },
+          {
+            "gear": "FH06_16 + bevel 1:1",
+            "ratio": 16.0,
+            "eta_catalogue_with_bevel": 0.7290000000000001,
+            "J": 7.131178022271351,
+            "terms": {
+              "r_e_mm": 0.9969224268251218,
+              "G": 15.999999999999998,
+              "P_N": 0.5734977439727327,
+              "r_r_mm": 1.0209879886151016,
+              "eta": 0.81,
+              "F_mot_N": 3.5542043985475402,
+              "v_max_m_s": 0.20027005225451164,
+              "m_r_g": 233.30406447269476,
+              "F_bd_N": 0.21281734265259505,
+              "P_cu_W": 0.0010342926942699226,
+              "F_use_mean_N": 0.3130032468018915,
+              "F_use_p10_N": 0.21600457428479897,
+              "share_full": 0.6781171111271882,
+              "F_rr_N": 0.03131388303008465,
+              "R_d_mm": 9.409756297060005,
+              "dR_mm": 2.659756297060005,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 8.6,
+              "mu_rr": 0.05460158014426904
+            }
+          },
+          {
+            "gear": "GP6A_57 + bevel 1:1",
+            "ratio": 57.0,
+            "eta_catalogue_with_bevel": 0.6120000000000001,
+            "J": 90.06129762237009,
+            "terms": {
+              "r_e_mm": 0.9962406749684034,
+              "G": 57.00000000000001,
+              "P_N": 0.5734946739901304,
+              "r_r_mm": 1.2645627262651569,
+              "eta": 0.735446008269832,
+              "F_mot_N": 9.282037219817061,
+              "v_max_m_s": 0.06962751280468875,
+              "m_r_g": 1930.1566768359671,
+              "F_bd_N": 0.6741807829997664,
+              "P_cu_W": 0.00015164973158404707,
+              "F_use_mean_N": 0.31300199762940045,
+              "F_use_p10_N": 0.21600457427955166,
+              "share_full": 0.6781205914607394,
+              "F_rr_N": 0.03132794370221343,
+              "R_d_mm": 9.953004583099732,
+              "dR_mm": 3.203004583099732,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 9.333156005665897,
+              "mu_rr": 0.054626389961474286
+            }
+          },
+          {
+            "gear": "FH06_64 + bevel 1:1",
+            "ratio": 64.0,
+            "eta_catalogue_with_bevel": 0.657,
+            "J": 106.79402854809615,
+            "terms": {
+              "r_e_mm": 0.9961706118418298,
+              "G": 63.99999999999998,
+              "P_N": 0.573494358292036,
+              "r_r_mm": 1.2895947539814152,
+              "eta": 0.7290000000000001,
+              "F_mot_N": 10.130066022421383,
+              "v_max_m_s": 0.06323953162204277,
+              "m_r_g": 2339.7908469058207,
+              "F_bd_N": 0.748844894263462,
+              "P_cu_W": 0.00012732207426943001,
+              "F_use_mean_N": 0.31300186917183426,
+              "F_use_p10_N": 0.21600457427901198,
+              "share_full": 0.6781209493566772,
+              "F_rr_N": 0.03132938960415537,
+              "R_d_mm": 10.008833879371686,
+              "dR_mm": 3.258833879371686,
+              "scrub_N": 0.22499999999999995,
+              "mass_g": 9.4,
+              "mu_rr": 0.054628941246187036
+            }
+          }
+        ],
+        "chosen": {
+          "gear": "bevel 1:1 only",
+          "ratio": 1.0,
+          "eta_catalogue_with_bevel": 0.9,
+          "J": 0.800960323422428,
+          "terms": {
+            "r_e_mm": 0.9986711622614515,
+            "G": 1.0,
+            "P_N": 0.5735056028049578,
+            "r_r_mm": 0.3962045388713124,
+            "eta": 1.0,
+            "F_mot_N": 0.7067056848910666,
+            "v_max_m_s": 1.2434685553684097,
+            "m_r_g": 6.051802025567395,
+            "F_bd_N": 0.027763437620720467,
+            "P_cu_W": 0.02616080401582476,
+            "F_use_mean_N": 0.313006444518543,
+            "F_use_p10_N": 0.21600457429822437,
+            "share_full": 0.6781082018301166,
+            "F_rr_N": 0.03127788878584716,
+            "R_d_mm": 8.016292670003052,
+            "dR_mm": 1.2662926700030521,
+            "scrub_N": 0.22499999999999995,
+            "mass_g": 7.0,
+            "mu_rr": 0.054538070130213515
+          }
+        },
+        "note": "ratio = gearhead x a 1:1 bevel at the heel (a 2:1 bevel doubles it); CALC"
+      },
+      "fits_layout": true
+    }
+  },
+  "meta": {
+    "evidence_status": "CALCULATION (contact mechanics, catalogue arithmetic, geometry; PROPOSED DESIGN; nothing measured)",
+    "generated_utc": "2026-09-29T10:58:17+00:00",
+    "git_revision": "9ba0e9c-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "drive/run_study.py",
+    "doc": "docs/grounded_drive.md",
+    "quick": true
+  },
+  "stabpen.provenance": {
+    "evidence_status": "CALCULATION (contact mechanics, catalogue arithmetic, geometry; PROPOSED DESIGN; nothing measured)",
+    "generated_utc": "2026-09-29T10:58:17+00:00",
+    "git_revision": "9ba0e9c-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "drive/run_study.py",
+    "doc": "docs/grounded_drive.md",
+    "quick": true
+  }
+}

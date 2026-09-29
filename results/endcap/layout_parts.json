@@ -1,23 +1,25 @@
 {
   "meta": {
     "evidence_status": "PROPOSED DESIGN (dimensions from endcap/optimise.py; part masses CALC and ASSUMPTION); not built",
-    "generated_utc": "2026-09-29T00:33:20+00:00",
-    "git_revision": "3f005eb",
+    "generated_utc": "2026-09-29T10:53:48+00:00",
+    "git_revision": "9ba0e9c-dirty",
     "script": "endcap/layout.py",
     "doc": "docs/inertial_endcap.md",
     "design_class": "LRM2",
     "choice": "lrm",
-    "mass_total_g": 44.99616814003441,
+    "mass_total_g": 43.32251606976099,
     "replaces": [
       "rear_cap",
       "rm_frame",
       "rm_mass",
       "rm_coils"
     ],
+    "moves": [
+      "usb"
+    ],
     "conflicts": [
-      "The end-cap occupies z 130-175 mm, so the Rev H handle shell ends at z 130 and the pen grows from 170 to 175 mm (Rev J limit).",
-      "The Rev H cell (14500, 48.5 mm long, z 101-149.5) no longer fits: 31 mm remain between the board (ends z 99) and the end-cap; a 10440 (44.5 mm, AMF-31) does not fit either. The cell, the board or the end-cap length must be rearranged (open issue for the lead).",
-      "The USB-C port and button (z 150-153.5) must move."
+      "Proposed compact packaging: the end-cap spans z 151-175 mm behind the Rev H cell (z 101-149.5, unchanged); the Rev H handle shell ends at z 151 and the pen grows from 170 to 175 mm (Rev J limit). The USB-C side port moves from z 150-153.5 to z 147-150.5, beside the cell's rear end.",
+      "The study simulated the slug centre at z 152.5 mm (a 45 mm end-cap at z 130-175, which leaves the 48.5 mm cell no room); the compact packaging puts it at z 162 mm. See 'packaging_check' for the effect."
     ],
     "axes": "z along the pen axis from the ball tip (z = 0) toward the back; x in the tilt plane, positive away from the paper; y sideways",
     "optional_note": "every end-cap part is marked optional: the end-cap is a module that replaces the Rev H rear cap and rear module; whether it is standard is the lead's decision (see the doc's proposed decision)",
@@ -25,7 +27,24 @@
     "rotor_speed_rpm": null,
     "spin_axis": null,
     "moving_mass_g": 30.386355015174157,
-    "stroke_mm": 3.999825645212901
+    "stroke_mm": 3.999825645212901,
+    "packaging": "compact (PROPOSED DESIGN): flexures nested inside the coil ring, end-cap z 151-175 mm, slug centre z 162 mm",
+    "packaging_check": {
+      "label": "SIMULATION (test seeds, r_rot 0.5, 8-12 Hz x 1-2 mm; a sensitivity check run after the test, not used to choose anything)",
+      "gain": 0.75,
+      "by_z_mm": {
+        "152.5": {
+          "further_reduction_mean": 0.18226696073128487,
+          "nose_plus_device_mean": 0.5786129042866867,
+          "nose_mean": 0.7054869472947883
+        },
+        "162.0": {
+          "further_reduction_mean": 0.17799371492651572,
+          "nose_plus_device_mean": 0.5806368667498653,
+          "nose_mean": 0.7054869472947883
+        }
+      }
+    }
   },
   "units": "mm",
   "components": [
@@ -40,15 +59,35 @@
       "id": "ec_shell",
       "label": "End-cap shell",
       "shape": "tube",
-      "z0": 130.0,
+      "z0": 151.0,
       "z1": 175.0,
       "d0": 26.0,
       "d1": 26.0,
       "d_in": 24.0,
-      "function": "Closes the back of the pen and holds the end-cap parts; 26 mm across, 45 mm long.",
+      "function": "Closes the back of the pen and holds the reaction mass; 26 mm across, 24 mm long.",
       "part": "PEEK tube, 1 mm wall",
       "ledger": "AMF-24",
-      "mass_g": 4.594579255875069
+      "mass_g": 2.450442269800037
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "id": "ec_end_wall",
+      "label": "End-cap rear wall",
+      "shape": "cylinder",
+      "z0": 174.2,
+      "z1": 175.0,
+      "d0": 24.0,
+      "d1": 24.0,
+      "function": "Closes the rear of the end-cap.",
+      "part": "PEEK disc 0.8 mm",
+      "ledger": "AMF-24",
+      "mass_g": 0.47048491580160734
     },
     {
       "group": "endcap",
@@ -61,15 +100,15 @@
       "id": "ec_board",
       "label": "End-cap driver board",
       "shape": "box",
-      "z0": 171.0,
-      "z1": 173.5,
+      "z0": 172.19982564521288,
+      "z1": 174.19982564521288,
       "size": [
-        18.0,
-        18.0,
-        2.5
+        16.0,
+        16.0,
+        2.0
       ],
-      "function": "Drivers for the end-cap actuators; talks to the main board.",
-      "part": "PCB with coil or motor drivers (ASSUMPTION)",
+      "function": "Coil drivers and the slug's position sensor; talks to the main board.",
+      "part": "PCB with coil drivers (ASSUMPTION)",
       "ledger": "AMF-37",
       "mass_g": 1.5
     },
@@ -84,8 +123,8 @@
       "id": "ec_slug",
       "label": "Tungsten reaction mass",
       "shape": "cylinder",
-      "z0": 145.0092106170568,
-      "z1": 159.9907893829432,
+      "z0": 154.5092106170568,
+      "z1": 169.4907893829432,
       "d0": 11.648767897433299,
       "d1": 11.648767897433299,
       "function": "A heavy slug that the coils push sideways (up to +/-4.0 mm in two axes); its reaction steadies the pen and can pulse for cues.",
@@ -104,12 +143,12 @@
       "id": "ec_flexure_front",
       "label": "Flexure plate (front)",
       "shape": "tube",
-      "z0": 139.0001743547871,
-      "z1": 142.0001743547871,
-      "d0": 23.5,
-      "d1": 23.5,
+      "z0": 153.5092106170568,
+      "z1": 154.3092106170568,
+      "d0": 22.0484191878591,
+      "d1": 22.0484191878591,
       "d_in": 4.0,
-      "function": "Spiral spring plate joined to the slug by a short axle: lets the slug move sideways, centres it at about 5 Hz, stiff along the pen.",
+      "function": "Spiral spring plate nested inside the coil ring (rim held by four tabs between the coils), joined to the slug by a short axle: lets it move sideways, centres it at about 5 Hz, stiff along the pen.",
       "part": "17-7PH or 301 spring steel, laser cut (ASSUMPTION)",
       "ledger": "AMF-20",
       "mass_g": 2.9369774625463227
@@ -125,12 +164,12 @@
       "id": "ec_flexure_rear",
       "label": "Flexure plate (rear)",
       "shape": "tube",
-      "z0": 162.9998256452129,
-      "z1": 165.9998256452129,
-      "d0": 23.5,
-      "d1": 23.5,
+      "z0": 169.6907893829432,
+      "z1": 170.4907893829432,
+      "d0": 22.0484191878591,
+      "d1": 22.0484191878591,
       "d_in": 4.0,
-      "function": "Second spring plate at the rear of the slug.",
+      "function": "Spiral spring plate nested inside the coil ring (rim held by four tabs between the coils), joined to the slug by a short axle: lets it move sideways, centres it at about 5 Hz, stiff along the pen.",
       "part": "17-7PH or 301 spring steel, laser cut (ASSUMPTION)",
       "ledger": "AMF-20",
       "mass_g": 2.9369774625463227
@@ -146,8 +185,8 @@
       "id": "ec_magnet_x+",
       "label": "Slug magnet",
       "shape": "box",
-      "z0": 146.5,
-      "z1": 158.5,
+      "z0": 156.0,
+      "z1": 168.0,
       "size": [
         1.0,
         3.0,
@@ -169,8 +208,8 @@
       "id": "ec_coil_x+",
       "label": "Flat coil",
       "shape": "box",
-      "z0": 142.5001743547871,
-      "z1": 162.4998256452129,
+      "z0": 152.0001743547871,
+      "z1": 171.9998256452129,
       "size": [
         0.67579040607045,
         8.0,
@@ -192,8 +231,8 @@
       "id": "ec_magnet_x-",
       "label": "Slug magnet",
       "shape": "box",
-      "z0": 146.5,
-      "z1": 158.5,
+      "z0": 156.0,
+      "z1": 168.0,
       "size": [
         1.0,
         3.0,
@@ -215,8 +254,8 @@
       "id": "ec_coil_x-",
       "label": "Flat coil",
       "shape": "box",
-      "z0": 142.5001743547871,
-      "z1": 162.4998256452129,
+      "z0": 152.0001743547871,
+      "z1": 171.9998256452129,
       "size": [
         0.67579040607045,
         8.0,
@@ -238,8 +277,8 @@
       "id": "ec_magnet_y+",
       "label": "Slug magnet",
       "shape": "box",
-      "z0": 146.5,
-      "z1": 158.5,
+      "z0": 156.0,
+      "z1": 168.0,
       "size": [
         3.0,
         1.0,
@@ -261,8 +300,8 @@
       "id": "ec_coil_y+",
       "label": "Flat coil",
       "shape": "box",
-      "z0": 142.5001743547871,
-      "z1": 162.4998256452129,
+      "z0": 152.0001743547871,
+      "z1": 171.9998256452129,
       "size": [
         8.0,
         0.67579040607045,
@@ -284,8 +323,8 @@
       "id": "ec_magnet_y-",
       "label": "Slug magnet",
       "shape": "box",
-      "z0": 146.5,
-      "z1": 158.5,
+      "z0": 156.0,
+      "z1": 168.0,
       "size": [
         3.0,
         1.0,
@@ -307,8 +346,8 @@
       "id": "ec_coil_y-",
       "label": "Flat coil",
       "shape": "box",
-      "z0": 142.5001743547871,
-      "z1": 162.4998256452129,
+      "z0": 152.0001743547871,
+      "z1": 171.9998256452129,
       "size": [
         8.0,
         0.67579040607045,
@@ -318,6 +357,29 @@
       "part": "self-bonding magnet wire, IEC class 155",
       "ledger": "AMF-29/AMF-30",
       "mass_g": 0.6603197359731311
+    },
+    {
+      "group": "endcap",
+      "optional": false,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        9.0
+      ],
+      "id": "ec_usb_moved",
+      "label": "USB-C port and button (moved)",
+      "shape": "box",
+      "z0": 147.0,
+      "z1": 150.5,
+      "size": [
+        8.4,
+        2.6,
+        3.5
+      ],
+      "function": "The Rev H side port, moved 3 mm forward beside the cell's rear end (the cell is 14.1 mm across, the port sits at the shell wall 9 mm off the axis).",
+      "part": "USB-C receptacle (mid-mount)",
+      "ledger": "",
+      "mass_g": 0.0
     }
   ]
 }

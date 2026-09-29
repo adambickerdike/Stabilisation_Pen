@@ -4,7 +4,8 @@
 Stages (each writes results/sim2/_cache/stage_<name>.json; `report` assembles results/sim2/*.json, the figures with
 their CSV twins, the evidence rows and the replay):
   h1check     reproduce H1 (opt/inertial Rev H-B) on its test seeds: oracle and causal ratios        (SIM, ~45 min)
-  diagnose    attribution of the largest H1 differences (stiff inner servo; tracker noise seeds)     (SIM, ~20 min)
+  diagnose    attribution of the largest H1 differences (idealised nose actuators; tracker noise seeds) (SIM, ~20 min)
+  streams     the causal tracker's inputs from both models on the worst causal case                  (SIM, ~5 min)
   contact     MuJoCo soft contact: stiffness, creep, sliding force, gliding, slip onset, pen sliding;
               the H1 law (LuGre): breakaway, pre-sliding stiffness, stick-slip                       (SIM, ~5 min)
   convergence timestep and integrator convergence of the Rev H case (training seed 300)              (SIM, ~20 min)
@@ -106,11 +107,28 @@ def stage_diagnose(quick=False):
     from sim2 import h1compare as HC
     h1 = load_stage("h1check", quick=quick) or load_stage("h1check", quick=False)
     rows = h1["splits"]["0.5"]["rows"]
-    out = HC.diagnose(rows, n_worst=1 if quick else 3, noise_seeds=(0, 1) if quick else (0, 1, 2, 3, 4), log=log)
-    out["label"] = ("SIM: the largest sim2-H1 differences of stage h1check (r_rot 0.5) rerun with a 2 kHz inner nose servo "
-                    "(oracle) and with five sensor-noise seeds in both models (causal)")
+    parts = ("oracle", "causal")
+    old = load_stage("diagnose")
+    if not quick and old and old.get("causal") and "oracle_variants" not in old:
+        parts = ("oracle",)                     # the causal part of an earlier run is still valid: reuse it
+        log("  diagnose: reusing the causal part of the earlier run; rerunning the oracle part")
+    out = HC.diagnose(rows, n_worst=1 if quick else 3, noise_seeds=(0, 1) if quick else (0, 1, 2, 3, 4), log=log, parts=parts)
+    if parts == ("oracle",):
+        out["causal"] = old["causal"]
+    out["label"] = ("SIM: the largest sim2-H1 differences of stage h1check (r_rot 0.5): oracle cases rerun with idealised "
+                    "nose actuators (every-step servo, no Hall delay, no coil lag; 400 Hz and 2 kHz inner loops), causal "
+                    "cases rerun with five sensor-noise seeds in both models")
     save_stage("diagnose", out)
     return out
+
+
+def stage_streams(quick=False):
+    from sim2 import h1compare as HC
+    out = HC.stream_comparison(noise_seeds=(0, 1) if quick else (0, 1, 2, 3, 4), log=log)
+    log(f"  streams: acc band power sim2/H1 {out['acc_band_power_sim2_over_h1']}, corr {out['acc_corr_x_y']}, page corr {out['page_corr_x_y']}")
+    out["label"] = ("SIM: the causal tracker's input streams of both models on the case with the largest causal difference "
+                    "(test seed 200, 8 Hz, 2 mm), and the AKF's settled frequency per sensor-noise seed")
+    save_stage("streams", out)
 
 
 # ============================================================================================ verification
@@ -462,7 +480,7 @@ def stage_report(quick=False):
 
 
 STAGES = {"h1check": stage_h1check, "diagnose": stage_diagnose, "contact": stage_contact, "convergence": stage_convergence,
-          "frontstop": stage_frontstop,
+          "frontstop": stage_frontstop, "streams": stage_streams,
           "energy": stage_energy, "gyro": stage_gyro, "sensors": stage_sensors, "native": stage_native, "arm": stage_arm,
           "myo": stage_myo, "validate": stage_validate, "env": stage_env, "plugins": stage_plugins, "report": stage_report}
 QUICK_DEFAULT = ["contact", "energy", "gyro", "sensors", "myo", "env", "plugins", "report"]

@@ -144,23 +144,30 @@ def summarise(rows, controllers=("oracle", "akf")) -> Dict:
     return out
 
 
-def diagnose(rows, n_worst=3, noise_seeds=(0, 1, 2, 3, 4), r_rot=0.5, log=print) -> Dict:
+# nose actuator variants for the oracle diagnosis: the Rev H nose as modelled (400 Hz inner loop at 10 kHz, 50 us Hall
+# delay, coil L/R 40 us) against idealised actuators closer to H1's kinematic stage (every-step servo, no Hall delay,
+# no coil lag; then also a 2 kHz inner loop).  A 2 kHz loop with the modelled delays and 10 kHz update is unstable.
+ORACLE_VARIANTS = {"no_delay_400Hz": dict(inner_hz=400.0, servo_rate=40000.0, hall_delay=0.0, L_ind=1e-8),
+                   "ideal_2kHz": dict(inner_hz=2000.0, servo_rate=40000.0, hall_delay=0.0, L_ind=1e-8)}
+
+
+def diagnose(rows, n_worst=3, noise_seeds=(0, 1, 2, 3, 4), r_rot=0.5, log=print, parts=("oracle", "causal")) -> Dict:
     """Attribution of the largest differences.
-    Oracle: rerun the worst cases with a much stiffer inner nose servo (2 kHz instead of 400 Hz), which makes the
-    dynamic nose closer to H1's kinematic stage; if the gap closes, it comes from the nose/refill dynamics.
+    Oracle: rerun the worst cases with idealised nose actuators (ORACLE_VARIANTS), which bring the dynamic nose closer
+    to H1's kinematic stage; if the gap closes, it comes from the modelled actuator dynamics (bandwidth and delays).
     Causal: rerun the tracker with other sensor-noise seeds on both models' unmodified runs; if the spread within a
     model is as large as the difference between the models, the causal ratio is not a sharp comparator (the AKF's
     frequency lock is bistable)."""
-    out = {"oracle": [], "causal": []}
+    out = {"oracle": [], "causal": [], "oracle_variants": ORACLE_VARIANTS}
     worst_o = sorted(rows, key=lambda r: -abs(r["d_oracle"]))[:n_worst]
     worst_c = sorted(rows, key=lambda r: -abs(r["d_akf"]))[:n_worst]
-    for r in worst_o:
+    for r in (worst_o if "oracle" in parts else []):
         sc, sc0 = scenario(r["seed"], r["f0"], r["amp_mm"] * 1e-3, r["kind"])
         res = {"seed": r["seed"], "f0": r["f0"], "amp_mm": r["amp_mm"], "kind": r["kind"], "h1": r["h1_oracle"],
-               "s2_400Hz": r["s2_oracle"]}
-        for ih in (2000.0,):
+               "s2_modelled": r["s2_oracle"]}
+        for vname, kw in ORACLE_VARIANTS.items():
             cfg = P.h1_check_config(r_rot)
-            cfg = cfg.replace(nose=P.replace(cfg.nose, inner_hz=ih))
+            cfg = cfg.replace(nose=P.replace(cfg.nose, **kw))
             if r["kind"] == "wrist":
                 cfg = cfg.replace(hand=P.replace(cfg.hand, rot_tremor=True))
             pm = B.build(cfg)
@@ -168,12 +175,17 @@ def diagnose(rows, n_worst=3, noise_seeds=(0, 1, 2, 3, 4), r_rot=0.5, log=print)
             un = S.run(pm, sc)
             n_ticks = int(math.ceil(len(sc.t) / 20))
             orc = S.run(pm, sc, S.RunOptions(source="oracle", clean=S.clean_ticks(ref, n_ticks)))
-            res[f"s2_{int(ih)}Hz"] = HE.compare(orc, ref)["e_rms_um"] / HE.compare(un, ref)["e_rms_um"]
+            m = HE.compare(orc, ref)
+            res[f"s2_{vname}"] = m["e_rms_um"] / HE.compare(un, ref)["e_rms_um"]
+            res[f"s2_{vname}_n_eval"] = m["n_eval"]
         out["oracle"].append(res)
         if log:
-            log(f"  oracle diag {r['seed']} {r['f0']} Hz {r['amp_mm']} mm: H1 {res['h1']:.3f}, sim2 400 Hz {res['s2_400Hz']:.3f}, 2 kHz {res['s2_2000Hz']:.3f}")
+            log(f"  oracle diag {r['seed']} {r['f0']} Hz {r['amp_mm']} mm: H1 {res['h1']:.3f}, sim2 modelled nose {res['s2_modelled']:.3f}, "
+                + ", ".join(f"{v} {res['s2_' + v]:.3f}" for v in ORACLE_VARIANTS))
     from opt.inertial import tracker as TK
     from sim.handpen import model as HM
+    if "causal" not in parts:
+        return out
     h1 = H1Eval(r_rot)
     s2 = Sim2Eval(r_rot)
     for r in worst_c:
@@ -203,3 +215,48 @@ def diagnose(rows, n_worst=3, noise_seeds=(0, 1, 2, 3, 4), r_rot=0.5, log=print)
         if log:
             log(f"  causal diag {r['seed']} {r['f0']} Hz {r['amp_mm']} mm: H1 {np.round(rh, 3)} | sim2 {np.round(rs, 3)}")
     return out
+
+
+def stream_comparison(seed=200, f0=8.0, amp=2.0e-3, noise_seeds=(0, 1, 2), r_rot=0.5, log=print) -> Dict:
+    """The causal tracker's inputs from both models on one case: page-frame acceleration and page-sensor band powers
+    (sim2 / H1), correlations, and the AKF's settled frequency estimate per sensor-noise seed.  Tells whether a causal
+    difference comes from the plant (different streams) or from the tracker (same streams, different lock)."""
+    from scipy.signal import welch
+    from opt.inertial import tracker as TK
+    from sim.handpen import model as HM
+    sc, sc0 = scenario(seed, f0, amp)
+    h1 = H1Eval(r_rot)
+    ev = h1.ev
+    un_h = HM.run(sc, ev.cfg, rec_hz=TK.REC_HZ)
+    s2 = Sim2Eval(r_rot)
+    un_s = S.run(s2.pm, sc)
+    n_ticks = int(math.ceil(len(sc.t) / 20))
+    bands = [(1, 4), (4, 7), (7, 9), (9, 12), (12, 16), (16, 30), (30, 100), (100, 400), (400, 1900)]
+    out = {"seed": seed, "f0": f0, "amp_mm": amp * 1e3, "akf_f_max_Hz": float(ev.akf_params.get("wmax_hz", float("nan")))
+           if isinstance(ev.akf_params, dict) else None, "per_noise_seed": []}
+    for j in noise_seeds:
+        ns = seed + 7000 + 1000 * j
+        dh, info, st = TK.estimate(un_h, sc, seed=ns, body="pen", z_imu=0.100, params=ev.akf_params)
+        dh2, info2, st2 = SN.akf_estimate(un_s, ns, s2.cfg.geom.z_imu, s2.akf, n_ticks=n_ticks)
+        fe1, fe2 = np.asarray(info["f_est"]), np.asarray(info2["f_est"])
+        out["per_noise_seed"].append({"noise_seed": ns, "f_est_h1_Hz": float(np.median(fe1[len(fe1) // 2:])),
+                                      "f_est_sim2_Hz": float(np.median(fe2[len(fe2) // 2:]))})
+        if j == noise_seeds[0]:
+            fs = 1.0 / float(np.median(np.diff(st.acc_t)))
+            n = min(len(st.acc), len(st2.acc))
+            a1, a2 = st.acc[len(st.acc) // 10:n], st2.acc[len(st2.acc) // 10:n]
+            f, P1 = welch(a1, fs=fs, nperseg=4096, axis=0)
+            f, P2 = welch(a2, fs=fs, nperseg=4096, axis=0)
+            P1, P2 = P1.sum(1), P2.sum(1)
+            out["acc_band_power_sim2_over_h1"] = {f"{lo}-{hi} Hz": float(P2[(f >= lo) & (f < hi)].sum() / max(P1[(f >= lo) & (f < hi)].sum(), 1e-30))
+                                                  for lo, hi in bands}
+            m = min(len(a1), len(a2))
+            out["acc_corr_x_y"] = [float(np.corrcoef(a1[:m, i], a2[:m, i])[0, 1]) for i in range(2)]
+            p1, p2 = st.pos[len(st.pos) // 10:], st2.pos[len(st2.pos) // 10:]
+            m = min(len(p1), len(p2))
+            out["page_corr_x_y"] = [float(np.corrcoef(p1[:m, i], p2[:m, i])[0, 1]) for i in range(2)]
+        if log:
+            log(f"  streams seed {seed} {f0:g} Hz {amp * 1e3:g} mm noise {ns}: AKF settles at H1 {out['per_noise_seed'][-1]['f_est_h1_Hz']:.2f} Hz, "
+                f"sim2 {out['per_noise_seed'][-1]['f_est_sim2_Hz']:.2f} Hz")
+    return out
+

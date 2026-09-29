@@ -13,6 +13,7 @@ Selection rules (fixed before training; tuning writers 100-103, seed 300, replay
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import Dict, List
 
 import numpy as np
@@ -140,17 +141,32 @@ def run(quick: bool, workers: int):
     backend = RE.ReplayBackend(train)
     specs = [("arbiter_ppo", "PPO", lambda s: RE.GateEnv(backend, seed=s), 600_000 // q, 6,
               lambda pf: evaluate_arbiter(pf, tune), lambda sc: sc["w_tremor_free_max"] <= 0.05),
+             # added after the first PPO run: its later checkpoints opened on tremor-free writing (w 0.06-0.11) because
+             # tremor-free episodes carry little reward; the supervised models' false-correction weight (4) is applied
+             # to the reward of tremor-free training episodes (the policy's observation is unchanged)
+             ("arbiter_ppo_fc", "PPO", lambda s: RE.GateEnv(backend, seed=s, fc_weight=4.0), 600_000 // q, 6,
+              lambda pf: evaluate_arbiter(pf, tune), lambda sc: sc["w_tremor_free_max"] <= 0.05),
              ("arbiter_sac", "SAC", lambda s: RE.GateEnv(backend, seed=s), 80_000 // q, 4,
               lambda pf: evaluate_arbiter(pf, tune), lambda sc: sc["w_tremor_free_max"] <= 0.05),
+             ("arbiter_sac_fc", "SAC", lambda s: RE.GateEnv(backend, seed=s, fc_weight=4.0), 80_000 // q, 4,
+              lambda pf: evaluate_arbiter(pf, tune), lambda sc: sc["w_tremor_free_max"] <= 0.05),
              ("residual_ppo", "PPO", lambda s: RE.ResidualEnv(backend, seed=s, amp_gate=ag), 400_000 // q, 4,
+              lambda pf: evaluate_residual(pf, tune, ag), lambda sc: sc["added_tremor_free_um"] <= 10.0),
+             ("residual_ppo_fc", "PPO", lambda s: RE.ResidualEnv(backend, seed=s, amp_gate=ag, fc_weight=4.0), 400_000 // q, 4,
               lambda pf: evaluate_residual(pf, tune, ag), lambda sc: sc["added_tremor_free_um"] <= 10.0)]
+    prev = C.load("rl", quick) or {}
     for name, algo, mk, budget, n_eval, ev, ok_fn in specs:
+        old = (prev.get("policies") or {}).get(name)
+        if old and old.get("env_steps") == budget and all(Path(c["path"]).exists() for c in old["checkpoints"]):
+            out["policies"][name] = old                     # already trained with this budget (resume)
+            C.log(f"[rl] {name}: reusing the trained run ({budget} steps)")
+            continue
         out["policies"][name] = _train(algo, mk, budget, n_eval, ev, name, ok_fn)
         C.save("rl", out, quick)
     arb = [(k, v) for k, v in out["policies"].items() if k.startswith("arbiter") and v["passes_rule"]]
     out["chosen_arbiter"] = max(arb, key=lambda kv: kv[1]["best"]["reward_mean"])[0] if arb else None
-    res = out["policies"]["residual_ppo"]
-    out["chosen_residual"] = "residual_ppo" if res["passes_rule"] else None
+    resp = [(k, v) for k, v in out["policies"].items() if k.startswith("residual") and v["passes_rule"]]
+    out["chosen_residual"] = max(resp, key=lambda kv: kv[1]["best"]["reward_mean"])[0] if resp else None
     out["compute_min_total"] = float(sum(v["wall_min"] for v in out["policies"].values()))
     C.save("rl", out, quick)
     C.log(f"[rl] chosen arbiter {out['chosen_arbiter']}, residual {out['chosen_residual']}; {out['compute_min_total']:.0f} min")

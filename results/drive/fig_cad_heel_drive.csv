@@ -13,5 +13,5 @@ drive_paper_sensor,Paper sensor (needed by the drive),drive,box,14.0,20.0,,,,"[4
 drive_transfer,Transfer gears,drive,box,47.2,49.2,,,,"[4.6, 12.0, 2.0]","[-7.8, 0.0]",handle,False,"module 0.1 spur gears (33 teeth, 1:1, centre distance 3.3 mm), brass",,0.12
 drive_motor,Wheel drive motor,drive,cylinder,49.5,69.5,6.0,6.0,,,"[-6.06, 4.24]",handle,False,"Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",AMF-100,2.5
 steer_motor,Steering motor,drive,cylinder,49.5,69.5,6.0,6.0,,,"[-6.06, -4.24]",handle,False,"Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",AMF-100,2.5
+drive_front_sleeve,Front sleeve (larger front),drive,tube,8.09,50.0,18.3,22.0,12.45,,"[0.0, 0.0]",handle,False,PEEK core + TPE overmould,AMF-24,10.79
 drive_drivers,Motor drivers,drive,box,99.5,103.0,,,,"[1.0, 10.0, 3.5]","[0.0, 0.0]",handle,False,3-phase micro BLDC driver x2 (to select; DRV8311 class),,0.15
-drive_front_sleeve,Front sleeve (larger front),grip,tube,8.09,50.0,18.3,22.0,12.45,,,handle,False,PEEK core + TPE overmould,AMF-24,

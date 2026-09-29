@@ -52,7 +52,8 @@ SHORT = {
 COL = {"none": plotstyle.MUTED, "tracker": S[1], "gated": S[0], "delayed_3mm": S[2], "delayed_6mm": S[5], "oracle": S[6],
        "clean_copy": S[4], "learned_tcn": S[3], "learned_ctx": S[3], "learned_hybrid": S[7], "learned_transformer": S[3],
        "rl_arbiter": S[4], "rl_residual": S[4]}
-METRICS = ("ink_err_um", "recognition", "word_acc_app", "coverage", "q_p95_mm", "at_travel_limit", "lag_mean_ms", "q_rms_mm")
+METRICS = ("ink_err_um", "recognition", "word_acc_app", "coverage", "q_p95_mm", "q_p99_mm", "over_3mm", "over_6mm", "at_travel_limit",
+           "lag_mean_ms", "q_rms_mm")
 
 
 def _is(amp_mm: float, which: str) -> bool:
@@ -302,7 +303,7 @@ def fig_synth(synth: Dict, od: Path) -> None:
     A = synth.get("A_synthetic_writers", {})
     ex = A.get("examples_mm") or {}
     methods = [("held", "held-out real\ninstance"), ("font", "font in the\nwriter's style"), ("copy", "copy of one\nreference"),
-               ("sl_k1", "sigma-lognormal,\n1 reference"), ("sl_k3", "sigma-lognormal,\n3 references")]
+               ("sl_recon", "sigma-lognormal\nreconstruction"), ("sl_k1", "sigma-lognormal,\n1 reference"), ("sl_k3", "sigma-lognormal,\n3 references")]
     plotstyle.apply()
     letters = sorted(ex)
     fig = plt.figure(figsize=(12.5, 6.2))
@@ -328,7 +329,7 @@ def fig_synth(synth: Dict, od: Path) -> None:
         axb = fig.add_subplot(gs[:, len(letters) + 1:])
     else:
         axb = fig.add_subplot(111)
-    ms = [m for m in ("font", "copy", "sl_k1", "sl_k3") if m in A]
+    ms = [m for m in ("font", "copy", "sl_recon", "sl_k1", "sl_k3") if m in A]
     yy = np.arange(len(ms))
     leg = [A[m]["legibility"] for m in ms]; wid = [A[m]["writer_id_acc"] for m in ms]
     axb.barh(yy + 0.2, leg, height=0.38, color=S[0], label="legible (app recogniser)")
@@ -485,12 +486,21 @@ def samples(test: Dict, od: Path) -> Dict:
 
 
 # ------------------------------------------------------------------ summaries of the other stages
-def learn_summary(learn: Optional[Dict]) -> Optional[Dict]:
+def learn_summary(learn: Optional[Dict], quick: bool = False) -> Optional[Dict]:
     if not learn:
         return None
+    ref = learn.get("reference", {})
+    try:            # recomputed from the tuning arrays (the stage's own Rev H reference repeated dh(t) at every lag;
+        from . import stage_learn as SL        # corrected to dh(t - lag) after the stage ran; model scores unchanged)
+        from . import stage_learn_data as SLD
+        tune = SLD.load_tuning()
+        if tune:
+            ref = SL.references(tune, SLD.model_params(quick))
+    except Exception:
+        pass
     out = {"n_train": learn["n_train"], "rule": learn.get("rule"), "ranked": learn.get("ranked"), "best": learn.get("best_learned"),
            "reference": {k: {kk: v[kk] for kk in ("J", "res_1_2mm_um", "res_0p3mm_um", "leak_um", "by_lag_1_2mm_um", "by_f0_1_2mm_um") if kk in v}
-                         for k, v in learn.get("reference", {}).items()}, "models": {}}
+                         for k, v in ref.items()}, "models": {}}
     for m, info in learn["models"].items():
         sc = info["tuning_score"]
         out["models"][m] = {"J": sc["J"], "res_1_2mm_um": sc["res_1_2mm_um"], "res_0p3mm_um": sc["res_0p3mm_um"], "leak_um": sc["leak_um"],
@@ -571,7 +581,7 @@ def build(quick: bool = False) -> Dict:
            "test_candidates": L["test"].get("candidates") if L["test"] else None,
            "aggregate": agg,
            "lag_kinematics_calc": kin,
-           "learn": learn_summary(L["learn"]),
+           "learn": learn_summary(L["learn"], quick),
            "rl": rl_summary(L["rl"]),
            "text": ({k: v for k, v in L["text"].items()} if L["text"] else None),
            "synth": L["synth"],

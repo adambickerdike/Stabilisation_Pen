@@ -10,7 +10,7 @@
 | LIT (id) | literature, with its ledger id |
 | ASSUMPTION | chosen here; section 9 names the experiment that measures it |
 
-Code: [`drive/`](../drive/__init__.py). One command: `python3 -m drive.run_study` (`--quick` for a 1-minute check of the test stage on one writer). Tests: `pytest drive/tests -q` (about 10 s). CAD: [`mechanics/cad/heel_drive.py`](../mechanics/cad/heel_drive.py). Results: `results/drive/`. Proposed ledger rows: `results/drive/evidence_rows.csv` (HAP-60…70, AMF-100…118, CON-36…38, PAT-30…34; 38 sources opened). Layout parts for the 3-D explainer: `results/drive/layout_parts.json`.
+Code: [`drive/`](../drive/__init__.py). One command: `python3 -m drive.run_study` (about 50 min on one core; `--quick` runs every stage in short form in about 5 min and writes `*_quick` files only). Tests: `pytest drive/tests -q` (about 10 s). CAD: [`mechanics/cad/heel_drive.py`](../mechanics/cad/heel_drive.py). Results: `results/drive/`. Proposed ledger rows: `results/drive/evidence_rows.csv` (HAP-60…70, AMF-100…118, CON-36…38, PAT-30…34; 38 sources opened). Layout parts for the 3-D explainer: `results/drive/layout_parts.json`.
 
 **The question.** Using the paper as ground, which small actuator at the heel can push, steer or brake the pen (and so the hand) with the most useful force, safely?
 
@@ -47,7 +47,7 @@ Code: [`drive/`](../drive/__init__.py). One command: `python3 -m drive.run_study
 - **The steered wheel constrains; the ball pulls.** The wheel is best where the path matters: big loops, leading a relaxed hand, gross-scale autowrite, and it needs almost no power. The ball is best where corners matter: small letters (the wheel must stop and re-steer at cusps) and tremor damping in every direction.
 - **Every "full" guide makes letters slightly less readable** (92 % → 84–90 %): the pull mixes the learner's letter with the template. The handwriting study found the same for the nose and the board; this study reproduces its numbers exactly.
 - **Nothing turns a letter the writer is set on into another letter** (0 % under every device), and the writer felt at most 0.48 N (95th percentile).
-- **Tremor:** the heel helps at 4–6 Hz, where the nose's tracker cannot (−22 to −31 %), but it bends clean writing by 68–186 µm. At 8–10 Hz the nose is better. The steered wheel is a weak free-writing tremor device.
+- **Tremor:** the heel helps at 4–6 Hz, where the nose's tracker cannot (−12 to −31 %), but it bends clean writing by 68–186 µm. At 8–10 Hz the nose is better. The steered wheel is a weak free-writing tremor device.
 
 **What it costs.** The heel grows: contact radius 6.75 → 8.75 mm, front sleeve Ø15.0 → Ø18.3 mm, the ball 1.4 mm further ahead of the heel, refill slide +2.0 mm (CALC). About 9 g more (CALC). Power 1–6 mW while guiding and 84 mW while leading, plus 30–80 mW for the paper sensor (SIM/CALC): about 12–18 h of writing while guiding, 8–10 h while leading (CALC, section 4.5). Two precision micromotors and watch-scale gears (cost class high). The sheet must be held.
 
@@ -133,7 +133,7 @@ Code: [`drive/`](../drive/__init__.py). One command: `python3 -m drive.run_study
 
 | concept | actuators | force on the pen (N) | force note | speed at the contact (m/s) | power (W) | mass (g) | heel size | when not driving | safety | ledger |
 |---|---|---|---|---|---|---|---|---|---|---|
-| **Driven ball (trackball in reverse)** | 2 motors (Faulhaber 0620 B) on shafts to 2 rollers r 0.40 mm (bevel 1:1), 1 idler, preload spring | 0.33-0.66 | traction-limited (mu 0.6-1.2 x P 0.55 N); motor limit 0.57 N continuous | 1.26 | 0.081 (2 motors, 0.15 N RMS) | 6.7 | ball d 2 mm with rollers: heel contact radius >= 8.03 mm (Rev H 6.75) | reflected mass 6 g per axis; back-drive 0.03 N plus the orthogonal roller's axial slip about 0.22 N with smooth rollers -> retract when off | force <= mu_max x P = 0.6 N by physics; lift = zero force; current cap; slip detection | AMF-100,AMF-103,AMF-117,AMF-118 |
+| **Driven ball (trackball in reverse)** | 2 motors (Faulhaber 0620 B) on shafts to 2 rollers r 0.40 mm (bevel 1:1), 1 idler, preload spring | 0.33-0.66 | traction-limited (mu 0.6-1.2 x P 0.55 N); motor limit 0.57 N continuous | 1.26 | 0.081 (2 motors, 0.15 N RMS) | 6.7 | ball d 2 mm with rollers: heel contact radius >= 8.03 mm (Rev H 6.75) | reflected mass 6 g per axis; back-drive 0.03 N plus the orthogonal roller's axial slip about 0.22 N with smooth rollers -> retract when off | force <= mu_max x P = 0.66 N by physics; lift = zero force; current cap; slip detection | AMF-100,AMF-103,AMF-117,AMF-118 |
 | **Two micro omni-wheels** | 2 motors (maxon DCX 6 M + GP 6 A 3.9:1) + 2 custom omni-wheels d 6 mm (smallest commercial found: 11.5 mm, AMF-110) | 0.17-0.47 | each wheel carries about half the heel load, so along one wheel's axis only half the traction pushes (0.5-0.71 x mu P, CALC) | 1.74 | 0.127 | 9.2 | 6 mm wheels: heel contact radius >= 11.4 mm; 11.5 mm commercial wheels: >= 16 mm (does not fit) | reflected mass 3 g per wheel; the rollers clog with paper dust (ASSUMPTION) | as the ball | AMF-101,AMF-102,AMF-110 |
 | **Steered wheel, steer only (cobot)** | 1 steering motor (Faulhaber 0620 B, transfer gears, crown 2:1 on the fork) + Hall angle sensor at the fork; free wheel d 2 mm with an O-ring tyre | 0.33-0.66 across the path (constraint); 0 along it | cannot push; the across-path force is a reaction, up to mu x P; along the path only rolling resistance 46 mN (CALC, Persson AMF-112) | steering 1569 rad/s no-load (needed: p90 71, p99 283 rad/s on synthetic letters) | about 0.005-0.02 (steering only; power is supplied by the writer) | 3.8 | wheel d 2 mm with steering ring: heel contact radius >= 8.68 mm | when not guiding, the wheel must follow the writer's direction (free mode, LIT HAP-60 eq. 2) or retract | intrinsically passive: cannot move the pen by itself (LIT HAP-60, PAT-27); across-path force <= mu_max P | HAP-60,AMF-112,AMF-100,AMF-103 |
 | **Steered wheel with an axle brake** | steering motor + a hub-train motor used as a generator (short-circuit or PWM braking) or a friction brake | 0.33-0.66 across; along the path up to mu x P as braking only | motor braking 0.4 N s/m at full short (Faulhaber 0620 B, 2:1, r 1.0 mm); more with a higher ratio | as 3 | < 0.02 (braking recovers energy) | 6.8 | as 3 plus the hub train | as 3 | passive (can only resist) | AMF-100,AMF-103 |
@@ -185,6 +185,7 @@ Code: [`drive/`](../drive/__init__.py). One command: `python3 -m drive.run_study
 | `drive_transfer` | Transfer gears | 47.2–49.2 | Two small spur-gear pairs that move each motor's output out to its shaft, around the gimbal. | module 0.1 spur gears (33 teeth, 1:1, centre distance 3.3 mm), brass | 0.12 |
 | `drive_motor` | Wheel drive motor | 49.5–69.5 | Turns the wheel so the pen is pushed along the letter (up to about 0.5 N at the wheel). | Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1) (AMF-100) | 2.50 |
 | `steer_motor` | Steering motor | 49.5–69.5 | Turns the wheel's heading to follow the letter. | Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1) (AMF-100) | 2.50 |
+| `drive_front_sleeve` | Front sleeve (larger front) | 8.1–50.0 | Where the thumb, index and middle finger rest; its front is 18.3 mm across instead of 15.0 mm to hold the heel drive. | PEEK core + TPE overmould (AMF-24) | 10.79 |
 | `drive_drivers` | Motor drivers | 99.5–103.0 | Two three-phase drivers with current sensing that set each motor's torque 2000 times a second. | 3-phase micro BLDC driver x2 (to select; DRV8311 class) | 0.15 |
 
 **Fit checks (CALC; `drive/layout.fit_checks`).** All pass:
@@ -240,10 +241,12 @@ Gradient check: largest relative error wheel 1.0e-10, ball 8.7e-10 (CALC).
 |---|---|---|
 | steer-only guidance | channels the writer's motion along the template; the writer supplies all motion | Stanley law: heading = template tangent 0.40 mm ahead + atan(15.4 s⁻¹ × cross-track error / speed); chosen over pure pursuit by the tuning (objective 0.65 vs 0.82) |
 | steer-only, free in a band | free (follows the writer) within 0.3 mm of the template, steered outside | as above, band chosen by grid |
-| steer + drive guidance ("full") | as steer-only plus a small push along the path while the writer moves forward | board law's lead term, 0.036 × the along-path error force (tuned) |
+| steer + drive guidance ("full") | as steer-only plus a small push along the path while the writer moves forward | a 0.036 N push along the path while the writer moves forward (the lead gain tuned for the ball's full law) |
 | steer + brake (tremor) | follows the writer's intended direction (free mode, LIT HAP-60 eq. 2) and brakes along the path above the writing band | free mode with apparent mass 0.05 kg, heading from the force low-passed at 9.3 Hz, brake 2.0 N·s/m (tuned) |
 | steer + drive lead ("lead-through", "autowrite") | leads a relaxed hand along the letter | push 0.17 N + 6.3 N·s/m × (20 mm/s − speed along the path), capped; stops at the stroke end (tuned) |
 | off | free wheel, or retracted | — |
+
+Fallback ball gains (same tuning): full law 361 N/m spring, 5.1 N·s/m damping, 0.036 N lead; damper 3.5 N·s/m above 8.0 Hz; lead 0.10 N + 6.7 N·s/m × (20 mm/s − speed) (`results/drive/rules.json`).
 
 **Supervisor (every mode; ASSUMPTION values, tested in SIM).**
 - Force cap: min(0.5 N, 0.8 × μ̂ × measured wheel load). μ̂ starts at 0.8 (the controller does not know the paper) and falls with slip flags.
@@ -268,7 +271,7 @@ Gradient check: largest relative error wheel 1.0e-10, ball 8.7e-10 (CALC).
 
 - **Power (CALC on SIM).** Drive: 0–1 mW steer-only, 6 mW steered + driven guidance, 84 mW while leading (SIM means). Paper sensor: 16.3–21.6 mA (MFR AMF-109, a mouse-class sensor) is 30–80 mW from the cell, depending on the regulator (CALC). Motor drivers and Hall sensors: 10–20 mW (ASSUMPTION). Rev H uses about 0.08 W and runs 27 h on its 750 mAh cell (docs/revH_concept.md), so about 2.2 Wh are usable. With the drive: 0.12–0.19 W while guiding (12–18 h) and 0.21–0.26 W while leading (8–10 h) (CALC). The Rev J target of 8 h holds.
 
-- **Mass.** Heel-drive parts 6.6 g plus about 2.5 g for the larger front sleeve (CALC): Rev H 75 g becomes about 84 g (Rev J envelope ≤ 120 g).
+- **Mass.** New heel-drive parts 6.6 g plus 2.5 g for the larger front sleeve (10.8 g instead of 8.3 g, same simplified shape; CALC): 9.1 g in all, so Rev H's 75 g becomes about 84 g (Rev J envelope ≤ 120 g).
 - **Noise.** Two 6 mm motors and watch-scale gears may whine. Not quantified (EXP-D06).
 - **Cost class.** High: two precision micromotors, custom module-0.1 gears and a sealed pod.
 
@@ -284,6 +287,7 @@ Gradient check: largest relative error wheel 1.0e-10, ball 8.7e-10 (CALC).
 - **Traction is unknown to the controller.** Each test case draws the true μ from 0.6–1.2 (seeded); the controller starts at μ̂ = 0.8 and lowers it on slip flags.
 - **Hands.** Relaxed: the HAP-26 nominal arm (170 N/m, 11 N·s/m). Lightly resisting: the HAP-26 upper 95 % CI arm (533 N/m, 27.6 N·s/m; ASSUMPTION for co-contraction). For lead-through and autowrite, the **relaxed writer**: while the pen is down the writer's own aim follows the hand (time constant 0.25 s, the board study's model); the writer makes the pen-up moves and holds the pen down while the drive leads (ASSUMPTION).
 - **The desk board** is simulated in the same plant as a grounded force on the handle with its own law, cap (0.4 N), lag, dead time, sensing noise and 0.98 N normal pull (`board/`, read-only).
+- **Added conditions.** Two rows were run after the main test, with the same frozen rules and cases (`tasks_extra.json`): the recommended hardware's passive mode ("driven wheel, steer only": the steer-only law with the drive train attached and 70 % of its drag compensated) and the ball with smooth rollers ("smooth rollers"). The lateral release (section 4.4) was checked on tuning writers only.
 - **Tuning and test.** Gains were tuned by Bayesian optimisation (Gaussian process, Matérn 5/2, expected improvement; 6 + 14 evaluations per law) and grids, on tuning writers 100–102 and seed 300 only, with μ = 0.9. The objectives are written in `drive/tune.py`. The rules were then frozen in `results/drive/rules.json` (hash 6b64568210e3c0b5, 2026-09-29 00:07 UTC) before any test run. Tests use writers 0–5 and seeds 200–203. No gain was changed after the freeze.
 - **Metrics.** Target error: distance from the ink to the target letters (µm). Letters read: share of letters the app's recogniser reads as the target (handwriting study). Words read: the app's word reading. Force: the drive's (or board's) force on the pen, RMS, 95th percentile, maximum. Felt change: the change in the writer's grip force against the same run without the device (what the writer feels). True sliding: share of contact time the tyre slides (plant). Slip flags: the detector's flags per run. Coverage: share of the template covered by ink within 0.3 mm. Drive power: copper loss plus positive mechanical power / 0.8 (CALC on SIM).
 
@@ -350,7 +354,7 @@ Figure: `results/drive/fig_practice.png` (CSV twin).
 | steered + driven wheel | 403 ± 67 | 88 % | 0.13 | 0.27 | 0.14 | 0.31 | 0.0 |
 
 - A lightly resisting writer (a stiffer arm) still gets 27–40 % less distance to the target with every grounded device (SIM).
-- The change in grip force they feel is 0.26 N (board) to 0.29–0.32 N (heel) at the 95th percentile, and never more than the 0.5 N cap. No device had to yield (0 yields): the resisting writer never held the pen 4 mm off the template for 0.3 s.
+- The change in grip force they feel is 0.26 N (board) to 0.29–0.32 N (heel) at the 95th percentile, below the 0.5 N cap. No device had to yield (0 yields): the resisting writer never held the pen 4 mm off the template for 0.3 s.
 - The steered wheel feels firmer than the ball (0.32 vs 0.29 N) because its constraint across the path is stiff until the tyre slips.
 
 ### 5.3 (b) "Write big" loops and (c) the reversed letter
@@ -449,7 +453,7 @@ By frequency (ratio, 1 mm):
 | ball damper + nose | 0.88 | 0.76 | 0.52 | 0.34 |
 | wheel on known text | 0.69 | 0.70 | 0.74 | 0.78 |
 
-Writer adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: ball_brake 0.71; ball_damp 0.73; wheel_tremor_brake 0.76
+Writer adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: heel ball, brake 0.71; heel ball, damper 0.73; wheel: steer + brake 0.76
 
 - **At 8–10 Hz the nose's tracker is the better corrector** (ratio 0.42–0.68); the heel alone gives 0.67–0.78.
 - **At 4–6 Hz the tracker does nothing (0.97–1.00) and the heel helps**: ball brake 0.70–0.75, ball damper 0.78–0.88, wheel steer + brake 0.74–0.77, wheel on known text 0.69–0.70.
@@ -527,7 +531,7 @@ Writer adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: 
 
 - **The front end grows.** Contact radius 6.75 → 8.75 mm, sleeve front Ø15.0 → Ø18.3 mm, ball 1.4 mm further ahead of the heel, refill slide +2.0 mm (CALC). If the nose's travel grows (study N, ±5–8 mm), its envelope grows and the heel must grow again: re-run `drive/geometry.py` with the new envelope.
 - **Watch-scale transmission.** Two 0.8 mm shafts, a 40° bevel, a crown and an axle bevel at module 0.1. Efficiency (0.9 per mesh), friction and backlash are assumptions. The steering angle is read at the fork, so shaft twist and backlash do not enter the steering loop, but they add lag to the drive (EXP-D04).
-- **Tremor during free writing.** The steered wheel does not help free-writing tremor in the simulation (section 5.6). The holonomic ball damper with the nose did best. If free-writing tremor becomes the main target, reconsider the ball.
+- **Tremor during free writing.** The steered wheel does not help free-writing tremor in the simulation (section 5.5). The holonomic ball damper with the nose did best. If free-writing tremor becomes the main target, reconsider the ball.
 - **Slip detector.** The simple detector raises many flags without true sliding (section 5.1), which lowers the traction estimate and weakens guidance. A model-based detector (using the tyre deflection estimate) is needed (EXP-D05).
 - **Relaxed-hand model.** Lead-through and autowrite rely on a writer whose aim follows the hand (τ 0.25 s). Real people may resist, over-help or tire (EXP-D11).
 - **Adapted writer.** The tremor-damper sensitivity case assumes the writer learns to push through the device's low-frequency drag; not known.
@@ -547,10 +551,10 @@ Writer adapted to the device's drag (ASSUMPTION sensitivity), 8 Hz 1 mm, ratio: 
 | `drive/plant.py`, `drive/scenarios.py` | model HW1-D and tasks (a)–(e) (SIM) |
 | `drive/tune.py` | Bayesian optimisation on tuning writers; rule freeze |
 | `drive/figures.py`, `drive/layout.py`, `drive/evidence.py`, `drive/proposals.py` | figures and tables, layout parts, ledger rows, requirements and experiments |
-| `drive/run_study.py` | `python3 -m drive.run_study [--quick] [--stages design,tune,test,extra,report]` |
+| `drive/run_study.py` | `python3 -m drive.run_study [--quick] [--stages design,tune,test,extra,release,report]` |
 | `drive/tests/test_drive.py` | fast checks (`pytest drive/tests -q`, about 10 s) |
 | `mechanics/cad/heel_drive.py` | CadQuery concept: `results/cad/heel_drive_assembly.step`, `heel_drive_summary.json`, `drawing_heel_drive.png` |
-| `results/drive/design.json`, `tuning.json`, `rules.json`, `tasks.json`, `tasks_extra.json`, `grounded_drive.json` | results with `stabpen.provenance` (rules.json is the frozen rule file; its provenance is in tuning.json) |
+| `results/drive/design.json`, `tuning.json`, `rules.json`, `tasks.json`, `tasks_extra.json`, `release_tuning.json`, `grounded_drive.json` | results with `stabpen.provenance` (rules.json is the frozen rule file; its provenance is in tuning.json) |
 | `results/drive/tables.md` | the SIM and CALC tables of this document, generated |
 | `results/drive/fig_*.png` + `.csv` | figures with CSV twins |
 | `results/drive/evidence_rows.csv` | 38 proposed ledger rows (23-column header of docs/evidence.csv) |

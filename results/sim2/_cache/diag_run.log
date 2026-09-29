@@ -1,0 +1,2 @@
+=== stage diagnose
+  diagnose: reusing the causal part of the earlier run; rerunning the oracle part

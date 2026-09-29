@@ -31,8 +31,8 @@
    "spring_travel_mm": 0.539,
    "roll_tolerance_deg": 20.0
   },
-  "added_mass_g": 6.55,
-  "added_mass_note": "parts listed here; the larger front sleeve adds about 2.5 g more (CALC, PEEK/TPE 1.3 g/cm3)",
+  "added_mass_g": 9.09,
+  "added_mass_note": "mass added to Rev H: the new parts plus the larger front sleeve's increment over Rev H's (10.79 g vs 8.25 g, both as tapered tubes with a constant bore, PEEK/TPE 1.3 g/cm3; CALC)",
   "tilted_parts_note": "drive_wheel, drive_fork and drive_pod lie on the paper normal (50 deg to the pen axis); here they are axis-aligned stand-ins; mechanics/cad/heel_drive.py draws them tilted",
   "fit_checks": {
    "drive_motor_to_arm_at_stop_mm": 0.26,
@@ -56,8 +56,8 @@
   "source": "drive/layout.py; docs/grounded_drive.md",
   "stabpen.provenance": {
    "evidence_status": "PROPOSED DESIGN; CALC",
-   "generated_utc": "2026-09-29T01:05:19+00:00",
-   "git_revision": "0eec4f0-dirty",
+   "generated_utc": "2026-09-29T10:56:59+00:00",
+   "git_revision": "9ba0e9c-dirty",
    "parameters_version": "0.4.4",
    "parameters_sha256_16": "a9d3d0016461d690",
    "command": "run_study.py --stages report",
@@ -370,6 +370,23 @@
    "part": "Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",
    "ledger": "AMF-100",
    "mass_g": 2.5
+  },
+  {
+   "id": "drive_front_sleeve",
+   "label": "Front sleeve (larger front)",
+   "group": "drive",
+   "shape": "tube",
+   "z0": 8.09,
+   "z1": 50.0,
+   "d0": 18.3,
+   "d1": 22.0,
+   "d_in": 12.45,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Where the thumb, index and middle finger rest; its front is 18.3 mm across instead of 15.0 mm to hold the heel drive.",
+   "part": "PEEK core + TPE overmould",
+   "ledger": "AMF-24",
+   "mass_g": 10.79
   },
   {
    "id": "drive_drivers",

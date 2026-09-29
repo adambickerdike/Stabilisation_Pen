@@ -49,7 +49,7 @@ def letter_instances(w: int, ch: str, seeds) -> List[Tuple[np.ndarray, List[np.n
     return out
 
 
-def synth_letter(refs, rng, k: int) -> List[np.ndarray]:
+def synth_letter(refs, rng, k: int, scale: float = 1.0) -> List[np.ndarray]:
     """Sigma-lognormal synthesis from the first k reference instances (per stroke).  The prototype is the medoid of the
     k instances (size-normalised DTW; with k = 1 the instance itself); a new instance perturbs its lognormal parameters
     by the default intra-writer spread (component matching across instances is not reliable, so the spread is not
@@ -66,7 +66,8 @@ def synth_letter(refs, rng, k: int) -> List[np.ndarray]:
     for t, xy in proto:
         f = SY.extract(t, xy)
         snr.append(f["snr_db"])
-        P = SY.perturb(f["P"], rng) if len(f["P"]) else f["P"]
+        sp = {kk: v * scale for kk, v in SY.DEFAULT_SPREAD.items()}
+        P = SY.perturb(f["P"], rng, sp) if (len(f["P"]) and scale > 0) else f["P"]
         out.append(SY.trajectory(t, P, f["start"]) if len(P) else xy)
     return out, float(np.nanmean(snr)) if snr else float("nan")
 
@@ -75,7 +76,37 @@ def _norm_shape(strokes) -> np.ndarray:
     return normalise(shape_points([np.asarray(s) for s in strokes]))
 
 
-def part_a(quick: bool) -> Dict:
+SPREAD_SCALES = (1.0, 0.5, 0.25, 0.1)
+
+
+def tune_spread(quick: bool) -> Dict:
+    """Rule Y1 (tuning writers 100-103, fixed before the test): the largest scale of the default intra-writer spread
+    whose one-reference synthesis is legible (app recogniser) at least as often as a copy of the reference minus 0.02.
+    (A smoke run showed the full default spread making a third of small letters illegible.)"""
+    from . import TUNE_WRITERS
+    writers = TUNE_WRITERS[:1] if quick else TUNE_WRITERS
+    letters = LETTERS[:6] if quick else LETTERS
+    rng = np.random.default_rng(9)
+    leg = {sc: [] for sc in SPREAD_SCALES}
+    copy_ok = []
+    for w in writers:
+        st = W.writer(w).style
+        rec = GlyphRecognizer(st.x_height_mm * 1e-3, st.width, math.radians(st.slant_deg))
+        for ch in letters:
+            refs = letter_instances(w, ch, (1,))
+            copy_ok.append(rec.classify([xy for _, xy in refs[0]])[0] == ch)
+            for sc in SPREAD_SCALES:
+                strokes, _ = synth_letter(refs, rng, 1, sc)
+                leg[sc].append(rec.classify(strokes)[0] == ch)
+    table = {f"{sc:g}": float(np.mean(v)) for sc, v in leg.items()}
+    ref = float(np.mean(copy_ok))
+    ok = [sc for sc in SPREAD_SCALES if table[f"{sc:g}"] >= ref - 0.02]
+    chosen = max(ok) if ok else min(SPREAD_SCALES)
+    return {"rule": "Y1: largest spread scale with legibility >= copy - 0.02 (tuning writers)", "legibility_by_scale": table,
+            "copy_legibility": ref, "chosen_scale": chosen, "passes": bool(ok), "writers": list(writers)}
+
+
+def part_a(quick: bool, scale: float = 1.0) -> Dict:
     writers = TEST_WRITERS[:2] if quick else TEST_WRITERS
     letters = LETTERS[:6] if quick else LETTERS
     rng = np.random.default_rng(5)
@@ -86,7 +117,7 @@ def part_a(quick: bool) -> Dict:
         recs[w] = GlyphRecognizer(st.x_height_mm * 1e-3, st.width, math.radians(st.slant_deg))
         for ch in letters:
             held[(w, ch)] = [[xy for _, xy in inst] for inst in letter_instances(w, ch, (11, 12, 13))]
-    methods = ("font", "copy", "sl_k1", "sl_k3")
+    methods = ("font", "copy", "sl_recon", "sl_k1", "sl_k3")
     res = {m: {"legible": [], "writer_id": [], "d_own": [], "d_other": []} for m in methods}
     examples: Dict[str, Dict] = {}
     snrs = []
@@ -99,8 +130,9 @@ def part_a(quick: bool) -> Dict:
             gens = {}
             gens["font"] = [np.column_stack([h * (st.width * g[:, 0] + g[:, 1] * shear), h * g[:, 1]]) for g in GLYPH_SET[ch]]
             gens["copy"] = [xy for _, xy in refs[0]]
-            gens["sl_k1"], s1 = synth_letter(refs, rng, 1)
-            gens["sl_k3"], s3 = synth_letter(refs, rng, 3)
+            gens["sl_recon"], _ = synth_letter(refs, rng, 1, 0.0)
+            gens["sl_k1"], s1 = synth_letter(refs, rng, 1, scale)
+            gens["sl_k3"], s3 = synth_letter(refs, rng, 3, scale)
             snrs.append(s3)
             if w == writers[0] and ch in EXAMPLE_LETTERS:
                 examples.setdefault(ch, {"held": [[np.round(xy * 1e3, 3).tolist() for xy in held[(w, ch)][0]]]})
@@ -119,6 +151,7 @@ def part_a(quick: bool) -> Dict:
     out["extraction_snr_db"] = {"median": float(np.nanmedian(snrs)), "p10": float(np.nanpercentile(snrs, 10)),
                                 "p90": float(np.nanpercentile(snrs, 90))}
     out["chance_writer_id"] = 1.0 / len(writers)
+    out["spread_scale"] = scale
     out["examples_writer"] = writers[0]
     out["examples_mm"] = examples
     return out
@@ -300,7 +333,9 @@ def part_c(quick: bool) -> Dict:
 
 def run(quick: bool, workers: int):
     t0 = time.time()
-    out = {"A_synthetic_writers": part_a(quick)}
+    tun = tune_spread(quick)
+    C.log(f"[synth] spread tuning: {tun}")
+    out = {"A_spread_tuning": tun, "A_synthetic_writers": part_a(quick, tun["chosen_scale"])}
     C.log(f"[synth] A: {out['A_synthetic_writers']}")
     out["B_character_trajectories"] = part_b(quick)
     C.log(f"[synth] B: SNR median {out['B_character_trajectories']['snr_db_median']:.1f} dB")

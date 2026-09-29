@@ -47,21 +47,21 @@ COLORS = {"structure": (0.70, 0.72, 0.75), "grip": (0.35, 0.55, 0.85), "moving_n
 THETA = 50.0
 
 
+def colour(c):
+    """Group colour; the larger front sleeve keeps the grip colour (it is listed in group 'drive' for the explainer)."""
+    return COLORS["grip"] if c["id"] == "drive_front_sleeve" else COLORS.get(c["group"], (0.6, 0.6, 0.6))
+
+
 def geometry():
     """Rev H components minus the replaced ones, plus the new front sleeve and the drive parts."""
     rv = json.load(open(os.path.join(ROOT, "results", "revH", "layout.json")))
     h = chosen_heel()
     comps = [dict(c) for c in rv["components"] if c["id"] not in REPLACED]
-    fs = next(c for c in rv["components"] if c["id"] == "front_sleeve")
     from opt.inertial import front_end as FE
     from opt.inertial.revh import RevH
     dm = FE.dims(h["R_skid_mm"], RevH(), FE.FrontRules())
     z_ring = h["front_end"]["ball_ahead_50_mm"]
-    sleeve = dict(fs, id="drive_front_sleeve", label="Front sleeve (larger front)", z0=round(z_ring + 1.5, 2),
-                  d0=round(h["front_end"]["sleeve_front_d_mm"], 2), d_in=round(2.0 * dm["sleeve_bore_r"], 2),
-                  function="Where the thumb, index and middle finger rest; its front is larger to hold the heel drive.")
-    comps.append(sleeve)
-    drive = LY.parts(h)
+    drive = LY.parts(h)                      # includes the larger front sleeve (drive_front_sleeve)
     for p in drive:
         p["offset"] = [float(v) for v in p.get("offset", [0.0, 0.0])]
     comps += drive
@@ -109,7 +109,7 @@ def build_assembly(geo):
     asm = cq.Assembly(name="heel_drive")
     tp, _, _ = tilted_parts(geo)
     for c in geo["components"]:
-        col = COLORS.get(c["group"], (0.6, 0.6, 0.6))
+        col = colour(c)
         s = tp.get(c["id"])
         if s is None:
             s = solid(c)
@@ -135,7 +135,7 @@ def drawing(geo, path_png):
 
     def outline(a, c, alpha=0.85, lw=0.7):
         z0, z1 = c["z0"], c["z1"]
-        col = COLORS.get(c["group"], (0.6, 0.6, 0.6))
+        col = colour(c)
         if c["id"] in ("drive_wheel", "drive_fork"):
             return
         if c["shape"] in ("cylinder", "cone"):
@@ -232,7 +232,7 @@ def drawing(geo, path_png):
         for c in geo["components"]:
             if not (c["z0"] <= zc <= c["z1"]):
                 continue
-            col = COLORS.get(c["group"], (0.6, 0.6, 0.6))
+            col = colour(c)
             ox, oy = c.get("offset", [0, 0])
             if c["shape"] in ("cylinder", "cone"):
                 r = c["d0"] / 2 + (c.get("d1", c["d0"]) - c["d0"]) / 2 * (zc - c["z0"]) / max(c["z1"] - c["z0"], 1e-9)
@@ -281,11 +281,12 @@ def main():
             step_ok = True
         except Exception as e:      # keep the drawing and summary even if a solid fails
             step_ok = f"failed: {e}"
-    mass_added = sum(c.get("mass_g", 0.0) for c in drive_parts)
+    mass_added = sum(c.get("mass_g", 0.0) for c in drive_parts if c["id"] != "drive_front_sleeve") + \
+        next(c for c in drive_parts if c["id"] == "drive_front_sleeve")["mass_g"] - LY.revh_sleeve_mass()
     summary = {"evidence_status": "PROPOSED DESIGN (dimensioned concept); masses and clearances CALC; nothing built or measured",
                "heel": h, "replaces_revH": list(REPLACED), "fit_checks": geo["fit_checks"],
                "drive_parts_mass_g": round(mass_added, 2),
-               "note_mass": "plus about 2.5 g for the larger front sleeve (CALC, 1.3 g/cm3)",
+               "note_mass": "new parts plus the larger front sleeve's increment over Rev H's (CALC, 1.3 g/cm3)",
                "components": geo["components"], "step_export": step_ok,
                "source": "drive/layout.py, drive/geometry.py, results/revH/layout.json"}
     with open(os.path.join(OUT, "heel_drive_summary.json"), "w") as f:
@@ -298,7 +299,7 @@ def main():
         w = csv.writer(f)
         w.writerow(["id", "label", "group", "shape", "z0_mm", "z1_mm", "d0_mm", "d1_mm", "d_in_mm", "size_mm", "offset_mm",
                     "moves_with", "optional", "part", "ledger", "mass_g"])
-        for c in drive_parts + [c for c in geo["components"] if c["id"] == "drive_front_sleeve"]:
+        for c in drive_parts:
             w.writerow([c["id"], c["label"], c["group"], c["shape"], c["z0"], c["z1"], c.get("d0", ""), c.get("d1", ""),
                         c.get("d_in", ""), c.get("size", ""), c.get("offset", ""), c["moves_with"], c["optional"], c["part"],
                         c["ledger"], c.get("mass_g", "")])

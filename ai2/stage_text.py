@@ -21,7 +21,8 @@ ensure_paths()
 from aiguide import lm  # noqa: E402
 from aiguide.sentences import APP_NOTE_LINES, EXTRA_NOTE_LINES, GUIDE_SENTENCE  # noqa: E402
 
-TF_CFG = {"n_layer": 3, "d_model": 192, "n_head": 4, "ctx": 128}
+TF_CFG = {"n_layer": 3, "d_model": 128, "n_head": 4, "ctx": 128}       # 3 x 192 ran at ~4 k tokens/s on one shared thread
+                                                                         # (quick run): too few tokens in the time box
 TF_CFG_SMALL = {"n_layer": 2, "d_model": 96, "n_head": 4, "ctx": 64}      # the pen-MCU class
 MCU_HZ = 128e6
 
@@ -71,7 +72,7 @@ def run(quick: bool, workers: int):
     tr_ids = TP.encode_stream(list(rng.permutation(np.array(train_sents, dtype=object))))
     va_ids = TP.encode_stream(tat.val)
     models = {}
-    for name, cfg, minutes in (("TF", TF_CFG, 3.0 if quick else 40.0), ("TF_small", TF_CFG_SMALL, 1.5 if quick else 12.0)):
+    for name, cfg, minutes in (("TF", TF_CFG, 3.0 if quick else 30.0), ("TF_small", TF_CFG_SMALL, 1.5 if quick else 10.0)):
         m, info = TP.train_transformer(tr_ids, va_ids, cfg, minutes=minutes, log=C.log)
         torch.save(m.state_dict(), BUILD_DIR / f"{name.lower()}.pt")
         info["macs_per_char"] = TP.macs_per_char(cfg)
@@ -86,9 +87,9 @@ def run(quick: bool, workers: int):
     tfs = TP.TFPredictor(models["TF_small"])
     # --- mixture weight on Tatoeba validation (glyph two ahead, NLL)
     best = None
-    for w in (0.3, 0.5, 0.7, 0.85):
+    for w in (0.3, 0.5, 0.7):
         mix = TP.TFPredictor(models["TF"], mix=(ng1, w))
-        r = TP.evaluate(mix, tat.val, n_glyph=300 if quick else 800, n_word=0, seed=11)
+        r = TP.evaluate(mix, tat.val, n_glyph=200 if quick else 400, n_word=0, seed=11)
         nll = r["glyph_d2"]["nll_bits"]
         C.log(f"[text] mixture weight {w}: glyph-2 NLL {nll:.3f} bits, top-1 {r['glyph_d2']['top1']:.3f}")
         if best is None or nll < best[1]:
@@ -99,13 +100,17 @@ def run(quick: bool, workers: int):
     word_fns = {"NG0": lambda c: ng0.next_words(c, k=5), "NG1": lambda c: ng1.next_words(c, k=5)}
     # --- test sets (used once)
     notes = APP_NOTE_LINES + EXTRA_NOTE_LINES
-    sets = {"tatoeba_test": (tat.test, 600 if quick else 3000, 150 if quick else 800),
-            "common_voice_test": (cv["test"], 300 if quick else 1500, 80 if quick else 400),
+    # evaluation sizes bounded for compute (the transformer's glyph-two-ahead query costs ~0.1-0.2 s on one shared
+    # CPU thread); the same positions for every model (same seed)
+    sets = {"tatoeba_test": (tat.test, 300 if quick else 1500, 60 if quick else 300),
+            "common_voice_test": (cv["test"], 150 if quick else 800, 40 if quick else 200),
             "note_lines": (notes, None, None), "study_sentence": ([GUIDE_SENTENCE], None, None)}
     for name, pred in preds.items():
         out["eval"][name] = {}
         for sname, (sents, ng, nw) in sets.items():
             t0 = time.time()
+            if name == "TF_small" and nw is not None:
+                nw = 0                                   # the MCU-class model is scored on letters only
             r = TP.evaluate(pred, sents, n_glyph=ng, n_word=nw, seed=5, word_fn=word_fns.get(name))
             r["bpc"] = TP.char_bpc(pred, sents, n=1000) if ng else None
             r["seconds"] = time.time() - t0

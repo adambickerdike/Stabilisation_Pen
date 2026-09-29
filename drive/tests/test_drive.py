@@ -137,3 +137,23 @@ def test_frozen_rules_are_intact():
     sha = body.pop("sha256_16")
     s = json.dumps(body, sort_keys=True, default=float)
     assert hashlib.sha256(s.encode()).hexdigest()[:16] == sha
+
+
+def test_lateral_release_lowers_the_steered_hold():
+    """The proposed release (off in the frozen test) caps the steer-only wheel's reaction nearer the command cap."""
+    from dataclasses import replace
+    from drive import plant as DP, scenarios as S
+    case = S.loops_case(300, hand="lightly_resisting")
+    g = S.Gains()
+    base = S.drive_for("sd_path", g, 1.2)
+    out = {}
+    for rel in (False, True):
+        drv = replace(base, rel_on=rel)
+        trk = case["track"]
+        r = DP.run(case["scn"], case["pen"], case["hand"], S.PR.Writing(), S.nose_ctl({}, trk), drv, Ntot=case["Nt"],
+                   drive_tmpl=trk.xy, drive_tdown=trk.pen_down.astype(float), seed=7300, rec_hz=2000.0)
+        c = r.contact > 0.5
+        F = np.hypot(r["FBx"], r["FBy"])[c]
+        out[rel] = (float(np.percentile(F, 95)), float(F.max()))
+    assert out[True][0] < out[False][0]
+    assert out[True][1] <= out[False][1] + 1e-3

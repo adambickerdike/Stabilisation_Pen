@@ -42,7 +42,10 @@ def load(quick: bool, modes=None) -> Dict:
                 pass
     rl = C.load("rl", quick)
     if rl:
-        for kind, key in (("arbiter", rl.get("chosen_arbiter")), ("residual", "residual_ppo")):
+        # the residual policy is shown even when no residual run passed its rule (information): the chosen one, else
+        # the FC-weighted run, else the plain run
+        res_key = rl.get("chosen_residual") or next((k for k in ("residual_ppo_fc", "residual_ppo") if k in rl["policies"]), None)
+        for kind, key in (("arbiter", rl.get("chosen_arbiter")), ("residual", res_key)):
             pol = rl["policies"].get(key) if key else None
             if pol:
                 out[kind] = SR.load_policy(pol["best"]["path"])

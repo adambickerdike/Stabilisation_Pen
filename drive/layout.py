@@ -38,6 +38,20 @@ def _cyl_mass(d, L, rho, d_in=0.0):
     return math.pi / 4.0 * (d * d - d_in * d_in) * L * rho
 
 
+def _tube_mass(d0, d1, d_in, L, rho):
+    """Tapered tube (cone frustum outside, constant bore) (CALC)."""
+    R0, R1, r = d0 / 2.0, d1 / 2.0, d_in / 2.0
+    return (math.pi * L * (R0 * R0 + R0 * R1 + R1 * R1) / 3.0 - math.pi * r * r * L) * rho
+
+
+
+
+def revh_sleeve_mass() -> float:
+    rv = json.loads((REPO / "results" / "revH" / "layout.json").read_text())
+    fs = next(c for c in rv["components"] if c["id"] == "front_sleeve")
+    return _tube_mass(fs["d0"], fs["d1"], fs["d_in"], fs["z1"] - fs["z0"], 1.3e-3)
+
+
 def parts(h: Dict = None) -> List[Dict]:
     h = h or heel()
     th = math.radians(THETA)
@@ -138,6 +152,18 @@ def parts(h: Dict = None) -> List[Dict]:
             offset=[round(-rm * math.cos(az), 2), round(sgn * rm * math.sin(az), 2)], moves_with="handle", optional=False,
             function=fn, part="Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: "
                               "crown 2:1)", ledger="AMF-100", mass_g=2.5)
+    # the front sleeve, larger at the front (replaces Rev H's front_sleeve; same 22 mm at z 50)
+    from opt.inertial import front_end as FE
+    from opt.inertial.revh import RevH
+    bore_d = 2.0 * FE.dims(R_s, RevH(), FE.FrontRules())["sleeve_bore_r"]
+    zs0 = z_ring + 1.5
+    add(id="drive_front_sleeve", label="Front sleeve (larger front)", group="drive", shape="tube",
+        z0=round(zs0, 2), z1=50.0, d0=round(sleeve_front_d, 2), d1=22.0, d_in=round(bore_d, 2), moves_with="handle",
+        optional=False,
+        function="Where the thumb, index and middle finger rest; its front is %.1f mm across instead of 15.0 mm to hold "
+                 "the heel drive." % sleeve_front_d,
+        part="PEEK core + TPE overmould", ledger="AMF-24",
+        mass_g=round(_tube_mass(sleeve_front_d, 22.0, bore_d, 50.0 - zs0, 1.3e-3), 2))
     add(id="drive_drivers", label="Motor drivers", group="drive", shape="box", z0=99.5, z1=103.0, size=[1.0, 10.0, 3.5],
         offset=[0.0, 0.0], moves_with="handle", optional=False,
         function="Two three-phase drivers with current sensing that set each motor's torque 2000 times a second.",
@@ -198,7 +224,9 @@ def write_layout(path: Path, design: Dict = None) -> Dict:
         if "size" in p:
             p["size"] = [round(float(v), 2) for v in p["size"]]
     fc = fit_checks(h, P)
-    mass = round(sum(p.get("mass_g", 0.0) for p in P), 2)
+    sleeve = next(p for p in P if p["id"] == "drive_front_sleeve")
+    old_sleeve = revh_sleeve_mass()
+    mass = round(sum(p.get("mass_g", 0.0) for p in P if p["id"] != "drive_front_sleeve") + sleeve["mass_g"] - old_sleeve, 2)
     doc = {
         "meta": {
             "evidence_status": "PROPOSED DESIGN (concept layout of study D's recommended heel drive; CALC masses from "
@@ -221,7 +249,9 @@ def write_layout(path: Path, design: Dict = None) -> Dict:
             "heel": {k: (round(v, 3) if isinstance(v, float) else v) for k, v in h.items()
                      if k in ("r_e_mm", "R_d_mm", "R_skid_mm", "delta_mm", "spring_travel_mm", "roll_tolerance_deg")},
             "added_mass_g": mass,
-            "added_mass_note": "parts listed here; the larger front sleeve adds about 2.5 g more (CALC, PEEK/TPE 1.3 g/cm3)",
+            "added_mass_note": "mass added to Rev H: the new parts plus the larger front sleeve's increment over Rev H's "
+                               "(%.2f g vs %.2f g, both as tapered tubes with a constant bore, PEEK/TPE 1.3 g/cm3; CALC)"
+                               % (sleeve["mass_g"], old_sleeve),
             "tilted_parts_note": "drive_wheel, drive_fork and drive_pod lie on the paper normal (50 deg to the pen "
                                  "axis); here they are axis-aligned stand-ins; mechanics/cad/heel_drive.py draws them tilted",
             "fit_checks": fc,
