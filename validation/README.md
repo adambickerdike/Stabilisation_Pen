@@ -12,9 +12,9 @@ Executed results will live only in [`records/`](records/README.md).
 
 | File | Content |
 |---|---|
-| [`bench_protocols.md`](bench_protocols.md) | 73 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01, A03, the pencil-class Q01–Q08, I01 and I04 from the inertial study (§35–§36; I04 is superseded for Rev H by I06), the Rev H I05–I07 (§37–§39), the guidance board G01…G06 (§40), and the Rev J studies: heel drive EXP-D01…D07, D10, D12, D13 (§41), inertial end-cap EXP-K01, K02, K04, K06…K08 (§42), nose v2 and autowrite EXP-N01…N08 (§43) and simulator v2 validation EXP-V01…V06 (§44) (§0.11 holds the pencil conventions; the A03, Q, Rev H and Rev J sections are compact: purpose and gates, predictions, set-up, procedure, measurands, criteria, decision rule). Each of the others gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
-| [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. §12: EXP-A02, guidance acceptance with people (pencil concept). §13–§14: EXP-I02 (rotational share of writing tremor) and EXP-I03 (passive nose and grip options). §15: the Rev H outcome studies EXP-W01…W05 (pen mass, tremor stabiliser, Parkinson's cues and size assist, guided practice, spelling help for dyslexia) and EXP-G07 (the guidance board with people). §16–§18: the Rev J studies with people: heel drive EXP-D08, D09, D11 (guided writing, tremor, lead-through with relaxed hands), inertial end-cap EXP-K03, K05 (user crossover, cue perception) and nose v2 EXP-N09, N10 (autowrite with people, delayed ink). The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
-| [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 385 rows, 94 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
+| [`bench_protocols.md`](bench_protocols.md) | 77 bench and offline protocols: EXP-B01…B10, S01–S02, F01–F02, M02–M03, P01–P02, E01–E02, C01–C02, A01, A03, the pencil-class Q01–Q08, I01 and I04 from the inertial study (§35–§36; I04 is superseded for Rev H by I06), the Rev H I05–I07 (§37–§39), the guidance board G01…G06 (§40), and the Rev J studies: heel drive EXP-D01…D07, D10, D12, D13 (§41), inertial end-cap EXP-K01, K02, K04, K06…K08 (§42), nose v2 and autowrite EXP-N01…N08 (§43), simulator v2 validation EXP-V01…V06 (§44) and the control stack EXP-L01, L02, L04, L05 (§45) (§0.11 holds the pencil conventions; the A03, Q, Rev H and Rev J sections are compact: purpose and gates, predictions, set-up, procedure, measurands, criteria, decision rule). Each of the others gives purpose and gated decisions, hypotheses with predictions, equipment classes and required accuracy, setup, procedure, sample size, data format, analysis and metric definitions, acceptance criteria, what result changes which decision, and risks. §0 holds the shared conventions: pre-registration, synchronisation, metrology and decision rules, randomisation and blinding, sample-size rules, the metric definitions that mirror `docs/physics.md` §8 and `sim/pensim/evaluate.py`, and the shared rigs R1–R8. |
+| [`human_study_plan.md`](human_study_plan.md) | EXP-H01…H06: tremor-at-nib census, form factor, skid feel, training with retention and transfer, perception thresholds, and the immediate-assistance crossover. §12: EXP-A02, guidance acceptance with people (pencil concept). §13–§14: EXP-I02 (rotational share of writing tremor) and EXP-I03 (passive nose and grip options). §15: the Rev H outcome studies EXP-W01…W05 (pen mass, tremor stabiliser, Parkinson's cues and size assist, guided practice, spelling help for dyslexia) and EXP-G07 (the guidance board with people). §16–§18: the Rev J studies with people: heel drive EXP-D08, D09, D11 (guided writing, tremor, lead-through with relaxed hands), inertial end-cap EXP-K03, K05 (user crossover, cue perception) and nose v2 EXP-N09, N10 (autowrite with people, delayed ink). §19: study L with people: EXP-L03 (ink lag; shares sessions with EXP-N10), L06 (text prediction in the app), L07 (style synthesis) and L08 (guidance that fades across sessions). The **immediate assistance vs lasting improvement** separation is central (§1). Also covers populations, randomisation, blinding, outcomes, step-by-step sample sizes, analysis plans, adverse events and stopping rules, and ethics, regulatory and data-protection notes. |
+| [`acceptance_criteria.csv`](acceptance_criteria.csv) | **Source of truth** for all criteria: 407 rows, 102 experiments. Columns: `id, requirement_id, experiment_id, metric, threshold, direction, basis, status, decision_gated`. |
 | [`prototype_stages.md`](prototype_stages.md) | Stages A (bench rig with commercial actuators), B (tethered Rev A pen), C (untethered pen), D (product-form candidates, DEC-008). Gates G-A, G-B, G-S (safety before any participant), G-C, G-D and the claim gates C-IA, C-LI, C-CAP, each defined by criterion ids. Also: what each stage may and may not claim, a mermaid dependency graph, and the mapping to the phases of `docs/plan.md`. |
 | [`records/README.md`](records/README.md) | How executed records are stored: layout, naming, mandatory `record.yaml` metadata, write-once raw data with SHA-256 manifests, verdict files, retention, human-data rules. |
 | [`check_criteria.py`](check_criteria.py) | Checks the CSV (unique ids, requirement ids exist in `docs/requirements.csv`, status and direction vocabulary, coverage) and regenerates the criteria tables embedded in the two protocol documents. Edit the CSV, then run `python3 validation/check_criteria.py`; add `--check` to only check. |
@@ -38,17 +38,18 @@ Executed results will live only in [`records/`](records/README.md).
   - EXP-Knn: the Rev J inertial end-cap (DEC-038). K03 and K05 are human studies; K04 and K08 include participants;
   - EXP-Nnn: the Rev J nose v2 and autowrite (DEC-036, DEC-039, DEC-041). N09 and N10 are human studies;
   - EXP-Vnn: simulator v2 validation (DEC-040). V03 runs inside EXP-H01 and V04 with participants; V06 is offline on human-study data;
+  - EXP-Lnn: the Rev J control stack and app AI (study L; DEC-042, DEC-043). L03, L06, L07 and L08 are human studies; L01, L02 and L04 replay EXP-H01 recordings;
   - EXP-Hnn: human studies.
 
-  The ids used in `docs/` for B01–B10, S01, S02, M02, M03, E01, E02, H01–H05 are kept, and so are the Rev J studies' ids (D01…D13, K01…K08, N01…N10, V01…V06). EXP-H06 is the immediate-assistance crossover that `docs/features.md` calls "immediate-assistance crossover study".
+  The ids used in `docs/` for B01–B10, S01, S02, M02, M03, E01, E02, H01–H05 are kept, and so are the Rev J studies' ids (D01…D13, K01…K08, N01…N10, V01…V06, L01…L08). EXP-H06 is the immediate-assistance crossover that `docs/features.md` calls "immediate-assistance crossover study".
 - **Criterion ids:** `AC-<exp>-<nn>`, for example AC-B09-02.
 - **`status`:**
 
   | Status | Meaning | Rows |
   |---|---|---|
-  | `requirement` | The threshold is copied from `docs/requirements.csv`; `requirement_id` is set | 137 |
+  | `requirement` | The threshold is copied from `docs/requirements.csv`; `requirement_id` is set | 151 |
   | `derived` | The threshold is computed from a requirement, literature value, simulation result or design rule (ICD, decision log), or chosen to protect another criterion (metrology qualification). The derivation is in `basis` | 51 |
-  | `hypothesis` | A prediction or proposed pass line about the device or the world, often engineering judgement, that the experiment tests. Thresholds taken from twin experiments (`sim_to_real.md`) say in `basis` that they are proposed design values, not measurements | 197 |
+  | `hypothesis` | A prediction or proposed pass line about the device or the world, often engineering judgement, that the experiment tests. Thresholds taken from twin experiments (`sim_to_real.md`) say in `basis` that they are proposed design values, not measurements | 205 |
 
 - **`direction`:** `<=`, `>=`, `<`, `>`, `=`, `within` (inclusive interval) or `pass/fail` (a conformity check described in `metric`).
 - **Decision rules:** simple acceptance when TUR ≥ 4, otherwise guarded acceptance. Safety criteria always use guarded acceptance (`bench_protocols.md` §0.5).
@@ -56,9 +57,9 @@ Executed results will live only in [`records/`](records/README.md).
 
 ## 3. Coverage
 
-- **Experiments:** 94 (72 bench or offline, 22 human-participant).
-- **Criteria:** 385.
-- **Requirements:** all 104 requirements in `docs/requirements.csv` have at least one criterion, including REQ-PNC-001…008, the Rev H requirements REQ-RVH-001…008 and the Rev J requirements REQ-DRV-001…013, REQ-EC-001…009, REQ-RVJ-N01…N08 and REQ-SIM-001…005.
+- **Experiments:** 102 (76 bench or offline, 26 human-participant).
+- **Criteria:** 407.
+- **Requirements:** all 113 requirements in `docs/requirements.csv` have at least one criterion, including REQ-PNC-001…008, the Rev H requirements REQ-RVH-001…008, the Rev J requirements REQ-DRV-001…013, REQ-EC-001…009, REQ-RVJ-N01…N08 and REQ-SIM-001…005, and study L's REQ-CTRL-009…013, REQ-ML-003/004 and REQ-APP-003/004 (REQ-CTRL-012 applies only if delayed ink is ever revived).
 - **Model validation:** the physics.md model-validation table is covered for every model:
   - P-1…P-4: AC-B04-05, AC-B06-03;
   - P-5…P-9: AC-B01-03, AC-B02-01, AC-B02-04, AC-B02-05;
@@ -92,7 +93,9 @@ Executed results will live only in [`records/`](records/README.md).
   - DEC-038: K02, K03, K08 (with I01); K05 before any cue mode;
   - DEC-039: N09;
   - DEC-040: V05 (V01 for the contact law);
-  - DEC-041: N01 (and I05), N06; N05 (pen lift or refill lock), V02 (front stop).
+  - DEC-041: N01 (and I05), N06; N05 (pen lift or refill lock), V02 (front stop);
+  - DEC-042: L01, L02, L04, L05;
+  - DEC-043: L06, L07.
 
 ## 4. The three most decision-critical experiments
 
@@ -150,6 +153,8 @@ Stating these in advance keeps the plan honest. Each will be measured, not assum
 | AC-D13-01 with smooth rollers | About 0.22 N of internal drag against 50 mN (CALC) |
 | AC-N08-01 (REQ-RVJ-N08) at the frozen 1.25 × sweep | Test writer 4 had no plan (12 of 72 cases per tremor amplitude); it passes only with the per-line sweep speed of DEC-039 (SIM, post hoc) |
 | AC-V03-01 before the writer refit | The synthetic writers write at about half adult phrase speed, and the glyph writer has about ten times the measured 8–12 Hz velocity content (SIM against LIT CON-20, CON-25) |
+| AC-L04-01 (REQ-ML-001) for the TCN | The worst test writer's tremor-free writing moved 34.8 µm, against 25 µm (19.3 µm on average) (SIM) |
+| AC-L06-01 (REQ-APP-003) for next-word guessing; the mixture's latency | The next word before its first letter reaches 18–28 % top-3 for every model, against 30 %; the mixture took 74–115 ms per query on the study's CPU, against 20 ms (CALC). Word completion after the first letters is not yet measured |
 
 ## 6. Issues found in existing documents (for the project lead)
 
@@ -327,12 +332,19 @@ Status of each item above after the consistency pass. Parameters moved to v0.4.2
   - The heel drive was sized on the Rev H front end. Re-run `drive/geometry.py` with the nose v2 envelope (REQ-DRV-008, AC-D04-04; revisit triggers of DEC-036 and DEC-037).
   - The Rev J power budget is not balanced. REQ-DRV-009 and REQ-EC-008 (≥ 8 h) were computed on the Rev H base load; nose v2 adds 0.16–0.18 W of coil loss with 1 mm tremor.
   - The end-cap results (REQ-EC-002, REQ-EC-003) were simulated on the Rev H pen and nose, not on nose v2 (heavier, Ø24 mm). Re-run them in sim2 (round 2).
-  - DEC-041 contests Rev H numbers that existing rows still carry: the current estimates of REQ-RVH-003 and REQ-RVH-004, and the predictions in the bases of AC-I05-01 and AC-I05-04 (0.47 N/√W, 0.004 W). They were not changed here; AC-N01-03 now measures the Rev H coupon.
+  - Resolved by the lead (2026-09-29): the current estimates of REQ-RVH-003 and REQ-RVH-004 and the bases of AC-I05-01 and AC-I05-04 now point to the contested image-method result (DEC-041) and to EXP-N01.
   - `prototype_stages.md` does not yet name the Rev J safety gates before participants: EXP-D07 (heel drive), EXP-K06 (any rotor), and EXP-N04, N05 and N08 (nose v2 and autowrite).
-  - Study L (AI and control v2, `docs/ai_control_v2.md`, EXP-L01…L05) has no decision yet and is not integrated. Its delayed-ink test (EXP-L03) overlaps EXP-N10.
+- **Study L integration (2026-09-29), open:**
+  - False-correction bounds disagree. REQ-CTRL-010 is relative (the Rev H tracker + 2 µm), and on study L's writers the Rev H tracker itself moves tremor-free writing by 26.3 µm. REQ-RVH-006 (15 µm), REQ-ML-001 and AC-E01-09 (25 µm) are absolute. One definition is needed.
+  - REQ-ML-003 (≤ 2 ms per 2 ms step, ≤ 64 kB of weights) is looser than REQ-ML-002 (≤ 1 ms per 4 ms step, ≤ 64 kB of RAM). The TCN's predicted 0.56 ms per 2 ms step meets the first and slightly misses the second.
+  - DEC-042 sets one arbitration law for all assistance, but the yield rules still differ by device: the nose drops within 60 ms beyond 2.5 mm (REQ-CTRL-013), the heel drive within 0.1 s after 0.3 s beyond 4 mm (REQ-DRV-002), the board within 0.5 s (REQ-RVH-007).
+  - The ledger holds the same three delayed-ink papers twice: HAP-90 = OPT-50 (Annett 2014), HAP-91 = OPT-51 (Tamada 1995), HAP-92 = OPT-52 (Morikiyo 1990). EXP-L03 and EXP-N10 cite both.
+  - EXP-L05's bench part trains a policy in sim2 for bench use (COU-2), so it waits for EXP-V05 (REQ-SIM-005). Study L names "the tremor-generating rig (EXP-I07)" for EXP-L02, but EXP-I07 is an offline replay; the protocol uses the EXP-I05 tremor rig.
+  - Autowritten ink on paper cannot carry the synthetic label of REQ-APP-004; the label lives in the app and the stroke record (AC-L07-03).
 
 ## 8. Changelog
 
+- **2026-09-29 (study L, DEC-042 and DEC-043).** New requirements in `docs/requirements.csv`, placed in their area blocks: REQ-CTRL-009…013 (causal commands, the tremor-line gate, the gated tracker's gain, ink-lag limits, fading guidance and hand-back), REQ-ML-003/004 (learned estimator on the pen, RL arbitration gate) and REQ-APP-003/004 (text suggestions, labelled style synthesis). REQ-CTRL-012 applies only if delayed ink is ever revived (DEC-042). REQ-ML-003 and REQ-ML-004 carry DEC-042's shadow mode and "no RL policy drives the nose". New experiments: bench and offline EXP-L01, L02, L04, L05 (`bench_protocols.md` §45); with people EXP-L03, L06, L07, L08 (`human_study_plan.md` §19). EXP-L03 shares its sessions with EXP-N10; both sections say so, and AC-N10-01/02 now gate DEC-042. 22 criteria (14 requirement, 8 hypothesis). Open points in §7. 385 → 407 criteria, 94 → 102 experiments, 104 → 113 requirements.
 - **2026-09-29 (Rev J integration, DEC-036…DEC-041).** New requirements in `docs/requirements.csv`: REQ-RVH-008 (the refill's front stop follows the nose, DEC-041), REQ-DRV-001…013 (heel drive, DEC-037), REQ-EC-001…009 (end-cap, DEC-038), REQ-RVJ-N01…N08 (nose v2 and autowrite, DEC-036, DEC-039) and REQ-SIM-001…005 (simulator v2, DEC-040). They keep the studies' thresholds as hypotheses; their text follows the decisions (REQ-DRV-008 front end, REQ-EC-001 detachable end-cap, REQ-EC-007 research module, REQ-RVJ-N07 heel drive may lead). New experiments: bench EXP-D01…D07, D10, D12, D13 (§41), K01, K02, K04, K06…K08 (§42), N01…N08 (§43) and V01…V06 (§44); with people EXP-D08, D09, D11 (`human_study_plan.md` §16), K03, K05 (§17) and N09, N10 (§18). 86 criteria (43 requirement, 8 derived, 35 hypothesis). The human plan's contents now list §15, and the bench plan's index and §34 now list the Rev H studies with people. Open points in §7. 299 → 385 criteria, 57 → 94 experiments.
 - **2026-09-28 (AI help for severe tremor, DEC-035).** `docs/ai_severe_tremor.md`: AI letter prediction does not steer free writing; the app's clean copy is proposed. AC-A03-04/05 (clean copy read by blinded readers; no harm on tremor-free notes) with EXP-A03 step 6, and AC-W02-03 (the severe-tremor tracker setting offline) with a note in EXP-W02. 296 → 299 criteria.
 - **2026-09-28 (Rev H front end, DEC-034).** AC-I05-08 (derived): at 35/50/75° and the usable travel in 8 directions only the skid ring touches the paper, and the ink force stays 0.15 N ± 20 % over the refill's slide; EXP-I05 procedure step 2 and decision rule extended; AC-I05-02's prediction updated. 295 → 296 criteria.

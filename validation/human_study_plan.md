@@ -19,6 +19,7 @@ Contents:
 - §16 Rev J heel drive with people (DEC-037): EXP-D08 (guided writing), EXP-D09 (tremor), EXP-D11 (lead-through and autowrite with relaxed hands)
 - §17 Rev J inertial end-cap with people (DEC-038): EXP-K03 (user crossover), EXP-K05 (cue perception)
 - §18 Rev J nose v2 with people (DEC-036, DEC-039): EXP-N09 (autowrite), EXP-N10 (delayed ink)
+- §19 Rev J AI and control with people (DEC-042, DEC-043): EXP-L03 (ink lag; shares sessions with EXP-N10), EXP-L06 (text prediction in the app), EXP-L07 (style synthesis), EXP-L08 (guidance that fades across sessions)
 
 ---
 
@@ -92,8 +93,12 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-K05 (§17) | Do people with ET and PD name the direction of an end-cap cue? | ET, PD with tremor, matched controls (n from a pilot, §11 rule) | Psychophysics: 8 directions, at rest and while writing | Direction named correctly; ink jitter during the cue | none (measurement) | after EXP-K01; K06 for rotor pulses |
 | EXP-N09 (§18) | Do people control and accept autowrite, and is its ink as legible as their own writing? | healthy adults, then ET (n from a pilot, §11 rule) | Autowrite switched on by the user; copy a known sentence at 2.5 and 3 mm | Legibility against the person's own writing; mode errors | IA (the device writes) | after EXP-N04, N05, N08; ethics |
 | EXP-N10 (§18) | Do writers accept ink that trails the hand? | adults (n from a pilot, §11 rule) | Within-subject: 0/50/100/150 ms delay, tablet then pen | Writing errors; acceptance of ≥ 100 ms | device burden | tablet: ethics only; pen: after EXP-N05 |
+| EXP-L03 (§19) | How large an ink lag do writers notice, and does it cause errors? (only before any revival of delayed ink; shares sessions with EXP-N10) | 12 controls + 12 ET or PD | Within-subject: 0/12/25/50/100 ms on a tablet, then the ±6 mm bench nose; staircase and copy task | Just-noticeable lag; added strokes or letters per 100 letters | device burden | tablet: ethics only; pen: after EXP-N04, N05 |
+| EXP-L06 (§19) | Does better text prediction save writing effort in the app? | 20 adults + 10 ET | Within-subject, counterbalanced: old n-gram against the mixture; offline scoring on own notes | Top-3 accuracy on own notes; accepted completions per 100 words; words per minute | IA (app) | ethics |
+| EXP-L07 (§19) | Does synthesis from the 20 s calibration look like the user's writing? | 20 writers + 5 raters | Two-alternative forced choice and reading | Legibility; own-style choice rate | none (measurement) | ethics |
+| EXP-L08 (§19) | Does guidance that fades across sessions help learning more than fixed guidance? | children with dysgraphia, or adults learning an unfamiliar script (n from a pilot, §11 rule) | Randomised: fixed partial guidance against session-level fading, 5 sessions; retention after 1 day and 1 week | Unassisted retention distance to the target letters | LI | after the bench gates of the build used; ethics |
 
-EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44).
+EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii).
 
 ---
 
@@ -1338,6 +1343,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 <!-- AC-TABLE:EXP-N09:END -->
 
 ### EXP-N10: Delayed ink acceptance
+- **Status and overlap.** DEC-042 does not adopt delayed ink, so this test is needed only before any revival. It overlaps EXP-L03 (§19): run the two as one session design, with the shared tablet and copy-task blocks run once and scored for both.
 - **Design.** Delayed ink at 0/50/100/150 ms, first on a tablet (no hardware needed), then with the nose and the pen lift. Randomised order within each participant; copied sentences.
 - **Measurands.** Writing errors (duplicated or inserted strokes); change of letter size; preference.
 - **Predictions.**
@@ -1345,13 +1351,98 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
   - Delayed visual feedback raised duplicated strokes (LIT OPT-51) and caused inserted strokes and larger letters (LIT OPT-52); both abstracts only.
   - 100 ms of delayed ink needs about 4.5–5.3 mm of travel, and 40–55 % of the ink is laid after the hand has lifted, so it needs the pen lift (CALC).
 - **Claim type.** Device burden.
-- **Decision.** Fail (as expected): delayed ink stays off (DEC-039 keeps it out of the default). Pass: a delayed-ink mode may be designed, with the pen lift.
+- **Decision.** Fail (as expected): delayed ink stays off (DEC-039, DEC-042). Pass, together with EXP-L03 and a refill that holds contact on its own: delayed ink may be reconsidered, with the pen lift (DEC-042 revisit).
 
 <!-- AC-TABLE:EXP-N10:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-N10-01 | — | Writing errors (duplicated or inserted strokes) with delayed ink at 50, 100 and 150 ms relative to 0 ms, copied sentences, tablet then pen; ratio of error rates at each delay | ≤ 1.0 | hypothesis | pass line of the nose v2 study (no increase over 0 ms); delayed visual feedback raised duplicated and inserted strokes (LIT OPT-51, OPT-52, abstracts only); inking latency is noticed from 50-61 ms (LIT OPT-50) -> may fail at ≥ 100 ms | DEC-039 (delayed ink not the default) |
-| AC-N10-02 | — | Users who accept a delay of 100 ms or more (preference after the delayed-ink blocks) | ≥ 50 % | hypothesis | pass line of the nose v2 study; 100-200 ms of delay will be seen (LIT OPT-50); 40-55 % of delayed ink is laid after the hand lifts, so the pen lift is needed (CALC) | DEC-039; delayed-ink mode with the pen lift |
+| AC-N10-01 | — | Writing errors (duplicated or inserted strokes) with delayed ink at 50, 100 and 150 ms relative to 0 ms, copied sentences, tablet then pen; ratio of error rates at each delay | ≤ 1.0 | hypothesis | pass line of the nose v2 study (no increase over 0 ms); delayed visual feedback raised duplicated and inserted strokes (LIT OPT-51, OPT-52, abstracts only); inking latency is noticed from 50-61 ms (LIT OPT-50) -> may fail at ≥ 100 ms | DEC-039; DEC-042 (no delayed ink; reconsidered only with EXP-L03) |
+| AC-N10-02 | — | Users who accept a delay of 100 ms or more (preference after the delayed-ink blocks) | ≥ 50 % | hypothesis | pass line of the nose v2 study; 100-200 ms of delay will be seen (LIT OPT-50); 40-55 % of delayed ink is laid after the hand lifts, so the pen lift is needed (CALC) | DEC-042 (delayed ink only if revived, with EXP-L03 and the pen lift) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-N10).
 <!-- AC-TABLE:EXP-N10:END -->
+
+---
+
+## 19. Rev J AI and control with people: EXP-L03, L06, L07, L08
+
+Study L sets the Rev J control stack (DEC-042) and the app's AI (DEC-043). The pen's default tremor estimator listens harder only while a tremor line is present. The ink never trails the hand. Guided practice uses partial guidance that fades across sessions. The app completes words and can write in the user's style, always labelled as synthetic. The bench and offline protocols are in `bench_protocols.md` §45. The predictions come from `docs/ai_control_v2.md` and `results/ai2/ai2.json` (model HW1 on synthetic writers, SIMULATION; text and synthesis, CALCULATION).
+- **Safety.** Tablet and app sessions need no powered pen. Sessions with the pen only after the bench gates of the build used: EXP-I05 for Rev H; EXP-N04, N05 and N08 for nose v2. Inclusion and exclusion as §3.2, including the rule on active implants.
+- **Notes as data.** EXP-L06 and EXP-L07 use participants' own writing; the optional consents of §3.3 apply, and no note leaves the device without them.
+
+### EXP-L03: Ink lag: is it noticed, and does it cause errors? (conditional; shares sessions with EXP-N10)
+- **Status.** DEC-042 does not adopt delayed ink. This test is needed only before any revival, which would also need a refill that holds contact on its own (study L).
+- **Overlap with EXP-N10 (§18).** Both test delayed ink on a tablet first, then with the nose. Run them as one session design: the tablet, the copy task and the lags are shared (EXP-N10: 0/50/100/150 ms; EXP-L03: 0/12/25/50/100 ms), and each shared block is run once and scored for both. EXP-L03 adds the just-noticeable-difference staircase and the pen-side lag limits of REQ-CTRL-012. The ledger holds the same three papers twice: HAP-90 = OPT-50, HAP-91 = OPT-51, HAP-92 = OPT-52.
+- **Design.** 12 controls and 12 people with ET or PD. A tablet with controlled inking latency (0, 12, 25, 50, 100 ms) and a stylus; then the ±6 mm bench nose. A staircase against 7 ms while writing words (the method of HAP-90). A copy task scored for added strokes and letters (HAP-91).
+- **Measurands.** Just-noticeable lag (ms); added strokes or letters per 100 letters; letter size; writing time; in the pen part, the lag, its return to 0 and the hand–ink distance.
+- **Predictions.**
+  - People noticed added inking latency above a median of 50 ms (range 32–87 ms), and 59 ms with the hand visible (LIT HAP-90).
+  - Delayed visual feedback made writers repeat strokes and letters, more with longer delays (LIT HAP-91, HAP-92; abstracts only).
+  - SIM: a lag of up to 25 ms cut the ink error by 4 % and read no more words. The ball would trail the pen by a median 0.26–0.35 mm at 25 ms (CALC).
+- **Claim type.** Device burden.
+- **Decision.** Pass, with a refill that holds contact on its own: delayed ink may be reconsidered (DEC-042 revisit). Otherwise it stays out.
+
+<!-- AC-TABLE:EXP-L03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L03-01 | — | Just-noticeable inking lag while writing words (staircase against 7 ms, tablet with controlled latency), median over participants (12 controls + 12 with ET or PD) | ≥ 25 ms | hypothesis | pass line of study L (the lag that would be used); people noticed added inking latency above a median of 50 ms (range 32-87 ms, n = 12) and 59 ms with the hand visible (LIT HAP-90 = OPT-50) | DEC-042 (delayed ink reconsidered only if EXP-L03 passes and a refill holds contact on its own) |
+| AC-L03-02 | — | Added strokes or letters per 100 letters in the copy task at a 25 ms lag, minus at 0 ms | < 1 per 100 letters | hypothesis | pass line of study L; delayed visual feedback made writers repeat strokes and letters, more with longer delays (LIT HAP-91 = OPT-51, HAP-92 = OPT-52; abstracts only) | DEC-042 |
+| AC-L03-03 | REQ-CTRL-012 | Only if delayed ink is revived, bench-nose part (±6 mm nose): ink lag while writing, time for the lag to return to 0 after the hand stops or lifts, and share of pen-down time with the hand-ink distance inside the usable nose travel (all) | all met (≤ 25 ms; ≤ 5 ms; ≥ 99 %) | requirement | REQ-CTRL-012; SIM: mean lag 15 ms at ≤ 25 ms; the command exceeded 3 mm for 3.5 % of pen-down time at 25 ms (so a ±3 mm nose fails) and 6 mm for at most 0.65 % at any lag (docs/ai_control_v2.md s3.5) | DEC-042 (no delayed ink); DEC-036 (nose travel) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-L03).
+<!-- AC-TABLE:EXP-L03:END -->
+
+### EXP-L06: Does better prediction save writing effort in the app?
+- **Design.** 20 adults and 10 people with ET write their own notes in the app with word completion, from the old n-gram (NG0) and from the mixture (within-subject, counterbalanced). Every model is also scored offline on their notes.
+- **Measurands.** Top-1 and top-3 accuracy on their own notes (word completion after the first letters; next word before its first letter, reported separately); accepted completions per 100 words; words per minute; latency per suggestion on the phone.
+- **Predictions (CALC).**
+  - The mixture (character transformer 0.3 + larger-corpus n-gram 0.7), letter two ahead, top-1: 41.0 % against 39.8 % (Tatoeba) and 40.7 % against 32.9 % (Common Voice); no gain on the app's note lines.
+  - Next word before its first letter: 9–15 % top-1 and 18–28 % top-3 for every model.
+  - Per next-word query on the study's CPU: 1.1 ms (larger-corpus n-gram) and 115 ms (mixture).
+  - Weak suggestions cost more than they save (LIT EML-63).
+- **Claim type.** IA for note-taking in the app; no claim about handwriting.
+- **Decision.** Below 30 % top-3 on their own notes: suggestions stay off by default (DEC-043 revisit). The mixture too slow on the phone: use the n-gram alone (DEC-043).
+
+<!-- AC-TABLE:EXP-L06:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L06-01 | REQ-APP-003 | Word completion after the first letters (the default suggestion, DEC-043), scored offline on each participant's own notes: top-3 accuracy, and latency per suggestion on the phone (both); next-word guessing before the first letter reported separately | both met (≥ 30 % top-3; ≤ 20 ms) | requirement | REQ-APP-003; next word before its first letter 18-28 % top-3 for every model (CALC, below 30 %); word completion not yet measured; per next-word query on the study's CPU 1.1 ms (larger-corpus n-gram) and 115 ms (mixture) (CALC) -> the mixture may miss 20 ms | DEC-043 (revisit if < 30 % top-3) |
+| AC-L06-02 | — | Accepted completions per 100 words with the mixture, and words per minute against the old n-gram (NG0), within-subject and counterbalanced, 20 adults and 10 with ET (both) | both met (≥ 10 per 100 words; no loss in words per minute) | hypothesis | pass line of study L; weak suggestions cost more than they save (LIT EML-63: keystroke savings 50 % with advanced prediction against 18 % with basic); top-1 two letters ahead, mixture against NG0: 41.0 against 39.8 % (Tatoeba), 40.7 against 32.9 % (Common Voice), 27.1 against 28.3 % on app note lines (CALC) | DEC-043 (prediction mixture with word completion) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-L06).
+<!-- AC-TABLE:EXP-L06:END -->
+
+### EXP-L07: Does synthesis from the 20 s calibration look like the user's writing?
+- **Design.** 20 writers write the calibration pangram. The app synthesises 10 words in each writer's style (sigma-lognormal, from 1–3 of their own letters). The writer and 5 raters judge the writer's own synthetic word against another writer's (two-alternative forced choice) and read the words.
+- **Measurands.** Legibility (raters and the app's recogniser); how often writers choose their own style; the synthetic label on every line.
+- **Predictions (CALC).** 96 % legible to the app's recogniser. Writer identified among six in 92–96 % of cases, on synthetic, font-based writers (which flatters identification). A learned generator on real letter shapes carried little style (65 % against 59 % for the class mean).
+- **Claim type.** Measurement; no assistance claim.
+- **Decision.** Fail: autowrite and templates use the calibration letters themselves only (DEC-043 revisit).
+
+<!-- AC-TABLE:EXP-L07:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L07-01 | REQ-APP-004 | Letters of the synthesised words (10 words per writer, sigma-lognormal from the writer's own calibration letters) read correctly by the app's recogniser and by 5 raters | ≥ 95 % | requirement | REQ-APP-004; prediction 96 % legible to the app's recogniser (CALC, synthetic glyph writers) | DEC-043 |
+| AC-L07-02 | — | Trials in which the writer chooses their own synthetic word against another writer's (2AFC) | ≥ 70 % | hypothesis | pass line of study L; writer identified among six in 92-96 % of cases on synthetic, font-based writers, which flatters identification; a learned generator on real shapes carried little style (65 % against 59 % for the class mean) (CALC) | DEC-043 (revisit if style judged by people fails) |
+| AC-L07-03 | REQ-APP-004 | App and record review: every synthesised line the app shows, stores or exports is labelled as synthetic, including the digital record of autowritten lines | conforms | requirement | REQ-APP-004; DEC-043; DEC-017 (immutable originals and provenance) | DEC-043 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-L07).
+<!-- AC-TABLE:EXP-L07:END -->
+
+### EXP-L08: Does guidance that fades across sessions help learning more than fixed guidance?
+- **Design.** Children with dysgraphia, or adults learning an unfamiliar script. Guided copying over 5 sessions, randomised to fixed partial guidance (0.5) or to guidance that fades across sessions with the learner's own error. Retention without guidance after 1 day and after 1 week.
+- **Measurands.** Unassisted retention distance to the target letters; letters read; the device's share of the ink motion over sessions; drop-rule events (logs).
+- **Predictions.**
+  - SIM (passive hand; learning is not modelled): partial guidance brought the ink 29 % closer (582 → 413 µm) with no loss of letters read. A per-letter assistance-as-needed law reacted one letter late.
+  - LIT: the robot must relax its help faster than the learner learns (HAP-94); guidance effects mostly vanish when it is off (HAP-42/43/44).
+- **Claim type.** LI (retention without guidance). Assisted performance during practice is reported separately (R4 of §1).
+- **Decision.** Fading no worse at retention: fading becomes the practice default (DEC-042). Worse: keep fixed partial guidance, with catch trials.
+
+<!-- AC-TABLE:EXP-L08:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L08-01 | — | Unassisted retention distance to the target letters after 1 day and after 1 week: session-level fading relative to fixed partial guidance (0.5), children with dysgraphia (or adults learning an unfamiliar script) | ≤ 1.0 | hypothesis | pass line of study L (fading no worse than fixed); SIM cannot test learning (passive hand); the robot must relax its help faster than the learner learns (LIT HAP-94); guidance effects mostly vanish when off (HAP-42/43/44) | DEC-042 (guided practice fades across sessions) |
+| AC-L08-02 | REQ-CTRL-013 | Session logs: the guidance level falls across sessions as the learner's own error falls (forgetting factor below 1, tolerance band), and guidance drops to 0 within 60 ms whenever the writer stays more than 2.5 mm from the target (every logged event) (both) | both met | requirement | REQ-CTRL-013; the drop rule T5 of HW1's guide mode; a per-letter assistance-as-needed law reacted one letter late (SIM) and is not used | DEC-042 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-L08).
+<!-- AC-TABLE:EXP-L08:END -->

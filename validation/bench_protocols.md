@@ -26,6 +26,7 @@ Contents:
 - §42 Rev J inertial end-cap (DEC-038): EXP-K01, K02, K04, K06, K07, K08 (K03 and K05 are in `human_study_plan.md` §17)
 - §43 Rev J nose v2 and autowrite (DEC-036, DEC-039, DEC-041): EXP-N01…N08 (N09 and N10 are in `human_study_plan.md` §18)
 - §44 Simulator v2 validation (DEC-040): EXP-V01…V06, with the Rev H refill front stop (REQ-RVH-008) in EXP-V02
+- §45 Rev J control stack (DEC-042): EXP-L01, L02, L04, L05 (L03, L06, L07 and L08 are in `human_study_plan.md` §19)
 
 ---
 
@@ -210,7 +211,11 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-V04 | Simulator v2: pen-grasp impedance while writing (participants) | A | R6 | DEC-040 | I01 or B06 sessions; ethics |
 | EXP-V05 | Simulator v2: device effect on a bench against the frozen model | A | R2, R3 | DEC-040, REQ-SIM-001…005 | V01, V02, V04; frozen firmware |
 | EXP-V06 | Simulator v2: population prediction against people | offline, after a human study | compute | DEC-040 | V05; W02 or D09 data |
-| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-002/003/005/006, REQ-RVJ-N07, DEC-002/008/009/016/020/024/031/035…039 | ethics |
+| EXP-L01 | Control stack: the tremor-line gate on real tremor-free writing; causality of the stack | offline, after H01; then A | compute; bench pen | REQ-CTRL-009/010, DEC-042 | H01 recordings |
+| EXP-L02 | Control stack: gated tracker against the Rev H tracker on real writing and on the bench | offline, after H01; then A | compute; R2 (EXP-I05 tremor rig), R3 | REQ-CTRL-011, DEC-042 | L01 |
+| EXP-L04 | Control stack: learned estimator against REQ-ML-001 on real data; MCU timing; shadow mode | offline, after H01; then A | compute; R7 | REQ-ML-001, REQ-ML-003, DEC-042 | H01 recordings; E01 protocol |
+| EXP-L05 | Control stack: RL arbiter in the sim2 closed loop, then on the bench | offline; then A | compute (sim2); EXP-V05 rig | REQ-ML-004, DEC-042 | V05 (REQ-SIM-005) |
+| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-002/003/005/006, REQ-RVJ-N07, REQ-CTRL-012/013, REQ-APP-003/004, DEC-002/008/009/016/020/024/031/035…039/042/043 | ethics |
 
 ---
 
@@ -3153,9 +3158,13 @@ The following are specified in [`human_study_plan.md`](human_study_plan.md), wit
 | EXP-K03 | End-cap crossover: nose alone, nose + weight, nose + active end-cap | **Immediate assistance**; device burden |
 | EXP-K05 | Cue perception by people with tremor | Measurement only |
 | EXP-N09 | Autowrite with people | **Immediate assistance** (the device writes) |
-| EXP-N10 | Delayed ink acceptance | Device burden |
+| EXP-N10 | Delayed ink acceptance (only before any revival of delayed ink; shares sessions with EXP-L03) | Device burden |
+| EXP-L03 | Ink lag: noticed, and does it cause writing errors? (only before any revival of delayed ink; shares sessions with EXP-N10) | Device burden |
+| EXP-L06 | Text prediction in the app on users' own notes | **Immediate assistance** (app) |
+| EXP-L07 | Handwriting synthesis in the user's style, judged by people | Measurement only |
+| EXP-L08 | Guidance that fades across sessions against fixed guidance; unassisted retention | **Lasting improvement** |
 
-EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44).
+EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3.
 
 ---
 
@@ -4193,3 +4202,118 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 <!-- AC-TABLE:EXP-V06:END -->
 
 - **Decision rule.** Fail: no population claims from sim2; refit the DR distributions from EXP-V03 and V04.
+
+---
+
+## 45. Rev J control stack: EXP-L01, L02, L04, L05
+
+### Purpose and what it gates
+
+DEC-042 sets the Rev J control stack.
+- **Default estimator.** A causal tremor-line detector on the page sensor looks at the last 4 s every 50 ms (peak-to-floor ratio in 4.5–13.5 Hz, hysteresis 5/2.5, amplitude gate 0.15–0.35 mm; its state kept across lines). It opens a listening fixed-lag Kalman estimate at lag 0 only while a tremor line is present. Otherwise the Rev H tracker runs.
+- **Successor in shadow mode.** A causal TCN (34 k parameters, int8) logs its estimate beside the default. It drives the nose only after REQ-ML-001 passes on held-out real recordings.
+- **No delayed ink; RL offline only; one arbitration law.** The ink never trails the hand. RL designs the arbitration offline; no RL policy drives the nose. Every assistance uses α = α_max × c_conf × c_need × c_agree, slew-limited, with the hand-back rules.
+- **What it gates.** DEC-042 is revisited if EXP-L01 or EXP-L02 fail, if EXP-L04 passes (then the TCN may take over), or if EXP-L05 passes its rules. Requirements: REQ-CTRL-009, REQ-CTRL-010, REQ-CTRL-011, REQ-ML-003 and REQ-ML-004.
+- **Predictions** come from `docs/ai_control_v2.md` and `results/ai2/ai2.json` (model HW1; test writers 0–5, seeds 200–203; rules R1–R4 fixed on tuning seeds 300–301; SIM and CALC). The learned models and RL policies were trained and tested inside one simulator family.
+- **Data.** EXP-L01, L02 and L04 replay the EXP-H01 recordings (instrumented passive pen, tip camera as the reference), with the participant splits of REQ-DATA-001 and the EXP-E01 protocol.
+- The studies with people (EXP-L03, L06, L07, L08) are in [`human_study_plan.md`](human_study_plan.md) §19.
+
+### EXP-L01: Does the tremor-line gate stay shut on real tremor-free writing?
+
+- **Purpose and gates.** Check the gate on real writing: shut on tremor-free writing, open on real tremor. Check that the stack is causal. Gates REQ-CTRL-009, REQ-CTRL-010 and DEC-042.
+- **Predictions (SIM).**
+  - The gate never opened on the tremor-free writing of any tuning or test writer. Tremor-free writing moved 26.3 µm, the same as with the Rev H tracker.
+  - At 1–2 mm it was open for 51–73 % of a 20 s recording, because it needs about 4.5 s to open (4 s window + 0.5 s). Once open on tuning data, it stayed open for 95 % of the detector's updates.
+  - At 0.3 mm it was open for 0.1–12.9 % of the time.
+- **Set-up.** Offline: the EXP-H01 recordings of ET, PD and control writers. The Rev J estimator stack as firmware code, run in a replay harness. Then the bench pen with recorded hand motion.
+- **Procedure.**
+  1. Test the causality of the stack build: change sensor samples after their availability time and check that no earlier command changes.
+  2. Replay every recording, keeping the detector's state across lines within a session, as the firmware does.
+  3. Log the gate, the detector's ratio and amplitude, and the commanded correction.
+  4. Repeat on the bench pen.
+- **Measurands.** Gate-open share of tremor-free writing time per writer; time to open after tremor onset; open share at 1–2 mm after the first 5 s; tremor-free writing moved (the commanded correction on the controls' writing) against the Rev H tracker alone.
+
+<!-- AC-TABLE:EXP-L01:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L01-01 | REQ-CTRL-010 | Gate-open share of tremor-free writing time for every control writer (EXP-H01 recordings replayed offline through the Rev J estimator stack, detector state kept across lines; tip camera as reference) | ≤ 1 % | requirement | REQ-CTRL-010 (closed ≥ 99 %); SIM: never open on the tremor-free writing of any tuning or test writer (results/ai2/ai2.json) | DEC-042 (revisit if the gate fails on real writing) |
+| AC-L01-02 | REQ-CTRL-010 | Tremor-free writing moved (commanded correction on the controls' recordings) with the gated stack minus that with the Rev H tracker alone, every control writer, RMS | ≤ 2 µm | requirement | REQ-CTRL-010; SIM 26.3 µm with both (test grid), because the gate stays shut | DEC-042 |
+| AC-L01-03 | — | Gate-open share of pen-down time after the first 5 s of writing, writers with 1-2 mm tremor at the tip | ≥ 80 % | hypothesis | pass line of study L; SIM: open for 51-73 % of a whole 20 s recording because the detector needs about 4.5 s to open, and for 95 % of its updates at 1-2 mm once open on tuning data (docs/ai_control_v2.md s3.4, s4.1) | DEC-042 |
+| AC-L01-04 | REQ-CTRL-009 | Causality test of the estimator stack used in the replay (firmware build): changing any sensor sample after its availability time (acquisition + latency) changes no earlier nose command, and every estimator output at a tick uses only samples available at that tick | conforms (bit-exact) | requirement | REQ-CTRL-009; study L found and fixed two look-ahead leaks before its test (docs/ai_control_v2.md s13 item 3); unit tests in ai2/tests | DEC-042 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-L01).
+<!-- AC-TABLE:EXP-L01:END -->
+
+- **Decision rule.** The gate opens on real tremor-free writing: revisit DEC-042 (re-tune the thresholds on training participants only, or keep the Rev H tracker). It opens too little on real tremor: re-tune the detector; the 20 s calibration can arm its band.
+
+### EXP-L02: Does the gated tracker beat the Rev H tracker on real writing?
+
+- **Purpose and gates.** Compare the default with the Rev H tracker, offline on real writing and in closed loop on the bench. Gates REQ-CTRL-011 and DEC-042.
+- **Predictions (SIM).** At 1–2 mm and 6–10 Hz: 430 against 627 µm (0.69; paired −197 µm, 95 % CI −206 to −188). At 6 Hz, where the Rev H tracker does nothing: 818 → 540 µm. Letters read 64 → 78 %, words 49 → 74 %. 0.3 mm tremor unchanged (161 against 162 µm).
+- **Set-up.** Offline: the EXP-H01 recordings, paired per writer, with the tip camera as the intended path. Bench: the Rev J pen in closed loop on the EXP-I05 tremor rig (R2 with a 2-axis shaker) with recorded hand paths; R3 scans.
+- **Procedure.**
+  1. Replay the recordings through both trackers. Score the ink error against the tip-camera intent, the letters read by the app, and the false correction on the controls' writing.
+  2. Bench: 0.3, 1 and 2 mm at 6, 8 and 10 Hz, both trackers, 10 seeds each, in random order.
+- **Measurands.** Ink error; letters and words read; false correction; paired differences per writer.
+
+<!-- AC-TABLE:EXP-L02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L02-01 | REQ-CTRL-011 | Ink error against the tip-camera intent with the gated tracker relative to the Rev H tracker at 1-2 mm tremor, 6-10 Hz (EXP-H01 recordings replayed offline, paired per writer); geometric mean ratio, with the paired 95 % upper bound below 1 | ≤ 0.8 | requirement | REQ-CTRL-011; SIM 430 against 627 µm (0.69), paired -197 µm (95 % CI -206 to -188); 6 Hz 818 -> 540 µm (results/ai2/ai2.json) | DEC-042 (revisit if it fails) |
+| AC-L02-02 | REQ-CTRL-011 | Letters read by the app with the gated tracker minus with the Rev H tracker at every tremor condition, and ink error at 0.3 mm relative to the Rev H tracker (both) | both met (≥ -1 point; ≤ 1.02) | requirement | REQ-CTRL-011; SIM letters 78 against 64 % at 1-2 mm; 0.3 mm 161 against 162 µm | DEC-042 |
+| AC-L02-03 | — | Closed loop on the bench pen with the EXP-I05 tremor rig (R2 with a 2-axis shaker), 1-2 mm at 6-10 Hz, 10 seeds: ink error with the gated tracker relative to the Rev H tracker (R3 scans) | ≤ 0.8 | hypothesis | pass line of study L; SIM 0.69, model to model only | DEC-042 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-L02).
+<!-- AC-TABLE:EXP-L02:END -->
+
+- **Decision rule.** Pass: the gated tracker stays the default (DEC-042). Fail: revisit DEC-042; the Rev H tracker stays.
+
+### EXP-L04: Does a learned estimator pass REQ-ML-001 on real data?
+
+- **Purpose and gates.** Test the TCN against the gate for learned models, and check its cost on the pen. Gates REQ-ML-001, REQ-ML-003 and the TCN's move from shadow mode to the nose (DEC-042).
+- **Predictions.**
+  - SIM: 278 µm at 1–2 mm (−152 µm against the gated tracker, 95 % CI −164 to −141), 307 µm at 6 Hz, 127 µm at 0.3 mm. Tremor-free writing moved 19.3 µm on average, but 34.8 µm for the worst writer, above REQ-ML-001's 25 µm. The 20 s calibration as an extra input did not help (290 µm).
+  - CALC: 33 248 multiply-accumulates per 2 ms step; 33 kB of int8 weights and about 16 kB of history; about 0.56 ms per step on a 128 MHz Cortex-M33 (28 % of one core; MCU model ASSUMPTION, LIT EML-13).
+- **Set-up.** EXP-H01 recordings with the Hall and grip-force channels, split by participant (REQ-DATA-001); only recordings whose consent covers model training (`human_study_plan.md` §3.3, item iii). The gated model-based stack as the conventional comparator (EXP-E01 protocol). The pen MCU on R7 for timing.
+- **Procedure.**
+  1. Train on synthetic data plus the training participants, then freeze.
+  2. Test on held-out participants against the gated stack (paired bootstrap per band).
+  3. Time the int8 build on the MCU (logic analyser; worst case over 10⁵ steps) and run the causality test of EXP-L01.
+  4. Check the shadow-mode wiring: the TCN's output is logged and never reaches the nose command.
+- **Measurands.** Residual ratio by band; false correction on tremor-free writing; spikes; worst-case step time; memory.
+
+<!-- AC-TABLE:EXP-L04:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L04-01 | REQ-ML-001 | Learned estimator (TCN trained on synthetic data and the EXP-H01 training participants) on held-out participants against the gated model-based stack as the conventional comparator: residual-ratio reduction in each of the 4-8 Hz and 8-12 Hz bands (paired bootstrap), false correction on tremor-free writing, and spikes (all, as REQ-ML-001) | all met (≥ 0.10 with the 95 % upper bound below 0; ≤ 25 µm RMS; no spike > 100 µm) | requirement | REQ-ML-001 as written, with the DEC-042 default as the comparator; SIM: 278 against 430 µm at 1-2 mm (paired -152 µm, 95 % CI -164 to -141); tremor-free writing 19.3 µm on average but 34.8 µm for the worst writer (docs/ai_control_v2.md s4.5) -> may fail on that writer | DEC-042 (the TCN drives the nose only if this passes) |
+| AC-L04-02 | REQ-ML-003 | Int8 TCN on the pen MCU (128 MHz Cortex-M33 class; logic analyser, worst case over 1e5 steps): time per 2 ms step, weight memory, and causality (test of AC-L01-04) (all) | all met (≤ 2 ms per 2 ms step; ≤ 64 kB of weights; causal) | requirement | REQ-ML-003; prediction about 0.56 ms per step (28 % of one core) and 33 kB of int8 weights plus about 16 kB of history (CALC; MCU model ASSUMPTION, LIT EML-13); REQ-ML-002 allows ≤ 1 ms per 4 ms step | DEC-042 (TCN in shadow mode) |
+| AC-L04-03 | REQ-ML-003 | Shadow mode (firmware review and logs): the TCN's estimate is computed and logged beside the default, and never reaches the nose command until AC-L04-01 passes | conforms | requirement | REQ-ML-003; DEC-042 | DEC-042 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-L04).
+<!-- AC-TABLE:EXP-L04:END -->
+
+- **Decision rule.** Pass: the TCN may drive the nose (DEC-042 revisit). Fail: it stays in shadow mode, and is retrained with more real data.
+
+### EXP-L05: Does an RL arbiter survive a closed-loop simulator and the bench?
+
+- **Purpose and gates.** Test RL arbitration where the replay results broke down: in closed loop. Gates REQ-ML-004 and DEC-042 (RL offline only).
+- **Predictions (SIM, replay-trained policy).** The PPO arbiter read 89 % of words at 298 µm. But it moved tremor-free writing by 30.7 µm (60.9 µm on tuning data, 128 µm for one tuning writer) and was worse than Rev H at 10 Hz, 0.3 mm, so it failed rules R1 and R2. Its replay rule (mean weight ≤ 0.05) missed brief full openings. Residual RL on the command moved tremor-free writing by 165 µm.
+- **Set-up.** sim2 (MuJoCo, closed loop, the pen's own sensors) with the estimators run online: the lag-0 smoother as a forward Kalman filter, the recursive Rev H filter, and the detector every 50 ms on a ring buffer. The Gymnasium arbiter environment (`ai2/rl_env.py`) with sim2 as its backend. Then the EXP-V05 bench rig.
+- **Dependency.** Training a policy in sim2 for bench tests is context of use COU-2. It needs sim2 validated first (EXP-V05, REQ-SIM-005).
+- **Procedure.**
+  1. Before training, fix a selection rule on the closed-loop false correction or the peak weight.
+  2. Train with a closed-loop false-correction constraint.
+  3. Test on held-out sim2 writers and seeds against the model-based gate.
+  4. Only if it passes, and EXP-V05 has passed: run the frozen policy on the bench rig.
+- **Measurands.** Ink error against the model-based gate; tremor-free writing moved; gate chatter (weight changes per second).
+
+<!-- AC-TABLE:EXP-L05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-L05-01 | REQ-ML-004 | RL arbiter trained in sim2's closed loop (estimators run online, closed-loop false-correction constraint), on held-out sim2 writers and seeds: ink error at 1-2 mm relative to the model-based gate, and tremor-free writing moved minus the gate's, with REQ-CTRL-010 and REQ-CTRL-011 met (all) | all met (≤ 0.95; ≤ 2 µm RMS; REQ-CTRL-010 and -011) | requirement | REQ-ML-004 (beats the gate by ≥ 5 %); replay-trained PPO: 298 µm and 89 % of words, but 30.7 µm on tremor-free writing and worse at 10 Hz, 0.3 mm, so it failed rules R1 and R2 (SIM, docs/ai_control_v2.md s5.3) | DEC-042 (RL offline only; revisit if it passes) |
+| AC-L05-02 | — | The frozen arbiter on the bench rig (EXP-V05 set-up), 1-2 mm tremor: ink error relative to the model-based gate, and tremor-free writing moved minus the gate's (both); gate chatter reported | both met (≤ 0.95; ≤ 2 µm RMS) | hypothesis | pass line of study L; the bench part is policy training for bench tests (COU-2), allowed only after EXP-V05 passes (REQ-SIM-005) | DEC-042; DEC-040 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-L05).
+<!-- AC-TABLE:EXP-L05:END -->
+
+- **Decision rule.** Fail: keep the model-based gate (DEC-042). Pass in sim2 and on the bench: RL arbitration may be proposed for the pen (DEC-042 revisit).
