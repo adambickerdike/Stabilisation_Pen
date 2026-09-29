@@ -533,13 +533,12 @@ def unipen_note(w: str, seed: int = 0, n_words: int = 10, dt: float = SIM_DT, in
             lines.append((sg_["label"], ss))
     if not lines:
         return None
-    # physical size is as recorded.  Letter height (metadata only; the project's 'T, p, a' height): the median over the
-    # lines of the 5-95 % vertical span of the pen-down points x 0.55 (ASSUMPTION: a line with ascenders and
-    # descenders spans about 2.5 x-heights; T, p, a average 1.367 x-heights)
-    spans_y = [float(np.percentile(np.vstack([s_ for s_, _a in ss])[:, 1], 95) -
-                     np.percentile(np.vstack([s_ for s_, _a in ss])[:, 1], 5)) for _, ss in lines]
+    # physical size is as recorded.  Letter height (metadata only; the project's 'T, p, a' height): x-height = 2 x the
+    # median over the lines of the inter-quartile range of the pen-down points' height (ASSUMPTION: most ink lies in
+    # the x-height band, so its IQR is about half the x-height); T, p, a average 1.367 x-heights
+    iqr_y = [float(np.subtract(*np.percentile(np.vstack([s_ for s_, _a in ss])[:, 1], [75, 25]))) for _, ss in lines]
     h_line = [float(np.ptp(np.vstack([s_ for s_, _a in ss])[:, 1])) for _, ss in lines]
-    height_tpa = 0.55 * float(np.median(spans_y)) if spans_y else 5e-3
+    height_tpa = 2.0 * TPA_PER_XHEIGHT * float(np.median(iqr_y)) if iqr_y else 5e-3
     pitch = max(8e-3, 1.25 * float(np.percentile(h_line, 90)))
     strokes_out: List[Stroke] = []
     off = 0
@@ -558,7 +557,8 @@ def unipen_note(w: str, seed: int = 0, n_words: int = 10, dt: float = SIM_DT, in
             "split": v["split"], "units": "documented (UNIPEN header: 500 points/inch, 100 samples/s)",
             "device": v["device"], "pen": v["pen"], "surface": v.get("surface", ""), "setup": v.get("setup", ""),
             "licence": "UNIPEN: research use only (iUF notice)", "letters": "not labelled (one pseudo-letter per stroke)"}
-    meta["letter_height_rule"] = "0.55 x median line span (5-95 %) of the pen-down points (ASSUMPTION; metadata only)"
+    meta["letter_height_rule"] = ("1.367 x (2 x the median line IQR of the pen-down points' height) (ASSUMPTION; "
+                                  "metadata only: the note keeps its recorded size)")
     return assemble(strokes_out, text, dt=dt, height_m=height_tpa, writer=f"unipen/{w}", source="unipen",
                     meta=meta, per_stroke_letters=True)
 

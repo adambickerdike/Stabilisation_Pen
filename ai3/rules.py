@@ -77,6 +77,11 @@ RULES = {
 # these tests ran.  They are kept apart so that the hash of the original rules (recorded by the earlier stages) stays
 # valid; the new stages record rules_v2_sha256().
 RULES_V2 = {
+    "W0_segment": ("Letters are separated at pen lifts: a stroke joins the current letter if it overlaps the letter's "
+                   "horizontal extent by at least m x-height (a dot, a stroke shorter than 0.3 x-height, joins within "
+                   "0.5); m in {-0.15, -0.1, -0.05, 0, 0.05, 0.1, 0.15, 0.2, 0.3} is the value with the fewest "
+                   "segmentation errors per letter, mean of normal and tight spacing, on the UJI tuning writers' words "
+                   "(geometry only).  The demo uses the same rule."),
     "W1_decode": ("Word decoding: the weight beta_w of the NG1x character model in {0, 0.25, 0.5, 0.75, 1.0} is the one "
                   "with the lowest character error rate of the writer-independent recogniser on the UJI tuning "
                   "writers' words (Tatoeba validation sentences, both sessions, normal spacing); ties: the smaller beta."),

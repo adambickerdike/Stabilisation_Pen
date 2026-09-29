@@ -178,8 +178,8 @@ SOURCES: Dict[str, Source] = {
              "inking pen with a ballpoint refill on preprinted paper forms; 100 samples/s; 500 points/inch = 0.05 mm; 14 "
              "writers in category 8), chosen by a kinematics rule over every setup of category 8 (kinematics.unipen_survey); "
              "the other setups: validation statistics only",
-        content="category 8 free text from 26 recording setups (e.g. hpb3: Wacom HD648A LCD screen with emulated ink, 8.8 % "
-                "of the pen-down velocity energy at 8-12 Hz; sta/hpb1: 40 %: digitiser artefacts)",
+        content="category 8 free text from 26 recording setups (e.g. hpb3: Wacom HD648A LCD screen with emulated ink, 5.4 % "
+                "of the pen-down velocity energy at 8-12 Hz on lower-case words; sta/hpb1: 40 %)",
         units="per data set: .X_POINTS_PER_MM or .X_POINTS_PER_INCH and .POINTS_PER_SECOND in the headers",
         files={"unipen/unipen-CDROM-train_r01_v07.tgz": "https://zenodo.org/api/records/1195803/files/unipen-CDROM-train_r01_v07.tgz/content"},
         ledger="CON-81 (proposed)",

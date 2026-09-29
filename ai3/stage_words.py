@@ -38,7 +38,8 @@ from . import stage_spell as SS
 from .rules import RULES_V2, rules_v2_sha256
 
 GAP = {"normal": (0.25, 0.12), "tight": (0.08, 0.12)}
-SEG_MARGIN = 0.15
+SEG_MARGIN = -0.2          # rule W0 (tuning writers); the first draft used +0.15 (see choose_W0)
+SEG_MARGINS = (0.15, 0.1, 0.05, 0.0, -0.05, -0.1, -0.15, -0.2, -0.3)
 BETAS_W = (0.0, 0.25, 0.5, 0.75, 1.0)
 LAMBDAS_R = (0.5, 0.75, 1.0, 1.5)
 THETAS_C = (0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 0.97, 0.99)
@@ -114,9 +115,11 @@ def compose(word: str, writer: str, session: int, bank: Dict, rng, gap=(0.25, 0.
     return strokes, owner
 
 
-def segment(strokes: Sequence[np.ndarray], margin: float = SEG_MARGIN) -> List[List[int]]:
-    """The demo's rule: a stroke joins the current letter if it overlaps its horizontal extent (with a margin of
-    0.15 x-height; 0.5 for a dot, a stroke shorter than 0.3 x-height, since i and j dots are often set off)."""
+def segment(strokes: Sequence[np.ndarray], margin: float = None) -> List[List[int]]:
+    """The demo's rule: a stroke joins the current letter if it overlaps the letter's horizontal extent by at least
+    -margin x-height (rule W0: margin -0.2, i.e. 0.2 x-height of overlap); a dot (a stroke shorter than 0.3
+    x-height) joins within 0.5 x-height, since i and j dots are often set off."""
+    margin = SEG_MARGIN if margin is None else margin
     segs: List[List[int]] = []
     lo = hi = None
     for i, s in enumerate(strokes):
@@ -129,6 +132,35 @@ def segment(strokes: Sequence[np.ndarray], margin: float = SEG_MARGIN) -> List[L
             segs.append([i])
             lo, hi = a, b
     return segs
+
+
+def choose_W0(bank: Dict, writers: Sequence[str], sents: List[List[str]], seed: int = 5) -> Dict:
+    """Rule W0: the margin with the fewest segmentation errors per letter, mean of normal and tight spacing, on the
+    tuning writers (geometry only)."""
+    tab = {}
+    for m in SEG_MARGINS:
+        r = {}
+        for g in ("normal", "tight"):
+            rng = np.random.default_rng(seed)
+            nl = err = 0
+            for w in writers:
+                for sess in (1, 2):
+                    for si in rng.choice(len(sents), size=min(12, len(sents)), replace=False):
+                        for word in sents[si]:
+                            comp = compose(word, w, sess, bank, rng, GAP[g])
+                            if comp is None:
+                                continue
+                            strokes, owner = comp
+                            sg = segment(strokes, m)
+                            good = len(sg) == len(word) and all(len({owner[i] for i in q}) == 1 and owner[q[0]] == k
+                                                                for k, q in enumerate(sg))
+                            nl += len(word)
+                            err += 0 if good else (abs(len(sg) - len(word)) or 1)
+            r[g] = err / max(nl, 1)
+        r["mean"] = 0.5 * (r["normal"] + r["tight"])
+        tab[f"{m:g}"] = r
+    best = min(SEG_MARGINS, key=lambda m: (tab[f"{m:g}"]["mean"], abs(m)))
+    return {"margin": best, "table": tab}
 
 
 def edit_distance(a: str, b: str) -> int:
@@ -464,6 +496,7 @@ def reliability(toks: List[Dict], lam: float, T: float) -> Dict:
 
 # ============================================================================================ the stage
 def run(quick: bool) -> Dict:
+    global SEG_MARGIN
     from aiguide import corpus as ACO
     from . import lmx
     from .stage_online import load_model
@@ -480,7 +513,7 @@ def run(quick: bool) -> Dict:
     reader = Reader(model, lb["bank"], a, tau)
     pred, _ = lmx.ng1x(quick)
     out = {"rules_v2_sha256": rules_v2_sha256(), "rules": {k: RULES_V2[k] for k in RULES_V2},
-           "O4": {"a": a, "tau": tau}, "gap_assumption": GAP, "seg_margin_xh": SEG_MARGIN}
+           "O4": {"a": a, "tau": tau}, "gap_assumption": GAP}
     # ---------------- A: words.  Rule W1 on tuning writers (Tatoeba validation), then test writers (Tatoeba test)
     spl = ACO.make_splits()
     n_w = 300 if quick else 2500
@@ -489,6 +522,11 @@ def run(quick: bool) -> Dict:
     tune_w = lb["writers"]["tune"][: 2 if quick else 6]
     test_w = lb["writers"]["test"][: 3 if quick else 20]
     per = 4 if quick else 12
+    w0 = choose_W0(lb["bank"], tune_w, s_val)
+    SEG_MARGIN = w0["margin"]
+    out["W0"] = w0
+    out["seg_margin_xh"] = SEG_MARGIN
+    C.log(f"[words] rule W0 -> segmentation margin {SEG_MARGIN:g} x-height")
     tw = word_eval(reader, lb["bank"], tune_w, s_val, pred.char, BETAS_W, GAP["normal"], seed=21, max_sent_per_ws=per)
     best_b = min(BETAS_W, key=lambda b: (tw[f"independent|beta={b:g}"]["cer"], b))
     out["W1"] = {"beta_w": best_b, "table": {k: v for k, v in tw.items()}}
@@ -510,7 +548,7 @@ def run(quick: bool) -> Dict:
     units_test = [SS.holbrook_units(p) for p in test_p]
     if quick:
         units_tune, units_test = units_tune[:2], units_test[:2]
-    max_units = 80 if quick else 300
+    max_units = 80 if quick else 200
     pools = {}
     for split in ("tune", "test"):
         keys = [k for k in lb["bank"] if O.split_of(k[0]) == split]

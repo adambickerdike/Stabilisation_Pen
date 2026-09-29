@@ -53,6 +53,10 @@ class WPFirmware(Firmware):
                 continue
             f, G = C.internal_model(dev, pen, ex, r0)
             G_inv = C.internal_model(dev, pen, ex, r0, out="ink")[1] if dev == "collar" else None
+            if dev == "collar":
+                # the nose must cancel the INK's residual, which differs from the measured barrel tip's by
+                # (G - G_ink) u (the ball slides on its refill as the pen swings): kept for the nose correction
+                self.col_f, self.col_D = f, G - G_inv
             if mode == "afc":
                 self.afc[dev] = C.AFC(f, G, tau=wp.afc_tau, G_ink=G_inv)
             elif mode == "oracle":
@@ -61,6 +65,8 @@ class WPFirmware(Firmware):
                 self.imc[dev] = C.PhasorIMC(f, G, gain, G_inv=G_inv)
         self.u_cmg = np.zeros(2)
         self.u_col = np.zeros(2)
+        self.col_f, self.col_D = None, None
+        self.ucol_hist = deque(maxlen=400)
         self.F_sled = np.zeros(2)
         self.F_omni = np.zeros(2)
         self.gate_state = 0.0
@@ -161,6 +167,19 @@ class WPFirmware(Firmware):
             u = self._law("collar", wp.collar, t, f_est, wp.collar_frac * self.col["range_rad"])
             self._commit("collar", wp.collar, u)
             self.u_col = u
+            self.ucol_hist.append(u.copy())
+            # the nose (sim2j's 'tremor' mode commands -g d_hat, the barrel tip's residual): re-issue its command on
+            # the ink's residual d_hat - (G - G_ink) u, phasor-realised at the tracked frequency
+            if self.fw.nose == "tremor" and wp.nose_ink_correct and self.col_D is not None and wp.collar in ("ff", "afc"):
+                fq = float(np.clip(f_est, self.col_f[0], self.col_f[-1]))
+                kq = max(1, int(round(1.0 / (4.0 * fq * self.Ts))))
+                Dr = np.array([[np.interp(fq, self.col_f, self.col_D[:, i, j].real) for j in range(2)] for i in range(2)])
+                Di = np.array([[np.interp(fq, self.col_f, self.col_D[:, i, j].imag) for j in range(2)] for i in range(2)])
+                uq = self.ucol_hist[-kq - 1] if len(self.ucol_hist) > kq else np.zeros(2)
+                c = Dr @ u - Di @ uq
+                x = -self.g_auth * (self.d_hat - c)
+                q, x_used = self.to_q(x)
+                self.q_page = x_used
         # ---- sled (force on the hand) and omni heel (force on the pen tip)
         for dev in ("sled", "omni"):
             mode = getattr(wp, dev)

@@ -73,7 +73,9 @@ class WPConfig:
     cmg_band: tuple = (3.0, 12.0)        # Hz band of the 'damp' law (2nd-order Butterworth band-pass, causal)
     model_r_rot: float = 0.5             # the internal model's grip split
     oracle_gain: float = 1.0             # the oracle laws' gain (perfect knowledge of the total tremor)
-    use_line_f: bool = True              # the device laws run at the tremor-line detector's frequency when it is open
+    use_line_f: bool = False             # the device laws run at the tremor-line detector's frequency when it is open
+                                         # (False: the AKF's frequency, as the nose)
+    nose_ink_correct: bool = True        # with a V2 collar, the nose cancels the ink's residual (see stepper.tick)
     preview: float = 0.0                 # s extra preview for the oracle (group delays)
     label: str = ""
 

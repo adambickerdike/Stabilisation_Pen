@@ -109,7 +109,8 @@ async function run(browser, url, label, viewport, scheme) {
     await page.evaluate(w => window.__demo.writeWordXh(w, false), FIX.words.libary);
     s = await page.evaluate(() => window.__demo.state());
     const withheld = await page.evaluate(() => document.getElementById("inkmeta").textContent);
-    check(`${label}: with "lift the pen" chosen, the pen cue fires on "libary" mid-word`, ["withhold", "tick"].includes(s.cue), `pen state ${s.cue}; ${withheld}`);
+    const pd = await page.evaluate(() => ["lib", "liba", "libar"].map(q => `${q} ${window.__demo.prefix(q).pdev.toFixed(3)}`).join(", ") + ` (theta ${window.__demo.S.theta}, theta_w ${window.__demo.S.theta_w})`);
+    check(`${label}: with "lift the pen" chosen, the pen cue fires on "libary" mid-word`, ["withhold", "tick"].includes(s.cue), `pen state ${s.cue}; P(going wrong) ${pd}; ${withheld}`);
     await page.screenshot({ path: path.join(SHOTS, `${label}_cue.png`), fullPage: true });
     await page.evaluate(() => window.__demo.endWord());
   }

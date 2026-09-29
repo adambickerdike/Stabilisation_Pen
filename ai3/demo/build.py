@@ -115,7 +115,7 @@ def _strokes_rounded(st, n_max=48):
 
 
 def settings(quick: bool):
-    S = {"tau_commit": 0.9, "cal_a": 0.5, "cal_tau": 0.05, "alpha": 0.063, "p_oov": 0.03, "theta": 0.9,
+    S = {"seg_margin": -0.2, "tau_commit": 0.9, "cal_a": 0.5, "cal_tau": 0.05, "alpha": 0.063, "p_oov": 0.03, "theta": 0.9,
          "theta_w": 0.99, "lam_r": 1.0, "T": 1.0, "theta_c": 0.9, "p_s": 0.3, "T_s": 1.0, "p_offer": 0.3,
          "cue_default": "pause_offer", "reach_mm": 6.0, "reserve_mm": 0.5, "xh_mm": 3.0, "v_max_mm_s": 30.0,
          "from_results": []}
@@ -130,6 +130,8 @@ def settings(quick: bool):
         S["alpha"], S["p_oov"], S["theta"] = sp["alpha"], sp["S2"]["p_oov"], sp["S2"]["theta"]
         S["theta_w"] = sp.get("S3", {}).get("theta_w", S["theta_w"]); S["from_results"] += ["S2", "S3"]
     wd = C.load("words", quick) or {}
+    if wd.get("W0"):
+        S["seg_margin"] = wd["W0"]["margin"]; S["from_results"].append("W0")
     blk = (wd.get("spelling") or {}).get("independent")
     if blk:
         S["lam_r"], S["T"], S["theta_c"] = blk["W2"]["lambda_r"], blk["W2"]["T"], blk["W2"]["theta_c"]

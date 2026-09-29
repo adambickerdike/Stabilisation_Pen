@@ -89,14 +89,16 @@ Only **hpb2** passes: HP Labs Palo Alto, 1992, a Wacom 420-510C, an inking pen w
 paper forms, 100 samples/s, 0.05 mm. Two things about the rule:
 - **The first survey sampled too little.** It took 12 lines per contributor, and all 12 fell in hpb2. It measured
   1.5 %. The full survey, with 60 random lines of lower-case words per setup, measures 2.4 %.
-- **The same contributor's screen setup fails.** Its hpb3 setup (Wacom HD648A LCD screen, emulated ink) has 8.8 % at
-  8-12 Hz.
+- **The same contributor's screen setup fails.** Its hpb3 setup (Wacom HD648A LCD screen, emulated ink) has 5.4 % at
+  8-12 Hz and 14 % above 12 Hz on lower-case words.
 
 The hpb2 notes:
-- **Size.** 14 writers, one note of about 10 words per writer, in their recorded size. Letters are about 4-9 mm.
-  Writing in form boxes is larger than everyday notes for some writers.
-- **Timing.** The recorded timing is kept. So are the recorded hover paths between strokes: 70-90 % of in-air moves.
-  Only line changes are added moves (ASSUMPTION).
+- **Size.** 14 writers, one note of about 10 words per writer, in their recorded size. Letter height (the mean of
+  'T', 'p' and 'a') is about 3-6 mm, median 4.4 mm (estimate from the line's ink, ASSUMPTION). That is close to
+  healthy adults on paper (median 5.0 mm, LIT PDT-06). One test writer writes tall, narrow letters of about 15 mm.
+- **Timing.** The recorded timing is kept. So are the recorded hover paths between strokes: 75-95 % of in-air moves,
+  median 91 %. Only line changes and the few moves out of the tablet's range are added moves (ASSUMPTION). A note
+  lasts 33-63 s (median 44 s).
 - **Split.** 5 tuning and 9 test writers. Because every line text was written by 2-12 writers, the texts are split
   too (81 tuning, 133 test). No test note repeats a tuning text.
 

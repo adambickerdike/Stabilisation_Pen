@@ -442,7 +442,8 @@ function penDown(p) {
   const action = word.withheldFrom !== null ? "withheld" : "none";
   curStroke = { pts: [p], action, xmin: p[0], xmax: p[0] };
   let L = word.letters[word.letters.length - 1];
-  if (!L || p[0] > L.xmax + 0.15 * h || p[0] < L.xmin - 0.15 * h) { if (L) finaliseLetter(L); L = { strokes: [], xmin: Infinity, xmax: -Infinity, rec: null, final: false }; word.letters.push(L) }
+  /* tentative: the pen-up re-checks with the exact rule (ai3/stage_words.segment, rule W0) */
+  if (!L || p[0] > L.xmax + 0.05 * h || p[0] < L.xmin - 0.05 * h) { if (L) finaliseLetter(L); L = { strokes: [], xmin: Infinity, xmax: -Infinity, rec: null, final: false }; word.letters.push(L) }
   L.strokes.push(curStroke); curStroke.letter = L;
   if (word.ghost) { word.ghost = null }
   setPen("idle"); drawPad();
@@ -457,16 +458,24 @@ function penMove(p) {
 async function penUp(p) {
   const st = curStroke; curStroke = null; lastUp = performance.now();
   if (st.pts.length < 2) st.pts.push([st.pts[0][0] + 0.5, st.pts[0][1] + 0.5, st.pts[0][2]]);
-  const L = st.letter, h = xhPx();
-  L.xmin = Math.min(L.xmin, st.xmin); L.xmax = Math.max(L.xmax, st.xmax);
-  /* the Python rule (ai3/stage_words.segment): a stroke that overlaps the previous letter's extent belongs to it
-     (margin 0.15 x-height; 0.5 for a dot, a stroke shorter than 0.3 x-height) */
+  let L = st.letter; const h = xhPx();
+  /* the exact rule of ai3/stage_words.segment (rule W0): a stroke joins the letter written just before it if it
+     overlaps that letter's horizontal extent by at least 0.2 x-height; a dot (shorter than 0.3 x-height) joins
+     within 0.5 x-height */
   const len = st.pts.reduce((a, q, k) => a + (k ? Math.hypot(q[0] - st.pts[k - 1][0], q[1] - st.pts[k - 1][1]) : 0), 0);
-  const mg = (len < 0.3 * h ? 0.5 : 0.15) * h;
-  const i = word.letters.indexOf(L), P = word.letters[i - 1];
-  if (P && L.strokes.length === 1 && st.xmin <= P.xmax + mg && st.xmax >= P.xmin - mg) {
-    word.letters.splice(i, 1); P.strokes.push(st); st.letter = P; P.xmin = Math.min(P.xmin, st.xmin); P.xmax = Math.max(P.xmax, st.xmax); P.final = false }
-  else if (L.strokes.length === 1 && word.letters.length > 1 && st.xmin > word.xmax + 1.0 * h) {
+  const mg = (len < 0.3 * h ? 0.5 : S.seg_margin) * h;
+  const i = word.letters.indexOf(L);
+  const prevL = L.strokes.length === 1 ? word.letters[i - 1] : L;
+  if (prevL) {
+    const oth = prevL.strokes.filter(q => q !== st);
+    const lo = Math.min(...oth.map(q => q.xmin)), hi = Math.max(...oth.map(q => q.xmax));
+    const join = st.xmin <= hi + mg && st.xmax >= lo - mg;
+    if (join && prevL !== L) { word.letters.splice(i, 1); prevL.strokes.push(st); st.letter = prevL; prevL.final = false; L = prevL }
+    else if (!join && prevL === L) { L.strokes = oth; L.final = false; L.rec = recognise(letterStrokesXh(L));
+      const Ln = { strokes: [st], xmin: st.xmin, xmax: st.xmax, rec: null, final: false }; word.letters.splice(i + 1, 0, Ln); st.letter = Ln; L = Ln }
+  }
+  for (const Lq of [st.letter, prevL].filter(Boolean)) { Lq.xmin = Math.min(...Lq.strokes.map(q => q.xmin)); Lq.xmax = Math.max(...Lq.strokes.map(q => q.xmax)) }
+  if (L.strokes.length === 1 && word.letters.length > 1 && st.xmin > word.xmax + 1.0 * h) {
     /* a wide gap before this stroke: the previous word is finished, this stroke starts the next one */
     word.letters.pop(); await endWord();
     word.letters.push(L); L.final = false }
