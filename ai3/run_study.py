@@ -6,6 +6,8 @@ Stages (each caches its result in ai3/build/cache (or ai3/build/quick) and resum
   lm       the NG1x language model (ai2's NG1 recipe), for tasks 2 and 3
   spell    task 2: the spelling checker on real misspellings (Birkbeck, Holbrook)
   cues     task 2: physical feedback simulation (assumed writer responses)
+  words    word recognition CER/WER (writer- and session-disjoint, with/without LM); recognition-aware spelling
+  plan     physical completion of an accepted word: reach-limited planner with the hand's advance
   predict  task 3: personalised text prediction on public-domain journals
   trace    task 4a: why close tracing lowers legibility (drive study's HW1-D runs)
   shape    task 4b: shape assist and clean copy on real handwriting in HW1
@@ -21,7 +23,7 @@ from pathlib import Path
 from . import BUILD_DIR
 from . import common as C
 
-ALL = ["online", "calib", "lm", "spell", "cues", "predict", "trace", "shape", "report"]
+ALL = ["online", "calib", "lm", "spell", "cues", "words", "plan", "predict", "trace", "shape", "report"]
 
 
 def main(argv=None):
@@ -85,6 +87,12 @@ def _run_stage(st: str, quick: bool) -> None:
         elif st == "cues":
             from . import stage_cues
             stage_cues.run(a.quick)
+        elif st == "words":
+            from . import stage_words
+            stage_words.run(a.quick)
+        elif st == "plan":
+            from . import complete_plan
+            complete_plan.run(a.quick)
         elif st == "predict":
             from . import stage_predict
             stage_predict.run(a.quick)

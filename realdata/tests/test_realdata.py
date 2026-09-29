@@ -120,11 +120,13 @@ def test_tremor_draw_has_the_class_amplitude_and_real_frequency():
     for kind in ("PD", "ET"):
         dr = RL.tremor("moderate", seed=2, kind=kind, split="tuning", duration=8.0, dt=1e-3)
         assert dr.d.shape == (8000, 2)
-        p = D.tremor_params(dr.d[500:], 1000.0)
-        assert abs(p["amp_median"] * 1e3 / dr.meta["amp_mm"] - 1) < 0.15
+        # the class convention: power amplitude (sqrt(2) x RMS of the major axis at f0 +- 2 Hz) after the onset ramp
+        pa = D.power_amplitude(dr.d[500:], 1000.0, dr.meta["f0"])
+        assert abs(pa * 1e3 / dr.meta["amp_mm"] - 1) < 0.10
         lo, hi = RL.classes()["moderate"]["range_mm"]
         assert lo <= dr.meta["amp_mm"] <= hi
-        assert abs(p["f0"] - dr.meta["f0"]) < 1.0
+        f, P = D.psd(dr.d[500:], 1000.0)
+        assert abs(f[np.argmax(P)] - dr.meta["f0"]) < 1.0          # the largest line is the recording's own f0
         assert dr.meta["split"] == "tuning"
 
 
@@ -147,11 +149,15 @@ def test_classes_are_ordered_and_from_the_data():
     assert c["mild"]["representative_mm"] < c["moderate"]["representative_mm"] < c["severe"]["representative_mm"]
 
 
-@pytest.mark.skipif(not (CACHE_DIR / "brush_writers.json").exists(), reason="BRUSH statistics not built")
+needs_unipen = pytest.mark.skipif(not (CACHE_DIR / "unipen_index.json").exists(), reason="UNIPEN index not built")
+
+
+@needs_unipen
 def test_real_note_runs_in_hw1_and_the_clean_ink_follows_the_letters():
     from handwriting import params as PR, plant as PL
     from realdata import hw1 as H, library as RL
-    wr = RL.writing("tuning", seed=0, n_words=3, dt=1e-4)
+    wr = RL.writing("tuning", seed=0, n_words=2, dt=1e-4, max_lines=1)
+    assert wr.real["source"] == "unipen" and wr.real["split"] == "tuning"
     hand, pen = PR.Hand.from_config(), PR.ordinary_pen()
     s0 = RL.hw1_scenario(wr)
     scn = PL.with_hand_path(s0, PL.adapted_path(s0.intended, s0.dt, pen, hand))
@@ -159,3 +165,113 @@ def test_real_note_runs_in_hw1_and_the_clean_ink_follows_the_letters():
     assert H.path_error_um(wr, r) < 30.0
     s2 = RL.sim2_scenario(wr)
     assert s2.pref.shape[1] == 3 and len(s2.t) == len(wr.intended.t)
+
+
+@needs_unipen
+def test_unipen_notes_are_writer_and_text_disjoint_and_upright():
+    from realdata import writinglib as WL
+    idx = WL.unipen_index()
+    tun, tst = WL.unipen_writers("tuning", idx), WL.unipen_writers("test", idx)
+    assert tun and tst and not (set(tun) & set(tst))
+    for w in tun[:1] + tst[:1]:
+        v = idx["writers"][w]
+        pool = WL._unipen_pool(v)
+        assert pool and all(sg["text_split"] == v["split"] for sg in pool)
+    ttxt = {sg["label"] for w in tun for sg in WL._unipen_pool(idx["writers"][w])}
+    stxt = {sg["label"] for w in tst for sg in WL._unipen_pool(idx["writers"][w])}
+    assert not (ttxt & stxt)
+    n = WL.unipen_note(tst[0], seed=0, n_words=4, dt=1e-3, index=idx)
+    it = n.intended
+    # ruled lines go down the page: the first line's ink lies above the last line's
+    a0, b0 = n.real["line_spans"][0]
+    a1, b1 = n.real["line_spans"][-1]
+    y0 = it.xy[(it.t >= a0) & (it.t <= b0) & it.pen_down, 1].mean()
+    y1 = it.xy[(it.t >= a1) & (it.t <= b1) & it.pen_down, 1].mean()
+    assert len(n.real["line_spans"]) == 1 or y0 > y1
+    assert 2.0 < n.real["letter_height_mm"] < 12.0
+
+
+def test_rank_split_takes_exactly_the_share():
+    from realdata import writinglib as WL
+    sp = WL.rank_split([f"w{i}" for i in range(14)], "salt")
+    assert sum(v == "tuning" for v in sp.values()) == 5
+    assert sp == WL.rank_split([f"w{i}" for i in range(14)][::-1], "salt")
+
+
+# ------------------------------------------------------------------ page-sensor model and measures (no data needed)
+def _toy_note():
+    from realdata import writinglib as WL
+    t = np.arange(0, 3.0, 0.01)
+    st = [WL.Stroke(t=t, xy=np.column_stack([0.02 * t + 0.01 * k, 0.002 * np.sin(12 * t)]), char=np.zeros(len(t), int))
+          for k in range(3)]
+    return WL.assemble(st, "a", dt=1e-3, height_m=5e-3, writer="toy/0", source="toy")
+
+
+def test_page_model_fit_reproduces_the_deltapen_statistics():
+    from realdata import sensors as RS
+    m = RS.fit_window_error([_toy_note()])
+    assert m.fitted["median_um"] == pytest.approx(23.6, rel=0.02)
+    assert m.fitted["mean_um"] == pytest.approx(68.3, rel=0.02)
+
+
+def test_degraded_page_stream_keeps_times_and_carries_the_window_error():
+    from fusion import sensors as FS
+    from realdata import sensors as RS
+    n = 6000
+    t = np.arange(n) / 1000.0
+    P = np.column_stack([0.02 * t, 0.002 * np.sin(2 * np.pi * 1.5 * t)])
+    z = np.zeros(10)
+    st = FS.Streams(tick_t=t, acc_t=t, acc_av=t, acc=np.zeros((n, 2)), pos_t=t, pos_av=t + 2e-3, pos=P,
+                    pos_ok=np.ones(n), con_t=z, con_av=z, con=z)
+    m = RS.PageModel(c=20e-6, sigma=1.3)
+    d = RS.degrade_page(st, m, seed=3)
+    assert np.array_equal(d.pos_t, st.pos_t)                    # acquisition times unchanged
+    assert np.all(np.diff(d.pos_av) >= 0) and np.all(d.pos_av >= d.pos_t + m.latency_s - 1e-12)
+    chk = RS.window_error_check(st, d)
+    assert 5.0 < chk["median_um"] < 80.0 and chk["mean_um"] > chk["median_um"]
+    assert d.pos_ok.mean() < 1.0                                 # outliers and dropouts are marked invalid
+
+
+def test_tip_tremor_uses_the_class_convention():
+    from types import SimpleNamespace
+    from realdata import hw1 as H
+    fs = 2000.0
+    t = np.arange(0, 6, 1 / fs)
+    A, f0 = 0.5e-3, 6.0
+    intended = np.column_stack([0.01 * t, np.zeros_like(t)])
+    ink = intended + np.column_stack([A * np.cos(2 * np.pi * f0 * t), 0.3 * A * np.sin(2 * np.pi * f0 * t)])
+    res = SimpleNamespace(t=t, ink=ink, contact=np.ones_like(t))
+    scn = SimpleNamespace(dt=1 / fs, t=t, intended=intended)
+    assert H.tip_tremor_mm(res, scn, f0) == pytest.approx(0.5, rel=0.03)
+
+
+def test_writer_bootstrap_card_and_ratio_meaning():
+    from realdata import hw1 as H
+    cases = []
+    for w in range(6):
+        cases.append({"writer": f"w{w}", "devices": {
+            "none": {"words_read": 4, "words_total": 10, "tip_tremor_mm": 1.0},
+            "revJ_gated|deltapen": {"words_read": 6 + (w % 2), "words_total": 10, "tip_tremor_mm": 0.5}}})
+    c = H.card(cases, ["none", "revJ_gated|deltapen"])
+    g = c["revJ_gated|deltapen"]
+    assert g["words_of_10"]["mean"] == pytest.approx(6.5)
+    assert g["words_of_10"]["lo"] <= 6.5 <= g["words_of_10"]["hi"]
+    assert g["words_of_10_gain"]["mean"] == pytest.approx(2.5)
+    assert g["tip_tremor_ratio"]["mean"] == pytest.approx(0.5)
+    assert g["tip_tremor_ratio"]["power_reduction_pct"] == pytest.approx(75.0)
+
+
+def test_literal_word_scoring_drops_punctuation_only_targets_and_reports_cer():
+    from realdata import ocr as OC
+    assert OC.cer("return library", "return library") == 0.0
+    assert OC.cer("abc", "abd") == pytest.approx(1 / 3)
+    assert OC.align_words(["hello", "world"], ["Hello,", "word"]) == [True, False]
+
+
+@needs_lib
+def test_classes_are_fitted_on_tuning_subjects_and_checked_on_test():
+    from realdata import library as RL
+    c = RL.classes()
+    assert "tuning" in c["_fitted_on"]
+    v = c["_validation_test_subjects"]
+    assert v["n"] > 5 and abs(v["share_mild"] + v["share_moderate"] + v["share_severe"] - 1) < 1e-9

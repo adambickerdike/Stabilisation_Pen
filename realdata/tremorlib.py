@@ -10,15 +10,18 @@ What each source contributes (details in docs/real_data.md):
               wrist amplitude (a lower bound of the tip's; statistics only)
 
 Rules, fixed before any simulation used the library (the simulation outcomes never feed back into them):
+  * roles (assign_roles): subjects are split into 'tuning' and 'test' FIRST; thresholds and class boundaries are
+    fitted on the tuning subjects only and checked on the test subjects; HW1 uses test subjects only;
   * detection: a recording has a tremor line when its line ratio (dsp.tremor_params) is at least the 95th percentile
-    of the control recordings of the same source (and condition, for PADS); Zenodo ET has no controls and uses the
-    UCI control threshold (both are unit-free spectral contrasts; ASSUMPTION);
+    of the TUNING control recordings of the same source (and condition, for PADS); Zenodo ET has no controls and
+    uses the UCI control threshold (both are unit-free spectral contrasts; ASSUMPTION);
   * tip amplitude of a UCI recording = the background-corrected major-axis peak amplitude ('amp_excess');
-  * a subject's tip amplitude = the median over its recordings with a line; severity classes over the detected PD
-    subjects' tip amplitudes: mild = below their median, moderate = median to 90th percentile, severe = the top 10 %
-    ('severe' means rare and large); 'none' = no line;
-  * split: subjects of each source are sorted by amplitude and assigned alternately (seeded coin per pair) to
-    'tuning' and 'test', so both splits span the severities; controls likewise;
+  * a subject's tip amplitude = the median over its recordings with a line; severity classes over the detected
+    TUNING PD subjects' tip amplitudes: mild = below their median, moderate = median to 90th percentile, severe = the
+    top 10 % ('severe' means rare and large); 'none' = no line;
+  * split: subjects of each source are sorted by a detection-free amplitude and assigned alternately (seeded coin per
+    pair) to 'tuning' and 'test', so both splits span the severities; controls likewise; a subject's every recording
+    (all tasks and sessions) is in one split;
   * a recording's waveform enters the generator when it has a line, its background share in f0 +- 1.5 Hz is at most
     0.35, it lasts at least 6 s (UCI) or 20 s (Zenodo, posture condition only: the action-tremor proxy), and its
     unit-power waveform (f0 +- 2 Hz and 2 f0 +- 2 Hz; dsp.power_amplitude) has a major-axis 99.9th percentile <= 4
@@ -138,6 +141,128 @@ def waveform_quality(w: np.ndarray, f0: float) -> Dict:
 P999_MAX = 4.0
 
 
+def assign_roles(rows: List[Dict], sources: Sequence[str], log=print) -> Tuple[Dict, Dict]:
+    """The four data roles, in this order (review 2026-09-29 s11):
+      split       subject level, per source and group, BEFORE anything is fitted (every recording, window and
+                  session of a person goes to one split); stratified by a detection-free amplitude
+      calibration unit conversions from device documents or calibration recordings only (calib.py; no split used)
+      fitting     detection thresholds from the TUNING controls; severity class boundaries from the TUNING PD subjects
+      validation  the class boundaries checked on the TEST subjects (share per class; reported, never refitted)
+      final test  HW1 uses TEST-split waveforms and writers only
+    Returns (thresholds, classes); sets x['split'], x['threshold'], x['detected'], x['class'] in place."""
+    # ---------------------------------------------------------------- split (subject level, detection-free)
+    split: Dict[Tuple[str, str], str] = {}
+    for src in sources:
+        amp = {}
+        for x in rows:
+            if x["source"] != src:
+                continue
+            a_ = x.get("amp_tip_mm") or x.get("amp_wrist_mm") or x.get("amp_sensor_mm") or x.get("line_ratio") or 0.0
+            key = f"{x['group']}:{x['subject']}"
+            amp[key] = max(amp.get(key, 0.0), float(a_) if np.isfinite(a_) else 0.0)
+        for grp in {k.split(":")[0] for k in amp}:
+            sub = {k: v for k, v in amp.items() if k.startswith(grp + ":")}
+            seed = int(hashlib.sha1(f"{src}/{grp}".encode()).hexdigest()[:8], 16)
+            for k, v in _split_subjects(sub, seed).items():
+                split[(src, k.split(":", 1)[1])] = v
+    for x in rows:
+        x["split"] = split.get((x["source"], x["subject"]), "test")
+    # ---------------------------------------------------------------- fitting: thresholds from TUNING controls
+    thr: Dict[str, float] = {}
+    for src in sources:
+        ctl = [x for x in rows if x["source"] == src and x["group"] == "control" and x["split"] == "tuning"]
+        if src == "pads":
+            for cond in ("rest", "postural", "kinetic"):
+                v = [x["line_ratio"] for x in ctl if x["condition"] == cond]
+                if v:
+                    thr[f"pads/{cond}"] = float(np.percentile(v, 95))
+        elif ctl:
+            thr[src] = float(np.percentile([x["line_ratio"] for x in ctl], 95))
+    if "zenodo_et" in sources:
+        thr["zenodo_et"] = thr.get("uci_spiral", 5.0)
+    for x in rows:
+        key = f"pads/{x['condition']}" if x["source"] == "pads" else x["source"]
+        x["threshold"] = thr.get(key)
+        x["detected"] = bool(x["threshold"] is not None and x["line_ratio"] >= x["threshold"] and 3.0 <= x["f0"] <= 12.0)
+    thr["_fitted_on"] = "tuning-split controls (95th percentile of the line ratio)"
+    # ---------------------------------------------------------------- fitting: classes from TUNING PD subjects
+    pd_sub: Dict[str, List[float]] = {}
+    for x in rows:
+        if x["source"] == "uci_spiral" and x["group"] == "PD" and x["detected"]:
+            pd_sub.setdefault(x["subject"], []).append(x["amp_tip_mm"])
+    sub_amp = {s_: float(np.median(v)) for s_, v in pd_sub.items()}
+    sub_split = {x["subject"]: x["split"] for x in rows if x["source"] == "uci_spiral" and x["group"] == "PD"}
+    classes: Dict = {}
+    fit = np.array(sorted(v for s_, v in sub_amp.items() if sub_split.get(s_) == "tuning"))
+    if len(fit) >= 4:
+        a = fit
+        q50, q90 = np.percentile(a, [50, 90])
+        ctl_amp = [x["amp_excess"] * 1e3 for x in rows if x["source"] == "uci_spiral" and x["group"] == "control"
+                   and x["split"] == "tuning"]
+        classes = {
+            "none": {"range_mm": [0.0, float(a.min())], "representative_mm": float(np.median(ctl_amp)) if ctl_amp else 0.03,
+                     "definition": "no tremor line above the tuning controls' 95th percentile; representative = median "
+                                   "background-corrected amplitude of the tuning control recordings (sensor and pixel "
+                                   "noise included)"},
+            "mild": {"range_mm": [float(a.min()), float(q50)], "n_subjects": int(np.sum(a < q50)),
+                     "definition": "below the median of the tuning PD subjects with a tremor line"},
+            "moderate": {"range_mm": [float(q50), float(q90)], "n_subjects": int(np.sum((a >= q50) & (a < q90))),
+                         "definition": "median to 90th percentile"},
+            "severe": {"range_mm": [float(q90), float(max(a.max(), max(sub_amp.values())))], "n_subjects": int(np.sum(a >= q90)),
+                       "definition": "the top 10 %"},
+        }
+        for k in ("mild", "moderate", "severe"):
+            lo_, hi_ = classes[k]["range_mm"]
+            sel = a[(a >= lo_) & (a <= hi_)]
+            classes[k]["representative_mm"] = float(np.median(sel)) if len(sel) else float(np.sqrt(lo_ * hi_))
+            classes[k]["definition"] += (" of the peak (major semi-axis) tremor amplitude at the pen tip of PD subjects "
+                                         "with a tremor line while drawing spirals on a tablet (DATA uci_spiral; one "
+                                         "value per subject = median over its recordings with a line; boundaries "
+                                         "fitted on the tuning subjects only)")
+        classes["_n_pd_subjects_with_line"] = int(len(sub_amp))
+        classes["_n_fit_subjects"] = int(len(a))
+        classes["_n_pd_subjects"] = int(len({x["subject"] for x in rows if x["source"] == "uci_spiral" and x["group"] == "PD"}))
+        classes["_quantiles_mm"] = {"p10": float(np.percentile(a, 10)), "p25": float(np.percentile(a, 25)),
+                                    "p50": float(q50), "p75": float(np.percentile(a, 75)), "p90": float(q90),
+                                    "max": float(a.max())}
+        classes["_subject_amplitudes_mm"] = sorted(float(v) for v in a)
+        classes["_plan_assumption_mm"] = PLAN_CLASSES_MM
+        classes["_fitted_on"] = "tuning-split PD subjects of uci_spiral"
+        # validation on held-out subjects: the boundaries are not refitted
+        tst = np.array(sorted(v for s_, v in sub_amp.items() if sub_split.get(s_) == "test"))
+        if len(tst):
+            classes["_validation_test_subjects"] = {
+                "n": int(len(tst)),
+                "share_mild": float(np.mean(tst < q50)), "share_moderate": float(np.mean((tst >= q50) & (tst < q90))),
+                "share_severe": float(np.mean(tst >= q90)),
+                "p50_mm": float(np.percentile(tst, 50)), "p90_mm": float(np.percentile(tst, 90)),
+                "expected_shares": {"mild": 0.5, "moderate": 0.4, "severe": 0.1}}
+        allv = np.array(sorted(sub_amp.values()))
+        classes["_all_subjects_descriptive"] = {"n": int(len(allv)), "p50_mm": float(np.percentile(allv, 50)),
+                                                "p90_mm": float(np.percentile(allv, 90)), "max_mm": float(allv.max())}
+    for x in rows:
+        if x["source"] == "uci_spiral" and x["group"] == "PD":
+            s_amp = sub_amp.get(x["subject"])
+            x["subject_amp_tip_mm"] = s_amp
+            x["class"] = _class_of(s_amp, classes) if (s_amp is not None and classes) else "none"
+    return thr, classes
+
+
+def refresh_roles(quick: bool = False, log=print) -> Dict:
+    """Re-apply the roles (split, thresholds, classes) to the cached per-recording parameters, then re-extract the
+    generator waveforms (UCI and Zenodo are re-read).  The per-recording parameters are unchanged."""
+    tag = "_quick" if quick else ""
+    p = CACHE_DIR / f"tremorlib{tag}.json"
+    lib = json.loads(p.read_text())
+    sources = sorted({x["source"] for x in lib["rows"]})
+    thr, classes = assign_roles(lib["rows"], sources, log)
+    lib["thresholds"], lib["classes"] = thr, classes
+    lib["rules"] = __doc__.split("Rules, fixed")[1].split("Waveforms are")[0].strip()
+    p.write_text(json.dumps(lib, default=_jd))
+    _LIB.pop(tag, None)
+    return refresh_generator(quick, log)
+
+
 def refresh_generator(quick: bool = False, log=print) -> Dict:
     """Recompute only the generator waveforms and their eligibility on the cached library (the UCI and Zenodo
     recordings are re-read; parameters, thresholds, classes and splits are unchanged)."""
@@ -211,81 +336,7 @@ def build(quick: bool = False, log=print, sources: Sequence[str] = ("uci_spiral"
         log(f"[tremorlib] {src}: {len(recs)} recordings")
         for r in recs:
             rows.append(_params_row(r))
-    # ---------------------------------------------------------------- detection thresholds (controls, 95th percentile)
-    thr: Dict[str, float] = {}
-    for src in recs_by_source:
-        ctl = [x for x in rows if x["source"] == src and x["group"] == "control"]
-        if src == "pads":
-            for cond in ("rest", "postural", "kinetic"):
-                v = [x["line_ratio"] for x in ctl if x["condition"] == cond]
-                if v:
-                    thr[f"pads/{cond}"] = float(np.percentile(v, 95))
-        elif ctl:
-            thr[src] = float(np.percentile([x["line_ratio"] for x in ctl], 95))
-    if "zenodo_et" in recs_by_source:
-        thr["zenodo_et"] = thr.get("uci_spiral", 5.0)
-    for x in rows:
-        key = f"pads/{x['condition']}" if x["source"] == "pads" else x["source"]
-        x["threshold"] = thr.get(key)
-        x["detected"] = bool(x["threshold"] is not None and x["line_ratio"] >= x["threshold"] and 3.0 <= x["f0"] <= 12.0)
-    # ---------------------------------------------------------------- severity classes (UCI PD tip amplitude, subjects)
-    pd_sub: Dict[str, List[float]] = {}
-    for x in rows:
-        if x["source"] == "uci_spiral" and x["group"] == "PD" and x["detected"]:
-            pd_sub.setdefault(x["subject"], []).append(x["amp_tip_mm"])
-    sub_amp = {s: float(np.median(v)) for s, v in pd_sub.items()}
-    classes = {}
-    if sub_amp:
-        a = np.array(sorted(sub_amp.values()))
-        q50, q90 = np.percentile(a, [50, 90])
-        ctl_amp = [x["amp_excess"] * 1e3 for x in rows if x["source"] == "uci_spiral" and x["group"] == "control"]
-        classes = {
-            "none": {"range_mm": [0.0, float(a.min())], "representative_mm": float(np.median(ctl_amp)) if ctl_amp else 0.03,
-                     "definition": "no tremor line above the controls' 95th percentile; representative = median "
-                                   "background-corrected amplitude of the control recordings (sensor and pixel noise "
-                                   "included)"},
-            "mild": {"range_mm": [float(a.min()), float(q50)], "n_subjects": int(np.sum(a < q50)),
-                     "definition": "below the median of the PD subjects with a tremor line"},
-            "moderate": {"range_mm": [float(q50), float(q90)], "n_subjects": int(np.sum((a >= q50) & (a < q90))),
-                         "definition": "median to 90th percentile"},
-            "severe": {"range_mm": [float(q90), float(a.max())], "n_subjects": int(np.sum(a >= q90)),
-                       "definition": "the top 10 %"},
-        }
-        for k in ("mild", "moderate", "severe"):
-            lo_, hi_ = classes[k]["range_mm"]
-            sel = a[(a >= lo_) & (a <= hi_)]
-            classes[k]["representative_mm"] = float(np.median(sel)) if len(sel) else float(np.sqrt(lo_ * hi_))
-            classes[k]["definition"] += (" of the peak (major semi-axis) tremor amplitude at the pen tip of PD subjects "
-                                         "with a tremor line while drawing spirals on a tablet (DATA uci_spiral; one "
-                                         "value per subject = median over its recordings with a line)")
-        classes["_n_pd_subjects_with_line"] = int(len(a))
-        classes["_n_pd_subjects"] = int(len({x["subject"] for x in rows if x["source"] == "uci_spiral" and x["group"] == "PD"}))
-        classes["_quantiles_mm"] = {"p10": float(np.percentile(a, 10)), "p25": float(np.percentile(a, 25)),
-                                    "p50": float(q50), "p75": float(np.percentile(a, 75)), "p90": float(q90),
-                                    "max": float(a.max())}
-        classes["_subject_amplitudes_mm"] = sorted(float(v) for v in a)
-        classes["_plan_assumption_mm"] = PLAN_CLASSES_MM
-    # ---------------------------------------------------------------- splits (subject level, per source)
-    split: Dict[Tuple[str, str], str] = {}
-    for src in recs_by_source:
-        amp = {}
-        for x in rows:
-            if x["source"] != src:
-                continue
-            a_ = x.get("amp_tip_mm") or x.get("amp_wrist_mm") or x.get("amp_sensor_mm") or x.get("line_ratio") or 0.0
-            key = f"{x['group']}:{x['subject']}"
-            amp[key] = max(amp.get(key, 0.0), float(a_) if x["detected"] or x["group"] == "control" else 0.0)
-        for grp in {k.split(":")[0] for k in amp}:
-            sub = {k: v for k, v in amp.items() if k.startswith(grp + ":")}
-            seed = int(hashlib.sha1(f"{src}/{grp}".encode()).hexdigest()[:8], 16)
-            for k, v in _split_subjects(sub, seed).items():
-                split[(src, k.split(":", 1)[1])] = v
-    for x in rows:
-        x["split"] = split.get((x["source"], x["subject"]), "test")
-        if x["source"] == "uci_spiral" and x["group"] == "PD":
-            s_amp = sub_amp.get(x["subject"])
-            x["subject_amp_tip_mm"] = s_amp
-            x["class"] = _class_of(s_amp, classes) if s_amp is not None else "none"
+    thr, classes = assign_roles(rows, list(recs_by_source))
     # ---------------------------------------------------------------- generator waveforms
     for src in ("uci_spiral", "zenodo_et"):
         for r in recs_by_source.get(src, []):

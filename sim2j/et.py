@@ -249,13 +249,15 @@ def oracle_table(r_none, r_clean, n_ticks: int, gd: float, Ts: float = 0.5e-3) -
 
 def run_case(su: WriterSetup, ctl_name: str, f0: float, amp: float, seed: int, ref_none=None, policy=None,
              guard: Optional[GuardParams] = None, keep: bool = False, det: Optional[DetParams] = None,
-             record: bool = False) -> Dict:
+             record: bool = False, fw_extra: Optional[Dict] = None) -> Dict:
     case = su.case
     tr = case.tremor(f0, amp, seed) if amp > 0 else None
     scn = case.scenario(tremor=tr)
     fw = controller(ctl_name, guard=guard, policy=policy, seed=seed * 7 + su.w, det=det)
     if record:
         fw = replace(fw, record_streams=True)
+    if fw_extra:
+        fw = replace(fw, **fw_extra)
     task = {}
     if ctl_name == "oracle":
         if ref_none is None:

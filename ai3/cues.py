@@ -21,6 +21,10 @@ Cues (PROPOSED DESIGN):
   show_me      opt-in: after a flag, the nose draws the correct next letter lightly within its reach for the writer
                to trace (the pen writes a letter only in this mode)
   heel_steer   the heel wheel steers the start of the next letter toward the correct letter (it cannot move the pen)
+  pause_offer  the review's interaction (section 10): nothing mid-word; at the next natural pause (the pen lift after a
+               flagged word) one tick and the app shows up to 3 suggestions (optionally read aloud); the writer chooses
+Interaction measures (rule I1): suggestion lists read per 100 words (reading burden), cues felt while a word is being
+written per 100 words (flow interruptions), cues at pauses, correct words made wrong (harmful edits), extra seconds.
 Invariant checked by the simulation: outside show_me the pen never draws a letter the writer did not write.
 """
 from __future__ import annotations
@@ -31,11 +35,12 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-CUES = ("none", "app_after", "tick_after", "tick_before", "withhold", "tick_lift", "show_me", "heel_steer")
+CUES = ("none", "app_after", "tick_after", "tick_before", "withhold", "tick_lift", "show_me", "heel_steer", "pause_offer")
 LABELS = {"none": "No cue", "app_after": "App underlines afterwards (no physical cue)",
           "tick_after": "LRA tick on the suspect letter", "tick_before": "LRA tick before a risky letter",
           "withhold": "Pen lift: the wrong letter is not drawn", "tick_lift": "Tick, plus pen lift when very sure",
-          "show_me": "Show me (opt-in): nose draws the next letter", "heel_steer": "Heel wheel steers toward the right letter"}
+          "show_me": "Show me (opt-in): nose draws the next letter", "heel_steer": "Heel wheel steers toward the right letter",
+          "pause_offer": "Tick at the next pause + suggestions"}
 
 
 @dataclass
@@ -110,6 +115,7 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
     base_t = 0.0
     caught = 0
     fragments = 0
+    reads = interrupts = pause_cues = 0
     for _ in range(n_rep):
         for recs in records:
             for u in recs:
@@ -132,6 +138,7 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                 if cue == "app_after":
                     if f is not None:
                         extra_t += R.t_look * 0.5
+                        reads += 1
                         if is_err:
                             caught += 1
                             if (sugg_ok and rng.random() < R.p_pick) or (not sugg_ok and rng.random() < R.p_self):
@@ -145,6 +152,7 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                     wk = warn_at(tok, theta_b)
                     if wk is not None:
                         extra_t += R.t_warn
+                        interrupts += 1
                         if is_err and wk == first_dev(tgt, tok["written"]):
                             interventions_err += 1
                             if rng.random() < R.p_notice_tick * R.p_prevent:
@@ -160,6 +168,7 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                     fk = f if (f is not None and f <= L) else None
                     k = min([x for x in (wk, fk) if x is not None], default=None)
                     if k is not None:
+                        interrupts += 1
                         if is_err:
                             interventions_err += 1
                             fd = first_dev(tgt, tok["written"])
@@ -170,18 +179,26 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                             if rng.random() < R.p_follow_steer * 0.2:
                                 harmed += 1
                     continue
-                if cue == "tick_after":
+                if cue in ("tick_after", "pause_offer"):
                     if f is None:
                         continue
+                    if cue == "pause_offer":
+                        f = L + 1                                # only at the pause after the word
+                        sugg_ok = tgt in sugg_at(tok, f)
                     if is_err:
                         caught += 1; interventions_err += 1
                     else:
                         false_int += 1
                     if rng.random() > R.p_notice_tick:
                         continue
+                    if f <= L:
+                        interrupts += 1
+                    else:
+                        pause_cues += 1
                     extra_t += R.t_notice
-                    looked = rng.random() < R.p_look
+                    looked = rng.random() < (R.p_look if cue == "tick_after" else max(R.p_look, 0.9))
                     extra_t += R.t_look if looked else 0.0
+                    reads += int(looked)
                     if is_err:
                         ok = (looked and sugg_ok and rng.random() < R.p_pick) or (not looked and rng.random() < R.p_self)
                         if ok:
@@ -206,8 +223,13 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                         if rng.random() > R.p_notice_tick:
                             continue
                         extra_t += R.t_notice
+                        if f <= L:
+                            interrupts += 1
+                        else:
+                            pause_cues += 1
                         looked = rng.random() < R.p_look
                         extra_t += R.t_look if looked else 0.0
+                        reads += int(looked)
                         if is_err:
                             if (looked and sugg_ok and rng.random() < R.p_pick) or (not looked and rng.random() < R.p_self):
                                 fixed_paper += 1; fixed_digital += 1
@@ -231,6 +253,8 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                     if rng.random() > R.p_notice_ink:
                         continue
                     extra_t += R.t_notice + R.t_look
+                    interrupts += 1
+                    reads += 1
                     if is_err:
                         if (sugg_ok and rng.random() < R.p_pick) or (not sugg_ok and rng.random() < R.p_self):
                             fixed_paper += 1; fixed_digital += 1
@@ -250,6 +274,8 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                     if rng.random() > R.p_notice_tick:
                         continue
                     extra_t += R.t_notice
+                    interrupts += int(f <= L)
+                    pause_cues += int(f > L)
                     if is_err:
                         can = sugg_ok and rng.random() < reach_ok
                         if can:
@@ -277,6 +303,10 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
             "correct_words_made_wrong_per_100_correct": 100.0 * harmed / n_cor,
             "extra_time_pct": 100.0 * extra_t / max(base_t, 1e-9),
             "letters_drawn_by_pen_per_100_words": 100.0 * pen_letters / (n_err + n_cor),
+            "suggestion_lists_read_per_100_words": 100.0 * reads / (n_err + n_cor),
+            "interruptions_per_100_words": 100.0 * interrupts / (n_err + n_cor),
+            "cues_at_pauses_per_100_words": 100.0 * pause_cues / (n_err + n_cor),
+            "extra_seconds_per_100_words": 100.0 * extra_t / (n_err + n_cor),
             "wrong_letter_fragments_per_100_words": 100.0 * fragments / (n_err + n_cor)}
 
 

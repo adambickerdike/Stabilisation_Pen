@@ -5,6 +5,10 @@ The simulated ink of each line is drawn as black 0.5 mm ballpoint ink on white p
 on Hugging Face; code MIT licence in microsoft/unilm; the model card states no licence; used locally as a measuring
 instrument and never redistributed).  It has never seen these writers.  A word counts as read when the reader's word
 equals the intended word (lower case, punctuation removed) after a word-level edit-distance alignment of the line.
+LITERAL transcription (review 2026-09-29 s13): greedy decoding, no lexicon, no spelling correction, no language-model
+rescoring; words that are only punctuation are not counted.  TrOCR's text decoder still carries an implicit language
+prior from its IAM training text, which can complete a damaged word: one reason a blinded human panel is proposed
+(EXP-R03).  The character error rate (CER) of each line is reported next to the word count.
 
 Why not the HW1 study's reader: aiguide's recogniser matches the synthetic glyph font; on real writing it misreads
 clean letters, and real letters with delayed strokes (t-bars, i-dots) break its per-letter time windows.
@@ -53,14 +57,24 @@ def available() -> bool:
         return False
 
 
-@lru_cache(maxsize=1)
+def set_model(name: str) -> None:
+    """Choose the reader (default MODEL); the choice is made on TUNING notes only (reader_choice in report)."""
+    global MODEL
+    MODEL = name
+
+
 def _model():
+    return _load(MODEL)
+
+
+@lru_cache(maxsize=2)
+def _load(name: str):
     _paths()
     import torch
     torch.set_num_threads(1)
     from transformers import TrOCRProcessor, VisionEncoderDecoderModel
     from huggingface_hub import snapshot_download
-    p = snapshot_download(MODEL, local_files_only=True)
+    p = snapshot_download(name, local_files_only=True)
     proc = TrOCRProcessor.from_pretrained(p, use_fast=False)
     model = VisionEncoderDecoderModel.from_pretrained(p)
     model.eval()
@@ -122,15 +136,18 @@ def _norm(w: str) -> str:
     return re.sub(r"[^a-z]", "", w.lower())
 
 
-def read_images(images) -> List[str]:
+def read_images(images, batch: int = 8) -> List[str]:
+    """Greedy, literal reading of line images (batched; every image is resized to the model's 384 x 384 input)."""
     import torch
     proc, model = _model()
     out = []
+    images = list(images)
     with torch.no_grad():
-        for im in images:
-            pv = proc(images=im, return_tensors="pt").pixel_values
-            ids = model.generate(pv, max_new_tokens=32, num_beams=1)
-            out.append(proc.batch_decode(ids, skip_special_tokens=True)[0])
+        for i in range(0, len(images), batch):
+            chunk = images[i:i + batch]
+            pv = proc(images=chunk, return_tensors="pt").pixel_values
+            ids = model.generate(pv, max_new_tokens=32, num_beams=1, do_sample=False)
+            out += proc.batch_decode(ids, skip_special_tokens=True)
     return out
 
 
@@ -158,24 +175,118 @@ def align_words(target: Sequence[str], read: Sequence[str]) -> List[bool]:
     return ok
 
 
+def ink_by_spans(res, spans: Sequence[Sequence[float]], decim: int = 4, pad: float = 0.02) -> List[List[np.ndarray]]:
+    """In-contact ink strokes of a run within each line's time span (first to last pen-down sample of the line)."""
+    t, ink, con = res.t, res.ink, res.contact > 0.5
+    out = []
+    for a, b in spans:
+        idx = np.flatnonzero((t >= a - pad) & (t <= b + pad) & con)
+        if len(idx) < 2:
+            out.append([])
+            continue
+        br = np.flatnonzero(np.diff(idx) > 1) + 1
+        out.append([ink[r][::decim] for r in np.split(idx, br) if len(r) >= 2])
+    return out
+
+
+def cer(target: str, read: str) -> float:
+    """Character error rate: Levenshtein distance of the normalised letters (spaces kept) / target length."""
+    a = re.sub(r"[^a-z ]", "", target.lower()).split()
+    b = re.sub(r"[^a-z ]", "", read.lower()).split()
+    a, b = " ".join(a), " ".join(b)
+    n, m = len(a), len(b)
+    if n == 0:
+        return float("nan")
+    prev = list(range(m + 1))
+    for i in range(1, n + 1):
+        cur = [i] + [0] * m
+        for j in range(1, m + 1):
+            cur[j] = min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] != b[j - 1]))
+        prev = cur
+    return prev[m] / n
+
+
 def words_read(res, written, cache: Optional[Dict] = None) -> Dict:
-    """Words read by the AI reader in one run: per line, the rendered ink is read and aligned with the line's words."""
-    lines_text = written.real.get("lines") if hasattr(written, "real") else None
-    if not lines_text:
-        lines_text = [written.text]
-    # line index of each letter: by word index, from the per-line word counts
-    wl = []
-    for li, ln in enumerate(lines_text):
-        wl += [li] * len(ln.split())
-    lol = [wl[min(Lt.word_index, len(wl) - 1)] for Lt in written.letters]
-    strokes = ink_lines(res, written, lol)
+    """Words read by the AI reader in one run: per line, the rendered ink is read and aligned with the line's words
+    (literal: exact word after lower-casing and removing punctuation)."""
+    real = getattr(written, "real", None) or {}
+    lines_text = real.get("lines") or [written.text]
+    if real.get("line_spans") and len(real["line_spans"]) == len(lines_text):
+        strokes = ink_by_spans(res, real["line_spans"])
+    else:
+        wl = []
+        for li, ln in enumerate(lines_text):
+            wl += [li] * len(ln.split())
+        lol = [wl[min(Lt.word_index, len(wl) - 1)] for Lt in written.letters]
+        strokes = ink_lines(res, written, lol)
     imgs = [render(s) for s in strokes]
     read = read_images(imgs)
-    ok, tot = 0, 0
+    ok, tot, ch_err, ch_n = 0, 0, 0.0, 0
     per = []
     for ln, rd in zip(lines_text, read):
-        m = align_words(ln.split(), rd.split())
+        target = [w for w in ln.split() if _norm(w)]
+        m = align_words(target, rd.split())
         ok += sum(m)
         tot += len(m)
-        per.append({"target": ln, "read": rd, "ok": [bool(x) for x in m]})
-    return {"words_read": ok, "words_total": tot, "share": ok / max(tot, 1), "lines": per}
+        c = cer(" ".join(target), rd)
+        nc = len(" ".join(_norm(w) for w in target))
+        if np.isfinite(c):
+            ch_err += c * nc
+            ch_n += nc
+        per.append({"target": ln, "read": rd, "ok": [bool(x) for x in m], "cer": c})
+    return {"words_read": ok, "words_total": tot, "share": ok / max(tot, 1), "cer": ch_err / max(ch_n, 1), "lines": per}
+
+
+# ------------------------------------------------------------------ the reader choice (tuning notes only)
+READERS = ("microsoft/trocr-small-handwritten", "microsoft/trocr-base-handwritten")
+READER_RULE = ("on the TUNING writers' clean notes (intended ink rendered as above), take the larger reader only if it "
+               "reads at least 10 percentage points more words than the small one (it costs about 3 times the time); "
+               "the chosen reader must read at least 70 % of the clean words (else the words-read measure is reported "
+               "as unreliable)")
+
+
+def reader_choice(log=print, refresh: bool = False) -> Dict:
+    """Compare the readers on the tuning notes (cached) and select one by READER_RULE; sets the module's MODEL."""
+    import json
+    from . import CACHE_DIR
+    p = CACHE_DIR / "reader_choice.json"
+    if p.exists() and not refresh:
+        d = json.loads(p.read_text())
+    else:
+        from . import library as RL
+        from . import writinglib as WL
+        ws = WL.unipen_writers("tuning")
+        notes = [RL.writing("tuning", seed=i, dt=1e-3) for i in range(2 * len(ws))]
+        d = {"notes": [n.real["writer"] + " | " + n.text for n in notes]}
+        for model in READERS:
+            try:
+                set_model(model)
+                ok = tot = 0
+                per = []
+                for n in notes:
+                    it = n.intended
+                    segs = []
+                    for a, b in n.real["line_spans"]:
+                        m = (it.t >= a - 0.02) & (it.t <= b + 0.02) & it.pen_down
+                        idx = np.flatnonzero(m)
+                        br = np.flatnonzero(np.diff(idx) > 1) + 1
+                        segs.append([it.xy[r][::4] for r in np.split(idx, br) if len(r) >= 2])
+                    rd = read_images([render(s) for s in segs])
+                    k = 0
+                    for ln, r in zip(n.real["lines"], rd):
+                        mm = align_words([w for w in ln.split() if _norm(w)], r.split())
+                        ok += sum(mm); tot += len(mm); k += sum(mm)
+                    per.append({"writer": n.real["writer"], "read": rd, "ok": k})
+                d[model] = {"share": ok / max(tot, 1), "ok": ok, "total": tot, "per": per}
+                log(f"[reader] {model}: {ok}/{tot} clean tuning words")
+            except Exception as e:
+                d[model] = {"error": repr(e)}
+        p.write_text(json.dumps(d, indent=1))
+    s_small = (d.get(READERS[0]) or {}).get("share", float("nan"))
+    s_base = (d.get(READERS[1]) or {}).get("share", float("nan"))
+    chosen = READERS[1] if (np.isfinite(s_base) and np.isfinite(s_small) and s_base >= s_small + 0.10) else READERS[0]
+    set_model(chosen)
+    d["chosen"] = chosen
+    d["rule"] = READER_RULE
+    d["reliable"] = bool((d.get(chosen) or {}).get("share", 0.0) >= 0.70)
+    return d

@@ -325,3 +325,79 @@ def write(quick: bool, od: Path, log=print) -> Dict:
     EV.write(od / "evidence_rows.csv", out)
     log(f"[report] wrote {od}/realdata.json, samples.json, evidence_rows.csv")
     return out
+
+
+# ================================================================== markdown tables for docs/real_data.md
+def doc_tables(out: Dict) -> str:
+    """The plain-words table, the results cards and the bridge table in Markdown (pasted into docs/real_data.md)."""
+    hw = out["hw1"]
+    ag = hw["aggregate"]
+    L = []
+
+    def m(e, nd=1):
+        return "n/a" if not e or not np.isfinite(e.get("mean", np.nan)) else f"{e['mean']:.{nd}f}"
+
+    def ci(e, nd=1):
+        return "n/a" if not e or not np.isfinite(e.get("mean", np.nan)) else f"{e['mean']:.{nd}f} ({e['lo']:.{nd}f}-{e['hi']:.{nd}f})"
+    heads = ["none", H.dkey("revH_akf", "deltapen"), H.dkey("revJ_gated", "deltapen"), H.dkey("revJ_tcn", "deltapen"),
+             "revJ_oracle"]
+    L.append("| Tremor (size at the pen tip) | No tremor (same notes) | " + " | ".join(H.SHORT[d] for d in heads) + " |")
+    L.append("|---|---|" + "---|" * len(heads))
+    for kind in ("PD", "ET"):
+        for cls in ("severe", "moderate", "mild"):
+            cd = ag["real"].get(f"{kind}/{cls}")
+            if not cd:
+                continue
+            clean = (cd.get("none") or {}).get("clean_words_of_10")
+            L.append(f"| {KIND_NAME[kind]}, {cls} ({cd['_amp_mm_mean']:.2f} mm) | {m(clean)} | " +
+                     " | ".join(m((cd.get(d) or {}).get("words_of_10")) for d in heads) + " |")
+    L.append("")
+    L.append("### Results cards")
+    for kind in ("PD", "ET"):
+        for cls in ("severe", "moderate", "mild"):
+            cd = ag["real"].get(f"{kind}/{cls}")
+            if not cd:
+                continue
+            L.append("")
+            L.append(f"**{KIND_NAME[kind]} tremor, {cls} class: {cd['_amp_mm_mean']:.2f} mm peak at the tip, about "
+                     f"{cd['_f0_mean']:.1f} Hz** ({cd['_n_writers']} test writers, {cd['_n_cases']} notes; 95 % intervals over writers)")
+            L.append("")
+            L.append("| | " + " | ".join(H.SHORT[d] for d in heads) + " |")
+            L.append("|---|" + "---|" * len(heads))
+            L.append("| Readable words out of 10 | " + " | ".join(ci((cd.get(d) or {}).get("words_of_10")) for d in heads) + " |")
+            L.append("| Tremor left at the tip, mm (peak, f0 +- 2 Hz) | " +
+                     " | ".join(ci((cd.get(d) or {}).get("tip_tremor_mm"), 2) for d in heads) + " |")
+
+            def ratio(d):
+                e = (cd.get(d) or {}).get("tip_tremor_ratio")
+                if d == "none" or not e or not np.isfinite(e.get("mean", np.nan)):
+                    return "1 (reference)" if d == "none" else "n/a"
+                return f"{e['mean']:.2f} ({100 * (1 - e['mean'] ** 2):+.0f} % power)".replace("+-", "-")
+            L.append("| ... as a share of the ordinary pen's (amplitude) | " + " | ".join(ratio(d) for d in heads) + " |")
+            L.append("| Clean writing moved, um (tremor-free notes) | " +
+                     " | ".join(("0 (reference)" if d == "none" else ci((cd.get(d) or {}).get("false_correction_um"), 0))
+                                for d in heads) + " |")
+            L.append("| Readable words without tremor | " + " | ".join(m((cd.get(d) or {}).get("clean_words_of_10")) for d in heads) + " |")
+            L.append("| With the ideal page sensor instead: words / tremor left | " + " | ".join(
+                ("-" if d in ("none", "revJ_oracle") else
+                 f"{m((cd.get(d.split('|')[0]) or {}).get('words_of_10'))} / {m((cd.get(d.split('|')[0]) or {}).get('tip_tremor_mm'), 2)} mm")
+                for d in heads) + " |")
+    if ag.get("bridge"):
+        L.append("")
+        L.append("### Bridge (1 mm peak at the tip, both kinds pooled)")
+        L.append("")
+        base = ["none", "revH_akf", "revJ_gated", "revJ_tcn", "revJ_oracle"]
+        L.append("| Inputs | " + " | ".join(H.SHORT[H.dkey(d, 'deltapen')] for d in base) + " |")
+        L.append("|---|" + "---|" * len(base))
+        for var, name in (("syn_syn", "synthetic writing + synthetic tremor (as before)"), ("real_syn", "real writing + synthetic tremor"),
+                          ("real_real", "real writing + real tremor"), ("real_real_dp", "... + DeltaPen-class page sensor")):
+            cd = ag["bridge"].get(f"{'real_real' if var == 'real_real_dp' else var}/all")
+            if not cd:
+                continue
+            cells = []
+            for d in base:
+                k = H.dkey(d, "deltapen") if var == "real_real_dp" else d
+                e = cd.get(k) or {}
+                cells.append(f"{m(e.get('words_of_10'))} words; {m(e.get('tip_tremor_mm'), 2)} mm")
+            L.append(f"| {name} | " + " | ".join(cells) + " |")
+    return "\n".join(L)

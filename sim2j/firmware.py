@@ -124,6 +124,7 @@ class FWConfig:
     seed: int = 0
     imu_noise: float = 1.0              # IMU noise scale (DR: 0.5-2 x the datasheet densities)
     record_streams: bool = False        # keep the sensor samples (for learned estimators run on the record: replay)
+    page_error: str = "white"           # page-sensor error model (sensing.py): 'white' | 'deltapen_held' | 'deltapen_walk'
     label: str = ""
 
 
@@ -143,7 +144,7 @@ class Firmware:
         self.h = h[:2].copy()
         self.t2 = t2[:2].copy()
         self.reach = fw.reach if fw.reach is not None else cfg.geom.travel
-        self.sens = OnlineSensors(pm, self.Ts, seed=fw.seed + 11, noise_scale=fw.imu_noise)
+        self.sens = OnlineSensors(pm, self.Ts, seed=fw.seed + 11, noise_scale=fw.imu_noise, page_error=fw.page_error)
         self.streams = {"acc": [], "pos": [], "con": []}
         nz = cfg.nose
         self.gd = 2.0 * nz.servo_zeta / (TWO_PI * nz.servo_hz) + 0.5 * self.Ts      # servo group delay + tick hold

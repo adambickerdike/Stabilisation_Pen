@@ -30,10 +30,14 @@ from fusion import sensors as FS  # noqa: E402
 from sim2 import builder as B  # noqa: E402
 
 G_VEC = np.array([0.0, 0.0, -FS.G0])
+# DeltaPen-like page error (ASSUMPTION on LIT OPT-02, see OnlineSensors): lognormal magnitude, median 23.6 um, mean 68.3 um
+DP_MEDIAN = 23.6e-6
+DP_SIGMA = math.sqrt(2.0 * math.log(68.3 / 23.6))
 
 
 class OnlineSensors:
-    def __init__(self, pm, Ts: float = 0.5e-3, seed: int = 0, noise_scale: float = 1.0, page_latency: Optional[float] = None):
+    def __init__(self, pm, Ts: float = 0.5e-3, seed: int = 0, noise_scale: float = 1.0, page_latency: Optional[float] = None,
+                 page_error: str = "white"):
         self.pm = pm
         self.Ts = Ts
         self.rng = np.random.default_rng(seed)
@@ -57,6 +61,17 @@ class OnlineSensors:
         self.page_latency = s.page_latency if page_latency is None else page_latency
         self.page_noise = s.page_noise * noise_scale
         self.lift_max = s.page_lift_max
+        # page-sensor error model: 'white' = sim2's (page_noise rms per 1 kHz sample, the default); 'deltapen_held' /
+        # 'deltapen_walk' = ASSUMPTION modelled on DeltaPen's measured translation error per 10 ms window (LIT OPT-02:
+        # mean 68.3 um, median 23.6 um; on a Wacom tablet, not paper) -> a lognormal magnitude with that median and
+        # mean, random direction, drawn every 10 ms on top of the white noise; 'held' = each draw is a position error
+        # held for its window (errors do not add up; DeltaPen's idle drift was small, 2.6 mm/min, OPT-02); 'walk' =
+        # the draws add up (dead reckoning with no correction: an upper bound, far more drift than DeltaPen showed).
+        # A separate generator, so 'white' runs stay bit-identical.
+        self.page_error = page_error
+        self._pe = np.zeros(2)
+        self._pe_n = max(int(round(0.010 / Ts)), 1)
+        self._pe_rng = np.random.default_rng(seed + 1_000_003)
         self.slide_noise = s.slide_noise * noise_scale
         self.js = pm.jnt_qadr("refill_s")
         self.j_refill = pm.ids["jnt:refill_s"]
@@ -158,8 +173,21 @@ class OnlineSensors:
             self.z_rest = float(tip[2])
         if self.k % self.page_every == 0:
             ok = (tip[2] - self.z_rest) < self.lift_max
-            out["page"] = (t, t + self.page_latency, (tip[0] + nz[6] * self.page_noise, tip[1] + nz[7] * self.page_noise),
-                           bool(ok))
+            ex = ey = 0.0
+            if self.page_error != "white":
+                if self.k % self._pe_n == 0:
+                    mag = DP_MEDIAN * math.exp(DP_SIGMA * self._pe_rng.standard_normal())
+                    ang = self._pe_rng.uniform(0.0, 2.0 * math.pi)
+                    e = np.array([mag * math.cos(ang), mag * math.sin(ang)])
+                    if self.page_error == "deltapen_walk":
+                        self._pe = self._pe + e
+                    elif self.page_error == "deltapen_held":
+                        self._pe = e
+                    else:
+                        raise ValueError(f"unknown page_error {self.page_error!r}")
+                ex, ey = float(self._pe[0]), float(self._pe[1])
+            out["page"] = (t, t + self.page_latency, (tip[0] + nz[6] * self.page_noise + ex,
+                                                      tip[1] + nz[7] * self.page_noise + ey), bool(ok))
         s = d.qpos[self.js] + nz[8] * self.slide_noise
         out["slide"] = float(s)
         out["contact"] = bool(s > self.pm.m.jnt_range[self.j_refill, 0] + 0.1e-3)

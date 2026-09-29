@@ -151,8 +151,10 @@ SOURCES: Dict[str, Source] = {
         url="https://github.com/brownvc/decoupled-style-descriptors", doi="10.1007/978-3-030-58610-2_45",
         licence="non-commercial research use only (README and dsd.cs.brown.edu); cite the ECCV paper",
         licence_url="https://github.com/brownvc/decoupled-style-descriptors#terms-of-use", redistribute="statistics",
-        role="real words with real pen-down timing from 170 writers: the writing inputs of the headline comparison "
-             "(aggregate numbers committed; ink not committed); scale-free kinematics",
+        role="real words with real pen-down timing from 170 writers: REJECTED as tracker input after its kinematics check "
+             "(36 % of the pen-down velocity energy at 8-12 Hz against 1.3-1.7 % for writing on paper, LIT CON-25: a "
+             "timing artefact of the resampling or the devices, which the trackers take for tremor); kept for the "
+             "kinematics table and a labelled diagnostic",
         content=("27,649 samples of short prescribed sentences (2-4 words) written with a stylus in a 120 x 748 pixel "
                  "box; points resampled every 10 ms by the authors (pen-down only, end-of-stroke flags); per-point "
                  "character labels"),
@@ -172,10 +174,12 @@ SOURCES: Dict[str, Source] = {
                  "purposes; it is not allowed to distribute this data for commercial purposes'); the Zenodo page tags CC "
                  "BY 4.0 - the stricter terms are applied"),
         licence_url="https://zenodo.org/records/1195803", redistribute="statistics",
-        role="real sentences and words written on paper or tablets with timing and physical units: writing speed and "
-             "kinematics in mm/s (validation only)",
-        content="categories 6-8: isolated words and free text from many contributors (e.g. dar2: CalComp DrawingBoard II, "
-                "ballpoint on A4 paper, 200 samples/s, 0.01 mm/unit)",
+        role="THE WRITING INPUT of the headline: setup hpp/hpb2 (HP Labs Palo Alto staff, 1992; Wacom 420-510C; untethered "
+             "inking pen with a ballpoint refill on preprinted paper forms; 100 samples/s; 500 points/inch = 0.05 mm; 14 "
+             "writers in category 8), chosen by a kinematics rule over every setup of category 8 (kinematics.unipen_survey); "
+             "the other setups: validation statistics only",
+        content="category 8 free text from 26 recording setups (e.g. hpb3: Wacom HD648A LCD screen with emulated ink, 8.8 % "
+                "of the pen-down velocity energy at 8-12 Hz; sta/hpb1: 40 %: digitiser artefacts)",
         units="per data set: .X_POINTS_PER_MM or .X_POINTS_PER_INCH and .POINTS_PER_SECOND in the headers",
         files={"unipen/unipen-CDROM-train_r01_v07.tgz": "https://zenodo.org/api/records/1195803/files/unipen-CDROM-train_r01_v07.tgz/content"},
         ledger="CON-81 (proposed)",
@@ -192,6 +196,13 @@ NOT_USED = {
                         "writing Czech; the natural source for the poor-handwriting and dyslexia studies (EXP-R04)"},
     "pahaw": {"name": "PaHaW Parkinson's disease handwriting database (Drotar et al.)",
               "url": "https://bdalab.utko.fee.vutbr.cz/", "why": "available on request with a licence agreement (not requested)"},
+    "onhw": {"name": "OnHW datasets (Fraunhofer IIS; STABILO DigiPen: two accelerometers, gyroscope, magnetometer, force)",
+             "url": "https://www.iis.fraunhofer.de/de/ff/lv/dataanalytics/anwproj/schreibtrainer/onhw-dataset.html",
+             "why": "project page and README opened 2026-09-29: direct downloads, NO licence stated (so no redistribution and "
+                    "permission needed before use); 'Only right-handed recordings are released' for OnHW-chars (left-handed "
+                    "'_L' sets exist for some); the timestamp 'Millis' is when the data were processed on the connected "
+                    "tablet (not acquisition time); a recognition benchmark (study S's dataset), no page trajectory or tremor "
+                    "ground truth: not downloaded"},
 }
 
 

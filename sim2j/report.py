@@ -482,62 +482,110 @@ def print_all() -> None:
 
 
 # ------------------------------------------------------------------------------------------------ plain-words table
-def plain_table() -> str:
-    """One understandable number per condition, ordinary pen -> Rev J (SIM means over the test writers)."""
-    import numpy as np
+def _rows(n):
     from . import BUILD
+    p = os.path.join(BUILD, f"{n}_rows.json")
+    return list(json.load(open(p)).values()) if os.path.exists(p) else []
 
-    def rows(n):
-        p = os.path.join(BUILD, f"{n}_rows.json")
-        return list(json.load(open(p)).values()) if os.path.exists(p) else []
-    et = [r for r in rows("et") + rows("et2") if r.get("kind") == "tremor"]
-    out = ["| Who | What Rev J does | Measure | Ordinary pen | Rev J |", "|---|---|---|---|---|"]
 
-    def m(rs, key, sc=1.0):
-        v = [r[key] * sc for r in rs if r.get(key) is not None]
-        return float(np.mean(v)) if v else float("nan")
-    for amp, lab in ((1.0, "moderate (1 mm)"), (2.0, "strong (2 mm)")):
-        sel = lambda c: [r for r in et if r["ctl"] == c and abs(r["amp_mm"] - amp) < 1e-6 and r["f0"] >= 8]
-        if sel("none") and sel("nose"):
-            out.append(f"| Essential tremor, {lab}, 8–12 Hz | the nose cancels the tremor it detects | tremor left in "
-                       f"the writing (mm, rms) | {m(sel('none'), 'ink_err_um', 1e-3):.2f} | "
-                       f"{m(sel('nose'), 'ink_err_um', 1e-3):.2f} (nose); {m(sel('nose_wheel'), 'ink_err_um', 1e-3):.2f} "
-                       f"(nose + wheel); limit {m(sel('oracle'), 'ink_err_um', 1e-3):.2f} |")
-    sel4 = lambda c: [r for r in et if r["ctl"] == c and r["f0"] < 5 and r["amp_mm"] > 1.5]
-    if sel4("none"):
-        out.append(f"| Essential tremor at 4 Hz, 2 mm | the detector does not see 4 Hz; the heel wheel damps | tremor left "
-                   f"(mm) | {m(sel4('none'), 'ink_err_um', 1e-3):.2f} | {m(sel4('nose'), 'ink_err_um', 1e-3):.2f} (nose); "
-                   f"{m(sel4('nose_wheel'), 'ink_err_um', 1e-3):.2f} (nose + wheel) |")
-    aw = [r for r in rows("autowrite") if r.get("task") == "autowrite" and r.get("plan_ok")]
-    sev = [r for r in rows("autowrite") if r.get("task") == "severe"]
-    if aw and sev:
-        a3 = [r for r in aw if r["amp_mm"] == 3.0]
-        s3 = [r for r in sev if r["ctl"] == "none" and r["amp_mm"] == 3.0]
-        out.append(f"| Severe tremor (3 mm) | the pen writes a known text itself (autowrite) while the hand sweeps | "
-                   f"letters the app reads | {m(s3, 'letters_read', 100):.0f} % | {m(a3, 'letters_read', 100):.0f} % |")
-    g = rows("guided")
+def _mean(rs, key, sc=1.0):
+    v = [r[key] * sc for r in rs if isinstance(r.get(key), (int, float)) and not (isinstance(r.get(key), float)
+                                                                                 and math.isnan(r.get(key)))]
+    return (float(np.mean(v)) if v else float("nan")), len(v)
+
+
+def _w(v: float) -> str:
+    """Words out of 10: whole numbers when they are whole, else one decimal."""
+    if v != v:
+        return "–"
+    return f"{v:.0f}" if abs(v - round(v)) < 0.05 else f"{v:.1f}"
+
+
+def results_cards() -> str:
+    """The plain-words results cards (SIM means over the test cases run): for each condition, ordinary pen -> Rev J
+    in readable words out of 10, what is left of the tremor at the tip (mm rms), how much tremor-free writing
+    changed, and the writing time per charge (suspended: the static ball load, docs/revJ_simulation.md 8.1)."""
+    et = [r for r in _rows("et") + _rows("et2") if r.get("kind") == "tremor"]
+    cl = [r for r in _rows("et") if r.get("kind") == "clean"]
+    aw = _rows("autowrite")
+    g = _rows("guided")
+    out = ["| Who (tremor at the hand, peak) | What Rev J does | Readable words out of 10: ordinary pen → Rev J | "
+           "Error left at the tip, mm rms: ordinary pen → Rev J | Tremor-free writing changed | Writing time per charge "
+           "| Cases |", "|---|---|---|---|---|---|---|"]
+    moved_nose = _mean([r for r in cl if r["ctl"] == "nose"], "moved_vs_clean_um", 1e-3)[0]
+    moved_wheel = _mean([r for r in cl if r["ctl"] == "nose_wheel"], "moved_vs_clean_um", 1e-3)[0]
+    SUS = "suspended"
+
+    def et_row(lab, what, sel_fn, ctl="nose"):
+        n = [r for r in et if r["ctl"] == "none" and sel_fn(r)]
+        d = [r for r in et if r["ctl"] == ctl and sel_fn(r)]
+        if not n or not d:
+            return
+        wn, wd = _mean(n, "words_app", 10)[0], _mean(d, "words_app", 10)[0]
+        ln, ld = _mean(n, "letters_read", 10)[0], _mean(d, "letters_read", 10)[0]
+        en, ed = _mean(n, "ink_err_um", 1e-3)[0], _mean(d, "ink_err_um", 1e-3)[0]
+        out.append(f"| {lab} | {what} | {_w(wn)} → {_w(wd)} (letters {ln:.1f} → {ld:.1f} of 10) | {en:.2f} → {ed:.2f} | "
+                   f"{moved_nose:.2f} mm | {SUS} | {len(d)} |")
+    et_row("Essential tremor, mild (0.3 mm, 4–12 Hz)", "the nose stays out of the way (tremor below what it acts on)",
+           lambda r: abs(r["amp_mm"] - 0.3) < 1e-6)
+    et_row("Essential tremor, moderate (1 mm, 8–12 Hz)", "the nose cancels the tremor it detects",
+           lambda r: abs(r["amp_mm"] - 1.0) < 1e-6 and r["f0"] >= 8)
+    et_row("Essential tremor, strong (2 mm, 8–12 Hz)", "the nose cancels the tremor it detects",
+           lambda r: abs(r["amp_mm"] - 2.0) < 1e-6 and r["f0"] >= 8)
+    et_row("Slow tremor (4 Hz, 1–2 mm)", "nothing: the detector listens from 4.5 Hz up (4 Hz overlaps the writing's own rhythm)",
+           lambda r: r["amp_mm"] > 0.5 and r["f0"] < 5)
+    sev = [r for r in aw if r.get("task") == "severe"]
+    a3 = [r for r in aw if r.get("task") == "autowrite" and r.get("plan_ok") and abs(r["amp_mm"] - 3.0) < 1e-6]
+    s3n = [r for r in sev if r["ctl"] == "none"]
+    s3d = [r for r in sev if r["ctl"] == "nose"]
+    if s3n and s3d:
+        out.append(f"| Severe tremor (3 mm, 5 and 8 Hz), writing through it | the nose cancels what it can | "
+                   f"{_w(_mean(s3n, 'words_app', 10)[0])} → {_w(_mean(s3d, 'words_app', 10)[0])} (letters "
+                   f"{_mean(s3n, 'letters_read', 10)[0]:.1f} → {_mean(s3d, 'letters_read', 10)[0]:.1f}) | "
+                   f"{_mean(s3n, 'ink_err_um', 1e-3)[0]:.2f} → {_mean(s3d, 'ink_err_um', 1e-3)[0]:.2f} | {moved_nose:.2f} mm | "
+                   f"{SUS} | {len(s3d)} |")
+    if s3n and a3:
+        out.append(f"| Severe tremor (3 mm, 5 and 8 Hz), known text | the pen writes the text itself (autowrite, 2.5 mm "
+                   f"letters) while the hand sweeps | {_w(_mean(s3n, 'words_app', 10)[0])} → {_w(_mean(a3, 'words_app', 10)[0])} "
+                   f"(letters {_mean(s3n, 'letters_read', 10)[0]:.1f} → {_mean(a3, 'letters_read', 10)[0]:.1f}) | "
+                   f"{_mean(s3n, 'ink_err_um', 1e-3)[0]:.2f} → {_mean(a3, 'ink_err_um', 1e-3)[0]:.2f} (to the planned "
+                   f"letters) | not applicable (the pen writes) | {SUS} | {len(a3)} |")
     lo = [r for r in g if r.get("task") == "loops"]
     if lo:
-        out.append(f"| Parkinson's, small writing (loops shrink) | the wheel and nose hold the loops to the 10 mm template | "
-                   f"loop height, % of target | {m([r for r in lo if r['ctl'] == 'none'], 'loop_height_ratio', 100):.0f} % | "
-                   f"{m([r for r in lo if r['ctl'] == 'wheel_nose'], 'loop_height_ratio', 100):.0f} % |")
+        n_, d_ = [r for r in lo if r["ctl"] == "none"], [r for r in lo if r["ctl"] == "wheel_nose"]
+        out.append(f"| Parkinson's, writing shrinks (10 mm loops) | the wheel steers along the template and the nose "
+                   f"pulls the ink onto it | not scored (loops) | loop height {_mean(n_, 'loop_height_ratio', 100)[0]:.0f} % "
+                   f"→ {_mean(d_, 'loop_height_ratio', 100)[0]:.0f} % of the target; ink to the template "
+                   f"{_mean(n_, 'ink_to_template_rms_mm')[0]:.2f} → {_mean(d_, 'ink_to_template_rms_mm')[0]:.2f} | – | "
+                   f"{SUS} | {len(d_)} |")
     tr = [r for r in g if r.get("task") == "tracing"]
     if tr:
-        out.append(f"| Dysgraphia (malformed letters) | the nose pulls the ink onto the copybook letter; the wheel steers | "
-                   f"distance from the copybook letters (mm) | {m([r for r in tr if r['ctl'] == 'none'], 'target_err_um', 1e-3):.2f} | "
-                   f"{m([r for r in tr if r['ctl'] == 'wheel_nose'], 'target_err_um', 1e-3):.2f} |")
+        n_, d_ = [r for r in tr if r["ctl"] == "none"], [r for r in tr if r["ctl"] == "wheel_nose"]
+        out.append(f"| Dysgraphia (badly formed letters), tracing | the nose pulls the ink onto the copybook letter; "
+                   f"the wheel steers | {_w(_mean(n_, 'words_app', 10)[0])} → {_w(_mean(d_, 'words_app', 10)[0])} "
+                   f"(letters {_mean(n_, 'letters_read', 10)[0]:.1f} → {_mean(d_, 'letters_read', 10)[0]:.1f}) | "
+                   f"to the copybook letters: {_mean(n_, 'target_err_um', 1e-3)[0]:.2f} → "
+                   f"{_mean(d_, 'target_err_um', 1e-3)[0]:.2f} | – | {SUS} | {len(d_)} |")
     ld = [r for r in g if r.get("task") == "lead"]
     if ld:
-        out.append(f"| Dyslexia, led through 'dug a deep' (hand relaxed) | the wheel drives the pen along the right letters | "
-                   f"letters read as the right letter | {m([r for r in ld if r['ctl'] == 'writer_alone'], 'letters_read', 100):.0f} % "
-                   f"(writing alone) | {m([r for r in ld if r['ctl'] == 'lead_nose'], 'letters_read', 100):.0f} % |")
-    a0 = [r for r in aw if r["amp_mm"] == 0.0]
+        n_, d_ = [r for r in ld if r["ctl"] == "writer_alone"], [r for r in ld if r["ctl"] == "lead_nose"]
+        out.append(f"| Dyslexia, led through the right spelling (hand relaxed) | the driven wheel pushes the pen along "
+                   f"the right letters; the nose adds the detail | {_w(_mean(n_, 'words_app', 10)[0])} (writing alone) → "
+                   f"{_w(_mean(d_, 'words_app', 10)[0])} (letters {_mean(n_, 'letters_read', 10)[0]:.1f} → "
+                   f"{_mean(d_, 'letters_read', 10)[0]:.1f}) | to the right letters: "
+                   f"{_mean(n_, 'target_err_um', 1e-3)[0]:.2f} → {_mean(d_, 'target_err_um', 1e-3)[0]:.2f} | – | {SUS} | "
+                   f"{len(d_)} |")
+    a0 = [r for r in aw if r.get("task") == "autowrite" and r.get("plan_ok") and r["amp_mm"] == 0.0]
     if a0:
-        out.append(f"| Dyslexia or anyone: known text | autowrite | words right, out of 5 | – | "
-                   f"{m(a0, 'words_app', 5):.1f} |")
-    cl = [r for r in rows("et") if r.get("kind") == "clean"]
+        out.append(f"| Dyslexia, or anyone: a known text, no tremor | the pen writes it (autowrite) | – → "
+                   f"{_w(_mean(a0, 'words_app', 10)[0])} (letters {_mean(a0, 'letters_read', 10)[0]:.1f}) | "
+                   f"{_mean(a0, 'ink_err_um', 1e-3)[0]:.2f} (to the planned letters) | not applicable (the pen writes) | "
+                   f"{SUS} | {len(a0)} |")
     if cl:
-        out.append(f"| Anyone, no tremor | nothing should change | how far the pen moves normal writing (mm) | 0 | "
-                   f"{m([r for r in cl if r['ctl'] == 'nose'], 'moved_vs_clean_um', 1e-3):.2f} (nose); "
-                   f"{m([r for r in cl if r['ctl'] == 'nose_wheel'], 'moved_vs_clean_um', 1e-3):.2f} (with the wheel on) |")
+        out.append(f"| Anyone, no tremor | should change nothing | – | – | {moved_nose:.2f} mm (nose); "
+                   f"{moved_wheel:.2f} mm with the heel wheel on | {SUS} | "
+                   f"{len([r for r in cl if r['ctl'] == 'nose'])} |")
     return "\n".join(out)
+
+
+plain_table = results_cards

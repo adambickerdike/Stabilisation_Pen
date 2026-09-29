@@ -42,7 +42,9 @@ class WPFirmware(Firmware):
         r0 = wp.model_r_rot
         self.afc = {}
         col_ex = ({"z_p": self.col["z_p"], "K_c": self.col["K_c"], "c_c": self.col["c_c"], "m_c": self.col["m"],
-                   "z_cm": self.col["z_cm"], "J_c": self.col["J"]} if self.col is not None else None)
+                   "z_cm": self.col["z_cm"], "J_c": self.col["J"], "K_s": self.col["K_s"], "C_s": self.col["C_s"],
+                   "skid_on_collar": self.col.get("skid_on_collar", False)}
+                  if self.col is not None else None)
         for dev, mode, gain, ok, ex in (("cmg", wp.cmg, wp.cmg_gain, self.gt is not None, {}),
                                         ("collar", wp.collar, wp.collar_gain, self.col is not None, col_ex),
                                         ("sled", wp.sled, wp.sled_gain, True, {}),
@@ -50,10 +52,13 @@ class WPFirmware(Firmware):
             if not ok or mode not in ("ff", "oracle", "afc"):
                 continue
             f, G = C.internal_model(dev, pen, ex, r0)
+            G_inv = C.internal_model(dev, pen, ex, r0, out="ink")[1] if dev == "collar" else None
             if mode == "afc":
-                self.afc[dev] = C.AFC(f, G, tau=wp.afc_tau)
+                self.afc[dev] = C.AFC(f, G, tau=wp.afc_tau)     # it can only cancel what it measures
+            elif mode == "oracle":
+                self.imc[dev] = C.PhasorIMC(f, G, wp.oracle_gain, G_inv=G_inv, total=True)
             else:
-                self.imc[dev] = C.PhasorIMC(f, G, gain)
+                self.imc[dev] = C.PhasorIMC(f, G, gain, G_inv=G_inv)
         self.u_cmg = np.zeros(2)
         self.u_col = np.zeros(2)
         self.F_sled = np.zeros(2)
@@ -148,12 +153,10 @@ class WPFirmware(Firmware):
                 u = o * float(u @ o)
             self._commit("cmg", wp.cmg, u)
             self.u_cmg = u
-        # ---- collar motors
-        if self.col is not None and wp.collar in ("ff", "oracle", "afc", "static"):
-            u = np.zeros(2)
-            if wp.collar in ("ff", "oracle", "afc"):
-                u = self._law("collar", wp.collar, t, f_est, 0.9 * self.col["tau_max"])
-                self._commit("collar", wp.collar, u)
+        # ---- collar: the servo's reference angle (pen relative to the collar, about t1 and t2)
+        if self.col is not None and wp.collar in ("ff", "oracle", "afc"):
+            u = self._law("collar", wp.collar, t, f_est, wp.collar_frac * self.col["range_rad"])
+            self._commit("collar", wp.collar, u)
             self.u_col = u
         # ---- sled (force on the hand) and omni heel (force on the pen tip)
         for dev in ("sled", "omni"):
@@ -207,7 +210,26 @@ class WPStepper(SJ.RevJStepper):
         self.b_hand_ = ids.get("body:hand", ids.get("body:palm"))
         self.s_piv = ids.get("site:collar_piv")
         self.a_piv = [ids.get("act:piv_m1"), ids.get("act:piv_m2")]
+        self.skid_on_collar = bool(self.col is not None and self.col.get("skid_on_collar", False))
+        if self.skid_on_collar and self.law is not None:
+            # V2: the H1 contact law's skid point acts on the collar (the ring's frame is the collar's, which is the
+            # handle's frame at rest), and the kernel clears the collar's applied force each step
+            from sim2 import contact as SC
+            bc = self.b_collar
+            pc = self.law.pts[0]
+            assert pc.name == "skid"
+            pc.body = bc
+            self.law.tab[0, SC.K_BODY] = bc
+            self.law.tab[0, SC.K_ROOT] = pm.m.body_rootid[bc]
+            self.law.bodies = sorted(set(self.law.bodies) | {bc})
+            self.law.body_arr = np.array(self.law.bodies, dtype=np.int64)
+        self.s_ball = ids["site:ball"]
+        self.r_ball = float(pm.cfg.geom.r_b)
+        self.q_refill = pm.jnt_qadr("refill_s")
+        self.ext_max = 3.0e-3                # the V2 refill's extension bound beyond the collar-relative stop (m)
         self.j_piv = [pm.jnt_qadr("piv_1"), pm.jnt_qadr("piv_2")] if "jnt:piv_1" in ids else None
+        self.jd_piv = [pm.jnt_dadr("piv_1"), pm.jnt_dadr("piv_2")] if "jnt:piv_1" in ids else None
+        self.piv_sign = DV.collar_axes(pm) if "jnt:piv_1" in ids else (1.0, 1.0)
         self.wrec = np.zeros((self.nrec, len(WREC))) if record else None
         self.wenergy = {"cmg_mech_J": 0.0, "col_cu_J": 0.0, "col_mech_J": 0.0, "sled_J": 0.0, "omni_J": 0.0,
                         "gate_lift_cycles": 0}
@@ -245,16 +267,23 @@ class WPStepper(SJ.RevJStepper):
             else:
                 gt.apply(pm, t, [0.0] * len(gt.pairs()) + ([fw.tu_angle] if gt.mode == "turret" else []))
         if self.col is not None and self.a_piv[0] is not None:
-            u = fw.u_col if fw.wp.collar in ("ff", "oracle") else np.zeros(2)
+            col = self.col
+            ref = fw.u_col if fw.wp.collar in ("ff", "oracle", "afc") else np.zeros(2)
             # static-load feed-forward: the writing force's moment about the pivot (tilt plane, about t2), from the
             # skid load cell and the ball force (sim2j sensing: the contact law's normal forces, 5 mN noise ignored)
-            tau_st = 0.0
-            if fw.wp.collar in ("ff", "oracle", "static"):
-                N = float(self.cont.get("Ns", 0.0) + self.cont.get("Nb", 0.0))
-                tau_st = N * self.col["z_p"] * fw.cth
-            # motor 1 acts on piv_1 (about t2), motor 2 on piv_2 (about t1)
-            pm.d.ctrl[self.a_piv[0]] = float(np.clip(u[1] + tau_st, -self.col["tau_max"], self.col["tau_max"]))
-            pm.d.ctrl[self.a_piv[1]] = float(np.clip(u[0], -self.col["tau_max"], self.col["tau_max"]))
+            # V1: skid and ball load the pen; V2: only the ball (the skid ring is on the collar)
+            N = float(self.cont.get("Nb", 0.0)) + (0.0 if self.skid_on_collar else float(self.cont.get("Ns", 0.0)))
+            tau_st = N * col["z_p"] * fw.cth
+            d = pm.d
+            # the servo on each hinge: piv_1 turns about t2 (sign s1), piv_2 about t1 (sign s2) (devices.collar_axes)
+            th1, th2 = d.qpos[self.j_piv[0]], d.qpos[self.j_piv[1]]
+            w1, w2 = d.qvel[self.jd_piv[0]], d.qvel[self.jd_piv[1]]
+            s1, s2 = self.piv_sign
+            # the paper's normal force at the tip turns the pen about +t2 by N z_p cos(theta) about the pivot: hold it
+            tau1 = col["K_s"] * (s1 * ref[1] - th1) - col["C_s"] * w1 - s1 * tau_st
+            tau2 = col["K_s"] * (s2 * ref[0] - th2) - col["C_s"] * w2
+            d.ctrl[self.a_piv[0]] = float(np.clip(tau1, -col["tau_max"], col["tau_max"]))
+            d.ctrl[self.a_piv[1]] = float(np.clip(tau2, -col["tau_max"], col["tau_max"]))
         if fw.lift_cmd > 0.5 and self._gate_prev <= 0.5 and fw.wp.gate:
             self.wenergy["gate_lift_cycles"] += 1
         self._gate_prev = fw.lift_cmd
@@ -296,6 +325,22 @@ class WPStepper(SJ.RevJStepper):
             self.tick += 1
         if k % self.sdec == 0:
             servo.servo_tick(self.sdec * dt, self.gate)
+            if self.skid_on_collar and servo.adaptive_stop:
+                # W4: the V2 collar's refill stop.  The ball moves -z_p phi along t1 when the pen turns by phi about
+                # t2, and the collar itself rocks on its skid ring under the motors' reaction, so the ball's contact
+                # position is not a function of phi alone.  PROPOSED DESIGN: while the skid ring carries load (its
+                # load cell), the stop follows the paper (the ball may protrude `margin` beyond its contact
+                # position), bounded to ext_max beyond the collar-relative stop; with the skid ring unloaded (a
+                # lift) the stop is collar-relative, so the ball lifts with the pen and strokes do not join
+                phi = self.piv_sign[0] * d.qpos[self.j_piv[0]]
+                rel = m.jnt_range[self.j_refill, 0] - self.col["z_p"] * phi * servo.cot
+                stop = rel
+                if float(self.cont.get("Ns", 0.0)) > 0.05:
+                    zlow = float(d.site_xpos[self.s_ball][2]) - self.r_ball
+                    az = float(d.xaxis[self.j_refill][2])
+                    s_con = float(d.qpos[self.q_refill]) - zlow / max(az, 0.2)
+                    stop = max(min(s_con - self.margin, rel + 0.3e-3), rel - self.ext_max)
+                m.jnt_range[self.j_refill, 0] = stop
             servo.follower_steps(self.sdec)
             if self.lift_state > 0.0:
                 m.jnt_range[self.j_refill, 0] += self.lift_state * (self.margin + self.lift_stroke)
@@ -329,10 +374,11 @@ class WPStepper(SJ.RevJStepper):
             pp = d.site_xpos[self.s_piv]
             cc = d.xipos[self.b_collar]
             xc = d.xfrc_applied[self.b_collar]
-            xc[:] = 0.0
-            xc[2] = -P
-            xc[3] = (pp[1] - cc[1]) * -P
-            xc[4] = -(pp[0] - cc[0]) * -P
+            if not self.skid_on_collar:
+                xc[:] = 0.0                  # V1: nothing else pushes the collar (V2: the contact law cleared it)
+            xc[2] += -P
+            xc[3] += (pp[1] - cc[1]) * -P
+            xc[4] += -(pp[0] - cc[0]) * -P
         # sled: force on the hand (H1: the hand body; arm: the palm) from the paper, capped at mu N
         if fw.wp.sled != "off" and self.b_hand_ is not None:
             xh = d.xfrc_applied[self.b_hand_]

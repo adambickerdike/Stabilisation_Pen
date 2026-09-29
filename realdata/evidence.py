@@ -43,40 +43,67 @@ def rows(out: Dict) -> List[Dict]:
         v = ((hw.get("bridge") or {}).get(f"{var}/all") or {}).get(dev) or {}
         return _f(v.get(key), nd)
     cal = tl.get("newhandpd_calibration") or {}
+
+    def pct(x, nd=1):
+        try:
+            return f"{100 * float(x):.{nd}f}"
+        except Exception:
+            return "n/a"
+    sv = ((out.get("kinematics") or {}).get("unipen_survey") or {})
+    survey_rows = [r for r in (sv.get("rows") or []) if r.get("measured_lines")]
+    pick = {r["setup"]: r for r in survey_rows}
+    survey_txt = "; ".join(f"{name} {pct(pick[key].get('share_8_12'))} % at 8-12 Hz, {_f(pick[key].get('speed_mm_s'), 1)} mm/s"
+                           for key, name in (("hpp/hpb2", "hpb2 paper"), ("hpp/hpb3", "hpb3 LCD screen"),
+                                             ("hpb/hpb5", "hpb5 paper, 6 writers"), ("sta/hpb1", "sta paper"),
+                                             ("aga/", "aga (surface undocumented)")) if key in pick)
+    cards = {(c["kind"], c["class"]): c for c in ((out.get("hw1") or {}).get("cards") or [])}
+
+    def cw(kind, cls, dev, key="words_of_10", nd=1):
+        e = (((cards.get((kind, cls)) or {}).get("pens") or {}).get(dev) or {}).get(key) or {}
+        return _f(e.get("mean"), nd)
+
+    def cwi(kind, cls, dev, key="words_of_10", nd=1):
+        e = (((cards.get((kind, cls)) or {}).get("pens") or {}).get(dev) or {}).get(key) or {}
+        return f"{_f(e.get('mean'), nd)} [{_f(e.get('lo'), nd)}-{_f(e.get('hi'), nd)}]"
+    rc = out.get("reader") or {}
     R: List[Dict] = []
     R.append(dict(
-        id="CON-80", topic="Real adult handwriting kinematics (words, 170 writers): BRUSH dataset, re-analysed",
+        id="CON-80", topic="Real adult handwriting kinematics (BRUSH words, 170 writers): a timing artefact in the tremor band",
         citation="Kotani A, Tellex S, Tompkin J. Generating handwriting via decoupled style descriptors. ECCV 2020, pp. 764-780; BRUSH dataset (refined release, brownvc/decoupled-style-descriptors); kinematics computed by study R",
         year="2020", doi_or_url="https://doi.org/10.1007/978-3-030-58610-2_45 ; https://github.com/brownvc/decoupled-style-descriptors",
         source_type="dataset", evidence_class="physical human study", access_level="full text (dataset and README; paper not opened)",
         task_or_setup="Prescribed short sentences (2-4 words) written with a stylus in a 120 x 748 px box; points resampled every 10 ms by the authors (pen-down only, end-of-stroke flags); per-point character labels",
         participants_or_bench="170 writers, 27,649 samples (33,597 files incl. alternative resamplings)",
-        comparator="Synthetic writers (aiguide v1, sim2j v2) measured with the same function",
-        key_quantitative_findings=(f"Study R, same measurement as sim2 (1 kHz, 20 Hz low-pass): mean pen-down speed {k('real_brush','speed_mm_s')} mm/s at a letter height DERIVED from LIT PDT-06; "
-                                   f"median stroke {k('real_brush','stroke_ms',0)} ms; 8-12 Hz share of velocity energy {_f(100*float(kin.get('real_brush',{}).get('share_8_12') or float('nan')),1)} %; "
-                                   f"cumulative velocity energy 50/90/99 % below {k('real_brush','f50')}/{k('real_brush','f90')}/{k('real_brush','f99')} Hz; power-law exponent {k('real_brush','beta',2)}. "
-                                   "2676 lower-case word recordings; writers split 40/60 tuning/test by a hash of the writer id."),
-        units_and_conditions="mm/s (scale DERIVED per writer), ms, Hz, share; stylus on screen; pen-up moves not in the release (added as ASSUMPTION in-air moves)",
-        locator="results/realdata/realdata.json kinematics; realdata/kinematics.py",
-        limitations="Screen and stylus, not paper; devices differ per writer and the pixel size is undocumented (speed in mm/s depends on the assumed letter height); pen-up timing lost; licence: non-commercial research use only",
-        relevance_to_design="Real writing movement that trackers must leave alone: how much of it lies in the tremor band",
-        transferability="medium", transferability_reason="Many adult writers and real timing, but stylus on glass and derived scale",
-        design_implication="Simulate trackers and pens on real writing (this library), not on glyph writers, before trusting false-correction and tremor-separation numbers",
+        comparator="UNIPEN hpb2 (ballpoint on paper), synthetic writers (aiguide v1, sim2j v2), LIT CON-25; one measurement function",
+        key_quantitative_findings=(f"Study R (1 kHz, 20 Hz low-pass, pen-down Welch): {pct(kin.get('real_brush', {}).get('share_8_12'))} % of the pen-down velocity energy at 8-12 Hz "
+                                   f"(real writing on paper 1.3-1.7 %, LIT CON-25; UNIPEN hpb2 {pct(kin.get('real_unipen', {}).get('share_8_12'))} %); mean pen-down speed {k('real_brush','speed_mm_s')} mm/s at a letter height DERIVED from LIT PDT-06; "
+                                   f"median stroke {k('real_brush','stroke_ms',0)} ms; exponent {k('real_brush','beta',2)}. In HW1 the trackers took this content for tremor "
+                                   "(false correction 100-450 um on tremor-free BRUSH notes in a stopped diagnostic run), so BRUSH was rejected as tracker input"),
+        units_and_conditions="share of velocity energy; mm/s (scale DERIVED per writer); stylus on screen; pen-up moves not in the release",
+        locator="results/realdata/realdata.json kinematics; fig_writer_kinematics; fig_unipen_setups",
+        limitations="Screen and stylus, devices undocumented; the artefact's origin (resampling to 10 ms or the devices) is not established; licence: non-commercial research use only",
+        relevance_to_design="Tracker tests on real writing need a digitiser without tremor-band artefacts: check the 8-12 Hz share of any writing data before use",
+        transferability="low", transferability_reason="The 8-12 Hz content is not writing movement",
+        design_implication="Do not test trackers on BRUSH timing; screen every writing data set with the kinematics check (realdata.kinematics)",
         retrieved=DATE, search_query="GitHub README brownvc/decoupled-style-descriptors; Google Drive refined_BRUSH.zip", stream="CON", lead_verification=""))
     R.append(dict(
-        id="CON-81", topic="Real handwriting speed on paper and tablets (UNIPEN train_r01_v07), re-analysed",
-        citation="Guyon I, Schomaker L, Plamondon R, Liberman M, Janet S. UNIPEN project of on-line data exchange and recognizer benchmarks. ICPR 1994; Unipen data set train_r01_v07 (International Unipen Foundation 1999), Zenodo record 1195803",
+        id="CON-81", topic="Real handwriting with a ballpoint on paper (UNIPEN hpb2): the writing input of the headline, chosen by a kinematics check",
+        citation="Guyon I, Schomaker L, Plamondon R, Liberman M, Janet S. UNIPEN project of on-line data exchange and recognizer benchmarks. ICPR 1994; Unipen data set train_r01_v07 (International Unipen Foundation 1999), Zenodo record 1195803; setup hpb2 (Hewlett Packard Laboratories, Palo Alto, 1992)",
         year="1999", doi_or_url="https://doi.org/10.5281/zenodo.1195803", source_type="dataset", evidence_class="physical human study",
         access_level="full text (data and documentation files)",
-        task_or_setup="Category 8 text lines from contributors recording >= 100 samples/s at >= 10 points/mm (e.g. dar2: CalComp DrawingBoard II, ballpoint on A4 paper, 200 samples/s, 0.01 mm/unit)",
-        participants_or_bench="Many writers of several institutions (see contributors in realdata.json)", comparator="Synthetic writers; LIT CON-20",
-        key_quantitative_findings=(f"Study R: mean pen-down speed {k('real_unipen','speed_mm_s')} mm/s; median stroke {k('real_unipen','stroke_ms',0)} ms; 8-12 Hz share {_f(100*float(kin.get('real_unipen',{}).get('share_8_12') or float('nan')),1)} %; "
-                                   f"cumulative 50/90/99 % below {k('real_unipen','f50')}/{k('real_unipen','f90')}/{k('real_unipen','f99')} Hz; exponent {k('real_unipen','beta',2)}"),
-        units_and_conditions="mm/s with each contributor's documented resolution; sample index / documented rate as time",
-        locator="results/realdata/realdata.json kinematics", limitations="Research use only (iUF notice; Zenodo tag CC BY conflicts, stricter terms applied); 1990s digitisers; writers' names in headers never copied",
-        relevance_to_design="Physical writing speeds on real devices, including ballpoint on paper",
-        transferability="high", transferability_reason="Adults, real text, physical units", design_implication="Writer models and trackers must be tested at these speeds",
-        retrieved=DATE, search_query="Zenodo search: online handwriting dataset sentences stylus timestamps", stream="CON", lead_verification=""))
+        task_or_setup="hpb2: Wacom 420-510C, untethered inking pen with a ballpoint refill on preprinted paper forms, 100 samples/s, 500 points/inch (0.05 mm); copied 2-3 word pseudo-phrases; pen-up (hover) points recorded",
+        participants_or_bench=f"14 writers in category 8 (hpb2); {(out.get('writing_library') or {}).get('unipen_lines', 'n/a')} lines of lower-case words; survey of all {len(survey_rows)} category-8 setups",
+        comparator="LIT CON-20 (speed on paper), CON-24/25/27; BRUSH; synthetic writers",
+        key_quantitative_findings=(f"Survey (study R, 60 lines of lower-case words per setup): only hpb2 passes the rule (<= 2.5 % at 8-12 Hz, <= 3 % above 12 Hz, 15-60 mm/s, >= 100 samples/s, >= 15 points/mm, >= 10 writers, paper): "
+                                   f"{survey_txt}. hpb2 notes used in HW1: speed {k('real_unipen','speed_mm_s')} mm/s, median stroke {k('real_unipen','stroke_ms',0)} ms, 8-12 Hz share {pct(kin.get('real_unipen', {}).get('share_8_12'))} %, "
+                                   f"cumulative 50/90/99 % below {k('real_unipen','f50')}/{k('real_unipen','f90')}/{k('real_unipen','f99')} Hz, exponent {k('real_unipen','beta',2)}. "
+                                   "Every line text was written by 2-12 writers (one stack of forms): writers AND texts split (5/9 writers, 81/133 texts)"),
+        units_and_conditions="mm/s (documented resolution), sample index / 100 samples/s", locator="results/realdata/realdata.json kinematics.unipen_survey; fig_unipen_setups",
+        limitations="Research use only (iUF notice; Zenodo tag CC BY conflicts, stricter terms applied); 1992 healthy adult staff; form boxes, larger than everyday writing for some writers; 14 writers; writers' names in headers never copied",
+        relevance_to_design="Real ink trajectories and timing on paper, with a clean digitiser, for tracker and legibility tests",
+        transferability="medium", transferability_reason="Healthy adults on paper; not patients; 100 samples/s",
+        design_implication="Test trackers on hpb2-class real writing (realdata.library.writing); record patients' writing for EXP-R01",
+        retrieved=DATE, search_query="Zenodo record 1195803 (UNIPEN CDROM train_r01_v07)", stream="CON", lead_verification=""))
     R.append(dict(
         id="CON-82", topic="UCI Character Trajectories: file constants and real letter timing used as inputs",
         citation="Williams BH. Character Trajectories [dataset]. UCI Machine Learning Repository, 2008", year="2008",
@@ -133,7 +160,11 @@ def rows(out: Dict) -> List[Dict]:
         task_or_setup="Static and dynamic spirals and circles around a point on a Wacom Cintiq 12WX; tremor line against the fitted broadband background (Welch 4 s); background-corrected major-axis amplitude",
         participants_or_bench=f"62 PD (hw_dataset 25 + new_dataset 37), 15 controls; {cl.get('_n_pd_subjects_with_line','n/a')} PD with a tremor line",
         comparator="Controls (95th percentile of the line ratio = detection threshold)",
-        key_quantitative_findings=(f"PD tip tremor (peak, per subject): p10 {_f(q.get('p10'))}, p50 {_f(q.get('p50'))}, p75 {_f(q.get('p75'))}, p90 {_f(q.get('p90'))}, max {_f(q.get('max'))} mm. "
+        key_quantitative_findings=(f"Boundaries FITTED on the {cl.get('_n_fit_subjects', 'n/a')} tuning PD subjects with a tremor line (of {cl.get('_n_pd_subjects_with_line','n/a')}); checked on the "
+                                   f"{(cl.get('_validation_test_subjects') or {}).get('n', 'n/a')} test subjects: mild/moderate/severe shares {pct((cl.get('_validation_test_subjects') or {}).get('share_mild'), 0)}/"
+                                   f"{pct((cl.get('_validation_test_subjects') or {}).get('share_moderate'), 0)}/{pct((cl.get('_validation_test_subjects') or {}).get('share_severe'), 0)} % (expected 50/40/10). "
+                                   f"Tuning PD tip tremor (peak, per subject): p10 {_f(q.get('p10'))}, p50 {_f(q.get('p50'))}, p75 {_f(q.get('p75'))}, p90 {_f(q.get('p90'))}, max {_f(q.get('max'))} mm; class representatives "
+                                   f"{_f(cl.get('mild',{}).get('representative_mm'))} / {_f(cl.get('moderate',{}).get('representative_mm'))} / {_f(cl.get('severe',{}).get('representative_mm'))} mm. "
                                    f"Classes: mild {_f(cl.get('mild',{}).get('range_mm',[0,0])[0])}-{_f(cl.get('mild',{}).get('range_mm',[0,0])[1])} mm, moderate {_f(cl.get('moderate',{}).get('range_mm',[0,0])[0])}-{_f(cl.get('moderate',{}).get('range_mm',[0,0])[1])} mm, severe {_f(cl.get('severe',{}).get('range_mm',[0,0])[0])}-{_f(cl.get('severe',{}).get('range_mm',[0,0])[1])} mm. "
                                    f"Frequency median {sm('uci_spiral/PD/kinetic','f0')} Hz; envelope CV median {sm('uci_spiral/PD/kinetic','env_cv')}; frequency wander SD {sm('uci_spiral/PD/kinetic','f_sd')} Hz. "
                                    f"{len(tl.get('duplicates_removed') or [])} byte-identical duplicate recordings removed across the sources."),
@@ -148,11 +179,15 @@ def rows(out: Dict) -> List[Dict]:
         citation="Pereira CR, Weber SAT, Hook C, Rosa GH, Papa JP. Deep learning-aided Parkinson's disease diagnosis from handwritten dynamics. SIBGRAPI 2016; NewHandPD signals (UNESP)",
         year="2016", doi_or_url="https://wwwp.fc.unesp.br/~papa/pub/datasets/Handpd/ ; http://sibgrapi.sid.inpe.br/col/sid.inpe.br/sibgrapi/2016/07.08.22.47/doc/opf-sibgrapi16.pdf",
         source_type="dataset", evidence_class="physical human study", access_level="full text (data and paper)",
-        task_or_setup="BiSP pen at 1000 samples/s: CH1 microphone, CH2 finger grip, CH3 axial refill pressure, CH4-6 tilt and acceleration X/Y/Z (sensor at the rear end, paper Fig. 3); spirals, meanders, circles",
+        task_or_setup=("Raw files: NewHandPD PatientSignal.zip and HealthySignal.zip (UNESP HandPD page), Signal/<task>-<P|H><n>.txt, tasks sigSp1-4 (spirals), sigMea1-4 (meanders), "
+                       "circA/circB (circles), sigDiaA/B (diadochokinesis); header '#<Samplerate>1000</Samplerate>' in every file, no per-sample time stamps (time = index / 1000); "
+                       "6 columns: CH1 microphone, CH2 finger grip, CH3 axial refill pressure, CH4-6 tilt and acceleration X/Y/Z (sensor at the rear end, paper Fig. 3). "
+                       "Study R preprocessing: byte-identical duplicates removed, gravity calibration of CH4-6 (sphere fit), 0.5 s trimmed at both ends, Welch 4 s"),
         participants_or_bench="31 PD (372 files), 35 healthy (420 files)", comparator="Healthy group",
         key_quantitative_findings=(f"DERIVED gravity calibration of CH4-6 (study R): offsets {', '.join(_f(v) for v in cal.get('offset', []))} units, gains {', '.join(_f(v) for v in cal.get('gain_ms2_per_unit', []))} m/s^2 per unit (about 1.46 units per g), residual {_f(cal.get('residual_rms_ms2'),3)} m/s^2 RMS over {cal.get('n_samples','n/a')} quasi-static samples. "
                                    f"Tremor line share PD {_f((summ.get('newhandpd/PD/kinetic') or {}).get('detected_share'))} vs healthy {_f((summ.get('newhandpd/control/kinetic') or {}).get('detected_share'))}; "
-                                   f"PD line frequency median {sm('newhandpd/PD/kinetic','f0')} Hz. The patient archive contains byte-identical files under two patient numbers (e.g. circB-P2 = circB-P25)."),
+                                   f"PD line frequency median {sm('newhandpd/PD/kinetic','f0')} Hz. The patient archive contains byte-identical files under two patient numbers (e.g. circB-P2 = circB-P25). "
+                                   "The header rate (1000/s) is consistent with the recordings: spiral durations median 20 s (PD) and 11 s (healthy) and PD tremor lines at 5-6 Hz; at 200/s (Tironi et al. 2025, PDT-83) they would be 100 s, 53 s and about 1.2 Hz"),
         units_and_conditions="m/s^2 (DERIVED); Hz", locator="results/realdata/realdata.json; SIBGRAPI 2016 Section III-A",
         limitations="No licence stated; controls younger (age confound, PDT-29); accelerometer at the pen's rear; no positions",
         relevance_to_design="Closest open analogue of the pen's own IMU in patients", transferability="medium",
@@ -207,31 +242,93 @@ def rows(out: Dict) -> List[Dict]:
         relevance_to_design="Trackers tuned on the smooth model meet more irregular tremor", transferability="medium", transferability_reason="Real recordings, few ET tip data",
         design_implication="Tune and test trackers on the real-waveform library (realdata.library.tremor)", retrieved=DATE, search_query="n/a (derived)", stream="PDT", lead_verification=""))
     R.append(dict(
-        id="EML-80", topic="TrOCR handwriting reader used as the 'words you can read' judge",
-        citation="Li M, Lv T, Chen J, Cui L, Lu Y, Florencio D, Zhang C, Li Z, Wei F. TrOCR: Transformer-based optical character recognition with pre-trained models. arXiv 2109.10282 (2021); model microsoft/trocr-small-handwritten (fine-tuned on IAM)",
-        year="2021", doi_or_url="https://arxiv.org/abs/2109.10282 ; https://huggingface.co/microsoft/trocr-small-handwritten", source_type="preprint",
-        evidence_class="numerical simulation", access_level="secondary account (model card read; paper not opened)",
-        task_or_setup="Encoder-decoder transformer reading a line image; used locally on rendered simulated ink (0.5 mm ink, 10 px/mm), greedy decoding",
-        participants_or_bench="n/a", comparator="Clean (tremor-free) ink of the same writing",
-        key_quantitative_findings=(f"Study R: reads {_f(10*float(((hw.get('clean') or {}).get('clean_real') or {}).get('none',{}).get('words_share') or float('nan')),1)} of 10 clean real words (BRUSH test writers) and 8.2 of 10 on tuning writers; the reader's own ceiling is reported with every result"),
-        units_and_conditions="words read exactly after word alignment", locator="realdata/ocr.py", limitations="An AI reader, not a person; trained on IAM (English); model card states no licence (code MIT)",
-        relevance_to_design="A reader that has never seen the writer, closer to a person than a template reader", transferability="medium",
-        transferability_reason="Standard handwriting OCR; human legibility may differ", design_implication="Confirm with human readers (EXP-R03)",
-        retrieved=DATE, search_query="huggingface_hub list_repo_files microsoft/trocr-small-handwritten", stream="EML", lead_verification=""))
+        id="EML-80", topic="TrOCR handwriting readers as the 'words you can read' judge (literal transcription)",
+        citation="Li M, Lv T, Chen J, Cui L, Lu Y, Florencio D, Zhang C, Li Z, Wei F. TrOCR: Transformer-based optical character recognition with pre-trained models. arXiv 2109.10282 (2021); models microsoft/trocr-small-handwritten and microsoft/trocr-base-handwritten (fine-tuned on IAM; model cards: MIT for base, none stated for small)",
+        year="2021", doi_or_url="https://arxiv.org/abs/2109.10282 ; https://huggingface.co/microsoft/trocr-base-handwritten", source_type="preprint",
+        evidence_class="numerical simulation", access_level="secondary account (model cards read; paper not opened)",
+        task_or_setup="Encoder-decoder transformer reading a line image; used locally on rendered ink (0.5 mm ink, 10 px/mm); greedy decoding, no lexicon, no spelling correction; a word counts only when it equals the intended word",
+        participants_or_bench="n/a", comparator="Clean (tremor-free) ink of the same notes",
+        key_quantitative_findings=(f"Reader chosen on TUNING notes by a rule fixed beforehand: small {pct((rc.get('microsoft/trocr-small-handwritten') or {}).get('share'), 0)} % vs base "
+                                   f"{pct((rc.get('microsoft/trocr-base-handwritten') or {}).get('share'), 0)} % of clean words read -> {rc.get('chosen', 'n/a')}. "
+                                   f"Test notes without tremor (the ceiling): {cw('PD', 'severe', 'none', 'clean_words_of_10')} of 10"),
+        units_and_conditions="words read exactly after word alignment; CER per line", locator="realdata/ocr.py; realdata.json reader",
+        limitations="An AI reader, not a person; its decoder has an implicit language prior from IAM text; pseudo-phrases with rare words are hard even when clean",
+        relevance_to_design="A reader that has never seen the writers, closer to a person than a template reader", transferability="medium",
+        transferability_reason="Standard handwriting OCR; human legibility may differ", design_implication="Confirm with a blinded human panel (EXP-R03)",
+        retrieved=DATE, search_query="huggingface.co/api/models/microsoft/trocr-base-handwritten", stream="EML", lead_verification=""))
     R.append(dict(
-        id="EML-81", topic="Headline pen comparison on real handwriting and real tremor (study R simulation, HW1)",
-        citation="This study's simulation (realdata/hw1.py): model HW1 with BRUSH test writers and UCI/Zenodo test tremor recordings",
+        id="EML-81", topic="Headline pen comparison on real handwriting and real tremor, with a measured-error page sensor (study R simulation, HW1)",
+        citation="This study's simulation (realdata/hw1.py): model HW1, UNIPEN hpb2 test writers, UCI PD and Zenodo ET test subjects' tremor at the data classes; page sensor ideal (bound) and DeltaPen-class (LIT OPT-02; pessimistic)",
         year="2026", doi_or_url="results/realdata/realdata.json", source_type="derived calculation", evidence_class="numerical simulation", access_level="full text",
-        task_or_setup="Ordinary pen, Rev H + tracker, Rev J + gated tracker, Rev J + TCN, Rev J perfect knowledge; data severity classes; words read by the AI reader",
-        participants_or_bench="Simulated (real recorded inputs)", comparator="Ordinary pen",
-        key_quantitative_findings=(f"Words read of 10 (ordinary / Rev J gated / Rev J limit): PD moderate {words('PD/moderate','none')} / {words('PD/moderate','revJ_gated')} / {words('PD/moderate','revJ_oracle')}; "
-                                   f"PD severe {words('PD/severe','none')} / {words('PD/severe','revJ_gated')} / {words('PD/severe','revJ_oracle')}; "
-                                   f"ET severe {words('ET/severe','none')} / {words('ET/severe','revJ_gated')} / {words('ET/severe','revJ_oracle')}. "
-                                   f"Bridge at 1 mm: ordinary pen {bw('syn_syn','none')} (synthetic inputs) -> {bw('real_real','none')} (real inputs); Rev J gated {bw('syn_syn','revJ_gated')} -> {bw('real_real','revJ_gated')}"),
-        units_and_conditions="words of 10; SIMULATION", locator="results/realdata/fig_words_read.png, fig_bridge_words.png",
-        limitations="Simulation; writer adapted to each pen; no human reader; Rev J is a PROPOSED DESIGN", relevance_to_design="What the pens change for real writing and tremor",
-        transferability="low", transferability_reason="Simulation with real inputs, not a measurement", design_implication="See docs/real_data.md",
+        task_or_setup="Ordinary pen, Rev H + tracker, Rev J + gated tracker, Rev J + TCN, Rev J perfect knowledge; one note of about 10 words per test writer; 95 % bootstrap over writers",
+        participants_or_bench="Simulated (real recorded inputs; 9 test writers)", comparator="Ordinary pen, same writer, note and tremor",
+        key_quantitative_findings=(f"Words read of 10, ordinary pen / Rev J gated (DeltaPen-class sensor) / Rev J limit: PD severe {cwi('PD','severe','none')} / {cwi('PD','severe','revJ_gated|deltapen')} / {cwi('PD','severe','revJ_oracle')}; "
+                                   f"ET severe {cwi('ET','severe','none')} / {cwi('ET','severe','revJ_gated|deltapen')} / {cwi('ET','severe','revJ_oracle')}; "
+                                   f"PD moderate {cw('PD','moderate','none')} / {cw('PD','moderate','revJ_gated|deltapen')} / {cw('PD','moderate','revJ_oracle')}. "
+                                   f"Tremor left at the tip, Rev J gated vs ordinary pen (amplitude ratio): PD severe {cw('PD','severe','revJ_gated|deltapen','tip_tremor_ratio',2)}, ET severe {cw('ET','severe','revJ_gated|deltapen','tip_tremor_ratio',2)}; "
+                                   f"with the ideal sensor {cw('PD','severe','revJ_gated','tip_tremor_ratio',2)} and {cw('ET','severe','revJ_gated','tip_tremor_ratio',2)}. "
+                                   f"Clean writing moved (false correction, tremor-free notes): Rev J gated {cw('PD','severe','revJ_gated|deltapen','false_correction_um',0)} um (DeltaPen-class) and {cw('PD','severe','revJ_gated','false_correction_um',0)} um (ideal); "
+                                   f"TCN {cw('PD','severe','revJ_tcn|deltapen','false_correction_um',0)} um"),
+        units_and_conditions="words of 10; mm peak at the tip in f0 +- 2 Hz; um RMS; SIMULATION", locator="results/realdata/fig_words_read.png, fig_tremor_left.png, fig_bridge_*.png",
+        limitations="Simulation; the writer adapts to each pen; healthy writers' notes plus patients' tremor (not patients' writing); AI reader; Rev J is a PROPOSED DESIGN; the DeltaPen-class sensor model gives all of the reference's error to the sensor",
+        relevance_to_design="What the pens change for real writing and tremor, and how much the page sensor matters", transferability="low",
+        transferability_reason="Simulation with real inputs, not a measurement", design_implication="See docs/real_data.md; measure the page sensor on paper (EXP-S01) before any claim",
         retrieved=DATE, search_query="n/a (derived)", stream="EML", lead_verification=""))
+    R.append(dict(
+        id="EML-82", topic="OnHW sensor-pen handwriting datasets (Fraunhofer IIS): licence, handedness and timestamps checked",
+        citation=("Fraunhofer IIS. Online Handwriting Recognition from Sensor-Enhanced Pens (OnHW datasets), project page and README; README reference [1]: Ott F, Ruegamer D, Heublein L, Hamann T, Barth J, Bischl B, Mutschler C. "
+                  "Benchmarking online sequence-to-sequence and character-based handwriting recognition from IMU-enhanced pens; dataset paper: The OnHW dataset: online handwriting recognition from IMU-enhanced ballpoint pens with machine learning. Proc ACM IMWUT 4(3), 2020 (title and DOI from the ACM listing)"),
+        year="2020", doi_or_url="https://doi.org/10.1145/3411842 ; https://www.iis.fraunhofer.de/de/ff/lv/dataanalytics/anwproj/schreibtrainer/onhw-dataset.html",
+        source_type="dataset", evidence_class="physical human study", access_level="secondary account (project page and README opened; paper not opened; data not downloaded)",
+        task_or_setup="STABILO DigiPen: front accelerometer and gyroscope (STM LSM6DSL), rear accelerometer (Freescale MMA8451Q), magnetometer (ALPS HSCDTD008A), force sensor (ALPS HSFPAR003A); characters, equations, words; writer-dependent and -independent 5-fold splits",
+        participants_or_bench="OnHW-chars 119 writers, 31,275 characters (search-result summary of the IMWUT paper); other sets as listed on the page",
+        comparator="n/a", key_quantitative_findings=("Page: 'Only right-handed recordings are released' (OnHW-chars; '_L' left-handed sets exist for some); timestamp 'Millis' = "
+                                                    "'The timestamp when the data were processed on the tablet computer that the pen was connected to during recording' (not acquisition time); "
+                                                    "no licence stated on the page or in the README (direct downloads)"),
+        units_and_conditions="n/a", locator="Project page sections Sensors, Sensor Data, Dataset; README.pdf", limitations="No licence: permission needed before use or redistribution; recognition benchmark without page trajectory or tremor ground truth",
+        relevance_to_design="The recognition-and-spelling dataset of the programme (study S), not a tremor or tracker input", transferability="medium",
+        transferability_reason="Same sensing modality as the pen (IMU and force), healthy writers", design_implication="Request the licence before use (EXP-R06); keep it out of the natural-handwriting dataset",
+        retrieved=DATE, search_query="WebSearch: OnHW dataset Fraunhofer IIS; https://www2.iis.fraunhofer.de/LV-OnHW/README.pdf", stream="EML", lead_verification=""))
+    R.append(dict(
+        id="PDT-81", topic="Primary writing tremor overlaps the frequency of normal writing oscillation",
+        citation="Bain PG, Findley LJ, Britton TC, Rothwell JC, Gresty MA, Thompson PD, Marsden CD. Primary writing tremor. Brain 1995;118(6):1461-1472",
+        year="1995", doi_or_url="https://doi.org/10.1093/brain/118.6.1461 ; PMID 8595477", source_type="journal", evidence_class="physical human study",
+        access_level="abstract only (PubMed)", task_or_setup="Clinical and neurophysiological study: surface polymyography and accelerometry during writing",
+        participants_or_bench="21 patients with primary writing tremor (20 male); healthy controls", comparator="Healthy control subjects",
+        key_quantitative_findings="Accelerometry: writing tremor 4.1-7.3 Hz (median 5.5 Hz); normal subjects wrote with a 4.0-7.7 Hz oscillation (median 4.6 Hz); EMG rhythmic activity 4.1-7.3 Hz; writing speed 73.1 +- 6.6 vs 127.7 +- 6.4 letters/min (mean +- SEM)",
+        units_and_conditions="Hz; letters per minute", locator="Abstract", limitations="Abstract only; task-specific tremor, small cohort; not ET or PD",
+        relevance_to_design="A frequency band alone cannot separate tremor from writing movement", transferability="medium",
+        transferability_reason="Writing task, accelerometry; primary writing tremor is a specific group",
+        design_implication="Trackers must not rely on a 4-8 Hz notch; evaluate false correction on real writing (REQ-DATA-003)",
+        retrieved=DATE, search_query="NCBI E-utilities efetch PMID 8595477", stream="PDT", lead_verification=""))
+    R.append(dict(
+        id="PDT-82", topic="Essential tremor measured in writing and drawing on a digitising tablet; weak link to wrist tremor",
+        citation="Elble RJ, Brilliant M, Leffler K, Higgins C. Quantification of essential tremor in writing and drawing. Mov Disord 1996;11(1):70-78",
+        year="1996", doi_or_url="https://doi.org/10.1002/mds.870110113 ; PMID 8771070", source_type="journal", evidence_class="physical human study",
+        access_level="abstract only (PubMed)", task_or_setup="Cursive e's and l's on ruled paper mounted on a digitising tablet (ballpoint); Archimedes spirals (40 patients); triaxial accelerometer on the extended hand",
+        participants_or_bench="87 ET patients, 15-84 years (mean 61.8)", comparator="Postural wrist accelerometry",
+        key_quantitative_findings="Detectable change in 30 patients (p = 0.01, power 90 %): 36.0 % in writing acceleration amplitude and 8.3 % in frequency; wrist-writing correlations < 0.60 (amplitude) and < 0.25 (frequency); very severe tremor could not be recorded when the pen left the tablet",
+        units_and_conditions="cm/s^2, Hz", locator="Abstract", limitations="Abstract only; amplitude as acceleration; missing contact biases severe cases",
+        relevance_to_design="Wrist or hand tremor does not predict writing tremor well; severe cases lose contact",
+        transferability="high", transferability_reason="ET writing on paper on a tablet",
+        design_implication="Record ink and pen-up time at the tip (EXP-R01); treat the hand-based ET waveforms here as shape, not size",
+        retrieved=DATE, search_query="NCBI E-utilities efetch PMID 8771070", stream="PDT", lead_verification=""))
+    R.append(dict(
+        id="PDT-83", topic="A smart-pen study that reuses the NewHandPD signals: which files, what timing",
+        citation="Tironi JC, Fernandes A, Borges RC, Silva LA, Parreira WD. A smart pen prototype with adaptive algorithms for stabilizing handwriting tremor signals in Parkinson's disease. Sci Rep 2025;15:28659",
+        year="2025", doi_or_url="https://doi.org/10.1038/s41598-025-14196-5 ; PMC12325923", source_type="journal", evidence_class="numerical simulation",
+        access_level="full text (Europe PMC XML; CC BY-NC-ND 4.0)",
+        task_or_setup="Fx-LMS, Fx-NLMS, RLS and Kalman filters simulated on NewHandPD spiral signals; Teensy 4.1 implementation; orbital shaking table; coin vibration motor",
+        participants_or_bench="Signals of 31 PD patients (one trial each); no human participants in device validation",
+        comparator="Between algorithms (MSE, convergence)",
+        key_quantitative_findings=("'the hand tremor signals of 31 PD patients, available in the NewHandPD dataset, were used ... derived from the dynamic trajectory data recorded by the BiSP device during spiral drawing tasks'; "
+                                   "'the full acquisition included motion data recorded at 200 Hz'; Data availability cites the HandPD image repository (736 JPEG images). "
+                                   "The signal files carry '#<Samplerate>1000</Samplerate>', and study R's durations and tremor frequencies support 1000/s (PDT-76); the paper names no file, column or preprocessing"),
+        units_and_conditions="dB MSE; no amplitude in mm", locator="Materials and methods; Data availability", limitations="Signal provenance not specified beyond the task; rate stated differently from the files; MSE is not ink",
+        relevance_to_design="An open algorithm baseline on the same patient signals; its timing must be reconciled before reuse", transferability="low",
+        transferability_reason="Vibration motor and signal MSE, no physical ink outcome",
+        design_implication="If the programme reuses NewHandPD signals, use the files' 1000/s header, name the files (sigSp1-4) and report ink outcomes",
+        retrieved=DATE, search_query="Europe PMC fullTextXML PMC12325923", stream="PDT", lead_verification=""))
     return R
 
 

@@ -118,10 +118,12 @@ def ceiling_collar(tau_cap: float, f: float, A: float, r_rot: float, z_p: float 
     return {"res": L.amp(torch.tensor(r)), "x0": L.amp(torch.tensor(x0)), "tau_needed": float(np.max(np.abs(u))), "scale": sc}
 
 
-def tmd_response(m: float, f_tune: float, zeta: float, f: float, r_rot: float, A: float = 1e-3, z: float = 0.160) -> Dict:
+def tmd_response(m: float, f_tune: float, zeta: float, f: float, r_rot: float, A: float = 1e-3, z: float = 0.160,
+                 grip_scale: float = 1.0) -> Dict:
     k = m * (TWO_PI * f_tune) ** 2
     c = 2 * zeta * math.sqrt(k * m)
-    mdl0 = L.Model(hand=L.HandP(r_rot=r_rot), tail=pen_with_tail(12e-3, z), c_paper=3.0)       # frame fixed on the pen
+    hp = L.HandP(r_rot=r_rot, grip_scale=grip_scale)
+    mdl0 = L.Model(hand=hp, tail=pen_with_tail(12e-3, z), c_paper=3.0)       # frame fixed on the pen
     x0 = L.amp(L.frf_tremor(mdl0, f, A))
     mdl = replace(mdl0, tmd=L.TMD(m=m, z=z, k=k, c=c))
     asm = L.Assembly(mdl)
@@ -129,10 +131,10 @@ def tmd_response(m: float, f_tune: float, zeta: float, f: float, r_rot: float, A
     X = asm.solve(w, asm.exc_tremor(w, L.tremor_dirs() * A))
     x = L.amp(asm.tip(X))
     stroke = float(np.max(np.abs((asm.E_tmd.to(L.CT) @ X).detach().numpy())))
-    mdl_rigid = L.Model(hand=L.HandP(r_rot=r_rot), tail=pen_with_tail(12e-3 + m, z), c_paper=3.0)
+    mdl_rigid = L.Model(hand=hp, tail=pen_with_tail(12e-3 + m, z), c_paper=3.0)
     xr = L.amp(L.frf_tremor(mdl_rigid, f, A))
     return {"ratio_vs_frame": x / x0, "ratio_vs_same_mass_fixed": x / xr, "stroke_mm_per_mm": stroke / A,
-            "x0_mm_per_mm": x0 / A}
+            "x0_mm_per_mm": x0 / A, "x": x, "x0": x0, "x_rigid": xr}
 
 
 def nose_residual(handle_pk: float) -> float:

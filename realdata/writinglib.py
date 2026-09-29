@@ -95,6 +95,12 @@ class Stroke:
     t: np.ndarray               # (n,) s, from 0
     xy: np.ndarray              # (n, 2) m
     char: np.ndarray            # (n,) index into the note's text, -1 unknown
+    air: Optional[np.ndarray] = None    # (m, 2) m: the RECORDED in-air points before this stroke (proximity), if any
+    air_fs: float = 0.0                 # their sample rate (Hz)
+
+
+AIR_GAP_MAX = 2.0e-3            # recorded in-air path used only if it joins both strokes within 2 mm (else the pen
+                                # left the digitiser's proximity range and the timing is unknown)
 
 
 @dataclass
@@ -127,11 +133,33 @@ def assemble(strokes: Sequence[Stroke], text: str, *, dt: float = SIM_DT, height
         t_cur += n / fs
 
     emit(np.repeat(p[None, :], int(0.2 * fs), 0), False, -np.ones(int(0.2 * fs), int), -1, np.full(int(0.2 * fs), LIFT_H))
+    n_rec_air = 0
     for si, st in enumerate(strokes):
         v1 = _end_velocity(st.t, st.xy, "start")
         d = float(np.hypot(*(st.xy[0] - p)))
         T = AIR_BASE_S + d / AIR_SPEED
-        air = _quintic_hermite(p, v, st.xy[0], v1, T, fs)
+        A = st.air if (st.air is not None and si > 0) else None
+        if A is not None and len(A) >= 1 and st.air_fs > 0 and \
+                float(np.hypot(*(A[0] - p))) <= AIR_GAP_MAX and float(np.hypot(*(A[-1] - st.xy[0]))) <= AIR_GAP_MAX:
+            # the recorded hover path and its real duration (cubic spline through the recorded points, clamped to
+            # the strokes' end velocities)
+            m = len(A)
+            ta = np.arange(m + 2) / st.air_fs
+            pts = np.vstack([p[None, :], A, st.xy[0][None, :]])
+            keep = np.concatenate([[True], np.hypot(*np.diff(pts, axis=0).T) > 0]) | (np.arange(m + 2) == m + 1)
+            ta_, pts_ = ta[keep], pts[keep]
+            if len(ta_) >= 3:
+                cs = CubicSpline(ta_, pts_, axis=0, bc_type=((1, v), (1, v1)))
+                air = cs(np.arange(0.0, ta_[-1], 1.0 / fs))
+                n_rec_air += 1
+            else:
+                air = _quintic_hermite(p, v, st.xy[0], v1, max(T, (m + 1) / st.air_fs), fs)
+        elif A is not None and st.air_fs > 0:
+            air = _quintic_hermite(p, v, st.xy[0], v1, max(T, (len(A) + 1) / st.air_fs), fs)
+        else:
+            air = _quintic_hermite(p, v, st.xy[0], v1, T, fs)
+        if len(air) < 2:
+            air = _quintic_hermite(p, v, st.xy[0], v1, T, fs)
         s = np.arange(len(air)) / len(air)
         emit(air, False, -np.ones(len(air), int), -1, LIFT_H * np.sin(np.pi * s) ** 2 + (LIFT_H if si == 0 else 0.0) * (1 - s) ** 3)
         # the stroke, resampled at fs by a cubic spline of its own samples (its duration kept)
@@ -170,7 +198,8 @@ def assemble(strokes: Sequence[Stroke], text: str, *, dt: float = SIM_DT, height
     xh = height_m / TPA_PER_XHEIGHT
     style = WriterStyle(x_height_mm=xh * 1e3, slant_deg=0.0, width=1.0)
     real = {"source": source, "writer": writer, "letter_height_mm": height_m * 1e3, "x_height_mm": xh * 1e3,
-            "duration_s": float(t[-1]), "pen_down_s": float(down.sum() * dt), **(meta or {})}
+            "duration_s": float(t[-1]), "pen_down_s": float(down.sum() * dt), "recorded_air_moves": int(n_rec_air),
+            "air_moves": int(len(strokes)), **(meta or {})}
     # time span of each written line (for the reader): from the line's first to its last pen-down sample
     if real.get("lines"):
         starts = np.cumsum([0] + [len(l) + 1 for l in real["lines"][:-1]])
@@ -387,44 +416,73 @@ def brush_writers(split: str, stats: Optional[Dict] = None, min_lower: int = 6) 
 
 
 # ================================================================== UNIPEN notes (ballpoint on paper, clean digitiser)
-UNIPEN_CONTRIBUTORS = ("hpp",)       # selected by the kinematics rule below (kinematics.unipen_survey), before any HW1 run
+UNIPEN_SETUPS = ("hpp/hpb2",)       # selected by kinematics.unipen_survey (rule below), before any HW1 run on UNIPEN
 UNIPEN_INDEX_JSON = CACHE_DIR / "unipen_index.json"
-UNIPEN_RULE = ("contributors whose pooled text lines have <= 2.5 % of the pen-down velocity energy at 8-12 Hz and <= 3 % "
-               "above 12 Hz (a clean digitiser; real writing on paper has 1.3-1.7 %, LIT CON-25), a mean pen-down speed of "
-               "15-60 mm/s (adult range, LIT CON-20), >= 100 samples/s and >= 15 points/mm, and >= 10 writers: 'hpp' "
-               "(Stanford University / HP Labs, Wacom 420-510C, ballpoint refill on preprinted paper forms, 100 Hz, 0.05 mm)")
+UNIPEN_RULE = ("recording setups (contributor + documentation file = one device, surface, rate and resolution) of UNIPEN "
+               "category 8, measured on lines of lower-case words with the one kinematics function: <= 2.5 % of the "
+               "pen-down velocity energy at 8-12 Hz and <= 3 % above 12 Hz (a clean digitiser; LIT CON-25: 1.3-1.7 %), "
+               "mean pen-down speed 15-60 mm/s (LIT CON-20), 100-250 samples/s, >= 15 points/mm, >= 10 writers, writing "
+               "on paper.  Only 'hpp/hpb2' passes: HP Labs Palo Alto staff, 1992, Wacom 420-510C, untethered inking pen "
+               "with a ballpoint refill on preprinted paper forms, 100 samples/s, 500 points/inch (0.05 mm), 14 writers")
+UNIPEN_FILE_SPLIT_NOTE = ("one file = one writer = one session (hpb2 documentation).  Writers are split before any note "
+                          "is made (rank of a hash: 40 %, i.e. 5 of 14, tuning).  The prompts come from one stack of "
+                          "forms, so every text line was written by 2-12 writers: the distinct line TEXTS are split too "
+                          "(hash, 40 % tuning), and a note uses only lines whose text is in its writer's split "
+                          "(writer-disjoint and text-disjoint)")
 
 
-def unipen_index(contributors: Sequence[str] = UNIPEN_CONTRIBUTORS, log=print) -> Dict:
+def rank_split(keys: Sequence[str], salt: str, share: float = SPLIT_TUNING_SHARE) -> Dict[str, str]:
+    """Exactly floor(share x n) keys to 'tuning' (lowest sha1 of salt:key), the rest to 'test'."""
+    ks = sorted(keys, key=lambda k: hashlib.sha1(f"{salt}:{k}".encode()).hexdigest())
+    n_t = int(share * len(ks))
+    return {k: ("tuning" if i < n_t else "test") for i, k in enumerate(ks)}
+
+
+def unipen_index(setups: Sequence[str] = UNIPEN_SETUPS, log=print) -> Dict:
     """writer (file) -> lower-case word segments (index in the file, label, words), cached."""
     if UNIPEN_INDEX_JSON.exists():
         d = json.loads(UNIPEN_INDEX_JSON.read_text())
-        if d.get("contributors") == list(contributors):
+        if d.get("setups") == list(setups):
             return d
     import glob as _glob
     out = {}
-    for c in contributors:
+    for setup in setups:
+        c, doc = setup.split("/")
         for path in sorted(_glob.glob(str(L.UNIPEN_ROOT / "data" / "8" / c / "**" / "*.dat"), recursive=True)):
             f = L.unipen_file(path)
-            if f is None:
+            if f is None or f["doc"] != doc:
                 continue
             segs = []
             for si, sg_ in enumerate(f["segments"]):
                 lab = sg_["label"].strip()
-                if sg_["level"] == "TEXT" and _is_words(lab):
+                if sg_["level"] == "TEXT" and _is_words(lab) and (sg_.get("quality") or "OK") != "BAD":
                     segs.append({"i": si, "label": lab, "n_words": len(lab.split())})
             w = os.path.relpath(path, L.UNIPEN_ROOT / "data" / "8")
             out[w] = {"path": path, "segments": segs, "pps": f["pps"], "res_x_per_mm": f["res_x_per_mm"],
-                      "device": f["device"], "pen": f["pen"], "split": split_of("unipen", w)}
-    d = {"contributors": list(contributors), "writers": out, "rule": UNIPEN_RULE}
+                      "device": f["device"], "pen": f["pen"], "surface": f["surface"], "setup": setup}
+    wsplit = rank_split(list(out), "unipen-writer")
+    texts = sorted({sg_["label"] for v in out.values() for sg_ in v["segments"]})
+    tsplit = {t_: split_of("unipen-text", t_) for t_ in texts}
+    for w, v in out.items():
+        v["split"] = wsplit[w]
+        for sg_ in v["segments"]:
+            sg_["text_split"] = tsplit[sg_["label"]]
+    d = {"setups": list(setups), "writers": out, "rule": UNIPEN_RULE, "split_note": UNIPEN_FILE_SPLIT_NOTE,
+         "n_texts": {"tuning": sum(1 for v in tsplit.values() if v == "tuning"),
+                     "test": sum(1 for v in tsplit.values() if v == "test")}}
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     UNIPEN_INDEX_JSON.write_text(json.dumps(d))
     return d
 
 
+def _unipen_pool(v: Dict) -> List[Dict]:
+    """The lines a note may use: those whose text belongs to the writer's split (writer- and text-disjoint)."""
+    return [sg_ for sg_ in v["segments"] if sg_.get("text_split") == v["split"]]
+
+
 def unipen_writers(split: str, index: Optional[Dict] = None, min_segments: int = 6) -> List[str]:
     index = index or unipen_index()
-    return sorted(w for w, v in index["writers"].items() if v["split"] == split and len(v["segments"]) >= min_segments)
+    return sorted(w for w, v in index["writers"].items() if v["split"] == split and len(_unipen_pool(v)) >= min_segments)
 
 
 @lru_cache(maxsize=4)
@@ -434,17 +492,19 @@ def _unipen_parsed(path: str) -> Dict:
 
 def unipen_note(w: str, seed: int = 0, n_words: int = 10, dt: float = SIM_DT, index: Optional[Dict] = None,
                 max_lines: int = 6) -> Optional[RealWritten]:
-    """A note of about n_words real words by UNIPEN writer w: lower-case word segments (seeded choice), one per line,
-    each with its recorded pen-down timing and shape in documented physical units; pen-up moves added (ASSUMPTION,
-    as the other sources)."""
+    """A note of about n_words real words by UNIPEN writer w: lines of lower-case words (seeded choice), one per ruled
+    line, each with its recorded pen-down strokes and, where the digitiser tracked the hovering pen, its recorded
+    in-air path and timing between strokes (documented physical units).  Line changes are added moves (ASSUMPTION)."""
     index = index or unipen_index()
     v = index["writers"].get(w)
-    if not v or len(v["segments"]) < 2:
+    if not v:
+        return None
+    pool = _unipen_pool(v)
+    if len(pool) < 2:
         return None
     f = _unipen_parsed(v["path"])
     comps = f["components"]
     rng = np.random.default_rng(int(hashlib.sha1(f"unipen-note:{w}:{seed}".encode()).hexdigest()[:8], 16))
-    pool = list(v["segments"])
     order = rng.permutation(len(pool))
     chosen, words = [], 0
     for k in order:
@@ -460,38 +520,46 @@ def unipen_note(w: str, seed: int = 0, n_words: int = 10, dt: float = SIM_DT, in
     for sg_ in chosen:
         seg = f["segments"][sg_["i"]]
         ids = [i for i in L._range_ids(seg["range"]) if i < len(comps)]
-        strokes = [comps[i][1] / res for i in ids if comps[i][0] and len(comps[i][1]) >= 3]
-        if strokes:
-            lines.append((sg_["label"], strokes))
+        ss, air = [], None
+        for i in ids:
+            down, P = comps[i]
+            if not down:
+                air = P / res if len(P) else None
+                continue
+            if len(P) >= 3:
+                ss.append((P / res, air))
+            air = None
+        if ss:
+            lines.append((sg_["label"], ss))
     if not lines:
         return None
-    # physical size: the median height of the strokes (m) of the chosen lines, as a letter-height proxy
-    hts = [float(np.ptp(s[:, 1])) for _, ss in lines for s in ss if len(s) >= 3]
-    h_line = [float(np.ptp(np.vstack(ss)[:, 1])) for _, ss in lines]
-    height = float(np.percentile(hts, 75)) if hts else 5e-3
+    # physical size is as recorded.  Letter height (metadata only; the project's 'T, p, a' height): the median over the
+    # lines of the 5-95 % vertical span of the pen-down points x 0.55 (ASSUMPTION: a line with ascenders and
+    # descenders spans about 2.5 x-heights; T, p, a average 1.367 x-heights)
+    spans_y = [float(np.percentile(np.vstack([s_ for s_, _a in ss])[:, 1], 95) -
+                     np.percentile(np.vstack([s_ for s_, _a in ss])[:, 1], 5)) for _, ss in lines]
+    h_line = [float(np.ptp(np.vstack([s_ for s_, _a in ss])[:, 1])) for _, ss in lines]
+    height_tpa = 0.55 * float(np.median(spans_y)) if spans_y else 5e-3
     pitch = max(8e-3, 1.25 * float(np.percentile(h_line, 90)))
     strokes_out: List[Stroke] = []
-    spans = []
     off = 0
     text = " ".join(lab for lab, _ in lines)
     for li, (lab, ss) in enumerate(lines):
-        P = np.vstack(ss)
-        # y of the recording: UNIPEN tablets grow y upwards or downwards; keep the writing upright by the sign that
-        # puts the line's ascenders above its body (most lower-case strokes start high and end low is not reliable):
-        # the pen-down path's median slope of consecutive letters is not used; the page orientation of each
-        # contributor is documented by its y dimension (hpp: y grows upwards on the Wacom 510C)
+        P = np.vstack([s_ for s_, _a in ss])
+        # the hpb2 tablet's y grows upwards (checked on descenders: see tests); each line is shifted so that its top
+        # sits on its ruled line position and its left end at x = 0
         shift = np.array([-P[:, 0].min(), -li * pitch - P[:, 1].max()])
-        # every stroke of the line gets the character index of the line's first word start (letters unknown)
-        t0_line = None
-        for s in ss:
-            n = len(s)
-            strokes_out.append(Stroke(t=np.arange(n) / f["pps"], xy=s + shift, char=np.full(n, off)))
-        spans.append(li)
+        for j, (s_, a_) in enumerate(ss):
+            n = len(s_)
+            strokes_out.append(Stroke(t=np.arange(n) / f["pps"], xy=s_ + shift, char=np.full(n, off),
+                                      air=(a_ + shift) if (a_ is not None and j > 0) else None, air_fs=f["pps"]))
         off += len(lab) + 1
     meta = {"recordings": [f"unipen/{w}#{sg_['i']}" for sg_ in chosen], "lines": [lab for lab, _ in lines],
-            "split": v["split"], "units": "documented (UNIPEN header)", "device": v["device"], "pen": v["pen"],
+            "split": v["split"], "units": "documented (UNIPEN header: 500 points/inch, 100 samples/s)",
+            "device": v["device"], "pen": v["pen"], "surface": v.get("surface", ""), "setup": v.get("setup", ""),
             "licence": "UNIPEN: research use only (iUF notice)", "letters": "not labelled (one pseudo-letter per stroke)"}
-    return assemble(strokes_out, text, dt=dt, height_m=height * TPA_PER_XHEIGHT, writer=f"unipen/{w}", source="unipen",
+    meta["letter_height_rule"] = "0.55 x median line span (5-95 %) of the pen-down points (ASSUMPTION; metadata only)"
+    return assemble(strokes_out, text, dt=dt, height_m=height_tpa, writer=f"unipen/{w}", source="unipen",
                     meta=meta, per_stroke_letters=True)
 
 

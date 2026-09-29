@@ -2,6 +2,7 @@ r"""One command for the Rev J closed-loop study in sim2 (SIMULATION):
 
     python3 -m sim2j.run_study --stages et            (one stage; rows are cached in sim2j/build and resumed)
     python3 -m sim2j.run_study --quick --stages et    (a smoke run: one writer, one cell)
+    SIM2J_WRITERS=4 python3 -m sim2j.run_study --stages et   (the ET grid for one writer per process: memory)
 
 Stages (each writes results/sim2j/<stage>.json with stabpen.provenance; rows are cached in sim2j/build/<stage>_rows.json
 so a stopped run resumes where it stopped):
@@ -18,6 +19,8 @@ so a stopped run resumes where it stopped):
   arm         the 'arm' hand model subset
   dt          25 us step check of a subset
   power       refill-spring sensitivity of the nose's coil power (static ball load)
+  page_noise  page-sensor sensitivity: sim2's 3 um white noise against a DeltaPen-like error model (writers 0-1)
+  power_split where the nose's coil power goes (nominal, no Hall noise, no bias current, 0.075 N spring; writer 0)
   report      figures (+ CSV twins), samples.json, the viewer replay
 Every number is labelled SIM or CALC on synthetic writers and tremor: sim2 ranks concepts (COU-1) until EXP-V01/V02/V04
 calibrate it and EXP-V05 validates it.
@@ -161,6 +164,142 @@ def stage_tune(quick: bool = False) -> None:
     TU.freeze(res, extra={"tuning_rows_files": ["sim2j/build/tune_guard_rows.json", "sim2j/build/tune_guard_gl_rows.json"],
                           "tuning_wall_s": res.get("elapsed_s")})
     log(f"[tune] frozen {res['chosen']} in {time.time() - t0:.0f} s")
+
+
+# ------------------------------------------------------------------------------------------------ ET
+ET_F0 = (4.0, 8.0, 12.0)
+ET_AMP = (0.3e-3, 1.0e-3, 2.0e-3)
+# every controller on the first test seed of each writer (6 cases per cell; the TCN replay at 0.3 and 1 mm only);
+# 'none', 'nose' and 'oracle' also on the second seed when the stage is run with second_seed=True (12 cases per cell)
+ET_CTL = ("none", "nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "oracle", "tcn")
+ET_SECOND = ("none", "nose", "oracle")
+ET_CLEAN = ("nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "tcn")
+
+
+def et_seeds(w: int) -> List[int]:
+    """Two of the test seeds per writer, rotating (each seed three times per cell)."""
+    return [TEST_SEEDS[w % 4], TEST_SEEDS[(w + 2) % 4]]
+
+
+def _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, pol=None):
+    if ctl == "tcn":
+        return LR.run_case(su, f0, amp, seed, r_none)
+    if pol is not None:
+        return ET.run_case(su, "rl", f0, amp, seed, ref_none=r_none if amp > 0 else None, policy=pol)
+    if amp <= 0:
+        return ET.run_case(su, ctl, 0.0, 0.0, seed)
+    return ET.run_case(su, ctl, f0, amp, seed, ref_none=r_none)
+
+
+def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows_name: str = "et",
+             writers=TEST_WRITERS, include_model_based: bool = True, first_seed_only: bool = False,
+             second_seed: bool = False, only_second: bool = False) -> Dict:
+    """The ET test grid.  controllers_extra: {'rl': policy} adds RL cases."""
+    from . import et as ET
+    from . import learned_replay as LR
+    rows = Rows(rows_name)
+    pens = ET.PenModels()
+    f0s, amps = (ET_F0, ET_AMP) if not quick else ((8.0,), (1.0e-3,))
+    ws = writers if not quick else writers[:1]
+    env_w = [int(x) for x in os.environ.get("SIM2J_WRITERS", "").split(",") if x.strip()]
+    if env_w:                     # one writer per process (the full stage's process grew to 11.5 GB over four writers)
+        ws = [w for w in ws if w in env_w]
+    extra = dict(controllers_extra or {})
+    ctl_all = (list(ET_CTL) if include_model_based else ["none"]) + list(extra.keys())
+    if not LR.available():
+        ctl_all = [c for c in ctl_all if c != "tcn"]
+    clean_all = (list(ET_CLEAN) if include_model_based else []) + list(extra.keys())
+    clean_all = [c for c in clean_all if c in ctl_all]
+    t0 = time.time()
+    for w in ws:
+        setups = {}
+
+        def su_for(pen):
+            if pen not in setups:
+                setups[pen] = ET.WriterSetup(w, pens, pen=pen, log=log)
+            return setups[pen]
+        seeds = et_seeds(w)[:1] if (quick or first_seed_only or not second_seed) else et_seeds(w)
+        for si, seed in enumerate(seeds):
+            if only_second and si == 0:
+                continue
+            ctls_here = ctl_all if si == 0 else [c for c in ctl_all if c in ET_SECOND]
+            # tremor-free writing (false correction against the device-off pen with the same seed)
+            for ctl in [c for c in clean_all if c in ctls_here]:
+                key = f"clean|{w}|{seed}|{ctl}"
+                if rows.has(key):
+                    continue
+                su = su_for(ET.PEN_OF.get(ctl, "base"))
+                ref = su.clean_ref(seed)
+                m = _run_ctl(ET, LR, su, ctl, 0.0, 0.0, seed, ref, extra.get(ctl))
+                m.update({"kind": "clean", "ctl": ctl})
+                rows.put(key, m)
+                log(f"[{rows_name}] w{w} s{seed} clean {ctl}: moved {m['moved_vs_clean_um']:.1f} um, "
+                    f"P {m['P_total_W']:.2f} W")
+            for f0 in f0s:
+                for amp in amps:
+                    cell = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|"
+                    for pen in ("base", "endcap"):
+                        todo = [c for c in ctls_here if c != "none" and ET.PEN_OF.get(c, "base") == pen
+                                and not rows.has(cell + c) and not (c == "tcn" and amp > 1.5e-3)]
+                        if not todo and (pen != "base" or rows.has(cell + "none")):
+                            continue
+                        su = su_for(pen)
+                        rn = ET.run_case(su, "none", f0, amp, seed, keep=True, record=True)
+                        r_none = rn.pop("_r")
+                        nk = "none" if pen == "base" else "none_endcap_pen"
+                        rows.put(cell + nk, dict(rn, kind="tremor", ctl=nk))
+                        for ctl in todo:
+                            m = _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, extra.get(ctl))
+                            m.update({"kind": "tremor", "ctl": ctl, "none_ink_err_um": rn["ink_err_um"],
+                                      "ratio": m["ink_err_um"] / max(rn["ink_err_um"], 1e-9)})
+                            rows.put(cell + ctl, m)
+                    done = [r for k, r in rows.rows.items() if k.startswith(cell)]
+                    log(f"[{rows_name}] w{w} s{seed} {f0:g} Hz {amp * 1e3:g} mm: " + ", ".join(
+                        f"{r['ctl']} {r['ink_err_um']:.0f}" for r in done) + f"  ({time.time() - t0:.0f} s)")
+            rows.save()
+    rows.save()
+    return summarise_et(rows.values(), rows_name, quick)
+
+
+def summarise_et(rows: List[Dict], name: str = "et", quick: bool = False) -> Dict:
+    tr = [r for r in rows if r.get("kind") == "tremor"]
+    cl = [r for r in rows if r.get("kind") == "clean"]
+    keys = ("ink_err_um", "ratio", "letters_read", "words_app", "ink_err_intended_um", "device_share", "felt_rms_N",
+            "felt_p95_N", "P_total_W", "P_nose_W", "P_wheel_W", "P_endcap_W", "battery_h", "wheel_F_rms_N",
+            "wheel_slide_share", "f_est_median", "f_at_bound_share", "guard_events")
+    by_cell = agg(tr, keys, by=("f0", "amp_mm", "ctl"))
+    by_amp = agg(tr, keys, by=("amp_mm", "ctl"))
+    by_ctl = agg(tr, keys, by=("ctl",))
+    clean = agg(cl, ("moved_vs_clean_um", "P_total_W", "P_nose_W", "letters_read", "words_app"), by=("ctl",))
+    clean_max = {}
+    for r in cl:
+        clean_max[r["ctl"]] = max(clean_max.get(r["ctl"], 0.0), float(r.get("moved_vs_clean_um") or 0.0))
+    cover = {}
+    for r in tr:
+        cover.setdefault(int(r["w"]), set()).add(f"{r['f0']:g} Hz x {r['amp_mm']:g} mm")
+    coverage = {f"writer {w}": {"seeds": sorted({int(r['seed']) for r in rows if r.get('w') == w}),
+                                "cells": len(c), "complete": len(c) == len(ET_F0) * len(ET_AMP)}
+                for w, c in sorted(cover.items())}
+    body = {"what": "Essential tremor with the Rev J pen (H1 hand, v2 writers, 'return library'), the test writers "
+                    "and seeds actually run are listed in 'coverage' (planned: writers 0-5, seeds 200-203); tremor "
+                    "4/8/12 Hz x 0.3/1/2 mm (stabpen tremor model)",
+            "coverage": coverage,
+            "unfinished": [f"writer {w}" for w in TEST_WRITERS if not coverage.get(f"writer {w}", {}).get("complete")],
+            "labels": {"ink_err_um": "SIM: rms distance of the in-contact ink to the writer's clean-ink letters "
+                                     "(letter-wise nearest point)",
+                       "ratio": "SIM: ink error / ink error of the device-off pen in the same case",
+                       "letters_read": "SIM: share of letters the app's recogniser reads as the intended letter",
+                       "words_app": "SIM: share of words the app reads correctly after its autocorrect",
+                       "device_share": "SIM: share of the ink motion that comes from the device (authorship)",
+                       "felt_rms_N": "SIM: rms change of the grip force on the hand against the device-off run",
+                       "P_total_W": "CALC on SIM: mean electrical power incl. 0.077 W electronics",
+                       "moved_vs_clean_um": "SIM: false correction, rms ink moved on tremor-free writing against the "
+                                            "device-off pen with the same seed (rule <= 25 um)"},
+            "by_cell": by_cell, "by_amp": by_amp, "by_ctl": by_ctl, "clean": clean, "clean_max_um": clean_max,
+            "n_rows": len(rows), "quick": quick}
+    if not quick:
+        write_result(name, body, seeds=list(TEST_SEEDS))
+    return body
 
 
 # ------------------------------------------------------------------------------------------------ writers
@@ -586,6 +725,147 @@ def stage_power(quick: bool = False) -> Dict:
     return body
 
 
+# ------------------------------------------------------------------------------------------------ power split
+def stage_power_split(quick: bool = False) -> Dict:
+    """Where the nose's coil power goes (SIM; the breakdown of docs/revJ_simulation.md 8.1, for reuse by other
+    studies): test writer 0 (v2), seed 200, tremor-free writing after the 4 s rest, nose held centred (device off), H1
+    hand, 50 us.  Variants: the nominal pen; without the nose's Hall-sensor noise; without sim2's contact-gated bias
+    current; refill spring 0.075 N.  With the static-load CALC of results/sim2j/power.json (F_c cot(theta) held by the
+    coils) at 35 / 50 / 75 deg."""
+    from dataclasses import replace
+    from . import et as ET
+    from . import revj as RJ
+    from . import stepper as ST
+    from .firmware import FWConfig
+    base = RJ.config(heel=True, dt=50e-6)
+    variants = {"nominal": base,
+                "no_hall_noise": base.replace(nose=replace(base.nose, hall_noise=0.0)),
+                "no_bias_current": base.replace(nose=replace(base.nose, bias=False)),
+                "F_c_0.075": RJ.config(heel=True, dt=50e-6, F_c=0.075)}
+    if quick:
+        variants = {"nominal": base}
+    pens = ET.PenModels()
+    su = ET.WriterSetup(0, pens, log=log)
+    scn = su.case.scenario()
+    out = {}
+    for name, cfg in variants.items():
+        pm = RJ.build(cfg)
+        r = ST.run(pm, scn, FWConfig(seed=7), {}, mu=0.9, seed=200)
+        c = r["contact"] > 0.5
+        P = r["Pcu"]
+        I = np.hypot(r["I1"], r["I2"])
+        out[name] = {"P_cu_mean_W": float(P.mean()), "P_cu_ball_on_paper_W": float(P[c].mean()),
+                     "P_cu_lifted_W": float(P[~c].mean()) if (~c).any() else None,
+                     "I_rms_ball_on_paper_A": float(np.sqrt(np.mean(I[c] ** 2))),
+                     "ball_on_paper_share": float(np.mean(c)), "T_coil_end_C": float(r["Tcoil"][-1]),
+                     "sim_s": float(r["t"][-1] - r["t"][0])}
+        log(f"[power_split] {name}: {out[name]['P_cu_mean_W']:.2f} W mean, {out[name]['P_cu_ball_on_paper_W']:.2f} W on "
+            f"paper, {out[name]['P_cu_lifted_W'] or float('nan'):.2f} W lifted; coil {out[name]['T_coil_end_C']:.1f} C")
+    calc = []
+    pj = os.path.join(RESULTS, "power.json")
+    if os.path.exists(pj):
+        calc = [c for c in json.load(open(pj)).get("calc", []) if abs(c["F_c_N"] - 0.15) < 1e-9 and c["km_scale"] == 1.0]
+    body = {"what": "SIM: the nose's copper loss in tremor-free writing (writer 0 v2, seed 200, 4 s rest + 7.5 s writing, "
+                    "nose held centred, H1 hand, 50 us step) for the nominal Rev J pen and three variants; CALC: the "
+                    "static side load F_c cot(theta) at the ball held by the coils (nominal spring, Km 1.0)",
+            "labels": {"P_cu_mean_W": "SIM: mean nose copper loss over the run",
+                       "P_cu_ball_on_paper_W": "SIM: mean while the ball touches the paper",
+                       "P_cu_lifted_W": "SIM: mean while the ball is lifted",
+                       "calc": "CALC: static load only (results/sim2j/power.json)"},
+            "reading": {"static_side_load_W": "about 1.1 W over a run with ~70 % pen-down (1.62 W while on paper at "
+                                              "50 deg, CALC): real, a design problem (DEC-046)",
+                        "hall_noise_W": "nominal minus no_hall_noise: the servo reacting to unfiltered Hall noise, "
+                                        "mostly a modelling artefact (REQ-RVJ-C04)",
+                        "rest_W": "friction, stick-slip and holding the nose against the handle's writing motion"},
+            "sim": out, "calc": calc}
+    if not quick:
+        write_result("power_split", body, seeds=[200])
+    return body
+
+
+# ------------------------------------------------------------------------------------------------ page sensor
+PAGE_MODELS = ("white", "deltapen_held", "deltapen_walk")
+
+
+def stage_page_noise(quick: bool = False) -> Dict:
+    """Page-sensor sensitivity: sim2's 3 um white noise against a DeltaPen-like error model (ASSUMPTION on LIT OPT-02,
+    sensing.py: lognormal errors per 10 ms window, median 23.6 um, mean 68.3 um; 'held' or adding up).  Test writers 0-1, their
+    first test seed: ET 8 Hz x 0.3 / 1 mm and tremor-free writing with the chosen tracker ('nose'), and autowrite of
+    the known text at 0 / 1 mm (8 Hz).  A small check, not a population result."""
+    from . import et as ET
+    from . import revj as RJ
+    from . import stepper as ST
+    from . import tasks as TK
+    from .firmware import FWConfig
+    rows = Rows("page_noise")
+    pens = ET.PenModels()
+    pm = RJ.build(RJ.config(heel=True, dt=50e-6))
+    ws = TEST_WRITERS[:2] if not quick else TEST_WRITERS[:1]
+    for w in ws:
+        seed = et_seeds(w)[0]
+        su = None
+        r_none = {}
+        for amp in (0.0, 0.3e-3, 1.0e-3):
+            for model in PAGE_MODELS:
+                key = f"et|{w}|{seed}|{amp * 1e3:g}|{model}"
+                if rows.has(key):
+                    continue
+                su = su or ET.WriterSetup(w, pens, log=log)
+                if amp > 0 and amp not in r_none:
+                    rn = ET.run_case(su, "none", 8.0, amp, seed, keep=True)
+                    r_none[amp] = rn.pop("_r")
+                    rows.put(f"et|{w}|{seed}|{amp * 1e3:g}|none", dict(rn, task="et", model="none"))
+                if amp <= 0:
+                    m = ET.run_case(su, "nose", 0.0, 0.0, seed, fw_extra={"page_error": model})
+                else:
+                    m = ET.run_case(su, "nose", 8.0, amp, seed, ref_none=r_none[amp], fw_extra={"page_error": model})
+                    nn = rows.get(f"et|{w}|{seed}|{amp * 1e3:g}|none")
+                    m["ratio"] = m["ink_err_um"] / max(nn["ink_err_um"], 1e-9)
+                m.update({"task": "et", "model": model})
+                rows.put(key, m, force_save=True)
+                log(f"[page_noise] w{w} ET {amp * 1e3:g} mm {model}: ink {m['ink_err_um']:.0f} um"
+                    + (f", moved {m['moved_vs_clean_um']:.1f} um" if amp <= 0 else f", ratio {m['ratio']:.2f}")
+                    + f", letters {m['letters_read']:.2f}")
+        ac = None
+        for amp in (0.0, 1.0e-3):
+            for model in PAGE_MODELS:
+                key = f"aw|{w}|{seed}|{amp * 1e3:g}|{model}"
+                if rows.has(key):
+                    continue
+                ac = ac or TK.AutowriteCase(w, h_mm=2.5, version="v2")
+                if not ac.ok:
+                    continue
+                scn = ac.scenario(8.0, amp, seed)
+                fw = FWConfig(nose="autowrite", pen_lift="plan", seed=seed, reach=pm.cfg.geom.travel, page_error=model)
+                r = ST.run(pm, scn, fw, ac.task(), seed=seed)
+                m = ac.metrics(r)
+                m.update({"w": w, "seed": seed, "f0": 8.0, "amp_mm": amp * 1e3, "task": "autowrite", "model": model})
+                rows.put(key, m, force_save=True)
+                log(f"[page_noise] w{w} autowrite {amp * 1e3:g} mm {model}: ink {m['ink_err_um']:.0f} um, letters "
+                    f"{m['letters_read']:.2f}, words {m['words_app']:.2f}")
+        rows.save()
+    R = rows.values()
+    keys = ("ink_err_um", "ratio", "letters_read", "words_app", "moved_vs_clean_um", "P_total_W")
+    body = {"what": "Page-sensor sensitivity (SIM): sim2's white noise (3 um rms per 1 kHz sample) against a DeltaPen-like "
+                    "error model (ASSUMPTION: lognormal error per 10 ms window, median 23.6 um, mean 68.3 um, random "
+                    "direction; 'held' = a position error held for each window, 'walk' = the errors add up); test "
+                    "writers 0-1, first test seed; ET 8 Hz with the chosen tracker; autowrite of the known text",
+            "labels": {"ink_err_um": "SIM: ET - rms distance of the ink to the writer's clean-ink letters; autowrite - "
+                                     "to the planned letters",
+                       "ratio": "SIM: ink error / device-off ink error, same case",
+                       "moved_vs_clean_um": "SIM: false correction on tremor-free writing (rule <= 25 um)"},
+            "source_of_deltapen_figures": "LIT OPT-02 (docs/evidence.csv): Luthi, Fender, Holz, DeltaPen, UIST '22, "
+                                          "doi 10.1145/3526113.3545655: translation error per 10 ms window, mean "
+                                          "68.3 um, median 23.6 um, measured on a Wacom Intuos 4 surface (not paper); "
+                                          "idle drift 2.6 mm/min",
+            "et": agg([r for r in R if r.get("task") == "et"], keys, by=("amp_mm", "model")),
+            "autowrite": agg([r for r in R if r.get("task") == "autowrite"], keys, by=("amp_mm", "model")),
+            "rows": R}
+    if not quick:
+        write_result("page_noise", body, seeds=[et_seeds(w)[0] for w in ws])
+    return body
+
+
 # ------------------------------------------------------------------------------------------------ RL
 RL_DIR = os.path.join(BUILD, "rl")
 RL_STEPS = int(os.environ.get("SIM2J_RL_STEPS", "400000"))
@@ -739,7 +1019,7 @@ def stage_arm(quick: bool = False) -> Dict:
         rows.save()
     R = rows.values()
     body = {"what": "sim2 'arm' hand (articulated forearm-wrist-hand, writer controller), ET tremor as joint torques "
-                    "calibrated to 1 mm peak at the lifted tip, 8 Hz; writers 0-2",
+                    "calibrated to 1 mm peak at the lifted tip, 8 Hz; writers 0-1",
             "by_ctl": agg(R, ("ink_err_um", "ratio", "letters_read", "words_app", "moved_vs_clean_um", "P_total_W",
                               "felt_rms_N", "clean_floor_um"), by=("ctl",)), "writers": list(ws)}
     if not quick:
@@ -814,7 +1094,7 @@ def stage_report(quick: bool = False) -> None:
 
 
 # ------------------------------------------------------------------------------------------------ main
-STAGES: Dict[str, Callable] = {"report": stage_report, "arm": stage_arm, "et2": stage_et2, "et_wheel": stage_et_wheel, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
+STAGES: Dict[str, Callable] = {"report": stage_report, "page_noise": stage_page_noise, "power_split": stage_power_split, "arm": stage_arm, "et2": stage_et2, "et_wheel": stage_et_wheel, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
                                "tune": stage_tune, "writers": stage_writers, "writer_cmp": stage_writer_cmp,
                                "verify": stage_verify, "et": stage_et, "guided": stage_guided,
                                "autowrite": stage_autowrite, "dr": stage_dr, "dt": stage_dt, "power": stage_power}

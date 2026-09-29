@@ -248,15 +248,41 @@ def tuned_mass(m: float = 40e-3, f_tune: float = 5.0, zeta: float = 0.08, z: flo
 # ================================================================================================ pivot collar
 @dataclass
 class Collar:
-    z_p: float = 0.060                   # pivot along the pen (m)
-    K_c: float = 0.20                    # N m/rad about t1, t2
-    c_c: float = 2e-3                    # N m s/rad
-    m: float = 14e-3                     # collar / saddle mass (kg)
-    z_cm: float = 0.055
-    J: float = 8e-6                      # kg m^2
-    range_rad: float = 0.30              # hinge hard stop (rad)
-    tau_max: float = 0.080               # collar motor torque limit per axis (N m); 0: no motors
-    label: str = "PROPOSED DESIGN (designs.py collar; values ASSUMPTION, swept)"
+    """The fingers hold an outer collar (sleeve) that also rests in the thumb-index web (a saddle); the whole inner pen
+    hangs in it on a 2-axis flexure gimbal at z_p and two motors in the collar swing it (reaction on the collar and the
+    hand: the Liftware principle, LIT ACT-16, ACT-17, PAT-08, PAT-12; the review's option B).  The motors run a stiff
+    position servo on the pivot angle (K_s, C_s: about 22 Hz with the Rev J inner pen) plus the static moment of the
+    writing force from the load cell; the flexure's own stiffness K_c is small."""
+    z_p: float = 0.050                   # pivot along the pen (m): the review's 50 mm pivot-to-tip
+    K_c: float = 0.02                    # flexure gimbal stiffness about t1, t2 (N m/rad), ASSUMPTION
+    c_c: float = 1.0e-4                  # N m s/rad, ASSUMPTION
+    K_s: float = 4.0                     # servo stiffness (N m/rad), PROPOSED DESIGN (tuned: rules.json)
+    C_s: float = 0.035                   # servo damping (N m s/rad), PROPOSED DESIGN
+    m: float = 0.022                     # collar sleeve + gimbal + 2 motors + gears (kg), CALC designs.collar_v2
+    z_cm: float = 0.056
+    J: float = 1.2e-5                    # kg m^2 about its centre (a 88 mm sleeve, CALC)
+    range_rad: float = 0.12              # hard stop (rad): the sleeve's clearance (6 mm at the tip)
+    tau_max: float = 0.080               # motor torque limit per axis (N m), MFR AMF-120 0824 B x 64:1 peak (CALC)
+    Km: float = 0.042                    # N m/sqrt(W) at the output (CALC designs.collar_design Km_label)
+    skid_on_collar: bool = True          # V2: the skid ring is part of the collar and carries the writing force; the
+                                         # inner pen touches the paper only with its ball on the refill spring
+                                         # (False = V1: the whole Rev J pen, skid ring included, swings)
+    label: str = "PROPOSED DESIGN (designs.py collar_v2; servo values tuned on the tuning writers)"
+
+
+def collar_axes(pm) -> Tuple[float, float]:
+    """Signs (s1, s2) such that a positive angle of hinge piv_1 turns the pen about +t2 times s1 and piv_2 about +t1
+    times s2 (page frame; lin.vectors), from the compiled model at rest."""
+    from . import lin as L
+    m = pm.m
+    d = mujoco.MjData(m)
+    mujoco.mj_forward(m, d)
+    _, t1, t2 = L.vectors(pm.cfg.geom.theta_deg)
+    x1 = d.xaxis[pm.ids["jnt:piv_1"]]
+    x2 = d.xaxis[pm.ids["jnt:piv_2"]]
+    if abs(float(x1 @ t2)) < 0.99 or abs(float(x2 @ t1)) < 0.99:
+        raise ValueError(f"collar hinge axes not on t2/t1: {x1} {x2}")
+    return (1.0 if float(x1 @ t2) > 0 else -1.0, 1.0 if float(x2 @ t1) > 0 else -1.0)
 
 
 def _handle_span(lines: List[str]) -> Tuple[int, int, str]:
@@ -285,7 +311,12 @@ def patch_collar(xml: str, col: Collar) -> str:
         grip.append(lines[j])
         j += 1
     body_rest = lines[j:i1]
-    new = [f'{ind}<body name="collar" pos="0 0 0" quat="{quat}">'] + grip
+    moved = []
+    if col.skid_on_collar:
+        # V2: the skid ring (its capsules and its contact site) belongs to the collar
+        moved = [ln for ln in body_rest if 'name="skid' in ln and (ln.lstrip().startswith("<geom") or ln.lstrip().startswith("<site"))]
+        body_rest = [ln for ln in body_rest if ln not in moved]
+    new = [f'{ind}<body name="collar" pos="0 0 0" quat="{quat}">'] + grip + moved
     new.append(f'{ind}  <inertial pos="0 0 {col.z_cm:.9g}" mass="{col.m:.9g}" diaginertia="{col.J:.6g} {col.J:.6g} {col.J / 2:.6g}"/>')
     new.append(f'{ind}  <geom type="cylinder" fromto="0 0 0.02 0 0 0.095" size="0.0135" rgba="0.3 0.6 0.4 0.25"/>')
     new.append(f'{ind}  <site name="collar_piv" pos="0 0 {col.z_p:.9g}" size="0.001"/>')

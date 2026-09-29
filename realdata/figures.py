@@ -6,8 +6,10 @@ plotted number.  Handwriting pictures are black ink on white ruled paper at true
 'SIMULATION with real recorded inputs'.
 
 Licences: committed pictures and their CSV twins use CC BY 4.0 inputs only (UCI Character Trajectories letters, UCI
-spiral PD tremor, Zenodo ET tremor), with attribution in the CSV header.  Pictures made from BRUSH writing are
-written to realdata/build/figures_research_only/ (git-ignored; BRUSH is for non-commercial research use).
+spiral PD tremor, Zenodo ET tremor), with attribution in the CSV header.  Pictures made from UNIPEN (research use
+only) or BRUSH (non-commercial research use) writing are written to realdata/build/figures_research_only/
+(git-ignored).  Every before/after picture: prominent SIMULATION label, the same writer and task in every panel, one
+fixed scale (mm on the page), never presented as an observed improvement of a person (review 2026-09-29 s11).
 """
 from __future__ import annotations
 
@@ -27,6 +29,8 @@ INK = {"primary": "#0b0b0b", "secondary": "#52514e", "muted": "#898781", "grid":
 # (dataviz skill: lightness band, chroma, CVD >= 6.1 with legend + direct labels, normal-vision >= 16.3)
 DEVICE_COLOR = {"none": "#eb6834", "revH_akf": "#4a3aa7", "revJ_gated": "#2a78d6", "revJ_tcn": "#1baf7a",
                 "revJ_oracle": "#e87ba4"}
+for _k in ("revH_akf", "revJ_gated", "revJ_tcn"):
+    DEVICE_COLOR[_k + "|deltapen"] = DEVICE_COLOR[_k]      # colour follows the pen; the sensor is shown by marker
 RESEARCH_DIR = BUILD_DIR / "figures_research_only"
 SIM_TAG = "SIMULATION with real recorded inputs"
 
@@ -404,4 +408,154 @@ def spectra_figure(out_png: Path, grid: np.ndarray, groups: Dict[str, np.ndarray
     fig.savefig(out_png, dpi=110)
     plt.close(fig)
     write_csv(out_png.with_suffix(".csv"), ["group", "Hz", "median_psd"], rows, [note])
+    return out_png
+
+
+# ================================================================== results-card charts (writer-bootstrap intervals)
+def words_ci_chart(out_png: Path, groups: List[Dict], devices: Sequence[str], labels: Dict[str, str], title: str,
+                   note: str, bound: Optional[Dict[str, str]] = None) -> Path:
+    """groups: [{'label', 'clean': {mean, lo, hi}, 'dev': {device: {mean, lo, hi}}, 'bound': {device: mean}}].
+    Horizontal bars per pen (headline page sensor) with 95 % writer-bootstrap intervals; open circles = the same pen
+    with the ideal page sensor (bound); a black tick = the same notes without tremor (the reader's ceiling)."""
+    plt = _plt()
+    nd = len(devices)
+    fig, ax = plt.subplots(figsize=(10.5, 0.62 * len(groups) * nd / 2.0 + 2.6))
+    bh = 0.8 / nd
+    rows = []
+    for gi, g in enumerate(groups):
+        for di, d in enumerate(devices):
+            v = g["dev"].get(d)
+            if not v or not np.isfinite(v.get("mean", np.nan)):
+                continue
+            y = gi + (di - (nd - 1) / 2) * bh
+            ax.barh(y, v["mean"], height=bh * 0.8, color=DEVICE_COLOR[d], zorder=2)
+            ax.plot([v["lo"], v["hi"]], [y, y], color=INK["primary"], linewidth=1.0, zorder=3)
+            ax.text(max(v["hi"], v["mean"]) + 0.15, y, f"{v['mean']:.1f}", va="center", ha="left", fontsize=8.5,
+                    color=INK["primary"])
+            b = (g.get("bound") or {}).get(d)
+            if b is not None and np.isfinite(b):
+                ax.plot([b], [y], marker="o", markersize=6, markerfacecolor="white", markeredgecolor=INK["primary"],
+                        markeredgewidth=1.2, zorder=4)
+            rows.append([g["label"], labels.get(d, d), v["mean"], v["lo"], v["hi"], b if b is not None else ""])
+        c = g.get("clean")
+        if c and np.isfinite(c.get("mean", np.nan)):
+            y0, y1 = gi - 0.45, gi + 0.45
+            ax.plot([c["mean"], c["mean"]], [y0, y1], color=INK["primary"], linewidth=2.2, zorder=5)
+            rows.append([g["label"], "no tremor (ceiling)", c["mean"], c.get("lo"), c.get("hi"), ""])
+    ax.set_yticks(range(len(groups)))
+    ax.set_yticklabels([g["label"] for g in groups], fontsize=9.5, color=INK["primary"])
+    ax.invert_yaxis()
+    ax.set_xlim(0, 10.9)
+    ax.set_xticks(range(0, 11, 2))
+    ax.set_xlabel("words you can read, out of 10 (bars: mean over writers; lines: 95 % interval)")
+    _grid(ax, "x")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=DEVICE_COLOR[d]) for d in devices]
+    names = [labels.get(d, d) for d in devices]
+    handles.append(plt.Line2D([0], [0], color=INK["primary"], linewidth=2.2))
+    names.append("same notes, no tremor")
+    handles.append(plt.Line2D([0], [0], marker="o", linestyle="", markerfacecolor="white", markeredgecolor=INK["primary"]))
+    names.append("ideal page sensor (bound)")
+    ax.legend(handles, names, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3, fontsize=8.5)
+    ax.set_title(title, loc="left", fontsize=12, pad=52)
+    fig.text(0.01, 0.01, note, fontsize=7.8, color=INK["secondary"], ha="left", va="bottom", wrap=True)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=120)
+    plt.close(fig)
+    write_csv(out_png.with_suffix(".csv"), ["group", "pen", "words_of_10_mean", "ci95_lo", "ci95_hi",
+                                            "ideal_sensor_bound_mean"], rows, [SIM_TAG, note])
+    return out_png
+
+
+def tremor_left_chart(out_png: Path, groups: List[Dict], devices: Sequence[str], labels: Dict[str, str], title: str,
+                      note: str) -> Path:
+    """groups: [{'label', 'dev': {device: {mean, lo, hi}}}] with the amplitude ratio to the ordinary pen (1 = no
+    change).  x axis in % of the ordinary pen's tip tremor; the power (squared-signal) reduction is printed."""
+    plt = _plt()
+    nd = len(devices)
+    fig, ax = plt.subplots(figsize=(10.5, 0.6 * len(groups) * nd / 2.0 + 2.4))
+    bh = 0.8 / nd
+    rows = []
+    xmax = 110.0
+    for gi, g in enumerate(groups):
+        for di, d in enumerate(devices):
+            v = g["dev"].get(d)
+            if not v or not np.isfinite(v.get("mean", np.nan)):
+                continue
+            y = gi + (di - (nd - 1) / 2) * bh
+            m, lo, hi = 100 * v["mean"], 100 * v["lo"], 100 * v["hi"]
+            xmax = max(xmax, hi + 25)
+            ax.barh(y, m, height=bh * 0.8, color=DEVICE_COLOR[d], zorder=2)
+            ax.plot([lo, hi], [y, y], color=INK["primary"], linewidth=1.0, zorder=3)
+            pw = 100 * (1 - v["mean"] ** 2)
+            ax.text(hi + 1.5, y, f"{m:.0f} %" + (f"  (power {'-' if pw >= 0 else '+'}{abs(pw):.0f} %)"),
+                    va="center", ha="left", fontsize=8, color=INK["primary"])
+            rows.append([g["label"], labels.get(d, d), v["mean"], v["lo"], v["hi"], 1 - v["mean"] ** 2])
+    ax.axvline(100, color=INK["secondary"], linewidth=1.2)
+    ax.set_yticks(range(len(groups)))
+    ax.set_yticklabels([g["label"] for g in groups], fontsize=9.5, color=INK["primary"])
+    ax.invert_yaxis()
+    ax.set_xlim(0, xmax)
+    ax.set_xlabel("tremor left at the tip, % of the ordinary pen's (amplitude; 100 % = no change)")
+    _grid(ax, "x")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=DEVICE_COLOR[d]) for d in devices]
+    ax.legend(handles, [labels.get(d, d) for d in devices], loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3,
+              fontsize=8.5)
+    ax.set_title(title, loc="left", fontsize=12, pad=36)
+    fig.text(0.01, 0.01, note, fontsize=7.8, color=INK["secondary"], ha="left", va="bottom", wrap=True)
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
+    fig.savefig(out_png, dpi=120)
+    plt.close(fig)
+    write_csv(out_png.with_suffix(".csv"), ["group", "pen", "amplitude_ratio_mean", "ci95_lo", "ci95_hi",
+                                            "power_reduction_share"], rows, [SIM_TAG, note])
+    return out_png
+
+
+def survey_figure(out_png: Path, survey: Dict, extra: Sequence[Dict] = ()) -> Path:
+    """UNIPEN recording setups: 8-12 Hz share of the pen-down velocity energy against mean speed; the rule's box."""
+    plt = _plt()
+    R = survey["rule"]
+    fig, ax = plt.subplots(figsize=(9.5, 5.4))
+    rows = []
+    ax.add_patch(plt.Rectangle((0.1, R["speed_mm_s"][0]), 100 * R["share_8_12_max"] - 0.1,
+                               R["speed_mm_s"][1] - R["speed_mm_s"][0], color="#86b6ef", alpha=0.18, zorder=0))
+    ax.axvspan(1.3, 1.7, color="#e1e0d9", alpha=0.7, zorder=0)
+    for r in survey["rows"]:
+        if "share_8_12" not in r or not r.get("measured_lines"):
+            continue
+        x, y = 100 * r["share_8_12"], r["speed_mm_s"]
+        sel = r["selected"]
+        paper = bool(r["checks"].get("paper"))
+        ax.scatter([x], [y], s=110 if sel else 45, color="#2a78d6" if sel else ("#1baf7a" if paper else "#898781"),
+                   edgecolor="white", linewidth=1.5, zorder=3)
+        if sel or x > 20 or r["setup"] in ("hpp/hpb3",):
+            ax.text(x * 1.06, y, r["setup"] + (" (selected)" if sel else ""), fontsize=8, va="center",
+                    color=INK["primary"])
+        rows.append([r["setup"], r.get("device", ""), r.get("surface", ""), r["writers"], r["segments"], x, y,
+                     100 * r.get("share_above_12", float("nan")), int(sel)])
+    for e in extra:
+        ax.scatter([e["x"]], [e["y"]], s=60, marker="s", color="#eb6834", edgecolor="white", linewidth=1.5, zorder=3)
+        ax.text(e["x"] * 1.06, e["y"], e["label"], fontsize=8, va="center", color=INK["primary"])
+        rows.append([e["label"], "", "", "", "", e["x"], e["y"], "", 0])
+    ax.set_xscale("log")
+    ax.set_xlim(0.2, 80)
+    ax.set_xlabel("share of the pen-down velocity energy at 8-12 Hz (%, log scale); grey band: 1.3-1.7 % (LIT CON-25)")
+    ax.set_ylabel("mean pen-down speed (mm/s)")
+    ax.set_title("Which recorded writing is clean enough to test trackers on? (lower-case words, per recording setup)",
+                 loc="left", fontsize=10.5)
+    _grid(ax, "both")
+    handles = [plt.Line2D([0], [0], marker="o", linestyle="", color=c, markersize=8) for c in ("#2a78d6", "#1baf7a", "#898781")]
+    handles.append(plt.Line2D([0], [0], marker="s", linestyle="", color="#eb6834", markersize=7))
+    ax.legend(handles, ["selected (passes every check)", "paper, fails a check", "screen or unknown surface",
+                        "other data sets"], fontsize=8, loc="upper right")
+    fig.text(0.01, 0.01, "CALC on DATA (UNIPEN train_r01_v07 category 8, research use only; BRUSH). Blue box: the "
+             "selection rule (<= 2.5 % at 8-12 Hz, <= 3 % above 12 Hz, 15-60 mm/s, >= 100 samples/s, >= 15 points/mm, "
+             ">= 10 writers, paper), fixed before any HW1 run.", fontsize=7.8, color=INK["secondary"], ha="left",
+             va="bottom", wrap=True)
+    fig.tight_layout(rect=(0, 0.06, 1, 1))
+    fig.savefig(out_png, dpi=120)
+    plt.close(fig)
+    write_csv(out_png.with_suffix(".csv"), ["setup", "device", "surface", "writers", "lines", "share_8_12_pct",
+                                            "speed_mm_s", "share_above_12_pct", "selected"], rows,
+              ["CALC on DATA; rule " + str(R)])
     return out_png

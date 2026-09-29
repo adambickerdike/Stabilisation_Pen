@@ -76,6 +76,8 @@ class Collar:
     z_cm: float = 0.032
     J: float = 2.0e-6         # collar transverse inertia about its centre (kg m^2)
     web_on_collar: bool = True  # the web rests on the collar's saddle (True) or still on the pen's tail (False)
+    skid_on_collar: bool = False  # V2: the skid ring on the collar carries the writing force; the pen's ball rides on
+                                  # its (constant-force) refill spring, so the pen tip has no stiff normal support
 
 
 @dataclass
@@ -118,6 +120,11 @@ class Model:
     c_n: float = 10.0
     c_sled: float = 0.0       # viscous hand-to-paper damper (sled), N s/m
     c_heel: float = 0.0       # viscous tip-to-paper damper (heel brake), N s/m
+    k_refill: float = 5.0     # V2 only: the ball's normal support through the constant-force refill spring (N/m)
+    c_skid: float = 2.0       # V2 only: in-plane drag of the collar's skid ring (N s/m; describing function of
+                              # mu_skid 0.12 x 0.85 N at 1 mm, 6 Hz: ASSUMPTION)
+    z_skid: float = 0.0098    # skid ring plane and contact radius (results/revJ/layout.json skid ring, sim2 builder)
+    r_skid: float = 0.0112
 
 
 def vectors(theta_deg: float):
@@ -294,7 +301,14 @@ class Assembly:
         Cn = mdl.c_n * torch.outer(n, n)
         P2 = torch.eye(3) - torch.outer(n, n)
         cp = self.g("c_heel", mdl.c_heel) + mdl.c_paper
-        self.add_spring(Jt, Kn, Cn + cp * P2)
+        if mdl.collar is not None and mdl.collar.skid_on_collar:
+            # V2: the ball on its refill spring (soft normal) with its in-plane drag; the skid ring on the collar
+            self.add_spring(Jt, mdl.k_refill * torch.outer(n, n), 0.05 * torch.outer(n, n) + cp * P2)
+            Ps = mdl.z_skid * self.a + mdl.r_skid * self.t1
+            Js = self.J("collar", Ps)
+            self.add_spring(Js, Kn, Cn + mdl.c_skid * P2)
+        else:
+            self.add_spring(Jt, Kn, Cn + cp * P2)
         cs = self.g("c_sled", mdl.c_sled)
         Jh = torch.zeros(3, self.n)
         i = self.bodies["hand"]
@@ -382,6 +396,16 @@ class Assembly:
     def tip(self, X: torch.Tensor) -> torch.Tensor:
         """Page-plane tip displacement (x, y) from the solution."""
         return (self.J_tip.to(CT) @ X)[0:2]
+
+    def ink(self, X: torch.Tensor) -> torch.Tensor:
+        """Page-plane displacement of the ink point.  With the V2 collar the ball rides on its refill spring and stays on
+        the paper by sliding along the pen axis a, so the ink moves tip_xy - tip_z a_xy / a_z (the tilt-plane motion
+        is 1 / sin(theta) of the tip's transverse motion); otherwise the tip itself."""
+        p = self.J_tip.to(CT) @ X
+        if self.mdl.collar is not None and self.mdl.collar.skid_on_collar:
+            a = self.a
+            return p[0:2] - p[2] * torch.tensor([a[0] / a[2], a[1] / a[2]], dtype=CT)
+        return p[0:2]
 
     def solve(self, w: float, F: torch.Tensor) -> torch.Tensor:
         return torch.linalg.solve(self.A(w), F)

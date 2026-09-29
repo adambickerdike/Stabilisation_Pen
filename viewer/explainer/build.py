@@ -10,8 +10,15 @@ Inputs (read-only; every number on the page comes from one of these files or fro
                           results/nose2/nose2.json                         autowrite (SIM)
                           results/drive/tasks.json, tasks_extra.json, fig_practice.csv, fig_loops_reversal.csv,
                           fig_traction_capacity.csv                        heel wheel (SIM, CALC)
-                          results/endcap/endcap_study.json, fig_ek_ceiling.csv, fig_ek_steer.csv   end-cap (SIM, CALC)
-                          results/sim2j/et.json                            whole-pen simulation (SIM), when it exists
+                          results/endcap/endcap_study.json, fig_ek_ceiling.csv, fig_ek_steer.csv   first end-cap (SIM, CALC)
+                          results/revJ1/{endcap,budgets,revJ1}.json        Rev J.1's lighter end-cap, the current tail (SIM)
+                          results/revJ/sim_params.json + layout            the static side load on the ball (CALC, the
+                                                                           independent review's formula) and the page
+                                                                           sensor's assumed accuracy (ASSUMPTION)
+                          docs/revJ_simulation.md §8                       simulated side-load power, heel wheel on clean
+                                                                           writing (SIM); docs/evidence.csv OPT-02 (LIT)
+                          results/sim2j/et.json                            whole-pen simulation (SIM), when it exists and
+                                                                           is complete (no 'unfinished' writers)
   data/samples.json  <- before/after strips (handwriting samples schema, one panel per scenario):
                           results/ai2/samples.json                         tremor, gated tracker, learned estimator, clean copy
                           results/nose2/fig_nose2_autowrite_example.csv    autowrite ink paths (+ nose2.json metrics)
@@ -29,8 +36,9 @@ cut-away, the 3-D views, the scenes and the strips load the JSON files with fetc
 The simple view is driven by two specs in this file, so that a mechanism or a result can be swapped when a study
 changes: MECHANISMS (one sentence per mechanism: what moves, what pushes it, what it does to the ink) and simple_rows()
 (one row per condition: a picture pair from samples.json or an illustration, ONE number from pen.json, its evidence
-label and source).  Results of the whole-pen simulation study (sim2j) are picked up as soon as its files exist
-(sim2j_row() adds a row); rebuild to add them.
+label and source).  KNOWN_PROBLEMS holds the "Known problems (being fixed)" panel (one plain line each, with its
+evidence), drawn with the side-load figure (sideload_svg).  Results of the whole-pen simulation study (sim2j) are
+picked up as soon as its files exist and its summary is complete (sim2j_row() adds a row); rebuild to add them.
 
 Run:  python3 viewer/explainer/build.py
 """
@@ -69,6 +77,15 @@ ENDCAP_STEER = "results/endcap/fig_ek_steer.csv"
 SIM2J_SAMPLES = "results/sim2j/samples.json"
 SIM2J_REPLAY = "results/sim2j/viz_sim2j.json"
 SIM2J_ET = "results/sim2j/et.json"
+SIM2J_PENDING: list = []      # why whole-pen results were left out (a partial summary of a run in progress)
+SIM_PARAMS = "results/revJ/sim_params.json"                 # inputs of the static nib load (refill spring, Km, coil)
+REVJ1_ENDCAP = "results/revJ1/endcap.json"                  # Rev J.1's lighter end-cap (the current tail design)
+REVJ1_BUDGETS = "results/revJ1/budgets.json"
+REVJ1_JSON = "results/revJ1/revJ1.json"
+LEDGER = "docs/evidence.csv"
+SIM_DOC = "docs/revJ_simulation.md"                         # the whole-pen simulation's findings (§8)
+REVIEW_RESPONSE = "docs/reviews/2026-09-29_review_response.md"
+REVIEW_PDF = "docs/reviews/2026-09-29_independent_review.pdf"
 STALE = ("board.json", "tip.json", "outcomes.json")          # Rev H page files that Rev J no longer uses
 
 SIM_HW1 = "SIMULATION (model HW1)"
@@ -319,6 +336,14 @@ def facts_sim2j() -> dict | None:
         return None
     try:
         et = load(SIM2J_ET)
+        left = [str(x) for x in (et.get("unfinished") or [])]
+        if left or et.get("quick"):
+            # a summary written while the study is still running (or a quick check): not quoted until it is complete
+            who = (", ".join(left[:-1]) + " and " + left[-1]) if len(left) > 1 else "".join(left)
+            SIM2J_PENDING.append(f"{SIM2J_ET} is a partial summary, with {who} not finished" if left
+                                 else f"{SIM2J_ET} is a quick check, not the study")
+            warn(f"{SIM2J_ET} is from a run still in progress ({', '.join(left) or 'quick'}); not shown until the study finishes")
+            return None
         by = et.get("by_amp") or {}
         rows = []
         for key, v in by.items():
@@ -339,11 +364,111 @@ def facts_sim2j() -> dict | None:
         return None
 
 
+def _doc(p: str) -> str:
+    try:
+        with open(rel(p), encoding="utf-8") as fh:
+            return fh.read()
+    except OSError:
+        return ""
+
+
+def _find(pattern: str, text: str, what: str, src: str):
+    m = re.search(pattern, text)
+    if not m:
+        warn(f"{src}: could not find {what}; the page shows a dash")
+        return None
+    return m.groups()
+
+
+def facts_sideload(lay: dict) -> dict:
+    """The static side load on the ball, with the independent review's formula (docs/reviews/..._independent_review.pdf
+    §4, reproduced in the lead's response): N sin θ = F_c; F⊥ = N cos θ = F_c cot θ; τ = L_t F⊥; F_act = τ / L_a;
+    P = (F_act / K_m)²; I = √(P / R).  Inputs from the design files: the refill spring F_c, K_m, R and the coil's
+    thermal model in results/revJ/sim_params.json; L_t (pivot to ball) and L_a (pivot to magnets) in the layout."""
+    sp = load(SIM_PARAMS)["sim_params"]
+    fc = float(sp["refill"]["spring_force_N"]["value"])
+    km = float(sp["nose"]["Km_act_N_per_sqrtW"]["value"])
+    r_ohm = float(sp["nose"]["coil_R_ohm"]["value"])
+    rth, cth = float(sp["nose"]["coil_Rth_K_W"]["value"]), float(sp["nose"]["coil_Cth_J_K"]["value"])
+    # The arms to 0.1 mm, as the design documents and the review quote them (76.5 and 11.5 mm); the layout's extra
+    # digits (76.48, 11.51) are drawing precision, and with the rounded arms the review's table reproduces exactly.
+    lt = round(float(lay["pivot_z"]), 1)
+    la = round(float(lay["actuator_z"]) - float(lay["pivot_z"]), 1)
+    sim = _doc(SIM_DOC)
+    lim = _find(r"pass its (\d+) °C limit within about (\d+) s", sim, "the coil limit", SIM_DOC)
+    t_lim = float(lim[0]) if lim else 120.0
+    t_amb = 25.0          # the simulator's starting coil temperature (docs/revJ_simulation.md §8.1: "25 → 61.5 °C")
+    rows = {}
+    for th in (35, 50, 75):
+        t = math.radians(th)
+        fp = fc / math.tan(t)
+        fa = fp * lt / la
+        p = (fa / km) ** 2
+        rise = p * rth
+        rows[str(th)] = {"N_N": fc / math.sin(t), "F_perp_N": fp, "torque_mNm": fp * lt, "F_act_N": fa, "P_W": p,
+                         "I_A": math.sqrt(p / r_ohm),
+                         "t_limit_s": (-rth * cth * math.log(1 - (t_lim - t_amb) / rise)) if rise > t_lim - t_amb else None}
+    review = {"35": 4.717, "50": 1.628, "75": 0.166}          # the review's table (a check, not an input)
+    for k, v in review.items():
+        if abs(rows[k]["P_W"] / v - 1) > 0.02:
+            warn(f"static nib load at {k}°: {rows[k]['P_W']:.3f} W here against {v} W in the review; check the inputs")
+    run = _find(r"\*\*About ([\d.]+) W: the refill spring's side load", sim, "the simulated share of the load", SIM_DOC)
+    return {"F_c_N": fc, "Km": km, "R_ohm": r_ohm, "Rth_K_W": rth, "Cth_J_K": cth, "L_t_mm": lt, "L_a_mm": la,
+            "ratio": lt / la, "by_angle": rows, "coil_limit_C": t_lim, "start_C": t_amb,
+            "sim_run_W": float(run[0]) if run else None,
+            "label": "CALC (the review's formula, reproduced; inputs results/revJ/sim_params.json and layout.json)",
+            "sim_label": "SIMULATION (sim2, docs/revJ_simulation.md §8.1)", "source": f"{REVIEW_RESPONSE}; {REVIEW_PDF} §4; {SIM_DOC} §8.1"}
+
+
+def facts_known() -> dict:
+    """The other known problems: the heel wheel on clean writing (sim2), the page sensor's assumed accuracy against
+    DeltaPen's measurement (ledger OPT-02)."""
+    sim = _doc(SIM_DOC)
+    # "Nose + heel wheel (± end-cap) | 324–503 µm (mean 403) | ..." (the mean appeared when more test writers finished)
+    heel = _find(r"Nose \+ heel wheel \(± end-cap\) \| (\d+)–(\d+) µm(?: \(mean (\d+)\))?", sim, "the heel wheel's false correction", SIM_DOC)
+    who = _find(r"SIM, test writers ([\d]+[–-][\d]+)", sim[sim.find("### 8.2"):], "the writers of the false-correction check", SIM_DOC)
+    sp = load(SIM_PARAMS)["sim_params"]
+    noise = ((sp.get("sensors") or {}).get("page_sensor") or {}).get("value", {}).get("noise_m")
+    led = ""
+    try:
+        led = " ".join(next((r for r in load_csv(LEDGER) if r.get("id") == "OPT-02"), {}).values())
+    except OSError:
+        warn(f"{LEDGER} could not be read")
+    dp = _find(r"MAE ([\d.]+) mm, median ([\d.]+) mm", led, "DeltaPen's measured error (OPT-02)", LEDGER)
+    return {"heel_moved_mm": [int(heel[0]) / 1000, int(heel[1]) / 1000] if heel else None,
+            "heel_mean_mm": (int(heel[2]) / 1000 if heel[2] else (int(heel[0]) + int(heel[1])) / 2000) if heel else None,
+            "heel_writers": who[0] if who else None,
+            "heel_label": "SIMULATION (sim2, docs/revJ_simulation.md §8.2)",
+            "page_assumed_um": noise * 1e6 if noise else None, "page_label": "ASSUMPTION (results/revJ/sim_params.json: page sensor 3 µm)",
+            "deltapen_um": [float(dp[1]) * 1000, float(dp[0]) * 1000] if dp else None,
+            "deltapen_label": "LIT OPT-02 (DeltaPen, UIST 2022: median and mean error per 10 ms window, on a tablet)",
+            "source": f"{SIM_DOC} §8.2; {SIM_PARAMS}; {LEDGER} OPT-02; {REVIEW_RESPONSE}"}
+
+
+def facts_endcap_j1() -> dict:
+    """Rev J.1's lighter end-cap (the current tail design, docs/revJ1_design.md §6.1): the chosen member's test verdict
+    and the same mass locked in place (study K's model H1, read-only; test seeds 200-203)."""
+    ec = load(REVJ1_ENDCAP)["endcap"]
+    member = load(REVJ1_JSON)["endcap"]["member"]
+    key = f"lrm_{member['L_s_mm']:g}"
+    v = ec["test_j1m2"]["verdicts"][key]
+    summ = ec["test_j1m2"]["summary"][key]
+    fixed = [summ["weight_lrm"][sp]["8-12Hz_1-2mm"]["further_reduction_mean"] for sp in ("0.3", "0.5", "0.7")]
+    mass = load(REVJ1_BUDGETS)["budgets"]["mass"]
+    return {"endcap_g": mass["endcap_g"], "pen_with_endcap_g": (mass.get("with_endcap") or {}).get("mass_g"), "slug_g": member["slug_g"],
+            "length_mm": member["L_shell_mm"], "stroke_mm": member["stroke_mm"],
+            "moving": [v["r0.3"], v["r0.5"], v["r0.7"]], "fixed": fixed, "splits": [0.3, 0.5, 0.7],
+            "label": SIM_H1, "detail": "Rev J.1's end-cap; on top of the Rev H nose and tracker; 8–12 Hz, 1–2 mm; test seeds 200–203",
+            "source": f"{REVJ1_ENDCAP}; {REVJ1_BUDGETS}; docs/revJ1_design.md §6.1"}
+
+
 def build_facts(lay: dict):
     srcs, facts = [], {"meta": {"built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")}}
     for key, fn, src in (("pen", lambda: facts_budgets(lay), f"{BUDGETS}, {REVJ}"), ("ai2", facts_ai2, AI2_JSON),
                          ("nose2", facts_nose2, NOSE2_JSON), ("drive", facts_drive, "results/drive/"),
-                         ("endcap", facts_endcap, ENDCAP_JSON)):
+                         ("endcap", facts_endcap, ENDCAP_JSON), ("endcap_j1", facts_endcap_j1, REVJ1_ENDCAP),
+                         ("sideload", lambda: facts_sideload(lay), f"{SIM_PARAMS} + layout"),
+                         ("known", facts_known, f"{SIM_DOC}, {LEDGER}")):
         try:
             facts[key] = fn()
             srcs.append(src)
@@ -361,7 +486,7 @@ def build_facts(lay: dict):
         facts["sim2j"] = s2
         srcs.append(SIM2J_ET)
     return facts, {"file": "pen.json", "source": " + ".join(srcs), "status": "final" if all(
-        facts.get(k) for k in ("pen", "ai2", "nose2", "drive", "endcap")) else "provisional",
+        facts.get(k) for k in ("pen", "ai2", "nose2", "drive", "endcap", "endcap_j1", "sideload", "known")) else "provisional",
         "modified": mtime_utc(BUDGETS) if exists(BUDGETS) else "",
         "evidence": "CALC and SIMULATION on a PROPOSED DESIGN (labelled per number); nothing measured"}
 
@@ -845,10 +970,20 @@ def results_rows(f: dict) -> str:
         row("Same tremor, a learned estimator", "A small causal neural network, in <b>shadow mode</b> (it logs, it does not steer)",
             f"<b>{_um(l_['ink_um'])}</b> and <b>{pct(l_['words'])} %</b> of words. It may drive the inner pen only after it passes on "
             "held-out real recordings (EXP-L04).", a, "docs/ai_control_v2.md · results/ai2/ai2.json")
+    j1 = f.get("endcap_j1")
+    if j1 and len(j1.get("moving") or []) == 3 and len(j1.get("fixed") or []) == 3:
+        mv1, fx1 = j1["moving"], j1["fixed"]
+        row("Tremor, on top of the inner pen (8–12 Hz, 1–2 mm)",
+            f"Tail: Rev J.1's lighter <b>end-cap</b> ({j1['endcap_g']:.1f} g, a {j1['slug_g']:.1f} g moving weight), the current design",
+            f"A further <b>{' / '.join(f'{100 * x:.1f}' for x in mv1)} %</b> less ink error at grip splits 0.3 / 0.5 / 0.7. The same mass "
+            f"locked in place gives {' / '.join(f'{100 * x:.1f}' for x in fx1)} %: better at split 0.3. The tail stays optional until it "
+            "beats a locked weight (by at least 10 %, the review's gate G5).", j1, "docs/revJ1_design.md §6.1 · results/revJ1/endcap.json")
     if ec:
         mv, fx, mw, fw = ec["moving"], ec["fixed"], ec["moving_worse"], ec["fixed_worse"]
         if all(x is not None for x in mv + fx + mw + fw):
-            row("Tremor, on top of the inner pen (8–12 Hz, 1–2 mm)", "Tail: the <b>tungsten end-cap</b> (moving weight)",
+            first_g = (f.get("pen") or {}).get("endcap_g")
+            row("The same, the first end-cap design (superseded)",
+                "Tail: the first <b>tungsten end-cap</b>" + (f" ({first_g:.0f} g in Rev J)" if first_g else ""),
                 f"A further <b>{pct(mv[0])} / {pct(mv[1])} / {pct(mv[2])} %</b> less ink error at grip splits 0.3 / 0.5 / 0.7. The same "
                 f"mass fixed gives {pct(fx[0])} / {pct(fx[1])} / {pct(fx[2])} % (better at 0.3), but it makes {pct(min(fw[1:]))}–{pct(max(fw[1:]))} % "
                 f"of the hard cases worse (the moving weight {pct(min(mw))}–{pct(max(mw))} %).", ec,
@@ -930,9 +1065,10 @@ def status_html(manifest: dict) -> str:
         word = "final" if st == "final" else "provisional"
         items.append(f'<li><span class="st {cls}">{word}</span> {e(names.get(m["file"], m["file"]))}: '
                      f'<code>{e(m["source"])}</code></li>')
-    if not any(m["file"] == "replay.json" for m in manifest["files"]):
+    if not any(m["file"] == "replay.json" for m in manifest["files"]) or SIM2J_PENDING:
+        why = f": {e('; '.join(SIM2J_PENDING))}, so its numbers are not shown yet" if SIM2J_PENDING else ""
         items.append('<li><span class="st prov">pending</span> Whole-pen simulation (sim2j): '
-                     '<code>results/sim2j/</code> is still being computed; rebuild to add its strips and replay</li>')
+                     f'<code>results/sim2j/</code> is still being computed{why}. Rebuild to add its results, strips and replay.</li>')
     return "<ul class=\"status\">" + "".join(items) + "</ul>"
 
 
@@ -958,20 +1094,53 @@ MECHANISMS = [
                   'behind the ball) swings inside the handle you hold, <b>pushed by coils</b> on the magnets at its back end, '
                   'so <b>the ball moves up to {travel_s}&nbsp;mm</b> against the shake and the ink stays on your letters.'),
      "uses": ["steadies the ink", "writes for you, if you turn it on"],
+     "note": "Being redesigned: holding the ball against the paper costs this design too much power (see Known problems).",
      "evidence": [("PROPOSED DESIGN", ""), ("CALCULATION", "reach and pivot: results/revJ/layout.json")]},
     {"key": "heel", "n": 2, "tok": "--g-drive", "name": "The heel wheel", "where": "under the front ring",
      "sentence": ('<b class="mv">A 2&nbsp;mm wheel under the front ring</b> grips the paper and is <b>steered, or driven, by two '
                   'tiny motors</b>, so <b>the paper pushes the whole pen and your hand</b> along the path of the letter, gently: '
                   'at most {trac_lo}–{trac_hi}&nbsp;N, about the weight of an egg.'),
      "uses": ["keeps your hand on the letter", "leads your hand, if you turn it on"],
+     "note": "Retracted by default: it is lowered onto the paper only when you turn guidance on (see Known problems).",
      "evidence": [("CALCULATION", "push: results/drive/fig_traction_capacity.csv (preload 0.55 N)"),
                   ("ASSUMPTION: tyre friction 0.6–1.2", "to be measured on paper (EXP-D01)"), ("PROPOSED DESIGN", "")]},
     {"key": "tail", "n": 3, "tok": "--g-inertial", "name": "The tail weight", "where": "in the end-cap you can take off",
-     "sentence": ('<b class="mv">A {slug_g}&nbsp;g tungsten weight in the end-cap</b> is <b>pushed from side to side by coils</b>, '
-                  'and its push-back <b>steadies the whole pen</b>: a further {ec_rng}&nbsp;% less shake in the ink, but far too '
+     "sentence": ('<b class="mv">A {ec1_slug}&nbsp;g tungsten weight in the end-cap</b> is <b>pushed from side to side by coils</b>, '
+                  'and its push-back <b>steadies the whole pen</b>: a further {ec1_rng}&nbsp;% less shake in the ink, but far too '
                   'weak to move letters.'),
-     "uses": ["calms a fast shake", "you can take it off"],
-     "evidence": [("SIMULATION (model H1)", "results/endcap/endcap_study.json; 8-12 Hz, 1-2 mm, grip splits 0.3/0.5/0.7"), ("PROPOSED DESIGN", "")]},
+     "uses": ["calms a fast shake", "optional"],
+     "note": ("Optional: in the same simulation a plain weight of the same mass, locked in place, did better for one of the three "
+              "grips, so the moving weight stays optional until it beats a locked one."),
+     "evidence": [("SIMULATION (model H1)", "results/revJ1/endcap.json: Rev J.1's lighter end-cap; 8-12 Hz, 1-2 mm, grip splits 0.3/0.5/0.7"),
+                  ("PROPOSED DESIGN", "")]},
+]
+
+# Problems found after the design was drawn (the whole-pen physics simulation, docs/revJ_simulation.md §8, and the
+# independent review of 29 September 2026 with the lead's response).  One plain line each, with its evidence; the
+# numbers are computed in facts_sideload() / facts_known() from the design files, the simulation doc and the ledger.
+KNOWN_PROBLEMS = [
+    {"key": "sideload",
+     "lead": "The inner pen's coils spend most of their power just holding the ball against the paper.",
+     "text": ("Because the pen is tilted, the paper pushes the ball sideways, and the magnets sit on a short arm, so they must "
+              "push about {kp_ratio} times harder. That is {kp_p50}&nbsp;W at a normal 50° angle and {kp_p35}&nbsp;W at 35°. "
+              "The coils would overheat within about a minute. A balanced nib is being designed, so battery and heat figures "
+              "are suspended."),
+     "evidence": [("CALCULATION", "the independent review's formula, reproduced by the lead; inputs results/revJ/sim_params.json and layout.json"),
+                  ("SIMULATION (sim2, the same load in a writing run)", "about {kp_sim} W of the nose's power in a writing run: docs/revJ_simulation.md §8.1")]},
+    {"key": "heel",
+     "lead": "The heel wheel moved clean writing by about {kp_heel}&nbsp;mm in the physics simulation,",
+     "text": "so it stays retracted unless the writer turns guidance on.",
+     "evidence": [("SIMULATION (sim2)", "{kp_heel_um}: docs/revJ_simulation.md §8.2")]},
+    {"key": "sensor",
+     "lead": "The page sensor was assumed accurate to {kp_page}&nbsp;µm (thousandths of a millimetre).",
+     "text": ("A published research pen (DeltaPen, 2022) measured about {kp_dp_lo}–{kp_dp_hi}&nbsp;µm, so real accuracy "
+              "is unproven."),
+     "evidence": [("ASSUMPTION (the page sensor)", "{kp_page} µm, results/revJ/sim_params.json (page sensor noise)"),
+                  ("LITERATURE · OPT-02", "DeltaPen (UIST 2022): median and mean error per 10 ms window, on a tablet surface; docs/evidence.csv")]},
+    {"key": "data",
+     "lead": "All writers and shakes so far are made up.",
+     "text": "Real recordings are being brought in.",
+     "evidence": [("SIMULATION: synthetic writers and shakes", "study R brings in real recordings: docs/round4_plan.md")]},
 ]
 MECH_CHIP = {"tip": ("Inner pen", "--g-nose"), "heel": ("Heel wheel", "--g-drive"), "tail": ("Tail weight", "--g-inertial"),
              "app": ("The app", "--accent")}
@@ -983,10 +1152,159 @@ def mechanisms_html(toks: dict) -> str:
         sent = re.sub(r"\{([a-z0-9_]+)\}", lambda mm: e(toks.get(mm.group(1), "—")), m["sentence"])
         uses = "".join(f"<span>{e(u)}</span>" for u in m["uses"])
         tags = "".join(tag(x, t) for x, t in m["evidence"])
+        link = '<a href="#known">see Known problems</a>'
+        note = f'<p class="mech-note">{e(m["note"]).replace("see Known problems", link)}</p>' if m.get("note") else ""
         out.append(f'      <article class="mech" data-mech="{e(m["key"])}" style="--c:var({m["tok"]})">'
                    f'<h3><span class="anum">{m["n"]}</span>{e(m["name"])} <small>{e(m["where"])}</small></h3>'
-                   f'<p class="mech-s">{sent}</p><div class="uses">{uses}</div><div class="tags">{tags}</div></article>')
+                   f'<p class="mech-s">{sent}</p><div class="uses">{uses}</div>{note}<div class="tags">{tags}</div></article>')
     return "\n".join(out)
+
+
+def known_tokens(f: dict) -> dict:
+    sl, kn = f.get("sideload") or {}, f.get("known") or {}
+    by = sl.get("by_angle") or {}
+    b50, b35 = by.get("50") or {}, by.get("35") or {}
+    hm, dp = kn.get("heel_moved_mm"), kn.get("deltapen_um")
+    return {"kp_ratio": f"{sl['ratio']:.0f}" if sl.get("ratio") else "—", "kp_ratio1": f"{sl['ratio']:.1f}" if sl.get("ratio") else "—",
+            "kp_p50": f"{b50['P_W']:.1f}" if b50 else "—", "kp_p35": f"{b35['P_W']:.1f}" if b35 else "—",
+            "kp_sim": f"{sl['sim_run_W']:g}" if sl.get("sim_run_W") else "—",
+            "kp_heel": f"{kn['heel_mean_mm']:.1f}" if kn.get("heel_mean_mm") else "—",
+            "kp_heel_um": (f"{1000 * hm[0]:.0f}–{1000 * hm[1]:.0f} µm, mean {1000 * kn['heel_mean_mm']:.0f} µm"
+                           + (f", test writers {kn['heel_writers']}" if kn.get("heel_writers") else "")) if hm else "—",
+            "kp_page": f"{kn['page_assumed_um']:.0f}" if kn.get("page_assumed_um") else "—",
+            "kp_dp_lo": f"{dp[0]:.0f}" if dp else "—", "kp_dp_hi": f"{dp[1]:.0f}" if dp else "—"}
+
+
+def _fill(s: str, toks: dict) -> str:
+    return re.sub(r"\{([a-z0-9_]+)\}", lambda mm: str(toks.get(mm.group(1), "—")), s)
+
+
+def sideload_svg(sl: dict) -> str:
+    """The static side load, drawn simply in two stacked panels (one SVG):
+      1. At the ball, magnified: the refill spring presses the ball along the pen, the paper pushes straight up, and
+         that push splits into a part along the pen (it balances the spring) and a part across it (the sideways push).
+         The three forces to one scale (330 units per newton), the pen at 50°.
+      2. The inner pen as a lever, drawn flat and to scale (2.25 units per mm, arms from the layout): the sideways push
+         on the long arm, the magnets' force on the short arm, to one force scale (90 units per newton)."""
+    th = math.radians(50.0)
+    u = (math.cos(th), -math.sin(th))            # along the pen, from the ball up the pen (screen: y down)
+    n_out = (-math.sin(th), -math.cos(th))       # across the pen, up and away from the paper (the sideways push)
+    n_in = (-n_out[0], -n_out[1])
+    row = sl["by_angle"]["50"]
+    lt, la, fc = sl["L_t_mm"], sl["L_a_mm"], sl["F_c_N"]
+
+    def f2(v):
+        return f"{v:.2f}"
+
+    def poly(pts, cls):
+        return f'<polygon class="{cls}" points="{" ".join(f2(x) + "," + f2(y) for x, y in pts)}"/>'
+
+    def arrow(p0, p1, cls):
+        return (f'<line class="sl-ar {cls}" x1="{f2(p0[0])}" y1="{f2(p0[1])}" x2="{f2(p1[0])}" y2="{f2(p1[1])}" '
+                f'marker-end="url(#sl-{cls})"/>')
+
+    def line(p0, p1, cls):
+        return f'<line class="{cls}" x1="{f2(p0[0])}" y1="{f2(p0[1])}" x2="{f2(p1[0])}" y2="{f2(p1[1])}"/>'
+
+    def text(p, lines, cls="", anchor="start", lh=8.6):
+        t = f'<text class="sl-t {cls}" x="{f2(p[0])}" y="{f2(p[1])}" text-anchor="{anchor}">'
+        for i_, ln in enumerate(lines):
+            t += f'<tspan x="{f2(p[0])}" dy="{0 if i_ == 0 else lh}">{ln}</tspan>'
+        return t + "</text>"
+
+    g = []
+    # ---- panel 1: at the ball, magnified -------------------------------------------------------------------------
+    k1 = 330.0
+    yp, bx, br = 122.0, 104.0, 3.6                # the paper line, the contact point, the ball's radius (drawing units)
+    C = (bx, yp - br)                             # the ball's centre: the pen's axis passes through it
+
+    def P(t, q=0.0, o=C):
+        return (o[0] + u[0] * t + n_out[0] * q, o[1] + u[1] * t + n_out[1] * q)
+    g.append(text((2, 11), ["1 · At the ball (magnified)"], "sl-h1"))
+    g.append(f'<rect class="sl-desk" x="0" y="{f2(yp)}" width="230" height="10"/>'
+             f'<line class="sl-paper" x1="0" x2="230" y1="{f2(yp)}" y2="{f2(yp)}"/>')
+    g.append(text((226, yp + 7.6), ["paper"], "sl-m", "end"))
+    g.append(poly([P(2.2, -1.5), P(15, -4.2), P(116, -4.2), P(116, 4.2), P(15, 4.2), P(2.2, 1.5)], "sl-inner"))
+    g.append(f'<circle class="sl-ball" cx="{f2(C[0])}" cy="{f2(C[1])}" r="{br}"/>')
+    g.append(text(P(104, 9), ["the inner pen"], "sl-m", "end"))
+    B = (bx, yp)
+    n_tip = (bx, yp - row["N_N"] * k1)
+    s_tip = (bx + n_out[0] * row["F_perp_N"] * k1, yp + n_out[1] * row["F_perp_N"] * k1)
+    sp0, sp1 = P(30 + fc * k1, -11), P(30, -11)
+    g.append(line(s_tip, n_tip, "sl-comp"))
+    g.append(arrow(sp0, sp1, "spring"))
+    g.append(arrow(B, n_tip, "paper"))
+    g.append(arrow(B, s_tip, "side"))
+    g.append(text((sp1[0] + 19, sp1[1] - 10), ["the spring pushes", "the ball along", f"the pen: {fc:.2f} N"], "sl-b"))
+    # the pen's angle to the paper
+    ra = 15.0
+    g.append(f'<path class="sl-dim" d="M{f2(bx + ra)} {f2(yp)}A{ra} {ra} 0 0 0 {f2(bx + ra * u[0])} {f2(yp + ra * u[1])}"/>')
+    g.append(text((bx + 19.5, yp - 3.2), ["50°"], "sl-m"))
+    g.append(text((bx - 5, n_tip[1] + 3), ["the paper pushes", f"straight up: {row['N_N']:.2f} N"], "", "end"))
+    g.append(text(((s_tip[0] + n_tip[0]) / 2 - 6, (s_tip[1] + n_tip[1]) / 2 + 2), ["along the pen:", "balances the spring"], "sl-m", "end"))
+    g.append(text((s_tip[0] - 4, s_tip[1] + 8), ["sideways part:", f"{row['F_perp_N']:.3f} N"], "sl-r", "end"))
+    # ---- panel 2: the inner pen is a lever (drawn flat, to scale) -----------------------------------------------
+    s2, k2 = 2.25, 90.0
+    yb, x0 = 262.0, 14.0
+    xp, xm = x0 + lt * s2, x0 + (lt + la) * s2
+    g.append(f'<line class="sl-sep" x1="0" x2="230" y1="146" y2="146"/>')
+    g.append(text((2, 160), ["2 · The inner pen is a lever"], "sl-h1"))
+    g.append(text((2, 170), ["drawn flat, to scale"], "sl-m"))
+    g.append(f'<rect class="sl-inner" x="{f2(x0)}" y="{f2(yb - 3)}" width="{f2(xm - x0)}" height="6"/>')
+    g.append(f'<circle class="sl-ball" cx="{f2(x0 - 1.5)}" cy="{f2(yb)}" r="3.4"/>')
+    g.append(f'<rect class="sl-mag" x="{f2(xm - 5)}" y="{f2(yb - 10)}" width="10" height="20"/>')
+    g.append(poly([(xp, yb + 3), (xp - 6.5, yb + 14), (xp + 6.5, yb + 14)], "sl-pivot"))
+    g.append(line((xp - 11, yb + 14.5), (xp + 11, yb + 14.5), "sl-ground"))
+    g.append(text((xp - 9, yb + 12), ["pivot"], "sl-p", "end"))
+    g.append(arrow((x0, yb - 4.5), (x0, yb - 4.5 - row["F_perp_N"] * k2), "side"))
+    g.append(arrow((xm, yb - 11), (xm, yb - 11 - row["F_act_N"] * k2), "mag"))
+    g.append(text((x0 + 6, yb - 8.5), [f"sideways part: {row['F_perp_N']:.3f} N"], "sl-r"))
+    g.append(text((xm - 8, yb - 11 - row["F_act_N"] * k2 + 8), ["the magnets must push", f"{row['F_act_N']:.2f} N: {sl['ratio']:.1f} times more"], "sl-r", "end"))
+    yd = yb + 25
+    for xa, xb_ in ((x0, xp), (xp, xm)):
+        g.append(line((xa, yd), (xb_, yd), "sl-dim"))
+    for xt in (x0, xp, xm):
+        g.append(line((xt, yd - 4), (xt, yd + 4), "sl-dim"))
+    g.append(text(((x0 + xp) / 2 - 10, yd + 10), [f"the ball's arm: {lt:.1f} mm"], "sl-m", "middle"))
+    g.append(text((xm + 5, yd + 10), ["the magnets' arm:", f"{la:.1f} mm"], "sl-m", "end", lh=8))
+    defs = "".join(f'<marker id="sl-{k_}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="3.6" markerHeight="3.6" '
+                   f'orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="sl-h {k_}"/></marker>'
+                   for k_ in ("spring", "paper", "side", "mag"))
+    return (f'<svg class="sideload" id="sideload" viewBox="0 0 230 {f2(yd + 22)}" role="img" aria-labelledby="sl-t sl-d">'
+            f'<title id="sl-t">Why the inner pen needs so much power just to hold the ball on the paper</title>'
+            f'<desc id="sl-d">At the ball: the refill spring presses the ball along the pen with {fc:.2f} N. The paper pushes back '
+            f'straight up with {row["N_N"]:.2f} N; the part of that push along the pen balances the spring, and the part across the '
+            f'pen is {row["F_perp_N"]:.3f} N at 50 degrees. The lever: that sideways push acts {lt:.1f} mm from the pivot, while '
+            f'the magnets sit {la:.1f} mm from it on the other side, so they must push {row["F_act_N"]:.2f} N, {sl["ratio"]:.1f} '
+            f'times more, all the time the ball touches the paper.</desc>'
+            f'<defs>{defs}</defs>{"".join(g)}</svg>')
+
+
+def known_problems_html(f: dict) -> str:
+    """The 'Known problems (being fixed)' panel: four plain lines and the side-load figure."""
+    toks = known_tokens(f)
+    items = []
+    for kp in KNOWN_PROBLEMS:
+        tags = "".join(tag(_fill(x, toks), _fill(t, toks)) for x, t in kp["evidence"])
+        items.append(f'<li data-kp="{e(kp["key"])}"><p><b>{_fill(kp["lead"], toks)}</b> {_fill(kp["text"], toks)}</p>'
+                     f'<div class="tags">{tags}</div></li>')
+    sl = f.get("sideload")
+    fig = ""
+    if sl and (sl.get("by_angle") or {}).get("50"):
+        r50, r35 = sl["by_angle"]["50"], sl["by_angle"].get("35") or {}
+        t_lim = r50.get("t_limit_s")
+        cost = (f'Holding it costs {r50["P_W"]:.1f}&nbsp;W at 50° and {r35.get("P_W", 0):.1f}&nbsp;W at 35°, all the time the ball touches '
+                f'the paper; a flatter pen is worse. At 50° the coil would pass its {sl["coil_limit_C"]:.0f}&nbsp;°C limit after about '
+                f'{5 * round(t_lim / 5):.0f}&nbsp;s of writing.' if t_lim else "")
+        fig = (f'<figure class="slfig">{sideload_svg(sl)}<figcaption><b>Why the nib must change.</b> The spring presses the ball along '
+               f'the pen; the paper pushes back straight up. The part of that push across the pen (red) tries to swing the inner pen '
+               f'about its pivot. It acts on a long arm and the magnets on a short one, so the magnets must push '
+               f'{sl["ratio"]:.1f} times harder:'
+               f'<span class="sl-eq">{r50["F_perp_N"]:.3f}&nbsp;N × {sl["L_t_mm"]:.1f}&nbsp;mm = {r50["F_act_N"]:.2f}&nbsp;N × '
+               f'{sl["L_a_mm"]:.1f}&nbsp;mm</span>{cost}'
+               f'<span class="tags">{tag("CALCULATION", sl["label"] + "; " + sl["source"])}'
+               f'{tag("ILLUSTRATION (the lever and the forces to scale)")}</span></figcaption></figure>')
+    return (f'<div class="known-grid"><ol class="known-list">{"".join(items)}</ol>{fig}</div>')
 
 
 def _clip(strokes, x0, x1):
@@ -1094,16 +1412,21 @@ def simple_rows(f: dict) -> list:
             "verdict": "Clearly better, not perfect.",
             "ev": [a.get("label", "SIMULATION")], "src": "results/ai2/ai2.json",
             "ev_note": "The tracker was tested on the older (Rev H) inner pen model, which reaches ±3 mm."})
-    mv = ec.get("moving") or []
+    j1 = f.get("endcap_j1") or {}
+    mv, fx = j1.get("moving") or [], j1.get("fixed") or []
     if len(mv) == 3 and None not in mv:
+        better_locked = [i for i in range(3) if len(fx) == 3 and fx[i] is not None and fx[i] > mv[i]]
         rows.append({
             "id": "tail", "mech": ["tail"], "who": "A fast shake, with the end-cap on", "sub": "Essential tremor: 8–12 shakes a second",
-            "help": "The tail weight pushes against the shake, on top of the inner pen.",
+            "help": (f"The tail weight pushes against the shake, on top of the inner pen. Rev J.1's lighter end-cap: "
+                     f"{j1['endcap_g']:.1f} g, with a {j1['slug_g']:.1f} g weight."),
             "pic": None, "nopic": "No writing pictures: this study saved numbers only.",
             "num": {"label": "Shake left in the ink", "text": f"{_pc(min(mv))}–{_pc(max(mv))} % less",
                     "sub": "than with the inner pen alone; it depends on how you hold the pen"},
-            "verdict": "A small extra help.",
-            "ev": [ec.get("label", "SIMULATION")], "src": "results/endcap/endcap_study.json", "ev_note": ""})
+            "verdict": ("Small. A plain weight of the same mass, locked in place, did better for "
+                        f"{'one of the three grips' if len(better_locked) == 1 else str(len(better_locked)) + ' of the three grips'}, "
+                        "so the tail stays optional until it beats a locked weight." if better_locked else "A small extra help."),
+            "ev": [j1.get("label", "SIMULATION")], "src": "results/revJ1/endcap.json (Rev J.1)", "ev_note": ""})
     a1 = n2.get("aw_2p5_1mm") or {}
     if a1.get("letters_read") is not None:
         rows.append({
@@ -1115,6 +1438,7 @@ def simple_rows(f: dict) -> list:
             "num": {"label": "Letters read correctly", "a": _pc(a1["letters_read"]), "unit": "%",
                     "sub": "with a shake of up to 1 mm; average of 6 simulated writers"},
             "verdict": "Nearly every letter readable. It writes only text you chose.",
+            "status": "Suspended as a hardware claim: the current inner pen would overheat (see Known problems).",
             "ev": [n2.get("label", "SIMULATION")], "src": "results/nose2/nose2.json", "ev_note": ""})
     last, tall = d.get("loops_last") or {}, d.get("loops_tallest") or {}
     if last.get("none") is not None and last.get("wheel_path") is not None and tall.get("none") and tall.get("wheel_path"):
@@ -1251,6 +1575,7 @@ def simple_results_html(f: dict, samples: dict) -> str:
         num = (f'<div class="bnum"><span class="bl">{e(n["label"])}</span><span class="bv{" worse" if n.get("worse") else ""}">{val}</span>'
                f'<span class="bs">{e(n.get("sub", ""))}</span>'
                + (f'<span class="verdict">{e(r["verdict"])}</span>' if r.get("verdict") else "")
+               + (f'<a class="bstat" href="#known">{e(r["status"])}</a>' if r.get("status") else "")
                + f'<div class="tags">{tags}</div>{src}</div>')
         out.append(f'      <article class="brow" data-row="{e(r["id"])}">{who}{pic}{num}</article>')
     return "\n".join(out)
@@ -1308,6 +1633,20 @@ def fact_tokens(f: dict, lay: dict) -> dict:
         "slug_g": fmt_num(sum(c.get("mass_g") or 0 for c in lay.get("components", []) if c.get("moves_with") == "inertial_mass") or None, 0),
         "ec_rng": (f"{100 * min(ec['moving']):.0f}–{100 * max(ec['moving']):.0f}" if ec.get("moving") and None not in ec["moving"] else "—"),
     }
+    j1 = f.get("endcap_j1") or {}
+    mv1, fx1 = j1.get("moving") or [], j1.get("fixed") or []
+    ok1 = len(mv1) == 3 and None not in mv1
+    tok.update({
+        "ec1_g": fmt_num(j1.get("endcap_g")), "ec1_pen": fmt_num(j1.get("pen_with_endcap_g")), "ec1_slug": fmt_num(j1.get("slug_g"), 0), "ec1_slug_1": fmt_num(j1.get("slug_g")),
+        "ec1_len": fmt_num(j1.get("length_mm"), 0),
+        "ec1_rng": f"{100 * min(mv1):.0f}–{100 * max(mv1):.0f}" if ok1 else "—",
+        "ec1_splits": " / ".join(f"{100 * x:.1f}" for x in mv1) if ok1 else "—",
+        "ec1_fixed": " / ".join(f"{100 * x:.1f}" for x in fx1) if len(fx1) == 3 and None not in fx1 else "—",
+    })
+    last, tall = d.get("loops_last") or {}, d.get("loops_tallest") or {}
+    tok.update({"loop_tall_wheel": fmt_num(tall.get("wheel_path"), 2), "loop_tall_none": fmt_num(tall.get("none"), 2),
+                "loop_last_wheel": fmt_num(last.get("wheel_path"), 2), "loop_last_none": fmt_num(last.get("none"), 2)})
+    tok.update(known_tokens(f))
     return tok
 
 
@@ -1328,7 +1667,8 @@ def main():
     files = [m_lay, m_facts, m_samp] + ([m_rep] if m_rep else [])
     manifest = {"built_utc": _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
                 "git_revision": git_revision(), "files": files, "warnings": WARNINGS,
-                "sim2j": {"samples": exists(SIM2J_SAMPLES), "replay": exists(SIM2J_REPLAY), "et": exists(SIM2J_ET)}}
+                "sim2j": {"samples": exists(SIM2J_SAMPLES), "replay": exists(SIM2J_REPLAY), "et": exists(SIM2J_ET),
+                          "et_shown": bool(facts.get("sim2j")), "pending": SIM2J_PENDING}}
     sizes = {"layout.json": dump(lay, "layout.json"), "pen.json": dump(facts, "pen.json"),
              "samples.json": dump(samples, "samples.json")}
     rp = os.path.join(DATA, "replay.json")
@@ -1345,7 +1685,8 @@ def main():
     toks = fact_tokens(facts, lay)
     fills = {"<!--BUILD:COMPONENT_ROWS-->": component_rows(lay), "<!--BUILD:DATA_STATUS-->": status_html(manifest),
              "<!--BUILD:PROVENANCE-->": provenance_html(manifest, lay), "<!--BUILD:RESULT_ROWS-->": results_rows(facts),
-             "<!--BUILD:MECHANISMS-->": mechanisms_html(toks), "<!--BUILD:SIMPLE_RESULTS-->": simple_results_html(facts, samples)}
+             "<!--BUILD:MECHANISMS-->": mechanisms_html(toks), "<!--BUILD:SIMPLE_RESULTS-->": simple_results_html(facts, samples),
+             "<!--BUILD:KNOWN_PROBLEMS-->": known_problems_html(facts)}
     for k, v in fills.items():
         if k not in page:
             warn(f"template.html has no {k} placeholder")
@@ -1368,7 +1709,8 @@ def main():
     for m in manifest["files"]:
         print(f"  {m['file']:<13} {m['status']:<11} <- {m['source']}")
     print("  data sizes:", ", ".join(f"{k} {v / 1024:.0f} kB" for k, v in sizes.items()))
-    print(f"  sim2j: samples {exists(SIM2J_SAMPLES)}, replay {exists(SIM2J_REPLAY)}, et {exists(SIM2J_ET)}")
+    print(f"  sim2j: samples {exists(SIM2J_SAMPLES)}, replay {exists(SIM2J_REPLAY)}, et {exists(SIM2J_ET)}"
+          f" (shown: {bool(facts.get('sim2j'))})")
     if WARNINGS:
         print(f"  {len(WARNINGS)} warning(s); see above")
 

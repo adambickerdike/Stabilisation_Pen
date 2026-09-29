@@ -57,10 +57,16 @@ class PenVariant:
     gt: Optional[Dict] = None            # CMGTail kwargs
     tmd: Optional[Dict] = None           # devices.tuned_mass kwargs
     collar: Optional[Dict] = None        # devices.Collar kwargs
+    grip_scale: float = 1.0              # H1 grip stiffness and damping scale (sim2 HandH1.grip_scale; HAP-26 range
+                                         # 228-1043 N/m around 575 N/m: 0.5-2 x)
+    r_rot: float = 0.5                   # H1 grip split (ASSUMPTION, EXP-I01)
     label: str = ""
 
-    def build(self, hand_model: str = "h1", r_rot: float = 0.5, dt: float = DT, arm=None):
-        cfg = RJ.config(hand_model=hand_model, heel=True, endcap=self.endcap, r_rot=r_rot, dt=dt, arm=arm,
+    def build(self, hand_model: str = "h1", r_rot: Optional[float] = None, dt: float = DT, arm=None):
+        from sim2 import params as P2
+        r_rot = self.r_rot if r_rot is None else r_rot
+        hand = P2.HandH1(r_rot=r_rot, grip_scale=self.grip_scale) if hand_model == "h1" else None
+        cfg = RJ.config(hand_model=hand_model, heel=True, endcap=self.endcap, r_rot=r_rot, dt=dt, arm=arm, hand=hand,
                         label=f"Rev J {self.name}")
         if self.gt is not None:
             cfg.plugins.append(DV.CMGTail(**self.gt))
@@ -71,11 +77,9 @@ class PenVariant:
 
 
 def base_wp(pv: PenVariant, tmd_mode: str = "passive") -> C.WPConfig:
-    """The device state the writer learns the pen with (and the tremor-free reference): collars hold their static
-    load, a tuned mass is on its flexures, a CMG's gimbals are held (inert)."""
+    """The device state the writer learns the pen with (and the tremor-free reference): a collar's servo holds the pen
+    centred against the writing force, a tuned mass is on its flexures, a CMG's gimbals are held (inert)."""
     wp = C.WPConfig()
-    if pv.collar is not None:
-        wp = replace(wp, collar="static")
     if pv.tmd is not None:
         wp = replace(wp, tmd=tmd_mode)
     return wp
@@ -283,6 +287,47 @@ def coverage(r, ref, t0: float = PRE_S) -> float:
     return float(c.sum() / max(c_ref.sum(), 1))
 
 
+def ink_completeness(r, ref, t0: float = PRE_S, miss_share: float = 0.5, t_reposition: float = 0.2) -> Dict:
+    """What an ink gate costs (the review's section 13: coverage, missing strokes and completion time must accompany
+    the error).  Strokes are the reference run's (tremor-free, device off) contiguous pen-down segments after t0; a
+    stroke is missing when less than half of it is inked in r.  ink_lost_mm: the reference ink path not laid.
+    Completion time: the writer model does not wait for the pen (the task time is unchanged); if the pen re-traced the
+    lost ink afterwards ('autowrite' completion, ASSUMPTION: at the writer's own mean inked speed plus 0.2 s to
+    reposition per lost segment), the task would take autowrite_extra_s longer (SIM on the record, CALC for the time)."""
+    n = min(len(r["t"]), len(ref["t"]))
+    t = ref["t"][:n]
+    m = t > t0
+    c_ref = (ref["contact"][:n] > 0.5) & m
+    c = (r["contact"][:n] > 0.5)
+    ink = ref.ink()[:n]
+    step = np.r_[0.0, np.hypot(*np.diff(ink, axis=0).T)]
+    # segments of the reference
+    edges = np.flatnonzero(np.diff(np.r_[0, c_ref.astype(int), 0]))
+    segs = list(zip(edges[0::2], edges[1::2]))
+    n_miss = 0
+    n_part = 0
+    lost_segments = 0
+    for a, b in segs:
+        share = float(np.mean(c[a:b])) if b > a else 1.0
+        if share < miss_share:
+            n_miss += 1
+        elif share < 0.9:
+            n_part += 1
+        lost = c_ref[a:b] & ~c[a:b]
+        if lost.any():
+            lost_segments += int(np.sum(np.diff(np.r_[0, lost.astype(int)]) == 1))
+    lost_mm = float(np.sum(step[c_ref & ~c])) * 1e3
+    inked_mm = float(np.sum(step[c_ref])) * 1e3
+    T_ink = float(np.sum(c_ref)) * float(t[1] - t[0])
+    v_ink = inked_mm / max(T_ink, 1e-9)
+    T_task = float(t[-1] - t0)
+    extra = lost_mm / max(v_ink, 1e-9) + t_reposition * lost_segments
+    return {"coverage": float(np.sum(c_ref & c) / max(c_ref.sum(), 1)), "n_strokes": len(segs),
+            "missing_strokes": n_miss, "missing_stroke_rate": n_miss / max(len(segs), 1), "partial_strokes": n_part,
+            "ink_lost_mm": lost_mm, "ink_ref_mm": inked_mm, "lost_segments": lost_segments,
+            "task_time_s": T_task, "autowrite_extra_s": extra, "completion_time_ratio": (T_task + extra) / max(T_task, 1e-9)}
+
+
 def device_power(r, pv: PenVariant, wp: C.WPConfig) -> Dict:
     """Electrical power of the whole-pen devices (CALC on SIM): designs.py's electrical models on the recorded
     mechanical quantities."""
@@ -304,12 +349,18 @@ def device_power(r, pv: PenVariant, wp: C.WPConfig) -> Dict:
     return out
 
 
+PAGE_ERR = {"measured": "deltapen_walk", "held": "deltapen_held", "ideal": "white"}
+
+
 def run_case(su: Setup, fw_name: str, wp: C.WPConfig, kind: str, f0: float, amp_tip: float, seed: int,
-             ref_none=None, keep: bool = False, oracle_nose: bool = False) -> Dict:
+             ref_none=None, keep: bool = False, oracle_nose: bool = False, nose_reach: Optional[float] = None,
+             oracle_split: Optional[float] = None) -> Dict:
     """One case: this writer and pen, a tremor class, a firmware (sim2j controller name) and the device laws."""
     case = su.case
     arm = su.hand_model == "arm"
-    fw = ET.controller(fw_name, seed=seed * 7 + su.w)
+    fw = replace(ET.controller(fw_name, seed=seed * 7 + su.w), page_error=PAGE_ERR[wp.page_err])
+    if nose_reach is not None:
+        fw = replace(fw, reach=nose_reach)
     task = {"f0": f0}
     if arm:
         scn = case.scenario()
@@ -330,6 +381,10 @@ def run_case(su: Setup, fw_name: str, wp: C.WPConfig, kind: str, f0: float, amp_
         od = ET.oracle_table(ref_none, su.clean, nt, 0.0)
         sos_o = butter(2, [2.5, 15.0], btype="band", fs=2000.0, output="sos")
         task["oracle_d_dev"] = sosfiltfilt(sos_o, od, axis=0)
+        if oracle_split is not None:
+            # both the nose and a device know the tremor perfectly: the nose takes this share, the device the rest
+            task["oracle_d"] = task["oracle_d"] * oracle_split
+            task["oracle_d_dev"] = task["oracle_d_dev"] * (1.0 - oracle_split)
     mu = ET.mu_for(su.w, seed, f0, amp_tip)
     t0 = time.time()
     r = WS.run(su.pm, scn, fw, wp, task=task, mu=mu, seed=seed, arm_tremor=tq)
@@ -337,7 +392,7 @@ def run_case(su: Setup, fw_name: str, wp: C.WPConfig, kind: str, f0: float, amp_
     m = su.metrics(r, ref_none=ref_none)
     m["tip_tremor_mm"] = tremor_amp_mm(r, su.clean, key="ink")
     m["handle_tremor_mm"] = tremor_amp_mm(r, su.clean, key="handle")
-    m["coverage"] = coverage(r, su.clean)
+    m.update(ink_completeness(r, su.clean))
     m.update(device_power(r, su.pv, wp))
     if "w_act" in r.idx:
         m["detector_open_share"] = float(np.mean(r["w_act"][r["t"] > PRE_S]))

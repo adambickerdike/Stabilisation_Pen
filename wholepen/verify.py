@@ -10,7 +10,9 @@ r"""Simulator checks for every new device (SIM against CALC closed forms; ASME V
                   equals sqrt(K_c / J_pivot) (closed form from the model's own inertia about the pivot)
   collar_energy   the same, undamped: energy conserved
   sled_static     a constant force on the H1 hand (pen lifted): the static displacement equals F / k_arm
-  dt_convergence  one closed-loop CMG case at 50 us and 25 us: tip tremor and gimbal peak agree
+  collar_v2_transmission  the V2 collar in the full model driven by a prescribed sine: the ink's motion against the
+                  linear model the controller uses
+  dt_convergence  one closed-loop collar case at 50 us and 25 us: tip tremor agrees
 Evidence status: SIMULATION checked against CALCULATION.
 """
 from __future__ import annotations
@@ -228,6 +230,71 @@ def sled_static(F: float = 0.5, dt: float = 50e-6) -> Dict:
             "label": "SIM against CALC (static F / k_arm)"}
 
 
+def collar_v2_transmission(f: float = 6.0, amp: float = 0.05, T: float = 2.5) -> Dict:
+    """The V2 collar in the full closed-loop model (H1 hand, pen resting on the paper, no tremor, nose held): the
+    servo's reference follows a prescribed sine about t2 (tilt plane) or t1 (sideways); the ink's peak-to-peak motion
+    against the linear model's ink response (lin.py, the controller's internal model) at the same frequency."""
+    from dataclasses import replace
+    from stabpen import signals as sg
+    from sim2j import et as ET, tasks as TK
+    from . import cases as CS, control as C, stepper as WS
+    pv = CS.PenVariant("collar", collar=dict(z_p=0.050))
+    pm = pv.build()
+    case = TK.WriterCase(100, text="r", pre_s=T)
+    n = int(T / TK.SIM_DT)
+    case.t = case.t[:n]; case.intended = case.intended[:n]; case.hand_path = case.hand_path[:n]
+    it = case.written.intended
+    case.written.intended = sg.Intended(it.t[:n], it.xy[:n], it.pen_down[:n], it.lift[:n], [])
+    scn = case.scenario()
+    col = pm.info["collar"]
+    ex = {"z_p": col["z_p"], "K_c": col["K_c"], "c_c": col["c_c"], "m_c": col["m"], "z_cm": col["z_cm"], "J_c": col["J"],
+          "K_s": col["K_s"], "C_s": col["C_s"], "skid_on_collar": col["skid_on_collar"]}
+    fr, G = C.internal_model("collar", DV.pen_props(pm), ex, out="ink")
+    i = int(np.argmin(np.abs(fr - f)))
+    rows = []
+    for axis in (1, 0):
+        fw = replace(ET.controller("nose", seed=1), reach=1e-9)
+        st = WS.WPStepper(pm, scn, fw, C.WPConfig(collar="ff"), task={"f0": f}, mu=0.9, seed=1)
+
+        def law(dev, mode, t, f_est, cap, axis=axis):
+            u = np.zeros(2)
+            u[axis] = amp * math.sin(2 * math.pi * f * t) * min(1.0, t / 0.5)
+            return u
+        st.fw._law = law
+        st.fw._commit = lambda *a: None
+        st.advance(st.n)
+        r = st.result()
+        m = r["t"] > 1.0
+        pp = np.ptp(r.ink()[m][:, :2], axis=0)
+        j = 0 if axis == 1 else 1                  # t2 moves the ink along page x, t1 along page y
+        sim = float(pp[j] / 2)
+        lin = float(abs(G[i, j, axis]) * amp)
+        rows.append({"axis": "t2 (tilt plane)" if axis == 1 else "t1 (sideways)", "ink_amp_sim_mm": sim * 1e3,
+                     "ink_amp_lin_mm": lin * 1e3, "rel_err": abs(sim - lin) / lin,
+                     "contact_share": float(np.mean(r["contact"][m] > 0.5))})
+    return {"f": f, "amp_rad": amp, "rows": rows, "err_max": max(r["rel_err"] for r in rows),
+            "label": "SIM (full model) against CALC (lin.py V2 ink response, the controller's internal model)"}
+
+
+def dt_convergence(dts=(50e-6, 25e-6)) -> Dict:
+    """One closed-loop case (tuning writer 100, 'return', ET 6 Hz 3 mm, the V2 collar + nose, seed 300) at the study's
+    50 us step and at 25 us."""
+    from . import cases as CS, control as C
+    out = []
+    for dt in dts:
+        pv = CS.PenVariant(f"collar_dt{int(dt * 1e6)}", collar=dict(z_p=0.050))
+        pm = pv.build(dt=dt)
+        su = CS.Setup(100, pv, pm, text="return")
+        ref = CS.run_case(su, "none", C.WPConfig(), "ET", 6.0, 3e-3, 300, keep=True)
+        r0 = ref.pop("_r")
+        m = CS.run_case(su, "nose", C.WPConfig(collar="ff"), "ET", 6.0, 3e-3, 300, ref_none=r0)
+        out.append({"dt_us": dt * 1e6, "tip_none_mm": ref["tip_tremor_mm"], "tip_collar_nose_mm": m["tip_tremor_mm"],
+                    "ink_err_um": m["ink_err_um"], "pivot_peak_rad": m.get("pivot_peak_rad")})
+    a, b = out[0], out[-1]
+    return {"rows": out, "rel_diff_tip": abs(a["tip_collar_nose_mm"] - b["tip_collar_nose_mm"]) / max(b["tip_collar_nose_mm"], 1e-9),
+            "label": "SIM at two steps (each with its own writer adaptation)"}
+
+
 def run_all(quick: bool = False) -> Dict:
     from . import designs as DS
     d = DS.cmg_design(100, mode="turret")
@@ -235,7 +302,9 @@ def run_all(quick: bool = False) -> Dict:
                     rpm=25000.0, fixed_mass=d["fixed_g"] * 1e-3, tau_g_max=0.045)
     out = {"cmg_torque_50us": cmg_torque(gt, 50e-6), "cmg_torque_25us": cmg_torque(gt, 25e-6),
            "cmg_energy_50us": cmg_energy(gt, 50e-6, T=0.3 if quick else 1.0),
-           "tmd_closed": tmd_closed(), "collar_modes": collar_modes(), "sled_static": sled_static()}
+           "tmd_closed": tmd_closed(), "collar_modes": collar_modes(), "sled_static": sled_static(),
+           "collar_v2_transmission": collar_v2_transmission()}
     if not quick:
         out["cmg_energy_25us"] = cmg_energy(gt, 25e-6, T=1.0)
+        out["dt_convergence"] = dt_convergence()
     return out

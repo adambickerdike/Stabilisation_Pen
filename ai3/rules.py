@@ -73,5 +73,42 @@ RULES = {
 }
 
 
+# Rules added on 2026-09-29 at about 17:30, after the lead forwarded the independent review (section 10), BEFORE any of
+# these tests ran.  They are kept apart so that the hash of the original rules (recorded by the earlier stages) stays
+# valid; the new stages record rules_v2_sha256().
+RULES_V2 = {
+    "W1_decode": ("Word decoding: the weight beta_w of the NG1x character model in {0, 0.25, 0.5, 0.75, 1.0} is the one "
+                  "with the lowest character error rate of the writer-independent recogniser on the UJI tuning "
+                  "writers' words (Tatoeba validation sentences, both sessions, normal spacing); ties: the smaller beta."),
+    "W2_score": ("Recognition-aware spelling, score = lambda_r log P(strokes | reading) + log P(w | context) + "
+                 "log P(reading | w): lambda_r in {0.5, 0.75, 1.0, 1.5}; for each, a temperature T fitted by the NLL of "
+                 "P(misspelled) on the tuning children's words (letters observed through UJI tuning writers' real "
+                 "letters), then theta_c = the lowest value in {0.3, ..., 0.99} with <= 2 false alarms per 100 correct "
+                 "words; the lambda_r with the highest detection wins.  Separate choices for the writer-independent "
+                 "and the writer-calibrated recogniser."),
+    "W3_abstain": ("A suggestion is shown only when its calibrated probability (temperature T_s fitted by NLL on the "
+                   "tuning children's flagged words) is >= p_s: the lowest p_s in {0, 0.2, ..., 0.7} whose shown "
+                   "suggestions are the intended word >= 80 % of the time on the tuning children; below it the word "
+                   "is marked 'check this word' without a suggestion (abstain)."),
+    "W4_auto": ("Opt-in automatic digital correction replaces a word only when calibrated P(misspelled) >= 0.9 and the "
+                "calibrated top suggestion >= 0.9 (fixed, not tuned); every replacement is logged and reversible; it is "
+                "reported as errors fixed and correct words changed per 100."),
+    "C1_complete": ("Physical completion planner (complete_plan.py), fixed before simulation: nib path speed <= 30 mm/s "
+                    "(the median pen-down speed, LIT CON-20) and acceleration <= 2 m/s^2; usable reach = stage radius "
+                    "minus a 0.5 mm reserve for tremor and tracking; the nib only moves forward along the accepted path; "
+                    "it slows or waits when the next path point is outside the reach disc; it lifts when the hand has "
+                    "not advanced for 0.5 s and hands back to the writer after 2 s without progress or when the hand has "
+                    "run past the next path point by more than the usable reach."),
+    "I1_interaction": ("Interaction measures (review section 10, R20), defined before simulation: reading burden = "
+                       "suggestion lists read per 100 words (3 words each); flow interruptions = physical cues and "
+                       "pop-ups noticed while a word is being written, per 100 words; harmful edits = correct words "
+                       "changed per 100 correct words; time cost = extra seconds per 100 words and % of writing time."),
+}
+
+
+def rules_v2_sha256() -> str:
+    return hashlib.sha256(json.dumps(RULES_V2, sort_keys=True).encode()).hexdigest()[:16]
+
+
 def rules_sha256() -> str:
     return hashlib.sha256(json.dumps(RULES, sort_keys=True).encode()).hexdigest()[:16]

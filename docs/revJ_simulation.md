@@ -1,6 +1,6 @@
 # Rev J in the physics simulator: closed-loop study, round 2
 
-Status: DRAFT while the test runs finish (sections marked (pending)).
+Status: final for this round, with unfinished parts marked (§11). 29 September 2026.
 
 **Evidence status.** Every number here is a SIMULATION (sim2, MuJoCo 3.6) or a CALCULATION on synthetic writers and
 synthetic tremor, on a PROPOSED DESIGN. Nothing was built or measured. sim2 ranks concepts (context of use COU-1,
@@ -10,14 +10,55 @@ PROPOSED DESIGN.
 
 ## 1. The answer in plain words
 
-(PLAIN_TABLE)
+**Results cards.** For each condition: the ordinary pen → the Rev J pen. Means over the simulated test cases (SIM:
+synthetic writers and synthetic tremor; not evidence of benefit to people). "Ordinary pen" is the Rev J pen with every
+device off.
+
+(CARDS)
+
+- **Readable words:** the share of words the app reads correctly after its autocorrect, out of 10. The tremor text has
+  2 words per case ("return library"); the autowrite text 5; letters read (out of 10) are in brackets.
+- **Left at the tip:** the rms distance between the ink and the same writer's tremor-free ink, in mm. The tremor at
+  the hand is given as a peak; the hand and the paper absorb part of it (2 mm peak leaves 0.96 mm rms with the
+  ordinary pen).
+- **Writing time per charge: suspended.** In the simulation the nose draws about 2.3 W in every mode, mostly to hold
+  the ball's static side load (below, §8.1). That would empty the 2.22 Wh cell in about an hour and heat the coil past
+  120 °C within a minute of continuous writing (CALC). No writing time is claimed until that load is carried
+  passively.
 
 ![Before and after, as handwriting: the same hand, text and tremor with an ordinary pen and with Rev J](../results/sim2j/fig_handwriting.png)
 
-*The ink only, at true scale on 8 mm ruled lines (SIM, test writer 0, seed 200). The ordinary pen is the Rev J pen
-with every device off.*
+*The ink only, at true scale on 8 mm ruled lines (SIM, test writer 0, seed 200; tremor at 8 Hz, severe at 5 Hz). The
+ordinary pen is the Rev J pen with every device off.*
 
-(PLAIN_BULLETS)
+**What to do** (recommendations; the lead decides, §10):
+
+- **Keep the chosen tremor tracker (G4).** At 8–12 Hz it takes out about a third of 1–2 mm tremor (0.63 of the
+  ordinary pen's error), and it never moved tremor-free writing (0 mm, 5 writers).
+- **Keep the heel wheel retracted by default** until its controller is redesigned. Switched on in its tremor mode it
+  moved tremor-free writing by 0.40 mm (up to 0.50 mm; the rule is 0.025 mm), doubled the error at 0.3 mm tremor and
+  pushed on the hand 8× harder. Use it for guidance and lead-through only.
+- **Filter the nose servo's position signal.** About 0.7 W of the nose's 2.3 W is the servo reacting to its own
+  sensor noise (SIM). A filter to the servo's bandwidth removes most of it (REQ-RVJ-C04).
+- **Carry the ball's static side load passively.** It is the largest real power item (1.6 W at 50°, CALC; the
+  balanced-nib study takes it up).
+- **For severe tremor (3 mm), let the pen write a known text (autowrite):** 8.8 of 10 words readable, against 0.4
+  with the ordinary pen and 3.8 writing through with the nose.
+(GUIDED_BULLETS)
+(PAGE_BULLET)
+
+**What did not work, or was not done:**
+
+- **Slow tremor (4 Hz):** no estimator acts on it (ai2's detector listens from 4.5 Hz up). With perfect knowledge the
+  nose would remove 90 % of it, so the gap is in estimation.
+- **ai2's gated listening tracker and ai2's TCN** both move tremor-free writing in sim2 (59 and 150 µm; rule 25 µm).
+  The end-cap added nothing.
+- **RL** was not trained (time); there is no RL-versus-model-based answer (§7). (RL_BULLET)
+- **Unfinished:** ET writers 4–5 and the second seed, the wheel with a writer who has learned it, the domain
+  randomisation population (§11).
+- **Writer model v2** (§3): speed and the speed–curvature law now match the literature; the 8–12 Hz content of
+  tremor-free writing is still 6–8× too high. On v2 writers the listening estimators lose more than the chosen tracker
+  (0.65 → 0.83 against 0.69 → 0.73).
 
 **Why the nose uses 1.3–2.7 W instead of the budget's 0.06–0.38 W** (details §8.1):
 
@@ -32,12 +73,12 @@ with every device off.*
   under the load and tremor-free writing degrades (62 % of letters read, one writer, SIM). Halving the spring force to
   0.075 N cuts the power to 1.3 W and let the tracker remove more tremor (SIM, one writer).
 
-**Why some runs moved tremor-free writing by 0.13–0.42 mm** (details §8.2): not the chosen tracker (0 mm). The
-0.42 mm comes from the heel wheel: switched on, it steers after the pen with a lag and its tyre resists sideways
+**Why some runs moved tremor-free writing by 0.04–0.50 mm** (details §8.2): never the chosen tracker (0 mm). The
+0.32–0.50 mm comes from the heel wheel: switched on, it steers after the pen with a lag and its tyre resists sideways
 motion, so fast turns in the letters change shape (real in the model; the simulated writer learned the pen with the
-wheel retracted). The 0.13–0.15 mm comes from ai2's TCN, trained in another simulator, reading the Rev J pen's
+wheel retracted). The 0.11–0.21 mm comes from ai2's TCN, trained in another simulator, reading the Rev J pen's
 signals as tremor (retraining needed). ai2's gated listening tracker moved it 0.04–0.08 mm because its fallback, the
-Rev H tracker, locks onto fast writing.
+Rev H tracker, locks onto fast writing. The hand model and the ball's stick-slip only amplify such differences.
 
 ## 2. What was simulated
 
@@ -229,17 +270,86 @@ sim2 is 3-D with the H1 contact law and the pen's mass properties.
 ### 6.1 Essential tremor
 
 Each case: a v2 test writer writes "return library" after a 4 s rest on the paper, with hand tremor of one frequency
-and amplitude; the first test seed of each writer (6 cases per cell; the second seed was not run, §11). Numbers are
-the ink error with the controller divided by the device-off pen's in the same case (lower is better), then the
-letters the app reads.
+and amplitude, the writer's first test seed. **Coverage (UNFINISHED):** writers 0–3 ran every cell; writer 4 ran the
+4 Hz cells and 8 Hz × 0.3 mm before the run was stopped (out of memory); writer 5 and the second seed were not run
+(§11). So a cell has 4–5 cases. "Ordinary pen" is the Rev J pen with the nose held centred by its servo and the wheel
+retracted: its ink moves like an ordinary pen's (it still draws the holding power, §8.1). Numbers: the ink error with
+the controller divided by the ordinary pen's in the same case (lower is better), then the letters the app reads.
 
-(ET_TABLE)
+| Tremor (cases) | Ordinary pen: ink error · letters read | Nose, chosen tracker (G4) | Nose + heel wheel | Nose + wheel + end-cap | Nose, ai2 GL | Nose, ai2 TCN (replay) | Limit: perfect knowledge |
+|---|---|---|---|---|---|---|---|
+| 4 Hz, 0.3 mm (5) | 138 µm · 98 % | 1.00 · 98 % | 1.96 · 95 % | 2.25 · 97 % | 1.07 · 100 % | 1.38 · 98 % | 0.31 · 100 % |
+| 4 Hz, 1 mm (5) | 416 µm · 78 % | 1.00 · 78 % | 0.98 · 68 % | 1.12 · 69 % | 1.05 · 82 % | 0.97 · 74 % | 0.12 · 98 % |
+| 4 Hz, 2 mm (5) | 934 µm · 54 % | 1.00 · 54 % | 0.73 · 52 % | 0.75 · 57 % | 1.01 · 52 % | not run | 0.07 · 98 % |
+| 8 Hz, 0.3 mm (5) | 130 µm · 97 % | 0.98 · 97 % | 2.07 · 94 % | 1.86 · 94 % | 1.09 · 96 % | 1.26 · 94 % | 0.35 · 100 % |
+| 8 Hz, 1 mm (4) | 444 µm · 90 % | 0.73 · 96 % | 0.68 · 94 % | 0.73 · 92 % | 0.82 · 92 % | 0.71 · 87 % | 0.13 · 98 % |
+| 8 Hz, 2 mm (4) | 960 µm · 58 % | 0.59 · 85 % | 0.54 · 83 % | 0.44 · 73 % | 0.55 · 92 % | not run | 0.10 · 98 % |
+| 12 Hz, 0.3 mm (4) | 110 µm · 100 % | 1.08 · 98 % | 2.27 · 94 % | 2.24 · 96 % | 1.29 · 100 % | 1.37 · 96 % | 0.42 · 100 % |
+| 12 Hz, 1 mm (4) | 383 µm · 92 % | 0.65 · 98 % | 0.81 · 94 % | 0.90 · 77 % | 0.66 · 96 % | 0.64 · 96 % | 0.18 · 98 % |
+| 12 Hz, 2 mm (4) | 958 µm · 58 % | 0.57 · 90 % | 0.57 · 85 % | 0.60 · 77 % | 0.63 · 83 % | not run | 0.20 · 96 % |
+| Tremor-free writing moved, mean (max), writers 0–4 | – | **0 (0) µm** | 403 (503) µm | 403 (497) µm | 59 (84) µm | 150 (206) µm | 0 µm by definition |
+| Felt grip-force change, rms, 8–12 Hz × 1–2 mm | – | 21 mN | 167 mN | 267 mN | 30 mN | 20 mN | 21 mN |
+| Mean electrical power, all tremor runs | 2.31 W | 2.31 W | 2.28 W | 2.33 W | 2.33 W | 2.58 W | 2.29 W |
 
-(ET_TEXT)
+All SIM (`results/sim2j/et.json`, rows in `sim2j/build/et_rows.json`). The TCN was not run at 2 mm (outside its
+training range, ai2).
+
+**What the table says** (means over cases; 95 % bootstrap intervals over cases in brackets; SIM):
+
+- **The chosen tracker helps at 8–12 Hz and 1–2 mm:** 0.63 of the ordinary pen's ink error (0.59–0.68; 16 cases).
+  Letters read 75 % → 92 %; words read after autocorrect 69 % → 100 %. The nose supplies about a third of the ink
+  motion (device share 0.34).
+- **It does no harm and no good at 0.3 mm:** 1.02 (0.99–1.05; 14 cases), inside the tuning rule (≤ 1.02 at 8 Hz).
+- **It does nothing at 4 Hz:** 1.00 (10 cases). ai2's detector listens from 4.5 Hz up, so it never opens. Perfect
+  knowledge would remove 90 % (0.10), so the nose could do it; the estimator cannot, because 4 Hz sits inside the
+  writing's own rhythm (90 % of writing's velocity energy lies below 4.9 Hz, LIT CON-25). Open issue (§11).
+- **The estimator, not the nose, is the limit.** Perfect knowledge reaches 0.16 at 8–12 Hz × 1–2 mm (0.13–0.18) and
+  0.36 at 0.3 mm.
+- **The heel wheel in its tremor mode should stay retracted by default.** It helps a little at 2 mm (0.54 against 0.59
+  at 8 Hz; 0.73 at 4 Hz, where the nose does nothing). But it doubles the error at 0.3 mm (2.09), moves tremor-free
+  writing by 0.40 mm (max 0.50 mm; rule 25 µm), and pushes on the hand 8× more (167 against 21 mN rms). Recommendation:
+  retracted by default until its controller is redesigned (§10).
+- **The end-cap adds nothing here.** Nose + wheel + end-cap: 0.67 at 8–12 Hz × 1–2 mm against 0.65 without it, fewer
+  letters read (80 % against 89 %) and more felt force (267 mN). With every device off the heavier end-cap pen (129 g)
+  writes better at 4 Hz (353 against 416 µm at 1 mm) and worse at 12 Hz × 2 mm (1202 against 958 µm).
+- **ai2's gated listening tracker (GL) as built** fails both rules on the test writers too: 1.14 at 0.3 mm and 59 µm
+  (max 84 µm) on tremor-free writing. At 8–12 Hz × 1–2 mm it is close to G4 (0.67 against 0.63).
+- **ai2's TCN, replayed without retraining,** fails both rules: 1.34 at 0.3 mm and 150 µm (max 206 µm) on tremor-free
+  writing; 0.67 at 8–12 Hz × 1 mm (8 cases).
+- **Power does not depend on the controller** (2.3 W in every column): it is mostly the nose holding the ball's static
+  side load (§8.1), paid by the "ordinary pen" of the simulation too.
 
 ### 6.2 Severe tremor: writing through it, or letting the pen write
 
-(SEVERE)
+Test writers 0–5, first test seed, 3 mm peak tremor at 5 Hz and at 8 Hz (12 cases per column; SIM,
+`results/sim2j/autowrite.json`).
+
+- **Writing through it** ("return library", 2 words; ratios to the ordinary pen in the same case):
+
+| 3 mm tremor | Ordinary pen: ink error · letters · words | Nose, chosen tracker | Nose + heel wheel | Limit: perfect knowledge |
+|---|---|---|---|---|
+| 5 Hz | 1.55 mm · 40 % · 8 % | 0.96 · 42 % · 8 % | 0.70 · 37 % · 17 % | 0.06 · 99 % · 100 % |
+| 8 Hz | 1.38 mm · 41 % · 0 % | 0.59 · 76 % · 67 % | 0.47 · 78 % · 67 % | 0.10 · 99 % · 100 % |
+| Felt grip-force change, rms | – | 9 mN | 232 mN | 26 mN |
+
+- **Letting the pen write** (autowrite: the hand sweeps along the line, the nose writes the known text "return library
+  books by friday" at 2.5 mm and lifts the ball between strokes; nose2's planner; 6 cases per row):
+
+| Tremor | Ink error to the planned letters | Letters read | Words read (after autocorrect) | Speed |
+|---|---|---|---|---|
+| none | 45 µm | 98 % | 100 % | 3.5 letters/s |
+| 1 mm, 8 Hz | 55 µm | 97 % | 100 % | 3.5 letters/s |
+| 2 mm, 5 / 8 Hz | 53 / 73 µm | 94 / 96 % | 97 / 100 % | 3.6 letters/s |
+| 3 mm, 5 / 8 Hz | 67 / 83 µm | 82 / 88 % | 80 / 97 % | 3.6 letters/s |
+
+- **Answer.** At 3 mm the ordinary pen's writing is unreadable (4 % of words). Writing through it with the nose helps
+  at 8 Hz (67 % of words) but not at 5 Hz (8 %), where the tracker hardly acts (0.96). Autowrite of a known text stays
+  readable (88 % of words at 3 mm). The nose then works near the end of its travel (peak 6.55 of 6.57 mm; above
+  5.7 mm about 1 % of the time), so 3 mm is about as far as autowrite goes with this nose.
+- The misreadings at 3 mm are mostly the letter i read as l or z ("llbrary", "frlday"): the i-dot, a short separate
+  stroke, is lost or misplaced (the planned letters themselves read 99 %).
+- The heel wheel adds a little at 5 Hz (0.70) and pushes on the hand (232 mN rms).
+- Power is 2.3 W in every case (the static load, §8.1).
 
 ### 6.3 Parkinson's "write big" loops
 
@@ -287,11 +397,15 @@ template is the copybook letter anchored at the learner's touchdown. Test writer
 - **Reward.** −(|ink − reference ink| / 0.3 mm)² while the ball is on the paper, − 0.005 |a|². In tremor-free episodes
   this is the false correction itself: the closed-loop false-correction constraint of EXP-L05, as a penalty in training
   and as a hard rule in selection.
-- **Training.** Stable-Baselines3 PPO, MLP 64-64 tanh, 600 000 steps, one process (pending: compute).
+- **Training: NOT DONE.** Planned: Stable-Baselines3 PPO, MLP 64-64 tanh, 400 000 steps, one process, resumable
+  (`python3 -m sim2j.run_study --stages rl_train rl_select rl_test`). When the lead cut the study to one process and a
+  hand-back within hours, the remaining time went to the conditions the user asked about. (RL_SMOKE)
 - **Selection** (rule frozen in `results/sim2j/rules.json` before any test run): the last checkpoints on tuning writers
   100–103, seeds 300–303; pass S1 (false correction ≤ 25 µm mean, every case ≤ 50 µm) and S2 (no worse than the
-  model-based tracker at 0.3 mm); among those, the lowest ink error at 1–2 mm; otherwise RL is not adopted.
-- **Results** (pending).
+  model-based tracker at 0.3 mm); among those, the lowest ink error at 1–2 mm; otherwise RL is not adopted. Not run.
+- **RL against model-based: no result.** The model-based tracker G4 stays the proposal (DEC-047). What RL could gain
+  is bounded by the gap between G4 (0.63) and perfect knowledge (0.16) at 8–12 Hz × 1–2 mm, and at 4 Hz, where G4
+  does nothing (§6.1).
 
 ## 8. Why the nose uses 1.3–2.7 W, and why some runs moved clean writing
 
@@ -347,20 +461,20 @@ largest terms below.
   DEC-044) did not include it.
 - **Battery.** At 2.3 W the 2.22 Wh cell lasts about 1 h (CALC), against 5.3–11 h in the budget.
 - The ET results of §6 are short runs (about 12 s): the coil stays below 120 °C (61.5 °C at the end, writer 0). Over
-  minutes of writing the coil limit would cut the nose's authority; that is not simulated. (pending: current-limit
-  share in the tremor runs)
+  minutes of writing the coil limit would cut the nose's authority; that is not simulated. Not checked: how often the
+  coil current reached its 1.5 A limit in the tremor runs.
 
 ### 8.2 Why some runs moved tremor-free writing (the false-correction check)
 
 "Moved" is the rms distance between the ink with the controller on and the ink of the device-off pen, same writer,
-same seed, no tremor (rule ≤ 25 µm). SIM, test writers:
+same seed, no tremor (rule ≤ 25 µm). SIM, test writers 0–4 (range over the five):
 
 | Controller | Moved | Cause | Artefact or real? |
 |---|---|---|---|
 | Chosen tracker G4 | 0 µm | its detector gate stays closed on tremor-free writing | – |
-| ai2's gated listening (GL) | 36–85 µm | its fallback, the Rev H tracker as built, locks onto the writing's own 8–12 Hz content | real for that tracker on these writers (§3); v2 writers exaggerate it |
-| TCN (replayed) | 131–155 µm | the network, trained on HW1 streams of Rev H, reads sim2's Rev J sensor signals as tremor | real for the TCN as trained (domain shift); retraining needed |
-| Nose + heel wheel (± end-cap) | 420–427 µm | the wheel, not the tracker: in its tremor mode it steers after the pen with a lag and its tyre resists sideways motion (1500 N/m), so fast turns in the letters are pulled out of shape | real in the model; the writer learned the pen with the wheel retracted. A writer who has learned the wheel is tested in §6.1 |
+| ai2's gated listening (GL) | 36–85 µm (mean 59) | its fallback, the Rev H tracker as built, locks onto the writing's own 8–12 Hz content | real for that tracker on these writers (§3); v2 writers exaggerate it |
+| TCN (replayed) | 107–206 µm (mean 150) | the network, trained on HW1 streams of Rev H, reads sim2's Rev J sensor signals as tremor | real for the TCN as trained (domain shift); retraining needed |
+| Nose + heel wheel (± end-cap) | 324–503 µm (mean 403) | the wheel, not the tracker: in its tremor mode it steers after the pen with a lag and its tyre resists sideways motion (1500 N/m), so fast turns in the letters are pulled out of shape | real in the model; the writer learned the pen with the wheel retracted. A writer who has learned the wheel was not tested (§11) |
 
 - The hand model matters in one way: sim2's ball stick-slip and the H1 grip amplify any small difference between two
   runs (that is why "moved" is measured against the same seed). It does not create the differences above.
@@ -379,28 +493,36 @@ same seed, no tremor (rule ≤ 25 µm). SIM, test writers:
 
 ## 10. Proposed decisions, requirements and experiments
 
-Proposals only; the lead decides. Identifiers are the next free ones in the ledgers.
+Proposals only; the lead decides. Identifiers are the next free ones in the ledgers on 29 September (the lead's
+DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's earlier numbers moved).
 
 **Proposed decisions**
 
-- **DEC-045 (proposed): carry the ball's static side load passively, or re-size the C1S actuator for it.** Until then the
+- **DEC-046 (proposed): carry the ball's static side load passively, or re-size the C1S actuator for it.** Until then the
   Rev J nose cannot write for more than about 45 s (static load alone, CALC) or 22 s (sim2's full 2.68 W, CALC on SIM)
-  without passing its 120 °C coil limit. Options, in order of
-  expected power: (a) a bias element that loads the nose against F_c·cot θ only while the refill is extended (a spring
-  or magnet acting through the refill slide, so it vanishes when the ball lifts); (b) a longer actuator arm or a higher
-  Km (Rev H's 34 mm arm needs about 0.13 W, CALC); (c) a lower refill spring force (power ∝ F_c², §8), limited by ink
-  laydown (EXP-Q02). Re-run nose2's optimiser with the static load in its duty (not done here).
-- **DEC-046 (proposed): the sim2 default tremor estimator for Rev J is the guarded tracker G4** (Rev H AKF run tick by
+  without passing its 120 °C coil limit. Options, in order of expected power: (a) a bias element that loads the nose
+  against F_c·cot θ only while the refill is extended (a spring or magnet acting through the refill slide, so it
+  vanishes when the ball lifts); (b) a longer actuator arm or a higher Km (Rev H's 34 mm arm needs about 0.13 W, CALC);
+  (c) a lower refill spring force (power ∝ F_c², §8), limited by ink laydown (EXP-Q02). The balanced-nib study (bnib/)
+  takes this up. Re-run nose2's optimiser with the static load in its duty (not done here).
+- **DEC-047 (proposed): the sim2 default tremor estimator for Rev J is the guarded tracker G4** (Rev H AKF run tick by
   tick, runaway guard, ai2's detector with a stricter threshold, ball-on-paper input; `results/sim2j/rules.json`). It
-  refines DEC-042 for sim2: ai2's gated listening tracker as built failed the false-correction rule on v2 writing in
-  sim2 (its Rev H fallback), and with the guarded fallback it was worse than G4 at 1 mm (tuning writers). The gated
-  listening estimate stays a candidate (it did best at 2 mm); the TCN stays in shadow mode until retrained on sim2 and
-  real recordings. (Test-set confirmation in §6.1.)
-- (pending: the wheel in ET, autowrite in severe tremor, RL)
+  refines DEC-042 for sim2. Test writers (§6.1): 0.63 of the ordinary pen's ink error at 8–12 Hz × 1–2 mm, 1.02 at
+  0.3 mm, 0 µm on tremor-free writing (5 writers). ai2's gated listening tracker as built failed the false-correction
+  rule (59 µm) and the 0.3 mm rule (1.14); the TCN stays in shadow mode until retrained on sim2 and real recordings.
+- **DEC-048 (proposed): the heel wheel is retracted by default.** It is deployed for guidance (tracing, loops) and
+  lead-through only, until a redesigned tremor-mode controller moves tremor-free writing by ≤ 25 µm in sim2
+  (REQ-RVJ-C02). In its present tremor mode it moved tremor-free writing by 0.40 mm (max 0.50 mm), doubled the error at
+  0.3 mm and pushed on the hand 8× more (167 against 21 mN rms); it gained only at 2 mm (0.54 against 0.59 at
+  8–12 Hz) and at 4 Hz (0.73, where the nose does nothing).
+- **DEC-049 (proposed): autowrite is the severe-tremor mode for a known text, up to 3 mm.** 88 % of words read at
+  3 mm, against 4 % with the ordinary pen and 38 % writing through with the nose (SIM, §6.2). Beyond 3 mm the nose's
+  travel runs out (peak 6.55 of 6.57 mm).
+- RL: no decision (not trained, §7).
 
 **Proposed requirements**
 
-- **REQ-RVJ-N09:** With the refill spring at its nominal force and the ball on the paper at 35–75° tilt, the nose's
+- **REQ-RVJ-N10:** With the refill spring at its nominal force and the ball on the paper at 35–75° tilt, the nose's
   steady coil heat shall be ≤ 0.1 W (ASSUMPTION target; now 1.6 W at 50°, CALC).
 - **REQ-RVJ-C01:** The nose command shall be band-limited to what the nose servo follows (the Rev H tracker's 64 Hz
   second-order output filter or equivalent, with its delay inside the prediction horizon).
@@ -408,37 +530,61 @@ Proposals only; the lead decides. Identifiers are the next free ones in the ledg
   (the project rule), checked in sim2 against the device-off pen with the same noise.
 - **REQ-RVJ-C03:** The tremor-line detector shall not open on the tremor-free writing of the tuning writers of every
   writer model in use (v1 and v2), with its input restricted to page samples taken while the ball is on the paper.
-- **REQ-RVJ-C04:** The nose servo's position-sensor noise shall add ≤ 50 mW of coil loss (filter the Hall signal to the
-  servo's bandwidth); in sim2 the unfiltered 5.9 µm rms at 10 kHz adds about 0.7 W (SIM).
+- **REQ-RVJ-C04 (filtered nose servo):** The nose servo's position-sensor noise shall add ≤ 50 mW of coil loss: filter
+  the Hall signal to the servo's bandwidth. In sim2 the unfiltered 5.9 µm rms at 10 kHz adds about 0.7 W (SIM).
+- **REQ-RVJ-C05 (page sensor):** (PAGE_REQ)
 
 **Proposed experiments** (equipment and data missing here; executable files in `sim2j/`)
 
-- **EXP-J10 (nose static load):** N-rig with the C1S nose and a 0.15 N refill spring; ball on paper at 35°, 50°, 75°;
+- **EXP-J17 (nose static load):** N-rig with the C1S nose and a 0.15 N refill spring; ball on paper at 35°, 50°, 75°;
   measure coil current and coil temperature for 60 s; compare with 0.81 A and 1.62 W at 50° (CALC). Pass: within 20 %.
   Dependency: the C1S nose prototype (study N), a current probe, a thermocouple on the coil.
+- **EXP-J18 (wheel on writing):** healthy writers write with the heel wheel retracted, free, and in its tremor mode;
+  measure letter distortion against their own writing and how it changes over 10 minutes (adaptation). Dependency: a
+  Rev J heel-drive prototype (study D) and the page sensor log.
 - **EXP-V07 (small handwriting kinematics):** 12 healthy adults write "return library books by friday" at their own
   size on a tablet (≥ 200 Hz); compute the 8–12 Hz share of velocity energy, speed and stroke times with
   `sim2j/writers.kinematics`; refit the v2 writers. Dependency: a pen tablet (e.g., Wacom-class, 200 Hz), consent.
-- **EXP-J11 (wheel on writing):** healthy writers write with the heel wheel retracted, free, and in its tremor mode;
-  measure letter distortion against their own writing and how it changes over 10 minutes (adaptation). Dependency: a
-  Rev J heel-drive prototype (study D) and the page sensor log.
-- **EXP-L05 (ai2's, closed-loop RL in sim2):** this study's RL environment (`sim2j/rl.py`) runs it; §7 gives the first
-  result.
+- **EXP-J10 (the lead's page-sensor test), an addition:** log the error of each 10 ms window and its correlation over
+  time on paper at writing speeds, in the form `sim2j/sensing.py` uses; then re-run `python3 -m sim2j.run_study
+  --stages page_noise` with the measured model.
+- **EXP-L05 (ai2's, closed-loop RL in sim2):** the environment is ready (`sim2j/rl.py`); training, selection and test
+  were not run (§7).
 
-## 11. Open issues
+## 11. Open issues, and what was not finished
+
+**Not finished (marked, not hidden):**
+
+- **ET grid:** writers 0–3 complete; writer 4 only the 4 Hz cells and 8 Hz × 0.3 mm; writer 5 not run; the second
+  test seed not run. Cells have 4–5 cases instead of 12. The run's process grew to 11.5 GB over four writers and was
+  killed; single-case tests did not reproduce the growth (0.6–1.3 GB stable). Run one writer per process
+  (`SIM2J_WRITERS=5 python3 -m sim2j.run_study --stages et`).
+- **Wheel with a writer who has learned it** (`et_wheel`): not run. The 0.40 mm on tremor-free writing may shrink
+  with practice (EXP-J18).
+- **RL:** not trained (§7).
+- **Domain randomisation population** (`dr`, 8 draws): not run; the results hold for the nominal pen only.
+- **'Arm' hand:** (ARM_STATUS)
+- **Current limit:** how often the coil hit 1.5 A in the tremor runs was not checked.
+
+**Open issues:**
 
 - **How realistic is this?** The pen's mechanics are detailed (3-D contact, stick-slip, the lead's masses and
   sensors). The people are not: the writers are synthetic (print-like glyph letters re-timed to measured speeds), the
   tremor is a model, the hand is a lumped spring–mass (or sim2's simple arm), and the writer does not adapt to the pen
   during writing. The first real check is the recorded-data study now starting and EXP-V05.
+- **Page sensing.** Every tremor, guidance and autowrite result uses sim2's page sensor: 3 µm rms white noise at
+  1 kHz (ASSUMPTION). A measured research pen (DeltaPen, LIT OPT-02) had 68.3 µm mean and 23.6 µm median error per
+  10 ms window, on a tablet, not paper. §6.7 shows what a DeltaPen-like error does. EXP-J10 (the lead's) measures the
+  Rev J die on paper.
+- **4 Hz tremor** is not handled by any estimator tried (§6.1). Perfect knowledge shows the nose could remove it.
 - The v2 writers' velocity spectrum is 6–8× the literature's 8–12 Hz share (§3); results on false detection are
   therefore conservative, and the ranking of estimators may change with realistic small writing (EXP-V07).
 - The writer does not relearn the pen with the heel wheel or the end-cap engaged (the adaptation was done with both
-  off); the wheel's effect on tremor-free writing (§6.1) may shrink with practice (EXP-J11).
+  off).
 - The TCN was not retrained on sim2 streams; the domain shift (HW1 → sim2, Rev H → Rev J IMU position) is the likely
   reason it fails the false-correction rule here.
 - The nose's static load (§8) is modelled as a contact-gated bias current (sim2's H1 convention); a passive bias is not
-  modelled.
+  modelled. Every power, battery and heat number rests on it; writing time per charge is suspended.
 - The heel motors' magnetic detent and the pen's roll in the hand (the lead's added DR factors) are not modelled.
 - Delayed ink was not re-run in sim2 (ai2: not worth its cost).
 - sim2 results rank concepts only (COU-1) until EXP-V01/V02/V04 and EXP-V05.
@@ -465,12 +611,16 @@ Proposals only; the lead decides. Identifiers are the next free ones in the ledg
 | `tests/test_sim2j.py` | fast checks (8 tests, about 5 s with a warm numba cache) |
 
 **Results** (`results/sim2j/`, each JSON with `stabpen.provenance` and the pen-parameter version): `writer_fit.json`,
-`writers.json`, `writer_cmp.json`, `rules.json`, `verify.json`, `et.json`, `et_wheel.json`, `et_rl.json`,
-`rl_select.json`, `guided.json`, `autowrite.json`, `dr.json`, `arm.json`, `dt_check.json`, `power.json`; figures
-`fig_*.png` with `fig_*.csv`; `samples.json` (the handwriting study's schema: before/after strips); `viz_sim2j.json`
-(sim2's viewer replay format).
+`writers.json`, `writer_cmp.json`, `rules.json`, `verify.json`, `et.json` (with its coverage), `autowrite.json`
+(autowrite and severe tremor), `guided.json`, `page_noise.json`, `power.json`, `power_split.json`, `arm.json`,
+`dt_check.json`; figures `fig_*.png` with `fig_*.csv` (`fig_handwriting.png`: the before/after handwriting);
+`samples.json` (the handwriting study's schema: before/after strips); `viz_sim2j.json` (sim2's viewer replay format).
+Not produced (not run): `et_wheel.json`, `et_rl.json`, `rl_select.json`, `rl_test.json`, `dr.json`.
 
-**Reproduce:** `python3 -m sim2j.run_study --stages tune et writer_cmp verify guided autowrite rl_train rl_select
-rl_test dr arm dt power et_wheel et2 report` (add `--quick` for a smoke run); `pytest sim2j/tests -q`.
+**Reproduce:** `python3 -m sim2j.run_study --stages <stage>`, one stage per process (rows are cached in
+`sim2j/build/*_rows.json`, so a stopped stage resumes). Stages: tune, writers, writer_cmp, verify, et, autowrite,
+guided, page_noise, power, power_split, dt, arm, report; not yet run: et2, et_wheel, dr, rl_train, rl_select,
+rl_test. Run the ET grid one writer per process (`SIM2J_WRITERS=5 python3 -m sim2j.run_study --stages et`); the
+whole grid in one process grew to 11.5 GB. `--quick` gives a smoke run; `pytest sim2j/tests -q` the fast checks.
 Dependencies as the repository (MuJoCo 3.6, numba, SciPy, Stable-Baselines3 with PyTorch for RL, ai2's trained TCN in
 `ai2/build/models/tcn.pt` for the replay).

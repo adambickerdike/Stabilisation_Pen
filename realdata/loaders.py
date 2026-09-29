@@ -467,9 +467,11 @@ def unipen_file(path: str) -> Optional[Dict]:
         segs.append({"level": m.group(1), "range": m.group(2).strip(), "quality": m.group(3), "label": m.group(4)})
     dev = re.search(r"Machine name:\s*(.*)", head)
     pen = re.search(r"Pen:\s*(.*)", head)
+    docs = [os.path.basename(r)[:-4] for r in inc if r.lower().endswith(".doc")]
     return {"pps": pps, "res_x_per_mm": res, "res_y_per_mm": yres, "components": comps, "segments": segs,
             "device": dev.group(1).strip() if dev else "", "pen": pen.group(1).strip() if pen else "",
-            "coord": _first(r"^\.COORD\s+(.*)", allt)}
+            "coord": _first(r"^\.COORD\s+(.*)", allt), "doc": docs[0] if docs else "",
+            "surface": (_first(r"Display:\s*(.*)", head) or _first(r"Inking:\s*(.*)", head))}
 
 
 def _first(pat: str, s: str) -> str:
@@ -533,7 +535,9 @@ def unipen_segments(categories: Sequence[str] = ("8",), level: str = "TEXT", max
                                  units="m (documented resolution)",
                                  meta={"device": f["device"], "pen": f["pen"], "category": cat,
                                        "res_x_per_mm": f["res_x_per_mm"], "pps": f["pps"],
-                                       "contributor": rel.split("/")[1] if "/" in rel else rel, "timing": "sample index / points per second "
+                                       "contributor": rel.split("/")[1] if "/" in rel else rel,
+                                       "setup": (rel.split("/")[1] if "/" in rel else rel) + "/" + f["doc"],
+                                       "surface": f["surface"], "timing": "sample index / points per second "
                                        "(pen-up time between blocks is not recorded where no PEN_UP points exist)"})
                 k += 1
                 if max_files and k >= max_files:

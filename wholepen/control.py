@@ -15,8 +15,9 @@ Devices:
   CMG turret     one pair whose output axis the turret turns to the major axis of the estimated tremor (principal
                  axis of d_hat over the last 1.5 s; the turret moves at most 1 rad/s); the torque command is the
                  component on that axis
-  collar motors  u = torque of the collar motors on the pen (reaction on the collar and hand) + static-load feed-forward
-                 of the writing force's moment about the pivot (N cos theta z_p, from the load cell)
+  collar         u = the reference angle of the collar's position servo (pen relative to the collar, about t1 and t2);
+                 the servo (stepper) adds the static moment of the writing force about the pivot (N z_p cos theta, from
+                 the load cell); the internal model includes the servo, the collar's mass and the grip
   sled / omni    u = force on the hand (sled) or on the pen tip (omni heel) from the paper; capped at mu N
   tuned mass     semi-active: the flexure stiffness is retuned to m (2 pi f_hat)^2 every 0.25 s while a tremor line is
                  detected (3.5-12 Hz), with a 1 s smoothing
@@ -48,8 +49,11 @@ class WPConfig:
     cmg_gain: float = 0.75
     cmg_center_hz: float = 0.3           # gimbal centring corner (Hz)
     cmg_frac: float = 0.9                # use at most this share of the gimbal range and torque
-    collar: str = "off"                  # off | ff | oracle | static (static-load feed-forward only)
+    collar: str = "off"                  # off (servo holds the pen centred: the collar locked) | ff | oracle
     collar_gain: float = 0.75
+    collar_frac: float = 0.9             # the reference angle uses at most this share of the collar's range
+    page_err: str = "measured"           # page sensor: 'measured' (OPT-02 per-window statistics as a random walk,
+                                         # study W's model) | 'ideal' (sim2j's 3 um white noise: a labelled bound)
     sled: str = "off"                    # off | ff | oracle | damp (passive viscous)
     sled_gain: float = 0.75
     sled_N: float = 2.0                  # N of hand weight on the sled (ASSUMPTION)
@@ -68,6 +72,7 @@ class WPConfig:
     cmg_c: float = 0.03                  # N m s/rad: 'damp' law, torque = -c x band-passed pen rotation rate (gyro)
     cmg_band: tuple = (3.0, 12.0)        # Hz band of the 'damp' law (2nd-order Butterworth band-pass, causal)
     model_r_rot: float = 0.5             # the internal model's grip split
+    oracle_gain: float = 1.0             # the oracle laws' gain (perfect knowledge of the total tremor)
     preview: float = 0.0                 # s extra preview for the oracle (group delays)
     label: str = ""
 
@@ -76,12 +81,12 @@ class WPConfig:
 _GCACHE: Dict = {}
 
 
-def internal_model(kind: str, pen: Dict, extra: Dict, r_rot: float = 0.5, freqs=None) -> Tuple[np.ndarray, np.ndarray]:
+def internal_model(kind: str, pen: Dict, extra: Dict, r_rot: float = 0.5, freqs=None, out: str = "tip") -> Tuple[np.ndarray, np.ndarray]:
     """(freqs, G[f, 2, m]): handle-tip page (x, y) per unit device input (lin.py, CALC).  kind: 'cmg' (torques about
     t1, t2), 'collar' (motor torques about t1, t2), 'sled' (hand force page x, y), 'omni' (tip force x, y)."""
     freqs = np.arange(2.0, 16.01, 0.25) if freqs is None else np.asarray(freqs, float)
     key = (kind, tuple(sorted((k, str(v)) for k, v in pen.items())), tuple(sorted((k, str(v)) for k, v in extra.items())),
-           r_rot, len(freqs))
+           r_rot, len(freqs), out)
     if key in _GCACHE:
         return _GCACHE[key]
     import torch
@@ -89,8 +94,14 @@ def internal_model(kind: str, pen: Dict, extra: Dict, r_rot: float = 0.5, freqs=
     if extra.get("tail_m", 0.0) > 0:
         mdl.tail = L.Tail(m=extra["tail_m"], z=extra.get("tail_z", 0.17), J_t=extra.get("tail_J", 0.0))
     if kind == "collar":
-        mdl.collar = L.Collar(z_p=extra["z_p"], K_c=extra["K_c"], c_c=extra.get("c_c", 2e-3), m=extra.get("m_c", 14e-3),
-                              z_cm=extra.get("z_cm", extra["z_p"]), J=extra.get("J_c", 8e-6))
+        # the collar's position servo: the flexure plus the servo's stiffness and damping between pen and collar; the
+        # input is the servo's reference angle (the generalised force K_s x theta_ref)
+        K_s = extra.get("K_s", 0.0)
+        mdl.collar = L.Collar(z_p=extra["z_p"], K_c=extra["K_c"] + K_s, c_c=extra.get("c_c", 2e-3) + extra.get("C_s", 0.0),
+                              m=extra.get("m_c", 14e-3), z_cm=extra.get("z_cm", extra["z_p"]), J=extra.get("J_c", 8e-6),
+                              skid_on_collar=bool(extra.get("skid_on_collar", False)))
+        if extra.get("skid_on_collar", False):
+            mdl.c_paper = 1.0            # the ball's drag only (the skid's drag is on the collar)
     asm = L.Assembly(mdl)
     G = np.zeros((len(freqs), 2, 2), complex)
     for i, f in enumerate(freqs):
@@ -99,7 +110,8 @@ def internal_model(kind: str, pen: Dict, extra: Dict, r_rot: float = 0.5, freqs=
             if kind == "cmg":
                 u = asm.u_torque_pen(asm.t1 if j == 0 else asm.t2)
             elif kind == "collar":
-                u = asm.u_collar(asm.t1 if j == 0 else asm.t2)
+                ks = extra.get("K_s", 0.0)
+                u = asm.u_collar(asm.t1 if j == 0 else asm.t2) * (ks if ks > 0 else 1.0)
             elif kind == "sled":
                 u = asm.u_force_hand(np.eye(3)[j])
             elif kind == "omni":
@@ -107,18 +119,22 @@ def internal_model(kind: str, pen: Dict, extra: Dict, r_rot: float = 0.5, freqs=
             else:
                 raise KeyError(kind)
             X = asm.solve(w, u)
-            G[i, :, j] = asm.tip(X).detach().numpy()
+            G[i, :, j] = (asm.ink(X) if out == "ink" else asm.tip(X)).detach().numpy()
     _GCACHE[key] = (freqs, G)
     return freqs, G
 
 
 class PhasorIMC:
-    """The internal-model phasor law (module doc) for one device with m = 2 inputs."""
+    """The internal-model phasor law (module doc) for one device with m = 2 inputs.  G predicts what the device does to
+    the measured point (the page sensor's handle tip); G_inv (default G) is the response of the point to be held still
+    (the ink: they differ for the V2 collar).  total=True: the input is already the total tremor (the oracle's
+    no-device record), so the device's own effect is not subtracted."""
 
-    def __init__(self, freqs, G, gain: float, Ts: float = 0.5e-3):
+    def __init__(self, freqs, G, gain: float, Ts: float = 0.5e-3, G_inv=None, total: bool = False):
         self.f = freqs
         self.G = G
-        self.H = np.array([-np.linalg.pinv(g) for g in G])
+        self.H = np.array([-np.linalg.pinv(g) for g in (G if G_inv is None else G_inv)])
+        self.total = total
         self.gain = gain
         self.Ts = Ts
         self.uh = deque(maxlen=400)
@@ -137,7 +153,7 @@ class PhasorIMC:
         Hr, Hi = self._interp(self.H, fq)
         u_q = self.uh[-kq] if len(self.uh) >= kq else np.zeros(2)
         y_u = Gr @ self.u - Gi @ u_q
-        e = dh - y_u
+        e = dh if self.total else dh - y_u
         self.eh.append(e.copy())
         e_q = self.eh[-kq] if len(self.eh) > kq else np.zeros(2)
         u = self.gain * (Hr @ e - Hi @ e_q) if active else np.zeros(2)

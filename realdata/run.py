@@ -2,8 +2,10 @@
 
 Stages (each resumes from its cache in realdata/build/cache; the container may restart):
   fetch       download any missing dataset (sources.py), never overwriting present files
-  tremor      the tremor library (tremorlib.build): parameters, thresholds, classes, splits, waveforms
-  writing     the BRUSH writer statistics (writer sizes, lower-case recordings, splits) and a check of the reader
+  tremor      the tremor library (tremorlib.build): parameters; then the roles (split first, thresholds and
+              classes fitted on the tuning subjects) and the generator waveforms
+  writing     the UNIPEN hpb2 index (writer- and text-disjoint splits), the BRUSH statistics (diagnostic), the reader
+              choice on tuning notes (ocr) and the page-sensor model fitted on tuning notes (sensors)
   kinematics  validation of real and synthetic writers against the literature (kinematics.validate)
   hw1         the headline comparison on real inputs and the bridge sets (hw1.run; one case per cache file)
   figures     figures with CSV twins, the before/after pictures (committed: CC BY inputs only)
@@ -49,16 +51,29 @@ def stage_tremor(quick: bool):
     from . import tremorlib as TL
     p = CACHE_DIR / ("tremorlib_quick.json" if quick else "tremorlib.json")
     if p.exists():
-        log(f"[tremor] cached {p.name}")
+        lib = json.loads(p.read_text())
+        if lib.get("classes", {}).get("_fitted_on"):
+            log(f"[tremor] cached {p.name} (roles applied)")
+            return
+        TL.refresh_roles(quick, log)
         return
     TL.build(quick=quick, log=log)
+    TL.refresh_roles(quick, log)
 
 
 def stage_writing(quick: bool):
     from . import writinglib as WL
+    from . import ocr as OC
+    from . import hw1 as H
+    idx = WL.unipen_index(log=log)
+    log(f"[writing] UNIPEN {idx['setups']}: {len(idx['writers'])} writers; tuning {len(WL.unipen_writers('tuning', idx))}, "
+        f"test {len(WL.unipen_writers('test', idx))}; texts {idx['n_texts']}")
     st = WL.brush_writer_stats(log=log)
-    log(f"[writing] BRUSH: {len(st['writers'])} writers; tuning {len(WL.brush_writers('tuning', st))}, "
-        f"test {len(WL.brush_writers('test', st))} (>= 6 lower-case word recordings)")
+    log(f"[writing] BRUSH (diagnostic only): {len(st['writers'])} writers")
+    rc = OC.reader_choice(log=log)
+    log(f"[writing] reader: {rc['chosen']} ({rc['rule']})")
+    m = H.page_model(quick, log)
+    log(f"[writing] page model: c {m.c * 1e6:.1f} um, sigma {m.sigma:.2f} ({m.fitted.get('label')})")
 
 
 def stage_kinematics(quick: bool):

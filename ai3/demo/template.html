@@ -1,0 +1,760 @@
+<meta charset="utf-8">
+<title>Spelling Pen Prototype</title>
+<meta name="description" content="Write with a mouse, finger or stylus: the page reads your letters with the study's recogniser, flags a likely misspelling with the physical cue the pen would give, offers completions at pauses, and keeps the ink record, the transcript and the pen's writing plan apart.">
+<style>
+/* Layout: a paper writing pad on top; under it the three outputs side by side (stacked on a phone). */
+:root {
+  --bg: #eceee8; --paper: #fbfbf7; --fg: #1d232a; --muted: #5a636d; --line: #d3d8d0; --rule: #b9c7d6;
+  --ink: #1e3f94; --pen: #0b7a66; --flag: #a85b00; --flag-bg: #fff1dc; --ok: #2c7a33; --withheld: #8d96a0;
+  --ghost: rgba(11, 122, 102, .30); --focus: #1e3f94; --chip: #e4e8e0; --shadow: 0 1px 2px rgba(20, 30, 40, .08);
+  --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-text: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161b; --paper: #1a2027; --fg: #e5e9ee; --muted: #9ba5b1; --line: #2d3640; --rule: #3a4a5c;
+  --ink: #93b4ff; --pen: #52d2b9; --flag: #f3a652; --flag-bg: #3a2a15; --ok: #74cf79; --withheld: #6f7883;
+  --ghost: rgba(82, 210, 185, .33); --focus: #93b4ff; --chip: #242c35; --shadow: none; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161b; --paper: #1a2027; --fg: #e5e9ee; --muted: #9ba5b1; --line: #2d3640; --rule: #3a4a5c;
+  --ink: #93b4ff; --pen: #52d2b9; --flag: #f3a652; --flag-bg: #3a2a15; --ok: #74cf79; --withheld: #6f7883;
+  --ghost: rgba(82, 210, 185, .33); --focus: #93b4ff; --chip: #242c35; --shadow: none; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--font-ui); margin: 0 }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 18px 40px; display: grid; gap: 16px }
+header.top { display: grid; gap: 6px }
+.titlerow { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; justify-content: space-between }
+h1 { font-size: 1.55rem; line-height: 1.2; margin: 0; letter-spacing: -.01em; text-wrap: balance }
+h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; margin: 0; color: var(--muted); font-weight: 650 }
+p { margin: 0 }
+.lede { color: var(--muted); max-width: 70ch }
+.tag { display: inline-block; font: 600 .68rem/1.4 var(--font-ui); letter-spacing: .05em; text-transform: uppercase;
+  border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; color: var(--muted); white-space: nowrap }
+button, select { font: inherit; color: inherit }
+button { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; min-height: 40px }
+button:hover { border-color: var(--muted) }
+button.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 600 }
+button:disabled { opacity: .45; cursor: not-allowed }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
+select { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-height: 40px; max-width: 100% }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center }
+.controls label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); font-size: .9rem }
+.banner { background: var(--chip); border-radius: 8px; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between }
+.banner p { font-size: .92rem; min-width: 0 }
+/* the pad */
+.padcard { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); display: grid }
+.penbar { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); min-height: 48px }
+.penstate { display: inline-flex; align-items: center; gap: 8px; font-weight: 600 }
+.dot { width: 12px; height: 12px; border-radius: 50%; background: var(--ok); flex: none }
+.penstate[data-cue="tick"] .dot { background: var(--flag); animation: pulse .5s 2 }
+.penstate[data-cue="withhold"] .dot { background: var(--withheld); box-shadow: 0 0 0 3px var(--flag) }
+.penstate[data-cue="show_me"] .dot, .penstate[data-cue="writing"] .dot { background: var(--pen) }
+.penstate[data-cue="pause_offer"] .dot { background: var(--flag) }
+@keyframes pulse { 50% { transform: scale(1.8) } }
+@media (prefers-reduced-motion: reduce) { .penstate .dot { animation: none !important } }
+.penhint { color: var(--muted); font-size: .88rem; min-width: 0 }
+#pad { display: block; width: 100%; touch-action: none; cursor: crosshair; border-radius: 0 0 10px 10px }
+.padfoot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; padding: 8px 12px; border-top: 1px solid var(--line) }
+.live { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0 }
+.lchip { font: 600 1.05rem/1 var(--font-mono); padding: 6px 8px; border-radius: 6px; background: var(--chip); border: 1px solid transparent; cursor: pointer; min-width: 30px; text-align: center }
+.lchip[data-sure="0"] { border-color: var(--flag); color: var(--flag) }
+.lchip.cur { outline: 2px dashed var(--ink); outline-offset: 1px }
+.top3 { font: .82rem/1.3 var(--font-mono); color: var(--muted) }
+/* suggestion tray */
+.tray { display: grid; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--flag-bg) }
+.tray .why { font-size: .9rem }
+.tray .opts { display: flex; flex-wrap: wrap; gap: 8px }
+.tray .opts button { font: 600 1.05rem var(--font-text); min-height: 44px; padding: 6px 16px }
+.tray .opts button .p { font: .75rem var(--font-mono); color: var(--muted); margin-left: 6px }
+/* the three outputs */
+.outputs { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)) }
+@media (max-width: 900px) { .outputs { grid-template-columns: minmax(0, 1fr) } }
+.out { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; align-content: start; min-width: 0 }
+.out header { display: grid; gap: 2px }
+.out h3 { margin: 0; font-size: 1.02rem }
+.out .rule { font-size: .85rem; color: var(--muted) }
+.meta { font: .8rem/1.4 var(--font-mono); color: var(--muted); overflow-wrap: anywhere }
+#inkstrip { width: 100%; display: block; background: var(--paper); border: 1px solid var(--line); border-radius: 6px }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: .8rem; color: var(--muted) }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 3px solid var(--ink); vertical-align: middle; margin-right: 4px }
+.legend i.pen { border-color: var(--pen) } .legend i.wh { border-top: 3px dashed var(--withheld) }
+.text { font: 1.2rem/1.9 var(--font-text); overflow-wrap: anywhere }
+.w { cursor: pointer; border-radius: 4px; padding: 0 2px }
+.w.flag { text-decoration: underline wavy var(--flag); text-underline-offset: 5px }
+.w.changed { background: var(--chip) }
+.w.sel { outline: 2px solid var(--ink) }
+.w.prot { border-bottom: 2px solid var(--ok) }
+.detail { border-top: 1px dashed var(--line); padding-top: 8px; display: grid; gap: 6px; font-size: .92rem }
+.detail .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center }
+.audit { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; max-height: 190px; overflow: auto; font-size: .84rem }
+.audit li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 3px }
+.audit time { font: .76rem var(--font-mono); color: var(--muted) }
+.plans { display: grid; gap: 10px }
+.plan { border: 1px solid var(--line); border-radius: 8px; padding: 8px; display: grid; gap: 6px }
+.plan canvas { width: 100%; display: block; background: var(--bg); border-radius: 6px }
+.state { font: 600 .72rem var(--font-ui); text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 4px; background: var(--chip) }
+.state[data-s="written"] { color: var(--ok) } .state[data-s="refused"], .state[data-s="cancelled"], .state[data-s="handed back"] { color: var(--flag) }
+.empty { color: var(--muted); font-size: .9rem }
+details.more { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px }
+details.more summary { cursor: pointer; font-weight: 600 }
+.facts { display: grid; gap: 6px; margin-top: 8px }
+.fact { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 4px }
+.fact b { font-variant-numeric: tabular-nums }
+.small { font-size: .85rem; color: var(--muted) }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="titlerow">
+      <h1>Spelling Pen Prototype</h1>
+      <div class="controls">
+        <button id="theme" type="button" aria-label="Switch light or dark theme">Theme: system</button>
+      </div>
+    </div>
+    <p class="lede">Write one word at a time in the pad. The pen reads your letters as you write, notices a likely misspelling, and shows here the physical cue the pen would give. It offers a few completions when you pause. Nothing on paper is ever changed: corrections live in the transcript, and the pen writes only what you accept.</p>
+    <div class="controls">
+      <label for="cue">Pen cue
+        <select id="cue">
+          <option value="pause_offer">At the next pause: tick + suggestions</option>
+          <option value="tick">Tick on the suspect letter</option>
+          <option value="withhold">Lift the pen: no ink for the wrong letter</option>
+          <option value="show_me">Show me (opt-in): pen draws the next letter lightly</option>
+          <option value="none">No pen cue (the app underlines only)</option>
+        </select>
+      </label>
+      <label for="speak"><input id="speak" type="checkbox"> Read suggestions aloud</label>
+      <label for="auto"><input id="auto" type="checkbox"> Automatic correction (opt-in, reversible)</label>
+    </div>
+    <div class="banner" id="exbanner">
+      <p id="extext">Example page: "we went to the libary", written with real letters from the UJI data set (not your writing). Start your own page to write.</p>
+      <button id="newpage" type="button">Start my own page</button>
+    </div>
+  </header>
+
+  <section class="padcard" aria-label="Writing pad">
+    <div class="penbar">
+      <span class="penstate" id="penstate" data-cue="idle"><span class="dot" aria-hidden="true"></span><span id="pentext">Pen: writing normally</span></span>
+      <span class="penhint" id="penhint">Write between the guide lines; lift the pen between letters. Leave a wide gap, or press Next word.</span>
+    </div>
+    <canvas id="pad" height="200" aria-label="Writing area. Draw letters with a mouse, finger or stylus."></canvas>
+    <div class="tray" id="tray" hidden>
+      <p class="why" id="traywhy"></p>
+      <div class="opts" id="trayopts"></div>
+    </div>
+    <div class="padfoot">
+      <div class="live" id="live" aria-live="polite"></div>
+      <div class="controls">
+        <span class="top3" id="top3"></span>
+        <button id="nextword" type="button" class="primary">Next word</button>
+      </div>
+    </div>
+  </section>
+
+  <p class="sr" id="announce" aria-live="assertive"></p>
+
+  <section class="outputs" aria-label="The three separate outputs">
+    <article class="out" id="out-ink">
+      <header><h2>1 · Ink on paper</h2><h3>What was actually written</h3>
+        <p class="rule">A record that is only ever added to. Permanent ink cannot be corrected by moving the nib.</p></header>
+      <canvas id="inkstrip" height="120" aria-label="All strokes written so far"></canvas>
+      <div class="legend"><span><i></i>your ink</span><span><i class="pen"></i>written by the pen (accepted)</span><span><i class="wh"></i>pen lifted: no ink</span></div>
+      <p class="meta" id="inkmeta"></p>
+    </article>
+    <article class="out" id="out-text">
+      <header><h2>2 · Transcript</h2><h3>What the app reads, and what you decide</h3>
+        <p class="rule">Can be changed. Every change is logged and can be undone. Tap a word.</p></header>
+      <div class="text" id="text"></div>
+      <div class="detail" id="detail" hidden></div>
+      <h2>Changes</h2>
+      <ol class="audit" id="audit"></ol>
+    </article>
+    <article class="out" id="out-plan">
+      <header><h2>3 · Pen writing plan</h2><h3>Ink the pen may write for you</h3>
+        <p class="rule">Only text you accepted. Fixed once made: a new prediction cannot steer the nib; only you can cancel.</p></header>
+      <div class="plans" id="plans"><p class="empty">No plan yet. Accept a completion while you write, then choose "Let the pen write it".</p></div>
+    </article>
+  </section>
+
+  <details class="more" id="more">
+    <summary>How this works, and what the study found</summary>
+    <div class="facts" id="facts"></div>
+    <p class="small" style="margin-top:10px">Letters: a small recurrent network that reads the pen path point by point (task 1 of study S), trained on UJI Pen Characters v2 (Llorens et al., CC BY 4.0), running in this page. Spelling: a noisy-channel model; score = λ·log P(strokes | letters) + log P(word) + log P(letters | word), with the error model estimated from real misspellings (Birkbeck corpus; only aggregate edit statistics are included) and a 20 000-word lexicon counted from CC0 sentences (Tatoeba, Common Voice). The combined probability is calibrated by temperature scaling. Names and words you mark as intended are never flagged. The pen cue, completions and writing plan are a proposed design shown in simulation; nothing here was measured on people or on a pen.</p>
+    <p class="small" id="settingsline"></p>
+  </details>
+</div>
+
+<script>
+"use strict";
+const DATA = /*__DATA__*/null;
+const S = DATA.settings;
+const LET = "abcdefghijklmnopqrstuvwxyz";
+const XH_LETTERS = "acemnorsuvwxz";
+const $ = id => document.getElementById(id);
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const logit = p => Math.log(p / (1 - p));
+const sigm = z => 1 / (1 + Math.exp(-z));
+const calT = (p, T) => sigm(logit(clamp(p, 1e-9, 1 - 1e-9)) / T);
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const store = { get(k, d) { try { const v = localStorage.getItem("spellpen." + k); return v === null ? d : JSON.parse(v) } catch (e) { return d } },
+  set(k, v) { try { localStorage.setItem("spellpen." + k, JSON.stringify(v)) } catch (e) {} } };
+const errors = [];
+window.addEventListener("error", e => errors.push(String(e.message)));
+
+/* ------------------------------------------------------------------ recogniser (task 1's GRU) */
+function f32(b64) { const bin = atob(b64), u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return new Float32Array(u8.buffer) }
+const NET = (() => { const W = {}; for (const k in DATA.model.tensors) W[k] = f32(DATA.model.tensors[k].b64); return { W, H: DATA.model.hidden, L: DATA.model.layers } })();
+function gruRun(F) {                               /* F: array of [x, y, dx, dy, pen]; returns the posterior after the last point */
+  const { W, H, L } = NET, wi = W["inp.weight"], bi = W["inp.bias"];
+  const h = []; for (let l = 0; l < L; l++) h.push(new Float32Array(H));
+  const z = new Float32Array(H), tmp = new Float32Array(H);
+  for (const x of F) {
+    for (let i = 0; i < H; i++) { let s = bi[i]; for (let j = 0; j < 5; j++) s += wi[i * 5 + j] * x[j]; z[i] = Math.tanh(s) }
+    let inp = z;
+    for (let l = 0; l < L; l++) {
+      const Wih = W[`gru.weight_ih_l${l}`], Whh = W[`gru.weight_hh_l${l}`], bih = W[`gru.bias_ih_l${l}`], bhh = W[`gru.bias_hh_l${l}`], hp = h[l];
+      for (let i = 0; i < H; i++) {
+        let ar = bih[i] + bhh[i], az = bih[H + i] + bhh[H + i], an = bih[2 * H + i], hn = bhh[2 * H + i];
+        const oR = i * H, oZ = (H + i) * H, oN = (2 * H + i) * H;
+        for (let j = 0; j < H; j++) { const xi = inp[j], hj = hp[j];
+          ar += Wih[oR + j] * xi + Whh[oR + j] * hj; az += Wih[oZ + j] * xi + Whh[oZ + j] * hj; an += Wih[oN + j] * xi; hn += Whh[oN + j] * hj }
+        const r = sigm(ar), u = sigm(az), n = Math.tanh(an + r * hn);
+        tmp[i] = (1 - u) * n + u * hp[i];
+      }
+      hp.set(tmp); inp = hp;
+    }
+  }
+  const wo = W["out.weight"], bo = W["out.bias"], top = h[L - 1], lo = new Float64Array(26);
+  let mx = -1e30;
+  for (let k = 0; k < 26; k++) { let s = bo[k]; for (let j = 0; j < H; j++) s += wo[k * H + j] * top[j]; lo[k] = s; mx = Math.max(mx, s) }
+  let tot = 0; for (let k = 0; k < 26; k++) { lo[k] = Math.exp(lo[k] - mx); tot += lo[k] }
+  for (let k = 0; k < 26; k++) lo[k] /= tot;
+  return lo;
+}
+function resample(P, step) {                        /* the same arc-length resampling as ai3/online.py */
+  const n0 = P.length; if (n0 < 2) return [P[0], P[0]];
+  const s = [0]; for (let i = 1; i < n0; i++) s.push(s[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
+  const Lt = s[n0 - 1]; if (Lt < 1e-9) return [P[0], P[0]];
+  const n = Math.max(2, Math.ceil(Lt / step) + 1), out = [];
+  let j = 0;
+  for (let k = 0; k < n; k++) { const u = Lt * k / (n - 1);
+    while (j < n0 - 2 && s[j + 1] < u) j++;
+    const t = (u - s[j]) / Math.max(s[j + 1] - s[j], 1e-12);
+    out.push([P[j][0] + t * (P[j + 1][0] - P[j][0]), P[j][1] + t * (P[j + 1][1] - P[j][1])]) }
+  return out;
+}
+function encode(strokes) {                           /* strokes in x-height units, y up: features as ai3.online.encode */
+  const o = strokes[0][0], F = []; let prev = null;
+  strokes.forEach((s, k) => {
+    const r = resample(s.map(p => [p[0] - o[0], p[1] - o[1]]), 0.1);
+    r.forEach((p, i) => { const pen = (i === 0 && k > 0) ? 0 : 1; const d = prev ? [p[0] - prev[0], p[1] - prev[1]] : [0, 0];
+      F.push([p[0], p[1], d[0], d[1], pen]); prev = p });
+  });
+  return F;
+}
+/* writer calibration (rule O4): the user's own corrected letters as templates, open-end DTW */
+function oeDTW(A, B) {
+  const n = A.length, m = B.length; let prev = new Float64Array(m + 1).fill(1e30), cur = new Float64Array(m + 1); prev[0] = 0;
+  const last = new Float64Array(m + 1).fill(1e30);
+  for (let i = 1; i <= n; i++) { cur.fill(1e30); cur[0] = 1e30;
+    for (let j = 1; j <= m; j++) { const c = Math.hypot(A[i - 1][0] - B[j - 1][0], A[i - 1][1] - B[j - 1][1]);
+      cur[j] = c + Math.min(prev[j - 1], prev[j], cur[j - 1]) }
+    if (i === 1) prev[0] = 1e30;
+    [prev, cur] = [cur, prev] }
+  let best = 1e30; for (let j = 1; j <= m; j++) best = Math.min(best, prev[j] / (n + j));
+  return best;
+}
+const CAL = store.get("calibration", {});             /* char -> encoded (x, y) path of the user's sample */
+function recognise(strokes) {                         /* -> {p: GRU posterior, q: calibrated (if templates)} */
+  const F = encode(strokes), p = gruRun(F);
+  const keys = Object.keys(CAL);
+  if (!keys.length) return { p, q: p, F };
+  const A = F.map(f => [f[0], f[1]]), d = new Float64Array(26).fill(NaN);
+  for (const c of keys) d[LET.indexOf(c)] = oeDTW(A, CAL[c]);
+  let worst = 0; for (const v of d) if (isFinite(v)) worst = Math.max(worst, v);
+  const lg = new Float64Array(26); let mx = -1e30;
+  for (let k = 0; k < 26; k++) { const dk = isFinite(d[k]) ? d[k] : worst; lg[k] = S.cal_a * Math.log(Math.max(p[k], 1e-9)) + (1 - S.cal_a) * (-dk / S.cal_tau); mx = Math.max(mx, lg[k]) }
+  let tot = 0; for (let k = 0; k < 26; k++) { lg[k] = Math.exp(lg[k] - mx); tot += lg[k] }
+  for (let k = 0; k < 26; k++) lg[k] /= tot;
+  return { p, q: lg, F };
+}
+
+/* ------------------------------------------------------------------ spelling: the task-2 checker, ported */
+const LEX = (() => {
+  const words = DATA.lexicon.words.split("\n"), counts = DATA.lexicon.counts;
+  const tot = counts.reduce((a, b) => a + b, 0);
+  const P = new Float64Array(words.length); words.forEach((w, i) => P[i] = counts[i] / tot);
+  const index = new Map(words.map((w, i) => [w, i]));
+  /* trie */
+  const par = [0], ch = [26], dep = [0], lo = [0], hi = [words.length], kids = [new Map()], term = new Int32Array(words.length);
+  words.forEach((w, wi) => { let n = 0;
+    for (const c of w) { const ci = LET.indexOf(c); let nx = kids[n].get(ci);
+      if (nx === undefined) { nx = par.length; kids[n].set(ci, nx); kids.push(new Map()); par.push(n); ch.push(ci); dep.push(dep[n] + 1); lo.push(wi); hi.push(wi + 1) }
+      else hi[nx] = wi + 1;
+      n = nx }
+    term[wi] = n });
+  const N = par.length, maxD = Math.max(...dep);
+  const byDepth = []; for (let d = 0; d <= maxD; d++) byDepth.push([]);
+  for (let n = 0; n < N; n++) byDepth[dep[n]].push(n);
+  const isTerm = new Uint8Array(N); for (const t of term) isTerm[t] = 1;
+  const suffix = new Array(N).fill(""), buckets = new Map();
+  for (let d = 1; d <= maxD; d++) for (const n of byDepth[d]) { suffix[n] = (suffix[par[n]] + LET[ch[n]]).slice(-3);
+    for (let L = 1; L <= Math.min(3, suffix[n].length); L++) { const k = suffix[n].slice(-L); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(n) } }
+  const anc = (n, a) => { for (let i = 0; i < a; i++) n = par[n]; return n };
+  const C = DATA.channel, rules = new Map();
+  for (const [be, al, cost, st, en] of C.rules) { let nodes = buckets.get(al); if (!nodes) continue;
+    nodes = nodes.filter(n => (!st || dep[n] === al.length) && (!en || isTerm[n]));
+    if (!nodes.length) continue;
+    if (!rules.has(be)) rules.set(be, []);
+    rules.get(be).push({ a: al.length, nodes: Int32Array.from(nodes), anc: Int32Array.from(nodes.map(n => anc(n, al.length))), cost }) }
+  const col0 = new Float64Array(N).fill(1e9); col0[0] = 0;
+  for (let d = 1; d <= maxD; d++) for (const n of byDepth[d]) col0[n] = col0[par[n]] + C.del[ch[n]];
+  return { words, P, index, par, ch, dep, lo, hi, kids, term, N, maxD, byDepth, rules, col0, C };
+})();
+const BIG = DATA.char_bigram;
+function charLogp(w) { let prev = 26, s = 0; for (const c of w) { const k = LET.indexOf(c); s += BIG[prev][k]; prev = k } return s + BIG[prev][26] }
+function nodeOf(p) { let n = 0; for (const c of p) { n = LEX.kids[n].get(LET.indexOf(c)); if (n === undefined) return -1 } return n }
+const PERSONAL = new Map(Object.entries(store.get("personal", {})));   /* words the user marked as intended */
+function prior(i) { const w = LEX.words[i]; return LEX.P[i] * (PERSONAL.has(w) ? 20 : 1) }
+function newCheck() { return { typed: "", cols: [LEX.col0] } }
+function pushLetter(st, c) {                          /* one DP column over the whole lexicon (as spell.Checker._column) */
+  const x = LET.indexOf(c), { par, ch, byDepth, maxD, N, C } = LEX, Dp = st.cols[st.cols.length - 1], Dk = new Float64Array(N).fill(1e9);
+  st.typed += c; const k = st.typed.length;
+  Dk[0] = Dp[0] + C.ins[26][x];
+  for (let d = 1; d <= maxD; d++) for (const n of byDepth[d]) { const cn = ch[n], p = par[n];
+    let v = Dp[p] + C.sub[cn][x]; const v2 = Dp[n] + C.ins[cn][x]; if (v2 < v) v = v2; const v3 = Dk[p] + C.del[cn]; if (v3 < v) v = v3; Dk[n] = v }
+  for (let b = 1; b <= Math.min(3, k); b++) { const lst = LEX.rules.get(st.typed.slice(k - b)); if (!lst) continue;
+    const src = st.cols[k - b];
+    for (const r of lst) for (let i = 0; i < r.nodes.length; i++) { const v = src[r.anc[i]] + r.cost; if (v < Dk[r.nodes[i]]) Dk[r.nodes[i]] = v } }
+  for (let d = 1; d <= maxD; d++) for (const n of byDepth[d]) { const v = Dk[par[n]] + C.del[ch[n]]; if (v < Dk[n]) Dk[n] = v }
+  st.cols.push(Dk);
+  return Dk;
+}
+function bestOnPath(Dk) { const B = Float64Array.from(Dk); for (let d = 1; d <= LEX.maxD; d++) for (const n of LEX.byDepth[d]) { const v = B[LEX.par[n]]; if (v < B[n]) B[n] = v } return B }
+function matchCost(s) { let m = 0; for (const c of s) m += LEX.C.match[LET.indexOf(c)]; return m }
+function prefixMasses(st) {                           /* P(deviation) after the letters so far (spell.Checker.push) */
+  const B = bestOnPath(st.cols[st.cols.length - 1]), a = S.alpha, n = nodeOf(st.typed);
+  const lo = n >= 0 ? LEX.lo[n] : 0, hi = n >= 0 ? LEX.hi[n] : 0, M = Math.exp(-matchCost(st.typed));
+  let dev = 0, nod = 0; const cand = [];
+  for (let i = 0; i < LEX.words.length; i++) { const P = prior(i);
+    if (i >= lo && i < hi) { const m = P * ((1 - a) + a * M); nod += m; cand.push([i, m]) }
+    else { const m = P * a * Math.exp(-B[LEX.term[i]]); dev += m; if (m > 0) cand.push([i, m]) } }
+  const oov = S.p_oov * (1 - a) * Math.exp(charLogp(st.typed) - BIG[LET.indexOf(st.typed.slice(-1))][26]);
+  const tot = (dev + nod) * (1 - S.p_oov) + oov;
+  cand.sort((u, v) => v[1] - u[1]);
+  return { pdev: dev * (1 - S.p_oov) / tot, complete: cand.slice(0, 5).map(([i, m]) => ({ w: LEX.words[i], p: m * (1 - S.p_oov) / tot })) };
+}
+function wordEnd(x) {                                 /* masses of a finished reading x (spell.Checker.end, unigram prior) */
+  const st = newCheck(); for (const c of x) pushLetter(st, c);
+  const F = st.cols[st.cols.length - 1], a = S.alpha, wi = LEX.index.get(x);
+  let err = 0; const sug = [];
+  for (let i = 0; i < LEX.words.length; i++) { if (i === wi) continue; const m = prior(i) * a * Math.exp(-F[LEX.term[i]]); err += m; if (m > 1e-300) sug.push([i, m]) }
+  const cor = wi !== undefined ? prior(wi) * ((1 - a) + a * Math.exp(-matchCost(x))) : 0;
+  const oov = S.p_oov * (1 - a) * Math.exp(charLogp(x));
+  const tot = (err + cor) * (1 - S.p_oov) + oov;
+  sug.sort((u, v) => v[1] - u[1]);
+  return { err: err * (1 - S.p_oov), cor: cor * (1 - S.p_oov), oov, tot, sug: sug.slice(0, 3).map(([i, m]) => [LEX.words[i], m * (1 - S.p_oov) / tot]), st };
+}
+function nbest(P, K = 3) { let hyps = [["", 0]];
+  for (const p of P) { const top = [...p.keys()].sort((u, v) => p[v] - p[u]).slice(0, K);
+    hyps = hyps.flatMap(([h, s]) => top.map(j => [h + LET[j], s + Math.log(Math.max(p[j], 1e-9))])).sort((u, v) => v[1] - u[1]).slice(0, K) }
+  return hyps }
+function scoreWord(P, isProtected) {                  /* the review's score over the N best readings (ai3/stage_words.combine) */
+  const reads = nbest(P).map(([x, lp]) => ({ x, lp, ...wordEnd(x) }));
+  const lw = reads.map(r => S.lam_r * r.lp + Math.log(Math.max(r.tot, 1e-300))), mx = Math.max(...lw);
+  let J = lw.map(v => Math.exp(v - mx)); const sJ = J.reduce((a, b) => a + b, 0); J = J.map(v => v / sJ);
+  let perr = 0; const cand = new Map();
+  reads.forEach((r, k) => { perr += J[k] * r.err / r.tot;
+    cand.set(r.x, (cand.get(r.x) || 0) + J[k] * (r.cor + r.oov) / r.tot);
+    for (const [w, pw] of r.sug) cand.set(w, (cand.get(w) || 0) + J[k] * pw) });
+  const kb = J.indexOf(Math.max(...J)), best = reads[kb].x;
+  const ranked = [...cand.entries()].sort((u, v) => v[1] - u[1]);
+  const sugg = ranked.filter(([w]) => w !== best).slice(0, 3).map(([w, p]) => ({ w, p: calT(p, S.T_s) }));
+  const pe = isProtected ? 0 : calT(clamp(perr, 1e-9, 1 - 1e-9), S.T);
+  return { literal: reads[0].x, best, pBest: J[kb], perr: pe, flagged: pe >= S.theta_c, sugg, reads: reads.map((r, k) => ({ x: r.x, p: J[k] })) };
+}
+
+/* ------------------------------------------------------------------ the three outputs */
+async function sha256hex(s) { try { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(v => v.toString(16).padStart(2, "0")).join("") }
+  catch (e) { let h1 = 0x811c9dc5, h2 = 0x01000193; for (let i = 0; i < s.length; i++) { h1 = Math.imul(h1 ^ s.charCodeAt(i), 16777619); h2 = Math.imul(h2 + s.charCodeAt(i), 2654435761) } return "fnv" + (h1 >>> 0).toString(16) + (h2 >>> 0).toString(16) } }
+const REC = { entries: [], hashAlgo: "SHA-256" };
+async function recordStroke(pts, action, planId, word) {   /* append-only, hash-chained */
+  const prev = REC.entries.length ? REC.entries[REC.entries.length - 1].digest : "genesis";
+  const body = JSON.stringify({ pts: pts.map(p => [+p[0].toFixed(2), +p[1].toFixed(2), Math.round(p[2] || 0)]), action, planId: planId || null });
+  const e = Object.freeze({ index: REC.entries.length, action, planId: planId || null, word, pts: Object.freeze(pts.map(p => Object.freeze([p[0], p[1], p[2] || 0]))), body, digest: await sha256hex(prev + body) });
+  REC.entries.push(e); drawInk(); return e;
+}
+async function verifyRecord() { let prev = "genesis"; for (const e of REC.entries) { if (await sha256hex(prev + e.body) !== e.digest) return false; prev = e.digest } return true }
+const TR = { words: [], revs: [] };
+function addWord(literal, conf, strokes, info) { TR.words.push({ literal, conf, strokes, text: literal, info, prot: PERSONAL.has(literal), flags: [] }); return TR.words.length - 1 }
+function revise(i, after, kind, source, by, reason) {
+  const w = TR.words[i], r = { id: TR.revs.length, word: i, before: w.text, after, kind, source, by, reason, t: new Date() };
+  w.text = after; TR.revs.push(r); renderText(); return r }
+function undo(id) { const r = TR.revs[id]; if (TR.words[r.word].text !== r.after) return null; return revise(r.word, r.before, "undo", "writer", "you", "undo of change " + id) }
+const PLANS = [];
+let busyPlan = null;
+
+/* ------------------------------------------------------------------ pad state and drawing */
+const pad = $("pad"), pctx = pad.getContext("2d");
+let XH = 44, DPR = 1, padW = 600, padH = 200, BASE = 130;
+const word = { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null };
+let curStroke = null, lastUp = 0, pauseTimer = null, cueMode = S.cue_default;
+const STYLE = store.get("style", {});                   /* char -> strokes (x-height units, y up): the user's letters */
+let exampleMode = true, xhEst = [];
+function sizePad() {
+  const w = Math.min(pad.parentElement.clientWidth, 1180); DPR = window.devicePixelRatio || 1;
+  XH = w < 520 ? 34 : 44; padW = w; padH = Math.round(XH * 4.2); BASE = Math.round(XH * 2.55);
+  pad.style.height = padH + "px"; pad.width = Math.round(padW * DPR); pad.height = Math.round(padH * DPR);
+  pctx.setTransform(DPR, 0, 0, DPR, 0, 0); drawPad(); drawInk();
+}
+function xhPx() { if (xhEst.length < 3) return XH; const v = [...xhEst].sort((a, b) => a - b); return clamp(v[v.length >> 1], XH * 0.5, XH * 2) }
+function drawPad() {
+  pctx.clearRect(0, 0, padW, padH);
+  pctx.fillStyle = cssv("--paper"); pctx.fillRect(0, 0, padW, padH);
+  pctx.strokeStyle = cssv("--rule"); pctx.lineWidth = 1;
+  for (const [y, dash] of [[BASE, []], [BASE - XH, [4, 4]], [BASE - 2 * XH, [2, 6]], [BASE + XH * 0.9, [2, 6]]]) { pctx.setLineDash(dash); pctx.beginPath(); pctx.moveTo(0, y + .5); pctx.lineTo(padW, y + .5); pctx.stroke() }
+  pctx.setLineDash([]);
+  if (word.ghost) { pctx.strokeStyle = cssv("--ghost"); pctx.lineWidth = 3; pctx.lineCap = "round"; for (const s of word.ghost) { pctx.beginPath(); s.forEach((p, i) => i ? pctx.lineTo(p[0], p[1]) : pctx.moveTo(p[0], p[1])); pctx.stroke() } }
+  for (const s of word.strokes) drawStroke(pctx, s.pts, s.action);
+  if (curStroke) drawStroke(pctx, curStroke.pts, curStroke.action);
+}
+function drawStroke(ctx, pts, action) {
+  ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.lineWidth = action === "autowritten" ? 2.4 : 2.2;
+  ctx.strokeStyle = action === "autowritten" ? cssv("--pen") : action === "withheld" ? cssv("--withheld") : cssv("--ink");
+  ctx.setLineDash(action === "withheld" ? [3, 5] : []);
+  ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke(); ctx.setLineDash([]);
+}
+function toXh(pts, o) { const h = xhPx(); return pts.map(p => [(p[0] - o[0]) / h, -(p[1] - o[1]) / h]) }   /* y up, as UJI */
+function letterStrokesXh(L) { const o = L.strokes[0].pts[0]; return L.strokes.map(s => toXh(s.pts, o)) }
+
+/* ------------------------------------------------------------------ writing: pointer input and segmentation */
+function evPt(e) { const r = pad.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top, performance.now()] }
+pad.addEventListener("pointerdown", e => { if (busyPlan) return; if (exampleMode) $("newpage").click();
+  if (word.done) { Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: false }) }
+  pad.setPointerCapture(e.pointerId); e.preventDefault(); penDown(evPt(e)) });
+pad.addEventListener("pointermove", e => { if (!curStroke) return; e.preventDefault(); const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e]; for (const q of (evs.length ? evs : [e])) penMove(evPt(q)) });
+pad.addEventListener("pointerup", e => { if (curStroke) penUp(evPt(e)) });
+pad.addEventListener("pointercancel", e => { if (curStroke) penUp(evPt(e)) });
+function penDown(p) {
+  clearTimeout(pauseTimer); hideTray(false);
+  const h = xhPx();
+  const action = word.withheldFrom !== null ? "withheld" : "none";
+  curStroke = { pts: [p], action, xmin: p[0], xmax: p[0] };
+  let L = word.letters[word.letters.length - 1];
+  if (!L || p[0] > L.xmax + 0.15 * h || p[0] < L.xmin - 0.15 * h) { if (L) finaliseLetter(L); L = { strokes: [], xmin: Infinity, xmax: -Infinity, rec: null, final: false }; word.letters.push(L) }
+  L.strokes.push(curStroke); curStroke.letter = L;
+  if (word.ghost) { word.ghost = null }
+  setPen("idle"); drawPad();
+}
+function penMove(p) {
+  const s = curStroke.pts, q = s[s.length - 1];
+  if (Math.hypot(p[0] - q[0], p[1] - q[1]) < 0.6) return;
+  s.push(p); curStroke.xmin = Math.min(curStroke.xmin, p[0]); curStroke.xmax = Math.max(curStroke.xmax, p[0]);
+  const L = curStroke.letter; L.xmin = Math.min(L.xmin, p[0]); L.xmax = Math.max(L.xmax, p[0]);
+  drawPad(); liveRecognise();
+}
+async function penUp(p) {
+  const st = curStroke; curStroke = null; lastUp = performance.now();
+  if (st.pts.length < 2) st.pts.push([st.pts[0][0] + 0.5, st.pts[0][1] + 0.5, st.pts[0][2]]);
+  const L = st.letter, h = xhPx();
+  L.xmin = Math.min(L.xmin, st.xmin); L.xmax = Math.max(L.xmax, st.xmax);
+  /* the Python rule (ai3/stage_words.segment): a stroke that overlaps the previous letter's extent belongs to it
+     (margin 0.15 x-height; 0.5 for a dot, a stroke shorter than 0.3 x-height) */
+  const len = st.pts.reduce((a, q, k) => a + (k ? Math.hypot(q[0] - st.pts[k - 1][0], q[1] - st.pts[k - 1][1]) : 0), 0);
+  const mg = (len < 0.3 * h ? 0.5 : 0.15) * h;
+  const i = word.letters.indexOf(L), P = word.letters[i - 1];
+  if (P && L.strokes.length === 1 && st.xmin <= P.xmax + mg && st.xmax >= P.xmin - mg) {
+    word.letters.splice(i, 1); P.strokes.push(st); st.letter = P; P.xmin = Math.min(P.xmin, st.xmin); P.xmax = Math.max(P.xmax, st.xmax); P.final = false }
+  else if (L.strokes.length === 1 && word.letters.length > 1 && st.xmin > word.xmax + 1.0 * h) {
+    /* a wide gap before this stroke: the previous word is finished, this stroke starts the next one */
+    word.letters.pop(); await endWord();
+    word.letters.push(L); L.final = false }
+  word.strokes.push(st); word.xmin = Math.min(word.xmin, st.xmin); word.xmax = Math.max(word.xmax, st.xmax);
+  st.rec = await recordStroke(st.pts, st.action, null, TR.words.length);
+  const Lc = st.letter; Lc.rec = recognise(letterStrokesXh(Lc));
+  afterLetterChange(); drawPad();
+  pauseTimer = setTimeout(onPause, 800);
+}
+let liveT = 0;
+function liveRecognise() { const now = performance.now(); if (now - liveT < 60) return; liveT = now;
+  const L = curStroke.letter; if (!L) return; L.rec = recognise(letterStrokesXh(L)); renderLive() }
+function finaliseLetter(L) { if (L.final) return; L.rec = recognise(letterStrokesXh(L)); L.final = true;
+  const c = LET[argmax(L.rec.q)];
+  if (L.rec.q[argmax(L.rec.q)] >= 0.9 && XH_LETTERS.includes(c)) { const ys = L.strokes.flatMap(s => s.pts.map(p => p[1])); xhEst.push(Math.max(...ys) - Math.min(...ys)); if (xhEst.length > 15) xhEst.shift() }
+  if (L.rec.q[argmax(L.rec.q)] >= 0.9) { STYLE[c] = letterStrokesXh(L); store.set("style", STYLE) } }
+const argmax = a => { let k = 0; for (let i = 1; i < a.length; i++) if (a[i] > a[k]) k = i; return k };
+function committedPrefix() {                          /* letters the recogniser has committed to (rule O2) */
+  let s = ""; for (const L of word.letters) { if (!L.rec) break; const k = argmax(L.rec.q); if (L.rec.q[k] < S.tau_commit && !L.final) break; s += LET[k] } return s }
+function afterLetterChange() {
+  renderLive();
+  const pre = word.letters.filter(L => L.rec).map(L => LET[argmax(L.rec.q)]).join("");
+  if (!pre) return;
+  const committed = committedPrefix();
+  if (!committed || word.flaggedAt !== null) return;
+  word.check = newCheck(); for (const c of committed) pushLetter(word.check, c);
+  const m = prefixMasses(word.check);
+  word.lastMasses = m;
+  if (m.pdev >= S.theta) { word.flaggedAt = committed.length; physicalCue(m, committed) }
+}
+function physicalCue(m, committed) {
+  if (exampleMode) return;
+  const top = m.complete.find(c => !c.w.startsWith(committed));
+  if (cueMode === "tick") { setPen("tick", "Tick: this word may be going wrong"); buzz(); announce("Check this word") }
+  else if (cueMode === "withhold") {
+    if (m.pdev >= S.theta_w) { word.withheldFrom = word.strokes.length; setPen("withhold", "Pen lifted: the next letters get no ink until you choose"); buzz(); showSuggestionsMid(m, committed) }
+    else { setPen("tick", "Tick: this word may be going wrong"); buzz() } }
+  else if (cueMode === "show_me") { if (top) { ghostNextLetter(top.w, committed.length); setPen("show_me", `Show me: follow the light letter ("${top.w}")`) } }
+  else if (cueMode === "pause_offer") { /* nothing mid-word: the cue waits for the pause */ }
+}
+function buzz() { try { navigator.vibrate && navigator.vibrate(30) } catch (e) {} }
+function announce(t) { $("announce").textContent = t }
+function setPen(cue, text) { $("penstate").dataset.cue = cue; $("pentext").textContent = text || (busyPlan ? "Pen: writing your accepted word" : "Pen: writing normally") }
+function placeLetter(src, c, x, h) {                /* letter strokes (x-height units, y up) -> pad px, bottom on the baseline */
+  const all = src.flat(), xmin = Math.min(...all.map(p => p[0])), xmax = Math.max(...all.map(p => p[0]));
+  const yb = Math.min(...all.map(p => p[1])) + (/[gjpqy]/.test(c) ? 0.9 : 0);
+  return { strokes: src.map(s => s.map(p => [x + (p[0] - xmin) * h, BASE - (p[1] - yb) * h])), width: (xmax - xmin) * h };
+}
+function ghostNextLetter(w, k) {                      /* show me (opt-in): the correct next letter, in the user's style if known */
+  const c = w[Math.min(k, w.length - 1)], src = STYLE[c] || DATA.templates[c]; if (!src) return;
+  word.ghost = placeLetter(src, c, word.xmax + 0.35 * xhPx(), xhPx()).strokes;
+  drawPad();
+}
+
+/* ------------------------------------------------------------------ pauses: completions; word end: spelling */
+function onPause() {
+  if (busyPlan || !word.letters.length) return;
+  const pre = committedPrefix(); if (!pre) return;
+  const st = newCheck(); for (const c of pre) pushLetter(st, c);
+  const m = prefixMasses(st);
+  const offers = m.complete.filter(c => c.w.length > pre.length && c.p >= S.p_offer).slice(0, 3);
+  const flagged = word.flaggedAt !== null;
+  if (!offers.length && !flagged) return;
+  if (cueMode === "pause_offer" && flagged) { setPen("pause_offer", "Tick at the pause: have a look at the suggestions"); buzz() }
+  showTray(flagged ? `Did you mean one of these? (the letters so far, "${pre}", look unusual)` : `Finish the word for you? Tap one to accept (Esc to close).`,
+    offers.length ? offers : m.complete.slice(0, 3), "completion", pre);
+}
+function showSuggestionsMid(m, pre) { showTray(`The pen lifted. Did you mean one of these?`, m.complete.slice(0, 3), "completion", pre) }
+async function endWord() {
+  clearTimeout(pauseTimer); hideTray(false);
+  if (word.done) { Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, ghost: null, done: false }); drawPad(); return }
+  if (!word.letters.length) return;
+  for (const L of word.letters) finaliseLetter(L);
+  const P = word.letters.map(L => L.rec.q), literal = P.map(p => LET[argmax(p)]).join("");
+  const sc = scoreWord(P, PERSONAL.has(literal));
+  const i = addWord(literal, P.map(p => Math.max(...p)), word.strokes.map(s => s.rec && s.rec.index), sc);
+  if (sc.best !== literal && sc.pBest >= 0.5) TR.words[i].flags.push({ kind: "recognition", w: sc.best, p: sc.pBest });
+  if (sc.flagged) {
+    const shown = sc.sugg.filter(s => s.p >= S.p_s);
+    TR.words[i].flags.push({ kind: "spelling", sugg: shown, p: sc.perr });
+    if ($("auto").checked && shown.length && sc.perr >= 0.9 && shown[0].p >= 0.9) revise(i, shown[0].w, "spelling", "checker", "automatic mode", `P(misspelled) ${sc.perr.toFixed(2)}`);
+    if (cueMode !== "none" && !exampleMode) { setPen(cueMode === "pause_offer" ? "pause_offer" : "tick", "Tick: check this word"); buzz() }
+    if (!exampleMode) { selectWord(i); speakList(shown.map(s => s.w)) }
+  }
+  Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: false });
+  renderText(); renderLive(); drawPad(); if (!exampleMode) setTimeout(() => { if (!busyPlan) setPen("idle") }, 1600);
+}
+function showTray(why, opts, kind, pre) {
+  $("traywhy").textContent = why; const box = $("trayopts"); box.innerHTML = "";
+  opts.forEach((o, k) => { const b = document.createElement("button"); b.type = "button"; b.dataset.w = o.w;
+    b.innerHTML = `${k + 1}. ${o.w}<span class="p">${Math.round(100 * o.p)}%</span>`; b.onclick = () => acceptCompletion(o.w, pre); box.appendChild(b) });
+  const no = document.createElement("button"); no.type = "button"; no.textContent = "None of these"; no.onclick = () => hideTray(true); box.appendChild(no);
+  $("tray").hidden = false; speakList(opts.map(o => o.w));
+}
+function hideTray(byUser) { $("tray").hidden = true }
+function speakList(ws) { if (!$("speak").checked || !ws.length || !window.speechSynthesis) return;
+  try { const u = new SpeechSynthesisUtterance(ws.join(", ")); const v = speechSynthesis.getVoices().find(v => v.localService && /^en/.test(v.lang)); if (v) u.voice = v; speechSynthesis.cancel(); speechSynthesis.speak(u) } catch (e) {} }
+document.addEventListener("keydown", e => { if ($("tray").hidden) return;
+  if (e.key === "Escape") hideTray(true); const k = +e.key; if (k >= 1 && k <= 3) { const b = $("trayopts").children[k - 1]; if (b && b.dataset.w) b.click() } });
+async function acceptCompletion(w, pre) {
+  hideTray(true);
+  const rest = w.slice(pre.length);
+  const P = word.letters.map(L => L.rec.q), literal = P.map(p => LET[argmax(p)]).join("");
+  const i = addWord(literal, P.map(p => Math.max(...p)), word.strokes.map(s => s.rec && s.rec.index), null);
+  const rev = revise(i, w, "completion", "predictor", "you", `completion accepted after "${pre}"`);
+  const x0 = word.xmax + 0.3 * xhPx();
+  Object.assign(word, { letters: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: true });
+  makePlan(rev, rest, x0);
+  drawPad(); renderLive();
+}
+
+/* ------------------------------------------------------------------ writing plan (accepted text only) */
+function makePlan(rev, rest, x0) {
+  const h = xhPx(), mm = S.xh_mm / h, letters = [];
+  let x = x0;
+  for (const c of rest) { const src = STYLE[c] || DATA.templates[c]; if (!src) continue;
+    const pl = placeLetter(src, c, x, h); letters.push({ c, strokes: pl.strokes, own: !!STYLE[c] }); x += pl.width + 0.3 * h }
+  const ys = letters.flatMap(L => L.strokes.flat().map(p => p[1])), xs = letters.flatMap(L => L.strokes.flat().map(p => p[0]));
+  const centre = BASE - 0.5 * h, vert = ys.length ? Math.max(...ys.map(y => Math.abs(y - centre))) * mm : 0;
+  const Ru = S.reach_mm - S.reserve_mm, path = letters.reduce((a, L) => a + L.strokes.reduce((b, s) => b + s.reduce((c, p, k) => c + (k ? Math.hypot(p[0] - s[k - 1][0], p[1] - s[k - 1][1]) : 0), 0), 0), 0) * mm;
+  const gates = { reach: vert <= Ru, accepted: rev.by === "you" };
+  const plan = { id: PLANS.length + 1, rev, text: rest, letters, vert, Ru, extent: xs.length ? (Math.max(...xs) - Math.min(...xs)) * mm : 0,
+    seconds: path / S.v_max_mm_s, state: gates.reach ? "planned" : "refused", gates };
+  PLANS.push(plan); renderPlans(); return plan;
+}
+async function runPlan(plan) {
+  if (plan.state !== "planned" || busyPlan) return;
+  busyPlan = plan; plan.state = "writing"; renderPlans(); setPen("writing", `Pen writing "${plan.text}" (you accepted it; tap Stop to take over)`);
+  hideTray(true);
+  for (const L of plan.letters) {
+    for (const s of L.strokes) {
+      const drawn = { pts: [], action: "autowritten" }; word.strokes.push(drawn);
+      for (let k = 0; k < s.length; k++) { if (plan.state !== "writing") break; drawn.pts.push([s[k][0], s[k][1], performance.now()]); if (k % 3 === 0) { drawPad(); await new Promise(r => setTimeout(r, 16)) } }
+      if (drawn.pts.length > 1) await recordStroke(drawn.pts, "autowritten", plan.id, plan.rev.word);
+      if (plan.state !== "writing") break;
+    }
+    if (plan.state !== "writing") break;
+  }
+  if (plan.state === "writing") plan.state = "written";
+  busyPlan = null; renderPlans(); setPen("idle"); drawPad();
+}
+
+/* ------------------------------------------------------------------ rendering */
+function renderLive() {
+  const box = $("live"); box.innerHTML = "";
+  word.letters.forEach((L, i) => { if (!L.rec) return; const k = argmax(L.rec.q), b = document.createElement("button");
+    b.type = "button"; b.className = "lchip" + (i === word.letters.length - 1 && curStroke ? " cur" : ""); b.textContent = LET[k];
+    b.dataset.sure = L.rec.q[k] >= S.tau_commit ? "1" : "0"; b.title = `${Math.round(100 * L.rec.q[k])}% sure. Tap to correct this letter (it becomes your calibration sample).`;
+    b.onclick = () => correctLetter(L); box.appendChild(b) });
+  const L = word.letters[word.letters.length - 1];
+  if (L && L.rec) { const o = [...L.rec.q.keys()].sort((u, v) => L.rec.q[v] - L.rec.q[u]).slice(0, 3); $("top3").textContent = o.map(k => `${LET[k]} ${Math.round(100 * L.rec.q[k])}%`).join(" · ") }
+  else $("top3").textContent = "";
+}
+function correctLetter(L) {
+  const o = [...L.rec.q.keys()].sort((u, v) => L.rec.q[v] - L.rec.q[u]).slice(0, 4).map(k => LET[k]);
+  showTrayLetter(L, o);
+}
+function showTrayLetter(L, opts) {
+  $("traywhy").textContent = "Which letter did you write? Your choice teaches the pen your style (calibration, kept in this browser).";
+  const box = $("trayopts"); box.innerHTML = "";
+  for (const c of opts) { const b = document.createElement("button"); b.type = "button"; b.textContent = c;
+    b.onclick = () => { const F = encode(letterStrokesXh(L)); CAL[c] = F.map(f => [f[0], f[1]]); store.set("calibration", CAL);
+      STYLE[c] = letterStrokesXh(L); store.set("style", STYLE); L.rec = recognise(letterStrokesXh(L)); hideTray(true); renderLive(); afterLetterChange() };
+    box.appendChild(b) }
+  const no = document.createElement("button"); no.type = "button"; no.textContent = "Cancel"; no.onclick = () => hideTray(true); box.appendChild(no);
+  $("tray").hidden = false;
+}
+let selected = null;
+function renderText() {
+  const box = $("text"); box.innerHTML = "";
+  if (!TR.words.length) { box.innerHTML = '<span class="empty">Your words appear here as the pen reads them.</span>' }
+  TR.words.forEach((w, i) => { const s = document.createElement("span"); s.className = "w"; s.textContent = w.text; s.tabIndex = 0; s.setAttribute("role", "button");
+    if (w.flags.some(f => f.kind === "spelling") && w.text === w.literal && !w.prot) s.classList.add("flag");
+    if (w.text !== w.literal) s.classList.add("changed"); if (w.prot) s.classList.add("prot"); if (i === selected) s.classList.add("sel");
+    s.onclick = () => selectWord(i); s.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectWord(i) } };
+    box.appendChild(s); box.appendChild(document.createTextNode(" ")) });
+  const au = $("audit"); au.innerHTML = "";
+  [...TR.revs].reverse().forEach(r => { const li = document.createElement("li");
+    li.innerHTML = `<time>${r.t.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</time><span>word ${r.word + 1}: <b></b> → <b></b> · ${r.kind} · by ${r.by}</span>`;
+    li.querySelectorAll("b")[0].textContent = r.before; li.querySelectorAll("b")[1].textContent = r.after; au.appendChild(li) });
+  if (!TR.revs.length) au.innerHTML = '<li class="empty"><span></span><span>No changes. The transcript still says exactly what the pen read.</span></li>';
+  if (selected !== null) renderDetail();
+}
+function selectWord(i) { selected = i; renderText(); renderDetail() }
+function renderDetail() {
+  const d = $("detail"), w = TR.words[selected]; if (!w) { d.hidden = true; return }
+  d.hidden = false; d.innerHTML = "";
+  const row = html => { const r = document.createElement("div"); r.className = "row"; r.innerHTML = html; d.appendChild(r); return r };
+  row(`<span>The pen read <b class="lit"></b></span><span class="tag">letters ${w.conf.length ? Math.round(100 * Math.min(...w.conf)) : 0}% sure or more</span>`).querySelector(".lit").textContent = w.literal;
+  for (const f of w.flags) {
+    if (f.kind === "recognition") { const r = row(`<span>Maybe you wrote <b></b>? (reading, ${Math.round(100 * f.p)}%)</span>`); r.querySelector("b").textContent = f.w;
+      const b = document.createElement("button"); b.type = "button"; b.textContent = "Use this reading"; b.onclick = () => revise(selected, f.w, "recognition", "recogniser", "you", "reading chosen by the writer"); r.appendChild(b) }
+    if (f.kind === "spelling") {
+      if (!f.sugg.length) row(`<span>Check this word: it looks misspelled (${Math.round(100 * f.p)}%), but no suggestion is sure enough to show.</span>`);
+      else { const r = row(`<span>Spelling (${Math.round(100 * f.p)}% likely misspelled):</span>`);
+        for (const s of f.sugg) { const b = document.createElement("button"); b.type = "button"; b.textContent = `${s.w} (${Math.round(100 * s.p)}%)`;
+          b.onclick = () => revise(selected, s.w, "spelling", "checker", "you", "suggestion accepted"); r.appendChild(b) } }
+    }
+  }
+  const r = row("");
+  const keep = document.createElement("button"); keep.type = "button"; keep.textContent = w.prot ? "Kept as intended" : "Keep as written (name or my word)";
+  keep.disabled = w.prot; keep.onclick = () => { w.prot = true; PERSONAL.set(w.literal, 1); store.set("personal", Object.fromEntries(PERSONAL)); if (w.text !== w.literal) revise(selected, w.literal, "writer_edit", "writer", "you", "kept as written"); else renderText() };
+  r.appendChild(keep);
+  const last = [...TR.revs].reverse().find(q => q.word === selected && q.kind !== "undo");
+  if (last) { const u = document.createElement("button"); u.type = "button"; u.textContent = "Undo last change"; u.onclick = () => undo(last.id); r.appendChild(u) }
+  if (w.text !== w.literal && w.flags.some(f => f.kind === "spelling")) {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = "Plan a rewrite after this word";
+    b.onclick = () => { const rv = TR.revs.filter(q => q.word === selected).pop(); const p = makePlan({ ...rv, by: "you", kind: "writer_edit" }, w.text, 12); renderPlans(); };
+    r.appendChild(b) }
+}
+function renderPlans() {
+  const box = $("plans"); box.innerHTML = "";
+  if (!PLANS.length) { box.innerHTML = '<p class="empty">No plan yet. Accept a completion while you write, then choose "Let the pen write it".</p>'; return }
+  for (const p of [...PLANS].reverse()) {
+    const el = document.createElement("div"); el.className = "plan"; el.dataset.plan = p.id;
+    el.innerHTML = `<div class="row" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:space-between"><b></b><span class="state" data-s="${p.state}">${p.state}</span></div>
+      <canvas height="70"></canvas>
+      <p class="meta">accepted in change ${p.rev.id} · reach needed ±${p.vert.toFixed(1)} mm of ±${p.Ru.toFixed(1)} mm usable (±${S.reach_mm} mm stage) · the hand must move ${p.extent.toFixed(1)} mm right in about ${p.seconds.toFixed(1)} s</p>
+      <div class="controls"></div>`;
+    el.querySelector("b").textContent = `"${p.text}"`;
+    const c = el.querySelector(".controls");
+    if (p.state === "planned") { const go = document.createElement("button"); go.type = "button"; go.className = "primary"; go.textContent = "Let the pen write it"; go.onclick = () => runPlan(p); c.appendChild(go) }
+    if (p.state === "planned" || p.state === "writing") { const x = document.createElement("button"); x.type = "button"; x.textContent = p.state === "writing" ? "Stop (I take over)" : "Cancel";
+      x.onclick = () => { p.state = p.state === "writing" ? "handed back" : "cancelled"; renderPlans() }; c.appendChild(x) }
+    if (p.state === "refused") { const q = document.createElement("p"); q.className = "small"; q.textContent = "Refused: the letters need more reach than the pen has at this size. Write it yourself, or write smaller."; c.appendChild(q) }
+    box.appendChild(el);
+    requestAnimationFrame(() => drawPlan(el.querySelector("canvas"), p));
+  }
+}
+function drawPlan(cv, p) {
+  const w = cv.clientWidth || 300, h = 70, dpr = window.devicePixelRatio || 1; cv.width = w * dpr; cv.height = h * dpr; const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const pts = p.letters.flatMap(L => L.strokes.flat()); if (!pts.length) return;
+  const xs = pts.map(q => q[0]), ys = pts.map(q => q[1]), x0 = Math.min(...xs), y0 = Math.min(...ys), sc = Math.min((w - 20) / Math.max(Math.max(...xs) - x0, 1), (h - 16) / Math.max(Math.max(...ys) - y0, 1));
+  g.strokeStyle = cssv("--pen"); g.lineWidth = 2; g.lineCap = "round";
+  for (const L of p.letters) for (const s of L.strokes) { g.beginPath(); s.forEach((q, i) => { const X = 10 + (q[0] - x0) * sc, Y = 8 + (q[1] - y0) * sc; i ? g.lineTo(X, Y) : g.moveTo(X, Y) }); g.stroke() }
+}
+function drawInk() {
+  const cv = $("inkstrip"), w = cv.clientWidth || 300, dpr = window.devicePixelRatio || 1, sc = 0.42, rowH = XH * 3.4 * sc + 6;
+  const groups = [], byWord = new Map();
+  for (const e of REC.entries) { if (!byWord.has(e.word)) { byWord.set(e.word, []); groups.push(byWord.get(e.word)) } byWord.get(e.word).push(e) }
+  let x = 8, row = 0; const pos = [];
+  for (const es of groups) { const xs = es.flatMap(e => e.pts.map(p => p[0])), x0 = Math.min(...xs), ww = (Math.max(...xs) - x0) * sc;
+    if (x + ww > w - 8 && x > 8) { x = 8; row++ }
+    pos.push({ es, x, x0, row }); x += ww + XH * 0.7 * sc }
+  const h = Math.max(64, Math.round((row + 1) * rowH + 8));
+  cv.style.height = h + "px"; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  const top = BASE - 2.2 * XH;
+  for (const p of pos) for (const e of p.es) drawStroke(g, e.pts.map(q => [p.x + (q[0] - p.x0) * sc, 4 + p.row * rowH + (q[1] - top) * sc]), e.action);
+  if (!REC.entries.length) { g.fillStyle = cssv("--muted"); g.font = "13px system-ui, sans-serif"; g.fillText("Nothing written yet.", 10, 24) }
+  $("inkmeta").textContent = `${REC.entries.length} strokes recorded · ${REC.entries.filter(e => e.action === "autowritten").length} written by the pen · ${REC.entries.filter(e => e.action === "withheld").length} without ink · chain ${REC.hashAlgo}: ${REC.entries.length ? REC.entries[REC.entries.length - 1].digest.slice(0, 12) : "empty"}`;
+}
+
+/* ------------------------------------------------------------------ example page, controls, theme */
+async function writeWordXh(letters, x0) {           /* replay real letters (x-height units, y up) through the same pipeline */
+  const h = xhPx(); let x = x0;
+  for (const L of letters) { const pl = placeLetter(L.strokes, L.char, x, h);
+    for (const s0 of pl.strokes) { const pts = s0.map(p => [p[0], p[1], 0]);
+      penDown(pts[0]); for (const p of pts.slice(1)) { curStroke.pts.push(p); curStroke.xmin = Math.min(curStroke.xmin, p[0]); curStroke.xmax = Math.max(curStroke.xmax, p[0]); const Lr = curStroke.letter; Lr.xmin = Math.min(Lr.xmin, p[0]); Lr.xmax = Math.max(Lr.xmax, p[0]) }
+      clearTimeout(pauseTimer); await penUp(pts[pts.length - 1]); clearTimeout(pauseTimer) }
+    x += pl.width + 0.3 * h }
+}
+async function loadExample() {
+  exampleMode = true;
+  for (const w of DATA.example) { await writeWordXh(w.letters, 16); await endWord() }
+  exampleMode = false; setPen("idle"); exampleMode = true;
+  const fl = TR.words.findIndex(w => w.flags.some(f => f.kind === "spelling")); if (fl >= 0) selectWord(fl);
+}
+$("newpage").onclick = () => { REC.entries = []; TR.words = []; TR.revs = []; PLANS.length = 0; selected = null; exampleMode = false;
+  Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null });
+  $("exbanner").hidden = true; $("detail").hidden = true; renderText(); renderPlans(); drawInk(); drawPad(); renderLive(); setPen("idle") };
+$("nextword").onclick = () => { if (!exampleMode) endWord() };
+$("cue").value = S.cue_default; $("cue").onchange = e => { cueMode = e.target.value; store.set("cue", cueMode) };
+const savedCue = store.get("cue", null); if (savedCue) { $("cue").value = savedCue; cueMode = savedCue }
+const themes = ["system", "light", "dark"]; let theme = store.get("theme", "system");
+function applyTheme() { if (theme === "system") document.documentElement.removeAttribute("data-theme"); else document.documentElement.dataset.theme = theme;
+  $("theme").textContent = "Theme: " + theme; drawPad(); drawInk(); renderPlans() }
+$("theme").onclick = () => { theme = themes[(themes.indexOf(theme) + 1) % 3]; store.set("theme", theme); applyTheme() };
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { drawPad(); drawInk(); renderPlans() });
+function renderFacts() {
+  const box = $("facts"); box.innerHTML = "";
+  for (const f of DATA.facts) { const r = document.createElement("div"); r.className = "fact"; r.innerHTML = `<span></span><b></b>`; r.children[0].innerHTML = ""; r.children[0].textContent = f.k + " "; const t = document.createElement("span"); t.className = "tag"; t.textContent = f.label; r.children[0].appendChild(t); r.children[1].textContent = f.v; box.appendChild(r) }
+  $("settingsline").textContent = `Settings from the study's rules (${S.from_results.join(", ") || "defaults"}): commit at ${S.tau_commit}; flag at P ≥ ${S.theta}; lift the pen at P ≥ ${S.theta_w}; word flag at calibrated P ≥ ${S.theta_c} (T = ${(+S.T).toFixed(2)}, λ = ${S.lam_r}); show a suggestion at ≥ ${S.p_s}; offer completions at ≥ ${S.p_offer}; reach ±${S.reach_mm} mm at a ${S.xh_mm} mm x-height.` + (S.cue_recommended_by_S4 ? ` The simulation's recommended physical cue (rule S4): ${S.cue_recommended_by_S4}.` : "");
+}
+window.addEventListener("resize", () => { sizePad(); renderPlans() });
+window.__demo = { ready: false, errors, S, recognise: strokes => Array.from(recognise(strokes).p), scoreWord: letters => scoreWord(letters.map(s => recognise(s).q), false),
+  prefix: s => { const st = newCheck(); for (const c of s) pushLetter(st, c); return prefixMasses(st) },
+  writeWordXh: async (letters, pause) => { await writeWordXh(letters, 16); if (pause) onPause() }, endWord, state: () => ({ record: REC.entries.length, words: TR.words.map(w => ({ literal: w.literal, text: w.text, flags: w.flags })), revs: TR.revs.length, plans: PLANS.map(p => ({ text: p.text, state: p.state })), cue: $("penstate").dataset.cue, tray: !$("tray").hidden, trayWords: [...$("trayopts").children].map(b => b.dataset.w).filter(Boolean) }),
+  verifyRecord, runPlan: () => runPlan(PLANS[PLANS.length - 1]), setCue: c => { cueMode = c; $("cue").value = c }, newPage: () => $("newpage").click() };
+(async () => { try { sizePad(); applyTheme(); renderFacts(); renderText(); renderPlans(); await loadExample(); drawInk(); window.__demo.ready = true }
+  catch (e) { errors.push(String(e && e.stack || e)); window.__demo.ready = true } })();
+</script>

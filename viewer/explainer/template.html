@@ -567,6 +567,53 @@ ul.movekey li{display:flex;align-items:center;gap:0}
 .sure p{font-size:18px;max-width:none}
 @media (max-width:640px){.sure{grid-template-columns:1fr}}
 
+/* ---------- known problems (being fixed) ---------- */
+.known{border:2px solid var(--t-prop);background:var(--panel);padding:16px 18px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px;scroll-margin-top:16px}
+.known>*{min-width:0}
+.known .sec-head{border-top:0;padding-top:0}
+.known-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px 26px;align-items:start}
+@media (max-width:900px){.known-grid{grid-template-columns:1fr}}
+.known-grid>*{min-width:0}
+ol.known-list{margin:0;padding:0;list-style:none;display:grid;gap:16px;counter-reset:kp}
+ol.known-list li{display:grid;gap:7px;padding-left:36px;position:relative;counter-increment:kp;min-width:0}
+ol.known-list li::before{content:counter(kp, lower-alpha);position:absolute;left:0;top:1px;width:25px;height:25px;border-radius:50%;
+  background:var(--t-prop);color:var(--panel);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px}
+ol.known-list p{font-size:17px;max-width:none}
+figure.slfig{margin:0;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;background:var(--panel-2);border:1px solid var(--rule);padding:12px 14px;min-width:0}
+figure.slfig figcaption{font-size:15.5px;color:var(--muted);display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}
+figure.slfig figcaption b{color:var(--ink)}
+.sl-eq{display:block;font-family:var(--mono);font-size:14.5px;color:var(--ink);background:var(--panel);border:1px solid var(--rule);
+  padding:5px 9px;width:fit-content;max-width:100%;justify-self:start;overflow-wrap:anywhere}
+svg.sideload{display:block;width:100%;height:auto;max-width:420px;margin:0 auto;font-family:var(--body)}
+svg.sideload .sl-desk{fill:var(--paper)} svg.sideload .sl-paper{stroke:var(--muted);stroke-width:.8}
+svg.sideload .sl-sep{stroke:var(--rule);stroke-width:.7}
+svg.sideload .sl-inner{fill:var(--g-nose)} svg.sideload .sl-mag{fill:color-mix(in srgb,var(--g-nose) 55%,var(--ink))}
+svg.sideload .sl-ball{fill:var(--ink)}
+svg.sideload .sl-pivot{fill:var(--panel);stroke:var(--g-pivot);stroke-width:1.5;stroke-linejoin:round}
+svg.sideload .sl-ground{stroke:var(--muted);stroke-width:1.2}
+svg.sideload .sl-dim{stroke:var(--muted);stroke-width:.6}
+svg.sideload .sl-ar{stroke-width:1.9;stroke-linecap:round}
+svg.sideload .sl-ar.spring{stroke:color-mix(in srgb,var(--g-nose) 72%,var(--ink))} svg.sideload .sl-h.spring{fill:color-mix(in srgb,var(--g-nose) 72%,var(--ink))}
+svg.sideload .sl-ar.paper{stroke:var(--ink)} svg.sideload .sl-h.paper{fill:var(--ink)}
+svg.sideload .sl-ar.side{stroke:var(--shake)} svg.sideload .sl-h.side{fill:var(--shake)}
+svg.sideload .sl-ar.mag{stroke:var(--shake);stroke-width:2.6} svg.sideload .sl-h.mag{fill:var(--shake)}
+svg.sideload .sl-comp{stroke:var(--muted);stroke-width:.8;stroke-dasharray:2.4 1.8}
+svg.sideload .sl-t{font-size:7.3px;fill:var(--ink);paint-order:stroke;stroke:var(--panel-2);stroke-width:2.2px;stroke-linejoin:round}
+svg.sideload .sl-t.sl-h1{font-size:8.6px;font-weight:700;font-family:var(--display)}
+svg.sideload .sl-t.sl-r{fill:var(--shake);font-weight:600}
+svg.sideload .sl-t.sl-b{fill:color-mix(in srgb,var(--g-nose) 72%,var(--ink))}
+svg.sideload .sl-t.sl-m{fill:var(--muted);font-size:6.6px}
+svg.sideload .sl-t.sl-p{fill:color-mix(in srgb,var(--g-pivot) 70%,var(--ink));font-weight:600}
+@media (max-width:640px){svg.sideload .sl-t{font-size:8px} svg.sideload .sl-t.sl-h1{font-size:9px} svg.sideload .sl-t.sl-m{font-size:7.2px}
+  .known{padding:14px 12px} figure.slfig{padding:10px 8px}}
+.mech-note{font-size:14.5px;border-left:3px solid var(--t-prop);padding:2px 0 2px 10px;color:var(--muted)}
+a.bstat{font-size:14px;border:1px solid var(--t-prop);border-left-width:4px;padding:3px 8px;color:var(--ink);text-decoration:none;display:block}
+a.bstat:hover{background:var(--panel-2)}
+a.susp{display:inline-block;font-family:var(--display);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:12px;
+  padding:0 6px;border-radius:3px;border:1px solid var(--t-prop);color:var(--t-prop);white-space:nowrap;margin-left:4px;text-decoration:none;
+  vertical-align:.1em;line-height:1.5}
+a.susp:hover{background:var(--panel-2)}
+
 /* ---------- details ---------- */
 .dets{display:grid;gap:10px}
 details.det{background:var(--panel);border:1px solid var(--rule)}
@@ -596,7 +643,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <p class="lede-sub">It has not been built yet. Everything below is a design and computer simulations, and every number says where it comes from.</p>
     <nav class="toc" aria-label="On this page"><span>On this page</span>
       <a href="#moves">Three parts that move</a><a href="#see">See it move</a><a href="#pen">The pen in 3-D</a><a href="#better">How much better</a>
-      <a href="#sure">How sure we are</a><a href="#details">Details</a>
+      <a href="#sure">How sure we are</a><a href="#known">Known problems</a><a href="#details">Details</a>
     </nav>
   </header>
 
@@ -696,7 +743,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
             <button class="btn" id="labels" aria-pressed="true">Labels</button>
             <button class="btn" id="endcap" aria-pressed="true">End-cap fitted</button>
           </div>
-          <p class="note" id="endcap-note">With the end-cap: [[len_ec]]&nbsp;mm and [[mass_ec]]&nbsp;g. Without it: [[len]]&nbsp;mm and [[mass]]&nbsp;g. <span class="tag calc"><i></i>Calculation</span></p>
+          <p class="note" id="endcap-note">With the first end-cap design (shown): [[len_ec]]&nbsp;mm and [[mass_ec]]&nbsp;g. Without it: [[len]]&nbsp;mm and [[mass]]&nbsp;g. Rev J.1's lighter end-cap weighs [[ec1_g]]&nbsp;g. <span class="tag calc"><i></i>Calculation</span></p>
           <label class="range" for="explode"><span><b>Take apart</b><output id="explode-out">0 %</output></span>
             <input type="range" id="explode" min="0" max="100" value="0"></label>
           <div class="seg" role="group" aria-label="Camera">
@@ -745,7 +792,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
   <section class="sec" id="better" aria-labelledby="better-h">
     <div class="sec-head">
       <h2 id="better-h">How much better is the writing?</h2>
-      <p>For each problem: writing without and with the pen's help, and one number. “Read correctly” means a handwriting-reading program read it right, standing in for a person.</p>
+      <p>For each problem: writing without and with the pen's help, and one number. “Read correctly” means a handwriting-reading program read it right, standing in for a person. These results assume the pen's parts work as designed; see the known problems below.</p>
     </div>
     <div class="better" id="better-rows">
 <!--BUILD:SIMPLE_RESULTS-->
@@ -756,6 +803,15 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
   <section class="sure" id="sure" aria-labelledby="sure-h">
     <h2 id="sure-h">How sure are we?</h2>
     <p><b>Not sure yet.</b> Every result on this page comes from computer simulations with made-up writers and made-up shakes. Nothing has been built, and nothing has been tested on a prototype or with people. <span class="tag sim"><i></i>Simulation only</span></p>
+  </section>
+
+  <!-- ===================================================================== 5b. known problems (being fixed) -->
+  <section class="sec known" id="known" aria-labelledby="known-h">
+    <div class="sec-head">
+      <h2 id="known-h">Known problems (being fixed)</h2>
+      <p>The whole-pen physics simulation and an independent review (29 September 2026) found these. They change the design, so the numbers they affect are marked “suspended” in the Details.</p>
+    </div>
+<!--BUILD:KNOWN_PROBLEMS-->
   </section>
 
   <!-- ===================================================================== 6. details (closed by default) -->
@@ -858,20 +914,20 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <article class="act c-heel">
         <h3><span class="anum">2</span>Heel <small>the wheel that grips the paper</small></h3>
         <div class="big">[[trac_lo]]–[[trac_hi]]<small> N of push on the hand</small></div>
-        <p>A 2&nbsp;mm wheel with a rubber tyre sits in a slot under the front ring. It uses the paper as ground. By default it only steers: it keeps your hand on the letter's path and cannot move the pen by itself. In a mode you turn on, it also drives and leads a relaxed hand.</p>
+        <p>A 2&nbsp;mm wheel with a rubber tyre sits in a slot under the front ring. It uses the paper as ground. It is retracted by default: in the physics simulation it moved clean writing by about [[kp_heel]]&nbsp;mm. When you turn guidance on, it steers: it keeps your hand on the letter's path and cannot move the pen by itself. In a mode you turn on, it also drives and leads a relaxed hand.</p>
         <div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag asm"><i></i>Assumption: tyre friction 0.6–1.2</span></div>
       </article>
       <article class="act c-tail">
         <h3><span class="anum">3</span>Tail <small>the end-cap you can take off</small></h3>
-        <div class="big">+[[ec_rng]]<small> % less shake, on top of the inner pen</small></div>
-        <p>Coils push a 30.4&nbsp;g tungsten weight up to ±4&nbsp;mm sideways, and the push steadies the pen. It can also give short cues in pauses. It cannot steer letters. It adds [[ec_g]]&nbsp;g and replaces the rear cap.</p>
+        <div class="big">+[[ec1_rng]]<small> % less shake, on top of the inner pen (Rev J.1)</small></div>
+        <p>In Rev J.1's lighter end-cap, coils push a [[ec1_slug_1]]&nbsp;g tungsten weight up to ±4&nbsp;mm sideways, and the push steadies the pen. It can also give short cues in pauses. It cannot steer letters. It weighs [[ec1_g]]&nbsp;g and replaces the rear cap. A plain weight of the same mass, locked in place, did better for one of three grips, so the moving weight stays optional until it beats a locked one. The 3-D model shows the first, [[ec_g]]&nbsp;g design (a further [[ec_rng]]&nbsp;%).</p>
         <div class="tags"><span class="tag sim"><i></i>Simulation · model H1</span><span class="tag prop"><i></i>Proposed design</span></div>
       </article>
     </div>
     <div class="spec" id="spec">
       <span>Handle <b>Ø[[od]] mm</b></span><span>length <b>[[len]] mm</b> ([[len_ec]] mm with the end-cap)</span>
       <span>mass <b>[[mass]] g</b> ([[mass_ec]] g with the end-cap)</span>
-      <span>battery <b>[[h_steady1]] h</b> of steady writing with 1&nbsp;mm of shake</span>
+      <span>battery <b>[[h_steady1]] h</b> of steady writing with 1&nbsp;mm of shake <a class="susp" href="#known">suspended (see known problems)</a></span>
       <span class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag prop"><i></i>Proposed design</span></span>
     </div>
     <ul class="steps" aria-label="How the parts work together">
@@ -903,14 +959,14 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
           <tr><td>Length</td><td>[[len]] mm</td><td>[[len_ec]] mm</td><td>≤ 175 mm</td></tr>
           <tr><td>Mass</td><td>[[mass]] g</td><td>[[mass_ec]] g <span class="pill warn">over</span></td><td>≤ 120 g</td></tr>
           <tr><td>Balance point from the tip</td><td>[[com]] mm</td><td>[[com_ec]] mm</td><td>the web of the hand is at about 92 mm</td></tr>
-          <tr><td>Battery, steady, 1 mm of shake</td><td>[[h_steady1]] h ([[h_steady1_gated]] h with the page sensor off)</td><td>[[h_steady1_ec]] h</td><td>≥ 8 h</td></tr>
-          <tr><td>Battery, guide / lead-through</td><td>[[h_guide]] h / [[h_lead]] h</td><td>–</td><td>≥ 8 h</td></tr>
-          <tr><td>Battery, autowrite, 1 mm of shake</td><td>[[h_aw1]] h</td><td>–</td><td>≥ 8 h (proposed: ≥ 5 h)</td></tr>
-          <tr><td>Skin over the coils, 1 mm of shake, 23 / 30 °C room</td><td>[[web_23]] / [[web_30]] °C ([[web_30_spr]] °C at 30 °C with a 0.5 mm aluminium spreader)</td><td>as base</td><td>≤ 41 °C</td></tr>
+          <tr><td>Battery, steady, 1 mm of shake <a class="susp" href="#known">suspended (see known problems)</a></td><td>[[h_steady1]] h ([[h_steady1_gated]] h with the page sensor off)</td><td>[[h_steady1_ec]] h</td><td>≥ 8 h</td></tr>
+          <tr><td>Battery, guide / lead-through <a class="susp" href="#known">suspended (see known problems)</a></td><td>[[h_guide]] h / [[h_lead]] h</td><td>–</td><td>≥ 8 h</td></tr>
+          <tr><td>Battery, autowrite, 1 mm of shake <a class="susp" href="#known">suspended (see known problems)</a></td><td>[[h_aw1]] h</td><td>–</td><td>≥ 8 h (proposed: ≥ 5 h)</td></tr>
+          <tr><td>Skin over the coils, 1 mm of shake, 23 / 30 °C room <a class="susp" href="#known">suspended (see known problems)</a></td><td>[[web_23]] / [[web_30]] °C ([[web_30_spr]] °C at 30 °C with a 0.5 mm aluminium spreader)</td><td>as base</td><td>≤ 41 °C</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">All budgets: <span class="tag calc"><i></i>Calculation</span> from <code>results/revJ/budgets.json</code> (<code>docs/revJ_design.md</code> §6). The battery range comes from how the page sensor is powered and how much the motor drivers draw (assumptions).</p>
+    <p class="note"><b>The battery and heat figures are suspended.</b> They leave out the static load that holding the ball on the paper puts on the inner pen's coils (1.6&nbsp;W at 50°; see Known problems), so they are far too optimistic. They stay here only as the design's first budget. All budgets: <span class="tag calc"><i></i>Calculation</span> from <code>results/revJ/budgets.json</code> (<code>docs/revJ_design.md</code> §6). The battery range comes from how the page sensor is powered and how much the motor drivers draw (assumptions).</p>
     <h3>Which technologies are needed</h3>
     <div class="tablewrap">
       <table class="tech">
@@ -921,7 +977,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
           <tr><td>Motion sensor (accelerometer + gyroscope)</td><td><span class="pill yes">Yes</span></td><td>Feels the hand's shake; the tracker separates shake from writing</td></tr>
           <tr><td>Page sensor (optical, beside the wheel)</td><td><span class="pill yes">Yes</span></td><td>Where the pen is on the page, 1000 times a second: needed for autowrite, for spotting wheel slip and for the tremor-line detector</td></tr>
           <tr><td>Pen lift (a drum, spring and brake at the pivot)</td><td><span class="pill yes">Yes</span></td><td>Sets a low ink force and lifts the ball 0.5&nbsp;mm between strokes, so strokes do not join</td></tr>
-          <tr><td>Tungsten end-cap</td><td><span class="pill maybe">Detachable</span></td><td>A further [[ec_rng]]&nbsp;% less shake on top of the inner pen, depending on the grip. A fixed weight can make hard cases worse; the moving one rarely does. Whether the motion is worth it depends on how people hold the pen, which is not measured yet <span class="tag sim"><i></i>Simulation · model H1</span></td></tr>
+          <tr><td>Tungsten end-cap</td><td><span class="pill maybe">Detachable</span></td><td>Rev J.1's end-cap ([[ec1_g]]&nbsp;g): a further [[ec1_splits]]&nbsp;% less shake on top of the inner pen at grip splits 0.3 / 0.5 / 0.7; the same mass locked in place gives [[ec1_fixed]]&nbsp;%. It stays optional until it beats a locked weight. Whether the motion is worth it depends on how people hold the pen, which is not measured yet (the first design: [[ec_rng]]&nbsp;%) <span class="tag sim"><i></i>Simulation · model H1</span></td></tr>
           <tr><td>Vibration motor</td><td><span class="pill opt">Optional</span></td><td>Gentle cues: “write bigger”, “check this word”</td></tr>
           <tr><td>AI in the phone app</td><td><span class="pill yes">Yes</span></td><td>Reads your writing, keeps a labelled clean copy, spelling help, letter shapes in your own style for autowrite</td></tr>
           <tr><td>Desk guidance board</td><td><span class="pill opt">Not in Rev J</span></td><td>The heel wheel takes over its job. Its magnet was removed from the pen</td></tr>
@@ -937,30 +993,30 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <article class="mode" data-tip="on" data-heel="part" data-tail="on">
         <h3>Steady</h3>
         <svg class="mini" viewBox="0 0 260 70" role="img" aria-label="Tip on, heel free, tail on"></svg>
-        <dl><dt class="c-tip">Tip</dt><dd>Cancels the shake (the gated tracker)</dd><dt>Heel</dt><dd>Rolls freely, or brakes along the path</dd><dt>Tail</dt><dd>The weight pushes against the shake</dd></dl>
+        <dl><dt class="c-tip">Tip</dt><dd>Cancels the shake (the gated tracker)</dd><dt>Heel</dt><dd>Retracted, off the paper</dd><dt>Tail</dt><dd>The weight pushes against the shake (optional)</dd></dl>
         <p class="who"><b>Who moves the pen</b>You.</p>
-        <p class="bat">Battery [[h_steady1]]&nbsp;h with 1&nbsp;mm of shake ([[h_steady1_gated]]&nbsp;h with the page sensor off; [[h_steady0]]&nbsp;h without shake) <span class="tag calc"><i></i>Calculation</span></p>
+        <p class="bat">Battery [[h_steady1]]&nbsp;h with 1&nbsp;mm of shake ([[h_steady1_gated]]&nbsp;h with the page sensor off; [[h_steady0]]&nbsp;h without shake) <span class="tag calc"><i></i>Calculation</span> <a class="susp" href="#known">suspended (see known problems)</a></p>
       </article>
       <article class="mode" data-tip="part" data-heel="on" data-tail="off">
         <h3>Guide <small class="note">practice, tracing, big writing</small></h3>
         <svg class="mini" viewBox="0 0 260 70" role="img" aria-label="Tip partly on, heel steering, tail off"></svg>
         <dl><dt>Tip</dt><dd>A partial nudge toward the letter, fading across sessions</dd><dt>Heel</dt><dd>Steer only: keeps you on the path</dd><dt>Tail</dt><dd>Off, or short cues in pauses</dd></dl>
         <p class="who"><b>Who moves the pen</b>You.</p>
-        <p class="bat">Battery [[h_guide]]&nbsp;h <span class="tag calc"><i></i>Calculation</span></p>
+        <p class="bat">Battery [[h_guide]]&nbsp;h <span class="tag calc"><i></i>Calculation</span> <a class="susp" href="#known">suspended (see known problems)</a></p>
       </article>
       <article class="mode" data-tip="part" data-heel="drive" data-tail="off">
         <h3>Lead-through <span class="pill you">you turn it on</span></h3>
         <svg class="mini" viewBox="0 0 260 70" role="img" aria-label="Tip adds detail, heel wheel driven, tail off"></svg>
         <dl><dt>Tip</dt><dd>Adds the detail</dd><dt>Heel</dt><dd>Driven: leads a relaxed hand along the letter</dd><dt>Tail</dt><dd>Off</dd></dl>
         <p class="who"><b>Who moves the pen</b>The pen leads. You can always resist or lift the pen.</p>
-        <p class="bat">Battery [[h_lead]]&nbsp;h <span class="tag calc"><i></i>Calculation</span></p>
+        <p class="bat">Battery [[h_lead]]&nbsp;h <span class="tag calc"><i></i>Calculation</span> <a class="susp" href="#known">suspended (see known problems)</a></p>
       </article>
       <article class="mode" data-tip="on" data-heel="part" data-tail="off">
         <h3>Autowrite <span class="pill you">you turn it on</span></h3>
         <svg class="mini" viewBox="0 0 260 70" role="img" aria-label="Tip draws the letters, heel steers, tail off"></svg>
         <dl><dt>Tip</dt><dd>Draws the letters of a known text within ±[[travel]]&nbsp;mm</dd><dt>Heel</dt><dd>Steer only, or leads the sweep</dd><dt>Tail</dt><dd>Off</dd></dl>
         <p class="who"><b>Who moves the pen</b>You sweep; the pen writes. It waits when you slow down.</p>
-        <p class="bat">Battery [[h_aw1]]&nbsp;h with 1&nbsp;mm of shake ([[h_aw0]]&nbsp;h without) <span class="tag calc"><i></i>Calculation</span></p>
+        <p class="bat">Battery [[h_aw1]]&nbsp;h with 1&nbsp;mm of shake ([[h_aw0]]&nbsp;h without) <span class="tag calc"><i></i>Calculation</span> <a class="susp" href="#known">suspended (see known problems)</a></p>
       </article>
       <article class="mode" data-tip="off" data-heel="off" data-tail="off" data-rec="1">
         <h3>Capture</h3>
@@ -1162,13 +1218,13 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
           <tr><td>Essential tremor (shaky writing)<br><span class="pill prop">Proposed</span></td><td>Tip and tail</td><td>The inner pen moves against the shake; the gated tracker listens harder while a shake is present. The end-cap takes away a little more.</td>
             <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1, H1</span><span class="tag lit"><i></i>Literature · ACT-16</span></span><span class="note">Ink [[none_um]] → [[gated_um]]&nbsp;µm in simulation. A handheld spoon that moves against the shake cut spoon tremor by about 73&nbsp;%. A pen has not been tested.</span></td></tr>
           <tr><td>Parkinson's (small, shrinking writing)<br><span class="pill prop">Proposed</span></td><td>Heel, and cues</td><td>The wheel steers along big loops, so they keep their size; a buzz when letters shrink; lined paper</td>
-            <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="tag lit"><i></i>Literature · PDT-16, PDT-19</span></span><span class="note">Loops kept at 0.99 of the target height in simulation. “Write big” cues made letters bigger in small studies.</span></td></tr>
+            <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="tag lit"><i></i>Literature · PDT-16, PDT-19</span></span><span class="note">With the wheel steering, the tallest loop reached [[loop_tall_wheel]] of the target height and the last [[loop_last_wheel]] ([[loop_tall_none]] and [[loop_last_none]] with nothing on); all in simulation. The wheel is retracted unless guidance is on. “Write big” cues made letters bigger in small studies.</span></td></tr>
           <tr><td>Poor handwriting / dysgraphia<br><span class="pill prop">Proposed</span></td><td>Heel and tip</td><td>Tracing with the wheel steering and the inner pen correcting; lead-through for learners who cannot form a letter yet; guidance that fades</td>
             <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="tag lit"><i></i>Literature · HAP-10</span></span><span class="note">Closer to the template is not easier to read. Guidance made writing smoother, but better letter shapes were not shown.</span></td></tr>
           <tr><td>Dyslexia (spelling)<br><span class="pill prop">Proposed</span></td><td>The app</td><td>Spelling help and a labelled clean copy; guidance never changes a letter you meant</td>
             <td><span class="tags"><span class="tag asm"><i></i>Not yet studied</span></span><span class="note">No study of this pen with dyslexic writers yet.</span></td></tr>
           <tr><td>Severe tremor, or not able to write at all<br><span class="pill prop">Proposed</span></td><td>Autowrite, lead-through, clean copy</td><td>You sweep and the pen writes a text you chose; or the wheel leads a relaxed hand; or the app keeps a clean copy</td>
-            <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1, HW1-D</span></span><span class="note">Autowrite read [[aw_letters]]&nbsp;% of letters with up to 1&nbsp;mm of shake. Whether people want a pen that writes for them is not known.</span></td></tr>
+            <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1, HW1-D</span></span><span class="note">Autowrite read [[aw_letters]]&nbsp;% of letters with up to 1&nbsp;mm of shake in simulation; as a hardware claim it is <a class="susp" href="#known">suspended (see known problems)</a>, because the current inner pen would overheat. Whether people want a pen that writes for them is not known.</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1181,6 +1237,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <div class="card">
         <h3>What it cannot do</h3>
         <ul>
+          <li>The current inner pen cannot hold the ball on the paper for long: the coils would overheat within about a minute (see Known problems). A load-balanced nib is being designed. <span class="tag calc"><i></i>Calculation</span> <span class="tag sim"><i></i>Simulation · sim2</span></li>
           <li>It cannot write by inertia. No weight or gyroscope that fits a pen can move a letter. <span class="tag calc"><i></i>Calculation</span> <span class="tag sim"><i></i>Simulation · model H1</span></li>
           <li>It cannot write against you: a writer who resists always wins. <span class="tag sim"><i></i>Simulation · model HW1-D</span></li>
           <li>It never writes text you did not choose.</li>
@@ -1193,10 +1250,11 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <div class="card">
         <h3>What to build and test first</h3>
         <ol>
+          <li>A load-balanced nib (study B) that removes the static load before another actuator is chosen; then the bench tests of the independent review's gates G1–G5 (study M). <span class="tag prop"><i></i>Proposed design · review response §3–§4</span></li>
           <li>Magnet test pieces, to measure the force on the inner pen (EXP-N01). A newer model gives 0.19&nbsp;N/√W for Rev H, not 0.47. <span class="tag calc"><i></i>Calculation</span></li>
           <li>The wheel's grip on six kinds of paper (EXP-D01), and the heel on a bench with its force limit and release (EXP-D04, D07).</li>
           <li>Recordings of real writing with tremor (EXP-H01); then the tremor detector and the gated tracker offline (EXP-L01, L02), and the learned estimator (EXP-L04).</li>
-          <li>How people split their grip on the 24&nbsp;mm handle, with and without the end-cap (EXP-I01, K08). This decides whether the moving weight beats a plain weight.</li>
+          <li>How people split their grip on the 24&nbsp;mm handle, with and without the end-cap (EXP-I01, K08), and the end-cap against the same weight locked in place (EXP-J16, gate G5). This decides whether the moving weight beats a plain weight.</li>
           <li>Spring fatigue and the pen lift (EXP-N05, N06).</li>
           <li>People: guidance and lead-through (EXP-D08), autowrite (EXP-N09), the end-cap and its cues (EXP-K03, K05). Whether people accept the pen is the question no simulation answers.</li>
         </ol>
@@ -1204,10 +1262,11 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     </div>
     <h3>Problems the integration found</h3>
     <div class="probs">
-      <div class="prob"><h4>Battery</h4><p>The page sensor and the electronics take [[base_mw]]&nbsp;mW before anything moves. With 1&nbsp;mm of shake the pen lasts [[h_steady1]]&nbsp;h ([[h_steady1_gated]]&nbsp;h if the page sensor is switched off while only the shake is corrected); lead-through [[h_lead]]&nbsp;h; autowrite [[h_aw1]]&nbsp;h; with the end-cap [[h_steady1_ec]]&nbsp;h. The target is 8&nbsp;h.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
-      <div class="prob"><h4>Weight with the end-cap</h4><p>[[mass_ec]]&nbsp;g against a 120&nbsp;g limit, so the end-cap stays a module you can take off. The base pen is [[mass]]&nbsp;g.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
-      <div class="prob"><h4>Load on the pivot</h4><p>The inner pen's magnets pull the pivot along the pen with up to [[pull]]&nbsp;N, above the 14.5&nbsp;N at which its thin strips buckle. The strips must work in tension, or a thrust pivot is added.</p><div class="tags"><span class="tag calc"><i></i>Calculation: an upper bound</span></div></div>
-      <div class="prob"><h4>Warmth</h4><p>With 1&nbsp;mm of shake, the skin over the coils reaches [[web_23]]&nbsp;°C in a 23&nbsp;°C room and [[web_30]]&nbsp;°C in a 30&nbsp;°C room. A 0.5&nbsp;mm aluminium spreader brings the hot room down to [[web_30_spr]]&nbsp;°C.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
+      <div class="prob"><h4>Holding the ball on the paper</h4><p>The refill spring presses the ball along the tilted pen, and the paper pushes back partly sideways. The inner pen's short magnet arm turns that into [[kp_p50]]&nbsp;W of coil heat at 50° and [[kp_p35]]&nbsp;W at 35°, all the time the ball touches the paper. It was left out of the battery and heat budgets below. See Known problems.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag sim"><i></i>Simulation · sim2</span></div></div>
+      <div class="prob"><h4>Battery <a class="susp" href="#known">suspended (see known problems)</a></h4><p>The page sensor and the electronics take [[base_mw]]&nbsp;mW before anything moves. With 1&nbsp;mm of shake the pen lasts [[h_steady1]]&nbsp;h ([[h_steady1_gated]]&nbsp;h if the page sensor is switched off while only the shake is corrected); lead-through [[h_lead]]&nbsp;h; autowrite [[h_aw1]]&nbsp;h; with the end-cap [[h_steady1_ec]]&nbsp;h. The target is 8&nbsp;h.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
+      <div class="prob"><h4>Weight with the end-cap</h4><p>[[mass_ec]]&nbsp;g against a 120&nbsp;g limit, so the end-cap stays a module you can take off. The base pen is [[mass]]&nbsp;g. Rev J.1, with its lighter [[ec1_g]]&nbsp;g end-cap, weighs [[ec1_pen]]&nbsp;g.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
+      <div class="prob"><h4>Load on the pivot</h4><p>The inner pen's magnets pull the pivot along the pen with up to [[pull]]&nbsp;N, above the 14.5&nbsp;N at which its thin strips buckle. The strips must work in tension, or a thrust pivot is added. Rev J.1 found that tension does not work and keeps thicker strips in compression instead (buckling at 55&nbsp;N; a calculation only).</p><div class="tags"><span class="tag calc"><i></i>Calculation: an upper bound</span></div></div>
+      <div class="prob"><h4>Warmth <a class="susp" href="#known">suspended (see known problems)</a></h4><p>With 1&nbsp;mm of shake, the skin over the coils reaches [[web_23]]&nbsp;°C in a 23&nbsp;°C room and [[web_30]]&nbsp;°C in a 30&nbsp;°C room. A 0.5&nbsp;mm aluminium spreader brings the hot room down to [[web_30_spr]]&nbsp;°C.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
       <div class="prob"><h4>Seeing the ink</h4><p>For an assumed eye position, the pen's own front hides the ink near the ball at 50–75° of tilt, as it already did in Rev H. Opening the top of the sleeve helps at 35°. People move their heads, so this needs a test with writers (EXP-J08).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag asm"><i></i>Assumption: eye position</span></div></div>
       <div class="prob"><h4>Magnets near the wheel motors</h4><p>The magnet cap on the inner pen (the nose's magnet cap) could put a detent of up to 0.16&nbsp;N on the heel wheel through the rotor magnets of the heel motors (a free-space upper bound). A soft-iron cup may be needed (EXP-J02).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
       <div class="prob"><h4>Page sensor and pen roll</h4><p>The page sensor's lens stays in its working band only while the pen is rolled less than about 1.5°. This limits autowrite and slip detection until a lens with more depth is found (EXP-J04).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
@@ -1215,6 +1274,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <div class="prob"><h4>Prior art</h4><p>A pen with an actuated nib that writes stored characters with a lift is patented (PAT-01). A freedom-to-operate review is needed before building autowrite with a pen lift.</p><div class="tags"><span class="tag lit"><i></i>Literature · PAT-01</span></div></div>
     </div>
     <div class="callout"><b>How far to trust the simulations</b>
+      <p>An independent review (29 September 2026) checked the design and the simulations. It confirmed the static load on the inner pen and the heel wheel's effect on clean writing (see Known problems). Its response and the claims register are in <code>docs/reviews/</code> and <code>docs/claims_register.md</code>.</p>
       <p>The newer simulator (MuJoCo, “sim2”) was checked against the earlier hand–pen model on 56 test cases: the uncorrected ink error agreed within 3.1&nbsp;% in all 56, the perfect-knowledge ratio within ±0.03 in 52 of 56, and the tracker's ratio within ±0.05 in 50 of 56 (the misses come from the Rev H tracker's frequency lock, not the physics). <span class="tag sim"><i></i>Simulation · sim2</span></p>
       <p>The synthetic writers write at about half adult speed and have about ten times the measured fast (8–12 per second) movement, which makes shake look harder to separate than it probably is. Until bench tests calibrate the simulator and a validation test passes, its results rank designs; they are not evidence of benefit. <span class="tag lit"><i></i>Literature · CON-20, CON-25</span></p>
     </div>
@@ -1319,7 +1379,7 @@ const GROUPS = {
   moving_nose:{name:"Inner pen (moving nose)", tok:"--g-nose", desc:"The inner pen: the refill's carrier and the arm behind it, which swing together on the pivot 76.5 mm behind the ball, so the ball moves up to about 6 mm in every direction. Coils in the handle push the magnet cap at its back end."},
   refill:{name:"Ink refill", tok:"--g-refill", desc:"A standard replaceable refill. It swings with the inner pen and slides in it, so the ball stays on the paper."},
   skid:{name:"Skid ring", tok:"--g-skid", desc:"A C-shaped ring at the front rests on the paper and carries your writing pressure. It is open on top, so you can see the ink; the heel wheel reaches the paper through a slot at the bottom."},
-  drive:{name:"Heel wheel and its drive", tok:"--g-drive", desc:"A 2 mm wheel under the front ring grips the paper. Two micromotors under the battery steer it and drive it through two thin shafts. By default it only steers; in lead-through and autowrite it can drive."},
+  drive:{name:"Heel wheel and its drive", tok:"--g-drive", desc:"A 2 mm wheel under the front ring grips the paper. Two micromotors under the battery steer it and drive it through two thin shafts. It is retracted by default (in the physics simulation it moved clean writing by 0.4 mm); when you turn guidance on it steers, and in lead-through and autowrite it can drive."},
   grip:{name:"Finger sleeve (fixed)", tok:"--g-grip", desc:"Soft sleeve where the thumb, index and middle finger rest. It does not move. Its first 10 mm are open on top, like the ring, so the ink stays visible."},
   mechanism:{name:"Pivot and pen lift", tok:"--g-pivot", desc:"A spring-steel pivot lets the inner pen swing in two directions without friction. A drum at the pivot sets the ink force and lifts the ball 0.5 mm between strokes."},
   actuator:{name:"Coils and magnets", tok:"--g-act", desc:"A spherical coil plate in the handle pushes a cap of magnets on the back of the inner pen. The gap stays the same at every tilt."},
@@ -1327,7 +1387,7 @@ const GROUPS = {
   electronics:{name:"Electronics", tok:"--g-elec", desc:"The main board along the top of the handle, with Bluetooth, the coil and motor drivers and the charger; and the charging port."},
   power:{name:"Battery", tok:"--g-power", desc:"A rechargeable 750 mAh lithium-ion cell, right behind the coil plate, lifted 3 mm so the two motors fit under it."},
   haptic:{name:"Vibration motor (optional)", tok:"--g-other", desc:"Gives gentle buzz cues."},
-  inertial:{name:"End-cap (detachable)", tok:"--g-inertial", desc:"A 30.4 g tungsten weight on springs, pushed up to ±4 mm sideways by four coils. Its reaction steadies the pen against the shake, and it can give short cues in pauses. It screws on in place of the rear cap."},
+  inertial:{name:"End-cap (detachable)", tok:"--g-inertial", desc:"A tungsten weight on springs, pushed up to ±4 mm sideways by coils. Its reaction steadies the pen against the shake, and it can give short cues in pauses. It screws on in place of the rear cap. Shown: the first design (30.4 g weight). Rev J.1's lighter end-cap has a 17.3 g weight; it stays optional until it beats the same weight locked in place."},
   magnet:{name:"Board magnet", tok:"--g-act", desc:"Only for the desk guidance board (not in Rev J)."},
   structure:{name:"Handle shell", tok:"--g-shell", desc:"The body of the pen that you hold."},
 };
@@ -1682,18 +1742,19 @@ function fitCamera(v, center, radius, dir){
 
 /* ================================================================================================ HERO */
 function actText(key, F){
-  const tip=(F&&F.tip)||{}, pen=(F&&F.pen)||{}, ec=(F&&F.endcap)||{}, d=(F&&F.drive)||{};
+  const tip=(F&&F.tip)||{}, pen=(F&&F.pen)||{}, d=(F&&F.drive)||{};
   const t055=(d.traction_055||[]).slice().sort((a,b)=>a.mu-b.mu);
   const tr= t055.length? `${fmt(t055[0].cap_N,1)}–${fmt(t055[t055.length-1].cap_N,1)} N` : "about 0.3–0.6 N";
-  const mv=ec.moving||[]; const ecr= mv.length===3 && mv.every(x=>x!=null)? `${pc(Math.min(...mv))}–${pc(Math.max(...mv))} %` : "8–20 %";
   if(key==="tip") return {title:"1 · Tip: the inner pen", group:"moving_nose",
     text:`The whole inner pen (refill, carrier and arm) swings on a pivot ${fmt(tip.pivot_mm,1)} mm behind the ball, so the ball moves up to ${fmt(tip.travel_guaranteed_mm,1)} mm in every direction (${fmt(tip.travel_nom_mm,2)} mm at 50°). Coils in the handle push the magnets at its back end. It cancels tremor up to about 2 mm, and in autowrite it draws letters of a known text by itself.`,
     tags:["CALCULATION", "SIMULATION (model HW1)"]};
   if(key==="heel") return {title:"2 · Heel: the wheel that grips the paper", group:"drive",
-    text:`A 2 mm wheel in the slot under the front ring presses on the paper with 0.55 N. Gripping the paper, it can push the pen and the hand with ${tr}. By default it only steers; in lead-through and autowrite it can also drive. Lift the pen and it has nothing to push against.`,
+    text:`A 2 mm wheel in the slot under the front ring presses on the paper with 0.55 N. Gripping the paper, it can push the pen and the hand with ${tr}. It is retracted by default, because in the physics simulation it moved clean writing; when you turn guidance on it steers, and in lead-through and autowrite it can also drive. Lift the pen and it has nothing to push against.`,
     tags:["CALCULATION", "ASSUMPTION: tyre friction 0.6–1.2", "PROPOSED DESIGN"]};
+  const j1=(F&&F.endcap_j1)||null, m1=j1&&j1.moving||[], ok1=m1.length===3&&m1.every(x=>x!=null);
   return {title:"3 · Tail: the detachable end-cap", group:"inertial",
-    text:`A 30.4 g tungsten weight, pushed up to ±4 mm sideways by coils. On top of the inner pen it removes a further ${ecr} of the ink error for fast shakes, depending on the grip. It cannot steer letters. It adds ${fmt(pen.endcap_g,1)} g and makes the pen ${fmt(pen.length_endcap_mm,1)} mm long.`,
+    text: ok1 ? `Rev J.1's lighter end-cap (${fmt(j1.endcap_g,1)} g): a ${fmt(j1.slug_g,1)} g tungsten weight, pushed up to ±4 mm sideways by coils. On top of the inner pen it removes a further ${pc(Math.min(...m1))}–${pc(Math.max(...m1))} % of the ink error for fast shakes, depending on the grip; the same weight locked in place did better for one of three grips, so it stays optional. It cannot steer letters. The model shows the first, heavier design (${fmt(pen.endcap_g,1)} g).`
+              : `A tungsten weight, pushed up to ±4 mm sideways by coils. On top of the inner pen it removes a little more of the ink error for fast shakes, depending on the grip (numbers in Details). It cannot steer letters.`,
     tags:["SIMULATION (model H1)", "PROPOSED DESIGN"]};
 }
 function initHero(lay, F){
@@ -2753,19 +2814,19 @@ function initCutaway(lay, F, samples){
       speed:"true size, half speed, from simulation data",
       tags:["SIMULATION (model HW1)", "ILLUSTRATION (the drawing)", "PROPOSED DESIGN"]},
     heel:{title:"Heel wheel",
-      text:"A 2 mm wheel under the front ring grips the paper. Two tiny motors in the handle turn it through two thin shafts: one steers it, one drives it. The wheel turns to follow the path of the letter; if your hand drifts sideways, the paper pushes back on the wheel and holds the whole pen on the path. In lead-through, a mode you turn on, the wheel is also driven, and the paper pushes the whole pen and your hand along.",
+      text:"A 2 mm wheel under the front ring grips the paper. Two tiny motors in the handle turn it through two thin shafts: one steers it, one drives it. It stays retracted unless you turn guidance on, because in the physics simulation it moved clean writing. Lowered, it turns to follow the path of the letter; if your hand drifts sideways, the paper pushes back on the wheel and holds the whole pen on the path. In lead-through, a mode you turn on, the wheel is also driven, and the paper pushes the whole pen and your hand along.",
       honest:"The push is gentle: at most about 0.3–0.6 N, about the weight of an egg, because it relies on the grip of the paper. Lift the pen and it stops.",
       speed:"drawing of big practice loops, half speed; wheel drawn 2× bigger in the view from above",
       tags:["ILLUSTRATION", "CALCULATION: 0.3–0.6 N", "ASSUMPTION: tyre friction 0.6–1.2", "PROPOSED DESIGN"]},
     tail:{title:"Tail weight",
-      text:"Coils in the end-cap push a 30 g tungsten weight from side to side, the other way to the shake. Its push-back steadies the whole pen, on top of what the inner pen does.",
-      honest:"The effect is modest: a further 8–20 % less shake in the ink in the simulations, depending on how you hold the pen. At writing speed its push is far too weak to move letters (at most about 0.2 mm).",
+      text:"Coils in the end-cap push a tungsten weight from side to side, the other way to the shake. Its push-back steadies the whole pen, on top of what the inner pen does. The drawing shows the first end-cap design.",
+      honest:"The effect is modest: a further 6–18 % less shake in the ink in the simulations, depending on how you hold the pen. A plain weight of the same mass, locked in place, did better for one of three grips, so the tail stays optional until it beats a locked weight. At writing speed its push is far too weak to move letters (at most about 0.2 mm).",
       speed:`a ${CUTCFG.shakeMM} mm shake, ${CUTCFG.shakeHz} times a second, drawn ${CUTCFG.mag}× bigger and ${Math.round(CUTCFG.shakeHz/CUTCFG.showHz)}× slower`,
-      tags:["ILLUSTRATION", "SIMULATION (model H1, 8–20 % less shake)", "CALCULATION: at most about 0.2 mm at writing speed", "PROPOSED DESIGN"]}
+      tags:["ILLUSTRATION (the first end-cap design)", "SIMULATION (model H1, Rev J.1's end-cap: 6–18 % less shake)", "CALCULATION: at most about 0.2 mm at writing speed", "PROPOSED DESIGN"]}
   };
-  if(F && F.endcap && Array.isArray(F.endcap.moving) && F.endcap.moving.every(x=>x!=null)){
-    const mv=F.endcap.moving, r=`${pc(Math.min(...mv))}–${pc(Math.max(...mv))} %`;
-    TXT.tail.honest=TXT.tail.honest.replace("8–20 %", r); TXT.tail.tags[1]=`SIMULATION (model H1, ${r} less shake)`; }
+  if(F && F.endcap_j1 && Array.isArray(F.endcap_j1.moving) && F.endcap_j1.moving.every(x=>x!=null)){
+    const mv=F.endcap_j1.moving, r=`${pc(Math.min(...mv))}–${pc(Math.max(...mv))} %`;
+    TXT.tail.honest=TXT.tail.honest.replace("6–18 %", r); TXT.tail.tags[1]=`SIMULATION (model H1, Rev J.1's end-cap: ${r} less shake)`; }
   if(F && F.ai2 && F.ai2.none && F.ai2.gated && F.ai2.none.ink_um>0){
     const k=F.ai2.gated.ink_um/F.ai2.none.ink_um; const word= k>0.4 && k<0.6 ? "about half" : `${pc(1-k)} %`;
     TXT.shake.honest=`This drawing is the ideal case. In the simulations the pen took away ${word} of the wobble in the ink, not all of it.`;

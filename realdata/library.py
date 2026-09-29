@@ -3,7 +3,7 @@
     from realdata import library as RL
     cls = RL.classes()                                   # severity classes, mm at the pen tip (DATA uci_spiral)
     tr = RL.tremor("moderate", seed=3, kind="PD", split="test", duration=20.0)     # real tremor, scaled to the class
-    wr = RL.writing("test", seed=3)                      # real words with real timing (aiguide Written format)
+    wr = RL.writing("test", seed=3)                      # real words, real timing, ballpoint on paper (UNIPEN hpb2)
     scn = RL.hw1_scenario(wr, tr)                        # model HW1 scenario (handwriting.plant.Scenario)
     s2 = RL.sim2_scenario(wr, tr)                        # sim2 / H1 scenario (sim.pensim.scenarios.Scenario)
     rd = wr.reader                                       # the writer-adapted reader (handwriting.metrics compatible)
@@ -153,11 +153,23 @@ def synthetic_like(draw: TremorDraw, seed: int = 0) -> TremorDraw:
 
 
 # ------------------------------------------------------------------ writing
-def writing(split: str = "test", seed: int = 0, source: str = "brush", n_words: int = 10, dt: float = WL.SIM_DT,
+def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words: int = 10, dt: float = WL.SIM_DT,
             writer: Optional[str] = None, **kw) -> WL.RealWritten:
-    """Real handwriting with timing in the aiguide Written format (with .reader, the writer-adapted reader)."""
+    """Real handwriting with timing in the aiguide Written format.
+    source 'unipen' (default): ballpoint on paper, HP Labs 1992 (UNIPEN hpp/hpb2), writer- and text-disjoint splits;
+           writer i of the split = seed % n_writers, a different choice of lines per seed
+    source 'chartraj': one writer's recorded letters composed into a sentence (CC BY; for committed pictures)
+    source 'brush': BRUSH words (timing artefact at 8-12 Hz: NOT for tracker evaluation; kept for the diagnostic)"""
     if source == "chartraj":
         return WL.ct_note(seed=seed, split=split, dt=dt, **kw)
+    if source == "unipen":
+        idx = WL.unipen_index()
+        ws = WL.unipen_writers(split, idx)
+        w = writer or ws[seed % len(ws)]
+        out = WL.unipen_note(w, seed=seed, n_words=n_words, dt=dt, index=idx, **kw)
+        if out is None:
+            raise ValueError(f"UNIPEN writer {w} has too few lines in its split")
+        return out
     stats = WL.brush_writer_stats()
     ws = WL.brush_writers(split, stats)
     w = writer or ws[seed % len(ws)]
@@ -172,13 +184,17 @@ class RealWriter:
     For BRUSH the text is what the writer recorded (the argument is ignored); for chartraj any text made of the 20
     recorded letters can be composed."""
 
-    def __init__(self, key: str = "brush/0", split: str = "test"):
+    def __init__(self, key: str = "unipen/0", split: str = "test"):
         self.source, self.id = key.split("/", 1)
         self.split = split
 
     def write(self, text: Optional[str] = None, *, dt: float = WL.SIM_DT, seed: int = 0, **kw):
         if self.source == "chartraj":
             return WL.ct_note(text or WL.CT_SENTENCE, seed=seed, split=self.split, dt=dt)
+        if self.source == "unipen":
+            ws = WL.unipen_writers(self.split)
+            w = ws[int(self.id) % len(ws)] if self.id.isdigit() else self.id
+            return writing(self.split, seed=seed, source="unipen", dt=dt, writer=w, **kw)
         return writing(self.split, seed=seed, source="brush", dt=dt, writer=self.id)
 
 

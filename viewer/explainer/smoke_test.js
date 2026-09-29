@@ -20,7 +20,11 @@
    the part-group legend and part selection, the three numbered pins, the hand shake (the handle moves, the ball stays),
    take apart, see inside, the end-cap toggle, the tip pad, the cameras.  "How much better?": one number per row, an
    evidence label per row, a picture pair where the study saved writing; the honest tracing row (letters read fall).
-   "How sure are we?".  "Details": every block is closed at first; opening them draws the physics chart and the mode
+   "How sure are we?".  "Known problems (being fixed)": right after it, four lines (holding power, heel wheel, page
+   sensor, made-up data), each with its evidence label, and the side-load figure (spring, paper, sideways part, magnets'
+   force, the two arms, the lever equation; every label inside the drawing).  Every battery-hours and heat figure is
+   marked "suspended (see known problems)".  The tail weight is Rev J.1's lighter end-cap in the simple view, the
+   first design's 8–20 % only in Details.  "Details": every block is closed at first; opening them draws the physics chart and the mode
    pictures, builds the six scenes (each plays and draws ink), the results table and the strips (which magnify), and
    shows the corrected limits text.
    Screenshots of every section, every cut-away mode, every opened Details block and a dark-theme set go to --shots.
@@ -59,7 +63,7 @@ const URL = arg("--url", process.env.EXPLAINER_URL || "http://127.0.0.1:8791/ind
 const SHOTS = path.resolve(arg("--shots", process.env.EXPLAINER_SHOTS || path.join(require("os").tmpdir(), "explainer_shots")));
 fs.mkdirSync(SHOTS, { recursive: true });
 const IGNORE = /fonts\.(googleapis|gstatic)\.com|ERR_CERT_AUTHORITY_INVALID|net::ERR_CERT/;
-const SECTIONS = [["top", "header.top"], ["moves", "#moves"], ["see", "#see"], ["pen", "#pen"], ["better", "#better"], ["sure", "#sure"], ["details", "#details"]];
+const SECTIONS = [["top", "header.top"], ["moves", "#moves"], ["see", "#see"], ["pen", "#pen"], ["better", "#better"], ["sure", "#sure"], ["known", "#known"], ["details", "#details"]];
 const DETAILS = ["d-physics", "d-parts", "d-modes", "d-results", "d-scenes", "d-grip", "d-who", "d-limits", "d-changes", "d-data"];
 const results = [];
 function check(name, ok, detail) { results.push({ name, ok: !!ok, detail: detail || "" }); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${detail ? "  (" + detail + ")" : ""}`); }
@@ -91,15 +95,23 @@ async function run(browser, label, viewport) {
 
   /* ---------------- the simple view ---------------- */
   const simple = await page.evaluate(() => {
+    /* micrometres stay out of the simple view, except the page-sensor line of "Known problems" (3 µm against 24–68 µm) */
     const txt = ["#moves", "#see", "#better", "#sure", "header.top"].map(s => (document.querySelector(s) || {}).textContent || "").join(" ");
-    const mechs = [...document.querySelectorAll("#moves .mech")].map(m => ({ key: m.dataset.mech, bold: m.querySelectorAll(".mech-s b").length, tags: m.querySelectorAll(".tag").length, words: (m.querySelector(".mech-s").textContent || "").split(/\s+/).length }));
+    const above = ["header.top", "#moves", "#see", "#pen", "#better", "#sure", "#known"].map(s => (document.querySelector(s) || {}).textContent || "").join(" ");
+    const mechs = [...document.querySelectorAll("#moves .mech")].map(m => ({ key: m.dataset.mech, bold: m.querySelectorAll(".mech-s b").length, tags: m.querySelectorAll(".tag").length,
+      words: (m.querySelector(".mech-s").textContent || "").split(/\s+/).length, sent: (m.querySelector(".mech-s").textContent || "").replace(/\s+/g, " "), note: (m.querySelector(".mech-note") || {}).textContent || "" }));
     const closed = [...document.querySelectorAll("details.det")].map(d => d.open);
-    return { um: /µm/.test(txt), mechs, dets: closed.length, anyOpen: closed.some(x => x) }; });
+    return { um: /µm/.test(txt), mechs, dets: closed.length, anyOpen: closed.some(x => x), first820: /8–20\s*%|8 \/ 18 \/ 20/.test(above) }; });
   check(`${label}: three mechanism sentences (inner pen, heel wheel, tail weight), each with its evidence labels`,
     simple.mechs.length === 3 && ["tip", "heel", "tail"].every(k => simple.mechs.some(m => m.key === k && m.bold >= 2 && m.tags >= 1)),
     simple.mechs.map(m => `${m.key}: ${m.words} words, ${m.tags} labels`).join("; "));
-  check(`${label}: no micrometre numbers in the simple view; ${DETAILS.length} Details blocks, all closed`, !simple.um && simple.dets === DETAILS.length && !simple.anyOpen,
+  check(`${label}: no micrometre numbers in the simple view (outside Known problems); ${DETAILS.length} Details blocks, all closed`, !simple.um && simple.dets === DETAILS.length && !simple.anyOpen,
     `µm above Details: ${simple.um}; ${simple.dets} blocks`);
+  const mTip = simple.mechs.find(m => m.key === "tip") || {}, mHeel = simple.mechs.find(m => m.key === "heel") || {}, mTail = simple.mechs.find(m => m.key === "tail") || {};
+  check(`${label}: mechanisms: the tail is Rev J.1's 17 g weight (6–18 %, optional); the heel wheel is retracted by default; the nib is being redesigned`,
+    /\b17\s*g tungsten weight/.test(mTail.sent) && /6–18\s*%/.test(mTail.sent) && /optional/i.test(mTail.note) && /locked/.test(mTail.note) &&
+    /Retracted by default/.test(mHeel.note) && /redesigned/.test(mTip.note) && !simple.first820,
+    `tail: "${(mTail.sent || "").slice(0, 60)}…"; heel note: "${(mHeel.note || "").slice(0, 40)}…"; first design's 8–20 % above Details: ${simple.first820}`);
   const rows = await page.evaluate(() => [...document.querySelectorAll("#better .brow")].map(r => ({ id: r.dataset.row, nums: r.querySelectorAll(".bnum .bv").length, thumbs: r.querySelectorAll("svg.thumb").length,
     tags: r.querySelectorAll(".bnum .tag").length, val: (r.querySelector(".bnum .bv") || {}).textContent, verdict: (r.querySelector(".verdict") || {}).textContent || "" })));
   check(`${label}: "How much better?" has one number and an evidence label per row`, rows.length >= 6 && rows.every(r => r.nums === 1 && r.tags >= 1),
@@ -110,6 +122,65 @@ async function run(browser, label, viewport) {
   check(`${label}: the tracing row says the letters get harder to read (92 → 79 %)`, trc && /92\D+79/.test(trc.val) && /Worse/.test(trc.verdict), trc ? `${trc.val.trim()} · ${trc.verdict}` : "missing");
   const sure = await page.$eval("#sure", el => el.textContent).catch(() => "");
   check(`${label}: "How sure are we?" says simulation only, not tested on a prototype or people`, /simulation/i.test(sure) && /prototype/.test(sure) && /people/.test(sure), sure.replace(/\s+/g, " ").trim().slice(0, 90));
+  const tail = rows.find(r => r.id === "tail");
+  check(`${label}: the tail row is Rev J.1's lighter end-cap (6–18 % less), optional until it beats a locked weight`,
+    tail && /6–18\s*%\s*less/.test(tail.val) && /locked/.test(tail.verdict) && /optional/.test(tail.verdict), tail ? `${tail.val.replace(/\s+/g, " ").trim()} · ${tail.verdict.slice(0, 80)}` : "missing");
+
+  /* ---------------- known problems (being fixed), with the side-load figure ---------------- */
+  const kp = await page.evaluate(() => {
+    const k = document.getElementById("known"), sure = document.getElementById("sure");
+    let next = sure ? sure.nextElementSibling : null;
+    while (next && next.tagName !== "SECTION") next = next.nextElementSibling;
+    const items = k ? [...k.querySelectorAll("li[data-kp]")].map(li => ({ key: li.dataset.kp, tags: [...li.querySelectorAll(".tag")].map(t => t.textContent.trim()), text: li.textContent.replace(/\s+/g, " ") })) : [];
+    const svg = document.getElementById("sideload"), fig = k && k.querySelector("figure.slfig");
+    const texts = svg ? [...svg.querySelectorAll("text")].map(t => t.textContent.replace(/\s+/g, " ")).join(" | ") : "";
+    const arrows = svg ? [...svg.querySelectorAll("line.sl-ar")].map(a => [...a.classList].find(c => c !== "sl-ar")) : [];
+    let outside = [];
+    if (svg) { const vb = svg.viewBox.baseVal;
+      for (const t of svg.querySelectorAll("text")) { const b = t.getBBox();
+        if (b.x < vb.x - 0.5 || b.y < vb.y - 0.5 || b.x + b.width > vb.x + vb.width + 0.5 || b.y + b.height > vb.y + vb.height + 0.5) outside.push(t.textContent.trim()); } }
+    const r = svg ? svg.getBoundingClientRect() : { width: 0, height: 0 };
+    return { afterSure: !!next && next.id === "known", inDetails: !!(k && k.closest("details")), heading: ((k && k.querySelector("h2")) || {}).textContent || "",
+      items, texts, arrows, outside, w: r.width, h: r.height, eq: ((fig && fig.querySelector(".sl-eq")) || {}).textContent || "",
+      cap: ((fig && fig.querySelector("figcaption")) || {}).textContent || "", figTags: fig ? fig.querySelectorAll(".tag").length : 0,
+      title: svg ? ((svg.querySelector("title") || {}).textContent || "") : "" }; });
+  const it = key => kp.items.find(i => i.key === key) || { text: "", tags: [] };
+  check(`${label}: "Known problems (being fixed)" is in the simple view, right after "How sure are we?", four lines each with its evidence label`,
+    kp.afterSure && !kp.inDetails && /Known problems \(being fixed\)/.test(kp.heading) && kp.items.length === 4 && kp.items.every(i => i.tags.length >= 1),
+    kp.items.map(i => `${i.key}: ${i.tags.join(" + ")}`).join("; "));
+  const kS = it("sideload"), kH = it("heel"), kP = it("sensor"), kD = it("data");
+  check(`${label}: known problems: holding the ball costs 1.6 W at 50° and 4.7 W at 35°, about 7 times; overheats; battery and heat suspended`,
+    /about 7 times harder/.test(kS.text) && /1\.6\s*W at a normal 50°/.test(kS.text) && /4\.7\s*W at 35°/.test(kS.text) && /overheat within about a minute/.test(kS.text) &&
+    /balanced nib/.test(kS.text) && /suspended/.test(kS.text) && kS.tags.some(t => /^Calculation/.test(t)) && kS.tags.some(t => /^Simulation/.test(t)), kS.text.slice(0, 110));
+  check(`${label}: known problems: heel wheel 0.4 mm, retracted; page sensor 3 µm against DeltaPen's 24–68 µm; made-up writers and shakes`,
+    /0\.4\s*mm/.test(kH.text) && /retracted unless the writer turns guidance on/.test(kH.text) && kH.tags.some(t => /^Simulation/.test(t)) &&
+    /3\s*µm/.test(kP.text) && /DeltaPen, 2022/.test(kP.text) && /24–68\s*µm/.test(kP.text) && /unproven/.test(kP.text) && kP.tags.some(t => /^Assumption/.test(t)) && kP.tags.some(t => /^Literature/.test(t)) &&
+    /made up/.test(kD.text) && /Real recordings/.test(kD.text),
+    `${kH.text.slice(0, 50)}… | ${kP.text.slice(0, 60)}… | ${kD.text.slice(0, 40)}…`);
+  check(`${label}: side-load figure: spring along the pen, paper's push, its sideways part, the magnets' force, the two arms and the lever equation`,
+    ["spring", "paper", "side", "mag"].every(a => kp.arrows.includes(a)) &&
+    ["1 · At the ball", "the pen: 0.15 N", "straight up: 0.20 N", "balances the spring", "sideways part:0.126 N", "2 · The inner pen is a lever", "sideways part: 0.126 N",
+     "0.84 N: 6.7 times more", "the ball's arm: 76.5 mm", "the magnets' arm:11.5 mm", "pivot"].every(s => kp.texts.includes(s)) &&
+    /0\.126\s*N × 76\.5\s*mm = 0\.84\s*N × 11\.5\s*mm/.test(kp.eq) && /6\.7 times harder/.test(kp.cap) && /45\s*s/.test(kp.cap) && kp.figTags >= 2 && kp.title.length > 20,
+    `arrows ${kp.arrows.join(", ")}; ${kp.eq.replace(/\s+/g, " ")}`);
+  check(`${label}: side-load figure is readable: every label inside the drawing, drawn at least 300 px wide`, kp.outside.length === 0 && kp.w >= 300,
+    `${kp.w.toFixed(0)} × ${kp.h.toFixed(0)} px${kp.outside.length ? "; outside: " + kp.outside.join(", ") : ""}`);
+  const susp = await page.evaluate(() => {
+    const marks = [...document.querySelectorAll("a.susp")];
+    const bats = [...document.querySelectorAll(".bat")], batOk = bats.length >= 4 && bats.every(b => b.querySelector("a.susp"));
+    const probs = [...document.querySelectorAll(".prob h4")].filter(h => /^(Battery|Warmth)/.test(h.textContent.trim()));
+    /* every text with battery hours ("6.1–7.3 h") or a temperature outside the Known problems panel sits in a block that carries the mark */
+    const bad = [], w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) { const t = w.currentNode, el = t.parentElement;
+      if (!el || el.closest("script, style, svg, #known")) continue;
+      if (!/\d(?:\.\d+)?\s*h\b|\bhours?\b|\d\s*°C/.test(t.textContent)) continue;
+      const box = el.closest("tr") || el.closest(".prob") || el.closest(".bat") || el.closest(".spec > span") || el.closest("p, li, dd, td, div");
+      if (!box || !box.querySelector("a.susp")) bad.push(t.textContent.replace(/\s+/g, " ").trim().slice(0, 70)); }
+    return { n: marks.length, linked: marks.every(a => a.getAttribute("href") === "#known"), words: marks.every(a => a.textContent.trim() === "suspended (see known problems)"),
+      batOk, bats: bats.length, probOk: probs.length === 2 && probs.every(h => h.querySelector("a.susp")), bad }; });
+  check(`${label}: every battery-hours and heat figure is marked "suspended (see known problems)" and links to the panel`,
+    susp.n >= 10 && susp.linked && susp.words && susp.batOk && susp.probOk && susp.bad.length === 0,
+    `${susp.n} marks; ${susp.bats} mode battery lines; unmarked: ${susp.bad.length ? susp.bad.join(" | ") : "none"}`);
 
   /* ---------------- the cut-away ---------------- */
   const cut = await page.evaluate(() => { const C = window.__explainer.cut; const probe = m => { const out = []; for (let i = 0; i <= 40; i++) out.push(C.probe(m, i / 40)); return out; };
@@ -159,6 +230,7 @@ async function run(browser, label, viewport) {
     await show(page, sel); await page.waitForTimeout(500);
     await el.screenshot({ path: path.join(SHOTS, `${label}_${name}.png`), timeout: 60000 });
   }
+  await shot(page, "#known figure.slfig", `${label}_sideload.png`);
 
   /* ---------------- the 3-D pen ---------------- */
   await show(page, "#pen"); await page.waitForTimeout(400);
@@ -186,6 +258,10 @@ async function run(browser, label, viewport) {
   await page.click(".pin[data-act='heel']").catch(() => {}); await page.waitForTimeout(300);
   const selHeel = await page.evaluate(() => { const H = window.__explainer.hero; return { g: H.sel && H.sel.group, name: document.getElementById("info-name").textContent }; });
   check(`${label}: the heel pin selects the heel drive`, selHeel.g === "drive" && /Heel/.test(selHeel.name), `${selHeel.g}: ${selHeel.name}`);
+  await page.click(".pin[data-act='tail']").catch(() => {}); await page.waitForTimeout(300);
+  const selTail = await page.evaluate(() => ({ g: (window.__explainer.hero.sel || {}).group, txt: (document.getElementById("info") || document.getElementById("info-name").parentElement).textContent.replace(/\s+/g, " ") }));
+  check(`${label}: the tail pin describes Rev J.1's lighter end-cap (optional), not the first design's 8–20 %`,
+    selTail.g === "inertial" && /Rev J\.1/.test(selTail.txt) && /17\.3\s*g/.test(selTail.txt) && /optional/.test(selTail.txt) && !/8–20/.test(selTail.txt), selTail.txt.slice(0, 120));
   /* hand shake: the root moves along the paper while the ball stays */
   const ballRest = await page.evaluate(() => { const b = window.__explainer.hero.pen.ballWorld(); return [b.x, b.y, b.z]; });
   await page.click("#shake");
@@ -256,6 +332,9 @@ async function run(browser, label, viewport) {
   const trRow = resRows.find(r => /Tracing/.test(r)) || "";
   check(`${label}: Details: results table (${resRows.length} rows), tracing shown with the fall in letters read`, resRows.length >= 9 && /582/.test(trRow) && /76 µm/.test(trRow) && /92 %/.test(trRow) && /79 %/.test(trRow),
     trRow.slice(0, 120));
+  const j1Row = resRows.find(r => /Rev J\.1's lighter end-cap/.test(r)) || "", firstRow = resRows.find(r => /first end-cap design \(superseded\)/.test(r)) || "";
+  check(`${label}: Details: the tail rows: Rev J.1 (5.6 / 16.8 / 18.3 %, locked 12.6 / 11.1 / 6.7 %) and the first design's 8 / 18 / 20 %, marked superseded`,
+    /5\.6 \/ 16\.8 \/ 18\.3/.test(j1Row) && /12\.6 \/ 11\.1 \/ 6\.7/.test(j1Row) && /8 \/ 18 \/ 20/.test(firstRow), `${j1Row.slice(0, 70)}… | ${firstRow.slice(0, 50)}…`);
   const panels = await page.$$eval("#results-body .rpanel", l => l.length);
   const conds = await page.$$eval("#results-body .rgroup", l => l.map(g => g.dataset.cond));
   check(`${label}: Details: handwriting strips render (tremor, autowrite, heel)`, panels >= 4 && ["tremor", "autowrite", "heel"].every(c => conds.includes(c)), `${panels} panels; groups ${conds.join(", ")}`);
@@ -340,7 +419,7 @@ async function run(browser, label, viewport) {
     await p.waitForTimeout(1500);
     await pauseAll(p, true);
     await openDet(p, "d-results", true); await openDet(p, "d-physics", true);
-    for (const [name, sel] of [["top", "header.top"], ["moves", "#moves"], ["see", "#see"], ["pen", "#pen"], ["better", "#better"], ["sure", "#sure"], ["d-physics", "#d-physics"], ["d-results", "#d-results"]]) {
+    for (const [name, sel] of [["top", "header.top"], ["moves", "#moves"], ["see", "#see"], ["pen", "#pen"], ["better", "#better"], ["sure", "#sure"], ["known", "#known"], ["d-physics", "#d-physics"], ["d-results", "#d-results"]]) {
       await show(p, sel); await p.waitForTimeout(500); await shot(p, sel, `dark_${name}.png`); }
     const bg = await p.evaluate(() => getComputedStyle(document.body).backgroundColor);
     check("dark theme: dark background and no page errors", derr.length === 0 && /rgb\(15, 18, 20\)/.test(bg), `${bg}; ${derr.slice(0, 3).join(" | ")}`);
