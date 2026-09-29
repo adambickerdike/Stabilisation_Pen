@@ -1126,18 +1126,19 @@ MECHANISMS = [
      "sentence": ('<b class="mv">A 2&nbsp;mm wheel under the front ring</b> grips the paper and is <b>steered, or driven, by two '
                   'tiny motors</b>, so <b>the paper pushes the whole pen and your hand</b> along the path of the letter, gently: '
                   'at most {trac_lo}–{trac_hi}&nbsp;N, about the weight of an egg.'),
-     "uses": ["keeps your hand on the letter", "leads your hand, if you turn it on"],
+     "uses": ["big-writing practice, if you turn it on", "leads your hand, if you turn it on"],
      "note": "Retracted by default: it is lowered onto the paper only when you turn guidance on (see Known problems).",
      "evidence": [("CALCULATION", "push: results/drive/fig_traction_capacity.csv (preload 0.55 N)"),
                   ("ASSUMPTION: tyre friction 0.6–1.2", "to be measured on paper (EXP-D01)"), ("PROPOSED DESIGN", "")]},
     {"key": "tail", "n": 3, "tok": "--g-inertial", "name": "The tail weight", "where": "in the end-cap you can take off",
      "sentence": ('<b class="mv">A {ec1_slug}&nbsp;g tungsten weight in the end-cap</b> is <b>pushed from side to side by coils</b>, '
-                  'and its push-back <b>steadies the whole pen</b>: a further {ec1_rng}&nbsp;% less shake in the ink, but far too '
-                  'weak to move letters.'),
-     "uses": ["calms a fast shake", "optional"],
-     "note": ("Optional: in the same simulation a plain weight of the same mass, locked in place, did better for one of the three "
-              "grips, so the moving weight stays optional until it beats a locked one."),
+                  'and its push-back is meant to <b>steady the whole pen</b>; it is far too weak to move letters.'),
+     "uses": ["meant to calm a fast shake", "optional"],
+     "note": ("Optional, and not shown to help yet: a simpler model gave a further {ec1_rng}&nbsp;% less shake in the ink, but "
+              "the whole-pen physics simulation gave no gain, and a plain weight of the same mass, locked in place, did as well "
+              "in the simpler model for one of three grips. It stays optional until it beats a locked weight."),
      "evidence": [("SIMULATION (model H1)", "results/revJ1/endcap.json: Rev J.1's lighter end-cap; 8-12 Hz, 1-2 mm, grip splits 0.3/0.5/0.7"),
+                  ("SIMULATION (sim2, whole Rev J pen)", "results/sim2j/et.json: 0.67 of the ordinary pen's ink error with it, 0.65 without"),
                   ("PROPOSED DESIGN", "")]},
 ]
 
@@ -1179,7 +1180,8 @@ def mechanisms_html(toks: dict) -> str:
         uses = "".join(f"<span>{e(u)}</span>" for u in m["uses"])
         tags = "".join(tag(x, t) for x, t in m["evidence"])
         link = '<a href="#known">see Known problems</a>'
-        note = f'<p class="mech-note">{e(m["note"]).replace("see Known problems", link)}</p>' if m.get("note") else ""
+        nt = re.sub(r"\{([a-z0-9_]+)\}", lambda mm: str(toks.get(mm.group(1), "—")), m.get("note") or "").replace("&nbsp;", "\u00a0")
+        note = f'<p class="mech-note">{e(nt).replace("see Known problems", link)}</p>' if nt else ""
         out.append(f'      <article class="mech" data-mech="{e(m["key"])}" style="--c:var({m["tok"]})">'
                    f'<h3><span class="anum">{m["n"]}</span>{e(m["name"])} <small>{e(m["where"])}</small></h3>'
                    f'<p class="mech-s">{sent}</p><div class="uses">{uses}</div>{note}<div class="tags">{tags}</div></article>')
