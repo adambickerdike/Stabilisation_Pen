@@ -62,7 +62,7 @@ Two independent routes found this before the review arrived:
 
 | Gate | Review | Our experiments (existing or to specify in study M) |
 |---|---|---|
-| G1 contact and ink | Axial and normal force apart; friction; ink continuity; ≥ 3 refills, 6 papers, 35/50/75° | EXP-B01/B02 (Rev A friction rig), EXP-Q02 (ink laydown), EXP-J10 in the simulation study's list (nose static load); study M merges them |
+| G1 contact and ink | Axial and normal force apart; friction; ink continuity; ≥ 3 refills, 6 papers, 35/50/75° | EXP-B01/B02 (Rev A friction rig), EXP-Q02 (ink laydown), EXP-J17 (the nib's static side load and holding power); study M runs them on rig R9 (`docs/measurement_rig.md`) |
 | G2 actuator coupon | 2-D force/current/displacement, Km, attraction, interference, loaded modes at temperature | EXP-N01, EXP-J01, EXP-J14 |
 | G3 one-axis loaded nib | Independent position ground truth; 1–30 Hz disturbances, 0.25–2 mm | EXP-I05 (Rev H nose bench); study M specifies it for the balanced nib |
 | G4 complete two-axis nib | Sharp turns, repeated contacts, full roll and tilt, optical dropout, long thermal run | EXP-N02…N06, EXP-J13; study M |

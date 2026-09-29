@@ -20,7 +20,7 @@ Contents:
 - §17 Rev J inertial end-cap with people (DEC-038): EXP-K03 (user crossover), EXP-K05 (cue perception)
 - §18 Rev J nose v2 with people (DEC-036, DEC-039): EXP-N09 (autowrite), EXP-N10 (delayed ink)
 - §19 Rev J AI and control with people (DEC-042, DEC-043): EXP-L03 (ink lag; shares sessions with EXP-N10), EXP-L06 (text prediction in the app), EXP-L07 (style synthesis), EXP-L08 (guidance that fades across sessions)
-- §20 Rev J integrated layout with people (DEC-044, DEC-045): EXP-J08 (ink visibility; superseded for Rev J.1 by EXP-J15), EXP-J09 (mass and balance, with EXP-K03), EXP-J15 (the clear window)
+- §20 Rev J integrated layout with people (DEC-044, DEC-045, DEC-048): EXP-J08 (ink visibility; superseded for Rev J.1 by EXP-J15), EXP-J09 (mass and balance, with EXP-K03), EXP-J15 (the clear window), EXP-J18 (the heel wheel on writing)
 
 ---
 
@@ -101,6 +101,7 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-J08 (§20) | Can writers see the fresh ink behind the ball with the larger Rev J front? (Superseded for Rev J.1 by EXP-J15) | 10 right- and left-handed writers | Within-subject: printed Rev H and Rev J fronts on dummy pens, video from the eye | Distance behind the ball at which the ink first shows; ratings | device burden | unpowered dummies; ethics |
 | EXP-J09 (§20) | Do writers accept the Rev J.1 masses and balance (84 g base, 113 g with the end-cap)? | 10 writers (with EXP-K03) | Within-subject: two dummies, 10 min each | Comfort, fatigue and acceptance | device burden | unpowered dummies; ethics |
 | EXP-J15 (§20) | Can writers see the fresh ink through the clear window of the Rev J.1 front? | 10 right- and 10 left-handed writers | Within-subject: printed Rev J.1 and Rev J fronts on dummy pens, eye tracking or video from the eye | Distance behind the ball at which the ink first shows; ratings | device burden | unpowered dummies; ethics |
+| EXP-J18 (§20) | Does the heel wheel distort writers' own writing, and do they adapt within 10 minutes? | healthy writers (n from a pilot, §11 rule) | Within-subject: wheel retracted, free and in its tremor mode, 10 min each | Distortion against their own writing with the wheel retracted, and its change over 10 min | device burden | EXP-D07 safety gate; ethics |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii).
 
@@ -1228,6 +1229,7 @@ The heel drive (DEC-037) uses the paper as ground. A small steered wheel at the 
   - A writer set on 'b' kept 'b' under every device.
   - Guided accuracy did not transfer to unassisted writing in a virtual-fixture study; error amplification did (LIT HAP-67).
 - **Decision.** Pass: DEC-037 can be adopted (together with EXP-D01, D05 and D07). Heel worse than the board: keep the board for tracing. Retention worse than none: use guidance only with fading and catch trials. Not accepted: revisit DEC-037.
+- **Status (DEC-048).** The heel wheel is retracted by default. It is deployed for 'write big' practice (driven) and lead-through only; its tracing arms wait for a controller that passes REQ-RVJ-C02 in sim2, or for EXP-J18. In sim2, tracing with the wheel read fewer words (97 → 70 %; `docs/revJ_simulation.md` §6.4).
 
 <!-- AC-TABLE:EXP-D08:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -1251,6 +1253,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows fo
   - Ball damper + nose: 0.62 with 95 µm.
   - The heel helps at 4–6 Hz, where the tracker does nothing.
 - **Decision.** As predicted (free writing fails, known text passes): offer the heel's tremor mode only for copying, tracing and dictation practice. If 4–6 Hz tremor matters more and EXP-D13 passes, reconsider the driven ball (`docs/grounded_drive.md` §6).
+- **Status (DEC-048).** The heel wheel is retracted by default. In sim2 its tremor mode moved tremor-free writing by 0.40 mm, against the 25 µm of REQ-RVJ-C02, and doubled the error at 0.3 mm. Run the heel arms only after a redesigned tremor-mode controller passes REQ-RVJ-C02 in sim2, or after EXP-J18 shows that writers adapt.
 
 <!-- AC-TABLE:EXP-D09:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -1453,9 +1456,9 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 ---
 
-## 20. Rev J integrated layout with people: EXP-J08, J09, J15
+## 20. Rev J integrated layout with people: EXP-J08, J09, J15, J18
 
-DEC-044 joins the Rev J designs into one Ø24 mm pen. Its front is bigger than Rev H's, and with the end-cap it is heavier and back-heavy. DEC-045 (Rev J.1) adds a clear window to the front and a lighter end-cap: 84.3 g, and 112.7 g with the end-cap. These three studies use unpowered, printed dummies (from `results/revJ/revJ_pen_assembly.step` and `results/revJ1/revJ1_pen_assembly.step`, with and without the end-cap), so they need no safety gate beyond §3. The bench protocols are in `bench_protocols.md` §46. The predictions come from `docs/revJ_design.md`, `docs/revJ1_design.md`, `results/revJ/` and `results/revJ1/` (CALCULATION).
+DEC-044 joins the Rev J designs into one Ø24 mm pen. Its front is bigger than Rev H's, and with the end-cap it is heavier and back-heavy. DEC-045 (Rev J.1) adds a clear window to the front and a lighter end-cap: 84.3 g, and 112.7 g with the end-cap. EXP-J08, J09 and J15 use unpowered, printed dummies (from `results/revJ/revJ_pen_assembly.step` and `results/revJ1/revJ1_pen_assembly.step`, with and without the end-cap), so they need no safety gate beyond §3. EXP-J18 uses a powered heel-drive prototype, so it runs only after the EXP-D07 safety gate on the exact build (as §16). The bench protocols are in `bench_protocols.md` §46. The predictions come from `docs/revJ_design.md`, `docs/revJ1_design.md`, `results/revJ/` and `results/revJ1/` (CALCULATION), and for EXP-J18 from `docs/revJ_simulation.md` (SIMULATION).
 
 ### EXP-J08: Can writers see the ink?
 - **Design.** 10 right- and left-handed writers. Printed fronts on dummy pens: Rev H; Rev J; Rev J with the C opening carried 10 mm into the sleeve (the chosen design); Rev J with a clear front sleeve. Randomised order; each writer copies lines at their own tilt; video from the eye (head-mounted camera); ratings.
@@ -1505,3 +1508,18 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-J15).
 <!-- AC-TABLE:EXP-J15:END -->
+
+### EXP-J18: Does the heel wheel distort writing, and do writers adapt?
+- **Design.** Healthy writers (n from a pilot, §11 rule). Each writes their own text with the heel wheel retracted, free (steer-only) and in its tremor mode, in random order, for 10 min in each mode; the same text at the start and at the end of each mode. The Rev J heel-drive prototype, after the EXP-D07 safety gate on the exact build; the page-sensor log; R3 scans.
+- **Measurands.** Letter distortion against the writer's own writing with the wheel retracted (the same text, RMS after alignment), less the writer's own repeat-to-repeat distance with the wheel retracted; its change over the 10 min (adaptation); felt force; ratings.
+- **Predictions (SIM, `docs/revJ_simulation.md` §6.1, §8.2).** sim2's writer, who does not adapt, was moved 324–503 µm (mean 403) by the tremor mode: the wheel steers after the pen with a lag and its tyre resists sideways motion (1500 N/m), so fast turns in the letters are pulled out of shape. The grip-force change was 167 mN rms, against 21 mN with the nose alone. A writer who has learned the wheel was not simulated.
+- **Claim type.** Device burden.
+- **Decision.** A mode within 25 µm after adaptation may be offered in free writing (DEC-048 revisit). Otherwise the wheel stays retracted by default (DEC-048).
+
+<!-- AC-TABLE:EXP-J18:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J18-01 | REQ-RVJ-C02 | Healthy writers' own tremor-free writing with the heel wheel free and in its tremor mode, after 10 min of writing with it: letter distortion against their own writing with the wheel retracted (the same text; page-sensor log and R3 scans; RMS after alignment), less their own repeat-to-repeat distance with the wheel retracted; each mode | ≤ 25 µm | hypothesis | REQ-RVJ-C02 applied to people after adaptation; sim2's writer, who did not adapt, was moved 324-503 µm (mean 403) by the tremor mode (SIM, results/sim2j/et.json) -> predicted to FAIL without adaptation; adaptation within 10 min is untested | DEC-048 (revisit if writers adapt within 10 min) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-J18).
+<!-- AC-TABLE:EXP-J18:END -->

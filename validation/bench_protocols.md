@@ -25,9 +25,9 @@ Contents:
 - §41 Rev J heel drive (DEC-037): EXP-D01…D07, D10, D12, D13 (the studies with people, D08, D09 and D11, are in `human_study_plan.md` §16)
 - §42 Rev J inertial end-cap (DEC-038): EXP-K01, K02, K04, K06, K07, K08 (K03 and K05 are in `human_study_plan.md` §17)
 - §43 Rev J nose v2 and autowrite (DEC-036, DEC-039, DEC-041): EXP-N01…N08 (N09 and N10 are in `human_study_plan.md` §18)
-- §44 Simulator v2 validation (DEC-040): EXP-V01…V06, with the Rev H refill front stop (REQ-RVH-008) in EXP-V02
+- §44 Simulator v2 validation (DEC-040): EXP-V01…V07, with the Rev H refill front stop (REQ-RVH-008) in EXP-V02, and small handwriting on a tablet (with participants) in EXP-V07
 - §45 Rev J control stack (DEC-042): EXP-L01, L02, L04, L05 (L03, L06, L07 and L08 are in `human_study_plan.md` §19)
-- §46 Rev J integrated layout (DEC-044): EXP-J01…J07, and Rev J.1 (DEC-045): EXP-J10…J14, J16 and the wear part of EXP-J15 (J08, J09 and J15's writers are in `human_study_plan.md` §20); the per-mode battery of REQ-RVJ-I01 is AC-P01-06 in EXP-P01 (§18)
+- §46 Rev J integrated layout (DEC-044): EXP-J01…J07; Rev J.1 (DEC-045): EXP-J10…J14, J16 and the wear part of EXP-J15; the nib's static load (DEC-046): EXP-J17 (J08, J09, J18 and J15's writers are in `human_study_plan.md` §20); the per-mode battery of REQ-RVJ-I01 is AC-P01-06 in EXP-P01 (§18)
 
 ---
 
@@ -212,10 +212,11 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-V04 | Simulator v2: pen-grasp impedance while writing (participants) | A | R6 | DEC-040 | I01 or B06 sessions; ethics |
 | EXP-V05 | Simulator v2: device effect on a bench against the frozen model | A | R2, R3 | DEC-040, REQ-SIM-001…005 | V01, V02, V04; frozen firmware |
 | EXP-V06 | Simulator v2: population prediction against people | offline, after a human study | compute | DEC-040 | V05; W02 or D09 data |
-| EXP-L01 | Control stack: the tremor-line gate on real tremor-free writing; causality of the stack; the gate on the low-power page sensor's stream and on the IMU alone | offline, after H01; then A | compute; bench pen | REQ-CTRL-009/010, DEC-042, DEC-045 | H01 recordings; J10 (the low-power die's stream) |
-| EXP-L02 | Control stack: gated tracker against the Rev H tracker on real writing and on the bench | offline, after H01; then A | compute; R2 (EXP-I05 tremor rig), R3 | REQ-CTRL-011, DEC-042 | L01 |
+| EXP-V07 | Simulator v2: small handwriting on a tablet (participants) | tablet session; then offline | pen tablet (≥ 200 Hz) | DEC-040 (writer refit), REQ-RVJ-C03 | consent; ethics |
+| EXP-L01 | Control stack: the tremor-line gate on real tremor-free writing; causality of the stack; the gate on the low-power page sensor's stream and on the IMU alone | offline, after H01; then A | compute; bench pen | REQ-CTRL-009/010, REQ-RVJ-C03, DEC-042, DEC-045, DEC-047 | H01 recordings; J10 (the low-power die's stream); sim2 (the SIM gate) |
+| EXP-L02 | Control stack: gated tracker and G4 against the Rev H tracker on real writing and on the bench; the command's band limit; the SIM gate for every controller | offline, after H01; then A | compute; R2 (EXP-I05 tremor rig), R3 | REQ-CTRL-011, REQ-RVJ-C01, REQ-RVJ-C02, DEC-042, DEC-047, DEC-048 | L01; sim2 (the SIM gate) |
 | EXP-L04 | Control stack: learned estimator against REQ-ML-001 on real data; MCU timing; shadow mode | offline, after H01; then A | compute; R7 | REQ-ML-001, REQ-ML-003, DEC-042 | H01 recordings; E01 protocol |
-| EXP-L05 | Control stack: RL arbiter in the sim2 closed loop, then on the bench | offline; then A | compute (sim2); EXP-V05 rig | REQ-ML-004, DEC-042 | V05 (REQ-SIM-005) |
+| EXP-L05 | Control stack: RL arbiter in the sim2 closed loop, then on the bench | offline; then A | compute (sim2); EXP-V05 rig | REQ-ML-004, DEC-042, DEC-047 | V05 (REQ-SIM-005); the environment in `sim2j/rl.py` |
 | EXP-J01 | Integrated layout: axial magnetic pull on the gimbal, and centring | A | x-y-z stage over a ±50 N load cell | REQ-RVJ-I02, DEC-044, DEC-045, DEC-036 | C1S cap and plate dummy |
 | EXP-J02 | Integrated layout: heel-motor cogging from the C1S magnets, at the Rev J.1 place | A | torque sensor (0.001 mN·m); plate dummy with a 1.5 mm back iron, and cap | REQ-RVJ-I03, REQ-RVJ-I04, DEC-044, DEC-045, DEC-037 | 0620 B motor |
 | EXP-J03 | Integrated layout: nose Hall sensors among the magnets, motors, brake and coils | A | R5 (2-axis micrometre stage) | REQ-RVJ-I04, DEC-044 | board, J02 set-up |
@@ -223,14 +224,15 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-J05 | Integrated layout: heat at the web, bare and with the graphite sheet (DEC-045) | A | heater in a PEEK shell, IR camera, thermocouples | REQ-RVJ-N03, DEC-044, DEC-045 | printed and moulded shell |
 | EXP-J06 | Integrated layout: ink-force drum, spring and front stop | A | linear stage, R8, R3 | REQ-RVJ-N05, REQ-RVJ-N09, DEC-041, DEC-044, DEC-045 | drum module |
 | EXP-J07 | Integrated layout: field outside the pen | A | gaussmeter on a scanning stage | REQ-RVJ-I05, DEC-044 | magnetic mock-up |
-| EXP-J10 | Rev J.1: a low-power page sensor (PMW3610 class) in every mode | A | EXP-J04 stage, encoder, current probe | REQ-RVJ-N06, REQ-RVJ-I07, REQ-DRV-005, DEC-042, DEC-045 | folded optics; EXP-D01 papers |
+| EXP-J10 | Rev J.1: a low-power page sensor (PMW3610 class) in every mode | A | EXP-J04 stage, encoder, current probe | REQ-RVJ-N06, REQ-RVJ-I07, REQ-RVJ-C05, REQ-DRV-005, DEC-042, DEC-045, DEC-049 | folded optics; EXP-D01 papers |
 | EXP-J11 | Rev J.1: the 75 µm gimbal under the pull, fatigue and drops | A | load frame with a rotary stage, R8, drop rig | REQ-RVJ-I02, DEC-045 | J01 (measured pull) |
 | EXP-J12 | Rev J.1: electronics power, then the pen's power per mode | A; then C | R7 | REQ-RVJ-I01, DEC-045 | main board and firmware loop; P01 set-up |
 | EXP-J13 | Rev J.1: heat with the graphite sheet | A | EXP-J05 shell, IR camera, thermocouples, hand phantom | REQ-RVJ-N03, REQ-THM-001, DEC-045 | J05 |
 | EXP-J14 | Rev J.1: K_m and pull with the 1.5 mm back iron | A | R4, EXP-J01 stage, Hall probe | REQ-RVJ-N02, DEC-045 | N01 and J01 coupons |
 | EXP-J15 (wear part) | Rev J.1: wear of the clear window (the writers are in `human_study_plan.md` §20) | A | Taber abraser or steel wool, haze meter | REQ-RVJ-I06, DEC-045 | coated PC coupons |
 | EXP-J16 | Rev J.1: the 29.6 g end-cap on top of the nose (EXP-K02 repeated) | A | EXP-K02 rig (EXP-I06), R3 | REQ-EC-002/003, DEC-038, DEC-045 | K01; I01 or K08 |
-| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-CTRL-012/013, REQ-APP-003/004, DEC-002/008/009/016/020/024/031/035…039/042…045 | ethics |
+| EXP-J17 | The nib's static side load and holding power (the C1S nose; the balanced nib of DEC-046) | A | tilt fixture over paper, current probe, coil thermocouple | REQ-RVJ-N10, REQ-RVJ-C04, DEC-046 | nib prototype; refill springs |
+| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15, J18 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-RVJ-C02, REQ-CTRL-012/013, REQ-APP-003/004, DEC-002/008/009/016/020/024/031/035…039/042…045/048 | ethics |
 
 ---
 
@@ -3184,8 +3186,9 @@ The following are specified in [`human_study_plan.md`](human_study_plan.md), wit
 | EXP-J08 | Can writers see the ink? Printed Rev H and Rev J fronts on dummy pens (superseded for Rev J.1 by EXP-J15) | Device burden |
 | EXP-J09 | Mass and balance: 84 g and 113 g dummies of the Rev J.1 pen (with EXP-K03) | Device burden |
 | EXP-J15 | The clear window: can writers see the ink through the Rev J.1 front? (its wear test on coupons is in §46) | Device burden |
+| EXP-J18 | The heel wheel on writing: distortion, and adaptation over 10 minutes (DEC-048) | Device burden |
 
-EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3.
+EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), EXP-V03 (inside EXP-H01 sessions), and EXP-V04 and EXP-V07 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3.
 
 ---
 
@@ -4089,7 +4092,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 ---
 
-## 44. Simulator v2 validation: EXP-V01…V06
+## 44. Simulator v2 validation: EXP-V01…V07
 
 ### Purpose and what it gates
 
@@ -4098,7 +4101,7 @@ DEC-040 makes sim2 (MuJoCo) the Rev J reference simulator, with H1 as the regres
 - **Identification.** Stochastic grey-box models with the same equations as sim2. Maximum likelihood with an extended Kalman filter over several recordings; parameters with 95 % intervals; residual checks (s2r `modelform.py`). The domain-randomisation (DR) ranges then narrow to the identified intervals. Parameters are frozen before EXP-V05 and never refitted on validation data.
 - **What it gates.** DEC-040 is revisited if EXP-V05 fails its pass lines, or if a device result depends on the contact law beyond the stated tolerance. Requirements: REQ-SIM-001…005 (checked on the frozen model in EXP-V05) and REQ-RVH-008 (EXP-V02 part B).
 - **Predictions (SIM, `results/sim2/`).** sim2 reproduces H1 on 56 Rev H cases: unmodified ink error within 3.1 %, oracle ratio within ±0.03 in 52 of 56. A 25 µs step is converged (0.22 µm against 12.5 µs). Energy residual ≤ 6.8 × 10⁻⁴. All of this is model to model; no bench or human data exist.
-- EXP-V03 runs inside EXP-H01 sessions and EXP-V04 with participants; both are covered by the same ethics approval. EXP-V06 is an offline analysis of human-study data.
+- EXP-V03 runs inside EXP-H01 sessions, and EXP-V04 and EXP-V07 with participants; all are covered by the same ethics approval. EXP-V06 is an offline analysis of human-study data.
 
 ### EXP-V01: Paper contact of the Rev H front end
 
@@ -4225,6 +4228,26 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 - **Decision rule.** Fail: no population claims from sim2; refit the DR distributions from EXP-V03 and V04.
 
+### EXP-V07: Small handwriting on a tablet (participants)
+
+- **Purpose and gates.** Measure the speed, stroke times and spectrum of small real handwriting, and refit sim2's v2 writers to them. Gates DEC-040's writer model and, through the detector's tuning writers, REQ-RVJ-C03.
+- **Predictions (LIT, CALC).**
+  - The literature's target: 1.3–1.7 % of the velocity energy at 8–12 Hz, with 50 % and 90 % of it below 3.1 and 4.9 Hz (LIT CON-25). Mean speed 30.5 mm/s (LIT CON-20); median stroke 90–150 ms (LIT CON-24).
+  - CON-25 recorded large characters, about 14 mm. At 3.65 mm and 30 mm/s the v2 writers carry 10.1–12.2 % at 8–12 Hz (v1: 17.3 %), so the target may not hold for small letters (CALC, `docs/revJ_simulation.md` §3).
+- **Set-up.** 12 healthy adults, with consent (covered by the ethics approval of EXP-H01). A pen tablet sampling at ≥ 200 Hz (Wacom class). The sentence "return library books by friday".
+- **Procedure.** Each participant writes the sentence at their own size. Compute the 8–12 Hz share of velocity energy, the speed and the stroke times with `sim2j/writers.kinematics`. Refit the v2 writers (`sim2j/writers.py`) to the measurements.
+- **Measurands.** Letter size; mean pen-down speed; median stroke time; share of velocity energy at 8–12 Hz, and the frequencies below which 50 % and 90 % of it lie.
+
+<!-- AC-TABLE:EXP-V07:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-V07-01 | — | Share of velocity energy at 8-12 Hz of pen-down writing ('return library books by friday' at the writer's own size, pen tablet ≥ 200 Hz), median over 12 healthy adults, computed with sim2j/writers.kinematics | within 1.3-1.7 % | hypothesis | LIT CON-25, recorded on large characters (about 14 mm; docs/revJ_simulation.md s3); sim2's v2 writers carry 10.1-12.2 % and v1 17.3 % (CALC), and the target may not hold for small letters; the v2 writers are refitted to the measurement either way | DEC-040 (sim2's writer model); REQ-RVJ-C03 (the detector's tuning writers) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-V07).
+<!-- AC-TABLE:EXP-V07:END -->
+
+- **Decision rule.** Share far from 1.3–1.7 %: the literature's target does not hold for small writing. Either way, the refitted writers replace v2 in sim2, and the detector's tuning (REQ-RVJ-C03) and the ET grid are re-run on them.
+
 ---
 
 ## 45. Rev J control stack: EXP-L01, L02, L04, L05
@@ -4242,44 +4265,49 @@ DEC-042 sets the Rev J control stack.
 
 ### EXP-L01: Does the tremor-line gate stay shut on real tremor-free writing?
 
-- **Purpose and gates.** Check the gate on real writing: shut on tremor-free writing, open on real tremor. Check that the stack is causal. For DEC-045, check the gate on the low-power page sensor's stream at 250 Hz, and on the IMU alone as the fallback. Gates REQ-CTRL-009, REQ-CTRL-010, DEC-042 and DEC-045.
+- **Purpose and gates.** Check the gate on real writing: shut on tremor-free writing, open on real tremor. Check that the stack is causal. For DEC-045, check the gate on the low-power page sensor's stream at 250 Hz, and on the IMU alone as the fallback. For DEC-047, replay the guarded tracker G4, sim2's default, beside DEC-042's gated listening tracker. Gates REQ-CTRL-009, REQ-CTRL-010, REQ-RVJ-C03, DEC-042, DEC-045 and DEC-047.
 - **Predictions (SIM).**
   - The gate never opened on the tremor-free writing of any tuning or test writer. Tremor-free writing moved 26.3 µm, the same as with the Rev H tracker.
   - At 1–2 mm it was open for 51–73 % of a 20 s recording, because it needs about 4.5 s to open (4 s window + 0.5 s). Once open on tuning data, it stayed open for 95 % of the detector's updates.
   - At 0.3 mm it was open for 0.1–12.9 % of the time.
   - The detector already works on a 250 Hz grid (a Welch spectrum of the last 4 s every 50 ms). No prediction exists for the low-power die's stream or for an IMU-only gate. The IMU carries the tremor estimate: without the page sensor the listening smoother's residual was 421 µm, against 412 µm with it (SIM, study L).
+  - sim2 (DEC-047; v2 writers, test writers 0–4): ai2's gated listening tracker moved tremor-free writing by 59 µm (36–85): its fallback, the Rev H tracker as built, locks onto the writing's own 8–12 Hz content. The guarded tracker G4, with a stricter detector threshold and ball-on-paper input, moved it by 0 µm.
 - **Set-up.** Offline: the EXP-H01 recordings of ET, PD and control writers. The Rev J estimator stack as firmware code, run in a replay harness. Then the bench pen with recorded hand motion.
 - **Procedure.**
-  1. Test the causality of the stack build: change sensor samples after their availability time and check that no earlier command changes.
-  2. Replay every recording, keeping the detector's state across lines within a session, as the firmware does.
-  3. Log the gate, the detector's ratio and amplitude, and the commanded correction.
-  4. Replay again with the detector on the low-power die's stream at 250 Hz (recorded with the die where available, otherwise the 1 kHz stream reduced to 250 Hz and to the die's 7.9 µm counts), and a third time on the IMU alone (DEC-045).
-  5. Repeat on the bench pen.
+  1. SIM gate (REQ-RVJ-C03): run the detector build in sim2 on the tremor-free writing of the tuning writers of writer models v1 and v2; it must never open. Check that its input takes page samples only while the ball is on the paper.
+  2. Test the causality of the stack build: change sensor samples after their availability time and check that no earlier command changes.
+  3. Replay every recording, keeping the detector's state across lines within a session, as the firmware does, with DEC-042's gated listening tracker and with G4 (DEC-047).
+  4. Log the gate, the detector's ratio and amplitude, and the commanded correction.
+  5. Replay again with the detector on the low-power die's stream at 250 Hz (recorded with the die where available, otherwise the 1 kHz stream reduced to 250 Hz and to the die's 7.9 µm counts), and a third time on the IMU alone (DEC-045).
+  6. Repeat on the bench pen.
 - **Measurands.** Gate-open share of tremor-free writing time per writer; time to open after tremor onset; open share at 1–2 mm after the first 5 s; tremor-free writing moved (the commanded correction on the controls' writing), judged against the absolute 25 µm bound on these real recordings (`README.md` §2), with the difference to the Rev H tracker alone reported. For DEC-045: the agreement of the 250 Hz and IMU-only gates with the 1 kHz gate per 50 ms decision, and their openings on tremor-free writing.
 
 <!-- AC-TABLE:EXP-L01:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-L01-01 | REQ-CTRL-010 | Gate-open share of tremor-free writing time for every control writer (EXP-H01 recordings replayed offline through the Rev J estimator stack, detector state kept across lines; tip camera as reference) | ≤ 1 % | requirement | REQ-CTRL-010 (closed ≥ 99 %); SIM: never open on the tremor-free writing of any tuning or test writer (results/ai2/ai2.json) | DEC-042 (revisit if the gate fails on real writing) |
-| AC-L01-02 | REQ-CTRL-010 | Tremor-free writing moved by the gated stack on the controls' real recordings (commanded correction, every control writer, RMS); the difference to the Rev H tracker alone is reported | ≤ 25 µm | derived | false-correction convention (validation/README.md s2): on real recordings the absolute bound of AC-E01-09 applies; REQ-CTRL-010's relative bound (Rev H + 2 µm) is for simulation on synthetic writers, which carry about ten times the measured 8-12 Hz content (DEC-040); SIM 26.3 µm with both trackers on synthetic writers | DEC-042 |
+| AC-L01-02 | REQ-CTRL-010 | Tremor-free writing moved by the gated stack on the controls' real recordings (commanded correction, every control writer, RMS); the difference to the Rev H tracker alone is reported | ≤ 25 µm | derived | false-correction convention (validation/README.md s2): on real recordings the absolute bound of AC-E01-09 applies; REQ-CTRL-010's relative bound (Rev H + 2 µm) is for simulation on synthetic writers, which carry about ten times the measured 8-12 Hz content (DEC-040); SIM 26.3 µm with both trackers on synthetic writers; in sim2 false correction is measured against the device-off pen with the same noise (REQ-RVJ-C02): ai2's gated listening tracker moved tremor-free v2 writing by 59 µm (36-85) and the guarded tracker G4 by 0 µm (SIM, test writers 0-4, DEC-047) | DEC-042; DEC-047 |
 | AC-L01-03 | — | Gate-open share of pen-down time after the first 5 s of writing, writers with 1-2 mm tremor at the tip | ≥ 80 % | hypothesis | pass line of study L; SIM: open for 51-73 % of a whole 20 s recording because the detector needs about 4.5 s to open, and for 95 % of its updates at 1-2 mm once open on tuning data (docs/ai_control_v2.md s3.4, s4.1) | DEC-042 |
 | AC-L01-04 | REQ-CTRL-009 | Causality test of the estimator stack used in the replay (firmware build): changing any sensor sample after its availability time (acquisition + latency) changes no earlier nose command, and every estimator output at a tick uses only samples available at that tick | conforms (bit-exact) | requirement | REQ-CTRL-009; study L found and fixed two look-ahead leaks before its test (docs/ai_control_v2.md s13 item 3); unit tests in ai2/tests | DEC-042 |
 | AC-L01-05 | — | Tremor-line gate computed on the low-power page sensor's stream at 250 Hz (DEC-045) against the gate on the 1 kHz page-sensor stream, per 50 ms decision on the EXP-H01 recordings (all writers), and its openings on the controls' tremor-free writing (both) | both met (≥ 95 % of decisions agree; never open on tremor-free writing) | hypothesis | pass line of the Rev J.1 study (docs/revJ1_design.md s4.2); the detector already works on a 250 Hz grid (DEC-042); no prediction for the low-power die's stream (EXP-J10) | DEC-045 (revisit if the detector needs the 1 kHz stream) |
 | AC-L01-06 | — | IMU-only tremor-line detector (the fallback pre-detector for a gated PMW3360-class die): tremor lines found by the 1 kHz page-sensor gate that it misses, and its openings on the controls' tremor-free writing (both) | both met (no line missed; never open on tremor-free writing) | hypothesis | pass line of the Rev J.1 study, needed only if EXP-J10 shows the low-power die cannot serve the detector; the IMU carries the tremor estimate (listening-smoother residual 421 µm without the page sensor against 412 µm with it; SIM, study L); no prediction for an IMU-only gate | DEC-045 (fallback: a PMW3360-class die gated by an IMU pre-detector) |
+| AC-L01-07 | REQ-RVJ-C03 | SIM gate on the detector build under test, before the replays: the tremor-line detector run in sim2 on the tremor-free writing of the tuning writers of every writer model in use (v1 and v2), and a firmware review that its input takes page samples only while the ball is on the paper (both) | both met (never opens; conforms) | requirement | REQ-RVJ-C03 (DEC-047); G4's stricter threshold (open above a peak ratio of 8, close below 4) with ball-on-paper input stayed shut on every tuning and test writer (SIM, results/sim2j/rules.json); ai2's threshold (5) is reached on the intended paths of v2 writers (peak ratios 4-6) and of one v1 writer (14) (CALC) | DEC-047; DEC-042 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-L01).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-L01).
 <!-- AC-TABLE:EXP-L01:END -->
 
-- **Decision rule.** The gate opens on real tremor-free writing: revisit DEC-042 (re-tune the thresholds on training participants only, or keep the Rev H tracker). It opens too little on real tremor: re-tune the detector; the 20 s calibration can arm its band. The 250 Hz gate disagrees with the 1 kHz gate: revisit DEC-045 (a PMW3360-class die, gated by the IMU-only detector if that one misses no line).
+- **Decision rule.** The gate opens on real tremor-free writing: revisit DEC-042 (re-tune the thresholds on training participants only, or keep the Rev H tracker). It opens too little on real tremor: re-tune the detector; the 20 s calibration can arm its band. The 250 Hz gate disagrees with the 1 kHz gate: revisit DEC-045 (a PMW3360-class die, gated by the IMU-only detector if that one misses no line). The SIM gate fails: that detector build is not replayed (REQ-RVJ-C03). The two trackers differ on real recordings: revisit DEC-042 and DEC-047 with the result.
 
 ### EXP-L02: Does the gated tracker beat the Rev H tracker on real writing?
 
-- **Purpose and gates.** Compare the default with the Rev H tracker, offline on real writing and in closed loop on the bench. Gates REQ-CTRL-011 and DEC-042.
+- **Purpose and gates.** Compare the default with the Rev H tracker, offline on real writing and in closed loop on the bench, with G4, sim2's default (DEC-047), as a third arm. Check the nose command's band limit, and keep any controller that fails the sim2 false-correction gate off the bench. Gates REQ-CTRL-011, REQ-RVJ-C01, REQ-RVJ-C02, DEC-042, DEC-047 and DEC-048.
 - **Predictions (SIM).** At 1–2 mm and 6–10 Hz: 430 against 627 µm (0.69; paired −197 µm, 95 % CI −206 to −188). At 6 Hz, where the Rev H tracker does nothing: 818 → 540 µm. Letters read 64 → 78 %, words 49 → 74 %. 0.3 mm tremor unchanged (161 against 162 µm).
+- **Predictions (sim2, DEC-047; v2 writers, test writers 0–4).** G4: 0.63 of the device-off ink error at 8–12 Hz × 1–2 mm (0.59–0.68), 1.02 at 0.3 mm, 0 µm on tremor-free writing. ai2's gated listening tracker: 0.67, 1.14 and 59 µm. The heel wheel in its tremor mode moved tremor-free writing by 0.40 mm (DEC-048). Without the 64 Hz output filter the listening prediction made the ink 1.6 × worse than the device-off pen (SIM).
 - **Set-up.** Offline: the EXP-H01 recordings, paired per writer, with the tip camera as the intended path. Bench: the Rev J pen in closed loop on the EXP-I05 tremor rig (R2 with a 2-axis shaker) with recorded hand paths; R3 scans.
 - **Procedure.**
-  1. Replay the recordings through both trackers. Score the ink error against the tip-camera intent, the letters read by the app, and the false correction on the controls' writing.
-  2. Bench: 0.3, 1 and 2 mm at 6, 8 and 10 Hz, both trackers, 10 seeds each, in random order.
+  1. Before the bench: the SIM gate on the firmware under test (every controller in it moves tremor-free writing by ≤ 25 µm against the device-off pen in sim2, REQ-RVJ-C02), and a review of the nose command's band limit (REQ-RVJ-C01).
+  2. Replay the recordings through the trackers: the gated listening tracker, G4 and the Rev H tracker. Score the ink error against the tip-camera intent, the letters read by the app, and the false correction on the controls' writing.
+  3. Bench: 0.3, 1 and 2 mm at 6, 8 and 10 Hz, each tracker, 10 seeds each, in random order.
 - **Measurands.** Ink error; letters and words read; false correction; paired differences per writer.
 
 <!-- AC-TABLE:EXP-L02:BEGIN -->
@@ -4288,11 +4316,13 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows fo
 | AC-L02-01 | REQ-CTRL-011 | Ink error against the tip-camera intent with the gated tracker relative to the Rev H tracker at 1-2 mm tremor, 6-10 Hz (EXP-H01 recordings replayed offline, paired per writer); geometric mean ratio, with the paired 95 % upper bound below 1 | ≤ 0.8 | requirement | REQ-CTRL-011; SIM 430 against 627 µm (0.69), paired -197 µm (95 % CI -206 to -188); 6 Hz 818 -> 540 µm (results/ai2/ai2.json) | DEC-042 (revisit if it fails) |
 | AC-L02-02 | REQ-CTRL-011 | Letters read by the app with the gated tracker minus with the Rev H tracker at every tremor condition, and ink error at 0.3 mm relative to the Rev H tracker (both) | both met (≥ -1 point; ≤ 1.02) | requirement | REQ-CTRL-011; SIM letters 78 against 64 % at 1-2 mm; 0.3 mm 161 against 162 µm | DEC-042 |
 | AC-L02-03 | — | Closed loop on the bench pen with the EXP-I05 tremor rig (R2 with a 2-axis shaker), 1-2 mm at 6-10 Hz, 10 seeds: ink error with the gated tracker relative to the Rev H tracker (R3 scans) | ≤ 0.8 | hypothesis | pass line of study L; SIM 0.69, model to model only | DEC-042 |
+| AC-L02-04 | REQ-RVJ-C01 | Firmware under test (review), checked on the EXP-L02 bench runs: the nose command passes the Rev H tracker's 64 Hz second-order output filter or an equivalent band limit no wider than the nose servo's measured bandwidth (EXP-N03), and the filter's delay is counted inside the prediction horizon (both) | conforms | requirement | REQ-RVJ-C01 (DEC-047); without the filter the listening prediction carried 15-200 Hz, the C1S nose missed its command by 890 µm rms, and the ink moved 1.6 x the device-off pen's (SIM, tuning writer 100; docs/revJ_simulation.md s4.1) | DEC-047; DEC-042 |
+| AC-L02-05 | REQ-RVJ-C02 | SIM gate on the firmware under test, before the bench runs: tremor-free writing moved by each controller that can drive the nose, the heel wheel or the end-cap, against the device-off pen with the same noise and seed in sim2, tuning writers of v1 and v2 (RMS, every writer) | ≤ 25 µm | requirement | REQ-RVJ-C02 (DEC-048); sim2, test writers 0-4: G4 0 µm; ai2's gated listening tracker 36-85 µm; the TCN replayed 107-206 µm; nose + heel wheel in its tremor mode 324-503 µm (SIM, results/sim2j/et.json) -> FAILS for the wheel's tremor mode (DEC-048 keeps the wheel retracted) and for the gated listening tracker | DEC-048 (the wheel stays retracted until its controller passes); DEC-047 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-L02).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-L02).
 <!-- AC-TABLE:EXP-L02:END -->
 
-- **Decision rule.** Pass: the gated tracker stays the default (DEC-042). Fail: revisit DEC-042; the Rev H tracker stays.
+- **Decision rule.** Pass: the gated tracker stays the default (DEC-042). Fail: revisit DEC-042; the Rev H tracker stays. G4 better than the gated tracker on real writing: revisit DEC-042 with DEC-047. A controller that fails the SIM gate does not run on the bench or with people (for the heel wheel, DEC-048).
 
 ### EXP-L04: Does a learned estimator pass REQ-ML-001 on real data?
 
@@ -4326,6 +4356,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 - **Predictions (SIM, replay-trained policy).** The PPO arbiter read 89 % of words at 298 µm. But it moved tremor-free writing by 30.7 µm (60.9 µm on tuning data, 128 µm for one tuning writer) and was worse than Rev H at 10 Hz, 0.3 mm, so it failed rules R1 and R2. Its replay rule (mean weight ≤ 0.05) missed brief full openings. Residual RL on the command moved tremor-free writing by 165 µm.
 - **Set-up.** sim2 (MuJoCo, closed loop, the pen's own sensors) with the estimators run online: the lag-0 smoother as a forward Kalman filter, the recursive Rev H filter, and the detector every 50 ms on a ring buffer. The Gymnasium arbiter environment (`ai2/rl_env.py`) with sim2 as its backend. Then the EXP-V05 bench rig.
 - **Dependency.** Training a policy in sim2 for bench tests is context of use COU-2. It needs sim2 validated first (EXP-V05, REQ-SIM-005).
+- **Status (2026-09-29).** The closed-loop environment is ready in `sim2j/rl.py`: Gymnasium on sim2 at 50 µs, with the firmware and online sensors of the whole-pen study; the action is a residual on the guarded tracker G4 (DEC-047); domain randomisation over sim2's 25 factors and the Rev J ones. Training, selection and test were not run: about 2.4 CPU hours are needed (`python3 -m sim2j.run_study --stages rl_train rl_select rl_test`). The selection rule is frozen in `results/sim2j/rules.json` (`docs/revJ_simulation.md` §7).
 - **Procedure.**
   1. Before training, fix a selection rule on the closed-loop false correction or the peak weight.
   2. Train with a closed-loop false-correction constraint.
@@ -4336,7 +4367,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 <!-- AC-TABLE:EXP-L05:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-L05-01 | REQ-ML-004 | RL arbiter trained in sim2's closed loop (estimators run online, closed-loop false-correction constraint), on held-out sim2 writers and seeds: ink error at 1-2 mm relative to the model-based gate, and tremor-free writing moved minus the gate's, with REQ-CTRL-010 and REQ-CTRL-011 met (all) | all met (≤ 0.95; ≤ 2 µm RMS; REQ-CTRL-010 and -011) | requirement | REQ-ML-004 (beats the gate by ≥ 5 %); replay-trained PPO: 298 µm and 89 % of words, but 30.7 µm on tremor-free writing and worse at 10 Hz, 0.3 mm, so it failed rules R1 and R2 (SIM, docs/ai_control_v2.md s5.3) | DEC-042 (RL offline only; revisit if it passes) |
+| AC-L05-01 | REQ-ML-004 | RL arbiter trained in sim2's closed loop (estimators run online, closed-loop false-correction constraint), on held-out sim2 writers and seeds: ink error at 1-2 mm relative to the model-based gate, and tremor-free writing moved minus the gate's, with REQ-CTRL-010 and REQ-CTRL-011 met (all) | all met (≤ 0.95; ≤ 2 µm RMS; REQ-CTRL-010 and -011) | requirement | REQ-ML-004 (beats the gate by ≥ 5 %); replay-trained PPO: 298 µm and 89 % of words, but 30.7 µm on tremor-free writing and worse at 10 Hz, 0.3 mm, so it failed rules R1 and R2 (SIM, docs/ai_control_v2.md s5.3); the closed-loop environment is ready in sim2j/rl.py (a residual on the guarded tracker G4, DEC-047), and training, selection and test were not run (docs/revJ_simulation.md s7) | DEC-042 (RL offline only; revisit if it passes) |
 | AC-L05-02 | — | The frozen arbiter on the bench rig (EXP-V05 set-up), 1-2 mm tremor: ink error relative to the model-based gate, and tremor-free writing moved minus the gate's (both); gate chatter reported | both met (≤ 0.95; ≤ 2 µm RMS) | hypothesis | pass line of study L; the bench part is policy training for bench tests (COU-2), allowed only after EXP-V05 passes (REQ-SIM-005) | DEC-042; DEC-040 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-L05).
@@ -4346,7 +4377,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 ---
 
-## 46. Rev J integrated layout: EXP-J01…J07, and Rev J.1: EXP-J10…J16
+## 46. Rev J integrated layout: EXP-J01…J07; Rev J.1 and the whole-pen simulation: EXP-J10…J17
 
 ### Purpose and what it gates
 
@@ -4357,7 +4388,7 @@ DEC-044 joins the round-1 designs into one Ø24 mm pen.
 - **What it gates.** DEC-044 is revisited if detailed CAD loses the 0.04–0.14 mm margins, if an EXP-J test fails (gimbal axial load, motor cogging, nose sensing near the magnets, stray field, ink visibility, heat), or if the battery cannot reach 8 h in the steady modes with the page sensor duty-cycled (EXP-P01, AC-P01-06). Requirements: REQ-RVJ-I01…I06, and the updated REQ-RVJ-N03, N05, N06 and REQ-EC-001.
 - **Predictions** come from `docs/revJ_design.md` and `results/revJ/` (CALC on the round-1 designs; 38 of 38 fit checks pass). No new closed-loop simulation was run; SIM numbers are quoted from the round-1 studies. The magnetic fields are free-space calculations without iron or motor housings, so the stray fields are upper bounds.
 - **Mock-ups** are printed from `results/revJ/revJ_pen_assembly.step` and `revJ_pen_assembly_no_endcap.step`.
-- Work with people (EXP-J08 ink visibility, EXP-J09 mass and balance, and EXP-J15's writers) is in [`human_study_plan.md`](human_study_plan.md) §20. The Rev J.1 fixes (DEC-045) and their tests follow EXP-J07.
+- Work with people (EXP-J08 ink visibility, EXP-J09 mass and balance, EXP-J15's writers, and EXP-J18, the heel wheel on writing) is in [`human_study_plan.md`](human_study_plan.md) §20. The Rev J.1 fixes (DEC-045) and their tests follow EXP-J07; EXP-J17, the nib's static load (DEC-046), comes last.
 
 ### EXP-J01: Axial pull and centring of the actuator
 
@@ -4537,14 +4568,15 @@ DEC-045 keeps the Rev J layout and fixes the loads and budgets that Rev J failed
 
 ### EXP-J10: Can a low-power page sensor serve every mode?
 
-- **Purpose and gates.** Test the PMW3610-class die in the folded optics, and its power. Gates REQ-RVJ-N06 (autowrite), REQ-RVJ-I07, the slip detection of REQ-DRV-005, DEC-042's detector and DEC-045.
+- **Purpose and gates.** Test the PMW3610-class die in the folded optics, and its power. Gates REQ-RVJ-N06 (autowrite), REQ-RVJ-I07, REQ-RVJ-C05 (drift), the slip detection of REQ-DRV-005, DEC-042's detector, DEC-045 and DEC-049.
 - **Predictions.**
   - 0.60 mA at 1.8 V; 1.3–1.9 mW with its polling and the regulator (MFR OPT-61; × 1.5 ASSUMPTION; CALC).
   - 3200 cpi (7.9 µm counts), 24–30 in/s and 10 g, with the same 2.2–2.6 mm lens plane as the PMW3360 (MFR OPT-61). Its frame rate and its accuracy on paper are not stated: no prediction.
   - What the modes need: autowrite 1 kHz, ≤ 2 ms and ≤ 10 µm (REQ-RVJ-N06); the detector a 250 Hz grid (DEC-042); guide and lead-through ≥ 120 Hz and ≤ 10 ms.
+  - Drift (REQ-RVJ-C05). DeltaPen (LIT OPT-02, on a tablet surface, not paper) had 68.3 µm mean and 23.6 µm median error per 10 ms window, and 2.6 mm/min of drift at rest. In sim2, errors like that which do not add up left autowrite readable with 2–4 × the ink error; errors that add up drifted the letters 1.5–3 mm apart (SIM, `results/sim2j/page_noise.json`).
 - **Set-up.** The die with the folded optics on the EXP-J04 stage; the six EXP-D01 papers; lens heights 2.0–2.8 mm, tilt 35–75°, roll 0–5°; polled at 1 kHz; the encoder as ground truth; a current probe on the sensor's supply. A PMW3360-class die as the reference.
-- **Procedure.** Writing sweeps with 1 mm of tremor added, at each paper, height, tilt and roll. Latency by cross-correlation with the encoder. Supply current at the polling of each mode.
-- **Measurands.** Report rate; latency; position error; dropouts; power.
+- **Procedure.** Writing sweeps with 1 mm of tremor added, at each paper, height, tilt and roll. Latency by cross-correlation with the encoder. Supply current at the polling of each mode. At writing speeds, log the error of each 10 ms window and its correlation over time, in the form `sim2j/sensing.py` uses; then re-run `python3 -m sim2j.run_study --stages page_noise` with the measured model.
+- **Measurands.** Report rate; latency; position error; dropouts; power; error per 10 ms window and its correlation over time; accumulated error over 2 s of writing.
 
 <!-- AC-TABLE:EXP-J10:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -4552,11 +4584,12 @@ DEC-045 keeps the Rev J layout and fixes the loads and budgets that Rev J failed
 | AC-J10-01 | REQ-RVJ-N06 | PMW3610-class die with the folded optics, polled at 1 kHz on the EXP-J04 stage, six EXP-D01 papers, lens 2.0-2.8 mm above the paper, tilt 35-75°, roll 0-5°, 1 mm tremor added, against the encoder: report rate, latency and position error (all); the roll range of REQ-RVJ-N06 is tested in EXP-J04 | all met (≥ 1 kHz; ≤ 2 ms; ≤ 10 µm RMS) | requirement | REQ-RVJ-N06 (autowrite's needs); the die's frame rate and accuracy on paper are not stated (MFR OPT-61: 3200 cpi, so 7.9 µm counts; 24-30 in/s; the PMW3360's 2.2-2.6 mm lens plane): no prediction; a PMW3360-class die stays the autowrite fallback (DEC-045) | DEC-045 (revisit if the low-power die cannot give autowrite's 1 kHz and 10 µm) |
 | AC-J10-02 | — | Same set-up at the needs of DEC-042's detector and the slip detector: report rate and position error (both) | both met (≥ 250 Hz; ≤ 50 µm RMS) | hypothesis | pass line of the Rev J.1 study; the detector works every 50 ms on a 250 Hz grid (DEC-042); guide and lead-through need ≥ 120 Hz and ≤ 10 ms (CHECKPOINT s7); 50 µm engineering judgement; no prediction | DEC-045 (the page sensor on in every mode); DEC-042; DEC-037 (slip detection) |
 | AC-J10-03 | REQ-RVJ-I07 | Page-sensor power from the cell (current probe on its supply, regulator included) at the polling each mode uses, the sensor on in every mode | ≤ 3 mW | requirement | REQ-RVJ-I07; prediction 1.3-1.9 mW (0.60 mA at 1.8 V, MFR OPT-61, x 1.5 for polling and the regulator, ASSUMPTION; CALC, results/revJ1/budgets.json); a PMW3360-class die takes 34-80 mW (MFR AMF-109) | DEC-045 |
+| AC-J10-04 | REQ-RVJ-C05 | Page sensor (the PMW3610-class die) on paper at writing speeds (EXP-J04 stage, six EXP-D01 papers, writing sweeps of 5-30 mm/s against the encoder): accumulated position error over each 2 s of writing, and the error of each 10 ms window (both) | both met (≤ 0.1 mm per 2 s; per 10 ms window, median ≤ 24 µm and mean ≤ 68 µm) | requirement | REQ-RVJ-C05 (DEC-049); DeltaPen (LIT OPT-02, on a tablet surface): 23.6 µm median and 68.3 µm mean per 10 ms window, 2.6 mm/min drift at rest; no measurement on paper; with errors that add up, the autowritten letters drifted 1.5-3 mm apart (SIM, results/sim2j/page_noise.json) | DEC-049 (revisit if the drift exceeds 0.1 mm per 2 s); DEC-045 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-J10).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-J10).
 <!-- AC-TABLE:EXP-J10:END -->
 
-- **Decision rule.** Meets autowrite's line: one low-power die for every mode (DEC-045). Meets only the detector's line: the PMW3360-class die for autowrite. Meets neither: the steady mode needs EXP-L01 to back an IMU pre-detector (DEC-045 revisit).
+- **Decision rule.** Meets autowrite's line: one low-power die for every mode (DEC-045). Meets only the detector's line: the PMW3360-class die for autowrite. Meets neither: the steady mode needs EXP-L01 to back an IMU pre-detector (DEC-045 revisit). Drift above 0.1 mm per 2 s: revisit DEC-049 (autowrite, guidance and tracing place the ink by the measured position).
 
 ### EXP-J11: The 75 µm gimbal under the pull, and shock
 
@@ -4681,3 +4714,30 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 <!-- AC-TABLE:EXP-J16:END -->
 
 - **Decision rule.** Below 10 % at the measured split, or the fixed mass within 5 points: revisit DEC-045 (a heavier end-cap costs the 120 g limit) and DEC-038 (fit the weight or nothing).
+
+### EXP-J17: Static side load and holding power of the nib
+
+- **Purpose and gates.** Measure what the coils pay to hold the ball's static side load, and the holding power of the balanced nib that replaces them. Gates REQ-RVJ-N10, REQ-RVJ-C04 and DEC-046. Until part (b) passes, every Rev J nose power, battery and heat claim stays suspended (DEC-046). It also serves gates G1 and G2 of the independent review (`docs/reviews/2026-09-29_review_response.md` §4).
+- **Predictions (CALC, SIM; `docs/revJ_simulation.md` §8).**
+  - The refill spring (0.15 N) presses the ball on the paper. At 50° the paper pushes back sideways with F_c·cot θ = 0.126 N. The soft C1S gimbal leaves this to the coils: 9.6 mN·m, or 0.81 A and 1.62 W with K_m 0.656 N/√W on the 11.5 mm magnet arm. At 35° it is 4.7 W, at 75° 0.17 W. It grows with F_c² and cot²θ (CALC).
+  - sim2 (writer 0, tremor-free writing): 2.25 W mean. About 1.1 W is this load, 0.7 W the servo reacting to unfiltered Hall noise, and 0.4 W friction and holding (SIM).
+  - With 100 K/W and 0.5 J/K (ASSUMPTION), the C1S coil passes 100 °C after about 10 s at 35° and 30 s at 50° (CALC).
+  - The balanced nib: no prediction until study B chooses the mechanism (DEC-046).
+- **Set-up.** The nib prototype in a tilt fixture over paper at 35°, 50° and 75°; the refill springs to test (0.15 N nominal, and the others); a current probe on each coil; a thermocouple on the coil and coil-resistance thermometry. Two builds: (a) the C1S nose (study N) with a 0.15 N refill spring; (b) the balanced nib of DEC-046.
+- **Procedure.**
+  1. Ball lifted, nose held centred by the servo as built: coil power for 60 s at each tilt. This is the baseline of gravity holding and sensor noise.
+  2. Ball on the paper: coil current, coil power and coil temperature for 60 s at each tilt. Stop any run when the coil reaches 100 °C.
+  3. Repeat with each refill spring.
+- **Measurands.** Coil current and power with the ball lifted and on the paper; coil temperature against time.
+
+<!-- AC-TABLE:EXP-J17:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-J17-01 | — | (a) The C1S nose with a 0.15 N refill spring, ball on paper at 35, 50 and 75°, 60 s each or until the coil reaches 100 °C: steady coil current and coil power, against the static-load model (F_c cot(θ) at the ball on the 76.5 / 11.5 mm lever, K_m 0.656 N/√W) | within ±20 % of the prediction | hypothesis | pass line of the whole-pen simulation study; prediction 0.81 A and 1.62 W at 50°, 4.7 W at 35° and 0.17 W at 75° (CALC, results/sim2j/power_split.json); the image-method K_m is an upper bound, so the power may be higher; at 4.7 W the coil reaches 100 °C in about 10 s (CALC, 100 K/W and 0.5 J/K ASSUMPTION) | DEC-046 (revisit if the static power is far from the CALC: the load path differs from the model) |
+| AC-J17-02 | REQ-RVJ-N10 | (b) The balanced nib of DEC-046 (study B's mechanism) with the nominal refill spring, ball on paper at 35, 50 and 75°, 60 s each: steady coil heat (current and coil resistance; thermocouple on the coil), largest over the tilts | ≤ 0.1 W | requirement | REQ-RVJ-N10 (DEC-046; the 0.1 W target is an ASSUMPTION); no prediction until study B chooses the mechanism; the C1S nose as it stands takes 4.7 / 1.6 / 0.17 W at 35 / 50 / 75° (CALC) -> fails without a passive bias | DEC-046 (revisit if study B finds no mechanism that meets 0.1 W over 35-75°); every Rev J nose power, battery and heat claim until then |
+| AC-J17-03 | REQ-RVJ-C04 | Coil loss added by the position-sensor noise: coil power with the ball lifted and the nose held centred by the servo as built (with its position filter), 60 s at each tilt, less the gravity-holding power at that tilt (CALC) | ≤ 50 mW | requirement | REQ-RVJ-C04 (DEC-046: the servo filters its position signal); sim2's unfiltered servo (Hall 5.9 µm rms at 10 kHz): 1.20 W with the ball lifted against 0.31 W without the noise (SIM, results/sim2j/power_split.json); gravity holding 0.8-8.3 mW over 75-35° (CALC, docs/revJ1_design.md s9.3) | DEC-046 (the filtered servo) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-J17).
+<!-- AC-TABLE:EXP-J17:END -->
+
+- **Decision rule.** (a) More than 20 % off the model: the load path differs from the model; re-run `python3 -m sim2j.run_study --stages power_split` with the measured values and revisit DEC-046. (b) Above 0.1 W at any tilt: study B's mechanism fails; re-size the actuator or limit the angle range (DEC-046 revisit). Noise loss above 50 mW: filter the position signal harder (REQ-RVJ-C04).
