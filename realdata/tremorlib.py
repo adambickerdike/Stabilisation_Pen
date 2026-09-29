@@ -208,8 +208,8 @@ def assign_roles(rows: List[Dict], sources: Sequence[str], log=print) -> Tuple[D
                      "definition": "below the median of the tuning PD subjects with a tremor line"},
             "moderate": {"range_mm": [float(q50), float(q90)], "n_subjects": int(np.sum((a >= q50) & (a < q90))),
                          "definition": "median to 90th percentile"},
-            "severe": {"range_mm": [float(q90), float(max(a.max(), max(sub_amp.values())))], "n_subjects": int(np.sum(a >= q90)),
-                       "definition": "the top 10 %"},
+            "severe": {"range_mm": [float(q90), float(a.max())], "n_subjects": int(np.sum(a >= q90)),
+                       "definition": "the top 10 % (upper end = the largest tuning subject; larger test subjects exist)"},
         }
         for k in ("mild", "moderate", "severe"):
             lo_, hi_ = classes[k]["range_mm"]

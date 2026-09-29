@@ -110,6 +110,7 @@ def pen_variant(name: str, grip: float = 1.0) -> CS.PenVariant:
 # design -> (pen, firmware, device-law overrides, nose reach override, oracle split (nose share))
 def designs(rules: Dict) -> Dict[str, tuple]:
     cg = rules.get("collar_gain", 0.75)
+    claw = rules.get("collar_law", "ff")
     law = rules.get("cmg_law", "damp")
     gm = rules.get("gate_margin_mm", 0.3) * 1e-3
     return {
@@ -117,8 +118,8 @@ def designs(rules: Dict) -> Dict[str, tuple]:
         "nose": ("base", "nose", {}, None, None),
         "nose_gate": ("base", "nose", {"gate": True, "gate_margin": gm}, None, None),
         "collar_locked": ("collar", "none", {}, None, None),
-        "collar_nose": ("collar", "nose", {"collar": "ff", "collar_gain": cg}, None, None),
-        "collar_fine": ("collar", "nose", {"collar": "ff", "collar_gain": cg}, 1.0e-3, None),
+        "collar_nose": ("collar", "nose", {"collar": claw, "collar_gain": cg}, None, None),
+        "collar_fine": ("collar", "nose", {"collar": claw, "collar_gain": cg}, 1.0e-3, None),
         "gt_locked": ("gt100", "none", {}, None, None),
         "gt_locked_nose": ("gt100", "nose", {}, None, None),
         "gt_nose": ("gt100", "nose", {"cmg": law}, None, None),
@@ -197,7 +198,8 @@ def run_design(bench: Bench, rows: Rows, rules: Dict, w: int, seed: int, cls: tu
     rk = (w, seed, cname, pen, grip, hand_model)
     ref = bench.refs.get(rk)
     ref_name = REF_OF_PEN[pen]
-    if ref is None and amp > 0:
+    is_oracle = fw == "oracle" or any(v == "oracle" for v in over.values())
+    if ref is None and amp > 0 and (is_oracle or dname == ref_name):
         rpen, rfw, rover, _, _ = designs(rules)[ref_name]
         m0 = CS.run_case(su, rfw, C.WPConfig(**rover), kind, f0, amp, seed, keep=True)
         ref = m0.pop("_r")
@@ -344,16 +346,18 @@ def stage_tune(quick=False):
     (damp / afc / ff, against the locked tail with the nose), the gate's margin (0.3 / 1.0 mm)."""
     rows = Rows("tune")
     bench = Bench()
-    ws = (100,) if quick else (100, 101)
+    ws = (100,)
     seed = 300
     et3 = ("ET_moderate", "ET", 6.0, 3e-3)
     pd8 = ("PD_severe", "PD_action", 5.0, 8e-3)
     et8 = ("ET_severe", "ET", 6.0, 8e-3)
     for w in ws:
-        for g in (0.75, 1.0):
-            for cls in (et3, pd8):
-                run_design(bench, rows, {"collar_gain": g}, w, seed, cls, "collar_nose", key_prefix=f"cg{g}|")
-                run_design(bench, rows, {"collar_gain": g}, w, seed, cls, "collar_oracle", key_prefix=f"cg{g}|") if g == 1.0 else None
+        for cls in (et3, pd8):
+            for tag, rl in (("ff0.75", {"collar_law": "ff", "collar_gain": 0.75}), ("ff1", {"collar_law": "ff", "collar_gain": 1.0}),
+                            ("afc", {"collar_law": "afc"})):
+                run_design(bench, rows, rl, w, seed, cls, "collar_nose", key_prefix=f"cl_{tag}|")
+            run_design(bench, rows, {}, w, seed, cls, "collar_oracle")
+            run_design(bench, rows, {}, w, seed, cls, "nose")
         for law in ("damp", "afc", "ff"):
             run_design(bench, rows, {"cmg_law": law}, w, seed, et3, "gt_nose", key_prefix=f"cmg_{law}|")
         run_design(bench, rows, {}, w, seed, et3, "gt_locked_nose")
@@ -380,12 +384,14 @@ def stage_freeze(quick=False):
     """Rules from the tuning rows only (written with a timestamp before any test row exists)."""
     rows = Rows("tune").values()
     by = lambda pref, cls, d: [r for r in rows if r["key"].startswith(pref) and r["class"] == cls and r["design"] == d]
-    # the collar's gain: lower mean ink error over ET 3 mm and PD 8 mm
+    # the collar's law and gain: lower mean ink error over ET 3 mm and PD 8 mm
     cg = {}
-    for g in (0.75, 1.0):
-        v = [r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"cg{g}|", cls, "collar_nose")]
-        cg[g] = float(np.mean(v)) if v else float("inf")
-    collar_gain = min(cg, key=cg.get)
+    for tag in ("ff0.75", "ff1", "afc"):
+        v = [r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"cl_{tag}|", cls, "collar_nose")]
+        cg[tag] = float(np.mean(v)) if v else float("inf")
+    best = min(cg, key=cg.get)
+    collar_law = "afc" if best == "afc" else "ff"
+    collar_gain = {"ff0.75": 0.75, "ff1": 1.0, "afc": 0.75}[best]
     # the gyroscope's law: lowest ink tremor among the causal laws (the gate against the locked tail is reported, not
     # used to pick)
     cl = {}
@@ -402,10 +408,10 @@ def stage_freeze(quick=False):
     gate_margin = 0.3
     if gmr[1.0][1] >= 0.9 * gmr[0.3][1] and gmr[1.0][0] < gmr[0.3][0]:
         gate_margin = 1.0
-    body = {"rules": {"collar_gain": collar_gain, "cmg_law": cmg_law, "gate_margin_mm": gate_margin,
+    body = {"rules": {"collar_law": collar_law, "collar_gain": collar_gain, "cmg_law": cmg_law, "gate_margin_mm": gate_margin,
                       "page_sensor": "measured (sim2j deltapen_walk: OPT-02 per-window statistics, errors add up)",
                       "tracker": "sim2j frozen (results/sim2j/rules.json)"},
-            "evidence": {"collar_gain_ink_um": cg, "cmg_law_tip_mm": cl, "gate_margin": {str(k): v for k, v in gmr.items()}},
+            "evidence": {"collar_law_ink_um": cg, "cmg_law_tip_mm": cl, "gate_margin": {str(k): v for k, v in gmr.items()}},
             "frozen_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "note": "chosen on the tuning writers 100-101 and seed 300 only, before any test run",
             "stabpen.provenance": provenance("SIMULATION (tuning set) -> frozen rules", seeds=[300])}
@@ -420,24 +426,27 @@ def stage_test(quick=False):
     rows = Rows("test" if not quick else "quick_test")
     bench = Bench()
     ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
-    main = ["none", "nose", "nose_gate", "collar_locked", "collar_nose", "collar_fine", "nose_oracle", "collar_nose_oracle"]
     cls_all = CLASSES if not quick else [c for c in CLASSES if c[0] in ("ET_moderate", "PD_severe")]
+    full = ("ET_moderate", "ET_severe", "PD_moderate", "PD_severe", "PD_reemergent_severe", "PD_recorded_moderate")
+    plan = {c[0]: (["none", "nose", "collar_nose", "collar_nose_oracle"] if c[0] in full else ["none", "nose", "collar_nose"])
+            for c in cls_all}
+    for c in ("ET_moderate", "ET_severe", "PD_severe", "PD_reemergent_severe"):
+        plan.get(c, []).append("nose_gate")
+    for c in ("ET_moderate", "ET_severe", "PD_moderate", "PD_severe"):
+        plan.get(c, []).append("collar_fine")
+    for c in ("ET_moderate", "ET_severe", "PD_severe"):
+        plan.get(c, []).append("nose_oracle")
+    for c in ("ET_moderate", "PD_severe"):
+        plan.get(c, []).extend(["gt_locked_nose", "gt_nose"])
+    if quick:
+        plan = {c[0]: ["none", "nose", "collar_nose", "collar_nose_oracle"] for c in cls_all}
     for w, seed in ws:
         for cls in cls_all:
-            ds = main if cls[0] != "ET_moderate_9Hz" else ["none", "nose", "collar_locked", "collar_nose", "collar_nose_oracle"]
-            if quick:
-                ds = ["none", "nose", "collar_locked", "collar_nose", "collar_nose_oracle"]
-            for dn in ds:
+            for dn in plan[cls[0]]:
                 try:
                     run_design(bench, rows, rules, w, seed, cls, dn)
                 except Exception as e:
                     log(f"[test] FAILED w{w} {cls[0]} {dn}: {e}\n{traceback.format_exc()}")
-            if not quick and cls[0] in ("ET_moderate", "ET_severe", "PD_severe"):
-                for dn in ("gt_locked_nose", "gt_nose"):
-                    try:
-                        run_design(bench, rows, rules, w, seed, cls, dn)
-                    except Exception as e:
-                        log(f"[test] FAILED w{w} {cls[0]} {dn}: {e}")
         # tremor-free writing: the false correction ('clean writing changed')
         for dn in ("nose", "collar_nose", "collar_fine"):
             key = f"h1|g1|w{w}|s{seed}|clean|{dn}"
@@ -463,9 +472,9 @@ def stage_grips(quick=False):
     bench = Bench()
     w, seed = 100, 300
     cls = ("ET_moderate", "ET", 6.0, 3e-3)
-    grips = (0.5, 1.0, 2.0) if not quick else (0.5,)
+    grips = (0.5, 2.0) if not quick else (0.5,)
     for g in grips:
-        for dn in ("none", "nose", "collar_locked", "collar_nose", "collar_oracle", "gt_locked_nose", "gt_nose"):
+        for dn in ("collar_locked", "collar_nose", "collar_oracle", "gt_locked_nose", "gt_nose"):
             try:
                 run_design(bench, rows, rules, w, seed, cls, dn, grip=g)
             except Exception as e:
@@ -480,7 +489,7 @@ def stage_arm(quick=False):
     rows = Rows("arm")
     bench = Bench()
     w, seed = 0, 200
-    for cls in (("ET_moderate", "ET", 6.0, 3e-3), ("PD_moderate", "PD_action", 5.0, 3e-3)):
+    for cls in (("ET_moderate", "ET", 6.0, 3e-3),):
         for dn in ("none", "nose", "collar_locked", "collar_nose", "collar_oracle"):
             try:
                 run_design(bench, rows, rules, w, seed, cls, dn, hand_model="arm")

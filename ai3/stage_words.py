@@ -44,6 +44,7 @@ LAMBDAS_R = (0.5, 0.75, 1.0, 1.5)
 THETAS_C = (0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85, 0.9, 0.95, 0.97, 0.99)
 P_S_GRID = (0.0, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7)
 NBEST = 3
+PRUNE_NATS = 14.0          # readings less likely than the best by more than e^14 are dropped (no effect for lambda_r >= 0.5)
 
 
 # ============================================================================================ letters and posteriors
@@ -265,14 +266,27 @@ def spell_tokens(ck, units_list: List[List[Dict]], pool, cal: bool, seed: int, p
                 if P is None:
                     continue
                 cands = nbest(P)
+                cands = [(x, lp) for x, lp in cands if lp >= cands[0][1] - PRUNE_NATS]   # negligible readings dropped
                 literal = "".join(O.LETTERS[int(np.argmax(p))] for p in P)
                 capital = bool(u["capital"] and ti == 0)
                 start_prev = None if (u["sentence_start"] and ti == 0) else prev
                 reads = []
-                for x, lp in cands:
-                    st = ck.start(start_prev, ctx_text=ctx[-60:], capital=capital)
-                    for c in x:
-                        ck.push(st, c)
+                snaps = []                                   # the first reading's checker state after each letter
+                for ri, (x, lp) in enumerate(cands):
+                    if ri == 0:
+                        st = ck.start(start_prev, ctx_text=ctx[-60:], capital=capital)
+                        snaps.append((st.typed, len(st.cols), st.logp_char))
+                        for c in x:
+                            ck.push(st, c)
+                            snaps.append((st.typed, len(st.cols), st.logp_char))
+                        st0 = st
+                    else:                                    # share the columns of the common prefix
+                        j = next((i for i, (a, b) in enumerate(zip(x, cands[0][0])) if a != b), len(x))
+                        typed, ncol, lpc = snaps[j]
+                        st = ck.start(start_prev, ctx_text=ctx[-60:], capital=capital)
+                        st.typed, st.cols, st.logp_char = typed, list(st0.cols[:ncol]), lpc
+                        for c in x[j:]:
+                            ck.push(st, c)
                     e = ck.end(st)
                     err_raw, cor_raw, oov_raw = e["masses"]
                     tot = (err_raw + cor_raw) * (1 - p_oov) + p_oov * oov_raw
@@ -496,7 +510,7 @@ def run(quick: bool) -> Dict:
     units_test = [SS.holbrook_units(p) for p in test_p]
     if quick:
         units_tune, units_test = units_tune[:2], units_test[:2]
-    max_units = 80 if quick else 500
+    max_units = 80 if quick else 300
     pools = {}
     for split in ("tune", "test"):
         keys = [k for k in lb["bank"] if O.split_of(k[0]) == split]

@@ -173,11 +173,11 @@ def lines(series: Dict[str, Dict], xlabel: str, ylabel: str, title: str, name: s
 
 # ------------------------------------------------------------------------------------------------ the system picture
 def system(d: Dict, name: str = "fig_w_system",
-           evidence: str = "PROPOSED DESIGN (sizes CALC from designs.py); an illustration, not a drawing for manufacture"):
-    """A labelled side view of the recommended pen: what moves, what pushes, what it does to the ink."""
+           evidence: str = "PROPOSED DESIGN (sizes CALC: wholepen/calc.py collar_geometry, collar_masses); an illustration, not a drawing for manufacture"):
+    """A labelled side view of the recommended pen (the V2 collar): what the hand holds, what moves, what pushes."""
     plt = _mpl()
-    from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle, Circle, Ellipse
-    fig, ax = plt.subplots(figsize=(11, 4.4))
+    from matplotlib.patches import FancyArrowPatch, Polygon, Circle, Ellipse
+    fig, ax = plt.subplots(figsize=(11, 4.6))
     th = math.radians(50)
     a = np.array([math.cos(th), math.sin(th)])
     n = np.array([-math.sin(th), math.cos(th)])
@@ -185,50 +185,228 @@ def system(d: Dict, name: str = "fig_w_system",
     def P(z, r=0.0):
         return a * z + n * r
 
-    # paper
-    ax.plot([-40, 230], [0, 0], color=GREY, linewidth=1.5)
-    ax.text(-38, -6, "paper", fontsize=8, color=INK2)
-    # pen body (0-145) and tail module
-    L = 144.7
-    Lt = d["length_mm"]
-    od = d["od_mm"]
-    body = [P(10, -11.65), P(50, -12), P(L, -12), P(L, 12), P(50, 12), P(10, 11.65)]
-    ax.add_patch(Polygon(body, closed=True, facecolor="#e9f1fb", edgecolor=SLOT[0], linewidth=1.2))
-    tail = [P(L, -od / 2), P(L + Lt, -od / 2), P(L + Lt, od / 2), P(L, od / 2)]
-    ax.add_patch(Polygon(tail, closed=True, facecolor="#fdeee6", edgecolor=SLOT[1], linewidth=1.2))
-    # nose inside: from the gimbal (76.5) to the ball (0), deflected
-    for q, alpha in ((0.0, 1.0), (6.6, 0.35), (-6.6, 0.35)):
-        tip = np.array([0.0, 0.0]) + np.array([1, 0]) * q
-        ax.plot([tip[0], P(76.5)[0]], [tip[1] + 0.5, P(76.5)[1]], color=INK, linewidth=1.2, alpha=alpha)
-    ax.add_patch(Circle(P(76.5), 1.6, color=INK))
-    # rotors (two discs seen edge-on, tilted +- delta)
-    for j, zc in enumerate((L + Lt * 0.33, L + Lt * 0.67)):
-        c = P(zc)
-        for dd, al in ((0.0, 1.0), (0.6, 0.3), (-0.6, 0.3)):
-            ang = th + math.pi / 2 + (dd if j == 0 else -dd)
-            v = np.array([math.cos(ang), math.sin(ang)]) * d["rotor_r_o_mm"]
-            ax.plot([c[0] - v[0], c[0] + v[0]], [c[1] - v[1], c[1] + v[1]], color=SLOT[1], linewidth=3.0, alpha=al,
-                    solid_capstyle="round")
-    # hand contact zones
-    for z, lab in ((32, "finger pads"), (92, "thumb-index web")):
-        c = P(z, 16)
+    zp = d["z_p_mm"]
+    rb = d["barrel_od_mm"] / 2
+    rc = d["collar_od_mm"] / 2
+    zf, zr = d["z_front_mm"], d["z_rear_mm"]
+    L = d["length_mm"]
+    phi = math.radians(d["swing_deg"])
+    ax.plot([-40, 200], [0, 0], color=GREY, linewidth=1.5)
+    ax.text(-38, -7, "paper", fontsize=8, color=INK2)
+    # the inner barrel in three poses (centre and the two ends of its swing about the pivot)
+    for ang, al in ((0.0, 1.0), (phi, 0.28), (-phi, 0.28)):
+        R = np.array([[math.cos(ang), -math.sin(ang)], [math.sin(ang), math.cos(ang)]])
+        piv = P(zp)
+        pts = [P(3, -1.2), P(12, -rb), P(L, -rb), P(L, rb), P(12, rb), P(3, 1.2)]
+        pts = [piv + R @ (p - piv) for p in pts]
+        ax.add_patch(Polygon(pts, closed=True, facecolor="#e9f1fb" if ang == 0 else "none", edgecolor=SLOT[0], linewidth=1.2,
+                             alpha=al))
+    # the collar (sleeve) held by the fingers and resting in the web, with its skid ring on the paper
+    col = [P(zf, -rc), P(zr, -rc), P(zr, rc), P(zf, rc)]
+    ax.add_patch(Polygon(col, closed=True, facecolor="none", edgecolor=SLOT[2], linewidth=2.0))
+    ax.add_patch(Polygon([P(zf - 0.5, -rc), P(9.5, -11.6), P(9.5, 11.6), P(zf - 0.5, rc)], closed=True, facecolor="none",
+                         edgecolor=SLOT[2], linewidth=1.2, linestyle="--"))
+    ax.add_patch(Circle(P(zp), 1.8, color=INK))
+    for z, lab in ((32, "finger pads hold the collar"), (92, "thumb-index web rests on the collar")):
+        c = P(z, rc + 4)
         ax.add_patch(Ellipse(c, 16, 7, angle=math.degrees(th), facecolor="#f3e3d3", edgecolor=GREY, linewidth=0.8))
-        ax.text(c[0] - 10, c[1] + 6, lab, fontsize=7, color=INK2)
-    # arrows and labels
-    def label(xy, txt, xyt, color=INK):
-        ax.annotate(txt, xy=xy, xytext=xyt, fontsize=8, color=color, arrowprops=dict(arrowstyle="-", color=GREY, lw=0.8))
-    label((0, 0.5), "ink tip: moves up to 6.6 mm each way\nto cancel what is left of the tremor", (-40, 40))
-    label(P(76.5), "nose pivot (Rev J)", (5, 95))
-    label(P(L + Lt * 0.33), f"two tungsten rotors, {d['rotor_g']:.0f} g each, spinning\n{d['rpm']:.0f} rpm in opposite senses; tipping them\ntwists the whole pen and hand against the tremor", (150, 150))
-    label(P(L + Lt, 0), f"gyro tail: {d['total_g']:.0f} g, {Lt:.0f} mm long, {od:.0f} mm across;\nit screws on in place of the rear cap", (210, 60))
-    ax.add_patch(FancyArrowPatch(P(L + Lt + 8, -14), P(L + Lt + 8, 14), connectionstyle="arc3,rad=0.5",
-                                 arrowstyle="<->", mutation_scale=10, color=SLOT[1], linewidth=1.2))
-    ax.set_xlim(-45, 280)
-    ax.set_ylim(-12, 190)
+        ax.text(c[0] - 18, c[1] + 6, lab, fontsize=7, color=INK2)
+
+    def label(xy, txt, xyt):
+        ax.annotate(txt, xy=xy, xytext=xyt, fontsize=8, color=INK, arrowprops=dict(arrowstyle="-", color=GREY, lw=0.8))
+    label((0, 0.3), f"ink point: the whole inner pen swings it\n+-{d['travel_mm']:.0f} mm across the page (tilt plane x 1.3)", (-42, 42))
+    label(P(zp), f"2-axis flexure pivot, {zp:.0f} mm from the tip", (8, 112))
+    label(P(zr - 3, -rc), f"two motors (geared or voice coil) swing the pen\nand push back on the collar and hand (Liftware principle)", (95, 18))
+    label(P(zf + 8, rc), f"collar {d['collar_od_mm']:.1f} mm across, skid ring on the paper\ncarries the writing force", (-40, 88))
+    label(P(L, 0), f"inner pen {d['barrel_od_mm']:.0f} mm across: refill, small fine nib,\ncell and board move together", (120, 150))
+    ax.add_patch(FancyArrowPatch(P(L + 6, -8), P(L + 6, 8), connectionstyle="arc3,rad=0.5", arrowstyle="<->",
+                                 mutation_scale=10, color=SLOT[0], linewidth=1.2))
+    ax.set_xlim(-45, 210)
+    ax.set_ylim(-12, 175)
     ax.set_aspect("equal")
     ax.axis("off")
-    ax.set_title("The recommended pen: Rev J's moving nose + a detachable gyro tail", loc="left")
+    ax.set_title("The recommended pen: the whole inner pen swings inside a collar the hand holds", loc="left")
     _evidence(fig, evidence)
     fig.tight_layout()
-    return save(fig, name, ["item", "value"], [["tail_mass_g", d["total_g"]], ["rotor_g", d["rotor_g"]], ["rpm", d["rpm"]],
-                                                ["tail_length_mm", Lt], ["tail_od_mm", od]])
+    return save(fig, name, ["item", "value"], [[k, v] for k, v in d.items()])
+
+
+# ------------------------------------------------------------------------------------------------ all figures
+DESIGN_COLORS = {"none": "#8a8985", "nose": SLOT[0], "nose_gate": SLOT[3], "collar_nose": SLOT[2], "collar_fine": SLOT[5],
+                 "gt_nose": SLOT[1], "gt_locked_nose": "#f4b99b", "nose_oracle": SLOT[6], "collar_nose_oracle": SLOT[4],
+                 "collar_oracle": SLOT[7], "collar_locked": "#b9b8b3", "gt_locked": "#d9c7bd"}
+
+
+def _load(n):
+    import json
+    p = os.path.join(RESULTS, n)
+    return json.load(open(p)) if os.path.exists(p) else None
+
+
+def fig_headline():
+    from . import run_study as RS
+    s = _load("summary.json")
+    if not s:
+        return None
+    head = s["headline"]
+    ds = [d for d in head["designs"] if any(r["design"] == d for r in head["rows"])]
+    rows = [{"class": RS.CLASS_LABEL[r["class"]], "design": RS.LABELS[r["design"]], "tip_mm": r["tip_mm"], "words10": r["words10"]}
+            for r in head["rows"] if r["design"] in ds]
+    colors = {RS.LABELS[d]: DESIGN_COLORS[d] for d in ds}
+    return headline(rows, [RS.LABELS[d] for d in ds], colors)
+
+
+def fig_writing():
+    """Before/after pictures from the saved traces (test writer 0)."""
+    from . import BUILD
+    from . import run_study as RS
+    d = os.path.join(BUILD, "traces")
+    if not os.path.isdir(d):
+        return None
+    samples = []
+    cls_rows = ["ET_moderate", "ET_severe", "PD_severe"]
+    des = ["none", "nose", "collar_nose", "collar_nose_oracle"]
+    for i, c in enumerate(cls_rows):
+        for j, dn in enumerate(des):
+            fn = os.path.join(d, f"h1_g1_w0_s200_{c}_{dn}.npz")
+            if not os.path.exists(fn):
+                continue
+            z = np.load(fn)
+            t0 = 4.3
+            m = z["t"] > t0
+            mi = z["it_t"] > t0
+            ink = np.column_stack([z["ink"][m] * 1e3, z["contact"][m]])
+            it = np.column_stack([z["it_xy"][mi] * 1e3, z["it_down"][mi]])
+            samples.append({"row": i, "col": j, "title": f"{RS.CLASS_LABEL[c]} - {RS.LABELS[dn]}", "intended": it.tolist(),
+                            "ink": ink.tolist(), "caption": ""})
+    if not samples:
+        return None
+    return writing(samples)
+
+
+def fig_collar_control():
+    c = _load("calc.json")
+    if not c:
+        return None
+    out = []
+    for key, pen in (("collar_control_revJ", "Rev J inner pen"), ("collar_control_compact", "compact 12 mm barrel")):
+        rows = c[key]["rows"]
+        series = {}
+        for web in (True, False):
+            for g in (0.5, 1.0, 2.0):
+                rr = sorted([r for r in rows if r["web_on_collar"] == web and r["grip_scale"] == g and r["r_rot"] == 0.5], key=lambda r: r["f"])
+                lab = f"grip {g:g} x, web on {'collar' if web else 'barrel'}"
+                series[lab] = {"x": [r["f"] for r in rr], "y": [r["transmission_min"] for r in rr]}
+        cols = {f"grip {g:g} x, web on {'collar' if w else 'barrel'}": SLOT[k] for k, (w, g) in
+                enumerate([(True, 0.5), (True, 1.0), (True, 2.0), (False, 0.5), (False, 1.0), (False, 2.0)])}
+        out.append(lines(series, "tremor frequency (Hz)", "ink motion / (pivot-to-tip x angle), weakest axis",
+                         f"Does the collar still move the ink? ({pen})", f"fig_w_collar_transmission_{'revj' if 'revJ' in key else 'compact'}",
+                         "CALC (lin.py, V2 collar, split 0.5); 1 = the ideal lever; below 1 the grip or the web takes part of the motion",
+                         colors=cols, hlines=[(1.0, "ideal")]))
+    return out
+
+
+def fig_tail_gate():
+    c = _load("calc.json")
+    if not c:
+        return None
+    rows = c["tail_gate"]["rows"]
+    series = {}
+    for mod in sorted({r["module"] for r in rows}):
+        rr = [r for r in rows if r["module"] == mod and r["r_rot"] == 0.5 and r["f"] == 6.0 and r["A_mm"] == 3.0]
+        rr = sorted(rr, key=lambda r: r["grip_scale"])
+        series[mod] = {"x": [r["grip_scale"] for r in rr], "y": [100 * r["gain_vs_locked"] for r in rr]}
+    return lines(series, "grip stiffness (x the nominal 575 N/m)", "improvement over the same mass locked (%)",
+                 "Tail modules against the same mass locked (6 Hz, 3 mm)", "fig_w_tail_gate",
+                 "CALC (lin.py, perfect knowledge of the tremor: an upper bound); dashed: the review's 10 % gate", hlines=[(10.0, "gate 10 %")])
+
+
+def fig_cmg_energy():
+    c = _load("calc.json")
+    if not c:
+        return None
+    rows = c["cmg_sizing"]["rows"]
+    plt = _mpl()
+    fig, ax = plt.subplots(figsize=(6.4, 3.8))
+    out = []
+    for i, r in enumerate(rows):
+        x, y = r["E_J_total"], r["tip_tremor_cancellable_5Hz_mm"]
+        ax.plot([x], [y], "o", color=SLOT[i % len(SLOT)], markersize=7)
+        ax.text(x * 1.05, y, "  " + r["name"].split(",")[0].replace("study W turret pair", "W pair"), fontsize=7, color=INK2, va="center")
+        out.append([r["name"], x, y, r["h_Nms"]])
+    ax.set_xscale("log")
+    ax.set_xlabel("energy stored in the spinning rotors (J)")
+    ax.set_ylabel("largest tip tremor it could cancel at 5 Hz (mm)")
+    ax.set_title("Gyroscopes: what they could do against what they store")
+    _grid(ax)
+    _evidence(fig, "CALC (designs.py, calc.py; perfect knowledge, +-1 rad gimbals; a 100 g pen dropped from 1 m carries about 1 J)")
+    fig.tight_layout()
+    return save(fig, "fig_w_cmg_energy", ["design", "E_stored_J", "cancellable_5Hz_mm", "h_Nms"], out)
+
+
+def fig_grips():
+    from . import run_study as RS
+    s = _load("summary.json")
+    if not s:
+        return None
+    rr = s.get("tail_and_collar_vs_locked_grips", [])
+    series = {}
+    for act in ("collar_nose", "collar_oracle", "gt_nose"):
+        v = sorted([r for r in rr if r["active"] == act], key=lambda r: r["grip"])
+        if v:
+            series[RS.LABELS[act]] = {"x": [r["grip"] for r in v], "y": [100 * r["gain_vs_locked"] for r in v]}
+    if not series:
+        return None
+    return lines(series, "grip stiffness (x nominal)", "improvement over the same pen locked (%)",
+                 "In the simulator: collar and gyro tail against the same mass locked", "fig_w_grips_sim",
+                 "SIMULATION (tuning writer 100, ET 6 Hz 3 mm, seed 300)", hlines=[(10.0, "gate 10 %")],
+                 colors={RS.LABELS[k]: DESIGN_COLORS[k] for k in ("collar_nose", "collar_oracle", "gt_nose")})
+
+
+def fig_gate():
+    from . import run_study as RS
+    s = _load("summary.json")
+    if not s:
+        return None
+    rows = [r for r in s["headline"]["rows"] if r["design"] in ("nose", "nose_gate")]
+    plt = _mpl()
+    fig, axs = plt.subplots(1, 2, figsize=(10, 3.6))
+    out = []
+    cls = [c for c in s["headline"]["classes"] if any(r["class"] == c for r in rows)]
+    for j, dn in enumerate(("nose", "nose_gate")):
+        rr = [next((r for r in rows if r["class"] == c and r["design"] == dn), None) for c in cls]
+        ys = np.arange(len(cls)) + (j - 0.5) * 0.4
+        axs[0].barh(ys, [r["ink_err_um"] if r else 0 for r in rr], height=0.38, color=DESIGN_COLORS[dn], label=RS.LABELS[dn])
+        axs[1].barh(ys, [100 * (r["coverage"] or 0) if r else 0 for r in rr], height=0.38, color=DESIGN_COLORS[dn])
+        out += [[c, dn, r["ink_err_um"] if r else None, r["coverage"] if r else None] for c, r in zip(cls, rr)]
+    for ax in axs:
+        ax.set_yticks(range(len(cls)))
+        ax.set_yticklabels([RS.CLASS_LABEL[c] for c in cls], fontsize=7)
+        ax.invert_yaxis()
+        _grid(ax, "x")
+    axs[0].set_xlabel("ink error while inking (um)")
+    axs[1].set_xlabel("share of the letters' ink laid (%)")
+    axs[0].set_title("Writing only when in reach: the error drops...")
+    axs[1].set_title("...because ink goes missing")
+    axs[0].legend(fontsize=7, loc="lower right")
+    _evidence(fig, "SIMULATION (test writers 0-1); coverage = share of the tremor-free run's inked samples also inked")
+    fig.tight_layout()
+    return save(fig, "fig_w_gate", ["class", "design", "ink_err_um", "coverage"], out)
+
+
+def all_figures() -> Dict:
+    from . import calc as K
+    out = {}
+    for nm, fn in (("headline", fig_headline), ("writing", fig_writing), ("collar_control", fig_collar_control),
+                   ("tail_gate", fig_tail_gate), ("cmg_energy", fig_cmg_energy), ("grips", fig_grips), ("gate", fig_gate)):
+        try:
+            out[nm] = fn()
+        except Exception as e:                                   # a missing input skips that figure only
+            out[nm] = f"skipped: {type(e).__name__}: {e}"
+    g = K.COLLAR_V2
+    mm = K.collar_masses("geared")
+    d = {"z_p_mm": 50.0, "barrel_od_mm": g["barrel_od"] * 1e3, "collar_od_mm": 21.7, "z_front_mm": g["z_front_v2"] * 1e3,
+         "z_rear_mm": g["z_rear"] * 1e3, "length_mm": g["length"] * 1e3, "travel_mm": 4.0, "swing_deg": math.degrees(4.0 / 50.0),
+         "total_g": round(mm["total_g"], 1)}
+    out["system"] = system(d)
+    return out

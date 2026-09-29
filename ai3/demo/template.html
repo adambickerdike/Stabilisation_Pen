@@ -36,9 +36,10 @@ button:hover { border-color: var(--muted) }
 button.primary { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 600 }
 button:disabled { opacity: .45; cursor: not-allowed }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px }
-select { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-height: 40px; max-width: 100% }
+select { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; min-height: 40px; max-width: 100%; min-width: 0 }
 .controls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center }
-.controls label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); font-size: .9rem }
+.controls label { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; color: var(--muted); font-size: .9rem; min-width: 0; max-width: 100% }
+.controls label select { flex: 1 1 14rem; width: 100% }
 .banner { background: var(--chip); border-radius: 8px; padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between }
 .banner p { font-size: .92rem; min-width: 0 }
 /* the pad */
@@ -116,11 +117,11 @@ details.more summary { cursor: pointer; font-weight: 600 }
     <div class="controls">
       <label for="cue">Pen cue
         <select id="cue">
-          <option value="pause_offer">At the next pause: tick + suggestions</option>
+          <option value="pause_offer">Tick at the next pause</option>
           <option value="tick">Tick on the suspect letter</option>
-          <option value="withhold">Lift the pen: no ink for the wrong letter</option>
-          <option value="show_me">Show me (opt-in): pen draws the next letter lightly</option>
-          <option value="none">No pen cue (the app underlines only)</option>
+          <option value="withhold">Lift the pen (no ink)</option>
+          <option value="show_me">Show me the next letter (opt-in)</option>
+          <option value="none">No pen cue</option>
         </select>
       </label>
       <label for="speak"><input id="speak" type="checkbox"> Read suggestions aloud</label>
@@ -430,13 +431,13 @@ function letterStrokesXh(L) { const o = L.strokes[0].pts[0]; return L.strokes.ma
 /* ------------------------------------------------------------------ writing: pointer input and segmentation */
 function evPt(e) { const r = pad.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top, performance.now()] }
 pad.addEventListener("pointerdown", e => { if (busyPlan) return; if (exampleMode) $("newpage").click();
-  if (word.done) { Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: false }) }
   pad.setPointerCapture(e.pointerId); e.preventDefault(); penDown(evPt(e)) });
 pad.addEventListener("pointermove", e => { if (!curStroke) return; e.preventDefault(); const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e]; for (const q of (evs.length ? evs : [e])) penMove(evPt(q)) });
 pad.addEventListener("pointerup", e => { if (curStroke) penUp(evPt(e)) });
 pad.addEventListener("pointercancel", e => { if (curStroke) penUp(evPt(e)) });
 function penDown(p) {
   clearTimeout(pauseTimer); hideTray(false);
+  if (word.done) Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: false });
   const h = xhPx();
   const action = word.withheldFrom !== null ? "withheld" : "none";
   curStroke = { pts: [p], action, xmin: p[0], xmax: p[0] };
@@ -521,19 +522,22 @@ function ghostNextLetter(w, k) {                      /* show me (opt-in): the c
 }
 
 /* ------------------------------------------------------------------ pauses: completions; word end: spelling */
-function onPause() {
-  if (busyPlan || !word.letters.length) return;
-  const pre = committedPrefix(); if (!pre) return;
-  const st = newCheck(); for (const c of pre) pushLetter(st, c);
+function literalNow() { return word.letters.filter(L => L.rec).map(L => LET[argmax(L.rec.q)]).join("") }
+function onPause() {                                  /* a natural pause mid-word: completions (and alternatives if flagged) */
+  if (busyPlan || !word.letters.length || word.done) return;
+  for (const L of word.letters) finaliseLetter(L);
+  const lit = literalNow(); if (!lit) return;
+  const st = newCheck(); for (const c of lit) pushLetter(st, c);
   const m = prefixMasses(st);
-  const offers = m.complete.filter(c => c.w.length > pre.length && c.p >= S.p_offer).slice(0, 3);
-  const flagged = word.flaggedAt !== null;
-  if (!offers.length && !flagged) return;
-  if (cueMode === "pause_offer" && flagged) { setPen("pause_offer", "Tick at the pause: have a look at the suggestions"); buzz() }
-  showTray(flagged ? `Did you mean one of these? (the letters so far, "${pre}", look unusual)` : `Finish the word for you? Tap one to accept (Esc to close).`,
-    offers.length ? offers : m.complete.slice(0, 3), "completion", pre);
+  const flagged = word.flaggedAt !== null || m.pdev >= S.theta;
+  const comps = m.complete.filter(c => c.w.startsWith(lit) && c.w.length > lit.length && c.p >= S.p_offer).slice(0, 3);
+  const alts = flagged ? m.complete.filter(c => !c.w.startsWith(lit)).slice(0, 3) : [];
+  if (!comps.length && !alts.length) return;
+  if (flagged && !exampleMode && cueMode === "pause_offer") { setPen("pause_offer", "Tick at the pause: have a look at the suggestions"); buzz() }
+  showTray(flagged ? `"${lit}" may be misspelled. Tap a word to fix the transcript (your ink stays as it is).` : `Finish "${lit}…" for you? Tap one to accept (keys 1-3; Esc closes).`,
+    comps, alts, lit);
 }
-function showSuggestionsMid(m, pre) { showTray(`The pen lifted. Did you mean one of these?`, m.complete.slice(0, 3), "completion", pre) }
+function showSuggestionsMid(m, pre) { const lit = literalNow(); showTray(`The pen lifted: "${lit}" looks misspelled. Tap a word to fix the transcript.`, [], m.complete.filter(c => !c.w.startsWith(lit)).slice(0, 3), lit) }
 async function endWord() {
   clearTimeout(pauseTimer); hideTray(false);
   if (word.done) { Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, ghost: null, done: false }); drawPad(); return }
@@ -552,29 +556,40 @@ async function endWord() {
   }
   Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: false });
   renderText(); renderLive(); drawPad(); if (!exampleMode) setTimeout(() => { if (!busyPlan) setPen("idle") }, 1600);
+  return i;
 }
-function showTray(why, opts, kind, pre) {
+function showTray(why, comps, alts, lit) {
   $("traywhy").textContent = why; const box = $("trayopts"); box.innerHTML = "";
-  opts.forEach((o, k) => { const b = document.createElement("button"); b.type = "button"; b.dataset.w = o.w;
-    b.innerHTML = `${k + 1}. ${o.w}<span class="p">${Math.round(100 * o.p)}%</span>`; b.onclick = () => acceptCompletion(o.w, pre); box.appendChild(b) });
+  let k = 0;
+  for (const o of comps) { const b = document.createElement("button"); b.type = "button"; b.dataset.w = o.w; b.dataset.kind = "completion";
+    b.innerHTML = `${++k}. ${lit}<b></b><span class="p">${Math.round(100 * o.p)}%</span>`; b.querySelector("b").textContent = o.w.slice(lit.length);
+    b.title = "The pen can write the rest for you after you accept"; b.onclick = () => acceptCompletion(o.w, lit); box.appendChild(b) }
+  for (const o of alts) { const b = document.createElement("button"); b.type = "button"; b.dataset.w = o.w; b.dataset.kind = "spelling";
+    b.innerHTML = `${++k}. <span></span><span class="p">${Math.round(100 * o.p)}%</span>`; b.querySelector("span").textContent = o.w;
+    b.title = "Fixes the transcript only; the ink stays"; b.onclick = () => acceptAlternative(o.w); box.appendChild(b) }
   const no = document.createElement("button"); no.type = "button"; no.textContent = "None of these"; no.onclick = () => hideTray(true); box.appendChild(no);
-  $("tray").hidden = false; speakList(opts.map(o => o.w));
+  $("tray").hidden = false; speakList([...comps, ...alts].map(o => o.w));
 }
 function hideTray(byUser) { $("tray").hidden = true }
 function speakList(ws) { if (!$("speak").checked || !ws.length || !window.speechSynthesis) return;
   try { const u = new SpeechSynthesisUtterance(ws.join(", ")); const v = speechSynthesis.getVoices().find(v => v.localService && /^en/.test(v.lang)); if (v) u.voice = v; speechSynthesis.cancel(); speechSynthesis.speak(u) } catch (e) {} }
 document.addEventListener("keydown", e => { if ($("tray").hidden) return;
   if (e.key === "Escape") hideTray(true); const k = +e.key; if (k >= 1 && k <= 3) { const b = $("trayopts").children[k - 1]; if (b && b.dataset.w) b.click() } });
-async function acceptCompletion(w, pre) {
+async function acceptCompletion(w, lit) {           /* accepted: the transcript says w; the pen may write the rest */
   hideTray(true);
-  const rest = w.slice(pre.length);
-  const P = word.letters.map(L => L.rec.q), literal = P.map(p => LET[argmax(p)]).join("");
-  const i = addWord(literal, P.map(p => Math.max(...p)), word.strokes.map(s => s.rec && s.rec.index), null);
-  const rev = revise(i, w, "completion", "predictor", "you", `completion accepted after "${pre}"`);
+  const rest = w.slice(lit.length);
+  const P = word.letters.map(L => L.rec.q);
+  const i = addWord(lit, P.map(p => Math.max(...p)), word.strokes.map(s => s.rec && s.rec.index), null);
+  const rev = revise(i, w, "completion", "predictor", "you", `completion accepted after "${lit}"`);
   const x0 = word.xmax + 0.3 * xhPx();
   Object.assign(word, { letters: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: true });
   makePlan(rev, rest, x0);
   drawPad(); renderLive();
+}
+async function acceptAlternative(w) {                 /* a spelling alternative at a pause: the transcript only */
+  hideTray(true);
+  const i = await endWord();
+  if (i !== undefined) { revise(i, w, "spelling", "checker", "you", "chosen at a pause"); selectWord(i) }
 }
 
 /* ------------------------------------------------------------------ writing plan (accepted text only) */

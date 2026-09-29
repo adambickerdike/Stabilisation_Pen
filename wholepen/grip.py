@@ -8,7 +8,7 @@ impedance of LIT HAP-26 (575 N/m, 1.3 N s/m) in every direction, for any split r
 that comes from the pen rotating in the grip) and web share rho_w.  The split is not measured (EXP-I01).
 Literature bounds used as cross-checks (not fitted):
   finger-pad skin in shear   k = 1.48 n^0.35 N/mm per pad at normal force n (LIT HAP-31); pad forces while writing on
-                             paper 3.1 / 2.1 / 1.3 N (thumb / index / middle, children; LIT CON-75)
+                             paper 3.1 / 2.1 / 1.3 N (thumb / index / middle, children; LIT CON-04)
   finger joints              MCP/PIP/DIP stiffness 0.45-0.71 N m/rad while tapping, 1.0-1.7 N m/rad expected for an
                              extended MCP at higher forces (LIT HAP-115)
   wrist                      passive stiffness 1.28 / 1.74 N m/rad (FE / RUD), pronation-supination 0.2-0.3 (LIT HAP-32);
@@ -32,10 +32,10 @@ from . import lin as L
 
 
 def pad_skin_shear(forces=(3.07, 2.11, 1.34)) -> Dict:
-    """LIT HAP-31 power law at the digit forces of LIT CON-75 (on paper, controls)."""
+    """LIT HAP-31 power law at the digit forces of LIT CON-04 (on paper, controls)."""
     per = [1.48 * n ** 0.35 * 1e3 for n in forces]
     return {"digit_forces_N": list(forces), "per_pad_N_m": per, "three_pads_N_m": float(sum(per)),
-            "label": "CALC from LIT HAP-31 (k = 1.48 n^0.35 N/mm) and LIT CON-75 (thumb/index/middle forces on paper)"}
+            "label": "CALC from LIT HAP-31 (k = 1.48 n^0.35 N/mm) and LIT CON-04 (thumb/index/middle forces on paper)"}
 
 
 def split_table(r_rots=(0.3, 0.5, 0.7), rho_w: float = 0.3, scales=(0.5, 1.0, 2.0), pen: Dict = None,
@@ -94,4 +94,4 @@ def summary() -> Dict:
             "pen_angle": {"mean_deg": 50, "variation_deg": 2.5, "rarely_above_deg": 10, "src": "CON-02"},
             "hap26": {"k1_N_m": 575, "b1_Ns_m": 1.3, "M_kg": 0.21, "k2_N_m": 170, "b2_Ns_m": 11,
                       "k1_CI_N_m": (228, 1043), "src": "HAP-26"},
-            "label": "CALC on LIT (HAP-26, HAP-31, HAP-32, HAP-115, CON-02, CON-05, CON-07, CON-75) and ASSUMPTION splits"}
+            "label": "CALC on LIT (HAP-26, HAP-31, HAP-32, HAP-115, CON-02, CON-04, CON-05, CON-07) and ASSUMPTION splits"}

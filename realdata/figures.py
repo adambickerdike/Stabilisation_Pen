@@ -98,6 +98,11 @@ def page(ax, paths: Sequence[np.ndarray], line_pitch_mm: float, baselines_mm: Se
     ax.set_aspect("equal")
     ax.set_xlim(x0 - 4, x1 + 4)
     ax.axis("off")
+    # a 10 mm scale bar at the right end (every panel, same scale)
+    ax.plot([x1 - 8, x1 + 2], [min(baselines_mm) - 4 if baselines_mm else 0, min(baselines_mm) - 4 if baselines_mm else 0],
+            color=INK["secondary"], linewidth=2.0, solid_capstyle="butt", zorder=3)
+    ax.text(x1 - 3, (min(baselines_mm) - 5.2) if baselines_mm else -1.2, "10 mm", ha="center", va="top", fontsize=9,
+            color=INK["secondary"])
     ax.set_title(title, loc="left", fontsize=15, color=INK["primary"], pad=6, fontweight="bold")
     ax.text(0.0, -0.02, caption, transform=ax.transAxes, ha="left", va="top", fontsize=15, color=INK["primary"])
 
@@ -116,10 +121,11 @@ def before_after(out_png: Path, panels: List[Dict], header: str, footer: str, re
     fig, axs = plt.subplots(len(panels), 1, figsize=(w_in, fig_h))
     axs = np.atleast_1d(axs)
     for ax, p in zip(axs, panels):
-        page(ax, _strokes(p["ink"]), p.get("line_pitch_mm", 13.0), p.get("baselines_mm", []), (x0, x1), p["title"],
-             p["caption"], p.get("intended"))
-        ax.set_ylim(lo - 3, hi + 3)
-    fig.suptitle(header, x=0.01, ha="left", fontsize=13, color=INK["secondary"], y=0.995)
+        bl = p.get("baselines_mm", [])
+        page(ax, _strokes(p["ink"]), p.get("line_pitch_mm", 13.0), bl, (x0, x1), p["title"], p["caption"],
+             p.get("intended"))
+        ax.set_ylim(min(lo - 3, (min(bl) - 7) if bl else lo - 3), hi + 3)
+    fig.suptitle(header, x=0.01, ha="left", fontsize=13, color=INK["primary"], y=0.995, fontweight="bold")
     fig.text(0.01, 0.005, footer, ha="left", va="bottom", fontsize=8.5, color=INK["secondary"], wrap=True)
     fig.tight_layout(rect=(0, 0.04, 1, 0.97))
     out_png.parent.mkdir(parents=True, exist_ok=True)
@@ -212,12 +218,21 @@ def tremor_figure(out_png: Path, lib: Dict, examples: List[Dict]) -> Path:
     frequency and amplitude; (c) irregularity: envelope CV and frequency wander, real against the model's settings."""
     plt = _plt()
     cl = lib["classes"]
-    amps = np.array(cl["_subject_amplitudes_mm"])
+    subj = {}
+    for x in lib["rows"]:
+        if x["source"] == "uci_spiral" and x["group"] == "PD" and x.get("subject_amp_tip_mm") is not None:
+            subj[x["subject"]] = (float(x["subject_amp_tip_mm"]), x["split"])
+    amps = np.array([a for a, sp in subj.values() if sp == "tuning"])
+    amps_t = np.array([a for a, sp in subj.values() if sp == "test"])
     fig = plt.figure(figsize=(12, 8.2))
     gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.05])
     ax = fig.add_subplot(gs[0, 0])
     rng = np.random.default_rng(0)
-    ax.scatter(amps, rng.uniform(-0.25, 0.25, len(amps)), s=28, color="#2a78d6", edgecolor="white", linewidth=1.2, zorder=3)
+    ax.scatter(amps, rng.uniform(0.0, 0.3, len(amps)), s=30, color="#2a78d6", edgecolor="white", linewidth=1.2, zorder=3,
+               label=f"tuning subjects (fit the classes), n = {len(amps)}")
+    ax.scatter(amps_t, rng.uniform(-0.32, -0.02, len(amps_t)), s=30, facecolor="white", edgecolor="#2a78d6", linewidth=1.4,
+               zorder=3, label=f"test subjects (check only), n = {len(amps_t)}")
+    ax.legend(fontsize=7.5, loc="upper left", bbox_to_anchor=(0.0, 0.83))
     for k, c in (("mild", "#86b6ef"), ("moderate", "#3987e5"), ("severe", "#184f95")):
         lo, hi = cl[k]["range_mm"]
         ax.axvspan(lo, hi, color=c, alpha=0.10, zorder=0)
@@ -285,19 +300,25 @@ def tremor_figure(out_png: Path, lib: Dict, examples: List[Dict]) -> Path:
     fig.savefig(out_png, dpi=110)
     plt.close(fig)
     for a in amps:
-        rows.append(["pd_subject_tip_amplitude_mm", "", round(float(a), 5)])
+        rows.append(["pd_subject_tip_amplitude_mm_tuning", "", round(float(a), 5)])
+    for a in amps_t:
+        rows.append(["pd_subject_tip_amplitude_mm_test", "", round(float(a), 5)])
     write_csv(out_png.with_suffix(".csv"), ["series", "kind_or_measure", "x_or_n", "y_or_p25", "p50", "p75"], rows,
               ["DATA re-analysis (CALC)"])
     return out_png
 
 
 # ================================================================== kinematics figure
+SHORT_SET = {"syn_v1": "synthetic, used so far", "syn_v2": "synthetic, refitted", "real_unipen": "UNIPEN hpb2 (HW1 input)",
+             "real_brush": "BRUSH (rejected)", "real_chartraj": "UCI letters"}
+
+
 def kinematics_figure(out_png: Path, val: Dict) -> Path:
     plt = _plt()
     sets = [("syn_v1", "Synthetic writers\nused so far", "#eb6834"),
             ("syn_v2", "Synthetic writers\nrefitted (sim2j)", "#4a3aa7"),
-            ("real_unipen", "Real: UNIPEN sentences\n(paper and tablets)", "#2a78d6"),
-            ("real_brush", "Real: BRUSH words\n(170 writers)", "#1baf7a"),
+            ("real_unipen", "Real: UNIPEN hpb2 notes\n(ballpoint on paper; HW1 input)", "#2a78d6"),
+            ("real_brush", "Real: BRUSH words (screens;\nrejected: timing artefact)", "#1baf7a"),
             ("real_chartraj", "Real: one writer's letters\n(UCI)", "#e87ba4")]
     sets = [s for s in sets if s[0] in val["sets"] and "error" not in val["sets"][s[0]]]
     L = val["literature"]
@@ -313,7 +334,7 @@ def kinematics_figure(out_png: Path, val: Dict) -> Path:
     ax.axvspan(L["speed_mm_s"]["value"] - L["speed_mm_s"]["sd_between"], L["speed_mm_s"]["value"] + L["speed_mm_s"]["sd_between"],
                color="#86b6ef", alpha=0.18, zorder=0)
     ax.axvline(L["speed_mm_s"]["value"], color=INK["secondary"], linewidth=1)
-    ax.text(L["speed_mm_s"]["value"], len(sets) - 0.4, "adults on paper\n30.5 +- 7.9 (LIT CON-20)", ha="center",
+    ax.text(L["speed_mm_s"]["value"], -0.75, "adults on paper: 30.5 +- 7.9 (LIT CON-20)", ha="center",
             fontsize=8, color=INK["secondary"])
     ax.set_yticks(range(len(sets)))
     ax.set_yticklabels([s[1] for s in sets], fontsize=8.5)
@@ -362,7 +383,7 @@ def kinematics_figure(out_png: Path, val: Dict) -> Path:
         s = val["sets"][k]["stroke_ms"]["median"]
         b = val["sets"][k]["beta"]["mean"]
         ax.scatter([s], [b], s=90, color=c, edgecolor="white", linewidth=2, zorder=3)
-        ax.text(s + 3, b + 0.004, lab.split("\n")[0], fontsize=8, color=INK["primary"])
+        ax.text(s + 3, b + 0.004, SHORT_SET.get(k, lab.split("\n")[0]), fontsize=8, color=INK["primary"])
         rows.append([k, "stroke_ms_median", s])
         rows.append([k, "power_law_beta", b])
     ax.axvspan(90, 150, color="#86b6ef", alpha=0.18, zorder=0)
@@ -539,6 +560,8 @@ def survey_figure(out_png: Path, survey: Dict, extra: Sequence[Dict] = ()) -> Pa
         rows.append([e["label"], "", "", "", "", e["x"], e["y"], "", 0])
     ax.set_xscale("log")
     ax.set_xlim(0.2, 80)
+    ax.set_xticks([0.3, 1, 2, 5, 10, 20, 50])
+    ax.set_xticklabels(["0.3", "1", "2", "5", "10", "20", "50"])
     ax.set_xlabel("share of the pen-down velocity energy at 8-12 Hz (%, log scale); grey band: 1.3-1.7 % (LIT CON-25)")
     ax.set_ylabel("mean pen-down speed (mm/s)")
     ax.set_title("Which recorded writing is clean enough to test trackers on? (lower-case words, per recording setup)",

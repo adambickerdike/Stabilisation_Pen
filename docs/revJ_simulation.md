@@ -377,7 +377,32 @@ template is the copybook letter anchored at the learner's touchdown. Test writer
 
 ### 6.6 The other hand model and the domain randomisation
 
-(OTHER)
+- **sim2's articulated 'arm' hand** (forearm–wrist–hand chain with its own writer controller; the tremor enters as
+  joint torques calibrated to 1 mm peak at the lifted tip; 8 Hz; writers 0–1, first test seed; SIM,
+  `results/sim2j/arm.json`):
+
+(ARM_TABLE)
+
+- **Domain randomisation population: not run** (§11). Every result above is for the nominal Rev J pen; the spread
+  over the lead's tolerances (Km 0.7–1.0, spring 0.12–0.18 N, friction, sensors) is not known. §8.1 shows the two
+  factors that matter most for power (Km and the spring).
+
+### 6.7 Page sensing: which results rest on the 3 µm page sensor
+
+- **What uses the page sensor.** The tremor tracker (its position input and ai2's detector), the guidance (the nose
+  pulls the ink toward the template by the measured position, so a position error goes straight into the ink), the
+  wheel's steering, and autowrite (the planner places the letters by the measured position). sim2 assumes 3 µm rms
+  white noise per 1 kHz sample (ASSUMPTION). The ET, tracing, lead-through and autowrite numbers above all rest on it.
+- **What a measured pen shows.** DeltaPen (LIT OPT-02; a research pen with an optical-flow sensor at the tip, on a
+  Wacom tablet surface, not paper) had a translation error per 10 ms window of 68.3 µm mean and 23.6 µm median; its
+  drift at rest was 2.6 mm/min.
+- **Check (SIM, `results/sim2j/page_noise.json`; ASSUMPTION for the error model).** Each 10 ms window gets an error
+  drawn from a lognormal with that median and mean, in a random direction, on top of the 3 µm noise. "Held": the error
+  is a position error for that window only (errors do not add up). "Adding up": the errors accumulate, as dead
+  reckoning with no correction would (far more drift than DeltaPen showed: an upper bound). Test writers 0–1, first
+  seed, the chosen tracker; autowrite of the known text.
+
+(PAGE_TABLE)
 
 ## 7. RL in the physics simulator (`sim2j/rl.py`; ai2's EXP-L05 in closed loop)
 

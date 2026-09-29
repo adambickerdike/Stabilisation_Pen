@@ -317,6 +317,8 @@ def _seed(*key) -> int:
 
 # ------------------------------------------------------------------ one case: every pen on the same inputs
 OCR_REAL = set(HEADLINE) | {"revJ_gated"}        # read by the AI reader (the others: tip tremor and ink only)
+OCR_BY_CLASS = {"severe": OCR_REAL, "moderate": {"none", "revJ_gated|deltapen", "revJ_oracle"},
+                "mild": {"none", "revJ_gated|deltapen"}}   # reading budget (one process; TrOCR base ~5 s per line)
 OCR_BRIDGE = {"none", "revJ_gated", "revJ_gated|deltapen", "revJ_oracle"}
 
 
@@ -342,7 +344,8 @@ def run_case(wr: Writer, tremor: Optional[np.ndarray], f0: float, amp: float, ca
         scn = wr.su.scenario("none", tremor)
         r = PL.run(scn, wr.pens["none"], hand)
         out["none"] = measures(wr, r, scn, wr.pens["none"], reads("none"), f0)
-        runs["none"] = r
+        if keep:
+            runs["none"] = r
     if "revH_akf" in devices:
         base = None
         for sensor in sensors:
@@ -354,7 +357,8 @@ def run_case(wr: Writer, tremor: Optional[np.ndarray], f0: float, amp: float, ca
             out[k] = measures(wr, r, sH.scn, sH.pen, reads(k), f0)
             if clean:
                 out[k]["false_correction_um"] = DL.ink_timeline_error(sH, r, np.zeros(len(sH.dh)), sH.neutral)
-            runs[k] = r
+            if keep:
+                runs[k] = r
     if any(d.startswith("revJ") for d in devices):
         base = None
         S = M["S"]
@@ -382,7 +386,8 @@ def run_case(wr: Writer, tremor: Optional[np.ndarray], f0: float, amp: float, ca
                 out[k] = measures(wr, r, sJ.scn, sJ.pen, reads(k), f0)
                 if clean:
                     out[k]["false_correction_um"] = DL.ink_timeline_error(sJ, r, zeros, sJ.neutral)
-                runs[k] = r
+                if keep:
+                    runs[k] = r
             out[f"_gate_open_frac|{sensor}"] = float(np.mean(est["g"] > 0.5))
             if sensor != "ideal":
                 from . import sensors as RS
@@ -458,7 +463,8 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
                                        amp_mm=RL.classes(quick)[cls]["representative_mm"])
                     res = {"set": "real", "writer": wr.written.real["writer"], "note": i, "kind": kind, "class": cls,
                            "tremor": {k: dr.meta[k] for k in ("rid", "amp_mm", "f0", "subject", "looped")},
-                           "devices": run_case(wr, dr.d, dr.meta["f0"], dr.meta["amp_mm"] * 1e-3, f"real:{i}:{kind}:{cls}")}
+                           "devices": run_case(wr, dr.d, dr.meta["f0"], dr.meta["amp_mm"] * 1e-3, f"real:{i}:{kind}:{cls}",
+                                               ocr_devices=OCR_BY_CLASS.get(cls, OCR_REAL))}
                     p.write_text(json.dumps(res, default=_jd))
                     log(f"[hw1] real w{i} {kind} {cls} {dr.meta['amp_mm']:.2f} mm {dr.meta['f0']:.1f} Hz: " + _fmt(res["devices"]))
                 if res:

@@ -230,10 +230,14 @@ def tur_table() -> List[Dict]:
     """TUR of the main measurands against the tolerance each decision needs (CALC)."""
     B = all_budgets()
     rows = [
-        ("R9", "F_c,min resolved against a 20 mN decision band (0.12 vs 0.14 N)", B["axial_force"], 20.0, "mN"),
-        ("R9", "N at the ink threshold against EXP-Q02's +-5 mN target", B["normal_force_2N"], 5.0, "mN"),
-        ("R9", "|R_perp| against AC-B01-09 (10 mN floor)", B["tangential_force_2N"], 10.0, "mN"),
-        ("R9", "friction force at N = 0.2 N, mu 0.15 (+-20 % of 30 mN)", B["tangential_force_2N"], 6.0, "mN"),
+        ("R9", "F_c,min against the 50 mN between the 0.15 N design value and the 0.2 N limit (AC-Q02-01)",
+         B["axial_force"], 50.0, "mN"),
+        ("R9", "F_c,min against a 20 mN band (is it below 0.12 N, the low end of REQ-RVJ-N05?)", B["axial_force"],
+         20.0, "mN"),
+        ("R9", "N at the ink threshold against a 20 mN band (plate route, cross-check of F_c)", B["normal_force_2N"],
+         20.0, "mN"),
+        ("R9", "|R_perp| against AC-B01-09's floor (U <= 10 mN required)", B["tangential_force_2N"], 10.0, "mN"),
+        ("R9", "friction force at N = 0.2 N, mu 0.15, to +-20 % (6 mN)", B["tangential_force_2N"], 6.0, "mN"),
         ("R10", "10 um RMS page error (REQ-RVJ-N06), Zaber truth", B["page_truth_zaber"], 10.0, "um"),
         ("R10", "10 um RMS page error, LM13 truth", B["page_truth_lm13"], 10.0, "um"),
         ("R10", "10 um RMS page error, camera truth", B["page_truth_camera"], 10.0, "um"),
@@ -242,7 +246,8 @@ def tur_table() -> List[Dict]:
         ("R13", "30 % reduction of 250 um residual (review G3 target), stage truth", B["stage_truth"], 75.0, "um"),
         ("R13", "false correction 25 um from scanned ink", B["ink_path"], 25.0, "um"),
         ("R12", "K_f within +-10 % of the model (AC-B03-04 analogue)", B["km_point"], 10.0, "%"),
-        ("R13", "coil rise <= 20 K (REQ-RVJ-N03) at 15 K", B["coil_temperature"], 5.0, "K"),
+        ("R13", "coil rise <= 20 K (REQ-RVJ-N03) when the rise is 15 K (5 K from the limit)", B["coil_temperature"],
+         5.0, "K"),
         ("all", "time alignment <= 50 us (section 0.4)", B["sync"], 50.0, "us"),
     ]
     out = []

@@ -12,6 +12,8 @@ Stages (each caches its result in ai3/build/cache (or ai3/build/quick) and resum
   trace    task 4a: why close tracing lowers legibility (drive study's HW1-D runs)
   shape    task 4b: shape assist and clean copy on real handwriting in HW1
   report   figures with CSV twins, ai3.json, samples.json, evidence_rows.csv
+  demo     the prototype page ai3/demo/index.html (inlined model, lexicon, error model and tuned settings); its
+           smoke test: NODE_PATH=$(npm root -g) node ai3/demo/smoke_test.js
 --quick runs every stage small and writes to ai3/build/quick/ only (never to results/ai3).
 """
 from __future__ import annotations
@@ -23,7 +25,7 @@ from pathlib import Path
 from . import BUILD_DIR
 from . import common as C
 
-ALL = ["online", "calib", "lm", "spell", "cues", "words", "plan", "predict", "trace", "shape", "report"]
+ALL = ["online", "calib", "lm", "spell", "cues", "words", "plan", "predict", "trace", "shape", "report", "demo"]
 
 
 def main(argv=None):
@@ -38,7 +40,7 @@ def main(argv=None):
     for st in a.stages:
         t1 = time.time()
         cached = C.load({"spell": "spell_NG1x", "calib": "online_cal"}.get(st, st), a.quick)
-        if cached is not None and not a.force and st not in ("report",):
+        if cached is not None and not a.force and st not in ("report", "demo"):
             C.log(f"[run] {st}: cached")
             continue
         C.log(f"[run] stage {st} ...")
@@ -105,6 +107,9 @@ def _run_stage(st: str, quick: bool) -> None:
         elif st == "report":
             from . import report
             report.run(a.quick)
+        elif st == "demo":
+            from .demo import build
+            build.main(["--quick"] if a.quick else [])
         else:
             raise KeyError(f"unknown stage {st!r} (stages: {ALL})")
 

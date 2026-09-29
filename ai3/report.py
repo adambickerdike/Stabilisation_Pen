@@ -307,14 +307,18 @@ def fig_trace(tr_examples: List[Dict], agg: Dict, out: Path):
     conds = [("none", "no guidance"), ("wheel_path", "heel wheel"), ("nose_nogate", "nose, no gate"), ("wheel_path+nose", "wheel + nose")]
     ys = np.arange(len(conds))[::-1]
     read = [100 * agg[c]["read"] for c, _ in conds]
+    stat = [100 * agg[c].get("read_static", float("nan")) for c, _ in conds]
     miss = [100 * agg[c]["missing_mean"] for c, _ in conds]
-    ax.barh(ys + 0.18, read, height=0.34, color=S[0], label="letters read (%)")
-    ax.barh(ys - 0.18, miss, height=0.34, color=S[1], label="letter left undrawn (%)")
-    for y, a, b in zip(ys, read, miss):
-        ax.text(a + 1, y + 0.18, f"{a:.0f}", fontsize=7, va="center", color=INK2)
-        ax.text(b + 1, y - 0.18, f"{b:.0f}", fontsize=7, va="center", color=INK2)
+    ax.barh(ys + 0.27, read, height=0.25, color=S[0], label="read by the app (writing order)")
+    ax.barh(ys, stat, height=0.25, color=S[2], label="read as a picture (order-free)")
+    ax.barh(ys - 0.27, miss, height=0.25, color=S[1], label="letter left undrawn")
+    for y, a, b2, b in zip(ys, read, stat, miss):
+        ax.text(a + 1, y + 0.27, f"{a:.0f}", fontsize=7, va="center", color=INK2)
+        if math.isfinite(b2):
+            ax.text(b2 + 1, y, f"{b2:.0f}", fontsize=7, va="center", color=INK2)
+        ax.text(b + 1, y - 0.27, f"{b:.0f}", fontsize=7, va="center", color=INK2)
     ax.set_yticks(ys); ax.set_yticklabels([l for _, l in conds], fontsize=8)
-    ax.set_xlim(0, 110); ax.legend(fontsize=7, loc="lower right")
+    ax.set_xlim(0, 125); ax.legend(fontsize=6.5, loc="lower right"); ax.set_xlabel("% of letters", fontsize=7.5)
     ax.set_title("Dysgraphia-like learners, 24 runs", fontsize=8.5, loc="left")
     fig.suptitle("Close tracing puts the ink ON the model letter but leaves parts of it undrawn (orange = undrawn part; green = target)",
                  fontsize=9, x=0.01, ha="left")
@@ -530,6 +534,84 @@ def trace_examples(quick: bool, n: int = 4) -> List[Dict]:
 
 
 # ============================================================================================ markdown tables
+def fig_words(wd: Dict, out: Path):
+    """CER and WER of word recognition: new writer vs calibrated, without and with the language model."""
+    PS.apply()
+    b = wd["W1"]["beta_w"]
+    combos = [("independent|beta=0", "new writer\nno LM"), (f"independent|beta={b:g}", "new writer\nwith LM"),
+              ("calibrated|beta=0", "calibrated\nno LM"), (f"calibrated|beta={b:g}", "calibrated\nwith LM")]
+    fig, axs = plt.subplots(1, 2, figsize=(7.4, 2.8))
+    rows = []
+    for ax, key, title in ((axs[0], "cer", "Letters wrong (CER)"), (axs[1], "wer", "Words wrong (WER)")):
+        x = np.arange(len(combos))
+        for j, (g, col, lab) in enumerate((("normal", S[0], "normal spacing"), ("tight", S[1], "tight spacing"))):
+            tw = wd["test_words"].get(g, {})
+            v = [100 * tw.get(k, {}).get(key, float("nan")) for k, _ in combos]
+            ax.bar(x + (j - 0.5) * 0.36, v, width=0.34, color=col, label=lab)
+            for xi, vi in zip(x, v):
+                if math.isfinite(vi):
+                    ax.text(xi + (j - 0.5) * 0.36, vi + 0.8, f"{vi:.0f}", ha="center", fontsize=6.5, color=INK2)
+            rows += [[g, k, key, tw.get(k, {}).get(key)] for k, _ in combos]
+        ax.set_xticks(x); ax.set_xticklabels([l for _, l in combos], fontsize=7)
+        ax.set_title(title, fontsize=8.5, loc="left"); ax.set_ylabel("%", fontsize=7.5)
+    axs[1].legend(fontsize=6.5, loc="upper right")
+    fig.suptitle(f"Word recognition on {wd.get('test_writers', 20)} held-out writers (real letters; calibration from their other session)",
+                 fontsize=9, x=0.01, ha="left")
+    fig.tight_layout()
+    _save(fig, out, "fig_words", EVIDENCE_SIM, ["spacing", "recogniser", "metric", "value"], rows, "UJI test writers, Tatoeba test sentences")
+
+
+def fig_calibration(wd: Dict, out: Path):
+    """Reliability of P(misspelled) before and after temperature scaling (test children)."""
+    PS.apply()
+    blk = (wd.get("spelling") or {}).get("independent", {})
+    rel = blk.get("reliability_test")
+    if not rel:
+        return
+    fig, ax = plt.subplots(figsize=(3.6, 3.3))
+    ax.plot([0, 1], [0, 1], color=GRID, lw=1)
+    rows = []
+    for key, col, lab in (("raw", S[1], "combined score, raw"), ("calibrated", S[0], "after temperature scaling")):
+        bins = rel[key]["bins"]
+        x = [b_["mean_p"] for b_ in bins]; y = [b_["freq"] for b_ in bins]; n = [b_["n"] for b_ in bins]
+        ax.plot(x, y, "-o", color=col, ms=3, lw=1.3, label=f"{lab} (ECE {rel[key]['ece']:.3f})")
+        rows += [[key, a, c, d] for a, c, d in zip(x, y, n)]
+    ax.set_xlabel("predicted P(misspelled)", fontsize=7.5); ax.set_ylabel("share actually misspelled", fontsize=7.5)
+    ax.legend(fontsize=6.3, loc="upper left"); ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    ax.set_title(f"Test children, {rel['n']} words (T = {blk['W2']['T']:.2f})", fontsize=8.5, loc="left")
+    _save(fig, out, "fig_calibration", EVIDENCE_SIM, ["series", "mean_predicted", "observed_share", "n"], rows,
+          "real letters of held-out writers as recognised strokes")
+
+
+def fig_plan(pl: Dict, out: Path):
+    """Accepted-word completion: share written in full vs the nib's reach, per hand behaviour."""
+    PS.apply()
+    from .complete_plan import BEHAVIOURS, RADII_MM
+    T = pl["table"]
+    fig, axs = plt.subplots(1, 2, figsize=(7.4, 2.8))
+    names = {"steady": "hand advances as usual", "slow": "hand at half speed", "fast": "hand runs ahead (x1.8)",
+             "pause": "hand pauses 3 s", "still": "hand held still"}
+    rows = []
+    for i, beh in enumerate(BEHAVIOURS):
+        v = [100 * T.get(f"{beh}|{R:g}|letter_admission", {}).get("completed_share", float("nan")) for R in RADII_MM]
+        axs[0].plot(RADII_MM, v, "-o", color=S[i % len(S)], ms=3, lw=1.3, label=names[beh])
+        rows += [[beh, R, "letter_admission", "completed_pct", x] for R, x in zip(RADII_MM, v)]
+    axs[0].set_xlabel("nib reach (+- mm)", fontsize=7.5); axs[0].set_ylabel("accepted words written in full (%)", fontsize=7.5)
+    axs[0].legend(fontsize=6.2, loc="upper left"); axs[0].set_ylim(-3, 103)
+    x = np.arange(len(BEHAVIOURS))
+    for j, (pol, col, lab) in enumerate((("pointwise", S[1], "point by point"), ("letter_admission", S[0], "whole letter must fit"))):
+        v = [T.get(f"{beh}|6|{pol}", {}).get("partial_letters_per_100", float("nan")) for beh in BEHAVIOURS]
+        axs[1].bar(x + (j - 0.5) * 0.36, v, width=0.34, color=col, label=lab)
+        rows += [[beh, 6, pol, "half_letters_per_100", vv] for beh, vv in zip(BEHAVIOURS, v)]
+    axs[1].set_xticks(x); axs[1].set_xticklabels([b_ for b_ in BEHAVIOURS], fontsize=7)
+    axs[1].set_ylabel("half-written letters per 100 words", fontsize=7.5); axs[1].legend(fontsize=6.5)
+    axs[1].set_title("+-6 mm reach", fontsize=8.5, loc="left")
+    fig.suptitle(f"Writing an accepted word: {pl['completions']} completions in the writers' own letters, 3 mm x-height",
+                 fontsize=9, x=0.01, ha="left")
+    fig.tight_layout()
+    _save(fig, out, "fig_plan", EVIDENCE_SIM, ["hand", "reach_mm", "policy", "metric", "value"], rows, "kinematics only; hand advance assumed")
+
+
 def _p(x, d=0):
     return "n/a" if x is None or (isinstance(x, float) and not math.isfinite(x)) else f"{100 * x:.{d}f} %"
 
@@ -619,12 +701,13 @@ def tables_md(res: Dict) -> str:
     if cu:
         from .cues import CUES, LABELS
         L += ["### T3. Physical cues (11 test children's real errors; writer responses ASSUMED; SIM)", "",
-              "| Cue | Mistakes caught per 10 | Fixed on paper per 10 (low - high) | False cues per 100 correct | Correct words made wrong per 100 | Extra time | Letters drawn by the pen per 100 words | Wrong-letter fragments per 100 words |",
-              "|---|---|---|---|---|---|---|---|"]
+              "| Cue | Mistakes caught per 10 | Fixed on paper per 10 (low - high) | False cues per 100 correct | Correct words made wrong per 100 | Extra time | Cues felt mid-word per 100 words | Suggestion lists read per 100 words | Letters drawn by the pen per 100 words | Wrong-letter fragments per 100 words |",
+              "|---|---|---|---|---|---|---|---|---|---|"]
         for c in CUES:
             n_, lo_, hi_ = cu["test"]["nominal"][c], cu["test"]["low"][c], cu["test"]["high"][c]
             L.append(f"| {LABELS[c]} | {n_['caught_per_10_errors']:.1f} | {n_['fixed_on_paper_per_10_errors']:.1f} ({lo_['fixed_on_paper_per_10_errors']:.1f} - {hi_['fixed_on_paper_per_10_errors']:.1f}) | "
                      f"{n_['false_interventions_per_100_correct']:.1f} | {n_['correct_words_made_wrong_per_100_correct']:.2f} | +{n_['extra_time_pct']:.0f} % | "
+                     f"{n_.get('interruptions_per_100_words', float('nan')):.1f} | {n_.get('suggestion_lists_read_per_100_words', float('nan')):.1f} | "
                      f"{n_['letters_drawn_by_pen_per_100_words']:.1f} | {n_['wrong_letter_fragments_per_100_words']:.1f} |")
         L += ["", f"Rule S4 (tuning children): recommended **{cu['S4']['recommended']}** (fragile: {cu['S4']['fragile']}); admissible: "
               f"{', '.join(cu['S4']['admissible'])}. Rule S5: theta_b {cu['S5']['theta_b']}. Recogniser commit before a letter's end: "
@@ -659,12 +742,13 @@ def tables_md(res: Dict) -> str:
     tr = res.get("trace")
     if tr:
         L += ["### T5. Why close tracing lowers legibility (drive study's runs, 6 test writers x 4 seeds; SIM)", "",
-              "| Learners | Condition | Ink to target | Letters read | Share of each letter left undrawn (> 1 mm from any ink) | Covered within 0.3 mm | Ink running backwards along the letter | Newly misread letters: undrawn part > 15 % | ...read again if the missing part is added |",
+              "| Learners | Condition | Ink to target | Letters read by the app (writing order) | Read as a picture (order-free) | Share of each letter left undrawn (> 1 mm from any ink) | Ink running backwards along the letter | Newly misread by the app / by both readers | ...app reads them again if drawn in the letter's own order / if the missing part is added |",
               "|---|---|---|---|---|---|---|---|---|"]
         for prof, agg in tr["aggregate"].items():
             for cond, a in agg.items():
-                L.append(f"| {prof} | {cond} | {a['d_ink_um_mean']:.0f} um | {_p(a['read'])} | {_p(a['missing_mean'])} | {_p(a['covered_mean'])} | "
-                         f"{_p(a['backtrack_mean'])} | {_p(a.get('newly_misread_with_missing_part_share'))} | {_p(a.get('newly_misread_filled_recovers'))} |")
+                L.append(f"| {prof} | {cond} | {a['d_ink_um_mean']:.0f} um | {_p(a['read'])} | {_p(a.get('read_static'))} | {_p(a['missing_mean'])} | "
+                         f"{_p(a['backtrack_mean'])} | {a.get('newly_misread', 0)} / {a.get('newly_misread_both_readers', 0)} | "
+                         f"{_p(a.get('newly_misread_covered_only_recovers'))} / {_p(a.get('newly_misread_filled_recovers'))} |")
         L.append("")
     sh = res.get("shape")
     if sh:
@@ -690,6 +774,48 @@ def tables_md(res: Dict) -> str:
                 L.append(f"| {c} | {_p(v['letters_read_raw'])} / {_p(v['letters_read_cleancopy'])} / {_p(v['letters_read_cleancopy_v2'])} | "
                          f"{_p(v['words_read_raw'])} / {_p(v['words_read_cleancopy'])} / {_p(v['words_read_cleancopy_v2'])} | {_p(v['synthetic_share'])} | {v['synthetic_wrong_letters']} |")
             L.append(f"\nRule A2 (tuning writers): clean copy v2 words gain {sh['A2']['words_gain_v2']:+.3f}; adopted: {sh['A2']['adopted']}.")
+    wd = res.get("words")
+    if wd and wd.get("test_words"):
+        b = wd["W1"]["beta_w"]
+        L += ["### T7. Word recognition: character and word error rates (20 held-out UJI writers; SIM on real letters)", "",
+              "| Recogniser | Spacing | CER no LM | CER with LM | WER no LM | WER with LM |", "|---|---|---|---|---|---|"]
+        for g, tw in wd["test_words"].items():
+            for rc, name in (("independent", "new writer (writer-disjoint)"), ("calibrated", "calibrated on the other session (session-disjoint)")):
+                a0, a1 = tw.get(f"{rc}|beta=0", {}), tw.get(f"{rc}|beta={b:g}", {})
+                L.append(f"| {name} | {g} | {_p(a0.get('cer'), 1)} | {_p(a1.get('cer'), 1)} | {_p(a0.get('wer'))} | {_p(a1.get('wer'))} |")
+            L.append(f"| segmentation errors per letter | {g} | {_p(tw.get('segmentation_error_per_letter'), 1)} | | | |")
+        L += ["", f"Rule W1 (tuning writers): language weight beta_w = {b:g}. Words: Tatoeba test sentences written with each writer's letters "
+              f"from one session; spacing N(0.25, 0.12) x-height (normal) and N(0.08, 0.12) (tight), ASSUMPTION.", ""]
+    if wd and wd.get("spelling"):
+        L += ["### T8. Spelling help with the pen's own reading of the letters (the review's score; 11 test children; SIM)", "",
+              "| Recogniser | Caught | False alarms per 100 correct | Suggestion shown / right when shown | Misread words put right / right readings changed | Unusual correct words kept | ECE raw / calibrated | Auto mode: errors fixed / correct words changed per 100 |",
+              "|---|---|---|---|---|---|---|---|"]
+        for name, blk in wd["spelling"].items():
+            if not isinstance(blk, dict) or "test" not in blk:
+                continue
+            t, rel = blk["test"], blk.get("reliability_test", {})
+            L.append(f"| {name} (lambda_r {blk['W2']['lambda_r']}, T {blk['W2']['T']:.2f}, theta_c {blk['W2']['theta_c']}, p_s {blk['W3']['p_s']}) | "
+                     f"{_p(t['detection_rate'])} | {t['fa_per_100_correct']:.1f} | {_p(t['suggestion_shown_share_of_detected'])} / {_p(t['suggestion_right_when_shown'])} | "
+                     f"{_p(t['recognition']['misread_fixed_share'])} / {_p(t['recognition']['right_reading_changed_share'], 1)} | "
+                     f"{_p(t['unusual_correct_words']['kept_unflagged_share'])} | {rel.get('raw', {}).get('ece', float('nan')):.3f} / {rel.get('calibrated', {}).get('ece', float('nan')):.3f} | "
+                     f"{t['auto_mode']['errors_fixed_per_100_errors']:.1f} / {t['auto_mode']['correct_words_changed_per_100_correct']:.2f} |")
+        pa = wd.get("pool_letter_accuracy", {}).get("test", {})
+        L += ["", f"Letters seen through real held-out letters (test pool): read right {_p(pa.get('independent'))} (new writer), "
+              f"{_p(pa.get('calibrated'))} (calibrated).", ""]
+    pl = res.get("plan")
+    if pl and pl.get("table"):
+        from .complete_plan import BEHAVIOURS, RADII_MM
+        L += ["### T9. Writing an accepted word with the pen (kinematic planner, rule C1; SIM)", "",
+              "| Hand | " + " | ".join(f"+-{R:g} mm" for R in RADII_MM) + " | half letters per 100 (point by point / whole letter) at +-6 mm | time vs own writing |",
+              "|---|" + "---|" * len(RADII_MM) + "---|---|"]
+        for beh in BEHAVIOURS:
+            T = pl["table"]
+            cells = [_p(T.get(f"{beh}|{R:g}|letter_admission", {}).get("completed_share")) for R in RADII_MM]
+            pw, la = T.get(f"{beh}|6|pointwise", {}), T.get(f"{beh}|6|letter_admission", {})
+            L.append(f"| {beh} | " + " | ".join(cells) + f" | {pw.get('partial_letters_per_100', float('nan')):.0f} / {la.get('partial_letters_per_100', float('nan')):.0f} | "
+                     f"{la.get('time_ratio_median_done', float('nan')):.2f} |")
+        L += ["", f"{pl['completions']} completions (the rest of words of 5+ letters after 40-60 % written); rest-of-word extent median "
+              f"{pl['extent_mm_median']:.1f} mm (90th percentile {pl['extent_mm_p90']:.1f} mm); the hand's usual advance {pl['v_hand_mm_s_median']:.1f} mm/s.", ""]
     return "\n".join(L) + "\n"
 
 
@@ -697,7 +823,8 @@ def tables_md(res: Dict) -> str:
 def load_all(quick: bool) -> Dict:
     res = {}
     for k, name in (("online", "online"), ("online_cal", "online_cal"), ("spell", "spell_NG1x"), ("cues", "cues"),
-                    ("predict", "predict"), ("trace", "trace"), ("shape", "shape"), ("lm", "lm")):
+                    ("predict", "predict"), ("trace", "trace"), ("shape", "shape"), ("lm", "lm"), ("words", "words"),
+                    ("plan", "plan")):
         v = C.load(name, quick)
         if v is not None:
             res[k] = v
@@ -733,6 +860,12 @@ def run(quick: bool) -> Dict:
             fig_trace(ex, agg, out)
     if "shape" in res:
         fig_shape(res["shape"].get("samples", []), res["shape"]["test"]["aggregate"], out)
+    for name, fn in (("words", fig_words), ("words", fig_calibration), ("plan", fig_plan)):
+        if name in res:
+            try:
+                fn(res[name], out)
+            except Exception as e:                           # a figure must never stop the report
+                C.log(f"[report] {fn.__name__}: {e!r}")
     # ai3.json: everything except bulky per-token records
     slim = {}
     for k, v in res.items():
@@ -743,6 +876,8 @@ def run(quick: bool) -> Dict:
                 slim[k].pop("samples", None)
             if k == "trace":
                 slim[k]["cases_n"] = len(v.get("cases", []))
+            if k == "plan":
+                slim[k].pop("rows", None)
     slim["summary"] = summary
     C.write_result("ai3.json", slim, quick, EVIDENCE_SIM + " / " + EVIDENCE_CALC)
     # samples.json (before/after ink of the shape assist and the spell sample)
@@ -772,7 +907,9 @@ def run(quick: bool) -> Dict:
             tn = res["cues"]["test"]["nominal"]
             res["cues"]["_summary"] = "; ".join(
                 f"{c}: fixed on paper {tn[c]['fixed_on_paper_per_10_errors']:.1f}/10, false cues "
-                f"{tn[c]['false_interventions_per_100_correct']:.1f}/100 correct, time +{tn[c]['extra_time_pct']:.0f} %"
+                f"{tn[c]['false_interventions_per_100_correct']:.1f}/100 correct, time +{tn[c]['extra_time_pct']:.0f} %, "
+                f"mid-word cues {tn[c].get('interruptions_per_100_words', float('nan')):.1f}/100 words, lists read "
+                f"{tn[c].get('suggestion_lists_read_per_100_words', float('nan')):.1f}/100 words"
                 for c in tn) + f"; recommended (rule S4, tuning children): {res['cues']['S4']['recommended']}"
     except Exception as e:                                   # a summary must never stop the report
         C.log(f"[report] summary strings: {e!r}")

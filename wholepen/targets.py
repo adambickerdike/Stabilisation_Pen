@@ -29,7 +29,7 @@ def rating_ratio(alpha: float) -> float:
 # prevalence of tremor in PD, and in writing (LIT; ids from results/wholepen/evidence_rows.csv)
 PD_PREVALENCE = [
     {"what": "rest tremor / action tremor at baseline, 3 cohorts (PPMI 423, BioFIND 118, PDBP 873)", "value": "58.2 % / 39.0 %",
-     "src": "PDT-64"},
+     "src": "PDT-08"},
     {"what": "any tremor at least once over 7 years (PPMI, de novo, 397)", "value": "96.2 %; rest tremor 87.2 %",
      "src": "PDT-66"},
     {"what": "writing tremor in 100 consecutive PD patients (on medication)", "value": "10 % (26 % of those with postural/kinetic tremor); task-specific in 4 of 10",

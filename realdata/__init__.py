@@ -21,14 +21,19 @@ dsp          resampling, zero-phase band limits, acceleration -> displacement, t
 loaders      one loader per dataset (tremor: UCI spirals, NewHandPD, Zenodo ET, PADS; writing: BRUSH, UNIPEN,
              UCI Character Trajectories, UJI)
 tremorlib    the tremor library: per-recording parameters, severity classes, tremor-only waveforms
-reader       a writer-adapted letter reader (the app's reader for real handwriting)
-writinglib   the writing library: real words and sentences with timing in HW1 (aiguide Written) and sim2 formats
+reader       a writer-adapted template letter reader (API extra; not the words-read judge)
+writinglib   the writing library: real notes (UNIPEN hpb2, ballpoint on paper) and composed CC BY sentences with
+             timing in HW1 (aiguide Written) and sim2 formats; BRUSH kept for the diagnostic only
 library      the public API for other studies: tremor(cls, seed), writing(split, seed), hw1_scenario, sim2_scenario
-kinematics   validation of real and synthetic writers against the literature (speed, strokes, power law, spectra)
+kinematics   validation of real and synthetic writers against the literature, and the UNIPEN setup survey
+sensors      a DeltaPen-class page-sensor error model (LIT OPT-02) applied to the fusion sensor streams
+ocr          'words you can read': literal TrOCR reading of the simulated ink; the reader choice on tuning notes
 hw1          the headline comparison on real inputs (ordinary pen, Rev H tracker, Rev J + gated tracker, Rev J +
-             causal TCN, perfect knowledge), with the synthetic-input factorial that explains the change
+             causal TCN, perfect knowledge; ideal and DeltaPen-class page sensors), the bridge sets that explain
+             the change, results cards with writer-bootstrap intervals
 figures      figures with CSV twins; the before/after pictures for non-engineers
-report       realdata.json, samples.json, evidence_rows.csv
+report       realdata.json, samples.json, evidence_rows.csv, tremor_library.csv
+evidence     the proposed ledger rows
 run          python3 -m realdata.run [--quick] [--stages ...]
 """
 from __future__ import annotations
@@ -37,7 +42,7 @@ import os
 import sys
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 PKG_DIR = Path(__file__).resolve().parent
 REPO_ROOT = PKG_DIR.parent

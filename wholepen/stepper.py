@@ -54,7 +54,7 @@ class WPFirmware(Firmware):
             f, G = C.internal_model(dev, pen, ex, r0)
             G_inv = C.internal_model(dev, pen, ex, r0, out="ink")[1] if dev == "collar" else None
             if mode == "afc":
-                self.afc[dev] = C.AFC(f, G, tau=wp.afc_tau)     # it can only cancel what it measures
+                self.afc[dev] = C.AFC(f, G, tau=wp.afc_tau, G_ink=G_inv)
             elif mode == "oracle":
                 self.imc[dev] = C.PhasorIMC(f, G, wp.oracle_gain, G_inv=G_inv, total=True)
             else:
@@ -124,6 +124,9 @@ class WPFirmware(Firmware):
         f_est = float(self.tracker.last[2]) if self.tracker is not None else 6.0
         if not np.isfinite(f_est) or f_est <= 0:
             f_est = 6.0
+        det = getattr(self.tracker, "det", None) if self.tracker is not None else None
+        if wp.use_line_f and det is not None and getattr(self.tracker, "det_gate", 0.0) > 0.5 and getattr(det, "f_line", 0.0) > 0:
+            f_est = float(det.f_line)            # the detector's tremor line (the device laws only; the nose keeps the AKF's)
         if wp.true_f and "f0" in self.task:
             f_est = float(self.task["f0"])
         # ---- CMG tail

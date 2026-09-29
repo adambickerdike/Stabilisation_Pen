@@ -100,10 +100,10 @@ LIT = [
          citation="Project Gutenberg eBooks #1026 (Grossmith, The Diary of a Nobody, 1892), #57393 (Thoreau, Journal 01, 1837-1846), #11579 (Scott, Scott's Last Expedition, Volume I, 1913), #2024 (Jerome, Diary of a Pilgrimage, 1891)",
          year="1891-1913", doi_or_url="https://www.gutenberg.org/ebooks/1026 ; /57393 ; /11579 ; /2024", source_type="dataset (texts)",
          evidence_class="text data", access_level="full text", task_or_setup="Each journal split in halves: the first half is the user's history, the second is predicted word by word",
-         participants_or_bench="4 authors (2 tuning, 2 test)", comparator="n/a", key_quantitative_findings="See the derived row EML-96",
+         participants_or_bench="4 authors (2 tuning, 2 test)", comparator="n/a", key_quantitative_findings="See the derived row EML-94",
          units_and_conditions="words", locator="Project Gutenberg plain-text files", limitations="Old literary diaries, not modern notes; each is one person's recurring vocabulary",
          relevance_to_design="The only openly licensed text found that is one person's own running notes", transferability="low",
-         transferability_reason="Style and vocabulary differ from modern notes", design_implication="Measure personalisation on the user's own notes in the app (EXP-S05)",
+         transferability_reason="Style and vocabulary differ from modern notes", design_implication="Measure personalisation on the user's own notes in the app (EXP-S14)",
          search_query="gutenberg.org/ebooks/search/?query=scott's last expedition | diary of a nobody | diary of a pilgrimage | journal henry david thoreau",
          stream="EML"),
     _row(id="EML-92", topic="Openly licensed dyslexic spelling-error data (French) and a review of dyslexic error corpora",
@@ -115,7 +115,7 @@ LIT = [
          key_quantitative_findings="Corpus DYS licence CC BY-NC-ND 4.0; annotation file (422 kB CSV) CC BY-NC-SA 4.0. The article reviews six studies (English, Spanish, German, French) (search summary)",
          units_and_conditions="n/a", locator="NAKALA dataset pages", limitations="French, typed; non-commercial licences; not used for the English models here",
          relevance_to_design="The only openly licensed dyslexic spelling-error data found; no openly licensed English dyslexic corpus was found",
-         transferability="low", transferability_reason="Other language and orthography", design_implication="An English dyslexic error corpus is a gap: collect one with consent (EXP-S02)",
+         transferability="low", transferability_reason="Other language and orthography", design_implication="An English dyslexic error corpus is a gap: collect one with consent (EXP-S11)",
          search_query="WebSearch 'corpus of spelling errors written by people with dyslexia English dataset download'; curl doi.org/10.34847/...",
          stream="EML"),
     _row(id="HAP-130", topic="Students with learning disabilities using spelling checkers: correction rates and choosing suggestions",
@@ -138,7 +138,7 @@ LIT = [
          units_and_conditions="detection threshold", locator="Abstract", limitations="Abstract only; fingertip shaker, not a pen LRA; speeds far above writing",
          relevance_to_design="Handwriting moves at about 3 cm/s (LIT CON-20), below the slow condition: a clear LRA tick while writing should not be masked by the movement",
          transferability="medium", transferability_reason="Same receptors; different stimulus site and device",
-         design_implication="Assume a tick is noticed most of the time (0.9 nominal, 0.75 low); measure it (EXP-S03)",
+         design_implication="Assume a tick is noticed most of the time (0.9 nominal, 0.75 low); measure it (EXP-S13)",
          search_query="WebSearch 'movement-related gating tactile detection threshold during active finger movement'; eutils efetch PMID 26443938",
          stream="HAP"),
     _row(id="HAP-132", topic="Word prediction for students with severe spelling problems (handwriting vs word prediction)",
@@ -166,6 +166,33 @@ LIT = [
          design_implication="A cue on the suspect letter plus the suggestion in the app; real-word errors need context",
          search_query="WebSearch 'Rello Ballesteros Bigham 2015 A Spellchecker for Dyslexia'; curl cs.cmu.edu/~jbigham/pubs/pdfs/2015/realcheck.pdf",
          stream="HAP"),
+    _row(id="EML-95", topic="Sensor-pen handwriting recognition datasets (OnHW, Fraunhofer IIS): availability, content and terms",
+         citation="Fraunhofer IIS. Online Handwriting Recognition from Sensor-Enhanced Pens (OnHW datasets and publications), project page; README for the sequence-to-sequence and character-based OnHW datasets (Ott et al.)",
+         year="2020-2022 (page accessed 2026)", doi_or_url="https://www.iis.fraunhofer.de/de/ff/lv/dataanalytics/anwproj/schreibtrainer/onhw-dataset.html ; https://www2.iis.fraunhofer.de/LV-OnHW/README.pdf",
+         source_type="dataset documentation", evidence_class="dataset description", access_level="full text (project page and README; data not downloaded)",
+         task_or_setup="STABILO DigiPen (two accelerometers, gyroscope, magnetometer, force) streamed to a tablet; single characters (OnHW-chars), words (OnHW-words500), equations; writer-dependent and writer-independent 5-fold splits",
+         participants_or_bench="OnHW-chars: 119 writers, 31,275 upper- and lower-case letters (search summary of the ACM IMWUT 2020 paper; the page says the download is 895 MB)",
+         comparator="n/a",
+         key_quantitative_findings="Sensor data at 100 Hz; the 'Millis' timestamp is when the data were processed on the connected tablet; 'Only right-handed recordings are released' while files marked _L (left-handed writers) are also listed; writers could choose print or cursive; no licence or terms of use stated on the page or in the README",
+         units_and_conditions="IMU and force time series; per-character and per-word labels", locator="Project page sections 'The OnHW-chars Dataset', 'Sensor Data', downloads list; README.pdf",
+         limitations="No stated licence: not used here; IMU signals, not page positions, so the task-1 model (pen-path input) cannot use them directly; not tremor or dyslexia data",
+         relevance_to_design="Candidate benchmark for the pen's own IMU-based recogniser and for writer-disjoint CER/WER (review R15)",
+         transferability="medium", transferability_reason="A real sensor pen on paper, but a different sensor set and no patients",
+         design_implication="Ask Fraunhofer IIS for terms before any use; record our own pen's data with a clear licence (EXP-S17)",
+         search_query="WebSearch 'OnHW dataset Fraunhofer IIS online handwriting sensor-enhanced pen download licence'; curl of the project page (de) and README.pdf",
+         stream="EML"),
+    _row(id="EML-96", topic="Calibrating the confidence of a combined model: temperature scaling",
+         citation="Guo C, Pleiss G, Sun Y, Weinberger KQ. On Calibration of Modern Neural Networks. ICML 2017 (PMLR 70:1321-1330); arXiv:1706.04599",
+         year="2017", doi_or_url="https://arxiv.org/abs/1706.04599", source_type="journal/conference paper", evidence_class="machine-learning methods",
+         access_level="abstract", task_or_setup="Post-hoc calibration methods on image and document classifiers",
+         participants_or_bench="n/a", comparator="histogram binning, isotonic regression, Platt scaling variants",
+         key_quantitative_findings="Modern networks are poorly calibrated; on most data sets temperature scaling, a one-parameter variant of Platt scaling, is 'surprisingly effective'",
+         units_and_conditions="expected calibration error, NLL", locator="Abstract",
+         limitations="Abstract only; calibration on one distribution does not guarantee it under a shift of writers or devices (review R18)",
+         relevance_to_design="The spelling checker's combined P(misspelled) is calibrated by temperature scaling on the tuning children (rule W2) and checked on test children",
+         transferability="medium", transferability_reason="General method; our model is a noisy-channel combination, not a deep classifier",
+         design_implication="Calibrate after combining the recognition, language and error models; re-check per user and device",
+         search_query="arxiv.org/abs/1706.04599", stream="EML"),
 ]
 
 
@@ -198,10 +225,11 @@ def derived(res: Dict) -> List[List[str]]:
                         year="2026", doi_or_url="results/ai3/ai3.json (trace)", source_type="derived simulation", evidence_class="simulation",
                         access_level="full text", task_or_setup="Per-letter completeness, backtracking and counterfactual readings of the guided ink",
                         participants_or_bench="none (synthetic learners)", comparator="no guidance",
-                        key_quantitative_findings=(f"heel wheel + nose: ink {w.get('d_ink_um_mean', float('nan')):.0f} um from the target, letters read {w.get('read', float('nan')):.3f} "
-                                                   f"(none {n.get('read', float('nan')):.3f}); share of the target letter left undrawn {w.get('missing_mean', float('nan')):.3f} "
-                                                   f"(none {n.get('missing_mean', float('nan')):.3f}); newly misread letters recovered by filling the missing parts "
-                                                   f"{w.get('newly_misread_filled_recovers', float('nan')):.2f}"),
+                        key_quantitative_findings=(f"heel wheel + nose: ink {w.get('d_ink_um_mean', float('nan')):.0f} um from the target, letters read by the app's "
+                                                   f"order-sensitive reader {w.get('read', float('nan')):.3f} (none {n.get('read', float('nan')):.3f}); by an order-free "
+                                                   f"picture reader {w.get('read_static', float('nan')):.3f} (none {n.get('read_static', float('nan')):.3f}); "
+                                                   f"{w.get('newly_misread', 0)} letters newly misread by the app's reader, {w.get('newly_misread_both_readers', 0)} of them by both; "
+                                                   f"share of the target letter left undrawn {w.get('missing_mean', float('nan')):.3f} (none {n.get('missing_mean', float('nan')):.3f})"),
                         units_and_conditions="shares of letters; um", locator="ai3.json trace", limitations="Synthetic learners, passive hand, the app's template recogniser",
                         relevance_to_design="Shape assist must not collapse ink onto the nearest part of the model letter", transferability="low",
                         transferability_reason="Model-to-model", design_implication="Progress-aligned correspondence, small limits, completeness metric",
@@ -259,6 +287,64 @@ def derived(res: Dict) -> List[List[str]]:
                         locator="ai3.json cues", limitations="Writer responses are ASSUMPTIONS", relevance_to_design="Which cue to build first",
                         transferability="low", transferability_reason="Assumed responses", design_implication="See docs/spelling_and_clarity.md",
                         search_query="n/a (derived)", stream="HAP"))
+    wd = res.get("words")
+    if wd and wd.get("test_words"):
+        tw = wd["test_words"]["normal"]
+        b = wd["W1"]["beta_w"]
+        g = lambda k: tw.get(k, {})
+        out.append(_row(id="EML-97", topic="Word recognition while writing: character and word error rates, writer- and session-disjoint",
+                        citation="This ledger's calculation: ai3 words stage (task 1's causal GRU on words written with real UJI letters of 20 held-out writers; NG1x character model)",
+                        year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived calculation", evidence_class="simulation",
+                        access_level="full text", task_or_setup="Letters separated at pen lifts by the demo's rule; rule W1 (LM weight) on 6 tuning writers",
+                        participants_or_bench="none (20 test writers, both sessions)", comparator="with and without the language model; with and without writer calibration from the other session",
+                        key_quantitative_findings=(f"CER / WER, new writers, no LM {g('independent|beta=0')['cer']:.3f} / {g('independent|beta=0')['wer']:.3f}; "
+                                                   f"with LM (beta {b:g}) {g(f'independent|beta={b:g}')['cer']:.3f} / {g(f'independent|beta={b:g}')['wer']:.3f}; "
+                                                   f"calibrated on the other session, with LM {g(f'calibrated|beta={b:g}')['cer']:.3f} / {g(f'calibrated|beta={b:g}')['wer']:.3f}; "
+                                                   f"segmentation errors {tw.get('segmentation_error_per_letter', float('nan')):.3f} per letter"),
+                        units_and_conditions="character and word error rates", locator="ai3.json words",
+                        limitations="Words assembled from isolated letters with assumed spacing (print writing); tablet data; no tremor",
+                        relevance_to_design="Review gate G7: raw and corrected CER/WER on held-out people and sessions", transferability="medium",
+                        transferability_reason="Real letters of held-out writers; assembled words", design_implication="Calibrate per writer; add CTC for joined-up writing (EXP-S17)",
+                        search_query="n/a (derived)", stream="EML"))
+    if wd and wd.get("spelling"):
+        blk = wd["spelling"].get("independent") or {}
+        t = blk.get("test", {})
+        rel = blk.get("reliability_test", {})
+        if t:
+            out.append(_row(id="EML-98", topic="Spelling help that keeps recognition errors apart from spelling errors, with calibrated confidence",
+                            citation="This ledger's calculation: ai3 words stage (the review's score over the recogniser's 3 best readings; Holbrook test children; UJI test writers' real letters)",
+                            year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived calculation", evidence_class="simulation",
+                            access_level="full text", task_or_setup="score = lambda_r log P(strokes|x) + log P(w|context) + log P(x|w); temperature scaling; rules W2-W4 on tuning children",
+                            participants_or_bench="none (11 test children's real writing; real letters of 20 held-out writers)", comparator="uncalibrated combination; letters known exactly (EML-93)",
+                            key_quantitative_findings=(f"caught {t['detection_rate']:.3f} of misspellings at {t['fa_per_100_correct']:.2f} false alarms per 100 correct words; "
+                                                       f"shown suggestions right {t['suggestion_right_when_shown']:.2f}; misread words put right {t['recognition']['misread_fixed_share']:.2f}, "
+                                                       f"right readings changed {t['recognition']['right_reading_changed_share']:.3f}; unusual correct words kept {t['unusual_correct_words']['kept_unflagged_share']:.2f}; "
+                                                       f"ECE {rel.get('raw', {}).get('ece', float('nan')):.3f} -> {rel.get('calibrated', {}).get('ece', float('nan')):.3f}; "
+                                                       f"auto mode: {t['auto_mode']['errors_fixed_per_100_errors']:.1f} errors fixed per 100, {t['auto_mode']['correct_words_changed_per_100_correct']:.2f} correct words changed per 100"),
+                            units_and_conditions="shares; per 100 words; expected calibration error", locator="ai3.json words",
+                            limitations="Recognition simulated with real letters of other writers than the children; unigram-bigram context; 1960s texts",
+                            relevance_to_design="Review section 10: combine recognition, context and error model; abstain when weak", transferability="medium",
+                            transferability_reason="Real errors and real letters, combined in simulation", design_implication="See docs/spelling_and_clarity.md",
+                            search_query="n/a (derived)", stream="EML"))
+    pl = res.get("plan")
+    if pl and pl.get("table"):
+        T = pl["table"]
+        g = lambda k, f: T.get(k, {}).get(f, float("nan"))
+        out.append(_row(id="CON-93", topic="Writing an accepted word with a reach-limited nib while the hand advances",
+                        citation="This ledger's simulation: ai3 plan stage (completions from held-out sentences, the UJI test writers' own letters at 3 mm x-height; kinematic planner, rule C1)",
+                        year="2026", doi_or_url="results/ai3/ai3.json (plan)", source_type="derived simulation", evidence_class="simulation",
+                        access_level="full text", task_or_setup="q = r(s) - b(t) kept within the usable reach; letter admission; slow, lift, hand back",
+                        participants_or_bench="none", comparator="stage radius 1-6 mm; hand steady, slow, fast, pausing, still",
+                        key_quantitative_findings=(f"completed with a steady hand: {g('steady|6|letter_admission', 'completed_share'):.2f} at +-6 mm, "
+                                                   f"{g('steady|4|letter_admission', 'completed_share'):.2f} at +-4 mm, {g('steady|3|letter_admission', 'completed_share'):.2f} at +-3 mm, "
+                                                   f"{g('steady|1|letter_admission', 'completed_share'):.2f} at +-1 mm; still hand at +-6 mm {g('still|6|letter_admission', 'completed_share'):.2f}; "
+                                                   f"half letters left with letter admission {g('pause|6|letter_admission', 'partial_letters_per_100'):.0f} per 100 (pausing hand) vs "
+                                                   f"{g('pause|6|pointwise', 'partial_letters_per_100'):.0f} point by point"),
+                        units_and_conditions="shares of completions; per 100 completions", locator="ai3.json plan",
+                        limitations="Kinematics only; the hand's advance is assumed; tracking error inside a 0.5 mm reserve",
+                        relevance_to_design="Review section 10: the workspace, not the prediction, limits physical completion", transferability="low",
+                        transferability_reason="Simulation", design_implication="Complete physically only with >= +-4-6 mm reach at a 3 mm x-height and a moving hand; letter admission",
+                        search_query="n/a (derived)", stream="CON"))
     return out
 
 

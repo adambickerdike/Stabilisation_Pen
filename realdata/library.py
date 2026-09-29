@@ -181,8 +181,8 @@ def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words:
 
 class RealWriter:
     """Writer-interface parity with aiguide/sim2j writers: RealWriter(key).write(text, dt, seed) -> Written.
-    For BRUSH the text is what the writer recorded (the argument is ignored); for chartraj any text made of the 20
-    recorded letters can be composed."""
+    For UNIPEN (key 'unipen/<i>' = the i-th writer of the split, or a writer file id) and BRUSH the text is what the
+    writer recorded (the argument is ignored); for chartraj any text made of the 20 recorded letters is composed."""
 
     def __init__(self, key: str = "unipen/0", split: str = "test"):
         self.source, self.id = key.split("/", 1)

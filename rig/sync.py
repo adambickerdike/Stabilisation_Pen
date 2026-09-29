@@ -94,28 +94,38 @@ def map_time(t_dev, fit: Dict) -> np.ndarray:
 
 
 # ------------------------------------------------------------------ delay estimation
-def xcorr_delay(ref: np.ndarray, sig: np.ndarray, fs: float, max_lag_s: float = 0.05) -> Dict:
-    """Delay of sig relative to ref (positive: sig lags) from the peak of the normalised
-    cross-correlation with parabolic sub-sample refinement. Both at the same rate fs."""
+def xcorr_delay(ref: np.ndarray, sig: np.ndarray, fs: float, max_lag_s: float = 0.05, upsample: int = 32) -> Dict:
+    """Delay of sig relative to ref (positive: sig lags) from the peak of the cross-correlation,
+    refined by band-limited interpolation (zero-padding the cross-spectrum by `upsample`) and a
+    parabola on the interpolated peak. Both signals at the same rate fs."""
     ref = np.asarray(ref, float) - np.mean(ref)
     sig = np.asarray(sig, float) - np.mean(sig)
     n = min(len(ref), len(sig))
     ref, sig = ref[:n], sig[:n]
     nfft = 1 << int(np.ceil(np.log2(2 * n)))
-    R = np.fft.rfft(ref, nfft)
-    S = np.fft.rfft(sig, nfft)
-    cc = np.fft.irfft(S * np.conj(R), nfft)
+    X = np.fft.rfft(sig, nfft) * np.conj(np.fft.rfft(ref, nfft))
+    cc = np.fft.irfft(X, nfft)
     L = int(round(max_lag_s * fs))
     lags = np.concatenate([np.arange(0, L + 1), np.arange(-L, 0)])
     vals = np.concatenate([cc[:L + 1], cc[-L:]])
-    k = int(np.argmax(vals))
-    lag = lags[k]
-    # parabolic refinement on the neighbours (circular indexing on the full cc)
-    ym1, y0, yp1 = cc[(lag - 1) % nfft], cc[lag % nfft], cc[(lag + 1) % nfft]
-    den = ym1 - 2 * y0 + yp1
-    frac = 0.5 * (ym1 - yp1) / den if den != 0 else 0.0
+    k0 = int(lags[int(np.argmax(vals))])
+    # band-limited interpolation around the integer peak: evaluate the correlation on a fine grid
+    # from the cross-spectrum directly (exact trigonometric interpolation of the circular xcorr)
+    f = np.arange(len(X))
+    fine = k0 + np.linspace(-1.5, 1.5, 3 * upsample + 1)
+    w = np.ones(len(X))
+    w[1:-1] = 2.0
+    vals_f = np.array([np.sum(w * np.real(X * np.exp(2j * np.pi * f * d / nfft))) for d in fine]) / nfft
+    j = int(np.argmax(vals_f))
+    if 0 < j < len(fine) - 1:
+        ym1, y0, yp1 = vals_f[j - 1], vals_f[j], vals_f[j + 1]
+        den = ym1 - 2 * y0 + yp1
+        frac = 0.5 * (ym1 - yp1) / den if den != 0 else 0.0
+        lag = fine[j] + frac * (fine[1] - fine[0])
+    else:
+        lag = fine[j]
     norm = np.sqrt(np.sum(ref ** 2) * np.sum(sig ** 2))
-    return {"delay_s": float((lag + frac) / fs), "peak_corr": float(y0 / norm) if norm > 0 else 0.0}
+    return {"delay_s": float(lag / fs), "peak_corr": float(vals_f[j] / norm) if norm > 0 else 0.0}
 
 
 def phase_delay(ref: np.ndarray, sig: np.ndarray, fs: float, band=(1.0, 30.0), nseg: int = 8) -> Dict:

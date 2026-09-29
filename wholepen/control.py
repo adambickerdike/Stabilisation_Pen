@@ -73,6 +73,7 @@ class WPConfig:
     cmg_band: tuple = (3.0, 12.0)        # Hz band of the 'damp' law (2nd-order Butterworth band-pass, causal)
     model_r_rot: float = 0.5             # the internal model's grip split
     oracle_gain: float = 1.0             # the oracle laws' gain (perfect knowledge of the total tremor)
+    use_line_f: bool = True              # the device laws run at the tremor-line detector's frequency when it is open
     preview: float = 0.0                 # s extra preview for the oracle (group delays)
     label: str = ""
 
@@ -188,11 +189,15 @@ class AFC:
     at the tremor frequency averages out of the update; the law acts only while the detector sees a tremor line
     (PROPOSED DESIGN; the adaptive feed-forward canceller of the tremor literature, with the device's internal model)."""
 
-    def __init__(self, freqs, G, tau: float = 0.3, Ts: float = 0.5e-3, hp_hz: float = 2.0, decay_tau: float = 0.3):
+    def __init__(self, freqs, G, tau: float = 0.3, Ts: float = 0.5e-3, hp_hz: float = 2.0, decay_tau: float = 0.3,
+                 G_ink=None):
+        """G: the device's effect on the measured point; G_ink (optional): its effect on the ink.  With G_ink the law
+        cancels the ink: the measured phasor is corrected by (G - G_ink) U before the Newton step with G_ink^-1."""
         from scipy.signal import butter
         self.f = freqs
         self.G = G
-        self.Ginv = np.array([np.linalg.pinv(g) for g in G])
+        self.G_ink = G_ink
+        self.Ginv = np.array([np.linalg.pinv(g) for g in (G if G_ink is None else G_ink)])
         self.a = Ts / tau
         self.Ts = Ts
         self.U = np.zeros(2, complex)
@@ -208,9 +213,10 @@ class AFC:
         out, self.zi = sosfilt(self.sos, y[None, :], axis=0, zi=self.zi)
         return out[0]
 
-    def _ginv(self, fq):
-        re = np.array([[np.interp(fq, self.f, self.Ginv[:, i, j].real) for j in range(2)] for i in range(2)])
-        im = np.array([[np.interp(fq, self.f, self.Ginv[:, i, j].imag) for j in range(2)] for i in range(2)])
+    def _ginv(self, fq, M=None):
+        M = self.Ginv if M is None else M
+        re = np.array([[np.interp(fq, self.f, M[:, i, j].real) for j in range(2)] for i in range(2)])
+        im = np.array([[np.interp(fq, self.f, M[:, i, j].imag) for j in range(2)] for i in range(2)])
         return re + 1j * im
 
     def step(self, y: np.ndarray, valid: bool, f_est: float, active: bool, cap: float) -> np.ndarray:
@@ -222,7 +228,10 @@ class AFC:
         else:
             yh = None
         if active and yh is not None:
-            self.U = self.U - self.a * (self._ginv(fq) @ (2.0 * yh * e))
+            Y = 2.0 * yh * e
+            if self.G_ink is not None:
+                Y = Y - (self._ginv(fq, self.G) - self._ginv(fq, self.G_ink)) @ self.U
+            self.U = self.U - self.a * (self._ginv(fq) @ Y)
         else:
             self.U = self.U * self.decay
         mag = np.abs(self.U)

@@ -49,8 +49,8 @@ async function run(browser, url, label, viewport, scheme) {
   const ov = await page.evaluate(() => [document.documentElement.scrollWidth, window.innerWidth]);
   check(`${label}: no horizontal page scroll`, ov[0] <= ov[1], `scrollWidth ${ov[0]} / viewport ${ov[1]}`);
   const ex = st0.s.words;
-  const flagged = ex.find(w => w.flags.some(f => f.kind === "spelling"));
-  check(`${label}: example page: five words read, the misspelling flagged`, ex.length === 5 && !!flagged,
+  const flagged = ex.find(w => w.literal.startsWith("lib") && w.flags.some(f => f.kind === "spelling"));
+  check(`${label}: example page: five words read, "libary" flagged`, ex.length === 5 && !!flagged,
     ex.map(w => w.literal + (w.flags.some(f => f.kind === "spelling") ? "*" : "")).join(" "));
   const sugg = flagged ? (flagged.flags.find(f => f.kind === "spelling").sugg || []).map(s => s.w) : [];
   check(`${label}: the flagged word's suggestions include "library"`, sugg.includes("library"), sugg.join(", "));
@@ -69,9 +69,9 @@ async function run(browser, url, label, viewport, scheme) {
     let s = await page.evaluate(() => window.__demo.state());
     check(`${label}: a pause after "becau" offers completions including "because"`, s.tray && s.trayWords.includes("because"), `tray ${s.tray}: ${s.trayWords.join(", ")}`);
     const rec0 = s.record;
-    if (s.trayWords.includes("because")) await page.click('#trayopts button[data-w="because"]');
+    if (s.trayWords.includes("because")) await page.click('#trayopts button[data-w="because"][data-kind="completion"]');
     s = await page.evaluate(() => window.__demo.state());
-    check(`${label}: accepting it logs a transcript change and makes a writing plan (planned, not yet ink)`, s.revs >= 1 && s.plans.length === 1 && s.plans[0].state === "planned" && s.record === rec0,
+    check(`${label}: accepting it logs a transcript change and makes a writing plan for "se" (planned, not yet ink)`, s.revs >= 1 && s.plans.length === 1 && s.plans[0].state === "planned" && s.plans[0].text === "se" && s.record === rec0,
       `revisions ${s.revs}, plans ${JSON.stringify(s.plans)}, record ${rec0} -> ${s.record}`);
     await page.screenshot({ path: path.join(SHOTS, `${label}_plan.png`), fullPage: true });
     await page.evaluate(() => window.__demo.runPlan());
@@ -94,7 +94,7 @@ async function run(browser, url, label, viewport, scheme) {
     await page.screenshot({ path: path.join(SHOTS, `${label}_after.png`), fullPage: true });
     /* 4. mouse strokes on the pad */
     const box = await page.$eval("#pad", el => { const r = el.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height } });
-    const o = FIX.letters.find(f => f.char === "o"), XH = box.w < 520 ? 34 : 44, base = Math.round(XH * 2.55);
+    const o = FIX.letters.find(f => f.top1 === f.char && f.strokes.length === 1 && "aceomnrsuvwxz".includes(f.char)), XH = box.w < 520 ? 34 : 44, base = Math.round(XH * 2.55);
     const pts = o.strokes[0], xs = pts.map(p => p[0]), ys = pts.map(p => p[1]), x0 = Math.min(...xs), y0 = Math.min(...ys);
     await page.mouse.move(box.x + 40 + (pts[0][0] - x0) * XH, box.y + base - (pts[0][1] - y0) * XH);
     await page.mouse.down();
@@ -102,7 +102,7 @@ async function run(browser, url, label, viewport, scheme) {
     await page.mouse.up();
     await page.waitForTimeout(200);
     const live = await page.$$eval("#live .lchip", els => els.map(e => e.textContent));
-    check(`${label}: a letter drawn with the mouse is read ("o" from a real test letter)`, live.length === 1 && live[0] === "o", `live letters: ${live.join("")}`);
+    check(`${label}: a letter drawn with the mouse is read as the Python model reads it ("${o.char}", a real test letter)`, live.length === 1 && live[0] === o.char, `live letters: ${live.join("")}`);
     await page.evaluate(() => window.__demo.endWord());
     /* 5. the pen-lift cue */
     await page.evaluate(() => window.__demo.setCue("withhold"));

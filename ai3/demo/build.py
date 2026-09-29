@@ -177,7 +177,13 @@ def example_and_fixtures(letters, xh, m):
     """The example phrase (UJI test writer, session 1) and fixtures (session 2 letters with Python posteriors)."""
     test_w = sorted({L.writer for L in letters if O.split_of(L.writer) == "test"})
     by = {(L.writer, L.rep, L.char): L for L in letters}
-    w = next(w for w in test_w if all((w, 1, c) in by and (w, 2, c) in by for c in O.LETTERS))
+    full = [w for w in test_w if all((w, 1, c) in by and (w, 2, c) in by for c in O.LETTERS)]
+    need = sorted(set("".join(EXAMPLE)))
+
+    def n_read(w):                                   # the example shows the interface: a writer whose letters it reads
+        F = [O.encode([np.asarray(s) / xh[w] for s in by[(w, 1, c)].strokes], 1.0)[0] for c in need]
+        return sum(int(O.LETTERS[int(np.argmax(p[-1]))] == c) for p, c in zip(O.posteriors(m, F), need))
+    w = max(full, key=lambda q: (n_read(q), -full.index(q)))
     ex = [{"word": word, "letters": [{"char": c, "strokes": _strokes_rounded([np.asarray(s) / xh[w] for s in by[(w, 1, c)].strokes], 64)}
                                      for c in word]} for word in EXAMPLE]
     fx = []

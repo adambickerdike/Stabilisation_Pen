@@ -85,14 +85,15 @@ def analyse_stroke(t, Fc, Fp, xy, theta, phi_h, trim_mm=2.0, band=(3.0, 15.0)) -
     c = contact_components(Fp, theta, phi_h)
     vhat = np.mean(v[m], axis=0)
     vhat = vhat / np.linalg.norm(vhat)
-    vperp = np.array([-vhat[1], vhat[0]])
+    e_drag = -vhat                                   # direction of pure kinetic drag on the ball
+    e_side = np.array([-e_drag[1], e_drag[0]])       # e_drag turned 90 deg counter-clockwise
     h, t2 = basis(phi_h)
     beta = float(np.arctan2(vhat @ t2, vhat @ h))
     f = np.column_stack([c["f_x"], c["f_y"]])
     N = c["N"]
     Nm = float(np.mean(N[m]))
-    drag = float(np.mean(-(f[m] @ vhat)))
-    cross = float(np.mean(f[m] @ vperp))
+    drag = float(np.mean(f[m] @ e_drag))
+    cross = float(np.mean(f[m] @ e_side))
     Fcm = float(np.mean(np.asarray(Fc, float)[m]))
     R_a = float(np.mean(c["R_a"][m]))
     fs = 1.0 / np.median(np.diff(t))

@@ -245,7 +245,8 @@ def samples(log=print, w: int = 0) -> Dict:
                 if k in ("ink_err_um", "letters_read", "words_app", "recognised", "P_total_W", "device_share",
                          "felt_rms_N", "ratio")}
         panels.append({"id": pid, "title": title, "condition": cond, "device": device, "caption": caption,
-                       "evidence": "SIM", "intended": intended, "ink": ink, "metrics": keep})
+                       "evidence": "SIM", "intended": intended, "ink": ink, "metrics": keep,
+                       "ink_250Hz": _path50(r["t"], r.ink(), r["contact"] > 0.5, hz=250.0, t0=t0)})
     for amp in (1.0e-3, 2.0e-3):
         rn = ET.run_case(su, "none", 8.0, amp, seed, keep=True)
         r_none = rn.pop("_r")
@@ -281,13 +282,15 @@ def samples(log=print, w: int = 0) -> Dict:
                                   "letters.", "evidence": "SIM",
                        "intended": [[round(a * 1e3, 2), round(b * 1e3, 2), int(c)] for (a, b), c in
                                     zip(itp.xy[::20], itp.pen_down[::20])],
-                       "ink": ink, "metrics": {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()
+                       "ink": ink, "ink_250Hz": _path50(r["t"], r.ink(), r["contact"] > 0.5, hz=250.0),
+                       "metrics": {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()
                                                if k in ("ink_err_um", "letters_read", "words_app", "recognised",
                                                         "letters_per_s", "P_total_W")}})
     meta = PV.metadata(STATUS, seeds={"writers": [w], "seeds": [seed]},
                        extra={"script": "sim2j/report.py", "version": VERSION,
                               "schema": "panels[{id, title, condition, device, caption, evidence, intended [[x_mm, y_mm, "
-                                        "pen_down]], ink [[...]], metrics}]; paths at 50 Hz, 0.01 mm",
+                                        "pen_down]], ink [[...]], metrics}]; paths at 50 Hz, 0.01 mm; ink_250Hz: the "
+                                        "same ink at 250 Hz (an addition: 8-12 Hz tremor needs it to be drawn)",
                               "units": "mm; page frame, x along the line, y up; pen_down 0/1",
                               "pen_source": RJ.lead()["meta"] if RJ.lead_available() else "round1"})
     out = {"meta": meta, "panels": panels}
@@ -345,7 +348,7 @@ def fig_handwriting(s: Optional[Dict] = None, log=print) -> None:
     fig, axs = plt.subplots(len(rows_), 1, figsize=(8.0, 1.35 * len(rows_)))
     csv_rows = []
     for ax, (p, lab) in zip(np.atleast_1d(axs), rows_):
-        a = np.asarray(p["ink"], float)
+        a = np.asarray(p.get("ink_250Hz") or p["ink"], float)
         if len(a) == 0:
             continue
         a[:, 0] -= np.nanmin(a[:, 0])
@@ -353,14 +356,20 @@ def fig_handwriting(s: Optional[Dict] = None, log=print) -> None:
         a[:, 1] -= base
         for y in (0.0, 8.0):                                   # 8 mm ruled lines (the handwriting study's figures)
             ax.axhline(y - 1.0, color="#b9cbe0", linewidth=0.8)
-        seg = np.split(np.arange(len(a)), np.flatnonzero(np.diff(a[:, 2]) != 0) + 1)
-        for sg in seg:
-            if a[sg[0], 2] > 0.5 and len(sg) > 1:
-                ax.plot(a[sg, 0], a[sg, 1], color=ink, linewidth=1.3, solid_capstyle="round", solid_joinstyle="round")
         ax.set_aspect("equal")
         ax.set_xlim(-2, max(70.0, float(np.nanmax(a[:, 0])) + 2))
         ax.set_ylim(-4, 10)
         ax.set_axis_off()
+        # a 0.35 mm ball-pen line at the figure's scale (points per mm of the axes)
+        fig.canvas.draw()
+        bb = ax.get_window_extent()
+        x0, x1 = ax.get_xlim()
+        pt_per_mm = (bb.width * 72.0 / fig.dpi) / (x1 - x0)
+        lw = max(0.6, 0.35 * pt_per_mm)
+        seg = np.split(np.arange(len(a)), np.flatnonzero(np.diff(a[:, 2]) != 0) + 1)
+        for sg in seg:
+            if a[sg[0], 2] > 0.5 and len(sg) > 1:
+                ax.plot(a[sg, 0], a[sg, 1], color=ink, linewidth=lw, solid_capstyle="round", solid_joinstyle="round")
         mt = p["metrics"]
         ax.text(-2, 9.2, f"{lab}: the app reads '{mt.get('recognised', '')}'", fontsize=8, color=PS.INK2, va="bottom")
         csv_rows.append([p["id"], lab, mt.get("recognised"), mt.get("letters_read"), mt.get("words_app"), mt.get("ink_err_um")])

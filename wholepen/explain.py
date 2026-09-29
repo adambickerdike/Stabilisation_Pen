@@ -1,111 +1,151 @@
-r"""Explainer outputs: layout_parts.json (the explainer's pen-layout schema, results/drive/layout_parts.json) for the new
-parts, and animation.json keyframes (time, part, position, angle) sampled from a SIMULATION run so the 3-D explainer can
-show the recommended system moving.
+r"""Explainer outputs: layout_parts.json (the explainer's pen-layout schema, as results/drive/layout_parts.json) for the
+recommended whole-pen collar (the review's option B, study W's V2 load path) with the gyroscopic tail as an optional,
+separate group, and animation.json keyframes (time, part, position, angle) sampled from a SIMULATION run so the 3-D
+explainer can show the whole pen moving.
 
 Layout frame (the explainer's): z along the pen axis from the ball tip (z = 0) toward the back, x in the tilt plane
-positive away from the paper, y lateral; mm.  The tail module replaces the Rev J rear cap (z 141.72-144.72 mm).
-Animation frame: the page frame of sim2 (x, y in the page, z up; metres converted to mm), the pen's attitude as the
-rotation of its axis from the writing pose (two small angles, degrees), the nose's tip deflection (mm), the CMG
-turret angle and gimbal angles (degrees) and the rotor spin phase.  Evidence status: PROPOSED DESIGN (layout, CALC
-masses) and SIMULATION (keyframes).
+positive away from the paper, y lateral; mm.
+Animation frame: the page frame of sim2 (x, y in the page, z up; mm relative to the first frame); angles in degrees:
+'inner_pen' = the swinging pen's axis direction (tilt-plane and sideways angles from its first pose), 'collar' = the
+held collar's (the inner pen's minus the pivot angles), 'pivot' = the collar's two pivot angles, 'nose' = the small nib's
+tip deflection (mm), 'ink' = where the ball is.  Evidence status: PROPOSED DESIGN (layout, CALC masses) and SIMULATION
+(keyframes).
 """
 from __future__ import annotations
 
 import math
+import os
 from typing import Dict, List, Optional
 
 import numpy as np
 
-from . import ROOT  # noqa: F401
+from . import BUILD, RESULTS, provenance, write_json
+from . import calc as K
 from . import designs as DS
 
 Z0_TAIL = 141.72          # mm: the Rev J rear cap's front face (results/revJ/layout.json)
 
 
-def layout_parts(total_g: float = 100.0, provenance: Optional[Dict] = None) -> Dict:
-    d = DS.cmg_design(total_g, mode="turret")
-    L = d["length_mm"]
-    od = d["od_mm"]
-    z0, z1 = Z0_TAIL, Z0_TAIL + L
-    ro = d["rotor_r_o_mm"]
-    t = d["rotor_t_mm"]
-    slot = (L - 12.0) / 2
-    zr = [z0 + 6.0 + slot * 0.5, z0 + 6.0 + slot * 1.5]
-    fp = d["fixed_parts_g"]
+def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float = 4.0) -> Dict:
+    g = K.COLLAR_V2
+    mm = K.collar_masses("geared")
+    geo = next(r for r in K.collar_geometry()["rows"] if r["z_p_mm"] == z_p and r["travel_mm"] == travel and r["path"] == "V2")
+    od = round(geo["collar_od_mm"], 2)
+    wall = g["wall"] * 1e3
+    zb = g["barrel_od"] * 1e3
+    z_front, z_rear, L = g["z_front_v2"] * 1e3, g["z_rear"] * 1e3, g["length"] * 1e3
+    cp, mv = mm["collar_parts_g"], mm["moving_parts_g"]
     comps = [
-        {"id": "gt_housing", "label": "Gyro tail housing (containment)", "group": "gyro_tail", "shape": "tube", "z0": z0, "z1": z1,
-         "d0": od, "d1": od, "d_in": od - 1.6, "moves_with": "handle", "optional": True,
-         "function": "Screws on in place of the rear cap. Holds the two spinning rotors and stops a loose rotor: aluminium, 0.8 mm wall.",
-         "part": "custom (aluminium tube, 0.8 mm wall, end caps)", "ledger": "", "mass_g": round(fp["housing_containment_al"], 2)},
-        {"id": "gt_turret", "label": "Turret (turns the pair's torque axis)", "group": "gyro_tail", "shape": "tube", "z0": z0 + 2.0,
-         "z1": z1 - 2.0, "d0": od - 2.2, "d1": od - 2.2, "d_in": od - 3.2, "moves_with": "gyro_turret", "optional": True,
-         "function": "Carries both gimbals and turns slowly (at most 1 rad/s) about the pen axis so the gyroscopes push along the tremor's main direction.",
-         "part": "custom frame + small geared motor", "ledger": "", "mass_g": round(fp["turret_motor"], 2)},
+        {"id": "collar_sleeve", "label": "Collar (what the hand holds)", "group": "collar", "shape": "tube", "z0": z_front + 1.5,
+         "z1": z_rear, "d0": od, "d1": od, "d_in": round(od - 2 * wall, 2), "moves_with": "collar", "optional": False,
+         "function": "The fingers hold it and the thumb-index web rests on it. It does not swing: the pen inside it does.",
+         "part": "custom (PA12-CF, 1.2 mm wall, or aluminium 0.8 mm)", "ledger": "", "mass_g": round(cp["sleeve_PA12CF_1.2mm"], 2)},
+        {"id": "collar_skid_ring", "label": "Skid ring on the collar", "group": "collar", "shape": "tube", "z0": z_front,
+         "z1": z_front + 1.5, "d0": round(od + 1.0, 2), "d1": round(od + 1.0, 2), "d_in": round(od - 2.5, 2), "moves_with": "collar",
+         "optional": False, "function": "Rests on the paper and carries the writing force, so the swinging pen only carries its small refill spring.",
+         "part": "custom (PTFE-coated POM ring)", "ledger": "", "mass_g": cp["skid_ring_V2"]},
+        {"id": "collar_pivot", "label": "Two-axis flexure pivot", "group": "collar", "shape": "box", "z0": z_p - 1.5, "z1": z_p + 1.5,
+         "size": [round(od - 2 * wall - 0.6, 2), round(od - 2 * wall - 0.6, 2), 3.0], "moves_with": "collar", "optional": False,
+         "function": f"Holds the inner pen {z_p:.0f} mm behind the tip and lets it tilt +-{geo['swing_deg']:.1f} deg each way: +-{travel:.0f} mm at the tip.",
+         "part": "custom cross-strip flexure (titanium or spring steel)", "ledger": "", "mass_g": cp["gimbal_cross_flexure"]},
+        {"id": "collar_motor_1", "label": "Swing motor (tilt plane)", "group": "collar", "shape": "cylinder", "z0": z_rear - 14.0,
+         "z1": z_rear - 2.0, "d0": 3.2, "d1": 3.2, "offset": [round(-(od / 2 - wall - 1.8), 2), 0.0], "moves_with": "collar", "optional": False,
+         "function": "Swings the inner pen in the tilt plane and pushes back on the collar and the hand (the Liftware principle).",
+         "part": "Faulhaber 0824 B + planetary head (MFR AMF-120, AMF-103; the 06/1 head's 25 mN m continuous rating is too low: a larger head is an open item)",
+         "ledger": "AMF-120,AMF-103", "mass_g": round((cp.get("motor_0824B_2x", 0) + cp.get("gearhead_06_1_2x", 0) + cp.get("output_gears_2x", 0)) / 2, 2)},
+        {"id": "collar_motor_2", "label": "Swing motor (sideways)", "group": "collar", "shape": "cylinder", "z0": z_rear - 14.0,
+         "z1": z_rear - 2.0, "d0": 3.2, "d1": 3.2, "offset": [0.0, round(od / 2 - wall - 1.8, 2)], "moves_with": "collar", "optional": False,
+         "function": "Swings the inner pen sideways.", "part": "as collar_motor_1", "ledger": "AMF-120,AMF-103",
+         "mass_g": round((cp.get("motor_0824B_2x", 0) + cp.get("gearhead_06_1_2x", 0) + cp.get("output_gears_2x", 0)) / 2, 2)},
+        {"id": "collar_load_cell", "label": "Skid load cell", "group": "collar", "shape": "box", "z0": z_front + 2.0, "z1": z_front + 4.0,
+         "size": [2.0, 4.0, 1.0], "offset": [round(-(od / 2 - wall - 0.8), 2), 0.0], "moves_with": "collar", "optional": False,
+         "function": "Measures the writing force: it tells the pen it is on the paper (the refill may then follow the paper) and the motors how much to hold.",
+         "part": "custom strain flexure", "ledger": "", "mass_g": cp["load_cell_and_wiring"]},
+        {"id": "inner_barrel", "label": "Inner pen (swings)", "group": "inner_pen", "shape": "tube", "z0": 4.0, "z1": L, "d0": zb, "d1": zb,
+         "d_in": zb - 1.0, "moves_with": "inner_pen", "optional": False,
+         "function": "Everything that writes: refill, small fine nib, cell and board. The collar's motors swing all of it.",
+         "part": "custom (aluminium tube 12 x 0.5 mm)", "ledger": "", "mass_g": round(mv["barrel_tube_al_0.5mm"], 2)},
+        {"id": "fine_nib", "label": "Small fine nib (+-1 mm)", "group": "inner_pen", "shape": "tube", "z0": 3.0, "z1": 40.0, "d0": 6.0,
+         "d1": 6.0, "d_in": 2.6, "moves_with": "inner_pen", "optional": False,
+         "function": "Study B's balanced nib: it trims the last millimetre quickly; the collar re-centres it and takes the large swings.",
+         "part": "study B (bnib/), not designed here", "ledger": "", "mass_g": mv["refill_and_fine_nib_stage"]},
+        {"id": "inner_cell", "label": "Li-ion cell 10280", "group": "inner_pen", "shape": "cylinder", "z0": 100.0, "z1": 128.0, "d0": 10.0,
+         "d1": 10.0, "moves_with": "inner_pen", "optional": False, "function": "Power; sits behind the pivot to balance the pen about it.",
+         "part": "10280 Li-ion (ASSUMPTION about 0.3 Wh)", "ledger": "", "mass_g": mv["cell_10280_Li_ion"]},
+        {"id": "inner_board", "label": "Board, IMU and page sensor link", "group": "inner_pen", "shape": "box", "z0": 60.0, "z1": 95.0,
+         "size": [9.0, 3.0, 35.0], "moves_with": "inner_pen", "optional": False,
+         "function": "Estimates the tremor and drives the motors and the nib.", "part": "custom", "ledger": "", "mass_g": mv["board_and_sensors"]},
     ]
-    for j in (0, 1):
-        comps.append({"id": f"gt_rotor{j}", "label": f"Tungsten rotor {j + 1} ({'clockwise' if j == 0 else 'anticlockwise'})",
-                      "group": "gyro_tail", "shape": "tube", "z0": round(zr[j] - t / 2, 2), "z1": round(zr[j] + t / 2, 2),
-                      "d0": round(2 * ro, 2), "d1": round(2 * ro, 2), "d_in": round(2 * d["rotor_r_i_mm"], 2),
-                      "moves_with": f"gyro_gimbal_{j}", "optional": True,
-                      "function": f"A {d['rotor_g']:.0f} g tungsten ring spinning at {d['rpm']:.0f} rpm; its gimbal tips it back and forth, "
-                                  "which twists the pen. The two rotors spin and tip in opposite senses, so their twists add on one axis and cancel on the others.",
-                      "part": "tungsten heavy alloy ring (ASTM B777, 18 g/cm3) pressed on an outrunner bell", "ledger": "AMF-49",
-                      "mass_g": round(d["rotor_g"], 2)})
-        comps.append({"id": f"gt_gimbal{j}", "label": f"Gimbal frame {j + 1} with spin motor", "group": "gyro_tail", "shape": "tube",
-                      "z0": round(zr[j] - t / 2 - 1.0, 2), "z1": round(zr[j] + t / 2 + 1.0, 2), "d0": round(2 * ro + 1.0, 2),
-                      "d1": round(2 * ro + 1.0, 2), "d_in": round(2 * ro + 0.2, 2), "moves_with": f"gyro_gimbal_{j}", "optional": True,
-                      "function": "Holds the rotor's bearings and hub motor; tips about an axis across the pen.",
-                      "part": "custom frame, 2 x 618/4 bearings, outrunner stator", "ledger": "AMF-126,AMF-79",
-                      "mass_g": round((fp["gimbal_frames_bearings"] + fp["spin_motor_stators_bearings"]) / 2, 2)})
-    comps += [
-        {"id": "gt_gimbal_motor", "label": "Gimbal motor and scissor gears", "group": "gyro_tail", "shape": "cylinder",
-         "z0": z1 - 6.0 - 1.0, "z1": z1 - 1.0, "d0": 12.0, "d1": 12.0, "offset": [0.0, 7.0], "moves_with": "gyro_turret",
-         "optional": True, "function": "Tips the two gimbals in opposite senses at the tremor frequency (up to about 1 rad) through a pair of gears.",
-         "part": "Faulhaber 1226 B + 16:1 gearhead (ASSUMPTION ratio)", "ledger": "AMF-121",
-         "mass_g": round(fp["gimbal_motor_gearhead_scissor_gears"], 2)},
-        {"id": "gt_board", "label": "Gyro driver board", "group": "gyro_tail", "shape": "box", "z0": z0 + 1.0, "z1": z0 + 5.0,
-         "size": [14.0, 14.0, 4.0], "moves_with": "handle", "optional": True,
-         "function": "Spins the rotors, drives the gimbal and turret motors, and brakes the rotors if anything goes wrong.",
-         "part": "custom", "ledger": "", "mass_g": round(fp["electronics"], 2)},
-    ]
-    return {"meta": {"evidence_status": "PROPOSED DESIGN (study W's gyro tail module; CALC masses from volumes and catalogue parts; ASSUMPTION sizes; nothing built)",
-                     "concept": "detachable gyro tail: one scissored pair of control-moment gyroscopes on a turret, behind the thumb-index web",
-                     "replaces": ["rear_cap"], "added_mass_g": round(total_g - 1.06, 2),
-                     "design": {k: d[k] for k in ("total_g", "rotor_g", "rotor_r_o_mm", "rotor_t_mm", "rpm", "h_Nms", "length_mm", "od_mm",
-                                                  "E_stored_J", "P_spin_W")},
-                     "torque_Nm": d["torque_Nm"], "source": "wholepen/explain.py; docs/whole_pen_shift.md",
-                     "stabpen.provenance": provenance},
+    # the optional gyro tail (study W's CMG turret pair), kept as a separate optional group
+    d = DS.cmg_design(100, mode="turret")
+    fp = d["fixed_parts_g"]
+    z0, z1 = Z0_TAIL, Z0_TAIL + d["length_mm"]
+    comps.append({"id": "gt_housing", "label": "Optional gyro tail (bench experiment only)", "group": "gyro_tail", "shape": "tube",
+                  "z0": z0, "z1": round(z1, 2), "d0": round(d["od_mm"], 2), "d1": round(d["od_mm"], 2), "d_in": round(d["od_mm"] - 1.6, 2),
+                  "moves_with": "inner_pen", "optional": True,
+                  "function": f"Two {d['rotor_g']:.0f} g tungsten rotors at {d['rpm']:.0f} rpm storing {d['E_stored_J']:.0f} J: an experiment for the review's gate G5, not part of the recommended pen.",
+                  "part": "PROPOSED DESIGN (designs.cmg_design)", "ledger": "AMF-49,AMF-121,AMF-126",
+                  "mass_g": round(d["total_g"], 1)})
+    return {"meta": {"evidence_status": "PROPOSED DESIGN (study W's recommended whole-pen collar, the review's option B with the V2 load path; CALC masses from volumes and catalogue parts; ASSUMPTION dimensions; nothing built or measured)",
+                     "concept": "the hand holds a collar that rests on the paper; the whole inner pen swings in it on a 2-axis pivot, driven by two motors that push back on the collar and hand; a small fine nib (study B) trims the rest",
+                     "replaces": ["front_sleeve", "shell", "gimbal", "carrier", "magnet_cap", "coil_plate"],
+                     "replaces_note": "a new architecture, not a Rev J add-on: the 24 mm shell becomes a 21.7 mm collar around a 12 mm swinging pen; Rev J's own nose can sit in the inner pen instead of the fine nib only if the barrel grows to 24 mm (then the collar is about 33 mm)",
+                     "collar_geometry": geo, "masses": {"collar_g": round(mm["collar_g"], 1), "inner_pen_g": round(mm["barrel_g"], 1), "total_g": round(mm["total_g"], 1)},
+                     "source": "wholepen/explain.py; wholepen/calc.py; docs/whole_pen_shift.md", "stabpen.provenance": prov},
             "units": "mm",
             "axis": "z along the pen axis from the ball tip (z = 0) toward the back; x in the tilt plane, positive away from the paper; y transverse",
             "components": comps}
 
 
-def keyframes(r, parts: Dict[str, str], t0: float, t1: float, hz: float = 50.0, label: str = "") -> List[Dict]:
-    """Keyframes (list of {t, part, pos_mm, ang_deg}) from a sim2 Result between t0 and t1."""
-    t = r["t"]
+def keyframes_from_trace(fn: str, t0: float, t1: float, hz: float = 50.0) -> List[Dict]:
+    z = np.load(fn)
+    t = z["t"]
     tt = np.arange(t0, t1, 1.0 / hz)
-    it = lambda ch: np.interp(tt, t, r[ch]) if ch in r.idx else np.zeros(len(tt))
-    out = []
-    tip = np.column_stack([it("tipx"), it("tipy"), it("tipz")]) * 1e3
-    ink = np.column_stack([it("ballx"), it("bally"), it("ballz")]) * 1e3
+    it = lambda ch: np.interp(tt, t, z["ch_" + ch]) if ("ch_" + ch) in z.files else np.zeros(len(tt))
     hand = np.column_stack([it("handx"), it("handy"), it("handz")]) * 1e3
+    tip = np.column_stack([it("tipx"), it("tipy"), it("tipz")]) * 1e3
+    ink = np.column_stack([np.interp(tt, t, z["ink"][:, 0]), np.interp(tt, t, z["ink"][:, 1])]) * 1e3
     ax = np.column_stack([it("ax"), it("ay"), it("az")])
-    a0 = ax[0] / np.linalg.norm(ax[0])
-    ang = []
-    for v in ax:
-        v = v / np.linalg.norm(v)
-        # two small rotation angles of the pen axis from its first pose: in the tilt plane and sideways (deg)
-        ang.append([math.degrees(math.asin(np.clip(v[2] - a0[2], -1, 1))), math.degrees(math.atan2(v[1], v[0]) - math.atan2(a0[1], a0[0]))])
-    ang = np.array(ang)
+    a0 = ax[0] / max(np.linalg.norm(ax[0]), 1e-12)
+    p1, p2 = it("w_piv1"), it("w_piv2")
     q = np.column_stack([it("q1"), it("q2")]) * 1e3
-    extra = {p: it(ch) for p, ch in parts.items()}
+    out = []
     for k, tk in enumerate(tt):
-        tk_ = round(float(tk - t0), 4)
-        out.append({"t": tk_, "part": "hand", "pos_mm": [round(float(x), 3) for x in hand[k] - hand[0]], "ang_deg": [0.0, 0.0]})
-        out.append({"t": tk_, "part": "pen", "pos_mm": [round(float(x), 3) for x in tip[k] - tip[0]],
-                    "ang_deg": [round(float(x), 3) for x in ang[k]]})
-        out.append({"t": tk_, "part": "nose", "pos_mm": [round(float(q[k, 0]), 3), round(float(q[k, 1]), 3), 0.0], "ang_deg": [0.0, 0.0]})
-        out.append({"t": tk_, "part": "ink", "pos_mm": [round(float(x), 3) for x in ink[k] - tip[0]], "ang_deg": [0.0, 0.0]})
-        for p in parts:
-            out.append({"t": tk_, "part": p, "pos_mm": [0.0, 0.0, 0.0], "ang_deg": [round(math.degrees(float(extra[p][k])), 3), 0.0]})
+        v = ax[k] / max(np.linalg.norm(ax[k]), 1e-12)
+        tilt = math.degrees(math.asin(float(np.clip(v[2], -1, 1))) - math.asin(float(np.clip(a0[2], -1, 1))))
+        side = math.degrees(math.atan2(v[1], v[0]) - math.atan2(a0[1], a0[0]))
+        ts = round(float(tk - t0), 3)
+        out += [{"t": ts, "part": "hand", "pos_mm": [round(float(x), 3) for x in hand[k] - hand[0]], "ang_deg": [0.0, 0.0]},
+                {"t": ts, "part": "inner_pen", "pos_mm": [round(float(x), 3) for x in tip[k] - tip[0]], "ang_deg": [round(tilt, 3), round(side, 3)]},
+                {"t": ts, "part": "collar", "pos_mm": [round(float(x), 3) for x in hand[k] - hand[0]],
+                 "ang_deg": [round(tilt - math.degrees(float(p1[k])), 3), round(side - math.degrees(float(p2[k])), 3)]},
+                {"t": ts, "part": "pivot", "pos_mm": [0.0, 0.0, 0.0], "ang_deg": [round(math.degrees(float(p1[k])), 3), round(math.degrees(float(p2[k])), 3)]},
+                {"t": ts, "part": "nose", "pos_mm": [round(float(q[k, 0]), 3), round(float(q[k, 1]), 3), 0.0], "ang_deg": [0.0, 0.0]},
+                {"t": ts, "part": "ink", "pos_mm": [round(float(ink[k, 0] - ink[0, 0]), 3), round(float(ink[k, 1] - ink[0, 1]), 3), 0.0],
+                 "ang_deg": [0.0, 0.0]}]
+    return out
+
+
+def write_all() -> Dict:
+    prov = provenance("PROPOSED DESIGN (layout; CALC masses)")
+    lp = layout_parts(prov)
+    write_json("layout_parts.json", lp)
+    out = {"layout_parts": os.path.join(RESULTS, "layout_parts.json")}
+    d = os.path.join(BUILD, "traces")
+    anim = {"meta": {"evidence_status": "SIMULATION (sim2 + sim2j firmware; the recommended collar with the Rev J nose on test writer 0; synthetic writer and tremor; nothing measured)",
+                     "frame": __doc__.split("Animation frame:")[1].split("Evidence status")[0].strip(),
+                     "parts": ["hand", "collar", "pivot", "inner_pen", "nose", "ink"], "stabpen.provenance": provenance("SIMULATION")},
+            "clips": []}
+    for cname, lab in (("PD_severe", "Parkinson's action tremor, 8 mm at 5 Hz"), ("ET_severe", "essential tremor, 8 mm at 6 Hz")):
+        for dn, dl in (("collar_nose", "collar + nose working"), ("none", "nothing moving")):
+            fn = os.path.join(d, f"h1_g1_w0_s200_{cname}_{dn}.npz")
+            if not os.path.exists(fn):
+                continue
+            z = np.load(fn)
+            if not any(k.startswith("ch_") for k in z.files):
+                continue
+            anim["clips"].append({"name": f"{cname}_{dn}", "label": f"{lab}: {dl}", "t0_s": 6.0, "keyframes": keyframes_from_trace(fn, 6.0, 8.0)})
+    write_json("animation.json", anim)
+    out["animation"] = os.path.join(RESULTS, "animation.json")
+    out["n_clips"] = len(anim["clips"])
     return out

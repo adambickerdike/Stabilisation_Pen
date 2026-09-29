@@ -1,0 +1,457 @@
+{
+  "model": "Task 2: a justified grip model with sensitivity bounds (LIT + CALC), and how freely a held pen can pivot.\n\nModel (the one every simulation of this study uses; identical to H1's and to study K's): the pen touches the hand in\ntwo zones fixed to the hand frame - the finger pads (thumb, index, middle; centre z_f = 32 mm, pads 26-38 mm on the\nRev J handle) with transverse stiffness k_f, axial stiffness and a pad tilt stiffness kappa_f, and the thumb-index\nweb (z_w = 92 mm) with transverse stiffness k_w - calibrated so that the pen tip sees the measured stylus-grip\nimpedance of LIT HAP-26 (575 N/m, 1.3 N s/m) in every direction, for any split r_rot (share of the tip compliance\nthat comes from the pen rotating in the grip) and web share rho_w.  The split is not measured (EXP-I01).",
+  "skin": {
+    "digit_forces_N": [
+      3.07,
+      2.11,
+      1.34
+    ],
+    "per_pad_N_m": [
+      2191.5942221908176,
+      1922.0318263707318,
+      1639.6395853651902
+    ],
+    "three_pads_N_m": 5753.26563392674,
+    "label": "CALC from LIT HAP-31 (k = 1.48 n^0.35 N/mm) and LIT CON-75 (thumb/index/middle forces on paper)"
+  },
+  "splits": [
+    {
+      "grip_scale": 0.5,
+      "r_rot": 0.3,
+      "rho_w": 0.3,
+      "k_f_N_m": 287.5,
+      "k_w_N_m": 123.21428571428571,
+      "kappa_f_Nm_rad": 2.0853333333333337,
+      "k_axial_N_m": 287.5,
+      "z_c_mm": 49.99999999999999,
+      "K_r_Nm_rad": 2.3958333333333335,
+      "web_share_of_K_r": 0.12959999999999997,
+      "torque_per_deg_mNm": 41.815179995697484,
+      "torque_per_mm_tip_static_mNm": 47.91666666666667,
+      "pen_J_about_zc": 0.00021175206446504,
+      "rocking_Hz": 16.929128697001612,
+      "tail": null
+    },
+    {
+      "grip_scale": 0.5,
+      "r_rot": 0.5,
+      "rho_w": 0.3,
+      "k_f_N_m": 402.5,
+      "k_w_N_m": 172.5,
+      "kappa_f_Nm_rad": 1.0028,
+      "k_axial_N_m": 287.5,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 1.4375,
+      "web_share_of_K_r": 0.3024,
+      "torque_per_deg_mNm": 25.089107997418488,
+      "torque_per_mm_tip_static_mNm": 28.75,
+      "pen_J_about_zc": 0.00021175206446503997,
+      "rocking_Hz": 13.113246701857866,
+      "tail": null
+    },
+    {
+      "grip_scale": 0.5,
+      "r_rot": 0.7,
+      "rho_w": 0.3,
+      "k_f_N_m": 670.8333333333331,
+      "k_w_N_m": 287.49999999999994,
+      "kappa_f_Nm_rad": 0.30228571428571466,
+      "k_axial_N_m": 287.5,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 1.0267857142857144,
+      "web_share_of_K_r": 0.7055999999999997,
+      "torque_per_deg_mNm": 17.920791426727494,
+      "torque_per_mm_tip_static_mNm": 20.53571428571429,
+      "pen_J_about_zc": 0.00021175206446503997,
+      "rocking_Hz": 11.082716243379863,
+      "tail": null
+    },
+    {
+      "grip_scale": 1.0,
+      "r_rot": 0.3,
+      "rho_w": 0.3,
+      "k_f_N_m": 575.0,
+      "k_w_N_m": 246.42857142857142,
+      "kappa_f_Nm_rad": 4.170666666666667,
+      "k_axial_N_m": 575.0,
+      "z_c_mm": 49.99999999999999,
+      "K_r_Nm_rad": 4.791666666666667,
+      "web_share_of_K_r": 0.12959999999999997,
+      "torque_per_deg_mNm": 83.63035999139497,
+      "torque_per_mm_tip_static_mNm": 95.83333333333334,
+      "pen_J_about_zc": 0.00021175206446504,
+      "rocking_Hz": 23.941403402459244,
+      "tail": null
+    },
+    {
+      "grip_scale": 1.0,
+      "r_rot": 0.5,
+      "rho_w": 0.3,
+      "k_f_N_m": 805.0,
+      "k_w_N_m": 345.0,
+      "kappa_f_Nm_rad": 2.0056,
+      "k_axial_N_m": 575.0,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 2.875,
+      "web_share_of_K_r": 0.3024,
+      "torque_per_deg_mNm": 50.178215994836975,
+      "torque_per_mm_tip_static_mNm": 57.5,
+      "pen_J_about_zc": 0.00021175206446503997,
+      "rocking_Hz": 18.544931332511652,
+      "tail": null
+    },
+    {
+      "grip_scale": 1.0,
+      "r_rot": 0.7,
+      "rho_w": 0.3,
+      "k_f_N_m": 1341.6666666666663,
+      "k_w_N_m": 574.9999999999999,
+      "kappa_f_Nm_rad": 0.6045714285714293,
+      "k_axial_N_m": 575.0,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 2.053571428571429,
+      "web_share_of_K_r": 0.7055999999999997,
+      "torque_per_deg_mNm": 35.84158285345499,
+      "torque_per_mm_tip_static_mNm": 41.07142857142858,
+      "pen_J_about_zc": 0.00021175206446503997,
+      "rocking_Hz": 15.673327619320402,
+      "tail": null
+    },
+    {
+      "grip_scale": 2.0,
+      "r_rot": 0.3,
+      "rho_w": 0.3,
+      "k_f_N_m": 1150.0,
+      "k_w_N_m": 492.85714285714283,
+      "kappa_f_Nm_rad": 8.341333333333335,
+      "k_axial_N_m": 1150.0,
+      "z_c_mm": 49.99999999999999,
+      "K_r_Nm_rad": 9.583333333333334,
+      "web_share_of_K_r": 0.12959999999999997,
+      "torque_per_deg_mNm": 167.26071998278994,
+      "torque_per_mm_tip_static_mNm": 191.66666666666669,
+      "pen_J_about_zc": 0.00021175206446504,
+      "rocking_Hz": 33.858257394003225,
+      "tail": null
+    },
+    {
+      "grip_scale": 2.0,
+      "r_rot": 0.5,
+      "rho_w": 0.3,
+      "k_f_N_m": 1610.0,
+      "k_w_N_m": 690.0,
+      "kappa_f_Nm_rad": 4.0112,
+      "k_axial_N_m": 1150.0,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 5.75,
+      "web_share_of_K_r": 0.3024,
+      "torque_per_deg_mNm": 100.35643198967395,
+      "torque_per_mm_tip_static_mNm": 115.0,
+      "pen_J_about_zc": 0.00021175206446503997,
+      "rocking_Hz": 26.226493403715732,
+      "tail": null
+    },
+    {
+      "grip_scale": 2.0,
+      "r_rot": 0.7,
+      "rho_w": 0.3,
+      "k_f_N_m": 2683.3333333333326,
+      "k_w_N_m": 1149.9999999999998,
+      "kappa_f_Nm_rad": 1.2091428571428586,
+      "k_axial_N_m": 1150.0,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 4.107142857142858,
+      "web_share_of_K_r": 0.7055999999999997,
+      "torque_per_deg_mNm": 71.68316570690997,
+      "torque_per_mm_tip_static_mNm": 82.14285714285715,
+      "pen_J_about_zc": 0.00021175206446503997,
+      "rocking_Hz": 22.165432486759727,
+      "tail": null
+    }
+  ],
+  "splits_heavy_tail": [
+    {
+      "grip_scale": 1.0,
+      "r_rot": 0.3,
+      "rho_w": 0.3,
+      "k_f_N_m": 575.0,
+      "k_w_N_m": 246.42857142857142,
+      "kappa_f_Nm_rad": 4.170666666666667,
+      "k_axial_N_m": 575.0,
+      "z_c_mm": 49.99999999999999,
+      "K_r_Nm_rad": 4.791666666666667,
+      "web_share_of_K_r": 0.12959999999999997,
+      "torque_per_deg_mNm": 83.63035999139497,
+      "torque_per_mm_tip_static_mNm": 95.83333333333334,
+      "pen_J_about_zc": 0.0018446520644650403,
+      "rocking_Hz": 8.111593897967216,
+      "tail": {
+        "m": 0.1,
+        "z": 0.177,
+        "J": 2e-05
+      }
+    },
+    {
+      "grip_scale": 1.0,
+      "r_rot": 0.5,
+      "rho_w": 0.3,
+      "k_f_N_m": 805.0,
+      "k_w_N_m": 345.0,
+      "kappa_f_Nm_rad": 2.0056,
+      "k_axial_N_m": 575.0,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 2.875,
+      "web_share_of_K_r": 0.3024,
+      "torque_per_deg_mNm": 50.178215994836975,
+      "torque_per_mm_tip_static_mNm": 57.5,
+      "pen_J_about_zc": 0.0018446520644650403,
+      "rocking_Hz": 6.2832136156049465,
+      "tail": {
+        "m": 0.1,
+        "z": 0.177,
+        "J": 2e-05
+      }
+    },
+    {
+      "grip_scale": 1.0,
+      "r_rot": 0.7,
+      "rho_w": 0.3,
+      "k_f_N_m": 1341.6666666666663,
+      "k_w_N_m": 574.9999999999999,
+      "kappa_f_Nm_rad": 0.6045714285714293,
+      "k_axial_N_m": 575.0,
+      "z_c_mm": 50.0,
+      "K_r_Nm_rad": 2.053571428571429,
+      "web_share_of_K_r": 0.7055999999999997,
+      "torque_per_deg_mNm": 35.84158285345499,
+      "torque_per_mm_tip_static_mNm": 41.07142857142858,
+      "pen_J_about_zc": 0.0018446520644650403,
+      "rocking_Hz": 5.310284720596667,
+      "tail": {
+        "m": 0.1,
+        "z": 0.177,
+        "J": 2e-05
+      }
+    }
+  ],
+  "pivot_torque": {
+    "0.3": [
+      {
+        "f_Hz": 1.0,
+        "mNm_per_mm_about_t1": 97.26416948113832,
+        "mNm_per_mm_about_t2": 126.6662686990645
+      },
+      {
+        "f_Hz": 3.0,
+        "mNm_per_mm_about_t1": 99.76436783864402,
+        "mNm_per_mm_about_t2": 127.4228111172058
+      },
+      {
+        "f_Hz": 5.0,
+        "mNm_per_mm_about_t1": 90.63110054540356,
+        "mNm_per_mm_about_t2": 111.46968745762351
+      },
+      {
+        "f_Hz": 8.0,
+        "mNm_per_mm_about_t1": 82.59698065619816,
+        "mNm_per_mm_about_t2": 94.37959243081166
+      },
+      {
+        "f_Hz": 10.0,
+        "mNm_per_mm_about_t1": 79.64846072440187,
+        "mNm_per_mm_about_t2": 86.71923258906459
+      }
+    ],
+    "0.5": [
+      {
+        "f_Hz": 1.0,
+        "mNm_per_mm_about_t1": 58.23534658880353,
+        "mNm_per_mm_about_t2": 75.7330690839019
+      },
+      {
+        "f_Hz": 3.0,
+        "mNm_per_mm_about_t1": 58.685018200691985,
+        "mNm_per_mm_about_t2": 73.99422254449816
+      },
+      {
+        "f_Hz": 5.0,
+        "mNm_per_mm_about_t1": 51.98188351751553,
+        "mNm_per_mm_about_t2": 61.77846073796169
+      },
+      {
+        "f_Hz": 8.0,
+        "mNm_per_mm_about_t1": 44.56971138925434,
+        "mNm_per_mm_about_t2": 48.722254008429715
+      },
+      {
+        "f_Hz": 10.0,
+        "mNm_per_mm_about_t1": 40.28259110870449,
+        "mNm_per_mm_about_t2": 43.542470269566465
+      }
+    ],
+    "0.7": [
+      {
+        "f_Hz": 1.0,
+        "mNm_per_mm_about_t1": 41.509470885551764,
+        "mNm_per_mm_about_t2": 53.91423522231229
+      },
+      {
+        "f_Hz": 3.0,
+        "mNm_per_mm_about_t1": 41.1077738424095,
+        "mNm_per_mm_about_t2": 51.23850684121995
+      },
+      {
+        "f_Hz": 5.0,
+        "mNm_per_mm_about_t1": 35.51102447299982,
+        "mNm_per_mm_about_t2": 40.99954290585581
+      },
+      {
+        "f_Hz": 8.0,
+        "mNm_per_mm_about_t1": 28.624799664076907,
+        "mNm_per_mm_about_t2": 31.58395755618891
+      },
+      {
+        "f_Hz": 10.0,
+        "mNm_per_mm_about_t1": 24.13902328952918,
+        "mNm_per_mm_about_t2": 29.14846531554042
+      }
+    ]
+  },
+  "pivot_torque_tail100g": {
+    "0.3": [
+      {
+        "f_Hz": 1.0,
+        "mNm_per_mm_about_t1": 102.96754828766328,
+        "mNm_per_mm_about_t2": 133.3944611357727
+      },
+      {
+        "f_Hz": 3.0,
+        "mNm_per_mm_about_t1": 80.82578282527109,
+        "mNm_per_mm_about_t2": 97.88935015282662
+      },
+      {
+        "f_Hz": 5.0,
+        "mNm_per_mm_about_t1": 42.8566071831766,
+        "mNm_per_mm_about_t2": 42.08071521411282
+      },
+      {
+        "f_Hz": 8.0,
+        "mNm_per_mm_about_t1": 31.48065216441804,
+        "mNm_per_mm_about_t2": 35.35772533273358
+      },
+      {
+        "f_Hz": 10.0,
+        "mNm_per_mm_about_t1": 49.53177615858213,
+        "mNm_per_mm_about_t2": 59.79522988299986
+      }
+    ],
+    "0.5": [
+      {
+        "f_Hz": 1.0,
+        "mNm_per_mm_about_t1": 60.81320291676134,
+        "mNm_per_mm_about_t2": 78.45558000200205
+      },
+      {
+        "f_Hz": 3.0,
+        "mNm_per_mm_about_t1": 42.802724754984176,
+        "mNm_per_mm_about_t2": 49.26527663760226
+      },
+      {
+        "f_Hz": 5.0,
+        "mNm_per_mm_about_t1": 20.223596402989052,
+        "mNm_per_mm_about_t2": 17.57807411665371
+      },
+      {
+        "f_Hz": 8.0,
+        "mNm_per_mm_about_t1": 24.268591961206518,
+        "mNm_per_mm_about_t2": 44.43640951839889
+      },
+      {
+        "f_Hz": 10.0,
+        "mNm_per_mm_about_t1": 50.43130481366605,
+        "mNm_per_mm_about_t2": 71.39059971743568
+      }
+    ],
+    "0.7": [
+      {
+        "f_Hz": 1.0,
+        "mNm_per_mm_about_t1": 42.758228212404894,
+        "mNm_per_mm_about_t2": 54.97482044716516
+      },
+      {
+        "f_Hz": 3.0,
+        "mNm_per_mm_about_t1": 26.69330270238506,
+        "mNm_per_mm_about_t2": 29.274167406448317
+      },
+      {
+        "f_Hz": 5.0,
+        "mNm_per_mm_about_t1": 11.673118763047679,
+        "mNm_per_mm_about_t2": 14.548816752535222
+      },
+      {
+        "f_Hz": 8.0,
+        "mNm_per_mm_about_t1": 24.603623235623676,
+        "mNm_per_mm_about_t2": 48.47606292268095
+      },
+      {
+        "f_Hz": 10.0,
+        "mNm_per_mm_about_t1": 48.85479673517305,
+        "mNm_per_mm_about_t2": 71.58561773358575
+      }
+    ]
+  },
+  "finger_joint_Nm_rad": {
+    "tapping": [
+      0.45,
+      0.71
+    ],
+    "extended_mcp_expected": [
+      1.0,
+      1.7
+    ],
+    "src": "HAP-115"
+  },
+  "wrist_Nm_rad": {
+    "FE": 1.28,
+    "RUD": 1.74,
+    "PS": [
+      0.2,
+      0.3
+    ],
+    "src": "HAP-32"
+  },
+  "pen_angle": {
+    "mean_deg": 50,
+    "variation_deg": 2.5,
+    "rarely_above_deg": 10,
+    "src": "CON-02"
+  },
+  "hap26": {
+    "k1_N_m": 575,
+    "b1_Ns_m": 1.3,
+    "M_kg": 0.21,
+    "k2_N_m": 170,
+    "b2_Ns_m": 11,
+    "k1_CI_N_m": [
+      228,
+      1043
+    ],
+    "src": "HAP-26"
+  },
+  "label": "CALC on LIT (HAP-26, HAP-31, HAP-32, HAP-115, CON-02, CON-05, CON-07, CON-75) and ASSUMPTION splits",
+  "stabpen.provenance": {
+    "evidence_status": "CALCULATION on LIT and ASSUMPTION",
+    "generated_utc": "2026-09-29T17:48:39+00:00",
+    "git_revision": "52d471b-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages targets grip calc",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "package": "wholepen",
+    "version": "wholepen-0.1"
+  }
+}

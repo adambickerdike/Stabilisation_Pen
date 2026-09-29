@@ -286,3 +286,92 @@ def gradient_check(det: Dict) -> Dict:
             out[f"{f}Hz_r{r}"] = {"residual_m": float(v), "d_dh_autograd": float(h_t.grad), "d_dh_fd": float(fd_h),
                                   "d_dm_autograd": float(m_t.grad), "d_dm_fd": float(fd_m)}
     return out
+
+
+# ------------------------------------------------------------------------------------------------ the collar (V2)
+COLLAR_CONDS = [(f, A) for f in (5.0, 6.0, 9.0) for A in (3e-3, 8e-3)]
+COLLAR_GRIPS = [(g, r) for g in (0.5, 1.0, 2.0) for r in (0.3, 0.5, 0.7)]
+
+
+def _collar_eval(x: np.ndarray, detail: bool = False, fine_reach: float = 1.0e-3, gain: float = 0.75):
+    """x = [z_p (m), log K_s, log C_s, z_g of the inner pen (m)].  The collar's sleeve must stay <= 22 mm across
+    (calc.collar_geometry V2 clearance), which sets its travel; the residual the phasor law leaves (nominal model,
+    gain 0.75, the grip unknown to the controller) and the travel limit (the command is scaled into the range) are
+    followed by the small fine nib (+-1 mm, perfect within its reach); objective = mean residual / tremor over 5-9 Hz,
+    3-8 mm, grip 0.5-2 x and split 0.3-0.7 + a power penalty (motor torque^2)."""
+    from . import calc as K
+    zp = float(np.clip(x[0], 0.035, 0.070))
+    Ks = float(np.clip(math.exp(x[1]), 0.5, 40.0))
+    Cs = float(np.clip(math.exp(x[2]), 0.002, 0.3))
+    zg = float(np.clip(x[3], 0.045, 0.100))
+    pen = K.compact_pen("geared")
+    pen = dict(pen, z_g=zg)
+    mc = K.collar_masses("geared")["collar_g"] * 1e-3
+    g = K.COLLAR_V2
+    # travel that keeps the sleeve at 22 mm: the larger clearance end sets it
+    lever = max(zp - g["z_front_v2"], g["z_rear"] - zp)
+    c_max = (22.0e-3 - g["barrel_od"]) / 2 - g["gap"] - g["wall"]
+    phi_max = c_max / lever
+    res, taus, rows = [], [], []
+    for f in sorted({c[0] for c in COLLAR_CONDS}):
+        w = TWO_PI * f
+        a0 = K._collar_asm(pen, zp, Ks, Cs, 1.0, 0.5, True, mc, 0.056, 1.2e-5)
+        G0 = K._G_collar(a0, w, Ks)
+        for gs, r in COLLAR_GRIPS:
+            asm = K._collar_asm(pen, zp, Ks, Cs, gs, r, True, mc, 0.056, 1.2e-5)
+            G = K._G_collar(asm, w, Ks)
+            d1 = asm.ink(asm.solve(w, asm.exc_tremor(w, L.tremor_dirs() * 1e-3))).detach().numpy()
+            M = np.linalg.solve(G0, G)
+            Aq = np.eye(2) + gain * (M - np.eye(2))
+            u1 = -gain * np.linalg.solve(Aq, np.linalg.solve(G0, d1))       # steady-state command per mm of hand tremor
+            for (ff, A) in COLLAR_CONDS:
+                if ff != f:
+                    continue
+                d = d1 * (A / 1e-3) / max(L.amp(torch.tensor(d1)), 1e-12) * 1e-3 / 1e-3
+                sc = A / max(L.amp(torch.tensor(d1)), 1e-12)
+                u = u1 * sc
+                s_lim = min(1.0, phi_max / max(np.max(np.abs(u)), 1e-12))
+                rres = d1 * sc + G @ (u * s_lim)
+                rr = L.amp(torch.tensor(rres))
+                after = max(0.0, rr - fine_reach)
+                res.append((after + 0.2 * rr) / A)
+                taus.append(Ks * np.max(np.abs(u * s_lim)))
+                rows.append({"f": f, "A_mm": A * 1e3, "grip": gs, "r_rot": r, "res_mm": rr * 1e3, "after_fine_mm": after * 1e3,
+                             "angle_mrad": float(np.max(np.abs(u * s_lim))) * 1e3, "limited": s_lim < 0.999})
+    val = float(np.mean(res)) + 0.02 * float(np.mean(np.square(taus)))
+    if detail:
+        return val, {"z_p_mm": zp * 1e3, "K_s": Ks, "C_s": Cs, "z_g_mm": zg * 1e3, "travel_mm": phi_max * zp * 1e3,
+                     "phi_max_deg": math.degrees(phi_max), "rows": rows}
+    return val
+
+
+def optimise_collar(evals: int = 120, seed: int = 0) -> Dict:
+    from endcap.cmaes import cmaes
+    x0 = np.array([0.050, math.log(4.0), math.log(0.035), 0.068])
+    res = cmaes(lambda x: _collar_eval(x), x0, sigma0=0.25, max_evals=evals, seed=seed)
+    f_best, det = _collar_eval(res["x"], detail=True)
+    f_nom, det_nom = _collar_eval(x0, detail=True)
+    # exact gradient of the nominal-grip residual with respect to the pivot position (torch autograd through lin.py's
+    # complex solve), checked against a central difference
+    from . import calc as K
+
+    def resid(zp_t):
+        pen = K.compact_pen("geared")
+        mdl = L.Model(hand=L.HandP(r_rot=0.5), pen=dict(pen), c_paper=1.0,
+                      collar=L.Collar(z_p=float(zp_t.detach()), K_c=0.02 + det["K_s"], c_c=1e-4 + det["C_s"], m=0.02, z_cm=0.056,
+                                      J=1.2e-5, skid_on_collar=True))
+        asm = L.Assembly(mdl, par={"z_p": zp_t})
+        w = TWO_PI * 6.0
+        d = asm.ink(asm.solve(w, asm.exc_tremor(w, L.tremor_dirs() * 3e-3)))
+        g = asm.ink(asm.solve(w, asm.u_collar(asm.t1) * det["K_s"]))
+        s = -(torch.conj(g) @ d) / (torch.conj(g) @ g).real
+        return torch.sqrt((torch.abs(d + s * g) ** 2).sum())
+    z = torch.tensor(det["z_p_mm"] * 1e-3, requires_grad=True)
+    v = resid(z)
+    v.backward()
+    e = 1e-5
+    fd = (resid(torch.tensor(det["z_p_mm"] * 1e-3 + e)) - resid(torch.tensor(det["z_p_mm"] * 1e-3 - e))) / (2 * e)
+    return {"nominal": {"f": f_nom, **{k: v_ for k, v_ in det_nom.items() if k != "rows"}},
+            "best": {"f": f_best, **det}, "cmaes": {"evals": res["evals"], "history": res["history"][-10:]},
+            "gradient_check_zp": {"residual_m": float(v), "d_dzp_autograd": float(z.grad), "d_dzp_fd": float(fd)},
+            "label": "CALC (linear model, V2 collar with the compact barrel; nominal-model phasor law; CMA-ES endcap/cmaes.py; torch gradient)"}
