@@ -438,8 +438,8 @@ header.top .lede b{font-weight:600}
 .mechs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 @media (max-width:980px){.mechs{grid-template-columns:1fr}}
 .mech{background:var(--panel);border:1px solid var(--rule);border-top:5px solid var(--c);padding:16px 18px;display:grid;gap:12px;align-content:start;min-width:0}
-.mech h3{display:flex;align-items:center;gap:10px;font-size:25px}
-.mech h3 small{font-family:var(--body);font-weight:400;font-size:15px;color:var(--muted);letter-spacing:0}
+.mech h3{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;font-size:25px}
+.mech h3 small{flex:1 1 100%;padding-left:31px;font-family:var(--body);font-weight:400;font-size:15px;color:var(--muted);letter-spacing:0}
 .mech .mech-s{font-size:18px;line-height:1.5}
 .mech .mech-s b{font-weight:700}
 .mech .mech-s .mv{box-shadow:inset 0 -.42em 0 color-mix(in srgb,var(--c) 26%,transparent)}
@@ -486,7 +486,8 @@ header.top .lede b{font-weight:600}
 #cutsvg .arr.k{stroke:var(--ink)} #cutsvg .arr.n{stroke:var(--g-nose)} #cutsvg .arr.w{stroke:var(--g-drive)} #cutsvg .arr.s{stroke:var(--g-inertial)} #cutsvg .arr.c{stroke:var(--g-act)}
 #cutsvg .ahd.k{fill:var(--ink)} #cutsvg .ahd.n{fill:var(--g-nose)} #cutsvg .ahd.w{fill:var(--g-drive)} #cutsvg .ahd.s{fill:var(--g-inertial)} #cutsvg .ahd.c{fill:var(--g-act)}
 #cutsvg .lead{stroke:var(--muted);stroke-width:.35;fill:none}
-#cutsvg .ltxt{font-size:3.9px;fill:var(--ink)}
+#cutsvg .ltxt{font-size:3.9px;fill:var(--ink);paint-order:stroke;stroke:var(--scene-bg);stroke-width:1.1px;stroke-linejoin:round}
+#cutsvg .ltxt.onpaper{stroke:var(--paper)}
 #cutsvg .ltxt.b{font-weight:600}
 #cutsvg .badge circle{stroke:var(--panel);stroke-width:.6}
 #cutsvg .badge text{font-size:3.6px;font-weight:700;fill:var(--panel);font-family:var(--display)}
@@ -592,7 +593,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <h1>How the pen works</h1>
     <p class="lede">A pen for people whose hand shakes, whose writing has become small, or who find writing hard. You hold the outside of the pen,
       as with any pen. <b>Inside it, three parts move</b> to help your ink land where you meant it.</p>
-    <p class="lede-sub">It has not been built yet. Everything below is a design and computer simulations; the last line of each part says how sure we are.</p>
+    <p class="lede-sub">It has not been built yet. Everything below is a design and computer simulations, and every number says where it comes from.</p>
     <nav class="toc" aria-label="On this page"><span>On this page</span>
       <a href="#moves">Three parts that move</a><a href="#see">See it move</a><a href="#pen">The pen in 3-D</a><a href="#better">How much better</a>
       <a href="#sure">How sure we are</a><a href="#details">Details</a>
@@ -769,16 +770,17 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
   <section class="sec" id="details" aria-labelledby="details-h">
     <div class="sec-head">
       <h2 id="details-h">Details</h2>
-      <p>Everything else is here, closed until you open it: the physics, every part, the modes, every result with its numbers, the simulation replays, the limits and what must be tested first.</p>
+      <p>Everything else is here, closed until you open it: the physics, every part, the modes, every result with its numbers, the simulation replays, the limits and what must be tested first.
+        The inner pen is called the “nose” or “moving nose” in the design documents and in some of the tables.</p>
     </div>
     <div class="dets">
       <details class="det" id="d-physics"><summary><span class="dt">How each part pushes: the physics</span><span class="dd">A pen can push only against a weight inside it, your hand, or the paper. Why the paper gives the strong push, and why a weight cannot write.</span></summary>
         <div class="det-body">
     <div class="push3">
       <article class="push c-tip">
-        <h3><span class="anum">1</span>Tip: pushes against your hand</h3>
+        <h3><span class="anum">1</span>Inner pen: pushes against your hand</h3>
         <svg class="pic" viewBox="0 0 300 130" role="img" aria-labelledby="pic1-t">
-          <title id="pic1-t">Inside the handle, the coil pushes the back of the nose one way and the handle the other way; the ink tip swings about the pivot.</title>
+          <title id="pic1-t">Inside the handle, the coil pushes the back of the inner pen one way and the handle the other way; the inner pen swings about the pivot.</title>
           <defs><marker id="ahn" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah n"/></marker>
             <marker id="ahk" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah k"/></marker></defs>
           <line x1="4" y1="120" x2="296" y2="120" stroke="var(--rule)" stroke-width="2"/>
@@ -789,16 +791,16 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
             <rect x="171" y="-13" width="8" height="26" fill="var(--g-pivot)"/>
             <rect x="192" y="-13" width="8" height="26" class="coilc"/>
           </g>
-          <path class="ar n" d="M203.4 62.6 l 5.2 19.3" marker-end="url(#ahn)"/><text class="sm" x="296" y="102" text-anchor="end">push on the nose</text>
+          <path class="ar n" d="M203.4 62.6 l 5.2 19.3" marker-end="url(#ahn)"/><text class="sm" x="296" y="102" text-anchor="end">push on the inner pen</text>
           <path class="ar k" d="M238.8 30.9 l -4.7 -17.4" marker-end="url(#ahk)"/><text class="sm" x="224" y="12" text-anchor="end">push back on the handle and hand</text>
           <path class="ar n" d="M24.0 98.0 l -5.2 -19.3" marker-end="url(#ahn)"/><text class="sm" x="22" y="64">tip moves</text>
         </svg>
-        <p>The coils push the nose one way and the handle the other way. Your hand is far heavier than the nose, so the tip moves and your hand hardly does. It is fast and precise, up to 6.0&nbsp;mm. It cannot move your hand.</p>
+        <p>The coils push the inner pen one way and the handle the other way. Your hand is far heavier than the inner pen, so the ball moves and your hand hardly does. It is fast and precise, up to 6.0&nbsp;mm. It cannot move your hand.</p>
         <p class="verdict">Speed and precision, not force.</p>
         <div class="tags"><span class="tag prop"><i></i>Proposed design</span><span class="tag calc"><i></i>Calculation</span></div>
       </article>
       <article class="push c-heel">
-        <h3><span class="anum">2</span>Heel: pushes against the paper</h3>
+        <h3><span class="anum">2</span>Heel wheel: pushes against the paper</h3>
         <svg class="pic" viewBox="0 0 300 130" role="img" aria-labelledby="pic2-t">
           <title id="pic2-t">The wheel under the front ring grips the paper; the paper pushes back on the wheel, and so on the pen and the hand.</title>
           <defs><marker id="ahw" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah w"/></marker></defs>
@@ -818,7 +820,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
         <div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag asm"><i></i>Assumption: friction, to measure (EXP-D01)</span></div>
       </article>
       <article class="push c-tail">
-        <h3><span class="anum">3</span>Tail: pushes against a weight</h3>
+        <h3><span class="anum">3</span>Tail weight: pushes against a weight</h3>
         <svg class="pic" viewBox="0 0 300 142" role="img" aria-labelledby="pic3-t">
           <title id="pic3-t">In the end-cap, coils push the tungsten weight one way; the pen is pushed the other way, and every push must be paid back.</title>
           <defs><marker id="ahs" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah s"/></marker>
@@ -848,7 +850,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <figcaption>How hard each can push, at each speed (log scale). Red line: the end-cap's moving weight at its limit (30.4&nbsp;g, ±4&nbsp;mm). Green band: the heel wheel's grip on the paper, for tyre friction 0.6–1.2 under its 0.55&nbsp;N spring. Dashed: the push that moves the ink about 2&nbsp;mm, half a letter, from the hand–pen model; at the heel it is similar (a relaxed hand moves about 1.7&nbsp;mm under 0.5&nbsp;N).
         <span class="tag calc"><i></i>Calculation</span> <span class="tag asm"><i></i>Assumption: friction</span> <span class="tag lit"><i></i>Literature · CON-24: handwriting mostly below 5 per second</span></figcaption>
     </figure>
-    <div class="callout"><b>So Rev J uses the paper for force, the nose for speed and precision, and the weight for calming and cues.</b>
+    <div class="callout"><b>So Rev J uses the paper for force, the inner pen for speed and precision, and the weight for calming and cues.</b>
       <p>The pen never takes over without your say. Steadying and steer-only guidance cannot start a stroke. Autowrite and lead-through are modes you turn on; they follow your sweep, wait when you slow, and a writer who resists always wins. <span class="tag prop"><i></i>Proposed design · DEC-037, DEC-039</span></p></div>
         </div></details>
 
@@ -856,9 +858,9 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
         <div class="det-body">
     <div class="acts" aria-label="The three places where the pen acts">
       <article class="act c-tip">
-        <h3><span class="anum">1</span>Tip <small>the moving nose</small></h3>
+        <h3><span class="anum">1</span>Tip <small>the inner pen (moving nose)</small></h3>
         <div class="big">±6.0<small> mm guaranteed at 35–75°; 6.57 mm at 50° (Rev H: 2.75 mm)</small></div>
-        <p>The nose tilts on a pivot 76.5&nbsp;mm behind the ball, so the ink tip moves in every direction. It cancels tremor up to about 2&nbsp;mm, and in autowrite it draws whole 2.5&nbsp;mm letters of a known text while you sweep the pen along the line.</p>
+        <p>The whole inner pen (the refill, its carrier and the arm) swings on a pivot 76.5&nbsp;mm behind the ball, so the ball moves in every direction. It cancels tremor up to about 2&nbsp;mm, and in autowrite it draws whole 2.5&nbsp;mm letters of a known text while you sweep the pen along the line.</p>
         <div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag sim"><i></i>Simulation · model HW1</span></div>
       </article>
       <article class="act c-heel">
@@ -869,7 +871,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       </article>
       <article class="act c-tail">
         <h3><span class="anum">3</span>Tail <small>the end-cap you can take off</small></h3>
-        <div class="big">+8–20<small> % less shake, on top of the nose</small></div>
+        <div class="big">+8–20<small> % less shake, on top of the inner pen</small></div>
         <p>Coils push a 30.4&nbsp;g tungsten weight up to ±4&nbsp;mm sideways, and the push steadies the pen. It can also give short cues in pauses. It cannot steer letters. It adds 43.3&nbsp;g and replaces the rear cap.</p>
         <div class="tags"><span class="tag sim"><i></i>Simulation · model H1</span><span class="tag prop"><i></i>Proposed design</span></div>
       </article>
@@ -883,11 +885,11 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <ul class="steps" aria-label="How the parts work together">
       <li><span class="sw g-grip"></span><span>Your thumb, index and middle finger hold the soft sleeve. It does not move.</span></li>
       <li><span class="sw g-skid"></span><span>A C-shaped ring at the front rests on the paper and carries your writing pressure. It is open on top, so you can see the ink.</span></li>
-      <li><span class="sw g-mechanism"></span><span>The nose and the refill hang on a spring-steel pivot 76.5&nbsp;mm behind the ball. A drum at the pivot sets the ink force and lifts the ball 0.5&nbsp;mm between strokes, so strokes do not join. <span class="tag prop"><i></i>Proposed design</span></span></li>
+      <li><span class="sw g-mechanism"></span><span>The inner pen (the refill in its carrier, and the arm) hangs on a spring-steel pivot 76.5&nbsp;mm behind the ball. A drum at the pivot sets the ink force and lifts the ball 0.5&nbsp;mm between strokes, so strokes do not join. <span class="tag prop"><i></i>Proposed design</span></span></li>
       <li><span class="sw g-actuator"></span><span>Coils push a cap of magnets just behind the pivot. The ball moves 6.6 times as far as the magnets. <span class="tag calc"><i></i>Calculation</span></span></li>
-      <li><span class="sw g-refill"></span><span>The standard refill slides up to 26.6&nbsp;mm in the nose, so the ball stays on the paper at every tilt.</span></li>
+      <li><span class="sw g-refill"></span><span>The standard refill slides up to 26.6&nbsp;mm in its carrier, so the ball stays on the paper at every tilt.</span></li>
       <li><span class="sw g-drive"></span><span>Two tiny motors under the battery turn two thin shafts that run to the heel: one steers the wheel, the other drives it. <span class="tag prop"><i></i>Proposed design</span></span></li>
-      <li><span class="sw g-sensor"></span><span>A motion sensor feels the shake. A page sensor beside the wheel sees the paper 1000 times a second. Two magnetic sensors read where the nose is.</span></li>
+      <li><span class="sw g-sensor"></span><span>A motion sensor feels the shake. A page sensor beside the wheel sees the paper 1000 times a second. Two magnetic sensors read where the inner pen is.</span></li>
       <li><span class="sw g-inertial"></span><span>The end-cap screws on in place of the rear cap. Its coils push the tungsten weight sideways against the shake.</span></li>
     </ul>
           <h3>Every part, from the tip to the back</h3>
@@ -897,10 +899,10 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <table class="comp">
         <thead><tr><th scope="col">Component</th><th scope="col">What it does</th><th scope="col">Part</th><th scope="col">Ledger</th></tr></thead>
         <tbody id="comp-body">
-<tr data-part="ball"><td><span class="sw g-refill" aria-hidden="true"></span><b>Ball tip</b><span class="where">Ink refill · z 0–3 mm · Ø0.7–2.35 × 3 mm</span><span class="pill move">moves with the nose</span></td><td>The point that touches the paper and writes.</td><td>ISO 12757-2 D1 mini refill (metal body preferred: it sticks out up to 16 mm beyond the nozzle at 35 deg)</td><td class="mono">DEC-004</td></tr>
-<tr data-part="refill"><td><span class="sw g-refill" aria-hidden="true"></span><b>Ink refill (D1 mini)</b><span class="where">Ink refill · z 3–67 mm · Ø2.35 × 64 mm · 0.84 g</span><span class="pill move">moves with the nose</span></td><td>Standard replaceable refill.  It slides 26.6 mm along the nose over 35-75 deg of tilt and the tip&#x27;s travel so the ball stays on the paper (CALC).</td><td>ISO 12757-2 D1 mini refill</td><td class="mono">DEC-004</td></tr>
+<tr data-part="ball"><td><span class="sw g-refill" aria-hidden="true"></span><b>Ball tip</b><span class="where">Ink refill · z 0–3 mm · Ø0.7–2.35 × 3 mm</span><span class="pill move">moves with the inner pen</span></td><td>The point that touches the paper and writes.</td><td>ISO 12757-2 D1 mini refill (metal body preferred: it sticks out up to 16 mm beyond the nozzle at 35 deg)</td><td class="mono">DEC-004</td></tr>
+<tr data-part="refill"><td><span class="sw g-refill" aria-hidden="true"></span><b>Ink refill (D1 mini)</b><span class="where">Ink refill · z 3–67 mm · Ø2.35 × 64 mm · 0.84 g</span><span class="pill move">moves with the inner pen</span></td><td>Standard replaceable refill.  It slides 26.6 mm along the nose over 35-75 deg of tilt and the tip&#x27;s travel so the ball stays on the paper (CALC).</td><td>ISO 12757-2 D1 mini refill</td><td class="mono">DEC-004</td></tr>
 <tr data-part="skid_ring"><td><span class="sw g-skid" aria-hidden="true"></span><b>Skid ring (C-shaped heel) with the wheel slot</b><span class="where">Skid ring · z 9.32–10.82 mm · Ø23.3 × 1.5 mm · 0.27 g</span></td><td>Rests on the paper and carries the writing force above the wheel&#x27;s preload; contact radius 11.65 mm (study N alone: 10.0; study D on Rev H: 8.40).  The nose swings inside its lip; it is open 120 deg on top so the ink stays visible; the heel wheel reaches the paper through a 3.2 mm slot at the bottom.</td><td>custom (PTFE-coated POM; contact radius 11.65 mm, flush with the sleeve front)</td><td class="mono">DEC-034</td></tr>
-<tr data-part="carrier_nozzle"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Nose nozzle (unscrews to change the refill)</b><span class="where">Moving nose · z 9.32–14.32 mm · Ø3.6–7 × 5 mm · 0.4 g</span><span class="pill move">moves with the nose</span></td><td>Front of the moving nose; guides the refill; its front face sits in the ring plane.  It unscrews for a refill change.</td><td>custom (PEEK)</td><td class="mono">AMF-24</td></tr>
+<tr data-part="carrier_nozzle"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Nose nozzle (unscrews to change the refill)</b><span class="where">Moving nose · z 9.32–14.32 mm · Ø3.6–7 × 5 mm · 0.4 g</span><span class="pill move">moves with the inner pen</span></td><td>Front of the moving nose; guides the refill; its front face sits in the ring plane.  It unscrews for a refill change.</td><td>custom (PEEK)</td><td class="mono">AMF-24</td></tr>
 <tr data-part="drive_wheel"><td><span class="sw g-drive" aria-hidden="true"></span><b>Heel wheel with O-ring tyre</b><span class="where">Heel drive · z 9.58–10.58 mm · Ø2 × 1 mm</span><span class="pill move">steered or sprung with the heel wheel</span></td><td>2 mm wheel in the ring&#x27;s bottom slot, contact radius 12.00 mm (0.35 mm beyond the ring): steered about the paper normal through its contact, driven through a 2:1 bevel (study D).</td><td>custom brass hub + NBR O-ring 0.6 mm cord; axle d 0.3 mm in jewel bearings</td><td class="mono">AMF-111; AMF-112</td></tr>
 <tr data-part="page_sensor"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Page sensor (folded optics beside the heel)</b><span class="where">Sensors · z 10.72–15.72 mm · 2 × 3 × 5 mm · 1 g</span></td><td>Sees the paper beside the heel wheel, 2.4 mm below its lens, at 1 kHz: where the pen is on the page (autowrite, capture) and wheel slip (heel drive).  Its window sits where the height changes least with tilt (2.23-2.45 mm over 35-75 deg); a mirror folds the view to a chip-on-board die in the sleeve wall.</td><td>optical-flow die (PMW3360 class performance, 1 kHz; its own package does not fit) + lens + 45 deg mirror (PROPOSED DESIGN)</td><td class="mono">OPT-54; AMF-109</td></tr>
 <tr data-part="drive_fork"><td><span class="sw g-drive" aria-hidden="true"></span><b>Steering fork and crown</b><span class="where">Heel drive · z 10.73–11.73 mm · Ø3 × 1 mm</span><span class="pill move">steered or sprung with the heel wheel</span></td><td>Holds the wheel; its crown (the steering ring, r 1.5 mm, 2-3 mm above the contact along the paper normal) is what sets the heel&#x27;s size.</td><td>custom (hardened steel fork, brass crown module 0.1)</td><td class="mono"><span class="muted">—</span></td></tr>
@@ -909,22 +911,22 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
 <tr data-part="drive_steer_sensor"><td><span class="sw g-drive" aria-hidden="true"></span><b>Steering-angle sensor</b><span class="where">Heel drive · z 12.02–13.02 mm · 0.8 × 1.5 × 1 mm</span><span class="pill move">steered or sprung with the heel wheel</span></td><td>3-D Hall reading a diametric magnet on the fork (heading at the wheel).</td><td>TMAG5273 class + d 1 mm magnet</td><td class="mono">OPT-45</td></tr>
 <tr data-part="drive_shaft_drive"><td><span class="sw g-drive" aria-hidden="true"></span><b>Drive shaft</b><span class="where">Heel drive · z 12.82–92.72 mm · Ø0.8 × 79.9 mm · 0.37 g</span><span class="pill move">steered or sprung with the heel wheel</span></td><td>0.8 mm steel shaft in a PTFE liner, in a groove of the sleeve and shell bottom wall, from the transfer gears behind the coil plate to the heel pod (80 mm; study D: 39 mm).</td><td>custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)</td><td class="mono"><span class="muted">—</span></td></tr>
 <tr data-part="drive_shaft_steering"><td><span class="sw g-drive" aria-hidden="true"></span><b>Steering shaft</b><span class="where">Heel drive · z 12.82–92.72 mm · Ø0.8 × 79.9 mm · 0.37 g</span><span class="pill move">steered or sprung with the heel wheel</span></td><td>0.8 mm steel shaft in a PTFE liner, in a groove of the sleeve and shell bottom wall, from the transfer gears behind the coil plate to the heel pod (80 mm; study D: 39 mm).</td><td>custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)</td><td class="mono"><span class="muted">—</span></td></tr>
-<tr data-part="carrier"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Moving nose (refill carrier)</b><span class="where">Moving nose · z 14.32–74.98 mm · Ø7 × 60.7 mm · 2.7 g</span><span class="pill move">moves with the nose</span></td><td>Titanium tube holding the refill; it tilts on the gimbal so the ball moves at least 6.0 mm in every direction over 35-75 deg (6.57 mm at 50 deg).</td><td>custom (Ti-6Al-4V tube 7/6 mm)</td><td class="mono">AMF-21</td></tr>
+<tr data-part="carrier"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Moving nose (refill carrier)</b><span class="where">Moving nose · z 14.32–74.98 mm · Ø7 × 60.7 mm · 2.7 g</span><span class="pill move">moves with the inner pen</span></td><td>Titanium tube holding the refill; it tilts on the gimbal so the ball moves at least 6.0 mm in every direction over 35-75 deg (6.57 mm at 50 deg).</td><td>custom (Ti-6Al-4V tube 7/6 mm)</td><td class="mono">AMF-21</td></tr>
 <tr data-part="drive_spring"><td><span class="sw g-drive" aria-hidden="true"></span><b>Preload flexure</b><span class="where">Heel drive · z 14.82–19.82 mm · 0.3 × 2 × 5 mm</span></td><td>Leaf spring in the sleeve&#x27;s bottom wall between the shafts: presses the pod down with 0.55 N over 0.75 mm of travel.</td><td>custom (17-7PH leaf 0.1 mm)</td><td class="mono">AMF-20</td></tr>
 <tr data-part="drive_load_sensor"><td><span class="sw g-drive" aria-hidden="true"></span><b>Wheel-load sensor</b><span class="where">Heel drive · z 18.32–19.32 mm · 0.8 × 1.5 × 1 mm</span></td><td>Linear Hall reading the flexure&#x27;s bend (the wheel&#x27;s load).</td><td>DRV5055 class + 1 mm magnet</td><td class="mono">OPT-46; AMF-72</td></tr>
-<tr data-part="front_pulley"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Front tendon pulley</b><span class="where">Pivot and pen lift · z 44.97–45.97 mm · Ø1.5 × 1 mm</span><span class="pill move">moves with the nose</span></td><td>Turns the tendon loop in front of the holder&#x27;s foremost position.</td><td>custom (PTFE pulley d 1.5 mm on a 0.3 mm pin; tendon UHMWPE 0.2 mm, ASSUMPTION)</td><td class="mono"><span class="muted">—</span></td></tr>
+<tr data-part="front_pulley"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Front tendon pulley</b><span class="where">Pivot and pen lift · z 44.97–45.97 mm · Ø1.5 × 1 mm</span><span class="pill move">moves with the inner pen</span></td><td>Turns the tendon loop in front of the holder&#x27;s foremost position.</td><td>custom (PTFE pulley d 1.5 mm on a 0.3 mm pin; tendon UHMWPE 0.2 mm, ASSUMPTION)</td><td class="mono"><span class="muted">—</span></td></tr>
 <tr data-part="main_board"><td><span class="sw g-electronics" aria-hidden="true"></span><b>Main board (along the top)</b><span class="where">Electronics · z 50–72 mm · 1 × 14 × 22 mm · 5.5 g</span></td><td>Lies along the top of the handle above the swinging carrier: MCU with Bluetooth, two coil drivers, the pen-lift driver, two 3-phase motor drivers, the charger, the IMU and the nose&#x27;s two linear Hall sensors.</td><td>nRF54L15 + 2 x DRV8214 + 2 x DRV8311-class + charger + LSM6DSV16X + 2 x DRV5055-A4 (14 x 22 mm, ASSUMPTION)</td><td class="mono">AMF-44; AMF-37; OPT-37; OPT-46</td></tr>
 <tr data-part="shell"><td><span class="sw g-structure" aria-hidden="true"></span><b>Handle shell</b><span class="where">Handle shell · z 50–141.72 mm · Ø24 × 91.7 mm · 8.6 g</span></td><td>The body you hold: 24 mm across; grooves in its bottom wall carry the drive shafts past the actuator.</td><td>PEEK or glass-filled nylon, 1 mm wall</td><td class="mono">AMF-24</td></tr>
 <tr data-part="imu"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Motion sensor (IMU)</b><span class="where">Sensors · z 55–57.5 mm · 0.83 × 3 × 2.5 mm</span></td><td>Accelerometer and gyroscope on the main board, 57 mm from the tip (Rev H: 92 mm).</td><td>ST LSM6DSV16X</td><td class="mono">OPT-37</td></tr>
 <tr data-part="nose_hall"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Nose position sensors (two linear Halls)</b><span class="where">Sensors · z 61.5–64.5 mm · 0.7 × 4 × 3 mm</span></td><td>Two linear Halls 2.4 mm apart on the board&#x27;s underside, 2.8 mm above the carrier&#x27;s magnet: x from the sum, y from the difference (uniform fields cancel in y).  Moved here from behind the coil plate.</td><td>2 x TI DRV5055-A4 (+-169 mT), SOT-23</td><td class="mono">OPT-46</td></tr>
-<tr data-part="position_magnet"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Nose position magnet</b><span class="where">Sensors · z 62–64 mm · 1 × 2 × 2 mm</span><span class="pill move">moves with the nose</span></td><td>Small magnet on top of the carrier, read by the two linear Hall sensors on the main board&#x27;s underside above it (the carrier moves 1.2 mm here for 6.6 mm at the ball).</td><td>NdFeB N52 2 x 2 x 1 mm, magnetised along x</td><td class="mono">AMF-139</td></tr>
-<tr data-part="refill_holder"><td><span class="sw g-refill" aria-hidden="true"></span><b>Refill holder (tendon end)</b><span class="where">Ink refill · z 67–72 mm · Ø3.2 × 5 mm · 0.5 g</span><span class="pill move">moves with the nose</span></td><td>The refill push-fits into it; a closed tendon loop joins it to the ink-force drum.  Its rearmost position is z 80.4 mm (75 deg, nose deflected, pen lifted).</td><td>custom (PEEK holder, socket for the D1 refill, two tendon anchors; ASSUMPTION 0.5 g)</td><td class="mono">PAT-41</td></tr>
-<tr data-part="pen_lift"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Pen lift and ink-force drum</b><span class="where">Pivot and pen lift · z 68–75 mm · Ø5.6 × 7 mm · 2 g</span><span class="pill move">moves with the nose</span></td><td>Annular module around the refill&#x27;s path in front of the gimbal.  A pre-coiled spiral spring in the drum sets the ink force (0.12-0.18 N over the whole slide, fatigue-rated) through the tendon loop; an electro-permanent brake locks the drum (pen lift, and the front stop that follows the nose); a bistable latch lifts the refill 0.5 mm.  No holding power.</td><td>custom (drum, 301 FH spiral spring 38 um x 2.6 mm x 139 mm, EP brake, bistable latch; about 2 g, ASSUMPTION)</td><td class="mono">PAT-41; AMF-20</td></tr>
-<tr data-part="slide_sensor"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Refill-slide sensor (drum angle)</b><span class="where">Sensors · z 74–75 mm · 1.2 × 1.2 × 1 mm</span><span class="pill move">moves with the nose</span></td><td>3-D Hall on the pen-lift module reading a 1 mm diametric magnet on the drum: slide = drum angle x 2.8 mm.  Pen-down, pen-up and the front-stop logic use it.</td><td>TMAG5273-class 3-D Hall (WSON) + d 1 mm magnet (ASSUMPTION package)</td><td class="mono">OPT-45; AMF-72</td></tr>
+<tr data-part="position_magnet"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Nose position magnet</b><span class="where">Sensors · z 62–64 mm · 1 × 2 × 2 mm</span><span class="pill move">moves with the inner pen</span></td><td>Small magnet on top of the carrier, read by the two linear Hall sensors on the main board&#x27;s underside above it (the carrier moves 1.2 mm here for 6.6 mm at the ball).</td><td>NdFeB N52 2 x 2 x 1 mm, magnetised along x</td><td class="mono">AMF-139</td></tr>
+<tr data-part="refill_holder"><td><span class="sw g-refill" aria-hidden="true"></span><b>Refill holder (tendon end)</b><span class="where">Ink refill · z 67–72 mm · Ø3.2 × 5 mm · 0.5 g</span><span class="pill move">moves with the inner pen</span></td><td>The refill push-fits into it; a closed tendon loop joins it to the ink-force drum.  Its rearmost position is z 80.4 mm (75 deg, nose deflected, pen lifted).</td><td>custom (PEEK holder, socket for the D1 refill, two tendon anchors; ASSUMPTION 0.5 g)</td><td class="mono">PAT-41</td></tr>
+<tr data-part="pen_lift"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Pen lift and ink-force drum</b><span class="where">Pivot and pen lift · z 68–75 mm · Ø5.6 × 7 mm · 2 g</span><span class="pill move">moves with the inner pen</span></td><td>Annular module around the refill&#x27;s path in front of the gimbal.  A pre-coiled spiral spring in the drum sets the ink force (0.12-0.18 N over the whole slide, fatigue-rated) through the tendon loop; an electro-permanent brake locks the drum (pen lift, and the front stop that follows the nose); a bistable latch lifts the refill 0.5 mm.  No holding power.</td><td>custom (drum, 301 FH spiral spring 38 um x 2.6 mm x 139 mm, EP brake, bistable latch; about 2 g, ASSUMPTION)</td><td class="mono">PAT-41; AMF-20</td></tr>
+<tr data-part="slide_sensor"><td><span class="sw g-sensor" aria-hidden="true"></span><b>Refill-slide sensor (drum angle)</b><span class="where">Sensors · z 74–75 mm · 1.2 × 1.2 × 1 mm</span><span class="pill move">moves with the inner pen</span></td><td>3-D Hall on the pen-lift module reading a 1 mm diametric magnet on the drum: slide = drum angle x 2.8 mm.  Pen-down, pen-up and the front-stop logic use it.</td><td>TMAG5273-class 3-D Hall (WSON) + d 1 mm magnet (ASSUMPTION package)</td><td class="mono">OPT-45; AMF-72</td></tr>
 <tr data-part="gimbal"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Flexure gimbal (2-axis)</b><span class="where">Pivot and pen lift · z 74.98–77.98 mm · Ø21 × 3 mm · 2 g</span></td><td>Cross-strip flexures: the nose tilts +-4.9 deg (usable) in two directions; its frame is notched at the bottom for the shafts.</td><td>custom (301 FH 0.050 mm strips, laser cut)</td><td class="mono">AMF-20</td></tr>
-<tr data-part="arm"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Short rear arm</b><span class="where">Moving nose · z 77.98–82.28 mm · Ø5 × 4.3 mm · 0.11 g</span><span class="pill move">moves with the nose</span></td><td>Carries the magnet cap 11.5 mm behind the gimbal; the refill holder may enter it; it carries the rear tendon pulley.</td><td>custom (aluminium 6061 tube 5/3.6 mm)</td><td class="mono"><span class="muted">—</span></td></tr>
-<tr data-part="rear_pulley"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Rear tendon pulley</b><span class="where">Pivot and pen lift · z 80.58–81.58 mm · Ø1.5 × 1 mm</span><span class="pill move">moves with the nose</span></td><td>Turns the tendon loop behind the holder&#x27;s rearmost position, inside the arm.</td><td>custom (PTFE pulley d 1.5 mm)</td><td class="mono"><span class="muted">—</span></td></tr>
-<tr data-part="magnet_cap"><td><span class="sw g-actuator" aria-hidden="true"></span><b>Magnet cap (2 x 2 checkerboard, spherical face)</b><span class="where">Coils and magnets · z 82.28–87.99 mm · Ø18.89 × 5.71 mm · 9.8 g</span><span class="pill move">moves with the nose</span></td><td>Four N52 poles on a spherical Hiperco cap centred on the gimbal; tilting slides the poles along the coils at a constant 0.77 mm gap.  Its rim is flattened at the bottom (to 8.8 mm radius) where the drive shafts pass; the poles end 6.3 mm from the axis there, so the flat costs no pole area.</td><td>NdFeB N52 segments 6.3 x 6.3 x 3.3 mm on a Hiperco 50A cap (custom)</td><td class="mono">AMF-139; AMF-140</td></tr>
+<tr data-part="arm"><td><span class="sw g-moving_nose" aria-hidden="true"></span><b>Short rear arm</b><span class="where">Moving nose · z 77.98–82.28 mm · Ø5 × 4.3 mm · 0.11 g</span><span class="pill move">moves with the inner pen</span></td><td>Carries the magnet cap 11.5 mm behind the gimbal; the refill holder may enter it; it carries the rear tendon pulley.</td><td>custom (aluminium 6061 tube 5/3.6 mm)</td><td class="mono"><span class="muted">—</span></td></tr>
+<tr data-part="rear_pulley"><td><span class="sw g-mechanism" aria-hidden="true"></span><b>Rear tendon pulley</b><span class="where">Pivot and pen lift · z 80.58–81.58 mm · Ø1.5 × 1 mm</span><span class="pill move">moves with the inner pen</span></td><td>Turns the tendon loop behind the holder&#x27;s rearmost position, inside the arm.</td><td>custom (PTFE pulley d 1.5 mm)</td><td class="mono"><span class="muted">—</span></td></tr>
+<tr data-part="magnet_cap"><td><span class="sw g-actuator" aria-hidden="true"></span><b>Magnet cap (2 x 2 checkerboard, spherical face)</b><span class="where">Coils and magnets · z 82.28–87.99 mm · Ø18.89 × 5.71 mm · 9.8 g</span><span class="pill move">moves with the inner pen</span></td><td>Four N52 poles on a spherical Hiperco cap centred on the gimbal; tilting slides the poles along the coils at a constant 0.77 mm gap.  Its rim is flattened at the bottom (to 8.8 mm radius) where the drive shafts pass; the poles end 6.3 mm from the axis there, so the flat costs no pole area.</td><td>NdFeB N52 segments 6.3 x 6.3 x 3.3 mm on a Hiperco 50A cap (custom)</td><td class="mono">AMF-139; AMF-140</td></tr>
 <tr data-part="coil_plate"><td><span class="sw g-actuator" aria-hidden="true"></span><b>Two-layer spherical coil plate and back iron</b><span class="where">Coils and magnets · z 88.76–92.22 mm · Ø22 × 3.46 mm · 8.7 g</span></td><td>x and y coil layers (0.55 mm) on a Hiperco plate concentric with the cap; the plate&#x27;s rim is notched at the bottom (r &gt; 9.90 mm, +-10 deg) for the drive shafts.  Its back iron is drawn at study N&#x27;s model thickness (2.37 mm; study N&#x27;s layout drew 0.8 mm).</td><td>custom (bonded 0.20 mm wire coils on a formed Hiperco 50A plate)</td><td class="mono">AMF-29; AMF-30; AMF-140</td></tr>
 <tr data-part="drive_transfer"><td><span class="sw g-drive" aria-hidden="true"></span><b>Transfer gears</b><span class="where">Heel drive · z 92.72–94.72 mm · 6.4 × 10 × 2 mm · 0.25 g</span></td><td>Two 3-gear trains (in two planes) that move each motor&#x27;s output out to its shaft at the bottom wall.</td><td>module 0.1 brass gears, idler about d 3 mm (ASSUMPTION)</td><td class="mono"><span class="muted">—</span></td></tr>
 <tr data-part="battery"><td><span class="sw g-power" aria-hidden="true"></span><b>Rechargeable cell (lifted 3 mm)</b><span class="where">Battery · z 92.72–141.22 mm · Ø14.1 × 48.5 mm · 20 g</span></td><td>EEMB LIR14500, 750 mAh; its axis is 3 mm above the pen&#x27;s so the two motors fit under it.</td><td>EEMB LIR14500</td><td class="mono">AMF-80</td></tr>
@@ -968,12 +970,12 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <table class="tech">
         <thead><tr><th scope="col">Technology</th><th scope="col">Needed?</th><th scope="col">What for</th></tr></thead>
         <tbody>
-          <tr><td>Electromagnets (a spherical coil plate and a magnet cap)</td><td><span class="pill yes">Yes</span></td><td>Tilt the nose so the ink tip moves up to 6.0&nbsp;mm in every direction, fast enough to cancel shake and to draw letters <span class="tag prop"><i></i>Proposed design</span></td></tr>
+          <tr><td>Electromagnets (a spherical coil plate and a magnet cap)</td><td><span class="pill yes">Yes</span></td><td>Swing the inner pen so the ball moves up to 6.0&nbsp;mm in every direction, fast enough to cancel shake and to draw letters <span class="tag prop"><i></i>Proposed design</span></td></tr>
           <tr><td>A wheel that grips the paper, with two micromotors</td><td><span class="pill yes">Yes</span></td><td>Steer the hand along a letter (steer only) or lead a relaxed hand (driven). The only real force the pen can make, from the paper <span class="tag calc"><i></i>Calculation</span></td></tr>
           <tr><td>Motion sensor (accelerometer + gyroscope)</td><td><span class="pill yes">Yes</span></td><td>Feels the hand's shake; the tracker separates shake from writing</td></tr>
           <tr><td>Page sensor (optical, beside the wheel)</td><td><span class="pill yes">Yes</span></td><td>Where the pen is on the page, 1000 times a second: needed for autowrite, for spotting wheel slip and for the tremor-line detector</td></tr>
           <tr><td>Pen lift (a drum, spring and brake at the pivot)</td><td><span class="pill yes">Yes</span></td><td>Sets a low ink force and lifts the ball 0.5&nbsp;mm between strokes, so strokes do not join</td></tr>
-          <tr><td>Tungsten end-cap</td><td><span class="pill maybe">Detachable</span></td><td>A further 8–20&nbsp;% less shake on top of the nose, depending on the grip. A fixed weight can make hard cases worse; the moving one rarely does. Whether the motion is worth it depends on how people hold the pen, which is not measured yet <span class="tag sim"><i></i>Simulation · model H1</span></td></tr>
+          <tr><td>Tungsten end-cap</td><td><span class="pill maybe">Detachable</span></td><td>A further 8–20&nbsp;% less shake on top of the inner pen, depending on the grip. A fixed weight can make hard cases worse; the moving one rarely does. Whether the motion is worth it depends on how people hold the pen, which is not measured yet <span class="tag sim"><i></i>Simulation · model H1</span></td></tr>
           <tr><td>Vibration motor</td><td><span class="pill opt">Optional</span></td><td>Gentle cues: “write bigger”, “check this word”</td></tr>
           <tr><td>AI in the phone app</td><td><span class="pill yes">Yes</span></td><td>Reads your writing, keeps a labelled clean copy, spelling help, letter shapes in your own style for autowrite</td></tr>
           <tr><td>Desk guidance board</td><td><span class="pill opt">Not in Rev J</span></td><td>The heel wheel takes over its job. Its magnet was removed from the pen</td></tr>
@@ -1039,17 +1041,17 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <table class="res">
         <thead><tr><th scope="col">Who or what</th><th scope="col">Help</th><th scope="col">Result</th><th scope="col">Evidence</th></tr></thead>
         <tbody>
-<tr><td>Essential tremor, 1–2 mm, 6–10 shakes a second</td><td>Tip: the nose with the <b>gated tracker</b> (the new default)</td><td>Ink off the letters <b>830 µm → 430 µm</b> (ordinary pen → Rev J); Rev H's tracker 627 µm. Words read <b>31 % → 74 %</b> (Rev H 49 %). Tremor-free writing moved 26 µm, as with Rev H.</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the Rev H nose model (±3 mm); docs/ai_control_v2.md · results/ai2/ai2.json</span></td></tr>
-<tr><td>Tremor at 6 shakes a second, 1–2 mm (where Rev H did almost nothing)</td><td>The gated tracker</td><td><b>822 µm → 540 µm</b> (Rev H 818 µm)</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the Rev H nose model (±3 mm); docs/ai_control_v2.md · results/ai2/ai2.json</span></td></tr>
-<tr><td>Same tremor, a learned estimator</td><td>A small causal neural network, in <b>shadow mode</b> (it logs, it does not steer)</td><td><b>278 µm</b> and <b>81 %</b> of words. It may drive the nose only after it passes on held-out real recordings (EXP-L04).</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the Rev H nose model (±3 mm); docs/ai_control_v2.md · results/ai2/ai2.json</span></td></tr>
-<tr><td>Tremor, on top of the nose (8–12 Hz, 1–2 mm)</td><td>Tail: the <b>tungsten end-cap</b> (moving weight)</td><td>A further <b>8 / 18 / 20 %</b> less ink error at grip splits 0.3 / 0.5 / 0.7. The same mass fixed gives 17 / 12 / 4 % (better at 0.3), but it makes 29–42 % of the hard cases worse (the moving weight 4–12 %).</td><td><span class="tag sim"><i></i>Simulation · model H1</span><span class="where">on top of the Rev H nose and tracker; test seeds 200–203; docs/inertial_endcap.md · results/endcap/endcap_study.json</span></td></tr>
-<tr><td>Writing for you (a known text)</td><td>Tip: <b>autowrite</b> with the ±6 mm nose (a mode you turn on)</td><td><b>99.2 %</b> of letters and <b>100 %</b> of words read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters a second. One of six test writers needed a slower sweep.</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; docs/nose_v2.md · results/nose2/nose2.json</span></td></tr>
-<tr><td>Parkinson's: “write big” loops that shrink</td><td>Heel: the wheel, <b>steer only</b></td><td>Loop height <b>0.99</b> of the target (<b>0.78</b> with nothing on; 0.93–0.94 for a hand that resists a little)</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/fig_loops_reversal.csv</span></td></tr>
-<tr><td>Tracing and copying (poorly formed letters)</td><td>Heel wheel steers; with or without the nose</td><td>Distance to the template <b>582 µm → 372 µm</b> (steer only) → <b>76 µm</b> (with the nose). But letters read fall from <b>92 %</b> to 86 % and <b>79 %</b>: closer to the template is not easier to read.</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/fig_practice.csv</span></td></tr>
+<tr><td>Essential tremor, 1–2 mm, 6–10 shakes a second</td><td>Tip: the inner pen with the <b>gated tracker</b> (the new default)</td><td>Ink off the letters <b>830 µm → 430 µm</b> (ordinary pen → Rev J); Rev H's tracker 627 µm. Words read <b>31 % → 74 %</b> (Rev H 49 %). Tremor-free writing moved 26 µm, as with Rev H.</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the older Rev H inner-pen (nose) model, ±3 mm; docs/ai_control_v2.md · results/ai2/ai2.json</span></td></tr>
+<tr><td>Tremor at 6 shakes a second, 1–2 mm (where Rev H did almost nothing)</td><td>The gated tracker</td><td><b>822 µm → 540 µm</b> (Rev H 818 µm)</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the older Rev H inner-pen (nose) model, ±3 mm; docs/ai_control_v2.md · results/ai2/ai2.json</span></td></tr>
+<tr><td>Same tremor, a learned estimator</td><td>A small causal neural network, in <b>shadow mode</b> (it logs, it does not steer)</td><td><b>278 µm</b> and <b>81 %</b> of words. It may drive the inner pen only after it passes on held-out real recordings (EXP-L04).</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the older Rev H inner-pen (nose) model, ±3 mm; docs/ai_control_v2.md · results/ai2/ai2.json</span></td></tr>
+<tr><td>Tremor, on top of the inner pen (8–12 Hz, 1–2 mm)</td><td>Tail: the <b>tungsten end-cap</b> (moving weight)</td><td>A further <b>8 / 18 / 20 %</b> less ink error at grip splits 0.3 / 0.5 / 0.7. The same mass fixed gives 17 / 12 / 4 % (better at 0.3), but it makes 29–42 % of the hard cases worse (the moving weight 4–12 %).</td><td><span class="tag sim"><i></i>Simulation · model H1</span><span class="where">on top of the Rev H nose and tracker; test seeds 200–203; docs/inertial_endcap.md · results/endcap/endcap_study.json</span></td></tr>
+<tr><td>Writing for you (a known text)</td><td>Tip: <b>autowrite</b> with the ±6 mm inner pen (a mode you turn on)</td><td><b>99.2 %</b> of letters and <b>100 %</b> of words read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters a second. One of six test writers needed a slower sweep.</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; docs/nose_v2.md · results/nose2/nose2.json</span></td></tr>
+<tr><td>Parkinson's: “write big” loops that shrink</td><td>Heel: the wheel, <b>steer only</b></td><td>Tallest loop <b>0.99</b> of the target height (<b>0.78</b> with nothing on; 0.93–0.94 for a hand that resists a little). The last loop still shrinks: <b>0.77</b> of the target (0.66 with nothing on; 0.87 when the wheel also drives).</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/fig_loops_reversal.csv, tasks.json</span></td></tr>
+<tr><td>Tracing and copying (poorly formed letters)</td><td>Heel wheel steers; with or without the inner pen</td><td>Distance to the template <b>582 µm → 372 µm</b> (steer only) → <b>76 µm</b> (with the inner pen). But letters read fall from <b>92 %</b> to 86 % and <b>79 %</b>: closer to the template is not easier to read.</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/fig_practice.csv</span></td></tr>
 <tr><td>Leading a relaxed hand through a letter</td><td>Heel: the wheel, <b>driven</b> (lead-through, a mode you turn on)</td><td>In the reversed-letter demo the wheel drew <b>93 %</b> of the ‘d’ bowl within 0.3 mm of the template (<b>3 %</b> with nothing on)</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/fig_loops_reversal.csv</span></td></tr>
-<tr><td>Leading a relaxed hand along a sentence</td><td>Heel wheel leads, the nose adds detail (lead-through)</td><td><b>76 %</b> of letters and <b>60 %</b> of words read, at 7.2 mm/s; the pen did 86 % of the work. Rev H nose in this run.</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/tasks.json</span></td></tr>
-<tr><td>A letter the writer is set on (a reversed ‘b’ against a ‘d’ template)</td><td>Any guidance: nose, wheel or board</td><td><b>0 %</b> turned into the other letter; the push stayed at or below 0.47 N. The writer always wins.</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · docs/handwriting_outcomes.md</span></td></tr>
-<tr><td>Severe tremor, notes</td><td>The app's <b>clean copy</b> (digital, labelled)</td><td><b>97 %</b> of words readable at 1–2 mm (the ink: 74 %). The paper keeps the pen's ink.</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the Rev H nose model (±3 mm); docs/ai_control_v2.md · docs/ai_severe_tremor.md</span></td></tr>
+<tr><td>Leading a relaxed hand along a sentence</td><td>Heel wheel leads, the inner pen adds detail (lead-through)</td><td><b>76 %</b> of letters and <b>60 %</b> of words read, at 7.2 mm/s; the pen did 86 % of the work (a relaxed hand with the inner pen only: 9 % of letters). The older Rev H inner pen in this run.</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · results/drive/tasks.json</span></td></tr>
+<tr><td>A letter the writer is set on (a reversed ‘b’ against a ‘d’ template)</td><td>Any guidance: inner pen, wheel or board</td><td><b>0 %</b> turned into the other letter; the push stayed at or below 0.47 N. The writer always wins.</td><td><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="where">test writers 0–5, seeds 200–203; rules frozen before the test; docs/grounded_drive.md · docs/handwriting_outcomes.md</span></td></tr>
+<tr><td>Severe tremor, notes</td><td>The app's <b>clean copy</b> (digital, labelled)</td><td><b>97 %</b> of words readable at 1–2 mm (the ink: 74 %). The paper keeps the pen's ink.</td><td><span class="tag sim"><i></i>Simulation · model HW1</span><span class="where">test writers 0–5, seeds 200–203; the trackers drive the older Rev H inner-pen (nose) model, ±3 mm; docs/ai_control_v2.md · docs/ai_severe_tremor.md</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -1065,7 +1067,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
         <ul>
           <li>Guess your next letter and steer the tip toward it: it closed 0–1&nbsp;% of the gap. <span class="tag sim"><i></i>Simulation</span></li>
           <li>Let the ink trail the hand to smooth it: −4&nbsp;% at 25&nbsp;ms, and longer delays lose stroke ends. <span class="tag sim"><i></i>Simulation · model HW1</span></li>
-          <li>Let reinforcement learning drive the nose: it read more words but moved clean writing too much. It is used offline, to design how the pen shares control. <span class="tag sim"><i></i>Simulation · model HW1</span></li>
+          <li>Let reinforcement learning drive the inner pen: it read more words but moved clean writing too much. It is used offline, to design how the pen shares control. <span class="tag sim"><i></i>Simulation · model HW1</span></li>
         </ul></div>
     </div>
     <h3>Before and after, at real size</h3>
@@ -1085,11 +1087,11 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <p class="note">Pick one. On the left, the hand and the pen. On the right, the paper seen from above, with the ink being drawn. Scenes a, b and f replay simulations; c, d and e are drawings sized like the study results.</p>
     <div class="scene-row" role="group" aria-label="Scenes">
       <button class="scene-btn" data-scene="a" aria-pressed="true"><span class="k">a<em>tremor</em></span><b>Shaky hand, pen off</b><span>The hand and the pen shake together. The ink wobbles.</span></button>
-      <button class="scene-btn" data-scene="b" aria-pressed="false"><span class="k">b<em>tip</em></span><b>Steady</b><span>The nose tilts against the shake. The ink stays near the letters.</span></button>
+      <button class="scene-btn" data-scene="b" aria-pressed="false"><span class="k">b<em>tip</em></span><b>Steady</b><span>The inner pen swings against the shake. The ink stays near the letters.</span></button>
       <button class="scene-btn" data-scene="c" aria-pressed="false"><span class="k">c<em>heel</em></span><b>Write big</b><span>The heel wheel steers along the loops, so they keep their size.</span></button>
-      <button class="scene-btn" data-scene="d" aria-pressed="false"><span class="k">d<em>heel + tip</em></span><b>Tracing</b><span>The wheel keeps the hand on the letter; the nose makes the last corrections.</span></button>
+      <button class="scene-btn" data-scene="d" aria-pressed="false"><span class="k">d<em>heel + tip</em></span><b>Tracing</b><span>The wheel keeps the hand on the letter; the inner pen makes the last corrections.</span></button>
       <button class="scene-btn" data-scene="e" aria-pressed="false"><span class="k">e<em>you turn it on</em></span><b>Lead-through</b><span>The driven wheel leads a relaxed hand through a letter.</span></button>
-      <button class="scene-btn" data-scene="f" aria-pressed="false"><span class="k">f<em>you turn it on</em></span><b>Autowrite</b><span>You sweep; the nose writes a text you chose.</span></button>
+      <button class="scene-btn" data-scene="f" aria-pressed="false"><span class="k">f<em>you turn it on</em></span><b>Autowrite</b><span>You sweep; the inner pen writes a text you chose.</span></button>
     </div>
     <div class="scene-grid">
       <div class="viewport" id="scene-vp">
@@ -1179,8 +1181,8 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
         <p>A shake from the wrist and forearm moves the hand, the fingers and the whole pen together. So the pen cannot rely on your fingers staying still. It moves its own tip, and it uses the paper under the heel when it needs to push.</p>
         <div class="callout">
           <b>Why the fingers hold a sleeve that stays still</b>
-          <p>If the fingers held the moving part, they would feel every correction and fight it. With a fixed sleeve, the moving nose is inside, out of the way. The ring at the front carries your writing pressure, so the nose only has to steer.</p>
-          <p>The nose tilts on a pivot 76.5&nbsp;mm behind the ball; the magnets sit just behind the pivot, so a small push there swings the tip 6.6 times as far. <span class="tag prop"><i></i>Proposed design</span> Tablet studies of essential tremor found a typical shake of about 2&nbsp;mm from side to side in spiral drawing. <span class="tag lit"><i></i>Literature · PDT-12</span></p>
+          <p>If the fingers held the moving part, they would feel every correction and fight it. With a fixed sleeve, the inner pen is inside, out of the way. The ring at the front carries your writing pressure, so the inner pen only has to steer.</p>
+          <p>The inner pen swings on a pivot 76.5&nbsp;mm behind the ball; the magnets sit just behind the pivot, so a small push there swings the tip 6.6 times as far. <span class="tag prop"><i></i>Proposed design</span> Tablet studies of essential tremor found a typical shake of about 2&nbsp;mm from side to side in spiral drawing. <span class="tag lit"><i></i>Literature · PDT-12</span></p>
         </div>
       </div>
     </div>
@@ -1221,11 +1223,11 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <table class="who">
         <thead><tr><th scope="col">Problem</th><th scope="col">Main help</th><th scope="col">How</th><th scope="col">Evidence so far</th></tr></thead>
         <tbody>
-          <tr><td>Essential tremor (shaky writing)<br><span class="pill prop">Proposed</span></td><td>Tip and tail</td><td>The nose moves against the shake; the gated tracker listens harder while a shake is present. The end-cap takes away a little more.</td>
+          <tr><td>Essential tremor (shaky writing)<br><span class="pill prop">Proposed</span></td><td>Tip and tail</td><td>The inner pen moves against the shake; the gated tracker listens harder while a shake is present. The end-cap takes away a little more.</td>
             <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1, H1</span><span class="tag lit"><i></i>Literature · ACT-16</span></span><span class="note">Ink 830 → 430&nbsp;µm in simulation. A handheld spoon that moves against the shake cut spoon tremor by about 73&nbsp;%. A pen has not been tested.</span></td></tr>
           <tr><td>Parkinson's (small, shrinking writing)<br><span class="pill prop">Proposed</span></td><td>Heel, and cues</td><td>The wheel steers along big loops, so they keep their size; a buzz when letters shrink; lined paper</td>
             <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="tag lit"><i></i>Literature · PDT-16, PDT-19</span></span><span class="note">Loops kept at 0.99 of the target height in simulation. “Write big” cues made letters bigger in small studies.</span></td></tr>
-          <tr><td>Poor handwriting / dysgraphia<br><span class="pill prop">Proposed</span></td><td>Heel and tip</td><td>Tracing with the wheel steering and the nose correcting; lead-through for learners who cannot form a letter yet; guidance that fades</td>
+          <tr><td>Poor handwriting / dysgraphia<br><span class="pill prop">Proposed</span></td><td>Heel and tip</td><td>Tracing with the wheel steering and the inner pen correcting; lead-through for learners who cannot form a letter yet; guidance that fades</td>
             <td><span class="tags"><span class="tag sim"><i></i>Simulation · model HW1-D</span><span class="tag lit"><i></i>Literature · HAP-10</span></span><span class="note">Closer to the template is not easier to read. Guidance made writing smoother, but better letter shapes were not shown.</span></td></tr>
           <tr><td>Dyslexia (spelling)<br><span class="pill prop">Proposed</span></td><td>The app</td><td>Spelling help and a labelled clean copy; guidance never changes a letter you meant</td>
             <td><span class="tags"><span class="tag asm"><i></i>Not yet studied</span></span><span class="note">No study of this pen with dyslexic writers yet.</span></td></tr>
@@ -1255,7 +1257,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
       <div class="card">
         <h3>What to build and test first</h3>
         <ol>
-          <li>Magnet test pieces, to measure the nose's force (EXP-N01). A newer model gives 0.19&nbsp;N/√W for Rev H, not 0.47. <span class="tag calc"><i></i>Calculation</span></li>
+          <li>Magnet test pieces, to measure the force on the inner pen (EXP-N01). A newer model gives 0.19&nbsp;N/√W for Rev H, not 0.47. <span class="tag calc"><i></i>Calculation</span></li>
           <li>The wheel's grip on six kinds of paper (EXP-D01), and the heel on a bench with its force limit and release (EXP-D04, D07).</li>
           <li>Recordings of real writing with tremor (EXP-H01); then the tremor detector and the gated tracker offline (EXP-L01, L02), and the learned estimator (EXP-L04).</li>
           <li>How people split their grip on the 24&nbsp;mm handle, with and without the end-cap (EXP-I01, K08). This decides whether the moving weight beats a plain weight.</li>
@@ -1268,10 +1270,10 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <div class="probs">
       <div class="prob"><h4>Battery</h4><p>The page sensor and the electronics take 115–165&nbsp;mW before anything moves. With 1&nbsp;mm of shake the pen lasts 6.1–7.3&nbsp;h (7.8–8.2&nbsp;h if the page sensor is switched off while only the shake is corrected); lead-through 5.9–6.9&nbsp;h; autowrite 5.3–6.1&nbsp;h; with the end-cap 4.3–6.6&nbsp;h. The target is 8&nbsp;h.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
       <div class="prob"><h4>Weight with the end-cap</h4><p>129.2&nbsp;g against a 120&nbsp;g limit, so the end-cap stays a module you can take off. The base pen is 87.0&nbsp;g.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
-      <div class="prob"><h4>Load on the pivot</h4><p>The nose's magnets pull the pivot along the pen with up to 16.5&nbsp;N, above the 14.5&nbsp;N at which its thin strips buckle. The strips must work in tension, or a thrust pivot is added.</p><div class="tags"><span class="tag calc"><i></i>Calculation: an upper bound</span></div></div>
+      <div class="prob"><h4>Load on the pivot</h4><p>The inner pen's magnets pull the pivot along the pen with up to 16.5&nbsp;N, above the 14.5&nbsp;N at which its thin strips buckle. The strips must work in tension, or a thrust pivot is added.</p><div class="tags"><span class="tag calc"><i></i>Calculation: an upper bound</span></div></div>
       <div class="prob"><h4>Warmth</h4><p>With 1&nbsp;mm of shake, the skin over the coils reaches 38.7&nbsp;°C in a 23&nbsp;°C room and 45.7&nbsp;°C in a 30&nbsp;°C room. A 0.5&nbsp;mm aluminium spreader brings the hot room down to 37.3&nbsp;°C.</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
       <div class="prob"><h4>Seeing the ink</h4><p>For an assumed eye position, the pen's own front hides the ink near the ball at 50–75° of tilt, as it already did in Rev H. Opening the top of the sleeve helps at 35°. People move their heads, so this needs a test with writers (EXP-J08).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag asm"><i></i>Assumption: eye position</span></div></div>
-      <div class="prob"><h4>Magnets near the wheel motors</h4><p>The nose's magnet cap could put a detent of up to 0.16&nbsp;N on the heel wheel through the rotor magnets of the heel motors (a free-space upper bound). A soft-iron cup may be needed (EXP-J02).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
+      <div class="prob"><h4>Magnets near the wheel motors</h4><p>The magnet cap on the inner pen (the nose's magnet cap) could put a detent of up to 0.16&nbsp;N on the heel wheel through the rotor magnets of the heel motors (a free-space upper bound). A soft-iron cup may be needed (EXP-J02).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
       <div class="prob"><h4>Page sensor and pen roll</h4><p>The page sensor's lens stays in its working band only while the pen is rolled less than about 1.5°. This limits autowrite and slip detection until a lens with more depth is found (EXP-J04).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span></div></div>
       <div class="prob"><h4>Magnetic field outside the pen</h4><p>The field falls to 1&nbsp;mT at about 23&nbsp;mm from the pen, mostly from the heel motors. That level is an assumption for implanted devices until ISO 14117 is read; check before any trial (EXP-J07).</p><div class="tags"><span class="tag calc"><i></i>Calculation</span><span class="tag asm"><i></i>Assumption: the limit</span></div></div>
       <div class="prob"><h4>Prior art</h4><p>A pen with an actuated nib that writes stored characters with a lift is patented (PAT-01). A freedom-to-operate review is needed before building autowrite with a pen lift.</p><div class="tags"><span class="tag lit"><i></i>Literature · PAT-01</span></div></div>
@@ -1323,7 +1325,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
     <div>Every number carries a label: <span class="tags" style="display:inline-flex"><span class="tag sim"><i></i>Simulation</span><span class="tag calc"><i></i>Calculation</span><span class="tag lit"><i></i>Literature (ledger id)</span><span class="tag asm"><i></i>Assumption</span><span class="tag prop"><i></i>Proposed design</span><span class="tag ill"><i></i>Illustration</span></span>
       Literature ids refer to the project's evidence ledger (<code>docs/evidence.csv</code>). The plain-words account is <code>docs/revJ_concept.md</code>.</div>
     <div>What changed from Rev H is under <a href="#d-changes">Details</a>. The step-by-step simulation replay of the earlier designs: <a href="https://claude.ai/artifact/NQYQ6ivjq1r3ro41484SFf" target="_blank" rel="noopener">Detailed simulation replay</a>.</div>
-    <div class="mono" id="provenance">Built 2026-09-29 16:25 UTC from git 1211575-dirty · parameters v0.4.4 · layout generated 2026-09-29T13:28:08+00:00</div>
+    <div class="mono" id="provenance">Built 2026-09-29 17:04 UTC from git 4831cdc-dirty · parameters v0.4.4 · layout generated 2026-09-29T13:28:08+00:00</div>
   </footer>
 </div>
 
@@ -1383,9 +1385,9 @@ const GROUPS = {
   skid:{name:"Skid ring", tok:"--g-skid", desc:"A C-shaped ring at the front rests on the paper and carries your writing pressure. It is open on top, so you can see the ink; the heel wheel reaches the paper through a slot at the bottom."},
   drive:{name:"Heel wheel and its drive", tok:"--g-drive", desc:"A 2 mm wheel under the front ring grips the paper. Two micromotors under the battery steer it and drive it through two thin shafts. By default it only steers; in lead-through and autowrite it can drive."},
   grip:{name:"Finger sleeve (fixed)", tok:"--g-grip", desc:"Soft sleeve where the thumb, index and middle finger rest. It does not move. Its first 10 mm are open on top, like the ring, so the ink stays visible."},
-  mechanism:{name:"Pivot and pen lift", tok:"--g-pivot", desc:"A spring-steel pivot lets the nose tilt in two directions without friction. A drum at the pivot sets the ink force and lifts the ball 0.5 mm between strokes."},
-  actuator:{name:"Coils and magnets", tok:"--g-act", desc:"A spherical coil plate in the handle pushes a cap of magnets on the back of the nose. The gap stays the same at every tilt."},
-  sensor:{name:"Sensors", tok:"--g-sensor", desc:"The motion sensor, the page sensor beside the heel wheel, the nose's two position sensors and the refill-slide sensor."},
+  mechanism:{name:"Pivot and pen lift", tok:"--g-pivot", desc:"A spring-steel pivot lets the inner pen swing in two directions without friction. A drum at the pivot sets the ink force and lifts the ball 0.5 mm between strokes."},
+  actuator:{name:"Coils and magnets", tok:"--g-act", desc:"A spherical coil plate in the handle pushes a cap of magnets on the back of the inner pen. The gap stays the same at every tilt."},
+  sensor:{name:"Sensors", tok:"--g-sensor", desc:"The motion sensor, the page sensor beside the heel wheel, the inner pen's two position sensors and the refill-slide sensor."},
   electronics:{name:"Electronics", tok:"--g-elec", desc:"The main board along the top of the handle, with Bluetooth, the coil and motor drivers and the charger; and the charging port."},
   power:{name:"Battery", tok:"--g-power", desc:"A rechargeable 750 mAh lithium-ion cell, right behind the coil plate, lifted 3 mm so the two motors fit under it."},
   haptic:{name:"Vibration motor (optional)", tok:"--g-other", desc:"Gives gentle buzz cues."},
@@ -1594,10 +1596,10 @@ function buildPen(lay){
   pen.length=function(){ return pen.endcap && lay.length_with_endcap ? +lay.length_with_endcap : (+lay.length||170); };
   /* the pen's matrix so that the ball's rest point B0 sits at page (x, y, h) */
   pen.rootFor=function(bs, x, y, h){ const z0=B0.z; return penMatrix(bs, x-z0*bs.a[0], y-z0*bs.a[1], (h||0)-z0*bs.a[2]); };
-  pen.wheelWorld=function(){ pod.updateMatrixWorld(true); return H.contact.clone().applyMatrix4(pod.matrixWorld); };
-  pen.ballWorld=function(){ refillG.updateMatrixWorld(true); return new THREE.Vector3(0,0,0).applyMatrix4(refillG.matrixWorld); };
+  pen.wheelWorld=function(){ root.updateMatrixWorld(true); return H.contact.clone().applyMatrix4(pod.matrixWorld); };
+  pen.ballWorld=function(){ root.updateMatrixWorld(true); return new THREE.Vector3(0,0,0).applyMatrix4(refillG.matrixWorld); };
   pen.tailWorld=function(){ const s=parts.find(m=>m.userData.id==="ec_slug"), rc=parts.find(m=>m.userData.comp.replaced_by_endcap);
-    const m=(pen.endcap && s)? s : (rc||s); if(!m) return null; m.updateMatrixWorld(true); const c=m.userData.comp;
+    const m=(pen.endcap && s)? s : (rc||s); if(!m) return null; root.updateMatrixWorld(true); const c=m.userData.comp;
     return new THREE.Vector3(0,0,(c.z0+c.z1)/2).applyMatrix4(m.parent.matrixWorld); };
   pen.setTipPage(0,0,0); pen.setSteer(0); pen.setSpin(0); pen.setEndcap(!!lay.length_with_endcap);
   return pen;
@@ -1755,7 +1757,7 @@ function actText(key, F){
     text:`A 2 mm wheel in the slot under the front ring presses on the paper with 0.55 N. Gripping the paper, it can push the pen and the hand with ${tr}. By default it only steers; in lead-through and autowrite it can also drive. Lift the pen and it has nothing to push against.`,
     tags:["CALCULATION", "ASSUMPTION: tyre friction 0.6–1.2", "PROPOSED DESIGN"]};
   return {title:"3 · Tail: the detachable end-cap", group:"inertial",
-    text:`A 30.4 g tungsten weight, pushed up to ±4 mm sideways by coils. On top of the nose it removes a further ${ecr} of the ink error for fast shakes, depending on the grip. It cannot steer letters. It adds ${fmt(pen.endcap_g,1)} g and makes the pen ${fmt(pen.length_endcap_mm,1)} mm long.`,
+    text:`A 30.4 g tungsten weight, pushed up to ±4 mm sideways by coils. On top of the inner pen it removes a further ${ecr} of the ink error for fast shakes, depending on the grip. It cannot steer letters. It adds ${fmt(pen.endcap_g,1)} g and makes the pen ${fmt(pen.length_endcap_mm,1)} mm long.`,
     tags:["SIMULATION (model H1)", "PROPOSED DESIGN"]};
 }
 function initHero(lay, F){
@@ -1857,8 +1859,10 @@ function initHero(lay, F){
     v.dirty=true; }
   H.setColorMode=m=>{ H.colorMode=m; applyColours(); };
   function setShake(on){ H.shake=!!on; H.shakeT=0; $("shake").setAttribute("aria-pressed", String(H.shake));
-    const chip=$("hero-shake"); chip.hidden=!H.shake;
-    chip.textContent=`Hand shake, drawn ${CUTCFG.mag}× bigger and ${Math.round(CUTCFG.shakeHz/CUTCFG.showHz)}× slower: the handle and the hand move; the inner pen swings the other way; the ball stays on the paper.`;
+    const chip=$("hero-shake"); chip.hidden=!H.shake; $("hero-chip").hidden=H.shake;
+    chip.textContent= v.w<560 ? `Hand shake (${CUTCFG.mag}× bigger, ${Math.round(CUTCFG.shakeHz/CUTCFG.showHz)}× slower): the inner pen swings back, the ball stays.`
+      : `Hand shake, drawn ${CUTCFG.mag}× bigger and ${Math.round(CUTCFG.shakeHz/CUTCFG.showHz)}× slower: the handle and the hand move; the inner pen swings the other way; the ball stays on the paper.`;
+    drawLabels();
     if(H.shake){ H.tipTarget=[0,0]; H.tip=[0,0]; H.psiTarget=0; H.psi=0; H.springBack=false; knob.setAttribute("cx","0"); knob.setAttribute("cy","0");
       $("pad-read").textContent="Tip centred (hand shake on)";
       if(H.explodeTarget>0){ H.explodeTarget=0; $("explode").value="0"; $("explode-out").textContent="0 %"; } }
@@ -1874,7 +1878,7 @@ function initHero(lay, F){
     $("info-sw").className="sw"+(comp&&comp.optional?" opt":""); $("info-fn").textContent=fn||"";
     const dl=$("info-dl"); let t="";
     if(comp){ dl.hidden=false; $("info-part").textContent=comp.part||"—"; $("info-ledger").textContent=comp.ledger||"none yet";
-      const mw={nose:"; moves with the nose", drive:"; moves with the heel wheel (steered or sprung)", inertial_mass:"; the moving weight of the end-cap"}[comp.moves_with]||"; fixed in the handle";
+      const mw={nose:"; swings with the inner pen", drive:"; moves with the heel wheel (steered or sprung)", inertial_mass:"; the moving weight of the end-cap"}[comp.moves_with]||"; fixed in the handle";
       $("info-where").textContent=`${fmt(comp.z0)}–${fmt(comp.z1)} mm from the tip`+mw+(dgroup(comp)==="inertial"?"; detachable end-cap":(comp.optional?"; optional":""))+(comp.mass_g>=0.1?`; ${fmt(comp.mass_g,comp.mass_g<1?2:1)} g`:"");
       t=tagHTML("PROPOSED DESIGN")+'<span class="tag calc"><i></i>Calculation or assumption: size, place, mass</span>'; }
     else { dl.hidden=true; t=(tags||["PROPOSED DESIGN"]).map(tagHTML).join(""); }
@@ -1939,8 +1943,9 @@ function initHero(lay, F){
     if(g==="grip"||g==="structure") tmpV.set(0, bb.max.y*0.95, bb.min.z+0.6*(bb.max.z-bb.min.z));
     else if(g==="skid") tmpV.set(0, bb.max.y*0.85, (bb.min.z+bb.max.z)/2);
     return tmpV.clone().applyMatrix4(m.matrixWorld); }
+  const hudTL=vp.querySelector(".hud.tl");
   function drawLabels(){
-    const W=v.w, Hh=v.h, exploded=H.explode>0.3, narrow=W<560;
+    const W=v.w, Hh=v.h, exploded=H.explode>0.3, narrow=W<560, top=Math.max(44, (hudTL? hudTL.offsetHeight : 0)+18);
     const selG=H.sel? H.sel.group : null;
     /* screen axis of the pen */
     const pz=poseAt(H.explode), A=P2W(...pz.tip).project(v.camera), Bv=pz.tip.map((t,k)=>t+pz.b.a[k]*penLen()), Bp=P2W(...Bv).project(v.camera);
@@ -1962,7 +1967,7 @@ function initHero(lay, F){
       let lx=q[0]+ux*au*pinGap+nx*an*pinGap, ly=q[1]+uy*au*pinGap+ny*an*pinGap;
       for(let it=0; it<12; it++){ let hit=null; for(const o of placed){ if(Math.abs(o.x-lx)<(o.w+bw)/2+6 && Math.abs(o.y-ly)<(o.h+bh)/2+4){ hit=o; break; } }
         if(!hit) break; lx+=ux*((hit.w+bw)/2+8)*0.5; ly+=uy*((hit.w+bw)/2+8)*0.5; }
-      lx=clamp(lx, bw/2+6, W-bw/2-6); ly=clamp(ly, bh/2+44, Hh-bh/2-36);
+      lx=clamp(lx, bw/2+6, W-bw/2-6); ly=clamp(ly, bh/2+top, Hh-bh/2-36);
       placed.push({x:lx, y:ly, w:bw, h:bh}); el.style.left=lx+"px"; el.style.top=ly+"px";
       s+=`<line class="pinline" style="--c:var(${a.tok})" x1="${q[0].toFixed(1)}" y1="${q[1].toFixed(1)}" x2="${lx.toFixed(1)}" y2="${ly.toFixed(1)}"/><circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="3.5" style="stroke:var(${a.tok})"/>`;
     }
@@ -1982,7 +1987,7 @@ function initHero(lay, F){
         let lx=q.sx+nx*gap*side, ly=q.sy+ny*gap*side;
         for(let it=0; it<16; it++){ let hit=null; for(const o of placed){ if(Math.abs(o.x-lx)<(o.w+bw)/2+6 && Math.abs(o.y-ly)<(o.h+bh)/2+4){ hit=o; break; } }
           if(!hit) break; lx+=ux*((hit.w+bw)/2+10)*0.5; ly+=uy*((hit.w+bw)/2+10)*0.5 + side*ny*8; lx+=side*nx*8; }
-        lx=clamp(lx, bw/2+6, W-bw/2-6); ly=clamp(ly, bh/2+44, Hh-bh/2-38);
+        lx=clamp(lx, bw/2+6, W-bw/2-6); ly=clamp(ly, bh/2+top, Hh-bh/2-38);
         placed.push({x:lx, y:ly, w:bw, h:bh}); q.lx=lx; q.ly=ly; });
       for(const q of pts){ s+=`<line x1="${q.sx.toFixed(1)}" y1="${q.sy.toFixed(1)}" x2="${q.lx.toFixed(1)}" y2="${q.ly.toFixed(1)}"/><circle cx="${q.sx.toFixed(1)}" cy="${q.sy.toFixed(1)}" r="3"/>`;
         q.d.el.style.left=q.lx+"px"; q.d.el.style.top=q.ly+"px"; }
@@ -2100,7 +2105,7 @@ function initScenes(lay, F, samples, replay){
   const panels=(samples && samples.panels)||[];
   const tremorPanels=panels.filter(p=>p.condition==="tremor" && Array.isArray(p.intended_points) && (p.variants||[]).some(q=>q.key==="none" && Array.isArray(q.points)));
   const awPanel=panels.find(p=>p.condition==="autowrite" && (p.variants||[]).some(q=>q.key==="autowrite" && q.points) && (p.variants||[]).some(q=>q.key==="hand" && q.points));
-  const TRK = RP ? [["today","Rev J nose"],["wheel","Nose + heel wheel"],["best","If it knew the shake exactly"]]
+  const TRK = RP ? [["today","Rev J inner pen"],["wheel","Inner pen + heel wheel"],["best","If it knew the shake exactly"]]
                  : [["tracker","Rev H tracker"],["gated","Gated tracker (Rev J default)"],["learned_tcn","Learned (shadow mode)"],["oracle","If it knew the shake exactly"]];
   Sx.trk = RP ? "today" : "gated";
   const scenList = RP ? RP.scenarios.map(sc=>({label:`${fmt(sc.f0_hz)} per second, ${fmt(sc.amp_mm)} mm`})) :
@@ -2127,7 +2132,7 @@ function initScenes(lay, F, samples, replay){
                ["Pen", V.label, key==="b"? "PROPOSED DESIGN" : simHW1]].concat(numsFromMetrics(V, simHW1));
     if(key==="b" && A2.gated && A2.none) S.numbers.push(["Averages over 6 writers and 4 seeds, 1–2 mm at 6–10 per second",
       `ordinary pen ${fmt(A2.none.ink_um,0)} µm, Rev H tracker ${fmt(A2.tracker&&A2.tracker.ink_um,0)} µm, gated tracker ${fmt(A2.gated.ink_um,0)} µm, learned ${fmt(A2.learned_tcn&&A2.learned_tcn.ink_um,0)} µm`, simHW1]);
-    if(key==="b") S.numbers.push(["Nose model in this study", "the Rev H nose (±3 mm); the Rev J nose reaches further", simHW1]);
+    if(key==="b") S.numbers.push(["Inner-pen model in this study", "the older Rev H inner pen (±3 mm); the Rev J inner pen reaches further", simHW1]);
     const inkOf=q=>{ const m=(q.metrics||[]).find(x=>/^Ink off/i.test(x.name)); return m? m.value : null; };
     S.inkWhole=inkOf(V); S.inkBase=inkOf(base); S.scenTitle=p.title; S.caseLabel=V.label; return S;
   }
@@ -2143,7 +2148,7 @@ function initScenes(lay, F, samples, replay){
       S.intended[2*i]=R[0]; S.intended[2*i+1]=R[1]; S.hand[2*i]=B[0]; S.hand[2*i+1]=B[1]; S.nose[2*i]=Q[0]-B[0]; S.nose[2*i+1]=Q[1]-B[1];
       S.down[i]=C.down[i]?1:0; S.lift[i]=C.lift? +C.lift[i] : 0;
       S.axis[2*i]=Math.asin(clamp(Ax[2],-1,1))*180/Math.PI; S.axis[2*i+1]=Math.atan2(Ax[1],Ax[0])*180/Math.PI; }
-    if(key==="b"){ S.ghost=new Float32Array(n*2); for(let i=0;i<n;i++){ S.ghost[2*i]=off.ink[i][0]; S.ghost[2*i+1]=off.ink[i][1]; } S.ghostLabel="ink with the nose and wheel off"; }
+    if(key==="b"){ S.ghost=new Float32Array(n*2); for(let i=0;i<n;i++){ S.ghost[2*i]=off.ink[i][0]; S.ghost[2*i+1]=off.ink[i][1]; } S.ghostLabel="ink with the inner pen and wheel off"; }
     S.numbers=[["What you see", `the whole Rev J pen in sim2, ${sc.title.toLowerCase()}`, sim], ["Pen", C.label, "PROPOSED DESIGN"],
       ["The letters you mean", "the ink the same pen writes with no shake", sim]];
     if(C.ink_err_mm!=null) S.numbers.push(["Ink off the letters, this run", `${C.ink_err_mm.toFixed(2)} mm`+(key==="b"&&off.ink_err_mm!=null? ` (pen off: ${off.ink_err_mm.toFixed(2)} mm)`:""), sim]);
@@ -2163,9 +2168,9 @@ function initScenes(lay, F, samples, replay){
     S.intendedAll=true; S.intendedLabel="the hand's path: a sweep with a 1 mm shake";
     const ex=(N2.example&&N2.example.revJ)||{}, a1=N2.aw_2p5_1mm||{};
     S.numbers=[["What you see", "the pen writing “return library books by friday” with 2.5 mm letters while the hand sweeps with a 1 mm shake, 8 times a second", simHW1],
-               ["Pen", "Rev J nose with the pen lift, autowrite on", "PROPOSED DESIGN"]].concat(numsFromMetrics(V, simHW1));
+               ["Pen", "Rev J inner pen with the pen lift, autowrite on", "PROPOSED DESIGN"]].concat(numsFromMetrics(V, simHW1));
     if(a1.letters_read!=null) S.numbers.push(["Average over 6 test writers, up to 1 mm of shake", `${fmt(100*a1.letters_read,1)} % of letters and ${pc(a1.words_read_app)} % of words read`, simHW1]);
-    if(ex.q_max_mm!=null) S.numbers.push(["Largest nose travel in this run", `${fmt(ex.q_max_mm,1)} mm`, simHW1]);
+    if(ex.q_max_mm!=null) S.numbers.push(["Largest inner-pen travel in this run", `${fmt(ex.q_max_mm,1)} mm`, simHW1]);
     S.numbers.push(["Who moves the pen", "you sweep; the pen writes, and waits when you slow down", "PROPOSED DESIGN"],
                    ["The ball lifts 0.5 mm between strokes", "so words are not joined by lines", "PROPOSED DESIGN"]);
     const inkOf=q=>{ const m=(q.metrics||[]).find(x=>/^Ink off/i.test(x.name)); return m? m.value : null; };
@@ -2213,7 +2218,7 @@ function initScenes(lay, F, samples, replay){
     S.headFrom="intended"; S.ghostLabel="your hand alone"; S.handPath=true; S.intendedFaint=true; S.keep=keep; S.fix=fix;
     const sim="SIMULATION (model HW1-D)";
     S.numbers=[["Target letter", "about 9 mm high", "ASSUMPTION"]];
-    if(t0&&ts&&tn){ S.numbers.push(["Distance to the template, study averages", `${fmt(t0.err_um,0)} µm with nothing on → ${fmt(ts.err_um,0)} µm steer only → ${fmt(tn.err_um,0)} µm with the nose`, sim],
+    if(t0&&ts&&tn){ S.numbers.push(["Distance to the template, study averages", `${fmt(t0.err_um,0)} µm with nothing on → ${fmt(ts.err_um,0)} µm steer only → ${fmt(tn.err_um,0)} µm with the inner pen`, sim],
       ["Letters the app reads right", `${pc(t0.letters)} % → ${pc(ts.letters)} % → ${pc(tn.letters)} %: closer to the template is not easier to read`, sim],
       ["Push on the pen", `${fmt(ts.F_rms_N,2)} N on average, ${fmt(ts.F_p95_N,2)} N at most (95th percentile)`, sim]); }
     S.numbers.push(["Wheel", "steer only: it keeps the hand on the letter's path and cannot push along it", "PROPOSED DESIGN"],
@@ -2341,7 +2346,7 @@ function initScenes(lay, F, samples, replay){
     const mm=x=>isNaN(x)? "—" : x.toFixed(2)+" mm";
     if(S.fromData && S.inkWhole!=null){
       h+=`<div class="row"><span>Ink off the ${S.key==="f"?"target ":""}letters, ${S.fromReplay?"this run":"whole sentence"}:</span><b>${S.inkWhole.toFixed(S.key==="f"?3:2)} mm</b>${tagHTML(S.sim||simHW1)}</div>`;
-      if(S.key==="b" && S.inkBase!=null) h+=`<div class="row"><span>${S.fromReplay?"With the nose and wheel off":"With an ordinary pen"}:</span><b>${S.inkBase.toFixed(2)} mm</b></div>`;
+      if(S.key==="b" && S.inkBase!=null) h+=`<div class="row"><span>${S.fromReplay?"With the inner pen and wheel off":"With an ordinary pen"}:</span><b>${S.inkBase.toFixed(2)} mm</b></div>`;
       if(S.key==="f"){ const q=Math.hypot(S.nose[2*i], S.nose[2*i+1]); h+=`<div class="row"><span>Nose moving the tip now:</span><b>${q.toFixed(1)} mm</b></div>`; } }
     else if(S.key==="c"){ const k=loopIdx(i); h+=`<div class="row"><span>Loop height now:</span>${tagHTML("ILLUSTRATION")}</div><div class="kv">`+
         `<span class="ln" style="--c:var(--accent)"></span><span>with the heel wheel steering</span><b>${Math.round(100*S.loopK[k])} %</b>`+
@@ -2349,7 +2354,7 @@ function initScenes(lay, F, samples, replay){
     else if(S.key==="d"){ h+=`<div class="row"><span>Off the letter, on average:</span>${tagHTML("ILLUSTRATION")}</div><div class="kv">`+
         `<span class="ln dash" style="--c:var(--shake)"></span><span>your hand alone</span><b>${mm(rmsSoFar(S.ghost, i))}</b>`+
         `<span class="ln" style="--c:var(--g-drive)"></span><span>the pen, the wheel steering</span><b>${mm(rmsSoFar(S.hand, i))}</b>`+
-        `<span class="ln" style="--c:var(--accent)"></span><span>the ink, the nose correcting</span><b>${mm(rmsSoFar(S.ink, i))}</b></div>`; }
+        `<span class="ln" style="--c:var(--accent)"></span><span>the ink, the inner pen correcting</span><b>${mm(rmsSoFar(S.ink, i))}</b></div>`; }
     else if(S.key==="e"){ const F=Math.hypot(S.force[2*i], S.force[2*i+1]);
       h+=`<div class="row"><span>${S.bset?"Ink off the ‘d’ template (the writer keeps the ‘b’)":"Ink off the letter, on average"}:</span><b>${mm(rmsSoFar(S.ink, i))}</b>${tagHTML("ILLUSTRATION")}</div>`+
          `<div class="row"><span class="ln" style="--c:var(--good)"></span><span>Push of the wheel on the pen now (limit 0.5 N):</span><b>${(S.down[i]? F : 0).toFixed(2)} N</b></div>`; }
@@ -2369,15 +2374,15 @@ function initScenes(lay, F, samples, replay){
     dialTip.setAttribute("cx", c(tx).toFixed(1)); dialTip.setAttribute("cy", c(ty).toFixed(1)); dialTip.classList.toggle("off", S.key==="a");
   }
   const TEXT={
-    a:"The shake comes from the wrist and forearm, so the hand, the fingers and the whole pen move together. The nose is held still, so the tip follows the hand, and the ink wobbles around the letters you meant.",
-    b:"The hand shakes exactly as before. The motion sensor feels the shake and the coils tilt the nose the other way, inside the still sleeve. The ring on the paper moves with your hand; the tip inside it stays near the letters.",
+    a:"The shake comes from the wrist and forearm, so the hand, the fingers and the whole pen move together. The inner pen is held still, so the tip follows the hand, and the ink wobbles around the letters you meant.",
+    b:"The hand shakes exactly as before. The motion sensor feels the shake and the coils swing the inner pen the other way, inside the still sleeve. The ring on the paper moves with your hand; the tip inside it stays near the letters.",
     c:"For Parkinson's: your loops start to shrink along the line. The heel wheel turns to follow each loop, and it grips the paper across its path, so your hand stays on the big loops. It only steers: it cannot push the pen along, and you do the writing.",
-    d:"The template is shown faintly. The heel wheel steers along it and holds your hand from drifting sideways; the nose then moves the ink the last small distance. The ink ends up close to the template, but in the study the letters were not easier to read.",
-    e:"Lead-through is a mode you turn on. You relax your hand and keep the pen on the paper. The driven wheel pushes the pen along the letter, and the nose adds the detail. The push is gentle and capped; resist or lift the pen and it stops.",
-    f:"Autowrite is a mode you turn on, for a text you typed, dictated or copied in the app. You only sweep the pen along the line. The nose draws the letters inside its reach and lifts the ball between strokes. If you slow down, it waits."};
+    d:"The template is shown faintly. The heel wheel steers along it and holds your hand from drifting sideways; the inner pen then moves the ink the last small distance. The ink ends up close to the template, but in the study the letters were not easier to read.",
+    e:"Lead-through is a mode you turn on. You relax your hand and keep the pen on the paper. The driven wheel pushes the pen along the letter, and the inner pen adds the detail. The push is gentle and capped; resist or lift the pen and it stops.",
+    f:"Autowrite is a mode you turn on, for a text you typed, dictated or copied in the app. You only sweep the pen along the line. The inner pen draws the letters inside its reach and lifts the ball between strokes. If you slow down, it waits."};
   const DATA_TEXT={
     a:"This is the handwriting simulation (model HW1). The same simulated hand and shake is used for every pen. With an ordinary pen, the tip follows the hand and the ink wobbles around the letters.",
-    b:"Same hand, same shake. The nose moves against the shake inside the still sleeve. Choose the shake and the tracker. The gated tracker is Rev J's default: it listens harder only while a tremor line is present. The learned estimator runs in shadow mode for now."};
+    b:"Same hand, same shake. The inner pen moves against the shake inside the still sleeve. Choose the shake and the tracker. The gated tracker is Rev J's default: it listens harder only while a tremor line is present. The learned estimator runs in shadow mode for now."};
   const B_TEXT="The writer is set on a reversed ‘b’, and the template is a ‘d’. The wheel pushes toward the ‘d’, but only gently. The writer overpowers it, and the ink stays a ‘b’. In the study, no guidance ever turned the ‘b’ into a ‘d’.";
   function selectScene(key, keepTime){
     v.resize();
@@ -2407,7 +2412,7 @@ function initScenes(lay, F, samples, replay){
     $("scene-key").innerHTML=keyItems.join("");
     $("size-wrap").hidden = key!=="c";
     $("dial-aim").textContent = S.intendedIsHand? "+ the hand's place" : "+ where the ink should be";
-    $("dial-cap").textContent = S.intendedIsHand? `The dot is the ink tip, moved by the nose around the hand's place; dashed circle: its ${fmt(travel,1)} mm reach.` :
+    $("dial-cap").textContent = S.intendedIsHand? `The dot is the ink tip, moved by the inner pen around the hand's place; dashed circle: its ${fmt(travel,1)} mm reach.` :
       `The ring moves with your hand. The dot is the ink tip inside it. Dashed circle: the tip's ${fmt(travel,1)} mm reach.`;
     arrow.visible=false;
     if(paper.userData.spacing!==S.ruling) retexturePaper(paper, S.ruling);
@@ -2458,7 +2463,7 @@ function initScenes(lay, F, samples, replay){
     place3d("lab-push", close && arrow.visible, arrow.visible? ww.clone().add(P2W(S.force[2*i],S.force[2*i+1],0).normalize().multiplyScalar(2+14*Math.hypot(S.force[2*i],S.force[2*i+1]))) : null, 12, -16);
     $("scene-t").textContent=`${S.t[i].toFixed(1)} s`;
     if(S.cam==="line"){ const fx=followX(i); if(Sx.lastFollow!=null){ const d=fx-Sx.lastFollow; v.camera.position.x+=d; v.controls.target.x+=d; } Sx.lastFollow=fx; }
-    const now=performance.now(); if(force || now-last2d>33){ last2d=now; drawPaper(ppZ, i, S.ppScale, followX(i)); drawPaper(ppT, i, MM, followX(i)); drawDial(i); readout(i); }
+    const now=performance.now(); if(!Sx.sweeping && (force || now-last2d>33)){ last2d=now; drawPaper(ppZ, i, S.ppScale, followX(i)); drawPaper(ppT, i, MM, followX(i)); drawDial(i); readout(i); }
     v.dirty=true;
   }
   Sx.update=function(dt){ if(!S || !Sx.playing) return false; Sx.t+=dt*Sx.speed; if(Sx.t>S.T+1.2) Sx.t=0; frame(); return true; };
@@ -2467,7 +2472,9 @@ function initScenes(lay, F, samples, replay){
     inkTriangles:ribbons.reduce((a,r)=>a+(r.geometry.drawRange.count===Infinity? 0 : r.geometry.drawRange.count),0)/3,
     psiRange: psiLog.length? hi-lo : 0, noseMax: S? Math.max(...Array.from({length:S.t.length},(_,k)=>Math.hypot(S.nose[2*k],S.nose[2*k+1]))) : 0,
     refillZ: pen.refillG.position.z, arrow: arrow.visible, bset: !!(S&&S.bset), caseKey: S&&S.caseKey, trk:Sx.trk}; };
-  Sx.headingSweep=function(){ psiLog.length=0; const n=S.t.length; for(let k=0;k<n;k+=Math.max(1,Math.floor(n/200))) { Sx.t=k*S.dt; frame(true); } return Sx.stats().psiRange; };
+  Sx.headingSweep=function(){ const t0=Sx.t; psiLog.length=0; const n=S.t.length; Sx.sweeping=true;
+    try{ for(let k=0;k<n;k+=Math.max(1,Math.floor(n/200))) { Sx.t=k*S.dt; frame(true); } } finally { Sx.sweeping=false; }
+    const r=Sx.stats().psiRange; Sx.t=t0; frame(true); return r; };
   Sx.onResize=function(){ if(S){ prepPaper(); setCamera(); frame(true); } };
   Sx.onTheme=function(){ v.scene.background=new THREE.Color(css("--scene-bg")); retexturePaper(paper);
     for(const m of pen.parts){ const nm=partMaterial(m.userData.comp); m.material.color.copy(nm.color); nm.dispose(); }
@@ -2493,7 +2500,7 @@ function initScenes(lay, F, samples, replay){
 /* ================================================================================================ RESULTS */
 const COND_TITLE = {
   tremor:["Shaky writing (essential tremor)","One simulated writer; the same hand and shake for every pen."],
-  wholepen:["The whole Rev J pen (sim2)","MuJoCo simulation of the integrated pen: the nose, the heel wheel and the end-cap together."],
+  wholepen:["The whole Rev J pen (sim2)","MuJoCo simulation of the integrated pen: the inner pen, the heel wheel and the end-cap together."],
   autowrite:["Autowrite (a mode you turn on)","The hand only sweeps; the pen writes a text you chose."],
   heel:["Lead-through with the heel wheel (a mode you turn on)","The wheel pushes on the paper, so it can move a relaxed hand."]};
 function renderResults(samples){
@@ -2659,7 +2666,7 @@ function initCutaway(lay, F, samples){
   el("line", {class:"target", x1:0, x2:0, y1:0.6, y2:4.2}, target);
   const gRot=el("g", {transform:`rotate(${f2(-thDeg)}) translate(${f2(-zB)} 0)`}, gBody);
   /* the hand, behind everything, see-through */
-  const gHand=el("g", {opacity:0.42}, gRot);
+  const gHand=el("g", {opacity:0.3}, gRot);
   try{
     const sk=handSkeleton(lay);
     for(const L of sk.limbs){ const q=L.pts.map(p=>[p[2], -p[1]]);
@@ -2774,25 +2781,25 @@ function initCutaway(lay, F, samples){
   const LABELS={
     shake:[
       {n:1, c:"k", text:["Your hand and the handle shake"], tx:[-32, 98], arrow:{at:handAt, pt:worldX, k:0.6, min:2.5, max:12}},
-      {n:2, c:"n", text:["The inner pen swings", "the other way"], tx:[-32, 36], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.6, min:2.5, max:10}},
+      {n:2, c:"n", text:["The inner pen swings", "the other way"], tx:[-32, 52], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.6, min:2.5, max:10}},
       {n:3, c:"n", text:["The ball stays on the line"], tx:[-32, -10.6], anchor:st=>[st.ballX, 0.8]},
       {n:4, c:"p", text:["Pivot, "+fmt(P,1)+" mm behind the ball"], tx:[-32, 66], anchor:st=>pFixed(P, 0, st)},
       {n:5, c:"c", text:["Coils push the magnets"], tx:[-32, 82], anchor:st=>pFixed(90.5, 8, st), arrow:{at:st=>pInner(85, st), pt:st=>pInner(85, st), rel:true, k:2.6, min:2, max:5}},
       {n:6, c:"s", text:["The tail weight swings", "against the shake"], tx:[-32, 132], anchor:slugAt},
       {n:7, c:"k", text:["○ where an ordinary pen's tip would be"], tx:[34, -10.6], anchor:st=>[st.bx, 1.8], small:true}],
     write:[
-      {n:1, c:"k", text:["Your hand only sweeps", "along the line"], tx:[-32, 94], arrow:{at:handAt, pt:worldX, k:1.2, min:3, max:9, dirX:true}},
-      {n:2, c:"n", text:["The inner pen draws", "the letters"], tx:[-32, 36], anchor:st=>pInner(26, st)},
+      {n:1, c:"k", text:["Your hand only sweeps", "along the line"], tx:[-32, 86], arrow:{at:handAt, pt:st=>[st.follow||0, 0], k:1.2, min:3, max:9, dirX:true}},
+      {n:2, c:"n", text:["The inner pen draws", "the letters"], tx:[-32, 52], anchor:st=>pInner(26, st)},
       {n:3, c:"n", text:["The ball lifts 0.5 mm between strokes"], tx:[-32, -10.6], anchor:st=>[st.ballX, st.lift+0.8]}],
     heel:[
-      {n:1, c:"w", text:["The paper pushes the whole", "pen and your hand"], tx:[-32, 94], arrow:{at:handAt, pt:worldX, k:1.2, min:2.5, max:9, dirX:true}},
+      {n:1, c:"w", text:["The paper pushes the whole", "pen and your hand"], tx:[-32, 86], arrow:{at:handAt, pt:worldX, k:1.2, min:2.5, max:9, dirX:true}},
       {n:2, c:"w", text:["The 2 mm wheel grips the paper"], tx:[30, -10.6], anchor:st=>[st.bx+contactX, 2*wr]},
-      {n:3, c:"w", text:["Two tiny motors turn it", "through two thin shafts"], tx:[-32, 36], anchor:st=>pFixed(46, -10.7, st)}],
+      {n:3, c:"w", text:["Two tiny motors turn it", "through two thin shafts"], tx:[-32, 52], anchor:st=>pFixed(46, -10.7, st)}],
     tail:[
       {n:1, c:"k", text:["Your hand and the handle shake"], tx:[-32, 98], arrow:{at:handAt, pt:worldX, k:0.6, min:2.5, max:12}},
       {n:2, c:"s", text:["Coils push the tail weight", "the other way"], tx:[-32, 132], anchor:slugAt, arrow:{at:slugAt, pt:slugAt, rel:true, k:0.5, min:2, max:8}},
       {n:3, c:"k", text:["Its push-back steadies", "the whole pen a little"], tx:[-32, 116], arrow:{at:st=>pFixed(152, 18, st), pt:slugAt, rel:true, flip:true, k:0.5, min:2, max:8}},
-      {n:4, c:"n", text:["The inner pen still keeps", "the ball on the line"], tx:[-32, 36], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.6, min:2.5, max:10}}]
+      {n:4, c:"n", text:["The inner pen still keeps", "the ball on the line"], tx:[-32, 52], arrow:{at:st=>pInner(30, st), pt:st=>pInner(30, st), rel:true, k:0.6, min:2.5, max:10}}]
   };
   const EPS=0.02;
   function velOf(A){ const s1=stateAt(X.mode, X.t), s2=stateAt(X.mode, X.t+EPS), p1=A.pt(s1), p2=A.pt(s2);
@@ -2810,7 +2817,7 @@ function initCutaway(lay, F, samples){
       speed:"true size, half speed, from simulation data",
       tags:["SIMULATION (model HW1)", "ILLUSTRATION (the drawing)", "PROPOSED DESIGN"]},
     heel:{title:"Heel wheel",
-      text:"A 2 mm wheel under the front ring grips the paper. Two tiny motors in the handle turn it through two thin shafts: one steers it, one drives it. Steering keeps your hand on the path of the letter; in lead-through, a mode you turn on, it also pushes. The paper pushes back on the wheel, so the whole pen and your hand move.",
+      text:"A 2 mm wheel under the front ring grips the paper. Two tiny motors in the handle turn it through two thin shafts: one steers it, one drives it. The wheel turns to follow the path of the letter; if your hand drifts sideways, the paper pushes back on the wheel and holds the whole pen on the path. In lead-through, a mode you turn on, the wheel is also driven, and the paper pushes the whole pen and your hand along.",
       honest:"The push is gentle: at most about 0.3–0.6 N, about the weight of an egg, because it relies on the grip of the paper. Lift the pen and it stops.",
       speed:"drawing of big practice loops, half speed; wheel drawn 2× bigger in the view from above",
       tags:["ILLUSTRATION", "CALCULATION: 0.3–0.6 N", "ASSUMPTION: tyre friction 0.6–1.2", "PROPOSED DESIGN"]},
@@ -2836,26 +2843,32 @@ function initCutaway(lay, F, samples){
     for(const L of LABELS[X.mode]){
       const g=el("g", {"data-n":L.n}, gLabels), col=COLS[L.c], tx=L.tx;
       const lead=el("path", {class:"lead"}, g);
-      const t=el("text", {class:"ltxt"+(L.small?"":" b"), x:f2(tx[0]+5.2), y:f2(-tx[1]+1.35)}, g);
-      let first=null; L.text.forEach((s,i)=>{ const sp=el("tspan", {x:f2(tx[0]+5.2), dy:i? "4.6" : "0"}, t); sp.textContent=s; if(!i) first=sp; });
+      const t=el("text", {class:"ltxt"+(L.small?"":" b")+(tx[1]<0?" onpaper":""), x:f2(tx[0]+5.2), y:f2(-tx[1]+1.35)}, g);
+      const spans=L.text.map((s,i)=>{ const sp=el("tspan", {x:f2(tx[0]+5.2), dy:i? "4.6" : "0"}, t); sp.textContent=s; return sp; });
       const bd=el("g", {class:"badge", transform:`translate(${f2(tx[0]+2.2)} ${f2(-tx[1])})`}, g);
       el("circle", {r:2.3, style:`fill:${col}`}, bd); const bt=el("text", {"text-anchor":"middle", y:1.25}, bd); bt.textContent=String(L.n);
       const arr= L.arrow? el("path", {class:`arr ${L.c==="p"?"k":L.c}`, "marker-end":`url(#cah-${L.c==="p"?"k":L.c})`}, gArrows) : null;
-      labelEls.push({L, lead, arr, first, w:null});
+      labelEls.push({L, lead, arr, spans, w:null});
     }
     $("cut-key").innerHTML=LABELS[X.mode].map(L=>`<li><span class="bn" style="--c:${COLS[L.c]}">${L.n}</span><span>${esc(L.text.join(" "))}</span></li>`).join("");
   }
   function drawLabels(st){
-    for(const E of labelEls){ const L=E.L, by=L.tx[1];
-      if(E.w==null){ let w=0; try{ w=E.first.getComputedTextLength(); }catch(_){ w=0; } E.w=w||0; }
-      const bx= E.w>0.5? L.tx[0]+5.2+E.w+1.2 : L.tx[0]+4.8;
+    for(const E of labelEls){ const L=E.L;
+      if(E.w==null){ let w=0, k=0; try{ E.spans.forEach((sp,i)=>{ const l=sp.getComputedTextLength()||0; if(l>w){ w=l; k=i; } }); }catch(_){ w=0; } E.w=w; E.wl=k; }
       let end=L.anchor? L.anchor(st) : null;
       if(L.arrow){ const A=L.arrow, c=A.at(st), v=velOf(A), sp=Math.hypot(v[0], v[1]);
         const len=clamp(A.k*sp, A.min, A.max), ux= sp>1e-6? v[0]/sp : 1, uy= sp>1e-6? v[1]/sp : 0;
         E.arr.setAttribute("d", `M${f2(c[0]-ux*len/2)} ${f2(-(c[1]-uy*len/2))} L${f2(c[0]+ux*len/2)} ${f2(-(c[1]+uy*len/2))}`);
         E.arr.setAttribute("opacity", len<=A.min+0.05? "0.45" : "1");
         if(!end) end=c; }
-      if(end) E.lead.setAttribute("d", `M${f2(bx)} ${f2(-by)} L${f2(end[0])} ${f2(-end[1])}`);
+      if(end){ let sx, sy;
+        if(E.w>0.5){ /* leave the text without crossing it: from the end of the longest line when the target is to the
+                        right, else from the nearest point of the text block */
+          const x0=L.tx[0]-0.4, x1=L.tx[0]+5.2+E.w+0.9, yt=L.tx[1]+2.2, yb=L.tx[1]-4.6*(L.text.length-1)-3.4;
+          if(end[0]>=x1){ sx=x1; sy=L.tx[1]-4.6*(E.wl||0); }
+          else { sx=clamp(end[0], x0, x1); sy=clamp(end[1], yb, yt); if(end[1]>yb && end[1]<yt){ sx=x1; sy=L.tx[1]-4.6*(E.wl||0); } } }
+        else { sx=L.tx[0]+2.2; sy=L.tx[1]; }
+        E.lead.setAttribute("d", `M${f2(sx)} ${f2(-sy)} L${f2(end[0])} ${f2(-end[1])}`); }
     }
   }
   /* ---------- the view from above (autowrite ink; the heel wheel steering along the loops) ---------- */
@@ -2868,7 +2881,7 @@ function initCutaway(lay, F, samples){
       for(const y of [0, 8]) el("line", {class:"rl", x1:-10, x2:90, y1:-y, y2:-y}, g);
       el("path", {class:"handp", d:"M"+W.H.map(p=>`${f2(p[0])} ${f2(-p[1])}`).join("L")}, g);
       const ink=el("path", {class:"inkp"}, g), ball=el("circle", {class:"balld", r:0.55}, g);
-      insetParts={ink, ball}; inset.hidden=false; $("cut-inset-cap").textContent="Seen from above: the ink so far (simulation data), and the hand's path in grey";
+      insetParts={ink, ball}; inset.hidden=false; $("cut-inset-cap").textContent="From above: the ink so far; grey, the hand's path";
     } else if(X.mode==="heel"){
       const g=el("g", {}, isvg);
       for(const y of [0, 8, 16]) el("line", {class:"rl", x1:-20, x2:80, y1:-y, y2:-y}, g);
@@ -2876,7 +2889,7 @@ function initCutaway(lay, F, samples){
       const ink=el("path", {class:"inkp"}, g), ball=el("circle", {class:"balld", r:0.55}, g);
       const wg=el("g", {}, g); el("line", {class:"wheelax", x1:0, x2:0, y1:-1.6, y2:1.6}, wg); el("rect", {class:"wheelr", x:-2, y:-0.6, width:4, height:1.2, rx:0.4}, wg);
       const push=el("path", {class:"pushar"}, g), ph=el("path", {class:"pushah"}, g);
-      insetParts={ink, ball, wg, push, ph}; inset.hidden=false; $("cut-inset-cap").textContent="Seen from above: the wheel (drawn 2× bigger) steers along the loop";
+      insetParts={ink, ball, wg, push, ph}; inset.hidden=false; $("cut-inset-cap").textContent="From above: the wheel (drawn 2× bigger) steers along the loop";
     } else inset.hidden=true;
   }
   function drawInset(st){
@@ -2899,7 +2912,7 @@ function initCutaway(lay, F, samples){
       insetParts.push.setAttribute("d", `M${f2(x1)} ${f2(-y1)} L${f2(x2)} ${f2(-y2)}`);
       const hx=x2+ux*1.4, hy=y2+uy*1.4, px=-uy, py=ux;
       insetParts.ph.setAttribute("d", `M${f2(hx)} ${f2(-hy)} L${f2(x2+px*0.8)} ${f2(-(y2+py*0.8))} L${f2(x2-px*0.8)} ${f2(-(y2-py*0.8))} Z`);
-      isvg.setAttribute("viewBox", `${f2(fo-14)} -15 36 16`);
+      isvg.setAttribute("viewBox", `${f2(fo-11)} -15 36 16`);
     }
   }
   /* ---------- one frame ---------- */
@@ -2912,7 +2925,7 @@ function initCutaway(lay, F, samples){
     const rx=wr*Math.max(0.14, Math.abs(Math.cos(st.psi)));
     wheel.setAttribute("rx", f2(rx));
     ballMark.setAttribute("cx", f2(st.ballX)); ballMark.setAttribute("cy", f2(-(st.lift+0.35)));
-    ghost.setAttribute("visibility", (X.mode==="shake"||X.mode==="tail")? "visible" : "hidden");
+    ghost.setAttribute("visibility", X.mode==="shake"? "visible" : "hidden");
     target.setAttribute("visibility", (X.mode==="shake"||X.mode==="tail")? "visible" : "hidden");
     const sc=st.scroll||0; gTicks.setAttribute("transform", `translate(${f2(-(((sc%5)+5)%5))} 0)`);
     drawLabels(st); drawInset(st);
@@ -2931,7 +2944,9 @@ function initCutaway(lay, F, samples){
   $("cut-play").onclick=()=>setPlaying(!X.playing);
   $("cut-scrub").addEventListener("input", e=>{ setPlaying(false); X.t=MODES[X.mode].T*(+e.target.value)/1000; render(); });
   if("IntersectionObserver" in window) new IntersectionObserver(es=>{ for(const e of es) X.visible=e.isIntersecting; }, {rootMargin:"120px"}).observe($("cutwrap"));
-  window.addEventListener("resize", ()=>{ for(const E of labelEls) E.w=null; if(!X.playing) render(); });
+  function fitView(){ const w=$("cutwrap").clientWidth||600; svg.setAttribute("viewBox", w<520? "-36 -142 160 158" : "-34 -142 190 158"); }
+  fitView();
+  window.addEventListener("resize", ()=>{ fitView(); for(const E of labelEls) E.w=null; if(!X.playing) render(); });
   X.update=function(dt){ if(!X.playing || !X.visible) return false; const M=MODES[X.mode]; X.t+=dt*M.rate; if(X.t>M.T) X.t-=M.T*Math.floor(X.t/M.T); render(); return true; };
   X.setMode=setMode; X.setPlaying=setPlaying; X.render=render;
   X.seek=u=>{ X.t=MODES[X.mode].T*clamp(u,0,1); render(); };

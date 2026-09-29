@@ -5,6 +5,8 @@ the checker of spell.py); when a letter can be recognised while it is written co
 recogniser (task 1).  How a writer responds to each cue is an ASSUMPTION, anchored where literature exists:
   * students with learning disabilities corrected 9 % of their errors unaided and 37 % with a spelling checker; when
     the checker offered the right word they chose it 82 % of the time (MacArthur et al. 1996, LIT HAP-130)
+  * adults with dyslexia correcting sentences: 78 % right with no help, 90 % with the errors marked, 93 % with
+    suggestions (Rello et al. 2015, Spanish real-word errors, LIT HAP-133)
   * vibrotactile detection thresholds at the fingertip rise during FAST hand movement (50-60 cm/s) but not
     significantly during slow movement (10-20 cm/s; Yildiz et al. 2015, LIT HAP-131); handwriting moves the pen at
     about 3 cm/s (LIT CON-20), so a clear tick is assumed to be noticed most of the time
@@ -15,6 +17,7 @@ Cues (PROPOSED DESIGN):
   tick_before  an LRA tick BEFORE a letter the model thinks is likely to go wrong (a warning, no knowledge of the answer)
   withhold     the pen lifts the ball once the letter being written is recognised AND flagged (stricter threshold): the
                rest of the wrong letter is not drawn; the app shows the suggestion; the writer continues
+  tick_lift    the pen lift when the checker is very sure (theta_w) mid-word, an LRA tick for every other flag
   show_me      opt-in: after a flag, the nose draws the correct next letter lightly within its reach for the writer
                to trace (the pen writes a letter only in this mode)
   heel_steer   the heel wheel steers the start of the next letter toward the correct letter (it cannot move the pen)
@@ -28,11 +31,11 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-CUES = ("none", "app_after", "tick_after", "tick_before", "withhold", "show_me", "heel_steer")
+CUES = ("none", "app_after", "tick_after", "tick_before", "withhold", "tick_lift", "show_me", "heel_steer")
 LABELS = {"none": "No cue", "app_after": "App underlines afterwards (no physical cue)",
           "tick_after": "LRA tick on the suspect letter", "tick_before": "LRA tick before a risky letter",
-          "withhold": "Pen lift: the wrong letter is not drawn", "show_me": "Show me (opt-in): nose draws the next letter",
-          "heel_steer": "Heel wheel steers toward the right letter"}
+          "withhold": "Pen lift: the wrong letter is not drawn", "tick_lift": "Tick, plus pen lift when very sure",
+          "show_me": "Show me (opt-in): nose draws the next letter", "heel_steer": "Heel wheel steers toward the right letter"}
 
 
 @dataclass
@@ -42,7 +45,9 @@ class Response:
     p_notice_ink: float = 0.95        # missing ink is noticed (the writer is looking at the tip)
     p_look: float = 0.7               # after noticing, the writer looks at the app's suggestion
     p_pick: float = 0.82              # chooses the right word when it is among the suggestions (LIT HAP-130)
-    p_self: float = 0.2               # fixes the word from their own knowledge once told it is wrong (unaided 9 %, LIT HAP-130)
+    p_self: float = 0.35              # fixes the word once told WHERE it is wrong, without a suggestion (children with
+                                      # LD: 9 % unaided, LIT HAP-130; adults with dyslexia: about 54 % of the sentences
+                                      # they missed were fixed with detection only, LIT HAP-133)
     p_prevent: float = 0.25           # a warning before a risky letter makes the writer get that letter right
     p_follow_show: float = 0.85       # traces/copies the letter the nose draws
     p_follow_steer: float = 0.25      # lets the wheel's steer change which letter they start
@@ -54,9 +59,9 @@ class Response:
     t_cross: float = 0.8              # s to cross out a word or letter
 
 
-LOW = Response(p_notice_tick=0.75, p_look=0.5, p_pick=0.7, p_self=0.1, p_prevent=0.1, p_follow_show=0.7,
+LOW = Response(p_notice_tick=0.75, p_look=0.5, p_pick=0.7, p_self=0.15, p_prevent=0.1, p_follow_show=0.7,
                p_follow_steer=0.1, p_harm=0.2)
-HIGH = Response(p_notice_tick=0.97, p_look=0.9, p_pick=0.9, p_self=0.35, p_prevent=0.4, p_follow_show=0.95,
+HIGH = Response(p_notice_tick=0.97, p_look=0.9, p_pick=0.9, p_self=0.55, p_prevent=0.4, p_follow_show=0.95,
                 p_follow_steer=0.4, p_harm=0.05)
 
 
@@ -75,6 +80,15 @@ def warn_at(tok: Dict, theta_b: float) -> Optional[int]:
         if p >= theta_b and k + 2 <= len(tok["p_dev"]):
             return k + 2
     return None
+
+
+def sugg_at(tok: Dict, k: Optional[int]) -> List[str]:
+    """What the app shows when the word is flagged at letter k: the spelling-tolerant completions after k letters
+    (mid-word), or the ranked corrections of the finished word (at its end)."""
+    ct = tok.get("complete_top") or []
+    if k is not None and k <= len(tok["p_dev"]) and len(ct) >= k and ct[k - 1]:
+        return list(ct[k - 1])[:3]
+    return list(tok.get("suggestions") or [])[:3]
 
 
 def first_dev(target: str, written: str) -> int:
@@ -111,8 +125,8 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                 tgt = u["target"].lower()
                 is_err = u["kind"] == "error"
                 n_err += is_err; n_cor += (not is_err)
-                sugg_ok = bool(tok["suggestions"]) and tgt in tok["suggestions"][:3]
                 f = flag_at(tok, theta)
+                sugg_ok = tgt in sugg_at(tok, f)
                 if cue == "none":
                     continue
                 if cue == "app_after":
@@ -177,14 +191,33 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                         if looked and rng.random() < R.p_harm:
                             harmed += 1
                     continue
-                if cue == "withhold":
+                if cue in ("withhold", "tick_lift"):
                     fp = None
                     for k, p in enumerate(tok["p_dev"]):
                         if p >= theta_w:
                             fp = k + 1
                             break
+                    if fp is None and cue == "tick_lift" and f is not None:
+                        # not sure enough to lift: an LRA tick instead (as tick_after)
+                        if is_err:
+                            caught += 1; interventions_err += 1
+                        else:
+                            false_int += 1
+                        if rng.random() > R.p_notice_tick:
+                            continue
+                        extra_t += R.t_notice
+                        looked = rng.random() < R.p_look
+                        extra_t += R.t_look if looked else 0.0
+                        if is_err:
+                            if (looked and sugg_ok and rng.random() < R.p_pick) or (not looked and rng.random() < R.p_self):
+                                fixed_paper += 1; fixed_digital += 1
+                                extra_t += R.t_cross + min(f, L) * R.t_letter
+                        elif looked and rng.random() < R.p_harm:
+                            harmed += 1
+                        continue
                     if fp is None:
                         continue
+                    sugg_ok = tgt in sugg_at(tok, fp)
                     # the letter must be recognised before its end for the lift to save any of it
                     before_end = rng.random() < commit["p_before_end"]
                     if is_err:

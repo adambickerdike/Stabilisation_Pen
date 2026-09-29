@@ -26,7 +26,8 @@ from .rules import RULES, rules_sha256
 
 ensure_paths()
 
-THETAS = tuple(np.round(np.r_[np.arange(0.30, 0.90, 0.05), 0.9, 0.93, 0.95, 0.97, 0.98, 0.99, 0.995, 0.999], 4))
+THETAS = tuple(np.round(np.r_[np.arange(0.30, 0.90, 0.05), 0.9, 0.93, 0.95, 0.97, 0.98, 0.99, 0.995, 0.999, 0.9995,
+                               0.9999], 5))
 _PUNCT_END = re.compile(r"[.!?]$")
 
 
@@ -39,14 +40,34 @@ def child_split(name: str) -> str:
     return "tune" if C.stable_hash("ai3-holbrook:" + name) < 40 else "test"
 
 
-def build_checker(pred, pairs_train, alpha: float, min_count: int = 3, rec_sub=None):
+P_OOV_GRID = (0.01, 0.03, 0.1, 0.3)
+
+
+def build_checker(pred, pairs_train, alpha: float, min_count: int = 4, rec_sub=None):
+    """skip_capital: a word written with a capital inside a sentence is taken as a name and never flagged (decided on
+    the tuning children: 12 of 43 false alarms in a first look were names, and 7 of 123 errors were capitalised)."""
     ch = SP.Channel.from_pairs(pairs_train)
     W = pred.word
     words = [w for w, c in zip(W.vocab, W.unigram_count) if c >= min_count and w and all(q in SP.A2I for q in w)]
     trie = SP.Trie(words)
     lex_ids = np.array([W.index.get(w, -1) for w in trie.words])
-    ck = SP.Checker(trie, ch, W, pred.char, lex_ids, alpha=alpha, rec_sub=rec_sub)
+    ck = SP.Checker(trie, ch, W, pred.char, lex_ids, alpha=alpha, rec_sub=rec_sub, skip_capital=True)
     return ck, ch
+
+
+def reweight(records: List[List[Dict]], p_oov: float) -> List[List[Dict]]:
+    """Recompute every letter's P(deviation) and the word-end P(error) for another out-of-vocabulary prior, from the
+    stored masses (exact: the prior enters only the final normalisation).  Names (capitalised) stay unflagged."""
+    for recs in records:
+        for u in recs:
+            for t in u["tokens"]:
+                if t.get("capital") or "m" not in t:
+                    continue
+                t["p_dev"] = [d * (1 - p_oov) / max(d * (1 - p_oov) + n * (1 - p_oov) + p_oov * o, 1e-300)
+                              for d, n, o in t["m"]]
+                e, c, o = t["m_end"]
+                t["p_err_end"] = e * (1 - p_oov) / max(e * (1 - p_oov) + c * (1 - p_oov) + p_oov * o, 1e-300)
+    return records
 
 
 # ------------------------------------------------------------------ Holbrook as word streams
@@ -109,7 +130,8 @@ def run_units(ck: "SP.Checker", units: List[Dict], noise: Optional[Dict] = None,
             tok = {"written": wl, "seen": seen, "p_dev": [o["p_dev"] for o in traj],
                    "p_next": [o.get("p_next_dev", 0.0) for o in traj], "p_err_end": e["p_err"],
                    "in_lexicon": e["in_lexicon"], "suggestions": [s for s, _ in e["suggestions"]],
-                   "nonword_at": _nonword_at(ck.t, seen)}
+                   "nonword_at": _nonword_at(ck.t, seen), "complete_top": [o.get("complete_top", []) for o in traj],
+                   "m": [o["masses"] for o in traj], "m_end": e["masses"], "capital": bool(st.capital)}
             if pending is not None:
                 prec, pst = pending
                 prec["p_err_late"] = ck.end(pst, next_word=seen)["p_err"]
@@ -311,16 +333,34 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
     n_letters = sum(len(t["written"]) for recs in rec_tune for u in recs for t in u["tokens"])
     out["ms_per_letter"] = (time.time() - t0) * 1e3 / max(n_letters, 1)
     C.log(f"[spell] tuning children done ({time.time() - t0:.0f} s, {out['ms_per_letter']:.1f} ms/letter)")
+    # rule S2: the out-of-vocabulary prior and theta jointly (highest detection with <= 2 false alarms per 100)
+    s2 = {}
+    best = None
+    for po in P_OOV_GRID:
+        reweight(rec_tune, po)
+        th, tb = choose_theta(rec_tune, 2.0)
+        sc = score(rec_tune, th)
+        s2[f"{po:g}"] = {"theta": th, "detection_rate": sc["detection_rate"], "fa_per_100_correct": sc["fa_per_100_correct"],
+                         "table": tb}
+        if sc["fa_per_100_correct"] <= 2.0 and (best is None or sc["detection_rate"] > best[2]):
+            best = (po, th, sc["detection_rate"])
+    if best is None:                                  # no pair met the constraint: the one with the fewest false alarms
+        po = min(s2, key=lambda k: s2[k]["fa_per_100_correct"])
+        best = (float(po), s2[po]["theta"], s2[po]["detection_rate"])
+    p_oov = best[0]
+    reweight(rec_tune, p_oov)
     theta, tab = choose_theta(rec_tune, 2.0)
     theta_w, tab_w = choose_theta(rec_tune, 0.2, prefix_only=True)
-    out["S2"] = {"theta": theta, "table": tab}
+    ck.p_oov = p_oov
+    out["S2"] = {"p_oov": p_oov, "theta": theta, "table": tab, "grid": s2}
     out["S3"] = {"theta_w": theta_w, "table": tab_w}
     out["tune_score"] = score(rec_tune, theta)
-    C.log(f"[spell] rule S2 -> theta {theta}; S3 -> theta_w {theta_w}; tuning {out['tune_score']['detection_rate']:.3f} "
-          f"detected, {out['tune_score']['fa_per_100_correct']:.2f} FA/100")
+    C.log(f"[spell] rule S2 -> p_oov {p_oov}, theta {theta}; S3 -> theta_w {theta_w}; tuning "
+          f"{out['tune_score']['detection_rate']:.3f} detected, {out['tune_score']['fa_per_100_correct']:.2f} FA/100")
     # ---- test children (rules fixed above)
     t0 = time.time()
     rec_test = [run_units(ck, us) for us in units_test]
+    reweight(rec_test, p_oov)
     C.log(f"[spell] test children done ({time.time() - t0:.0f} s)")
     res = {"theta": theta, "theta_w": theta_w}
     res["score"] = score(rec_test, theta)
@@ -352,7 +392,7 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
     from aiguide import corpus as ACO
     spl = ACO.make_splits()
     units_bb, info_bb = pairs_in_text(sp["test"], list(spl.test), 400 if quick else 3000, seed=5)
-    rec_bb = run_units(ck, units_bb)
+    rec_bb = reweight([run_units(ck, units_bb)], p_oov)[0]
     out["birkbeck_in_text"] = {"info": info_bb, "score": score([rec_bb], theta),
                                "earliest_possible": earliest_possible([rec_bb])}
     C.log(f"[spell] Birkbeck-in-text: {out['birkbeck_in_text']['score']['detection_rate']:.3f} detected, "
@@ -367,12 +407,14 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
         for i in range(26, SP.NA):
             rs[i, i] = 0.0
         ck.rec_sub = rs
-        rec_n = [run_units(ck, us, noise={"conf": conf}, seed=17) for us in units_test]
+        # the first 500 units of each test child (compute bound; the same units for every recogniser)
+        rec_n = reweight([run_units(ck, us[:500], noise={"conf": conf}, seed=17) for us in units_test], p_oov)
         ck.rec_sub = None
         out["with_recognition"][name] = {"letter_error_rate": float(1 - np.mean(np.diag(conf))),
                                          "score": score(rec_n, theta), "records": _slim(rec_n)}
         C.log(f"[spell] with recognition '{name}': {out['with_recognition'][name]['score']['detection_rate']:.3f} detected, "
               f"{out['with_recognition'][name]['score']['fa_per_100_correct']:.2f} FA/100")
+    out["records_tune"] = _slim(rec_tune)
     out["records_test"] = _slim(rec_test)
     out["records_birkbeck"] = _slim([rec_bb])
     out["minutes"] = (time.time() - t_all) / 60
@@ -393,6 +435,7 @@ def _slim(records):
                                   "p_err_end": round(float(t["p_err_end"]), 4),
                                   "p_err_late": round(float(t.get("p_err_late", t["p_err_end"])), 4),
                                   "in_lexicon": t["in_lexicon"], "suggestions": t["suggestions"][:3],
-                                  "nonword_at": t["nonword_at"]} for t in u["tokens"]]})
+                                  "nonword_at": t["nonword_at"],
+                                  "complete_top": t.get("complete_top", [])[:4]} for t in u["tokens"]]})
         out.append(o)
     return out

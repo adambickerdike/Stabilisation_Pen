@@ -11,7 +11,9 @@ import json
 
 RULES = {
     # ---------------------------------------------------------------- task 1: online recogniser
-    "O1_variant": ("Three augmentation variants are trained for the same time budget on the 34 UJI training writers: "
+    "O1_variant": ("Three augmentation variants are trained for the same number of steps (5,470 batches of 48 letters; "
+                   "first written as 'the same time budget', changed before the choice because the shared machine "
+                   "stalled one variant) on the 34 UJI training writers: "
                    "'base' (affine + jitter), 'tremor' (+ tremor 4-12 Hz up to 0.4 x-height) and 'full' (+ sigma-"
                    "lognormal variation).  Choose the one with the highest mean top-1 accuracy on the UJI tuning writers "
                    "over the fractions 0.3-1.0 of the letter, averaged over clean letters and letters with 0.33 x-height "
@@ -21,15 +23,23 @@ RULES = {
     "O3_beta": ("Language-context weight beta in {0, 0.25, 0.5, 0.75, 1.0}: the one with the highest top-1 at half of the "
                 "letter on tuning writers' letters in Tatoeba validation sentences, provided top-1 at the full letter does "
                 "not fall by more than 0.5 points against beta = 0."),
+    "O4_calibration": ("Writer calibration (the app holds one sample of every letter from the calibration pangram; here "
+                       "the writer's other UJI repetition): fused posterior = GRU^a x exp(-DTW/tau), a in {0.3, 0.5, 0.7}, "
+                       "tau in {0.05, 0.1, 0.2} x-height; choose the pair with the highest mean top-1 over the fractions "
+                       "0.3-1.0 on the tuning writers."),
     # ---------------------------------------------------------------- task 2: spell checker
     "S1_channel": ("The spelling-error (channel) model is estimated from Birkbeck pairs whose target word falls in the "
                    "training bucket (sha256 bucket >= 20 of 100); pairs with target buckets < 10 are the tuning pairs, "
                    "10-19 the test pairs.  Holbrook passages: the 19 children are split by sha256 of the name into "
                    "tuning (bucket < 40) and test children."),
     "S2_detect": ("Word-level flag threshold theta (posterior probability that the word as written so far is not what "
-                  "the writer intends to spell): the lowest theta on a grid 0.30-0.99 whose false alarms on correctly "
-                  "spelled words of the tuning children stay <= 2 per 100 correct words; the error prior (share of "
-                  "misspelled words) is set to the tuning children's measured rate."),
+                  "the writer intends to spell) and the out-of-vocabulary prior p_oov in {0.01, 0.03, 0.1, 0.3}: for "
+                  "each p_oov the lowest theta on a grid 0.30-0.9999 whose false alarms on correctly spelled words of the "
+                  "tuning children stay <= 2 per 100 correct words; the pair with the highest detection rate wins.  The "
+                  "error prior (share of misspelled words) is set to the tuning children's measured rate.  A word "
+                  "written with a capital inside a sentence is taken as a name and never flagged (added before the "
+                  "test: in a first look at 4 tuning children, 12 of 43 false alarms were names and 7 of 123 errors "
+                  "were capitalised)."),
     "S3_withhold": ("Ink withholding (pen lift on the letter being written) uses a stricter threshold theta_w: the lowest "
                     "value whose false withholdings on correct words of the tuning children stay <= 0.2 per 100 correct "
                     "words, and it acts only on a letter the online recogniser has committed to (rule O2)."),
@@ -38,11 +48,15 @@ RULES = {
                   "ever changed by the pen outside an opt-in mode, and extra writing time <= 25 %.  Writer-response "
                   "parameters are ASSUMPTIONS and are varied in a sensitivity table; the choice must hold at the "
                   "low end of the ranges or it is reported as fragile."),
+    "S5_warn": ("Warning before a risky letter (tick_before, heel_steer): theta_b = the lowest value in {0.02, 0.03, "
+                "0.05, 0.08, 0.12} whose warnings on correctly spelled words of the tuning children stay <= 5 per 100 "
+                "correct words."),
     # ---------------------------------------------------------------- task 3: prediction
-    "P1_personal": ("Personalisation settings (cache weight lambda_c in {0, 0.05, 0.1, 0.2, 0.3}, cache decay half-life "
-                    "in words {200, 1000, 5000, inf}, user bigram weight in {0, 0.2, 0.4}) are chosen by the highest mean "
-                    "top-3 next-word-or-completion accuracy over the tuning journals' held-out halves, evaluated "
-                    "online (the model adapts as the user writes).  Latency <= 20 ms per suggestion is a hard constraint."),
+    "P1_personal": ("Personalisation settings (base model in {NG0, NG1x}; cache weight lc in {0, 0.05, 0.1, 0.2, 0.3}; "
+                    "cache half-life in words {500, 5000, inf}; user-bigram weight lb in {0, 0.2, 0.4}) are chosen by the "
+                    "highest mean top-3 accuracy (next word before its first letter, and completion after 1 and 2 letters, "
+                    "averaged) over the tuning journals, evaluated online on 1500 words after the first half of each "
+                    "journal (the model adapts as the user writes).  Latency <= 20 ms per suggestion is a hard constraint."),
     "P2_offer": ("A completion is offered physically (haptic tick, or ghost word) only when its calibrated probability is "
                  ">= p_offer, p_offer in {0.3, 0.4, 0.5, 0.6, 0.7}: the value with the most letters saved on tuning "
                  "journals with an acceptance cost of one gesture (ASSUMPTION: 0.6 s) and a checking cost of 0.25 s per "

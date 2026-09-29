@@ -344,3 +344,34 @@ def build(cfg: P.Config, collar: Optional[Collar] = None) -> B.PenModel:
     pm2 = recompile(pm, patch_collar(pm.xml, collar))
     pm2.info["collar"] = asdict(collar)
     return pm2
+
+
+def pen_props(pm) -> Dict:
+    """Mass, centre of mass (from the tip, along the axis) and transverse inertia about it of the whole moving pen
+    (the handle's subtree: nose, refill, rotors, tuned mass), from the compiled model at rest (CALC on the SIM model)."""
+    m, d = pm.m, mujoco.MjData(pm.m)
+    mujoco.mj_forward(m, d)
+    bh = pm.ids["body:handle"]
+
+    def in_sub(b):
+        while b > 0:
+            if b == bh:
+                return True
+            b = int(m.body_parentid[b])
+        return False
+    sub = [b for b in range(m.nbody) if in_sub(b)]
+    M = float(sum(m.body_mass[b] for b in sub))
+    tip = d.site_xpos[pm.ids["site:tip"]]
+    R = d.xmat[bh].reshape(3, 3)
+    a, t2 = R[:, 2], R[:, 1]
+    zs = [float((d.xipos[b] - tip) @ a) for b in sub]
+    zg = sum(m.body_mass[b] * z for b, z in zip(sub, zs)) / M
+    J = 0.0
+    Ja = 0.0
+    for b, z in zip(sub, zs):
+        Rb = d.ximat[b].reshape(3, 3)
+        I = Rb @ np.diag(m.body_inertia[b]) @ Rb.T
+        J += float(t2 @ I @ t2) + m.body_mass[b] * (z - zg) ** 2
+        Ja += float(a @ I @ a)
+    return {"m": M, "z_g": zg, "J_t": J, "J_a": max(Ja, 1e-7), "length": 0.145,
+            "label": "CALC from the compiled MuJoCo model (handle subtree at rest)"}

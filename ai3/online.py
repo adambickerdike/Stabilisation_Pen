@@ -241,8 +241,10 @@ def _batch(seqs: List[np.ndarray], labels: List[int]):
 
 
 def train(train_items: List[Dict], val_items: List[Dict], cfg: Dict, minutes: float, dt: float, seed: int = 0,
-          ckpt=None, log_every: float = 60.0):
-    """Time-boxed training (resumable from ckpt: state_dict + optimiser + rng + elapsed)."""
+          ckpt=None, log_every: float = 60.0, max_steps: Optional[int] = None):
+    """Training for max_steps batches (or, if None, a wall-clock time box), resumable from ckpt (state_dict +
+    optimiser + rng + steps).  A step budget keeps variants comparable on a shared, overloaded machine (a time box
+    gave one variant a third of the steps of another when the machine stalled)."""
     import torch
     torch.set_num_threads(1)
     torch.manual_seed(seed)
@@ -261,8 +263,14 @@ def train(train_items: List[Dict], val_items: List[Dict], cfg: Dict, minutes: fl
     last_ck = time.time()
     B = cfg.get("batch", 48)
     ls = cfg.get("label_smoothing", 0.05)
-    while time.time() - t_start < budget:
-        frac = (time.time() - t_start) / budget
+
+    def running():
+        if max_steps is not None:
+            return state["steps"] < max_steps and time.time() - t_start < 6 * 3600
+        return time.time() - t_start < budget
+
+    while running():
+        frac = (state["steps"] / max_steps) if max_steps else (time.time() - t_start) / budget
         for g in opt.param_groups:
             g["lr"] = cfg.get("lr", 3e-3) * (0.05 + 0.95 * 0.5 * (1 + math.cos(math.pi * min(frac, 1.0))))
         idx = rng.integers(0, len(train_items), size=B)
@@ -286,7 +294,7 @@ def train(train_items: List[Dict], val_items: List[Dict], cfg: Dict, minutes: fl
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
         state["steps"] += 1
-        if time.time() - last_log > log_every or time.time() - t_start >= budget:
+        if time.time() - last_log > log_every or not running():
             acc = evaluate_fracs(model, val_items, fracs=(0.5, 1.0))
             score = 0.5 * (acc["top1"][0] + acc["top1"][1])
             state["hist"].append({"minutes": (time.time() - t_start) / 60, "steps": state["steps"], "loss": float(loss.detach()),
@@ -393,3 +401,48 @@ def latency_ms(model, n_points: int = 400) -> Dict:
             torch.softmax(lo, -1)
         dt = (time.perf_counter() - t0) / n_points
     return {"ms_per_point": dt * 1e3, "points_per_letter_median": None}
+
+
+# ============================================================================================ writer calibration
+def _oe_dtw_dist_py(A, B):
+    n, m = A.shape[0], B.shape[0]
+    D = np.full((n + 1, m + 1), 1e30)
+    D[0, 0] = 0.0
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            c = math.sqrt((A[i - 1, 0] - B[j - 1, 0]) ** 2 + (A[i - 1, 1] - B[j - 1, 1]) ** 2)
+            D[i, j] = c + min(D[i - 1, j - 1], D[i - 1, j], D[i, j - 1])
+    best = 1e30
+    for j in range(1, m + 1):
+        v = D[n, j] / (n + j)
+        if v < best:
+            best = v
+    return best
+
+
+try:
+    from numba import njit as _njit
+    oe_dtw_dist = _njit(cache=True)(_oe_dtw_dist_py)
+except Exception:                                   # pragma: no cover
+    oe_dtw_dist = _oe_dtw_dist_py
+
+
+def calib_logscores(F: np.ndarray, templates: Dict[int, np.ndarray], tau: float) -> np.ndarray:
+    """Log-scores of the 26 classes from open-end DTW of the (partial) letter's encoded path (x, y columns) against
+    the writer's own calibration sample of each class (encoded the same way); classes without a sample get the worst
+    score."""
+    A = np.ascontiguousarray(F[:, :2].astype(np.float64))
+    d = np.full(len(LETTERS), np.nan)
+    for c, B in templates.items():
+        d[c] = oe_dtw_dist(A, np.ascontiguousarray(B[:, :2].astype(np.float64)))
+    worst = np.nanmax(d) if np.any(np.isfinite(d)) else 1.0
+    d = np.where(np.isfinite(d), d, worst)
+    s = -d / tau
+    return s - s.max()
+
+
+def fuse(p_gru: np.ndarray, cal_log: np.ndarray, a: float) -> np.ndarray:
+    lg = a * np.log(np.maximum(p_gru, 1e-9)) + (1 - a) * cal_log
+    lg -= lg.max()
+    q = np.exp(lg)
+    return q / q.sum()

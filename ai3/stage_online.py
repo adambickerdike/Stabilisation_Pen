@@ -62,19 +62,25 @@ def tremor_items(items: List[Dict], amp_xh: float, dt: float, seed: int) -> List
     return out
 
 
+STEPS = 5470                          # training batches per variant (48 letters each): the base variant's count
+                                      # under the first (time-boxed) run; every variant gets the same number
+
+
 def train_variant(name: str, train, val, dt: float, minutes: float, quick: bool):
     import torch
     tag = f"online_{name}{'_quick' if quick else ''}"
     pt, js, ck = model_dir() / f"{tag}.pt", model_dir() / f"{tag}.json", model_dir() / f"{tag}.ckpt"
+    steps = 250 if quick else STEPS
     if pt.exists() and js.exists():
         info = json.loads(js.read_text())
-        if abs(info.get("minutes_budget", -1) - minutes) < 1e-9:
+        if info.get("steps", 0) >= steps or (quick and abs(info.get("minutes_budget", -1) - minutes) < 1e-9):
             m = O.make_model(info["cfg"].get("hidden", 96), info["cfg"].get("layers", 2))
             m.load_state_dict(torch.load(pt)); m.eval()
             C.log(f"[online] {name}: reusing the trained model ({info['steps']} steps)")
             return m, info
-    m, info = O.train(train, val, VARIANTS[name], minutes, dt, seed=11, ckpt=ck)
+    m, info = O.train(train, val, VARIANTS[name], minutes, dt, seed=11, ckpt=ck, max_steps=steps)
     info["minutes_budget"] = minutes
+    info["step_budget"] = steps
     torch.save(m.state_dict(), pt)
     js.write_text(json.dumps(info, default=C.jdefault))
     return m, info
@@ -310,3 +316,79 @@ def load_model(quick: bool = False):
     m.load_state_dict(torch.load(model_dir() / f"online_chosen{'_quick' if quick else ''}.pt"))
     m.eval()
     return m, js
+
+
+# ------------------------------------------------------------------ writer calibration (rule O4)
+def _calib_sets(letters, xh, split):
+    """For every writer of the split: the encoded letters of each repetition, as calibration sets."""
+    sets: Dict[str, Dict[int, Dict[int, np.ndarray]]] = {}
+    for L in letters:
+        if O.split_of(L.writer) != split:
+            continue
+        F, _ = O.encode([np.asarray(s) / xh[L.writer] for s in L.strokes], 1.0)
+        sets.setdefault(L.writer, {}).setdefault(L.rep, {})[O.L2I[L.char]] = F
+    return sets
+
+
+def _eval_cal(model, items, sets, a, tau, fracs=O.FRACTIONS):
+    seqs = [O.encode(it["strokes"], 1.0) for it in items]
+    P = O.posteriors(model, [s[0] for s in seqs])
+    top1 = np.zeros(len(fracs)); n = 0
+    M = np.zeros((26, 26), int)
+    fused_final = []
+    for it, (F, fr), p in zip(items, seqs, P):
+        w, rep = it["writer"], int(it["key"].split("-")[-2])
+        cal = sets[w].get(3 - rep, {})
+        for i, f in enumerate(fracs):
+            k = int(np.searchsorted(fr, f + 1e-9, side="right")) - 1
+            k = max(k, 1)
+            q = O.fuse(p[k], O.calib_logscores(F[:k + 1], cal, tau), a)
+            top1[i] += int(np.argmax(q) == it["label"])
+        q = O.fuse(p[-1], O.calib_logscores(F, cal, tau), a)
+        fused_final.append(q)
+        M[it["label"], int(np.argmax(q))] += 1
+        n += 1
+    return {"fractions": list(fracs), "top1": (top1 / max(n, 1)).tolist(), "n": n}, M, fused_final
+
+
+def run_calibrated(quick: bool) -> Dict:
+    t0 = time.time()
+    model, js = load_model(quick)
+    letters, _ = D.load_uji()
+    xh = O.writer_xheights(letters)
+    dt = O.sample_dt(letters, xh)
+    tune = O.build_items(letters, xh, "tune")
+    test = O.build_items(letters, xh, "test")
+    if quick:
+        tune = tune[::3]; test = test[::8]
+    s_tune = _calib_sets(letters, xh, "tune")
+    s_test = _calib_sets(letters, xh, "test")
+    grid = [(a, tau) for a in (0.3, 0.5, 0.7) for tau in (0.05, 0.1, 0.2)]
+    tab = {}
+    for a, tau in grid:
+        r, _, _ = _eval_cal(model, tune, s_tune, a, tau)
+        k = [i for i, f in enumerate(r["fractions"]) if f >= 0.3 - 1e-9]
+        tab[f"{a:g},{tau:g}"] = {"top1": r["top1"], "score": float(np.mean([r["top1"][i] for i in k]))}
+    best = max(tab, key=lambda k: tab[k]["score"])
+    a, tau = (float(x) for x in best.split(","))
+    C.log(f"[online] rule O4 -> a {a}, tau {tau} (score {tab[best]['score']:.3f})")
+    res_clean, M, fused = _eval_cal(model, test, s_test, a, tau)
+    res_trem, _, _ = _eval_cal(model, tremor_items(test, 0.33, dt, seed=401), s_test, a, tau)
+    # commit statistics with the fused posterior (full evaluation at every point is costly: every 3rd point)
+    fr_list, P_list, y = [], [], []
+    seqs = [O.encode(it["strokes"], 1.0) for it in test]
+    Pg = O.posteriors(model, [s[0] for s in seqs])
+    for it, (F, fr), p in zip(test, seqs, Pg):
+        w, rep = it["writer"], int(it["key"].split("-")[-2])
+        cal = s_test[w].get(3 - rep, {})
+        idx = list(range(1, len(F), 3)) + [len(F) - 1]
+        Q = np.stack([O.fuse(p[k], O.calib_logscores(F[:k + 1], cal, tau), a) for k in idx])
+        P_list.append(Q); fr_list.append(fr[idx]); y.append(it["label"])
+    commit = O.commit_stats(P_list, fr_list, y, js["tau"])
+    out = {"O4": {"table": tab, "a": a, "tau": tau}, "test": {"clean": res_clean, "tremor_0.33xh": res_trem,
+                                                            "commit": commit, "confusion_full_letter": M.tolist()},
+           "minutes": (time.time() - t0) / 60}
+    C.save("online_cal", out, quick)
+    C.log(f"[online] calibrated test: full letter {res_clean['top1'][-1]:.3f}, half {res_clean['top1'][4]:.3f}, "
+          f"commit {commit}")
+    return out

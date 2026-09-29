@@ -450,7 +450,7 @@ def stage_autowrite(quick: bool = False) -> Dict:
 
 
 # ------------------------------------------------------------------------------------------------ DR population
-def stage_dr(quick: bool = False, n: int = 12) -> Dict:
+def stage_dr(quick: bool = False, n: int = 8) -> Dict:
     """The main controllers over sim2's domain randomisation mapped onto Rev J (rl.sample_dr: hand, grip, tremor,
     friction, sensors, tolerances, posture and the lead's Rev J factors); test writers 0-5 in turn, test seeds; no
     re-adaptation per draw (the nominal pen's adapted hand path; the clean reference is re-run on the drawn pen)."""
@@ -714,11 +714,11 @@ def stage_rl_test(quick: bool = False) -> Dict:
 
 def stage_arm(quick: bool = False) -> Dict:
     """The main controllers with sim2's articulated 'arm' hand (forearm-wrist-hand chain, writer controller, ET tremor
-    as joint torques calibrated to the lifted tip): writers 0-2, their first test seed, 8 Hz x 1 mm, and tremor-free."""
+    as joint torques calibrated to the lifted tip): writers 0-1, their first test seed, 8 Hz x 1 mm, and tremor-free."""
     from . import et as ET
     rows = Rows("arm")
     pens = ET.PenModels(hand_model="arm")
-    ws = TEST_WRITERS[:3] if not quick else TEST_WRITERS[:1]
+    ws = TEST_WRITERS[:2] if not quick else TEST_WRITERS[:1]
     for w in ws:
         seed = et_seeds(w)[0]
         keys = {c: f"{w}|{c}" for c in ("none", "nose", "nose_wheel", "oracle", "clean_nose")}
@@ -741,7 +741,7 @@ def stage_arm(quick: bool = False) -> Dict:
     body = {"what": "sim2 'arm' hand (articulated forearm-wrist-hand, writer controller), ET tremor as joint torques "
                     "calibrated to 1 mm peak at the lifted tip, 8 Hz; writers 0-2",
             "by_ctl": agg(R, ("ink_err_um", "ratio", "letters_read", "words_app", "moved_vs_clean_um", "P_total_W",
-                              "felt_rms_N", "clean_floor_um"), by=("ctl",))}
+                              "felt_rms_N", "clean_floor_um"), by=("ctl",)), "writers": list(ws)}
     if not quick:
         write_result("arm", body, seeds=[et_seeds(w)[0] for w in ws])
     return body

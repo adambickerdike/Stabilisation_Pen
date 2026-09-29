@@ -209,10 +209,36 @@ def tremor_params(x: np.ndarray, fs: float, band=(3.0, 12.0), floor_band=(2.0, 2
     return out
 
 
+def power_amplitude(x: np.ndarray, fs: float, f0: float, half_width: float = 2.0) -> float:
+    """sqrt(2) x RMS of the principal (major) axis of the motion band-limited to f0 +- 2 Hz: the amplitude of a
+    steady sinusoid with the same power (for a steady tremor it equals TremorSpec.amp_pk; for intermittent tremor it
+    is the power-average amplitude, the same basis as 'amp_excess').  ZERO-PHASE: statistics and inputs only."""
+    X = np.asarray(x, float)
+    X = X[:, None] if X.ndim == 1 else X
+    nb = bandpass(X - X.mean(0), fs, max(1.0, f0 - half_width), f0 + half_width)
+    if X.shape[1] > 1:
+        _, _, Y = principal_axes(nb)
+        m = Y[:, 0]
+    else:
+        m = nb[:, 0]
+    return float(math.sqrt(2.0) * np.sqrt(np.mean(m ** 2)))
+
+
 def spectrum_on_grid(x: np.ndarray, fs: float, grid: np.ndarray) -> np.ndarray:
     """Welch PSD (summed over axes) interpolated onto a common frequency grid (for averaged spectra)."""
     f, P = psd(x, fs)
     return np.interp(grid, f, P)
+
+
+def tremor_bands(f0: float, half: float = 2.0) -> List[Tuple[float, float]]:
+    """The bands kept in a tremor-only waveform: the fundamental f0 +- 2 Hz and the second harmonic 2 f0 +- 2 Hz (one
+    band from f0 - 2 to 2 f0 + 2 Hz when they overlap); nothing of the slow drawing or writing below them and no
+    broadband content between them (ASSUMPTION, fixed before the test split was used)."""
+    lo1, hi1 = max(1.5, f0 - half), f0 + half
+    lo2, hi2 = 2 * f0 - half, min(2 * f0 + half, 45.0)
+    if lo2 <= hi1:
+        return [(lo1, hi2)]
+    return [(lo1, hi1), (lo2, hi2)]
 
 
 def tremor_band_for(f0: float) -> Tuple[float, float]:

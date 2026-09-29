@@ -313,7 +313,7 @@ largest terms below.
     component F_c·cot θ: 0.126 N at 50° (CALC).
   - The C1S gimbal is soft (0.0028 N·m/rad), so the coils must hold the resulting 9.6 mN·m. With Km 0.656 N/√W on the
     11.5 mm magnet arm that is 0.81 A and 1.62 W while the ball is on the paper (CALC); about 1.1 W over a run with
-    70 % pen-down time. It scales with F_c² (0.41 W at 0.075 N) and with cot²θ (3.9 W at 35°, 0.3 W at 75°).
+    70 % pen-down time. It scales with F_c² (0.41 W at 0.075 N) and with cot²θ (4.7 W at 35°, 0.17 W at 75°; CALC, as the table below).
   - The servo holds this load by feedback whether or not sim2's feed-forward bias is on (the same 2.25 W either way).
   - Rev H's 34 mm magnet arm needed about 0.13 W for the same load (CALC). This is a consequence of the C1S nose's short
     arm, not of the simulator.

@@ -532,7 +532,8 @@ def unipen_segments(categories: Sequence[str] = ("8",), level: str = "TEXT", max
                                  char=-np.ones(len(down), int), stroke=np.concatenate(st), fs=f["pps"],
                                  units="m (documented resolution)",
                                  meta={"device": f["device"], "pen": f["pen"], "category": cat,
-                                       "contributor": rel.split("/")[0], "timing": "sample index / points per second "
+                                       "res_x_per_mm": f["res_x_per_mm"], "pps": f["pps"],
+                                       "contributor": rel.split("/")[1] if "/" in rel else rel, "timing": "sample index / points per second "
                                        "(pen-up time between blocks is not recorded where no PEN_UP points exist)"})
                 k += 1
                 if max_files and k >= max_files:

@@ -14,12 +14,15 @@ Rules, fixed before any simulation used the library (the simulation outcomes nev
     of the control recordings of the same source (and condition, for PADS); Zenodo ET has no controls and uses the
     UCI control threshold (both are unit-free spectral contrasts; ASSUMPTION);
   * tip amplitude of a UCI recording = the background-corrected major-axis peak amplitude ('amp_excess');
-  * a subject's tip amplitude = the median over its recordings with a line; severity classes = tertiles of the
-    detected PD subjects' tip amplitudes (mild / moderate / severe), 'none' below detection;
+  * a subject's tip amplitude = the median over its recordings with a line; severity classes over the detected PD
+    subjects' tip amplitudes: mild = below their median, moderate = median to 90th percentile, severe = the top 10 %
+    ('severe' means rare and large); 'none' = no line;
   * split: subjects of each source are sorted by amplitude and assigned alternately (seeded coin per pair) to
     'tuning' and 'test', so both splits span the severities; controls likewise;
   * a recording's waveform enters the generator when it has a line, its background share in f0 +- 1.5 Hz is at most
-    0.35 and it lasts at least 6 s (UCI) or 20 s (Zenodo, posture condition only: the action-tremor proxy).
+    0.35, it lasts at least 6 s (UCI) or 20 s (Zenodo, posture condition only: the action-tremor proxy), and its
+    unit-power waveform (f0 +- 2 Hz and 2 f0 +- 2 Hz; dsp.power_amplitude) has a major-axis 99.9th percentile <= 4
+    (a tremor line, not splices, clipping or pen-landing transients).
 Waveforms are extracted with ZERO-PHASE filters (dsp.bandpass, dsp.acc_to_disp): simulation inputs only.
 """
 from __future__ import annotations
@@ -98,20 +101,82 @@ def _split_subjects(amp_by_subject: Dict[str, float], seed: int) -> Dict[str, st
 
 
 def _waveform(r: L.TremorRec, row: Dict) -> np.ndarray:
-    """Tremor-only waveform at WAVE_FS, normalised to unit major-axis median envelope (ZERO-PHASE extraction)."""
-    lo, hi = D.tremor_band_for(row["f0"])
-    if r.quantity == "displacement":
-        w = D.bandpass(r.x, r.fs, lo, hi)
-    else:
-        w = D.acc_to_disp(r.x, r.fs, lo, hi)
-        w = w[:, None] if w.ndim == 1 else w
+    """Tremor-only waveform at WAVE_FS: the recording band-passed to f0 +- 2 Hz and 2 f0 +- 2 Hz (dsp.tremor_bands;
+    acceleration converted to displacement band by band), normalised to unit power amplitude (dsp.power_amplitude:
+    sqrt(2) x RMS of the major axis at f0 +- 2 Hz).  ZERO-PHASE extraction: simulation inputs only."""
+    parts = []
+    for lo, hi in D.tremor_bands(row["f0"]):
+        if r.quantity == "displacement":
+            parts.append(D.bandpass(r.x, r.fs, lo, hi))
+        else:
+            a = D.acc_to_disp(r.x, r.fs, lo, hi)
+            parts.append(a[:, None] if a.ndim == 1 else a)
+    w = np.sum(parts, axis=0)
     trim = int(0.5 * r.fs)
     w = w[trim:len(w) - trim]
     if r.fs != WAVE_FS:
         t = np.arange(len(w)) / r.fs
         _, w = D.uniform(t, w, WAVE_FS)
-    pp = D.tremor_params(w, WAVE_FS)
-    return (w / max(pp["amp_median"], 1e-30)).astype(np.float32)
+    return (w / max(D.power_amplitude(w, WAVE_FS, row["f0"]), 1e-30)).astype(np.float32)
+
+
+def waveform_quality(w: np.ndarray, f0: float) -> Dict:
+    """Checks of a unit-power-amplitude waveform: the 99.9th percentile of the major axis (a steady sinusoid gives
+    1.0; real amplitude modulation 1.5-3; splices, clipping and pen-landing transients give much more) and the
+    intermittency (median Hilbert envelope / power amplitude: 1 for steady tremor, small when it comes and goes)."""
+    X = np.asarray(w, float)
+    if X.shape[1] > 1:
+        _, _, Y = D.principal_axes(X - X.mean(0))
+        m = Y[:, 0]
+    else:
+        m = X[:, 0]
+    es = D.envelope_stats(D.bandpass(m, WAVE_FS, max(1.0, f0 - 2.0), f0 + 2.0), WAVE_FS)
+    return {"major_p999": float(np.percentile(np.abs(m), 99.9)), "intermittency": es["amp_median"],
+            "env_cv": es["env_cv"]}
+
+
+P999_MAX = 4.0
+
+
+def refresh_generator(quick: bool = False, log=print) -> Dict:
+    """Recompute only the generator waveforms and their eligibility on the cached library (the UCI and Zenodo
+    recordings are re-read; parameters, thresholds, classes and splits are unchanged)."""
+    tag = "_quick" if quick else ""
+    lib = json.loads((CACHE_DIR / f"tremorlib{tag}.json").read_text())
+    rows = {x["rid"]: x for x in lib["rows"]}
+    waves = {}
+    recs = L.uci_spiral_records() + L.zenodo_et_records()
+    for r in recs:
+        x = rows.get(r.rid)
+        if x is None:
+            continue
+        src = r.source
+        ok = (x["detected"] and x["background_share"] <= BG_MAX and x["duration_s"] >= MIN_S[src]
+              and (src != "zenodo_et" or x["condition"] == "postural") and x["group"] in ("PD", "ET"))
+        x.pop("waveform_quality", None)
+        if ok:
+            w = _waveform(r, x)
+            q = waveform_quality(w, x["f0"])
+            x["waveform_quality"] = q
+            ok = q["major_p999"] <= P999_MAX
+            if ok:
+                waves[r.rid] = w
+        x["generator"] = bool(ok)
+    e2 = [x for x in lib["rows"] if x["source"] == "uci_spiral" and x.get("generator")]
+    if e2:
+        lib["shape_2d"] = {"ellipticity_median": float(np.median([x["ellipticity"] for x in e2])),
+                           "ellipticity_iqr": [float(np.percentile([x["ellipticity"] for x in e2], 25)),
+                                               float(np.percentile([x["ellipticity"] for x in e2], 75))],
+                           "n": len(e2), "label": "DATA uci_spiral (PD, tip, 2-D), recordings in the generator"}
+    lib["generator_rule"] = (f"line detected, background share <= {BG_MAX}, duration >= {MIN_S}, Zenodo posture only, "
+                             f"unit-power waveform 99.9th percentile <= {P999_MAX}")
+    (CACHE_DIR / f"tremorlib{tag}.json").write_text(json.dumps(lib, default=_jd))
+    np.savez_compressed(CACHE_DIR / f"tremor_waveforms{tag}.npz", **{k.replace("/", "|"): v for k, v in waves.items()})
+    _LIB.pop(tag, None)
+    _WAV.pop(tag, None)
+    n = {s: sum(1 for x in lib["rows"] if x.get("generator") and x["source"] == s) for s in ("uci_spiral", "zenodo_et")}
+    log(f"[tremorlib] generator waveforms: {n}")
+    return lib
 
 
 def build(quick: bool = False, log=print, sources: Sequence[str] = ("uci_spiral", "zenodo_et", "newhandpd", "pads")) -> Dict:
@@ -172,28 +237,33 @@ def build(quick: bool = False, log=print, sources: Sequence[str] = ("uci_spiral"
     classes = {}
     if sub_amp:
         a = np.array(sorted(sub_amp.values()))
-        q1, q2 = np.percentile(a, [100 / 3, 200 / 3])
+        q50, q90 = np.percentile(a, [50, 90])
         ctl_amp = [x["amp_excess"] * 1e3 for x in rows if x["source"] == "uci_spiral" and x["group"] == "control"]
         classes = {
             "none": {"range_mm": [0.0, float(a.min())], "representative_mm": float(np.median(ctl_amp)) if ctl_amp else 0.03,
                      "definition": "no tremor line above the controls' 95th percentile; representative = median "
                                    "background-corrected amplitude of the control recordings (sensor and pixel noise "
                                    "included)"},
-            "mild": {"range_mm": [float(a.min()), float(q1)], "n_subjects": int(np.sum(a < q1))},
-            "moderate": {"range_mm": [float(q1), float(q2)], "n_subjects": int(np.sum((a >= q1) & (a < q2)))},
-            "severe": {"range_mm": [float(q2), float(a.max())], "n_subjects": int(np.sum(a >= q2))},
+            "mild": {"range_mm": [float(a.min()), float(q50)], "n_subjects": int(np.sum(a < q50)),
+                     "definition": "below the median of the PD subjects with a tremor line"},
+            "moderate": {"range_mm": [float(q50), float(q90)], "n_subjects": int(np.sum((a >= q50) & (a < q90))),
+                         "definition": "median to 90th percentile"},
+            "severe": {"range_mm": [float(q90), float(a.max())], "n_subjects": int(np.sum(a >= q90)),
+                       "definition": "the top 10 %"},
         }
         for k in ("mild", "moderate", "severe"):
             lo_, hi_ = classes[k]["range_mm"]
             sel = a[(a >= lo_) & (a <= hi_)]
             classes[k]["representative_mm"] = float(np.median(sel)) if len(sel) else float(np.sqrt(lo_ * hi_))
-            classes[k]["definition"] = ("tertile of the peak (major semi-axis) tremor amplitude at the pen tip of PD "
-                                        "subjects with a tremor line while drawing spirals on a tablet (DATA uci_spiral; "
-                                        "subject = median over its recordings)")
+            classes[k]["definition"] += (" of the peak (major semi-axis) tremor amplitude at the pen tip of PD subjects "
+                                         "with a tremor line while drawing spirals on a tablet (DATA uci_spiral; one "
+                                         "value per subject = median over its recordings with a line)")
         classes["_n_pd_subjects_with_line"] = int(len(a))
         classes["_n_pd_subjects"] = int(len({x["subject"] for x in rows if x["source"] == "uci_spiral" and x["group"] == "PD"}))
-        classes["_quantiles_mm"] = {"p10": float(np.percentile(a, 10)), "p50": float(np.percentile(a, 50)),
-                                    "p90": float(np.percentile(a, 90)), "max": float(a.max())}
+        classes["_quantiles_mm"] = {"p10": float(np.percentile(a, 10)), "p25": float(np.percentile(a, 25)),
+                                    "p50": float(q50), "p75": float(np.percentile(a, 75)), "p90": float(q90),
+                                    "max": float(a.max())}
+        classes["_subject_amplitudes_mm"] = sorted(float(v) for v in a)
         classes["_plan_assumption_mm"] = PLAN_CLASSES_MM
     # ---------------------------------------------------------------- splits (subject level, per source)
     split: Dict[Tuple[str, str], str] = {}
@@ -222,9 +292,14 @@ def build(quick: bool = False, log=print, sources: Sequence[str] = ("uci_spiral"
             x = next(z for z in rows if z["rid"] == r.rid)
             ok = (x["detected"] and x["background_share"] <= BG_MAX and x["duration_s"] >= MIN_S[src]
                   and (src != "zenodo_et" or x["condition"] == "postural") and x["group"] in ("PD", "ET"))
-            x["generator"] = bool(ok)
             if ok:
-                waves[r.rid] = _waveform(r, x)
+                w = _waveform(r, x)
+                q = waveform_quality(w, x["f0"])
+                x["waveform_quality"] = q
+                ok = q["major_p999"] <= P999_MAX
+                if ok:
+                    waves[r.rid] = w
+            x["generator"] = bool(ok)
     # ellipticity and orientation of real 2-D tip tremor (for the ET construction)
     e2 = [x for x in rows if x["source"] == "uci_spiral" and x.get("generator")]
     shape = {"ellipticity_median": float(np.median([x["ellipticity"] for x in e2])) if e2 else 0.4,

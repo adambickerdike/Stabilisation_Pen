@@ -301,6 +301,18 @@ class RuleIndex:
                 self.by_beta[be] = out
 
 
+def bigram_prob(W, prev: Optional[str], w: str) -> float:
+    """P(w | prev) from aiguide's WordKN without building the whole distribution (O(successors of prev))."""
+    wi = W.index.get(w)
+    if wi is None or wi < 0:
+        return 0.0
+    u = W.index.get(prev if prev is not None else "<s>", None)
+    if u is None or u not in W.big:
+        return float(W.p_uni[wi])
+    ids, disc = W.big[u]
+    return float(W.big_gam[u] * W.p_uni[wi] + disc[ids == wi].sum())
+
+
 # ============================================================================================ the checker
 @dataclass
 class WordState:
@@ -317,7 +329,9 @@ class WordState:
 
 class Checker:
     def __init__(self, trie: Trie, channel: Channel, word_lm, char_lm, lex_ids: np.ndarray, alpha: float = 0.12,
-                 p_oov: float = 0.03, p_oov_name: float = 0.5, rec_sub: Optional[np.ndarray] = None):
+                 p_oov: float = 0.03, p_oov_name: float = 0.5, rec_sub: Optional[np.ndarray] = None,
+                 skip_capital: bool = False):
+        self.skip_capital = skip_capital  # never flag a capitalised word inside a sentence (a name)
         self.t = trie
         self.ch = channel
         self.rules = RuleIndex(trie, channel)
@@ -431,13 +445,25 @@ class Checker:
             dev_terms[lo:hi] = 0.0
         dev = float(dev_terms.sum())
         poov = self.p_oov_name if st.capital else self.p_oov
-        oov = poov * (1 - a) * math.exp(st.logp_char)
+        oov_raw = (1 - a) * math.exp(st.logp_char)
+        # masses without the out-of-vocabulary prior, so the prior can be re-weighted afterwards (rule S2)
+        masses = (dev, nodev, oov_raw)
+        oov = poov * oov_raw
         # lexicon mass is (1 - poov) of the prior
         dev *= (1 - poov); nodev *= (1 - poov)
         tot = dev + nodev + oov
-        out = {"k": k, "p_dev": dev / max(tot, 1e-300), "in_lexicon_prefix": hi > lo}
+        out = {"k": k, "p_dev": dev / max(tot, 1e-300), "in_lexicon_prefix": hi > lo, "masses": masses}
+        if st.capital and self.skip_capital:
+            out["p_dev"] = 0.0                       # a capitalised word inside a sentence is taken as a name
         top = np.argsort(-dev_terms)[:3]
         out["intended_top"] = [(t.words[i], float(dev_terms[i] / max(tot, 1e-300))) for i in top if dev_terms[i] > 0]
+        # spelling-tolerant completion: the most likely intended words, whether or not the letters so far are right
+        allw = dev_terms.copy()
+        if hi > lo:
+            allw[lo:hi] = P[lo:hi] * ((1 - a) + a * math.exp(-Mp))
+        top = np.argpartition(-allw, 3)[:3] if len(allw) > 3 else np.arange(len(allw))
+        top = top[np.argsort(-allw[top])]
+        out["complete_top"] = [t.words[i] for i in top if allw[i] > 0]
         if want_next:
             out["p_next_dev"] = self.next_letter_risk(st, lo, hi, nodev, tot)
         st.history.append(out)
@@ -476,16 +502,20 @@ class Checker:
         F = Dk[t.term]
         P = st.p_lex.copy()
         a = self.alpha
+        p_next_oov = 1.0
         if next_word is not None:
-            # right context (one word later): P(next | w)
+            # right context (one word later): P(next | w) for the 20 best candidates and the written word itself
             nxt = clean_word(next_word)
-            ids = np.argsort(-(P * np.exp(-F)))[:60]
-            f = np.array([self.wlm.prob(nxt, t.words[i]) for i in ids])
+            sc = P * np.exp(-F)
+            ids = np.argpartition(-sc, 20)[:20] if len(sc) > 20 else np.arange(len(sc))
+            f = np.array([bigram_prob(self.wlm, t.words[i], nxt) for i in ids])
             scale = np.zeros_like(P); scale[ids] = f
             wi = t.index.get(s)
             if wi is not None:
-                scale[wi] = self.wlm.prob(nxt, s)
+                scale[wi] = bigram_prob(self.wlm, s, nxt)
             P = P * scale
+            ni = self.wlm.index.get(nxt)
+            p_next_oov = float(self.wlm.p_uni[ni]) if ni is not None and ni >= 0 else 1e-5   # P(next | a name)
         err_terms = P * np.exp(-F) * a
         wi = t.index.get(s)
         Ms = float(sum(self.ch.match_cost[A2I[q]] for q in s))
@@ -494,12 +524,16 @@ class Checker:
             cor = P[wi] * ((1 - a) + a * math.exp(-Ms))
             err_terms[wi] = 0.0
         poov = self.p_oov_name if st.capital else self.p_oov
-        err = float(err_terms.sum()) * (1 - poov)
+        err_raw, cor_raw = float(err_terms.sum()), cor
+        err = err_raw * (1 - poov)
         cor *= (1 - poov)
         end_lp = self._char_logp(st.ctx_text + s, " ")
-        oov = poov * (1 - a) * math.exp(st.logp_char + end_lp) if next_word is None else \
-            poov * (1 - a) * math.exp(st.logp_char + end_lp) * 1e-3
+        oov_raw = (1 - a) * math.exp(st.logp_char + end_lp) * p_next_oov
+        oov = poov * oov_raw
         tot = err + cor + oov
         top = np.argsort(-err_terms)[:3]
-        return {"p_err": err / max(tot, 1e-300), "in_lexicon": wi is not None,
+        p_err = err / max(tot, 1e-300)
+        if st.capital and self.skip_capital:
+            p_err = 0.0
+        return {"p_err": p_err, "in_lexicon": wi is not None, "masses": (err_raw, cor_raw, oov_raw),
                 "suggestions": [(t.words[i], float(err_terms[i] * (1 - poov) / max(tot, 1e-300))) for i in top if err_terms[i] > 0]}

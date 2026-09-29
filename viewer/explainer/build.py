@@ -21,11 +21,16 @@ Inputs (read-only; every number on the page comes from one of these files or fro
                         it they replay the ai2 strips)
   data/manifest.json    which source each file came from (the page shows it)
 
-The page itself is viewer/explainer/template.html.  build.py fills its <!--BUILD:...--> placeholders (component table,
-results table, data status, provenance) and its [[fact]] tokens (numbers in the text), so the text and tables read
-without any script.  The 3-D views, the scenes and the strips load the JSON files with fetch() at run time.
+The page itself is viewer/explainer/template.html.  build.py fills its <!--BUILD:...--> placeholders (the mechanism
+sentences, the "How much better?" rows with their pictures, the component table, the results table, data status,
+provenance) and its [[fact]] tokens (numbers in the text), so the text and tables read without any script.  The 2-D
+cut-away, the 3-D views, the scenes and the strips load the JSON files with fetch() at run time.
 
-Results of the whole-pen simulation study (sim2j) are picked up as soon as its files exist; rebuild to add them.
+The simple view is driven by two specs in this file, so that a mechanism or a result can be swapped when a study
+changes: MECHANISMS (one sentence per mechanism: what moves, what pushes it, what it does to the ink) and simple_rows()
+(one row per condition: a picture pair from samples.json or an illustration, ONE number from pen.json, its evidence
+label and source).  Results of the whole-pen simulation study (sim2j) are picked up as soon as its files exist
+(sim2j_row() adds a row); rebuild to add them.
 
 Run:  python3 viewer/explainer/build.py
 """
@@ -213,7 +218,7 @@ def facts_ai2() -> dict:
     out["paired_gated_tracker"] = (a.get("paired") or {}).get("gated-tracker:ink_err_um")
     out["gate_open_tremor_free"] = a.get("gate_open_frac_tremor_free")
     out["label"] = SIM_HW1
-    out["detail"] = "test writers 0–5, seeds 200–203; the trackers drive the Rev H nose model (±3 mm)"
+    out["detail"] = "test writers 0–5, seeds 200–203; the trackers drive the older Rev H inner-pen (nose) model, ±3 mm"
     out["source"] = AI2_JSON
     return out
 
@@ -484,8 +489,8 @@ def panels_ai2() -> list:
             "id": f"ai2_{scen}", "condition": "tremor", "source": AI2_SAMPLES, "evidence": SIM_HW1, "provisional": False,
             "title": _plain_shake(scen), "scenario": scen,
             "subtitle": ("One simulated writer (writer 0, seed 200) writes “return library books by friday”. The same hand and "
-                         "the same shake for every row. The trackers drive the Rev H nose model (±3 mm) in this study; the "
-                         "Rev J nose reaches further. The tremor detector needs about 4.5 s of writing before it switches the "
+                         "the same shake for every row. The trackers drive the older Rev H inner-pen model (±3 mm) in this "
+                         "study; the Rev J inner pen reaches further. The tremor detector needs about 4.5 s of writing before it switches the "
                          "listening tracker on, so the first word looks the same in every tracker row."),
             "ruling_mm": 8, "rate_hz": 50.0, "intended": strokes_from(ipts, [p_[2] for p_ in ipts]), "intended_points": ipts,
             "variants": variants,
@@ -533,12 +538,12 @@ def panel_autowrite() -> dict | None:
     v_h = _num(m.get("v_h_mm_s"))
     variants = [
         {"key": "hand", "role": "before", "key_device": True,
-         "label": (f"The hand only sweeps along the line ({v_h:.1f} mm/s) with a 1 mm shake, 8 times a second. With the nose "
+         "label": (f"The hand only sweeps along the line ({v_h:.1f} mm/s) with a 1 mm shake, 8 times a second. With the inner pen "
                    f"held still, the tip would follow this path." if v_h else "The hand's path"),
          "ink": [[p_[:2] for p_ in hand_pts]], "points": hand_pts,
          "metrics": [_txt("What the hand does", "a steady sweep plus the shake; it draws no letters", ev)]},
         {"key": "autowrite", "role": "after", "key_device": True,
-         "label": "Autowrite on: the Rev J nose draws the known text, and the pen lift raises the ball between strokes",
+         "label": "Autowrite on: the Rev J inner pen draws the known text, and the pen lift raises the ball between strokes",
          "ink": strokes_from([p_[1:3] for p_ in series["revJ"]], [p_[3] for p_ in series["revJ"]]),
          "points": [[r3(p_[1]), r3(p_[2]), p_[3]] for p_ in series["revJ"]], "metrics": mets(m, True)},
     ]
@@ -564,8 +569,8 @@ def panel_heel_lead() -> dict | None:
     pf = (t.get("autowrite") or {}).get("paths_first_case") or {}
     rows = (t.get("autowrite") or {}).get("rows") or []
     first = {r["cond"]: r for r in rows if r.get("writer") == 0 and r.get("seed") == 200}
-    spec = [("relaxed_nose", "before", True, "A relaxed hand, nose only: the tip cannot move the hand along the line"),
-            ("sd_lead+nose", "after", True, "Lead-through on: the heel wheel leads the hand, the nose adds the detail"),
+    spec = [("relaxed_nose", "before", True, "A relaxed hand, inner pen only: the tip cannot move the hand along the line"),
+            ("sd_lead+nose", "after", True, "Lead-through on: the heel wheel leads the hand, the inner pen adds the detail"),
             ("writer_alone", "other", False, "For comparison: the same writer writing alone, at their own speed")]
     variants = []
     ev = SIM_HW1D
@@ -595,16 +600,16 @@ def panel_heel_lead() -> dict | None:
             "title": "The heel wheel leads a relaxed hand along a sentence",
             "subtitle": ("Test writer 0, seed 200, “a big dog dug a deep pit by the pond”. The writer relaxes and holds the pen "
                          "on the paper; in lead-through, a mode you turn on, the driven heel wheel pushes the pen and the hand "
-                         "along the line. This study used the Rev H nose for the detail; the integrated Rev J run is in the "
+                         "along the line. This study used the older Rev H inner pen for the detail; the integrated Rev J run is in the "
                          "whole-pen simulation."),
             "ruling_mm": 8, "rate_hz": 100.0, "intended": [], "variants": variants,
             "note": "The pen did most of the work here, by design: lead-through is for people who cannot write at all, or as a first stage that fades."}
 
 
-SIM2J_LABEL = {"none": "Rev J pen, nose and wheel off", "nose": "Rev J nose, chosen tracker",
-               "nose_wheel": "Rev J nose + heel wheel", "nose_wheel_ec": "Rev J nose + heel wheel + end-cap",
-               "oracle": "Rev J nose, if it knew the shake exactly (the limit)",
-               "autowrite": "Autowrite: the Rev J nose writes the known text"}
+SIM2J_LABEL = {"none": "Rev J pen, inner pen and wheel off", "nose": "Rev J inner pen, chosen tracker",
+               "nose_wheel": "Rev J inner pen + heel wheel", "nose_wheel_ec": "Rev J inner pen + heel wheel + end-cap",
+               "oracle": "Rev J inner pen, if it knew the shake exactly (the limit)",
+               "autowrite": "Autowrite: the Rev J inner pen writes the known text"}
 SIM2J_ORDER = ["none", "nose", "nose_wheel", "nose_wheel_ec", "oracle", "autowrite"]
 SIM2J_ROLE = {"none": "before", "nose": "after", "nose_wheel": "after", "nose_wheel_ec": "after", "oracle": "limit",
               "autowrite": "after"}
@@ -697,8 +702,8 @@ def build_samples():
 
 
 # ------------------------------------------------------------------------------------------- whole-pen replay (a, b)
-REPLAY_CASES = {"none": ("off", "Rev J pen, nose and wheel off"), "nose": ("today", "Rev J nose, chosen tracker"),
-                "nose_wheel": ("wheel", "Rev J nose + heel wheel"), "oracle": ("best", "Rev J nose, if it knew the shake exactly")}
+REPLAY_CASES = {"none": ("off", "Rev J pen, inner pen and wheel off"), "nose": ("today", "Rev J inner pen, chosen tracker"),
+                "nose_wheel": ("wheel", "Rev J inner pen + heel wheel"), "oracle": ("best", "Rev J inner pen, if it knew the shake exactly")}
 
 
 def _mm2(p):
@@ -774,7 +779,7 @@ def component_rows(lay: dict) -> str:
         pills = []
         mw = c.get("moves_with")
         if mw == "nose":
-            pills.append('<span class="pill move">moves with the nose</span>')
+            pills.append('<span class="pill move">moves with the inner pen</span>')
         elif mw == "drive":
             pills.append('<span class="pill move">steered or sprung with the heel wheel</span>')
         elif mw == "inertial_mass":
@@ -832,25 +837,25 @@ def results_rows(f: dict) -> str:
                f"{_um(tr['ink_um'])}. Words read <b>{pct(n['words'])} % → {pct(g['words'])} %</b> (Rev H {pct(tr['words'])} %).")
         if mv:
             txt += f" Tremor-free writing moved {mv:.0f} µm, as with Rev H."
-        row("Essential tremor, 1–2 mm, 6–10 shakes a second", "Tip: the nose with the <b>gated tracker</b> (the new default)",
+        row("Essential tremor, 1–2 mm, 6–10 shakes a second", "Tip: the inner pen with the <b>gated tracker</b> (the new default)",
             txt, a, "docs/ai_control_v2.md · results/ai2/ai2.json")
         row("Tremor at 6 shakes a second, 1–2 mm (where Rev H did almost nothing)", "The gated tracker",
             f"<b>{_um(n['ink_6hz_um'])} → {_um(g['ink_6hz_um'])}</b> (Rev H {_um(tr['ink_6hz_um'])})", a,
             "docs/ai_control_v2.md · results/ai2/ai2.json")
         row("Same tremor, a learned estimator", "A small causal neural network, in <b>shadow mode</b> (it logs, it does not steer)",
-            f"<b>{_um(l_['ink_um'])}</b> and <b>{pct(l_['words'])} %</b> of words. It may drive the nose only after it passes on "
+            f"<b>{_um(l_['ink_um'])}</b> and <b>{pct(l_['words'])} %</b> of words. It may drive the inner pen only after it passes on "
             "held-out real recordings (EXP-L04).", a, "docs/ai_control_v2.md · results/ai2/ai2.json")
     if ec:
         mv, fx, mw, fw = ec["moving"], ec["fixed"], ec["moving_worse"], ec["fixed_worse"]
         if all(x is not None for x in mv + fx + mw + fw):
-            row("Tremor, on top of the nose (8–12 Hz, 1–2 mm)", "Tail: the <b>tungsten end-cap</b> (moving weight)",
+            row("Tremor, on top of the inner pen (8–12 Hz, 1–2 mm)", "Tail: the <b>tungsten end-cap</b> (moving weight)",
                 f"A further <b>{pct(mv[0])} / {pct(mv[1])} / {pct(mv[2])} %</b> less ink error at grip splits 0.3 / 0.5 / 0.7. The same "
                 f"mass fixed gives {pct(fx[0])} / {pct(fx[1])} / {pct(fx[2])} % (better at 0.3), but it makes {pct(min(fw[1:]))}–{pct(max(fw[1:]))} % "
                 f"of the hard cases worse (the moving weight {pct(min(mw))}–{pct(max(mw))} %).", ec,
                 "docs/inertial_endcap.md · results/endcap/endcap_study.json")
     if n2:
         a0, a1, a2 = n2.get("aw_2p5_none") or {}, n2.get("aw_2p5_1mm") or {}, n2.get("aw_2p5_2mm") or {}
-        row("Writing for you (a known text)", "Tip: <b>autowrite</b> with the ±6 mm nose (a mode you turn on)",
+        row("Writing for you (a known text)", "Tip: <b>autowrite</b> with the ±6 mm inner pen (a mode you turn on)",
             f"<b>{pct(a1.get('letters_read', 0), 1)} %</b> of letters and <b>{pct(a1.get('words_read_app', 0))} %</b> of words read with up "
             f"to 1 mm of tremor; {pct(a2.get('words_read_app', 0))} % of words at 2 mm; {a0.get('letters_per_s', 0):.1f} letters a second. "
             "One of six test writers needed a slower sweep.", n2, "docs/nose_v2.md · results/nose2/nose2.json")
@@ -858,15 +863,19 @@ def results_rows(f: dict) -> str:
         lp, tr_, ld, gr = d["loops"], d["tracing"], d["lead"], d["gross"]
         if lp.get("wheel") is not None:
             rs = [x for x in (lp.get("wheel_resist"), lp.get("sd_resist"), lp.get("sd_full_resist")) if x is not None]
+            ll = d.get("loops_last") or {}
+            last = (f" The last loop still shrinks: <b>{ll['wheel_path']:.2f}</b> of the target ({ll['none']:.2f} with nothing on"
+                    + (f"; {ll['sd_full']:.2f} when the wheel also drives" if ll.get("sd_full") is not None else "") + ")."
+                    if ll.get("wheel_path") is not None and ll.get("none") is not None else "")
             row("Parkinson's: “write big” loops that shrink", "Heel: the wheel, <b>steer only</b>",
-                f"Loop height <b>{lp['wheel']:.2f}</b> of the target (<b>{lp['none']:.2f}</b> with nothing on"
-                + (f"; {min(rs):.2f}–{max(rs):.2f} for a hand that resists a little" if rs else "") + ")",
-                d, "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv")
+                f"Tallest loop <b>{lp['wheel']:.2f}</b> of the target height (<b>{lp['none']:.2f}</b> with nothing on"
+                + (f"; {min(rs):.2f}–{max(rs):.2f} for a hand that resists a little" if rs else "") + ")." + last,
+                d, "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv, tasks.json")
         t0, ts, tn = tr_.get("none"), tr_.get("sd_path"), tr_.get("wheel_path+nose")
         if t0 and ts and tn:
-            row("Tracing and copying (poorly formed letters)", "Heel wheel steers; with or without the nose",
+            row("Tracing and copying (poorly formed letters)", "Heel wheel steers; with or without the inner pen",
                 f"Distance to the template <b>{_um(t0['err_um'])} → {_um(ts['err_um'])}</b> (steer only) → <b>{_um(tn['err_um'])}</b> "
-                f"(with the nose). But letters read fall from <b>{pct(t0['letters'])} %</b> to {pct(ts['letters'])} % and "
+                f"(with the inner pen). But letters read fall from <b>{pct(t0['letters'])} %</b> to {pct(ts['letters'])} % and "
                 f"<b>{pct(tn['letters'])} %</b>: closer to the template is not easier to read.",
                 d, "docs/grounded_drive.md · results/drive/fig_practice.csv")
         if ld.get("sd") is not None:
@@ -875,15 +884,17 @@ def results_rows(f: dict) -> str:
                 f"(<b>{pct(ld['none'])} %</b> with nothing on)", d, "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv")
         g1 = gr.get("sd_lead+nose") or {}
         if g1.get("letters_read_ok") is not None:
-            row("Leading a relaxed hand along a sentence", "Heel wheel leads, the nose adds detail (lead-through)",
+            g0 = gr.get("relaxed_nose") or {}
+            row("Leading a relaxed hand along a sentence", "Heel wheel leads, the inner pen adds detail (lead-through)",
                 f"<b>{pct(g1['letters_read_ok'])} %</b> of letters and <b>{pct(g1.get('words_app') or 0)} %</b> of words read, at "
-                f"{g1.get('pen_speed_mm_s') or 0:.1f} mm/s; the pen did {pct(g1.get('device_work_share') or 0)} % of the work. Rev H nose in "
-                "this run.", d, "docs/grounded_drive.md · results/drive/tasks.json")
+                f"{g1.get('pen_speed_mm_s') or 0:.1f} mm/s; the pen did {pct(g1.get('device_work_share') or 0)} % of the work"
+                + (f" (a relaxed hand with the inner pen only: {pct(g0['letters_read_ok'])} % of letters)" if g0.get("letters_read_ok") is not None else "")
+                + ". The older Rev H inner pen in this run.", d, "docs/grounded_drive.md · results/drive/tasks.json")
         sb = d.get("set_on_b") or {}
         moved = [v.get("moved") for v in sb.values() if v and v.get("moved") is not None]
         fmax = [v.get("F_max_N") for k, v in sb.items() if v and k != "none" and v.get("F_max_N") is not None]
         if moved:
-            row("A letter the writer is set on (a reversed ‘b’ against a ‘d’ template)", "Any guidance: nose, wheel or board",
+            row("A letter the writer is set on (a reversed ‘b’ against a ‘d’ template)", "Any guidance: inner pen, wheel or board",
                 f"<b>{pct(max(moved))} %</b> turned into the other letter; the push stayed at or below {max(fmax):.2f} N. "
                 "The writer always wins." if fmax else f"<b>{pct(max(moved))} %</b> turned into the other letter.",
                 d, "docs/grounded_drive.md · docs/handwriting_outcomes.md")
@@ -901,10 +912,10 @@ def results_rows(f: dict) -> str:
         for r in want:
             amp = r["amp_mm"]
             amp_mm = amp * 1000 if isinstance(amp, float) and amp < 0.05 else amp
-            nm = {"none": "pen off", "nose": "nose", "nose_wheel": "nose + wheel", "nose_wheel_ec": "nose + wheel + end-cap",
+            nm = {"none": "pen off", "nose": "inner pen", "nose_wheel": "inner pen + wheel", "nose_wheel_ec": "inner pen + wheel + end-cap",
                   "oracle": "perfect knowledge"}[r["ctl"]]
             parts.append(f"{nm} at {amp_mm:g} mm: {_um(r['ink_um'])}" + (f" ({pct(r['words'])} % of words)" if r.get("words") is not None else ""))
-        row("Whole Rev J pen, tremor (sim2, MuJoCo)", "Nose, heel wheel and end-cap together", "; ".join(parts),
+        row("Whole Rev J pen, tremor (sim2, MuJoCo)", "Inner pen, heel wheel and end-cap together", "; ".join(parts),
             s2, "docs/revJ_simulation.md · results/sim2j/et.json", cls="s2")
     return "\n".join(rows)
 
@@ -1182,8 +1193,12 @@ def sim2j_row(f: dict, samples: dict):
             amp = off[0]["amp_mm"]
             on_same = [r for r in on if r["amp_mm"] == amp] or on
             pick = sorted(on_same, key=lambda r: ["nose_wheel_ec", "nose_wheel", "nose"].index(r["ctl"]))[0]
+            parts_ = {"nose": "inner pen", "nose_wheel": "inner pen and heel wheel",
+                      "nose_wheel_ec": "inner pen, heel wheel and tail weight"}[pick["ctl"]]
+            amp_mm = amp * 1000 if isinstance(amp, float) and amp < 0.05 else amp
+            shake = f", a {amp_mm:g} mm shake" if isinstance(amp_mm, (int, float)) else ""
             num = {"label": "Words read correctly", "b": _pc(off[0]["words"]), "a": _pc(pick["words"]), "unit": "%",
-                   "sub": f"whole Rev J pen in the physics simulator ({pick['ctl'].replace('_', ' + ')}), shake {amp:g}"}
+                   "sub": f"pen off → {parts_} on, in the physics simulator{shake}"}
     if not best and not num:
         return None
     pic = None
