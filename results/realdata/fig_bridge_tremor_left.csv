@@ -1,0 +1,54 @@
+# SIMULATION with real recorded inputs
+# tremor left at the tip (mm, peak)
+# SIMULATION (HW1). Tip tremor = peak (sqrt(2) x RMS of the major axis) of ink minus intended, f0 +- 2 Hz.
+inputs,pen,value
+"synthetic writing
++ synthetic tremor
+(inputs used so far)",Ordinary pen,0.932843
+"real writing
++ synthetic tremor",Ordinary pen,1.00675
+"real writing
++ real tremor",Ordinary pen,0.953227
+"real inputs
++ DeltaPen-class
+page sensor",Ordinary pen,0.953227
+"synthetic writing
++ synthetic tremor
+(inputs used so far)",Rev H,0.885976
+"real writing
++ synthetic tremor",Rev H,0.959897
+"real writing
++ real tremor",Rev H,1.03447
+"real inputs
++ DeltaPen-class
+page sensor",Rev H,1.04097
+"synthetic writing
++ synthetic tremor
+(inputs used so far)",Rev J,0.635541
+"real writing
++ synthetic tremor",Rev J,0.731521
+"real writing
++ real tremor",Rev J,0.977448
+"real inputs
++ DeltaPen-class
+page sensor",Rev J,0.988018
+"synthetic writing
++ synthetic tremor
+(inputs used so far)",Rev J + AI,0.338862
+"real writing
++ synthetic tremor",Rev J + AI,0.546585
+"real writing
++ real tremor",Rev J + AI,0.787338
+"real inputs
++ DeltaPen-class
+page sensor",Rev J + AI,0.794343
+"synthetic writing
++ synthetic tremor
+(inputs used so far)",Rev J limit,0.0131502
+"real writing
++ synthetic tremor",Rev J limit,0.013693
+"real writing
++ real tremor",Rev J limit,0.0123387
+"real inputs
++ DeltaPen-class
+page sensor",Rev J limit,0.0123387

@@ -9,17 +9,17 @@
         10.0
       ],
       "letters": [
-        9.835164835164836,
-        9.780219780219781
+        9.87179487179487,
+        9.82905982905983
       ],
       "err_mm": [
-        0.1270153216280664,
-        0.12843901380633557
+        0.12578527974084594,
+        0.12666400768757533
       ],
       "err_kind": "rms_to_clean_ink",
       "moved_clean_mm": 0.0,
       "words_before_label": null,
-      "n": 14
+      "n": 18
     },
     {
       "id": "et_moderate",
@@ -30,59 +30,59 @@
         10.0
       ],
       "letters": [
-        9.134615384615385,
-        9.711538461538463
+        9.35897435897436,
+        9.807692307692308
       ],
       "err_mm": [
-        0.41340605343398035,
-        0.28427241129995606
+        0.409095837614943,
+        0.2771147549529191
       ],
       "err_kind": "rms_to_clean_ink",
       "moved_clean_mm": 0.0,
       "words_before_label": null,
-      "n": 8
+      "n": 12
     },
     {
       "id": "et_strong",
       "who": "Essential tremor, strong (2 mm, 8\u201312 Hz)",
       "what": "the nose cancels the tremor it detects",
       "words": [
-        3.75,
+        5.416666666666667,
         10.0
       ],
       "letters": [
-        5.76923076923077,
-        8.75
+        6.53846153846154,
+        8.974358974358974
       ],
       "err_mm": [
-        0.9589485867861349,
-        0.553037185077992
+        0.9323342656831014,
+        0.5367179545605562
       ],
       "err_kind": "rms_to_clean_ink",
       "moved_clean_mm": 0.0,
       "words_before_label": null,
-      "n": 8
+      "n": 12
     },
     {
       "id": "slow_4hz",
       "who": "Slow tremor (4 Hz, 1\u20132 mm)",
       "what": "nothing: the detector listens from 4.5 Hz up (4 Hz overlaps the writing's own rhythm)",
       "words": [
-        5.5,
-        5.5
+        5.416666666666667,
+        5.416666666666667
       ],
       "letters": [
-        6.615384615384616,
-        6.615384615384616
+        6.85897435897436,
+        6.85897435897436
       ],
       "err_mm": [
-        0.675160008880069,
-        0.6754469988007121
+        0.693227135284542,
+        0.6934870510650631
       ],
       "err_kind": "rms_to_clean_ink",
       "moved_clean_mm": 0.0,
       "words_before_label": null,
-      "n": 10
+      "n": 12
     },
     {
       "id": "severe_through",
@@ -289,9 +289,9 @@
       ],
       "err_kind": null,
       "moved_clean_mm": 0.0,
-      "moved_clean_wheel_mm": 0.4033947998056644,
+      "moved_clean_wheel_mm": 0.41035588093853154,
       "words_before_label": null,
-      "n": 5
+      "n": 6
     }
   ],
   "coverage": {
@@ -327,14 +327,18 @@
       "seeds": [
         200
       ],
-      "cells": 4,
-      "complete": false
+      "cells": 9,
+      "complete": true
+    },
+    "writer 5": {
+      "seeds": [
+        201
+      ],
+      "cells": 9,
+      "complete": true
     }
   },
-  "unfinished": [
-    "writer 4",
-    "writer 5"
-  ],
+  "unfinished": [],
   "writing_time_per_charge": "suspended (the nose's static ball load, docs/revJ_simulation.md 8.1)",
   "units": {
     "words": "readable words out of 10 (after the app's autocorrect)",
@@ -344,8 +348,8 @@
   },
   "meta": {
     "evidence_status": "SIMULATION (sim2) - ranks concepts (COU-1) until EXP-V01/V02/V04 calibrate and EXP-V05 validates",
-    "generated_utc": "2026-09-29T19:10:29+00:00",
-    "git_revision": "bfa33c3-dirty",
+    "generated_utc": "2026-09-29T20:50:55+00:00",
+    "git_revision": "052c2f8-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "-c",

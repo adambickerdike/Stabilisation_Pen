@@ -1,0 +1,23 @@
+# CALC on DATA; rule {'share_8_12_max': 0.025, 'share_above_12_max': 0.03, 'speed_mm_s': [15.0, 60.0], 'pps_min': 100.0, 'res_min_per_mm': 15.0, 'writers_min': 10, 'surface': 'paper'}
+setup,device,surface,writers,lines,share_8_12_pct,speed_mm_s,share_above_12_pct,selected
+aga/,,,14,77,2.17082,23.5774,2.65983,0
+apa/app,Wacom SD-510C,Apple monitor,139,139,8.33673,13.8375,9.65989,0
+apb/app,Wacom SD-510C,Apple monitor,30,30,2.15113,84.5661,2.31697,0
+apc/app,Prototype Newton 110,Non-backlit LCD,183,183,9.67503,45.5609,4.398,0
+apd/app,Prototype Newton 110,Non-backlit LCD,114,114,3.18014,39.568,1.85754,0
+ape/app,Prototype Newton 110,Non-backlit LCD,3,3,3.63065,28.8783,2.26239,0
+app/app,Wacom SD-510C,Apple monitor,174,174,4.15574,13.0055,8.82087,0
+art/,,,5,10,0.288417,5.63922,0.524294,0
+att/att0,WACOM HD-648A LCD Digitizer & 386 PC,Backlit LCD,7,40,4.61208,35.2909,5.19448,0
+cea/ced0,,,1,3,3.85824,46.4013,2.96988,0
+ceb/ced1,,,1,1,4.00374,28.5039,3.00972,0
+cec/ced2,,,4,13,3.83302,44.2794,2.73586,0
+ced/ced3,EPRI Gateway 2000 486/33C,,31,73,4.56223,21.7113,6.276,0
+dar/dar2,CALCOMP DrawingBoard II,"Paper, Ink",2,4,9.69255,29.3356,10.7717,0
+hpb/hpb5,Wacom 420-510C,"Lined paper, direct inking by Pen.",6,21,6.04261,30.4671,6.67106,0
+hpp/hpb2,Wacom 420-510C,"Preprinted paper forms, direct inking by Pen.",14,1335,2.44031,26.936,2.93152,1
+hpp/hpb3,Wacom HD648A,Wacom backlit LCD screen (640x480).,6,305,5.42011,15.2402,14.3167,0
+lex/lex0,Concerto/Northgate/UNIQ PCs with WACOM PL100-V,Inking:,13,162,5.73622,80.7115,2.95464,0
+scr/scr,,640x480 VGA,15,15,2.12781,121.667,2.9616,0
+sta/hpb1,Wacom 420-L,"Lined paper, direct inking by Pen.",17,22,39.9428,92.6898,30.5918,0
+BRUSH (stylus on screens; size derived),,,,,35.579,39.2399,,0

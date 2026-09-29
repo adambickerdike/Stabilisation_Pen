@@ -1,0 +1,27 @@
+# SIMULATION with real recorded inputs
+# SIMULATION (HW1), same cases as fig_words_read. Tremor at the tip = peak (sqrt(2) x RMS of the major axis) of ink minus intended in contact, band f0 +- 2 Hz, the class convention. An amplitude of 50 % is 75 % less power (-6 dB). Intervals: 95 % bootstrap over writers.
+group,pen,amplitude_ratio_mean,ci95_lo,ci95_hi,power_reduction_share
+"Parkinson's, severe (1.72 mm)",Rev H,1.09035,1.04736,1.14363,-0.188873
+"Parkinson's, severe (1.72 mm)",Rev J,1.05201,0.96925,1.13423,-0.106723
+"Parkinson's, severe (1.72 mm)",Rev J + AI,0.823405,0.738522,0.904902,0.322004
+"Parkinson's, severe (1.72 mm)",Rev J limit,0.0135039,0.012201,0.0148106,0.999818
+"Parkinson's, moderate (0.24 mm)",Rev H,1.08774,1.07371,1.10338,-0.183172
+"Parkinson's, moderate (0.24 mm)",Rev J,1.09207,1.07652,1.1072,-0.192613
+"Parkinson's, moderate (0.24 mm)",Rev J + AI,1.17082,0.978269,1.49651,-0.370808
+"Parkinson's, moderate (0.24 mm)",Rev J limit,0.0127277,0.0105596,0.0147247,0.999838
+"Parkinson's, mild (0.10 mm)",Rev H,1.10056,1.08623,1.11583,-0.211226
+"Parkinson's, mild (0.10 mm)",Rev J,1.10704,1.09428,1.11992,-0.225546
+"Parkinson's, mild (0.10 mm)",Rev J + AI,1.24631,1.09281,1.4772,-0.553294
+"Parkinson's, mild (0.10 mm)",Rev J limit,0.0158225,0.0153085,0.016284,0.99975
+"Essential tremor, severe (1.72 mm)",Rev H,1.02901,1.00787,1.04889,-0.0588594
+"Essential tremor, severe (1.72 mm)",Rev J,0.874273,0.765232,0.968434,0.235646
+"Essential tremor, severe (1.72 mm)",Rev J + AI,0.587115,0.556757,0.615803,0.655296
+"Essential tremor, severe (1.72 mm)",Rev J limit,0.0220036,0.0109535,0.0434466,0.999516
+"Essential tremor, moderate (0.24 mm)",Rev H,1.07124,1.06349,1.07951,-0.147563
+"Essential tremor, moderate (0.24 mm)",Rev J,1.09585,1.07287,1.12828,-0.200895
+"Essential tremor, moderate (0.24 mm)",Rev J + AI,1.04396,0.97289,1.11683,-0.0898427
+"Essential tremor, moderate (0.24 mm)",Rev J limit,0.012185,0.0115867,0.0127902,0.999852
+"Essential tremor, mild (0.10 mm)",Rev H,1.07777,1.07319,1.08303,-0.161598
+"Essential tremor, mild (0.10 mm)",Rev J,1.08425,1.07865,1.08965,-0.175591
+"Essential tremor, mild (0.10 mm)",Rev J + AI,1.7711,1.16911,2.73269,-2.1368
+"Essential tremor, mild (0.10 mm)",Rev J limit,0.0149612,0.0140966,0.0157512,0.999776

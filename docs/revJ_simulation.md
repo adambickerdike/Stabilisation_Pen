@@ -16,10 +16,10 @@ device off.
 
 | Who (tremor at the hand, peak) | What Rev J does | Readable words out of 10: ordinary pen → Rev J | Error left at the tip, mm rms: ordinary pen → Rev J | Tremor-free writing changed | Writing time per charge | Cases |
 |---|---|---|---|---|---|---|
-| Essential tremor, mild (0.3 mm, 4–12 Hz) | the nose stays out of the way (tremor below what it acts on) | 10 → 10 (letters 9.8 → 9.8 of 10) | 0.13 → 0.13 | 0.00 mm | suspended | 14 |
-| Essential tremor, moderate (1 mm, 8–12 Hz) | the nose cancels the tremor it detects | 10 → 10 (letters 9.1 → 9.7 of 10) | 0.41 → 0.28 | 0.00 mm | suspended | 8 |
-| Essential tremor, strong (2 mm, 8–12 Hz) | the nose cancels the tremor it detects | 3.8 → 10 (letters 5.8 → 8.8 of 10) | 0.96 → 0.55 | 0.00 mm | suspended | 8 |
-| Slow tremor (4 Hz, 1–2 mm) | nothing: the detector listens from 4.5 Hz up (4 Hz overlaps the writing's own rhythm) | 5.5 → 5.5 (letters 6.6 → 6.6 of 10) | 0.68 → 0.68 | 0.00 mm | suspended | 10 |
+| Essential tremor, mild (0.3 mm, 4–12 Hz) | the nose stays out of the way (tremor below what it acts on) | 10 → 10 (letters 9.9 → 9.8 of 10) | 0.13 → 0.13 | 0.00 mm | suspended | 18 |
+| Essential tremor, moderate (1 mm, 8–12 Hz) | the nose cancels the tremor it detects | 10 → 10 (letters 9.4 → 9.8 of 10) | 0.41 → 0.28 | 0.00 mm | suspended | 12 |
+| Essential tremor, strong (2 mm, 8–12 Hz) | the nose cancels the tremor it detects | 5.4 → 10 (letters 6.5 → 9.0 of 10) | 0.93 → 0.54 | 0.00 mm | suspended | 12 |
+| Slow tremor (4 Hz, 1–2 mm) | nothing: the detector listens from 4.5 Hz up (4 Hz overlaps the writing's own rhythm) | 5.4 → 5.4 (letters 6.9 → 6.9 of 10) | 0.69 → 0.69 | 0.00 mm | suspended | 12 |
 | Severe tremor (3 mm, 5 and 8 Hz), writing through it | the nose cancels what it can | 0.4 → 3.8 (letters 4.0 → 5.9) | 1.47 → 1.15 | 0.00 mm | suspended | 12 |
 | Severe tremor (3 mm, 5 and 8 Hz), known text | the pen writes the text itself (autowrite, 2.5 mm letters) while the hand sweeps | 0.4 → 8.8 (letters 4.0 → 8.5) | 1.47 → 0.08 (to the planned letters) | not applicable (the pen writes) | suspended | 12 |
 | Parkinson's, writing shrinks (five 10 mm loops), relaxed hand | the driven heel wheel pushes the pen along the template | not scored (loops) | last loop 6.6 → 8.6 mm high (target 10) | – | suspended | 2 |
@@ -27,7 +27,7 @@ device off.
 | Dysgraphia (badly formed letters), copying a sentence | the nose pulls the ink half-way toward the copybook letter | 9.7 → 9.7 (letters 9.6 → 9.7) | to the copybook letters: 0.83 → 0.64 | – | suspended | 6 |
 | Dyslexia, led through the right spelling (hand relaxed) | the driven heel wheel pushes the pen along the right letters | 5.8 (writing alone) → 6.7 (letters 7.5 → 7.5) | to the right letters: 0.70 → 0.50 | – | suspended | 4 |
 | Dyslexia, or anyone: a known text, no tremor | the pen writes it (autowrite) | – → 10 (letters 9.8) | 0.04 (to the planned letters) | not applicable (the pen writes) | suspended | 6 |
-| Anyone, no tremor | should change nothing | – | – | 0.00 mm (nose); 0.40 mm with the heel wheel on | suspended | 5 |
+| Anyone, no tremor | should change nothing | – | – | 0.00 mm (nose); 0.41 mm with the heel wheel on | suspended | 6 |
 
 - **Readable words:** the share of words the app reads correctly after its autocorrect, out of 10. Words per case:
   2 in the tremor text ("return library"), 5 in the autowrite text, 9 in the tracing text, 3 in the lead-through text.
@@ -47,6 +47,8 @@ at 5 Hz). The first line is the same simulated writer with no tremor: the writer
 a limit of the synthetic writers (§11), not of the pen. The ordinary pen is the Rev J pen with every device off. The
 labels give what the app's recogniser reads. More: `fig_et.png`, `fig_autowrite.png`, `fig_guided.png`,
 `fig_power.png` (each with a CSV twin).*
+
+**Real tremor (study R, `real_data.md`).** Every tremor row above uses synthetic tremor. With real recorded tremor and real writing in the simpler hand–pen model HW1, the gated listening tracker and the Rev H tracker did not help (0.96–1.06 × of the ordinary pen's tip tremor; readable words 0.4 of 10 at the severe size, against 7.0 with perfect knowledge). The chosen tracker G4 has not been run on real inputs yet.
 
 **What to do** (recommendations; the lead decides, §10):
 
@@ -82,8 +84,8 @@ labels give what the app's recogniser reads. More: `fig_et.png`, `fig_autowrite.
   The end-cap added nothing.
 - **RL** was not trained (time); there is no RL-versus-model-based answer (§7). The environment runs (a 5 000-step
   smoke run); the full run would take about 2.4 CPU hours.
-- **Unfinished:** ET writers 4–5 and the second seed, the wheel with a writer who has learned it, the domain
-  randomisation population (§11).
+- **Unfinished:** the second test seed of the tremor grid, the wheel with a writer who has learned it, the domain
+  randomisation population (§11). (Test writers 4 and 5 were run by the lead after the study; every tremor cell now has 6 cases.)
 - **Writer model v2** (§3): speed and the speed–curvature law now match the literature; the 8–12 Hz content of
   tremor-free writing is still 6–8× too high. On v2 writers the listening estimators lose more than the chosen tracker
   (0.65 → 0.83 against 0.69 → 0.73).
@@ -299,52 +301,52 @@ sim2 is 3-D with the H1 contact law and the pen's mass properties.
 ### 6.1 Essential tremor
 
 Each case: a v2 test writer writes "return library" after a 4 s rest on the paper, with hand tremor of one frequency
-and amplitude, the writer's first test seed. **Coverage (UNFINISHED):** writers 0–3 ran every cell; writer 4 ran the
-4 Hz cells and 8 Hz × 0.3 mm before the run was stopped (out of memory); writer 5 and the second seed were not run
-(§11). So a cell has 4–5 cases. "Ordinary pen" is the Rev J pen with the nose held centred by its servo and the wheel
+and amplitude, the writer's first test seed. **Coverage:** writers 0–5 ran every cell on their first test seed (writers 4
+and 5 were run one per process by the lead after the study, because a single process grew to 11.5 GB); the second seed
+was not run (§11). So a cell has 6 cases. "Ordinary pen" is the Rev J pen with the nose held centred by its servo and the wheel
 retracted: its ink moves like an ordinary pen's (it still draws the holding power, §8.1). Numbers: the ink error with
 the controller divided by the ordinary pen's in the same case (lower is better), then the letters the app reads.
 
 | Tremor (cases) | Ordinary pen: ink error · letters read | Nose, chosen tracker (G4) | Nose + heel wheel | Nose + wheel + end-cap | Nose, ai2 GL | Nose, ai2 TCN (replay) | Limit: perfect knowledge |
 |---|---|---|---|---|---|---|---|
-| 4 Hz, 0.3 mm (5) | 138 µm · 98 % | 1.00 · 98 % | 1.96 · 95 % | 2.25 · 97 % | 1.07 · 100 % | 1.38 · 98 % | 0.31 · 100 % |
-| 4 Hz, 1 mm (5) | 416 µm · 78 % | 1.00 · 78 % | 0.98 · 68 % | 1.12 · 69 % | 1.05 · 82 % | 0.97 · 74 % | 0.12 · 98 % |
-| 4 Hz, 2 mm (5) | 934 µm · 54 % | 1.00 · 54 % | 0.73 · 52 % | 0.75 · 57 % | 1.01 · 52 % | not run | 0.07 · 98 % |
-| 8 Hz, 0.3 mm (5) | 130 µm · 97 % | 0.98 · 97 % | 2.07 · 94 % | 1.86 · 94 % | 1.09 · 96 % | 1.26 · 94 % | 0.35 · 100 % |
-| 8 Hz, 1 mm (4) | 444 µm · 90 % | 0.73 · 96 % | 0.68 · 94 % | 0.73 · 92 % | 0.82 · 92 % | 0.71 · 87 % | 0.13 · 98 % |
-| 8 Hz, 2 mm (4) | 960 µm · 58 % | 0.59 · 85 % | 0.54 · 83 % | 0.44 · 73 % | 0.55 · 92 % | not run | 0.10 · 98 % |
-| 12 Hz, 0.3 mm (4) | 110 µm · 100 % | 1.08 · 98 % | 2.27 · 94 % | 2.24 · 96 % | 1.29 · 100 % | 1.37 · 96 % | 0.42 · 100 % |
-| 12 Hz, 1 mm (4) | 383 µm · 92 % | 0.65 · 98 % | 0.81 · 94 % | 0.90 · 77 % | 0.66 · 96 % | 0.64 · 96 % | 0.18 · 98 % |
-| 12 Hz, 2 mm (4) | 958 µm · 58 % | 0.57 · 90 % | 0.57 · 85 % | 0.60 · 77 % | 0.63 · 83 % | not run | 0.20 · 96 % |
-| Tremor-free writing moved, mean (max), writers 0–4 | – | **0 (0) µm** | 403 (503) µm | 403 (497) µm | 59 (84) µm | 150 (206) µm | 0 µm by definition |
-| Felt grip-force change, rms, 8–12 Hz × 1–2 mm | – | 21 mN | 167 mN | 267 mN | 30 mN | 20 mN | 21 mN |
-| Mean electrical power, all tremor runs | 2.31 W | 2.31 W | 2.28 W | 2.33 W | 2.33 W | 2.58 W | 2.29 W |
+| 4 Hz, 0.3 mm (6) | 141 µm · 99 % | 1.00 · 99 % | 1.95 · 96 % | 2.20 · 97 % | 1.06 · 100 % | 1.35 · 99 % | 0.29 · 100 % |
+| 4 Hz, 1 mm (6) | 417 µm · 82 % | 1.00 · 82 % | 0.99 · 71 % | 1.11 · 72 % | 1.04 · 85 % | 0.97 · 78 % | 0.12 · 99 % |
+| 4 Hz, 2 mm (6) | 970 µm · 55 % | 1.00 · 55 % | 0.73 · 54 % | 0.75 · 58 % | 0.97 · 55 % | not run | 0.07 · 99 % |
+| 8 Hz, 0.3 mm (6) | 127 µm · 97 % | 0.97 · 97 % | 2.25 · 96 % | 2.02 · 96 % | 1.05 · 97 % | 1.27 · 95 % | 0.34 · 100 % |
+| 8 Hz, 1 mm (6) | 434 µm · 94 % | 0.71 · 97 % | 0.71 · 95 % | 0.73 · 92 % | 0.82 · 94 % | 0.72 · 87 % | 0.13 · 99 % |
+| 8 Hz, 2 mm (6) | 944 µm · 68 % | 0.59 · 87 % | 0.53 · 83 % | 0.43 · 78 % | 0.55 · 94 % | not run | 0.10 · 99 % |
+| 12 Hz, 0.3 mm (6) | 109 µm · 100 % | 1.07 · 99 % | 2.44 · 96 % | 2.43 · 97 % | 1.27 · 100 % | 1.43 · 96 % | 0.41 · 100 % |
+| 12 Hz, 1 mm (6) | 384 µm · 94 % | 0.64 · 99 % | 0.79 · 96 % | 0.92 · 82 % | 0.67 · 97 % | 0.65 · 97 % | 0.18 · 99 % |
+| 12 Hz, 2 mm (6) | 921 µm · 63 % | 0.56 · 92 % | 0.55 · 85 % | 0.61 · 82 % | 0.61 · 85 % | not run | 0.20 · 96 % |
+| Tremor-free writing moved, mean (max), writers 0–5 | – | **0 (0) µm** | 410 (503) µm | 417 (497) µm | 54 (84) µm | 150 (206) µm | 0 µm by definition |
+| Felt grip-force change, rms, 8–12 Hz × 1–2 mm | – | 21 mN | 164 mN | 263 mN | 29 mN | 20 mN | 21 mN |
+| Mean electrical power, all tremor runs | 2.32 W | 2.33 W | 2.29 W | 2.35 W | 2.35 W | 2.60 W | 2.30 W |
 
 All SIM (`results/sim2j/et.json`, rows in `sim2j/build/et_rows.json`). The TCN was not run at 2 mm (outside its
 training range, ai2).
 
 **What the table says** (means over cases; 95 % bootstrap intervals over cases in brackets; SIM):
 
-- **The chosen tracker helps at 8–12 Hz and 1–2 mm:** 0.63 of the ordinary pen's ink error (0.59–0.68; 16 cases).
-  Letters read 75 % → 92 %; words read after autocorrect 69 % → 100 %. The nose supplies about a third of the ink
+- **The chosen tracker helps at 8–12 Hz and 1–2 mm:** 0.63 of the ordinary pen's ink error (0.59–0.66; 24 cases).
+  Letters read 79 % → 94 %; words read after autocorrect 77 % → 100 %. The nose supplies about a third of the ink
   motion (device share 0.34).
-- **It does no harm and no good at 0.3 mm:** 1.02 (0.99–1.05; 14 cases), inside the tuning rule (≤ 1.02 at 8 Hz).
-- **It does nothing at 4 Hz:** 1.00 (10 cases). ai2's detector listens from 4.5 Hz up, so it never opens. Perfect
-  knowledge would remove 90 % (0.10), so the nose could do it; the estimator cannot, because 4 Hz sits inside the
+- **It does no harm and no good at 0.3 mm:** 1.01 (0.98–1.04; 18 cases), inside the tuning rule (≤ 1.02 at 8 Hz).
+- **It does nothing at 4 Hz:** 1.00 (12 cases). ai2's detector listens from 4.5 Hz up, so it never opens. Perfect
+  knowledge would remove 91 % (0.09), so the nose could do it; the estimator cannot, because 4 Hz sits inside the
   writing's own rhythm (90 % of writing's velocity energy lies below 4.9 Hz, LIT CON-25). Open issue (§11).
-- **The estimator, not the nose, is the limit.** Perfect knowledge reaches 0.16 at 8–12 Hz × 1–2 mm (0.13–0.18) and
-  0.36 at 0.3 mm.
-- **The heel wheel in its tremor mode should stay retracted by default.** It helps a little at 2 mm (0.54 against 0.59
-  at 8 Hz; 0.73 at 4 Hz, where the nose does nothing). But it doubles the error at 0.3 mm (2.09), moves tremor-free
-  writing by 0.40 mm (max 0.50 mm; rule 25 µm), and pushes on the hand 8× more (167 against 21 mN rms). Recommendation:
-  retracted by default until its controller is redesigned (§10).
-- **The end-cap adds nothing here.** Nose + wheel + end-cap: 0.67 at 8–12 Hz × 1–2 mm against 0.65 without it, fewer
-  letters read (80 % against 89 %) and more felt force (267 mN). With every device off the heavier end-cap pen (129 g)
-  writes better at 4 Hz (353 against 416 µm at 1 mm) and worse at 12 Hz × 2 mm (1202 against 958 µm).
-- **ai2's gated listening tracker (GL) as built** fails both rules on the test writers too: 1.14 at 0.3 mm and 59 µm
-  (max 84 µm) on tremor-free writing. At 8–12 Hz × 1–2 mm it is close to G4 (0.67 against 0.63).
-- **ai2's TCN, replayed without retraining,** fails both rules: 1.34 at 0.3 mm and 150 µm (max 206 µm) on tremor-free
-  writing; 0.67 at 8–12 Hz × 1 mm (8 cases).
+- **The estimator, not the nose, is the limit.** Perfect knowledge reaches 0.16 at 8–12 Hz × 1–2 mm (0.14–0.17) and
+  0.35 at 0.3 mm.
+- **The heel wheel in its tremor mode should stay retracted by default.** It helps a little at 8 Hz × 2 mm (0.53 against
+  0.59) and at 4 Hz × 2 mm (0.73, where the nose does nothing); over 8–12 Hz × 1–2 mm it gives 0.65 against 0.63. But it
+  multiplies the error at 0.3 mm by 2.21, moves tremor-free writing by 0.41 mm (max 0.50 mm; rule 25 µm), and pushes on
+  the hand about 8× more (164 against 21 mN rms). Recommendation: retracted by default until its controller is redesigned (§10).
+- **The end-cap adds nothing here.** Nose + wheel + end-cap: 0.68 at 8–12 Hz × 1–2 mm against 0.65 without it, fewer
+  letters read (84 % against 90 %) and more felt force (263 mN). With every device off the heavier end-cap pen (129 g)
+  writes better at 4 Hz (361 against 417 µm at 1 mm) and worse at 12 Hz × 2 mm (1132 against 921 µm).
+- **ai2's gated listening tracker (GL) as built** fails both rules on the test writers too: 1.13 at 0.3 mm and 54 µm
+  (max 84 µm) on tremor-free writing. At 8–12 Hz × 1–2 mm it is close to G4 (0.66 against 0.63).
+- **ai2's TCN, replayed without retraining,** fails both rules: 1.35 at 0.3 mm and 150 µm (max 206 µm) on tremor-free
+  writing; 0.69 at 8–12 Hz × 1 mm (12 cases).
 - **Power does not depend on the controller** (2.3 W in every column): it is mostly the nose holding the ball's static
   side load (§8.1), paid by the "ordinary pen" of the simulation too.
 
@@ -695,10 +697,9 @@ DEC-045, REQ-RVJ-N09 and EXP-J10–J16 were taken meanwhile, so this draft's ear
 
 **Not finished (marked, not hidden):**
 
-- **ET grid:** writers 0–3 complete; writer 4 only the 4 Hz cells and 8 Hz × 0.3 mm; writer 5 not run; the second
-  test seed not run. Cells have 4–5 cases instead of 12. The run's process grew to 11.5 GB over four writers and was
-  killed; single-case tests did not reproduce the growth (0.6–1.3 GB stable). Run one writer per process
-  (`SIM2J_WRITERS=5 python3 -m sim2j.run_study --stages et`).
+- **ET grid:** all six test writers on their first test seed (writers 4 and 5 were run by the lead one per process after
+  the study: `SIM2J_WRITERS=4` then `=5`, about 24 min each, peak about 4.4 GB); the second test seed was not run. The
+  single process of the study grew to 11.5 GB over four writers and was killed; one writer per process does not grow.
 - **Wheel with a writer who has learned it** (`et_wheel`): not run. The 0.40 mm on tremor-free writing may shrink
   with practice (EXP-J18).
 - **RL:** not trained (§7).

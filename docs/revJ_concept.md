@@ -30,23 +30,25 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-049 in [`decisi
 
 ## 2. How much better (SIM on synthetic writers; nothing measured)
 
-**In the physics simulation of the whole Rev J pen** (`revJ_simulation.md` §1; study sim2j; the tremor rows cover 4 of 6 test writers so far). "Ordinary pen" is the same pen with every device off. Readable words are those the app reads correctly, out of 10.
+**In the physics simulation of the whole Rev J pen** (`revJ_simulation.md` §1; study sim2j; 6 test writers; **synthetic tremor**: on real recorded tremor the trackers have not helped yet, see below). "Ordinary pen" is the same pen with every device off. Readable words are those the app reads correctly, out of 10.
 
 | Who (tremor at the hand, peak) | What Rev J does | Readable words out of 10: ordinary pen → Rev J | Error left at the tip |
 |---|---|---|---|
 | Essential tremor, mild (0.3 mm) | Stays out of the way | 10 → 10 | 0.13 → 0.13 mm rms |
-| Essential tremor, 1 mm, 8–12 Hz | Cancels the tremor it detects (guarded tracker G4, DEC-047) | 10 → 10 (letters 9.1 → 9.7) | 0.41 → 0.28 mm |
-| Essential tremor, 2 mm, 8–12 Hz | As above | 3.8 → 10 | 0.96 → 0.55 mm |
-| Slow tremor, 4 Hz, 1–2 mm | Nothing yet: it cannot tell a 4 Hz tremor from the writing itself (with perfect knowledge it would remove 90 %) | 5.5 → 5.5 | 0.68 → 0.68 mm |
+| Essential tremor, 1 mm, 8–12 Hz | Cancels the tremor it detects (guarded tracker G4, DEC-047) | 10 → 10 (letters 9.4 → 9.8) | 0.41 → 0.28 mm |
+| Essential tremor, 2 mm, 8–12 Hz | As above | 5.4 → 10 | 0.93 → 0.54 mm |
+| Slow tremor, 4 Hz, 1–2 mm | Nothing yet: it cannot tell a 4 Hz tremor from the writing itself (with perfect knowledge it would remove 90 %) | 5.4 → 5.4 | 0.69 → 0.69 mm |
 | Severe tremor, 3 mm, writing through it | Cancels what it can | 0.4 → 3.8 | 1.47 → 1.15 mm |
 | Severe tremor, 3 mm, a text you chose | Writes it (autowrite, DEC-049) | 0.4 → 8.8 | 0.08 mm from the planned letters |
 | Parkinson's, five 10 mm practice loops that shrink | The driven heel wheel pushes along the loops | not scored | Last loop 6.6 → 8.6 mm (7.4 mm with a lightly resisting hand) |
 | Dysgraphia, copying a sentence | The nose pulls the ink half-way toward the copybook letter | 9.7 → 9.7 | 0.83 → 0.64 mm from the copybook letters |
 | Dyslexia, led through the right spelling | The driven heel wheel pushes a relaxed hand | 5.8 → 6.7 (letters distorted, slow) | 0.70 → 0.50 mm from the right letters |
 | Anyone, a text you chose, no tremor | Autowrite | – → 10 | 0.04 mm |
-| Anyone, no tremor | Should change nothing | – | 0 mm with the nose; 0.40 mm if the heel wheel is on |
+| Anyone, no tremor | Should change nothing | – | 0 mm with the nose; 0.41 mm if the heel wheel is on |
 
 Writing time per charge is **suspended** in every row: in this simulation the nose draws about 2.3 W (§3).
+
+**With real recorded tremor** (study R, `real_data.md`; the simpler hand–pen model HW1 with real handwriting of 9 held-out writers, real Parkinson's and essential tremor, and a realistic page sensor): **no tracker built so far makes the writing more readable.** Real tremor at the pen tip was smaller than assumed (severe typically 1.7 mm, not 5–10 mm) and far more irregular. At the severe size, readable words out of 10: ordinary pen 0.5, Rev J gated tracker 0.4, the learned TCN 0.2; with perfect knowledge of the tremor the same nose gives 7.0 (no tremor 6.8). The nose has the reach; estimating real tremor in time is the missing piece (DEC-054, DEC-055). The chosen tracker G4 has not been run on real inputs yet.
 
 **Where the earlier, simpler models disagree** (see `claims_register.md`):
 - The gated listening tracker (HW1: ink 830 → 430 µm, words 31 → 74 % at 1–2 mm, 6–10 Hz) moved tremor-free writing by 59 µm in the physics simulation, over the 25 µm rule; the guarded tracker G4 replaces it there (DEC-047). The learned TCN moved it by 150 µm (shadow mode stays).

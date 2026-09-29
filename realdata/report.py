@@ -109,7 +109,7 @@ def picture_png(pr: Dict, od: Path) -> Path:
     pc = pr["case"]
     n = pr["devices"]["none"]["words_total"]
     kind_txt = {"PD": "Parkinson's tremor recorded from a patient drawing on a tablet",
-                "ET": "essential tremor recorded from a patient's hand"}[pc["kind"]]
+                "ET": "Essential tremor recorded from a patient's hand"}[pc["kind"]]
     cls_txt = f"{pc['class']} class ({pr['tremor']['amp_mm']:.2f} mm at the tip, {pr['tremor']['f0']:.1f} Hz)"
     dn, dj = pr["devices"]["none"], pr["devices"][REV_J]
     wn, wj = dn["words_read"], dj["words_read"]
@@ -125,8 +125,7 @@ def picture_png(pr: Dict, od: Path) -> Path:
         p_["baselines_mm"] = pr.get("baselines_mm") or []
     src = ("letters written by one real adult (UCI Character Trajectories, Williams 2008, CC BY 4.0), placed on the "
            "line by the simulation" if pc["source"] == "chartraj" else
-           f"real words of UNIPEN writer {pr['writer'].split('/')[-1].replace('.dat', '')} (HP Labs 1992, ballpoint on "
-           f"paper; UNIPEN research use only)")
+           "real words of a UNIPEN hpb2 test writer (HP Labs 1992, ballpoint on paper; UNIPEN research use only)")
     trem = (f"tremor: {'UCI Parkinson spiral tablet data (Isenkul et al. 2014, CC BY 4.0)' if pc['kind'] == 'PD' else 'Zenodo ET accelerometry (Pardo-Valencia, Ammann, Foffani 2026, CC BY 4.0)'}, "
             f"recording {pr['tremor']['rid']}, scaled to the {pc['class']} class")
     tl_n, tl_j = dn.get("tip_tremor_mm", float("nan")), dj.get("tip_tremor_mm", float("nan"))
@@ -297,7 +296,8 @@ def figures(quick: bool, od: Path, log=print) -> Dict:
         made["bridge_tip"] = str(FG.bridge_chart(
             od / "fig_bridge_tremor_left.png", ser_t, base_devs, labels, "tremor left at the tip (mm, peak)",
             "Tremor left at the pen tip when the inputs become real (1 mm peak at the tip going in)",
-            "SIMULATION (HW1). Tip tremor = peak (sqrt(2) x RMS of the major axis) of ink minus intended, f0 +- 2 Hz."))
+            "SIMULATION (HW1). Tip tremor = peak (sqrt(2) x RMS of the major axis) of ink minus intended, f0 +- 2 Hz.",
+            nd=2))
     # --- before/after pictures
     pics = []
     for pc in picture_cases(quick):
@@ -448,8 +448,9 @@ def write(quick: bool, od: Path, log=print) -> Dict:
     EV.write(od / "evidence_rows.csv", out)
     tremor_table(lib, od / "tremor_library.csv")
     from . import BUILD_DIR
-    (BUILD_DIR / "doc_tables.md").write_text(doc_tables(out))
-    log(f"[report] wrote {od}/realdata.json, samples.json, evidence_rows.csv; tables in {BUILD_DIR}/doc_tables.md")
+    tp = BUILD_DIR / ("doc_tables_quick.md" if quick else "doc_tables.md")
+    tp.write_text(doc_tables(out))
+    log(f"[report] wrote {od}/realdata.json, samples.json, evidence_rows.csv; tables in {tp}")
     return out
 
 

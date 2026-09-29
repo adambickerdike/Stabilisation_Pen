@@ -77,6 +77,9 @@ ENDCAP_STEER = "results/endcap/fig_ek_steer.csv"
 SIM2J_SAMPLES = "results/sim2j/samples.json"
 SIM2J_REPLAY = "results/sim2j/viz_sim2j.json"
 SIM2J_ET = "results/sim2j/et.json"
+REALDATA_JSON = "results/realdata/realdata.json"         # study R: real recorded handwriting and tremor (HW1)
+REALDATA_SAMPLES = "results/realdata/samples.json"
+SIM_REAL = "SIMULATION (model HW1) with real recorded inputs"
 SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
 SIM2J_PARTIAL: list = []      # coverage notes when the study finished with parts still to run
 SIM2J_PENDING: list = []      # why whole-pen results were left out (a partial summary of a run in progress)
@@ -388,6 +391,69 @@ def facts_sim2j() -> dict | None:
         return None
 
 
+def facts_realdata() -> dict | None:
+    """Study R's pooled results (results/realdata/realdata.json, hw1.aggregate.real): readable words out of 10 and the
+    tip tremor, per pen, at the severe and moderate real tremor sizes (Parkinson's and essential tremor pooled; held-out
+    writers, texts and patients; the DeltaPen-class page sensor)."""
+    if not exists(REALDATA_JSON):
+        return None
+    try:
+        agg = ((load(REALDATA_JSON).get("hw1") or {}).get("aggregate") or {}).get("real") or {}
+
+        def val(x, k="mean"):
+            v = x.get(k) if isinstance(x, dict) else x
+            return v if isinstance(v, (int, float)) and v == v else None
+        out = {"label": SIM_REAL, "source": REALDATA_JSON}
+        for cls in ("severe", "moderate", "mild"):
+            a = agg.get(f"all/{cls}") or {}
+            pens = {}
+            for key, name in (("none", "none"), ("revJ_gated|deltapen", "gated"), ("revJ_tcn|deltapen", "tcn"),
+                              ("revH_akf|deltapen", "revh"), ("revJ_oracle", "oracle")):
+                v = a.get(key) or {}
+                pens[name] = {"words": val(v.get("words_of_10")), "words_lo": val(v.get("words_of_10"), "lo"),
+                              "words_hi": val(v.get("words_of_10"), "hi"), "tip_mm": val(v.get("tip_tremor_mm")),
+                              "ratio": val(v.get("tip_tremor_ratio")), "clean_moved_um": val(v.get("false_correction_um"))}
+            pens["clean_words"] = val((a.get("none") or {}).get("clean_words_of_10"))
+            out[cls] = pens
+        return out
+    except (OSError, ValueError, TypeError, AttributeError) as ex:
+        warn(f"{REALDATA_JSON} could not be read ({ex})")
+        return None
+
+
+def panels_realdata() -> list:
+    """Study R's committed pictures (results/realdata/samples.json; letters of UCI Character Trajectories, CC BY, with
+    real recorded tremor): one panel per population and size, variants keyed none / gated / oracle / tcn / revh."""
+    if not exists(REALDATA_SAMPLES):
+        return []
+    raw = load(REALDATA_SAMPLES)
+    keymap = {"none": "none", "revJ_gated|deltapen": "gated", "revJ_oracle": "oracle", "revJ_tcn|deltapen": "tcn",
+              "revH_akf|deltapen": "revh"}
+    groups: dict = {}
+    for p in raw.get("panels", []):
+        k = keymap.get(str(p.get("device", "")))
+        if k:
+            groups.setdefault(str(p.get("condition", "")), []).append((k, p))
+    panels = []
+    for cond, items in groups.items():
+        variants = []
+        for k, p in items:
+            pts = _pts3(p.get("ink", []))
+            ink = strokes_from(pts, [q[2] for q in pts])
+            if ink:
+                variants.append({"key": k, "role": {"none": "before", "oracle": "limit"}.get(k, "after"), "label": p.get("title", k),
+                                 "key_device": k in ("none", "gated", "oracle"), "ink": ink, "metrics": []})
+        if not variants:
+            continue
+        first = items[0][1]
+        ipts = _pts3(first.get("intended", []))
+        panels.append({"id": f"real_{cond}", "condition": "real", "source": REALDATA_SAMPLES, "evidence": SIM_REAL,
+                       "provisional": False, "title": str(first.get("title", cond)), "subtitle": str(first.get("caption", "")),
+                       "ruling_mm": 8, "rate_hz": 50.0, "intended": strokes_from(ipts, [q[2] for q in ipts]),
+                       "variants": variants})
+    return panels
+
+
 def _doc(p: str) -> str:
     try:
         with open(rel(p), encoding="utf-8") as fh:
@@ -505,6 +571,10 @@ def build_facts(lay: dict):
                     "ring_r_mm": lay.get("skid_contact_radius"), "wheel_r_mm": lay.get("heel_contact_radius"),
                     "tilt_deg": lay.get("tilt_deg"), "revH_travel_guaranteed_mm": 2.75, "revH_pivot_mm": 45.0,
                     "revH_ring_r_mm": 6.75, "label": "CALC (results/revJ/layout.json); Rev H values from docs/revJ_design.md §2-§3"}
+    rd = facts_realdata()
+    if rd:
+        facts["realdata"] = rd
+        srcs.append(REALDATA_JSON)
     s2 = facts_sim2j()
     if s2:
         facts["sim2j"] = s2
@@ -832,7 +902,8 @@ def panels_sim2j() -> list:
 def build_samples():
     panels, srcs = [], []
     for fn, src in ((panels_ai2, AI2_SAMPLES), (lambda: [p for p in [panel_autowrite()] if p], NOSE2_EXAMPLE),
-                    (lambda: [p for p in [panel_heel_lead()] if p], DRIVE_TASKS), (panels_sim2j, SIM2J_SAMPLES)):
+                    (lambda: [p for p in [panel_heel_lead()] if p], DRIVE_TASKS), (panels_sim2j, SIM2J_SAMPLES),
+                    (panels_realdata, REALDATA_SAMPLES)):
         try:
             ps = fn()
         except (OSError, KeyError, ValueError, TypeError, IndexError) as ex:
@@ -1467,7 +1538,7 @@ def simple_rows_revj(f: dict) -> list:
         n = sum(C[k]["n"] for k in fast)
         rf = s2.get("ratio_fast")
         rows.append({
-            "id": "tremor", "mech": ["tip"], "who": "A shaky hand", "sub": "Essential tremor: a fast shake of 1–2 mm, 8–12 times a second",
+            "id": "tremor", "mech": ["tip"], "who": "A shaky hand, simulated shake", "sub": "A fast shake of 1–2 mm, 8–12 times a second, made up by the computer",
             "help": "The inner pen tilts against the shake, so the ball stays on the letters.",
             "pic": {"panel": "sim2j_8Hz_2mm", "before": "none", "after": "nose", "x": (-1.5, 40.0),
                     "cap": ("Ordinary pen", "With the inner pen"),
@@ -1475,8 +1546,23 @@ def simple_rows_revj(f: dict) -> list:
             "num": {"label": "Words read correctly", "b": pc10(pooled(fast, 0)), "a": pc10(pooled(fast, 1)), "unit": "%",
                     "sub": (f"shake left at the tip: {rf:.2f} of the ordinary pen's; " if rf is not None else "")
                            + f"average of {n} simulated cases" + (f" ({part})" if part else "")},
-            "verdict": "Clearly better for fast shakes.",
+            "verdict": "Clearly better for a simulated fast shake. Not yet for a real one (next row).",
             "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+    rd = (f.get("realdata") or {}).get("severe") or {}
+    if rd.get("none", {}).get("words") is not None and rd.get("gated", {}).get("words") is not None:
+        lim, cw = rd.get("oracle", {}).get("words"), rd.get("clean_words")
+        rows.append({
+            "id": "real", "mech": ["tip"], "who": "A shaky hand, real recorded shake", "sub": "Parkinson's and essential tremor recorded from patients: a severe shake at the pen tip (about 1.7 mm)",
+            "help": "Real tremor of real patients, added to real handwriting, in the hand–pen simulation. The inner pen with today's tracker.",
+            "pic": {"panel": "real_real_pd_severe", "before": "none", "after": "oracle", "x": (-1.0, 58.0), "y": (-4.0, 10.0),
+                    "cap": ("Ordinary pen", "If the pen knew the shake exactly (not achieved yet)"),
+                    "note": "Letters of one real writer (UCI Character Trajectories, CC BY) with a real Parkinson's tremor recording scaled to the severe size. Today's tracker looks like the left picture."},
+            "num": {"label": "Words read correctly", "b": round(10 * rd["none"]["words"]), "a": round(10 * rd["gated"]["words"]), "unit": "%",
+                    "sub": (f"with today's tracker; if the pen knew the shake exactly: {round(10 * lim)} %" if lim is not None else "with today's tracker")
+                           + (f" (the same notes with no tremor: {round(10 * cw)} %)" if cw is not None else "") + ". 9 held-out writers"},
+            "verdict": "No help yet on real tremor. The pen has the reach; it cannot yet estimate a real, irregular shake in time.",
+            "ev": [SIM_REAL], "src": REALDATA_JSON,
+            "ev_note": "Real handwriting and real tremor recorded by others, in the simpler hand–pen model (HW1); not a measurement of the pen or of any person."})
     if "slow_4hz" in C:
         c = C["slow_4hz"]
         lim = s2.get("ratio_slow_limit")

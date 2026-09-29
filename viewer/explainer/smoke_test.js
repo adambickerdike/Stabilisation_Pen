@@ -116,10 +116,12 @@ async function run(browser, label, viewport) {
     tags: r.querySelectorAll(".bnum .tag").length, val: (r.querySelector(".bnum .bv") || {}).textContent, verdict: (r.querySelector(".verdict") || {}).textContent || "" })));
   check(`${label}: "How much better?" has one number and an evidence label per row`, rows.length >= 6 && rows.every(r => r.nums === 1 && r.tags >= 1),
     rows.map(r => `${r.id}: ${r.val.replace(/\s+/g, " ").trim()}`).join("; "));
-  check(`${label}: picture pairs where the study saved writing (tremor, severe tremor with autowrite, loops, clean copy)`,
-    ["tremor", "autowrite", "loops", "clean"].every(k => (rows.find(r => r.id === k) || {}).thumbs === 2), rows.map(r => `${r.id} ${r.thumbs}`).join(", "));
+  check(`${label}: picture pairs where the study saved writing (tremor, real tremor, severe tremor with autowrite, loops, clean copy)`,
+    ["tremor", "real", "autowrite", "loops", "clean"].every(k => (rows.find(r => r.id === k) || {}).thumbs === 2), rows.map(r => `${r.id} ${r.thumbs}`).join(", "));
+  const real = rows.find(r => r.id === "real");
+  check(`${label}: the real-tremor row says the pen does not help yet on real tremor`, real && /No help yet on real tremor/.test(real.verdict), real ? `${real.val.replace(/\s+/g, " ").trim()} · ${real.verdict.slice(0, 60)}` : "missing");
   check(`${label}: the rows from the physics simulation: fast shake, slow shake (no help yet), severe shake, loops, tracing, lead-through, tail, clean copy, normal writing`,
-    ["tremor", "slow", "autowrite", "loops", "tracing", "lead", "tail", "clean", "normal"].every(k => rows.some(r => r.id === k)) &&
+    ["tremor", "real", "slow", "autowrite", "loops", "tracing", "lead", "tail", "clean", "normal"].every(k => rows.some(r => r.id === k)) &&
     /No help yet/.test((rows.find(r => r.id === "slow") || {}).verdict || ""), rows.map(r => r.id).join(", "));
   const trc = rows.find(r => r.id === "tracing");
   check(`${label}: the tracing row: the half-way nib brings the ink closer (0.83 → 0.64 mm) and stays as readable`, trc && /0\.83\D+0\.64/.test(trc.val) && /readable/.test(trc.verdict), trc ? `${trc.val.trim()} · ${trc.verdict}` : "missing");

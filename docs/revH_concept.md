@@ -190,7 +190,7 @@ A desk board under the paper that can physically steer the pen along whole lette
 ## 9. What to build and test first
 
 1. **Grip split.** How the grip gives, by sliding versus tilting (EXP-I01). It decides where inertial devices act and how the nose's reaction reaches the hand.
-2. **Bench active nose (EXP-R01, proposed):** pivot, coils and Hall sensing on a shaker with a hand simulant. Measure:
+2. **Bench active nose (EXP-I05):** pivot, coils and Hall sensing on a shaker with a hand simulant. Measure:
    - tip travel;
    - bandwidth;
    - force;

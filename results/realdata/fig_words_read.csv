@@ -1,0 +1,29 @@
+# SIMULATION with real recorded inputs
+# SIMULATION (model HW1) with real inputs: UNIPEN hpb2 test writers (real words written with a ballpoint on paper, real timing; one note of about 10 words each) and real tremor recordings of test subjects (PD: pen tip on a tablet; ET: hand), at each data class's representative size (peak at the tip). Trackers use a DeltaPen-class page sensor (pessimistic); open circles: the same pen with the ideal sensor, where read. Reader: TrOCR base, literal. Intervals: 95 % bootstrap over writers.
+group,pen,words_of_10_mean,ci95_lo,ci95_hi,ideal_sensor_bound_mean
+"Parkinson's, severe (1.72 mm)",Ordinary pen,0.333333,0.111111,0.666667,
+"Parkinson's, severe (1.72 mm)",Rev H,0.111111,0,0.333333,nan
+"Parkinson's, severe (1.72 mm)",Rev J,0.222222,0,0.555556,0.222222
+"Parkinson's, severe (1.72 mm)",Rev J + AI,0,0,0,nan
+"Parkinson's, severe (1.72 mm)",Rev J limit,7.14141,6.01995,8.18207,
+"Parkinson's, severe (1.72 mm)",no tremor (ceiling),6.81818,5.53535,8.08081,
+"Parkinson's, moderate (0.24 mm)",Ordinary pen,5.55556,4.73712,6.30303,
+"Parkinson's, moderate (0.24 mm)",Rev J,4.93939,3.97955,6.07071,nan
+"Parkinson's, moderate (0.24 mm)",Rev J limit,7.0404,5.67677,8.29318,
+"Parkinson's, moderate (0.24 mm)",no tremor (ceiling),6.81818,5.53535,8.08081,
+"Parkinson's, mild (0.10 mm)",Ordinary pen,6.93939,5.68662,8.06061,
+"Parkinson's, mild (0.10 mm)",Rev J,6.93939,5.79773,8.08081,nan
+"Parkinson's, mild (0.10 mm)",no tremor (ceiling),6.81818,5.53535,8.08081,
+"Essential tremor, severe (1.72 mm)",Ordinary pen,0.747475,0,1.57576,
+"Essential tremor, severe (1.72 mm)",Rev H,0.636364,0,1.35354,nan
+"Essential tremor, severe (1.72 mm)",Rev J,0.535354,0,1.07071,0.636364
+"Essential tremor, severe (1.72 mm)",Rev J + AI,0.323232,0,0.767677,nan
+"Essential tremor, severe (1.72 mm)",Rev J limit,6.83838,5.48485,8.06086,
+"Essential tremor, severe (1.72 mm)",no tremor (ceiling),6.81818,5.53535,8.08081,
+"Essential tremor, moderate (0.24 mm)",Ordinary pen,5.86869,4.26237,7.31313,
+"Essential tremor, moderate (0.24 mm)",Rev J,6.09091,4.68636,7.40404,nan
+"Essential tremor, moderate (0.24 mm)",Rev J limit,6.81818,5.53535,8.08081,
+"Essential tremor, moderate (0.24 mm)",no tremor (ceiling),6.81818,5.53535,8.08081,
+"Essential tremor, mild (0.10 mm)",Ordinary pen,6.60606,5.20202,7.97045,
+"Essential tremor, mild (0.10 mm)",Rev J,6.71717,5.24242,8.13182,nan
+"Essential tremor, mild (0.10 mm)",no tremor (ceiling),6.81818,5.53535,8.08081,

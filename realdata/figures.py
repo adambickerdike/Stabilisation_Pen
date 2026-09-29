@@ -125,9 +125,11 @@ def before_after(out_png: Path, panels: List[Dict], header: str, footer: str, re
         page(ax, _strokes(p["ink"]), p.get("line_pitch_mm", 13.0), bl, (x0, x1), p["title"], p["caption"],
              p.get("intended"))
         ax.set_ylim(min(lo - 3, (min(bl) - 7) if bl else lo - 3), hi + 3)
-    fig.suptitle(header, x=0.01, ha="left", fontsize=13, color=INK["primary"], y=0.995, fontweight="bold")
+    import textwrap
+    header = "\n".join(textwrap.wrap(header, max(60, int(w_in * 10.5))))
+    fig.suptitle(header, x=0.01, ha="left", fontsize=13, color=INK["primary"], y=0.997, fontweight="bold")
     fig.text(0.01, 0.005, footer, ha="left", va="bottom", fontsize=8.5, color=INK["secondary"], wrap=True)
-    fig.tight_layout(rect=(0, 0.04, 1, 0.97))
+    fig.tight_layout(rect=(0, 0.04, 1, 0.955))
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=110)
     plt.close(fig)
@@ -179,24 +181,34 @@ def words_chart(out_png: Path, table: Dict, devices: Sequence[str], labels: Dict
 
 
 def bridge_chart(out_png: Path, series: Dict[str, Dict[str, float]], devices: Sequence[str], labels: Dict[str, str],
-                 ylabel: str, title: str, note: str) -> Path:
-    """series: {input set label: {device: value}} -> one line per pen across the three input sets (same axis)."""
+                 ylabel: str, title: str, note: str, nd: int = 1) -> Path:
+    """series: {input set label: {device: value}} -> one line per pen across the input sets (same axis)."""
     plt = _plt()
     sets = list(series)
     fig, ax = plt.subplots(figsize=(8.5, 4.6))
     rows = []
+    ends = []
     for d in devices:
         ys = [series[s].get(d) for s in sets]
         if all(v is None for v in ys):
             continue
-        ax.plot(range(len(sets)), ys, color=DEVICE_COLOR[d], linewidth=2, marker="o", markersize=6, zorder=3,
-                label=labels[d])
+        ax.plot(range(len(sets)), [np.nan if v is None else v for v in ys], color=DEVICE_COLOR[d], linewidth=2,
+                marker="o", markersize=6, zorder=3, label=labels[d])
         last = next((v for v in reversed(ys) if v is not None), None)
         if last is not None:
-            ax.text(len(sets) - 1 + 0.06, last, f"{last:.1f}" if last < 100 else f"{last:.0f}", va="center",
-                    fontsize=9, color=INK["primary"])
+            ends.append([last, last, d])
         for s, v in zip(sets, ys):
             rows.append([s, labels[d], v])
+    # end labels, nudged apart so that they do not overlap
+    if ends:
+        ends.sort(key=lambda e: e[0])
+        lo, hi = ax.get_ylim()
+        gap = 0.045 * (hi - lo)
+        for i in range(1, len(ends)):
+            if ends[i][1] - ends[i - 1][1] < gap:
+                ends[i][1] = ends[i - 1][1] + gap
+        for v, y, d in ends:
+            ax.text(len(sets) - 1 + 0.06, y, f"{v:.{nd}f}", va="center", fontsize=9, color=INK["primary"])
     ax.set_xticks(range(len(sets)))
     ax.set_xticklabels(sets, fontsize=9)
     ax.set_xlim(-0.2, len(sets) - 0.5)
@@ -232,13 +244,15 @@ def tremor_figure(out_png: Path, lib: Dict, examples: List[Dict]) -> Path:
                label=f"tuning subjects (fit the classes), n = {len(amps)}")
     ax.scatter(amps_t, rng.uniform(-0.32, -0.02, len(amps_t)), s=30, facecolor="white", edgecolor="#2a78d6", linewidth=1.4,
                zorder=3, label=f"test subjects (check only), n = {len(amps_t)}")
-    ax.legend(fontsize=7.5, loc="upper left", bbox_to_anchor=(0.0, 0.83))
+    ax.legend(fontsize=7.5, loc="lower right", bbox_to_anchor=(1.0, 0.07))
     for k, c in (("mild", "#86b6ef"), ("moderate", "#3987e5"), ("severe", "#184f95")):
         lo, hi = cl[k]["range_mm"]
         ax.axvspan(lo, hi, color=c, alpha=0.10, zorder=0)
         ax.text(math.sqrt(lo * hi), 0.42, f"{k}\n{lo:.2f}-{hi:.2f} mm", ha="center", va="bottom", fontsize=8.5,
                 color=INK["primary"])
     ax.set_xscale("log")
+    ax.set_xticks([0.03, 0.1, 0.3, 1, 3])
+    ax.set_xticklabels(["0.03", "0.1", "0.3", "1", "3"])
     ax.set_ylim(-0.5, 0.75)
     ax.set_yticks([])
     ax.set_xlabel("tremor at the pen tip, peak (mm, log scale)")
@@ -285,8 +299,8 @@ def tremor_figure(out_png: Path, lib: Dict, examples: List[Dict]) -> Path:
             rows.append([lab, key, len(v), q[0], q[1], q[2]])
         xs.append((gi * 3 + 0.5, lab + f"\n(n = {len(sel)})"))
     ax3.axhline(0.3, color="#eb6834", linewidth=1.5)
-    ax3.text(len(grp) * 3 - 0.6, 0.31, "model setting: 0.3 (amplitude wander) and 0.3 Hz (frequency wander)",
-             ha="right", va="bottom", fontsize=8.5, color=INK["primary"])
+    ax3.text(-0.4, 0.27, "model setting: 0.3 (amplitude wander) and 0.3 Hz (frequency wander)",
+             ha="left", va="top", fontsize=8.5, color=INK["primary"])
     ax3.set_xticks([p for p, _ in xs])
     ax3.set_xticklabels([l for _, l in xs], fontsize=8.5)
     ax3.set_ylabel("median and quartiles")
@@ -334,12 +348,11 @@ def kinematics_figure(out_png: Path, val: Dict) -> Path:
     ax.axvspan(L["speed_mm_s"]["value"] - L["speed_mm_s"]["sd_between"], L["speed_mm_s"]["value"] + L["speed_mm_s"]["sd_between"],
                color="#86b6ef", alpha=0.18, zorder=0)
     ax.axvline(L["speed_mm_s"]["value"], color=INK["secondary"], linewidth=1)
-    ax.text(L["speed_mm_s"]["value"], -0.75, "adults on paper: 30.5 +- 7.9 (LIT CON-20)", ha="center",
-            fontsize=8, color=INK["secondary"])
+
     ax.set_yticks(range(len(sets)))
     ax.set_yticklabels([s[1] for s in sets], fontsize=8.5)
     ax.invert_yaxis()
-    ax.set_xlabel("mean pen-down speed (mm/s)")
+    ax.set_xlabel("mean pen-down speed (mm/s); band: adults on paper 30.5 +- 7.9 (LIT CON-20)")
     ax.set_title("(a) Writing speed", loc="left", fontsize=10.5)
     _grid(ax, "x")
     # 8-12 Hz share
@@ -424,8 +437,9 @@ def spectra_figure(out_png: Path, grid: np.ndarray, groups: Dict[str, np.ndarray
     ax.legend(fontsize=9)
     ax.set_title(title, loc="left", fontsize=11)
     _grid(ax, "both")
-    fig.text(0.01, 0.01, note, fontsize=8, color=INK["secondary"], ha="left", va="bottom")
-    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    import textwrap
+    fig.text(0.01, 0.01, "\n".join(textwrap.wrap(note, 170)), fontsize=8, color=INK["secondary"], ha="left", va="bottom")
+    fig.tight_layout(rect=(0, 0.08, 1, 1))
     fig.savefig(out_png, dpi=110)
     plt.close(fig)
     write_csv(out_png.with_suffix(".csv"), ["group", "Hz", "median_psd"], rows, [note])
