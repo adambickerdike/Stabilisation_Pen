@@ -1,0 +1,43 @@
+existing,rig,relation,note
+EXP-B01,R9,re-specified by EXP-T01 (Parts 1-2) and EXP-T02 (Part 4); Part 3 moves to EXP-T03,"the F/T on the pen holder is replaced by a page-frame plate + an in-line axial cell, so axial and normal forces are measured apart"
+EXP-B02,R9 + R13 stage,"runs as EXP-T03 (optional, after G1)",s2r.exp_b01b02.identify reads the records unchanged
+EXP-B08,R9,merged into EXP-T02 (modulated-force part),
+EXP-Q01,R9,runs on R9 with a skid head,criteria unchanged
+EXP-Q02,R9,Part A merged into EXP-T02; Part B needs a skid nose,
+EXP-V01,R9,merged into EXP-T01,the Rev H lip is one more head
+EXP-D01,R9,runs on R9 with a wheel head,same six papers
+EXP-S01,R10,accuracy/noise into EXP-T04; latency into EXP-T05,the strobe method stays an option
+EXP-B04,R10 / R12,optical scale (procedure 5) into EXP-T04; Hall calibration stays with the nib build,
+EXP-N07,R10,merged into EXP-T04 (sensor) and EXP-T14 (in the pen),
+EXP-J04,R10,merged into EXP-T04,height and roll band
+EXP-J10,R10,"merged into EXP-T04 (accuracy) + power logging; its addition (window errors and their correlation in sim2j's form) is rig.pagesense.sim2j_page_model, judged by AC-T04-02 and AC-T04-06",AC-J10-03 power unchanged
+EXP-J17,R9 frame (static),"is EXP-T12 part A: nose module on R9's head, ball on the force plate, 35/50/75 deg, 60 s each; pass line AC-T12-03 (0.81 A, 1.62 W at 50 deg, +-20 %)","the plate adds the side load itself, so a miss can be traced to the load or to the actuator"
+EXP-V07,R11 (tablet protocol),runs on the tablet protocol once AC-T06-04 shows >= 200 Hz; recorder CSV -> rig.tablet.load_recording -> sim2j/writers.kinematics,12 healthy adults; consent as EXP-H01
+EXP-H01,R11,instrumented by R11; EXP-T06 qualifies it,the human study itself is unchanged
+EXP-V03,R11,inputs from R11 recordings,
+EXP-B03,R12,"force map, back-EMF, R/L into EXP-T07; thermal into EXP-T08; crosstalk into EXP-T09",coupons of study B's actuator
+EXP-N01,R12,merged into EXP-T07,
+EXP-J01,R12,merged into EXP-T08,
+EXP-J03,R12,merged into EXP-T09,
+EXP-J11,R12 / R8,stiffness vs preload into EXP-T08; fatigue and drops stay on R8,
+EXP-J14,R12,merged into EXP-T07/T08,
+EXP-K01,R12,force-constant part into EXP-T07,net force on the housing stays with EXP-T16
+EXP-I05,R13,bandwidth and tremor-rig parts into EXP-T10; K_m into EXP-T07,
+EXP-N03,R13,merged into EXP-T10 (closed loop) and EXP-T08 (modes),
+EXP-B05,R13,in-contact FRF and margins into EXP-T10; free-space parts stay with the nib build,s2r.exp_b05 methods unchanged
+EXP-B09,R13,one-axis precursor EXP-T10; two-axis EXP-T13,REQ-VAL-001
+EXP-Q06,R13,runs on R13 (pencil stage in the nib holder),
+EXP-N05,R13,step 4 into EXP-T11,module life test stays
+EXP-Q08,R13,merged into EXP-T11,
+EXP-N02,R13,merged into EXP-T13,
+EXP-N08,R13,runs on R13 after EXP-T13,
+EXP-N04,R13,merged into EXP-T15,
+EXP-J05,R13,merged into EXP-T15 (heater shell first),
+EXP-J13,R13,merged into EXP-T15,
+EXP-B07,R12 / R13,coupon part into EXP-T08; pen part into EXP-T15,
+EXP-I06,R14,merged into EXP-T16,
+EXP-K02,R14,merged into EXP-T16,
+EXP-J16,R14,merged into EXP-T16,
+EXP-K07,R14,merged into EXP-T16 (rotor condition),only if a rotor is kept
+EXP-I04,R14,superseded by EXP-T16,as EXP-I06 already superseded it for Rev H
+EXP-V05,R13,bench part runs on R13 after EXP-T13,frozen predictions first (section 0.2)

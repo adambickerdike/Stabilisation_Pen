@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (R12 coupon bench concept geometry)",
+    "generated_utc": "2026-09-29T19:15:35+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "rig_coupon.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "script": "mechanics/cad/rig_coupon.py"
+  },
+  "summary": {
+    "parameters_mm": {
+      "base": [
+        240.0,
+        160.0,
+        12.0
+      ],
+      "k3d40": [
+        40.0,
+        40.0,
+        20.0
+      ],
+      "stator_plate": [
+        60.0,
+        60.0,
+        5.0
+      ],
+      "Rs": 20.0,
+      "bowl_t": 3.0,
+      "bowl_r": 11.0,
+      "cap_t": 2.5,
+      "cap_r": 9.0,
+      "arm_d": 5.0,
+      "gap_range": [
+        0.5,
+        1.5
+      ],
+      "gon": [
+        40.0,
+        40.0,
+        22.0
+      ],
+      "gon_c": 30.0,
+      "xyz": [
+        60.0,
+        60.0,
+        60.0
+      ],
+      "post": [
+        20.0,
+        30.0
+      ],
+      "post_x": 100.0,
+      "beam": [
+        220.0,
+        30.0,
+        15.0
+      ],
+      "hall": [
+        16.0,
+        8.0,
+        1.6
+      ],
+      "hall_at": [
+        18.0,
+        0.0,
+        30.0
+      ],
+      "tilt_deg": 10.0,
+      "centring_errors_mm": [
+        0.0,
+        0.05,
+        0.1,
+        0.2
+      ]
+    },
+    "gap_mm": 1.0,
+    "pivot_height_mm": 48.0,
+    "step": "results/rig/cad/rig_coupon_assembly.step",
+    "gap_vs_centring": [
+      {
+        "gap_mm": 0.5,
+        "centring_error_mm": 0.0,
+        "min_gap_at_10deg_mm": 0.5,
+        "gap_change_mm": -0.0
+      },
+      {
+        "gap_mm": 0.5,
+        "centring_error_mm": 0.05,
+        "min_gap_at_10deg_mm": 0.488,
+        "gap_change_mm": -0.012
+      },
+      {
+        "gap_mm": 0.5,
+        "centring_error_mm": 0.1,
+        "min_gap_at_10deg_mm": 0.476,
+        "gap_change_mm": -0.024
+      },
+      {
+        "gap_mm": 0.5,
+        "centring_error_mm": 0.2,
+        "min_gap_at_10deg_mm": 0.453,
+        "gap_change_mm": -0.047
+      },
+      {
+        "gap_mm": 1.5,
+        "centring_error_mm": 0.0,
+        "min_gap_at_10deg_mm": 1.5,
+        "gap_change_mm": -0.0
+      },
+      {
+        "gap_mm": 1.5,
+        "centring_error_mm": 0.05,
+        "min_gap_at_10deg_mm": 1.488,
+        "gap_change_mm": -0.012
+      },
+      {
+        "gap_mm": 1.5,
+        "centring_error_mm": 0.1,
+        "min_gap_at_10deg_mm": 1.476,
+        "gap_change_mm": -0.024
+      },
+      {
+        "gap_mm": 1.5,
+        "centring_error_mm": 0.2,
+        "min_gap_at_10deg_mm": 1.453,
+        "gap_change_mm": -0.047
+      }
+    ],
+    "interference_at_rest": [],
+    "calc": {
+      "plate_choice": "K3D40 +-10 N for the force map (up to about 4 N of coil force), +-50 N for the pull (12.4-22.2 N for Rev J.1's cap, 36 N by the cruder estimate; operating force 200 % FS; MFR AMF-224)",
+      "centring_rule": "the goniometer centre must sit on the sphere centre within a fraction of the gap: see gap_vs_centring (a 0.2 mm error at 10 deg changes a 0.5 mm gap noticeably); set it with the zero-current pull map (the pull is symmetric only when centred)",
+      "thermal": "the coupon fits the printer chamber of R9's frame (active control to 55 C, MFR AMF-231) or a small heated box for the 23/35/50 C runs"
+    },
+    "notes": [
+      "coupon geometry is generic (ASSUMPTION): replace with study B's chosen actuator coupon",
+      "translation coupons: lock the goniometers and use the XYZ stage; the map runs 7 x 7 or 11 x 11 nodes"
+    ]
+  }
+}

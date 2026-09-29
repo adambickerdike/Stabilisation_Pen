@@ -1,0 +1,320 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (R13 loaded-nib rig concept geometry)",
+    "generated_utc": "2026-09-29T19:06:22+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "rig_nib.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "script": "mechanics/cad/rig_nib.py"
+  },
+  "summary": {
+    "parameters_mm": {
+      "pens": {
+        "pen24": {
+          "od": 24.0,
+          "L": 144.0,
+          "nose": [
+            3.0,
+            4.0,
+            32.0
+          ],
+          "mass_g": 90.0
+        },
+        "slim14": {
+          "od": 14.0,
+          "L": 140.0,
+          "nose": [
+            2.5,
+            4.0,
+            22.0
+          ],
+          "mass_g": 35.0
+        }
+      },
+      "ball_d": 0.7,
+      "leaf": {
+        "t": 0.15,
+        "b": 15.0,
+        "L": 50.0
+      },
+      "leaf_x": 30.0,
+      "leaf_y": 30.0,
+      "base": [
+        80.0,
+        90.0,
+        12.0
+      ],
+      "platform": [
+        80.0,
+        90.0,
+        3.0
+      ],
+      "platform_ribs": [
+        4.0,
+        90.0,
+        8.0
+      ],
+      "platform_windows": [
+        24.0,
+        60.0
+      ],
+      "z_platform": 165.0,
+      "vcm_d": 31.8,
+      "vcm_L": 25.4,
+      "coil_d": 22.0,
+      "coil_L": 10.0,
+      "coil_mass_g": 30.0,
+      "vcm_ratings_N": [
+        9.3,
+        29.3
+      ],
+      "vcm_stroke": 12.7,
+      "readhead": [
+        36.0,
+        14.0,
+        12.0
+      ],
+      "scale": [
+        70.0,
+        6.0,
+        0.3
+      ],
+      "arc_r": 95.0,
+      "arc_w": 12.0,
+      "arc_t": 5.0,
+      "arc_y": -34.0,
+      "arc_a": [
+        30.0,
+        82.0
+      ],
+      "roll_ring": [
+        44.0,
+        32.0,
+        10.0
+      ],
+      "collar_od": 30.0,
+      "collar_w": 14.0,
+      "collar_s": 95.0,
+      "inserts": [
+        12.0,
+        14.0,
+        16.0,
+        20.0,
+        24.0,
+        26.0
+      ],
+      "cam_board": [
+        38.0,
+        6.0,
+        38.0
+      ],
+      "cam_lens": [
+        14.0,
+        16.0
+      ],
+      "cam_at": [
+        -30.0,
+        -70.0,
+        25.0
+      ],
+      "theta_range": [
+        35.0,
+        75.0
+      ],
+      "amp_mm": [
+        0.25,
+        2.0
+      ],
+      "f_hz": [
+        1.0,
+        30.0
+      ],
+      "stroke_limit_mm": 3.0
+    },
+    "theta_deg": 50.0,
+    "pen_drawn": "pen24",
+    "step": "results/rig/cad/rig_nib_assembly.step",
+    "by_pen": {
+      "pen24": {
+        "interference_with_bed": [],
+        "clearance_by_theta": [
+          {
+            "theta": 35.0,
+            "pen_top_mm": 92.8,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          },
+          {
+            "theta": 50.0,
+            "pen_top_mm": 118.4,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          },
+          {
+            "theta": 65.0,
+            "pen_top_mm": 135.9,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          },
+          {
+            "theta": 75.0,
+            "pen_top_mm": 142.5,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          }
+        ],
+        "calc": {
+          "head_payload_g": 1056.0,
+          "head_payload_note": "everything hung from the CoreXY head when R13 rides on it (solid 12 mm aluminium base as drawn; a pocketed base saves a few hundred grams); the Core One+ page lists no payload (MFR AMF-231)",
+          "stage_k_N_per_m": 324.0,
+          "leaf_stress_at_3mm_MPa": 108.0,
+          "leaf_buckling_per_leaf_N": 3.33,
+          "weight_carried_N": 2.58,
+          "buckling_note": "hanging, the leaves carry the weight in tension; mounted upright the four leaves buckle at about 13.3 N (Euler, K = 1)",
+          "parasitic_vertical_motion_um_at_2mm": 48.0,
+          "parasitic_note": "the platform rises 0.6 d^2 / L at twice the drive frequency: 48 um at 2 mm; through the nib's own axial spring it modulates the ink force (measured by the force plate, not assumed away)",
+          "moving_mass": {
+            "parts_g": {
+              "collar_insert": 4.3,
+              "collar": 1.7,
+              "roll_ring": 8.7,
+              "arc_carriage": 2.2,
+              "tilt_arc": 32.3,
+              "camera_arm": 11.6,
+              "platform": 50.5,
+              "leaves": 1.2,
+              "clamp_lo_nn": 3.3,
+              "clamp_lo_np": 3.3,
+              "clamp_lo_pn": 3.3,
+              "clamp_lo_pp": 3.3,
+              "coil_link": 1.2,
+              "lm13_scale": 1.0,
+              "camera_module": 15.0,
+              "vcm_coil": 30.0,
+              "pen_module": 90.0
+            },
+            "total_g": 262.9,
+            "stage_without_pen_g": 172.9
+          },
+          "stage_mode_Hz": 5.59,
+          "F_needed_2mm_30Hz_N": 18.03,
+          "F_needed_multitone_capped_40m_s2_N": 11.16,
+          "vcm_continuous_N": 9.3,
+          "vcm_peak_N": 29.3,
+          "corner_verdict": "above continuous, within peak: short bursts only",
+          "vcm_stroke_mm": 12.7,
+          "stroke_needed_mm": 6.0,
+          "alternative": "LVCM-038-038-02 (24.9 N continuous, 78.8 N peak, 0.38 in stroke; MFR AMF-232) covers the 2 mm / 30 Hz corner continuously; its moving mass is not on the page (weigh it)",
+          "collar_inserts_mm": [
+            12.0,
+            14.0,
+            16.0,
+            20.0,
+            24.0,
+            26.0
+          ]
+        }
+      },
+      "slim14": {
+        "interference_with_bed": [],
+        "clearance_by_theta": [
+          {
+            "theta": 35.0,
+            "pen_top_mm": 86.4,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          },
+          {
+            "theta": 50.0,
+            "pen_top_mm": 112.1,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          },
+          {
+            "theta": 65.0,
+            "pen_top_mm": 130.2,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          },
+          {
+            "theta": 75.0,
+            "pen_top_mm": 137.4,
+            "platform_underside_mm": 165.0,
+            "lowest_part_other_than_nib_mm": 6.0,
+            "self_interference": []
+          }
+        ],
+        "calc": {
+          "head_payload_g": 1006.0,
+          "head_payload_note": "everything hung from the CoreXY head when R13 rides on it (solid 12 mm aluminium base as drawn; a pocketed base saves a few hundred grams); the Core One+ page lists no payload (MFR AMF-231)",
+          "stage_k_N_per_m": 324.0,
+          "leaf_stress_at_3mm_MPa": 108.0,
+          "leaf_buckling_per_leaf_N": 3.33,
+          "weight_carried_N": 2.09,
+          "buckling_note": "hanging, the leaves carry the weight in tension; mounted upright the four leaves buckle at about 13.3 N (Euler, K = 1)",
+          "parasitic_vertical_motion_um_at_2mm": 48.0,
+          "parasitic_note": "the platform rises 0.6 d^2 / L at twice the drive frequency: 48 um at 2 mm; through the nib's own axial spring it modulates the ink force (measured by the force plate, not assumed away)",
+          "moving_mass": {
+            "parts_g": {
+              "collar_insert": 9.5,
+              "collar": 1.7,
+              "roll_ring": 8.7,
+              "arc_carriage": 2.2,
+              "tilt_arc": 32.3,
+              "camera_arm": 11.6,
+              "platform": 50.5,
+              "leaves": 1.2,
+              "clamp_lo_nn": 3.3,
+              "clamp_lo_np": 3.3,
+              "clamp_lo_pn": 3.3,
+              "clamp_lo_pp": 3.3,
+              "coil_link": 1.2,
+              "lm13_scale": 1.0,
+              "camera_module": 15.0,
+              "vcm_coil": 30.0,
+              "pen_module": 35.0
+            },
+            "total_g": 213.1,
+            "stage_without_pen_g": 178.1
+          },
+          "stage_mode_Hz": 6.21,
+          "F_needed_2mm_30Hz_N": 14.5,
+          "F_needed_multitone_capped_40m_s2_N": 9.17,
+          "vcm_continuous_N": 9.3,
+          "vcm_peak_N": 29.3,
+          "corner_verdict": "above continuous, within peak: short bursts only",
+          "vcm_stroke_mm": 12.7,
+          "stroke_needed_mm": 6.0,
+          "alternative": "LVCM-038-038-02 (24.9 N continuous, 78.8 N peak, 0.38 in stroke; MFR AMF-232) covers the 2 mm / 30 Hz corner continuously; its moving mass is not on the page (weigh it)",
+          "collar_inserts_mm": [
+            12.0,
+            14.0,
+            16.0,
+            20.0,
+            24.0,
+            26.0
+          ]
+        }
+      }
+    },
+    "notes": [
+      "the stage hangs from the CoreXY head (R9 frame) so the paper stays on R9's force plate; the standard build hangs it from a fixed bridge and moves the paper on the Zaber stages instead",
+      "the voice coil's reaction shakes the head: log the head encoders and the plate; do not assume it away",
+      "moving masses are roll-ups with ASSUMED densities, coil and camera masses: weigh the parts"
+    ]
+  }
+}

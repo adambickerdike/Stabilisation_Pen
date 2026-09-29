@@ -1,0 +1,480 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (rig self-test on synthetic data)",
+    "generated_utc": "2026-09-29T19:17:55+00:00",
+    "git_revision": "2895487-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "selftest.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": "fixed per check (see rig/selftest.py)",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "evidence_status": "SIMULATION (synthetic data through the rig analyses; method check only)",
+  "n_checks": 49,
+  "n_pass": 49,
+  "all_pass": true,
+  "quick": false,
+  "timing_s": {
+    "check_protocol": 1.22,
+    "check_sync": 0.11,
+    "check_uncertainty": 0.0,
+    "check_contact": 0.25,
+    "check_ink": 0.36,
+    "check_coupon": 0.11,
+    "check_frf": 0.36,
+    "check_pagesense": 4.67,
+    "check_thermal": 0.25,
+    "check_collar": 1.59,
+    "check_camera": 0.24,
+    "check_tablet": 0.02
+  },
+  "checks": [
+    {
+      "area": "protocol",
+      "check": "CRC-16/CCITT-FALSE check value",
+      "value": "0x29b1",
+      "truth": "0x29b1",
+      "tolerance": "exact",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "protocol",
+      "check": "good frames recovered, corrupted frames rejected",
+      "value": 1978,
+      "truth": 1978,
+      "tolerance": 0,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "protocol",
+      "check": "config frame parsed (f_cpu)",
+      "value": "600000000",
+      "truth": "600000000",
+      "tolerance": "exact",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "protocol",
+      "check": "missing frames counted from the sequence number",
+      "value": 22,
+      "truth": 22,
+      "tolerance": 0,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "sync",
+      "check": "clock fit residual max (us), must be <= 50",
+      "value": 5.972224698780337,
+      "truth": "<=50",
+      "tolerance": 50,
+      "unit": "us",
+      "pass": true
+    },
+    {
+      "area": "sync",
+      "check": "drift recovered (ppm)",
+      "value": 20.00009894898014,
+      "truth": 20.0,
+      "tolerance": 0.5,
+      "unit": "ppm",
+      "pass": true
+    },
+    {
+      "area": "sync",
+      "check": "cross-correlation delay (ms)",
+      "value": 3.398535140794412,
+      "truth": 3.4,
+      "tolerance": 0.05,
+      "unit": "ms",
+      "pass": true
+    },
+    {
+      "area": "uncertainty",
+      "check": "budgets and TUR table computed",
+      "value": 15,
+      "truth": ">0 rows",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "uncertainty",
+      "check": "simple acceptance when TUR >= 4",
+      "value": "simple/pass",
+      "truth": "simple/pass",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "uncertainty",
+      "check": "guarded acceptance when TUR < 4",
+      "value": "guarded/inconclusive",
+      "truth": "guarded/inconclusive",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G1 contact",
+      "check": "guide stiffness recovered (N/m)",
+      "value": 40.010548097424824,
+      "truth": 40.0,
+      "tolerance": 1.0,
+      "unit": "N/m",
+      "pass": true
+    },
+    {
+      "area": "G1 contact",
+      "check": "kinetic friction (mean over strokes)",
+      "value": 0.14981732354391183,
+      "truth": 0.15,
+      "tolerance": 0.0075,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G1 contact",
+      "check": "friction vector angle to the velocity (deg)",
+      "value": 3.0084573958811767,
+      "truth": 3.0,
+      "tolerance": 1.0,
+      "unit": "deg",
+      "pass": true
+    },
+    {
+      "area": "G1 contact",
+      "check": "static side load R_perp/F_c, worst relative error",
+      "value": 0.011469698970638209,
+      "truth": 0.0,
+      "tolerance": 0.03,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G1 contact",
+      "check": "axial closure F_c - R.a, worst (mN)",
+      "value": 0.1299810388503131,
+      "truth": 0.0,
+      "tolerance": 3.0,
+      "unit": "mN",
+      "pass": true
+    },
+    {
+      "area": "G1 contact",
+      "check": "P-6 predicts R_perp/F_c within 15 % (fraction)",
+      "value": 1.0,
+      "truth": 1.0,
+      "tolerance": 0.1,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G1 ink",
+      "check": "minimum ink force from windows (N)",
+      "value": 0.13949466666666666,
+      "truth": 0.14514143820161507,
+      "tolerance": 0.012,
+      "unit": "N",
+      "pass": true
+    },
+    {
+      "area": "G1 ink",
+      "check": "logistic segment model is monotone and finite (F50, N)",
+      "value": 0.11774788996806984,
+      "truth": "finite, below the window threshold",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "K_f map, worst relative error",
+      "value": 0.003404768342248232,
+      "truth": 0.0,
+      "tolerance": 0.01,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "K_m at the centre (N/sqrt(W))",
+      "value": 0.6607337126404175,
+      "truth": 0.6617361534948089,
+      "tolerance": 0.005,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "parasitic lateral stiffness (N/mm)",
+      "value": 0.6001235328517316,
+      "truth": 0.6,
+      "tolerance": 0.02,
+      "unit": "N/mm",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "attraction at the design gap (N)",
+      "value": 5.189219201410776,
+      "truth": 5.170195192202355,
+      "tolerance": 0.15510585576607064,
+      "unit": "N",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "Hall sensitivity to coil current (um/A)",
+      "value": 5.886117562912606,
+      "truth": 6.0,
+      "tolerance": 0.2,
+      "unit": "um/A",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "loaded mode frequency (Hz)",
+      "value": 419.9600920991531,
+      "truth": 420.0,
+      "tolerance": 4.0,
+      "unit": "Hz",
+      "pass": true
+    },
+    {
+      "area": "G2 coupon",
+      "check": "loaded mode damping ratio",
+      "value": 0.03000526406681514,
+      "truth": 0.03,
+      "tolerance": 0.005,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G3 nib",
+      "check": "multitone peak displacement (mm)",
+      "value": 0.5,
+      "truth": 0.5,
+      "tolerance": 0.05,
+      "unit": "mm",
+      "pass": true
+    },
+    {
+      "area": "G3 nib",
+      "check": "multitone peak acceleration (m/s^2) <= cap",
+      "value": 3.716472995003681,
+      "truth": "<=40",
+      "tolerance": 40,
+      "unit": "m/s^2",
+      "pass": true
+    },
+    {
+      "area": "G3 nib",
+      "check": "transmissibility |T(f)| recovered 1-30 Hz, worst abs error",
+      "value": 0.0007343183520944763,
+      "truth": 0.0,
+      "tolerance": 0.02,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G3 nib",
+      "check": "closed-loop -3 dB bandwidth (Hz)",
+      "value": 68.5790454778085,
+      "truth": 68.97785379387658,
+      "tolerance": 3.448892689693829,
+      "unit": "Hz",
+      "pass": true
+    },
+    {
+      "area": "G3 nib",
+      "check": "ink-error reduction vs locked nib, 3-12 Hz (oracle, 60 Hz servo, 2.5 ms)",
+      "value": 0.7571177190685945,
+      "truth": ">= 0.30 (review target, for this synthetic plant)",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "latency (ms)",
+      "value": 1.6154921355871088,
+      "truth": 1.6,
+      "tolerance": 0.05,
+      "unit": "ms",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "scale/rotation matrix, worst element error",
+      "value": 0.0010886594427059748,
+      "truth": 0.0,
+      "tolerance": 0.01,
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "per-sample noise after 100 ms detrend (um)",
+      "value": 3.7652502655548057,
+      "truth": 3.77,
+      "tolerance": 0.9437400834192025,
+      "unit": "um",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "10 ms window error, vector >= magnitude (DeltaPen metric)",
+      "value": [
+        3.82,
+        6.74
+      ],
+      "truth": "vec >= mag",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "sim2j model: walk step recovered (truth 0 um)",
+      "value": 0.24,
+      "truth": 0.0,
+      "tolerance": 1.0,
+      "unit": "um",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "sim2j model: mode (truth deltapen_held)",
+      "value": "deltapen_held",
+      "truth": "deltapen_held",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "sim2j model: walk step recovered (truth 8 um)",
+      "value": 8.26,
+      "truth": 8.0,
+      "tolerance": 1.0,
+      "unit": "um",
+      "pass": true
+    },
+    {
+      "area": "page sensing",
+      "check": "sim2j model: mode (truth deltapen_walk)",
+      "value": "deltapen_walk",
+      "truth": "deltapen_walk",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "thermal",
+      "check": "two-node R12 (K/W)",
+      "value": 35.00497356436916,
+      "truth": 35.0,
+      "tolerance": 3.5,
+      "unit": "K/W",
+      "pass": true
+    },
+    {
+      "area": "thermal",
+      "check": "two-node R2a (K/W)",
+      "value": 54.98367008680719,
+      "truth": 55.0,
+      "tolerance": 5.5,
+      "unit": "K/W",
+      "pass": true
+    },
+    {
+      "area": "thermal",
+      "check": "two-node C2 (J/K)",
+      "value": 5.996316023371208,
+      "truth": 6.0,
+      "tolerance": 1.2000000000000002,
+      "unit": "J/K",
+      "pass": true
+    },
+    {
+      "area": "thermal",
+      "check": "one-node R_th is the coil-to-room sum (K/W)",
+      "value": 86.6675214433893,
+      "truth": 90.0,
+      "tolerance": 13.5,
+      "unit": "K/W",
+      "pass": true
+    },
+    {
+      "area": "G5 collar",
+      "check": "gate passes where active beats locked by 16 % (light grip)",
+      "value": 0.14298710072879542,
+      "truth": ">= 0.10",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "G5 collar",
+      "check": "gate fails where active beats locked by 6 % (firm grip)",
+      "value": 0.08087279778151071,
+      "truth": "< 0.10",
+      "tolerance": "-",
+      "unit": "",
+      "pass": true
+    },
+    {
+      "area": "camera",
+      "check": "dot-grid calibration residual (um)",
+      "value": 0.4160003137985399,
+      "truth": "< 1",
+      "tolerance": 1.0,
+      "unit": "um",
+      "pass": true
+    },
+    {
+      "area": "camera",
+      "check": "dot centroid error, worst of 10 (px)",
+      "value": 0.06872510616441685,
+      "truth": "< 0.1",
+      "tolerance": 0.1,
+      "unit": "px",
+      "pass": true
+    },
+    {
+      "area": "tablet (EXP-H01 method)",
+      "check": "excess-power A_pp, major axis (mm)",
+      "value": 0.7971373471315363,
+      "truth": 0.8,
+      "tolerance": 0.08000000000000002,
+      "unit": "mm",
+      "pass": true
+    },
+    {
+      "area": "tablet (EXP-H01 method)",
+      "check": "tremor peak frequency (Hz)",
+      "value": 6.0,
+      "truth": 6.0,
+      "tolerance": 0.3,
+      "unit": "Hz",
+      "pass": true
+    },
+    {
+      "area": "tablet (EXP-H01 method)",
+      "check": "sampling rate estimate (Hz)",
+      "value": 200.2709046663373,
+      "truth": 200.0,
+      "tolerance": 5.0,
+      "unit": "Hz",
+      "pass": true
+    }
+  ]
+}

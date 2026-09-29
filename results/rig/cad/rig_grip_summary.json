@@ -1,0 +1,207 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (R14 grip simulant concept geometry)",
+    "generated_utc": "2026-09-29T19:00:56+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "rig_grip.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "script": "mechanics/cad/rig_grip.py"
+  },
+  "summary": {
+    "parameters_mm": {
+      "s_grip": 32.0,
+      "pad": [
+        5.0,
+        10.0,
+        16.0
+      ],
+      "skin_t": 2.0,
+      "pad_roll": [
+        0.0,
+        120.0,
+        -120.0
+      ],
+      "frame_r": [
+        7.0,
+        12.0
+      ],
+      "frame_w": 12.0,
+      "frame_open_deg": 125.0,
+      "cell": [
+        6.0,
+        12.0,
+        47.0
+      ],
+      "strip": {
+        "L": 20.0,
+        "b": 10.0,
+        "t_options": [
+          0.15,
+          0.2,
+          0.25,
+          0.3
+        ]
+      },
+      "pivot_y": 24.0,
+      "leaf": {
+        "L": 40.0,
+        "b": 10.0,
+        "t_options": [
+          0.15,
+          0.2,
+          0.25
+        ]
+      },
+      "z_yoke": 112.0,
+      "z_mount": 158.0,
+      "squeeze_N": [
+        2.0,
+        4.0,
+        8.0
+      ],
+      "grip_ratio_HAP140": [
+        4.3,
+        1.5
+      ],
+      "r_rot": [
+        0.3,
+        0.5,
+        0.7
+      ]
+    },
+    "theta_deg": 50.0,
+    "pen_drawn": "pen24",
+    "step": "results/rig/cad/rig_grip_assembly.step",
+    "checks": [
+      {
+        "pen": "pen24",
+        "theta": 35.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 3.61
+      },
+      {
+        "pen": "pen24",
+        "theta": 50.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 10.49
+      },
+      {
+        "pen": "pen24",
+        "theta": 65.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 16.68
+      },
+      {
+        "pen": "pen24",
+        "theta": 75.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 14.77
+      },
+      {
+        "pen": "slim14",
+        "theta": 35.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 5.65
+      },
+      {
+        "pen": "slim14",
+        "theta": 50.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 12.09
+      },
+      {
+        "pen": "slim14",
+        "theta": 65.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 16.08
+      },
+      {
+        "pen": "slim14",
+        "theta": 75.0,
+        "interference_with_bed": [],
+        "mount_vs_pen": [],
+        "lowest_grip_part_mm": 13.48
+      }
+    ],
+    "calc": {
+      "translation_and_rotation": [
+        {
+          "leaf_t_mm": 0.15,
+          "k_trans_N_per_m": 211.0,
+          "r_rot_0.3": {
+            "k_rot_N_m_per_rad": 0.504,
+            "strip_t_mm": 0.247
+          },
+          "r_rot_0.5": {
+            "k_rot_N_m_per_rad": 0.216,
+            "strip_t_mm": 0.186
+          },
+          "r_rot_0.7": {
+            "k_rot_N_m_per_rad": 0.0926,
+            "strip_t_mm": 0.141
+          }
+        },
+        {
+          "leaf_t_mm": 0.2,
+          "k_trans_N_per_m": 500.0,
+          "r_rot_0.3": {
+            "k_rot_N_m_per_rad": 1.1947,
+            "strip_t_mm": 0.33
+          },
+          "r_rot_0.5": {
+            "k_rot_N_m_per_rad": 0.512,
+            "strip_t_mm": 0.249
+          },
+          "r_rot_0.7": {
+            "k_rot_N_m_per_rad": 0.2194,
+            "strip_t_mm": 0.187
+          }
+        },
+        {
+          "leaf_t_mm": 0.25,
+          "k_trans_N_per_m": 977.0,
+          "r_rot_0.3": {
+            "k_rot_N_m_per_rad": 2.3333,
+            "strip_t_mm": 0.412
+          },
+          "r_rot_0.5": {
+            "k_rot_N_m_per_rad": 1.0,
+            "strip_t_mm": 0.311
+          },
+          "r_rot_0.7": {
+            "k_rot_N_m_per_rad": 0.4286,
+            "strip_t_mm": 0.234
+          }
+        }
+      ],
+      "translation_note": "two leaves, fixed-guided; 0.15/0.20/0.25 mm give about 211/500/977 N/m, spanning HAP-26's k1 95 % CI (228-651 N/m X, 679-1043 N/m Z)",
+      "rotation_note": "r_rot = share of the nib displacement due to rotation about the grip point for a force at the nib (grip point 32 mm behind the ball); strips crossing at midpoints, small-angle stiffness E I / L each (rig_common.cross_pivot_k), four strips",
+      "squeeze_to_normal": {
+        "2 N": 0.47,
+        "4 N": 0.93,
+        "8 N": 1.86
+      },
+      "squeeze_note": "writing force implied by grip-to-normal ratio 4.3 +- 1.5 (children, LIT HAP-140); adult ratios come from EXP-B06/I01",
+      "cell": "TAL221 1000 g (9.8 N capacity, 150 % safe overload; MFR AMF-227) for 2-8 N; the 100 g SEN-14727 would overload"
+    },
+    "pad_block_mass_g": 13.8,
+    "notes": [
+      "the dummy module for the 'same mass locked' condition is printed with tungsten inserts to the module's mass, centre of mass and inertia (weighed and swung on a bifilar pendulum)",
+      "EXP-T17 qualifies the simulant's FRF against its target within +-10 % before any G5 run"
+    ]
+  }
+}

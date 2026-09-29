@@ -1,0 +1,16 @@
+rig,short,decision,U_k2,unit,tolerance,TUR,rule,dominant_term
+R9,"F_c,min vs 0.15 N design and 0.2 N limit","F_c,min against the 50 mN between the 0.15 N design value and the 0.2 N limit (AC-Q02-01)",1.909,mN,50.0,26.19,simple,hysteresis +-0.1 % RO
+R9,"F_c,min below 0.12 N? (20 mN band)","F_c,min against a 20 mN band (is it below 0.12 N, the low end of REQ-RVJ-N05?)",1.909,mN,20.0,10.48,simple,hysteresis +-0.1 % RO
+R9,N at the ink threshold (20 mN band),"N at the ink threshold against a 20 mN band (plate route, cross-check of F_c)",3.581,mN,20.0,5.59,simple,relative linearity error 0.2 % FS (half left after calibration)
+R9,|R_perp| to AC-B01-09's 10 mN,|R_perp| against AC-B01-09's floor (U <= 10 mN required),4.261,mN,10.0,2.35,guarded,relative linearity error 0.2 % FS (half left after calibration)
+R9,friction at N 0.2 N to +-20 %,"friction force at N = 0.2 N, mu 0.15, to +-20 % (6 mN)",4.261,mN,6.0,1.41,guarded,relative linearity error 0.2 % FS (half left after calibration)
+R10,"10 um page error, Zaber truth","10 um RMS page error (REQ-RVJ-N06), Zaber truth",0.377,um,10.0,26.51,simple,Abbe/yaw error of the stacked stages over the sensor offset
+R10,"10 um page error, LM13 truth","10 um RMS page error, LM13 truth",2.643,um,10.0,3.78,guarded,"hysteresis < 4 um, only in windows with a reversal (1 in 5 at 8 Hz tremor)"
+R10,"10 um page error, camera truth","10 um RMS page error, camera truth",2.072,um,10.0,4.83,simple,"dot centroid noise 0.05 px, two frames"
+R10,"DeltaPen median 23.6 um, camera truth","DeltaPen median 23.6 um per window, camera truth",2.072,um,23.6,11.39,simple,"dot centroid noise 0.05 px, two frames"
+R13,"false correction 25 um, stage truth","false correction 25 um (AC-E01-09 bound), stage truth",4.772,um,25.0,5.24,simple,hysteresis < 4 um at reversals
+R13,"30 % of a 250 um residual, stage truth","30 % reduction of 250 um residual (review G3 target), stage truth",4.772,um,75.0,15.72,simple,hysteresis < 4 um at reversals
+R13,"false correction 25 um, scanned ink",false correction 25 um from scanned ink,3.188,um,25.0,7.84,simple,ridge-fit noise per 20 um step (0.2 px)
+R12,K_f within +-10 % of the model,K_f within +-10 % of the model (AC-B03-04 analogue),1.183,%,10.0,8.45,simple,hysteresis 0.1 % FS of 10 N on a +-F swing
+R13,coil rise 20 K limit when at 15 K,coil rise <= 20 K (REQ-RVJ-N03) when the rise is 15 K (5 K from the limit),2.48,K,5.0,2.02,guarded,hot-spot minus mean winding temperature
+all,time alignment 50 us,time alignment <= 50 us (section 0.4),8.406,us,50.0,5.95,simple,affine clock-fit residual over 10 min

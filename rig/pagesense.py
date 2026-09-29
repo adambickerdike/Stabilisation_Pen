@@ -190,3 +190,177 @@ def qualify(t_truth, g_xy, t_sens, dx, dy, um_per_count, valid=None, cal_fractio
             "per_sample": per_sample_noise(t_truth, g_xy, ts, ss, d, valid=vv),
             "stroke": stroke_error(t_truth, g_xy, ts, ss, d, valid=vv),
             "dropouts": dropouts(t_sens, valid if valid is not None else np.ones(n, bool))}
+
+
+# ------------------------------------------------------------------------------------------ sim2j page-noise model (EXP-J10 addition)
+# sim2j/sensing.py (read-only here) models the page sensor as white noise per 1 kHz sample (page_noise), a latency
+# (page_latency), and optionally a DeltaPen-like error drawn every 10 ms: a 2-D vector with lognormal magnitude
+# (DP_MEDIAN, DP_SIGMA = sqrt(2 ln(mean/median))) and uniform direction, either HELD for its window (errors do not
+# add up: 'deltapen_held') or ADDED to the previous ones ('deltapen_walk'). The functions below measure those
+# quantities on paper and say which mode the data support, from the correlation of the 10 ms window errors:
+#   P_k = position error at window k = h_k (held part) + W_k (walk part, W_k = W_{k-1} + w_k)
+#   e_k = P_k - P_{k-1}:   E|e|^2 = 2 E|h|^2 + E|w|^2,   E[e_k . e_{k-1}] = -E|h|^2
+# so the lag-1 covariance of the window errors separates the held and the walking parts.
+
+def position_error_runs(t_truth, g_xy, t_sens, s_xy, delay_s=0.0, valid=None, window_s=0.010, min_run_s=0.5):
+    """Position error P = (s - s0) - (g - g0) (um) every window_s along each dropout-free run of >= min_run_s."""
+    t_sens = np.asarray(t_sens, float)
+    v = np.ones(len(t_sens), bool) if valid is None else np.asarray(valid, bool)
+    runs = []
+    k = 0
+    while k < len(v):
+        if not v[k]:
+            k += 1
+            continue
+        j = k
+        while j < len(v) and v[j]:
+            j += 1
+        ta, tb = t_sens[k], t_sens[j - 1]
+        if tb - ta >= min_run_s:
+            tw = np.arange(ta, tb, window_s)
+            s = np.column_stack([np.interp(tw, t_sens[k:j], np.asarray(s_xy)[k:j, c]) for c in range(2)])
+            g = np.column_stack([np.interp(tw - delay_s, t_truth, np.asarray(g_xy)[:, c]) for c in range(2)])
+            runs.append((s - s[0]) - (g - g[0]))
+        k = j
+    return runs
+
+
+def _held_lognormal_for_window_stats(median_e, mean_e, n=200_000, seed=7):
+    """(median, sigma) of a held lognormal-magnitude error h whose window difference |h_k - h_{k-1}| has the given
+    median and mean (Monte Carlo inversion, fixed seed)."""
+    rng = np.random.default_rng(seed)
+    z1, z2 = rng.standard_normal(n), rng.standard_normal(n)
+    a1, a2 = rng.uniform(0, 2 * np.pi, n), rng.uniform(0, 2 * np.pi, n)
+
+    def stats(sig):
+        m1, m2 = np.exp(sig * z1), np.exp(sig * z2)
+        d = np.hypot(m1 * np.cos(a1) - m2 * np.cos(a2), m1 * np.sin(a1) - m2 * np.sin(a2))
+        return np.median(d), np.mean(d)
+
+    target = mean_e / median_e
+    lo, hi = 1e-3, 3.0
+    r_lo = stats(lo)[1] / stats(lo)[0]
+    if target <= r_lo:
+        sig = lo
+    else:
+        for _ in range(40):
+            mid = 0.5 * (lo + hi)
+            md, mn = stats(mid)
+            if mn / md < target:
+                lo = mid
+            else:
+                hi = mid
+        sig = 0.5 * (lo + hi)
+    md, _ = stats(sig)
+    return float(median_e / md), float(sig)
+
+
+def page_error_model_from_runs(runs, window_s=0.010, drift_s=2.0, max_lag=20) -> Dict:
+    """Held/walk split, sim2j parameters, drift over drift_s and the correlation of window errors.
+
+    The split is fitted on the structure function V(L) = E|P_{k+L} - P_k|^2 = 2 E|h|^2 + L E|w|^2 over lags of 10 ms
+    to drift_s (intercept: held part; slope: walk step), which is far better conditioned than the lag-1 covariance
+    alone (also reported). The mode sim2j should use is the one that dominates V at drift_s."""
+    es = [np.diff(P, axis=0) for P in runs if len(P) > 2]
+    e = np.concatenate(es)
+    v = float(np.mean(np.sum(e ** 2, axis=1)))
+    c1 = float(np.sum([np.sum(x[1:] * x[:-1]) for x in es]) / max(sum(len(x) - 1 for x in es), 1))
+    mag = np.linalg.norm(e, axis=1)
+    med, mean = float(np.median(mag)), float(np.mean(mag))
+    acf = []
+    for L in range(1, max_lag + 1):
+        num = np.sum([np.sum(x[L:] * x[:-L]) for x in es if len(x) > L])
+        den = sum(len(x) - L for x in es if len(x) > L)
+        acf.append(float(num / max(den, 1) / v) if v > 0 else float("nan"))
+    Lmax = int(round(drift_s / window_s))
+    lags = np.unique(np.round(np.geomspace(1, Lmax, 14)).astype(int))
+    sf, Ls, Vs = [], [], []
+    for L in lags:
+        d = [np.sum((P[L:] - P[:-L]) ** 2, axis=1) for P in runs if len(P) > L]
+        if not d:
+            continue
+        d = np.concatenate(d)
+        Ls.append(L)
+        Vs.append(float(np.mean(d)))
+        sf.append({"lag_s": float(L * window_s), "rms_um": float(np.sqrt(np.mean(d))), "p95_um": float(np.sqrt(np.percentile(d, 95))),
+                   "n": int(len(d))})
+    Ls, Vs = np.array(Ls, float), np.array(Vs, float)
+    W = 1.0 / np.maximum(Vs, 1e-12)                       # relative-error weighting across lags
+    A = np.column_stack([np.full_like(Ls, 2.0), Ls]) * W[:, None]
+    coef, *_ = np.linalg.lstsq(A, Vs * W, rcond=None)
+    var_h, var_w = max(0.0, float(coef[0])), max(0.0, float(coef[1]))
+    V_end = 2 * var_h + Lmax * var_w
+    walk_share = float(Lmax * var_w / V_end) if V_end > 0 else float("nan")
+    mode = "deltapen_held" if walk_share < 1 / 3 else ("deltapen_walk" if walk_share > 2 / 3 else "mixed")
+    dd = [np.linalg.norm(P[Lmax:] - P[:-Lmax], axis=1) for P in runs if len(P) > Lmax]
+    dd = np.concatenate(dd) if dd else np.array([np.nan])
+    held_med, held_sig = _held_lognormal_for_window_stats(med, mean) if med > 0 else (float("nan"), float("nan"))
+    return {
+        "window_s": window_s, "n_windows": int(len(e)), "n_runs": len(runs),
+        "window_error_um": {"vec_median": med, "vec_mean": mean, "vec_p95": float(np.percentile(mag, 95))},
+        "held_rms_um": float(np.sqrt(var_h)), "walk_step_rms_um": float(np.sqrt(var_w)),
+        "walk_share_at_drift_s": walk_share,
+        "lag1_correlation": float(c1 / v) if v > 0 else float("nan"),
+        "lag1_estimate": {"held_rms_um": float(np.sqrt(max(0.0, -c1))), "walk_step_rms_um": float(np.sqrt(max(0.0, v + 2 * c1)))},
+        "acf": acf, "mode_supported": mode,
+        "sim2j": {
+            "page_error": mode if mode != "mixed" else "deltapen_held (lower bound) and deltapen_walk (upper bound)",
+            "DP_MEDIAN_walk_m": med * 1e-6, "DP_SIGMA_walk": float(np.sqrt(2 * np.log(max(mean / med, 1.0)))),
+            "DP_MEDIAN_held_m": held_med * 1e-6, "DP_SIGMA_held": held_sig,
+            "note": "walk: the window error itself is the sim2j draw; held: the draw is a position error, so its "
+                    "(median, sigma) are inverted to reproduce the measured window-error median and mean"},
+        "drift": {"over_s": drift_s, "walk_rms_um": float(np.sqrt(Lmax * var_w)),
+                  "raw_rms_um": float(np.sqrt(np.nanmean(dd ** 2))), "raw_p95_um": float(np.nanpercentile(dd, 95)),
+                  "raw_max_um": float(np.nanmax(dd)), "n": int(np.sum(np.isfinite(dd))),
+                  "note": "raw = |P(t + drift_s) - P(t)|, which contains the held error at both ends (a pure held error "
+                          "of DeltaPen's size already gives a raw p95 near or above 0.1 mm); walk = the accumulated part "
+                          "sqrt(L var_w) fitted from the structure function: the quantity REQ-RVJ-C05's drift means"},
+        "structure_function": sf,
+    }
+
+
+def sim2j_page_model(t_truth, g_xy, t_sens, s_xy, delay_s=0.0, valid=None, per_sample_rms_um=None, window_s=0.010,
+                     drift_s=2.0) -> Dict:
+    """The measured page-noise model in sim2j/sensing.py's terms (EXP-J10 addition). Adds the per-sample white noise
+    (page_noise) and the latency (page_latency) when given, and the proposed REQ-RVJ-C05 verdict inputs."""
+    runs = position_error_runs(t_truth, g_xy, t_sens, s_xy, delay_s, valid, window_s)
+    m = page_error_model_from_runs(runs, window_s, drift_s)
+    m["sim2j"]["page_latency_s"] = float(delay_s)
+    if per_sample_rms_um is not None:
+        m["sim2j"]["page_noise_m"] = float(per_sample_rms_um) * 1e-6
+    w = window_errors(t_truth, g_xy, t_sens, s_xy, window_s, delay_s, valid)
+    m["deltapen_metric"] = {"mag_median_um": w["mag_median_um"], "mag_mean_um": w["mag_mae_um"]}
+    m["req_rvj_c05"] = {"drift_walk_um": m["drift"]["walk_rms_um"], "drift_raw_p95_um": m["drift"]["raw_p95_um"],
+                        "drift_line_um": 100.0,
+                        "window_median_um": w["mag_median_um"], "window_mean_um": w["mag_mae_um"],
+                        "deltapen_median_um": DELTAPEN_MEDIAN_UM, "deltapen_mean_um": DELTAPEN_MAE_UM}
+    return m
+
+
+class patch_sim2j:
+    """Context manager that loads a measured model into sim2j's page-sensor code for one run, without editing sim2j:
+        with patch_sim2j(model, sensing_module, run_study_module): run_study_module.stage_page_noise()
+    It sets sensing.DP_MEDIAN / DP_SIGMA to the measured values for the supported mode and restricts
+    run_study.PAGE_MODELS to ('white', mode). Where results are written is sim2j's business (its owner runs it)."""
+
+    def __init__(self, model: Dict, sensing, run_study=None, mode: str = None):
+        self.m, self.s, self.r = model, sensing, run_study
+        sup = model["mode_supported"]
+        self.mode = mode or ("deltapen_walk" if sup == "deltapen_walk" else "deltapen_held")
+        self.saved = {}
+
+    def __enter__(self):
+        key = "walk" if self.mode == "deltapen_walk" else "held"
+        self.saved = {"DP_MEDIAN": self.s.DP_MEDIAN, "DP_SIGMA": self.s.DP_SIGMA}
+        self.s.DP_MEDIAN = self.m["sim2j"][f"DP_MEDIAN_{key}_m"]
+        self.s.DP_SIGMA = self.m["sim2j"][f"DP_SIGMA_{key}"]
+        if self.r is not None:
+            self.saved["PAGE_MODELS"] = self.r.PAGE_MODELS
+            self.r.PAGE_MODELS = ("white", self.mode)
+        return self
+
+    def __exit__(self, *exc):
+        self.s.DP_MEDIAN, self.s.DP_SIGMA = self.saved["DP_MEDIAN"], self.saved["DP_SIGMA"]
+        if self.r is not None:
+            self.r.PAGE_MODELS = self.saved["PAGE_MODELS"]
+        return False

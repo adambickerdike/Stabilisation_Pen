@@ -141,3 +141,89 @@ def pressure_to_newton(p: np.ndarray, cal_levels: np.ndarray, cal_newton: np.nda
     calibration of the pen on the tablet (or against the R9 plate)."""
     order = np.argsort(cal_levels)
     return np.interp(np.asarray(p, float), np.asarray(cal_levels)[order], np.asarray(cal_newton)[order])
+
+
+# ------------------------------------------------------------------------------------------ recorder files
+def load_recording(path: str) -> Dict:
+    """Read a CSV written by rig/tablet/tablet_recorder.html (format rig-tablet-1): metadata ('# key=value'),
+    pen samples, and the four fiducial taps. Positions are mapped to page millimetres with the affine fit of
+    the tapped fiducials (fit_affine) when all four are present; otherwise they stay in CSS pixels."""
+    meta = {}
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            if line.startswith("#") and "=" in line:
+                k, v = line[1:].strip().split("=", 1)
+                meta[k.strip()] = v.strip()
+    cols = load_csv(path)
+    pen = np.asarray(cols.get("pointer_type", np.array([])) == "pen") if "pointer_type" in cols else None
+    keep = pen if pen is not None and pen.any() else np.ones(len(cols["t_ms"]), bool)
+    t = cols["t_ms"][keep] / 1e3
+    order = np.argsort(t, kind="stable")
+    px = np.column_stack([cols["x_px"][keep], cols["y_px"][keep]])[order]
+    out = {"meta": meta, "t_s": t[order], "px": px, "pen_down": cols["pen_down"][keep][order] > 0.5,
+           "pressure": cols["pressure"][keep][order], "stroke": cols["stroke"][keep][order].astype(int),
+           "coalesced": cols["coalesced"][keep][order] > 0.5}
+    for k in ("tilt_x_deg", "tilt_y_deg", "twist_deg"):
+        if k in cols:
+            out[k] = cols[k][keep][order]
+
+    def pairs(s):
+        pts = [p.split() for p in s.split(";") if p.strip()]
+        return np.array([[float(a), float(b)] for a, b in pts]) if pts else np.zeros((0, 2))
+
+    fmm, fpx = pairs(meta.get("fiducials_mm", "")), pairs(meta.get("fiducials_px", ""))
+    out["fiducials_mm"], out["fiducials_px"] = fmm, fpx
+    if len(fmm) >= 3 and len(fpx) == len(fmm):
+        cal = fit_affine(fpx, fmm)
+        out["cal"] = cal
+        out["xy_mm"] = to_mm(cal, px)
+        out["units"] = "mm"
+    else:
+        out["xy_mm"] = px.astype(float)
+        out["units"] = "px"
+    return out
+
+
+def analyse_recording(rec: Dict, fs: float = 200.0, S_ref: Dict = None, win_s: float = 4.0) -> Dict:
+    """Sampling quality, then the excess-power tremor estimate on pen-down runs of >= win_s seconds
+    (human_study_plan.md section 3.6). Raises ValueError when no run is long enough (sentence copying:
+    see the open issue on a pooled-run variant in docs/measurement_rig.md)."""
+    t = rec["t_s"]
+    u, idx = np.unique(t, return_index=True)            # drop duplicate time stamps (coalesced copies)
+    xy = rec["xy_mm"][idx]
+    down = rec["pen_down"][idx]
+    q = sampling_quality(u)
+    tt, xyr = resample(u, xy, fs)
+    k = np.clip(np.searchsorted(u, tt), 0, len(u) - 1)
+    down_r = down[k]
+    out = {"sampling": q, "units": rec.get("units", "?"), "duration_s": float(u[-1] - u[0]),
+           "pen_down_s": float(down_r.sum() / fs)}
+    if "cal" in rec:
+        out["fiducial_fit_rms_mm"] = rec["cal"]["resid_rms_mm"]
+    out["tremor"] = excess_power(xyr, fs, down_r, S_ref=S_ref, win_s=win_s)
+    return out
+
+
+def write_recording_csv(path: str, t_s, px, pen_down, pressure=None, fiducials_mm=None, fiducials_px=None, meta=None):
+    """Write a file in the recorder's format (used by the tests and to convert other tablet logs)."""
+    cols = ["t_ms", "type", "pointer_id", "pointer_type", "x_px", "y_px", "screen_x", "screen_y", "pressure",
+            "tilt_x_deg", "tilt_y_deg", "twist_deg", "altitude_rad", "azimuth_rad", "width_px", "height_px",
+            "buttons", "coalesced", "stroke", "pen_down"]
+    t_s, px, pen_down = np.asarray(t_s, float), np.asarray(px, float), np.asarray(pen_down, bool)
+    pressure = np.where(pen_down, 0.5, 0.0) if pressure is None else np.asarray(pressure, float)
+    stroke = np.cumsum(np.concatenate([[pen_down[0]], pen_down[1:] & ~pen_down[:-1]])).astype(int)
+    m = {"format": "rig-tablet-1", "participant": "SYNTH", "session": "1", "task": "el-loops"}
+    m.update(meta or {})
+    if fiducials_mm is not None:
+        m["fiducials_mm"] = ";".join(f"{a} {b}" for a, b in fiducials_mm)
+        m["fiducials_px"] = ";".join(f"{a} {b}" for a, b in fiducials_px)
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        for k, v in m.items():
+            f.write(f"# {k}={v}\n")
+        f.write(",".join(cols) + "\n")
+        for i in range(len(t_s)):
+            typ = "move"
+            row = [f"{t_s[i] * 1e3:.3f}", typ, "1", "pen", f"{px[i, 0]:.4f}", f"{px[i, 1]:.4f}", "", "",
+                   f"{pressure[i]:.5f}", "20", "-10", "0", "", "", "1", "1", "1" if pen_down[i] else "0", "0",
+                   str(stroke[i]), "1" if pen_down[i] else "0"]
+            f.write(",".join(row) + "\n")

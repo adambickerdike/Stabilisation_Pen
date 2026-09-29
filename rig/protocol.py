@@ -27,6 +27,8 @@ SAMPLE  0x01  seq u32, t_cyc u64, adc i32[8], enc i32[4], cmd i32, flags u16,
               bit2 DUT sync-in level, bit3 strobe on, bit4 disturbance loop on,
               bit5 current loop on, bit6 governor limiting, bit7 overrun seen.
 EVENT   0x02  seq u32, t_cyc u64, kind u8, pad[3], value u32         20 bytes
+              kinds: 1/2 sync out rise/fall, 3/4 DUT sync in rise/fall, 5 camera
+              trigger, 6 strobe, 7 marker, 8 lift, 9 overrun, 10 temperature
 TEXT    0x03  ASCII (status, errors, command echo)
 CONFIG  0x04  ASCII "key=value;..." (f_cpu, adc rate, gains, channel map, ...)
 IMU     0x05  seq u32, t_cyc u64, acc i16[3], gyr i16[3], temp i16, rsv u16  28 bytes
@@ -54,9 +56,20 @@ assert SIZE[T_SAMPLE] == 68 and SIZE[T_EVENT] == 20 and SIZE[T_IMU] == 28 and SI
 
 # event kinds
 EV_SYNC_OUT_RISE, EV_SYNC_OUT_FALL, EV_DUT_RISE, EV_DUT_FALL = 1, 2, 3, 4
-EV_CAM_TRIGGER, EV_STROBE, EV_MARKER, EV_LIFT, EV_OVERRUN = 5, 6, 7, 8, 9
+EV_CAM_TRIGGER, EV_STROBE, EV_MARKER, EV_LIFT, EV_OVERRUN, EV_TEMP = 5, 6, 7, 8, 9, 10
 EVENT_NAMES = {1: "sync_out_rise", 2: "sync_out_fall", 3: "dut_rise", 4: "dut_fall", 5: "cam_trigger",
-               6: "strobe", 7: "marker", 8: "lift", 9: "overrun"}
+               6: "strobe", 7: "marker", 8: "lift", 9: "overrun", 10: "temperature"}
+# EV_TEMP value: bits 31-24 thermocouple channel (0-3), bits 23-0 the MAX31856 linearised temperature
+# register LTCBH:LTCBM:LTCBL (19-bit two's complement in bits 23-5, 0.0078125 C per LSB; MFR AMF-234)
+
+
+def temp_event_to_celsius(value: int):
+    """Decode an EV_TEMP value into (channel, degrees C)."""
+    ch = (int(value) >> 24) & 0xFF
+    raw = int(value) & 0xFFFFFF
+    if raw & 0x800000:
+        raw -= 1 << 24
+    return ch, (raw >> 5) * 0.0078125
 
 SAMPLE_DTYPE = np.dtype([("seq", "<u4"), ("t_cyc", "<u8"), ("adc", "<i4", (8,)), ("enc", "<i4", (4,)),
                          ("cmd", "<i4"), ("flags", "<u2"), ("nadc", "u1"), ("rsv", "u1")])

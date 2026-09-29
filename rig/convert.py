@@ -17,6 +17,10 @@ import numpy as np
 from . import protocol
 
 VREF = 1.2           # ADS131M08 internal reference (MFR AMF-222)
+# The sinc3 decimation filter (SBAS950B Equation 6, OSR <= 1024) has linear phase: its output at DRDY
+# represents the input about 1.5 output periods earlier (CALC: 3(N-1)/2 modulator periods). Encoders are
+# latched at the interrupt, so force-position alignment shifts ADC times by this delay (t_adc_s).
+ADC_GROUP_DELAY_PERIODS = 1.5
 
 # PROPOSED DESIGN: default channel maps per rig. kind: bridge | shunt | volt | hall ; gain = PGA gain
 CHANNEL_MAPS: Dict[str, Dict] = {
@@ -55,6 +59,8 @@ def to_units(session: Dict, chmap: Dict, cal: Dict = None) -> Dict[str, np.ndarr
     s = session["samples"]
     f_cpu = float(session["info"]["config"].get("f_cpu", 600e6))
     out = {"t_s": time_s(s["t_cyc"], f_cpu), "seq": s["seq"].astype(np.int64), "flags": s["flags"]}
+    f_data = float(session["info"]["config"].get("adc_rate", 4000))
+    out["t_adc_s"] = out["t_s"] - ADC_GROUP_DELAY_PERIODS / f_data
     for ch, (name, kind, gain) in chmap.get("adc", {}).items():
         v = adc_volts(s["adc"][:, ch], gain)
         if kind == "bridge":

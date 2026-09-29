@@ -230,29 +230,29 @@ def tur_table() -> List[Dict]:
     """TUR of the main measurands against the tolerance each decision needs (CALC)."""
     B = all_budgets()
     rows = [
-        ("R9", "F_c,min against the 50 mN between the 0.15 N design value and the 0.2 N limit (AC-Q02-01)",
+        ("R9", "F_c,min vs 0.15 N design and 0.2 N limit", "F_c,min against the 50 mN between the 0.15 N design value and the 0.2 N limit (AC-Q02-01)",
          B["axial_force"], 50.0, "mN"),
-        ("R9", "F_c,min against a 20 mN band (is it below 0.12 N, the low end of REQ-RVJ-N05?)", B["axial_force"],
-         20.0, "mN"),
-        ("R9", "N at the ink threshold against a 20 mN band (plate route, cross-check of F_c)", B["normal_force_2N"],
-         20.0, "mN"),
-        ("R9", "|R_perp| against AC-B01-09's floor (U <= 10 mN required)", B["tangential_force_2N"], 10.0, "mN"),
-        ("R9", "friction force at N = 0.2 N, mu 0.15, to +-20 % (6 mN)", B["tangential_force_2N"], 6.0, "mN"),
-        ("R10", "10 um RMS page error (REQ-RVJ-N06), Zaber truth", B["page_truth_zaber"], 10.0, "um"),
-        ("R10", "10 um RMS page error, LM13 truth", B["page_truth_lm13"], 10.0, "um"),
-        ("R10", "10 um RMS page error, camera truth", B["page_truth_camera"], 10.0, "um"),
-        ("R10", "DeltaPen median 23.6 um per window, camera truth", B["page_truth_camera"], 23.6, "um"),
-        ("R13", "false correction 25 um (AC-E01-09 bound), stage truth", B["stage_truth"], 25.0, "um"),
-        ("R13", "30 % reduction of 250 um residual (review G3 target), stage truth", B["stage_truth"], 75.0, "um"),
-        ("R13", "false correction 25 um from scanned ink", B["ink_path"], 25.0, "um"),
-        ("R12", "K_f within +-10 % of the model (AC-B03-04 analogue)", B["km_point"], 10.0, "%"),
-        ("R13", "coil rise <= 20 K (REQ-RVJ-N03) when the rise is 15 K (5 K from the limit)", B["coil_temperature"],
-         5.0, "K"),
-        ("all", "time alignment <= 50 us (section 0.4)", B["sync"], 50.0, "us"),
+        ("R9", "F_c,min below 0.12 N? (20 mN band)", "F_c,min against a 20 mN band (is it below 0.12 N, the low end of REQ-RVJ-N05?)",
+         B["axial_force"], 20.0, "mN"),
+        ("R9", "N at the ink threshold (20 mN band)", "N at the ink threshold against a 20 mN band (plate route, cross-check of F_c)",
+         B["normal_force_2N"], 20.0, "mN"),
+        ("R9", "|R_perp| to AC-B01-09's 10 mN", "|R_perp| against AC-B01-09's floor (U <= 10 mN required)", B["tangential_force_2N"], 10.0, "mN"),
+        ("R9", "friction at N 0.2 N to +-20 %", "friction force at N = 0.2 N, mu 0.15, to +-20 % (6 mN)", B["tangential_force_2N"], 6.0, "mN"),
+        ("R10", "10 um page error, Zaber truth", "10 um RMS page error (REQ-RVJ-N06), Zaber truth", B["page_truth_zaber"], 10.0, "um"),
+        ("R10", "10 um page error, LM13 truth", "10 um RMS page error, LM13 truth", B["page_truth_lm13"], 10.0, "um"),
+        ("R10", "10 um page error, camera truth", "10 um RMS page error, camera truth", B["page_truth_camera"], 10.0, "um"),
+        ("R10", "DeltaPen median 23.6 um, camera truth", "DeltaPen median 23.6 um per window, camera truth", B["page_truth_camera"], 23.6, "um"),
+        ("R13", "false correction 25 um, stage truth", "false correction 25 um (AC-E01-09 bound), stage truth", B["stage_truth"], 25.0, "um"),
+        ("R13", "30 % of a 250 um residual, stage truth", "30 % reduction of 250 um residual (review G3 target), stage truth", B["stage_truth"], 75.0, "um"),
+        ("R13", "false correction 25 um, scanned ink", "false correction 25 um from scanned ink", B["ink_path"], 25.0, "um"),
+        ("R12", "K_f within +-10 % of the model", "K_f within +-10 % of the model (AC-B03-04 analogue)", B["km_point"], 10.0, "%"),
+        ("R13", "coil rise 20 K limit when at 15 K", "coil rise <= 20 K (REQ-RVJ-N03) when the rise is 15 K (5 K from the limit)",
+         B["coil_temperature"], 5.0, "K"),
+        ("all", "time alignment 50 us", "time alignment <= 50 us (section 0.4)", B["sync"], 50.0, "us"),
     ]
     out = []
-    for rig, what, b, tol, unit in rows:
-        out.append({"rig": rig, "decision": what, "measurand": b.measurand, "U_k2": round(b.U, 3), "unit": unit,
+    for rig, short, what, b, tol, unit in rows:
+        out.append({"rig": rig, "short": short, "decision": what, "measurand": b.measurand, "U_k2": round(b.U, 3), "unit": unit,
                     "tolerance": tol, "TUR": round(tur(tol, b.U), 2), "rule": "simple" if tur(tol, b.U) >= 4
                     else "guarded", "dominant_term": b.dominant()})
     return out

@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tablet Recorder</title>
+<!--
+  Tablet recorder for EXP-H01 / EXP-T06 (study M, rig R11). PROPOSED DESIGN; runs offline, sends nothing anywhere.
+
+  Use: paper clipped on an EMR tablet whose pen writes real ink (for example a Wacom Intuos Pro Paper Edition
+  with the Finetip or Ballpoint pen, MFR OPT-86), tablet mapped to this screen, browser full screen.
+  1. Enter a pseudonymous participant code (never a name), the task and the paper's fiducial positions.
+  2. "Calibrate": tap the four printed fiducials in order with the pen (maps tablet pixels to page millimetres).
+  3. "Record", write, "Stop", "Download CSV". Load it with rig.tablet.load_recording().
+
+  Logged per pen sample (Pointer Events, with coalesced samples when the browser offers them): the event time
+  (ms since the page's time origin), position in CSS pixels, pressure, tilt, twist, altitude/azimuth when
+  present, buttons, and whether the sample came from getCoalescedEvents(). Times are the host's event times,
+  not the tablet's acquisition times: latency cannot be measured this way; jitter is reported.
+-->
+<style>
+  :root {
+    --bg: #fcfcfb; --panel: #f3f2ee; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781; --line: #e1e0d9;
+    --accent: #2a78d6; --good: #0ca30c; --warn: #fab219; --bad: #d03b3b; --trace: #2a78d6; --fid: #eb6834;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151514; --panel: #1f1f1d; --ink: #f2f1ec; --ink2: #c9c8c1; --muted: #8f8e88; --line: #34332f;
+      --accent: #6da7ec; --good: #3fc43f; --warn: #f5c04a; --bad: #ef6b6b; --trace: #6da7ec; --fid: #f08a5d;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151514; --panel: #1f1f1d; --ink: #f2f1ec; --ink2: #c9c8c1; --muted: #8f8e88; --line: #34332f;
+    --accent: #6da7ec; --good: #3fc43f; --warn: #f5c04a; --bad: #ef6b6b; --trace: #6da7ec; --fid: #f08a5d;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; padding: 10px 16px;
+    background: var(--panel); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 15px; margin: 0 12px 0 0; font-weight: 600; }
+  label { display: flex; flex-direction: column; font-size: 12px; color: var(--ink2); gap: 2px; }
+  input, select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 6px; min-width: 0; }
+  input.short { width: 90px; } input.tiny { width: 64px; }
+  button { font: inherit; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--ink); cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  button:disabled { opacity: 0.45; cursor: default; }
+  #status { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 6px 16px; font-size: 12px; color: var(--ink2);
+    border-bottom: 1px solid var(--line); }
+  #status b { color: var(--ink); font-weight: 600; }
+  #state { font-weight: 600; }
+  #state.rec { color: var(--bad); } #state.cal { color: var(--fid); } #state.idle { color: var(--muted); }
+  #pad { position: relative; flex: 1; touch-action: none; user-select: none; -webkit-user-select: none; }
+  #wrap { display: flex; flex-direction: column; height: 100%; }
+  canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  #msg { position: absolute; left: 16px; top: 12px; right: 16px; color: var(--muted); font-size: 13px; pointer-events: none; }
+  .note { font-size: 11px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <header>
+    <h1>Tablet recorder (EXP-H01)</h1>
+    <label>Participant code <input id="pid" class="short" placeholder="P007" autocomplete="off"></label>
+    <label>Session <input id="sess" class="tiny" value="1"></label>
+    <label>Task
+      <select id="task">
+        <option>spiral</option><option>el-loops</option><option>dot-hold</option>
+        <option>sentence-copy</option><option>free</option>
+      </select></label>
+    <label>Hand <select id="hand"><option>right</option><option>left</option></select></label>
+    <label>Pen <input id="pen" class="short" value="Finetip gel"></label>
+    <label>Fiducials (mm) x1,y1;x2,y2;x3,y3;x4,y4
+      <input id="fidmm" value="10,10;200,10;200,287;10,287" style="width:220px"></label>
+    <button id="bCal">Calibrate</button>
+    <button id="bRec" class="primary">Record</button>
+    <button id="bStop" disabled>Stop</button>
+    <button id="bSave" disabled>Download CSV</button>
+    <button id="bClear">Clear</button>
+    <button id="bFull">Full screen</button>
+  </header>
+  <div id="status">
+    <span>State: <span id="state" class="idle">idle</span></span>
+    <span>Samples <b id="nS">0</b></span>
+    <span>Coalesced <b id="nC">0</b></span>
+    <span>Rate <b id="rate">-</b> Hz</span>
+    <span>Jitter <b id="jit">-</b> ms</span>
+    <span>Pen-down <b id="down">0.0</b> s</span>
+    <span>Pressure <b id="pr">-</b></span>
+    <span>Tilt <b id="tilt">-</b></span>
+    <span>Fiducials <b id="fid">0/4</b></span>
+    <span>Ignored non-pen events <b id="ign">0</b></span>
+  </div>
+  <div id="pad">
+    <canvas id="cv"></canvas>
+    <div id="msg">Pen input only. Calibrate first: tap the four printed fiducials in the order given above. Nothing leaves this computer.</div>
+  </div>
+</div>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const pad = $("pad"), cv = $("cv"), ctx = cv.getContext("2d");
+const S = { mode: "idle", rows: [], fids: [], stroke: 0, down: false, t0: null, downTime: 0, lastDownT: null,
+            nC: 0, ign: 0, saved: true, lastT: [] };
+const COLS = ["t_ms", "type", "pointer_id", "pointer_type", "x_px", "y_px", "screen_x", "screen_y", "pressure",
+              "tilt_x_deg", "tilt_y_deg", "twist_deg", "altitude_rad", "azimuth_rad", "width_px", "height_px",
+              "buttons", "coalesced", "stroke", "pen_down"];
+
+function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function resize() {
+  const r = pad.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+  cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d);
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+  redraw();
+}
+function redraw() {
+  const r = pad.getBoundingClientRect();
+  ctx.clearRect(0, 0, r.width, r.height);
+  ctx.lineWidth = 1.2; ctx.strokeStyle = css("--trace"); ctx.lineCap = "round";
+  let last = null;
+  for (const row of S.rows) {
+    if (row.type !== "move" && row.type !== "down") { last = null; continue; }
+    if (!row.pen_down) { last = null; continue; }
+    const x = row.x_px - r.left, y = row.y_px - r.top;
+    if (last && last.stroke === row.stroke) { ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke(); }
+    last = { x, y, stroke: row.stroke };
+  }
+  ctx.fillStyle = css("--fid");
+  S.fids.forEach((f, i) => { ctx.beginPath(); ctx.arc(f.x - r.left, f.y - r.top, 5, 0, 2 * Math.PI); ctx.fill();
+    ctx.fillText(String(i + 1), f.x - r.left + 8, f.y - r.top - 8); });
+}
+function setMode(m) {
+  S.mode = m;
+  const st = $("state"); st.textContent = m; st.className = m === "recording" ? "rec" : m === "calibrating" ? "cal" : "idle";
+  $("bRec").disabled = m === "recording"; $("bStop").disabled = m !== "recording";
+  $("bCal").disabled = m === "recording"; $("bSave").disabled = S.rows.length === 0 || m === "recording";
+}
+function num(v, d = 4) { return (v === undefined || v === null || Number.isNaN(v)) ? "" : (+v).toFixed(d); }
+
+function sample(e, type, coalesced) {
+  const penDown = (e.buttons & 1) === 1 || (type === "down");
+  return { t_ms: e.timeStamp, type, pointer_id: e.pointerId, pointer_type: e.pointerType,
+           x_px: e.clientX, y_px: e.clientY, screen_x: e.screenX, screen_y: e.screenY, pressure: e.pressure,
+           tilt_x_deg: e.tiltX, tilt_y_deg: e.tiltY, twist_deg: e.twist, altitude_rad: e.altitudeAngle,
+           azimuth_rad: e.azimuthAngle, width_px: e.width, height_px: e.height, buttons: e.buttons,
+           coalesced: coalesced ? 1 : 0, stroke: S.stroke, pen_down: penDown ? 1 : 0 };
+}
+function stats(row) {
+  $("nS").textContent = S.rows.length; $("nC").textContent = S.nC;
+  $("pr").textContent = num(row.pressure, 3);
+  $("tilt").textContent = `${num(row.tilt_x_deg, 0)}/${num(row.tilt_y_deg, 0)}`;
+  S.lastT.push(row.t_ms); if (S.lastT.length > 400) S.lastT.shift();
+  if (S.lastT.length > 20) {
+    const dt = []; for (let i = 1; i < S.lastT.length; i++) { const d = S.lastT[i] - S.lastT[i - 1]; if (d > 0) dt.push(d); }
+    dt.sort((a, b) => a - b);
+    const med = dt[Math.floor(dt.length / 2)], mean = dt.reduce((a, b) => a + b, 0) / dt.length;
+    const sd = Math.sqrt(dt.reduce((a, b) => a + (b - mean) ** 2, 0) / dt.length);
+    $("rate").textContent = (1000 / med).toFixed(0); $("jit").textContent = sd.toFixed(2);
+  }
+  $("down").textContent = (S.downTime / 1000).toFixed(1);
+}
+function record(e, type) {
+  if (e.pointerType !== "pen") { S.ign++; $("ign").textContent = S.ign; return; }
+  e.preventDefault();
+  if (S.mode === "calibrating") {
+    if (type === "down" && S.fids.length < 4) {
+      S.fids.push({ x: e.clientX, y: e.clientY, t_ms: e.timeStamp });
+      $("fid").textContent = `${S.fids.length}/4`;
+      redraw();
+      if (S.fids.length === 4) setMode("idle");
+    }
+    return;
+  }
+  if (S.mode !== "recording") return;
+  if (type === "down") { S.stroke++; S.down = true; S.lastDownT = e.timeStamp; }
+  const list = (type === "move" && e.getCoalescedEvents) ? e.getCoalescedEvents() : [];
+  if (list.length > 1) {
+    for (const c of list) { const r = sample(c, "move", true); S.rows.push(r); S.nC++; }
+  } else {
+    S.rows.push(sample(e, type, false));
+  }
+  if (type === "up" || type === "cancel") {
+    if (S.down && S.lastDownT !== null) S.downTime += e.timeStamp - S.lastDownT;
+    S.down = false; S.lastDownT = null;
+  }
+  S.saved = false;
+  const last = S.rows[S.rows.length - 1];
+  stats(last);
+  if (type !== "move" || S.rows.length % 4 === 0) redraw();
+}
+pad.addEventListener("pointerdown", (e) => { pad.setPointerCapture(e.pointerId); record(e, "down"); });
+pad.addEventListener("pointermove", (e) => record(e, "move"));
+pad.addEventListener("pointerup", (e) => record(e, "up"));
+pad.addEventListener("pointercancel", (e) => record(e, "cancel"));
+pad.addEventListener("contextmenu", (e) => e.preventDefault());
+
+function parseFid() {
+  return $("fidmm").value.split(";").map((p) => p.split(",").map(Number)).filter((p) => p.length === 2 && p.every(Number.isFinite));
+}
+function csvText() {
+  const r = pad.getBoundingClientRect();
+  const meta = [
+    `# format=rig-tablet-1`, `# created=${new Date().toISOString()}`, `# participant=${$("pid").value}`,
+    `# session=${$("sess").value}`, `# task=${$("task").value}`, `# hand=${$("hand").value}`, `# pen=${$("pen").value}`,
+    `# time_origin_ms=${performance.timeOrigin}`, `# user_agent=${navigator.userAgent.replace(/[\r\n,]/g, " ")}`,
+    `# screen_px=${screen.width}x${screen.height}`, `# device_pixel_ratio=${window.devicePixelRatio}`,
+    `# pad_rect_px=${r.left},${r.top},${r.width},${r.height}`,
+    `# fiducials_mm=${parseFid().map((p) => p.join(" ")).join(";")}`,
+    `# fiducials_px=${S.fids.map((f) => `${f.x} ${f.y}`).join(";")}`,
+    `# evidence_status=MEASURED if recorded with a participant on a tablet; times are host event times`,
+  ];
+  const lines = [meta.join("\n"), COLS.join(",")];
+  for (const row of S.rows) {
+    lines.push(COLS.map((c) => {
+      const v = row[c];
+      if (typeof v === "number") return c === "t_ms" ? v.toFixed(3) : (Number.isInteger(v) ? String(v) : v.toFixed(5));
+      return v === undefined || v === null ? "" : String(v);
+    }).join(","));
+  }
+  return lines.join("\n") + "\n";
+}
+$("bCal").onclick = () => { S.fids = []; $("fid").textContent = "0/4"; setMode("calibrating"); redraw(); };
+$("bRec").onclick = () => {
+  if (!/^[A-Za-z0-9_-]{1,16}$/.test($("pid").value)) { alert("Enter a pseudonymous participant code (letters, digits, - or _), never a name."); return; }
+  if (S.fids.length < 4 && !confirm("No fiducial calibration yet: positions will stay in screen pixels. Record anyway?")) return;
+  setMode("recording");
+};
+$("bStop").onclick = () => setMode("idle");
+$("bSave").onclick = () => {
+  const blob = new Blob([csvText()], { type: "text/csv" });
+  const a = document.createElement("a");
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  a.href = URL.createObjectURL(blob);
+  a.download = `tablet_${$("pid").value}_s${$("sess").value}_${$("task").value}_${stamp}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  S.saved = true;
+};
+$("bClear").onclick = () => {
+  if (!S.saved && !confirm("Discard the unsaved recording?")) return;
+  Object.assign(S, { rows: [], stroke: 0, nC: 0, downTime: 0, lastT: [], saved: true });
+  ["nS", "nC"].forEach((k) => ($(k).textContent = "0")); $("down").textContent = "0.0";
+  setMode("idle"); redraw();
+};
+$("bFull").onclick = () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); };
+window.addEventListener("resize", resize);
+window.addEventListener("beforeunload", (e) => { if (!S.saved) { e.preventDefault(); e.returnValue = ""; } });
+setMode("idle");
+resize();
+</script>
+</body>
+</html>

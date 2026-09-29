@@ -1,0 +1,1556 @@
+{
+  "meta": {
+    "evidence_status": "CALCULATION (budgets, envelopes) and SIMULATION (self-test on synthetic data)",
+    "generated_utc": "2026-09-29T19:14:26+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_all.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "bom_rows": 52,
+  "bom_seen_price_floor_usd": {
+    "DAQ-1:all": 133.0,
+    "DAQ-1:low-cost": 23.8,
+    "GT:reference": 18510.0,
+    "GT:all": 1999.0,
+    "R9:all": 925.0,
+    "R9:low-cost": 29.0,
+    "R12:all": 172.0
+  },
+  "evidence_rows": 31,
+  "experiments": {
+    "experiments": 17,
+    "criteria": 50,
+    "merge_rows": 42
+  },
+  "uncertainty_budgets": {
+    "axial_force": {
+      "measurand": "axial refill force F_c (R9 cartridge)",
+      "unit": "mN",
+      "k": 2.0,
+      "u": 0.9544425365392909,
+      "U": 1.9088850730785818,
+      "dominant": "hysteresis +-0.1 % RO",
+      "note": "after in-situ dead-weight calibration at the test angle; flexure-guide force corrected",
+      "lines": [
+        {
+          "name": "hysteresis +-0.1 % RO",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "mN",
+          "source": "MFR AMF-225 (FUTEK LSB200 drawing FI1455-B)"
+        },
+        {
+          "name": "non-repeatability +-0.05 % RO",
+          "value": 0.5,
+          "distribution": "rect",
+          "u": 0.2886751345948129,
+          "unit": "mN",
+          "source": "MFR AMF-225"
+        },
+        {
+          "name": "residual non-linearity after 5-point calibration",
+          "value": 0.3,
+          "distribution": "rect",
+          "u": 0.17320508075688773,
+          "unit": "mN",
+          "source": "ASSUMPTION (30 % of the +-0.1 % RO spec left after a 2nd-order fit)"
+        },
+        {
+          "name": "zero shift, +-1 K during a run (0.018 % RO/K)",
+          "value": 0.18000000000000002,
+          "distribution": "rect",
+          "u": 0.10392304845413265,
+          "unit": "mN",
+          "source": "MFR AMF-225"
+        },
+        {
+          "name": "ADC noise averaged over the window",
+          "value": 0.005217491947499509,
+          "distribution": "normal",
+          "u": 0.005217491947499509,
+          "unit": "mN",
+          "source": "MFR AMF-221 (ADS131M04/M08 Table 7-1) / CALC"
+        },
+        {
+          "name": "flexure-guide force correction k_g*dx (40 N/m +-5 %, dx <= 0.5 mm)",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "mN",
+          "source": "PROPOSED DESIGN / ASSUMPTION (k_g calibrated to 5 %)"
+        },
+        {
+          "name": "dead-weight standard (class M1, 5-50 g)",
+          "value": 0.02,
+          "distribution": "rect",
+          "u": 0.011547005383792516,
+          "unit": "mN",
+          "source": "ASSUMPTION (OIML class M1 tolerance)"
+        },
+        {
+          "name": "inertia of refill+holder (6 g) at <= 0.1 m/s^2 in steady strokes",
+          "value": 0.6000000000000001,
+          "distribution": "rect",
+          "u": 0.3464101615137755,
+          "unit": "mN",
+          "source": "CALC"
+        }
+      ]
+    },
+    "normal_force_2N": {
+      "measurand": "normal force on the paper (R9 plate, K3D40 +-2 N)",
+      "unit": "mN",
+      "k": 2.0,
+      "u": 1.7904841058588972,
+      "U": 3.5809682117177943,
+      "dominant": "relative linearity error 0.2 % FS (half left after calibration)",
+      "note": "3x3 matrix and position correction fitted in situ; residuals replace these lines once measured",
+      "lines": [
+        {
+          "name": "relative linearity error 0.2 % FS (half left after calibration)",
+          "value": 2.0,
+          "distribution": "rect",
+          "u": 1.1547005383792517,
+          "unit": "mN",
+          "source": "MFR AMF-224 (K3D40 data sheet, 5 Oct 2016) / ASSUMPTION (half removed)"
+        },
+        {
+          "name": "zero-signal hysteresis 0.1 % FS",
+          "value": 2.0,
+          "distribution": "rect",
+          "u": 1.1547005383792517,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "creep 0.05 % FS",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "zero drift 0.05 % FS/K, +-0.5 K between zeroings",
+          "value": 0.5,
+          "distribution": "rect",
+          "u": 0.2886751345948129,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "eccentric load 0.5 % FS/100 mm, +-30 mm, 80 % corrected",
+          "value": 0.6,
+          "distribution": "rect",
+          "u": 0.34641016151377546,
+          "unit": "mN",
+          "source": "MFR AMF-224 / ASSUMPTION (position correction removes 80 %)"
+        },
+        {
+          "name": "ADC noise (1 s average)",
+          "value": 0.05,
+          "distribution": "normal",
+          "u": 0.05,
+          "unit": "mN",
+          "source": "CALC from MFR AMF-221"
+        }
+      ]
+    },
+    "tangential_force_2N": {
+      "measurand": "tangential force on the paper (R9 plate, K3D40 +-2 N)",
+      "unit": "mN",
+      "k": 2.0,
+      "u": 2.130532014935863,
+      "U": 4.261064029871726,
+      "dominant": "relative linearity error 0.2 % FS (half left after calibration)",
+      "note": "3x3 matrix and position correction fitted in situ; residuals replace these lines once measured",
+      "lines": [
+        {
+          "name": "relative linearity error 0.2 % FS (half left after calibration)",
+          "value": 2.0,
+          "distribution": "rect",
+          "u": 1.1547005383792517,
+          "unit": "mN",
+          "source": "MFR AMF-224 (K3D40 data sheet, 5 Oct 2016) / ASSUMPTION (half removed)"
+        },
+        {
+          "name": "zero-signal hysteresis 0.1 % FS",
+          "value": 2.0,
+          "distribution": "rect",
+          "u": 1.1547005383792517,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "creep 0.05 % FS",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "zero drift 0.05 % FS/K, +-0.5 K between zeroings",
+          "value": 0.5,
+          "distribution": "rect",
+          "u": 0.2886751345948129,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "eccentric load 0.5 % FS/100 mm, +-30 mm, 80 % corrected",
+          "value": 0.6,
+          "distribution": "rect",
+          "u": 0.34641016151377546,
+          "unit": "mN",
+          "source": "MFR AMF-224 / ASSUMPTION (position correction removes 80 %)"
+        },
+        {
+          "name": "crosstalk z->x/y 1 % FS, 90 % removed by the matrix",
+          "value": 2.0,
+          "distribution": "rect",
+          "u": 1.1547005383792517,
+          "unit": "mN",
+          "source": "MFR AMF-224 / ASSUMPTION (matrix removes 90 %)"
+        },
+        {
+          "name": "ADC noise (1 s average)",
+          "value": 0.05,
+          "distribution": "normal",
+          "u": 0.05,
+          "unit": "mN",
+          "source": "CALC from MFR AMF-221"
+        }
+      ]
+    },
+    "normal_force_10N": {
+      "measurand": "normal force on the paper (R9 plate, K3D40 +-10 N)",
+      "unit": "mN",
+      "k": 2.0,
+      "u": 8.94906885286583,
+      "U": 17.89813770573166,
+      "dominant": "relative linearity error 0.2 % FS (half left after calibration)",
+      "note": "3x3 matrix and position correction fitted in situ; residuals replace these lines once measured",
+      "lines": [
+        {
+          "name": "relative linearity error 0.2 % FS (half left after calibration)",
+          "value": 10.0,
+          "distribution": "rect",
+          "u": 5.773502691896258,
+          "unit": "mN",
+          "source": "MFR AMF-224 (K3D40 data sheet, 5 Oct 2016) / ASSUMPTION (half removed)"
+        },
+        {
+          "name": "zero-signal hysteresis 0.1 % FS",
+          "value": 10.0,
+          "distribution": "rect",
+          "u": 5.773502691896258,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "creep 0.05 % FS",
+          "value": 5.0,
+          "distribution": "rect",
+          "u": 2.886751345948129,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "zero drift 0.05 % FS/K, +-0.5 K between zeroings",
+          "value": 2.5,
+          "distribution": "rect",
+          "u": 1.4433756729740645,
+          "unit": "mN",
+          "source": "MFR AMF-224"
+        },
+        {
+          "name": "eccentric load 0.5 % FS/100 mm, +-30 mm, 80 % corrected",
+          "value": 2.9999999999999996,
+          "distribution": "rect",
+          "u": 1.7320508075688772,
+          "unit": "mN",
+          "source": "MFR AMF-224 / ASSUMPTION (position correction removes 80 %)"
+        },
+        {
+          "name": "ADC noise (1 s average)",
+          "value": 0.05,
+          "distribution": "normal",
+          "u": 0.05,
+          "unit": "mN",
+          "source": "CALC from MFR AMF-221"
+        }
+      ]
+    },
+    "page_truth_zaber": {
+      "measurand": "truth displacement over a 10 ms window (2 x Zaber X-LDM110C)",
+      "unit": "um",
+      "k": 2.0,
+      "u": 0.18862005771072943,
+      "U": 0.37724011542145885,
+      "dominant": "Abbe/yaw error of the stacked stages over the sensor offset",
+      "note": "",
+      "lines": [
+        {
+          "name": "encoder count 1 nm, two endpoints",
+          "value": 0.0014142135623730952,
+          "distribution": "rect",
+          "u": 0.0008164965809277262,
+          "unit": "um",
+          "source": "MFR AMF-229"
+        },
+        {
+          "name": "accuracy 1 um over 110 mm (local slope over <= 2 mm)",
+          "value": 0.01818181818181818,
+          "distribution": "rect",
+          "u": 0.01049727762162956,
+          "unit": "um",
+          "source": "MFR AMF-229 / CALC"
+        },
+        {
+          "name": "repeatability < 0.08 um",
+          "value": 0.08,
+          "distribution": "rect",
+          "u": 0.046188021535170064,
+          "unit": "um",
+          "source": "MFR AMF-229"
+        },
+        {
+          "name": "time-stamp jitter x speed (1 us x 100 mm/s)",
+          "value": 0.1,
+          "distribution": "rect",
+          "u": 0.05773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION (DAQ ISR jitter 1 us)"
+        },
+        {
+          "name": "Abbe/yaw error of the stacked stages over the sensor offset",
+          "value": 0.3,
+          "distribution": "rect",
+          "u": 0.17320508075688773,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        }
+      ]
+    },
+    "page_truth_lm13": {
+      "measurand": "truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13)",
+      "unit": "um",
+      "k": 2.0,
+      "u": 1.3215859159862948,
+      "U": 2.6431718319725896,
+      "dominant": "hysteresis < 4 um, only in windows with a reversal (1 in 5 at 8 Hz tremor)",
+      "note": "",
+      "lines": [
+        {
+          "name": "resolution 0.244 um, two endpoints",
+          "value": 0.1725340546095176,
+          "distribution": "rect",
+          "u": 0.09961258287318259,
+          "unit": "um",
+          "source": "MFR OPT-89 (LM13 13B)"
+        },
+        {
+          "name": "sub-divisional error (not stated in the data sheet)",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION (not in MFR OPT-89)"
+        },
+        {
+          "name": "hysteresis < 4 um, only in windows with a reversal (1 in 5 at 8 Hz tremor)",
+          "value": 1.7888543819998317,
+          "distribution": "rect",
+          "u": 1.0327955589886446,
+          "unit": "um",
+          "source": "MFR OPT-89 / CALC (fraction of windows)"
+        },
+        {
+          "name": "belt/carriage flex between encoder and sensor (Abbe)",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        },
+        {
+          "name": "time-stamp jitter x speed",
+          "value": 0.1,
+          "distribution": "rect",
+          "u": 0.05773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        }
+      ]
+    },
+    "page_truth_camera": {
+      "measurand": "truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",
+      "unit": "um",
+      "k": 2.0,
+      "u": 1.035857133006285,
+      "U": 2.07171426601257,
+      "dominant": "dot centroid noise 0.05 px, two frames",
+      "note": "",
+      "lines": [
+        {
+          "name": "dot centroid noise 0.05 px, two frames",
+          "value": 0.6646803743153548,
+          "distribution": "normal",
+          "u": 0.6646803743153548,
+          "unit": "um",
+          "source": "ASSUMPTION (to be measured on a static target)"
+        },
+        {
+          "name": "lens distortion after a dot-grid calibration 0.1 px",
+          "value": 0.9400000000000001,
+          "distribution": "rect",
+          "u": 0.5427092530382482,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        },
+        {
+          "name": "motion blur residual (50 us strobe at 100 mm/s = 5 um streak)",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "um",
+          "source": "CALC / ASSUMPTION"
+        },
+        {
+          "name": "scale (grid pitch 1 um in 10 mm) over 1 mm",
+          "value": 0.1,
+          "distribution": "rect",
+          "u": 0.05773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        }
+      ]
+    },
+    "stage_truth": {
+      "measurand": "housing position (R13 disturbance stage, LM13)",
+      "unit": "um",
+      "k": 2.0,
+      "u": 2.385887954899252,
+      "U": 4.771775909798504,
+      "dominant": "hysteresis < 4 um at reversals",
+      "note": "",
+      "lines": [
+        {
+          "name": "resolution 0.244 um",
+          "value": 0.122,
+          "distribution": "rect",
+          "u": 0.07043673284113434,
+          "unit": "um",
+          "source": "MFR OPT-89"
+        },
+        {
+          "name": "hysteresis < 4 um at reversals",
+          "value": 4.0,
+          "distribution": "rect",
+          "u": 2.3094010767585034,
+          "unit": "um",
+          "source": "MFR OPT-89"
+        },
+        {
+          "name": "sub-divisional error",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        },
+        {
+          "name": "Abbe offset x flexure yaw (5 mm x 50 urad)",
+          "value": 0.25,
+          "distribution": "rect",
+          "u": 0.14433756729740646,
+          "unit": "um",
+          "source": "ASSUMPTION / CALC"
+        }
+      ]
+    },
+    "ink_path": {
+      "measurand": "ink centreline position (Epson V850 Pro at 4800 dpi, 5.3 um/px)",
+      "unit": "um",
+      "k": 2.0,
+      "u": 1.5938214036292357,
+      "U": 3.1876428072584715,
+      "dominant": "ridge-fit noise per 20 um step (0.2 px)",
+      "note": "",
+      "lines": [
+        {
+          "name": "ridge-fit noise per 20 um step (0.2 px)",
+          "value": 1.06,
+          "distribution": "normal",
+          "u": 1.06,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        },
+        {
+          "name": "residual distortion after grid correction",
+          "value": 1.5,
+          "distribution": "rect",
+          "u": 0.8660254037844387,
+          "unit": "um",
+          "source": "ASSUMPTION (R3 requirement <= 5 um k=2)"
+        },
+        {
+          "name": "paper cockle/shrinkage over 25 mm between writing and scan",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        },
+        {
+          "name": "fiducial registration",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "um",
+          "source": "ASSUMPTION"
+        }
+      ]
+    },
+    "sync": {
+      "measurand": "time alignment DAQ <-> device under test",
+      "unit": "us",
+      "k": 2.0,
+      "u": 4.203173404306164,
+      "U": 8.406346808612328,
+      "dominant": "affine clock-fit residual over 10 min",
+      "note": "",
+      "lines": [
+        {
+          "name": "device edge-capture latency and jitter",
+          "value": 5.0,
+          "distribution": "rect",
+          "u": 2.886751345948129,
+          "unit": "us",
+          "source": "ASSUMPTION (GPIO interrupt on a Cortex-M)"
+        },
+        {
+          "name": "affine clock-fit residual over 10 min",
+          "value": 3.0,
+          "distribution": "normal",
+          "u": 3.0,
+          "unit": "us",
+          "source": "CALC (rig.sync on synthetic 20 ppm drift)"
+        },
+        {
+          "name": "DAQ ISR jitter",
+          "value": 1.0,
+          "distribution": "rect",
+          "u": 0.5773502691896258,
+          "unit": "us",
+          "source": "ASSUMPTION"
+        }
+      ]
+    },
+    "km_point": {
+      "measurand": "force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",
+      "unit": "%",
+      "k": 2.0,
+      "u": 0.5914829422780653,
+      "U": 1.1829658845561306,
+      "dominant": "hysteresis 0.1 % FS of 10 N on a +-F swing",
+      "note": "",
+      "lines": [
+        {
+          "name": "sensor gain after dead-weight calibration",
+          "value": 0.3,
+          "distribution": "rect",
+          "u": 0.17320508075688773,
+          "unit": "%",
+          "source": "ASSUMPTION (calibration residual)"
+        },
+        {
+          "name": "hysteresis 0.1 % FS of 10 N on a +-F swing",
+          "value": 0.9615384615384615,
+          "distribution": "rect",
+          "u": 0.5551444896054094,
+          "unit": "%",
+          "source": "MFR AMF-224 / CALC"
+        },
+        {
+          "name": "current: 0.1 % shunt read by the 24-bit ADC",
+          "value": 0.1,
+          "distribution": "rect",
+          "u": 0.05773502691896258,
+          "unit": "%",
+          "source": "ASSUMPTION (0.1 % shunt)"
+        },
+        {
+          "name": "coil warming between +I and -I (K_f follows the magnets, not the coil)",
+          "value": 0.05,
+          "distribution": "rect",
+          "u": 0.02886751345948129,
+          "unit": "%",
+          "source": "CALC"
+        },
+        {
+          "name": "position error 10 um on a 15 %/mm ripple slope",
+          "value": 0.15,
+          "distribution": "rect",
+          "u": 0.08660254037844387,
+          "unit": "%",
+          "source": "ASSUMPTION / CALC"
+        }
+      ]
+    },
+    "coil_temperature": {
+      "measurand": "coil temperature by resistance (4-wire, alpha_cu 0.00393/K)",
+      "unit": "K",
+      "k": 2.0,
+      "u": 1.2399717539345063,
+      "U": 2.4799435078690126,
+      "dominant": "hot-spot minus mean winding temperature",
+      "note": "",
+      "lines": [
+        {
+          "name": "R20 reference at 20.0 +- 0.5 C",
+          "value": 0.5,
+          "distribution": "rect",
+          "u": 0.2886751345948129,
+          "unit": "K",
+          "source": "PROTOCOL R4 bath band"
+        },
+        {
+          "name": "resistance ratio (0.02 % of R)",
+          "value": 0.05089058524173028,
+          "distribution": "rect",
+          "u": 0.029381693088530572,
+          "unit": "K",
+          "source": "ASSUMPTION (4-wire ratio)"
+        },
+        {
+          "name": "alpha_cu tolerance (1 %) at a 60 K rise",
+          "value": 0.6,
+          "distribution": "rect",
+          "u": 0.34641016151377546,
+          "unit": "K",
+          "source": "ASSUMPTION"
+        },
+        {
+          "name": "hot-spot minus mean winding temperature",
+          "value": 2.0,
+          "distribution": "rect",
+          "u": 1.1547005383792517,
+          "unit": "K",
+          "source": "ASSUMPTION (a thermocouple on the coil checks it)"
+        }
+      ]
+    }
+  },
+  "tur_table": [
+    {
+      "rig": "R9",
+      "short": "F_c,min vs 0.15 N design and 0.2 N limit",
+      "decision": "F_c,min against the 50 mN between the 0.15 N design value and the 0.2 N limit (AC-Q02-01)",
+      "measurand": "axial refill force F_c (R9 cartridge)",
+      "U_k2": 1.909,
+      "unit": "mN",
+      "tolerance": 50.0,
+      "TUR": 26.19,
+      "rule": "simple",
+      "dominant_term": "hysteresis +-0.1 % RO"
+    },
+    {
+      "rig": "R9",
+      "short": "F_c,min below 0.12 N? (20 mN band)",
+      "decision": "F_c,min against a 20 mN band (is it below 0.12 N, the low end of REQ-RVJ-N05?)",
+      "measurand": "axial refill force F_c (R9 cartridge)",
+      "U_k2": 1.909,
+      "unit": "mN",
+      "tolerance": 20.0,
+      "TUR": 10.48,
+      "rule": "simple",
+      "dominant_term": "hysteresis +-0.1 % RO"
+    },
+    {
+      "rig": "R9",
+      "short": "N at the ink threshold (20 mN band)",
+      "decision": "N at the ink threshold against a 20 mN band (plate route, cross-check of F_c)",
+      "measurand": "normal force on the paper (R9 plate, K3D40 +-2 N)",
+      "U_k2": 3.581,
+      "unit": "mN",
+      "tolerance": 20.0,
+      "TUR": 5.59,
+      "rule": "simple",
+      "dominant_term": "relative linearity error 0.2 % FS (half left after calibration)"
+    },
+    {
+      "rig": "R9",
+      "short": "|R_perp| to AC-B01-09's 10 mN",
+      "decision": "|R_perp| against AC-B01-09's floor (U <= 10 mN required)",
+      "measurand": "tangential force on the paper (R9 plate, K3D40 +-2 N)",
+      "U_k2": 4.261,
+      "unit": "mN",
+      "tolerance": 10.0,
+      "TUR": 2.35,
+      "rule": "guarded",
+      "dominant_term": "relative linearity error 0.2 % FS (half left after calibration)"
+    },
+    {
+      "rig": "R9",
+      "short": "friction at N 0.2 N to +-20 %",
+      "decision": "friction force at N = 0.2 N, mu 0.15, to +-20 % (6 mN)",
+      "measurand": "tangential force on the paper (R9 plate, K3D40 +-2 N)",
+      "U_k2": 4.261,
+      "unit": "mN",
+      "tolerance": 6.0,
+      "TUR": 1.41,
+      "rule": "guarded",
+      "dominant_term": "relative linearity error 0.2 % FS (half left after calibration)"
+    },
+    {
+      "rig": "R10",
+      "short": "10 um page error, Zaber truth",
+      "decision": "10 um RMS page error (REQ-RVJ-N06), Zaber truth",
+      "measurand": "truth displacement over a 10 ms window (2 x Zaber X-LDM110C)",
+      "U_k2": 0.377,
+      "unit": "um",
+      "tolerance": 10.0,
+      "TUR": 26.51,
+      "rule": "simple",
+      "dominant_term": "Abbe/yaw error of the stacked stages over the sensor offset"
+    },
+    {
+      "rig": "R10",
+      "short": "10 um page error, LM13 truth",
+      "decision": "10 um RMS page error, LM13 truth",
+      "measurand": "truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13)",
+      "U_k2": 2.643,
+      "unit": "um",
+      "tolerance": 10.0,
+      "TUR": 3.78,
+      "rule": "guarded",
+      "dominant_term": "hysteresis < 4 um, only in windows with a reversal (1 in 5 at 8 Hz tremor)"
+    },
+    {
+      "rig": "R10",
+      "short": "10 um page error, camera truth",
+      "decision": "10 um RMS page error, camera truth",
+      "measurand": "truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",
+      "U_k2": 2.072,
+      "unit": "um",
+      "tolerance": 10.0,
+      "TUR": 4.83,
+      "rule": "simple",
+      "dominant_term": "dot centroid noise 0.05 px, two frames"
+    },
+    {
+      "rig": "R10",
+      "short": "DeltaPen median 23.6 um, camera truth",
+      "decision": "DeltaPen median 23.6 um per window, camera truth",
+      "measurand": "truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",
+      "U_k2": 2.072,
+      "unit": "um",
+      "tolerance": 23.6,
+      "TUR": 11.39,
+      "rule": "simple",
+      "dominant_term": "dot centroid noise 0.05 px, two frames"
+    },
+    {
+      "rig": "R13",
+      "short": "false correction 25 um, stage truth",
+      "decision": "false correction 25 um (AC-E01-09 bound), stage truth",
+      "measurand": "housing position (R13 disturbance stage, LM13)",
+      "U_k2": 4.772,
+      "unit": "um",
+      "tolerance": 25.0,
+      "TUR": 5.24,
+      "rule": "simple",
+      "dominant_term": "hysteresis < 4 um at reversals"
+    },
+    {
+      "rig": "R13",
+      "short": "30 % of a 250 um residual, stage truth",
+      "decision": "30 % reduction of 250 um residual (review G3 target), stage truth",
+      "measurand": "housing position (R13 disturbance stage, LM13)",
+      "U_k2": 4.772,
+      "unit": "um",
+      "tolerance": 75.0,
+      "TUR": 15.72,
+      "rule": "simple",
+      "dominant_term": "hysteresis < 4 um at reversals"
+    },
+    {
+      "rig": "R13",
+      "short": "false correction 25 um, scanned ink",
+      "decision": "false correction 25 um from scanned ink",
+      "measurand": "ink centreline position (Epson V850 Pro at 4800 dpi, 5.3 um/px)",
+      "U_k2": 3.188,
+      "unit": "um",
+      "tolerance": 25.0,
+      "TUR": 7.84,
+      "rule": "simple",
+      "dominant_term": "ridge-fit noise per 20 um step (0.2 px)"
+    },
+    {
+      "rig": "R12",
+      "short": "K_f within +-10 % of the model",
+      "decision": "K_f within +-10 % of the model (AC-B03-04 analogue)",
+      "measurand": "force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",
+      "U_k2": 1.183,
+      "unit": "%",
+      "tolerance": 10.0,
+      "TUR": 8.45,
+      "rule": "simple",
+      "dominant_term": "hysteresis 0.1 % FS of 10 N on a +-F swing"
+    },
+    {
+      "rig": "R13",
+      "short": "coil rise 20 K limit when at 15 K",
+      "decision": "coil rise <= 20 K (REQ-RVJ-N03) when the rise is 15 K (5 K from the limit)",
+      "measurand": "coil temperature by resistance (4-wire, alpha_cu 0.00393/K)",
+      "U_k2": 2.48,
+      "unit": "K",
+      "tolerance": 5.0,
+      "TUR": 2.02,
+      "rule": "guarded",
+      "dominant_term": "hot-spot minus mean winding temperature"
+    },
+    {
+      "rig": "all",
+      "short": "time alignment 50 us",
+      "decision": "time alignment <= 50 us (section 0.4)",
+      "measurand": "time alignment DAQ <-> device under test",
+      "U_k2": 8.406,
+      "unit": "us",
+      "tolerance": 50.0,
+      "TUR": 5.95,
+      "rule": "simple",
+      "dominant_term": "affine clock-fit residual over 10 min"
+    }
+  ],
+  "static_side_load": {
+    "rows": [
+      {
+        "theta_deg": 35.0,
+        "cot": 1.4281480067421146,
+        "Fperp_mN_Fc0.05_frictionless": 71.40740033710573,
+        "Fperp_mN_Fc0.075_frictionless": 107.1111005056586,
+        "Fperp_mN_Fc0.1_frictionless": 142.81480067421145,
+        "Fperp_mN_Fc0.15_frictionless": 214.2222010113172,
+        "ratio_min_mu0.1": 1.1621725637072293,
+        "ratio_max_mu0.1": 1.7827512746884409,
+        "ratio_min_mu0.15": 1.0526475349219888,
+        "ratio_max_mu0.15": 2.0083896602490343,
+        "ratio_min_mu0.3": 0.789773830290273,
+        "ratio_max_mu0.3": 3.0235868791377873,
+        "C1S_holding_W_Fc0.15": 4.716516448319396
+      },
+      {
+        "theta_deg": 40.0,
+        "cot": 1.19175359259421,
+        "Fperp_mN_Fc0.05_frictionless": 59.58767962971051,
+        "Fperp_mN_Fc0.075_frictionless": 89.38151944456575,
+        "Fperp_mN_Fc0.1_frictionless": 119.17535925942101,
+        "Fperp_mN_Fc0.15_frictionless": 178.7630388891315,
+        "ratio_min_mu0.1": 0.9754982394507359,
+        "ratio_max_mu0.1": 1.4665275389073251,
+        "ratio_min_mu0.15": 0.8837684574636482,
+        "ratio_max_mu0.15": 1.6338202688530366,
+        "ratio_min_mu0.3": 0.6568961047537742,
+        "ratio_max_mu0.3": 2.3218897156721656,
+        "C1S_holding_W_Fc0.15": 3.2843380880123623
+      },
+      {
+        "theta_deg": 45.0,
+        "cot": 1.0000000000000002,
+        "Fperp_mN_Fc0.05_frictionless": 50.00000000000001,
+        "Fperp_mN_Fc0.075_frictionless": 75.00000000000001,
+        "Fperp_mN_Fc0.1_frictionless": 100.00000000000001,
+        "Fperp_mN_Fc0.15_frictionless": 150.00000000000003,
+        "ratio_min_mu0.1": 0.8181818181818183,
+        "ratio_max_mu0.1": 1.2222222222222223,
+        "ratio_min_mu0.15": 0.7391304347826088,
+        "ratio_max_mu0.15": 1.3529411764705885,
+        "ratio_min_mu0.3": 0.5384615384615385,
+        "ratio_max_mu0.3": 1.8571428571428574,
+        "C1S_holding_W_Fc0.15": 2.3124636631584643
+      },
+      {
+        "theta_deg": 50.0,
+        "cot": 0.83909963117728,
+        "Fperp_mN_Fc0.05_frictionless": 41.954981558864,
+        "Fperp_mN_Fc0.075_frictionless": 62.932472338296,
+        "Fperp_mN_Fc0.1_frictionless": 83.909963117728,
+        "Fperp_mN_Fc0.15_frictionless": 125.864944676592,
+        "ratio_min_mu0.1": 0.6818828651148798,
+        "ratio_max_mu0.1": 1.0251171755707733,
+        "ratio_min_mu0.15": 0.6120624275900391,
+        "ratio_max_mu0.15": 1.1315180934041573,
+        "ratio_min_mu0.3": 0.43068367685607734,
+        "ratio_max_mu0.3": 1.5223107471079196,
+        "C1S_holding_W_Fc0.15": 1.6281783574432453
+      },
+      {
+        "theta_deg": 55.0,
+        "cot": 0.7002075382097098,
+        "Fperp_mN_Fc0.05_frictionless": 35.01037691048549,
+        "Fperp_mN_Fc0.075_frictionless": 52.515565365728236,
+        "Fperp_mN_Fc0.1_frictionless": 70.02075382097098,
+        "Fperp_mN_Fc0.15_frictionless": 105.03113073145647,
+        "ratio_min_mu0.1": 0.5609307446294006,
+        "ratio_max_mu0.1": 0.8604574150417794,
+        "ratio_min_mu0.15": 0.4979113464844283,
+        "ratio_max_mu0.15": 0.9499855999511838,
+        "ratio_min_mu0.3": 0.33073301346153566,
+        "ratio_max_mu0.3": 1.2661852819717523,
+        "C1S_holding_W_Fc0.15": 1.1337791889464721
+      },
+      {
+        "theta_deg": 60.0,
+        "cot": 0.577350269189626,
+        "Fperp_mN_Fc0.05_frictionless": 28.867513459481298,
+        "Fperp_mN_Fc0.075_frictionless": 43.301270189221945,
+        "Fperp_mN_Fc0.1_frictionless": 57.735026918962596,
+        "Fperp_mN_Fc0.15_frictionless": 86.60254037844389,
+        "ratio_min_mu0.1": 0.4512947543961761,
+        "ratio_max_mu0.1": 0.7188532828242697,
+        "ratio_min_mu0.15": 0.3932903277041738,
+        "ratio_max_mu0.15": 0.7963129977293627,
+        "ratio_min_mu0.3": 0.23640391073885794,
+        "ratio_max_mu0.3": 1.0611461787800953,
+        "C1S_holding_W_Fc0.15": 0.7708212210528215
+      },
+      {
+        "theta_deg": 65.0,
+        "cot": 0.4663076581549986,
+        "Fperp_mN_Fc0.05_frictionless": 23.315382907749928,
+        "Fperp_mN_Fc0.075_frictionless": 34.973074361624896,
+        "Fperp_mN_Fc0.1_frictionless": 46.630765815499856,
+        "Fperp_mN_Fc0.15_frictionless": 69.94614872324979,
+        "ratio_min_mu0.1": 0.34998747420689846,
+        "ratio_max_mu0.1": 0.5940066428086606,
+        "ratio_min_mu0.15": 0.29562951231932905,
+        "ratio_max_mu0.15": 0.6626580356706763,
+        "ratio_min_mu0.3": 0.14589769448179313,
+        "ratio_max_mu0.3": 0.890943838637851,
+        "C1S_holding_W_Fc0.15": 0.5028286479391411
+      },
+      {
+        "theta_deg": 70.0,
+        "cot": 0.36397023426620245,
+        "Fperp_mN_Fc0.05_frictionless": 18.198511713310122,
+        "Fperp_mN_Fc0.075_frictionless": 27.297767569965185,
+        "Fperp_mN_Fc0.1_frictionless": 36.397023426620244,
+        "Fperp_mN_Fc0.15_frictionless": 54.59553513993037,
+        "ratio_min_mu0.1": 0.25469991547586907,
+        "ratio_max_mu0.1": 0.48149522733533245,
+        "ratio_min_mu0.15": 0.20289317291468673,
+        "ratio_max_mu0.15": 0.5436511602917761,
+        "ratio_min_mu0.3": 0.057672871681217285,
+        "ratio_max_mu0.3": 0.7453565092514266,
+        "C1S_holding_W_Fc0.15": 0.3063420777372353
+      },
+      {
+        "theta_deg": 75.0,
+        "cot": 0.2679491924311227,
+        "Fperp_mN_Fc0.05_frictionless": 13.397459621556134,
+        "Fperp_mN_Fc0.075_frictionless": 20.0961894323342,
+        "Fperp_mN_Fc0.1_frictionless": 26.79491924311227,
+        "Fperp_mN_Fc0.15_frictionless": 40.1923788646684,
+        "ratio_min_mu0.1": 0.16356644280527224,
+        "ratio_max_mu0.1": 0.37807981041874417,
+        "ratio_min_mu0.15": 0.11339170986799561,
+        "ratio_max_mu0.15": 0.4354510041676283,
+        "ratio_min_mu0.3": 0.029666104912697094,
+        "ratio_max_mu0.3": 0.6175943659097841,
+        "C1S_holding_W_Fc0.15": 0.16602742112004065
+      }
+    ],
+    "note": "F_perp = F_c cot(theta) without friction; with friction R_perp/F_c from P-6/P-7 over all stroke directions (rig.contact.predicted_ratio_perp_to_axial). C1S holding loss uses the review's inputs (L_t 76.48 mm, L_a 11.5 mm, Km 0.656 N/sqrt(W)): 4.717/1.628/0.166 W at 35/50/75 deg (CALC, reproduces the review)."
+  },
+  "disturbance_envelope": {
+    "k_flex_N_per_m": 324.0,
+    "stage_moving_kg_without_pen": 0.175,
+    "F_cont_N": 9.3,
+    "F_peak_N": 29.3,
+    "source": "ratings MFR AMF-232 (LVCM-032-025-02); stiffness CALC and moving mass from the CAD roll-up (mechanics/cad/rig_nib.py, densities, coil and camera masses ASSUMPTION)",
+    "cases": {
+      "slim core module (35 g)": {
+        "m_moving_kg": 0.21,
+        "rows": [
+          {
+            "amp_mm": 0.25,
+            "F_needed_N": [
+              0.079,
+              0.073,
+              0.062,
+              0.048,
+              0.006,
+              0.052,
+              0.126,
+              0.217,
+              0.385,
+              0.748,
+              1.214,
+              1.784
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          {
+            "amp_mm": 0.5,
+            "F_needed_N": [
+              0.158,
+              0.145,
+              0.125,
+              0.096,
+              0.013,
+              0.103,
+              0.253,
+              0.435,
+              0.771,
+              1.496,
+              2.429,
+              3.569
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          {
+            "amp_mm": 1.0,
+            "F_needed_N": [
+              0.316,
+              0.291,
+              0.249,
+              0.191,
+              0.026,
+              0.207,
+              0.505,
+              0.87,
+              1.541,
+              2.992,
+              4.858,
+              7.137
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          {
+            "amp_mm": 2.0,
+            "F_needed_N": [
+              0.631,
+              0.582,
+              0.499,
+              0.383,
+              0.051,
+              0.413,
+              1.01,
+              1.74,
+              3.083,
+              5.984,
+              9.715,
+              14.275
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              false,
+              false
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          }
+        ]
+      },
+      "24 mm pen module (90 g)": {
+        "m_moving_kg": 0.265,
+        "rows": [
+          {
+            "amp_mm": 0.25,
+            "F_needed_N": [
+              0.078,
+              0.071,
+              0.057,
+              0.039,
+              0.013,
+              0.086,
+              0.181,
+              0.296,
+              0.507,
+              0.965,
+              1.554,
+              2.273
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          {
+            "amp_mm": 0.5,
+            "F_needed_N": [
+              0.157,
+              0.141,
+              0.115,
+              0.078,
+              0.026,
+              0.173,
+              0.361,
+              0.591,
+              1.015,
+              1.93,
+              3.107,
+              4.546
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          {
+            "amp_mm": 1.0,
+            "F_needed_N": [
+              0.314,
+              0.282,
+              0.23,
+              0.157,
+              0.053,
+              0.346,
+              0.722,
+              1.182,
+              2.03,
+              3.861,
+              6.215,
+              9.092
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          {
+            "amp_mm": 2.0,
+            "F_needed_N": [
+              0.627,
+              0.564,
+              0.46,
+              0.313,
+              0.105,
+              0.691,
+              1.444,
+              2.365,
+              4.06,
+              7.721,
+              12.429,
+              18.183
+            ],
+            "within_continuous": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              false,
+              false
+            ],
+            "within_peak": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          }
+        ]
+      }
+    },
+    "f_hz": [
+      1.0,
+      2.0,
+      3.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0,
+      12.0,
+      15.0,
+      20.0,
+      25.0,
+      30.0
+    ]
+  },
+  "disturbance_designs": {
+    "rows": [
+      {
+        "x_peak_mm": 0.25,
+        "a_peak_m_s2": 2.13,
+        "acc_limited": false,
+        "crest": 3.53,
+        "tones": 24,
+        "F_peak_N_24mm_module": 0.52,
+        "F_rms_N_24mm_module": 0.19
+      },
+      {
+        "x_peak_mm": 0.5,
+        "a_peak_m_s2": 4.27,
+        "acc_limited": false,
+        "crest": 3.53,
+        "tones": 24,
+        "F_peak_N_24mm_module": 1.05,
+        "F_rms_N_24mm_module": 0.38
+      },
+      {
+        "x_peak_mm": 1.0,
+        "a_peak_m_s2": 8.54,
+        "acc_limited": false,
+        "crest": 3.53,
+        "tones": 24,
+        "F_peak_N_24mm_module": 2.09,
+        "F_rms_N_24mm_module": 0.77
+      },
+      {
+        "x_peak_mm": 2.0,
+        "a_peak_m_s2": 17.07,
+        "acc_limited": false,
+        "crest": 3.53,
+        "tones": 24,
+        "F_peak_N_24mm_module": 4.18,
+        "F_rms_N_24mm_module": 1.54
+      }
+    ],
+    "note": "24 log-spaced tones 1-30 Hz on a 0.1 Hz grid, Schroeder phases, peak acceleration capped at 40 m/s^2 (ASSUMPTION: keeps the nib module's own accelerometers in range); force for the 0.265 kg moving mass (24 mm pen) on the 324 N/m flexure"
+  },
+  "page_noise_example": {
+    "sim2j_deltapen_held": {
+      "window_error_um": {
+        "vec_median": 54.653842860939456,
+        "vec_mean": 117.0093089072894,
+        "vec_p95": 409.5676680752654
+      },
+      "held_rms_um": 181.01592862249913,
+      "walk_step_rms_um": 0.0,
+      "mode_supported": "deltapen_held",
+      "drift": {
+        "over_s": 2.0,
+        "walk_rms_um": 0.0,
+        "raw_rms_um": 257.4993113764714,
+        "raw_p95_um": 416.33159521711735,
+        "raw_max_um": 5406.407019125817,
+        "n": 6000,
+        "note": "raw = |P(t + drift_s) - P(t)|, which contains the held error at both ends (a pure held error of DeltaPen's size already gives a raw p95 near or above 0.1 mm); walk = the accumulated part sqrt(L var_w) fitted from the structure function: the quantity REQ-RVJ-C05's drift means"
+      },
+      "sim2j": {
+        "page_error": "deltapen_held",
+        "DP_MEDIAN_walk_m": 5.4653842860939456e-05,
+        "DP_SIGMA_walk": 1.2338832725323259,
+        "DP_MEDIAN_held_m": 2.4436957371237328e-05,
+        "DP_SIGMA_held": 1.4314104697344714,
+        "note": "walk: the window error itself is the sim2j draw; held: the draw is a position error, so its (median, sigma) are inverted to reproduce the measured window-error median and mean"
+      }
+    },
+    "held_plus_5um_walk": {
+      "window_error_um": {
+        "vec_median": 54.907984038979606,
+        "vec_mean": 117.18558547956331,
+        "vec_p95": 408.8420928912835
+      },
+      "held_rms_um": 180.98829754759566,
+      "walk_step_rms_um": 4.919609083185166,
+      "mode_supported": "deltapen_held",
+      "drift": {
+        "over_s": 2.0,
+        "walk_rms_um": 69.57377887014329,
+        "raw_rms_um": 269.6869834530828,
+        "raw_p95_um": 427.72913787006,
+        "raw_max_um": 5342.919838444341,
+        "n": 6000,
+        "note": "raw = |P(t + drift_s) - P(t)|, which contains the held error at both ends (a pure held error of DeltaPen's size already gives a raw p95 near or above 0.1 mm); walk = the accumulated part sqrt(L var_w) fitted from the structure function: the quantity REQ-RVJ-C05's drift means"
+      },
+      "sim2j": {
+        "page_error": "deltapen_held",
+        "DP_MEDIAN_walk_m": 5.49079840389796e-05,
+        "DP_SIGMA_walk": 1.2313408237262788,
+        "DP_MEDIAN_held_m": 2.4584059064522577e-05,
+        "DP_SIGMA_held": 1.4285812245593101,
+        "note": "walk: the window error itself is the sim2j draw; held: the draw is a position error, so its (median, sigma) are inverted to reproduce the measured window-error median and mean"
+      }
+    }
+  },
+  "build_plan": [
+    {
+      "step": 1,
+      "rig": "DAQ-1",
+      "what": "Teensy 4.1 + ADS131M08EVM + encoders, sync, logger",
+      "start_week": 0,
+      "weeks": 2,
+      "cost_class": "A"
+    },
+    {
+      "step": 2,
+      "rig": "R9",
+      "what": "Contact and ink rig on a CoreXY frame (G1)",
+      "start_week": 1,
+      "weeks": 4,
+      "cost_class": "B (low-cost) / C (standard)"
+    },
+    {
+      "step": 3,
+      "rig": "R10",
+      "what": "Page-sensor rig on the same frame",
+      "start_week": 3,
+      "weeks": 3,
+      "cost_class": "B / D with Zaber truth"
+    },
+    {
+      "step": 4,
+      "rig": "R11",
+      "what": "Tablet protocol now; recording pen later",
+      "start_week": 0,
+      "weeks": 2,
+      "cost_class": "B"
+    },
+    {
+      "step": 5,
+      "rig": "R12",
+      "what": "Actuator coupon bench (G2), when study B's coupons exist",
+      "start_week": 5,
+      "weeks": 3,
+      "cost_class": "B / C"
+    },
+    {
+      "step": 6,
+      "rig": "R13-1",
+      "what": "One-axis loaded nib rig (G3)",
+      "start_week": 7,
+      "weeks": 4,
+      "cost_class": "B / C"
+    },
+    {
+      "step": 7,
+      "rig": "R13-2",
+      "what": "Second axis, tilt-roll holder, 30 C runs (G4)",
+      "start_week": 11,
+      "weeks": 3,
+      "cost_class": "B"
+    },
+    {
+      "step": 8,
+      "rig": "R14",
+      "what": "Grip simulant on the R13 stage (G5)",
+      "start_week": 12,
+      "weeks": 3,
+      "cost_class": "A / B"
+    }
+  ],
+  "cost_classes": {
+    "A": "< USD 500",
+    "B": "USD 500-2,000",
+    "C": "USD 2,000-10,000",
+    "D": "> USD 10,000"
+  },
+  "selftest": {
+    "n_checks": 49,
+    "n_pass": 49,
+    "all_pass": true,
+    "timing_s": {
+      "check_protocol": 0.13,
+      "check_sync": 0.31,
+      "check_uncertainty": 0.0,
+      "check_contact": 0.28,
+      "check_ink": 0.45,
+      "check_coupon": 0.14,
+      "check_frf": 0.43,
+      "check_pagesense": 5.83,
+      "check_thermal": 0.58,
+      "check_collar": 0.83,
+      "check_camera": 0.1,
+      "check_tablet": 0.01
+    }
+  }
+}

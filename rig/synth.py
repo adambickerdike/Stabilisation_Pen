@@ -347,3 +347,24 @@ def tablet_loops(duration=12.0, fs=200.0, tremor_mm_pk=0.4, tremor_hz=6.0, loop_
     q = lambda a: np.round(a / 0.01) * 0.01
     return {"t": t, "xy": q(xy), "xy_clean": q(xy_clean), "pen_down": np.ones(len(t), bool),
             "_truth": {"A_pp_major_mm": 2 * tremor_mm_pk, "f_hz": tremor_hz}}
+
+
+def page_error_runs(n_runs=20, run_s=4.0, window_s=0.010, held_median_um=20.0, held_sigma=0.8, walk_step_um=0.0,
+                    white_um=0.0, rng=None):
+    """Synthetic position-error runs (um) sampled every window_s: a held lognormal-magnitude error redrawn every
+    window (sim2j 'deltapen_held'), plus a random walk of isotropic Gaussian steps (walk_step_um RMS vector length),
+    plus white noise; truth parameters returned for the tests."""
+    rng = rng or np.random.default_rng(21)
+    n = int(round(run_s / window_s))
+    runs = []
+    for _ in range(n_runs):
+        mag = held_median_um * np.exp(held_sigma * rng.standard_normal(n))
+        ang = rng.uniform(0, 2 * np.pi, n)
+        h = np.column_stack([mag * np.cos(ang), mag * np.sin(ang)])
+        w = np.cumsum(rng.standard_normal((n, 2)) * walk_step_um / np.sqrt(2), axis=0)
+        P = h + w + rng.standard_normal((n, 2)) * white_um / np.sqrt(2)
+        runs.append(P - P[0])
+    held_rms = held_median_um * np.exp(held_sigma ** 2)       # E|h|^2 = m^2 exp(2 sigma^2)
+    return {"runs": runs, "_truth": {"held_rms_um": float(np.sqrt(held_rms ** 2 + white_um ** 2 / 1.0)) if white_um else float(held_rms),
+                                     "walk_step_rms_um": float(walk_step_um), "held_median_um": held_median_um,
+                                     "held_sigma": held_sigma}}

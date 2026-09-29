@@ -8,8 +8,10 @@ PROPOSED DESIGN, following validation/bench_protocols.md section 0.4:
   t_daq = a + b * t_dev over all identified pulses, and reports the residuals.
   Required alignment: <= 50 us (section 0.4); the fit reports max |residual|.
 
-Width code: w = W0 + n * DW with W0 = 1 ms and DW = 0.1 ms (n = 0..255, 1.0-26.5 ms).
-Any width decoder with +-40 us error identifies n uniquely.
+Width code: w = W0 + n * DW with W0 = 1 ms and DW = 0.25 ms (n = 0..255, 1.0-64.75 ms). The DAQ
+toggles the line inside its 4 kHz sample interrupt, so widths are multiples of 0.25 ms; the rising
+edge's exact cycle count is logged as an EVENT frame. Any width decoder with +-0.1 ms error
+identifies n uniquely.
 """
 from __future__ import annotations
 
@@ -19,7 +21,7 @@ import numpy as np
 
 PERIOD_S = 1.0
 W0_S = 1.0e-3
-DW_S = 0.1e-3
+DW_S = 0.25e-3
 ALIGN_REQUIRED_S = 50e-6   # bench_protocols.md section 0.4
 
 

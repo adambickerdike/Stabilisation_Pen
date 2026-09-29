@@ -217,7 +217,7 @@ def check_frf(C: Check, quick: bool):
 
 def check_pagesense(C: Check, quick: bool):
     from . import pagesense, synth
-    d = synth.page_run(duration=4.0 if quick else 6.0)
+    d = synth.page_run(duration=6.0)              # the matrix fit needs >= 1.8 s of motion (30 % of the run); 4 s is too short
     q = pagesense.qualify(d["t_truth"], d["g_xy"], d["t_sens"], d["dx"], d["dy"], d["um_per_count"], d["valid"])
     tl = d["_truth"]["latency_s"]
     C.add("page sensing", "latency (ms)", q["latency"]["delay_s"] * 1e3, tl * 1e3, 0.05,
@@ -235,6 +235,14 @@ def check_pagesense(C: Check, quick: bool):
     C.add("page sensing", "10 ms window error, vector >= magnitude (DeltaPen metric)",
           [round(w["mag_median_um"], 2), round(w["vec_median_um"], 2)], "vec >= mag", "-",
           w["vec_median_um"] >= w["mag_median_um"])
+    # EXP-J10 addition: held/walk split of window errors in sim2j's terms
+    for walk in (0.0, 8.0):
+        r = synth.page_error_runs(walk_step_um=walk)
+        m = pagesense.page_error_model_from_runs(r["runs"])
+        C.add("page sensing", f"sim2j model: walk step recovered (truth {walk:g} um)", round(m["walk_step_rms_um"], 2), walk, 1.0,
+              abs(m["walk_step_rms_um"] - walk) < 1.0, "um")
+        want = "deltapen_held" if walk == 0 else "deltapen_walk"
+        C.add("page sensing", f"sim2j model: mode (truth {want})", m["mode_supported"], want, "-", m["mode_supported"] == want)
     return q
 
 

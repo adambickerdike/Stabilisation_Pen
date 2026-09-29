@@ -1,0 +1,9 @@
+step,rig,what,start_week,weeks,cost_class
+1,DAQ-1,"Teensy 4.1 + ADS131M08EVM + encoders, sync, logger",0,2,A
+2,R9,Contact and ink rig on a CoreXY frame (G1),1,4,B (low-cost) / C (standard)
+3,R10,Page-sensor rig on the same frame,3,3,B / D with Zaber truth
+4,R11,Tablet protocol now; recording pen later,0,2,B
+5,R12,"Actuator coupon bench (G2), when study B's coupons exist",5,3,B / C
+6,R13-1,One-axis loaded nib rig (G3),7,4,B / C
+7,R13-2,"Second axis, tilt-roll holder, 30 C runs (G4)",11,3,B
+8,R14,Grip simulant on the R13 stage (G5),12,3,A / B

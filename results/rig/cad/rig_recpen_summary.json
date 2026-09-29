@@ -1,0 +1,274 @@
+{
+  "meta": {
+    "evidence_status": "proposed design (R11 recording pen concept geometry)",
+    "generated_utc": "2026-09-29T19:01:01+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "rig_recpen.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "cadquery": "2.8.0",
+    "script": "mechanics/cad/rig_recpen.py"
+  },
+  "summary": {
+    "parameters_mm": {
+      "ball_d": 0.7,
+      "refill_d": 2.35,
+      "refill_L": 67.0,
+      "tip": [
+        0.3,
+        0.25,
+        4.5
+      ],
+      "pens": {
+        "pen24": {
+          "od": 24.0,
+          "wall": 1.0,
+          "L": 144.0,
+          "nose": [
+            3.0,
+            4.0,
+            12.0,
+            32.0
+          ],
+          "cell": "LSB200",
+          "cell_mass_g": 19.3,
+          "cell_dims": [
+            16.5,
+            6.7,
+            19.05
+          ],
+          "target": [
+            84.3,
+            86.0
+          ],
+          "target_src": "Rev J.1 base pen, CALC (docs/revJ1_design.md)"
+        },
+        "slim14": {
+          "od": 14.0,
+          "wall": 0.8,
+          "L": 140.0,
+          "nose": [
+            2.5,
+            4.0,
+            7.0,
+            22.0
+          ],
+          "cell": "LLB130",
+          "cell_mass_g": 8.5,
+          "cell_dims": [
+            9.5,
+            3.3
+          ],
+          "target": [
+            35.0,
+            70.0
+          ],
+          "target_src": "ASSUMPTION inside the review's 25-40 g slim class"
+        }
+      },
+      "bush": [
+        6.0,
+        2.45,
+        8.0
+      ],
+      "bush_s": [
+        10.0,
+        52.0
+      ],
+      "pin": [
+        2.0,
+        3.0
+      ],
+      "bulkhead_t": 3.0,
+      "imu": [
+        12.0,
+        10.0,
+        1.6
+      ],
+      "imu_s": 118.0,
+      "cable_d": 4.0,
+      "slug_front": [
+        12.0,
+        36.0,
+        46.0
+      ],
+      "slug_rear_L": 12.0
+    },
+    "step": "results/rig/cad/rig_recpen_assembly.step",
+    "by_pen": {
+      "pen24": {
+        "checks": {
+          "bore_mm": 22.0,
+          "cell_section_diagonal_mm": 17.81,
+          "cell_section_diagonal_if_rotated_mm": 20.19,
+          "cell_fits": true,
+          "parts_outside_shell": [],
+          "refill_free_0p3mm": true,
+          "refill_hits": []
+        },
+        "mass": {
+          "target_at_limit": false,
+          "parts_g_and_centre_mm": {
+            "refill": [
+              0.77,
+              33.6
+            ],
+            "nose": [
+              1.46,
+              18.8
+            ],
+            "body": [
+              21.85,
+              88.0
+            ],
+            "ptfe_bushes": [
+              6.67,
+              35.0
+            ],
+            "force_pin": [
+              0.07,
+              68.6
+            ],
+            "axial_cell": [
+              19.3,
+              79.6
+            ],
+            "bulkhead": [
+              3.05,
+              90.6
+            ],
+            "imu_board": [
+              0.36,
+              118.0
+            ],
+            "cap": [
+              1.36,
+              142.5
+            ],
+            "slug_front": [
+              20.19,
+              41.0
+            ],
+            "slug_rear": [
+              79.76,
+              135.0
+            ],
+            "cable_strain_relief_and_wires": [
+              3.0,
+              139.0
+            ]
+          },
+          "without_slugs": {
+            "mass_g": 57.9,
+            "com_mm": 80.9
+          },
+          "full_slugs_g": {
+            "front": 20.2,
+            "rear": 79.8
+          },
+          "target": {
+            "mass_g": 84.3,
+            "com_mm": 86.0,
+            "source": "Rev J.1 base pen, CALC (docs/revJ1_design.md)"
+          },
+          "slug_fill_fraction": {
+            "front": 0.525,
+            "rear": 0.198
+          },
+          "target_reachable": true
+        }
+      },
+      "slim14": {
+        "checks": {
+          "bore_mm": 12.4,
+          "cell_diameter_mm": 9.5,
+          "cell_fits": true,
+          "parts_outside_shell": [],
+          "refill_free_0p3mm": true,
+          "refill_hits": []
+        },
+        "mass": {
+          "target_at_limit": true,
+          "parts_g_and_centre_mm": {
+            "refill": [
+              0.77,
+              33.6
+            ],
+            "nose": [
+              0.45,
+              13.8
+            ],
+            "body": [
+              10.57,
+              81.0
+            ],
+            "ptfe_bushes": [
+              2.25,
+              35.0
+            ],
+            "force_pin": [
+              0.07,
+              68.6
+            ],
+            "axial_cell": [
+              8.5,
+              71.8
+            ],
+            "bulkhead": [
+              0.96,
+              74.9
+            ],
+            "imu_board": [
+              0.36,
+              118.0
+            ],
+            "cap": [
+              0.39,
+              138.5
+            ],
+            "slug_front": [
+              20.19,
+              41.0
+            ],
+            "slug_rear": [
+              22.0,
+              131.0
+            ],
+            "cable_strain_relief_and_wires": [
+              3.0,
+              135.0
+            ]
+          },
+          "without_slugs": {
+            "mass_g": 27.3,
+            "com_mm": 78.9
+          },
+          "full_slugs_g": {
+            "front": 20.2,
+            "rear": 22.0
+          },
+          "target": {
+            "mass_g": 35.0,
+            "com_mm": 70.0,
+            "source": "ASSUMPTION inside the review's 25-40 g slim class"
+          },
+          "slug_fill_fraction": {
+            "front": 0.391,
+            "rear": -0.01
+          },
+          "target_reachable": true
+        }
+      }
+    },
+    "notes": [
+      "a light preload spring (about 20 mN, ASSUMPTION) keeps the refill on the pin when the pen is lifted; the cell reads it as an offset that is re-zeroed at every pen lift",
+      "PTFE bush friction adds to the cell reading during axial motion: EXP-T06 measures it on R9 (recording pen on the plate, plate force vs cell force)",
+      "the IMU is the only electronics in the pen; the bridge and IMU lines run in the 12-core cable to DAQ-1"
+    ]
+  }
+}

@@ -1,0 +1,62 @@
+budget,measurand,unit,line,value,distribution,u,source,U_k2
+axial_force,axial refill force F_c (R9 cartridge),mN,hysteresis +-0.1 % RO,1.0,rect,0.57735,MFR AMF-225 (FUTEK LSB200 drawing FI1455-B),1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,non-repeatability +-0.05 % RO,0.5,rect,0.28868,MFR AMF-225,1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,residual non-linearity after 5-point calibration,0.3,rect,0.17321,ASSUMPTION (30 % of the +-0.1 % RO spec left after a 2nd-order fit),1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,"zero shift, +-1 K during a run (0.018 % RO/K)",0.18000000000000002,rect,0.10392,MFR AMF-225,1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,ADC noise averaged over the window,0.005217491947499509,normal,0.00522,MFR AMF-221 (ADS131M04/M08 Table 7-1) / CALC,1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,"flexure-guide force correction k_g*dx (40 N/m +-5 %, dx <= 0.5 mm)",1.0,rect,0.57735,PROPOSED DESIGN / ASSUMPTION (k_g calibrated to 5 %),1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,"dead-weight standard (class M1, 5-50 g)",0.02,rect,0.01155,ASSUMPTION (OIML class M1 tolerance),1.9089
+axial_force,axial refill force F_c (R9 cartridge),mN,inertia of refill+holder (6 g) at <= 0.1 m/s^2 in steady strokes,0.6000000000000001,rect,0.34641,CALC,1.9089
+normal_force_2N,"normal force on the paper (R9 plate, K3D40 +-2 N)",mN,relative linearity error 0.2 % FS (half left after calibration),2.0,rect,1.1547,"MFR AMF-224 (K3D40 data sheet, 5 Oct 2016) / ASSUMPTION (half removed)",3.581
+normal_force_2N,"normal force on the paper (R9 plate, K3D40 +-2 N)",mN,zero-signal hysteresis 0.1 % FS,2.0,rect,1.1547,MFR AMF-224,3.581
+normal_force_2N,"normal force on the paper (R9 plate, K3D40 +-2 N)",mN,creep 0.05 % FS,1.0,rect,0.57735,MFR AMF-224,3.581
+normal_force_2N,"normal force on the paper (R9 plate, K3D40 +-2 N)",mN,"zero drift 0.05 % FS/K, +-0.5 K between zeroings",0.5,rect,0.28868,MFR AMF-224,3.581
+normal_force_2N,"normal force on the paper (R9 plate, K3D40 +-2 N)",mN,"eccentric load 0.5 % FS/100 mm, +-30 mm, 80 % corrected",0.6,rect,0.34641,MFR AMF-224 / ASSUMPTION (position correction removes 80 %),3.581
+normal_force_2N,"normal force on the paper (R9 plate, K3D40 +-2 N)",mN,ADC noise (1 s average),0.05,normal,0.05,CALC from MFR AMF-221,3.581
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,relative linearity error 0.2 % FS (half left after calibration),2.0,rect,1.1547,"MFR AMF-224 (K3D40 data sheet, 5 Oct 2016) / ASSUMPTION (half removed)",4.2611
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,zero-signal hysteresis 0.1 % FS,2.0,rect,1.1547,MFR AMF-224,4.2611
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,creep 0.05 % FS,1.0,rect,0.57735,MFR AMF-224,4.2611
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,"zero drift 0.05 % FS/K, +-0.5 K between zeroings",0.5,rect,0.28868,MFR AMF-224,4.2611
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,"eccentric load 0.5 % FS/100 mm, +-30 mm, 80 % corrected",0.6,rect,0.34641,MFR AMF-224 / ASSUMPTION (position correction removes 80 %),4.2611
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,"crosstalk z->x/y 1 % FS, 90 % removed by the matrix",2.0,rect,1.1547,MFR AMF-224 / ASSUMPTION (matrix removes 90 %),4.2611
+tangential_force_2N,"tangential force on the paper (R9 plate, K3D40 +-2 N)",mN,ADC noise (1 s average),0.05,normal,0.05,CALC from MFR AMF-221,4.2611
+normal_force_10N,"normal force on the paper (R9 plate, K3D40 +-10 N)",mN,relative linearity error 0.2 % FS (half left after calibration),10.0,rect,5.7735,"MFR AMF-224 (K3D40 data sheet, 5 Oct 2016) / ASSUMPTION (half removed)",17.8981
+normal_force_10N,"normal force on the paper (R9 plate, K3D40 +-10 N)",mN,zero-signal hysteresis 0.1 % FS,10.0,rect,5.7735,MFR AMF-224,17.8981
+normal_force_10N,"normal force on the paper (R9 plate, K3D40 +-10 N)",mN,creep 0.05 % FS,5.0,rect,2.88675,MFR AMF-224,17.8981
+normal_force_10N,"normal force on the paper (R9 plate, K3D40 +-10 N)",mN,"zero drift 0.05 % FS/K, +-0.5 K between zeroings",2.5,rect,1.44338,MFR AMF-224,17.8981
+normal_force_10N,"normal force on the paper (R9 plate, K3D40 +-10 N)",mN,"eccentric load 0.5 % FS/100 mm, +-30 mm, 80 % corrected",2.9999999999999996,rect,1.73205,MFR AMF-224 / ASSUMPTION (position correction removes 80 %),17.8981
+normal_force_10N,"normal force on the paper (R9 plate, K3D40 +-10 N)",mN,ADC noise (1 s average),0.05,normal,0.05,CALC from MFR AMF-221,17.8981
+page_truth_zaber,truth displacement over a 10 ms window (2 x Zaber X-LDM110C),um,"encoder count 1 nm, two endpoints",0.0014142135623730952,rect,0.00082,MFR AMF-229,0.3772
+page_truth_zaber,truth displacement over a 10 ms window (2 x Zaber X-LDM110C),um,accuracy 1 um over 110 mm (local slope over <= 2 mm),0.01818181818181818,rect,0.0105,MFR AMF-229 / CALC,0.3772
+page_truth_zaber,truth displacement over a 10 ms window (2 x Zaber X-LDM110C),um,repeatability < 0.08 um,0.08,rect,0.04619,MFR AMF-229,0.3772
+page_truth_zaber,truth displacement over a 10 ms window (2 x Zaber X-LDM110C),um,time-stamp jitter x speed (1 us x 100 mm/s),0.1,rect,0.05774,ASSUMPTION (DAQ ISR jitter 1 us),0.3772
+page_truth_zaber,truth displacement over a 10 ms window (2 x Zaber X-LDM110C),um,Abbe/yaw error of the stacked stages over the sensor offset,0.3,rect,0.17321,ASSUMPTION,0.3772
+page_truth_lm13,truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13),um,"resolution 0.244 um, two endpoints",0.1725340546095176,rect,0.09961,MFR OPT-89 (LM13 13B),2.6432
+page_truth_lm13,truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13),um,sub-divisional error (not stated in the data sheet),1.0,rect,0.57735,ASSUMPTION (not in MFR OPT-89),2.6432
+page_truth_lm13,truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13),um,"hysteresis < 4 um, only in windows with a reversal (1 in 5 at 8 Hz tremor)",1.7888543819998317,rect,1.0328,MFR OPT-89 / CALC (fraction of windows),2.6432
+page_truth_lm13,truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13),um,belt/carriage flex between encoder and sensor (Abbe),1.0,rect,0.57735,ASSUMPTION,2.6432
+page_truth_lm13,truth displacement over a 10 ms window (CoreXY + 2 x RLS LM13),um,time-stamp jitter x speed,0.1,rect,0.05774,ASSUMPTION,2.6432
+page_truth_camera,"truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",um,"dot centroid noise 0.05 px, two frames",0.6646803743153548,normal,0.66468,ASSUMPTION (to be measured on a static target),2.0717
+page_truth_camera,"truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",um,lens distortion after a dot-grid calibration 0.1 px,0.9400000000000001,rect,0.54271,ASSUMPTION,2.0717
+page_truth_camera,"truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",um,motion blur residual (50 us strobe at 100 mm/s = 5 um streak),1.0,rect,0.57735,CALC / ASSUMPTION,2.0717
+page_truth_camera,"truth displacement over a 10 ms window (strobed global-shutter camera, 9.4 um/px)",um,scale (grid pitch 1 um in 10 mm) over 1 mm,0.1,rect,0.05774,ASSUMPTION,2.0717
+stage_truth,"housing position (R13 disturbance stage, LM13)",um,resolution 0.244 um,0.122,rect,0.07044,MFR OPT-89,4.7718
+stage_truth,"housing position (R13 disturbance stage, LM13)",um,hysteresis < 4 um at reversals,4.0,rect,2.3094,MFR OPT-89,4.7718
+stage_truth,"housing position (R13 disturbance stage, LM13)",um,sub-divisional error,1.0,rect,0.57735,ASSUMPTION,4.7718
+stage_truth,"housing position (R13 disturbance stage, LM13)",um,Abbe offset x flexure yaw (5 mm x 50 urad),0.25,rect,0.14434,ASSUMPTION / CALC,4.7718
+ink_path,"ink centreline position (Epson V850 Pro at 4800 dpi, 5.3 um/px)",um,ridge-fit noise per 20 um step (0.2 px),1.06,normal,1.06,ASSUMPTION,3.1876
+ink_path,"ink centreline position (Epson V850 Pro at 4800 dpi, 5.3 um/px)",um,residual distortion after grid correction,1.5,rect,0.86603,ASSUMPTION (R3 requirement <= 5 um k=2),3.1876
+ink_path,"ink centreline position (Epson V850 Pro at 4800 dpi, 5.3 um/px)",um,paper cockle/shrinkage over 25 mm between writing and scan,1.0,rect,0.57735,ASSUMPTION,3.1876
+ink_path,"ink centreline position (Epson V850 Pro at 4800 dpi, 5.3 um/px)",um,fiducial registration,1.0,rect,0.57735,ASSUMPTION,3.1876
+sync,time alignment DAQ <-> device under test,us,device edge-capture latency and jitter,5.0,rect,2.88675,ASSUMPTION (GPIO interrupt on a Cortex-M),8.4063
+sync,time alignment DAQ <-> device under test,us,affine clock-fit residual over 10 min,3.0,normal,3.0,CALC (rig.sync on synthetic 20 ppm drift),8.4063
+sync,time alignment DAQ <-> device under test,us,DAQ ISR jitter,1.0,rect,0.57735,ASSUMPTION,8.4063
+km_point,"force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",%,sensor gain after dead-weight calibration,0.3,rect,0.17321,ASSUMPTION (calibration residual),1.183
+km_point,"force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",%,hysteresis 0.1 % FS of 10 N on a +-F swing,0.9615384615384615,rect,0.55514,MFR AMF-224 / CALC,1.183
+km_point,"force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",%,current: 0.1 % shunt read by the 24-bit ADC,0.1,rect,0.05774,ASSUMPTION (0.1 % shunt),1.183
+km_point,"force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",%,"coil warming between +I and -I (K_f follows the magnets, not the coil)",0.05,rect,0.02887,CALC,1.183
+km_point,"force constant K_f at one grid point (R12, K3D40 +-10 N, reversal method)",%,position error 10 um on a 15 %/mm ripple slope,0.15,rect,0.0866,ASSUMPTION / CALC,1.183
+coil_temperature,"coil temperature by resistance (4-wire, alpha_cu 0.00393/K)",K,R20 reference at 20.0 +- 0.5 C,0.5,rect,0.28868,PROTOCOL R4 bath band,2.4799
+coil_temperature,"coil temperature by resistance (4-wire, alpha_cu 0.00393/K)",K,resistance ratio (0.02 % of R),0.05089058524173028,rect,0.02938,ASSUMPTION (4-wire ratio),2.4799
+coil_temperature,"coil temperature by resistance (4-wire, alpha_cu 0.00393/K)",K,alpha_cu tolerance (1 %) at a 60 K rise,0.6,rect,0.34641,ASSUMPTION,2.4799
+coil_temperature,"coil temperature by resistance (4-wire, alpha_cu 0.00393/K)",K,hot-spot minus mean winding temperature,2.0,rect,1.1547,ASSUMPTION (a thermocouple on the coil checks it),2.4799
