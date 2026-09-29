@@ -164,7 +164,7 @@ At 8–10 Hz and 1–2 mm (test writers 0–5, seeds 200–203):
 | Tremor, on top of the nose | 30.4 g reaction-mass end-cap | A further 8 / 18 / 20 % at grip splits 0.3 / 0.5 / 0.7 |
 | Writing a known text for you | Autowrite with the ±6 mm nose | 99.2 % of letters and 100 % of words read up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters/s |
 | Parkinson's "write big" loops | Heel wheel, steer only | 0.99 of the target height (0.78 with nothing) |
-| Tracing and copying | Heel wheel + nose | 582 → 76 µm from the target; 79 % of letters read |
+| Tracing and copying | Heel wheel + nose | 582 → 76 µm from the target, but letters read 92 → 79 % (closer to the template is not more legible) |
 | Leading a relaxed hand | Heel wheel, driven | Letter bowl within 0.3 mm in 93 % of runs (3 % with nothing) |
 
 - **Inertia cannot write (CALC, SIM).** At writing frequencies the best 45 g end-cap moves the ink at most 0.21 mm and a gyroscope 1.06 mm, against 2 mm needed; the paper, through the heel wheel, gives 0.3–0.6 N (friction ASSUMPTION).

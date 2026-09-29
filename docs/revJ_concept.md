@@ -36,7 +36,7 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 | Tremor, on top of the nose | Tungsten end-cap | A further 8 / 18 / 20 % at grip splits 0.3 / 0.5 / 0.7 (8–12 Hz, 1–2 mm); the same mass fixed gives 17 / 12 / 4 %, better at split 0.3, but it worsens 29–42 % of the hard cases (the moving slug 4–12 %) | `inertial_endcap.md` |
 | Writing for you (known text) | Autowrite with the ±6 mm nose | 99.2 % of letters and 100 % of words read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters/s | `nose_v2.md` |
 | Parkinson's "write big" loops | Heel wheel, steer only | Loop height 0.99 of the target (0.78 with nothing; 0.93–0.94 for a resisting hand) | `grounded_drive.md` |
-| Tracing and copying (poor handwriting) | Heel wheel + nose | Distance to the target 582 → 76 µm while guided; letters read 79 % | `grounded_drive.md` |
+| Tracing and copying (poor handwriting) | Heel wheel + nose | Distance to the target 582 → 76 µm while guided, but letters read fell from 92 % to 79 %: ink closer to a template is not more legible (as with Rev H's full guidance). Steer only: 372 µm, 86 % | `grounded_drive.md` |
 | Leading a relaxed hand through a letter | Heel wheel, driven | In the reversed-letter demo, the 'd' bowl was drawn within 0.3 mm in 93 % of runs (3 % with nothing) | `grounded_drive.md` |
 | A letter the writer is set on (e.g. a reversed b) | Any guidance | 0 % turned into another letter: the writer always wins | `grounded_drive.md`, `handwriting_outcomes.md` |
 | Severe tremor, notes | The app's clean copy (digital) | 97 % of words readable; the paper keeps the pen's ink | `ai_severe_tremor.md` |
@@ -87,7 +87,7 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 
 ## 6. Simulation you can trust (and how far)
 
-- **Simulator v2** (`sim_v2.md`, DEC-040): MuJoCo physics of the pen, its moving nose, refill, paper contact and plug-ins (heel wheel, end-cap, gyroscopes natively), with two hand models, several tremor types and the pen's own sensors. It reproduces the earlier hand–pen model on 56 test cases within tolerances fixed in advance, converges in time step, conserves energy, and matches the gyroscopic torque formula (SIM, CALC).
+- **Simulator v2** (`sim_v2.md`, DEC-040): MuJoCo physics of the pen, its moving nose, refill, paper contact and plug-ins (heel wheel, end-cap, gyroscopes natively), with two hand models, several tremor types and the pen's own sensors. Against tolerances fixed in advance, on the earlier hand–pen model's 56 test cases, it reproduces the uncorrected ink error within 3.1 % in every case, the perfect-knowledge ratio within ±0.03 in 52 cases (worst 0.040) and the tracker's ratio within ±0.05 in 50 cases; the misses come from the Rev H tracker's frequency lock, which sits on a knife edge, not from the plant. It converges in time step, conserves energy, and matches the gyroscopic torque formula (SIM, CALC).
 - **What it found:** the synthetic writers write at half adult speed and have about ten times the measured 8–12 Hz velocity content (LIT CON-20, CON-25), which makes tremor separation look harder than it probably is; they must be refitted to recorded writing (EXP-V03).
 - **How far to trust it:** until bench identification (EXP-V01, V02, V04) calibrates it and EXP-V05 validates it, its results rank designs (context of use COU-1, following ASME V&V 40); they are not evidence of benefit.
 

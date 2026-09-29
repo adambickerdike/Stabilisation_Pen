@@ -271,6 +271,14 @@ WHERE_ROWS = [
     ("Guidance board", "A magnet moved under the paper: forces, stage, sensing, guided practice", "board/", "Gallery"),
     ("AI help for severe tremor", "Letter prediction as a tracker input and as nose guidance, a severe-tremor tracker setting, the "
      "app's clean copy, on model HW1", "aiprior/", "Gallery"),
+    ("Simulator v2 (MuJoCo)", "Hand, pen, moving nose, refill and paper in 25 µs steps with the H1 contact law; an articulated arm "
+     "and a MyoSuite check of the hand; heel-wheel, end-cap and rotor plug-ins; a Gymnasium environment with domain randomisation",
+     "sim2/", "Gallery"),
+    ("Rev J studies", "The tip (nose v2 and autowrite), the heel (a wheel that uses the paper as ground), the tail (reaction-mass "
+     "end-cap), and AI and control v2 (gated tracker, learned estimators, RL, prediction, style synthesis)",
+     "nose2/, drive/, endcap/, ai2/", "Gallery; the 3-D explainer"),
+    ("Rev J integrated pen", "Layout, mass, power, heat and magnetics of the whole pen; its whole-pen closed loop in simulator v2 "
+     "(round 2)", "revj/, sim2j/", "Gallery"),
     ("Rev A model M1", "The earlier, larger voice-coil pen", "sim/pensim/", "docs/sim_report.md"),
 ]
 EXPLAINER_URL = "https://claude.ai/artifact/VSMxtB8vpbTQjtoAjzqbez"
@@ -280,7 +288,7 @@ def where(root):
     rows = [[_e(a), _e(b), f"<code>{_e(c)}</code>", _e(d)] for a, b, c, d in WHERE_ROWS]
     lede = ("Every simulation is Python in the repository and re-runs with one command (README.md, “Reproduce”). "
             "This page replays their recorded runs in 3D and shows their charts. Nothing here is a measurement. "
-            f'The bigger-grip pen (Rev H), its parts and how it moves are shown in 3-D on the separate '
+            f'The current pen (Rev J), its parts and how it moves are shown in 3-D on the separate '
             f'<a href="{EXPLAINER_URL}" target="_blank" rel="noopener">explainer page</a>.')
     return _section("Where the simulations are", _tags("SIM", "CALC"), lede,
                     _table(["Model", "What it simulates", "Code", "On this page"], rows), "README.md; CHECKPOINT.md")
@@ -535,6 +543,51 @@ GALLERY_REVH = [   # the bigger-grip pen (Rev H), its handwriting outcomes and t
     ("results/board/fig_force_vs_gap.png", "Guidance board: magnet force",
      "Force on the pen's magnet against the gap under the paper: sideways force and the extra pull onto the page.", ("CALC",), "board/magnetics.py"),
 ]
+GALLERY_REVJ = [   # Rev J: the tip (nose v2), the heel (paper-grounded wheel), the tail (end-cap), AI v2 and simulator v2
+    ("results/revJ/drawing_revJ_pen.png", "Rev J: the integrated pen",
+     "Section through the proposed Rev J pen with its end-cap: C-shaped skid ring with the heel wheel, fixed sleeve, the moving "
+     "nose on its gimbal 76.5 mm behind the ball, magnet cap and coil plate, heel motors under the cell, the detachable end-cap. "
+     "Dashed: the nose at its usable travel (±6.57 mm at 50°, 6.0 mm guaranteed over 35–75°).", ("CAD",),
+     "mechanics/cad/revJ_pen.py"),
+    ("results/revJ/fig_revJ_budgets.png", "Rev J: mass, power and battery",
+     "Mass by group (87.0 g, or 129.2 g with the end-cap, against a 120 g limit), mean power per mode, and battery life per mode "
+     "against the 8 h target: only guiding and steadying small or no tremor reach about 8 h.", ("CALC",), "revj/"),
+    ("results/nose2/fig_nose2_autowrite_example.png", "Autowrite: the pen writes a known text",
+     "The hand only sweeps along the line at 8.5 mm/s with 1 mm of tremor at 8 Hz; the ±6 mm nose draws the letters. With the "
+     "pen lift the ink error is 34 µm; without it every pen-up move is inked (55 µm). The app read 'refurn' for 'return' in "
+     "both.", ("SIM",), "nose2/"),
+    ("results/drive/fig_loops_reversal.png", "Heel wheel: write big, resist, lead",
+     "'Write big' loops that shrink from 0.8 to 0.6 of the target, for a relaxed and a lightly resisting hand; a writer set on "
+     "'b' against a 'd' template (the bowl never moved to the 'd' side: the writer wins); a relaxed hand led through 'd' "
+     "(93 % of the bowl covered with the steered and driven wheel).", ("SIM",), "drive/"),
+    ("results/drive/fig_practice.png", "Heel wheel: guided tracing",
+     "Tracing the practice sentence for dysgraphia-like and dyslexia-like writers: distance to the target letters, letters read "
+     "by the app, and the device's force on the pen. The steered wheel with the nose gets closest (76 µm) but reads worse than "
+     "no guidance (79 % against 92 %).", ("SIM",), "drive/"),
+    ("results/endcap/fig_ek_ceiling.png", "Why inertia cannot write",
+     "The largest force a 30 g reaction mass moving ±4 mm can put on the pen, and the torque of a gyroscope (CMG) and a reaction "
+     "wheel, against what 1 mm at the tip needs: far short at 1–3 Hz, where letters are written. The mass reaches it only near "
+     "10–12 Hz and the gyroscope above about 5 Hz.", ("CALC",), "endcap/"),
+    ("results/endcap/fig_ek_tremor.png", "End-cap: tremor removed on top of the nose",
+     "Further reduction on top of the nose at three grip splits: the moving reaction mass, a gyroscope (CMG) and the same masses "
+     "fixed. The moving slug is best at splits 0.5 and 0.7; a fixed weight is better at 0.3 but makes more of the hard cases "
+     "worse (docs/inertial_endcap.md).", ("SIM",), "endcap/"),
+    ("results/ai2/fig_before_after.png", "AI and control v2: the same sentence with each estimator",
+     "1 mm at 6 Hz, 2 mm at 8 Hz and 1 mm at 10 Hz: ordinary pen, Rev H's tracker, the gated listening tracker, delayed-ink "
+     "variants, a learned TCN (shadow mode only), an RL arbiter, the app's clean copy (digital) and perfect knowledge.",
+     ("SIM",), "ai2/"),
+    ("results/ai2/fig_synthesis.png", "Letters in the writer's own style",
+     "Sigma-lognormal models fitted to 1 or 3 of a synthetic writer's letters, against a copy and a font: 96 % legible and 92–96 % "
+     "recognised as the right writer; the font is legible but recognised as the writer only 40 % of the time.",
+     ("CALC",), "ai2/"),
+    ("results/sim2/fig_sim2_h1check.png", "Simulator v2 against the earlier model",
+     "Ink error ratio in the MuJoCo simulator against model H1 on H1's 56 test cases: perfect knowledge within ±0.03 in 52; the "
+     "Rev H tracker within ±0.05 in 50, the misses being the tracker's frequency lock, not the plant.", ("SIM",), "sim2/"),
+    ("results/sim2/fig_sim2_validation.png", "Simulator v2 against the literature",
+     "Left: velocity spectra of the two synthetic writers against real writing's cumulative energy (LIT CON-25): one is too slow, "
+     "the other has too much fast content, so both must be refitted to recordings. Right: the arm model's wrist resonance drops "
+     "from 9.3 to 7.8 Hz with 300 g added, as described for mechanical tremor.", ("SIM",), "sim2/"),
+]
 GALLERY_OPT = [   # optimisation studies (shown when their figures exist)
     ("results/opt/fig_hw_validation.png", "Slim pencil hardware: before and after",
      "Error left with perfect tremor knowledge, and time at the travel limit, for the current and optimised pencil stages in the pencil model. "
@@ -561,7 +614,7 @@ def gallery_files(root):
     """Figures of the gallery that exist: (published name, source path)."""
     import os
     out = []
-    for rel, *_ in GALLERY_REVH + GALLERY + GALLERY_OPT:
+    for rel, *_ in GALLERY_REVJ + GALLERY_REVH + GALLERY + GALLERY_OPT:
         src = os.path.join(root, rel)
         if os.path.exists(src):
             out.append((rel.replace("/", "__"), src))
@@ -571,7 +624,7 @@ def gallery_files(root):
 def gallery(root):
     import os
     items = []
-    for rel, title, cap, tags, src in GALLERY_REVH + GALLERY + GALLERY_OPT:
+    for rel, title, cap, tags, src in GALLERY_REVJ + GALLERY_REVH + GALLERY + GALLERY_OPT:
         if not os.path.exists(os.path.join(root, rel)):
             continue
         name = "figures/" + rel.replace("/", "__")
