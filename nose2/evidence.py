@@ -254,7 +254,7 @@ def rows(results: Dict = None) -> List[Dict[str, str]]:
            transferability="medium", transferability_reason="Same control split; different scale and load",
            design_implication="Autowrite should lift the refill (retract) when the text leaves the reach, as Origin retracts its cutter; the pen's axial DOF provides this",
            search_query="WebSearch: Shaper Origin specifications auto-correct range", stream="ACT"),
-        _r(id="ACT-101", topic="Cooperative handheld robots: intention prediction and user frustration when the tool disobeys",
+        _r(id="HAP-62", topic="Cooperative handheld robots: intention prediction and user frustration when the tool disobeys",
            citation="Stolzenwald J, Mayol-Cuevas WW. Rebellion and obedience: the effects of intention prediction in cooperative handheld robots. arXiv:1903.08158 (2019).",
            year="2019", doi_or_url="https://arxiv.org/abs/1903.08158", source_type="preprint", evidence_class="physical human study",
            access_level="full text (HTML)", task_or_setup="6-DoF-tip handheld robot, block-assembly tasks with intention prediction and 'rebel' modes",
