@@ -66,7 +66,7 @@ Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-043 in [`decisi
 | Battery, guide / autowrite | 8.0–10.5 h / 5.3–6.1 h | 5.3–9.2 h / 3.9–5.7 h |
 | Skin over the coils, 23 °C / 30 °C room | 38.7 / 45.7 °C (37.3 °C at 23 °C with a 0.5 mm aluminium spreader) | as base |
 
-**Problems the integration found (CALC):** the page sensor and base electronics take 115–165 mW before anything moves, so the 8 h target fails in the assisted modes unless the page sensor is duty-cycled; the nose magnets pull the gimbal axially with 16.5 N, above the strips' 14.5 N buckling load (the strips must work in tension, or a thrust pivot is added); the cap's field could put a 0.16 N detent on the heel wheel through its motors; the skin over the coils gets warm in a hot room (a spreader is needed); and for an assumed eye position the ink near the ball is hidden at 50–75° of tilt, as it already is in Rev H.
+**Problems the integration found (CALC):** the page sensor and base electronics take 115–165 mW before anything moves, so the 8 h target fails in the assisted modes unless the page sensor is duty-cycled; the nose magnets pull the gimbal axially with 16.5 N, above the strips' 14.5 N buckling load (the strips must work in tension, or a thrust pivot is added); the nose's magnet cap, 2.7 mm in front of the heel motors, could put a detent of up to 0.16 N on the heel wheel through the motors' rotor magnets; the skin over the coils gets warm in a hot room (a spreader is needed); and for an assumed eye position the ink near the ball is hidden at 50–75° of tilt, as it already is in Rev H.
 
 ## 4. Modes
 

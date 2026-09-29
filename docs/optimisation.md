@@ -1,6 +1,6 @@
 # Where the simulations are, and how they were optimised
 
-**Status: proposed designs, optimised in simulation only (2026-09-28).** Nothing here has been measured on hardware or on people. Labels:
+**Status: proposed designs, optimised in simulation only (2026-09-29).** Nothing here has been measured on hardware or on people. Labels:
 - **SIM**: an executed simulation on synthetic writing and tremor;
 - **CALC**: a calculation;
 - **MFR**: a manufacturer statement, with its ledger id in `docs/evidence.csv`;
@@ -8,7 +8,7 @@
 
 ## 1. Where to see them
 
-- **3-D explainer of the bigger-grip pen, Rev H** (`viewer/explainer/index.html`; rebuild with `python3 viewer/explainer/build.py`; published as a private artifact). It shows every component in 3-D, how the nose and the inertial module move, and before/after writing for each condition.
+- **3-D explainer** (`viewer/explainer/index.html`; rebuild with `python3 viewer/explainer/build.py`; published as a private artifact). It shows every component in 3-D, how the nose and the inertial devices move, and before/after writing for each condition. It showed Rev H and is being updated to Rev J.
 - **3D replay page** (`viewer/index.html`; rebuild with `python3 viewer/build.py --variant Q`; published as a private artifact). It has four parts:
   - recorded simulation runs replayed in 3D: the pen, the hand's shake, the nib stage, the ink against the intended letters, and the forces;
   - a gallery of every study's charts;
@@ -28,6 +28,9 @@
 | Handwriting model HW1 | 2-D letters and words with tremor, shrinking letters, poor letter shapes and spelling errors; ink error, and letters and words read by the app's recogniser | `handwriting/` | `results/handwriting/` |
 | Guidance board | Magnet force maps, the XY stage, how far a hand gives way, Hall sensing, guided practice | `board/`, `mechanics/cad/guidance_board.py` | `results/board/`, `results/cad/` |
 | Rev A model M1 | The earlier, larger voice-coil pen | `sim/pensim/` | `results/sim/` |
+| Simulator v2 (MuJoCo) | Rigid-body physics of the hand, pen, moving nose, refill and paper at 25 µs with the H1 contact law; an articulated arm and a MyoSuite check of the hand's impedance; the pen's sensors; plug-ins for the heel wheel, the end-cap's reaction mass and rotors; a Gymnasium environment with domain randomisation | `sim2/` | `results/sim2/` |
+| Rev J studies | Heel drive (traction, tyre, guided and lead-through writing), end-cap (reaction masses, gyroscopes, cues), nose v2 (magnetics, autowrite), AI and control v2 (trackers, learned estimators, RL, prediction, synthesis, shared control) | `drive/`, `endcap/`, `nose2/`, `ai2/` | `results/drive/`, `results/endcap/`, `results/nose2/`, `results/ai2/` |
+| Rev J integrated pen | Layout, budgets, magnetics and the simulator parameters of the whole pen; the whole-pen closed loop in simulator v2 is round 2 | `revj/`, `sim2j/` | `results/revJ/` |
 
 ## 2. What was optimised, and how
 
@@ -39,6 +42,11 @@
 | Rev H: moving nose and inertial control of the pen body | The nose actuator (pivot, arm, magnets, coils, travel; 7 variables); the tracker for ±3 mm travel (10 settings); the rear reaction mass, a gyroscope pair and a passive weight with their control; tip design A against B | Adjoint (autograd) design of the actuator, checked against finite differences; ParEGO multi-objective Bayesian optimisation of the tracker; a neural reaction-mass controller trained by backpropagation through time; linear screens, then time-domain tests in H1 | [`opt_inertial.md`](opt_inertial.md); added at the user's direction (DEC-024 superseded by DEC-032, DEC-033) |
 | Guidance board | Magnet sizes and gap, stage and sensing for a board that moves a magnet under the paper | Force maps (magpylib, checked by a dipole model); architecture comparison by calculation; Monte Carlo of the Hall ring; closed-loop guidance simulations | [`guidance_board.md`](guidance_board.md) (DEC-031) |
 | AI help for severe tremor | Letter prediction as a tracker prior and as nose guidance; a more aggressive tracker setting; the app's clean copy | Settings chosen on tuning writers with rules fixed before the test (twelve tracker settings, four prior and four guidance settings); safety rules on wrong letters, small tremor and false correction | [`ai_severe_tremor.md`](ai_severe_tremor.md) (DEC-035) |
+| Rev J nose v2 (tip) | Multi-pivot and multi-coil candidates for ±5–8 mm: pivot place, arm, magnet array, gap, coils, travel, mass weight, handle size; autowrite settings | Magnet fields by magpylib with a fitted surrogate (checked on a grid); CMA-ES and adjoint L-BFGS over every candidate with Pareto fronts and a gradient check; a fixed selection rule; autowrite tuned on tuning writers, tested on test writers | [`nose_v2.md`](nose_v2.md) (DEC-036, DEC-039) |
+| Rev J heel drive | Wheel, tyre, preload, steer and drive gear, motors; guidance gains; force cap and release | Differentiable design model (autograd) with a gradient check; gains by grid search and Bayesian optimisation on tuning writers; frozen rules on test writers, including writers who resist | [`grounded_drive.md`](grounded_drive.md) (DEC-037) |
+| Rev J end-cap (tail) | Reaction masses, control-moment gyroscopes, reaction wheels and cue actuators within mass and size budgets | Closed-form ceilings; CMA-ES over every class with Pareto fronts, then autograd (Adam) refinement; feed-forward gain tuned on tuning seeds; tests on top of the nose at three grip splits | [`inertial_endcap.md`](inertial_endcap.md) (DEC-038) |
+| Rev J AI and control | Tremor-line gate and listening tracker; delayed ink; learned estimators; RL policies; text prediction; style synthesis; shared-control arbitration | Settings tuned on tuning writers with rules fixed before the test; TCN, context TCN, hybrid Kalman–network and transformer trained on domain-randomised data; PPO and SAC (Stable-Baselines3) in Gymnasium; n-gram and small transformer language models; sigma-lognormal fitting | [`ai_control_v2.md`](ai_control_v2.md) (DEC-042, DEC-043) |
+| Simulator v2 | Not an optimisation: verification and validation of the new physics simulator | Reproduction of H1 on its own test cases within tolerances fixed in advance; time-step and integrator convergence; energy balance; gyroscopic torque against h × ω; comparison with literature writing kinematics, tremor spectra and forces; ASME V&V 40 contexts of use | [`sim_v2.md`](sim_v2.md) (DEC-040) |
 | Handwriting outcomes | What each function changes in the ink, per condition | Tracker settings re-tuned on training writers only; results on test writers, cross-checked against P1; legibility scored by the app's recogniser | [`handwriting_outcomes.md`](handwriting_outcomes.md) |
 
 **Why these methods.** The simulators have friction, contact and saturation, so their exact gradients are rough. Each study used gradients (the adjoint) where they are exact and smooth: a reduced model, the filter recursion or the design equations. It then used Bayesian optimisation or CMA-ES on the full simulator, and judged every result on test seeds that were never used for tuning.
@@ -146,6 +154,23 @@ At 8–10 Hz and 1–2 mm (test writers 0–5, seeds 200–203):
 - A correct predicted letter is 535–938 µm off at 1–2 mm tremor because it is placed where the shaking tip lands, and only 6 of 26 letters reach the confidence gate.
 - No AI variant changed anything at 0.3 mm or on tremor-free writing. A wrong prediction at full confidence made 3–8 of 3744 letters read wrongly, so guidance toward predicted letters is not used.
 
+### 3.8 Rev J: tip, heel and tail (DEC-036…044; SIM on synthetic writers, test writers and seeds only)
+
+| Condition | Help | Result |
+|---|---|---|
+| Essential tremor, 1–2 mm, 6–10 Hz | Nose + gated listening tracker | Ink error 830 → 430 µm (Rev H's tracker 627); words read 31 → 74 % (Rev H 49 %); clean writing moved 26 µm |
+| Tremor at 6 Hz, 1–2 mm | Gated tracker | 822 → 540 µm (Rev H did nothing here) |
+| Same, learned estimator (shadow mode only) | Causal TCN | 278 µm, 81 % of words |
+| Tremor, on top of the nose | 30.4 g reaction-mass end-cap | A further 8 / 18 / 20 % at grip splits 0.3 / 0.5 / 0.7 |
+| Writing a known text for you | Autowrite with the ±6 mm nose | 99.2 % of letters and 100 % of words read up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters/s |
+| Parkinson's "write big" loops | Heel wheel, steer only | 0.99 of the target height (0.78 with nothing) |
+| Tracing and copying | Heel wheel + nose | 582 → 76 µm from the target; 79 % of letters read |
+| Leading a relaxed hand | Heel wheel, driven | Letter bowl within 0.3 mm in 93 % of runs (3 % with nothing) |
+
+- **Inertia cannot write (CALC, SIM).** At writing frequencies the best 45 g end-cap moves the ink at most 0.21 mm and a gyroscope 1.06 mm, against 2 mm needed; the paper, through the heel wheel, gives 0.3–0.6 N (friction ASSUMPTION).
+- **What did not help (SIM).** Delayed ink (−4 % at 25 ms; longer lags lose stroke ends); steering toward predicted letters (0–1 %); RL driving the nose directly (more words read, but clean writing moved too much).
+- **Integration (CALC, DEC-044).** 87.0 g base pen, 129.2 g with the end-cap; battery short of 8 h in the assisted modes; gimbal axial pull 16.5 N against 14.5 N buckling. The whole-pen closed loop in simulator v2 is running.
+
 ## 4. What must be measured first
 
 | Question | Experiment |
@@ -158,3 +183,7 @@ At 8–10 Hz and 1–2 mm (test writers 0–5, seeds 200–203):
 | Is the clean copy readable to people, and is a severe-tremor setting worth its false correction? | EXP-A03 (AC-A03-04/05), EXP-W02 offline (AC-W02-03) |
 | Stage stiffness and damping, then the servo retune | EXP-Q04 / Q07 |
 | Friction under vibration (the largest model uncertainty for the tremor error) | EXP-B01 / B02 with superimposed vibration |
+| Rev J nose v2 and Rev H force constants (magnetics are an upper bound) | EXP-N01 coupons |
+| Tyre friction on real papers (sets the heel's force) | EXP-D01, then the heel bench EXP-D04 / D07 |
+| Refit the simulator's synthetic writers to recorded writing | EXP-V03 (needs EXP-H01) |
+| Does the moving end-cap beat a plain weight on a Ø24 handle? | EXP-I01 with EXP-K08 |

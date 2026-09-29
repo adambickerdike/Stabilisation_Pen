@@ -1,13 +1,13 @@
-# Checkpoint — 2026-09-28
+# Checkpoint — 2026-09-29
 
-Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it. The pencil-class concept has its own overlay, `config/pencil.yaml` **P0.1.2** (§7). **The primary design is now Rev H, the bigger-grip pen (§8).**
+Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it. The pencil-class concept has its own overlay, `config/pencil.yaml` **P0.1.2** (§7). **The primary design is now Rev J, which acts at the tip, the heel and the tail (§9); Rev H, the bigger-grip pen, is §8.**
 
 ## 1. What exists and what actually ran
 
 | Area | Ran here | Not run or not possible here |
 |---|---|---|
 | Audit | Recalculation of all 37 report numbers (all reproduce); 28 corrections with severity | — |
-| Evidence | 391 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
+| Evidence | 581 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
 | Simulation | M1 coupled model, 12 tests passing; estimator tuning on seeds 100–105; nominal benchmark; 12-seed × 9 f × 3 amplitude grid; 160-sample Monte Carlo + rank sensitivity; failure cases F1–F7; design sweeps; κ_s comparison; guided-mode evaluation; contact-feedforward diagnosis; frequency-gate diagnostic | Validation against hardware (all EXP-B*) |
 | Mechanics | CAD Rev A and A.1 (interference-free at full travel); flexure calculation; tolerance stacks S1–S6; mass budget; stage-A rig CAD with platen-clearance check; drawings | Physical parts; FEM of flexures and actuator |
 | Electronics | KiCad 8 schematic generated deterministically; ERC (0 errors, 1 accepted warning); netlist cross-check pass (102 nets / 492 pins); BOM; drive/sense calculations with the winding headroom assessment; ngspice transient incl. coil short; placement study | PCB layout (DEC-014 open); datasheet checks behind 45 VERIFY and 3 SELECT BOM lines |
@@ -242,3 +242,51 @@ python3 mechanics/cad/guidance_board.py
 python3 viewer/explainer/build.py          # smoke test: viewer/explainer/smoke_test.js (Playwright; see its README)
 python3 validation/check_criteria.py
 ```
+
+## 9. Rev J, a pen that acts at the tip, the heel and the tail (added 2026-09-29)
+
+The user asked for far more physical effect on the writing: more advanced tip manipulation, movement and tilt of the whole pen, a clever inertial system (for example at the end of the pen), a pen that can "somewhat write for you" while held, better algorithms and AI (smoothing, prediction, adaptation, RL), and more realistic physics simulation with proper sim-to-real practice. Plan: `docs/revJ_plan.md`. Plain-words account: `docs/revJ_concept.md`. Integrated design: `docs/revJ_design.md`. Decisions DEC-036…044.
+
+- **Physics that decided the architecture (CALC).** A handheld pen can push the hand only against a mass inside it, against the hand, or against the paper. A reaction mass gives F = m(2πf)²X: at writing frequencies (below about 5 Hz) the best 45 g end-cap moves the ink at most 0.21 mm and a gyroscope 1.06 mm, against 2 mm needed (SIM, study K). The paper, through a wheel at the heel, gives μ·N ≈ 0.3–0.6 N (friction ASSUMPTION, EXP-D01), and a relaxed hand moves about 0.35 mm per 0.1 N.
+- **Round 1 (five parallel studies, all executed; SIM and CALC).**
+  - *N, nose v2 (DEC-036):* short-arm gimbal 76.5 mm behind the ball, 2 × 2 N52 checkerboard across a spherical gap; ±6.0 mm guaranteed over 35–75° (6.57 mm at 50°); pen lift with an electro-permanent brake and latch; autowrite of a known text 99.2 % of letters and 100 % of words read up to 1 mm of tremor.
+  - *D, heel drive (DEC-037):* 2 mm steered and driven wheel; steer-only by default; driven only in lead-through and autowrite (DEC-039); force cap min(0.5 N, 0.8 μ̂ × load) with a lateral release. PD loops 0.78 → 0.99 of the target height; tracing 582 → 76 µm.
+  - *K, end-cap (DEC-038):* 30.4 g tungsten, ±4 mm, 5 Hz flexures, detachable; +8 / 18 / 20 % at grip splits 0.3 / 0.5 / 0.7 on top of the nose; a fixed mass gives 17 / 12 / 4 % but worsens 29–42 % of hard cases. It cannot steer letters.
+  - *L, AI and control (DEC-042, DEC-043):* tremor-line detector with hysteresis plus a fixed-lag Kalman (RTS) listening tracker: 1–2 mm at 6–10 Hz, 830 → 430 µm (Rev H tracker 627 µm), words 31 → 74 %. Causal TCN 278 µm, shadow mode only. No delayed ink; RL offline only (arbitration α = α_max · c_conf · c_need · c_agree); word completion and labelled style synthesis in the app.
+  - *V, simulator v2 (DEC-040):* MuJoCo 3.6 with the H1 contact law at 25 µs; reproduces H1 on 56 test cases; convergence, energy and gyroscope checks; MyoSuite impedance; Gymnasium environment with domain randomisation. Synthetic writers are at half adult speed with about ten times the measured 8–12 Hz content: refit on recordings (EXP-V03). Context of use COU-1 (ranking designs) until EXP-V01/V02/V04/V05.
+- **Rev H corrections (DEC-041).** The nose actuator's force constant is 0.19 N/√W by an image-method model, not 0.47 (REQ-RVH-003/004 and AC-I05-01/04 marked contested); the ink-force spring needs a fatigue rating; a free refill follows lifts; the refill's front stop must follow the nose (REQ-RVH-008).
+- **Round 2 integration (DEC-044; CALC).** Ø24 mm; contact radius 11.65 mm, wheel at 12.0 mm; sleeve front Ø23.3 mm; 144.7 mm and 87.0 g, or 165.7 mm and 129.2 g with the end-cap (target ≤ 120 g); refill slide 26.6 mm; 38 fit checks pass.
+- **Open problems (the next session must not lose these).**
+  1. Battery: the page sensor and base electronics take 115–165 mW before anything moves; steady mode 6.1–7.3 h (target 8 h) unless the page sensor is duty-cycled.
+  2. The nose magnets pull the gimbal axially with 16.5 N, above the strips' 14.5 N buckling load: tension-only strips or a thrust pivot.
+  3. Mass 129.2 g with the end-cap; the end-cap stays detachable and optional.
+  4. The nose's magnet cap, 2.7 mm in front of the heel motors, could put a detent of up to 0.16 N on the heel wheel through the motors' rotor magnets (measure in EXP-J02; a soft-iron cup if needed); skin over the coils 45.7 °C in a 30 °C room without a spreader.
+  5. Ink near the ball is hidden at 50–75° of tilt for the assumed eye position (as in Rev H).
+  6. The TCN may fail REQ-ML-001 (34.8 µm on the worst writer); text prediction latency 74–115 ms against 20 ms.
+  7. Autowrite with a pen lift needs a freedom-to-operate review against an actuated-nib pen that scribes predefined characters (LIT PAT-01).
+  8. The synthetic writers are unrealistic (above); every tremor-separation result waits on EXP-H01 recordings.
+- **Round 2 running.** Whole-pen closed loop in simulator v2 (`sim2j/`): writer refit, the gated tracker, nose and heel wheel coordinated, controllers compared (including RL with domain randomisation), outcomes per condition. The 3-D explainer is being updated to Rev J.
+
+**Next for Rev J, in order (from `docs/revJ_concept.md` §7).**
+1. EXP-N01 magnetics coupons: nose v2 and Rev H force constants.
+2. EXP-D01 tyre friction on six papers; EXP-D04 and D07 the heel bench with its force cap and release.
+3. EXP-H01 recordings; then EXP-L01, L02 (gate and gated tracker offline), EXP-L04 (learned estimator), EXP-V03 (refit the simulator's writers).
+4. EXP-I01 and K08: grip split on the Ø24 handle with and without the end-cap.
+5. EXP-N05, N06: spring fatigue and the pen lift.
+6. People: EXP-D08 (guidance and lead-through), EXP-N09 (autowrite), EXP-K03, K05 (end-cap acceptance and cues).
+
+**Resume.**
+
+```bash
+python3 -m drive.run_study            # about 50 min; --quick about 5 min
+python3 -m endcap.run_study           # about 75 min; --quick about 2.5 min
+python3 nose2/run_study.py            # about 2-3 h; --quick about 1.5 min
+python3 -m ai2.run_study --workers 1  # about 4 h; --quick about 40 min
+python3 -m sim2.run_study             # about 3 h; --quick
+python3 -m revj.run                   # about 25 s
+python3 mechanics/cad/revJ_pen.py     # --no-endcap for the base pen
+python3 -m pytest -q drive/tests endcap/tests nose2/tests ai2/tests sim2/tests revj/tests
+python3 validation/check_criteria.py --check
+```
+
+The studies' dependencies are pinned in `requirements.txt` (mujoco 3.6.0, MyoSuite 2.12.2, gymnasium 1.2.3, stable-baselines3 2.9.0); see `ENVIRONMENT.md`.

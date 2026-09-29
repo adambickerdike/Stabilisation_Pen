@@ -10,13 +10,15 @@ This repository holds the research and development package: the audit of the sou
 
 | If you want… | Read |
 |---|---|
-| **The current design, Rev H (bigger grip):** what is inside, how the tip and the pen body are moved, how much it helps each condition, what to measure first | [`docs/revH_concept.md`](docs/revH_concept.md); the 3-D explainer [`viewer/explainer/`](viewer/explainer/build.py) |
+| **The current design, Rev J:** a pen that acts at the tip (a ±6 mm moving nose), the heel (a wheel that uses the paper as ground) and the tail (a detachable reaction-mass end-cap); what each can do, whether it can write for you, what to test first | [`docs/revJ_concept.md`](docs/revJ_concept.md); plan [`docs/revJ_plan.md`](docs/revJ_plan.md); integrated design [`docs/revJ_design.md`](docs/revJ_design.md); the 3-D explainer [`viewer/explainer/`](viewer/explainer/build.py) |
+| The Rev J studies | tip [`docs/nose_v2.md`](docs/nose_v2.md), heel [`docs/grounded_drive.md`](docs/grounded_drive.md), tail [`docs/inertial_endcap.md`](docs/inertial_endcap.md), algorithms and AI [`docs/ai_control_v2.md`](docs/ai_control_v2.md), physics simulator [`docs/sim_v2.md`](docs/sim_v2.md) |
+| The previous design, Rev H (bigger grip, ±3 mm nose): what is inside, how much it helps each condition | [`docs/revH_concept.md`](docs/revH_concept.md) |
 | The recommended route: what to build, where custom hardware and our own data are unavoidable, what evidence each benefit needs | [`docs/recommendation.md`](docs/recommendation.md) |
 | The slim pencil variant (Ø8.9 × 166 mm): exact forces, mechanisms with existing parts, what to make, AI guidance and autocorrect, sim-to-real, 3D replay | [`docs/pencil_concept.md`](docs/pencil_concept.md), [`viewer/`](viewer/build.py) |
 | The verdict on the source report | [`docs/audit.md`](docs/audit.md), [`docs/corrections.csv`](docs/corrections.csv) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
-| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…034) |
+| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…044) |
 | What the simulations say | [`docs/sim_report.md`](docs/sim_report.md) |
 | What may be claimed for each feature | [`docs/features.md`](docs/features.md) |
 | The riskiest open questions | [`docs/research_questions.md`](docs/research_questions.md) |
@@ -55,13 +57,23 @@ This repository holds the research and development package: the audit of the sou
    - The calibrated twin then predicts the oracle ratio within ±0.1 for 14 of 15 plants, against 4–5 uncalibrated.
    - The same work found that the frozen tremor estimator degrades on randomised plants (median ratio 0.88 at 9 Hz), and that the existing Monte Carlo lets the controller see true plant values.
 
-7. **Rev H, the bigger-grip pen, is now the primary design** (DEC-029, DEC-032, DEC-033; `docs/revH_concept.md`). All simulation and calculation.
+7. **Rev H, the bigger-grip pen, was the primary design until Rev J (item 8)** (DEC-029, DEC-032, DEC-033; `docs/revH_concept.md`). All simulation and calculation.
    - Ø22 × 170 mm, 75 g, or 103 g with the inertial module. The fingers hold a fixed sleeve whose front ring rests on the paper and carries the writing force. The whole front of the pen (the nose, holding the refill) tilts on a flexure gimbal, driven by two pairs of flat voice coils, so the ink tip moves up to ±3 mm: ten times the pencil's stage. About 0.08 W, about 27 h of writing.
    - A rear inertial module (19.8 g tungsten slug moved ±2.75 mm on two axes) pushes the whole pen against the shake. On top of the nose it adds 6–17 % further reduction depending on the grip. It is fitted in the first prototype; the product keeps it if the grip measurement (EXP-I01) and the bench test (EXP-I06) confirm ≥ 10 %. A plain weight made the ink worse in 38–42 % of 8–12 Hz cases and is not used.
    - With perfect knowledge of the tremor the nose removes 87–99 % of the ink error up to 2 mm, and the app reads 98–100 % of words. With today's accelerometer tracker: 22–50 % at 8–10 Hz (words read at 10 Hz, 1 mm: 54 → 87 %), and nothing at 4–6 Hz. **The tracker, not the mechanism, is the limit** (`docs/opt_inertial.md`, `docs/handwriting_outcomes.md`).
    - Parkinson's shrinking letters: a "write bigger" vibration cue kept letters at 5.2 mm instead of 4.2 mm, if people respond as small studies suggest. Poor handwriting: guidance brings the ink 24–61 % closer to the target letters while it is on (partial nose guidance 35 %, reading slightly better; full guidance reads worse); lasting benefit needs a human study (EXP-W04). Dyslexia: guidance never turned a wrong letter into the right one; the help is the app's spelling check, read-back and clean copy.
    - An optional desk board moves a permanent magnet under the paper to pull the pen along whole letters (0.4 N cap; `docs/guidance_board.md`, DEC-031).
    - AI letter prediction does not close the tracker's gap at 1–2 mm tremor: a correct predicted letter is 0.5–0.9 mm off because it is placed where the shaking tip lands; as a tracker input it closed 0 %, as nose guidance 1 %. The app's digital clean copy makes 97 % of words readable at 1–2 mm, against 30–59 % in the ink (`docs/ai_severe_tremor.md`, DEC-035).
+
+8. **Rev J acts at the tip, the heel and the tail; it is now the primary design** (DEC-036…044; `docs/revJ_concept.md`). The user asked for far more physical effect, inertial movement of the whole pen, and a pen that can partly write for you. All calculation and simulation.
+   - **Physics first.** A handheld pen can push the hand only against a mass inside it, against the hand itself, or against the paper. A moving mass gives F = m(2πf)²X, which is tiny at handwriting frequencies (below about 5 Hz): the best 45 g end-cap moves the ink at most 0.21 mm and a gyroscope 1.06 mm, against the 2 mm needed (SIM). The paper, used as ground through a small wheel at the heel, gives 0.3–0.6 N on the hand (CALC on an assumed tyre friction, to measure in EXP-D01).
+   - **Tip (nose v2, DEC-036).** The refill tilts on a gimbal 76.5 mm behind the ball, driven by a 2 × 2 magnet checkerboard across a spherical gap: ±6.0 mm of ball travel guaranteed over 35–75° of tilt (Rev H ±2.75 mm), in a Ø24 handle. A pen lift (electro-permanent brake and latch) separates strokes. **Autowrite** (a mode the user turns on) writes a known text in the writer's style while the hand sweeps along the line: 99.2 % of letters and 100 % of words read with up to 1 mm of tremor, 98 % at 2 mm; 2.5 mm letters at 3.7 letters/s (SIM).
+   - **Heel (paper-grounded drive, DEC-037).** A 2 mm wheel in the skid ring, steered by default (the cobot principle: it keeps the hand on the letter's path and cannot move the pen by itself); driven only in lead-through and autowrite. Parkinson's "write big" loops reach 0.99 of the target height (0.78 with nothing); tracing error 582 → 76 µm; lead-through drew a letter bowl within 0.3 mm in 93 % of runs. A writer who resists always wins: a letter the writer is set on was never turned into another (0 %).
+   - **Tail (reaction-mass end-cap, DEC-038).** 30.4 g of tungsten moved ±4 mm on 5 Hz flexures in a detachable end-cap: a further 8 / 18 / 20 % tremor reduction on top of the nose at grip splits 0.3 / 0.5 / 0.7, and cues in pauses. It cannot steer letters.
+   - **Algorithms and AI (DEC-042, DEC-043).** A tremor-line detector switches on a listening (fixed-lag Kalman) tracker: essential tremor 1–2 mm at 6–10 Hz, ink error 830 → 430 µm (Rev H's tracker 627) and words read 31 → 74 %, including 6 Hz where Rev H did nothing. A causal TCN reaches 278 µm but stays in shadow mode until real recordings. Delayed ink and next-letter steering did not help, and RL driving the nose read more words but moved clean writing too much; RL is used offline to design shared control. The app gains word completion and labelled style synthesis.
+   - **Simulator v2 (DEC-040).** MuJoCo physics of the hand, pen, moving nose, refill and paper, with the heel wheel and end-cap as plug-ins, domain randomisation and a Gymnasium environment. It reproduces the earlier hand–pen model on 56 test cases, converges and conserves energy; it also showed that the synthetic writers write at half adult speed with about ten times the measured 8–12 Hz motion, which makes tremor separation look harder than it probably is (refit on recordings, EXP-V03). Until bench identification, it ranks designs only (ASME V&V 40 context COU-1).
+   - **Integration (DEC-044; CALC).** Ø24 × 144.7 mm, 87.0 g (165.7 mm and 129.2 g with the end-cap, over the 120 g target). Open problems: the battery misses 8 h in the assisted modes unless the page sensor is duty-cycled; the nose magnets pull the gimbal with 16.5 N, above the strips' 14.5 N buckling load; skin over the coils is warm in a hot room; ink near the ball is hidden at 50–75° of tilt. The whole-pen closed-loop simulation in simulator v2 is running (round 2).
+   - Rev H corrections found on the way (DEC-041): the nose actuator's force constant is 0.19 N/√W by an image-method model, not 0.47; the refill's front stop must follow the nose; the ink-force spring needs a fatigue rating.
 
 **Where the simulations are, and what the optimisation studies found:** [`docs/optimisation.md`](docs/optimisation.md). The 3D replay page is `viewer/index.html` (`python3 viewer/build.py --variant Q`); the Rev H explainer is `viewer/explainer/index.html` (`python3 viewer/explainer/build.py`).
 
@@ -72,7 +84,7 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Brief area | Deliverable | State | Evidence |
 |---|---|---|---|
 | 1 Research | Audit and recalculation of the report (37/37 numbers reproduce; 28 corrections) | executed | `analysis/audit_recalc.py` → `results/audit/` |
-| 1 Research | Evidence ledger (391 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
+| 1 Research | Evidence ledger (581 sources, 8 streams) and synthesis | drafted | `docs/evidence.csv`, `docs/research_synthesis.md` |
 | 1 Research | Ranked research questions with decisive experiments | drafted | `docs/research_questions.md` |
 | 2 Mechanics | Parametric CAD (Rev A, Rev A.1) with interference checks, STEP, drawings | executed | `mechanics/cad/`, `results/cad/` |
 | 2 Mechanics | Flexures, tolerance stacks (S1–S6), mass/CoM budget, configuration trade | executed | `mechanics/`, `results/mechanics/`, `results/trade/` |
@@ -101,6 +113,14 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Rev H | 3-D explainer: components, how it moves, before/after writing, evidence level of every number; smoke test | executed | `viewer/explainer/` (`python3 viewer/explainer/build.py`) |
 | Rev H | AI help for severe tremor: letter prediction as a tracker prior and as nose guidance, a severe-tremor tracker setting, the app's digital clean copy; safety (wrong letters, agency, false correction); rules fixed on tuning writers | executed (simulation) · recordings pending (EXP-W02, EXP-A03) | `docs/ai_severe_tremor.md`, `aiprior/`, `results/aiprior/` |
 | 4 Simulation | Sim-to-real: virtual bench with instrument models, blind identification of 15 plants in protocol order, bench-time study, calibrated-twin prediction gap, model-form diagnostics, piezo hysteresis identification, domain randomisation, hardware-in-the-loop specification; 22 tests | executed (twin experiments) · bench pending | `docs/sim_to_real.md`, `validation/sim_to_real.md`, `s2r/`, `results/s2r/` |
+| Rev J | Plan and plain-words concept: what acts at the tip, heel and tail, results per condition, modes, whether it can write for you, what to test first | drafted | `docs/revJ_plan.md`, `docs/revJ_concept.md` |
+| Rev J | Study D, paper-grounded heel drive: traction over the writer population, tyre mechanics, driven ball, omni-wheels, steered and braked wheels, controllable friction; differentiable design optimisation; guided, lead-through and resisting-writer runs; force cap and lateral release; CAD | executed (calculation, simulation) · friction and bench pending (EXP-D01…D07) | `docs/grounded_drive.md`, `drive/`, `results/drive/`, `mechanics/cad/heel_drive.py` |
+| Rev J | Study K, inertial end-cap: force ceilings, CMA-ES and autograd design of reaction masses, gyroscopes (CMG), reaction wheels and pseudo-force cues; tremor on top of the nose; letter steering; CAD | executed (calculation, simulation) · grip pending (EXP-I01, K08) | `docs/inertial_endcap.md`, `endcap/`, `results/endcap/`, `mechanics/cad/endcap.py` |
+| Rev J | Study N, nose v2: magnet-array field models (magpylib), CMA-ES and adjoint optimisation over multi-pivot and multi-coil candidates, front-end closure at ±3–8 mm, pen lift, autowrite planner and test grid; CAD | executed (calculation, simulation) · coupons pending (EXP-N01) | `docs/nose_v2.md`, `nose2/`, `results/nose2/`, `mechanics/cad/nose2.py` |
+| Rev J | Study L, AI and control v2: tremor-line gate, gated listening tracker, learned estimators (TCN, transformer, hybrid), delayed ink, RL (PPO, SAC) in Gymnasium, next-letter and next-word prediction, sigma-lognormal style synthesis, shared-control arbitration | executed (synthetic data) · recordings pending (EXP-H01, EXP-L01…L08) | `docs/ai_control_v2.md`, `ai2/`, `results/ai2/` |
+| Rev J | Study V, simulator v2: MuJoCo 3.6 hand–pen–paper model with the H1 contact law, reproduction of H1, time-step convergence, energy balance, gyroscope check, MyoSuite impedance, literature validation, Gymnasium environment with domain randomisation, plug-ins; ASME V&V 40 contexts of use | executed · bench identification pending (EXP-V01…V06) | `docs/sim_v2.md`, `sim2/`, `results/sim2/` |
+| Rev J | Integrated design: front end, placement along the pen, refill and pen lift, mass, power, heat and cost budgets, magnetics, 38 fit checks, simulator parameters, CAD with STEP | executed (calculation) · hardware pending | `docs/revJ_design.md`, `revj/`, `results/revJ/`, `mechanics/cad/revJ_pen.py` |
+| Rev J | Whole-pen closed loop in simulator v2 (nose, heel wheel and end-cap together, gated tracker, controllers compared, outcomes per condition) | running (round 2) | `sim2j/` |
 | — | Engineering recommendation: route, conflicting targets with limiting calculations, custom hardware, AI data needs, evidence per benefit | drafted | `docs/recommendation.md` |
 | — | Interfaces, decisions, plan with effort ranges (100–174 pw) and quotation list, environment lock | drafted | `docs/icd.md`, `docs/decisions.md`, `docs/plan.md`, `ENVIRONMENT.md`, `requirements.txt` |
 
@@ -151,6 +171,18 @@ python3 mechanics/cad/guidance_board.py               # board CAD and drawing
 python3 viewer/explainer/build.py                     # 3-D explainer page from the results
 ```
 
+Rev J (tip, heel and tail):
+
+```bash
+python3 -m drive.run_study                            # heel drive (about 50 min; --quick about 5 min); tests: python3 -m pytest -q drive/tests
+python3 -m endcap.run_study                           # end-cap (about 75 min; --quick about 2.5 min); tests: python3 -m pytest -q endcap/tests
+python3 nose2/run_study.py                            # nose v2 and autowrite (about 2-3 h; --quick about 1.5 min); tests: python3 -m pytest -q nose2/tests
+python3 -m ai2.run_study --workers 1                  # AI and control v2 (about 4 h; --quick about 40 min); tests: python3 -m pytest -q ai2/tests
+python3 -m sim2.run_study                             # simulator v2 (about 3 h; --quick); tests: python3 -m pytest -q sim2/tests
+python3 -m revj.run                                   # integrated layout, budgets, simulator parameters (about 25 s); tests: python3 -m pytest -q revj/tests
+python3 mechanics/cad/revJ_pen.py [--no-endcap]       # Rev J CAD, STEP and drawing
+```
+
 Firmware, ML and app have their own build and test commands in their READMEs.
 
 ## Repository map
@@ -169,12 +201,19 @@ Firmware, ML and app have their own build and test commands in their READMEs.
 | `app/` | Companion software |
 | `aiguide/` | AI prediction, templates and guidance studies (pencil concept) |
 | `fusion/` | Sensor models and tremor trackers |
-| `opt/` | Optimisation studies: touchdown, tracker, slim hardware, Rev H inertial |
+| `opt/` | Optimisation studies: touchdown, tracker, slim hardware, Rev H inertial and front end |
 | `handwriting/` | Handwriting outcomes model HW1 and the recording scorer |
 | `aiprior/` | AI help for severe tremor: tracker prior, guidance, clean copy |
 | `board/` | Guidance board study |
+| `drive/` | Rev J heel drive (paper-grounded wheel) study |
+| `endcap/` | Rev J inertial end-cap study |
+| `nose2/` | Rev J nose v2 and autowrite study |
+| `ai2/` | Rev J AI and control v2: trackers, learned estimators, RL, text prediction, style synthesis, shared control |
+| `sim2/` | Simulator v2 (MuJoCo) with plug-ins and a Gymnasium environment |
+| `revj/` | Rev J integration: layout, budgets, magnetics, simulator parameters |
+| `sim2j/` | Rev J whole-pen closed loop in simulator v2 (round 2) |
 | `s2r/` | Sim-to-real: virtual bench, identification, calibrated twin |
-| `viewer/` | 3D replay page; `viewer/explainer/` the Rev H 3-D explainer |
+| `viewer/` | 3D replay page; `viewer/explainer/` the 3-D explainer (Rev H, being updated to Rev J) |
 | `validation/` | Experiments and studies |
 | `docs/` | Everything written |
 | `results/` | Generated outputs with provenance |
