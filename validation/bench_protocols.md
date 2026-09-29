@@ -23,13 +23,15 @@ Contents:
 - §37–§39 Rev H (bigger grip, DEC-029): EXP-I05 active nose on the bench, EXP-I06 rear inertial module on a hand simulant, EXP-I07 tracker on recorded tremor writing
 - §40 Guidance board (DEC-031): EXP-G01…G06
 - §41 Rev J heel drive (DEC-037): EXP-D01…D07, D10, D12, D13 (the studies with people, D08, D09 and D11, are in `human_study_plan.md` §16)
-- §42 Rev J inertial end-cap (DEC-038): EXP-K01, K02, K04, K06, K07, K08 (K03 and K05 are in `human_study_plan.md` §17)
+- §42 Rev J inertial end-cap (DEC-038; since DEC-051 a bench comparison only): EXP-K01, K02, K04, K06, K07, K08 (K03 and K05 are in `human_study_plan.md` §17)
 - §43 Rev J nose v2 and autowrite (DEC-036, DEC-039, DEC-041): EXP-N01…N08 (N09 and N10 are in `human_study_plan.md` §18)
 - §44 Simulator v2 validation (DEC-040): EXP-V01…V07, with the Rev H refill front stop (REQ-RVH-008) in EXP-V02, and small handwriting on a tablet (with participants) in EXP-V07
 - §45 Rev J control stack (DEC-042): EXP-L01, L02, L04, L05 (L03, L06, L07 and L08 are in `human_study_plan.md` §19)
 - §46 Rev J integrated layout (DEC-044): EXP-J01…J07; Rev J.1 (DEC-045): EXP-J10…J14, J16 and the wear part of EXP-J15; the nib's static load (DEC-046): EXP-J17 (J08, J09, J18 and J15's writers are in `human_study_plan.md` §20); the per-mode battery of REQ-RVJ-I01 is AC-P01-06 in EXP-P01 (§18)
 - §47 Measurement rigs R9–R14 (study M; DEC-058, DEC-059): EXP-T01…T17, where the existing experiments now run, and which proposed criteria were kept under existing ids
 - §48 Real recorded data (study R; DEC-054, DEC-055): EXP-R02, R04…R07 (R01 and R03 are in `human_study_plan.md` §21)
+- §49 Spelling help, prediction and clearer handwriting (study S; DEC-056, DEC-057): EXP-S16, S19, S20, S21 (S10…S15, S17 and S18 are in `human_study_plan.md` §22)
+- §50 Shifting the whole pen (study W; DEC-051…DEC-053): EXP-W11, W13, W14, W15, W17 (W10, W12 and W16 are in `human_study_plan.md` §23)
 
 ---
 
@@ -209,7 +211,7 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-N05 | Pen lift; strokes kept separate at 50–70° | A | R7, high-speed camera; R13 for step 4 (EXP-T11) | REQ-RVJ-N04, DEC-036, DEC-041 | pen-lift module |
 | EXP-N06 | Refill force element fatigue | A | R8 | REQ-RVJ-N05, DEC-036, DEC-041 | candidate springs; J06 cycles the drum's spring |
 | EXP-N07 | Page sensor under the pen | A | R10 (EXP-T04); R13 in the pen (EXP-T14) | REQ-RVJ-N06, DEC-036, DEC-037 (slip), DEC-044 | sensor board; J04 (height band) |
-| EXP-N08 | Autowrite on the bench, with the SIM gate | A | R13 after EXP-T13, R3 | REQ-RVJ-N08, DEC-039 | N02…N07 |
+| EXP-N08 | Autowrite on the bench, with the SIM gate | A | R13 after EXP-T13, R3 | REQ-RVJ-N08, DEC-039, DEC-049 | N02…N07 |
 | EXP-V01 | Simulator v2: paper contact of the Rev H front end | A | R9 (EXP-T01) | DEC-040 | B02, Q01 methods |
 | EXP-V02 | Simulator v2: identify the assembled pen; refill front stop | A | R4, R5, R7 | DEC-040, REQ-RVH-008, DEC-041 | I05 build |
 | EXP-V03 | Simulator v2: real writing and tremor at the pen (inside EXP-H01) | offline, after H01 | compute; R11 recordings (EXP-T06) | DEC-040 (writer refit) | H01 recordings |
@@ -251,14 +253,23 @@ The "Gates" column lists decisions (DEC-…, `docs/decisions.md`), requirements 
 | EXP-T13 | Rig R13: two-axis nib; sharp turns, repeated contacts, full roll and tilt | A | R13 (two axes), R3 | G4, REQ-CTRL-005, REQ-VAL-001, REQ-ENV-001 | T10, T11 |
 | EXP-T14 | Rig R13: optical dropout while writing, in closed loop | A | R13, R10 fixtures | G4, REQ-SAF-003, REQ-CTRL-005, REQ-RVJ-N06 | T13; T04 |
 | EXP-T15 | Rig R13: long thermal run with the governor | A | R13 in a 30 °C chamber | G4, REQ-RVJ-N03, REQ-THM-001/002 | T13 |
-| EXP-T16 | Rig R14: collar and tail on a grip simulant (none, same mass locked, unpowered, active) | A | R14 on the R13 stage, R3 | G5, REQ-EC-002/003 | T17 |
+| EXP-T16 | Rig R14: collar and tail on a grip simulant (none, same mass locked, unpowered, active) | A | R14 on the R13 stage, R3 | G5, REQ-WP-001, REQ-EC-002/003 | T17 |
 | EXP-T17 | Rig R14: grip simulant qualification | A | R14 | G5 (validity of T16), inputs of REQ-SIM-005 | R14 built |
 | EXP-R02 | Real data: every tracker on real inputs, as results cards; DEC-055's line at the severe class | offline; then on H01/R01 recordings | compute (realdata, HW1); the EXP-L01, L02, L04 replay harness | REQ-DATA-002/003/004/007/008, DEC-054, DEC-055, DEC-042, DEC-047 | realdata library; H01/R01 recordings (later) |
 | EXP-R04 | Real data: children's handwriting with and without dysgraphia (DiaGraMo) | offline | compute | REQ-DATA-006, study S | the data set downloaded |
 | EXP-R05 | Real data: a tracker trained on real inputs; does it keep clean writing still? | offline | compute (realdata, HW1) | REQ-ML-001, REQ-DATA-005, DEC-042, DEC-055 | realdata tuning split; R01 training participants (later) |
 | EXP-R06 | Real data: get the missing data sets (IAM-OnDB, PaHaW, OnHW) | offline | — | REQ-DATA-006 | registration and agreements |
 | EXP-R07 | Real data: the page sensor's window error on paper against a fine reference; the page model refitted | A | R10 (inside EXP-T04, T05) | REQ-DATA-007, REQ-RVJ-C05, DEC-059 | T04, T05 |
-| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15, J18, R01, R03 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-RVJ-C02, REQ-CTRL-012/013, REQ-APP-003/004, REQ-DATA-004/008/009, DEC-002/008/009/016/020/024/031/035…039/042…045/048/054/055 | ethics |
+| EXP-S16 | Study S: close tracing with guidance that advances along the letter (EXP-D08's task on the bench) | A | R14 on R13's stage, R3; heel drive and nose | DEC-057, DEC-037 | D07; the heel-drive and nose prototype |
+| EXP-S19 | Study S: writing an accepted word with a reach-limited nib while the hand moves | A | R13 after EXP-T13 (EXP-N08's set-up), R3 | REQ-CTRL-014, REQ-RVJ-N07/N08, DEC-049, DEC-056 | N08's SIM gate (AC-N08-01, N08-03) |
+| EXP-S20 | Study S: is the spelling score calibrated for new users and devices? | offline, after S18 | compute | REQ-APP-007, DEC-056 | S18 data |
+| EXP-S21 | Study S: shape assist and spelling cues on children's handwriting with dysgraphia (DiaGraMo) | offline | compute (HW1) | DEC-057 | R04 (DiaGraMo in the library) |
+| EXP-W11 | Study W: the collar mock-up: transmission, holding power, stability, fit and stops; its G5 part in EXP-T16 | A | R14 on R13's stage (EXP-T16), R9 plate, R3 | REQ-WP-001 (AC-T16-01), REQ-WP-002/003/005/006/008, DEC-051 | T17; the mock-up built |
+| EXP-W13 | Study W: does the ball stay on the paper during large corrections, with the nose and with the collar? | A | R13 over R9's plate (EXP-J17 and T12 set-up), R3 | REQ-WP-004, DEC-051 | J17, T11; the W11 mock-up |
+| EXP-W14 | Study W: tail modules against the same mass locked (G5) | A | R14 (EXP-T16) | REQ-WP-010, REQ-WP-001 (AC-T16-01), DEC-051 | T17; K06 methods for the gyroscope |
+| EXP-W15 | Study W: causal estimates against perfect knowledge on real writing; the collar's command on clean writing | offline; then on H01/R01 and W10 recordings | compute (study W's simulator, HW1; EXP-R02's replays) | REQ-WP-007, REQ-WP-012, DEC-052 | R02 replays; study E |
+| EXP-W17 | Study W: an amplitude-gated paper force (the heel wheel's tremor mode above a detected amplitude) | offline (sim2); then A | compute (sim2); R14 with the heel drive | REQ-WP-001, REQ-RVJ-C02 (AC-L02-05), DEC-048 | D07 safety gate |
+| EXP-H01…H06, A02, I02, I03, W01…W05, G07, D08, D09, D11, K03, K05, N09, N10, L03, L06, L07, L08, J08, J09, J15, J18, R01, R03, S10…S15, S17, S18, W10, W12, W16 | Human-participant studies | see `human_study_plan.md` | — | REQ-USR-\*, REQ-VAL-002, REQ-PNC-007, REQ-RVH-\*, REQ-DRV-002/003, REQ-EC-001/002/003/005/006, REQ-RVJ-N07, REQ-RVJ-I06, REQ-RVJ-C02, REQ-CTRL-012/013, REQ-APP-001/003…008, REQ-DATA-004/008/009, REQ-WP-005/009/011, DEC-002/008/009/016/020/024/031/035…039/042…045/048/049/051…057 | ethics |
 
 ---
 
@@ -2406,6 +2417,8 @@ This experiment evaluates the default on-device recogniser (ML Kit Digital Ink c
 
 There are no published accuracy figures for ML Kit (OPT-20). Research systems reach 2.5–4 % CER on IAM-OnDB tablet ink (OPT-25); IMU-only capture reaches 17–35 % (OPT-16/17).
 
+EXP-S17 (`human_study_plan.md` §22) tests the pen's own streaming recogniser (study S, DEC-056) on the pen's recordings, with sessions held out as well as writers (REQ-APP-006). Its CER line (AC-S17-03) is the same 8 % as AC-C01-01.
+
 ### Hypotheses
 
 - CER ≤ 8 % for healthy adults (AC-C01-01); group CER ≤ 1.5 × healthy (AC-C01-02).
@@ -2681,7 +2694,7 @@ This experiment runs the app's autocorrect (`app/penapp/autocorrect.py`) on real
 3. For every change, check that the derived layer lists from, to, posterior and stroke ranges, that the app shows it as a suggestion, and that reverting it restores the base text.
 4. Score word error before and after against the adjudicated transcript. Classify every change as fixed, broken (a correct word changed) or changed but still wrong, and tag names and out-of-lexicon words.
 5. Optional: participants review the suggestions on their own notes (accept or reject each), which gives the acceptance rate.
-6. **Clean copy (DEC-035).** For notes of writers with 1–2 mm tremor and for tremor-free notes of healthy controls, make the app's clean copy from the recorded tip path (`aiprior/cleancopy.py`, settings frozen). Blinded readers transcribe the clean copy and, in a separate session, the raw ink of other notes. Log whether a tremor line was detected, and every letter read correctly in the raw ink but wrongly in the clean copy. The clean copy is a derived layer shown next to the untouched ink (DEC-017).
+6. **Clean copy (DEC-035).** For notes of writers with 1–2 mm tremor and for tremor-free notes of healthy controls, make the app's clean copy from the recorded tip path (`aiprior/cleancopy.py`, settings frozen). Blinded readers transcribe the clean copy and, in a separate session, the raw ink of other notes. Log whether a tremor line was detected, and every letter read correctly in the raw ink but wrongly in the clean copy. The clean copy is a derived layer shown next to the untouched ink (DEC-017). Study S (SIM on real letters of 20 new writers in HW1; `docs/spelling_and_clarity.md` T6): the clean copy raised the letters read on screen from 41 to 83 % at 1 mm and 8 Hz (words 4 → 45 %), and from 47 to 52 % with real ET tremor; its tremor detector switched on for 27 % of clean words, so DEC-057 asks for a stricter detector before this step is run (AC-A03-04, AC-A03-05).
 
 ### Measurands and uncertainty
 
@@ -2702,8 +2715,8 @@ This experiment runs the app's autocorrect (`app/penapp/autocorrect.py`) on real
 | AC-A03-01 | REQ-PNC-008 | Conformity on real notes: autocorrect writes only a derived layer that cites stroke ids; original stroke layer and base recognition layer byte-identical (SHA-256) before and after; every change listed with from, to, posterior and strokes, visible and reversible in the app; default threshold posterior ≥ 0.9 | all notes conform | requirement | REQ-PNC-008; DEC-017; tested so far on synthetic notes only (app/tests/test_autocorrect.py) | autocorrect release (DEC-020) |
 | AC-A03-02 | REQ-PNC-008 | Over-correction on real notes with the personal dictionary on: correctly recognised words changed by autocorrect (names and rare words also reported separately, with and without the dictionary); point estimate / upper 95 % bound, writer-clustered | ≤ 0.1 % / 0.5 % | hypothesis | prediction 0.0-0.1 % on held-out corpus text, 0 % on note-like lines, 0 % of names with a personal dictionary vs 6-14 % without (results/ai/autocorrect.json; CALCULATION with injected recognition errors); 0.5 % upper bound engineering judgement | autocorrect default threshold and dictionary (DEC-020) |
 | AC-A03-03 | — | Word error rate after / before autocorrect on real notes at the recogniser's native error rate (writer-disjoint, double-transcribed ground truth as EXP-C01); upper 95 % bound, writer bootstrap | ≤ 0.8 | hypothesis | prediction 0.50-0.54 on note-like lines at 3-7 % CER and 0.33 on corpus sentences (results/ai/autocorrect.json; CALCULATION with uniform injected edits, not real recogniser errors); 0.8 engineering judgement (at least a 20 % relative reduction) | DEC-020 (digital autocorrect first) |
-| AC-A03-04 | — | Clean copy (DEC-035) of recorded notes of ET writers with 1-2 mm tremor: words correctly transcribed by blinded readers from the clean copy (readers never see the raw ink of the same note first); point estimate, writer bootstrap | ≥ 90 % | hypothesis | DEC-035; prediction 97 % of words read by the app's recogniser at 1-2 mm and 6-10 Hz, against 30-59 % in the ink (results/aiprior/aiprior.json; SIMULATION on synthetic writers); 90 % engineering judgement for human readers and real tremor | DEC-035 |
-| AC-A03-05 | — | Clean copy does no harm: letters read correctly in the raw ink but wrongly in the clean copy (blinded readers, per 1000 letters), AND the clean copy of tremor-free notes from healthy controls equals the recording (no tremor line detected) in at least 95 % of notes (both) | both met (1 per 1000; 95 %) | hypothesis | DEC-035; prediction: no tremor line detected on tremor-free writing, which is left unchanged (28 µm = the recorder's noise) (results/aiprior/aiprior.json; SIMULATION); thresholds engineering judgement | DEC-035 |
+| AC-A03-04 | — | Clean copy (DEC-035) of recorded notes of ET writers with 1-2 mm tremor: words correctly transcribed by blinded readers from the clean copy (readers never see the raw ink of the same note first); point estimate, writer bootstrap | ≥ 90 % | hypothesis | DEC-035; prediction 97 % of words read by the app's recogniser at 1-2 mm and 6-10 Hz, against 30-59 % in the ink (results/aiprior/aiprior.json; SIMULATION on synthetic writers); 90 % engineering judgement for human readers and real tremor; study S on real letters of 20 new writers in HW1 (SIM): the clean copy raised the letters read on screen from 41 to 83 % and the words from 4 to 45 % at 1 mm, 8 Hz, and the letters from 47 to 52 % with real ET tremor (docs/spelling_and_clarity.md T6) -> may fail for words | DEC-035; DEC-057 |
+| AC-A03-05 | — | Clean copy does no harm: letters read correctly in the raw ink but wrongly in the clean copy (blinded readers, per 1000 letters), AND the clean copy of tremor-free notes from healthy controls equals the recording (no tremor line detected) in at least 95 % of notes (both) | both met (1 per 1000; 95 %) | hypothesis | DEC-035; prediction: no tremor line detected on tremor-free writing, which is left unchanged (28 µm = the recorder's noise) (results/aiprior/aiprior.json; SIMULATION); thresholds engineering judgement; study S (SIM): the clean copy's tremor detector switched on for 27 % of clean words and lowered the clean letters read from 88 to 85 % (docs/spelling_and_clarity.md T6) -> part (b) predicted to fail as built; DEC-057 asks for a stricter detector | DEC-035; DEC-057 (a stricter detector) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-A03).
 <!-- AC-TABLE:EXP-A03:END -->
@@ -3252,8 +3265,19 @@ The following are specified in [`human_study_plan.md`](human_study_plan.md), wit
 | EXP-J18 | The heel wheel on writing: distortion, and adaptation over 10 minutes (DEC-048) | Device burden |
 | EXP-R01 | Patients' own writing and tremor at the pen tip, with ink and the pen's IMU (the recording part of EXP-H01, in its sessions) | Measurement only |
 | EXP-R03 | A blinded panel of readers against the AI reader's "words you can read" | Measurement only (the reader's validity) |
+| EXP-S10 | Letters read while people write on paper with the pen (inside EXP-H01/R01 sessions) | Measurement only |
+| EXP-S11 | An English corpus of dyslexic misspellings in context, with consent for release | Measurement only (data) |
+| EXP-S12 | A tick while writing for people with dyslexia (shares sessions with EXP-S18) | **Immediate assistance** |
+| EXP-S13 | Detection of a tick in a pen while writing | Measurement only |
+| EXP-S14 | Personal text prediction on users' own notes over 4 weeks (continues EXP-L06) | **Immediate assistance** (app) |
+| EXP-S15 | Shape assist with real writers (only after a redesign shows a simulated gain) | **Immediate assistance** |
+| EXP-S17 | Word recognition on the pen's own recordings, writer- and session-disjoint | Measurement only |
+| EXP-S18 | Suggestions at pauses against cues while writing (shares sessions with EXP-S12) | **Immediate assistance** |
+| EXP-W10 | Tremor at the ink while writing, per population; does anyone exceed the nose's reach? (with EXP-H01/R01) | Measurement only |
+| EXP-W12 | Holding and writing with the collar mock-up | Device burden |
+| EXP-W16 | The cost of writing only when in reach | **Immediate assistance**; device burden |
 
-EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), EXP-V03 (inside EXP-H01 sessions), and EXP-V04 and EXP-V07 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3, and so do EXP-R02 and R05 (§48).
+EXP-B06 (grip impedance, §7) and EXP-I01 (grip compliance split, §35) also involve participants and are covered by the same ethics approval. So do EXP-K04 (6 healthy writers) and EXP-K08 (§42), EXP-V03 (inside EXP-H01 sessions), and EXP-V04 and EXP-V07 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of `human_study_plan.md` §3.3, and so do EXP-R02 and R05 (§48). EXP-S20 (§49) re-uses EXP-S18's data, and EXP-W15 (§50) the EXP-H01/R01 and EXP-W10 recordings, under the same consents.
 
 ---
 
@@ -3840,6 +3864,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc coils push a 30.4 g tungsten slug (non-magnetic grade) by ±4 mm in two axes, on two 5 Hz flexures. The end-cap is Ø26 × 24 mm, sits behind the cell in place of the rear cap (z 141.7–165.7 in the Rev J layout, DEC-044, so the pen is 165.7 mm) and weighs 43 g. The tracker's feed-forward drives it on top of the nose (gain 0.75). DEC-045 (Rev J.1) makes it lighter: a 9 mm tungsten slug (17.3 g), 29.6 g and Ø26 × 21 mm, so the pen with it is 161.9 mm and 112.7 g. It runs only while a tremor line is detected, and EXP-J16 (§46) repeats EXP-K02 with it.
 - **Inertia steadies and cues; it does not write.** Cues are played only in pauses, and only after EXP-K05. No rotor goes in the product; a CMG end-cap stays a research module for torque-pulse cues.
+- **Superseded for the product (DEC-051, 2026-09-29).** Inertial tails are rejected for the pen, and the end-cap stays only as a bench comparison against the same mass locked (EXP-J16, and EXP-W14 on R14 in EXP-T16). REQ-EC-001, 002 and 003 are bench-only. REQ-EC-004, 005, 006 and 008 apply again only if an end-cap returns through REQ-WP-001 (≥ 10 % against the same pen with it locked, at three grip strengths, with coverage kept; AC-T16-01). So EXP-K01, K02, K07 and K08 stay bench comparisons; EXP-K03, K05 and K04's review of product text run only if an end-cap returns; EXP-K06's methods serve the gyroscope pair of EXP-W14 (REQ-WP-010: ≤ 2 J).
 - **What it gates.** DEC-038 is revisited if EXP-K02 gives less than 10 % further reduction at the measured grip split, or the fixed weight comes within 5 points; if EXP-K01 misses the force model by more than 20 %; if EXP-I01 or K08 find r_rot outside 0.3–0.7; if writers reject the back-heavy pen (EXP-K03). Requirements: REQ-EC-001…009.
 - **Predictions** come from `docs/inertial_endcap.md` and `results/endcap/endcap_study.json` (H1 with the causal Rev H tracker; test seeds 200–203; grip splits r_rot 0.3 / 0.5 / 0.7; CALC and SIM). They were run on the **Rev H** pen and nose (75 g, Ø22 mm), not on the Rev J pen (Ø24 mm; 87.0 g in DEC-044, 84.3 g in Rev J.1, DEC-045). The Rev J.1 end-cap family ran on the same Rev H model (EXP-J16).
 - Work with people (EXP-K03, K05) is in [`human_study_plan.md`](human_study_plan.md) §17. EXP-K04 and EXP-K08 include participants; they are covered by the same ethics approval as EXP-B06 and EXP-I01.
@@ -3870,7 +3895,7 @@ DEC-038 fits a detachable rear end-cap to the first Rev J prototype. Four arc co
 | AC-K01-02 | — | Coil force constant K_m per axis (force and current) and slug stroke: ±4 mm reached in both axes without contact (both) | both met (K_m ≥ 90 % of the design value: 0.598 N/√W for the Rev J.1 end-cap, 0.735 for study K's; ±4 mm without contact) | hypothesis | pass line of study K; design K_m 0.735 N/√W, 0.52 N per axis at 0.5 W, ±4.0 mm on two 5 Hz flexures (CALC, docs/inertial_endcap.md s9.1); in the test runs the slug reached its stops in 39 of 180 cases (SIM): soft end-stops; the Rev J.1 end-cap (DEC-045, 9 mm slug): K_m 0.598 N/√W, 0.42 N, ±4.0 mm on 5 Hz flexures (CALC, results/revJ1/sim_params.json) | DEC-038 |
 | AC-K01-03 | REQ-EC-001 | Built end-cap: diameter, length and mass; peak and average electrical power (drivers included) logged during the EXP-K02 tremor runs | ≤ 26 mm, 45 mm, 45 g; 1 W peak, 0.3 W average | requirement | REQ-EC-001; prediction for the Rev J.1 end-cap (DEC-045): Ø26 x 21 mm, 29.6 g; 0.082 W average in the design model and 0.028 W in the SIM test runs; peak not recomputed (CALC, SIM; results/revJ1/endcap.json); study K's end-cap Ø26 x 24 mm, 43.3 g, 1.0 W peak and 0.145 W average (results/endcap/endcap_study.json) | DEC-038 |
 | AC-K01-04 | REQ-EC-001 | Rev J.1 pen as built, weighed and measured, with the end-cap fitted | ≤ 175 mm and 120 g | requirement | REQ-EC-001 (DEC-045: ≤ 120 g with the end-cap fitted; was 120 g base and a provisional 130 g with the end-cap); prediction 143.9 mm and 84.3 g base, 161.9 mm and 112.7 g with the 29.6 g end-cap (CALC, results/revJ1/budgets.json): 7.3 g under 120 g | DEC-038 (detachable end-cap); DEC-045; Rev J envelope |
-| AC-K01-05 | REQ-EC-008 | Writing time per charge in the steady mode at 1 mm tremor with the end-cap active only while a tremor line is detected: 2.22 Wh usable (MFR AMF-80) divided by the measured base load of the Rev J.1 pen plus (a) the end-cap's measured mean power at its measured duty (EXP-K02 or EXP-J16 runs) and (b) its design power (both) | both met (≥ 8 h at the measured duty; ≥ 6 h at the design power) | requirement | REQ-EC-008, folded into REQ-RVJ-I01 as its end-cap row (DEC-045; was ≥ 8 h with the end-cap active); prediction on the Rev J.1 base load: 7.7-8.6 h at the SIM power of 27.6 mW (8.6 h only with the typical electronics) and 6.4-7.1 h at the design power of 82 mW (CALC, SIM; results/revJ1/budgets.json) -> the 8 h part is marginal | DEC-038; DEC-045; Rev J power budget |
+| AC-K01-05 | REQ-EC-008 | Writing time per charge in the steady mode at 1 mm tremor with the end-cap active only while a tremor line is detected: 2.22 Wh usable (MFR AMF-80) divided by the measured base load of the Rev J.1 pen plus (a) the end-cap's measured mean power at its measured duty (EXP-K02 or EXP-J16 runs) and (b) its design power (both) | both met (≥ 8 h at the measured duty; ≥ 6 h at the design power) | requirement | REQ-EC-008 (DEC-045 folded it into REQ-RVJ-I01 as its end-cap row; DEC-051 took the end-cap out of the product, so it is judged only if an end-cap returns through REQ-WP-001; was ≥ 8 h with the end-cap active); prediction on the Rev J.1 base load: 7.7-8.6 h at the SIM power of 27.6 mW (8.6 h only with the typical electronics) and 6.4-7.1 h at the design power of 82 mW (CALC, SIM; results/revJ1/budgets.json) -> the 8 h part is marginal | DEC-038; DEC-045; Rev J power budget |
 | AC-K01-06 | REQ-EC-009 | Relative magnetic permeability of every tungsten part within 20 mm of a Hall sensor or coil (incoming inspection, permeability meter) | ≤ 1.05 | derived | REQ-EC-009 made measurable: ET95NM relative permeability ≤ 1.05 (MFR AMF-49); INERMET grades paramagnetic (MFR AMF-125) | DEC-038; Hall sensor bias |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-K01).
@@ -4152,22 +4177,24 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 ### EXP-N08: Autowrite on the bench
 
 - **Purpose and gates.** Gates REQ-RVJ-N08 (the SIM gate on the firmware), DEC-039, and the go-ahead for EXP-N09.
+- **DEC-049 and DEC-056 (2026-09-29).** Autowrite now writes accepted text (typed, dictated or an accepted suggestion) at up to 3 mm of tremor, through the plan of REQ-CTRL-014, and the app labels it pen-written. The SIM gate gains DEC-049's 3 mm run in sim2 (AC-N08-03), and the bench adds 3 mm of tremor. EXP-S19 (§49) tests the accepted-word plan on this set-up, in the same sessions.
 - **Rig (study M).** Runs on R13 after EXP-T13 (§47; `docs/measurement_rig.md` §6.5).
-- **Predictions (SIM).** Ink error 29 µm without tremor, 36 µm with 1 mm and 60 µm with 2 mm. Letters read 99.2 % (98.3 % at 2 mm) against a 100 % ceiling. 3.7 letters per second at a 9.5 mm/s sweep. Total power 0.24 W without tremor and 0.31 W with 1 mm. One test writer needed a slower sweep for its line (post hoc); DEC-039 lets the pen set the sweep speed per line.
-- **Set-up.** The pen on a motion stage that sweeps at the planner's speed (R2). Tremor from a shaker (0.3/1/2 mm at 4/8/12 Hz). The text of the HW1 test set. R3 scans; the app's recogniser and reader; coil power logging.
+- **Predictions (SIM).** Ink error 29 µm without tremor, 36 µm with 1 mm and 60 µm with 2 mm. Letters read 99.2 % (98.3 % at 2 mm) against a 100 % ceiling. 3.7 letters per second at a 9.5 mm/s sweep. Total power 0.24 W without tremor and 0.31 W with 1 mm. One test writer needed a slower sweep for its line (post hoc); DEC-039 lets the pen set the sweep speed per line. In sim2 at 3 mm peak at the hand (DEC-049): letters read 82 / 88 % and ink 67 / 83 µm at 5 / 8 Hz; the nose used 6.55 of its 6.57 mm.
+- **Set-up.** The pen on a motion stage that sweeps at the planner's speed (R2). Tremor from a shaker (0.3/1/2 mm at 4/8/12 Hz, and 3 mm at 5 and 8 Hz for DEC-049). The text of the HW1 test set, and accepted words for EXP-S19. R3 scans; the app's recogniser and reader; coil power logging.
 - **Procedure.**
   1. Run the SIM gate on the firmware under test.
   2. Write the test sentence at 2.5 and 3 mm x-height under each tremor condition, in random order.
   3. Scan and score blind.
-- **Measurands.** Ink error to the target; letters and words read; coil power.
+- **Measurands.** Ink error to the target; letters and words read; coverage, missing strokes and completion time (REQ-WP-011); coil power.
 
 <!-- AC-TABLE:EXP-N08:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
 | AC-N08-01 | REQ-RVJ-N08 | SIM gate on the firmware under test before each bench session: HW1 test set (writers 0-5, seeds 200-203), 2.5 mm letters, ≤ 1 mm tremor: mean letters read, mean ink error, and every writer's line planned (all) | all met (≥ ceiling - 2 points; ≤ 45 µm RMS; every line planned) | requirement | REQ-RVJ-N08; SIM 99.2 % against a 100 % ceiling, 29-36 µm; writer 4 had no plan at the frozen 1.25 x sweep (12 of 72 cases per tremor amplitude) and passes only with the per-line sweep speed of DEC-039 (post hoc; results/nose2/nose2.json) | DEC-039; firmware for EXP-N08 and EXP-N09 |
 | AC-N08-02 | — | Autowrite on the motion stage with shaker tremor (0.3/1/2 mm at 4/8/12 Hz), text of the HW1 test set, 2.5 and 3 mm letters: ink error to the target relative to the SIM value at the same conditions, and letters read by the app's recogniser against the clean-target ceiling (both) | both met (≤ 1.5 x SIM; ≥ ceiling - 5 points) | hypothesis | pass line of the nose v2 study; SIM 29 / 36 / 60 µm at 0 / 1 / 2 mm tremor (2.5 mm letters), letters 98.3-99.2 % against a 100 % ceiling (docs/nose_v2.md s5.3) | DEC-039; DEC-036 |
+| AC-N08-03 | REQ-RVJ-N08 | SIM gate (b) on the firmware under test, for DEC-049's range: sim2, test writers 0-5, 3 mm peak tremor at the hand at 5 and 8 Hz, 2.5 mm letters, accepted text written through the plan of REQ-CTRL-014: mean letters read at each frequency, and letters left half-written (both); reported with the measured-error page model beside the ideal one | both met (no more than 2 points below DEC-049's result: 82 % at 5 Hz, 88 % at 8 Hz; no half letter) | requirement | REQ-RVJ-N08 (b) (DEC-049; DEC-056 (f)); DEC-049's result with nose2's planner and a known text: letters 82 / 88 %, words (after autocorrect) 80 / 97 %, ink 67 / 83 µm, the nose at 6.55 of its 6.57 mm (SIM, results/sim2j/autowrite.json); not yet run with the plan of REQ-CTRL-014 (study S, T9: 0-8 half letters per 100 completions, kinematics only) | DEC-049 (autowrite up to 3 mm); firmware for EXP-N08, N09 and S19 |
 
-Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-N08).
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-N08).
 <!-- AC-TABLE:EXP-N08:END -->
 
 - **Decision rule.** SIM gate fails: no bench or participant session with that firmware. Bench lines fail: identify the pen (EXP-V02) and retune in the calibrated simulator.
@@ -4794,6 +4821,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 ### EXP-J16: The light end-cap on top of the nose
 
 - **Purpose and gates.** Repeat EXP-K02 with the Rev J.1 end-cap. Gates REQ-EC-002, REQ-EC-003 and DEC-045 (revisited below 10 % at the measured grip split).
+- **DEC-051 (2026-09-29).** The end-cap is out of the product; this is its bench comparison against the same mass locked. Its runs are also EXP-W14's driven reaction mass (§50), and AC-T16-01 (REQ-WP-001) judges the G5 gate for any return.
 - **Rig (study M).** Runs on R14, the grip simulant on R13's stage, as part of EXP-T16 (§47; `docs/measurement_rig.md` §7.3).
 - **Predictions (SIM, study K's model H1 on the Rev H pen and tracker; test seeds 200–203).**
   - The 31.6 g member of the end-cap family, 29.6 g in Rev J.1's packaging (9 mm tungsten slug, 17.3 g): +5.6 / +16.8 / +18.3 % further reduction at grip splits 0.3 / 0.5 / 0.7. Study K's 45 g end-cap gave +8.0 / +18.2 / +19.5 %.
@@ -4869,7 +4897,7 @@ The independent review of 29 September 2026 asks for experiments that decide the
 
 ### Where the existing experiments run
 
-From `results/rig/experiment_merge_map.csv` (42 rows), with three more parts named in `results/rig/proposed_experiments.csv` (EXP-F01, F02, P01).
+From `results/rig/experiment_merge_map.csv` (42 rows), with three more parts named in `results/rig/proposed_experiments.csv` (EXP-F01, F02, P01). The last five rows are studies S and W (§49, §50).
 
 | Existing | Rig | Runs as | Note |
 |---|---|---|---|
@@ -4918,6 +4946,11 @@ From `results/rig/experiment_merge_map.csv` (42 rows), with three more parts nam
 | EXP-J16 | R14 | EXP-T16 | |
 | EXP-K07 | R14 | EXP-T16 (the rotor condition) | only if a rotor is kept |
 | EXP-I04 | R14 | superseded by EXP-T16 | as EXP-I06 superseded it for Rev H |
+| EXP-W11 | R14, R9 plate | its G5 part in EXP-T16 (the collar condition) | the transmission, holding power, fit and stops are its own runs (§50) |
+| EXP-W13 | R13, R9 plate | in EXP-J17's and EXP-T12's set-up; extends EXP-T11's ladder | §50 |
+| EXP-W14 | R14 | EXP-T16 (the tail conditions) | its driven reaction mass is EXP-J16's end-cap |
+| EXP-S16 | R14, R13 | EXP-D08's tracing task on the grip simulant | §49 |
+| EXP-S19 | R13 | with EXP-N08, after EXP-T13 | §49 |
 
 ### Proposed criteria kept under existing ids
 
@@ -4935,7 +4968,7 @@ From `results/rig/experiment_merge_map.csv` (42 rows), with three more parts nam
 
 **Kept apart**, because the rig line adds a new load case, condition or article: AC-T01-04 (μ at F_c 0.15 N; AC-B01-04 is at N 1 N); AC-T02-03 (REQ-MECH-005; AC-Q02-02 is the pencil's refill); AC-T04-01 and AC-T05-01 (REQ-RVJ-N06 on the bare sensor; AC-J04-01, J10-01 and N07-01 on the nose insert or in the pen); AC-T04-05 (with AC-S01-04 and S01-05); AC-T07-01, T07-03 and T08-01 (study B's coupon; AC-N01-01, N01-02 and J01-01 are the C1S's); AC-T08-03 and T10-02 (REQ-RVJ-N02 at temperature and in contact; AC-N03-01); AC-T09-01 (REQ-RVJ-I04 on R12, without the heel motors and brake of AC-J03-01); AC-T10-03 (with AC-B05-06/07 and AC-N03-02); AC-T11-03 (with AC-N05-03); AC-T13-02 (with AC-B09-06/07); AC-T15-01 and T15-02 (the balanced nib with the governor; AC-N04-01 and AC-B07-03); AC-T16-01 and T16-02 (three grip strengths; AC-K02-02/03 and AC-J16-01/02).
 
-**Statuses brought in line with the status rule of [`README.md`](README.md) §2** (requirement only when the threshold is the linked requirement's own): AC-T10-03 (45°, stricter than REQ-CTRL-002's 40°), AC-T11-03 and AC-T14-01 are derived; AC-T16-01 (the review's 10 %, where REQ-EC-003 asks 5 points) is a hypothesis. AC-T02-01's threshold now starts with its number. Rows with no requirement (rig validity, model checks) keep an empty requirement id; the checker allows it.
+**Statuses brought in line with the status rule of [`README.md`](README.md) §2** (requirement only when the threshold is the linked requirement's own): AC-T10-03 (45°, stricter than REQ-CTRL-002's 40°), AC-T11-03 and AC-T14-01 are derived; AC-T16-01 (the review's 10 %, where REQ-EC-003 asks 5 points) was made a hypothesis; REQ-WP-001 (DEC-051, DEC-053) has since made the 10 % a requirement, with coverage, and AC-T16-01 is now its requirement criterion. AC-T02-01's threshold now starts with its number. Rows with no requirement (rig validity, model checks) keep an empty requirement id; the checker allows it.
 
 ### Open items
 
@@ -5226,17 +5259,18 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 
 ### EXP-T16: Collar and tail on a grip simulant: none, same mass locked, unpowered, active
 
-- **Rig and gate.** R14 on R13's stage, with R3 scans. Gate G5. Requirements: REQ-EC-002, REQ-EC-003.
+- **Rig and gate.** R14 on R13's stage, with R3 scans. Gate G5. Requirements: REQ-WP-001 (AC-T16-01), REQ-EC-002 (AC-T16-02) and REQ-EC-003 (EXP-K02, J16).
 - **Measures.** The same tasks and disturbance seeds in four conditions, at three grip strengths (a squeeze of 2, 4 and 8 N): ink error; the pen's translation and rotation; the module's power.
 - **Decision it enables.** The benefit of an active module per added gram, watt and grip effort (review G5: at least 10 % over the same mass locked, with no subgroup harmed).
+- **REQ-WP-001 (DEC-051, DEC-053).** The G5 gate is now a requirement for any device that would shift the pen: ≥ 10 % against the same pen with the device locked and the existing corrector working, at 0.5, 1 and 2 × the nominal grip, without lowering coverage by more than 5 points. AC-T16-01 is its criterion. REQ-WP-001's grip strengths are stiffness multiples (study W's phantom springs: 300, 575 and 1100 N/m); R14 sets squeezes of 2, 4 and 8 N, and its leaf sets give 211, 500 and 977 N/m (CALC). The rig design picks the settings (`README.md` §7).
 - **Procedure.** The four conditions in random order, 10 disturbance seeds each, the EXP-K02 tasks. A camera tracks dots at the front and rear of the pen (translation at the grip and rotation about it); the pen's IMU adds angular rate at 1.92 kHz. A printed dummy with tungsten inserts, of the same mass, centre of mass and inertia, is the locked condition. `rig.collar.g5_decision` pairs the conditions per seed and uses the lower 95 % bound.
-- **Existing experiments it runs.** EXP-I06; EXP-K02; EXP-J16; EXP-K07 (the rotor condition, only if a rotor is kept). It supersedes EXP-I04.
+- **Existing experiments it runs.** EXP-I06; EXP-K02; EXP-J16; EXP-K07 (the rotor condition, only if a rotor is kept); study W's EXP-W11 (the collar, its G5 part) and EXP-W14 (the tails; its driven reaction mass is EXP-J16's end-cap). It supersedes EXP-I04.
 - **Full procedure, instruments and uncertainty.** `docs/measurement_rig.md` §7.2–§7.3.
 
 <!-- AC-TABLE:EXP-T16:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-T16-01 | REQ-EC-003 | Relative reduction of the band ink-error RMS, active module vs the same mass locked, same seeds, at every grip strength (2, 4, 8 N): lower 95 % bound | ≥ 10 % | hypothesis | review G5 (≥ 10 % incremental over the same mass locked); REQ-EC-003's intent; REQ-EC-003 itself asks ≥ 5 points over the same mass fixed (AC-K02-03, AC-J16-02), so this stricter gate is a hypothesis | keep the tail or collar module |
+| AC-T16-01 | REQ-WP-001 | Any module added to shift the pen, on the hand phantom (R14 on R13's stage): the collar of EXP-W11, the tail modules of EXP-W14, the end-cap of EXP-K02 and EXP-J16: relative reduction of the band ink-error RMS (the tremor left at the tip), active module against the same pen with the module locked and the nose working, same seeds, at every grip strength (R14's squeezes of 2, 4 and 8 N, with leaf sets for 0.5, 1 and 2 x the nominal grip stiffness), lower 95 % bound; and coverage (share of the intended ink laid) against the locked condition (both) | both met (≥ 10 % at every grip strength; coverage no more than 5 points lower) | requirement | REQ-WP-001 (DEC-051, DEC-053: the review's G5 made a requirement for product entry, with coverage); it was a hypothesis on REQ-EC-003, whose own bar is ≥ 5 points over the same mass fixed (AC-K02-03, AC-J16-02); SIM: the collar with the Rev J pen inside -5 % to +5 % (fails), the light collar +17 % at 8 mm PD but 17 points less ink (fails on coverage), the 100 g gyroscopic tail 15 / 51 / -14 % at grips 0.5 / 1 / 2 x on the tuning writer (fails) (docs/whole_pen_shift.md s4.5); rig.collar.g5_decision uses the lower 95 % bound (SIM check: passes at a 16 % margin, fails at 6 %) | DEC-051 (revisited if the collar mock-up passes); a module enters the product only after a pass (DEC-053) |
 | AC-T16-02 | REQ-EC-002 | Mean ink error with the active module relative to no module, at every grip strength | never higher | requirement | REQ-EC-002 ('never raises it on average'); review G5 'no subgroup harmed materially' | module |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-T16).
@@ -5266,11 +5300,11 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 Study R (`docs/real_data.md`) tests the pens in simulation (model HW1) on real recorded inputs. The writing is real handwriting on paper (UNIPEN hpb2: 14 adults with a ballpoint on paper forms). The tremor is real: Parkinson's at the pen tip from spirals on a tablet (UCI), essential tremor from the hand (Zenodo). The page sensor has DeltaPen-class errors. Test writers, texts and patients were set aside before anything was tuned. **Nothing was measured on a person or on hardware.**
 - **DEC-054.** Real recorded inputs and the results card are the standard test. Every claimed benefit is reported on held-out real inputs as a results card: words read by a literal reader out of 10 with 95 % writer-bootstrap intervals, tremor left at the tip in mm, and how much clean writing changed. Tremor classes are named in mm at the tip: mild 0.03–0.16 mm, moderate 0.16–0.51 mm, severe above 0.51 mm (typically 1.7 mm).
-- **DEC-055.** No legibility claim at severe tremor until a causal tracker passes on real inputs: at least 2 more readable words out of 10 than the ordinary pen at the severe class, with the 95 % interval above 0, and ≤ 25 µm of change to clean real writing (AC-R02-01). Until then the help for severe tremor is autowrite of accepted text (DEC-049) and the app's clean copy.
+- **DEC-055.** No legibility claim at severe tremor until a causal tracker passes on real inputs: at least 2 more readable words out of 10 than the ordinary pen at the severe class, with the 95 % interval above 0, and ≤ 25 µm of change to clean real writing as the mean over the test writers, with no single writer above 50 µm (AC-R02-01; clarified by the lead, 2026-09-29). Until then the help for severe tremor is autowrite of accepted text (DEC-049) and the app's clean copy.
 - **What the study found (SIM with real inputs).** At the severe class (1.72 mm), readable words out of 10: ordinary pen 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2. The same Rev J nose with perfect knowledge of the tremor gives 7.0, and the same notes without tremor 6.8. So the nose is big enough; the tremor estimate is the limit. Real tremor wanders about twice as much as the model, so the gate opens only 21–42 % of the time at the severe size. The TCN moved clean real writing by 172 µm. A realistic page sensor changed the results by at most 0.1 word.
 - **Requirements.** REQ-DATA-002…009 (study R's), with REQ-ML-001, REQ-CTRL-009…011 and REQ-RVJ-C05.
 - **Studies with people.** EXP-R01 (patients' own writing, the recording part of EXP-H01) and EXP-R03 (a human panel against the AI reader) are in [`human_study_plan.md`](human_study_plan.md) §21.
-- **One run, several scorings.** EXP-R02 shares the replay runs of EXP-L01, L02 and L04 on the EXP-H01/R01 recordings and scores them as results cards. EXP-R05's model enters EXP-L04 for REQ-ML-001. EXP-R07 runs inside EXP-T04 and T05 on rig R10 (§47).
+- **One run, several scorings.** EXP-R02 shares the replay runs of EXP-L01, L02 and L04 on the EXP-H01/R01 recordings and scores them as results cards. EXP-R05's model enters EXP-L04 for REQ-ML-001. EXP-R07 runs inside EXP-T04 and T05 on rig R10 (§47). EXP-W15 (§50) scores the same runs for the gap to perfect knowledge, with study W's GLG and the collar (DEC-052).
 - **Data rules.** Splits as REQ-DATA-001; licences as REQ-DATA-006; the library's zero-phase tremor extraction is an input only (REQ-DATA-005).
 
 ### EXP-R02: Do the trackers leave real clean writing alone and remove real tremor?
@@ -5284,15 +5318,15 @@ Study R (`docs/real_data.md`) tests the pens in simulation (model HW1) on real r
 - **Set-up.** Now: the realdata test split (UNIPEN hpb2 test writers and texts; UCI and Zenodo test patients at DEC-054's classes), model HW1, with the DeltaPen-class page sensor and the ideal sensor as a labelled bound (`python3 -m realdata.run`). Later: the EXP-H01/R01 recordings, replayed through the same trackers in the harness of EXP-L01, L02 and L04 (the same runs), with the recorded sensor streams.
 - **Procedure.**
   1. Check the clean writing before use (REQ-DATA-003).
-  2. Run each tracker on the test split at every class: Rev H, Rev J gated, G4 (DEC-047) and the TCN, as built and as re-tuned (EXP-R05; EXP-L01 for the detector), with perfect knowledge as the mechanism's limit.
+  2. Run each tracker on the test split at every class: Rev H, Rev J gated, G4 (DEC-047), study W's GLG (DEC-052) and the TCN, as built and as re-tuned (EXP-R05; EXP-L01 for the detector), with perfect knowledge as the mechanism's limit.
   3. Score the results card per class and population: literal words read with the clean-ink ceiling, tremor left at the tip in mm, clean writing changed, all with 95 % intervals over writers; the ideal-sensor rows as a bound.
   4. Repeat on the recordings when they exist.
-- **Measurands.** Readable words out of 10; tremor left at the tip (peak, √2 × RMS of the major axis in f0 ± 2 Hz); clean writing changed (µm); gate-open share; the same with the ideal sensor.
+- **Measurands.** Readable words out of 10; tremor left at the tip (peak, √2 × RMS of the major axis in f0 ± 2 Hz); clean writing changed (µm; the mean over the test writers and the largest writer); gate-open share; the same with the ideal sensor.
 
 <!-- AC-TABLE:EXP-R02:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-R02-01 | REQ-DATA-002 | Severe tremor class (DEC-054: above 0.51 mm at the tip, representative 1.72 mm), PD and ET pooled, on the real-input test split (realdata: UNIPEN hpb2 test writers and texts, UCI and Zenodo test patients; model HW1; the measured-error page sensor), and on the EXP-H01/R01 recordings when they exist: readable words out of 10 (literal reader) with the causal tracker under test minus with the ordinary pen, with its 95 % writer-bootstrap interval; and clean real writing changed by that tracker (the same notes without tremor; mean over the test writers, as the results card, the worst writer reported) (both) | both met (≥ 2 more words, with the 95 % interval above 0; ≤ 25 µm) | derived | DEC-055's pass line, from the decision log, so derived; REQ-DATA-002 (DEC-054); SIM with real inputs at 1.72 mm, readable words out of 10: ordinary pen 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2, perfect knowledge 7.0, the same notes without tremor 6.8; clean real writing moved 25 µm (14-42) by Rev H and Rev J gated and 172 µm (93-286) by the TCN (docs/real_data.md; results/realdata/realdata.json) -> every tracker as built FAILS | DEC-055 (a legibility claim at the severe class only after a pass; until then autowrite of accepted text, DEC-049, and the app's clean copy); DEC-042 (tracker choice, with EXP-L01 and L02) |
+| AC-R02-01 | REQ-DATA-002 | Severe tremor class (DEC-054: above 0.51 mm at the tip, representative 1.72 mm), PD and ET pooled, on the real-input test split (realdata: UNIPEN hpb2 test writers and texts, UCI and Zenodo test patients; model HW1; the measured-error page sensor), and on the EXP-H01/R01 recordings when they exist: readable words out of 10 (literal reader) with the causal tracker under test minus with the ordinary pen, with its 95 % writer-bootstrap interval; and clean real writing changed by that tracker (the same notes without tremor): the mean over the test writers (the results card) and the largest single writer (all) | all met (≥ 2 more words, with the 95 % interval above 0; ≤ 25 µm as the mean over the test writers; no writer above 50 µm) | derived | DEC-055's pass line, from the decision log, so derived (clarified by the lead: ≤ 25 µm as the mean over the test writers, with no single writer above 50 µm); REQ-DATA-002 (DEC-054); SIM with real inputs at 1.72 mm, readable words out of 10: ordinary pen 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2, perfect knowledge 7.0, the same notes without tremor 6.8; clean real writing moved 25 µm (14-42) by Rev H and Rev J gated and 172 µm (93-286) by the TCN (docs/real_data.md; results/realdata/realdata.json) -> every tracker as built FAILS | DEC-055 (a legibility claim at the severe class only after a pass; until then autowrite of accepted text, DEC-049, and the app's clean copy); DEC-042 (tracker choice, with EXP-L01 and L02) |
 | AC-R02-02 | REQ-DATA-002 | Every tracker results card of EXP-R02 and of the tracker studies it scores (document review): the result on real inputs (test writers, texts and subjects only) reported next to the synthetic one, and results on synthetic writers or tremor labelled as model-input results | conforms | requirement | REQ-DATA-002 (DEC-054); the bridge at 1 mm: Rev J gated left 0.68 x the ordinary pen's tip tremor with synthetic inputs and 1.04 x with real writing, real tremor and the DeltaPen-class sensor (SIM, docs/real_data.md) | DEC-054 |
 | AC-R02-03 | REQ-DATA-003 | Clean writing used for 'clean writing changed' (the UNIPEN hpb2 test notes now; the controls' EXP-H01/R01 recordings later), checked with sim2j.writers.kinematics before use: share of pen-down velocity energy at 8-12 Hz | ≤ 2.5 % | requirement | REQ-DATA-003; UNIPEN hpb2 2.4 % (passes) and UCI letters 1.3 %; BRUSH 35.6 % and the synthetic writers 10.1-17.3 % fail, and on BRUSH the trackers moved clean ink by 160-880 µm (CALC on DATA, SIM; docs/real_data.md); real writing on paper 1.3-1.7 % (LIT CON-25) | validity of every 'clean writing changed' result (AC-R02-01, AC-R05-01) |
 | AC-R02-04 | REQ-DATA-004 | Results cards of EXP-R02 and every claim that cites them (document review): the tremor class named in mm at the tip (peak = sqrt(2) x RMS of the major axis in f0 ± 2 Hz; DEC-054's classes) with the population; peak-to-peak values (EXP-H01, REQ-USR-002) labelled as such | conforms | requirement | REQ-DATA-004 (DEC-054); the round-4 plan's 0.3-1 / 2-4 / 5-10 mm classes are replaced; REQ-USR-002's 1 mm p-p is about 0.5 mm peak (human_study_plan.md s3.6: A_pp = 2 sqrt(2) A_rms) | DEC-054 |
@@ -5338,7 +5372,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 <!-- AC-TABLE:EXP-R05:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-R05-01 | REQ-ML-001 | TCN retrained on the realdata tuning split (UNIPEN hpb2 tuning writers and texts with the UCI and Zenodo tuning patients' tremor; later the EXP-R01 training participants), frozen, on the test split in HW1 with the DeltaPen-class page sensor: clean real writing changed (the same notes without tremor; mean over the test writers, the worst writer reported) | ≤ 25 µm | derived | REQ-ML-001's false-correction limit (≤ 25 µm RMS on tremor-free writing) applied in simulation on real inputs, as the entry check to EXP-L04, so derived; as built (trained on synthetic writers) the TCN moved clean real writing 172 µm (93-286), against 17 µm on the synthetic writers (SIM, docs/real_data.md): no prediction for the retrained model | the TCN's entry to EXP-L04 and EXP-R02; DEC-042 (shadow mode until REQ-ML-001 passes); DEC-055 |
+| AC-R05-01 | REQ-ML-001 | TCN retrained on the realdata tuning split (UNIPEN hpb2 tuning writers and texts with the UCI and Zenodo tuning patients' tremor; later the EXP-R01 training participants), frozen, on the test split in HW1 with the DeltaPen-class page sensor: clean real writing changed (the same notes without tremor): the mean over the test writers and the largest single writer (both) | both met (≤ 25 µm as the mean over the test writers; no writer above 50 µm) | derived | REQ-ML-001's false-correction limit (≤ 25 µm RMS on tremor-free writing) applied in simulation on real inputs, as the entry check to EXP-L04, so derived; as built (trained on synthetic writers) the TCN moved clean real writing 172 µm (93-286), against 17 µm on the synthetic writers (SIM, docs/real_data.md): no prediction for the retrained model; the per-writer cap is DEC-055's clarified line, since this model enters EXP-R02 | the TCN's entry to EXP-L04 and EXP-R02; DEC-042 (shadow mode until REQ-ML-001 passes); DEC-055 |
 | AC-R05-02 | REQ-DATA-005 | Training and test pipeline of the retrained TCN, and every tracker replay of EXP-R02 (code review, and a test that no controller or estimator input is read from the library's tremor or writing arrays): only simulated or recorded sensor streams reach a controller or estimator | conforms | requirement | REQ-DATA-005; the library's tremor extraction is zero-phase (it uses future samples) and marked for inputs and statistics only (realdata/dsp.py); REQ-CTRL-009 is the command-side rule (AC-L01-04) | DEC-054; DEC-042 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-R05).
@@ -5379,3 +5413,242 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 <!-- AC-TABLE:EXP-R07:END -->
 
 - **Decision rule.** Pass: the measured model replaces the DeltaPen-class one in every tracker simulation (REQ-DATA-007). Fail: a richer model, such as sim2j's held-and-walking model from EXP-J10's addition.
+
+---
+
+## 49. Spelling help, prediction and clearer handwriting: EXP-S16, S19, S20, S21 (study S; DEC-056, DEC-057)
+
+### Purpose and what it gates
+
+Study S (`docs/spelling_and_clarity.md`) built the language layer of the pen and the app: a causal streaming recogniser, spelling help trained on real misspellings, personal text prediction, and a writing plan for accepted words. It also explained why close tracing made letters harder to read, and tested a shape assist. **Nothing was measured on people or on a pen.** The numbers are CALC on real letters of held-out writers and real misspellings of held-out children, or SIM with the writers' responses ASSUMED.
+- **DEC-056.** Language help is a separate layer with three outputs: the ink record, the transcript and the pen's writing plan are kept apart (REQ-APP-005). A causal streaming recogniser, calibrated on the user's own letters, reads the letters. Spelling help scores several readings, abstains when unsure, and never flags names, numbers or words the writer marks (REQ-APP-007). The default cue is a tick at the next pause, and completions come only at pauses (REQ-APP-008). The pen writes only accepted text, through a plan that starts a letter only when all of it fits within reach (REQ-CTRL-014). This feeds DEC-049's autowrite.
+- **DEC-057.** Nearest-point close tracing is retired for letters. Guidance advances along the letter and checks that every part is drawn (EXP-S16, then EXP-D08). The shape assist is not adopted (EXP-S15 and S21 come only after a redesign). Clearer text on screen comes from the app's clean copy, whose tremor detector must be made stricter (EXP-A03, AC-A03-04 and AC-A03-05).
+- **What the study found.** The recogniser names 82 % of letters by the end of the letter (86 % calibrated). With a language model one word in five is still read wrong. With the letters known, the checker catches 63 % of children's real misspellings at 2.3 false alarms per 100 correct words; with the pen's own reading, 34 % at 1.7 (a post-hoc design). A tick at the next pause gets 3.0 of 10 misspellings fixed on paper, and a tick plus a pen lift 3.4. Completion after one letter is in the top 3 52–56 % of the time. An accepted word is written in full at ±6 mm of reach in 95 % of cases, and at ±4 mm in 23 %.
+- **Studies with people.** EXP-S10…S15, S17 and S18 are in [`human_study_plan.md`](human_study_plan.md) §22.
+- **One run, several scorings.** EXP-S19 runs on EXP-N08's set-up with the same firmware and SIM gate. EXP-S20 uses EXP-S18's data. EXP-S21 needs EXP-R04 (DiaGraMo in the library) first.
+
+### EXP-S16: Close tracing with guidance that advances along the letter
+
+- **Purpose and gates.** Test whether a guidance law that advances along the letter and checks that every part is drawn keeps letters readable, against the nearest-point law. Gates DEC-057 and EXP-D08's tracing arms.
+- **Relation to EXP-D08.** The same tracing task and learner profiles. This bench run comes first; the chosen law then becomes an arm of EXP-D08 with people (`human_study_plan.md` §16).
+- **Predictions (SIM; the drive study's runs, 6 test writers × 4 seeds; `docs/spelling_and_clarity.md` T5).**
+  - With nearest-point close tracing (heel wheel and nose), the app read 79 % of letters against 92 % unguided, but a page reader read 72 % against 70 %. The app's reader reads letters in writing order, so it reacts to how the ink was laid down.
+  - 4.2 % of each letter's path was left undrawn (2.0 % unguided). Redrawing the drawn parts in the letter's own order recovered 58 % of the lost letters; snapping the ink onto the letter, 9 %.
+  - The progress-aligned law has not been simulated.
+- **Set-up.** The heel drive and nose prototype, after EXP-D07. R14's grip simulant on R13's stage moves the pen along the drive study's learner paths, as a passive hand. R3 scans. The app's reader and an order-free page reader.
+- **Procedure.** Three conditions in random order: unguided, the nearest-point law, the progress-aligned law (DEC-057). 4 seeds per learner profile. Scan; read blind with both readers; measure each letter's undrawn share.
+- **Measurands.** Share of each letter's path with no ink within 1 mm; letters read by both readers; ink running backwards along the letter.
+
+<!-- AC-TABLE:EXP-S16:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S16-01 | — | EXP-D08's tracing task on the bench (heel drive and nose; the stage moves the pen along the learner profiles' paths): with the progress-aligned guidance law, the share of each letter's path with no ink within 1 mm, and the letters read by the app's reader and by a page reader relative to unguided (both) | both met (≤ 5 % undrawn; letters read no fewer than unguided) | hypothesis | pass line of study S; SIM with nearest-point close tracing: 4.2 % undrawn (2.0 % unguided), letters read 92 -> 79 % by the app's order-sensitive reader and 70 -> 72 % by a page reader (docs/spelling_and_clarity.md T5); the progress-aligned law not yet simulated | DEC-057 (guidance for letters); EXP-D08's tracing arms |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-S16).
+<!-- AC-TABLE:EXP-S16:END -->
+
+- **Decision rule.** Pass: the progress-aligned law becomes the guidance law for letters, and EXP-D08 uses it (DEC-057). Fail: guidance for letters stays off until a law passes, and EXP-D08's tracing arms wait.
+
+### EXP-S19: Writing an accepted word with a reach-limited nib while the hand moves
+
+- **Purpose and gates.** Check the writing plan of REQ-CTRL-014 on the bench. An accepted word is written in full only with enough reach and a moving hand, and a hand-back must never leave half a letter. Gates REQ-CTRL-014, DEC-056 (f) and DEC-049's autowrite of accepted words (REQ-RVJ-N07, N08).
+- **Relation to EXP-N08.** It runs on EXP-N08's set-up (R13 after EXP-T13), with the same firmware and SIM gate (AC-N08-01, AC-N08-03). EXP-N08 writes a known line while the stage sweeps; EXP-S19 writes accepted words while the stage replays recorded hand advances. The two share sessions.
+- **Predictions (SIM, kinematics only; `docs/spelling_and_clarity.md` T9).**
+  - 100 completions (the rest of words of 5 or more letters) in 20 test writers' own letters at a 3 mm x-height. The part the pen writes is 11.8 mm long (median).
+  - Written in full with a steady hand: 95 % at ±6 mm, 23 % at ±4 mm, 4 % at ±3 mm, none at ±1–2 mm. With a still hand, 2 % at ±6 mm; with a hand that runs ahead, 1 %.
+  - Letter admission leaves no half letter per 100 completions with steady, slow or still hands, and 8 with hands that pause or run ahead (point by point: 2–99).
+  - With a steady hand the pen takes 1.01 × the writer's own time.
+- **Set-up.** The nose on R13 (usable reach ±6.0 mm, REQ-RVJ-N01; a software stop at ±4 mm for the smaller reach). The stage replays recorded hand advances: steady, slow, pausing, running ahead, still. Accepted words in the writer's own letters, from the calibration pangram. A camera or digitiser for the ink; the plan's logs.
+- **Procedure.** Each hand profile at each reach, 20 words each, in random order. Scan and read blind. Count the words written in full, the half letters and the ink gaps. Log the plan's waits, lifts and hand-backs.
+- **Measurands.** Words written in full (coverage); half letters and ink gaps (missing strokes); reach used; time against the writer's own (completion time), as REQ-WP-011 asks.
+
+<!-- AC-TABLE:EXP-S19:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S19-01 | REQ-CTRL-014 | Accepted words written in full with a steady hand advance at the design reach (the stage replaying recorded hand advances; the nose's guaranteed ±6.0 mm, REQ-RVJ-N01), 3 mm x-height, in the writer's own letters | ≥ 90 % | hypothesis | pass line of study S; SIM, kinematics only: 95 % at ±6 mm, 23 % at ±4 mm and 4 % at ±3 mm with a steady hand (docs/spelling_and_clarity.md T9) -> passes only at the Rev J nose's reach | DEC-049 and DEC-056 (f) (autowrite of accepted words) |
+| AC-S19-02 | REQ-CTRL-014 | Every hand profile (steady, slow, pausing, running ahead, still) with letter admission: half letters left on the page (R3 scans); and the plan's logs: a letter starts only when all of it fits the usable reach, the nib slows or waits when the hand lags, lifts after 0.5 s without progress, and hands back after 2 s without progress or when the hand runs ahead (both) | both met (no half letter; conforms) | requirement | REQ-CTRL-014 (rule C1); SIM, kinematics only: with letter admission 0 half letters per 100 completions with steady, slow or still hands and 8 with hands that pause or run ahead (2-99 point by point) (docs/spelling_and_clarity.md T9) -> predicted to FAIL for pausing and running-ahead hands | DEC-056 (f); EXP-N09 with accepted words |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-S19).
+<!-- AC-TABLE:EXP-S19:END -->
+
+- **Decision rule.** Pass: this plan writes accepted words in autowrite (DEC-056 (f), DEC-049). Fewer than 90 % in full at the design reach: autowrite of accepted words waits for more reach or a slower sweep. Any half letter: fix the admission rule before EXP-N09 uses accepted words.
+
+### EXP-S20: Is the spelling score calibrated for new users and devices?
+
+- **Purpose and gates.** Confirm the post-hoc rule W5 and the calibration of P(misspelled) on new users and devices, offline on EXP-S18's data. Gates REQ-APP-007 (ECE ≤ 0.05) and DEC-056, which is revisited if W5 or the calibration is not confirmed.
+- **Predictions (SIM, 11 test children, the pen's own reading; `docs/spelling_and_clarity.md` T8).** 34 % of misspellings caught at 1.7 false alarms per 100 correct words with the new-writer recogniser, and 28 % at 2.3 when calibrated. ECE 0.06–0.08 raw and 0.03 after Platt scaling. W5 was written after the planned rule failed (1–3 % caught), so these numbers are post hoc.
+- **Set-up.** EXP-S18's recordings and transcripts, with consent for this use (`human_study_plan.md` §3.3). The frozen W5 score, with Platt scaling fitted on other users, per device.
+- **Procedure.** Score each user's words. Draw reliability diagrams per user and per device. Refit the temperature per user after 200 words and score the rest. Find the detection at ≤ 2 false alarms per 100 correct words.
+- **Measurands.** ECE per user and device, and pooled; detection at ≤ 2 false alarms per 100 correct words; suggestions shown, and right when shown.
+
+<!-- AC-TABLE:EXP-S20:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S20-01 | REQ-APP-007 | Expected calibration error of P(misspelled) on held-out users (EXP-S18's data; the W5 score with Platt scaling fitted on other users), pooled | ≤ 0.05 | requirement | REQ-APP-007 (DEC-056 (c)); SIM on 11 test children: 0.06-0.08 raw and 0.03 after Platt scaling (post-hoc rule W5; docs/spelling_and_clarity.md T8) | DEC-056 (revisited if not confirmed) |
+| AC-S20-02 | REQ-APP-007 | Users (and devices) whose own ECE of P(misspelled) is ≤ 0.05, with the temperature refitted per user after 200 words | ≥ 80 % | hypothesis | pass line of study S; no per-user result exists (the SIM pooled 11 test children; docs/spelling_and_clarity.md T8) | DEC-056 |
+| AC-S20-03 | — | Misspellings caught at ≤ 2 false alarms per 100 correct words with the pen's own reading and the W5 score, new users (EXP-S18's data), with the 95 % interval over users | the interval's upper bound reaches W5's result (34 % with the new-writer recogniser; 28 % calibrated) | hypothesis | confirms the post-hoc rule W5, written after the planned rule W2 caught 1-3 % (DEC-056 is revisited if EXP-S20 fails to confirm it); SIM: 34 % at 1.7 and 28 % at 2.3 false alarms per 100 correct words (docs/spelling_and_clarity.md T8) | DEC-056 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-S20).
+<!-- AC-TABLE:EXP-S20:END -->
+
+- **Decision rule.** Pass: the calibrated score stays the spelling layer's (DEC-056). Fail: the cue stays at the next pause, suggestions come only on request, the automatic mode stays off, and DEC-056 is revisited.
+
+### EXP-S21: Shape assist and spelling cues on children's handwriting with dysgraphia
+
+- **Purpose and gates.** Test the shape assist and the spelling layer offline on real children's handwriting, with and without dysgraphia. Gates DEC-057 (the shape assist stays out unless a redesign helps here) and the practice functions for children (EXP-W05, EXP-L08, EXP-G07).
+- **Needs EXP-R04 first:** DiaGraMo (CC BY 4.0) in the library, with its licence recorded and the children split before any use (AC-R04-01).
+- **Predictions.** None: the set is not yet used. On adults' real letters the shape assist changed the letters read by less than one point (`docs/spelling_and_clarity.md` T6).
+- **Set-up.** DiaGraMo through the task-1 recogniser, calibrated on each child's letters (a recogniser with the Czech diacritics, or a letter subset), and the shape assist in model HW1. Letters read by study R's word reader and by the per-letter reader.
+- **Procedure.** Replay each test child's writing with and without the assist. Score the letters and words read, and the ink moved on the children's clean letters.
+- **Measurands.** Letters and words read with and without the assist; ink moved on clean letters.
+
+<!-- AC-TABLE:EXP-S21:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S21-01 | — | DiaGraMo test children (with and without dysgraphia) replayed in HW1 through the recogniser calibrated on each child's letters: letters read with the shape assist against without (study R's word reader and the per-letter reader), and ink moved on the children's clean letters (both) | both met (≥ 10 % more letters read; ≤ 25 µm) | hypothesis | EXP-S15's line applied offline (pass line of study S); no prediction: the set is not yet used (EXP-R04); on adults' real letters the assist changed the letters read by under one point (docs/spelling_and_clarity.md T6) | DEC-057 (a redesigned assist before EXP-S15); the practice functions for children |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-S21).
+<!-- AC-TABLE:EXP-S21:END -->
+
+- **Decision rule.** Pass: a redesigned assist may go to EXP-S15 with people. Fail: the shape assist stays out for children too (DEC-057).
+
+---
+
+## 50. Shifting the whole pen: EXP-W11, W13, W14, W15, W17 (study W; DEC-051…DEC-053)
+
+### Purpose and what it gates
+
+Study W (`docs/whole_pen_shift.md`) asked whether shifting the whole pen could handle larger tremor than the moving nose. Its strongest design is a collar: a held sleeve, 21.7 mm across and 40.1 g in total, with the inner pen on a two-axis flexure pivot about 50 mm behind the tip. A coil plate in the sleeve's rear wall swings the inner pen ±4.6°, reacting on the sleeve, which gives ±4 mm at the tip. **Nothing was built or measured.** The numbers are CALC, and SIM on two synthetic test writers with one seed each and at study R's real tremor sizes.
+- **DEC-051.** No whole-pen actuator in the product now; the moving nose stays the part that shifts the ink; inertial tails are rejected for the pen. The collar stays a bench experiment (EXP-W11). The end-cap stays only as a bench comparison against the same mass locked (EXP-J16, W14). DEC-051 is revisited if EXP-W10 finds writers whose tremor at the ink exceeds the nose's reach (about ±6 mm) while writing, or if the collar mock-up beats the same pen with it locked by ≥ 10 % without losing ink.
+- **DEC-052.** The tremor estimate is the priority. In every study the gap between today's causal estimates and perfect knowledge of the tremor is far larger than anything added mechanics gave. Study E chooses the estimator on real inputs under DEC-055; DEC-047's G4 stays the default meanwhile; study W's candidate (GLG) goes into study E (EXP-W15).
+- **DEC-053.** Any added device is judged against the same pen with that device locked and the existing corrector working, at three grip strengths, on a measured-style page sensor, with coverage, missing strokes and completion time for any gated mode, and with power that includes the nib's static load (REQ-WP-001, WP-011, WP-012).
+- **What the study found (SIM).** With the 87 g Rev J pen inside, the collar changed the tremor left by −5 % to +5 % against the same pen with it locked and the nose working. With perfect knowledge, sharing the correction with it was worse than the nose alone (3 mm ET: 0.66 against 0.24 mm). With a light 24 g inner pen it left 17 % less tremor at 8 mm PD but laid 17 points less ink, so no more words were read. At study R's real sizes no extra travel was needed. With the pen's best causal estimate the nose left 1.1–1.4 mm of a 3 mm tremor; with perfect knowledge, 0.14–0.24 mm.
+- **Requirements.** REQ-WP-001 applies to anything that would shift the pen. REQ-WP-002…009 apply to the collar mock-up, and to any product collar that later passes REQ-WP-001. REQ-WP-010 applies to tail modules, and REQ-WP-011 and 012 to every report.
+- **Studies with people.** EXP-W10, W12 and W16 are in [`human_study_plan.md`](human_study_plan.md) §23.
+- **Rigs (study M).** The G5 comparisons of the collar (EXP-W11) and the tails (EXP-W14) are conditions of EXP-T16 on R14 (§47), judged by AC-T16-01 (now REQ-WP-001's criterion), as the end-cap's are (EXP-K02, J16). EXP-W13 runs on R13 over R9's plate, in the set-up of EXP-J17 and T12.
+
+### EXP-W11: Does the collar move the ink as calculated, and does it beat the same pen with it locked?
+
+- **Purpose and gates.** Build the V2 collar as a bench mock-up and check its transmission, holding power, stability, fit and stops. Its G5 comparison decides DEC-051's revisit. Gates REQ-WP-001 (through AC-T16-01), REQ-WP-002, 003, 005, 006 and 008, and DEC-051.
+- **Rig (study M).** The phantom is R14's grip simulant on R13's stage, and the G5 part (collar active against the collar locked, with the same nib working, at three grip strengths) is a condition of EXP-T16 (§47), judged by AC-T16-01. REQ-WP-001 sets the grip strengths at 0.5, 1 and 2 × nominal (study W's phantom springs: 300, 575 and 1100 N/m); R14 sets them by squeeze (2, 4 and 8 N), and its leaf sets give 211, 500 and 977 N/m (CALC). The rig design picks the settings (open, `README.md` §7). The paper lies on R9's plate, so the force path can be checked.
+- **Predictions (CALC, SIM; `docs/whole_pen_shift.md` §3d, §4).**
+  - Collar 21.7 mm across, 12 mm barrel, 40.1 g in total; ±4 mm at the tip (±5.2 mm across the page in the tilt plane). The swung inner pen clears the sleeve by 0.72–1.00 mm and the coil plate by 0.52 mm (CALC on the CAD).
+  - Holding power with the ball on the paper: 0.16 / 0.055 / 0.006 W at 35 / 50 / 75° (Rev J's nose: 4.72 / 1.63 / 0.17 W).
+  - A prescribed swing moved the ink within 1–3 % of the linear model, with the ball on the paper 99.8–100 % of the time (SIM).
+  - With one fixed model the loop keeps a margin ≥ 0.93 over grip 0.5–2 × and split 0.3–0.7, with the web on the collar (CALC). With the web on the barrel the ink moves 0.58–1.23 × the ideal lever.
+  - Against the same pen with the collar locked and the nose working: −5 % to +5 % (SIM). The pivot reached its stops at 8 mm (0.16–0.18 rad against 0.12).
+- **Set-up.** The V2 mock-up: a 3D-printed sleeve, a cross-strip flexure pivot at 50 mm, a two-axis coil plate under magnets on the barrel's end face, and a 12 mm barrel with a refill and the paper-following front stop. The phantom with swappable grip springs and split variants, on the shaker (R13). Paper on R9's plate. Optical ground truth of the ink (R13's camera, R3 scans).
+- **Procedure.**
+  1. Weigh and measure; check the fit at full swing (feeler gauges, or CT of the assembly).
+  2. Transmission: swept sines at 2–12 Hz and ±1–5 mm at the tip, ball on the paper, at 35, 50 and 75°; web on the collar, then on the barrel.
+  3. Current at rest while writing with the ring loaded, at each tilt.
+  4. Closed loop with one fixed controller model: 3 mm tremor at 5–9 Hz on the phantom, three grip strengths. First the phantom's known tremor as the reference (oracle), then the causal estimator.
+  5. 8 mm at 5 Hz with the stop-approach limiter: pivot angle and stop contacts.
+  6. The G5 conditions in EXP-T16: collar active against locked, the same nib working, the same seeds, three grip strengths.
+- **Measurands.** Ink moved against the model; tip travel; holding current and power; loop margins; tremor removed; pivot angle and stop contacts; coverage.
+
+<!-- AC-TABLE:EXP-W11:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W11-01 | REQ-WP-002 | Collar mock-up as built: collar diameter, inner barrel diameter, mass (with dummy masses for the parts it lacks, such as the cell and board), and tip travel at 4-10 Hz under a 1 N writing load (optical ink truth) (all) | all met (≤ 22 mm; ≤ 12 mm; ≤ 55 g; ≥ ±4 mm) | requirement | REQ-WP-002 (DEC-051); PROPOSED DESIGN (CALC): 21.7 mm, 12 mm barrel, 40.1 g, ±4 mm at the tip for ±4.6° (docs/whole_pen_shift.md s3d) | DEC-051 (the collar mock-up) |
+| AC-W11-02 | REQ-WP-003 | Static holding power (coil power holding the inner pen centred against the refill spring's side load, ball on the paper, skid ring loaded, 60 s) at 35 and 50°; and the force path (the refill's axial load at the ball equals its spring's force; the rest of the writing force goes through the skid ring, R9's plate) (all) | all met (≤ 0.2 W at 35°; ≤ 0.06 W at 50°; conforms) | requirement | REQ-WP-003 (DEC-051); CALC 0.16 / 0.055 / 0.006 W at 35 / 50 / 75° with the coil plate, against Rev J's nose 4.72 / 1.63 / 0.17 W (docs/whole_pen_shift.md s3a, s3d); the coil plate's force constant is scaled from the Rev J nose's contested image-method value (open issue 7) | DEC-051; DEC-053 (power with the nib's static load) |
+| AC-W11-03 | REQ-WP-006 | Closed loop on the hand phantom with one fixed controller model, web on the collar, 3 mm tremor at 5-9 Hz, grip 0.5, 1 and 2 x nominal: stability (no limit cycle, margins from the loop's response) and the tremor removed at the ink, with the reference from the phantom's known tremor (as EXP-T10's oracle); the causal estimator reported beside it (both) | both met (stable at every grip; ≥ 50 % removed) | requirement | REQ-WP-006 (DEC-051); CALC: margin ≥ 0.93 over grip 0.5-2 x and split 0.3-0.7 with the web on the collar; SIM with perfect knowledge the collar alone removed 64 % of a 3 mm, 6 Hz tremor (tuning writer); as the main corrector behind a ±1 mm nib with today's estimate the loop became unstable (docs/whole_pen_shift.md s3d, s4.4) | DEC-051 |
+| AC-W11-04 | REQ-WP-008 | 8 mm tremor at 5 Hz on the phantom (three grip strengths) with the stop-approach limiter on: the pivot reference as a share of its range, and hard-stop contacts (pivot sensing, contact switch) (both) | both met (≤ 65 %; 0 contacts) | requirement | REQ-WP-008 (DEC-051); SIM without a limiter the pivot reached its 0.12 rad stops at 8 mm (peaks 0.16-0.18 rad), even with the reference held to 65 % (docs/whole_pen_shift.md s4.3, open issue 4) -> fails until a limiter is designed | DEC-051 |
+| AC-W11-05 | REQ-WP-005 | Fit of the mock-up at full swing: clearance between the swinging barrel and the sleeve and web saddle (feeler gauges or CT of the assembly), and the saddle's reach along the pen (both) | both met (≥ 0.3 mm; saddle to z ≥ 97 mm) | requirement | REQ-WP-005 (DEC-051); CALC on the CAD: the swung inner pen clears the sleeve by 0.72-1.00 mm and the coil plate by 0.52 mm (docs/whole_pen_shift.md s9) | DEC-051 |
+| AC-W11-06 | — | Ink moved by a prescribed swing (open loop, sines 2-12 Hz, ±1-5 mm at the tip, ball on the paper at 35, 50 and 75°, web on the collar) against the linear model (z_p x angle sideways; z_p x angle / sin(θ) in the tilt plane) | within ±20 % of the model | hypothesis | the project's pass line for a model check (as AC-K01-01, AC-J17-01); SIM: within 1-3 % of the linear model with the ball on the paper 99.8-100 % of the time (docs/whole_pen_shift.md s3d; results/wholepen/verification.json) | DEC-051 (the collar's model); the simulator's collar |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (6 rows for EXP-W11).
+<!-- AC-TABLE:EXP-W11:END -->
+
+- **Decision rule.** AC-T16-01 passes with the collar (≥ 10 % over locked at every grip strength, without losing ink): DEC-051 is revisited. Otherwise the collar stays the bench reference for shifting the whole pen. The lines here judge the mock-up, not a product.
+
+### EXP-W13: Does the ball stay on the paper during large corrections?
+
+- **Purpose and gates.** Measure ball contact when the nose or the collar corrects ±4–8 mm at tremor rates, and check the collar's paper-following front stop. Gates REQ-WP-004, and any severe-tremor correction claim (whether it can keep the ink).
+- **Rig (study M).** R13 with the paper on R9's plate, in the set-up of EXP-J17 and EXP-T12 (the same tilts, plate and nib holder), which measure the static side load; the plate's normal force gives the ball's load and contact. The nose's large swings extend EXP-T11's amplitude ladder, which stops at 2 mm. They share sessions.
+- **Predictions (SIM; §3d, §4.4 and open issue 1).**
+  - At 8 mm the ball stayed on the paper only 44–77 % of the time whenever the nose or the collar corrected hard, even with perfect knowledge, against 88–96 % with nothing moving.
+  - With the paper-following stop and a ±0.05 rad, 6 Hz swing the ball stayed on the paper 99.8 % of the time; with a stop that follows only the pivot angle, 70 % (development runs).
+  - REQ-WP-004's formula gives about 6.0 mm of extension at the full ±4.6° swing and 35°. Its text says about 3.3 mm, and the simulated stop was bounded to 3 mm (open, `README.md` §7).
+- **Set-up.** The Rev J nose (the C1S nose built for EXP-J17) and the collar mock-up of EXP-W11 in R13's holder, over paper on R9's plate at 35, 50 and 75°. The stage swings ±4–8 mm at 5–6 Hz. A load cell on the collar's skid ring (the stop logic). R3 scans.
+- **Procedure.** At each tilt: swings of ±4, 6 and 8 mm at 5 and 6 Hz while writing lines, with and without correction (the same pen not correcting is the reference). Then pen lifts with the ring unloaded, and scans for joined strokes.
+- **Measurands.** Ball normal force and the contact share of pen-down time; the refill's extension; ink laid (coverage) and missing strokes; strokes joined across lifts.
+
+<!-- AC-TABLE:EXP-W13:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W13-01 | REQ-WP-004 | Collar mock-up swung ±4-8 mm at 5-6 Hz on paper at 35, 50 and 75° with the skid ring loaded: the refill's extension along the pen as it follows the paper; and pen lifts with the ring unloaded: strokes joined across the lifts (R3 scans) (both) | both met (extension ≥ z_p x swing x cot(θ_min) + 0.3 mm; no joined strokes) | requirement | REQ-WP-004 (DEC-051); SIM development runs: the ball stayed on the paper 99.8 % of the time with this stop and 70 % with a stop that follows only the pivot angle (docs/whole_pen_shift.md s3d); the formula gives about 6.0 mm at the full ±4.6° swing and 35°, the requirement's text says about 3.3 mm, and the simulated stop was bounded to 3 mm (validation/README.md s7) | DEC-051; the collar's front stop |
+| AC-W13-02 | — | Ball contact with the paper (plate normal force above half the refill spring's force) as a share of pen-down time while correcting ±4-8 mm at 5-6 Hz, the Rev J nose and the collar, at 35, 50 and 75°, against the same pen not correcting | no more than 5 points lower | hypothesis | the 5 points of REQ-WP-001's coverage bound applied to contact (engineering judgement); SIM at 8 mm: 44-77 % whenever the nose or the collar corrected hard, even with perfect knowledge, against 88-96 % with nothing moving (docs/whole_pen_shift.md open issue 1) -> predicted to FAIL at 8 mm | any severe-tremor correction claim (whether it keeps the ink) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W13).
+<!-- AC-TABLE:EXP-W13:END -->
+
+- **Decision rule.** Contact kept: severe-tremor correction can keep the ink, and every severe-tremor claim carries its coverage (REQ-WP-011). Contact lost, as predicted: no severe-tremor correction claim beyond the nose's comfortable range until the refill's force element or front stop is redesigned.
+
+### EXP-W14: Do tail modules beat the same mass locked?
+
+- **Purpose and gates.** Test tail modules only against the same mass locked (G5), at three grip strengths. Gates REQ-WP-010 and DEC-051 (tails rejected for the pen).
+- **Rig (study M).** The tail conditions of EXP-T16 on R14 (§47), judged by AC-T16-01 (REQ-WP-001). The driven reaction mass is the 29.6 g end-cap of EXP-J16, so those runs serve both (one run, two scorings). The gyroscope pair runs only after its burst test and the checks of EXP-K06.
+- **Predictions (CALC, SIM; §3b, §3c, §4.5).**
+  - A tuned or a driven tail mass did no better than the same mass locked.
+  - The 100 g gyroscopic tail beat its locked mass by 15 / 51 / −14 % at grips 0.5 / 1 / 2 × on the tuning writer, and by 9 % on test writer 0. It never beat the pen without a tail.
+  - A gyroscope that could matter stores 5–18 J; the optimum at 100 g stores 6.4 J (CALC). Spin itself did not steady the pen (EXP-K07).
+- **Set-up.** R14 on R13's stage. The tuned mass (40 g), the driven reaction mass (30 g: the end-cap) and the gyroscope pair (≤ 2 J, in a burst-test housing), each with a locked dummy of the same mass, centre of mass and inertia.
+- **Procedure.** Before any run, the gyroscope pair's burst test at 1.2 × its design speed and a test of its over-speed trip. Then EXP-T16's conditions (none, locked, unpowered, active) at three grip strengths, 4–10 Hz, 10 seeds, in random order.
+- **Measurands.** Tremor left at the tip; coverage; power; stored energy.
+
+<!-- AC-TABLE:EXP-W14:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W14-01 | REQ-WP-010 | Gyroscope pair before any run: stored energy from the measured speed and inertia, the stress margin at 1.2 x the design speed (a burst excluded by design; burst-test housing), and the over-speed trip tested; guarded acceptance (all) | all met (≤ 2 J; ≥ 3; trips) | requirement | REQ-WP-010 (DEC-051); the simulated 100 g gyroscopic tail stored 17.8 J at its starting design and 6.4 J at its optimum, and one that could matter stores 5-18 J (CALC, docs/whole_pen_shift.md s3b, s3g); REQ-EC-007 allows 3 J for the end-cap's CMG research module | gate before any gyroscope runs on the rig (with EXP-K06's methods) |
+| AC-W14-02 | REQ-WP-010 | Test plan and records of every tail module (tuned mass 40 g; driven reaction mass 30 g, the 29.6 g end-cap of EXP-J16; gyroscope pair): compared only against the same mass locked (a dummy of the same mass, centre of mass and inertia), same seeds, at three grip strengths, 4-10 Hz | conforms | requirement | REQ-WP-010 (DEC-051, DEC-053); the G5 verdict itself is AC-T16-01 (REQ-WP-001) | DEC-051 (tails rejected for the pen) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W14).
+<!-- AC-TABLE:EXP-W14:END -->
+
+- **Decision rule.** No tail passes AC-T16-01, as predicted: DEC-051 stands. One passes: the tail question is reopened with the lead (DEC-051 revisit).
+
+### EXP-W15: How close can a causal estimate get to perfect knowledge on real writing?
+
+- **Purpose and gates.** Measure the gap between the firmware's causal estimates and perfect knowledge on recorded writing, offline; this gap is the programme's largest lever (DEC-052). Check that the collar's command leaves clean writing alone. Gates DEC-052, REQ-WP-007 and REQ-WP-012.
+- **One run, several scorings.** It uses EXP-R02's replays: study R's library now, and the EXP-H01/R01 and EXP-W10 recordings later. It adds study W's candidate estimate (GLG: the gated listening estimate with the guarded tracker as its fallback) and the collar's overflow command. DEC-052's verdict is AC-R02-01 (DEC-055's line), judged in EXP-R02; study E chooses the estimator.
+- **Predictions (SIM).**
+  - On study W's tuning writer, GLG removed about two thirds of a 3 mm, 6 Hz tremor where G4 removed about a tenth, and moved tremor-free writing 5 µm (with the Rev H tracker as its fallback, 135 µm).
+  - On the test writers the nose left 1.1–1.4 mm of a 3 mm tremor with GLG, against 0.14–0.24 mm with perfect knowledge.
+  - With the collar enabled, tremor-free writing moved at most 8 µm.
+  - On real inputs at the severe class every tracker as built failed DEC-055's line (EXP-R02).
+- **Set-up.** Study W's simulator (the Rev J nose and the collar) and model HW1, with the measured-style page sensor (REQ-WP-012). Study R's test split; later the recordings.
+- **Procedure.** Replay each estimator (G4, GLG, the gated tracker, and the TCN of EXP-R05) with the nose, and with the collar and nose; perfect knowledge as the limit. Replay the test writers' tremor-free writing, checked by REQ-DATA-003, for false correction.
+- **Measurands.** Tremor left at the tip, and its share of the perfect-knowledge limit; words read; clean writing moved with the collar enabled.
+
+<!-- AC-TABLE:EXP-W15:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W15-01 | REQ-WP-007 | In the replay model (study W's simulator with the collar and the measured-style page sensor), real tremor-free writing of the test writers (checked by REQ-DATA-003), collar enabled: clean writing moved; and a firmware review that the collar is commanded only at a detected tremor line, only by the share beyond the nib's reach, never from letter shapes (both) | both met (≤ 25 µm; conforms) | requirement | REQ-WP-007 (DEC-051); SIM on synthetic writers: at most 8 µm with the collar enabled; the command is a phasor at the tracked tremor line, gated by the detector (docs/whole_pen_shift.md s3d, s4.3) | DEC-051; DEC-052 |
+| AC-W15-02 | REQ-WP-012 | Every whole-pen result of EXP-W15 and study W's results cards (review): the measured-style page sensor (OPT-02 statistics) by default; 3 µm white noise only as a labelled bound | conforms | requirement | REQ-WP-012 (DEC-053; as REQ-DATA-007 for tracker results); study W used sim2j's DeltaPen-like walking model by default (results/wholepen/rules.json) | DEC-053 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W15).
+<!-- AC-TABLE:EXP-W15:END -->
+
+- **Decision rule.** A causal estimate passes AC-R02-01: it becomes the candidate default, with study E (DEC-052). None passes: the help for severe tremor stays autowrite of accepted text and the app's clean copy (DEC-055).
+
+### EXP-W17: Is an amplitude-gated paper force useful?
+
+- **Purpose and gates.** Test the heel wheel's tremor mode switched on only above a detected tremor amplitude (the lead's note). Gates REQ-WP-001 for the paper force, and whether paper grounding joins a severe-tremor mode. DEC-048 keeps the wheel retracted by default.
+- **Predictions (CALC, SIM; §3e).**
+  - The paper can push back with at most its friction, 0.3–1.4 N, against about 1.7 N of tremor force through the grip at 3 mm and 4.6 N at 8 mm (CALC).
+  - In development runs an idealised heel pushing 0.37 N in any direction removed about 15 % of a 3 mm tremor (SIM, tuning writer, an earlier firmware).
+  - The present tremor mode helps only where the tremor is large or slow (4 Hz × 2 mm: 0.73 of the device-off error) and moves tremor-free writing 0.40 mm (sim2).
+- **Set-up.** First sim2, where AC-L02-05 (REQ-RVJ-C02) judges the gated mode's clean writing. Then the heel-drive prototype on R14 over R13's stage, after the EXP-D07 safety gate.
+- **Procedure.** Amplitude thresholds of 1 and 2 mm, chosen in sim2 first. Tremor at 1–3 mm and 8 mm, three grip strengths. The same pen with the wheel retracted and the nose working is the comparison. Tremor-free writing for false correction.
+- **Measurands.** Tremor left at the tip; coverage; clean writing moved; felt force.
+
+<!-- AC-TABLE:EXP-W17:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W17-01 | REQ-WP-001 | Amplitude-gated heel wheel (tremor mode on only above a detected amplitude of 1-2 mm) with the nose, against the same pen with the wheel retracted and the nose working, same seeds, at 1-3 mm and 8 mm tremor, three grip strengths, in sim2 and then on R14: tremor left at the tip (lower 95 % bound) and coverage (both) | both met (≥ 10 % lower at every grip strength; coverage no more than 5 points lower) | requirement | REQ-WP-001 (DEC-051, DEC-053) for the paper force; CALC: paper friction 0.3-1.4 N against 1.7 N of tremor force through the grip at 3 mm and 4.6 N at 8 mm; development runs: an idealised heel pushing 0.37 N in any direction removed about 15 % of a 3 mm tremor (SIM, tuning writer, an earlier firmware) (docs/whole_pen_shift.md s3e) -> uncertain; the clean-writing line is AC-L02-05 (REQ-RVJ-C02) | DEC-048 (the wheel retracted by default); paper grounding in a severe-tremor mode |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-W17).
+<!-- AC-TABLE:EXP-W17:END -->
+
+- **Decision rule.** Pass (AC-W17-01, and AC-L02-05 on clean writing): the gated paper force may join the severe-tremor mode (DEC-048 revisit). Otherwise the wheel stays retracted in tremor modes.

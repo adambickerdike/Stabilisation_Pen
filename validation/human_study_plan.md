@@ -17,11 +17,13 @@ Contents:
 - §14 EXP-I03: passive nose and grip options on writers (extends EXP-H03)
 - §15 Rev H outcome studies: EXP-W01…W05, and EXP-G07 (the guidance board with people)
 - §16 Rev J heel drive with people (DEC-037): EXP-D08 (guided writing), EXP-D09 (tremor), EXP-D11 (lead-through and autowrite with relaxed hands)
-- §17 Rev J inertial end-cap with people (DEC-038): EXP-K03 (user crossover), EXP-K05 (cue perception)
-- §18 Rev J nose v2 with people (DEC-036, DEC-039): EXP-N09 (autowrite), EXP-N10 (delayed ink)
+- §17 Rev J inertial end-cap with people (DEC-038): EXP-K03 (user crossover), EXP-K05 (cue perception); since DEC-051 only if an end-cap returns to the product
+- §18 Rev J nose v2 with people (DEC-036, DEC-039, DEC-049): EXP-N09 (autowrite of accepted text), EXP-N10 (delayed ink)
 - §19 Rev J AI and control with people (DEC-042, DEC-043): EXP-L03 (ink lag; shares sessions with EXP-N10), EXP-L06 (text prediction in the app), EXP-L07 (style synthesis), EXP-L08 (guidance that fades across sessions)
 - §20 Rev J integrated layout with people (DEC-044, DEC-045, DEC-048): EXP-J08 (ink visibility; superseded for Rev J.1 by EXP-J15), EXP-J09 (mass and balance, with EXP-K03), EXP-J15 (the clear window), EXP-J18 (the heel wheel on writing)
 - §21 Real recorded data with people (study R; DEC-054, DEC-055): EXP-R01 (patients' own writing and tremor, the recording part of EXP-H01), EXP-R03 (a reading panel against the AI reader)
+- §22 Spelling help, text prediction and clearer handwriting with people (study S; DEC-056, DEC-057): EXP-S10 (letters read while writing, inside EXP-H01/R01 sessions), EXP-S11 (a dyslexic misspelling corpus), EXP-S12 (a tick while writing), EXP-S13 (the tick's detection), EXP-S14 (personal prediction, with EXP-L06), EXP-S15 (shape assist, conditional), EXP-S17 (word recognition on the pen's recordings), EXP-S18 (suggestions at pauses against cues while writing)
+- §23 Shifting the whole pen with people (study W; DEC-051…DEC-053): EXP-W10 (tremor at the ink while writing, with EXP-H01/R01), EXP-W12 (holding and writing with the collar), EXP-W16 (the cost of writing only when in reach)
 
 ---
 
@@ -91,9 +93,9 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-D08 (§16) | Does the heel drive guide tracing, loops and reversed letters as well as the desk board, does every writer overpower it, and is unassisted retention no worse? | 12 adults, then children with dysgraphia | Randomised crossover (none, nose, board, heel steer-only, heel steered and driven), resist block, retention block after 1 day | Target error against the board with felt force at the 95th percentile; unassisted retention | IA; LI (retention block) | after the EXP-D07 safety gate; ethics |
 | EXP-D09 (§16) | Does the heel's constraint and damping cut ink tremor without bending clean writing? | ≥ 8 ET + controls | Within-subject: none, nose, heel steer + brake, heel + nose; copying and free writing | Ink error; distortion of clean writing | IA | after EXP-D07 |
 | EXP-D11 (§16) | Can the drive lead a relaxed hand through a sentence, and do people accept it? | 8 | Mode switched on by the participant; lead speeds 4–10 mm/s; practice sentence | Letters read at the lead speed; comfort | IA (the device writes) | after EXP-D07 |
-| EXP-K03 (§17) | Does the active end-cap cut tremor more than the nose alone and more than the same weight, and is the back-heavy pen accepted? | 12 ET (+ a PD group) | Blinded crossover: nose, nose + weight, nose + active end-cap | Tip tremor amplitude (4–12 Hz); legibility; preference | IA; device burden | after EXP-K01, K02 |
-| EXP-K05 (§17) | Do people with ET and PD name the direction of an end-cap cue? | ET, PD with tremor, matched controls (n from a pilot, §11 rule) | Psychophysics: 8 directions, at rest and while writing | Direction named correctly; ink jitter during the cue | none (measurement) | after EXP-K01; K06 for rotor pulses |
-| EXP-N09 (§18) | Do people control and accept autowrite, and is its ink as legible as their own writing? | healthy adults, then ET (n from a pilot, §11 rule) | Autowrite switched on by the user; copy a known sentence at 2.5 and 3 mm | Legibility against the person's own writing; mode errors | IA (the device writes) | after EXP-N04, N05, N08; ethics |
+| EXP-K03 (§17) | Does the active end-cap cut tremor more than the nose alone and more than the same weight, and is the back-heavy pen accepted? | 12 ET (+ a PD group) | Blinded crossover: nose, nose + weight, nose + active end-cap | Tip tremor amplitude (4–12 Hz); legibility; preference | IA; device burden | after EXP-K01, K02; only if an end-cap returns to the product (DEC-051) |
+| EXP-K05 (§17) | Do people with ET and PD name the direction of an end-cap cue? | ET, PD with tremor, matched controls (n from a pilot, §11 rule) | Psychophysics: 8 directions, at rest and while writing | Direction named correctly; ink jitter during the cue | none (measurement) | after EXP-K01; K06 for rotor pulses; only if an end-cap returns (DEC-051) |
+| EXP-N09 (§18) | Do people control and accept autowrite of accepted text, and is its ink as legible as their own writing? | healthy adults, then ET with up to 3 mm of tremor (n from a pilot, §11 rule) | Autowrite switched on by the user; accepted text (typed, dictated or an accepted suggestion) at 2.5 and 3 mm (DEC-049) | Legibility against the person's own writing; mode errors; coverage | IA (the device writes) | after EXP-N04, N05, N08 and S19; ethics |
 | EXP-N10 (§18) | Do writers accept ink that trails the hand? | adults (n from a pilot, §11 rule) | Within-subject: 0/50/100/150 ms delay, tablet then pen | Writing errors; acceptance of ≥ 100 ms | device burden | tablet: ethics only; pen: after EXP-N05 |
 | EXP-L03 (§19) | How large an ink lag do writers notice, and does it cause errors? (only before any revival of delayed ink; shares sessions with EXP-N10) | 12 controls + 12 ET or PD | Within-subject: 0/12/25/50/100 ms on a tablet, then the ±6 mm bench nose; staircase and copy task | Just-noticeable lag; added strokes or letters per 100 letters | device burden | tablet: ethics only; pen: after EXP-N04, N05 |
 | EXP-L06 (§19) | Does better text prediction save writing effort in the app? | 20 adults + 10 ET | Within-subject, counterbalanced: old n-gram against the mixture; offline scoring on own notes | Top-3 accuracy on own notes; accepted completions per 100 words; words per minute | IA (app) | ethics |
@@ -105,8 +107,19 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-J18 (§20) | Does the heel wheel distort writers' own writing, and do they adapt within 10 minutes? | healthy writers (n from a pilot, §11 rule) | Within-subject: wheel retracted, free and in its tremor mode, 10 min each | Distortion against their own writing with the wheel retracted, and its change over 10 min | device burden | EXP-D07 safety gate; ethics |
 | EXP-R01 (§21) | What do ET and PD patients' own writing and tremor look like at the pen tip, with ink? | EXP-H01's participants (ET, PD, older and healthy adults) | The recording part of EXP-H01, in its sessions (the retest is the second session): ink and hover over a digitiser, the pen's IMU, REQ-DATA-009 | Tip tremor per participant in DEC-054's classes (zero-to-peak mm); writing kinematics | none (measurement) | with EXP-H01; ethics |
 | EXP-R03 (§21) | Does the AI reader's "words you can read" match people? | naive readers (n from a pilot, §11 rule) | Blinded literal transcription of study R's rendered test-case ink, and EXP-R01 ink with consent | Tracker-minus-ordinary-pen words, panel against the AI reader | none (the reader's validity) | ethics |
+| EXP-S10 (§22) | How early and how well does the recogniser read letters while people write on paper with the pen? | 20 adults + 10 ET/PD (inside EXP-H01/R01 sessions) | The calibration pangram and 3 notes; offline replay with and without calibration | Letters read at 50 % and 100 % of each letter; time per point on a phone | none (measurement) | with EXP-H01; ethics |
+| EXP-S11 (§22) | An English corpus of dyslexic misspellings in context, with consent | 30 adults + 30 children with a dyslexia assessment | Free text and dictation by hand; transcribed and tagged; released under an open licence | Words and tagged errors | none (data) | ethics; consent for release |
+| EXP-S12 (§22) | Does a tick while writing help people with dyslexia fix misspellings, and does it annoy them? | 20 adults with dyslexia + 20 controls | Within-subject, counterbalanced: no cue / tick on the suspect letter / tick + pen lift / app afterwards (shares sessions with EXP-S18) | Misspellings left on paper per 100 words; time; tolerance | IA | pen with LRA and pen lift, after EXP-N04, N05; ethics |
+| EXP-S13 (§22) | Is a tick felt while writing, and how small can it be? | adults, including adults with dyslexia (n from a pilot, §11 rule) | 2AFC and yes/no detection; 5 pulse lengths, 3 amplitudes; while writing and at rest | Detection rate at the chosen pulse | none (measurement) | LRA mock-up; ethics |
+| EXP-S14 (§22) | Does personal prediction on the user's own notes beat the old model? | 20 users (with EXP-L06) | 4 weeks of notes in the app; offline replay of NG0, NG1x and the personalised model | Top-3 after one letter, personalised against NG0 | IA (app) | app with logging; ethics |
+| EXP-S15 (§22) | Does a shape assist make writing more legible without taking over? (only after a redesign shows a simulated gain) | ET (1–2 mm) and poor handwriting | Assist off and on, blinded order; a panel of 5 readers | Letters read by people; clean-writing motion; agency | IA | Rev J prototype; conditional (DEC-057); ethics |
+| EXP-S17 (§22) | How well is writing read from the pen's own recordings, writer- and session-disjoint? | 30 writers (10 ET/PD, 10 dyslexia) | 2 sessions a week apart; a causal CTC recogniser trained on 20, tested on 10 and on held-out sessions | CER and WER with and without the language model | none (measurement) | pen with page sensor; ethics; a licence for release |
+| EXP-S18 (§22) | Suggestions at pauses or cues while writing: accuracy against fluency | 24 adults with dyslexia | Within-subject, counterbalanced: app afterwards / tick at the next pause with 3 suggestions / tick on the suspect letter / opt-in automatic correction (shares sessions with EXP-S12) | Misspellings left; writing speed; harmful edits | IA | app + pen with LRA; ethics |
+| EXP-W10 (§23) | How large is tremor at the ink while writing, and does anyone exceed the nose's reach (about ±6 mm)? | ET, PD action, PD re-emergent (≥ 20 each; with EXP-H01/R01) | Sentence and spirals on a digitiser with an ink pen and a 1 kHz IMU, hand resting and in free air | Tip tremor (zero-to-peak, main axis); writers beyond ±6 mm | none (measurement) | with EXP-H01; ethics |
+| EXP-W12 (§23) | Can people hold and write with the collar? | tremor-free adults first (n from a pilot, §11 rule) | Collar locked and active (equal mass), random order | Comfort; felt reaction; noise; where the web rests | device burden | after EXP-W11's bench checks; ethics |
+| EXP-W16 (§23) | What does "write only when in reach" cost people? | people with tremor (n from a pilot, §11 rule) | The Rev J pen with the gate on and off, random order | Words read; coverage; missing strokes; completion time | IA; device burden | after EXP-N04, N05, N08 and J17; ethics |
 
-EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii). The same holds for EXP-R02 and R05 (`bench_protocols.md` §48); R05 also trains a model.
+EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii). The same holds for EXP-R02 and R05 (`bench_protocols.md` §48); R05 also trains a model. EXP-S20 (`bench_protocols.md` §49) re-uses EXP-S18's data, and EXP-W15 (§50) the EXP-H01/R01 and EXP-W10 recordings, under the same consents.
 
 ---
 
@@ -198,7 +211,7 @@ EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_p
 
 | Measure | Definition |
 |---|---|
-| **Nib (or ink) tremor amplitude, excess-power method** | Displacement PSD S_p(f) of the nib (or deposited-ink) page trajectory per axis (Welch, 4 s Hann windows, 50 % overlap, pen-down segments). S_ref(f) = median PSD of the healthy-adult group for the same task, scaled to the participant's letter height; leave-one-out for healthy participants. Band = f_pk ± 1.5 Hz, where f_pk is the frequency of the largest ratio S_p/S_ref in 3–12 Hz. A_rms = √(∫_band max(0, S_p − S_ref) df); A_pp = 2√2·A_rms (sinusoid-equivalent peak-to-peak). The **major-axis** value uses the principal eigenvalue of the 2 × 2 cross-spectral matrix integrated over the band. The "per axis" limit of REQ-USR-002 is applied to the major axis (conservative). Before use, the method must recover known amplitudes injected into EXP-E01-A semi-synthetic recordings (method qualification). |
+| **Nib (or ink) tremor amplitude, excess-power method** | Displacement PSD S_p(f) of the nib (or deposited-ink) page trajectory per axis (Welch, 4 s Hann windows, 50 % overlap, pen-down segments). S_ref(f) = median PSD of the healthy-adult group for the same task, scaled to the participant's letter height; leave-one-out for healthy participants. Band = f_pk ± 1.5 Hz, where f_pk is the frequency of the largest ratio S_p/S_ref in 3–12 Hz. A_rms = √(∫_band max(0, S_p − S_ref) df); A_pp = 2√2·A_rms (sinusoid-equivalent peak-to-peak). The **major-axis** value uses the principal eigenvalue of the 2 × 2 cross-spectral matrix integrated over the band. The "per axis" limit of REQ-USR-002 is applied to the major axis (conservative). REQ-USR-002 now states its limits zero-to-peak, as DEC-054 (REQ-DATA-004): for a steady tremor A_pp is twice the peak, so its 0.5 mm peak is 1 mm p-p here. Before use, the method must recover known amplitudes injected into EXP-E01-A semi-synthetic recordings (method qualification). |
 | Tremor frequency | f_pk as above; also the tracked frequency f_est from the pen's estimator (ICD research frame). |
 | Path distance (guided tasks) | RMS over in-contact ink points of the distance to the nearest template point (as `sim/guided_eval.py`), from scans registered to the page. |
 | Clinical ratings | **Fahn–Tolosa–Marín** (FTM) part B handwriting and drawing (spiral) items; **TETRAS** performance items for spirals, handwriting and dot approximation (PDT-14). Rated from scans or video by a movement-disorders clinician blinded to condition. MDS-UPDRS Part III (PD) and Part II item 2.7 (handwriting, patient-reported) as descriptors. |
@@ -231,7 +244,7 @@ How large is tremor at the nib during natural writing, per axis and in millimetr
 
 It is research question rank 2. The census sets the addressable population and the stage travel.
 
-- **Requirements:** REQ-USR-002, whose "≤ 1 mm p-p full / ≤ 2 mm partial" is currently a literature-based estimate; REQ-MECH-001 (altitude envelope).
+- **Requirements:** REQ-USR-002, whose "≤ 0.5 mm peak full / ≤ 1 mm peak partial" (1 and 2 mm p-p; restated zero-to-peak, DEC-054) is currently a literature-based estimate; REQ-MECH-001 (altitude envelope).
 - **Decisions:** DEC-002 (claims by group and mechanism); DEC-009, since the frequency distribution vs the 7.5 Hz gate decides who free-writing cancellation can help.
 - **Downstream uses:**
   - the recordings for EXP-E01 and E02 (causal separability on real writing);
@@ -1192,6 +1205,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 ### EXP-W05: Does the app's spelling help reduce spelling errors in dyslexia?
 - **Design.** Dictation practice, 4–6 weeks. The app knows the target words, flags wrong words with a gentle buzz, shows and reads the right spelling, and keeps a corrected copy. The comparison is the same app without flags.
+- **Study S (DEC-056).** The buzz is the tick at the next pause, with suggestions only at pauses (REQ-APP-008). EXP-S12 and S18 (§22) test cues while writing, and EXP-S11 may share this cohort.
 - The pen never changes the ink.
 
 <!-- AC-TABLE:EXP-W05:BEGIN -->
@@ -1237,6 +1251,7 @@ The heel drive (DEC-037) uses the paper as ground. A small steered wheel at the 
   - Guided accuracy did not transfer to unassisted writing in a virtual-fixture study; error amplification did (LIT HAP-67).
 - **Decision.** Pass: DEC-037 can be adopted (together with EXP-D01, D05 and D07). Heel worse than the board: keep the board for tracing. Retention worse than none: use guidance only with fading and catch trials. Not accepted: revisit DEC-037.
 - **Status (DEC-048).** The heel wheel is retracted by default. It is deployed for 'write big' practice (driven) and lead-through only; its tracing arms wait for a controller that passes REQ-RVJ-C02 in sim2, or for EXP-J18. In sim2, tracing with the wheel read fewer words (97 → 70 %; `docs/revJ_simulation.md` §6.4).
+- **Status (DEC-057).** Nearest-point close tracing is retired for letters. The tracing arms use guidance that advances along the letter and checks that every part is drawn, once EXP-S16 passes on the bench (`bench_protocols.md` §49); the nearest-point law stays only as EXP-S16's comparison. Letters are also read by a page reader, not only by the app's reader, which reads in writing order (study S, SIM: close tracing 92 → 79 % with the app's reader, 70 → 72 % with a page reader). DEC-057 is revisited if this study shows that close tracing helps learning despite the reader.
 
 <!-- AC-TABLE:EXP-D08:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -1292,6 +1307,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 
 The end-cap (DEC-038) holds a 30 g tungsten slug that coils push by ±4 mm against the tremor, on top of the nose; the Rev J.1 end-cap (DEC-045) has a 17.3 g slug and weighs 29.6 g. It may also play short cues, but only in pauses and only after EXP-K05. It never writes or steers. The bench protocols are in `bench_protocols.md` §42. The predictions come from `docs/inertial_endcap.md` and `results/endcap/endcap_study.json` (H1 on the Rev H pen, SIMULATION; literature for the cues).
 - **Safety.** Only after EXP-K01 and EXP-K02 on the exact build; for CMG pulses in EXP-K05, also after EXP-K06. Inclusion and exclusion as §3.2, including the rule on active implants (NdFeB tiles on the slug, and the nose magnets).
+- **Superseded for the product (DEC-051, 2026-09-29).** Inertial tails are rejected for the pen, and the end-cap stays only as a bench comparison against the same mass locked (EXP-J16, W14). EXP-K03 and K05 run only if an end-cap returns to the product through REQ-WP-001 (≥ 10 % against the same pen with it locked, at three grip strengths, with coverage kept). REQ-EC-005 and 006 apply again only then; the pen's cue is now an LRA tick (EXP-S13, §22).
 
 ### EXP-K03: Does the end-cap help people?
 - **Design.** Randomised crossover. 12 writers with ET, and a PD group. Blinded housings of equal look and mass: nose alone, nose + the same weight fixed, nose + active end-cap. Archimedes spirals, lines and a sentence.
@@ -1335,23 +1351,27 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 ## 18. Rev J nose v2 with people: EXP-N09 (autowrite) and EXP-N10 (delayed ink)
 
-The nose v2 (DEC-036) moves the ball 6 mm in every direction. In an explicit autowrite mode (DEC-039) the pen draws a known text in the user's own style while the user sweeps the pen along the line. It waits when the user slows, lifts the ball when the text leaves its reach, and never pushes the hand with the nose. The bench protocols are in `bench_protocols.md` §43. The predictions come from `docs/nose_v2.md` and `results/nose2/nose2.json` (HW1 on synthetic writers, SIMULATION).
-- **Safety.** Only after EXP-N04 (heat), EXP-N05 (pen lift) and EXP-N08 (bench autowrite, with the SIM gate) on the exact build. Inclusion and exclusion as §3.2, including the rule on active implants (N52 magnets).
+The nose v2 (DEC-036) moves the ball 6 mm in every direction. In an explicit autowrite mode (DEC-039) the pen draws text the user accepted (typed, dictated or an accepted suggestion; DEC-049, DEC-056) in the user's own style, at up to 3 mm of tremor, while the user sweeps the pen along the line. It waits when the user slows, lifts the ball when the text leaves its reach, and never pushes the hand with the nose. The bench protocols are in `bench_protocols.md` §43. The predictions come from `docs/nose_v2.md` and `results/nose2/nose2.json` (HW1 on synthetic writers, SIMULATION).
+- **Safety.** Only after EXP-N04 (heat), EXP-N05 (pen lift) and EXP-N08 (bench autowrite, with the SIM gate) on the exact build, and for accepted words EXP-S19 (the writing plan, `bench_protocols.md` §49). Inclusion and exclusion as §3.2, including the rule on active implants (N52 magnets).
 - **Freedom to operate.** Autowrite with a pen lift is close to claim 1 of PAT-01. Attorney review comes before any product claim (DEC-036).
 
 ### EXP-N09: Autowrite with people
-- **Design.** Healthy adults first, then people with ET (ethics approval). The user switches autowrite on and copies a known sentence at 2.5 and 3 mm x-height. The same person also writes the sentence by hand. Questionnaires on control and trust (users were frustrated when a tool disobeyed, LIT HAP-62).
-- **Measurands.** Legibility by blinded readers; sweep speed chosen; perceived pull; mode errors; mode logs.
-- **Predictions (SIM).** 99.2 % of letters and every word read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters per second at a 9.5 mm/s sweep. One of six test writers needed a slower sweep; the pen now sets the speed per line (DEC-039). An uneven sweep (±30 %) and a drifting hand (±1 mm) were tolerated.
-- **Claim type.** IA; the device writes, so no claim is made about the user's own writing.
-- **Decision.** Pass: autowrite stays an explicit mode (DEC-039). Legibility worse than the person's own writing, mode errors, or reports of the pen "taking over": revisit DEC-039.
+- **Design.** Healthy adults first, then people with ET with up to 3 mm of tremor (DEC-049; ethics approval). The user switches autowrite on and chooses the text: typed, dictated, or a suggestion accepted with one action (DEC-049, DEC-056 (f); REQ-APP-008). The pen writes it at 2.5 and 3 mm x-height through the plan of REQ-CTRL-014, while the user sweeps along the line. The same person also writes the text by hand. Questionnaires on control and trust (users were frustrated when a tool disobeyed, LIT HAP-62).
+- **Measurands.** Legibility by blinded readers; words written in full, half letters and hand-backs (coverage and completion time, REQ-WP-011); sweep speed chosen; perceived pull; mode errors; mode logs; the pen-written label in the app and the stroke record.
+- **Predictions (SIM).**
+  - nose2 (HW1): 99.2 % of letters and every word read with up to 1 mm of tremor; 98 % of words at 2 mm; 3.7 letters per second at a 9.5 mm/s sweep. One of six test writers needed a slower sweep; the pen now sets the speed per line (DEC-039). An uneven sweep (±30 %) and a drifting hand (±1 mm) were tolerated.
+  - sim2 (DEC-049; 6 test writers, 3 mm peak at the hand, 5 and 8 Hz, a known text): 82 and 88 % of letters and 80 and 97 % of words read (after autocorrect), against 4 % of words with the ordinary pen; ink 67–83 µm from the planned letters. The nose used 6.55 of its 6.57 mm, so 3 mm is about its limit.
+  - Study S (kinematics only): an accepted word at a 3 mm x-height is written in full in 95 % of cases at ±6 mm with the hand advancing, and in 23 % at ±4 mm (`bench_protocols.md` EXP-S19).
+- **Claim type.** IA; the device writes, so no claim is made about the user's own writing. The app labels the text pen-written (DEC-049).
+- **Decision.** Pass: autowrite of accepted text stays an explicit mode, up to 3 mm (DEC-039, DEC-049). Legibility worse than the person's own writing, mode errors, or reports of the pen "taking over": revisit DEC-039 and DEC-049.
+- **Hardware.** DEC-049's hardware claim waits for DEC-046 (the nose's static load, EXP-J17) and for a page sensor that does not drift (REQ-RVJ-C05, EXP-J10).
 
 <!-- AC-TABLE:EXP-N09:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-N09-01 | — | Legibility of the autowritten sentence minus that of the same person's own handwritten sentence (blinded readers, % words correct), 2.5 and 3 mm letters, healthy adults then people with ET | ≥ 0 points | hypothesis | pass line of the nose v2 study; SIM: 99.2 % of letters and every word read with up to 1 mm tremor, 98 % of words at 2 mm (synthetic writers, docs/nose_v2.md s5.3) | DEC-039 (revisit if users do not accept or control it) |
-| AC-N09-02 | REQ-RVJ-N07 | Mode conformity: the pen drew letters only in the autowrite mode the participant switched on (logs), never pushed the hand with the nose, and no participant reports the pen 'taking over' outside the mode (questionnaire) (all) | all met | requirement | REQ-RVJ-N07; DEC-039; users were frustrated when a handheld tool disobeyed (LIT HAP-62) | DEC-039 |
-| AC-N09-03 | — | Participants who complete the sentence in autowrite without a mode error and rate it acceptable (control and trust questionnaire) | ≥ 70 % | hypothesis | DEC-039 revisit trigger (users do not accept or control it); 70 % engineering judgement, as AC-G07-01 | DEC-039 |
+| AC-N09-01 | — | Legibility of the autowritten text (accepted text: typed, dictated or an accepted suggestion; DEC-049) minus that of the same person's own handwritten version (blinded readers, % words correct), 2.5 and 3 mm letters, healthy adults then people with ET with up to 3 mm of tremor; coverage, half letters and completion time reported beside it (REQ-WP-011) | ≥ 0 points | hypothesis | pass line of the nose v2 study; SIM: 99.2 % of letters and every word read with up to 1 mm tremor, 98 % of words at 2 mm (synthetic writers, docs/nose_v2.md s5.3); DEC-049 (sim2, 6 writers, 3 mm peak at the hand): letters 82 / 88 % and words (after autocorrect) 80 / 97 % at 5 / 8 Hz, against 4 % of words with the ordinary pen (results/sim2j/autowrite.json) | DEC-039; DEC-049 (revisit if users do not accept or control pen-written text) |
+| AC-N09-02 | REQ-RVJ-N07 | Mode conformity: the pen drew letters only in the autowrite mode the participant switched on and only text the participant accepted (logs); the app and the stroke record label it pen-written; it wrote through the plan of REQ-CTRL-014 (no letter started that did not fit, no half letter); it never pushed the hand with the nose; and no participant reports the pen 'taking over' outside the mode (questionnaire) (all) | all met | requirement | REQ-RVJ-N07 (DEC-039; widened by DEC-049 and DEC-056 (f): accepted text, up to 3 mm, the pen-written label, the writing plan); users were frustrated when a handheld tool disobeyed (LIT HAP-62) | DEC-039; DEC-049 |
+| AC-N09-03 | — | Participants who complete the accepted text in autowrite without a mode error and rate it acceptable (control and trust questionnaire) | ≥ 70 % | hypothesis | DEC-039 and DEC-049 revisit triggers (users do not accept or control pen-written text); 70 % engineering judgement, as AC-G07-01 | DEC-039; DEC-049 |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-N09).
 <!-- AC-TABLE:EXP-N09:END -->
@@ -1408,19 +1428,21 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows fo
 
 ### EXP-L06: Does better prediction save writing effort in the app?
 - **Design.** 20 adults and 10 people with ET write their own notes in the app with word completion, from the old n-gram (NG0) and from the mixture (within-subject, counterbalanced). Every model is also scored offline on their notes.
+- **Continued in EXP-S14 (§22).** The same participants keep notes for 4 weeks, and study S's personalised model is scored on them as well: AC-L06-01 scores it against the 30 % line, and AC-S14-01 its gain over NG0.
 - **Measurands.** Top-1 and top-3 accuracy on their own notes (word completion after the first letters; next word before its first letter, reported separately); accepted completions per 100 words; words per minute; latency per suggestion on the phone.
 - **Predictions (CALC).**
   - The mixture (character transformer 0.3 + larger-corpus n-gram 0.7), letter two ahead, top-1: 41.0 % against 39.8 % (Tatoeba) and 40.7 % against 32.9 % (Common Voice); no gain on the app's note lines.
   - Next word before its first letter: 9–15 % top-1 and 18–28 % top-3 for every model.
   - Per next-word query on the study's CPU: 1.1 ms (larger-corpus n-gram) and 115 ms (mixture).
   - Weak suggestions cost more than they save (LIT EML-63).
+  - Study S (CALC on two journals standing in for notes): word completion after one letter reached 52–56 % top-3 with the personalised model and 46–47 % with NG0, in 2.2–3.0 ms.
 - **Claim type.** IA for note-taking in the app; no claim about handwriting.
 - **Decision.** Below 30 % top-3 on their own notes: suggestions stay off by default (DEC-043 revisit). The mixture too slow on the phone: use the n-gram alone (DEC-043).
 
 <!-- AC-TABLE:EXP-L06:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
 |---|---|---|---|---|---|---|
-| AC-L06-01 | REQ-APP-003 | Word completion after the first letters (the default suggestion, DEC-043), scored offline on each participant's own notes: top-3 accuracy, and latency per suggestion on the phone (both); next-word guessing before the first letter reported separately | both met (≥ 30 % top-3; ≤ 20 ms) | requirement | REQ-APP-003; next word before its first letter 18-28 % top-3 for every model (CALC, below 30 %); word completion not yet measured; per next-word query on the study's CPU 1.1 ms (larger-corpus n-gram) and 115 ms (mixture) (CALC) -> the mixture may miss 20 ms | DEC-043 (revisit if < 30 % top-3) |
+| AC-L06-01 | REQ-APP-003 | Word completion after the first letters (the default suggestion, DEC-043), scored offline on each participant's own notes: top-3 accuracy, and latency per suggestion on the phone (both); next-word guessing before the first letter reported separately | both met (≥ 30 % top-3; ≤ 20 ms) | requirement | REQ-APP-003; next word before its first letter 18-28 % top-3 for every model (CALC, below 30 %); word completion not yet measured; per next-word query on the study's CPU 1.1 ms (larger-corpus n-gram) and 115 ms (mixture) (CALC) -> the mixture may miss 20 ms; study S (CALC on two journals): word completion after one letter 46-47 % top-3 with NG0 and 52-56 % with the personalised model (EXP-S14), 2.2-3.0 ms at the 95th percentile (docs/spelling_and_clarity.md T4) -> completions pass | DEC-043 (revisit if < 30 % top-3) |
 | AC-L06-02 | — | Accepted completions per 100 words with the mixture, and words per minute against the old n-gram (NG0), within-subject and counterbalanced, 20 adults and 10 with ET (both) | both met (≥ 10 per 100 words; no loss in words per minute) | hypothesis | pass line of study L; weak suggestions cost more than they save (LIT EML-63: keystroke savings 50 % with advanced prediction against 18 % with basic); top-1 two letters ahead, mixture against NG0: 41.0 against 39.8 % (Tatoeba), 40.7 against 32.9 % (Common Voice), 27.1 against 28.3 % on app note lines (CALC) | DEC-043 (prediction mixture with word completion) |
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-L06).
@@ -1490,6 +1512,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 - **Predictions (CALC).** The Rev J.1 base pen is 84.3 g with its centre of mass 6 mm in front of the thumb–index web. With the 29.6 g end-cap it is 112.7 g, 10.5 mm behind the web (Rev J: 129.2 g, 16 mm behind). The Rev H pen was 75 g, and a Rev H study declined a 28 g module partly because it took the pen over 100 g (DEC-024).
 - **Claim type.** Device burden.
 - **Decision.** Accepted: the 120 g limit with the end-cap in REQ-EC-001 stands (with EXP-K03). Not accepted: a lighter end-cap (in study K's family the 28.0 g member still passed rule R-T1 in SIM) or no end-cap (DEC-038, DEC-045).
+- **Status (DEC-051).** The end-cap is out of the product. The 113 g dummy now stands only for a possible return through REQ-WP-001; the 84 g base pen is the product's.
 
 <!-- AC-TABLE:EXP-J09:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -1536,8 +1559,8 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows fo
 ## 21. Real recorded data with people: EXP-R01, R03 (study R; DEC-054, DEC-055)
 
 Study R (`docs/real_data.md`) tested the pens in simulation on real handwriting of healthy adults and real tremor of patients, composed in the model's hand. Two questions need people: what patients' own writing and tremor look like with the pen (EXP-R01), and whether the AI reader's "words you can read" match what people read (EXP-R03). The offline and bench parts (EXP-R02, R04…R07) are in `bench_protocols.md` §48.
-- **DEC-054.** Real recorded inputs and the results card are the standard test. Tremor classes are named in mm at the tip (peak = √2 × RMS of the major axis in f0 ± 2 Hz): mild 0.03–0.16 mm, moderate 0.16–0.51 mm, severe above 0.51 mm, typically 1.7 mm. These are zero-to-peak values; EXP-H01 and REQ-USR-002 use peak-to-peak, about twice as large for a steady tremor (REQ-DATA-004).
-- **DEC-055.** No legibility claim at severe tremor until a causal tracker passes on real inputs (AC-R02-01).
+- **DEC-054.** Real recorded inputs and the results card are the standard test. Tremor classes are named in mm at the tip (peak = √2 × RMS of the major axis in f0 ± 2 Hz): mild 0.03–0.16 mm, moderate 0.16–0.51 mm, severe above 0.51 mm, typically 1.7 mm. These are zero-to-peak values. EXP-H01 reports peak-to-peak, about twice as large for a steady tremor; REQ-USR-002 is now stated zero-to-peak (REQ-DATA-004).
+- **DEC-055.** No legibility claim at severe tremor until a causal tracker passes on real inputs (AC-R02-01): at least 2 more readable words out of 10 than the ordinary pen, with the 95 % interval above 0, and ≤ 25 µm of change to clean real writing as the mean over the test writers, with no writer above 50 µm.
 - **Ethics.** Both studies are covered by EXP-H01's approval and the common elements of §3. EXP-R01's recordings are EXP-H01's. Showing a participant's ink to a reading panel (EXP-R03) needs the optional consent of §3.3.
 
 ### EXP-R01: Patients' own writing and tremor at the pen tip, with ink (the recording part of EXP-H01)
@@ -1571,3 +1594,206 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-R03).
 <!-- AC-TABLE:EXP-R03:END -->
+
+---
+
+## 22. Spelling help, text prediction and clearer handwriting with people: EXP-S10…S15, S17, S18 (study S; DEC-056, DEC-057)
+
+Study S (`docs/spelling_and_clarity.md`) built the language layer of the pen and the app (DEC-056) and set how guidance keeps letters whole (DEC-057). Its numbers are CALC and SIM on real letters of held-out writers and real misspellings of held-out children, with the writers' responses ASSUMED. Nothing was measured on people or on a pen. The offline and bench parts (EXP-S16, S19, S20, S21) are in `bench_protocols.md` §49.
+- **DEC-056.** The ink record, the transcript and the pen's writing plan are kept apart (REQ-APP-005). A causal streaming recogniser reads the letters, calibrated on the user's own. Spelling help abstains when unsure and never flags names, numbers or words the writer marks (REQ-APP-007). The default cue is a tick at the next pause; a tick on the suspect letter plus a pen lift comes only once mid-word flags are reliable, and EXP-S18 decides. Suggestions and completions come only at pauses (REQ-APP-008). The pen writes only accepted text (REQ-CTRL-014; EXP-N09 in §18).
+- **DEC-057.** Guidance keeps letters whole (EXP-D08 in §16, after EXP-S16). The shape assist is not adopted, so EXP-S15 runs only after a redesign shows a gain in simulation.
+- **Safety.** App and tablet sessions need no powered pen. Sessions with the pen's LRA tick or pen lift only after the bench gates of the build used (EXP-N04 and N05 on the exact build). Inclusion and exclusion as §3.2, including the rule on active implants.
+- **Shared sessions.** EXP-S10 records inside EXP-H01/R01 sessions. EXP-S12 and S18 share sessions: the app-afterwards block and the tick-on-the-suspect-letter block are run once and scored for both. EXP-S14 continues EXP-L06 with the same participants. EXP-S17's writers come from EXP-S10 and EXP-S11 where possible.
+- **Writing and notes as data.** The consents of §3.3 apply. EXP-S11 releases a corpus, so its consent must cover release under an open licence. Training a model (EXP-S17) uses only recordings whose consent covers it (item iii).
+
+### EXP-S10: Letters read while people write on paper with the pen
+- **Relation to EXP-H01 and R01.** Not a separate visit where it can be avoided. The calibration pangram and three short notes are added to the tasks of EXP-H01/R01 sessions (about 10 min) for 20 healthy adults and 10 writers with ET or PD, with the same digitiser and pen (R11). The recognition is offline.
+- **Design.** Each writer writes the calibration pangram (one sample of every letter), then three notes. The pen's page sensor, or the digitiser under the paper, records. Offline replay through the streaming recogniser, with and without the writer's calibration letters. The recogniser's time per point is measured on a mid-range phone.
+- **Measurands.** Letters named correctly at 50 % and 100 % of each letter; the commit point; time per point on the phone.
+- **Predictions (CALC on real letters of 20 held-out UJI writers on a tablet; T1).** New writers: 82 % at the letter's end and 52 % halfway. Calibrated: 86 % and 60 %. With 1 mm of tremor: 73 % (new writer) and 76 % (calibrated) at the end. With the next-letter prior: 88 % and 74 % (uncalibrated). On another tablet and writer only 40 %, so the capture convention matters. 0.19 ms per point on the study's CPU; about 1.8 ms on a 128 MHz Cortex-M33.
+- **Claim type.** None (measurement).
+- **Decision.** Pass: the recogniser feeds spelling help and completions (DEC-056 (b)). Fail: more calibration or the language prior first, and mid-word cues stay off.
+
+<!-- AC-TABLE:EXP-S10:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S10-01 | REQ-APP-001 | Letters named correctly by the streaming recogniser, calibrated with the writer's own pangram letters, in offline replay of the notes recorded on paper (EXP-S10: 20 adults and 10 writers with ET or PD): at the letter's end and at half the letter (both) | both met (≥ 90 % at the end; ≥ 70 % at half) | hypothesis | pass line of study S; CALC on real letters of 20 held-out UJI writers on a tablet: calibrated 86 % at the end and 60 % halfway, new writers 82 % and 52 %, 73-76 % at the end with 1 mm tremor; with the next-letter prior 88 % and 74 % (uncalibrated) (docs/spelling_and_clarity.md T1; results/ai3/ai3.json) -> predicted to FAIL both lines unless writing on paper reads better than tablet letters | DEC-056 (b) (the recogniser feeds spelling help and completions); mid-word cues |
+| AC-S10-02 | — | Recogniser time per pen sample on a mid-range phone (the app's build) | ≤ 5 ms | hypothesis | pass line of study S; 0.19 ms per point on the study's CPU (one thread) and about 1.8 ms on a 128 MHz Cortex-M33 (int8, CALC; docs/spelling_and_clarity.md T1) | DEC-056 (b) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-S10).
+<!-- AC-TABLE:EXP-S10:END -->
+
+### EXP-S11: An English corpus of dyslexic misspellings in context, with consent
+- **Design.** 30 adults and 30 children with a dyslexia assessment write free text and dictation by hand. Two people transcribe. Every misspelling is tagged with its target (Mitton's format). The corpus is released under an open licence. Recruitment can share the dyslexia cohorts of EXP-W05, S12 and S18.
+- **Measurands.** Errors per word; the shares of non-word, real-word and word-boundary errors; the position of the first wrong letter.
+- **Predictions.** No open English dyslexic corpus with consent was found. In Holbrook's collection of 1960s schoolchildren (used by study S with the Birkbeck lists; neither states a licence), the test children misspelled 5–23 % of their words; the first wrong letter was typically letter 3, and 17 % of errors showed only at the word's end (CALC, T2).
+- **Claim type.** None (data).
+- **Decision.** Released: it replaces Birkbeck and Holbrook for tuning and testing the checker (rule S1). Not released: the checker stays on sources without a stated licence, used for evaluation only.
+
+<!-- AC-TABLE:EXP-S11:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S11-01 | — | Corpus of handwritten free text and dictation from 30 adults and 30 children with a dyslexia assessment: words transcribed by two people, every misspelling tagged with its target (Mitton's format), and consent for release under an open licence (all) | all met (≥ 20 000 words; ≥ 2 000 tagged errors; release consented) | hypothesis | pass line of study S; no open English dyslexic corpus with consent was found, and the Birkbeck lists and Holbrook's 1960s schoolchildren state no licence (docs/spelling_and_clarity.md, assumptions); Holbrook's test children misspelled 5-23 % of their words (CALC, T2) | the checker's tuning and test data (rule S1); REQ-DATA-006 for the release |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-S11).
+<!-- AC-TABLE:EXP-S11:END -->
+
+### EXP-S12: Does a tick while writing help people with dyslexia fix misspellings, and does it annoy them?
+- **Design.** Within subject, counterbalanced: no cue; a tick on the suspect letter; a tick plus a pen lift when very sure; the app afterwards. Free writing and dictation with the pen. 20 adults with dyslexia and 20 controls. Shares sessions with EXP-S18.
+- **Measurands.** Misspellings left on paper per 100 words; writing time; false alarms and how well they are tolerated (NASA-TLX, a sense-of-agency questionnaire); the share of ticks noticed; wrong-letter fragments after a lift; coverage and missing strokes when the pen lifts (REQ-WP-011).
+- **Predictions (SIM on 11 test children's real errors; responses ASSUMED; T3).** With the letters known: the tick on the suspect letter fixed 2.6 of 10 misspellings on paper (1.4–3.4) at +16 % time; the tick plus lift 3.4 (2.4–4.1) at +15 %; 2.3 false cues per 100 correct words; a wrong-letter fragment about once per 100 words. When the pen reads the letters itself, mid-word cues fire about 40 times per 100 correct words, so DEC-056 (d) keeps them off until mid-word flags use the recognition-aware score.
+- **Claim type.** IA (spelling on paper while the pen cues); no LI claim.
+- **Decision.** Pass: the mid-word tick may become an option (with EXP-S18; DEC-056 (d)). Fail: the cue stays at the next pause.
+
+<!-- AC-TABLE:EXP-S12:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S12-01 | — | Misspellings left on paper per 100 words with the tick on the suspect letter, relative to no cue (within subject, 20 adults with dyslexia, free writing and dictation with the pen), with the writing time and the share of ticks noticed (all) | all met (≥ 30 % fewer; time no more than 20 % longer; ≥ 85 % noticed) | hypothesis | pass line of study S; SIM with the letters known (11 test children's real errors, writer responses ASSUMED): the tick on the suspect letter fixed 2.6 of 10 misspellings (1.4-3.4) at +16 % time; with the pen's own reading 2.1-2.3 of 10 at about 40 false cues per 100 correct words (docs/spelling_and_clarity.md T3) -> predicted to FAIL the 30 % | DEC-056 (d) (mid-word cues only once reliable); with EXP-S18 |
+| AC-S12-02 | REQ-APP-007 | Spelling help in the EXP-S12 sessions (the pen's own reading, the calibrated score): false alarms per 100 correct words, and names, numbers and words the writer marked that were flagged (both) | both met (≤ 2 per 100; none flagged) | requirement | REQ-APP-007 (DEC-056 (c)); SIM: word-level 1.7 (new writer) and 2.3 (calibrated) false alarms per 100 correct words with the post-hoc W5 score; mid-word flags with raw recognised letters about 40 per 100 (docs/spelling_and_clarity.md T3, T8) -> the mid-word arms fail unless they use the recognition-aware score | DEC-056; spelling help on by default |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-S12).
+<!-- AC-TABLE:EXP-S12:END -->
+
+### EXP-S13: Is a tick felt while writing, and how small can it be?
+- **Design.** An LRA in a pen body. A two-alternative forced choice and a yes/no detection task, while writing at 3 cm/s and at rest. 5 pulse lengths and 3 amplitudes. Adults, including adults with dyslexia (n from a pilot, §11 rule).
+- **Measurands.** Detection rate; reaction time; the smallest pulse detected in 95 % of trials while writing; ink jitter during the tick.
+- **Predictions.** None measured for a tick in a pen while writing. Study S's cue simulation assumed that writers notice it.
+- **Claim type.** None (measurement).
+- **Decision.** The pen uses the smallest tick detected in ≥ 95 % of trials while writing. None reaches it: cues stay on the phone.
+
+<!-- AC-TABLE:EXP-S13:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S13-01 | — | Detection of an LRA tick in a pen body while writing at 3 cm/s (yes/no task) at the chosen pulse, the smallest of 5 pulse lengths and 3 amplitudes that reaches the line (2AFC and yes/no, while writing and at rest) | ≥ 95 % | hypothesis | pass line of study S; no measurement of a tick in a pen while writing; the cue simulation assumed that writers notice it (rule S4; docs/spelling_and_clarity.md T3) | the pen's physical cue (DEC-056 (d)); REQ-APP-008 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-S13).
+<!-- AC-TABLE:EXP-S13:END -->
+
+### EXP-S14: Personal text prediction on the user's own notes
+- **Relation to EXP-L06 (§19).** The same participants and notes where consent allows: EXP-L06's session is followed by 4 weeks of notes in the app, and every model is replayed offline on them. REQ-APP-003's 30 % line is AC-L06-01, which scores the personalised model too; this study adds its gain over NG0.
+- **Design.** 20 users keep notes in the app for 4 weeks. Offline replay of NG0, NG1x and the personalised model on their own notes, the model adapting as they write.
+- **Measurands.** Top-3 accuracy after 0, 1 and 2 letters; letters saved; latency.
+- **Predictions (CALC on two public-domain journals standing in for notes; T4).** After one letter, top 3: personalised 56 % and 52 %, NG0 46 % and 47 % (+10 and +5 points). The next word before its first letter: 22–24 %. 2.2–3.0 ms at the 95th percentile on the study's CPU. Letters saved from a top-3 list: 46–50 %.
+- **Claim type.** IA (the app); no handwriting claim.
+- **Decision.** Pass: the personalised model is the default for completions (DEC-056 (e)). Fail: NG1x without personalisation.
+
+<!-- AC-TABLE:EXP-S14:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S14-01 | REQ-APP-003 | Top-3 accuracy of word completion after one letter on each user's own notes over 4 weeks (offline replay, the model adapting as the user writes): the personalised model minus NG0 | ≥ 5 points | hypothesis | pass line of study S; CALC on two public-domain journals standing in for notes: 56 against 46 % and 52 against 47 % (+10 and +5 points; docs/spelling_and_clarity.md T4) -> marginal on one; the ≥ 30 % line of REQ-APP-003 is AC-L06-01, which scores this model too | DEC-056 (e); the personalised model as the default for completions |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-S14).
+<!-- AC-TABLE:EXP-S14:END -->
+
+### EXP-S15: Shape assist with real writers (only after a redesign shows a simulated gain)
+- **Status.** DEC-057 does not adopt the shape assist: within safe limits it changed the letters read by less than one point. This study runs only after a redesign shows a gain in simulation (for example on children's writing, EXP-S21).
+- **Design.** Writers with ET (1–2 mm tremor) and writers with poor handwriting write words with the pen, the assist off and on in blinded order. A panel of 5 readers transcribes the ink.
+- **Measurands.** Letters read by people; RMS nose motion on clean writing; sense of agency; after-effect with the assist off.
+- **Predictions (SIM on real letters of 20 new writers in HW1; T6).** Letters read without and with the assist: 41.4 and 41.9 % at 1 mm and 8 Hz; 47.0 and 47.3 % with real ET tremor. Clean writing moved 23 µm on average, 121 µm in the worst word.
+- **Claim type.** IA; the after-effect block is exploratory (§1, R3).
+- **Decision.** Pass: the shape assist may be offered (DEC-057 revisit). Fail: it stays out.
+
+<!-- AC-TABLE:EXP-S15:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S15-01 | — | Shape assist on and off in blinded order, writers with ET (1-2 mm tremor): letters read by a panel of 5 readers; RMS nose motion on clean writing; sense of agency (all) | all met (≥ 10 % more letters read; ≤ 25 µm on clean writing; no loss of agency) | hypothesis | pass line of study S; SIM on real letters of 20 new writers in HW1: letters read 41.4 -> 41.9 % at 1 mm, 8 Hz and 47.0 -> 47.3 % with real ET tremor; clean writing moved 23 µm on average and 121 µm in the worst word (docs/spelling_and_clarity.md T6) -> predicted to FAIL; runs only after a redesign shows a simulated gain (DEC-057) | DEC-057 (the shape assist stays out unless this passes) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-S15).
+<!-- AC-TABLE:EXP-S15:END -->
+
+### EXP-S17: Word recognition on the pen's own recordings, print and joined-up
+- **Design.** 30 writers (10 with ET or PD, 10 with dyslexia) write two sessions a week apart on paper with the pen (page sensor and IMU). Two people transcribe literally. A causal CTC recogniser is trained on 20 writers and tested on 10 held-out writers and on the held-out sessions of the calibrated writers. Writers come from EXP-S10 and S11 where possible.
+- **Relation to EXP-C01.** EXP-C01 tests the app's default recogniser on EXP-H01/H06 ink (AC-C01-01: CER ≤ 8 %). This study tests the pen's own streaming recogniser, with sessions held out as well as writers (REQ-APP-006).
+- **Measurands.** CER and WER with and without the language model; latency; segmentation errors; print and joined-up separately.
+- **Predictions (SIM on real letters of 20 held-out UJI writers, words assembled with ASSUMED print spacing; T7).** With the language model: CER 9.1 % and WER 19.8 % (writer-disjoint), 9.2 % and 20.2 % (session-disjoint). Without it: CER 20–23 %, WER 51–55 %. With tight spacing: 10.5 % and 22.5 %. Joined-up writing not tested.
+- **Claim type.** None (measurement).
+- **Decision.** The report comes before any spelling cue is on by default (REQ-APP-006). More than 20 % of words read wrong: DEC-056 is revisited; the cue stays at the pause, and suggestions come only on request.
+
+<!-- AC-TABLE:EXP-S17:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S17-01 | REQ-APP-006 | Recognition report before any spelling cue is on by default (review): CER and WER of the pen's streaming recogniser on held-out writers and on held-out sessions of the calibrated writers, each with and without the language model, print and joined-up separately | conforms | requirement | REQ-APP-006 (DEC-056; the review's G7); EXP-C01 reports the app's default recogniser (AC-C01-01) | spelling cues on by default (DEC-056) |
+| AC-S17-02 | — | Word error rate of the causal recogniser, calibrated, with the language model, on print, on held-out writers and on held-out sessions of the pen's own recordings | ≤ 20 % | derived | DEC-056's revisit trigger (EXP-S17 reads more than 20 % of words wrong), so derived; study S proposed 25 % as the pass line; SIM on real UJI letters with ASSUMED print spacing: 19.8 % (writer-disjoint) and 20.2 % (session-disjoint), 22.5 % with tight spacing (docs/spelling_and_clarity.md T7) -> marginal | DEC-056 |
+| AC-S17-03 | REQ-APP-001 | Character error rate of the same recogniser, calibrated, with the language model, on print, held-out writers and sessions | ≤ 8 % | hypothesis | pass line of study S, the same 8 % as AC-C01-01 for the app's default recogniser; SIM on real UJI letters: 9.1 % (writer-disjoint) and 9.2 % (session-disjoint), 10.5 % with tight spacing (docs/spelling_and_clarity.md T7) -> predicted to FAIL narrowly | DEC-056 (b); comparison with the app's default recogniser (DEC-013) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-S17).
+<!-- AC-TABLE:EXP-S17:END -->
+
+### EXP-S18: Suggestions at pauses or cues while writing: accuracy against fluency
+- **Relation to EXP-N09, N10 and S12.** EXP-S18, N09 and N10 are the tests of DEC-049's condition that users accept and control pen-written text: N09 with autowrite of accepted text, N10 with delayed ink, and S18 with suggestions and cues on the writer's own writing. They use the same control and trust questionnaire and the same mode logs. A suggestion accepted here is the kind of text that N09's autowrite writes (DEC-056 (f)); in S18 the writer writes it by hand. S18 shares sessions with EXP-S12.
+- **Design.** Within subject, 24 adults with dyslexia, counterbalanced: the app afterwards; a tick at the next pause with up to 3 suggestions (read aloud if wanted); a tick on the suspect letter (with the pen lift when very sure, as EXP-S12); opt-in automatic correction. Dictation and free writing.
+- **Measurands.** Misspellings left on paper; suggestion lists read per 100 words; pauses and writing speed; harmful edits (correct words made wrong); NASA-TLX; preference; the app's and the pen's logs (the three outputs, REQ-APP-005).
+- **Predictions (SIM on 11 test children's real errors; responses ASSUMED; T3, T8).** The tick at the next pause fixed 3.0 of 10 misspellings on paper (1.6–4.0), with 6.4 suggestion lists read per 100 words, +17 % writing time and 0.15 correct words made wrong per 100. The app afterwards fixes none on paper (+5 %). The tick plus lift fixed 3.4 of 10, with 7.7 cues felt mid-word per 100 words. The opt-in automatic correction changed no correct word and fixed almost nothing at today's reading accuracy.
+- **Claim type.** IA (spelling while writing); no LI claim.
+- **Decision.** Pause offers pass (AC-S18-01): they stay the default cue (DEC-056 (d)). Mid-word cues better without costing flow (AC-S18-02): they become an option. Pause offers fail: spelling help stays in the app afterwards.
+
+<!-- AC-TABLE:EXP-S18:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-S18-01 | REQ-APP-008 | Tick at the next pause with up to 3 suggestions against the app afterwards (within subject, 24 adults with dyslexia, dictation and free writing): misspellings left on paper per 100 words, writing speed, and correct words made wrong per 100 words (all) | all met (fewer left; no more than 10 % slower; ≤ 0.5 harmful edits per 100 words) | hypothesis | pass line of study S; SIM (11 test children's real errors, responses ASSUMED): the pause offer fixed 3.0 of 10 misspellings on paper (1.6-4.0) and the app afterwards none, at +17 % against +5 % writing time (about 11 % slower), with 0.15 correct words made wrong per 100 (docs/spelling_and_clarity.md T3) -> the speed line is marginal | DEC-056 (d) (the default cue); REQ-APP-008 |
+| AC-S18-02 | — | Tick on the suspect letter (with the pen lift when very sure) against the tick at the next pause, same sessions: misspellings left on paper per 100 words, writing speed, and workload (NASA-TLX) (all) | all met (fewer left; no more than 10 % slower; workload no higher) | hypothesis | DEC-056 (d): mid-word cues only once mid-word flags are reliable, and EXP-S18 decides; the 10 % is AC-S18-01's line (engineering judgement); SIM with the letters known: tick plus lift 3.4 of 10 fixed at +15 % against 3.0 at +17 %, with 7.7 cues felt mid-word per 100 words; with raw recognised letters mid-word cues fire about 40 times per 100 correct words (docs/spelling_and_clarity.md T3) | DEC-056 (d) (tick plus lift as an option) |
+| AC-S18-03 | REQ-APP-007 | Opt-in automatic correction in EXP-S18: correct words changed per 100 correct words (every change logged and reversible) | ≤ 0.5 | requirement | REQ-APP-007 (DEC-056 (c)); SIM with the post-hoc W5 score: the automatic mode changed no correct word and fixed almost nothing (0.4 errors per 100 with the new-writer recogniser, 0 calibrated; docs/spelling_and_clarity.md T8) | the opt-in automatic mode (DEC-056) |
+| AC-S18-04 | REQ-APP-005 | Logs of every EXP-S18 session and the app build (review and tests): the ink record is append-only and its hash chain verifies; every transcript change (accepted suggestion, automatic correction, edit) is logged and can be undone; no writing plan exists for text the participant did not accept (all) | all met | requirement | REQ-APP-005 (DEC-056 (a), (f)); ai3/tests/test_layers.py checks each rule on the specification (test) | DEC-056 (the three outputs) |
+| AC-S18-05 | REQ-APP-008 | App logs of the EXP-S18 sessions: suggestions and completions offered only at natural pauses (none while a letter was being written), at most 3 at a time, each accepted with one action (tap, key or pen gesture) (all) | all met | requirement | REQ-APP-008 (DEC-056 (d), (e)); the prototype offers completions at pauses (28 of 28 smoke-test checks) | DEC-056 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-S18).
+<!-- AC-TABLE:EXP-S18:END -->
+
+---
+
+## 23. Shifting the whole pen with people: EXP-W10, W12, W16 (study W; DEC-051…DEC-053)
+
+Study W (`docs/whole_pen_shift.md`) found in simulation that shifting the whole pen did not beat the moving nose (DEC-051), and that the tremor estimate matters far more than added mechanics (DEC-052). Three questions need people: how large tremor at the ink is while writing (EXP-W10), whether people can hold and write with the collar (EXP-W12), and what "write only when in reach" costs them (EXP-W16). The bench and offline parts (EXP-W11, W13, W14, W15, W17) are in `bench_protocols.md` §50.
+- **Convention.** Tremor at the ink is given zero-to-peak along the main axis, as DEC-054 (REQ-DATA-004).
+- **DEC-053.** Any gated mode is reported with its coverage, missing strokes and completion time (REQ-WP-011), and any added device against the same pen with it locked (REQ-WP-001).
+- **Safety.** EXP-W10 uses a passive pen (EXP-H01's). EXP-W12 uses the collar mock-up only after its bench checks (EXP-W11: current, stops and the unpowered latch). EXP-W16 uses the Rev J nose, so it runs only after EXP-N04, N05 and N08 on the exact build, and after EXP-J17 settles the nose's static load (DEC-046). Inclusion and exclusion as §3.2, including the rule on active implants.
+- **Ethics.** EXP-W10's recordings are EXP-H01/R01's where the same people take part, under the same approval and the consents of §3.3; its added groups and tasks need an amendment.
+
+### EXP-W10: How large is tremor at the ink while writing, and does anyone exceed the nose's reach?
+- **Relation to EXP-H01 and R01 (§4, §21).** Not separate visits where they can be avoided. The ET and PD participants of EXP-H01/R01 are recorded with the same pen, digitiser and IMU. EXP-W10 adds a group with PD re-emergent tremor, the spirals, and writing with the hand resting and in free air, and brings each population to at least 20.
+- **Design.** Writers with ET, with PD action tremor and with PD re-emergent tremor (≥ 20 each; a reviewed protocol and consent). They write the study's sentence and spirals on a digitising tablet with an ink pen and a 1 kHz IMU on the pen, with the hand resting and in free air.
+- **Measurands.** Ink amplitude along the main axis (peak, 2.5–20 Hz; also in DEC-054's convention); frequency; axis; the share of time with a tremor line.
+- **Predictions.** Recorded PD tip tremor while drawing spirals is mostly 0.1–0.3 mm; severe (the top 10 %) from 0.51 mm, typically 1.72 mm; the largest UCI test patient 7.1 mm (CALC on recorded data, study R). NewHandPD's pen accelerations show a tremor line in 4 of 26 patients while drawing, about 0.3–1.4 mm (study W). Study W's 5–10 mm classes are ASSUMPTION built on clinical scales (ET: 8–17 mm peak on a tablet at a rating of 2.5–3, LIT PDT-12). No open recording of ET at the pen tip exists.
+- **Claim type.** None (measurement).
+- **Decision.** Nobody beyond about ±6 mm: no whole-pen travel is needed, and DEC-051 stands. Writers beyond it: DEC-051 is revisited, with the collar (EXP-W11) or a larger stage.
+
+<!-- AC-TABLE:EXP-W10:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W10-01 | — | Writers per population (ET, PD with action tremor, PD with re-emergent tremor; ≥ 20 each) whose tremor at the ink while writing exceeds the nose's reach: peak along the main axis (2.5-20 Hz; also in DEC-054's convention) above 6 mm | none | hypothesis | DEC-051's premise and revisit trigger (writers beyond the nose's reach, about ±6 mm; REQ-RVJ-N01 guarantees 6.0 mm); study R (CALC on recorded data): PD tip tremor while drawing spirals mostly 0.1-0.3 mm, severe from 0.51 mm (typically 1.72 mm), but the largest UCI test patient 7.1 mm -> at risk; study W's 5-10 mm classes are ASSUMPTION from clinical scales (ET FTM 2.5-3: 8-17 mm peak on a tablet, LIT PDT-12) | DEC-051 (revisit: whole-pen travel needed) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-W10).
+<!-- AC-TABLE:EXP-W10:END -->
+
+### EXP-W12: Can people hold and write with the collar?
+- **Design.** Tremor-free adults first (n from a pilot, §11 rule). The collar mock-up of EXP-W11, with the collar locked and active (equal mass), in random order. Copying and free writing, 10 min each.
+- **Measurands.** Comfort; the felt reaction (grip-force change, force-sensing pads on the collar); noise at 30 cm; where the web rests (video, contact sensing on the barrel); writing speed.
+- **Predictions (SIM, CALC).** Grip-force change 0.03–0.38 N rms (SIM). Noise not estimated. The web rests on a saddle reaching z 97 mm, and the barrel clears the sleeve by 0.72–1.00 mm (CALC on the CAD). The latch that centres the unpowered inner pen is not designed.
+- **Claim type.** Device burden.
+- **Decision.** Accepted, with the web on the saddle: the collar may go to people with tremor if it ever passes REQ-WP-001 on the bench (EXP-W11). Not: redesign the saddle or the sleeve.
+
+<!-- AC-TABLE:EXP-W12:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W12-01 | REQ-WP-009 | Collar active against locked, tremor-free adults writing: grip-force change (force-sensing pads on the collar), sound level at 30 cm, and the latch centring the inner pen with the power off (all) | all met (≤ 0.5 N rms; ≤ 35 dBA; conforms) | requirement | REQ-WP-009 (DEC-051; the 35 dBA is an ASSUMPTION target); SIM grip-force change 0.03-0.38 N rms; noise not estimated; no latch designed (docs/whole_pen_shift.md open issue 6) | DEC-051; the collar with people with tremor |
+| AC-W12-02 | REQ-WP-005 | Participants whose thumb-index web rests on the collar's saddle and never touches the swinging barrel while writing with the collar active (contact sensing on the barrel, video) | all participants | derived | REQ-WP-005 made measurable with people, so derived: with the web on the collar the ink moves 0.78-1.21 x the ideal lever, with the web on the barrel 0.58-1.23 x (CALC, docs/whole_pen_shift.md s3d) | DEC-051 (the saddle design) |
+| AC-W12-03 | — | Participants who rate the collar pen acceptable for a writing session, collar active and locked (comfort and preference questionnaire) | ≥ 70 % | hypothesis | engineering judgement, as AC-G07-01 and AC-K03-04; no prediction | DEC-051 (the collar with people with tremor) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-W12).
+<!-- AC-TABLE:EXP-W12:END -->
+
+### EXP-W16: What does "write only when in reach" cost people?
+- **Design.** People with tremor (n from a pilot, §11 rule) write with the Rev J pen, the gate on and off, in random order; copying. The gate lifts the ball while the estimated tremor exceeds the nose's reach minus a margin (0.3 mm), so ink is laid only where the nose can cancel.
+- **Measurands.** Legibility (blinded literal transcription); coverage (the share of the intended ink laid); missing strokes (strokes less than half inked); completion time; preference.
+- **Predictions (SIM at 8 mm; `docs/whole_pen_shift.md` §3f).** The gate lowered the tremor in the ink laid (ET: 2.9 against 3.2 mm), but laid 55 % of the intended ink against 80 % (ET) and 42 % against 76 % (PD). 20 and 27 of 42 strokes were less than half inked, against 1 and 0 with the nose alone. Re-tracing the lost ink would add 15–18 s to a 15.7 s sentence. No word more was read. At study R's real tremor sizes the gate would rarely act.
+- **Claim type.** IA; device burden.
+- **Decision.** Pass (AC-W16-02): the gate may be offered as an option, always reported with its coverage. Fail, as predicted: the gate stays off, and its cost is reported as REQ-WP-011 asks.
+
+<!-- AC-TABLE:EXP-W16:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-W16-01 | REQ-WP-011 | Every result of a gated or ink-only-when-correct mode (review): EXP-W16's gate; DEC-049's autowrite of accepted text (EXP-N08, N09, S19); the spelling cue's pen lift (EXP-S12, S18): coverage (share of the intended ink laid), missing strokes (strokes less than half inked) and completion time reported beside the error | conforms | requirement | REQ-WP-011 (DEC-053); study W's results cards carry coverage, and its stroke metrics come from the saved records (docs/whole_pen_shift.md s3f) | DEC-053; every claim for a gated mode |
+| AC-W16-02 | — | Words read by blinded readers (literal transcription) with the gate on minus off, the same writers and texts (people with tremor, the Rev J pen), and coverage with the gate on against off (both) | both met (more words read; coverage no more than 5 points lower) | hypothesis | the 5 points of REQ-WP-001's coverage bound applied to a mode (engineering judgement); SIM at 8 mm: coverage 55 against 80 % (ET) and 42 against 76 % (PD), 20 and 27 of 42 strokes less than half inked, no word more read (docs/whole_pen_shift.md s3f) -> predicted to FAIL | the gate as an option (DEC-053) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-W16).
+<!-- AC-TABLE:EXP-W16:END -->
