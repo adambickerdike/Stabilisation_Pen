@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "SIMULATION (test seeds, after the rules and the tuning were fixed)",
-    "generated_utc": "2026-09-28T23:12:25+00:00",
-    "git_revision": "3f005eb",
+    "generated_utc": "2026-09-29T11:16:34+00:00",
+    "git_revision": "e0976ec-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "command": "run_study.py --quick",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": {
@@ -28,8 +28,8 @@
     "tuning": "Feed-forward gain chosen on tuning seeds 300-303 (r_rot 0.5, 6-12 Hz, 1-2 mm) from {0.5, 0.75, 1.0}: the largest mean further reduction at 8-12 Hz; ties within 0.01 go to the lower gain."
   },
   "rules_fixed_before_test": true,
-  "tune_generated_utc": "2026-09-28T23:12:13+00:00",
-  "test_started_utc": "2026-09-28T23:12:25+00:00",
+  "tune_generated_utc": "2026-09-29T11:16:27+00:00",
+  "test_started_utc": "2026-09-29T11:16:34+00:00",
   "rows": {
     "lrm": [
       {
@@ -65,16 +65,16 @@
         "nose": 0.6788388618509061,
         "dev_passive": 0.9164312529017867,
         "nose+passive": 0.525368849413985,
-        "dev": 0.7400702172861012,
-        "nose+dev": 0.48364442385011425,
-        "P_act_W": 0.01818846805163813,
+        "dev": 0.7377767658885287,
+        "nose+dev": 0.4833655868206287,
+        "P_act_W": 0.0182473803663259,
         "stroke_pk_mm": [
-          2.3667795006492716,
-          2.502934925968599
+          2.3784910924944755,
+          2.4977555856554825
         ],
         "F_rms_N": [
-          0.04181992787740163,
-          0.04502917141803754
+          0.04261113228599518,
+          0.04468490341672252
         ],
         "nose_sat_frac": 0.0
       }
@@ -88,22 +88,22 @@
         "r_rot": 0.5,
         "unmod0_um": 1012.9039770611706,
         "nose": 0.9702181182152612,
-        "dev_passive": 0.9568222360939376,
-        "nose+passive": 0.9457690057047312,
-        "dev": 0.9294554763969196,
-        "nose+dev": 0.9287568021194627,
-        "P_act_W": 0.012126663986714461,
+        "dev_passive": 0.9753118336970765,
+        "nose+passive": 0.9683136237390654,
+        "dev": 0.9261337128916909,
+        "nose+dev": 0.9128712045697319,
+        "P_act_W": 0.014839020278760256,
         "gimbal_pk_rad": [
-          0.06315046222104612,
-          0.03388271505854022
+          0.5574572108687569,
+          0.25645442733637414
         ],
         "torque_rms_mNm": [
-          2.380067122424948,
-          1.5720946519289685
+          3.9908528874642397,
+          2.5403902119561135
         ],
         "rate_rms_rad_s": [
-          1.221714016924254,
-          0.8068729123718835
+          10.902979614297667,
+          6.860732244244181
         ],
         "nose_sat_frac": 0.0
       },
@@ -115,22 +115,22 @@
         "r_rot": 0.5,
         "unmod0_um": 1081.6252446972555,
         "nose": 0.6788388618509061,
-        "dev_passive": 0.9808331562313106,
-        "nose+passive": 0.5526696837949681,
-        "dev": 0.7439706251397672,
-        "nose+dev": 0.5024961115312752,
-        "P_act_W": 0.013476145774842352,
+        "dev_passive": 0.8785529725410568,
+        "nose+passive": 0.5300796890838106,
+        "dev": 0.7168241393791615,
+        "nose+dev": 0.4945320911122695,
+        "P_act_W": 0.01925063600402396,
         "gimbal_pk_rad": [
-          0.19045967509476042,
-          0.1135471921617252
+          0.7860529944218507,
+          0.7768638205266684
         ],
         "torque_rms_mNm": [
-          8.126394924388359,
-          4.261181217189335
+          6.0618145397518175,
+          3.0143218360197723
         ],
         "rate_rms_rad_s": [
-          4.178672251279894,
-          2.188724379677297
+          18.108669216772523,
+          9.665869180365926
         ],
         "nose_sat_frac": 0.0
       }
@@ -168,8 +168,8 @@
         "r_rot": 0.5,
         "unmod0_um": 1012.9039770611706,
         "nose": 0.9702181182152612,
-        "dev_passive": 0.9568162206572253,
-        "nose+passive": 0.9457460796464562
+        "dev_passive": 0.9753184785736488,
+        "nose+passive": 0.9682996932361679
       },
       {
         "seed": 200,
@@ -179,8 +179,8 @@
         "r_rot": 0.5,
         "unmod0_um": 1081.6252446972555,
         "nose": 0.6788388618509061,
-        "dev_passive": 0.9814383347546517,
-        "nose+passive": 0.5529215452790229
+        "dev_passive": 0.879076388468147,
+        "nose+passive": 0.5302802525906928
       }
     ]
   },
@@ -189,11 +189,17 @@
     "lrm": {
       "lognormal_um": [
         11.163287911795987
+      ],
+      "glyph_um": [
+        4.8400789302773095
       ]
     },
     "cmg": {
       "lognormal_um": [
-        12.16488792990464
+        16.67748083493854
+      ],
+      "glyph_um": [
+        8.184538060148824
       ]
     }
   },
@@ -204,7 +210,7 @@
       "kind": "rm"
     },
     "cmg": {
-      "label": "end-cap CMG DG1 (0515B), H 1.95 mN m s per rotor, 39.7 g",
+      "label": "end-cap CMG DG2 (0308B), H 0.19 mN m s per rotor, 32.9 g",
       "kind": "cmg"
     },
     "weight_lrm": {
@@ -212,7 +218,7 @@
       "kind": "mass"
     },
     "weight_cmg": {
-      "label": "passive weight 39.7 g at 152 mm",
+      "label": "passive weight 32.9 g at 152 mm",
       "kind": "mass"
     }
   }

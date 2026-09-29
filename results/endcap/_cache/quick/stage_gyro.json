@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "SIMULATION (passive devices: nothing tuned)",
-    "generated_utc": "2026-09-28T23:12:41+00:00",
-    "git_revision": "3f005eb",
+    "generated_utc": "2026-09-29T11:16:46+00:00",
+    "git_revision": "91a2fc9-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "command": "run_study.py --quick",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": {
@@ -18,8 +18,8 @@
     "script": "endcap/run_study.py",
     "doc": "docs/inertial_endcap.md"
   },
-  "H_design_Nms": 0.001894174223556647,
-  "mass_g": 31.50593725748347,
+  "H_design_Nms": 0.002426732126302737,
+  "mass_g": 32.15812713889589,
   "rows": {
     "pg_design": [
       {
@@ -30,9 +30,9 @@
         "r_rot": 0.5,
         "unmod0_um": 1105.6254023633976,
         "nose": 0.7759504667101618,
-        "dev_passive": 0.8020046599099927,
-        "nose+passive": 0.8136342891610656,
-        "H": 0.001894174223556647
+        "dev_passive": 0.7988682387662527,
+        "nose+passive": 0.8112392208195639,
+        "H": 0.002426732126302737
       }
     ],
     "pg_design_nospin": [
@@ -44,8 +44,8 @@
         "r_rot": 0.5,
         "unmod0_um": 1105.6254023633976,
         "nose": 0.7759504667101618,
-        "dev_passive": 0.7890507990881204,
-        "nose+passive": 0.7992283995480954,
+        "dev_passive": 0.7816745029786895,
+        "nose+passive": 0.7924468046376197,
         "H": 0.0
       }
     ],
@@ -58,9 +58,9 @@
         "r_rot": 0.5,
         "unmod0_um": 1105.6254023633976,
         "nose": 0.7759504667101618,
-        "dev_passive": 0.9950821224332209,
-        "nose+passive": 0.7709301086510731,
-        "H": 0.001894174223556647
+        "dev_passive": 0.9934622672934345,
+        "nose+passive": 0.7692078110234567,
+        "H": 0.002426732126302737
       }
     ],
     "massless_H3x": [
@@ -72,9 +72,9 @@
         "r_rot": 0.5,
         "unmod0_um": 1105.6254023633976,
         "nose": 0.7759504667101618,
-        "dev_passive": 0.982115729286979,
-        "nose+passive": 0.7576805834571543,
-        "H": 0.00568252267066994
+        "dev_passive": 0.9762701453761313,
+        "nose+passive": 0.7510855567432957,
+        "H": 0.007280196378908211
       }
     ],
     "massless_H10x": [
@@ -86,9 +86,9 @@
         "r_rot": 0.5,
         "unmod0_um": 1105.6254023633976,
         "nose": 0.7759504667101618,
-        "dev_passive": 0.9508172103665062,
-        "nose+passive": 0.7170078837897962,
-        "H": 0.01894174223556647
+        "dev_passive": 0.946749684991682,
+        "nose+passive": 0.7088993002730944,
+        "H": 0.02426732126302737
       }
     ],
     "massless_H30x": [
@@ -100,9 +100,9 @@
         "r_rot": 0.5,
         "unmod0_um": 1105.6254023633976,
         "nose": 0.7759504667101618,
-        "dev_passive": 1.007699756886819,
-        "nose+passive": 0.7269805208435264,
-        "H": 0.05682522670669941
+        "dev_passive": 1.0182079064580616,
+        "nose+passive": 0.7330023981197872,
+        "H": 0.0728019637890821
       }
     ]
   }

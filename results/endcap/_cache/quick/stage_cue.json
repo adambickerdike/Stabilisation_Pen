@@ -1,11 +1,11 @@
 {
   "meta": {
     "evidence_status": "SIMULATION + CALCULATION + LITERATURE",
-    "generated_utc": "2026-09-28T23:12:47+00:00",
-    "git_revision": "3f005eb",
+    "generated_utc": "2026-09-29T11:16:51+00:00",
+    "git_revision": "91a2fc9-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "command": "run_study.py --quick",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,
@@ -79,16 +79,16 @@
       "effect_on_movement": "congruent cue raised peak wrist velocity, Cohen d 0.22 (HAP-85); agency fell",
       "people_with_tremor": "near chance on sides with tremor or hemiplegia in many participants (PDT-39, preprint)",
       "cost_in_pen": "5-11 g actuator (HAP-86, AMF-124); or the reaction mass itself; power 0.1-1 W while on (CALC)",
-      "caveats": "shakes the ink (see SIM cue cases); must be attached firmly (HAP-84 on WAVES); adaptation over tens of seconds reported (not opened); unpleasant in long use (HAP-84)"
+      "caveats": "shakes the ink (see SIM cue cases); the actuators 'must be attached very precisely' to the hand (HAP-84, related-work remark); psychophysics protocols pause for 'fatigue ... and the adaptation to the stimulus' (HAP-85)"
     },
     {
       "channel": "CMG torque pulse (real, lent torque)",
       "what_it_is": "real torque for 0.1-0.2 s, then a slower opposite reset",
       "direction_accuracy": "99.3 % (12 healthy; 51 mN m pulses, 198 g device; HAP-82)",
-      "strength": "51 mN m in HAP-82; the 45 g end-cap reaches about 40-60 mN m at 3 Hz (CALC, endcap/optimise)",
+      "strength": "51 mN m in HAP-82",
       "effect_on_movement": "orientation guidance succeeded in 60/60 trials but slowly: median 8.6 s, path 3.3x direct (HAP-82)",
       "people_with_tremor": "not tested in the literature found",
-      "cost_in_pen": "the whole 45 g end-cap, 0.15-0.25 W spin power, spin-up seconds, 400 Hz tone (CALC)",
+      "cost_in_pen": "the whole end-cap, spin power, spin-up time, a rotor tone",
       "caveats": "the torque must be paid back (reset); gyroscopic side effects when the pen is turned (uncancelled H)"
     },
     {
