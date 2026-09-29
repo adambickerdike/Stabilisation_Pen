@@ -1,0 +1,123 @@
+{
+ "evidence_status": "PROPOSED (protocols; nothing run)",
+ "experiments": [
+  {
+   "id": "EXP-D01",
+   "title": "Tyre-paper friction on six papers",
+   "purpose": "Replace the assumed traction range (0.6-1.2) with measurements; pick the tyre compound",
+   "method": "Horizontal-plane and rolling tribometer (TAPPI T 549 adapted) with a 2 mm wheel locked and rolling; NBR 70, PU 80 and silicone 50 Shore A tyres; copy 80 g/m2, recycled, school ruled, coated, tracing and card; 0.3 and 0.6 N; 40 and 60 % RH; 5 repeats",
+   "measurand": "static and kinetic friction coefficient, rolling resistance coefficient",
+   "pass_line": "kinetic mu >= 0.6 on all six papers at 0.3-0.6 N; spread (max/min) reported",
+   "needs": "tribometer or tilting table, 0.01 N load cell, climate box"
+  },
+  {
+   "id": "EXP-D02",
+   "title": "Tyre lateral stiffness and relaxation length",
+   "purpose": "Check k_lat = 1.5 N/mm used by the model and the slip threshold",
+   "method": "Wheel on paper at 0.55 N, lateral displacement stage 0-1 mm, force sensor under the paper",
+   "measurand": "lateral force vs deflection; relaxation length when rolling",
+   "pass_line": "k_lat >= 1.0 N/mm",
+   "needs": "micrometre stage, 3-axis force sensor"
+  },
+  {
+   "id": "EXP-D03",
+   "title": "Holding the sheet",
+   "purpose": "Know when the drive drags the paper instead of the pen",
+   "method": "Heel drive pulls 0.1-0.6 N on a sheet on wood, laminate and a pad, with and without the writing hand resting and with the other hand holding",
+   "measurand": "force at which the sheet slides",
+   "pass_line": ">= 0.6 N with the writing hand resting",
+   "needs": "spring scale or load cell; 3 desks"
+  },
+  {
+   "id": "EXP-D04",
+   "title": "Heel geometry, roll and steering bench",
+   "purpose": "Contact over tilt and roll; steering speed and bandwidth",
+   "method": "3-D printed heel with the sprung wheel pod; pen held in a tilt-roll fixture at 35-75 deg and +/-25 deg roll; steering step and chirp responses with the Hall angle sensor",
+   "measurand": "contact yes/no, wheel load; steering bandwidth (-3 dB), rate limit",
+   "pass_line": "contact at +/-20 deg roll over 35-75 deg; >= 40 Hz; >= 300 rad/s",
+   "needs": "printed heel, 0620 B motors, fixture"
+  },
+  {
+   "id": "EXP-D05",
+   "title": "Slip detection",
+   "purpose": "Test the paper-sensor-minus-odometry slip rule",
+   "method": "Drive the wheel on six papers; impose slips by lowering the preload or raising the command; record optical flow and wheel odometry at 1 kHz",
+   "measurand": "detection latency; false flags per 10 s of normal writing motion",
+   "pass_line": "detect within 50 ms; < 1 false flag per 10 s",
+   "needs": "paper sensor board, encoder, high-speed camera"
+  },
+  {
+   "id": "EXP-D06",
+   "title": "Noise, heat and power",
+   "purpose": "Check the power budget and comfort",
+   "method": "Run recorded drive commands from the SIM tasks on the bench drive; microphone at 30 cm in a quiet room; thermocouples on windings and sleeve; supply current logging",
+   "measurand": "dB(A); winding and surface temperature; mean electrical power",
+   "pass_line": "<= 35 dB(A); surface <= 41 C; <= 0.15 W",
+   "needs": "sound meter, thermocouples, power analyser"
+  },
+  {
+   "id": "EXP-D07",
+   "title": "Force cap, stall and lift safety",
+   "purpose": "Show the drive never exceeds its caps and lets go",
+   "method": "Handle clamped to a 3-axis load cell over paper; commanded forces up to saturation; stall the wheel; lift the pen mid-push; fault injection (sensor loss, motor short)",
+   "measurand": "peak and steady force; time to zero after lift or stall",
+   "pass_line": "steady <= 0.5 N; peak <= 0.6 N; zero within 20 ms of lift",
+   "needs": "load cell, fixture"
+  },
+  {
+   "id": "EXP-D08",
+   "title": "Guided writing with people (tracing, loops, reversed letters, resist)",
+   "purpose": "Compare heel drive, desk board and nose alone on real hands",
+   "method": "n = 12 adults then children with dysgraphia (ethics approval); crossover of none / nose / board / heel steer-only / heel steer + drive; tracing, 'write big' loops, b-d reversal; a 'resist' block; unassisted retention block after 1 day",
+   "measurand": "target error, letters read by the app, felt force (instrumented handle), yields, preference, retention",
+   "pass_line": "heel >= board on target error with felt force p95 <= 0.5 N; every participant can overpower it; no retention loss vs none",
+   "needs": "prototype, instrumented handle, app recogniser"
+  },
+  {
+   "id": "EXP-D09",
+   "title": "Tremor: constraint and damping",
+   "purpose": "Test steer + brake and the ball damper on tremor and on clean writing",
+   "method": "People with ET (n >= 8): copy and free writing with none / nose / heel steer + brake / heel + nose; controls without tremor for false correction",
+   "measurand": "ink error, words read, distortion of clean writing",
+   "pass_line": "tremor ink error -20 % with clean-writing distortion <= 100 um",
+   "needs": "prototype, IMU logging"
+  },
+  {
+   "id": "EXP-D10",
+   "title": "Ink smear and wheel track",
+   "purpose": "Make sure the wheel does not smear ink or mark the paper",
+   "method": "Wheel rolled over fresh gel and ballpoint ink at 0.55 N; 1 page of writing; magnified images",
+   "measurand": "smear length, visible track",
+   "pass_line": "no ink pick-up; no visible track at 30 cm",
+   "needs": "microscope camera"
+  },
+  {
+   "id": "EXP-D11",
+   "title": "Lead-through and autowrite with relaxed hands",
+   "purpose": "Check that the drive can lead a relaxed hand and that people accept it",
+   "method": "n = 8; relaxed-hand instruction; lead speeds 4-10 mm/s; practice sentence; comfort questionnaire",
+   "measurand": "letters read, pen speed, force, comfort",
+   "pass_line": ">= 70 % letters read at >= 5 mm/s with no discomfort",
+   "needs": "prototype with drive motor"
+  },
+  {
+   "id": "EXP-D12",
+   "title": "Durability",
+   "purpose": "Tyre wear and friction drift",
+   "method": "Wheel rolled 10 km on copy paper at 0.55 N (about 5000 pages, ASSUMPTION), friction re-measured every 1 km",
+   "measurand": "mu drift, diameter loss",
+   "pass_line": "mu within 20 % of new; diameter loss < 0.05 mm",
+   "needs": "rolling rig"
+  },
+  {
+   "id": "EXP-D13",
+   "title": "Driven-ball fallback: roller drag and wear",
+   "purpose": "Decide whether the driven ball (better tracing and tremor numbers in SIM) can be built with low internal drag",
+   "method": "Bench ball drive: 2 mm urethane-coated ball, two rollers r 0.4 mm, smooth vs micro omni-type rollers (if they can be made); push the ball along each roller axis and across; 1 km rolling on paper",
+   "measurand": "internal drag across the driven axis, drive force, wear, dust pick-up",
+   "pass_line": "drag <= 50 mN across the driven axis after 1 km (the SIM assumed 30 mN; smooth rollers: about 0.22 N, CALC)",
+   "needs": "micro-machined rollers, force sensor"
+  }
+ ],
+ "decision_text": "Heel drive for Rev J (proposed): a 2 mm steered wheel with an O-ring tyre at the bottom of a larger skid ring (contact radius 8.75 mm instead of 6.75 mm), steered about the paper normal through its contact point. Steer-only by default (passive guidance and tremor constraint); its drive motor is used only in an explicit lead-through or autowrite mode. Force cap 0.5 N and 0.8 x mu_hat x wheel load; yields to the writer. The driven ball is the fallback; omni-wheels, braked ball and controllable friction pads are rejected. The front sleeve grows from 15.0 to 18.3 mm at the heel and the paper sensor becomes mandatory. Adopt only after EXP-D01, EXP-D05, EXP-D07 and EXP-D08."
+}

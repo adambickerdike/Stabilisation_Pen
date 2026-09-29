@@ -8,6 +8,8 @@ Stages (each writes its own JSON under results/drive/, so they can be re-run sep
   test     SIM on test writers/seeds with the frozen rules: tasks (a)-(e) and the resisting-writer runs
   extra    SIM: the recommended design's passive mode on its driven wheel ('sd_path'), added after the main test
            with the same frozen rules and cases (tasks_extra.json)
+  release  SIM on TUNING writers after the test: the proposed lateral release of the steered wheel
+           (release_tuning.json; not a test result)
   report   figures (with CSV twins), evidence rows, layout parts, proposals, tables.md, grounded_drive.json
 --quick: one test writer and seed, fewer conditions, the quick tuning (about 5-8 minutes); never overwrites the full
          rules or test files (it writes *_quick.json).
@@ -349,14 +351,17 @@ def stage_test(rules: Dict, quick: bool, log=print) -> Dict:
 
 
 # ============================================================================== extra condition (after the main test)
-EXTRA_CONDS = ["sd_path"]
+EXTRA_CONDS = ["sd_path", "ballsmooth_full"]
+EXTRA_TREMOR = ["ballsmooth_damp"]
 
 
 def stage_extra(rules: Dict, quick: bool, log=print) -> Dict:
-    """The recommended design's passive mode carries its drive train: 'sd_path' is the steer-only law (frozen rules,
-    the same gains as 'wheel_path') on the driven wheel's hardware (reflected mass 3.8 g, back-drive 24 mN, 70 %
-    friction compensation, no push).  It was defined in drive_for before the freeze and is run after the main test
-    as an added condition; no gain is changed (SIM)."""
+    """Two conditions added after the main test run, with the frozen rules and the same cases (SIM):
+    'sd_path': the recommended design's passive mode carries its drive train: the steer-only law (the same gains as
+    'wheel_path') on the driven wheel's hardware (reflected mass 3.8 g, back-drive 24 mN, 70 % friction
+    compensation, no push);  'ballsmooth_full' / 'ballsmooth_damp': the ball with smooth drive rollers, whose
+    orthogonal roller slips axially with 0.3 x its 0.75 N preload (LIT AMF-117; CALC 0.225 N), with the ball's
+    gains.  Both were defined in drive_for before the freeze; no gain is changed."""
     t0 = time.time()
     W_ = TEST_WRITERS[:1] if quick else TEST_WRITERS
     S_ = TEST_SEEDS[:1] if quick else TEST_SEEDS
@@ -365,6 +370,8 @@ def stage_extra(rules: Dict, quick: bool, log=print) -> Dict:
     out["practice"] = test_practice(rules, W_, S_, ("dysgraphia", "dyslexia"), ["none"] + EXTRA_CONDS, log)
     out["resisting"] = test_resisting_conds(rules, W_, S_[:2], ["none"] + EXTRA_CONDS)
     out["loops"] = test_loops(rules, S_, ["none"] + EXTRA_CONDS, log)
+    out["tremor"] = test_tremor(rules, W_, S_[:1], (4.0, 6.0, 8.0, 10.0) if not quick else (8.0,),
+                                (1e-3, 2e-3) if not quick else (1e-3,), ["none"] + EXTRA_TREMOR, log, adapt_subset=False)
     out["elapsed_s"] = time.time() - t0
     _write("tasks_extra.json", out, quick, EVIDENCE_SIM, seeds={"test_writers": list(W_), "test_seeds": list(S_)})
     return out
@@ -417,7 +424,82 @@ def merge_extra(tasks: Dict, extra: Dict) -> Dict:
         for h, cells in extra.get("loops", {}).get("aggregate", {}).items():
             if c in cells:
                 tasks["loops"]["aggregate"].setdefault(h, {})[c] = cells[c]
+    tr, te = tasks.get("tremor", {}), extra.get("tremor", {})
+    for c in EXTRA_TREMOR:
+        for blk in ("by_cell", "by_amp", "by_f"):
+            for k, cells in te.get(blk, {}).items():
+                if c in cells:
+                    tr.setdefault(blk, {}).setdefault(k, {})[c] = cells[c]
+        nv = te.get("tremor_free", {}).get("naive", {})
+        if c in nv:
+            tr.setdefault("tremor_free", {}).setdefault("naive", {})[c] = nv[c]
     return tasks
+
+
+# ============================================================================== lateral release (after the test)
+def stage_release(rules: Dict, quick: bool, log=print) -> Dict:
+    """The steered wheel's hold across the path is a reaction, not a command, so the software cap does not limit it
+    (test: up to 0.66 N in the loops task).  A lateral release (the excess over the cap turns the wheel toward the
+    push, apparent mass 0.02 kg, ASSUMPTION) is proposed.  It is evaluated here on TUNING writers and seeds only
+    (writers 100-102, seed 300; loops seeds 300-303), at the worst-case friction mu = 1.2, after the test, so it is
+    not a test result (SIM)."""
+    from dataclasses import replace as _rep
+    from . import scenarios as S, tune as TU
+    from . import plant as DP
+    t0 = time.time()
+    writers = (100,) if quick else (100, 101, 102)
+    seeds = (300,) if quick else (300, 301, 302, 303)
+    conds = ["sd_path", "sd_full"]
+
+    def drv_mod(cond, rel):
+        orig = S.drive_for
+
+        def patched(c, g, mu, hw=S.HW, board=None):
+            d = orig(c, g, mu, hw, board)
+            if rel and d.kind == "wheel":
+                d = _rep(d, rel_on=True)
+            return d
+        return patched
+
+    out = {"label": "SIM on tuning writers/seeds after the test (not a test result)", "loops": [], "practice": []}
+    orig = S.drive_for
+    try:
+        for rel in (False, True):
+            S.drive_for = drv_mod(None, rel)
+            for hand in ("relaxed", "lightly_resisting"):
+                for seed in seeds:
+                    case = S.loops_case(seed, hand=hand)
+                    mu = 1.2                                   # worst case for the hold: the highest friction
+                    ev0, r0 = S.run_loops(case, "none", TU.gains_for(rules, "none"), mu)
+                    for c in conds:
+                        ev = S.run_loops(case, c, TU.gains_for(rules, c), mu, ref=r0)[0]
+                        out["loops"].append(dict(ev, cond=c, release=rel, hand=hand, seed=seed, mu=mu))
+            for w in writers:
+                for hand in ("relaxed", "lightly_resisting"):
+                    case = S.practice_case(w, 300, "dysgraphia")
+                    mu = 1.2
+                    hd = S._hand(hand)
+                    ev0, r0 = S.run_practice(case, "none", TU.gains_for(rules, "none"), mu, hand=hd)
+                    for c in conds:
+                        ev = S.run_practice(case, c, TU.gains_for(rules, c), mu, hand=hd, ref=r0)[0]
+                        out["practice"].append(dict({k: v for k, v in ev.items() if not isinstance(v, (list, dict))},
+                                                    cond=c, release=rel, hand=hand, writer=w, mu=mu))
+            log(f"  release={rel} [{time.time() - t0:.0f}s]")
+    finally:
+        S.drive_for = orig
+    keys_l = ["loop_height_ratio_ink", "last_loop_ratio", "ink_to_template_rms_mm", "F_rms_N", "F_p95_N", "F_max_N",
+              "felt_rms_N", "slide_share"]
+    keys_p = ["target_err_um", "letters_read_ok", "F_rms_N", "F_p95_N", "F_max_N", "felt_p95_N", "slide_share"]
+    agg = {}
+    for blk, keys in (("loops", keys_l), ("practice", keys_p)):
+        for r in out[blk]:
+            r["group"] = f"{r['cond']}|release={r['release']}|{r['hand']}"
+        agg[blk] = _agg(out[blk], "group", keys)
+    out["aggregate"] = agg
+    out["elapsed_s"] = time.time() - t0
+    _write("release_tuning.json", out, quick, EVIDENCE_SIM + " (tuning writers, after the test)",
+           seeds={"writers": list(writers), "seeds": list(seeds)})
+    return out
 
 
 # ============================================================================== report
@@ -471,6 +553,11 @@ def main():
         from . import tune as TU
         rules = rules or (json.loads((OUT / "rules_quick.json").read_text()) if a.quick else TU.load_rules())
         stage_extra(rules, a.quick)
+    if "release" in stages:
+        print("[release]")
+        from . import tune as TU
+        rules = rules or (json.loads((OUT / "rules_quick.json").read_text()) if a.quick else TU.load_rules())
+        stage_release(rules, a.quick)
     if "report" in stages:
         print("[report]")
         stage_report(a.quick)

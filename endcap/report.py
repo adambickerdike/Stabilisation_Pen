@@ -64,6 +64,26 @@ def tremor_summary(test):
     return out
 
 
+def device_use(test):
+    """How much of its stroke or gimbal range each active device used in the test runs (SIM), and its actuation power."""
+    out = {}
+    for n, rows in test["rows"].items():
+        if n == "lrm":
+            pk = [max(c["stroke_pk_mm"]) for c in rows if c.get("stroke_pk_mm")]
+            if pk:
+                out[n] = {"stroke_peak_mm_median": float(np.median(pk)), "stroke_peak_mm_p95": float(np.percentile(pk, 95)),
+                          "stroke_peak_mm_max": float(np.max(pk))}
+        elif n == "cmg":
+            pk = [max(c["gimbal_pk_rad"]) for c in rows if c.get("gimbal_pk_rad")]
+            if pk:
+                out[n] = {"gimbal_peak_rad_median": float(np.median(pk)), "gimbal_peak_rad_p95": float(np.percentile(pk, 95)),
+                          "gimbal_peak_rad_max": float(np.max(pk))}
+        if n in out:
+            P_ = [c["P_act_W"] for c in rows if c.get("P_act_W") is not None]
+            out[n].update({"P_act_W_mean": float(np.mean(P_)), "P_act_W_max": float(np.max(P_))})
+    return out
+
+
 def rule_RT1(ts, name, P_avg):
     """R-T1 verdict (see run_study.RULES)."""
     try:
@@ -394,9 +414,11 @@ def what_it_would_take(sc, target_mm=2.0, fs=(1.0, 2.0, 3.0), r_rot=0.5):
                      "see 'h1_vs_linear' for how much less H1 with paper friction gave per unit push)", "rows": rows}
 
 
-def h1_vs_linear(sc, steer, fs=(1.0, 2.0, 3.0, 5.0), r_rot=0.5):
+def h1_vs_linear(sc, steer, fs=(1.0, 2.0, 3.0, 5.0), r_rot=0.5, lrm=None):
     """SIM vs CALC: tip amplitude in H1 while writing (paper friction, test seeds) against the linear model's prediction
-    for the same command (relaxed hand, no friction), per device and frequency (axis 0, r_rot 0.5)."""
+    for the same command (relaxed hand, no friction), per device and frequency (axis 0, r_rot 0.5).  For the reaction mass
+    the command is the coil force; the net force on the pen is the slug's inertial force, cmd m w^2 / |k - m w^2 + j c w|
+    (5 Hz flexure, damping 0.7), which is what the linear end-cap receptance is applied to."""
     rec = {(r["r_rot"], r["f_Hz"]): r for r in sc["receptance"]}
     out = []
     for dev in sorted({r["device"] for r in steer["rows"]}):
@@ -406,7 +428,15 @@ def h1_vs_linear(sc, steer, fs=(1.0, 2.0, 3.0, 5.0), r_rot=0.5):
             if not b or (r_rot, f) not in rec:
                 continue
             cmd = b[0]["command_amp"]
-            lin = cmd * (rec[(r_rot, f)]["tip_mm_per_N_cap_t1"] if dev == "lrm" else rec[(r_rot, f)]["tip_um_per_mNm_t2"])
+            if dev == "lrm":
+                m = (lrm or {}).get("moving_mass_g", 30.0) * 1e-3
+                w = 2 * math.pi * f
+                k = m * (2 * math.pi * 5.0) ** 2
+                c = 1.4 * math.sqrt(k * m)
+                net = cmd * m * w * w / math.sqrt((k - m * w * w) ** 2 + (c * w) ** 2)
+                lin = net * rec[(r_rot, f)]["tip_mm_per_N_cap_t1"]
+            else:
+                lin = cmd * rec[(r_rot, f)]["tip_um_per_mNm_t2"]
             h1 = _mean([r["tip_amp_mm"] for r in b])
             out.append({"device": dev, "f_Hz": f, "command": cmd, "linear_amp_mm": lin, "h1_write_amp_mm": h1,
                         "h1_write_peak_mm": _mean([r["tip_peak_mm"] for r in b]), "linear_over_h1": lin / h1 if h1 > 0 else float("nan")})
@@ -594,15 +624,33 @@ def recommend(ts, des, ss, cs):
         if n in (ts or {}) and n in des:
             verdicts[n] = rule_RT1(ts, n, des[n]["P_avg_W"])
     passing = [n for n, v in verdicts.items() if v.get("pass")]
+    ranking = None
     if passing:
-        best = sorted(passing, key=lambda n: (-round(verdicts[n]["r0.5"] / 0.02), des[n]["P_avg_W"], des[n]["mass_g"]))[0]
-        text = (f"Fit the {'reaction-mass' if best == 'lrm' else 'CMG'} end-cap for tremor (rule R-T1 passed: "
-                f"{verdicts[best]['r0.3'] * 100:.0f}/{verdicts[best]['r0.5'] * 100:.0f}/{verdicts[best]['r0.7'] * 100:.0f} % at r_rot 0.3/0.5/0.7).")
+        # R-T2 as written: rank by the further reduction at r_rot 0.5; devices within 2 points of the best are tied and the
+        # tie goes to the lower average power, then the lower mass.  (A first version rounded the reductions into 2-point
+        # bins, which is not the rule's "within 2 points"; corrected before the report was written - see the doc.)
+        best_r = max(verdicts[n]["r0.5"] for n in passing)
+        tied = [n for n in passing if best_r - verdicts[n]["r0.5"] <= 0.02 + 1e-12]
+        best = sorted(tied, key=lambda n: (des[n]["P_avg_W"], des[n]["mass_g"]))[0]
+        ranking = {"by_r0.5": {n: verdicts[n]["r0.5"] for n in passing}, "tied_within_2_points": tied,
+                   "tie_break": "lower average power, then lower mass" if len(tied) > 1 else None,
+                   "P_avg_W": {n: des[n]["P_avg_W"] for n in tied}}
+        names = {"lrm": "reaction-mass", "cmg": "CMG"}
+        text = (f"Fit the {names[best]} end-cap for tremor (rule R-T1 passed: "
+                f"{verdicts[best]['r0.3'] * 100:.0f}/{verdicts[best]['r0.5'] * 100:.0f}/{verdicts[best]['r0.7'] * 100:.0f} % at r_rot 0.3/0.5/0.7")
+        if len(tied) > 1:
+            others = [n for n in tied if n != best]
+            o_names = ", ".join(names[n] for n in others)
+            o_red = ", ".join("%.1f %%" % (verdicts[n]["r0.5"] * 100) for n in others)
+            o_pow = ", ".join("%.3f W" % des[n]["P_avg_W"] for n in others)
+            text += ("; rule R-T2: the %s end-cap was within 2 points at r_rot 0.5 (%s against %.1f %%), so the tie went to the lower "
+                     "average power (%.3f W against %s)" % (o_names, o_red, verdicts[best]["r0.5"] * 100, des[best]["P_avg_W"], o_pow))
+        text += ")."
         choice = best
     else:
         choice = None
         text = "No end-cap device passes rule R-T1; no inertial end-cap is justified for tremor."
-    return {"verdicts": verdicts, "choice": choice, "text": text}
+    return {"verdicts": verdicts, "choice": choice, "text": text, "ranking": ranking}
 
 
 def build(quick=False):
@@ -612,6 +660,7 @@ def build(quick=False):
     offs = _load("offshelf", quick)
     rw = _load("rw", quick)
     bud = _load("budgets", quick)
+    compact = _load("compact", quick)
     if opt and rw:
         opt = dict(opt)
         opt["fronts"] = dict(opt["fronts"])
@@ -657,7 +706,7 @@ def build(quick=False):
         res["scaling"] = sc
         res["what_it_would_take"] = what_it_would_take(sc)
         if steer:
-            res["what_it_would_take"]["h1_vs_linear"] = h1_vs_linear(sc, steer)
+            res["what_it_would_take"]["h1_vs_linear"] = h1_vs_linear(sc, steer, lrm=des.get("lrm"))
     ts = tremor_summary(test) if test else None
     ss = steer_summary(steer) if steer else None
     gs = gyro_summary(gyro) if gyro else None
@@ -670,7 +719,8 @@ def build(quick=False):
                          "oracle": {n: {"dev_oracle_mean_8_12Hz_1mm_r0.5": _mean([c.get("dev_oracle") for c in v]),
                                         "dev_passive_mean": _mean([c.get("dev_passive") for c in v])} for n, v in test.get("oracle", {}).items()},
                          "wrist": {n: {"nose": _mean([c["nose"] for c in v]), "nose+device": _mean([c.get("nose+dev", c.get("nose+passive")) for c in v])}
-                                   for n, v in test.get("wrist", {}).items()}}
+                                   for n, v in test.get("wrist", {}).items()},
+                         "device_use": device_use(test)}
     if ss:
         res["steering"] = ss
     if gs:
@@ -680,6 +730,10 @@ def build(quick=False):
         res["cue"] = {"summary": cs, "force_for_levels": cue["force_for_levels"], "writing_share": cue["writing_share"],
                       "channels": CU.channel_table(cmg=des.get("cmg")), "sim": cue["sim"]}
     res["recommendation"] = rec
+    if compact:
+        res["compact_packaging"] = {"label": "SIMULATION (test seeds, r_rot 0.5, 8-12 Hz x 1-2 mm; a sensitivity check run after the test, "
+                                             "not used to choose anything)", "gain": compact["gain"],
+                                    "by_z_mm": {z: {k: v for k, v in b.items() if k != "rows"} for z, b in compact["z_mm"].items()}}
     res["headline"] = headline(sc, opt, tune, test, steer, gyro, cue, ts, ss, gs, cs, rec)
     # figures
     figs = []

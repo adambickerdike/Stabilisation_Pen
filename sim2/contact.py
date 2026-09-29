@@ -5,7 +5,7 @@ transitions (stick, pre-sliding, Stribeck) drive them (H1 found friction drove e
 soft contacts are regularised: tangential compliance relaxes Coulomb's law so a sticking contact creeps (LIT CON:
 Castro et al. 2022; Le Lidec et al. 2024), and in this model stiff settings chatter when the pen slides (SIM,
 verification.contact).  This law reproduces H1/P1 exactly and is the default for the ink studies; the native contacts
-remain available (contact.model = 'mujoco') for fast RL runs and geometry-rich plug-ins.
+remain available (contact.model = 'mujoco') for geometry-rich plug-ins and larger time steps.
 
 Contact points (world frame, recomputed every step from the current kinematics):
   skid   the lowest point of the C ring (a torus of centreline radius R0 in the plane z_ring behind the ball, tube

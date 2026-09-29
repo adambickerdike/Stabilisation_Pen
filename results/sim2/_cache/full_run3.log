@@ -1,0 +1,77 @@
+=== stage validate
+  writer lognormal: speed {'mean': 14.453784607958056, 'median': 13.402737299420385, 'p95': 32.141360654088764}, strokes {'median': 213.0, 'iqr': [195.0, 241.0], 'n': 145}, spectrum {'peak_Hz': 2.44140625, 'f50_Hz': 2.44140625, 'f90_Hz': 3.41796875, 'f95_Hz': 4.8828125, 'f99_Hz': 7.32421875, 'share_0_3Hz': 0.8776602121588243, 'share_3_12Hz': 0.12206093562933892, 'share_8_12Hz': 0.005594328038911497, 'share_above_12Hz': 0.000278850389353607}, beta {'mean': 0.7827739361890844, 'sd': 0.039676762568669956, 'n': 10}
+  writer glyph: speed {'mean': 17.668121921439568, 'median': 12.672080033406328, 'p95': 46.732760415262064}, strokes {'median': 147.0, 'iqr': [91.0, 239.0], 'n': 198}, spectrum {'peak_Hz': 4.39453125, 'f50_Hz': 4.8828125, 'f90_Hz': 10.7421875, 'f95_Hz': 13.18359375, 'f99_Hz': 17.578125, 'share_0_3Hz': 0.2269066547032466, 'share_3_12Hz': 0.7018284150837586, 'share_8_12Hz': 0.14208737397978327, 'share_above_12Hz': 0.07126492995957294}, beta {'mean': 0.9825066389957055, 'sd': 0.05943639608778171, 'n': 8}
+  tremor ET 6 Hz: ink band rms 649 um p99 1399 um, peak 5.37 Hz, h2/h1 0.003, pen rate 25.82 deg/s, gate writing 1.00
+  tremor ET 9 Hz: ink band rms 348 um p99 695 um, peak 8.79 Hz, h2/h1 0.004, pen rate 23.61 deg/s, gate writing 1.00
+  tremor PD_action 5 Hz: ink band rms 599 um p99 1337 um, peak 4.39 Hz, h2/h1 0.015, pen rate 23.48 deg/s, gate writing 1.00
+  tremor PD_rest 5 Hz: ink band rms 112 um p99 257 um, peak 4.39 Hz, h2/h1 0.014, pen rate 3.96 deg/s, gate writing 0.23
+  tremor physio 10 Hz: ink band rms 41 um p99 100 um, peak 8.79 Hz, h2/h1 0.009, pen rate 2.24 deg/s, gate writing 1.00
+  hand-wrist: tip response peak 2.8 Hz (+300 g 2.6 Hz); wrist natural frequency 9.3 Hz (+300 g 7.8 Hz), zeta 1.01
+=== stage validate done in 81 s
+=== stage env
+  env speed h1: 478 steps/s at 1000 Hz (0.478 sim s per wall s), reset 1.2 s
+  env speed mujoco: 223 steps/s at 1000 Hz (0.223 sim s per wall s), reset 3.4 s
+  rollout zero: 2000 steps, return -71571.0, ink error rms 667.3605217505061 um
+  rollout random: 2000 steps, return -90341.5, ink error rms 750.241397672253 um
+  env with reaction mass: act 4, obs 18
+=== stage env done in 46 s
+=== stage convergence
+  convergence h1 implicitfast dt 12.5 us: unmod 1110.64 um, oracle 0.1420 (28 s)
+  convergence h1 implicitfast dt 25.0 us: unmod 1110.53 um, oracle 0.1417 (18 s)
+  convergence h1 implicitfast dt 50.0 us: unmod 1110.30 um, oracle 0.1411 (11 s)
+  convergence h1 implicitfast dt 100.0 us: unmod 1103.18 um, oracle 0.1397 (9 s)
+    dt 12.5 us: ink path difference vs finest 0.000 um, observed order None
+    dt 25.0 us: ink path difference vs finest 0.216 um, observed order None
+    dt 50.0 us: ink path difference vs finest 0.660 um, observed order 1.072224381278247
+    dt 100.0 us: ink path difference vs finest 71.338 um, observed order 7.296447962002615
+  convergence mujoco implicitfast dt 12.5 us: unmod 1108.85 um, oracle 0.1462 (77 s)
+  convergence mujoco implicitfast dt 25.0 us: unmod 1108.61 um, oracle 0.1458 (38 s)
+  convergence mujoco implicitfast dt 50.0 us: unmod 1108.38 um, oracle 0.1452 (22 s)
+  convergence mujoco implicitfast dt 100.0 us: unmod 1099.02 um, oracle 0.1438 (15 s)
+    dt 12.5 us: ink path difference vs finest 0.000 um, observed order None
+    dt 25.0 us: ink path difference vs finest 0.660 um, observed order None
+    dt 50.0 us: ink path difference vs finest 2.345 um, observed order 1.5989678442271498
+    dt 100.0 us: ink path difference vs finest 71.575 um, observed order 5.163457872913148
+  convergence h1 RK4 dt 25.0 us: unmod 1110.87 um, oracle 0.1418 (20 s)
+    dt 25.0 us: ink path difference vs finest 0.000 um, observed order None
+  convergence h1 Euler dt 25.0 us: unmod 1110.87 um, oracle 0.1418 (21 s)
+    dt 25.0 us: ink path difference vs finest 0.000 um, observed order None
+  convergence h1 implicit dt 25.0 us: unmod 1110.53 um, oracle 0.1417 (25 s)
+    dt 25.0 us: ink path difference vs finest 0.000 um, observed order None
+=== stage convergence done in 290 s
+=== stage frontstop
+  front stop nose_adaptive seed 300 8 Hz 1 mm: oracle 0.134, contact while pen down 1.000 (reference 1.000) (35 s)
+  front stop nose_adaptive seed 300 8 Hz 2 mm: oracle 0.174, contact while pen down 0.998 (reference 1.000) (40 s)
+  front stop nose_adaptive seed 300 12 Hz 2 mm: oracle 0.282, contact while pen down 0.908 (reference 1.000) (36 s)
+  front stop nose_adaptive seed 301 8 Hz 1 mm: oracle 0.095, contact while pen down 1.000 (reference 1.000) (38 s)
+  front stop nose_adaptive seed 301 8 Hz 2 mm: oracle 0.142, contact while pen down 1.000 (reference 1.000) (34 s)
+  front stop nose_adaptive seed 301 12 Hz 2 mm: oracle 0.272, contact while pen down 1.000 (reference 1.000) (36 s)
+  front stop carrier seed 300 8 Hz 1 mm: oracle 0.173, contact while pen down 0.692 (reference 1.000) (30 s)
+  front stop carrier seed 300 8 Hz 2 mm: oracle 0.238, contact while pen down 0.629 (reference 1.000) (29 s)
+  front stop carrier seed 300 12 Hz 2 mm: oracle nan, contact while pen down 0.632 (reference 1.000) (28 s)
+  front stop carrier seed 301 8 Hz 1 mm: oracle 0.152, contact while pen down 0.734 (reference 1.000) (29 s)
+  front stop carrier seed 301 8 Hz 2 mm: oracle 0.178, contact while pen down 0.650 (reference 1.000) (28 s)
+  front stop carrier seed 301 12 Hz 2 mm: oracle 0.085, contact while pen down 0.653 (reference 1.000) (29 s)
+  front stop wide seed 300 8 Hz 1 mm: oracle 0.135, contact while pen down 1.000 (reference 1.000) (31 s)
+  front stop wide seed 300 8 Hz 2 mm: oracle 0.178, contact while pen down 1.000 (reference 1.000) (29 s)
+  front stop wide seed 300 12 Hz 2 mm: oracle 0.336, contact while pen down 0.984 (reference 1.000) (34 s)
+  front stop wide seed 301 8 Hz 1 mm: oracle 0.109, contact while pen down 1.000 (reference 1.000) (36 s)
+  front stop wide seed 301 8 Hz 2 mm: oracle 0.158, contact while pen down 1.000 (reference 1.000) (34 s)
+  front stop wide seed 301 12 Hz 2 mm: oracle 0.275, contact while pen down 1.000 (reference 1.000) (30 s)
+=== stage frontstop done in 587 s
+=== stage native
+  native: reusing the earlier h1 and stiff-setting rows; running the new default setting
+  native-vs-h1 mujoco seed 300 8 Hz: unmod 1017.1 um, oracle 0.139 (44 s)
+  native-vs-h1 mujoco seed 300 12 Hz: unmod 820.4 um, oracle 0.266 (36 s)
+  native-vs-h1 mujoco seed 301 8 Hz: unmod 855.5 um, oracle 0.100 (42 s)
+  native-vs-h1 mujoco seed 301 12 Hz: unmod 748.4 um, oracle 0.183 (27 s)
+=== stage native done in 151 s
+=== stage diagnose
+  oracle diag 202 12.0 Hz 2.0 mm: H1 0.244, sim2 400 Hz 0.281, 2 kHz nan
+  oracle diag 203 12.0 Hz 1.0 mm: H1 0.220, sim2 400 Hz 0.252, 2 kHz nan
+  oracle diag 200 12.0 Hz 1.0 mm: H1 0.218, sim2 400 Hz 0.249, 2 kHz nan
+  causal diag 201 8.0 Hz 2.0 mm: H1 [0.75  0.747 0.747 0.753 0.743] | sim2 [1.054 1.054 0.705 1.057 1.054]
+  causal diag 203 8.0 Hz 1.0 mm: H1 [0.789 0.79  0.789 0.789 0.789] | sim2 [0.854 0.787 0.863 0.809 0.817]
+  causal diag 200 8.0 Hz 2.0 mm: H1 [0.725 0.736 0.722 0.728 0.719] | sim2 [0.661 1.048 1.05  0.67  1.043]
+=== stage diagnose done in 234 s
+all done in 1388 s

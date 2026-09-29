@@ -7,7 +7,8 @@
       "amp_mm": 1.0,
       "unmod_e_rms_um": 1026.1899002300763,
       "oracle_ratio": 0.13436224094083482,
-      "oracle_band_ratio": 0.1719529219819778
+      "oracle_band_ratio": 0.1719529219819778,
+      "reused": true
     },
     {
       "contact": "h1",
@@ -16,7 +17,8 @@
       "amp_mm": 1.0,
       "unmod_e_rms_um": 823.5002528584375,
       "oracle_ratio": 0.2589348887534596,
-      "oracle_band_ratio": 0.29542480168308755
+      "oracle_band_ratio": 0.29542480168308755,
+      "reused": true
     },
     {
       "contact": "h1",
@@ -25,7 +27,8 @@
       "amp_mm": 1.0,
       "unmod_e_rms_um": 874.2912667839252,
       "oracle_ratio": 0.09493525638821167,
-      "oracle_band_ratio": 0.16229797778868413
+      "oracle_band_ratio": 0.16229797778868413,
+      "reused": true
     },
     {
       "contact": "h1",
@@ -34,53 +37,94 @@
       "amp_mm": 1.0,
       "unmod_e_rms_um": 759.1817639968389,
       "oracle_ratio": 0.17439027658452577,
-      "oracle_band_ratio": 0.2908097632331797
+      "oracle_band_ratio": 0.2908097632331797,
+      "reused": true
     },
     {
-      "contact": "mujoco",
+      "contact": "mujoco_stiff",
       "seed": 300,
       "f0": 8.0,
       "amp_mm": 1.0,
       "unmod_e_rms_um": 1013.2179370543929,
       "oracle_ratio": 0.1377087286587936,
-      "oracle_band_ratio": 0.17278490723265472
+      "oracle_band_ratio": 0.17278490723265472,
+      "reused": true
+    },
+    {
+      "contact": "mujoco_stiff",
+      "seed": 300,
+      "f0": 12.0,
+      "amp_mm": 1.0,
+      "unmod_e_rms_um": 812.7042396459158,
+      "oracle_ratio": 0.2662303782254349,
+      "oracle_band_ratio": 0.29556402494059963,
+      "reused": true
+    },
+    {
+      "contact": "mujoco_stiff",
+      "seed": 301,
+      "f0": 8.0,
+      "amp_mm": 1.0,
+      "unmod_e_rms_um": 852.922791106449,
+      "oracle_ratio": 0.09899492732757997,
+      "oracle_band_ratio": 0.16412039462882652,
+      "reused": true
+    },
+    {
+      "contact": "mujoco_stiff",
+      "seed": 301,
+      "f0": 12.0,
+      "amp_mm": 1.0,
+      "unmod_e_rms_um": 742.5521046713491,
+      "oracle_ratio": 0.18284121605510126,
+      "oracle_band_ratio": 0.2943469612906634,
+      "reused": true
+    },
+    {
+      "contact": "mujoco",
+      "seed": 300,
+      "f0": 8.0,
+      "amp_mm": 1.0,
+      "unmod_e_rms_um": 1017.0536621323106,
+      "oracle_ratio": 0.13910915083195727,
+      "oracle_band_ratio": 0.17397902238714455
     },
     {
       "contact": "mujoco",
       "seed": 300,
       "f0": 12.0,
       "amp_mm": 1.0,
-      "unmod_e_rms_um": 812.7042396459158,
-      "oracle_ratio": 0.2662303782254349,
-      "oracle_band_ratio": 0.29556402494059963
+      "unmod_e_rms_um": 820.3593380636424,
+      "oracle_ratio": 0.26558374802320445,
+      "oracle_band_ratio": 0.29318479998850894
     },
     {
       "contact": "mujoco",
       "seed": 301,
       "f0": 8.0,
       "amp_mm": 1.0,
-      "unmod_e_rms_um": 852.922791106449,
-      "oracle_ratio": 0.09899492732757997,
-      "oracle_band_ratio": 0.16412039462882652
+      "unmod_e_rms_um": 855.5467583303517,
+      "oracle_ratio": 0.10030846563816834,
+      "oracle_band_ratio": 0.16615054467187992
     },
     {
       "contact": "mujoco",
       "seed": 301,
       "f0": 12.0,
       "amp_mm": 1.0,
-      "unmod_e_rms_um": 742.5521046713491,
-      "oracle_ratio": 0.18284121605510126,
-      "oracle_band_ratio": 0.2943469612906634
+      "unmod_e_rms_um": 748.3987828898956,
+      "oracle_ratio": 0.1833496322092604,
+      "oracle_band_ratio": 0.2901090963880506
     }
   ],
-  "label": "SIM: Rev H-B, H1 hand, training seeds; native = MuJoCo soft contact (solref 0.5 ms, solimp 0.99/0.999, impratio 10, elliptic)",
+  "label": "SIM: Rev H-B, H1 hand, training seeds; mujoco = native soft contact at the default setting (solref 2 ms, solimp 0.95/0.99, impratio 1, elliptic); mujoco_stiff = solref 0.5 ms, solimp 0.99/0.999, impratio 10",
   "meta": {
     "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
-    "generated_utc": "2026-09-29T00:39:21+00:00",
-    "git_revision": "3f005eb",
+    "generated_utc": "2026-09-29T01:06:45+00:00",
+    "git_revision": "0eec4f0-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --stages contact,energy,gyro,sensors,myo,plugins,native,convergence,arm,validate,env,diagnose",
+    "command": "run_study.py --stages validate,env,convergence,frontstop,native,diagnose",
     "python": "3.11.15",
     "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
     "seeds": null,

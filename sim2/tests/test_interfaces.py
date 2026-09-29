@@ -41,3 +41,12 @@ def test_plugins_build_and_run(plugin):
 def test_env_action_space_grows_with_plugins():
     env = E.PenEnv(E.EnvConfig(base=P.Config(plugins=[PL.ReactionMass()]), seed=301, episode_s=0.2, settle_s=0.05))
     assert env.n_act == 2 + len(PL.ReactionMass().commands())
+
+
+def test_gymnasium_env_checker():
+    import warnings
+    from gymnasium.utils.env_checker import check_env
+    env = E.PenEnv(E.EnvConfig(seed=300, episode_s=0.3, settle_s=0.1))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        check_env(env, skip_render_check=True)

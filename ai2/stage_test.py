@@ -60,6 +60,12 @@ def settings(quick: bool) -> Dict:
     conf = d2b.get("confirmation_seed_301") or {}
     out["confirmation_seed_301"] = {k: {kk: v.get(kk) for kk in ("R1", "R2", "R3", "R4", "passes", "J_ink_1_2mm_um")}
                                     for k, v in (conf.get("table") or {}).items()}
+    # a setting is adopted only if it also passes the rules on the confirmation seed (301)
+    for name in ("gated", "delayed_3mm", "delayed_6mm"):
+        nm = out[name]["name"]
+        c = out["confirmation_seed_301"].get(nm)
+        out.setdefault("confirmed", {})[name] = bool(c and c.get("passes"))
+        out["adopted"][name] = bool(out["adopted"].get(name)) and out["confirmed"][name]
     cl = C.load("cl", quick) or C.load("cl", False)
     learn = C.load("learn", quick) or C.load("learn", False)
     out["learned_best"] = (learn or {}).get("best_learned")

@@ -51,7 +51,7 @@ def parts_for(design):
     rec = (res.get("recommendation") or {}).get("choice") or "lrm"
     name = rec if design == "recommended" else design
     d = res["designs"][name]
-    parts = LY.lrm_parts(d) if d["class"] == "LRM2" else LY.cmg_parts(d)
+    parts = LY.lrm_parts_compact(d) if d["class"] == "LRM2" else LY.cmg_parts(d)
     return name, d, parts
 
 
@@ -86,8 +86,15 @@ def drawing(name, d, parts, path_png):
         if c.get("moves_with") in ("handle", "nose") and c["shape"] in ("tube", "cylinder") and c["z1"] <= 130.0 and not c.get("optional"):
             r = c.get("d0", 2) / 2
             ax.add_patch(Rectangle((c["z0"], -r), c["z1"] - c["z0"], 2 * r, facecolor=(0.93, 0.93, 0.93), edgecolor=(0.8, 0.8, 0.8), lw=0.5))
-    ax.add_patch(Rectangle((101.0, -7.05), 29.0, 14.1, facecolor=(0.98, 0.9, 0.6), edgecolor=(0.8, 0.7, 0.3), lw=0.6, alpha=0.7))
-    ax.text(115.5, 0.0, "Rev H cell (z 101-149.5):\nno room with the end-cap\n(open packaging issue)", fontsize=7, ha="center", va="center", color="0.3")
+    z_cap0 = min(c["z0"] for c in parts if c["id"] == "ec_shell")
+    if z_cap0 >= 149.5:              # compact packaging: the Rev H cell keeps its place
+        ax.add_patch(Rectangle((101.0, -7.05), 48.5, 14.1, facecolor=(0.98, 0.9, 0.6), edgecolor=(0.8, 0.7, 0.3), lw=0.6, alpha=0.7))
+        ax.text(125.0, 0.0, "Rev H cell, unchanged (z 101-149.5)", fontsize=7, ha="center", va="center", color="0.3")
+        ax.add_patch(Rectangle((50.0, -11.0), z_cap0 - 50.0, 1.0, facecolor=(0.85, 0.85, 0.85), edgecolor=(0.7, 0.7, 0.7), lw=0.5))
+        ax.add_patch(Rectangle((50.0, 10.0), z_cap0 - 50.0, 1.0, facecolor=(0.85, 0.85, 0.85), edgecolor=(0.7, 0.7, 0.7), lw=0.5))
+    else:
+        ax.add_patch(Rectangle((101.0, -7.05), 29.0, 14.1, facecolor=(0.98, 0.9, 0.6), edgecolor=(0.8, 0.7, 0.3), lw=0.6, alpha=0.7))
+        ax.text(115.5, 0.0, "Rev H cell (z 101-149.5):\nno room with the end-cap\n(open packaging issue)", fontsize=7, ha="center", va="center", color="0.3")
 
     def poly(c, dx=0.0, rot=0.0, fill=True, ls="-", zc=None):
         z0, z1 = c["z0"], c["z1"]
@@ -135,9 +142,9 @@ def drawing(name, d, parts, path_png):
                 ha="center", fontsize=8)
     ax.set_xlim(95, 180); ax.set_ylim(-16, 16); ax.set_aspect("equal")
     ax.set_xlabel("z from the ball tip (mm)"); ax.set_ylabel("x (mm)")
-    ttl = {"LRM2": "End-cap: 2-axis tungsten reaction mass on flexures (tremor damping, cues)",
+    ttl = {"LRM2": "End-cap: 2-axis tungsten reaction mass on nested flexures, behind the Rev H cell (tremor damping, cues)",
            "DG1": "End-cap: single-rotor double-gimbal CMG (torque pulses and nudges)"}.get(d["class"], f"End-cap: {d['class']} CMG")
-    ax.set_title(ttl + f" - {d['mass_g']:.1f} g (CALC)", fontsize=11)
+    ax.set_title(ttl + f" - {sum(c.get('mass_g', 0.0) for c in parts):.1f} g (CALC)", fontsize=11)
     ax.grid(alpha=0.2)
     # cross-sections: through the moving mass or rotor, and through the flexure plate or the gimbal drives
     moving = [c for c in parts if c.get("moves_with") in ("inertial_mass", "rotor")]

@@ -74,7 +74,7 @@ PRIMARY: List[Dict[str, str]] = [
        units_and_conditions="Model statements", locator="Sections on related work and regularisation",
        limitations="Simulation study; no pen-on-paper case", relevance_to_design="Predicts the creep and gliding artefacts measured in sim2's native contact tests",
        transferability="high", transferability_reason="Applies to the MuJoCo contact model used by sim2",
-       design_implication="Use a compliant penalty + LuGre law for micrometre ink studies; keep native contacts for coarse RL runs",
+       design_implication="Use a compliant penalty + LuGre law for micrometre ink studies; keep native contacts for geometry-rich plug-ins",
        search_query="Castro Permenter Han unconstrained convex formulation compliant contact arXiv", stream="CON"),
     _r(id="CON-57", topic="Contact models compared: tangential compliance relaxes Coulomb friction",
        citation="Le Lidec Q, Jallet W, Montaut L, Laptev I, Schmid C, Carpentier J. Contact models in robotics: a comparative analysis. IEEE Transactions on Robotics (arXiv 2304.06372v3)",
@@ -390,7 +390,27 @@ def derived(st: Dict) -> List[Dict[str, str]]:
         c = st["contact"]
         nb = c["native_block"][0]
         lg = c["lugre"]
-        rows.append(_r(id="CON-67", topic="Native MuJoCo contact versus the H1 contact law for a pen on paper",
+        extra = ""
+        if st.get("frontstop"):
+            fr = st["frontstop"]["rows"]
+            cf = lambda fs: [r["oracle_contact_frac_pen_down"] for r in fr if r["front_stop"] == fs]
+            extra = (f"; refill front stop under oracle correction (seeds 300-301): ball in contact while the pen is down "
+                     f"{_f(min(cf('carrier')), 2)}-{_f(max(cf('carrier')), 2)} with a fixed stop 0.3 mm beyond contact, "
+                     f"{_f(min(cf('nose_adaptive')), 3)}-{_f(max(cf('nose_adaptive')), 3)} with a stop that follows the nose, "
+                     f"{_f(min(cf('wide')), 3)}-{_f(max(cf('wide')), 3)} with a fixed 3.2 mm stop")
+        if st.get("native"):
+            nr = st["native"]["rows"]
+            def pair(model):
+                d = [(r["seed"], r["f0"], r["oracle_ratio"], r["unmod_e_rms_um"]) for r in nr if r["contact"] == model]
+                return d
+            h1r = {(a, b): (c_, e) for a, b, c_, e in pair("h1")}
+            for model in ("mujoco", "mujoco_stiff"):
+                dd = [(c_ - h1r[(a, b)][0], e / h1r[(a, b)][1] - 1) for a, b, c_, e in pair(model) if (a, b) in h1r]
+                if dd:
+                    extra += (f"; Rev H cases with native contact ({'2 ms' if model == 'mujoco' else '0.5 ms stiff'}) against the H1 law: "
+                              f"oracle ratio {_f(min(x[0] for x in dd), 2)} to {_f(max(x[0] for x in dd), 2)}, unmodified error "
+                              f"{_f(100 * min(x[1] for x in dd), 2)} to {_f(100 * max(x[1] for x in dd), 2)} %")
+        rows.append(_r(id="CON-67", topic="Pen-on-paper contact in sim2: native MuJoCo contact versus the H1 law; refill front stop",
                        citation="This ledger's simulation: sim2/verify.py (native_block_tests, pen_sliding, lugre_tests)", year=2026,
                        doi_or_url="results/sim2/verification.json", source_type="derived simulation", evidence_class="numerical simulation",
                        access_level="full text", task_or_setup="20 g block tests and the Rev H pen dragged at 20 mm/s",
@@ -400,10 +420,10 @@ def derived(st: Dict) -> List[Dict[str, str]]:
                                                   f"{_f(nb['creep']['v_creep_m_s'] * 1e6)} um/s (closed form {_f(nb['creep']['closed_form_m_s'] * 1e6)}); "
                                                   f"sliding friction/normal {_f(nb['sliding_mu_elliptic'])} (mu 0.12); H1 law: pre-sliding stiffness "
                                                   f"{_f(lg['presliding_stiffness_N_per_m']['measured'])} N/m (closed form {_f(lg['presliding_stiffness_N_per_m']['closed_form'])}); "
-                                                  f"stick-slip period {_f(lg['stick_slip']['period_s'])} s versus Coulomb {_f(lg['stick_slip']['period_analytic_s'])} s"),
+                                                  f"stick-slip period {_f(lg['stick_slip']['period_s'])} s versus Coulomb {_f(lg['stick_slip']['period_analytic_s'])} s" + extra),
                        units_and_conditions="N/m, um/s, s", locator=loc, limitations="Friction parameters are ASSUMPTION until EXP-Q01/V01",
                        relevance_to_design="Default contact law for ink studies", transferability="high", transferability_reason="Engine-level verification",
-                       design_implication="H1 law for micrometre ink metrics; native contacts only for coarse RL and plug-ins", search_query="n/a", stream="CON"))
+                       design_implication="H1 law for micrometre ink metrics; native contacts only for geometry-rich plug-ins (they are also slower at 25 us)", search_query="n/a", stream="CON"))
     if st.get("convergence") or st.get("energy") or st.get("gyro"):
         parts = []
         cv = st.get("convergence") or {}

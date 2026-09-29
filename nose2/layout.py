@@ -86,6 +86,7 @@ def layout(des: Dict, handle_od: float = 24.0, length: float = 175.0, axial: boo
            part="custom (aluminium 6061 tube 5/3 mm; the refill passes through)", ledger="",
            mass_g=_tube_mass(5.0, 3.0, max(arm_z1, zp + 2.0) - zp - 1.5, RHO["Al"])))
     act_checks = {}
+    channel_from = None
     if kind == "gimbal_radial":
         z0m, z1m = za - l / 2, za + l / 2
         A(comp("magnet_hub", "Magnet hub (soft iron)", "moving_nose", "box", z0m, z1m, "nose", size=[hub, hub, l],
@@ -116,15 +117,20 @@ def layout(des: Dict, handle_od: float = 24.0, length: float = 175.0, axial: boo
         act_checks["coil_radius_margin_mm"] = round(bore_r - r_out - 0.5, 3)
         act_checks["magnet_clears_gimbal_mm"] = round(z0m - (zp + 1.5), 3)
         z_act_end = z1m + w / 2 + 0.5
+        if z_end > z1m:
+            channel_from = z1m
     else:
         # checkerboard cap on the arm's end (spherical faces for C1S), two coil layers on a concentric plate; when the refill
         # reaches behind the cap, its channel passes through a central hole and the four pole units sit outside it
-        through = z_end > za
+        Bsat = DS.BACK_IRON[des["parts"]["iron"]][0]
+        t_bi = max(des["B_gap_T"] * w / Bsat + 0.3, 0.5)                    # back iron carrying one pole's flux (as the model)
+        cap_front = za - (t_m + t_bi)
+        through = z_end + 0.5 > cap_front
         r_hole = (DS.R_CH * 1e3 + s_act + 0.3) if through else 0.0
         r_disc = w * math.sqrt(2) + 0.5 + r_hole
         z0m = za - t_m / 2
         faces = "spherical" if kind in ("gimbal_sphere", "coarse_fine") else "flat"
-        A(comp("magnet_cap", "Magnet cap (2 x 2 checkerboard on soft iron)", "actuator", "tube" if through else "cylinder", za - t_m - 0.6, za,
+        A(comp("magnet_cap", "Magnet cap (2 x 2 checkerboard on soft iron)", "actuator", "tube" if through else "cylinder", cap_front, za,
                "nose", 2 * r_disc, 2 * r_disc, 2 * (DS.R_CH * 1e3 + 0.3) if through else None,
                function=f"Four magnet poles (N S / S N) on a soft-iron cap with a {faces} face centred on the gimbal: tilting slides the "
                         f"poles along the coils" + (" at a constant gap" if faces == "spherical" else "") +
@@ -137,13 +143,17 @@ def layout(des: Dict, handle_od: float = 24.0, length: float = 175.0, axial: boo
                         ("; its central hole lets the refill channel swing." if through else "."),
                part="custom (bonded coils on a formed plate)", ledger="AMF-29/AMF-30"))
         act_checks["coil_radius_margin_mm"] = round(bore_r - (r_disc + s_act + 0.5), 3)
-        act_checks["magnet_clears_gimbal_mm"] = round(za - t_m - 0.6 - (zp + 1.5), 3)
+        act_checks["magnet_clears_gimbal_mm"] = round(cap_front - (zp + 1.5), 3)
+        if not through:
+            act_checks["refill_holder_clears_cap_mm"] = round(cap_front - z_end, 3)
+        else:
+            channel_from = cap_front
         z_act_end = za + gap + 2 * t_c + 0.8
-    if z_end > za:
-        A(comp("refill_channel", "Refill channel (behind the actuator)", "moving_nose", "tube", za, z_end, "nose", 2 * DS.R_CH * 1e3,
-               2 * DS.R_CH * 1e3, 3.4, function="Thin tube that carries the refill's rear end and its holder behind the actuator; it swings "
-                                              "with the nose.", part="custom (Ti-6Al-4V tube 4.0/3.4 mm)", ledger="AMF-21",
-               mass_g=DS.LIN_CH * (z_end - za)))
+    if channel_from is not None:
+        A(comp("refill_channel", "Refill channel (through and behind the actuator)", "moving_nose", "tube", channel_from, z_end, "nose",
+               2 * DS.R_CH * 1e3, 2 * DS.R_CH * 1e3, 3.4, function="Thin tube that carries the refill's rear end and its holder through "
+                                                                   "and behind the actuator; it swings with the nose.",
+               part="custom (Ti-6Al-4V tube 4.0/3.4 mm)", ledger="AMF-21", mass_g=DS.LIN_CH * (z_end - channel_from)))
     act_checks["refill_channel_swing_margin_mm"] = round(bore_r - (a_s * max(z_end - zp, 0.0) + DS.R_CH * 1e3 + 0.3), 3)
     z_act_end = max(z_act_end, z_end + 1.0)
     A(comp("hall_magnet", "Position magnet", "sensor", "cylinder", z_act_end + 0.5, z_act_end + 1.5, "nose", 1.0, 1.0,

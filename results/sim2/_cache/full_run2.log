@@ -6,3 +6,6 @@ arm calibration: rms rel error 0.227, {'k_wrist_fe': np.float64(10.2433048034437
   arm vs H1 hand seed 300 6 Hz: arm unmod 702 um (band 543), oracle 0.099; H1 unmod 998 um (band 800), oracle 0.120 (48 s)
   arm vs H1 hand seed 300 10 Hz: arm unmod 824 um (band 617), oracle 0.156; H1 unmod 1048 um (band 720), oracle 0.191 (37 s)
   arm vs H1 hand seed 301 6 Hz: arm unmod 687 um (band 536), oracle 0.105; H1 unmod 825 um (band 634), oracle 0.096 (46 s)
+  arm vs H1 hand seed 301 10 Hz: arm unmod 813 um (band 603), oracle 0.157; H1 unmod 963 um (band 581), oracle 0.160 (38 s)
+=== stage arm done in 212 s
+=== stage validate

@@ -16,11 +16,15 @@ REQ_HEADER = ["id", "area", "title", "requirement", "rationale", "source", "veri
 
 REQUIREMENTS: List[Dict] = [
     dict(id="REQ-DRV-001", area="drive", title="Heel force cap",
-         requirement="The heel drive's force on the pen stays at or below 0.5 N (software cap) and at or below 0.8 x the "
-                     "estimated traction (mu_hat x wheel load); the physical limit is mu x preload (about 0.33-0.66 N)",
+         requirement="The heel drive's commanded force stays at or below 0.5 N (software cap) and at or below 0.8 x the "
+                     "estimated traction (mu_hat x wheel load); the steered wheel's passive hold across its heading is "
+                     "capped at the same level by a lateral release (the excess turns the wheel toward the push); the "
+                     "physical limit is the static traction (about 0.36-0.73 N)",
          rationale="Handwriting-guidance devices used 0.43-0.49 N; the desk board 0.4 N; far below ISO/TS 15066 hand limits",
-         source="HAP-15; HAP-16; HAP-51; HAP-70; docs/grounded_drive.md s4",
-         verification="EXP-D07", evidence_status="CALC; SIM", current_estimate="cap met in all SIM runs (force p95 and max in s5)",
+         source="HAP-15; HAP-16; HAP-51; HAP-70; docs/grounded_drive.md s4.4",
+         verification="EXP-D07", evidence_status="CALC; SIM",
+         current_estimate="commands capped in every SIM run; passive hold up to 0.66 N without the release (test, loops); "
+                          "95th percentile 0.43-0.50 N and maximum 0.49-0.56 N with it (tuning writers, mu 1.2)",
          trace="drive/plant.py supervisor", status="proposed"),
     dict(id="REQ-DRV-002", area="drive", title="The writer always wins",
          requirement="The drive yields (force to zero within 0.1 s) when the pen is held more than 4 mm off the "
@@ -50,7 +54,7 @@ REQUIREMENTS: List[Dict] = [
                      "is lowered; false slip flags fewer than 1 per 10 s of writing",
          rationale="Slip wastes force and marks the paper; the SIM detector raises many false flags at mode switches",
          source="AMF-109; SIM (slip flags against true sliding)", verification="EXP-D05", evidence_status="SIM; ASSUMPTION",
-         current_estimate="true sliding < 1 % of contact time; detector flags much more often (s5)",
+         current_estimate="tracing: true sliding < 0.1 % of contact time, yet 3-40 false flags per sentence (SIM)",
          trace="drive/plant.py slip rule", status="proposed"),
     dict(id="REQ-DRV-006", area="drive", title="Steering speed",
          requirement="Steering servo bandwidth >= 40 Hz and rate >= 300 rad/s at the wheel",
@@ -75,7 +79,7 @@ REQUIREMENTS: List[Dict] = [
                      "rise < 10 K; the pen still writes >= 8 h with assistance on",
          rationale="Rev H uses about 0.08 W; the 750 mAh cell must last a school day",
          source="AMF-100; AMF-109; docs/revH_concept.md", verification="EXP-D06", evidence_status="CALC; SIM",
-         current_estimate="see s4.5", trace="drive/scenarios.drive_metrics", status="proposed"),
+         current_estimate="drive 1-6 mW guiding, 84 mW leading (SIM); paper sensor 30-80 mW (CALC); 8-18 h (CALC)", trace="drive/scenarios.drive_metrics", status="proposed"),
     dict(id="REQ-DRV-010", area="drive", title="Noise",
          requirement="Drive noise <= 35 dB(A) at 30 cm while guiding (ASSUMPTION threshold, quiet classroom)",
          rationale="Two 6 mm motors and watch-scale gears may whine", source="ASSUMPTION", verification="EXP-D06",
@@ -175,6 +179,14 @@ EXPERIMENTS: List[Dict] = [
          method="Wheel rolled 10 km on copy paper at 0.55 N (about 5000 pages, ASSUMPTION), friction re-measured every "
                 "1 km", measurand="mu drift, diameter loss", pass_line="mu within 20 % of new; diameter loss < 0.05 mm",
          needs="rolling rig"),
+    dict(id="EXP-D13", title="Driven-ball fallback: roller drag and wear",
+         purpose="Decide whether the driven ball (better tracing and tremor numbers in SIM) can be built with low "
+                 "internal drag",
+         method="Bench ball drive: 2 mm urethane-coated ball, two rollers r 0.4 mm, smooth vs micro omni-type rollers "
+                "(if they can be made); push the ball along each roller axis and across; 1 km rolling on paper",
+         measurand="internal drag across the driven axis, drive force, wear, dust pick-up",
+         pass_line="drag <= 50 mN across the driven axis after 1 km (the SIM assumed 30 mN; smooth rollers: about "
+                   "0.22 N, CALC)", needs="micro-machined rollers, force sensor"),
 ]
 
 DECISION = (

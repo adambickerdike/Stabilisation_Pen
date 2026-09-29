@@ -39,6 +39,8 @@ LABEL = {
     "wheel_path+nose": "steered wheel + nose",
     "sd_full": "steered + driven wheel",
     "sd_path": "driven wheel, steer only",
+    "ballsmooth_full": "heel ball, full, smooth rollers",
+    "ballsmooth_damp": "heel ball damper, smooth rollers",
     "sd_lead": "steered + driven wheel, lead",
     "sd_lead+nose": "wheel lead + nose",
     "wheel_tremor_brake": "wheel: steer + brake",
@@ -92,11 +94,17 @@ def fig_geometry(design: Dict, out: Path) -> Path:
     ax.plot(r, wh, color=ps.SERIES[0], label="steered wheel + steering ring")
     ax.plot(r, bl, color=ps.SERIES[1], label="ball + two drive rollers (r 0.6 mm)")
     ax.axhline(6.75, color=ps.INK2, lw=1, ls=":")
-    ax.text(r.min(), 6.9, "Rev H skid ring 6.75 mm (DEC-034)", fontsize=8, color=ps.INK2)
+    ax.text(1.35, 6.85, "Rev H skid ring 6.75 mm (DEC-034)", fontsize=8, color=ps.INK2)
+    ch = design["geometry"].get("chosen_heel", {})
+    if ch:
+        ax.plot([ch["r_e_mm"]], [ch["R_d_mm"]], **ps.marker_kw(ps.SERIES[0]))
+        ax.annotate(f"chosen: 2 mm wheel, {ch['R_d_mm']:.2f} mm", xy=(ch["r_e_mm"], ch["R_d_mm"]),
+                    xytext=(ch["r_e_mm"] + 0.12, ch["R_d_mm"] + 0.9), fontsize=8, color=ps.INK2,
+                    arrowprops=dict(arrowstyle="-", color=ps.INK2, lw=0.7))
     ax.set_xlabel("element radius r_e (mm)")
     ax.set_ylabel("heel contact radius needed (mm)")
     ax.set_title("The drive must sit outside the swinging nose", loc="left")
-    ax.legend(loc="lower right")
+    ax.legend(loc="upper left")
     ax = axs[1]
     fe = [p["front_end"] for p in pods]
     ax.plot(r, [f["sleeve_front_d_mm"] for f in fe], color=ps.SERIES[0], label="sleeve front diameter (wheel pod)")
@@ -106,11 +114,11 @@ def fig_geometry(design: Dict, out: Path) -> Path:
     ax.axhline(ref["sleeve_front_d_mm"], color=ps.SERIES[0], lw=1, ls=":")
     ax.axhline(ref["refill_slide_range_mm"], color=ps.SERIES[2], lw=1, ls=":")
     ax.axhline(ref["ball_ahead_50_mm"], color=ps.SERIES[3], lw=1, ls=":")
-    ax.text(r.min(), ref["sleeve_front_d_mm"] + 0.3, "dotted: Rev H today", fontsize=8, color=ps.INK2)
+    ax.text(1.55, ref["sleeve_front_d_mm"] - 1.2, "dotted lines: Rev H today", fontsize=8, color=ps.INK2)
     ax.set_xlabel("element radius r_e (mm)")
     ax.set_ylabel("mm")
     ax.set_title("What the bigger heel costs the front end", loc="left")
-    ax.legend(loc="upper left", fontsize=7.5)
+    ax.legend(loc="center left", fontsize=7.5, bbox_to_anchor=(0.0, 0.62))
     p = _save(fig, out, "fig_heel_geometry", CALC_STAMP, "drive/geometry.py; opt/inertial/front_end.py method")
     _csv(out / "fig_heel_geometry.csv",
          ["r_e_mm", "R_element_alone_mm", "R_wheel_pod_mm", "R_ball_pod_mm", "sleeve_front_d_mm_wheel_pod",
@@ -144,7 +152,7 @@ def fig_capacity(design: Dict, out: Path) -> Path:
     axs[1].plot([c["P_N"] for c in sel], [100 * c["share_full"] for c in sel], color=ps.SERIES[0])
     axs[1].plot([c["P_N"] for c in sel], [100 * c["share_full"] for c in sel], **ps.marker_kw(ps.SERIES[0]))
     axs[1].set_xlabel("preload P (N)")
-    axs[1].set_ylabel("writers whose mean force keeps the element fully loaded (%)")
+    axs[1].set_ylabel("writers keeping it fully loaded (%)")
     axs[1].set_title("Light writers unload the heel", loc="left")
     p = _save(fig, out, "fig_traction_capacity", CALC_STAMP,
               "writer force CON-01 lognormal; ball carries 0.196 N; mu range ASSUMPTION (AMF-111)")
@@ -156,21 +164,29 @@ def fig_design_pareto(design: Dict, out: Path) -> Optional[Path]:
     par = design.get("design_opt", {}).get("pareto", {})
     if not par:
         return None
-    fig, ax = plt.subplots(figsize=(7.5, 4.4))
+    fig, axs = plt.subplots(1, 2, figsize=(11.5, 4.3))
     rows = []
     for i, (concept, pr) in enumerate(par.items()):
+        pr = sorted(pr, key=lambda r: r["R_d_mm"])
         R = [r["R_d_mm"] for r in pr]
-        ax.plot(R, [r["F_use_mean_N"] for r in pr], color=ps.SERIES[i], label=f"{concept}: mean over writers")
-        ax.plot(R, [r["F_use_p10_N"] for r in pr], color=ps.SERIES[i], ls="--", lw=1.4, label=f"{concept}: weakest 10 %")
-        ax.plot(R, [r["F_use_mean_N"] for r in pr], **ps.marker_kw(ps.SERIES[i]))
+        axs[0].plot(R, [r["F_use_mean_N"] for r in pr], color=ps.SERIES[i], label=f"{concept}: mean writer")
+        axs[0].plot(R, [r["F_use_p10_N"] for r in pr], color=ps.SERIES[i], ls="--", lw=1.4, label=f"{concept}: weakest 10 %")
+        axs[0].plot(R, [r["F_use_mean_N"] for r in pr], **ps.marker_kw(ps.SERIES[i]))
+        axs[1].plot(R, [r["m_r_g"] for r in pr], color=ps.SERIES[i], label=f"{concept}: reflected mass (g)")
+        axs[1].plot(R, [1e3 * r["P_cu_W"] for r in pr], color=ps.SERIES[i], ls=":", label=f"{concept}: copper loss at 0.15 N (mW)")
         for r in pr:
             rows.append([concept, r["w_dR"], r["R_d_mm"], r["r_e_mm"], r["P_N"], r["G"], r["F_use_mean_N"], r["F_use_p10_N"],
                          r["share_full"], r["m_r_g"], r["P_cu_W"], r["F_rr_N"]])
-    ax.set_xlabel("heel contact radius (mm)")
-    ax.set_ylabel("usable force at mu 0.6 (N)")
-    ax.set_title("Force against heel size (autograd optimum per size weight)", loc="left")
-    ax.legend(fontsize=7.5)
-    p = _save(fig, out, "fig_design_pareto", CALC_STAMP, "drive/design_opt.py (torch autograd; FD-checked)")
+    axs[0].set_ylim(0, 0.4)
+    axs[0].set_xlabel("heel contact radius (mm)")
+    axs[0].set_ylabel("usable force at mu 0.6 (N)")
+    axs[0].set_title("A bigger element gives no more force", loc="left")
+    axs[0].legend(fontsize=7.5, loc="lower right")
+    axs[1].set_xlabel("heel contact radius (mm)")
+    axs[1].set_ylabel("g  /  mW")
+    axs[1].set_title("What each optimum costs in feel and power", loc="left")
+    axs[1].legend(fontsize=7.5)
+    p = _save(fig, out, "fig_design_pareto", CALC_STAMP, "drive/design_opt.py (torch autograd; FD-checked); size-weight sweep")
     _csv(out / "fig_design_pareto.csv", ["concept", "w_dR", "R_d_mm", "r_e_mm", "P_N", "G", "F_use_mean_N", "F_use_p10_N",
                                          "share_full", "m_r_g", "P_cu_W", "F_rr_N"], rows)
     return p
@@ -229,7 +245,7 @@ def fig_feel(tasks: Dict, out: Path) -> Optional[Path]:
     pr = tasks.get("practice", {}).get("aggregate", {}).get("dysgraphia", {})
     if not rs or not pr:
         return None
-    conds = [c for c in ["board_full", "ball_full", "wheel_path", "sd_path", "sd_full"] if c in rs and c in pr]
+    conds = [c for c in ["board_full", "ball_full", "ballsmooth_full", "wheel_path", "sd_path", "sd_full"] if c in rs and c in pr]
     x = np.arange(len(conds))
     fig, axs = plt.subplots(1, 2, figsize=(11.5, 4.3))
     rows = []
@@ -260,7 +276,7 @@ def fig_loops_reversal(tasks: Dict, out: Path) -> Optional[Path]:
         return None
     fig, axs = plt.subplots(1, 3, figsize=(15, 4.4))
     rows = []
-    conds = [c for c in ["none", "board_full", "ball_full", "wheel_path", "sd_path", "sd_full"] if c in lp.get("relaxed", {})]
+    conds = [c for c in ["none", "board_full", "ball_full", "ballsmooth_full", "wheel_path", "sd_path", "sd_full"] if c in lp.get("relaxed", {})]
     x = np.arange(len(conds))
     for i, hand in enumerate(["relaxed", "lightly_resisting"]):
         if hand not in lp:
@@ -276,24 +292,35 @@ def fig_loops_reversal(tasks: Dict, out: Path) -> Optional[Path]:
     axs[0].set_ylabel("loop height / 10 mm target")
     axs[0].set_title("(b) 'write big': loops shrinking 0.8 -> 0.6", loc="left")
     axs[0].legend(fontsize=7.5)
-    for j, (wtr, key, yl, title) in enumerate([("set on b", "bowl_correct_side", "share of bowl ink on the 'd' side",
-                                               "(c) writer set on 'b', template 'd'"),
-                                              ("relaxed (lead-through)", "bowl_to_template_rms_mm", "bowl ink to template, RMS (mm)",
-                                               "(c) relaxed hand led through 'd'")]):
-        cells = rv.get(wtr, {})
-        cs = list(cells.keys())
-        xx = np.arange(len(cs))
-        v = [_get(cells[c], key) for c in cs]
-        e = [_get(cells[c], key + "_sd") for c in cs]
-        axs[j + 1].bar(xx, v, yerr=e, color=ps.SERIES[2 + j], capsize=2)
-        axs[j + 1].set_xticks(xx)
-        axs[j + 1].set_xticklabels([lab(c) for c in cs], rotation=25, ha="right", fontsize=8)
-        axs[j + 1].set_ylabel(yl)
-        axs[j + 1].set_title(title, loc="left")
-        for c in cs:
-            rows.append(["reversal", wtr, c, key, _get(cells[c], key)])
-            rows.append(["reversal", wtr, c, "felt_p95_N", _get(cells[c], "felt_p95_N")])
-            rows.append(["reversal", wtr, c, "F_max_N", _get(cells[c], "F_max_N")])
+    cells = rv.get("set on b", {})
+    cs = [c for c in ["board_full", "ball_full", "wheel_path", "sd_full"] if c in cells]
+    xx = np.arange(len(cs))
+    v = [_get(cells[c], "felt_p95_N") for c in cs]
+    e = [_get(cells[c], "felt_p95_N_sd") for c in cs]
+    axs[1].bar(xx, v, yerr=e, color=ps.SERIES[3], capsize=2)
+    axs[1].set_xticks(xx)
+    axs[1].set_xticklabels([lab(c) for c in cs], rotation=25, ha="right", fontsize=8)
+    axs[1].set_ylabel("change in grip force the writer feels, p95 (N)")
+    axs[1].set_title("(c) writer set on 'b', template 'd'", loc="left")
+    moved = max((_get(cells[c], "bowl_correct_side") for c in cs), default=float("nan"))
+    axs[1].text(0.02, 0.95, f"bowl moved to the 'd' side: {100 * moved:.0f} % at most (the writer wins)",
+                transform=axs[1].transAxes, fontsize=8, color=ps.INK2, va="top")
+    for c in cells:
+        for key in ("bowl_correct_side", "bowl_coverage", "felt_p95_N", "F_max_N"):
+            rows.append(["reversal", "set on b", c, key, _get(cells[c], key)])
+    cells = rv.get("relaxed (lead-through)", {})
+    cs = [c for c in ["none", "wheel_path", "board_lead", "ball_lead", "sd_lead"] if c in cells]
+    xx = np.arange(len(cs))
+    v = [100 * _get(cells[c], "bowl_coverage") for c in cs]
+    e = [100 * _get(cells[c], "bowl_coverage_sd") for c in cs]
+    axs[2].bar(xx, v, yerr=e, color=ps.SERIES[4], capsize=2)
+    axs[2].set_xticks(xx)
+    axs[2].set_xticklabels([lab(c) for c in cs], rotation=25, ha="right", fontsize=8)
+    axs[2].set_ylabel("template bowl covered by ink within 0.3 mm (%)")
+    axs[2].set_title("(c) relaxed hand led through 'd' (fixed pen-down time)", loc="left")
+    for c in cells:
+        for key in ("bowl_correct_side", "bowl_coverage", "bowl_to_template_rms_mm", "felt_p95_N", "F_max_N"):
+            rows.append(["reversal", "relaxed (lead-through)", c, key, _get(cells[c], key)])
     p = _save(fig, out, "fig_loops_reversal", SIM_STAMP, "tasks (b) and (c)")
     _csv(out / "fig_loops_reversal.csv", ["task", "writer", "cond", "metric", "value"], rows)
     return p
@@ -307,8 +334,10 @@ def fig_autowrite(tasks: Dict, out: Path) -> Optional[Path]:
     order = ["writer_alone", "nose_nogate", "relaxed_nose", "board_lead+nose", "ball_lead", "ball_lead+nose", "sd_lead",
              "sd_lead+nose"]
     conds = [c for c in order if c in ag]
-    fig = plt.figure(figsize=(15, 8.2))
-    gs = fig.add_gridspec(2, 3)
+    paths = aw.get("paths_first_case", {})
+    show = [c for c in ["writer_alone", "relaxed_nose", "board_lead+nose", "ball_lead+nose", "sd_lead+nose"] if c in paths]
+    fig = plt.figure(figsize=(15, 6.2 + 1.35 * len(show)))
+    gs = fig.add_gridspec(1 + len(show), 3, height_ratios=[4.2] + [1.0] * len(show))
     ax = fig.add_subplot(gs[0, 0])
     _bars(ax, conds, ag, "letters_read_ok", scale=100, color=ps.SERIES[2], ylabel="letters read as target (%)")
     ax.set_title("(e) autowrite: letters read", loc="left")
@@ -318,23 +347,20 @@ def fig_autowrite(tasks: Dict, out: Path) -> Optional[Path]:
     ax = fig.add_subplot(gs[0, 2])
     _bars(ax, conds, ag, "device_work_share", scale=100, color=ps.SERIES[1], ylabel="device share of positive work (%)")
     ax.set_title("who moved the pen", loc="left")
-    paths = aw.get("paths_first_case", {})
-    show = [c for c in ["relaxed_nose", "board_lead+nose", "sd_lead+nose"] if c in paths]
     rows = []
     for k, c in enumerate(show):
-        ax = fig.add_subplot(gs[1, k])
+        ax = fig.add_subplot(gs[1 + k, :])
         P = np.asarray(paths[c])
         if P.ndim == 2 and P.shape[1] >= 3:
             dn = P[:, 2] > 0.5
             x, y = P[:, 0], P[:, 1]                    # handwriting.metrics.decimate_path: mm
-            xs = np.where(dn, x, np.nan)
-            ys = np.where(dn, y, np.nan)
-            ax.plot(xs, ys, color=ps.INK, lw=1.0)
+            ax.plot(np.where(dn, x, np.nan), np.where(dn, y, np.nan), color=ps.INK, lw=1.0)
             for i in range(0, len(P), 4):
                 rows.append([c, P[i, 0], P[i, 1], int(dn[i])])
         ax.set_aspect("equal")
-        ax.set_title(lab(c), loc="left", fontsize=9)
-        ax.set_xlabel("mm")
+        ax.set_title(f"ink, first test case: {lab(c)}", loc="left", fontsize=9)
+        ax.tick_params(labelsize=7)
+        ax.grid(False)
     for c in conds:
         rows.append([c + " (aggregate)", _get(ag[c], "letters_read_ok"), _get(ag[c], "target_err_um"),
                      _get(ag[c], "pen_speed_mm_s")])
@@ -350,8 +376,8 @@ def fig_tremor(tasks: Dict, out: Path) -> Optional[Path]:
     if not byc:
         return None
     cells = sorted(byc.keys(), key=lambda s: (float(s.split("Hz")[0]), s))
-    conds = [c for c in ["nose_akf", "nose_oracle", "ball_damp", "ball_brake", "wheel_tremor_brake", "ball_damp+nose_akf",
-                         "wheel_known_text"] if c in byc[cells[0]]]
+    conds = [c for c in ["nose_akf", "nose_oracle", "ball_damp", "ballsmooth_damp", "ball_brake", "wheel_tremor_brake",
+                         "ball_damp+nose_akf", "wheel_known_text"] if c in byc[cells[0]]]
     amps = sorted({c.split("_")[1] for c in cells})
     fig, axs = plt.subplots(1, len(amps) + 1, figsize=(5.2 * (len(amps) + 1), 4.4))
     axs = np.atleast_1d(axs)
@@ -372,7 +398,7 @@ def fig_tremor(tasks: Dict, out: Path) -> Optional[Path]:
         ax.set_ylabel("ink error / ink error with nothing on")
         ax.set_title(f"(d) tremor {a.replace('mm', ' mm')} at the hand", loc="left")
         if j == 0:
-            ax.legend(fontsize=7)
+            ax.legend(fontsize=7, loc="lower left", bbox_to_anchor=(0.0, 0.1), framealpha=0.9)
     ax = axs[-1]
     tf = tr.get("tremor_free", {})
     nv = tf.get("naive", {})
@@ -546,7 +572,7 @@ def markdown_tables(design: Optional[Dict], tasks: Optional[Dict]) -> str:
             L.append("| condition | target error (um) | letters read | learner's error letters read as the target | words read (app) | force RMS (N) | force p95 (N) | felt change p95 (N) | true sliding | slip flags per run | coverage | drive power (mW) |")
             L.append("|---|---|---|---|---|---|---|---|---|---|---|---|")
             order = ["none", "nose_partial", "board_partial", "board_full", "ball_partial", "ball_full", "wheel_path",
-                     "wheel_partial", "sd_path", "sd_full", "wheel_path+nose"]
+                     "wheel_partial", "sd_path", "sd_full", "wheel_path+nose", "ballsmooth_full"]
             for c in [c for c in order if c in cells]:
                 cl = cells[c]
                 L.append(f"| {lab(c)} | {_pm(cl, 'target_err_um')} | {_f(cl.get('letters_read_ok'), pct=True)} | "
@@ -560,7 +586,7 @@ def markdown_tables(design: Optional[Dict], tasks: Optional[Dict]) -> str:
             L.append("\n### T6. A lightly resisting writer (SIM; upper-CI arm impedance; 6 writers x 2 seeds)\n")
             L.append("| condition | target error (um) | letters read | force RMS (N) | force p95 (N) | felt change RMS (N) | felt change p95 (N) | yields |")
             L.append("|---|---|---|---|---|---|---|---|")
-            for c in ["none", "board_full", "ball_full", "wheel_path", "sd_path", "sd_full"]:
+            for c in ["none", "board_full", "ball_full", "ballsmooth_full", "wheel_path", "sd_path", "sd_full"]:
                 if c in rs:
                     cl = rs[c]
                     L.append(f"| {lab(c)} | {_pm(cl, 'target_err_um')} | {_f(cl.get('letters_read_ok'), pct=True)} | {_f(cl.get('F_rms_N'))} | "
@@ -571,7 +597,7 @@ def markdown_tables(design: Optional[Dict], tasks: Optional[Dict]) -> str:
             L.append("| hand | condition | loop height / target | last loop / target | ink to template RMS (mm) | force RMS (N) | felt change RMS (N) |")
             L.append("|---|---|---|---|---|---|---|")
             for h, cells in lp.items():
-                for c in ["none", "board_full", "ball_full", "wheel_path", "sd_path", "sd_full"]:
+                for c in ["none", "board_full", "ball_full", "ballsmooth_full", "wheel_path", "sd_path", "sd_full"]:
                     if c in cells:
                         cl = cells[c]
                         L.append(f"| {h.replace('_', ' ')} | {lab(c)} | {_pm(cl, 'loop_height_ratio_ink', 2)} | {_f(cl.get('last_loop_ratio'))} | "
@@ -605,8 +631,8 @@ def markdown_tables(design: Optional[Dict], tasks: Optional[Dict]) -> str:
                      " | force RMS (N) | felt change RMS (N) | tremor-free distortion (um) | same, writer adapted (um) |")
             L.append("|---|" + "---|" * (len(amps) + 5))
             tf = tr.get("tremor_free", {})
-            for c in ["none", "nose_akf", "nose_oracle", "ball_damp", "ball_brake", "wheel_tremor_brake", "ball_damp+nose_akf",
-                      "wheel_known_text"]:
+            for c in ["none", "nose_akf", "nose_oracle", "ball_damp", "ballsmooth_damp", "ball_brake", "wheel_tremor_brake",
+                      "ball_damp+nose_akf", "wheel_known_text"]:
                 if c not in ba[amps[0]]:
                     continue
                 vals = [_pm(ba[a].get(c, {}), "ratio", 2) for a in amps]
@@ -620,7 +646,8 @@ def markdown_tables(design: Optional[Dict], tasks: Optional[Dict]) -> str:
                 cells = sorted([k for k in bc if k.endswith("_1mm")], key=lambda s: float(s.split("Hz")[0]))
                 L.append("| condition | " + " | ".join(k.replace("_", " ") for k in cells) + " |")
                 L.append("|---|" + "---|" * len(cells))
-                for c in ["nose_akf", "ball_damp", "ball_brake", "wheel_tremor_brake", "ball_damp+nose_akf", "wheel_known_text"]:
+                for c in ["nose_akf", "ball_damp", "ballsmooth_damp", "ball_brake", "wheel_tremor_brake", "ball_damp+nose_akf",
+                          "wheel_known_text"]:
                     if c in bc[cells[0]]:
                         L.append(f"| {lab(c)} | " + " | ".join(_f(bc[k].get(c, {}).get("ratio")) for k in cells) + " |")
                 adapted = [k for k in bc[cells[0]] if "(adapted" in k] if cells else []

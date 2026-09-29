@@ -19,7 +19,7 @@ measurement of hardware or people):
              harmonics; ET, PD (rest, re-emergent) and physiological profiles;
   paper      the H1 contact law by default (compliant penalty normal force and LuGre friction at the skid ring's
              lowest point and the ball, numba kernel), or MuJoCo's soft contacts with Coulomb friction (elliptic
-             cones) for coarse RL runs and geometry-rich plug-ins;
+             cones) for geometry-rich plug-ins and larger time steps;
   sensors    IMU (LSM6DSV16X class through fusion's reading models), nose Hall position, page sensor (optical flow,
              1 kHz, 2 ms), writing force, refill slide;
   checks     verify.py (contact closed forms, convergence, energy, gyroscope, sensors), h1compare.py (against H1),

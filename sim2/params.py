@@ -162,7 +162,7 @@ lab("hand.k_roll", "ASSUMPTION", "grip torsional stiffness 0.2 N m/rad: three pa
 @dataclass
 class Contact:
     model: str = "h1"                   # 'h1' (compliant penalty normal + LuGre friction, numba; default for ink studies) |
-                                        # 'mujoco' (MuJoCo soft contacts, Coulomb, elliptic cone; coarse RL and plug-ins)
+                                        # 'mujoco' (MuJoCo soft contacts, Coulomb, elliptic cone; geometry-rich plug-ins)
     mu_ball: float = 0.15
     mu_skid: float = 0.12
     mu_rubber: float = 0.6

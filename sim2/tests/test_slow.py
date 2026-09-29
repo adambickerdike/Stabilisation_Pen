@@ -29,3 +29,16 @@ def test_h1_comparison_one_case_within_tolerance():
 def test_run_study_quick_stage(tmp_path, monkeypatch):
     from sim2 import run_study as RS
     RS.main(["--quick", "--stages", "gyro"])
+
+
+@pytest.mark.slow
+def test_stable_baselines3_smoke():
+    """A PPO agent can train on the environment (a few hundred steps; interface check, not a result)."""
+    from stable_baselines3 import PPO
+    from sim2 import env as E
+    env = E.PenEnv(E.EnvConfig(seed=300, episode_s=0.2, settle_s=0.05))
+    model = PPO("MlpPolicy", env, n_steps=64, batch_size=32, n_epochs=1, verbose=0, seed=0, device="cpu")
+    model.learn(total_timesteps=128)
+    obs, _ = env.reset(seed=301)
+    a, _ = model.predict(obs, deterministic=True)
+    assert a.shape == env.action_space.shape

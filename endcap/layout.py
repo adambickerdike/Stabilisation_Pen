@@ -34,7 +34,7 @@ def shell_parts(d: Dict = None) -> List[Dict]:
         _p(id="ec_shell", label="End-cap shell", shape="tube", z0=Z0, z1=Z1, d0=P.ENV["od"] * 1e3, d1=P.ENV["od"] * 1e3, d_in=P.D_IN * 1e3,
            function="Closes the back of the pen and holds the end-cap parts; 26 mm across, 45 mm long.", part="PEEK tube, 1 mm wall",
            ledger="AMF-24", mass_g=pg.get("shell_g", DS.SHELL_M * 1e3)),
-        _p(id="ec_board", label="End-cap driver board", shape="box", z0=Z1 - 4.0, z1=Z1 - 1.5, size=[18.0, 18.0, 2.5],
+        _p(id="ec_board", label="End-cap driver board", shape="box", z0=Z1 - 4.0, z1=Z1 - 1.5, size=[16.0, 16.0, 2.5],
            function="Drivers for the end-cap actuators; talks to the main board.", part="PCB with coil or motor drivers (ASSUMPTION)",
            ledger="AMF-37", mass_g=pg.get("electronics_g", DS.ELEC_M * 1e3)),
     ]
@@ -72,6 +72,62 @@ def lrm_parts(d: Dict) -> List[Dict]:
                         size=[tc if ox else 8.0, 8.0 if ox else tc, Lcoil], offset=[ox * r_coil, oy * r_coil],
                         function="Fixed flat coil with a back iron: current through it pushes the facing magnet.",
                         part="self-bonding magnet wire, IEC class 155", ledger="AMF-29/AMF-30", mass_g=d["parts_g"]["copper_g"] / 4))
+    return parts
+
+
+# Proposed compact packaging (PROPOSED DESIGN, CALC geometry): the reaction-mass end-cap sits behind the Rev H cell, in the
+# slot of the Rev H rear module, with its spiral flexures nested inside the coil ring (outer rims held by four tabs between
+# the coils).  The Rev H cell stays at z 101-149.5 and the USB-C side port moves forward beside the cell's rear end.
+COMPACT = dict(z0=151.0, z1=175.0, zc=162.0, wall=0.8, board=2.0, usb_z=(147.0, 150.5))
+
+
+def lrm_parts_compact(d: Dict) -> List[Dict]:
+    x = d["x"]
+    ds, Ls, tc = x["d_s"] * 1e3, x["L_s"] * 1e3, x["t_c"] * 1e3
+    X = d["X"] * 1e3
+    pg = d["parts_g"]
+    C = COMPACT
+    zc = C["zc"]
+    Lmag = min(Ls, 12.0)
+    Lcoil = Lmag + 2 * X
+    r_coil = ds / 2 + X + 1.0 + DS.CLEAR * 1e3 + tc / 2
+    r_plate = r_coil - tc / 2 - 0.3                      # nested plate: inside the coil ring
+    L_shell = C["z1"] - C["z0"]
+    shell_g = pg.get("shell_g", DS.SHELL_M * 1e3) * L_shell / (P.ENV["length"] * 1e3)
+    wall_g = P.RHO_PEEK * math.pi / 4 * (P.D_IN * 1e3) ** 2 * C["wall"] * 1e-6       # g (RHO in g/cm3 x mm3 / 1000)
+    z_board0 = zc + Lcoil / 2 + 0.2
+    parts = [
+        _p(id="ec_shell", label="End-cap shell", shape="tube", z0=C["z0"], z1=C["z1"], d0=P.ENV["od"] * 1e3, d1=P.ENV["od"] * 1e3,
+           d_in=P.D_IN * 1e3, function=f"Closes the back of the pen and holds the reaction mass; 26 mm across, {L_shell:.0f} mm long.",
+           part="PEEK tube, 1 mm wall", ledger="AMF-24", mass_g=shell_g),
+        _p(id="ec_end_wall", label="End-cap rear wall", shape="cylinder", z0=C["z1"] - C["wall"], z1=C["z1"], d0=P.D_IN * 1e3, d1=P.D_IN * 1e3,
+           function="Closes the rear of the end-cap.", part="PEEK disc 0.8 mm", ledger="AMF-24", mass_g=wall_g),
+        _p(id="ec_board", label="End-cap driver board", shape="box", z0=z_board0, z1=z_board0 + C["board"], size=[16.0, 16.0, C["board"]],
+           function="Coil drivers and the slug's position sensor; talks to the main board.", part="PCB with coil drivers (ASSUMPTION)",
+           ledger="AMF-37", mass_g=pg.get("electronics_g", DS.ELEC_M * 1e3)),
+        _p(id="ec_slug", label="Tungsten reaction mass", shape="cylinder", z0=zc - Ls / 2, z1=zc + Ls / 2, d0=ds, d1=ds, moves_with="inertial_mass",
+           function=f"A heavy slug that the coils push sideways (up to +/-{X:.1f} mm in two axes); its reaction steadies the pen and can pulse for cues.",
+           part="tungsten heavy alloy, non-magnetic grade (INERMET class)", ledger="AMF-49/AMF-125", mass_g=pg["slug_g"]),
+    ]
+    for name, z0_, z1_ in (("front", zc - Ls / 2 - 1.0, zc - Ls / 2 - 0.2), ("rear", zc + Ls / 2 + 0.2, zc + Ls / 2 + 1.0)):
+        parts.append(_p(id=f"ec_flexure_{name}", label=f"Flexure plate ({name})", shape="tube", z0=z0_, z1=z1_, d0=2 * r_plate, d1=2 * r_plate,
+                        d_in=4.0, function="Spiral spring plate nested inside the coil ring (rim held by four tabs between the coils), joined to "
+                                           "the slug by a short axle: lets it move sideways, centres it at about 5 Hz, stiff along the pen.",
+                        part="17-7PH or 301 spring steel, laser cut (ASSUMPTION)", ledger="AMF-20", mass_g=pg["frame_g"] / 2))
+    for ax, (ox, oy) in (("x+", (1, 0)), ("x-", (-1, 0)), ("y+", (0, 1)), ("y-", (0, -1))):
+        parts.append(_p(id=f"ec_magnet_{ax}", label="Slug magnet", shape="box", z0=zc - Lmag / 2, z1=zc + Lmag / 2,
+                        size=[1.0 if ox else 3.0, 3.0 if ox else 1.0, Lmag], offset=[ox * (ds / 2 + 0.5), oy * (ds / 2 + 0.5)], moves_with="inertial_mass",
+                        function="NdFeB tile on the slug; the facing coil pushes it sideways.", part="NdFeB N45 tile 1 mm thick", ledger="AMF-28",
+                        mass_g=pg["magnets_g"] / 4))
+        parts.append(_p(id=f"ec_coil_{ax}", label="Flat coil", shape="box", z0=zc - Lcoil / 2, z1=zc + Lcoil / 2,
+                        size=[tc if ox else 8.0, 8.0 if ox else tc, Lcoil], offset=[ox * r_coil, oy * r_coil],
+                        function="Fixed flat coil with a back iron: current through it pushes the facing magnet.",
+                        part="self-bonding magnet wire, IEC class 155", ledger="AMF-29/AMF-30", mass_g=pg["copper_g"] / 4))
+    u0, u1 = C["usb_z"]
+    parts.append(_p(id="ec_usb_moved", label="USB-C port and button (moved)", shape="box", z0=u0, z1=u1, size=[8.4, 2.6, u1 - u0], offset=[0.0, 9.0],
+                    optional=False, function="The Rev H side port, moved 3 mm forward beside the cell's rear end (the cell is 14.1 mm across, the "
+                                             "port sits at the shell wall 9 mm off the axis).", part="USB-C receptacle (mid-mount)", ledger="",
+                    mass_g=0.0))
     return parts
 
 
@@ -119,17 +175,25 @@ def write(path, res: Dict):
     rec = res.get("recommendation", {})
     choice = rec.get("choice") or res.get("layout_choice") or "lrm"
     d = res["designs"][choice]
-    parts = lrm_parts(d) if d["class"] == "LRM2" else cmg_parts(d)
+    compact = d["class"] == "LRM2"
+    parts = lrm_parts_compact(d) if compact else cmg_parts(d)
     total = sum(p.get("mass_g", 0.0) for p in parts)
     meta = {"evidence_status": "PROPOSED DESIGN (dimensions from endcap/optimise.py; part masses CALC and ASSUMPTION); not built",
             "generated_utc": res["meta"]["generated_utc"], "git_revision": res["meta"]["git_revision"], "script": "endcap/layout.py",
             "doc": "docs/inertial_endcap.md", "design_class": d["class"], "choice": choice, "mass_total_g": total,
             "replaces": ["rear_cap", "rm_frame", "rm_mass", "rm_coils"],
-            "conflicts": ["The end-cap occupies z 130-175 mm, so the Rev H handle shell ends at z 130 and the pen grows from 170 to 175 mm (Rev J limit).",
-                          "The Rev H cell (14500, 48.5 mm long, z 101-149.5) no longer fits: 31 mm remain between the board (ends z 99) and the "
-                          "end-cap; a 10440 (44.5 mm, AMF-31) does not fit either. The cell, the board or the end-cap length must be rearranged "
-                          "(open issue for the lead).",
-                          "The USB-C port and button (z 150-153.5) must move."],
+            "moves": (["usb"] if compact else []),
+            "conflicts": (["Proposed compact packaging: the end-cap spans z 151-175 mm behind the Rev H cell (z 101-149.5, unchanged); the Rev H "
+                           "handle shell ends at z 151 and the pen grows from 170 to 175 mm (Rev J limit). The USB-C side port moves from "
+                           "z 150-153.5 to z 147-150.5, beside the cell's rear end.",
+                           "The study simulated the slug centre at z 152.5 mm (a 45 mm end-cap at z 130-175, which leaves the 48.5 mm "
+                           "cell no room); the compact packaging puts it at z 162 mm. See 'packaging_check' for the effect."]
+                          if compact else
+                          ["The end-cap occupies z 130-175 mm, so the Rev H handle shell ends at z 130 and the pen grows from 170 to 175 mm (Rev J limit).",
+                           "The Rev H cell (14500, 48.5 mm long, z 101-149.5) no longer fits: 31 mm remain between the board (ends z 99) and the "
+                           "end-cap; a 10440 (44.5 mm, AMF-31) does not fit either. The cell, the board or the end-cap length must be rearranged "
+                           "(open issue for the lead).",
+                           "The USB-C port and button (z 150-153.5) must move."]),
             "axes": "z along the pen axis from the ball tip (z = 0) toward the back; x in the tilt plane, positive away from the paper; y sideways",
             "optional_note": "every end-cap part is marked optional: the end-cap is a module that replaces the Rev H rear cap and rear "
                              "module; whether it is standard is the lead's decision (see the doc's proposed decision)",
@@ -139,6 +203,8 @@ def write(path, res: Dict):
         meta.update({"rotor_speed_rpm": d["x"]["n"], "spin_axis": "along the pen axis (z) with the gimbals centred",
                      "angular_momentum_Nms_per_rotor": d["H"], "stored_energy_J_total": d["extras"]["E_J"]})
     else:
-        meta.update({"rotor_speed_rpm": None, "spin_axis": None, "moving_mass_g": d["moving_mass_g"], "stroke_mm": d["X"] * 1e3})
+        meta.update({"rotor_speed_rpm": None, "spin_axis": None, "moving_mass_g": d["moving_mass_g"], "stroke_mm": d["X"] * 1e3,
+                     "packaging": "compact (PROPOSED DESIGN): flexures nested inside the coil ring, end-cap z 151-175 mm, slug centre z 162 mm",
+                     "packaging_check": res.get("compact_packaging")})
     provenance.write_json(path, {"meta": meta, "units": "mm", "components": parts})
     return parts

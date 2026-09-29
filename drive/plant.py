@@ -80,6 +80,9 @@ DNAMES = [
     "plaw", "k_st", "L_t",
     # share of the drive train's own friction (back-drive, scrub) that the controller compensates
     "k_fc",
+    # lateral release of the steered wheel (proposed after the test; default off): above the force cap, the heading
+    # turns toward the writer's lateral push with apparent mass m_rel, so the constraint reaction is also capped
+    "rel_on", "m_rel",
 ]
 DIDX = {n: i for i, n in enumerate(DNAMES)}
 NDP = len(DNAMES)
@@ -168,6 +171,7 @@ def simulate(P, D, hp, trem, down, active, Ntot, qext, tmpl, tdown, tss, tse, dt
     tlaw = int(D[D_tlaw])
     plaw = int(D[D_plaw]); k_st = D[D_k_st]; L_t = D[D_L_t]
     k_fc = D[D_k_fc]
+    rel_on = D[D_rel_on] > 0.5; m_rel = D[D_m_rel]
     flp = 0.0                                            # low-passed lateral force (tremor steering)
     Nb0 = Fc / sin_th
     Ts = dt * tdec
@@ -440,6 +444,12 @@ def simulate(P, D, hp, trem, down, active, Ntot, qext, tmpl, tdown, tss, tse, dt
                             want_psi = _near_mod_pi(math.atan2(qy_, qx_) + math.atan(k_st * ecr / (vm_ + 0.005)), psic)
                         else:
                             want_psi = _near_mod_pi(math.atan2(ay_, ax_), psic)
+                        if rel_on and abs(Flat_meas) > capd and capd > 0.0:
+                            # lateral release: the excess of the across-heading reaction over the cap turns the
+                            # wheel toward the push (free mode on the excess only)
+                            um = max(abs(u), u_min)
+                            exc = abs(Flat_meas) - capd
+                            want_psi += math.copysign(exc, Flat_meas) / (m_rel * um) * Ts
                         # longitudinal push along the path direction (sign by the heading): lead-through /
                         # autowrite regulates the speed; path guidance adds the board's small lead while the
                         # writer moves forward
@@ -781,6 +791,8 @@ class Drive:
     k_st: float = 5.0                 # 1/s Stanley cross-track gain
     L_t: float = 0.3e-3               # m tangent look-ahead (Stanley)
     k_fc: float = 0.7                 # compensated share of the drive's own friction (ASSUMPTION)
+    rel_on: bool = False              # lateral release of the steered wheel (proposed; off in the frozen test)
+    m_rel: float = 0.02               # kg apparent mass of the release (ASSUMPTION)
     relaxed: bool = False
     tau_relax: float = 0.25
     tau_air: float = 0.05
@@ -808,7 +820,7 @@ class Drive:
         s("b_noise", self.b_noise); s("b_pull", self.b_pull); s("wc_pull_frac", 1.0)
         s("slip_v", self.slip_v); s("slip_t", self.slip_t); s("mu_adapt", self.mu_adapt); s("win_fwd", self.win_fwd)
         s("tlaw", self.tlaw); s("plaw", self.plaw); s("k_st", self.k_st); s("L_t", self.L_t)
-        s("k_fc", self.k_fc)
+        s("k_fc", self.k_fc); s("rel_on", self.rel_on); s("m_rel", self.m_rel)
         return D
 
 

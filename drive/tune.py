@@ -232,6 +232,7 @@ def gains_for(rules: Dict, cond: str) -> S.Gains:
     G = rules["gains"]
     g = S.Gains(**G["common"])
     c = cond.replace("+nose_akf", "").replace("+nose", "")
+    c = c.replace("ballsmooth", "ball")          # the smooth-roller ball uses the ball's gains (hardware differs only)
     if c == "wheel_partial":
         g = replace(g, band=G["wheel_partial_band"])
     if c in ("ball_damp", "ball_brake"):

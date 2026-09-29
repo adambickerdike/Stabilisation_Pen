@@ -14,6 +14,7 @@ touches the final results):
   offshelf  45 g CMG optima with catalogue motors only (no integrated-motor concept)                  (CALC, ~2 min)
   rw        reaction-wheel fronts with the corrected peak-power model (replaces the optimise stage's)    (CALC, ~4 min)
   budgets   larger envelopes redone with a second CMA-ES run and a warm-started Adam run              (CALC, ~8 min)
+  compact   the reaction-mass end-cap moved 9.5 mm rearward (proposed packaging), test seeds, r_rot 0.5  (SIM, ~4 min)
   report    results/endcap/endcap_study.json, figures (+CSV), evidence rows, layout_parts.json
 Run: python3 -m endcap.run_study [--quick] [--stages a,b,...]
 Rules (RULES below) were written into this file before the test stage was first run; the test stage records the time.
@@ -534,6 +535,37 @@ def stage_budgets(quick=False):
     return out
 
 
+# ================================================================================================ compact packaging (sensitivity)
+Z_COMPACT = 0.162          # slug centre (m) in the proposed compact packaging behind the Rev H cell (docs, section 9)
+
+
+def stage_compact(quick=False):
+    """Sensitivity check for the proposed packaging (SIM; run after the rules, the tuning and the test; not used to choose
+    anything): the reaction-mass end-cap moved 9.5 mm rearward, slug centre z 162 mm instead of 152.5 mm, so that the
+    Rev H cell keeps its place.  Same design, gain and seeds; r_rot 0.5; 8, 10, 12 Hz x 1, 2 mm."""
+    import dataclasses
+    from endcap import sim as S
+    des = chosen_designs(quick)
+    tune = load("tune", quick)
+    s = des["lrm"]
+    g = tune["chosen"].get("lrm", {}).get("gain", 1.0)
+    seeds = P.SEEDS["test"][:1] if quick else P.SEEDS["test"]
+    conds = ((10.0, 1e-3),) if quick else tuple((f, a) for f in (8.0, 10.0, 12.0) for a in (1e-3, 2e-3))
+    out = {"meta": meta("SIMULATION (test seeds; a sensitivity check after the test, not used to choose anything)", seeds={"test": list(seeds)}),
+           "z_mm": {}, "gain": g}
+    for z in (P.Z_CAP, Z_COMPACT):
+        dev = dataclasses.replace(S.h1_device(s), z=z)
+        ev = S.TremorEval(dev, 0.5, gain=g, Km=s.get("Km"))
+        rows = [ev.case(seed, f0, a) for seed in seeds for f0, a in conds]
+        fr = [1 - c["nose+dev"] / c["nose"] for c in rows]
+        out["z_mm"][f"{z * 1e3:.1f}"] = {"rows": rows, "further_reduction_mean": float(np.mean(fr)),
+                                          "nose_plus_device_mean": float(np.mean([c["nose+dev"] for c in rows])),
+                                          "nose_mean": float(np.mean([c["nose"] for c in rows]))}
+        log(f"compact z {z * 1e3:.1f} mm: further reduction {np.mean(fr) * 100:.1f} % (r_rot 0.5, 8-12 Hz, 1-2 mm)")
+    save("compact", out, quick)
+    return out
+
+
 # ================================================================================================ report
 def stage_report(quick=False):
     from endcap import report as RP
@@ -543,7 +575,7 @@ def stage_report(quick=False):
 
 STAGES = {"scaling": stage_scaling, "optimise": stage_optimise, "gradient": stage_gradient, "tune": stage_tune, "test": stage_test, "steer": stage_steer,
           "gyro": stage_gyro, "cue": stage_cue, "offshelf": stage_offshelf, "rw": stage_rw, "budgets": stage_budgets,
-          "report": stage_report}
+          "compact": stage_compact, "report": stage_report}
 
 
 def main(argv=None):

@@ -26,20 +26,20 @@ Labels used for every number:
 | Check | Result | Label |
 |---|---|---|
 | Reproduces H1 (Rev H-B, H1's test seeds, 56 cases) | Unmodified ink error within 3.1 % of H1 in every case (tolerance 10 %). Perfect-knowledge ("oracle") ratio within ±0.03 of H1 in 52 of 56 cases; worst +0.037. Causal-tracker ratio within ±0.05 in 50 of 56 cases; the misses come from the tracker's frequency lock, not the plant (§5.1) | SIM, `results/sim2/verification.json` |
-| Time step | [[CONV_SUMMARY]] | SIM |
+| Time step | Ink path at 25 µs within 0.22 µm rms of the 12.5 µs solution; oracle ratio changes by 0.0003; first-order convergence (observed order 1.07); 50 µs within 0.66 µm; 100 µs breaks down (71 µm) | SIM |
 | Energy balance | Residual ≤ 6.8 × 10⁻⁴ of the energy scale in conservative, damped and actuated tests, for all four MuJoCo integrators | SIM |
 | Gyroscopic torque | Rotor reaction torque equals h × ω within 1.3 × 10⁻⁴ (relative) | SIM |
 | Contact closed forms | MuJoCo contact stiffness and stick creep match their closed forms within 0.3 % (stiff setting); H1 law pre-sliding stiffness within 0.5 % | SIM |
 | Sensor models | Accelerometer noise density 58.5–59.6 µg/√Hz against fusion's 60 µg/√Hz (MFR OPT-37); page-sensor latency 2.0 ms at 1 kHz as set | SIM |
-| Gym speed (one core, shared machine) | [[ENV_SPEED]] | SIM |
+| Gym speed (one core, shared machine) | 478 environment steps/s at 1 kHz control with the H1 law (0.48 simulated s per wall-clock s, about 52 µs per 25 µs physics step); 223 steps/s with native contacts; measured on one core while the other studies loaded the machine (load average 7–9 on 4 cores) | SIM |
 
 **What we found on the way** (details in §5–§7; each is a finding about the model or the design, not a measurement):
 
-1. **Front stop.** When the nose tilts, the ball rises or falls by about q·z_p·cot θ. A refill front stop fixed 0.3 mm beyond contact lifts the ball off the paper during large corrections. H1 assumed an ideal refill and did not see this (§5.8).
+1. **Front stop.** When the nose tilts, the ball rises or falls by about q·z_p·cot θ. A refill front stop fixed 0.3 mm beyond contact lifted the ball off the paper for 27–37 % of the pen-down time once the nose corrected; a stop that follows the nose, or one about 3 mm further out, kept contact. H1 assumed an ideal refill and did not see this (§5.8).
 2. **Native contacts chatter.** MuJoCo's stiff soft contact (0.5 ms, impratio 10) creeps least in stick but chatters when the pen slides (normal-force variation 2.6–3.0 times the mean). A softer setting slides cleanly but creeps about 30 µm/s in stick. H1's law is therefore the default for ink studies (§5.2).
 3. **Causal ratio is bistable.** The largest sim2–H1 differences in the causal ratio are the tracker locking onto the tremor or not, on nearly identical inputs (§5.1).
 4. **MyoSuite arm.** With constant co-contraction the Hill-type MyoArm cannot hold the pen-grasp posture on its own (7 slowly diverging modes). Its pen-point impedance at 8 Hz is 1.1–5.6 times HAP-26's (§7.3).
-5. **Synthetic writers.** [[WRITER_SUMMARY]] (§6).
+5. **Synthetic writers.** The synthetic writers used by every simulator differ from measured writing. The sigma-lognormal writer is about half as fast as adults writing a phrase on paper (14.5 against 30.5 mm/s, LIT CON-20) with longer strokes and little 4–12 Hz content; the aiguide glyph writer has about ten times more 8–12 Hz content than recorded characters (14 % against 1.3–1.7 % of velocity energy, LIT CON-25) and nearly constant speed along curves (§6).
 6. **Passive rotor.** A 1.2 mN·m·s rotor spinning passively in the end cap did not lower the ink error with a translational hand tremor (+1.3 %, one case, §5.9).
 7. **Code fix.** A new unit test found a sign error in sim2's own C-ring contact point (it used the arc end instead of the lowest point). It was fixed before the results in this report. The H1 check used H1's fixed skid point and was not affected.
 
@@ -56,7 +56,7 @@ Labels used for every number:
 | Nose | Body on two hinges at the gimbal (45 mm from the tip), flexure stiffness 0.025 N·m/rad per axis, structural damping ratio 0.02 | 6.96 g; 6.0 × 10⁻⁶ kg·m² about the pivot (CALC); stiffness ASSUMPTION |
 | Voice coils | One actuator per axis at 79 mm: current input with the coil's L/R time constant, force = K_f·I, limits 1.5 A and 3.7 V minus back-EMF, copper loss and a first-order coil temperature | Km 0.47 N/√W, R 2.47 Ω, K_f 0.74 N/A (CALC), L 100 µH, 100 K/W, 0.5 J/K (ASSUMPTION) |
 | Nose servo | H1's second-order reference follower (80 Hz, ζ 0.7, 0.6 m/s slew) realised by an inverse-dynamics + PD + integral inner loop at 400 Hz, updated at 10 kHz; bias torque for the static ball load | ASSUMPTION (`results/revH/tip_params.json`) |
-| Refill | Slide joint with a constant-force spring (0.15 N), front stop that follows the nose deflection 0.3 mm beyond contact (§5.8) | F_c ASSUMPTION (EXP-Q02); D1 refill 0.84 g (DEC-004) |
+| Refill | Slide joint with a constant-force spring (0.15 N), front stop that follows the nose deflection 0.3 mm beyond contact (§5.8) | F_c ASSUMPTION (EXP-Q02); D1 refill 0.84 g (DEC-004) + 10 % |
 | Tilt | 50° writing altitude | LIT CON-02; DR 40–60° |
 
 ### 2.2 Plug-ins (`sim2/plugins.py`; every default is ASSUMPTION until studies D, K and N hand over)
@@ -90,8 +90,8 @@ Narrow-band torque generators at the forearm and wrist (and optionally a force a
 | Profile | Frequency | Behaviour | Source |
 |---|---|---|---|
 | ET | 4–12 Hz, default 6 Hz | Present while writing (kinetic) | LIT PDT-56, PDT-07, PDT-31 |
-| PD rest | 4–6 Hz, default 5 Hz | Suppressed while the pen moves (gate 0.15, 0.15 s), re-emerges over 3 s after it stops | LIT PDT-56, PDT-07, PDT-09 |
-| PD action | 4–6 Hz | Present while writing | LIT PDT-08 |
+| PD rest | Default 5 Hz (LIT range 3–6 Hz) | Suppressed while the pen moves (gate 0.15 within 0.15 s, ASSUMPTION shape), re-emerges over 3 s after it stops | LIT PDT-56, PDT-07, PDT-09 |
+| PD action | Default 5 Hz (LIT range 5–8 Hz for PD action tremor) | Present while writing | LIT PDT-56, PDT-08 |
 | Physiological | 8–12 Hz, broadband | About 30 µm rms at the hand | LIT PDT-56, PDT-15 |
 
 `tremor.calibrate()` sets the torque amplitudes so the lifted pen tip moves with a chosen peak amplitude at f0 (CALC on the linearised arm). In the H1-hand mode the tremor is H1's imposed hand-path displacement (and optional wrist rotation), as in `opt/inertial`.
@@ -101,7 +101,7 @@ Narrow-band torque generators at the forearm and wrist (and optionally a force a
 | Mode | What it does | When to use |
 |---|---|---|
 | `'h1'` (default) | Compliant penalty normal force (10⁵ N/m, 10 N·s/m at the skid; 10⁵ N/m, 2 N·s/m at the ball) and LuGre friction normalised by N (μ_s/μ_k 1.3, Stribeck 2 mm/s, pre-sliding 10 µm) at the skid's lowest point and the ball's lowest point, applied as wrenches every step; compiled with numba | Ink metrics (micrometres) |
-| `'mujoco'` | MuJoCo soft contacts with Coulomb friction on elliptic cones; default solref 2 ms, solimp 0.95/0.99/0.1 mm, impratio 1 | Coarse RL runs, geometry-rich plug-ins (heel drive) |
+| `'mujoco'` | MuJoCo soft contacts with Coulomb friction on elliptic cones; default solref 2 ms, solimp 0.95/0.99/0.1 mm, impratio 1 | Geometry-rich plug-ins (heel drive), larger time steps; slower than `'h1'` at 25 µs |
 
 Friction coefficients: ball 0.15 (ASSUMPTION; CON-13 0.09–0.165), skid 0.12 (ASSUMPTION; EXP-Q01), rubber 0.6 (ASSUMPTION).
 
@@ -142,7 +142,7 @@ res = S.run(pm, SC.get(300, SC.tremor(8.0, 1e-3)))         # recorded channels, 
   - reward: −(e/0.1 mm)² per tick while the ball touches the paper, e = ink deviation from the tremor-free ink of the same plant and writing, minus small action-rate and saturation penalties;
   - episode: 3 s of sigma-lognormal writing with a sampled tremor at 1 kHz control; domain randomisation per episode (table in §7.4).
 - **Study.** `python3 -m sim2.run_study [--quick] [--stages ...]`. Stages: h1check, diagnose, contact, convergence, frontstop, energy, gyro, sensors, native, arm, myo, validate, env, plugins, report.
-- **Tests.** `python3 -m pytest sim2/tests -q` (fast, about 15 s); `--runslow` adds MyoArm, one H1 case and a quick stage.
+- **Tests.** `python3 -m pytest sim2/tests -q` (fast, about 25 s on the shared machine: model, contact kernel against its Python reference, closed forms, energy, gyroscope, tremor, sensors, Gymnasium checker, plug-ins, the s2r adapter); `--runslow` adds MyoArm, one H1 case, a Stable-Baselines3 PPO smoke run and a quick stage.
 
 ## 5. Verification (code and calculation verification, ASME V&V 40 sense)
 
@@ -203,7 +203,25 @@ H1 contact law (LuGre), point mass (CALC closed forms):
 
 Rev H case, training seed 300, 8 Hz, 1 mm, first 3 s; ink path difference against the finest step (12.5 µs):
 
-[[CONV_TABLE]]
+| Contact law, integrator | Step | Unmodified ink error | Oracle ratio | Ink path difference vs 12.5 µs | Observed order |
+|---|---|---|---|---|---|
+| H1 law, implicitfast | 12.5 µs | 1110.64 µm | 0.1420 | — | — |
+| | 25 µs | 1110.53 µm | 0.1417 | 0.22 µm | — |
+| | 50 µs | 1110.30 µm | 0.1411 | 0.66 µm | 1.07 |
+| | 100 µs | 1103.18 µm | 0.1397 | 71.3 µm | breaks down |
+| Native (2 ms), implicitfast | 12.5 µs | 1108.85 µm | 0.1462 | — | — |
+| | 25 µs | 1108.61 µm | 0.1458 | 0.66 µm | — |
+| | 50 µs | 1108.38 µm | 0.1452 | 2.35 µm | 1.60 |
+| | 100 µs | 1099.02 µm | 0.1438 | 71.6 µm | breaks down |
+| H1 law, RK4 | 25 µs | 1110.87 µm | 0.1418 | | |
+| H1 law, Euler | 25 µs | 1110.87 µm | 0.1418 | | |
+| H1 law, implicit | 25 µs | 1110.53 µm | 0.1417 | | |
+
+- 25 µs is converged for ink metrics: 0.22 µm rms against a 1111 µm error (0.02 %). The oracle ratio moves by 0.0003.
+- 50 µs is usable for training (0.66 µm, ratio −0.0006), which halves the cost.
+- At 100 µs both contact laws jump by about 71 µm. The step no longer resolves the fastest parts of the model (the ball's penalty contact on the 0.92 g refill rings at about 1.66 kHz, CALC; the stiff refill-stop limit and the 10 kHz servo). The cause was not isolated; 100 µs is outside the valid range.
+- The four integrators agree within 0.34 µm on the unmodified error and 0.0001 on the ratio at 25 µs.
+- The native contact gives a 0.2 % smaller unmodified error and a 0.004 larger oracle ratio than the H1 law on this case.
 
 ### 5.4 Energy balance (SIM, `verification.json` → `energy`)
 
@@ -224,7 +242,7 @@ The residual is the midpoint power estimate's own error; the integrators do not 
 ### 5.6 Sensors (SIM, `verification.json` → `sensors`)
 
 - Accelerometer reading, pen held still, 20–200 Hz: 59.6 and 58.5 µg/√Hz (x, y) against fusion's setting of 60 µg/√Hz (MFR OPT-37); ODR 3840 Hz as set.
-- With the firmware's lever-arm compensation (r × dω/dt) the page-frame estimate carries 294–372 µg/√Hz in the same band: the derivative of gyro noise times the 91 mm lever. This is a property of the compensation, not a model error.
+- With the firmware's lever-arm compensation (r × dω/dt) the page-frame estimate carries 294–372 µg/√Hz in the same band: the derivative of gyro noise times the IMU lever (100 mm in the H1-check configuration). This is a property of the compensation, not a model error.
 - MuJoCo's native accelerometer against differentiated site velocity and positions in the 3–15 Hz band: correlation 0.9997; rms difference 2.4 % (SIM).
 - Page sensor: 1 kHz, 2.0 ms latency as set.
 
@@ -236,7 +254,17 @@ The residual is the midpoint power estimate's own error; the integrators do not 
 
 Tilting the nose by q moves the ball along t₁ and changes its height, so the refill must extend by about q·z_p·cot θ to stay on the paper. H1 treated the refill as an ideal constant force and never met a stop.
 
-[[FRONTSTOP_TABLE]]
+Oracle correction on training seeds 300–301 (8 Hz 1 mm, 8 Hz 2 mm, 12 Hz 2 mm), H1 hand, three front-stop designs (SIM):
+
+| Front stop | Ball in contact while the pen is down (6 cases) | Oracle ratio (6 cases) |
+|---|---|---|
+| Follows the nose deflection, 0.3 mm beyond contact (sim2 default) | 0.908–1.000 (5 of 6 cases ≥ 0.998) | 0.095–0.282 |
+| Fixed 0.3 mm beyond the contact position | **0.63–0.73** | Not meaningful: the ink is missing for 27–37 % of the pen-down time |
+| Fixed, 0.3 mm + stop travel × cot θ = 3.2 mm beyond contact | 0.984–1.000 | 0.109–0.336 |
+
+- A fixed stop close to the contact position loses the ink for a third of the writing time once the nose corrects. The tremor-free reference keeps contact 100 % of the time in every case.
+- Either a stop that follows the nose, or a fixed stop at about travel × cot θ_min + 0.3 mm (CALC: 2.8 mm at 50°, 4.6 mm at 35° for the 3.0 mm usable travel), keeps the ball on the paper. The adaptive stop gives the better ratios (0.095–0.282 against 0.109–0.336).
+- Even the adaptive stop lost contact 9 % of the time in one 12 Hz 2 mm case: the refill's constant-force spring (0.15 N on 0.92 g) and the ball's contact dynamics then limit how fast the ball follows the paper.
 
 ### 5.9 Plug-in smoke runs (SIM, `results/sim2/plugins.json`)
 
@@ -252,17 +280,54 @@ Tilting the nose by q moves the ball along t₁ and changes its height, so the r
 
 | Quantity | sim2 | Literature | Status |
 |---|---|---|---|
-[[VALIDATION_TABLE]]
+| Writing speed, pen down (mean) | σ-lognormal writer 14.5 mm/s (median 13.4, 95th percentile 32.1); glyph writer 17.7 mm/s (median 12.7) (SIM, 10 and 8 training seeds) | Adults on paper: phrase 30.5 ± 7.9 mm/s, loops 104.6, zigzag 40.5, staircase 20.8 mm/s (LIT CON-20); signatures 87.7 ± 10.7 mm/s (LIT CON-08) | **Not reproduced**: about 2× slower than phrase writing |
+| Stroke duration (between speed minima) | σ-lognormal median 213 ms (IQR 195–241); glyph 147 ms (IQR 91–239) | Typically 90–150 ms (LIT CON-24) | σ-lognormal **too long**; glyph **within** the range |
+| Velocity spectrum: 50 / 90 / 95 / 99 % of energy below | σ-lognormal 2.4 / 3.4 / 4.9 / 7.3 Hz; glyph 4.9 / 10.7 / 13.2 / 17.6 Hz | 3.1 / 4.9 / 5.9 / 9.3 Hz, peak 3.0 Hz (LIT CON-25); flat 1–5 Hz, noise level by about 10 Hz (LIT CON-24) | **Bracketed, not reproduced**: σ-lognormal lower, glyph much higher |
+| Share of velocity energy at 8–12 Hz | σ-lognormal 0.6 %; glyph 14 % | 1.3–1.7 % (LIT CON-25) | **Bracketed**; matters for tracker difficulty |
+| Speed–curvature exponent (angular speed ∝ curvature^β) | σ-lognormal 0.78 ± 0.04; glyph 0.98 ± 0.06 | 2/3 (LIT CON-27, secondary account) | **Not reproduced** (σ-lognormal closer) |
+| Tremor frequency bands (input) | ET 4–12 Hz (DR); PD rest and action default 5 Hz; physiological 8–12 Hz | ET 4–12 Hz, typically 4–8; PD rest 3–6; PD action 5–8; physiological 8–12 Hz (LIT PDT-56); ET 4–7, PD rest 3–4 Hz in 5 patients (LIT PDT-57) | **By construction** |
+| Tremor peak in the ink (arm model, seed 300) | ET 6 Hz → 5.4 Hz; ET 9 Hz → 8.8 Hz; PD 5 Hz → 4.4 Hz; physiological 10 Hz → 8.8 Hz | — | Peaks sit 0.2–1.2 Hz below f0: frequency wander, the arm's low-pass, Welch resolution 0.49 Hz (SIM) |
+| PD rest tremor while writing | Gate 0.23 during writing; ink tremor 112 µm rms against 599 µm for PD action with the same torques (SIM) | Rest tremor is suppressed by movement and re-emerges after a delay (LIT PDT-56, PDT-09) | **By construction** (gate model) |
+| Physiological tremor amplitude at the ink | 41 µm rms (target 42.5 µm peak at the lifted tip) | About 30 µm rms at 8–9 Hz (LIT PDT-15) | **Same order**; by construction |
+| Mechanical resonance and inertial loading | Fitted wrist flexion natural frequency 9.3 Hz, 7.8 Hz with +300 g on the hand (CALC); pen-tip response peak 2.8 → 2.6 Hz (SIM) | Mechanical component of physiological tremor 8–12 Hz; inertial loading lowers it, the central component is unaffected (LIT PDT-56); 300 g loading protocol (LIT PDT-55, abstract) | **Reproduced qualitatively**, although the fit did not target it |
+| Writing force | 1 N intended (input; DR 0.6–2 N); arm model carries 0.82 N on the paper (skid 0.62 N, ball 0.20 N) because its joint servo takes part of the push (SIM) | Per-subject means 0.56–2.08 N (LIT CON-01); 0.95 ± 0.29 N in children without difficulties (LIT CON-04) | **Within range** (input) |
+| Paper drag while writing | 0.10 N at 0.82 N (arm model, SIM) | Ball-on-paper friction 0.09–0.165 (LIT CON-13) | **By construction** (friction parameters) |
+| Grip force | Not modelled (the grip is a linear impedance) | Grip 4.3 ± 1.5 times the normal force (LIT CON-07); 5–20 N in signatures (LIT CON-08) | **Not modelled** |
+| Hand impedance at the pen | H1 hand = HAP-26 by construction; arm fitted to it (§7.1); MyoArm 1.1–5.6× stiffer at 8 Hz (§7.3) | LIT HAP-26 | Reproduced by calibration; MyoArm **not** |
 
 ## 7. Hand models and the MyoSuite check
 
 ### 7.1 Arm fitted to H1's pen-tip impedance (SIM fit, `results/sim2/arm_calibration.json`, figure `fig_sim2_arm.png`)
 
-[[ARM_CAL]]
+Nine joint-impedance values of the arm were fitted so that the pen-tip compliance (pen lifted, nose rigid) matches H1's over 0.6–20 Hz in x, y and z (Nelder–Mead, 1400 evaluations). Masses and geometry stay as set (ASSUMPTION).
+
+| Parameter | Start (label) | Fitted (SIM fit) |
+|---|---|---|
+| Wrist flexion–extension stiffness | 1.28 N·m/rad (LIT HAP-32, passive) | 10.2 N·m/rad (8.0×, at the fit's upper bound) |
+| Radial–ulnar deviation stiffness | 1.74 N·m/rad (LIT HAP-32) | 1.32 N·m/rad (0.76×) |
+| Pronation–supination stiffness | 0.25 N·m/rad (LIT HAP-32) | 2.0 N·m/rad (8.0×, at the bound) |
+| Joint damping ratio | 0.35 (ASSUMPTION) | 1.01 |
+| Arm base stiffness x / y / z | 170 / 170 / 272 N/m (LIT HAP-26) | 496 / 688 / 1131 N/m |
+| Arm base damping in-plane / vertical | 11 / 18 N·s/m (LIT HAP-26) | 16.5 / 24.9 N·s/m |
+
+- Fit quality: rms relative error of the complex compliance 0.227; magnitude within −30 % to +35 % at every frequency point; phase within ±26° (SIM).
+- Two stiffnesses sit at the 8× bound. To match H1's tip impedance the wrist must be much stiffer than the passive wrist, which is what co-contraction does. The fitted wrist's undamped natural frequency is √(10.2 / 0.003)/2π = 9.3 Hz (CALC). That lies in the 8–12 Hz band of the mechanical component of physiological tremor (LIT PDT-56), which the fit was not told about.
+- Tremor torque for 1 mm peak at the lifted pen tip (CALC, `tremor.calibrate`): ET 32 mN·m of pronation–supination torque at 4 Hz rising to 165 mN·m at 12 Hz, with flexion–extension at 0.89 and deviation at 0.56 of it; PD action 47–188 mN·m.
+- Writer controller, tremor-free writing (seeds 300–301): ink follows the intended path within 192–194 µm rms after removing a constant offset of about 0.83 mm per axis; ball in contact 99.6 % of pen-down time; skid 0.62 N and ball 0.20 N of the 1 N writing force; paper drag 0.10 N (SIM).
 
 ### 7.2 The Rev H nose in the articulated arm against the H1 hand (SIM, training seeds)
 
-[[ARM_VS_H1]]
+Same writing and tremor frequency; the tremor is defined differently in the two hand models: 1 mm peak at the lifted pen tip from forearm and wrist torques (arm), 1 mm peak of the imposed hand path (H1).
+
+| Seed, tremor | Arm: unmodified ink error (3–15 Hz band) | Arm: oracle ratio | H1 hand: unmodified (band) | H1 hand: oracle ratio |
+|---|---|---|---|---|
+| 300, ET 6 Hz | 702 µm (543 µm) | 0.099 | 998 µm (800 µm) | 0.120 |
+| 300, ET 10 Hz | 824 µm (617 µm) | 0.156 | 1048 µm (720 µm) | 0.191 |
+| 301, ET 6 Hz | 687 µm (536 µm) | 0.105 | 825 µm (634 µm) | 0.096 |
+| 301, ET 10 Hz | 813 µm (603 µm) | 0.157 | 963 µm (581 µm) | 0.160 |
+
+- The perfect-knowledge ratios agree within 0.035 (mean arm − H1 = −0.013, SIM). The articulated hand is not harder to correct than H1's lumped hand.
+- The nose's copper loss in these runs is 0.13–0.14 W (SIM).
 
 ### 7.3 MyoSuite MyoArm at a pen grasp (SIM, `results/sim2/myo_impedance.json`, figure `fig_sim2_myo.png`)
 
@@ -293,7 +358,35 @@ What this says:
 
 ### 7.4 Domain randomisation (`sim2/env.py`, table in `results/sim2/env_benchmark.json`)
 
-[[DR_TABLE]]
+Sampled once per episode (25 factors). Every range is a hypothesis.
+
+| Factor | Range | Sampling | Source (label) |
+|---|---|---|---|
+| Grip tip stiffness (`k_nib`) | 230–1040 N/m | log-uniform | LIT HAP-26 95 % CI 228-1043 N/m |
+| Grip tip damping (`b_nib`) | 0.4–4.6 N·s/m | log-uniform | LIT HAP-26 0.3-4.6 N s/m |
+| Grip split r_rot (`r_rot`) | 0.3–0.7 | uniform | ASSUMPTION (EXP-I01) |
+| Web share ρ_w (`rho_w`) | 0.15–0.5 | uniform | ASSUMPTION (EXP-I01) |
+| Hand mass (`M`) | 0.12–0.57 kg | log-uniform | LIT HAP-26 hand mass CI 0.14-0.57 kg (X) |
+| Arm stiffness (`k_arm`) | 63–533 N/m | log-uniform | LIT HAP-26 k2 63-533 N/m |
+| Arm damping (`b_arm`) | 3.7–60 N·s/m | log-uniform | LIT HAP-26 b2 3.7-27.6 N s/m, upper end widened to the MyoArm arm-part damping at co-contraction 0.3 (SIM, fore-aft b2 57.6 N s/m, results/sim2/myo_impedance.json) |
+| Tremor frequency (`f0`) | 4–12 Hz | uniform | LIT PDT-07, HAP (tremor 4-12 Hz) |
+| Tremor amplitude (`amp`) | 0.1–2 mm (peak) | log-uniform | ASSUMPTION within PDT-13/PDT-15 scales (0.1-2 mm at the pen) |
+| Frequency wander (`f_jitter`) | 0.1–0.6 Hz rms | uniform | ASSUMPTION (stabpen default 0.3 Hz) |
+| Amplitude wander (`am_depth`) | 0.1–0.5 relative | uniform | ASSUMPTION (stabpen default 0.3) |
+| Ball friction (`mu_ball`) | 0.09–0.2 | uniform | LIT CON-13 0.09-0.165 + margin |
+| Skid friction (`mu_skid`) | 0.05–0.25 | uniform | ASSUMPTION (EXP-Q01 range) |
+| Static/kinetic ratio (`ms_ratio`) | 1–1.5 | uniform | ASSUMPTION (config 1.3) |
+| Stribeck speed (`v_s`) | 0.5–5 mm/s | log-uniform | ASSUMPTION (s2r: unidentifiable without a dip) |
+| Pre-sliding distance (`presliding`) | 3–30 µm | log-uniform | ASSUMPTION (s2r 3-30 um) |
+| IMU noise scale (`imu_noise`) | 0.5–2 × nominal | log-uniform | MFR OPT-37 x (0.5-2) |
+| Page-sensor latency (`page_latency`) | 1–10 ms | log-uniform | ASSUMPTION (proposed requirement <= 10 ms) |
+| Hall noise (`hall_noise`) | 2–10 µm rms | log-uniform | ASSUMPTION from MFR OPT-45 |
+| Part mass scale (`mass_scale`) | 0.9–1.1 × | uniform | ASSUMPTION part tolerance |
+| Gimbal stiffness (`k_r`) | 0.02–0.03 N·m/rad | uniform | ASSUMPTION gimbal +-20 % |
+| Coil motor constant (`Km`) | 0.42–0.52 N/√W | uniform | ASSUMPTION Km +-10 % |
+| Refill spring force (`F_c`) | 0.1–0.2 N | uniform | ASSUMPTION refill spring (EXP-Q02) |
+| Writing tilt (`theta`) | 40–60 ° | uniform | LIT CON-02 about 50 deg |
+| Writing force (`N0`) | 0.6–2 N | log-uniform | LIT CON-01 per-subject means 0.56-2.08 N |
 
 **Change from the MyoSuite check.** The arm damping range is widened from 3.7–27.6 N·s/m (HAP-26's 95 % interval) to 3.7–60 N·s/m (MyoArm's fore–aft b₂ at c = 0.3). Stiffness and mass keep HAP-26's intervals: MyoArm's stiffness is not credible (no short-range stiffness), and writers rest the forearm on the desk.
 
@@ -314,7 +407,7 @@ Sources: LIT CON-63 (FDA guidance, full text), CON-64 (ASME V&V 40 scope; standa
 | Factor (V&V 40 / FDA category) | Goal for COU-1 | Goal for COU-2 | Status now |
 |---|---|---|---|
 | Code verification | Unit tests of every closed form; independent re-implementation where possible | Same | Met: closed forms (§5.2–§5.6), compiled kernel = Python reference (tests), H1 cross-check (§5.1) |
-| Calculation verification | Ink path difference at the production step ≤ 1 µm rms against half the step; observed order reported | Same, plus the RL step | [[CRED_CALC]] |
+| Calculation verification | Ink path difference at the production step ≤ 1 µm rms against half the step; observed order reported | Same, plus the RL step | Met: 0.22 µm rms at 25 µs against 12.5 µs, observed order 1.07 (H1 law); energy residual ≤ 6.8 × 10⁻⁴; 100 µs excluded |
 | Model inputs (calibration) | Nominal values with ranges from literature; DR over them | Identified values with uncertainty from EXP-V01, V02, V04 | Literature and ASSUMPTION only |
 | Model form | Two contact laws and two hand models compared on the COU's metrics | Residual diagnostics on bench data (s2r model-form checks) | Contact: native vs H1 law (§5.7); hand: arm vs H1 (§7.2) |
 | Bench validation (comparator) | Not required before ranking | EXP-V05: ratio within ±0.05 (causal), ±0.03 (known disturbance), ≥ 80 % of conditions; rank order Spearman ≥ 0.9 | Not started (no hardware) |
@@ -362,7 +455,7 @@ Sources: LIT CON-63 (FDA guidance, full text), CON-64 (ASME V&V 40 scope; standa
 ### 8.6 How `s2r/` calibrates sim2
 
 - `s2r` already runs the identification pipeline in protocol order (B03 → B05 → B01/B02) on a virtual bench with hidden plants and scores the recovered parameters (`results/s2r/c1_identification.json`).
-- `sim2.params.from_identified(values)` maps s2r's parameter names (`actuator.Kf`, `actuator.R20`, `stage.k_tip`, `writing.mu_eff`, `friction.x_presliding`, `hand.grip_stiffness`, `sensing.opt_delay`, …) onto a sim2 configuration. It was tested on s2r's revealed truths (unit test `test_from_identified_maps_s2r_names`).
+- `sim2.params.from_identified(values)` maps s2r's parameter names (`actuator.Kf`, `actuator.R20`, `stage.k_tip`, `writing.mu_eff`, `friction.x_presliding`, `hand.grip_stiffness`, `sensing.opt_delay`, …) onto a sim2 configuration. It builds a working sim2 model from s2r's revealed truth T00 (SIM check during this study) and has a unit test (`test_from_identified_maps_s2r_names`). s2r's pencil-stage values (for example k_tip) are not Rev H values; the mapping, not the numbers, is what carries over.
 - Next step (round 2): point s2r's virtual bench at sim2 instead of M1, so the same pipeline identifies sim2's hidden parameters from simulated EXP-V01/V02 records in the `s2r-bench-1` file format. That tests the identification end to end before hardware exists.
 - When bench data exist, the same pipeline reads them, `from_identified` builds the calibrated sim2, and the DR narrows to the identified intervals (§8.4 step 5).
 
@@ -380,19 +473,19 @@ Sources: LIT CON-63 (FDA guidance, full text), CON-64 (ASME V&V 40 scope; standa
 
 1. **Oracle gap at 12 Hz.** [[OPEN_ORACLE]]
 2. **Causal comparisons need many tracker-noise seeds.** The AKF's frequency lock makes single-seed differences large. Compare trackers over ≥ 5 noise seeds.
-3. **Front stop.** The Rev H refill needs a stop that follows the nose (as modelled) or a margin of about travel × cot θ (2.5 mm at 50°, 4.3 mm at 35°, CALC). A mechanism has not been designed.
+3. **Front stop.** The Rev H refill needs a stop that follows the nose (as modelled) or a fixed margin of about travel × cot θ_min + 0.3 mm (2.8 mm at 50°, 4.6 mm at 35°, CALC). A fixed 0.3 mm stop lost the ink for 27–37 % of the pen-down time (§5.8). A mechanism has not been designed.
 4. **Native contacts** still chatter at stiff settings; a physically parameterised compliant contact (LIT CON-56) would remove the trade-off.
-5. **Arm fit anisotropy.** [[OPEN_ARM]]
+5. **Arm fit anisotropy.** The fitted arm matches H1's tip impedance only to 0.227 rms relative error, with two stiffness multipliers at their bound. The chain's masses and geometry are ASSUMPTION and were not fitted. Refit masses and stiffnesses to measured pen-grasp impedance (EXP-V04).
 6. **MyoArm** has no short-range stiffness or reflexes and rigid pad welds; its absolute impedance is not the writer's.
-7. **Writers.** [[OPEN_WRITER]]
-8. **Speed.** [[OPEN_SPEED]]
+7. **Writers.** The synthetic writers bracket measured writing kinematics but match none of them (§6). Tracker results depend on the writing content at 4–12 Hz, so the writers should be fitted to recorded pen kinematics (EXP-V03) before causal-tracker numbers are trusted.
+8. **Speed.** One core gives about 0.5 simulated seconds per wall-clock second at 25 µs with the H1 law. Large RL runs need parallel workers, a larger training step (checked in §5.3), or a reduced model. Native contacts at 25 µs are slower (0.22×), not faster, with the 31-capsule skid ring.
 
 ## 11. Proposed decision, requirements and experiments
 
 **Proposed decision (the lead assigns the number).** *Simulator v2 is the Rev J reference simulator for device and controller studies.*
 
 - Ink metrics use H1's contact law at 25 µs with `implicitfast`.
-- Native MuJoCo contacts are used only for speed-limited RL runs and geometry-rich plug-ins (2 ms, impratio 1), and such results are cross-checked with H1's law.
+- Native MuJoCo contacts (2 ms, impratio 1) are used only for geometry-rich plug-ins (heel drive, several contact bodies) and larger time steps, and such results are cross-checked with H1's law. At 25 µs they are slower than H1's law (223 against 478 environment steps/s).
 - H1 stays the fast regression reference: after any change, sim2 must pass the H1 check (REQ-SIM-001).
 - Device results are reported with both hand models and over the domain randomisation.
 - Until EXP-V01, V02 and V04 calibrate it and EXP-V05 validates it, sim2's results rank concepts (COU-1) and are not evidence of benefit.

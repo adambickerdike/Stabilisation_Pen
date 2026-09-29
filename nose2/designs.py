@@ -84,7 +84,9 @@ FLEXURES = {             # name -> (E Pa, fatigue strain allowable, static strai
     "Ti6Al4V": (114e9, 530e6 / 114e9, 910e6 / 114e9, 4.42e3, "AMF-20/AMF-21"),
     "C17200_TH04": (127.6e9, 310e6 / 127.6e9, 1241e6 / 127.6e9, 8.26e3, "AMF-19"),
     "NiTi_superelastic": (45e9, 0.004, 0.03, 6.45e3, "AMF-141/AMF-142 (E and density ASSUMPTION)")}
-STOCK_T = (25e-6, 50e-6, 75e-6, 100e-6, 127e-6, 150e-6, 200e-6)       # shim stock (ASSUMPTION typical series)
+STOCK_T = (50e-6, 75e-6, 100e-6, 127e-6, 150e-6, 200e-6)               # shim stock (ASSUMPTION typical series); >= 50 um so the
+                                                                        # laser-cut strips survive handling (ASSUMPTION)
+BUCKLE_SF = 3.0          # the gimbal's compressed strip must carry 3 x the refill force without buckling (ASSUMPTION)
 WIRES = {                # bare copper diameter -> fill factor of a bonded flat coil (ASSUMPTION: grade-2 enamel + bond)
     0.08e-3: 0.50, 0.10e-3: 0.55, 0.125e-3: 0.58, 0.15e-3: 0.60, 0.20e-3: 0.63}
 BACK_IRON = {"1010": (1.6, RHO_FE, "ASSUMPTION"), "Hiperco50A": (2.3, 8.12e3, "AMF-140 (2.4 T saturation; density ASSUMPTION)")}
@@ -200,8 +202,11 @@ def flexure(parts: Parts, b, L_f, alpha_u, alpha_s):
     k_r = E * b * t ** 3 / (6.0 * L_f)
     eps_u = t * alpha_u / L_f
     eps_s = t * alpha_s / L_f
+    # the axial refill force (0.15 N) reaches the handle through the gimbal; in a cross-strip pivot one strip of a pair is
+    # in compression: Euler buckling with both ends clamped (effective length L_f / 2)
+    P_cr = math.pi ** 2 * E * b * t ** 3 / 12.0 / (0.5 * L_f) ** 2
     return {"k_r": k_r, "eps_u": eps_u, "eps_s": eps_s, "eps_f_allow": eps_f / FAT_SF, "eps_s_allow": eps_y / 1.2,
-            "mass": 4 * rho * b * t * L_f * 2.0 + 0.8e-3}       # four strips + a 0.8 g frame (ASSUMPTION)
+            "P_cr": P_cr, "mass": 4 * rho * b * t * L_f * 2.0 + 0.8e-3}       # four strips + a 0.8 g frame (ASSUMPTION)
 
 
 def nose_inertia(z_p, L_b, m_act, r_act_extra=0.0, z_end=None):
@@ -312,7 +317,7 @@ def act_unit(parts: Parts, topology: str, w, l, t_m, t_c, s, r_u=None, g_extra=N
         geom = torch.zeros((), dtype=DT)
     geom = geom + torch.relu(0.6e-3 - (w - 2 * s)) / 1e-4                # an active leg must remain
     return {"Km": Km, "B": B, "g": g, "b_leg": b, "m_move": m_move, "m_stat": m_cu + m_bi, "r_out": r_out, "len": length,
-            "r_act_extra": r_extra, "geom": geom, "phi": phi}
+            "r_act_extra": r_extra, "geom": geom, "phi": phi, "cap_depth": t_m + t_bi}
 
 
 def act_radial(parts, w, l, t_m, t_c, s, s_far=None):
@@ -373,6 +378,7 @@ def _common_out(out, parts, duty, servo_hz, bore_need, f_modes):
         "modes": torch.relu(3.0 * servo_hz - f_modes) / 10.0,
         "peak": torch.relu(out["F_pk_tip_need"] - out["F_pk_tip"]) / 0.01,
         "fatigue": torch.relu(out["eps_u"] - out["eps_f_allow"]) / 1e-4 + torch.relu(out["eps_s"] - out["eps_s_allow"]) / 1e-4,
+        "buckling": torch.relu(BUCKLE_SF * F_REFILL - out["P_cr"]) / 0.01 if "P_cr" in out else torch.zeros((), dtype=DT),
         "heat": torch.relu(out["dT_coil"] - DT_COIL_MAX) / 1.0,
         "length": torch.relu(out["z_a"] + out["len_act"] / 2 - Z_ACT_MAX) / 1e-4 if torch.isfinite(out["z_a"]) else torch.zeros((), dtype=DT),
         "geom": out.get("geom_pen", torch.zeros((), dtype=DT)),
@@ -404,18 +410,21 @@ def _gimbal(kind, v, parts, duty, servo_hz):
         A = act_radial(parts, v["w"], v["l"], v["t_m"], v["t_c"], s, s_far=alpha_s * (L_b + v["l"] / 2))
         # the magnets start behind the gimbal (1.5 mm half-length + 1.5 mm clearance)
         geom_pen = A["geom"] + torch.relu(3.0e-3 - (L_b - v["l"] / 2)) / 1e-4
-        z_act_back = z_p + L_b + v["l"] / 2
+        z_act_back = z_p + L_b - v["l"] / 2                             # the hub's front face (the channel runs through it)
     else:
         # flat coil plate (C1+): the disc's tilt opens the gap at its rim; spherical faces (C1S, and C3's coarse stage)
         # keep it constant
         g_extra = torch.zeros((), dtype=DT) if kind in ("gimbal_sphere", "coarse_fine") else (v["w"] * math.sqrt(2.0)) * alpha_s
-        # the refill channel passes through the cap and the coil plate when the refill reaches behind the cap; the plate's
-        # hole also clears the channel's swing there (the stroke s)
-        through = torch.sigmoid((z_end - (z_p + L_b)) / 0.5e-3)
+        # the refill channel passes through the cap and the coil plate when the refill's holder reaches within 0.5 mm of
+        # the cap's front face (magnet face at z_a, back iron in front of it); the plate's hole also clears the channel's
+        # swing there (the stroke s).  The cap depth is taken from a first evaluation without the hole.
+        A0 = act_axial(parts, v["w"], v["l"], v["t_m"], v["t_c"], s, None, g_extra)
+        cap_front = z_p + L_b - A0["cap_depth"]
+        through = torch.sigmoid((z_end + 0.5e-3 - cap_front) / 0.3e-3)
         r_hole = through * (R_CH + s + 0.3e-3)
         A = act_axial(parts, v["w"], v["l"], v["t_m"], v["t_c"], s, None, g_extra, r_hole=r_hole)
         geom_pen = A["geom"] + torch.relu(3.0e-3 + 0.5 * A["len"] - L_b) / 1e-4
-        z_act_back = z_p + L_b + A["len"]
+        z_act_back = cap_front
     fl = flexure(parts, v["b_f"], v["L_f"], alpha_u, alpha_s)
     I, m_nose, d_cm, m_front = nose_inertia(z_p, L_b, A["m_move"], A["r_act_extra"], z_end=z_end)
     m_eff = I / z_p ** 2
@@ -434,7 +443,7 @@ def _gimbal(kind, v, parts, duty, servo_hz):
            "F_pk_tip": F_pk_tip, "F_pk_tip_need": Fpk_need, "f_parasitic": f_modes,
            "mass_added": A["m_move"] + A["m_stat"] + fl["mass"], "m_act_move": A["m_move"], "m_act_stat": A["m_stat"],
            "r_act": A["r_out"], "len_act": A["len"], "eps_u": fl["eps_u"], "eps_s": fl["eps_s"], "eps_f_allow": fl["eps_f_allow"],
-           "eps_s_allow": fl["eps_s_allow"], "k_r": fl["k_r"], "front_R": fe["R"], "front_bore_r": fe["sleeve_bore_r"],
+           "eps_s_allow": fl["eps_s_allow"], "k_r": fl["k_r"], "P_cr": fl["P_cr"], "front_R": fe["R"], "front_bore_r": fe["sleeve_bore_r"],
            "refill_slide": fe["slide"], "dT_coil": P_aw * R_TH_COIL, "reaction_rms": torch.sqrt(Faw ** 2)}
     # envelope: the actuator's radial build (+ its swing for the axial disc), the carrier's swing at the gimbal, and the
     # refill channel's swing behind the actuator
@@ -514,7 +523,7 @@ def _dual(v, parts, duty, servo_hz):
            "mass_added": A1["m_move"] + A1["m_stat"] + A2["m_move"] + A2["m_stat"] + 2 * fl["mass"],
            "m_act_move": A1["m_move"] + A2["m_move"], "m_act_stat": A1["m_stat"] + A2["m_stat"], "r_act": torch.maximum(r1, A2["r_out"]),
            "r_act_front": r1, "len_act": A1["len"] + A2["len"], "eps_u": fl["eps_u"], "eps_s": fl["eps_s"],
-           "eps_f_allow": fl["eps_f_allow"], "eps_s_allow": fl["eps_s_allow"], "k_r": fl["k_r"], "front_R": fe["R"],
+           "eps_f_allow": fl["eps_f_allow"], "eps_s_allow": fl["eps_s_allow"], "k_r": fl["k_r"], "P_cr": fl["P_cr"], "front_R": fe["R"],
            "front_bore_r": fe["sleeve_bore_r"], "refill_slide": fe["slide"], "dT_coil": P_aw * R_TH_COIL,
            "reaction_rms": Faw, "lam1": lam1, "lam2": lam2}
     swing_rear = alpha_s * torch.abs(z_end - zv) + R_CH + 0.3e-3

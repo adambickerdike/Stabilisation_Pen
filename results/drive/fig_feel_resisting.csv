@@ -1,0 +1,13 @@
+metric,cond,label,relaxed_writer,lightly_resisting_writer
+felt_p95_N,board_full,"desk board, full",0.2063241847386156,0.2616705859179488
+felt_p95_N,ball_full,"heel ball, full",0.24898875036964593,0.2913966952738462
+felt_p95_N,ballsmooth_full,"heel ball, full, smooth rollers",0.24238279495490098,0.28751649321765854
+felt_p95_N,wheel_path,steered wheel (steer only),0.26490054970379,0.3219932405093769
+felt_p95_N,sd_path,"driven wheel, steer only",0.26264259775953364,0.31644156022512776
+felt_p95_N,sd_full,steered + driven wheel,0.25720680943054147,0.31050829252236434
+target_err_um,board_full,"desk board, full",383.8178329496379,411.87232974771376
+target_err_um,ball_full,"heel ball, full",288.08614117309725,338.05054772952604
+target_err_um,ballsmooth_full,"heel ball, full, smooth rollers",288.64983950903326,336.68258999152175
+target_err_um,wheel_path,steered wheel (steer only),371.25726693616804,389.98901752869006
+target_err_um,sd_path,"driven wheel, steer only",372.1652223403583,392.3944269962587
+target_err_um,sd_full,steered + driven wheel,388.89145769292236,403.1665223443684
