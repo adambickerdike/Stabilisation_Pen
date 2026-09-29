@@ -212,7 +212,8 @@ def facts_ai2() -> dict:
     out["moved_um"] = {k: _num((tf.get(k) or {}).get("false_correction_um")) for k in ("tracker", "gated", "learned_tcn", "rl_arbiter")}
     out["paired_gated_tracker"] = (a.get("paired") or {}).get("gated-tracker:ink_err_um")
     out["gate_open_tremor_free"] = a.get("gate_open_frac_tremor_free")
-    out["label"] = f"{SIM_HW1}, test writers 0-5, seeds 200-203; the trackers drive the Rev H nose model (±3 mm)"
+    out["label"] = SIM_HW1
+    out["detail"] = "test writers 0–5, seeds 200–203; the trackers drive the Rev H nose model (±3 mm)"
     out["source"] = AI2_JSON
     return out
 
@@ -228,7 +229,8 @@ def facts_nose2() -> dict:
                                                        "h_mm", "w", "seed")}
                       for k in ("revJ", "revJ_noaxial") if k in ex}
     out["travel_guaranteed_mm"], out["travel_nom_mm"] = h.get("guaranteed_travel_mm"), h.get("nominal_travel_mm")
-    out["label"] = f"{SIM_HW1}, test writers 0-5, seeds 200-203"
+    out["label"] = SIM_HW1
+    out["detail"] = "test writers 0–5, seeds 200–203"
     out["source"] = NOSE2_JSON
     return out
 
@@ -271,7 +273,7 @@ def facts_drive() -> dict:
                                                                      "pen_speed_mm_s", "device_work_share", "F_rms_N", "F_max_N")}
                   for k in ("relaxed_nose", "sd_lead+nose", "ball_lead+nose", "board_lead+nose", "writer_alone")},
         "traction": trac, "traction_055": at055,
-        "label": f"{SIM_HW1D}, test writers 0-5, seeds 200-203, rules frozen before the test",
+        "label": SIM_HW1D, "detail": "test writers 0–5, seeds 200–203; rules frozen before the test",
         "source": "results/drive/ (fig_practice.csv, fig_loops_reversal.csv, tasks.json)",
     }
     return out
@@ -292,7 +294,7 @@ def facts_endcap() -> dict:
     return {"moving": get("lrm", "further_reduction_mean"), "fixed": get("weight_lrm", "further_reduction_mean"),
             "moving_worse": get("lrm", "frac_conditions_worse"), "fixed_worse": get("weight_lrm", "frac_conditions_worse"),
             "splits": [0.3, 0.5, 0.7], "ceiling": ceil, "write_shift_r05": shift,
-            "label": f"{SIM_H1} on top of the Rev H nose and tracker, test seeds 200-203",
+            "label": SIM_H1, "detail": "on top of the Rev H nose and tracker; test seeds 200–203",
             "ceiling_label": "CALC (linear hand-pen model, relaxed hand, no paper friction: optimistic)",
             "source": ENDCAP_JSON}
 
@@ -317,7 +319,7 @@ def facts_sim2j() -> dict | None:
         clean = {k: _num((v or {}).get("moved_vs_clean_um")) for k, v in (et.get("clean") or {}).items()}
         prov = et.get("stabpen.provenance") or {}
         return {"rows": rows, "clean_moved_um": clean, "what": et.get("what", ""), "generated_utc": prov.get("generated_utc"),
-                "label": SIM_SIM2 + "; sim2 ranks designs until it is calibrated (EXP-V01, V02, V04) and validated (EXP-V05)",
+                "label": SIM_SIM2, "detail": "sim2 ranks designs until it is calibrated (EXP-V01, V02, V04) and validated (EXP-V05)",
                 "source": SIM2J_ET}
     except (OSError, ValueError, TypeError, AttributeError) as ex:
         warn(f"{SIM2J_ET} could not be read ({ex})")
@@ -808,9 +810,11 @@ def results_rows(f: dict) -> str:
     rows = []
     a, n2, d, ec = f.get("ai2"), f.get("nose2"), f.get("drive"), f.get("endcap")
 
-    def row(who, help_, result, ev, src, cls=""):
-        rows.append(f'<tr{f" class={chr(34)}{cls}{chr(34)}" if cls else ""}><td>{who}</td><td>{help_}</td><td>{result}</td>'
-                    f'<td>{tag(ev)}<span class="where">{e(src)}</span></td></tr>')
+    def row(who, help_, result, block, src, cls=""):
+        ev, det = (block.get("label"), block.get("detail", "")) if isinstance(block, dict) else (block, "")
+        cl = f' class="{cls}"' if cls else ""
+        rows.append(f'<tr{cl}><td>{who}</td><td>{help_}</td><td>{result}</td>'
+                    f'<td>{tag(ev)}<span class="where">{e(det)}{"; " if det else ""}{e(src)}</span></td></tr>')
 
     if a:
         n, tr, g, l_, c = a["none"], a["tracker"], a["gated"], a["learned_tcn"], a["clean_copy"]
@@ -820,27 +824,27 @@ def results_rows(f: dict) -> str:
         if mv:
             txt += f" Tremor-free writing moved {mv:.0f} µm, as with Rev H."
         row("Essential tremor, 1–2 mm, 6–10 shakes a second", "Tip: the nose with the <b>gated tracker</b> (the new default)",
-            txt, a["label"], "docs/ai_control_v2.md · results/ai2/ai2.json")
+            txt, a, "docs/ai_control_v2.md · results/ai2/ai2.json")
         row("Tremor at 6 shakes a second, 1–2 mm (where Rev H did almost nothing)", "The gated tracker",
-            f"<b>{_um(n['ink_6hz_um'])} → {_um(g['ink_6hz_um'])}</b> (Rev H {_um(tr['ink_6hz_um'])})", a["label"],
+            f"<b>{_um(n['ink_6hz_um'])} → {_um(g['ink_6hz_um'])}</b> (Rev H {_um(tr['ink_6hz_um'])})", a,
             "docs/ai_control_v2.md · results/ai2/ai2.json")
         row("Same tremor, a learned estimator", "A small causal neural network, in <b>shadow mode</b> (it logs, it does not steer)",
             f"<b>{_um(l_['ink_um'])}</b> and <b>{pct(l_['words'])} %</b> of words. It may drive the nose only after it passes on "
-            "held-out real recordings (EXP-L04).", a["label"], "docs/ai_control_v2.md · results/ai2/ai2.json")
+            "held-out real recordings (EXP-L04).", a, "docs/ai_control_v2.md · results/ai2/ai2.json")
     if ec:
         mv, fx, mw, fw = ec["moving"], ec["fixed"], ec["moving_worse"], ec["fixed_worse"]
         if all(x is not None for x in mv + fx + mw + fw):
             row("Tremor, on top of the nose (8–12 Hz, 1–2 mm)", "Tail: the <b>tungsten end-cap</b> (moving weight)",
                 f"A further <b>{pct(mv[0])} / {pct(mv[1])} / {pct(mv[2])} %</b> less ink error at grip splits 0.3 / 0.5 / 0.7. The same "
                 f"mass fixed gives {pct(fx[0])} / {pct(fx[1])} / {pct(fx[2])} % (better at 0.3), but it makes {pct(min(fw[1:]))}–{pct(max(fw[1:]))} % "
-                f"of the hard cases worse (the moving weight {pct(min(mw))}–{pct(max(mw))} %).", ec["label"],
+                f"of the hard cases worse (the moving weight {pct(min(mw))}–{pct(max(mw))} %).", ec,
                 "docs/inertial_endcap.md · results/endcap/endcap_study.json")
     if n2:
         a0, a1, a2 = n2.get("aw_2p5_none") or {}, n2.get("aw_2p5_1mm") or {}, n2.get("aw_2p5_2mm") or {}
         row("Writing for you (a known text)", "Tip: <b>autowrite</b> with the ±6 mm nose (a mode you turn on)",
             f"<b>{pct(a1.get('letters_read', 0), 1)} %</b> of letters and <b>{pct(a1.get('words_read_app', 0))} %</b> of words read with up "
             f"to 1 mm of tremor; {pct(a2.get('words_read_app', 0))} % of words at 2 mm; {a0.get('letters_per_s', 0):.1f} letters a second. "
-            "One of six test writers needed a slower sweep.", n2["label"], "docs/nose_v2.md · results/nose2/nose2.json")
+            "One of six test writers needed a slower sweep.", n2, "docs/nose_v2.md · results/nose2/nose2.json")
     if d:
         lp, tr_, ld, gr = d["loops"], d["tracing"], d["lead"], d["gross"]
         if lp.get("wheel") is not None:
@@ -848,24 +852,24 @@ def results_rows(f: dict) -> str:
             row("Parkinson's: “write big” loops that shrink", "Heel: the wheel, <b>steer only</b>",
                 f"Loop height <b>{lp['wheel']:.2f}</b> of the target (<b>{lp['none']:.2f}</b> with nothing on"
                 + (f"; {min(rs):.2f}–{max(rs):.2f} for a hand that resists a little" if rs else "") + ")",
-                d["label"], "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv")
+                d, "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv")
         t0, ts, tn = tr_.get("none"), tr_.get("sd_path"), tr_.get("wheel_path+nose")
         if t0 and ts and tn:
             row("Tracing and copying (poorly formed letters)", "Heel wheel steers; with or without the nose",
                 f"Distance to the template <b>{_um(t0['err_um'])} → {_um(ts['err_um'])}</b> (steer only) → <b>{_um(tn['err_um'])}</b> "
                 f"(with the nose). But letters read fall from <b>{pct(t0['letters'])} %</b> to {pct(ts['letters'])} % and "
                 f"<b>{pct(tn['letters'])} %</b>: closer to the template is not easier to read.",
-                d["label"], "docs/grounded_drive.md · results/drive/fig_practice.csv")
+                d, "docs/grounded_drive.md · results/drive/fig_practice.csv")
         if ld.get("sd") is not None:
             row("Leading a relaxed hand through a letter", "Heel: the wheel, <b>driven</b> (lead-through, a mode you turn on)",
                 f"In the reversed-letter demo the wheel drew <b>{pct(ld['sd'])} %</b> of the ‘d’ bowl within 0.3 mm of the template "
-                f"(<b>{pct(ld['none'])} %</b> with nothing on)", d["label"], "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv")
+                f"(<b>{pct(ld['none'])} %</b> with nothing on)", d, "docs/grounded_drive.md · results/drive/fig_loops_reversal.csv")
         g1 = gr.get("sd_lead+nose") or {}
         if g1.get("letters_read_ok") is not None:
             row("Leading a relaxed hand along a sentence", "Heel wheel leads, the nose adds detail (lead-through)",
                 f"<b>{pct(g1['letters_read_ok'])} %</b> of letters and <b>{pct(g1.get('words_app') or 0)} %</b> of words read, at "
                 f"{g1.get('pen_speed_mm_s') or 0:.1f} mm/s; the pen did {pct(g1.get('device_work_share') or 0)} % of the work. Rev H nose in "
-                "this run.", d["label"], "docs/grounded_drive.md · results/drive/tasks.json")
+                "this run.", d, "docs/grounded_drive.md · results/drive/tasks.json")
         sb = d.get("set_on_b") or {}
         moved = [v.get("moved") for v in sb.values() if v and v.get("moved") is not None]
         fmax = [v.get("F_max_N") for k, v in sb.items() if v and k != "none" and v.get("F_max_N") is not None]
@@ -873,12 +877,12 @@ def results_rows(f: dict) -> str:
             row("A letter the writer is set on (a reversed ‘b’ against a ‘d’ template)", "Any guidance: nose, wheel or board",
                 f"<b>{pct(max(moved))} %</b> turned into the other letter; the push stayed at or below {max(fmax):.2f} N. "
                 "The writer always wins." if fmax else f"<b>{pct(max(moved))} %</b> turned into the other letter.",
-                d["label"], "docs/grounded_drive.md · docs/handwriting_outcomes.md")
+                d, "docs/grounded_drive.md · docs/handwriting_outcomes.md")
     if a:
         c = a["clean_copy"]
         row("Severe tremor, notes", "The app's <b>clean copy</b> (digital, labelled)",
             f"<b>{pct(c['words'])} %</b> of words readable at 1–2 mm (the ink: {pct(a['gated']['words'])} %). The paper keeps the pen's ink.",
-            a["label"], "docs/ai_control_v2.md · docs/ai_severe_tremor.md")
+            a, "docs/ai_control_v2.md · docs/ai_severe_tremor.md")
     s2 = f.get("sim2j")
     if s2 and s2.get("rows"):
         want = [r for r in s2["rows"] if r["ctl"] in ("none", "nose", "nose_wheel", "nose_wheel_ec", "oracle")]
@@ -892,7 +896,7 @@ def results_rows(f: dict) -> str:
                   "oracle": "perfect knowledge"}[r["ctl"]]
             parts.append(f"{nm} at {amp_mm:g} mm: {_um(r['ink_um'])}" + (f" ({pct(r['words'])} % of words)" if r.get("words") is not None else ""))
         row("Whole Rev J pen, tremor (sim2, MuJoCo)", "Nose, heel wheel and end-cap together", "; ".join(parts),
-            s2["label"], "docs/revJ_simulation.md · results/sim2j/et.json", cls="s2")
+            s2, "docs/revJ_simulation.md · results/sim2j/et.json", cls="s2")
     return "\n".join(rows)
 
 
@@ -950,16 +954,18 @@ def fact_tokens(f: dict, lay: dict) -> dict:
         "h_steady1_gated": fmt_range(hg.get("steady_1mm")), "h_guide": fmt_range(h.get("guide")),
         "h_lead": fmt_range(h.get("lead")), "h_aw0": fmt_range(h.get("autowrite_no_tremor")),
         "h_aw1": fmt_range(h.get("autowrite_1mm")), "h_steady1_ec": fmt_range(hec.get("steady_1mm")),
-        "base_mW": f"{p['base_load_mW'][0]:.0f}–{p['base_load_mW'][1]:.0f}" if p.get("base_load_mW") else "—",
+        "base_mw": f"{p['base_load_mW'][0]:.0f}–{p['base_load_mW'][1]:.0f}" if p.get("base_load_mW") else "—",
         "web_23": fmt_num(heat.get("web_surface_C")), "web_30": fmt_num(heat.get("web_surface_C_hot_room")),
         "web_30_spr": fmt_num((heat.get("with_spreader") or {}).get("web_surface_C_hot_room")),
         "coil_rise": fmt_num(heat.get("coil_rise_K_100KW")),
         "pull": fmt_num(p.get("axial_pull_N")), "fit_n": str(p.get("fit_n") or "—"),
-        "trac_lo": fmt_num(t055[0]["cap_N"], 2) if t055 else "0.30", "trac_hi": fmt_num(t055[-1]["cap_N"], 2) if t055 else "0.60",
+        "trac_lo": fmt_num(t055[0]["cap_N"], 1) if t055 else "—", "trac_hi": fmt_num(t055[-1]["cap_N"], 1) if t055 else "—",
         "aw_letters": fmt_num(100 * ((n2.get("aw_2p5_1mm") or {}).get("letters_read") or 0)),
         "aw_rate": fmt_num((n2.get("aw_2p5_none") or {}).get("letters_per_s")),
         "gated_um": fmt_num((a.get("gated") or {}).get("ink_um"), 0), "none_um": fmt_num((a.get("none") or {}).get("ink_um"), 0),
         "revh_um": fmt_num((a.get("tracker") or {}).get("ink_um"), 0),
+        "none6_um": fmt_num((a.get("none") or {}).get("ink_6hz_um"), 0), "revh6_um": fmt_num((a.get("tracker") or {}).get("ink_6hz_um"), 0),
+        "gated6_um": fmt_num((a.get("gated") or {}).get("ink_6hz_um"), 0),
         "ec_mid": fmt_num(100 * (ec.get("moving") or [0, 0, 0])[1], 0),
         "ec_rng": (f"{100 * min(ec['moving']):.0f}–{100 * max(ec['moving']):.0f}" if ec.get("moving") and None not in ec["moving"] else "—"),
     }
@@ -1003,11 +1009,18 @@ def main():
         if k not in page:
             warn(f"template.html has no {k} placeholder")
         page = page.replace(k, v)
+    # [[fact]] tokens are filled in the markup only (the script, which starts at the first <script, is left alone)
     toks = fact_tokens(facts, lay)
-    missing = sorted(set(re.findall(r"\[\[([a-z0-9_]+)\]\]", page)) - set(toks))
+    cut = page.find("<script")
+    head, tail = (page[:cut], page[cut:]) if cut >= 0 else (page, "")
+    tok_re = r"\[\[([A-Za-z][A-Za-z0-9_]*)\]\]"
+    missing = sorted(set(re.findall(tok_re, head)) - set(toks))
     if missing:
         warn(f"template.html uses unknown [[tokens]]: {', '.join(missing)}")
-    page = re.sub(r"\[\[([a-z0-9_]+)\]\]", lambda m: e(toks.get(m.group(1), "—")), page)
+    empty = sorted(k for k in set(re.findall(tok_re, head)) if toks.get(k) in (None, "—"))
+    if empty:
+        warn(f"[[tokens]] without a value (shown as a dash): {', '.join(empty)}")
+    page = re.sub(tok_re, lambda m: e(toks.get(m.group(1), "—")), head) + tail
     out = os.path.join(HERE, "index.html")
     with open(out, "w", encoding="utf-8") as f:
         f.write(page)

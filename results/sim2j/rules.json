@@ -1,0 +1,119 @@
+{
+  "stabpen.provenance": {
+    "evidence_status": "SIMULATION (rules fixed on the tuning writers 100-103 and seed 300 before any test run; sim2 ranks concepts, COU-1)",
+    "generated_utc": "2026-09-29T14:02:09+00:00",
+    "git_revision": "e923ffd-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "freeze_rules.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": [
+      300
+    ],
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "pen_source": {
+      "file": "results/revJ/sim_params.json",
+      "generated_utc": "2026-09-29T13:28:08+00:00",
+      "sha256_16": "e4d769dd72035480",
+      "layout_generated_utc": "2026-09-29T13:28:08+00:00",
+      "label": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)"
+    }
+  },
+  "frozen_utc": "2026-09-29T14:02:09Z",
+  "guard": {
+    "variant": "G4_gate_r8",
+    "params": {
+      "on": true,
+      "edge_hz": 0.8,
+      "t_edge": 0.25,
+      "df_max": 2.0,
+      "t_df": 0.5,
+      "t_hold": 0.2,
+      "lock_hz": 1.0,
+      "use_det_gate": true,
+      "label": "ASSUMPTION (rules of this study; values fixed on tuning writers/seeds before the test)"
+    },
+    "det_params": {
+      "win": 4.0,
+      "seg": 2.0,
+      "fs": 250.0,
+      "band_lo": 4.5,
+      "band_hi": 13.5,
+      "hp_hz": 1.5,
+      "every": 0.05,
+      "min_win": 2.0,
+      "r_on": 8.0,
+      "r_off": 4.0,
+      "t_on": 0.5,
+      "t_off": 1.0,
+      "ramp": 0.2,
+      "margin": 2.0,
+      "half_width": 1.5,
+      "label": "ai2/smoothers.DET_DEFAULTS (tuned by study L on tuning writers; algorithm re-implemented online)"
+    },
+    "tracker": "guarded",
+    "summary": {
+      "G3_reseed_lock_gate": {
+        "false_correction_um_mean": 0.0,
+        "false_correction_um_max": 0.0,
+        "ratio_0p3": 1.024740730272423,
+        "ratio_1_2mm": 0.7019585687560023,
+        "n_clean": 4,
+        "n_tremor": 20,
+        "R1": true,
+        "R2": false
+      },
+      "G4_gate_r8": {
+        "false_correction_um_mean": 0.0,
+        "false_correction_um_max": 0.0,
+        "ratio_0p3": 1.015063528203664,
+        "ratio_1_2mm": 0.717671395778258,
+        "n_clean": 4,
+        "n_tremor": 20,
+        "R1": true,
+        "R2": true
+      },
+      "GL_ai2": {
+        "false_correction_um_mean": 75.61541935132678,
+        "false_correction_um_max": 140.75447841239702,
+        "ratio_0p3": 1.1637710044336957,
+        "ratio_1_2mm": 0.7798231964201369,
+        "n_clean": 4,
+        "n_tremor": 20,
+        "R1": false,
+        "R2": false
+      },
+      "GLG_ai2_guarded": {
+        "false_correction_um_mean": 0.0,
+        "false_correction_um_max": 0.0,
+        "ratio_0p3": 1.0148705923457566,
+        "ratio_1_2mm": 0.7815404030871432,
+        "n_clean": 4,
+        "n_tremor": 20,
+        "R1": true,
+        "R2": true
+      }
+    },
+    "rule_text": "Rules fixed on tuning writers (100-103) and tuning seeds (300+) before any test run (SIMULATION).\n\nGuard rule (tune_guard): the tracker variants are compared on tuning writers 100-103, seed 300, ET at 6/8/10 Hz x 1 mm\nand 8 Hz x 0.3 and 2 mm (v2 writers, \"return library\", Rev J pen, H1 hand), with the rules written here before the runs:\n  R1  false correction on tremor-free writing (ink moved against the device-off pen run with the same seed, i.e. the\n      same sensor and Hall noise) <= 25 um (project rule, AC-E01-09 / docs/revJ_plan.md);\n  R2  no worse than the device-off pen at 0.3 mm (mean ink-error ratio <= 1.02);\n  choose the variant with the lowest mean ink-error ratio at 1-2 mm among those that pass R1 and R2; if none\n  passes, the variant with the smallest false correction.\nVariants: G0 no guard (the Rev H re-tuned AKF alone, tremor-free writing only), G3 re-seed + frequency lock + ai2's\ndetector gate on the authority (G1 re-seed only and G2 re-seed + lock were run on the round-1 assembly: both moved\ntremor-free writing by about 0.2 mm), G4 as G3 with a stricter line (r_on 8, r_off 4), GL ai2's gated listening tracker\n(DEC-042: ai2's detector and amplitude gate on a listening AKF, the Rev H tracker as built as the fallback), GLG the same\nwith G4 as the fallback.  The detectors see the page samples taken while the ball is on the paper (firmware).  Every run\nstarts with the pen resting on the paper for 4 s (et.ET_PRE_S; the detectors need 2-4 s of signal).\nThe chosen variant is written to results/sim2j/rules.json with the time of the freeze.\n",
+    "elapsed_s": 2641.383326292038
+  },
+  "rl_selection_rule": "RL checkpoint selection (fixed before any test run): each saved PPO checkpoint is run deterministically on the\ntuning writers 100-103 with seeds 300-303 (ET 6/8/10 Hz x 0.3/1/2 mm, one seed per writer and cell, and the tremor-free\nwriting of every writer); a checkpoint passes when (S1) its false correction on tremor-free writing is <= 25 um (mean\nand every case <= 50 um) and (S2) its mean ink-error ratio to the model-based tracker at 0.3 mm is <= 1.00; among the\npassing checkpoints the one with the lowest mean ink error at 1-2 mm is taken to the test; if none passes, the RL policy\nis not adopted and is reported as such (the model-based tracker stays).",
+  "test_protocol": "Test (after the freeze): writers 0-5 (v2), seeds 200-203 (two per writer and cell, rotating), ET 4/8/12 Hz x\n0.3/1/2 mm, controllers none, nose, nose_wheel, nose_wheel_ec, oracle, rl; nose_noguard at 1 mm; tremor-free writing of every\nwriter with every controller (false correction against the device-off run with the same seed).",
+  "tuning_passes": "Two tuning passes on the same writers, seed and cells: G3/G4 (sim2j/build/tune_guard.json) and the gated listening variants GL/GLG after their output low-pass fix (sim2j/build/tune_guard_gl.json); the first pass's GL/GLG rows (unfiltered listening output) are superseded and kept in its file.",
+  "pen_source_pass1": {
+    "file": "results/revJ/sim_params.json",
+    "generated_utc": "2026-09-29T13:11:14+00:00",
+    "sha256_16": "b45ed5d2ca50d8a9",
+    "layout_generated_utc": "2026-09-29T13:11:14+00:00",
+    "label": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)"
+  },
+  "pen_source_pass2": {
+    "file": "results/revJ/sim_params.json",
+    "generated_utc": "2026-09-29T13:28:08+00:00",
+    "sha256_16": "e4d769dd72035480",
+    "layout_generated_utc": "2026-09-29T13:28:08+00:00",
+    "label": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (parameters for sim2)"
+  }
+}

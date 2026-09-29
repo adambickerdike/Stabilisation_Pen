@@ -45,7 +45,7 @@ from . import revj as RJ
 from . import stepper as ST
 from . import tasks as TK
 from . import writers as WV
-from .akf_online import GuardParams, frozen_det, frozen_guard
+from .akf_online import GuardParams, frozen_det, frozen_guard, frozen_tracker
 from .firmware import FWConfig
 from sim2 import env as SE  # noqa: E402
 from sim2 import params as P  # noqa: E402
@@ -177,6 +177,7 @@ class RevJTremorEnv(gym.Env):
         super().__init__()
         self.guard = guard or frozen_guard()
         self.det = frozen_det()
+        self.tracker = frozen_tracker()
         self.rng = np.random.default_rng(seed)
         self.writers = list(writers or range(1000, 1400))
         self.episode_s = episode_s
@@ -257,8 +258,8 @@ class RevJTremorEnv(gym.Env):
         akf = dict(SS.revh_params())
         self.policy = Policy(model=None)
         self.policy_env_action = np.zeros(3)
-        fw = FWConfig(nose="tremor", akf=akf, guard=self.guard, det=self.det, policy=_EnvPolicy(self),
-                      seed=sh["fw_seed"], imu_noise=p["imu_noise"])
+        fw = FWConfig(nose="tremor", akf=akf, guard=self.guard, det=self.det, tracker=self.tracker,
+                      policy=_EnvPolicy(self), seed=sh["fw_seed"], imu_noise=p["imu_noise"])
         self.st = ST.RevJStepper(pm, self._scenario(tr), fw, {}, mu=p["tyre_mu"], record=False, seed=sh["seed"])
         self.nsub = int(round(DECIM * 0.5e-3 / pm.m.opt.timestep))
         self.ref_t = sh["ref"]["t"]

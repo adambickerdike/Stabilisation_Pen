@@ -133,7 +133,10 @@ ET_PRE_S = 4.0          # s the pen rests on the paper before writing (tremor de
 
 class WriterSetup:
     def __init__(self, w: int, pens: PenModels, version: str = "v2", text: str = ET_TEXT, pen: str = "base",
-                 n_adapt: int = 3, log=None, pre_s: float = ET_PRE_S):
+                 n_adapt: int = 3, log=None, pre_s: float = ET_PRE_S, adapt_ctl: str = "none"):
+        """adapt_ctl: the controller the writer learns the pen with and whose tremor-free ink is the reference ('none':
+        devices off; 'wheel_only': the heel wheel in its tremor mode, for the writer who has learned the wheel)."""
+        self.adapt_ctl = adapt_ctl
         self.w, self.version, self.text, self.pen = w, version, text, pen
         self.pre_s = pre_s
         self.pm = pens.get(pen)
@@ -148,7 +151,7 @@ class WriterSetup:
             self.adapt_hist = self._adapt(n_adapt)
             if cache:
                 np.savez(cache, hand_path=self.case.hand_path, adapt_hist=np.array(self.adapt_hist))
-        self.clean = ST.run(self.pm, self.case.scenario(), controller("none"))
+        self.clean = ST.run(self.pm, self.case.scenario(), controller(self.adapt_ctl))
         self.ref_polys = clean_letters(self.case.written, self.clean)
         rows = MT.letter_rows(self.case.written, TK.Res(self.clean), self.case.rec)
         s = MT.summary(rows)
@@ -166,6 +169,7 @@ class WriterSetup:
         import hashlib
         pm = self.pm
         key = f"{self.w}|{self.version}|{self.text}|{self.pen}|{pm.cfg.label}|{pm.m.opt.timestep}|{n_adapt}|{self.pre_s}|" \
+              f"{'' if self.adapt_ctl == 'none' else self.adapt_ctl}|" \
               f"{(pm.info.get('revj') or {}).get('lead')}|{pm.cfg.hand}|{pm.cfg.hand_model}|{pm.cfg.contact}|{pm.cfg.refill}"
         h = hashlib.sha256(key.encode()).hexdigest()[:16]
         d = os.path.join(BUILD, "setups")
@@ -179,7 +183,7 @@ class WriterSetup:
         hist = []
         v = np.gradient(case.intended, SIM_DT, axis=0)
         for it in range(n_iter):
-            r = ST.run(self.pm, case.scenario(), controller("none"))
+            r = ST.run(self.pm, case.scenario(), controller(self.adapt_ctl))
             ink = np.column_stack([np.interp(case.t, r["t"], r.ink()[:, j]) for j in range(2)])
             e = ink - case.intended
             hist.append(float(np.sqrt(np.mean(np.sum(e[m] ** 2, axis=1))) * 1e6))
@@ -194,7 +198,7 @@ class WriterSetup:
         stick-slip contact amplifies any difference: the false correction is measured against the same noise)."""
         if seed not in self.clean_runs:
             self.clean_runs[seed] = ST.run(self.pm, self.case.scenario(),
-                                           replace(controller("none", seed=seed * 7 + self.w), record_streams=True),
+                                           replace(controller(self.adapt_ctl, seed=seed * 7 + self.w), record_streams=True),
                                            mu=mu_for(self.w, seed, 0.0, 0.0), seed=seed)
         return self.clean_runs[seed]
 

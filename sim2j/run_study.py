@@ -179,7 +179,7 @@ def _run_ctl(ET, LR, su, ctl, f0, amp, seed, r_none, pol=None):
 
 def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows_name: str = "et",
              writers=TEST_WRITERS, include_model_based: bool = True, first_seed_only: bool = False,
-             second_seed: bool = False) -> Dict:
+             second_seed: bool = False, only_second: bool = False) -> Dict:
     """The ET test grid.  controllers_extra: {'rl': policy} adds RL cases."""
     from . import et as ET
     from . import learned_replay as LR
@@ -203,6 +203,8 @@ def stage_et(quick: bool = False, controllers_extra: Optional[Dict] = None, rows
             return setups[pen]
         seeds = et_seeds(w)[:1] if (quick or first_seed_only or not second_seed) else et_seeds(w)
         for si, seed in enumerate(seeds):
+            if only_second and si == 0:
+                continue
             ctls_here = ctl_all if si == 0 else [c for c in ctl_all if c in ET_SECOND]
             # tremor-free writing (false correction against the device-off pen with the same seed)
             for ctl in [c for c in clean_all if c in ctls_here]:
@@ -719,7 +721,8 @@ def _checkpoints(d: str) -> List[str]:
     import glob
     cks = sorted(glob.glob(os.path.join(d, "ppo_revj_*_steps.zip")), key=lambda p: int(p.split("_")[-2]))
     fin = os.path.join(d, "ppo_revj_final.zip")
-    if os.path.exists(fin):
+    last = int(cks[-1].split("_")[-2]) if cks else 0
+    if os.path.exists(fin) and last < RL_STEPS:        # the final model equals the last checkpoint otherwise
         cks.append(fin)
     return cks
 
@@ -857,13 +860,74 @@ def stage_arm(quick: bool = False) -> Dict:
     return body
 
 
+def stage_et2(quick: bool = False) -> Dict:
+    """The second test seed of each writer for the device-off pen, the chosen tracker and perfect knowledge (12 cases
+    per cell with the ET stage's first seed); rows in et2_rows.json, merged by the report."""
+    body = stage_et(quick=quick, rows_name="et2", second_seed=True, only_second=True)
+    return body
+
+
+def stage_et_wheel(quick: bool = False) -> Dict:
+    """Nose + heel wheel for a writer who has learned the wheel: the hand path is adapted with the wheel in its tremor
+    mode and the tremor-free ink with the wheel is the reference (the first test seed of each writer, every ET cell).
+    The ratio is to the device-off pen's ink error of the ET stage in the same case."""
+    from . import et as ET
+    rows = Rows("et_wheel")
+    ref_rows = Rows("et")
+    pens = ET.PenModels()
+    ws = TEST_WRITERS if not quick else TEST_WRITERS[:1]
+    for w in ws:
+        seed = et_seeds(w)[0]
+        su = None
+        kc = f"clean|{w}|{seed}|nose_wheel_adapted"
+        if not rows.has(kc):
+            su = su or ET.WriterSetup(w, pens, adapt_ctl="wheel_only", log=log)
+            m = ET.run_case(su, "nose_wheel", 0.0, 0.0, seed)
+            rows.put(kc, dict(m, kind="clean", ctl="nose_wheel_adapted",
+                              clean_floor_um=su.clean_floor["ink_to_intended_um"],
+                              clean_letters_read=su.clean_floor["letters_read"], clean_words=su.clean_floor["words_app"]))
+            log(f"[et_wheel] w{w} clean: moved {m['moved_vs_clean_um']:.1f} um; wheel-adapted clean ink to intended "
+                f"{su.clean_floor['ink_to_intended_um']:.0f} um, letters {su.clean_floor['letters_read']:.2f}")
+        for f0 in (ET_F0 if not quick else (8.0,)):
+            for amp in (ET_AMP if not quick else (1e-3,)):
+                key = f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|nose_wheel_adapted"
+                if rows.has(key):
+                    continue
+                su = su or ET.WriterSetup(w, pens, adapt_ctl="wheel_only", log=log)
+                m = ET.run_case(su, "nose_wheel", f0, amp, seed)
+                ref = ref_rows.get(f"{f0:g}|{amp * 1e3:g}|{w}|{seed}|none")
+                m.update({"kind": "tremor", "ctl": "nose_wheel_adapted",
+                          "none_ink_err_um": ref["ink_err_um"] if ref else None,
+                          "ratio": m["ink_err_um"] / ref["ink_err_um"] if ref else None})
+                rows.put(key, m)
+                log(f"[et_wheel] w{w} {f0:g} Hz {amp * 1e3:g} mm: {m['ink_err_um']:.0f} um"
+                    + (f" (device off {ref['ink_err_um']:.0f})" if ref else ""))
+        rows.save()
+    R = rows.values()
+    body = {"what": "nose + heel wheel (tremor mode) with the writer adapted to the wheel; reference = the wheel-adapted "
+                    "writer's tremor-free ink; ratio to the device-off pen of the ET stage (same case)",
+            "by_cell": agg([r for r in R if r["kind"] == "tremor"], ("ink_err_um", "ratio", "letters_read", "words_app",
+                                                                      "P_total_W", "wheel_F_rms_N"), by=("f0", "amp_mm")),
+            "clean": agg([r for r in R if r["kind"] == "clean"], ("moved_vs_clean_um", "clean_floor_um",
+                                                                   "clean_letters_read", "clean_words"), by=("ctl",))}
+    if not quick:
+        write_result("et_wheel", body, seeds=list(TEST_SEEDS))
+    return body
+
+
+def merge_et() -> Dict:
+    """et.json recomputed over the rows of the ET stage and of its second-seed pass (et2)."""
+    rows = Rows("et").values() + Rows("et2").values()
+    return summarise_et(rows, "et", False)
+
+
 def stage_report(quick: bool = False) -> None:
     from . import report as RP
     RP.run_all(log=log, with_runs=not quick)
 
 
 # ------------------------------------------------------------------------------------------------ main
-STAGES: Dict[str, Callable] = {"report": stage_report, "arm": stage_arm, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
+STAGES: Dict[str, Callable] = {"report": stage_report, "arm": stage_arm, "et2": stage_et2, "et_wheel": stage_et_wheel, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
                                "tune": stage_tune, "writers": stage_writers, "writer_cmp": stage_writer_cmp,
                                "verify": stage_verify, "et": stage_et, "guided": stage_guided,
                                "autowrite": stage_autowrite, "dr": stage_dr, "dt": stage_dt, "power": stage_power}

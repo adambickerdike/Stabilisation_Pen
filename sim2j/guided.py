@@ -95,7 +95,10 @@ class GuidedCase:
         self.v_target = v_t
         t0 = time.time()
         self.adapt_hist = self._adapt(n_adapt)
-        self.none = ST.run(pm, self.scenario(), FWConfig(), self.task())
+        # the device-off reference with the same seeds as the controller runs (run_tracing): sim2's stick-slip
+        # amplifies any difference, so the device share and felt force are measured against the same noise
+        self.none = ST.run(pm, self.scenario(), replace(FWConfig(), seed=seed * 13 + w), self.task(),
+                           mu=mu_case(w, seed), seed=seed)
         if log:
             log(f"[guided] {profile} w{w} s{seed}: adaptation {['%.0f' % h for h in self.adapt_hist]} um, "
                 f"{time.time() - t0:.0f} s")
@@ -224,7 +227,8 @@ class LoopsCase:
             k = int(round(lag / SIM_DT))
             ea = np.vstack([e[k:], np.repeat(e[-1:], k, 0)]) if k > 0 else e
             self.hand_path = self.hand_path - 0.9 * sosfiltfilt(sos, ea, axis=0)
-        self.none = ST.run(self.pm, self.scenario(), FWConfig(), self.task())
+        self.none = ST.run(self.pm, self.scenario(), replace(FWConfig(), seed=seed), self.task(),
+                           mu=mu_case(seed, seed, tag=5), seed=seed)
 
     def _intended(self, P, speed_mm_s, dt_=SIM_DT):
         from aiguide.writer import Path as APath

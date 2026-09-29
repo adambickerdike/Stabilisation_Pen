@@ -364,6 +364,14 @@ def replay(log=print, w: int = 0, rate: float = 200.0, window=(4.0, 7.0)) -> Non
 
 def run_all(log=print, with_runs: bool = True) -> None:
     os.makedirs(RESULTS, exist_ok=True)
+    try:                                              # the ET stage's rows + its second-seed pass, when present
+        from . import BUILD
+        if os.path.exists(os.path.join(BUILD, "et2_rows.json")):
+            from .run_study import merge_et
+            merge_et()
+            log("[report] et.json merged with the second-seed pass")
+    except Exception as e:
+        log(f"[report] merge failed: {e!r}")
     for f in (fig_et, fig_writers, fig_guided, fig_autowrite, fig_power):
         try:
             f(log)
