@@ -269,6 +269,8 @@ There is no assistance and no intervention: the pen is passive.
 - 4800 dpi scans of every page (bench rig R3);
 - the reference chain must agree with the scanned ink to ≤ 50 µm RMS (AC-H01-08; PDT notes §2.7 require ≥ 200 Hz and 0.05 mm).
 
+**Rig (study M).** Rig R11 instruments this study: the tablet protocol first (no build), then the recording pen, with the paper on R9's force plate so that the axial and paper-normal forces are measured apart. EXP-T06 qualifies both before the first participant ([`bench_protocols.md`](bench_protocols.md) §47; `docs/measurement_rig.md` §4). The study itself is unchanged.
+
 ### Tasks (about 90 min including consent and ratings)
 
 1. Standard sentence copying, 3 repetitions, at natural size; then on 1.0 cm guide lines (PDT-18).
@@ -335,7 +337,7 @@ Minimal risk: writing tasks and fatigue. The optional OFF sub-study carries OFF-
 | AC-H01-05 | — | Fraction of participants whose 99th-percentile axial writing force is ≤ 4 N | ≥ 95 % | hypothesis | CON-01 and COR-26 (heavy writers to about 4 N axial, derived high case) | REQ-ACT-001 envelope; EXP-B01 sweep range |
 | AC-H01-06 | — | 2.5-97.5 % range of pen altitude during writing, pooled across participants | within 35-80° | hypothesis | CON-12 (47-77° on tablets), CON-02 (~50° on paper); config writing.tilt_deg 35-75° | config writing.tilt_deg; REQ-MECH-001 envelope (COR-26) |
 | AC-H01-07 | — | Median fraction of intended velocity energy in 4-7 Hz in healthy participants' sentence copying | within 0.10-0.25 | hypothesis | CON-25 (single writer, derived ~17 %); CON-10 (36 % of angular-velocity power in 4-7 Hz in older adults); range engineering judgement | DEC-009; EXP-E01 benchmark |
-| AC-H01-08 | — | Reference-system qualification: RMS difference between motion-capture-derived nib position and the scanned ink centreline | ≤ 50 µm | derived | PDT notes s2.7 (instrumentation ≥ 200 Hz and 0.05 mm accuracy) | validity of EXP-H01 |
+| AC-H01-08 | — | Reference-system qualification: RMS difference between the reference chain's nib position (motion capture, or on rig R11 the tablet-recorded pen-down path after registration) and the scanned ink centreline | ≤ 50 µm | derived | PDT notes s2.7 (instrumentation ≥ 200 Hz and 0.05 mm accuracy); qualified on rig R11 in EXP-T06 (docs/measurement_rig.md s4.3), where it was proposed as AC-T06-01; the tablet's accuracy class of about ±0.25 mm (LIT CON-101) may fail it, and then the chain is registered per stroke | validity of EXP-H01; EXP-H01 on the tablet protocol |
 | AC-H01-20 | REQ-ENV-001 | Fraction of in-contact writing time (sentence copying, all groups) with barrel altitude within 35-75°, per participant median and group 10th percentile | ≥ 90 % | requirement | REQ-ENV-001 range; COR-26 (paper ~50°, tablets 62 ± 7.5°) | REQ-ENV-001 range; REQ-MECH-001 low-altitude limit |
 | AC-H01-21 | REQ-ENV-003 | Fraction of ET participants whose nib writing tremor lies in 3-12 Hz and ≤ 1 mm p-p (the addressable box of REQ-ENV-003), with 95 % CI | ≥ report with CI; programme review if < 20 % | hypothesis | REQ-ENV-003; PDT-12 (~30 % ≤ 1 mm) and PDT-31 (frequency 5.79 ± 1.32 Hz) | DEC-001; DEC-009 programme scope |
 

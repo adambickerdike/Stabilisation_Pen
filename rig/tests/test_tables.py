@@ -24,9 +24,14 @@ def test_ledger_ids_in_assigned_ranges_and_unique():
 
 
 def test_ledger_ids_not_already_in_evidence_csv():
+    """The study's ids are new: either absent from docs/evidence.csv, or present only because the lead merged these
+    very rows (same citation and source)."""
     with open(os.path.join(ROOT, "docs", "evidence.csv"), newline="", encoding="utf-8") as f:
-        existing = {row["id"] for row in csv.DictReader(f)}
-    assert not (existing & {r["id"] for r in ledger.ROWS})
+        existing = {row["id"]: row for row in csv.DictReader(f)}
+    for r in ledger.ROWS:
+        if r["id"] in existing:
+            assert existing[r["id"]]["citation"] == r["citation"], r["id"]
+            assert existing[r["id"]]["doi_or_url"] == r["doi_or_url"], r["id"]
 
 
 def test_bom_prices_only_where_seen():

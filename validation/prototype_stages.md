@@ -1,10 +1,32 @@
 # Prototype stages, gates and the order of experiments
 
-**Status: PROPOSED PLAN. No stage has started; no gate has been passed (2026-09-27).**
+**Status: PROPOSED PLAN. No stage has started; no gate has been passed (2026-09-27; §0 added 2026-09-29).**
 
 - Gates are defined by acceptance-criterion ids from [`acceptance_criteria.csv`](acceptance_criteria.csv).
 - Protocols are in [`bench_protocols.md`](bench_protocols.md) and [`human_study_plan.md`](human_study_plan.md).
 - Decision ids (DEC-…) refer to `docs/decisions.md`.
+
+## 0. Current order for Rev J (2026-09-29): the review's gates on study M's rigs
+
+This section supersedes the Stage A equipment and critical path below for the Rev J nib; the stage structure (bench → tethered pen → untethered pen → product form) and the principles stand. Sources: the independent review of 29 September 2026 and the lead's response (`docs/reviews/2026-09-29_review_response.md` §3–§4), study M's rigs (`docs/measurement_rig.md`, DEC-058, DEC-059) and `bench_protocols.md` §47. Nothing has been built.
+
+| Order | Review gate | Rig (study M) | Experiments | What passing decides |
+|---|---|---|---|---|
+| 0 | all | DAQ-1: one 24-bit simultaneous DAQ, encoders, camera trigger, sync pulse | bring-up (`docs/measurement_rig.md` §1.3) | every later rig shares one clock |
+| 1 | **G1** contact and ink | R9 on a converted CoreXY printer: force plate under the paper plus an in-line axial cell (DEC-058) | EXP-T01, T02 (EXP-B01 re-specified, B08, Q02), T03 (B02, optional); **EXP-J17** (the nib's static side load and holding power at 35/50/75°) | the lowest refill force that writes, the static side load the nib must carry, the friction map of the simulator; the balanced nib's design range (DEC-046, study B) |
+| 2 | sensing build gate | R10 on R9's frame | EXP-T04, T05 (EXP-S01 with DEC-059's metric, EXP-J10 with its accumulated-drift rule) | whether ordinary-paper sensing is good enough for guidance and autowrite (REQ-RVJ-C05); which die and optics |
+| 3 | people, in parallel as soon as ethics allows | R11: tablet protocol (no build), then the recording pen | EXP-H01 (with T06), EXP-V07 | who the pen can help (tremor at the nib), the real axial/normal force split, the writer-model refit |
+| 4 | **G2** actuator coupon | R12 coupon bench | EXP-T07–T09 (N01, J01, J14, B03) | the actuator's force map, magnetic pull and Hall interference before a nib is built |
+| 5 | **G3** loaded one-axis nib, then **G4** complete two-axis nib | R13 loaded-nib rig (fixed bridge with a one-axis paper table) | G3: EXP-T10, T11, T12 part B (I05, B05, B09); G4: EXP-T13–T15 (N02–N06, J05, J13, B07) | correction bandwidth under contact; turns, roll, dropout and a 30-minute heat run |
+| 6 | **G5** collar and tail | R14 grip simulant on R13's shaker | EXP-T16, T17 (K02, J16, I06; supersedes I04) | whether a moving collar or tail beats the same mass locked (≥ 10 %) |
+| 7 | **G6** grounded guidance | heel bench and board rigs | EXP-D04…D08, EXP-G01…G07; EXP-J18 (people, after G-S) | whether any heel-wheel mode earns a place (it is retracted by default, DEC-048) |
+| 8 | **G7** recognition and suggestions | offline, on recorded writing | EXP-L06, EXP-A03, study S's tests | spelling, completion and recognition on held-out people |
+| 9 | **G8** user study | the pen that passed G1–G5, after G-S | `human_study_plan.md` | benefit to people (none is claimed before this) |
+
+**Decisions taken for this order (lead, provisional).**
+- **EXP-H01's pen.** It records with R11's Ø24 mm body first (the Rev J grip); the 14 mm slim body becomes a second arm once study B's slim core is chosen. Grip size changes how tremor reaches the nib, so the census must use the grip being designed.
+- **EXP-K01** (net force of a clamped end-cap on its housing, AC-K01-01) stays its own bench test on a clamp fixture at R12; EXP-T16 does not measure it.
+- **Open for the rig design:** EXP-B01's 4 N normal-force level needs a larger in-line axial cell than R9's 250 g cell at most tilts, and Part 1's indentation needs a named displacement sensor; to be specified before R9 is built.
 
 ## 1. Principles
 
