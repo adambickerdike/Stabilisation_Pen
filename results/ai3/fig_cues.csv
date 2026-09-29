@@ -17,6 +17,15 @@ tick_lift,false_interventions_per_100_correct,2.34439,2.34439,2.34439
 show_me,false_interventions_per_100_correct,2.34439,2.34439,2.34439
 heel_steer,false_interventions_per_100_correct,1.91145,1.91145,1.91145
 pause_offer,false_interventions_per_100_correct,2.34439,2.34439,2.34439
+none,interruptions_per_100_words,0,0,0
+app_after,interruptions_per_100_words,0,0,0
+tick_after,interruptions_per_100_words,7.44777,6.1968,8.02245
+tick_before,interruptions_per_100_words,0,0,0
+withhold,interruptions_per_100_words,4.77303,4.77303,4.77303
+tick_lift,interruptions_per_100_words,7.68997,7.21904,7.93039
+show_me,interruptions_per_100_words,7.42122,6.23964,8.02174
+heel_steer,interruptions_per_100_words,8.27137,8.27137,8.27137
+pause_offer,interruptions_per_100_words,0,0,0
 none,extra_time_pct,0,0,0
 app_after,extra_time_pct,4.89087,4.89087,4.89087
 tick_after,extra_time_pct,15.5097,10.1308,19.7575

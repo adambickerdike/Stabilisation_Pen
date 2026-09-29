@@ -1,0 +1,8 @@
+condition,read_none_pct,read_assist_pct
+clean,87.8852,88.3103
+tremor_0.3mm_8Hz,80.4463,80.4463
+tremor_1mm_8Hz,41.4453,41.8704
+tremor_1mm_6Hz,46.3337,46.5462
+real_PD_tremor_1mm,29.4368,28.9054
+real_ET_tremor_1mm,46.9713,47.2901
+warp,55.6854,55.2604

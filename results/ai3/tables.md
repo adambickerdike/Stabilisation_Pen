@@ -103,6 +103,33 @@ Journal 2024, autowrite completion on request (offers at p >= 0.7): -6.9 s per 1
 | dyslexia | nose_nogate | 82 um | 77 % | 73 % | 7 % | 8 % | 53 / 37 | 58 % / 2 % |
 | dyslexia | wheel_path+nose | 72 um | 76 % | 72 % | 8 % | 6 % | 59 / 54 | 56 % / 20 % |
 
+### T6. Shape assist on 20 new writers' real letters in HW1 (SIM)
+
+| Writer's hand | Letters read without / with assist | Words fully read without / with | Ink moved (mean / worst word) | Device share of ink motion | Ink to intended letters without / with | Letters helped / harmed |
+|---|---|---|---|---|---|---|
+| clean | 88 % / 88 % | 56 % / 58 % | 23 / 121 um | 1 % | 1 / 24 um | 4 / 0 |
+| warp | 56 % / 55 % | 8 % / 8 % | 32 / 184 um | 1 % | 6 / 35 um | 2 / 6 |
+| tremor_0.3mm_8Hz | 80 % / 80 % | 38 % / 38 % | 23 / 112 um | 1 % | 275 / 276 um | 3 / 3 |
+| tremor_1mm_8Hz | 41 % / 42 % | 4 % / 4 % | 41 / 153 um | 1 % | 916 / 912 um | 12 / 8 |
+| tremor_1mm_6Hz | 46 % / 47 % | 4 % / 4 % | 37 / 165 um | 1 % | 863 / 859 um | 9 / 7 |
+| real_PD_tremor_1mm | 29 % / 29 % | 1 % / 1 % | 41 / 122 um | 1 % | 1014 / 1010 um | 3 / 8 |
+| real_ET_tremor_1mm | 47 % / 47 % | 2 % / 2 % | 42 / 126 um | 1 % | 1000 / 994 um | 9 / 6 |
+
+Close tracing (nearest-point, full gain, no gate) on the same poorly formed words: letters read 56 % -> 51 %.
+
+Rule A1 chose {'c_min': 0.9, 'g': 0.25, 'q_max_mm': 0.3, 'd0_xh': 0.2}. Judge (offline reader) accuracy on clean test letters: 89 %.
+
+| Writer's hand | App clean copy: letters read raw / clean copy / clean copy v2 | Words read raw / clean copy / v2 | Letters re-drawn (synthetic) | ...of which the wrong letter |
+|---|---|---|---|---|
+| clean | 88 % / 85 % / 85 % | 56 % / 52 % / 52 % | 15 % | 1 |
+| warp | 56 % / 54 % / 55 % | 8 % / 7 % / 8 % | 6 % | 1 |
+| tremor_0.3mm_8Hz | 80 % / 84 % / 84 % | 38 % / 46 % / 46 % | 13 % | 0 |
+| tremor_1mm_8Hz | 41 % / 83 % / 83 % | 4 % / 44 % / 45 % | 13 % | 0 |
+| tremor_1mm_6Hz | 46 % / 57 % / 58 % | 4 % / 12 % / 13 % | 6 % | 2 |
+| real_PD_tremor_1mm | 29 % / 39 % / 40 % | 1 % / 4 % / 4 % | 4 % | 1 |
+| real_ET_tremor_1mm | 47 % / 52 % / 52 % | 2 % / 8 % / 8 % | 5 % | 0 |
+
+Rule A2 (tuning writers): clean copy v2 words gain +0.007; adopted: False.
 ### T7. Word recognition: character and word error rates (20 held-out UJI writers; SIM on real letters)
 
 | Recogniser | Spacing | CER no LM | CER with LM | WER no LM | WER with LM |
@@ -122,6 +149,8 @@ Rule W1 (tuning writers): language weight beta_w = 0.75. Words: Tatoeba test sen
 |---|---|---|---|---|---|---|---|
 | independent, as planned (W2, temperature) (lambda_r 0.5, T 13.63, theta_c 0.8, p_s 0.7) | 1 % | 1.3 | 0 % / 0 % | 36 % / 2.3 % | 100 % | 0.224 / 0.353 | 0.0 / 0.00 |
 | calibrated, as planned (W2, temperature) (lambda_r 0.5, T 10.42, theta_c 0.85, p_s 0.7) | 3 % | 1.1 | 0 % / 0 % | 40 % / 2.7 % | 100 % | 0.193 / 0.334 | 0.0 / 0.00 |
+| independent, post hoc (W5: + lexicon readings, Platt) (lambda_r 1.5, Platt a 0.38, b -1.37, theta_c 0.4, p_s 0.2) | 34 % | 1.7 | 65 % / 62 % | 68 % / 1.0 % | 83 % | 0.062 / 0.032 | 0.4 / 0.00 |
+| calibrated, post hoc (W5: + lexicon readings, Platt) (lambda_r 1.0, Platt a 0.38, b -0.71, theta_c 0.3, p_s 0.4) | 28 % | 2.3 | 26 % / 79 % | 72 % / 5.2 % | 95 % | 0.081 / 0.035 | 0.0 / 0.00 |
 | letters known exactly, same words (task 2's checker) | 63 % | 1.8 | right word first 59 % | n/a | n/a | n/a | n/a |
 
 Letters seen through real held-out letters (test pool): read right 82 % (new writer), 86 % (calibrated).

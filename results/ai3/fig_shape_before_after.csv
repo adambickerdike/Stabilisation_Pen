@@ -1,0 +1,7 @@
+word,condition,panel,letters_read,letters
+feed,tremor_1mm_8Hz,none,4,4
+feed,tremor_1mm_8Hz,assist,4,4
+feed,warp,none,3,4
+feed,warp,assist,3,4
+feed,tremor_1mm_6Hz,none,2,4
+feed,tremor_1mm_6Hz,assist,2,4

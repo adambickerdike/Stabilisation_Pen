@@ -322,9 +322,10 @@ def stage_calc(quick=False):
 
 def stage_optimise(quick=False):
     from . import optimise as OP
-    body = {"combo_100g": OP.optimise_combo(100.0, evals=60 if quick else 240),
-            "sweep_cmg": OP.sweep_cmg(), "sweep_tmd": OP.sweep_tmd(), "sweep_force_omni": OP.sweep_force("omni"),
-            "sweep_force_sled": OP.sweep_force("sled")}
+    body = {"collar_design": OP.optimise_collar(evals=40 if quick else 80),
+            "combo_100g": OP.optimise_combo(100.0, evals=40 if quick else 120),
+            "sweep_cmg": OP.sweep_cmg(masses=(60, 100)), "sweep_tmd": OP.sweep_tmd(f_tunes=(5.0, 6.0), zetas=(0.08,)),
+            "sweep_force_omni": OP.sweep_force("omni"), "sweep_force_sled": OP.sweep_force("sled")}
     body["stabpen.provenance"] = provenance("CALCULATION (linear model; CMA-ES endcap/cmaes.py; torch gradients)")
     write_json("optimise.json", body)
     return body
