@@ -1,8 +1,8 @@
 {
   "stabpen.provenance": {
     "evidence_status": "CALCULATION + SIMULATION on PROPOSED DESIGNS (study B); inputs LIT/MFR/ASSUMPTION; nothing built or measured",
-    "generated_utc": "2026-09-29T19:24:13+00:00",
-    "git_revision": "6129b48-dirty",
+    "generated_utc": "2026-09-29T19:27:36+00:00",
+    "git_revision": "ffbd947-dirty",
     "parameters_version": "0.4.4",
     "parameters_sha256_16": "a9d3d0016461d690",
     "command": "run_study.py --stages report",
@@ -32954,6 +32954,12 @@
         38.400000000000006
       ],
       "label": "CALC (statics of the refill on two bushings; friction coefficients ASSUMPTION)"
+    },
+    "P_at_Fs": {
+      "0.15": 7.560826863919315,
+      "0.3": 30.277872659188102,
+      "0.69": 183.7906838298985,
+      "1": 415.83833362862725
     }
   },
   "interface": null,
@@ -32991,7 +32997,7 @@
       "Fallbacks if the counter-face fails its bench test (EXP-B22 with EXP-J17): first the EPM-clutched scheduled bias (b': 8 mW holding at worst, CALC); the same nib unbalanced (f) holds 314 mW at 35 deg and so meets REQ-RVJ-N10 only above about 50 deg or with a lower ink force.",
       "Large tremor (> 1 mm) is not the nib's job: it goes to study W's collar / whole-pen shifting (candidate g couples a +-0.5 mm counter-face nib to W's collar).",
       "Slim core (12-16 mm): voice coils around a D1 refill do not fit (candidates a-g infeasible at 14 mm); the piezo bender stage (h, h') is the slim branch, a trade study, not the first prototype.",
-      "Freeze the refill spring force only after gate G1 measures the minimum reliable ink force (EXP-B20 / EXP-T02); the counter-face scales with the actual force, so G1 moves the numbers, not the architecture."
+      "Freeze the refill spring force only after gate G1 measures the minimum reliable ink force (EXP-B20 / EXP-T02). The counter-face balances whatever force G1 picks, but the ball's drag grows with it: B1's continuous power is about 8 mW at 0.15 N, 30 mW at 0.3 N and 184 mW at 0.69 N (CALC): G1 sets the power and thermal budget."
     ],
     "because": [
       "Balance: the residual static load is 5.3 mN mean (6% of the unbalanced load) over 35-75 deg, all rolls, two inks, six papers, +-20 % spring force and the IMU errors (CALC, Monte Carlo); it vanishes on lift.",
@@ -33012,7 +33018,7 @@
     "revisit_if": [
       "EXP-B22 measures a residual side load > 25 % of F_s cot(theta) or a face that does not release on lift within 20 ms (-> candidate f or b').",
       "EXP-B23 measures Km < 0.7 x the image-method value (-> larger poles; the 24 mm bore is then the limit).",
-      "EXP-B20 finds a minimum reliable force > 0.7 N (-> the counter-face still balances; re-check the friction fluctuation and the stroke under load).",
+      "EXP-B20 finds a minimum reliable force above about 0.3 N (-> B1's power passes 40 mW and reaches about 0.24 W at 0.69 N through the ball's drag: lower-friction inks, a larger Km or a better thermal path become the drivers).",
       "EXP-B25 wire coupons fail before 43.2 M cycles at the stop travel.",
       "The sim2 ranking reverses when the page sensor is measured on paper (EXP-T04 / EXP-B32)."
     ],
@@ -33262,9 +33268,9 @@
     },
     {
       "item": "carrier",
-      "description": "Ti-6Al-4V tube 3.2/2.5 mm, two PTFE-lined bushings, the coils' hub and the wire flange",
+      "description": "Ti-6Al-4V tube 3.2/2.5 mm with a rolling guide for the refill at two stations (friction <= 0.01, REQ-BNIB-016; e.g. three miniature rollers per station), the coils' hub and the wire flange",
       "qty": 1,
-      "evidence": "AMF-21",
+      "evidence": "AMF-21; ASSUMPTION",
       "part_number": "custom"
     },
     {

@@ -201,7 +201,8 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       f"small face that is kept parallel to the paper. The face's push and the paper's push are then parallel and opposite: "
       f"there is nothing left across the pen for the nib to hold, at any tilt. Because the spring's own force does the "
       f"balancing, it follows the actual ink force (a new refill, another ink) without calibration, and a stop lets the face "
-      f"go when the ball lifts, so nothing is held in the air (the figure below).")
+      f"go when the ball lifts, so nothing is held in the air (the figure below). What is left for the coils is mostly the "
+      f"ball's drag on the paper, which no balance can remove and which grows with the ink force.")
     A(f"- **The nib for the first prototype (B1):** the refill rides in a titanium carrier that slides sideways +-1 mm on four "
       f"thin titanium wires; flat moving coils on the carrier sit between four fixed magnets (so there is no magnetic pull "
       f"and no negative stiffness); the counter-face sits behind the refill; the pen stays 24 mm. Continuous nib power "
@@ -234,9 +235,15 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
          f"{f(B3.get('tremor_left_ratio_mean'), 2)} of the tremor ink error with the tracker and "
          f"{f(B3.get('tremor_left_ratio_oracle_mean'), 2)} with perfect knowledge, at {f(B3.get('P_nib_mW_tremor_mean'), 0)} mW of "
          "drive power (SIM)." if B3 else ""))
-    A("- **Not proven:** the lowest ink force that still writes (no source gives it; 0.15 N is 4.6 x below the lowest maker's "
-      "test load found), the real magnet strength, that the face mechanism behaves as modelled, the friction numbers, the "
-      "wire fatigue with real clamps, and every tremor result (simulated). Nothing was built or measured.")
+    pf = rec.get("P_at_Fs") or {}
+    sens = {float(k): {"P_cont_W": v * 1e-3} for k, v in pf.items()}
+    A("- **Not proven, and the biggest unknown is the ink force.** Nobody has published the lowest force at which a ballpoint "
+      "still writes; 0.15 N is 4.6 x below the lowest maker's test load found (0.69 N). The balance keeps its ten-fold "
+      "advantage at any force, but the ball's drag grows with it: B1 needs about "
+      f"{mw(sens.get(0.15, {}).get('P_cont_W'), 0)} mW at 0.15 N, {mw(sens.get(0.3, {}).get('P_cont_W'), 0)} mW at 0.3 N and "
+      f"{mw(sens.get(0.69, {}).get('P_cont_W'), 0)} mW at 0.69 N (CALC). Also unproven: the real magnet strength, that the face "
+      "mechanism behaves as modelled, the friction numbers, the wire fatigue with real clamps, and every tremor result "
+      "(simulated). Nothing was built or measured.")
     A("- **Do next:** G1 measures the ink force and the friction (EXP-B20, EXP-B21); G2 benches the counter-face (EXP-B22), the "
       "actuator coupon (EXP-B23) and the wires (EXP-B25); then the one- and two-axis nib on the tremor rig (G3, G4).")
     A("")
@@ -259,6 +266,12 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       "and leaves the refill: nothing is held in the air. The stop and the face's "
       "orientation are set slowly (seconds) by three small screw motors with no holding power, from the pen's motion sensor "
       "and the refill-slide sensor. CALC statics; PROPOSED DESIGN.")
+    A("")
+    A("One limit of the IMU schedule: the motion sensor knows gravity, not the paper. On a sloped desk the face is set for a "
+      "horizontal page and leaves F_n sin(slope) across the pen: about 17 / 34 / 67 mN at 5 / 10 / 20 deg of slope, i.e. "
+      "about 2 / 7 / 28 mW of holding (CALC, Km upper bound), still inside the 0.1 W limit but a large share of the balance. "
+      "A slope setting in the app, or the slide-cam variant (c'), whose cam reads the tilt from the refill's slide, i.e. "
+      "relative to the paper, removes it; roll still needs a reference (EXP-B28 measures both).")
     A("")
     A(f"Balance quality (CALC, Monte Carlo over tilt 35-75 deg, all rolls, oil and gel ink, six papers, spring +-20 %, "
       f"IMU tilt / roll errors 1 / 2 deg): residual {f(bq.get('c_counterface imu2', {}).get('residual_contact_mean_N', 0) * 1e3, 1)} mN mean "
@@ -314,8 +327,9 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
     A("")
     A("**Recommendation: B1 (candidate c, optimised at a +-1.0 mm travel floor).** Reasons: among the +-1 mm designs that use "
       "a standard D1 refill and need no clutch, it has the lowest power and it meets the 0.1 W holding limit (REQ-RVJ-N10) "
-      "by a factor of about 30 even with 30 % weaker magnets; it is robust to what G1 may find, because the balance scales "
-      "with the actual ink force (`fig_ink_force_sensitivity.png`); a moving coil has no negative stiffness and no pull on "
+      "by a factor of about 30 even with 30 % weaker magnets; it keeps a ten-fold advantage over the unbalanced nib at any "
+      "ink force, although its own power grows with the force through the ball's drag (`fig_ink_force_sensitivity.png`: "
+      "G1 sets the power and thermal budget, not the architecture); a moving coil has no negative stiffness and no pull on "
       "the suspension; unpowered it writes like a normal pen; its parts are ordinary (wires, flat coils, magnets, a face on a "
       "flexure, three small screw motors). The steeper tip (e) is as frugal but needs a custom short cartridge; the slide-cam "
       "variant (c') saves a motor if its cam can be made; (g) is the same nib at +-0.5 mm for use with study W's collar. The "
@@ -614,6 +628,10 @@ def open_issues(res: Dict, S: Dict) -> List[str]:
         "The tracker, not the nib, limits the simulated benefit; improving it is another study's job (ai2, sim2j).",
         "Squiggle motors are sold only in volume (AMF-15): a micro-stepper lead-screw fallback needs its own layout.",
         "Study W's collar (candidate g) was taken read-only; the combined coarse/fine controller was not simulated here.",
+        "The IMU-scheduled face assumes a horizontal page: on a 10 deg writing slope it leaves about 34 mN across the pen "
+        "(7 mW); a slope setting or the paper-referenced slide cam (c') is needed for sloped desks.",
+        "The face schedule must follow the pen's tilt wobble while writing (about +-2.5 deg, LIT CON-02): with a 0.2 s "
+        "response it lags by about 2 deg at 1 Hz (about 5 % residual); a 0.05 s response halves it.",
         "The counter-face's couple loads the refill guide (about 1 N in all at 35 deg); with PTFE sleeves the slide "
         "friction doubles B1's power and with bare metal it breaks REQ-RVJ-N10 at 35 deg: the guide must roll (REQ-BNIB-016, "
         "EXP-B22). The couple also tilts the carrier by up to 4.5 mrad (0.17 mm at the ball, static): a feed-forward item.",

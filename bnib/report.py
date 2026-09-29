@@ -131,8 +131,11 @@ def decision_draft(res: Dict) -> Dict:
             "couples a +-0.5 mm counter-face nib to W's collar).",
             "Slim core (12-16 mm): voice coils around a D1 refill do not fit (candidates a-g infeasible at 14 mm); the "
             "piezo bender stage (h, h') is the slim branch, a trade study, not the first prototype.",
-            "Freeze the refill spring force only after gate G1 measures the minimum reliable ink force (EXP-B20 / EXP-T02); "
-            "the counter-face scales with the actual force, so G1 moves the numbers, not the architecture.",
+            "Freeze the refill spring force only after gate G1 measures the minimum reliable ink force (EXP-B20 / EXP-T02). "
+            "The counter-face balances whatever force G1 picks, but the ball's drag grows with it: B1's continuous power is "
+            f"about {rec.get('P_at_Fs', {}).get('0.15', float('nan')):.0f} mW at 0.15 N, "
+            f"{rec.get('P_at_Fs', {}).get('0.3', float('nan')):.0f} mW at 0.3 N and "
+            f"{rec.get('P_at_Fs', {}).get('0.69', float('nan')):.0f} mW at 0.69 N (CALC): G1 sets the power and thermal budget.",
         ],
         "because": [
             f"Balance: the residual static load is {res['bq_residual_mN']:.1f} mN mean ({res['bq_ratio']:.0%} of the "
@@ -152,8 +155,10 @@ def decision_draft(res: Dict) -> Dict:
             "EXP-B22 measures a residual side load > 25 % of F_s cot(theta) or a face that does not release on lift within "
             "20 ms (-> candidate f or b').",
             "EXP-B23 measures Km < 0.7 x the image-method value (-> larger poles; the 24 mm bore is then the limit).",
-            "EXP-B20 finds a minimum reliable force > 0.7 N (-> the counter-face still balances; re-check the friction "
-            "fluctuation and the stroke under load).",
+            f"EXP-B20 finds a minimum reliable force above about 0.3 N (-> B1's power passes "
+            f"{rec.get('P_at_Fs', {}).get('0.3', float('nan')):.0f} mW and reaches about "
+            f"{rec.get('P_at_Fs', {}).get('0.69', float('nan')):.0f} mW at 0.69 N through the ball's drag: lower-friction "
+            "inks, a larger Km or a better thermal path become the drivers).",
             "EXP-B25 wire coupons fail before 43.2 M cycles at the stop travel.",
             "The sim2 ranking reverses when the page sensor is measured on paper (EXP-T04 / EXP-B32).",
         ],
@@ -226,7 +231,8 @@ def experiments() -> List[Dict]:
         ("EXP-B27", "G4", "Two-axis nib with the counter-face on the tremor rig: tremor left at the tip, clean writing "
          "changed, power, 500 touchdowns, roll +-20 deg", "rig R13 (EXP-T13)", "G4 pass/fail; sim2 calibration"),
         ("EXP-B28", "G2", "IMU tilt and roll estimates while writing (20 writers' recorded strokes replayed on a robot, or "
-         "study R's recordings) against motion capture", "rig R13 + camera", "the face schedule's error budget"),
+         "study R's recordings) against motion capture, on 0 / 10 / 20 deg writing slopes (the IMU sees gravity, not the page)",
+         "rig R13 + camera", "the face schedule's error budget; whether a slope setting or the slide cam is needed"),
         ("EXP-B29", "G4", "Long thermal run with the governor: 30-60 min at the design duty and at 35 deg / 2 mm in a "
          "30 degC room", "rig R13 in the chamber (EXP-T15)", "REQ-BNIB-010; battery time"),
         ("EXP-B30", "G2 (optional)", "Roll spread of a keyed (triangular) grip across 10 writers", "motion capture",
@@ -356,6 +362,11 @@ def assemble(S: Dict) -> Dict:
     from . import loads as LD
     rec["sim2j_power"] = LD.sim2j_power()
     rec["guide_friction"] = guide_friction(d, ev)
+    rec["P_at_Fs"] = {}
+    for F in (0.15, 0.3, 0.69, 1.0):
+        dF = _rp(d, F_s=F)
+        dF.balance = _rp(d.balance, F_s_nom=F)
+        rec["P_at_Fs"][f"{F:g}"] = CD.evaluate(dF, detail=False, fast=True)["P_cont_W"] * 1e3
     res = {"cards": cards, "recommended": rec, "bq_residual_mN": cf.get("residual_contact_mean_N", float("nan")) * 1e3,
            "bq_ratio": cf.get("balance_ratio_mean", float("nan"))}
     res["decision"] = decision_draft(res)

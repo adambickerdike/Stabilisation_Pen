@@ -186,3 +186,31 @@ def test_sim_builds_and_steps():
     c = r["contact"] > 0.5
     assert c.mean() > 0.5
     assert np.mean(r["Fface"][c]) == pytest.approx(0.15 / math.sin(50 * D2R), rel=0.05)
+
+
+def _refill_lateral(theta, face, F, h, fh, ft2=0.0):
+    """Solve the refill's force balance (unknowns N, R1, R2: bushing forces along t1, t2) for a face push -F n
+    (face=True) or a spring push -F a from the carrier (face=False), axial guide friction h along a, and the ball's
+    drag f = fh h_hat + ft2 t2 in the paper (independent 3-D statics)."""
+    fr = C.frame(theta, 0.0)
+    a, n, h_, t1, t2 = fr["a"], fr["n"], fr["h"], fr["t1"], fr["t2"]
+    ext = (-F * n if face else -F * a) + h * a + fh * h_ + ft2 * t2
+    A = np.column_stack([n, t1, t2])            # N n + R1 t1 + R2 t2 = -ext
+    N, R1, R2 = np.linalg.solve(A, -ext)
+    return N, R1, R2
+
+
+@pytest.mark.parametrize("th", [35.0, 50.0, 75.0])
+def test_counterface_statics_independent(th):
+    t = th * D2R
+    # no friction: the face leaves nothing across the pen; the spring leaves F cot(theta)
+    N, R1, R2 = _refill_lateral(t, True, 0.2, 0.0, 0.0)
+    assert abs(R1) < 1e-12 and abs(R2) < 1e-12 and N == pytest.approx(0.2)
+    N, R1, R2 = _refill_lateral(t, False, 0.15, 0.0, 0.0)
+    assert abs(R1) == pytest.approx(0.15 / math.tan(t))
+    # the drag term f_h / sin(theta) and the guide term h cot(theta) are the same in both designs
+    _, R1f, _ = _refill_lateral(t, True, 0.2, 0.01, 0.03)
+    _, R1s, _ = _refill_lateral(t, False, 0.15, 0.01, 0.03)
+    assert abs(R1f) == pytest.approx(abs(0.03 / math.sin(t) + 0.01 * math.cos(t) / math.sin(t)), rel=1e-9)
+    # the two designs differ by exactly the static side load F_s cot(theta): same drag, same guide friction
+    assert abs(R1s - R1f) == pytest.approx(0.15 / math.tan(t), rel=1e-9)
