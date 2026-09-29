@@ -39,6 +39,7 @@ class WPFirmware(Firmware):
         pen = DV.pen_props(pm)
         self.pen_lin = pen
         self.imc = {}
+        self.col_f, self.col_D = None, None
         r0 = wp.model_r_rot
         self.afc = {}
         col_ex = ({"z_p": self.col["z_p"], "K_c": self.col["K_c"], "c_c": self.col["c_c"], "m_c": self.col["m"],
@@ -65,7 +66,6 @@ class WPFirmware(Firmware):
                 self.imc[dev] = C.PhasorIMC(f, G, gain, G_inv=G_inv)
         self.u_cmg = np.zeros(2)
         self.u_col = np.zeros(2)
-        self.col_f, self.col_D = None, None
         self.ucol_hist = deque(maxlen=400)
         self.F_sled = np.zeros(2)
         self.F_omni = np.zeros(2)
@@ -84,8 +84,20 @@ class WPFirmware(Firmware):
         self._last_r = None
         _read = self.sens.read
 
+        # V2 collar: the page sensor sits on the collar (which stays on the paper) and, with the pivot's angle sensors,
+        # gives the inner pen's tip position on the page; its validity is the COLLAR's lift, not the swinging tip's
+        self._col_body = pm.ids.get("body:collar") if (self.col is not None and self.col.get("skid_on_collar")) else None
+        self._col_z0 = None
+        lift_max = float(pm.cfg.sensors.page_lift_max)
+
         def _read_wrap(t, _read=_read):
             r = _read(t)
+            if self._col_body is not None and "page" in r:
+                zc = float(pm.d.xpos[self._col_body][2])
+                if self._col_z0 is None:
+                    self._col_z0 = zc
+                p = r["page"]
+                r["page"] = (p[0], p[1], p[2], bool((zc - self._col_z0) < lift_max))
             self._last_r = r
             return r
         self.sens.read = _read_wrap
@@ -165,6 +177,16 @@ class WPFirmware(Firmware):
         # ---- collar: the servo's reference angle (pen relative to the collar, about t1 and t2)
         if self.col is not None and wp.collar in ("ff", "oracle", "afc"):
             u = self._law("collar", wp.collar, t, f_est, wp.collar_frac * self.col["range_rad"])
+            if wp.collar == "ff" and wp.collar_alloc == "overflow":
+                # coarse/fine allocation: the running rms of the estimated total tremor (the phasor law's e); the
+                # collar takes the share beyond the nib's reach at the amplitude-modulated peaks (x 1.3, ASSUMPTION)
+                e = getattr(self.imc["collar"], "e_last", np.zeros(2))
+                a = self.Ts / max(wp.alloc_tau, 1e-3)
+                self.col_ms = (1 - a) * getattr(self, "col_ms", 0.0) + a * float(e @ e)
+                peak = 1.3 * math.sqrt(2.0 * self.col_ms)
+                share = min(wp.alloc_share_max, max(0.0, 1.0 - wp.alloc_reach / max(peak, 1e-9)))
+                u = u * share
+                self.col_share = share
             self._commit("collar", wp.collar, u)
             self.u_col = u
             self.ucol_hist.append(u.copy())

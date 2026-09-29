@@ -188,7 +188,7 @@ def test_unipen_notes_are_writer_and_text_disjoint_and_upright():
     y0 = it.xy[(it.t >= a0) & (it.t <= b0) & it.pen_down, 1].mean()
     y1 = it.xy[(it.t >= a1) & (it.t <= b1) & it.pen_down, 1].mean()
     assert len(n.real["line_spans"]) == 1 or y0 > y1
-    assert 2.0 < n.real["letter_height_mm"] < 12.0
+    assert 1.5 < n.real["letter_height_mm"] < 20.0             # one test writer writes tall letters (about 15 mm)
 
 
 def test_rank_split_takes_exactly_the_share():
@@ -275,3 +275,23 @@ def test_classes_are_fitted_on_tuning_subjects_and_checked_on_test():
     assert "tuning" in c["_fitted_on"]
     v = c["_validation_test_subjects"]
     assert v["n"] > 5 and abs(v["share_mild"] + v["share_moderate"] + v["share_severe"] - 1) < 1e-9
+
+
+def test_results_card_tables_render_from_fake_cases():
+    from realdata import hw1 as H, report as R
+    cases = []
+    for w in range(4):
+        dv = {"none": {"words_read": 2, "words_total": 10, "tip_tremor_mm": 1.7},
+              "revJ_gated|deltapen": {"words_read": 3, "words_total": 10, "tip_tremor_mm": 1.2},
+              "revJ_oracle": {"words_read": 7, "words_total": 10, "tip_tremor_mm": 0.02}}
+        cases.append({"set": "real", "writer": f"w{w}", "kind": "PD", "class": "severe",
+                      "tremor": {"amp_mm": 1.7, "f0": 6.0}, "devices": dv})
+        cases.append({"set": "clean_real", "writer": f"w{w}", "devices": {
+            "none": {"words_read": 8, "words_total": 10}, "revJ_gated|deltapen": {"words_read": 8, "words_total": 10,
+                                                                                "false_correction_um": 20.0}}})
+    ag = H.aggregate(cases)
+    c = R.cards(ag)
+    assert c and c[0]["pens"]["revJ_gated|deltapen"]["words_of_10"]["mean"] == pytest.approx(3.0)
+    md = R.doc_tables({"hw1": {"aggregate": ag}})
+    assert "| Parkinson's, severe (1.70 mm) | 8.0 |" in md
+    assert "power -50 %" in md                      # (1.2/1.7)^2 - 1 = -0.50

@@ -307,22 +307,27 @@ def derived(res: Dict) -> List[List[str]]:
                         transferability_reason="Real letters of held-out writers; assembled words", design_implication="Calibrate per writer; add CTC for joined-up writing (EXP-S17)",
                         search_query="n/a (derived)", stream="EML"))
     if wd and wd.get("spelling"):
-        blk = wd["spelling"].get("independent") or {}
+        b2 = (wd["spelling"].get("calibrated") or {})
+        blk = (wd.get("spelling_v2") or {}).get("calibrated") or b2
         t = blk.get("test", {})
         rel = blk.get("reliability_test", {})
+        t2, r2 = b2.get("test", {}), b2.get("reliability_test", {})
         if t:
             out.append(_row(id="EML-98", topic="Spelling help that keeps recognition errors apart from spelling errors, with calibrated confidence",
                             citation="This ledger's calculation: ai3 words stage (the review's score over the recogniser's 3 best readings; Holbrook test children; UJI test writers' real letters)",
                             year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived calculation", evidence_class="simulation",
                             access_level="full text", task_or_setup="score = lambda_r log P(strokes|x) + log P(w|context) + log P(x|w); temperature scaling; rules W2-W4 on tuning children",
                             participants_or_bench="none (11 test children's real writing; real letters of 20 held-out writers)", comparator="uncalibrated combination; letters known exactly (EML-93)",
-                            key_quantitative_findings=(f"caught {t['detection_rate']:.3f} of misspellings at {t['fa_per_100_correct']:.2f} false alarms per 100 correct words; "
+                            key_quantitative_findings=(f"calibrated recogniser. As planned (rule W2: 3 best letter strings, temperature scaling): caught "
+                                                       f"{t2.get('detection_rate', float('nan')):.3f} at {t2.get('fa_per_100_correct', float('nan')):.2f} false alarms per 100, ECE "
+                                                       f"{r2.get('raw', {}).get('ece', float('nan')):.3f} -> {r2.get('calibrated', {}).get('ece', float('nan')):.3f} (failed). "
+                                                       f"Post hoc (W5: + lexicon readings, Platt scaling): caught {t['detection_rate']:.3f} of misspellings at {t['fa_per_100_correct']:.2f} false alarms per 100 correct words; "
                                                        f"shown suggestions right {t['suggestion_right_when_shown']:.2f}; misread words put right {t['recognition']['misread_fixed_share']:.2f}, "
                                                        f"right readings changed {t['recognition']['right_reading_changed_share']:.3f}; unusual correct words kept {t['unusual_correct_words']['kept_unflagged_share']:.2f}; "
                                                        f"ECE {rel.get('raw', {}).get('ece', float('nan')):.3f} -> {rel.get('calibrated', {}).get('ece', float('nan')):.3f}; "
                                                        f"auto mode: {t['auto_mode']['errors_fixed_per_100_errors']:.1f} errors fixed per 100, {t['auto_mode']['correct_words_changed_per_100_correct']:.2f} correct words changed per 100"),
                             units_and_conditions="shares; per 100 words; expected calibration error", locator="ai3.json words",
-                            limitations="Recognition simulated with real letters of other writers than the children; unigram-bigram context; 1960s texts",
+                            limitations="W5 was designed after W2's test result (post hoc); recognition simulated with real letters of other writers than the children; 1960s texts",
                             relevance_to_design="Review section 10: combine recognition, context and error model; abstain when weak", transferability="medium",
                             transferability_reason="Real errors and real letters, combined in simulation", design_implication="See docs/spelling_and_clarity.md",
                             search_query="n/a (derived)", stream="EML"))

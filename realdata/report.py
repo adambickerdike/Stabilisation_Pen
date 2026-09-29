@@ -61,9 +61,11 @@ def picture_cases(quick: bool) -> List[Dict]:
         for kind in ("PD", "ET"):
             out.append({"id": f"ct_{kind}_{cls}", "source": "chartraj", "kind": kind, "class": cls,
                         "amp_mm": cl[cls]["representative_mm"], "seed": 0})
-    for kind in ("PD", "ET"):
+    for kind in (("PD",) if quick else ("PD", "ET")):
         out.append({"id": f"unipen_{kind}_severe", "source": "unipen", "kind": kind, "class": "severe",
                     "amp_mm": cl["severe"]["representative_mm"], "seed": 0, "research_only": True})
+    if quick:
+        out = [o for o in out if o["kind"] == "PD"]
     return out
 
 

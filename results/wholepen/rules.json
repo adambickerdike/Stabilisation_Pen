@@ -1,0 +1,72 @@
+{
+  "rules": {
+    "tracker_fw": "nose_gl",
+    "collar_law": "ff",
+    "collar_gain": 0.5,
+    "collar_alloc": "overflow",
+    "collar_share_max": 0.6,
+    "collar_frac": 0.65,
+    "collar_helps_on_tuning": true,
+    "cmg_law": "damp",
+    "gate_margin_mm": 0.3,
+    "page_sensor": "measured (sim2j deltapen_walk: OPT-02 per-window statistics, errors add up)",
+    "tracker": "sim2j frozen (results/sim2j/rules.json)"
+  },
+  "evidence": {
+    "tracker_and_collar": {
+      "tracker": {
+        "nose": {
+          "ink_um": 4100.047105776267,
+          "clean_moved_um": 4.82879114197426
+        },
+        "nose_gl": {
+          "ink_um": 1930.5572711235595,
+          "clean_moved_um": 134.57477456864783
+        }
+      },
+      "collar_variants_ink_um": {
+        "g0.75_f0.9": 2052.809189121736,
+        "g0.5_f0.65": 1596.9361459590223,
+        "g0.5_s0.6_f0.65": 1589.2393455173485
+      },
+      "collar_vs_nose_ink_um": {
+        "nose": 1930.5572711235595,
+        "collar_nose": 1589.2393455173485
+      }
+    },
+    "cmg_law_tip_mm": {
+      "damp": 2.594699272608807,
+      "afc": 3.010894029670252,
+      "ff": 2.6727113787575245
+    },
+    "gate_margin": {
+      "0.3": [
+        5335.842578254101,
+        0.8444035383750064
+      ],
+      "1.0": [
+        5335.842578254101,
+        0.8444035383750064
+      ]
+    }
+  },
+  "frozen_utc": "2026-09-29T19:11:19Z",
+  "note": "chosen on the tuning writers 100-101 and seed 300 only, before any test run",
+  "stabpen.provenance": {
+    "evidence_status": "SIMULATION (tuning set) -> frozen rules",
+    "generated_utc": "2026-09-29T19:11:19+00:00",
+    "git_revision": "bfa33c3-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages tune freeze test grips arm verify summary",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": [
+      300
+    ],
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "package": "wholepen",
+    "version": "wholepen-0.1"
+  }
+}

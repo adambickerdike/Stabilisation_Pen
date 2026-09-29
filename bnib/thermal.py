@@ -76,11 +76,13 @@ class TwoNode:
 
 
 def model_for(D: float, L_src: float, m_cu: float, C_s: float = 6.0, spreader: Optional[Dict] = GRAPHITE_30,
-              T_room: float = None) -> TwoNode:
+              T_room: float = None, wall: float = 1.0e-3) -> TwoNode:
     """A two-node model for a nib: coil capacity from its copper mass (x1.5 for bond and former, ASSUMPTION), shell
-    resistance from the fin model (bare or with the graphite spreader)."""
+    resistance from the fin model (bare or with the graphite spreader); the shell node's capacity C_s scales with the
+    shell's diameter (6 J/K at 24 mm, ASSUMPTION: shell section + stator parts bonded to it)."""
     C_c = max(m_cu * 385.0 * 1.5, 0.05)
-    R_sa = fin_R(D, L_src=L_src, spreader=spreader)
+    R_sa = fin_R(D, wall=wall, L_src=L_src, spreader=spreader)
+    C_s = C_s * (D / 24e-3)
     return TwoNode(C_c=C_c, C_s=C_s, R_cs=val(THERMAL["R_cs"]), R_sa=R_sa,
                    T_room=val(THERMAL["T_room"]) if T_room is None else T_room,
                    T_c_max=val(THERMAL["T_coil_max"]), T_s_target=val(THERMAL["T_skin_target"]))

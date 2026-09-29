@@ -149,7 +149,10 @@ DRIVE = {
     "electronics_W": V((0.034, 0.060), "W", "CALC", "Rev J.1 datasheet count (docs/revJ1_design.md s4.1; OPT-60, OPT-37, AMF-37)"),
     "page_sensor_W": V((0.0013, 0.0019), "W", "CALC", "Rev J.1 (PMW3610 class on in every mode, OPT-61)"),
     "cell_Wh_usable": V(2.22, "Wh", "MFR", "AMF-80 (LIR14500 750 mAh 3.7 V) x 0.8 usable (ASSUMPTION)"),
-    "cell_slim_Wh_usable": V(1.11, "Wh", "ASSUMPTION", "review section 8: 300 mAh 3.7 V nominal; 0.89 Wh at 80 % usable"),
+    "cell_slim_Wh_usable": V(0.89, "Wh", "ASSUMPTION", "review section 8: 300 mAh 3.7 V = 1.11 Wh nominal; 80 % usable"),
+    "cell_slim_mass": V(9.0e-3, "kg", "ASSUMPTION", "a 10440-class 300-350 mAh Li-ion cell (no datasheet opened here)"),
+    "cell_slim_len": V(44e-3, "m", "ASSUMPTION", "10440 class (10 x 44 mm)"),
+    "driver_eff": V(0.85, "-", "ASSUMPTION", "coil copper loss -> battery (bridge and conversion losses)"),
 }
 
 # ------------------------------------------------------------------------------------------------ thermal (two nodes)
@@ -212,7 +215,10 @@ PIEZO = {
               "t": V(0.67e-3, "m", "MFR", "AMF-11"), "C_half": V(3.4e-6, "F", "MFR", "AMF-11"), "f_res": V(420.0, "Hz", "MFR", "AMF-11"),
               "V_range": V((-30.0, 30.0), "V", "MFR", "AMF-11"), "L_free": V(27e-3, "m", "MFR", "AMF-53"),
               "tol": V(0.20, "-", "MFR", "AMF-11"), "T_max": V(85.0, "degC", "MFR", "AMF-53 (PIC251)")},
-    "recovery": V(0.5, "-", "ASSUMPTION", "charge-recovery share of the reactive energy (LT8365 + half-bridges; AMF-58; EXP-Q05)"),
+    "eta_rec": V(0.85, "-", "ASSUMPTION", "charge-recovery driver efficiency per direction (docs/opt_hardware.md A7; EXP-Q05): "
+                                          "P_rail = (1/eta - eta) V_mean C_axis V_pp f per axis (opt/hardware/model.py convention)"),
+    "eta_boost": V(0.80, "-", "ASSUMPTION", "60 V boost efficiency (docs/opt_hardware.md A7)"),
+    "V_mean": V(30.0, "V", "MFR", "AMF-11 (0-60 V parallel drive: the middle electrode swings about 30 V)"),
     "boost_Iq_W": V(0.002, "W", "ASSUMPTION", "boost + bridge quiescent incl. leakage hold (LT8365 Burst Iq 9 uA: AMF-58)"),
 }
 

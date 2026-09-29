@@ -94,6 +94,8 @@ class Duty:
     contact: float = 0.70            # ASSUMPTION (review section 4)
     ink: str = "oil_common"
     paper: float = 1.0
+    slide_friction: bool = True      # the refill's axial slide friction h_sl (+-h_sl cot th across the pen, sign with
+                                     # the slide direction: the nib's motion makes the refill slide, ds = cot th dq)
     label: str = "ASSUMPTION duty (Rev H / study N 1 mm rms at 8 Hz; CON-20 writing speed; 70 % contact)"
 
 
@@ -103,6 +105,10 @@ def loads_at(nib: NibModel, theta: float, phi: float, F_s: float, duty: Duty, ba
     Q_static = st["static"]
     Q_mean = st["mean_sliding"]
     sig_fric = st["rms_about_mean"]
+    if duty.slide_friction:
+        h_sl = val(CONTACT["slide_friction"])
+        sig_sl = h_sl / math.tan(theta) * np.abs(np.array([math.cos(phi), math.sin(phi)]))
+        sig_fric = np.sqrt(sig_fric ** 2 + sig_sl ** 2)
     G = gravity_load(nib, theta, phi)
     w = 2 * math.pi * duty.f
     D_inert = nib.m_eff_tip * w * w * duty.q_rms
@@ -172,7 +178,7 @@ def nose2_duty_model(theta_deg: float = 50.0) -> Dict:
 
 
 def sim2j_power() -> Dict:
-    """sim2j's executed power runs (results/sim2j/power.json, SIM) as quoted evidence."""
+    """sim2j's executed power runs (results/sim2j/power.json and power_split.json, SIM) as quoted evidence."""
     p = REPO_ROOT / "results" / "sim2j" / "power.json"
     if not p.exists():
         return {}
@@ -181,7 +187,17 @@ def sim2j_power() -> Dict:
     out = {}
     for k, v in sim.items():
         out[k] = {kk: v.get(kk) for kk in ("P_nose_W", "ink_err_um", "letters_read", "moved_vs_clean_um")}
-    return {"rows": out, "label": "SIM (sim2j, writer 0, seed 200; results/sim2j/power.json)",
+    split = {}
+    ps = REPO_ROOT / "results" / "sim2j" / "power_split.json"
+    if ps.exists():
+        dd = json.load(open(ps))
+        split = {k: {kk: v.get(kk) for kk in ("P_cu_mean_W", "P_cu_ball_on_paper_W", "P_cu_lifted_W", "T_coil_end_C")}
+                 for k, v in dd.get("sim", {}).items()}
+    return {"rows": out, "split": split,
+            "split_label": "SIM (sim2j power_split.json: writer 0 v2, seed 200, tremor-free, nose held centred): nominal "
+                           "2.25 W = ~1.1 W static side load + ~0.74 W servo on unfiltered Hall noise + ~0.4 W friction and "
+                           "holding; F_c 0.075 N -> 1.32 W",
+            "label": "SIM (sim2j, writer 0, seed 200; results/sim2j/power.json)",
             "doc": "docs/revJ_simulation.md section 8.1: nominal 2.25 W mean (2.68 W with the ball on the paper), 1.51 W "
                    "without the Hall noise, 1.32 W with a 0.075 N spring"}
 
@@ -232,7 +248,8 @@ def load_catalogue() -> List[Dict]:
          "status": "CALC (vector statics); F_c ASSUMPTION until gate G1"},
         {"load": "ball drag and friction-dependent side load", "formula": "-mu N v_hat . u; tilt-plane band F_c cot(th -+ phi_f)",
          "status": "CALC on a friction map (LIT CON-13 base, ASSUMPTION load/speed shapes)"},
-        {"load": "refill slide friction", "formula": "F_s' = F_s -+ h_sl changes N and the side load by h_sl cot th",
+        {"load": "refill slide friction", "formula": "F_s' = F_s -+ h_sl changes N and the side load by -+h_sl cot th (the "
+         "nib's motion slides the refill: ds = cot th dq), counted as a fluctuation of rms h_sl cot th in the tilt plane",
          "status": "ASSUMPTION h_sl 0.01 N (Rev J)"},
         {"load": "inertia", "formula": "m_eff (2 pi f)^2 q", "status": "CALC (mass properties of each design)"},
         {"load": "suspension (flexure)", "formula": "k_tip q", "status": "CALC (flexure.py; beam models)"},

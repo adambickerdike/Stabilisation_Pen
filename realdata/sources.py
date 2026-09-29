@@ -85,7 +85,10 @@ SOURCES: Dict[str, Source] = {
                "newhandpd_NewSpiral.csv": f"{_HPD}/NewSpiral.csv",
                "opf-sibgrapi16.pdf": "http://sibgrapi.sid.inpe.br/col/sid.inpe.br/sibgrapi/2016/07.08.22.47/doc/opf-sibgrapi16.pdf"},
         ledger="PDT-29 (existing); PDT-76 (proposed, this study's spectra)",
-        notes="File headers carry a person ID number, age, weight, height and smoking status: never copied to results."),
+        notes=("File headers carry a person ID number, age, weight, height and smoking status: never copied to results. "
+               "Files: PatientSignal.zip (31 PD x 12 tasks = 372) and HealthySignal.zip (35 x 12 = 420): circA, circB, "
+               "sigDiaA/B, sigMea1-4, sigSp1-4; header Samplerate 1000, no per-sample time stamps; CH4-6 are held for "
+               "3-4 samples (the accelerometer updates about 250-330 times per second inside the 1000/s file).")),
     "zenodo_et": Source(
         key="zenodo_et", name="Accelerometry recordings from essential tremor patients",
         citation=("Pardo-Valencia J, Ammann C, Foffani G. Accelerometry recordings from essential tremor patients "

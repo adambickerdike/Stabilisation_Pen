@@ -119,7 +119,7 @@ details.more summary { cursor: pointer; font-weight: 600 }
         <select id="cue">
           <option value="pause_offer">Tick at the next pause</option>
           <option value="tick">Tick on the suspect letter</option>
-          <option value="withhold">Lift the pen (no ink)</option>
+          <option value="withhold">Tick; lift the pen when very sure</option>
           <option value="show_me">Show me the next letter (opt-in)</option>
           <option value="none">No pen cue</option>
         </select>
@@ -195,7 +195,8 @@ const $ = id => document.getElementById(id);
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const logit = p => Math.log(p / (1 - p));
 const sigm = z => 1 / (1 + Math.exp(-z));
-const calT = (p, T) => sigm(logit(clamp(p, 1e-9, 1 - 1e-9)) / T);
+const calT = (p, T) => Array.isArray(T) ? sigm(T[1] * logit(clamp(p, 1e-9, 1 - 1e-9)) + T[2])   /* Platt (rule W5) */
+                                       : sigm(logit(clamp(p, 1e-9, 1 - 1e-9)) / T);          /* temperature (W2) */
 const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const store = { get(k, d) { try { const v = localStorage.getItem("spellpen." + k); return v === null ? d : JSON.parse(v) } catch (e) { return d } },
   set(k, v) { try { localStorage.setItem("spellpen." + k, JSON.stringify(v)) } catch (e) {} } };
@@ -360,8 +361,16 @@ function nbest(P, K = 3) { let hyps = [["", 0]];
   for (const p of P) { const top = [...p.keys()].sort((u, v) => p[v] - p[u]).slice(0, K);
     hyps = hyps.flatMap(([h, s]) => top.map(j => [h + LET[j], s + Math.log(Math.max(p[j], 1e-9))])).sort((u, v) => v[1] - u[1]).slice(0, K) }
   return hyps }
-function scoreWord(P, isProtected) {                  /* the review's score over the N best readings (ai3/stage_words.combine) */
-  const reads = nbest(P).map(([x, lp]) => ({ x, lp, ...wordEnd(x) }));
+const BYLEN = (() => { const m = new Map(); LEX.words.forEach((w, i) => { if (!m.has(w.length)) m.set(w.length, []); m.get(w.length).push(i) }); return m })();
+function lexReadings(P, k = 3) {                      /* rule W5: the lexicon words of the written length the recogniser likes best */
+  const ids = BYLEN.get(P.length) || [], lp = P.map(p => Array.from(p, v => Math.log(Math.max(v, 1e-9))));
+  const sc = ids.map(i => { const w = LEX.words[i]; let s = 0; for (let j = 0; j < w.length; j++) s += lp[j][LET.indexOf(w[j])]; return [w, s] });
+  return sc.sort((u, v) => v[1] - u[1]).slice(0, k);
+}
+function scoreWord(P, isProtected) {                  /* the review's score over the readings (ai3/stage_words.combine, rule W5) */
+  const nb = nbest(P), have = new Set(nb.map(r => r[0]));
+  for (const r of lexReadings(P)) if (!have.has(r[0])) nb.push(r);
+  const reads = nb.map(([x, lp]) => ({ x, lp, ...wordEnd(x) }));
   const lw = reads.map(r => S.lam_r * r.lp + Math.log(Math.max(r.tot, 1e-300))), mx = Math.max(...lw);
   let J = lw.map(v => Math.exp(v - mx)); const sJ = J.reduce((a, b) => a + b, 0); J = J.map(v => v / sJ);
   let perr = 0; const cand = new Map();
@@ -613,11 +622,13 @@ function makePlan(rev, rest, x0) {
   const gates = { reach: vert <= Ru, accepted: rev.by === "you" };
   const plan = { id: PLANS.length + 1, rev, text: rest, letters, vert, Ru, extent: xs.length ? (Math.max(...xs) - Math.min(...xs)) * mm : 0,
     seconds: path / S.v_max_mm_s, state: gates.reach ? "planned" : "refused", gates };
-  PLANS.push(plan); renderPlans(); return plan;
+  PLANS.push(plan); renderPlans();
+  if (plan.state === "planned") { word.ghost = letters.flatMap(L => L.strokes); drawPad() }   /* where the pen would write */
+  return plan;
 }
 async function runPlan(plan) {
   if (plan.state !== "planned" || busyPlan) return;
-  busyPlan = plan; plan.state = "writing"; renderPlans(); setPen("writing", `Pen writing "${plan.text}" (you accepted it; tap Stop to take over)`);
+  busyPlan = plan; plan.state = "writing"; word.ghost = null; renderPlans(); setPen("writing", `Pen writing "${plan.text}" (you accepted it; tap Stop to take over)`);
   hideTray(true);
   for (const L of plan.letters) {
     for (const s of L.strokes) {
@@ -772,7 +783,7 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { dr
 function renderFacts() {
   const box = $("facts"); box.innerHTML = "";
   for (const f of DATA.facts) { const r = document.createElement("div"); r.className = "fact"; r.innerHTML = `<span></span><b></b>`; r.children[0].innerHTML = ""; r.children[0].textContent = f.k + " "; const t = document.createElement("span"); t.className = "tag"; t.textContent = f.label; r.children[0].appendChild(t); r.children[1].textContent = f.v; box.appendChild(r) }
-  $("settingsline").textContent = `Settings from the study's rules (${S.from_results.join(", ") || "defaults"}): commit at ${S.tau_commit}; flag at P ≥ ${S.theta}; lift the pen at P ≥ ${S.theta_w}; word flag at calibrated P ≥ ${S.theta_c} (T = ${(+S.T).toFixed(2)}, λ = ${S.lam_r}); show a suggestion at ≥ ${S.p_s}; offer completions at ≥ ${S.p_offer}; reach ±${S.reach_mm} mm at a ${S.xh_mm} mm x-height.` + (S.cue_recommended_by_S4 ? ` The simulation's recommended physical cue (rule S4): ${S.cue_recommended_by_S4}.` : "");
+  $("settingsline").textContent = `Settings from the study's rules (${S.from_results.join(", ") || "defaults"}): commit at ${S.tau_commit}; flag at P ≥ ${S.theta}; lift the pen at P ≥ ${S.theta_w}; word flag at calibrated P ≥ ${S.theta_c} (${Array.isArray(S.T) ? `Platt a = ${S.T[1].toFixed(2)}, b = ${S.T[2].toFixed(2)}` : `T = ${(+S.T).toFixed(2)}`}, λ = ${S.lam_r}); show a suggestion at ≥ ${S.p_s}; offer completions at ≥ ${S.p_offer}; reach ±${S.reach_mm} mm at a ${S.xh_mm} mm x-height.` + (S.cue_recommended_by_S4 ? ` The simulation's recommended physical cue (rule S4): ${S.cue_recommended_by_S4}.` : "");
 }
 window.addEventListener("resize", () => { sizePad(); renderPlans() });
 window.__demo = { ready: false, errors, S, recognise: strokes => Array.from(recognise(strokes).p), scoreWord: letters => scoreWord(letters.map(s => recognise(s).q), false),

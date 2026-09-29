@@ -282,9 +282,30 @@ def observe(word: str, pool: Dict[str, List[Tuple[np.ndarray, np.ndarray]]], rng
     return out
 
 
+def lexicon_by_length(words: Sequence[str]) -> Dict[int, Tuple[List[str], np.ndarray]]:
+    by: Dict[int, List[str]] = {}
+    for w in words:
+        if w and all(c in O.L2I for c in w):
+            by.setdefault(len(w), []).append(w)
+    return {L: (ws, np.array([[O.L2I[c] for c in w] for w in ws], np.int64)) for L, ws in by.items()}
+
+
+def lexicon_readings(P: List[np.ndarray], lex, k: int = 3) -> List[Tuple[str, float]]:
+    """The k lexicon words of the written length that the recogniser finds most likely (sum of letter log-posteriors)."""
+    n = len(P)
+    if n not in lex:
+        return []
+    ws, Wl = lex[n]
+    lp = np.log(np.maximum(np.stack(P), 1e-9))
+    sc = lp[np.arange(n)[None, :], Wl].sum(1)
+    top = np.argpartition(-sc, min(k, len(sc) - 1))[:k] if len(sc) > k else np.arange(len(sc))
+    return [(ws[i], float(sc[i])) for i in top[np.argsort(-sc[top])]]
+
+
 def spell_tokens(ck, units_list: List[List[Dict]], pool, cal: bool, seed: int, p_oov: float,
-                 max_units: int) -> List[Dict]:
-    """For every single-token correct/error unit: the N-best readings and the checker's word-end masses per reading."""
+                 max_units: int, lex=None) -> List[Dict]:
+    """For every single-token correct/error unit: the N-best readings and the checker's word-end masses per reading.
+    lex: also add the 3 lexicon words of the same length the recogniser finds most likely (rule W5, post hoc)."""
     rng = np.random.default_rng(seed)
     toks = []
     for ui, units in enumerate(units_list):
@@ -299,6 +320,9 @@ def spell_tokens(ck, units_list: List[List[Dict]], pool, cal: bool, seed: int, p
                     continue
                 cands = nbest(P)
                 cands = [(x, lp) for x, lp in cands if lp >= cands[0][1] - PRUNE_NATS]   # negligible readings dropped
+                if lex is not None:
+                    have = {x for x, _ in cands}
+                    cands += [(w, lp) for w, lp in lexicon_readings(P, lex) if w not in have]
                 literal = "".join(O.LETTERS[int(np.argmax(p))] for p in P)
                 capital = bool(u["capital"] and ti == 0)
                 start_prev = None if (u["sentence_start"] and ti == 0) else prev
@@ -375,7 +399,22 @@ def fit_temperature(p: Sequence[float], y: Sequence[int]) -> float:
 
 
 def apply_T(p, T):
+    """Temperature scaling (T a number) or Platt scaling (T = ('platt', a, b))."""
+    if isinstance(T, (tuple, list)):
+        return 1 / (1 + np.exp(-(T[1] * _logit(p) + T[2])))
     return 1 / (1 + np.exp(-_logit(p) / T))
+
+
+def fit_platt(p: Sequence[float], y: Sequence[int]) -> Tuple[str, float, float]:
+    """Platt scaling: sigmoid(a logit(p) + b), a and b by the NLL (rule W5)."""
+    from scipy.optimize import minimize
+    z, y = _logit(p), np.asarray(y, float)
+
+    def nll(v):
+        q = 1 / (1 + np.exp(-(v[0] * z + v[1])))
+        return -np.mean(y * np.log(np.maximum(q, 1e-12)) + (1 - y) * np.log(np.maximum(1 - q, 1e-12)))
+    r = minimize(nll, np.array([1.0, 0.0]), method="Nelder-Mead", options={"xatol": 1e-4, "fatol": 1e-7, "maxiter": 2000})
+    return ("platt", float(r.x[0]), float(r.x[1]))
 
 
 def ece(p: Sequence[float], y: Sequence[int], bins: int = 15) -> Dict:
@@ -440,15 +479,16 @@ def evaluate(toks: List[Dict], lam_r: float, T: float, theta: float, p_s: float,
                           "correct_words_changed_per_100_correct": 100.0 * auto_harm / max(n_cor, 1)}}
 
 
-def choose_W2(toks: List[Dict]) -> Dict:
-    """Rule W2: for each lambda_r, T by NLL, then the lowest theta_c with <= 2 false alarms per 100 correct words; the
-    lambda_r with the highest detection wins."""
+def choose_W2(toks: List[Dict], method: str = "temperature") -> Dict:
+    """Rule W2 (method 'temperature') or W5 ('platt'): for each lambda_r, the calibrator by NLL, then the lowest theta_c
+    with <= 2 false alarms per 100 correct words; the lambda_r with the highest detection wins."""
     tab = {}
     best = None
-    y = [int(t["kind"] == "error") for t in toks]
+    fit = [t for t in toks if not t["capital"]]               # names are never flagged: not used to fit T
+    y = [int(t["kind"] == "error") for t in fit]
     for lam in LAMBDAS_R:
-        pe = [combine(t, lam)["p_err"] for t in toks]
-        T = fit_temperature(pe, y)
+        pe = [combine(t, lam)["p_err"] for t in fit]
+        T = fit_temperature(pe, y) if method == "temperature" else fit_platt(pe, y)
         th_ok = None
         for th in THETAS_C:
             r = evaluate(toks, lam, T, th, 1.1, 1.0)
@@ -467,7 +507,7 @@ def choose_W2(toks: List[Dict]) -> Dict:
     return {"lambda_r": best[0], "T": best[1], "theta_c": best[2], "table": tab}
 
 
-def choose_W3(toks: List[Dict], lam: float, T: float, theta: float) -> Dict:
+def choose_W3(toks: List[Dict], lam: float, T, theta: float, method: str = "temperature") -> Dict:
     """Rule W3: the suggestion temperature T_s by NLL of 'the top suggestion is the intended word' over flagged
     errors and false alarms; then the lowest p_s whose shown suggestions are right >= 80 % of the time."""
     ps, ys = [], []
@@ -475,7 +515,7 @@ def choose_W3(toks: List[Dict], lam: float, T: float, theta: float) -> Dict:
         c = combine(t, lam)
         if float(apply_T(c["p_err"], T)) >= theta and c["sugg"]:
             ps.append(c["sugg"][0][1]); ys.append(int(t["kind"] == "error" and c["sugg"][0][0] == t["target"]))
-    T_s = fit_temperature(ps, ys) if len(ps) >= 10 else 1.0
+    T_s = (fit_temperature(ps, ys) if method == "temperature" else fit_platt(ps, ys)) if len(ps) >= 10 else 1.0
     tab = {}
     chosen = None
     for p_s in P_S_GRID:
@@ -514,6 +554,14 @@ def run(quick: bool) -> Dict:
     pred, _ = lmx.ng1x(quick)
     out = {"rules_v2_sha256": rules_v2_sha256(), "rules": {k: RULES_V2[k] for k in RULES_V2},
            "O4": {"a": a, "tau": tau}, "gap_assumption": GAP}
+    import pickle
+    part_p = C.cache_dir(quick) / "words_part.pkl"
+    part = pickle.loads(part_p.read_bytes()) if part_p.exists() else {}
+
+    def save_part():
+        tmp = part_p.with_suffix(".tmp")
+        tmp.write_bytes(pickle.dumps(part))
+        tmp.replace(part_p)
     # ---------------- A: words.  Rule W1 on tuning writers (Tatoeba validation), then test writers (Tatoeba test)
     spl = ACO.make_splits()
     n_w = 300 if quick else 2500
@@ -522,24 +570,29 @@ def run(quick: bool) -> Dict:
     tune_w = lb["writers"]["tune"][: 2 if quick else 6]
     test_w = lb["writers"]["test"][: 3 if quick else 20]
     per = 4 if quick else 12
-    w0 = choose_W0(lb["bank"], tune_w, s_val)
-    SEG_MARGIN = w0["margin"]
-    out["W0"] = w0
-    out["seg_margin_xh"] = SEG_MARGIN
-    C.log(f"[words] rule W0 -> segmentation margin {SEG_MARGIN:g} x-height")
-    tw = word_eval(reader, lb["bank"], tune_w, s_val, pred.char, BETAS_W, GAP["normal"], seed=21, max_sent_per_ws=per)
-    best_b = min(BETAS_W, key=lambda b: (tw[f"independent|beta={b:g}"]["cer"], b))
-    out["W1"] = {"beta_w": best_b, "table": {k: v for k, v in tw.items()}}
-    C.log(f"[words] rule W1 -> beta_w {best_b} (tuning CER {tw[f'independent|beta={best_b:g}']['cer']:.3f})")
-    res = {}
-    for gname in ("normal", "tight"):
-        r = word_eval(reader, lb["bank"], test_w, s_test, pred.char, (0.0, best_b), GAP[gname], seed=31,
-                      max_sent_per_ws=per)
-        res[gname] = r
-        C.log(f"[words] test ({gname} spacing): " + ", ".join(f"{k} CER {v['cer']:.3f} WER {v['wer']:.3f}"
-                                                              for k, v in r.items() if isinstance(v, dict)))
-    out["test_words"] = res
-    out["test_writers"] = len(test_w)
+    if "A" in part:
+        out.update(part["A"]); SEG_MARGIN = out["seg_margin_xh"]
+        C.log("[words] part A reused from the partial results")
+    else:
+        w0 = choose_W0(lb["bank"], tune_w, s_val)
+        SEG_MARGIN = w0["margin"]
+        out["W0"] = w0
+        out["seg_margin_xh"] = SEG_MARGIN
+        C.log(f"[words] rule W0 -> segmentation margin {SEG_MARGIN:g} x-height")
+        tw = word_eval(reader, lb["bank"], tune_w, s_val, pred.char, BETAS_W, GAP["normal"], seed=21, max_sent_per_ws=per)
+        best_b = min(BETAS_W, key=lambda b: (tw[f"independent|beta={b:g}"]["cer"], b))
+        out["W1"] = {"beta_w": best_b, "table": {k: v for k, v in tw.items()}}
+        C.log(f"[words] rule W1 -> beta_w {best_b} (tuning CER {tw[f'independent|beta={best_b:g}']['cer']:.3f})")
+        res = {}
+        for gname in ("normal", "tight"):
+            r = word_eval(reader, lb["bank"], test_w, s_test, pred.char, (0.0, best_b), GAP[gname], seed=31,
+                          max_sent_per_ws=per)
+            res[gname] = r
+            C.log(f"[words] test ({gname} spacing): " + ", ".join(f"{k} CER {v['cer']:.3f} WER {v['wer']:.3f}"
+                                                                  for k, v in r.items() if isinstance(v, dict)))
+        out["test_words"] = res
+        out["test_writers"] = len(test_w)
+        part["A"] = {k: out[k] for k in ("W0", "seg_margin_xh", "W1", "test_words", "test_writers")}; save_part()
     # ---------------- B: spelling with recognition (Holbrook children; UJI tuning writers <-> tuning children)
     passages, _ = D.load_holbrook()
     tune_p = [p for p in passages if SS.child_split(p.child) == "tune"]
@@ -566,8 +619,17 @@ def run(quick: bool) -> Dict:
     p_oov = sp_cache["S2"]["p_oov"]
     ck.p_oov = p_oov
     out["spelling"] = {"p_oov": p_oov, "alpha": sp_cache["alpha"], "max_units_per_child": max_units}
+    # the same words with the letters known exactly (task 2's checker, its own threshold): the cost of reading
+    if sp_cache.get("records_test"):
+        recs = [r[:max_units] for r in sp_cache["records_test"]]
+        sc = SS.score(recs, sp_cache["test"]["theta"])
+        out["spelling"]["exact_letters_same_units"] = {k: sc[k] for k in ("errors", "correct_words", "detection_rate",
+                                                                          "fa_per_100_correct", "suggestion_top1", "suggestion_top3")}
     for cal in (False, True):
         name = "calibrated" if cal else "independent"
+        if f"spell_{name}" in part:
+            out["spelling"][name] = part[f"spell_{name}"]
+            continue
         t1 = time.time()
         tk_tune = spell_tokens(ck, units_tune, pools["tune"], cal, seed=41, p_oov=p_oov, max_units=max_units)
         w2 = choose_W2(tk_tune)
@@ -579,9 +641,32 @@ def run(quick: bool) -> Dict:
                                  "tune": evaluate(tk_tune, w2["lambda_r"], w2["T"], w2["theta_c"], w3["p_s"], w3["T_s"]),
                                  "n_tokens": {"tune": len(tk_tune), "test": len(tk_test)},
                                  "minutes": (time.time() - t1) / 60}
+        part[f"spell_{name}"] = out["spelling"][name]; save_part()
         C.log(f"[words] spelling with {name} recognition: W2 lambda_r {w2['lambda_r']}, T {w2['T']:.2f}, theta_c "
               f"{w2['theta_c']}; W3 p_s {w3['p_s']}; test detection {ev['detection_rate']:.3f}, "
               f"FA/100 {ev['fa_per_100_correct']:.2f}, ECE {rel['raw']['ece']:.3f} -> {rel['calibrated']['ece']:.3f}")
+    # ---------------- rule W5 (post hoc, written after W2's first test result): lexicon readings + Platt scaling
+    lex = lexicon_by_length(ck.t.words)
+    out["spelling_v2"] = {"rule": "W5_posthoc"}
+    for cal in (False, True):
+        name = "calibrated" if cal else "independent"
+        if f"v2_{name}" in part:
+            out["spelling_v2"][name] = part[f"v2_{name}"]
+            continue
+        t1 = time.time()
+        tk_tune = spell_tokens(ck, units_tune, pools["tune"], cal, seed=41, p_oov=p_oov, max_units=max_units, lex=lex)
+        w5 = choose_W2(tk_tune, method="platt")
+        w3 = choose_W3(tk_tune, w5["lambda_r"], w5["T"], w5["theta_c"], method="platt")
+        tk_test = spell_tokens(ck, units_test, pools["test"], cal, seed=42, p_oov=p_oov, max_units=max_units, lex=lex)
+        ev = evaluate(tk_test, w5["lambda_r"], w5["T"], w5["theta_c"], w3["p_s"], w3["T_s"])
+        rel = reliability(tk_test, w5["lambda_r"], w5["T"])
+        out["spelling_v2"][name] = {"W5": w5, "W3": w3, "test": ev, "reliability_test": rel,
+                                    "tune": evaluate(tk_tune, w5["lambda_r"], w5["T"], w5["theta_c"], w3["p_s"], w3["T_s"]),
+                                    "n_tokens": {"tune": len(tk_tune), "test": len(tk_test)}, "minutes": (time.time() - t1) / 60}
+        part[f"v2_{name}"] = out["spelling_v2"][name]; save_part()
+        C.log(f"[words] W5 (post hoc) with {name} recognition: lambda_r {w5['lambda_r']}, Platt {w5['T']}, theta_c "
+              f"{w5['theta_c']}; p_s {w3['p_s']}; test detection {ev['detection_rate']:.3f}, FA/100 {ev['fa_per_100_correct']:.2f}, "
+              f"ECE {rel['raw']['ece']:.3f} -> {rel['calibrated']['ece']:.3f}")
     out["minutes"] = (time.time() - t0) / 60
     C.save("words", out, quick)
     return out

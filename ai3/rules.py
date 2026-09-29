@@ -88,7 +88,7 @@ RULES_V2 = {
     "W2_score": ("Recognition-aware spelling, score = lambda_r log P(strokes | reading) + log P(w | context) + "
                  "log P(reading | w): lambda_r in {0.5, 0.75, 1.0, 1.5}; for each, a temperature T fitted by the NLL of "
                  "P(misspelled) on the tuning children's words (letters observed through UJI tuning writers' real "
-                 "letters), then theta_c = the lowest value in {0.3, ..., 0.99} with <= 2 false alarms per 100 correct "
+                 "letters; capitalised words, never flagged, left out of the fit), then theta_c = the lowest value in {0.3, ..., 0.99} with <= 2 false alarms per 100 correct "
                  "words; the lambda_r with the highest detection wins.  Separate choices for the writer-independent "
                  "and the writer-calibrated recogniser."),
     "W3_abstain": ("A suggestion is shown only when its calibrated probability (temperature T_s fitted by NLL on the "
@@ -98,6 +98,12 @@ RULES_V2 = {
     "W4_auto": ("Opt-in automatic digital correction replaces a word only when calibrated P(misspelled) >= 0.9 and the "
                 "calibrated top suggestion >= 0.9 (fixed, not tuned); every replacement is logged and reversible; it is "
                 "reported as errors fixed and correct words changed per 100."),
+    "W5_posthoc": ("Written at 19:05 AFTER the first test of W2 had failed (1 % caught; temperature scaling made the "
+                   "calibration worse, ECE 0.22 -> 0.35), so its test numbers are a post-hoc design and are reported as "
+                   "such: the readings are the recogniser's 3 best letter strings PLUS the 3 lexicon words of the written "
+                   "length that the recogniser finds most likely; P(misspelled) and the top suggestion are calibrated by "
+                   "Platt scaling (sigmoid(a logit p + b), a and b by NLL on the tuning children); lambda_r and theta_c as "
+                   "in W2, p_s as in W3."),
     "C1_complete": ("Physical completion planner (complete_plan.py), fixed before simulation: nib path speed <= 30 mm/s "
                     "(the median pen-down speed, LIT CON-20) and acceleration <= 2 m/s^2; usable reach = stage radius "
                     "minus a 0.5 mm reserve for tremor and tracking; the nib only moves forward along the accepted path; "

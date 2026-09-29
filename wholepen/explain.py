@@ -51,7 +51,7 @@ def layout_parts(prov: Optional[Dict] = None, z_p: float = 50.0, travel: float =
         {"id": "collar_motor_1", "label": "Swing motor (tilt plane)", "group": "collar", "shape": "cylinder", "z0": z_rear - 14.0,
          "z1": z_rear - 2.0, "d0": 3.2, "d1": 3.2, "offset": [round(-(od / 2 - wall - 1.8), 2), 0.0], "moves_with": "collar", "optional": False,
          "function": "Swings the inner pen in the tilt plane and pushes back on the collar and the hand (the Liftware principle).",
-         "part": "Faulhaber 0824 B + planetary head (MFR AMF-120, AMF-103; the 06/1 head's 25 mN m continuous rating is too low: a larger head is an open item)",
+         "part": "Faulhaber 0824 B + 06/1 planetary head (MFR AMF-120, AMF-103: 25 mN m continuous; the compact pen needs about 10 mN m at 8 mm tremor, CALC); a moving-magnet voice coil at the sleeve's rear is the backlash-free alternative",
          "ledger": "AMF-120,AMF-103", "mass_g": round((cp.get("motor_0824B_2x", 0) + cp.get("gearhead_06_1_2x", 0) + cp.get("output_gears_2x", 0)) / 2, 2)},
         {"id": "collar_motor_2", "label": "Swing motor (sideways)", "group": "collar", "shape": "cylinder", "z0": z_rear - 14.0,
          "z1": z_rear - 2.0, "d0": 3.2, "d1": 3.2, "offset": [0.0, round(od / 2 - wall - 1.8, 2)], "moves_with": "collar", "optional": False,

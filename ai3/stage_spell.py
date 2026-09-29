@@ -327,11 +327,25 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
     tg = [SP.clean_word(u["target"]) for us in units_tune + units_test for u in us if u["kind"] in ("correct", "error")
           and " " not in u["target"]]
     out["lexicon_coverage_of_intended_words"] = float(np.mean([t in ck.t.index for t in tg if t]))
+    # partial results survive a crash or an out-of-memory kill (the checker is deterministic, so they can be reused)
+    import pickle
+    part_p = C.cache_dir(quick) / f"spell_part_{lm_name}.pkl"
+    part = pickle.loads(part_p.read_bytes()) if part_p.exists() else {}
+
+    def save_part():
+        tmp = part_p.with_suffix(".tmp")
+        tmp.write_bytes(pickle.dumps(part))
+        tmp.replace(part_p)
     # ---- tuning children
     t0 = time.time()
-    rec_tune = [run_units(ck, us) for us in units_tune]
-    n_letters = sum(len(t["written"]) for recs in rec_tune for u in recs for t in u["tokens"])
-    out["ms_per_letter"] = (time.time() - t0) * 1e3 / max(n_letters, 1)
+    if "rec_tune" in part:
+        rec_tune, out["ms_per_letter"] = part["rec_tune"], part["ms_per_letter"]
+        C.log("[spell] tuning children: reused the partial results")
+    else:
+        rec_tune = [run_units(ck, us) for us in units_tune]
+        n_letters = sum(len(t["written"]) for recs in rec_tune for u in recs for t in u["tokens"])
+        out["ms_per_letter"] = (time.time() - t0) * 1e3 / max(n_letters, 1)
+        part.update(rec_tune=rec_tune, ms_per_letter=out["ms_per_letter"]); save_part()
     C.log(f"[spell] tuning children done ({time.time() - t0:.0f} s, {out['ms_per_letter']:.1f} ms/letter)")
     # rule S2: the out-of-vocabulary prior and theta jointly (highest detection with <= 2 false alarms per 100)
     s2 = {}
@@ -359,7 +373,11 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
           f"{out['tune_score']['detection_rate']:.3f} detected, {out['tune_score']['fa_per_100_correct']:.2f} FA/100")
     # ---- test children (rules fixed above)
     t0 = time.time()
-    rec_test = [run_units(ck, us) for us in units_test]
+    if "rec_test" in part:
+        rec_test = part["rec_test"]
+    else:
+        rec_test = [run_units(ck, us) for us in units_test]
+        part["rec_test"] = rec_test; save_part()
     reweight(rec_test, p_oov)
     C.log(f"[spell] test children done ({time.time() - t0:.0f} s)")
     res = {"theta": theta, "theta_w": theta_w}
@@ -392,7 +410,9 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
     from aiguide import corpus as ACO
     spl = ACO.make_splits()
     units_bb, info_bb = pairs_in_text(sp["test"], list(spl.test), 400 if quick else 3000, seed=5)
-    rec_bb = reweight([run_units(ck, units_bb)], p_oov)[0]
+    if "rec_bb" not in part:
+        part["rec_bb"] = run_units(ck, units_bb); save_part()
+    rec_bb = reweight([part["rec_bb"]], p_oov)[0]
     out["birkbeck_in_text"] = {"info": info_bb, "score": score([rec_bb], theta),
                                "earliest_possible": earliest_possible([rec_bb])}
     C.log(f"[spell] Birkbeck-in-text: {out['birkbeck_in_text']['score']['detection_rate']:.3f} detected, "
@@ -401,14 +421,17 @@ def run(quick: bool, pred=None, lm_name: str = "NG1x", rec_conf: Optional[Dict[s
     out["with_recognition"] = {}
     for name, conf in (rec_conf or {}).items():
         conf = np.asarray(conf, float)
-        conf = (conf + 0.02) / (conf + 0.02).sum(1, keepdims=True)
+        conf = (conf + 5e-4) / (conf + 5e-4).sum(1, keepdims=True)    # rows are probabilities: a small floor only
         rs = np.full((SP.NA, SP.NA), 12.0)
         rs[:26, :26] = -np.log(conf)
         for i in range(26, SP.NA):
             rs[i, i] = 0.0
         ck.rec_sub = rs
         # the first 500 units of each test child (compute bound; the same units for every recogniser)
-        rec_n = reweight([run_units(ck, us[:500], noise={"conf": conf}, seed=17) for us in units_test], p_oov)
+        key = f"rec_noise_{name}"
+        if key not in part:
+            part[key] = [run_units(ck, us[:500], noise={"conf": conf}, seed=17) for us in units_test]; save_part()
+        rec_n = reweight(part[key], p_oov)
         ck.rec_sub = None
         out["with_recognition"][name] = {"letter_error_rate": float(1 - np.mean(np.diag(conf))),
                                          "score": score(rec_n, theta), "records": _slim(rec_n)}

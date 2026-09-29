@@ -16,7 +16,8 @@ refill's front collar through decoupling leaves, the refill pivoting at a rear g
     tip blocking force F_b = n_p F_block / lambda;  tip stiffness k = F_b / x_f
     loaded usable (symmetric) travel under a static tip load F_s:  x_u = x_f - |F_s| / k
     loaded resonance f = sqrt(k / (m_tip + m_plates_eff lambda^2... )) / 2 pi  (plate effective mass 0.24 m at the tip)
-    drive power P = (1 - r) sum C V_pp^2 f (reactive energy per cycle, charge recovery share r ASSUMPTION) + hold/boost
+    drive power (recovery driver, docs/opt_hardware.md A7): P_rail = (1/eta - eta) V_mean C_axis V_pp f per axis,
+    battery = 2 P_rail / eta_boost + quiescent
 """
 from __future__ import annotations
 
@@ -49,6 +50,8 @@ def eta_axial(w, t_m, G, t_c):
 
 
 CAL_PATH = BUILD / "vc_calibration.json"
+R_CARRIER = 1.6e-3          # m outer radius of the nib carrier where it passes the magnets (Ti tube 3.2/2.5 mm around the
+                            # refill: PROPOSED DESIGN); the magnet array's central hole clears it at the stop travel
 _CAL = None
 
 
@@ -63,12 +66,12 @@ def calibration() -> Dict:
 
 
 def vc_axial(w, t_m, t_c, s, e=None, c0: float = 0.30e-3, c1: float = 0.15e-3, k_fill: float = 0.55, Br: float = 1.42,
-             moving: str = "coil", refill_r: float = 1.175e-3, cal: Optional[Dict] = None) -> Dict:
+             moving: str = "coil", refill_r: float = R_CARRIER, cal: Optional[Dict] = None) -> Dict:
     """Moving-coil (or moving-magnet) annular axial-gap checkerboard, differentiable in the continuous variables."""
     cal = cal or calibration()
     w, t_m, t_c, s = _t(w), _t(t_m), _t(t_c), _t(s)
     if e is None:
-        e = (refill_r + s + 0.30e-3) / math.sqrt(2.0)       # the refill swings +-s in the hole with 0.3 mm clearance
+        e = (refill_r + s + 0.30e-3) / math.sqrt(2.0)       # the carrier swings +-s in the hole with 0.3 mm clearance
     e = _t(e)
     c = 0.5 * w + e
     G = c0 + 2 * t_c + c1
@@ -174,6 +177,11 @@ class PiezoStage:
 
 
 def piezo_stage(ps: PiezoStage, F_static_tip: float, q_rms: float = 0.3e-3, f: float = 8.0, worst: bool = True) -> Dict:
+    """Force-travel line, loaded resonance and drive power of the piezo stage (CALC on MFR AMF-11 endpoints).
+    Power: the recovery-driver convention of the pencil study (opt/hardware/model.py, docs/opt_hardware.md A7):
+    per axis P_rail = (1/eta - eta) V_mean C_axis V_pp f for a sinusoidal duty of amplitude A = sqrt(2) q_rms
+    (V_pp = 60 V x A / x_free); battery = both axes / eta_boost + quiescent.  The static offset that holds the side
+    load costs no power (only leakage, inside the quiescent figure) but uses stroke: x_u = x_f - |F| / k."""
     p = PIEZO[ps.plate]
     d_free = val(p["free_um"]) * 1e-6
     Fb = val(p["F_block"])
@@ -183,16 +191,19 @@ def piezo_stage(ps: PiezoStage, F_static_tip: float, q_rms: float = 0.3e-3, f: f
     k = F_b / x_f
     x_u = x_f - abs(F_static_tip) / k
     m_plate = val(MAT["PZT_rho"]) * val(p["L"]) * val(p["w"]) * val(p["t"])
-    m_eff = ps.m_tip + 0.24 * ps.n_p * m_plate * ps.lam ** -2 * 0 + 0.24 * ps.n_p * m_plate / ps.lam ** 2
+    m_eff = ps.m_tip + 0.24 * ps.n_p * m_plate / ps.lam ** 2
     f_res = math.sqrt(k / m_eff) / (2 * math.pi)
     Vr = val(p["V_range"])
     Vpp_full = Vr[1] - Vr[0]
-    C = 2 * val(p["C_half"])                                       # both halves of a bimorph plate
-    frac = min(math.sqrt(2) * q_rms / x_f, 1.0)                    # share of the full voltage swing the duty uses
-    Vpp = frac * Vpp_full
-    r = val(PIEZO["recovery"])
-    P_axis = (1 - r) * ps.n_p * C * Vpp ** 2 * f
+    C_axis = ps.n_p * 2 * val(p["C_half"])                         # both halves of each bimorph plate
+    A = math.sqrt(2) * q_rms
+    Vpp = min(A / x_f, 1.0) * Vpp_full
+    eta = val(PIEZO["eta_rec"])
+    P_rail_axis = (1.0 / eta - eta) * val(PIEZO["V_mean"]) * C_axis * Vpp * f
+    P_batt = 2 * P_rail_axis / val(PIEZO["eta_boost"]) + val(PIEZO["boost_Iq_W"])
     return {"plate": ps.plate, "tip_free_stroke_mm": x_f * 1e3, "tip_block_N": F_b, "tip_k_N_m": k,
-            "loaded_usable_mm": x_u * 1e3, "f_loaded_Hz": f_res, "P_drive_2axes_W": 2 * P_axis + val(PIEZO["boost_Iq_W"]),
-            "plates_mass_g": 2 * ps.n_p * m_plate * 1e3, "C_per_axis_uF": ps.n_p * C * 1e6, "V_pp": Vpp,
-            "worst_case_tol": worst, "label": "CALC (force-travel line of MFR AMF-11 endpoints; power ASSUMPTION recovery)"}
+            "loaded_usable_mm": x_u * 1e3, "f_loaded_Hz": f_res, "m_eff_tip_g": m_eff * 1e3,
+            "P_rail_per_axis_W": P_rail_axis, "P_drive_2axes_W": P_batt, "duty_amp_mm": A * 1e3,
+            "duty_feasible": bool(A <= x_u), "plates_mass_g": 2 * ps.n_p * m_plate * 1e3, "C_per_axis_uF": C_axis * 1e6,
+            "V_pp": Vpp, "worst_case_tol": worst,
+            "label": "CALC (force-travel line of MFR AMF-11 endpoints, -20 % tolerance; recovery-driver power ASSUMPTION A7)"}

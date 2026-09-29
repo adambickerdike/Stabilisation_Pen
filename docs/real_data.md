@@ -73,7 +73,7 @@ SIM.
 
 **BRUSH and the synthetic writers put far too much movement in the tremor band.**
 - BRUSH is the only large open set with letter labels, but its 36 % at 8-12 Hz is a timing artefact.
-- In a first HW1 run on BRUSH notes the trackers took it for tremor. They moved tremor-free ink by 100-450 um.
+- In a first HW1 run on BRUSH notes the trackers took it for tremor. They moved tremor-free ink by 160-310 um (Rev H and Rev J trackers) and 440-880 um (TCN), on two notes.
 - That run was stopped and kept as a labelled diagnostic in `realdata/build/cache/hw1/brush_diagnostic/`.
 - The synthetic writers carry 10-17 %: 6-13 times the real share.
 
@@ -163,7 +163,7 @@ bound (open circles and "ideal sensor" rows).
 | UNIPEN, the other 25 category-8 setups | text lines from many labs and devices | as above | statistics only | the kinematics survey that selected hpb2 |
 | UCI Parkinson Disease Spiral Drawings (Isenkul et al. 2014; 10.24432/C5Q01S) | 62 PD + 15 controls drawing spirals on a Wacom Cintiq 12WX; X, Y, pressure, grip angle, time | CC BY 4.0 | short attributed excerpts, statistics | PD tremor at the pen tip in mm; the severity classes; the PD tremor waveforms |
 | Zenodo ET accelerometry (Pardo-Valencia, Ammann, Foffani 2026; 10.5281/zenodo.19130599) | 29 ET patients, both hands, rest and arms out, one axis, 5 kHz | CC BY 4.0 | excerpts, statistics | ET tremor waveforms (shape, frequency, wander); amplitude set by the class |
-| NewHandPD smart-pen signals (Pereira et al., SIBGRAPI 2016) | 31 PD + 35 healthy; BiSP pen: microphone, grip, refill force, 3-axis tilt/acceleration at the pen's rear; 1000 samples/s (file headers) | none stated (cite the paper) | statistics only | pen acceleration spectra; gravity calibration |
+| NewHandPD smart-pen signals (Pereira et al., SIBGRAPI 2016) | 31 PD + 35 healthy, 12 tasks each (PatientSignal.zip, HealthySignal.zip); BiSP pen: microphone, grip, refill force, 3-axis tilt/acceleration at the pen's rear; files at 1000 samples/s (headers), the acceleration channels updated about 250-330 times a second (held samples) | none stated (cite the paper) | statistics only | pen acceleration spectra; gravity calibration |
 | PADS smartwatch (Varghese et al. 2024; 10.13026/m0w9-zx22) | 469 people (276 PD, 28 ET, 79 healthy); two watches, 100 Hz; rest, postural, kinetic tasks | CC BY-NC-SA 4.0 | statistics only | wrist tremor size; rest against action |
 | UCI Character Trajectories (Williams 2008; 10.24432/C58G7V) | 2858 letters of one adult, 200 Hz | CC BY 4.0 | excerpts, statistics | the letters of the **committed** pictures |
 | UJI Pen Characters v2 (Llorens et al., LREC 2008; 10.24432/C5FG8S) | 11,640 letters of 60 writers | CC BY 4.0 | excerpts, statistics | checked: no timing in the data, so not used |
@@ -216,7 +216,7 @@ OC.reader_choice(); OC.words_read(result, wr)  # literal words read by the AI re
 | id | Requirement | Rationale | Verification |
 |---|---|---|---|
 | REQ-DATA-002 | Every tracker or pen claim about writing is also evaluated on **real recorded writing and real recorded tremor** (this library or better), on test writers and test subjects only, and reported next to the synthetic result | The synthetic writers and tremor model differ from real ones in ways that change the results (bridge, this doc) | results card with both input sets |
-| REQ-DATA-003 | False correction ("clean writing changed") is measured on **real tremor-free writing recorded on paper with a clean digitiser**, i.e. <= 2.5 % of its pen-down velocity energy at 8-12 Hz | BRUSH's timing artefact made the trackers move clean ink by 100-450 um | kinematics check (realdata.kinematics) before use |
+| REQ-DATA-003 | False correction ("clean writing changed") is measured on **real tremor-free writing recorded on paper with a clean digitiser**, i.e. <= 2.5 % of its pen-down velocity energy at 8-12 Hz | BRUSH's timing artefact made the trackers move clean ink by 160-880 um | kinematics check (realdata.kinematics) before use |
 | REQ-DATA-004 | Claims name the **tremor class in mm at the tip** (peak = sqrt(2) x RMS of the major axis in f0 +- 2 Hz) and the population, never "tremor" alone | The data's severe class starts at about 0.5 mm, far below the plan's assumed 5-10 mm | review of every claim |
 | REQ-DATA-005 | Inputs built with non-causal (zero-phase) filters are **never** given to a controller or estimator | The tremor extraction uses the future of the recording | code review; library docstrings |
 | REQ-DATA-006 | Datasets are used and redistributed only within their licences; results hold statistics only for research-only and non-commercial sources | UNIPEN, BRUSH, PADS, NewHandPD terms | sources.py registry test |

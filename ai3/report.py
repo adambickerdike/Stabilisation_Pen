@@ -493,9 +493,17 @@ def build_spell_sample(sp: Dict, quick: bool) -> Optional[Dict]:
         ttl = (f"Pen lift (for illustration: this word's P = {tok['p_dev'][k]:.2f} is below the stricter lift threshold "
                f"{theta_w:g}, so the pen would NOT lift here)")
     panels.append({"title": ttl, "strokes": flat(lets_prev + wr[:k]) + keep, "withheld": cut})
-    corr, _, _ = write(target, xw + 1.6)
-    panels.append({"title": f"After the cue: the writer finishes '{target}' (response ASSUMED; the pen never writes it)",
-                   "strokes": flat(lets_prev + corr)})
+    # after the cue: permanent ink stays; the writer crosses out the wrong letters (first wrong letter to the flagged
+    # one) and writes the rest of the word right after them; the transcript reads the target
+    from .spell import first_deviation
+    fd = max(1, min(first_deviation(target, tok["written"]), f))
+    x_end = spans[f - 1][2] + 0.35 * O.XH_MM
+    rest, _, _ = write(target[fd - 1:], x_end)
+    y_mid = 0.5 * O.XH_MM
+    strike = np.array([[spans[fd - 1][1] - 0.3, y_mid - shift[1] - 0.2], [spans[f - 1][2] + 0.3, y_mid - shift[1] + 0.3]])
+    panels.append({"title": (f"After the tick: the writer crosses out '{tok['written'][fd - 1:f]}' and writes '{target[fd - 1:]}' after it "
+                             f"(response ASSUMED); the pen never changes ink; the transcript reads '{target}'"),
+                   "strokes": flat(lets_prev + wr[:f] + rest) + [strike + shift]})
     return {"panels": panels, "writer": w, "written": tok["written"], "target": target, "flag_letter": f,
             "suptitle": "A misspelling caught while writing, in real handwriting at true scale (3 mm x-height, 8 mm ruled lines)"}
 
@@ -554,7 +562,9 @@ def fig_words(wd: Dict, out: Path):
             rows += [[g, k, key, tw.get(k, {}).get(key)] for k, _ in combos]
         ax.set_xticks(x); ax.set_xticklabels([l for _, l in combos], fontsize=7)
         ax.set_title(title, fontsize=8.5, loc="left"); ax.set_ylabel("%", fontsize=7.5)
-    axs[1].legend(fontsize=6.5, loc="upper right")
+        top = max([r[3] for r in rows if r[2] == key and r[3] is not None] + [0.01]) * 100
+        ax.set_ylim(0, top * 1.35)
+    axs[1].legend(fontsize=6.5, loc="upper center", ncol=2, frameon=False)
     fig.suptitle(f"Word recognition on {wd.get('test_writers', 20)} held-out writers (real letters; calibration from their other session)",
                  fontsize=9, x=0.01, ha="left")
     fig.tight_layout()
@@ -564,23 +574,27 @@ def fig_words(wd: Dict, out: Path):
 def fig_calibration(wd: Dict, out: Path):
     """Reliability of P(misspelled) before and after temperature scaling (test children)."""
     PS.apply()
-    blk = (wd.get("spelling") or {}).get("independent", {})
-    rel = blk.get("reliability_test")
-    if not rel:
+    panels = [("as planned (W2)", (wd.get("spelling") or {}).get("calibrated", {}), "temperature scaling"),
+              ("post hoc (W5)", (wd.get("spelling_v2") or {}).get("calibrated", {}), "Platt scaling")]
+    panels = [p_ for p_ in panels if p_[1].get("reliability_test")]
+    if not panels:
         return
-    fig, ax = plt.subplots(figsize=(3.6, 3.3))
-    ax.plot([0, 1], [0, 1], color=GRID, lw=1)
+    fig, axs = plt.subplots(1, len(panels), figsize=(3.5 * len(panels), 3.3), squeeze=False)
     rows = []
-    for key, col, lab in (("raw", S[1], "combined score, raw"), ("calibrated", S[0], "after temperature scaling")):
-        bins = rel[key]["bins"]
-        x = [b_["mean_p"] for b_ in bins]; y = [b_["freq"] for b_ in bins]; n = [b_["n"] for b_ in bins]
-        ax.plot(x, y, "-o", color=col, ms=3, lw=1.3, label=f"{lab} (ECE {rel[key]['ece']:.3f})")
-        rows += [[key, a, c, d] for a, c, d in zip(x, y, n)]
-    ax.set_xlabel("predicted P(misspelled)", fontsize=7.5); ax.set_ylabel("share actually misspelled", fontsize=7.5)
-    ax.legend(fontsize=6.3, loc="upper left"); ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-    ax.set_title(f"Test children, {rel['n']} words (T = {blk['W2']['T']:.2f})", fontsize=8.5, loc="left")
-    _save(fig, out, "fig_calibration", EVIDENCE_SIM, ["series", "mean_predicted", "observed_share", "n"], rows,
-          "real letters of held-out writers as recognised strokes")
+    for ax, (title, blk, how) in zip(axs[0], panels):
+        rel = blk["reliability_test"]
+        ax.plot([0, 1], [0, 1], color=GRID, lw=1)
+        for key, col, lab in (("raw", S[1], "combined score, raw"), ("calibrated", S[0], f"after {how}")):
+            bins = rel[key]["bins"]
+            x = [b_["mean_p"] for b_ in bins]; y = [b_["freq"] for b_ in bins]; n = [b_["n"] for b_ in bins]
+            ax.plot(x, y, "-o", color=col, ms=3, lw=1.3, label=f"{lab} (ECE {rel[key]['ece']:.3f})")
+            rows += [[title, key, a, c, d] for a, c, d in zip(x, y, n)]
+        ax.set_xlabel("predicted P(misspelled)", fontsize=7.5); ax.set_ylabel("share actually misspelled", fontsize=7.5)
+        ax.legend(fontsize=6.0, loc="upper left"); ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+        ax.set_title(f"{title}: {rel['n']} test words", fontsize=8.5, loc="left")
+    fig.tight_layout()
+    _save(fig, out, "fig_calibration", EVIDENCE_SIM, ["design", "series", "mean_predicted", "observed_share", "n"], rows,
+          "calibrated recogniser; real letters of held-out writers as recognised strokes")
 
 
 def fig_plan(pl: Dict, out: Path):
@@ -790,15 +804,24 @@ def tables_md(res: Dict) -> str:
         L += ["### T8. Spelling help with the pen's own reading of the letters (the review's score; 11 test children; SIM)", "",
               "| Recogniser | Caught | False alarms per 100 correct | Suggestion shown / right when shown | Misread words put right / right readings changed | Unusual correct words kept | ECE raw / calibrated | Auto mode: errors fixed / correct words changed per 100 |",
               "|---|---|---|---|---|---|---|---|"]
-        for name, blk in wd["spelling"].items():
+        rows_ = [("as planned (W2, temperature)", n_, b_) for n_, b_ in wd["spelling"].items()]
+        rows_ += [("post hoc (W5: + lexicon readings, Platt)", n_, b_) for n_, b_ in (wd.get("spelling_v2") or {}).items()]
+        for tag, name, blk in rows_:
             if not isinstance(blk, dict) or "test" not in blk:
                 continue
             t, rel = blk["test"], blk.get("reliability_test", {})
-            L.append(f"| {name} (lambda_r {blk['W2']['lambda_r']}, T {blk['W2']['T']:.2f}, theta_c {blk['W2']['theta_c']}, p_s {blk['W3']['p_s']}) | "
+            rk = "W2" if "W2" in blk else "W5"
+            cal_ = blk[rk]["T"]
+            cal_s = (f"Platt a {cal_[1]:.2f}, b {cal_[2]:.2f}" if isinstance(cal_, (list, tuple)) else f"T {cal_:.2f}")
+            L.append(f"| {name}, {tag} (lambda_r {blk[rk]['lambda_r']}, {cal_s}, theta_c {blk[rk]['theta_c']}, p_s {blk['W3']['p_s']}) | "
                      f"{_p(t['detection_rate'])} | {t['fa_per_100_correct']:.1f} | {_p(t['suggestion_shown_share_of_detected'])} / {_p(t['suggestion_right_when_shown'])} | "
                      f"{_p(t['recognition']['misread_fixed_share'])} / {_p(t['recognition']['right_reading_changed_share'], 1)} | "
                      f"{_p(t['unusual_correct_words']['kept_unflagged_share'])} | {rel.get('raw', {}).get('ece', float('nan')):.3f} / {rel.get('calibrated', {}).get('ece', float('nan')):.3f} | "
                      f"{t['auto_mode']['errors_fixed_per_100_errors']:.1f} / {t['auto_mode']['correct_words_changed_per_100_correct']:.2f} |")
+        ex = wd["spelling"].get("exact_letters_same_units")
+        if ex:
+            L.append(f"| letters known exactly, same words (task 2's checker) | {_p(ex['detection_rate'])} | {ex['fa_per_100_correct']:.1f} | "
+                     f"right word first {_p(ex['suggestion_top1'])} | n/a | n/a | n/a | n/a |")
         pa = wd.get("pool_letter_accuracy", {}).get("test", {})
         L += ["", f"Letters seen through real held-out letters (test pool): read right {_p(pa.get('independent'))} (new writer), "
               f"{_p(pa.get('calibrated'))} (calibrated).", ""]

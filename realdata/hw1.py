@@ -136,7 +136,9 @@ class _SU:
         self.scn0 = PL.scenario_from_written(written, None)
         self.pens = pens_
         self.hp = {k: PL.adapted_path(self.scn0.intended, self.scn0.dt, p, hand) for k, p in pens_.items()}
-        self.clean = {k: PL.run(PL.with_hand_path(self.scn0, self.hp[k]), p, hand) for k, p in pens_.items()}
+        # tremor-free runs of the nose pens only (the ordinary pen's is run where needed): memory
+        self.clean = {k: PL.run(PL.with_hand_path(self.scn0, self.hp[k]), p, hand) for k, p in pens_.items()
+                      if k != "none"}
 
     def scenario(self, key: str, tremor):
         return PL.with_hand_path(self.scn0, self.hp[key], tremor)
@@ -359,6 +361,8 @@ def run_case(wr: Writer, tremor: Optional[np.ndarray], f0: float, amp: float, ca
                 out[k]["false_correction_um"] = DL.ink_timeline_error(sH, r, np.zeros(len(sH.dh)), sH.neutral)
             if keep:
                 runs[k] = r
+            del r
+        sH = base = None                     # free the Rev H runs before the Rev J ones (memory)
     if any(d.startswith("revJ") for d in devices):
         base = None
         S = M["S"]
@@ -420,10 +424,10 @@ def plan(quick: bool) -> Dict:
     data classes; bridge at 1 mm on the first four test writers and aiguide test writers 0-3."""
     from . import writinglib as WL
     n_test = len(WL.unipen_writers("test"))
-    n_real = 2 if quick else n_test
-    n_bridge = 2 if quick else min(4, n_test)
-    n_syn = 2 if quick else 4
-    classes = ["moderate", "severe"] if quick else ["mild", "moderate", "severe"]
+    n_real = 1 if quick else n_test
+    n_bridge = 1 if quick else min(4, n_test)
+    n_syn = 1 if quick else 4
+    classes = ["severe"] if quick else ["mild", "moderate", "severe"]
     kinds = ["PD", "ET"]
     return {"real": {"writers": list(range(n_real)), "classes": classes, "kinds": kinds, "sensors": list(SENSORS)},
             "bridge": {"writers_real": list(range(n_bridge)), "writers_syn": list(range(n_syn)), "amp_mm": 1.0,
@@ -630,6 +634,14 @@ def card(sel: List[Dict], devices: Sequence[str], clean: Optional[List[Dict]] = 
             b["dB"] = float(20.0 * np.log10(b["mean"])) if (np.isfinite(b["mean"]) and b["mean"] > 0) else float("nan")
             b["meaning"] = "amplitude ratio to the ordinary pen; power (squared-signal) ratio = its square"
             e["tip_tremor_ratio"] = b
+            rr = []
+            for c in sel:
+                d, r = c["devices"].get(dev), c["devices"].get("none")
+                if d and r and np.isfinite(float(d.get("tip_tremor_mm", np.nan))) and float(r.get("tip_tremor_mm", 0) or 0) > 0:
+                    rr.append(float(d["tip_tremor_mm"]) / float(r["tip_tremor_mm"]))
+            if rr:
+                e["tip_tremor_worse_share"] = float(np.mean(np.array(rr) > 1.05))
+                e["tip_tremor_halved_share"] = float(np.mean(np.array(rr) < 0.5))
         if clean:
             e["clean_words_of_10"] = _boot(_per_writer(clean, dev, "", fn=_of10))
             e["false_correction_um"] = _boot(_per_writer(clean, dev, "false_correction_um"))

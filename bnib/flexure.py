@@ -161,6 +161,18 @@ def tolerance_mc(ws: WireStage, travel: float, stop: float, m_moving: float, n: 
 
 
 # ------------------------------------------------------------------------------------------------ gimbal (revj1)
+_PB_CACHE: Dict = {}
+
+
+def _buckling(t, b, L, n):
+    """revj1.gimbal.buckling_load depends only on the strip (cached: it dominates the optimiser's cost)."""
+    key = (round(t, 12), round(b, 12), round(L, 12), n)
+    if key not in _PB_CACHE:
+        from revj1 import gimbal as G
+        _PB_CACHE[key] = G.buckling_load(G.Strip(t=t, b=b, L=L), n=n)
+    return _PB_CACHE[key]
+
+
 def gimbal_check(t: float = 75e-6, b: float = 2.55e-3, L: float = 3.8e-3, F_pull: float = 0.0, alpha_usable: float = 0.013,
                  alpha_stop: float = 0.017, n: int = 12) -> Dict:
     """revj1.gimbal's co-rotational cross-strip model for a small-travel gimbal (CALC, imported read-only)."""
@@ -170,7 +182,7 @@ def gimbal_check(t: float = 75e-6, b: float = 2.55e-3, L: float = 3.8e-3, F_pull
     k0 = cp.stiffness(-F_pull)
     e_u = cp.peak_strain(-F_pull, alpha_usable)["bending_strain"]
     e_s = cp.peak_strain(-F_pull, alpha_stop)["bending_strain"]
-    Pb = G.buckling_load(s, n=n)
+    Pb = _buckling(t, b, L, n)
     sig_a = e_s * s.E * val(FAT["Kt_etched_strip"])
     S_f = G.FATIGUE_301FH * val(FAT["size_surface"])
     return {"k_rot_Nm_rad": k0, "strain_usable": e_u, "strain_stop": e_s, "buckling_N": Pb,

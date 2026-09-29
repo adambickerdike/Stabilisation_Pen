@@ -78,7 +78,7 @@ def rows(out: Dict) -> List[Dict]:
         key_quantitative_findings=(f"Study R (1 kHz, 20 Hz low-pass, pen-down Welch): {pct(kin.get('real_brush', {}).get('share_8_12'))} % of the pen-down velocity energy at 8-12 Hz "
                                    f"(real writing on paper 1.3-1.7 %, LIT CON-25; UNIPEN hpb2 {pct(kin.get('real_unipen', {}).get('share_8_12'))} %); mean pen-down speed {k('real_brush','speed_mm_s')} mm/s at a letter height DERIVED from LIT PDT-06; "
                                    f"median stroke {k('real_brush','stroke_ms',0)} ms; exponent {k('real_brush','beta',2)}. In HW1 the trackers took this content for tremor "
-                                   "(false correction 100-450 um on tremor-free BRUSH notes in a stopped diagnostic run), so BRUSH was rejected as tracker input"),
+                                   "(on two tremor-free BRUSH notes the Rev H and Rev J trackers moved the ink by 160-310 um and the TCN by 440-880 um, in a stopped diagnostic run), so BRUSH was rejected as tracker input"),
         units_and_conditions="share of velocity energy; mm/s (scale DERIVED per writer); stylus on screen; pen-up moves not in the release",
         locator="results/realdata/realdata.json kinematics; fig_writer_kinematics; fig_unipen_setups",
         limitations="Screen and stylus, devices undocumented; the artefact's origin (resampling to 10 ms or the devices) is not established; licence: non-commercial research use only",
@@ -187,7 +187,8 @@ def rows(out: Dict) -> List[Dict]:
         key_quantitative_findings=(f"DERIVED gravity calibration of CH4-6 (study R): offsets {', '.join(_f(v) for v in cal.get('offset', []))} units, gains {', '.join(_f(v) for v in cal.get('gain_ms2_per_unit', []))} m/s^2 per unit (about 1.46 units per g), residual {_f(cal.get('residual_rms_ms2'),3)} m/s^2 RMS over {cal.get('n_samples','n/a')} quasi-static samples. "
                                    f"Tremor line share PD {_f((summ.get('newhandpd/PD/kinetic') or {}).get('detected_share'))} vs healthy {_f((summ.get('newhandpd/control/kinetic') or {}).get('detected_share'))}; "
                                    f"PD line frequency median {sm('newhandpd/PD/kinetic','f0')} Hz. The patient archive contains byte-identical files under two patient numbers (e.g. circB-P2 = circB-P25). "
-                                   "The header rate (1000/s) is consistent with the recordings: spiral durations median 20 s (PD) and 11 s (healthy) and PD tremor lines at 5-6 Hz; at 200/s (Tironi et al. 2025, PDT-83) they would be 100 s, 53 s and about 1.2 Hz"),
+                                   "The header rate (1000/s) is consistent with the recordings: spiral durations median 20 s (PD) and 11 s (healthy) and PD tremor lines at 5-6 Hz; at 200/s (Tironi et al. 2025, PDT-83) they would be 100 s, 53 s and about 1.2 Hz. "
+                                   "Within the files, CH1-3 change every sample but CH4-6 (tilt/acceleration) are held for 3-4 samples: the accelerometer updates about 250-330 times per second (sample-and-hold), which may be the '200 Hz' motion rate reported by PDT-83"),
         units_and_conditions="m/s^2 (DERIVED); Hz", locator="results/realdata/realdata.json; SIBGRAPI 2016 Section III-A",
         limitations="No licence stated; controls younger (age confound, PDT-29); accelerometer at the pen's rear; no positions",
         relevance_to_design="Closest open analogue of the pen's own IMU in patients", transferability="medium",
@@ -323,7 +324,7 @@ def rows(out: Dict) -> List[Dict]:
         comparator="Between algorithms (MSE, convergence)",
         key_quantitative_findings=("'the hand tremor signals of 31 PD patients, available in the NewHandPD dataset, were used ... derived from the dynamic trajectory data recorded by the BiSP device during spiral drawing tasks'; "
                                    "'the full acquisition included motion data recorded at 200 Hz'; Data availability cites the HandPD image repository (736 JPEG images). "
-                                   "The signal files carry '#<Samplerate>1000</Samplerate>', and study R's durations and tremor frequencies support 1000/s (PDT-76); the paper names no file, column or preprocessing"),
+                                   "The signal files carry '#<Samplerate>1000</Samplerate>', and study R's durations and tremor frequencies support 1000/s; the accelerometer channels, however, update only every 3-4 samples (about 250-330/s; PDT-76), close to the paper's 200 Hz. The paper names no file, column or preprocessing"),
         units_and_conditions="dB MSE; no amplitude in mm", locator="Materials and methods; Data availability", limitations="Signal provenance not specified beyond the task; rate stated differently from the files; MSE is not ink",
         relevance_to_design="An open algorithm baseline on the same patient signals; its timing must be reconciled before reuse", transferability="low",
         transferability_reason="Vibration motor and signal MSE, no physical ink outcome",

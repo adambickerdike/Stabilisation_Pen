@@ -1,0 +1,601 @@
+{
+  "meta": {
+    "evidence_status": "PROPOSED DESIGN (study B's recommended balanced nib B1; dimensions from bnib/optimise.py, masses CALC or ASSUMPTION; nothing built or measured)",
+    "concept": "two-axis translation nib on four wires, moving-coil axial-gap actuator, contact-driven counter-face balance at the refill's rear end",
+    "replaces": [
+      "carrier_nozzle",
+      "carrier",
+      "front_pulley",
+      "pen_lift",
+      "slide_sensor",
+      "arm",
+      "rear_pulley",
+      "position_magnet",
+      "magnet_cap",
+      "coil_plate",
+      "gimbal",
+      "nose_hall",
+      "refill_holder",
+      "skid_ring",
+      "drive_wheel",
+      "drive_fork",
+      "drive_pod",
+      "drive_spring",
+      "drive_load_sensor",
+      "drive_steer_sensor",
+      "drive_shaft_drive",
+      "drive_shaft_steering",
+      "drive_transfer",
+      "drive_motor",
+      "steer_motor"
+    ],
+    "replaces_note": "the Rev J.1 C1S nose, gimbal, pen lift, nose Hall and the heel drive are removed; the skid ring shrinks to a 7 mm contact radius (the nib moves +-1 mm, not +-6 mm)",
+    "keeps": [
+      "front_sleeve",
+      "shell",
+      "rear_cap",
+      "main_board",
+      "imu",
+      "page_sensor",
+      "usb",
+      "battery",
+      "lra",
+      "heat_spreader"
+    ],
+    "mass_added_g": 16.28628005531543,
+    "fit_checks": {
+      "actuator_in_bore_mm": 0.20014142135623914,
+      "wires_clear_board_mm": 1.9000000000000004,
+      "magnet_hole_clears_carrier_at_stop_mm": 0.2999999999999998,
+      "face_behind_refill_end_mm": 0.0,
+      "wire_anchor_before_battery_mm": 27.68361873211029,
+      "all_pass": true
+    },
+    "source": "bnib/layout.py; docs/balanced_nib.md",
+    "cad": "mechanics/cad/bnib.py",
+    "stabpen.provenance": {
+      "evidence_status": "PROPOSED DESIGN; CALC",
+      "generated_utc": "2026-09-29T19:10:13+00:00",
+      "git_revision": "bfa33c3-dirty",
+      "parameters_version": "0.4.4",
+      "parameters_sha256_16": "a9d3d0016461d690",
+      "command": "run_study.py --stages calib,loads,candidates,optimise,interface,layout",
+      "python": "3.11.15",
+      "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+      "seeds": null,
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "package": "bnib",
+      "version": "bnib-0.1",
+      "read_only_inputs_sha256_16": {
+        "nose2/designs.py": "3c9e61c19652f1c4",
+        "nose2/magnetics.py": "8c766896e233edb1",
+        "revj1/gimbal.py": "304da56e32041c0b",
+        "sim2/builder.py": "ddac7835073bfe4c",
+        "sim2/sim.py": "5292af8847395576",
+        "sim2/contact.py": "0e43b94b14449acd",
+        "sim2j/akf_online.py": "4d32b634d67bd1ce",
+        "sim2j/writers.py": "260943c20beb6761",
+        "sim2j/tasks.py": "ea8509617f1ea65b",
+        "wholepen/designs.py": "28c38b9d855dd88f",
+        "results/nose2/nose2.json": "e82b87538d281286"
+      }
+    }
+  },
+  "units": "mm",
+  "axis": "z along the pen axis from the ball tip (z = 0) toward the back; x in the tilt plane, positive away from the paper; y sideways",
+  "moves_with_note": "'nib' = translates with the nib (carrier, coils, refill); 'handle' = fixed to the pen",
+  "components": [
+    {
+      "id": "ball",
+      "label": "Ball tip",
+      "group": "refill",
+      "shape": "cone",
+      "z0": 0.0,
+      "z1": 3.0,
+      "d0": 0.7,
+      "d1": 1.6,
+      "moves_with": "nib",
+      "function": "The ink ball (0.7 mm, ISO 12757 class F).",
+      "part": "D1 refill tip",
+      "ledger": "CON-22",
+      "mass_g": 0.0,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "refill",
+      "label": "Ink refill (D1 mini)",
+      "group": "refill",
+      "shape": "cylinder",
+      "z0": 3.0,
+      "z1": 67.0,
+      "d0": 2.35,
+      "d1": 2.35,
+      "moves_with": "nib",
+      "function": "A standard replaceable refill; it slides along its axis in the carrier's bushings.",
+      "part": "ISO 12757-1 type D refill",
+      "ledger": "CON-22",
+      "mass_g": 0.8400000000000001,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_refill_end",
+      "label": "Refill end cap with rolling ball",
+      "group": "refill",
+      "shape": "cylinder",
+      "z0": 67.0,
+      "z1": 71.0,
+      "d0": 3.2,
+      "d1": 3.2,
+      "moves_with": "nib",
+      "function": "Clips on the refill's end; a 3 mm hardened ball in it rolls on the counter-face.",
+      "part": "PEEK cap + 3 mm Si3N4 ball (ASSUMPTION)",
+      "ledger": "AMF-24",
+      "mass_g": 0.5,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_carrier",
+      "label": "Nib carrier (titanium tube with two bushings)",
+      "group": "moving_nib",
+      "shape": "tube",
+      "z0": 9.0,
+      "z1": 36.91534012802591,
+      "d0": 3.2,
+      "d1": 3.2,
+      "d_in": 2.5,
+      "moves_with": "nib",
+      "function": "Carries the refill sideways (two PTFE-lined bushings at its ends) and the moving coils; the refill slides in it freely along the pen.",
+      "part": "Ti-6Al-4V tube 4.0/2.5 mm + PTFE liners",
+      "ledger": "AMF-21",
+      "mass_g": 0.6499999999999999,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_coils",
+      "label": "Moving coils (two flat layers, x and y)",
+      "group": "actuator",
+      "shape": "tube",
+      "z0": 31.2,
+      "z1": 32.8,
+      "d0": 19.99971715728752,
+      "d1": 19.99971715728752,
+      "d_in": 3.3,
+      "moves_with": "nib",
+      "function": "Two racetrack pairs per layer over the four poles; current pushes the nib sideways. Moving coil: no magnetic pull or negative stiffness on the suspension.",
+      "part": "self-bonding 0.10 mm wire on a 0.1 mm polyimide former (or a 4-layer flex coil)",
+      "ledger": "AMF-29",
+      "mass_g": 1.4479578713613164,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_carrier_flange",
+      "label": "Carrier flange (wire clamps, Hall magnet)",
+      "group": "moving_nib",
+      "shape": "tube",
+      "z0": 34.91534012802591,
+      "z1": 36.41534012802591,
+      "d0": 12.6,
+      "d1": 12.6,
+      "d_in": 2.6,
+      "moves_with": "nib",
+      "function": "Clamps the four suspension wires (0.1 mm edge radius, Kt about 1.3-1.8) and holds the 1 mm position magnet.",
+      "part": "Ti-6Al-4V ring, laser-welded wire ends",
+      "ledger": "AMF-21",
+      "mass_g": 0.25,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_hall_magnet",
+      "label": "Nib position magnet",
+      "group": "sensor",
+      "shape": "box",
+      "z0": 36.41534012802591,
+      "z1": 37.41534012802591,
+      "size": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "offset": [
+        6.7,
+        0.0
+      ],
+      "moves_with": "nib",
+      "function": "Read by the 3-D Hall on the stator.",
+      "part": "N52 1 mm cube",
+      "ledger": "AMF-139",
+      "mass_g": 0.05,
+      "optional": false
+    },
+    {
+      "id": "bnib_back_plate",
+      "label": "Magnet back plate (soft iron)",
+      "group": "actuator",
+      "shape": "tube",
+      "z0": 25.934659871974084,
+      "z1": 27.4,
+      "d0": 21.399717157287522,
+      "d1": 21.399717157287522,
+      "d_in": 6.3173919317642016,
+      "moves_with": "handle",
+      "function": "Carries the four poles and returns their flux.",
+      "part": "AISI 1010 low-carbon steel, laser-cut (B_sat 1.6 T ASSUMPTION; Hiperco 50A would thin it: AMF-140)",
+      "ledger": "ASSUMPTION",
+      "mass_g": 3.7863372065729055,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_magnet_1",
+      "label": "Pole magnet (checkerboard)",
+      "group": "magnet",
+      "shape": "box",
+      "z0": 27.4,
+      "z1": 30.9,
+      "size": [
+        5.120275187158268,
+        5.120275187158268,
+        3.5
+      ],
+      "offset": [
+        4.793672930760958,
+        4.793672930760958
+      ],
+      "moves_with": "handle",
+      "function": "Four poles in a 2 x 2 checkerboard around the refill; axially polarised, alternating.",
+      "part": "N52 cuboid 5.12 x 5.12 x 3.50 mm",
+      "ledger": "AMF-139",
+      "mass_g": 0.6973779985932816,
+      "optional": false
+    },
+    {
+      "id": "bnib_magnet_2",
+      "label": "Pole magnet (checkerboard)",
+      "group": "magnet",
+      "shape": "box",
+      "z0": 27.4,
+      "z1": 30.9,
+      "size": [
+        5.120275187158268,
+        5.120275187158268,
+        3.5
+      ],
+      "offset": [
+        -4.793672930760958,
+        4.793672930760958
+      ],
+      "moves_with": "handle",
+      "function": "Four poles in a 2 x 2 checkerboard around the refill; axially polarised, alternating.",
+      "part": "N52 cuboid 5.12 x 5.12 x 3.50 mm",
+      "ledger": "AMF-139",
+      "mass_g": 0.6973779985932816,
+      "optional": false
+    },
+    {
+      "id": "bnib_magnet_3",
+      "label": "Pole magnet (checkerboard)",
+      "group": "magnet",
+      "shape": "box",
+      "z0": 27.4,
+      "z1": 30.9,
+      "size": [
+        5.120275187158268,
+        5.120275187158268,
+        3.5
+      ],
+      "offset": [
+        -4.793672930760958,
+        -4.793672930760958
+      ],
+      "moves_with": "handle",
+      "function": "Four poles in a 2 x 2 checkerboard around the refill; axially polarised, alternating.",
+      "part": "N52 cuboid 5.12 x 5.12 x 3.50 mm",
+      "ledger": "AMF-139",
+      "mass_g": 0.6973779985932816,
+      "optional": false
+    },
+    {
+      "id": "bnib_magnet_4",
+      "label": "Pole magnet (checkerboard)",
+      "group": "magnet",
+      "shape": "box",
+      "z0": 27.4,
+      "z1": 30.9,
+      "size": [
+        5.120275187158268,
+        5.120275187158268,
+        3.5
+      ],
+      "offset": [
+        4.793672930760958,
+        -4.793672930760958
+      ],
+      "moves_with": "handle",
+      "function": "Four poles in a 2 x 2 checkerboard around the refill; axially polarised, alternating.",
+      "part": "N52 cuboid 5.12 x 5.12 x 3.50 mm",
+      "ledger": "AMF-139",
+      "mass_g": 0.6973779985932816,
+      "optional": false
+    },
+    {
+      "id": "bnib_keeper",
+      "label": "Keeper plate (soft iron)",
+      "group": "actuator",
+      "shape": "tube",
+      "z0": 32.949999999999996,
+      "z1": 34.41534012802591,
+      "d0": 21.399717157287522,
+      "d1": 21.399717157287522,
+      "d_in": 6.3173919317642016,
+      "moves_with": "handle",
+      "function": "Closes the magnetic circuit behind the coils; the gap stays constant as the coils translate.",
+      "part": "AISI 1010 low-carbon steel (ASSUMPTION; Hiperco 50A alternative: AMF-140)",
+      "ledger": "ASSUMPTION",
+      "mass_g": 3.7863372065729055,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_stator_housing",
+      "label": "Actuator housing and spacers",
+      "group": "structure",
+      "shape": "tube",
+      "z0": 25.434659871974084,
+      "z1": 34.91534012802591,
+      "d0": 22.0,
+      "d1": 22.0,
+      "d_in": 21.59971715728752,
+      "moves_with": "handle",
+      "function": "Holds plates and magnets at the set gap; bonded into the shell (heat path to the spreader).",
+      "part": "aluminium ring (ASSUMPTION)",
+      "ledger": "-",
+      "mass_g": 0.5,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_wire_1",
+      "label": "Suspension wire",
+      "group": "mechanism",
+      "shape": "cylinder",
+      "z0": 35.91534012802591,
+      "z1": 62.71638126788972,
+      "d0": 0.12840231678730876,
+      "d1": 0.12840231678730876,
+      "offset": [
+        3.8890872965260117,
+        3.889087296526011
+      ],
+      "moves_with": "handle",
+      "function": "Four parallel wires (fixed-guided) let the carrier translate in x and y and hold it along the pen.",
+      "part": "Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",
+      "ledger": "AMF-20; AMF-21",
+      "mass_g": 0.0015339441087929028,
+      "optional": false
+    },
+    {
+      "id": "bnib_wire_2",
+      "label": "Suspension wire",
+      "group": "mechanism",
+      "shape": "cylinder",
+      "z0": 35.91534012802591,
+      "z1": 62.71638126788972,
+      "d0": 0.12840231678730876,
+      "d1": 0.12840231678730876,
+      "offset": [
+        -3.889087296526011,
+        3.8890872965260117
+      ],
+      "moves_with": "handle",
+      "function": "Four parallel wires (fixed-guided) let the carrier translate in x and y and hold it along the pen.",
+      "part": "Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",
+      "ledger": "AMF-20; AMF-21",
+      "mass_g": 0.0015339441087929028,
+      "optional": false
+    },
+    {
+      "id": "bnib_wire_3",
+      "label": "Suspension wire",
+      "group": "mechanism",
+      "shape": "cylinder",
+      "z0": 35.91534012802591,
+      "z1": 62.71638126788972,
+      "d0": 0.12840231678730876,
+      "d1": 0.12840231678730876,
+      "offset": [
+        -3.889087296526012,
+        -3.889087296526011
+      ],
+      "moves_with": "handle",
+      "function": "Four parallel wires (fixed-guided) let the carrier translate in x and y and hold it along the pen.",
+      "part": "Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",
+      "ledger": "AMF-20; AMF-21",
+      "mass_g": 0.0015339441087929028,
+      "optional": false
+    },
+    {
+      "id": "bnib_wire_4",
+      "label": "Suspension wire",
+      "group": "mechanism",
+      "shape": "cylinder",
+      "z0": 35.91534012802591,
+      "z1": 62.71638126788972,
+      "d0": 0.12840231678730876,
+      "d1": 0.12840231678730876,
+      "offset": [
+        3.8890872965260104,
+        -3.889087296526012
+      ],
+      "moves_with": "handle",
+      "function": "Four parallel wires (fixed-guided) let the carrier translate in x and y and hold it along the pen.",
+      "part": "Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",
+      "ledger": "AMF-20; AMF-21",
+      "mass_g": 0.0015339441087929028,
+      "optional": false
+    },
+    {
+      "id": "bnib_anchor_ring",
+      "label": "Wire anchor ring",
+      "group": "structure",
+      "shape": "tube",
+      "z0": 62.71638126788972,
+      "z1": 64.21638126788972,
+      "d0": 13.0,
+      "d1": 13.0,
+      "d_in": 9.0,
+      "moves_with": "handle",
+      "function": "Fixes the wires' rear ends to the handle; axial stops (20 um) protect the wires in a drop.",
+      "part": "Ti-6Al-4V ring",
+      "ledger": "AMF-21",
+      "mass_g": 0.3,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_hall",
+      "label": "Nib position sensor (3-D Hall)",
+      "group": "sensor",
+      "shape": "box",
+      "z0": 38.11534012802591,
+      "z1": 40.11534012802591,
+      "size": [
+        0.8,
+        3.0,
+        2.0
+      ],
+      "offset": [
+        6.7,
+        0.0
+      ],
+      "moves_with": "handle",
+      "function": "Measures the nib's x/y at 10 kHz; its reading is filtered by the servo's observer.",
+      "part": "TMAG5170-A1 on a flex tail",
+      "ledger": "OPT-44; OPT-53",
+      "mass_g": 0.05,
+      "optional": false
+    },
+    {
+      "id": "bnib_face",
+      "label": "Counter-face (hardened disc on a 2-axis flexure)",
+      "group": "balance",
+      "shape": "cylinder",
+      "z0": 71.0,
+      "z1": 72.2,
+      "d0": 6.0,
+      "d1": 6.0,
+      "moves_with": "handle",
+      "function": "The ink spring pushes this face against the refill's rolling end. Set parallel to the paper, it cancels the paper's push across the pen at every tilt; it rests on its follower stop when the ball lifts.",
+      "part": "hardened steel disc 6 mm on a cross-strip flexure (301 FH)",
+      "ledger": "AMF-20",
+      "mass_g": 0.3,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_face_spring",
+      "label": "Face spring (constant force) and follower stop",
+      "group": "balance",
+      "shape": "tube",
+      "z0": 72.2,
+      "z1": 77.0,
+      "d0": 6.0,
+      "d1": 6.0,
+      "d_in": 3.0,
+      "moves_with": "handle",
+      "function": "Constant-force spring along the face normal (the ink force); a slow stop set a gap beyond the writing position leaves the refill when the ball lifts.",
+      "part": "stainless constant-force strip spring; lead-screw stop",
+      "ledger": "EXP-N06",
+      "mass_g": 0.4,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    },
+    {
+      "id": "bnib_face_positioners",
+      "label": "Face positioners (2 x tilt/roll, 1 x stop)",
+      "group": "balance",
+      "shape": "box",
+      "z0": 77.0,
+      "z1": 83.0,
+      "size": [
+        2.8,
+        8.0,
+        6.0
+      ],
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "moves_with": "handle",
+      "function": "Three slow screw motors with zero holding power set the face orientation from the IMU and the stop from the refill-slide sensor.",
+      "part": "New Scale SQL-RV-1.8 x 3 (or micro-stepper lead screws)",
+      "ledger": "AMF-15; AMF-106",
+      "mass_g": 0.48,
+      "optional": false
+    },
+    {
+      "id": "bnib_skid_ring",
+      "label": "Skid ring (C-shaped heel, 7 mm contact radius)",
+      "group": "skid",
+      "shape": "tube",
+      "z0": 9.3,
+      "z1": 10.8,
+      "d0": 15.0,
+      "d1": 15.0,
+      "d_in": 12.0,
+      "moves_with": "handle",
+      "open_deg": 120.0,
+      "function": "Rests on the paper and carries the hand's writing force; the ball sits about 5.4 mm in front of it at 50 deg.",
+      "part": "PTFE-coated POM",
+      "ledger": "DEC-034",
+      "mass_g": 0.15,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "optional": false
+    }
+  ]
+}

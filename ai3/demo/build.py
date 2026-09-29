@@ -132,16 +132,23 @@ def settings(quick: bool):
     wd = C.load("words", quick) or {}
     if wd.get("W0"):
         S["seg_margin"] = wd["W0"]["margin"]; S["from_results"].append("W0")
-    blk = (wd.get("spelling") or {}).get("independent")
-    if blk:
-        S["lam_r"], S["T"], S["theta_c"] = blk["W2"]["lambda_r"], blk["W2"]["T"], blk["W2"]["theta_c"]
-        S["p_s"], S["T_s"] = blk["W3"]["p_s"], blk["W3"]["T_s"]; S["from_results"] += ["W2", "W3"]
+    blk = (wd.get("spelling_v2") or {}).get("independent")
+    if blk:                                          # rule W5 (post hoc): lexicon readings + Platt scaling
+        S["lam_r"], S["T"], S["theta_c"] = blk["W5"]["lambda_r"], blk["W5"]["T"], blk["W5"]["theta_c"]
+        S["p_s"], S["T_s"] = blk["W3"]["p_s"], blk["W3"]["T_s"]; S["from_results"] += ["W5", "W3"]
+    else:
+        blk = (wd.get("spelling") or {}).get("independent")
+        if blk:
+            S["lam_r"], S["T"], S["theta_c"] = blk["W2"]["lambda_r"], blk["W2"]["T"], blk["W2"]["theta_c"]
+            S["p_s"], S["T_s"] = blk["W3"]["p_s"], blk["W3"]["T_s"]; S["from_results"] += ["W2", "W3"]
     pr = C.load("predict", quick) or {}
     if pr.get("P2", {}).get("p_offer") is not None:
         S["p_offer"] = pr["P2"]["p_offer"]; S["from_results"].append("P2")
     cu = C.load("cues", quick) or {}
     if cu.get("S4", {}).get("recommended"):
         S["cue_recommended_by_S4"] = cu["S4"]["recommended"]; S["from_results"].append("S4")
+        S["cue_default"] = {"tick_after": "tick", "tick_lift": "withhold", "withhold": "withhold", "show_me": "pause_offer",
+                            "pause_offer": "pause_offer"}.get(cu["S4"]["recommended"], "pause_offer")
     return S
 
 
@@ -170,8 +177,18 @@ def facts(quick: bool):
     sp = C.load("spell_NG1x", quick) or {}
     s = (sp.get("test") or {}).get("score")
     if s:
-        F.append({"k": "Misspellings caught (children's real errors)", "v": f"{100 * s['detection_rate']:.0f} %",
+        F.append({"k": "Misspellings caught, letters known exactly (children's real errors)", "v": f"{100 * s['detection_rate']:.0f} %",
                   "label": f"CALC, {s['fa_per_100_correct']:.1f} false alarms per 100 correct words"})
+    blk = ((wd.get("spelling_v2") or {}).get("calibrated") or {}).get("test")
+    if blk:
+        F.append({"k": "... with the pen's own (calibrated) reading of the letters (rule W5, post hoc)", "v": f"{100 * blk['detection_rate']:.0f} %",
+                  "label": f"SIM, {blk['fa_per_100_correct']:.1f} false alarms per 100 correct words"})
+    pl = C.load("plan", quick) or {}
+    T = pl.get("table") or {}
+    if "steady|6|letter_admission" in T:
+        F.append({"k": "Accepted words the pen could write in full (+-6 mm reach, hand moving as usual)",
+                  "v": f"{100 * T['steady|6|letter_admission']['completed_share']:.0f} %",
+                  "label": f"SIM; +-1 mm: {100 * T.get('steady|1|letter_admission', {}).get('completed_share', float('nan')):.0f} %"})
     return F
 
 

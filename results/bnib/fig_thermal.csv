@@ -1,0 +1,541 @@
+design,t_s,T_coil_C,T_skin_C
+B1 counter-face,0,30.0007,30
+B1 counter-face,10,30.1703,30.0103
+B1 counter-face,20,30.2438,30.0305
+B1 counter-face,30,30.2869,30.0534
+B1 counter-face,40,30.3166,30.0765
+B1 counter-face,50,30.3422,30.0989
+B1 counter-face,60,30.366,30.1205
+B1 counter-face,70,30.3865,30.1412
+B1 counter-face,80,30.409,30.1609
+B1 counter-face,90,30.4278,30.1799
+B1 counter-face,100,30.4478,30.1979
+B1 counter-face,110,30.4653,30.2152
+B1 counter-face,120,30.4826,30.2317
+B1 counter-face,130,30.4996,30.2475
+B1 counter-face,140,30.5138,30.2626
+B1 counter-face,150,30.5307,30.277
+B1 counter-face,160,30.5441,30.2907
+B1 counter-face,170,30.559,30.3039
+B1 counter-face,180,30.5716,30.3165
+B1 counter-face,190,30.5842,30.3286
+B1 counter-face,200,30.5967,30.3401
+B1 counter-face,210,30.6071,30.3511
+B1 counter-face,220,30.6197,30.3616
+B1 counter-face,230,30.6291,30.3716
+B1 counter-face,240,30.6401,30.3813
+B1 counter-face,250,30.6492,30.3904
+B1 counter-face,260,30.6579,30.3992
+B1 counter-face,270,30.6665,30.4075
+B1 counter-face,280,30.6741,30.4154
+B1 counter-face,290,30.684,30.423
+B1 counter-face,300,30.6906,30.4304
+B1 counter-face,310,30.699,30.4374
+B1 counter-face,320,30.7054,30.4441
+B1 counter-face,330,30.7121,30.4505
+B1 counter-face,340,30.719,30.4566
+B1 counter-face,350,30.724,30.4625
+B1 counter-face,360,30.7313,30.468
+B1 counter-face,370,30.7358,30.4734
+B1 counter-face,380,30.7422,30.4785
+B1 counter-face,390,30.7467,30.4834
+B1 counter-face,400,30.7515,30.488
+B1 counter-face,410,30.7566,30.4925
+B1 counter-face,420,30.76,30.4968
+B1 counter-face,430,30.7658,30.5008
+B1 counter-face,440,30.7687,30.5047
+B1 counter-face,450,30.7736,30.5085
+B1 counter-face,460,30.7767,30.512
+B1 counter-face,470,30.7802,30.5154
+B1 counter-face,480,30.7841,30.5187
+B1 counter-face,490,30.7862,30.5218
+B1 counter-face,500,30.7908,30.5248
+B1 counter-face,510,30.7927,30.5276
+B1 counter-face,520,30.7958,30.5303
+B1 counter-face,530,30.7974,30.5327
+B1 counter-face,540,30.7995,30.5351
+B1 counter-face,550,30.8027,30.5373
+B1 counter-face,560,30.8045,30.5395
+B1 counter-face,570,30.8085,30.5417
+B1 counter-face,580,30.8097,30.5438
+B1 counter-face,590,30.8127,30.5458
+B1 counter-face,600,30.8142,30.5477
+B1 counter-face,610,30.816,30.5495
+B1 counter-face,620,30.8183,30.5513
+B1 counter-face,630,30.8189,30.5529
+B1 counter-face,640,30.8221,30.5545
+B1 counter-face,650,30.8226,30.556
+B1 counter-face,660,30.825,30.5575
+B1 counter-face,670,30.8259,30.5589
+B1 counter-face,680,30.8272,30.5602
+B1 counter-face,690,30.829,30.5615
+B1 counter-face,700,30.8292,30.5627
+B1 counter-face,710,30.8319,30.5639
+B1 counter-face,720,30.8319,30.565
+B1 counter-face,730,30.834,30.566
+B1 counter-face,740,30.8345,30.567
+B1 counter-face,750,30.8354,30.568
+B1 counter-face,760,30.8368,30.5689
+B1 counter-face,770,30.8366,30.5698
+B1 counter-face,780,30.839,30.5707
+B1 counter-face,790,30.8387,30.5715
+B1 counter-face,800,30.8405,30.5723
+B1 counter-face,810,30.8407,30.573
+B1 counter-face,820,30.8414,30.5737
+B1 counter-face,830,30.8425,30.5744
+B1 counter-face,840,30.8421,30.575
+B1 counter-face,850,30.8442,30.5756
+B1 counter-face,860,30.8437,30.5762
+B1 counter-face,870,30.8453,30.5768
+B1 counter-face,880,30.8453,30.5773
+B1 counter-face,890,30.8457,30.5778
+B1 counter-face,900,30.8467,30.5783
+B1 counter-face,910,30.8461,30.5788
+B1 counter-face,920,30.848,30.5792
+B1 counter-face,930,30.8473,30.5797
+B1 counter-face,940,30.8487,30.5801
+B1 counter-face,950,30.8486,30.5805
+B1 counter-face,960,30.8489,30.5809
+B1 counter-face,970,30.8497,30.5812
+B1 counter-face,980,30.8489,30.5816
+B1 counter-face,990,30.8508,30.5819
+B1 counter-face,1000,30.85,30.5822
+B1 counter-face,1010,30.8513,30.5825
+B1 counter-face,1020,30.851,30.5828
+B1 counter-face,1030,30.8505,30.583
+B1 counter-face,1040,30.8506,30.5832
+B1 counter-face,1050,30.8494,30.5833
+B1 counter-face,1060,30.8509,30.5834
+B1 counter-face,1070,30.8498,30.5835
+B1 counter-face,1080,30.8513,30.5836
+B1 counter-face,1090,30.8507,30.5837
+B1 counter-face,1100,30.8514,30.5838
+B1 counter-face,1110,30.8524,30.584
+B1 counter-face,1120,30.8516,30.5842
+B1 counter-face,1130,30.8534,30.5844
+B1 counter-face,1140,30.8525,30.5846
+B1 counter-face,1150,30.8537,30.5848
+B1 counter-face,1160,30.8533,30.585
+B1 counter-face,1170,30.8534,30.5851
+B1 counter-face,1180,30.854,30.5853
+B1 counter-face,1190,30.8531,30.5855
+B1 counter-face,1200,30.8547,30.5856
+B1 counter-face,1210,30.8537,30.5858
+B1 counter-face,1220,30.8549,30.5859
+B1 counter-face,1230,30.8544,30.586
+B1 counter-face,1240,30.8545,30.5862
+B1 counter-face,1250,30.855,30.5863
+B1 counter-face,1260,30.854,30.5864
+B1 counter-face,1270,30.8557,30.5865
+B1 counter-face,1280,30.8547,30.5866
+B1 counter-face,1290,30.8557,30.5867
+B1 counter-face,1300,30.8552,30.5868
+B1 counter-face,1310,30.8553,30.5869
+B1 counter-face,1320,30.8558,30.587
+B1 counter-face,1330,30.8548,30.5871
+B1 counter-face,1340,30.8564,30.5872
+B1 counter-face,1350,30.8553,30.5873
+B1 counter-face,1360,30.8564,30.5873
+B1 counter-face,1370,30.8558,30.5874
+B1 counter-face,1380,30.8558,30.5875
+B1 counter-face,1390,30.8564,30.5875
+B1 counter-face,1400,30.8553,30.5876
+B1 counter-face,1410,30.8569,30.5877
+B1 counter-face,1420,30.8558,30.5877
+B1 counter-face,1430,30.8568,30.5878
+B1 counter-face,1440,30.8563,30.5878
+B1 counter-face,1450,30.8563,30.5879
+B1 counter-face,1460,30.8568,30.5879
+B1 counter-face,1470,30.8557,30.588
+B1 counter-face,1480,30.8572,30.588
+B1 counter-face,1490,30.8561,30.5881
+B1 counter-face,1500,30.8572,30.5881
+B1 counter-face,1510,30.8566,30.5881
+B1 counter-face,1520,30.8566,30.5882
+B1 counter-face,1530,30.8571,30.5882
+B1 counter-face,1540,30.856,30.5882
+B1 counter-face,1550,30.8575,30.5883
+B1 counter-face,1560,30.8564,30.5883
+B1 counter-face,1570,30.8574,30.5883
+B1 counter-face,1580,30.8568,30.5884
+B1 counter-face,1590,30.8568,30.5884
+B1 counter-face,1600,30.8573,30.5884
+B1 counter-face,1610,30.8562,30.5884
+B1 counter-face,1620,30.8577,30.5885
+B1 counter-face,1630,30.8566,30.5885
+B1 counter-face,1640,30.8576,30.5885
+B1 counter-face,1650,30.857,30.5885
+B1 counter-face,1660,30.8569,30.5885
+B1 counter-face,1670,30.8574,30.5886
+B1 counter-face,1680,30.8563,30.5886
+B1 counter-face,1690,30.8578,30.5886
+B1 counter-face,1700,30.8567,30.5886
+B1 counter-face,1710,30.8577,30.5886
+B1 counter-face,1720,30.8571,30.5886
+B1 counter-face,1730,30.8571,30.5887
+B1 counter-face,1740,30.8575,30.5887
+B1 counter-face,1750,30.8564,30.5887
+B1 counter-face,1760,30.8579,30.5887
+B1 counter-face,1770,30.8568,30.5887
+B1 counter-face,1780,30.8578,30.5887
+B1 counter-face,1790,30.8572,30.5887
+f_translation,0,30.0165,30
+f_translation,10,33.0619,30.1993
+f_translation,20,33.8645,30.5324
+f_translation,30,34.3354,30.8754
+f_translation,40,34.6742,31.207
+f_translation,50,35.0008,31.524
+f_translation,60,35.3273,31.8266
+f_translation,70,35.5821,32.1146
+f_translation,80,35.9177,32.3895
+f_translation,90,36.1542,32.652
+f_translation,100,36.4424,32.9024
+f_translation,110,36.6703,33.1412
+f_translation,120,36.9022,33.3691
+f_translation,130,37.1404,33.5863
+f_translation,140,37.3088,33.7921
+f_translation,150,37.5656,33.9894
+f_translation,160,37.7262,34.1779
+f_translation,170,37.9417,34.3578
+f_translation,180,38.1003,34.5294
+f_translation,190,38.2661,34.693
+f_translation,200,38.4412,34.8491
+f_translation,210,38.5595,34.998
+f_translation,220,38.7525,35.14
+f_translation,230,38.8571,35.2754
+f_translation,240,39.0201,35.4046
+f_translation,250,39.1288,35.5277
+f_translation,260,39.2371,35.6448
+f_translation,270,39.3532,35.7545
+f_translation,280,39.4402,35.8597
+f_translation,290,39.5976,35.9615
+f_translation,300,39.664,36.0589
+f_translation,310,39.7899,36.1518
+f_translation,320,39.8631,36.2404
+f_translation,330,39.9474,36.325
+f_translation,340,40.0448,36.4057
+f_translation,350,40.089,36.4826
+f_translation,360,40.2112,36.5559
+f_translation,370,40.2484,36.6259
+f_translation,380,40.3471,36.6927
+f_translation,390,40.3945,36.7563
+f_translation,400,40.4543,36.817
+f_translation,410,40.5282,36.8749
+f_translation,420,40.5501,36.9301
+f_translation,430,40.651,36.9828
+f_translation,440,40.6678,37.0331
+f_translation,450,40.7472,37.081
+f_translation,460,40.7761,37.1267
+f_translation,470,40.8182,37.1703
+f_translation,480,40.8753,37.2118
+f_translation,490,40.8811,37.2515
+f_translation,500,40.9667,37.2893
+f_translation,510,40.969,37.3254
+f_translation,520,41.0176,37.3587
+f_translation,530,41.023,37.389
+f_translation,540,41.0465,37.4176
+f_translation,550,41.0997,37.445
+f_translation,560,41.1066,37.4731
+f_translation,570,41.1838,37.5005
+f_translation,580,41.1764,37.5268
+f_translation,590,41.2323,37.5519
+f_translation,600,41.2388,37.5758
+f_translation,610,41.2595,37.5987
+f_translation,620,41.2963,37.6204
+f_translation,630,41.2826,37.6412
+f_translation,640,41.3497,37.661
+f_translation,650,41.3342,37.6799
+f_translation,660,41.3828,37.6979
+f_translation,670,41.3822,37.7151
+f_translation,680,41.3964,37.7315
+f_translation,690,41.4268,37.7471
+f_translation,700,41.4071,37.762
+f_translation,710,41.4684,37.7763
+f_translation,720,41.4474,37.7898
+f_translation,730,41.4908,37.8028
+f_translation,740,41.4853,37.8151
+f_translation,750,41.4946,37.8269
+f_translation,760,41.5205,37.8381
+f_translation,770,41.4965,37.8488
+f_translation,780,41.5536,37.859
+f_translation,790,41.5287,37.8687
+f_translation,800,41.5683,37.8781
+f_translation,810,41.5592,37.8869
+f_translation,820,41.5652,37.8954
+f_translation,830,41.5878,37.9034
+f_translation,840,41.5606,37.9111
+f_translation,850,41.6148,37.9184
+f_translation,860,41.5871,37.9254
+f_translation,870,41.624,37.9321
+f_translation,880,41.6123,37.9384
+f_translation,890,41.6158,37.9445
+f_translation,900,41.6361,37.9503
+f_translation,910,41.6067,37.9558
+f_translation,920,41.6588,37.9611
+f_translation,930,41.629,37.9661
+f_translation,940,41.664,37.9709
+f_translation,950,41.6505,37.9754
+f_translation,960,41.6522,37.9798
+f_translation,970,41.6708,37.984
+f_translation,980,41.6398,37.9879
+f_translation,990,41.6903,37.9917
+f_translation,1000,41.6591,37.9953
+f_translation,1010,41.6927,37.9988
+f_translation,1020,41.6778,38.002
+f_translation,1030,41.6606,38.0042
+f_translation,1040,41.6675,38.0046
+f_translation,1050,41.6292,38.0048
+f_translation,1060,41.6733,38.0049
+f_translation,1070,41.6357,38.005
+f_translation,1080,41.6793,38.0051
+f_translation,1090,41.6593,38.0051
+f_translation,1100,41.6723,38.0062
+f_translation,1110,41.695,38.0087
+f_translation,1120,41.6638,38.0115
+f_translation,1130,41.7134,38.0142
+f_translation,1140,41.6812,38.0167
+f_translation,1150,41.7137,38.0192
+f_translation,1160,41.6979,38.0215
+f_translation,1170,41.6974,38.0238
+f_translation,1180,41.7139,38.0259
+f_translation,1190,41.681,38.0279
+f_translation,1200,41.7296,38.0298
+f_translation,1210,41.6966,38.0317
+f_translation,1220,41.7284,38.0334
+f_translation,1230,41.7119,38.0351
+f_translation,1240,41.7108,38.0367
+f_translation,1250,41.7267,38.0382
+f_translation,1260,41.6931,38.0397
+f_translation,1270,41.7412,38.0411
+f_translation,1280,41.7076,38.0424
+f_translation,1290,41.7389,38.0437
+f_translation,1300,41.722,38.0448
+f_translation,1310,41.7204,38.046
+f_translation,1320,41.7358,38.0471
+f_translation,1330,41.7018,38.0481
+f_translation,1340,41.7495,38.0491
+f_translation,1350,41.7156,38.0501
+f_translation,1360,41.7465,38.051
+f_translation,1370,41.7292,38.0518
+f_translation,1380,41.7272,38.0527
+f_translation,1390,41.7424,38.0535
+f_translation,1400,41.7081,38.0542
+f_translation,1410,41.7555,38.0549
+f_translation,1420,41.7213,38.0556
+f_translation,1430,41.7519,38.0563
+f_translation,1440,41.7343,38.0569
+f_translation,1450,41.7322,38.0575
+f_translation,1460,41.7471,38.058
+f_translation,1470,41.7126,38.0586
+f_translation,1480,41.7598,38.0591
+f_translation,1490,41.7254,38.0596
+f_translation,1500,41.7558,38.0601
+f_translation,1510,41.7381,38.0605
+f_translation,1520,41.7357,38.0609
+f_translation,1530,41.7505,38.0613
+f_translation,1540,41.7158,38.0617
+f_translation,1550,41.7628,38.0621
+f_translation,1560,41.7283,38.0624
+f_translation,1570,41.7586,38.0628
+f_translation,1580,41.7407,38.0631
+f_translation,1590,41.7383,38.0634
+f_translation,1600,41.7529,38.0637
+f_translation,1610,41.7181,38.064
+f_translation,1620,41.7651,38.0642
+f_translation,1630,41.7304,38.0645
+f_translation,1640,41.7606,38.0647
+f_translation,1650,41.7427,38.0649
+f_translation,1660,41.7401,38.0652
+f_translation,1670,41.7547,38.0654
+f_translation,1680,41.7198,38.0656
+f_translation,1690,41.7666,38.0658
+f_translation,1700,41.7319,38.0659
+f_translation,1710,41.7621,38.0661
+f_translation,1720,41.744,38.0663
+f_translation,1730,41.7414,38.0665
+f_translation,1740,41.7559,38.0666
+f_translation,1750,41.721,38.0667
+f_translation,1760,41.7678,38.0669
+f_translation,1770,41.733,38.067
+f_translation,1780,41.7631,38.0671
+f_translation,1790,41.745,38.0672
+a_long_arm,0,30.0233,30
+a_long_arm,10,34.8075,30.3035
+a_long_arm,20,36.3593,30.8444
+a_long_arm,30,37.2439,31.4202
+a_long_arm,40,37.8603,31.9837
+a_long_arm,50,38.4311,32.5249
+a_long_arm,60,38.9905,33.0421
+a_long_arm,70,39.4417,33.5352
+a_long_arm,80,40.004,34.006
+a_long_arm,90,40.4233,34.4559
+a_long_arm,100,40.9112,34.8854
+a_long_arm,110,41.3105,35.2953
+a_long_arm,120,41.7123,35.6867
+a_long_arm,130,42.1194,36.0601
+a_long_arm,140,42.4224,36.4142
+a_long_arm,150,42.8511,36.7537
+a_long_arm,160,43.1412,37.0783
+a_long_arm,170,43.5053,37.3884
+a_long_arm,180,43.7865,37.6843
+a_long_arm,190,44.0755,37.9668
+a_long_arm,200,44.3749,38.2363
+a_long_arm,210,44.5924,38.4936
+a_long_arm,220,44.9124,38.7392
+a_long_arm,230,45.1063,38.9736
+a_long_arm,240,45.3804,39.1973
+a_long_arm,250,45.576,39.4108
+a_long_arm,260,45.6272,39.6109
+a_long_arm,270,45.2721,39.7599
+a_long_arm,280,44.8948,39.8485
+a_long_arm,290,44.7138,39.8952
+a_long_arm,300,44.5454,39.9167
+a_long_arm,310,44.5103,39.9252
+a_long_arm,320,44.4637,39.9278
+a_long_arm,330,44.4508,39.9283
+a_long_arm,340,44.4625,39.9281
+a_long_arm,350,44.4272,39.9278
+a_long_arm,360,44.4746,39.9276
+a_long_arm,370,44.44,39.9275
+a_long_arm,380,44.4705,39.9275
+a_long_arm,390,44.4523,39.9274
+a_long_arm,400,44.4496,39.9274
+a_long_arm,410,44.464,39.9274
+a_long_arm,420,44.4288,39.9274
+a_long_arm,430,44.4757,39.9274
+a_long_arm,440,44.4406,39.9274
+a_long_arm,450,44.4708,39.9274
+a_long_arm,460,44.4524,39.9274
+a_long_arm,470,44.4497,39.9274
+a_long_arm,480,44.464,39.9274
+a_long_arm,490,44.4288,39.9274
+a_long_arm,500,44.4757,39.9274
+a_long_arm,510,44.4406,39.9274
+a_long_arm,520,44.4532,39.9263
+a_long_arm,530,44.4291,39.9239
+a_long_arm,540,44.4282,39.922
+a_long_arm,550,44.4587,39.921
+a_long_arm,560,44.4405,39.9226
+a_long_arm,570,44.4874,39.9246
+a_long_arm,580,44.4482,39.926
+a_long_arm,590,44.475,39.9268
+a_long_arm,600,44.4544,39.9272
+a_long_arm,610,44.4505,39.9274
+a_long_arm,620,44.4643,39.9274
+a_long_arm,630,44.4289,39.9274
+a_long_arm,640,44.4757,39.9274
+a_long_arm,650,44.4406,39.9274
+a_long_arm,660,44.4708,39.9274
+a_long_arm,670,44.4524,39.9274
+a_long_arm,680,44.4497,39.9274
+a_long_arm,690,44.464,39.9274
+a_long_arm,700,44.4288,39.9274
+a_long_arm,710,44.4757,39.9274
+a_long_arm,720,44.4406,39.9274
+a_long_arm,730,44.4708,39.9274
+a_long_arm,740,44.4524,39.9274
+a_long_arm,750,44.4497,39.9274
+a_long_arm,760,44.464,39.9274
+a_long_arm,770,44.4288,39.9274
+a_long_arm,780,44.4757,39.9274
+a_long_arm,790,44.4406,39.9274
+a_long_arm,800,44.4708,39.9274
+a_long_arm,810,44.4524,39.9274
+a_long_arm,820,44.4497,39.9274
+a_long_arm,830,44.464,39.9274
+a_long_arm,840,44.4288,39.9274
+a_long_arm,850,44.4757,39.9274
+a_long_arm,860,44.4406,39.9274
+a_long_arm,870,44.4708,39.9274
+a_long_arm,880,44.4524,39.9274
+a_long_arm,890,44.4497,39.9274
+a_long_arm,900,44.464,39.9274
+a_long_arm,910,44.4288,39.9274
+a_long_arm,920,44.4757,39.9274
+a_long_arm,930,44.4406,39.9274
+a_long_arm,940,44.4708,39.9274
+a_long_arm,950,44.4524,39.9274
+a_long_arm,960,44.4497,39.9274
+a_long_arm,970,44.464,39.9274
+a_long_arm,980,44.4288,39.9274
+a_long_arm,990,44.4757,39.9274
+a_long_arm,1000,44.4406,39.9274
+a_long_arm,1010,44.4708,39.9274
+a_long_arm,1020,44.4524,39.9274
+a_long_arm,1030,44.4313,39.9264
+a_long_arm,1040,44.4393,39.9239
+a_long_arm,1050,44.4056,39.922
+a_long_arm,1060,44.4547,39.9208
+a_long_arm,1070,44.4198,39.9203
+a_long_arm,1080,44.4658,39.92
+a_long_arm,1090,44.4462,39.9199
+a_long_arm,1100,44.4603,39.9209
+a_long_arm,1110,44.4789,39.9233
+a_long_arm,1120,44.4395,39.9252
+a_long_arm,1130,44.4819,39.9264
+a_long_arm,1140,44.4436,39.927
+a_long_arm,1150,44.4721,39.9273
+a_long_arm,1160,44.4529,39.9274
+a_long_arm,1170,44.4498,39.9275
+a_long_arm,1180,44.464,39.9274
+a_long_arm,1190,44.4288,39.9274
+a_long_arm,1200,44.4756,39.9274
+a_long_arm,1210,44.4406,39.9274
+a_long_arm,1220,44.4708,39.9274
+a_long_arm,1230,44.4524,39.9274
+a_long_arm,1240,44.4497,39.9274
+a_long_arm,1250,44.464,39.9274
+a_long_arm,1260,44.4288,39.9274
+a_long_arm,1270,44.4757,39.9274
+a_long_arm,1280,44.4406,39.9274
+a_long_arm,1290,44.4708,39.9274
+a_long_arm,1300,44.4524,39.9274
+a_long_arm,1310,44.4497,39.9274
+a_long_arm,1320,44.464,39.9274
+a_long_arm,1330,44.4288,39.9274
+a_long_arm,1340,44.4757,39.9274
+a_long_arm,1350,44.4406,39.9274
+a_long_arm,1360,44.4708,39.9274
+a_long_arm,1370,44.4524,39.9274
+a_long_arm,1380,44.4497,39.9274
+a_long_arm,1390,44.464,39.9274
+a_long_arm,1400,44.4288,39.9274
+a_long_arm,1410,44.4757,39.9274
+a_long_arm,1420,44.4406,39.9274
+a_long_arm,1430,44.4708,39.9274
+a_long_arm,1440,44.4524,39.9274
+a_long_arm,1450,44.4497,39.9274
+a_long_arm,1460,44.464,39.9274
+a_long_arm,1470,44.4288,39.9274
+a_long_arm,1480,44.4757,39.9274
+a_long_arm,1490,44.4406,39.9274
+a_long_arm,1500,44.4708,39.9274
+a_long_arm,1510,44.4524,39.9274
+a_long_arm,1520,44.4497,39.9274
+a_long_arm,1530,44.464,39.9274
+a_long_arm,1540,44.4288,39.9274
+a_long_arm,1550,44.4757,39.9274
+a_long_arm,1560,44.4406,39.9274
+a_long_arm,1570,44.4708,39.9274
+a_long_arm,1580,44.4524,39.9274
+a_long_arm,1590,44.4497,39.9274
+a_long_arm,1600,44.464,39.9274
+a_long_arm,1610,44.4288,39.9274
+a_long_arm,1620,44.4757,39.9274
+a_long_arm,1630,44.4406,39.9274
+a_long_arm,1640,44.4708,39.9274
+a_long_arm,1650,44.4524,39.9274
+a_long_arm,1660,44.4497,39.9274
+a_long_arm,1670,44.464,39.9274
+a_long_arm,1680,44.4288,39.9274
+a_long_arm,1690,44.4757,39.9274
+a_long_arm,1700,44.4406,39.9274
+a_long_arm,1710,44.4708,39.9274
+a_long_arm,1720,44.4524,39.9274
+a_long_arm,1730,44.4497,39.9274
+a_long_arm,1740,44.464,39.9274
+a_long_arm,1750,44.4288,39.9274
+a_long_arm,1760,44.4757,39.9274
+a_long_arm,1770,44.4406,39.9274
+a_long_arm,1780,44.4708,39.9274
+a_long_arm,1790,44.4524,39.9274

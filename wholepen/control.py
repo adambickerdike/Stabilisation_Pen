@@ -76,6 +76,12 @@ class WPConfig:
     use_line_f: bool = False             # the device laws run at the tremor-line detector's frequency when it is open
                                          # (False: the AKF's frequency, as the nose)
     nose_ink_correct: bool = True        # with a V2 collar, the nose cancels the ink's residual (see stepper.tick)
+    collar_alloc: str = "overflow"       # 'overflow': the collar takes only the share of the estimated total tremor that
+                                         # exceeds alloc_reach (the nib's usable reach), the nib the rest (coarse/fine
+                                         # allocation; the collar stays still for tremor the nib can cover); 'full'
+    alloc_reach: float = 5.0e-3          # m: the nib's usable reach for the allocation (Rev J nose 6.57 mm x 0.75)
+    alloc_tau: float = 0.5               # s: time constant of the total-tremor amplitude estimate
+    alloc_share_max: float = 1.0         # the collar's largest share of the estimated total tremor
     preview: float = 0.0                 # s extra preview for the oracle (group delays)
     label: str = ""
 
@@ -157,6 +163,7 @@ class PhasorIMC:
         u_q = self.uh[-kq] if len(self.uh) >= kq else np.zeros(2)
         y_u = Gr @ self.u - Gi @ u_q
         e = dh if self.total else dh - y_u
+        self.e_last = e.copy()
         self.eh.append(e.copy())
         e_q = self.eh[-kq] if len(self.eh) > kq else np.zeros(2)
         u = self.gain * (Hr @ e - Hi @ e_q) if active else np.zeros(2)

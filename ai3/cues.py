@@ -196,7 +196,7 @@ def simulate(records: List[List[Dict]], cue: str, theta: float, theta_w: float, 
                     else:
                         pause_cues += 1
                     extra_t += R.t_notice
-                    looked = rng.random() < (R.p_look if cue == "tick_after" else max(R.p_look, 0.9))
+                    looked = rng.random() < R.p_look                  # same look rate for both (no assumed advantage)
                     extra_t += R.t_look if looked else 0.0
                     reads += int(looked)
                     if is_err:

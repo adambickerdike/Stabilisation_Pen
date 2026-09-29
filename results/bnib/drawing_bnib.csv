@@ -1,0 +1,25 @@
+id,label,group,shape,z0_mm,z1_mm,d0_mm,d1_mm,d_in_mm,size_mm,offset_mm,moves_with,mass_g,part,ledger
+ball,Ball tip,refill,cone,0.0,3.0,0.7,1.6,,,"[0.0, 0.0]",nib,0.0,D1 refill tip,CON-22
+refill,Ink refill (D1 mini),refill,cylinder,3.0,67.0,2.35,2.35,,,"[0.0, 0.0]",nib,0.84,ISO 12757-1 type D refill,CON-22
+bnib_refill_end,Refill end cap with rolling ball,refill,cylinder,67.0,71.0,3.2,3.2,,,"[0.0, 0.0]",nib,0.5,PEEK cap + 3 mm Si3N4 ball (ASSUMPTION),AMF-24
+bnib_carrier,Nib carrier (titanium tube with two bushings),moving_nib,tube,9.0,36.915,3.2,3.2,2.5,,"[0.0, 0.0]",nib,0.65,Ti-6Al-4V tube 4.0/2.5 mm + PTFE liners,AMF-21
+bnib_coils,"Moving coils (two flat layers, x and y)",actuator,tube,31.2,32.8,19.99971715728752,19.99971715728752,3.3,,"[0.0, 0.0]",nib,1.448,self-bonding 0.10 mm wire on a 0.1 mm polyimide former (or a 4-layer flex coil),AMF-29
+bnib_carrier_flange,"Carrier flange (wire clamps, Hall magnet)",moving_nib,tube,34.915,36.415,12.6,12.6,2.6,,"[0.0, 0.0]",nib,0.25,"Ti-6Al-4V ring, laser-welded wire ends",AMF-21
+bnib_hall_magnet,Nib position magnet,sensor,box,36.415,37.415,,,,"[1.0, 1.0, 1.0]","[6.7, 0.0]",nib,0.05,N52 1 mm cube,AMF-139
+bnib_back_plate,Magnet back plate (soft iron),actuator,tube,25.935,27.4,21.399717157287522,21.399717157287522,6.3173919317642016,,"[0.0, 0.0]",handle,3.7863,"AISI 1010 low-carbon steel, laser-cut (B_sat 1.6 T ASSUMPTION; Hiperco 50A would thin it: AMF-140)",ASSUMPTION
+bnib_magnet_1,Pole magnet (checkerboard),magnet,box,27.4,30.9,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[4.793672930760958, 4.793672930760958]",handle,0.6974,N52 cuboid 5.12 x 5.12 x 3.50 mm,AMF-139
+bnib_magnet_2,Pole magnet (checkerboard),magnet,box,27.4,30.9,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[-4.793672930760958, 4.793672930760958]",handle,0.6974,N52 cuboid 5.12 x 5.12 x 3.50 mm,AMF-139
+bnib_magnet_3,Pole magnet (checkerboard),magnet,box,27.4,30.9,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[-4.793672930760958, -4.793672930760958]",handle,0.6974,N52 cuboid 5.12 x 5.12 x 3.50 mm,AMF-139
+bnib_magnet_4,Pole magnet (checkerboard),magnet,box,27.4,30.9,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[4.793672930760958, -4.793672930760958]",handle,0.6974,N52 cuboid 5.12 x 5.12 x 3.50 mm,AMF-139
+bnib_keeper,Keeper plate (soft iron),actuator,tube,32.95,34.415,21.399717157287522,21.399717157287522,6.3173919317642016,,"[0.0, 0.0]",handle,3.7863,AISI 1010 low-carbon steel (ASSUMPTION; Hiperco 50A alternative: AMF-140),ASSUMPTION
+bnib_stator_housing,Actuator housing and spacers,structure,tube,25.435,34.915,22.0,22.0,21.59971715728752,,"[0.0, 0.0]",handle,0.5,aluminium ring (ASSUMPTION),-
+bnib_wire_1,Suspension wire,mechanism,cylinder,35.915,62.716,0.12840231678730876,0.12840231678730876,,,"[3.8890872965260117, 3.889087296526011]",handle,0.0015,"Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",AMF-20; AMF-21
+bnib_wire_2,Suspension wire,mechanism,cylinder,35.915,62.716,0.12840231678730876,0.12840231678730876,,,"[-3.889087296526011, 3.8890872965260117]",handle,0.0015,"Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",AMF-20; AMF-21
+bnib_wire_3,Suspension wire,mechanism,cylinder,35.915,62.716,0.12840231678730876,0.12840231678730876,,,"[-3.889087296526012, -3.889087296526011]",handle,0.0015,"Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",AMF-20; AMF-21
+bnib_wire_4,Suspension wire,mechanism,cylinder,35.915,62.716,0.12840231678730876,0.12840231678730876,,,"[3.8890872965260104, -3.889087296526012]",handle,0.0015,"Ti-6Al-4V wire 0.128 mm, free length 26.8 mm",AMF-20; AMF-21
+bnib_anchor_ring,Wire anchor ring,structure,tube,62.716,64.216,13.0,13.0,9.0,,"[0.0, 0.0]",handle,0.3,Ti-6Al-4V ring,AMF-21
+bnib_hall,Nib position sensor (3-D Hall),sensor,box,38.115,40.115,,,,"[0.8, 3.0, 2.0]","[6.7, 0.0]",handle,0.05,TMAG5170-A1 on a flex tail,OPT-44; OPT-53
+bnib_face,Counter-face (hardened disc on a 2-axis flexure),balance,cylinder,71.0,72.2,6.0,6.0,,,"[0.0, 0.0]",handle,0.3,hardened steel disc 6 mm on a cross-strip flexure (301 FH),AMF-20
+bnib_face_spring,Face spring (constant force) and follower stop,balance,tube,72.2,77.0,6.0,6.0,3.0,,"[0.0, 0.0]",handle,0.4,stainless constant-force strip spring; lead-screw stop,EXP-N06
+bnib_face_positioners,"Face positioners (2 x tilt/roll, 1 x stop)",balance,box,77.0,83.0,,,,"[2.8, 8.0, 6.0]","[0.0, 0.0]",handle,0.48,New Scale SQL-RV-1.8 x 3 (or micro-stepper lead screws),AMF-15; AMF-106
+bnib_skid_ring,"Skid ring (C-shaped heel, 7 mm contact radius)",skid,tube,9.3,10.8,15.0,15.0,12.0,,"[0.0, 0.0]",handle,0.15,PTFE-coated POM,DEC-034

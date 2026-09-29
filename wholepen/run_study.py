@@ -109,20 +109,25 @@ def pen_variant(name: str, grip: float = 1.0) -> CS.PenVariant:
 
 # design -> (pen, firmware, device-law overrides, nose reach override, oracle split (nose share))
 def designs(rules: Dict) -> Dict[str, tuple]:
-    cg = rules.get("collar_gain", 0.75)
+    cg = rules.get("collar_gain", 1.0)
     claw = rules.get("collar_law", "ff")
     law = rules.get("cmg_law", "damp")
     gm = rules.get("gate_margin_mm", 0.3) * 1e-3
+    tr = rules.get("tracker_fw", "nose")          # 'nose' (sim2j's frozen guarded tracker) | 'nose_gl' (ai2's gated listening)
+    cmax = rules.get("collar_share_max", 1.0)
+    cfrac = rules.get("collar_frac", 0.9)
     return {
         "none": ("base", "none", {}, None, None),
-        "nose": ("base", "nose", {}, None, None),
-        "nose_gate": ("base", "nose", {"gate": True, "gate_margin": gm}, None, None),
+        "nose": ("base", tr, {}, None, None),
+        "nose_gate": ("base", tr, {"gate": True, "gate_margin": gm}, None, None),
         "collar_locked": ("collar", "none", {}, None, None),
-        "collar_nose": ("collar", "nose", {"collar": claw, "collar_gain": cg}, None, None),
-        "collar_fine": ("collar", "nose", {"collar": claw, "collar_gain": cg}, 1.0e-3, None),
+        "collar_nose": ("collar", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 5.0e-3, "alloc_share_max": cmax,
+                                       "collar_frac": cfrac}, None, None),
+        "collar_fine": ("collar", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 0.8e-3, "alloc_share_max": cmax,
+                                       "collar_frac": cfrac}, 1.0e-3, None),
         "gt_locked": ("gt100", "none", {}, None, None),
-        "gt_locked_nose": ("gt100", "nose", {}, None, None),
-        "gt_nose": ("gt100", "nose", {"cmg": law}, None, None),
+        "gt_locked_nose": ("gt100", tr, {}, None, None),
+        "gt_nose": ("gt100", tr, {"cmg": law}, None, None),
         "nose_oracle": ("base", "oracle", {}, None, None),
         "collar_oracle": ("collar", "none", {"collar": "oracle"}, None, None),
         "collar_nose_oracle": ("collar", "oracle", {"collar": "oracle"}, None, 0.5),
@@ -341,6 +346,14 @@ def load_rules() -> Dict:
         return {}
 
 
+TRACKERS = ("nose", "nose_gl", "nose_glg")       # sim2j's guarded (G4); ai2's gated listening (fallback: Rev H as built);
+                                                 # gated listening with the guarded fallback
+DESIGN_TRACKER = "nose_glg"
+COLLAR_VARIANTS = {"g0.75_f0.9": {"collar_gain": 0.75, "collar_share_max": 1.0, "collar_frac": 0.9},
+                   "g0.5_f0.65": {"collar_gain": 0.5, "collar_share_max": 1.0, "collar_frac": 0.65},
+                   "g0.5_s0.6_f0.65": {"collar_gain": 0.5, "collar_share_max": 0.6, "collar_frac": 0.65}}
+
+
 def stage_tune(quick=False):
     """Tuning writer 100 (and 101 unless quick), seed 300: the collar's gain (0.75 / 1.0), the gyroscope's causal law
     (damp / afc / ff, against the locked tail with the nose), the gate's margin (0.3 / 1.0 mm)."""
@@ -353,19 +366,29 @@ def stage_tune(quick=False):
     et8 = ("ET_severe", "ET", 6.0, 8e-3)
     for w in ws:
         for cls in (et3, pd8):
-            for tag, rl in (("ff0.75", {"collar_law": "ff", "collar_gain": 0.75}), ("ff1", {"collar_law": "ff", "collar_gain": 1.0}),
-                            ("afc", {"collar_law": "afc"})):
-                run_design(bench, rows, rl, w, seed, cls, "collar_nose", key_prefix=f"cl_{tag}|")
+            for trk in TRACKERS:
+                run_design(bench, rows, {"tracker_fw": trk}, w, seed, cls, "nose", key_prefix=f"tr_{trk}|")
+            # the collar's gain, share cap and reference cap, with the gated listening tracker whose fallback is the
+            # guarded tracker (DEC-042's listening estimate, DEC-047's guard)
+            for tag, rl in COLLAR_VARIANTS.items():
+                run_design(bench, rows, dict(rl, tracker_fw=DESIGN_TRACKER), w, seed, cls, "collar_nose", key_prefix=f"cpg_{tag}|")
             run_design(bench, rows, {}, w, seed, cls, "collar_oracle")
-            run_design(bench, rows, {}, w, seed, cls, "nose")
+        # tremor-free writing with each tracker: the false correction (the review: tremor and writing overlap)
+        for trk in TRACKERS:
+            key = f"tr_{trk}|h1|g1|w{w}|s{seed}|clean|nose"
+            if not rows.has(key):
+                su = bench.setup(w, "base")
+                m = CS.run_case(su, trk, C.WPConfig(), "ET", 6.0, 0.0, seed)
+                rows.put(key, _row(m, "clean", "nose", 1.0))
+                log(f"[tune] clean {trk}: moved {m.get('moved_vs_clean_um', float('nan')):.0f} um")
+        T = {"tracker_fw": DESIGN_TRACKER}
         for law in ("damp", "afc", "ff"):
-            run_design(bench, rows, {"cmg_law": law}, w, seed, et3, "gt_nose", key_prefix=f"cmg_{law}|")
-        run_design(bench, rows, {}, w, seed, et3, "gt_locked_nose")
+            run_design(bench, rows, dict(T, cmg_law=law), w, seed, et3, "gt_nose", key_prefix=f"cmgg_{law}|")
+        run_design(bench, rows, T, w, seed, et3, "gt_locked_nose", key_prefix="g|")
         run_design(bench, rows, {}, w, seed, et3, "gt_oracle")
-        run_design(bench, rows, {}, w, seed, et3, "nose")
         for gmm in (0.3, 1.0):
-            run_design(bench, rows, {"gate_margin_mm": gmm}, w, seed, et8, "nose_gate", key_prefix=f"gm{gmm}|")
-        run_design(bench, rows, {}, w, seed, et8, "nose")
+            run_design(bench, rows, dict(T, gate_margin_mm=gmm), w, seed, et8, "nose_gate", key_prefix=f"gmg{gmm}|")
+        run_design(bench, rows, T, w, seed, et8, "nose", key_prefix="g|")
         if quick:
             break
     R = rows.values()
@@ -384,34 +407,51 @@ def stage_freeze(quick=False):
     """Rules from the tuning rows only (written with a timestamp before any test row exists)."""
     rows = Rows("tune").values()
     by = lambda pref, cls, d: [r for r in rows if r["key"].startswith(pref) and r["class"] == cls and r["design"] == d]
-    # the collar's law and gain: lower mean ink error over ET 3 mm and PD 8 mm
-    cg = {}
-    for tag in ("ff0.75", "ff1", "afc"):
-        v = [r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"cl_{tag}|", cls, "collar_nose")]
-        cg[tag] = float(np.mean(v)) if v else float("inf")
-    best = min(cg, key=cg.get)
-    collar_law = "afc" if best == "afc" else "ff"
-    collar_gain = {"ff0.75": 0.75, "ff1": 1.0, "afc": 0.75}[best]
+    # the tracker: lower mean ink error of the nose over ET 3 mm and PD 8 mm, unless its false correction on
+    # tremor-free writing exceeds sim2j's 25 um rule by more than the other's
+    trk = {}
+    for tr_ in ("nose", "nose_gl"):
+        v = [r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"tr_{tr_}|", cls, "nose")]
+        clean = [r.get("moved_vs_clean_um", float("nan")) for r in rows if r["key"].startswith(f"tr_{tr_}|") and r["class"] == "clean"]
+        trk[tr_] = {"ink_um": float(np.mean(v)) if v else float("inf"), "clean_moved_um": float(np.mean(clean)) if clean else float("nan")}
+    ok = [k for k in trk if trk[k]["clean_moved_um"] <= 25.0]      # sim2j's false-correction rule (25 um)
+    tracker_fw = min(ok or list(trk), key=lambda k: trk[k]["ink_um"])
+    # the collar's settings: the lowest mean ink error over ET 3 mm and PD 8 mm (gated listening tracker); kept in the
+    # test when it beats the nose alone on those cases (reported either way)
+    cv = {}
+    for tag in COLLAR_VARIANTS:
+        v = [r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"cpg_{tag}|", cls, "collar_nose")]
+        cv[tag] = float(np.mean(v)) if v else float("inf")
+    best = min(cv, key=cv.get)
+    nose_ink = float(np.mean([r["ink_err_um"] for cls in ("ET_moderate", "PD_severe") for r in by(f"tr_{tracker_fw}|", cls, "nose")] or [float("inf")]))
+    cc = {"nose": nose_ink, "collar_nose": cv[best]}
+    cg = {"tracker": trk, "collar_variants_ink_um": cv, "collar_vs_nose_ink_um": cc}
+    collar_law = "ff"
+    collar_gain = COLLAR_VARIANTS[best]["collar_gain"]
+    collar_share_max = COLLAR_VARIANTS[best]["collar_share_max"]
+    collar_frac = COLLAR_VARIANTS[best]["collar_frac"]
     # the gyroscope's law: lowest ink tremor among the causal laws (the gate against the locked tail is reported, not
     # used to pick)
     cl = {}
     for law in ("damp", "afc", "ff"):
-        v = [r["tip_tremor_mm"] for r in by(f"cmg_{law}|", "ET_moderate", "gt_nose")]
+        v = [r["tip_tremor_mm"] for r in by(f"cmgg_{law}|", "ET_moderate", "gt_nose")]
         cl[law] = float(np.mean(v)) if v else float("inf")
     cmg_law = min(cl, key=cl.get)
     # the gate's margin: the larger margin only if it keeps >= 90 % coverage and lowers the ink error
     gmr = {}
     for gmm in (0.3, 1.0):
-        rr = by(f"gm{gmm}|", "ET_severe", "nose_gate")
+        rr = by(f"gmg{gmm}|", "ET_severe", "nose_gate")
         gmr[gmm] = (float(np.mean([r["ink_err_um"] for r in rr])) if rr else float("inf"),
                     float(np.mean([r["coverage"] for r in rr])) if rr else 0.0)
     gate_margin = 0.3
     if gmr[1.0][1] >= 0.9 * gmr[0.3][1] and gmr[1.0][0] < gmr[0.3][0]:
         gate_margin = 1.0
-    body = {"rules": {"collar_law": collar_law, "collar_gain": collar_gain, "cmg_law": cmg_law, "gate_margin_mm": gate_margin,
+    body = {"rules": {"tracker_fw": tracker_fw, "collar_law": collar_law, "collar_gain": collar_gain, "collar_alloc": "overflow",
+                      "collar_share_max": collar_share_max, "collar_frac": collar_frac,
+                      "collar_helps_on_tuning": cc["collar_nose"] < cc["nose"], "cmg_law": cmg_law, "gate_margin_mm": gate_margin,
                       "page_sensor": "measured (sim2j deltapen_walk: OPT-02 per-window statistics, errors add up)",
-                      "tracker": "sim2j frozen (results/sim2j/rules.json)"},
-            "evidence": {"collar_law_ink_um": cg, "cmg_law_tip_mm": cl, "gate_margin": {str(k): v for k, v in gmr.items()}},
+                      "tracker_note": "nose = sim2j's frozen guarded tracker (G4); nose_gl = ai2's gated listening (fallback Rev H as built); nose_glg = gated listening with the guarded fallback; chosen by ink error among those whose tremor-free writing moved <= 25 um"},
+            "evidence": {"tracker_and_collar": cg, "cmg_law_tip_mm": cl, "gate_margin": {str(k): v for k, v in gmr.items()}},
             "frozen_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "note": "chosen on the tuning writers 100-101 and seed 300 only, before any test run",
             "stabpen.provenance": provenance("SIMULATION (tuning set) -> frozen rules", seeds=[300])}
@@ -427,22 +467,19 @@ def stage_test(quick=False):
     bench = Bench()
     ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
     cls_all = CLASSES if not quick else [c for c in CLASSES if c[0] in ("ET_moderate", "PD_severe")]
+    # compute budget (four shared cores): the collar and the oracles on the moderate and severe classes; the mild
+    # and 9 Hz classes with the pen alone; the gate, the fine nib, the nose's own limit and the gyro tail on writer 0
     full = ("ET_moderate", "ET_severe", "PD_moderate", "PD_severe", "PD_reemergent_severe", "PD_recorded_moderate")
-    plan = {c[0]: (["none", "nose", "collar_nose", "collar_nose_oracle"] if c[0] in full else ["none", "nose", "collar_nose"])
-            for c in cls_all}
-    for c in ("ET_moderate", "ET_severe", "PD_severe", "PD_reemergent_severe"):
-        plan.get(c, []).append("nose_gate")
-    for c in ("ET_moderate", "ET_severe", "PD_moderate", "PD_severe"):
-        plan.get(c, []).append("collar_fine")
-    for c in ("ET_moderate", "ET_severe", "PD_severe"):
-        plan.get(c, []).append("nose_oracle")
-    for c in ("ET_moderate", "PD_severe"):
-        plan.get(c, []).extend(["gt_locked_nose", "gt_nose"])
+    plan0 = {c[0]: (["none", "nose", "collar_nose", "collar_nose_oracle"] if c[0] in full else ["none", "nose"]) for c in cls_all}
+    extra0 = {"ET_severe": ["nose_gate"], "PD_severe": ["nose_gate", "collar_fine", "nose_oracle"],
+              "ET_moderate": ["gt_locked_nose", "gt_nose"]}
     if quick:
-        plan = {c[0]: ["none", "nose", "collar_nose", "collar_nose_oracle"] for c in cls_all}
+        plan0 = {c[0]: ["none", "nose", "collar_nose", "collar_nose_oracle"] for c in cls_all}
+        extra0 = {}
     for w, seed in ws:
         for cls in cls_all:
-            for dn in plan[cls[0]]:
+            ds = list(plan0[cls[0]]) + (extra0.get(cls[0], []) if w == ws[0][0] else [])
+            for dn in ds:
                 try:
                     run_design(bench, rows, rules, w, seed, cls, dn)
                 except Exception as e:
@@ -474,7 +511,7 @@ def stage_grips(quick=False):
     cls = ("ET_moderate", "ET", 6.0, 3e-3)
     grips = (0.5, 2.0) if not quick else (0.5,)
     for g in grips:
-        for dn in ("collar_locked", "collar_nose", "collar_oracle", "gt_locked_nose", "gt_nose"):
+        for dn in ("collar_locked", "collar_nose", "gt_locked_nose", "gt_nose"):
             try:
                 run_design(bench, rows, rules, w, seed, cls, dn, grip=g)
             except Exception as e:
@@ -490,7 +527,7 @@ def stage_arm(quick=False):
     bench = Bench()
     w, seed = 0, 200
     for cls in (("ET_moderate", "ET", 6.0, 3e-3),):
-        for dn in ("none", "nose", "collar_locked", "collar_nose", "collar_oracle"):
+        for dn in ("none", "nose", "collar_nose"):
             try:
                 run_design(bench, rows, rules, w, seed, cls, dn, hand_model="arm")
             except Exception as e:

@@ -14,8 +14,9 @@ multiplier):
 The load on the nib (tip-referred, per nib axis, in the direction that the nib must push) is  Q_i = -F . u_i ; with no
 friction Q_1 = -N (n . t1) = N cos(theta) = F_s cot(theta) for phi = 0 (the static side load).
 With friction the tilt-plane load is F_s cot(theta -+ phi_f) (tan phi_f = mu) for sliding toward -+h.
-The nib-to-ink Jacobian: a nib displacement dq along u (perpendicular to a) moves the ink by (I - n n^T) dq + the
-refill slide along the paper, ds = (n . dq) / sin(theta):  dx_ink = dq_1 / sin(theta) h + dq_2 t2 for phi = 0.
+The nib-to-ink Jacobian: a nib displacement dq along u (perpendicular to a) moves the ink by (I - n n^T)(dq + ds a) with
+the refill sliding into the pen by ds = -(n . dq) / sin(theta) (= cot(theta) dq_1 at roll 0) to keep the ball on the
+paper:  dx_ink = dq_1 / sin(theta) h + dq_2 t2 for phi = 0.
 """
 from __future__ import annotations
 
@@ -113,20 +114,26 @@ def side_load_friction_band(theta: float, F_c: float, mu: float) -> Tuple[float,
 def writing_load_stats(theta: float, phi: float, F_s: float, ink: str = "oil_common", paper: float = 1.0,
                        n_dir: int = 72, v: float = 30e-3, h_sl: float = 0.0) -> Dict:
     """Nib load over writing directions (uniform over the circle, sliding at speed v) and the static (not sliding)
-    value: mean (static part) and rms of the fluctuation about it per axis (N)."""
-    mu = mu_kinetic(ink, v, F_s / math.sin(theta), paper)
-    fr = frame(theta, 0.0)
-    Qs = []
-    for k in range(n_dir):
-        ang = 2 * math.pi * k / n_dir
-        vh = math.cos(ang) * fr["h"] + math.sin(ang) * fr["t2"]
-        Qs.append(nib_load(theta, phi, F_s, mu, vh, h_sl, 0.0))
-    Qs = np.array(Qs)
-    Q0 = nib_load(theta, phi, F_s, 0.0, None)
-    mean = Qs.mean(axis=0)
-    dev = Qs - mean
+    value: mean (static part) and rms of the fluctuation about it per axis (N).  Vectorised form of nib_load:
+        N = F_s / (sin th - mu cos(ang) cos th),  Q_i = N (-(n . u_i) + mu (v . u_i))
+    with n . u1 = -cos th cos phi, n . u2 = cos th sin phi, v . u1 = cos phi cos(ang) sin th + sin phi sin(ang),
+    v . u2 = -sin phi cos(ang) sin th + cos phi sin(ang)."""
+    st, ct = math.sin(theta), math.cos(theta)
+    sp, cp = math.sin(phi), math.cos(phi)
+    mu = mu_kinetic(ink, v, F_s / st, paper)
+    ang = 2 * np.pi * np.arange(n_dir) / n_dir
+    ca, sa = np.cos(ang), np.sin(ang)
+    N = F_s / (st - mu * ca * ct)
+    nu1, nu2 = -ct * cp, ct * sp
+    vu1 = cp * ca * st + sp * sa
+    vu2 = -sp * ca * st + cp * sa
+    Q = np.column_stack([N * (-nu1 + mu * vu1), N * (-nu2 + mu * vu2)])
+    N0 = F_s / st
+    Q0 = np.array([-N0 * nu1, -N0 * nu2])
+    mean = Q.mean(axis=0)
+    dev = Q - mean
     return {"mu": mu, "static": Q0, "mean_sliding": mean, "rms_about_mean": np.sqrt((dev ** 2).mean(axis=0)),
-            "rms_total": np.sqrt((Qs ** 2).mean(axis=0)), "max_abs": np.abs(Qs).max(axis=0)}
+            "rms_total": np.sqrt((Q ** 2).mean(axis=0)), "max_abs": np.abs(Q).max(axis=0)}
 
 
 # ------------------------------------------------------------------------------------------------ Jacobians
@@ -139,13 +146,14 @@ def contact_jacobian(theta: float, phi: float = 0.0) -> Dict:
     J = np.zeros((2, 2))
     ds = np.zeros(2)
     for j, u in enumerate((fr["u1"], fr["u2"])):
-        s_rate = (n @ u) / (n @ a)            # refill slide (m per m of nib motion; + = into the pen)
-        dx = P @ (u - s_rate * a)             # ball motion when the refill slides to keep contact
+        s_rate = -(n @ u) / (n @ a)           # refill slide INTO the pen (m per m of nib motion): the ball moves by
+        dx = P @ (u + s_rate * a)             # dq u + ds a and must stay on the paper, n . (u + ds a) = 0
         J[0, j] = dx @ fr["h"]
         J[1, j] = dx @ fr["t2"]
         ds[j] = s_rate
     return {"J_ink_per_nib": J, "slide_per_nib": ds,
-            "label": "CALC: dx_ink = (I - n n^T)(dq - ds a), ds = (n . dq) / (n . a); page axes (h, t2), nib axes (u1, u2)"}
+            "label": "CALC: dx_ink = (I - n n^T)(dq + ds a), ds = -(n . dq) / (n . a) (into the pen); page axes (h, t2), "
+                     "nib axes (u1, u2)"}
 
 
 def ball_protrusion(theta: float, R_skid: float, r_b: float = None) -> float:
