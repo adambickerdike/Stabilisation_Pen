@@ -1,0 +1,112 @@
+{
+  "native_block": [
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "mu": 0.12,
+      "impratio": 10.0,
+      "static_stiffness_N_per_m": {
+        "measured": 7856544.984578939,
+        "closed_form": 7856505.153802444
+      },
+      "creep": {
+        "F_t_over_muN": 0.5,
+        "v_creep_m_s": 1.483206600647397e-07,
+        "closed_form_m_s": 1.4848772727272744e-07,
+        "v_creep_noslip10_m_s": 1.4832066007345814e-07
+      },
+      "sliding_mu_elliptic": 0.06098032677559186,
+      "sliding_speed_elliptic_m_s": 0.019522711197926312,
+      "sliding_mu_pyramidal": 0.06036012004001333,
+      "sliding_speed_pyramidal_m_s": 0.01951243044460889,
+      "gliding": {
+        "mean_gap_um": 0.0249430714219593,
+        "contact_fraction": 0.508002000500125,
+        "predicted_um": 1.26,
+        "v_t_m_s": 0.02
+      },
+      "incline": {
+        "4.84deg": {
+          "displacement_m": 2.7856869941203857e-08,
+          "predicted_rigid_m": 0.0
+        },
+        "8.84deg": {
+          "displacement_m": 0.010345465948185435,
+          "predicted_rigid_m": 0.006896405463003343
+        }
+      },
+      "name": "sim2 native default"
+    }
+  ],
+  "pen_sliding": [
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "dt": 2.5e-05,
+      "dir": [
+        1,
+        0
+      ],
+      "Ns_mean": 2.039742768594041,
+      "Ns_cv": 2.964687192770344,
+      "mu_apparent": 1.5495556694314285,
+      "flicker": 76,
+      "tip_z_um": 336.51233860158237
+    }
+  ],
+  "label": "SIM: MuJoCo 3.6 soft contacts and the H1 contact law (verify.py)",
+  "lugre": {
+    "presliding_stiffness_N_per_m": {
+      "measured": 15521.871447867352,
+      "closed_form": 15599.999999999998
+    },
+    "stick_slip": {
+      "F_max_N": 0.15375846187610986,
+      "F_min_N": 0.08763901199475284,
+      "mu_s_N": 0.156,
+      "mu_k_N": 0.12,
+      "F_min_analytic_N": 0.08399999999999999,
+      "period_s": 0.45635000000000003,
+      "period_analytic_s": 0.39141592653589796
+    },
+    "sliding_20mm_s": {
+      "F_N": 0.11999999999999995,
+      "mu_k_N": 0.12
+    }
+  },
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:21:11+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages plugins,energy,gyro,sensors,myo,contact,native,convergence,arm,validate,env",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "contact",
+    "quick": true,
+    "script": "sim2/run_study.py"
+  }
+}

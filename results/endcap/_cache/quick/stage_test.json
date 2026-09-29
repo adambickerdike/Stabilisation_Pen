@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (test seeds, after the rules and the tuning were fixed)",
+    "generated_utc": "2026-09-28T23:12:25+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "test": [
+        200
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "endcap/run_study.py",
+    "doc": "docs/inertial_endcap.md"
+  },
+  "rules": {
+    "R-T1": "An end-cap device is 'worth fitting for tremor' if, on TEST seeds 200-203 with the causal Rev H tracker cascade, it adds >= 10 % further reduction of the ink error on top of the nose (mean over 8-12 Hz x 1-2 mm) at r_rot 0.5, >= 5 % at r_rot 0.3 and 0.7, no split worse on average, and fits 45 g / 0.3 W average.",
+    "R-T2": "Among devices passing R-T1, rank by the further reduction at r_rot 0.5; ties (within 2 points) go to the lower average power, then the lower mass.",
+    "R-S1": "'Can write' = >= 2 mm peak tip displacement at 1-3 Hz, repeatable, while writing with the relaxed HAP-26 hand (most favourable case); 'can nudge' = >= 0.2 mm; below 0.2 mm = a cue at most.",
+    "R-G1": "A passive rotor is 'useful' if it lowers the ink error by >= 10 % at 4-12 Hz, 1 mm, r_rot 0.5, compared with the same mass without spin.",
+    "R-C1": "A pseudo-force cue is 'usable while writing' only if its ink side effect is <= 30 um RMS during the cue; otherwise pen-up or pause only.",
+    "R-D1": "Recommended end-cap: the R-T1 device with the best R-T2 rank; if none passes, no inertial end-cap for tremor, and the end-cap is chosen for its steering / cue value against its mass, power, noise and safety costs.",
+    "tuning": "Feed-forward gain chosen on tuning seeds 300-303 (r_rot 0.5, 6-12 Hz, 1-2 mm) from {0.5, 0.75, 1.0}: the largest mean further reduction at 8-12 Hz; ties within 0.01 go to the lower gain."
+  },
+  "rules_fixed_before_test": true,
+  "tune_generated_utc": "2026-09-28T23:12:13+00:00",
+  "test_started_utc": "2026-09-28T23:12:25+00:00",
+  "rows": {
+    "lrm": [
+      {
+        "seed": 200,
+        "f0": 6.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1012.9039770611706,
+        "nose": 0.9702181182152612,
+        "dev_passive": 0.9024398563150368,
+        "nose+passive": 0.8956775099191083,
+        "dev": 0.8812707673222117,
+        "nose+dev": 0.8815622231798471,
+        "P_act_W": 0.01583949701781506,
+        "stroke_pk_mm": [
+          1.6925764300611532,
+          1.8658198336266816
+        ],
+        "F_rms_N": [
+          0.032015878462902506,
+          0.03549468044351624
+        ],
+        "nose_sat_frac": 0.0
+      },
+      {
+        "seed": 200,
+        "f0": 10.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1081.6252446972555,
+        "nose": 0.6788388618509061,
+        "dev_passive": 0.9164312529017867,
+        "nose+passive": 0.525368849413985,
+        "dev": 0.7400702172861012,
+        "nose+dev": 0.48364442385011425,
+        "P_act_W": 0.01818846805163813,
+        "stroke_pk_mm": [
+          2.3667795006492716,
+          2.502934925968599
+        ],
+        "F_rms_N": [
+          0.04181992787740163,
+          0.04502917141803754
+        ],
+        "nose_sat_frac": 0.0
+      }
+    ],
+    "cmg": [
+      {
+        "seed": 200,
+        "f0": 6.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1012.9039770611706,
+        "nose": 0.9702181182152612,
+        "dev_passive": 0.9568222360939376,
+        "nose+passive": 0.9457690057047312,
+        "dev": 0.9294554763969196,
+        "nose+dev": 0.9287568021194627,
+        "P_act_W": 0.012126663986714461,
+        "gimbal_pk_rad": [
+          0.06315046222104612,
+          0.03388271505854022
+        ],
+        "torque_rms_mNm": [
+          2.380067122424948,
+          1.5720946519289685
+        ],
+        "rate_rms_rad_s": [
+          1.221714016924254,
+          0.8068729123718835
+        ],
+        "nose_sat_frac": 0.0
+      },
+      {
+        "seed": 200,
+        "f0": 10.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1081.6252446972555,
+        "nose": 0.6788388618509061,
+        "dev_passive": 0.9808331562313106,
+        "nose+passive": 0.5526696837949681,
+        "dev": 0.7439706251397672,
+        "nose+dev": 0.5024961115312752,
+        "P_act_W": 0.013476145774842352,
+        "gimbal_pk_rad": [
+          0.19045967509476042,
+          0.1135471921617252
+        ],
+        "torque_rms_mNm": [
+          8.126394924388359,
+          4.261181217189335
+        ],
+        "rate_rms_rad_s": [
+          4.178672251279894,
+          2.188724379677297
+        ],
+        "nose_sat_frac": 0.0
+      }
+    ],
+    "weight_lrm": [
+      {
+        "seed": 200,
+        "f0": 6.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1012.9039770611706,
+        "nose": 0.9702181182152612,
+        "dev_passive": 0.9419311735132364,
+        "nose+passive": 0.9288133191197833
+      },
+      {
+        "seed": 200,
+        "f0": 10.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1081.6252446972555,
+        "nose": 0.6788388618509061,
+        "dev_passive": 1.0271359374013431,
+        "nose+passive": 0.5711089060872313
+      }
+    ],
+    "weight_cmg": [
+      {
+        "seed": 200,
+        "f0": 6.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1012.9039770611706,
+        "nose": 0.9702181182152612,
+        "dev_passive": 0.9568162206572253,
+        "nose+passive": 0.9457460796464562
+      },
+      {
+        "seed": 200,
+        "f0": 10.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1081.6252446972555,
+        "nose": 0.6788388618509061,
+        "dev_passive": 0.9814383347546517,
+        "nose+passive": 0.5529215452790229
+      }
+    ]
+  },
+  "wrist": {},
+  "distortion": {
+    "lrm": {
+      "lognormal_um": [
+        11.163287911795987
+      ]
+    },
+    "cmg": {
+      "lognormal_um": [
+        12.16488792990464
+      ]
+    }
+  },
+  "oracle": {},
+  "designs": {
+    "lrm": {
+      "label": "end-cap LRM 26.9 g moving, +/-4.00 mm, 43.9 g total",
+      "kind": "rm"
+    },
+    "cmg": {
+      "label": "end-cap CMG DG1 (0515B), H 1.95 mN m s per rotor, 39.7 g",
+      "kind": "cmg"
+    },
+    "weight_lrm": {
+      "label": "passive weight 43.9 g at 152 mm",
+      "kind": "mass"
+    },
+    "weight_cmg": {
+      "label": "passive weight 39.7 g at 152 mm",
+      "kind": "mass"
+    }
+  }
+}

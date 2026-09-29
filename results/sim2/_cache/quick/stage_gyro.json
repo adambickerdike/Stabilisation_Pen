@@ -1,0 +1,30 @@
+{
+  "rows": [
+    {
+      "spin_rpm": 20000,
+      "gimbal_rate_rad_s": 5.0,
+      "h_mNms": 1.213073643306139,
+      "torque_measured_mNm": 5.924254073424038,
+      "h_x_omega_mNm": 5.92425407342404,
+      "rel_error": 0.00012499999991807647
+    }
+  ],
+  "max_rel_error": 0.00012499999991807647,
+  "label": "SIM: 18.1 g rotor (16 x 5 mm WHA) on a driven gimbal; reaction torque against h x omega",
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:20:54+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages plugins,energy,gyro,sensors,myo,contact,native,convergence,arm,validate,env",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "gyro",
+    "quick": true,
+    "script": "sim2/run_study.py"
+  }
+}

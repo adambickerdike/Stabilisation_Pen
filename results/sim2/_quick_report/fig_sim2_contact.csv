@@ -1,0 +1,5 @@
+test,setting,quantity,value
+native_block,sim2 native default,creep_um_s,0.148321
+native_block,sim2 native default,gliding_gap_um,0.0249431
+pen_sliding,"0.5 ms/10 (1, 0)",Ns_cv,2.96469
+pen_sliding,"0.5 ms/10 (1, 0)",mu_apparent,1.54956

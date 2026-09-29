@@ -1,0 +1,109 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (passive devices: nothing tuned)",
+    "generated_utc": "2026-09-28T23:12:41+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "test": [
+        200
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "endcap/run_study.py",
+    "doc": "docs/inertial_endcap.md"
+  },
+  "H_design_Nms": 0.001894174223556647,
+  "mass_g": 31.50593725748347,
+  "rows": {
+    "pg_design": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1105.6254023633976,
+        "nose": 0.7759504667101618,
+        "dev_passive": 0.8020046599099927,
+        "nose+passive": 0.8136342891610656,
+        "H": 0.001894174223556647
+      }
+    ],
+    "pg_design_nospin": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1105.6254023633976,
+        "nose": 0.7759504667101618,
+        "dev_passive": 0.7890507990881204,
+        "nose+passive": 0.7992283995480954,
+        "H": 0.0
+      }
+    ],
+    "massless_H1x": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1105.6254023633976,
+        "nose": 0.7759504667101618,
+        "dev_passive": 0.9950821224332209,
+        "nose+passive": 0.7709301086510731,
+        "H": 0.001894174223556647
+      }
+    ],
+    "massless_H3x": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1105.6254023633976,
+        "nose": 0.7759504667101618,
+        "dev_passive": 0.982115729286979,
+        "nose+passive": 0.7576805834571543,
+        "H": 0.00568252267066994
+      }
+    ],
+    "massless_H10x": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1105.6254023633976,
+        "nose": 0.7759504667101618,
+        "dev_passive": 0.9508172103665062,
+        "nose+passive": 0.7170078837897962,
+        "H": 0.01894174223556647
+      }
+    ],
+    "massless_H30x": [
+      {
+        "seed": 200,
+        "f0": 8.0,
+        "amp_mm": 1.0,
+        "kind": "trans",
+        "r_rot": 0.5,
+        "unmod0_um": 1105.6254023633976,
+        "nose": 0.7759504667101618,
+        "dev_passive": 1.007699756886819,
+        "nose+passive": 0.7269805208435264,
+        "H": 0.05682522670669941
+      }
+    ]
+  }
+}

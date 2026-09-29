@@ -1,0 +1,82 @@
+{
+ "objectives": "(declared here, before any test run; tuning writers 100-102 and seed 300 unless noted):\n  guidance   J = mean(target error / target error without guidance) + 2 x max(0, letters read without - with)\n             (dysgraphia-like learners, practice sentence);\n  tremor     J = mean(ink error / ink error of Rev H with nothing on) over 5 and 8 Hz at 1 mm, + 0.01 x\n             max(0, tremor-free distortion - 100 um) (the device must not bend clean writing by more than 100 um on\n             average; ASSUMPTION threshold, about 3 % of a 3 mm x-height);\n  lead       J = (1 - letters read) + target error / 1000 um in autowrite (relaxed writer, nose on).",
+ "mu_tune": 0.9,
+ "tuning_writers": {
+  "guidance": [
+   100,
+   101,
+   102
+  ],
+  "tremor": [
+   100,
+   101
+  ],
+  "lead": [
+   100,
+   101
+  ]
+ },
+ "tuning_seed": 300,
+ "gains": {
+  "common": {
+   "K_partial": 100.0,
+   "band": 0.001,
+   "K_full": 360.6048928998174,
+   "D": 5.117101052502402,
+   "lead": 0.03559366236990518,
+   "slew": 20.0,
+   "L_a": 0.0012,
+   "plaw": 1,
+   "k_st": 15.419668260712363,
+   "L_t": 0.00040255014753969986,
+   "K_lead": 200.0,
+   "F_lead": 0.25,
+   "v_lead": 0.02,
+   "Kv": 10.0,
+   "f_lp": 3.0,
+   "m_eff": 0.3,
+   "b_wheel": 5.0,
+   "b_ball": 5.0
+  },
+  "wheel_partial_band": 0.0003,
+  "ball_damp": {
+   "b_ball": 3.5203462294663384,
+   "f_lp": 8.014754631426104
+  },
+  "wheel_tremor": {
+   "b_wheel": 1.9540397807675998,
+   "m_eff": 0.05000000000000001,
+   "f_lp_wheel": 9.33639490057998
+  },
+  "sd_lead": {
+   "F_lead": 0.16712713318501016,
+   "Kv": 6.269901150870037
+  },
+  "ball_lead": {
+   "F_lead": 0.10028162981316935,
+   "Kv": 6.666395334445165
+  }
+ },
+ "elapsed_s": 526.33988904953,
+ "quick": false,
+ "frozen_utc": "2026-09-29T00:07:22Z",
+ "test_plan": {
+  "writers": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "seeds": [
+   200,
+   201,
+   202,
+   203
+  ],
+  "mu": "per case uniform 0.6-1.2 (params CONTACT mu_drive_range), seeded by case",
+  "rule": "no gain or rule is changed after this file is written; the test tables use it as is"
+ },
+ "sha256_16": "6b64568210e3c0b5"
+}

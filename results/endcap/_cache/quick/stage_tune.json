@@ -1,0 +1,254 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION (tuning seeds only)",
+    "generated_utc": "2026-09-28T23:12:13+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": {
+      "tune": [
+        300
+      ]
+    },
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "endcap/run_study.py",
+    "doc": "docs/inertial_endcap.md"
+  },
+  "grid": {
+    "lrm": {
+      "0.5": [
+        {
+          "seed": 300,
+          "f0": 10.0,
+          "amp_mm": 1.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 982.0562355965857,
+          "nose": 0.6834793422319692,
+          "dev_passive": 0.9552725076513036,
+          "nose+passive": 0.5586824913937145,
+          "dev": 0.7577906390580507,
+          "nose+dev": 0.5120140103363684,
+          "P_act_W": 0.017404502341349364,
+          "stroke_pk_mm": [
+            2.0374181221922947,
+            2.3657425088469246
+          ],
+          "F_rms_N": [
+            0.04199408396737962,
+            0.038128441127942864
+          ],
+          "nose_sat_frac": 0.0
+        },
+        {
+          "seed": 300,
+          "f0": 8.0,
+          "amp_mm": 2.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 1739.743257557884,
+          "nose": 0.6730490640077966,
+          "dev_passive": 0.8120288361405693,
+          "nose+passive": 0.5202693251521832,
+          "dev": 0.7021143112716771,
+          "nose+dev": 0.48415456751623637,
+          "P_act_W": 0.03519506226441904,
+          "stroke_pk_mm": [
+            2.247817204363814,
+            2.2545048014810054
+          ],
+          "F_rms_N": [
+            0.07052209789768536,
+            0.08859782763444508
+          ],
+          "nose_sat_frac": 0.0
+        }
+      ],
+      "1.0": [
+        {
+          "seed": 300,
+          "f0": 10.0,
+          "amp_mm": 1.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 982.0562355965857,
+          "nose": 0.6834793422319692,
+          "dev_passive": 0.9552725076513036,
+          "nose+passive": 0.5586824913937145,
+          "dev": 0.5857889997782857,
+          "nose+dev": 0.4734023079884314,
+          "P_act_W": 0.03322915471500251,
+          "stroke_pk_mm": [
+            3.173486528985009,
+            3.04485811274667
+          ],
+          "F_rms_N": [
+            0.1063315360235373,
+            0.040504659209232255
+          ],
+          "nose_sat_frac": 0.0
+        },
+        {
+          "seed": 300,
+          "f0": 8.0,
+          "amp_mm": 2.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 1739.743257557884,
+          "nose": 0.6730490640077966,
+          "dev_passive": 0.8120288361405693,
+          "nose+passive": 0.5202693251521832,
+          "dev": 0.6127317846418714,
+          "nose+dev": 0.6850681442324099,
+          "P_act_W": 0.04982412264675612,
+          "stroke_pk_mm": [
+            2.6885090141297647,
+            1.9558062702437384
+          ],
+          "F_rms_N": [
+            0.10745485088688089,
+            0.09954414501969788
+          ],
+          "nose_sat_frac": 0.0
+        }
+      ]
+    },
+    "cmg": {
+      "0.5": [
+        {
+          "seed": 300,
+          "f0": 10.0,
+          "amp_mm": 1.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 982.0562355965857,
+          "nose": 0.6834793422319692,
+          "dev_passive": 1.1214667488592638,
+          "nose+passive": 0.6238407958303361,
+          "dev": 0.8360270885636562,
+          "nose+dev": 0.5474888705389913,
+          "P_act_W": 0.01372629815436589,
+          "gimbal_pk_rad": [
+            0.20127252018205247,
+            0.14373434951809402
+          ],
+          "torque_rms_mNm": [
+            8.857067192338956,
+            5.291103091145393
+          ],
+          "rate_rms_rad_s": [
+            4.554165146988876,
+            2.7186640939191333
+          ],
+          "nose_sat_frac": 0.0
+        },
+        {
+          "seed": 300,
+          "f0": 8.0,
+          "amp_mm": 2.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 1739.743257557884,
+          "nose": 0.6730490640077966,
+          "dev_passive": 0.5896577252077252,
+          "nose+passive": 0.6689068884582231,
+          "dev": 0.5873872391325512,
+          "nose+dev": 0.6754714468391622,
+          "P_act_W": 0.016886077947571937,
+          "gimbal_pk_rad": [
+            0.24606315576326845,
+            0.12920035317808357
+          ],
+          "torque_rms_mNm": [
+            12.53857970449419,
+            9.30019549341111
+          ],
+          "rate_rms_rad_s": [
+            6.460363105148326,
+            4.777703590698426
+          ],
+          "nose_sat_frac": 0.0
+        }
+      ],
+      "1.0": [
+        {
+          "seed": 300,
+          "f0": 10.0,
+          "amp_mm": 1.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 982.0562355965857,
+          "nose": 0.6834793422319692,
+          "dev_passive": 1.1214667488592638,
+          "nose+passive": 0.6238407958303361,
+          "dev": 0.6372424725632867,
+          "nose+dev": 0.5166799736747818,
+          "P_act_W": 0.018958638960845882,
+          "gimbal_pk_rad": [
+            0.40846580897266527,
+            0.2888269580663284
+          ],
+          "torque_rms_mNm": [
+            17.509925139240295,
+            10.408458982857157
+          ],
+          "rate_rms_rad_s": [
+            9.05275170147071,
+            5.365741832809928
+          ],
+          "nose_sat_frac": 0.0
+        },
+        {
+          "seed": 300,
+          "f0": 8.0,
+          "amp_mm": 2.0,
+          "kind": "trans",
+          "r_rot": 0.5,
+          "unmod0_um": 1739.743257557884,
+          "nose": 0.6730490640077966,
+          "dev_passive": 0.5896577252077252,
+          "nose+passive": 0.6689068884582231,
+          "dev": 0.6121285883350172,
+          "nose+dev": 0.7170085001702466,
+          "P_act_W": 0.03189947642892319,
+          "gimbal_pk_rad": [
+            0.49535399506372807,
+            0.258164752029379
+          ],
+          "torque_rms_mNm": [
+            24.558554694862497,
+            17.858553684400405
+          ],
+          "rate_rms_rad_s": [
+            12.821817052118824,
+            9.203478926989824
+          ],
+          "nose_sat_frac": 0.0
+        }
+      ]
+    }
+  },
+  "chosen": {
+    "lrm": {
+      "gain": 0.5,
+      "further_reduction_8_12Hz": 0.26576307014874806
+    },
+    "cmg": {
+      "gain": 0.5,
+      "further_reduction_8_12Hz": 0.0976844074219454
+    }
+  },
+  "rules": {
+    "R-T1": "An end-cap device is 'worth fitting for tremor' if, on TEST seeds 200-203 with the causal Rev H tracker cascade, it adds >= 10 % further reduction of the ink error on top of the nose (mean over 8-12 Hz x 1-2 mm) at r_rot 0.5, >= 5 % at r_rot 0.3 and 0.7, no split worse on average, and fits 45 g / 0.3 W average.",
+    "R-T2": "Among devices passing R-T1, rank by the further reduction at r_rot 0.5; ties (within 2 points) go to the lower average power, then the lower mass.",
+    "R-S1": "'Can write' = >= 2 mm peak tip displacement at 1-3 Hz, repeatable, while writing with the relaxed HAP-26 hand (most favourable case); 'can nudge' = >= 0.2 mm; below 0.2 mm = a cue at most.",
+    "R-G1": "A passive rotor is 'useful' if it lowers the ink error by >= 10 % at 4-12 Hz, 1 mm, r_rot 0.5, compared with the same mass without spin.",
+    "R-C1": "A pseudo-force cue is 'usable while writing' only if its ink side effect is <= 30 um RMS during the cue; otherwise pen-up or pause only.",
+    "R-D1": "Recommended end-cap: the R-T1 device with the best R-T2 rank; if none passes, no inertial end-cap for tremor, and the end-cap is chosen for its steering / cue value against its mass, power, noise and safety costs.",
+    "tuning": "Feed-forward gain chosen on tuning seeds 300-303 (r_rot 0.5, 6-12 Hz, 1-2 mm) from {0.5, 0.75, 1.0}: the largest mean further reduction at 8-12 Hz; ties within 0.01 go to the lower gain."
+  }
+}

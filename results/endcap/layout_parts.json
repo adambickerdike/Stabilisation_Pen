@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "evidence_status": "PROPOSED DESIGN (dimensions from endcap/optimise.py; part masses CALC and ASSUMPTION); not built",
+    "generated_utc": "2026-09-29T00:33:20+00:00",
+    "git_revision": "3f005eb",
+    "script": "endcap/layout.py",
+    "doc": "docs/inertial_endcap.md",
+    "design_class": "LRM2",
+    "choice": "lrm",
+    "mass_total_g": 44.99616814003441,
+    "replaces": [
+      "rear_cap",
+      "rm_frame",
+      "rm_mass",
+      "rm_coils"
+    ],
+    "conflicts": [
+      "The end-cap occupies z 130-175 mm, so the Rev H handle shell ends at z 130 and the pen grows from 170 to 175 mm (Rev J limit).",
+      "The Rev H cell (14500, 48.5 mm long, z 101-149.5) no longer fits: 31 mm remain between the board (ends z 99) and the end-cap; a 10440 (44.5 mm, AMF-31) does not fit either. The cell, the board or the end-cap length must be rearranged (open issue for the lead).",
+      "The USB-C port and button (z 150-153.5) must move."
+    ],
+    "axes": "z along the pen axis from the ball tip (z = 0) toward the back; x in the tilt plane, positive away from the paper; y sideways",
+    "optional_note": "every end-cap part is marked optional: the end-cap is a module that replaces the Rev H rear cap and rear module; whether it is standard is the lead's decision (see the doc's proposed decision)",
+    "moves_with_note": "'inertial_mass' = the sliding reaction mass (as rm_mass in the Rev H layout); 'rotor' = spinning; 'gimbal' = tilts on the gimbal; 'handle' = fixed to the pen body",
+    "rotor_speed_rpm": null,
+    "spin_axis": null,
+    "moving_mass_g": 30.386355015174157,
+    "stroke_mm": 3.999825645212901
+  },
+  "units": "mm",
+  "components": [
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "id": "ec_shell",
+      "label": "End-cap shell",
+      "shape": "tube",
+      "z0": 130.0,
+      "z1": 175.0,
+      "d0": 26.0,
+      "d1": 26.0,
+      "d_in": 24.0,
+      "function": "Closes the back of the pen and holds the end-cap parts; 26 mm across, 45 mm long.",
+      "part": "PEEK tube, 1 mm wall",
+      "ledger": "AMF-24",
+      "mass_g": 4.594579255875069
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "id": "ec_board",
+      "label": "End-cap driver board",
+      "shape": "box",
+      "z0": 171.0,
+      "z1": 173.5,
+      "size": [
+        18.0,
+        18.0,
+        2.5
+      ],
+      "function": "Drivers for the end-cap actuators; talks to the main board.",
+      "part": "PCB with coil or motor drivers (ASSUMPTION)",
+      "ledger": "AMF-37",
+      "mass_g": 1.5
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "inertial_mass",
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "id": "ec_slug",
+      "label": "Tungsten reaction mass",
+      "shape": "cylinder",
+      "z0": 145.0092106170568,
+      "z1": 159.9907893829432,
+      "d0": 11.648767897433299,
+      "d1": 11.648767897433299,
+      "function": "A heavy slug that the coils push sideways (up to +/-4.0 mm in two axes); its reaction steadies the pen and can pulse for cues.",
+      "part": "tungsten heavy alloy, non-magnetic grade (INERMET class)",
+      "ledger": "AMF-49/AMF-125",
+      "mass_g": 28.739549250926448
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "id": "ec_flexure_front",
+      "label": "Flexure plate (front)",
+      "shape": "tube",
+      "z0": 139.0001743547871,
+      "z1": 142.0001743547871,
+      "d0": 23.5,
+      "d1": 23.5,
+      "d_in": 4.0,
+      "function": "Spiral spring plate joined to the slug by a short axle: lets the slug move sideways, centres it at about 5 Hz, stiff along the pen.",
+      "part": "17-7PH or 301 spring steel, laser cut (ASSUMPTION)",
+      "ledger": "AMF-20",
+      "mass_g": 2.9369774625463227
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "id": "ec_flexure_rear",
+      "label": "Flexure plate (rear)",
+      "shape": "tube",
+      "z0": 162.9998256452129,
+      "z1": 165.9998256452129,
+      "d0": 23.5,
+      "d1": 23.5,
+      "d_in": 4.0,
+      "function": "Second spring plate at the rear of the slug.",
+      "part": "17-7PH or 301 spring steel, laser cut (ASSUMPTION)",
+      "ledger": "AMF-20",
+      "mass_g": 2.9369774625463227
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "inertial_mass",
+      "offset": [
+        6.324383948716649,
+        0.0
+      ],
+      "id": "ec_magnet_x+",
+      "label": "Slug magnet",
+      "shape": "box",
+      "z0": 146.5,
+      "z1": 158.5,
+      "size": [
+        1.0,
+        3.0,
+        12.0
+      ],
+      "function": "NdFeB tile on the slug; the facing coil pushes it sideways.",
+      "part": "NdFeB N45 tile 1 mm thick",
+      "ledger": "AMF-28",
+      "mass_g": 0.411701441061927
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        11.662104796964776,
+        0.0
+      ],
+      "id": "ec_coil_x+",
+      "label": "Flat coil",
+      "shape": "box",
+      "z0": 142.5001743547871,
+      "z1": 162.4998256452129,
+      "size": [
+        0.67579040607045,
+        8.0,
+        19.999651290425803
+      ],
+      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
+      "part": "self-bonding magnet wire, IEC class 155",
+      "ledger": "AMF-29/AMF-30",
+      "mass_g": 0.6603197359731311
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "inertial_mass",
+      "offset": [
+        -6.324383948716649,
+        0.0
+      ],
+      "id": "ec_magnet_x-",
+      "label": "Slug magnet",
+      "shape": "box",
+      "z0": 146.5,
+      "z1": 158.5,
+      "size": [
+        1.0,
+        3.0,
+        12.0
+      ],
+      "function": "NdFeB tile on the slug; the facing coil pushes it sideways.",
+      "part": "NdFeB N45 tile 1 mm thick",
+      "ledger": "AMF-28",
+      "mass_g": 0.411701441061927
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        -11.662104796964776,
+        0.0
+      ],
+      "id": "ec_coil_x-",
+      "label": "Flat coil",
+      "shape": "box",
+      "z0": 142.5001743547871,
+      "z1": 162.4998256452129,
+      "size": [
+        0.67579040607045,
+        8.0,
+        19.999651290425803
+      ],
+      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
+      "part": "self-bonding magnet wire, IEC class 155",
+      "ledger": "AMF-29/AMF-30",
+      "mass_g": 0.6603197359731311
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "inertial_mass",
+      "offset": [
+        0.0,
+        6.324383948716649
+      ],
+      "id": "ec_magnet_y+",
+      "label": "Slug magnet",
+      "shape": "box",
+      "z0": 146.5,
+      "z1": 158.5,
+      "size": [
+        3.0,
+        1.0,
+        12.0
+      ],
+      "function": "NdFeB tile on the slug; the facing coil pushes it sideways.",
+      "part": "NdFeB N45 tile 1 mm thick",
+      "ledger": "AMF-28",
+      "mass_g": 0.411701441061927
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        11.662104796964776
+      ],
+      "id": "ec_coil_y+",
+      "label": "Flat coil",
+      "shape": "box",
+      "z0": 142.5001743547871,
+      "z1": 162.4998256452129,
+      "size": [
+        8.0,
+        0.67579040607045,
+        19.999651290425803
+      ],
+      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
+      "part": "self-bonding magnet wire, IEC class 155",
+      "ledger": "AMF-29/AMF-30",
+      "mass_g": 0.6603197359731311
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "inertial_mass",
+      "offset": [
+        0.0,
+        -6.324383948716649
+      ],
+      "id": "ec_magnet_y-",
+      "label": "Slug magnet",
+      "shape": "box",
+      "z0": 146.5,
+      "z1": 158.5,
+      "size": [
+        3.0,
+        1.0,
+        12.0
+      ],
+      "function": "NdFeB tile on the slug; the facing coil pushes it sideways.",
+      "part": "NdFeB N45 tile 1 mm thick",
+      "ledger": "AMF-28",
+      "mass_g": 0.411701441061927
+    },
+    {
+      "group": "endcap",
+      "optional": true,
+      "moves_with": "handle",
+      "offset": [
+        0.0,
+        -11.662104796964776
+      ],
+      "id": "ec_coil_y-",
+      "label": "Flat coil",
+      "shape": "box",
+      "z0": 142.5001743547871,
+      "z1": 162.4998256452129,
+      "size": [
+        8.0,
+        0.67579040607045,
+        19.999651290425803
+      ],
+      "function": "Fixed flat coil with a back iron: current through it pushes the facing magnet.",
+      "part": "self-bonding magnet wire, IEC class 155",
+      "ledger": "AMF-29/AMF-30",
+      "mass_g": 0.6603197359731311
+    }
+  ]
+}

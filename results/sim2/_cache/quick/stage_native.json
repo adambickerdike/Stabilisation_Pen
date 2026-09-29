@@ -1,0 +1,39 @@
+{
+  "rows": [
+    {
+      "contact": "h1",
+      "seed": 300,
+      "f0": 8.0,
+      "amp_mm": 1.0,
+      "unmod_e_rms_um": 1026.1899002300763,
+      "oracle_ratio": 0.13436224094083482,
+      "oracle_band_ratio": 0.1719529219819778
+    },
+    {
+      "contact": "mujoco",
+      "seed": 300,
+      "f0": 8.0,
+      "amp_mm": 1.0,
+      "unmod_e_rms_um": 1013.2179370543929,
+      "oracle_ratio": 0.1377087286587936,
+      "oracle_band_ratio": 0.17278490723265472
+    }
+  ],
+  "label": "SIM: Rev H-B, H1 hand, training seeds; native = MuJoCo soft contact (solref 0.5 ms, solimp 0.99/0.999, impratio 10, elliptic)",
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:30:16+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages plugins,native",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "native",
+    "quick": true,
+    "script": "sim2/run_study.py"
+  }
+}

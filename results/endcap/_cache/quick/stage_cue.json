@@ -1,0 +1,293 @@
+{
+  "meta": {
+    "evidence_status": "SIMULATION + CALCULATION + LITERATURE",
+    "generated_utc": "2026-09-28T23:12:47+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages scaling,optimise,tune,test,steer,gyro,cue",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "endcap/run_study.py",
+    "doc": "docs/inertial_endcap.md"
+  },
+  "force_for_levels": [
+    {
+      "f_Hz": 40.0,
+      "r_rot": 0.3,
+      "grip_acc_per_N_t1": 8.037435183857186,
+      "grip_acc_per_N_t2": 40.5830768692222,
+      "F_for_8_m_s2_N": 0.9953423967968821,
+      "F_for_40_m_s2_N": 4.97671198398441,
+      "F_for_60_m_s2_N": 7.465067975976615
+    },
+    {
+      "f_Hz": 40.0,
+      "r_rot": 0.5,
+      "grip_acc_per_N_t1": 5.823870432928163,
+      "grip_acc_per_N_t2": 29.81420133769002,
+      "F_for_8_m_s2_N": 1.3736569335004434,
+      "F_for_40_m_s2_N": 6.868284667502217,
+      "F_for_60_m_s2_N": 10.302427001253326
+    },
+    {
+      "f_Hz": 40.0,
+      "r_rot": 0.7,
+      "grip_acc_per_N_t1": 4.780387794553858,
+      "grip_acc_per_N_t2": 17.064762508798353,
+      "F_for_8_m_s2_N": 1.6735043983490507,
+      "F_for_40_m_s2_N": 8.367521991745253,
+      "F_for_60_m_s2_N": 12.55128298761788
+    },
+    {
+      "f_Hz": 75.0,
+      "r_rot": 0.3,
+      "grip_acc_per_N_t1": 5.391370114593761,
+      "grip_acc_per_N_t2": 18.497261082681884,
+      "F_for_8_m_s2_N": 1.483852866703587,
+      "F_for_40_m_s2_N": 7.419264333517936,
+      "F_for_60_m_s2_N": 11.128896500276904
+    },
+    {
+      "f_Hz": 75.0,
+      "r_rot": 0.5,
+      "grip_acc_per_N_t1": 5.012712618002156,
+      "grip_acc_per_N_t2": 16.649318454179106,
+      "F_for_8_m_s2_N": 1.5959422790904865,
+      "F_for_40_m_s2_N": 7.979711395452433,
+      "F_for_60_m_s2_N": 11.969567093178648
+    },
+    {
+      "f_Hz": 75.0,
+      "r_rot": 0.7,
+      "grip_acc_per_N_t1": 4.769176811607209,
+      "grip_acc_per_N_t2": 16.094811281933694,
+      "F_for_8_m_s2_N": 1.6774383328648297,
+      "F_for_40_m_s2_N": 8.387191664324147,
+      "F_for_60_m_s2_N": 12.580787496486222
+    }
+  ],
+  "channels": [
+    {
+      "channel": "Asymmetric vibration (pseudo-force), handle-held voice-coil vibrators",
+      "what_it_is": "perceptual pull; zero mean force",
+      "direction_accuracy": "median 96.9 % (healthy, 75 Hz, 60 m/s2; HAP-85); about 90 % at 10 Hz for a DC-motor rotor (HAP-86)",
+      "strength": "felt like 0.29 N (s.d. 0.08 N) for a 5.2 g actuator (HAP-81); Tanabe's handles moved at 8-60 m/s2 (HAP-80, HAP-85)",
+      "effect_on_movement": "congruent cue raised peak wrist velocity, Cohen d 0.22 (HAP-85); agency fell",
+      "people_with_tremor": "near chance on sides with tremor or hemiplegia in many participants (PDT-39, preprint)",
+      "cost_in_pen": "5-11 g actuator (HAP-86, AMF-124); or the reaction mass itself; power 0.1-1 W while on (CALC)",
+      "caveats": "shakes the ink (see SIM cue cases); must be attached firmly (HAP-84 on WAVES); adaptation over tens of seconds reported (not opened); unpleasant in long use (HAP-84)"
+    },
+    {
+      "channel": "CMG torque pulse (real, lent torque)",
+      "what_it_is": "real torque for 0.1-0.2 s, then a slower opposite reset",
+      "direction_accuracy": "99.3 % (12 healthy; 51 mN m pulses, 198 g device; HAP-82)",
+      "strength": "51 mN m in HAP-82; the 45 g end-cap reaches about 40-60 mN m at 3 Hz (CALC, endcap/optimise)",
+      "effect_on_movement": "orientation guidance succeeded in 60/60 trials but slowly: median 8.6 s, path 3.3x direct (HAP-82)",
+      "people_with_tremor": "not tested in the literature found",
+      "cost_in_pen": "the whole 45 g end-cap, 0.15-0.25 W spin power, spin-up seconds, 400 Hz tone (CALC)",
+      "caveats": "the torque must be paid back (reset); gyroscopic side effects when the pen is turned (uncancelled H)"
+    },
+    {
+      "channel": "Skin stretch at the finger pads (holdable device)",
+      "what_it_is": "tangential displacement of the pads, 3 mm over 0.2 s",
+      "direction_accuracy": "> 93.3 % for 8 directions (20 healthy; HAP-84)",
+      "strength": "3 mm pad displacement; reaction goes into the palm (HAP-84)",
+      "effect_on_movement": "people moved in the cued direction before training; delay 0.33 s (fast) or 1.56 s (slow) (HAP-84)",
+      "people_with_tremor": "not tested",
+      "cost_in_pen": "would need moving pads in the grip sleeve, not an end-cap (out of this study's scope)",
+      "caveats": "suggests the grip, not the end-cap, is the better place for guidance by feel"
+    },
+    {
+      "channel": "Plain vibration buzz (existing Rev H LRA)",
+      "what_it_is": "a symbolic alert, no direction",
+      "direction_accuracy": "none (needs a learned code)",
+      "strength": "coin LRA about 1 G class (AMF-45)",
+      "effect_on_movement": "PD 'write bigger' cues work as symbolic reminders (PDT-18, PDT-19)",
+      "people_with_tremor": "usable",
+      "cost_in_pen": "1 g, already in Rev H",
+      "caveats": "no direction"
+    }
+  ],
+  "writing_share": {
+    "0.33s": {
+      "latency_s": 0.33,
+      "f_follow_Hz": 1.5151515151515151,
+      "share_mean": 0.4530722868783803,
+      "shares": [
+        0.46860932832217916,
+        0.4375352454345814
+      ]
+    },
+    "1.56s": {
+      "latency_s": 1.56,
+      "f_follow_Hz": 0.3205128205128205,
+      "share_mean": 0.049246726169255545,
+      "shares": [
+        0.06757517332021483,
+        0.030918279018296257
+      ]
+    }
+  },
+  "sim": [
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 16.709000790377825,
+      "grip_acc_peak_m_s2": 34.832315242074664,
+      "ink_jitter_um": 186.0268125597628,
+      "ink_drift_um": 101.42775535295986
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": true,
+      "grip_acc_amp_m_s2": 16.613743550218935,
+      "grip_acc_peak_m_s2": 33.69869833538506,
+      "ink_jitter_um": 170.8938223502601,
+      "ink_drift_um": 14.954548192371135
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "hold",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 7.856231347796071,
+      "grip_acc_peak_m_s2": 11.29370397169702,
+      "ink_jitter_um": 73.8170518757461,
+      "ink_drift_um": 165.25471488756162
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": -180.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 12.686608076842278,
+      "grip_acc_peak_m_s2": 30.030835382641506,
+      "ink_jitter_um": 152.0071155602763,
+      "ink_drift_um": 95.20089931431504
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": -180.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": true,
+      "grip_acc_amp_m_s2": 12.600742296712966,
+      "grip_acc_peak_m_s2": 30.00163703697399,
+      "ink_jitter_um": 140.20648272433925,
+      "ink_drift_um": 15.081043895177746
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": -180.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "hold",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 4.72191084004005,
+      "grip_acc_peak_m_s2": 5.23693663374862,
+      "ink_jitter_um": 40.46236621677373,
+      "ink_drift_um": 189.91537068616768
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": false,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 15.496267738416487,
+      "grip_acc_peak_m_s2": 43.47708013499333,
+      "ink_jitter_um": 202.54222451536782,
+      "ink_drift_um": 108.3134259165968
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": false,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": true,
+      "grip_acc_amp_m_s2": 15.40190686639052,
+      "grip_acc_peak_m_s2": 43.09497810366534,
+      "ink_jitter_um": 183.98230470812996,
+      "ink_drift_um": 13.771228618043507
+    },
+    {
+      "f_cue": 40.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": false,
+      "r_rot": 0.5,
+      "scenario": "hold",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 5.730942463575329,
+      "grip_acc_peak_m_s2": 6.4198104282498765,
+      "ink_jitter_um": 87.38536682084526,
+      "ink_drift_um": 118.06548727338918
+    },
+    {
+      "f_cue": 75.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 9.023133486598581,
+      "grip_acc_peak_m_s2": 31.298962838331107,
+      "ink_jitter_um": 30.630111254105262,
+      "ink_drift_um": 105.18890586472449
+    },
+    {
+      "f_cue": 75.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "write",
+      "nose_cancel": true,
+      "grip_acc_amp_m_s2": 8.941886138552343,
+      "grip_acc_peak_m_s2": 31.29975347564509,
+      "ink_jitter_um": 31.86305801531944,
+      "ink_drift_um": 13.79594320231314
+    },
+    {
+      "f_cue": 75.0,
+      "F0_N": 0.5,
+      "phase_deg": 0.0,
+      "harmonic": true,
+      "r_rot": 0.5,
+      "scenario": "hold",
+      "nose_cancel": false,
+      "grip_acc_amp_m_s2": 5.819201676052478,
+      "grip_acc_peak_m_s2": 6.875210200404007,
+      "ink_jitter_um": 19.672838758387968,
+      "ink_drift_um": 22.100760488880365
+    }
+  ]
+}

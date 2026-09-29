@@ -1,0 +1,10 @@
+id,label,shape,z0_mm,z1_mm,d0_mm,d_in_mm,size_mm,offset_mm,moves_with,mass_g,part,ledger
+ec_shell,End-cap shell,tube,130.0,175.0,26.0,24.0,,"[0.0, 0.0]",handle,4.59,"PEEK tube, 1 mm wall",AMF-24
+ec_board,End-cap driver board,box,171.0,173.5,,,"[18.0, 18.0, 2.5]","[0.0, 0.0]",handle,1.8,PCB with coil or motor drivers (ASSUMPTION),AMF-37
+ec_rotor,Tungsten rotor,cylinder,147.32,153.68,15.761381744166068,,,"[0.0, 0.0]",rotor,22.0,"tungsten heavy alloy, non-magnetic grade (INERMET class), balanced to G0.4-G2.5",AMF-49/AMF-125/AMF-52
+ec_spin_motor,Spin motor,cylinder,153.68,156.68,8.0,,,"[0.0, 0.0]",gimbal,2.0,Custom integrated outrunner in the rotor hub (0620 B electrical and friction constants),ASSUMPTION (concept of HAP-82: the outrunner casing is the flywheel; constants of AMF-78)
+ec_bearings,Rotor bearings,tube,144.82,147.32,9.0,4.0,,"[0.0, 0.0]",gimbal,1.4,"2 x SKF 618/4 class, 4 x 9 x 2.5 mm",AMF-126
+ec_gimbal_inner,Inner gimbal ring,tube,147.5,153.5,18.761381744166066,16.761381744166066,,"[0.0, 0.0]",gimbal,0.75,aluminium ring with pivots (ASSUMPTION),
+ec_gimbal_outer,Outer gimbal ring,tube,147.0,154.0,21.761381744166066,19.261381744166066,,"[0.0, 0.0]",gimbal,0.75,aluminium ring with pivots (ASSUMPTION),
+ec_gimbal_drive_1,Gimbal drive,box,162.0,170.0,,,"[5.0, 5.0, 8.0]","[7.0, 0.0]",handle,3.3,Faulhaber 0515 B + gearhead + angle sensor (ASSUMPTION),AMF-51
+ec_gimbal_drive_2,Gimbal drive,box,162.0,170.0,,,"[5.0, 5.0, 8.0]","[-7.0, 0.0]",handle,3.3,Faulhaber 0515 B + gearhead + angle sensor (ASSUMPTION),AMF-51

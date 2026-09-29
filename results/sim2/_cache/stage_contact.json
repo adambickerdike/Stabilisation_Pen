@@ -1,0 +1,477 @@
+{
+  "native_block": [
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "mu": 0.12,
+      "impratio": 10.0,
+      "static_stiffness_N_per_m": {
+        "measured": 7856544.984578939,
+        "closed_form": 7856505.153802444
+      },
+      "creep": {
+        "F_t_over_muN": 0.5,
+        "v_creep_m_s": 1.483206600647397e-07,
+        "closed_form_m_s": 1.4848772727272744e-07,
+        "v_creep_noslip10_m_s": 1.4832066007345814e-07
+      },
+      "sliding_mu_elliptic": 0.12000000000000001,
+      "sliding_contact_fraction_elliptic": 0.5081693897965989,
+      "sliding_speed_elliptic_m_s": 0.019522711197926312,
+      "sliding_mu_pyramidal": 0.12000000000000002,
+      "sliding_contact_fraction_pyramidal": 0.5030010003334445,
+      "sliding_speed_pyramidal_m_s": 0.01951243044460889,
+      "gliding": {
+        "mean_gap_um": 0.0249430714219593,
+        "contact_fraction": 0.508002000500125,
+        "predicted_um": 1.26,
+        "v_t_m_s": 0.02
+      },
+      "incline": {
+        "4.84deg": {
+          "displacement_m": 2.7856869941203857e-08,
+          "predicted_rigid_m": 0.0
+        },
+        "8.84deg": {
+          "displacement_m": 0.010345465948185435,
+          "predicted_rigid_m": 0.006896405463003343
+        }
+      },
+      "name": "sim2 native default"
+    },
+    {
+      "solref": [
+        0.02,
+        1.0
+      ],
+      "solimp": [
+        0.9,
+        0.95,
+        0.001,
+        0.5,
+        2.0
+      ],
+      "mu": 0.12,
+      "impratio": 1.0,
+      "static_stiffness_N_per_m": {
+        "measured": 1221.158086318647,
+        "closed_form": 448.75346260387823
+      },
+      "creep": {
+        "F_t_over_muN": 0.5,
+        "v_creep_m_s": 0.0004975874981014258,
+        "closed_form_m_s": 0.0006212999999999997,
+        "v_creep_noslip10_m_s": 0.0004975874981014258
+      },
+      "sliding_mu_elliptic": 0.12,
+      "sliding_contact_fraction_elliptic": 1.0,
+      "sliding_speed_elliptic_m_s": 0.019529120044286905,
+      "sliding_mu_pyramidal": 0.12,
+      "sliding_contact_fraction_pyramidal": 0.9791597199066355,
+      "sliding_speed_pyramidal_m_s": 0.019519682023458978,
+      "gliding": {
+        "mean_gap_um": 74.41462729271522,
+        "contact_fraction": 1.0,
+        "predicted_um": 48.06,
+        "v_t_m_s": 0.02
+      },
+      "incline": {
+        "4.84deg": {
+          "displacement_m": 0.0001063027031931395,
+          "predicted_rigid_m": 0.0
+        },
+        "8.84deg": {
+          "displacement_m": 0.010304698929062078,
+          "predicted_rigid_m": 0.006896405463003343
+        }
+      },
+      "name": "MuJoCo default"
+    },
+    {
+      "solref": [
+        0.002,
+        1.0
+      ],
+      "solimp": [
+        0.95,
+        0.99,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "mu": 0.12,
+      "impratio": 1.0,
+      "static_stiffness_N_per_m": {
+        "measured": 95271.50809139496,
+        "closed_form": 92082.44056728897
+      },
+      "creep": {
+        "F_t_over_muN": 0.5,
+        "v_creep_m_s": 3.0489902721921007e-05,
+        "closed_form_m_s": 3.066915789473687e-05,
+        "v_creep_noslip10_m_s": 3.0489902721921007e-05
+      },
+      "sliding_mu_elliptic": 0.11999999999999998,
+      "sliding_contact_fraction_elliptic": 0.8484494831610537,
+      "sliding_speed_elliptic_m_s": 0.01955888990818192,
+      "sliding_mu_pyramidal": 0.12,
+      "sliding_contact_fraction_pyramidal": 0.8071023674558186,
+      "sliding_speed_pyramidal_m_s": 0.019517709913133594,
+      "gliding": {
+        "mean_gap_um": 2.116136658530279,
+        "contact_fraction": 0.84896224056014,
+        "predicted_um": 4.859999999999999,
+        "v_t_m_s": 0.02
+      },
+      "incline": {
+        "4.84deg": {
+          "displacement_m": 5.751712608260325e-06,
+          "predicted_rigid_m": 0.0
+        },
+        "8.84deg": {
+          "displacement_m": 0.010345472562279178,
+          "predicted_rigid_m": 0.006896405463003343
+        }
+      },
+      "name": "intermediate"
+    }
+  ],
+  "pen_sliding": [
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "dt": 2.5e-05,
+      "dir": [
+        1,
+        0
+      ],
+      "Ns_mean": 2.703057856844957,
+      "Ns_cv": 2.95105283606925,
+      "mu_apparent": 1.036031296285665,
+      "flicker": 0,
+      "tip_z_um": 336.54265127288164
+    },
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "dt": 2.5e-05,
+      "dir": [
+        -1,
+        0
+      ],
+      "Ns_mean": 3.768518232978305,
+      "Ns_cv": 2.679247622253796,
+      "mu_apparent": 0.5520906045330305,
+      "flicker": 0,
+      "tip_z_um": 306.1428404711521
+    },
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "dt": 2.5e-05,
+      "dir": [
+        0,
+        1
+      ],
+      "Ns_mean": 1.3175492014109733,
+      "Ns_cv": 2.551321759924505,
+      "mu_apparent": 1.7143748713254938,
+      "flicker": 0,
+      "tip_z_um": 321.58802202948584
+    },
+    {
+      "solref": [
+        0.02,
+        1.0
+      ],
+      "solimp": [
+        0.9,
+        0.95,
+        0.001,
+        0.5,
+        2.0
+      ],
+      "impratio": 1.0,
+      "dt": 2.5e-05,
+      "dir": [
+        1,
+        0
+      ],
+      "Ns_mean": 0.9948190892292287,
+      "Ns_cv": 0.0007581270302189709,
+      "mu_apparent": 0.12,
+      "flicker": 0,
+      "tip_z_um": 277.8298032878817
+    },
+    {
+      "solref": [
+        0.02,
+        1.0
+      ],
+      "solimp": [
+        0.9,
+        0.95,
+        0.001,
+        0.5,
+        2.0
+      ],
+      "impratio": 1.0,
+      "dt": 2.5e-05,
+      "dir": [
+        -1,
+        0
+      ],
+      "Ns_mean": 0.9884647755369718,
+      "Ns_cv": 0.0013810466936141005,
+      "mu_apparent": 0.12,
+      "flicker": 0,
+      "tip_z_um": 245.94207501359074
+    },
+    {
+      "solref": [
+        0.02,
+        1.0
+      ],
+      "solimp": [
+        0.9,
+        0.95,
+        0.001,
+        0.5,
+        2.0
+      ],
+      "impratio": 1.0,
+      "dt": 2.5e-05,
+      "dir": [
+        0,
+        1
+      ],
+      "Ns_mean": 0.9917354311399977,
+      "Ns_cv": 0.0006958843583324019,
+      "mu_apparent": 0.11999999988903393,
+      "flicker": 0,
+      "tip_z_um": 262.13826771231504
+    },
+    {
+      "solref": [
+        0.002,
+        1.0
+      ],
+      "solimp": [
+        0.95,
+        0.99,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 1.0,
+      "dt": 2.5e-05,
+      "dir": [
+        1,
+        0
+      ],
+      "Ns_mean": 0.8046359338649138,
+      "Ns_cv": 0.2363877612427254,
+      "mu_apparent": 0.11999999999999995,
+      "flicker": 0,
+      "tip_z_um": 336.5149642696547
+    },
+    {
+      "solref": [
+        0.002,
+        1.0
+      ],
+      "solimp": [
+        0.95,
+        0.99,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 1.0,
+      "dt": 2.5e-05,
+      "dir": [
+        -1,
+        0
+      ],
+      "Ns_mean": 0.8507731729440668,
+      "Ns_cv": 0.2963765884930508,
+      "mu_apparent": 0.12,
+      "flicker": 0,
+      "tip_z_um": 307.11046269447485
+    },
+    {
+      "solref": [
+        0.002,
+        1.0
+      ],
+      "solimp": [
+        0.95,
+        0.99,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 1.0,
+      "dt": 2.5e-05,
+      "dir": [
+        0,
+        1
+      ],
+      "Ns_mean": 0.8262365673634767,
+      "Ns_cv": 0.2675496828462479,
+      "mu_apparent": 0.12,
+      "flicker": 0,
+      "tip_z_um": 321.04799654136247
+    },
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "noslip_iterations": 10,
+      "dt": 2.5e-05,
+      "dir": [
+        1,
+        0
+      ],
+      "Ns_mean": 3.7091762597747575,
+      "Ns_cv": 2.7264351690834623,
+      "mu_apparent": 0.5825492317873744,
+      "flicker": 0,
+      "tip_z_um": 336.540896069762
+    },
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "noslip_iterations": 10,
+      "dt": 2.5e-05,
+      "dir": [
+        -1,
+        0
+      ],
+      "Ns_mean": 2.9468897350281873,
+      "Ns_cv": 2.9458395905377364,
+      "mu_apparent": 0.6077372736177141,
+      "flicker": 0,
+      "tip_z_um": 306.1416885592561
+    },
+    {
+      "solref": [
+        0.0005,
+        1.0
+      ],
+      "solimp": [
+        0.99,
+        0.999,
+        0.0001,
+        0.5,
+        2.0
+      ],
+      "impratio": 10.0,
+      "noslip_iterations": 10,
+      "dt": 2.5e-05,
+      "dir": [
+        0,
+        1
+      ],
+      "Ns_mean": 1.4211444431087104,
+      "Ns_cv": 2.616911158977456,
+      "mu_apparent": 1.723230482827324,
+      "flicker": 0,
+      "tip_z_um": 321.5989644997727
+    }
+  ],
+  "label": "SIM: MuJoCo 3.6 soft contacts and the H1 contact law (verify.py)",
+  "lugre": {
+    "presliding_stiffness_N_per_m": {
+      "measured": 15521.871447867352,
+      "closed_form": 15599.999999999998
+    },
+    "stick_slip": {
+      "F_max_N": 0.15375846187610986,
+      "F_min_N": 0.08763901199475284,
+      "mu_s_N": 0.156,
+      "mu_k_N": 0.12,
+      "F_min_analytic_N": 0.08399999999999999,
+      "period_s": 0.45635000000000003,
+      "period_analytic_s": 0.39141592653589796
+    },
+    "sliding_20mm_s": {
+      "F_N": 0.11999999999999995,
+      "mu_k_N": 0.12
+    }
+  },
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:31:13+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages contact,energy,gyro,sensors,myo,plugins,native,convergence,arm,validate,env,diagnose",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "contact",
+    "quick": false,
+    "script": "sim2/run_study.py"
+  }
+}

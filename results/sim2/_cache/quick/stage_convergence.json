@@ -1,0 +1,44 @@
+{
+  "label": "SIM: Rev H case (H1 hand, H1 contact law unless stated), training seed 300, 8 Hz 1 mm, first 1 s; ink path difference against the finest step",
+  "h1_contact": {
+    "rows": [
+      {
+        "dt_us": 25.0,
+        "integrator": "implicitfast",
+        "unmod_e_rms_um": 1102.124813914447,
+        "oracle_ratio": 0.14294721879634376,
+        "wall_s": 8.45726752281189,
+        "ink_path_diff_um": 0.0
+      },
+      {
+        "dt_us": 50.0,
+        "integrator": "implicitfast",
+        "unmod_e_rms_um": 1101.8954713421663,
+        "oracle_ratio": 0.1423252420590123,
+        "wall_s": 5.607850790023804,
+        "ink_path_diff_um": 0.42688926260472804
+      }
+    ],
+    "seed": 300,
+    "f0": 8.0,
+    "amp_mm": 1.0,
+    "contact": "h1",
+    "integrator": "implicitfast"
+  },
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:23:27+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages plugins,energy,gyro,sensors,myo,contact,native,convergence,arm,validate,env",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "convergence",
+    "quick": true,
+    "script": "sim2/run_study.py"
+  }
+}

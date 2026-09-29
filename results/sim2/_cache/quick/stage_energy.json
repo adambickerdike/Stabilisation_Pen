@@ -1,0 +1,60 @@
+{
+  "rows": [
+    {
+      "case": "conservative",
+      "integrator": "implicitfast",
+      "dt_us": 25.0,
+      "E0_J": 6.833449309499532e-05,
+      "E1_J": 6.831984526212574e-05,
+      "dE_J": -1.4647832869587435e-08,
+      "W_damper_J": -7.290331805235676e-16,
+      "W_actuator_J": 0.0,
+      "W_constraint_J": 0.0,
+      "residual_J": -1.4647832140554254e-08,
+      "residual_rel": -0.0002143548810728945
+    },
+    {
+      "case": "damped",
+      "integrator": "implicitfast",
+      "dt_us": 25.0,
+      "E0_J": 6.833449309499532e-05,
+      "E1_J": 1.5703713073706924e-06,
+      "dE_J": -6.676412178762464e-05,
+      "W_damper_J": -6.67772048349727e-05,
+      "W_actuator_J": 0.0,
+      "W_constraint_J": 0.0,
+      "residual_J": 1.3083047348066111e-08,
+      "residual_rel": 0.0001914559800696654
+    },
+    {
+      "case": "actuated",
+      "integrator": "implicitfast",
+      "dt_us": 25.0,
+      "E0_J": 6.833449309499532e-05,
+      "E1_J": 6.765755913587442e-05,
+      "dE_J": -6.769339591209024e-07,
+      "W_damper_J": -7.398287530352047e-16,
+      "W_actuator_J": -6.546874500394227e-07,
+      "W_constraint_J": -9.541315070913372e-09,
+      "residual_J": -1.2705193270737557e-08,
+      "residual_rel": -0.00018592650205329552
+    }
+  ],
+  "label": "SIM: pen in the air, H1 hand springs as joint springs (verify.energy_audit)",
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:20:53+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --quick --stages plugins,energy,gyro,sensors,myo,contact,native,convergence,arm,validate,env",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "energy",
+    "quick": true,
+    "script": "sim2/run_study.py"
+  }
+}

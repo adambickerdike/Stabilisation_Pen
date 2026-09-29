@@ -1,0 +1,945 @@
+{
+ "evidence_status": "PROPOSED DESIGN (dimensioned concept); masses and clearances CALC; nothing built or measured",
+ "heel": {
+  "r_e_mm": 1.0,
+  "R_d_mm": 8.75,
+  "R_skid_mm": 8.4,
+  "delta_mm": 0.35,
+  "spring_travel_mm": 0.5390932887976613,
+  "roll_tolerance_deg": 19.999999999999975,
+  "protrusion_by_tilt": [
+   {
+    "theta_deg": 35.0,
+    "protrusion_mm": 0.3207773892120788
+   },
+   {
+    "theta_deg": 40.0,
+    "protrusion_mm": 0.2833078020794343
+   },
+   {
+    "theta_deg": 50.0,
+    "protrusion_mm": 0.22497566339028877
+   },
+   {
+    "theta_deg": 60.0,
+    "protrusion_mm": 0.190192246987792
+   },
+   {
+    "theta_deg": 75.0,
+    "protrusion_mm": 0.18427887874923232
+   }
+  ],
+  "front_end": {
+   "R_mm": 8.4,
+   "ball_ahead_50_mm": 6.591544350622856,
+   "ball_ahead_35_mm": 11.38623687816638,
+   "ball_ahead_75_mm": 1.8884265532779014,
+   "refill_slide_range_mm": 15.488875683538062,
+   "sleeve_front_d_mm": 18.3
+  },
+  "front_end_revH": {
+   "R_mm": 6.75,
+   "ball_ahead_50_mm": 5.207029959180343,
+   "ball_ahead_35_mm": 9.02979266704189,
+   "ball_ahead_75_mm": 1.4463103857665491,
+   "refill_slide_range_mm": 13.48421481182163,
+   "sleeve_front_d_mm": 15.0
+  }
+ },
+ "replaces_revH": [
+  "skid_ring",
+  "front_sleeve",
+  "optical",
+  "board_magnet",
+  "board_keel"
+ ],
+ "fit_checks": {
+  "drive_motor_to_arm_at_stop_mm": 0.26,
+  "drive_motor_shell_pocket_depth_mm": 0.396,
+  "drive_motor_shell_wall_left_mm": 0.604,
+  "drive_motor_to_back_ring_z_mm": 2.48,
+  "drive_motor_to_gimbal_z_mm": 3.0,
+  "steer_motor_to_arm_at_stop_mm": 0.26,
+  "steer_motor_shell_pocket_depth_mm": 0.396,
+  "steer_motor_shell_wall_left_mm": 0.604,
+  "steer_motor_to_back_ring_z_mm": 2.48,
+  "steer_motor_to_gimbal_z_mm": 3.0,
+  "shaft_outside_gimbal_mm": 0.451,
+  "wheel_pod_contact_radius_needed_mm": 8.676,
+  "wheel_pod_contact_radius_used_mm": 8.75,
+  "keel_to_paper_at_35deg_front_mm": 0.203,
+  "drive_pod_to_nose_envelope_mm": 0.409,
+  "drive_paper_sensor_to_nose_envelope_mm": 0.689,
+  "all_pass": true
+ },
+ "drive_parts_mass_g": 6.55,
+ "note_mass": "plus about 2.5 g for the larger front sleeve (CALC, 1.3 g/cm3)",
+ "components": [
+  {
+   "id": "ball",
+   "label": "Ball tip",
+   "group": "refill",
+   "shape": "cone",
+   "z0": 0.0,
+   "z1": 3.0,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "The point that touches the paper and writes.",
+   "part": "ISO 12757-2 D1 mini refill",
+   "ledger": "DEC-004",
+   "d0": 0.7,
+   "d1": 2.35
+  },
+  {
+   "id": "refill",
+   "label": "Ink refill (D1 mini)",
+   "group": "refill",
+   "shape": "cylinder",
+   "z0": 3.0,
+   "z1": 67.0,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Standard replaceable refill; it slides along its axis on a soft constant-force spring so the ball stays on the paper while the nose tilts.",
+   "part": "ISO 12757-2 D1 mini refill",
+   "ledger": "DEC-004",
+   "d0": 2.35,
+   "d1": 2.35,
+   "mass_g": 0.84
+  },
+  {
+   "id": "refill_spring",
+   "label": "Constant-force refill spring",
+   "group": "mechanism",
+   "shape": "cylinder",
+   "z0": 67.0,
+   "z1": 75.0,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Presses the refill onto the paper with about 0.15 N while the refill slides about 13.5 mm (tilt 35-75 deg and the tip's corrections).",
+   "part": "custom constant-force strip spring, about 0.15 N (to size with a spring supplier)",
+   "ledger": "",
+   "d0": 2.4,
+   "d1": 2.4
+  },
+  {
+   "id": "carrier",
+   "label": "Moving nose (refill carrier)",
+   "group": "moving_nose",
+   "shape": "tube",
+   "z0": 10.21,
+   "z1": 43.5,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Thin titanium tube that holds the refill; it tilts on the gimbal so the tip moves up to about 3 mm against the handle.",
+   "part": "custom (Ti-6Al-4V tube 7/6 mm)",
+   "ledger": "AMF-21",
+   "d0": 7.0,
+   "d1": 7.0,
+   "d_in": 6.0
+  },
+  {
+   "id": "carrier_nozzle",
+   "label": "Nose nozzle",
+   "group": "moving_nose",
+   "shape": "cone",
+   "z0": 5.21,
+   "z1": 10.21,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Front of the moving nose; guides the refill tip.",
+   "part": "custom (PEEK)",
+   "ledger": "AMF-24",
+   "d0": 3.6,
+   "d1": 7.0
+  },
+  {
+   "id": "arm",
+   "label": "Rear arm",
+   "group": "moving_nose",
+   "shape": "cylinder",
+   "z0": 46.5,
+   "z1": 75.75,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Carries the magnets behind the gimbal: the tip moves the opposite way, 1/lever times the magnet motion.",
+   "part": "custom (aluminium 6061)",
+   "ledger": "",
+   "d0": 5.0,
+   "d1": 5.0
+  },
+  {
+   "id": "magnet_hub",
+   "label": "Magnet hub",
+   "group": "moving_nose",
+   "shape": "box",
+   "z0": 75.75,
+   "z1": 82.25,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Square hub on the arm carrying four magnets.",
+   "part": "custom (soft iron)",
+   "ledger": "",
+   "size": [
+    5.0,
+    5.0,
+    6.5
+   ]
+  },
+  {
+   "id": "magnet_x+",
+   "label": "Actuator magnet (y-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 75.75,
+   "z1": 82.25,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+   "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+   "ledger": "AMF-28",
+   "size": [
+    2.8,
+    3.0,
+    6.5
+   ],
+   "offset": [
+    3.9,
+    0
+   ]
+  },
+  {
+   "id": "magnet_x-",
+   "label": "Actuator magnet (y-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 75.75,
+   "z1": 82.25,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+   "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+   "ledger": "AMF-28",
+   "size": [
+    2.8,
+    3.0,
+    6.5
+   ],
+   "offset": [
+    -3.9,
+    0
+   ]
+  },
+  {
+   "id": "magnet_y+",
+   "label": "Actuator magnet (x-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 75.75,
+   "z1": 82.25,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+   "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+   "ledger": "AMF-28",
+   "size": [
+    3.0,
+    2.8,
+    6.5
+   ],
+   "offset": [
+    0,
+    3.9
+   ]
+  },
+  {
+   "id": "magnet_y-",
+   "label": "Actuator magnet (x-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 75.75,
+   "z1": 82.25,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "NdFeB magnet on the moving arm; the coil facing it pushes it sideways (shear), tilting the nose.",
+   "part": "NdFeB N45 block 3.0 x 6.5 x 2.8 mm",
+   "ledger": "AMF-28",
+   "size": [
+    3.0,
+    2.8,
+    6.5
+   ],
+   "offset": [
+    0,
+    -3.9
+   ]
+  },
+  {
+   "id": "hall_magnet",
+   "label": "Position magnet",
+   "group": "sensor",
+   "shape": "cylinder",
+   "z0": 82.75,
+   "z1": 83.75,
+   "moves_with": "nose",
+   "optional": false,
+   "function": "Tiny magnet at the end of the arm read by the 3-D Hall sensor.",
+   "part": "supermagnete S-01-01-N",
+   "ledger": "AMF-72",
+   "d0": 1.0,
+   "d1": 1.0
+  },
+  {
+   "id": "gimbal",
+   "label": "Flexure gimbal (2-axis)",
+   "group": "mechanism",
+   "shape": "tube",
+   "z0": 43.5,
+   "z1": 46.5,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Laser-cut spring-steel cross flexures: the nose tilts in two directions with no friction or backlash; stiff along the pen.",
+   "part": "custom (301 full-hard or 17-7PH 0.1 mm, laser-cut)",
+   "ledger": "AMF-20",
+   "d0": 17.0,
+   "d1": 17.0,
+   "d_in": 5.5
+  },
+  {
+   "id": "shell",
+   "label": "Handle shell",
+   "group": "structure",
+   "shape": "tube",
+   "z0": 50.0,
+   "z1": 170.0,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "The body you hold: 22 mm thick, easier to grip than a pencil.",
+   "part": "PEEK or glass-filled nylon, 1 mm wall",
+   "ledger": "AMF-24",
+   "d0": 22.0,
+   "d1": 22.0,
+   "d_in": 20.0
+  },
+  {
+   "id": "back_ring",
+   "label": "Soft-iron ring (flux return)",
+   "group": "actuator",
+   "shape": "tube",
+   "z0": 71.98,
+   "z1": 86.02,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Section of the shell over the coils made of soft iron: it closes the magnets' flux through the coils.",
+   "part": "custom (soft iron / 1010 steel, nickel plated)",
+   "ledger": "",
+   "d0": 22.0,
+   "d1": 22.0,
+   "d_in": 20.0
+  },
+  {
+   "id": "coil_x+",
+   "label": "Flat voice coil (y-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 72.98,
+   "z1": 85.02,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+   "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+   "ledger": "AMF-29/AMF-30",
+   "size": [
+    1.43,
+    8.53,
+    12.03
+   ],
+   "offset": [
+    8.78,
+    0
+   ]
+  },
+  {
+   "id": "coil_x-",
+   "label": "Flat voice coil (y-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 72.98,
+   "z1": 85.02,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+   "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+   "ledger": "AMF-29/AMF-30",
+   "size": [
+    1.43,
+    8.53,
+    12.03
+   ],
+   "offset": [
+    -8.78,
+    0
+   ]
+  },
+  {
+   "id": "coil_y+",
+   "label": "Flat voice coil (x-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 72.98,
+   "z1": 85.02,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+   "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+   "ledger": "AMF-29/AMF-30",
+   "size": [
+    8.53,
+    1.43,
+    12.03
+   ],
+   "offset": [
+    0,
+    8.78
+   ]
+  },
+  {
+   "id": "coil_y-",
+   "label": "Flat voice coil (x-force)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 72.98,
+   "z1": 85.02,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Fixed flat coil with a soft-iron back plate; current through it pushes the magnet sideways.",
+   "part": "custom (self-bonding 0.1 mm magnet wire, IEC class 155)",
+   "ledger": "AMF-29/AMF-30",
+   "size": [
+    8.53,
+    1.43,
+    12.03
+   ],
+   "offset": [
+    0,
+    -8.78
+   ]
+  },
+  {
+   "id": "hall3d",
+   "label": "3-D Hall position sensor",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 84.75,
+   "z1": 85.75,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Reads the nose position in x and y about 10 000 times a second for the position servo.",
+   "part": "TI TMAG5273 (3-D Hall, I2C) or DRV5055 x2",
+   "ledger": "OPT-45/OPT-46",
+   "size": [
+    2.9,
+    2.8,
+    1.0
+   ]
+  },
+  {
+   "id": "pcb",
+   "label": "Control board",
+   "group": "electronics",
+   "shape": "box",
+   "z0": 86.52,
+   "z1": 99.0,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "nRF54L15-class MCU with Bluetooth, two coil drivers with current sensing, charger and the IMU. Runs the tremor tracker and the servo.",
+   "part": "nRF54L15 + 2 x DRV8214 + charger",
+   "ledger": "AMF-44/AMF-37",
+   "size": [
+    1.0,
+    15.0,
+    12.48
+   ]
+  },
+  {
+   "id": "imu",
+   "label": "Motion sensor (IMU)",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 90.0,
+   "z1": 92.5,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Accelerometer and gyroscope: measures the hand's shake about 2000 times a second (feeds the tracker).",
+   "part": "ST LSM6DSV16X",
+   "ledger": "OPT-37",
+   "size": [
+    2.5,
+    3.0,
+    0.83
+   ],
+   "offset": [
+    1.0,
+    0.0
+   ]
+  },
+  {
+   "id": "battery",
+   "label": "Rechargeable cell",
+   "group": "power",
+   "shape": "cylinder",
+   "z0": 101.0,
+   "z1": 149.5,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "EEMB LIR14500, 750 mAh.",
+   "part": "EEMB LIR14500",
+   "ledger": "AMF-80",
+   "d0": 14.1,
+   "d1": 14.1
+  },
+  {
+   "id": "lra",
+   "label": "Vibration cue motor",
+   "group": "haptic",
+   "shape": "cylinder",
+   "z0": 94.0,
+   "z1": 97.0,
+   "moves_with": "handle",
+   "optional": true,
+   "function": "Gentle buzz cues (write bigger, slow down, check a word).",
+   "part": "coin LRA 8 mm",
+   "ledger": "AMF-45",
+   "d0": 8.0,
+   "d1": 8.0
+  },
+  {
+   "id": "usb",
+   "label": "USB-C port and button",
+   "group": "electronics",
+   "shape": "box",
+   "z0": 150.0,
+   "z1": 153.5,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Charging and on/off / mode button (side port so the rear cap stays free).",
+   "part": "USB-C receptacle (mid-mount)",
+   "ledger": "",
+   "size": [
+    8.4,
+    2.6,
+    3.5
+   ],
+   "offset": [
+    0.0,
+    9.0
+   ]
+  },
+  {
+   "id": "rear_cap",
+   "label": "Rear cap",
+   "group": "structure",
+   "shape": "cylinder",
+   "z0": 167.0,
+   "z1": 170.0,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Closes the handle.",
+   "part": "custom (PEEK)",
+   "ledger": "AMF-24",
+   "d0": 22.0,
+   "d1": 20.0
+  },
+  {
+   "id": "rm_frame",
+   "label": "Inertial module frame",
+   "group": "inertial",
+   "shape": "tube",
+   "z0": 151.0,
+   "z1": 169.0,
+   "moves_with": "handle",
+   "optional": true,
+   "function": "Houses the moving tungsten mass, its coils and flexures.",
+   "part": "custom (aluminium)",
+   "ledger": "",
+   "d0": 20.0,
+   "d1": 20.0,
+   "d_in": 19.0
+  },
+  {
+   "id": "rm_mass",
+   "label": "Tungsten reaction mass",
+   "group": "inertial",
+   "shape": "cylinder",
+   "z0": 153.0,
+   "z1": 167.0,
+   "moves_with": "inertial_mass",
+   "optional": true,
+   "function": "A heavy slug pushed sideways by coils: its reaction steadies the whole pen against the shake.",
+   "part": "Tungsten heavy alloy ASTM B777 class 3 (non-magnetic grade)",
+   "ledger": "AMF-49",
+   "d0": 10.0,
+   "d1": 10.0,
+   "mass_g": 19.8
+  },
+  {
+   "id": "rm_coils",
+   "label": "Reaction-mass coils",
+   "group": "inertial",
+   "shape": "tube",
+   "z0": 153.0,
+   "z1": 167.0,
+   "moves_with": "handle",
+   "optional": true,
+   "function": "Four flat coils facing magnets on the slug (2 axes).",
+   "part": "custom",
+   "ledger": "",
+   "d0": 19.0,
+   "d1": 19.0,
+   "d_in": 16.0
+  },
+  {
+   "id": "drive_front_sleeve",
+   "label": "Front sleeve (larger front)",
+   "group": "grip",
+   "shape": "tube",
+   "z0": 8.09,
+   "z1": 50.0,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Where the thumb, index and middle finger rest; its front is larger to hold the heel drive.",
+   "part": "PEEK core + TPE overmould",
+   "ledger": "AMF-24",
+   "d0": 18.3,
+   "d1": 22.0,
+   "d_in": 12.45
+  },
+  {
+   "id": "drive_skid_ring",
+   "label": "Skid ring with wheel slot",
+   "group": "drive",
+   "shape": "tube",
+   "z0": 6.59,
+   "z1": 8.09,
+   "d0": 16.8,
+   "d1": 16.8,
+   "d_in": 14.48,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Rests on the paper like the Rev H ring, but larger, with a slot at the bottom through which the drive wheel reaches the paper.",
+   "part": "custom (PTFE-coated POM, contact radius 8.40 mm, open 120 deg on top)",
+   "ledger": "",
+   "mass_g": 0.08,
+   "open_deg": 120.0,
+   "offset": [
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "id": "drive_wheel",
+   "label": "Drive wheel with O-ring tyre",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 6.86,
+   "z1": 7.86,
+   "d0": 2.0,
+   "d1": 2.0,
+   "offset": [
+    -8.11,
+    0.0
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "A 2 mm wheel that rolls on the paper: steered, it lets the pen move only along the letter; driven, it pushes the pen along it.",
+   "part": "custom brass hub d 0.8 mm + NBR O-ring 0.8 x 0.6 mm (tyre); axle d 0.3 mm in jewel bearings",
+   "ledger": "AMF-111,AMF-112",
+   "mass_g": 0.006
+  },
+  {
+   "id": "drive_fork",
+   "label": "Steering fork and crown",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 8.01,
+   "z1": 9.01,
+   "d0": 3.0,
+   "d1": 3.0,
+   "offset": [
+    -7.14,
+    0.0
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Holds the wheel and turns it about the paper normal through its contact point; carries the crown gear, the axle bevel and a tiny magnet for the steering-angle sensor.",
+   "part": "custom (hardened steel fork, brass crown gear module 0.1, bevel 2:1 to the axle)",
+   "ledger": "",
+   "mass_g": 0.08
+  },
+  {
+   "id": "drive_pod",
+   "label": "Heel pod (sprung)",
+   "group": "drive",
+   "shape": "box",
+   "z0": 8.09,
+   "z1": 12.09,
+   "size": [
+    2.5,
+    4.0,
+    4.0
+   ],
+   "offset": [
+    -7.75,
+    0.0
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Bearing block for the fork, the two bevel pinions and the sensors; it hangs on a flexure so a 0.55 N preload presses the wheel onto the paper.",
+   "part": "custom (PEEK housing, two jewel bearings)",
+   "ledger": "",
+   "mass_g": 0.075
+  },
+  {
+   "id": "drive_spring",
+   "label": "Preload flexure",
+   "group": "drive",
+   "shape": "box",
+   "z0": 12.09,
+   "z1": 17.09,
+   "size": [
+    0.3,
+    3.0,
+    5.0
+   ],
+   "offset": [
+    -8.6,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Leaf spring that lets the pod move 0.54 mm toward the paper and presses it with about 0.55 N; the ring takes any extra writing force.",
+   "part": "custom (17-7PH leaf 0.1 mm, laser-cut)",
+   "ledger": "",
+   "mass_g": 0.012
+  },
+  {
+   "id": "drive_load_sensor",
+   "label": "Wheel-load sensor",
+   "group": "drive",
+   "shape": "box",
+   "z0": 15.59,
+   "z1": 16.59,
+   "size": [
+    0.8,
+    1.5,
+    1.0
+   ],
+   "offset": [
+    -9.2,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Hall sensor that reads the flexure's bend: the wheel's load, which sets how much force can be used before the wheel slips.",
+   "part": "linear Hall IC (DRV5055 class) + 1 mm magnet",
+   "ledger": "OPT-46",
+   "mass_g": 0.02
+  },
+  {
+   "id": "drive_steer_sensor",
+   "label": "Steering-angle sensor",
+   "group": "drive",
+   "shape": "box",
+   "z0": 8.79,
+   "z1": 9.79,
+   "size": [
+    0.8,
+    1.5,
+    1.0
+   ],
+   "offset": [
+    -8.4,
+    -1.3
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Reads the wheel's heading from a magnet on the fork, right at the wheel (so shaft twist does not matter).",
+   "part": "3-D Hall IC (TMAG5273 class) + diametric magnet d 1 mm",
+   "ledger": "OPT-45",
+   "mass_g": 0.02
+  },
+  {
+   "id": "drive_shaft_drive",
+   "label": "Drive shaft",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 10.19,
+   "z1": 49.2,
+   "d0": 0.8,
+   "d1": 0.8,
+   "offset": [
+    -9.1,
+    2.9
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Thin steel shaft in a PTFE liner that carries the drive motor's turning to the heel pod.",
+   "part": "custom (stainless shaft d 0.8 mm, PTFE liner d 1.2 mm; 40 deg bevel pinion at the pod)",
+   "ledger": "",
+   "mass_g": 0.155
+  },
+  {
+   "id": "drive_shaft_steering",
+   "label": "Steering shaft",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 10.19,
+   "z1": 49.2,
+   "d0": 0.8,
+   "d1": 0.8,
+   "offset": [
+    -9.1,
+    -2.9
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Thin steel shaft in a PTFE liner that carries the steering motor's turning to the heel pod.",
+   "part": "custom (stainless shaft d 0.8 mm, PTFE liner d 1.2 mm; 40 deg bevel pinion at the pod)",
+   "ledger": "",
+   "mass_g": 0.155
+  },
+  {
+   "id": "drive_keel",
+   "label": "Shaft keel",
+   "group": "drive",
+   "shape": "box",
+   "z0": 10.19,
+   "z1": 47.2,
+   "size": [
+    2.6,
+    8.4,
+    37.010000000000005
+   ],
+   "offset": [
+    -9.4,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Ridge under the front sleeve (toward the paper) that houses the two shafts either side of the paper sensor.",
+   "part": "PEEK / TPE, part of the sleeve moulding",
+   "ledger": "AMF-24",
+   "mass_g": 0.373
+  },
+  {
+   "id": "drive_paper_sensor",
+   "label": "Paper sensor (needed by the drive)",
+   "group": "drive",
+   "shape": "box",
+   "z0": 14.0,
+   "z1": 20.0,
+   "size": [
+    4.0,
+    5.0,
+    6.0
+   ],
+   "offset": [
+    -8.6,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Optical sensor that sees the paper: it detects wheel slip (pen motion that the wheel did not make) and gives the page position.",
+   "part": "optical flow sensor, to select (mouse-class performance as PMW3360: 1 kHz reports, 12 000 frames/s; its own package is too large)",
+   "ledger": "AMF-109",
+   "mass_g": 0.3
+  },
+  {
+   "id": "drive_transfer",
+   "label": "Transfer gears",
+   "group": "drive",
+   "shape": "box",
+   "z0": 47.2,
+   "z1": 49.2,
+   "size": [
+    4.6,
+    12.0,
+    2.0
+   ],
+   "offset": [
+    -7.8,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Two small spur-gear pairs that move each motor's output out to its shaft, around the gimbal.",
+   "part": "module 0.1 spur gears (33 teeth, 1:1, centre distance 3.3 mm), brass",
+   "ledger": "",
+   "mass_g": 0.12
+  },
+  {
+   "id": "drive_motor",
+   "label": "Wheel drive motor",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 49.5,
+   "z1": 69.5,
+   "d0": 6.0,
+   "d1": 6.0,
+   "offset": [
+    -6.06,
+    4.24
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Turns the wheel so the pen is pushed along the letter (up to about 0.5 N at the wheel).",
+   "part": "Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",
+   "ledger": "AMF-100",
+   "mass_g": 2.5
+  },
+  {
+   "id": "steer_motor",
+   "label": "Steering motor",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 49.5,
+   "z1": 69.5,
+   "d0": 6.0,
+   "d1": 6.0,
+   "offset": [
+    -6.06,
+    -4.24
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Turns the wheel's heading to follow the letter.",
+   "part": "Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",
+   "ledger": "AMF-100",
+   "mass_g": 2.5
+  },
+  {
+   "id": "drive_drivers",
+   "label": "Motor drivers",
+   "group": "drive",
+   "shape": "box",
+   "z0": 99.5,
+   "z1": 103.0,
+   "size": [
+    1.0,
+    10.0,
+    3.5
+   ],
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Two three-phase drivers with current sensing that set each motor's torque 2000 times a second.",
+   "part": "3-phase micro BLDC driver x2 (to select; DRV8311 class)",
+   "ledger": "",
+   "mass_g": 0.15
+  }
+ ],
+ "step_export": true,
+ "source": "drive/layout.py, drive/geometry.py, results/revH/layout.json"
+}

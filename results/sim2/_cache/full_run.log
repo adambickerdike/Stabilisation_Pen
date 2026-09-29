@@ -1,0 +1,102 @@
+=== stage contact
+  native block 'sim2 native default': k 7.86e+06 vs 7.86e+06 N/m, creep 0.148 um/s (closed form 0.148), mu_slide 0.1200/0.1200, gliding 0.02 um (pred 1.26) (1 s)
+  native block 'MuJoCo default': k 1.22e+03 vs 449 N/m, creep 498 um/s (closed form 621), mu_slide 0.1200/0.1200, gliding 74.41 um (pred 48.06) (1 s)
+  native block 'intermediate': k 9.53e+04 vs 9.21e+04 N/m, creep 30.5 um/s (closed form 30.7), mu_slide 0.1200/0.1200, gliding 2.12 um (pred 4.86) (1 s)
+  LuGre: {"presliding_stiffness_N_per_m": {"measured": 15521.871447867352, "closed_form": 15599.999999999998}, "stick_slip": {"F_max_N": 0.15375846187610986, "F_min_N": 0.08763901199475284, "mu_s_N": 0.156, "mu_k_N": 0.12, "F_min_analytic_N": 0.08399999999999999, "period_s": 0.45635000000000003, "period_analytic_s": 0.39141592653589796}, "sliding_20mm_s": {"F_N": 0.11999999999999995, "mu_k_N": 0.12}}
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [1, 0]: Ns 2.703 N cv 2.951, mu_app 1.036, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [-1, 0]: Ns 3.769 N cv 2.679, mu_app 0.552, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 0 dir [0, 1]: Ns 1.318 N cv 2.551, mu_app 1.714, flicker 0
+  pen sliding solref [0.02, 1.0] impratio 1.0 noslip 0 dir [1, 0]: Ns 0.995 N cv 0.001, mu_app 0.120, flicker 0
+  pen sliding solref [0.02, 1.0] impratio 1.0 noslip 0 dir [-1, 0]: Ns 0.988 N cv 0.001, mu_app 0.120, flicker 0
+  pen sliding solref [0.02, 1.0] impratio 1.0 noslip 0 dir [0, 1]: Ns 0.992 N cv 0.001, mu_app 0.120, flicker 0
+  pen sliding solref [0.002, 1.0] impratio 1.0 noslip 0 dir [1, 0]: Ns 0.805 N cv 0.236, mu_app 0.120, flicker 0
+  pen sliding solref [0.002, 1.0] impratio 1.0 noslip 0 dir [-1, 0]: Ns 0.851 N cv 0.296, mu_app 0.120, flicker 0
+  pen sliding solref [0.002, 1.0] impratio 1.0 noslip 0 dir [0, 1]: Ns 0.826 N cv 0.268, mu_app 0.120, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 10 dir [1, 0]: Ns 3.709 N cv 2.726, mu_app 0.583, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 10 dir [-1, 0]: Ns 2.947 N cv 2.946, mu_app 0.608, flicker 0
+  pen sliding solref [0.0005, 1.0] impratio 10.0 noslip 10 dir [0, 1]: Ns 1.421 N cv 2.617, mu_app 1.723, flicker 0
+=== stage contact done in 33 s
+=== stage energy
+  energy implicitfast conservative: E0 6.833e-05 J, dE -2.285e-08, W_damp -1.822e-15, W_act +0.000e+00, residual -2.72e-04
+  energy implicitfast damped: E0 6.833e-05 J, dE -6.772e-05, W_damp -6.773e-05, W_act +0.000e+00, residual +1.89e-04
+  energy implicitfast actuated: E0 6.833e-05 J, dE +1.123e-05, W_damp -1.815e-15, W_act +1.129e-05, residual -6.81e-04
+  energy implicit conservative: E0 6.833e-05 J, dE -2.283e-08, W_damp -1.822e-15, W_act +0.000e+00, residual -2.73e-04
+  energy implicit damped: E0 6.833e-05 J, dE -6.772e-05, W_damp -6.773e-05, W_act +0.000e+00, residual +1.89e-04
+  energy implicit actuated: E0 6.833e-05 J, dE +1.123e-05, W_damp -1.815e-15, W_act +1.129e-05, residual -6.82e-04
+  energy Euler conservative: E0 6.833e-05 J, dE -2.285e-08, W_damp -1.822e-15, W_act +0.000e+00, residual -2.72e-04
+  energy Euler damped: E0 6.833e-05 J, dE -6.772e-05, W_damp -6.773e-05, W_act +0.000e+00, residual +1.89e-04
+  energy Euler actuated: E0 6.833e-05 J, dE +1.123e-05, W_damp -1.815e-15, W_act +1.129e-05, residual -6.81e-04
+  energy RK4 conservative: E0 6.833e-05 J, dE -2.285e-08, W_damp -1.822e-15, W_act +0.000e+00, residual -2.72e-04
+  energy RK4 damped: E0 6.833e-05 J, dE -6.772e-05, W_damp -6.773e-05, W_act +0.000e+00, residual +1.89e-04
+  energy RK4 actuated: E0 6.833e-05 J, dE +1.123e-05, W_damp -1.815e-15, W_act +1.129e-05, residual -6.81e-04
+=== stage energy done in 11 s
+=== stage gyro
+  gyro: max relative error 1.25e-04
+=== stage gyro done in 6 s
+=== stage sensors
+  sensors: {"imu": {"raw_reading": {"odr_Hz": 3840.0000000002183, "acc_nd_ug_per_rtHz_x_y": [59.62567209628934, 58.508456300997246]}, "compensated": {"odr_Hz": 3840.0000000002183, "acc_nd_ug_per_rtHz_x_y": [293.9388259078058, 372.41069324076636]}, "odr_fusion_Hz": 3840.0, "acc_nd_fusion_ug_per_rtHz": 59.99999999999999, "note": "pen held still on the paper; 20-200 Hz band; 'raw' = accelerometer reading rotated to the page (fusion's reading model: its noise density should come back); 'compensated' adds the firmware's lever-arm term r x d(omega)/dt, which differentiates gyro noise (dominant above ~50 Hz)"},
+=== stage sensors done in 18 s
+=== stage myo
+MyoSuite:> Registering Myo Envs
+  MyoArm c = 0.00: unstable modes 0 (max growth 0.00 /s); two-mass fit 1-20 Hz x: k1 1 b1 166.08 M 0.516 k2 71 b2 9.0 (rms 0.05) y: k1 1730 b1 63.98 M 0.486 k2 22 b2 14.0 (rms 0.08) z: k1 112 b1 63.41 M 0.226 k2 12 b2 7.0 (rms 0.10) (3 s)
+  MyoArm c = 0.02: unstable modes 7 (max growth 0.98 /s); two-mass fit 1-20 Hz x: k1 1 b1 160.38 M 0.542 k2 88 b2 10.0 (rms 0.04) y: k1 416 b1 59.49 M 0.798 k2 20 b2 21.7 (rms 0.08) z: k1 2023 b1 63.37 M 0.214 k2 13 b2 7.2 (rms 0.08) (3 s)
+  MyoArm c = 0.05: unstable modes 7 (max growth 1.64 /s); two-mass fit 1-20 Hz x: k1 1 b1 159.71 M 0.573 k2 108 b2 11.2 (rms 0.03) y: k1 1921 b1 61.17 M 0.802 k2 56 b2 23.5 (rms 0.07) z: k1 2393 b1 66.02 M 0.223 k2 15 b2 8.5 (rms 0.06) (4 s)
+  MyoArm c = 0.10: unstable modes 7 (max growth 2.14 /s); two-mass fit 1-20 Hz x: k1 1 b1 165.81 M 0.606 k2 136 b2 13.0 (rms 0.02) y: k1 3020 b1 65.90 M 0.916 k2 87 b2 31.0 (rms 0.06) z: k1 3185 b1 72.80 M 0.230 k2 18 b2 10.5 (rms 0.04) (4 s)
+  MyoArm c = 0.20: unstable modes 7 (max growth 2.61 /s); two-mass fit 1-20 Hz x: k1 5399 b1 188.65 M 0.585 k2 162 b2 15.6 (rms 0.02) y: k1 4611 b1 74.70 M 1.057 k2 136 b2 44.7 (rms 0.05) z: k1 5014 b1 85.49 M 0.235 k2 23 b2 14.2 (rms 0.02) (5 s)
+  MyoArm c = 0.30: unstable modes 7 (max growth 3.53 /s); two-mass fit 1-20 Hz x: k1 8041 b1 200.45 M 0.591 k2 203 b2 18.7 (rms 0.02) y: k1 5758 b1 82.09 M 1.153 k2 180 b2 57.6 (rms 0.05) z: k1 6865 b1 94.18 M 0.237 k2 27 b2 17.6 (rms 0.02) (5 s)
+  |Z| 4 Hz axis x (HAP-26 X 139, H1 234 N/m): c 0.00: 329, c 0.02: 341, c 0.05: 357, c 0.10: 380, c 0.20: 430, c 0.30: 487
+  |Z| 4 Hz axis y (HAP-26 Z 356, H1 234 N/m): c 0.00: 480, c 0.02: 584, c 0.05: 708, c 0.10: 879, c 0.20: 1170, c 0.30: 1432
+  |Z| 4 Hz axis z (HAP-26 Y 177, H1 234 N/m): c 0.00: 228, c 0.02: 239, c 0.05: 257, c 0.10: 294, c 0.20: 373, c 0.30: 454
+  |Z| 8 Hz axis x (HAP-26 X 607, H1 584 N/m): c 0.00: 1289, c 0.02: 1337, c 0.05: 1388, c 0.10: 1444, c 0.20: 1523, c 0.30: 1594
+  |Z| 8 Hz axis y (HAP-26 Z 669, H1 584 N/m): c 0.00: 1382, c 0.02: 1686, c 0.05: 2073, c 0.10: 2566, c 0.20: 3251, c 0.30: 3763
+  |Z| 8 Hz axis z (HAP-26 Y 759, H1 584 N/m): c 0.00: 657, c 0.02: 698, c 0.05: 744, c 0.10: 806, c 0.20: 929, c 0.30: 1064
+  |Z| 12 Hz axis x (HAP-26 X 532, H1 746 N/m): c 0.00: 2698, c 0.02: 2808, c 0.05: 2946, c 0.10: 3105, c 0.20: 3298, c 0.30: 3430
+  |Z| 12 Hz axis y (HAP-26 Z 881, H1 746 N/m): c 0.00: 2473, c 0.02: 2896, c 0.05: 3497, c 0.10: 4319, c 0.20: 5447, c 0.30: 6209
+  |Z| 12 Hz axis z (HAP-26 Y 802, H1 746 N/m): c 0.00: 1188, c 0.02: 1263, c 0.05: 1358, c 0.10: 1481, c 0.20: 1675, c 0.30: 1857
+=== stage myo done in 5 s
+=== stage plugins
+  reaction mass: stroke p-p 5.54 mm (free slug 4.00 mm)
+  passive rotor: {'0rpm': {'unmod_e_rms_um': 802.4618302582709, 'unmod_band_um': 437.15500083737305}, '20000rpm': {'unmod_e_rms_um': 813.1572486656531, 'unmod_band_um': 445.29654839667984}}
+  CMG: {'gimbal_peak_rad': 0.498427570662748, 'spin_change_rel': 6.439804245417236e-11, 'torque_expected_mNm': 6.065368216530694}
+  heel drive: {'tau_Nm': 0.0002, 'traction_expected_N': 0.13333333333333333, 'heel_N_mean': 0.2971904385606899, 'heel_ft_mean': 0.1333537966327361, 'mu_heel': 0.6, 'N_skid_mean': 0.4846423376873485, 'tip_dx_mm': 0.36829030931400525, 'tip_dy_mm': 0.0, 'describe': {'name': 'heel', 'kind': 'ball', 'z': 0.012, 'r_mount': 0.0072, 'radius': 0.0015, 'm': 0.0003, 'mu': 0.6, 'k_susp': 300.0, 'preload': 0.3, 'travel': 0.001, 'tau_max': 0.0002, 'omega_max': 200.0, 'steer_kp': 0.002, 'fixed_mass': 0.003, 'label': 'ASSUMPTION (study D hands over the drive element; mu 0.3-0.8 in the Rev J plan)', 'plugin': 'heel'}}
+  multi-plane nose: {'F_N': 0.1, 'k_lat_N_per_m': 50.0, 'static_F_over_k_mm': 2.0, 'lifted': {'slide_before_mm': 0.03550274482401839, 'slide_after_mm': 2.031951200502277, 'ink_dx_mm': 1.5273625250699634}, 'on_paper': {'slide_before_mm': -0.4147606146639419, 'slide_after_mm': -0.3987701327554393, 'ink_dx_mm': 0.014840732582793108}, 'describe': {'name': 'mpn', 'travel_pivot': 0.003, 'k_lat': 50.0, 'c_lat': 0.05, 'm_carrier': 0.003, 'K_f2': 0.74, 'I_max2': 1.5, 'R20': 2.47, 'fixed_mass': 0.004, 'label': 'ASSUMPTION placeholder for study N (nose v2, +-5-8 mm tip travel)', 'plugin': 'mpn'}}
+=== stage plugins done in 67 s
+=== stage native
+  native-vs-h1 h1 seed 300 8 Hz: unmod 1026.2 um, oracle 0.134 (36 s)
+  native-vs-h1 h1 seed 300 12 Hz: unmod 823.5 um, oracle 0.259 (30 s)
+  native-vs-h1 h1 seed 301 8 Hz: unmod 874.3 um, oracle 0.095 (47 s)
+  native-vs-h1 h1 seed 301 12 Hz: unmod 759.2 um, oracle 0.174 (33 s)
+  native-vs-h1 mujoco seed 300 8 Hz: unmod 1013.2 um, oracle 0.138 (76 s)
+  native-vs-h1 mujoco seed 300 12 Hz: unmod 812.7 um, oracle 0.266 (46 s)
+  native-vs-h1 mujoco seed 301 8 Hz: unmod 852.9 um, oracle 0.099 (68 s)
+  native-vs-h1 mujoco seed 301 12 Hz: unmod 742.6 um, oracle 0.183 (43 s)
+=== stage native done in 381 s
+=== stage convergence
+  convergence h1 implicitfast dt 12.5 us: unmod 1110.64 um, oracle 0.1420 (35 s)
+  convergence h1 implicitfast dt 25.0 us: unmod 1110.53 um, oracle 0.1417 (22 s)
+  convergence h1 implicitfast dt 50.0 us: unmod 1110.30 um, oracle 0.1411 (15 s)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/Stabilisation_Pen/sim2/run_study.py", line 437, in <module>
+    sc = V._still(T=max(T, 0.8), N=0.0 if lift > 0 else 1.0)
+^^^^^^
+  File "/home/user/Stabilisation_Pen/sim2/run_study.py", line 431, in main
+    log(f"  heel drive: {out['heel_drive']}")
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Stabilisation_Pen/sim2/run_study.py", line 158, in stage_convergence
+    f"{T:g} s; ink path difference against the finest step"}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Stabilisation_Pen/sim2/verify.py", line 281, in convergence
+    orc = S.run(pm, sc, S.RunOptions(source="oracle", clean=clean))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Stabilisation_Pen/sim2/sim.py", line 622, in run
+    st.advance(st.n)
+  File "/home/user/Stabilisation_Pen/sim2/sim.py", line 569, in advance
+    self.step()
+  File "/home/user/Stabilisation_Pen/sim2/sim.py", line 544, in step
+    servo.ref_tick(k * dt, self.tick, tip, in_c, direct_q=direct)
+  File "/home/user/Stabilisation_Pen/sim2/sim.py", line 289, in ref_tick
+    ex = tip_xy[0] - self.clean[tick, 0]
+                     ~~~~~~~~~~^^^^^^^^^
+IndexError: index 6000 is out of bounds for axis 0 with size 6000

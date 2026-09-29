@@ -1,0 +1,398 @@
+{
+ "meta": {
+  "evidence_status": "PROPOSED DESIGN (concept layout of study D's recommended heel drive; CALC masses from volumes and catalogue; ASSUMPTION dimensions; nothing built or measured)",
+  "concept": "steered and driven wheel at the heel (powered cobot); modes: steer only (passive guidance, tremor constraint), steer + brake, steer + drive (lead-through, autowrite)",
+  "replaces": [
+   "skid_ring",
+   "front_sleeve",
+   "optical",
+   "board_magnet",
+   "board_keel"
+  ],
+  "replaces_note": "skid_ring -> drive_skid_ring (contact radius 8.40 mm instead of 6.75 mm, slotted); front_sleeve grows at the front from 15.0 to 18.3 mm (same 22 mm at z 50); optical -> drive_paper_sensor (no longer optional: slip detection); the board magnet and its keel give way to the shaft keel (the heel drive does the board's job without a board)",
+  "changes_to_other_revH_parts": {
+   "front_sleeve": {
+    "d0_mm": 18.3,
+    "z0_mm": 8.09,
+    "d1_mm": 22.0,
+    "z1_mm": 50.0
+   },
+   "refill_spring": "the refill slides 15.5 mm over 35-75 deg instead of 13.5 mm",
+   "ball_ahead_of_heel_at_50deg_mm": [
+    5.21,
+    6.59
+   ]
+  },
+  "heel": {
+   "r_e_mm": 1.0,
+   "R_d_mm": 8.75,
+   "R_skid_mm": 8.4,
+   "delta_mm": 0.35,
+   "spring_travel_mm": 0.539,
+   "roll_tolerance_deg": 20.0
+  },
+  "added_mass_g": 6.55,
+  "added_mass_note": "parts listed here; the larger front sleeve adds about 2.5 g more (CALC, PEEK/TPE 1.3 g/cm3)",
+  "tilted_parts_note": "drive_wheel, drive_fork and drive_pod lie on the paper normal (50 deg to the pen axis); here they are axis-aligned stand-ins; mechanics/cad/heel_drive.py draws them tilted",
+  "fit_checks": {
+   "drive_motor_to_arm_at_stop_mm": 0.26,
+   "drive_motor_shell_pocket_depth_mm": 0.396,
+   "drive_motor_shell_wall_left_mm": 0.604,
+   "drive_motor_to_back_ring_z_mm": 2.48,
+   "drive_motor_to_gimbal_z_mm": 3.0,
+   "steer_motor_to_arm_at_stop_mm": 0.26,
+   "steer_motor_shell_pocket_depth_mm": 0.396,
+   "steer_motor_shell_wall_left_mm": 0.604,
+   "steer_motor_to_back_ring_z_mm": 2.48,
+   "steer_motor_to_gimbal_z_mm": 3.0,
+   "shaft_outside_gimbal_mm": 0.451,
+   "wheel_pod_contact_radius_needed_mm": 8.676,
+   "wheel_pod_contact_radius_used_mm": 8.75,
+   "keel_to_paper_at_35deg_front_mm": 0.203,
+   "drive_pod_to_nose_envelope_mm": 0.409,
+   "drive_paper_sensor_to_nose_envelope_mm": 0.689,
+   "all_pass": true
+  },
+  "source": "drive/layout.py; docs/grounded_drive.md",
+  "stabpen.provenance": {
+   "evidence_status": "PROPOSED DESIGN; CALC",
+   "generated_utc": "2026-09-29T00:26:57+00:00",
+   "git_revision": "3f005eb",
+   "parameters_version": "0.4.4",
+   "parameters_sha256_16": "a9d3d0016461d690",
+   "command": "-c",
+   "python": "3.11.15",
+   "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+   "seeds": null,
+   "numpy": "2.4.6",
+   "scipy": "1.17.1",
+   "script": "drive/layout.py"
+  }
+ },
+ "units": "mm",
+ "axis": "z along the pen axis from the ball tip (z = 0) toward the back; x in the tilt plane, positive away from the paper; y transverse",
+ "components": [
+  {
+   "id": "drive_skid_ring",
+   "label": "Skid ring with wheel slot",
+   "group": "drive",
+   "shape": "tube",
+   "z0": 6.59,
+   "z1": 8.09,
+   "d0": 16.8,
+   "d1": 16.8,
+   "d_in": 14.48,
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Rests on the paper like the Rev H ring, but larger, with a slot at the bottom through which the drive wheel reaches the paper.",
+   "part": "custom (PTFE-coated POM, contact radius 8.40 mm, open 120 deg on top)",
+   "ledger": "",
+   "mass_g": 0.08,
+   "open_deg": 120.0
+  },
+  {
+   "id": "drive_wheel",
+   "label": "Drive wheel with O-ring tyre",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 6.86,
+   "z1": 7.86,
+   "d0": 2.0,
+   "d1": 2.0,
+   "offset": [
+    -8.11,
+    0.0
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "A 2 mm wheel that rolls on the paper: steered, it lets the pen move only along the letter; driven, it pushes the pen along it.",
+   "part": "custom brass hub d 0.8 mm + NBR O-ring 0.8 x 0.6 mm (tyre); axle d 0.3 mm in jewel bearings",
+   "ledger": "AMF-111,AMF-112",
+   "mass_g": 0.006
+  },
+  {
+   "id": "drive_fork",
+   "label": "Steering fork and crown",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 8.01,
+   "z1": 9.01,
+   "d0": 3.0,
+   "d1": 3.0,
+   "offset": [
+    -7.14,
+    0.0
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Holds the wheel and turns it about the paper normal through its contact point; carries the crown gear, the axle bevel and a tiny magnet for the steering-angle sensor.",
+   "part": "custom (hardened steel fork, brass crown gear module 0.1, bevel 2:1 to the axle)",
+   "ledger": "",
+   "mass_g": 0.08
+  },
+  {
+   "id": "drive_pod",
+   "label": "Heel pod (sprung)",
+   "group": "drive",
+   "shape": "box",
+   "z0": 8.09,
+   "z1": 12.09,
+   "size": [
+    2.5,
+    4.0,
+    4.0
+   ],
+   "offset": [
+    -7.75,
+    0.0
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Bearing block for the fork, the two bevel pinions and the sensors; it hangs on a flexure so a 0.55 N preload presses the wheel onto the paper.",
+   "part": "custom (PEEK housing, two jewel bearings)",
+   "ledger": "",
+   "mass_g": 0.075
+  },
+  {
+   "id": "drive_spring",
+   "label": "Preload flexure",
+   "group": "drive",
+   "shape": "box",
+   "z0": 12.09,
+   "z1": 17.09,
+   "size": [
+    0.3,
+    3.0,
+    5.0
+   ],
+   "offset": [
+    -8.6,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Leaf spring that lets the pod move 0.54 mm toward the paper and presses it with about 0.55 N; the ring takes any extra writing force.",
+   "part": "custom (17-7PH leaf 0.1 mm, laser-cut)",
+   "ledger": "",
+   "mass_g": 0.012
+  },
+  {
+   "id": "drive_load_sensor",
+   "label": "Wheel-load sensor",
+   "group": "drive",
+   "shape": "box",
+   "z0": 15.59,
+   "z1": 16.59,
+   "size": [
+    0.8,
+    1.5,
+    1.0
+   ],
+   "offset": [
+    -9.2,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Hall sensor that reads the flexure's bend: the wheel's load, which sets how much force can be used before the wheel slips.",
+   "part": "linear Hall IC (DRV5055 class) + 1 mm magnet",
+   "ledger": "OPT-46",
+   "mass_g": 0.02
+  },
+  {
+   "id": "drive_steer_sensor",
+   "label": "Steering-angle sensor",
+   "group": "drive",
+   "shape": "box",
+   "z0": 8.79,
+   "z1": 9.79,
+   "size": [
+    0.8,
+    1.5,
+    1.0
+   ],
+   "offset": [
+    -8.4,
+    -1.3
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Reads the wheel's heading from a magnet on the fork, right at the wheel (so shaft twist does not matter).",
+   "part": "3-D Hall IC (TMAG5273 class) + diametric magnet d 1 mm",
+   "ledger": "OPT-45",
+   "mass_g": 0.02
+  },
+  {
+   "id": "drive_shaft_drive",
+   "label": "Drive shaft",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 10.19,
+   "z1": 49.2,
+   "d0": 0.8,
+   "d1": 0.8,
+   "offset": [
+    -9.1,
+    2.9
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Thin steel shaft in a PTFE liner that carries the drive motor's turning to the heel pod.",
+   "part": "custom (stainless shaft d 0.8 mm, PTFE liner d 1.2 mm; 40 deg bevel pinion at the pod)",
+   "ledger": "",
+   "mass_g": 0.155
+  },
+  {
+   "id": "drive_shaft_steering",
+   "label": "Steering shaft",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 10.19,
+   "z1": 49.2,
+   "d0": 0.8,
+   "d1": 0.8,
+   "offset": [
+    -9.1,
+    -2.9
+   ],
+   "moves_with": "drive",
+   "optional": false,
+   "function": "Thin steel shaft in a PTFE liner that carries the steering motor's turning to the heel pod.",
+   "part": "custom (stainless shaft d 0.8 mm, PTFE liner d 1.2 mm; 40 deg bevel pinion at the pod)",
+   "ledger": "",
+   "mass_g": 0.155
+  },
+  {
+   "id": "drive_keel",
+   "label": "Shaft keel",
+   "group": "drive",
+   "shape": "box",
+   "z0": 10.19,
+   "z1": 47.2,
+   "size": [
+    2.6,
+    8.4,
+    37.01
+   ],
+   "offset": [
+    -9.4,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Ridge under the front sleeve (toward the paper) that houses the two shafts either side of the paper sensor.",
+   "part": "PEEK / TPE, part of the sleeve moulding",
+   "ledger": "AMF-24",
+   "mass_g": 0.373
+  },
+  {
+   "id": "drive_paper_sensor",
+   "label": "Paper sensor (needed by the drive)",
+   "group": "drive",
+   "shape": "box",
+   "z0": 14.0,
+   "z1": 20.0,
+   "size": [
+    4.0,
+    5.0,
+    6.0
+   ],
+   "offset": [
+    -8.6,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Optical sensor that sees the paper: it detects wheel slip (pen motion that the wheel did not make) and gives the page position.",
+   "part": "optical flow sensor, to select (mouse-class performance as PMW3360: 1 kHz reports, 12 000 frames/s; its own package is too large)",
+   "ledger": "AMF-109",
+   "mass_g": 0.3
+  },
+  {
+   "id": "drive_transfer",
+   "label": "Transfer gears",
+   "group": "drive",
+   "shape": "box",
+   "z0": 47.2,
+   "z1": 49.2,
+   "size": [
+    4.6,
+    12.0,
+    2.0
+   ],
+   "offset": [
+    -7.8,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Two small spur-gear pairs that move each motor's output out to its shaft, around the gimbal.",
+   "part": "module 0.1 spur gears (33 teeth, 1:1, centre distance 3.3 mm), brass",
+   "ledger": "",
+   "mass_g": 0.12
+  },
+  {
+   "id": "drive_motor",
+   "label": "Wheel drive motor",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 49.5,
+   "z1": 69.5,
+   "d0": 6.0,
+   "d1": 6.0,
+   "offset": [
+    -6.06,
+    4.24
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Turns the wheel so the pen is pushed along the letter (up to about 0.5 N at the wheel).",
+   "part": "Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",
+   "ledger": "AMF-100",
+   "mass_g": 2.5
+  },
+  {
+   "id": "steer_motor",
+   "label": "Steering motor",
+   "group": "drive",
+   "shape": "cylinder",
+   "z0": 49.5,
+   "z1": 69.5,
+   "d0": 6.0,
+   "d1": 6.0,
+   "offset": [
+    -6.06,
+    -4.24
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Turns the wheel's heading to follow the letter.",
+   "part": "Faulhaber 0620 B brushless DC, 6 x 20 mm (drive: bevel 2:1 at the wheel; steering: crown 2:1)",
+   "ledger": "AMF-100",
+   "mass_g": 2.5
+  },
+  {
+   "id": "drive_drivers",
+   "label": "Motor drivers",
+   "group": "drive",
+   "shape": "box",
+   "z0": 99.5,
+   "z1": 103.0,
+   "size": [
+    1.0,
+    10.0,
+    3.5
+   ],
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "Two three-phase drivers with current sensing that set each motor's torque 2000 times a second.",
+   "part": "3-phase micro BLDC driver x2 (to select; DRV8311 class)",
+   "ledger": "",
+   "mass_g": 0.15
+  }
+ ]
+}

@@ -1,0 +1,115 @@
+{
+  "label": "SIM: plug-in smoke runs on the Rev H pen with the H1 hand (every plug-in parameter is ASSUMPTION)",
+  "reaction_mass": {
+    "F_amp_N": 0.1,
+    "f_Hz": 8.0,
+    "stroke_pp_mm": 5.5413055623710665,
+    "free_mass_pp_mm": 3.9978371070998175,
+    "describe": {
+      "name": "rm",
+      "m": 0.0198,
+      "z": 0.16,
+      "stroke": [
+        0.00275,
+        0.00275,
+        0.0
+      ],
+      "k_c": 0.0,
+      "c_c": 0.0,
+      "K_f": 0.9,
+      "R20": 1.0,
+      "I_max": 0.55,
+      "fixed_mass": 0.008,
+      "label": "PROPOSED DESIGN (opt/inertial rear-cap module: WHA 19.8 g, +/-2.75 mm, Km 0.9 N/sqrt(W) ASSUMPTION)",
+      "plugin": "rm"
+    }
+  },
+  "rotor_gyro": {
+    "h_mNms_at_20000": 1.2130736433061389,
+    "0rpm": {
+      "unmod_e_rms_um": 802.4618302582709,
+      "unmod_band_um": 437.15500083737305
+    },
+    "20000rpm": {
+      "unmod_e_rms_um": 813.1572486656531,
+      "unmod_band_um": 445.29654839667984
+    }
+  },
+  "rotor_cmg": {
+    "gimbal_peak_rad": 0.498427570662748,
+    "spin_change_rel": 6.439804245417236e-11,
+    "torque_expected_mNm": 6.065368216530694
+  },
+  "heel_drive": {
+    "tau_Nm": 0.0002,
+    "traction_expected_N": 0.13333333333333333,
+    "heel_N_mean": 0.2971904385606899,
+    "heel_ft_mean": 0.1333537966327361,
+    "mu_heel": 0.6,
+    "N_skid_mean": 0.4846423376873485,
+    "tip_dx_mm": 0.36829030931400525,
+    "tip_dy_mm": 0.0,
+    "describe": {
+      "name": "heel",
+      "kind": "ball",
+      "z": 0.012,
+      "r_mount": 0.0072,
+      "radius": 0.0015,
+      "m": 0.0003,
+      "mu": 0.6,
+      "k_susp": 300.0,
+      "preload": 0.3,
+      "travel": 0.001,
+      "tau_max": 0.0002,
+      "omega_max": 200.0,
+      "steer_kp": 0.002,
+      "fixed_mass": 0.003,
+      "label": "ASSUMPTION (study D hands over the drive element; mu 0.3-0.8 in the Rev J plan)",
+      "plugin": "heel"
+    }
+  },
+  "multi_plane_nose": {
+    "F_N": 0.1,
+    "k_lat_N_per_m": 50.0,
+    "static_F_over_k_mm": 2.0,
+    "lifted": {
+      "slide_before_mm": 0.03550274482401839,
+      "slide_after_mm": 2.031951200502277,
+      "ink_dx_mm": 1.5273625250699634
+    },
+    "on_paper": {
+      "slide_before_mm": -0.4147606146639419,
+      "slide_after_mm": -0.3987701327554393,
+      "ink_dx_mm": 0.014840732582793108
+    },
+    "describe": {
+      "name": "mpn",
+      "travel_pivot": 0.003,
+      "k_lat": 50.0,
+      "c_lat": 0.05,
+      "m_carrier": 0.003,
+      "K_f2": 0.74,
+      "I_max2": 1.5,
+      "R20": 2.47,
+      "fixed_mass": 0.004,
+      "label": "ASSUMPTION placeholder for study N (nose v2, +-5-8 mm tip travel)",
+      "plugin": "mpn"
+    }
+  },
+  "meta": {
+    "evidence_status": "SIMULATION (simulator v2, MuJoCo 3.6; synthetic writing and tremor; nothing measured)",
+    "generated_utc": "2026-09-29T00:33:00+00:00",
+    "git_revision": "3f005eb",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "run_study.py --stages contact,energy,gyro,sensors,myo,plugins,native,convergence,arm,validate,env,diagnose",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "stage": "plugins",
+    "quick": false,
+    "script": "sim2/run_study.py"
+  }
+}

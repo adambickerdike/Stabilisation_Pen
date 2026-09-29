@@ -17,3 +17,6 @@ electronics/spice/*.log
 
 # regenerable stage caches of the handwriting study (python3 -m handwriting.run_study)
 results/handwriting/_cache/
+
+# MuJoCo writes warnings here when run from the repository root
+MUJOCO_LOG.TXT
