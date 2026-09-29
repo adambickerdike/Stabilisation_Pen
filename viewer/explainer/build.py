@@ -250,6 +250,13 @@ def facts_drive() -> dict:
         r = _row(lr, task=task, writer=writer, cond=cond, metric=metric)
         return _f(r, "value") if r else None
 
+    lagg = ((t.get("loops") or {}).get("aggregate") or {}).get("relaxed") or {}
+    last = {c: _num((lagg.get(c) or {}).get("last_loop_ratio")) for c in ("none", "wheel_path", "sd_full")}
+    tall = {c: _num((lagg.get(c) or {}).get("loop_height_ratio_ink")) for c in ("none", "wheel_path", "sd_full")}
+    ex_rows = [r for r in ((t.get("practice") or {}).get("rows") or [])
+               if r.get("profile") == "dysgraphia" and r.get("writer") == 0 and r.get("seed") == 200]
+    tr_ex = {r["cond"]: {"read": r.get("recognised"), "letters": _num(r.get("letters_read_ok"))} for r in ex_rows
+             if r.get("cond") in ("none", "wheel_path+nose", "sd_path")}
     trac = [{"P_N": _f(r, "P_N"), "mu": _f(r, "mu"), "cap_N": _f(r, "cap_mean_N")} for r in tr]
     at055 = [x for x in trac if x["P_N"] == 0.55]
     out = {
@@ -272,6 +279,7 @@ def facts_drive() -> dict:
         "gross": {k: {kk: _num((aw.get(k) or {}).get(kk)) for kk in ("letters_read_ok", "words_app", "target_err_um",
                                                                      "pen_speed_mm_s", "device_work_share", "F_rms_N", "F_max_N")}
                   for k in ("relaxed_nose", "sd_lead+nose", "ball_lead+nose", "board_lead+nose", "writer_alone")},
+        "loops_last": last, "loops_tallest": tall, "tracing_example": tr_ex,
         "traction": trac, "traction_055": at055,
         "label": SIM_HW1D, "detail": "test writers 0–5, seeds 200–203; rules frozen before the test",
         "source": "results/drive/ (fig_practice.csv, fig_loops_reversal.csv, tasks.json)",
@@ -787,18 +795,19 @@ def component_rows(lay: dict) -> str:
     return "\n".join(rows)
 
 
-def tag(ev: str) -> str:
-    """The page's evidence tag, as tagHTML() in the template draws it."""
+def tag(ev: str, title: str = "") -> str:
+    """The page's evidence tag, as tagHTML() in the template draws it; `title` (for example the source file) shows on hover."""
     s = str(ev or "").strip()
-    up = s.upper()
-    for pre, cls, word in (("SIM", "sim", "Simulation"), ("CALC", "calc", "Calculation"), ("LIT", "lit", "Literature"),
-                           ("PROP", "prop", "Proposed design"), ("ILL", "ill", "Illustration"), ("MFR", "mfr", "Manufacturer"),
-                           ("ASS", "asm", "Assumption")):
-        if up.startswith(pre):
-            rest = re.sub(r"^[A-Z]+\s*", "", s)
-            rest = re.sub(r"^[\s·:(-]+|[)\s]+$", "", rest)
-            return f'<span class="tag {cls}"><i></i>{e(word)}{" · " + e(rest) if rest else ""}</span>'
-    return f'<span class="tag asm"><i></i>{e(s or "Assumption")}</span>'
+    ti = f' title="{e(title)}"' if title else ""
+    for pat, cls, word in ((r"^SIM(ULATION)?", "sim", "Simulation"), (r"^CALC(ULATION)?", "calc", "Calculation"),
+                           (r"^LIT(ERATURE)?", "lit", "Literature"), (r"^PROP(OSED)?( DESIGN)?", "prop", "Proposed design"),
+                           (r"^ILL(USTRATION)?", "ill", "Illustration"), (r"^MFR", "mfr", "Manufacturer"),
+                           (r"^ASS(UMPTION)?", "asm", "Assumption")):
+        m = re.match(pat, s, re.I)
+        if m:
+            rest = re.sub(r"^[\s·:(-]+|[)\s]+$", "", s[m.end():])
+            return f'<span class="tag {cls}"{ti}><i></i>{e(word)}{" · " + e(rest) if rest else ""}</span>'
+    return f'<span class="tag asm"{ti}><i></i>{e(s or "Assumption")}</span>'
 
 
 def _um(x):
@@ -926,11 +935,324 @@ def provenance_html(manifest: dict, lay: dict) -> str:
     return " · ".join(bits)
 
 
+# ------------------------------------------------------------------------------------------------ the simple view
+# The page opens with a simple view: one sentence per mechanism, and one "How much better?" row per condition with one
+# picture pair and ONE number.  Both are specs below, so that a mechanism or a result can be swapped when a new study
+# lands: edit the entry (text, picture source, number, evidence) and rebuild.  {tokens} in the sentences are the numbers
+# of fact_tokens() (read from the results files).  Every number shown carries its evidence label.
+
+MECHANISMS = [
+    {"key": "tip", "n": 1, "tok": "--g-nose", "name": "The inner pen", "where": "at the tip",
+     "sentence": ('<b class="mv">The whole inner pen</b> (the refill, its carrier and the arm, back to a pivot {pivot}&nbsp;mm '
+                  'behind the ball) swings inside the handle you hold, <b>pushed by coils</b> on the magnets at its back end, '
+                  'so <b>the ball moves up to {travel_s}&nbsp;mm</b> against the shake and the ink stays on your letters.'),
+     "uses": ["steadies the ink", "writes for you, if you turn it on"],
+     "evidence": [("PROPOSED DESIGN", ""), ("CALCULATION", "reach and pivot: results/revJ/layout.json")]},
+    {"key": "heel", "n": 2, "tok": "--g-drive", "name": "The heel wheel", "where": "under the front ring",
+     "sentence": ('<b class="mv">A 2&nbsp;mm wheel under the front ring</b> grips the paper and is <b>steered, or driven, by two '
+                  'tiny motors</b>, so <b>the paper pushes the whole pen and your hand</b> along the path of the letter, gently: '
+                  'at most {trac_lo}–{trac_hi}&nbsp;N, about the weight of an egg.'),
+     "uses": ["keeps your hand on the letter", "leads your hand, if you turn it on"],
+     "evidence": [("CALCULATION", "push: results/drive/fig_traction_capacity.csv (preload 0.55 N)"),
+                  ("ASSUMPTION: tyre friction 0.6–1.2", "to be measured on paper (EXP-D01)"), ("PROPOSED DESIGN", "")]},
+    {"key": "tail", "n": 3, "tok": "--g-inertial", "name": "The tail weight", "where": "in the end-cap you can take off",
+     "sentence": ('<b class="mv">A {slug_g}&nbsp;g tungsten weight in the end-cap</b> is <b>pushed from side to side by coils</b>, '
+                  'and its push-back <b>steadies the whole pen</b>: a further {ec_rng}&nbsp;% less shake in the ink, but far too '
+                  'weak to move letters.'),
+     "uses": ["calms a fast shake", "you can take it off"],
+     "evidence": [("SIMULATION (model H1)", "results/endcap/endcap_study.json; 8-12 Hz, 1-2 mm, grip splits 0.3/0.5/0.7"), ("PROPOSED DESIGN", "")]},
+]
+MECH_CHIP = {"tip": ("Inner pen", "--g-nose"), "heel": ("Heel wheel", "--g-drive"), "tail": ("Tail weight", "--g-inertial"),
+             "app": ("The app", "--accent")}
+
+
+def mechanisms_html(toks: dict) -> str:
+    out = []
+    for m in MECHANISMS:
+        sent = re.sub(r"\{([a-z0-9_]+)\}", lambda mm: e(toks.get(mm.group(1), "—")), m["sentence"])
+        uses = "".join(f"<span>{e(u)}</span>" for u in m["uses"])
+        tags = "".join(tag(x, t) for x, t in m["evidence"])
+        out.append(f'      <article class="mech" data-mech="{e(m["key"])}" style="--c:var({m["tok"]})">'
+                   f'<h3><span class="anum">{m["n"]}</span>{e(m["name"])} <small>{e(m["where"])}</small></h3>'
+                   f'<p class="mech-s">{sent}</p><div class="uses">{uses}</div><div class="tags">{tags}</div></article>')
+    return "\n".join(out)
+
+
+def _clip(strokes, x0, x1):
+    """Strokes cut to the window x0..x1 (a stroke leaving the window is split)."""
+    out = []
+    for s_ in strokes or []:
+        cur = []
+        for p_ in s_:
+            if x0 <= p_[0] <= x1:
+                cur.append(p_)
+            elif cur:
+                if len(cur) > 1:
+                    out.append(cur)
+                cur = []
+        if len(cur) > 1:
+            out.append(cur)
+    return out
+
+
+def _d(strokes) -> str:
+    d = []
+    for s_ in strokes:
+        d.append("M" + " L".join(f"{p_[0]:.1f} {-p_[1]:.1f}" for p_ in s_))
+    return "".join(d)
+
+
+def thumb_svg(layers, x0, x1, y0, y1, label, ruled=(0.0, 8.0), extra=""):
+    """A small picture of writing in mm: layers = [(css class, strokes)], window x0..x1, y0..y1 (y up)."""
+    w, h = x1 - x0, y1 - y0
+    body = [f'<rect class="pp" x="{x0:.2f}" y="{-y1:.2f}" width="{w:.2f}" height="{h:.2f}"/>']
+    for y in ruled:
+        if y0 <= y <= y1:
+            body.append(f'<line class="rl" x1="{x0:.2f}" x2="{x1:.2f}" y1="{-y:.2f}" y2="{-y:.2f}"/>')
+    body.append(extra)
+    for cls, strokes in layers:
+        d = _d(_clip(strokes, x0, x1))
+        if d:
+            body.append(f'<path class="{cls}" d="{d}"/>')
+    return (f'<svg class="thumb" viewBox="{x0:.2f} {-y1:.2f} {w:.2f} {h:.2f}" role="img" aria-label="{e(label)}">'
+            + "".join(body) + "</svg>")
+
+
+def loops_strokes(first, last, n=8, h0=10.0):
+    """Cursive practice loops whose height goes in a straight line from first to last (fractions of h0): an
+    illustration drawn from two numbers of the drive study (the tallest and the last loop)."""
+    pts, x = [], 0.0
+    for i in range(n):
+        k = first + (last - first) * i / (n - 1)
+        hh, w, r = h0 * k, 0.5 * h0, 0.17 * h0 * k
+        for j in range(0 if i == 0 else 1, 41):
+            s_ = j / 40
+            px, py = x + w * s_ - r * math.sin(2 * math.pi * s_), hh * (1 - math.cos(2 * math.pi * s_)) / 2
+            pts.append([round(px + 0.3 * py, 3), round(py, 3)])
+        x += w
+    return [pts]
+
+
+def _panel(samples, pid):
+    return next((p for p in (samples.get("panels") or []) if p.get("id") == pid), None)
+
+
+def _variant(panel, key):
+    return next((v for v in (panel or {}).get("variants", []) if v.get("key") == key), None)
+
+
+def pic_pair(samples, spec):
+    """(before svg, after svg) for a picture spec: from a strip panel, or the loops illustration."""
+    x0, x1 = spec["x"]
+    y0, y1 = spec.get("y", (-3.4, 7.6))
+    if spec.get("kind") == "loops":
+        tgt = (f'<line class="tgt" x1="{x0:.2f}" x2="{x1:.2f}" y1="-10" y2="-10"/>'
+               f'<text class="lbl" x="{x0 + 0.8:.2f}" y="-10.6">target height</text>')
+        b = thumb_svg([("ink before", loops_strokes(*spec["before"]))], x0, x1, y0, y1, spec["cap"][0], ruled=(0.0,), extra=tgt)
+        a = thumb_svg([("ink after", loops_strokes(*spec["after"]))], x0, x1, y0, y1, spec["cap"][1], ruled=(0.0,), extra=tgt)
+        return b, a
+    p = _panel(samples, spec["panel"])
+    vb, va = _variant(p, spec["before"]), _variant(p, spec["after"])
+    if not (p and vb and va):
+        return None
+    intended = p.get("intended") if spec.get("intended", True) else []
+    cls_b = "ink hand" if spec["before"] == "hand" else "ink before"
+    b = thumb_svg(([("int", intended)] if intended else []) + [(cls_b, vb["ink"])], x0, x1, y0, y1, spec["cap"][0])
+    a = thumb_svg(([("int", intended)] if intended else []) + [("ink after", va["ink"])], x0, x1, y0, y1, spec["cap"][1])
+    return b, a
+
+
+def _pc(x):
+    return None if x is None else round(100 * x)
+
+
+def simple_rows(f: dict) -> list:
+    """The rows of "How much better?" (condition, picture, one number, evidence).  Each number is read from pen.json's
+    facts (built from the results files named in the evidence detail)."""
+    a, n2, d, ec = f.get("ai2") or {}, f.get("nose2") or {}, f.get("drive") or {}, f.get("endcap") or {}
+    rows = []
+    if a.get("none") and a.get("gated"):
+        rows.append({
+            "id": "tremor", "mech": ["tip"], "who": "A shaky hand", "sub": "Essential tremor: a shake of 1–2 mm",
+            "help": "The inner pen moves against the shake.",
+            "pic": {"panel": "ai2_8Hz_2mm", "before": "none", "after": "gated", "x": (25.5, 65.0),
+                    "cap": ("Ordinary pen", "With the inner pen"),
+                    "note": "One simulated writer with a 2 mm shake, 8 times a second, writing “books by friday”. Grey: what the writer meant."},
+            "num": {"label": "Words read correctly", "b": _pc(a["none"]["words"]), "a": _pc(a["gated"]["words"]), "unit": "%",
+                    "sub": "average of 6 simulated writers, 4 shakes each (1–2 mm, 6–10 a second)"},
+            "verdict": "Clearly better, not perfect.",
+            "ev": [a.get("label", "SIMULATION")], "src": "results/ai2/ai2.json",
+            "ev_note": "The tracker was tested on the older (Rev H) inner pen model, which reaches ±3 mm."})
+    mv = ec.get("moving") or []
+    if len(mv) == 3 and None not in mv:
+        rows.append({
+            "id": "tail", "mech": ["tail"], "who": "A fast shake, with the end-cap on", "sub": "Essential tremor: 8–12 shakes a second",
+            "help": "The tail weight pushes against the shake, on top of the inner pen.",
+            "pic": None, "nopic": "No writing pictures: this study saved numbers only.",
+            "num": {"label": "Shake left in the ink", "text": f"{_pc(min(mv))}–{_pc(max(mv))} % less",
+                    "sub": "than with the inner pen alone; it depends on how you hold the pen"},
+            "verdict": "A small extra help.",
+            "ev": [ec.get("label", "SIMULATION")], "src": "results/endcap/endcap_study.json", "ev_note": ""})
+    a1 = n2.get("aw_2p5_1mm") or {}
+    if a1.get("letters_read") is not None:
+        rows.append({
+            "id": "autowrite", "mech": ["tip"], "who": "Too shaky to write", "sub": "Autowrite, a mode you turn on",
+            "help": "You sweep the pen along the line; the inner pen writes a text you chose, in your own style.",
+            "pic": {"panel": "autowrite_example", "before": "hand", "after": "autowrite", "x": (20.0, 59.0), "y": (-2.4, 6.6),
+                    "intended": False, "cap": ("What your hand does: a sweep", "What the pen writes"),
+                    "note": "One simulated writer with a 1 mm shake, 8 times a second; 2.5 mm letters."},
+            "num": {"label": "Letters read correctly", "a": _pc(a1["letters_read"]), "unit": "%",
+                    "sub": "with a shake of up to 1 mm; average of 6 simulated writers"},
+            "verdict": "Nearly every letter readable. It writes only text you chose.",
+            "ev": [n2.get("label", "SIMULATION")], "src": "results/nose2/nose2.json", "ev_note": ""})
+    last, tall = d.get("loops_last") or {}, d.get("loops_tallest") or {}
+    if last.get("none") is not None and last.get("wheel_path") is not None and tall.get("none") and tall.get("wheel_path"):
+        rows.append({
+            "id": "loops", "mech": ["heel"], "who": "Writing that gets smaller", "sub": "Parkinson's: big practice loops that shrink",
+            "help": "The heel wheel steers along the loops.",
+            "pic": {"kind": "loops", "before": (tall["none"], last["none"]), "after": (tall["wheel_path"], last["wheel_path"]),
+                    "x": (-1.5, 43.0), "y": (-1.2, 13.6), "cap": ("Nothing on", "Heel wheel steering"),
+                    "note": "Drawn from two numbers of the simulation: the tallest and the last loop; the loops between are drawn in a straight line.",
+                    "ill": True},
+            "num": {"label": "Size of the last loop, against the target", "b": _pc(last["none"]), "a": _pc(last["wheel_path"]), "unit": "%",
+                    "sub": "average of 4 runs, relaxed hand, steering only"},
+            "verdict": "Better, but the loops still shrink.",
+            "ev": [d.get("label", "SIMULATION"), "ILLUSTRATION (the pictures)"], "src": "results/drive/tasks.json (loops)", "ev_note": ""})
+    g = d.get("gross") or {}
+    r0, r1 = g.get("relaxed_nose") or {}, g.get("sd_lead+nose") or {}
+    if r0.get("letters_read_ok") is not None and r1.get("letters_read_ok") is not None:
+        rows.append({
+            "id": "lead", "mech": ["heel", "tip"], "who": "Cannot form letters yet", "sub": "Lead-through, a mode you turn on",
+            "help": "The driven heel wheel leads a relaxed hand along the line; the inner pen adds the detail.",
+            "pic": {"panel": "heel_lead_sentence", "before": "relaxed_nose", "after": "sd_lead+nose", "x": (0.0, 40.0), "y": (-2.4, 6.6),
+                    "intended": False, "cap": ("Relaxed hand, inner pen only", "Heel wheel leads the hand"),
+                    "note": "One simulated writer, “a big dog dug a deep pit by the pond”."},
+            "num": {"label": "Letters read correctly", "b": _pc(r0["letters_read_ok"]), "a": _pc(r1["letters_read_ok"]), "unit": "%",
+                    "sub": "average of 6 simulated writers"},
+            "verdict": "Much better, but the pen does most of the work.",
+            "ev": [d.get("label", "SIMULATION")], "src": "results/drive/tasks.json (autowrite)",
+            "ev_note": "This study used the older (Rev H) inner pen for the detail."})
+    tr = d.get("tracing") or {}
+    t0, tn = tr.get("none") or {}, tr.get("wheel_path+nose") or {}
+    ex = d.get("tracing_example") or {}
+    if t0.get("letters") is not None and tn.get("letters") is not None:
+        rows.append({
+            "id": "tracing", "mech": ["heel", "tip"], "who": "Tracing practice", "sub": "Poor handwriting (dysgraphia-like writers)",
+            "help": "The heel wheel steers along the template and the inner pen corrects toward it.",
+            "pic": None, "readas": [("Nothing on", (ex.get("none") or {}).get("read")),
+                                    ("Heel wheel and inner pen", (ex.get("wheel_path+nose") or {}).get("read"))],
+            "nopic": "No writing pictures were saved in this study. This is what the reading program read for one simulated writer copying “a big dog dug a deep pit by the pond”:",
+            "num": {"label": "Letters read correctly", "b": _pc(t0["letters"]), "a": _pc(tn["letters"]), "unit": "%", "worse": True,
+                    "sub": "average of 6 simulated writers"},
+            "verdict": "Worse: the ink gets closer to the template, but the letters get harder to read.",
+            "ev": [d.get("label", "SIMULATION")], "src": "results/drive/fig_practice.csv", "ev_note": ""})
+    if a.get("gated") and a.get("clean_copy"):
+        rows.append({
+            "id": "clean", "mech": ["app"], "who": "Notes you must read later", "sub": "A strong shake",
+            "help": "The app keeps a clean copy of what you wrote, clearly labelled as a copy. The paper keeps your ink.",
+            "pic": {"panel": "ai2_8Hz_2mm", "before": "gated", "after": "clean_copy", "x": (25.5, 65.0),
+                    "cap": ("Your ink, with the inner pen", "The app's clean copy (digital)"),
+                    "note": "The same writer and shake as in the first row."},
+            "num": {"label": "Words read correctly", "b": _pc(a["gated"]["words"]), "a": _pc(a["clean_copy"]["words"]), "unit": "%",
+                    "sub": "the ink → the app's copy; same writers and shakes as the first row"},
+            "verdict": "Readable in the app; the paper still shows the shaky ink.",
+            "ev": [a.get("label", "SIMULATION")], "src": "results/ai2/ai2.json", "ev_note": ""})
+    return rows
+
+
+def sim2j_row(f: dict, samples: dict):
+    """When the whole-pen simulation (results/sim2j/) has run: one more row, pen off against the full pen."""
+    s2 = f.get("sim2j") or {}
+    pan = [p for p in (samples.get("panels") or []) if p.get("condition") == "wholepen"]
+    if not s2 and not pan:
+        return None
+    best = None
+    for p in pan:
+        keys = [v["key"] for v in p.get("variants", [])]
+        after = next((k for k in ("nose_wheel_ec", "nose_wheel", "nose") if k in keys), None)
+        if "none" in keys and after:
+            best = (p, after)
+            break
+    num = None
+    rows = [r for r in (s2.get("rows") or []) if r.get("words") is not None]
+    if rows:
+        off = [r for r in rows if r["ctl"] == "none"]
+        on = [r for r in rows if r["ctl"] in ("nose_wheel_ec", "nose_wheel", "nose")]
+        if off and on:
+            amp = off[0]["amp_mm"]
+            on_same = [r for r in on if r["amp_mm"] == amp] or on
+            pick = sorted(on_same, key=lambda r: ["nose_wheel_ec", "nose_wheel", "nose"].index(r["ctl"]))[0]
+            num = {"label": "Words read correctly", "b": _pc(off[0]["words"]), "a": _pc(pick["words"]), "unit": "%",
+                   "sub": f"whole Rev J pen in the physics simulator ({pick['ctl'].replace('_', ' + ')}), shake {amp:g}"}
+    if not best and not num:
+        return None
+    pic = None
+    if best:
+        p, after = best
+        xs = [q[0] for s_ in (p.get("intended") or []) for q in s_] or [0, 40]
+        pic = {"panel": p["id"], "before": "none", "after": after, "x": (max(min(xs), max(xs) - 39.5) - 0.5, max(xs) + 0.5),
+               "cap": ("Pen off", "The whole pen on"), "note": str(p.get("title", ""))}
+    return {"id": "wholepen", "mech": ["tip", "heel", "tail"], "who": "The whole pen together", "sub": "Tremor, in the physics simulator (sim2)",
+            "help": "The inner pen, the heel wheel and the tail weight working at once.",
+            "pic": pic, "nopic": "No writing pictures in the results yet.",
+            "num": num or {"label": "Words read correctly", "text": "see Details", "sub": ""},
+            "verdict": "", "ev": [SIM_SIM2], "src": "results/sim2j/", "ev_note": "sim2 ranks designs until bench tests calibrate it."}
+
+
+def simple_results_html(f: dict, samples: dict) -> str:
+    rows = simple_rows(f)
+    r2 = sim2j_row(f, samples)
+    if r2:
+        rows.insert(1, r2)
+    out = []
+    for r in rows:
+        chips = "".join(f'<span class="mchip" style="--c:var({MECH_CHIP[m][1]})">{e(MECH_CHIP[m][0])}</span>' for m in r["mech"])
+        who = (f'<div class="bwho"><h3>{e(r["who"])}</h3><p>{e(r["sub"])}</p><p>{e(r["help"])}</p>'
+               f'<div class="mchips">{chips}</div></div>')
+        pic = ""
+        spec = r.get("pic")
+        pair = pic_pair(samples, spec) if spec else None
+        if pair:
+            b, a = pair
+            cb = "hand" if spec.get("before") == "hand" else "shake"
+            pic = (f'<div class="bpics"><figure><figcaption><span class="ln" style="--c:var(--{"muted" if cb == "hand" else "shake"})"></span>{e(spec["cap"][0])}</figcaption>{b}</figure>'
+                   f'<figure><figcaption><span class="ln" style="--c:var(--accent)"></span>{e(spec["cap"][1])}</figcaption>{a}</figure>'
+                   f'<p class="pnote">{e(spec.get("note", ""))} {tag("ILLUSTRATION") if spec.get("ill") else ""}</p></div>')
+        elif r.get("readas"):
+            ra = "".join(f'<div class="ra"><b>{e(k)}:</b><q>{e(v or "—")}</q></div>' for k, v in r["readas"])
+            pic = f'<div class="readas"><p class="bnote">{e(r.get("nopic", ""))}</p>{ra}</div>'
+        else:
+            pic = f'<div class="readas"><p class="bnote">{e(r.get("nopic", ""))}</p></div>'
+        n = r["num"]
+        if n.get("text") is not None:
+            val = f'<span class="b1">{e(n["text"])}</span>'
+        elif n.get("b") is not None:
+            val = (f'<span class="b0">{n["b"]}&nbsp;{e(n["unit"])}</span><span class="ar" aria-label="to">→</span>'
+                   f'<span class="b1">{n["a"]}&nbsp;{e(n["unit"])}</span>')
+        else:
+            val = f'<span class="b1">{n["a"]}&nbsp;{e(n["unit"])}</span>'
+        tags = "".join(tag(x, r["src"]) for x in r["ev"])
+        src = (f'<span class="bnote">{e(r["ev_note"])}</span>' if r.get("ev_note") else "") + f'<span class="bnote mono">{e(r["src"])}</span>'
+        num = (f'<div class="bnum"><span class="bl">{e(n["label"])}</span><span class="bv{" worse" if n.get("worse") else ""}">{val}</span>'
+               f'<span class="bs">{e(n.get("sub", ""))}</span>'
+               + (f'<span class="verdict">{e(r["verdict"])}</span>' if r.get("verdict") else "")
+               + f'<div class="tags">{tags}</div>{src}</div>')
+        out.append(f'      <article class="brow" data-row="{e(r["id"])}">{who}{pic}{num}</article>')
+    return "\n".join(out)
+
+
 # ---------------------------------------------------------------------------------------------- [[fact]] tokens
 def fmt_num(v, nd=1) -> str:
     if v is None:
         return "—"
     return f"{v:.{nd}f}"
+
+
+def fmt_short(v) -> str:
+    """6.0 -> "6", 6.49 -> "6.5" """
+    if v is None:
+        return "—"
+    return f"{v:.0f}" if abs(v - round(v)) < 0.05 else f"{v:.1f}"
 
 
 def fmt_range(r, nd=1) -> str:
@@ -948,6 +1270,7 @@ def fact_tokens(f: dict, lay: dict) -> dict:
         "mass": fmt_num(p.get("mass_g")), "mass_ec": fmt_num(p.get("mass_endcap_g")), "ec_g": fmt_num(p.get("endcap_g")),
         "com": fmt_num(p.get("com_mm"), 0), "com_ec": fmt_num(p.get("com_endcap_mm"), 0),
         "travel": fmt_num(tip.get("travel_guaranteed_mm")), "travel_nom": fmt_num(tip.get("travel_nom_mm"), 2),
+        "travel_s": fmt_short(tip.get("travel_guaranteed_mm")),
         "pivot": fmt_num(tip.get("pivot_mm")), "lever": fmt_num(tip.get("lever")), "slide": fmt_num(tip.get("refill_slide_mm")),
         "ring_r": fmt_num(tip.get("ring_r_mm"), 2), "wheel_r": fmt_num(tip.get("wheel_r_mm")), "ball_ahead": fmt_num(tip.get("ball_ahead_mm")),
         "h_steady1": fmt_range(h.get("steady_1mm")), "h_steady0": fmt_range(h.get("steady_no_tremor")),
@@ -967,6 +1290,7 @@ def fact_tokens(f: dict, lay: dict) -> dict:
         "none6_um": fmt_num((a.get("none") or {}).get("ink_6hz_um"), 0), "revh6_um": fmt_num((a.get("tracker") or {}).get("ink_6hz_um"), 0),
         "gated6_um": fmt_num((a.get("gated") or {}).get("ink_6hz_um"), 0),
         "ec_mid": fmt_num(100 * (ec.get("moving") or [0, 0, 0])[1], 0),
+        "slug_g": fmt_num(sum(c.get("mass_g") or 0 for c in lay.get("components", []) if c.get("moves_with") == "inertial_mass") or None, 0),
         "ec_rng": (f"{100 * min(ec['moving']):.0f}–{100 * max(ec['moving']):.0f}" if ec.get("moving") and None not in ec["moving"] else "—"),
     }
     return tok
@@ -1003,14 +1327,15 @@ def main():
     sizes["manifest.json"] = dump(manifest, "manifest.json")
     with open(os.path.join(HERE, "template.html"), encoding="utf-8") as f:
         page = f.read()
+    toks = fact_tokens(facts, lay)
     fills = {"<!--BUILD:COMPONENT_ROWS-->": component_rows(lay), "<!--BUILD:DATA_STATUS-->": status_html(manifest),
-             "<!--BUILD:PROVENANCE-->": provenance_html(manifest, lay), "<!--BUILD:RESULT_ROWS-->": results_rows(facts)}
+             "<!--BUILD:PROVENANCE-->": provenance_html(manifest, lay), "<!--BUILD:RESULT_ROWS-->": results_rows(facts),
+             "<!--BUILD:MECHANISMS-->": mechanisms_html(toks), "<!--BUILD:SIMPLE_RESULTS-->": simple_results_html(facts, samples)}
     for k, v in fills.items():
         if k not in page:
             warn(f"template.html has no {k} placeholder")
         page = page.replace(k, v)
     # [[fact]] tokens are filled in the markup only (the script, which starts at the first <script, is left alone)
-    toks = fact_tokens(facts, lay)
     cut = page.find("<script")
     head, tail = (page[:cut], page[cut:]) if cut >= 0 else (page, "")
     tok_re = r"\[\[([A-Za-z][A-Za-z0-9_]*)\]\]"

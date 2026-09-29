@@ -133,7 +133,9 @@ async function run(browser, label, viewport) {
   /* the tip pad: the nose tilts, the refill slides, the heel wheel steers */
   const rest = await page.evaluate(() => { const P = window.__explainer.hero.pen; return { z: P.refillG.position.z, psi: P.psi }; });
   await page.evaluate(() => window.__explainer.hero.padSet(45, 0));
-  await page.waitForTimeout(900);
+  /* the nose eases toward the pad; with software WebGL a frame can take a while, so wait for it */
+  await page.waitForFunction(() => { const H = window.__explainer.hero; return Math.hypot(H.tip[0], H.tip[1]) > 3; }, null, { timeout: 15000 }).catch(() => {});
+  await page.waitForTimeout(300);
   const moved = await page.evaluate(() => { const H = window.__explainer.hero, P = H.pen; return { tip: Math.hypot(H.tip[0], H.tip[1]), psi: P.psi, z: P.refillG.position.z, read: document.getElementById("pad-read").textContent }; });
   check(`${label}: tip pad tilts the nose, slides the refill and steers the heel wheel`,
     moved.tip > 3 && Math.abs(moved.z - rest.z) > 0.05 && Math.abs(moved.psi - rest.psi) > 0.3,

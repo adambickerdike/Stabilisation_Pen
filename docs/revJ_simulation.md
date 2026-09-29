@@ -10,7 +10,34 @@ PROPOSED DESIGN.
 
 ## 1. The answer in plain words
 
-(pending)
+(PLAIN_TABLE)
+
+![Before and after, as handwriting: the same hand, text and tremor with an ordinary pen and with Rev J](../results/sim2j/fig_handwriting.png)
+
+*The ink only, at true scale on 8 mm ruled lines (SIM, test writer 0, seed 200). The ordinary pen is the Rev J pen
+with every device off.*
+
+(PLAIN_BULLETS)
+
+**Why the nose uses 1.3–2.7 W instead of the budget's 0.06–0.38 W** (details §8.1):
+
+- About half is real and is a design problem: the refill spring presses the ball on the paper along the nose; at a
+  50° tilt the paper pushes the ball sideways (0.126 N), and the C1S nose's soft gimbal and short magnet arm need
+  1.6 W of coil current to hold that, all the time the ball touches the paper (CALC). The budget's duty model left it
+  out. At this power the coil would pass its 120 °C limit within about 45 s of continuous writing (CALC).
+- About a third is mostly a simulator artefact: sim2's nose servo reacts to the position sensor's noise because the
+  signal is not filtered (0.7 W, SIM). A filtered servo would not pay this.
+- The rest is ball friction and holding the nose steady while the hand moves (0.4 W, SIM).
+- If the magnets are weaker than the image-method estimate (0.7×, the lead's range), the power doubles, the nose sags
+  under the load and tremor-free writing degrades (62 % of letters read, one writer, SIM). Halving the spring force to
+  0.075 N cuts the power to 1.3 W and let the tracker remove more tremor (SIM, one writer).
+
+**Why some runs moved tremor-free writing by 0.13–0.42 mm** (details §8.2): not the chosen tracker (0 mm). The
+0.42 mm comes from the heel wheel: switched on, it steers after the pen with a lag and its tyre resists sideways
+motion, so fast turns in the letters change shape (real in the model; the simulated writer learned the pen with the
+wheel retracted). The 0.13–0.15 mm comes from ai2's TCN, trained in another simulator, reading the Rev J pen's
+signals as tremor (retraining needed). ai2's gated listening tracker moved it 0.04–0.08 mm because its fallback, the
+Rev H tracker, locks onto fast writing.
 
 ## 2. What was simulated
 
@@ -199,17 +226,48 @@ sim2 is 3-D with the H1 contact law and the pen's mass properties.
 
 ## 6. Outcomes per condition (test writers 0–5, seeds 200–203; SIM)
 
-### 6.1 Essential tremor (pending)
+### 6.1 Essential tremor
 
-### 6.2 Severe tremor: writing through it or letting the pen write (pending)
+Each case: a v2 test writer writes "return library" after a 4 s rest on the paper, with hand tremor of one frequency
+and amplitude; the first test seed of each writer (6 cases per cell; the second seed was not run, §11). Numbers are
+the ink error with the controller divided by the device-off pen's in the same case (lower is better), then the
+letters the app reads.
 
-### 6.3 PD "write big" loops (pending)
+(ET_TABLE)
 
-### 6.4 Dysgraphia tracing (pending)
+(ET_TEXT)
 
-### 6.5 Dyslexia: lead-through and autowrite of a known text (pending)
+### 6.2 Severe tremor: writing through it, or letting the pen write
 
-### 6.6 The other hand model and the domain randomisation (pending)
+(SEVERE)
+
+### 6.3 Parkinson's "write big" loops
+
+A micrographia-like writer draws five loops against a 10 mm template; the writer's loops shrink from 0.8 to 0.6 of the
+target (drive study task b). Hands: relaxed (HAP-26 nominal arm) and lightly resisting (the HAP-26 upper 95 % CI arm).
+Test seeds 200–201.
+
+(LOOPS)
+
+### 6.4 Dysgraphia tracing
+
+Dysgraphia-like v2 learners copy "a big dog dug a deep pit by the pond" (the handwriting study's error model); the
+template is the copybook letter anchored at the learner's touchdown. Test writers 0–5, seed 200.
+
+(TRACING)
+
+### 6.5 Dyslexia: lead-through, and autowrite of a known text
+
+- Lead-through: a dyslexia-like learner (who writes "deep" as "daep") relaxes the hand; the pen goes down at each
+  stroke of the correct letters of "dug a deep", and the driven heel wheel pushes it along (with the nose adding the
+  detail). Test writers 0–3, seed 200.
+- Autowrite: the pen writes a known text itself (§6.2).
+
+(LEAD)
+
+### 6.6 The other hand model and the domain randomisation
+
+(OTHER)
 
 ## 7. RL in the physics simulator (`sim2j/rl.py`; ai2's EXP-L05 in closed loop)
 
@@ -311,7 +369,9 @@ same seed, no tremor (rule ≤ 25 µm). SIM, test writers:
 
 - **Code.** The online AKF equals fusion's batch AKF bit for bit (maximum difference 0.0 on a synthetic record; test in
   `sim2j/tests`). The Rev J handle's mass properties match the lead's budget within 0.1 % (test). 8 fast tests pass.
-- **Step size** (pending: `dt_check.json`, 25 µs against 50 µs).
+- **Step size** (`dt_check.json`; writers 0–1, 8 Hz × 1 mm): 25 µs against the test's 50 µs changes the device-off
+  ink error by 0.15 µm (439.9 → 439.8 µm), the tracker's ratio by less than 0.001 (0.729 both), the limit's by 0.001
+  (0.130 → 0.129) and the nose power by 2 % (2.27 → 2.22 W) (SIM). 50 µs is adequate for these rankings.
 - **Determinism.** Two runs with the device off and the same seed give identical ink (0.0 µm; test). This is the basis
   of the false-correction measure.
 - **Replay validity (TCN).** The nose's action changes the handle's motion by less than 1 % (handle-tip deviation 690–696 µm
@@ -367,6 +427,10 @@ Proposals only; the lead decides. Identifiers are the next free ones in the ledg
 
 ## 11. Open issues
 
+- **How realistic is this?** The pen's mechanics are detailed (3-D contact, stick-slip, the lead's masses and
+  sensors). The people are not: the writers are synthetic (print-like glyph letters re-timed to measured speeds), the
+  tremor is a model, the hand is a lumped spring–mass (or sim2's simple arm), and the writer does not adapt to the pen
+  during writing. The first real check is the recorded-data study now starting and EXP-V05.
 - The v2 writers' velocity spectrum is 6–8× the literature's 8–12 Hz share (§3); results on false detection are
   therefore conservative, and the ranking of estimators may change with realistic small writing (EXP-V07).
 - The writer does not relearn the pen with the heel wheel or the end-cap engaged (the adaptation was done with both

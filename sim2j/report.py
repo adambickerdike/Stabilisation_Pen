@@ -39,10 +39,10 @@ def _save(fig, name: str, header, rows, log=print):
     log(f"[report] {name}.png + .csv")
 
 
-CTL_LABEL = {"none": "Device off", "nose": "Nose (chosen tracker)", "nose_guarded": "Nose, guarded tracker",
+CTL_LABEL = {"none": "Ordinary pen (Rev J off)", "nose": "Rev J nose (chosen tracker)", "nose_guarded": "Nose, guarded tracker",
              "nose_gl": "Nose, ai2 gated listening", "nose_glg": "Nose, gated listening + guarded fallback",
-             "nose_noguard": "Nose, Rev H tracker as built", "nose_wheel": "Nose + heel wheel",
-             "nose_wheel_ec": "Nose + wheel + end-cap", "oracle": "Nose, perfect knowledge (limit)", "rl": "Nose + RL arbiter"}
+             "nose_noguard": "Nose, Rev H tracker as built", "nose_wheel": "Rev J nose + heel wheel",
+             "nose_wheel_ec": "Nose + wheel + end-cap", "oracle": "Perfect tremor knowledge (limit)", "rl": "Nose + RL arbiter"}
 
 
 # ------------------------------------------------------------------------------------------------ figures
@@ -57,7 +57,7 @@ def fig_et(log=print) -> None:
     rl = _load("et_rl")
     if rl:
         cells = dict(cells, **{k: v for k, v in rl["by_cell"].items() if k.endswith("|rl")})
-    ctls = [c for c in ("none", "nose", "nose_gl", "nose_wheel", "nose_wheel_ec", "rl", "oracle")
+    ctls = [c for c in ("none", "nose", "nose_wheel", "oracle")          # the rest are in the tables (clarity)
             if any(k.endswith("|" + c) for k in cells)]
     f0s = sorted({float(k.split("|")[0]) for k in cells})
     fig, axs = plt.subplots(2, len(f0s), figsize=(4.0 * len(f0s), 6.4), sharey="row")
@@ -76,9 +76,9 @@ def fig_et(log=print) -> None:
                 ax.plot(x, y, **PS.marker_kw(PS.SERIES[ci % 8]))
                 for p in pts:
                     rows.append([f0, p[0], c, key, p[1][key], p[1].get(key + "_sd"), p[1]["n"]])
-            ax.set_xlabel("tremor amplitude (mm, peak)")
-            ax.set_title(f"{f0:g} Hz" + (" - ink error" if i == 0 else " - letters read"))
-            ax.set_ylabel("ink error to the clean-ink letters (um)" if i == 0 else "letters read by the app (%)")
+            ax.set_xlabel("hand tremor (mm, peak)")
+            ax.set_title(f"{f0:g} Hz tremor" + (": wobble left in the ink" if i == 0 else ": letters the app reads"))
+            ax.set_ylabel("distance from own tremor-free letters (um rms)" if i == 0 else "letters read (%)")
     axs[0, 0].legend(fontsize=7)
     _save(fig, "fig_et", ["f0_Hz", "amp_mm", "controller", "metric", "mean", "sd", "n"], rows, log)
 
@@ -188,18 +188,25 @@ def fig_power(log=print) -> None:
     for i, (Fc, kms) in enumerate(sorted({(r["F_c_N"], r["km_scale"]) for r in calc})):
         rr = sorted([r for r in calc if r["F_c_N"] == Fc and r["km_scale"] == kms], key=lambda r: r["theta_deg"])
         ax.plot([r["theta_deg"] for r in rr], [r["P_static_W"] for r in rr], color=PS.SERIES[i],
-                label=f"CALC F_c {Fc:g} N, Km x{kms:g}")
+                label=f"CALC, side load only: spring {Fc:g} N, Km x{kms:g}")
         for r in rr:
             rows.append(["calc", r["theta_deg"], Fc, kms, r["P_static_W"]])
-    for k, v in (p.get("sim") or {}).items():
+    first = True
+    sims = sorted([(k, v) for k, v in (p.get("sim") or {}).items() if k.endswith("|clean_none")],
+                  key=lambda kv: kv[1]["P_nose_W"])
+    for j, (k, v) in enumerate(sims):
         Fc, kms, case = k.split("|")
-        if case == "clean_none":
-            ax.plot([50.0], [v["P_nose_W"]], **PS.marker_kw(PS.SERIES[4]))
+        if True:
+            ax.plot([50.0], [v["P_nose_W"]], label="SIM: whole nose power, tremor-free writing (writer 0)" if first else None,
+                    **PS.marker_kw(PS.SERIES[4]))
+            ax.annotate(f"{float(Fc):g} N, Km x{float(kms):g}", (50.0, v["P_nose_W"]), xytext=(6, 6 if j % 2 == 0 else -6),
+                        textcoords="offset points", fontsize=7, color=PS.INK2, va="center")
+            first = False
             rows.append(["sim_nose_held_tremor_free", 50.0, float(Fc), float(kms), v["P_nose_W"]])
-    ax.axhline(0.2, color=PS.STATUS["serious"], linewidth=1.2, label="0.2 W: the nose coil heat budget (study N)")
+    ax.axhspan(0.064, 0.376, color=PS.GRID, alpha=0.8, label="the integrated budget's nose power, 0.06-0.38 W (results/revJ)")
     ax.set_xlabel("pen tilt (deg)")
-    ax.set_ylabel("nose coil power holding the ball load (W)")
-    ax.set_title("Static ball load F_c cot(tilt) held by the C1S nose")
+    ax.set_ylabel("nose coil power (W)")
+    ax.set_title("Holding the refill spring's side load at the ball costs the C1S nose watts")
     ax.legend(fontsize=7)
     _save(fig, "fig_power", ["kind", "theta_deg", "F_c_N", "km_scale", "P_W"], rows, log)
 
@@ -228,7 +235,7 @@ def samples(log=print, w: int = 0) -> Dict:
     pens = ET.PenModels()
     su = ET.WriterSetup(w, pens, log=log)
     it = su.case.written.intended
-    t0 = float(su.case.written.letters[0].t0) - 0.2
+    t0 = float(su.case.written.letters[0].t0) - 0.02          # after the 4 s rest (its ink is not part of the writing)
     intended = _path50(it.t, it.xy, it.pen_down, t0=t0)
     panels = []
 
@@ -287,6 +294,7 @@ def samples(log=print, w: int = 0) -> Dict:
     PV.write_json(os.path.join(RESULTS, "samples.json"), out)
     log(f"[report] samples.json: {len(panels)} panels")
     fig_samples(out, log)
+    fig_handwriting(out, log)
     return out
 
 
@@ -315,6 +323,48 @@ def fig_samples(s: Dict, log=print) -> None:
         rows.append([p["id"], p["device"], mt.get("ink_err_um"), mt.get("letters_read"), mt.get("words_app"),
                      mt.get("recognised")])
     _save(fig, "fig_before_after", ["panel", "device", "ink_err_um", "letters_read", "words_app", "recognised"], rows, log)
+
+
+def fig_handwriting(s: Optional[Dict] = None, log=print) -> None:
+    """Before/after as handwriting: the ink only, at true scale, blue-black ball-pen line on 8 mm ruled paper (SIM)."""
+    import matplotlib.pyplot as plt
+    from stabpen import plotstyle as PS
+    s = s or (json.load(open(os.path.join(RESULTS, "samples.json"))) if os.path.exists(os.path.join(RESULTS, "samples.json")) else None)
+    if not s:
+        return
+    want = [("revj_none_8Hz_1mm", "Ordinary pen, tremor 1 mm"), ("revj_nose_8Hz_1mm", "Rev J, tremor 1 mm"),
+            ("revj_none_8Hz_2mm", "Ordinary pen, tremor 2 mm"), ("revj_nose_8Hz_2mm", "Rev J, tremor 2 mm"),
+            ("revj_none_5Hz_3mm", "Ordinary pen, severe tremor 3 mm"),
+            ("revj_autowrite_5Hz_3mm", "Rev J writes it (autowrite), severe tremor 3 mm")]
+    P = {p["id"]: p for p in s["panels"]}
+    rows_ = [(P[i], lab) for i, lab in want if i in P]
+    if not rows_:
+        return
+    PS.apply()
+    ink = "#1f2a44"
+    fig, axs = plt.subplots(len(rows_), 1, figsize=(8.0, 1.35 * len(rows_)))
+    csv_rows = []
+    for ax, (p, lab) in zip(np.atleast_1d(axs), rows_):
+        a = np.asarray(p["ink"], float)
+        if len(a) == 0:
+            continue
+        a[:, 0] -= np.nanmin(a[:, 0])
+        base = np.nanpercentile(a[a[:, 2] > 0.5, 1], 5) if np.any(a[:, 2] > 0.5) else 0.0
+        a[:, 1] -= base
+        for y in (0.0, 8.0):                                   # 8 mm ruled lines (the handwriting study's figures)
+            ax.axhline(y - 1.0, color="#b9cbe0", linewidth=0.8)
+        seg = np.split(np.arange(len(a)), np.flatnonzero(np.diff(a[:, 2]) != 0) + 1)
+        for sg in seg:
+            if a[sg[0], 2] > 0.5 and len(sg) > 1:
+                ax.plot(a[sg, 0], a[sg, 1], color=ink, linewidth=1.3, solid_capstyle="round", solid_joinstyle="round")
+        ax.set_aspect("equal")
+        ax.set_xlim(-2, max(70.0, float(np.nanmax(a[:, 0])) + 2))
+        ax.set_ylim(-4, 10)
+        ax.set_axis_off()
+        mt = p["metrics"]
+        ax.text(-2, 9.2, f"{lab}: the app reads '{mt.get('recognised', '')}'", fontsize=8, color=PS.INK2, va="bottom")
+        csv_rows.append([p["id"], lab, mt.get("recognised"), mt.get("letters_read"), mt.get("words_app"), mt.get("ink_err_um")])
+    _save(fig, "fig_handwriting", ["panel", "label", "app_reads", "letters_read", "words_app", "ink_err_um"], csv_rows, log)
 
 
 def replay(log=print, w: int = 0, rate: float = 200.0, window=(4.0, 7.0)) -> None:
@@ -429,3 +479,65 @@ def print_all() -> None:
         print(f"## {name}")
         print(json.dumps(d, indent=1, default=str)[:6000])
     print(md_et())
+
+
+# ------------------------------------------------------------------------------------------------ plain-words table
+def plain_table() -> str:
+    """One understandable number per condition, ordinary pen -> Rev J (SIM means over the test writers)."""
+    import numpy as np
+    from . import BUILD
+
+    def rows(n):
+        p = os.path.join(BUILD, f"{n}_rows.json")
+        return list(json.load(open(p)).values()) if os.path.exists(p) else []
+    et = [r for r in rows("et") + rows("et2") if r.get("kind") == "tremor"]
+    out = ["| Who | What Rev J does | Measure | Ordinary pen | Rev J |", "|---|---|---|---|---|"]
+
+    def m(rs, key, sc=1.0):
+        v = [r[key] * sc for r in rs if r.get(key) is not None]
+        return float(np.mean(v)) if v else float("nan")
+    for amp, lab in ((1.0, "moderate (1 mm)"), (2.0, "strong (2 mm)")):
+        sel = lambda c: [r for r in et if r["ctl"] == c and abs(r["amp_mm"] - amp) < 1e-6 and r["f0"] >= 8]
+        if sel("none") and sel("nose"):
+            out.append(f"| Essential tremor, {lab}, 8–12 Hz | the nose cancels the tremor it detects | tremor left in "
+                       f"the writing (mm, rms) | {m(sel('none'), 'ink_err_um', 1e-3):.2f} | "
+                       f"{m(sel('nose'), 'ink_err_um', 1e-3):.2f} (nose); {m(sel('nose_wheel'), 'ink_err_um', 1e-3):.2f} "
+                       f"(nose + wheel); limit {m(sel('oracle'), 'ink_err_um', 1e-3):.2f} |")
+    sel4 = lambda c: [r for r in et if r["ctl"] == c and r["f0"] < 5 and r["amp_mm"] > 1.5]
+    if sel4("none"):
+        out.append(f"| Essential tremor at 4 Hz, 2 mm | the detector does not see 4 Hz; the heel wheel damps | tremor left "
+                   f"(mm) | {m(sel4('none'), 'ink_err_um', 1e-3):.2f} | {m(sel4('nose'), 'ink_err_um', 1e-3):.2f} (nose); "
+                   f"{m(sel4('nose_wheel'), 'ink_err_um', 1e-3):.2f} (nose + wheel) |")
+    aw = [r for r in rows("autowrite") if r.get("task") == "autowrite" and r.get("plan_ok")]
+    sev = [r for r in rows("autowrite") if r.get("task") == "severe"]
+    if aw and sev:
+        a3 = [r for r in aw if r["amp_mm"] == 3.0]
+        s3 = [r for r in sev if r["ctl"] == "none" and r["amp_mm"] == 3.0]
+        out.append(f"| Severe tremor (3 mm) | the pen writes a known text itself (autowrite) while the hand sweeps | "
+                   f"letters the app reads | {m(s3, 'letters_read', 100):.0f} % | {m(a3, 'letters_read', 100):.0f} % |")
+    g = rows("guided")
+    lo = [r for r in g if r.get("task") == "loops"]
+    if lo:
+        out.append(f"| Parkinson's, small writing (loops shrink) | the wheel and nose hold the loops to the 10 mm template | "
+                   f"loop height, % of target | {m([r for r in lo if r['ctl'] == 'none'], 'loop_height_ratio', 100):.0f} % | "
+                   f"{m([r for r in lo if r['ctl'] == 'wheel_nose'], 'loop_height_ratio', 100):.0f} % |")
+    tr = [r for r in g if r.get("task") == "tracing"]
+    if tr:
+        out.append(f"| Dysgraphia (malformed letters) | the nose pulls the ink onto the copybook letter; the wheel steers | "
+                   f"distance from the copybook letters (mm) | {m([r for r in tr if r['ctl'] == 'none'], 'target_err_um', 1e-3):.2f} | "
+                   f"{m([r for r in tr if r['ctl'] == 'wheel_nose'], 'target_err_um', 1e-3):.2f} |")
+    ld = [r for r in g if r.get("task") == "lead"]
+    if ld:
+        out.append(f"| Dyslexia, led through 'dug a deep' (hand relaxed) | the wheel drives the pen along the right letters | "
+                   f"letters read as the right letter | {m([r for r in ld if r['ctl'] == 'writer_alone'], 'letters_read', 100):.0f} % "
+                   f"(writing alone) | {m([r for r in ld if r['ctl'] == 'lead_nose'], 'letters_read', 100):.0f} % |")
+    a0 = [r for r in aw if r["amp_mm"] == 0.0]
+    if a0:
+        out.append(f"| Dyslexia or anyone: known text | autowrite | words right, out of 5 | – | "
+                   f"{m(a0, 'words_app', 5):.1f} |")
+    cl = [r for r in rows("et") if r.get("kind") == "clean"]
+    if cl:
+        out.append(f"| Anyone, no tremor | nothing should change | how far the pen moves normal writing (mm) | 0 | "
+                   f"{m([r for r in cl if r['ctl'] == 'nose'], 'moved_vs_clean_um', 1e-3):.2f} (nose); "
+                   f"{m([r for r in cl if r['ctl'] == 'nose_wheel'], 'moved_vs_clean_um', 1e-3):.2f} (with the wheel on) |")
+    return "\n".join(out)

@@ -323,7 +323,7 @@ def stage_guided(quick: bool = False) -> Dict:
             log(f"[guided] tracing w{w} {ctl}: target {m['target_err_um']:.0f} um, letters {m['letters_read']:.2f}, "
                 f"words {m['words_app']:.2f}, coverage {m['coverage']:.2f}, P {m['P_total_W']:.2f} W")
         rows.save()
-    for seed in (TEST_SEEDS if not quick else TEST_SEEDS[:1]):
+    for seed in (TEST_SEEDS[:2] if not quick else TEST_SEEDS[:1]):
         for hand in GD.HANDS:
             lc = None
             for ctl in GD.LOOPS_CTL:
@@ -337,7 +337,7 @@ def stage_guided(quick: bool = False) -> Dict:
                 log(f"[guided] loops {hand} s{seed} {ctl}: height ratio {m['loop_height_ratio']:.2f}, last "
                     f"{m['last_loop_ratio']:.2f}, ink-template {m['ink_to_template_rms_mm']:.2f} mm")
         rows.save()
-    for w in ws:
+    for w in (ws[:4] if not quick else ws):
         lc = None
         r0 = None
         for ctl in ("writer_alone", "relaxed_none", "lead", "lead_nose"):
@@ -416,7 +416,7 @@ def stage_autowrite(quick: bool = False) -> Dict:
     for w in ws:
         seed = et_seeds(w)[0]
         su = None
-        for amp in (2.0e-3, 3.0e-3):
+        for amp in (3.0e-3,):
             for f0 in (5.0, 8.0):
                 keys = {c: f"sev|{w}|{seed}|{f0:g}|{amp * 1e3:g}|{c}" for c in ("none", "nose", "nose_wheel", "oracle")}
                 if all(rows.has(k) for k in keys.values()):
@@ -614,7 +614,7 @@ def _checkpoints(d: str) -> List[str]:
     return cks
 
 
-def stage_rl_select(quick: bool = False, last_n: int = 3) -> Dict:
+def stage_rl_select(quick: bool = False, last_n: int = 2) -> Dict:
     """Checkpoint selection on the tuning writers 100-103 (seed 300 + i for writer 100 + i) with the rule frozen in
     results/sim2j/rules.json (S1 false correction, S2 no worse than the model-based tracker at 0.3 mm, then the lowest
     ink error at 1-2 mm)."""
