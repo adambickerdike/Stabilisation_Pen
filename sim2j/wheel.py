@@ -58,6 +58,8 @@ class WheelParams:
     R_w: float = 0.0                # radial position of the wheel's contact in the ring plane (m); 0: at the ring's
                                     # contact radius with the protrusion h_w along the paper normal (study D)
     kP_copper: float = 3.48         # W/N^2 copper loss of the drive train (drive concepts.train, CALC)
+    F_peak: float = 0.67            # N peak drive force at the wheel (study D; the lead's Rev J train: 0.603 N)
+    F_cont: float = 0.41            # N continuous (thermal) drive force (study D; the lead's Rev J train: 0.369 N)
     eta_mech: float = 0.8           # mechanical efficiency for the positive-work power estimate (drive)
     label: str = ("PROPOSED DESIGN / ASSUMPTION / CALC after study D (docs/grounded_drive.md T3, T6, T7; "
                   "drive/scenarios.Hardware; results/drive/rules.json)")

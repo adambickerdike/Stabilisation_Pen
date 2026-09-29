@@ -372,6 +372,11 @@ class LeadCase:
         from aiguide.metrics import letter_metrics
         gc = self.gc
         A, B = pen_down_runs(r)
+        # the simulation starts with the ball resting on the paper before the writer lifts for the approach: runs that
+        # start before the schedule's first pen-down are not strokes
+        t0_down = float(self.it.t[int(np.argmax(self.it.pen_down))]) - 0.05
+        keep = r["t"][A] >= t0_down
+        A, B = A[keep], B[keep]
         ink = r.ink()
         q = np.column_stack([r["qpx"], r["qpy"]]) if "qpx" in r.idx else None
         rows = []

@@ -335,7 +335,8 @@ def wheel_params(source: Optional[str] = None, mu: float = 0.9):
     cp = _v(hw["contact_point_m"])
     return WheelParams(mu=mu, R_w=abs(cp[0]), h_w=0.0, P=_v(hw["preload_N"]), travel=_v(hw["spring_travel_m"]),
                        k_s=_v(hw["spring_rate_N_per_m"]), k_lat=_v(hw["k_lat_N_per_m"]), c_rr=_v(hw["rolling_coef"]),
-                       m_r=_v(hw["reflected_mass_kg"]), F_bdc=_v(hw["backdrive_N"]), kP_copper=mot["R_ohm"] / kF ** 2)
+                       m_r=_v(hw["reflected_mass_kg"]), F_bdc=_v(hw["backdrive_N"]), kP_copper=mot["R_ohm"] / kF ** 2,
+                       F_peak=_v(hw["F_peak_N"]), F_cont=_v(hw["F_cont_N"]))
 
 
 # ------------------------------------------------------------------------------------------------ configuration

@@ -377,7 +377,7 @@ class Firmware:
         self.was_con_w = con
         self.up_w = 0.0 if con else self.up_w + self.Ts
         # force cap from the traction estimate, slew
-        self.capd = min(g.F_cap, g.k_safe * self.muh * max(N_meas, 0.0))
+        self.capd = min(g.F_cap, self.wheel.wp.F_peak, g.k_safe * self.muh * max(N_meas, 0.0))
         if has_long:
             f = max(-self.capd, min(self.capd, F_along))
         else:

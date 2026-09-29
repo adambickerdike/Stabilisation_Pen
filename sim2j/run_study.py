@@ -827,8 +827,13 @@ def stage_rl_test(quick: bool = False) -> Dict:
     return body
 
 
+def stage_report(quick: bool = False) -> None:
+    from . import report as RP
+    RP.run_all(log=log, with_runs=not quick)
+
+
 # ------------------------------------------------------------------------------------------------ main
-STAGES: Dict[str, Callable] = {"rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
+STAGES: Dict[str, Callable] = {"report": stage_report, "rl_train": stage_rl_train, "rl_select": stage_rl_select, "rl_test": stage_rl_test,
                                "tune": stage_tune, "writers": stage_writers, "writer_cmp": stage_writer_cmp,
                                "verify": stage_verify, "et": stage_et, "guided": stage_guided,
                                "autowrite": stage_autowrite, "dr": stage_dr, "dt": stage_dt, "power": stage_power}
