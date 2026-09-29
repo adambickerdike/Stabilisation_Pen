@@ -202,7 +202,10 @@ def auth_search(design: Dict, n_random: int = 60, n_local: int = 30, seed: int =
 
     space = dict(AUTH_SPACE)
     space.update(conf_space or {})
-    run([sample(space, rng) for _ in range(n_random)])
+    raw_p = {"a_lo": 0.0, "a_hi": 0.0, "tau_amp": 0.3, "tau_up": 0.005, "tau_down": 0.005, "gain": 1.0}
+    if conf_space:
+        raw_p.update({"r_lo": 0.0, "r_hi": 1e-9})
+    run([raw_p] + [sample(space, rng) for _ in range(n_random)])        # history[0] = the estimator without a gate
     for rnd in range(2):
         best = sorted(hist, key=lambda h: h["score"])[:3]
         run([perturb(b["params"], space, rng, 0.3 if rnd == 0 else 0.15) for b in best

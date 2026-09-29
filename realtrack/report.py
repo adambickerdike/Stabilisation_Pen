@@ -152,4 +152,43 @@ def write(quick: bool = False, log=print) -> Dict:
             out[k] = v
     (od / "realtrack.json").write_text(json.dumps(out, indent=1, default=float))
     log(f"[report] {od / 'realtrack.json'}")
+    figures(out, od, fr, quick, log)
+    from . import evidence as EVD
+    EVD.write(od / "evidence_rows.csv", out)
+    log(f"[report] {od / 'evidence_rows.csv'}")
     return out
+
+
+FAMILY_LABEL = {"auth_s2_akf_amp": "AKF + amplitude gate", "auth_s2_wflc_amp": "WFLC + amplitude gate",
+                "auth_s2_epll_amp": "EPLL + amplitude gate", "gate_s2_gate_listen": "listening + binary gate",
+                "auth_s2_listen_conf": "listening + soft confidence", "joint_akf": "AKF + gate, tuned jointly",
+                "auth_net_main": "TCN (real data) + gate", "auth_ai2tcn": "ai2 TCN (synthetic) + gate",
+                "gate_s2_glg": "GLG (G4 fallback), retuned"}
+
+
+def figures(out: Dict, od: Path, fr: Dict, quick: bool, log=print) -> None:
+    from . import figures as FG
+    from . import test as T
+    ag = out["test"]["cards"]
+    devs = ["none", "revJ_gated|deltapen", "revJ_g4|deltapen", "revJ_new|deltapen", "revJ_oracle"]
+    FG.words_chart(od, ag, devs)
+    FG.tremor_chart(od, ag, devs)
+    fronts = {}
+    for stem, lab in FAMILY_LABEL.items():
+        v = _load(TU.TUNE_DIR / f"{stem}.json")
+        if v:
+            fronts[lab] = all_points(v["history"])
+    ch = (fr.get("tuning_full_plant") or {}).get(fr.get("chosen_name")) or {}
+    chosen = None
+    if ch:
+        chosen = {"clean_um": ch["summary"].get("clean_um_mean"), "severe_ratio": ch["summary"].get("severe_ratio")}
+    FG.tradeoff_chart(od, fronts, chosen)
+    if out.get("separability"):
+        FG.separability_chart(od, out["separability"])
+    dl = out.get("delay")
+    if dl:
+        FG.delay_chart(od, dl["servo_lag"], dl["decompose"], dl["horizon"])
+    if not quick:
+        for pr in T.picture_runs(log=log):
+            FG.picture(od, pr)
+    log("[report] figures written")

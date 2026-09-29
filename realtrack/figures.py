@@ -160,7 +160,7 @@ def separability_chart(od: Path, dist: Dict[str, Dict[str, List[float]]]) -> Pat
     """dist: {feature label: {'clean': quantiles, 'severe': quantiles, ...}} with 'q' = the quantile levels.  ECDF-like
     step curves per level for each feature (two panels)."""
     plt, PS = _plt()
-    feats = [k for k in dist if k != "q"]
+    feats = [k for k, v in dist.items() if isinstance(v, dict) and "clean" in v]
     fig, axs = plt.subplots(1, len(feats), figsize=(5.2 * len(feats), 4.4))
     axs = np.atleast_1d(axs)
     q = np.array(dist["q"])

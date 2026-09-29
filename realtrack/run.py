@@ -6,7 +6,8 @@ Stages (each resumes from realtrack/build; the container may restart; ONE proces
   cases    the tuning selection set (cases.py): 10 tuning notes x PD/ET x 4 amplitudes + the clean notes
   search   stage 1 (raw estimators), stage 2 (soft authority), the retuned binary gate, the soft line confidence, the
            joint AKF search (search.py; the rules are in tune.py)
-  learn    the FIR (linear) and the TCN trained on real tuning inputs, cross-fitted by fold (learned.py, netmodel.py)
+  learn    the FIR (linear) and the TCN trained on real tuning inputs, cross-fitted by fold (learned.py, netmodel.py),
+           the soft authority on the learned outputs (and on ai2's TCN), then study W's GLG (chain_after.py)
   freeze   the finalists re-run in the full HW1 plant on the tuning cases; the choice by tune.py's rules; writes
            results/realtrack/frozen.json (test.py refuses to run without it)
   test     the one test run on R's test split (test.py) and the CC BY before/after picture runs
@@ -39,21 +40,13 @@ def stage_cases(quick: bool):
 def stage_search(quick: bool):
     from . import search as SR
     SR.stage1(log=log)
-    SR.stage2(log=log) if hasattr(SR, "stage2") else None
+    SR.stage2(log=log)
     SR.stage2b(log=log)
 
 
 def stage_learn(quick: bool):
-    from . import cases as C
-    from . import learned as LE
-    from . import netmodel as NM
-    import json
-    if not (LE.MODEL_DIR / "fir_fir_main.json").exists():
-        LE.train_fir(C.tuning_specs(), L=128, tag="fir_main", log=log)
-    NM.build_train_set(log=log)
-    NM.selection_arrays(log=log)
-    if not (NM.MODEL_DIR / "net_main_crossfit.json").exists():
-        NM.cross_fit(log=log, tag="net_main")
+    from . import chain_after
+    chain_after.main()
 
 
 def stage_freeze(quick: bool):

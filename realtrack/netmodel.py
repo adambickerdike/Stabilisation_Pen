@@ -318,7 +318,7 @@ def estimate(st, tag: str, fold, case=None) -> np.ndarray:
 
 
 # ------------------------------------------------------------------ the cross-fitting driver (fixed rule)
-MAX_EPOCHS_F0 = 14
+MAX_EPOCHS_F0 = 10
 
 
 def cross_fit(log=print, tag: str = "net_main", cfg: Optional[Dict] = None, max_epochs: int = MAX_EPOCHS_F0) -> Dict:

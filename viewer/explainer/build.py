@@ -80,6 +80,8 @@ SIM2J_ET = "results/sim2j/et.json"
 REALDATA_JSON = "results/realdata/realdata.json"         # study R: real recorded handwriting and tremor (HW1)
 REALDATA_SAMPLES = "results/realdata/samples.json"
 SIM_REAL = "SIMULATION (model HW1) with real recorded inputs"
+AI3_JSON = "results/ai3/ai3.json"                         # study S: spelling help, prediction, clarity
+WHOLEPEN_SUMMARY = "results/wholepen/summary.json"         # study W: shifting the whole pen
 SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
 SIM2J_PARTIAL: list = []      # coverage notes when the study finished with parts still to run
 SIM2J_PENDING: list = []      # why whole-pen results were left out (a partial summary of a run in progress)
@@ -421,6 +423,46 @@ def facts_realdata() -> dict | None:
         return None
 
 
+def facts_ai3() -> dict | None:
+    """Study S's headline numbers (results/ai3/ai3.json): misspellings put right on paper per cue, the spell checker's
+    catch rate with the letters known and with the pen reading them, and word completion after one letter."""
+    if not exists(AI3_JSON):
+        return None
+    try:
+        d = load(AI3_JSON)
+        cues = d["cues"]["test"]["nominal"]
+        sp = d["spell"]["test"]["score"]
+        own = d["words"]["spelling_v2"]["independent"]["test"]
+        pt = d["predict"]["test"]
+        top3 = [v["personalised (chosen)"]["after1_top3"] for v in pt.values()
+                if isinstance(v, dict) and isinstance(v.get("personalised (chosen)"), dict)]
+        return {"pause_fixed_of10": cues["pause_offer"]["fixed_on_paper_per_10_errors"],
+                "lift_fixed_of10": cues["tick_lift"]["fixed_on_paper_per_10_errors"],
+                "caught_known": sp["detection_rate"], "fa_known": sp["fa_per_100_correct"],
+                "caught_own": own["detection_rate"], "fa_own": own["fa_per_100_correct"],
+                "top3_after1": [min(top3), max(top3)] if top3 else None,
+                "label": "SIMULATION and CALCULATION on real letters and real misspellings (study S)", "source": AI3_JSON}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as ex:
+        warn(f"{AI3_JSON} could not be read ({ex})")
+        return None
+
+
+def facts_wholepen() -> dict | None:
+    """Study W's collar against the same pen with the collar locked (results/wholepen/summary.json)."""
+    if not exists(WHOLEPEN_SUMMARY):
+        return None
+    try:
+        sm = load(WHOLEPEN_SUMMARY)
+        rows = [r for r in (sm.get("tail_and_collar_vs_locked_test") or []) + (sm.get("tail_and_collar_vs_locked_grips") or [])
+                if str(r.get("active", "")).startswith("collar") and isinstance(r.get("gain_vs_locked"), (int, float))]
+        g = [r["gain_vs_locked"] for r in rows]
+        return {"collar_gain": [min(g), max(g)] if g else None, "n": len(g),
+                "label": "SIMULATION (study W, the collar carrying the Rev J pen)", "source": WHOLEPEN_SUMMARY}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as ex:
+        warn(f"{WHOLEPEN_SUMMARY} could not be read ({ex})")
+        return None
+
+
 def panels_realdata() -> list:
     """Study R's committed pictures (results/realdata/samples.json; letters of UCI Character Trajectories, CC BY, with
     real recorded tremor): one panel per population and size, variants keyed none / gated / oracle / tcn / revh."""
@@ -575,6 +617,14 @@ def build_facts(lay: dict):
     if rd:
         facts["realdata"] = rd
         srcs.append(REALDATA_JSON)
+    a3 = facts_ai3()
+    if a3:
+        facts["ai3"] = a3
+        srcs.append(AI3_JSON)
+    wp = facts_wholepen()
+    if wp:
+        facts["wholepen"] = wp
+        srcs.append(WHOLEPEN_SUMMARY)
     s2 = facts_sim2j()
     if s2:
         facts["sim2j"] = s2
@@ -1204,10 +1254,10 @@ MECHANISMS = [
     {"key": "tail", "n": 3, "tok": "--g-inertial", "name": "The tail weight", "where": "in the end-cap you can take off",
      "sentence": ('<b class="mv">A {ec1_slug}&nbsp;g tungsten weight in the end-cap</b> is <b>pushed from side to side by coils</b>, '
                   'and its push-back is meant to <b>steady the whole pen</b>; it is far too weak to move letters.'),
-     "uses": ["meant to calm a fast shake", "optional"],
-     "note": ("Optional, and not shown to help yet: a simpler model gave a further {ec1_rng}&nbsp;% less shake in the ink, but "
-              "the whole-pen physics simulation gave no gain, and a plain weight of the same mass, locked in place, did as well "
-              "in the simpler model for one of three grips. It stays optional until it beats a locked weight."),
+     "uses": ["tested: no gain", "not in the product"],
+     "note": ("Not in the product: a simpler model gave a further {ec1_rng}&nbsp;% less shake in the ink, but the whole-pen "
+              "physics simulation gave no gain, and in study W no tail weight or gyroscope robustly beat a plain weight of the "
+              "same mass locked in place. It stays only as a bench comparison."),
      "evidence": [("SIMULATION (model H1)", "results/revJ1/endcap.json: Rev J.1's lighter end-cap; 8-12 Hz, 1-2 mm, grip splits 0.3/0.5/0.7"),
                   ("SIMULATION (sim2, whole Rev J pen)", "results/sim2j/et.json: 0.67 of the ordinary pen's ink error with it, 0.65 without"),
                   ("PROPOSED DESIGN", "")]},
@@ -1618,18 +1668,28 @@ def simple_rows_revj(f: dict) -> list:
                            "(0.27 mm) but only 63 % of words were read"},
             "verdict": "A little closer, and just as readable.",
             "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
-    if "lead" in C:
-        c = C["lead"]
-        aw0 = C.get("autowrite_no_tremor")
+    a3 = f.get("ai3") or {}
+    if a3.get("pause_fixed_of10") is not None:
         rows.append({
-            "id": "lead", "mech": ["heel", "tip"], "who": "A word you cannot spell", "sub": "Dyslexia: the pen leads your hand through the right spelling",
-            "help": "The driven heel wheel pushes a relaxed hand along the right letters.",
-            "pic": None, "nopic": "No writing pictures were saved from this run.",
-            "num": {"label": "Words read correctly", "b": pc10(c["words"][0]), "a": pc10(c["words"][1]), "unit": "%",
-                    "sub": f"{c['n']} simulated learners; the letters came out distorted and slow"
-                           + (f". When the pen writes the right spelling itself (autowrite), {pc10(aw0['words'][1])} % are read" if aw0 else "")},
-            "verdict": "Little help. The app's spelling help (being built) and autowrite do better.",
-            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+            "id": "spell", "mech": ["app", "tip"], "who": "A word you cannot spell", "sub": "Dyslexia: the app spots a misspelling, and the pen gives a small tick at the next pause",
+            "help": "The app reads your letters as you write. When a word looks misspelled, the pen ticks once at the next pause and the app shows the right spelling. Your ink is never changed.",
+            "pic": None, "nopic": "Try it yourself: the spelling prototype page (ai3/demo/index.html in the project files).",
+            "num": {"label": "Misspellings put right on paper", "b": 0, "a": round(10 * a3["pause_fixed_of10"]), "unit": "%",
+                    "sub": (f"the app spots {round(100 * a3['caught_known'])} % of real misspellings when it knows the letters, "
+                            f"{round(100 * a3['caught_own'])} % when the pen reads them itself, with about {a3['fa_known']:.0f} false alarms per 100 words. "
+                            "How writers respond to the tick is assumed")},
+            "verdict": "A real help, from the app's spelling check. Leading the hand through the spelling helped little.",
+            "ev": [a3.get("label", "SIMULATION")], "src": AI3_JSON, "ev_note": "Real children's misspellings and real letters; the writers' responses are assumptions."})
+    if a3.get("top3_after1"):
+        lo, hi = a3["top3_after1"]
+        rows.append({
+            "id": "predict", "mech": ["app"], "who": "Finding the next word", "sub": "Anyone, when writing is slow or tiring",
+            "help": "After your first letter the app offers the likeliest words; if you accept one, the pen can write the rest for you.",
+            "pic": None, "nopic": "No picture: suggestions appear in the app.",
+            "num": {"label": "Right word among 3 suggestions after one letter", "text": f"{round(100 * lo)}–{round(100 * hi)} %",
+                    "sub": "on a person's own running text, in about 3 ms"},
+            "verdict": "Saves effort, not time: letting the pen finish a word takes a typical writer about 15 % longer.",
+            "ev": [a3.get("label", "CALCULATION")], "src": AI3_JSON, "ev_note": ""})
     rec = s2.get("ratio_fast_ec")
     rw = s2.get("ratio_fast_wheel")
     if rec is not None and rw is not None:
@@ -1641,8 +1701,19 @@ def simple_rows_revj(f: dict) -> list:
             "pic": None, "nopic": "No writing pictures for this comparison.",
             "num": {"label": "Shake left in the ink", "text": "no better",
                     "sub": f"{rec:.2f} of the ordinary pen's with it, {rw:.2f} without, in the physics simulation{h1}"},
-            "verdict": "No gain here. It stays optional and must beat a plain weight of the same mass.",
+            "verdict": "No gain here, so the tail weight is not in the product.",
             "ev": [SIM_SIM2], "src": SIM2J_ET, "ev_note": ev_note})
+    wp = f.get("wholepen") or {}
+    if wp.get("collar_gain"):
+        g0, g1 = wp["collar_gain"]
+        rows.append({
+            "id": "collar", "mech": ["tip"], "who": "Moving the whole pen", "sub": "A collar you hold; the whole inner pen swings inside it on a hinge",
+            "help": "We designed the strongest compact way to shift the whole pen (±4 mm at the tip, 40 g, very little holding power) and tested it on top of the moving nose.",
+            "pic": None, "nopic": "No writing pictures for this comparison.",
+            "num": {"label": "Shake left, against the same pen with the collar locked", "text": "no better",
+                    "sub": f"{100 * g0:+.0f} % to {100 * g1:+.0f} % in the simulation (a real gain would need at least 10 %)"},
+            "verdict": "Not adopted: the moving nose already reaches far enough. Knowing the shake in time is what is missing.",
+            "ev": [wp.get("label", "SIMULATION")], "src": WHOLEPEN_SUMMARY, "ev_note": ""})
     if a.get("gated") and a.get("clean_copy"):
         rows.append({
             "id": "clean", "mech": ["app"], "who": "Notes you must read later", "sub": "A strong shake",

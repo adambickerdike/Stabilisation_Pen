@@ -87,3 +87,42 @@ def delay(chosen: Dict, log=print) -> Dict:
     p.write_text(json.dumps(out, default=float))
     log(f"[analysis] delay in {out['elapsed_s']:.0f} s")
     return out
+
+
+def learned(log=print) -> Dict:
+    """The learned estimators on the tuning cases (cross-fitted where trained here): raw and with the soft authority."""
+    from . import evaluate as EV
+    from . import netmodel as NM
+    from . import tune as TU
+    p = BUILD_DIR / "learned.json"
+    if p.exists():
+        return json.loads(p.read_text())
+    out = {}
+    rows = EV.eval_batch([{"name": "fir", "family": "fir", "params": {"tag": "fir_main", "fold": "auto"}}],
+                         C.tuning_specs(), "deltapen", log=log)
+    out["fir_raw"] = EV.summarize(rows)["fir"]
+    for tag, key in (("auth_net_main", "net"), ("auth_ai2tcn", "ai2_tcn")):
+        v = json.loads((TU.TUNE_DIR / f"{tag}.json").read_text()) if (TU.TUNE_DIR / f"{tag}.json").exists() else None
+        if v:
+            out[f"{key}_raw"] = v["history"][0]["summary"]
+            out[f"{key}_gated"] = {"params": v["best"]["params"], "summary": v["best"]["summary"],
+                                   "passes": TU.passes(v["best"]["summary"])}
+    cf = NM.MODEL_DIR / "net_main_crossfit.json"
+    if cf.exists():
+        c = json.loads(cf.read_text())
+        out["net_training"] = {k: c.get(k) for k in ("n_cases", "epochs", "fold0_val_loss", "params", "cfg",
+                                                    "macs_per_step", "elapsed_s")}
+        try:
+            data = NM.load_arrays(sorted(str(x) for x in (NM.TRAIN_DIR / "selection").glob("tune_n*_severe.npz")))
+            out["int8"] = NM.int8_check("net_main", data)
+        except Exception as e:                     # the int8 check is informative only
+            out["int8"] = {"error": repr(e)}
+
+    def fmt(s):
+        return (f"severe tip {s.get('severe_ratio', float('nan')):.2f} x, clean {s.get('clean_um_mean', float('nan')):.0f} um"
+                if s else "n/a")
+    out["summary"] = "; ".join(f"{k}: {fmt(out.get(k) if 'gated' not in k else (out.get(k) or {}).get('summary'))}"
+                               for k in ("fir_raw", "net_raw", "net_gated", "ai2_tcn_raw", "ai2_tcn_gated") if k in out)
+    p.write_text(json.dumps(out, default=float))
+    log(f"[analysis] learned: {out['summary']}")
+    return out

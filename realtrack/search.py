@@ -162,7 +162,8 @@ def hyst_gate(t_up, ratio, amp, p: Dict, every: float = 0.05) -> np.ndarray:
 
 
 def gate_search(D_design: Dict, n_random: int = 60, n_local: int = 30, seed: int = 23, tag: str = "gate",
-                log=print) -> Dict:
+                log=print, fallbacks=("revh", "none"), init: Optional[List[Dict]] = None,
+                det_configs: Optional[tuple] = None) -> Dict:
     """Search the binary (hysteresis) gate on cached per-case detector outputs; command = g D + (1 - g) fb, fb the
     Rev H tracker as built (R's gated tracker) or nothing."""
     from . import cases as C
@@ -182,10 +183,15 @@ def gate_search(D_design: Dict, n_random: int = 60, n_local: int = 30, seed: int
                               case=case, sensor="deltapen")
         dets = {}
         for k, dc in DET_CONFIGS.items():
+            if det_configs and k not in det_configs:
+                continue
             dp = dict(SM.DET_DEFAULTS); dp.update(dc)
             det = SM.detector(st, dp)
             dets[k] = (det["t"], det["ratio"], det["amp"])
-        data.append((s, D, case.dh_revh("deltapen"), dets, TU._light(case)))
+        fbs = {"revh": case.dh_revh("deltapen")}
+        if "g4" in fallbacks:
+            fbs["g4"] = E.g4(st)[0]
+        data.append((s, D, fbs, dets, TU._light(case)))
         del case, st
     log(f"[gate] {tag}: detectors and estimates on {len(data)} cases in {time.time() - t0:.0f} s")
     hist = []
@@ -193,13 +199,13 @@ def gate_search(D_design: Dict, n_random: int = 60, n_local: int = 30, seed: int
     def run(plist):
         for p in plist:
             rows = []
-            for s, D, fb, dets, lc in data:
+            for s, D, fbs, dets, lc in data:
                 t_up, ratio, amp = dets[p["det"]]
                 gu = hyst_gate(t_up, ratio, amp, p)
                 tick_t = lc.tick_t
                 k = np.searchsorted(t_up, tick_t, side="right") - 1
                 g = np.where(k >= 0, gu[np.clip(k, 0, len(gu) - 1)], 0.0)[:, None]
-                d = p["gain"] * g * D + ((1.0 - g) * fb if p["fallback"] == "revh" else 0.0)
+                d = p["gain"] * g * D + ((1.0 - g) * fbs[p["fallback"]] if p["fallback"] in fbs else 0.0)
                 m = SV.fast_measures(lc, -d, pp)
                 m.update({"design": "x", "case": s["id"], "level": s["level"], "kind": s.get("kind"),
                           "gate_open": float(np.mean(g[lc.arrays["down_ticks"] > 0.5] > 0.5))})
@@ -207,14 +213,18 @@ def gate_search(D_design: Dict, n_random: int = 60, n_local: int = 30, seed: int
             sm = EV.summarize(rows)["x"]
             hist.append({"params": dict(p), "summary": sm, "score": TU.score(sm, True)})
 
-    init = [{"det": "ai2", "r_on": 5.0, "r_off_frac": 0.5, "t_on": 0.5, "t_off": 1.0, "ramp": 0.2, "amp_lo": 0.15e-3,
+    init_ = [{"det": "ai2", "r_on": 5.0, "r_off_frac": 0.5, "t_on": 0.5, "t_off": 1.0, "ramp": 0.2, "amp_lo": 0.15e-3,
              "amp_hi_mult": 0.35 / 0.15, "fallback": "revh", "gain": 1.0},
             {"det": "ai2", "r_on": 8.0, "r_off_frac": 0.5, "t_on": 0.5, "t_off": 1.0, "ramp": 0.2, "amp_lo": 0.15e-3,
              "amp_hi_mult": 0.35 / 0.15, "fallback": "none", "gain": 1.0}]
-    run(init + [TU.sample(GATE_SPACE, rng) for _ in range(n_random)])
+    space = dict(GATE_SPACE)
+    space["fallback"] = ("choice", tuple(fallbacks))
+    if det_configs:
+        space["det"] = ("choice", tuple(det_configs))
+    run((init_ if init is None else init) + [TU.sample(space, rng) for _ in range(n_random)])
     for rnd in range(2):
         best = sorted(hist, key=lambda h: h["score"])[:3]
-        run([TU.perturb(b["params"], GATE_SPACE, rng, 0.3 if rnd == 0 else 0.15) for b in best
+        run([TU.perturb(b["params"], space, rng, 0.3 if rnd == 0 else 0.15) for b in best
              for _ in range(max(1, n_local // 3))])
     best = min(hist, key=lambda h: h["score"])
     log(f"[gate] {tag}: {len(hist)} gates in {time.time() - t0:.0f} s; best {best['score']:.3f} " +
@@ -251,20 +261,13 @@ def stage2(log=print) -> Dict:
             log(f"[stage2] {tag}: cached")
             continue
         out[tag] = TU.auth_search(best_design(fam), n_random=50, n_local=24, seed=31, log=log, tag=tag)
-    for tag, D in (("s2_gate_akf", best_design("akf")), ("s2_gate_listen", listening_design())):
+    for tag, D in (("s2_gate_listen", listening_design()),):
         prev = TU.TUNE_DIR / f"gate_{tag}.json"
         if prev.exists():
             out[tag] = json.loads(prev.read_text())
             log(f"[stage2] {tag}: cached")
             continue
         out[tag] = gate_search(D, n_random=40, n_local=24, seed=37, tag=tag, log=log)
-    tag = "s2_akf_conf"
-    prev = TU.TUNE_DIR / f"auth_{tag}.json"
-    if prev.exists():
-        out[tag] = json.loads(prev.read_text())
-    else:
-        out[tag] = TU.auth_search(best_design("akf"), n_random=50, n_local=24, seed=41, log=log, tag=tag,
-                                  conf_fn=conf_ratio, conf_space=CONF_SPACE)
     return out
 
 
@@ -357,3 +360,18 @@ def stage2b(log=print) -> Dict:
     p = TU.TUNE_DIR / f"{tag}.json"
     out[tag] = json.loads(p.read_text()) if p.exists() else joint_akf(log=log)
     return out
+
+
+GLG_INIT = [{"det": "ai2", "r_on": 5.0, "r_off_frac": 0.5, "t_on": 0.5, "t_off": 1.0, "ramp": 0.2, "amp_lo": 0.15e-3,
+             "amp_hi_mult": 0.35 / 0.15, "fallback": "g4", "gain": 1.0}]
+
+
+def glg_search(log=print) -> Dict:
+    """Study W's GLG on real inputs (the lead's request): ai2's gated listening estimate with sim2j's guarded tracker G4
+    as the fallback; the frozen GLG setting (ai2's detector and amplitude gate) first, then the same retuning as the
+    binary gate with the fallback chosen among G4, the Rev H tracker and none."""
+    p = TU.TUNE_DIR / "gate_s2_glg.json"
+    if p.exists():
+        return json.loads(p.read_text())
+    return gate_search(listening_design(), n_random=20, n_local=12, seed=43, tag="s2_glg", log=log,
+                       fallbacks=("g4", "revh", "none"), init=GLG_INIT, det_configs=("ai2",))

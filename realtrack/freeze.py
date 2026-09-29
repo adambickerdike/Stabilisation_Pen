@@ -5,6 +5,8 @@ Finalists (the best setting of each family that the searches found; tuning split
   gate_listen   ai2's listening estimate with the retuned binary gate (detector band, window, thresholds, hysteresis,
                 amplitude gate, fallback)
   listen_conf   ai2's listening estimate with the soft authority: amplitude x the detector's continuous line confidence
+  glg           study W's GLG (the lead's request): ai2's gated listening estimate with sim2j's G4 as the fallback, the
+                gate retuned like the binary gate (fallback chosen among G4, the Rev H tracker and none)
   net           the TCN trained on real tuning inputs (cross-fitted: each tuning case scored by the fold model that never
                 saw its writer or patients), with its own soft amplitude authority if the search found one
 Rule (tune.py): pass T2-T4 in the full plant; the lowest J (severe broadband ratio); within 0.02 the cheaper MCU design.
@@ -45,6 +47,10 @@ def finalists() -> Dict[str, Dict]:
         b = json.loads(p.read_text())["best"]["params"]
         out["gate_listen"] = {"family": "gatefast", "params": {"gate": b, "D": SR.listening_design()},
                               "name": "gate_listen"}
+    p = TU.TUNE_DIR / "gate_s2_glg.json"
+    if p.exists():
+        b = json.loads(p.read_text())["best"]["params"]
+        out["glg"] = {"family": "gatefast", "params": {"gate": b, "D": SR.listening_design()}, "name": "glg"}
     p = TU.TUNE_DIR / "auth_s2_listen_conf.json"
     if p.exists():
         b = json.loads(p.read_text())["best"]["params"]
@@ -163,6 +169,7 @@ def run(log=print, designs: Optional[Dict[str, Dict]] = None, costs: Optional[Di
     cost = {"joint_akf": t["akf"]["cpu_share_128MHz"] + t["authority"]["cpu_share_128MHz"],
             "gate_listen": t["akf"]["cpu_share_128MHz"] + t["detector"]["cpu_share_128MHz"],
             "listen_conf": t["akf"]["cpu_share_128MHz"] + t["detector"]["cpu_share_128MHz"],
+            "glg": 2 * t["akf"]["cpu_share_128MHz"] + 2 * t["detector"]["cpu_share_128MHz"],
             "net": 0.07}
     cost.update(costs or {})
     ch = choose(summ, cost)

@@ -463,6 +463,9 @@ def gatefast(st, p: Dict, case=None, sensor: str = "deltapen", horizon: Optional
     if g_p["fallback"] == "revh":
         fb, _ = raw_estimate("revh", st, None, horizon=horizon)
         d = d + (1.0 - g) * fb
+    elif g_p["fallback"] == "g4":                  # study W's GLG: sim2j's guarded tracker as the fallback
+        fb, _ = g4(st, horizon=horizon)
+        d = d + (1.0 - g) * fb
     return d, {"det_gate": g[:, 0], "gate_open": float(np.mean(g > 0.5))}
 
 

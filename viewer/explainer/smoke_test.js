@@ -108,8 +108,8 @@ async function run(browser, label, viewport) {
   check(`${label}: no micrometre numbers in the simple view (outside Known problems); ${DETAILS.length} Details blocks, all closed`, !simple.um && simple.dets === DETAILS.length && !simple.anyOpen,
     `µm above Details: ${simple.um}; ${simple.dets} blocks`);
   const mTip = simple.mechs.find(m => m.key === "tip") || {}, mHeel = simple.mechs.find(m => m.key === "heel") || {}, mTail = simple.mechs.find(m => m.key === "tail") || {};
-  check(`${label}: mechanisms: the tail is Rev J.1's 17 g weight, optional, with no gain in the physics simulation (6–18 % only in the simpler model); the heel wheel is retracted by default; the nib is being redesigned`,
-    /\b17\s*g tungsten weight/.test(mTail.sent) && /6–18\s*%/.test(mTail.note) && /no gain/.test(mTail.note) && /optional/i.test(mTail.note) && /locked/.test(mTail.note) &&
+  check(`${label}: mechanisms: the tail is Rev J.1's 17 g weight, not in the product (no gain in the physics simulation; 6–18 % only in the simpler model); the heel wheel is retracted by default; the nib is being redesigned`,
+    /\b17\s*g tungsten weight/.test(mTail.sent) && /6–18\s*%/.test(mTail.note) && /no gain/.test(mTail.note) && /Not in the product/.test(mTail.note) && /locked/.test(mTail.note) &&
     /Retracted by default/.test(mHeel.note) && /redesigned/.test(mTip.note) && !simple.first820,
     `tail: "${(mTail.sent || "").slice(0, 60)}…"; heel note: "${(mHeel.note || "").slice(0, 40)}…"; first design's 8–20 % above Details: ${simple.first820}`);
   const rows = await page.evaluate(() => [...document.querySelectorAll("#better .brow")].map(r => ({ id: r.dataset.row, nums: r.querySelectorAll(".bnum .bv").length, thumbs: r.querySelectorAll("svg.thumb").length,
@@ -121,15 +121,15 @@ async function run(browser, label, viewport) {
   const real = rows.find(r => r.id === "real");
   check(`${label}: the real-tremor row says the pen does not help yet on real tremor`, real && /No help yet on real tremor/.test(real.verdict), real ? `${real.val.replace(/\s+/g, " ").trim()} · ${real.verdict.slice(0, 60)}` : "missing");
   check(`${label}: the rows from the physics simulation: fast shake, slow shake (no help yet), severe shake, loops, tracing, lead-through, tail, clean copy, normal writing`,
-    ["tremor", "real", "slow", "autowrite", "loops", "tracing", "lead", "tail", "clean", "normal"].every(k => rows.some(r => r.id === k)) &&
+    ["tremor", "real", "slow", "autowrite", "loops", "tracing", "spell", "predict", "tail", "collar", "clean", "normal"].every(k => rows.some(r => r.id === k)) &&
     /No help yet/.test((rows.find(r => r.id === "slow") || {}).verdict || ""), rows.map(r => r.id).join(", "));
   const trc = rows.find(r => r.id === "tracing");
   check(`${label}: the tracing row: the half-way nib brings the ink closer (0.83 → 0.64 mm) and stays as readable`, trc && /0\.83\D+0\.64/.test(trc.val) && /readable/.test(trc.verdict), trc ? `${trc.val.trim()} · ${trc.verdict}` : "missing");
   const sure = await page.$eval("#sure", el => el.textContent).catch(() => "");
   check(`${label}: "How sure are we?" says simulation only, not tested on a prototype or people`, /simulation/i.test(sure) && /prototype/.test(sure) && /people/.test(sure), sure.replace(/\s+/g, " ").trim().slice(0, 90));
   const tail = rows.find(r => r.id === "tail");
-  check(`${label}: the tail row says no gain in the physics simulation, optional until it beats a plain weight`,
-    tail && /no better/.test(tail.val) && /plain weight/.test(tail.verdict) && /optional/.test(tail.verdict), tail ? `${tail.val.replace(/\s+/g, " ").trim()} · ${tail.verdict.slice(0, 80)}` : "missing");
+  check(`${label}: the tail row says no gain in the physics simulation, so it is not in the product; the collar row says no better than locked`,
+    tail && /no better/.test(tail.val) && /not in the product/.test(tail.verdict) && /no better/.test((rows.find(r => r.id === "collar") || {}).val || ""), tail ? `${tail.val.replace(/\s+/g, " ").trim()} · ${tail.verdict.slice(0, 80)}` : "missing");
 
   /* ---------------- known problems (being fixed), with the side-load figure ---------------- */
   const kp = await page.evaluate(() => {
