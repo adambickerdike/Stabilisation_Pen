@@ -7,6 +7,8 @@
 - **MFR**: a manufacturer statement, with its ledger id;
 - **ASSUMPTION**: an input nobody has measured.
 
+> **Correction, 29 September 2026: the nose design is reopened.** The refill spring presses the ball along the tilted pen, so the paper pushes it sideways. The nose's magnets sit on a short arm and must push about 7 times harder than that sideways force, so the coils spend 1.6 W at a 50° pen angle (4.7 W at 35°) just holding the ball still (CALC; confirmed by the physics simulation and an independent review). They would overheat within about a minute. **The battery and heat figures below are suspended.** A load-balanced nib is being designed (study B). See [`claims_register.md`](claims_register.md) and [`reviews/2026-09-29_review_response.md`](reviews/2026-09-29_review_response.md).
+
 Plan: [`revJ_plan.md`](revJ_plan.md). Decisions: DEC-036 … DEC-045 in [`decisions.md`](decisions.md). Detailed reports: [`nose_v2.md`](nose_v2.md) (tip), [`grounded_drive.md`](grounded_drive.md) (heel), [`inertial_endcap.md`](inertial_endcap.md) (tail), [`ai_control_v2.md`](ai_control_v2.md) (algorithms and AI), [`sim_v2.md`](sim_v2.md) (the physics simulator).
 
 ## 1. The answer in plain words

@@ -262,8 +262,9 @@ The user asked for far more physical effect on the writing: more advanced tip ma
   - Heat: 0.1 mm graphite sheet in the shell wall; web 35.9 °C at 1 mm tremor in a 30 °C room (limit 43 °C, AMF-35).
   - End-cap: 9 mm tungsten slug, 29.6 g, 21 mm; +5.6 / 16.8 / 18.3 % at splits 0.3 / 0.5 / 0.7 (SIM, H1).
   - Clear 15 mm PC window over the top 240° of the sleeve; heel motors 10 mm further back (detent 0.66 × friction, free space).
+- **Independent review (2026-09-29, `docs/reviews/`).** Commissioned by the user outside the repository. Its central finding is confirmed by the lead and by sim2j: the refill spring's static side load at the ball (F_c·cot θ) makes the C1S nose's holding loss 4.717 / 1.628 / 0.166 W at 35 / 50 / 75° (CALC). DEC-036 is reopened; the battery and heat conclusions of DEC-032, DEC-044 and DEC-045 are suspended. The adopted order is: balanced nib (study B), then a motorised collar (study W), then a tail only if it beats a locked mass, then a grounded surface; language help runs in parallel (study S). Rigs for the review's gates G1–G5 are in study M. `docs/claims_register.md` lists every headline claim with its status.
 - **Open problems (the next session must not lose these).**
-  1. **Nose-coil power.** Every Rev J.1 battery and heat number rests on study N's coil-power model. The whole-pen simulation (sim2j) logged 1.3–2.4 W in some tremor runs (unconfirmed): at 2 × the model, 4.9–5.3 h and 42.1 °C; at 5 ×, 2.0–2.1 h and 63.8 °C.
+  1. **Nose-coil power (confirmed).** The static side load dominates: 1.6 W at 50° for the C1S nose (CALC; about 1.1 W in sim2j's writing run, SIM, plus a 0.7 W servo-noise artefact). Battery and heat claims suspended; study B designs a load-balanced nib.
   2. Low-power page sensor accuracy at 1 kHz on paper (EXP-J10) and the detector on its stream (EXP-L01 extension).
   3. The pull's size (12.4–22.2 N, ideal iron; EXP-J01) and the shock stops (not designed).
   4. The TCN may fail REQ-ML-001 (34.8 µm on the worst writer).

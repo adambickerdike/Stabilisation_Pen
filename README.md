@@ -16,6 +16,8 @@ This repository holds the research and development package: the audit of the sou
 | The recommended route: what to build, where custom hardware and our own data are unavoidable, what evidence each benefit needs | [`docs/recommendation.md`](docs/recommendation.md) |
 | The slim pencil variant (Ø8.9 × 166 mm): exact forces, mechanisms with existing parts, what to make, AI guidance and autocorrect, sim-to-real, 3D replay | [`docs/pencil_concept.md`](docs/pencil_concept.md), [`viewer/`](viewer/build.py) |
 | The verdict on the source report | [`docs/audit.md`](docs/audit.md), [`docs/corrections.csv`](docs/corrections.csv) |
+| **Which numbers still stand:** every headline claim with its status (current, suspended, unproven) | [`docs/claims_register.md`](docs/claims_register.md) |
+| The independent review of 29 September 2026 and our response to each finding | [`docs/reviews/`](docs/reviews/2026-09-29_review_response.md) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
 | Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…044) |
@@ -25,6 +27,14 @@ This repository holds the research and development package: the audit of the sou
 | How to proceed | [`docs/plan.md`](docs/plan.md), [`validation/`](validation/README.md) |
 
 ## Key conclusions so far
+
+> **Correction, 29 September 2026.** The moving nose's coils must hold the ball against a static sideways push from the paper. The refill spring presses the ball along the tilted pen, and the paper pushes back partly sideways. This was left out of the power budgets.
+>
+> - **Rev J (C1S nose):** it costs 4.7 / 1.6 / 0.17 W at 35 / 50 / 75° pen angle (CALC; confirmed by the physics simulation and by an independent review). The coils would overheat within about a minute.
+> - **Rev H (longer arm):** 0.13 W at 50° or more (CALC).
+> - **What is suspended:** every battery and heat claim for Rev H, Rev J and Rev J.1. A load-balanced nib is being designed (study B).
+>
+> Check [`docs/claims_register.md`](docs/claims_register.md) before quoting any number.
 
 1. **The transverse load is dominated by N·cos θ, not friction** (COR-01). Holding power (F/(n·K_m))² therefore rules out direct drive at the tip (about 12 W). A front-pivot lever with a rear annular actuator brings it to about 0.5 W in contact at the design point. That is **above the 0.412 W a moving coil can dissipate continuously** (within it on average at 65 % pen-down). Skid and bias-actuator variants remain the product path (DEC-003, DEC-008; route in `docs/recommendation.md`).
 2. **Intent separation, not mechanics or latency, limits free-writing assistance.**
