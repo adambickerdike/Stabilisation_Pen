@@ -159,6 +159,8 @@ POWER = {
     "nose_drivers_hall_W": V(0.012, "W", "ASSUMPTION", "Rev H drivers and Hall (docs/opt_inertial.md s2)"),
     "page_sensor_mA": V((16.3, 21.6), "mA", "MFR", "AMF-109 (PMW3360 run current with 1 ms polling)"),
     "page_sensor_V": V((1.9, 3.7), "V", "ASSUMPTION", "a 1.9 V buck (PMW3360 core) to the raw cell voltage (linear)"),
+    "slide_sensor_W": V((0.004, 0.008), "W", "ASSUMPTION",
+                        "refill-slide 3-D Hall (TMAG5273 class, 2.3 mA active, MFR OPT-45) duty-cycled at 1 kHz"),
     "cell_mAh": V(750.0, "mAh", "MFR", "AMF-80 (EEMB LIR14500)"),
     "cell_V": V(3.7, "V", "MFR", "AMF-80"),
     "usable_frac": V(0.8, "-", "ASSUMPTION", "Rev H: 2.22 Wh usable of 2.78 Wh"),
@@ -197,6 +199,9 @@ THERMAL = {
     "R_int_K_W": V(15.0, "K/W", "ASSUMPTION", "coil layer to shell through the bonded coil plate"),
     "ambient_C": V(23.0, "degC", "ASSUMPTION", "EXP-N04 ambient"),
     "ambient_hot_C": V(30.0, "degC", "ASSUMPTION", "a warm room (sensitivity)"),
+    "k_al_W_mK": V(167.0, "W/mK", "ASSUMPTION", "aluminium 6061 handbook value (heat spreader option)"),
+    "spreader": V({"t_mm": 0.5, "L_mm": 20.0, "z_mm": [82.0, 102.0]}, "mm", "ASSUMPTION",
+                  "proposed aluminium sleeve inside the PEEK shell over the actuator (option)"),
 }
 
 

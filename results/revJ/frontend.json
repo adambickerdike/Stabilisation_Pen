@@ -1,0 +1,2027 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "closure": {
+  "R_mm": 11.65,
+  "ring_wall_mm": 2.9693135535431807,
+  "carrier_stop_clearance_mm": 0.09361078299642323,
+  "nozzle_clear_usable_min_mm": 1.4479499590902236,
+  "nozzle_clear_stop_min_mm": 1.3841282755335413,
+  "ball_travel_usable_min_mm": 6.000061645695352,
+  "ball_travel_usable_max_mm": 14.24385244124683,
+  "refill_slide_mm": [
+   -7.883571290713974,
+   18.728166580002593
+  ],
+  "refill_slide_range_mm": 26.611737870716567,
+  "refill_slide_range_40_70_mm": 20.915884688734522,
+  "dims": {
+   "R": 11.65,
+   "p50": 9.3186,
+   "s_g": 67.1609,
+   "alpha_u": 0.0859,
+   "alpha_s": 0.0925,
+   "ring_bore_r": 8.6807,
+   "ring_wall": 2.9693,
+   "carrier_front_s": 5.0,
+   "sleeve_bore_r": 9.3407,
+   "carrier_stop_clearance": 0.0936,
+   "sleeve_front_r": 12.4,
+   "nozzle_r_front": 1.8
+  },
+  "sleeve_step_mm": 0.0,
+  "sleeve_front_d_mm": 23.3,
+  "sleeve_front_clear_min_mm": 0.8603646545265691,
+  "protrusion_mm": {
+   "35": 16.02771790007825,
+   "40": 13.339426014321404,
+   "50": 9.318618151949016,
+   "60": 6.321985447626404,
+   "70": 3.86779100883469,
+   "75": 2.7592614286790504
+  },
+  "R_d_mm": 12.0,
+  "pod_clearance_min_mm": 0.10091072247397115,
+  "pod_to_nose_at_stop_mm": 0.40091072247397114,
+  "wheel_protrusion_mm": {
+   "35": 0.3207773892120788,
+   "50": 0.22497566339028877,
+   "75": 0.18427887874923232
+  },
+  "spring_travel_mm": 0.7476710493443754,
+  "roll_tolerance_deg": 19.999999999999993,
+  "rule_margins_mm": {
+   "ring_wall": 1.9693135535431807,
+   "nozzle": 1.1479499590902236,
+   "sleeve_front": 0.8603646545265691,
+   "carrier": 0.09361078299642323,
+   "pod": 0.10091072247397115
+  },
+  "passes": true,
+  "history": [
+   {
+    "iter": 0,
+    "X_nom_mm": 6.570922851562501,
+    "R_d_continuous_mm": 11.84294917789163,
+    "R_d_mm": 12.0,
+    "R_s_mm": 11.65
+   },
+   {
+    "iter": 1,
+    "X_nom_mm": 6.570922851562501,
+    "R_d_continuous_mm": 11.906354221497656,
+    "R_d_mm": 12.0,
+    "R_s_mm": 11.65
+   }
+  ],
+  "X_nom_mm": 6.570922851562501,
+  "alpha_u_rad": 0.08591740161184919,
+  "alpha_s_rad": 0.0924550983367026,
+  "z_p_mm": 76.47953416058942,
+  "R_d_needed_continuous_mm": 11.906354221497656,
+  "pod_worst_point": {
+   "s_mm": 1.1411156319211633,
+   "inboard_mm": 3.307242826673779,
+   "lateral_mm": 0.0
+  },
+  "nose_only_R_mm": 10.0
+ },
+ "variants": {
+  "revH_nose_only": {
+   "R_mm": 6.75,
+   "ring_wall_mm": 1.1616578857140274,
+   "carrier_stop_clearance_mm": 0.1134114439908922,
+   "nozzle_clear_usable_min_mm": 0.7972950646068142,
+   "nozzle_clear_stop_min_mm": 0.7336178207365975,
+   "ball_travel_usable_min_mm": 2.7472583992604696,
+   "ball_travel_usable_max_mm": 6.282085342242183,
+   "refill_slide_mm": [
+    -4.395316011592598,
+    9.088898800229032
+   ],
+   "refill_slide_range_mm": 13.48421481182163,
+   "refill_slide_range_40_70_mm": 10.520671394755261,
+   "dims": {
+    "R": 6.75,
+    "p50": 5.207,
+    "s_g": 39.793,
+    "alpha_u": 0.0667,
+    "alpha_s": 0.0778,
+    "ring_bore_r": 5.5883,
+    "ring_wall": 1.1617,
+    "carrier_front_s": 5.0,
+    "sleeve_bore_r": 6.3195,
+    "carrier_stop_clearance": 0.1134,
+    "sleeve_front_r": 7.5,
+    "nozzle_r_front": 1.8
+   },
+   "sleeve_step_mm": 0.75,
+   "sleeve_front_d_mm": 15.0,
+   "sleeve_front_clear_min_mm": 0.24600062130982525,
+   "protrusion_mm": {
+    "35": 9.02979266704189,
+    "40": 7.499833410609774,
+    "50": 5.207029959180343,
+    "60": 3.492969128597237,
+    "70": 2.0843368609302972,
+    "75": 1.4463103857665491
+   },
+   "rule_margins_mm": {
+    "ring_wall": 0.1616578857140274,
+    "nozzle": 0.4972950646068142,
+    "sleeve_front": 0.24600062130982525,
+    "carrier": 0.1134114439908922
+   },
+   "passes": true,
+   "history": [
+    {
+     "iter": 0,
+     "X_nom_mm": 3.0,
+     "R_d_continuous_mm": null,
+     "R_d_mm": null,
+     "R_s_mm": 6.75
+    },
+    {
+     "iter": 1,
+     "X_nom_mm": 3.0,
+     "R_d_continuous_mm": null,
+     "R_d_mm": null,
+     "R_s_mm": 6.75
+    }
+   ],
+   "X_nom_mm": 3.0,
+   "alpha_u_rad": 0.06666666666666667,
+   "alpha_s_rad": 0.07777777777777778,
+   "z_p_mm": 45.0,
+   "nose_only_R_mm": 6.75
+  },
+  "revH_with_heel_studyD": {
+   "R_mm": 8.4,
+   "ring_wall_mm": 2.919342338381778,
+   "carrier_stop_clearance_mm": 0.12879493722914237,
+   "nozzle_clear_usable_min_mm": 1.2452472812449713,
+   "nozzle_clear_stop_min_mm": 1.1844689441229903,
+   "ball_travel_usable_min_mm": 2.684478171056635,
+   "ball_travel_usable_max_mm": 6.407144755828568,
+   "refill_slide_mm": [
+    -5.323212465607639,
+    10.165663217930422
+   ],
+   "refill_slide_range_mm": 15.488875683538062,
+   "refill_slide_range_40_70_mm": 11.921327894481657,
+   "dims": {
+    "R": 8.4,
+    "p50": 6.5915,
+    "s_g": 38.4085,
+    "alpha_u": 0.0667,
+    "alpha_s": 0.0778,
+    "ring_bore_r": 5.4807,
+    "ring_wall": 2.9193,
+    "carrier_front_s": 5.0,
+    "sleeve_bore_r": 6.2272,
+    "carrier_stop_clearance": 0.1288,
+    "sleeve_front_r": 9.15,
+    "nozzle_r_front": 1.8
+   },
+   "sleeve_step_mm": 0.75,
+   "sleeve_front_d_mm": 18.3,
+   "sleeve_front_clear_min_mm": 0.24600062130982525,
+   "protrusion_mm": {
+    "35": 11.38623687816638,
+    "40": 9.46622683839022,
+    "50": 6.591544350622856,
+    "60": 4.44559707276012,
+    "70": 2.6848877474695314,
+    "75": 1.8884265532779014
+   },
+   "R_d_mm": 8.75,
+   "pod_clearance_min_mm": 0.05620696822644966,
+   "pod_to_nose_at_stop_mm": 0.35620696822644965,
+   "wheel_protrusion_mm": {
+    "35": 0.3207773892120788,
+    "50": 0.22497566339028877,
+    "75": 0.18427887874923232
+   },
+   "spring_travel_mm": 0.5390932887976613,
+   "roll_tolerance_deg": 19.999999999999975,
+   "rule_margins_mm": {
+    "ring_wall": 1.919342338381778,
+    "nozzle": 0.9452472812449713,
+    "sleeve_front": 0.24600062130982525,
+    "carrier": 0.12879493722914237,
+    "pod": 0.05620696822644966
+   },
+   "passes": true,
+   "history": [
+    {
+     "iter": 0,
+     "X_nom_mm": 3.0,
+     "R_d_continuous_mm": 8.697236548723962,
+     "R_d_mm": 8.75,
+     "R_s_mm": 8.4
+    },
+    {
+     "iter": 1,
+     "X_nom_mm": 3.0,
+     "R_d_continuous_mm": 8.697236548723962,
+     "R_d_mm": 8.75,
+     "R_s_mm": 8.4
+    }
+   ],
+   "X_nom_mm": 3.0,
+   "alpha_u_rad": 0.06666666666666667,
+   "alpha_s_rad": 0.07777777777777778,
+   "z_p_mm": 45.0,
+   "R_d_needed_continuous_mm": 8.697236548723962,
+   "pod_worst_point": {
+    "s_mm": 1.1411156319211633,
+    "inboard_mm": 3.307242826673779,
+    "lateral_mm": 0.0
+   },
+   "nose_only_R_mm": 6.75
+  },
+  "nose2_only": {
+   "R_mm": 10.0,
+   "ring_wall_mm": 1.260555287857322,
+   "carrier_stop_clearance_mm": 0.08455924779397606,
+   "nozzle_clear_usable_min_mm": 1.0056752621202918,
+   "nozzle_clear_stop_min_mm": 0.9398408955949691,
+   "ball_travel_usable_min_mm": 6.008044842439144,
+   "ball_travel_usable_max_mm": 13.883862533862,
+   "refill_slide_mm": [
+    -6.946220863259029,
+    17.44835465185595
+   ],
+   "refill_slide_range_mm": 24.39457551511498,
+   "refill_slide_range_40_70_mm": 19.351373341753828,
+   "dims": {
+    "R": 10.0,
+    "p50": 7.9341,
+    "s_g": 68.5454,
+    "alpha_u": 0.0849,
+    "alpha_s": 0.0914,
+    "ring_bore_r": 8.7394,
+    "ring_wall": 1.2606,
+    "carrier_front_s": 5.0,
+    "sleeve_bore_r": 9.394,
+    "carrier_stop_clearance": 0.0846,
+    "sleeve_front_r": 10.75,
+    "nozzle_r_front": 1.8
+   },
+   "sleeve_step_mm": 0.75,
+   "sleeve_front_d_mm": 21.5,
+   "sleeve_front_clear_min_mm": 0.24600062130982525,
+   "protrusion_mm": {
+    "35": 13.671273688953761,
+    "40": 11.373032586540957,
+    "50": 7.9341037605065035,
+    "60": 5.3693575034635215,
+    "70": 3.2672401222954557,
+    "75": 2.3171452611676977
+   },
+   "rule_margins_mm": {
+    "ring_wall": 0.26055528785732207,
+    "nozzle": 0.7056752621202917,
+    "sleeve_front": 0.24600062130982525,
+    "carrier": 0.08455924779397606
+   },
+   "passes": true,
+   "history": [
+    {
+     "iter": 0,
+     "X_nom_mm": 6.491931790882802,
+     "R_d_continuous_mm": null,
+     "R_d_mm": null,
+     "R_s_mm": 10.0
+    },
+    {
+     "iter": 1,
+     "X_nom_mm": 6.491931790882802,
+     "R_d_continuous_mm": null,
+     "R_d_mm": null,
+     "R_s_mm": 10.0
+    }
+   ],
+   "X_nom_mm": 6.491931790882802,
+   "alpha_u_rad": 0.08488456241445246,
+   "alpha_s_rad": 0.09142225913930588,
+   "z_p_mm": 76.47953416058942,
+   "nose_only_R_mm": 10.0
+  },
+  "revJ_keep_angle": {
+   "R_mm": 11.65,
+   "ring_wall_mm": 3.0371307213338774,
+   "carrier_stop_clearance_mm": 0.09361078299642323,
+   "nozzle_clear_usable_min_mm": 1.4582924659169407,
+   "nozzle_clear_stop_min_mm": 1.394021972306703,
+   "ball_travel_usable_min_mm": 5.928144122828278,
+   "ball_travel_usable_max_mm": 14.0479914679824,
+   "refill_slide_mm": [
+    -7.870941286472288,
+    18.558728961408974
+   ],
+   "refill_slide_range_mm": 26.429670247881262,
+   "refill_slide_range_40_70_mm": 20.764417906224267,
+   "dims": {
+    "R": 11.65,
+    "p50": 9.3186,
+    "s_g": 67.1609,
+    "alpha_u": 0.0849,
+    "alpha_s": 0.0914,
+    "ring_bore_r": 8.6129,
+    "ring_wall": 3.0371,
+    "carrier_front_s": 5.0,
+    "sleeve_bore_r": 9.2765,
+    "carrier_stop_clearance": 0.0936,
+    "sleeve_front_r": 12.4,
+    "nozzle_r_front": 1.8
+   },
+   "sleeve_step_mm": 0.0,
+   "sleeve_front_d_mm": 23.3,
+   "sleeve_front_clear_min_mm": 0.8603646545265691,
+   "protrusion_mm": {
+    "35": 16.02771790007825,
+    "40": 13.339426014321404,
+    "50": 9.318618151949016,
+    "60": 6.321985447626404,
+    "70": 3.86779100883469,
+    "75": 2.7592614286790504
+   },
+   "R_d_mm": 12.0,
+   "pod_clearance_min_mm": 0.16909856010735425,
+   "pod_to_nose_at_stop_mm": 0.46909856010735423,
+   "wheel_protrusion_mm": {
+    "35": 0.3207773892120788,
+    "50": 0.22497566339028877,
+    "75": 0.18427887874923232
+   },
+   "spring_travel_mm": 0.7476710493443754,
+   "roll_tolerance_deg": 19.999999999999993,
+   "rule_margins_mm": {
+    "ring_wall": 2.0371307213338774,
+    "nozzle": 1.1582924659169407,
+    "sleeve_front": 0.8603646545265691,
+    "carrier": 0.09361078299642323,
+    "pod": 0.16909856010735425
+   },
+   "passes": true,
+   "history": [
+    {
+     "iter": 0,
+     "X_nom_mm": 6.491931790882802,
+     "R_d_continuous_mm": 11.84294917789163,
+     "R_d_mm": 12.0,
+     "R_s_mm": 11.65
+    },
+    {
+     "iter": 1,
+     "X_nom_mm": 6.491931790882802,
+     "R_d_continuous_mm": 11.84294917789163,
+     "R_d_mm": 12.0,
+     "R_s_mm": 11.65
+    }
+   ],
+   "X_nom_mm": 6.491931790882802,
+   "alpha_u_rad": 0.08488456241445246,
+   "alpha_s_rad": 0.09142225913930588,
+   "z_p_mm": 76.47953416058942,
+   "R_d_needed_continuous_mm": 11.84294917789163,
+   "pod_worst_point": {
+    "s_mm": 1.1411156319211633,
+    "inboard_mm": 3.307242826673779,
+    "lateral_mm": 0.0
+   },
+   "nose_only_R_mm": 10.0
+  },
+  "revJ": {
+   "R_mm": 11.65,
+   "ring_wall_mm": 2.9693135535431807,
+   "carrier_stop_clearance_mm": 0.09361078299642323,
+   "nozzle_clear_usable_min_mm": 1.4479499590902236,
+   "nozzle_clear_stop_min_mm": 1.3841282755335413,
+   "ball_travel_usable_min_mm": 6.000061645695352,
+   "ball_travel_usable_max_mm": 14.24385244124683,
+   "refill_slide_mm": [
+    -7.883571290713974,
+    18.728166580002593
+   ],
+   "refill_slide_range_mm": 26.611737870716567,
+   "refill_slide_range_40_70_mm": 20.915884688734522,
+   "dims": {
+    "R": 11.65,
+    "p50": 9.3186,
+    "s_g": 67.1609,
+    "alpha_u": 0.0859,
+    "alpha_s": 0.0925,
+    "ring_bore_r": 8.6807,
+    "ring_wall": 2.9693,
+    "carrier_front_s": 5.0,
+    "sleeve_bore_r": 9.3407,
+    "carrier_stop_clearance": 0.0936,
+    "sleeve_front_r": 12.4,
+    "nozzle_r_front": 1.8
+   },
+   "sleeve_step_mm": 0.0,
+   "sleeve_front_d_mm": 23.3,
+   "sleeve_front_clear_min_mm": 0.8603646545265691,
+   "protrusion_mm": {
+    "35": 16.02771790007825,
+    "40": 13.339426014321404,
+    "50": 9.318618151949016,
+    "60": 6.321985447626404,
+    "70": 3.86779100883469,
+    "75": 2.7592614286790504
+   },
+   "R_d_mm": 12.0,
+   "pod_clearance_min_mm": 0.10091072247397115,
+   "pod_to_nose_at_stop_mm": 0.40091072247397114,
+   "wheel_protrusion_mm": {
+    "35": 0.3207773892120788,
+    "50": 0.22497566339028877,
+    "75": 0.18427887874923232
+   },
+   "spring_travel_mm": 0.7476710493443754,
+   "roll_tolerance_deg": 19.999999999999993,
+   "rule_margins_mm": {
+    "ring_wall": 1.9693135535431807,
+    "nozzle": 1.1479499590902236,
+    "sleeve_front": 0.8603646545265691,
+    "carrier": 0.09361078299642323,
+    "pod": 0.10091072247397115
+   },
+   "passes": true,
+   "history": [
+    {
+     "iter": 0,
+     "X_nom_mm": 6.570922851562501,
+     "R_d_continuous_mm": 11.84294917789163,
+     "R_d_mm": 12.0,
+     "R_s_mm": 11.65
+    },
+    {
+     "iter": 1,
+     "X_nom_mm": 6.570922851562501,
+     "R_d_continuous_mm": 11.906354221497656,
+     "R_d_mm": 12.0,
+     "R_s_mm": 11.65
+    }
+   ],
+   "X_nom_mm": 6.570922851562501,
+   "alpha_u_rad": 0.08591740161184919,
+   "alpha_s_rad": 0.0924550983367026,
+   "z_p_mm": 76.47953416058942,
+   "R_d_needed_continuous_mm": 11.906354221497656,
+   "pod_worst_point": {
+    "s_mm": 1.1411156319211633,
+    "inboard_mm": 3.307242826673779,
+    "lateral_mm": 0.0
+   },
+   "nose_only_R_mm": 10.0
+  },
+  "revJ_with_revH_step": {
+   "R_mm": 11.65,
+   "ring_wall_mm": 2.9693135535431807,
+   "carrier_stop_clearance_mm": 0.09361078299642323,
+   "nozzle_clear_usable_min_mm": 1.4479499590902236,
+   "nozzle_clear_stop_min_mm": 1.3841282755335413,
+   "ball_travel_usable_min_mm": 6.000061645695352,
+   "ball_travel_usable_max_mm": 14.24385244124683,
+   "refill_slide_mm": [
+    -7.883571290713974,
+    18.728166580002593
+   ],
+   "refill_slide_range_mm": 26.611737870716567,
+   "refill_slide_range_40_70_mm": 20.915884688734522,
+   "dims": {
+    "R": 11.65,
+    "p50": 9.3186,
+    "s_g": 67.1609,
+    "alpha_u": 0.0859,
+    "alpha_s": 0.0925,
+    "ring_bore_r": 8.6807,
+    "ring_wall": 2.9693,
+    "carrier_front_s": 5.0,
+    "sleeve_bore_r": 9.3407,
+    "carrier_stop_clearance": 0.0936,
+    "sleeve_front_r": 12.4,
+    "nozzle_r_front": 1.8
+   },
+   "sleeve_step_mm": 0.75,
+   "sleeve_front_d_mm": 24.8,
+   "sleeve_front_clear_min_mm": 0.24600062130982525,
+   "protrusion_mm": {
+    "35": 16.02771790007825,
+    "40": 13.339426014321404,
+    "50": 9.318618151949016,
+    "60": 6.321985447626404,
+    "70": 3.86779100883469,
+    "75": 2.7592614286790504
+   },
+   "R_d_mm": 12.0,
+   "pod_clearance_min_mm": 0.10091072247397115,
+   "pod_to_nose_at_stop_mm": 0.40091072247397114,
+   "wheel_protrusion_mm": {
+    "35": 0.3207773892120788,
+    "50": 0.22497566339028877,
+    "75": 0.18427887874923232
+   },
+   "spring_travel_mm": 0.7476710493443754,
+   "roll_tolerance_deg": 19.999999999999993,
+   "rule_margins_mm": {
+    "ring_wall": 1.9693135535431807,
+    "nozzle": 1.1479499590902236,
+    "sleeve_front": 0.24600062130982525,
+    "carrier": 0.09361078299642323,
+    "pod": 0.10091072247397115
+   },
+   "passes": true
+  },
+  "pod_without_steering_ring_R_d_mm": 10.585042362307567,
+  "pod_steer_axis_55deg_R_d_mm": 11.867599645698837
+ },
+ "visibility": {
+  "revH": {
+   "35": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": 4.5,
+      "150": 3.25,
+      "165": 2.5,
+      "180": 2.0,
+      "195": 2.0,
+      "210": 1.75,
+      "225": 1.75,
+      "240": 2.0,
+      "255": 2.25,
+      "270": 2.75,
+      "285": 3.5,
+      "300": 5.0,
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 2.0,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.3333333333333333,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": 5.0,
+      "75": 3.5,
+      "90": 2.75,
+      "105": 2.25,
+      "120": 2.0,
+      "135": 1.75,
+      "150": 1.75,
+      "165": 2.0,
+      "180": 2.0,
+      "195": 2.5,
+      "210": 3.25,
+      "225": 4.5,
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 2.0,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.3333333333333333,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 2.0,
+      "15": "inf",
+      "30": "inf",
+      "45": 5.0,
+      "60": 2.25,
+      "75": 1.25,
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.5,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.75,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "50": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": 6.0,
+      "210": 5.5,
+      "225": 5.25,
+      "240": 5.0,
+      "255": 5.25,
+      "270": 5.5,
+      "285": 6.0,
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 5.0,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": 6.0,
+      "90": 5.5,
+      "105": 5.25,
+      "120": 5.0,
+      "135": 5.25,
+      "150": 5.5,
+      "165": 6.0,
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 5.0,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 0.75,
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.75,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.7916666666666666,
+     "share_directions_visible_within_3mm": 0.7916666666666666,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "75": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": 5.75,
+      "195": 5.25,
+      "210": 5.0,
+      "225": 4.75,
+      "240": 5.0,
+      "255": 5.25,
+      "270": 5.5,
+      "285": 6.0,
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 5.0,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    }
+   }
+  },
+  "nose2": {
+   "35": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": 4.5,
+      "165": 3.5,
+      "180": 2.75,
+      "195": 2.5,
+      "210": 2.5,
+      "225": 2.5,
+      "240": 2.5,
+      "255": 3.0,
+      "270": 3.75,
+      "285": 5.0,
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 2.5,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.25,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": 5.0,
+      "90": 3.75,
+      "105": 3.0,
+      "120": 2.5,
+      "135": 2.5,
+      "150": 2.5,
+      "165": 2.5,
+      "180": 2.75,
+      "195": 3.5,
+      "210": 4.5,
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 2.5,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.25,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 2.0,
+      "15": "inf",
+      "30": "inf",
+      "45": 5.0,
+      "60": 2.25,
+      "75": 1.25,
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.5,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.75,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "50": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 0.75,
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.75,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.7916666666666666,
+     "share_directions_visible_within_3mm": 0.7916666666666666,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "75": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    }
+   }
+  },
+  "revJ": {
+   "35": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": 5.75,
+      "150": 4.0,
+      "165": 3.0,
+      "180": 2.5,
+      "195": 2.25,
+      "210": 2.0,
+      "225": 2.0,
+      "240": 2.25,
+      "255": 2.5,
+      "270": 3.25,
+      "285": 4.5,
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 2.25,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.2916666666666667,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": 4.5,
+      "90": 3.25,
+      "105": 2.5,
+      "120": 2.25,
+      "135": 2.0,
+      "150": 2.0,
+      "165": 2.25,
+      "180": 2.5,
+      "195": 3.0,
+      "210": 4.0,
+      "225": 5.75,
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 2.25,
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.2916666666666667,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 2.0,
+      "15": "inf",
+      "30": "inf",
+      "45": 5.0,
+      "60": 2.25,
+      "75": 1.25,
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.5,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.75,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "50": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 0.75,
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.75,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.7916666666666666,
+     "share_directions_visible_within_3mm": 0.7916666666666666,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "75": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    }
+   }
+  },
+  "revJ_C_sleeve_10mm": {
+   "35": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 3.0,
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": 2.75,
+      "75": 2.0,
+      "90": 1.5,
+      "105": 1.0,
+      "120": 1.0,
+      "135": 0.75,
+      "150": 0.75,
+      "165": 0.75,
+      "180": 0.75,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.75,
+      "345": 2.0
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.6666666666666666,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.75
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 3.0,
+      "15": 2.0,
+      "30": 0.75,
+      "45": 0.5,
+      "60": 0.5,
+      "75": 0.5,
+      "90": 0.5,
+      "105": 0.5,
+      "120": 0.5,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.75,
+      "195": 0.75,
+      "210": 0.75,
+      "225": 0.75,
+      "240": 1.0,
+      "255": 1.0,
+      "270": 1.5,
+      "285": 2.0,
+      "300": 2.75,
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.6666666666666666,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.75
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 2.0,
+      "15": "inf",
+      "30": "inf",
+      "45": 5.0,
+      "60": 2.25,
+      "75": 1.25,
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.5,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.75,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "50": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": 5.75,
+      "210": 5.0,
+      "225": 5.25,
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": 5.25,
+      "150": 5.0,
+      "165": 5.75,
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": 0.75,
+      "15": 2.75,
+      "30": "inf",
+      "45": "inf",
+      "60": 4.5,
+      "75": 2.0,
+      "90": 1.0,
+      "105": 0.75,
+      "120": 0.75,
+      "135": 0.5,
+      "150": 0.5,
+      "165": 0.5,
+      "180": 0.5,
+      "195": 0.5,
+      "210": 0.5,
+      "225": 0.5,
+      "240": 0.5,
+      "255": 0.5,
+      "270": 0.5,
+      "285": 0.5,
+      "300": 0.5,
+      "315": 0.5,
+      "330": 0.5,
+      "345": 0.5
+     },
+     "trail_first_visible_mm": 0.5,
+     "share_directions_visible_within_1mm": 0.7916666666666666,
+     "share_directions_visible_within_3mm": 0.875,
+     "median_first_visible_mm": 0.5
+    }
+   },
+   "75": {
+    "right_hand": {
+     "eye": {
+      "az": -30.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "left_hand": {
+     "eye": {
+      "az": 30.0,
+      "el": 55.0,
+      "trail_deg": 120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": "inf",
+      "165": "inf",
+      "180": "inf",
+      "195": "inf",
+      "210": "inf",
+      "225": "inf",
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.0,
+     "median_first_visible_mm": "inf"
+    },
+    "side_view": {
+     "eye": {
+      "az": -90.0,
+      "el": 55.0,
+      "trail_deg": -120.0
+     },
+     "first_visible_mm_by_direction": {
+      "0": "inf",
+      "15": "inf",
+      "30": "inf",
+      "45": "inf",
+      "60": "inf",
+      "75": "inf",
+      "90": "inf",
+      "105": "inf",
+      "120": "inf",
+      "135": "inf",
+      "150": 3.75,
+      "165": 2.25,
+      "180": 2.5,
+      "195": 2.75,
+      "210": 3.5,
+      "225": 5.25,
+      "240": "inf",
+      "255": "inf",
+      "270": "inf",
+      "285": "inf",
+      "300": "inf",
+      "315": "inf",
+      "330": "inf",
+      "345": "inf"
+     },
+     "trail_first_visible_mm": "inf",
+     "share_directions_visible_within_1mm": 0.0,
+     "share_directions_visible_within_3mm": 0.125,
+     "median_first_visible_mm": "inf"
+    }
+   }
+  }
+ },
+ "eyes": {
+  "right_hand": {
+   "az": -30.0,
+   "el": 55.0,
+   "trail_deg": -120.0
+  },
+  "left_hand": {
+   "az": 30.0,
+   "el": 55.0,
+   "trail_deg": 120.0
+  },
+  "side_view": {
+   "az": -90.0,
+   "el": 55.0,
+   "trail_deg": -120.0
+  }
+ },
+ "page_sensor": {
+  "target_mm": 2.4,
+  "tolerance_mm": 0.2,
+  "roll_design_deg": 5.0,
+  "window": {
+   "phi_deg": 24.0,
+   "s_mm": 1.9000000000000012,
+   "r_mm": 11.066772775696133,
+   "y_mm": 4.501262008469301,
+   "max_dev_mm": 0.3385587524441105
+  },
+  "height_band_mm": {
+   "roll0": [
+    2.2338403994071125,
+    2.4457307289849948
+   ],
+   "roll5": [
+    2.0614412475558894,
+    2.7375131478538304
+   ],
+   "roll10": [
+    1.8368272204518405,
+    3.12026431563471
+   ],
+   "roll20": [
+    1.5896297867231042,
+    4.111835428052824
+   ]
+  },
+  "heel_lift_max_mm": 0.3207773892120788,
+  "height_with_heel_lift_mm": [
+   2.2338403994071125,
+   2.7084961831197547
+  ],
+  "roll_tolerance_deg_for_band": 1.5,
+  "invariant_point": {
+   "dr_mm": 1.4167337977870842,
+   "s_mm": 2.0233055493938097,
+   "note": "at phi = 0 this is inside the wheel pod"
+  },
+  "label": "CALC (geometry); optics block size and folded path ASSUMPTION / PROPOSED DESIGN",
+  "studyD_placement_on_revJ": {
+   "note": "study D put the sensor at the bottom, z 14-20, 8.6 mm off the axis (Rev H nose); on the Rev J front the same spot lies inside the C1S nose's swing",
+   "nose_env_at_that_s_mm": 9.024419598375609
+  }
+ },
+ "heel": {
+  "r_e": 1.0,
+  "t": 0.3,
+  "c": 0.3,
+  "cap_r_extra": 0.5,
+  "cap_h": 1.0,
+  "delta": 0.35,
+  "theta0": 50.0,
+  "roll_deg": 20.0
+ },
+ "rules": {
+  "theta_min": 35.0,
+  "theta_max": 75.0,
+  "theta_nom": 50.0,
+  "stop": 3.5,
+  "nozzle_r_front": 1.8,
+  "nozzle_len": 5.0,
+  "carrier_r": 3.5,
+  "ring_len": 1.5,
+  "ring_wall_min": 1.0,
+  "c_ring": 0.3,
+  "c_sleeve": 0.5,
+  "c_paper": 0.3,
+  "sleeve_step": 0.75,
+  "R_step": 0.25
+ }
+}

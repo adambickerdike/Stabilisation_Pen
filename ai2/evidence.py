@@ -222,7 +222,7 @@ def literature() -> List[Dict[str, str]]:
           "Error rates rose with delay; addition errors (stroke duplication, 'feeeling'), where a set of strokes repeats; visual monitoring indispensable for repetitive letters (abstract)",
           "ms delay; error rate", "J-STAGE abstract", "Abstract only; whole visual scene delayed (video), not ink alone",
           "A lagging ink could cause repeated strokes and letters in writers who rely on seeing their ink (m, n, u, w, e)",
-          "medium", "Delay of the whole visual feedback, not of ink behind a visible hand", "Test delayed ink for letter duplication errors (EXP-L02)", R1, "J-STAGE article page (abstract)", "HAP"),
+          "medium", "Delay of the whole visual feedback, not of ink behind a visible hand", "Test delayed ink for added strokes and repeated letters (EXP-L03)", R1, "J-STAGE article page (abstract)", "HAP"),
         L("HAP-92", "Delayed visual feedback in handwriting (Kanji and English)",
           "Morikiyo Y, Matsushima T. Effects of delayed visual feedback on motor control performance. Perceptual and Motor Skills 70(1):111-114",
           "1990", "10.2466/pms.1990.70.1.111 ; PMID 2326107", "journal", "physical human study", "abstract only",
@@ -347,13 +347,16 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   + f"; seed-301 confirmation (R1R2R3R4): {conf_txt}; not adopted (R3 failed on seed 301)",
                   "um RMS ink error; share of letters read", "ai2.json aggregate.summary, aggregate.paired, tuning.d2b",
                   "Model HW1 replay convention; a +-6 mm nose is an assumption (same servo)", "Whether a small ink lag buys a cleaner line",
-                  "Adopt the causal gated tracker; keep delayed ink as an option only if EXP-L01/L02 show writers accept the lag", "CON",
+                  "Adopt the causal gated tracker; keep delayed ink off unless EXP-L03 shows writers accept the lag", "CON",
                   "aiguide test writers 0-5 x seeds 200-203 x 6/8/10 Hz x 0.3/1/2 mm (216 scenarios)"))
     rows.append(D("CON-51", "Delayed ink: stroke ends, contact delay (Z-actuated refill) and nose travel needed",
                   f"Coverage of the intended path within 0.3 mm, 1-2 mm tremor: gated {_f(t('gated', 'coverage_1_2mm'), '{:.3f}')}, 100 ms catch-up "
                   f"{_f(t('lag_100_6mm', 'coverage_1_2mm'), '{:.3f}')}, 100 ms with delayed contact {_f(t('limit_100_6mm', 'coverage_1_2mm'), '{:.3f}')}; letters read "
                   f"{_f(t('lag_100_6mm', 'recognition_1_2mm'), '{:.3f}')} vs {_f(t('limit_100_6mm', 'recognition_1_2mm'), '{:.3f}')}; nose travel needed p95: gated "
-                  f"{_f(t('gated', 'q_p95_mm_1_2mm'), '{:.2f}')} mm, 50 ms {_f(t('lag_50_6mm', 'q_p95_mm_1_2mm'), '{:.2f}')} mm, 100 ms {_f(t('lag_100_6mm', 'q_p95_mm_1_2mm'), '{:.2f}')} mm",
+                  f"{_f(t('gated', 'q_p95_mm_1_2mm'), '{:.2f}')} mm, 25 ms {_f(t('delayed_3mm', 'q_p95_mm_1_2mm'), '{:.2f}')} mm, "
+                  f"50 ms {_f(t('lag_50_6mm', 'q_p95_mm_1_2mm') or t('delayed_6mm', 'q_p95_mm_1_2mm'), '{:.2f}')} mm, 100 ms {_f(t('lag_100_6mm', 'q_p95_mm_1_2mm'), '{:.2f}')} mm; "
+                  f"commanded beyond 3 mm: {_f(100 * (t('gated', 'over_3mm_1_2mm') or 0), '{:.1f}')} % (lag 0), {_f(100 * (t('delayed_3mm', 'over_3mm_1_2mm') or 0), '{:.1f}')} % (25 ms), "
+                  f"{_f(100 * (t('delayed_6mm', 'over_3mm_1_2mm') or 0), '{:.1f}')} % (50 ms), {_f(100 * (t('lag_100_6mm', 'over_3mm_1_2mm') or 0), '{:.1f}')} % (100 ms) of pen-down time",
                   "share; mm", "ai2.json aggregate.summary", "The delayed-contact case is an upper bound (the refill's Z motion is not modelled)",
                   "A lag needs both travel and a way to finish strokes", "Do not pursue lags above 50 ms without a Z-actuated refill", "CON",
                   "aiguide test writers 0-5 x seeds 200-203 x 6/8/10 Hz x 1-2 mm"))
@@ -368,7 +371,7 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   f"UJI few-shot generator: legible {_f(_g(Cc, 'generated_legibility'), '{:.2f}')} (real test letters {_f(_g(Cc, 'classifier_acc_real_test_letters'), '{:.2f}')}), "
                   f"same-writer preference {_f(_g(Cc, 'same_writer_preference_generated'), '{:.2f}')} vs class mean {_f(_g(Cc, 'same_writer_preference_class_mean'), '{:.2f}')} (chance 0.5)",
                   "share; dB", "ai2.json synth", "Synthetic writers are glyph-font based; UJI has shapes only",
-                  "Whether autowrite and templates can look like the user's own writing from a 20 s sample", "Use sigma-lognormal synthesis from the calibration letters; measure style on real writers (EXP-L05)", "CON",
+                  "Whether autowrite and templates can look like the user's own writing from a 20 s sample", "Use the calibration letters and sigma-lognormal synthesis from them; measure style on real writers (EXP-L07)", "CON",
                   "aiguide writers 0-5 (26 letters, 3 held-out instances); UCI Character Trajectories; UCI UJI Pen Characters v2", eclass="calculation",
                   stype="derived calculation", comp="font in the writer's style; copy of one reference instance"))
     det = agg.get("gate_open_frac_by_condition", {})
@@ -410,7 +413,7 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   f"{_f(t('rl_residual', 'ink_err_um_1_2mm'))} um, gated {_f(t('gated', 'ink_err_um_1_2mm'))} um; tremor-free moved: arbiter {_f(_g(tf, 'rl_arbiter', 'false_correction_um'), '{:.1f}')} um, "
                   f"residual {_f(_g(tf, 'rl_residual', 'false_correction_um'), '{:.1f}')} um",
                   "reward per decision; um RMS", "ai2.json rl, aggregate.summary", "Replay backend (no closed-loop training); synthetic writers",
-                  "What RL adds on top of the model-based stack", "Use RL for arbitration only after sim2 closed-loop training and EXP-L03", "EML",
+                  "What RL adds on top of the model-based stack", "Use RL for arbitration only after sim2 closed-loop training with a false-correction constraint (EXP-L05)", "EML",
                   "Stable-Baselines3 2.9, one CPU thread; 320 randomised training episodes; tuning writers 100-103", comp="model-based gate and the Rev H tracker"))
     tx = doc.get("text") or {}
     ev = tx.get("eval", {})
@@ -423,7 +426,7 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   f"; transformer {_f(_g(tx, 'models', 'TF', 'n_params'))} parameters ({_f(_g(tx, 'models', 'TF', 'mcu_ms_per_char_int8'), '{:.1f}')} ms per character on a 128 MHz MCU, int8, CALC); "
                   f"small {_f(_g(tx, 'models', 'TF_small', 'n_params'))} parameters ({_f(_g(tx, 'models', 'TF_small', 'mcu_ms_per_char_int8'), '{:.2f}')} ms)",
                   "top-k accuracy; ms; parameters", "ai2.json text", "Sentence corpora, not notes; CPU latency on this container",
-                  "How much better prediction the pen and app can have", "Ship the mixture on the phone; the small model or n-gram on the pen", "EML",
+                  "How much better prediction the pen and app can have", "Phone: the mixture for top-1, the n-gram where latency matters, word completion after the first letters; pen: templates only for a known text (EXP-L06)", "EML",
                   "Tatoeba CC0 + Common Voice CC0 sentence text; test splits used once", eclass="calculation", stype="derived calculation",
                   comp="aiguide n-gram predictor (NG0) as used so far"))
     sh = doc.get("shared") or {}
@@ -432,9 +435,9 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   "Test learners (dysgraphia-like, passive hand): " + ", ".join(
                       f"{k} target {_f(_g(st_, k, 'target_err_um'))} um, device share {_f(_g(st_, k, 'device_share'), '{:.2f}')}, gain on malformed/well-formed letters "
                       f"{_f(_g(st_, k, 'gain_on_malformed'), '{:.2f}')}/{_f(_g(st_, k, 'gain_on_wellformed'), '{:.2f}')}" for k in ("fixed_partial", "fixed_full", "aan", "aan_fade") if k in st_) +
-                  f"; chosen AAN setting (tuning learners, rule S1): {sh.get('chosen')}",
+                  f"; chosen AAN setting (tuning learners, rule S1): f {_g(sh, 'chosen', 'f')}, kappa {_g(sh, 'chosen', 'kappa')}, e_tol {_g(sh, 'chosen', 'e_tol')}",
                   "um RMS; share", "ai2.json shared", "The simulated learner does not learn, so no learning benefit can be shown",
-                  "How the pen decides how much to help and hands control back", "Use AAN with a forgetting factor for guidance; test learning in EXP-L04", "EML",
+                  "How the pen decides how much to help and hands control back", "Per-letter AAN reacted one letter late; use partial guidance with the level fading across sessions; test learning in EXP-L08", "EML",
                   "handwriting study's dysgraphia-like learners, test writers 0-5 x seeds 200-203", comp="fixed partial guidance (gain 0.5)"))
     cl = _g(tun, "cl") or {}
     cad = cl.get("adopted")
@@ -442,7 +445,7 @@ def derived(doc: Dict) -> List[Dict[str, str]]:
                   f"Closed-loop tuning check (seeds 300-301, rules R1-R4 vs Rev H): passing {cl.get('passing')}; adopted {cad}; " +
                   ", ".join(f"{k} J {_f(v.get('J_ink_1_2mm_um'))} um fc {_f(v.get('fc_um'), '{:.1f}')} um" for k, v in (cl.get('table') or {}).items()),
                   "um RMS", "ai2.json tuning.cl", "Calibration = the detector on a separate synthetic recording",
-                  "Whether per-user calibration helps a learned estimator", "Calibrate the detector band and the context input from the 20 s calibration; confirm on real users (EXP-L03)", "PDT",
+                  "Whether per-user calibration helps a learned estimator", "The calibration context did not help the TCN (SIM); use the calibration to arm the detector; confirm on real users (EXP-L01, EXP-L04)", "PDT",
                   "aiguide tuning writers 100-103, seeds 300-301"))
     return rows
 

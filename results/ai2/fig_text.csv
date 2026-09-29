@@ -1,0 +1,61 @@
+panel,label,value
+"Tatoeba test: letter two ahead, top-1",NG0,0.398
+"Tatoeba test: letter two ahead, top-1",NG1,0.40066666666666667
+"Tatoeba test: letter two ahead, top-1",TF_small,0.28933333333333333
+"Tatoeba test: letter two ahead, top-1",TF,0.33666666666666667
+"Tatoeba test: letter two ahead, top-1",MIX,0.41
+"Tatoeba test: letter two ahead, top-3",NG0,0.61
+"Tatoeba test: letter two ahead, top-3",NG1,0.6126666666666667
+"Tatoeba test: letter two ahead, top-3",TF_small,0.5093333333333333
+"Tatoeba test: letter two ahead, top-3",TF,0.5446666666666666
+"Tatoeba test: letter two ahead, top-3",MIX,0.612
+"Tatoeba test: next word, top-1",NG0,0.13333333333333333
+"Tatoeba test: next word, top-1",NG1,0.12333333333333334
+"Tatoeba test: next word, top-1",TF_small,
+"Tatoeba test: next word, top-1",TF,0.11333333333333333
+"Tatoeba test: next word, top-1",MIX,0.13666666666666666
+"Tatoeba test: next word, top-3",NG0,0.20666666666666667
+"Tatoeba test: next word, top-3",NG1,0.21666666666666667
+"Tatoeba test: next word, top-3",TF_small,
+"Tatoeba test: next word, top-3",TF,0.18
+"Tatoeba test: next word, top-3",MIX,0.21666666666666667
+"Common Voice test: letter two ahead, top-1",NG0,0.32875
+"Common Voice test: letter two ahead, top-1",NG1,0.405
+"Common Voice test: letter two ahead, top-1",TF_small,0.305
+"Common Voice test: letter two ahead, top-1",TF,0.3275
+"Common Voice test: letter two ahead, top-1",MIX,0.4075
+"Common Voice test: letter two ahead, top-3",NG0,0.545
+"Common Voice test: letter two ahead, top-3",NG1,0.605
+"Common Voice test: letter two ahead, top-3",TF_small,0.53875
+"Common Voice test: letter two ahead, top-3",TF,0.5575
+"Common Voice test: letter two ahead, top-3",MIX,0.60375
+"Common Voice test: next word, top-1",NG0,0.135
+"Common Voice test: next word, top-1",NG1,0.13
+"Common Voice test: next word, top-1",TF_small,
+"Common Voice test: next word, top-1",TF,0.11
+"Common Voice test: next word, top-1",MIX,0.145
+"Common Voice test: next word, top-3",NG0,0.265
+"Common Voice test: next word, top-3",NG1,0.28
+"Common Voice test: next word, top-3",TF_small,
+"Common Voice test: next word, top-3",TF,0.23
+"Common Voice test: next word, top-3",MIX,0.28
+"app note lines: letter two ahead, top-1",NG0,0.2826603325415677
+"app note lines: letter two ahead, top-1",NG1,0.26128266033254155
+"app note lines: letter two ahead, top-1",TF_small,0.26365795724465557
+"app note lines: letter two ahead, top-1",TF,0.2660332541567696
+"app note lines: letter two ahead, top-1",MIX,0.27078384798099764
+"app note lines: letter two ahead, top-3",NG0,0.505938242280285
+"app note lines: letter two ahead, top-3",NG1,0.5273159144893111
+"app note lines: letter two ahead, top-3",TF_small,0.47980997624703087
+"app note lines: letter two ahead, top-3",TF,0.46080760095011875
+"app note lines: letter two ahead, top-3",MIX,0.5106888361045131
+"app note lines: next word, top-1",NG0,0.15217391304347827
+"app note lines: next word, top-1",NG1,0.10869565217391304
+"app note lines: next word, top-1",TF_small,0.08695652173913043
+"app note lines: next word, top-1",TF,0.13043478260869565
+"app note lines: next word, top-1",MIX,0.14130434782608695
+"app note lines: next word, top-3",NG0,0.22826086956521738
+"app note lines: next word, top-3",NG1,0.21739130434782608
+"app note lines: next word, top-3",TF_small,0.20652173913043478
+"app note lines: next word, top-3",TF,0.2391304347826087
+"app note lines: next word, top-3",MIX,0.2391304347826087

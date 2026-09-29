@@ -73,8 +73,20 @@ def run(quick: bool, workers: int):
     va_ids = TP.encode_stream(tat.val)
     models = {}
     for name, cfg, minutes in (("TF", TF_CFG, 3.0 if quick else 30.0), ("TF_small", TF_CFG_SMALL, 1.5 if quick else 10.0)):
-        m, info = TP.train_transformer(tr_ids, va_ids, cfg, minutes=minutes, log=C.log)
-        torch.save(m.state_dict(), BUILD_DIR / f"{name.lower()}.pt")
+        tag = f"{name.lower()}{'_quick' if quick else ''}"
+        pt, js = BUILD_DIR / f"{tag}.pt", BUILD_DIR / f"{tag}.json"
+        old = json.loads(js.read_text()) if js.exists() else None
+        if pt.exists() and old and old.get("cfg") == cfg and abs(float(old.get("minutes_budget", -1)) - minutes) < 1e-9:
+            m = TP.make_transformer(**cfg)
+            m.load_state_dict(torch.load(pt))
+            m.eval()
+            info = old                                   # the same run's weights and record (resume after a crash)
+            C.log(f"[text] {name}: reusing the trained model ({info.get('tokens', 0) / 1e6:.1f} M tokens)")
+        else:
+            m, info = TP.train_transformer(tr_ids, va_ids, cfg, minutes=minutes, log=C.log)
+            info["minutes_budget"] = minutes
+            torch.save(m.state_dict(), pt)
+            js.write_text(json.dumps(info, default=C.jdefault))
         info["macs_per_char"] = TP.macs_per_char(cfg)
         info["mcu_ms_per_char_int8"] = mcu_latency_ms(info["macs_per_char"], cfg["n_layer"])
         info["weights_kB_int8"] = info["n_params"] / 1024.0
@@ -115,8 +127,9 @@ def run(quick: bool, workers: int):
             r["bpc"] = TP.char_bpc(pred, sents, n=1000) if ng else None
             r["seconds"] = time.time() - t0
             out["eval"][name][sname] = r
+            nwd = r.get("next_word") or {}
             C.log(f"[text] {name} {sname}: glyph-2 top1 {r['glyph_d2']['top1']:.3f} top3 {r['glyph_d2']['top3']:.3f} "
-                  f"next-word top1 {r['next_word']['top1']:.3f} top3 {r['next_word']['top3']:.3f} ({r['seconds']:.0f} s)")
+                  f"next-word top1 {nwd.get('top1', float('nan')):.3f} top3 {nwd.get('top3', float('nan')):.3f} ({r['seconds']:.0f} s)")
     out["minutes_total"] = (time.time() - t_all) / 60.0
     C.save("text", out, quick)
     return out

@@ -21,6 +21,12 @@ words read by the app 2/5  ·  mean lag 32 ms"
 "hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",limit_100_6mm,"Delayed ink 100 ms
 (Z-refill limit)","ink error 513 um  ·  letters read 62%
 words read by the app 2/5  ·  mean lag 100 ms"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",learned_tcn,"Learned TCN
+(causal, 0 ms)","ink error 249 um  ·  letters read 77%
+words read by the app 4/5"
+"hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",rl_arbiter,"RL arbiter
+(causal, 0 ms)","ink error 286 um  ·  letters read 77%
+words read by the app 4/5"
 "hand tremor 1 mm peak at 6 Hz (writer 0, seed 200)",clean_copy,"App clean copy
 (digital, not ink)","ink error 186 um  ·  letters read 92%
 words read by the app 5/5"
@@ -49,6 +55,12 @@ words read by the app 2/5  ·  mean lag 53 ms"
 "hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",limit_100_6mm,"Delayed ink 100 ms
 (Z-refill limit)","ink error 567 um  ·  letters read 77%
 words read by the app 3/5  ·  mean lag 100 ms"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",learned_tcn,"Learned TCN
+(causal, 0 ms)","ink error 361 um  ·  letters read 77%
+words read by the app 3/5"
+"hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",rl_arbiter,"RL arbiter
+(causal, 0 ms)","ink error 309 um  ·  letters read 77%
+words read by the app 4/5"
 "hand tremor 2 mm peak at 8 Hz (writer 0, seed 200)",clean_copy,"App clean copy
 (digital, not ink)","ink error 214 um  ·  letters read 96%
 words read by the app 5/5"
@@ -77,6 +89,12 @@ words read by the app 4/5  ·  mean lag 49 ms"
 "hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",limit_100_6mm,"Delayed ink 100 ms
 (Z-refill limit)","ink error 287 um  ·  letters read 85%
 words read by the app 4/5  ·  mean lag 100 ms"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",learned_tcn,"Learned TCN
+(causal, 0 ms)","ink error 181 um  ·  letters read 92%
+words read by the app 5/5"
+"hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",rl_arbiter,"RL arbiter
+(causal, 0 ms)","ink error 196 um  ·  letters read 88%
+words read by the app 5/5"
 "hand tremor 1 mm peak at 10 Hz (writer 0, seed 200)",clean_copy,"App clean copy
 (digital, not ink)","ink error 148 um  ·  letters read 96%
 words read by the app 5/5"

@@ -116,14 +116,16 @@ def pod_points(h: Heel, n_az: int = 72, n_h: int = 9) -> np.ndarray:
 
 
 def pod_contact_radius(env_fun: Callable[[float], Tuple[np.ndarray, np.ndarray]], h: Heel, R0: float = 8.0,
-                       iters: int = 8) -> Dict:
+                       iters: int = 8, ring_offset: float = 0.0) -> Dict:
     """Smallest wheel contact radius R_d (mm, continuous) at which every pod point clears the nose envelope by h.c.
-    env_fun(R) -> (s, r_env) for a ring of contact radius R (the envelope depends weakly on R through p(50))."""
+    env_fun(R) -> (s, r_env) for a ring of contact radius R (the envelope depends weakly on R through p(50)); the ring is
+    evaluated at R_d - ring_offset (drive/geometry.py uses 0; the integration uses delta: the ring, not the wheel, sets
+    the ring plane)."""
     P = pod_points(h)
     R = R0
     worst = None
     for _ in range(iters):
-        s, env = env_fun(R)
+        s, env = env_fun(R - ring_offset)
         need_i = np.interp(P[:, 2], s, env) + h.c - (R - P[:, 0])
         k = int(np.argmax(need_i))
         worst = {"s_mm": float(P[k, 2]), "inboard_mm": float(P[k, 0]), "lateral_mm": float(P[k, 1])}
@@ -180,7 +182,7 @@ def check(R_s: float, nz: NoseGeo, h: Optional[Heel] = None, sleeve_step: float 
         P = pod_points(h)
         clr = (R_d - P[:, 0]) - (np.interp(P[:, 2], s, env) + h.c)
         out["R_d_mm"] = R_d
-        out["pod_clearance_min_mm"] = float(clr.min()) + h.c - h.c           # margin beyond the 0.3 mm rule
+        out["pod_clearance_min_mm"] = float(clr.min())                        # margin beyond the 0.3 mm rule
         out["pod_to_nose_at_stop_mm"] = float(clr.min() + h.c)               # actual gap pod-nose at the stop
         # the wheel is the lowest point of the heel at every tilt: protrusion beyond the ring (drive/geometry)
         out["wheel_protrusion_mm"] = {f"{t:g}": float(h.delta * math.cos(math.radians(t)) + h.r_e * (1 - math.cos(math.radians(t - h.theta0))))
@@ -205,7 +207,7 @@ def close(h: Optional[Heel] = Heel(), X_min_req: float = 6.0, sleeve_step: float
     for it in range(max_iter):
         if h is not None:
             env_fun = lambda R, nz=nz: envelope(R, nz)[:2]                                 # noqa: E731
-            pr = pod_contact_radius(env_fun, h)
+            pr = pod_contact_radius(env_fun, h, ring_offset=h.delta)
             R_d = ceil_step(pr["R_d_mm"])
             R_s_new = max(R_d - h.delta, nose_only_R(nz)["R_mm"])
         else:
@@ -227,7 +229,7 @@ def close(h: Optional[Heel] = Heel(), X_min_req: float = 6.0, sleeve_step: float
     chk["z_p_mm"] = nz.z_p
     if h is not None:
         env_fun = lambda R, nz=nz: envelope(R, nz)[:2]                                     # noqa: E731
-        pr = pod_contact_radius(env_fun, h)
+        pr = pod_contact_radius(env_fun, h, ring_offset=h.delta)
         chk["R_d_needed_continuous_mm"] = pr["R_d_mm"]
         chk["pod_worst_point"] = pr["worst_point"]
     chk["nose_only_R_mm"] = nose_only_R(nz)["R_mm"]
@@ -253,8 +255,8 @@ def variants(quick: bool = False) -> Dict:
     # (e) what sets the heel: the pod without its steering ring (a lower bound for a redesigned pod)
     nzj = replace(c1s_nose(), X=out["revJ"]["X_nom_mm"])
     env_fun = lambda R, nz=nzj: envelope(R, nz)[:2]                                           # noqa: E731
-    out["pod_without_steering_ring_R_d_mm"] = pod_contact_radius(env_fun, Heel(cap_h=0.0, cap_r_extra=0.0))["R_d_mm"]
-    out["pod_steer_axis_55deg_R_d_mm"] = pod_contact_radius(env_fun, Heel(theta0=55.0))["R_d_mm"]
+    out["pod_without_steering_ring_R_d_mm"] = pod_contact_radius(env_fun, Heel(cap_h=0.0, cap_r_extra=0.0), ring_offset=0.35)["R_d_mm"]
+    out["pod_steer_axis_55deg_R_d_mm"] = pod_contact_radius(env_fun, Heel(theta0=55.0), ring_offset=0.35)["R_d_mm"]
     return out
 
 
@@ -279,7 +281,9 @@ def side_view(R_s: float, nz: NoseGeo, h: Optional[Heel], theta_deg: float) -> D
 
 
 # --------------------------------------------------------------------------------------------------- ink visibility
-def _solids_pen_frame(R_s: float, dm: Dict, h: Optional[Heel], sleeve_step: float, cheek: Optional[Dict]) -> List[Callable]:
+def _solids_pen_frame(R_s: float, dm: Dict, h: Optional[Heel], sleeve_step: float, cheek: Optional[Dict],
+                      p_ball: float = 8.0, r_grip: float = 12.0, L_taper: float = 40.0,
+                      sleeve_open_len: float = 0.0) -> List[Callable]:
     """Occupancy tests f(P) -> bool array for points P (N, 3) in the pen frame (x away from paper, y, s behind the ring
     plane).  The C ring (120 deg open on top), the full sleeve behind it, the heel pod, the page-sensor cheek and the
     nose (centred) with the refill ahead of the ring."""
@@ -296,15 +300,20 @@ def _solids_pen_frame(R_s: float, dm: Dict, h: Optional[Heel], sleeve_step: floa
     def sleeve(P):
         r = np.hypot(P[:, 0], P[:, 1])
         s = P[:, 2]
-        r_out = np.minimum(R_s + sleeve_step + np.clip(s - RU.ring_len, 0, None) * 0.5, 12.0)
-        return (s > RU.ring_len) & (s <= 60.0) & (r >= sb) & (r <= r_out)
+        r0 = R_s + sleeve_step                          # the sleeve's front outer radius, tapering to the grip radius at z 50
+        r_out = r0 + (r_grip - r0) * np.clip((s - RU.ring_len) / L_taper, 0.0, 1.0)
+        ang = np.degrees(np.arctan2(np.abs(P[:, 1]), P[:, 0]))
+        opened = (s <= RU.ring_len + sleeve_open_len) & (ang < 60.0)      # the C opening continued into the sleeve
+        return (s > RU.ring_len) & (s <= 60.0) & (r >= sb) & (r <= r_out) & ~opened
     sol.append(sleeve)
 
     def nose(P):
         r = np.hypot(P[:, 0], P[:, 1])
         s = P[:, 2]
         nozr = RU.nozzle_r_front + (RU.carrier_r - RU.nozzle_r_front) * np.clip(s, 0, RU.nozzle_len) / RU.nozzle_len
-        return ((s >= 0) & (s <= 60) & (r <= nozr)) | ((s < 0) & (r <= REFILL_R))
+        # the refill's tip is a cone (d 0.7 mm at the ball to 2.35 mm 3 mm behind it: the Rev H 'ball' component)
+        tip = 0.35 + (REFILL_R - 0.35) * np.clip((s + p_ball) / 3.0, 0.0, 1.0)
+        return ((s >= 0) & (s <= 60) & (r <= nozr)) | ((s < 0) & (s >= -p_ball) & (r <= tip))
     sol.append(nose)
     if h is not None:
         th = math.radians(h.theta0)
@@ -340,53 +349,62 @@ def _world_to_pen(theta: float):
     return a, tp
 
 
+EYES = {  # eye directions relative to the pen (ASSUMPTION): azimuth from the pen's back direction on the paper toward +y
+    # (+y = the side of the page-sensor cheek), elevation above the paper.  A right-handed writer's eyes are above the
+    # page, about 30 deg to the pen's left seen from behind (-y here), about 55 deg up; the fresh ink trails behind the
+    # tip's motion, about 120 deg from the pen's back direction on the same side.
+    "right_hand": {"az": -30.0, "el": 55.0, "trail_deg": -120.0},
+    "left_hand": {"az": 30.0, "el": 55.0, "trail_deg": 120.0},
+    "side_view": {"az": -90.0, "el": 55.0, "trail_deg": -120.0},
+}
+
+
 def visibility(R_s: float, nz: NoseGeo, h: Optional[Heel] = None, sleeve_step: float = 0.0, cheek: Optional[Dict] = None,
-               thetas: Sequence[float] = (35.0, 50.0, 75.0), elevations: Sequence[float] = (40.0, 55.0, 70.0),
-               azimuths: Sequence[float] = tuple(range(-90, 91, 15)), ink_len: float = 3.0, n_dir: int = 24,
-               n_ink: int = 7, step: float = 0.1, reach: float = 40.0) -> Dict:
-    """Share of the most recent ink (a 3 mm stroke leaving the ball in any of n_dir directions on the paper) and of the
-    ball's contact point that the writer can see, from eye directions (elevation above the paper; azimuth relative to
-    the pen's back direction, + = to the pen's left when looking from behind it) (CALC; eye directions ASSUMPTION).
-    A paper point is hidden if the straight ray toward the eye enters any front-end solid within `reach` mm."""
+               r_grip: float = 12.0, sleeve_open_len: float = 0.0, thetas: Sequence[float] = (35.0, 50.0, 75.0), n_dir: int = 24,
+               d_max: float = 6.0, d_step: float = 0.25, step: float = 0.1, reach: float = 45.0) -> Dict:
+    """How close to the ball the writer sees the fresh ink (CALC; eye directions ASSUMPTION, EYES).  For every tilt, eye
+    and ink direction on the paper, the first distance from the ball's contact (0.5-6 mm) at which the paper point is
+    visible: the straight ray toward the eye enters none of the front end's solids (C ring open 120 deg on top, the full
+    sleeve behind it tapering to the grip, the nose centred with the refill's tip cone, the heel pod, the page-sensor
+    cheek) within `reach` mm."""
     dm = FEN.dims(R_s, FEN.Nose(z_p=nz.z_p, travel=nz.X, stop_extra=nz.stop_extra), RU)
-    sol = _solids_pen_frame(R_s, dm, h, sleeve_step, cheek)
+    ds = np.arange(0.5, d_max + 1e-9, d_step)
+    ts = np.arange(step, reach, step)
     res = {}
     for t in thetas:
+        z_ring = protrusion(50.0, R_s)
+        sol = _solids_pen_frame(R_s, dm, h, sleeve_step, cheek, p_ball=protrusion(t, R_s), r_grip=r_grip,
+                                L_taper=max(50.0 - z_ring - RU.ring_len, 1.0), sleeve_open_len=sleeve_open_len)
         th = math.radians(t)
         a, tp = _world_to_pen(th)
         ey = np.array([0.0, 1.0, 0.0])
-        C = np.array([0.0, 0.0, R_s * math.cos(th)])                 # ring-plane centre in the world
-        B = C - protrusion(t, R_s) * a                                 # ball centre
-        B[2] = 0.0                                                     # its contact point on the paper
-        pts = [B.copy()]
-        for k in range(n_dir):
-            ang = 2 * math.pi * k / n_dir
-            d = np.array([math.cos(ang), math.sin(ang), 0.0])
-            for j in range(1, n_ink + 1):
-                pts.append(B + d * ink_len * j / n_ink)
-        pts = np.array(pts)
-        per = {}
-        for el in elevations:
-            for az in azimuths:
-                e_back = np.array([1.0, 0.0, 0.0])                     # the pen's back direction on the paper (+x_w)
-                e_left = np.array([0.0, 1.0, 0.0])
-                aa = math.radians(az)
-                hor = math.cos(aa) * e_back + math.sin(aa) * e_left
-                eye = math.cos(math.radians(el)) * hor + math.sin(math.radians(el)) * np.array([0.0, 0.0, 1.0])
-                ts = np.arange(step, reach, step)
-                R = pts[:, None, :] + ts[None, :, None] * eye[None, None, :]        # (Np, Nt, 3) world
+        C = np.array([0.0, 0.0, R_s * math.cos(th)])
+        B = C - protrusion(t, R_s) * a
+        B[2] = 0.0
+        betas = np.degrees(2 * np.pi * np.arange(n_dir) / n_dir)
+        per_eye = {}
+        for name, ev in EYES.items():
+            aa, ee = math.radians(ev["az"]), math.radians(ev["el"])
+            eye = np.array([math.cos(ee) * math.cos(aa), math.cos(ee) * math.sin(aa), math.sin(ee)])
+            first = []
+            for b in list(betas) + [ev["trail_deg"]]:
+                d = np.array([math.cos(math.radians(b)), math.sin(math.radians(b)), 0.0])
+                P0 = B[None, :] + ds[:, None] * d[None, :]
+                R = P0[:, None, :] + ts[None, :, None] * eye[None, None, :]
                 Q = R - C[None, None, :]
-                Pp = np.stack([-(Q @ tp), Q @ ey, Q @ a], axis=-1).reshape(-1, 3)    # pen frame: x = away from paper
+                Pp = np.stack([-(Q @ tp), Q @ ey, Q @ a], axis=-1).reshape(-1, 3)
                 hit = np.zeros(Pp.shape[0], bool)
                 for f in sol:
                     hit |= f(Pp)
-                hidden = hit.reshape(len(pts), len(ts)).any(axis=1)
-                per[f"el{el:g}_az{az:+g}"] = {"ball_visible": bool(not hidden[0]),
-                                              "recent_ink_visible_share": float(1.0 - hidden[1:].mean())}
-        vals = list(per.values())
-        res[f"{t:g}"] = {"by_eye": per, "ball_visible_share": float(np.mean([v["ball_visible"] for v in vals])),
-                         "recent_ink_visible_mean": float(np.mean([v["recent_ink_visible_share"] for v in vals])),
-                         "recent_ink_visible_min": float(np.min([v["recent_ink_visible_share"] for v in vals]))}
+                vis = ~hit.reshape(len(ds), len(ts)).any(axis=1)
+                first.append(float(ds[np.argmax(vis)]) if vis.any() else float("inf"))
+            fd = np.array(first[:-1])
+            per_eye[name] = {"eye": ev, "first_visible_mm_by_direction": dict(zip([f"{b:g}" for b in betas], first[:-1])),
+                             "trail_first_visible_mm": first[-1],
+                             "share_directions_visible_within_1mm": float(np.mean(fd <= 1.0)),
+                             "share_directions_visible_within_3mm": float(np.mean(fd <= 3.0)),
+                             "median_first_visible_mm": float(np.median(fd))}
+        res[f"{t:g}"] = per_eye
     return res
 
 
@@ -401,23 +419,36 @@ def window_height(R_s: float, s: float, r: float, phi_deg: float, theta_deg, rol
 
 
 def page_sensor_window(R_s: float, R_d: float, nz: NoseGeo, h: Heel, target: float = 2.4, band: float = 0.2,
-                       roll_design: float = 10.0) -> Dict:
+                       roll_design: float = 5.0) -> Dict:
     """Place the page sensor's lens reference point (PMW3360 class: lens plane 2.2-2.6 mm from the surface, MFR OPT-54)
-    where its height changes least over 35-75 deg of tilt and +-roll_design of roll, outside the wheel pod (|y| >= 2.2 mm
-    at the bottom) and outside the nose's envelope at the stop (CALC).  Reports the height band over tilt, roll and the
-    heel lift for the chosen point and for study D's placement (bottom, z 14-20)."""
+    where its height changes least over 35-75 deg of tilt and +-roll_design of roll (CALC).
+    The height of a handle point is h = (R_s - r cos(phi + psi)) cos(theta) + s sin(theta): the only point whose height is
+    2.4 mm at every tilt near 55 deg lies 1.42 mm inboard of the contact circle and 2.02 mm behind the ring plane, i.e.
+    at the heel.  The wheel pod occupies |y| <= 2.2 mm there, so the window goes beside it.  A mouse-class package (study
+    D: 'its own package is too large') does not fit between the nose's swing and the sleeve's surface there, so the
+    PROPOSED DESIGN is a folded path: lens and a 45 deg mirror (a 2 x 2 x 2 mm block, ASSUMPTION) at the window, the
+    sensor die chip-on-board in the sleeve's bottom wall behind it.  Constraints: the window clears the pod (|y| >= 2.7 mm),
+    stays inside the handle (r <= R_s in the ring, <= 12 mm behind it), and the optics block clears the nose's envelope at
+    the stop by 0.3 mm."""
     thetas = np.linspace(35.0, 75.0, 41)
     rolls = np.linspace(-roll_design, roll_design, 9)
     s_env, env, _ = envelope(R_s, nz)
     best = None
-    for phi in np.arange(12.0, 46.0, 1.0):
-        for s in np.arange(0.5, 6.01, 0.25):
-            for dr in np.arange(0.2, 4.01, 0.05):
+    for phi in np.arange(8.0, 46.0, 0.5):
+        for s in np.arange(0.5, 4.51, 0.05):
+            for dr in np.arange(0.2, 3.51, 0.02):
                 r = (R_s - dr) / math.cos(math.radians(phi))
                 y = r * math.sin(math.radians(phi))
-                if y < 2.2 + 1.0:                                  # a 2 mm-wide window beside the 4 mm-wide pod (|y| <= 2.2)
+                if y < 2.7:
                     continue
-                if r - 1.0 < float(np.interp(s, s_env, env)) + 0.3:  # sensor body inboard of the window clears the nose
+                if r > (R_s if s <= RU.ring_len else 12.0):
+                    continue
+                r_in = r - 1.5 * math.cos(math.radians(50.0)) - 1.0      # optics block, 1.5 mm along the normal, 1 mm half-width
+                s_in = s + 1.5 * math.sin(math.radians(50.0))
+                if r_in < float(np.interp(s_in, s_env, env)) + 0.3:
+                    continue
+                H0 = window_height(R_s, s, r, phi, thetas)
+                if float(np.max(np.abs(H0 - target))) > band - 0.02:     # unrolled: inside the lens band with 0.02 mm spare
                     continue
                 H = window_height(R_s, s, r, phi, thetas[:, None], rolls[None, :])
                 err = float(np.max(np.abs(H - target)))
@@ -426,24 +457,26 @@ def page_sensor_window(R_s: float, R_d: float, nz: NoseGeo, h: Heel, target: flo
     phi, s, r = best["phi_deg"], best["s_mm"], best["r_mm"]
 
     def band_at(roll):
-        H = window_height(R_s, s, r, phi, thetas[:, None], np.linspace(-roll, roll, 9)[None, :])
+        H = window_height(R_s, s, r, phi, thetas[:, None], np.linspace(-roll, roll, 21)[None, :])
         return [float(H.min()), float(H.max())]
     lift_max = h.delta * math.cos(math.radians(35.0)) + h.r_e * (1 - math.cos(math.radians(15.0)))
-    out = {"target_mm": target, "tolerance_mm": band, "window": best,
-           "height_band_mm": {"roll0": band_at(0.0), "roll10": band_at(10.0), "roll20": band_at(20.0)},
+    out = {"target_mm": target, "tolerance_mm": band, "roll_design_deg": roll_design, "window": best,
+           "height_band_mm": {"roll0": band_at(0.0), "roll5": band_at(5.0), "roll10": band_at(10.0), "roll20": band_at(20.0)},
+           "heel_lift_max_mm": lift_max,
            "height_with_heel_lift_mm": [float(window_height(R_s, s, r, phi, thetas).min()),
-                                        float(window_height(R_s, s, r, phi, thetas, lift=lift_max).max())],
-           "roll_tolerance_deg_for_band": None}
+                                        float(window_height(R_s, s, r, phi, thetas, lift=lift_max * math.cos(math.radians(35))).max())],
+           "roll_tolerance_deg_for_band": None,
+           "invariant_point": {"dr_mm": 2.47 * math.cos(math.radians(55.0)), "s_mm": 2.47 * math.sin(math.radians(55.0)),
+                               "note": "at phi = 0 this is inside the wheel pod"},
+           "label": "CALC (geometry); optics block size and folded path ASSUMPTION / PROPOSED DESIGN"}
     for roll in np.arange(0.0, 30.01, 0.5):
         lo, hi = band_at(roll)
         if lo < target - band or hi > target + band:
             out["roll_tolerance_deg_for_band"] = float(max(roll - 0.5, 0.0))
             break
-    # study D's placement: bottom (phi 0), z 14-20 behind the ball at 50 deg; lens plane at the sensor's paper face
     s_D = 14.0 - protrusion(50.0, 8.40)
-    rD = 8.6 + 2.0
     out["studyD_placement_on_revJ"] = {
         "note": "study D put the sensor at the bottom, z 14-20, 8.6 mm off the axis (Rev H nose); on the Rev J front the "
-                "same spot lies inside the C1S nose's swing (r_env at the stop about 9.3 mm)",
-        "nose_env_at_s_mm": float(np.interp(s_D, s_env, env))}
+                "same spot lies inside the C1S nose's swing",
+        "nose_env_at_that_s_mm": float(np.interp(s_D, s_env, env))}
     return out

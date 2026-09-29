@@ -1,0 +1,37 @@
+panel,label,value
+Distance of the ink to the target letters (um RMS),no guidance,582.3604134566253
+Distance of the ink to the target letters (um RMS),fixed 0.5,412.98179265074197
+Distance of the ink to the target letters (um RMS),fixed 1.0,283.3475723779873
+Distance of the ink to the target letters (um RMS),assist as needed,433.31722366994865
+Distance of the ink to the target letters (um RMS),"AAN, faster fade",469.48743687995375
+Distance of the ink to the target letters (um RMS),plant guide mode 0.5 (check),377.4346695199303
+Device share of the ink motion,no guidance,0.0
+Device share of the ink motion,fixed 0.5,0.25106763474491395
+Device share of the ink motion,fixed 1.0,0.3980724571019003
+Device share of the ink motion,assist as needed,0.2494392613089854
+Device share of the ink motion,"AAN, faster fade",0.20406429058412803
+Device share of the ink motion,plant guide mode 0.5 (check),0.23365878427232845
+Letters read,no guidance,0.9228395061728394
+Letters read,fixed 0.5,0.9290123456790124
+Letters read,fixed 1.0,0.79320987654321
+Letters read,assist as needed,0.9043209876543209
+Letters read,"AAN, faster fade",0.9120370370370371
+Letters read,plant guide mode 0.5 (check),0.9351851851851851
+Mean guidance gain on malformed letters,no guidance,0.0
+Mean guidance gain on malformed letters,fixed 0.5,0.5
+Mean guidance gain on malformed letters,fixed 1.0,1.0
+Mean guidance gain on malformed letters,assist as needed,0.4738379224447898
+Mean guidance gain on malformed letters,"AAN, faster fade",0.35872181591586605
+Mean guidance gain on malformed letters,plant guide mode 0.5 (check),0.5
+Mean guidance gain on well-formed letters,no guidance,0.0
+Mean guidance gain on well-formed letters,fixed 0.5,0.5
+Mean guidance gain on well-formed letters,fixed 1.0,1.0
+Mean guidance gain on well-formed letters,assist as needed,0.5428211134435094
+Mean guidance gain on well-formed letters,"AAN, faster fade",0.4283919727172278
+Mean guidance gain on well-formed letters,plant guide mode 0.5 (check),0.5
+Nose deflection RMS (mm),no guidance,0.0015342228546487754
+Nose deflection RMS (mm),fixed 0.5,0.33656722274258816
+Nose deflection RMS (mm),fixed 1.0,0.6729424111302911
+Nose deflection RMS (mm),assist as needed,0.37986970107422263
+Nose deflection RMS (mm),"AAN, faster fade",0.3179499113764524
+Nose deflection RMS (mm),plant guide mode 0.5 (check),0.3036370800363817

@@ -1,0 +1,305 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (magpylib, free space unless stated)",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured (magpylib, free space unless stated)",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "magnetics": {
+  "axial_pull": {
+   "F_axial_N_images": 16.502007147601198,
+   "B_max_at_plate_T": 0.7231303723633259,
+   "F_axial_N_lumped_Bgap": 35.98436715590479,
+   "gimbal_strip_buckling_N": 14.5,
+   "strip_force_if_one_strip_per_axis_carries_it_N": 11.668681157257682,
+   "torque_from_eccentricity_mNm_per_0.1mm": 1.6502007147601199,
+   "negative_stiffness_Nm_per_rad_per_0.1mm": 0.00165020071476012,
+   "gimbal_bending_stiffness_Nm_per_rad": 0.0028,
+   "label": "CALC (magpylib + images, ideal iron: upper bound); eccentricity = offset of the spheres' centre from the flexure's pivot (tolerance, ASSUMPTION 0.1 mm)",
+   "lateral_offset_0.02mm": {
+    "torque_mNm": 0.33004014295202394,
+    "coil_force_N": 0.028684710832691567,
+    "hold_power_W": 0.0019092581403807873,
+    "axial_offset_negative_k_share_of_flexure": 0.11787147962572284
+   },
+   "lateral_offset_0.05mm": {
+    "torque_mNm": 0.8251003573800599,
+    "coil_force_N": 0.07171177708172893,
+    "hold_power_W": 0.011932863377379926,
+    "axial_offset_negative_k_share_of_flexure": 0.2946786990643071
+   },
+   "lateral_offset_0.1mm": {
+    "torque_mNm": 1.6502007147601199,
+    "coil_force_N": 0.14342355416345787,
+    "hold_power_W": 0.047731453509519704,
+    "axial_offset_negative_k_share_of_flexure": 0.5893573981286142
+   },
+   "offset_note": "hold power = (F e / (arm Km))^2 with arm = actuator - pivot and Km at the magnets (study N, an upper bound: a lower Km raises it); the servo holds either offset, at a cost in power"
+  },
+  "c1s_at_motors": {
+   "positions": {
+    "rest": {
+     "B_front_mT": 18.371379266777765,
+     "B_rotor_mean_mT": 1.4137100139015775,
+     "B_max_mT": 18.371379266777765,
+     "torque_bound_mNm": 0.07952118828196374
+    },
+    "stop_toward": {
+     "B_front_mT": 20.993595174041918,
+     "B_rotor_mean_mT": 1.4274393158441296,
+     "B_max_mT": 20.993595174041918,
+     "torque_bound_mNm": 0.08029346151623229
+    },
+    "stop_side": {
+     "B_front_mT": 17.798472352278935,
+     "B_rotor_mean_mT": 1.3603427729853383,
+     "B_max_mT": 17.798472352278935,
+     "torque_bound_mNm": 0.07651928098042528
+    }
+   },
+   "rotor_moment_Am2": 0.05625,
+   "motor_friction_mNm": 0.011,
+   "motor_rated_mNm": 0.28,
+   "worst_torque_to_friction": 7.299405592384754,
+   "worst_torque_to_rated": 0.28676236255797244,
+   "shield_factor_needed_for_friction_level": 7.299405592384754,
+   "label": "CALC (free space upper bound; rotor magnet ASSUMPTION; housing and plate shielding not counted)"
+  },
+  "nose_hall": {
+   "sensors_xyz_mm": [
+    [
+     6.8,
+     1.2,
+     63.0
+    ],
+    [
+     6.8,
+     -1.2,
+     63.0
+    ]
+   ],
+   "magnet_motion_per_tip_motion": 0.17625021266847027,
+   "slope_mT_per_mm_magnet": {
+    "x": 16.874920935894092,
+    "y": 15.538887368226305
+   },
+   "max_field_mT": {
+    "usable": 84.27938360140911,
+    "stop": 94.49298912296875
+   },
+   "range_mT": {
+    "DRV5055_A4": 169.0,
+    "DRV5055_A3": 85.0
+   },
+   "package_to_magnet_at_stop_mm": 0.5676705348934687,
+   "tip_noise_um_rms": {
+    "DRV5055_A4_pair": {
+     "x": 5.610810599270249,
+     "y": 6.093228106059021
+    },
+    "TMAG5170_CONV_AVG_000_20kSPS": {
+     "x": 24.26826689800428,
+     "y": 48.538954898139124
+    },
+    "TMAG5170_CONV_AVG_101": {
+     "x": 4.160274325372162,
+     "y": 8.320963696823851
+    }
+   },
+   "disturbance_equiv_tip_error_um": {
+    "c1s_cap_over_stroke_x_y": [
+     0.0,
+     2.7902765614890566
+    ],
+    "motors_unshielded_x_y": [
+     15.372200463471199,
+     0.6354757658395969
+    ],
+    "endcap_tiles_x_y": [
+     0.34279658667771834,
+     0.0
+    ],
+    "earth_50uT_x_y": [
+     16.81119585888708,
+     0.0
+    ]
+   },
+   "notes": [
+    "the C1S cap's field at the sensors is a fixed function of the nose position: calibrate it (a map)",
+    "the y channel is a gradiometer: uniform fields (Earth, distant motors) cancel; the x channel sees them",
+    "the Earth's field changes only as the pen turns (slow): a slow offset in x, removed by the page sensor's absolute position in autowrite"
+   ],
+   "label": "CALC (magpylib, free space; DRV5055 noise from the OPT-46 CALC; TMAG5170 noise MFR OPT-53; Earth field 25-65 uT, 50 uT used, ASSUMPTION)"
+  },
+  "pod_crosstalk": {
+   "steer_magnet_at_load_sensor_pp_mT": 0.27055868417421197,
+   "load_signal_slope_mT_per_mm": 91.50035214560218,
+   "false_deflection_um_amplitude": 1.4784570650814481,
+   "false_load_mN_amplitude": 1.5058358996199936,
+   "load_magnet_at_steer_sensor_mT": 0.2593458669003162,
+   "note": "the crosstalk is a fixed function of the heading: calibrate it out (a heading-indexed table) or place the load magnet and sensor 90 deg around the fork",
+   "label": "CALC (magpylib; magnet sizes and positions ASSUMPTION, AMF-72 class magnets)"
+  },
+  "outside": {
+   "by_distance_from_surface_mm": {
+    "5": {
+     "all": {
+      "B_max_mT": 13.296031895725406,
+      "at_z_mm": 105.52406779661017
+     },
+     "c1s_cap": {
+      "B_max_mT": 4.203710846971772,
+      "at_z_mm": 88.09016949152542
+     },
+     "motors": {
+      "B_max_mT": 13.23979829725407,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 2.925416805189323,
+      "at_z_mm": 154.33898305084745
+     }
+    },
+    "10": {
+     "all": {
+      "B_max_mT": 5.267475782543269,
+      "at_z_mm": 105.52406779661017
+     },
+     "c1s_cap": {
+      "B_max_mT": 1.0501633826533971,
+      "at_z_mm": 81.11661016949152
+     },
+     "motors": {
+      "B_max_mT": 5.238693650797555,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.8958449961151831,
+      "at_z_mm": 154.33898305084745
+     }
+    },
+    "20": {
+     "all": {
+      "B_max_mT": 1.3489058533445697,
+      "at_z_mm": 105.52406779661017
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.15103281681658876,
+      "at_z_mm": 91.57694915254237
+     },
+     "motors": {
+      "B_max_mT": 1.3283754405464392,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.16969922254701766,
+      "at_z_mm": 154.33898305084745
+     }
+    },
+    "30": {
+     "all": {
+      "B_max_mT": 0.5182039281157244,
+      "at_z_mm": 105.52406779661017
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.03804691195642422,
+      "at_z_mm": 95.06372881355932
+     },
+     "motors": {
+      "B_max_mT": 0.5058554231903133,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.052871146839667066,
+      "at_z_mm": 154.33898305084745
+     }
+    },
+    "50": {
+     "all": {
+      "B_max_mT": 0.13753418085495045,
+      "at_z_mm": 105.52406779661017
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.005331115020759722,
+      "at_z_mm": 98.55050847457626
+     },
+     "motors": {
+      "B_max_mT": 0.13375729906484285,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.010415026040573958,
+      "at_z_mm": 154.33898305084745
+     }
+    },
+    "100": {
+     "all": {
+      "B_max_mT": 0.019721766112806023,
+      "at_z_mm": 102.03728813559322
+     },
+     "c1s_cap": {
+      "B_max_mT": 0.00027487335294431426,
+      "at_z_mm": 60.19593220338983
+     },
+     "motors": {
+      "B_max_mT": 0.01943049391988125,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.0009367987048141789,
+      "at_z_mm": 154.33898305084745
+     }
+    },
+    "150": {
+     "all": {
+      "B_max_mT": 0.006121011602904337,
+      "at_z_mm": 102.03728813559322
+     },
+     "c1s_cap": {
+      "B_max_mT": 4.3326575253791106e-05,
+      "at_z_mm": 122.95796610169492
+     },
+     "motors": {
+      "B_max_mT": 0.006048813013901271,
+      "at_z_mm": 105.52406779661017
+     },
+     "endcap_tiles": {
+      "B_max_mT": 0.0002118112037568557,
+      "at_z_mm": 154.33898305084745
+     }
+    }
+   },
+   "threshold_note": "ASSUMPTION 1 mT (10 G) static field: the level commonly used for implanted cardiac devices' magnet mode; the applicable limit (ISO 14117 and the implant makers' guidance) was not opened here and must be checked",
+   "label": "CALC (magpylib, free space: every iron and housing ignored, an upper bound)"
+  },
+  "imu": {
+   "note": "LSM6DSV16X has an accelerometer and a gyroscope only (MFR OPT-37): no magnetometer, so the fields do not enter its readings; its lever to the tip is 56 mm (was 92 mm in Rev H)"
+  }
+ }
+}

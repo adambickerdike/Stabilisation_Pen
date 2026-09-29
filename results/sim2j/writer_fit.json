@@ -1,0 +1,57 @@
+{
+ "chosen": {
+  "params": {
+   "beta": 0.6666666666666666,
+   "kappa0": 50.62949930933283,
+   "c_acc": 18.208230093940443,
+   "sigma_t": 0.008,
+   "v_cap": 2.604952445236837,
+   "smooth_geom": 0.1132331122111341,
+   "corner_deg": 74.38169264896857,
+   "trim": 0.002,
+   "dwell_start": 0.005,
+   "dwell_end": 0.0,
+   "pen_T": 0.03,
+   "size_scale": 1.4071294559099439,
+   "speed_sd": 7.9,
+   "speed_mean": 30.46,
+   "speed_lo": 18.0,
+   "speed_hi": 45.0
+  },
+  "summary": {
+   "speed_mean_mm_s": 30.37608297773563,
+   "share_8_12": 0.15945868516498976,
+   "f50": 4.39453125,
+   "f90": 11.23046875,
+   "f95": 13.671875,
+   "f99": 18.06640625,
+   "peak_Hz": 3.90625,
+   "stroke_median_ms": 132.0,
+   "beta": 0.7935886283157094
+  },
+  "loss": 168.96172336178535,
+  "source": "fit 3 (size fixed at the PDT-06 median), sim2j/build/writer_fit_try3.json"
+ },
+ "meta": {
+  "evidence_status": "CALCULATION (writer v2 fit on synthetic fitting writers 1000-1005; targets LIT CON-20/24/25/27, PDT-06)",
+  "generated_utc": "2026-09-29T12:31:39+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "-c",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": {
+   "fitting_writers": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005
+   ]
+  },
+  "numpy": "2.4.6",
+  "scipy": "1.17.1"
+ }
+}

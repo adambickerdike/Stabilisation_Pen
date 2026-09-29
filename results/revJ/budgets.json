@@ -1,0 +1,812 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "budgets": {
+  "mass": {
+   "base": {
+    "mass_g": 86.99900000000001,
+    "com_mm": [
+     0.4332722215197875,
+     0.12084966493867744,
+     86.06152294853963
+    ],
+    "inertia_g_mm2": [
+     [
+      98068.3040708764,
+      60.62189748261477,
+      -1117.7301787970098
+     ],
+     [
+      60.62189748261477,
+      98980.70063314763,
+      135.92378397635602
+     ],
+     [
+      -1117.7301787970098,
+      135.92378397635602,
+      5530.20881019008
+     ]
+    ]
+   },
+   "with_endcap": {
+    "mass_g": 129.156,
+    "com_mm": [
+     0.29185055281984573,
+     0.08140388367555514,
+     108.09975901235715
+    ],
+    "inertia_g_mm2": [
+     [
+      229641.60609632416,
+      59.13501834223732,
+      -287.01539904845663
+     ],
+     [
+      59.13501834223732,
+      230558.91871727572,
+      367.62939030412076
+     ],
+     [
+      -287.01539904845663,
+      367.62939030412076,
+      7223.154797201349
+     ]
+    ]
+   },
+   "by_group_base_g": {
+    "refill": 1.47,
+    "moving_nose": 3.58,
+    "mechanism": 4.44,
+    "sensor": 1.19,
+    "actuator": 20.31,
+    "skid": 0.3,
+    "grip": 8.55,
+    "structure": 10.65,
+    "electronics": 6.6,
+    "power": 22.0,
+    "haptic": 1.1,
+    "drive": 6.82
+   },
+   "endcap_g": 43.322999999999986,
+   "rear_cap_removed_g": 1.1660000000000001,
+   "handle_only_base": {
+    "mass_g": 68.893,
+    "com_mm": [
+     0.5452259300654637,
+     0.1508542232157113,
+     89.81894140188409
+    ],
+    "inertia_g_mm2": [
+     [
+      84856.48981691916,
+      61.73298404598434,
+      -979.6372085270795
+     ],
+     [
+      61.73298404598434,
+      85764.7819964986,
+      173.5749382015009
+     ],
+     [
+      -979.6372085270795,
+      173.5749382015009,
+      4998.879307558197
+     ]
+    ]
+   },
+   "handle_only_with_endcap": {
+    "mass_g": 80.66199999999999,
+    "com_mm": [
+     0.4656746671295033,
+     0.12884381741092457,
+     99.44592261535793
+    ],
+    "inertia_g_mm2": [
+     [
+      129822.06590007589,
+      60.9062236805435,
+      -618.0261334412719
+     ],
+     [
+      60.9062236805435,
+      130733.1174543361,
+      273.62622855689176
+     ],
+     [
+      -618.0261334412719,
+      273.62622855689176,
+      6134.515170167356
+     ]
+    ]
+   },
+   "nose": {
+    "mass_g": 18.106,
+    "com_z_mm": 71.7646142162819,
+    "I_pivot_g_mm2": 8940.823219372916,
+    "m_eff_tip_g": 1.528557391356745,
+    "cg_ahead_of_pivot_mm": 4.715385783718105,
+    "gravity_hold": {
+     "35": {
+      "torque_mNm": 0.6860776514030633,
+      "coil_force_N": 0.05962892532781929,
+      "hold_power_W": 0.008250450502818142
+     },
+     "50": {
+      "torque_mNm": 0.5383642959562058,
+      "coil_force_N": 0.046790744950059554,
+      "hold_power_W": 0.005080232842986536
+     },
+     "75": {
+      "torque_mNm": 0.2167728980722355,
+      "coil_force_N": 0.018840338153866584,
+      "hold_power_W": 0.0008236469327296076
+     }
+    },
+    "gravity_tip_N_studyN": 0.005309574654580285,
+    "gravity_note": "CALC: the coils hold the nose's weight about the gimbal (study N's Km at the magnets is an upper bound, so the power is a lower bound); study N's duty model already carries this load (F_grav_tip); the power budget uses this Rev J value at 50 deg in place of study N's"
+   },
+   "limit_g": 120.0,
+   "references": {
+    "revH_g": 74.95,
+    "revH_com_mm": 92.85,
+    "nose2_pen_g": 83.45,
+    "nose2_com_mm": 102.07,
+    "studyD_added_g": 9.09,
+    "studyK_endcap_g": 43.32,
+    "DEC038_estimate_g": [
+     134,
+     136
+    ],
+    "labels": "CALC (results/revH/layout.json, results/nose2/layout.json, results/drive/layout_parts.json, results/endcap/layout_parts.json, docs/decisions.md DEC-038)"
+   },
+   "wiring_allowance": 0.1,
+   "label": "CALC (part masses from volumes and catalogue values; +10 % wiring and adhesive on the base pen, ASSUMPTION)"
+  },
+  "length": {
+   "base_mm": 144.72,
+   "with_endcap_mm": 165.72,
+   "limit_mm": 175.0,
+   "references": {
+    "revH_mm": 170.0,
+    "nose2_mm": 175.0,
+    "studyK_revH_with_endcap_mm": 175.0
+   },
+   "label": "CALC (layout)"
+  },
+  "power": {
+   "modes": {
+    "steady_no_tremor": {
+     "what": "stabiliser on, writing without tremor (ball drag only); wheel free-following",
+     "nose_coil_W": 0.06430927042876175,
+     "heel_W": [
+      0.011,
+      0.021
+     ],
+     "pen_lift_W": 0.012,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.20272038153987287,
+      0.26222927042876176
+     ],
+     "hours": [
+      8.465874142768872,
+      10.951044898084659
+     ],
+     "total_with_endcap_W": [
+      0.23172038153987287,
+      0.4072292704287618
+     ],
+     "hours_with_endcap": [
+      5.451474540773104,
+      9.580512448871476
+     ]
+    },
+    "steady_0.3mm": {
+     "what": "stabiliser on, 0.3 mm rms tremor",
+     "nose_coil_W": 0.07360299101195172,
+     "heel_W": [
+      0.011,
+      0.021
+     ],
+     "pen_lift_W": 0.012,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.21201410212306288,
+      0.27152299101195176
+     ],
+     "hours": [
+      8.176103215886721,
+      10.47100158795762
+     ],
+     "total_with_endcap_W": [
+      0.24101410212306287,
+      0.4165229910119518
+     ],
+     "hours_with_endcap": [
+      5.329837843059902,
+      9.211079270649725
+     ]
+    },
+    "steady_1mm": {
+     "what": "stabiliser on, 1 mm rms tremor at 8 Hz (study N's design duty)",
+     "nose_coil_W": 0.16757283246420618,
+     "heel_W": [
+      0.011,
+      0.021
+     ],
+     "pen_lift_W": 0.012,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.30598394357531733,
+      0.3654928324642062
+     ],
+     "hours": [
+      6.073990521325507,
+      7.255282659802545
+     ],
+     "total_with_endcap_W": [
+      0.33498394357531736,
+      0.5104928324642062
+     ],
+     "hours_with_endcap": [
+      4.348738824174692,
+      6.627183310058735
+     ]
+    },
+    "guide": {
+     "what": "tracing / loops / known text: wheel steered (study D 1-6 mW), nose partial guidance (0.3 mm duty as a proxy, ASSUMPTION)",
+     "nose_coil_W": 0.07360299101195172,
+     "heel_W": [
+      0.011,
+      0.026000000000000002
+     ],
+     "pen_lift_W": 0.012,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.21201410212306288,
+      0.27652299101195177
+     ],
+     "hours": [
+      8.028265540871603,
+      10.47100158795762
+     ],
+     "total_with_endcap_W": [
+      0.24101410212306287,
+      0.4215229910119518
+     ],
+     "hours_with_endcap": [
+      5.266616643306782,
+      9.211079270649725
+     ]
+    },
+    "lead": {
+     "what": "lead-through: the heel drive leads a relaxed hand (study D SIM 84 mW / 0.9 = 93 mW), the nose adds detail (study N autowrite without tremor, 0.089 W, as a proxy)",
+     "nose_coil_W": 0.089,
+     "heel_W": [
+      0.10333333333333333,
+      0.11333333333333334
+     ],
+     "pen_lift_W": 0.012,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.31974444444444444,
+      0.3792533333333334
+     ],
+     "hours": [
+      5.853607087610744,
+      6.943044792716406
+     ],
+     "total_with_endcap_W": [
+      0.34874444444444447,
+      0.5242533333333333
+     ],
+     "hours_with_endcap": [
+      4.234593962206567,
+      6.365692802752732
+     ]
+    },
+    "autowrite_no_tremor": {
+     "what": "the nose writes a known text (study N SIM 0.089 W), pen lift 0.071 W",
+     "nose_coil_W": 0.089,
+     "heel_W": [
+      0.011,
+      0.021
+     ],
+     "pen_lift_W": 0.0708,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.2862111111111111,
+      0.34572
+     ],
+     "hours": [
+      6.421381464769177,
+      7.756512286967663
+     ],
+     "total_with_endcap_W": [
+      0.3152111111111111,
+      0.49072000000000005
+     ],
+     "hours_with_endcap": [
+      4.523964786436257,
+      7.0428989389826935
+     ]
+    },
+    "autowrite_1mm": {
+     "what": "autowrite with 1 mm tremor (study N SIM 0.166 W)",
+     "nose_coil_W": 0.166,
+     "heel_W": [
+      0.011,
+      0.021
+     ],
+     "pen_lift_W": 0.0708,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.36321111111111115,
+      0.42272
+     ],
+     "hours": [
+      5.251703255109766,
+      6.112147817308575
+     ],
+     "total_with_endcap_W": [
+      0.3922111111111112,
+      0.56772
+     ],
+     "hours_with_endcap": [
+      3.910378355527373,
+      5.660217003314541
+     ]
+    },
+    "autowrite_2mm": {
+     "what": "autowrite with 2 mm tremor (study N SIM 0.376 W; short texts only)",
+     "nose_coil_W": 0.376,
+     "heel_W": [
+      0.011,
+      0.021
+     ],
+     "pen_lift_W": 0.0708,
+     "electronics_W": 0.077,
+     "page_sensor_W": [
+      0.03841111111111112,
+      0.08792
+     ],
+     "total_W": [
+      0.5732111111111111,
+      0.6327200000000001
+     ],
+     "hours": [
+      3.5086610190921736,
+      3.8729186454476734
+     ],
+     "total_with_endcap_W": [
+      0.6022111111111111,
+      0.7777200000000001
+     ],
+     "hours_with_endcap": [
+      2.8544977626909427,
+      3.6864148785032937
+     ]
+    }
+   },
+   "energy_Wh": 2.22,
+   "coil_by_tremor_W": {
+    "0.0": 0.06430927042876175,
+    "0.3": 0.07360299101195172,
+    "1.0": 0.16757283246420618,
+    "2.0": 0.47736351857053955
+   },
+   "travel_factor": 1.017101099541486,
+   "F_grav_tip_N": 0.007039282112398088,
+   "endcap_W": [
+    0.029,
+    0.145
+   ],
+   "target_h": 8.0,
+   "labels": {
+    "electronics": "ASSUMPTION 0.077 W (Rev H: 0.065 MCU/radio + 0.012 drivers and Hall)",
+    "page_sensor": "MFR AMF-109 16.3-21.6 mA at 1.9 V (90 % buck) .. 3.7 V (linear); plus the refill-slide Hall 4-8 mW (ASSUMPTION, duty-cycled TMAG5273 class)",
+    "heel": "SIM study D (1, 6, 84 mW; lead divided by 0.9 for the Rev J idler mesh, CALC) + ASSUMPTION drivers 10-20 mW",
+    "pen_lift": "CALC study N 0.071 W in autowrite; ASSUMPTION 6 mJ x 2 lifts/s brake-only otherwise",
+    "nose": "CALC (duty model) or SIM study N (autowrite rows)",
+    "endcap": "SIM study K 0.029 W (test runs) .. CALC 0.145 W (design model)",
+    "cell": "MFR AMF-80 750 mAh x 3.7 V x 0.8 usable (ASSUMPTION)"
+   }
+  },
+  "power_options": {
+   "energy_needed": {
+    "steady_no_tremor": {
+     "Wh_needed_for_8h_worst": 2.097834163430094,
+     "vs_cell": 0.9449703438874297,
+     "cell_length_for_8h_mm": 48.5,
+     "pen_length_base_mm": 144.72,
+     "pen_length_with_endcap_mm": 165.72,
+     "Wh_needed_for_8h_with_endcap_worst": 3.2578341634300942
+    },
+    "steady_0.3mm": {
+     "Wh_needed_for_8h_worst": 2.172183928095614,
+     "vs_cell": 0.9784612288718981,
+     "cell_length_for_8h_mm": 48.5,
+     "pen_length_base_mm": 144.72,
+     "pen_length_with_endcap_mm": 165.72,
+     "Wh_needed_for_8h_with_endcap_worst": 3.3321839280956143
+    },
+    "steady_1mm": {
+     "Wh_needed_for_8h_worst": 2.9239426597136497,
+     "vs_cell": 1.3170912881593015,
+     "cell_length_for_8h_mm": 62.92765361124822,
+     "pen_length_base_mm": 159.14765361124822,
+     "pen_length_with_endcap_mm": 180.14765361124822,
+     "Wh_needed_for_8h_with_endcap_worst": 4.0839426597136494
+    },
+    "guide": {
+     "Wh_needed_for_8h_worst": 2.212183928095614,
+     "vs_cell": 0.9964792468899162,
+     "cell_length_for_8h_mm": 48.5,
+     "pen_length_base_mm": 144.72,
+     "pen_length_with_endcap_mm": 165.72,
+     "Wh_needed_for_8h_with_endcap_worst": 3.3721839280956143
+    },
+    "lead": {
+     "Wh_needed_for_8h_worst": 3.034026666666667,
+     "vs_cell": 1.3666786786786786,
+     "cell_length_for_8h_mm": 65.1838798798799,
+     "pen_length_base_mm": 161.4038798798799,
+     "pen_length_with_endcap_mm": 182.4038798798799,
+     "Wh_needed_for_8h_with_endcap_worst": 4.194026666666667
+    },
+    "autowrite_no_tremor": {
+     "Wh_needed_for_8h_worst": 2.76576,
+     "vs_cell": 1.2458378378378379,
+     "cell_length_for_8h_mm": 59.68562162162162,
+     "pen_length_base_mm": 155.9056216216216,
+     "pen_length_with_endcap_mm": 176.9056216216216,
+     "Wh_needed_for_8h_with_endcap_worst": 3.9257600000000004
+    },
+    "autowrite_1mm": {
+     "Wh_needed_for_8h_worst": 3.38176,
+     "vs_cell": 1.5233153153153152,
+     "cell_length_for_8h_mm": 72.31084684684684,
+     "pen_length_base_mm": 168.53084684684683,
+     "pen_length_with_endcap_mm": 189.53084684684683,
+     "Wh_needed_for_8h_with_endcap_worst": 4.54176
+    },
+    "autowrite_2mm": {
+     "Wh_needed_for_8h_worst": 5.0617600000000005,
+     "vs_cell": 2.280072072072072,
+     "cell_length_for_8h_mm": 106.74327927927928,
+     "pen_length_base_mm": 202.96327927927928,
+     "pen_length_with_endcap_mm": 223.96327927927928,
+     "Wh_needed_for_8h_with_endcap_worst": 6.221760000000001
+    }
+   },
+   "page_sensor_gated_in_steady_modes": {
+    "steady_no_tremor": {
+     "total_W": [
+      0.16830927042876176,
+      0.18230927042876177
+     ],
+     "hours": [
+      12.177109780423788,
+      13.190004295928743
+     ],
+     "hours_with_endcap": [
+      6.782575993316324,
+      11.251371996743195
+     ]
+    },
+    "steady_0.3mm": {
+     "total_W": [
+      0.17760299101195176,
+      0.19160299101195177
+     ],
+     "hours": [
+      11.586457958067687,
+      12.499789487501399
+     ],
+     "hours_with_endcap": [
+      6.595306813305098,
+      10.745246180252906
+     ]
+    },
+    "steady_1mm": {
+     "total_W": [
+      0.2715728324642062,
+      0.2855728324642062
+     ],
+     "hours": [
+      7.7738487265880085,
+      8.174602664987118
+     ],
+     "hours_with_endcap": [
+      5.155922140500006,
+      7.385897061286699
+     ]
+    }
+   },
+   "label": "CALC (power_modes rows); cell scaling ASSUMPTION (energy proportional to length less 3 mm); gating ASSUMPTION (the sensor is off, not in a rest mode, while only the tremor is corrected)"
+  },
+  "heat": {
+   "R_shell_over_coil_plate_K_W": 93.50743082479447,
+   "R_with_spreader_K_W": 43.29027926768624,
+   "spreader": {
+    "t_mm": 0.5,
+    "L_mm": 20.0,
+    "z_mm": [
+     82.0,
+     102.0
+    ]
+   },
+   "spreader_mass_g": 1.8661060362323372,
+   "R_shell_over_board_K_W": 40.52985832441349,
+   "R_over_motors_K_W": 43.168194164363705,
+   "R_over_page_sensor_K_W": 84.34925055159178,
+   "R_over_endcap_K_W": 39.82433868818432,
+   "rows": {
+    "steady_no_tremor": {
+     "coil_W": 0.06430927042876175,
+     "coil_rise_K_100KW": 6.430927042876175,
+     "coil_rise_K_fin": 6.978033712441866,
+     "web_surface_C": 29.01339465601044,
+     "web_surface_C_hot_room": 36.01339465601044,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.043168194164362,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 25.783966276362253,
+      "web_surface_C_hot_room": 32.78396627636225,
+      "coil_rise_K": 3.748605332793679
+     }
+    },
+    "steady_0.3mm": {
+     "coil_W": 0.07360299101195172,
+     "coil_rise_K_100KW": 7.360299101195173,
+     "coil_rise_K_fin": 7.986471455727321,
+     "web_surface_C": 29.882426590548043,
+     "web_surface_C_hot_room": 36.88242659054804,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.043168194164362,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 26.18629403584439,
+      "web_surface_C_hot_room": 33.18629403584439,
+      "coil_rise_K": 4.290338901023666
+     }
+    },
+    "steady_1mm": {
+     "coil_W": 0.16757283246420618,
+     "coil_rise_K_100KW": 16.757283246420617,
+     "coil_rise_K_fin": 18.182897526724723,
+     "web_surface_C": 38.66930503976163,
+     "web_surface_C_hot_room": 45.66930503976163,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.043168194164362,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 30.254274715052684,
+      "web_surface_C_hot_room": 37.25427471505269,
+      "coil_rise_K": 9.767867202015777
+     }
+    },
+    "guide": {
+     "coil_W": 0.07360299101195172,
+     "coil_rise_K_100KW": 7.360299101195173,
+     "coil_rise_K_fin": 7.986471455727321,
+     "web_surface_C": 29.882426590548043,
+     "web_surface_C_hot_room": 36.88242659054804,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.259009164986182,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 26.18629403584439,
+      "web_surface_C_hot_room": 33.18629403584439,
+      "coil_rise_K": 4.290338901023666
+     }
+    },
+    "lead": {
+     "coil_W": 0.089,
+     "coil_rise_K_100KW": 8.9,
+     "coil_rise_K_fin": 9.657161343406708,
+     "web_surface_C": 31.322161343406705,
+     "web_surface_C_hot_room": 38.322161343406705,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 27.029031455340615,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 26.852834854824074,
+      "web_surface_C_hot_room": 33.852834854824074,
+      "coil_rise_K": 5.187834854824075
+     }
+    },
+    "autowrite_no_tremor": {
+     "coil_W": 0.089,
+     "coil_rise_K_100KW": 8.9,
+     "coil_rise_K_fin": 9.657161343406708,
+     "web_surface_C": 31.322161343406705,
+     "web_surface_C_hot_room": 38.322161343406705,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.043168194164362,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 26.852834854824074,
+      "web_surface_C_hot_room": 33.852834854824074,
+      "coil_rise_K": 5.187834854824075
+     }
+    },
+    "autowrite_1mm": {
+     "coil_W": 0.166,
+     "coil_rise_K_100KW": 16.6,
+     "coil_rise_K_fin": 18.012233516915884,
+     "web_surface_C": 38.52223351691588,
+     "web_surface_C_hot_room": 45.52223351691588,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.043168194164362,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": true,
+     "passes_41C_at_23C": true,
+     "with_spreader": {
+      "web_surface_C": 30.186186358435915,
+      "web_surface_C_hot_room": 37.18618635843592,
+      "coil_rise_K": 9.676186358435915
+     }
+    },
+    "autowrite_2mm": {
+     "coil_W": 0.376,
+     "coil_rise_K_100KW": 37.6,
+     "coil_rise_K_fin": 40.79879399012272,
+     "web_surface_C": 58.15879399012272,
+     "web_surface_C_hot_room": 65.15879399012272,
+     "board_surface_C": 26.445037957575146,
+     "motor_surface_C": 23.043168194164362,
+     "page_sensor_surface_C": 30.41598610849595,
+     "passes_20K": false,
+     "passes_41C_at_23C": false,
+     "with_spreader": {
+      "web_surface_C": 39.27714500465002,
+      "web_surface_C_hot_room": 46.27714500465002,
+      "coil_rise_K": 21.917145004650024
+     }
+    }
+   },
+   "endcap_surface_C": [
+    24.154905821957346,
+    28.774529109786727
+   ],
+   "where": "the coil plate (z 88.8-92.2) lies under the thumb-index web (z about 92): the web touches the shell right over the coils; the fingertips (z 26-38) are 50 mm from them",
+   "coil_power_allowed_for_41C_W": 0.19249807038038214,
+   "coil_power_allowed_for_20K_W": 0.2,
+   "label": "CALC (fin model of the PEEK shell, h 10 W/m2K and R_int ASSUMPTION; no hand contact counted)"
+  },
+  "cost": [
+   {
+    "module": "base pen (shell, sleeve, ring, cell, board, IMU, LRA)",
+    "class": "medium",
+    "why": "catalogue electronics (nRF54L15, DRV8214, LSM6DSV16X, LIR14500) and moulded PEEK/TPE parts"
+   },
+   {
+    "module": "C1S nose (gimbal, spherical-gap actuator, carrier)",
+    "class": "high",
+    "why": "custom spherical Hiperco cap and plate, curved N52 segments, bonded coils on a formed plate, laser-cut 50 um flexures"
+   },
+   {
+    "module": "pen lift and ink-force drum",
+    "class": "high",
+    "why": "custom spiral spring (38 um strip), electro-permanent brake and bistable latch at watch scale, tendon loop"
+   },
+   {
+    "module": "heel drive (wheel, pod, shafts, two motors, gears)",
+    "class": "high",
+    "why": "two precision 6 mm brushless motors (Faulhaber 0620 B), module-0.1 gears, jewel bearings, a sealed sprung pod"
+   },
+   {
+    "module": "page sensor (folded optics)",
+    "class": "high (development)",
+    "why": "chip-on-board optical-flow die with custom lens and mirror; not a catalogue module in this size"
+   },
+   {
+    "module": "reaction-mass end-cap (detachable)",
+    "class": "medium-high",
+    "why": "tungsten heavy-alloy slug (non-magnetic grade), arc coils, nested spiral flexures, own driver board"
+   }
+  ],
+  "cost_note": "classes only: no prices were seen on a page (as Rev H); the heel drive and the spherical actuator dominate"
+ },
+ "travel_factor": {
+  "studyN": {
+   "X_nom": 0.006491931790882802,
+   "Km_tip": 0.09876184786053872,
+   "P_tremor": 0.16037556822323282,
+   "P_autowrite": 0.17872335260736857,
+   "dT_coil": 17.872335260736858,
+   "stroke_act": 0.001051884944956312,
+   "F_pk_tip": 0.2326674867492158,
+   "eps_u": 0.001116411684043532,
+   "eps_s": 0.001202396235330054
+  },
+  "revJ": {
+   "X_nom": 0.006570922851562501,
+   "Km_tip": 0.09792861620755033,
+   "P_tremor": 0.1631176886542271,
+   "P_autowrite": 0.18177971845069527,
+   "dT_coil": 18.177971845069525,
+   "stroke_act": 0.0010637685716849727,
+   "F_pk_tip": 0.2307045231273275,
+   "eps_u": 0.0011299957058599126,
+   "eps_s": 0.0012159802571464348
+  },
+  "factor_P": 1.017101099541486,
+  "factor_P_tremor": 1.0170981182568746,
+  "bore_penalty_revJ": 0.12974874890167923,
+  "strain_allow": 0.0018000000000000002,
+  "label": "CALC (nose2/designs.py evaluated read-only at study N's variables with the new travel)"
+ }
+}

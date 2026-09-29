@@ -1,0 +1,224 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:11:14+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": false
+ },
+ "refill": {
+  "slide": {
+   "slide_range_mm": 26.611737870716567,
+   "slide_mm": [
+    -7.883571290713974,
+    18.728166580002593
+   ],
+   "retraction_max_mm": 7.883571290713974,
+   "extension_max_mm": 18.728166580002593,
+   "tendon_travel_mm": 27.411737870716568,
+   "holder_length_mm": 5.0,
+   "holder_rear_max_z_mm": 80.38357129071397,
+   "holder_front_min_z_mm": 47.97183341999741,
+   "rear_pulley_z_mm": [
+    80.58357129071398,
+    81.58357129071398
+   ],
+   "cap_front_z_mm": 82.27786032842039,
+   "gimbal_rear_z_mm": 77.97953416058942,
+   "rear_pulley_to_cap_mm": 0.6942890377064117,
+   "front_pulley_z_mm": [
+    44.97183341999741,
+    45.97183341999741
+   ],
+   "drum_z_mm": [
+    68.0,
+    75.0
+   ],
+   "holder_passes_drum": true,
+   "label": "CALC (closure revj.frontend; holder length, lift stroke, pulley size ASSUMPTION)",
+   "fits": true
+  },
+  "spring": {
+   "r_drum_mm": 2.8,
+   "working_angle_rad": 9.789906382398774,
+   "working_turns": 1.55811199316566,
+   "phi_min_rad": 19.579812764797556,
+   "phi_max_rad": 29.369719147196328,
+   "k_N_m_per_rad": 1.716053182102398e-05,
+   "M_mid_mNm": 0.42,
+   "force_range_N": [
+    0.12,
+    0.18
+   ],
+   "rows": [
+    {
+     "t_um": 25.0,
+     "L_mm": 91.4374817783198,
+     "b_mm": 6.025404732254048,
+     "sigma_max_MPa": 803.0000000000001,
+     "sigma_min_MPa": 535.3333333333336,
+     "sigma_a_small_MPa": 12.694075374126236,
+     "goodman_small": 0.5793844337364034,
+     "SF_small": 1.7259697392128417,
+     "goodman_large": 0.7681327160493827,
+     "SF_large": 1.3018583626318434,
+     "annulus_fill": 0.158181817487986,
+     "fits": false
+    },
+    {
+     "t_um": 30.0,
+     "L_mm": 109.72497813398375,
+     "b_mm": 4.184308841843087,
+     "sigma_max_MPa": 803.0000000000001,
+     "sigma_min_MPa": 535.3333333333336,
+     "sigma_a_small_MPa": 12.694075374126237,
+     "goodman_small": 0.5793844337364034,
+     "SF_small": 1.7259697392128417,
+     "goodman_large": 0.7681327160493827,
+     "SF_large": 1.3018583626318434,
+     "annulus_fill": 0.2277818171826998,
+     "fits": false
+    },
+    {
+     "t_um": 38.0,
+     "L_mm": 138.9849723030461,
+     "b_mm": 2.6079487241404293,
+     "sigma_max_MPa": 803.0000000000001,
+     "sigma_min_MPa": 535.3333333333335,
+     "sigma_a_small_MPa": 12.694075374126236,
+     "goodman_small": 0.5793844337364034,
+     "SF_small": 1.7259697392128417,
+     "goodman_large": 0.7681327160493827,
+     "SF_large": 1.3018583626318434,
+     "annulus_fill": 0.36546327112424276,
+     "fits": true
+    },
+    {
+     "t_um": 40.0,
+     "L_mm": 146.2999708453117,
+     "b_mm": 2.3536737235367373,
+     "sigma_max_MPa": 803.0000000000001,
+     "sigma_min_MPa": 535.3333333333335,
+     "sigma_a_small_MPa": 12.694075374126236,
+     "goodman_small": 0.5793844337364034,
+     "SF_small": 1.7259697392128417,
+     "goodman_large": 0.7681327160493827,
+     "SF_large": 1.3018583626318434,
+     "annulus_fill": 0.4049454527692441,
+     "fits": true
+    },
+    {
+     "t_um": 50.0,
+     "L_mm": 182.8749635566396,
+     "b_mm": 1.506351183063512,
+     "sigma_max_MPa": 803.0000000000001,
+     "sigma_min_MPa": 535.3333333333336,
+     "sigma_a_small_MPa": 12.694075374126236,
+     "goodman_small": 0.5793844337364034,
+     "SF_small": 1.7259697392128417,
+     "goodman_large": 0.7681327160493827,
+     "SF_large": 1.3018583626318434,
+     "annulus_fill": 0.632727269951944,
+     "fits": false
+    },
+    {
+     "t_um": 64.0,
+     "L_mm": 234.07995335249873,
+     "b_mm": 0.9194037982565378,
+     "sigma_max_MPa": 803.0000000000001,
+     "sigma_min_MPa": 535.3333333333335,
+     "sigma_a_small_MPa": 12.694075374126236,
+     "goodman_small": 0.5793844337364034,
+     "SF_small": 1.7259697392128417,
+     "goodman_large": 0.7681327160493827,
+     "SF_large": 1.3018583626318434,
+     "annulus_fill": 1.0366603590892651,
+     "fits": false
+    }
+   ],
+   "chosen": {
+    "t_um": 38.0,
+    "L_mm": 138.9849723030461,
+    "b_mm": 2.6079487241404293,
+    "sigma_max_MPa": 803.0000000000001,
+    "sigma_min_MPa": 535.3333333333335,
+    "sigma_a_small_MPa": 12.694075374126236,
+    "goodman_small": 0.5793844337364034,
+    "SF_small": 1.7259697392128417,
+    "goodman_large": 0.7681327160493827,
+    "SF_large": 1.3018583626318434,
+    "annulus_fill": 0.36546327112424276,
+    "fits": true
+   },
+   "cycles_small": 100000000.0,
+   "ball_normal_force_N": {
+    "35": 0.20921361547453177,
+    "50": 0.1958110933998418,
+    "75": 0.18634971247381493
+   },
+   "ball_normal_note": "wound so that the force is lowest with the refill extended (35 deg) and highest retracted (75 deg): the ball's normal force F / sin(theta) then varies only 0.19-0.21 N (CALC)",
+   "label": "CALC (linear spiral spring, Goodman with the AMF-20 fatigue strength x 0.8 knockdown, ASSUMPTION)"
+  },
+  "moving_mass": {
+   "refill_g": 0.84,
+   "holder_pulleys_g": 0.5,
+   "drum_reflected_g": 0.3,
+   "spring_g": 0.1,
+   "total_g": 1.74,
+   "max_accel_m_s2_at_0.12N": 68.9655172413793,
+   "need_accel_m_s2_12Hz_2mm": 7.390359775535711,
+   "label": "CALC (masses ASSUMPTION: refill 0.84 g DEC-004 via Rev H; holder 0.5 g study N)"
+  },
+  "front_stop": {
+   "dL_dtheta_mm_per_deg": -0.3398024988897641,
+   "slide_per_mm_ball_travel": 0.65,
+   "tilt_error_deg": 0.5,
+   "L_error_from_tilt_mm": 0.16990124944488205,
+   "lock_threshold_mm": 0.3,
+   "detect_ms": 7.660444431189779,
+   "brake_ms": 3.0,
+   "ink_tail_at_lift_mm": 0.32514355515128823,
+   "fixed_stop_margin_mm": 9.684250372915198,
+   "lift_followed_with_fixed_stop_mm": 7.418566183944578,
+   "rule": "lock the drum when (slide - L_contact(theta, q)) > 0.3 mm, where L_contact comes from the IMU tilt (gyro-aided) and the nose Hall; release when the wheel-load or writing-force sensor sees contact; the slide itself (not the computed L) is the primary signal: a lift shows as a fast extension of the slide that the nose's motion does not explain",
+   "labels": {
+    "lift_speed": "ASSUMPTION 30 mm/s",
+    "brake": "ASSUMPTION 3 ms",
+    "writing_speed": "LIT CON-20 30.5 mm/s",
+    "tilt_error": "ASSUMPTION 0.5 deg (gyro-aided tilt while writing)",
+    "margin": "sim2 s5.8 / DEC-041 0.3 mm"
+   }
+  },
+  "replacement_steps": [
+   "In 'refill change' the pen drives the holder to its front stop and locks the drum (the old refill then protrudes about 18 mm beyond the nozzle at rest).",
+   "Unscrew the nozzle (PEEK cone, 5 mm long, at the ring plane; reachable through the ring's 120 deg top opening with the fingertips or the supplied key).",
+   "Pull the refill forward out of the holder's socket and the carrier (the holder stays on its tendon, deep in the carrier; nothing else is unhooked).",
+   "Push a new D1 refill in until it seats in the holder; screw the nozzle back; the pen releases the drum and checks the slide with its sensor (a refill that is not seated shows as a wrong rest position)."
+  ]
+ }
+}

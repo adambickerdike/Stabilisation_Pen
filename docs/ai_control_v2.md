@@ -16,7 +16,7 @@ Every target here is a hypothesis until it is measured.
   - A causal tremor-line detector on the page sensor opens a more aggressive ("listening") Kalman estimate only while the writing's spectrum shows a tremor line; otherwise the Rev H tracker runs. The gate never opened on any tuning or test writer's tremor-free writing.
   - On the test grid it cuts the ink error at 1–2 mm from 627 to 430 µm (−31 %; paired difference −197 µm, 95 % CI −206 to −188). At 6 Hz, where the Rev H tracker does nothing, 818 → 540 µm. Words read by the app: 49 % → 74 %. Tremor-free writing moves 26.3 µm, exactly as with Rev H. 0.3 mm tremor: unchanged (161 against 162 µm).
 - **A learned causal estimator does better still in this simulator, and passed every rule; it is the candidate successor, not yet the default (SIM).**
-  - A small causal TCN (34 k parameters), trained on 320 domain-randomised synthetic writers with a false-correction penalty: 278 µm at 1–2 mm (−56 % against Rev H; −152 µm against the gated tracker, 95 % CI −164 to −141), 307 µm at 6 Hz, 127 µm at 0.3 mm, 81 % of words. It moves tremor-free writing less than Rev H (19.3 against 26.3 µm). It passed the rules on both tuning seeds and on the test grid.
+  - A small causal TCN (34 k parameters), trained on 320 domain-randomised synthetic writers with a false-correction penalty: 278 µm at 1–2 mm (−56 % against Rev H; −152 µm against the gated tracker, 95 % CI −164 to −141), 307 µm at 6 Hz, 127 µm at 0.3 mm, 81 % of words. It moves tremor-free writing less than Rev H (19.3 against 26.3 µm). It passed the rules on the tuning data (seeds 300 and 301 pooled) and on the test grid.
   - The hybrid Kalman–network is better on ink (256 µm, 87 % of words), but it moved one tuning writer's tremor-free writing by 123 µm, so the rules rejected it.
   - Caveat: both were trained and tested inside one simulator family. REQ-ML-001 requires held-out real recordings before a learned estimator may drive the nose (EXP-L04).
 - **Delayed ink is not worth its cost (SIM, CALC, LIT).**
@@ -28,13 +28,15 @@ Every target here is a hypothesis until it is measured.
   - A PPO policy that decides every 20 ms how much to trust the listening estimate reads 89 % of words (the most of any causal estimator here) at 298 µm, but it moves tremor-free writing by 30.7 µm and is worse than Rev H at 10 Hz, 0.3 mm, so it fails the rules on tuning and test data. The replay rule used to pick it (mean weight on tremor-free writing ≤ 0.05) did not catch brief full openings.
   - RL on the nose command itself (a residual policy on top of the model-based estimate) gained little (394 µm) and moved tremor-free writing by 165 µm.
   - Compute: 2.56 million environment steps in 13 minutes on one CPU thread.
-- **Prediction, synthesis and shared control:** see §6–8.
+- **Next-letter and next-word prediction improve only a little over the n-gram in use (CALC).** A transformer mixed with a larger-corpus n-gram has the best top-1 on both sentence test sets (letter two ahead: 41.0 % against 39.8 % on Tatoeba, 40.7 % against 32.9 % on Common Voice), but not on the app's note lines, and a small transformer trained for 30 CPU minutes is worse on its own. The next word before its first letter is right 9–15 % of the time (top-3: 18–28 %) for every model.
+- **Writing in the user's style from a few samples works on synthetic writers (CALC).** Sigma-lognormal synthesis from one or three of the writer's own letters stays legible (96 %) and identifiable (92–96 % among six writers, against 40 % for a font in the writer's style). A learned few-shot generator on 60 real writers' letter shapes carries only a little style (65 % same-writer preference, against 59 % for the class mean).
+- **Shared control: one arbitration law for all help; assistance as needed must react within the letter (SIM).** Partial guidance brings the ink 29 % closer to the target letters with no loss in letters read; a per-letter assistance-as-needed law reacted one letter late and gave no less help than fixed guidance.
 
 ## 2. Main results (SIM, test grid)
 
 ![Delayed ink and causal estimators: the same sentence, hand and tremor](../results/ai2/fig_before_after.png)
 
-The same hand, sentence and tremor in every row, at true scale on 8 mm ruled lines (SIM, writer 0, seed 200). The first word looks the same in every model-based row: the detector needs about 4.5 s of writing before it opens (§4.1). The learned TCN has no such start-up.
+The same hand, sentence and tremor in every row, at true scale on 8 mm ruled lines (SIM, writer 0, seed 200). The first word looks the same in every model-based row: the detector needs about 4.5 s of writing before it opens (§4.1). The learned TCN and the RL arbiter have no such start-up. In the 100 ms catch-up row, "books" reads as "bookr": the lag cut the end of the s.
 
 Means over 6 writers × 4 seeds (1–2 mm: 144 scenarios; 0.3 mm: 72; tremor-free: 6 writers). "R1–R4" are the tuning rules recomputed on the test grid (✓ pass, ✗ fail).
 
@@ -186,7 +188,7 @@ J = mean residual at 1–2 mm over lags 0/25/50 ms + 2 × (output on tremor-free
 | Fixed-lag RTS, ungated | 814 µm | 412 / 343 / 335 µm | 275 µm | 251 µm | – | – |
 | Rev H tracker (its estimate at t − lag) | 962 µm | 939 / 944 / 946 µm | 239 µm | 34 µm | – | – |
 
-The open-loop ranking does not predict the closed loop well: the TCN's lag-0 residual (457 µm) is worse than the ungated smoother's (412 µm), yet in closed loop it gives the lower ink error (§4.4), and without the smoother's false openings.
+The open-loop ranking does not predict the closed loop well: the TCN's lag-0 residual (457 µm) is worse than the ungated smoother's (412 µm), yet in closed loop it beats the gated stack by a wide margin (§4.4), because it needs no gate start-up and does not open on writing rhythms.
 
 ### 4.4 Closed-loop tuning check (SIM; stage cl; tuning writers 100–103, seeds 300 and 301)
 
@@ -210,7 +212,7 @@ Rev H on the same runs: 617 µm at 1–2 mm; tremor-free writing moved 33.5 µm.
 - **Gated listening tracker:** 430 µm against Rev H's 627 µm (−31 %); passes R1–R4 on the test grid.
 - **TCN:** 278 µm (−56 % against Rev H; −152 µm against the gated tracker, 95 % CI −164 to −141); 0.3 mm 127 µm (Rev H 162); tremor-free writing moved 19.3 µm on average (worst writer 34.8 µm; Rev H 26.3 and 48.7 µm); passes R1–R4. Against REQ-ML-001's line (≤ 25 µm on tremor-free writing): met on average, not for the worst writer.
 - **Hybrid:** 256 µm and 27.8 µm on the test grid (it would pass here), but it was rejected on tuning data (51.3 µm), and a rule is not revisited on test data.
-- The learned models gain most at 6 Hz (818 → 307 µm) and in the first seconds of writing, where the model-based stack is still waiting for its gate.
+- The learned models gain most at 6 Hz (818 → 307 µm) and, as the figure in §2 shows, in the first seconds of writing, where the model-based stack is still waiting for its gate.
 
 ### 4.6 Per-user adaptation: the 20 s calibration (SIM)
 
@@ -272,9 +274,25 @@ Total: 2.56 million environment steps in 13.3 minutes of wall time on one thread
 - **Models:** NG0 = aiguide's calibrated Tatoeba n-gram (character 7-gram Kneser–Ney + word bigram), as used so far; NG1 = the same family on Tatoeba + Common Voice (3.8 million n-grams, 130 373 words); TF = a character transformer (3 layers × 128, 4 heads, context 128), 30 min on one CPU thread; TF_small = the pen-MCU class (2 × 96, context 64), 10 min; MIX = TF mixed with NG1 (weight chosen on Tatoeba validation).
 - **Scores, on the same positions for every model:** the letter one and two ahead (spaces are gaps, as aiguide; two ahead is what a template needs), the next word before its first letter (top-1/3/5), bits per character; latency on this container's CPU (one shared thread) and a MAC count for an MCU (int8, 0.5 MAC/cycle + 300 cycles per layer call at 128 MHz, ASSUMPTION).
 
-### 6.2 Results
+### 6.2 Results (CALC)
 
-*Stage text was still running when this draft was written; this section is completed from `results/ai2/ai2.json` when it finishes.*
+![Prediction accuracy by model and test set](../results/ai2/fig_text.png)
+
+Letter two ahead (top-1 / top-3) and next word before its first letter (top-1 / top-3); Tatoeba test: 1500 letter and 300 word positions; Common Voice test: 800 and 200; app note lines and the study sentence: every position.
+
+| Model | Tatoeba test: letter 2 ahead | next word | Common Voice test: letter 2 ahead | next word | App note lines: letter 2 ahead | next word | Bits per character (Tatoeba) |
+|---|---|---|---|---|---|---|---|
+| NG0 (aiguide, as used so far) | 39.8 % / 61.0 % | 13.3 % / 20.7 % | 32.9 % / 54.5 % | 13.5 % / 26.5 % | 28.3 % / 50.6 % | 15.2 % / 22.8 % | 1.81 |
+| NG1 (larger CC0 corpus) | 40.1 % / 61.3 % | 12.3 % / 21.7 % | 40.5 % / 60.5 % | 13.0 % / 28.0 % | 26.1 % / 52.7 % | 10.9 % / 21.7 % | 1.76 |
+| TF (character transformer, 0.62 M parameters) | 33.7 % / 54.5 % | 11.3 % / 18.0 % | 32.8 % / 55.7 % | 11.0 % / 23.0 % | 26.6 % / 46.1 % | 13.0 % / 23.9 % | 2.14 |
+| TF_small (pen class, 0.24 M) | 28.9 % / 50.9 % | – | 30.5 % / 53.9 % | – | 26.4 % / 48.0 % | 8.7 % / 20.7 % | 2.32 |
+| **MIX (TF 0.3 + NG1 0.7)** | **41.0 % / 61.2 %** | **13.7 % / 21.7 %** | **40.7 % / 60.4 %** | **14.5 % / 28.0 %** | 27.1 % / 51.1 % | 14.1 % / 23.9 % | 1.79 |
+
+- **A larger corpus helps where the text looks like it** (Common Voice: 32.9 → 40.5 % top-1 two letters ahead) and not elsewhere (Tatoeba 39.8 → 40.1 %; note lines 28.3 → 26.1 %).
+- **The small transformer, trained for 30 minutes on one CPU thread (24 M characters), does not beat the n-grams on its own** (2.14 against 1.76 bits per character). Mixed with NG1 (transformer weight 0.3, chosen on Tatoeba validation) it has the best top-1 on both sentence test sets (+0.9 and +0.2 points for the letter two ahead, +0.4 and +1.0 points for the next word) and is within 0.1 point of the best on top-3. It is not better on the app's note lines.
+- **Next word before its first letter is hard for every model:** 9–15 % top-1 and 18–28 % top-3. Word prediction pays only when it is good enough to be used (LIT EML-63: keystroke savings 50 % with advanced prediction against 18 % with basic); these levels argue for completing a word after its first letters rather than guessing it before (EXP-L06).
+- **Latency and memory.** On this container's CPU (one shared thread), per query: letter two ahead 15 ms (NG0), 34 ms (NG1), 39 ms (TF), 14 ms (TF_small), 74 ms (MIX); next word 0.2 ms (NG0), 1.1 ms (NG1), 70 ms (TF beam search), 115 ms (MIX) (CALC). The transformer needs 645 k multiply-accumulates per character (10 ms int8 on a 128 MHz MCU, 608 kB of int8 weights) and TF_small 250 k (3.9 ms, 233 kB) (CALC, ASSUMPTION MCU model). The n-grams hold 1.4 M (NG0) and 3.8 M (NG1) entries: phone-side, not pen-side.
+- **Where to run what:** the app (phone) runs MIX or NG1; the pen needs predictions only two letters ahead for templates on a known text, which the phone can send.
 
 ## 7. Task 5: handwriting synthesis in the user's style (CALC)
 
@@ -285,9 +303,26 @@ Total: 2.56 million environment steps in 13.3 minutes of wall time on one thread
 - **Measures:** legibility by the app's recogniser; style by writer identification among the six test writers (size-normalised DTW to each writer's three held-out instances of the letter). Baselines: the glyph font in the writer's global style, and a copy of one sample.
 - **Real data:** UCI Character Trajectories (one writer, pen-tip velocity at 200 Hz, CC BY 4.0; ledger CON-25) for extraction on real velocity; UCI UJI Pen Characters v2 (60 writers, shapes only, CC BY 4.0; LIT CON-48) for a learned few-shot generator: a conditional decoder trained on the 40 training writers, conditioned on a style vector from 5 of the writer's other letters, tested on the 20 test writers. No licensed, downloadable multi-writer online-handwriting corpus with time stamps was found for a Graves-style generator (LIT EML-60, EML-61, EML-62).
 
-### 7.2 Results
+### 7.2 Results (CALC)
 
-*Stage synth was queued when this draft was written; completed when it finishes.*
+![Synthesis in the writer's style](../results/ai2/fig_synthesis.png)
+
+**Spread tuning (rule Y1, tuning writers 100–103, 26 letters each).** Legibility of one-sample synthesis at spread scales 1, 0.5, 0.25 and 0.1: 88 %, 86 %, 93 % and 90 %, against 97 % for a plain copy of the sample. No scale met the rule (copy − 2 points), so the smallest (0.1) is used and the rule is reported as failed: the perturbation model itself, not only its size, costs legibility on some letters.
+
+**Test writers 0–5 (26 letters each, 156 letters per method):**
+
+| Method | Legible (app recogniser) | Writer identified among 6 (chance 17 %) | DTW to own held-out letters / to others' (size-normalised) |
+|---|---|---|---|
+| Font in the writer's global style (baseline) | 100 % | 40 % | 0.115 / 0.159 |
+| Copy of one sample (baseline) | 97 % | 99 % | 0.042 / 0.188 |
+| Sigma-lognormal reconstruction of one sample | 97 % | 96 % | 0.069 / 0.193 |
+| **Sigma-lognormal synthesis from 1 sample** | 96 % | 92 % | 0.086 / 0.205 |
+| **Sigma-lognormal synthesis from 3 samples** | 96 % | 96 % | 0.085 / 0.204 |
+
+- Extraction quality (velocity reconstruction SNR): median 22.4 dB on the synthetic writers (p10 16.5, p90 25.7 dB) and 24.0 dB on real pen-tip velocity (UCI Character Trajectories, one writer, 240 characters).
+- **Synthesis from one or three of the writer's own letters keeps the writer's style** (92–96 % identified, against 40 % for the font in the writer's global style) and stays legible (96 %). It does not beat a plain copy of a sample on either measure; its value is new instances (variation), which a copy cannot give. So autowrite and templates can use the calibration letters directly (the calibration text is a pangram, so every letter has a sample) and synthesise new instances from them.
+- **Learned few-shot generator on real shapes (UJI, 20 held-out writers):** its letters are legible to a classifier trained on real letters (97.5 %; real test letters 87.2 %: the generator draws tidier letters than people), and they are closer to the writer's own letter than to another writer's 65.4 % of the time, against 58.5 % for the class-mean letter (chance 50 %). So it carries a little style from 5 of the writer's other letters, trained in 1.7 minutes on 2080 letters. Shapes only (UJI has no time stamps), so it cannot drive the pen's kinematics.
+- **Caveats:** the synthetic writers are glyph-font based, which flatters shape-based writer identification; the recogniser is the app's own; no human judged style (EXP-L07).
 
 ## 8. Task 6: shared control and arbitration
 
@@ -311,12 +346,28 @@ Every assistance the pen gives has the same form (policy blending, LIT HAP-23; r
 ### 8.2 Set-up of the simulation (SIM)
 
 - Guided copying (the handwriting study's practice task) by its dysgraphia-like synthetic learners, model HW1, with a passive hand (the learner does not learn in this model).
-- An external guidance law that reproduces HW1's guide mode (nearest point of the matching template stroke from the page-sensor handle position; 2 mm capture gate; drop after 60 ms beyond 2.5 mm), with the gain set per letter: fixed 0.5 (the handwriting study's partial guidance), fixed 1.0, and assistance as needed g(k+1) = clip(f·g(k) + κ·(e(k) − e_tol)+, 0, 1), with e(k) the learner's own RMS distance to letter k's target (x-height units) and e_tol = 0.10. The AAN setting is chosen on tuning learners 100–103, seeds 300–301 (rule S1: the lowest device share whose distance to the target is within 5 % of fixed 0.5); a faster-fading variant uses f − 0.3.
+- An external guidance law that reproduces HW1's guide mode (nearest point of the matching template stroke from the page-sensor handle position; 2 mm capture gate; drop after 60 ms beyond 2.5 mm), with the gain set per letter: fixed 0.5 (the handwriting study's partial guidance), fixed 1.0, and assistance as needed g(k+1) = clip(f·g(k) + κ·(e(k) − e_tol)+, 0, 1), with e(k) the learner's own RMS distance to letter k's target (x-height units) and e_tol = 0.10. The AAN setting is chosen on tuning learners 100–103, seeds 300–301 (rule S1: the lowest device share whose distance to the target is within 5 % of fixed 0.5); a faster-fading variant uses f − 0.3 (not below 0.3).
 - Check: the plant's own guide mode at 0.5 on the same learners.
 
-### 8.3 Results
+### 8.3 Results (SIM)
 
-*Stage shared was queued when this draft was written; completed when it finishes.*
+![Guided practice with fixed and assistance-as-needed gains](../results/ai2/fig_shared_control.png)
+
+Test learners (writers 0–5 × seeds 200–203, dysgraphia-like, passive hand); distance of the ink to the target letters, letters and words read against the target text, and the device's share of the ink motion:
+
+| Policy | Distance to target | Letters read | Words read | Device share | Mean gain on malformed / well-formed letters |
+|---|---|---|---|---|---|
+| No guidance | 582 µm | 92.3 % | 86.7 % | 0 | – |
+| Fixed 0.5 (the handwriting study's partial guidance) | 413 µm | 92.9 % | 87.1 % | 25.1 % | 0.50 / 0.50 |
+| Fixed 1.0 | 283 µm | 79.3 % | 62.1 % | 39.8 % | 1.00 / 1.00 |
+| Assistance as needed (chosen: f 0.5, κ 4) | 433 µm | 90.4 % | 84.6 % | 24.9 % | 0.47 / 0.54 |
+| Assistance as needed, faster fade (f 0.3) | 469 µm | 91.2 % | 84.2 % | 20.4 % | 0.36 / 0.43 |
+| Check: the plant's own guide mode at 0.5 | 377 µm | 93.5 % | 87.9 % | 23.4 % | 0.50 / 0.50 |
+
+- **Full guidance pulls the ink closest to the targets (283 µm) but the app reads fewer letters (79 %) and words (62 %).** A likely cause, not analysed here: at gain 1 the pull toward the nearest template point also bends the learner's correct strokes, so letters come out distorted. Partial guidance helps without that cost.
+- **Assistance as needed, driven by the previous letter's error, did not target the malformed letters.** The chosen setting gave the same share of help as fixed 0.5 (24.9 against 25.1 %) and gave *less* gain on malformed letters than on well-formed ones (0.47 against 0.54): these learners' errors are isolated letters, and a per-letter law reacts one letter late. The faster fade lowers the help (20 %) at a cost in distance (469 µm).
+- **So "how much to help" needs a signal inside the letter,** not the last letter's score: the running distance to the template while writing (which the capture gate and drop rule already compute), or the recogniser's live confidence. The forgetting factor belongs across sessions (fade the level as a learner's error falls from day to day, LIT HAP-94), which this passive-hand model cannot test (EXP-L08).
+- **Check:** the external law reproduces the plant's own guide mode to within 10 % (413 against 377 µm; it acts on the page-sensor stream of the unguided run, the plant on its own guided run).
 
 ## 9. Recommended algorithm stack (proposed design)
 
@@ -327,6 +378,11 @@ Every assistance the pen gives has the same form (policy blending, LIT HAP-23; r
 | Pen MCU | Ink lag | None (lag 0). Delayed ink stays in the code, off | Not adopted |
 | Pen MCU | Arbitration of every assistance | α = α_max × c_conf × c_need × c_agree, slew-limited; hand-back by the T5 drop rule and force override | Adopt (design) |
 | Offline | Arbitration policies by RL | PPO in the Gymnasium arbiter environment with a false-correction-weighted reward; move to sim2 closed loop with online estimators | Research only (EXP-L05) |
+| Phone app | Letter and word prediction | MIX (character transformer 0.3 + larger-corpus n-gram NG1 0.7) for top-1; NG1 alone where latency matters (1 ms per next-word query against 115 ms, CALC); word completion after the first letters rather than guessing the next word | Adopt (CALC); train on note-like text; EXP-L06 |
+| Phone app → pen | Templates two letters ahead (guidance on a known text only) | The known text itself; predictions only with confidence ≥ 0.5 (aiprior rule 5) | As aiprior |
+| Phone app | Clean copy (digital) | aiprior's zero-phase clean copy | Unchanged (aiprior) |
+| Phone app | Writing in the user's style (autowrite, templates) | The calibration letters themselves where they exist; sigma-lognormal synthesis from them for new instances (spread scale 0.1); always labelled as synthetic | Adopt (CALC); EXP-L07 |
+| Pen + app | Guided practice | Partial guidance (gain 0.5) with the drop rule; the level lowered across sessions as the learner's error falls; within a letter, help set by the running distance to the template, not by the last letter's score | Adopt fixed partial (SIM); session-level fading: EXP-L08 |
 
 ## 10. Proposed decisions (text for `docs/decisions.md`; the lead assigns the numbers)
 
@@ -348,7 +404,11 @@ Every assistance the pen gives has the same form (policy blending, LIT HAP-23; r
 - *Evidence.* SIM: the PPO arbiter beat the model-based gate in replay (reward 5.72 against 4.28) and read the most words in closed loop, but moved tremor-free writing more than Rev H (R1) and worsened 0.3 mm tremor at 10 Hz (R2). RL on the command itself gained little and moved tremor-free writing by 165 µm.
 - *Next.* Closed-loop training in sim2 with the estimators run online, with a closed-loop false-correction constraint (EXP-L05).
 
-**DEC-L5 (proposed): one arbitration law for all assistance:** α = α_max × c_conf × c_need × c_agree, with assistance as needed for guided practice (forgetting factor, tolerance band) and the hand-back rules T5 and force override.
+**DEC-L5 (proposed): one arbitration law for all assistance:** α = α_max × c_conf × c_need × c_agree, slew-limited, with the hand-back rules T5 and force override. For guided practice: partial guidance (0.5) as the default level; the level fades across sessions with the learner's error (forgetting factor and tolerance); within a letter the capture gate and drop rule decide. A per-letter assistance-as-needed law reacted one letter late in simulation and is not adopted.
+
+**DEC-L6 (proposed): text prediction.** The app uses the mixture of a small character transformer and the larger-corpus n-gram for top-1 suggestions, and the n-gram alone where latency matters; word completion after the first letters rather than next-word guessing. Retrain on note-like CC0 text and measure on users' own notes (EXP-L06). The pen gets letter templates only for a known text.
+
+**DEC-L7 (proposed): style synthesis.** Autowrite and templates use the user's own calibration letters, and sigma-lognormal synthesis from them for new instances; every synthetic line is labelled as synthetic. A learned generator waits for a licensed multi-writer online corpus with time stamps.
 
 ## 11. Proposed requirements (rows for `docs/requirements.csv`; ids proposed, the lead confirms)
 
@@ -360,7 +420,9 @@ Every assistance the pen gives has the same form (policy blending, LIT HAP-23; r
 | REQ-CTRL-012 | control | If an ink lag is ever used: ≤ 25 ms while writing, back to 0 within 5 ms of the hand stopping or lifting, and the hand–ink distance within the usable nose travel for ≥ 99 % of pen-down time | Perception (LIT HAP-90); stroke ends and travel (SIM, CALC) | EXP-L03; SIM | proposed (only if delayed ink is revived) |
 | REQ-ML-003 | ml | A learned tremor estimator is causal, takes ≤ 2 ms per 2 ms step on the pen MCU (int8) with ≤ 64 kB of weights, and may drive the nose only after REQ-ML-001 passes on held-out real recordings | Compute and safety | CALC (MAC count), bench timing; EXP-L04 | proposed |
 | REQ-ML-004 | ml | An RL policy may arbitrate assistance only if, in closed loop on held-out writers and seeds, it meets REQ-CTRL-010 and REQ-CTRL-011 and beats the model-based gate by ≥ 5 % | Replay rewards did not predict closed-loop false correction (SIM) | EXP-L05 | proposed |
-| REQ-CTRL-013 | control | Guidance gain fades with the writer's own performance (forgetting factor f < 1 and a tolerance band) and drops to 0 within 60 ms of the writer staying > 2.5 mm from the target | Assistance as needed and hand-back (LIT HAP-94, EML-59) | EXP-L08; SIM | proposed |
+| REQ-CTRL-013 | control | Guidance level fades across sessions with the writer's own error (forgetting factor f < 1 and a tolerance band), and guidance drops to 0 within 60 ms of the writer staying > 2.5 mm from the target | Assistance as needed and hand-back (LIT HAP-94, EML-59); per-letter AAN reacted one letter late (SIM) | EXP-L08; SIM | proposed |
+| REQ-APP-003 | app | Next-word or word-completion suggestions reach ≥ 30 % top-3 accuracy on the user's own notes before they are shown by default, at ≤ 20 ms per suggestion on the phone | Weak suggestions cost more than they save (LIT EML-63); here 18–28 % top-3 before the first letter (CALC) | EXP-L06; CALC | proposed |
+| REQ-APP-004 | app | Synthesised handwriting is always labelled as synthetic, and is legible to the app's recogniser for ≥ 95 % of letters | Honesty; usefulness (96 % here, CALC) | EXP-L07 | proposed |
 
 ## 12. Experiments needed (proposed; nothing here is measured)
 
@@ -371,6 +433,9 @@ Every assistance the pen gives has the same form (policy blending, LIT HAP-23; r
 | **EXP-L03** | How large an ink lag do writers notice, and does it cause writing errors? | Tablet with controlled inking latency (0, 12, 25, 50, 100 ms) and a stylus, then the ±6 mm bench nose; JND staircase against 7 ms while writing words (method of LIT HAP-90); copy task scored for added strokes and letters (LIT HAP-91); 12 controls + 12 ET/PD | JND (ms); added strokes or letters per 100 letters; letter size; writing time | Delayed ink stays an option only if the median JND ≥ the lag used (25 ms) and added errors rise by < 1 per 100 letters |
 | **EXP-L04** | Does a learned estimator pass REQ-ML-001 on real data? | Train on synthetic + EXP-H01 training participants (with the Hall and grip-force channels recorded); test on held-out participants against the gated model-based stack | Residual ratio by band; false correction; spikes | REQ-ML-001 as written, with the gated stack as the conventional comparator |
 | **EXP-L05** | Does an RL arbiter survive a closed-loop simulator and the bench? | Train the arbiter in sim2 (MuJoCo, closed loop, the pen's own sensors) with the estimators run online and a closed-loop false-correction constraint; test on held-out sim2 seeds, then on the bench rig | Ink error against the model-based gate; false correction; gate chatter | ≥ 5 % lower ink error than the model-based gate at 1–2 mm with false correction ≤ the gate's + 2 µm; otherwise keep the model-based gate |
+| **EXP-L06** | Does better prediction save writing effort in the app? | 20 adults and 10 people with ET write their own notes in the app with word completion from NG0 against the mixture (within-subject, counterbalanced); offline scoring of every model on their notes | Top-1/top-3 accuracy on own notes; accepted completions per 100 words; words per minute | Accepted completions ≥ 10 per 100 words and no loss in words per minute |
+| **EXP-L07** | Does synthesis from the 20 s calibration look like the user's writing? | 20 writers write the calibration pangram; the app synthesises 10 words in their style; the writer and 5 raters judge own against another writer's synthetic word (2AFC), and read them | Legibility (raters and recogniser); own-style choice rate | Legibility ≥ 95 %; writers choose their own synthetic word ≥ 70 % of the time |
+| **EXP-L08** | Does guidance that fades across sessions help learning more than fixed guidance? | Children with dysgraphia (or adults learning an unfamiliar script), guided copying over 5 sessions with fixed partial guidance or session-level fading; retention test without guidance after 1 day and 1 week | Retention distance to the target letters; letters read; device share over sessions | Retention with fading ≤ fixed guidance; device share falls across sessions |
 
 ## 13. What changed during the study (in full)
 
@@ -384,7 +449,8 @@ Every assistance the pen gives has the same form (policy blending, LIT HAP-23; r
 5. **The learned stage's own Rev H reference** repeated the tracker's estimate at every lag; the report recomputes it with the lag applied (its estimate at t − lag). Model scores are unchanged.
 6. **The guided-practice law (task 6) counted a touchdown only when a valid page-sensor sample had already arrived**, so it skipped the first stroke and then guided every stroke toward the previous template stroke. Noticed in the quick smoke run (which includes two test writers: the law gave 453 µm where the plant's own guide mode gave 363 µm), debugged on tuning learner 100, and fixed before the full shared stage ran (touchdowns counted from the contact sensor alone). No setting or rule changed.
 7. **Compute:** the text transformer was reduced from 3 × 192 to 3 × 128 (the quick run showed about 4 k tokens/s for 3 × 192 on one shared thread), and the text evaluation sizes were bounded (1500 letter and 300 word positions on the Tatoeba test split; 800 and 200 on Common Voice). The synthesis spread is tuned on tuning writers (rule Y1) after a smoke run showed the default spread making a third of small letters illegible.
-8. **The machine** was overloaded (load 6–8 on 4 cores) during tuning and learning and was restarted during the study; every stage resumed from its cache.
+8. **The text stage crashed after both transformers had trained** (a log line expected a next-word score from the letters-only small model). It was fixed and resumed with the saved weights; the two training records (tokens, minutes, validation history) were reconstructed from the run's own log (`ai2/build/logs/chain2.log`), and the evaluation ran in full.
+9. **The machine** was overloaded (load 6–8 on 4 cores) during tuning and learning and was restarted during the study; every stage resumed from its cache.
 
 ## 14. Assumptions and open issues
 
@@ -405,7 +471,7 @@ python3 -m ai2.run_study [--quick] [--workers 1] [--stages d01 d2 d2b learn_data
 python3 -m pytest -q ai2/tests
 ```
 
-`--quick` (fewer writers, seeds, samples and minutes) writes to `ai2/build/quick/` and never overwrites the results. Stage caches, trained models and policies, corpora and training data are in `ai2/build/` (git-ignored); each stage re-creates what it needs. Full run on this shared machine, one process: tuning D0–D2b about 45 min; training data 11 min; learned models 53 min; RL 13 min; closed-loop check 11 min; test grid 42 min; text about 60 min; synthesis and shared control about 20 min.
+`--quick` (fewer writers, seeds, samples and minutes) writes to `ai2/build/quick/` and never overwrites the results. Stage caches, trained models and policies, corpora and training data are in `ai2/build/` (git-ignored); each stage re-creates what it needs. Full run on this shared machine, one process at a time, one numerical thread (wall-clock): tuning D0–D2b 43 min (d01 6 min, d2 20 min, d2b 16 min); training data 11 min; learned models 53 min; RL 13 min (2.56 M environment steps); closed-loop check 11 min; test grid 42 min; figure strips and sensor ablation 2 min; text 40 min of transformer training + 14 min of n-gram building and evaluation; synthesis 16 min; shared control 2 min; report 10 s. The `--quick` run took about 40 min (it was completed in two parts after the text-stage fix, §13 item 8).
 
 **Code** (`ai2/`, new; `handwriting/`, `fusion/`, `aiguide/`, `aiprior/` and `app/` are used read-only):
 

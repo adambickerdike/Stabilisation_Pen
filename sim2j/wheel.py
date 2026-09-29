@@ -55,6 +55,8 @@ class WheelParams:
     rate_s: float = 500.0           # rad/s
     acc_s: float = 6.0e4            # rad/s^2
     radius: float = 1.0e-3          # wheel radius (m) (2 mm wheel)
+    R_w: float = 0.0                # radial position of the wheel's contact in the ring plane (m); 0: at the ring's
+                                    # contact radius with the protrusion h_w along the paper normal (study D)
     kP_copper: float = 3.48         # W/N^2 copper loss of the drive train (drive concepts.train, CALC)
     eta_mech: float = 0.8           # mechanical efficiency for the positive-work power estimate (drive)
     label: str = ("PROPOSED DESIGN / ASSUMPTION / CALC after study D (docs/grounded_drive.md T3, T6, T7; "
@@ -215,7 +217,7 @@ class Wheel:
         # wheel point in the pen frame (x = t1 toward the paper side): the lowest point of the ring at nominal tilt
         # (the C ring's contact point p_nom a + R t1 in sim2's geometry), and the pod axis = the paper normal
         # expressed in the pen frame at the nominal pose: n = sin(th) a - cos(th) t1
-        self.p_loc = np.array([g.skid_R, 0.0, g.p_nom()])
+        self.p_loc = np.array([wp.R_w if wp.R_w > 0 else g.skid_R, 0.0, g.p_nom()])
         self.n_loc = np.array([-math.cos(th), 0.0, math.sin(th)])
         self.prm = param_vector(wp, self.p_loc, self.n_loc, on)
         self.st = np.zeros(len(SNAMES))

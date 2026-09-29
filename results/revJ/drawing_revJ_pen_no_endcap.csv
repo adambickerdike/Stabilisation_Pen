@@ -1,0 +1,37 @@
+id,label,group,shape,z0_mm,z1_mm,d0_mm,d1_mm,d_in_mm,size_mm,offset_mm,moves_with,optional,mass_g,part,ledger
+ball,Ball tip,refill,cone,0.0,3.0,0.7,2.35,,,,nose,False,,ISO 12757-2 D1 mini refill (metal body preferred: it sticks out up to 16 mm beyond the nozzle at 35 deg),DEC-004
+refill,Ink refill (D1 mini),refill,cylinder,3.0,67.0,2.35,2.35,,,,nose,False,0.84,ISO 12757-2 D1 mini refill,DEC-004
+refill_holder,Refill holder (tendon end),refill,cylinder,67.0,72.0,3.2,3.2,,,,nose,False,0.5,"custom (PEEK holder, socket for the D1 refill, two tendon anchors; ASSUMPTION 0.5 g)",PAT-41
+carrier_nozzle,Nose nozzle (unscrews to change the refill),moving_nose,cone,9.32,14.32,3.6,7.0,,,,nose,False,0.4,custom (PEEK),AMF-24
+carrier,Moving nose (refill carrier),moving_nose,tube,14.32,74.98,7.0,7.0,6.0,,,nose,False,2.74,custom (Ti-6Al-4V tube 7/6 mm),AMF-21
+front_pulley,Front tendon pulley,mechanism,cylinder,44.97,45.97,1.5,1.5,,,,nose,False,0.02,"custom (PTFE pulley d 1.5 mm on a 0.3 mm pin; tendon UHMWPE 0.2 mm, ASSUMPTION)",
+pen_lift,Pen lift and ink-force drum,mechanism,tube,68.0,75.0,5.6,5.6,3.6,,,nose,False,2.0,"custom (drum, 301 FH spiral spring 38 um x 2.6 mm x 139 mm, EP brake, bistable latch; about 2 g, ASSUMPTION)",PAT-41; AMF-20
+slide_sensor,Refill-slide sensor (drum angle),sensor,box,74.0,75.0,,,,"[1.2, 1.2, 1.0]","[0.0, 2.2]",nose,False,0.05,TMAG5273-class 3-D Hall (WSON) + d 1 mm magnet (ASSUMPTION package),OPT-45; AMF-72
+arm,Short rear arm,moving_nose,tube,77.98,82.28,5.0,5.0,3.6,,,nose,False,0.11,custom (aluminium 6061 tube 5/3.6 mm),
+rear_pulley,Rear tendon pulley,mechanism,cylinder,80.58,81.58,1.5,1.5,,,,nose,False,0.02,custom (PTFE pulley d 1.5 mm),
+position_magnet,Nose position magnet,sensor,box,62.0,64.0,,,,"[1.0, 2.0, 2.0]","[4.0, 0.0]",nose,False,0.03,"NdFeB N52 2 x 2 x 1 mm, magnetised along x",AMF-139
+magnet_cap,"Magnet cap (2 x 2 checkerboard, spherical face)",actuator,cylinder,82.28,87.99,18.89,18.89,,,,nose,False,9.75,NdFeB N52 segments 6.3 x 6.3 x 3.3 mm on a Hiperco 50A cap (custom),AMF-139; AMF-140
+coil_plate,Two-layer spherical coil plate and back iron,actuator,cylinder,88.76,92.22,22.0,22.0,,,,handle,False,8.71,custom (bonded 0.20 mm wire coils on a formed Hiperco 50A plate),AMF-29; AMF-30; AMF-140
+gimbal,Flexure gimbal (2-axis),mechanism,tube,74.98,77.98,21.0,21.0,5.5,,,handle,False,2.0,"custom (301 FH 0.050 mm strips, laser cut)",AMF-20
+skid_ring,Skid ring (C-shaped heel) with the wheel slot,skid,tube,9.32,10.82,23.3,23.3,17.36,,,handle,False,0.27,"custom (PTFE-coated POM; contact radius 11.65 mm, flush with the sleeve front)",DEC-034
+front_sleeve,Front sleeve (fixed grip),grip,tube,10.82,50.0,23.3,24.0,18.68,,,handle,False,7.77,PEEK core + TPE overmould,AMF-24
+shell,Handle shell,structure,tube,50.0,141.72,24.0,24.0,22.0,,,handle,False,8.62,"PEEK or glass-filled nylon, 1 mm wall",AMF-24
+rear_cap,Rear cap (base pen),structure,cylinder,141.72,144.72,24.0,22.0,,,,handle,False,1.06,custom (PEEK),AMF-24
+main_board,Main board (along the top),electronics,box,50.0,72.0,,,,"[1.0, 14.0, 22.0]","[7.5, 0.0]",handle,False,5.5,"nRF54L15 + 2 x DRV8214 + 2 x DRV8311-class + charger + LSM6DSV16X + 2 x DRV5055-A4 (14 x 22 mm, ASSUMPTION)",AMF-44; AMF-37; OPT-37; OPT-46
+imu,Motion sensor (IMU),sensor,box,55.0,57.5,,,,"[0.83, 3.0, 2.5]","[8.42, 0.0]",handle,False,,ST LSM6DSV16X,OPT-37
+nose_hall,Nose position sensors (two linear Halls),sensor,box,61.5,64.5,,,,"[0.7, 4.0, 3.0]","[6.65, 0.0]",handle,False,,"2 x TI DRV5055-A4 (+-169 mT), SOT-23",OPT-46
+page_sensor,Page sensor (folded optics beside the heel),sensor,box,10.72,15.72,,,,"[2.0, 3.0, 5.0]","[-10.3, 5.0]",handle,False,1.0,"optical-flow die (PMW3360 class performance, 1 kHz; its own package does not fit) + lens + 45 deg mirror (PROPOSED DESIGN)",OPT-54; AMF-109
+usb,USB-C port and button,electronics,box,137.22,140.72,,,,"[8.4, 2.6, 3.5]","[0.0, 9.0]",handle,False,0.5,USB-C receptacle (mid-mount),
+battery,Rechargeable cell (lifted 3 mm),power,cylinder,92.72,141.22,14.1,14.1,,,"[3.0, 0.0]",handle,False,20.0,EEMB LIR14500,AMF-80
+lra,Vibration cue motor,haptic,box,115.72,123.72,,,,"[3.0, 8.0, 8.0]","[-8.6, 0.0]",handle,True,1.0,coin LRA 8 mm,AMF-45
+drive_wheel,Heel wheel with O-ring tyre,drive,cylinder,9.58,10.58,2.0,2.0,,,"[-11.36, 0.0]",drive,False,0.01,custom brass hub + NBR O-ring 0.6 mm cord; axle d 0.3 mm in jewel bearings,AMF-111; AMF-112
+drive_fork,Steering fork and crown,drive,cylinder,10.73,11.73,3.0,3.0,,,"[-10.39, 0.0]",drive,False,0.08,"custom (hardened steel fork, brass crown module 0.1)",
+drive_pod,Heel pod (sprung),drive,box,10.82,14.82,,,,"[2.1, 4.0, 4.0]","[-10.75, 0.0]",drive,False,0.07,"custom (PEEK housing, jewel bearings)",
+drive_spring,Preload flexure,drive,box,14.82,19.82,,,,"[0.3, 2.0, 5.0]","[-11.3, 0.0]",handle,False,0.01,custom (17-7PH leaf 0.1 mm),AMF-20
+drive_load_sensor,Wheel-load sensor,drive,box,18.32,19.32,,,,"[0.8, 1.5, 1.0]","[-10.6, 0.0]",handle,False,0.02,DRV5055 class + 1 mm magnet,OPT-46; AMF-72
+drive_steer_sensor,Steering-angle sensor,drive,box,12.02,13.02,,,,"[0.8, 1.5, 1.0]","[-10.2, -2.6]",drive,False,0.02,TMAG5273 class + d 1 mm magnet,OPT-45
+drive_shaft_drive,Drive shaft,drive,cylinder,12.82,92.72,0.8,0.8,,,"[-10.88, 1.6]",drive,False,0.37,"custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)",
+drive_shaft_steering,Steering shaft,drive,cylinder,12.82,92.72,0.8,0.8,,,"[-10.88, -1.6]",drive,False,0.37,"custom (austenitic stainless shaft d 0.8 mm, PTFE liner d 1.0 mm)",
+drive_transfer,Transfer gears,drive,box,92.72,94.72,,,,"[6.4, 10.0, 2.0]","[-7.7, 0.0]",handle,False,0.25,"module 0.1 brass gears, idler about d 3 mm (ASSUMPTION)",
+drive_motor,Wheel drive motor,drive,cylinder,94.92,114.92,6.0,6.0,,,"[-7.2, 3.2]",handle,False,2.5,"Faulhaber 0620 B brushless DC, 6 x 20 mm",AMF-100
+steer_motor,Steering motor,drive,cylinder,94.92,114.92,6.0,6.0,,,"[-7.2, -3.2]",handle,False,2.5,"Faulhaber 0620 B brushless DC, 6 x 20 mm",AMF-100

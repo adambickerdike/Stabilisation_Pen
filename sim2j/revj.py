@@ -1,4 +1,16 @@
-r"""The Rev J pen in simulator v2 (PROPOSED DESIGN inputs from round 1; every model value labelled).
+r"""The Rev J pen in simulator v2 (PROPOSED DESIGN; every model value labelled).
+
+Two sources of the pen's parameters (config(source=...)):
+  'revJ'    (default when present) the lead's integration results/revJ/sim_params.json + results/revJ/layout.json
+            (CALC on a PROPOSED DESIGN, round 2): handle 68.89 g with the heel drive (COM 89.8 mm), nose 18.1 g
+            about the gimbal at 76.48 mm (tip-equivalent 1.53 g from the layout; study N's model gave 2.10 g), refill
+            1.74 g on a 0.15 N spring (-2.19 N/m, 0.01 N friction), skid ring contact radius 11.65 mm, heel wheel at
+            12.0 mm (0.35 mm beyond the ring), IMU 56.25 mm from the tip and 8.42 mm off the axis, page sensor 1 kHz,
+            2 ms, 3 um, valid up to 2 mm lift, nose Hall noise 3.2 / 6.4 um (5.1 um rms used), end-cap slug 30.39 g at
+            152.7 mm on 5 Hz flexures with damping ratio 0.05, pen 144.7 mm long (165.7 mm with the end-cap).
+  'round1'  the round-1 assembly described below (study N's layout and design model; used before the lead's file
+            existed and for the comparison with nose2's HW1 runs).
+Round-1 assembly:
 
   handle     Rev J layout of study N (results/nose2/layout.json: handle Ø24 x 175 mm, 65.28 g with +10 % wiring, CALC):
              front sleeve, skid ring (contact radius 10.0 mm, DEC-036), page sensor, gimbal mount, shell, fixed coil
@@ -42,7 +54,8 @@ from sim2 import plugins as PL
 
 NOSE2_LAYOUT = os.path.join(ROOT, "results", "nose2", "layout.json")
 NOSE2_JSON = os.path.join(ROOT, "results", "nose2", "nose2.json")
-REVJ_PARAMS = os.path.join(ROOT, "results", "revJ", "sim_params.json")     # the lead's integration (not present yet)
+REVJ_PARAMS = os.path.join(ROOT, "results", "revJ", "sim_params.json")     # the lead's integration (round 2)
+REVJ_LAYOUT = os.path.join(ROOT, "results", "revJ", "layout.json")
 
 
 def _nose2():
@@ -128,19 +141,201 @@ def revj_parts(wiring: float = P.WIRING, heel: bool = True):
 
 
 @contextlib.contextmanager
-def _parts_patch(heel: bool):
+def _parts_patch(heel: bool, endcap: bool = False, source: str = "round1"):
     """sim2.builder takes its part lists from sim2.params.part_lists (Rev H).  Swap in the Rev J lists for one build
     (runtime substitution in this process only; sim2's files are not edited)."""
     orig = P.part_lists
 
     def revj(wiring=P.WIRING):
-        hp, npar, rf, _ = revj_parts(wiring, heel=heel)
+        if source == "revJ":
+            hp, npar, rf, _ = lead_parts(wiring, heel=heel, endcap=endcap)
+        else:
+            hp, npar, rf, _ = revj_parts(wiring, heel=heel)
         return hp, npar, rf
     P.part_lists = revj
     try:
         yield
     finally:
         P.part_lists = orig
+
+
+# ------------------------------------------------------------------------------------------------ the lead's integration
+_LEAD = None
+
+
+def lead_available() -> bool:
+    return os.path.exists(REVJ_PARAMS) and os.path.exists(REVJ_LAYOUT)
+
+
+def default_source() -> str:
+    return "revJ" if lead_available() else "round1"
+
+
+def lead() -> Dict:
+    """results/revJ/sim_params.json and layout.json (read once per process) with their provenance."""
+    global _LEAD
+    if _LEAD is None:
+        import hashlib
+        raw = open(REVJ_PARAMS, "rb").read()
+        sp = json.loads(raw)
+        lay = json.load(open(REVJ_LAYOUT))
+        _LEAD = {"sp": sp["sim_params"], "lay": lay,
+                 "meta": {"file": "results/revJ/sim_params.json", "generated_utc": sp.get("meta", {}).get("generated_utc"),
+                          "sha256_16": hashlib.sha256(raw).hexdigest()[:16],
+                          "layout_generated_utc": (lay.get("meta") or {}).get("generated_utc"),
+                          "label": sp.get("meta", {}).get("evidence_status")}}
+    return _LEAD
+
+
+def _v(x):
+    return x["value"] if isinstance(x, dict) and "value" in x else x
+
+
+def _lead_part(c: Dict, m: float):
+    """A layout component as a sim2 part (name, m kg, z m, L m, r2 m^2): sim2's rigid_props uses J_t = m (dz^2 + L^2/12
+    + r2) and J_a = 2 m r2, so r2 = (ro^2 + ri^2)/4 for cylinders and tubes, (sx^2 + sy^2)/24 for boxes, plus half the
+    squared radial offset of an off-axis part (its axial and mean transverse contribution)."""
+    L = (c["z1"] - c["z0"]) * 1e-3
+    z = 0.5 * (c["z0"] + c["z1"]) * 1e-3
+    if c["shape"] == "box":
+        sx, sy = c["size"][0], c["size"][1]
+        r2 = (sx * sx + sy * sy) / 24.0
+    else:
+        ro = 0.25 * (c.get("d0", 0.0) + c.get("d1", c.get("d0", 0.0)))
+        ri = 0.5 * c.get("d_in", 0.0) if c["shape"] == "tube" else 0.0
+        r2 = (ro * ro + ri * ri) / 4.0
+    ox, oy = c.get("offset", [0.0, 0.0])
+    r2 += 0.5 * (ox * ox + oy * oy)
+    return (c["id"], m, z, L, r2 * 1e-6)
+
+
+def lead_parts(wiring: float = P.WIRING, heel: bool = True, endcap: bool = False):
+    """(handle, nose without the refill, refill) from the lead's layout (results/revJ/layout.json), x(1 + wiring) as the
+    lead's budgets; the refill body is the refill and holder (layout) + the ink drum's reflected 0.3 g and the spring's
+    0.1 g (sim_params refill.moving_mass 1.74 g, CALC/ASSUMPTION).  The handle includes the heel drive (the lead's
+    'handle' = every part but the moving nose and the end-cap slug); heel=False removes the drive parts (the C1S pen of
+    study N, for the comparison with nose2); endcap=True replaces the rear cap by the end-cap's fixed parts (its slug
+    and magnets are the ReactionMass body)."""
+    L = lead()
+    comps = L["lay"]["components"]
+    f = 1.0 + wiring
+    hp, npar = [], []
+    for c in comps:
+        m = c.get("mass_g") or 0.0
+        if m <= 0:
+            continue
+        mw, grp = c.get("moves_with"), c["group"]
+        if mw == "nose":
+            if grp == "refill":
+                continue
+            npar.append(_lead_part(c, m * 1e-3 * f))
+        elif mw in ("handle", "drive"):
+            if grp == "drive" and not heel:
+                continue
+            if grp == "inertial" and not endcap:
+                continue
+            if endcap and c.get("replaced_by_endcap"):
+                continue
+            hp.append(_lead_part(c, m * 1e-3 * (1.0 if grp == "inertial" else f)))   # the lead: no allowance on the end-cap
+    comp = {c["id"]: c for c in comps}
+    zh = 0.5 * (comp["refill_holder"]["z0"] + comp["refill_holder"]["z1"]) * 1e-3
+    rf = [_lead_part(comp["refill"], 0.84e-3), _lead_part(comp["refill_holder"], 0.5e-3),
+          ("drum_reflected", 0.3e-3, zh, 0.0, 0.0), ("refill_spring", 0.1e-3, zh, 0.0, 0.0)]
+    return hp, npar, rf, {"source": "revJ"}
+
+
+def lead_geometry(theta_deg: float = 50.0) -> P.Geometry:
+    """sim2's handle frame has x = t1 toward the paper; the lead's frame has x away from the paper, so its IMU
+    offset +8.42 mm (on the board, on the top side) is r_imu = -8.42 mm here and its wheel at x = -12 mm is +12 mm."""
+    L = lead()
+    sp, lay = L["sp"], L["lay"]
+    comp = {c["id"]: c for c in lay["components"]}
+    zc = lambda cid: 0.5 * (comp[cid]["z0"] + comp[cid]["z1"]) * 1e-3
+    zp = lay["pivot_z"] * 1e-3
+    usable = _v(sp["nose"]["usable_angle_rad"])
+    stop = _v(sp["nose"]["stop_angle_rad"])
+    imu = _v(sp["sensors"]["imu_position_m"])
+    ps = _v(sp["sensors"]["page_sensor"])
+    return P.Geometry(theta_deg=theta_deg, length=lay["length"] * 1e-3, handle_od=lay["handle_od"] * 1e-3,
+                      skid_R=_v(sp["skid_ring"]["contact_radius_m"]), skid_open_deg=_v(sp["skid_ring"]["open_deg_top"]),
+                      skid_rho=_v(sp["skid_ring"]["tube_radius_m"]), z_p=zp, z_a=_v(sp["nose"]["actuator_z_m"]),
+                      travel=usable * zp, travel_stop=stop * zp, z_f=0.032, z_w=lay["hand"]["web_z"] * 1e-3,
+                      z_imu=imu[2], r_imu=-imu[0], z_hall_sensor=zc("nose_hall"), z_hall_magnet=zc("position_magnet"),
+                      z_page_sensor=ps["window_m"][2], z_endcap=(comp["ec_shell"]["z0"] * 1e-3, comp["ec_shell"]["z1"] * 1e-3),
+                      front_stop_margin=_v(sp["refill"]["front_stop"])["margin_m"])
+
+
+def _hall_noise() -> float:
+    n = _v(lead()["sp"]["sensors"]["nose_position_noise_m"])
+    return math.sqrt(0.5 * (n[0] ** 2 + n[1] ** 2))
+
+
+def lead_nose(neg_k: float = 0.0, km_scale: float = 1.0, kr_scale: float = 1.0) -> P.Nose:
+    """C1S nose from sim_params: flexure 0.0028 N m/rad minus the magnetic negative stiffness (0-0.00165 N m/rad,
+    nominal 0: sphere centres aligned), Km 0.656 N/sqrt(W) at the magnets (image method: upper bound; DR 0.7-1.0),
+    R 2.47 ohm, 100 uH, 1.5 A, 3.7 V, 100 K/W, 0.5 J/K, 80 Hz / 0.7 servo, 0.6 m/s slew, Hall noise 5.1 um rms at the
+    tip (3.2 / 6.4 um per axis), 50 us Hall delay.  The servo holds the refill spring's transverse ball load
+    F_c cot(theta) with a contact-gated bias current (sim2 H1 convention: Nose.bias)."""
+    n = lead()["sp"]["nose"]
+    s = lead()["sp"]["sensors"]
+    return P.Nose(k_r=_v(n["flexure_k_Nm_per_rad"]) * kr_scale - neg_k, zeta_flex=_v(n["damping_ratio"]),
+                  Km_act=_v(n["Km_act_N_per_sqrtW"]) * km_scale, R=_v(n["coil_R_ohm"]), L_ind=_v(n["coil_L_H"]),
+                  I_max=_v(n["I_max_A"]), V_supply=_v(n["V_bus_V"]), R_th=_v(n["coil_Rth_K_W"]), C_th=_v(n["coil_Cth_J_K"]),
+                  servo_hz=_v(n["servo_hz"]), servo_zeta=_v(n["servo_zeta"]), inner_hz=400.0, slew=_v(n["slew_m_s"]),
+                  q_taper=0.6e-3, hall_noise=_hall_noise(), hall_delay=_v(s["nose_position_delay_s"]))
+
+
+def lead_refill(F_c: Optional[float] = None) -> P.Refill:
+    r = lead()["sp"]["refill"]
+    Fc = _v(r["spring_force_N"]) if F_c is None else F_c
+    grad = abs(_v(r["spring_gradient_N_per_m"]))
+    rng = _v(r["slide_range_m"])
+    return P.Refill(F_c=Fc, L_ref=max(Fc / max(grad, 1e-6), 1e-3), slide_range=(-0.3e-3, abs(rng[0])),
+                    frictionloss=_v(r["friction_hysteresis_N"]), front_stop="nose_adaptive")
+
+
+def lead_sensors() -> P.Sensors:
+    s = lead()["sp"]["sensors"]
+    ps = _v(s["page_sensor"])
+    sl = _v(lead()["sp"]["refill"]["slide_sensor"])
+    return P.Sensors(hall_noise=_hall_noise(), page_rate=ps["rate_hz"], page_latency=ps["latency_s"],
+                     page_noise=ps["noise_m"], page_lift_max=ps["lift_cutoff_m"][0], slide_rate=sl["rate_hz"],
+                     slide_noise=sl["noise_m"], slide_latency=sl["delay_s"])
+
+
+def lead_endcap_plugin() -> PL.ReactionMass:
+    """The end-cap from sim_params: 30.39 g slug at 152.7 mm, +-4 mm, 30.0 N/m flexures (5 Hz), damping ratio 0.05,
+    Km 0.735 N/sqrt(W), 1 W peak (ASSUMPTION R 1 ohm: I_max = F_peak / K_f); its fixed parts are in the handle."""
+    ec = lead()["sp"]["endcap"]
+    m = _v(ec["slug_mass_kg"])
+    k = _v(ec["flexure_k_N_per_m"])
+    zeta = _v(ec["damping_ratio"])
+    Km = _v(ec["Km_N_per_sqrtW"])
+    s = _v(ec["stroke_m"])
+    R = 1.0
+    K_f = Km * math.sqrt(R)
+    F_peak = Km * math.sqrt(_v(ec["P_peak_W"]))
+    return PL.ReactionMass(name="rm", m=m, z=_v(ec["slug_centre_z_m"]), stroke=(s, s, 0.0), k_c=k,
+                           c_c=2.0 * zeta * math.sqrt(k * m), K_f=K_f, R20=R, I_max=F_peak / K_f, fixed_mass=0.0,
+                           label="PROPOSED DESIGN + CALC (results/revJ/sim_params.json endcap; study K)")
+
+
+def wheel_params(source: Optional[str] = None, mu: float = 0.9):
+    """Heel-wheel parameters: the lead's (sim_params heel_wheel: contact at 12.0 mm in the ring plane, i.e. 0.35 mm
+    beyond the 11.65 mm ring, 0.55 N preload on a 200 N/m leaf with 0.75 mm travel, rolling coefficient 0.078,
+    back-drive 0.03 N, reflected mass 3.8 g; copper loss from the motor data R 8.8 ohm, kt 1.09 mN m/A, 2:1, 0.656
+    efficiency, 1 mm wheel radius) or study D's (round 1)."""
+    from .wheel import WheelParams
+    src = source or default_source()
+    if src != "revJ":
+        return WheelParams(mu=mu)
+    hw = lead()["sp"]["heel_wheel"]
+    mot = _v(hw["motor"])
+    kF = mot["kt_mNm_A"] * 1e-3 * _v(hw["drive_ratio"]) * _v(hw["drive_efficiency"]) / _v(hw["radius_m"])
+    cp = _v(hw["contact_point_m"])
+    return WheelParams(mu=mu, R_w=abs(cp[0]), h_w=0.0, P=_v(hw["preload_N"]), travel=_v(hw["spring_travel_m"]),
+                       k_s=_v(hw["spring_rate_N_per_m"]), k_lat=_v(hw["k_lat_N_per_m"]), c_rr=_v(hw["rolling_coef"]),
+                       m_r=_v(hw["reflected_mass_kg"]), F_bdc=_v(hw["backdrive_N"]), kP_copper=mot["R_ohm"] / kF ** 2)
 
 
 # ------------------------------------------------------------------------------------------------ configuration
@@ -193,14 +388,24 @@ def endcap_plugin(z: float = 0.173) -> PL.ReactionMass:
 
 def config(hand_model: str = "h1", heel: bool = True, endcap: bool = False, theta_deg: float = 50.0,
            r_rot: float = 0.5, N0: float = 1.0, dt: float = 25e-6, arm: Optional[P.Arm] = None,
-           hand: Optional[P.HandH1] = None, contact: Optional[P.Contact] = None, label: str = "Rev J") -> P.Config:
+           hand: Optional[P.HandH1] = None, contact: Optional[P.Contact] = None, label: str = "Rev J",
+           source: Optional[str] = None, F_c: Optional[float] = None, neg_k: float = 0.0, km_scale: float = 1.0) -> P.Config:
+    src = source or default_source()
     plugins = []
     if heel:
         plugins.append(HeelMass())
     if endcap:
-        plugins.append(endcap_plugin())
-    kw = dict(geom=geometry(theta_deg), nose=nose(), refill=refill(), plugins=plugins, N0=N0, dt=dt,
-              hand_model=hand_model, label=label)
+        plugins.append(lead_endcap_plugin() if src == "revJ" else endcap_plugin())
+    if src == "revJ":
+        kw = dict(geom=lead_geometry(theta_deg), nose=lead_nose(neg_k=neg_k, km_scale=km_scale),
+                  refill=lead_refill(F_c), sensors=lead_sensors())
+    else:
+        nz = nose()
+        if km_scale != 1.0 or neg_k:
+            nz = replace(nz, Km_act=nz.Km_act * km_scale, k_r=nz.k_r - neg_k)
+        rf = refill() if F_c is None else replace(refill(), F_c=F_c)
+        kw = dict(geom=geometry(theta_deg), nose=nz, refill=rf)
+    kw.update(plugins=plugins, N0=N0, dt=dt, record_hz=2000.0, hand_model=hand_model, label=f"{label} [{src}]")
     if hand_model == "h1":
         kw["hand"] = hand or P.HandH1(r_rot=r_rot)
         kw["gravity"] = False
@@ -212,11 +417,18 @@ def config(hand_model: str = "h1", heel: bool = True, endcap: bool = False, thet
     return P.Config(**kw)
 
 
+def source_of(cfg: P.Config) -> str:
+    return "revJ" if "[revJ]" in (cfg.label or "") else "round1"
+
+
 def build(cfg: P.Config) -> B.PenModel:
     heel = any(isinstance(p, HeelMass) for p in cfg.plugins)
-    with _parts_patch(heel):
+    endcap = any(isinstance(p, PL.ReactionMass) for p in cfg.plugins)
+    src = source_of(cfg)
+    with _parts_patch(heel, endcap, src):
         pm = B.build(cfg)
-    pm.info["revj"] = {"heel": heel, "endcap": any(isinstance(p, PL.ReactionMass) for p in cfg.plugins)}
+    pm.info["revj"] = {"heel": heel, "endcap": endcap, "source": src,
+                       "lead": lead()["meta"] if src == "revJ" else None}
     return pm
 
 

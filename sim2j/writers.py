@@ -67,7 +67,7 @@ class KinParams:
     trim: float = 0.002             # the smoothed ramps start/end where s(t) passes this share of the piece
     dwell_start: float = 0.005      # s after touchdown (ASSUMPTION; aiguide v1 0.015)
     dwell_end: float = 0.0          # s before lift (ASSUMPTION; aiguide v1 0.010)
-    pen_T: float = 0.02             # s touchdown / lift transition (ASSUMPTION; aiguide v1 0.04)
+    pen_T: float = 0.03             # s touchdown / lift transition (ASSUMPTION; aiguide v1 0.04); contact at its end
     size_scale: float = 1.0         # letter size relative to the aiguide style (fitted; prior from LIT PDT-06)
     speed_sd: float = 7.90          # mm/s between-writer SD of the target speed (LIT CON-20)
     speed_mean: float = 30.46       # mm/s (LIT CON-20)
@@ -468,13 +468,14 @@ def fit_loss(kin: Dict) -> float:
 # ------------------------------------------------------------------------------------------------ the fit (CALC)
 # x-height prior: LIT PDT-06 median letter height 5.0 mm (IQR 1.4 mm) in healthy adults' free writing on paper, the
 # mean of the heights of 'T', 'p' and 'a'; with the glyph font's proportions ('a' 1.0, 'p' 1.6 x-heights) and a capital
-# 'T' of 1.5 x-heights (ASSUMPTION) that is an x-height of 5.0 / 1.37 = 3.65 mm (CALC), 1.40 x the aiguide mean (2.6 mm)
+# 'T' of 1.5 x-heights (ASSUMPTION) that is an x-height of 5.0 / 1.37 = 3.65 mm (CALC), 1.40 x the aiguide mean (2.6 mm);
+# the fit keeps the scale inside the IQR (letter height 4.3-5.7 mm: scale 1.2-1.6)
 SIZE_PRIOR = {"x_height_mm": 5.0 / ((1.0 + 1.6 + 1.5) / 3.0), "scale_mean": (5.0 / ((1.0 + 1.6 + 1.5) / 3.0)) / 2.6,
               "scale_sd": (1.4 / ((1.0 + 1.6 + 1.5) / 3.0)) / 2.6 / 1.35,
               "label": "LIT PDT-06 (median letter height 5.0 mm, IQR 1.4 mm; mean of T, p, a) -> x-height 3.65 mm (CALC, "
                        "capital T = 1.5 x-heights ASSUMPTION)"}
 FIT_SPACE = {  # name: (lo, hi, log)
-    "size_scale": (1.0, 2.0, False), "smooth_geom": (0.02, 0.15, True), "sigma_t": (0.008, 0.05, True),
+    "size_scale": (1.2, 1.6, False), "smooth_geom": (0.02, 0.25, True), "sigma_t": (0.008, 0.05, True),
     "corner_deg": (30.0, 90.0, False), "c_acc": (3.0, 30.0, True), "v_cap": (2.0, 5.0, False),
     "kappa0": (20.0, 500.0, True)}
 
@@ -489,12 +490,14 @@ def fit_objective(kin: Dict, kp: KinParams) -> float:
     return float(l)
 
 
-def fit(writers: Sequence[int] = tuple(range(1000, 1006)), n_iter: int = 80, seed: int = 0, log=print) -> Dict:
-    """Nelder-Mead over FIT_SPACE (unit-cube coordinates), from the defaults, on fitting writers (CALC)."""
+def fit(writers: Sequence[int] = tuple(range(1000, 1006)), n_iter: int = 80, seed: int = 0, log=print,
+        base: Optional[KinParams] = None, fixed: Sequence[str] = ()) -> Dict:
+    """Nelder-Mead over FIT_SPACE (unit-cube coordinates, minus the `fixed` names), from `base`, on fitting writers
+    (CALC)."""
     from scipy.optimize import minimize
-    names = list(FIT_SPACE)
-    base = KinParams(size_scale=SIZE_PRIOR["scale_mean"], smooth_geom=0.06, sigma_t=0.02, corner_deg=45.0, c_acc=12.0,
-                     v_cap=3.5, kappa0=60.0)
+    names = [n for n in FIT_SPACE if n not in fixed]
+    base = base or KinParams(size_scale=SIZE_PRIOR["scale_mean"], smooth_geom=0.1, sigma_t=0.015, corner_deg=70.0,
+                             c_acc=12.0, v_cap=2.5, kappa0=40.0)
 
     def to_u(kp):
         u = []
@@ -533,7 +536,8 @@ def fit(writers: Sequence[int] = tuple(range(1000, 1006)), n_iter: int = 80, see
                                                           "initial_simplex": np.vstack([u0] + [np.clip(u0 + 0.25 * e, 0, 1)
                                                                                                 for e in np.eye(len(u0))])})
     best = min(hist, key=lambda h: h["loss"])
-    return {"method": "Nelder-Mead on the unit cube of FIT_SPACE (scipy), start at the defaults", "writers": list(writers),
+    return {"method": "Nelder-Mead on the unit cube of FIT_SPACE (scipy)", "fixed": {n: getattr(base, n) for n in fixed},
+            "start": asdict(base), "writers": list(writers),
             "n_evaluations": len(hist), "best": best, "history": hist, "space": FIT_SPACE, "size_prior": SIZE_PRIOR}
 
 

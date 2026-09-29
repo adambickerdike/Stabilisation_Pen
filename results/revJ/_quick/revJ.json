@@ -1,0 +1,614 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:17:24+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --quick --no-figures",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": true
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev J integration, round 2); inputs from the round-1 studies (labelled) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-29T13:17:24+00:00",
+  "git_revision": "61f71cd-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --quick --no-figures",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "script": "revj/run.py",
+  "doc": "docs/revJ_design.md",
+  "quick": true
+ },
+ "front_end": {
+  "R_ring_mm": 11.65,
+  "R_wheel_mm": 12.0,
+  "R_wheel_needed_mm": 11.905649296563595,
+  "sleeve_front_d_mm": 23.3,
+  "sleeve_front_d_with_revH_step_mm": 24.8,
+  "X_nom_mm": 6.570043945312501,
+  "X_guaranteed_mm": 6.000004565421515,
+  "X_guaranteed_if_studyN_angle_kept_mm": 5.928744299107637,
+  "refill_slide_mm": 26.60970861255997,
+  "ball_ahead_of_ring_mm": {
+   "35": 16.02771790007825,
+   "40": 13.339426014321404,
+   "50": 9.318618151949016,
+   "60": 6.321985447626404,
+   "70": 3.86779100883469,
+   "75": 2.7592614286790504
+  },
+  "pod_without_steering_ring_R_d_mm": 10.584323684029842,
+  "label": "CALC"
+ },
+ "length_mm": {
+  "base": 144.72,
+  "with_endcap": 165.72
+ },
+ "mass_g": {
+  "base": 86.99900000000001,
+  "with_endcap": 129.156,
+  "com_z_base_mm": 86.06152294853963,
+  "com_z_with_endcap_mm": 108.09975901235715
+ },
+ "power_W_and_hours": {
+  "steady_no_tremor": {
+   "W": [
+    0.2027082148639454,
+    0.2622171037528343
+   ],
+   "h": [
+    8.466266952946635,
+    10.951702186761546
+   ],
+   "h_with_endcap": [
+    5.451637417831688,
+    9.581015508248344
+   ]
+  },
+  "steady_0.3mm": {
+   "W": [
+    0.2120001771674077,
+    0.2715090660562966
+   ],
+   "h": [
+    8.176522545805854,
+    10.471689362065762
+   ],
+   "h_with_endcap": [
+    5.330016033072227,
+    9.211611485488268
+   ]
+  },
+  "steady_1mm": {
+   "W": [
+    0.30595224045797126,
+    0.36546112934686015
+   ],
+   "h": [
+    6.074517429439102,
+    7.256034460401222
+   ],
+   "h_with_endcap": [
+    4.3490089105129535,
+    6.627810570738841
+   ]
+  },
+  "guide": {
+   "W": [
+    0.2120001771674077,
+    0.2765090660562966
+   ],
+   "h": [
+    8.028669843136402,
+    10.471689362065762
+   ],
+   "h_with_endcap": [
+    5.266790631031167,
+    9.211611485488268
+   ]
+  },
+  "lead": {
+   "W": [
+    0.31974444444444444,
+    0.3792533333333334
+   ],
+   "h": [
+    5.853607087610744,
+    6.943044792716406
+   ],
+   "h_with_endcap": [
+    4.234593962206567,
+    6.365692802752732
+   ]
+  },
+  "autowrite_no_tremor": {
+   "W": [
+    0.2862111111111111,
+    0.34572
+   ],
+   "h": [
+    6.421381464769177,
+    7.756512286967663
+   ],
+   "h_with_endcap": [
+    4.523964786436257,
+    7.0428989389826935
+   ]
+  },
+  "autowrite_1mm": {
+   "W": [
+    0.36321111111111115,
+    0.42272
+   ],
+   "h": [
+    5.251703255109766,
+    6.112147817308575
+   ],
+   "h_with_endcap": [
+    3.910378355527373,
+    5.660217003314541
+   ]
+  },
+  "autowrite_2mm": {
+   "W": [
+    0.5732111111111111,
+    0.6327200000000001
+   ],
+   "h": [
+    3.5086610190921736,
+    3.8729186454476734
+   ],
+   "h_with_endcap": [
+    2.8544977626909427,
+    3.6864148785032937
+   ]
+  }
+ },
+ "power_options": {
+  "page_sensor_gated_hours": {
+   "steady_no_tremor": [
+    12.17792249190072,
+    13.190957838825037
+   ],
+   "steady_0.3mm": [
+    11.58730007769689,
+    12.500769609860155
+   ],
+   "steady_1mm": [
+    7.774711843011808,
+    8.175557070635238
+   ]
+  },
+  "Wh_needed_for_8h_worst": {
+   "steady_no_tremor": 2.0977368300226744,
+   "steady_0.3mm": 2.172072528450373,
+   "steady_1mm": 2.923689034774881,
+   "guide": 2.212072528450373,
+   "lead": 3.034026666666667,
+   "autowrite_no_tremor": 2.76576,
+   "autowrite_1mm": 3.38176,
+   "autowrite_2mm": 5.0617600000000005
+  },
+  "label": "CALC (power_modes rows); cell scaling ASSUMPTION (energy proportional to length less 3 mm); gating ASSUMPTION (the sensor is off, not in a rest mode, while only the tremor is corrected)"
+ },
+ "heat": {
+  "steady_no_tremor": {
+   "coil_rise_K": 6.429710375283426,
+   "web_C": 29.012256981402782,
+   "web_C_spreader": 25.78343957756359
+  },
+  "steady_0.3mm": {
+   "coil_rise_K": 7.358906605629658,
+   "web_C": 29.881124503720383,
+   "web_C_spreader": 26.185691220625287
+  },
+  "steady_1mm": {
+   "coil_rise_K": 16.754112934686013,
+   "web_C": 38.666340562709465,
+   "web_C_spreader": 30.252902278249117
+  },
+  "guide": {
+   "coil_rise_K": 7.358906605629658,
+   "web_C": 29.881124503720383,
+   "web_C_spreader": 26.185691220625287
+  },
+  "lead": {
+   "coil_rise_K": 8.9,
+   "web_C": 31.322161343406705,
+   "web_C_spreader": 26.852834854824074
+  },
+  "autowrite_no_tremor": {
+   "coil_rise_K": 8.9,
+   "web_C": 31.322161343406705,
+   "web_C_spreader": 26.852834854824074
+  },
+  "autowrite_1mm": {
+   "coil_rise_K": 16.6,
+   "web_C": 38.52223351691588,
+   "web_C_spreader": 30.186186358435915
+  },
+  "autowrite_2mm": {
+   "coil_rise_K": 37.6,
+   "web_C": 58.15879399012272,
+   "web_C_spreader": 39.27714500465002
+  }
+ },
+ "magnetics": {
+  "axial_pull_N": 16.502007147601198,
+  "motor_torque_bound_mNm": 0.08029346151623229,
+  "nose_hall_tip_noise_um": {
+   "DRV5055_A4_pair": {
+    "x": 5.610810599270249,
+    "y": 6.093228106059021
+   },
+   "TMAG5170_CONV_AVG_000_20kSPS": {
+    "x": 24.26826689800428,
+    "y": 48.538954898139124
+   },
+   "TMAG5170_CONV_AVG_101": {
+    "x": 4.160274325372162,
+    "y": 8.320963696823851
+   }
+  },
+  "outside_1mT_distance_note": {
+   "5": {
+    "all": {
+     "B_max_mT": 13.296031895725406,
+     "at_z_mm": 105.52406779661017
+    },
+    "c1s_cap": {
+     "B_max_mT": 4.203710846971772,
+     "at_z_mm": 88.09016949152542
+    },
+    "motors": {
+     "B_max_mT": 13.23979829725407,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 2.925416805189323,
+     "at_z_mm": 154.33898305084745
+    }
+   },
+   "10": {
+    "all": {
+     "B_max_mT": 5.267475782543269,
+     "at_z_mm": 105.52406779661017
+    },
+    "c1s_cap": {
+     "B_max_mT": 1.0501633826533971,
+     "at_z_mm": 81.11661016949152
+    },
+    "motors": {
+     "B_max_mT": 5.238693650797555,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 0.8958449961151831,
+     "at_z_mm": 154.33898305084745
+    }
+   },
+   "20": {
+    "all": {
+     "B_max_mT": 1.3489058533445697,
+     "at_z_mm": 105.52406779661017
+    },
+    "c1s_cap": {
+     "B_max_mT": 0.15103281681658876,
+     "at_z_mm": 91.57694915254237
+    },
+    "motors": {
+     "B_max_mT": 1.3283754405464392,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 0.16969922254701766,
+     "at_z_mm": 154.33898305084745
+    }
+   },
+   "30": {
+    "all": {
+     "B_max_mT": 0.5182039281157244,
+     "at_z_mm": 105.52406779661017
+    },
+    "c1s_cap": {
+     "B_max_mT": 0.03804691195642422,
+     "at_z_mm": 95.06372881355932
+    },
+    "motors": {
+     "B_max_mT": 0.5058554231903133,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 0.052871146839667066,
+     "at_z_mm": 154.33898305084745
+    }
+   },
+   "50": {
+    "all": {
+     "B_max_mT": 0.13753418085495045,
+     "at_z_mm": 105.52406779661017
+    },
+    "c1s_cap": {
+     "B_max_mT": 0.005331115020759722,
+     "at_z_mm": 98.55050847457626
+    },
+    "motors": {
+     "B_max_mT": 0.13375729906484285,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 0.010415026040573958,
+     "at_z_mm": 154.33898305084745
+    }
+   },
+   "100": {
+    "all": {
+     "B_max_mT": 0.019721766112806023,
+     "at_z_mm": 102.03728813559322
+    },
+    "c1s_cap": {
+     "B_max_mT": 0.00027487335294431426,
+     "at_z_mm": 60.19593220338983
+    },
+    "motors": {
+     "B_max_mT": 0.01943049391988125,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 0.0009367987048141789,
+     "at_z_mm": 154.33898305084745
+    }
+   },
+   "150": {
+    "all": {
+     "B_max_mT": 0.006121011602904337,
+     "at_z_mm": 102.03728813559322
+    },
+    "c1s_cap": {
+     "B_max_mT": 4.3326575253791106e-05,
+     "at_z_mm": 122.95796610169492
+    },
+    "motors": {
+     "B_max_mT": 0.006048813013901271,
+     "at_z_mm": 105.52406779661017
+    },
+    "endcap_tiles": {
+     "B_max_mT": 0.0002118112037568557,
+     "at_z_mm": 154.33898305084745
+    }
+   }
+  }
+ },
+ "refill": {
+  "holder_rear_max_z_mm": 80.3834311891457,
+  "spring": {
+   "t_um": 38.0,
+   "L_mm": 138.97468341184117,
+   "b_mm": 2.6079487241404298,
+   "sigma_max_MPa": 803.0000000000001,
+   "sigma_min_MPa": 535.3333333333335,
+   "sigma_a_small_MPa": 12.695015170909832,
+   "goodman_small": 0.579386609191921,
+   "SF_small": 1.7259632586170996,
+   "goodman_large": 0.7681327160493827,
+   "SF_large": 1.3018583626318434,
+   "annulus_fill": 0.36543621631555595,
+   "fits": true
+  },
+  "tendon_travel_mm": 27.40970861255997,
+  "ink_tail_mm": 0.32514355515128823
+ },
+ "page_sensor": {
+  "window": {
+   "phi_deg": 24.0,
+   "s_mm": 1.9000000000000012,
+   "r_mm": 11.066772775696133,
+   "y_mm": 4.501262008469301,
+   "max_dev_mm": 0.3385587524441105
+  },
+  "height_band_mm": {
+   "roll0": [
+    2.2338403994071125,
+    2.4457307289849948
+   ],
+   "roll5": [
+    2.0614412475558894,
+    2.7375131478538304
+   ],
+   "roll10": [
+    1.8368272204518405,
+    3.12026431563471
+   ],
+   "roll20": [
+    1.5896297867231042,
+    4.111835428052824
+   ]
+  }
+ },
+ "fit_checks_all_pass": true,
+ "travel_factor": {
+  "P": 1.016908674104514,
+  "Km_tip": 0.09793787433645133
+ },
+ "round1_conflicts": {
+  "parts": {
+   "drive_shaft_drive": {
+    "z_mm": [
+     10.19,
+     49.2
+    ],
+    "r_inner_mm": 9.150916186418975,
+    "by_z": {
+     "10.2": {
+      "nose_envelope_r_mm": 9.223126055852285,
+      "overlap_mm": 0.3722098694333109
+     },
+     "29.7": {
+      "nose_envelope_r_mm": 7.803829135820954,
+      "overlap_mm": -1.0470870505980212
+     },
+     "49.2": {
+      "nose_envelope_r_mm": 6.003283677270636,
+      "overlap_mm": -2.8476325091483394
+     }
+    },
+    "worst_overlap_mm": 0.3722098694333109,
+    "collides": true
+   },
+   "drive_shaft_steering": {
+    "z_mm": [
+     10.19,
+     49.2
+    ],
+    "r_inner_mm": 9.150916186418975,
+    "by_z": {
+     "10.2": {
+      "nose_envelope_r_mm": 9.223126055852285,
+      "overlap_mm": 0.3722098694333109
+     },
+     "29.7": {
+      "nose_envelope_r_mm": 7.803829135820954,
+      "overlap_mm": -1.0470870505980212
+     },
+     "49.2": {
+      "nose_envelope_r_mm": 6.003283677270636,
+      "overlap_mm": -2.8476325091483394
+     }
+    },
+    "worst_overlap_mm": 0.3722098694333109,
+    "collides": true
+   },
+   "drive_keel": {
+    "z_mm": [
+     10.19,
+     47.2
+    ],
+    "r_inner_mm": 8.1,
+    "by_z": {
+     "10.2": {
+      "nose_envelope_r_mm": 9.223126055852285,
+      "overlap_mm": 1.4231260558522862
+     },
+     "28.7": {
+      "nose_envelope_r_mm": 7.896141130619739,
+      "overlap_mm": 0.09614113061974017
+     },
+     "47.2": {
+      "nose_envelope_r_mm": 6.187907666868208,
+      "overlap_mm": -1.612092333131792
+     }
+    },
+    "worst_overlap_mm": 1.4231260558522862,
+    "collides": true
+   },
+   "drive_paper_sensor": {
+    "z_mm": [
+     14.0,
+     20.0
+    ],
+    "r_inner_mm": 6.6,
+    "by_z": {
+     "14.0": {
+      "nose_envelope_r_mm": 9.223126055852285,
+      "overlap_mm": 2.9231260558522862
+     },
+     "17.0": {
+      "nose_envelope_r_mm": 8.97572990979154,
+      "overlap_mm": 2.6757299097915404
+     },
+     "20.0": {
+      "nose_envelope_r_mm": 8.698793925395183,
+      "overlap_mm": 2.398793925395184
+     }
+    },
+    "worst_overlap_mm": 2.9231260558522862,
+    "collides": true
+   },
+   "drive_transfer": {
+    "z_mm": [
+     47.2,
+     49.2
+    ],
+    "r_inner_mm": 5.5,
+    "by_z": {
+     "47.2": {
+      "nose_envelope_r_mm": 6.187907666868208,
+      "overlap_mm": 0.9879076668682076
+     },
+     "48.2": {
+      "nose_envelope_r_mm": 6.095595672069422,
+      "overlap_mm": 0.8955956720694216
+     },
+     "49.2": {
+      "nose_envelope_r_mm": 6.003283677270636,
+      "overlap_mm": 0.8032836772706355
+     }
+    },
+    "worst_overlap_mm": 0.9879076668682076,
+    "collides": true
+   },
+   "drive_motor": {
+    "z_mm": [
+     49.5,
+     69.5
+    ],
+    "r_inner_mm": 4.396025959932807,
+    "by_z": {
+     "49.5": {
+      "nose_envelope_r_mm": 5.975590078831001,
+      "overlap_mm": 1.8795641188981937
+     },
+     "59.5": {
+      "nose_envelope_r_mm": 5.052470130843142,
+      "overlap_mm": 0.9564441709103351
+     },
+     "69.5": {
+      "nose_envelope_r_mm": 4.129350182855284,
+      "overlap_mm": 0.033324222922477276
+     }
+    },
+    "worst_overlap_mm": 1.8795641188981937,
+    "collides": true
+   },
+   "steer_motor": {
+    "z_mm": [
+     49.5,
+     69.5
+    ],
+    "r_inner_mm": 4.396025959932807,
+    "by_z": {
+     "49.5": {
+      "nose_envelope_r_mm": 5.975590078831001,
+      "overlap_mm": 1.8795641188981937
+     },
+     "59.5": {
+      "nose_envelope_r_mm": 5.052470130843142,
+      "overlap_mm": 0.9564441709103351
+     },
+     "69.5": {
+      "nose_envelope_r_mm": 4.129350182855284,
+      "overlap_mm": 0.033324222922477276
+     }
+    },
+    "worst_overlap_mm": 1.8795641188981937,
+    "collides": true
+   }
+  },
+  "clearance_mm": 0.3,
+  "z_p_mm": 76.47953416058942,
+  "alpha_s_rad": 0.09244360629167844,
+  "label": "CALC (results/drive/layout_parts.json read-only; C1S nose envelope from revj/frontend.close)"
+ }
+}
