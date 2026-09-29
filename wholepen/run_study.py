@@ -8,11 +8,17 @@ row per case in wholepen/build/rows/<stage>.jsonl and resume from it, so a kille
   calc       the review's questions by calculation (calc.py) and the sizing of every candidate (designs.py) ~1 min
   optimise   CMA-ES + exact gradients over the gyroscope tail (optimise.py) and the CALC sweeps           ~3 min
   verify     simulator checks for each new device (verify.py)                                              ~5 min
-  tune       tuning writers 100 (and 101), seed 300: the collar's gain, the gyroscope's law, the gate      ~15 min
+  tune       tuning writer 100, seed 300: the tracker, the collar's gain, the gyroscope's law, the gate  ~40 min
   freeze     the rules (results/wholepen/rules.json) before any test run
   test       test writers 0-1 (5 words each: 10 words), seeds 200/201; tremor classes x designs          ~80 min
-  grips      the collar and the gyroscope tail against the same mass locked at grip 0.5 / 1 / 2 x         ~20 min
+  grips      the collar and the gyroscope tail against the same mass locked at grip 0.5 and 2 x (tuning
+             writer 100, ET 3 mm; grip 1 x from the tune stage)                                             ~20 min
   arm        a subset on sim2's articulated arm                                                            ~10 min
+  limits     the collar against the same pen with the collar locked and the nose working, and the nose's own
+             perfect-knowledge limit, on the test writers (comparators; rows added to the test rows)        ~15 min
+  light      the collar with a light (24 g) inner pen, the review's design point, on the test writers        ~20 min
+  real       study R's real tremor classes (recorded PD tremor, test split) at 0.24 and 1.72 mm, test
+             writers 0-1                                                                                    ~15 min
   summary    the one-number table, results cards, ratios explained                                          seconds
   figures    figures with CSV twins; explain: animation.json and layout_parts.json; evidence rows          ~1 min
 --quick: one writer, the moderate classes and fewer designs (a smoke test, minutes; results under quick_*.json).
@@ -97,6 +103,10 @@ def gt100_kwargs() -> Dict:
 def pens() -> Dict[str, CS.PenVariant]:
     return {"base": CS.PenVariant("base"),
             "collar": CS.PenVariant("collar", collar=dict(z_p=0.050)),
+            # the review's design point: a light inner pen (the Rev J nose and refill in a 6 g barrel: 24 g, centre of
+            # mass 63 mm from the tip) instead of the whole 87 g Rev J pen; servo damping scaled to its inertia
+            "collar_light": CS.PenVariant("collar_light", collar=dict(z_p=0.050, inner_m=0.006, inner_zcm=0.035, inner_J=3e-6,
+                                                                     C_s=0.015)),
             "gt100": CS.PenVariant("gt100", gt=gt100_kwargs())}
 
 
@@ -121,10 +131,18 @@ def designs(rules: Dict) -> Dict[str, tuple]:
         "nose": ("base", tr, {}, None, None),
         "nose_gate": ("base", tr, {"gate": True, "gate_margin": gm}, None, None),
         "collar_locked": ("collar", "none", {}, None, None),
+        "collar_locked_nose": ("collar", tr, {}, None, None),
         "collar_nose": ("collar", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 5.0e-3, "alloc_share_max": cmax,
                                        "collar_frac": cfrac}, None, None),
         "collar_fine": ("collar", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 0.8e-3, "alloc_share_max": cmax,
                                        "collar_frac": cfrac}, 1.0e-3, None),
+        "light_locked": ("collar_light", "none", {}, None, None),
+        "light_locked_nose": ("collar_light", tr, {}, None, None),
+        "light_nose": ("collar_light", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 5.0e-3, "alloc_share_max": cmax,
+                                            "collar_frac": cfrac}, None, None),
+        "light_fine": ("collar_light", tr, {"collar": claw, "collar_gain": cg, "alloc_reach": 0.8e-3, "alloc_share_max": cmax,
+                                            "collar_frac": cfrac}, 1.0e-3, None),
+        "light_nose_oracle": ("collar_light", "oracle", {"collar": "oracle"}, None, 0.5),
         "gt_locked": ("gt100", "none", {}, None, None),
         "gt_locked_nose": ("gt100", tr, {}, None, None),
         "gt_nose": ("gt100", tr, {"cmg": law}, None, None),
@@ -135,15 +153,21 @@ def designs(rules: Dict) -> Dict[str, tuple]:
     }
 
 
-REF_OF_PEN = {"base": "none", "collar": "collar_locked", "gt100": "gt_locked"}
+REF_OF_PEN = {"base": "none", "collar": "collar_locked", "collar_light": "light_locked", "gt100": "gt_locked"}
 
 LABELS = {
     "none": "Rev J pen, nothing moving (no help)",
-    "nose": "Rev J moving nose (+-6.57 mm), as built",
+    "nose": "Rev J moving nose (±6.57 mm), as built",
     "nose_gate": "Rev J nose + write only when in reach",
     "collar_locked": "collar pen, collar locked, nose held",
+    "collar_locked_nose": "collar pen, collar locked + Rev J nose (same mass, no collar action)",
     "collar_nose": "whole-pen collar + Rev J nose",
-    "collar_fine": "whole-pen collar + small fine nib (+-1 mm)",
+    "collar_fine": "whole-pen collar + small fine nib (±1 mm)",
+    "light_locked": "light collar pen (24 g inner pen), collar locked, nose held",
+    "light_locked_nose": "light collar pen, collar locked + Rev J nose (same mass, no collar action)",
+    "light_nose": "light collar pen: collar + Rev J nose",
+    "light_fine": "light collar pen: collar + small fine nib (±1 mm)",
+    "light_nose_oracle": "light collar pen: collar + Rev J nose, perfect tremor knowledge (limit)",
     "gt_locked": "gyro tail 100 g, locked, nose held",
     "gt_locked_nose": "gyro tail 100 g locked + Rev J nose (same mass, no gyro action)",
     "gt_nose": "gyro tail 100 g active + Rev J nose",
@@ -457,7 +481,7 @@ def stage_freeze(quick=False):
                       "tracker_note": "nose = sim2j's frozen guarded tracker (G4); nose_gl = ai2's gated listening (fallback Rev H as built); nose_glg = gated listening with the guarded fallback; chosen by ink error among those whose tremor-free writing moved <= 25 um"},
             "evidence": {"tracker_and_collar": cg, "cmg_law_tip_mm": cl, "gate_margin": {str(k): v for k, v in gmr.items()}},
             "frozen_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "note": "chosen on the tuning writers 100-101 and seed 300 only, before any test run",
+            "note": "chosen on tuning writer 100 and seed 300 only, before any test run",
             "stabpen.provenance": provenance("SIMULATION (tuning set) -> frozen rules", seeds=[300])}
     if not quick:
         write_json("rules.json", body)
@@ -561,7 +585,8 @@ def stage_real(quick=False):
     ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
     for w, seed in ws:
         for cls in CLASSES_REAL:
-            for dn in ("none", "nose", "collar_nose", "collar_nose_oracle"):
+            dns = ["none", "nose", "collar_nose", "collar_nose_oracle"] + (["collar_locked_nose"] if cls[0] == "REAL_PD_severe" else [])
+            for dn in dns:
                 try:
                     run_design(bench, rows, rules, w, seed, cls, dn)
                 except Exception as e:
@@ -573,6 +598,61 @@ def stage_real(quick=False):
             "stabpen.provenance": provenance("SIMULATION with REAL recorded tremor (study R's library, test split)",
                                              seeds=[s for _, s in ws])}
     write_json("real.json", body)
+    return body
+
+
+def stage_limits(quick=False):
+    """What the collar adds on its own (the review's gate: the same pen with the collar locked and the nose working)
+    and the nose's own limit with perfect knowledge, on the test writers with the frozen rules (comparators added after
+    the main test campaign; no rule changed).  Rows go to the test rows."""
+    rules = load_rules()
+    rows = Rows("test")
+    bench = Bench()
+    import gc
+    ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
+    cls_l = [c for c in CLASSES if c[0] in ("ET_moderate", "PD_moderate", "ET_severe", "PD_severe", "PD_reemergent_severe")]
+    for w, seed in ws:
+        for cls in cls_l:
+            for dn in ("collar_locked_nose", "nose_oracle"):
+                try:
+                    run_design(bench, rows, rules, w, seed, cls, dn)
+                except Exception as e:
+                    log(f"[limits] FAILED w{w} {cls[0]} {dn}: {e}\n{traceback.format_exc()}")
+            bench.refs.clear()
+            gc.collect()
+        bench.su.clear()
+        gc.collect()
+    body = {"rows": rows.values(), "rules": rules,
+            "stabpen.provenance": provenance("SIMULATION (test writers and seeds; rules frozen before)", seeds=[s for _, s in ws])}
+    write_json("test.json", body)
+    return body
+
+
+def stage_light(quick=False):
+    """The review's design point in the simulator: the collar with a light inner pen (24 g) instead of the 87 g Rev J
+    pen, on the test writers with the frozen rules (added after the main campaign; no rule changed): the collar locked,
+    locked with the nose working (the same-mass comparator), the collar with the Rev J nose, and the collar with a
+    +-1 mm fine nib (the compact design).  Rows go to wholepen/build/rows/light.jsonl."""
+    rules = load_rules()
+    rows = Rows("light")
+    bench = Bench()
+    import gc
+    ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
+    cls_l = [c for c in CLASSES if c[0] in ("ET_moderate", "PD_severe")]
+    for w, seed in ws:
+        for cls in cls_l:
+            for dn in ("light_locked", "light_locked_nose", "light_nose", "light_fine", "light_nose_oracle"):
+                try:
+                    run_design(bench, rows, rules, w, seed, cls, dn)
+                except Exception as e:
+                    log(f"[light] FAILED w{w} {cls[0]} {dn}: {e}\n{traceback.format_exc()}")
+            bench.refs.clear()
+            gc.collect()
+        bench.su.clear()
+        gc.collect()
+    body = {"rows": rows.values(), "pen": asdict(pens()["collar_light"]) if hasattr(pens()["collar_light"], "__dataclass_fields__") else None,
+            "stabpen.provenance": provenance("SIMULATION (test writers and seeds; rules frozen before)", seeds=[s for _, s in ws])}
+    write_json("light.json", body)
     return body
 
 
@@ -592,8 +672,8 @@ def stage_figures(quick=False):
     return out
 
 
-STAGES = ["targets", "realdata", "grip", "calc", "optimise", "verify", "tune", "freeze", "test", "real", "grips", "arm",
-          "summary", "figures"]
+STAGES = ["targets", "realdata", "grip", "calc", "optimise", "verify", "tune", "freeze", "test", "limits", "light", "real",
+          "grips", "arm", "summary", "figures"]
 FN = {s: globals()["stage_" + s] for s in STAGES}
 
 

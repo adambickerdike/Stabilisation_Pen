@@ -246,9 +246,10 @@ def main(argv=None):
     html = tpl_html.replace("/*__DATA__*/null", blob)
     if html == tpl_html:
         raise SystemExit("template placeholder /*__DATA__*/null not found")
-    out = HERE / ("index_quick.html" if a.quick else "index.html")
+    dest = C.out_dir(True) if a.quick else HERE            # --quick never touches the published page
+    out = dest / ("index_quick.html" if a.quick else "index.html")
     out.write_text(html, encoding="utf-8")
-    (HERE / ("fixtures_quick.json" if a.quick else "fixtures.json")).write_text(json.dumps(fixtures))
+    (dest / ("fixtures_quick.json" if a.quick else "fixtures.json")).write_text(json.dumps(fixtures))
     print(f"wrote {out} ({out.stat().st_size / 1e6:.2f} MB); settings from {data['settings']['from_results']}")
 
 

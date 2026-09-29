@@ -1,0 +1,128 @@
+{
+ "cmg_torque_50us": {
+  "h_Nms": 0.006814316991351769,
+  "rate": 5.0,
+  "rel_err_max": 0.021877306947364155,
+  "offaxis_rel_max": 0.0,
+  "label": "SIM against CALC (tau = 2 h delta' cos delta)"
+ },
+ "cmg_torque_25us": {
+  "h_Nms": 0.006814316991351769,
+  "rate": 5.0,
+  "rel_err_max": 0.011393534690325648,
+  "offaxis_rel_max": 0.0,
+  "label": "SIM against CALC (tau = 2 h delta' cos delta)"
+ },
+ "cmg_energy_50us": {
+  "dt": 5e-05,
+  "E0_J": 17.839877461871104,
+  "E_drift_rel_max": 1.754679525223019e-06,
+  "L_drift_rel_max": 0.03278306831402652,
+  "label": "SIM (free gimbals, free base, no damping): energy and angular momentum conservation"
+ },
+ "tmd_closed": {
+  "rows": [
+   {
+    "f": 4.0,
+    "rel_per_base_sim": 0.7859405683509761,
+    "rel_per_base_closed": 0.7856499532372324,
+    "err": 0.00036990406802198014
+   },
+   {
+    "f": 6.0,
+    "rel_per_base_sim": 6.249949734816654,
+    "rel_per_base_closed": 6.25,
+    "err": 8.042429335404222e-06
+   },
+   {
+    "f": 9.0,
+    "rel_per_base_sim": 1.7675971416035872,
+    "rel_per_base_closed": 1.7677123947837727,
+    "err": 6.519905643342413e-05
+   }
+  ],
+  "err_max": 0.00036990406802198014,
+  "label": "SIM against CALC (2-DOF absorber transmissibility)"
+ },
+ "collar_modes": {
+  "J_pivot_kg_m2": 0.00021175329657172894,
+  "f_closed_Hz": 1.5467496962362197,
+  "f_sim_Hz": 1.5467904098994585,
+  "rel_err": 2.6322076117317334e-05,
+  "E_drift_rel_max": 0.021776461710492613,
+  "label": "SIM against CALC (rocking frequency sqrt(K_c/J)); energy conservation, undamped"
+ },
+ "sled_static": {
+  "x_sim_m": 0.002940737053088652,
+  "x_closed_m": 0.0029411764705882353,
+  "rel_err": 0.00014940194985827576,
+  "label": "SIM against CALC (static F / k_arm)"
+ },
+ "collar_v2_transmission": {
+  "f": 6.0,
+  "amp_rad": 0.05,
+  "rows": [
+   {
+    "axis": "t2 (tilt plane)",
+    "ink_amp_sim_mm": 3.6924820687538324,
+    "ink_amp_lin_mm": 3.6002396422455716,
+    "rel_err": 0.02562119071905073,
+    "contact_share": 0.9976658886295432
+   },
+   {
+    "axis": "t1 (sideways)",
+    "ink_amp_sim_mm": 2.8161581952148804,
+    "ink_amp_lin_mm": 2.781953520814793,
+    "rel_err": 0.012295199809833221,
+    "contact_share": 1.0
+   }
+  ],
+  "err_max": 0.02562119071905073,
+  "label": "SIM (full model) against CALC (lin.py V2 ink response, the controller's internal model)"
+ },
+ "cmg_energy_25us": {
+  "dt": 2.5e-05,
+  "E0_J": 17.839877461871104,
+  "E_drift_rel_max": 1.6877873397190546e-06,
+  "L_drift_rel_max": 0.012744632779304123,
+  "label": "SIM (free gimbals, free base, no damping): energy and angular momentum conservation"
+ },
+ "dt_convergence": {
+  "rows": [
+   {
+    "dt_us": 50.0,
+    "tip_none_mm": 3.377096227500752,
+    "tip_collar_nose_mm": 2.9092439993473644,
+    "ink_err_um": 1394.6685491759567,
+    "pivot_peak_rad": 0.01365602756548407
+   },
+   {
+    "dt_us": 25.0,
+    "tip_none_mm": 3.376608842184154,
+    "tip_collar_nose_mm": 2.909961880406704,
+    "ink_err_um": 1395.458835280743,
+    "pivot_peak_rad": 0.013683434912663321
+   }
+  ],
+  "rel_diff_tip": 0.0002466977537311353,
+  "label": "SIM at two steps (each with its own writer adaptation)"
+ },
+ "stabpen.provenance": {
+  "evidence_status": "SIMULATION checked against CALCULATION (closed forms, conservation)",
+  "generated_utc": "2026-09-29T21:31:49+00:00",
+  "git_revision": "6a931b2-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "-",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "wholepen",
+  "version": "wholepen-0.1"
+ },
+ "notes": [
+  "collar_v2_transmission re-run 2026-09-29T21:31:49Z with WPConfig(collar='ff', collar_alloc='full') (the earlier run used the overflow allocation, which zeroed the prescribed swing)"
+ ]
+}

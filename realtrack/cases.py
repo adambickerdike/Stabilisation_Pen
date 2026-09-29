@@ -127,7 +127,8 @@ def streams_to_arrays(st, prefix: str) -> Dict[str, np.ndarray]:
 
 def arrays_to_streams(d: Dict[str, np.ndarray], prefix: str, meta: Optional[Dict] = None):
     from fusion import sensors as S
-    kw = {k: np.ascontiguousarray(d[f"{prefix}{k}"]) for k in STREAM_KEYS}
+    # the DeltaPen-class streams store only their page arrays; the IMU and contact streams are the ideal case's
+    kw = {k: np.ascontiguousarray(d[f"{prefix}{k}"] if f"{prefix}{k}" in d else d[f"i_{k}"]) for k in STREAM_KEYS}
     return S.Streams(meta=dict(meta or {}), **kw)
 
 

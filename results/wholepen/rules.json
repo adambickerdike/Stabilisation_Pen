@@ -1,76 +1,77 @@
 {
-  "rules": {
-    "tracker_fw": "nose_glg",
-    "collar_law": "ff",
-    "collar_gain": 0.5,
-    "collar_alloc": "overflow",
-    "collar_share_max": 0.6,
-    "collar_frac": 0.65,
-    "collar_helps_on_tuning": true,
-    "cmg_law": "damp",
-    "gate_margin_mm": 0.3,
-    "page_sensor": "measured (sim2j deltapen_walk: OPT-02 per-window statistics, errors add up)",
-    "tracker_note": "nose = sim2j's frozen guarded tracker (G4); nose_gl = ai2's gated listening (fallback Rev H as built); nose_glg = gated listening with the guarded fallback; chosen by ink error among those whose tremor-free writing moved <= 25 um"
-  },
-  "evidence": {
-    "tracker_and_collar": {
-      "tracker": {
-        "nose": {
-          "ink_um": 4100.047105776267,
-          "clean_moved_um": 4.82879114197426
-        },
-        "nose_gl": {
-          "ink_um": 1930.5572711235595,
-          "clean_moved_um": 134.57477456864783
-        },
-        "nose_glg": {
-          "ink_um": 1923.382774625332,
-          "clean_moved_um": 4.82879114197426
-        }
-      },
-      "collar_variants_ink_um": {
-        "g0.75_f0.9": 2146.6699151334224,
-        "g0.5_f0.65": 1598.497692473425,
-        "g0.5_s0.6_f0.65": 1585.8536964479856
-      },
-      "collar_vs_nose_ink_um": {
-        "nose": 1923.382774625332,
-        "collar_nose": 1585.8536964479856
-      }
+ "rules": {
+  "tracker_fw": "nose_glg",
+  "collar_law": "ff",
+  "collar_gain": 0.5,
+  "collar_alloc": "overflow",
+  "collar_share_max": 0.6,
+  "collar_frac": 0.65,
+  "collar_helps_on_tuning": true,
+  "cmg_law": "damp",
+  "gate_margin_mm": 0.3,
+  "page_sensor": "measured (sim2j deltapen_walk: OPT-02 per-window statistics, errors add up)",
+  "tracker_note": "nose = sim2j's frozen guarded tracker (G4); nose_gl = ai2's gated listening (fallback Rev H as built); nose_glg = gated listening with the guarded fallback; chosen by ink error among those whose tremor-free writing moved <= 25 um"
+ },
+ "evidence": {
+  "tracker_and_collar": {
+   "tracker": {
+    "nose": {
+     "ink_um": 4100.047105776267,
+     "clean_moved_um": 4.82879114197426
     },
-    "cmg_law_tip_mm": {
-      "damp": 1.1996521843221812,
-      "afc": 2.9657250810562723,
-      "ff": 2.71090825375757
+    "nose_gl": {
+     "ink_um": 1930.5572711235595,
+     "clean_moved_um": 134.57477456864783
     },
-    "gate_margin": {
-      "0.3": [
-        2296.2513198483093,
-        0.3368614818223654
-      ],
-      "1.0": [
-        2426.9299571559627,
-        0.29309198752364884
-      ]
+    "nose_glg": {
+     "ink_um": 1923.382774625332,
+     "clean_moved_um": 4.82879114197426
     }
+   },
+   "collar_variants_ink_um": {
+    "g0.75_f0.9": 2146.6699151334224,
+    "g0.5_f0.65": 1598.497692473425,
+    "g0.5_s0.6_f0.65": 1585.8536964479856
+   },
+   "collar_vs_nose_ink_um": {
+    "nose": 1923.382774625332,
+    "collar_nose": 1585.8536964479856
+   }
   },
-  "frozen_utc": "2026-09-29T19:33:55Z",
-  "note": "chosen on the tuning writers 100-101 and seed 300 only, before any test run",
-  "stabpen.provenance": {
-    "evidence_status": "SIMULATION (tuning set) -> frozen rules",
-    "generated_utc": "2026-09-29T19:33:56+00:00",
-    "git_revision": "af5f29a-dirty",
-    "parameters_version": "0.4.4",
-    "parameters_sha256_16": "a9d3d0016461d690",
-    "command": "run_study.py --stages freeze",
-    "python": "3.11.15",
-    "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
-    "seeds": [
-      300
-    ],
-    "numpy": "2.4.6",
-    "scipy": "1.17.1",
-    "package": "wholepen",
-    "version": "wholepen-0.1"
+  "cmg_law_tip_mm": {
+   "damp": 1.1996521843221812,
+   "afc": 2.9657250810562723,
+   "ff": 2.71090825375757
+  },
+  "gate_margin": {
+   "0.3": [
+    2296.2513198483093,
+    0.3368614818223654
+   ],
+   "1.0": [
+    2426.9299571559627,
+    0.29309198752364884
+   ]
   }
+ },
+ "frozen_utc": "2026-09-29T19:33:55Z",
+ "note": "chosen on tuning writer 100 and seed 300 only, before any test run",
+ "stabpen.provenance": {
+  "evidence_status": "SIMULATION (tuning set) -> frozen rules",
+  "generated_utc": "2026-09-29T19:33:56+00:00",
+  "git_revision": "af5f29a-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run_study.py --stages freeze",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "seeds": [
+   300
+  ],
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "wholepen",
+  "version": "wholepen-0.1"
+ },
+ "note_correction": "metadata only, corrected 2026-09-29T21:24:44Z: the original note said 'tuning writers 100-101'; only writer 100 was run (wholepen/build/rows/tune.jsonl). The rules and frozen_utc are unchanged."
 }

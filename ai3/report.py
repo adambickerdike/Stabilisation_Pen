@@ -319,8 +319,8 @@ def fig_trace(tr_examples: List[Dict], agg: Dict, out: Path):
             ax.text(b2 + 1, y, f"{b2:.0f}", fontsize=7, va="center", color=INK2)
         ax.text(b + 1, y - 0.27, f"{b:.0f}", fontsize=7, va="center", color=INK2)
     ax.set_yticks(ys); ax.set_yticklabels([l for _, l in conds], fontsize=8)
-    ax.set_xlim(0, 115); ax.set_xlabel("% of letters", fontsize=7.5)
-    ax.legend(fontsize=6.5, loc="upper center", bbox_to_anchor=(0.45, -0.16), ncol=3, frameon=False)
+    ax.set_xlim(0, 110); ax.set_xlabel("% of letters", fontsize=7.5)
+    ax.legend(fontsize=6.5, loc="center left", bbox_to_anchor=(1.01, 0.5), frameon=False)
     ax.set_title("Dysgraphia-like learners, 24 runs", fontsize=8.5, loc="left")
     fig.suptitle("Close tracing keeps the ink near the model letter; the app's reader (writing order) loses letters, a reader of the page "
                  "barely does\n(orange = part of the letter left undrawn; green = the model letter)", fontsize=9, x=0.01, ha="left", y=1.08)

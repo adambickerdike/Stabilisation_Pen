@@ -222,7 +222,7 @@ def derived(res: Dict) -> List[List[str]]:
         n, w = a.get("none", {}), a.get("wheel_path+nose", {})
         out.append(_row(id="CON-91", topic="Why close tracing makes letters less readable",
                         citation="This ledger's simulation: ai3 task 4a on the drive study's HW1-D runs (test writers 0-5, seeds 200-203)",
-                        year="2026", doi_or_url="results/ai3/ai3.json (trace)", source_type="derived simulation", evidence_class="simulation",
+                        year="2026", doi_or_url="results/ai3/ai3.json (trace)", source_type="derived simulation", evidence_class="numerical simulation",
                         access_level="full text", task_or_setup="Per-letter completeness, backtracking and counterfactual readings of the guided ink",
                         participants_or_bench="none (synthetic learners)", comparator="no guidance",
                         key_quantitative_findings=(f"heel wheel + nose: ink {w.get('d_ink_um_mean', float('nan')):.0f} um from the target, letters read by the app's "
@@ -241,7 +241,7 @@ def derived(res: Dict) -> List[List[str]]:
             return ag.get(k, {}).get(key, float("nan"))
         out.append(_row(id="CON-92", topic="Shape assist on real handwriting with the nose (HW1)",
                         citation="This ledger's simulation: ai3 task 4b (UJI test writers' letters in words, HW1 closed loop, independent offline reader)",
-                        year="2026", doi_or_url="results/ai3/ai3.json (shape)", source_type="derived simulation", evidence_class="simulation",
+                        year="2026", doi_or_url="results/ai3/ai3.json (shape)", source_type="derived simulation", evidence_class="numerical simulation",
                         access_level="full text", task_or_setup="Recognised-letter shape assist toward the writer's own letter; rules A1 fixed on tuning writers",
                         participants_or_bench="none (20 test writers' real letters, simulated hand)", comparator="no assist",
                         key_quantitative_findings=(f"letters read with 1 mm 8 Hz tremor {f('tremor_1mm_8Hz', 'read_none'):.3f} -> {f('tremor_1mm_8Hz', 'read_assist'):.3f}; "
@@ -280,7 +280,7 @@ def derived(res: Dict) -> List[List[str]]:
     if cu:
         out.append(_row(id="HAP-134", topic="Physical feedback for spelling while writing: tick, pen lift, show-me, heel steer (simulated)",
                         citation="This ledger's simulation: ai3 task 2 cue comparison (Holbrook test children's words; assumed responses anchored in HAP-130, HAP-131, HAP-133)",
-                        year="2026", doi_or_url="results/ai3/ai3.json (cues)", source_type="derived simulation", evidence_class="simulation",
+                        year="2026", doi_or_url="results/ai3/ai3.json (cues)", source_type="derived simulation", evidence_class="numerical simulation",
                         access_level="full text", task_or_setup="Monte Carlo of writer responses to each cue; rule S4 on tuning children",
                         participants_or_bench="none", comparator="no cue; the app afterwards",
                         key_quantitative_findings=cu.get("_summary", "see ai3.json"), units_and_conditions="per 10 errors; per 100 correct words; % time",
@@ -294,7 +294,7 @@ def derived(res: Dict) -> List[List[str]]:
         g = lambda k: tw.get(k, {})
         out.append(_row(id="EML-97", topic="Word recognition while writing: character and word error rates, writer- and session-disjoint",
                         citation="This ledger's calculation: ai3 words stage (task 1's causal GRU on words written with real UJI letters of 20 held-out writers; NG1x character model)",
-                        year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived calculation", evidence_class="simulation",
+                        year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived simulation", evidence_class="numerical simulation",
                         access_level="full text", task_or_setup="Letters separated at pen lifts by the demo's rule; rule W1 (LM weight) on 6 tuning writers",
                         participants_or_bench="none (20 test writers, both sessions)", comparator="with and without the language model; with and without writer calibration from the other session",
                         key_quantitative_findings=(f"CER / WER, new writers, no LM {g('independent|beta=0')['cer']:.3f} / {g('independent|beta=0')['wer']:.3f}; "
@@ -315,7 +315,7 @@ def derived(res: Dict) -> List[List[str]]:
         if t:
             out.append(_row(id="EML-98", topic="Spelling help that keeps recognition errors apart from spelling errors, with calibrated confidence",
                             citation="This ledger's calculation: ai3 words stage (the review's score over the recogniser's 3 best readings; Holbrook test children; UJI test writers' real letters)",
-                            year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived calculation", evidence_class="simulation",
+                            year="2026", doi_or_url="results/ai3/ai3.json (words)", source_type="derived simulation", evidence_class="numerical simulation",
                             access_level="full text", task_or_setup="score = lambda_r log P(strokes|x) + log P(w|context) + log P(x|w); temperature scaling; rules W2-W4 on tuning children",
                             participants_or_bench="none (11 test children's real writing; real letters of 20 held-out writers)", comparator="uncalibrated combination; letters known exactly (EML-93)",
                             key_quantitative_findings=(f"calibrated recogniser. As planned (rule W2: 3 best letter strings, temperature scaling): caught "
@@ -337,7 +337,7 @@ def derived(res: Dict) -> List[List[str]]:
         g = lambda k, f: T.get(k, {}).get(f, float("nan"))
         out.append(_row(id="CON-93", topic="Writing an accepted word with a reach-limited nib while the hand advances",
                         citation="This ledger's simulation: ai3 plan stage (completions from held-out sentences, the UJI test writers' own letters at 3 mm x-height; kinematic planner, rule C1)",
-                        year="2026", doi_or_url="results/ai3/ai3.json (plan)", source_type="derived simulation", evidence_class="simulation",
+                        year="2026", doi_or_url="results/ai3/ai3.json (plan)", source_type="derived simulation", evidence_class="numerical simulation",
                         access_level="full text", task_or_setup="q = r(s) - b(t) kept within the usable reach; letter admission; slow, lift, hand back",
                         participants_or_bench="none", comparator="stage radius 1-6 mm; hand steady, slow, fast, pausing, still",
                         key_quantitative_findings=(f"completed with a steady hand: {g('steady|6|letter_admission', 'completed_share'):.2f} at +-6 mm, "

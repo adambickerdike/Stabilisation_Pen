@@ -173,7 +173,7 @@ def _derived() -> List[Dict]:
         tg = calc["tail_gate"]["summary"]
         R.append(dict(id="ACT-130", topic="Tail modules against the same mass locked (the review's gate G5), perfect knowledge",
                       citation="This ledger's calculation: wholepen/calc.py tail_gate (results/wholepen/calc.json)", year="2026",
-                      doi_or_url="results/wholepen/calc.json", source_type="derived simulation", evidence_class="calculation",
+                      doi_or_url="results/wholepen/calc.json", source_type="derived calculation", evidence_class="calculation",
                       access_level="full text", task_or_setup="Linear model (lin.py): H1 hand, grip 0.5/1/2 x, split 0.3/0.5/0.7; 5 and 6 Hz at 3 and 8 mm, 9 Hz at 3 mm; perfect knowledge of the tremor",
                       participants_or_bench="Model", comparator="Same mass locked; no module",
                       key_quantitative_findings="; ".join(f"{k}: gain vs locked mean {v['gain_vs_locked_mean']:.2f} (min {v['gain_vs_locked_min']:.2f}), passes >= 10 % in {100 * v['share_passing_gate']:.0f} % of conditions" for k, v in tg.items()),
@@ -185,7 +185,7 @@ def _derived() -> List[Dict]:
         rows = calc["cmg_sizing"]["rows"]
         R.append(dict(id="ACT-131", topic="Gyroscope sizing with stored energy (the review's examples included)",
                       citation="This ledger's calculation: wholepen/calc.py cmg_sizing and designs.py cmg_design (results/wholepen/calc.json)", year="2026",
-                      doi_or_url="results/wholepen/calc.json", source_type="derived simulation", evidence_class="calculation", access_level="full text",
+                      doi_or_url="results/wholepen/calc.json", source_type="derived calculation", evidence_class="calculation", access_level="full text",
                       task_or_setup="Scissored pair, +-1 rad gimbal swing, fundamental torque 2 h w 2 J1(1); torque needed per mm of tip tremor from lin.py (perfect knowledge, grip 1 x, split 0.5)",
                       participants_or_bench="Model", comparator="Between rotor designs",
                       key_quantitative_findings="; ".join(f"{r['name']}: h {r['h_Nms'] * 1e3:.2f} mN m s, stored {r['E_J_total']:.1f} J, cancels at best {r.get('tip_tremor_cancellable_5Hz_mm', float('nan')):.1f} mm at 5 Hz" for r in rows),
@@ -195,23 +195,47 @@ def _derived() -> List[Dict]:
                       design_implication="Keep the gyroscope an optional bench experiment (G5), never the severe-tremor solution",
                       retrieved=RET, search_query="n/a", stream="ACT", lead_verification=""))
     if summ:
-        head = summ.get("headline", {}).get("rows", [])
+        head = summ.get("headline", {}).get("rows", []) + (summ.get("headline_real") or {}).get("rows", [])
+
         def cell(c, d, k="tip_mm"):
             r = next((x for x in head if x["class"] == c and x["design"] == d), None)
-            return None if r is None else r.get(k)
+            return "n/a" if r is None or r.get(k) is None else r.get(k)
         txt = []
-        for c in ("ET_moderate", "ET_severe", "PD_severe"):
-            txt.append(f"{c}: none {cell(c, 'none')} mm, nose {cell(c, 'nose')} mm, collar+nose {cell(c, 'collar_nose')} mm, collar+nose oracle {cell(c, 'collar_nose_oracle')} mm")
-        R.append(dict(id="ACT-132", topic="Whole-pen collar (V2) in the closed loop, test writers",
-                      citation="This ledger's simulation: wholepen/run_study.py stage test (results/wholepen/test.json, summary.json)", year="2026",
+        for c in ("ET_moderate", "PD_moderate", "ET_severe", "PD_severe", "PD_reemergent_severe"):
+            txt.append(f"{c}: no help {cell(c, 'none')} mm, Rev J nose {cell(c, 'nose')} mm, collar+nose {cell(c, 'collar_nose')} mm, "
+                       f"collar+nose perfect knowledge {cell(c, 'collar_nose_oracle')} mm (words of 10: {cell(c, 'none', 'words10')} / "
+                       f"{cell(c, 'nose', 'words10')} / {cell(c, 'collar_nose', 'words10')} / {cell(c, 'collar_nose_oracle', 'words10')}; "
+                       f"ink laid with collar+nose {cell(c, 'collar_nose', 'coverage')})")
+        inc = summ.get("collar_increment") or []
+        itx = [f"{r['class']}: collar+nose vs collar locked+nose {100 * r['collar_gain_vs_locked']:.0f} %"
+               + (f", with perfect knowledge collar+nose vs nose {100 * r['oracle_collar_gain']:.0f} %" if r.get("oracle_collar_gain") is not None else "")
+               for r in inc if r.get("collar_gain_vs_locked") is not None]
+        R.append(dict(id="ACT-132", topic="Whole-pen collar (V2) with the Rev J nose in the closed loop, test writers",
+                      citation="This ledger's simulation: wholepen/run_study.py stages test and limits (results/wholepen/test.json, summary.json)", year="2026",
                       doi_or_url="results/wholepen/summary.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
-                      task_or_setup="sim2 (MuJoCo) + sim2j firmware; H1 hand; test writers 0-1, 5 words each; measured-style page sensor (OPT-02 statistics)",
-                      participants_or_bench="Synthetic writers; synthetic and recorded tremor", comparator="Rev J nose; collar locked; perfect knowledge",
-                      key_quantitative_findings="; ".join(txt), units_and_conditions="Peak ink tremor (mm) while writing, mean of 2 writers",
-                      locator="summary.json headline", limitations="Two synthetic writers x one seed; the causal tremor estimate is sim2j's frozen tracker; nothing measured",
-                      relevance_to_design="Shows the mechanism's limit and what today's estimator achieves with it", transferability="low",
-                      transferability_reason="Simulation ranks concepts only (sim2 COU-1)", design_implication="Build the collar bench (EXP-W11) and the estimator work before any user test",
+                      task_or_setup="sim2 (MuJoCo) + sim2j firmware at 2 kHz; H1 hand; test writers 0-1, 5 words each, seeds 200/201; measured-style page sensor (OPT-02 statistics); gated listening tremor estimate with the guarded fallback (frozen on tuning writer 100)",
+                      participants_or_bench="Synthetic writers; synthetic tremor (ET 6 Hz, PD 5 Hz) and a recorded NewHandPD waveform", comparator="No help; Rev J nose alone; collar pen with the collar locked and the nose working; perfect knowledge",
+                      key_quantitative_findings="; ".join(txt + itx), units_and_conditions="Peak ink tremor (mm) along the main axis, 2.5-20 Hz, while inking, mean of 2 writers; words read by the app's recogniser",
+                      locator="summary.json headline, collar_increment", limitations="Two synthetic writers x one seed; the simulated inner pen is the Rev J pen (heavier than the proposed 22 g inner pen); the ball-contact model decides the 8 mm coverage; nothing measured",
+                      relevance_to_design="What moving the whole pen adds to the Rev J nose, and the mechanism's limit", transferability="low",
+                      transferability_reason="Simulation ranks concepts only (sim2 COU-1)", design_implication="The tremor estimate, not the travel, limits the result below about 5 mm; build the collar as a bench experiment (EXP-W11) under the 10 % gate before it enters the product",
                       retrieved=RET, search_query="n/a", stream="ACT", lead_verification=""))
+        rtx = []
+        for c in ("REAL_PD_moderate", "REAL_PD_severe"):
+            rtx.append(f"{c}: no help {cell(c, 'none')} mm, Rev J nose {cell(c, 'nose')} mm, collar+nose {cell(c, 'collar_nose')} mm, "
+                       f"perfect knowledge {cell(c, 'collar_nose_oracle')} mm (words of 10: {cell(c, 'none', 'words10')} / {cell(c, 'nose', 'words10')} / "
+                       f"{cell(c, 'collar_nose', 'words10')} / {cell(c, 'collar_nose_oracle', 'words10')})")
+        if any("n/a" not in t for t in rtx):
+            R.append(dict(id="ACT-133", topic="Whole-pen collar and Rev J nose at study R's real PD tremor classes",
+                          citation="This ledger's simulation: wholepen/run_study.py stage real (results/wholepen/real.json, summary.json)", year="2026",
+                          doi_or_url="results/wholepen/real.json", source_type="derived simulation", evidence_class="numerical simulation", access_level="full text",
+                          task_or_setup="As ACT-132, with recorded PD tremor from study R's library (realdata.library, test split) at its representative moderate (0.24 mm) and severe (1.72 mm) amplitudes, frequency from the recording",
+                          participants_or_bench="Synthetic writers 0-1; recorded patients' tremor (test split)", comparator="No help; perfect knowledge",
+                          key_quantitative_findings="; ".join(rtx), units_and_conditions="As ACT-132",
+                          locator="summary.json headline_real", limitations="Two writers x one recorded draw each; the recordings are tablet spirals (may understate free-air tremor)",
+                          relevance_to_design="Whether whole-pen travel matters at the tremor sizes the recordings show", transferability="low",
+                          transferability_reason="Simulation ranks concepts only (sim2 COU-1)", design_implication="At real sizes travel is not the limit; the estimate and the detector's threshold are",
+                          retrieved=RET, search_query="n/a", stream="ACT", lead_verification=""))
     return R
 
 

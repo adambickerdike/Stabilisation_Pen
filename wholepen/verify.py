@@ -254,7 +254,7 @@ def collar_v2_transmission(f: float = 6.0, amp: float = 0.05, T: float = 2.5) ->
     rows = []
     for axis in (1, 0):
         fw = replace(ET.controller("nose", seed=1), reach=1e-9)
-        st = WS.WPStepper(pm, scn, fw, C.WPConfig(collar="ff"), task={"f0": f}, mu=0.9, seed=1)
+        st = WS.WPStepper(pm, scn, fw, C.WPConfig(collar="ff", collar_alloc="full"), task={"f0": f}, mu=0.9, seed=1)
 
         def law(dev, mode, t, f_est, cap, axis=axis):
             u = np.zeros(2)

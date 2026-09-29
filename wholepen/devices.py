@@ -267,6 +267,9 @@ class Collar:
     skid_on_collar: bool = True          # V2: the skid ring is part of the collar and carries the writing force; the
                                          # inner pen touches the paper only with its ball on the refill spring
                                          # (False = V1: the whole Rev J pen, skid ring included, swings)
+    inner_m: Optional[float] = None      # light inner pen: the handle body's own mass (kg), replacing the Rev J body's
+    inner_zcm: Optional[float] = None    # 68.9 g at 89.8 mm (the nose and the refill are kept); None = the Rev J pen
+    inner_J: Optional[float] = None      # its transverse inertia about its own centre (kg m^2)
     label: str = "PROPOSED DESIGN (designs.py collar_v2; servo values tuned on the tuning writers)"
 
 
@@ -324,6 +327,18 @@ def patch_collar(xml: str, col: Collar) -> str:
     for nm, ax in (("piv_1", "0 1 0"), ("piv_2", "1 0 0")):
         new.append(f'{ind}    <joint name="{nm}" type="hinge" axis="{ax}" pos="0 0 {col.z_p:.9g}" stiffness="{col.K_c:.9g}" '
                    f'damping="{col.c_c:.9g}" range="{-col.range_rad:.6g} {col.range_rad:.6g}" limited="true" solreflimit="2e-3 1"/>')
+    if col.inner_m is not None:
+        # the handle's own inertial is its first <inertial> line, before any nested <body>
+        for k, ln in enumerate(body_rest):
+            st = ln.lstrip()
+            if st.startswith("<body"):
+                break
+            if st.startswith("<inertial"):
+                pad = ln[:len(ln) - len(st)]
+                Jt = col.inner_J if col.inner_J is not None else 1.0e-5
+                body_rest[k] = (f'{pad}<inertial pos="0 0 {col.inner_zcm:.9g}" mass="{col.inner_m:.9g}" '
+                                f'diaginertia="{Jt:.6g} {Jt:.6g} {Jt / 10:.6g}"/>')
+                break
     new += ["  " + ln for ln in body_rest]
     new.append(f'{ind}  </body>')
     new.append(f'{ind}</body>')

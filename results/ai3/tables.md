@@ -119,6 +119,8 @@ Close tracing (nearest-point, full gain, no gate) on the same poorly formed word
 
 Rule A1 chose {'c_min': 0.9, 'g': 0.25, 'q_max_mm': 0.3, 'd0_xh': 0.2}. Judge (offline reader) accuracy on clean test letters: 89 %.
 
+Spot check with study R's word reader (microsoft/trocr-base-handwritten, literal, no lexicon; post hoc) on 60 sample words: read 85 % of the writers' clean letters, 23 % without the assist, 23 % with it. By condition (without / with): clean 100 % / 100 % (9 words); real_ET_tremor_1mm 0 % / 0 % (8 words); real_PD_tremor_1mm 0 % / 0 % (8 words); tremor_0.3mm_8Hz 56 % / 56 % (9 words); tremor_1mm_6Hz 0 % / 0 % (8 words); tremor_1mm_8Hz 0 % / 0 % (9 words); warp 0 % / 0 % (9 words).
+
 | Writer's hand | App clean copy: letters read raw / clean copy / clean copy v2 | Words read raw / clean copy / v2 | Letters re-drawn (synthetic) | ...of which the wrong letter |
 |---|---|---|---|---|
 | clean | 88 % / 85 % / 85 % | 56 % / 52 % / 52 % | 15 % | 1 |

@@ -214,7 +214,7 @@ def system(d: Dict, name: str = "fig_w_system",
 
     def label(xy, txt, xyt):
         ax.annotate(txt, xy=xy, xytext=xyt, fontsize=8, color=INK, arrowprops=dict(arrowstyle="-", color=GREY, lw=0.8))
-    label((0, 0.3), f"ink point: the whole inner pen swings it\n+-{d['travel_mm']:.0f} mm (x 1.3 across the page in the\ntilt plane)", (-95, 22))
+    label((0, 0.3), f"ink point: the whole inner pen swings it\n±{d['travel_mm']:.0f} mm (×1.3 across the page in the\ntilt plane)", (-95, 22))
     label(P(zp), f"2-axis flexure pivot,\n{zp:.0f} mm from the tip", (40, 20))
     label(P(zf + 1, -rc), f"skid ring on the collar carries\nthe writing force", (25, -9))
     label(P(75, -rc), f"collar {d['collar_od_mm']:.1f} mm across,\n{zr:.0f} mm long", (80, 38))
@@ -245,16 +245,22 @@ def _load(n):
 
 
 def fig_headline():
+    """The four designs every class ran on both test writers, at the assumed classes and at study R's real classes."""
     from . import run_study as RS
     s = _load("summary.json")
     if not s:
         return None
-    head = s["headline"]
-    ds = [d for d in head["designs"] if any(r["design"] == d for r in head["rows"])]
+    ds = ["none", "nose", "collar_nose", "collar_nose_oracle"]
+    rr = [r for r in s["headline"]["rows"] + (s.get("headline_real") or {}).get("rows", [])
+          if r["design"] in ds and r.get("n_writers", 2) >= 2]
+    order = [c[0] for c in RS.CLASSES] + [c[0] for c in RS.CLASSES_REAL]
+    rr.sort(key=lambda r: order.index(r["class"]))
     rows = [{"class": RS.CLASS_LABEL[r["class"]], "design": RS.LABELS[r["design"]], "tip_mm": r["tip_mm"], "words10": r["words10"]}
-            for r in head["rows"] if r["design"] in ds]
+            for r in rr]
     colors = {RS.LABELS[d]: DESIGN_COLORS[d] for d in ds}
-    return headline(rows, [RS.LABELS[d] for d in ds], colors)
+    return headline(rows, [RS.LABELS[d] for d in ds], colors,
+                    evidence="SIMULATION (sim2, H1 hand, two synthetic test writers; synthetic tremor, a recorded NewHandPD waveform, and "
+                             "study R's recorded PD tremor for the two 'Real PD' rows); nothing measured; the perfect-knowledge bars are a limit, not a result")
 
 
 def fig_writing():
@@ -340,7 +346,7 @@ def fig_cmg_energy():
     ax.set_ylabel("largest tip tremor it could cancel at 5 Hz (mm)")
     ax.set_title("Gyroscopes: what they could do against what they store")
     _grid(ax)
-    _evidence(fig, "CALC (designs.py, calc.py; perfect knowledge, +-1 rad gimbals; a 100 g pen dropped from 1 m carries about 1 J)")
+    _evidence(fig, "CALC (designs.py, calc.py; perfect knowledge, ±1 rad gimbals; a 100 g pen dropped from 1 m carries about 1 J)")
     fig.tight_layout()
     return save(fig, "fig_w_cmg_energy", ["design", "E_stored_J", "cancellable_5Hz_mm", "h_Nms"], out)
 

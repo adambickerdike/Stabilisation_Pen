@@ -41,8 +41,9 @@ def _agg(R, cls, design, key, how="mean", hand="h1", grip=1.0):
 def headline(R, classes=None) -> Dict:
     classes = classes or [c[0] for c in RS.CLASSES]
     tip, words, cover, ink, n = {}, {}, {}, {}, {}
+    all_designs = HEAD_DESIGNS + [d for d in RS.LABELS if d not in HEAD_DESIGNS]
     for c in classes:
-        for d in HEAD_DESIGNS:
+        for d in all_designs:
             t = _agg(R, c, d, "tip_tremor_mm")
             if t is None:
                 continue
@@ -57,7 +58,7 @@ def headline(R, classes=None) -> Dict:
     for (c, d), t in tip.items():
         base = tip.get((c, "none"))
         rows.append({"class": c, "class_label": RS.CLASS_LABEL[c], "design": d, "design_label": RS.LABELS[d],
-                     "tip_mm": round(t, 2), "words10": round(words[(c, d)], 1), "n_writers": n[(c, d)],
+                     "tip_mm": round(t, 2), "words10": round(words[(c, d)], 1), "words_of": 5 * n[(c, d)], "n_writers": n[(c, d)],
                      "ratio_vs_none": round(t / base, 3) if base else None,
                      "coverage": None if cover[(c, d)] is None else round(cover[(c, d)], 3),
                      "ink_err_um": None if ink[(c, d)] is None else round(ink[(c, d)], 0)})
@@ -103,8 +104,8 @@ def cards(R) -> List[Dict]:
     return out
 
 
-def gate_vs_locked(R, pairs=(("gt_nose", "gt_locked_nose"), ("collar_nose", "collar_locked"), ("collar_oracle", "collar_locked"),
-                             ("nose", "none"))) -> List[Dict]:
+def gate_vs_locked(R, pairs=(("gt_nose", "gt_locked_nose"), ("collar_nose", "collar_locked_nose"), ("collar_nose", "collar_locked"),
+                             ("collar_oracle", "collar_locked"), ("nose", "none"))) -> List[Dict]:
     out = []
     for act, lock in pairs:
         for c in sorted({r["class"] for r in R if r.get("design") == act}):
@@ -113,22 +114,113 @@ def gate_vs_locked(R, pairs=(("gt_nose", "gt_locked_nose"), ("collar_nose", "col
                 b = _agg(R, c, lock, "tip_tremor_mm", grip=g)
                 if a is None or b is None:
                     continue
-                out.append({"active": act, "locked": lock, "class": c, "grip": g, "tip_active_mm": round(a, 3),
+                ws = sorted({int(r["w"]) for r in R if r.get("design") == act and r.get("class") == c
+                             and float(r.get("grip", 1.0)) == g and "w" in r})
+                out.append({"active": act, "locked": lock, "class": c, "grip": g, "writers": ws, "tip_active_mm": round(a, 3),
                             "tip_locked_mm": round(b, 3), "gain_vs_locked": round(1 - a / b, 3),
                             "passes_10pc_gate": (1 - a / b) >= 0.10})
     return out
 
 
+INC_DESIGNS = ["nose", "collar_locked_nose", "collar_nose", "nose_oracle", "collar_nose_oracle"]
+
+
+def collar_increment(R) -> List[Dict]:
+    """What the collar adds (review: an added device must beat the same pen with it locked by >= 10 %): per class, the
+    Rev J nose on its own pen, the collar pen with the collar locked and the nose working, the collar with the nose,
+    and both with perfect knowledge; two test writers where both ran."""
+    out = []
+    for c in [c[0] for c in RS.CLASSES] + [c[0] for c in RS.CLASSES_REAL]:
+        row = {"class": c, "class_label": RS.CLASS_LABEL[c]}
+        for d in INC_DESIGNS:
+            rr = [r for r in R if r.get("class") == c and r.get("design") == d and r.get("hand_model", "h1") == "h1"
+                  and float(r.get("grip", 1.0)) == 1.0]
+            if rr:
+                row[d] = {"tip_mm": round(float(np.mean([r["tip_tremor_mm"] for r in rr])), 3),
+                          "words": float(np.nansum([5.0 * r.get("words_app", 0.0) for r in rr])), "words_of": 5 * len(rr),
+                          "coverage": round(float(np.mean([r.get("coverage", float("nan")) for r in rr])), 3),
+                          "writers": sorted(int(r["w"]) for r in rr)}
+        if "collar_nose" in row and "collar_locked_nose" in row:
+            row["collar_gain_vs_locked"] = round(1 - row["collar_nose"]["tip_mm"] / row["collar_locked_nose"]["tip_mm"], 3)
+        if "collar_nose_oracle" in row and "nose_oracle" in row:
+            row["oracle_collar_gain"] = round(1 - row["collar_nose_oracle"]["tip_mm"] / row["nose_oracle"]["tip_mm"], 3)
+        if len(row) > 2:
+            out.append(row)
+    return out
+
+
+LIGHT_DESIGNS = ["none", "nose", "nose_oracle", "collar_locked", "collar_locked_nose", "collar_nose", "collar_nose_oracle",
+                 "light_locked", "light_locked_nose", "light_nose", "light_fine", "light_nose_oracle"]
+
+
+def compare(R, designs: List[str], classes: List[str]) -> List[Dict]:
+    """Per design and class: mean tip tremor, words read (summed over writers, out of 5 per writer), ink laid, the
+    writers, the felt grip-force change and the devices' power (SIM rows)."""
+    out = []
+    for d in designs:
+        row = {"design": d, "label": RS.LABELS.get(d, d)}
+        for c in classes:
+            rr = [r for r in R if r.get("class") == c and r.get("design") == d and r.get("hand_model", "h1") == "h1"
+                  and float(r.get("grip", 1.0)) == 1.0]
+            if not rr:
+                continue
+            row[c] = {"tip_mm": round(float(np.mean([r["tip_tremor_mm"] for r in rr])), 3),
+                      "words": float(np.nansum([5.0 * r.get("words_app", 0.0) for r in rr])), "words_of": 5 * len(rr),
+                      "coverage": round(float(np.mean([r.get("coverage", float("nan")) for r in rr])), 3),
+                      "writers": sorted(int(r["w"]) for r in rr),
+                      "pivot_peak_rad": max([r.get("pivot_peak_rad") or 0.0 for r in rr]),
+                      "P_devices_W": round(float(np.mean([r.get("P_devices_W") or 0.0 for r in rr])), 2),
+                      "felt_rms_N": (round(float(np.mean([r["felt_rms_N"] for r in rr if r.get("felt_rms_N") is not None])), 3)
+                                     if any(r.get("felt_rms_N") is not None for r in rr) else None)}
+        out.append(row)
+    return out
+
+
+def tune_frozen_grip1(tune: List[Dict], rules_body: Dict) -> List[Dict]:
+    """The grip-1 x rows of the grip comparison: the tuning writer's runs (writer 100, ET 3 mm, seed 300) with the
+    frozen settings (the tracker, the collar variant and the gyroscope law that rules.json chose)."""
+    try:
+        ev = rules_body["evidence"]
+        var = min(ev["tracker_and_collar"]["collar_variants_ink_um"], key=ev["tracker_and_collar"]["collar_variants_ink_um"].get)
+        law = rules_body["rules"]["cmg_law"]
+    except Exception:
+        return []
+    want = {f"h1|g1|w100|s300|ET_moderate|collar_locked": "collar_locked",
+            f"cpg_{var}|h1|g1|w100|s300|ET_moderate|collar_nose": "collar_nose",
+            f"h1|g1|w100|s300|ET_moderate|collar_oracle": "collar_oracle",
+            f"g|h1|g1|w100|s300|ET_moderate|gt_locked_nose": "gt_locked_nose",
+            f"cmgg_{law}|h1|g1|w100|s300|ET_moderate|gt_nose": "gt_nose"}
+    out = []
+    for r in tune:
+        if r.get("key") in want:
+            rr = dict(r)
+            rr["design"] = want[r["key"]]
+            rr["grip"] = 1.0
+            out.append(rr)
+    return out
+
+
+def _rules_body() -> Dict:
+    try:
+        return json.load(open(os.path.join(RESULTS, "rules.json")))
+    except Exception:
+        return {}
+
+
 def build() -> Dict:
     test = _rows("test")
     real = _rows("real")
+    light = _rows("light")
     grips = _rows("grips")
     arm = _rows("arm")
     tune = _rows("tune")
     body = {"conventions": __doc__.split("Conventions")[1].split("Evidence status")[0].strip(),
             "headline": headline(test), "headline_real": headline(real, [c[0] for c in RS.CLASSES_REAL]), "cards": cards(test),
             "tail_and_collar_vs_locked_test": gate_vs_locked(test),
-            "tail_and_collar_vs_locked_grips": gate_vs_locked(grips),
+            "collar_increment": collar_increment(test + real),
+            "light_compare": {"classes": ["ET_moderate", "PD_severe"],
+                              "rows": compare(test + light, LIGHT_DESIGNS, ["ET_moderate", "PD_severe"])} if light else None,
+            "tail_and_collar_vs_locked_grips": gate_vs_locked(grips + tune_frozen_grip1(tune, _rules_body())),
             "arm": [{k: r.get(k) for k in ("class", "design", "tip_tremor_mm", "words_app", "coverage", "ink_err_um")} for r in arm],
             "n_rows": {"test": len(test), "grips": len(grips), "arm": len(arm), "tune": len(tune)}}
     try:
@@ -144,13 +236,25 @@ def build() -> Dict:
 
 
 def table_md(head: Dict, key: str = "tip_mm", fmt: str = "{:.1f}") -> str:
-    """Markdown table: classes as rows, designs as columns."""
+    """Markdown table: classes as rows, designs as columns.  A cell run on one test writer only (writer 0) is marked
+    with an asterisk; its words are then out of 5, and say so."""
     ds = [d for d in head["designs"] if any(r["design"] == d for r in head["rows"])]
     lines = ["| Tremor class | " + " | ".join(RS.LABELS[d] for d in ds) + " |", "|---|" + "---|" * len(ds)]
+    one = False
     for c in head["classes"]:
         cells = []
         for d in ds:
             r = next((x for x in head["rows"] if x["class"] == c and x["design"] == d), None)
-            cells.append("–" if r is None or r.get(key) is None else fmt.format(r[key]))
+            if r is None or r.get(key) is None:
+                cells.append("–")
+                continue
+            cell = fmt.format(r[key])
+            if r.get("n_writers", 2) < 2:
+                one = True
+                cell += f" of {r.get('words_of', 5)}*" if key == "words10" else "*"
+            cells.append(cell)
         lines.append(f"| {RS.CLASS_LABEL[c]} | " + " | ".join(cells) + " |")
+    if one:
+        lines.append("")
+        lines.append("\\* test writer 0 only (one writer, one seed); every other cell is the two test writers.")
     return "\n".join(lines)

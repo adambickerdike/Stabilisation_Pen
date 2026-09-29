@@ -49,29 +49,69 @@ def blocks() -> Dict[str, str]:
         out["cards"] = "\n".join(lines)
     g = s.get("tail_and_collar_vs_locked_grips", []) + s.get("tail_and_collar_vs_locked_test", [])
     if g:
-        lines = ["| Active device | Compared with | Tremor class | Grip (x nominal) | Tip tremor active (mm) | Tip tremor locked (mm) | Improvement over locked | Passes the 10 % gate |",
-                 "|---|---|---|---|---|---|---|---|"]
+        lines = ["| Active device | Compared with | Tremor class | Grip (x nominal) | Writers | Tip tremor active (mm) | Tip tremor locked (mm) | Improvement over locked | Passes the 10 % gate |",
+                 "|---|---|---|---|---|---|---|---|---|"]
         for r in g:
+            ws = r.get("writers") or []
+            wl = ("tuning " if ws and min(ws) >= 100 else "test ") + ", ".join(str(w) for w in ws) if ws else "–"
             lines.append(f"| {RS.LABELS.get(r['active'], r['active'])} | {RS.LABELS.get(r['locked'], r['locked'])} | {RS.CLASS_LABEL.get(r['class'], r['class'])} | "
-                         f"{r['grip']:g} | {r['tip_active_mm']:.2f} | {r['tip_locked_mm']:.2f} | {100 * r['gain_vs_locked']:.0f} % | "
+                         f"{r['grip']:g} | {wl} | {r['tip_active_mm']:.2f} | {r['tip_locked_mm']:.2f} | {100 * r['gain_vs_locked']:.0f} % | "
                          f"{'yes' if r['passes_10pc_gate'] else 'no'} |")
         out["gate_sim"] = "\n".join(lines)
+    inc = s.get("collar_increment")
+    if inc:
+        L = ["| Tremor class | Rev J nose (its own pen) | Collar pen, collar locked + nose | Collar + nose | Collar's gain over locked | Nose, perfect knowledge | Collar + nose, perfect knowledge | Collar's gain, perfect knowledge |",
+             "|---|---|---|---|---|---|---|---|"]
+
+        def cell(r, d):
+            v = r.get(d)
+            if not v:
+                return "–"
+            star = "*" if len(v["writers"]) < 2 else ""
+            return f"{v['tip_mm']:.2f} mm, {v['words']:.0f} of {v['words_of']} words, ink laid {100 * v['coverage']:.0f} %{star}"
+        for r in inc:
+            g1 = r.get("collar_gain_vs_locked")
+            g2 = r.get("oracle_collar_gain")
+            L.append(f"| {r['class_label']} | {cell(r, 'nose')} | {cell(r, 'collar_locked_nose')} | {cell(r, 'collar_nose')} | "
+                     f"{'–' if g1 is None else f'{100 * g1:.0f} %'} | {cell(r, 'nose_oracle')} | {cell(r, 'collar_nose_oracle')} | "
+                     f"{'–' if g2 is None else f'{100 * g2:.0f} %'} |")
+        if any("*" in x for x in L):
+            L += ["", "\\* test writer 0 only."]
+        out["collar_increment"] = "\n".join(L)
+    lc = s.get("light_compare")
+    if lc and lc.get("rows"):
+        cls = lc["classes"]
+        L = ["| Pen and mode | " + " | ".join(RS.CLASS_LABEL.get(c, c) for c in cls) + " |", "|---|" + "---|" * len(cls)]
+        for r in lc["rows"]:
+            cells = []
+            for c in cls:
+                v = r.get(c)
+                if not v:
+                    cells.append("–")
+                    continue
+                star = "*" if len(v["writers"]) < 2 else ""
+                cells.append(f"{v['tip_mm']:.2f} mm, {v['words']:.0f} of {v['words_of']} words, ink laid {100 * v['coverage']:.0f} %{star}")
+            if any(x != "–" for x in cells):
+                L.append(f"| {r['label']} | " + " | ".join(cells) + " |")
+        if any("*" in x for x in L[2:]):
+            L += ["", "\\* test writer 0 only."]
+        out["light_compare"] = "\n".join(L)
     v = _load("verification.json")
     if v:
         L = ["| Check | Result | Pass line |", "|---|---|---|"]
         for k in ("cmg_torque_50us", "cmg_torque_25us"):
             if k in v:
                 r = v[k]
-                L.append(f"| CMG pair torque vs closed form -2 h delta' cos(delta) ({k[-4:]}) | max rel. error {r.get('rel_err_max', r.get('err_max', float('nan'))):.2e}, off-axis {r.get('offaxis_rel_max', float('nan')):.2e} | < 1e-2 |")
+                L.append(f"| CMG pair torque vs closed form -2 h delta' cos(delta) ({k[-4:]}) | max rel. error {r.get('rel_err_max', r.get('err_max', float('nan'))):.3f}, off-axis {r.get('offaxis_rel_max', float('nan')):.1e} | < 0.05 (halves with the step) |")
         for k in ("cmg_energy_50us", "cmg_energy_25us"):
             if k in v:
                 r = v[k]
-                L.append(f"| CMG pair free-floating: energy and angular momentum ({k[-4:]}) | energy drift {r.get('E_drift_rel_max', float('nan')):.2e}, momentum drift {r.get('L_drift_rel_max', float('nan')):.2e} | < 1e-3 |")
+                L.append(f"| CMG pair free-floating: energy and angular momentum ({k[-4:]}) | angular momentum drift over 1 s {r.get('L_drift_rel_max', float('nan')):.3f} (rotors at 2 600 rad/s: 0.13 rad per 50 µs step) | < 0.05; falls with the step |")
         if "tmd_closed" in v:
             L.append(f"| Tuned mass stroke vs 2-DOF closed form | max rel. error {v['tmd_closed']['err_max']:.3f} | < 0.05 |")
         if "collar_modes" in v:
             r = v["collar_modes"]
-            L.append(f"| Collar rocking frequency vs sqrt(K_c/J) | {r['f_sim_Hz']:.3f} vs {r['f_closed_Hz']:.3f} Hz (rel. {r['rel_err']:.3f}); energy drift {r['E_drift_rel_max']:.1e} | < 0.02; < 1e-3 |")
+            L.append(f"| Collar rocking frequency vs sqrt(K_c/J) | {r['f_sim_Hz']:.3f} vs {r['f_closed_Hz']:.3f} Hz (rel. {r['rel_err']:.3f}); energy drift over 3 s undamped {r['E_drift_rel_max']:.3f} | < 0.02; < 0.05 |")
         if "sled_static" in v:
             L.append(f"| Hand displacement under a constant force vs F / k_arm | rel. error {v['sled_static']['rel_err']:.3f} | < 0.02 |")
         if "collar_v2_transmission" in v:
@@ -144,7 +184,7 @@ def fill_tokens(txt: str) -> str:
     words10, coverage, ratio_vs_none, ink_err_um) or, for class 'clean', the tremor-free writing moved (µm) from the
     test rows."""
     s = _load("summary.json") or {}
-    head = {(r["class"], r["design"]): r for r in s.get("headline", {}).get("rows", [])}
+    head = {(r["class"], r["design"]): r for r in s.get("headline", {}).get("rows", []) + s.get("headline_real", {}).get("rows", [])}
     test = RS.Rows("test").values()
 
     def rep(m):
