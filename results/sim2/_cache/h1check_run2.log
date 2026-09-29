@@ -34,3 +34,5 @@ h1check: r_rot 0.5, 40 cases
   H1 check seed 203 8 Hz 1 mm trans: unmod +0.002, oracle 0.131/0.138, akf 0.789/0.801  (486 s)
   H1 check seed 203 8 Hz 2 mm trans: unmod -0.005, oracle 0.169/0.172, akf 0.680/0.658  (499 s)
   H1 check seed 203 12 Hz 0.3 mm trans: unmod -0.005, oracle 0.102/0.107, akf 0.903/0.912  (511 s)
+  H1 check seed 203 12 Hz 1 mm trans: unmod -0.011, oracle 0.220/0.254, akf 0.755/0.775  (524 s)
+  H1 check seed 203 12 Hz 2 mm trans: unmod -0.015, oracle 0.243/0.267, akf 0.701/0.672  (536 s)
