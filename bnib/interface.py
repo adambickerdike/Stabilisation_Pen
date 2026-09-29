@@ -245,8 +245,20 @@ def build_interface(d=None, x=None, ev: Optional[Dict] = None, km: Optional[Dict
                                        "the review's section 4, reproduced (bnib/contact.review_static_power)"),
         },
     }
-    if sim_cards:
-        doc["simulated"] = sim_cards
+    if sim_cards and sim_cards.get("B1"):
+        b1 = sim_cards["B1"]
+        src = "bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)"
+        doc["simulated"] = {
+            "note": "headline SIMULATION numbers for this nib (sim2, synthetic writers and tremor, DeltaPen-calibrated page "
+                    "sensor, the frozen tracker); results, not interface parameters",
+            "tremor_left_ratio_tracker": L(b1.get("tremor_left_ratio_mean"), "1", "SIM", src, "mean over the ET/PD cells"),
+            "tremor_left_ratio_perfect_knowledge": L(b1.get("tremor_left_ratio_oracle_mean"), "1", "SIM", src,
+                                                     "the mechanism's limit"),
+            "nib_power_while_correcting": L(b1.get("P_nib_mW_tremor_mean"), "mW", "SIM", src),
+            "nib_power_tremor_free": L(b1.get("P_nib_mW_clean_mean"), "mW", "SIM", src),
+            "clean_writing_moved": L(b1.get("clean_moved_um_mean"), "um", "SIM", src, "false correction"),
+            "n_writers": L(b1.get("n_writers"), "1", "SIM", src),
+        }
     return doc
 
 

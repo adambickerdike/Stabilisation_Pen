@@ -1,0 +1,17 @@
+spacing,recogniser,metric,value
+normal,independent|beta=0,cer,0.228659
+normal,independent|beta=0.75,cer,0.0913947
+normal,calibrated|beta=0,cer,0.200675
+normal,calibrated|beta=0.75,cer,0.0917738
+tight,independent|beta=0,cer,0.239067
+tight,independent|beta=0.75,cer,0.105455
+tight,calibrated|beta=0,cer,0.210635
+tight,calibrated|beta=0.75,cer,0.105662
+normal,independent|beta=0,wer,0.54706
+normal,independent|beta=0.75,wer,0.197797
+normal,calibrated|beta=0,wer,0.509477
+normal,calibrated|beta=0.75,wer,0.201523
+tight,independent|beta=0,wer,0.559857
+tight,independent|beta=0.75,wer,0.224526
+tight,calibrated|beta=0,wer,0.522436
+tight,calibrated|beta=0.75,wer,0.227928

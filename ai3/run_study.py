@@ -11,6 +11,7 @@ Stages (each caches its result in ai3/build/cache (or ai3/build/quick) and resum
   predict  task 3: personalised text prediction on public-domain journals
   trace    task 4a: why close tracing lowers legibility (drive study's HW1-D runs)
   shape    task 4b: shape assist and clean copy on real handwriting in HW1
+  ocr      spot check of task 4b's sample words with study R's word reader (TrOCR)
   report   figures with CSV twins, ai3.json, samples.json, evidence_rows.csv
   demo     the prototype page ai3/demo/index.html (inlined model, lexicon, error model and tuned settings); its
            smoke test: NODE_PATH=$(npm root -g) node ai3/demo/smoke_test.js
@@ -25,7 +26,7 @@ from pathlib import Path
 from . import BUILD_DIR
 from . import common as C
 
-ALL = ["online", "calib", "lm", "spell", "cues", "words", "plan", "predict", "trace", "shape", "report", "demo"]
+ALL = ["online", "calib", "lm", "spell", "cues", "words", "plan", "predict", "trace", "shape", "ocr", "report", "demo"]
 
 
 def main(argv=None):
@@ -104,6 +105,9 @@ def _run_stage(st: str, quick: bool) -> None:
         elif st == "shape":
             from . import stage_shape
             stage_shape.run(a.quick)
+        elif st == "ocr":
+            from . import ocr_check
+            ocr_check.run(a.quick)
         elif st == "report":
             from . import report
             report.run(a.quick)

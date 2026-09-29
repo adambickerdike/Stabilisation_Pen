@@ -455,7 +455,8 @@ function penDown(p) {
   if (!L || p[0] > L.xmax + 0.05 * h || p[0] < L.xmin - 0.05 * h) { if (L) finaliseLetter(L); L = { strokes: [], xmin: Infinity, xmax: -Infinity, rec: null, final: false }; word.letters.push(L) }
   L.strokes.push(curStroke); curStroke.letter = L;
   if (word.ghost) { word.ghost = null }
-  setPen("idle"); drawPad();
+  if (word.flaggedAt === null && !busyPlan) setPen("idle");   /* a cue stays shown until the word ends */
+  drawPad();
 }
 function penMove(p) {
   const s = curStroke.pts, q = s[s.length - 1];
@@ -527,7 +528,8 @@ function physicalCue(m, committed) {
 }
 function buzz() { try { navigator.vibrate && navigator.vibrate(30) } catch (e) {} }
 function announce(t) { $("announce").textContent = t }
-function setPen(cue, text) { $("penstate").dataset.cue = cue; $("pentext").textContent = text || (busyPlan ? "Pen: writing your accepted word" : "Pen: writing normally") }
+let cueSeq = 0;
+function setPen(cue, text) { cueSeq++; $("penstate").dataset.cue = cue; $("pentext").textContent = text || (busyPlan ? "Pen: writing your accepted word" : "Pen: writing normally") }
 function placeLetter(src, c, x, h) {                /* letter strokes (x-height units, y up) -> pad px, bottom on the baseline */
   const all = src.flat(), xmin = Math.min(...all.map(p => p[0])), xmax = Math.max(...all.map(p => p[0]));
   const yb = Math.min(...all.map(p => p[1])) + (/[gjpqy]/.test(c) ? 0.9 : 0);
@@ -573,7 +575,8 @@ async function endWord() {
     if (!exampleMode) { selectWord(i); speakList(shown.map(s => s.w)) }
   }
   Object.assign(word, { letters: [], strokes: [], xmin: Infinity, xmax: -Infinity, check: null, flaggedAt: null, withheldFrom: null, ghost: null, done: false });
-  renderText(); renderLive(); drawPad(); if (!exampleMode) setTimeout(() => { if (!busyPlan) setPen("idle") }, 1600);
+  renderText(); renderLive(); drawPad();
+  if (!exampleMode) { const seq = cueSeq; setTimeout(() => { if (!busyPlan && cueSeq === seq) setPen("idle") }, 1600) }
   return i;
 }
 function showTray(why, comps, alts, lit) {
@@ -783,7 +786,7 @@ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { dr
 function renderFacts() {
   const box = $("facts"); box.innerHTML = "";
   for (const f of DATA.facts) { const r = document.createElement("div"); r.className = "fact"; r.innerHTML = `<span></span><b></b>`; r.children[0].innerHTML = ""; r.children[0].textContent = f.k + " "; const t = document.createElement("span"); t.className = "tag"; t.textContent = f.label; r.children[0].appendChild(t); r.children[1].textContent = f.v; box.appendChild(r) }
-  $("settingsline").textContent = `Settings from the study's rules (${S.from_results.join(", ") || "defaults"}): commit at ${S.tau_commit}; flag at P ≥ ${S.theta}; lift the pen at P ≥ ${S.theta_w}; word flag at calibrated P ≥ ${S.theta_c} (${Array.isArray(S.T) ? `Platt a = ${S.T[1].toFixed(2)}, b = ${S.T[2].toFixed(2)}` : `T = ${(+S.T).toFixed(2)}`}, λ = ${S.lam_r}); show a suggestion at ≥ ${S.p_s}; offer completions at ≥ ${S.p_offer}; reach ±${S.reach_mm} mm at a ${S.xh_mm} mm x-height.` + (S.cue_recommended_by_S4 ? ` The simulation's recommended physical cue (rule S4): ${S.cue_recommended_by_S4}.` : "");
+  $("settingsline").textContent = `Settings from the study's rules (${S.from_results.join(", ") || "defaults"}): commit at ${S.tau_commit}; flag at P ≥ ${S.theta}; lift the pen at P ≥ ${S.theta_w}; word flag at calibrated P ≥ ${S.theta_c} (${Array.isArray(S.T) ? `Platt a = ${S.T[1].toFixed(2)}, b = ${S.T[2].toFixed(2)}` : `T = ${(+S.T).toFixed(2)}`}, λ = ${S.lam_r}); show a suggestion at ≥ ${S.p_s}; offer completions at ≥ ${S.p_offer}; reach ±${S.reach_mm} mm at a ${S.xh_mm} mm x-height.` + (S.cue_recommended_by_S4 ? ` With letters known exactly the study's rule S4 recommends "${S.cue_recommended_by_S4}" (tick, plus a pen lift when very sure); this page reads the letters itself, and cues in the middle of a word would also fire on misread letters, so it starts with the tick at the next pause, which uses the calibrated word-level score.` : "");
 }
 window.addEventListener("resize", () => { sizePad(); renderPlans() });
 window.__demo = { ready: false, errors, S, recognise: strokes => Array.from(recognise(strokes).p), scoreWord: letters => scoreWord(letters.map(s => recognise(s).q), false),

@@ -12,7 +12,7 @@ import json
 import math
 import pickle
 import time
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -71,13 +71,13 @@ def pick_words(n: int, seed: int) -> List[str]:
     return [cand[i] for i in rng.choice(len(cand), size=n, replace=False)]
 
 
-def writer_cases(letters, xh, dt, split: str, n_words: int, seed: int, pen, hand) -> List[Dict]:
+def writer_cases(letters, xh, dt, split: str, n_words: int, seed: int, pen, hand):
+    """Yields the word cases one by one (each scenario is about 14 MB at the plant's 40 kHz step: never hold them all)."""
     conds = active_conds(split)
     by: Dict[str, Dict[Tuple[str, int], object]] = {}
     for L in letters:
         if O.split_of(L.writer) == split:
             by.setdefault(L.writer, {})[(L.char, L.rep)] = L
-    out = []
     for wi, w in enumerate(sorted(by)):
         words = pick_words(n_words, seed + 97 * wi)
         rng = np.random.default_rng(seed + wi)
@@ -112,8 +112,7 @@ def writer_cases(letters, xh, dt, split: str, n_words: int, seed: int, pen, hand
                 # of the SAME class as the written letter where the class is right; for another class, repetition 1
                 case.meta = {"reps": reps, "cond": cname,
                              "tpl_by_class": {ci: (d.get(1) or d.get(2)) for ci, d in tpl_by_class.items()}}
-                out.append({"writer": w, "word": word, "cond": cname, "case": case})
-    return out
+                yield {"writer": w, "word": word, "cond": cname, "case": case}
 
 
 def judge_word(judge, strokes_per_letter, word) -> List[bool]:
@@ -166,8 +165,14 @@ def clean_copy_eval(items, judge, rec, cal: Dict, conf_min: float = 0.9) -> Dict
     re-drawn from the writer's own calibration sample and MARKED synthetic.  Readability by the independent judge."""
     import torch
     from aiprior import cleancopy as CC
+    return _cc_finish(_cc_counts(items, judge, rec, cal, conf_min))
+
+
+def _cc_counts(items, judge, rec, cal: Dict, conf_min: float = 0.9, out: Optional[Dict] = None) -> Dict:
+    import torch
+    from aiprior import cleancopy as CC
     a, tau = float(cal.get("a", 0.5)), float(cal.get("tau", 0.1))
-    out: Dict[str, Dict] = {}
+    out = {} if out is None else out
     for it in items:
         case = it["case"]; r0 = it["res0"]
         c = it["cond"]
@@ -217,6 +222,10 @@ def clean_copy_eval(items, judge, rec, cal: Dict, conf_min: float = 0.9) -> Dict
         o["letters"] += n; o["words"] += 1
         o["raw_l"] += sum(raw); o["cc_l"] += sum(cc); o["v2_l"] += sum(v2)
         o["raw_w"] += int(all(raw)); o["cc_w"] += int(all(cc)); o["v2_w"] += int(all(v2))
+    return out
+
+
+def _cc_finish(out: Dict) -> Dict:
     res = {}
     for c, o in out.items():
         res[c] = {"letters_read_raw": o["raw_l"] / max(o["letters"], 1), "letters_read_cleancopy": o["cc_l"] / max(o["letters"], 1),
@@ -266,21 +275,29 @@ def run(quick: bool, judge_minutes: float = None) -> Dict:
     # ---- tuning writers: nose-held runs and controller signals
     c_mins = GRID["c_min"]
 
+    import itertools
+
+    def one(it):
+        case = it["case"]
+        r0 = PL.run(case.scn, pen, hand, seed=C.stable_hash(case.writer + case.word, 1 << 20))
+        it["res0"] = r0
+        sg = SH.controller_signals(r0, case, rec, pen.tick_hz, c_mins, templates_by_class=case.meta["tpl_by_class"],
+                                   seed=C.stable_hash("ps" + case.writer + case.word, 1 << 20))
+        L = SH.letters_ink(r0.t, r0.ink, r0.contact, case.windows)
+        return sg, judge_word(judge, L, case.word)
+
+    def stream(split, n_words, seed):
+        g = writer_cases(letters, xh, dt, split, n_words, seed, pen, hand)
+        return itertools.islice(g, 5 * len(CONDS)) if quick else g
+
     def prepare(split, n_words, seed):
-        its = writer_cases(letters, xh, dt, split, n_words, seed, pen, hand)
-        if quick:
-            its = its[: 5 * len(CONDS)]
-        sigs, base = [], []
+        """Tuning words: nose-held runs and controller signals; the 40 kHz scenario is dropped after its run."""
+        its, sigs, base = [], [], []
         t0 = time.time()
-        for it in its:
-            case = it["case"]
-            r0 = PL.run(case.scn, pen, hand, seed=C.stable_hash(case.writer + case.word, 1 << 20))
-            it["res0"] = r0
-            sg = SH.controller_signals(r0, case, rec, pen.tick_hz, c_mins, templates_by_class=case.meta["tpl_by_class"],
-                                       seed=C.stable_hash("ps" + case.writer + case.word, 1 << 20))
-            sigs.append(sg)
-            L = SH.letters_ink(r0.t, r0.ink, r0.contact, case.windows)
-            base.append(judge_word(judge, L, case.word))
+        for it in stream(split, n_words, seed):
+            sg, br = one(it)
+            it["case"].scn = None
+            its.append(it); sigs.append(sg); base.append(br)
         C.log(f"[shape] {split}: {len(its)} word runs prepared ({time.time() - t0:.0f} s)")
         return its, sigs, base
 
@@ -302,11 +319,19 @@ def run(quick: bool, judge_minutes: float = None) -> Dict:
     gain_w = float(np.mean([cc_tune[c]["words_read_cleancopy_v2"] - cc_tune[c]["words_read_cleancopy"] for c in trem])) if trem else 0.0
     out["A2"] = {"tuning": cc_tune, "words_gain_v2": gain_w, "adopted": bool(gain_w >= 0.02)}
     C.log(f"[shape] rule A2: clean copy v2 words gain {gain_w:+.3f} on tuning writers -> adopted {out['A2']['adopted']}")
+    import gc                                         # the tuning runs are no longer needed: free them (memory limit)
+    del tune, tsig, tbase, tab
+    gc.collect()
     # ---- test writers: HW1 closed loop
-    test, xsig, xbase = prepare("test", 3 if quick else 10, 57)
     rows = []
     samples = {}
-    for it, sg, br in zip(test, xsig, xbase):
+    trace_rows = []
+    cc_counts: Dict = {}
+    t0 = time.time()
+    n_test = 0
+    for it in stream("test", 3 if quick else 10, 57):           # one word at a time (memory)
+        sg, br = one(it)
+        n_test += 1
         case = it["case"]; r0 = it["res0"]
         q = SH.command(sg["dev"][cfg["c_min"]], cfg["g"], cfg["q_max_mm"] * 1e-3, cfg["d0_xh"] * SH.XH_M, pen.tick_hz)
         r1 = PL.run(case.scn, pen, hand, ctl=PL.Controls(qext=q), seed=C.stable_hash(case.writer + case.word, 1 << 20))
@@ -335,18 +360,18 @@ def run(quick: bool, judge_minutes: float = None) -> Dict:
                             "none": [[np.round(s * 1e3, 3).tolist() for s in let] for let in SH.letters_ink(r0.t, r0.ink, r0.contact, case.windows)],
                             "assist": [[np.round(s * 1e3, 3).tolist() for s in let] for let in L1],
                             "read_none": br, "read_assist": rd}
-    # close tracing on the warped words (nearest-point full guidance toward the same templates), for task 4a
-    trace_rows = []
-    for it, br in zip(test, xbase):
-        if it["cond"] != "warp":
-            continue
-        case = it["case"]
-        tr = trace_track(case, pen)
-        r2 = PL.run(case.scn, pen, hand, ctl=PL.Controls(tmpl=tr[0], tmpl_down=tr[1], g_guide=1.0, stroke_match=True,
-                                                        capture=10e-3, drop_d=1.0),
-                    seed=C.stable_hash(case.writer + case.word, 1 << 20))
-        L2 = SH.letters_ink(r2.t, r2.ink, r2.contact, case.windows)
-        trace_rows.append({"writer": case.writer, "word": case.word, "read_none": br, "read_trace": judge_word(judge, L2, case.word)})
+        # close tracing on the warped words (nearest-point full guidance toward the same templates), for task 4a
+        if it["cond"] == "warp":
+            tr = trace_track(case, pen)
+            r2 = PL.run(case.scn, pen, hand, ctl=PL.Controls(tmpl=tr[0], tmpl_down=tr[1], g_guide=1.0, stroke_match=True,
+                                                            capture=10e-3, drop_d=1.0),
+                        seed=C.stable_hash(case.writer + case.word, 1 << 20))
+            L2 = SH.letters_ink(r2.t, r2.ink, r2.contact, case.windows)
+            trace_rows.append({"writer": case.writer, "word": case.word, "read_none": br,
+                               "read_trace": judge_word(judge, L2, case.word)})
+        _cc_counts([it], judge, rec, cal, out=cc_counts)          # the app's clean copy on the same word
+        del it, case, r0, r1
+    C.log(f"[shape] test: {n_test} word runs ({time.time() - t0:.0f} s)")
     agg = {}
     for c in list(CONDS) + list(REAL_CONDS):
         sel = [r for r in rows if r["cond"] == c]
@@ -370,7 +395,7 @@ def run(quick: bool, judge_minutes: float = None) -> Dict:
         agg["warp_close_tracing"] = {"letters": nn, "read_none": sum(sum(r["read_none"]) for r in trace_rows) / nn,
                                      "read_trace": sum(sum(r["read_trace"]) for r in trace_rows) / nn}
     out["test"] = {"cfg": cfg, "aggregate": agg, "rows": rows, "n_writers": len({r["writer"] for r in rows})}
-    out["test"]["clean_copy"] = clean_copy_eval(test, judge, rec, cal)
+    out["test"]["clean_copy"] = _cc_finish(cc_counts)
     C.log(f"[shape] clean copy (test): {json.dumps(out['test']['clean_copy'])}")
     out["samples"] = list(samples.values())
     out["minutes"] = (time.time() - t_all) / 60

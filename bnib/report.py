@@ -149,7 +149,7 @@ def decision_draft(res: Dict) -> Dict:
             f"{rec['SF']:.1f} at full travel for 43.2 M cycles (CALC).",
             "A moving coil keeps the magnetic gap constant: no negative stiffness and no pull on the suspension.",
             "Unpowered it writes like a normal pen (centred by its wires, the face still balancing).",
-        ],
+        ] + _sim_because(res.get("sim") or {}),
         "unproven": rec["unproven"],
         "revisit_if": [
             "EXP-B22 measures a residual side load > 25 % of F_s cot(theta) or a face that does not release on lift within "
@@ -167,13 +167,46 @@ def decision_draft(res: Dict) -> Dict:
     }
 
 
+def _sim_because(sim: Dict) -> List[str]:
+    """One SIM line for the decision draft, read off the sim cards and sim2j's Rev J reference (no new numbers)."""
+    c = (sim.get("cards") or {}).get("B1") or {}
+    if not c:
+        return []
+    by = c.get("by_cell") or {}
+    ref = (sim.get("sim2j_revJ_reference") or {}).get("cells") or {}
+    P_j = [v["P_nose_W"] for v in ref.values() if v.get("P_nose_W")]
+    th = c.get("thermal_35deg") or {}
+    g = lambda d, k: d.get(k) if d else None
+    fmt = lambda x, nd=2: "-" if x is None else f"{x:.{nd}f}"
+    r = lambda cell, d=by: fmt(g(d.get(cell), "ratio_mean" if d is by else "ratio_nose"))
+    s = (f"Simulation (SIM; sim2, {c.get('n_writers')} synthetic writers, the project's frozen tracker, a DeltaPen-calibrated "
+         f"page sensor): with the tracker B1 leaves {r('ET 8 Hz 1 mm')} / {r('ET 12 Hz 1 mm')} of the tremor's ink error at "
+         f"8 / 12 Hz 1 mm, the Rev J C1S nose {r('ET 8 Hz 1 mm', ref)} / {r('ET 12 Hz 1 mm', ref)} in sim2j's runs; at 8 Hz "
+         f"2 mm {r('ET 8 Hz 2 mm')} against {r('ET 8 Hz 2 mm', ref)} (B1's +-1 mm reach clips); B1 draws "
+         f"{fmt(c.get('P_nib_mW_tremor_mean'), 1)} mW, the nose {fmt(sum(P_j) / len(P_j) if P_j else None, 1)} W; "
+         f"tremor-free writing moved {fmt(c.get('clean_moved_um_mean'), 1)} um")
+    if th:
+        s += (f"; at 35 deg with 2 mm tremor for 30 min the coil reaches {fmt(th['T_after_30min'][0], 1)} degC and the skin "
+              f"{fmt(th['T_after_30min'][1], 1)} degC ("
+              + ("governor idle" if (th.get("gov_min_hot") or 0.0) >= 0.999 else f"governor authority down to {fmt(th.get('gov_min_hot'))}")
+              + ")")
+    return [s + "."]
+
+
 def requirements(res: Dict) -> List[Dict]:
     rec = res["recommended"]
+    b1 = ((res.get("sim") or {}).get("cards") or {}).get("B1") or {}
+    th = b1.get("thermal_35deg") or {}
+    face_now = ("CALC (design rule)" + (f"; SIM: face engaged {100 * b1['face_engaged_in_contact_mean']:.1f} % of the contact "
+                f"time, {100 * b1['face_engaged_penup_mean']:.1f} % of the pen-up time" if b1.get("face_engaged_in_contact_mean")
+                is not None and b1.get("face_engaged_penup_mean") is not None else "; SIM face engagement"))
+    skin_now = (f"SIM + CALC: B1 {th['T_after_30min'][1]:.1f} degC skin, {th['T_after_30min'][0]:.1f} degC coil after 30 min "
+                f"({1e3 * th['P_nib_mean_W']:.0f} mW)" if th else "CALC/SIM (bnib.json thermal)")
     R = [
         ("REQ-BNIB-001", "Static side load left on the nib while writing", "<= 10 % of F_s cot(theta), mean over 35-75 deg and "
          "all rolls; <= 25 % at the 95th percentile", f"CALC {res['bq_ratio']:.0%} mean", "EXP-B22", "G2"),
         ("REQ-BNIB-002", "Balance released on lift", "pen-up residual <= 10 % of the contact balance force within 20 ms of lift; "
-         "full balance within 0.25 mm of refill travel at touchdown", "CALC (design rule); SIM face engagement", "EXP-B22", "G2"),
+         "full balance within 0.25 mm of refill travel at touchdown", face_now, "EXP-B22", "G2"),
         ("REQ-BNIB-003", "Usable travel under load", ">= +-1.0 mm at 35 deg, 12 Hz, coil +90 K, 3.3 V, Km x 0.7",
          f"CALC {rec['travel_mm']:.2f} mm", "EXP-B26", "G3"),
         ("REQ-BNIB-004", "Continuous nib power (duty A: 0.2 mm rms, 8 Hz, 70 % contact); holding coil heat per "
@@ -190,7 +223,7 @@ def requirements(res: Dict) -> List[Dict]:
          "the coils driven (calibrated cross-talk); the servo acts on an observer's estimate, never on the raw Hall reading",
          f"CALC {rec['hall_um']:.2f} um; SIM filtered servo", "EXP-B24", "G2"),
         ("REQ-BNIB-010", "Skin temperature", "<= 41 degC in a 30 degC room at 35 deg with 2 mm tremor for 30 min (governor in "
-         "the loop)", "CALC/SIM (bnib.json thermal)", "EXP-B29", "G4"),
+         "the loop)", skin_now, "EXP-B29", "G4"),
         ("REQ-BNIB-011", "Unpowered state", "the nib centred by its suspension within 0.1 mm and the pen writes like a normal pen",
          "CALC (failure state)", "EXP-B27", "G4"),
         ("REQ-BNIB-012", "Drop", "1 m onto a hard floor: wires elastic (axial stops <= 20 um), face and positioners undamaged",
@@ -368,7 +401,7 @@ def assemble(S: Dict) -> Dict:
         dF.balance = _rp(d.balance, F_s_nom=F)
         rec["P_at_Fs"][f"{F:g}"] = CD.evaluate(dF, detail=False, fast=True)["P_cont_W"] * 1e3
     res = {"cards": cards, "recommended": rec, "bq_residual_mN": cf.get("residual_contact_mean_N", float("nan")) * 1e3,
-           "bq_ratio": cf.get("balance_ratio_mean", float("nan"))}
+           "bq_ratio": cf.get("balance_ratio_mean", float("nan")), "sim": sim}
     res["decision"] = decision_draft(res)
     res["requirements"] = requirements(res)
     res["experiments"] = experiments()

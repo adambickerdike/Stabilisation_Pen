@@ -166,6 +166,9 @@ CLASS_LABEL = {
     "PD_reemergent_severe": "PD re-emergent severe (8 mm, 5 Hz, in pauses)",
     "PD_recorded_moderate": "PD recorded patient waveform (3 mm, 5.4 Hz)",
 }
+CLASSES_REAL = [("REAL_PD_moderate", "REAL_PD", 6.0, 0.24e-3), ("REAL_PD_severe", "REAL_PD", 6.0, 1.72e-3)]
+CLASS_LABEL.update({"REAL_PD_moderate": "Real PD, moderate class (0.24 mm, study R)",
+                    "REAL_PD_severe": "Real PD, severe class (1.72 mm, study R)"})
 KEEP = ("ink_err_um", "letters_read", "words_app", "tip_tremor_mm", "handle_tremor_mm", "coverage", "missing_stroke_rate",
         "missing_strokes", "n_strokes", "ink_lost_mm", "autowrite_extra_s", "completion_time_ratio", "task_time_s",
         "P_nose_W", "P_devices_W", "P_total_W", "P_collar_W", "P_cmg_spin_W", "P_cmg_gimbal_W", "P_gate_W",
@@ -476,6 +479,7 @@ def stage_test(quick=False):
     if quick:
         plan0 = {c[0]: ["none", "nose", "collar_nose", "collar_nose_oracle"] for c in cls_all}
         extra0 = {}
+    import gc
     for w, seed in ws:
         for cls in cls_all:
             ds = list(plan0[cls[0]]) + (extra0.get(cls[0], []) if w == ws[0][0] else [])
@@ -484,6 +488,8 @@ def stage_test(quick=False):
                     run_design(bench, rows, rules, w, seed, cls, dn)
                 except Exception as e:
                     log(f"[test] FAILED w{w} {cls[0]} {dn}: {e}\n{traceback.format_exc()}")
+            bench.refs.clear()                       # memory: the device-off records are only needed within a class
+            gc.collect()
         # tremor-free writing: the false correction ('clean writing changed')
         for dn in ("nose", "collar_nose", "collar_fine"):
             key = f"h1|g1|w{w}|s{seed}|clean|{dn}"
@@ -494,6 +500,9 @@ def stage_test(quick=False):
             m = CS.run_case(su, fw, C.WPConfig(**over), "ET", 6.0, 0.0, seed, nose_reach=reach)
             rows.put(key, _row(m, "clean", dn, 1.0))
             log(f"[test] w{w} clean {dn}: moved {m.get('moved_vs_clean_um', float('nan')):.0f} um")
+        bench.su.clear()                             # memory: one writer's set-ups at a time
+        bench.refs.clear()
+        gc.collect()
     body = {"rows": rows.values(), "rules": rules,
             "stabpen.provenance": provenance("SIMULATION (test writers and seeds; rules frozen before)",
                                              seeds=[s for _, s in ws])}
@@ -516,6 +525,8 @@ def stage_grips(quick=False):
                 run_design(bench, rows, rules, w, seed, cls, dn, grip=g)
             except Exception as e:
                 log(f"[grips] FAILED g{g} {dn}: {e}")
+        bench.su.clear()
+        bench.refs.clear()
     body = {"rows": rows.values(), "stabpen.provenance": provenance("SIMULATION (tuning writer 100, seed 300)", seeds=[seed])}
     write_json("grips.json", body)
     return body
@@ -539,6 +550,31 @@ def stage_arm(quick=False):
     return body
 
 
+def stage_real(quick=False):
+    """The headline at study R's real tremor classes (the lead's request): recorded PD tremor at the pen tip (UCI spirals,
+    test split) scaled to study R's representative moderate (0.24 mm) and severe (1.72 mm) amplitudes, test writers 0-1."""
+    rules = load_rules()
+    rows = Rows("real")
+    bench = Bench()
+    import gc
+    ws = ((0, 200), (1, 201)) if not quick else ((0, 200),)
+    for w, seed in ws:
+        for cls in CLASSES_REAL:
+            for dn in ("none", "nose", "collar_nose", "collar_nose_oracle"):
+                try:
+                    run_design(bench, rows, rules, w, seed, cls, dn)
+                except Exception as e:
+                    log(f"[real] FAILED w{w} {cls[0]} {dn}: {e}\n{traceback.format_exc()}")
+            bench.refs.clear()
+            gc.collect()
+        bench.su.clear()
+    body = {"rows": rows.values(), "classes": {c[0]: {"amp_mm": c[3] * 1e3, "kind": c[1]} for c in CLASSES_REAL},
+            "stabpen.provenance": provenance("SIMULATION with REAL recorded tremor (study R's library, test split)",
+                                             seeds=[s for _, s in ws])}
+    write_json("real.json", body)
+    return body
+
+
 def stage_summary(quick=False):
     from . import summary as SM
     body = SM.build()
@@ -555,7 +591,7 @@ def stage_figures(quick=False):
     return out
 
 
-STAGES = ["targets", "realdata", "grip", "calc", "optimise", "verify", "tune", "freeze", "test", "grips", "arm",
+STAGES = ["targets", "realdata", "grip", "calc", "optimise", "verify", "tune", "freeze", "test", "real", "grips", "arm",
           "summary", "figures"]
 FN = {s: globals()["stage_" + s] for s in STAGES}
 

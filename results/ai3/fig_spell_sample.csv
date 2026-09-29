@@ -1,0 +1,5 @@
+panel,strokes
+As written (a real misspelling from Holbrook's children: 'siter' for 'sister'),10
+"LRA tick on letter 5 ('r'), P(going wrong) = 1.00; the app shows 'sister'",10
+Pen lift: letter 5 is recognised at 78 % of its path and withheld (orange = not inked); the app shows 'sister',10
+After the tick: the writer crosses out 'ter' and writes 'ster' after it (response ASSUMED); the pen never changes ink; the transcript reads 'sister',16

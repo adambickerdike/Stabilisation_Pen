@@ -1,0 +1,18 @@
+model_or_journal,position,top3_pct
+NG0 (as used so far),next word,19.6833
+NG0 (as used so far),after 1 letter,46.5333
+NG0 (as used so far),after 2 letters,60.2
+NG1x (larger corpus),next word,21.0167
+NG1x (larger corpus),after 1 letter,47.9833
+NG1x (larger corpus),after 2 letters,62.0833
+personalised (chosen),next word,23.0667
+personalised (chosen),after 1 letter,53.6333
+personalised (chosen),after 2 letters,67.1833
+journal 11579,history 0 words,50.8
+journal 11579,history 1000 words,51.0667
+journal 11579,history 5000 words,52.0667
+journal 11579,history 20000 words,54.5333
+journal 2024,history 0 words,50.1333
+journal 2024,history 1000 words,51.2667
+journal 2024,history 5000 words,51.8
+journal 2024,history 20000 words,52.7333

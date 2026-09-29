@@ -131,6 +131,10 @@ def sim_md(sim: Dict) -> str:
                 vals.append(f"{f(c.get('T_coil_end_C_max'), 1)} / {f(c.get('T_skin_end_C_max'), 1)}")
         L.append(f"| {lab} | " + " | ".join(vals) + " |")
     L.append("")
+    L.append("Writing time per charge includes the electronics (34-60 mW, CALC): the 24 mm pen's LIR14500 gives 2.22 Wh "
+             "usable (MFR AMF-80 x 0.8), the slim core's 10440-class cell 0.89 Wh (ASSUMPTION), hence B3's shorter time at "
+             "a lower nib power than B2.")
+    L.append("")
     return "\n".join(L)
 
 
@@ -147,7 +151,8 @@ def by_cell_md(sim: Dict) -> str:
         for k, v in cards.items():
             x = v["by_cell"].get(c, {})
             a.append(f"{f(x.get('ratio_mean'), 2)} / {f(x.get('ratio_oracle'), 2)}")
-            b.append(f"{f((x.get('words_off') or 0) * 10, 1)} -> {f((x.get('words_nib') or 0) * 10, 1)}")
+            w10 = lambda v: None if v is None else 10.0 * float(v)
+            b.append(f"{f(w10(x.get('words_off')), 1)} -> {f(w10(x.get('words_nib')), 1)}")
         L.append(f"| {c} | " + " | ".join(a) + " | " + " | ".join(b) + " |")
     ref = (sim.get("sim2j_revJ_reference") or {}).get("cells", {})
     if ref:
@@ -220,21 +225,32 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       f"once the magnets are 30 % weaker. A lower ink force helps in proportion, but nobody knows yet how low it can go. A bent "
       f"tip needs a custom short cartridge. (Sections 2 and 3.)")
     if B1:
-        A(f"- **In simulation** (sim2, synthetic writers and tremor, a page sensor with DeltaPen's measured error): with the "
-          f"project's tracker B1 leaves {f(B1.get('tremor_left_ratio_mean'), 2)} of the tremor ink error (perfect knowledge: "
-          f"{f(B1.get('tremor_left_ratio_oracle_mean'), 2)}); readable words out of 10 go from "
-          f"{f(B1.get('words_per10_off'), 1)} to {f(B1.get('words_per10_nib'), 1)}; tremor-free writing moves by "
-          f"{f(B1.get('clean_moved_um_mean'), 1)} um; the nib draws {f(B1.get('P_nib_mW_tremor_mean'), 1)} mW (the same nib "
-          f"unbalanced: {f(B2.get('P_nib_mW_tremor_mean'), 1)} mW"
-          + (f"; the Rev J C1S nose drew {f(_c1s_ref_P(sim), 2)} W in the same ET cells, sim2j" if _c1s_ref_P(sim) else "")
-          + "). With perfect knowledge the same nib removes most of the tremor up to its +-1 mm reach; beyond that it "
-          "saturates, which is why large tremor is study W's collar's job. The nib is not the bottleneck; the tracker is. SIM.")
+        F = sim_findings(sim)
+        by, ref, tv = F["by"], F["ref"], F["travel"]
+        rr = lambda c, k="ratio_mean": f(by.get(c, {}).get(k), 2)
+        jr = lambda c: f(ref.get(c, {}).get("ratio_nose"), 2)
+        t82 = (tv.get("ET 8 Hz 2 mm") or {}).get("oracle") or {}
+        A(f"- **In simulation** (sim2: {B1.get('n_writers')} synthetic writers, essential and Parkinsonian tremor at 0.3-2 mm, "
+          f"a page sensor with DeltaPen's measured error): B1 draws {f(B1.get('P_nib_mW_tremor_mean'), 1)} mW while correcting "
+          f"(the same nib without the balance: {f(B2.get('P_nib_mW_tremor_mean'), 0)} mW"
+          + (f"; the Rev J C1S nose: {f(_c1s_ref_P(sim), 1)} W in sim2j's runs" if _c1s_ref_P(sim) else "") + "). "
+          f"With the project's frozen tracker it leaves {rr('ET 8 Hz 1 mm')} of the tremor's ink error at 8 Hz 1 mm and "
+          f"{rr('ET 12 Hz 1 mm')} at 12 Hz 1 mm (the Rev J nose: {jr('ET 8 Hz 1 mm')} and {jr('ET 12 Hz 1 mm')}), but the "
+          f"tracker does not act at 4 Hz, at 0.3 mm or on the Parkinsonian tremor ({F['idle_rng']} left). With perfect "
+          f"knowledge of the tremor the same nib leaves {F['o_small_rng']} up to 1 mm and {F['o_big_rng']} at 2 mm: the "
+          f"handle's tremor already passes the nib's +-1 mm reach at the peaks of the 1 mm cells"
+          + (f"; a +-1.5 mm version leaves {f(t82.get('ratio_B1w'), 2)} at 8 Hz 2 mm (+-1 mm: {f(t82.get('ratio_B1'), 2)}) "
+             f"for {f(t82.get('P_B1w_mW'), 0)} mW" if t82 else "") + ". "
+          f"Readable words out of 10: {f(B1.get('words_per10_off'), 1)} without the nib, {f(B1.get('words_per10_nib'), 1)} "
+          f"with it, {f(B1.get('words_per10_oracle'), 1)} with perfect knowledge; tremor-free writing moved "
+          f"{f(B1.get('clean_moved_um_mean'), 1)} um. Today the tracker, not the nib, limits the benefit, and large tremor "
+          f"stays study W's collar's job. SIM (section 5.3).")
     else:
-        A("- **In simulation:** the sim2 runs had not finished when this page was generated (section 6).")
+        A("- **In simulation:** the sim2 runs had not finished when this page was generated (section 5.3).")
     A(f"- **Slim 12-16 mm core:** magnet-and-coil nibs around a D1 refill do not fit (they run out of force or of travel). "
       f"Piezo benders do: " + (f"+-{f(pz_best['travel_mm'], 2)} mm with {mw(pz_best['P_cont_W'])} mW at {f(pz_best['od_mm'], 0)} mm "
       f"(with the counter-face; CALC)" if pz_best else "see the slim cards") + ". That is a separate branch, not the first prototype."
-      + (f" In simulation the slim piezo stage (B3, +-{f(B3.get('travel_mm'), 2) if B3.get('travel_mm') else '0.3'} mm) leaves "
+      + (f" In simulation the slim piezo stage (B3, +-{f(c_slim_piezo.get('travel_under_load_mm'), 2)} mm under load) leaves "
          f"{f(B3.get('tremor_left_ratio_mean'), 2)} of the tremor ink error with the tracker and "
          f"{f(B3.get('tremor_left_ratio_oracle_mean'), 2)} with perfect knowledge, at {f(B3.get('P_nib_mW_tremor_mean'), 0)} mW of "
          "drive power (SIM)." if B3 else ""))
@@ -265,7 +281,7 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       "nib; the two forces are offset along the pen, and that couple goes into the carrier's bushings and the wires' tilt "
       "stiffness, not the coils. When the nib moves, the refill translates parallel to the paper, so its end slides along the "
       "face and the face does not move. When the ball lifts, the refill moves forward, the face lands on a stop set a small "
-      f"gap ({f(((sim.get('rules') or {}).get('chosen') or {}).get('face_gap_mm', 0.15), 2)} mm) beyond its writing position "
+      f"gap ({f((_rules(sim).get('chosen') or {}).get('face_gap_mm', 0.15), 2)} mm, a tuned rule) beyond its writing position "
       "and leaves the refill: nothing is held in the air. The stop and the face's "
       "orientation are set slowly (seconds) by three small screw motors with no holding power, from the pen's motion sensor "
       "and the refill-slide sensor. CALC statics; PROPOSED DESIGN.")
@@ -506,6 +522,7 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
     A("")
     A(sim_md(sim))
     A(by_cell_md(sim))
+    A(sim_analysis_md(sim, cards))
     idl = sim.get("ideal") or {}
     if idl:
         A(f"Ideal page sensor (a BOUND): ink error {f(idl.get('ink_err_um_ideal'), 0)} um vs {f(idl.get('ink_err_um_deltapen'), 0)} um "
@@ -583,6 +600,112 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
     with open(path, "w") as fh:
         fh.write(text)
     return str(path)
+
+
+def _rules(sim: Dict) -> Dict:
+    r = (sim or {}).get("rules") or {}
+    if not r:
+        import json
+        p = os.path.join(REPO_ROOT, "results", "bnib", "rules.json")
+        if os.path.exists(p):
+            try:
+                r = json.load(open(p))
+            except Exception:
+                r = {}
+    return r
+
+
+def _parse_cell(k: str):
+    kind, f0, _, amp, _ = k.split()
+    return kind, float(f0), float(amp)
+
+
+def sim_findings(sim: Dict) -> Dict:
+    """What the B1 runs show, read off the cards (no new numbers): the cells where the tracker acts, where it does not,
+    perfect knowledge up to 1 mm and at 2 mm, and the Rev J reference."""
+    cards = (sim or {}).get("cards") or {}
+    by = (cards.get("B1") or {}).get("by_cell") or {}
+    act, idle, o_small, o_big = [], [], [], []
+    for k, v in by.items():
+        if v.get("ratio_mean") is None:
+            continue
+        kind, f0, amp = _parse_cell(k)
+        (act if v["ratio_mean"] < 0.95 else idle).append((k, v["ratio_mean"]))
+        if v.get("ratio_oracle") is not None:
+            (o_small if amp <= 1.0 else o_big).append((k, v["ratio_oracle"]))
+    rng = lambda L: (f"{min(x for _, x in L):.2f}-{max(x for _, x in L):.2f}" if len(L) > 1 else
+                     (f"{L[0][1]:.2f}" if L else "-"))
+    return {"by": by, "ref": ((sim or {}).get("sim2j_revJ_reference") or {}).get("cells") or {},
+            "active": sorted(act, key=lambda x: x[1]), "idle": idle, "o_small": o_small, "o_big": o_big,
+            "idle_rng": rng(idle), "o_small_rng": rng(o_small), "o_big_rng": rng(o_big),
+            "travel": ((sim or {}).get("travel") or {}).get("cells") or {}, "diag": (sim or {}).get("oracle_diagnosis") or {}}
+
+
+def sim_analysis_md(sim: Dict, cards: Dict) -> str:
+    """The paragraphs under the simulation tables: what the runs show, one case taken apart, the travel variant."""
+    F = sim_findings(sim)
+    sc = (sim or {}).get("cards") or {}
+    B1, B2, B3 = sc.get("B1") or {}, sc.get("B2") or {}, sc.get("B3") or {}
+    if not F["by"]:
+        return ""
+    L = []
+    act = "; ".join(f"{k} {v:.2f}" for k, v in F["active"])
+    idle = ", ".join(k for k, _ in F["idle"])
+    L.append(f"What the runs show (SIM). The tracker acts where it detects the tremor ({act}; the ratio is the ink error "
+             f"with the nib over the ink error with the nib held centred) and stays off in {idle} ({F['idle_rng']}), as in "
+             f"sim2j's Rev J runs at 4 Hz and 0.3 mm; sim2j did not run the Parkinsonian model (ASSUMPTION shape: 4.5-5.5 Hz, "
+             f"frequency jitter, waxing and waning). With perfect knowledge the same nib leaves {F['o_small_rng']} up to 1 mm "
+             f"and {F['o_big_rng']} at 2 mm. B1 draws {f(B1.get('P_nib_mW_tremor_mean'), 1)} mW while correcting and "
+             f"{f(B1.get('P_nib_mW_clean_mean'), 1)} mW in tremor-free writing; the unbalanced B2 draws "
+             f"{f(B2.get('P_nib_mW_tremor_mean'), 1)} mW for the same correction (ratio {f(B2.get('tremor_left_ratio_mean'), 2)} "
+             f"vs {f(B1.get('tremor_left_ratio_mean'), 2)}): the balance changes the power, not the correction. "
+             f"Tremor-free writing moved {f(B1.get('clean_moved_um_mean'), 1)} um on average (max "
+             f"{f(B1.get('clean_moved_um_max'), 1)} um): the frozen tracker makes no false correction here. "
+             + (f"The slim piezo stage B3 (+-{f((cards.get('slim14|h_piezo') or {}).get('travel_under_load_mm'), 2)} mm under "
+                f"load) leaves {f(B3.get('tremor_left_ratio_mean'), 2)} with the tracker and "
+                f"{f(B3.get('tremor_left_ratio_oracle_mean'), 2)} with perfect knowledge at "
+                f"{f(B3.get('P_nib_mW_tremor_mean'), 0)} mW of drive power (the pencil study's recovery-driver convention)."
+                if B3 else ""))
+    L.append("")
+    d = F["diag"]
+    ref = F["ref"].get(d.get("cell", ""), {}) if d else {}
+    if d:
+        gx, gy = (d.get("page_gain_xy") or [None, None])[:2]
+        lx, ly = (d.get("lag_ms_xy") or [None, None])[:2]
+        L.append(f"Why perfect knowledge leaves more with B1 than with the Rev J nose (one case taken apart: {d['cell']}, "
+                 f"writer {d['w']}, seed {d['seed']}; SIM, `sim.oracle_diagnosis`): the nib reproduces the commanded page "
+                 f"offset with gain {f(gx, 3)} / {f(gy, 3)} (x / y) and a {f(lx, 1)} / {f(ly, 1)} ms lag (the oracle previews "
+                 f"{f(d.get('preview_ms'), 1)} ms). The handle's tremor at its tip point is {f(d['handle_tremor_rms_um'] * 1e-3, 2)} mm "
+                 f"rms with a 95th percentile of {f(d['handle_tremor_p95_mm'], 2)} mm, beyond B1's +-{f(d['reach_mm'], 2)} mm "
+                 f"reach {f(100 * d['share_beyond_reach'], 1)} % of the time: the clipped peaks alone are "
+                 f"{f(d['clip_residual_um'], 0)} um of the {f(d['ink_oracle_um'], 0)} um left (rms of the ink's "
+                 f"deviation from the tremor-free run; {f(d['ink_none_um'], 0)} um with the nib held centred). Most of the "
+                 f"rest is sim2's contact gate: the H1 writer's ball makes {d['lifts_under_5ms']} lifts shorter than 5 ms in this "
+                 f"run ({d['lifts']} in all), and the servo fades the command back in after each touchdown "
+                 f"({f(100 * d['gated_share'], 1)} % of the samples inside the reach, a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms "
+                 f"after a touchdown, {f(100 * d['gated_share_of_command_error'], 0)} % of the command error there). The Rev J "
+                 f"nose shares the gate but its +-3 mm reach does not clip"
+                 + (f" (its perfect-knowledge ratio in this cell: {f(ref.get('ratio_oracle'), 2)}, B1's: "
+                    f"{f((F['by'].get(d['cell']) or {}).get('ratio_oracle'), 2)})" if ref else "") + ".")
+        L.append("")
+    tv = F["travel"]
+    if tv:
+        L.append("The travel variant (SIM, writers 0-2 with their test seeds; B1w = the optimiser's counter-face point at the "
+                 "1.5 mm travel floor, the same frozen rules; case by case against B1):")
+        L.append("")
+        L.append("| cell | tracker ratio, +-1.0 / +-1.5 mm | perfect knowledge, +-1.0 / +-1.5 mm | words out of 10 with the tracker, +-1.0 / +-1.5 mm | nib power with the tracker, mW, +-1.0 / +-1.5 mm |")
+        L.append("|---|---|---|---|---|")
+        for cell, v in tv.items():
+            n_, o_ = v.get("nose") or {}, v.get("oracle") or {}
+            L.append(f"| {cell} | {f(n_.get('ratio_B1'), 2)} / {f(n_.get('ratio_B1w'), 2)} | {f(o_.get('ratio_B1'), 2)} / "
+                     f"{f(o_.get('ratio_B1w'), 2)} | {f(n_.get('words10_B1'), 1)} / {f(n_.get('words10_B1w'), 1)} | "
+                     f"{f(n_.get('P_B1_mW'), 1)} / {f(n_.get('P_B1w_mW'), 1)} |")
+        L.append("")
+        tsum = (sim or {}).get("travel") or {}
+        if tsum.get("clean_moved_um_B1w") is not None:
+            L.append(f"B1w in tremor-free writing: moved {f(tsum['clean_moved_um_B1w'], 1)} um, {f(tsum.get('clean_P_mW_B1w'), 1)} mW.")
+            L.append("")
+    return "\n".join(L)
 
 
 def _c1s_ref_P(sim: Dict):

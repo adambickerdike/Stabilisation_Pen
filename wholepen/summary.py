@@ -38,8 +38,8 @@ def _agg(R, cls, design, key, how="mean", hand="h1", grip=1.0):
     return float(np.sum(v)) if how == "sum" else float(np.mean(v))
 
 
-def headline(R) -> Dict:
-    classes = [c[0] for c in RS.CLASSES]
+def headline(R, classes=None) -> Dict:
+    classes = classes or [c[0] for c in RS.CLASSES]
     tip, words, cover, ink, n = {}, {}, {}, {}, {}
     for c in classes:
         for d in HEAD_DESIGNS:
@@ -121,11 +121,12 @@ def gate_vs_locked(R, pairs=(("gt_nose", "gt_locked_nose"), ("collar_nose", "col
 
 def build() -> Dict:
     test = _rows("test")
+    real = _rows("real")
     grips = _rows("grips")
     arm = _rows("arm")
     tune = _rows("tune")
     body = {"conventions": __doc__.split("Conventions")[1].split("Evidence status")[0].strip(),
-            "headline": headline(test), "cards": cards(test),
+            "headline": headline(test), "headline_real": headline(real, [c[0] for c in RS.CLASSES_REAL]), "cards": cards(test),
             "tail_and_collar_vs_locked_test": gate_vs_locked(test),
             "tail_and_collar_vs_locked_grips": gate_vs_locked(grips),
             "arm": [{k: r.get(k) for k in ("class", "design", "tip_tremor_mm", "words_app", "coverage", "ink_err_um")} for r in arm],

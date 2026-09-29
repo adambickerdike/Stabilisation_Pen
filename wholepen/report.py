@@ -32,6 +32,10 @@ def blocks() -> Dict[str, str]:
         out["table_tip"] = SM.table_md(head, "tip_mm", "{:.1f}")
         out["table_words"] = SM.table_md(head, "words10", "{:.0f}")
         out["table_ratio"] = SM.table_md(head, "ratio_vs_none", "{:.2f}")
+    hr = s.get("headline_real")
+    if hr and hr.get("rows"):
+        out["table_real_tip"] = SM.table_md(hr, "tip_mm", "{:.2f}")
+        out["table_real_words"] = SM.table_md(hr, "words10", "{:.0f}")
     cards = s.get("cards")
     if cards:
         lines = ["| Population | Mode | Readable words | Useful words / min | Tremor left at the tip (mm; no help) | Clean writing changed (µm) | Ink laid (coverage) | Missing strokes | Nose power (W) | Other devices (W) |",
@@ -132,8 +136,34 @@ def blocks() -> Dict[str, str]:
     return out
 
 
+TOKEN = re.compile(r"«([A-Za-z_0-9]+)\|([a-z_0-9]+)\|([a-z_0-9]+)(?:\|([0-9]))?»")
+
+
+def fill_tokens(txt: str) -> str:
+    """Replace «class|design|key|decimals» with the two-writer value from summary.json's headline (key: tip_mm,
+    words10, coverage, ratio_vs_none, ink_err_um) or, for class 'clean', the tremor-free writing moved (µm) from the
+    test rows."""
+    s = _load("summary.json") or {}
+    head = {(r["class"], r["design"]): r for r in s.get("headline", {}).get("rows", [])}
+    test = RS.Rows("test").values()
+
+    def rep(m):
+        c, d, k, dec = m.group(1), m.group(2), m.group(3), m.group(4)
+        dec = int(dec) if dec else (0 if k in ("words10", "ink_err_um") else 2)
+        if c == "clean":
+            v = [r.get("moved_vs_clean_um") for r in test if r.get("class") == "clean" and r.get("design") == d]
+            v = [x for x in v if x is not None]
+            return f"{max(v):.0f}" if v else "–"
+        r = head.get((c, d))
+        if r is None or r.get(k) is None:
+            return "–"
+        val = r[k] * (100.0 if k == "coverage" else 1.0)
+        return f"{val:.{dec}f}"
+    return TOKEN.sub(rep, txt)
+
+
 def fill_doc(path: str = DOC) -> str:
-    txt = open(path).read()
+    txt = fill_tokens(open(path).read())
     for name, body in blocks().items():
         pat = re.compile(rf"(<!-- W:{name} -->)(.*?)(<!-- /W:{name} -->)", re.S)
         txt = pat.sub(lambda m: m.group(1) + "\n" + body + "\n" + m.group(3), txt)

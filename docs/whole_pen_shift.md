@@ -10,7 +10,56 @@ the whole pen against hand tremor of 1–10 mm, and the independent review of 29
 ## The answer in plain words
 
 <!-- W:answer -->
-(filled at the end of the study)
+**What moves.** The strongest compact way to physically shift the whole pen is to split it in two. The part you hold is a
+**collar**: a sleeve 21.7 mm across and about 100 mm long that your fingers grip, that rests in the web between thumb and
+index finger, and whose front ring slides on the paper and carries your writing force. The **inner pen** — refill, a
+small fast nib, battery and electronics, 12 mm across — hangs inside it on a small two-way hinge 50 mm behind the tip. A
+magnet-and-coil actuator in the collar's back wall swings the inner pen up to 4.6° each way, which moves the tip up to
+4 mm (5.2 mm across the page in the direction the pen leans). The actuator pushes back on the collar and so on your
+fingers: the Liftware spoon's principle (LIT ACT-16, ACT-17). About 40 g in all, the review's 40–65 g target (PROPOSED
+DESIGN, CALC). Because the ring carries the writing force, holding the pen steady costs about 0.05 W, where Rev J's nose
+costs 1.6 W at 50° (CALC, the review's point 1).
+
+**How it works with the nib.** The small nib corrects fast and fine. The collar moves only at the tremor's own rhythm,
+only while a tremor is detected, and only for the part of the tremor the nib cannot reach — so it never drags your
+letters around: with it switched on, tremor-free writing moved at most «clean|collar_nose|moved» µm (SIM; the programme's
+rule is 25 µm).
+
+**What the simulator says** (two synthetic test writers, ten words; the tables below):
+
+- **Moderate tremor (3 mm).** Most of the benefit comes from knowing the tremor well, not from moving more metal. With the
+  best causal tremor estimate the Rev J nose alone brings ET 3 mm down from «ET_moderate|none|tip_mm|1» mm to
+  «ET_moderate|nose|tip_mm|1» mm (words read «ET_moderate|none|words10» → «ET_moderate|nose|words10» of 10), and PD 3 mm
+  from «PD_moderate|none|tip_mm|1» to «PD_moderate|nose|tip_mm|1» mm. The collar adds little on top today
+  («ET_moderate|collar_nose|tip_mm|1» and «PD_moderate|collar_nose|tip_mm|1» mm), because the estimate, not the
+  travel, is the limit.
+- **What the mechanism could do.** If the pen knew the tremor exactly, collar and nose together would leave
+  «ET_moderate|collar_nose_oracle|tip_mm|1» mm (ET 3 mm), «PD_moderate|collar_nose_oracle|tip_mm|1» mm (PD 3 mm) and
+  «PD_reemergent_severe|collar_nose_oracle|tip_mm|1» mm of an 8 mm re-emergent PD tremor
+  («PD_reemergent_severe|collar_nose_oracle|words10» of 10 words read). That is the real capacity of the mechanics.
+- **Severe tremor (8 mm) is the hard limit.** Whatever moves — nose, collar or both, even with perfect knowledge — the
+  ball stays on the paper only about half to three quarters of the time when the pen is swung that far that fast
+  (ET 8 mm: «ET_severe|nose|coverage» % of the ink laid with the nose, «ET_severe|collar_nose|coverage» % with the collar
+  added), about 3 mm of tremor is left in the ink that is laid, and 0–1 words in 10 can be read. For severe tremor the
+  realistic routes to legible words are the pen writing a known text by itself (autowrite, DEC-049) or a surface that
+  steadies the hand, not a pen that shifts itself further.
+
+**What does not work in a pen, and why** (the numbers are in §3):
+
+- **Weights and gyroscopes** can only push against their own inertia. A 30 g weight moving ±4 mm pushes 0.12 N at 5 Hz,
+  while your grip passes on about 0.6 N for every millimetre of tremor (CALC). A gyroscope strong enough to matter stores
+  5–18 J in its spinning rotors — like dropping this pen from 5–18 m — and in the simulator it only undid the harm its
+  own 100 g did (SIM). A tuned weight made the tip shake more than the same weight held still (CALC, SIM).
+- **Pushing on the paper**: the paper can push back with at most about 0.3–1.4 N of friction against 1.7–4.6 N of tremor
+  force at 3–8 mm (CALC).
+- **Honestly impossible today:** moving the ink ±10 mm from inside a 22 mm grip (the collar gives ±4 mm, a compact nib
+  ±1 mm; ±10 mm needs about a 33 mm collar around Rev J's nose); holding a ball on the paper while swinging it ±5 mm at
+  5–6 Hz with a spring-fed refill (SIM: a quarter to half of the ink lost); and knowing the tremor exactly while writing,
+  because tremor (4–8 Hz) and fast handwriting strokes (4–7.7 Hz) overlap (the review's point 7).
+
+**Next:** build the collar on a hand-phantom bench (EXP-W11) with a refill that follows the paper through the swing
+(EXP-W13), and improve the tremor estimate on real recordings (EXP-W15). The estimator made a threefold difference in the
+simulator; the extra travel matters only once the estimate is good.
 <!-- /W:answer -->
 
 ### One number per tremor class and design: the tremor left at the pen tip (mm, peak)
@@ -30,6 +79,31 @@ population estimate.
 <!-- W:table_words -->
 <!-- /W:table_words -->
 
+### At the real tremor sizes (study R)
+
+Study R measured tremor at the pen tip in recorded PD spirals (fitted on 24 tuning patients, checked on 25 test patients):
+mild 0.03–0.16 mm, moderate 0.16–0.51 mm, severe above 0.51 mm, typically 1.72 mm — far below the 5–10 mm this study
+was asked to design for (the tablet recordings, with the hand resting, may understate free-air tremor, and the severe class
+rests on three tuning patients). The same designs with recorded PD tremor from study R's library (test split) at its
+representative moderate (0.24 mm) and severe (1.72 mm) amplitudes (SIM, test writers 0–1):
+
+<!-- W:table_real_tip -->
+<!-- /W:table_real_tip -->
+
+Words read (out of 10):
+
+<!-- W:table_real_words -->
+<!-- /W:table_real_words -->
+
+**What changes at the real sizes.** A 1.7 mm tremor is well inside the Rev J nose's ±6.57 mm and inside the collar's ±4 mm:
+nothing needs more reach, so the collar's reason to exist (reach beyond the nib) disappears for these people, the
+"write only when in reach" gate never triggers, and the gyroscope and weights stay pointless. The limit is entirely the
+tremor estimate — study R found that no causal tracker restored legibility at 1.72 mm on real writing (words 0.4–0.5 of 10)
+while perfect knowledge gave 7 of 10. A paper-grounded force becomes relatively stronger at these sizes (the grip passes on
+about 1 N at 1.7 mm, comparable with the paper's 0.3–1.4 N of friction, CALC), so an amplitude-gated paper force (EXP-W17)
+is worth more here than at 8 mm. The whole-pen collar remains the right mechanism for the minority with tremor beyond
+about 4–5 mm at the ink, which the recordings did not contain and EXP-W10 must look for.
+
 How to read a ratio: the tremor left divided by the tremor with no help. **0.5 means half the amplitude, which is 75 %
 less tremor power (−6 dB); it is not "75 % less tremor".** The ratios are in §4.4.
 
@@ -48,7 +122,19 @@ The pictures are synthetic; they carry this label wherever they are shown.*
 ![The whole-pen collar (PROPOSED DESIGN)](../results/wholepen/fig_w_system.png)
 
 <!-- W:recommend -->
-(filled at the end of the study)
+**The recommended system (PROPOSED DESIGN; CALC unless marked):**
+
+| | |
+|---|---|
+| What you hold | a collar 21.7 mm across, about 100 mm long (PA12-CF, 1.2 mm wall), resting in the thumb-index web, with a skid ring on the paper at its front that carries the writing force and a load cell that measures it |
+| What moves | the inner pen (12 mm aluminium tube, 92 mm): refill and a small fast nib (study B's balanced nib, ±1 mm), board and IMU, a 10280 Li-ion cell behind the pivot so the pen balances on it |
+| How it moves | a two-axis cross-strip flexure pivot 50 mm behind the tip; ±4.6° swing → ±4 mm at the tip, ±5.2 mm across the page in the tilt plane (the ball slides on its refill spring to stay on the paper); the refill's front stop follows the paper while the ring is loaded and lifts with the pen when it is not |
+| What pushes | magnets on the inner pen's end face over a two-axis coil plate in the collar's rear wall, 42 mm behind the pivot (Rev J's C1S actuator principle at 3.6 × its lever); reaction into the collar and the hand. Two geared 8 mm motors (MFR AMF-120) do not fit beside the swinging pen |
+| Control | the gated listening tremor estimate with the guarded fallback; the collar takes only the share of the estimated tremor the nib cannot reach, at the tremor line only; the nib is commanded on what the collar leaves at the ink |
+| Mass | collar 18.3 g, inner pen 21.9 g, **40.1 g** in total |
+| Power | holding: about 0.05 W (the ball's refill-spring moment, 6.3 mN·m, at about 27 mN·m/√W); swinging for 8 mm tremor: about 0.05 W more (CALC); the whole-pen simulation of the collar with the Rev J inner pen (heavier) drew 0.4–1.4 W at the actuator (SIM) |
+| Safety | the moving pen is inside the collar (no pinch point for the fingers); force at the tip ≤ the motor's peak; a limiter keeps the pivot off its stops (REQ-WP-008: the simulator reached the stops at 8 mm); unpowered, a centring latch must hold the pen (the flexure alone is soft: open issue); no stored energy beyond the cell |
+| Feel | the grip-force change the writer feels: 0.2–0.5 N rms in the simulator (SIM) |
 <!-- /W:recommend -->
 
 ### Results cards (one per population and mode; the review's §13)
@@ -299,8 +385,10 @@ inside the firmware's tick (`wholepen/stepper.py`, a copy of sim2j's step with t
 same hand tremor for every pen (its hand-path amplitude set on the Rev J pen with nothing moving), so a heavier pen shows
 what its mass does. **Page sensor:** sim2j's measured-style model (DeltaPen per-window statistics, LIT OPT-02: lognormal
 error per 10 ms window, median 23.6 µm, mean 68.3 µm, errors adding up); sim2j's 3 µm white noise is used only where
-marked. **Tracker:** chosen on the tuning writer between sim2j's frozen guarded tracker and ai2's gated listening tracker
-(DEC-042's default). **Collar law:** the internal-model phasor law with the controller's model of the collar at grip 1 ×
+marked. **Tracker (the tremor estimate every causal device uses):** chosen on the tuning writer among sim2j's frozen
+guarded tracker (G4), ai2's gated listening tracker with the Rev H tracker as its fallback (DEC-042), and the gated
+listening tracker with the guarded tracker as its fallback, by ink error among those that move tremor-free writing by at
+most 25 µm (sim2j's rule): the last was chosen. **Collar law:** the internal-model phasor law with the controller's model of the collar at grip 1 ×
 and split 0.5; the nose is re-commanded on what the collar leaves at the ink (the measured barrel tip and the ink differ
 by (G − G_ink) u because the ball slides on its refill).
 
@@ -431,7 +519,24 @@ page sensor, at three grip strengths, with power including the nib's static load
 ### 8 Open issues
 
 <!-- W:open -->
-(filled at the end of the study)
+1. **Ink contact under large, fast swings.** At 8 mm tremor the ball stayed on the paper only 44–74 % of the time with the
+   nose or the collar moving (SIM); the refill's follow-and-lift mechanism (REQ-WP-004) and the contact model need the
+   bench (EXP-W13) before any severe-tremor claim.
+2. **The pivot reached its hard stops at 8 mm** in the simulator (0.17 rad against 0.12) even with the reference held to
+   65 % of the range: the collar's servo cannot hold the heavy Rev J inner pen against 10 mm of hand tremor; a stop-approach
+   limiter and the light compact inner pen (CALC only here) must be shown on the bench.
+3. **The simulated inner pen is the Rev J pen (87 g)**, not the 22 g compact inner pen; the compact design's
+   controllability and power are CALC only.
+4. **The fine nib is study B's and not yet available**; the Rev J nose (with its 1.6–2.4 W static load, SIM and CALC) stood
+   in for it; the "±1 mm fine nib" rows clip the Rev J nose's reach to 1 mm.
+5. **The causal estimate is the main limit**; the chosen one (gated listening, guarded fallback) was tuned on one writer
+   and tested on two synthetic writers with one seed each.
+6. **Unpowered state:** the flexure is soft (0.02 N·m/rad); a centring latch or detent is needed and not designed.
+7. **Actuator detail:** the coil plate's force constant at a 42 mm lever is scaled from the Rev J nose's image-method value
+   (itself contested, DEC-041); measure it (EXP-W11).
+8. **The class amplitudes are not calibrated at the tip:** the same hand tremor is applied to every pen and the achieved
+   no-help tip tremor is reported (it is larger than the class value for the 8 mm classes).
+9. **Arm model:** only a small subset was run on the articulated arm (§4.6).
 <!-- /W:open -->
 
 ### 9 Files and how to reproduce

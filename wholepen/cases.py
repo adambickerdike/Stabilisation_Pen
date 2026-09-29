@@ -128,11 +128,29 @@ def cal_key(hand_model: str, kind: str, f0: float) -> str:
     return f"{hand_model}|{kind}|{f0:g}"
 
 
+_REAL: Dict = {}
+
+
+def real_draw(case: TK.WriterCase, kind: str, amp_tip: float, seed: int):
+    """A real recorded tremor waveform at the pen tip from study R's library (realdata.library, test split; PD: UCI
+    spirals, ET: Zenodo hand recordings scaled to the tip classes), scaled to amp_tip (REAL DATA, CALC)."""
+    key = (case.w, len(case.t), kind, round(amp_tip * 1e7), seed)
+    if key not in _REAL:
+        from realdata import library as RL
+        a = amp_tip * 1e3
+        cls = "severe" if a > 0.51 else ("moderate" if a > 0.165 else "mild")
+        _REAL[key] = RL.tremor(cls, seed=seed, kind="ET" if kind == "REAL_ET" else "PD", split="test", t=case.t, amp_mm=a)
+    return _REAL[key]
+
+
 def h1_tremor(case: TK.WriterCase, kind: str, f0: float, amp_tip: float, seed: int, pen_lin: Dict = None,
               r_rot: float = 0.5) -> np.ndarray:
     """Hand-path tremor (n, 2) for the H1 hand.  The SAME hand tremor for every pen: its hand-path peak is scaled so
     that the Rev J pen WITHOUT devices (lin.PEN) moves amp_tip at its tip (linear model, CALC), times the empirical
     correction CAL (SIM on the tuning writers); a heavier pen then shows what its mass does to the same tremor."""
+    if kind.startswith("REAL"):
+        dr = real_draw(case, kind, amp_tip, seed)
+        return dr.d / max(tip_per_hand(dict(L.PEN), float(dr.meta["f0"]), r_rot), 1e-6)
     k = tip_per_hand(dict(L.PEN), f0, r_rot)
     A_hand = amp_tip / max(k, 1e-6) * CAL.get(cal_key("h1", kind, f0), 1.0)
     if kind == "PD_recorded":
@@ -358,6 +376,8 @@ def run_case(su: Setup, fw_name: str, wp: C.WPConfig, kind: str, f0: float, amp_
     """One case: this writer and pen, a tremor class, a firmware (sim2j controller name) and the device laws."""
     case = su.case
     arm = su.hand_model == "arm"
+    if kind.startswith("REAL") and amp_tip > 0:
+        f0 = float(real_draw(case, kind, amp_tip, seed).meta["f0"])      # the recording's own tremor frequency
     fw = replace(ET.controller(fw_name, seed=seed * 7 + su.w), page_error=PAGE_ERR[wp.page_err])
     if nose_reach is not None:
         fw = replace(fw, reach=nose_reach)

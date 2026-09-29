@@ -1,0 +1,7 @@
+when,share_pct,count
+on the wrong letter,24.8731,441
+1 letter later,15.7924,280
+2+ letters later,12.0135,213
+at the word's end,11.9571,212
+one word later (context),3.83531,68
+not caught,31.5285,559

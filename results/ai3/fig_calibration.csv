@@ -1,0 +1,27 @@
+design,series,mean_predicted,observed_share,n
+as planned (W2),raw,0.00760134,0.0311502,1252
+as planned (W2),raw,0.097409,0.176471,34
+as planned (W2),raw,0.16834,0.25,20
+as planned (W2),raw,0.2321,0.428571,7
+as planned (W2),raw,0.286987,0.625,8
+as planned (W2),raw,0.372679,0.25,4
+as planned (W2),raw,0.446655,0.25,4
+as planned (W2),raw,0.508747,0.333333,6
+as planned (W2),raw,0.565007,0.3,10
+as planned (W2),raw,0.630697,0.166667,6
+as planned (W2),raw,0.690659,0.333333,3
+as planned (W2),raw,0.777256,0.2,5
+as planned (W2),raw,0.836932,0.4,5
+as planned (W2),raw,0.905524,0.230769,13
+as planned (W2),raw,0.997602,0.355895,458
+as planned (W2),calibrated,0.253791,0,5
+as planned (W2),calibrated,0.312213,0.00772201,259
+as planned (W2),calibrated,0.365593,0.0375648,772
+as planned (W2),calibrated,0.421004,0.0703704,270
+as planned (W2),calibrated,0.498237,0.339623,53
+as planned (W2),calibrated,0.566643,0.25,40
+as planned (W2),calibrated,0.636074,0.4,70
+as planned (W2),calibrated,0.701356,0.40146,137
+as planned (W2),calibrated,0.767974,0.340136,147
+as planned (W2),calibrated,0.832218,0.294118,68
+as planned (W2),calibrated,0.87767,0.357143,14

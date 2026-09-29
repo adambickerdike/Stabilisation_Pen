@@ -1041,6 +1041,14 @@ def apply_rules(designs: Dict[str, SimDesign], rules: Optional[Dict]) -> Dict[st
     return out
 
 
+def _done(rows: Rows, prefix: str, name: str, w: int, seed: int, cells, ctls, page_mode: str = "deltapen") -> bool:
+    """All rows of one (writer, design) block present: skip building its Setup (a resumed stage costs no sim time)."""
+    keys = [f"{prefix}|{name}|clean|{w}|{seed}|{page_mode}|nose"]
+    for kind, f0, amp in cells:
+        keys += [f"{prefix}|{name}|{kind}|{f0:g}|{amp * 1e3:g}|{w}|{seed}|{page_mode}|{c}" for c in ("none",) + tuple(ctls)]
+    return all(rows.has(k) for k in keys)
+
+
 def stage_test(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, names=("B1", "B2", "B3"),
                writers=TEST_WRITERS, log=print) -> None:
     pens = Pens(designs)
@@ -1049,6 +1057,8 @@ def stage_test(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, n
     for w in ws:                                  # writers outer: partial results cover every design
         for name in names:
             seed = TEST_SEEDS[w % len(TEST_SEEDS)]
+            if _done(rows, "test", name, w, seed, cells, ("nose", "oracle") if name in ("B1", "B3") else ("nose",)):
+                continue
             su = Setup(w, pens, name, log=log)
             run_clean(su, rows, "test", seed, log=log)
             ctls = ("none", "nose", "oracle") if name in ("B1", "B3") else ("none", "nose")
@@ -1062,9 +1072,12 @@ def stage_ideal(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, 
     pens = Pens(designs)
     for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:3]):
         seed = TEST_SEEDS[w % len(TEST_SEEDS)]
+        icells = (CELLS[3],) if quick else (CELLS[0], CELLS[3], CELLS[6])
+        if _done(rows, "ideal", "B1", w, seed, icells, ("nose",), page_mode="ideal"):
+            continue
         su = Setup(w, pens, "B1", log=log)
         run_clean(su, rows, "ideal", seed, page_mode="ideal", log=log)
-        for kind, f0, amp in ((CELLS[3],) if quick else (CELLS[0], CELLS[3], CELLS[6])):
+        for kind, f0, amp in icells:
             run_cell(su, rows, "ideal", kind, f0, amp, seed, page_mode="ideal", log=log)
         rows.save()
 
@@ -1081,11 +1094,91 @@ def stage_travel(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False,
     pens = Pens({"B1w": designs["B1w"]})
     for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:3]):
         seed = TEST_SEEDS[w % len(TEST_SEEDS)]
+        tcells = TRAVEL_CELLS[:1] if quick else TRAVEL_CELLS
+        if _done(rows, "travel", "B1w", w, seed, tcells, ("nose", "oracle")):
+            continue
         su = Setup(w, pens, "B1w", log=log)
         run_clean(su, rows, "travel", seed, log=log)
-        for kind, f0, amp in (TRAVEL_CELLS[:1] if quick else TRAVEL_CELLS):
+        for kind, f0, amp in tcells:
             run_cell(su, rows, "travel", kind, f0, amp, seed, ctls=("none", "nose", "oracle"), log=log)
         rows.save()
+
+
+def oracle_diagnosis(designs: Dict[str, SimDesign], rows: Rows, name: str = "B1", w: int = 0,
+                     cell=("ET", 8.0, 1.0e-3), log=print) -> Dict:
+    """One case, taken apart: why perfect knowledge of the tremor still leaves part of it (SIM).  The oracle commands
+    -d(t + preview), d = the handle's tremor at its tip point; the ink residual splits into (1) the command clipped at
+    the nib's page-plane reach, (2) the firmware's contact gate (sim2's servo fades the command when the ball lifts;
+    the H1 writer's ball chatters in short lifts) and (3) the floor between runs with different seeds."""
+    kind, f0, amp = cell
+    key = f"diag|{name}|{kind}|{f0:g}|{amp * 1e3:g}|{w}"
+    if rows.has(key):
+        return rows.rows[key]
+    sd = designs[name]
+    su = Setup(w, Pens({name: sd}), name, log=log)
+    seed = TEST_SEEDS[w % len(TEST_SEEDS)]
+    env = case_env(w, seed)
+    tr = _tremor(su.case, kind, f0, amp, seed)
+    t0 = time.time()
+    rn = su.run("none", seed, env, tremor=tr)
+    ro = su.run("oracle", seed, env, tremor=tr, ref_none=rn)
+    cl = su.clean
+    n = min(len(rn["t"]), len(ro["t"]), len(cl["t"]))
+    t = rn["t"][:n]
+    dt = float(t[1] - t[0])
+    co = ro["contact"][:n] > 0.5
+    c = (rn["contact"][:n] > 0.5) & co & (t > 0.5)
+    d = rn.ball()[:n] - cl.ball()[:n]
+    e_or = ro.ink()[:n] - cl.ink()[:n]
+    dink = ro.ink()[:n] - rn.ink()[:n]
+    qp = np.column_stack([ro["qpx"][:n], ro["qpy"][:n]])
+    reach = float(su.pm.cfg.geom.travel)
+    r = np.hypot(d[:, 0], d[:, 1])
+    clip_res = d * (1.0 - np.where(r > reach, reach / np.maximum(r, 1e-12), 1.0))[:, None]
+    rms = lambda v, m=c: float(np.sqrt(np.mean(np.sum(v[m] ** 2, axis=1))) * 1e6)          # um
+    gains, lags = [], []
+    for j in (0, 1):
+        gains.append(float(np.sum(dink[c, j] * qp[c, j]) / np.sum(qp[c, j] ** 2)))
+        a_ = qp[c, j] - qp[c, j].mean()
+        b_ = dink[c, j] - dink[c, j].mean()
+        L = range(-40, 41)
+        cc = [float(np.sum(a_[max(0, -k):len(a_) - max(0, k)] * b_[max(0, k):len(b_) - max(0, -k)])) for k in L]
+        lags.append(list(L)[int(np.argmax(cc))] * dt)
+    nz = su.pm.cfg.nose
+    gd = 2 * nz.servo_zeta / (2 * math.pi * nz.servo_hz) + 0.25e-3
+    kk = int(round(gd / dt))
+    ds = np.vstack([d[kk:], np.repeat(d[-1:], kk, 0)])
+    rs = np.hypot(ds[:, 0], ds[:, 1])
+    m2 = c & (rs > 0.2e-3) & (rs < 0.7 * reach)
+    g_eff = -np.sum(qp * ds, axis=1) / np.maximum(np.sum(ds * ds, axis=1), 1e-18)
+    td = np.where(np.diff(co.astype(int)) > 0)[0] + 1
+    lo = np.where(np.diff(co.astype(int)) < 0)[0] + 1
+    durs = np.array([t[td[td > a][0]] - t[a] for a in lo if np.any(td > a)])
+    since = np.full(n, np.inf)
+    last = -np.inf
+    tds = set(td.tolist())
+    for i in range(n):
+        if i in tds:
+            last = t[i]
+        since[i] = t[i] - last
+    low = m2 & (g_eff < 0.5)
+    err = qp + ds
+    row = {"design": name, "w": w, "seed": seed, "cell": f"{kind} {f0:g} Hz {amp * 1e3:g} mm",
+           "reach_mm": reach * 1e3, "handle_tremor_rms_um": rms(d), "handle_tremor_p95_mm": float(np.percentile(r[c], 95) * 1e3),
+           "share_beyond_reach": float(np.mean(r[c] > reach)), "ink_none_um": rms(rn.ink()[:n] - cl.ink()[:n]),
+           "ink_oracle_um": rms(e_or), "clip_residual_um": rms(clip_res), "page_gain_xy": gains, "lag_ms_xy": [1e3 * x for x in lags],
+           "preview_ms": gd * 1e3, "command_error_unclipped_um": rms(err, m2), "gated_share": float(np.mean(g_eff[m2] < 0.5)),
+           "gated_share_of_command_error": float(np.sum(err[low] ** 2) / max(np.sum(err[m2] ** 2), 1e-30)),
+           "gated_ms_after_touchdown_median": float(np.median(since[low]) * 1e3) if low.any() else None,
+           "lifts": int(len(durs)), "lifts_under_5ms": int(np.sum(durs < 5e-3)), "lifts_over_50ms": int(np.sum(durs >= 0.05)),
+           "wall_s": time.time() - t0,
+           "label": "SIMULATION (sim2; one case: writer 0, its test seed; B1 with perfect knowledge of the tremor)"}
+    rows.put(key, row)
+    rows.save()
+    log(f"[sim] oracle diagnosis {name} {row['cell']}: ink none {row['ink_none_um']:.0f} -> oracle {row['ink_oracle_um']:.0f} um; "
+        f"clipped at the reach {row['clip_residual_um']:.0f} um; beyond reach {100 * row['share_beyond_reach']:.1f} %; "
+        f"gain {gains[0]:.3f}/{gains[1]:.3f}; lag {1e3 * lags[0]:.1f}/{1e3 * lags[1]:.1f} ms")
+    return row
 
 
 def _travel_summary(rows: Rows) -> Dict:
@@ -1215,6 +1308,7 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
             "words_per10_nib": 10 * mean(tr, "words_app"), "words_per10_off": 10 * mean(tn, "words_app") if tn else None,
             "words_per10_oracle": 10 * mean(to, "words_app") if to else None,
             "clean_moved_um_mean": mean(cl, "moved_vs_clean_um"),
+            "clean_ink_err_um_mean": mean(cl, "ink_err_um"),
             "clean_moved_um_max": float(np.max([r["moved_vs_clean_um"] for r in cl])) if cl else None,
             "clean_words_per10": 10 * mean(cl, "words_app") if cl else None,
             "P_nib_mW_tremor_mean": 1e3 * mean(tr, "P_nib_W"), "P_nib_mW_off_mean": 1e3 * mean(tn, "P_nib_W") if tn else None,
@@ -1263,6 +1357,8 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
                             "label": "SIMULATION: the ideal page sensor (3 um white) is a BOUND, not a prediction"}
     out["sim2j_revJ_reference"] = _sim2j_reference(CELLS)
     out["travel"] = _travel_summary(rows)
+    dg = [r for k, r in rows.rows.items() if k.startswith("diag|")]
+    out["oracle_diagnosis"] = dg[0] if dg else {}
     return out
 
 
@@ -1285,6 +1381,8 @@ def run_all(quick: bool = False, stages=("tune", "test", "ideal", "thermal", "tr
         stage_ideal(designs, rows, quick=quick, log=log)
     if "travel" in stages:
         stage_travel(designs, rows, quick=quick, log=log)
+        if not quick:
+            oracle_diagnosis(designs, rows, log=log)
     rows.save()
     summ = summarise(rows, designs)
     summ["designs"] = {k: {"title": sd.title, "key": sd.key, "grip": sd.grip, "family": sd.family, "counterface": sd.counterface,

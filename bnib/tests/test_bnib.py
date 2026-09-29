@@ -214,3 +214,26 @@ def test_counterface_statics_independent(th):
     assert abs(R1f) == pytest.approx(abs(0.03 / math.sin(t) + 0.01 * math.cos(t) / math.sin(t)), rel=1e-9)
     # the two designs differ by exactly the static side load F_s cot(theta): same drag, same guide friction
     assert abs(R1s - R1f) == pytest.approx(0.15 / math.tan(t), rel=1e-9)
+
+
+def test_travel_summary_and_sim_findings(tmp_path):
+    from bnib import docgen as DG
+    from bnib import sim as SM
+    rows = SM.Rows(str(tmp_path / "rows.json"))
+    base = dict(kind="ET", f0=8.0, amp_mm=2.0, w=0, seed=200)
+    for pre, nm, ratio, P in (("test", "B1", 0.7, 0.012), ("travel", "B1w", 0.5, 0.02)):
+        for ctl in ("nose", "oracle"):
+            rows.rows[f"{pre}|{nm}|ET|8|2|0|200|deltapen|{ctl}"] = dict(
+                base, ctl=ctl, design=nm, ratio=ratio - (0.2 if ctl == "oracle" else 0.0), P_nib_W=P, words_app=0.5,
+                ink_err_um=100.0)
+    tv = SM._travel_summary(rows)
+    o = tv["cells"]["ET 8 Hz 2 mm"]["oracle"]
+    assert o["ratio_B1"] == pytest.approx(0.5) and o["ratio_B1w"] == pytest.approx(0.3)
+    assert tv["cells"]["ET 8 Hz 2 mm"]["nose"]["P_B1w_mW"] == pytest.approx(20.0)
+    sim = {"cards": {"B1": {"by_cell": {"ET 8 Hz 1 mm": {"ratio_mean": 0.72, "ratio_oracle": 0.27},
+                                        "ET 4 Hz 1 mm": {"ratio_mean": 1.0, "ratio_oracle": 0.35},
+                                        "ET 8 Hz 2 mm": {"ratio_mean": 0.7, "ratio_oracle": 0.53}}}}, "travel": tv}
+    F = DG.sim_findings(sim)
+    assert [k for k, _ in F["active"]] == ["ET 8 Hz 2 mm", "ET 8 Hz 1 mm"]
+    assert F["idle_rng"] == "1.00" and F["o_small_rng"] == "0.27-0.35" and F["o_big_rng"] == "0.53"
+    assert "ET 8 Hz 2 mm" in F["travel"]

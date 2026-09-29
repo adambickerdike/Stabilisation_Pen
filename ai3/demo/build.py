@@ -147,8 +147,9 @@ def settings(quick: bool):
     cu = C.load("cues", quick) or {}
     if cu.get("S4", {}).get("recommended"):
         S["cue_recommended_by_S4"] = cu["S4"]["recommended"]; S["from_results"].append("S4")
-        S["cue_default"] = {"tick_after": "tick", "tick_lift": "withhold", "withhold": "withhold", "show_me": "pause_offer",
-                            "pause_offer": "pause_offer"}.get(cu["S4"]["recommended"], "pause_offer")
+        # the page reads letters itself: mid-word cues would fire on misread letters (T3, with recognition), while the
+        # pause uses the calibrated word-level score (rule W5); so the page starts with the pause
+        S["cue_default"] = "pause_offer"
     return S
 
 

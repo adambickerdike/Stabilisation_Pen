@@ -191,15 +191,16 @@ def fig_cues(cu: Dict, out: Path):
     from .cues import CUES, LABELS
     t = cu["test"]
     cues = [c for c in CUES]
-    fig, axes = plt.subplots(1, 3, figsize=(10.5, 3.6), sharey=True)
+    fig, axes = plt.subplots(1, 4, figsize=(12.5, 3.6), sharey=True)
     metrics = [("fixed_on_paper_per_10_errors", "Mistakes fixed on paper\n(per 10 mistakes)"),
                ("false_interventions_per_100_correct", "False cues\n(per 100 correct words)"),
+               ("interruptions_per_100_words", "Cues while a word is written\n(per 100 words)"),
                ("extra_time_pct", "Extra writing time (%)")]
     rows = []
     for ax, (m, lab) in zip(axes, metrics):
-        v = [t["nominal"][c][m] for c in cues]
-        lo = [min(t["low"][c][m], t["high"][c][m]) for c in cues]
-        hi = [max(t["low"][c][m], t["high"][c][m]) for c in cues]
+        v = [t["nominal"][c].get(m, float("nan")) for c in cues]
+        lo = [min(t["low"][c].get(m, float("nan")), t["high"][c].get(m, float("nan"))) for c in cues]
+        hi = [max(t["low"][c].get(m, float("nan")), t["high"][c].get(m, float("nan"))) for c in cues]
         y = np.arange(len(cues))[::-1]
         ax.barh(y, v, color=S[0], height=0.6)
         ax.errorbar(v, y, xerr=[np.array(v) - np.array(lo), np.array(hi) - np.array(v)], fmt="none", ecolor=INK2, elinewidth=0.8, capsize=2)
@@ -318,10 +319,11 @@ def fig_trace(tr_examples: List[Dict], agg: Dict, out: Path):
             ax.text(b2 + 1, y, f"{b2:.0f}", fontsize=7, va="center", color=INK2)
         ax.text(b + 1, y - 0.27, f"{b:.0f}", fontsize=7, va="center", color=INK2)
     ax.set_yticks(ys); ax.set_yticklabels([l for _, l in conds], fontsize=8)
-    ax.set_xlim(0, 125); ax.legend(fontsize=6.5, loc="lower right"); ax.set_xlabel("% of letters", fontsize=7.5)
+    ax.set_xlim(0, 115); ax.set_xlabel("% of letters", fontsize=7.5)
+    ax.legend(fontsize=6.5, loc="upper center", bbox_to_anchor=(0.45, -0.16), ncol=3, frameon=False)
     ax.set_title("Dysgraphia-like learners, 24 runs", fontsize=8.5, loc="left")
-    fig.suptitle("Close tracing puts the ink ON the model letter but leaves parts of it undrawn (orange = undrawn part; green = target)",
-                 fontsize=9, x=0.01, ha="left")
+    fig.suptitle("Close tracing keeps the ink near the model letter; the app's reader (writing order) loses letters, a reader of the page "
+                 "barely does\n(orange = part of the letter left undrawn; green = the model letter)", fontsize=9, x=0.01, ha="left", y=1.08)
     _save(fig, out, "fig_trace_why", EVIDENCE_SIM, ["target_letter", "read_as", "has_missing_part", "d_ink_um", "missing_share"], rows,
           "drive study HW1-D runs, test writers 0-5")
 
@@ -780,6 +782,12 @@ def tables_md(res: Dict) -> str:
             a = ag["warp_close_tracing"]
             L.append(f"\nClose tracing (nearest-point, full gain, no gate) on the same poorly formed words: letters read {_p(a['read_none'])} -> {_p(a['read_trace'])}.")
         L.append(f"\nRule A1 chose {sh['test']['cfg']}. Judge (offline reader) accuracy on clean test letters: {_p(sh['judge'].get('acc_test_clean'))}.")
+        oc = res.get("ocr")
+        if oc:
+            L.append(f"\nSpot check with study R's word reader ({oc['reader']}, literal, no lexicon; post hoc) on {len(oc['rows'])} sample words: "
+                     f"read {_p(oc['all']['read_intended'])} of the writers' clean letters, {_p(oc['all']['read_none'])} without the assist, "
+                     f"{_p(oc['all']['read_assist'])} with it. By condition (without / with): " +
+                     "; ".join(f"{c} {_p(v['read_none'])} / {_p(v['read_assist'])} ({v['words']} words)" for c, v in oc["aggregate"].items()) + ".")
         cc = sh["test"].get("clean_copy", {})
         if cc:
             L += ["", "| Writer's hand | App clean copy: letters read raw / clean copy / clean copy v2 | Words read raw / clean copy / v2 | Letters re-drawn (synthetic) | ...of which the wrong letter |",
@@ -847,7 +855,7 @@ def load_all(quick: bool) -> Dict:
     res = {}
     for k, name in (("online", "online"), ("online_cal", "online_cal"), ("spell", "spell_NG1x"), ("cues", "cues"),
                     ("predict", "predict"), ("trace", "trace"), ("shape", "shape"), ("lm", "lm"), ("words", "words"),
-                    ("plan", "plan")):
+                    ("plan", "plan"), ("ocr", "ocr")):
         v = C.load(name, quick)
         if v is not None:
             res[k] = v

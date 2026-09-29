@@ -1,0 +1,51 @@
+series,share_written_pct,recognised_pct
+"New writer, clean letters",10,20.0962
+"New writer, clean letters",20,25.1923
+"New writer, clean letters",30,31.8269
+"New writer, clean letters",40,41.1538
+"New writer, clean letters",50,52.1154
+"New writer, clean letters",60,63.4615
+"New writer, clean letters",70,70
+"New writer, clean letters",80,76.5385
+"New writer, clean letters",90,82.8846
+"New writer, clean letters",100,82.0192
+"New writer, 1 mm tremor",10,7.98077
+"New writer, 1 mm tremor",20,12.4038
+"New writer, 1 mm tremor",30,17.4038
+"New writer, 1 mm tremor",40,25.9615
+"New writer, 1 mm tremor",50,36.8269
+"New writer, 1 mm tremor",60,46.3462
+"New writer, 1 mm tremor",70,55
+"New writer, 1 mm tremor",80,68.8462
+"New writer, 1 mm tremor",90,73.8462
+"New writer, 1 mm tremor",100,72.9808
+With the writer's calibration letters,10,24.2308
+With the writer's calibration letters,20,30.3846
+With the writer's calibration letters,30,37.6923
+With the writer's calibration letters,40,49.2308
+With the writer's calibration letters,50,59.7115
+With the writer's calibration letters,60,69.6154
+With the writer's calibration letters,70,75.2885
+With the writer's calibration letters,80,81.8269
+With the writer's calibration letters,90,85.3846
+With the writer's calibration letters,100,85.8654
+"Calibrated, 1 mm tremor",10,7.88462
+"Calibrated, 1 mm tremor",20,13.6538
+"Calibrated, 1 mm tremor",30,20.2885
+"Calibrated, 1 mm tremor",40,28.2692
+"Calibrated, 1 mm tremor",50,40.6731
+"Calibrated, 1 mm tremor",60,49.1346
+"Calibrated, 1 mm tremor",70,60.5769
+"Calibrated, 1 mm tremor",80,70.1923
+"Calibrated, 1 mm tremor",90,75.9615
+"Calibrated, 1 mm tremor",100,76.4423
+Other writer and tablet (Character Trajectories),10,14.6956
+Other writer and tablet (Character Trajectories),20,22.4633
+Other writer and tablet (Character Trajectories),30,27.7467
+Other writer and tablet (Character Trajectories),40,39.853
+Other writer and tablet (Character Trajectories),50,46.3611
+Other writer and tablet (Character Trajectories),60,50.3849
+Other writer and tablet (Character Trajectories),70,54.8635
+Other writer and tablet (Character Trajectories),80,55.8432
+Other writer and tablet (Character Trajectories),90,49.1253
+Other writer and tablet (Character Trajectories),100,40.098

@@ -1,0 +1,25 @@
+series,fa_per_100_correct,caught_pct,theta
+exact letters,2.34439,63.0122,0.3
+exact letters,2.05849,62.2139,0.35
+exact letters,1.87878,61.5753,0.4
+exact letters,1.72357,61.0431,0.45
+exact letters,1.57654,60.5641,0.5
+exact letters,1.4295,60.0319,0.55
+exact letters,1.33148,59.6062,0.6
+exact letters,1.24163,59.0208,0.65
+exact letters,1.15994,58.6482,0.7
+exact letters,1.09459,58.4886,0.75
+exact letters,1.05375,58.1692,0.8
+exact letters,0.980232,57.2113,0.85
+exact letters,0.841366,56.7855,0.9
+exact letters,0.792354,56.0937,0.93
+exact letters,0.792354,55.7211,0.95
+exact letters,0.735174,55.3486,0.97
+exact letters,0.710668,55.0293,0.98
+exact letters,0.661657,54.5503,0.99
+exact letters,0.588139,54.0181,0.995
+exact letters,0.449273,51.0378,0.999
+exact letters,0.424767,49.6541,0.9995
+exact letters,0.35125,45.769,0.9999
+Letters from the recogniser (new writer),40.6335,76.7956,0.3
+Letters from the recogniser (calibrated),38.7246,75.5525,0.3

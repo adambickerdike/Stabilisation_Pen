@@ -301,38 +301,85 @@ def thermal(traces: Dict) -> str:
 
 
 def sim_cards(sim: Dict) -> str:
+    """Tremor left (tracker bars, perfect-knowledge markers, the Rev J nose's sim2j runs), readable words and the power
+    while correcting (log scale), per cell in the order the cells were defined."""
     plt = _plt()
     cards = sim.get("cards", {})
     if not cards:
         return ""
-    fig, axs = plt.subplots(1, 2, figsize=(14, 4.8))
-    rows = []
     names = list(cards.keys())
-    cells = sorted({c for n in names for c in cards[n]["by_cell"].keys()})
+    have = {c for n in names for c in cards[n]["by_cell"].keys()}
+    order = [f"{c['kind']} {c['f0']:g} Hz {c['amp_mm']:g} mm" for c in (sim.get("cells") or [])]
+    cells = [c for c in order if c in have] + sorted(have - set(order))
+    ref = (sim.get("sim2j_revJ_reference") or {}).get("cells") or {}
+    fig = plt.figure(figsize=(15, 5.6))
+    gs = fig.add_gridspec(1, 5)
+    ax0, ax1, ax2 = fig.add_subplot(gs[0, :2]), fig.add_subplot(gs[0, 2:4]), fig.add_subplot(gs[0, 4])
+    rows = []
     x = np.arange(len(cells))
     wbar = 0.8 / max(len(names), 1)
+    cols = {n: f"C{i}" for i, n in enumerate(names)}
     for i, n in enumerate(names):
         bc = cards[n]["by_cell"]
-        r = [bc.get(c, {}).get("ratio_mean", np.nan) for c in cells]
-        wn = [bc.get(c, {}).get("words_nib", np.nan) * 10 for c in cells]
-        wo = [bc.get(c, {}).get("words_off", np.nan) * 10 for c in cells]
-        axs[0].bar(x + (i - (len(names) - 1) / 2) * wbar, r, wbar, label=f"{n}: {cards[n]['title']}")
-        axs[1].bar(x + (i - (len(names) - 1) / 2) * wbar, wn, wbar, label=f"{n} nib on")
-        axs[1].scatter(x + (i - (len(names) - 1) / 2) * wbar, wo, color="k", s=10, zorder=3)
-        for c, a, b, d in zip(cells, r, wn, wo):
-            rows.append([n, c, a, b, d])
-    axs[0].axhline(1.0, color="k", lw=0.8)
-    axs[0].set_ylabel("tremor left at the tip (ink error nib on / off)")
-    axs[1].set_ylabel("readable words out of 10 (bars nib on, dots off)")
-    for ax in axs:
+        xo = x + (i - (len(names) - 1) / 2) * wbar
+        g = lambda c, k, sc=1.0: (np.nan if bc.get(c, {}).get(k) is None else sc * bc[c][k])
+        r = [g(c, "ratio_mean") for c in cells]
+        ro = [g(c, "ratio_oracle") for c in cells]
+        wn = [g(c, "words_nib", 10) for c in cells]
+        wo = [g(c, "words_off", 10) for c in cells]
+        wr = [g(c, "words_oracle", 10) for c in cells]
+        ax0.bar(xo, r, wbar, color=cols[n], label=f"{n}: {cards[n]['title']} - project tracker")
+        if np.isfinite(ro).any():
+            ax0.scatter(xo, ro, marker="v", color="k", s=22, zorder=3, label="perfect knowledge (B1, B3)" if i == 0 else None)
+        ax1.bar(xo, wn, wbar, color=cols[n])
+        ax1.scatter(xo, wo, color="k", s=12, zorder=3, label="nib held centred" if i == 0 else None)
+        if np.isfinite(wr).any():
+            ax1.scatter(xo, wr, marker="v", color="k", s=22, zorder=3, label="perfect knowledge" if i == 0 else None)
+        for c, a, b, d_, e, h in zip(cells, r, ro, wn, wo, wr):
+            rows.append([n, c, a, b, d_, e, h, (ref.get(c) or {}).get("ratio_nose"), (ref.get(c) or {}).get("ratio_oracle")])
+    for k, c in enumerate(cells):
+        rj = (ref.get(c) or {})
+        if rj.get("ratio_nose") is not None:
+            ax0.plot([k - 0.42, k + 0.42], [rj["ratio_nose"]] * 2, color="C3", lw=2.0,
+                     label="Rev J C1S nose, tracker (sim2j)" if k == min(i for i, cc in enumerate(cells) if ref.get(cc)) else None)
+            ax0.plot([k - 0.42, k + 0.42], [rj["ratio_oracle"]] * 2, color="C3", lw=1.2, ls=":",
+                     label="Rev J C1S nose, perfect knowledge" if k == min(i for i, cc in enumerate(cells) if ref.get(cc)) else None)
+    ax0.axhline(1.0, color="k", lw=0.8)
+    ax0.set_ylim(0, 1.12)
+    ax0.set_ylabel("tremor left at the tip (ink error nib on / nib centred)")
+    ax1.set_ylabel("readable words out of 10 (bars: with the tracker)")
+    for ax in (ax0, ax1):
         ax.set_xticks(x)
-        ax.set_xticklabels(cells, rotation=30, fontsize=7)
+        ax.set_xticklabels(cells, rotation=35, fontsize=7, ha="right")
         ax.grid(True, axis="y", alpha=0.3)
-    axs[0].legend(fontsize=7)
-    fig.suptitle("SIMULATION (sim2; synthetic writers 0-5, synthetic ET/PD tremor, DeltaPen-calibrated page sensor)", fontsize=10)
+    ax0.legend(fontsize=6.5, loc="lower center", bbox_to_anchor=(0.5, -0.52), ncol=2)
+    ax1.legend(fontsize=6.5, loc="lower center", bbox_to_anchor=(0.5, -0.40), ncol=3)
+    # power while correcting, log scale, with the Rev J nose's sim2j mean in the ET cells
+    pn = [(n, cards[n].get("P_nib_mW_tremor_mean")) for n in names]
+    Pj = [v["P_nose_W"] * 1e3 for v in ref.values() if v.get("P_nose_W")]
+    if Pj:
+        pn.append(("Rev J C1S\n(sim2j)", float(np.mean(Pj))))
+    lab = [p[0] for p in pn]
+    val_ = [p[1] if p[1] is not None else np.nan for p in pn]
+    ax2.bar(range(len(pn)), val_, color=[cols.get(n, "C3") for n in lab])
+    for k, v in enumerate(val_):
+        if np.isfinite(v):
+            ax2.text(k, v * 1.15, f"{v:.0f}" if v >= 10 else f"{v:.1f}", ha="center", fontsize=8)
+    ax2.set_yscale("log")
+    ax2.set_ylim(1, 1e4)
+    ax2.set_xticks(range(len(pn)))
+    ax2.set_xticklabels(lab, fontsize=7)
+    ax2.set_ylabel("nib power while correcting (mW, log)")
+    ax2.grid(True, axis="y", alpha=0.3)
+    for n, v in pn:
+        rows.append([n, "power_mW_while_correcting", v, None, None, None, None, None, None])
+    nw = max((cards[n].get("n_writers") or 0) for n in names)
+    fig.suptitle(f"SIMULATION (sim2; {nw} synthetic writers, synthetic ET/PD tremor, DeltaPen-calibrated page sensor; "
+                 "the Rev J C1S nose from sim2j's runs, read-only)", fontsize=10)
     png, cs = _out("fig_sim_cards")
-    fig.tight_layout()
-    fig.savefig(png, dpi=140)
+    fig.tight_layout(rect=(0, 0.02, 1, 0.96))
+    fig.savefig(png, dpi=140, bbox_inches="tight")
     plt.close(fig)
-    _csv(cs, ["design", "cell", "ink_ratio_mean", "words_per10_nib", "words_per10_off"], rows)
+    _csv(cs, ["design", "cell", "ratio_tracker", "ratio_perfect_knowledge", "words10_tracker", "words10_nib_centred",
+              "words10_perfect_knowledge", "revj_ratio_tracker", "revj_ratio_perfect_knowledge"], rows)
     return png
