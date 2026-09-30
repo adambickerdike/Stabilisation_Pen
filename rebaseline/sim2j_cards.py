@@ -115,9 +115,14 @@ def pen_models(mode: str, quick: bool = False):
     return Pens()
 
 
+_SEED_INDEX = {"i": 0}
+
+
 def first_seed(w: int) -> int:
+    """The case's test seed: sim2j.run_study.et_seeds(w)[0] (the historical cards), or et_seeds(w)[1] when a run is
+    started with --seed-index 1 (the second seed, never run historically; its rows go to their own file)."""
     from sim2j import TEST_SEEDS
-    return int(TEST_SEEDS[w % 4])            # sim2j.run_study.et_seeds(w)[0]
+    return int(TEST_SEEDS[w % 4] if _SEED_INDEX["i"] == 0 else TEST_SEEDS[(w + 2) % 4])
 
 
 def cell_key(f0: float, amp: float, w: int, seed: int, ctl: str) -> str:
@@ -193,17 +198,89 @@ def run_writer(mode: str, w: int, cells: Sequence[Tuple[float, float]], rows: CM
     rows.save()
 
 
-def run(mode: str, writers: Sequence[int] = WRITERS, phase: str = "headline", quick: bool = False, log=CM.log) -> Dict:
+SEVERE_CELLS: Tuple[Tuple[float, float], ...] = ((5.0, 3.0e-3), (8.0, 3.0e-3))
+AUTOWRITE_CONDITIONS: Tuple[Tuple[float, float], ...] = ((8.0, 0.0), (8.0, 1.0e-3), (5.0, 2.0e-3), (8.0, 2.0e-3),
+                                                         (5.0, 3.0e-3), (8.0, 3.0e-3))
+HIST_AW_ROWS = REPO_ROOT / "sim2j" / "build" / "autowrite_rows.json"   # read-only
+
+
+def run_severe(mode: str, w: int, rows: CM.Rows, pens, log=CM.log) -> None:
+    """sim2j.run_study.stage_autowrite's severe block (3 mm at 5 and 8 Hz, writing through it): the ordinary pen, G4
+    and perfect knowledge, keys 'sev|w|seed|f0|amp|ctl' as the historical rows (the heel wheel is not rerun)."""
+    import sim2j.et as ET
+    seed = first_seed(w)
+    su = None
+    for f0, amp in SEVERE_CELLS:
+        keys = {c: f"sev|{w}|{seed}|{f0:g}|{amp * 1e3:g}|{c}" for c in CTLS}
+        if all(rows.has(k) for k in keys.values()):
+            continue
+        su = su or ET.WriterSetup(w, pens, log=log)
+        t0 = time.time()
+        rn = ET.run_case(su, "none", f0, amp, seed, keep=True)
+        r_none = rn.pop("_r")
+        rows.put(keys["none"], dict(rn, **_servo_info(r_none), task="severe", kind="severe", ctl="none", mode=mode))
+        for c in ("nose", "oracle"):
+            m = ET.run_case(su, c, f0, amp, seed, ref_none=r_none, keep=True)
+            r = m.pop("_r")
+            m.update(_servo_info(r), task="severe", kind="severe", ctl=c, mode=mode,
+                     ratio=m["ink_err_um"] / max(rn["ink_err_um"], 1e-9))
+            rows.put(keys[c], m)
+            del r
+        del r_none
+        rows.save()
+        log(f"[{mode}] severe w{w} {f0:g} Hz 3 mm: none {rn['ink_err_um']:.0f} um ({rn['words_app']:.2f}), nose "
+            f"{rows.get(keys['nose'])['ink_err_um']:.0f} ({rows.get(keys['nose'])['words_app']:.2f}), oracle "
+            f"{rows.get(keys['oracle'])['ink_err_um']:.0f} [{time.time() - t0:.0f} s]")
+
+
+def run_autowrite(mode: str, w: int, rows: CM.Rows, pens, log=CM.log) -> None:
+    """sim2j.run_study.stage_autowrite's autowrite block: the nose writes the known text (nose2 planner, pen lift) in
+    2.5 mm letters while the hand sweeps, 8 Hz tremor of 0/1 mm and 5/8 Hz of 2/3 mm; keys 'aw|w|seed|f0|amp'."""
+    import sim2j.stepper as ST
+    import sim2j.tasks as TK
+    from sim2j.firmware import FWConfig
+    pm = pens.get("base")
+    seed = first_seed(w)
+    ac = None
+    for f0, amp in AUTOWRITE_CONDITIONS:
+        key = f"aw|{w}|{seed}|{f0:g}|{amp * 1e3:g}"
+        if rows.has(key):
+            continue
+        ac = ac or TK.AutowriteCase(w, h_mm=2.5, version="v2")
+        if not ac.ok:
+            rows.put(key, {"w": w, "plan_ok": False, "amp_mm": amp * 1e3, "f0": f0, "task": "autowrite", "mode": mode})
+            continue
+        scn = ac.scenario(f0, amp, seed)
+        fw = FWConfig(nose="autowrite", pen_lift="plan", seed=seed, reach=pm.cfg.geom.travel)
+        t0 = time.time()
+        r = ST.run(pm, scn, fw, ac.task(), seed=seed)
+        m = ac.metrics(r)
+        m.update(_servo_info(r), w=w, seed=seed, f0=f0, amp_mm=amp * 1e3, plan_ok=True, ctl="autowrite",
+                 task="autowrite", kind="autowrite", mode=mode, wall_s=time.time() - t0)
+        rows.put(key, m, save=True)
+        del r
+        log(f"[{mode}] autowrite w{w} {f0:g} Hz {amp * 1e3:g} mm: ink {m['ink_err_um']:.0f} um, letters "
+            f"{m['letters_read']:.2f}, words {m['words_app']:.2f}, P {m['P_total_W']:.2f} W [{m['wall_s']:.0f} s]")
+
+
+def run(mode: str, writers: Sequence[int] = WRITERS, phase: str = "headline", quick: bool = False, log=CM.log,
+        seed_index: int = 0) -> Dict:
     info = install(mode)
-    cells = {"headline": HEADLINE_CELLS, "other": OTHER_CELLS, "all": HEADLINE_CELLS + OTHER_CELLS}[phase]
-    ctls = CTLS
-    if quick:
-        writers, cells, ctls = tuple(writers)[:1], ((8.0, 1.0e-3),), ("none", "nose")
-    rows = CM.Rows(f"sim2j_{mode}", quick=quick)
+    _SEED_INDEX["i"] = int(seed_index)
+    rows = CM.Rows(f"sim2j_{mode}" + ("" if seed_index == 0 else "_seed2"), quick=quick)
     pens = pen_models(mode, quick)
     t0 = time.time()
-    for w in writers:
-        run_writer(mode, int(w), cells, rows, pens, ctls=ctls, log=log)
+    if phase in ("severe", "autowrite"):
+        for w in (tuple(writers)[:1] if quick else writers):
+            (run_severe if phase == "severe" else run_autowrite)(mode, int(w), rows, pens, log=log)
+    else:
+        cells = {"headline": HEADLINE_CELLS, "other": OTHER_CELLS, "all": HEADLINE_CELLS + OTHER_CELLS}[phase]
+        ctls = CTLS
+        if quick:
+            writers, cells, ctls = tuple(writers)[:1], ((8.0, 1.0e-3),), ("none", "nose")
+        for w in writers:
+            run_writer(mode, int(w), cells, rows, pens, ctls=ctls, log=log)
+    rows.save()
     info.update({"writers": list(writers), "phase": phase, "wall_s": time.time() - t0, "n_rows": len(rows.rows)})
     log(f"[{mode}] done: {info}")
     return info
@@ -271,18 +348,68 @@ def summarise_mode(rows: List[Dict]) -> Dict:
                         "letters_of_10": CM.mean_or_none(x["letters_read"] * 10 for x in L),
                         "P_total_W": CM.mean_or_none(x["P_total_W"] for x in L)} for c, L in v.items()}
     stale = [r.get("stale_or_warmup_ticks") for r in rows if r.get("stale_or_warmup_ticks") is not None]
+    cards.update(severe_autowrite_cards(rows))
     return {"cards": cards, "clean_writing": clean, "by_cell": cells,
             "stale_or_warmup_ticks_max": max(stale) if stale else None,
             "writers": sorted({r["w"] for r in rows if "w" in r and r.get("kind") in ("tremor", "clean")})}
 
 
-def paired(rows_a: Dict[str, Dict], rows_b: Dict[str, Dict], sel=None) -> Dict:
-    """Case-by-case differences (a - b) over the keys both have (tremor rows of 'nose' and 'oracle' and 'none')."""
+def severe_autowrite_cards(rows: List[Dict]) -> Dict:
+    """sim2j/report.py's severe_through, severe_autowrite and autowrite_no_tremor cards (means over the cases run)."""
     out = {}
-    for ctl in ("none", "nose", "oracle"):
+    mean = lambda L, k, sc=1.0: CM.mean_or_none(r.get(k) * sc for r in L if r.get(k) is not None)   # noqa: E731
+    sev = [r for r in rows if r.get("task") == "severe"]
+    sn = [r for r in sev if r["ctl"] == "none"]
+    sd = [r for r in sev if r["ctl"] == "nose"]
+    so = [r for r in sev if r["ctl"] == "oracle"]
+    aw = [r for r in rows if r.get("task") == "autowrite" and r.get("plan_ok")]
+    a3 = [r for r in aw if abs(r["amp_mm"] - 3.0) < 1e-6]
+    a0 = [r for r in aw if r["amp_mm"] == 0.0]
+    if sn and sd:
+        ratios = [r["ratio"] for r in sd]
+        out["severe_through"] = {"who": "Severe tremor (3 mm, 5 and 8 Hz), writing through it", "n_cases": len(sd),
+                                 "words_of_10": [mean(sn, "words_app", 10), mean(sd, "words_app", 10)],
+                                 "letters_of_10": [mean(sn, "letters_read", 10), mean(sd, "letters_read", 10)],
+                                 "err_mm": [mean(sn, "ink_err_um", 1e-3), mean(sd, "ink_err_um", 1e-3)],
+                                 "ratio_mean": CM.mean_or_none(ratios), "ratio_case_boot": CM.boot_mean(ratios),
+                                 "ratio_writer_boot": CM.cluster_boot_mean(ratios, [r["w"] for r in sd]),
+                                 "oracle_ratio_mean": CM.mean_or_none(r["ratio"] for r in so) if so else None,
+                                 "oracle_words_of_10": mean(so, "words_app", 10) if so else None,
+                                 "P_total_W": [mean(sn, "P_total_W"), mean(sd, "P_total_W")]}
+    if sn and a3:
+        out["severe_autowrite"] = {"who": "Severe tremor (3 mm, 5 and 8 Hz), known text: the pen writes it", "n_cases": len(a3),
+                                   "words_of_10": [mean(sn, "words_app", 10), mean(a3, "words_app", 10)],
+                                   "letters_of_10": [mean(sn, "letters_read", 10), mean(a3, "letters_read", 10)],
+                                   "err_mm": [mean(sn, "ink_err_um", 1e-3), mean(a3, "ink_err_um", 1e-3)],
+                                   "err_kind": "ordinary pen: to the clean ink; autowrite: to the planned letters",
+                                   "q_max_mm": mean(a3, "q_max_mm"), "P_total_W": mean(a3, "P_total_W")}
+    if a0:
+        out["autowrite_no_tremor"] = {"who": "A known text, no tremor: the pen writes it", "n_cases": len(a0),
+                                      "words_of_10": [None, mean(a0, "words_app", 10)],
+                                      "letters_of_10": [None, mean(a0, "letters_read", 10)],
+                                      "err_mm": [None, mean(a0, "ink_err_um", 1e-3)], "P_total_W": mean(a0, "P_total_W")}
+    if aw:
+        by = {}
+        for r in aw:
+            by.setdefault(f"{r['f0']:g} Hz x {r['amp_mm']:g} mm", []).append(r)
+        out["autowrite_by_condition"] = {k: {"n": len(v), "words_of_10": mean(v, "words_app", 10),
+                                             "letters_of_10": mean(v, "letters_read", 10),
+                                             "ink_err_um": mean(v, "ink_err_um"), "q_max_mm": mean(v, "q_max_mm"),
+                                             "at_reach": mean(v, "at_reach"), "P_total_W": mean(v, "P_total_W")}
+                                         for k, v in sorted(by.items())}
+    return out
+
+
+def paired(rows_a: Dict[str, Dict], rows_b: Dict[str, Dict], sel=None, kinds=("tremor",)) -> Dict:
+    """Case-by-case differences (a - b) over the keys both have (rows of the given kinds; 'none', 'nose', 'oracle',
+    'autowrite')."""
+    out = {}
+    for ctl in ("none", "nose", "oracle", "autowrite"):
         diffs_r, diffs_w, diffs_e, ws = [], [], [], []
         for k, ra in rows_a.items():
-            if ra.get("kind") != "tremor" or ra.get("ctl") != ctl or k not in rows_b:
+            if ra.get("kind") not in kinds or ra.get("ctl") != ctl or k not in rows_b:
+                continue
+            if ra.get("ink_err_um") is None or rows_b[k].get("ink_err_um") is None:
                 continue
             if sel is not None and not sel(ra):
                 continue
@@ -302,11 +429,17 @@ def paired(rows_a: Dict[str, Dict], rows_b: Dict[str, Dict], sel=None) -> Dict:
 
 
 def historical_rows() -> Dict[str, Dict]:
-    """sim2j/build/et_rows.json (git-ignored; read-only).  Empty in a clean clone: the committed cards then stand in."""
-    if not HIST_ROWS.exists():
-        return {}
-    d = json.loads(HIST_ROWS.read_text())
-    return {k: v for k, v in d.items() if v.get("ctl") in ("none", "nose", "oracle")}
+    """sim2j/build/et_rows.json and autowrite_rows.json (git-ignored; read-only).  Empty in a clean clone: the
+    committed cards then stand in."""
+    out = {}
+    if HIST_ROWS.exists():
+        d = json.loads(HIST_ROWS.read_text())
+        out.update({k: v for k, v in d.items() if v.get("ctl") in ("none", "nose", "oracle")})
+    if HIST_AW_ROWS.exists():
+        d = json.loads(HIST_AW_ROWS.read_text())
+        out.update({k: dict(v, kind=v.get("task")) for k, v in d.items()
+                    if v.get("task") == "autowrite" or (v.get("task") == "severe" and v.get("ctl") in CTLS)})
+    return out
 
 
 def summarise(quick: bool = False, write: bool = True) -> Dict:
@@ -330,6 +463,13 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
         body["by_mode"][m] = summarise_mode(list(R.values()))
         body["by_mode"][m]["setups"] = {k: v for k, v in R.items() if k.startswith("setup|")}
         body["by_mode"][m]["wall_s_total"] = float(sum(r.get("wall_s") or 0.0 for r in R.values()))
+    s2 = CM.Rows("sim2j_causal_seed2", quick=quick).rows
+    if s2:
+        both = list(mode_rows.get("causal", {}).values()) + list(s2.values())
+        body["causal_second_seed"] = {"summary": summarise_mode(list(s2.values())),
+                                      "both_seeds_headline": card(both, CARD_SEL["headline_8_12Hz_1_2mm"][1]),
+                                      "note": "the second test seed of each writer (never run historically): new cases, "
+                                              "not paired with history"}
     hsel = CARD_SEL["headline_8_12Hz_1_2mm"][1]
     pairs = {"causal_vs_legacy_flags": ("causal", "legacy_flags"), "legacy_flags_vs_historical": ("legacy_flags", None),
              "legacy_exact_vs_historical": ("legacy_exact", None), "causal_vs_historical": ("causal", None)}
@@ -337,7 +477,8 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
         ra = mode_rows.get(a) or {}
         rb = (mode_rows.get(b) or {}) if b else hist
         if ra and rb:
-            body["paired"][name] = {"all_cells": paired(ra, rb), "headline_cells": paired(ra, rb, hsel)}
+            body["paired"][name] = {"all_cells": paired(ra, rb), "headline_cells": paired(ra, rb, hsel),
+                                    "severe_and_autowrite": paired(ra, rb, kinds=("severe", "autowrite"))}
     if write and not quick:
         seeds = sorted({first_seed(w) for w in WRITERS})
         CM.write_result("sim2j_cards", body, body["evidence"], inputs=SOURCES, seeds=seeds,
@@ -351,13 +492,14 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--mode", choices=list(MODES))
-    ap.add_argument("--phase", choices=("headline", "other", "all"), default="headline")
+    ap.add_argument("--phase", choices=("headline", "other", "all", "severe", "autowrite"), default="headline")
     ap.add_argument("--writers", default=",".join(map(str, WRITERS)))
+    ap.add_argument("--seed-index", type=int, default=0, choices=(0, 1))
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--summarise", action="store_true")
     a = ap.parse_args(argv)
     if a.mode:
-        run(a.mode, [int(x) for x in a.writers.split(",") if x.strip()], a.phase, a.quick)
+        run(a.mode, [int(x) for x in a.writers.split(",") if x.strip()], a.phase, a.quick, seed_index=a.seed_index)
     if a.summarise:
         s = summarise(quick=a.quick)
         print(json.dumps({m: v["cards"].get("headline_8_12Hz_1_2mm") for m, v in s["by_mode"].items()}, indent=1,

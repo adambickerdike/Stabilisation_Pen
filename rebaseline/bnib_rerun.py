@@ -391,6 +391,12 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
         out["configs"][c] = s
     hist = CM.jload(HIST_ROWS) if HIST_ROWS.exists() else None
     if hist:
+        # study B's own rows (read-only) in the same cells, as this study's summary sees them (writers 0-1 and 0-3)
+        hb = {k: dict(v, config="studyB_published") for k, v in hist.items()
+              if k.startswith("test|B1|ET|") or k.startswith("test|B1|clean|")}
+        out["studyB_rows"] = {"writers_0_1": summarise_config(hb, writers=(0, 1)),
+                              "writers_0_3": summarise_config(hb, writers=(0, 1, 2, 3)),
+                              "source": "bnib/build/sim_rows.json (read-only); study B ran no 12 Hz x 2 mm cell"}
         ex = CM.Rows("bnib_B1_studyB_exact", quick=quick).rows
         cmp_ = []
         for k, r in ex.items():

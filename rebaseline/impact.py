@@ -294,37 +294,46 @@ ROWS: List[Dict] = [
     dict(id="H-03b", section="Hardware", claim="Study B 33.5 h in simulation", evidence="SIM (bnib)",
          status="SUPERSEDED by the Rev K range", model="sim2-bnib", faults="F5, F6, F7, F8", classification=RR,
          rerun="results/rebaseline/bnib_rerun.json (battery_h from the simulated nib power)"),
-    dict(id="H-04", section="Hardware", claim="Rev J.1 at the simulated 2.68 W: C1S coil passes 120 C after about 22 s",
+    dict(id="H-03c", section="Hardware", claim="Rev J at the simulated 2.3 W: the 2.22 Wh cell lasts about 1 h",
+         evidence="CALC on SIM (sim2j)", status="SUSPENDED", model="sim2j-legacy", faults="F1, F2", classification=RR,
+         rerun="results/rebaseline/sim2j_cards.json (P_total under causal sensing; hours = 2.22 Wh / P)"),
+    dict(id="H-04a", section="Hardware", claim="Rev J.1 at the simulated 2.68 W: C1S coil passes 120 C after about 22 s",
          evidence="CALC; SIM (sim2j)", status="SUSPENDED", model="sim2j-legacy", faults="F1, F2", classification=NR,
          rerun="", note="not rerun: the C1S nose is not carried forward (DEC-050); sim2j_cards.json gives the causal "
                         "servo's power for the same pen, which a thermal update can use"),
-    dict(id="H-05", section="Hardware", claim="Skin and coil temperature of Rev K (fin model) and study B (two-node)",
-         evidence="CALC", status="CURRENT (unproven)", model="calc", faults="F5, F6, F7", classification=NS, rerun=""),
-    dict(id="H-06", section="Hardware", claim="Mass and length", evidence="CALC", status="CURRENT", model="calc",
+    dict(id="H-04b", section="Hardware", claim="Study B's two-node model: skin 30.6 C; coil 31.2 C after 30 min at 35 deg "
+         "with 2 mm tremor (at the simulated nib power)", evidence="CALC; SIM (bnib thermal run)",
+         status="CURRENT (Rev K unproven)", model="sim2-bnib", faults="F5, F6, F7, F8", classification=NR, rerun="",
+         note="not rerun: the thermal run was not repeated; the coil rise scales with the nib power, which task 3 "
+              "re-simulates (bnib_rerun.json), so a CALC update follows from it"),
+    dict(id="H-04c", section="Hardware", claim="Rev K: web of the hand 30.6 C; front finger pad 35.9 / 37.6 C (fin model)",
+         evidence="CALC", status="CURRENT (unproven)", model="calc", faults="F5, F6, F7", classification=NS, rerun="",
+         note="the engineering pass marks Rev K budgets REQUIRES RECOMPUTATION"),
+    dict(id="H-05", section="Hardware", claim="Mass and length", evidence="CALC", status="CURRENT", model="calc",
          faults="", classification=NS, rerun=""),
-    dict(id="H-07", section="Hardware", claim="Gimbal strength", evidence="CALC", status="CURRENT", model="calc",
+    dict(id="H-06", section="Hardware", claim="Gimbal strength", evidence="CALC", status="CURRENT", model="calc",
          faults="", classification=NS, rerun=""),
-    dict(id="H-08", section="Hardware", claim="Heel-wheel push on the hand", evidence="CALC", status="UNPROVEN",
+    dict(id="H-07", section="Hardware", claim="Heel-wheel push on the hand", evidence="CALC", status="UNPROVEN",
          model="calc", faults="", classification=NS, rerun=""),
-    dict(id="H-09", section="Hardware", claim="Rev K fit checks", evidence="CALC; PROPOSED DESIGN", status="CURRENT",
+    dict(id="H-08", section="Hardware", claim="Rev K fit checks", evidence="CALC; PROPOSED DESIGN", status="CURRENT",
          model="calc", faults="F6", classification=NS, rerun=""),
-    dict(id="H-10", section="Hardware", claim="Servo bandwidth: Rev K 46 Hz at the worst stuck-ball mode; at 40/46 Hz the "
+    dict(id="H-09", section="Hardware", claim="Servo bandwidth: Rev K 46 Hz at the worst stuck-ball mode; at 40/46 Hz the "
          "corrected ink error rose 7 % and power fell 29 % (2 tuning writers, one seed)", evidence="CALC; SIM",
          status="CURRENT (marginal)", model="sim2-revk-servo", faults="F6, F7, F3", classification=RR,
          rerun="results/rebaseline/bnib_rerun.json (servo ladder: 80/100 against 40/46 Hz, corrected loads)"),
-    dict(id="H-11", section="Hardware", claim="Seeing the fresh ink (Rev K)", evidence="CALC", status="UNPROVEN",
+    dict(id="H-10", section="Hardware", claim="Seeing the fresh ink (Rev K)", evidence="CALC", status="UNPROVEN",
          model="calc", faults="", classification=NS, rerun=""),
-    dict(id="H-12", section="Hardware", claim="Rev K pen lift", evidence="CALC", status="UNPROVEN", model="calc",
+    dict(id="H-11", section="Hardware", claim="Rev K pen lift", evidence="CALC", status="UNPROVEN", model="calc",
          faults="", classification=NS, rerun=""),
-    dict(id="H-13", section="Hardware", claim="Unit cost", evidence="MFR; ASSUMPTION", status="UNPROVEN", model="calc",
+    dict(id="H-12", section="Hardware", claim="Unit cost", evidence="MFR; ASSUMPTION", status="UNPROVEN", model="calc",
          faults="", classification=NS, rerun=""),
-    dict(id="H-14", section="Hardware", claim="Beryllium in the nib's wires", evidence="MFR/LIT", status="CURRENT",
+    dict(id="H-13", section="Hardware", claim="Beryllium in the nib's wires", evidence="MFR/LIT", status="CURRENT",
          model="calc", faults="", classification=NS, rerun=""),
-    dict(id="H-15", section="Hardware", claim="Page sensor: for the trackers on real inputs a DeltaPen-class sensor "
+    dict(id="H-14", section="Hardware", claim="Page sensor: for the trackers on real inputs a DeltaPen-class sensor "
          "changed results by at most 0.1 word and 0.01 mm (study R)", evidence="ASSUMPTION; SIM",
          status="UNPROVEN", model="hw1-real-v1", faults="F4", classification=RR,
          rerun="results/rebaseline/page_v2.json (ideal vs v1 vs v2)"),
-    dict(id="H-16", section="Hardware", claim="Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters "
+    dict(id="H-15", section="Hardware", claim="Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters "
          "in tremor-free writing, SIM)", evidence="CALC; SIM", status="UNPROVEN, contested", model="sim2j-legacy",
          faults="F1, F2", classification=NR, rerun="", note="not rerun: C1S nose not carried forward (DEC-050)"),
     # ------------------------------------------------------------------ Simulation
@@ -401,12 +410,13 @@ def summary() -> Dict:
 
 def markdown_table(include_not_sim: bool = False) -> str:
     lines = ["| Id | Claim (short) | Model | Faults | Classification | Rerun / reason |", "|---|---|---|---|---|---|"]
+    esc = lambda s: str(s).replace("|", "\\|")          # noqa: E731  (a '|' inside a cell ends the cell)
     for r in ROWS:
         if r["classification"] == NS and not include_not_sim:
             continue
         why = r.get("rerun") or r.get("note") or ""
-        lines.append(f"| {r['id']} | {r['claim']} | {r['model']} | {r['faults'] or '-'} | {r['classification']} | "
-                     f"{why} |")
+        lines.append(f"| {r['id']} | {esc(r['claim'])} | {r['model']} | {esc(r['faults'] or '-')} | "
+                     f"{r['classification']} | {esc(why)} |")
     return "\n".join(lines)
 
 
