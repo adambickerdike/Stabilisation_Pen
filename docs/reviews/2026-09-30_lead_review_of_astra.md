@@ -43,3 +43,10 @@ Five studies run in parallel. Each writes only to its own folders, and the lead 
 | P: active writing surface | A moving-paper platen for severe tremor (reach) and for writing accepted words without pushing the hand. Simulated on real recorded tremor and the pass's accepted references | `platen/`, `results/platen/`, `docs/platen_concept.md` |
 | U: users and market | Sourced market sizing, competitors, customer-discovery pack with go/no-go numbers, the pen, typing and dictation comparison study, business-model order | `docs/market_and_users.md`, `results/market/` |
 | H: first bench build | Order-ready build list per gate: parts, prices, fabrication, assembly, safety, test-to-decision map, budget and schedule | `docs/bench_build_plan.md`, `results/benchbuild/` |
+
+## Lead checks on the round-5 results
+
+- **Study N.** Study K's 17 mW and the pass's 0.081 W for similar nibs were reconciled line by line (`docs/nib_optimisation.md` §2). The difference is mostly convention and duty: which force constant is used, and a typical duty against a worst-case screen. The physics adds only 17 → 20 mW. The claims register now states every nib figure under one convention (DEC-080).
+- **Study P, friction integration.** The pass found that its new accepted-writing replay could create energy: an explicit 0.5 ms update of smoothed friction on a 3.44 g mass. Study P's plant is not that code. It uses HW1's LuGre law with the exact exponential bristle step at HW1's 25 µs, and with the page held still it reproduces HW1's ordinary pen to 1e-17 m (`platen/tests`). So this check does not suspend its results. They remain simulation on the tuning split.
+- **Study P, a shared cache.** Study P refitted the git-ignored `realdata/build/cache/page_model.json` to page model v2, the current code's default. The lead kept v2; the v1 values remain in `results/realdata/realdata.json`. Anyone rerunning study R's page-sensor rows should expect v2 values (study X reports the difference).
+- **Test fixes.** Study P's evidence-row test refused rows that the lead had already merged into the ledger. Its check now matches studies K and F: a new id, or a row merged verbatim.
