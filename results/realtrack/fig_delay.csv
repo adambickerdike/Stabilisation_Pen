@@ -1,0 +1,27 @@
+# SIMULATION (model HW1) on the tuning split; ratios to the ordinary pen; horizon offsets in ms
+# servo lag (CALC): [{'f_hz': 3.0, 'gain': 1.0000100943531125, 'phase_deg': -3.8050956662617224, 'delay_ms': 3.5232367280201133}, {'f_hz': 4.0, 'gain': 1.000016603716994, 'phase_deg': -5.074941947054868, 'delay_ms': 3.5242652410103252}, {'f_hz': 5.0, 'gain': 1.0000232475727382, 'phase_deg': -6.346054306598838, 'delay_ms': 3.5255857258882437}, {'f_hz': 6.0, 'gain': 1.0000287317151608, 'phase_deg': -7.618744994710675, 'delay_ms': 3.527196756810498}, {'f_hz': 7.0, 'gain': 1.0000314741928331, 'phase_deg': -8.89332338416841, 'delay_ms': 3.52909658101921}, {'f_hz': 8.0, 'gain': 1.0000296053452125, 'phase_deg': -10.170095365170148, 'delay_ms': 3.5312831129063014}, {'f_hz': 10.0, 'gain': 1.0000031176033344, 'phase_deg': -12.731422502029272, 'delay_ms': 3.5365062505636864}, {'f_hz': 12.0, 'gain': 0.9999285679136475, 'phase_deg': -15.305079781052477, 'delay_ms': 3.5428425419102956}, {'f_hz': 14.0, 'gain': 0.9997806867782476, 'phase_deg': -17.893322991875966, 'delay_ms': 3.5502624983880886}]
+panel,series,x,value_pct
+decomposition,severe,held,108.76593874382374
+decomposition,severe,revh,105.63361037038051
+decomposition,edge,held,109.36537557388442
+decomposition,edge,revh,103.34110148267625
+decomposition,moderate,held,108.54873892698981
+decomposition,moderate,revh,107.03351481035119
+decomposition,mild,held,108.32287907707345
+decomposition,mild,revh,109.64322201869948
+horizon,Rev H tracker (as built),-3.0,104.35749839144965
+horizon,Rev H tracker (as built),-1.5,105.0170778024627
+horizon,Rev H tracker (as built),0.0,105.6441794305464
+horizon,Rev H tracker (as built),1.5,106.22714729226388
+horizon,Rev H tracker (as built),3.0,106.75787208127592
+horizon,Rev H tracker (as built),5.0,107.37698095306773
+horizon,Rev H tracker (as built),7.5,108.00849453303752
+horizon,Rev H tracker (as built),10.0,108.49837800320063
+horizon,chosen design,-3.0,65.32965090362867
+horizon,chosen design,-1.5,65.97642291761264
+horizon,chosen design,0.0,66.00725060701433
+horizon,chosen design,1.5,65.81224433693184
+horizon,chosen design,3.0,65.83378479492346
+horizon,chosen design,5.0,66.3241574877729
+horizon,chosen design,7.5,67.45915062554793
+horizon,chosen design,10.0,68.95875012901895

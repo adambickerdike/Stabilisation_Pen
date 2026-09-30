@@ -36,20 +36,28 @@ def main(steps=("test", "pictures", "sim2", "report")):
 
 
 def summarize_sim2(out) -> dict:
-    """Per cell: the new design's ink-error ratio to the device-off run and sim2j's G4 ('nose') and perfect knowledge
-    ('oracle') ratios for the same writer, seed and cell; the clean runs' false correction."""
+    """Per cell: the ink error of the new design, sim2j's G4 ('nose'), ai2's TCN ('tcn') and perfect knowledge ('oracle')
+    as a ratio to sim2j's device-off run for the same writer, seed and cell (the device-off run repeated here must
+    match it); the app reader's word accuracy; on the clean run, the writing moved against the clean reference."""
     rows = []
-    for r in out["rows"]:
+
+    def ratio(v, base):
+        x = (v or {}).get("ink_err_um")
+        return float(x) / float(base) if (x is not None and base) else None
+    for r in sorted(out["rows"], key=lambda r: (r["amp_mm"], r["f0"])):
         ref = r["sim2j_rows"]
         none = ref.get("none") or {}
-        rr = {"f0": r["f0"], "amp_mm": r["amp_mm"], "new_ratio": r["new"].get("ratio"),
+        base = none.get("ink_err_um")
+        rr = {"f0": r["f0"], "amp_mm": r["amp_mm"], "new_ratio": ratio(r["new"], base),
               "new_ink_err_um": r["new"].get("ink_err_um"), "new_words_app": r["new"].get("words_app"),
               "new_moved_um": r["new"].get("moved_vs_clean_um"),
               "none_ink_err_um_rerun": (r.get("none_rerun") or {}).get("ink_err_um"),
-              "none_ink_err_um_sim2j": none.get("ink_err_um"), "none_words_app": none.get("words_app")}
+              "none_ink_err_um_sim2j": base, "none_words_app": none.get("words_app"),
+              "rerun_rel_diff": (None if base is None else
+                                 abs(float((r.get("none_rerun") or {}).get("ink_err_um", float("nan"))) / float(base) - 1.0))}
         for c in ("nose", "oracle", "tcn"):
             v = ref.get(c) or {}
-            rr[f"{c}_ratio"] = v.get("ratio")
+            rr[f"{c}_ratio"] = ratio(v, base)
             rr[f"{c}_words_app"] = v.get("words_app")
             rr[f"{c}_moved_um"] = v.get("moved_vs_clean_um")
         rows.append(rr)

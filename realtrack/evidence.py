@@ -22,6 +22,13 @@ def _f(x, nd=2):
         return "n/a"
 
 
+def _pc(x, nd=1):
+    try:
+        return f"{100.0 * float(x):.{nd}f} %"
+    except Exception:
+        return "n/a"
+
+
 def rows(out: Dict) -> List[Dict]:
     R = []
     R.append(dict(
@@ -120,14 +127,18 @@ def rows(out: Dict) -> List[Dict]:
     sep = out.get("separability") or {}
     k1 = "line ratio, page track 4 s (ai2's detector)"
     s1 = (sep.get(k1) or {}).get("_share_above") or {}
+    s2 = (sep.get("line ratio, accelerometer track 2 s") or {}).get("_share_above") or {}
+    s3 = (sep.get("amplitude of the listening estimate, mm (1 s)") or {}).get("_share_above") or {}
     R.append(dict(
         id="EML-101", topic="Real handwriting and real tremor look alike to a tremor-line detector (study E, tuning split)",
         citation="This study's calculation (realtrack/analysis.py separability) on study R's tuning split",
         year="2026", doi_or_url="results/realtrack/realtrack.json (separability)", source_type="derived calculation", evidence_class="numerical simulation",
         access_level="full text", task_or_setup="ai2's running detector (Welch over 4 s, line ratio over the running-median floor) on the page track and on an accelerometer-only track; the listening estimate's amplitude",
         participants_or_bench="Simulated (5 tuning writers, tuning patients)", comparator="Same notes without tremor",
-        key_quantitative_findings=(f"Share of pen-down time with a line ratio > 5 (page track): no tremor {_f((s1.get('clean') or {}).get('5'), 2)}, "
-                                   f"moderate {_f((s1.get('moderate') or {}).get('5'), 2)}, severe {_f((s1.get('severe') or {}).get('5'), 2)}"),
+        key_quantitative_findings=(f"Share of pen-down time with a line ratio > 5 (page track): no tremor {_pc((s1.get('clean') or {}).get('5'))}, "
+                                   f"moderate {_pc((s1.get('moderate') or {}).get('5'))}, severe {_pc((s1.get('severe') or {}).get('5'))}; "
+                                   f"accelerometer track: no tremor {_pc((s2.get('clean') or {}).get('5'))}, severe {_pc((s2.get('severe') or {}).get('5'))}; "
+                                   f"listening estimate's size above 1 mm: no tremor {_pc((s3.get('clean') or {}).get('1.0'))}, severe {_pc((s3.get('severe') or {}).get('1.0'))}"),
         units_and_conditions="shares of pen-down time; DeltaPen-class page sensor", locator="fig_detector_separability.png",
         limitations="Healthy writers' notes; the detector's floor is a running median over +-3 Hz", relevance_to_design="Why the gated trackers rarely open on real tremor",
         transferability="medium", transferability_reason="Real writing and real tremor recordings", design_implication="Gate on size and consistency, not on a spectral line; measure patients' own writing (EXP-R01)",
@@ -154,10 +165,19 @@ def rows(out: Dict) -> List[Dict]:
         year="2026", doi_or_url="results/realtrack/realtrack.json (mcu)", source_type="derived calculation", evidence_class="analytical calculation",
         access_level="full text", task_or_setup="Operation counts of the chosen estimator and its authority; Cortex-M33 at 128 MHz (nRF54L15 / nRF5340 application core)",
         participants_or_bench="n/a", comparator="The AKF of DEC-025, G4, the TCN",
-        key_quantitative_findings=f"{mc.get('summary', 'n/a')}", units_and_conditions="MAC and cycles per 1 ms; bytes",
+        key_quantitative_findings=(f"Frozen design (ai2's TCN in int8 + the soft size gate): {_f(mc.get('mac_per_1ms_step'), 0)} multiply-accumulates per 1 ms, "
+                                   f"{_pc(mc.get('cpu_share_128MHz'))} of a 128 MHz Cortex-M33, {_f((mc.get('ram_bytes') or 0) / 1024, 1)} kB RAM, "
+                                   f"{int(((out.get('mcu') or {}).get('ai2_tcn') or {}).get('flash_bytes', 0)):,} bytes of int8 weights. "
+                                   f"TCN trained on real data: {_pc(((out.get('mcu') or {}).get('tcn_real_data') or {}).get('cpu_share_128MHz'))}; "
+                                   f"G4: {_pc(((out.get('mcu') or {}).get('g4') or {}).get('cpu_share_128MHz'))}; EPLL: {_pc(((out.get('mcu') or {}).get('epll') or {}).get('cpu_share_128MHz'))}. "
+                                   f"int8 weights change ai2's TCN output by {_f((out.get('int8_ai2tcn') or {}).get('rms_diff_um'), 1)} um RMS on {_f((out.get('int8_ai2tcn') or {}).get('rms_out_um'), 0)} um"),
+        units_and_conditions="MAC and cycles per 1 ms; bytes",
         locator="docs/real_tracker.md MCU section", limitations="Cycle model is an ASSUMPTION (2 cycles per float MAC); to be profiled",
         relevance_to_design="Fits the pen's MCU next to the servo", transferability="high", transferability_reason="Operation counts",
-        design_implication="Profile with DWT CYCCNT on the board (firmware O2)", retrieved=DATE, search_query="n/a (derived)", stream="ACT", lead_verification=""))
+        design_implication=("The frozen design does not fit ICD section 5's network budget (1.12 ms per 4 ms against 1 ms; 33,800 bytes of weights against 32 kB; "
+                            "16 kB of activations against 8 kB); the real-data TCN fits it (0.30 ms, 16,960 bytes, 6.0 kB) but needs the contract's inputs and outputs revised. "
+                            "Profile with DWT CYCCNT on the board (EXP-E14)"),
+        retrieved=DATE, search_query="n/a (derived)", stream="ACT", lead_verification=""))
     ln = out.get("learned") or {}
     R.append(dict(
         id="EML-102", topic="Learned tremor estimators trained on real inputs vs ai2's TCN trained on synthetic writers (study E)",

@@ -96,9 +96,9 @@ def words_chart(od: Path, ag: Dict, devices: Sequence[str]) -> Path:
 def tremor_chart(od: Path, ag: Dict, devices: Sequence[str]) -> Path:
     FG = _register()
     groups = card_groups(ag, [d for d in devices if d != "none"], "ratio")
-    note = ("SIMULATION (model HW1) with real recorded inputs, test split. Tremor left at the tip: power amplitude "
+    note = ("SIMULATION (model HW1) with real recorded inputs, test split. Tremor left at the tip: peak amplitude "
             "(sqrt(2) x RMS of the major axis) of ink minus intended, band f0 +- 2 Hz, as a share of the ordinary pen's; "
-            "lines: 95 % interval over writers; power change = 1 - ratio^2.")
+            "lines: 95 % interval over writers; power change = ratio^2 - 1 (negative = less tremor power).")
     return FG.tremor_left_chart(od / "fig_tremor_left.png", groups, [d for d in devices if d != "none"], LABEL,
                                 "Tremor left at the pen tip, share of the ordinary pen's (held-out test data)", note)
 
@@ -106,44 +106,66 @@ def tremor_chart(od: Path, ag: Dict, devices: Sequence[str]) -> Path:
 # ------------------------------------------------------------------ the tuning trade-off
 def tradeoff_chart(od: Path, fronts: Dict[str, List[Dict]], chosen: Optional[Dict] = None) -> Path:
     """fronts: {family label: [{'clean_um', 'severe_bb', 'severe_ratio'}]}: every tuning evaluation of each family (with
-    its authority) as a point; the Pareto front per family as a line; the 20 um tuning limit and 25 um DEC-055 line."""
+    its authority) as a faint point; each family's Pareto front as a step line with markers; the 20 um tuning limit and
+    the 25 um DEC-055 line.  Two panels: the classical trackers, and the learned ones against the best classical front."""
     plt, PS = _plt()
-    fig, ax = plt.subplots(figsize=(9.6, 5.6))
+    learned = [f for f in fronts if "TCN" in f]
+    classical = [f for f in fronts if f not in learned]
+    fig, axs = plt.subplots(1, 2, figsize=(12.8, 5.8), sharey=True)
     rows = []
-    fam_col = {}
-    order = list(fronts)
-    for i, fam in enumerate(order):
-        c = PS.SERIES[i % len(PS.SERIES)]
-        fam_col[fam] = c
-        pts = sorted(fronts[fam], key=lambda p: p["clean_um"])
-        x = np.array([p["clean_um"] for p in pts])
-        y = np.array([100 * p["severe_ratio"] for p in pts])
-        ax.plot(x, y, **dict(PS.marker_kw(c), markersize=4.5, alpha=0.35))
+
+    def front(pts):
         fx, fy, best = [], [], np.inf
-        for xi, yi in zip(x, y):
+        for p_ in sorted(pts, key=lambda q: q["clean_um"]):
+            yi = 100 * p_["severe_ratio"]
             if yi < best:
                 best = yi
-                fx.append(xi); fy.append(yi)
-        ax.plot(fx, fy, color=c, linewidth=2.0, label=fam, drawstyle="steps-post")
+                fx.append(max(p_["clean_um"], 1.05)); fy.append(yi)
+        return fx, fy
+
+    def draw(ax, fam, c, lw=2.0, ls="-", points=True, label=None):
+        pts = fronts[fam]
+        if points:
+            ax.plot([max(p_["clean_um"], 1.05) for p_ in pts], [100 * p_["severe_ratio"] for p_ in pts],
+                    **dict(PS.marker_kw(c), markersize=4.0, alpha=0.25))
+        fx, fy = front(pts)
         if fx:
-            ax.text(fx[-1] * 1.04, fy[-1], fam, color=PS.INK2, fontsize=8.5, va="center")
-        for p in pts:
-            rows.append([fam, p["clean_um"], p["severe_ratio"], p["severe_bb"]])
-    ax.axvline(25.0, color=PS.INK, linewidth=1.2)
-    ax.text(25.0 * 1.03, 102, "DEC-055: 25 um", fontsize=8.5, color=PS.INK, va="bottom")
-    ax.axvline(20.0, color=PS.MUTED, linewidth=1.0, linestyle="--")
-    ax.axhline(100.0, color=PS.BASELINE, linewidth=1.0)
+            xe = max(max(p_["clean_um"] for p_ in pts), fx[-1])
+            ax.plot(fx + [xe], fy + [fy[-1]], color=c, linewidth=lw, linestyle=ls, drawstyle="steps-post",
+                    label=label or fam)
+            ax.plot(fx, fy, linestyle="none", marker="o", markersize=4.5, color=c)
+    pal = [c for c in PS.SERIES if c.lower() != COL["revJ_new"].lower()]      # green is the frozen design's colour
+    for i, fam in enumerate(classical):
+        draw(axs[0], fam, pal[i % len(pal)])
+    best_classical = "listening + soft confidence" if "listening + soft confidence" in fronts else None
+    for i, fam in enumerate(learned):
+        draw(axs[1], fam, ("#4a3aa7" if "real" in fam else COL["revJ_new"]))
+    if best_classical:
+        draw(axs[1], best_classical, PS.MUTED, lw=1.6, ls="--", points=False,
+             label=f"{best_classical} (best classical, for reference)")
+    for ax in axs:
+        ax.axvline(25.0, color=PS.INK, linewidth=1.2)
+        ax.axvline(20.0, color=PS.MUTED, linewidth=1.0, linestyle="--")
+        ax.text(26.0, 111, "DEC-055: 25 um", fontsize=8.5, color=PS.INK, va="top")
+        ax.text(19.0, 111, "rule T2: 20 um", fontsize=8.5, color=PS.INK2, va="top", ha="right")
+        ax.axhline(100.0, color=PS.BASELINE, linewidth=1.0)
+        ax.set_xscale("log")
+        ax.set_xlim(1, 2000)
+        ax.set_ylim(30, 113)
+        ax.set_xlabel("clean real writing moved, um RMS (mean of the 10 tuning notes; log scale; 0 drawn at 1)")
+        ax.legend(loc="lower left", fontsize=8.5)
     if chosen:
-        ax.plot([chosen["clean_um"]], [100 * chosen["severe_ratio"]], marker="*", markersize=14, color=COL["revJ_new"],
-                markeredgecolor=PS.SURFACE, linestyle="none", zorder=5)
-        ax.text(chosen["clean_um"] * 1.08, 100 * chosen["severe_ratio"] - 3, "chosen", fontsize=8.5, color=PS.INK)
-    ax.set_xscale("log")
-    ax.set_xlim(3, 1500)
-    ax.set_ylim(30, 115)
-    ax.set_xlabel("clean real writing moved by the tracker, um RMS (tuning notes; log scale)")
-    ax.set_ylabel("severe tremor left at the tip, % of the ordinary pen")
-    ax.set_title("Tuning split: every tracker setting tried; the line is each family's best trade-off", loc="left")
-    ax.legend(loc="lower left", ncol=2)
+        axs[1].plot([chosen["clean_um"]], [100 * chosen["severe_ratio"]], marker="*", markersize=15, color=COL["revJ_new"],
+                    markeredgecolor=PS.INK, linestyle="none", zorder=5)
+        axs[1].annotate("frozen choice (full plant)", (chosen["clean_um"], 100 * chosen["severe_ratio"]),
+                        xytext=(chosen["clean_um"] * 2.2, 100 * chosen["severe_ratio"] + 9), fontsize=8.5,
+                        color=PS.INK, arrowprops=dict(arrowstyle="-", color=PS.INK2, linewidth=0.8))
+    axs[0].set_ylabel("severe tremor left at the tip, % of the ordinary pen")
+    axs[0].set_title("Classical trackers with their gates", loc="left")
+    axs[1].set_title("Learned trackers with a soft size gate", loc="left")
+    for fam in fronts:
+        for p_ in fronts[fam]:
+            rows.append([fam, p_["clean_um"], p_["severe_ratio"], p_["severe_bb"]])
     PS.stamp(fig, "SIMULATION (HW1 surrogate, tuning split)", "real inputs; not a measurement")
     fig.tight_layout()
     p = od / "fig_tuning_tradeoff.png"
@@ -171,16 +193,21 @@ def separability_chart(od: Path, dist: Dict[str, Dict[str, List[float]]]) -> Pat
             v = dist[f].get(lev)
             if v is None:
                 continue
-            ax.plot(v, 100 * q, color=lev_col[lev], label={"clean": "no tremor", "moderate": "moderate (0.24 mm)",
-                                                            "severe": "severe (1.72 mm)"}[lev])
+            vv = np.asarray(v, float)
+            ok = vv > 0                                   # a ratio of 0 = the detector's window not yet full
+            ax.plot(vv[ok], 100 * q[ok], color=lev_col[lev], marker="o", markersize=3,
+                    label={"clean": "no tremor", "moderate": "moderate (0.24 mm)", "severe": "severe (1.72 mm)"}[lev])
             for qi, vi in zip(q, v):
                 rows.append([f, lev, qi, vi])
         ax.set_title(f, loc="left", fontsize=10)
         ax.set_ylabel("% of pen-down time below")
         ax.set_xscale("log")
-        ax.legend(loc="lower right")
-    fig.suptitle("Real writing looks like real tremor to a line detector; only the size differs (tuning split)",
-                 x=0.01, ha="left", fontsize=11)
+        ref = 1.0 if "mm" in f else 5.0
+        ax.axvline(ref, color=PS.MUTED, linewidth=1.0, linestyle="--")
+        ax.text(ref * 1.05, 101, f"{ref:g}{' mm' if 'mm' in f else ''}", fontsize=8, color=PS.INK2, va="bottom")
+        ax.legend(loc="upper left" if "mm" in f else "lower right")
+    fig.suptitle("To a tremor detector, clean real writing looks like moderate tremor; severe tremor differs mostly in "
+                 "size (tuning split)", x=0.01, ha="left", fontsize=11)
     PS.stamp(fig, "SIMULATION (HW1, tuning split)", "real inputs")
     fig.tight_layout(rect=(0, 0.03, 1, 0.94))
     p = od / "fig_detector_separability.png"
@@ -214,7 +241,7 @@ def delay_chart(od: Path, lag: Dict, decomp: Dict, sweeps: Dict[str, Dict]) -> P
     ax.set_xlim(90, 115)
     ax.set_xlabel("tip tremor, % of the ordinary 12 g pen")
     ax.set_title("Most of 'Rev H makes it worse' is the heavier pen", loc="left", fontsize=10)
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.45, -0.16), ncol=2, fontsize=8, frameon=False)
     for lv, a, b in zip(levels, held, revh):
         rows.append(["decomposition", lv, "held", a])
         rows.append(["decomposition", lv, "revh", b])
@@ -223,7 +250,8 @@ def delay_chart(od: Path, lag: Dict, decomp: Dict, sweeps: Dict[str, Dict]) -> P
         off = [float(o) for o in sw["offsets_ms"]]
         v = [100 * sw["by_offset"][str(o)]["severe_ratio"] for o in sw["offsets_ms"]]
         c = COL["revH_akf"] if "Rev H" in name else COL["revJ_new"]
-        ax.plot(off, v, color=c, label=name)
+        lab = "frozen design (ai2's TCN + soft size gate)" if "chosen" in name else name
+        ax.plot(off, v, color=c, label=lab)
         ax.plot(off, v, **PS.marker_kw(c))
         for o, vv in zip(off, v):
             rows.append(["horizon", name, o, vv])
@@ -233,7 +261,7 @@ def delay_chart(od: Path, lag: Dict, decomp: Dict, sweeps: Dict[str, Dict]) -> P
     ax.set_xlabel("prediction horizon minus the servo delay, ms")
     ax.set_ylabel("severe tip tremor, % of the ordinary pen")
     ax.set_title("More prediction does not remove it", loc="left", fontsize=10)
-    ax.legend(loc="upper left", fontsize=8)
+    ax.legend(loc="center right", fontsize=8)
     PS.stamp(fig, "SIMULATION (HW1, tuning split) and CALC (servo lag)", "real inputs")
     fig.tight_layout()
     p = od / "fig_delay.png"
@@ -271,8 +299,9 @@ def picture(od: Path, pr: Dict, new_key: str = "revJ_new|deltapen") -> Path:
         p_["baselines_mm"] = pr.get("baselines_mm") or []
     trem = (f"tremor: {'UCI Parkinson spiral tablet data (Isenkul et al. 2014, CC BY 4.0)' if pc['kind'] == 'PD' else 'Zenodo ET accelerometry (Pardo-Valencia, Ammann, Foffani 2026, CC BY 4.0)'}, "
             f"recording {pr['tremor']['rid']}, scaled to the {pc['class']} class")
-    header = f"SIMULATION, not a measurement of a person.  {kind_txt}, {cls_txt}."
-    footer = (f"SIMULATION (model HW1) with real recorded inputs; the same writer, text and tremor in every panel; one "
+    short = {"PD": "Parkinson's tremor", "ET": "Essential tremor"}[pc["kind"]]
+    header = f"SIMULATION, not a measurement of a person. {short}, {cls_txt}."      # one line at the figure's width
+    footer = (f"SIMULATION (model HW1) with real recorded inputs ({kind_txt}); the same writer, text and tremor in every panel; one "
               f"fixed scale (mm on the page, 10 mm bar). Writing: letters written by one real adult (UCI Character "
               f"Trajectories, Williams 2008, CC BY 4.0), placed on the line by the simulation. {trem}. Tremor left at "
               f"the tip (peak, f0 +- 2 Hz): ordinary pen {dn.get('tip_tremor_mm', float('nan')):.2f} mm, Rev J with "

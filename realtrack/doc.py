@@ -3,6 +3,7 @@ python3 -m realtrack.doc  ->  realtrack/build/doc_tables.md"""
 from __future__ import annotations
 
 import json
+import textwrap
 from typing import Dict, List
 
 import numpy as np
@@ -84,8 +85,9 @@ def cards(out: Dict) -> str:
                 f((fc.get(d) or {}).get("words_of_10", {}).get("mean")) for d, _ in DEV[:-1]) + " | - |")
             held = (cd.get("revJ_held") or {}).get("tip_tremor_ratio")
             ide = (cd.get("revJ_new") or {}).get("tip_tremor_ratio")
-            L.append(f"\nRev J with the nose held (no tracker): tip tremor {ci(held, 2)} x the ordinary pen's. "
-                     f"Best causal tracker with the ideal page sensor (bound): {ci(ide, 2)} x.\n")
+            L.append("\n" + "\n".join(textwrap.wrap(
+                f"Rev J with the nose held (no tracker): tip tremor {ci(held, 2)} x the ordinary pen's. "
+                f"Best causal tracker with the ideal page sensor (bound): {ci(ide, 2)} x.", width=118)) + "\n")
     return "\n".join(L)
 
 
@@ -152,8 +154,10 @@ def per_writer(out: Dict) -> str:
     if tu:
         h = [w["letter_height_mm"] for w in tu]
         v = [w["speed_median_mm_s"] for w in tu]
-        L.append(f"\nThe 5 tuning writers (10 notes): letter height {min(h):.1f}-{max(h):.1f} mm, median pen speed "
-                 f"{min(v):.0f}-{max(v):.0f} mm/s (DATA, statistics only).")
+        L.append("\n" + "\n".join(textwrap.wrap(
+            f"The 5 tuning writers (10 notes): letter height {min(h):.1f}-{max(h):.1f} mm, median pen speed "
+            f"{min(v):.0f}-{max(v):.0f} mm/s. Letter height is R's metadata estimate (its rule is an ASSUMPTION of "
+            f"realdata); pen speed is the median pen-down speed of the recorded path (CALC). Statistics only.", width=118)))
     return "\n".join(L)
 
 
@@ -273,8 +277,9 @@ def delay(out: Dict) -> str:
     offs = hz[labs[0]]["offsets_ms"]
     L = ["| Prediction beyond the servo delay, ms | " + " | ".join(f"{o:+g}" for o in offs) + " |",
          "|---" * (len(offs) + 1) + "|"]
-    for lab in labs:
-        by = hz[lab]["by_offset"]
+    for lab0 in labs:
+        by = hz[lab0]["by_offset"]
+        lab = "Frozen design (ai2's TCN + soft size gate)" if "chosen" in lab0 else lab0
         L.append(f"| {lab}: severe tip tremor (x ordinary pen) | " + " | ".join(
             f((by.get(str(o)) or {}).get("severe_ratio"), 3) for o in offs) + " |")
         L.append(f"| {lab}: mild tip tremor (x nose held) | " + " | ".join(
@@ -299,9 +304,12 @@ def sim2(out: Dict) -> str:
                  f"{f(r.get('new_ratio'), 2)} | {f(r.get('oracle_ratio'), 2)} | {r.get('none_words_app', '-')} / "
                  f"{r.get('nose_words_app', '-')} / {r.get('new_words_app', '-')} / {r.get('oracle_words_app', '-')} |")
     if clean:
-        L.append(f"\nNo tremor (same writer and seed): writing moved {f(clean.get('nose_moved_um'))} um by G4, "
-                 f"{f(clean.get('tcn_moved_um'))} um by ai2's TCN (no gate), {f(clean.get('new_moved_um'))} um by the frozen "
-                 f"design; app reader's word accuracy: G4 {clean.get('nose_words_app', '-')}, frozen {clean.get('new_words_app', '-')}.")
+        import textwrap
+        L.append("\n" + "\n".join(textwrap.wrap(
+            f"No tremor (same writer and seed): writing moved {f(clean.get('nose_moved_um'))} um by G4, "
+            f"{f(clean.get('tcn_moved_um'))} um by ai2's TCN (no gate), {f(clean.get('new_moved_um'))} um by the frozen "
+            f"design; app reader's word accuracy: G4 {clean.get('nose_words_app', '-')}, frozen "
+            f"{clean.get('new_words_app', '-')}.", width=118)))
     return "\n".join(L)
 
 

@@ -1,0 +1,92 @@
+# SIMULATION (model HW1) with real inputs, tuning split, DeltaPen-class page sensor; pen-down ticks
+feature,level,quantile,value
+"line ratio, page track 4 s (ai2's detector)",clean,0.01,0.0
+"line ratio, page track 4 s (ai2's detector)",clean,0.05,0.0
+"line ratio, page track 4 s (ai2's detector)",clean,0.1,1.1463538094686723
+"line ratio, page track 4 s (ai2's detector)",clean,0.25,1.3341863231075628
+"line ratio, page track 4 s (ai2's detector)",clean,0.5,1.578548977277414
+"line ratio, page track 4 s (ai2's detector)",clean,0.75,1.9305173543192224
+"line ratio, page track 4 s (ai2's detector)",clean,0.9,2.4366747054296125
+"line ratio, page track 4 s (ai2's detector)",clean,0.95,2.7591951540133506
+"line ratio, page track 4 s (ai2's detector)",clean,0.99,4.062498894413701
+"line ratio, page track 4 s (ai2's detector)",clean,0.999,7.066575112121723
+"line ratio, page track 4 s (ai2's detector)",moderate,0.01,0.0
+"line ratio, page track 4 s (ai2's detector)",moderate,0.05,0.0
+"line ratio, page track 4 s (ai2's detector)",moderate,0.1,1.1668086674977776
+"line ratio, page track 4 s (ai2's detector)",moderate,0.25,1.3840929438807263
+"line ratio, page track 4 s (ai2's detector)",moderate,0.5,1.6883370064413192
+"line ratio, page track 4 s (ai2's detector)",moderate,0.75,2.101613253150718
+"line ratio, page track 4 s (ai2's detector)",moderate,0.9,2.7527305854728716
+"line ratio, page track 4 s (ai2's detector)",moderate,0.95,3.4139361225395697
+"line ratio, page track 4 s (ai2's detector)",moderate,0.99,5.4535329777692025
+"line ratio, page track 4 s (ai2's detector)",moderate,0.999,9.314807378864849
+"line ratio, page track 4 s (ai2's detector)",severe,0.01,0.0
+"line ratio, page track 4 s (ai2's detector)",severe,0.05,0.0
+"line ratio, page track 4 s (ai2's detector)",severe,0.1,1.5455237792017975
+"line ratio, page track 4 s (ai2's detector)",severe,0.25,2.16504437746546
+"line ratio, page track 4 s (ai2's detector)",severe,0.5,3.26435980161408
+"line ratio, page track 4 s (ai2's detector)",severe,0.75,5.539101476091945
+"line ratio, page track 4 s (ai2's detector)",severe,0.9,8.838358218634387
+"line ratio, page track 4 s (ai2's detector)",severe,0.95,11.435116488481373
+"line ratio, page track 4 s (ai2's detector)",severe,0.99,21.279423739088063
+"line ratio, page track 4 s (ai2's detector)",severe,0.999,46.27210733496632
+"line ratio, accelerometer track 2 s",clean,0.01,0.0
+"line ratio, accelerometer track 2 s",clean,0.05,0.0
+"line ratio, accelerometer track 2 s",clean,0.1,1.0000000000000016
+"line ratio, accelerometer track 2 s",clean,0.25,1.352670052835309
+"line ratio, accelerometer track 2 s",clean,0.5,2.0759073524405944
+"line ratio, accelerometer track 2 s",clean,0.75,3.09532817977915
+"line ratio, accelerometer track 2 s",clean,0.9,4.5817402325450685
+"line ratio, accelerometer track 2 s",clean,0.95,6.0367862766404015
+"line ratio, accelerometer track 2 s",clean,0.99,9.266936836280575
+"line ratio, accelerometer track 2 s",clean,0.999,12.591226884332551
+"line ratio, accelerometer track 2 s",moderate,0.01,0.0
+"line ratio, accelerometer track 2 s",moderate,0.05,0.0
+"line ratio, accelerometer track 2 s",moderate,0.1,1.0000000000000018
+"line ratio, accelerometer track 2 s",moderate,0.25,1.3913518160243088
+"line ratio, accelerometer track 2 s",moderate,0.5,2.1175521199229785
+"line ratio, accelerometer track 2 s",moderate,0.75,3.076908805601437
+"line ratio, accelerometer track 2 s",moderate,0.9,4.51275272577727
+"line ratio, accelerometer track 2 s",moderate,0.95,5.792161400058764
+"line ratio, accelerometer track 2 s",moderate,0.99,8.797363427823852
+"line ratio, accelerometer track 2 s",moderate,0.999,15.0813415968089
+"line ratio, accelerometer track 2 s",severe,0.01,0.0
+"line ratio, accelerometer track 2 s",severe,0.05,0.0
+"line ratio, accelerometer track 2 s",severe,0.1,1.201025981308097
+"line ratio, accelerometer track 2 s",severe,0.25,1.710907794312156
+"line ratio, accelerometer track 2 s",severe,0.5,2.4804196562879093
+"line ratio, accelerometer track 2 s",severe,0.75,3.8421573091353443
+"line ratio, accelerometer track 2 s",severe,0.9,6.501828320773051
+"line ratio, accelerometer track 2 s",severe,0.95,8.687314867683586
+"line ratio, accelerometer track 2 s",severe,0.99,13.34327196064766
+"line ratio, accelerometer track 2 s",severe,0.999,23.425519585864063
+"amplitude of the listening estimate, mm (1 s)",clean,0.01,0.1092165478264775
+"amplitude of the listening estimate, mm (1 s)",clean,0.05,0.15093915235719496
+"amplitude of the listening estimate, mm (1 s)",clean,0.1,0.1726968205529928
+"amplitude of the listening estimate, mm (1 s)",clean,0.25,0.23681052206008002
+"amplitude of the listening estimate, mm (1 s)",clean,0.5,0.4294581017558489
+"amplitude of the listening estimate, mm (1 s)",clean,0.75,0.6549078680563326
+"amplitude of the listening estimate, mm (1 s)",clean,0.9,0.8681557119679164
+"amplitude of the listening estimate, mm (1 s)",clean,0.95,1.028994341095542
+"amplitude of the listening estimate, mm (1 s)",clean,0.99,1.5153051746412012
+"amplitude of the listening estimate, mm (1 s)",clean,0.999,2.199129216882922
+"amplitude of the listening estimate, mm (1 s)",moderate,0.01,0.13743224358774644
+"amplitude of the listening estimate, mm (1 s)",moderate,0.05,0.16230497097007981
+"amplitude of the listening estimate, mm (1 s)",moderate,0.1,0.18078499196450076
+"amplitude of the listening estimate, mm (1 s)",moderate,0.25,0.24027701716814343
+"amplitude of the listening estimate, mm (1 s)",moderate,0.5,0.3637547962549842
+"amplitude of the listening estimate, mm (1 s)",moderate,0.75,0.5852090457664526
+"amplitude of the listening estimate, mm (1 s)",moderate,0.9,0.8286703777614655
+"amplitude of the listening estimate, mm (1 s)",moderate,0.95,1.0242857797915295
+"amplitude of the listening estimate, mm (1 s)",moderate,0.99,1.4917120078638189
+"amplitude of the listening estimate, mm (1 s)",moderate,0.999,2.3628724304121755
+"amplitude of the listening estimate, mm (1 s)",severe,0.01,0.41917157956110707
+"amplitude of the listening estimate, mm (1 s)",severe,0.05,0.6628314125663841
+"amplitude of the listening estimate, mm (1 s)",severe,0.1,0.8179381228705578
+"amplitude of the listening estimate, mm (1 s)",severe,0.25,1.09752365208934
+"amplitude of the listening estimate, mm (1 s)",severe,0.5,1.548486642010142
+"amplitude of the listening estimate, mm (1 s)",severe,0.75,1.9611045483613707
+"amplitude of the listening estimate, mm (1 s)",severe,0.9,2.264606763208616
+"amplitude of the listening estimate, mm (1 s)",severe,0.95,2.4451156770077747
+"amplitude of the listening estimate, mm (1 s)",severe,0.99,2.9895774003726476
+"amplitude of the listening estimate, mm (1 s)",severe,0.999,3.3994555879691855
