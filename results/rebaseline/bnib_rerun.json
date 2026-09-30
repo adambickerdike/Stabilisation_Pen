@@ -2,10 +2,10 @@
  "stabpen.provenance": {
   "evidence_status": "SIMULATION (sim2 / MuJoCo via bnib/sim.py; synthetic v2 writers, synthetic ET tremor, study B's DeltaPen-calibrated page sensor, sim2j's G4 tracker); nib parameters CALC / PROPOSED DESIGN",
   "package": "rebaseline 0.1.0",
-  "generated_utc": "2026-09-30T15:30:36+00:00",
+  "generated_utc": "2026-09-30T16:05:41+00:00",
   "git": {
-   "head": "b162f1d8428c12ebb955707aefc9800a0a5586d6",
-   "short": "b162f1d",
+   "head": "7d5243689e4f76253af968b0ca451799b12c1027",
+   "short": "7d52436",
    "dirty_tree": true,
    "note": "other agents work in this clone at the same time; the source hashes below pin the code that ran"
   },
@@ -193,6 +193,610 @@
  "what": "the balanced nib in sim2 under causal sensing, DEC-066 servo and corrected loads (task 3; the synthetic-input half of EXP-E23)",
  "evidence": "SIMULATION (sim2 / MuJoCo via bnib/sim.py; synthetic v2 writers, synthetic ET tremor, study B's DeltaPen-calibrated page sensor, sim2j's G4 tracker); nib parameters CALC / PROPOSED DESIGN",
  "configs": {
+  "B1_studyB_now": {
+   "setup": {
+    "nib": "B1",
+    "servo": [
+     80.0,
+     100.0
+    ],
+    "loads": "linear",
+    "contact": "current"
+   },
+   "design": {
+    "kind": "design",
+    "config": "B1_studyB_now",
+    "Km_tip": 0.4000699816929562,
+    "k_tip": 3.792734399767604,
+    "m_move": 0.0034879578713613167,
+    "travel": 0.0010586959658821008,
+    "source": "study B (bnib/sim.py sim_designs + results/bnib/rules.json)",
+    "servo_hz": 80.0,
+    "inner_hz": 100.0,
+    "loads": "linear",
+    "contact": "current",
+    "wire_k0_N_m": null,
+    "drag_step_check": null
+   },
+   "all_writers": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5837337189399192,
+      "ratio_G4_boot": {
+       "mean": 0.5837337189399192,
+       "lo": 0.5630475988605235,
+       "hi": 0.6044198390193148,
+       "n": 2
+      },
+      "ratio_oracle": 0.1473193857154859,
+      "ink_off_um": 500.78162853809687,
+      "ink_G4_um": 292.60125863502503,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 10.0,
+      "letters_G4": 9.615384615384617,
+      "P_nib_mW_off": 13.813271395365568,
+      "P_nib_mW_G4": 13.964839332504539,
+      "P_nib_mW_oracle": 12.512346568858765,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5888340507043567,
+      "ratio_G4_boot": {
+       "mean": 0.5888340507043567,
+       "lo": 0.5857753636887995,
+       "hi": 0.5918927377199139,
+       "n": 2
+      },
+      "ratio_oracle": 0.4575561171265828,
+      "ink_off_um": 1116.70299421139,
+      "ink_G4_um": 657.9615349967207,
+      "words_off": 2.5,
+      "words_G4": 7.5,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 7.692307692307693,
+      "P_nib_mW_off": 17.039514508379238,
+      "P_nib_mW_G4": 16.78593277478371,
+      "P_nib_mW_oracle": 18.256757782244428,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.44607011496938886,
+      "ratio_G4_boot": {
+       "mean": 0.44607011496938886,
+       "lo": 0.41096463482991225,
+       "hi": 0.48117559510886543,
+       "n": 2
+      },
+      "ratio_oracle": 0.2078650615662434,
+      "ink_off_um": 528.0998353877474,
+      "ink_G4_um": 236.1191449500779,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 16.943486435453238,
+      "P_nib_mW_G4": 16.663818483653994,
+      "P_nib_mW_oracle": 14.662530192821091,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5688151525506411,
+      "ratio_G4_boot": {
+       "mean": 0.5688151525506411,
+       "lo": 0.5380686441385927,
+       "hi": 0.5995616609626896,
+       "n": 2
+      },
+      "ratio_oracle": 0.5306554099815557,
+      "ink_off_um": 1221.9818401795378,
+      "ink_G4_um": 700.157315340044,
+      "words_off": 0.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 4.230769230769231,
+      "letters_G4": 8.461538461538462,
+      "P_nib_mW_off": 32.51125876756308,
+      "P_nib_mW_G4": 36.45467768816545,
+      "P_nib_mW_oracle": 34.68129399659715,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5468632592910765,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5468632592910765,
+      "lo": 0.524464060379457,
+      "hi": 0.5692624582026959,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.335848993597467,
+     "words_off": 5.625,
+     "words_G4": 9.375,
+     "words_oracle": 9.375,
+     "letters_off": 7.211538461538462,
+     "letters_G4": 8.942307692307693,
+     "P_nib_mW_G4": 20.967317069776925,
+     "P_nib_mW_off": 20.076882776690283,
+     "battery_h_G4": 30.728877705207438,
+     "T_coil_end_C_max": 30.451671170341193,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 11.181171580965984,
+     "P_nib_mW_held": 11.181171580965984,
+     "words": 10.0,
+     "battery_h": 35.72541689875925
+    }
+   },
+   "writers_0_3": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5837337189399192,
+      "ratio_G4_boot": {
+       "mean": 0.5837337189399192,
+       "lo": 0.5630475988605235,
+       "hi": 0.6044198390193148,
+       "n": 2
+      },
+      "ratio_oracle": 0.1473193857154859,
+      "ink_off_um": 500.78162853809687,
+      "ink_G4_um": 292.60125863502503,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 10.0,
+      "letters_G4": 9.615384615384617,
+      "P_nib_mW_off": 13.813271395365568,
+      "P_nib_mW_G4": 13.964839332504539,
+      "P_nib_mW_oracle": 12.512346568858765,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5888340507043567,
+      "ratio_G4_boot": {
+       "mean": 0.5888340507043567,
+       "lo": 0.5857753636887995,
+       "hi": 0.5918927377199139,
+       "n": 2
+      },
+      "ratio_oracle": 0.4575561171265828,
+      "ink_off_um": 1116.70299421139,
+      "ink_G4_um": 657.9615349967207,
+      "words_off": 2.5,
+      "words_G4": 7.5,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 7.692307692307693,
+      "P_nib_mW_off": 17.039514508379238,
+      "P_nib_mW_G4": 16.78593277478371,
+      "P_nib_mW_oracle": 18.256757782244428,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.44607011496938886,
+      "ratio_G4_boot": {
+       "mean": 0.44607011496938886,
+       "lo": 0.41096463482991225,
+       "hi": 0.48117559510886543,
+       "n": 2
+      },
+      "ratio_oracle": 0.2078650615662434,
+      "ink_off_um": 528.0998353877474,
+      "ink_G4_um": 236.1191449500779,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 16.943486435453238,
+      "P_nib_mW_G4": 16.663818483653994,
+      "P_nib_mW_oracle": 14.662530192821091,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5688151525506411,
+      "ratio_G4_boot": {
+       "mean": 0.5688151525506411,
+       "lo": 0.5380686441385927,
+       "hi": 0.5995616609626896,
+       "n": 2
+      },
+      "ratio_oracle": 0.5306554099815557,
+      "ink_off_um": 1221.9818401795378,
+      "ink_G4_um": 700.157315340044,
+      "words_off": 0.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 4.230769230769231,
+      "letters_G4": 8.461538461538462,
+      "P_nib_mW_off": 32.51125876756308,
+      "P_nib_mW_G4": 36.45467768816545,
+      "P_nib_mW_oracle": 34.68129399659715,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5468632592910765,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5468632592910765,
+      "lo": 0.524464060379457,
+      "hi": 0.5692624582026959,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.335848993597467,
+     "words_off": 5.625,
+     "words_G4": 9.375,
+     "words_oracle": 9.375,
+     "letters_off": 7.211538461538462,
+     "letters_G4": 8.942307692307693,
+     "P_nib_mW_G4": 20.967317069776925,
+     "P_nib_mW_off": 20.076882776690283,
+     "battery_h_G4": 30.728877705207438,
+     "T_coil_end_C_max": 30.451671170341193,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 11.181171580965984,
+     "P_nib_mW_held": 11.181171580965984,
+     "words": 10.0,
+     "battery_h": 35.72541689875925
+    }
+   },
+   "writers_0_1": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5837337189399192,
+      "ratio_G4_boot": {
+       "mean": 0.5837337189399192,
+       "lo": 0.5630475988605235,
+       "hi": 0.6044198390193148,
+       "n": 2
+      },
+      "ratio_oracle": 0.1473193857154859,
+      "ink_off_um": 500.78162853809687,
+      "ink_G4_um": 292.60125863502503,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 10.0,
+      "letters_G4": 9.615384615384617,
+      "P_nib_mW_off": 13.813271395365568,
+      "P_nib_mW_G4": 13.964839332504539,
+      "P_nib_mW_oracle": 12.512346568858765,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5888340507043567,
+      "ratio_G4_boot": {
+       "mean": 0.5888340507043567,
+       "lo": 0.5857753636887995,
+       "hi": 0.5918927377199139,
+       "n": 2
+      },
+      "ratio_oracle": 0.4575561171265828,
+      "ink_off_um": 1116.70299421139,
+      "ink_G4_um": 657.9615349967207,
+      "words_off": 2.5,
+      "words_G4": 7.5,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 7.692307692307693,
+      "P_nib_mW_off": 17.039514508379238,
+      "P_nib_mW_G4": 16.78593277478371,
+      "P_nib_mW_oracle": 18.256757782244428,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.44607011496938886,
+      "ratio_G4_boot": {
+       "mean": 0.44607011496938886,
+       "lo": 0.41096463482991225,
+       "hi": 0.48117559510886543,
+       "n": 2
+      },
+      "ratio_oracle": 0.2078650615662434,
+      "ink_off_um": 528.0998353877474,
+      "ink_G4_um": 236.1191449500779,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 16.943486435453238,
+      "P_nib_mW_G4": 16.663818483653994,
+      "P_nib_mW_oracle": 14.662530192821091,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5688151525506411,
+      "ratio_G4_boot": {
+       "mean": 0.5688151525506411,
+       "lo": 0.5380686441385927,
+       "hi": 0.5995616609626896,
+       "n": 2
+      },
+      "ratio_oracle": 0.5306554099815557,
+      "ink_off_um": 1221.9818401795378,
+      "ink_G4_um": 700.157315340044,
+      "words_off": 0.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 4.230769230769231,
+      "letters_G4": 8.461538461538462,
+      "P_nib_mW_off": 32.51125876756308,
+      "P_nib_mW_G4": 36.45467768816545,
+      "P_nib_mW_oracle": 34.68129399659715,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5468632592910765,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5468632592910765,
+      "lo": 0.524464060379457,
+      "hi": 0.5692624582026959,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.335848993597467,
+     "words_off": 5.625,
+     "words_G4": 9.375,
+     "words_oracle": 9.375,
+     "letters_off": 7.211538461538462,
+     "letters_G4": 8.942307692307693,
+     "P_nib_mW_G4": 20.967317069776925,
+     "P_nib_mW_off": 20.076882776690283,
+     "battery_h_G4": 30.728877705207438,
+     "T_coil_end_C_max": 30.451671170341193,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 11.181171580965984,
+     "P_nib_mW_held": 11.181171580965984,
+     "words": 10.0,
+     "battery_h": 35.72541689875925
+    }
+   },
+   "studyB_cells_writers_0_3": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5837337189399192,
+      "ratio_G4_boot": {
+       "mean": 0.5837337189399192,
+       "lo": 0.5630475988605235,
+       "hi": 0.6044198390193148,
+       "n": 2
+      },
+      "ratio_oracle": 0.1473193857154859,
+      "ink_off_um": 500.78162853809687,
+      "ink_G4_um": 292.60125863502503,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 10.0,
+      "letters_G4": 9.615384615384617,
+      "P_nib_mW_off": 13.813271395365568,
+      "P_nib_mW_G4": 13.964839332504539,
+      "P_nib_mW_oracle": 12.512346568858765,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5888340507043567,
+      "ratio_G4_boot": {
+       "mean": 0.5888340507043567,
+       "lo": 0.5857753636887995,
+       "hi": 0.5918927377199139,
+       "n": 2
+      },
+      "ratio_oracle": 0.4575561171265828,
+      "ink_off_um": 1116.70299421139,
+      "ink_G4_um": 657.9615349967207,
+      "words_off": 2.5,
+      "words_G4": 7.5,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 7.692307692307693,
+      "P_nib_mW_off": 17.039514508379238,
+      "P_nib_mW_G4": 16.78593277478371,
+      "P_nib_mW_oracle": 18.256757782244428,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.44607011496938886,
+      "ratio_G4_boot": {
+       "mean": 0.44607011496938886,
+       "lo": 0.41096463482991225,
+       "hi": 0.48117559510886543,
+       "n": 2
+      },
+      "ratio_oracle": 0.2078650615662434,
+      "ink_off_um": 528.0998353877474,
+      "ink_G4_um": 236.1191449500779,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 16.943486435453238,
+      "P_nib_mW_G4": 16.663818483653994,
+      "P_nib_mW_oracle": 14.662530192821091,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 6,
+     "ratio_G4": 0.5395459615378881,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5395459615378881,
+      "lo": 0.5199291991264118,
+      "hi": 0.5591627239493647,
+      "n": 6,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.2709135214694373,
+     "words_off": 7.5,
+     "words_G4": 9.166666666666666,
+     "words_oracle": 9.166666666666666,
+     "letters_off": 8.205128205128204,
+     "letters_G4": 9.102564102564104,
+     "P_nib_mW_G4": 15.804863530314082,
+     "P_nib_mW_off": 15.93209077973268,
+     "battery_h_G4": 32.915609079621824,
+     "T_coil_end_C_max": 30.219642606287973,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 11.181171580965984,
+     "P_nib_mW_held": 11.181171580965984,
+     "words": 10.0,
+     "battery_h": 35.72541689875925
+    }
+   },
+   "studyB_cells_writers_0_1": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5837337189399192,
+      "ratio_G4_boot": {
+       "mean": 0.5837337189399192,
+       "lo": 0.5630475988605235,
+       "hi": 0.6044198390193148,
+       "n": 2
+      },
+      "ratio_oracle": 0.1473193857154859,
+      "ink_off_um": 500.78162853809687,
+      "ink_G4_um": 292.60125863502503,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 10.0,
+      "letters_G4": 9.615384615384617,
+      "P_nib_mW_off": 13.813271395365568,
+      "P_nib_mW_G4": 13.964839332504539,
+      "P_nib_mW_oracle": 12.512346568858765,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5888340507043567,
+      "ratio_G4_boot": {
+       "mean": 0.5888340507043567,
+       "lo": 0.5857753636887995,
+       "hi": 0.5918927377199139,
+       "n": 2
+      },
+      "ratio_oracle": 0.4575561171265828,
+      "ink_off_um": 1116.70299421139,
+      "ink_G4_um": 657.9615349967207,
+      "words_off": 2.5,
+      "words_G4": 7.5,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 7.692307692307693,
+      "P_nib_mW_off": 17.039514508379238,
+      "P_nib_mW_G4": 16.78593277478371,
+      "P_nib_mW_oracle": 18.256757782244428,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.44607011496938886,
+      "ratio_G4_boot": {
+       "mean": 0.44607011496938886,
+       "lo": 0.41096463482991225,
+       "hi": 0.48117559510886543,
+       "n": 2
+      },
+      "ratio_oracle": 0.2078650615662434,
+      "ink_off_um": 528.0998353877474,
+      "ink_G4_um": 236.1191449500779,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 16.943486435453238,
+      "P_nib_mW_G4": 16.663818483653994,
+      "P_nib_mW_oracle": 14.662530192821091,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 6,
+     "ratio_G4": 0.5395459615378881,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5395459615378881,
+      "lo": 0.5199291991264118,
+      "hi": 0.5591627239493647,
+      "n": 6,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.2709135214694373,
+     "words_off": 7.5,
+     "words_G4": 9.166666666666666,
+     "words_oracle": 9.166666666666666,
+     "letters_off": 8.205128205128204,
+     "letters_G4": 9.102564102564104,
+     "P_nib_mW_G4": 15.804863530314082,
+     "P_nib_mW_off": 15.93209077973268,
+     "battery_h_G4": 32.915609079621824,
+     "T_coil_end_C_max": 30.219642606287973,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 11.181171580965984,
+     "P_nib_mW_held": 11.181171580965984,
+     "words": 10.0,
+     "battery_h": 35.72541689875925
+    }
+   },
+   "power_bands": null,
+   "wall_s_total": 0.0
+  },
   "B1_studyB_exact": {
    "setup": {
     "nib": "B1",
@@ -795,6 +1399,1230 @@
     }
    },
    "power_bands": null,
+   "wall_s_total": 0.0
+  },
+  "B1_dec066": {
+   "setup": {
+    "nib": "B1",
+    "servo": [
+     40.0,
+     46.0
+    ],
+    "loads": "linear",
+    "contact": "current"
+   },
+   "design": {
+    "kind": "design",
+    "config": "B1_dec066",
+    "Km_tip": 0.4000699816929562,
+    "k_tip": 3.792734399767604,
+    "m_move": 0.0034879578713613167,
+    "travel": 0.0010586959658821008,
+    "source": "study B (bnib/sim.py sim_designs + results/bnib/rules.json)",
+    "servo_hz": 40.0,
+    "inner_hz": 46.0,
+    "loads": "linear",
+    "contact": "current",
+    "wire_k0_N_m": null,
+    "drag_step_check": null
+   },
+   "all_writers": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5793702121089181,
+      "ratio_G4_boot": {
+       "mean": 0.5793702121089181,
+       "lo": 0.5585787096677061,
+       "hi": 0.6001617145501303,
+       "n": 2
+      },
+      "ratio_oracle": 0.19041976732426025,
+      "ink_off_um": 543.2704264602636,
+      "ink_G4_um": 315.2010361728692,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 8.74188504367581,
+      "P_nib_mW_G4": 8.463499180476395,
+      "P_nib_mW_oracle": 6.497680099940914,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5880621768686409,
+      "ratio_G4_boot": {
+       "mean": 0.5880621768686409,
+       "lo": 0.5810845469231755,
+       "hi": 0.5950398068141065,
+       "n": 2
+      },
+      "ratio_oracle": 0.4585418550243219,
+      "ink_off_um": 1212.7282925427662,
+      "ink_G4_um": 714.1533580233073,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.538461538461538,
+      "P_nib_mW_off": 12.929287549665082,
+      "P_nib_mW_G4": 11.144718134588135,
+      "P_nib_mW_oracle": 11.226995266296743,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.43631873899145895,
+      "ratio_G4_boot": {
+       "mean": 0.43631873899145895,
+       "lo": 0.4063120966583744,
+       "hi": 0.4663253813245435,
+       "n": 2
+      },
+      "ratio_oracle": 0.27410474360566317,
+      "ink_off_um": 584.9566239651426,
+      "ink_G4_um": 256.38343441863805,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.366443289491091,
+      "P_nib_mW_G4": 9.709345070399241,
+      "P_nib_mW_oracle": 8.195134174609493,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5805473900490088,
+      "ratio_G4_boot": {
+       "mean": 0.5805473900490088,
+       "lo": 0.5445634237751903,
+       "hi": 0.6165313563228273,
+       "n": 2
+      },
+      "ratio_oracle": 0.5538665943954795,
+      "ink_off_um": 1408.140441734467,
+      "ink_G4_um": 825.0107704796802,
+      "words_off": 0.0,
+      "words_G4": 7.5,
+      "words_oracle": 5.0,
+      "letters_off": 3.8461538461538467,
+      "letters_G4": 7.307692307692308,
+      "P_nib_mW_off": 30.095941341998103,
+      "P_nib_mW_G4": 23.4091723094349,
+      "P_nib_mW_oracle": 22.718075022225925,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5460746295045067,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5460746295045067,
+      "lo": 0.5226346942561115,
+      "hi": 0.5695145647529019,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3692332400874312,
+     "words_off": 5.625,
+     "words_G4": 8.125,
+     "words_oracle": 8.125,
+     "letters_off": 6.923076923076923,
+     "letters_G4": 8.461538461538462,
+     "P_nib_mW_G4": 13.181683673724669,
+     "P_nib_mW_off": 16.03338930620752,
+     "battery_h_G4": 34.84450382677418,
+     "T_coil_end_C_max": 30.263099808796962,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 5.699080146926974,
+     "P_nib_mW_held": 5.699080146926974,
+     "words": 10.0,
+     "battery_h": 39.872064816633575
+    }
+   },
+   "writers_0_3": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5793702121089181,
+      "ratio_G4_boot": {
+       "mean": 0.5793702121089181,
+       "lo": 0.5585787096677061,
+       "hi": 0.6001617145501303,
+       "n": 2
+      },
+      "ratio_oracle": 0.19041976732426025,
+      "ink_off_um": 543.2704264602636,
+      "ink_G4_um": 315.2010361728692,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 8.74188504367581,
+      "P_nib_mW_G4": 8.463499180476395,
+      "P_nib_mW_oracle": 6.497680099940914,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5880621768686409,
+      "ratio_G4_boot": {
+       "mean": 0.5880621768686409,
+       "lo": 0.5810845469231755,
+       "hi": 0.5950398068141065,
+       "n": 2
+      },
+      "ratio_oracle": 0.4585418550243219,
+      "ink_off_um": 1212.7282925427662,
+      "ink_G4_um": 714.1533580233073,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.538461538461538,
+      "P_nib_mW_off": 12.929287549665082,
+      "P_nib_mW_G4": 11.144718134588135,
+      "P_nib_mW_oracle": 11.226995266296743,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.43631873899145895,
+      "ratio_G4_boot": {
+       "mean": 0.43631873899145895,
+       "lo": 0.4063120966583744,
+       "hi": 0.4663253813245435,
+       "n": 2
+      },
+      "ratio_oracle": 0.27410474360566317,
+      "ink_off_um": 584.9566239651426,
+      "ink_G4_um": 256.38343441863805,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.366443289491091,
+      "P_nib_mW_G4": 9.709345070399241,
+      "P_nib_mW_oracle": 8.195134174609493,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5805473900490088,
+      "ratio_G4_boot": {
+       "mean": 0.5805473900490088,
+       "lo": 0.5445634237751903,
+       "hi": 0.6165313563228273,
+       "n": 2
+      },
+      "ratio_oracle": 0.5538665943954795,
+      "ink_off_um": 1408.140441734467,
+      "ink_G4_um": 825.0107704796802,
+      "words_off": 0.0,
+      "words_G4": 7.5,
+      "words_oracle": 5.0,
+      "letters_off": 3.8461538461538467,
+      "letters_G4": 7.307692307692308,
+      "P_nib_mW_off": 30.095941341998103,
+      "P_nib_mW_G4": 23.4091723094349,
+      "P_nib_mW_oracle": 22.718075022225925,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5460746295045067,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5460746295045067,
+      "lo": 0.5226346942561115,
+      "hi": 0.5695145647529019,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3692332400874312,
+     "words_off": 5.625,
+     "words_G4": 8.125,
+     "words_oracle": 8.125,
+     "letters_off": 6.923076923076923,
+     "letters_G4": 8.461538461538462,
+     "P_nib_mW_G4": 13.181683673724669,
+     "P_nib_mW_off": 16.03338930620752,
+     "battery_h_G4": 34.84450382677418,
+     "T_coil_end_C_max": 30.263099808796962,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 5.699080146926974,
+     "P_nib_mW_held": 5.699080146926974,
+     "words": 10.0,
+     "battery_h": 39.872064816633575
+    }
+   },
+   "writers_0_1": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5793702121089181,
+      "ratio_G4_boot": {
+       "mean": 0.5793702121089181,
+       "lo": 0.5585787096677061,
+       "hi": 0.6001617145501303,
+       "n": 2
+      },
+      "ratio_oracle": 0.19041976732426025,
+      "ink_off_um": 543.2704264602636,
+      "ink_G4_um": 315.2010361728692,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 8.74188504367581,
+      "P_nib_mW_G4": 8.463499180476395,
+      "P_nib_mW_oracle": 6.497680099940914,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5880621768686409,
+      "ratio_G4_boot": {
+       "mean": 0.5880621768686409,
+       "lo": 0.5810845469231755,
+       "hi": 0.5950398068141065,
+       "n": 2
+      },
+      "ratio_oracle": 0.4585418550243219,
+      "ink_off_um": 1212.7282925427662,
+      "ink_G4_um": 714.1533580233073,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.538461538461538,
+      "P_nib_mW_off": 12.929287549665082,
+      "P_nib_mW_G4": 11.144718134588135,
+      "P_nib_mW_oracle": 11.226995266296743,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.43631873899145895,
+      "ratio_G4_boot": {
+       "mean": 0.43631873899145895,
+       "lo": 0.4063120966583744,
+       "hi": 0.4663253813245435,
+       "n": 2
+      },
+      "ratio_oracle": 0.27410474360566317,
+      "ink_off_um": 584.9566239651426,
+      "ink_G4_um": 256.38343441863805,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.366443289491091,
+      "P_nib_mW_G4": 9.709345070399241,
+      "P_nib_mW_oracle": 8.195134174609493,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5805473900490088,
+      "ratio_G4_boot": {
+       "mean": 0.5805473900490088,
+       "lo": 0.5445634237751903,
+       "hi": 0.6165313563228273,
+       "n": 2
+      },
+      "ratio_oracle": 0.5538665943954795,
+      "ink_off_um": 1408.140441734467,
+      "ink_G4_um": 825.0107704796802,
+      "words_off": 0.0,
+      "words_G4": 7.5,
+      "words_oracle": 5.0,
+      "letters_off": 3.8461538461538467,
+      "letters_G4": 7.307692307692308,
+      "P_nib_mW_off": 30.095941341998103,
+      "P_nib_mW_G4": 23.4091723094349,
+      "P_nib_mW_oracle": 22.718075022225925,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5460746295045067,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5460746295045067,
+      "lo": 0.5226346942561115,
+      "hi": 0.5695145647529019,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3692332400874312,
+     "words_off": 5.625,
+     "words_G4": 8.125,
+     "words_oracle": 8.125,
+     "letters_off": 6.923076923076923,
+     "letters_G4": 8.461538461538462,
+     "P_nib_mW_G4": 13.181683673724669,
+     "P_nib_mW_off": 16.03338930620752,
+     "battery_h_G4": 34.84450382677418,
+     "T_coil_end_C_max": 30.263099808796962,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 5.699080146926974,
+     "P_nib_mW_held": 5.699080146926974,
+     "words": 10.0,
+     "battery_h": 39.872064816633575
+    }
+   },
+   "studyB_cells_writers_0_3": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5793702121089181,
+      "ratio_G4_boot": {
+       "mean": 0.5793702121089181,
+       "lo": 0.5585787096677061,
+       "hi": 0.6001617145501303,
+       "n": 2
+      },
+      "ratio_oracle": 0.19041976732426025,
+      "ink_off_um": 543.2704264602636,
+      "ink_G4_um": 315.2010361728692,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 8.74188504367581,
+      "P_nib_mW_G4": 8.463499180476395,
+      "P_nib_mW_oracle": 6.497680099940914,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5880621768686409,
+      "ratio_G4_boot": {
+       "mean": 0.5880621768686409,
+       "lo": 0.5810845469231755,
+       "hi": 0.5950398068141065,
+       "n": 2
+      },
+      "ratio_oracle": 0.4585418550243219,
+      "ink_off_um": 1212.7282925427662,
+      "ink_G4_um": 714.1533580233073,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.538461538461538,
+      "P_nib_mW_off": 12.929287549665082,
+      "P_nib_mW_G4": 11.144718134588135,
+      "P_nib_mW_oracle": 11.226995266296743,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.43631873899145895,
+      "ratio_G4_boot": {
+       "mean": 0.43631873899145895,
+       "lo": 0.4063120966583744,
+       "hi": 0.4663253813245435,
+       "n": 2
+      },
+      "ratio_oracle": 0.27410474360566317,
+      "ink_off_um": 584.9566239651426,
+      "ink_G4_um": 256.38343441863805,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.366443289491091,
+      "P_nib_mW_G4": 9.709345070399241,
+      "P_nib_mW_oracle": 8.195134174609493,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 6,
+     "ratio_G4": 0.534583709323006,
+     "ratio_G4_writer_boot": {
+      "mean": 0.534583709323006,
+      "lo": 0.515325117749752,
+      "hi": 0.5538423008962602,
+      "n": 6,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3076887886514151,
+     "words_off": 7.5,
+     "words_G4": 8.333333333333334,
+     "words_oracle": 9.166666666666666,
+     "letters_off": 7.948717948717949,
+     "letters_G4": 8.846153846153847,
+     "P_nib_mW_G4": 9.772520795154591,
+     "P_nib_mW_off": 11.345871960943995,
+     "battery_h_G4": 36.79003170512613,
+     "T_coil_end_C_max": 30.140351506631603,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 5.699080146926974,
+     "P_nib_mW_held": 5.699080146926974,
+     "words": 10.0,
+     "battery_h": 39.872064816633575
+    }
+   },
+   "studyB_cells_writers_0_1": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5793702121089181,
+      "ratio_G4_boot": {
+       "mean": 0.5793702121089181,
+       "lo": 0.5585787096677061,
+       "hi": 0.6001617145501303,
+       "n": 2
+      },
+      "ratio_oracle": 0.19041976732426025,
+      "ink_off_um": 543.2704264602636,
+      "ink_G4_um": 315.2010361728692,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 8.74188504367581,
+      "P_nib_mW_G4": 8.463499180476395,
+      "P_nib_mW_oracle": 6.497680099940914,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5880621768686409,
+      "ratio_G4_boot": {
+       "mean": 0.5880621768686409,
+       "lo": 0.5810845469231755,
+       "hi": 0.5950398068141065,
+       "n": 2
+      },
+      "ratio_oracle": 0.4585418550243219,
+      "ink_off_um": 1212.7282925427662,
+      "ink_G4_um": 714.1533580233073,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.538461538461538,
+      "P_nib_mW_off": 12.929287549665082,
+      "P_nib_mW_G4": 11.144718134588135,
+      "P_nib_mW_oracle": 11.226995266296743,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.43631873899145895,
+      "ratio_G4_boot": {
+       "mean": 0.43631873899145895,
+       "lo": 0.4063120966583744,
+       "hi": 0.4663253813245435,
+       "n": 2
+      },
+      "ratio_oracle": 0.27410474360566317,
+      "ink_off_um": 584.9566239651426,
+      "ink_G4_um": 256.38343441863805,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.366443289491091,
+      "P_nib_mW_G4": 9.709345070399241,
+      "P_nib_mW_oracle": 8.195134174609493,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 6,
+     "ratio_G4": 0.534583709323006,
+     "ratio_G4_writer_boot": {
+      "mean": 0.534583709323006,
+      "lo": 0.515325117749752,
+      "hi": 0.5538423008962602,
+      "n": 6,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3076887886514151,
+     "words_off": 7.5,
+     "words_G4": 8.333333333333334,
+     "words_oracle": 9.166666666666666,
+     "letters_off": 7.948717948717949,
+     "letters_G4": 8.846153846153847,
+     "P_nib_mW_G4": 9.772520795154591,
+     "P_nib_mW_off": 11.345871960943995,
+     "battery_h_G4": 36.79003170512613,
+     "T_coil_end_C_max": 30.140351506631603,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 5.699080146926974,
+     "P_nib_mW_held": 5.699080146926974,
+     "words": 10.0,
+     "battery_h": 39.872064816633575
+    }
+   },
+   "power_bands": null,
+   "wall_s_total": 0.0
+  },
+  "revK_linear": {
+   "setup": {
+    "nib": "revK",
+    "servo": [
+     40.0,
+     46.0
+    ],
+    "loads": "linear",
+    "contact": "current"
+   },
+   "design": {
+    "kind": "design",
+    "config": "revK_linear",
+    "Km_tip": 0.33354573489671424,
+    "Km_y": 0.27169865452228603,
+    "Km_disk_min_map": 0.235,
+    "k_tip_linear": 1.5617,
+    "m_move": 0.003439830737727785,
+    "travel": 0.0010586959658821008,
+    "stop": 0.0012586959658821009,
+    "wires": {
+     "length": 0.026801041139863813,
+     "diameter": 0.0001,
+     "n_wires": 4,
+     "anchor_stiffness": 10000.0,
+     "assembly_tension": 0.0
+    },
+    "source": "results/revK/revK.json nib (Km_tip_revK, m_move_g); revk/servo_sim.py (k 1.5617 N/m); revk/feasibility.wire_anchor defaults (Rev K's wires, stated 0.01 N/um anchor)",
+    "servo_hz": 40.0,
+    "inner_hz": 46.0,
+    "loads": "linear",
+    "contact": "current",
+    "wire_k0_N_m": null,
+    "drag_step_check": null
+   },
+   "all_writers": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5796209881320107,
+      "ratio_G4_boot": {
+       "mean": 0.5796209881320107,
+       "lo": 0.5587129564693787,
+       "hi": 0.6005290197946426,
+       "n": 2
+      },
+      "ratio_oracle": 0.19202129812050164,
+      "ink_off_um": 544.0435637640533,
+      "ink_G4_um": 315.7806718590183,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.597286540176409,
+      "P_nib_mW_G4": 12.151917306322401,
+      "P_nib_mW_oracle": 9.270114727484062,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5881262216218522,
+      "ratio_G4_boot": {
+       "mean": 0.5881262216218522,
+       "lo": 0.5815378804686946,
+       "hi": 0.5947145627750099,
+       "n": 2
+      },
+      "ratio_oracle": 0.45827331444862685,
+      "ink_off_um": 1214.473170154395,
+      "ink_G4_um": 715.204168777294,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.153846153846154,
+      "P_nib_mW_off": 18.66676588855507,
+      "P_nib_mW_G4": 15.944662424314863,
+      "P_nib_mW_oracle": 15.944618682868414,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.4373762375043082,
+      "ratio_G4_boot": {
+       "mean": 0.4373762375043082,
+       "lo": 0.4080926944816957,
+       "hi": 0.46665978052692064,
+       "n": 2
+      },
+      "ratio_oracle": 0.27610411985442807,
+      "ink_off_um": 585.8560037834559,
+      "ink_G4_um": 257.37250445520465,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 17.854418559342975,
+      "P_nib_mW_G4": 13.926454303225713,
+      "P_nib_mW_oracle": 11.655213000143913,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5807787851555235,
+      "ratio_G4_boot": {
+       "mean": 0.5807787851555235,
+       "lo": 0.5442888211510286,
+       "hi": 0.6172687491600185,
+       "n": 2
+      },
+      "ratio_oracle": 0.5541103774061045,
+      "ink_off_um": 1411.4614409370224,
+      "ink_G4_um": 827.3607538020035,
+      "words_off": 0.0,
+      "words_G4": 7.5,
+      "words_oracle": 5.0,
+      "letters_off": 3.4615384615384617,
+      "letters_G4": 7.307692307692308,
+      "P_nib_mW_off": 43.41162003581684,
+      "P_nib_mW_G4": 33.293279705327365,
+      "P_nib_mW_oracle": 32.03197607737056,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5464755581034236,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5464755581034236,
+      "lo": 0.5231580881426994,
+      "hi": 0.5697930280641479,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3701272774574153,
+     "words_off": 5.625,
+     "words_G4": 8.125,
+     "words_oracle": 8.125,
+     "letters_off": 6.8269230769230775,
+     "letters_G4": 8.365384615384617,
+     "P_nib_mW_G4": 18.829078434797587,
+     "P_nib_mW_off": 23.132522755972822,
+     "battery_h_G4": 31.84201104517201,
+     "T_coil_end_C_max": 30.370746554916483,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 8.149071073992594,
+     "P_nib_mW_held": 8.149071073992594,
+     "words": 10.0,
+     "battery_h": 37.92652708949843
+    }
+   },
+   "writers_0_3": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5796209881320107,
+      "ratio_G4_boot": {
+       "mean": 0.5796209881320107,
+       "lo": 0.5587129564693787,
+       "hi": 0.6005290197946426,
+       "n": 2
+      },
+      "ratio_oracle": 0.19202129812050164,
+      "ink_off_um": 544.0435637640533,
+      "ink_G4_um": 315.7806718590183,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.597286540176409,
+      "P_nib_mW_G4": 12.151917306322401,
+      "P_nib_mW_oracle": 9.270114727484062,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5881262216218522,
+      "ratio_G4_boot": {
+       "mean": 0.5881262216218522,
+       "lo": 0.5815378804686946,
+       "hi": 0.5947145627750099,
+       "n": 2
+      },
+      "ratio_oracle": 0.45827331444862685,
+      "ink_off_um": 1214.473170154395,
+      "ink_G4_um": 715.204168777294,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.153846153846154,
+      "P_nib_mW_off": 18.66676588855507,
+      "P_nib_mW_G4": 15.944662424314863,
+      "P_nib_mW_oracle": 15.944618682868414,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.4373762375043082,
+      "ratio_G4_boot": {
+       "mean": 0.4373762375043082,
+       "lo": 0.4080926944816957,
+       "hi": 0.46665978052692064,
+       "n": 2
+      },
+      "ratio_oracle": 0.27610411985442807,
+      "ink_off_um": 585.8560037834559,
+      "ink_G4_um": 257.37250445520465,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 17.854418559342975,
+      "P_nib_mW_G4": 13.926454303225713,
+      "P_nib_mW_oracle": 11.655213000143913,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5807787851555235,
+      "ratio_G4_boot": {
+       "mean": 0.5807787851555235,
+       "lo": 0.5442888211510286,
+       "hi": 0.6172687491600185,
+       "n": 2
+      },
+      "ratio_oracle": 0.5541103774061045,
+      "ink_off_um": 1411.4614409370224,
+      "ink_G4_um": 827.3607538020035,
+      "words_off": 0.0,
+      "words_G4": 7.5,
+      "words_oracle": 5.0,
+      "letters_off": 3.4615384615384617,
+      "letters_G4": 7.307692307692308,
+      "P_nib_mW_off": 43.41162003581684,
+      "P_nib_mW_G4": 33.293279705327365,
+      "P_nib_mW_oracle": 32.03197607737056,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5464755581034236,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5464755581034236,
+      "lo": 0.5231580881426994,
+      "hi": 0.5697930280641479,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3701272774574153,
+     "words_off": 5.625,
+     "words_G4": 8.125,
+     "words_oracle": 8.125,
+     "letters_off": 6.8269230769230775,
+     "letters_G4": 8.365384615384617,
+     "P_nib_mW_G4": 18.829078434797587,
+     "P_nib_mW_off": 23.132522755972822,
+     "battery_h_G4": 31.84201104517201,
+     "T_coil_end_C_max": 30.370746554916483,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 8.149071073992594,
+     "P_nib_mW_held": 8.149071073992594,
+     "words": 10.0,
+     "battery_h": 37.92652708949843
+    }
+   },
+   "writers_0_1": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5796209881320107,
+      "ratio_G4_boot": {
+       "mean": 0.5796209881320107,
+       "lo": 0.5587129564693787,
+       "hi": 0.6005290197946426,
+       "n": 2
+      },
+      "ratio_oracle": 0.19202129812050164,
+      "ink_off_um": 544.0435637640533,
+      "ink_G4_um": 315.7806718590183,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.597286540176409,
+      "P_nib_mW_G4": 12.151917306322401,
+      "P_nib_mW_oracle": 9.270114727484062,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5881262216218522,
+      "ratio_G4_boot": {
+       "mean": 0.5881262216218522,
+       "lo": 0.5815378804686946,
+       "hi": 0.5947145627750099,
+       "n": 2
+      },
+      "ratio_oracle": 0.45827331444862685,
+      "ink_off_um": 1214.473170154395,
+      "ink_G4_um": 715.204168777294,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.153846153846154,
+      "P_nib_mW_off": 18.66676588855507,
+      "P_nib_mW_G4": 15.944662424314863,
+      "P_nib_mW_oracle": 15.944618682868414,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.4373762375043082,
+      "ratio_G4_boot": {
+       "mean": 0.4373762375043082,
+       "lo": 0.4080926944816957,
+       "hi": 0.46665978052692064,
+       "n": 2
+      },
+      "ratio_oracle": 0.27610411985442807,
+      "ink_off_um": 585.8560037834559,
+      "ink_G4_um": 257.37250445520465,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 17.854418559342975,
+      "P_nib_mW_G4": 13.926454303225713,
+      "P_nib_mW_oracle": 11.655213000143913,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5807787851555235,
+      "ratio_G4_boot": {
+       "mean": 0.5807787851555235,
+       "lo": 0.5442888211510286,
+       "hi": 0.6172687491600185,
+       "n": 2
+      },
+      "ratio_oracle": 0.5541103774061045,
+      "ink_off_um": 1411.4614409370224,
+      "ink_G4_um": 827.3607538020035,
+      "words_off": 0.0,
+      "words_G4": 7.5,
+      "words_oracle": 5.0,
+      "letters_off": 3.4615384615384617,
+      "letters_G4": 7.307692307692308,
+      "P_nib_mW_off": 43.41162003581684,
+      "P_nib_mW_G4": 33.293279705327365,
+      "P_nib_mW_oracle": 32.03197607737056,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 8,
+     "ratio_G4": 0.5464755581034236,
+     "ratio_G4_writer_boot": {
+      "mean": 0.5464755581034236,
+      "lo": 0.5231580881426994,
+      "hi": 0.5697930280641479,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.3701272774574153,
+     "words_off": 5.625,
+     "words_G4": 8.125,
+     "words_oracle": 8.125,
+     "letters_off": 6.8269230769230775,
+     "letters_G4": 8.365384615384617,
+     "P_nib_mW_G4": 18.829078434797587,
+     "P_nib_mW_off": 23.132522755972822,
+     "battery_h_G4": 31.84201104517201,
+     "T_coil_end_C_max": 30.370746554916483,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 8.149071073992594,
+     "P_nib_mW_held": 8.149071073992594,
+     "words": 10.0,
+     "battery_h": 37.92652708949843
+    }
+   },
+   "studyB_cells_writers_0_3": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5796209881320107,
+      "ratio_G4_boot": {
+       "mean": 0.5796209881320107,
+       "lo": 0.5587129564693787,
+       "hi": 0.6005290197946426,
+       "n": 2
+      },
+      "ratio_oracle": 0.19202129812050164,
+      "ink_off_um": 544.0435637640533,
+      "ink_G4_um": 315.7806718590183,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.597286540176409,
+      "P_nib_mW_G4": 12.151917306322401,
+      "P_nib_mW_oracle": 9.270114727484062,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5881262216218522,
+      "ratio_G4_boot": {
+       "mean": 0.5881262216218522,
+       "lo": 0.5815378804686946,
+       "hi": 0.5947145627750099,
+       "n": 2
+      },
+      "ratio_oracle": 0.45827331444862685,
+      "ink_off_um": 1214.473170154395,
+      "ink_G4_um": 715.204168777294,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.153846153846154,
+      "P_nib_mW_off": 18.66676588855507,
+      "P_nib_mW_G4": 15.944662424314863,
+      "P_nib_mW_oracle": 15.944618682868414,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.4373762375043082,
+      "ratio_G4_boot": {
+       "mean": 0.4373762375043082,
+       "lo": 0.4080926944816957,
+       "hi": 0.46665978052692064,
+       "n": 2
+      },
+      "ratio_oracle": 0.27610411985442807,
+      "ink_off_um": 585.8560037834559,
+      "ink_G4_um": 257.37250445520465,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 17.854418559342975,
+      "P_nib_mW_G4": 13.926454303225713,
+      "P_nib_mW_oracle": 11.655213000143913,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 6,
+     "ratio_G4": 0.535041149086057,
+     "ratio_G4_writer_boot": {
+      "mean": 0.535041149086057,
+      "lo": 0.5161145104732563,
+      "hi": 0.5539677876988577,
+      "n": 6,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.30879957747451886,
+     "words_off": 7.5,
+     "words_G4": 8.333333333333334,
+     "words_oracle": 9.166666666666666,
+     "letters_off": 7.948717948717949,
+     "letters_G4": 8.717948717948717,
+     "P_nib_mW_G4": 14.007678011287659,
+     "P_nib_mW_off": 16.372823662691484,
+     "battery_h_G4": 34.06207889236724,
+     "T_coil_end_C_max": 30.20191045822463,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 8.149071073992594,
+     "P_nib_mW_held": 8.149071073992594,
+     "words": 10.0,
+     "battery_h": 37.92652708949843
+    }
+   },
+   "studyB_cells_writers_0_1": {
+    "n_writers": 2,
+    "cells": {
+     "ET 8 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.5796209881320107,
+      "ratio_G4_boot": {
+       "mean": 0.5796209881320107,
+       "lo": 0.5587129564693787,
+       "hi": 0.6005290197946426,
+       "n": 2
+      },
+      "ratio_oracle": 0.19202129812050164,
+      "ink_off_um": 544.0435637640533,
+      "ink_G4_um": 315.7806718590183,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.615384615384617,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 12.597286540176409,
+      "P_nib_mW_G4": 12.151917306322401,
+      "P_nib_mW_oracle": 9.270114727484062,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 8 Hz 2 mm": {
+      "n": 2,
+      "ratio_G4": 0.5881262216218522,
+      "ratio_G4_boot": {
+       "mean": 0.5881262216218522,
+       "lo": 0.5815378804686946,
+       "hi": 0.5947145627750099,
+       "n": 2
+      },
+      "ratio_oracle": 0.45827331444862685,
+      "ink_off_um": 1214.473170154395,
+      "ink_G4_um": 715.204168777294,
+      "words_off": 2.5,
+      "words_G4": 5.0,
+      "words_oracle": 7.5,
+      "letters_off": 5.0,
+      "letters_G4": 6.153846153846154,
+      "P_nib_mW_off": 18.66676588855507,
+      "P_nib_mW_G4": 15.944662424314863,
+      "P_nib_mW_oracle": 15.944618682868414,
+      "extra_load_rms_mN_G4": 0.0
+     },
+     "ET 12 Hz 1 mm": {
+      "n": 2,
+      "ratio_G4": 0.4373762375043082,
+      "ratio_G4_boot": {
+       "mean": 0.4373762375043082,
+       "lo": 0.4080926944816957,
+       "hi": 0.46665978052692064,
+       "n": 2
+      },
+      "ratio_oracle": 0.27610411985442807,
+      "ink_off_um": 585.8560037834559,
+      "ink_G4_um": 257.37250445520465,
+      "words_off": 10.0,
+      "words_G4": 10.0,
+      "words_oracle": 10.0,
+      "letters_off": 9.230769230769232,
+      "letters_G4": 10.0,
+      "P_nib_mW_off": 17.854418559342975,
+      "P_nib_mW_G4": 13.926454303225713,
+      "P_nib_mW_oracle": 11.655213000143913,
+      "extra_load_rms_mN_G4": 0.0
+     }
+    },
+    "pooled_4_cells": {
+     "n": 6,
+     "ratio_G4": 0.535041149086057,
+     "ratio_G4_writer_boot": {
+      "mean": 0.535041149086057,
+      "lo": 0.5161145104732563,
+      "hi": 0.5539677876988577,
+      "n": 6,
+      "n_clusters": 2
+     },
+     "ratio_oracle": 0.30879957747451886,
+     "words_off": 7.5,
+     "words_G4": 8.333333333333334,
+     "words_oracle": 9.166666666666666,
+     "letters_off": 7.948717948717949,
+     "letters_G4": 8.717948717948717,
+     "P_nib_mW_G4": 14.007678011287659,
+     "P_nib_mW_off": 16.372823662691484,
+     "battery_h_G4": 34.06207889236724,
+     "T_coil_end_C_max": 30.20191045822463,
+     "worse_than_off_share": 0.0
+    },
+    "clean": {
+     "n": 2,
+     "moved_um_mean": 0.0,
+     "moved_um_max": 0.0,
+     "P_nib_mW": 8.149071073992594,
+     "P_nib_mW_held": 8.149071073992594,
+     "words": 10.0,
+     "battery_h": 37.92652708949843
+    }
+   },
+   "power_bands": {
+    "sim_x_axis_mW": 18.829078434797587,
+    "weaker_axis_mW": 28.376894939955555,
+    "disk_minimum_mW": 37.931858627119965,
+    "disk_minimum_derated_0p7_mW": 77.41195638187749,
+    "label": "CALC on SIM (P = F^2 / Km^2 at the simulated force demand; the servo force does not depend on Km)"
+   },
    "wall_s_total": 0.0
   },
   "revK_corrected": {
