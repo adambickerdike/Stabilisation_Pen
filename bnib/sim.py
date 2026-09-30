@@ -1090,7 +1090,7 @@ def stage_ideal(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, 
 
 def stage_travel(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, log=print) -> None:
     """Does B1's +-1.0 mm reach limit the correction?  B1w (the optimiser's counter-face point at the 1.5 mm travel
-    floor, the same frozen rules) on writers 0-2 (their test seeds) in TRAVEL_CELLS with none / tracker / perfect
+    floor, the same frozen rules) on writers 0-1 (their test seeds) in TRAVEL_CELLS with none / tracker / perfect
     knowledge, compared case by case with B1's test rows.  Added after the test grid had started (diagnosis of one
     case, SIM: in ET 8 Hz 1 mm the handle's tremor at the tip exceeds B1's reach 11 % of the time, p95 1.29 mm); it
     changes no rule and no B1 result."""
@@ -1098,7 +1098,7 @@ def stage_travel(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False,
         log("[sim] travel: no B1w design (the optimiser cache has no 1.5 mm point)")
         return
     pens = Pens({"B1w": designs["B1w"]})
-    for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:3]):
+    for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:2]):          # writers 0-1 (shortened after container restarts)
         seed = TEST_SEEDS[w % len(TEST_SEEDS)]
         tcells = TRAVEL_CELLS[:1] if quick else TRAVEL_CELLS
         if _done(rows, "travel", "B1w", w, seed, tcells, ("nose", "oracle")):
@@ -1267,7 +1267,7 @@ def _travel_summary(rows: Rows) -> Dict:
     if cl:
         out["clean_moved_um_B1w"] = float(np.mean([r["moved_vs_clean_um"] for r in cl]))
         out["clean_P_mW_B1w"] = float(1e3 * np.mean([r["P_nib_W"] for r in cl]))
-    out["label"] = ("SIMULATION (sim2; writers 0-2, their test seeds; B1w = the optimiser's counter-face point at the "
+    out["label"] = ("SIMULATION (sim2; writers 0-1, their test seeds; B1w = the optimiser's counter-face point at the "
                     "1.5 mm travel floor, same frozen rules; compared case by case with B1)")
     return out
 

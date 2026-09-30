@@ -5,7 +5,7 @@
 # in bnib/labels.py or the design, re-run, and bump the version.
 schema: bnib-nib-interface/1
 version: bnib-0.1
-generated_utc: '2026-09-29T22:36:39Z'
+generated_utc: '2026-09-30T00:43:23Z'
 status: PROPOSED DESIGN (study B, balanced two-axis nib). Nothing here was built or measured.
 design:
   id: B1
@@ -828,6 +828,12 @@ sensors:
       unit: Hz
       status: LIT
       source: OPT-01
+    lift_cutoff:
+      value: 2.0
+      unit: mm
+      status: MFR
+      source: 'OPT-54 (PMW3360 with the LM19-LSI lens: lift cut-off 2-3 mm; the lower bound, as Rev J''s revj/simparams.py);
+        sim2''s default 0.8 mm was used in a first run by mistake'
     latency:
       value: 2.0
       unit: ms
@@ -1026,24 +1032,24 @@ simulated:
   note: headline SIMULATION numbers for this nib (sim2, synthetic writers and tremor, DeltaPen-calibrated page sensor, the
     frozen tracker); results, not interface parameters
   tremor_left_ratio_tracker:
-    value: 0.867239
+    value: 0.830608
     unit: '1'
     status: SIM
     source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
     note: mean over the ET/PD cells
   tremor_left_ratio_perfect_knowledge:
-    value: 0.396446
+    value: 0.284335
     unit: '1'
     status: SIM
     source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
     note: the mechanism's limit
   nib_power_while_correcting:
-    value: 16.2744
+    value: 14.8052
     unit: mW
     status: SIM
     source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
   nib_power_tremor_free:
-    value: 12.8326
+    value: 11.7667
     unit: mW
     status: SIM
     source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
@@ -1054,7 +1060,7 @@ simulated:
     source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)
     note: false correction
   n_writers:
-    value: 6
+    value: 4
     unit: '1'
     status: SIM
     source: bnib/sim.py -> results/bnib/bnib.json (sim.cards.B1; the full cards and every case are there)

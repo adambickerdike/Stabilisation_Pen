@@ -157,7 +157,9 @@ def by_cell_md(sim: Dict) -> str:
     ref = (sim.get("sim2j_revJ_reference") or {}).get("cells", {})
     if ref:
         L.append("")
-        L.append("Reference, the Rev J C1S nose in the same ET cells (sim2j, same writers and tracker; SIM, read-only): " + "; ".join(
+        wr_ = (sim.get("sim2j_revJ_reference") or {}).get("writers")
+        L.append("Reference, the Rev J C1S nose in the same ET cells (sim2j, the same "
+                 + (f"writers {min(wr_)}-{max(wr_)}, " if wr_ else "writers, ") + "seeds and tracker; SIM, read-only): " + "; ".join(
             f"{k}: ratio {f(v['ratio_nose'], 2)} (perfect knowledge {f(v.get('ratio_oracle'), 2)}), nose power {f(v['P_nose_W'], 2)} W"
             for k, v in ref.items()) + ".")
     L.append("")
@@ -252,8 +254,8 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
              f"for {f(t82.get('P_B1w_mW'), 0)} mW" if t82 else "") + ". "
           f"Readable words out of 10: {f(B1.get('words_per10_off'), 1)} without the nib, {f(B1.get('words_per10_nib'), 1)} "
           f"with it, {f(B1.get('words_per10_oracle'), 1)} with perfect knowledge; tremor-free writing moved "
-          f"{f(B1.get('clean_moved_um_mean'), 1)} um. Today the tracker, not the nib, limits the benefit, and large tremor "
-          f"stays study W's collar's job. SIM (section 5.3).")
+          f"{f(B1.get('clean_moved_um_mean'), 1)} um. Today the tracker, not the nib, limits the benefit (as DEC-052 records); "
+          f"tremor beyond the nib's reach stays uncorrected for now (DEC-051). SIM (section 5.3).")
     else:
         A("- **In simulation:** the sim2 runs had not finished when this page was generated (section 5.3).")
     A(f"- **Slim 12-16 mm core:** magnet-and-coil nibs around a D1 refill do not fit (they run out of force or of travel). "
@@ -696,13 +698,16 @@ def sim_analysis_md(sim: Dict, cards: Dict) -> str:
                  f"{f(wr.get('handle_tremor_p95_mm'), 2)} mm) and passes B1's +-{f(d['reach_mm'], 2)} mm reach "
                  f"{f(100 * (wr.get('share_beyond_reach') or 0), 1)} % of the time. Of the {f(wr.get('ink_oracle_um'), 0)} um left "
                  f"(rms deviation of the ink from the tremor-free run; {f(wr.get('ink_none_um'), 0)} um with the nib held centred) "
-                 f"the clipped peaks account for {f(wr.get('clip_residual_um'), 0)} um and the seed-to-seed floor for "
-                 f"{f(wr.get('floor_um'), 0)} um (in quadrature)"
+                 f"the clipped peaks alone would be {f(wr.get('clip_residual_um'), 0)} um (for scale: two tremor-free runs with "
+                 f"different seeds differ by {f(wr.get('floor_um'), 0)} um)"
                  + (f"; the +-1.5 mm variant clips {f(ww.get('clip_residual_um'), 0)} um and leaves {f(ww.get('ink_oracle_um'), 0)} um, "
                     f"{f(100 * gain_w, 0)} % less" if gain_w is not None else "")
-                 + f". The command falls below half its intended size in {f(100 * d['gated_share'], 1)} % of the samples inside "
-                 f"the reach (a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms after a touchdown: the firmware fades "
-                 f"its authority back in over 50 ms whenever the page sensor has lost the page). The pen-up handle lift in this "
+                 + (f". The command falls below half its intended size in {f(100 * d['gated_share'], 1)} % of the samples inside "
+                    f"the reach (a median {f(d.get('gated_ms_after_touchdown_median'), 0)} ms after a touchdown: the firmware fades "
+                    f"its authority back in over 50 ms whenever the page sensor has lost the page)"
+                    if (d.get("gated_share") or 0.0) >= 0.005 else
+                    ". Inside the reach the command is never gated: the page sensor keeps the page through the pen lifts")
+                 + f". The pen-up handle lift in this "
                  f"run is {f(d.get('handle_lift_up_median_mm'), 2)} mm median ({f(d.get('handle_lift_up_p90_mm'), 2)} mm at the "
                  f"90th percentile) against the sensor's {f(d.get('page_lift_max_mm'), 1)} mm cut-off. The Rev J nose's +-6 mm "
                  f"(its usable tip travel, sim2j/revj.py) never clips"
@@ -726,7 +731,7 @@ def sim_analysis_md(sim: Dict, cards: Dict) -> str:
         L.append("")
     tv = F["travel"]
     if tv:
-        L.append("The travel variant (SIM, writers 0-2 with their test seeds; B1w = the optimiser's counter-face point at the "
+        L.append("The travel variant (SIM, writers 0-1 with their test seeds; B1w = the optimiser's counter-face point at the "
                  "1.5 mm travel floor, the same frozen rules; case by case against B1):")
         L.append("")
         L.append("| cell | tracker ratio, +-1.0 / +-1.5 mm | perfect knowledge, +-1.0 / +-1.5 mm | words out of 10 with the tracker, +-1.0 / +-1.5 mm | nib power with the tracker, mW, +-1.0 / +-1.5 mm |")

@@ -246,7 +246,8 @@ def requirements(res: Dict) -> List[Dict]:
         ("REQ-BNIB-015", "Face orientation sensing", "IMU tilt error <= 1 deg and roll error <= 2 deg (1 sigma) while writing",
          "ASSUMPTION", "EXP-B28", "G2"),
         ("REQ-BNIB-016", "Refill guide friction", "guide friction coefficient <= 0.01 (a ball or roller guide): the counter-face's "
-         "couple loads the two bushings with 0.6-0.75 N, and the slide friction acts across the pen as h cot(theta)",
+         "couple loads the two bushings with 1.0 / 0.6 / 0.19 N in all at 35 / 50 / 75 deg (CALC), and the slide friction "
+         "acts across the pen as h cot(theta)",
          "ASSUMPTION mu_g 0.005", "EXP-B22", "G2"),
         ("REQ-BNIB-017", "Page sensor lift range (with the page sensor's own requirements)", "keeps the page through the lifts "
          "between strokes: lift cut-off >= 2 mm above the writing height (OPT-54 class)", lift_now, "EXP-B32", "G4"),
