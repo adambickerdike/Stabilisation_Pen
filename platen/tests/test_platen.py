@@ -223,8 +223,10 @@ def test_evidence_rows_format():
         num = int(num)
         assert (pre == "ACT" and 170 <= num <= 189) or (pre == "AMF" and 280 <= num <= 299) or \
                (pre == "CON" and 110 <= num <= 119)
-    ledger = {r["id"] for r in csv.DictReader(open(ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8"))}
-    assert not ({r["id"] for r in rows} & ledger)
+    ledger = {r["id"]: r for r in csv.DictReader(open(ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8"))}
+    for r in rows:
+        # a new id, or one the lead has already merged into the ledger verbatim
+        assert r["id"] not in ledger or ledger[r["id"]] == r, r["id"]
 
 
 @pytest.mark.skipif(not (RES / "platen.json").exists(), reason="results not generated")
