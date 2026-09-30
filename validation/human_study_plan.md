@@ -21,10 +21,11 @@ Contents:
 - §18 Rev J nose v2 with people (DEC-036, DEC-039, DEC-049): EXP-N09 (autowrite of accepted text), EXP-N10 (delayed ink); since DEC-050 the C1S nose is a bench research module, and autowrite a research mode with it
 - §19 Rev J AI and control with people (DEC-042, DEC-043): EXP-L03 (ink lag; shares sessions with EXP-N10), EXP-L06 (text prediction in the app), EXP-L07 (style synthesis), EXP-L08 (guidance that fades across sessions)
 - §20 Rev J integrated layout with people (DEC-044, DEC-045, DEC-048): EXP-J08 (ink visibility; superseded for Rev J.1 by EXP-J15), EXP-J09 (mass and balance, with EXP-K03; Rev K's 66 g too), EXP-J15 (the clear window; the Rev K front too), EXP-J18 (the heel wheel on writing)
-- §21 Real recorded data with people (study R; DEC-054, DEC-055): EXP-R01 (patients' own writing and tremor, the recording part of EXP-H01), EXP-R03 (a reading panel against the AI reader)
+- §21 Real recorded data with people (study R; DEC-054, DEC-055): EXP-R01 (patients' own writing and tremor, the recording part of EXP-H01), EXP-R03 (a reading panel against the AI reader; it also reads study F's inks, EXP-E20 in §25)
 - §22 Spelling help, text prediction and clearer handwriting with people (study S; DEC-056, DEC-057): EXP-S10 (letters read while writing, inside EXP-H01/R01 sessions), EXP-S11 (a dyslexic misspelling corpus), EXP-S12 (a tick while writing), EXP-S13 (the tick's detection), EXP-S14 (personal prediction, with EXP-L06), EXP-S15 (shape assist, conditional), EXP-S17 (word recognition on the pen's recordings), EXP-S18 (suggestions at pauses against cues while writing)
 - §23 Shifting the whole pen with people (study W; DEC-051…DEC-053): EXP-W10 (tremor at the ink while writing, with EXP-H01/R01), EXP-W12 (holding and writing with the collar), EXP-W16 (the cost of writing only when in reach, on Rev K's B1 nib since DEC-050)
 - §24 The Rev K grip with people (study K; DEC-062): EXP-K24 (do the writers' fingers touch the paper?)
+- §25 The readable target with people (study F; DEC-067): EXP-E20 (do people read the E13 inks as the AI reader does? inside EXP-R03's panel)
 
 ---
 
@@ -107,7 +108,7 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-J15 (§20) | Can writers see the fresh ink through the clear window of the Rev J.1 front, and with the Rev K front? | 10 right- and 10 left-handed writers | Within-subject: printed Rev J.1, Rev K and Rev J fronts on dummy pens, eye tracking or video from the eye | Distance behind the ball at which the ink first shows; ratings | device burden | unpowered dummies; ethics |
 | EXP-J18 (§20) | Does the heel wheel distort writers' own writing, and do they adapt within 10 minutes? | healthy writers (n from a pilot, §11 rule) | Within-subject: wheel retracted, free and in its tremor mode, 10 min each | Distortion against their own writing with the wheel retracted, and its change over 10 min | device burden | EXP-D07 safety gate; ethics |
 | EXP-R01 (§21) | What do ET and PD patients' own writing and tremor look like at the pen tip, with ink? | EXP-H01's participants (ET, PD, older and healthy adults) | The recording part of EXP-H01, in its sessions (the retest is the second session): ink and hover over a digitiser, the pen's IMU, REQ-DATA-009 | Tip tremor per participant in DEC-054's classes (zero-to-peak mm); writing kinematics | none (measurement) | with EXP-H01; ethics |
-| EXP-R03 (§21) | Does the AI reader's "words you can read" match people? | naive readers (n from a pilot, §11 rule) | Blinded literal transcription of study R's rendered test-case ink, and EXP-R01 ink with consent | Tracker-minus-ordinary-pen words, panel against the AI reader | none (the reader's validity) | ethics |
+| EXP-R03 (§21) | Does the AI reader's "words you can read" match people? | naive readers (n from a pilot, §11 rule) | Blinded literal transcription of study R's rendered test-case ink, and EXP-R01 ink with consent; the E13 inks for EXP-E20 | Tracker-minus-ordinary-pen words, panel against the AI reader | none (the reader's validity) | ethics |
 | EXP-S10 (§22) | How early and how well does the recogniser read letters while people write on paper with the pen? | 20 adults + 10 ET/PD (inside EXP-H01/R01 sessions) | The calibration pangram and 3 notes; offline replay with and without calibration | Letters read at 50 % and 100 % of each letter; time per point on a phone | none (measurement) | with EXP-H01; ethics |
 | EXP-S11 (§22) | An English corpus of dyslexic misspellings in context, with consent | 30 adults + 30 children with a dyslexia assessment | Free text and dictation by hand; transcribed and tagged; released under an open licence | Words and tagged errors | none (data) | ethics; consent for release |
 | EXP-S12 (§22) | Does a tick while writing help people with dyslexia fix misspellings, and does it annoy them? | 20 adults with dyslexia + 20 controls | Within-subject, counterbalanced: no cue / tick on the suspect letter / tick + pen lift / app afterwards (shares sessions with EXP-S18) | Misspellings left on paper per 100 words; time; tolerance | IA | the Rev K pen with LRA and pen lift, after G-S on that build and EXP-K23's pen-lift tests (DEC-064); ethics |
@@ -120,6 +121,7 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-W12 (§23) | Can people hold and write with the collar? | tremor-free adults first (n from a pilot, §11 rule) | Collar locked and active (equal mass), random order | Comfort; felt reaction; noise; where the web rests | device burden | after EXP-W11's bench checks; ethics |
 | EXP-W16 (§23) | What does "write only when in reach" cost people? | people with tremor (n from a pilot, §11 rule) | The Rev K pen (the B1 nib, ±1.0 mm, and a pen lift fast enough for the gate; DEC-050, DEC-064) with the gate on and off, random order | Words read; coverage; missing strokes; completion time | IA; device burden | after G-S on the Rev K build and a bench test of a lift fast enough for the gate (DEC-064: not the follower's; a latching lift coil, not designed); ethics |
 | EXP-K24 (§24) | Do writers' fingers touch the paper with Rev K's grip, which sits 3.3 mm closer to the paper at 35° than an ordinary pen's? | 20 writers | Within-subject: printed mock-ups of the Rev K grip, an ordinary pen and Rev J's front, a sentence with each | Writers who never touch the paper with a finger; ratings | device burden | unpowered mock-ups; ethics |
+| EXP-E20 (§25) | Do people read the E13 inks as the AI reader does: how much tremor may be left at the tip for readable words? | EXP-R03's panel | Blinded literal transcription of the E13 test inks (clean, ordinary pen, perfect knowledge, four amplitude levels), inside EXP-R03's sessions | The residual at which the panel's words reach the ordinary pen's plus 2 | none (the target's validity) | with EXP-R03; ethics |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). So does study B's EXP-B30 (the roll of a keyed grip, 10 writers with motion capture; `bench_protocols.md` §51). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii). The same holds for EXP-R02 and R05 (`bench_protocols.md` §48); R05 also trains a model. EXP-S20 (`bench_protocols.md` §49) re-uses EXP-S18's data, and EXP-W15 (§50) the EXP-H01/R01 and EXP-W10 recordings, under the same consents.
 
@@ -1597,6 +1599,7 @@ Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows fo
 - **Predictions (SIM).** The AI reader reads 6.8 of 10 words of the clean real test notes, and 0.3–0.7 of 10 at the severe class with an ordinary pen. Its decoder has a language prior from its training text, and the test phrases include rare words. No prediction for people. UNIPEN writing is for research use only: the panel may see it, and results hold statistics only (REQ-DATA-006).
 - **Claim type.** None (the reader's validity).
 - **Decision.** Within AC-R03-01: the reader's words stand for people in DEC-055 and in the results cards. Outside: DEC-055 is judged by the panel, and the results cards report the panel's reads.
+- **Study F (EXP-E20).** The same panel also reads study F's E13 test inks, to check the tremor that may be left at the tip for readable words (§25, DEC-067).
 
 <!-- AC-TABLE:EXP-R03:BEGIN -->
 | ID | Req. | Metric | Threshold | Status | Basis | Gates |
@@ -1831,3 +1834,26 @@ Study K (`docs/revK_design.md`) laid out Rev K (DEC-062). Its grip is the Rev J 
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-K24).
 <!-- AC-TABLE:EXP-K24:END -->
+
+---
+
+## 25. The readable target with people: EXP-E20 (study F; DEC-067)
+
+Study F (`docs/readable_target.md`) found how much tremor may be left at the pen tip for words to be readable, with the literal AI reader standing in for people: DEC-055's +2 words needs no more than about 0.55–0.65 mm, and near-normal reading about 0.25 mm (DEC-067, REQ-CTRL-018). One question needs people: do they read those inks as the reader does (EXP-E20)? The offline parts (EXP-E21, E22 and E23) are in `bench_protocols.md` §54.
+- **Ethics and data.** EXP-E20 runs inside EXP-R03's panel (§21), under the same approval and the consents of §3.3. The E13 inks are made from UNIPEN notes, which are for research use only: the panel may see them, and results hold statistics only (REQ-DATA-006).
+
+### EXP-E20: Do people read the E13 inks as the AI reader does?
+- **Relation to EXP-R03.** Not a separate study: the same blinded panel, sessions and literal scoring as EXP-R03, with the E13 test inks added to its notes.
+- **Design.** The panel reads the E13 test inks: the clean notes, the ordinary pen, perfect knowledge and the four amplitude levels, in random order and blind to the condition. Each note is read by several readers.
+- **Measurands.** Words read out of 10 per note (the median reader); the words-against-residual curve, refitted as in study F; the residual at which the panel's words reach the ordinary pen's plus 2, and the residual for 80 % of the tremor-free words.
+- **Predictions (SIM, the AI reader; `docs/readable_target.md` §3).** The +2 level is at 0.55 mm on the test split (0.47–0.64) and 0.65 mm on the tuning split (0.56–0.70); near-normal reading at 0.25–0.26 mm. The reader's readings move in whole words. There is no prediction for people.
+- **Claim type.** None (the target's validity).
+- **Decision.** Within 0.47–0.70 mm (AC-E20-01): DEC-067's 0.55 mm stands. Outside: DEC-067 is revisited with the panel's value.
+
+<!-- AC-TABLE:EXP-E20:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-E20-01 | REQ-CTRL-018 | Residual tip tremor at which the blinded panel's words out of 10 (literal scoring, the median reader) reach the ordinary pen's plus 2, fitted as in study F (the words-against-residual curve) on the E13 test inks: clean notes, the ordinary pen, perfect knowledge and the four amplitude levels | within 0.47-0.70 mm | derived | study F's AI-reader values, 0.55 mm on the test split (0.47-0.64) and 0.65 mm on the tuning split (0.56-0.70), with their writer-bootstrap intervals (SIM, docs/readable_target.md s3); DEC-067 is revisited if people move the +2 level outside 0.47-0.70 mm; no prediction for people | DEC-067 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-E20).
+<!-- AC-TABLE:EXP-E20:END -->
