@@ -7,7 +7,7 @@ Use this file to resume work without losing assumptions. Branch: `claude/pensive
 | Area | Ran here | Not run or not possible here |
 |---|---|---|
 | Audit | Recalculation of all 37 report numbers (all reproduce); 28 corrections with severity | — |
-| Evidence | 692 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
+| Evidence | 697 ledger rows; two decision-driving sources lead-verified against the primary text | Full-text access failed for some sources (listed in the ledger's limitations column) |
 | Simulation | M1 coupled model, 12 tests passing; estimator tuning on seeds 100–105; nominal benchmark; 12-seed × 9 f × 3 amplitude grid; 160-sample Monte Carlo + rank sensitivity; failure cases F1–F7; design sweeps; κ_s comparison; guided-mode evaluation; contact-feedforward diagnosis; frequency-gate diagnostic | Validation against hardware (all EXP-B*) |
 | Mechanics | CAD Rev A and A.1 (interference-free at full travel); flexure calculation; tolerance stacks S1–S6; mass budget; stage-A rig CAD with platen-clearance check; drawings | Physical parts; FEM of flexures and actuator |
 | Electronics | KiCad 8 schematic generated deterministically; ERC (0 errors, 1 accepted warning); netlist cross-check pass (102 nets / 492 pins); BOM; drive/sense calculations with the winding headroom assessment; ngspice transient incl. coil short; placement study | PCB layout (DEC-014 open); datasheet checks behind 45 VERIFY and 3 SELECT BOM lines |
@@ -264,21 +264,25 @@ The user asked for far more physical effect on the writing: more advanced tip ma
   - Clear 15 mm PC window over the top 240° of the sleeve; heel motors 10 mm further back (detent 0.66 × friction, free space).
 - **Independent review (2026-09-29, `docs/reviews/`).** Commissioned by the user outside the repository. Its central finding is confirmed by the lead and by sim2j: the refill spring's static side load at the ball (F_c·cot θ) makes the C1S nose's holding loss 4.717 / 1.628 / 0.166 W at 35 / 50 / 75° (CALC). DEC-036 is reopened; the battery and heat conclusions of DEC-032, DEC-044 and DEC-045 are suspended. The adopted order is: balanced nib (study B), then a motorised collar (study W), then a tail only if it beats a locked mass, then a grounded surface; language help runs in parallel (study S). Rigs for the review's gates G1–G5 are in study M. `docs/claims_register.md` lists every headline claim with its status.
 - **Open problems (the next session must not lose these).**
-  1. **Nose-coil power (confirmed).** The static side load dominates: 1.6 W at 50° for the C1S nose (CALC; about 1.1 W in sim2j's writing run, SIM, plus a 0.7 W servo-noise artefact). Battery and heat claims suspended; study B designs a load-balanced nib.
+  1. **Nose-coil power (confirmed).** The static side load dominates: 1.6 W at 50° for the C1S nose (CALC; about 1.1 W in sim2j's writing run, SIM, plus a 0.7 W servo-noise artefact). Rev J's battery and heat claims stay suspended. **Fixed on paper** by the balanced nib B1 (study B, DEC-050) and laid out as Rev K (study K, DEC-062…066): 145.1 mm, 66.4 g, 23.5–48.6 h per charge with 1 mm tremor (CALC). Unproven until EXP-J17 (c), EXP-T07/K22 (the buildable coil), EXP-K20 (ball guide) and EXP-K21 (C17200 wire leads).
   2. Low-power page sensor accuracy at 1 kHz on paper (EXP-J10) and the detector on its stream (EXP-L01 extension).
   3. The pull's size (12.4–22.2 N, ideal iron; EXP-J01) and the shock stops (not designed).
   4. The TCN may fail REQ-ML-001 (34.8 µm on the worst writer).
   5. Autowrite with a pen lift needs a freedom-to-operate review against an actuated-nib pen that scribes predefined characters (LIT PAT-01).
   6. The synthetic writers are unrealistic; every tremor-separation result waits on EXP-H01 recordings (round 4 study R brings in public recordings meanwhile).
-- **Running.** Round 2: the whole-pen closed loop in simulator v2 (`sim2j/`). Round 4 (`docs/round4_plan.md`): study W, shifting and pivoting the whole pen against large tremor (`wholepen/`); study R, real recorded handwriting and tremor (`realdata/`); study S, physical spell checker, prediction and shape assist (`ai3/`). The 3-D explainer is being rebuilt around a simple view.
+  7. **No causal tracker helps on real tremor yet** (studies R and E, DEC-060): perfect knowledge would make about 7 of 10 words readable at the severe size, against 0.5 today. The next candidate (a network trained on real recordings, DEC-061) needs new held-out recordings for EXP-E10: EXP-R06's registrations (IAM-OnDB, PaHaW) or EXP-R01.
+  8. **Rev K's failing fit checks** (`docs/revK_design.md` §4): the page sensor tracks only ±0.2 mm of lift (REQ-BNIB-017 asks 2 mm; EXP-T04); the touchdown travel before the balance returns is 0.98 mm (REQ-BNIB-002 relaxed by DEC-064 unless a float brake is fitted); the grip sits 3.3 mm closer to the paper at 35° than an ordinary pen (EXP-K24); the fresh ink is seen within 1 mm in 19 % of cases (Rev J.1 47 %; EXP-J15).
+  9. **Beryllium.** Rev K's C17200 wire leads must be soldered or crimped, never welded or ground without fume extraction (AMF-18, DEC-063); a beryllium-free alternative is still to be found.
+- **Done in round 4 (2026-09-29/30):** sim2j (whole Rev J pen in simulator v2), studies R (real recordings), E (tracking real tremor), S (spelling, prediction, clarity), W (shifting the whole pen), B (the balanced nib), M (measurement rigs) and K (the Rev K layout); validation passes 5–10; the explainer (v9).
+- **Running.** Study F (`readable/`, `docs/readable_target.md`): how much tremor may be left at the tip for words to be readable (EXP-E13), a gate calibrated on each writer's own clean writing (EXP-E11, information only), and whether the gap to perfect knowledge is prediction or separation.
 
-**Next for Rev J, in order (from `docs/revJ_concept.md` §7).**
-1. EXP-N01 magnetics coupons: nose v2 and Rev H force constants.
-2. EXP-D01 tyre friction on six papers; EXP-D04 and D07 the heel bench with its force cap and release.
-3. EXP-H01 recordings; then EXP-L01, L02 (gate and gated tracker offline), EXP-L04 (learned estimator), EXP-V03 (refit the simulator's writers).
-4. EXP-I01 and K08: grip split on the Ø24 handle with and without the end-cap.
-5. EXP-N05, N06: spring fatigue and the pen lift.
-6. People: EXP-D08 (guidance and lead-through), EXP-N09 (autowrite), EXP-K03, K05 (end-cap acceptance and cues).
+**Next, in order (`validation/prototype_stages.md` §0; the Rev J list in `docs/revJ_concept.md` §7 is superseded).**
+1. DAQ-1 bring-up, then rig R9 (gate G1): EXP-T01, T02 (friction; the lowest ink force, which sets B1's power) and EXP-J17 (the static side load; part (c) the counter-face bench, with EXP-K23's head mock-up).
+2. Rig R10: page sensing on paper (EXP-T04, T05), including the lift range Rev K fails on paper.
+3. People, as soon as ethics allows: EXP-H01 recordings (with T06), EXP-V07.
+4. Gate G2 coupons: EXP-T07 with Rev K's buildable coil (EXP-K22), C17200 wires carrying current (EXP-K21), the ball thrust guide (EXP-K20), EXP-B25 and B28.
+5. Gates G3/G4: the one- and two-axis nib on R13 (EXP-T10…T15): servo bandwidth, the stuck-ball mode, heat.
+6. Offline, in parallel: EXP-E10 on new recordings (needs EXP-R06's registrations or EXP-R01); EXP-E13 and E11 (study F); EXP-K25 (Rev K in sim2j).
 
 **Resume.**
 

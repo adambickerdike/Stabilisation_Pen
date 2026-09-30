@@ -81,6 +81,8 @@ REALDATA_JSON = "results/realdata/realdata.json"         # study R: real recorde
 REALDATA_SAMPLES = "results/realdata/samples.json"
 SIM_REAL = "SIMULATION (model HW1) with real recorded inputs"
 REALTRACK_JSON = "results/realtrack/realtrack.json"      # study E: tremor tracking on the real recordings (HW1)
+REVK_BUDGETS = "results/revK/budgets.json"                # study K: the Rev K layout's budgets
+REVK_LAYOUT = "results/revK/layout.json"
 AI3_JSON = "results/ai3/ai3.json"                         # study S: spelling help, prediction, clarity
 WHOLEPEN_SUMMARY = "results/wholepen/summary.json"         # study W: shifting the whole pen
 SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
@@ -441,6 +443,25 @@ def facts_realtrack() -> dict | None:
         warn(f"{REALTRACK_JSON} could not be read ({ex})")
         return None
 
+def facts_revk() -> dict | None:
+    """Study K's Rev K layout (results/revK/budgets.json and layout.json): the nib's power and the hours per charge in
+    steady writing with 1 mm of tremor (low-high), the base pen's mass and the fit checks by verdict."""
+    if not (exists(REVK_BUDGETS) and exists(REVK_LAYOUT)):
+        return None
+    try:
+        b = load(REVK_BUDGETS)["budgets"]
+        row = b["power"]["rows"]["steady_1mm"]
+        checks = load(REVK_LAYOUT)["fit_checks"]
+        return {"nib_W": list(row["nib_W"]), "hours": list(row["hours"]), "mass_g": b["mass"]["base"]["mass_g"]
+                if isinstance(b["mass"].get("base"), dict) else b["mass"]["base"],
+                "n_checks": len(checks), "n_fail": sum(c.get("status") == "fail" for c in checks),
+                "n_marginal": sum(c.get("status") == "marginal" for c in checks),
+                "label": "CALCULATION (study K, the Rev K layout)", "source": f"{REVK_BUDGETS}, {REVK_LAYOUT}"}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as ex:
+        warn(f"{REVK_BUDGETS} could not be read ({ex})")
+        return None
+
+
 def facts_ai3() -> dict | None:
     """Study S's headline numbers (results/ai3/ai3.json): misspellings put right on paper per cue, the spell checker's
     catch rate with the letters known and with the pen reading them, and word completion after one letter."""
@@ -635,6 +656,10 @@ def build_facts(lay: dict):
     if rd:
         facts["realdata"] = rd
         srcs.append(REALDATA_JSON)
+    rk = facts_revk()
+    if rk:
+        facts["revk"] = rk
+        srcs.append(REVK_BUDGETS)
     rt = facts_realtrack()
     if rt:
         facts["realtrack"] = rt
@@ -1295,14 +1320,16 @@ KNOWN_PROBLEMS = [
      "lead": "The inner pen's coils spend most of their power just holding the ball against the paper.",
      "text": ("Because the pen is tilted, the paper pushes the ball sideways, and the magnets sit on a short arm, so they must "
               "push about {kp_ratio} times harder. That is {kp_p50}&nbsp;W at a normal 50° angle and {kp_p35}&nbsp;W at 35°. "
-              "The coils would overheat within about a minute. <b>A fix is designed</b> (study B): in the next prototype (Rev K) "
+              "The coils would overheat within about a minute. <b>A fix is designed</b> (studies B and K): in the next prototype (Rev K) "
               "the refill slides on thin wires, and its spring pushes on a small face kept parallel to the paper, so the two "
-              "pushes cancel at any angle. Holding then costs at most 0.0016&nbsp;W, and the pen would run about 38 hours per charge. "
-              "The price is reach: about ±1&nbsp;mm instead of ±6&nbsp;mm, so the pen can no longer write whole words for you. "
-              "Nothing has been built yet."),
+              "pushes cancel at any angle. The whole nib then needs about {kp_k_nib}&nbsp;W, and the pen would run about "
+              "{kp_k_hours} hours per charge. The price is reach: about ±1&nbsp;mm instead of ±6&nbsp;mm, so the pen can no longer "
+              "write whole words for you. Laying out the whole pen left {kp_k_fail} of its {kp_k_checks} fit checks failing, "
+              "to be solved before it is built. Nothing has been built yet."),
      "evidence": [("CALCULATION", "the independent review's formula, reproduced by the lead; inputs results/revJ/sim_params.json and layout.json"),
                   ("SIMULATION (sim2, the same load in a writing run)", "about {kp_sim} W of the nose's power in a writing run: docs/revJ_simulation.md §8.1"),
-                  ("CALCULATION (the balanced nib)", "docs/balanced_nib.md; DEC-050")]},
+                  ("CALCULATION (the balanced nib)", "docs/balanced_nib.md; DEC-050"),
+                  ("CALCULATION (study K, the Rev K layout)", "docs/revK_design.md; results/revK/budgets.json; DEC-062…066")]},
     {"key": "heel",
      "lead": "The heel wheel moved clean writing by about {kp_heel}&nbsp;mm in the physics simulation,",
      "text": "so it stays retracted unless the writer turns guidance on.",
@@ -1349,6 +1376,8 @@ def known_tokens(f: dict) -> dict:
     b50, b35 = by.get("50") or {}, by.get("35") or {}
     hm, dp = kn.get("heel_moved_mm"), kn.get("deltapen_um")
     rt = f.get("realtrack") or {}
+    rk = f.get("revk") or {}
+    nw, hh = rk.get("nib_W"), rk.get("hours")
     return {"kp_ratio": f"{sl['ratio']:.0f}" if sl.get("ratio") else "—", "kp_ratio1": f"{sl['ratio']:.1f}" if sl.get("ratio") else "—",
             "kp_p50": f"{b50['P_W']:.1f}" if b50 else "—", "kp_p35": f"{b35['P_W']:.1f}" if b35 else "—",
             "kp_sim": f"{sl['sim_run_W']:g}" if sl.get("sim_run_W") else "—",
@@ -1358,7 +1387,9 @@ def known_tokens(f: dict) -> dict:
             "kp_page": f"{kn['page_assumed_um']:.0f}" if kn.get("page_assumed_um") else "—",
             "kp_dp_lo": f"{dp[0]:.0f}" if dp else "—", "kp_dp_hi": f"{dp[1]:.0f}" if dp else "—",
             "kp_rt_cut": f"{5 * round(100 * (1 - rt['ratio']) / 5):.0f}" if rt.get("ratio") else "—",
-            "kp_rt_worst": f"{rt['clean_worst_um'] / 1000:.1f}" if rt.get("clean_worst_um") else "—"}
+            "kp_rt_worst": f"{rt['clean_worst_um'] / 1000:.1f}" if rt.get("clean_worst_um") else "—",
+            "kp_k_nib": f"{nw[0]:.2f}–{nw[1]:.2f}" if nw else "—", "kp_k_hours": f"{hh[0]:.0f}–{hh[1]:.0f}" if hh else "—",
+            "kp_k_fail": str(rk["n_fail"]) if rk.get("n_checks") else "—", "kp_k_checks": str(rk["n_checks"]) if rk.get("n_checks") else "—"}
 
 
 def _fill(s: str, toks: dict) -> str:

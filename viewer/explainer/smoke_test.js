@@ -157,9 +157,9 @@ async function run(browser, label, viewport) {
     kp.afterSure && !kp.inDetails && /Known problems \(being fixed\)/.test(kp.heading) && kp.items.length === 4 && kp.items.every(i => i.tags.length >= 1),
     kp.items.map(i => `${i.key}: ${i.tags.join(" + ")}`).join("; "));
   const kS = it("sideload"), kH = it("heel"), kP = it("sensor"), kD = it("data");
-  check(`${label}: known problems: holding the ball costs 1.6 W at 50° and 4.7 W at 35°, about 7 times; overheats; a fix is designed (about 38 hours, ±1 mm reach)`,
+  check(`${label}: known problems: holding the ball costs 1.6 W at 50° and 4.7 W at 35°, about 7 times; overheats; a fix is designed (Rev K: about 24–49 hours, ±1 mm reach, 9 of 59 fit checks failing)`,
     /about 7 times harder/.test(kS.text) && /1\.6\s*W at a normal 50°/.test(kS.text) && /4\.7\s*W at 35°/.test(kS.text) && /overheat within about a minute/.test(kS.text) &&
-    /fix is designed/.test(kS.text) && /38 hours/.test(kS.text) && /±1/.test(kS.text) && kS.tags.some(t => /^Calculation/.test(t)) && kS.tags.some(t => /^Simulation/.test(t)), kS.text.slice(0, 110));
+    /fix is designed/.test(kS.text) && /24–49 hours/.test(kS.text) && /0\.02–0\.04\s*W/.test(kS.text) && /9 of its 59 fit checks/.test(kS.text) && /±1/.test(kS.text) && !/—/.test(kS.text) && kS.tags.some(t => /^Calculation/.test(t)) && kS.tags.some(t => /^Simulation/.test(t)), kS.text.slice(0, 110));
   check(`${label}: known problems: heel wheel 0.4 mm, retracted; page sensor 3 µm against DeltaPen's 24–68 µm; made-up writers and shakes`,
     /0\.4\s*mm/.test(kH.text) && /retracted unless the writer turns guidance on/.test(kH.text) && kH.tags.some(t => /^Simulation/.test(t)) &&
     /3\s*µm/.test(kP.text) && /DeltaPen, 2022/.test(kP.text) && /24–68\s*µm/.test(kP.text) && /unproven/.test(kP.text) && kP.tags.some(t => /^Assumption/.test(t)) && kP.tags.some(t => /^Literature/.test(t)) &&
