@@ -44,7 +44,7 @@ def example_traces(quick: bool) -> List[Dict]:
                            ("still", "relaxed_naive", "still but relaxed hand, tip following")):
         m = A.run_one(se[0], hk, cfg, preds, keep=True)
         tr = m.pop("_trace")
-        tr["title"] = f"{title} ({'complete' if m['engineering_complete'] else 'not complete'}; RMS " + \
+        tr["title"] = f"{title}\n({'complete' if m['engineering_complete'] else 'not complete'}; RMS " + \
                       (f"{m['actual_requested_ink_rms_error_mm']:.3f} mm)" if m['actual_requested_ink_rms_error_mm']
                        is not None else "n/a)")
         out.append(tr)
@@ -56,6 +56,8 @@ def comparison(res: Dict) -> Dict:
     numbers of this study and the earlier ones and their labels."""
     tr = (res.get("tremor") or {}).get("by_class", {}).get("all/severe", {})
     acc = (res.get("accepted") or {}).get("summary", {})
+    ss = (res.get("sensitivity") or {}).get("rows", {})
+    sv = lambda k: CM.fmt_ci((ss.get(k) or {}).get("tip_tremor_mm"), 2).split(" (")[0]            # noqa: E731
     f = lambda k, m="tip_tremor_mm", nd=2: CM.fmt_ci((tr.get(k) or {}).get(m), nd)            # noqa: E731
     w = lambda k: CM.fmt_ci((tr.get(k) or {}).get("words_read"), 1)                            # noqa: E731
     a = lambda t, c, h: acc.get(f"{t}|{c}|{h}") or {}                                            # noqa: E731
@@ -77,7 +79,9 @@ def comparison(res: Dict) -> Dict:
                         "or 500 N/m grip (the independent pass, SIM)",
              "platen": f"Perfect knowledge {f('P_oracle')} mm, {w('P_oracle')} words; perfect separation with the "
                        f"camera {f('P_cam_sep')} mm, {w('P_cam_sep')} words; with E's design {f('P_E_chosen')} mm, "
-                       f"{w('P_E_chosen')} words (SIM, tuning): reach solved, separation not",
+                       f"{w('P_E_chosen')} words (SIM, tuning; HW1's convention, the hand cancels the ball's drag). If "
+                       f"the tremor-band drag acts on the pen, perfect knowledge leaves {sv('friction_intended|oracle')} "
+                       f"mm and the camera loop {sv('friction_intended|camera')} mm. Reach solved, separation not",
              "typing_dictation": "Legible by construction (typed or dictated text); keyboards also suffer from tremor "
                                  "and dictation needs clear speech and privacy (ASSUMPTION; no ledger numbers); paper "
                                  "forms, cards and signatures still need ink",
@@ -94,10 +98,12 @@ def comparison(res: Dict) -> Dict:
              "nib": "0/20 'se' suffixes pass the whole-text preflight at +-1.06 mm (Rev K) and +-1.5 mm (the independent "
                     "pass's writing audit, SIM): the pen's reach cannot write whole letters",
              "fivebar": f"'se': {fb(0.0)} with no hand resistance, {fb(200.0)} at 200 N/m, {fb(500.0)} at 500 N/m (SIM)",
-             "platen": (f"'se': proposed {comp('se', 'proposed', 'still')} (still), {comp('se', 'proposed', 'drift')} "
-                        f"(drift); pen in a cradle {comp('se', 'cradle', 'cradle')}; relaxed hand with tip following "
-                        f"{comp('se', 'relaxed_naive', 'still')}. 'library': proposed {comp('library', 'proposed', 'still')} "
-                        f"(still) (SIM)"),
+             "platen": (f"Pen docked in a cradle: 'se' {comp('se', 'cradle', 'cradle')}, 'library' "
+                        f"{comp('library', 'cradle', 'cradle')}. Pen held firmly on the palm rest (0.5 N, ink loop): 'se' "
+                        f"{comp('se', 'proposed', 'still')} (still hand), {comp('se', 'proposed', 'mod_PD')} and "
+                        f"{comp('se', 'proposed', 'mod_ET')} (moderate PD, ET), {comp('se', 'proposed', 'sev_PD')} and "
+                        f"{comp('se', 'proposed', 'sev_ET')} (severe); 'library' {comp('library', 'proposed', 'still')} "
+                        f"(still). HW1's relaxed hand: {comp('se', 'relaxed_naive', 'still')} (SIM)"),
              "typing_dictation": "Spell checking and word prediction already do this for typed text (LITERATURE: "
                                  "ledger HAP-50, HAP-133, EML-63); a pen plotter writes accepted text on paper without "
                                  "the user's hand (MFR AMF-283)"},

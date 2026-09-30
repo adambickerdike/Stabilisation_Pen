@@ -123,7 +123,8 @@ def bnib_tables(s: Dict) -> str:
                "| Nib power G4 / held / clean, mW | Extra load rms (G4), mN |")
     out.append("|---|---|---|---|---|---|---|---|")
     ladder = [("study B's rows (bnib/build/sim_rows.json)", (s.get("studyB_rows") or {}).get("writers_0_1"), None)]
-    for c in ("B1_studyB_exact", "B1_studyB_now", "B1_dec066", "revK_linear", "revK_corrected", "cand15_corrected"):
+    for c in ("B1_studyB_exact", "B1_studyB_now", "B1_dec066", "revK_linear_80", "revK_linear", "revK_corrected",
+              "cand15_corrected"):
         v = (s.get("configs") or {}).get(c) or {}
         ladder.append((c, v.get("studyB_cells_writers_0_1"), v.get("writers_0_1")))
     for name, b3, b4 in ladder:

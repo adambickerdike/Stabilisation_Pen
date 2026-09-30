@@ -32,10 +32,13 @@ better at both jobs: cancelling tremor at the ink, and writing accepted words.
    read. The nib with the same estimator leaves {{t:all/severe:N15_E_chosen:tip_tremor_mm}} mm at ±1.5 mm. Sensing is not
    the limit: with the tremor perfectly separated from the writing, a 250 frames/s camera that tracks the tip leaves
    {{t:all/severe:P_cam_sep:tip_tremor_mm}} mm and {{t:all/severe:P_cam_sep:words_read}} words are read (SIM).
-3. **Accepted writing works if the pen is held stiffly against the page's drag.** Moving the page wrote
-   {{a:se|proposed|still:complete}} accepted "se" suffixes to the five-bar's criterion with a firm grip on the palm rest,
-   and {{a:se|cradle|cradle:complete}} with the pen docked in a cradle. With HW1's relaxed hand, the moving page drags
-   the pen. The platen cannot tell that drag from a hand movement, so following the tip completes
+3. **Accepted writing works when the pen is docked, and with a held pen only for a calm, firm hand.** Moving the page
+   under the user's own pen docked in a cradle on the palm rest wrote {{a:se|cradle|cradle:complete}} accepted "se"
+   suffixes to the five-bar's criterion, and {{a:library|cradle|cradle:complete}} "library" rewrites. With the pen held
+   in a firm grip on the palm rest, at 0.5 N and with the proposed controller, it wrote {{a:se|proposed|still:complete}}
+   suffixes for a still hand. Moderate tremor brought that down to {{a:se|proposed|mod_PD:complete}} and severe tremor
+   to {{a:se|proposed|sev_PD:complete}}. With HW1's relaxed hand, the moving page drags the pen through the ball's
+   friction. The platen cannot tell that drag from a hand movement, and it completes
    {{a:se|relaxed_naive|still:complete}} (SIM).
 
 **The answers in more detail.**
@@ -54,19 +57,24 @@ better at both jobs: cancelling tremor at the ink, and writing accepted words.
   {{r:tremor.clean.P_E_chosen.mean_over_writers.mean:1}} µm (E's frozen design) and
   {{r:tremor.clean.P_E_net.mean_over_writers.mean:1}} µm (real-data network), mean over writers. Neither design was
   built for an ordinary pen's sensor streams (§3.3).
-- **Accepted writing.** The proposed configuration completes {{a:se|proposed|drift:complete}} "se" suffixes with a
-  drifting hand, {{a:se|proposed|mod_PD:complete}} and {{a:se|proposed|mod_ET:complete}} with moderate Parkinson's and
-  essential tremor, and {{a:se|proposed|sev_PD:complete}} and {{a:se|proposed|sev_ET:complete}} with severe tremor. For
-  the longer rewrite "library" it completes {{a:library|proposed|still:complete}} (still hand), and the cradle completes
-  {{a:library|cradle|cradle:complete}}. The ink's peak acceleration is
-  {{a:se|proposed|still:ink_lp30_max_acc_m_s2}} m/s² and its peak jerk {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}}
-  m/s³ after a 30 Hz low-pass, which is within 2 m/s² and 300 m/s³ for
-  {{a:se|proposed|still:ink_lp30_passes_both}} of 20 words. Sampled without filtering, as the five-bar's check was, the
-  jerk of the ink is dominated by sensor noise and encoder steps ({{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³;
-  {{a:se|proposed|still:ink_passes_both}} of 20 pass). The five-bar reached
-  {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.maximum:1}} m/s² and
-  {{r:fivebar.derivative_check.summary.tip_page.peak_sampled_jerk_m_s3.maximum:0}} m/s³ with no hand on its pen
-  (§4.4).
+- **Accepted writing.**
+  - *Tremor.* The proposed configuration completes {{a:se|proposed|drift:complete}} "se" suffixes with a drifting hand,
+    {{a:se|proposed|mod_PD:complete}} and {{a:se|proposed|mod_ET:complete}} with moderate Parkinson's and essential
+    tremor, and {{a:se|proposed|sev_PD:complete}} and {{a:se|proposed|sev_ET:complete}} with severe tremor. The camera's
+    residual and the pen's deflection pass the five-bar's 0.2 mm refusal limit, so a user with severe tremor docks the
+    pen.
+  - *The longer rewrite "library".* The held pen completes {{a:library|proposed|still:complete}}. The refusals fall on
+    short strokes such as the dot of the i, where the pen's deflection must flip. The cradle completes
+    {{a:library|cradle|cradle:complete}}.
+  - *Smoothness.* After a 30 Hz low-pass the ink peaks at {{a:se|proposed|still:ink_lp30_max_acc_m_s2}} m/s² and
+    {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}} m/s³ (still hand). {{a:se|proposed|still:ink_lp30_passes_both}} of
+    {{a:se|proposed|still:n}} words stay within 2 m/s² and 300 m/s³, against
+    {{r:fivebar.derivative_check_same_definition.lp30_passes_both}} of
+    {{r:fivebar.derivative_check_same_definition.n}} for the five-bar's own traces on the same definition. Sampled
+    without filtering, as the five-bar's published check was, neither device passes: the platen's ink jerk is
+    dominated by camera noise and encoder steps ({{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³), the five-bar's reached
+    {{r:fivebar.derivative_check.summary.tip_page.peak_sampled_jerk_m_s3.maximum:0}} m/s³ (§4.4). With tremor the ink
+    carries residual tremor and fails both definitions.
 - **Sensitivity.** Camera latency matters most: 2 / 6 / 15 / 25 ms leave {{s:latency_2ms|camera:tip_tremor_mm}} /
   {{s:baseline|camera:tip_tremor_mm}} / {{s:latency_15ms|camera:tip_tremor_mm}} / {{s:latency_25ms|camera:tip_tremor_mm}}
   mm with perfect separation. A marker that reads 10 % of the hand's tremor as tip motion leaves
@@ -327,6 +335,19 @@ knowledge (SIM; CSV twin `results/platen/fig_reach.csv`).*
 - **The camera is good enough if the tremor can be separated.** With the clean path known,
   camera sensing and prediction leave {{t:all/severe:P_cam_sep:tip_tremor_mm}} mm, far below F's near-normal level of
   0.25 mm. The platen's sensing is therefore not what stands between the user and legible writing; separation is.
+- **The stage's effort.** With perfect knowledge the fine stage needs {{t:all/severe:P_oracle:force_rms_N}} N RMS
+  ({{t:all/severe:P_oracle:copper_W_per_axis_rms}} W of copper loss per axis), and with the camera
+  {{t:all/severe:P_cam_sep:force_rms_N}} N ({{t:all/severe:P_cam_sep:copper_W_per_axis_rms}} W), within the voice coil's
+  9.3 N continuous rating. Part of that is chatter of the inner loop on its 0.25 µm encoder steps; part (c) removes it
+  (the ideal inner loop). With study E's commands the stage works far harder:
+  {{t:all/severe:P_E_chosen:force_rms_N}} N RMS, at the 20 N cap for part of the time, and
+  {{t:all/severe:P_E_chosen:copper_W_per_axis_rms}} W per axis, near the coil's 14 W continuous limit. The cause is the
+  command, not the tremor. ai2's network gives an output every 2 ms, and predicting 2.7 ms beyond its build horizon
+  (to cover the platen's 6.07 ms lag instead of the Rev J servo's 3.39 ms) turns those outputs into a 2 ms sawtooth,
+  which the stage follows. Smoothing the command removes most of the effort (part c):
+
+{{tab:ecmd}}
+
 - **Moderate tremor.** The ordinary pen leaves {{t:all/moderate:none:tip_tremor_mm}} mm, and perfect knowledge on the
   platen {{t:all/moderate:P_oracle:tip_tremor_mm}} mm. E's gated designs leave the moderate class almost as it was
   ({{t:all/moderate:P_E_chosen:tip_tremor_mm}} mm), because their gate keeps small tremor alone.
@@ -373,34 +394,56 @@ knowledge (SIM; CSV twin `results/platen/fig_reach.csv`).*
 
 ### 4.2 The physics found: the page drags the pen
 
-The fundamental finding of part (b) is that **a moving page pulls the pen along through the ball's friction, and a
-relaxed hand lets it.** HW1's relaxed hand has a compliance of 7.62 mm/N at the tip. With μ_k 0.15 and 1 N of normal
-force, the sliding drag deflects the tip by 1.14 mm (CALC), and stiction holds the pen until 1.48 mm. This is not a
-disturbance the platen can cancel by following the tip: the tip's motion is caused by the page itself. Following it
-feeds the page's motion back into the page, which is positive feedback in stiction, so the pen runs away with the page
-(relaxed_naive: {{a:se|relaxed_naive|still:complete}}).
+The central finding of part (b) is that **a moving page pulls the pen along through the ball's friction, and a relaxed
+hand lets it.** HW1's relaxed hand has a compliance of 7.62 mm/N at the tip. With μ_k 0.15 and 1 N of normal force,
+the sliding drag deflects the tip by 1.14 mm (CALC), and stiction holds the pen until 1.48 mm. The platen cannot cancel
+this by following the tip, because the page itself causes the tip's motion. Following it feeds the page's motion back
+into the page, which is positive feedback in stiction, so the pen runs away with the page. The relaxed hand followed
+naively completes {{a:se|relaxed_naive|still:complete}}.
 
-Three measures remove the coupling:
-- **stiffness:** the hand anchored on the palm rest with a firm grip, or the pen in a cradle;
-- **low normal force:** 0.5 N by Z force control;
-- **a controller that knows the drag** (the ink loop).
-
-With the relaxed hand, the ink loop alone completes {{a:se|relaxed_ink_loop|still:complete}}. The HW1 convention
-(firm_ideal: the hand cancels the drag, as every earlier study assumed) completes {{a:se|firm_ideal|still:complete}}
-with a still hand. That is the upper bound for a hand that does not yield to the page.
+- **Control alone does not rescue a relaxed hand.** With HW1's relaxed hand the ink loop completes
+  {{a:se|relaxed_ink_loop|still:complete}}. Lowering the normal force to 0.5 or 0.3 N under the proposed controller
+  completes {{as:relaxed_N0.5|still:complete}} and {{as:relaxed_N0.3|still:complete}}.
+- **Stiffness decides.** A firm grip with the hand anchored on the palm rest (1.37 mm/N) at 0.5 N completes
+  {{a:se|proposed|still:complete}}. At 1.0 N it completes {{as:firm_N1.0|still:complete}}. A medium grip (HW1's grip,
+  the arm anchored at 1,000 N/m) completes {{as:medium_grip_N0.5|still:complete}}. With the pen docked in a cradle,
+  {{a:se|cradle|cradle:complete}} 'se' and {{a:library|cradle|cradle:complete}} 'library' words complete, with a median
+  RMS of {{a:se|cradle|cradle:median_rms_mm}} mm.
+- **The controller matters once the hand is firm.** The firm grip followed naively completes
+  {{as:proposed_naive|still:complete}}. With drag decoupling only (no feedforward, no ink integral) the ink stays
+  {{as:decoupled_only|still:median_rms_mm}} mm off (median), just over the 0.10 mm criterion
+  ({{as:decoupled_only|still:complete}}).
+- **HW1's convention is the upper bound.** In firm_ideal the hand cancels the drag, as every earlier study assumed, and
+  it completes {{a:se|firm_ideal|still:complete}} with a still hand.
+- **Where a firm hand still fails.** The calm-hand refusals of the proposed configuration are in short strokes. All
+  {{r:accepted.refusal_context.library|proposed|still.in_short_strokes}} of the
+  {{r:accepted.refusal_context.library|proposed|still.refusals}} 'library' refusals with a still hand fall in strokes
+  shorter than 200 ms (the dot of the i, short hooks), a median
+  {{r:accepted.refusal_context.library|proposed|still.median_ms_into_phase:0}} ms into the stroke. The stroke
+  reverses, so the pen's deflection must flip from one side to the other: 2 × 1.37 mm/N × 0.15 × 0.5 N = 0.21 mm
+  (CALC), plus stiction. That flip is as large as the supervisor's 0.2 mm limit.
+- **Tremor.** With moderate tremor the proposed configuration completes {{a:se|proposed|mod_PD:complete}} (PD) and
+  {{a:se|proposed|mod_ET:complete}} (ET) 'se' suffixes. Its refusals come anywhere in long strokes (median
+  {{r:accepted.refusal_context.se|proposed|mod_PD.median_ms_into_phase:0}} ms in, PD): the camera's prediction
+  residual adds to the pen's deflection. With HW1's ideal drag compensation the moderate class completes
+  {{a:se|firm_ideal|mod_PD:complete}}. Severe tremor defeats even that: the proposed configuration completes
+  {{a:se|proposed|sev_PD:complete}} and {{a:se|proposed|sev_ET:complete}}, and firm_ideal
+  {{a:se|firm_ideal|sev_PD:complete}}, because the camera's residual at the severe class passes the 0.2 mm supervisor.
+  For a user with severe tremor, accepted words are written with the pen docked. The user's tremor then plays no part:
+  the platen writes with the user's own pen, like a plotter.
 
 ### 4.3 Results
 
 ![Accepted writing](../results/platen/fig_accepted.png)
 
-*Figure 3. Accepted words complete (of 20) per configuration and hand, 'se' and 'library', against the five-bar
+*Figure 3. Accepted words complete per configuration and hand, 'se' and 'library', against the five-bar
 (SIM; CSV twin `results/platen/fig_accepted.csv`).*
 
 **'se' (20 suffixes).**
 
 {{tab:acc_se}}
 
-**'library' (20 rewrites).**
+**'library' (the rewrite for the 20 writers; ai3's preflight rejects the plan of {{r:accepted.library_rejected_text}}).**
 
 {{tab:acc_library}}
 
@@ -426,27 +469,43 @@ followed naively (SIM; CSV twin `results/platen/fig_accepted_example.csv`).*
 - **Smoothness.** The five-bar's ink on the page reached {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.maximum:2}}
   m/s² (median word peak {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.median_word_peak:2}})
   and a sampled jerk of {{r:fivebar.derivative_check.summary.tip_page.peak_sampled_jerk_m_s3.maximum:0}} m/s³, with
-  {{r:fivebar.derivative_check.summary.tip_page.both_gates_pass}} of 20 words within both limits. On the platen
+  {{r:fivebar.derivative_check.summary.tip_page.both_gates_pass}} of {{r:fivebar.derivative_check.summary.tip_page.words}} words within both limits. On the platen
   (proposed, still hand) the ink reached {{a:se|proposed|still:ink_max_acc_m_s2}} m/s² and
   {{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³ sampled
-  ({{a:se|proposed|still:ink_passes_both}} of 20 within both). After a 30 Hz low-pass it reached
+  ({{a:se|proposed|still:ink_passes_both}} of {{a:se|proposed|still:n}} within both). After a 30 Hz low-pass it reached
   {{a:se|proposed|still:ink_lp30_max_acc_m_s2}} m/s² and {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}} m/s³
-  ({{a:se|proposed|still:ink_lp30_passes_both}} of 20). The page itself (the stage) reached
+  ({{a:se|proposed|still:ink_lp30_passes_both}} of {{a:se|proposed|still:n}}). The page itself (the stage) reached
   {{a:se|proposed|still:page_max_acc_m_s2}} m/s² and {{a:se|proposed|still:page_max_jerk_m_s3}} m/s³ sampled. The
   sampled jerk at 0.5 ms is dominated by the camera noise that the stage follows and by the 0.25 µm encoder steps of the
-  inner loop, not by the word. The 2 m/s² and 300 m/s³ limits are reference-planning assumptions (the five-bar's check
-  says so), not hardware ratings.
+  inner loop, not by the word. The five-bar's own stored traces, put through the same check, reproduce its published
+  sampled peaks ({{r:fivebar.derivative_check_same_definition.max_acc_m_s2:2}} m/s²,
+  {{r:fivebar.derivative_check_same_definition.max_jerk_m_s3:0}} m/s³). After the same 30 Hz low-pass they reach
+  {{r:fivebar.derivative_check_same_definition.lp30_max_acc_m_s2:2}} m/s² and
+  {{r:fivebar.derivative_check_same_definition.lp30_max_jerk_m_s3:0}} m/s³, with
+  {{r:fivebar.derivative_check_same_definition.lp30_passes_both}} of {{r:fivebar.derivative_check_same_definition.n}}
+  words within both limits (CALC on its SIM traces, no hand on its pen). On one definition the two devices are
+  therefore comparable in smoothness. The 2 m/s² and 300 m/s³ limits are reference-planning assumptions (the
+  five-bar's check says so), not hardware ratings.
 
 ### 4.5 What it means
 
-Accepted writing by moving the page does not fight the hand, and with the pen held stiffly it completes the words the
-five-bar completed only with no hand at all. It needs:
-- the pen docked, or held firmly with the hand anchored (REQ-PLT-007);
-- a normal force regulated low;
+Moving the page writes accepted words without pushing the hand. With the pen docked it completes every word
+({{a:se|cradle|cradle:complete}} 'se', {{a:library|cradle|cradle:complete}} 'library'), where the five-bar completed
+{{fb:0}} only with no hand on its pen and {{fb:200}} against a grip.
+
+With the pen in the user's hand, three conditions must all hold:
+- a firm grip, with the hand anchored on the palm rest;
+- a normal force held low;
 - a controller that separates the page's own drag from the hand's motion.
-Severe tremor limits it through the camera's residual against the 0.2 mm supervisor. A pen plotter already writes
-accepted text with no hand at all (AMF-283). The platen's case rests on the user's own pen and hand staying on the
-page, and on the same device cancelling tremor in free writing.
+
+Even then, short strokes with sharp reversals are sometimes refused, and tremor makes refusals common: about half the
+words at the moderate class, nearly all at the severe class. The accepted mode's default should therefore be the pen
+docked in a cradle on the palm rest, with the platen writing the word with the user's own pen. A held pen is an option
+for calm hands (REQ-PLT-007, DEC-088).
+
+A pen plotter already writes accepted text with no hand at all (AMF-283). The platen's case rests on two things: the
+same device also cancels tremor in free writing, once an estimator allows it, and the user keeps their own pen and
+paper.
 
 ## 5. Part (c): sensitivity
 

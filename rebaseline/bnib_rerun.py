@@ -10,6 +10,8 @@ Configurations (one per process; each a runtime configuration of the unmodified 
   B1_dec066        + DEC-066's servo: 40 Hz position loop, 46 Hz inner loop
   revK_linear      + Rev K's nib constants (Km 0.3335 N/sqrt(W) x-axis at the centre, 3.44 g moving mass, wires linear
                    1.56 N/m) as study K's servo check ran them (revk/servo_sim.py variant C)
+  revK_linear_80   the same at study B's 80/100 Hz (study K's variant A): with revK_linear, the servo-bandwidth claim
+                   of study K's check (H-09) under causal contact
   revK_corrected   + corrected loads: Rev K's four 0.10 mm x 26.8 mm C17200 wires with the stated 10,000 N/m anchor, as a
                    nonlinear force law (revk/feasibility.wire_anchor: 11.5 mN at 1.06 mm, 18.2 mN at the 1.26 mm stop),
                    and the ball guide's rolling drag 8.07 mN (thrust_guide at 4 N preload per race, rolling coefficient
@@ -65,6 +67,7 @@ CONFIGS: Dict[str, Dict] = {
     "B1_studyB_exact": {"nib": "B1", "servo": (80.0, 100.0), "loads": "linear", "contact": "historical"},
     "B1_dec066": {"nib": "B1", "servo": (40.0, 46.0), "loads": "linear", "contact": "current"},
     "revK_linear": {"nib": "revK", "servo": (40.0, 46.0), "loads": "linear", "contact": "current"},
+    "revK_linear_80": {"nib": "revK", "servo": (80.0, 100.0), "loads": "linear", "contact": "current"},
     "revK_corrected": {"nib": "revK", "servo": (40.0, 46.0), "loads": "corrected", "contact": "current"},
     "cand15_corrected": {"nib": "cand15", "servo": (40.0, 46.0), "loads": "corrected", "contact": "current"},
 }

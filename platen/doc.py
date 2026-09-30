@@ -84,7 +84,7 @@ def sens_table(res: Dict) -> str:
     names = []
     for k in rows:
         n = k.split("|")[0]
-        if n not in names:
+        if n not in names and n != "e_command_smoothed":
             names.append(n)
     out = []
     for n in names:
@@ -92,12 +92,29 @@ def sens_table(res: Dict) -> str:
         c = rows.get(f"{n}|camera")
         f = rows.get(f"{n}|fixed")
         slip = (c or o or {}).get("paper_slip_max_mm")
+        force = " / ".join(_ci((x or {}).get("force_rms_N"), 2).split(" (")[0] if x else "-" for x in (o, c))
         out.append([SENS_LABEL.get(n, n.replace("_", " ")), _ci((f or {}).get("tip_tremor_mm")) if f else "-",
                     _ci((o or {}).get("tip_tremor_mm")) if o else "-", _ci((o or {}).get("words_via_curve"), 1) if o else "-",
                     _ci((c or {}).get("tip_tremor_mm")) if c else "-", _ci((c or {}).get("words_via_curve"), 1) if c else "-",
-                    _ci(slip, 3) if slip else "-"])
+                    force, _ci(slip, 3) if slip else "-"])
     return _t(["Variant", "Fixed page (own reference), mm", "Perfect knowledge: tip, mm", "words via curve",
-               "Camera + predictor: tip, mm", "words via curve", "Paper slip max, mm"], out)
+               "Camera + predictor: tip, mm", "words via curve", "Fine force RMS, N (perfect knowledge / camera)",
+               "Paper slip max, mm"], out)
+
+
+def ecmd_table(res: Dict) -> str:
+    """Study E's frozen design on the platen: the command as in part (a) and smoothed (part c)."""
+    rows = res["sensitivity"].get("rows") or {}
+    out = []
+    for k, lab in (("e_command_smoothed|E_chosen_raw", "as in part (a): 500 Hz outputs extrapolated 2.7 ms"),
+                   ("e_command_smoothed|E_chosen_smooth", "smoothed: 0.75 ms more prediction, 2 ms moving average")):
+        e = rows.get(k)
+        if not e:
+            continue
+        out.append([lab, _ci(e.get("tip_tremor_mm")), _ci(e.get("words_via_curve"), 1), _ci(e.get("force_rms_N")),
+                    _ci(e.get("force_p99_N")), _ci(e.get("copper_W_per_axis_rms"), 2)])
+    return _t(["E's frozen design on the platen", "Tip tremor, mm", "Words via F's curve (CALC)", "Fine force RMS, N",
+               "Fine force p99, N", "Copper loss per axis, W (CALC)"], out)
 
 
 HANDS = ["still", "drift", "mod_PD", "mod_ET", "sev_PD", "sev_ET"]
@@ -222,7 +239,7 @@ def _b(b: Optional[Dict], nd: int, ci: bool) -> str:
 def _tables() -> Dict:
     return {"tremor_severe": lambda r: tremor_table(r, "all/severe"), "tremor_pd": lambda r: tremor_table(r, "PD/severe"),
             "tremor_et": lambda r: tremor_table(r, "ET/severe"), "tremor_moderate": lambda r: tremor_table(r, "all/moderate"),
-            "stage": stage_table, "clean": clean_table, "sens": sens_table,
+            "stage": stage_table, "clean": clean_table, "sens": sens_table, "ecmd": ecmd_table,
             "acc_se": lambda r: accepted_table(r, "se"), "acc_library": lambda r: accepted_table(r, "library"),
             "acc_sens": accepted_sens_table, "fivebar": fivebar_table, "design": design_tables,
             "comparison": comparison_table, "proposed": _proposed, "ledger": _ledger, "timings": _timings}

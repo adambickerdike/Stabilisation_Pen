@@ -524,6 +524,7 @@ def aggregate(quick: bool) -> Dict:
     for p in sorted(ds.glob("se_*.json")):
         c = CM.jload(p)
         out["sensitivity"][f"{c['variant']}|{c['hand']}"] = summarize(c["rows"])
+    out["refusal_context"] = refusal_context(quick)
     ext = {}
     for text, rr in references(quick).items():
         if not rr:
@@ -535,7 +536,75 @@ def aggregate(quick: bool) -> Dict:
                      "max_duration_s": float(max(float(np.asarray(r["t"])[-1]) for r in rr)),
                      "median_duration_s": float(np.median([float(np.asarray(r["t"])[-1]) for r in rr]))}
     out["reference_extent"] = ext
+    if "library" in P["texts"]:
+        out["library_rejected"] = [{"writer": r["writer"], "reason": r["rejected"]}
+                                   for r in library_references(quick)[:P["n_writers"]] if "t" not in r]
+        out["library_rejected_text"] = ", ".join(f"{r['writer']} ({r['reason']})" for r in out["library_rejected"]) \
+            or "none"
     return out
+
+
+def refusal_context(quick: bool) -> Dict:
+    """Where the refusals happen: the reference phase at the refusal, the time since that phase began and the phase's
+    length (CALC on the SIM rows): refusals in short strokes (< 200 ms: dots and hooks) against long ones."""
+    P = plan(quick)
+    refs = references(quick)
+    d = CM.cache_dir(quick, "accepted")
+    out = {}
+    for text in P["texts"]:
+        byw = {r["writer"]: r for r in refs.get(text, [])}
+        for cfg, hk in P["conditions"]:
+            c = CM.jload(d / f"{text}_{cfg}_{hk}.json")
+            if not c:
+                continue
+            ev = []
+            for r in c["rows"]:
+                if not r["refused"] or r["writer"] not in byw:
+                    continue
+                ref = byw[r["writer"]]
+                t, ph = np.asarray(ref["t"], float), np.asarray(ref["phase"]).astype(str)
+                tr = float(r["refusal_time_s"]) - PRE_S
+                i = int(np.clip(np.searchsorted(t, tr, side="right") - 1, 0, len(t) - 1))
+                j, k = i, i
+                while j > 0 and ph[j - 1] == ph[i]:
+                    j -= 1
+                while k < len(ph) - 1 and ph[k + 1] == ph[i]:
+                    k += 1
+                ev.append({"writer": r["writer"], "phase": str(ph[i]), "ms_into_phase": (tr - t[j]) * 1e3,
+                           "phase_ms": (t[k] - t[j]) * 1e3})
+            if ev:
+                short = [e for e in ev if e["phase"] == "ink" and e["phase_ms"] < 200.0]
+                out[f"{text}|{cfg}|{hk}"] = {"refusals": len(ev), "in_short_strokes": len(short),
+                                             "median_ms_into_phase": float(np.median([e["ms_into_phase"] for e in ev])),
+                                             "events": ev}
+    return out
+
+
+def fivebar_lp30() -> Optional[Dict]:
+    """The five-bar's own stored traces (read-only: the 20 unloaded feedforward words) through this study's derivative
+    check: sampled at its 0.5 ms step (reproducing the published check) and after the same 30 Hz low-pass as the
+    platen's secondary measure, so that both devices are compared on one definition."""
+    folder = CM.GROUNDED_BATCH.parent / "grounded_words"
+    files = sorted(folder.glob("*_0N_m_ff.npz"))
+    if not files:
+        return None
+    rows = []
+    for f in files:
+        with np.load(f) as z:
+            t, xy = np.asarray(z["t"], float), np.asarray(z["actual_xy"], float)
+        dt = float(t[1] - t[0])
+        _, a, j = _derivs(xy, dt)
+        _, al, jl = _derivs(_lp(xy, 1.0 / dt), dt)
+        rows.append({"file": f.name, "max_acc_m_s2": float(a.max()), "max_jerk_m_s3": float(j.max()),
+                     "lp30_max_acc_m_s2": float(al.max()), "lp30_max_jerk_m_s3": float(jl.max()),
+                     "passes_both": bool(a.max() <= ACC_LIM and j.max() <= JERK_LIM),
+                     "lp30_passes_both": bool(al.max() <= ACC_LIM and jl.max() <= JERK_LIM)})
+    return {"label": "CALC on the five-bar's stored SIMULATION traces (tip on the page, actual_xy)", "n": len(rows),
+            "max_acc_m_s2": max(r["max_acc_m_s2"] for r in rows), "max_jerk_m_s3": max(r["max_jerk_m_s3"] for r in rows),
+            "lp30_max_acc_m_s2": max(r["lp30_max_acc_m_s2"] for r in rows),
+            "lp30_max_jerk_m_s3": max(r["lp30_max_jerk_m_s3"] for r in rows),
+            "passes_both": int(sum(r["passes_both"] for r in rows)),
+            "lp30_passes_both": int(sum(r["lp30_passes_both"] for r in rows)), "rows": rows}
 
 
 def fivebar() -> Dict:
@@ -544,6 +613,7 @@ def fivebar() -> Dict:
     dv = CM.jload(CM.GROUNDED_DERIV) or {}
     return {"summary": b.get("summary"), "criterion": b.get("declared_engineering_criterion"),
             "derivative_check": {k: dv.get(k) for k in list(dv.keys())[:12]} if dv else None,
+            "derivative_check_same_definition": fivebar_lp30(),
             "source": [str(CM.GROUNDED_BATCH.relative_to(CM.REPO_ROOT)), str(CM.GROUNDED_DERIV.relative_to(CM.REPO_ROOT))],
             "sha256": {"grounded_batch": CM.sha256_file(CM.GROUNDED_BATCH),
                        "grounded_derivative_check": CM.sha256_file(CM.GROUNDED_DERIV)}}

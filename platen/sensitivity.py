@@ -11,6 +11,12 @@ HW1's writer convention, a rigid sheet, the ordinary 12 g pen.  Two drives per v
 Measure: study R's tip tremor (sqrt(2) x RMS of the major axis, f0 +- 2 Hz, contact), mapped to words of 10 through
 study F's frozen tuning curve (CALCULATION); writer-bootstrap intervals.
 
+Estimator command smoothing: ai2's TCN outputs at 500 Hz; extrapolated over the platen's extra 2.7 ms of lag they
+form a 2 ms sawtooth that the fine stage follows with large forces (part a's force budget).  The variant
+'e_command_smoothed' runs study E's frozen design twice on the same streams: as in part (a) ('E_chosen_raw', which
+reproduces part a's row) and with a causal 4-tick (2 ms) moving average after predicting 0.75 ms further (the average's
+delay), which turns the sawtooth into a continuous line ('E_chosen_smooth').
+
 Page slip under the hand: the sheet becomes a 3 g body held by a LuGre hold-down (normal force N_hold, mu 0.4) and,
 where the hand rests on the paper (no palm rest), loaded by the hand's skin friction (N_hand, mu 0.5), whose reaction
 also drags the hand.  Pen tilt: the camera marker sits above the ball, so the pen's rotation reads as motion: the
@@ -40,6 +46,7 @@ SLIPS = {   # name: (N_hold N, N_hand N)
     "palm_rest_clip_only": (0.5, 0.0),
 }
 PEN_MASSES_G = (20.0,)
+FIRM_HAND = {"K_grip": 1150.0, "k_arm": 2000.0, "b_arm": 20.0}   # part (b)'s firm grip on the palm rest (ASSUMPTION)
 
 
 def variants(quick: bool) -> List[Dict]:
@@ -69,7 +76,21 @@ def variants(quick: bool) -> List[Dict]:
         v.append({"name": f"pen_{mg:g}g", "pen_mass": mg * 1e-3, "drives": ["oracle", "camera"]})
     v.append({"name": "belt_single_stage", "variant": "belt_single", "drives": ["oracle", "camera"]})
     v.append({"name": "ideal_inner_loop", "stage": {"enc_res": 0.0, "vel_filter_hz": 0.0}, "drives": ["oracle"]})
+    v.append({"name": "e_command_smoothed", "drives": ["E_chosen_raw", "E_chosen_smooth"]})
+    v.append({"name": "friction_intended_firm_hand", "writer": "intended", "hand": dict(FIRM_HAND),
+              "drives": ["oracle", "camera"]})
     return v
+
+
+def moving_average(d: np.ndarray, n: int = 4) -> np.ndarray:
+    """Causal n-tick moving average (delay (n - 1) / 2 ticks); removes a sawtooth of period n ticks."""
+    d = np.asarray(d, float)
+    c = np.cumsum(np.vstack([np.zeros((1, d.shape[1])), d]), axis=0)
+    out = np.empty_like(d)
+    k = np.arange(len(d))
+    lo = np.maximum(k + 1 - n, 0)
+    out[:] = (c[k + 1] - c[lo]) / (k + 1 - lo)[:, None]
+    return np.ascontiguousarray(out)
 
 
 def _stage(var: Dict):
@@ -133,34 +154,36 @@ def run_note(i: int, quick: bool = False) -> List[str]:
         dev = prev["devices"]
         refs: Dict = {}
 
-        def reference(writer: str, pen_mass: float):
-            """(scn with tremor, clean tip per tick, fixed-page run with tremor, the oracle d) for a pen/convention."""
-            key = (writer, pen_mass)
+        def reference(writer: str, pen_mass: float, hand_over: Optional[Dict] = None):
+            """(scn with tremor, clean run, fixed-page run with tremor, intended velocity, integrator pen mass, hand)
+            for a pen, a writer convention and a hand (a changed pen or hand gets its own adapted hand path)."""
+            key = (writer, pen_mass, tuple(sorted((hand_over or {}).items())))
             if key in refs:
                 return refs[key]
             pen = dataclasses.replace(PR.ordinary_pen(), mass=pen_mass)
-            if abs(pen_mass - 0.012) < 1e-9:
+            hand = PR.Hand.from_config(**hand_over) if hand_over else note.hand
+            if abs(pen_mass - 0.012) < 1e-9 and not hand_over:
                 scn_n, scn_c = note.scenario("none", dr.d), note.scenario("none", None)
             else:
-                hp = PL.adapted_path(note.scn0.intended, note.scn0.dt, pen, note.hand)
+                hp = PL.adapted_path(note.scn0.intended, note.scn0.dt, pen, hand)
                 scn_n, scn_c = PL.with_hand_path(note.scn0, hp, dr.d), PL.with_hand_path(note.scn0, hp, None)
             m_int = pen_mass + 1e-6
             vint = np.gradient(np.asarray(scn_c.intended), scn_c.dt, axis=0)
-            held = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=note.hand, writing=PR.Writing(),
+            held = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
                           pen_mass=m_int, writer=writer, vint=vint, stage=_stage({}),
                           cmd_ext=None)
-            clean = PP.run(scn_c.pref, scn_c.vref, scn_c.down, scn_c.dt, hand=note.hand, writing=PR.Writing(),
+            clean = PP.run(scn_c.pref, scn_c.vref, scn_c.down, scn_c.dt, hand=hand, writing=PR.Writing(),
                            pen_mass=m_int, writer=writer, vint=vint, stage=_stage({}))
-            refs[key] = (scn_n, clean, held, vint, m_int)
+            refs[key] = (scn_n, clean, held, vint, m_int, hand)
             return refs[key]
-        base_scn, base_clean, base_held, _, _ = reference("hw1", 0.012)
+        base_scn, base_clean, base_held, _, _, _ = reference("hw1", 0.012)
         dev["platen_off|fixed"] = {"tip_tremor_mm": RC.measures(note.written, base_held.as_hw1(), base_scn,
                                                                  note.pens["none"], f0, read=False)["tip_tremor_mm"]}
         for v in todo:
             writer = v.get("writer", "hw1")
             pm = v.get("pen_mass", 0.012)
-            scn_n, clean, held, vint, m_int = reference(writer, pm)
-            if writer != "hw1" or pm != 0.012:
+            scn_n, clean, held, vint, m_int, hand = reference(writer, pm, v.get("hand"))
+            if writer != "hw1" or pm != 0.012 or v.get("hand"):
                 dev[f"{v['name']}|fixed"] = {"tip_tremor_mm": RC.measures(
                     note.written, held.as_hw1(), scn_n, note.pens["none"], f0, read=False)["tip_tremor_mm"]}
             st = _stage(v)
@@ -171,16 +194,30 @@ def run_note(i: int, quick: bool = False) -> List[str]:
                 k = f"{v['name']}|{drive}"
                 if k in dev:
                     continue
-                if drive == "oracle":
+                if drive.startswith("E_chosen"):
+                    if "e_st" not in refs:
+                        from aiprior import core as CO
+                        r_n = PL.run(scn_n, note.pens["none"], hand)
+                        refs["e_st"] = CO.streams_for(r_n, scn_n, note.pens["none"], note.trk,
+                                                      CM.h(spec["id"], "platen-streams") % (2 ** 31))
+                        del r_n
+                    des = T.designs()["E_chosen"]
+                    if drive.endswith("smooth"):
+                        cmd = moving_average(T.e_command(des, refs["e_st"], RC.CaseLike(spec, None), g + 0.75e-3), 4)
+                    else:
+                        cmd = T.e_command(des, refs["e_st"], RC.CaseLike(spec, None), g)
+                    pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
+                                pen_mass=m_int, writer=writer, vint=vint, stage=st, paper=paper, cmd_ext=cmd)
+                elif drive == "oracle":
                     cmd = T._oracle_ticks(held, clean, n_ticks, 5e-4, g)
-                    pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=note.hand, writing=PR.Writing(),
+                    pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
                                 pen_mass=m_int, writer=writer, vint=vint, stage=st, paper=paper, cmd_ext=cmd)
                 else:
                     c = _cam(v)
                     ctl = PP.Control(mode=1, cam_hz=c["cam_hz"], cam_latency=c["cam_latency"], cam_noise=c["noise"],
                                      kappa=v.get("kappa", 0.0), ar_coef=np.asarray(preds[v["name"]]["coef"]),
                                      horizon=g)
-                    pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=note.hand, writing=PR.Writing(),
+                    pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
                                 pen_mass=m_int, writer=writer, vint=vint, stage=st, paper=paper, ctl=ctl, trem=dr.d,
                                 tgt_tick=T._clean_ticks(clean, n_ticks, 5e-4),
                                 seed=CM.h(spec["id"], "cam", v["name"]) % (2 ** 31))
@@ -188,7 +225,9 @@ def run_note(i: int, quick: bool = False) -> List[str]:
                                                   read=False)["tip_tremor_mm"]}
                 m.update(T.stage_stats(pr, pr.contact > 0.5))
                 if paper is not None:
-                    m["paper_slip_max_mm"] = float(np.max(np.linalg.norm(pr.xy("paperx") - pr.page, axis=1)) * 1e3)
+                    slip = np.linalg.norm(pr.xy("paperx") - pr.page, axis=1) * 1e3
+                    m["paper_slip_max_mm"] = float(np.max(slip))
+                    m["paper_slip_final_mm"] = float(slip[-1])
                 dev[k] = m
                 del pr
         CM.jdump(p, {"split": "tuning", "writer": note.written.real["writer"], "note": i, "kind": kind,
@@ -214,7 +253,8 @@ def aggregate(quick: bool) -> Dict:
         row = {"tip_tremor_mm": CM.boot(pw),
                "words_via_curve": CM.boot(CM.per_writer(cases, lambda c: CM.words_via_curve(
                    (c["devices"].get(k) or {}).get("tip_tremor_mm"), fc["p"]) if k in c["devices"] else None))}
-        for m in ("at_limit_share", "travel_p99_mm", "force_rms_N", "paper_slip_max_mm"):
+        for m in ("at_limit_share", "travel_p99_mm", "force_rms_N", "force_p99_N", "copper_W_per_axis_rms",
+                  "paper_slip_max_mm"):
             b = CM.per_writer(cases, lambda c, m=m: (c["devices"].get(k) or {}).get(m))
             if b:
                 row[m] = CM.boot(b)

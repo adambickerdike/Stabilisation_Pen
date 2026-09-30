@@ -27,7 +27,8 @@ def _plt():
                          "axes.labelcolor": INK2, "xtick.color": INK2, "ytick.color": INK2, "axes.titlecolor": INK,
                          "figure.facecolor": SURFACE, "axes.facecolor": SURFACE, "savefig.facecolor": SURFACE,
                          "axes.grid": True, "grid.color": GRID, "grid.linewidth": 0.8, "grid.linestyle": "-",
-                         "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False})
+                         "axes.spines.top": False, "axes.spines.right": False, "legend.frameon": False,
+                         "axes.axisbelow": True})
     return plt
 
 
@@ -87,20 +88,21 @@ def fig_tremor(tr: Dict, f_curve: Dict, out: Path, tag: str = "all/severe") -> O
     axes[0].set_yticks(y)
     axes[0].set_yticklabels([r[1] for r in rows])
     r2, r80 = f_curve["r_plus2_mm"], f_curve["r_80_mm"]
-    for x, txt in ((r2, f"+2 words (F, tuning) {r2:.2f} mm"), (r80, f"near-normal {r80:.2f} mm")):
+    for x, txt, yy, va in ((r2, f" +2 words (F, tuning) {r2:.2f} mm", y[0] + 0.55, "bottom"),
+                           (r80, f" near-normal (F) {r80:.2f} mm", y[-1] - 0.55, "top")):
         axes[0].axvline(x, color=MUTED, lw=1)
-        axes[0].text(x, y[0] + 0.7, txt, color=INK2, fontsize=7.5, ha="center", va="bottom")
-    axes[0].set_xlabel("Tremor left at the tip, mm (study R's measure; mean over writers, 95 % interval)")
+        axes[0].text(x, yy, txt, color=INK2, fontsize=7.5, ha="left", va=va)
+    axes[0].set_xlabel("Tremor left at the tip, mm (R's measure; writer mean, 95 % interval)")
     axes[0].set_xlim(0, 2.0)
     w_ord = (tab.get("none") or {}).get("words_read") or {}
     if w_ord.get("mean") is not None:
         axes[1].axvline(w_ord["mean"] + 2, color=MUTED, lw=1)
-        axes[1].text(w_ord["mean"] + 2, y[0] + 0.7, "ordinary pen + 2 words (DEC-055)", color=INK2, fontsize=7.5,
-                     ha="center", va="bottom")
-    axes[1].set_xlabel("Words read out of 10 (filled: read by study R's reader; hollow: via F's frozen curve)")
+        axes[1].text(w_ord["mean"] + 2, y[0] + 0.55, " ordinary pen + 2 words (DEC-055)", color=INK2, fontsize=7.5,
+                     ha="left", va="bottom")
+    axes[1].set_xlabel("Words of 10 (filled: read by R's reader; hollow: F's curve)")
     axes[1].set_xlim(0, 10)
     for ax in axes:
-        ax.set_ylim(-0.8, len(rows) + 0.2)
+        ax.set_ylim(-1.3, len(rows) + 0.2)
     from matplotlib.lines import Line2D
     h = [Line2D([], [], color=FAMILY[f], marker="o", lw=2, label=l) for f, l in
          (("ordinary", "ordinary pen"), ("nib", "handheld nib (Rev J nose, travel cut)"), ("platen", "platen"))]
@@ -141,9 +143,9 @@ def fig_reach(tr: Dict, sens: Dict, f_curve: Dict, out: Path) -> Optional[Path]:
             ax.plot(xs, ms, "-", color=col, lw=2, label=lab)
             ax.vlines(xs, lo, hi, color=col, lw=2)
             ax.plot(xs, ms, "o", color=col, ms=7, mec=SURFACE, mew=1.5)
-    for yv, txt in ((f_curve["r_plus2_mm"], "+2 words (F)"), (f_curve["r_80_mm"], "near-normal")):
+    for yv, txt in ((f_curve["r_plus2_mm"], "+2 words (F)"), (f_curve["r_80_mm"], "near-normal (F)")):
         ax.axhline(yv, color=MUTED, lw=1)
-        ax.text(6.35, yv, txt, color=INK2, fontsize=8, va="center")
+        ax.text(7.35, yv + 0.01, txt, color=INK2, fontsize=8, va="bottom", ha="right")
     ax.set_xlabel("Usable travel (radius), mm")
     ax.set_ylabel("Tremor left at the tip, mm (perfect knowledge)")
     ax.set_xlim(0.5, 7.4)
@@ -159,43 +161,56 @@ def fig_reach(tr: Dict, sens: Dict, f_curve: Dict, out: Path) -> Optional[Path]:
 
 
 def fig_sensing(sens: Dict, f_curve: Dict, out: Path) -> Optional[Path]:
+    """Tremor left against the camera's latency and noise (perfect separation) and the fine stage's bandwidth
+    (perfect separation with the camera, and perfect knowledge)."""
     rows = (sens or {}).get("rows") or {}
     if not rows:
         return None
     lat = [(2, "latency_2ms"), (4, "latency_4ms"), (6, "baseline"), (10, "latency_10ms"), (15, "latency_15ms"),
            (25, "latency_25ms")]
     noi = [(0, "noise_0um"), (5, "noise_5um"), (15, "baseline"), (30, "noise_30um"), (60, "noise_60um")]
+    bwd = [(15, "bandwidth_15Hz"), (25, "bandwidth_25Hz"), (40, "baseline"), (80, "bandwidth_80Hz")]
     plt = _plt()
-    fig, axes = plt.subplots(1, 2, figsize=(10.5, 4.0), sharey=True, gridspec_kw={"wspace": 0.08})
+    fig, axes = plt.subplots(1, 3, figsize=(13.0, 4.2), sharey=True, gridspec_kw={"wspace": 0.08})
     csv_rows = []
-    for ax, pts, xl, name in ((axes[0], lat, "Camera latency, ms (250 Hz, 15 um)", "latency"),
-                              (axes[1], noi, "Camera noise, um RMS per axis (250 Hz, 6 ms)", "noise")):
-        xs, ms, lo, hi = [], [], [], []
-        for x, key in pts:
-            c = _ci((rows.get(f"{key}|camera") or {}).get("tip_tremor_mm"))
-            if c:
-                xs.append(x); ms.append(c[0]); lo.append(c[1]); hi.append(c[2])
-                csv_rows.append([name, x, *c])
-        ax.plot(xs, ms, "-", color=FAMILY["platen"], lw=2)
-        ax.vlines(xs, lo, hi, color=FAMILY["platen"], lw=2)
-        ax.plot(xs, ms, "o", color=FAMILY["platen"], ms=7, mec=SURFACE, mew=1.5)
-        orc = _ci((rows.get("baseline|oracle") or {}).get("tip_tremor_mm"))
-        if orc:
-            ax.axhline(orc[0], color=INK2, lw=1)
-            ax.text(xs[-1] if xs else 0, orc[0], " perfect knowledge", color=INK2, fontsize=7.5, va="bottom", ha="right")
-        for yv, txt in ((f_curve["r_plus2_mm"], "+2 words (F)"), (f_curve["r_80_mm"], "near-normal")):
+    panels = ((axes[0], lat, "Camera latency, ms (250 Hz, 15 um)", "latency", ("camera",)),
+              (axes[1], noi, "Camera noise, um RMS per axis (250 Hz, 6 ms)", "noise", ("camera",)),
+              (axes[2], bwd, "Fine-stage bandwidth, Hz (camera 250 Hz, 6 ms, 15 um)", "bandwidth", ("camera", "oracle")))
+    for ax, pts, xl, name, drives in panels:
+        for drive in drives:
+            col = FAMILY["platen"] if drive == "camera" else SLOT[3]
+            xs, ms, lo, hi = [], [], [], []
+            for x, key in pts:
+                c = _ci((rows.get(f"{key}|{drive}") or {}).get("tip_tremor_mm"))
+                if c:
+                    xs.append(x); ms.append(c[0]); lo.append(c[1]); hi.append(c[2])
+                    csv_rows.append([name, drive, x, *c])
+            if not xs:
+                continue
+            lab = "camera + predictor (perfect separation)" if drive == "camera" else "perfect knowledge"
+            ax.plot(xs, ms, "-", color=col, lw=2, label=lab if name == "bandwidth" else None)
+            ax.vlines(xs, lo, hi, color=col, lw=2)
+            ax.plot(xs, ms, "o", color=col, ms=7, mec=SURFACE, mew=1.5)
+        if name != "bandwidth":
+            orc = _ci((rows.get("baseline|oracle") or {}).get("tip_tremor_mm"))
+            if orc:
+                ax.axhline(orc[0], color=INK2, lw=1)
+                ax.text(0.99, orc[0], "perfect knowledge ", color=INK2, fontsize=7.5, va="bottom", ha="right",
+                        transform=ax.get_yaxis_transform())
+        for yv, txt in ((f_curve["r_plus2_mm"], " +2 words (F)"), (f_curve["r_80_mm"], " near-normal (F)")):
             ax.axhline(yv, color=MUTED, lw=1)
-            ax.text(0, yv, txt, color=INK2, fontsize=7.5, va="bottom")
+            ax.text(0.01, yv, txt, color=INK2, fontsize=7.5, va="bottom", ha="left", transform=ax.get_yaxis_transform())
         ax.set_xlabel(xl)
+    axes[2].legend(loc="upper right", fontsize=7.5)
     axes[0].set_ylabel("Tremor left at the tip, mm")
     axes[0].set_ylim(0, 1.0)
-    fig.suptitle("Sensing: the platen told the clean path, sensing the tip with a camera-class sensor (SIMULATION, "
-                 "tuning split, severe)", fontsize=10, x=0.02, ha="left", color=INK)
-    fig.subplots_adjust(left=0.08, right=0.98, top=0.86, bottom=0.14)
+    fig.suptitle("Sensing and bandwidth: severe real tremor, tuning split (SIMULATION; each predictor refitted for its "
+                 "setting)", fontsize=10, x=0.02, ha="left", color=INK)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.86, bottom=0.14)
     p = out / "fig_sensing.png"
     fig.savefig(p, dpi=150)
     plt.close(fig)
-    _csv(p.with_suffix(".csv"), ["sweep", "x", "tip_mm", "tip_lo", "tip_hi"], csv_rows)
+    _csv(p.with_suffix(".csv"), ["sweep", "drive", "x", "tip_mm", "tip_lo", "tip_hi"], csv_rows)
     return p
 
 
@@ -228,13 +243,17 @@ def fig_accepted(acc: Dict, five: Dict, out: Path) -> Optional[Path]:
                     csv_rows.append([text, cfg, hk, s["engineering_complete"], s["n"], s["refused"],
                                      s["median_coverage"], s["median_rms_mm"], s["ink_passes_both"],
                                      s["ink_lp30_passes_both"]])
-            ax.bar(x + (ci - 1.5) * (bw + 0.012), vals, width=bw, color=SLOT[ci], label=lab if text == texts[0] else None)
+            xb = x + (ci - 1.5) * (bw + 0.012)
+            ax.bar(xb, vals, width=bw, color=SLOT[ci], label=lab if text == texts[0] else None)
+            for xi, v in zip(xb, vals):              # a zero is a result: mark it
+                if v == 0:
+                    ax.text(xi, 0.15, "0", ha="center", va="bottom", fontsize=6.5, color=INK2)
         cr = summ.get(f"{text}|cradle|cradle")
         if cr:
             csv_rows.append([text, "cradle", "cradle", cr["engineering_complete"], cr["n"], cr["refused"],
                              cr["median_coverage"], cr["median_rms_mm"], cr["ink_passes_both"], cr["ink_lp30_passes_both"]])
-            ax.text(len(HAND_ORDER) - 0.5, cr["n"] + 1.3, f"pen in a cradle: {cr['engineering_complete']}/{cr['n']}",
-                    ha="right", fontsize=8, color=INK2)
+            ax.text(0.01, 0.98, f"pen in a cradle (still): {cr['engineering_complete']}/{cr['n']}",
+                    transform=ax.transAxes, ha="left", va="top", fontsize=8, color=INK2)
         n = max((s["n"] for k, s in summ.items() if k.startswith(text + "|")), default=20)
         ax.set_xticks(x)
         ax.set_xticklabels([h[1] for h in HAND_ORDER], rotation=20, ha="right")
@@ -250,14 +269,17 @@ def fig_accepted(acc: Dict, five: Dict, out: Path) -> Optional[Path]:
         vals.append(r["engineering_complete"])
         csv_rows.append(["se", "fivebar", labs[-1], r["engineering_complete"], r["words"], r["refused"],
                          r["median_ink_coverage"], r["median_actual_ink_error_mm"], None, None])
-    ax.bar(np.arange(len(vals)), vals, width=0.5, color=SLOT[4])
+    ax.bar(np.arange(len(vals)), vals, width=0.5, color=MUTED)       # the published comparator, in neutral
+    for xi, v in enumerate(vals):
+        if v == 0:
+            ax.text(xi, 0.15, "0", ha="center", va="bottom", fontsize=6.5, color=INK2)
     ax.set_xticks(np.arange(len(vals)))
     ax.set_xticklabels(labs, rotation=20, ha="right")
     ax.set_ylim(0, 23)
     ax.set_title("grounded five-bar, 'se'\n(no tremor; published)", fontsize=9.5, loc="left")
     fig.legend(loc="lower center", ncol=2, fontsize=8, bbox_to_anchor=(0.45, -0.01))
-    fig.suptitle("Accepted writing by moving the page under a held pen (SIMULATION; UJI references of the "
-                 "independent pass)", fontsize=10.5, x=0.02, ha="left", color=INK)
+    fig.suptitle("Accepted writing by moving the page under a held pen (SIMULATION)", fontsize=10.5, x=0.02,
+                 ha="left", color=INK)
     fig.subplots_adjust(left=0.06, right=0.99, top=0.86, bottom=0.34)
     p = out / "fig_accepted.png"
     fig.savefig(p, dpi=150)
@@ -272,8 +294,8 @@ def fig_accepted_example(traces: List[Dict], out: Path) -> Optional[Path]:
     if not traces:
         return None
     plt = _plt()
-    fig, axes = plt.subplots(2, len(traces), figsize=(4.2 * len(traces), 6.6), squeeze=False,
-                             gridspec_kw={"height_ratios": [1.2, 1.0], "hspace": 0.45, "wspace": 0.25})
+    fig, axes = plt.subplots(2, len(traces), figsize=(4.2 * len(traces), 7.0), squeeze=False,
+                             gridspec_kw={"height_ratios": [1.2, 1.0], "hspace": 0.5, "wspace": 0.25})
     csv_rows = []
     for j, tr in enumerate(traces):
         ax = axes[0, j]
@@ -297,11 +319,12 @@ def fig_accepted_example(traces: List[Dict], out: Path) -> Optional[Path]:
             bx.legend(fontsize=7.5, loc="upper right")
         k = np.arange(0, len(t), 20)
         for i in k:
-            csv_rows.append([tr["title"], t[i], ink[i, 0], ink[i, 1], ref[i, 0], ref[i, 1], int(con[i]), int(req[i]),
+            csv_rows.append([tr["title"].replace("\n", " "), t[i], ink[i, 0], ink[i, 1], ref[i, 0], ref[i, 1],
+                             int(con[i]), int(req[i]),
                              page[i, 0], page[i, 1], tip[i, 0], tip[i, 1]])
     fig.suptitle("Accepted 'se' written by the platen: example runs (SIMULATION)", fontsize=10.5, x=0.02, ha="left",
                  color=INK)
-    fig.subplots_adjust(left=0.07, right=0.98, top=0.9, bottom=0.08)
+    fig.subplots_adjust(left=0.07, right=0.98, top=0.86, bottom=0.08)
     p = out / "fig_accepted_example.png"
     fig.savefig(p, dpi=150)
     plt.close(fig)

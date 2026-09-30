@@ -45,7 +45,7 @@ STAGES: Dict[str, List[List[str]]] = {
     "bnib_cand15": [["-m", "rebaseline.bnib_rerun", "--config", "cand15_corrected"]],
     "bnib_ladder": [["-m", "rebaseline.bnib_rerun", "--config", c, "--writers", w] for c, w in
                     (("B1_studyB_now", "0,1"), ("B1_dec066", "0,1"), ("revK_linear", "0,1"),
-                     ("B1_studyB_exact", "0"))],
+                     ("revK_linear_80", "0,1"), ("B1_studyB_exact", "0"))],
     "reach": [["-m", "rebaseline.reach_b1", "--run"]],
     "page_re": [["-m", "rebaseline.page_v2", "--re"]],
     "page_gap": [["-m", "rebaseline.page_v2", "--gap"], ["-m", "rebaseline.page_v2", "--sensing"]],
