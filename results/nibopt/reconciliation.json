@@ -1,0 +1,4304 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on PROPOSED DESIGNS (study N, round 4: the balanced nib's reach, force and heat); inputs from study K (revk/, results/revK/), study B (bnib/, results/bnib/), study F (results/readable/), the independent engineering pass (revk/feasibility.py, revk/improve.py, revk/compact.py, results/improvement/mechanics/), datasheets (MANUFACTURER) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-30T13:21:58+00:00",
+  "git_revision": "4e87eb7-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --reuse --procs 2",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": {
+   "nsga_main": 7,
+   "nsga_reach2": 11,
+   "nsga_reach15": 13,
+   "refine": 3,
+   "severe_process": 11,
+   "K_residual": 5
+  },
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "nibopt",
+  "version": "nibopt-0.1",
+  "script": "nibopt/run.py",
+  "doc": "docs/nib_optimisation.md",
+  "quick": false,
+  "reuse": true,
+  "procs": 2,
+  "read_only_inputs_sha256_16": {
+   "revk/feasibility.py": "5657e8896722ce0e",
+   "revk/improve.py": "2fbebc6b914b76b5",
+   "revk/compact.py": "c7660e96ce565152",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/counterface.py": "befe386459c3c7e3",
+   "revk/frontend.py": "e61afede01491f1f",
+   "revk/tolerance.py": "25a202e322456ce6",
+   "bnib/loads.py": "7778deb93b562253",
+   "bnib/contact.py": "8ac04bfcbdbf325e",
+   "bnib/balance.py": "485396a48fcb4902",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "nose2/magnetics.py": "8c766896e233edb1",
+   "results/revK/revK.json": "0eb0a21f8fbd593e",
+   "results/revK/layout.json": "8a4806648b6035b7",
+   "results/revK/budgets.json": "2cf2a26f5f15c756",
+   "results/improvement/mechanics/mechanics_study.json": "a5cdf4385405f233",
+   "results/improvement/mechanics/compact_20mm.json": "72e04c2d91f3e7ff",
+   "results/readable/readable.json": "99a24aeb97d38ef6",
+   "results/bnib/bnib.json": "c68d41f2837ac849"
+  },
+  "nibopt_sources_sha256_16": {
+   "nibopt/__init__.py": "6caf5e14fc01634e",
+   "nibopt/budgets.py": "a091069c05479338",
+   "nibopt/candidates.py": "99ee414a1893e3c7",
+   "nibopt/design.py": "31159bd5ac7c6df1",
+   "nibopt/doc_tables.py": "2c2f0a3c5082417e",
+   "nibopt/duty.py": "4700b1065ace4136",
+   "nibopt/evaluate.py": "08fe3268c71646ed",
+   "nibopt/evidence.py": "eedbb63236316531",
+   "nibopt/figures.py": "e9fbff8c0c9ab4ef",
+   "nibopt/levers.py": "26b44fc4cc610621",
+   "nibopt/magnet.py": "55922451b688d368",
+   "nibopt/optimise.py": "08325c16438befb3",
+   "nibopt/params.py": "5ff1f25b5b90fd1c",
+   "nibopt/pen.py": "d3b8ff208520a711",
+   "nibopt/reconcile.py": "42dab584627da830",
+   "nibopt/run.py": "3c84abb78a2ec7a1",
+   "nibopt/suspension.py": "fc80b0495787adc3",
+   "mechanics/cad/nibopt.py": "af847ed6197db074"
+  },
+  "parameters": "every input with its label and source: results/nibopt/nibopt.json -> inputs (nibopt/params.py)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "numba": "0.67.0"
+ },
+ "designs": {
+  "K_B1": {
+   "name": "K_B1",
+   "source": "study K (results/revK/revK.json nib, layout.json)",
+   "reach_mm": 1.058695965882101,
+   "stop_mm": 1.2586959658821009,
+   "od_mm": 24.0,
+   "bore_mm": 11.0,
+   "length_mm": 145.1316411398638,
+   "m_move_g": 3.439830737727785,
+   "moving_parts_g": {
+    "refill": 0.84,
+    "refill_holder": 0.05,
+    "holder_extension": 4.102849659526342e-05,
+    "carrier_tube": 0.3333262497029004,
+    "guide_stations": 0.06,
+    "coils": 0.8499721268016793,
+    "flange": 1.274773907322842,
+    "flange_inserts": 0.0,
+    "position_magnet": 0.0075,
+    "wires_third": 0.0023154437337227344
+   },
+   "stator_parts_g": {
+    "back_plate": 3.7863431605655156,
+    "keeper": 3.7863431605655156,
+    "magnets": 2.752807889184006
+   },
+   "stack_mm": 8.480599999999999,
+   "plate_t_mm": 1.4653,
+   "magnets_mm": {
+    "w": 5.120275187158268,
+    "e": 2.233535337181825,
+    "t_m": 3.5,
+    "t_cu": 1.6,
+    "c0": 0.3,
+    "c1": 0.15,
+    "Br_T": 1.42,
+    "double": false,
+    "t_m2": 0.0
+   },
+   "coil_mm": {
+    "x_in": 2.3499999999999996,
+    "y_in": 1.0725885830646076,
+    "b": 2.2,
+    "yc": 5.0,
+    "order": "xy",
+    "k_fill": 0.55,
+    "outer_corner_r": 9.441304034117898,
+    "inner_edge": 1.7274114169353927
+   },
+   "grade": "N52",
+   "iron": "1010",
+   "R_coil_ohm": 2.5,
+   "wires": {
+    "n": 4,
+    "d_mm": 0.1,
+    "L_mm": 26.801041139863813,
+    "anchor_N_m": 10000.0,
+    "assembly_N": 0.005,
+    "parallel_per_lead": 1,
+    "circle_mm": 5.5
+   },
+   "guide": {
+    "circle_r_mm": 8.3,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "flange_r_mm": 9.43,
+    "rear_race": "ring"
+   },
+   "flange_t_mm": 1.5,
+   "carrier_mat": "Ti",
+   "flange_mat": "Ti",
+   "board_narrow": false,
+   "weight_trim": false,
+   "notes": {
+    "anchor": "revk/layout.py: 'axially soft (about 0.01 N/um)' = 10,000 N/m",
+    "moving_mass": "study K's layout parts that move with the nib (results/revK/layout.json)"
+   }
+  },
+  "P_1059_24": {
+   "name": "P_1059_24",
+   "source": "the pass, re-optimised 1.059 mm (mechanics_study.json)",
+   "reach_mm": 1.058695965882101,
+   "stop_mm": 1.2586959658821009,
+   "od_mm": 24.0,
+   "bore_mm": 11.0,
+   "length_mm": 148.3306,
+   "m_move_g": 3.5871064405329633,
+   "moving_parts_g": {
+    "refill": 0.84,
+    "refill_holder": 0.05,
+    "holder_extension": 0.08001499999999995,
+    "carrier_tube": 0.3333262497029004,
+    "guide_stations": 0.06,
+    "coils": 0.9331903580000003,
+    "flange": 1.2778912049516398,
+    "flange_inserts": 0.0,
+    "position_magnet": 0.0075,
+    "wires_third": 0.0051836278784231585
+   },
+   "stator_parts_g": {
+    "back_plate": 3.7863431605655156,
+    "keeper": 3.7863431605655156,
+    "magnets": 2.752807889184006
+   },
+   "stack_mm": 8.480599999999999,
+   "plate_t_mm": 1.4653,
+   "magnets_mm": {
+    "w": 5.120275187158268,
+    "e": 2.233535337181825,
+    "t_m": 3.5,
+    "t_cu": 1.6,
+    "c0": 0.3,
+    "c1": 0.15,
+    "Br_T": 1.42,
+    "double": false,
+    "t_m2": 0.0
+   },
+   "coil_mm": {
+    "x_in": 2.6000000000000005,
+    "y_in": 0.4499999999999997,
+    "b": 2.6000000000000005,
+    "yc": 4.75,
+    "order": "xyyx",
+    "k_fill": 0.55,
+    "outer_corner_r": 9.374433316206371,
+    "inner_edge": 1.6999999999999997
+   },
+   "grade": "N52",
+   "iron": "1010",
+   "R_coil_ohm": 2.5,
+   "wires": {
+    "n": 8,
+    "d_mm": 0.1,
+    "L_mm": 30.0,
+    "anchor_N_m": 100.0,
+    "assembly_N": 0.005,
+    "parallel_per_lead": 2,
+    "circle_mm": 4.2038040341178995
+   },
+   "guide": {
+    "circle_r_mm": 8.211956051176848,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "flange_r_mm": 9.441304034117898,
+    "rear_race": "ring"
+   },
+   "flange_t_mm": 1.5,
+   "carrier_mat": "Ti",
+   "flange_mat": "Ti",
+   "board_narrow": false,
+   "weight_trim": false,
+   "notes": {
+    "pass_moving_mass_g": 3.569975,
+    "pass_length_mm": 148.299
+   }
+  },
+  "P_150_24": {
+   "name": "P_150_24",
+   "source": "the pass, 1.5 mm (mechanics_study.json)",
+   "reach_mm": 1.5,
+   "stop_mm": 1.7,
+   "od_mm": 24.0,
+   "bore_mm": 11.0,
+   "length_mm": 152.3306,
+   "m_move_g": 3.4359566246415074,
+   "moving_parts_g": {
+    "refill": 0.84,
+    "refill_holder": 0.05,
+    "holder_extension": 0.18001499999999995,
+    "carrier_tube": 0.3333262497029004,
+    "guide_stations": 0.06,
+    "coils": 0.80027419,
+    "flange": 1.1589664066763943,
+    "flange_inserts": 0.0,
+    "position_magnet": 0.0075,
+    "wires_third": 0.005874778262212913
+   },
+   "stator_parts_g": {
+    "back_plate": 3.6782863952706926,
+    "keeper": 3.6782863952706926,
+    "magnets": 2.4276000000000013
+   },
+   "stack_mm": 8.480599999999999,
+   "plate_t_mm": 1.4653,
+   "magnets_mm": {
+    "w": 4.808326112068524,
+    "e": 2.5455844122715705,
+    "t_m": 3.5,
+    "t_cu": 1.6,
+    "c0": 0.3,
+    "c1": 0.15,
+    "Br_T": 1.42,
+    "double": false,
+    "t_m2": 0.0
+   },
+   "coil_mm": {
+    "x_in": 2.2,
+    "y_in": 0.8499999999999999,
+    "b": 2.2,
+    "yc": 4.75,
+    "order": "xy",
+    "k_fill": 0.55,
+    "outer_corner_r": 8.955445270895245,
+    "inner_edge": 1.6999999999999997
+   },
+   "grade": "N52",
+   "iron": "1010",
+   "R_coil_ohm": 2.5,
+   "wires": {
+    "n": 8,
+    "d_mm": 0.1,
+    "L_mm": 34.0,
+    "anchor_N_m": 100.0,
+    "assembly_N": 0.005,
+    "parallel_per_lead": 2,
+    "circle_mm": 3.7624999999999997
+   },
+   "guide": {
+    "circle_r_mm": 7.55,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "flange_r_mm": 9.0,
+    "rear_race": "ring"
+   },
+   "flange_t_mm": 1.5,
+   "carrier_mat": "Ti",
+   "flange_mat": "Ti",
+   "board_narrow": false,
+   "weight_trim": false,
+   "notes": {
+    "pass_moving_mass_g": 3.6699750000000004,
+    "pass_length_mm": 152.299
+   }
+  },
+  "P_1059_20": {
+   "name": "P_1059_20",
+   "source": "the pass, 20 mm body / 1.059 mm (compact_20mm.json)",
+   "reach_mm": 1.058695965882101,
+   "stop_mm": 1.2586959658821009,
+   "od_mm": 20.0,
+   "bore_mm": 9.0,
+   "length_mm": 152.3306,
+   "m_move_g": 2.65744776634721,
+   "moving_parts_g": {
+    "refill": 0.84,
+    "refill_holder": 0.05,
+    "holder_extension": 0.08001499999999995,
+    "carrier_tube": 0.3333262497029004,
+    "guide_stations": 0.06,
+    "coils": 0.4969467792163179,
+    "flange": 0.7844761095495688,
+    "flange_inserts": 0.0,
+    "position_magnet": 0.0075,
+    "wires_third": 0.0051836278784231585
+   },
+   "stator_parts_g": {
+    "back_plate": 2.380674765642804,
+    "keeper": 2.380674765642804,
+    "magnets": 1.4422415688481798
+   },
+   "stack_mm": 8.480599999999999,
+   "plate_t_mm": 1.4653,
+   "magnets_mm": {
+    "w": 3.7061616247851745,
+    "e": 2.233535337181825,
+    "t_m": 3.5,
+    "t_cu": 1.6,
+    "c0": 0.3,
+    "c1": 0.15,
+    "Br_T": 1.42,
+    "double": false,
+    "t_m2": 0.0
+   },
+   "coil_mm": {
+    "x_in": 1.8000000000000003,
+    "y_in": 0.6168109252649671,
+    "b": 1.7,
+    "yc": 4.25,
+    "order": "yxxy",
+    "k_fill": 0.55,
+    "outer_corner_r": 7.4413040341179,
+    "inner_edge": 1.9331890747350335
+   },
+   "grade": "N52",
+   "iron": "1010",
+   "R_coil_ohm": 2.5,
+   "wires": {
+    "n": 8,
+    "d_mm": 0.1,
+    "L_mm": 30.0,
+    "anchor_N_m": 100.0,
+    "assembly_N": 0.005,
+    "parallel_per_lead": 2,
+    "circle_mm": 3.203804034117899
+   },
+   "guide": {
+    "circle_r_mm": 6.211956051176848,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "flange_r_mm": 7.441304034117899,
+    "rear_race": "ring"
+   },
+   "flange_t_mm": 1.5,
+   "carrier_mat": "Ti",
+   "flange_mat": "Ti",
+   "board_narrow": false,
+   "weight_trim": false,
+   "notes": {
+    "pass_moving_mass_g": 3.569975,
+    "pass_length_mm": 148.299
+   }
+  }
+ },
+ "table": {
+  "K_B1": {
+   "design": {
+    "name": "K_B1",
+    "source": "study K (results/revK/revK.json nib, layout.json)",
+    "reach_mm": 1.058695965882101,
+    "stop_mm": 1.2586959658821009,
+    "od_mm": 24.0,
+    "bore_mm": 11.0,
+    "length_mm": 145.1316411398638,
+    "m_move_g": 3.439830737727785,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 4.102849659526342e-05,
+     "carrier_tube": 0.3333262497029004,
+     "guide_stations": 0.06,
+     "coils": 0.8499721268016793,
+     "flange": 1.274773907322842,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.0023154437337227344
+    },
+    "stator_parts_g": {
+     "back_plate": 3.7863431605655156,
+     "keeper": 3.7863431605655156,
+     "magnets": 2.752807889184006
+    },
+    "stack_mm": 8.480599999999999,
+    "plate_t_mm": 1.4653,
+    "magnets_mm": {
+     "w": 5.120275187158268,
+     "e": 2.233535337181825,
+     "t_m": 3.5,
+     "t_cu": 1.6,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": false,
+     "t_m2": 0.0
+    },
+    "coil_mm": {
+     "x_in": 2.3499999999999996,
+     "y_in": 1.0725885830646076,
+     "b": 2.2,
+     "yc": 5.0,
+     "order": "xy",
+     "k_fill": 0.55,
+     "outer_corner_r": 9.441304034117898,
+     "inner_edge": 1.7274114169353927
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 2.5,
+    "wires": {
+     "n": 4,
+     "d_mm": 0.1,
+     "L_mm": 26.801041139863813,
+     "anchor_N_m": 10000.0,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 1,
+     "circle_mm": 5.5
+    },
+    "guide": {
+     "circle_r_mm": 8.3,
+     "preload_per_race_N": 4.0,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 9.43,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.5,
+    "carrier_mat": "Ti",
+    "flange_mat": "Ti",
+    "board_narrow": false,
+    "weight_trim": false,
+    "notes": {
+     "anchor": "revk/layout.py: 'axially soft (about 0.01 N/um)' = 10,000 N/m",
+     "moving_mass": "study K's layout parts that move with the nib (results/revK/layout.json)"
+    }
+   },
+   "magnetics": {
+    "Km_centre_x_N_sqrtW": 0.3272824644734702,
+    "Km_centre_y_N_sqrtW": 0.265022040169278,
+    "sv_min_centre_N_sqrtW": 0.265022040169278,
+    "sv_min_workspace_N_sqrtW": 0.2349922135821929,
+    "cross_coupling_max": 0.09683640545048162,
+    "copper_mass_g": 0.7499721268016794,
+    "field_scale": 1.0,
+    "sv_min_workspace_x0.7": 0.16449454950753503,
+    "n_positions": 97,
+    "quadrature": "fine"
+   },
+   "wires": {
+    "n_w": 4,
+    "d_mm": 0.1,
+    "L_mm": 26.801041139863813,
+    "anchor_N_m": 10000.0,
+    "assembly_N": 0.005,
+    "F_usable_mN": 11.745069644446566,
+    "F_stop_mN": 18.44724766336282,
+    "F_stop_linear_mN": 1.965747149538104,
+    "tension_stop_N": 0.30939400809180384,
+    "k_small_N_m": 1.5617330974446224,
+    "goodman_worst_corner": 0.7136472614956976,
+    "goodman_nominal_Kt1.8": 1.0691659498953954,
+    "bend_stress_worst_MPa": 362.50542494882575,
+    "P_buckle_each_ff_N": 0.03442524018624079,
+    "R_wire_ohm": 0.26742472326135847,
+    "k_axial_N_m": 149571.51123573649,
+    "k_tilt_Nm_rad_wires": 1.1965720898858918,
+    "mass_g": 0.006946331201168203,
+    "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+   },
+   "guide": {
+    "circle_r_mm": 8.3,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "mu_roll": 0.001,
+    "drag_35_mN": 8.07190487901829,
+    "drag_mean_mN": 8.0374838335902,
+    "hertz_run_GPa": 2.639699664975209,
+    "hertz_static_GPa": 3.0495408753292272,
+    "tilt_stiffness_min_Nm_rad": 625.7550598050653,
+    "min_preload_all_balls_loaded_N": 3.144492493532809,
+    "lever_mm": 67.8016411398638,
+    "mass_balls_g": 0.010294370807283036,
+    "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+   },
+   "guide_rows": {
+    "35": {
+     "couple_mNm": 10.874703206800964,
+     "total_normal_N": 8.07190487901829,
+     "drag_mN": 8.07190487901829,
+     "max_hertz_GPa": 2.639699664975209,
+     "min_tilt_stiffness_Nm_rad": 625.7550598050653,
+     "tilt_urad": 17.32578858358947,
+     "unloaded_contacts": 0
+    },
+    "50": {
+     "couple_mNm": 8.533366337890824,
+     "total_normal_N": 8.044185301095537,
+     "drag_mN": 8.044185301095537,
+     "max_hertz_GPa": 2.5939574822879226,
+     "min_tilt_stiffness_Nm_rad": 626.8602351179209,
+     "tilt_urad": 13.587608842582663,
+     "unloaded_contacts": 0
+    },
+    "60": {
+     "couple_mNm": 6.6377806675926685,
+     "total_normal_N": 8.026700895136559,
+     "drag_mN": 8.026700895136559,
+     "max_hertz_GPa": 2.556378165137041,
+     "min_tilt_stiffness_Nm_rad": 627.553323550181,
+     "tilt_urad": 10.565414113819964,
+     "unloaded_contacts": 0
+    },
+    "75": {
+     "couple_mNm": 3.435968107972614,
+     "total_normal_N": 8.00714425911041,
+     "drag_mN": 8.00714425911041,
+     "max_hertz_GPa": 2.491695773284145,
+     "min_tilt_stiffness_Nm_rad": 628.3249338033783,
+     "tilt_urad": 5.466827459290505,
+     "unloaded_contacts": 0
+    },
+    "penup": {
+     "couple_mNm": 0.0,
+     "total_normal_N": 8.00000000000001,
+     "drag_mN": 8.00000000000001,
+     "max_hertz_GPa": 2.420422196758821,
+     "min_tilt_stiffness_Nm_rad": 628.6058675731061,
+     "tilt_urad": 0.0,
+     "unloaded_contacts": 0
+    }
+   },
+   "leads": {
+    "R_lead_ohm": 0.5348494465227169,
+    "factor": 1.2139397786090869
+   },
+   "dutyA": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.06464327345743612,
+     "mean_items_W": {
+      "gravity": 0.020116323997924047,
+      "residual": 0.0014616910677550134,
+      "writing_drag": 0.04342152877443698,
+      "guide_drag": 0.0032602079565531234,
+      "inertia_and_wires": 0.00015017608538339121,
+      "cross_terms": -0.003766654424616447
+     },
+     "worst": 0.12411130276061978,
+     "worst_items_W": {
+      "gravity": 0.03853415188851372,
+      "residual": 0.004444945019564131,
+      "writing_drag": 0.06962542402153328,
+      "guide_drag": 0.003288163013039651,
+      "inertia_and_wires": 0.0001501760853833912,
+      "cross_terms": 0.008068442732585623
+     },
+     "P35_W": 0.10322198234916191,
+     "temp_factor": 1.1248824750818696,
+     "coil_C": 38.972706536486584,
+     "skin": {
+      "pads_C": [
+       37.44032162210313,
+       35.723565432967476,
+       33.28608135667574
+      ],
+      "web_C": 30.640595470981214,
+      "max_shell_C": 37.69723775179825,
+      "coil_C": 38.972706536486584,
+      "sources_W": {
+       "coils": 0.10322198234916191,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.019874755153228996,
+     "mean_items_W": {
+      "gravity": 0.006184820054092945,
+      "residual": 0.0004494010053562805,
+      "writing_drag": 0.013350070418990364,
+      "guide_drag": 0.001002360051085079,
+      "inertia_and_wires": 4.6172057311277324e-05,
+      "cross_terms": -0.0011580684336069472
+     },
+     "worst": 0.043880921648574656,
+     "worst_items_W": {
+      "gravity": 0.014310912286183645,
+      "residual": 0.0016507750962297008,
+      "writing_drag": 0.023865628315258278,
+      "guide_drag": 0.001010954911358209,
+      "inertia_and_wires": 4.6172057311277324e-05,
+      "cross_terms": 0.0029964789822335474
+     },
+     "P35_W": 0.03173588705979317,
+     "temp_factor": 1.0844002950183609,
+     "coil_C": 32.96345522172178,
+     "skin": {
+      "pads_C": [
+       32.503361736678855,
+       32.37987664637078,
+       32.19401804344171
+      ],
+      "web_C": 30.640549291873413,
+      "max_shell_C": 32.77751910170491,
+      "coil_C": 32.96345522172178,
+      "sources_W": {
+       "coils": 0.03173588705979317,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.04128177930147108,
+     "mean_items_W": {
+      "gravity": 0.012846466511105483,
+      "residual": 0.0009334491407791301,
+      "writing_drag": 0.027729381139385743,
+      "guide_drag": 0.0020819982983681052,
+      "inertia_and_wires": 9.590380687076548e-05,
+      "cross_terms": -0.002405419595038141
+     },
+     "worst": 0.09114489758870298,
+     "worst_items_W": {
+      "gravity": 0.029725142173887963,
+      "residual": 0.003428818753917959,
+      "writing_drag": 0.04957120696107625,
+      "guide_drag": 0.0020998506503687635,
+      "inertia_and_wires": 9.59038068707655e-05,
+      "cross_terms": 0.006223975242581288
+     },
+     "P35_W": 0.06591849184748036,
+     "temp_factor": 1.1036778526854603,
+     "coil_C": 35.83690721166482,
+     "skin": {
+      "pads_C": [
+       34.8640746548066,
+       33.97873292551986,
+       32.71621146425039
+      ],
+      "web_C": 30.640571373401087,
+      "max_shell_C": 35.120990784501714,
+      "coil_C": 35.83690721166482,
+      "sources_W": {
+       "coils": 0.06591849184748036,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.06587778918360332,
+     "mean_items_W": {
+      "gravity": 0.020129172146879315,
+      "residual": 0.001462624639145444,
+      "writing_drag": 0.04344926178716917,
+      "guide_drag": 0.0032622902275214805,
+      "inertia_and_wires": 0.0013442846790288148,
+      "cross_terms": -0.003769844296140918
+     },
+     "worst": 0.12538379692388466,
+     "worst_items_W": {
+      "gravity": 0.038558763369387634,
+      "residual": 0.004447783973426438,
+      "writing_drag": 0.06966989327043753,
+      "guide_drag": 0.0032902631386980503,
+      "inertia_and_wires": 0.001344284679028815,
+      "cross_terms": 0.008072808492906204
+     },
+     "P35_W": 0.10448113465631786,
+     "temp_factor": 1.1256009292884388,
+     "coil_C": 39.0785531717887,
+     "skin": {
+      "pads_C": [
+       37.527280972797904,
+       35.78246099067017,
+       33.305316902201795
+      ],
+      "web_C": 30.640596284377583,
+      "max_shell_C": 37.78419710249302,
+      "coil_C": 39.0785531717887,
+      "sources_W": {
+       "coils": 0.10448113465631786,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.02013835824250013,
+     "mean_items_W": {
+      "gravity": 0.0061856684886967194,
+      "residual": 0.0004494626542580401,
+      "writing_drag": 0.013351901783784688,
+      "guide_drag": 0.0009628674986413636,
+      "inertia_and_wires": 0.00034749877595153465,
+      "cross_terms": -0.0011590409588322155
+     },
+     "worst": 0.044147474610225175,
+     "worst_items_W": {
+      "gravity": 0.014312875459418919,
+      "residual": 0.0016510015498213072,
+      "writing_drag": 0.023868902205965912,
+      "guide_drag": 0.0009711237251374238,
+      "inertia_and_wires": 0.00034749877595153465,
+      "cross_terms": 0.002996072893930082
+     },
+     "P35_W": 0.03200077396365721,
+     "temp_factor": 1.0845490532241921,
+     "coil_C": 32.98572209710314,
+     "skin": {
+      "pads_C": [
+       32.52165530850227,
+       32.392266459614625,
+       32.198064610381685
+      ],
+      "web_C": 30.640549462986982,
+      "max_shell_C": 32.795510190091896,
+      "coil_C": 32.98572209710314,
+      "sources_W": {
+       "coils": 0.03200077396365721,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.04183559137967735,
+     "mean_items_W": {
+      "gravity": 0.012850158696508284,
+      "residual": 0.0009337174221223977,
+      "writing_drag": 0.027737350802964675,
+      "guide_drag": 0.0020002688769792778,
+      "inertia_and_wires": 0.0007218968210112452,
+      "cross_terms": -0.00240780123990853
+     },
+     "worst": 0.0917123275888635,
+     "worst_items_W": {
+      "gravity": 0.029733685436421336,
+      "residual": 0.003429804226035223,
+      "writing_drag": 0.04958545415399756,
+      "guide_drag": 0.0020174204299444193,
+      "inertia_and_wires": 0.0007218968210112452,
+      "cross_terms": 0.006224066521453697
+     },
+     "P35_W": 0.06647867156080423,
+     "temp_factor": 1.1039950592304317,
+     "coil_C": 35.88399693820772,
+     "skin": {
+      "pads_C": [
+       34.90276168564964,
+       34.004934757055594,
+       32.7247690964901
+      ],
+      "web_C": 30.640571735270054,
+      "max_shell_C": 35.15967781534476,
+      "coil_C": 35.88399693820772,
+      "sources_W": {
+       "coils": 0.06647867156080423,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe_motion": {
+    "q_rms_2d_mm": 0.7604463247367595,
+    "at_limit": 0.3179,
+    "F_a_r2_tip_mm": 1.0174694234212904,
+    "F_oracle_tip_mm": 0.962612838313106,
+    "F_a_r2_at_limit": 0.3555302879671768
+   },
+   "screen": {
+    "worst07": 0.1679612303276815,
+    "worst07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 0.0,
+     "roll_deg": 150.0,
+     "P_W": 0.1679612303276815
+    },
+    "worst07_temp_factor": 1.1630116235746266,
+    "worst07_coil_C": 44.40161671294159,
+    "worst07_skin_max_C": 42.15741263196616,
+    "map07": 0.13736960467380682,
+    "map07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 45.0,
+     "roll_deg": 270.0,
+     "P_W": 0.13736960467380682
+    },
+    "map07_temp_factor": 1.145040195731956,
+    "map07_coil_C": 41.83652597287019,
+    "map07_skin_max_C": 40.05003695022511,
+    "centre10": 0.05828456044948496,
+    "centre10_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 270.0,
+     "roll_deg": 270.0,
+     "P_W": 0.05828456044948496
+    },
+    "centre10_temp_factor": 1.0994439937562293,
+    "centre10_coil_C": 35.1947947970297,
+    "centre10_skin_max_C": 34.59345697588938
+   },
+   "nib_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "mean_W": 0.06112045534209063,
+      "P35_W": 0.09960042339001761,
+      "skin_max_C": 37.44712629681361,
+      "front_pad_C": 37.190210167118494,
+      "coil_C": 38.66827169711478
+     },
+     "steady_1mm": {
+      "mean_W": 0.06461116044473982,
+      "P35_W": 0.10318922846250285,
+      "skin_max_C": 37.694975708755145,
+      "front_pad_C": 37.43805957906003,
+      "coil_C": 38.9699531851436
+     },
+     "steady_2mm": {
+      "mean_W": 0.06483976366880509,
+      "P35_W": 0.10342239396832902,
+      "skin_max_C": 37.711078543079346,
+      "front_pad_C": 37.454162413384225,
+      "coil_C": 38.98955350205519
+     },
+     "guide": {
+      "mean_W": 0.06474111797816873,
+      "P35_W": 0.10332178222348433,
+      "skin_max_C": 37.70415277287773,
+      "front_pad_C": 37.44722578018145,
+      "coil_C": 38.98110698913746
+     },
+     "spelling_cue": {
+      "mean_W": 0.06112045767381491,
+      "P35_W": 0.0996004271897394,
+      "skin_max_C": 37.44713868042667,
+      "front_pad_C": 37.19021673995525,
+      "coil_C": 38.668277950612435
+     },
+     "severe": {
+      "mean_W": 0.06587778918360332,
+      "P35_W": 0.10448113465631786,
+      "skin_max_C": 37.78419710249302,
+      "front_pad_C": 37.527280972797904,
+      "coil_C": 39.0785531717887
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "mean_W": 0.018815751777474958,
+      "P35_W": 0.03066169636578954,
+      "skin_max_C": 32.70456019192726,
+      "front_pad_C": 32.42917617172213,
+      "coil_C": 32.873156796355005
+     },
+     "steady_1mm": {
+      "mean_W": 0.019865112105242232,
+      "P35_W": 0.031726184413825326,
+      "skin_max_C": 32.77686009909418,
+      "front_pad_C": 32.502691654284064,
+      "coil_C": 32.96263959963747
+     },
+     "steady_2mm": {
+      "mean_W": 0.01993375326129098,
+      "P35_W": 0.03179524980361008,
+      "skin_max_C": 32.78155101251411,
+      "front_pad_C": 32.507461435840305,
+      "coil_C": 32.96844536204048
+     },
+     "guide": {
+      "mean_W": 0.019904134980224517,
+      "P35_W": 0.0317654492847509,
+      "skin_max_C": 32.779551839448594,
+      "front_pad_C": 32.505415154820184,
+      "coil_C": 32.96595136969519
+     },
+     "spelling_cue": {
+      "mean_W": 0.01881575247830063,
+      "P35_W": 0.030661697507838193,
+      "skin_max_C": 32.7045735753778,
+      "front_pad_C": 32.42918256101514,
+      "coil_C": 32.87316282644381
+     },
+     "severe": {
+      "mean_W": 0.02013835824250013,
+      "P35_W": 0.03200077396365721,
+      "skin_max_C": 32.795510190091896,
+      "front_pad_C": 32.52165530850227,
+      "coil_C": 32.98572209710314
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "mean_W": 0.03905835001932806,
+      "P35_W": 0.06364854739819928,
+      "skin_max_C": 34.96422428826382,
+      "front_pad_C": 34.70730815856871,
+      "coil_C": 35.64609154868772
+     },
+     "steady_1mm": {
+      "mean_W": 0.04126152279619957,
+      "P35_W": 0.06589797603417667,
+      "skin_max_C": 35.11957392508469,
+      "front_pad_C": 34.86265779538957,
+      "coil_C": 35.83518261504824
+     },
+     "steady_2mm": {
+      "mean_W": 0.041405717562620264,
+      "P35_W": 0.06604401669592928,
+      "skin_max_C": 35.12965975906114,
+      "front_pad_C": 34.87274362936603,
+      "coil_C": 35.84745905895099
+     },
+     "guide": {
+      "mean_W": 0.04134349692232287,
+      "P35_W": 0.06598100123643194,
+      "skin_max_C": 35.125330456771906,
+      "front_pad_C": 34.868403464075634,
+      "coil_C": 35.84217295822585
+     },
+     "spelling_cue": {
+      "mean_W": 0.039058351491166605,
+      "P35_W": 0.06364854979667195,
+      "skin_max_C": 34.96423657510407,
+      "front_pad_C": 34.707314634632645,
+      "coil_C": 35.64609768439382
+     },
+     "severe": {
+      "mean_W": 0.04183559137967735,
+      "P35_W": 0.06647867156080423,
+      "skin_max_C": 35.15967781534476,
+      "front_pad_C": 34.90276168564964,
+      "coil_C": 35.88399693820772
+     }
+    }
+   },
+   "battery": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.06112045534209063,
+      "total_W": 0.11924007678204633,
+      "hours": 18.61790146326256
+     },
+     "steady_1mm": {
+      "nib_W": 0.06461116044473982,
+      "total_W": 0.12273078188469552,
+      "hours": 18.08837168564338
+     },
+     "steady_2mm": {
+      "nib_W": 0.06483976366880509,
+      "total_W": 0.12295938510876078,
+      "hours": 18.054742206431435
+     },
+     "guide": {
+      "nib_W": 0.06474111797816873,
+      "total_W": 0.12636073941812442,
+      "hours": 17.568748095514678
+     },
+     "spelling_cue": {
+      "nib_W": 0.06112045767381491,
+      "total_W": 0.12111227969291535,
+      "hours": 18.330098365160758
+     },
+     "severe": {
+      "nib_W": 0.06587778918360332,
+      "total_W": 0.12399741062355901,
+      "hours": 17.90359967063868
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.06112045534209063,
+      "total_W": 0.08901300851705032,
+      "hours": 24.940174891120122
+     },
+     "steady_1mm": {
+      "nib_W": 0.06461116044473982,
+      "total_W": 0.0925037136196995,
+      "hours": 23.9990365049218
+     },
+     "steady_2mm": {
+      "nib_W": 0.06483976366880509,
+      "total_W": 0.09273231684376478,
+      "hours": 23.939874205237984
+     },
+     "guide": {
+      "nib_W": 0.06474111797816873,
+      "total_W": 0.09338367115312841,
+      "hours": 23.772892761516033
+     },
+     "spelling_cue": {
+      "nib_W": 0.06112045767381491,
+      "total_W": 0.0891016759396758,
+      "hours": 24.91535626673284
+     },
+     "severe": {
+      "nib_W": 0.06587778918360332,
+      "total_W": 0.093770342358563,
+      "hours": 23.67486290613156
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.018815751777474958,
+      "total_W": 0.046708304952434644,
+      "hours": 47.52902085101857
+     },
+     "steady_1mm": {
+      "nib_W": 0.019865112105242232,
+      "total_W": 0.04775766528020192,
+      "hours": 46.48468443704068
+     },
+     "steady_2mm": {
+      "nib_W": 0.01993375326129098,
+      "total_W": 0.047826306436250667,
+      "hours": 46.41796880047835
+     },
+     "guide": {
+      "nib_W": 0.019904134980224517,
+      "total_W": 0.0485466881551842,
+      "hours": 45.72917503462965
+     },
+     "spelling_cue": {
+      "nib_W": 0.01881575247830063,
+      "total_W": 0.04679697074416152,
+      "hours": 47.438968050661096
+     },
+     "severe": {
+      "nib_W": 0.02013835824250013,
+      "total_W": 0.04803091141745981,
+      "hours": 46.22023472977453
+     }
+    }
+   },
+   "electrical": {
+    "F_peak_N": 0.16101373989113338,
+    "F_peak_parts_N": {
+     "static_N": 0.11369390570346856,
+     "dynamic_N": 0.04731983418766483,
+     "total_N": 0.16101373989113338
+    },
+    "I_peak_A": 0.6568007536329612,
+    "V_peak_V": 2.341685149292468,
+    "R_hot_loop_ohm": 3.2623985551007757,
+    "back_emf_V": 0.04130713877928447,
+    "ok": true
+   },
+   "lead_heating": {
+    "I_rms_coil_A": 0.10418037936064213,
+    "rise_K": 12.364085162259192
+   },
+   "modes": {
+    "servo_bw_max_worst_Hz": 46.108968426044584,
+    "lowest_stuck_worst_Hz": 115.27242106511146,
+    "first_free_nominal_Hz": 1205.0222906138818,
+    "lowest_stuck_nominal_Hz": 163.3904392025573,
+    "m_carrier_g": 2.5279287560577397,
+    "k_lat_N_m": 1.5617330974446224,
+    "k_tilt_Nm_rad": 626.9516318949512,
+    "n_cases": 18,
+    "passes": true,
+    "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+   },
+   "fit": {
+    "coil_clearance_stop_mm": 0.3000000000000007,
+    "coil_clearance_p99_mm": 0.2100000000000007,
+    "coil_p99_ok": true,
+    "coil_inner_edge_mm": 1.7274114169353927,
+    "coil_inner_ok": true,
+    "magnet_r_out_mm": 10.39985857864376,
+    "magnets_ok": true,
+    "flange_r_mm": 9.43,
+    "flange_ok": true,
+    "ball_circle_r_mm": 8.3,
+    "ball_on_flange_ok": true,
+    "wire_circle_mm": 5.5,
+    "wire_circle_min_mm": 3.0336959658821003,
+    "wire_circle_max_mm": 5.46195605117685,
+    "wires_ok": false,
+    "rear_race": "ring",
+    "pad_gap_ok": true,
+    "board_ok": true,
+    "board": "14 mm (study K)",
+    "head": {
+     "od_min_head_mm": 17.89366637052058,
+     "margin_mm": 3.0531668147397095,
+     "R_s_mm": 5.999982818918658,
+     "fits": true
+    },
+    "head_ok": true,
+    "length_mm": 145.1316411398638,
+    "length_ok": true,
+    "all_ok": false
+   },
+   "constraints": {
+    "goodman": -0.7863527385043024,
+    "hertz_run": 0.6938425441580098,
+    "hertz_static": 0.6194970765632282,
+    "modes": 6.108968426044584,
+    "coil_p99": 0.010000000000000703,
+    "skin": 3.2158028975069826,
+    "coil_inner": 0.02741141693539273,
+    "magnets": 0.4001414213562402,
+    "wires_min": 2.4663040341178997,
+    "wires_max": -0.038043948823149876,
+    "head": 3.0531668147397095,
+    "board": 1.0,
+    "length": 29.868358860136198,
+    "voltage": 0.9583148507075316,
+    "lead_heat": 32.635914837740806,
+    "magnet_T": 40.9214468282113,
+    "feasible": false
+   }
+  },
+  "P_1059_24": {
+   "design": {
+    "name": "P_1059_24",
+    "source": "the pass, re-optimised 1.059 mm (mechanics_study.json)",
+    "reach_mm": 1.058695965882101,
+    "stop_mm": 1.2586959658821009,
+    "od_mm": 24.0,
+    "bore_mm": 11.0,
+    "length_mm": 148.3306,
+    "m_move_g": 3.5871064405329633,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.08001499999999995,
+     "carrier_tube": 0.3333262497029004,
+     "guide_stations": 0.06,
+     "coils": 0.9331903580000003,
+     "flange": 1.2778912049516398,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.0051836278784231585
+    },
+    "stator_parts_g": {
+     "back_plate": 3.7863431605655156,
+     "keeper": 3.7863431605655156,
+     "magnets": 2.752807889184006
+    },
+    "stack_mm": 8.480599999999999,
+    "plate_t_mm": 1.4653,
+    "magnets_mm": {
+     "w": 5.120275187158268,
+     "e": 2.233535337181825,
+     "t_m": 3.5,
+     "t_cu": 1.6,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": false,
+     "t_m2": 0.0
+    },
+    "coil_mm": {
+     "x_in": 2.6000000000000005,
+     "y_in": 0.4499999999999997,
+     "b": 2.6000000000000005,
+     "yc": 4.75,
+     "order": "xyyx",
+     "k_fill": 0.55,
+     "outer_corner_r": 9.374433316206371,
+     "inner_edge": 1.6999999999999997
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 2.5,
+    "wires": {
+     "n": 8,
+     "d_mm": 0.1,
+     "L_mm": 30.0,
+     "anchor_N_m": 100.0,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 2,
+     "circle_mm": 4.2038040341178995
+    },
+    "guide": {
+     "circle_r_mm": 8.211956051176848,
+     "preload_per_race_N": 4.0,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 9.441304034117898,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.5,
+    "carrier_mat": "Ti",
+    "flange_mat": "Ti",
+    "board_narrow": false,
+    "weight_trim": false,
+    "notes": {
+     "pass_moving_mass_g": 3.569975,
+     "pass_length_mm": 148.299
+    }
+   },
+   "magnetics": {
+    "Km_centre_x_N_sqrtW": 0.28084077307268734,
+    "Km_centre_y_N_sqrtW": 0.26790027968809793,
+    "sv_min_centre_N_sqrtW": 0.26790027968809793,
+    "sv_min_workspace_N_sqrtW": 0.2302087588475817,
+    "cross_coupling_max": 0.0891769589398174,
+    "copper_mass_g": 0.8331903580000003,
+    "field_scale": 1.0,
+    "sv_min_workspace_x0.7": 0.1611461311933072,
+    "n_positions": 97,
+    "quadrature": "fine"
+   },
+   "wires": {
+    "n_w": 8,
+    "d_mm": 0.1,
+    "L_mm": 30.0,
+    "anchor_N_m": 100.0,
+    "assembly_N": 0.005,
+    "F_usable_mN": 2.6636376837435427,
+    "F_stop_mN": 3.2131318866861727,
+    "F_stop_linear_mN": 2.8031664218807637,
+    "tension_stop_N": 0.008156660903527554,
+    "k_small_N_m": 2.2270401255447654,
+    "goodman_worst_corner": 1.807371309178557,
+    "goodman_nominal_Kt1.8": 2.668592926630759,
+    "bend_stress_worst_MPa": 145.74110055915767,
+    "P_buckle_each_ff_N": 0.027475006280599016,
+    "R_wire_ohm": 0.29934440441971283,
+    "k_axial_N_m": 267244.81506537175,
+    "k_tilt_Nm_rad_wires": 2.137958520522974,
+    "mass_g": 0.015550883635269476,
+    "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+   },
+   "guide": {
+    "circle_r_mm": 8.211956051176848,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "mu_roll": 0.001,
+    "drag_35_mN": 8.080601652025248,
+    "drag_mean_mN": 8.04201013473406,
+    "hertz_run_GPa": 2.651987520802438,
+    "hertz_static_GPa": 3.0495408753292272,
+    "tilt_stiffness_min_Nm_rad": 612.2087988756133,
+    "min_preload_all_balls_loaded_N": 3.328157350763287,
+    "lever_mm": 71.00059999999999,
+    "mass_balls_g": 0.010294370807283036,
+    "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+   },
+   "guide_rows": {
+    "35": {
+     "couple_mNm": 11.387784123278868,
+     "total_normal_N": 8.080601652025248,
+     "drag_mN": 8.080601652025248,
+     "max_hertz_GPa": 2.651987520802438,
+     "min_tilt_stiffness_Nm_rad": 612.2087988756133,
+     "tilt_urad": 18.53776434874585,
+     "unloaded_contacts": 0
+    },
+    "50": {
+     "couple_mNm": 8.935980307028718,
+     "total_normal_N": 8.049517030020574,
+     "drag_mN": 8.049517030020574,
+     "max_hertz_GPa": 2.6037557115816887,
+     "min_tilt_stiffness_Nm_rad": 613.4241744812309,
+     "tilt_urad": 14.537053186631102,
+     "unloaded_contacts": 0
+    },
+    "60": {
+     "couple_mNm": 6.950958740000001,
+     "total_normal_N": 8.029918152666612,
+     "drag_mN": 8.029918152666612,
+     "max_hertz_GPa": 2.5641057256064,
+     "min_tilt_stiffness_Nm_rad": 614.1855135583214,
+     "tilt_urad": 11.303176884579017,
+     "unloaded_contacts": 0
+    },
+    "75": {
+     "couple_mNm": 3.598081007267641,
+     "total_normal_N": 8.008003704223805,
+     "drag_mN": 8.008003704223805,
+     "max_hertz_GPa": 2.4957971686985934,
+     "min_tilt_stiffness_Nm_rad": 615.0323407563018,
+     "tilt_urad": 5.848276828649856,
+     "unloaded_contacts": 0
+    },
+    "penup": {
+     "couple_mNm": 0.0,
+     "total_normal_N": 8.00000000000001,
+     "drag_mN": 8.00000000000001,
+     "max_hertz_GPa": 2.420422196758821,
+     "min_tilt_stiffness_Nm_rad": 615.3404619685601,
+     "tilt_urad": 0.0,
+     "unloaded_contacts": 0
+    }
+   },
+   "leads": {
+    "R_lead_ohm": 0.29934440441971283,
+    "factor": 1.1197377617678852
+   },
+   "dutyA": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.06365740929314234,
+     "mean_items_W": {
+      "gravity": 0.021012582939573147,
+      "residual": 0.001404015913788516,
+      "writing_drag": 0.041708209583554375,
+      "guide_drag": 0.0031351023247937013,
+      "inertia_and_wires": 0.00017043424431790696,
+      "cross_terms": -0.003772935712885293
+     },
+     "worst": 0.12298050276616812,
+     "worst_items_W": {
+      "gravity": 0.04025099529352692,
+      "residual": 0.004269557145866769,
+      "writing_drag": 0.06687815605293838,
+      "guide_drag": 0.0031652287526768527,
+      "inertia_and_wires": 0.00017043424431790696,
+      "cross_terms": 0.008246131276841286
+     },
+     "P35_W": 0.10201480126876665,
+     "temp_factor": 1.1241937036104945,
+     "coil_C": 38.87121006954484,
+     "skin": {
+      "pads_C": [
+       37.35693169002143,
+       35.66704012495954,
+       33.267454051787155
+      ],
+      "web_C": 30.725338651950775,
+      "max_shell_C": 37.61382957921819,
+      "coil_C": 38.87121006954484,
+      "sources_W": {
+       "coils": 0.10201480126876665,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.021242491403909894,
+     "mean_items_W": {
+      "gravity": 0.007011903522688779,
+      "residual": 0.0004685204175096426,
+      "writing_drag": 0.013918038660215648,
+      "guide_drag": 0.0010461843314754958,
+      "inertia_and_wires": 5.6873944605298904e-05,
+      "cross_terms": -0.0012590294725849706
+     },
+     "worst": 0.04244982899628379,
+     "worst_items_W": {
+      "gravity": 0.014064913645035175,
+      "residual": 0.001491912240212758,
+      "writing_drag": 0.022898444274698535,
+      "guide_drag": 0.0010562375270491851,
+      "inertia_and_wires": 5.6873944605298904e-05,
+      "cross_terms": 0.002881447364682831
+     },
+     "P35_W": 0.034042361495487415,
+     "temp_factor": 1.0856958108812416,
+     "coil_C": 33.157323034283934,
+     "skin": {
+      "pads_C": [
+       32.66263125135972,
+       32.48769897130538,
+       32.22906739089973
+      ],
+      "web_C": 30.72529474261972,
+      "max_shell_C": 32.934132814834804,
+      "coil_C": 33.157323034283934,
+      "sources_W": {
+       "coils": 0.034042361495487415,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.04418051491678422,
+     "mean_items_W": {
+      "gravity": 0.014583482807585535,
+      "residual": 0.0009744371741062721,
+      "writing_drag": 0.028946986629207593,
+      "guide_drag": 0.0021758729512279173,
+      "inertia_and_wires": 0.00011828745085655425,
+      "cross_terms": -0.002618552096199645
+     },
+     "worst": 0.08828791630533783,
+     "worst_items_W": {
+      "gravity": 0.02925245985898737,
+      "residual": 0.003102905856472217,
+      "writing_drag": 0.04762459542119734,
+      "guide_drag": 0.0021967817678332506,
+      "inertia_and_wires": 0.00011828745085655427,
+      "cross_terms": 0.005992885949991109
+     },
+     "P35_W": 0.07080191448622239,
+     "temp_factor": 1.106444321303152,
+     "coil_C": 36.24739798166454,
+     "skin": {
+      "pads_C": [
+       35.20131290387929,
+       34.20708935957445,
+       32.79062777644836
+      ],
+      "web_C": 30.725318488823138,
+      "max_shell_C": 35.45821079307605,
+      "coil_C": 36.24739798166454,
+      "sources_W": {
+       "coils": 0.07080191448622239,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.0643822375102278,
+     "mean_items_W": {
+      "gravity": 0.021020464614371938,
+      "residual": 0.0014045425504650554,
+      "writing_drag": 0.04172385404503361,
+      "guide_drag": 0.0031362782800323325,
+      "inertia_and_wires": 0.0008694567972963362,
+      "cross_terms": -0.003772358776971464
+     },
+     "worst": 0.1237275922258271,
+     "worst_items_W": {
+      "gravity": 0.04026609316398595,
+      "residual": 0.004271158627276996,
+      "writing_drag": 0.06690324158757578,
+      "guide_drag": 0.0031664160081306026,
+      "inertia_and_wires": 0.0008694567972963362,
+      "cross_terms": 0.008251226041561432
+     },
+     "P35_W": 0.10275402663853213,
+     "temp_factor": 1.1246153809077686,
+     "coil_C": 38.933350699931616,
+     "skin": {
+      "pads_C": [
+       37.40798393986173,
+       35.70161663343503,
+       33.278746889971494
+      ],
+      "web_C": 30.725339129480957,
+      "max_shell_C": 37.66488182905849,
+      "coil_C": 38.933350699931616,
+      "sources_W": {
+       "coils": 0.10275402663853213,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.02145923601599917,
+     "mean_items_W": {
+      "gravity": 0.007012695050000263,
+      "residual": 0.00046857330567406843,
+      "writing_drag": 0.01391960977534668,
+      "guide_drag": 0.00103692581906046,
+      "inertia_and_wires": 0.0002800328392453096,
+      "cross_terms": -0.0012586007733276139
+     },
+     "worst": 0.04266888019985899,
+     "worst_items_W": {
+      "gravity": 0.014066501339909708,
+      "residual": 0.0014920806522966729,
+      "writing_drag": 0.022901029128294316,
+      "guide_drag": 0.0010468900459569962,
+      "inertia_and_wires": 0.0002800328392453096,
+      "cross_terms": 0.0028823461941559843
+     },
+     "P35_W": 0.034260463635783896,
+     "temp_factor": 1.0858183678849844,
+     "coil_C": 33.175657097265336,
+     "skin": {
+      "pads_C": [
+       32.67769378223667,
+       32.49790047521869,
+       32.23239924648635
+      ],
+      "web_C": 30.725294883510927,
+      "max_shell_C": 32.94894628740074,
+      "coil_C": 33.175657097265336,
+      "sources_W": {
+       "coils": 0.034260463635783896,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.044636839748585025,
+     "mean_items_W": {
+      "gravity": 0.01458693799346716,
+      "residual": 0.0009746680422473687,
+      "writing_drag": 0.02895384488253682,
+      "guide_drag": 0.0021568844101469255,
+      "inertia_and_wires": 0.0005824895611574805,
+      "cross_terms": -0.002617985140970738
+     },
+     "worst": 0.08875450954137788,
+     "worst_items_W": {
+      "gravity": 0.029259390486440436,
+      "residual": 0.0031036410112119145,
+      "writing_drag": 0.04763587885958367,
+      "guide_drag": 0.0021776107584133603,
+      "inertia_and_wires": 0.0005824895611574805,
+      "cross_terms": 0.00599549886457102
+     },
+     "P35_W": 0.0712643648582149,
+     "temp_factor": 1.1067064651852558,
+     "coil_C": 36.286272401852976,
+     "skin": {
+      "pads_C": [
+       35.23325056848784,
+       34.22872000140668,
+       32.79769243823189
+      ],
+      "web_C": 30.725318787560195,
+      "max_shell_C": 35.4901484576846,
+      "coil_C": 36.286272401852976,
+      "sources_W": {
+       "coils": 0.0712643648582149,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe_motion": {
+    "q_rms_2d_mm": 0.7604463247367595,
+    "at_limit": 0.3179,
+    "F_a_r2_tip_mm": 1.0174694234212904,
+    "F_oracle_tip_mm": 0.962612838313106,
+    "F_a_r2_at_limit": 0.3555302879671768
+   },
+   "screen": {
+    "worst07": 0.17143670910871667,
+    "worst07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 45.0,
+     "roll_deg": 150.0,
+     "P_W": 0.17143670910871667
+    },
+    "worst07_temp_factor": 1.1650647101768474,
+    "worst07_coil_C": 44.69280747739999,
+    "worst07_skin_max_C": 42.39662054039064,
+    "map07": 0.13983239411761042,
+    "map07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 135.0,
+     "roll_deg": 60.0,
+     "P_W": 0.13983239411761042
+    },
+    "map07_temp_factor": 1.1464800786704537,
+    "map07_coil_C": 42.04312122420648,
+    "map07_skin_max_C": 40.21974457768371,
+    "centre10": 0.0578412717894525,
+    "centre10_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 90.0,
+     "roll_deg": 270.0,
+     "P_W": 0.0578412717894525
+    },
+    "centre10_temp_factor": 1.0991918643498082,
+    "centre10_coil_C": 35.157522091491145,
+    "centre10_skin_max_C": 34.56281247005089
+   },
+   "nib_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "mean_W": 0.06024438395654722,
+      "P35_W": 0.09850338732204295,
+      "skin_max_C": 37.37132493931695,
+      "front_pad_C": 37.11442705012019,
+      "coil_C": 38.57603422044274
+     },
+     "steady_1mm": {
+      "mean_W": 0.06563768415413171,
+      "P35_W": 0.10403438812763761,
+      "skin_max_C": 37.75330592447129,
+      "front_pad_C": 37.496408035274534,
+      "coil_C": 39.040980217681
+     },
+     "steady_2mm": {
+      "mean_W": 0.06589178445667344,
+      "P35_W": 0.10429353385442905,
+      "skin_max_C": 37.7712030001539,
+      "front_pad_C": 37.514305110957146,
+      "coil_C": 39.062764479265496
+     },
+     "guide": {
+      "mean_W": 0.0638767631605956,
+      "P35_W": 0.10223851042453999,
+      "skin_max_C": 37.62929181914401,
+      "front_pad_C": 37.37238794795466,
+      "coil_C": 38.89002157739091
+     },
+     "spelling_cue": {
+      "mean_W": 0.06024438522169914,
+      "P35_W": 0.09850338939064655,
+      "skin_max_C": 37.37133175702935,
+      "front_pad_C": 37.11443066797831,
+      "coil_C": 38.57603766209136
+     },
+     "severe": {
+      "mean_W": 0.0643822375102278,
+      "P35_W": 0.10275402663853213,
+      "skin_max_C": 37.66488182905849,
+      "front_pad_C": 37.40798393986173,
+      "coil_C": 38.933350699931616
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "mean_W": 0.020127631437159225,
+      "P35_W": 0.03290995351134892,
+      "skin_max_C": 32.85721979333177,
+      "front_pad_C": 32.5844250943582,
+      "coil_C": 33.06213075752034
+     },
+     "steady_1mm": {
+      "mean_W": 0.021888246426347187,
+      "P35_W": 0.034692423315922864,
+      "skin_max_C": 32.97828493975248,
+      "front_pad_C": 32.70752570415567,
+      "coil_C": 33.211968414386426
+     },
+     "steady_2mm": {
+      "mean_W": 0.021971042093697622,
+      "P35_W": 0.034775771233253705,
+      "skin_max_C": 32.983945920819096,
+      "front_pad_C": 32.71328186306644,
+      "coil_C": 33.21897479205716
+     },
+     "guide": {
+      "mean_W": 0.021314065425333418,
+      "P35_W": 0.03411441332270788,
+      "skin_max_C": 32.93904026469036,
+      "front_pad_C": 32.66761377808178,
+      "coil_C": 33.16338595099055
+     },
+     "spelling_cue": {
+      "mean_W": 0.02012763185032724,
+      "P35_W": 0.032909954186904816,
+      "skin_max_C": 32.857227166443984,
+      "front_pad_C": 32.58442861600991,
+      "coil_C": 33.06213408206683
+     },
+     "severe": {
+      "mean_W": 0.02145923601599917,
+      "P35_W": 0.034260463635783896,
+      "skin_max_C": 32.94894628740074,
+      "front_pad_C": 32.67769378223667,
+      "coil_C": 33.175657097265336
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "mean_W": 0.04183488457578345,
+      "P35_W": 0.06840268865415976,
+      "skin_max_C": 35.29251588917872,
+      "front_pad_C": 35.035617999981966,
+      "coil_C": 36.045714690286275
+     },
+     "steady_1mm": {
+      "mean_W": 0.04554040295756903,
+      "P35_W": 0.07218060810389701,
+      "skin_max_C": 35.553425884307394,
+      "front_pad_C": 35.296527995110644,
+      "coil_C": 36.36329347716101
+     },
+     "steady_2mm": {
+      "mean_W": 0.04571483467587084,
+      "P35_W": 0.07235745240823703,
+      "skin_max_C": 35.56563907392082,
+      "front_pad_C": 35.30874118472407,
+      "coil_C": 36.37815933133953
+     },
+     "guide": {
+      "mean_W": 0.04433119192705271,
+      "P35_W": 0.07095467590571636,
+      "skin_max_C": 35.468773253169786,
+      "front_pad_C": 35.211869381980435,
+      "coil_C": 36.26024549363433
+     },
+     "spelling_cue": {
+      "mean_W": 0.04183488544533938,
+      "P35_W": 0.06840269007593883,
+      "skin_max_C": 35.29252266222025,
+      "front_pad_C": 35.03562157316921,
+      "coil_C": 36.04571807756164
+     },
+     "severe": {
+      "mean_W": 0.044636839748585025,
+      "P35_W": 0.0712643648582149,
+      "skin_max_C": 35.4901484576846,
+      "front_pad_C": 35.23325056848784,
+      "coil_C": 36.286272401852976
+     }
+    }
+   },
+   "battery": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.06024438395654722,
+      "total_W": 0.11836400539650292,
+      "hours": 18.755701892338887
+     },
+     "steady_1mm": {
+      "nib_W": 0.06563768415413171,
+      "total_W": 0.1237573055940874,
+      "hours": 17.938334947929427
+     },
+     "steady_2mm": {
+      "nib_W": 0.06589178445667344,
+      "total_W": 0.12401140589662915,
+      "hours": 17.901579164826998
+     },
+     "guide": {
+      "nib_W": 0.0638767631605956,
+      "total_W": 0.1254963846005513,
+      "hours": 17.689752633640794
+     },
+     "spelling_cue": {
+      "nib_W": 0.06024438522169914,
+      "total_W": 0.12023620724079959,
+      "hours": 18.46365625583947
+     },
+     "severe": {
+      "nib_W": 0.0643822375102278,
+      "total_W": 0.1225018589501835,
+      "hours": 18.122173973725438
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.06024438395654722,
+      "total_W": 0.08813693713150691,
+      "hours": 25.188077465042763
+     },
+     "steady_1mm": {
+      "nib_W": 0.06563768415413171,
+      "total_W": 0.0935302373290914,
+      "hours": 23.73563954712106
+     },
+     "steady_2mm": {
+      "nib_W": 0.06589178445667344,
+      "total_W": 0.09378433763163313,
+      "hours": 23.67132994764791
+     },
+     "guide": {
+      "nib_W": 0.0638767631605956,
+      "total_W": 0.09251931633555528,
+      "hours": 23.994989240391217
+     },
+     "spelling_cue": {
+      "nib_W": 0.06024438522169914,
+      "total_W": 0.08822560348756003,
+      "hours": 25.162763554380494
+     },
+     "severe": {
+      "nib_W": 0.0643822375102278,
+      "total_W": 0.09227479068518749,
+      "hours": 24.058575300094052
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.020127631437159225,
+      "total_W": 0.04802018461211891,
+      "hours": 46.23055946019283
+     },
+     "steady_1mm": {
+      "nib_W": 0.021888246426347187,
+      "total_W": 0.04978079960130687,
+      "hours": 44.5955070585431
+     },
+     "steady_2mm": {
+      "nib_W": 0.021971042093697622,
+      "total_W": 0.04986359526865731,
+      "hours": 44.521458752402125
+     },
+     "guide": {
+      "nib_W": 0.021314065425333418,
+      "total_W": 0.0499566186002931,
+      "hours": 44.43855613532208
+     },
+     "spelling_cue": {
+      "nib_W": 0.02012763185032724,
+      "total_W": 0.04810885011618812,
+      "hours": 46.1453556806795
+     },
+     "severe": {
+      "nib_W": 0.02145923601599917,
+      "total_W": 0.04935178919095885,
+      "hours": 44.983171560610806
+     }
+    }
+   },
+   "electrical": {
+    "F_peak_N": 0.14776104850594476,
+    "F_peak_parts_N": {
+     "static_N": 0.1148769916590664,
+     "dynamic_N": 0.03288405684687836,
+     "total_N": 0.14776104850594476
+    },
+    "I_peak_A": 0.614995709410528,
+    "V_peak_V": 2.032729183978635,
+    "R_hot_loop_ohm": 3.0076382139210778,
+    "back_emf_V": 0.03544561669950208,
+    "ok": true
+   },
+   "lead_heating": {
+    "I_rms_coil_A": 0.10723581789352388,
+    "rise_K": 3.9744221933633144
+   },
+   "modes": {
+    "servo_bw_max_worst_Hz": 45.0197916071775,
+    "lowest_stuck_worst_Hz": 112.54947901794375,
+    "first_free_nominal_Hz": 1202.378700818428,
+    "lowest_stuck_nominal_Hz": 159.50913257085944,
+    "m_carrier_g": 2.6971064405329637,
+    "k_lat_N_m": 2.2270401255447654,
+    "k_tilt_Nm_rad": 614.3467573961362,
+    "n_cases": 18,
+    "passes": true,
+    "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+   },
+   "fit": {
+    "coil_clearance_stop_mm": 0.36687071791152803,
+    "coil_clearance_p99_mm": 0.27687071791152806,
+    "coil_p99_ok": true,
+    "coil_inner_edge_mm": 1.6999999999999997,
+    "coil_inner_ok": true,
+    "magnet_r_out_mm": 10.39985857864376,
+    "magnets_ok": true,
+    "flange_r_mm": 9.441304034117898,
+    "flange_ok": true,
+    "ball_circle_r_mm": 8.211956051176848,
+    "ball_on_flange_ok": true,
+    "wire_circle_mm": 4.2038040341178995,
+    "wire_circle_min_mm": 3.0336959658821003,
+    "wire_circle_max_mm": 5.373912102353698,
+    "wires_ok": true,
+    "rear_race": "ring",
+    "pad_gap_ok": true,
+    "board_ok": true,
+    "board": "14 mm (study K)",
+    "head": {
+     "od_min_head_mm": 17.89366637052058,
+     "margin_mm": 3.0531668147397095,
+     "R_s_mm": 5.999982818918658,
+     "fits": true
+    },
+    "head_ok": true,
+    "length_mm": 148.3306,
+    "length_ok": true,
+    "all_ok": true
+   },
+   "constraints": {
+    "goodman": 0.30737130917855704,
+    "hertz_run": 0.6815546883307806,
+    "hertz_static": 0.6194970765632282,
+    "modes": 5.019791607177503,
+    "coil_p99": 0.07687071791152805,
+    "skin": 3.335118170941513,
+    "coil_inner": -2.220446049250313e-16,
+    "magnets": 0.4001414213562402,
+    "wires_min": 1.1701080682357992,
+    "wires_max": 1.1701080682357983,
+    "head": 3.0531668147397095,
+    "board": 1.0,
+    "length": 26.669399999999996,
+    "voltage": 1.267270816021365,
+    "lead_heat": 41.02557780663668,
+    "magnet_T": 41.066649300068384,
+    "feasible": true
+   }
+  },
+  "P_150_24": {
+   "design": {
+    "name": "P_150_24",
+    "source": "the pass, 1.5 mm (mechanics_study.json)",
+    "reach_mm": 1.5,
+    "stop_mm": 1.7,
+    "od_mm": 24.0,
+    "bore_mm": 11.0,
+    "length_mm": 152.3306,
+    "m_move_g": 3.4359566246415074,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.18001499999999995,
+     "carrier_tube": 0.3333262497029004,
+     "guide_stations": 0.06,
+     "coils": 0.80027419,
+     "flange": 1.1589664066763943,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005874778262212913
+    },
+    "stator_parts_g": {
+     "back_plate": 3.6782863952706926,
+     "keeper": 3.6782863952706926,
+     "magnets": 2.4276000000000013
+    },
+    "stack_mm": 8.480599999999999,
+    "plate_t_mm": 1.4653,
+    "magnets_mm": {
+     "w": 4.808326112068524,
+     "e": 2.5455844122715705,
+     "t_m": 3.5,
+     "t_cu": 1.6,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": false,
+     "t_m2": 0.0
+    },
+    "coil_mm": {
+     "x_in": 2.2,
+     "y_in": 0.8499999999999999,
+     "b": 2.2,
+     "yc": 4.75,
+     "order": "xy",
+     "k_fill": 0.55,
+     "outer_corner_r": 8.955445270895245,
+     "inner_edge": 1.6999999999999997
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 2.5,
+    "wires": {
+     "n": 8,
+     "d_mm": 0.1,
+     "L_mm": 34.0,
+     "anchor_N_m": 100.0,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 2,
+     "circle_mm": 3.7624999999999997
+    },
+    "guide": {
+     "circle_r_mm": 7.55,
+     "preload_per_race_N": 4.0,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 9.0,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.5,
+    "carrier_mat": "Ti",
+    "flange_mat": "Ti",
+    "board_narrow": false,
+    "weight_trim": false,
+    "notes": {
+     "pass_moving_mass_g": 3.6699750000000004,
+     "pass_length_mm": 152.299
+    }
+   },
+   "magnetics": {
+    "Km_centre_x_N_sqrtW": 0.27286010296453667,
+    "Km_centre_y_N_sqrtW": 0.21856178524149425,
+    "sv_min_centre_N_sqrtW": 0.21856178524149425,
+    "sv_min_workspace_N_sqrtW": 0.15837233149404356,
+    "cross_coupling_max": 0.21707894503071298,
+    "copper_mass_g": 0.70027419,
+    "field_scale": 1.0,
+    "sv_min_workspace_x0.7": 0.11086063204583048,
+    "n_positions": 97,
+    "quadrature": "fine"
+   },
+   "wires": {
+    "n_w": 8,
+    "d_mm": 0.1,
+    "L_mm": 34.0,
+    "anchor_N_m": 100.0,
+    "assembly_N": 0.005,
+    "F_usable_mN": 2.7674949886503275,
+    "F_stop_mN": 3.203394360142964,
+    "F_stop_linear_mN": 2.6007821535341105,
+    "tension_stop_N": 0.010070691187327173,
+    "k_small_N_m": 1.5298718550200652,
+    "goodman_worst_corner": 1.6959318234824108,
+    "goodman_nominal_Kt1.8": 2.5034528504879257,
+    "bend_stress_worst_MPa": 155.29985673859906,
+    "P_buckle_each_ff_N": 0.02139057582399577,
+    "R_wire_ohm": 0.3392569916756745,
+    "k_axial_N_m": 235804.2485870927,
+    "k_tilt_Nm_rad_wires": 1.8864339886967416,
+    "mass_g": 0.01762433478663874,
+    "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+   },
+   "guide": {
+    "circle_r_mm": 7.55,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "mu_roll": 0.001,
+    "drag_35_mN": 8.106606941973295,
+    "drag_mean_mN": 8.055535244693672,
+    "hertz_run_GPa": 2.684909506279982,
+    "hertz_static_GPa": 3.0495408753292272,
+    "tilt_stiffness_min_Nm_rad": 516.6221126433725,
+    "min_preload_all_balls_loaded_N": 3.823897431851446,
+    "lever_mm": 75.00059999999999,
+    "mass_balls_g": 0.010294370807283036,
+    "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+   },
+   "guide_rows": {
+    "35": {
+     "couple_mNm": 12.029344004366006,
+     "total_normal_N": 8.106606941973295,
+     "drag_mN": 8.106606941973295,
+     "max_hertz_GPa": 2.684909506279982,
+     "min_tilt_stiffness_Nm_rad": 516.6221126433725,
+     "tilt_urad": 23.179174783669552,
+     "unloaded_contacts": 0
+    },
+    "50": {
+     "couple_mNm": 9.439411562935216,
+     "total_normal_N": 8.065443821676796,
+     "drag_mN": 8.065443821676796,
+     "max_hertz_GPa": 2.6300378177624326,
+     "min_tilt_stiffness_Nm_rad": 517.9899379514932,
+     "tilt_urad": 18.1728795618358,
+     "unloaded_contacts": 0
+    },
+    "60": {
+     "couple_mNm": 7.342558740000001,
+     "total_normal_N": 8.039522596969507,
+     "drag_mN": 8.039522596969507,
+     "max_hertz_GPa": 2.5848565204193474,
+     "min_tilt_stiffness_Nm_rad": 518.8438607850015,
+     "tilt_urad": 14.128300048073967,
+     "unloaded_contacts": 0
+    },
+    "75": {
+     "couple_mNm": 3.8007880833919354,
+     "total_normal_N": 8.010567618155095,
+     "drag_mN": 8.010567618155095,
+     "max_hertz_GPa": 2.506835136984624,
+     "min_tilt_stiffness_Nm_rad": 519.7910927212226,
+     "tilt_urad": 7.308919762278668,
+     "unloaded_contacts": 0
+    },
+    "penup": {
+     "couple_mNm": 0.0,
+     "total_normal_N": 8.00000000000001,
+     "drag_mN": 8.00000000000001,
+     "max_hertz_GPa": 2.420422196758821,
+     "min_tilt_stiffness_Nm_rad": 520.1350844293219,
+     "tilt_urad": 0.0,
+     "unloaded_contacts": 0
+    }
+   },
+   "leads": {
+    "R_lead_ohm": 0.3392569916756745,
+    "factor": 1.13570279667027
+   },
+   "dutyA": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.1415580859894123,
+     "mean_items_W": {
+      "gravity": 0.04393895290379076,
+      "residual": 0.003199893136701578,
+      "writing_drag": 0.09505719435216438,
+      "guide_drag": 0.007169325451933692,
+      "inertia_and_wires": 0.00042928758715370536,
+      "cross_terms": -0.008236567442331786
+     },
+     "worst": 0.2716438908705069,
+     "worst_items_W": {
+      "gravity": 0.08416797647480985,
+      "residual": 0.0097307491130561,
+      "writing_drag": 0.15242202773300578,
+      "guide_drag": 0.007260380528353929,
+      "inertia_and_wires": 0.00042928758715370536,
+      "cross_terms": 0.01763346943412753
+     },
+     "P35_W": 0.2259675704198932,
+     "temp_factor": 1.1955593938781648,
+     "coil_C": 49.290893505542726,
+     "skin": {
+      "pads_C": [
+       45.91732282757471,
+       41.464764688970654,
+       35.16090924253303
+      ],
+      "web_C": 30.725418723862187,
+      "max_shell_C": 46.17420896385384,
+      "coil_C": 49.290893505542726,
+      "sources_W": {
+       "coils": 0.2259675704198932,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.027280392866245923,
+     "mean_items_W": {
+      "gravity": 0.00846770347994492,
+      "residual": 0.0006166680009063706,
+      "writing_drag": 0.018318964886852824,
+      "guide_drag": 0.0013816378877103178,
+      "inertia_and_wires": 8.273023719063133e-05,
+      "cross_terms": -0.0015873116263591413
+     },
+     "worst": 0.060585354525734526,
+     "worst_items_W": {
+      "gravity": 0.019761681855804833,
+      "residual": 0.002284669018369722,
+      "writing_drag": 0.03291695012550297,
+      "guide_drag": 0.0013991855836956667,
+      "inertia_and_wires": 8.273023719063133e-05,
+      "cross_terms": 0.0041401377051707025
+     },
+     "P35_W": 0.043547382355444135,
+     "temp_factor": 1.091043161292374,
+     "coil_C": 33.95632038990972,
+     "skin": {
+      "pads_C": [
+       33.31905253290844,
+       32.93224749369072,
+       32.37415198334806
+      ],
+      "web_C": 30.725300882742232,
+      "max_shell_C": 33.5796858381401,
+      "coil_C": 33.95632038990972,
+      "sources_W": {
+       "coils": 0.043547382355444135,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.05704748885476835,
+     "mean_items_W": {
+      "gravity": 0.01770726771663664,
+      "residual": 0.0012895474446163837,
+      "writing_drag": 0.038307767426130894,
+      "guide_drag": 0.002889216896066144,
+      "inertia_and_wires": 0.00017300162454494535,
+      "cross_terms": -0.003319312253226664
+     },
+     "worst": 0.12669327579022677,
+     "worst_items_W": {
+      "gravity": 0.041324710056334334,
+      "residual": 0.004777593599964044,
+      "writing_drag": 0.06883439526052566,
+      "guide_drag": 0.0029259118218342285,
+      "inertia_and_wires": 0.00017300162454494535,
+      "cross_terms": 0.008657663427023555
+     },
+     "P35_W": 0.09106426075888098,
+     "temp_factor": 1.117953972130859,
+     "coil_C": 37.95067569584062,
+     "skin": {
+      "pads_C": [
+       36.60065466278779,
+       35.154800744760216,
+       33.10004755022361
+      ],
+      "web_C": 30.725331578040965,
+      "max_shell_C": 36.857540799066925,
+      "coil_C": 37.95067569584062,
+      "sources_W": {
+       "coils": 0.09106426075888098,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.1428506143111721,
+     "mean_items_W": {
+      "gravity": 0.04396768499659841,
+      "residual": 0.0032019855767918,
+      "writing_drag": 0.09511935314179557,
+      "guide_drag": 0.0071740135409899845,
+      "inertia_and_wires": 0.0016261287990919915,
+      "cross_terms": -0.008238551744095646
+     },
+     "worst": 0.2730215050847784,
+     "worst_items_W": {
+      "gravity": 0.08422301470288965,
+      "residual": 0.009737112141033039,
+      "writing_drag": 0.15252169792442666,
+      "guide_drag": 0.007265128159177454,
+      "inertia_and_wires": 0.001626128799091992,
+      "cross_terms": 0.017648423358159613
+     },
+     "P35_W": 0.22731531646044711,
+     "temp_factor": 1.196341181362659,
+     "coil_C": 49.404187491364496,
+     "skin": {
+      "pads_C": [
+       46.01040062278817,
+       41.52780412768581,
+       35.18149819763664
+      ],
+      "web_C": 30.725419594488976,
+      "max_shell_C": 46.267286759067304,
+      "coil_C": 49.404187491364496,
+      "sources_W": {
+       "coils": 0.22731531646044711,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.02737033322655624,
+     "mean_items_W": {
+      "gravity": 0.008468094838145286,
+      "residual": 0.0006166965019137132,
+      "writing_drag": 0.01831981154818758,
+      "guide_drag": 0.0012894886439013113,
+      "inertia_and_wires": 0.0002632779467732073,
+      "cross_terms": -0.0015870362523648558
+     },
+     "worst": 0.06067566521130558,
+     "worst_items_W": {
+      "gravity": 0.019762595196271417,
+      "residual": 0.002284774610630667,
+      "writing_drag": 0.0329184714728663,
+      "guide_drag": 0.001305865984810252,
+      "inertia_and_wires": 0.0002632779467732074,
+      "cross_terms": 0.004140679999953753
+     },
+     "P35_W": 0.04363690558428124,
+     "temp_factor": 1.0910935868521654,
+     "coil_C": 33.9638458755082,
+     "skin": {
+      "pads_C": [
+       33.32523517007436,
+       32.93643485089901,
+       32.37551959244042
+      ],
+      "web_C": 30.7253009405731,
+      "max_shell_C": 33.58576624566196,
+      "coil_C": 33.9638458755082,
+      "sources_W": {
+       "coils": 0.04363690558428124,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.057238514996982695,
+     "mean_items_W": {
+      "gravity": 0.01770899789114611,
+      "residual": 0.001289673446106457,
+      "writing_drag": 0.0383115104724199,
+      "guide_drag": 0.0026966575259219356,
+      "inertia_and_wires": 0.0005505829461415409,
+      "cross_terms": -0.0033189072847532347
+     },
+     "worst": 0.12688866242152766,
+     "worst_items_W": {
+      "gravity": 0.041328747887641494,
+      "residual": 0.00477806041792803,
+      "writing_drag": 0.06884112105910509,
+      "guide_drag": 0.002730906822978997,
+      "inertia_and_wires": 0.0005505829461415407,
+      "cross_terms": 0.008659243287732503
+     },
+     "P35_W": 0.09125616608439312,
+     "temp_factor": 1.1180632072481165,
+     "coil_C": 37.96680760687837,
+     "skin": {
+      "pads_C": [
+       36.61390799394285,
+       35.16377691953107,
+       33.10297920797827
+      ],
+      "web_C": 30.725331702009363,
+      "max_shell_C": 36.87079413022199,
+      "coil_C": 37.96680760687837,
+      "sources_W": {
+       "coils": 0.09125616608439312,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 24.0,
+      "fin_lambda_mm": 5.3619026473818066,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe_motion": {
+    "q_rms_2d_mm": 0.8973422207371354,
+    "at_limit": 0.13785,
+    "F_a_r2_tip_mm": 0.818,
+    "F_oracle_tip_mm": 0.674,
+    "F_a_r2_at_limit": 0.149
+   },
+   "screen": {
+    "worst07": 0.4280345449074508,
+    "worst07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 0.0,
+     "roll_deg": 150.0,
+     "P_W": 0.4280345449074508
+    },
+    "worst07_temp_factor": 1.3225665689847736,
+    "worst07_coil_C": 65.97187660542428,
+    "worst07_skin_max_C": 59.87863570520385,
+    "map07": 0.270122598598197,
+    "map07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 135.0,
+     "roll_deg": 240.0,
+     "P_W": 0.270122598598197
+    },
+    "map07_temp_factor": 1.224309166940508,
+    "map07_coil_C": 52.93687789913938,
+    "map07_skin_max_C": 49.16960352321321,
+    "centre10": 0.08880168513852638,
+    "centre10_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 90.0,
+     "roll_deg": 270.0,
+     "P_W": 0.08880168513852638
+    },
+    "centre10_temp_factor": 1.1168887153010125,
+    "centre10_coil_C": 37.7589231640506,
+    "centre10_skin_max_C": 36.70000460898449
+   },
+   "nib_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "mean_W": 0.13340077088246638,
+      "P35_W": 0.21736753506644857,
+      "skin_max_C": 45.58027486546281,
+      "front_pad_C": 45.32338872918367,
+      "coil_C": 48.56795887685003
+     },
+     "steady_1mm": {
+      "mean_W": 0.14679722564263273,
+      "P35_W": 0.23143048242814074,
+      "skin_max_C": 46.55148761270363,
+      "front_pad_C": 46.294601476424496,
+      "coil_C": 49.75011583451624
+     },
+     "steady_2mm": {
+      "mean_W": 0.15368382243454237,
+      "P35_W": 0.23861138987953662,
+      "skin_max_C": 47.047414154571385,
+      "front_pad_C": 46.79052801829225,
+      "coil_C": 50.35375598815493
+     },
+     "guide": {
+      "mean_W": 0.1421343340866883,
+      "P35_W": 0.2265684268527515,
+      "skin_max_C": 46.21571112096039,
+      "front_pad_C": 45.958822147673544,
+      "coil_C": 49.34140548839563
+     },
+     "spelling_cue": {
+      "mean_W": 0.13340077226264793,
+      "P35_W": 0.21736753731536104,
+      "skin_max_C": 45.58027818637808,
+      "front_pad_C": 45.32339053254252,
+      "coil_C": 48.567960615658016
+     },
+     "severe": {
+      "mean_W": 0.1428506143111721,
+      "P35_W": 0.22731531646044711,
+      "skin_max_C": 46.267286759067304,
+      "front_pad_C": 46.01040062278817,
+      "coil_C": 49.404187491364496
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "mean_W": 0.025795839535788876,
+      "P35_W": 0.04203257610710743,
+      "skin_max_C": 33.47680037001981,
+      "front_pad_C": 33.21443725560233,
+      "coil_C": 33.82898301887856
+     },
+     "steady_1mm": {
+      "mean_W": 0.028229194389188302,
+      "P35_W": 0.04450422034508995,
+      "skin_max_C": 33.64467416558335,
+      "front_pad_C": 33.385133506454544,
+      "coil_C": 34.03675393330052
+     },
+     "steady_2mm": {
+      "mean_W": 0.02947010058967792,
+      "P35_W": 0.04575564005500876,
+      "skin_max_C": 33.72967044996713,
+      "front_pad_C": 33.47155882990646,
+      "coil_C": 34.14195055240122
+     },
+     "guide": {
+      "mean_W": 0.027384952572473878,
+      "P35_W": 0.04365282789447923,
+      "skin_max_C": 33.586854183519414,
+      "front_pad_C": 33.32633787475449,
+      "coil_C": 33.9651872311025
+     },
+     "spelling_cue": {
+      "mean_W": 0.025795839787735985,
+      "P35_W": 0.0420325765176382,
+      "skin_max_C": 33.4768038728996,
+      "front_pad_C": 33.21443893199919,
+      "coil_C": 33.82898460314884
+     },
+     "severe": {
+      "mean_W": 0.02737033322655624,
+      "P35_W": 0.04363690558428124,
+      "skin_max_C": 33.58576624566196,
+      "front_pad_C": 33.32523517007436,
+      "coil_C": 33.9638458755082
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "mean_W": 0.05389612830307812,
+      "P35_W": 0.08782009640099425,
+      "skin_max_C": 36.63349290231473,
+      "front_pad_C": 36.37660676603559,
+      "coil_C": 37.67796533372013
+     },
+     "steady_1mm": {
+      "mean_W": 0.05906409001296383,
+      "P35_W": 0.0931164113357027,
+      "skin_max_C": 36.99926605396591,
+      "front_pad_C": 36.742379917686776,
+      "coil_C": 38.12318320939194
+     },
+     "steady_2mm": {
+      "mean_W": 0.06170492025995763,
+      "P35_W": 0.09580381690405677,
+      "skin_max_C": 37.18486317510008,
+      "front_pad_C": 36.92797703882094,
+      "coil_C": 38.34909141405142
+     },
+     "guide": {
+      "mean_W": 0.05726961233853896,
+      "P35_W": 0.09129029982365766,
+      "skin_max_C": 36.87315738635618,
+      "front_pad_C": 36.61626841306933,
+      "coil_C": 37.96967984835501
+     },
+     "spelling_cue": {
+      "mean_W": 0.05389612883792141,
+      "P35_W": 0.08782009727248523,
+      "skin_max_C": 36.63349612810276,
+      "front_pad_C": 36.3766084742672,
+      "coil_C": 37.67796695673956
+     },
+     "severe": {
+      "mean_W": 0.057238514996982695,
+      "P35_W": 0.09125616608439312,
+      "skin_max_C": 36.87079413022199,
+      "front_pad_C": 36.61390799394285,
+      "coil_C": 37.96680760687837
+     }
+    }
+   },
+   "battery": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.13340077088246638,
+      "total_W": 0.19152039232242207,
+      "hours": 11.59145495202756
+     },
+     "steady_1mm": {
+      "nib_W": 0.14679722564263273,
+      "total_W": 0.20491684708258842,
+      "hours": 10.83366268613954
+     },
+     "steady_2mm": {
+      "nib_W": 0.15368382243454237,
+      "total_W": 0.21180344387449807,
+      "hours": 10.48141597412098
+     },
+     "guide": {
+      "nib_W": 0.1421343340866883,
+      "total_W": 0.203753955526644,
+      "hours": 10.895494000408256
+     },
+     "spelling_cue": {
+      "nib_W": 0.13340077226264793,
+      "total_W": 0.19339259428174838,
+      "hours": 11.479239979405534
+     },
+     "severe": {
+      "nib_W": 0.1428506143111721,
+      "total_W": 0.2009702357511278,
+      "hours": 11.046411881355134
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.13340077088246638,
+      "total_W": 0.16129332405742608,
+      "hours": 13.763743868342637
+     },
+     "steady_1mm": {
+      "nib_W": 0.14679722564263273,
+      "total_W": 0.1746897788175924,
+      "hours": 12.708242090787007
+     },
+     "steady_2mm": {
+      "nib_W": 0.15368382243454237,
+      "total_W": 0.18157637560950207,
+      "hours": 12.226260120833834
+     },
+     "guide": {
+      "nib_W": 0.1421343340866883,
+      "total_W": 0.17077688726164797,
+      "hours": 12.999417167024067
+     },
+     "spelling_cue": {
+      "nib_W": 0.13340077226264793,
+      "total_W": 0.16138199052850882,
+      "hours": 13.756181794075886
+     },
+     "severe": {
+      "nib_W": 0.1428506143111721,
+      "total_W": 0.17074316748613177,
+      "hours": 13.001984399641143
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.025795839535788876,
+      "total_W": 0.05368839271074856,
+      "hours": 41.34971989123359
+     },
+     "steady_1mm": {
+      "nib_W": 0.028229194389188302,
+      "total_W": 0.05612174756414799,
+      "hours": 39.55685801591455
+     },
+     "steady_2mm": {
+      "nib_W": 0.02947010058967792,
+      "total_W": 0.0573626537646376,
+      "hours": 38.70113835926756
+     },
+     "guide": {
+      "nib_W": 0.027384952572473878,
+      "total_W": 0.056027505747433565,
+      "hours": 39.623395158933896
+     },
+     "spelling_cue": {
+      "nib_W": 0.025795839787735985,
+      "total_W": 0.05377705805359687,
+      "hours": 41.281544218864454
+     },
+     "severe": {
+      "nib_W": 0.02737033322655624,
+      "total_W": 0.05526288640151593,
+      "hours": 40.171625923960114
+     }
+    }
+   },
+   "electrical": {
+    "F_peak_N": 0.15427376179893726,
+    "F_peak_parts_N": {
+     "static_N": 0.11366278442076223,
+     "dynamic_N": 0.04061097737817503,
+     "total_N": 0.15427376179893726
+    },
+    "I_peak_A": 0.9626584806081121,
+    "V_peak_V": 3.328914805172059,
+    "R_hot_loop_ohm": 3.1673571482089127,
+    "back_emf_V": 0.04879354998807724,
+    "ok": false
+   },
+   "lead_heating": {
+    "I_rms_coil_A": 0.1586074951204,
+    "rise_K": 11.49240434225857
+   },
+   "modes": {
+    "servo_bw_max_worst_Hz": 45.935812807180106,
+    "lowest_stuck_worst_Hz": 114.83953201795026,
+    "first_free_nominal_Hz": 1197.4203718603417,
+    "lowest_stuck_nominal_Hz": 162.71799323588655,
+    "m_carrier_g": 2.5459566246415073,
+    "k_lat_N_m": 1.5298718550200652,
+    "k_tilt_Nm_rad": 518.5085466320692,
+    "n_cases": 18,
+    "passes": true,
+    "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+   },
+   "fit": {
+    "coil_clearance_stop_mm": 0.3445547291047557,
+    "coil_clearance_p99_mm": 0.25455472910475574,
+    "coil_p99_ok": true,
+    "coil_inner_edge_mm": 1.6999999999999997,
+    "coil_inner_ok": true,
+    "magnet_r_out_mm": 10.400000000000002,
+    "magnets_ok": true,
+    "flange_r_mm": 9.0,
+    "flange_ok": true,
+    "ball_circle_r_mm": 7.55,
+    "ball_on_flange_ok": true,
+    "wire_circle_mm": 3.7624999999999997,
+    "wire_circle_min_mm": 3.4749999999999996,
+    "wire_circle_max_mm": 4.05,
+    "wires_ok": true,
+    "rear_race": "ring",
+    "pad_gap_ok": true,
+    "board_ok": true,
+    "board": "14 mm (study K)",
+    "head": {
+     "od_min_head_mm": 18.584157602508462,
+     "margin_mm": 2.707921198745769,
+     "R_s_mm": 6.25,
+     "fits": true
+    },
+    "head_ok": true,
+    "length_mm": 152.3306,
+    "length_ok": true,
+    "all_ok": true
+   },
+   "constraints": {
+    "goodman": 0.19593182348241078,
+    "hertz_run": 0.6486327028532366,
+    "hertz_static": 0.6194970765632282,
+    "modes": 5.935812807180106,
+    "coil_p99": 0.05455472910475573,
+    "skin": -5.267286759067304,
+    "coil_inner": -2.220446049250313e-16,
+    "magnets": 0.3999999999999986,
+    "wires_min": 0.2875000000000001,
+    "wires_max": 0.2875000000000001,
+    "head": 2.707921198745769,
+    "board": 1.0,
+    "length": 22.669399999999996,
+    "voltage": -0.028914805172059133,
+    "lead_heat": 33.50759565774143,
+    "magnet_T": 30.595812508635504,
+    "feasible": false
+   }
+  },
+  "P_1059_20": {
+   "design": {
+    "name": "P_1059_20",
+    "source": "the pass, 20 mm body / 1.059 mm (compact_20mm.json)",
+    "reach_mm": 1.058695965882101,
+    "stop_mm": 1.2586959658821009,
+    "od_mm": 20.0,
+    "bore_mm": 9.0,
+    "length_mm": 152.3306,
+    "m_move_g": 2.65744776634721,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.08001499999999995,
+     "carrier_tube": 0.3333262497029004,
+     "guide_stations": 0.06,
+     "coils": 0.4969467792163179,
+     "flange": 0.7844761095495688,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.0051836278784231585
+    },
+    "stator_parts_g": {
+     "back_plate": 2.380674765642804,
+     "keeper": 2.380674765642804,
+     "magnets": 1.4422415688481798
+    },
+    "stack_mm": 8.480599999999999,
+    "plate_t_mm": 1.4653,
+    "magnets_mm": {
+     "w": 3.7061616247851745,
+     "e": 2.233535337181825,
+     "t_m": 3.5,
+     "t_cu": 1.6,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": false,
+     "t_m2": 0.0
+    },
+    "coil_mm": {
+     "x_in": 1.8000000000000003,
+     "y_in": 0.6168109252649671,
+     "b": 1.7,
+     "yc": 4.25,
+     "order": "yxxy",
+     "k_fill": 0.55,
+     "outer_corner_r": 7.4413040341179,
+     "inner_edge": 1.9331890747350335
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 2.5,
+    "wires": {
+     "n": 8,
+     "d_mm": 0.1,
+     "L_mm": 30.0,
+     "anchor_N_m": 100.0,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 2,
+     "circle_mm": 3.203804034117899
+    },
+    "guide": {
+     "circle_r_mm": 6.211956051176848,
+     "preload_per_race_N": 4.0,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 7.441304034117899,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.5,
+    "carrier_mat": "Ti",
+    "flange_mat": "Ti",
+    "board_narrow": false,
+    "weight_trim": false,
+    "notes": {
+     "pass_moving_mass_g": 3.569975,
+     "pass_length_mm": 148.299
+    }
+   },
+   "magnetics": {
+    "Km_centre_x_N_sqrtW": 0.1349597817524764,
+    "Km_centre_y_N_sqrtW": 0.14685003430827992,
+    "sv_min_centre_N_sqrtW": 0.1349597817524764,
+    "sv_min_workspace_N_sqrtW": 0.10284268102353232,
+    "cross_coupling_max": 0.14092086767402118,
+    "copper_mass_g": 0.39694677921631794,
+    "field_scale": 1.0,
+    "sv_min_workspace_x0.7": 0.07198987671647263,
+    "n_positions": 97,
+    "quadrature": "fine"
+   },
+   "wires": {
+    "n_w": 8,
+    "d_mm": 0.1,
+    "L_mm": 30.0,
+    "anchor_N_m": 100.0,
+    "assembly_N": 0.005,
+    "F_usable_mN": 2.6636376837435427,
+    "F_stop_mN": 3.2131318866861727,
+    "F_stop_linear_mN": 2.8031664218807637,
+    "tension_stop_N": 0.008156660903527554,
+    "k_small_N_m": 2.2270401255447654,
+    "goodman_worst_corner": 1.807371309178557,
+    "goodman_nominal_Kt1.8": 2.668592926630759,
+    "bend_stress_worst_MPa": 145.74110055915767,
+    "P_buckle_each_ff_N": 0.027475006280599016,
+    "R_wire_ohm": 0.29934440441971283,
+    "k_axial_N_m": 267244.81506537175,
+    "k_tilt_Nm_rad_wires": 2.137958520522974,
+    "mass_g": 0.015550883635269476,
+    "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+   },
+   "guide": {
+    "circle_r_mm": 6.211956051176848,
+    "preload_per_race_N": 4.0,
+    "ball_d_mm": 0.8,
+    "n_balls": 6,
+    "mu_roll": 0.001,
+    "drag_35_mN": 8.141496543732584,
+    "drag_mean_mN": 8.073658330898027,
+    "hertz_run_GPa": 2.7227217666677785,
+    "hertz_static_GPa": 3.0495408753292272,
+    "tilt_stiffness_min_Nm_rad": 348.9396712700582,
+    "min_preload_all_balls_loaded_N": 4.3996901572881395,
+    "lever_mm": 71.00059999999999,
+    "mass_balls_g": 0.010294370807283036,
+    "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+   },
+   "guide_rows": {
+    "35": {
+     "couple_mNm": 11.387784123278868,
+     "total_normal_N": 8.141496543732584,
+     "drag_mN": 8.141496543732584,
+     "max_hertz_GPa": 2.7227217666677785,
+     "min_tilt_stiffness_Nm_rad": 348.9396712700582,
+     "tilt_urad": 32.43799169095095,
+     "unloaded_contacts": 0
+    },
+    "50": {
+     "couple_mNm": 8.935980307028718,
+     "total_normal_N": 8.08677300154941,
+     "drag_mN": 8.08677300154941,
+     "max_hertz_GPa": 2.6602736776387697,
+     "min_tilt_stiffness_Nm_rad": 350.17976893043186,
+     "tilt_urad": 25.424554478861932,
+     "unloaded_contacts": 0
+    },
+    "60": {
+     "couple_mNm": 6.950958740000001,
+     "total_normal_N": 8.052370562243544,
+     "drag_mN": 8.052370562243544,
+     "max_hertz_GPa": 2.6087678448679115,
+     "min_tilt_stiffness_Nm_rad": 350.95035866100744,
+     "tilt_urad": 19.76247733174625,
+     "unloaded_contacts": 0
+    },
+    "75": {
+     "couple_mNm": 3.598081007267641,
+     "total_normal_N": 8.013993216066568,
+     "drag_mN": 8.013993216066568,
+     "max_hertz_GPa": 2.519597213665193,
+     "min_tilt_stiffness_Nm_rad": 351.80202160694023,
+     "tilt_urad": 10.2215954038572,
+     "unloaded_contacts": 0
+    },
+    "penup": {
+     "couple_mNm": 0.0,
+     "total_normal_N": 8.00000000000001,
+     "drag_mN": 8.00000000000001,
+     "max_hertz_GPa": 2.420422196758821,
+     "min_tilt_stiffness_Nm_rad": 352.11050939030116,
+     "tilt_urad": 0.0,
+     "unloaded_contacts": 0
+    }
+   },
+   "leads": {
+    "R_lead_ohm": 0.29934440441971283,
+    "factor": 1.1197377617678852
+   },
+   "dutyA": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.35414061560054017,
+     "mean_items_W": {
+      "gravity": 0.0741478218745677,
+      "residual": 0.009027137156976095,
+      "writing_drag": 0.26816343375105245,
+      "guide_drag": 0.0203166026205469,
+      "inertia_and_wires": 0.00045685379445925284,
+      "cross_terms": -0.01797123359706218
+     },
+     "worst": 0.6534818667436642,
+     "worst_items_W": {
+      "gravity": 0.14203506717290446,
+      "residual": 0.02745116887691645,
+      "writing_drag": 0.4299939064554383,
+      "guide_drag": 0.020658757736269285,
+      "inertia_and_wires": 0.00045685379445925274,
+      "cross_terms": 0.03288611270767639
+     },
+     "P35_W": 0.5552350474558215,
+     "temp_factor": 1.4425213585390153,
+     "coil_C": 84.8078868093672,
+     "skin": {
+      "pads_C": [
+       76.49845148479713,
+       62.26027339510505,
+       42.189819800649325
+      ],
+      "web_C": 30.872327724327548,
+      "max_shell_C": 76.80663047030994,
+      "coil_C": 84.8078868093672,
+      "sources_W": {
+       "coils": 0.5552350474558215,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 20.0,
+      "fin_lambda_mm": 5.338539126015654,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.07365920270202944,
+     "mean_items_W": {
+      "gravity": 0.015422318708378114,
+      "residual": 0.0018775923923245975,
+      "writing_drag": 0.055776445439462,
+      "guide_drag": 0.0042257360063197545,
+      "inertia_and_wires": 9.502295068358733e-05,
+      "cross_terms": -0.0037379127951386064
+     },
+     "worst": 0.1436281798223504,
+     "worst_items_W": {
+      "gravity": 0.03203098352879855,
+      "residual": 0.006190639788077047,
+      "writing_drag": 0.09359833220541966,
+      "guide_drag": 0.004296902294269511,
+      "inertia_and_wires": 9.502295068358733e-05,
+      "cross_terms": 0.007416299055102069
+     },
+     "P35_W": 0.11548568310490312,
+     "temp_factor": 1.1433068886499633,
+     "coil_C": 41.67888692658547,
+     "skin": {
+      "pads_C": [
+       39.965692067279164,
+       37.55963973885299,
+       34.16189612591832
+      ],
+      "web_C": 30.87200289181081,
+      "max_shell_C": 40.27387105279198,
+      "coil_C": 41.67888692658547,
+      "sources_W": {
+       "coils": 0.11548568310490312,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 20.0,
+      "fin_lambda_mm": 5.338539126015654,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.16273399346617834,
+     "mean_items_W": {
+      "gravity": 0.034072260082355955,
+      "residual": 0.004148132166739822,
+      "writing_drag": 0.12322592934422273,
+      "guide_drag": 0.009335844951024522,
+      "inertia_and_wires": 0.0002099325497485169,
+      "cross_terms": -0.008258105627913227
+     },
+     "worst": 0.31731523583441507,
+     "worst_items_W": {
+      "gravity": 0.07076549396518451,
+      "residual": 0.013676872649568293,
+      "writing_drag": 0.2067851649600097,
+      "guide_drag": 0.009493071391352373,
+      "inertia_and_wires": 0.00020993254974851686,
+      "cross_terms": 0.016384700318551694
+     },
+     "P35_W": 0.2551405080483264,
+     "temp_factor": 1.237685117024951,
+     "coil_C": 55.37571838762731,
+     "skin": {
+      "pads_C": [
+       51.56770115416964,
+       45.40402326478976,
+       36.71138992020396
+      ],
+      "web_C": 30.872106051546645,
+      "max_shell_C": 51.875880139682465,
+      "coil_C": 55.37571838762731,
+      "sources_W": {
+       "coils": 0.2551405080483264,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 20.0,
+      "fin_lambda_mm": 5.338539126015654,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe": {
+    "worst07": {
+     "conv": "worst07",
+     "mean": 0.3568084731591375,
+     "mean_items_W": {
+      "gravity": 0.07425107361103085,
+      "residual": 0.009039707554368557,
+      "writing_drag": 0.2685368545676147,
+      "guide_drag": 0.020344893734790984,
+      "inertia_and_wires": 0.002622148007468308,
+      "cross_terms": -0.017986204316135974
+     },
+     "worst": 0.6565666450872274,
+     "worst_items_W": {
+      "gravity": 0.14223285271742214,
+      "residual": 0.027489394960742347,
+      "writing_drag": 0.4305926781575282,
+      "guide_drag": 0.020687525305639692,
+      "inertia_and_wires": 0.002622148007468308,
+      "cross_terms": 0.03294204593842671
+     },
+     "P35_W": 0.5581830159182989,
+     "temp_factor": 1.4445300869330373,
+     "coil_C": 85.0970127110278,
+     "skin": {
+      "pads_C": [
+       76.74335785952056,
+       62.425860192778586,
+       42.24363696954328
+      ],
+      "web_C": 30.87232990192254,
+      "max_shell_C": 77.05153684503338,
+      "coil_C": 85.0970127110278,
+      "sources_W": {
+       "coils": 0.5581830159182989,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 20.0,
+      "fin_lambda_mm": 5.338539126015654,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre10": {
+     "conv": "centre10",
+     "mean": 0.07423967394441798,
+     "mean_items_W": {
+      "gravity": 0.015427702443279947,
+      "residual": 0.0018782478358986224,
+      "writing_drag": 0.05579591628568757,
+      "guide_drag": 0.004294907173129204,
+      "inertia_and_wires": 0.0005796544982572542,
+      "cross_terms": -0.003736754291834621
+     },
+     "worst": 0.14423423712037428,
+     "worst_items_W": {
+      "gravity": 0.03204216513690981,
+      "residual": 0.006192800861526633,
+      "writing_drag": 0.09363100619027083,
+      "guide_drag": 0.004367238383631532,
+      "inertia_and_wires": 0.0005796544982572542,
+      "cross_terms": 0.00742137204977824
+     },
+     "P35_W": 0.11608191621600235,
+     "temp_factor": 1.1437060025132106,
+     "coil_C": 41.73736327666881,
+     "skin": {
+      "pads_C": [
+       40.015224920696014,
+       37.59313003319992,
+       34.17278076679851
+      ],
+      "web_C": 30.87200333223419,
+      "max_shell_C": 40.32340390620883,
+      "coil_C": 41.73736327666881,
+      "sources_W": {
+       "coils": 0.11608191621600235,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 20.0,
+      "fin_lambda_mm": 5.338539126015654,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    },
+    "centre07": {
+     "conv": "centre07",
+     "mean": 0.1640880154394521,
+     "mean_items_W": {
+      "gravity": 0.03409903279752394,
+      "residual": 0.0041513916147691236,
+      "writing_drag": 0.12332275569796824,
+      "guide_drag": 0.00949280562658542,
+      "inertia_and_wires": 0.0012811796066183525,
+      "cross_terms": -0.008259149904013026
+     },
+     "worst": 0.3187932876055563,
+     "worst_items_W": {
+      "gravity": 0.07082109885928524,
+      "residual": 0.013687619427590962,
+      "writing_drag": 0.20694764905437438,
+      "guide_drag": 0.009652675466457646,
+      "inertia_and_wires": 0.0012811796066183522,
+      "cross_terms": 0.016403065191229787
+     },
+     "P35_W": 0.25656970523002615,
+     "temp_factor": 1.2386576439728454,
+     "coil_C": 55.51588878940374,
+     "skin": {
+      "pads_C": [
+       51.68643359822059,
+       45.484300984030625,
+       36.73748088660652
+      ],
+      "web_C": 30.872107107261,
+      "max_shell_C": 51.99461258373341,
+      "coil_C": 55.51588878940374,
+      "sources_W": {
+       "coils": 0.25656970523002615,
+       "board": 0.04313411764705883,
+       "page sensor": 0.0019058823529411765,
+       "head motors and face sensor": 0.013079621439955696
+      },
+      "D_mm": 20.0,
+      "fin_lambda_mm": 5.338539126015654,
+      "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+     }
+    }
+   },
+   "severe_motion": {
+    "q_rms_2d_mm": 0.7604463247367595,
+    "at_limit": 0.3179,
+    "F_a_r2_tip_mm": 1.0174694234212904,
+    "F_oracle_tip_mm": 0.962612838313106,
+    "F_a_r2_at_limit": 0.3555302879671768
+   },
+   "screen": {
+    "worst07": 1.2462945318452365,
+    "worst07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 0.0,
+     "roll_deg": 150.0,
+     "P_W": 1.2462945318452365
+    },
+    "worst07_temp_factor": 2.0190411019556276,
+    "worst07_coil_C": 140.96891678379245,
+    "worst07_skin_max_C": 124.37827373289328,
+    "map07": 0.6911345320835829,
+    "map07_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 45.0,
+     "roll_deg": 150.0,
+     "P_W": 0.6911345320835829
+    },
+    "map07_temp_factor": 1.5714288747951635,
+    "map07_coil_C": 95.8899813858638,
+    "map07_skin_max_C": 86.1938060622708,
+    "centre10": 0.20696314675302896,
+    "centre10_at": {
+     "f_Hz": 12.0,
+     "dir_deg": 0.0,
+     "roll_deg": 0.0,
+     "P_W": 0.20696314675302896
+    },
+    "centre10_temp_factor": 1.2073340171830325,
+    "centre10_coil_C": 50.60555346796898,
+    "centre10_skin_max_C": 47.83527433232791
+   },
+   "nib_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "mean_W": 0.3289170756327554,
+      "P35_W": 0.5269895310993244,
+      "skin_max_C": 74.46009688248188,
+      "front_pad_C": 74.15191789696905,
+      "coil_C": 82.03767047619168
+     },
+     "steady_1mm": {
+      "mean_W": 0.36036767016154453,
+      "P35_W": 0.5621156431835092,
+      "skin_max_C": 77.378245050674,
+      "front_pad_C": 77.07006606516119,
+      "coil_C": 85.48271032564658
+     },
+     "steady_2mm": {
+      "mean_W": 0.36115748011305976,
+      "P35_W": 0.5629883329287851,
+      "skin_max_C": 77.45074490421527,
+      "front_pad_C": 77.14256591870245,
+      "coil_C": 85.56830052536698
+     },
+     "guide": {
+      "mean_W": 0.35483666204967823,
+      "P35_W": 0.5560041623161014,
+      "skin_max_C": 76.87054008637205,
+      "front_pad_C": 76.56235418447173,
+      "coil_C": 84.88332578477424
+     },
+     "spelling_cue": {
+      "mean_W": 0.32891708478321746,
+      "P35_W": 0.5269895457601556,
+      "skin_max_C": 74.46010579408672,
+      "front_pad_C": 74.15192310889827,
+      "coil_C": 82.03767566883472
+     },
+     "severe": {
+      "mean_W": 0.3568084731591375,
+      "P35_W": 0.5581830159182989,
+      "skin_max_C": 77.05153684503338,
+      "front_pad_C": 76.74335785952056,
+      "coil_C": 85.0970127110278
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "mean_W": 0.06914784069907444,
+      "P35_W": 0.1107883744753418,
+      "skin_max_C": 39.883635932550504,
+      "front_pad_C": 39.57545694703769,
+      "coil_C": 41.21819217690058
+     },
+     "steady_1mm": {
+      "mean_W": 0.07476099500858249,
+      "P35_W": 0.11661513580130518,
+      "skin_max_C": 40.36770182771994,
+      "front_pad_C": 40.05952284220712,
+      "coil_C": 41.78965949195947
+     },
+     "steady_2mm": {
+      "mean_W": 0.07490034045911897,
+      "P35_W": 0.11675797991966602,
+      "skin_max_C": 40.37956879157101,
+      "front_pad_C": 40.07138980605819,
+      "coil_C": 41.80366911758594
+     },
+     "guide": {
+      "mean_W": 0.07378263782182645,
+      "P35_W": 0.11561221858707911,
+      "skin_max_C": 40.28439753807554,
+      "front_pad_C": 39.976211636175215,
+      "coil_C": 41.691304080542395
+     },
+     "spelling_cue": {
+      "mean_W": 0.06914784238460445,
+      "P35_W": 0.11078837717589077,
+      "skin_max_C": 39.8836438505391,
+      "front_pad_C": 39.57546116535066,
+      "coil_C": 41.218196196523145
+     },
+     "severe": {
+      "mean_W": 0.07423967394441798,
+      "P35_W": 0.11608191621600235,
+      "skin_max_C": 40.32340390620883,
+      "front_pad_C": 40.015224920696014,
+      "coil_C": 41.73736327666881
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "mean_W": 0.1522439998155582,
+      "P35_W": 0.24392468503236564,
+      "skin_max_C": 50.944110824867536,
+      "front_pad_C": 50.63593183935472,
+      "coil_C": 54.27571172757297
+     },
+     "steady_1mm": {
+      "mean_W": 0.16530480250834856,
+      "P35_W": 0.25784892230107437,
+      "skin_max_C": 52.10088523194602,
+      "front_pad_C": 51.7927062464332,
+      "coil_C": 55.64134969368208
+     },
+     "steady_2mm": {
+      "mean_W": 0.16563024163537984,
+      "P35_W": 0.2581917826863319,
+      "skin_max_C": 52.12936881142066,
+      "front_pad_C": 51.82118982590784,
+      "coil_C": 55.67497617893559
+     },
+     "guide": {
+      "mean_W": 0.16302179164599437,
+      "P35_W": 0.2554437136789183,
+      "skin_max_C": 51.90108373095312,
+      "front_pad_C": 51.59289782905279,
+      "coil_C": 55.40546269979757
+     },
+     "spelling_cue": {
+      "mean_W": 0.1522440037081724,
+      "P35_W": 0.24392469126909544,
+      "skin_max_C": 50.94411903662903,
+      "front_pad_C": 50.63593635144059,
+      "coil_C": 54.27571609401114
+     },
+     "severe": {
+      "mean_W": 0.1640880154394521,
+      "P35_W": 0.25656970523002615,
+      "skin_max_C": 51.99461258373341,
+      "front_pad_C": 51.68643359822059,
+      "coil_C": 55.51588878940374
+     }
+    }
+   },
+   "battery": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.3289170756327554,
+      "total_W": 0.3870366970727111,
+      "hours": 5.735890205736583
+     },
+     "steady_1mm": {
+      "nib_W": 0.36036767016154453,
+      "total_W": 0.4184872916015002,
+      "hours": 5.304820587273579
+     },
+     "steady_2mm": {
+      "nib_W": 0.36115748011305976,
+      "total_W": 0.41927710155301545,
+      "hours": 5.294827673099845
+     },
+     "guide": {
+      "nib_W": 0.35483666204967823,
+      "total_W": 0.4164562834896339,
+      "hours": 5.330691570788266
+     },
+     "spelling_cue": {
+      "nib_W": 0.32891708478321746,
+      "total_W": 0.3889089068023179,
+      "hours": 5.708277597068315
+     },
+     "severe": {
+      "nib_W": 0.3568084731591375,
+      "total_W": 0.4149280945990932,
+      "hours": 5.350324619847643
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.3289170756327554,
+      "total_W": 0.3568096288077151,
+      "hours": 6.221805188997182
+     },
+     "steady_1mm": {
+      "nib_W": 0.36036767016154453,
+      "total_W": 0.38826022333650423,
+      "hours": 5.717814668014372
+     },
+     "steady_2mm": {
+      "nib_W": 0.36115748011305976,
+      "total_W": 0.38905003328801946,
+      "hours": 5.706206940114825
+     },
+     "guide": {
+      "nib_W": 0.35483666204967823,
+      "total_W": 0.3834792152246379,
+      "hours": 5.789101239032078
+     },
+     "spelling_cue": {
+      "nib_W": 0.32891708478321746,
+      "total_W": 0.3568983030490783,
+      "hours": 6.220259331674996
+     },
+     "severe": {
+      "nib_W": 0.3568084731591375,
+      "total_W": 0.3847010263340972,
+      "hours": 5.770715043718185
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.06914784069907444,
+      "total_W": 0.09704039387403413,
+      "hours": 22.87707120069742
+     },
+     "steady_1mm": {
+      "nib_W": 0.07476099500858249,
+      "total_W": 0.10265354818354218,
+      "hours": 21.62613995602657
+     },
+     "steady_2mm": {
+      "nib_W": 0.07490034045911897,
+      "total_W": 0.10279289363407866,
+      "hours": 21.596823686107513
+     },
+     "guide": {
+      "nib_W": 0.07378263782182645,
+      "total_W": 0.10242519099678614,
+      "hours": 21.67435548223345
+     },
+     "spelling_cue": {
+      "nib_W": 0.06914784238460445,
+      "total_W": 0.09712906065046534,
+      "hours": 22.85618727426007
+     },
+     "severe": {
+      "nib_W": 0.07423967394441798,
+      "total_W": 0.10213222711937767,
+      "hours": 21.736527858196457
+     }
+    }
+   },
+   "electrical": {
+    "F_peak_N": 0.13475864952752092,
+    "F_peak_parts_N": {
+     "static_N": 0.10740891579876097,
+     "dynamic_N": 0.027349733728759956,
+     "total_N": 0.13475864952752092
+    },
+    "I_peak_A": 1.4229135394644854,
+    "V_peak_V": 5.362292098846652,
+    "R_hot_loop_ohm": 3.5155042104485377,
+    "back_emf_V": 0.018534310283545654,
+    "ok": false
+   },
+   "lead_heating": {
+    "I_rms_coil_A": 0.252449442009424,
+    "rise_K": 23.708347683607336
+   },
+   "modes": {
+    "servo_bw_max_worst_Hz": 52.166939022340635,
+    "lowest_stuck_worst_Hz": 130.4173475558516,
+    "first_free_nominal_Hz": 1211.524266890728,
+    "lowest_stuck_nominal_Hz": 184.50131716858985,
+    "m_carrier_g": 1.7674477663472103,
+    "k_lat_N_m": 2.2270401255447654,
+    "k_tilt_Nm_rad": 351.0776297905812,
+    "n_cases": 18,
+    "passes": true,
+    "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+   },
+   "fit": {
+    "coil_clearance_stop_mm": 0.29999999999999893,
+    "coil_clearance_p99_mm": 0.20999999999999894,
+    "coil_p99_ok": true,
+    "coil_inner_edge_mm": 1.9331890747350335,
+    "coil_inner_ok": true,
+    "magnet_r_out_mm": 8.4,
+    "magnets_ok": true,
+    "flange_r_mm": 7.441304034117899,
+    "flange_ok": true,
+    "ball_circle_r_mm": 6.211956051176848,
+    "ball_on_flange_ok": true,
+    "wire_circle_mm": 3.203804034117899,
+    "wire_circle_min_mm": 3.0336959658821003,
+    "wire_circle_max_mm": 3.3739121023536978,
+    "wires_ok": true,
+    "rear_race": "ring",
+    "pad_gap_ok": true,
+    "board_ok": false,
+    "board": "14 mm (study K)",
+    "head": {
+     "od_min_head_mm": 17.89366637052058,
+     "margin_mm": 1.0531668147397095,
+     "R_s_mm": 5.999982818918658,
+     "fits": true
+    },
+    "head_ok": true,
+    "length_mm": 152.3306,
+    "length_ok": true,
+    "all_ok": false
+   },
+   "constraints": {
+    "goodman": 0.30737130917855704,
+    "hertz_run": 0.6108204424654402,
+    "hertz_static": 0.6194970765632282,
+    "modes": 12.166939022340635,
+    "coil_p99": 0.009999999999998926,
+    "skin": -36.05153684503338,
+    "coil_inner": 0.23318907473503359,
+    "magnets": 0.40000000000000036,
+    "wires_min": 0.17010806823579872,
+    "wires_max": 0.17010806823579872,
+    "head": 1.0531668147397095,
+    "board": -1.0,
+    "length": 22.669399999999996,
+    "voltage": -2.062292098846652,
+    "lead_heat": 21.291652316392664,
+    "magnet_T": -5.097012711027801,
+    "feasible": false
+   }
+  }
+ },
+ "waterfall_K": {
+  "duty": "A (study B): 0.2 mm rms per axis at 8 Hz, 70 % contact, writing 30.5 mm/s, mean 35-75 deg",
+  "steps": [
+   {
+    "step": 0,
+    "name": "K as published",
+    "P_mW": 16.627494454216386,
+    "delta_mW": null,
+    "what": "study K's chain at duty A: study B's P_cont 7.56 mW (results/revK/revK.json power_table km1_q0.2) x 1.80 x 1.21 + the 2.6 mN guide friction, K_m at the upper bound (study K's low end)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 1,
+    "name": "coherent harmonic load",
+    "P_mW": 16.554302686449876,
+    "delta_mW": -0.07319176776650949,
+    "what": "the same chain re-run with bnib/loads.py as the pass corrected it (spring and inertia keep their phase)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 2,
+    "name": "study B's loads, per axis",
+    "P_mW": 14.980342036205023,
+    "delta_mW": -1.573960650244853,
+    "what": "study B's loads (bnib/loads.loads_at with the counter-face: F_s along the pen, +1 sigma IMU errors, the weight trimmed in contact) re-implemented per axis with study K's K_m (0.334 / 0.272) in place of the scalar x 1.80, roll 0, linear wires, 2.6 mN guide, 20 degC",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 3,
+    "name": "all rolls",
+    "P_mW": 16.554906861449197,
+    "delta_mW": 1.574564825244174,
+    "what": "mean over twelve rolls (study B's fast mode evaluates roll 0 only; with unequal x and y K_m the roll matters)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 4,
+    "name": "study K's residual",
+    "P_mW": 16.29929479899592,
+    "delta_mW": -0.2556120624532774,
+    "what": "study K's face-parallelism Monte Carlo (5.7 mN mean, 6.4 mN rms) in place of study B's deterministic +1 sigma IMU residual (16 mN at 35 deg); weight still trimmed, F_s still along the pen",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 5,
+    "name": "ink force N = F_n",
+    "P_mW": 13.950051150009166,
+    "delta_mW": -2.3492436489867536,
+    "what": "study K's constant-force float: the ball's normal force is F_n = 0.196 N at every tilt (study B's duty model used F_s / sin(theta): 0.26 N at 35 deg), so the ball's drag is 28 mN instead of 38 mN at 35 deg",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 6,
+    "name": "gravity held in contact",
+    "P_mW": 16.745700097980396,
+    "delta_mW": 2.7956489479712303,
+    "what": "study K's head keeps the face parallel to the paper, so the coils hold the 3.44 g moving mass (28 mN at 35 deg) in contact as well as pen-up; study B's schedule trimmed the face to cancel it in contact and study K's budget inherited that",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 7,
+    "name": "guide preload drag",
+    "P_mW": 17.535409207084726,
+    "delta_mW": 0.7897091091043293,
+    "what": "the ball guide's drag from its 4 N internal preload per race (8.1 mN) instead of the couple's ball load alone (2.6 mN) (the pass's correction)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 8,
+    "name": "nonlinear wires",
+    "P_mW": 17.520493219166937,
+    "delta_mW": -0.014915987917788698,
+    "what": "the pass's beam-column wires with study K's 10,000 N/m anchor (at duty A's 0.28 mm radius the force is small)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 9,
+    "name": "map centre",
+    "P_mW": 18.32787693302175,
+    "delta_mW": 0.8073837138548114,
+    "what": "study K's coil's centre force matrix from this package's map (fine quadrature, raw image method: 0.329 / 0.266 N/sqrt(W)) in place of study K's values scaled to study B's calibration (0.334 / 0.272)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 10,
+    "name": "coil and magnet temperature",
+    "P_mW": 19.874755153228996,
+    "delta_mW": 1.5468782202072475,
+    "what": "copper resistance and Br at the coil temperature of study K's fin model (33.0 degC at 35 deg; study K computed at 20 degC)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 11,
+    "name": "K_m x 0.7 at the centre",
+    "P_mW": 41.28177930147108,
+    "delta_mW": 21.407024148242087,
+    "what": "study K's high-end convention (centre K_m x 0.7)",
+    "label": "CALCULATION"
+   },
+   {
+    "step": 12,
+    "name": "weakest point x 0.7",
+    "P_mW": 64.64327345743612,
+    "delta_mW": 23.36149415596504,
+    "what": "the brief's convention: the smallest singular value of the force matrix over the usable disk x 0.7 in every direction",
+    "label": "CALCULATION"
+   }
+  ],
+  "K_published_high_end_mW": 33.933662151462016,
+  "items_final_mW": {
+   "gravity": 20.11632399792405,
+   "residual": 1.4616910677550135,
+   "writing_drag": 43.42152877443698,
+   "guide_drag": 3.2602079565531232,
+   "inertia_and_wires": 0.15017608538339122,
+   "cross_terms": -3.766654424616447
+  },
+  "items_centre10_mW": {
+   "gravity": 6.184820054092945,
+   "residual": 0.4494010053562805,
+   "writing_drag": 13.350070418990363,
+   "guide_drag": 1.002360051085079,
+   "inertia_and_wires": 0.046172057311277326,
+   "cross_terms": -1.1580684336069471
+  },
+  "label": "CALCULATION"
+ },
+ "waterfall_pass": {
+  "K_B1": {
+   "design": "K_B1",
+   "residual_N": 0.02,
+   "steps": [
+    {
+     "step": 0,
+     "name": "the pass as published",
+     "P_W": 0.024836538084844643,
+     "delta_W": null,
+     "what": "results/improvement/mechanics: worst cycle-mean copper loss, 20 mN constant residual along the motion, field x 0.7 on the map, coil and leads at +90 K",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 1,
+     "name": "the pass's function re-run",
+     "P_W": 0.024836538084844637,
+     "delta_W": -6.938893903907228e-18,
+     "what": "revk/improve.matched_force_duty on the pass's stored map (read-only): reproduces it",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 2,
+     "name": "this package, the pass's loads",
+     "P_W": 0.024798120821835842,
+     "delta_W": -3.841726300879422e-05,
+     "what": "nibopt's screen with the pass's loads, mass and hot factor on nibopt's own 97-point map: the models agree",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 3,
+     "name": "moving mass",
+     "P_W": 0.024610177184426502,
+     "delta_W": -0.00018794363740934003,
+     "what": "this package's moving-mass model 3.44 g (study K's layout conventions) in place of the pass's 3.49 g",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 4,
+     "name": "gravity + residual + drag offset",
+     "P_W": 0.06384052565505158,
+     "delta_W": 0.03923034847062508,
+     "what": "the constant load: gravity on 3.44 g at 35 deg and the worst roll (27.6 mN) + study K's residual p95 (11.2 mN) aligned with it + the drag's mean offset, in place of 20 mN along the motion",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 5,
+     "name": "writing-drag fluctuation",
+     "P_W": 0.15920142509634264,
+     "delta_W": 0.09536089944129106,
+     "what": "the ball's drag as the writing direction turns (28 mN magnitude at N = F_n) with the refill-slide and face friction (study B's friction share), continuous contact",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 6,
+     "name": "guide drag",
+     "P_W": 0.16236282009759678,
+     "delta_W": 0.003161395001254147,
+     "what": "the ball guide's Coulomb drag at its 4 N preload (8.1 mN), opposing every stroke",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 7,
+     "name": "coil at the fin model's temperature",
+     "P_W": 0.13736960467380682,
+     "delta_W": -0.02499321542378996,
+     "what": "coil and magnets at the temperature study K's fin model gives for this screen sustained at 35 deg (42 degC: x 1.145) instead of +90 K copper (x 1.354) with 20 degC magnets",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 8,
+     "name": "weakest point x 0.7",
+     "P_W": 0.1679612303276815,
+     "delta_W": 0.030591625653874688,
+     "what": "the brief's convention: the smallest singular value over the disk x 0.7 in every direction, in place of the map's own matrix x 0.7 at each position",
+     "label": "CALCULATION"
+    }
+   ],
+   "label": "CALCULATION"
+  },
+  "P_1059_24": {
+   "design": "P_1059_24",
+   "residual_N": 0.02,
+   "steps": [
+    {
+     "step": 0,
+     "name": "the pass as published",
+     "P_W": 0.029882856128670206,
+     "delta_W": null,
+     "what": "results/improvement/mechanics: worst cycle-mean copper loss, 20 mN constant residual along the motion, field x 0.7 on the map, coil and leads at +90 K",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 1,
+     "name": "the pass's function re-run",
+     "P_W": 0.029882856128670206,
+     "delta_W": 0.0,
+     "what": "revk/improve.matched_force_duty on the pass's stored map (read-only): reproduces it",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 2,
+     "name": "this package, the pass's loads",
+     "P_W": 0.029882227350164686,
+     "delta_W": -6.287785055195116e-07,
+     "what": "nibopt's screen with the pass's loads, mass and hot factor on nibopt's own 97-point map: the models agree",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 3,
+     "name": "moving mass",
+     "P_W": 0.02998944898282864,
+     "delta_W": 0.00010722163266395357,
+     "what": "this package's moving-mass model 3.59 g (study K's layout conventions) in place of the pass's 3.57 g",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 4,
+     "name": "gravity + residual + drag offset",
+     "P_W": 0.07196331487102084,
+     "delta_W": 0.0419738658881922,
+     "what": "the constant load: gravity on 3.59 g at 35 deg and the worst roll (28.8 mN) + study K's residual p95 (11.2 mN) aligned with it + the drag's mean offset, in place of 20 mN along the motion",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 5,
+     "name": "writing-drag fluctuation",
+     "P_W": 0.16186835888285214,
+     "delta_W": 0.0899050440118313,
+     "what": "the ball's drag as the writing direction turns (28 mN magnitude at N = F_n) with the refill-slide and face friction (study B's friction share), continuous contact",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 6,
+     "name": "guide drag",
+     "P_W": 0.1650819165111517,
+     "delta_W": 0.003213557628299557,
+     "what": "the ball guide's Coulomb drag at its 4 N preload (8.1 mN), opposing every stroke",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 7,
+     "name": "coil at the fin model's temperature",
+     "P_W": 0.13983239411761042,
+     "delta_W": -0.02524952239354128,
+     "what": "coil and magnets at the temperature study K's fin model gives for this screen sustained at 35 deg (42 degC: x 1.146) instead of +90 K copper (x 1.354) with 20 degC magnets",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 8,
+     "name": "weakest point x 0.7",
+     "P_W": 0.17143670910871667,
+     "delta_W": 0.03160431499110625,
+     "what": "the brief's convention: the smallest singular value over the disk x 0.7 in every direction, in place of the map's own matrix x 0.7 at each position",
+     "label": "CALCULATION"
+    }
+   ],
+   "label": "CALCULATION"
+  },
+  "P_150_24": {
+   "design": "P_150_24",
+   "residual_N": 0.02,
+   "steps": [
+    {
+     "step": 0,
+     "name": "the pass as published",
+     "P_W": 0.08088128639137677,
+     "delta_W": null,
+     "what": "results/improvement/mechanics: worst cycle-mean copper loss, 20 mN constant residual along the motion, field x 0.7 on the map, coil and leads at +90 K",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 1,
+     "name": "the pass's function re-run",
+     "P_W": 0.08088128639137677,
+     "delta_W": 0.0,
+     "what": "revk/improve.matched_force_duty on the pass's stored map (read-only): reproduces it",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 2,
+     "name": "this package, the pass's loads",
+     "P_W": 0.08087789388545046,
+     "delta_W": -3.3925059263195667e-06,
+     "what": "nibopt's screen with the pass's loads, mass and hot factor on nibopt's own 97-point map: the models agree",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 3,
+     "name": "moving mass",
+     "P_W": 0.07483071018306324,
+     "delta_W": -0.0060471837023872155,
+     "what": "this package's moving-mass model 3.44 g (study K's layout conventions) in place of the pass's 3.67 g",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 4,
+     "name": "gravity + residual + drag offset",
+     "P_W": 0.1457111033610116,
+     "delta_W": 0.07088039317794835,
+     "what": "the constant load: gravity on 3.44 g at 35 deg and the worst roll (27.6 mN) + study K's residual p95 (11.2 mN) aligned with it + the drag's mean offset, in place of 20 mN along the motion",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 5,
+     "name": "writing-drag fluctuation",
+     "P_W": 0.29270365624576905,
+     "delta_W": 0.14699255288475746,
+     "what": "the ball's drag as the writing direction turns (28 mN magnitude at N = F_n) with the refill-slide and face friction (study B's friction share), continuous contact",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 6,
+     "name": "guide drag",
+     "P_W": 0.29841563396453,
+     "delta_W": 0.005711977718760974,
+     "what": "the ball guide's Coulomb drag at its 4 N preload (8.1 mN), opposing every stroke",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 7,
+     "name": "coil at the fin model's temperature",
+     "P_W": 0.270122598598197,
+     "delta_W": -0.02829303536633304,
+     "what": "coil and magnets at the temperature study K's fin model gives for this screen sustained at 35 deg (53 degC: x 1.224) instead of +90 K copper (x 1.354) with 20 degC magnets",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 8,
+     "name": "weakest point x 0.7",
+     "P_W": 0.4280345449074508,
+     "delta_W": 0.15791194630925381,
+     "what": "the brief's convention: the smallest singular value over the disk x 0.7 in every direction, in place of the map's own matrix x 0.7 at each position",
+     "label": "CALCULATION"
+    }
+   ],
+   "label": "CALCULATION"
+  },
+  "P_1059_20": {
+   "design": "P_1059_20",
+   "residual_N": 0.02,
+   "steps": [
+    {
+     "step": 0,
+     "name": "the pass as published",
+     "P_W": 0.13857358957842547,
+     "delta_W": null,
+     "what": "results/improvement/mechanics: worst cycle-mean copper loss, 20 mN constant residual along the motion, field x 0.7 on the map, coil and leads at +90 K",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 1,
+     "name": "the pass's function re-run",
+     "P_W": 0.1385735895784255,
+     "delta_W": 2.7755575615628914e-17,
+     "what": "revk/improve.matched_force_duty on the pass's stored map (read-only): reproduces it",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 2,
+     "name": "this package, the pass's loads",
+     "P_W": 0.13857055606531285,
+     "delta_W": -3.0335131126491e-06,
+     "what": "nibopt's screen with the pass's loads, mass and hot factor on nibopt's own 97-point map: the models agree",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 3,
+     "name": "moving mass",
+     "P_W": 0.11501318961426299,
+     "delta_W": -0.02355736645104986,
+     "what": "this package's moving-mass model 2.66 g (study K's layout conventions) in place of the pass's 3.57 g",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 4,
+     "name": "gravity + residual + drag offset",
+     "P_W": 0.19780165294318158,
+     "delta_W": 0.0827884633289186,
+     "what": "the constant load: gravity on 2.66 g at 35 deg and the worst roll (21.3 mN) + study K's residual p95 (11.2 mN) aligned with it + the drag's mean offset, in place of 20 mN along the motion",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 5,
+     "name": "writing-drag fluctuation",
+     "P_W": 0.580133640914716,
+     "delta_W": 0.3823319879715344,
+     "what": "the ball's drag as the writing direction turns (28 mN magnitude at N = F_n) with the refill-slide and face friction (study B's friction share), continuous contact",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 6,
+     "name": "guide drag",
+     "P_W": 0.5950103723497742,
+     "delta_W": 0.014876731435058188,
+     "what": "the ball guide's Coulomb drag at its 4 N preload (8.1 mN), opposing every stroke",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 7,
+     "name": "coil at the fin model's temperature",
+     "P_W": 0.6911345320835829,
+     "delta_W": 0.09612415973380872,
+     "what": "coil and magnets at the temperature study K's fin model gives for this screen sustained at 35 deg (96 degC: x 1.571) instead of +90 K copper (x 1.354) with 20 degC magnets",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 8,
+     "name": "weakest point x 0.7",
+     "P_W": 1.2462945318452365,
+     "delta_W": 0.5551599997616536,
+     "what": "the brief's convention: the smallest singular value over the disk x 0.7 in every direction, in place of the map's own matrix x 0.7 at each position",
+     "label": "CALCULATION"
+    }
+   ],
+   "label": "CALCULATION"
+  }
+ },
+ "waterfall_pass_40mN": {
+  "P_150_24": {
+   "design": "P_150_24",
+   "residual_N": 0.04,
+   "steps": [
+    {
+     "step": 0,
+     "name": "the pass as published",
+     "P_W": 0.1889560583505218,
+     "delta_W": null,
+     "what": "results/improvement/mechanics: worst cycle-mean copper loss, 40 mN constant residual along the motion, field x 0.7 on the map, coil and leads at +90 K",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 1,
+     "name": "the pass's function re-run",
+     "P_W": 0.18895605835052184,
+     "delta_W": 5.551115123125783e-17,
+     "what": "revk/improve.matched_force_duty on the pass's stored map (read-only): reproduces it",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 2,
+     "name": "this package, the pass's loads",
+     "P_W": 0.1889526658445955,
+     "delta_W": -3.3925059263473223e-06,
+     "what": "nibopt's screen with the pass's loads, mass and hot factor on nibopt's own 97-point map: the models agree",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 3,
+     "name": "moving mass",
+     "P_W": 0.1829054821422083,
+     "delta_W": -0.006047183702387188,
+     "what": "this package's moving-mass model 3.44 g (study K's layout conventions) in place of the pass's 3.67 g",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 4,
+     "name": "gravity + residual + drag offset",
+     "P_W": 0.1457111033610116,
+     "delta_W": -0.03719437878119672,
+     "what": "the constant load: gravity on 3.44 g at 35 deg and the worst roll (27.6 mN) + study K's residual p95 (11.2 mN) aligned with it + the drag's mean offset, in place of 40 mN along the motion",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 5,
+     "name": "writing-drag fluctuation",
+     "P_W": 0.29270365624576905,
+     "delta_W": 0.14699255288475746,
+     "what": "the ball's drag as the writing direction turns (28 mN magnitude at N = F_n) with the refill-slide and face friction (study B's friction share), continuous contact",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 6,
+     "name": "guide drag",
+     "P_W": 0.29841563396453,
+     "delta_W": 0.005711977718760974,
+     "what": "the ball guide's Coulomb drag at its 4 N preload (8.1 mN), opposing every stroke",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 7,
+     "name": "coil at the fin model's temperature",
+     "P_W": 0.270122598598197,
+     "delta_W": -0.02829303536633304,
+     "what": "coil and magnets at the temperature study K's fin model gives for this screen sustained at 35 deg (53 degC: x 1.224) instead of +90 K copper (x 1.354) with 20 degC magnets",
+     "label": "CALCULATION"
+    },
+    {
+     "step": 8,
+     "name": "weakest point x 0.7",
+     "P_W": 0.4280345449074508,
+     "delta_W": 0.15791194630925381,
+     "what": "the brief's convention: the smallest singular value over the disk x 0.7 in every direction, in place of the map's own matrix x 0.7 at each position",
+     "label": "CALCULATION"
+    }
+   ],
+   "label": "CALCULATION"
+  }
+ },
+ "K_published": {
+  "duty_A_studyB_mW": {
+   "km1.0": 7.560826863919315,
+   "km0.7": 15.430258905957785,
+   "35deg_km1.0": 17.646239028432348
+  },
+  "factors": {
+   "coil_power_factor_vs_studyB": 1.8034291536220757,
+   "lead_power_factor": 1.2139397786090869,
+   "Km_scale": [
+    1.0,
+    0.7
+   ],
+   "ball_guide_friction_mN": 2.6203469841992764
+  },
+  "modes_nib_mW": {
+   "steady_0mm": [
+    16.45174938938928,
+    33.57499875385568
+   ],
+   "steady_1mm": [
+    17.7869465193361,
+    36.29989085578798
+   ],
+   "steady_2mm": [
+    17.94450822418836,
+    47.607878962132396
+   ],
+   "guide": [
+    16.753524480051023,
+    34.19086628581842
+   ],
+   "spelling_cue": [
+    16.45174938938928,
+    33.57499875385568
+   ]
+  },
+  "modes_nib35_mW": {
+   "steady_0mm": [
+    38.5312822201456,
+    78.63526983703183
+   ],
+   "steady_1mm": [
+    39.86647935009242,
+    81.36016193896414
+   ],
+   "steady_2mm": [
+    40.024041054944675,
+    106.1862313702614
+   ],
+   "guide": [
+    38.83305731080734,
+    79.25113736899459
+   ],
+   "spelling_cue": [
+    38.5312822201456,
+    78.63526983703183
+   ]
+  },
+  "modes_hours": {
+   "steady_0mm": [
+    24.210798793949653,
+    50.06280111810329
+   ],
+   "steady_1mm": [
+    23.512089249586975,
+    48.59948149294687
+   ],
+   "steady_2mm": [
+    20.9973752482297,
+    48.4324241614944
+   ],
+   "guide": [
+    23.170741039895514,
+    48.90290339334994
+   ],
+   "spelling_cue": [
+    23.72635921217121,
+    49.962901808060664
+   ]
+  },
+  "skin_front_pad_C": {
+   "steady_0mm": 35.74232828043754,
+   "steady_1mm": 35.93051350339282,
+   "steady_2mm": 37.64503989059136,
+   "guide": 35.78487283634982,
+   "spelling_cue": 35.74233459279034
+  },
+  "skin_max_C": {
+   "steady_0mm": 35.99927431938861,
+   "steady_1mm": 36.18745954234389,
+   "steady_2mm": 37.901985929542434,
+   "guide": 36.041829741627446,
+   "spelling_cue": 35.999286444296516
+  },
+  "Km_tip": {
+   "x": 0.33354573489671424,
+   "y": 0.27169865452228603,
+   "x_min_over_stroke": 0.250756509427465,
+   "power_factor_vs_studyB": 1.8034291536220757,
+   "label": "CALCULATION (study B's Km_tip x the buildable coil's ratio to study B's idealised coil, same magpylib method; an upper bound)"
+  },
+  "m_move_g": 3.439830737727785,
+  "source": "results/revK/budgets.json, results/revK/revK.json (CALC, study K)"
+ },
+ "K_residual": {
+  "mean_N": 0.005665886130283173,
+  "p95_N": 0.011217176210030374,
+  "rms_N": 0.006432475518969446,
+  "reproduces_K": true,
+  "K_reported_mN": {
+   "mean": 5.665886130283173,
+   "p95": 11.217176210030374
+  },
+  "label": "CALCULATION (study K's Monte Carlo re-drawn, seed 5, n 20,000)"
+ },
+ "screen_topologies": {
+  "stop_mm": 1.7,
+  "couple_35_mNm": 10.874439984426996,
+  "rows": [
+   {
+    "topology": "wires alone (study B / K's four 0.10 mm C17200 wires on a 5.5 mm circle)",
+    "carries_couple": false,
+    "reason": "0.70 N of compression per wire against 34.4 mN fixed-fixed buckling (study K N14)",
+    "F_stop_mN": null,
+    "drag_mN": 0.0
+   },
+   {
+    "topology": "four wires pre-tensioned to 1.19 N each (circle 5.5 mm, 34.0 mm long)",
+    "carries_couple": true,
+    "k_N_m": 168.2429421047814,
+    "F_stop_mN": 286.0130015781284,
+    "drag_mN": 0.0,
+    "reason": "tension stiffening n T / L: the spring force at the stop exceeds the moving mass's weight"
+   },
+   {
+    "topology": "four wires pre-tensioned to 0.72 N each (circle 9.0 mm, 40.0 mm long)",
+    "carries_couple": true,
+    "k_N_m": 87.46528615189807,
+    "F_stop_mN": 148.69098645822672,
+    "drag_mN": 0.0,
+    "reason": "tension stiffening n T / L: the spring force at the stop exceeds the moving mass's weight"
+   },
+   {
+    "topology": "necked struts (stiff middle, short C17200 hinges) in place of wires and balls",
+    "carries_couple": true,
+    "best_with_buckling_margin_2": {
+     "n": 6,
+     "L_mm": 45.0,
+     "d_h_mm": 0.15,
+     "l_h_mm": 3.0,
+     "buckling_margin": 4.796530424603109,
+     "goodman_Kt1.8": 1.040111269751928,
+     "k_N_m": 7.071268925908953
+    },
+    "F_stop_mN": 12.02115717404522,
+    "drag_mN": 0.0,
+    "reason": "a hinge short enough to carry the couple's compression twice over bends to Goodman 1.04 at the stop (target 1.5)"
+   },
+   {
+    "topology": "two planar flexure stages (beams 15 x taller than wide, 5 N/m lateral each, 20 mm apart)",
+    "carries_couple": false,
+    "k_tilt_Nm_rad": 0.073,
+    "tilt_mrad": 148.96493129352052,
+    "drag_mN": 0.0,
+    "reason": "tilt 149 mrad under the couple (5.4 mm at the ball): the out-of-plane to in-plane stiffness ratio of a planar beam is only (height / width)^2"
+   },
+   {
+    "topology": "nested parallel-blade XY stage (two blades per axis, 16 mm apart)",
+    "carries_couple": true,
+    "best": {
+     "k_per_axis_N_m": 29.036088888888884,
+     "F_stop_mN": 49.3613511111111,
+     "blade_buckling_ff_N": 1.4328735534409978,
+     "couple_axial_N": 0.6796524990266872,
+     "buckling_margin": 2.1082443682513916,
+     "goodman": 3.4905092001916835,
+     "length_mm": 63.0,
+     "label": "CALCULATION (fixed-guided blades; C17200 AMF-19; Kt 1.3 etched fillet ASSUMPTION)",
+     "t_um": 80,
+     "b_mm": 6.0,
+     "L_mm": 30.0
+    },
+    "F_stop_mN": 49.3613511111111,
+    "drag_mN": 0.0,
+    "reason": "carries the couple, but its lateral spring force at the stop is several times the wires' and it needs two stages in series (about 35-60 mm)"
+   },
+   {
+    "topology": "ball thrust guide, 2 x 6 Si3N4 0.8 mm on 16.6 mm, 4 N preload per race + wires",
+    "carries_couple": true,
+    "drag_mN": 8.07190137956181,
+    "hertz_run_GPa": 2.639694562307397,
+    "F_stop_mN": null,
+    "reason": "rolling drag mu_roll x total normal load, Coulomb"
+   },
+   {
+    "topology": "ball thrust guide, 2 x 6 Si3N4 0.8 mm on 16.6 mm, 1 N preload per race + wires",
+    "carries_couple": true,
+    "drag_mN": 2.317922454562518,
+    "hertz_run_GPa": 2.0338031569440713,
+    "F_stop_mN": null,
+    "reason": "rolling drag mu_roll x total normal load, Coulomb"
+   }
+  ],
+  "label": "CALCULATION (beam models; C17200 AMF-19; tolerances and Kt ASSUMPTION)"
+ },
+ "label": "CALCULATION (matched reconciliation; nothing measured)"
+}

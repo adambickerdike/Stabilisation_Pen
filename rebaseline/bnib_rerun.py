@@ -303,12 +303,14 @@ def run(config: str, writers: Sequence[int] = WRITERS, cells=CELLS, ctls=CTLS, q
 
 
 # ------------------------------------------------------------------ summaries
-def summarise_config(R: Dict[str, Dict], writers: Optional[Sequence[int]] = None) -> Dict:
+def summarise_config(R: Dict[str, Dict], writers: Optional[Sequence[int]] = None, cells=CELLS) -> Dict:
     rows = [r for r in R.values() if r.get("kind") in ("ET", "PD", "clean") and (writers is None or r.get("w") in writers)]
-    tr = [r for r in rows if r.get("kind") == "ET"]
+    in_cells = lambda r: any(r.get("kind") == k and abs(r["f0"] - f) < 1e-9 and abs(r["amp_mm"] - a * 1e3) < 1e-9   # noqa: E731
+                             for k, f, a in cells)
+    tr = [r for r in rows if r.get("kind") == "ET" and in_cells(r)]
     mean = lambda L, k, sc=1.0: CM.mean_or_none(x[k] * sc for x in L if x.get(k) is not None)    # noqa: E731
     out = {"n_writers": len({r["w"] for r in tr}), "cells": {}}
-    for kind, f0, amp in CELLS:
+    for kind, f0, amp in cells:
         sel = [r for r in tr if abs(r["f0"] - f0) < 1e-9 and abs(r["amp_mm"] - amp * 1e3) < 1e-9]
         n, g, o = ([r for r in sel if r["ctl"] == c] for c in CTLS)
         if not g:
@@ -384,7 +386,9 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
             continue
         d = R.get(f"{c}|design", {})
         s = {"setup": CONFIGS[c], "design": d, "all_writers": summarise_config(R),
-             "writers_0_3": summarise_config(R, writers=(0, 1, 2, 3)), "writers_0_1": summarise_config(R, writers=(0, 1))}
+             "writers_0_3": summarise_config(R, writers=(0, 1, 2, 3)), "writers_0_1": summarise_config(R, writers=(0, 1)),
+             "studyB_cells_writers_0_3": summarise_config(R, writers=(0, 1, 2, 3), cells=CELLS[:3]),
+             "studyB_cells_writers_0_1": summarise_config(R, writers=(0, 1), cells=CELLS[:3])}
         P = ((s["all_writers"].get("pooled_4_cells") or {}).get("P_nib_mW_G4"))
         s["power_bands"] = calc_power_bands(P, d)
         s["wall_s_total"] = float(sum((r.get("wall_s") or 0.0) for r in R.values()))

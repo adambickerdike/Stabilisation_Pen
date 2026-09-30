@@ -65,6 +65,10 @@ NAMES = [
     "mode", "cam_every", "cam_lat", "cam_noise", "kappa", "n_phase", "ar_order", "horizon",
     # contact / lift / supervisor
     "lift_mode", "lift_up_ticks", "lift_down_ticks", "abort_err", "abort_ticks",
+    # drag decoupling (accepted mode): the pen's drag on the page, measured, through a hand-compliance model
+    "drag_on", "f_lat", "f_noise", "f_gain",
+    # ink loop (accepted mode): integral action on the measured ink error, with a limit
+    "ink_ki", "ink_umax",
 ]
 IDX = {n: i for i, n in enumerate(NAMES)}
 NP = len(NAMES)
@@ -99,7 +103,7 @@ def _quant(x, q):
 
 @njit(cache=True)
 def simulate(P, pref, vref, vint, trem, down, cmd_ext, tgt_tick, off_tick, offv_tick, offa_tick,
-             cref_tick, cvel_tick, cacc_tick, lift_cmd, ref_ink, ar_coef, seed, rec):
+             cref_tick, cvel_tick, cacc_tick, lift_cmd, ref_ink, ar_coef, drag_b, drag_a, uff_tick, seed, rec):
     np.random.seed(seed)
     dt = P[0]; n = int(P[1]); rdec = int(P[2]); tdec = int(P[3])
     Kg = P[4]; Cg = P[5]; Mh = P[6]; ka = P[7]; ba = P[8]; wcm = int(P[9]); mpen = P[10]
@@ -113,6 +117,14 @@ def simulate(P, pref, vref, vint, trem, down, cmd_ext, tgt_tick, off_tick, offv_
     mode = int(P[51]); cam_every = int(P[52]); cam_lat = int(P[53]); cam_noise = P[54]; kappa = P[55]
     n_phase = int(P[56]); order = int(P[57]); horizon = P[58]
     lift_mode = int(P[59]); up_t = int(P[60]); dn_t = int(P[61]); abort_err = P[62]; abort_ticks = int(P[63])
+    drag_on = P[64] > 0.5; f_lat = int(P[65]); f_noise = P[66]; f_gain = P[67]
+    nb = drag_b.shape[0]; na = drag_a.shape[0]
+    rb_F = np.zeros((RB, 2))
+    fx_hist = np.zeros((nb, 2)); dy_hist = np.zeros((na, 2))
+    dl0 = 0.0; dl1 = 0.0
+    Fb0 = 0.0; Fb1 = 0.0
+    ink_ki = P[68]; ink_umax = P[69]
+    ui0 = 0.0; ui1 = 0.0
     Ts = dt * tdec
     nt = cmd_ext.shape[0]
     # state: hand, pen
@@ -147,13 +159,32 @@ def simulate(P, pref, vref, vint, trem, down, cmd_ext, tgt_tick, off_tick, offv_
     for k in range(n):
         # ------------------------------------------------ controller tick
         if k % tdec == 0:
+            # drag decoupling: the ball's drag on the pen (measured on the page side: delay, noise, gain error)
+            # through the hand-compliance model gives the tip deflection the page itself causes
+            if drag_on:
+                rb_F[tick % RB, 0] = Fb0; rb_F[tick % RB, 1] = Fb1
+                jf = (tick - f_lat) % RB if tick >= f_lat else 0
+                fm0 = f_gain * rb_F[jf, 0] + f_noise * np.random.standard_normal()
+                fm1 = f_gain * rb_F[jf, 1] + f_noise * np.random.standard_normal()
+                for q in range(nb - 1, 0, -1):
+                    fx_hist[q, 0] = fx_hist[q - 1, 0]; fx_hist[q, 1] = fx_hist[q - 1, 1]
+                fx_hist[0, 0] = fm0; fx_hist[0, 1] = fm1
+                y0 = 0.0; y1 = 0.0
+                for q in range(nb):
+                    y0 += drag_b[q] * fx_hist[q, 0]; y1 += drag_b[q] * fx_hist[q, 1]
+                for q in range(1, na):
+                    y0 -= drag_a[q] * dy_hist[q - 1, 0]; y1 -= drag_a[q] * dy_hist[q - 1, 1]
+                for q in range(na - 2, 0, -1):
+                    dy_hist[q, 0] = dy_hist[q - 1, 0]; dy_hist[q, 1] = dy_hist[q - 1, 1]
+                dy_hist[0, 0] = y0; dy_hist[0, 1] = y1
+                dl0 = y0; dl1 = y1
             # camera frame (mode 1): marker = tip + kappa x imposed tremor (+ noise); stored with the target
             if mode == 1 and tick % cam_every == 0:
                 j = nfr % RB
                 ti = tick if tick < tgt_tick.shape[0] else tgt_tick.shape[0] - 1
                 mk0 = pH0 + kappa * trem[k, 0] + cam_noise * np.random.standard_normal()
                 mk1 = pH1 + kappa * trem[k, 1] + cam_noise * np.random.standard_normal()
-                fr_e[j, 0] = mk0 - tgt_tick[ti, 0]; fr_e[j, 1] = mk1 - tgt_tick[ti, 1]
+                fr_e[j, 0] = mk0 - dl0 - tgt_tick[ti, 0]; fr_e[j, 1] = mk1 - dl1 - tgt_tick[ti, 1]
                 # the platen's own ink estimate (marker - encoder page) for the supervisor
                 fr_ink[j, 0] = mk0 - (xc0 + xf0); fr_ink[j, 1] = mk1 - (xc1 + xf1)
                 fr_tick[j] = tick
@@ -185,7 +216,18 @@ def simulate(P, pref, vref, vint, trem, down, cmd_ext, tgt_tick, off_tick, offv_
                 th = tick + int(horizon / Ts + 0.5)
                 if th >= off_tick.shape[0]:
                     th = off_tick.shape[0] - 1
-                pc0 = e0 + off_tick[th, 0]; pc1 = e1 + off_tick[th, 1]
+                # ink loop: integrate the platen's own ink error (marker - encoder page - reference) while in contact
+                if ink_ki > 0.0 and jl >= 0 and lift_mode == 1 and lift_state == 1:
+                    tj = fr_tick[jl % RB]
+                    if tj < ref_ink.shape[0]:
+                        ui0 += ink_ki * Ts * (fr_ink[jl % RB, 0] - ref_ink[tj, 0])
+                        ui1 += ink_ki * Ts * (fr_ink[jl % RB, 1] - ref_ink[tj, 1])
+                        um = math.sqrt(ui0 * ui0 + ui1 * ui1)
+                        if um > ink_umax and um > 0.0:
+                            ui0 *= ink_umax / um; ui1 *= ink_umax / um
+                tf_ = th if th < uff_tick.shape[0] else uff_tick.shape[0] - 1
+                pc0 = e0 + off_tick[th, 0] + ui0 + uff_tick[tf_, 0]
+                pc1 = e1 + off_tick[th, 1] + ui1 + uff_tick[tf_, 1]
                 # supervisor on the platen's own ink estimate (accepted mode)
                 if lift_mode == 1 and not aborted and jl >= 0:
                     tj = fr_tick[jl % RB]
@@ -432,6 +474,14 @@ class Control:
     lift_down: float = 0.040       # s page drop until contact is broken
     abort_err: float = 0.20e-3     # m (the grounded five-bar's refusal threshold)
     abort_t: float = 0.010         # s
+    drag: bool = False             # subtract the tip deflection the page's own drag causes (accepted mode)
+    drag_b: Optional[np.ndarray] = None    # discrete hand-compliance model (tip displacement per N), per tick
+    drag_a: Optional[np.ndarray] = None
+    f_latency: float = 1.0e-3      # s delay of the drag-force measurement (ASSUMPTION)
+    f_noise: float = 5e-3          # N RMS noise of the drag-force measurement (ASSUMPTION)
+    f_gain: float = 1.0            # gain error of the force measurement (1 = exact)
+    ink_ki: float = 0.0            # 1/s integral gain of the ink loop (0 = off)
+    ink_umax: float = 3.0e-3       # m limit of the integral
 
 
 def build_params(dt: float, n: int, hand, pen_mass: float, writing, stage: Stage, paper: Paper, ctl: Control,
@@ -474,6 +524,8 @@ def build_params(dt: float, n: int, hand, pen_mass: float, writing, stage: Stage
     s("lift_mode", ctl.lift_mode); s("lift_up_ticks", int(round(ctl.lift_up / Ts)))
     s("lift_down_ticks", int(round(ctl.lift_down / Ts)))
     s("abort_err", ctl.abort_err); s("abort_ticks", int(round(ctl.abort_t / Ts)))
+    s("drag_on", 1.0 if ctl.drag else 0.0); s("f_lat", int(round(ctl.f_latency / Ts))); s("f_noise", ctl.f_noise)
+    s("f_gain", ctl.f_gain); s("ink_ki", ctl.ink_ki); s("ink_umax", ctl.ink_umax)
     info = {"tick_decim": tdec, "Ts": Ts, "cam_every": cam_every, "cam_lat_ticks": cam_lat,
             "horizon_s": P[IDX["horizon"]], "writer": writer, "pen_mass": pen_mass}
     return P, info, np.ascontiguousarray(coef)
@@ -540,8 +592,8 @@ def run(pref: np.ndarray, vref: np.ndarray, down: np.ndarray, dt: float, *, hand
         off_tick: Optional[np.ndarray] = None, offv_tick: Optional[np.ndarray] = None,
         offa_tick: Optional[np.ndarray] = None, cref_tick: Optional[np.ndarray] = None,
         cvel_tick: Optional[np.ndarray] = None, cacc_tick: Optional[np.ndarray] = None,
-        lift_cmd: Optional[np.ndarray] = None, ref_ink: Optional[np.ndarray] = None, seed: int = 1,
-        rec_hz: float = 4000.0) -> PlatenResult:
+        lift_cmd: Optional[np.ndarray] = None, ref_ink: Optional[np.ndarray] = None,
+        uff_tick: Optional[np.ndarray] = None, seed: int = 1, rec_hz: float = 4000.0) -> PlatenResult:
     """One platen run.  pref/vref/down/vint/trem at the plant step dt; *_tick arrays per 2 kHz controller tick."""
     stage = stage or Stage()
     paper = paper or Paper()
@@ -562,9 +614,29 @@ def run(pref: np.ndarray, vref: np.ndarray, down: np.ndarray, dt: float, *, hand
     ri = np.zeros((1, 3)) if ref_ink is None else np.ascontiguousarray(ref_ink, float)
     nrec = int(math.ceil(n / P[IDX["rec_decim"]])) + 1
     rec = np.zeros((nrec, NREC))
+    db = np.zeros(1) if ctl.drag_b is None else np.ascontiguousarray(ctl.drag_b, float)
+    da = np.ones(1) if ctl.drag_a is None else np.ascontiguousarray(ctl.drag_a, float)
     m = simulate(P, np.ascontiguousarray(pref, float), np.ascontiguousarray(vref, float), vint, trem,
                  np.ascontiguousarray(down, float), cmd, tgt, tk(off_tick), tk(offv_tick), tk(offa_tick),
-                 tk(cref_tick), tk(cvel_tick), tk(cacc_tick), lc, ri, coef, int(seed), rec)
+                 tk(cref_tick), tk(cvel_tick), tk(cacc_tick), lc, ri, coef, db, da, tk(uff_tick), int(seed), rec)
     info.update({"n_ticks": nt, "rec_hz": rec_hz, "stage": asdict(stage), "paper": asdict(paper),
                  "control": {k: (v if not isinstance(v, np.ndarray) else f"array{v.shape}") for k, v in asdict(ctl).items()}})
     return PlatenResult(rec[:m], info)
+
+
+def hand_compliance(hand, pen_mass: float, Ts: float = 5e-4, scale: float = 1.0):
+    """Discrete model (bilinear, at the tick rate) of the pen-tip displacement per newton of lateral force at the tip
+    for HW1's hand: pen mass m on the grip (K_g, C_g) to the hand mass M on the arm (k_a, b_a) to the imposed path.
+        G(s) = (M s^2 + Z_g + Z_a) / (m s^2 (M s^2 + Z_g + Z_a) + Z_g (M s^2 + Z_a)),  Z_g = K_g + C_g s, Z_a = k_a + b_a s
+    scale multiplies the compliance (a model error).  Returns (b, a) with a[0] = 1.  CALCULATION."""
+    from scipy.signal import bilinear
+    Kg, Cg, M, ka, ba, m = hand.K_grip, hand.C_grip, hand.M_hand, hand.k_arm, hand.b_arm, pen_mass
+    # polynomials in s (highest power first)
+    Zg = np.array([Cg, Kg])
+    Za = np.array([ba, ka])
+    Ms2 = np.array([M, 0.0, 0.0])
+    D1 = np.polyadd(np.polyadd(Ms2, Zg), Za)                      # M s^2 + Zg + Za
+    num = D1
+    den = np.polyadd(np.polymul(np.array([m, 0.0, 0.0]), D1), np.polymul(Zg, np.polyadd(Ms2, Za)))
+    b, a = bilinear(scale * num, den, fs=1.0 / Ts)
+    return np.asarray(b, float) / a[0], np.asarray(a, float) / a[0]

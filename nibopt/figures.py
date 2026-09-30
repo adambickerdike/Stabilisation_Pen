@@ -58,11 +58,13 @@ def pareto(points: List[Dict], front: List[Dict], cands: Dict[str, Dict], out: P
             if pts:
                 ax.scatter([-p["F"][0] for p in pts], [p["F"][obj] for p in pts], s=16, color=col,
                            edgecolors=SURF, linewidths=0.8, label=name, zorder=3)
+        offsets = {"reach_first": (6, 6), "balanced": (6, -12), "slim": (6, 6), "k_envelope": (-62, 8)}
         for cn, c in cands.items():
             ax.scatter([c["reach_mm"]], [c["screen_W"] if obj == 1 else c["typical_W"]], s=90, marker="D",
                        color=INK, edgecolors=SURF, linewidths=1.5, zorder=4)
             ax.annotate(cn, (c["reach_mm"], c["screen_W"] if obj == 1 else c["typical_W"]), textcoords="offset points",
-                        xytext=(6, 6), fontsize=8, color=INK)
+                        xytext=offsets.get(cn, (6, 6)), fontsize=8, color=INK,
+                        bbox=dict(boxstyle="round,pad=0.15", fc=SURF, ec="none", alpha=0.85), zorder=5)
         if obj == 1:
             ax.axhline(0.15, color=MUTED, lw=1.0)
             ax.annotate("0.15 W (the pass's allocation)", (1.0, 0.15), textcoords="offset points", xytext=(2, 3),
@@ -87,21 +89,28 @@ def pareto(points: List[Dict], front: List[Dict], cands: Dict[str, Dict], out: P
 
 
 def waterfall(steps: List[Dict], key: str, unit: str, title: str, out: Path, scale: float = 1.0) -> List[str]:
-    plt, fig, axs = _fig(10, 0.36 * len(steps) + 1.4)
+    plt, fig, axs = _fig(10, 0.36 * (len(steps) + 1) + 1.4)
     ax = axs[0]
     _style(ax)
     ax.grid(True, axis="x", color=GRID, lw=0.8)
     ax.grid(False, axis="y")
-    vals = [s[key] * scale for s in steps]
-    names = [s["name"] for s in steps]
-    y = np.arange(len(steps))[::-1]
+    # every step (the last one included) is drawn as a change; a grey total closes the chart
+    vals = [s[key] * scale for s in steps] + [steps[-1][key] * scale]
+    names = [s["name"] for s in steps] + ["= matched result"]
+    y = np.arange(len(vals))[::-1]
+    from matplotlib.patches import Patch
     for i, (yy, v) in enumerate(zip(y, vals)):
-        if i == 0 or i == len(steps) - 1:
+        if i == 0 or i == len(vals) - 1:
             ax.barh(yy, v, height=0.55, color=MUTED, zorder=3)
+            xl = v
         else:
             prev = vals[i - 1]
             ax.barh(yy, v - prev, left=prev, height=0.55, color=POS if v >= prev else NEG, zorder=3)
-        ax.annotate(f"{v:.3g}", (v, yy), textcoords="offset points", xytext=(4, -3), fontsize=7, color=INK)
+            xl = max(v, prev)
+        ax.annotate(f"{v:.3g}", (xl, yy), textcoords="offset points", xytext=(4, -3), fontsize=7, color=INK)
+    ax.legend(handles=[Patch(color=MUTED, label="start and matched result"), Patch(color=POS, label="step raises it"),
+                       Patch(color=NEG, label="step lowers it")], frameon=False, fontsize=8, labelcolor=INK2,
+              loc="upper right")
     ax.set_yticks(y)
     ax.set_yticklabels(names, fontsize=8, color=INK2)
     ax.set_xlabel(unit)
@@ -126,6 +135,11 @@ def levers(study: Dict, out: Path) -> List[str]:
         ax.annotate(f"{x:+.0f} %", (x, yy), textcoords="offset points", xytext=(4 if x >= 0 else -30, -3), fontsize=7,
                     color=INK)
     ax.axvline(0, color="#c3c2b7", lw=1)
+    span = max(v) - min(min(v), 0.0)
+    ax.set_xlim(min(min(v), 0.0) - 0.16 * span, max(max(v), 0.0) + 0.12 * span)
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color=NEG, label="lowers the loss"), Patch(color=POS, label="raises the loss")], frameon=False,
+              fontsize=8, labelcolor=INK2, loc="lower right")
     ax.set_yticks(y)
     ax.set_yticklabels([r["lever"] for r in rows], fontsize=8, color=INK2)
     ax.set_xlabel("change in typical copper loss (duty A), %")
@@ -187,13 +201,15 @@ def battery(budgets: Dict[str, Dict], out: Path) -> List[str]:
         h = [budgets[n]["battery_hours"]["conservative"][m] for m in modes]
         ax.bar(x + (j - (len(names) - 1) / 2) * wbar, h, width=wbar * 0.92, color=cols[j % len(cols)], label=n, zorder=3)
         rows.append([n] + [f"{v:.2f}" for v in h])
-    ax.axhline(8.0, color=MUTED, lw=1)
-    ax.annotate("REQ-RVJ-I01 8 h", (x[-1] + 0.3, 8.0), textcoords="offset points", xytext=(0, 3), fontsize=7, color=INK2)
+    ax.axhline(16.0, color=INK2, lw=1.2, ls="--", zorder=4, label="REQ-RVK-002: 16 h")
+    ax.axhline(8.0, color=INK2, lw=1.0, ls=":", zorder=4, label="REQ-RVJ-I01: 8 h")
     ax.set_xticks(x)
     ax.set_xticklabels(modes, fontsize=8, color=INK2)
     ax.set_ylabel("hours on 2.22 Wh (conservative end)")
-    ax.legend(frameon=False, fontsize=8, labelcolor=INK2, ncol=len(names))
-    ax.set_title("Battery per mode in study K's structure (CALCULATION)", fontsize=9, color=INK)
+    ax.set_ylim(0, 1.08 * max(max(budgets[n]["battery_hours"]["conservative"][m] for m in modes) for n in names))
+    ax.legend(frameon=False, fontsize=8, labelcolor=INK2, ncol=4, loc="lower center", bbox_to_anchor=(0.5, 1.0))
+    ax.set_title("Battery per mode in study K's structure: weakest point x 0.7, electronics at the high end "
+                 "(CALCULATION)", fontsize=9, color=INK, pad=34)
     fig.tight_layout()
     fig.savefig(out, dpi=150, facecolor=SURF)
     plt.close(fig)

@@ -1,0 +1,1342 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on PROPOSED DESIGNS (study N, round 4: the balanced nib's reach, force and heat); inputs from study K (revk/, results/revK/), study B (bnib/, results/bnib/), study F (results/readable/), the independent engineering pass (revk/feasibility.py, revk/improve.py, revk/compact.py, results/improvement/mechanics/), datasheets (MANUFACTURER) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-30T13:32:51+00:00",
+  "git_revision": "4e87eb7-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --reuse --procs 2",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": {
+   "nsga_main": 7,
+   "nsga_reach2": 11,
+   "nsga_reach15": 13,
+   "refine": 3,
+   "severe_process": 11,
+   "K_residual": 5
+  },
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "nibopt",
+  "version": "nibopt-0.1",
+  "script": "nibopt/run.py",
+  "doc": "docs/nib_optimisation.md",
+  "quick": false,
+  "reuse": true,
+  "procs": 2,
+  "read_only_inputs_sha256_16": {
+   "revk/feasibility.py": "5657e8896722ce0e",
+   "revk/improve.py": "2fbebc6b914b76b5",
+   "revk/compact.py": "c7660e96ce565152",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/counterface.py": "befe386459c3c7e3",
+   "revk/frontend.py": "e61afede01491f1f",
+   "revk/tolerance.py": "25a202e322456ce6",
+   "bnib/loads.py": "7778deb93b562253",
+   "bnib/contact.py": "8ac04bfcbdbf325e",
+   "bnib/balance.py": "485396a48fcb4902",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "nose2/magnetics.py": "8c766896e233edb1",
+   "results/revK/revK.json": "0eb0a21f8fbd593e",
+   "results/revK/layout.json": "8a4806648b6035b7",
+   "results/revK/budgets.json": "2cf2a26f5f15c756",
+   "results/improvement/mechanics/mechanics_study.json": "a5cdf4385405f233",
+   "results/improvement/mechanics/compact_20mm.json": "72e04c2d91f3e7ff",
+   "results/readable/readable.json": "99a24aeb97d38ef6",
+   "results/bnib/bnib.json": "c68d41f2837ac849"
+  },
+  "nibopt_sources_sha256_16": {
+   "nibopt/__init__.py": "6caf5e14fc01634e",
+   "nibopt/budgets.py": "a091069c05479338",
+   "nibopt/candidates.py": "99ee414a1893e3c7",
+   "nibopt/design.py": "31159bd5ac7c6df1",
+   "nibopt/doc_tables.py": "2c2f0a3c5082417e",
+   "nibopt/duty.py": "4700b1065ace4136",
+   "nibopt/evaluate.py": "08fe3268c71646ed",
+   "nibopt/evidence.py": "eedbb63236316531",
+   "nibopt/figures.py": "e9fbff8c0c9ab4ef",
+   "nibopt/levers.py": "26b44fc4cc610621",
+   "nibopt/magnet.py": "55922451b688d368",
+   "nibopt/optimise.py": "08325c16438befb3",
+   "nibopt/params.py": "5ff1f25b5b90fd1c",
+   "nibopt/pen.py": "d3b8ff208520a711",
+   "nibopt/reconcile.py": "42dab584627da830",
+   "nibopt/run.py": "3c84abb78a2ec7a1",
+   "nibopt/suspension.py": "fc80b0495787adc3",
+   "mechanics/cad/nibopt.py": "af847ed6197db074"
+  },
+  "parameters": "every input with its label and source: results/nibopt/nibopt.json -> inputs (nibopt/params.py)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "numba": "0.67.0"
+ },
+ "budgets": {
+  "K_B1 (matched)": {
+   "mass": {
+    "mass_g": 66.31982376578576,
+    "com_mm": 75.01669022947581,
+    "I_transverse_g_mm2": 118725.43292109598,
+    "K_mass_g": 66.4086530108663,
+    "K_com_mm": 74.94890868978003,
+    "moving_g": 3.439830737727785,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 4.102849659526342e-05,
+     "carrier_tube": 0.3333262497029004,
+     "guide_stations": 0.06,
+     "coils": 0.8499721268016793,
+     "flange": 1.274773907322842,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.0023154437337227344
+    },
+    "stator_parts_g": {
+     "back_plate": 3.7863431605655156,
+     "keeper": 3.7863431605655156,
+     "magnets": 2.752807889184006
+    },
+    "label": "CALCULATION (study K's layout parts, the nib's replaced; revj/budgets.mass_properties, +10 % wiring)"
+   },
+   "length_mm": 145.1316411398638,
+   "od_mm": 24.0,
+   "battery_hours": {
+    "conservative": {
+     "steady_0mm": 18.61790146326256,
+     "steady_1mm": 18.08837168564338,
+     "steady_2mm": 18.054742206431435,
+     "guide": 17.568748095514678,
+     "spelling_cue": 18.330098365160758,
+     "severe": 17.90359967063868
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": 24.940174891120122,
+     "steady_1mm": 23.9990365049218,
+     "steady_2mm": 23.939874205237984,
+     "guide": 23.772892761516033,
+     "spelling_cue": 24.91535626673284,
+     "severe": 23.67486290613156
+    },
+    "optimistic": {
+     "steady_0mm": 47.52902085101857,
+     "steady_1mm": 46.48468443704068,
+     "steady_2mm": 46.41796880047835,
+     "guide": 45.72917503462965,
+     "spelling_cue": 47.438968050661096,
+     "severe": 46.22023472977453
+    }
+   },
+   "battery_rows": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.06112045534209063,
+      "total_W": 0.11924007678204633,
+      "hours": 18.61790146326256
+     },
+     "steady_1mm": {
+      "nib_W": 0.06461116044473982,
+      "total_W": 0.12273078188469552,
+      "hours": 18.08837168564338
+     },
+     "steady_2mm": {
+      "nib_W": 0.06483976366880509,
+      "total_W": 0.12295938510876078,
+      "hours": 18.054742206431435
+     },
+     "guide": {
+      "nib_W": 0.06474111797816873,
+      "total_W": 0.12636073941812442,
+      "hours": 17.568748095514678
+     },
+     "spelling_cue": {
+      "nib_W": 0.06112045767381491,
+      "total_W": 0.12111227969291535,
+      "hours": 18.330098365160758
+     },
+     "severe": {
+      "nib_W": 0.06587778918360332,
+      "total_W": 0.12399741062355901,
+      "hours": 17.90359967063868
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.06112045534209063,
+      "total_W": 0.08901300851705032,
+      "hours": 24.940174891120122
+     },
+     "steady_1mm": {
+      "nib_W": 0.06461116044473982,
+      "total_W": 0.0925037136196995,
+      "hours": 23.9990365049218
+     },
+     "steady_2mm": {
+      "nib_W": 0.06483976366880509,
+      "total_W": 0.09273231684376478,
+      "hours": 23.939874205237984
+     },
+     "guide": {
+      "nib_W": 0.06474111797816873,
+      "total_W": 0.09338367115312841,
+      "hours": 23.772892761516033
+     },
+     "spelling_cue": {
+      "nib_W": 0.06112045767381491,
+      "total_W": 0.0891016759396758,
+      "hours": 24.91535626673284
+     },
+     "severe": {
+      "nib_W": 0.06587778918360332,
+      "total_W": 0.093770342358563,
+      "hours": 23.67486290613156
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.018815751777474958,
+      "total_W": 0.046708304952434644,
+      "hours": 47.52902085101857
+     },
+     "steady_1mm": {
+      "nib_W": 0.019865112105242232,
+      "total_W": 0.04775766528020192,
+      "hours": 46.48468443704068
+     },
+     "steady_2mm": {
+      "nib_W": 0.01993375326129098,
+      "total_W": 0.047826306436250667,
+      "hours": 46.41796880047835
+     },
+     "guide": {
+      "nib_W": 0.019904134980224517,
+      "total_W": 0.0485466881551842,
+      "hours": 45.72917503462965
+     },
+     "spelling_cue": {
+      "nib_W": 0.01881575247830063,
+      "total_W": 0.04679697074416152,
+      "hours": 47.438968050661096
+     },
+     "severe": {
+      "nib_W": 0.02013835824250013,
+      "total_W": 0.04803091141745981,
+      "hours": 46.22023472977453
+     }
+    }
+   },
+   "skin_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "max_shell_C": 37.44712629681361,
+      "front_pad_C": 37.190210167118494,
+      "coil_C": 38.66827169711478,
+      "nib_35deg_W": 0.09960042339001761,
+      "nib_mean_W": 0.06112045534209063
+     },
+     "steady_1mm": {
+      "max_shell_C": 37.694975708755145,
+      "front_pad_C": 37.43805957906003,
+      "coil_C": 38.9699531851436,
+      "nib_35deg_W": 0.10318922846250285,
+      "nib_mean_W": 0.06461116044473982
+     },
+     "steady_2mm": {
+      "max_shell_C": 37.711078543079346,
+      "front_pad_C": 37.454162413384225,
+      "coil_C": 38.98955350205519,
+      "nib_35deg_W": 0.10342239396832902,
+      "nib_mean_W": 0.06483976366880509
+     },
+     "guide": {
+      "max_shell_C": 37.70415277287773,
+      "front_pad_C": 37.44722578018145,
+      "coil_C": 38.98110698913746,
+      "nib_35deg_W": 0.10332178222348433,
+      "nib_mean_W": 0.06474111797816873
+     },
+     "spelling_cue": {
+      "max_shell_C": 37.44713868042667,
+      "front_pad_C": 37.19021673995525,
+      "coil_C": 38.668277950612435,
+      "nib_35deg_W": 0.0996004271897394,
+      "nib_mean_W": 0.06112045767381491
+     },
+     "severe": {
+      "max_shell_C": 37.78419710249302,
+      "front_pad_C": 37.527280972797904,
+      "coil_C": 39.0785531717887,
+      "nib_35deg_W": 0.10448113465631786,
+      "nib_mean_W": 0.06587778918360332
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "max_shell_C": 32.70456019192726,
+      "front_pad_C": 32.42917617172213,
+      "coil_C": 32.873156796355005,
+      "nib_35deg_W": 0.03066169636578954,
+      "nib_mean_W": 0.018815751777474958
+     },
+     "steady_1mm": {
+      "max_shell_C": 32.77686009909418,
+      "front_pad_C": 32.502691654284064,
+      "coil_C": 32.96263959963747,
+      "nib_35deg_W": 0.031726184413825326,
+      "nib_mean_W": 0.019865112105242232
+     },
+     "steady_2mm": {
+      "max_shell_C": 32.78155101251411,
+      "front_pad_C": 32.507461435840305,
+      "coil_C": 32.96844536204048,
+      "nib_35deg_W": 0.03179524980361008,
+      "nib_mean_W": 0.01993375326129098
+     },
+     "guide": {
+      "max_shell_C": 32.779551839448594,
+      "front_pad_C": 32.505415154820184,
+      "coil_C": 32.96595136969519,
+      "nib_35deg_W": 0.0317654492847509,
+      "nib_mean_W": 0.019904134980224517
+     },
+     "spelling_cue": {
+      "max_shell_C": 32.7045735753778,
+      "front_pad_C": 32.42918256101514,
+      "coil_C": 32.87316282644381,
+      "nib_35deg_W": 0.030661697507838193,
+      "nib_mean_W": 0.01881575247830063
+     },
+     "severe": {
+      "max_shell_C": 32.795510190091896,
+      "front_pad_C": 32.52165530850227,
+      "coil_C": 32.98572209710314,
+      "nib_35deg_W": 0.03200077396365721,
+      "nib_mean_W": 0.02013835824250013
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "max_shell_C": 34.96422428826382,
+      "front_pad_C": 34.70730815856871,
+      "coil_C": 35.64609154868772,
+      "nib_35deg_W": 0.06364854739819928,
+      "nib_mean_W": 0.03905835001932806
+     },
+     "steady_1mm": {
+      "max_shell_C": 35.11957392508469,
+      "front_pad_C": 34.86265779538957,
+      "coil_C": 35.83518261504824,
+      "nib_35deg_W": 0.06589797603417667,
+      "nib_mean_W": 0.04126152279619957
+     },
+     "steady_2mm": {
+      "max_shell_C": 35.12965975906114,
+      "front_pad_C": 34.87274362936603,
+      "coil_C": 35.84745905895099,
+      "nib_35deg_W": 0.06604401669592928,
+      "nib_mean_W": 0.041405717562620264
+     },
+     "guide": {
+      "max_shell_C": 35.125330456771906,
+      "front_pad_C": 34.868403464075634,
+      "coil_C": 35.84217295822585,
+      "nib_35deg_W": 0.06598100123643194,
+      "nib_mean_W": 0.04134349692232287
+     },
+     "spelling_cue": {
+      "max_shell_C": 34.96423657510407,
+      "front_pad_C": 34.707314634632645,
+      "coil_C": 35.64609768439382,
+      "nib_35deg_W": 0.06364854979667195,
+      "nib_mean_W": 0.039058351491166605
+     },
+     "severe": {
+      "max_shell_C": 35.15967781534476,
+      "front_pad_C": 34.90276168564964,
+      "coil_C": 35.88399693820772,
+      "nib_35deg_W": 0.06647867156080423,
+      "nib_mean_W": 0.04183559137967735
+     }
+    }
+   },
+   "label": "CALCULATION in study K's budget structure (revk/budgets.py): mass, length, battery per mode, skin"
+  },
+  "reach_first": {
+   "mass": {
+    "mass_g": 67.3293060459418,
+    "com_mm": 82.49464351295104,
+    "I_transverse_g_mm2": 143520.92139926713,
+    "K_mass_g": 66.4086530108663,
+    "K_com_mm": 74.94890868978003,
+    "moving_g": 3.0627770459618704,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.28173589351248146,
+     "carrier_tube": 0.137133387821551,
+     "guide_stations": 0.06,
+     "coils": 1.0874862820201008,
+     "flange": 0.49307314513465733,
+     "flange_inserts": 0.1,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005848337473079401
+    },
+    "stator_parts_g": {
+     "back_plate": 4.049700999827448,
+     "keeper": 4.049700999827448,
+     "magnets": 5.111373513422539
+    },
+    "label": "CALCULATION (study K's layout parts, the nib's replaced; revj/budgets.mass_properties, +10 % wiring)"
+   },
+   "length_mm": 156.39943574049926,
+   "od_mm": 23.659801838869857,
+   "battery_hours": {
+    "conservative": {
+     "steady_0mm": 18.850295487824994,
+     "steady_1mm": 18.471111349835233,
+     "steady_2mm": 18.124143839982924,
+     "guide": 18.16334883108253,
+     "spelling_cue": 18.55531987716936,
+     "severe": 18.675367705608682
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": 25.35897546229781,
+     "steady_1mm": 24.677466994900765,
+     "steady_2mm": 24.062047233817292,
+     "guide": 24.87476096237983,
+     "spelling_cue": 25.33331729875753,
+     "severe": 25.043404856123402
+    },
+    "optimistic": {
+     "steady_0mm": 57.85350699840935,
+     "steady_1mm": 57.234637706360644,
+     "steady_2mm": 56.65850604292658,
+     "guide": 56.50799196719063,
+     "spelling_cue": 57.72013732187423,
+     "severe": 57.58490895778533
+    }
+   },
+   "battery_rows": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.05965041571589955,
+      "total_W": 0.11777003715585525,
+      "hours": 18.850295487824994
+     },
+     "steady_1mm": {
+      "nib_W": 0.06206805746869877,
+      "total_W": 0.12018767890865448,
+      "hours": 18.471111349835233
+     },
+     "steady_2mm": {
+      "nib_W": 0.06436892310042418,
+      "total_W": 0.12248854454037988,
+      "hours": 18.124143839982924
+     },
+     "guide": {
+      "nib_W": 0.06060453560541052,
+      "total_W": 0.12222415704536622,
+      "hours": 18.16334883108253
+     },
+     "spelling_cue": {
+      "nib_W": 0.05965041614740561,
+      "total_W": 0.11964223816650604,
+      "hours": 18.55531987716936
+     },
+     "severe": {
+      "nib_W": 0.06075353998825428,
+      "total_W": 0.11887316142820997,
+      "hours": 18.675367705608682
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.05965041571589955,
+      "total_W": 0.08754296889085925,
+      "hours": 25.35897546229781
+     },
+     "steady_1mm": {
+      "nib_W": 0.06206805746869877,
+      "total_W": 0.08996061064365846,
+      "hours": 24.677466994900765
+     },
+     "steady_2mm": {
+      "nib_W": 0.06436892310042418,
+      "total_W": 0.09226147627538386,
+      "hours": 24.062047233817292
+     },
+     "guide": {
+      "nib_W": 0.06060453560541052,
+      "total_W": 0.08924708878037022,
+      "hours": 24.87476096237983
+     },
+     "spelling_cue": {
+      "nib_W": 0.05965041614740561,
+      "total_W": 0.0876316344132665,
+      "hours": 25.33331729875753
+     },
+     "severe": {
+      "nib_W": 0.06075353998825428,
+      "total_W": 0.08864609316321397,
+      "hours": 25.043404856123402
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.010480228617871611,
+      "total_W": 0.038372781792831295,
+      "hours": 57.85350699840935
+     },
+     "steady_1mm": {
+      "nib_W": 0.010895147576979998,
+      "total_W": 0.038787700751939685,
+      "hours": 57.234637706360644
+     },
+     "steady_2mm": {
+      "nib_W": 0.011289560068867213,
+      "total_W": 0.0391821132438269,
+      "hours": 56.65850604292658
+     },
+     "guide": {
+      "nib_W": 0.010643925121578707,
+      "total_W": 0.03928647829653839,
+      "hours": 56.50799196719063
+     },
+     "spelling_cue": {
+      "nib_W": 0.010480228691901036,
+      "total_W": 0.03846144695776192,
+      "hours": 57.72013732187423
+     },
+     "severe": {
+      "nib_W": 0.010659213949087526,
+      "total_W": 0.03855176712404721,
+      "hours": 57.58490895778533
+     }
+    }
+   },
+   "skin_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "max_shell_C": 36.094600928401476,
+      "front_pad_C": 35.59224052795847,
+      "coil_C": 37.09168649809549,
+      "nib_35deg_W": 0.09638855879965648,
+      "nib_mean_W": 0.05965041571589955
+     },
+     "steady_1mm": {
+      "max_shell_C": 36.23661715321113,
+      "front_pad_C": 35.73425675276812,
+      "coil_C": 37.27147057983264,
+      "nib_35deg_W": 0.09890641592815655,
+      "nib_mean_W": 0.06206805746869877
+     },
+     "steady_2mm": {
+      "max_shell_C": 36.36850083342149,
+      "front_pad_C": 35.86614043297848,
+      "coil_C": 37.43842746362896,
+      "nib_35deg_W": 0.10124462950055342,
+      "nib_mean_W": 0.06436892310042418
+     },
+     "guide": {
+      "max_shell_C": 36.152736908868846,
+      "front_pad_C": 35.65037084674342,
+      "coil_C": 37.165276289352065,
+      "nib_35deg_W": 0.09741914644197734,
+      "nib_mean_W": 0.06060453560541052
+     },
+     "spelling_cue": {
+      "max_shell_C": 36.09460477619357,
+      "front_pad_C": 35.59224134723482,
+      "coil_C": 37.09168767971725,
+      "nib_35deg_W": 0.09638855949692317,
+      "nib_mean_W": 0.05965041614740561
+     },
+     "severe": {
+      "max_shell_C": 36.161272008321326,
+      "front_pad_C": 35.65891160787832,
+      "coil_C": 37.17608811416352,
+      "nib_35deg_W": 0.0975705945428682,
+      "nib_mean_W": 0.06075353998825428
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "max_shell_C": 32.0792116214401,
+      "front_pad_C": 31.110767845973903,
+      "coil_C": 31.41840901138135,
+      "nib_35deg_W": 0.016934905151018136,
+      "nib_mean_W": 0.010480228617871611
+     },
+     "steady_1mm": {
+      "max_shell_C": 32.08793754715784,
+      "front_pad_C": 31.134834257966368,
+      "coil_C": 31.44887565550298,
+      "nib_35deg_W": 0.017361587292962558,
+      "nib_mean_W": 0.010895147576979998
+     },
+     "steady_2mm": {
+      "max_shell_C": 32.096026648417684,
+      "front_pad_C": 31.157144285562893,
+      "coil_C": 31.477118821594374,
+      "nib_35deg_W": 0.017757129859287193,
+      "nib_mean_W": 0.011289560068867213
+     },
+     "guide": {
+      "max_shell_C": 32.08280503272534,
+      "front_pad_C": 31.120625271689697,
+      "coil_C": 31.430888195276925,
+      "nib_35deg_W": 0.017109645173882748,
+      "nib_mean_W": 0.010643925121578707
+     },
+     "spelling_cue": {
+      "max_shell_C": 32.07922224986664,
+      "front_pad_C": 31.11076863266909,
+      "coil_C": 31.418410151757303,
+      "nib_35deg_W": 0.016934905270641606,
+      "nib_mean_W": 0.010480228691901036
+     },
+     "severe": {
+      "max_shell_C": 32.08309130809794,
+      "front_pad_C": 31.121468159101642,
+      "coil_C": 31.431954970461373,
+      "nib_35deg_W": 0.01712461488117027,
+      "nib_mean_W": 0.010659213949087526
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "max_shell_C": 32.622755365633985,
+      "front_pad_C": 32.12039496519098,
+      "coil_C": 32.69653680817822,
+      "nib_35deg_W": 0.03483495032300438,
+      "nib_mean_W": 0.021557737703381093
+     },
+     "steady_1mm": {
+      "max_shell_C": 32.672664599011426,
+      "front_pad_C": 32.17030419856842,
+      "coil_C": 32.75971892490463,
+      "nib_35deg_W": 0.03571980921293607,
+      "nib_mean_W": 0.022415726524858563
+     },
+     "steady_2mm": {
+      "max_shell_C": 32.718949450185995,
+      "front_pad_C": 32.216589049742986,
+      "coil_C": 32.81831278964025,
+      "nib_35deg_W": 0.03654041011700641,
+      "nib_mean_W": 0.023231522111172225
+     },
+     "guide": {
+      "max_shell_C": 32.64319947780538,
+      "front_pad_C": 32.14083341567995,
+      "coil_C": 32.72241093920208,
+      "nib_35deg_W": 0.03519728516954279,
+      "nib_mean_W": 0.02189626167112666
+     },
+     "spelling_cue": {
+      "max_shell_C": 32.622759188053074,
+      "front_pad_C": 32.12039575909432,
+      "coil_C": 32.69653795767927,
+      "nib_35deg_W": 0.03483495057042381,
+      "nib_mean_W": 0.021557737856497523
+     },
+     "severe": {
+      "max_shell_C": 32.64494332095145,
+      "front_pad_C": 32.14258292050844,
+      "coil_C": 32.724625438035275,
+      "nib_35deg_W": 0.03522832862564403,
+      "nib_mean_W": 0.021927867837915588
+     }
+    }
+   },
+   "label": "CALCULATION in study K's budget structure (revk/budgets.py): mass, length, battery per mode, skin"
+  },
+  "balanced": {
+   "mass": {
+    "mass_g": 70.23908240811448,
+    "com_mm": 81.48287019908646,
+    "I_transverse_g_mm2": 151494.8346672064,
+    "K_mass_g": 66.4086530108663,
+    "K_com_mm": 74.94890868978003,
+    "moving_g": 3.2452193835934837,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.30067119784183705,
+     "carrier_tube": 0.1480194954962819,
+     "guide_stations": 0.06,
+     "coils": 1.1519086823799587,
+     "flange": 0.6815280483372622,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005591959538143705
+    },
+    "stator_parts_g": {
+     "back_plate": 4.604521138650111,
+     "keeper": 4.604521138650111,
+     "magnets": 6.963909896858738
+    },
+    "label": "CALCULATION (study K's layout parts, the nib's replaced; revj/budgets.mass_properties, +10 % wiring)"
+   },
+   "length_mm": 157.1568479136735,
+   "od_mm": 23.999998988803558,
+   "battery_hours": {
+    "conservative": {
+     "steady_0mm": 23.324998091293576,
+     "steady_1mm": 22.975915537088365,
+     "steady_2mm": 22.633698619987655,
+     "guide": 22.39641469790673,
+     "spelling_cue": 22.87502894552368,
+     "severe": 23.181179904995513
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": 34.180249924693015,
+     "steady_1mm": 33.43582487613987,
+     "steady_2mm": 32.71596998022608,
+     "guide": 33.5621505841701,
+     "spelling_cue": 34.133652805165745,
+     "severe": 33.872302479046716
+    },
+    "optimistic": {
+     "steady_0mm": 62.11653612465948,
+     "steady_1mm": 61.595573816542974,
+     "steady_2mm": 61.078325954163354,
+     "guide": 60.68478818069988,
+     "spelling_cue": 61.96281330732876,
+     "severe": 61.89936714832308
+    }
+   },
+   "battery_rows": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.037057235223052994,
+      "total_W": 0.0951768566630087,
+      "hours": 23.324998091293576
+     },
+     "steady_1mm": {
+      "nib_W": 0.038503296433171665,
+      "total_W": 0.09662291787312736,
+      "hours": 22.975915537088365
+     },
+     "steady_2mm": {
+      "nib_W": 0.039964215288325826,
+      "total_W": 0.09808383672828153,
+      "hours": 22.633698619987655
+     },
+     "guide": {
+      "nib_W": 0.03750338686045282,
+      "total_W": 0.09912300830040852,
+      "hours": 22.39641469790673
+     },
+     "spelling_cue": {
+      "nib_W": 0.037057235505017924,
+      "total_W": 0.09704905752411835,
+      "hours": 22.87502894552368
+     },
+     "severe": {
+      "nib_W": 0.037647721253484735,
+      "total_W": 0.09576734269344044,
+      "hours": 23.181179904995513
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.037057235223052994,
+      "total_W": 0.06494978839801269,
+      "hours": 34.180249924693015
+     },
+     "steady_1mm": {
+      "nib_W": 0.038503296433171665,
+      "total_W": 0.06639584960813136,
+      "hours": 33.43582487613987
+     },
+     "steady_2mm": {
+      "nib_W": 0.039964215288325826,
+      "total_W": 0.0678567684632855,
+      "hours": 32.71596998022608
+     },
+     "guide": {
+      "nib_W": 0.03750338686045282,
+      "total_W": 0.0661459400354125,
+      "hours": 33.5621505841701
+     },
+     "spelling_cue": {
+      "nib_W": 0.037057235505017924,
+      "total_W": 0.06503845377087882,
+      "hours": 34.133652805165745
+     },
+     "severe": {
+      "nib_W": 0.037647721253484735,
+      "total_W": 0.06554027442844443,
+      "hours": 33.872302479046716
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.007846722362632438,
+      "total_W": 0.035739275537592124,
+      "hours": 62.11653612465948
+     },
+     "steady_1mm": {
+      "nib_W": 0.008148997580165606,
+      "total_W": 0.036041550755125294,
+      "hours": 61.595573816542974
+     },
+     "steady_2mm": {
+      "nib_W": 0.008454219028096671,
+      "total_W": 0.036346772203056356,
+      "hours": 61.078325954163354
+     },
+     "guide": {
+      "nib_W": 0.00793992600235161,
+      "total_W": 0.0365824791773113,
+      "hours": 60.68478818069988
+     },
+     "spelling_cue": {
+      "nib_W": 0.007846722421548569,
+      "total_W": 0.03582794068740946,
+      "hours": 61.96281330732876
+     },
+     "severe": {
+      "nib_W": 0.007972110750932203,
+      "total_W": 0.03586466392589189,
+      "hours": 61.89936714832308
+     }
+    }
+   },
+   "skin_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "max_shell_C": 33.66745511149634,
+      "front_pad_C": 33.15678117158369,
+      "coil_C": 34.11850546897199,
+      "nib_35deg_W": 0.060122791945059983,
+      "nib_mean_W": 0.037057235223052994
+     },
+     "steady_1mm": {
+      "max_shell_C": 33.744019809220674,
+      "front_pad_C": 33.233345869308025,
+      "coil_C": 34.21772108055834,
+      "nib_35deg_W": 0.06163285286919452,
+      "nib_mean_W": 0.038503296433171665
+     },
+     "steady_2mm": {
+      "max_shell_C": 33.81879008807748,
+      "front_pad_C": 33.30811614816483,
+      "coil_C": 34.31461141207861,
+      "nib_35deg_W": 0.06310752304675893,
+      "nib_mean_W": 0.039964215288325826
+     },
+     "guide": {
+      "max_shell_C": 33.692853134157794,
+      "front_pad_C": 33.182171570320726,
+      "coil_C": 34.15140799735636,
+      "nib_35deg_W": 0.06062353391590884,
+      "nib_mean_W": 0.03750338686045282
+     },
+     "spelling_cue": {
+      "max_shell_C": 33.66745988281687,
+      "front_pad_C": 33.15678186475688,
+      "coil_C": 34.11850670396691,
+      "nib_35deg_W": 0.06012279240252852,
+      "nib_mean_W": 0.037057235505017924
+     },
+     "severe": {
+      "max_shell_C": 33.70023300186304,
+      "front_pad_C": 33.18955906195038,
+      "coil_C": 34.16098037628438,
+      "nib_35deg_W": 0.06076925974143952,
+      "nib_mean_W": 0.037647721253484735
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "max_shell_C": 31.955368452752786,
+      "front_pad_C": 30.753860626955145,
+      "coil_C": 31.004704480857324,
+      "nib_35deg_W": 0.012730762379318509,
+      "nib_mean_W": 0.007846722362632438
+     },
+     "steady_1mm": {
+      "max_shell_C": 31.961467342478098,
+      "front_pad_C": 30.76975454278413,
+      "coil_C": 31.025300455586464,
+      "nib_35deg_W": 0.013044232972662313,
+      "nib_mean_W": 0.008148997580165606
+     },
+     "steady_2mm": {
+      "max_shell_C": 31.967417591965912,
+      "front_pad_C": 30.785261097055525,
+      "coil_C": 31.04539447164557,
+      "nib_35deg_W": 0.013350063758509717,
+      "nib_mean_W": 0.008454219028096671
+     },
+     "guide": {
+      "max_shell_C": 31.9574162812069,
+      "front_pad_C": 30.75913407012904,
+      "coil_C": 31.011538649948495,
+      "nib_35deg_W": 0.012834744101497332,
+      "nib_mean_W": 0.00793992600235161
+     },
+     "spelling_cue": {
+      "max_shell_C": 31.955381698090402,
+      "front_pad_C": 30.753861301779853,
+      "coil_C": 31.004705692075543,
+      "nib_35deg_W": 0.012730762474905838,
+      "nib_mean_W": 0.007846722421548569
+     },
+     "severe": {
+      "max_shell_C": 31.958020862584316,
+      "front_pad_C": 30.760772897959384,
+      "coil_C": 31.01366167935114,
+      "nib_35deg_W": 0.012867090878623913,
+      "nib_mean_W": 0.007972110750932203
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "max_shell_C": 32.21592767780226,
+      "front_pad_C": 31.432886905166733,
+      "coil_C": 31.884614014602604,
+      "nib_35deg_W": 0.026122979414898245,
+      "nib_mean_W": 0.016101138380091397
+     },
+     "steady_1mm": {
+      "max_shell_C": 32.22851265888512,
+      "front_pad_C": 31.465683797560132,
+      "coil_C": 31.927113545504675,
+      "nib_35deg_W": 0.02676982198214292,
+      "nib_mean_W": 0.016723652131262354
+     },
+     "steady_2mm": {
+      "max_shell_C": 32.24079421303134,
+      "front_pad_C": 31.497689948948473,
+      "coil_C": 31.96858840244139,
+      "nib_35deg_W": 0.027401069018701187,
+      "nib_mean_W": 0.017352324549044226
+     },
+     "guide": {
+      "max_shell_C": 32.22012663744239,
+      "front_pad_C": 31.443766269999728,
+      "coil_C": 31.89871256221866,
+      "nib_35deg_W": 0.026337524928129238,
+      "nib_mean_W": 0.01629311791187491
+     },
+     "spelling_cue": {
+      "max_shell_C": 32.2159409251108,
+      "front_pad_C": 31.432887585127727,
+      "coil_C": 31.884615232476634,
+      "nib_35deg_W": 0.02612297961178691,
+      "nib_mean_W": 0.016101138501445532
+     },
+     "severe": {
+      "max_shell_C": 32.2214004722506,
+      "front_pad_C": 31.447149195227524,
+      "coil_C": 31.90309566310461,
+      "nib_35deg_W": 0.0264042699776458,
+      "nib_mean_W": 0.016359390521520772
+     }
+    }
+   },
+   "label": "CALCULATION in study K's budget structure (revk/budgets.py): mass, length, battery per mode, skin"
+  },
+  "slim": {
+   "mass": {
+    "mass_g": 63.573836876014404,
+    "com_mm": 85.79734566385784,
+    "I_transverse_g_mm2": 133167.61753860503,
+    "K_mass_g": 66.4086530108663,
+    "K_com_mm": 74.94890868978003,
+    "moving_g": 2.509427765270274,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.2413565564856085,
+     "carrier_tube": 0.14135009560839318,
+     "guide_stations": 0.06,
+     "coils": 0.6295940342757406,
+     "flange": 0.43420782348559056,
+     "flange_inserts": 0.1,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005419255414941165
+    },
+    "stator_parts_g": {
+     "back_plate": 3.060368538459761,
+     "keeper": 3.060368538459761,
+     "magnets": 4.770556649662431
+    },
+    "label": "CALCULATION (study K's layout parts, the nib's replaced; revj/budgets.mass_properties, +10 % wiring)"
+   },
+   "length_mm": 167.90426225942434,
+   "od_mm": 20.9330822636419,
+   "battery_hours": {
+    "conservative": {
+     "steady_0mm": 22.428872442486885,
+     "steady_1mm": 22.270616341265605,
+     "steady_2mm": 22.270516389492002,
+     "guide": 21.570683581176684,
+     "spelling_cue": 22.012505408460804,
+     "severe": 22.289564435188524
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": 32.28973724361356,
+     "steady_1mm": 31.96275102589781,
+     "steady_2mm": 31.962545146216318,
+     "guide": 31.741314180461732,
+     "spelling_cue": 32.24814911281345,
+     "severe": 32.00179465662454
+    },
+    "optimistic": {
+     "steady_0mm": 55.59882628574124,
+     "steady_1mm": 55.316297954895724,
+     "steady_2mm": 55.3161189143213,
+     "guide": 54.40408923883203,
+     "spelling_cue": 55.47563847409423,
+     "severe": 55.347269060920546
+    }
+   },
+   "battery_rows": {
+    "conservative": {
+     "steady_0mm": {
+      "nib_W": 0.040859941874812934,
+      "total_W": 0.09897956331476863,
+      "hours": 22.428872442486885
+     },
+     "steady_1mm": {
+      "nib_W": 0.041563295547237165,
+      "total_W": 0.09968291698719287,
+      "hours": 22.270616341265605
+     },
+     "steady_2mm": {
+      "nib_W": 0.04156374293176012,
+      "total_W": 0.09968336437171582,
+      "hours": 22.270516389492002
+     },
+     "guide": {
+      "nib_W": 0.04129784019938001,
+      "total_W": 0.10291746163933571,
+      "hours": 21.570683581176684
+     },
+     "spelling_cue": {
+      "nib_W": 0.04085994195805744,
+      "total_W": 0.10085176397715788,
+      "hours": 22.012505408460804
+     },
+     "severe": {
+      "nib_W": 0.04147855628375465,
+      "total_W": 0.09959817772371035,
+      "hours": 22.289564435188524
+     }
+    },
+    "worst07_low_electronics": {
+     "steady_0mm": {
+      "nib_W": 0.040859941874812934,
+      "total_W": 0.06875249504977263,
+      "hours": 32.28973724361356
+     },
+     "steady_1mm": {
+      "nib_W": 0.041563295547237165,
+      "total_W": 0.06945584872219684,
+      "hours": 31.96275102589781
+     },
+     "steady_2mm": {
+      "nib_W": 0.04156374293176012,
+      "total_W": 0.0694562961067198,
+      "hours": 31.962545146216318
+     },
+     "guide": {
+      "nib_W": 0.04129784019938001,
+      "total_W": 0.06994039337433969,
+      "hours": 31.741314180461732
+     },
+     "spelling_cue": {
+      "nib_W": 0.04085994195805744,
+      "total_W": 0.06884116022391833,
+      "hours": 32.24814911281345
+     },
+     "severe": {
+      "nib_W": 0.04147855628375465,
+      "total_W": 0.06937110945871433,
+      "hours": 32.00179465662454
+     }
+    },
+    "optimistic": {
+     "steady_0mm": {
+      "nib_W": 0.012036347276835222,
+      "total_W": 0.03992890045179491,
+      "hours": 55.59882628574124
+     },
+     "steady_1mm": {
+      "nib_W": 0.012240284380622267,
+      "total_W": 0.04013283755558195,
+      "hours": 55.316297954895724
+     },
+     "steady_2mm": {
+      "nib_W": 0.012240414277773951,
+      "total_W": 0.040132967452733634,
+      "hours": 55.3161189143213
+     },
+     "guide": {
+      "nib_W": 0.012163202992637913,
+      "total_W": 0.0408057561675976,
+      "hours": 54.40408923883203
+     },
+     "spelling_cue": {
+      "nib_W": 0.012036347300990336,
+      "total_W": 0.040017565566851224,
+      "hours": 55.47563847409423
+     },
+     "severe": {
+      "nib_W": 0.012217826933523248,
+      "total_W": 0.04011038010848293,
+      "hours": 55.347269060920546
+     }
+    }
+   },
+   "skin_by_mode": {
+    "worst07": {
+     "steady_0mm": {
+      "max_shell_C": 34.614121179262156,
+      "front_pad_C": 34.19362807152133,
+      "coil_C": 35.217782216921044,
+      "nib_35deg_W": 0.06527708722107445,
+      "nib_mean_W": 0.040859941874812934
+     },
+     "steady_1mm": {
+      "max_shell_C": 34.66356210751836,
+      "front_pad_C": 34.243068999777535,
+      "coil_C": 35.279121298193424,
+      "nib_35deg_W": 0.06607029742215308,
+      "nib_mean_W": 0.041563295547237165
+     },
+     "steady_2mm": {
+      "max_shell_C": 34.66359031994888,
+      "front_pad_C": 34.24309721220805,
+      "coil_C": 35.27915630005584,
+      "nib_35deg_W": 0.06607075005094613,
+      "nib_mean_W": 0.04156374293176012
+     },
+     "guide": {
+      "max_shell_C": 34.646824399056875,
+      "front_pad_C": 34.22632957335176,
+      "coil_C": 35.25835357771199,
+      "nib_35deg_W": 0.06580173057006153,
+      "nib_mean_W": 0.04129784019938001
+     },
+     "spelling_cue": {
+      "max_shell_C": 34.61412231601754,
+      "front_pad_C": 34.19362828931279,
+      "coil_C": 35.21778254835775,
+      "nib_35deg_W": 0.06527708735406433,
+      "nib_mean_W": 0.04085994195805744
+     },
+     "severe": {
+      "max_shell_C": 34.658221146826776,
+      "front_pad_C": 34.237728039085944,
+      "coil_C": 35.272495014393975,
+      "nib_35deg_W": 0.06598460921496223,
+      "nib_mean_W": 0.04147855628375465
+     }
+    },
+    "centre10": {
+     "steady_0mm": {
+      "max_shell_C": 31.954478518176778,
+      "front_pad_C": 31.323445725922962,
+      "coil_C": 31.65687924902161,
+      "nib_35deg_W": 0.019229045734336637,
+      "nib_mean_W": 0.012036347276835222
+     },
+     "steady_1mm": {
+      "max_shell_C": 31.959699353716513,
+      "front_pad_C": 31.337687428767026,
+      "coil_C": 31.674548273431554,
+      "nib_35deg_W": 0.019457533838728676,
+      "nib_mean_W": 0.012240284380622267
+     },
+     "steady_2mm": {
+      "max_shell_C": 31.95970233207763,
+      "front_pad_C": 31.337695553315992,
+      "coil_C": 31.67455835318505,
+      "nib_35deg_W": 0.019457664185697218,
+      "nib_mean_W": 0.012240414277773951
+     },
+     "guide": {
+      "max_shell_C": 31.95793788881959,
+      "front_pad_C": 31.332866688754386,
+      "coil_C": 31.668567517927116,
+      "nib_35deg_W": 0.01938018555756195,
+      "nib_mean_W": 0.012163202992637913
+     },
+     "spelling_cue": {
+      "max_shell_C": 31.954481676927113,
+      "front_pad_C": 31.32344593783045,
+      "coil_C": 31.656879573158342,
+      "nib_35deg_W": 0.0192290457729264,
+      "nib_mean_W": 0.012036347300990336
+     },
+     "severe": {
+      "max_shell_C": 31.95918722560523,
+      "front_pad_C": 31.33629041552586,
+      "coil_C": 31.672815063482613,
+      "nib_35deg_W": 0.019435120724877044,
+      "nib_mean_W": 0.012217826933523248
+     }
+    },
+    "centre07": {
+     "steady_0mm": {
+      "max_shell_C": 33.01532745515168,
+      "front_pad_C": 32.594834347410846,
+      "coil_C": 33.2342325215594,
+      "nib_35deg_W": 0.03962668913766372,
+      "nib_mean_W": 0.024804173773450587
+     },
+     "steady_1mm": {
+      "max_shell_C": 33.04496896074439,
+      "front_pad_C": 32.62447585300356,
+      "coil_C": 33.27100737156152,
+      "nib_35deg_W": 0.04010224543162397,
+      "nib_mean_W": 0.02522739482058943
+     },
+     "steady_2mm": {
+      "max_shell_C": 33.044985872505016,
+      "front_pad_C": 32.624492764764184,
+      "coil_C": 33.27102835320357,
+      "nib_35deg_W": 0.04010251675705246,
+      "nib_mean_W": 0.025227664225417144
+     },
+     "guide": {
+      "max_shell_C": 33.03493598213862,
+      "front_pad_C": 32.614441156433514,
+      "coil_C": 33.2585579004341,
+      "nib_35deg_W": 0.03994124654608575,
+      "nib_mean_W": 0.025067535503006538
+     },
+     "spelling_cue": {
+      "max_shell_C": 33.015328588608114,
+      "front_pad_C": 32.59483456190336,
+      "coil_C": 33.23423284890326,
+      "nib_35deg_W": 0.0396266892177267,
+      "nib_mean_W": 0.0248041738235657
+     },
+     "severe": {
+      "max_shell_C": 33.04206102347802,
+      "front_pad_C": 32.62156791573719,
+      "coil_C": 33.2673996278033,
+      "nib_35deg_W": 0.04005559166550064,
+      "nib_mean_W": 0.025180820516465266
+     }
+    }
+   },
+   "label": "CALCULATION in study K's budget structure (revk/budgets.py): mass, length, battery per mode, skin"
+  }
+ },
+ "K_published": {
+  "duty_A_studyB_mW": {
+   "km1.0": 7.560826863919315,
+   "km0.7": 15.430258905957785,
+   "35deg_km1.0": 17.646239028432348
+  },
+  "factors": {
+   "coil_power_factor_vs_studyB": 1.8034291536220757,
+   "lead_power_factor": 1.2139397786090869,
+   "Km_scale": [
+    1.0,
+    0.7
+   ],
+   "ball_guide_friction_mN": 2.6203469841992764
+  },
+  "modes_nib_mW": {
+   "steady_0mm": [
+    16.45174938938928,
+    33.57499875385568
+   ],
+   "steady_1mm": [
+    17.7869465193361,
+    36.29989085578798
+   ],
+   "steady_2mm": [
+    17.94450822418836,
+    47.607878962132396
+   ],
+   "guide": [
+    16.753524480051023,
+    34.19086628581842
+   ],
+   "spelling_cue": [
+    16.45174938938928,
+    33.57499875385568
+   ]
+  },
+  "modes_nib35_mW": {
+   "steady_0mm": [
+    38.5312822201456,
+    78.63526983703183
+   ],
+   "steady_1mm": [
+    39.86647935009242,
+    81.36016193896414
+   ],
+   "steady_2mm": [
+    40.024041054944675,
+    106.1862313702614
+   ],
+   "guide": [
+    38.83305731080734,
+    79.25113736899459
+   ],
+   "spelling_cue": [
+    38.5312822201456,
+    78.63526983703183
+   ]
+  },
+  "modes_hours": {
+   "steady_0mm": [
+    24.210798793949653,
+    50.06280111810329
+   ],
+   "steady_1mm": [
+    23.512089249586975,
+    48.59948149294687
+   ],
+   "steady_2mm": [
+    20.9973752482297,
+    48.4324241614944
+   ],
+   "guide": [
+    23.170741039895514,
+    48.90290339334994
+   ],
+   "spelling_cue": [
+    23.72635921217121,
+    49.962901808060664
+   ]
+  },
+  "skin_front_pad_C": {
+   "steady_0mm": 35.74232828043754,
+   "steady_1mm": 35.93051350339282,
+   "steady_2mm": 37.64503989059136,
+   "guide": 35.78487283634982,
+   "spelling_cue": 35.74233459279034
+  },
+  "skin_max_C": {
+   "steady_0mm": 35.99927431938861,
+   "steady_1mm": 36.18745954234389,
+   "steady_2mm": 37.901985929542434,
+   "guide": 36.041829741627446,
+   "spelling_cue": 35.999286444296516
+  },
+  "Km_tip": {
+   "x": 0.33354573489671424,
+   "y": 0.27169865452228603,
+   "x_min_over_stroke": 0.250756509427465,
+   "power_factor_vs_studyB": 1.8034291536220757,
+   "label": "CALCULATION (study B's Km_tip x the buildable coil's ratio to study B's idealised coil, same magpylib method; an upper bound)"
+  },
+  "m_move_g": 3.439830737727785,
+  "source": "results/revK/budgets.json, results/revK/revK.json (CALC, study K)"
+ }
+}

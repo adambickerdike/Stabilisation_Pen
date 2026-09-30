@@ -52,6 +52,51 @@ V1_PUBLISHED_FIT = {"c": 2.048007929735164e-05, "sigma": 1.3544049799035518, "n_
 
 
 # ------------------------------------------------------------------ the page model
+ANCHOR_NOTE = ("rebaseline runtime workaround (patch proposal 6): realdata.sensors.degrade_page version 2 raises when "
+               "the first page sample is invalid, and every real note starts with the pen lifted; here the sensor "
+               "anchors at its first valid report (the version-2 model runs unchanged from there; the earlier samples "
+               "are reported invalid, their availability monotone, their absolute reference invalid)")
+
+
+def anchored(orig):
+    """Wrap version 2 of degrade_page so that a stream whose first page sample is invalid is anchored at its first valid
+    sample instead of raising.  From the anchor on, the output is exactly orig() applied to the suffix (same seed, same
+    substreams); version 1 and streams that start valid pass straight through."""
+    import dataclasses as _dc
+
+    def degrade_page(st, model, seed):
+        if getattr(model, "version", None) != 2:
+            return orig(st, model, seed)
+        P = np.asarray(st.pos, float)
+        ok = np.asarray(st.pos_ok, bool)
+        if P.ndim != 2 or len(ok) != len(P) or len(ok) == 0:
+            return orig(st, model, seed)
+        ok = ok & np.all(np.isfinite(P), axis=1)
+        if ok[0] or not ok.any():
+            return orig(st, model, seed)
+        k = int(np.flatnonzero(ok)[0])
+        if len(ok) - k < 2:
+            return orig(st, model, seed)
+        t = np.asarray(st.pos_t, float)
+        sub = _dc.replace(st, pos_t=t[k:], pos_av=np.asarray(st.pos_av, float)[k:], pos=P[k:],
+                          pos_ok=np.asarray(st.pos_ok, float)[k:], meta=dict(st.meta))
+        out = orig(sub, model, seed)
+        lead_av = t[:k] + float(model.latency_s)
+        av = np.concatenate([np.minimum(lead_av, float(out.pos_av[0])), np.asarray(out.pos_av, float)])
+        pos = np.concatenate([np.repeat(np.asarray(out.pos, float)[:1], k, axis=0), np.asarray(out.pos, float)])
+        pok = np.concatenate([np.zeros(k), np.asarray(out.pos_ok, float)])
+        meta = dict(out.meta)
+        rv = meta.get("page_reference_valid")
+        if rv is not None:
+            meta["page_reference_valid"] = [False] * k + list(rv)
+        meta.update(page_anchor_index=k, page_anchor_t=float(t[k]), page_anchor_note=ANCHOR_NOTE)
+        return _dc.replace(out, pos_t=t, pos_av=av, pos=np.ascontiguousarray(pos), pos_ok=pok, meta=meta)
+
+    degrade_page._rebaseline_anchored = True
+    degrade_page.__wrapped__ = orig
+    return degrade_page
+
+
 def install_v2(log=CM.log) -> Dict:
     """Fit version 2 on the tuning writers' clean notes (as realdata.hw1.page_model does) and install it in realdata.hw1
     for this process only; compare its fit with the cached version-1 fit (read-only)."""
@@ -66,12 +111,15 @@ def install_v2(log=CM.log) -> Dict:
     m = RS.fit_window_error(notes, RS.PageModel())
     assert m.version == 2
     H._PAGE["m"] = m
+    if not getattr(RS.degrade_page, "_rebaseline_anchored", False):
+        RS.degrade_page = anchored(RS.degrade_page)
     v1 = RS.load_model(allow_legacy=True)
     info = {"v2": {k: v for k, v in asdict(m).items() if k != "labels"},
             "v1_cached": {k: v for k, v in asdict(v1).items() if k != "labels"} if v1 else None,
             "fit_identical_c_sigma": bool(v1 is not None and abs(v1.c - m.c) < 1e-15 and abs(v1.sigma - m.sigma) < 1e-12),
             "v1_fit_as_published": V1_PUBLISHED_FIT,
             "c_change_vs_v1_published": m.c / V1_PUBLISHED_FIT["c"] - 1.0,
+            "anchoring": ANCHOR_NOTE,
             "note": ("version 2 as the current code defines it: the causal construction AND the pass's corrected window "
                      "definition in the moment fit (a 10 ms window now spans 10 sample intervals, not 9), which moves "
                      "the fitted amplitude c; the cached file realdata/build/cache/page_model.json may already hold a "
@@ -172,11 +220,7 @@ def run_case_v2(wr, i: int, kind: Optional[str], cls: Optional[str], fr: Dict, b
     # the page-model check against the ideal streams of the same case (the same IMU and seeds)
     st_i = CO.streams_for(sJ.neutral, sJ.scn, sJ.pen, wr.trk, H._seed(key, "revJ"))
     out["_page_check|deltapen_v2"] = RS.window_error_check(st_i, sJ.streams)
-    meta = sJ.streams.meta or {}
-    out["_page_v2_meta"] = {k: meta.get(k) for k in ("page_model", "page_model_version", "page_dropouts",
-                                                     "page_lost_intervals", "page_lost_displacement_m")}
-    rv = meta.get("page_reference_valid")
-    out["_page_v2_meta"]["reference_valid_share"] = float(np.mean(rv)) if rv else None
+    out["_page_v2_meta"] = _v2_meta(sJ.streams)
     out["_elapsed_s"] = time.time() - t0
     return {"set": "bridge" if bridge else ("clean_real" if clean else "real"), "variant": "real_real" if bridge else None,
             "writer": wr.written.real["writer"], "note": i, "kind": kind, "class": cls, "tremor": tmeta,
@@ -229,6 +273,20 @@ def run_re(notes: Optional[Sequence[int]] = None, quick: bool = False, log=CM.lo
     return {"wall_s": time.time() - t0}
 
 
+_META_KEYS = ("page_model", "page_model_version", "page_dropouts", "page_lost_intervals", "page_lost_displacement_m",
+              "page_anchor_index", "page_anchor_t")
+
+
+def _v2_meta(st) -> Dict:
+    meta = (getattr(st, "meta", None) or {}) if st is not None else {}
+    out = {k: meta.get(k) for k in _META_KEYS}
+    rv = meta.get("page_reference_valid")
+    out["reference_valid_share"] = float(np.mean(rv)) if rv else None
+    ok = np.asarray(getattr(st, "pos_ok", []), float) if st is not None else np.zeros(0)
+    out["pos_valid_share"] = float(np.mean(ok > 0.5)) if len(ok) else None
+    return out
+
+
 # ------------------------------------------------------------------ F's gap decomposition with version 2
 def run_gap(splits=("tuning", "test"), quick: bool = False, log=CM.log) -> Dict:
     from realdata import hw1 as H
@@ -255,7 +313,7 @@ def run_gap(splits=("tuning", "test"), quick: bool = False, log=CM.log) -> Dict:
                 tc = RC.TuneCase(note, spec, streams=True)
                 res = G.run_case(tc, spec, str(spec["fold"]), ar)
                 res.update({"split": "tuning", "writer": note.written.real["writer"], "note": i, "kind": kind,
-                            "_elapsed_s": time.time() - t1})
+                            "_page_v2_meta": _v2_meta(tc.streams_d), "_elapsed_s": time.time() - t1})
                 CM.jdump(p, res, indent=None)
                 log(f"[page_v2 gap] tune n{i} {kind} ({time.time() - t1:.0f} s)")
     if "test" in splits:
@@ -270,7 +328,7 @@ def run_gap(splits=("tuning", "test"), quick: bool = False, log=CM.log) -> Dict:
                 tc = RC.TestCase(wr, i, kind, "severe")
                 res = G.run_case(tc, {"split": "test"}, None, ar, read_keys=())
                 res.update({"split": "test", "writer": wr.written.real["writer"], "note": i, "kind": kind,
-                            "_elapsed_s": time.time() - t1})
+                            "_page_v2_meta": _v2_meta(tc.streams_d), "_elapsed_s": time.time() - t1})
                 CM.jdump(p, res, indent=None)
                 log(f"[page_v2 gap] test w{i} {kind} ({time.time() - t1:.0f} s)")
     return {"wall_s": time.time() - t0}

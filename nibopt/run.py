@@ -16,7 +16,7 @@ import multiprocessing as mp
 import time
 from dataclasses import replace
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import numpy as np
 
@@ -122,13 +122,37 @@ def front_record(p: Dict) -> Dict:
             "genes": {k: g[k] for k in keep}, "x": p["x"]}
 
 
+def _violations_by_od(arch: List[Dict]) -> Dict:
+    """Which constraints fail, by body-diameter band, among the evaluated +-2 mm designs (CALC)."""
+    from collections import Counter
+    out = {}
+    for lo, hi in ((22.0, 24.0), (24.0, 26.0), (26.0, 27.0), (27.0, 28.0), (28.0, 29.0), (29.0, 30.0), (30.0, 32.0),
+                   (32.0, 34.0 + 1e-9)):
+        b = [p for p in arch if p.get("ok") and lo <= p["F"][3] < hi]
+        viol = Counter()
+        for p in b:
+            if p["V"] > 0:
+                for k, v in p.get("constraints", {}).items():
+                    if v < 0:
+                        viol[k] += 1
+        best = min(b, key=lambda p: p["V"]) if b else None
+        out[f"{lo:g}-{hi:g}"] = {"n": len(b), "n_feasible": sum(1 for p in b if p["V"] <= 0),
+                                 "failing": dict(viol.most_common(8)),
+                                 "closest": ({k: v for k, v in best["constraints"].items() if v < 0}
+                                             if best is not None and best["V"] > 0 else None),
+                                 "closest_V": (best["V"] if best is not None else None)}
+    return out
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--reuse", action="store_true")
     ap.add_argument("--procs", type=int, default=2)
-    ap.add_argument("--skip-optimise", action="store_true")
+    ap.add_argument("--figures-only", action="store_true", help="rebuild the figures from the saved JSON files")
     args = ap.parse_args(argv)
+    if args.figures_only:
+        return figures_only(args)
     args.procs = max(1, min(2, args.procs if not args.quick else 1))
     out = (BUILD / "quick") if args.quick else RESULTS
     out.mkdir(parents=True, exist_ok=True)
@@ -154,14 +178,21 @@ def main(argv=None):
             r15 = run_nsga("quick_r15", args, pool, pop_size=12, gens=2, seed=13, bounds={"reach_mm": (1.5, 1.5),
                                                                                            "od_mm": (20.0, 24.0)},
                            objectives=(2, 1))
+            r2s = run_nsga("quick_r2s", args, pool, pop_size=12, gens=2, seed=17, bounds={"reach_mm": (2.0, 2.0),
+                                                                                           "od_mm": (24.0, 29.8)},
+                           objectives=(3, 2))
         else:
             main_run = run_nsga("full", args, pool, pop_size=96, gens=80, seed=7)
             r2 = run_nsga("reach2", args, pool, pop_size=48, gens=40, seed=11,
                           bounds={"reach_mm": (2.0, 2.0), "od_mm": (22.0, 34.0)}, objectives=(3, 2))
             r15 = run_nsga("reach15", args, pool, pop_size=48, gens=40, seed=13,
                            bounds={"reach_mm": (1.5, 1.5), "od_mm": (20.0, 24.0)}, objectives=(2, 1))
+            # the smallest body for +-2 mm: the first 'reach2' run left 24-29.8 mm thinly sampled
+            r2s = run_nsga("reach2_small", args, pool, pop_size=48, gens=30, seed=17,
+                           bounds={"reach_mm": (2.0, 2.0), "od_mm": (24.0, 29.8)}, objectives=(3, 2))
         times["optimise_s"] = time.time() - t
-        pooled = main_run["archive"] + r2["archive"] + r15["archive"]
+        a2 = r2["archive"] + r2s["archive"]
+        pooled = main_run["archive"] + a2 + r15["archive"]
         front = O.pareto(main_run["archive"])
         # ------------------------------------------------------------ candidates
         t = time.time()
@@ -173,7 +204,8 @@ def main(argv=None):
             else:
                 i = O.NAMES.index("fill")
                 fix = {"fill": 0.5}
-                refined[name] = CA.refine(p, iters=30, lam=6, seed=3, pool=pool, fix=fix)
+                refined[name] = CA.refine(p, iters=30, lam=6, seed=3, pool=pool, fix=fix,
+                                          length_max=CA.length_cap_of(name))
         times["refine_s"] = time.time() - t
     finally:
         if pool is not None:
@@ -191,6 +223,8 @@ def main(argv=None):
                           "head_fit": PN.head_fit(d.reach_mm, d.od_mm), "reach_mm": d.reach_mm,
                           "typical_W": ev["dutyA"]["worst07"]["mean"], "screen_W": ev["screen"]["worst07"],
                           "refinement": r["history"], "selected_from": front_record(sel[name]),
+                          "length_cap_mm": CA.length_cap_of(name),
+                          "length_cap_met": bool(d.length_mm() <= CA.length_cap_of(name) + 1e-9),
                           "genes": O.decode(np.array(r["best"]["x"]))}
     times["candidates_s"] = time.time() - t
     # targeted questions
@@ -203,17 +237,22 @@ def main(argv=None):
                               "closest_infeasible": front_record(min(inf15, key=lambda p: p["V"])) if inf15 else None,
                               "closest_infeasible_violations": ({k: v for k, v in min(inf15, key=lambda p: p["V"])
                                                                 ["constraints"].items() if v < 0} if inf15 else None)},
-         "reach2": {"n_evaluated": len(r2["archive"]), "n_feasible": len(CA.feasible(r2["archive"])),
-                    "smallest_od": best_of(r2["archive"], lambda p: (p["F"][3], p["F"][2])),
-                    "lowest_typical": best_of(r2["archive"], lambda p: p["F"][2]),
-                    "front_od_vs_typical": [front_record(p) for p in O.pareto(r2["archive"], obj=(3, 2))]},
+         "reach2": {"n_evaluated": len(a2), "n_feasible": len(CA.feasible(a2)),
+                    "n_evaluated_24_29.8": len(r2s["archive"]), "n_feasible_24_29.8": len(CA.feasible(r2s["archive"])),
+                    "smallest_od": best_of(a2, lambda p: (p["F"][3], p["F"][2])),
+                    "lowest_typical": best_of(a2, lambda p: p["F"][2]),
+                    "violations_below_smallest_od": _violations_by_od(a2),
+                    "front_od_vs_typical": [front_record(p) for p in O.pareto(a2, obj=(3, 2))]},
          "reach_per_watt": CA.reach_per_watt(pooled), "max_reach_by_od": CA.max_reach_by_od(pooled)}
-    par = {"n_evaluated": {"main": len(main_run["archive"]), "reach2": len(r2["archive"]), "reach15": len(r15["archive"])},
+    par = {"n_evaluated": {"main": len(main_run["archive"]), "reach2": len(r2["archive"]),
+                           "reach2_small": len(r2s["archive"]), "reach15": len(r15["archive"])},
            "n_feasible": {"main": len(CA.feasible(main_run["archive"])), "reach2": len(CA.feasible(r2["archive"])),
-                          "reach15": len(CA.feasible(r15["archive"]))},
+                          "reach2_small": len(CA.feasible(r2s["archive"])), "reach15": len(CA.feasible(r15["archive"]))},
            "settings": {"main": {"pop": main_run["pop_size"], "gens": main_run["gens"], "seed": main_run["seed"],
                                  "seconds": main_run["seconds"]},
                         "reach2": {"pop": r2["pop_size"], "gens": r2["gens"], "seed": r2["seed"], "seconds": r2["seconds"]},
+                        "reach2_small": {"pop": r2s["pop_size"], "gens": r2s["gens"], "seed": r2s["seed"],
+                                         "seconds": r2s["seconds"]},
                         "reach15": {"pop": r15["pop_size"], "gens": r15["gens"], "seed": r15["seed"],
                                     "seconds": r15["seconds"]}},
            "genes": [{"name": n, "lo": float(lo), "hi": float(hi), "categories": O.CAT.get(n)} for n, lo, hi in O.GENES],
@@ -278,6 +317,33 @@ def main(argv=None):
         "label": "CALCULATION on PROPOSED DESIGNS; nothing built or measured"}
     write(out / "nibopt.json", summary, args, extra={"times_s": times})
     print(json.dumps(_clean({"times_s": times, "candidates": summary["candidates_headline"]}), indent=1, default=_default))
+    return 0
+
+
+def figures_only(args) -> int:
+    out = (BUILD / "quick") if args.quick else RESULTS
+    rec = json.loads((out / "reconciliation.json").read_text())
+    par = json.loads((out / "pareto.json").read_text())
+    cand = json.loads((out / "candidates.json").read_text())["candidates"]
+    lev = json.loads((out / "levers.json").read_text())["studies"]
+    bud = json.loads((out / "budgets.json").read_text())["budgets"]
+    cache = BUILD / ("nsga_quick.json" if args.quick else "nsga_full.json")
+    arch = json.loads(cache.read_text())["archive"] if cache.exists() else []
+    front = O.pareto(arch) if arch else [{"F": [-p["reach_mm"], p["screen_W"], p["typical_W"], p["od_mm"], p["length_mm"]],
+                                          **p} for p in par["front"]]
+    figs = []
+    figs += FG.reconciliation(rec["table"], out / "fig_reconciliation.png")
+    figs += FG.waterfall(rec["waterfall_K"]["steps"], "P_mW", "mW", "Duty A on study K's B1: study K's number to the "
+                         "matched model, one change per step (CALCULATION)", out / "fig_waterfall_K.png")
+    figs += FG.waterfall(rec["waterfall_pass"]["P_150_24"]["steps"], "P_W", "W", "The pass's 1.5 mm nib, its screen: "
+                         "its number to the matched loads, one change per step (CALCULATION)",
+                         out / "fig_waterfall_pass.png")
+    cmarks = {n: {"reach_mm": c["reach_mm"], "screen_W": c["screen_W"], "typical_W": c["typical_W"]} for n, c in cand.items()}
+    figs += FG.pareto(arch, front, cmarks, out / "fig_pareto.png")
+    for name, st in lev.items():
+        figs += FG.levers(st, out / "fig_levers.png")
+    figs += FG.battery(bud, out / "fig_battery.png")
+    print("\n".join(figs))
     return 0
 
 

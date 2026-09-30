@@ -1,0 +1,10 @@
+step,name,W
+0,the pass as published,0.0808813
+1,the pass's function re-run,0.0808813
+2,"this package, the pass's loads",0.0808779
+3,moving mass,0.0748307
+4,gravity + residual + drag offset,0.145711
+5,writing-drag fluctuation,0.292704
+6,guide drag,0.298416
+7,coil at the fin model's temperature,0.270123
+8,weakest point x 0.7,0.428035

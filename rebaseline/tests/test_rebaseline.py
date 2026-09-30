@@ -256,6 +256,38 @@ def test_version2_page_model_is_causal():
     assert np.array_equal(np.asarray(a.pos), np.asarray(b.pos)[:1000])
 
 
+def test_anchored_version2_starts_at_the_first_valid_report():
+    """Patch-proposal-6 workaround: a record that starts lifted is anchored at its first valid page report; from there
+    the output is exactly version 2 on the suffix; a record that starts valid is untouched; version 1 passes through."""
+    import dataclasses
+    from fusion.sensors import Streams
+    from realdata import sensors as RS
+    from rebaseline import page_v2 as PV
+    orig = getattr(RS.degrade_page, "__wrapped__", RS.degrade_page)
+    wrapped = PV.anchored(orig)
+    t = np.arange(0, 1.0, 1e-3)
+    n = len(t)
+    xy = np.column_stack([0.02 * t, 0.003 * np.sin(2 * np.pi * 3 * t)])
+    ok = np.ones(n)
+    ok[:37] = 0.0
+    st = Streams(tick_t=t, acc_t=t, acc_av=t, acc=np.zeros((n, 2)), pos_t=t, pos_av=t + 2e-3, pos=xy, pos_ok=ok,
+                 con_t=t, con_av=t, con=np.ones(n), meta={})
+    m = RS.PageModel()
+    with pytest.raises(ValueError):
+        orig(st, m, 5)
+    out = wrapped(st, m, 5)
+    ref = orig(dataclasses.replace(st, pos_t=t[37:], pos_av=(t + 2e-3)[37:], pos=xy[37:], pos_ok=ok[37:]), m, 5)
+    assert len(out.pos_t) == n and np.array_equal(np.asarray(out.pos)[37:], np.asarray(ref.pos))
+    assert np.array_equal(np.asarray(out.pos_ok)[37:], np.asarray(ref.pos_ok)) and not np.any(np.asarray(out.pos_ok)[:37])
+    assert np.all(np.diff(np.asarray(out.pos_av)) >= 0)
+    rv = out.meta["page_reference_valid"]
+    assert len(rv) == n and not any(rv[:37]) and rv[37] and out.meta["page_anchor_index"] == 37
+    st_ok = dataclasses.replace(st, pos_ok=np.ones(n))
+    assert np.array_equal(np.asarray(wrapped(st_ok, m, 5).pos), np.asarray(orig(st_ok, m, 5).pos))
+    m1 = dataclasses.replace(m, version=1)
+    assert np.array_equal(np.asarray(wrapped(st, m1, 5).pos), np.asarray(orig(st, m1, 5).pos))
+
+
 # ------------------------------------------------------------------ outputs
 def _result_files():
     return sorted(RESULTS_DIR.glob("*.json")) if RESULTS_DIR.exists() else []

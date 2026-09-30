@@ -1,0 +1,14 @@
+step,name,mW
+0,K as published,16.6275
+1,coherent harmonic load,16.5543
+2,"study B's loads, per axis",14.9803
+3,all rolls,16.5549
+4,study K's residual,16.2993
+5,ink force N = F_n,13.9501
+6,gravity held in contact,16.7457
+7,guide preload drag,17.5354
+8,nonlinear wires,17.5205
+9,map centre,18.3279
+10,coil and magnet temperature,19.8748
+11,K_m x 0.7 at the centre,41.2818
+12,weakest point x 0.7,64.6433

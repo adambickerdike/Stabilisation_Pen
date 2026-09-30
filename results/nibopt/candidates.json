@@ -1,0 +1,3792 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on PROPOSED DESIGNS (study N, round 4: the balanced nib's reach, force and heat); inputs from study K (revk/, results/revK/), study B (bnib/, results/bnib/), study F (results/readable/), the independent engineering pass (revk/feasibility.py, revk/improve.py, revk/compact.py, results/improvement/mechanics/), datasheets (MANUFACTURER) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-30T13:32:47+00:00",
+  "git_revision": "4e87eb7-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --reuse --procs 2",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": {
+   "nsga_main": 7,
+   "nsga_reach2": 11,
+   "nsga_reach15": 13,
+   "refine": 3,
+   "severe_process": 11,
+   "K_residual": 5
+  },
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "nibopt",
+  "version": "nibopt-0.1",
+  "script": "nibopt/run.py",
+  "doc": "docs/nib_optimisation.md",
+  "quick": false,
+  "reuse": true,
+  "procs": 2,
+  "read_only_inputs_sha256_16": {
+   "revk/feasibility.py": "5657e8896722ce0e",
+   "revk/improve.py": "2fbebc6b914b76b5",
+   "revk/compact.py": "c7660e96ce565152",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/counterface.py": "befe386459c3c7e3",
+   "revk/frontend.py": "e61afede01491f1f",
+   "revk/tolerance.py": "25a202e322456ce6",
+   "bnib/loads.py": "7778deb93b562253",
+   "bnib/contact.py": "8ac04bfcbdbf325e",
+   "bnib/balance.py": "485396a48fcb4902",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "nose2/magnetics.py": "8c766896e233edb1",
+   "results/revK/revK.json": "0eb0a21f8fbd593e",
+   "results/revK/layout.json": "8a4806648b6035b7",
+   "results/revK/budgets.json": "2cf2a26f5f15c756",
+   "results/improvement/mechanics/mechanics_study.json": "a5cdf4385405f233",
+   "results/improvement/mechanics/compact_20mm.json": "72e04c2d91f3e7ff",
+   "results/readable/readable.json": "99a24aeb97d38ef6",
+   "results/bnib/bnib.json": "c68d41f2837ac849"
+  },
+  "nibopt_sources_sha256_16": {
+   "nibopt/__init__.py": "6caf5e14fc01634e",
+   "nibopt/budgets.py": "a091069c05479338",
+   "nibopt/candidates.py": "99ee414a1893e3c7",
+   "nibopt/design.py": "31159bd5ac7c6df1",
+   "nibopt/doc_tables.py": "2c2f0a3c5082417e",
+   "nibopt/duty.py": "4700b1065ace4136",
+   "nibopt/evaluate.py": "08fe3268c71646ed",
+   "nibopt/evidence.py": "eedbb63236316531",
+   "nibopt/figures.py": "e9fbff8c0c9ab4ef",
+   "nibopt/levers.py": "26b44fc4cc610621",
+   "nibopt/magnet.py": "55922451b688d368",
+   "nibopt/optimise.py": "08325c16438befb3",
+   "nibopt/params.py": "5ff1f25b5b90fd1c",
+   "nibopt/pen.py": "d3b8ff208520a711",
+   "nibopt/reconcile.py": "42dab584627da830",
+   "nibopt/run.py": "3c84abb78a2ec7a1",
+   "nibopt/suspension.py": "fc80b0495787adc3",
+   "mechanics/cad/nibopt.py": "af847ed6197db074"
+  },
+  "parameters": "every input with its label and source: results/nibopt/nibopt.json -> inputs (nibopt/params.py)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "numba": "0.67.0"
+ },
+ "candidates": {
+  "reach_first": {
+   "name": "reach_first",
+   "design": {
+    "name": "reach_first",
+    "source": "nibopt NSGA-II",
+    "reach_mm": 1.5955841202386003,
+    "stop_mm": 1.7955841202386003,
+    "od_mm": 23.659801838869857,
+    "bore_mm": 10.829900919434928,
+    "length_mm": 156.39943574049926,
+    "m_move_g": 3.0627770459618704,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.28173589351248146,
+     "carrier_tube": 0.137133387821551,
+     "guide_stations": 0.06,
+     "coils": 1.0874862820201008,
+     "flange": 0.49307314513465733,
+     "flange_inserts": 0.1,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005848337473079401
+    },
+    "stator_parts_g": {
+     "back_plate": 4.049700999827448,
+     "keeper": 4.049700999827448,
+     "magnets": 5.111373513422539
+    },
+    "stack_mm": 13.131950592014974,
+    "plate_t_mm": 1.6847527140867458,
+    "magnets_mm": {
+     "w": 4.903302431602616,
+     "e": 2.6131725918660353,
+     "t_m": 3.5519581582607027,
+     "t_cu": 2.22582751534995,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": true,
+     "t_m2": 3.5346594902308293
+    },
+    "coil_mm": {
+     "x_in": 2.229316853407087,
+     "y_in": 0.46315253714464566,
+     "b": 2.3919196833870062,
+     "yc": 4.556571512117842,
+     "order": "xyyx",
+     "k_fill": 0.55,
+     "outer_corner_r": 8.734316799196328,
+     "inner_edge": 1.7014992915861913
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 4.268523201285058,
+    "wires": {
+     "n": 8,
+     "d_mm": 0.1,
+     "L_mm": 33.84697518946004,
+     "anchor_N_m": 341.7643614491738,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 2,
+     "circle_mm": 3.5800846524921663
+    },
+    "guide": {
+     "circle_r_mm": 7.232961365103633,
+     "preload_per_race_N": 1.5907491274759002,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 8.730753425222934,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.0705099590242484,
+    "carrier_mat": "CFRP",
+    "flange_mat": "Al",
+    "board_narrow": false,
+    "weight_trim": false,
+    "notes": {
+     "genes": {
+      "reach_mm": 1.5955841202386003,
+      "od_mm": 23.659801838869857,
+      "w_frac": 0.999999999999,
+      "t_m_mm": 3.5519581582607027,
+      "grade": "N52",
+      "layout": "double",
+      "t_m2_frac": 0.9951298221265241,
+      "iron": "1010",
+      "t_cu_mm": 2.22582751534995,
+      "order": "xyyx",
+      "fill": 0.55,
+      "b_mm": 2.391919683387006,
+      "yc_frac": 0.8996505476103459,
+      "leg_frac": 0.6762874337139354,
+      "R_coil_log": 1.4512679129190857,
+      "wireset": [
+       8,
+       0.1
+      ],
+      "L_w_mm": 33.84697518946004,
+      "K_a_log": 2.5337267733264155,
+      "preload_N": 1.5907491274759002,
+      "ball_d_mm": 0.8110207446685873,
+      "carrier": "CFRP",
+      "flange": "Al",
+      "flange_t_mm": 1.0705099590242484,
+      "board": false,
+      "flange_frac": 0.9995920260215748,
+      "race": "ring",
+      "R_coil": 4.268523201285058,
+      "K_a": 341.7643614491738
+     },
+     "flange_inserts_g": 0.1
+    }
+   },
+   "evaluation": {
+    "design": {
+     "name": "reach_first",
+     "source": "nibopt NSGA-II",
+     "reach_mm": 1.5955841202386003,
+     "stop_mm": 1.7955841202386003,
+     "od_mm": 23.659801838869857,
+     "bore_mm": 10.829900919434928,
+     "length_mm": 156.39943574049926,
+     "m_move_g": 3.0627770459618704,
+     "moving_parts_g": {
+      "refill": 0.84,
+      "refill_holder": 0.05,
+      "holder_extension": 0.28173589351248146,
+      "carrier_tube": 0.137133387821551,
+      "guide_stations": 0.06,
+      "coils": 1.0874862820201008,
+      "flange": 0.49307314513465733,
+      "flange_inserts": 0.1,
+      "position_magnet": 0.0075,
+      "wires_third": 0.005848337473079401
+     },
+     "stator_parts_g": {
+      "back_plate": 4.049700999827448,
+      "keeper": 4.049700999827448,
+      "magnets": 5.111373513422539
+     },
+     "stack_mm": 13.131950592014974,
+     "plate_t_mm": 1.6847527140867458,
+     "magnets_mm": {
+      "w": 4.903302431602616,
+      "e": 2.6131725918660353,
+      "t_m": 3.5519581582607027,
+      "t_cu": 2.22582751534995,
+      "c0": 0.3,
+      "c1": 0.15,
+      "Br_T": 1.42,
+      "double": true,
+      "t_m2": 3.5346594902308293
+     },
+     "coil_mm": {
+      "x_in": 2.229316853407087,
+      "y_in": 0.46315253714464566,
+      "b": 2.3919196833870062,
+      "yc": 4.556571512117842,
+      "order": "xyyx",
+      "k_fill": 0.55,
+      "outer_corner_r": 8.734316799196328,
+      "inner_edge": 1.7014992915861913
+     },
+     "grade": "N52",
+     "iron": "1010",
+     "R_coil_ohm": 4.268523201285058,
+     "wires": {
+      "n": 8,
+      "d_mm": 0.1,
+      "L_mm": 33.84697518946004,
+      "anchor_N_m": 341.7643614491738,
+      "assembly_N": 0.005,
+      "parallel_per_lead": 2,
+      "circle_mm": 3.5800846524921663
+     },
+     "guide": {
+      "circle_r_mm": 7.232961365103633,
+      "preload_per_race_N": 1.5907491274759002,
+      "ball_d_mm": 0.8,
+      "n_balls": 6,
+      "flange_r_mm": 8.730753425222934,
+      "rear_race": "ring"
+     },
+     "flange_t_mm": 1.0705099590242484,
+     "carrier_mat": "CFRP",
+     "flange_mat": "Al",
+     "board_narrow": false,
+     "weight_trim": false,
+     "notes": {
+      "genes": {
+       "reach_mm": 1.5955841202386003,
+       "od_mm": 23.659801838869857,
+       "w_frac": 0.999999999999,
+       "t_m_mm": 3.5519581582607027,
+       "grade": "N52",
+       "layout": "double",
+       "t_m2_frac": 0.9951298221265241,
+       "iron": "1010",
+       "t_cu_mm": 2.22582751534995,
+       "order": "xyyx",
+       "fill": 0.55,
+       "b_mm": 2.391919683387006,
+       "yc_frac": 0.8996505476103459,
+       "leg_frac": 0.6762874337139354,
+       "R_coil_log": 1.4512679129190857,
+       "wireset": [
+        8,
+        0.1
+       ],
+       "L_w_mm": 33.84697518946004,
+       "K_a_log": 2.5337267733264155,
+       "preload_N": 1.5907491274759002,
+       "ball_d_mm": 0.8110207446685873,
+       "carrier": "CFRP",
+       "flange": "Al",
+       "flange_t_mm": 1.0705099590242484,
+       "board": false,
+       "flange_frac": 0.9995920260215748,
+       "race": "ring",
+       "R_coil": 4.268523201285058,
+       "K_a": 341.7643614491738
+      },
+      "flange_inserts_g": 0.1
+     }
+    },
+    "magnetics": {
+     "Km_centre_x_N_sqrtW": 0.37576484969533597,
+     "Km_centre_y_N_sqrtW": 0.3371853591533108,
+     "sv_min_centre_N_sqrtW": 0.3371853591533108,
+     "sv_min_workspace_N_sqrtW": 0.21625081505406896,
+     "cross_coupling_max": 0.24358247502203817,
+     "copper_mass_g": 0.9874862820201007,
+     "field_scale": 1.0,
+     "sv_min_workspace_x0.7": 0.15137557053784825,
+     "n_positions": 33,
+     "quadrature": "fine"
+    },
+    "wires": {
+     "n_w": 8,
+     "d_mm": 0.1,
+     "L_mm": 33.84697518946004,
+     "anchor_N_m": 341.7643614491738,
+     "assembly_N": 0.005,
+     "F_usable_mN": 3.6134990447161712,
+     "F_stop_mN": 4.319797420764584,
+     "F_stop_linear_mN": 2.7844406981178684,
+     "tension_stop_N": 0.02426909028157484,
+     "k_small_N_m": 1.5507158181750167,
+     "goodman_worst_corner": 1.5109441662518404,
+     "goodman_nominal_Kt1.8": 2.2366104882760465,
+     "bend_stress_worst_MPa": 174.16503393719245,
+     "P_buckle_each_ff_N": 0.021584429968494818,
+     "R_wire_ohm": 0.33773008764992374,
+     "k_axial_N_m": 236870.3379573415,
+     "k_tilt_Nm_rad_wires": 1.8949627036587318,
+     "mass_g": 0.017545012419238202,
+     "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+    },
+    "guide": {
+     "circle_r_mm": 7.232961365103633,
+     "preload_per_race_N": 1.5907491274759002,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "mu_roll": 0.001,
+     "drag_35_mN": 3.5264875806117635,
+     "drag_mean_mN": 3.3581234786887646,
+     "hertz_run_GPa": 2.2855599027823845,
+     "hertz_static_GPa": 2.2425821431486814,
+     "tilt_stiffness_min_Nm_rad": 329.40116192093404,
+     "min_preload_all_balls_loaded_N": 4.208050498047283,
+     "lever_mm": 79.06943574049926,
+     "mass_balls_g": 0.010294370807283036,
+     "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+    },
+    "guide_rows": {
+     "35": {
+      "couple_mNm": 12.681944447825458,
+      "total_normal_N": 3.5264875806117635,
+      "drag_mN": 3.5264875806117635,
+      "max_hertz_GPa": 2.2855599027823845,
+      "min_tilt_stiffness_Nm_rad": 329.40116192093404,
+      "tilt_urad": 36.83317700074477,
+      "unloaded_contacts": 0
+     },
+     "50": {
+      "couple_mNm": 9.951506334664414,
+      "total_normal_N": 3.3878496332578276,
+      "drag_mN": 3.3878496332578276,
+      "max_hertz_GPa": 2.18360624801145,
+      "min_tilt_stiffness_Nm_rad": 338.8232619919018,
+      "tilt_urad": 28.668682610574436,
+      "unloaded_contacts": 0
+     },
+     "60": {
+      "couple_mNm": 7.740897758994879,
+      "total_normal_N": 3.30431098552378,
+      "drag_mN": 3.30431098552378,
+      "max_hertz_GPa": 2.099268787603038,
+      "min_tilt_stiffness_Nm_rad": 343.9919998197201,
+      "tilt_urad": 22.196423170263635,
+      "unloaded_contacts": 0
+     },
+     "75": {
+      "couple_mNm": 4.006983532438594,
+      "total_normal_N": 3.2138457153616873,
+      "drag_mN": 3.2138457153616873,
+      "max_hertz_GPa": 1.9509696349832923,
+      "min_tilt_stiffness_Nm_rad": 349.24638820931176,
+      "tilt_urad": 11.433772255086753,
+      "unloaded_contacts": 0
+     },
+     "penup": {
+      "couple_mNm": 0.0,
+      "total_normal_N": 3.181498000000003,
+      "drag_mN": 3.181498000000003,
+      "max_hertz_GPa": 1.7799385790340758,
+      "min_tilt_stiffness_Nm_rad": 351.04951854446347,
+      "tilt_urad": 0.0,
+      "unloaded_contacts": 0
+     }
+    },
+    "leads": {
+     "R_lead_ohm": 0.33773008764992374,
+     "factor": 1.079121061717141
+    },
+    "dutyA": {
+     "worst07": {
+      "conv": "worst07",
+      "mean": 0.060413959547531176,
+      "mean_items_W": {
+       "gravity": 0.01655690661378746,
+       "residual": 0.0015175029678770851,
+       "writing_drag": 0.045079497466021495,
+       "guide_drag": 0.0005915316244807965,
+       "inertia_and_wires": 0.00015035473229017411,
+       "cross_terms": -0.0034818338569258486
+      },
+      "worst": 0.11642026158265321,
+      "worst_items_W": {
+       "gravity": 0.031715851977998775,
+       "residual": 0.00461466681163955,
+       "writing_drag": 0.07228393873587373,
+       "guide_drag": 0.0006515682933300594,
+       "inertia_and_wires": 0.00015035473229017411,
+       "cross_terms": 0.007003881031520916
+      },
+      "P35_W": 0.09722547793995596,
+      "temp_factor": 1.1125425814231964,
+      "coil_C": 37.15144554376327,
+      "skin": {
+       "pads_C": [
+        35.63944578652176,
+        35.90087147578767,
+        34.14535851379293
+       ],
+       "web_C": 30.739778321342946,
+       "max_shell_C": 36.141806186964764,
+       "coil_C": 37.15144554376327,
+       "sources_W": {
+        "coils": 0.09722547793995596,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.659801838869857,
+       "fin_lambda_mm": 5.360226354720079,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre10": {
+      "conv": "centre10",
+      "mean": 0.010611191717699274,
+      "mean_items_W": {
+       "gravity": 0.002908078060877926,
+       "residual": 0.0002665363277778973,
+       "writing_drag": 0.007917825511389453,
+       "guide_drag": 0.00010389743564994213,
+       "inertia_and_wires": 2.6408513892209963e-05,
+       "cross_terms": -0.0006115541318881535
+      },
+      "worst": 0.022026431798791064,
+      "worst_items_W": {
+       "gravity": 0.006171735608326929,
+       "residual": 0.0008979895448407685,
+       "writing_drag": 0.013452937885336993,
+       "guide_drag": 0.00011444235950566692,
+       "inertia_and_wires": 2.6408513892209966e-05,
+       "cross_terms": 0.0013629178868884947
+      },
+      "P35_W": 0.01707681790752572,
+      "temp_factor": 1.0741709541234086,
+      "coil_C": 31.4285420941233,
+      "skin": {
+       "pads_C": [
+        31.11877223736824,
+        31.38019792663415,
+        31.764976567983783
+       ],
+       "web_C": 30.739677980774356,
+       "max_shell_C": 32.08211382907889,
+       "coil_C": 31.4285420941233,
+       "sources_W": {
+        "coils": 0.01707681790752572,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.659801838869857,
+       "fin_lambda_mm": 5.360226354720079,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre07": {
+      "conv": "centre07",
+      "mean": 0.021828586335521594,
+      "mean_items_W": {
+       "gravity": 0.005982290652276862,
+       "residual": 0.0005482995121790337,
+       "writing_drag": 0.016287985587582456,
+       "guide_drag": 0.0002137303899939144,
+       "inertia_and_wires": 5.4325710139361716e-05,
+       "cross_terms": -0.0012580455166500324
+      },
+      "worst": 0.04531120358342159,
+      "worst_items_W": {
+       "gravity": 0.012696054048450213,
+       "residual": 0.0018472800067552203,
+       "writing_drag": 0.027674423750790458,
+       "guide_drag": 0.00023542265481297825,
+       "inertia_and_wires": 5.4325710139361716e-05,
+       "cross_terms": 0.002803697412473354
+      },
+      "P35_W": 0.035129211114774676,
+      "temp_factor": 1.082756836097898,
+      "coil_C": 32.71754809020882,
+      "skin": {
+       "pads_C": [
+        32.13699233534503,
+        32.39841802461093,
+        32.30112515551844
+       ],
+       "web_C": 30.73970058111974,
+       "max_shell_C": 32.63935273578803,
+       "coil_C": 32.71754809020882,
+       "sources_W": {
+        "coils": 0.035129211114774676,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.659801838869857,
+       "fin_lambda_mm": 5.360226354720079,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     }
+    },
+    "severe": {
+     "worst07": {
+      "conv": "worst07",
+      "mean": 0.06075353998825428,
+      "mean_items_W": {
+       "gravity": 0.016559384851244467,
+       "residual": 0.0015177301076915346,
+       "writing_drag": 0.04508624496431748,
+       "guide_drag": 0.0005916201649227394,
+       "inertia_and_wires": 0.00048039204707288016,
+       "cross_terms": -0.0034818321469948315
+      },
+      "worst": 0.11676825126040437,
+      "worst_items_W": {
+       "gravity": 0.03172059920610039,
+       "residual": 0.004615357534877349,
+       "writing_drag": 0.07229475819440508,
+       "guide_drag": 0.0006516658200594176,
+       "inertia_and_wires": 0.0004803920470728802,
+       "cross_terms": 0.0070054784578892455
+      },
+      "P35_W": 0.0975705945428682,
+      "temp_factor": 1.1127091067749493,
+      "coil_C": 37.17608811416352,
+      "skin": {
+       "pads_C": [
+        35.65891160787832,
+        35.92033729714423,
+        34.155608333695575
+       ],
+       "web_C": 30.73977875340502,
+       "max_shell_C": 36.161272008321326,
+       "coil_C": 37.17608811416352,
+       "sources_W": {
+        "coils": 0.0975705945428682,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.659801838869857,
+       "fin_lambda_mm": 5.360226354720079,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre10": {
+      "conv": "centre10",
+      "mean": 0.010659213949087526,
+      "mean_items_W": {
+       "gravity": 0.002908139474070999,
+       "residual": 0.0002665419565287823,
+       "writing_drag": 0.00791799272111927,
+       "guide_drag": 0.00010028962586142878,
+       "inertia_and_wires": 7.772561744950703e-05,
+       "cross_terms": -0.0006114754459424624
+      },
+      "worst": 0.02207433329906357,
+      "worst_items_W": {
+       "gravity": 0.006171865943889653,
+       "residual": 0.0008980085087076732,
+       "writing_drag": 0.013453221986332378,
+       "guide_drag": 0.0001104683801455196,
+       "inertia_and_wires": 7.772561744950703e-05,
+       "cross_terms": 0.001363042862538841
+      },
+      "P35_W": 0.01712461488117027,
+      "temp_factor": 1.0741936386135833,
+      "coil_C": 31.431954970461373,
+      "skin": {
+       "pads_C": [
+        31.121468159101642,
+        31.38289384836755,
+        31.76639611826799
+       ],
+       "web_C": 30.739678040612855,
+       "max_shell_C": 32.08309130809794,
+       "coil_C": 31.431954970461373,
+       "sources_W": {
+        "coils": 0.01712461488117027,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.659801838869857,
+       "fin_lambda_mm": 5.360226354720079,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre07": {
+      "conv": "centre07",
+      "mean": 0.021927867837915588,
+      "mean_items_W": {
+       "gravity": 0.005982551654018835,
+       "residual": 0.0005483234339735635,
+       "writing_drag": 0.016288696217148735,
+       "guide_drag": 0.00020631330526878742,
+       "inertia_and_wires": 0.00015989519257178207,
+       "cross_terms": -0.0012579119650661123
+      },
+      "worst": 0.0454107653250924,
+      "worst_items_W": {
+       "gravity": 0.012696607965405345,
+       "residual": 0.0018473606018529344,
+       "writing_drag": 0.027675631159996546,
+       "guide_drag": 0.00022725278352321037,
+       "inertia_and_wires": 0.00015989519257178207,
+       "cross_terms": 0.0028040176217425878
+      },
+      "P35_W": 0.03522832862564403,
+      "temp_factor": 1.0828040757652395,
+      "coil_C": 32.724625438035275,
+      "skin": {
+       "pads_C": [
+        32.14258292050844,
+        32.40400860977435,
+        32.30406890446311
+       ],
+       "web_C": 30.739700705207998,
+       "max_shell_C": 32.64494332095145,
+       "coil_C": 32.724625438035275,
+       "sources_W": {
+        "coils": 0.03522832862564403,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.659801838869857,
+       "fin_lambda_mm": 5.360226354720079,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     }
+    },
+    "severe_motion": {
+     "q_rms_2d_mm": 0.9165367628844371,
+     "at_limit": 0.11328333333333333,
+     "F_a_r2_tip_mm": 0.7975449982689395,
+     "F_oracle_tip_mm": 0.6273549493235631,
+     "F_a_r2_at_limit": 0.12988317595227994
+    },
+    "screen": {
+     "worst07": 0.17341070172022657,
+     "worst07_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 45.0,
+      "roll_deg": 150.0,
+      "P_W": 0.17341070172022657
+     },
+     "worst07_temp_factor": 1.1502483841372422,
+     "worst07_coil_C": 42.582906419922274,
+     "worst07_skin_max_C": 40.43226150080705,
+     "map07": 0.10486420918642038,
+     "map07_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 135.0,
+      "roll_deg": 240.0,
+      "P_W": 0.10486420918642038
+     },
+     "map07_temp_factor": 1.1164535611357524,
+     "map07_coil_C": 37.695312999817176,
+     "map07_skin_max_C": 36.571421546452086,
+     "centre10": 0.031972598288719435,
+     "centre10_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 90.0,
+      "roll_deg": 270.0,
+      "P_W": 0.031972598288719435
+     },
+     "centre10_temp_factor": 1.081268669485678,
+     "centre10_coil_C": 32.49212085832291,
+     "centre10_skin_max_C": 32.46128177348486
+    },
+    "nib_by_mode": {
+     "worst07": {
+      "steady_0mm": {
+       "mean_W": 0.05965041571589955,
+       "P35_W": 0.09638855879965648,
+       "skin_max_C": 36.094600928401476,
+       "front_pad_C": 35.59224052795847,
+       "coil_C": 37.09168649809549
+      },
+      "steady_1mm": {
+       "mean_W": 0.06206805746869877,
+       "P35_W": 0.09890641592815655,
+       "skin_max_C": 36.23661715321113,
+       "front_pad_C": 35.73425675276812,
+       "coil_C": 37.27147057983264
+      },
+      "steady_2mm": {
+       "mean_W": 0.06436892310042418,
+       "P35_W": 0.10124462950055342,
+       "skin_max_C": 36.36850083342149,
+       "front_pad_C": 35.86614043297848,
+       "coil_C": 37.43842746362896
+      },
+      "guide": {
+       "mean_W": 0.06060453560541052,
+       "P35_W": 0.09741914644197734,
+       "skin_max_C": 36.152736908868846,
+       "front_pad_C": 35.65037084674342,
+       "coil_C": 37.165276289352065
+      },
+      "spelling_cue": {
+       "mean_W": 0.05965041614740561,
+       "P35_W": 0.09638855949692317,
+       "skin_max_C": 36.09460477619357,
+       "front_pad_C": 35.59224134723482,
+       "coil_C": 37.09168767971725
+      },
+      "severe": {
+       "mean_W": 0.06075353998825428,
+       "P35_W": 0.0975705945428682,
+       "skin_max_C": 36.161272008321326,
+       "front_pad_C": 35.65891160787832,
+       "coil_C": 37.17608811416352
+      }
+     },
+     "centre10": {
+      "steady_0mm": {
+       "mean_W": 0.010480228617871611,
+       "P35_W": 0.016934905151018136,
+       "skin_max_C": 32.0792116214401,
+       "front_pad_C": 31.110767845973903,
+       "coil_C": 31.41840901138135
+      },
+      "steady_1mm": {
+       "mean_W": 0.010895147576979998,
+       "P35_W": 0.017361587292962558,
+       "skin_max_C": 32.08793754715784,
+       "front_pad_C": 31.134834257966368,
+       "coil_C": 31.44887565550298
+      },
+      "steady_2mm": {
+       "mean_W": 0.011289560068867213,
+       "P35_W": 0.017757129859287193,
+       "skin_max_C": 32.096026648417684,
+       "front_pad_C": 31.157144285562893,
+       "coil_C": 31.477118821594374
+      },
+      "guide": {
+       "mean_W": 0.010643925121578707,
+       "P35_W": 0.017109645173882748,
+       "skin_max_C": 32.08280503272534,
+       "front_pad_C": 31.120625271689697,
+       "coil_C": 31.430888195276925
+      },
+      "spelling_cue": {
+       "mean_W": 0.010480228691901036,
+       "P35_W": 0.016934905270641606,
+       "skin_max_C": 32.07922224986664,
+       "front_pad_C": 31.11076863266909,
+       "coil_C": 31.418410151757303
+      },
+      "severe": {
+       "mean_W": 0.010659213949087526,
+       "P35_W": 0.01712461488117027,
+       "skin_max_C": 32.08309130809794,
+       "front_pad_C": 31.121468159101642,
+       "coil_C": 31.431954970461373
+      }
+     },
+     "centre07": {
+      "steady_0mm": {
+       "mean_W": 0.021557737703381093,
+       "P35_W": 0.03483495032300438,
+       "skin_max_C": 32.622755365633985,
+       "front_pad_C": 32.12039496519098,
+       "coil_C": 32.69653680817822
+      },
+      "steady_1mm": {
+       "mean_W": 0.022415726524858563,
+       "P35_W": 0.03571980921293607,
+       "skin_max_C": 32.672664599011426,
+       "front_pad_C": 32.17030419856842,
+       "coil_C": 32.75971892490463
+      },
+      "steady_2mm": {
+       "mean_W": 0.023231522111172225,
+       "P35_W": 0.03654041011700641,
+       "skin_max_C": 32.718949450185995,
+       "front_pad_C": 32.216589049742986,
+       "coil_C": 32.81831278964025
+      },
+      "guide": {
+       "mean_W": 0.02189626167112666,
+       "P35_W": 0.03519728516954279,
+       "skin_max_C": 32.64319947780538,
+       "front_pad_C": 32.14083341567995,
+       "coil_C": 32.72241093920208
+      },
+      "spelling_cue": {
+       "mean_W": 0.021557737856497523,
+       "P35_W": 0.03483495057042381,
+       "skin_max_C": 32.622759188053074,
+       "front_pad_C": 32.12039575909432,
+       "coil_C": 32.69653795767927
+      },
+      "severe": {
+       "mean_W": 0.021927867837915588,
+       "P35_W": 0.03522832862564403,
+       "skin_max_C": 32.64494332095145,
+       "front_pad_C": 32.14258292050844,
+       "coil_C": 32.724625438035275
+      }
+     }
+    },
+    "battery": {
+     "conservative": {
+      "steady_0mm": {
+       "nib_W": 0.05965041571589955,
+       "total_W": 0.11777003715585525,
+       "hours": 18.850295487824994
+      },
+      "steady_1mm": {
+       "nib_W": 0.06206805746869877,
+       "total_W": 0.12018767890865448,
+       "hours": 18.471111349835233
+      },
+      "steady_2mm": {
+       "nib_W": 0.06436892310042418,
+       "total_W": 0.12248854454037988,
+       "hours": 18.124143839982924
+      },
+      "guide": {
+       "nib_W": 0.06060453560541052,
+       "total_W": 0.12222415704536622,
+       "hours": 18.16334883108253
+      },
+      "spelling_cue": {
+       "nib_W": 0.05965041614740561,
+       "total_W": 0.11964223816650604,
+       "hours": 18.55531987716936
+      },
+      "severe": {
+       "nib_W": 0.06075353998825428,
+       "total_W": 0.11887316142820997,
+       "hours": 18.675367705608682
+      }
+     },
+     "worst07_low_electronics": {
+      "steady_0mm": {
+       "nib_W": 0.05965041571589955,
+       "total_W": 0.08754296889085925,
+       "hours": 25.35897546229781
+      },
+      "steady_1mm": {
+       "nib_W": 0.06206805746869877,
+       "total_W": 0.08996061064365846,
+       "hours": 24.677466994900765
+      },
+      "steady_2mm": {
+       "nib_W": 0.06436892310042418,
+       "total_W": 0.09226147627538386,
+       "hours": 24.062047233817292
+      },
+      "guide": {
+       "nib_W": 0.06060453560541052,
+       "total_W": 0.08924708878037022,
+       "hours": 24.87476096237983
+      },
+      "spelling_cue": {
+       "nib_W": 0.05965041614740561,
+       "total_W": 0.0876316344132665,
+       "hours": 25.33331729875753
+      },
+      "severe": {
+       "nib_W": 0.06075353998825428,
+       "total_W": 0.08864609316321397,
+       "hours": 25.043404856123402
+      }
+     },
+     "optimistic": {
+      "steady_0mm": {
+       "nib_W": 0.010480228617871611,
+       "total_W": 0.038372781792831295,
+       "hours": 57.85350699840935
+      },
+      "steady_1mm": {
+       "nib_W": 0.010895147576979998,
+       "total_W": 0.038787700751939685,
+       "hours": 57.234637706360644
+      },
+      "steady_2mm": {
+       "nib_W": 0.011289560068867213,
+       "total_W": 0.0391821132438269,
+       "hours": 56.65850604292658
+      },
+      "guide": {
+       "nib_W": 0.010643925121578707,
+       "total_W": 0.03928647829653839,
+       "hours": 56.50799196719063
+      },
+      "spelling_cue": {
+       "nib_W": 0.010480228691901036,
+       "total_W": 0.03846144695776192,
+       "hours": 57.72013732187423
+      },
+      "severe": {
+       "nib_W": 0.010659213949087526,
+       "total_W": 0.03855176712404721,
+       "hours": 57.58490895778533
+      }
+     }
+    },
+    "electrical": {
+     "F_peak_N": 0.14629973485560505,
+     "F_peak_parts_N": {
+      "static_N": 0.11066498159217324,
+      "dynamic_N": 0.035634753263431795,
+      "total_N": 0.14629973485560505
+     },
+     "I_peak_A": 0.4934461264149771,
+     "V_peak_V": 2.6381904400119023,
+     "R_hot_loop_ohm": 4.917184719536909,
+     "back_emf_V": 0.09339761694990467,
+     "ok": true
+    },
+    "lead_heating": {
+     "I_rms_coil_A": 0.08120763986043233,
+     "rise_K": 2.8890658677226946
+    },
+    "modes": {
+     "servo_bw_max_worst_Hz": 48.46340530852614,
+     "lowest_stuck_worst_Hz": 121.15851327131536,
+     "first_free_nominal_Hz": 1408.333991442241,
+     "lowest_stuck_nominal_Hz": 171.82670241371346,
+     "m_carrier_g": 2.1727770459618703,
+     "k_lat_N_m": 1.5507158181750167,
+     "k_tilt_Nm_rad": 331.2961246245928,
+     "n_cases": 18,
+     "passes": true,
+     "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+    },
+    "fit": {
+     "coil_clearance_stop_mm": 0.3000000000000007,
+     "coil_clearance_p99_mm": 0.2100000000000007,
+     "coil_p99_ok": true,
+     "coil_inner_edge_mm": 1.7014992915861913,
+     "coil_inner_ok": true,
+     "magnet_r_out_mm": 10.629900919427994,
+     "magnets_ok": true,
+     "flange_r_mm": 8.730753425222934,
+     "flange_ok": true,
+     "ball_circle_r_mm": 7.232961365103633,
+     "ball_on_flange_ok": true,
+     "wire_circle_mm": 3.5800846524921663,
+     "wire_circle_min_mm": 3.5705841202385997,
+     "wire_circle_max_mm": 3.589585184745733,
+     "wires_ok": true,
+     "rear_race": "ring",
+     "pad_gap_ok": true,
+     "board_ok": true,
+     "board": "14 mm (study K)",
+     "head": {
+      "od_min_head_mm": 19.164276123387552,
+      "margin_mm": 2.2477628577411526,
+      "R_s_mm": 6.3455841202386,
+      "fits": true
+     },
+     "head_ok": true,
+     "length_mm": 156.39943574049926,
+     "length_ok": true,
+     "all_ok": true
+    },
+    "constraints": {
+     "goodman": 0.01094416625184036,
+     "hertz_run": 1.0479823063508342,
+     "hertz_static": 1.426455808743774,
+     "modes": 8.463405308526141,
+     "coil_p99": 0.010000000000000703,
+     "skin": 4.838727991678674,
+     "coil_inner": 0.0014992915861913314,
+     "magnets": 6.934897101018578e-12,
+     "wires_min": 0.009500532253566618,
+     "wires_max": 0.009500532253566618,
+     "head": 2.2477628577411526,
+     "board": 1.0,
+     "length": 18.600564259500743,
+     "voltage": 0.6618095599880975,
+     "lead_heat": 42.11093413227731,
+     "magnet_T": 42.82391188583648,
+     "feasible": true
+    }
+   },
+   "head_fit": {
+    "od_min_head_mm": 19.164276123387552,
+    "margin_mm": 2.2477628577411526,
+    "R_s_mm": 6.3455841202386,
+    "fits": true
+   },
+   "reach_mm": 1.5955841202386003,
+   "typical_W": 0.060413959547531176,
+   "screen_W": 0.17341070172022657,
+   "refinement": [
+    {
+     "it": 0,
+     "typical_W": 0.08487691505334599,
+     "V": 0.0
+    },
+    {
+     "it": 1,
+     "typical_W": 0.08487691505334599,
+     "V": 0.0,
+     "sigma": 0.055999999999999994
+    },
+    {
+     "it": 2,
+     "typical_W": 0.07578378602176696,
+     "V": 0.0,
+     "sigma": 0.07279999999999999
+    },
+    {
+     "it": 3,
+     "typical_W": 0.07578378602176696,
+     "V": 0.0,
+     "sigma": 0.05095999999999999
+    },
+    {
+     "it": 4,
+     "typical_W": 0.07495231699871405,
+     "V": 0.0,
+     "sigma": 0.06624799999999999
+    },
+    {
+     "it": 5,
+     "typical_W": 0.07495231699871405,
+     "V": 0.0,
+     "sigma": 0.04637359999999999
+    },
+    {
+     "it": 6,
+     "typical_W": 0.07495231699871405,
+     "V": 0.0,
+     "sigma": 0.03246151999999999
+    },
+    {
+     "it": 7,
+     "typical_W": 0.07114758765473334,
+     "V": 0.0,
+     "sigma": 0.042199975999999986
+    },
+    {
+     "it": 8,
+     "typical_W": 0.06424154262885301,
+     "V": 0.0,
+     "sigma": 0.054859968799999985
+    },
+    {
+     "it": 9,
+     "typical_W": 0.06424154262885301,
+     "V": 0.0,
+     "sigma": 0.03840197815999999
+    },
+    {
+     "it": 10,
+     "typical_W": 0.06424154262885301,
+     "V": 0.0,
+     "sigma": 0.02688138471199999
+    },
+    {
+     "it": 11,
+     "typical_W": 0.06424154262885301,
+     "V": 0.0,
+     "sigma": 0.01881696929839999
+    },
+    {
+     "it": 12,
+     "typical_W": 0.06395170367231857,
+     "V": 0.0,
+     "sigma": 0.02446206008791999
+    },
+    {
+     "it": 13,
+     "typical_W": 0.06395170367231857,
+     "V": 0.0,
+     "sigma": 0.01712344206154399
+    },
+    {
+     "it": 14,
+     "typical_W": 0.06395170367231857,
+     "V": 0.0,
+     "sigma": 0.011986409443080792
+    },
+    {
+     "it": 15,
+     "typical_W": 0.0628567849796095,
+     "V": 0.0,
+     "sigma": 0.01558233227600503
+    },
+    {
+     "it": 16,
+     "typical_W": 0.0628567849796095,
+     "V": 0.0,
+     "sigma": 0.010907632593203521
+    },
+    {
+     "it": 17,
+     "typical_W": 0.0628567849796095,
+     "V": 0.0,
+     "sigma": 0.0076353428152424645
+    },
+    {
+     "it": 18,
+     "typical_W": 0.0628567849796095,
+     "V": 0.0,
+     "sigma": 0.0053447399706697245
+    },
+    {
+     "it": 19,
+     "typical_W": 0.06239722495680739,
+     "V": 0.0,
+     "sigma": 0.006948161961870642
+    },
+    {
+     "it": 20,
+     "typical_W": 0.062274747714004285,
+     "V": 0.0,
+     "sigma": 0.009032610550431834
+    },
+    {
+     "it": 21,
+     "typical_W": 0.062274747714004285,
+     "V": 0.0,
+     "sigma": 0.006322827385302284
+    },
+    {
+     "it": 22,
+     "typical_W": 0.0620722407062572,
+     "V": 0.0,
+     "sigma": 0.008219675600892968
+    },
+    {
+     "it": 23,
+     "typical_W": 0.0620722407062572,
+     "V": 0.0,
+     "sigma": 0.005753772920625078
+    },
+    {
+     "it": 24,
+     "typical_W": 0.0620722407062572,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 25,
+     "typical_W": 0.06175971899672185,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 26,
+     "typical_W": 0.06175971899672185,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 27,
+     "typical_W": 0.06175971899672185,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 28,
+     "typical_W": 0.06175971899672185,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 29,
+     "typical_W": 0.06175971899672185,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 30,
+     "typical_W": 0.06175971899672185,
+     "V": 0.0,
+     "sigma": 0.005
+    }
+   ],
+   "selected_from": {
+    "reach_mm": 1.5955841202386003,
+    "screen_W": 0.24480072897534844,
+    "typical_W": 0.08487691505334599,
+    "od_mm": 23.659801838869857,
+    "length_mm": 157.2195259415474,
+    "m_move_g": 2.9244158967308675,
+    "sv_min_N_sqrtW": 0.18225037852233908,
+    "skin_C": 38.36427372289918,
+    "severe_P35_W": 0.1365027921467386,
+    "goodman": 1.5782755286521615,
+    "genes": {
+     "reach_mm": 1.5955841202386003,
+     "od_mm": 23.659801838869857,
+     "w_frac": 0.9796037895584307,
+     "t_m_mm": 3.5146429690581957,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.9995094747895042,
+     "iron": "1010",
+     "t_cu_mm": 2.3047138238189975,
+     "order": "xyyx",
+     "fill": 0.55,
+     "b_mm": 1.932913809676715,
+     "R_coil": 4.373968367551777,
+     "wireset": [
+      8,
+      0.1
+     ],
+     "L_w_mm": 34.75272066512533,
+     "K_a": 375.86299288651696,
+     "preload_N": 1.824452909698178,
+     "ball_d_mm": 0.8272429885036644,
+     "carrier": "CFRP",
+     "flange": "Al",
+     "flange_t_mm": 1.0678915861955187,
+     "flange_frac": 0.9995097313345692,
+     "race": "ring",
+     "board": false
+    },
+    "x": [
+     1.5955841202386003,
+     23.659801838869857,
+     0.9796037895584307,
+     3.5146429690581957,
+     0.058746088261752184,
+     0.6753782030117391,
+     0.9995094747895042,
+     0.009495840306449317,
+     2.3047138238189975,
+     0.9907245093560718,
+     0.5536827518652925,
+     1.932913809676715,
+     0.9879036226858361,
+     0.7031156216049831,
+     1.4756706903015342,
+     0.3562279494447706,
+     34.75272066512533,
+     2.5750295675963155,
+     1.824452909698178,
+     0.8272429885036644,
+     0.6003158529944035,
+     0.9567424014431599,
+     1.0678915861955187,
+     0.41742679125647447,
+     0.9995097313345692,
+     0.06016472709544388
+    ]
+   },
+   "genes": {
+    "reach_mm": 1.5955841202386003,
+    "od_mm": 23.659801838869857,
+    "w_frac": 0.999999999999,
+    "t_m_mm": 3.5519581582607027,
+    "grade": "N52",
+    "layout": "double",
+    "t_m2_frac": 0.9951298221265241,
+    "iron": "1010",
+    "t_cu_mm": 2.22582751534995,
+    "order": "xyyx",
+    "fill": 0.55,
+    "b_mm": 2.391919683387006,
+    "yc_frac": 0.8996505476103459,
+    "leg_frac": 0.6762874337139354,
+    "R_coil_log": 1.4512679129190857,
+    "wireset": [
+     8,
+     0.1
+    ],
+    "L_w_mm": 33.84697518946004,
+    "K_a_log": 2.5337267733264155,
+    "preload_N": 1.5907491274759002,
+    "ball_d_mm": 0.8110207446685873,
+    "carrier": "CFRP",
+    "flange": "Al",
+    "flange_t_mm": 1.0705099590242484,
+    "board": false,
+    "flange_frac": 0.9995920260215748,
+    "race": "ring",
+    "R_coil": 4.268523201285058,
+    "K_a": 341.7643614491738
+   }
+  },
+  "balanced": {
+   "name": "balanced",
+   "design": {
+    "name": "balanced",
+    "source": "nibopt NSGA-II",
+    "reach_mm": 1.5000000000857272,
+    "stop_mm": 1.7000000000857272,
+    "od_mm": 23.999998988803558,
+    "bore_mm": 10.999999494401779,
+    "length_mm": 157.1568479136735,
+    "m_move_g": 3.2452193835934837,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.30067119784183705,
+     "carrier_tube": 0.1480194954962819,
+     "guide_stations": 0.06,
+     "coils": 1.1519086823799587,
+     "flange": 0.6815280483372622,
+     "flange_inserts": 0.0,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005591959538143705
+    },
+    "stator_parts_g": {
+     "back_plate": 4.604521138650111,
+     "keeper": 4.604521138650111,
+     "magnets": 6.963909896858738
+    },
+    "stack_mm": 15.434210714945387,
+    "plate_t_mm": 1.8342795580549784,
+    "magnets_mm": {
+     "w": 5.091168466965502,
+     "e": 2.545584412332189,
+     "t_m": 4.7635246435674805,
+     "t_cu": 2.3600048973467285,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": true,
+     "t_m2": 4.19212205792122
+    },
+    "coil_mm": {
+     "x_in": 2.745719875218617,
+     "y_in": 0.9181870718164249,
+     "b": 2.040720110101451,
+     "yc": 4.6627713185581445,
+     "order": "xy",
+     "k_fill": 0.55,
+     "outer_corner_r": 8.999999494316052,
+     "inner_edge": 1.7038641366402691
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 5.601297068172295,
+    "wires": {
+     "n": 8,
+     "d_mm": 0.1,
+     "L_mm": 32.363200075107,
+     "anchor_N_m": 93.37316033470124,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 2,
+     "circle_mm": 3.475370923988379
+    },
+    "guide": {
+     "circle_r_mm": 6.975741848019621,
+     "preload_per_race_N": 1.1686296518805643,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 8.425741848062485,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.0094371236210966,
+    "carrier_mat": "CFRP",
+    "flange_mat": "Ti",
+    "board_narrow": false,
+    "weight_trim": false,
+    "notes": {
+     "genes": {
+      "reach_mm": 1.5000000000857272,
+      "od_mm": 23.999998988803558,
+      "w_frac": 0.999999999999,
+      "t_m_mm": 4.7635246435674805,
+      "grade": "N52",
+      "layout": "double",
+      "t_m2_frac": 0.8800462622949028,
+      "iron": "1010",
+      "t_cu_mm": 2.3600048973467285,
+      "order": "xy",
+      "fill": 0.55,
+      "b_mm": 2.0407201101014505,
+      "yc_frac": 0.9158548150611847,
+      "leg_frac": 0.7397279862974383,
+      "R_coil_log": 1.722998190237972,
+      "wireset": [
+       8,
+       0.1
+      ],
+      "L_w_mm": 32.363200075107,
+      "K_a_log": 1.9702220583109156,
+      "preload_N": 1.1686296518805643,
+      "ball_d_mm": 0.8145123910445292,
+      "carrier": "CFRP",
+      "flange": "Ti",
+      "flange_t_mm": 1.0094371236210966,
+      "board": false,
+      "flange_frac": 0.9361935912756175,
+      "race": "ring",
+      "R_coil": 5.601297068172295,
+      "K_a": 93.37316033470124
+     }
+    }
+   },
+   "evaluation": {
+    "design": {
+     "name": "balanced",
+     "source": "nibopt NSGA-II",
+     "reach_mm": 1.5000000000857272,
+     "stop_mm": 1.7000000000857272,
+     "od_mm": 23.999998988803558,
+     "bore_mm": 10.999999494401779,
+     "length_mm": 157.1568479136735,
+     "m_move_g": 3.2452193835934837,
+     "moving_parts_g": {
+      "refill": 0.84,
+      "refill_holder": 0.05,
+      "holder_extension": 0.30067119784183705,
+      "carrier_tube": 0.1480194954962819,
+      "guide_stations": 0.06,
+      "coils": 1.1519086823799587,
+      "flange": 0.6815280483372622,
+      "flange_inserts": 0.0,
+      "position_magnet": 0.0075,
+      "wires_third": 0.005591959538143705
+     },
+     "stator_parts_g": {
+      "back_plate": 4.604521138650111,
+      "keeper": 4.604521138650111,
+      "magnets": 6.963909896858738
+     },
+     "stack_mm": 15.434210714945387,
+     "plate_t_mm": 1.8342795580549784,
+     "magnets_mm": {
+      "w": 5.091168466965502,
+      "e": 2.545584412332189,
+      "t_m": 4.7635246435674805,
+      "t_cu": 2.3600048973467285,
+      "c0": 0.3,
+      "c1": 0.15,
+      "Br_T": 1.42,
+      "double": true,
+      "t_m2": 4.19212205792122
+     },
+     "coil_mm": {
+      "x_in": 2.745719875218617,
+      "y_in": 0.9181870718164249,
+      "b": 2.040720110101451,
+      "yc": 4.6627713185581445,
+      "order": "xy",
+      "k_fill": 0.55,
+      "outer_corner_r": 8.999999494316052,
+      "inner_edge": 1.7038641366402691
+     },
+     "grade": "N52",
+     "iron": "1010",
+     "R_coil_ohm": 5.601297068172295,
+     "wires": {
+      "n": 8,
+      "d_mm": 0.1,
+      "L_mm": 32.363200075107,
+      "anchor_N_m": 93.37316033470124,
+      "assembly_N": 0.005,
+      "parallel_per_lead": 2,
+      "circle_mm": 3.475370923988379
+     },
+     "guide": {
+      "circle_r_mm": 6.975741848019621,
+      "preload_per_race_N": 1.1686296518805643,
+      "ball_d_mm": 0.8,
+      "n_balls": 6,
+      "flange_r_mm": 8.425741848062485,
+      "rear_race": "ring"
+     },
+     "flange_t_mm": 1.0094371236210966,
+     "carrier_mat": "CFRP",
+     "flange_mat": "Ti",
+     "board_narrow": false,
+     "weight_trim": false,
+     "notes": {
+      "genes": {
+       "reach_mm": 1.5000000000857272,
+       "od_mm": 23.999998988803558,
+       "w_frac": 0.999999999999,
+       "t_m_mm": 4.7635246435674805,
+       "grade": "N52",
+       "layout": "double",
+       "t_m2_frac": 0.8800462622949028,
+       "iron": "1010",
+       "t_cu_mm": 2.3600048973467285,
+       "order": "xy",
+       "fill": 0.55,
+       "b_mm": 2.0407201101014505,
+       "yc_frac": 0.9158548150611847,
+       "leg_frac": 0.7397279862974383,
+       "R_coil_log": 1.722998190237972,
+       "wireset": [
+        8,
+        0.1
+       ],
+       "L_w_mm": 32.363200075107,
+       "K_a_log": 1.9702220583109156,
+       "preload_N": 1.1686296518805643,
+       "ball_d_mm": 0.8145123910445292,
+       "carrier": "CFRP",
+       "flange": "Ti",
+       "flange_t_mm": 1.0094371236210966,
+       "board": false,
+       "flange_frac": 0.9361935912756175,
+       "race": "ring",
+       "R_coil": 5.601297068172295,
+       "K_a": 93.37316033470124
+      }
+     }
+    },
+    "magnetics": {
+     "Km_centre_x_N_sqrtW": 0.40605992424690773,
+     "Km_centre_y_N_sqrtW": 0.4175793460355673,
+     "sv_min_centre_N_sqrtW": 0.40605992424690773,
+     "sv_min_workspace_N_sqrtW": 0.2732492063513728,
+     "cross_coupling_max": 0.18814856614703462,
+     "copper_mass_g": 1.0519086823799586,
+     "field_scale": 1.0,
+     "sv_min_workspace_x0.7": 0.19127444444596095,
+     "n_positions": 33,
+     "quadrature": "fine"
+    },
+    "wires": {
+     "n_w": 8,
+     "d_mm": 0.1,
+     "L_mm": 32.363200075107,
+     "anchor_N_m": 93.37316033470124,
+     "assembly_N": 0.005,
+     "F_usable_mN": 3.1535497499058605,
+     "F_stop_mN": 3.643057024414395,
+     "F_stop_linear_mN": 3.0156876201376175,
+     "tension_stop_N": 0.009976994390436467,
+     "k_small_N_m": 1.7739338941091432,
+     "goodman_worst_corner": 1.5420473685138543,
+     "goodman_nominal_Kt1.8": 2.2767929256560544,
+     "bend_stress_worst_MPa": 170.8058019969865,
+     "P_buckle_each_ff_N": 0.023608989202809478,
+     "R_wire_ohm": 0.32292476171996365,
+     "k_axial_N_m": 247730.27492197536,
+     "k_tilt_Nm_rad_wires": 1.9818421993758029,
+     "mass_g": 0.016775878614431115,
+     "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+    },
+    "guide": {
+     "circle_r_mm": 6.975741848019621,
+     "preload_per_race_N": 1.1686296518805643,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "mu_roll": 0.001,
+     "drag_35_mN": 2.9140765402387747,
+     "drag_mean_mN": 2.621570773112163,
+     "hertz_run_GPa": 2.2447571003846685,
+     "hertz_static_GPa": 2.023516557270271,
+     "tilt_stiffness_min_Nm_rad": 237.6668327911692,
+     "min_preload_all_balls_loaded_N": 4.405011323886368,
+     "lever_mm": 79.82684791367348,
+     "mass_balls_g": 0.010294370807283036,
+     "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+    },
+    "guide_rows": {
+     "35": {
+      "couple_mNm": 12.803425763764357,
+      "total_normal_N": 2.9140765402387743,
+      "drag_mN": 2.9140765402387747,
+      "max_hertz_GPa": 2.2447571003846685,
+      "min_tilt_stiffness_Nm_rad": 237.6668327911692,
+      "tilt_urad": 45.69513486007894,
+      "unloaded_contacts": 0
+     },
+     "50": {
+      "couple_mNm": 10.046832575059403,
+      "total_normal_N": 2.6609891704166024,
+      "drag_mN": 2.6609891704166024,
+      "max_hertz_GPa": 2.112331774084416,
+      "min_tilt_stiffness_Nm_rad": 270.32544162658695,
+      "tilt_urad": 34.97517449824136,
+      "unloaded_contacts": 0
+     },
+     "60": {
+      "couple_mNm": 7.815048410748634,
+      "total_normal_N": 2.5254011093665127,
+      "drag_mN": 2.5254011093665127,
+      "max_hertz_GPa": 2.006843525416822,
+      "min_tilt_stiffness_Nm_rad": 281.64269395311936,
+      "tilt_urad": 26.902079445145418,
+      "unloaded_contacts": 0
+     },
+     "75": {
+      "couple_mNm": 4.045366734199867,
+      "total_normal_N": 2.385816272426762,
+      "drag_mN": 2.385816272426762,
+      "max_hertz_GPa": 1.8223789889077222,
+      "min_tilt_stiffness_Nm_rad": 291.5023841560519,
+      "tilt_urad": 13.778593880859574,
+      "unloaded_contacts": 0
+     },
+     "penup": {
+      "couple_mNm": 0.0,
+      "total_normal_N": 2.3372600000000032,
+      "drag_mN": 2.3372600000000032,
+      "max_hertz_GPa": 1.6060663153182768,
+      "min_tilt_stiffness_Nm_rad": 294.62894571595604,
+      "tilt_urad": 0.0,
+      "unloaded_contacts": 0
+     }
+    },
+    "leads": {
+     "R_lead_ohm": 0.32292476171996365,
+     "factor": 1.0576517827549066
+    },
+    "dutyA": {
+     "worst07": {
+      "conv": "worst07",
+      "mean": 0.03737923903037511,
+      "mean_items_W": {
+       "gravity": 0.011202861035394134,
+       "residual": 0.0009145805122791582,
+       "writing_drag": 0.027168862768972464,
+       "guide_drag": 0.00021821498024321537,
+       "inertia_and_wires": 9.817868379612048e-05,
+       "cross_terms": -0.002223458950309981
+      },
+      "worst": 0.07279343768404696,
+      "worst_items_W": {
+       "gravity": 0.021459822816949022,
+       "residual": 0.0027812033491382143,
+       "writing_drag": 0.04356464739643622,
+       "guide_drag": 0.000268144892084431,
+       "inertia_and_wires": 9.817868379612048e-05,
+       "cross_terms": 0.004621440545642957
+      },
+      "P35_W": 0.06049821758900747,
+      "temp_factor": 1.0922921484778687,
+      "coil_C": 34.14317207961937,
+      "skin": {
+       "pads_C": [
+        33.17581639757186,
+        33.340590235720974,
+        33.29904562085845
+       ],
+       "web_C": 30.732815087511486,
+       "max_shell_C": 33.68649033748451,
+       "coil_C": 34.14317207961937,
+       "sources_W": {
+        "coils": 0.06049821758900747,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.999998988803558,
+       "fin_lambda_mm": 5.3619026424706275,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre10": {
+      "conv": "centre10",
+      "mean": 0.007913958443200794,
+      "mean_items_W": {
+       "gravity": 0.0023718775175443395,
+       "residual": 0.00019363562113334764,
+       "writing_drag": 0.005752210491175311,
+       "guide_drag": 4.620062714292659e-05,
+       "inertia_and_wires": 2.07864591074007e-05,
+       "cross_terms": -0.00047075227290253044
+      },
+      "worst": 0.015725283097308185,
+      "worst_items_W": {
+       "gravity": 0.004670554228537873,
+       "residual": 0.0006053060723540473,
+       "writing_drag": 0.009366045926657357,
+       "guide_drag": 5.6771822748673365e-05,
+       "inertia_and_wires": 2.0786459107400704e-05,
+       "cross_terms": 0.0010058185879028357
+      },
+      "P35_W": 0.012808724637172475,
+      "temp_factor": 1.0713896805266827,
+      "coil_C": 31.009826839147646,
+      "skin": {
+       "pads_C": [
+        30.75781355137766,
+        30.92258738952677,
+        31.34262588946978
+       ],
+       "web_C": 30.732732358135124,
+       "max_shell_C": 31.956885287899315,
+       "coil_C": 31.009826839147646,
+       "sources_W": {
+        "coils": 0.012808724637172475,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.999998988803558,
+       "fin_lambda_mm": 5.3619026424706275,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre07": {
+      "conv": "centre07",
+      "mean": 0.016239649210534817,
+      "mean_items_W": {
+       "gravity": 0.004867154551255825,
+       "residual": 0.0003973453467614832,
+       "writing_drag": 0.011803686010267201,
+       "guide_drag": 9.480489232950663e-05,
+       "inertia_and_wires": 4.2654356433136175e-05,
+       "cross_terms": -0.000965995946512337
+      },
+      "worst": 0.03226869120800588,
+      "worst_items_W": {
+       "gravity": 0.009584099137568683,
+       "residual": 0.0012421038536639848,
+       "writing_drag": 0.019219370613368633,
+       "guide_drag": 0.00011649726152823114,
+       "inertia_and_wires": 4.2654356433136175e-05,
+       "cross_terms": 0.002063965985443208
+      },
+      "P35_W": 0.02628383715114464,
+      "temp_factor": 1.0772745933862404,
+      "coil_C": 31.895182858829358,
+      "skin": {
+       "pads_C": [
+        31.441042883349787,
+        31.6058167214989,
+        31.895430592837947
+       ],
+       "web_C": 30.7327557340946,
+       "max_shell_C": 32.21905732892636,
+       "coil_C": 31.895182858829358,
+       "sources_W": {
+        "coils": 0.02628383715114464,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.999998988803558,
+       "fin_lambda_mm": 5.3619026424706275,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     }
+    },
+    "severe": {
+     "worst07": {
+      "conv": "worst07",
+      "mean": 0.037647721253484735,
+      "mean_items_W": {
+       "gravity": 0.011204085380262001,
+       "residual": 0.0009146804654922637,
+       "writing_drag": 0.027171832015631146,
+       "guide_drag": 0.00021823882865035964,
+       "inertia_and_wires": 0.0003622881630348503,
+       "cross_terms": -0.0022234035995858836
+      },
+      "worst": 0.07306582356372647,
+      "worst_items_W": {
+       "gravity": 0.021462168130690597,
+       "residual": 0.0027815073029261134,
+       "writing_drag": 0.04356940851525148,
+       "guide_drag": 0.0002681741972611561,
+       "inertia_and_wires": 0.0003622881630348503,
+       "cross_terms": 0.0046222772545622785
+      },
+      "P35_W": 0.06076925974143952,
+      "temp_factor": 1.0924115235448248,
+      "coil_C": 34.16098037628438,
+      "skin": {
+       "pads_C": [
+        33.18955906195038,
+        33.3543329000995,
+        33.31016488806458
+       ],
+       "web_C": 30.732815557702022,
+       "max_shell_C": 33.70023300186304,
+       "coil_C": 34.16098037628438,
+       "sources_W": {
+        "coils": 0.06076925974143952,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.999998988803558,
+       "fin_lambda_mm": 5.3619026424706275,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre10": {
+      "conv": "centre10",
+      "mean": 0.007972110750932203,
+      "mean_items_W": {
+       "gravity": 0.0023719338636187387,
+       "residual": 0.00019364022112092457,
+       "writing_drag": 0.005752347140086521,
+       "guide_drag": 4.659671214721718e-05,
+       "inertia_and_wires": 7.829105175106991e-05,
+       "cross_terms": -0.0004706982377922693
+      },
+      "worst": 0.01578371862421757,
+      "worst_items_W": {
+       "gravity": 0.004670665181735962,
+       "residual": 0.000605320451941836,
+       "writing_drag": 0.009366268425465455,
+       "guide_drag": 5.7258536220926216e-05,
+       "inertia_and_wires": 7.829105175106991e-05,
+       "cross_terms": 0.0010059149771023204
+      },
+      "P35_W": 0.012867090878623913,
+      "temp_factor": 1.0714151323479522,
+      "coil_C": 31.01366167935114,
+      "skin": {
+       "pads_C": [
+        30.760772897959384,
+        30.925546736108497,
+        31.345020313468748
+       ],
+       "web_C": 30.732732459385996,
+       "max_shell_C": 31.958020862584316,
+       "coil_C": 31.01366167935114,
+       "sources_W": {
+        "coils": 0.012867090878623913,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.999998988803558,
+       "fin_lambda_mm": 5.3619026424706275,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre07": {
+      "conv": "centre07",
+      "mean": 0.016359390521520772,
+      "mean_items_W": {
+       "gravity": 0.0048673925361136195,
+       "residual": 0.00039736477539783496,
+       "writing_drag": 0.011804263164435416,
+       "guide_drag": 9.562007288296634e-05,
+       "inertia_and_wires": 0.00016065931971486706,
+       "cross_terms": -0.0009659093470239306
+      },
+      "worst": 0.032389416670507536,
+      "worst_items_W": {
+       "gravity": 0.009584567762603354,
+       "residual": 0.0012421645876936663,
+       "writing_drag": 0.019220310365565558,
+       "guide_drag": 0.00011749896407538512,
+       "inertia_and_wires": 0.00016065931971486706,
+       "cross_terms": 0.0020642156708547007
+      },
+      "P35_W": 0.0264042699776458,
+      "temp_factor": 1.0773272679085333,
+      "coil_C": 31.90309566310461,
+      "skin": {
+       "pads_C": [
+        31.447149195227524,
+        31.611923033376637,
+        31.90037124419509
+       ],
+       "web_C": 30.73275594301552,
+       "max_shell_C": 32.2214004722506,
+       "coil_C": 31.90309566310461,
+       "sources_W": {
+        "coils": 0.0264042699776458,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 23.999998988803558,
+       "fin_lambda_mm": 5.3619026424706275,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     }
+    },
+    "severe_motion": {
+     "q_rms_2d_mm": 0.8973422207371354,
+     "at_limit": 0.13785,
+     "F_a_r2_tip_mm": 0.8179999999816543,
+     "F_oracle_tip_mm": 0.6739999999581652,
+     "F_a_r2_at_limit": 0.14899999998285454
+    },
+    "screen": {
+     "worst07": 0.10596908279990981,
+     "worst07_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 0.0,
+      "roll_deg": 150.0,
+      "P_W": 0.10596908279990981
+     },
+     "worst07_temp_factor": 1.112588360822228,
+     "worst07_coil_C": 37.12951895164748,
+     "worst07_skin_max_C": 35.99105452754484,
+     "map07": 0.06924770952516619,
+     "map07_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 45.0,
+      "roll_deg": 150.0,
+      "P_W": 0.06924770952516619
+     },
+     "map07_temp_factor": 1.0962200744920365,
+     "map07_coil_C": 34.717735941763124,
+     "map07_skin_max_C": 34.12988132933537,
+     "centre10": 0.022567161035600473,
+     "centre10_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 0.0,
+      "roll_deg": 0.0,
+      "P_W": 0.022567161035600473
+     },
+     "centre10_temp_factor": 1.075655941243994,
+     "centre10_coil_C": 31.65097718654792,
+     "centre10_skin_max_C": 32.14674303037399
+    },
+    "nib_by_mode": {
+     "worst07": {
+      "steady_0mm": {
+       "mean_W": 0.037057235223052994,
+       "P35_W": 0.060122791945059983,
+       "skin_max_C": 33.66745511149634,
+       "front_pad_C": 33.15678117158369,
+       "coil_C": 34.11850546897199
+      },
+      "steady_1mm": {
+       "mean_W": 0.038503296433171665,
+       "P35_W": 0.06163285286919452,
+       "skin_max_C": 33.744019809220674,
+       "front_pad_C": 33.233345869308025,
+       "coil_C": 34.21772108055834
+      },
+      "steady_2mm": {
+       "mean_W": 0.039964215288325826,
+       "P35_W": 0.06310752304675893,
+       "skin_max_C": 33.81879008807748,
+       "front_pad_C": 33.30811614816483,
+       "coil_C": 34.31461141207861
+      },
+      "guide": {
+       "mean_W": 0.03750338686045282,
+       "P35_W": 0.06062353391590884,
+       "skin_max_C": 33.692853134157794,
+       "front_pad_C": 33.182171570320726,
+       "coil_C": 34.15140799735636
+      },
+      "spelling_cue": {
+       "mean_W": 0.037057235505017924,
+       "P35_W": 0.06012279240252852,
+       "skin_max_C": 33.66745988281687,
+       "front_pad_C": 33.15678186475688,
+       "coil_C": 34.11850670396691
+      },
+      "severe": {
+       "mean_W": 0.037647721253484735,
+       "P35_W": 0.06076925974143952,
+       "skin_max_C": 33.70023300186304,
+       "front_pad_C": 33.18955906195038,
+       "coil_C": 34.16098037628438
+      }
+     },
+     "centre10": {
+      "steady_0mm": {
+       "mean_W": 0.007846722362632438,
+       "P35_W": 0.012730762379318509,
+       "skin_max_C": 31.955368452752786,
+       "front_pad_C": 30.753860626955145,
+       "coil_C": 31.004704480857324
+      },
+      "steady_1mm": {
+       "mean_W": 0.008148997580165606,
+       "P35_W": 0.013044232972662313,
+       "skin_max_C": 31.961467342478098,
+       "front_pad_C": 30.76975454278413,
+       "coil_C": 31.025300455586464
+      },
+      "steady_2mm": {
+       "mean_W": 0.008454219028096671,
+       "P35_W": 0.013350063758509717,
+       "skin_max_C": 31.967417591965912,
+       "front_pad_C": 30.785261097055525,
+       "coil_C": 31.04539447164557
+      },
+      "guide": {
+       "mean_W": 0.00793992600235161,
+       "P35_W": 0.012834744101497332,
+       "skin_max_C": 31.9574162812069,
+       "front_pad_C": 30.75913407012904,
+       "coil_C": 31.011538649948495
+      },
+      "spelling_cue": {
+       "mean_W": 0.007846722421548569,
+       "P35_W": 0.012730762474905838,
+       "skin_max_C": 31.955381698090402,
+       "front_pad_C": 30.753861301779853,
+       "coil_C": 31.004705692075543
+      },
+      "severe": {
+       "mean_W": 0.007972110750932203,
+       "P35_W": 0.012867090878623913,
+       "skin_max_C": 31.958020862584316,
+       "front_pad_C": 30.760772897959384,
+       "coil_C": 31.01366167935114
+      }
+     },
+     "centre07": {
+      "steady_0mm": {
+       "mean_W": 0.016101138380091397,
+       "P35_W": 0.026122979414898245,
+       "skin_max_C": 32.21592767780226,
+       "front_pad_C": 31.432886905166733,
+       "coil_C": 31.884614014602604
+      },
+      "steady_1mm": {
+       "mean_W": 0.016723652131262354,
+       "P35_W": 0.02676982198214292,
+       "skin_max_C": 32.22851265888512,
+       "front_pad_C": 31.465683797560132,
+       "coil_C": 31.927113545504675
+      },
+      "steady_2mm": {
+       "mean_W": 0.017352324549044226,
+       "P35_W": 0.027401069018701187,
+       "skin_max_C": 32.24079421303134,
+       "front_pad_C": 31.497689948948473,
+       "coil_C": 31.96858840244139
+      },
+      "guide": {
+       "mean_W": 0.01629311791187491,
+       "P35_W": 0.026337524928129238,
+       "skin_max_C": 32.22012663744239,
+       "front_pad_C": 31.443766269999728,
+       "coil_C": 31.89871256221866
+      },
+      "spelling_cue": {
+       "mean_W": 0.016101138501445532,
+       "P35_W": 0.02612297961178691,
+       "skin_max_C": 32.2159409251108,
+       "front_pad_C": 31.432887585127727,
+       "coil_C": 31.884615232476634
+      },
+      "severe": {
+       "mean_W": 0.016359390521520772,
+       "P35_W": 0.0264042699776458,
+       "skin_max_C": 32.2214004722506,
+       "front_pad_C": 31.447149195227524,
+       "coil_C": 31.90309566310461
+      }
+     }
+    },
+    "battery": {
+     "conservative": {
+      "steady_0mm": {
+       "nib_W": 0.037057235223052994,
+       "total_W": 0.0951768566630087,
+       "hours": 23.324998091293576
+      },
+      "steady_1mm": {
+       "nib_W": 0.038503296433171665,
+       "total_W": 0.09662291787312736,
+       "hours": 22.975915537088365
+      },
+      "steady_2mm": {
+       "nib_W": 0.039964215288325826,
+       "total_W": 0.09808383672828153,
+       "hours": 22.633698619987655
+      },
+      "guide": {
+       "nib_W": 0.03750338686045282,
+       "total_W": 0.09912300830040852,
+       "hours": 22.39641469790673
+      },
+      "spelling_cue": {
+       "nib_W": 0.037057235505017924,
+       "total_W": 0.09704905752411835,
+       "hours": 22.87502894552368
+      },
+      "severe": {
+       "nib_W": 0.037647721253484735,
+       "total_W": 0.09576734269344044,
+       "hours": 23.181179904995513
+      }
+     },
+     "worst07_low_electronics": {
+      "steady_0mm": {
+       "nib_W": 0.037057235223052994,
+       "total_W": 0.06494978839801269,
+       "hours": 34.180249924693015
+      },
+      "steady_1mm": {
+       "nib_W": 0.038503296433171665,
+       "total_W": 0.06639584960813136,
+       "hours": 33.43582487613987
+      },
+      "steady_2mm": {
+       "nib_W": 0.039964215288325826,
+       "total_W": 0.0678567684632855,
+       "hours": 32.71596998022608
+      },
+      "guide": {
+       "nib_W": 0.03750338686045282,
+       "total_W": 0.0661459400354125,
+       "hours": 33.5621505841701
+      },
+      "spelling_cue": {
+       "nib_W": 0.037057235505017924,
+       "total_W": 0.06503845377087882,
+       "hours": 34.133652805165745
+      },
+      "severe": {
+       "nib_W": 0.037647721253484735,
+       "total_W": 0.06554027442844443,
+       "hours": 33.872302479046716
+      }
+     },
+     "optimistic": {
+      "steady_0mm": {
+       "nib_W": 0.007846722362632438,
+       "total_W": 0.035739275537592124,
+       "hours": 62.11653612465948
+      },
+      "steady_1mm": {
+       "nib_W": 0.008148997580165606,
+       "total_W": 0.036041550755125294,
+       "hours": 61.595573816542974
+      },
+      "steady_2mm": {
+       "nib_W": 0.008454219028096671,
+       "total_W": 0.036346772203056356,
+       "hours": 61.078325954163354
+      },
+      "guide": {
+       "nib_W": 0.00793992600235161,
+       "total_W": 0.0365824791773113,
+       "hours": 60.68478818069988
+      },
+      "spelling_cue": {
+       "nib_W": 0.007846722421548569,
+       "total_W": 0.03582794068740946,
+       "hours": 61.96281330732876
+      },
+      "severe": {
+       "nib_W": 0.007972110750932203,
+       "total_W": 0.03586466392589189,
+       "hours": 61.89936714832308
+      }
+     }
+    },
+    "electrical": {
+     "F_peak_N": 0.14636224013199164,
+     "F_peak_parts_N": {
+      "static_N": 0.11213056595705607,
+      "dynamic_N": 0.03423167417493558,
+      "total_N": 0.14636224013199164
+     },
+     "I_peak_A": 0.33792547418298297,
+     "V_peak_V": 2.306233846939359,
+     "R_hot_loop_ohm": 6.253920490968247,
+     "back_emf_V": 0.11177268572232457,
+     "ok": true
+    },
+    "lead_heating": {
+     "I_rms_coil_A": 0.05636878750857037,
+     "rise_K": 1.2646026366872491
+    },
+    "modes": {
+     "servo_bw_max_worst_Hz": 46.9667991926135,
+     "lowest_stuck_worst_Hz": 117.41699798153375,
+     "first_free_nominal_Hz": 1511.597433015777,
+     "lowest_stuck_nominal_Hz": 166.41630614070442,
+     "m_carrier_g": 2.355219383593483,
+     "k_lat_N_m": 1.7739338941091432,
+     "k_tilt_Nm_rad": 239.648674990545,
+     "n_cases": 18,
+     "passes": true,
+     "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+    },
+    "fit": {
+     "coil_clearance_stop_mm": 0.29999999999999893,
+     "coil_clearance_p99_mm": 0.20999999999999894,
+     "coil_p99_ok": true,
+     "coil_inner_edge_mm": 1.7038641366402691,
+     "coil_inner_ok": true,
+     "magnet_r_out_mm": 10.79999949439458,
+     "magnets_ok": true,
+     "flange_r_mm": 8.425741848062485,
+     "flange_ok": true,
+     "ball_circle_r_mm": 6.975741848019621,
+     "ball_on_flange_ok": true,
+     "wire_circle_mm": 3.475370923988379,
+     "wire_circle_min_mm": 3.4750000000857266,
+     "wire_circle_max_mm": 3.4757418478910305,
+     "wires_ok": true,
+     "rear_race": "ring",
+     "pad_gap_ok": true,
+     "board_ok": true,
+     "board": "14 mm (study K)",
+     "head": {
+      "od_min_head_mm": 18.584157603028757,
+      "margin_mm": 2.7079206928874004,
+      "R_s_mm": 6.250000000085727,
+      "fits": true
+     },
+     "head_ok": true,
+     "length_mm": 157.1568479136735,
+     "length_ok": true,
+     "all_ok": true
+    },
+    "constraints": {
+     "goodman": 0.042047368513854266,
+     "hertz_run": 1.0887851087485503,
+     "hertz_static": 1.6455213946221843,
+     "modes": 6.9667991926135,
+     "coil_p99": 0.009999999999998926,
+     "skin": 7.29976699813696,
+     "coil_inner": 0.003864136640269189,
+     "magnets": 7.199574270089215e-12,
+     "wires_min": 0.00037092390265236475,
+     "wires_max": 0.00037092390265147657,
+     "head": 2.7079206928874004,
+     "board": 1.0,
+     "length": 17.843152086326512,
+     "voltage": 0.993766153060641,
+     "lead_heat": 43.73539736331275,
+     "magnet_T": 45.83901962371562,
+     "feasible": true
+    }
+   },
+   "head_fit": {
+    "od_min_head_mm": 18.584157603028757,
+    "margin_mm": 2.7079206928874004,
+    "R_s_mm": 6.250000000085727,
+    "fits": true
+   },
+   "reach_mm": 1.5000000000857272,
+   "typical_W": 0.03737923903037511,
+   "screen_W": 0.10596908279990981,
+   "refinement": [
+    {
+     "it": 0,
+     "typical_W": 0.039771918407268556,
+     "V": 0.0
+    },
+    {
+     "it": 1,
+     "typical_W": 0.039771918407268556,
+     "V": 0.0,
+     "sigma": 0.055999999999999994
+    },
+    {
+     "it": 2,
+     "typical_W": 0.039771918407268556,
+     "V": 0.0,
+     "sigma": 0.03919999999999999
+    },
+    {
+     "it": 3,
+     "typical_W": 0.039771918407268556,
+     "V": 0.0,
+     "sigma": 0.027439999999999992
+    },
+    {
+     "it": 4,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.03567199999999999
+    },
+    {
+     "it": 5,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.02497039999999999
+    },
+    {
+     "it": 6,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.017479279999999993
+    },
+    {
+     "it": 7,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.012235495999999995
+    },
+    {
+     "it": 8,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.008564847199999996
+    },
+    {
+     "it": 9,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.005995393039999997
+    },
+    {
+     "it": 10,
+     "typical_W": 0.03895180634426702,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 11,
+     "typical_W": 0.03877462168913019,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 12,
+     "typical_W": 0.03877462168913019,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 13,
+     "typical_W": 0.038702368915597675,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 14,
+     "typical_W": 0.03865460445057776,
+     "V": 0.0,
+     "sigma": 0.008450000000000001
+    },
+    {
+     "it": 15,
+     "typical_W": 0.03848947742764589,
+     "V": 0.0,
+     "sigma": 0.010985000000000002
+    },
+    {
+     "it": 16,
+     "typical_W": 0.03840678652104267,
+     "V": 0.0,
+     "sigma": 0.014280500000000003
+    },
+    {
+     "it": 17,
+     "typical_W": 0.03840678652104267,
+     "V": 0.0,
+     "sigma": 0.009996350000000001
+    },
+    {
+     "it": 18,
+     "typical_W": 0.03840678652104267,
+     "V": 0.0,
+     "sigma": 0.006997445000000001
+    },
+    {
+     "it": 19,
+     "typical_W": 0.03840678652104267,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 20,
+     "typical_W": 0.03830024954481684,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 21,
+     "typical_W": 0.03828805640033292,
+     "V": 0.0,
+     "sigma": 0.008450000000000001
+    },
+    {
+     "it": 22,
+     "typical_W": 0.03828805640033292,
+     "V": 0.0,
+     "sigma": 0.005915
+    },
+    {
+     "it": 23,
+     "typical_W": 0.03828805640033292,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 24,
+     "typical_W": 0.03819435858116446,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 25,
+     "typical_W": 0.03815758507072456,
+     "V": 0.0,
+     "sigma": 0.008450000000000001
+    },
+    {
+     "it": 26,
+     "typical_W": 0.03814979359962405,
+     "V": 0.0,
+     "sigma": 0.010985000000000002
+    },
+    {
+     "it": 27,
+     "typical_W": 0.03814979359962405,
+     "V": 0.0,
+     "sigma": 0.007689500000000001
+    },
+    {
+     "it": 28,
+     "typical_W": 0.03814979359962405,
+     "V": 0.0,
+     "sigma": 0.00538265
+    },
+    {
+     "it": 29,
+     "typical_W": 0.03814979359962405,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 30,
+     "typical_W": 0.03814979359962405,
+     "V": 0.0,
+     "sigma": 0.005
+    }
+   ],
+   "selected_from": {
+    "reach_mm": 1.5000000000857272,
+    "screen_W": 0.11268547885592853,
+    "typical_W": 0.039771918407268556,
+    "od_mm": 23.999998988803558,
+    "length_mm": 157.22518443188966,
+    "m_move_g": 3.198430686065231,
+    "sv_min_N_sqrtW": 0.2646423797739745,
+    "skin_C": 33.97895166105914,
+    "severe_P35_W": 0.06458526930238548,
+    "goodman": 1.5767626817742628,
+    "genes": {
+     "reach_mm": 1.5000000000857272,
+     "od_mm": 23.999998988803558,
+     "w_frac": 0.999531425239317,
+     "t_m_mm": 4.697264386059444,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.8415975509465347,
+     "iron": "1010",
+     "t_cu_mm": 2.350873952441211,
+     "order": "xy",
+     "fill": 0.55,
+     "b_mm": 1.9669507930342915,
+     "R_coil": 5.289474739636172,
+     "wireset": [
+      8,
+      0.1
+     ],
+     "L_w_mm": 32.78216832212827,
+     "K_a": 108.57896988937172,
+     "preload_N": 1.1813837206421325,
+     "ball_d_mm": 0.8004559286434254,
+     "carrier": "CFRP",
+     "flange": "Ti",
+     "flange_t_mm": 1.002569316538675,
+     "flange_frac": 0.9493732415085522,
+     "race": "ring",
+     "board": false
+    },
+    "x": [
+     1.5000000000857272,
+     23.999998988803558,
+     0.999531425239317,
+     4.697264386059444,
+     0.00010036855866692603,
+     0.5854693253744352,
+     0.8415975509465347,
+     0.0,
+     2.350873952441211,
+     0.06400673628862652,
+     0.6407648320006796,
+     1.9669507930342915,
+     0.9337207110405503,
+     0.6992160952539177,
+     1.6657189478658767,
+     0.42107594165177586,
+     32.78216832212827,
+     2.0357457170996964,
+     1.1813837206421325,
+     0.8004559286434254,
+     0.6635235167114847,
+     0.0,
+     1.002569316538675,
+     0.13624084114279206,
+     0.9493732415085522,
+     0.03064036926418771
+    ]
+   },
+   "genes": {
+    "reach_mm": 1.5000000000857272,
+    "od_mm": 23.999998988803558,
+    "w_frac": 0.999999999999,
+    "t_m_mm": 4.7635246435674805,
+    "grade": "N52",
+    "layout": "double",
+    "t_m2_frac": 0.8800462622949028,
+    "iron": "1010",
+    "t_cu_mm": 2.3600048973467285,
+    "order": "xy",
+    "fill": 0.55,
+    "b_mm": 2.0407201101014505,
+    "yc_frac": 0.9158548150611847,
+    "leg_frac": 0.7397279862974383,
+    "R_coil_log": 1.722998190237972,
+    "wireset": [
+     8,
+     0.1
+    ],
+    "L_w_mm": 32.363200075107,
+    "K_a_log": 1.9702220583109156,
+    "preload_N": 1.1686296518805643,
+    "ball_d_mm": 0.8145123910445292,
+    "carrier": "CFRP",
+    "flange": "Ti",
+    "flange_t_mm": 1.0094371236210966,
+    "board": false,
+    "flange_frac": 0.9361935912756175,
+    "race": "ring",
+    "R_coil": 5.601297068172295,
+    "K_a": 93.37316033470124
+   }
+  },
+  "slim": {
+   "name": "slim",
+   "design": {
+    "name": "slim",
+    "source": "nibopt NSGA-II",
+    "reach_mm": 1.0017861450640837,
+    "stop_mm": 1.2017861450640837,
+    "od_mm": 20.9330822636419,
+    "bore_mm": 9.46654113182095,
+    "length_mm": 167.90426225942434,
+    "m_move_g": 2.509427765270274,
+    "moving_parts_g": {
+     "refill": 0.84,
+     "refill_holder": 0.05,
+     "holder_extension": 0.2413565564856085,
+     "carrier_tube": 0.14135009560839318,
+     "guide_stations": 0.06,
+     "coils": 0.6295940342757406,
+     "flange": 0.43420782348559056,
+     "flange_inserts": 0.1,
+     "position_magnet": 0.0075,
+     "wires_third": 0.005419255414941165
+    },
+    "stator_parts_g": {
+     "back_plate": 3.060368538459761,
+     "keeper": 3.060368538459761,
+     "magnets": 4.770556649662431
+    },
+    "stack_mm": 13.706404567450006,
+    "plate_t_mm": 1.6636061238452722,
+    "magnets_mm": {
+     "w": 4.359140055485008,
+     "e": 2.1932940169652935,
+     "t_m": 4.234539625071893,
+     "t_cu": 1.5607205162990239,
+     "c0": 0.3,
+     "c1": 0.15,
+     "Br_T": 1.42,
+     "double": true,
+     "t_m2": 4.133932178388545
+    },
+    "coil_mm": {
+     "x_in": 2.490703474454681,
+     "y_in": 0.6946937854970692,
+     "b": 1.7982717709455054,
+     "yc": 4.192965556442575,
+     "order": "xy",
+     "k_fill": 0.55,
+     "outer_corner_r": 7.94336097013734,
+     "inner_edge": 1.7000000000000008
+    },
+    "grade": "N52",
+    "iron": "1010",
+    "R_coil_ohm": 4.259530350840198,
+    "wires": {
+     "n": 8,
+     "d_mm": 0.1,
+     "L_mm": 31.363683169651157,
+     "anchor_N_m": 1567.0753011846082,
+     "assembly_N": 0.005,
+     "parallel_per_lead": 2,
+     "circle_mm": 3.1584499639489483
+    },
+    "guide": {
+     "circle_r_mm": 6.092793000429937,
+     "preload_per_race_N": 1.2514002003801585,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "flange_r_mm": 7.29368607296198,
+     "rear_race": "ring"
+    },
+    "flange_t_mm": 1.3641745223231734,
+    "carrier_mat": "CFRP",
+    "flange_mat": "Al",
+    "board_narrow": true,
+    "weight_trim": false,
+    "notes": {
+     "genes": {
+      "reach_mm": 1.0017861450640837,
+      "od_mm": 20.9330822636419,
+      "w_frac": 0.999999999999,
+      "t_m_mm": 4.234539625071893,
+      "grade": "N52",
+      "layout": "double",
+      "t_m2_frac": 0.9762412314935797,
+      "iron": "1010",
+      "t_cu_mm": 1.5607205162990239,
+      "order": "xy",
+      "fill": 0.55,
+      "b_mm": 1.7982717709455052,
+      "yc_frac": 0.9588602603634702,
+      "leg_frac": 0.7751988914519179,
+      "R_coil_log": 1.4491589079220673,
+      "wireset": [
+       8,
+       0.1
+      ],
+      "L_w_mm": 31.363683169651157,
+      "K_a_log": 3.195089865711234,
+      "preload_N": 1.2514002003801585,
+      "ball_d_mm": 0.8,
+      "carrier": "CFRP",
+      "flange": "Al",
+      "flange_t_mm": 1.3641745223231734,
+      "board": true,
+      "flange_frac": 0.9157451905412427,
+      "race": "ring",
+      "R_coil": 4.259530350840198,
+      "K_a": 1567.0753011846082
+     },
+     "flange_inserts_g": 0.1
+    }
+   },
+   "evaluation": {
+    "design": {
+     "name": "slim",
+     "source": "nibopt NSGA-II",
+     "reach_mm": 1.0017861450640837,
+     "stop_mm": 1.2017861450640837,
+     "od_mm": 20.9330822636419,
+     "bore_mm": 9.46654113182095,
+     "length_mm": 167.90426225942434,
+     "m_move_g": 2.509427765270274,
+     "moving_parts_g": {
+      "refill": 0.84,
+      "refill_holder": 0.05,
+      "holder_extension": 0.2413565564856085,
+      "carrier_tube": 0.14135009560839318,
+      "guide_stations": 0.06,
+      "coils": 0.6295940342757406,
+      "flange": 0.43420782348559056,
+      "flange_inserts": 0.1,
+      "position_magnet": 0.0075,
+      "wires_third": 0.005419255414941165
+     },
+     "stator_parts_g": {
+      "back_plate": 3.060368538459761,
+      "keeper": 3.060368538459761,
+      "magnets": 4.770556649662431
+     },
+     "stack_mm": 13.706404567450006,
+     "plate_t_mm": 1.6636061238452722,
+     "magnets_mm": {
+      "w": 4.359140055485008,
+      "e": 2.1932940169652935,
+      "t_m": 4.234539625071893,
+      "t_cu": 1.5607205162990239,
+      "c0": 0.3,
+      "c1": 0.15,
+      "Br_T": 1.42,
+      "double": true,
+      "t_m2": 4.133932178388545
+     },
+     "coil_mm": {
+      "x_in": 2.490703474454681,
+      "y_in": 0.6946937854970692,
+      "b": 1.7982717709455054,
+      "yc": 4.192965556442575,
+      "order": "xy",
+      "k_fill": 0.55,
+      "outer_corner_r": 7.94336097013734,
+      "inner_edge": 1.7000000000000008
+     },
+     "grade": "N52",
+     "iron": "1010",
+     "R_coil_ohm": 4.259530350840198,
+     "wires": {
+      "n": 8,
+      "d_mm": 0.1,
+      "L_mm": 31.363683169651157,
+      "anchor_N_m": 1567.0753011846082,
+      "assembly_N": 0.005,
+      "parallel_per_lead": 2,
+      "circle_mm": 3.1584499639489483
+     },
+     "guide": {
+      "circle_r_mm": 6.092793000429937,
+      "preload_per_race_N": 1.2514002003801585,
+      "ball_d_mm": 0.8,
+      "n_balls": 6,
+      "flange_r_mm": 7.29368607296198,
+      "rear_race": "ring"
+     },
+     "flange_t_mm": 1.3641745223231734,
+     "carrier_mat": "CFRP",
+     "flange_mat": "Al",
+     "board_narrow": true,
+     "weight_trim": false,
+     "notes": {
+      "genes": {
+       "reach_mm": 1.0017861450640837,
+       "od_mm": 20.9330822636419,
+       "w_frac": 0.999999999999,
+       "t_m_mm": 4.234539625071893,
+       "grade": "N52",
+       "layout": "double",
+       "t_m2_frac": 0.9762412314935797,
+       "iron": "1010",
+       "t_cu_mm": 1.5607205162990239,
+       "order": "xy",
+       "fill": 0.55,
+       "b_mm": 1.7982717709455052,
+       "yc_frac": 0.9588602603634702,
+       "leg_frac": 0.7751988914519179,
+       "R_coil_log": 1.4491589079220673,
+       "wireset": [
+        8,
+        0.1
+       ],
+       "L_w_mm": 31.363683169651157,
+       "K_a_log": 3.195089865711234,
+       "preload_N": 1.2514002003801585,
+       "ball_d_mm": 0.8,
+       "carrier": "CFRP",
+       "flange": "Al",
+       "flange_t_mm": 1.3641745223231734,
+       "board": true,
+       "flange_frac": 0.9157451905412427,
+       "race": "ring",
+       "R_coil": 4.259530350840198,
+       "K_a": 1567.0753011846082
+      },
+      "flange_inserts_g": 0.1
+     }
+    },
+    "magnetics": {
+     "Km_centre_x_N_sqrtW": 0.31281971779180934,
+     "Km_centre_y_N_sqrtW": 0.32122767890716875,
+     "sv_min_centre_N_sqrtW": 0.31281971779180934,
+     "sv_min_workspace_N_sqrtW": 0.2484466636989615,
+     "cross_coupling_max": 0.11647492611692789,
+     "copper_mass_g": 0.5295940342757406,
+     "field_scale": 1.0,
+     "sv_min_workspace_x0.7": 0.17391266458927304,
+     "n_positions": 33,
+     "quadrature": "fine"
+    },
+    "wires": {
+     "n_w": 8,
+     "d_mm": 0.1,
+     "L_mm": 31.363683169651157,
+     "anchor_N_m": 1567.0753011846082,
+     "assembly_N": 0.005,
+     "F_usable_mN": 3.2637742558404157,
+     "F_stop_mN": 4.491422516323682,
+     "F_stop_linear_mN": 2.3422746864579,
+     "tension_stop_N": 0.047212232393922436,
+     "k_small_N_m": 1.948994582836534,
+     "goodman_worst_corner": 1.8334290649000147,
+     "goodman_nominal_Kt1.8": 2.7213860568544903,
+     "bend_stress_worst_MPa": 143.2367233462357,
+     "P_buckle_each_ff_N": 0.025137737900246322,
+     "R_wire_ohm": 0.3129514352942599,
+     "k_axial_N_m": 255625.09379380156,
+     "k_tilt_Nm_rad_wires": 2.0450007503504124,
+     "mass_g": 0.016257766244823495,
+     "label": "CALCULATION (revk/feasibility.wire_anchor, read-only; the pass's worst corner; C17200 AMF-19)"
+    },
+    "guide": {
+     "circle_r_mm": 6.092793000429937,
+     "preload_per_race_N": 1.2514002003801585,
+     "ball_d_mm": 0.8,
+     "n_balls": 6,
+     "mu_roll": 0.001,
+     "drag_35_mN": 3.188903385434598,
+     "drag_mean_mN": 2.8368685523002926,
+     "hertz_run_GPa": 2.3220315382717187,
+     "hertz_static_GPa": 2.0702042787711132,
+     "tilt_stiffness_min_Nm_rad": 168.6884781067491,
+     "min_preload_all_balls_loaded_N": 4.893474695235026,
+     "lever_mm": 77.45426225942434,
+     "mass_balls_g": 0.010294370807283036,
+     "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"
+    },
+    "guide_rows": {
+     "35": {
+      "couple_mNm": 12.422886821212078,
+      "total_normal_N": 3.188903385434598,
+      "drag_mN": 3.188903385434598,
+      "max_hertz_GPa": 2.3220315382717187,
+      "min_tilt_stiffness_Nm_rad": 168.6884781067491,
+      "tilt_urad": 57.26266308619161,
+      "unloaded_contacts": 0
+     },
+     "50": {
+      "couple_mNm": 9.74822413114331,
+      "total_normal_N": 2.8791985385470626,
+      "drag_mN": 2.8791985385470626,
+      "max_hertz_GPa": 2.1792026031879987,
+      "min_tilt_stiffness_Nm_rad": 208.93474851237954,
+      "tilt_urad": 43.58702818486421,
+      "unloaded_contacts": 0
+     },
+     "60": {
+      "couple_mNm": 7.5827722751976445,
+      "total_normal_N": 2.7205596729599737,
+      "drag_mN": 2.7205596729599737,
+      "max_hertz_GPa": 2.067368599332463,
+      "min_tilt_stiffness_Nm_rad": 218.90199283148897,
+      "tilt_urad": 33.484920829196454,
+      "unloaded_contacts": 0
+     },
+     "75": {
+      "couple_mNm": 3.9251317589930457,
+      "total_normal_N": 2.558812612259537,
+      "drag_mN": 2.558812612259537,
+      "max_hertz_GPa": 1.872256516131531,
+      "min_tilt_stiffness_Nm_rad": 227.31699341320365,
+      "tilt_urad": 17.134130149753723,
+      "unloaded_contacts": 0
+     },
+     "penup": {
+      "couple_mNm": 0.0,
+      "total_normal_N": 2.5028000000000037,
+      "drag_mN": 2.5028000000000037,
+      "max_hertz_GPa": 1.6431221372536442,
+      "min_tilt_stiffness_Nm_rad": 229.9502109688715,
+      "tilt_urad": 0.0,
+      "unloaded_contacts": 0
+     }
+    },
+    "leads": {
+     "R_lead_ohm": 0.3129514352942599,
+     "factor": 1.0734708781292122
+    },
+    "dutyA": {
+     "worst07": {
+      "conv": "worst07",
+      "mean": 0.041237595376432484,
+      "mean_items_W": {
+       "gravity": 0.008280250448633683,
+       "residual": 0.0011305120406517337,
+       "writing_drag": 0.03358340362468043,
+       "guide_drag": 0.0003162359042122219,
+       "inertia_and_wires": 5.245792894692133e-05,
+       "cross_terms": -0.0021252645706925023
+      },
+      "worst": 0.07731585399104451,
+      "worst_items_W": {
+       "gravity": 0.01586136853311329,
+       "residual": 0.0034378426300231252,
+       "writing_drag": 0.05385021632014132,
+       "guide_drag": 0.00039692055623198955,
+       "inertia_and_wires": 5.245792894692133e-05,
+       "cross_terms": 0.0037170480225878644
+      },
+      "P35_W": 0.06574077950682981,
+      "temp_factor": 1.0997475910779375,
+      "coil_C": 35.253639621128215,
+      "skin": {
+       "pads_C": [
+        34.22253009144217,
+        34.41413824480033,
+        33.34866321038898
+       ],
+       "web_C": 30.377768906794255,
+       "max_shell_C": 34.643023199183,
+       "coil_C": 35.253639621128215,
+       "sources_W": {
+        "coils": 0.06574077950682981,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 20.9330822636419,
+       "fin_lambda_mm": 5.344797638092059,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre10": {
+      "conv": "centre10",
+      "mean": 0.012145707506846718,
+      "mean_items_W": {
+       "gravity": 0.002438781871602947,
+       "residual": 0.0003329696713250074,
+       "writing_drag": 0.009891318681080473,
+       "guide_drag": 9.31409496762254e-05,
+       "inertia_and_wires": 1.5450431956281873e-05,
+       "cross_terms": -0.0006259540987942158
+      },
+      "worst": 0.02318394397422342,
+      "worst_items_W": {
+       "gravity": 0.00479552590178662,
+       "residual": 0.001039397284296388,
+       "writing_drag": 0.016092853120705325,
+       "guide_drag": 0.00011690499738022579,
+       "inertia_and_wires": 1.5450431956281873e-05,
+       "cross_terms": 0.001123812238098578
+      },
+      "P35_W": 0.019362629461619547,
+      "temp_factor": 1.0757576074980066,
+      "coil_C": 31.667209301627253,
+      "skin": {
+       "pads_C": [
+        31.33177202261936,
+        31.52338017597752,
+        31.656942292869108
+       ],
+       "web_C": 30.377699639389476,
+       "max_shell_C": 31.957530837564626,
+       "coil_C": 31.667209301627253,
+       "sources_W": {
+        "coils": 0.019362629461619547,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 20.9330822636419,
+       "fin_lambda_mm": 5.344797638092059,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre07": {
+      "conv": "centre07",
+      "mean": 0.025031253335515986,
+      "mean_items_W": {
+       "gravity": 0.005026118636871895,
+       "residual": 0.0006862217117678309,
+       "writing_drag": 0.02038515282776864,
+       "guide_drag": 0.00019195544647702723,
+       "inertia_and_wires": 3.184200477599432e-05,
+       "cross_terms": -0.0012900372921454
+      },
+      "worst": 0.047780104584937436,
+      "worst_items_W": {
+       "gravity": 0.00988316437366719,
+       "residual": 0.0021421079607592893,
+       "writing_drag": 0.03316597926704113,
+       "guide_drag": 0.0002409310947067247,
+       "inertia_and_wires": 3.184200477599433e-05,
+       "cross_terms": 0.0023160798839871044
+      },
+      "P35_W": 0.039904705676660504,
+      "temp_factor": 1.0863512875638353,
+      "coil_C": 33.25573158833564,
+      "skin": {
+       "pads_C": [
+        32.612163166102135,
+        32.803771319460296,
+        32.40624902434494
+       ],
+       "web_C": 30.377730319705677,
+       "max_shell_C": 33.03265627384297,
+       "coil_C": 33.25573158833564,
+       "sources_W": {
+        "coils": 0.039904705676660504,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 20.9330822636419,
+       "fin_lambda_mm": 5.344797638092059,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     }
+    },
+    "severe": {
+     "worst07": {
+      "conv": "worst07",
+      "mean": 0.04147855628375465,
+      "mean_items_W": {
+       "gravity": 0.008281205070750789,
+       "residual": 0.001130642376298506,
+       "writing_drag": 0.033587275423011494,
+       "guide_drag": 0.00031627236274572363,
+       "inertia_and_wires": 0.00028831725843999495,
+       "cross_terms": -0.002125156207491855
+      },
+      "worst": 0.07756101817839085,
+      "worst_items_W": {
+       "gravity": 0.015863197175049085,
+       "residual": 0.0034382389755962576,
+       "writing_drag": 0.053856424659832126,
+       "guide_drag": 0.0003969663168214867,
+       "inertia_and_wires": 0.00028831725843999495,
+       "cross_terms": 0.003717873792651905
+      },
+      "P35_W": 0.06598460921496223,
+      "temp_factor": 1.0998743799208823,
+      "coil_C": 35.272495014393975,
+      "skin": {
+       "pads_C": [
+        34.237728039085944,
+        34.429336192444104,
+        33.35755730851834
+       ],
+       "web_C": 30.377769270962535,
+       "max_shell_C": 34.658221146826776,
+       "coil_C": 35.272495014393975,
+       "sources_W": {
+        "coils": 0.06598460921496223,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 20.9330822636419,
+       "fin_lambda_mm": 5.344797638092059,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre10": {
+      "conv": "centre10",
+      "mean": 0.012217826933523248,
+      "mean_items_W": {
+       "gravity": 0.0024388664062699275,
+       "residual": 0.00033298121293953546,
+       "writing_drag": 0.009891661540497478,
+       "guide_drag": 9.356495662894315e-05,
+       "inertia_and_wires": 8.661320631521149e-05,
+       "cross_terms": -0.0006258603891278489
+      },
+      "worst": 0.023256567694406854,
+      "worst_items_W": {
+       "gravity": 0.0047956921274707725,
+       "residual": 0.0010394333125711226,
+       "writing_drag": 0.016093410941802475,
+       "guide_drag": 0.00011743718576641871,
+       "inertia_and_wires": 8.661320631521149e-05,
+       "cross_terms": 0.0011239809204808531
+      },
+      "P35_W": 0.019435120724877044,
+      "temp_factor": 1.0757948961182644,
+      "coil_C": 31.672815063482613,
+      "skin": {
+       "pads_C": [
+        31.33629041552586,
+        31.527898568884016,
+        31.65958653344944
+       ],
+       "web_C": 30.377699747657736,
+       "max_shell_C": 31.95918722560523,
+       "coil_C": 31.672815063482613,
+       "sources_W": {
+        "coils": 0.019435120724877044,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 20.9330822636419,
+       "fin_lambda_mm": 5.344797638092059,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     },
+     "centre07": {
+      "conv": "centre07",
+      "mean": 0.025180820516465266,
+      "mean_items_W": {
+       "gravity": 0.005026479551074322,
+       "residual": 0.0006862709877956535,
+       "writing_drag": 0.020386616639450322,
+       "guide_drag": 0.0001928364505671438,
+       "inertia_and_wires": 0.00017850896190014904,
+       "cross_terms": -0.0012898920743223232
+      },
+      "worst": 0.04793155608834679,
+      "worst_items_W": {
+       "gravity": 0.009883874061329796,
+       "residual": 0.002142261780683176,
+       "writing_drag": 0.03316836084093933,
+       "guide_drag": 0.0002420368788028186,
+       "inertia_and_wires": 0.00017850896190014904,
+       "cross_terms": 0.002316513564691515
+      },
+      "P35_W": 0.04005559166550064,
+      "temp_factor": 1.086429295990781,
+      "coil_C": 33.2673996278033,
+      "skin": {
+       "pads_C": [
+        32.62156791573719,
+        32.81317606909535,
+        32.41175284420909
+       ],
+       "web_C": 30.37773054505923,
+       "max_shell_C": 33.04206102347802,
+       "coil_C": 33.2673996278033,
+       "sources_W": {
+        "coils": 0.04005559166550064,
+        "board": 0.04313411764705883,
+        "page sensor": 0.0019058823529411765,
+        "head motors and face sensor": 0.013079621439955696
+       },
+       "D_mm": 20.9330822636419,
+       "fin_lambda_mm": 5.344797638092059,
+       "label": "CALCULATION (study K's fin model generalised to the body diameter; h ASSUMPTION, k MFR AMF-24)"
+      }
+     }
+    },
+    "severe_motion": {
+     "q_rms_2d_mm": 0.736337628800009,
+     "at_limit": 0.3481166666666667,
+     "F_a_r2_tip_mm": 1.0431926624310341,
+     "F_oracle_tip_mm": 0.9998318611280892,
+     "F_a_r2_at_limit": 0.38216408411000885
+    },
+    "screen": {
+     "worst07": 0.108033157465249,
+     "worst07_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 0.0,
+      "roll_deg": 150.0,
+      "P_W": 0.108033157465249
+     },
+     "worst07_temp_factor": 1.1221175138658572,
+     "worst07_coil_C": 38.52186727931997,
+     "worst07_skin_max_C": 37.2773014736825,
+     "map07": 0.08021612945430626,
+     "map07_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 45.0,
+      "roll_deg": 150.0,
+      "P_W": 0.08021612945430626
+     },
+     "map07_temp_factor": 1.1074297184148536,
+     "map07_coil_C": 36.37218220808748,
+     "map07_skin_max_C": 35.54459822518946,
+     "centre10": 0.03193437665504625,
+     "centre10_at": {
+      "f_Hz": 12.0,
+      "dir_deg": 0.0,
+      "roll_deg": 0.0,
+      "P_W": 0.03193437665504625
+     },
+     "centre10_temp_factor": 1.082253168554034,
+     "centre10_coil_C": 32.63934163140084,
+     "centre10_skin_max_C": 32.53582960140993
+    },
+    "nib_by_mode": {
+     "worst07": {
+      "steady_0mm": {
+       "mean_W": 0.040859941874812934,
+       "P35_W": 0.06527708722107445,
+       "skin_max_C": 34.614121179262156,
+       "front_pad_C": 34.19362807152133,
+       "coil_C": 35.217782216921044
+      },
+      "steady_1mm": {
+       "mean_W": 0.041563295547237165,
+       "P35_W": 0.06607029742215308,
+       "skin_max_C": 34.66356210751836,
+       "front_pad_C": 34.243068999777535,
+       "coil_C": 35.279121298193424
+      },
+      "steady_2mm": {
+       "mean_W": 0.04156374293176012,
+       "P35_W": 0.06607075005094613,
+       "skin_max_C": 34.66359031994888,
+       "front_pad_C": 34.24309721220805,
+       "coil_C": 35.27915630005584
+      },
+      "guide": {
+       "mean_W": 0.04129784019938001,
+       "P35_W": 0.06580173057006153,
+       "skin_max_C": 34.646824399056875,
+       "front_pad_C": 34.22632957335176,
+       "coil_C": 35.25835357771199
+      },
+      "spelling_cue": {
+       "mean_W": 0.04085994195805744,
+       "P35_W": 0.06527708735406433,
+       "skin_max_C": 34.61412231601754,
+       "front_pad_C": 34.19362828931279,
+       "coil_C": 35.21778254835775
+      },
+      "severe": {
+       "mean_W": 0.04147855628375465,
+       "P35_W": 0.06598460921496223,
+       "skin_max_C": 34.658221146826776,
+       "front_pad_C": 34.237728039085944,
+       "coil_C": 35.272495014393975
+      }
+     },
+     "centre10": {
+      "steady_0mm": {
+       "mean_W": 0.012036347276835222,
+       "P35_W": 0.019229045734336637,
+       "skin_max_C": 31.954478518176778,
+       "front_pad_C": 31.323445725922962,
+       "coil_C": 31.65687924902161
+      },
+      "steady_1mm": {
+       "mean_W": 0.012240284380622267,
+       "P35_W": 0.019457533838728676,
+       "skin_max_C": 31.959699353716513,
+       "front_pad_C": 31.337687428767026,
+       "coil_C": 31.674548273431554
+      },
+      "steady_2mm": {
+       "mean_W": 0.012240414277773951,
+       "P35_W": 0.019457664185697218,
+       "skin_max_C": 31.95970233207763,
+       "front_pad_C": 31.337695553315992,
+       "coil_C": 31.67455835318505
+      },
+      "guide": {
+       "mean_W": 0.012163202992637913,
+       "P35_W": 0.01938018555756195,
+       "skin_max_C": 31.95793788881959,
+       "front_pad_C": 31.332866688754386,
+       "coil_C": 31.668567517927116
+      },
+      "spelling_cue": {
+       "mean_W": 0.012036347300990336,
+       "P35_W": 0.0192290457729264,
+       "skin_max_C": 31.954481676927113,
+       "front_pad_C": 31.32344593783045,
+       "coil_C": 31.656879573158342
+      },
+      "severe": {
+       "mean_W": 0.012217826933523248,
+       "P35_W": 0.019435120724877044,
+       "skin_max_C": 31.95918722560523,
+       "front_pad_C": 31.33629041552586,
+       "coil_C": 31.672815063482613
+      }
+     },
+     "centre07": {
+      "steady_0mm": {
+       "mean_W": 0.024804173773450587,
+       "P35_W": 0.03962668913766372,
+       "skin_max_C": 33.01532745515168,
+       "front_pad_C": 32.594834347410846,
+       "coil_C": 33.2342325215594
+      },
+      "steady_1mm": {
+       "mean_W": 0.02522739482058943,
+       "P35_W": 0.04010224543162397,
+       "skin_max_C": 33.04496896074439,
+       "front_pad_C": 32.62447585300356,
+       "coil_C": 33.27100737156152
+      },
+      "steady_2mm": {
+       "mean_W": 0.025227664225417144,
+       "P35_W": 0.04010251675705246,
+       "skin_max_C": 33.044985872505016,
+       "front_pad_C": 32.624492764764184,
+       "coil_C": 33.27102835320357
+      },
+      "guide": {
+       "mean_W": 0.025067535503006538,
+       "P35_W": 0.03994124654608575,
+       "skin_max_C": 33.03493598213862,
+       "front_pad_C": 32.614441156433514,
+       "coil_C": 33.2585579004341
+      },
+      "spelling_cue": {
+       "mean_W": 0.0248041738235657,
+       "P35_W": 0.0396266892177267,
+       "skin_max_C": 33.015328588608114,
+       "front_pad_C": 32.59483456190336,
+       "coil_C": 33.23423284890326
+      },
+      "severe": {
+       "mean_W": 0.025180820516465266,
+       "P35_W": 0.04005559166550064,
+       "skin_max_C": 33.04206102347802,
+       "front_pad_C": 32.62156791573719,
+       "coil_C": 33.2673996278033
+      }
+     }
+    },
+    "battery": {
+     "conservative": {
+      "steady_0mm": {
+       "nib_W": 0.040859941874812934,
+       "total_W": 0.09897956331476863,
+       "hours": 22.428872442486885
+      },
+      "steady_1mm": {
+       "nib_W": 0.041563295547237165,
+       "total_W": 0.09968291698719287,
+       "hours": 22.270616341265605
+      },
+      "steady_2mm": {
+       "nib_W": 0.04156374293176012,
+       "total_W": 0.09968336437171582,
+       "hours": 22.270516389492002
+      },
+      "guide": {
+       "nib_W": 0.04129784019938001,
+       "total_W": 0.10291746163933571,
+       "hours": 21.570683581176684
+      },
+      "spelling_cue": {
+       "nib_W": 0.04085994195805744,
+       "total_W": 0.10085176397715788,
+       "hours": 22.012505408460804
+      },
+      "severe": {
+       "nib_W": 0.04147855628375465,
+       "total_W": 0.09959817772371035,
+       "hours": 22.289564435188524
+      }
+     },
+     "worst07_low_electronics": {
+      "steady_0mm": {
+       "nib_W": 0.040859941874812934,
+       "total_W": 0.06875249504977263,
+       "hours": 32.28973724361356
+      },
+      "steady_1mm": {
+       "nib_W": 0.041563295547237165,
+       "total_W": 0.06945584872219684,
+       "hours": 31.96275102589781
+      },
+      "steady_2mm": {
+       "nib_W": 0.04156374293176012,
+       "total_W": 0.0694562961067198,
+       "hours": 31.962545146216318
+      },
+      "guide": {
+       "nib_W": 0.04129784019938001,
+       "total_W": 0.06994039337433969,
+       "hours": 31.741314180461732
+      },
+      "spelling_cue": {
+       "nib_W": 0.04085994195805744,
+       "total_W": 0.06884116022391833,
+       "hours": 32.24814911281345
+      },
+      "severe": {
+       "nib_W": 0.04147855628375465,
+       "total_W": 0.06937110945871433,
+       "hours": 32.00179465662454
+      }
+     },
+     "optimistic": {
+      "steady_0mm": {
+       "nib_W": 0.012036347276835222,
+       "total_W": 0.03992890045179491,
+       "hours": 55.59882628574124
+      },
+      "steady_1mm": {
+       "nib_W": 0.012240284380622267,
+       "total_W": 0.04013283755558195,
+       "hours": 55.316297954895724
+      },
+      "steady_2mm": {
+       "nib_W": 0.012240414277773951,
+       "total_W": 0.040132967452733634,
+       "hours": 55.3161189143213
+      },
+      "guide": {
+       "nib_W": 0.012163202992637913,
+       "total_W": 0.0408057561675976,
+       "hours": 54.40408923883203
+      },
+      "spelling_cue": {
+       "nib_W": 0.012036347300990336,
+       "total_W": 0.040017565566851224,
+       "hours": 55.47563847409423
+      },
+      "severe": {
+       "nib_W": 0.012217826933523248,
+       "total_W": 0.04011038010848293,
+       "hours": 55.347269060920546
+      }
+     }
+    },
+    "electrical": {
+     "F_peak_N": 0.12820559902629633,
+     "F_peak_parts_N": {
+      "static_N": 0.10621985079288315,
+      "dynamic_N": 0.021985748233413184,
+      "total_N": 0.12820559902629633
+     },
+     "I_peak_A": 0.37459887385774077,
+     "V_peak_V": 1.9556328941945376,
+     "R_hot_loop_ohm": 4.846926282893291,
+     "back_emf_V": 0.05007603722536757,
+     "ok": true
+    },
+    "lead_heating": {
+     "I_rms_coil_A": 0.06734739873807301,
+     "rise_K": 1.6982648817007329
+    },
+    "modes": {
+     "servo_bw_max_worst_Hz": 53.354531273620054,
+     "lowest_stuck_worst_Hz": 133.38632818405014,
+     "first_free_nominal_Hz": 1436.509311311369,
+     "lowest_stuck_nominal_Hz": 188.33096882050307,
+     "m_carrier_g": 1.6194277652702744,
+     "k_lat_N_m": 1.948994582836534,
+     "k_tilt_Nm_rad": 170.73347885709953,
+     "n_cases": 18,
+     "passes": true,
+     "label": "CALCULATION (bnib/flexure.loaded_modes read-only; pre-sliding and refill EI ASSUMPTION)"
+    },
+    "fit": {
+     "coil_clearance_stop_mm": 0.32139401661952594,
+     "coil_clearance_p99_mm": 0.23139401661952594,
+     "coil_p99_ok": true,
+     "coil_inner_edge_mm": 1.7000000000000008,
+     "coil_inner_ok": true,
+     "magnet_r_out_mm": 9.266541131814787,
+     "magnets_ok": true,
+     "flange_r_mm": 7.29368607296198,
+     "flange_ok": true,
+     "ball_circle_r_mm": 6.092793000429937,
+     "ball_on_flange_ok": true,
+     "wire_circle_mm": 3.1584499639489483,
+     "wire_circle_min_mm": 2.976786145064083,
+     "wire_circle_max_mm": 3.3401137828338126,
+     "wires_ok": true,
+     "rear_race": "ring",
+     "pad_gap_ok": true,
+     "board_ok": true,
+     "board": "10 mm (repackaged)",
+     "head": {
+      "od_min_head_mm": 16.931603684441974,
+      "margin_mm": 2.000739289599963,
+      "R_s_mm": 5.757607091414326,
+      "fits": true
+     },
+     "head_ok": true,
+     "length_mm": 167.90426225942434,
+     "length_ok": true,
+     "all_ok": true
+    },
+    "constraints": {
+     "goodman": 0.33342906490001467,
+     "hertz_run": 1.0115106708615,
+     "hertz_static": 1.5988336731213422,
+     "modes": 13.354531273620054,
+     "coil_p99": 0.03139401661952593,
+     "skin": 6.341778853173224,
+     "coil_inner": 8.881784197001252e-16,
+     "magnets": 6.163958232718869e-12,
+     "wires_min": 0.18166381888486516,
+     "wires_max": 0.18166381888486427,
+     "head": 2.000739289599963,
+     "board": 1.0,
+     "length": 7.095737740575657,
+     "voltage": 1.3443671058054623,
+     "lead_heat": 43.30173511829927,
+     "magnet_T": 44.727504985606025,
+     "feasible": true
+    }
+   },
+   "head_fit": {
+    "od_min_head_mm": 16.931603684441974,
+    "margin_mm": 2.000739289599963,
+    "R_s_mm": 5.757607091414326,
+    "fits": true
+   },
+   "reach_mm": 1.0017861450640837,
+   "typical_W": 0.041237595376432484,
+   "screen_W": 0.108033157465249,
+   "refinement": [
+    {
+     "it": 0,
+     "typical_W": 0.05295167655143661,
+     "V": 0.0
+    },
+    {
+     "it": 1,
+     "typical_W": 0.04811486929776363,
+     "V": 0.0,
+     "sigma": 0.10400000000000001
+    },
+    {
+     "it": 2,
+     "typical_W": 0.04811486929776363,
+     "V": 0.0,
+     "sigma": 0.0728
+    },
+    {
+     "it": 3,
+     "typical_W": 0.04736547566976025,
+     "V": 0.0,
+     "sigma": 0.09464
+    },
+    {
+     "it": 4,
+     "typical_W": 0.04483815119150117,
+     "V": 0.0,
+     "sigma": 0.123032
+    },
+    {
+     "it": 5,
+     "typical_W": 0.04483815119150117,
+     "V": 0.0,
+     "sigma": 0.0861224
+    },
+    {
+     "it": 6,
+     "typical_W": 0.04483815119150117,
+     "V": 0.0,
+     "sigma": 0.060285679999999994
+    },
+    {
+     "it": 7,
+     "typical_W": 0.0441924552635788,
+     "V": 0.0,
+     "sigma": 0.07837138399999999
+    },
+    {
+     "it": 8,
+     "typical_W": 0.0441924552635788,
+     "V": 0.0,
+     "sigma": 0.054859968799999985
+    },
+    {
+     "it": 9,
+     "typical_W": 0.0441924552635788,
+     "V": 0.0,
+     "sigma": 0.03840197815999999
+    },
+    {
+     "it": 10,
+     "typical_W": 0.0441924552635788,
+     "V": 0.0,
+     "sigma": 0.02688138471199999
+    },
+    {
+     "it": 11,
+     "typical_W": 0.044043349101409,
+     "V": 0.0,
+     "sigma": 0.03494580012559999
+    },
+    {
+     "it": 12,
+     "typical_W": 0.044043349101409,
+     "V": 0.0,
+     "sigma": 0.02446206008791999
+    },
+    {
+     "it": 13,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.03180067811429599
+    },
+    {
+     "it": 14,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.022260474680007192
+    },
+    {
+     "it": 15,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.015582332276005034
+    },
+    {
+     "it": 16,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.010907632593203523
+    },
+    {
+     "it": 17,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.007635342815242465
+    },
+    {
+     "it": 18,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.005344739970669725
+    },
+    {
+     "it": 19,
+     "typical_W": 0.04342118342457205,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 20,
+     "typical_W": 0.04327188384341969,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 21,
+     "typical_W": 0.04327188384341969,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 22,
+     "typical_W": 0.04327188384341969,
+     "V": 0.0,
+     "sigma": 0.005
+    },
+    {
+     "it": 23,
+     "typical_W": 0.04319701942619053,
+     "V": 0.0,
+     "sigma": 0.006500000000000001
+    },
+    {
+     "it": 24,
+     "typical_W": 0.04301162461822806,
+     "V": 0.0,
+     "sigma": 0.008450000000000001
+    },
+    {
+     "it": 25,
+     "typical_W": 0.0429415616609122,
+     "V": 0.0,
+     "sigma": 0.010985000000000002
+    },
+    {
+     "it": 26,
+     "typical_W": 0.04242335145900949,
+     "V": 0.0,
+     "sigma": 0.014280500000000003
+    },
+    {
+     "it": 27,
+     "typical_W": 0.041945542374922186,
+     "V": 0.0,
+     "sigma": 0.018564650000000005
+    },
+    {
+     "it": 28,
+     "typical_W": 0.04177475497490079,
+     "V": 0.0,
+     "sigma": 0.024134045000000007
+    },
+    {
+     "it": 29,
+     "typical_W": 0.041530543608705554,
+     "V": 0.0,
+     "sigma": 0.03137425850000001
+    },
+    {
+     "it": 30,
+     "typical_W": 0.041530543608705554,
+     "V": 0.0,
+     "sigma": 0.021961980950000005
+    }
+   ],
+   "selected_from": {
+    "reach_mm": 1.0017861450640837,
+    "screen_W": 0.14059266101804788,
+    "typical_W": 0.05295167655143661,
+    "od_mm": 20.9330822636419,
+    "length_mm": 172.3735655182381,
+    "m_move_g": 2.7027381907187147,
+    "sv_min_N_sqrtW": 0.22891321227279843,
+    "skin_C": 35.616237062783405,
+    "severe_P35_W": 0.08490125782457841,
+    "goodman": 2.467932592737832,
+    "genes": {
+     "reach_mm": 1.0017861450640837,
+     "od_mm": 20.9330822636419,
+     "w_frac": 0.9302662410942604,
+     "t_m_mm": 4.90043636753788,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.952251611490464,
+     "iron": "1010",
+     "t_cu_mm": 1.5220950391870347,
+     "order": "xy",
+     "fill": 0.55,
+     "b_mm": 1.8311445715044112,
+     "R_coil": 2.867122857698496,
+     "wireset": [
+      8,
+      0.1
+     ],
+     "L_w_mm": 34.74497836017344,
+     "K_a": 338.5432347446563,
+     "preload_N": 1.8887952495107916,
+     "ball_d_mm": 0.8002497377693165,
+     "carrier": "CFRP",
+     "flange": "Al",
+     "flange_t_mm": 1.4368150225854057,
+     "flange_frac": 0.9756271592578568,
+     "race": "ring",
+     "board": true
+    },
+    "x": [
+     1.0017861450640837,
+     20.9330822636419,
+     0.9302662410942604,
+     4.90043636753788,
+     0.4415834121038936,
+     0.892000616814551,
+     0.952251611490464,
+     0.022061845044576478,
+     1.5220950391870347,
+     0.043354380283591974,
+     0.5700543888183193,
+     1.8311445715044112,
+     1.0067547977666969,
+     0.7969734514257256,
+     1.0533090383369497,
+     0.30606047848947493,
+     34.74497836017344,
+     2.5296141395263807,
+     1.8887952495107916,
+     0.8002497377693165,
+     0.7555198324142819,
+     0.9930140916168344,
+     1.4368150225854057,
+     0.7556177975013776,
+     0.9756271592578568,
+     0.005570774430872869
+    ]
+   },
+   "genes": {
+    "reach_mm": 1.0017861450640837,
+    "od_mm": 20.9330822636419,
+    "w_frac": 0.999999999999,
+    "t_m_mm": 4.234539625071893,
+    "grade": "N52",
+    "layout": "double",
+    "t_m2_frac": 0.9762412314935797,
+    "iron": "1010",
+    "t_cu_mm": 1.5607205162990239,
+    "order": "xy",
+    "fill": 0.55,
+    "b_mm": 1.7982717709455052,
+    "yc_frac": 0.9588602603634702,
+    "leg_frac": 0.7751988914519179,
+    "R_coil_log": 1.4491589079220673,
+    "wireset": [
+     8,
+     0.1
+    ],
+    "L_w_mm": 31.363683169651157,
+    "K_a_log": 3.195089865711234,
+    "preload_N": 1.2514002003801585,
+    "ball_d_mm": 0.8,
+    "carrier": "CFRP",
+    "flange": "Al",
+    "flange_t_mm": 1.3641745223231734,
+    "board": true,
+    "flange_frac": 0.9157451905412427,
+    "race": "ring",
+    "R_coil": 4.259530350840198,
+    "K_a": 1567.0753011846082
+   }
+  }
+ },
+ "selection_rules": "Recommended candidates from the pooled feasible points, local refinement, and the targeted questions (CALCULATION).\n\nSelection (feasible points of every run, fill fixed at study B / K's 0.55 for the recommendations so that no\nrecommended design rests on the higher fills, which are an ASSUMPTION):\n  reach_first  the largest usable radius in a body of 24 mm or less; ties (within 0.03 mm) by the worst-case loss\n  balanced     usable radius >= 1.5 mm (DEC-050's option, study F's perfect-knowledge line) in <= 24 mm with the lowest\n               typical-duty loss; if none is feasible, the design with the most reach per typical watt\n  slim         the smallest body diameter that keeps +-1.0 mm (DEC-060) with every constraint met; ties by typical loss\nRefinement: the categorical genes, reach and body diameter fixed, a (1 + lambda) evolution strategy with Deb's rules on\nthe continuous genes minimises the typical-duty loss (the worst-case loss as the tie-break).\nTargeted runs: 'reach2' fixes the usable radius at 2.0 mm and lets the body grow to 34 mm (objectives: diameter and\ntypical loss); 'reach15' fixes 1.5 mm in <= 24 mm (objectives: typical and worst-case loss).\n",
+ "label": "PROPOSED DESIGN; numbers CALCULATION"
+}

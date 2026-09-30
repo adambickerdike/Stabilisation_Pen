@@ -1,18 +1,25 @@
 r"""Recommended candidates from the pooled feasible points, local refinement, and the targeted questions (CALCULATION).
 
 Selection (feasible points of every run, fill fixed at study B / K's 0.55 for the recommendations so that no
-recommended design rests on the higher fills, which are an ASSUMPTION):
+recommended design rests on the higher fills, which are an ASSUMPTION; length <= 160 mm for the first three, an
+ASSUMPTION: at most 10 mm over REQ-RVK-001's 150 mm, well inside the Rev J envelope's 175 mm):
   reach_first  the largest usable radius in a body of 24 mm or less; ties (within 0.03 mm) by the worst-case loss
   balanced     usable radius >= 1.5 mm (DEC-050's option, study F's perfect-knowledge line) in <= 24 mm with the lowest
                typical-duty loss; if none is feasible, the design with the most reach per typical watt
-  slim         the smallest body diameter that keeps +-1.0 mm (DEC-060) with every constraint met; ties by typical loss
+  slim         the smallest body diameter that keeps +-1.0 mm (DEC-060) with every constraint met; ties (within
+               0.25 mm of diameter) by typical loss
+  k_envelope   the largest usable radius inside Rev K's envelope as REQ-RVK-001 states it (<= 24 mm across,
+               <= 150 mm long); ties (within 0.03 mm) by the worst-case loss
 Refinement: the categorical genes, reach and body diameter fixed, a (1 + lambda) evolution strategy with Deb's rules on
-the continuous genes minimises the typical-duty loss (the worst-case loss as the tie-break).
+the continuous genes minimises the typical-duty loss (the worst-case loss as the tie-break), the candidate's length
+cap added as a constraint.
 Targeted runs: 'reach2' fixes the usable radius at 2.0 mm and lets the body grow to 34 mm (objectives: diameter and
-typical loss); 'reach15' fixes 1.5 mm in <= 24 mm (objectives: typical and worst-case loss).
+typical loss); 'reach2_small' repeats it between 24 and 29.8 mm to find the smallest body that works; 'reach15' fixes
+1.5 mm in <= 24 mm (objectives: typical and worst-case loss).
 """
 from __future__ import annotations
 
+import functools
 import math
 from typing import Dict, List, Optional
 
@@ -29,39 +36,68 @@ def feasible(points: List[Dict], fill055: bool = False) -> List[Dict]:
     return out
 
 
-def select(points: List[Dict]) -> Dict[str, Dict]:
+LENGTH_CAP_MM = 160.0          # ASSUMPTION (see the module note)
+K_ENVELOPE = (24.0, 150.0)     # REQ-RVK-001: <= 24 mm across, <= 150 mm long
+
+
+def select(points: List[Dict], length_cap: float = LENGTH_CAP_MM) -> Dict[str, Dict]:
     fz = feasible(points, fill055=True)
+    fzc = [p for p in fz if p["F"][4] <= length_cap + 1e-9]
     sel = {}
-    f24 = [p for p in fz if p["F"][3] <= 24.0 + 1e-9]
+    f24 = [p for p in fzc if p["F"][3] <= 24.0 + 1e-9]
     if f24:
         rmax = max(-p["F"][0] for p in f24)
         pool = [p for p in f24 if -p["F"][0] >= rmax - 0.03]
         sel["reach_first"] = min(pool, key=lambda p: p["F"][1])
-        b = [p for p in f24 if -p["F"][0] >= 1.5 - 1e-9 and p["F"][4] <= 160.0]
+        b = [p for p in f24 if -p["F"][0] >= 1.5 - 1e-9]
         if b:
             sel["balanced"] = min(b, key=lambda p: p["F"][2])
         else:
             sel["balanced"] = max(f24, key=lambda p: -p["F"][0] / p["F"][2])
-    s = [p for p in fz if -p["F"][0] >= 1.0 - 1e-9]
+    s = [p for p in fzc if -p["F"][0] >= 1.0 - 1e-9]
     if s:
         odmin = min(p["F"][3] for p in s)
         pool = [p for p in s if p["F"][3] <= odmin + 0.25]
         sel["slim"] = min(pool, key=lambda p: p["F"][2])
+    k = [p for p in fz if p["F"][3] <= K_ENVELOPE[0] + 1e-9 and p["F"][4] <= K_ENVELOPE[1] + 1e-9]
+    if k:
+        rmax = max(-p["F"][0] for p in k)
+        pool = [p for p in k if -p["F"][0] >= rmax - 0.03]
+        sel["k_envelope"] = min(pool, key=lambda p: p["F"][1])
     return sel
+
+
+def length_cap_of(name: str) -> float:
+    return K_ENVELOPE[1] if name == "k_envelope" else LENGTH_CAP_MM
+
+
+def score_capped(x, length_max: Optional[float] = None) -> Dict:
+    """optimise.score with a length cap added to the violation (the same scale as the 175 mm limit)."""
+    r = O.score(x)
+    if length_max is not None and r.get("ok"):
+        over = max(0.0, r["F"][4] - length_max)
+        if over > 0:
+            r["V"] = r["V"] + over / O.SCALES["length"]
+            r["feasible"] = False
+        r.setdefault("constraints", {})["length_cap"] = float(length_max - r["F"][4])
+    return r
 
 
 CONT = ["w_frac", "t_m_mm", "t_m2_frac", "t_cu_mm", "b_mm", "yc_frac", "leg_frac", "R_coil_log", "L_w_mm", "K_a_log",
         "preload_N", "ball_d_mm", "flange_t_mm", "flange_frac"]
 
 
-def refine(p: Dict, iters: int = 30, lam: int = 6, seed: int = 3, pool=None, fix: Optional[Dict[str, float]] = None) -> Dict:
-    """(1 + lambda)-ES on the continuous genes with Deb's rules; objective typical loss, tie-break worst-case loss."""
+def refine(p: Dict, iters: int = 30, lam: int = 6, seed: int = 3, pool=None, fix: Optional[Dict[str, float]] = None,
+           length_max: Optional[float] = None) -> Dict:
+    """(1 + lambda)-ES on the continuous genes with Deb's rules; objective typical loss, tie-break worst-case loss;
+    length_max adds a length cap to the constraints."""
     rng = np.random.default_rng(seed)
     x0 = np.array(p["x"], float)
     if fix:
         for k, v in fix.items():
             x0[O.NAMES.index(k)] = v
-    best = O.score(x0)
+    fn = functools.partial(score_capped, length_max=length_max)
+    best = fn(x0)
     idx = [O.NAMES.index(n) for n in CONT]
     span = np.array([O.HI[i] - O.LO[i] for i in idx])
     sigma = 0.08
@@ -82,7 +118,7 @@ def refine(p: Dict, iters: int = 30, lam: int = 6, seed: int = 3, pool=None, fix
             x[idx] = np.clip(x[idx] + rng.normal(0, sigma, len(idx)) * span, [O.LO[i] for i in idx],
                              [O.HI[i] - 1e-12 for i in idx])
             xs.append(x)
-        res = pool.map(O.score, xs) if pool is not None else [O.score(x) for x in xs]
+        res = pool.map(fn, xs) if pool is not None else [fn(x) for x in xs]
         cand = best
         for r in res:
             if r.get("ok") and better(r, cand):
@@ -117,7 +153,7 @@ def reach_per_watt(points: List[Dict]) -> Dict:
 def max_reach_by_od(points: List[Dict]) -> Dict:
     fz = feasible(points)
     out = {}
-    for od in (20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0):
+    for od in (20.0, 21.0, 22.0, 23.0, 24.0, 25.0, 26.0, 28.0, 30.0, 32.0, 34.0):
         b = [p for p in fz if p["F"][3] <= od + 1e-9]
         if b:
             q = max(b, key=lambda p: (-p["F"][0], -p["F"][2]))

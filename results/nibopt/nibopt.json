@@ -1,0 +1,1300 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on PROPOSED DESIGNS (study N, round 4: the balanced nib's reach, force and heat); inputs from study K (revk/, results/revK/), study B (bnib/, results/bnib/), study F (results/readable/), the independent engineering pass (revk/feasibility.py, revk/improve.py, revk/compact.py, results/improvement/mechanics/), datasheets (MANUFACTURER) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-30T13:32:54+00:00",
+  "git_revision": "4e87eb7-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --reuse --procs 2",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": {
+   "nsga_main": 7,
+   "nsga_reach2": 11,
+   "nsga_reach15": 13,
+   "refine": 3,
+   "severe_process": 11,
+   "K_residual": 5
+  },
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "nibopt",
+  "version": "nibopt-0.1",
+  "script": "nibopt/run.py",
+  "doc": "docs/nib_optimisation.md",
+  "quick": false,
+  "reuse": true,
+  "procs": 2,
+  "read_only_inputs_sha256_16": {
+   "revk/feasibility.py": "5657e8896722ce0e",
+   "revk/improve.py": "2fbebc6b914b76b5",
+   "revk/compact.py": "c7660e96ce565152",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/counterface.py": "befe386459c3c7e3",
+   "revk/frontend.py": "e61afede01491f1f",
+   "revk/tolerance.py": "25a202e322456ce6",
+   "bnib/loads.py": "7778deb93b562253",
+   "bnib/contact.py": "8ac04bfcbdbf325e",
+   "bnib/balance.py": "485396a48fcb4902",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "nose2/magnetics.py": "8c766896e233edb1",
+   "results/revK/revK.json": "0eb0a21f8fbd593e",
+   "results/revK/layout.json": "8a4806648b6035b7",
+   "results/revK/budgets.json": "2cf2a26f5f15c756",
+   "results/improvement/mechanics/mechanics_study.json": "a5cdf4385405f233",
+   "results/improvement/mechanics/compact_20mm.json": "72e04c2d91f3e7ff",
+   "results/readable/readable.json": "99a24aeb97d38ef6",
+   "results/bnib/bnib.json": "c68d41f2837ac849"
+  },
+  "nibopt_sources_sha256_16": {
+   "nibopt/__init__.py": "6caf5e14fc01634e",
+   "nibopt/budgets.py": "a091069c05479338",
+   "nibopt/candidates.py": "99ee414a1893e3c7",
+   "nibopt/design.py": "31159bd5ac7c6df1",
+   "nibopt/doc_tables.py": "2c2f0a3c5082417e",
+   "nibopt/duty.py": "4700b1065ace4136",
+   "nibopt/evaluate.py": "08fe3268c71646ed",
+   "nibopt/evidence.py": "eedbb63236316531",
+   "nibopt/figures.py": "e9fbff8c0c9ab4ef",
+   "nibopt/levers.py": "26b44fc4cc610621",
+   "nibopt/magnet.py": "55922451b688d368",
+   "nibopt/optimise.py": "08325c16438befb3",
+   "nibopt/params.py": "5ff1f25b5b90fd1c",
+   "nibopt/pen.py": "d3b8ff208520a711",
+   "nibopt/reconcile.py": "42dab584627da830",
+   "nibopt/run.py": "3c84abb78a2ec7a1",
+   "nibopt/suspension.py": "fc80b0495787adc3",
+   "mechanics/cad/nibopt.py": "af847ed6197db074"
+  },
+  "parameters": "every input with its label and source: results/nibopt/nibopt.json -> inputs (nibopt/params.py)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "numba": "0.67.0",
+  "times_s": {
+   "reconcile_s": 42.428860902786255,
+   "optimise_s": 554.9315252304077,
+   "refine_s": 78.26353025436401,
+   "candidates_s": 12.502148151397705,
+   "levers_s": 4.13965630531311,
+   "total_s": 698.8573069572449
+  }
+ },
+ "answers_inputs": {
+  "reach15_od_le_24": {
+   "n_evaluated": 1968,
+   "n_feasible": 1512,
+   "best_typical": {
+    "reach_mm": 1.5000000001522285,
+    "screen_W": 0.09720961341054621,
+    "typical_W": 0.03415680860763327,
+    "od_mm": 23.99999891446106,
+    "length_mm": 156.63494841025928,
+    "m_move_g": 3.363071369019326,
+    "sv_min_N_sqrtW": 0.2888234655155544,
+    "skin_C": 33.48013651899209,
+    "severe_P35_W": 0.0556806214455072,
+    "goodman": 1.5110405089670975,
+    "genes": {
+     "reach_mm": 1.5000000001522285,
+     "od_mm": 23.99999891446106,
+     "w_frac": 0.9999886155642279,
+     "t_m_mm": 4.758965691435998,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.8519893984875748,
+     "iron": "1010",
+     "t_cu_mm": 2.348002639394974,
+     "order": "xy",
+     "fill": 0.65,
+     "b_mm": 1.9664501923712887,
+     "R_coil": 5.30353855195267,
+     "wireset": [
+      8,
+      0.1
+     ],
+     "L_w_mm": 32.01305321634268,
+     "K_a": 88.17263204944774,
+     "preload_N": 1.2039485770474225,
+     "ball_d_mm": 0.8000051841752295,
+     "carrier": "CFRP",
+     "flange": "Ti",
+     "flange_t_mm": 1.0021150749759653,
+     "flange_frac": 0.9484454528908619,
+     "race": "ring",
+     "board": false
+    },
+    "x": [
+     1.5000000001522285,
+     23.99999891446106,
+     0.9999886155642279,
+     4.758965691435998,
+     0.02851951254235539,
+     0.5899658923053578,
+     0.8519893984875748,
+     9.539374294381094e-05,
+     2.348002639394974,
+     0.001049849901525489,
+     0.6831624781958054,
+     1.9664501923712887,
+     0.9320961045761023,
+     0.7002779800380392,
+     1.6683742490899176,
+     0.4217249184928794,
+     32.01305321634268,
+     1.945333805150786,
+     1.2039485770474225,
+     0.8000051841752295,
+     0.6527127921091675,
+     0.0,
+     1.0021150749759653,
+     0.0037705894664160082,
+     0.9484454528908619,
+     0.01749399388887529
+    ]
+   },
+   "closest_infeasible": {
+    "reach_mm": 1.5,
+    "screen_W": 0.2630655475964645,
+    "typical_W": 0.09034126265748182,
+    "od_mm": 23.999999999999,
+    "length_mm": 157.28371742966272,
+    "m_move_g": 3.4667292488447274,
+    "sv_min_N_sqrtW": 0.19272004831131412,
+    "skin_C": 38.822051136331936,
+    "severe_P35_W": 0.14598016858461077,
+    "goodman": 1.7649582151972516,
+    "genes": {
+     "reach_mm": 1.5,
+     "od_mm": 23.999999999999,
+     "w_frac": 0.9289014055897287,
+     "t_m_mm": 4.483981250986903,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.5001843320889768,
+     "iron": "1010",
+     "t_cu_mm": 2.483996412358412,
+     "order": "xy",
+     "fill": 0.55,
+     "b_mm": 1.7870385946858118,
+     "R_coil": 2.468583558880394,
+     "wireset": [
+      8,
+      0.1
+     ],
+     "L_w_mm": 34.658584852997734,
+     "K_a": 87.6698809130127,
+     "preload_N": 3.376382612723204,
+     "ball_d_mm": 0.9814774656609067,
+     "carrier": "Ti",
+     "flange": "Ti",
+     "flange_t_mm": 1.0970294280838293,
+     "flange_frac": 0.9759288982153828,
+     "race": "ring",
+     "board": false
+    },
+    "x": [
+     1.5,
+     23.999999999999,
+     0.9289014055897287,
+     4.483981250986903,
+     0.0990298661363381,
+     0.8997210933638472,
+     0.5001843320889768,
+     0.04335880533675043,
+     2.483996412358412,
+     0.01819994387180174,
+     0.5033381433107188,
+     1.7870385946858118,
+     0.8615374534602361,
+     0.7472940280265585,
+     0.9036445282068308,
+     0.4496764790402793,
+     34.658584852997734,
+     1.9428504166278338,
+     3.376382612723204,
+     0.9814774656609067,
+     0.08317945589208364,
+     0.0,
+     1.0970294280838293,
+     0.37948789803865157,
+     0.9759288982153828,
+     0.009147670268194604
+    ]
+   },
+   "closest_infeasible_violations": {
+    "coil_inner": -2.220446049250313e-16
+   }
+  },
+  "reach2": {
+   "n_evaluated": 1968,
+   "n_feasible": 1367,
+   "smallest_od": {
+    "reach_mm": 2.0000000002226557,
+    "screen_W": 0.07405853890795844,
+    "typical_W": 0.022829122328643797,
+    "od_mm": 29.793662472750164,
+    "length_mm": 160.68157314004947,
+    "m_move_g": 3.8971193957507357,
+    "sv_min_N_sqrtW": 0.3750936803792623,
+    "skin_C": 32.047595804773785,
+    "severe_P35_W": 0.03772044505465213,
+    "goodman": 1.742029590503357,
+    "genes": {
+     "reach_mm": 2.0000000002226557,
+     "od_mm": 29.793662472750164,
+     "w_frac": 0.9997524768368823,
+     "t_m_mm": 4.3052525101999795,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.8556571382481822,
+     "iron": "Hiperco50A",
+     "t_cu_mm": 2.0819130200457736,
+     "order": "xy",
+     "fill": 0.55,
+     "b_mm": 2.5284570574598386,
+     "R_coil": 6.1347080356651045,
+     "wireset": [
+      8,
+      0.08
+     ],
+     "L_w_mm": 36.194859427647074,
+     "K_a": 70.19262318868842,
+     "preload_N": 1.6207698968731274,
+     "ball_d_mm": 1.2738294140352087,
+     "carrier": "CFRP",
+     "flange": "Al",
+     "flange_t_mm": 1.1322399829705951,
+     "flange_frac": 0.93960592274415,
+     "race": "ring",
+     "board": false
+    },
+    "x": [
+     2.0000000002226557,
+     29.793662472750164,
+     0.9997524768368823,
+     4.3052525101999795,
+     0.05284663706891733,
+     0.5516214311226775,
+     0.8556571382481822,
+     0.7907168778534839,
+     2.0819130200457736,
+     0.4514528853093009,
+     0.36859078127404615,
+     2.5284570574598386,
+     0.9698454920427357,
+     0.7394988346663854,
+     1.813962487081799,
+     0.8463642676748535,
+     36.194859427647074,
+     1.846291472859353,
+     1.6207698968731274,
+     1.2738294140352087,
+     0.9897014481100619,
+     0.8253264951340119,
+     1.1322399829705951,
+     0.3065617344880431,
+     0.93960592274415,
+     0.3401177748198132
+    ]
+   },
+   "lowest_typical": {
+    "reach_mm": 2.000000000220462,
+    "screen_W": 0.030745652939238748,
+    "typical_W": 0.009295730276174226,
+    "od_mm": 33.999999999999,
+    "length_mm": 161.0298870688882,
+    "m_move_g": 4.29879323839937,
+    "sv_min_N_sqrtW": 0.6067858878312361,
+    "skin_C": 31.38556801371565,
+    "severe_P35_W": 0.015522503716843834,
+    "goodman": 1.7105100044843937,
+    "genes": {
+     "reach_mm": 2.000000000220462,
+     "od_mm": 33.999999999999,
+     "w_frac": 0.999999999999,
+     "t_m_mm": 4.29695841072941,
+     "grade": "N52",
+     "layout": "double",
+     "t_m2_frac": 0.999999999999,
+     "iron": "Hiperco50A",
+     "t_cu_mm": 1.805388003478898,
+     "order": "xy",
+     "fill": 0.55,
+     "b_mm": 2.4586953445482775,
+     "R_coil": 6.132032967469377,
+     "wireset": [
+      8,
+      0.08
+     ],
+     "L_w_mm": 35.66405717781359,
+     "K_a": 57.51418004213778,
+     "preload_N": 1.4810124356134942,
+     "ball_d_mm": 1.1177150625798078,
+     "carrier": "CFRP",
+     "flange": "Al",
+     "flange_t_mm": 1.1352455219251705,
+     "flange_frac": 0.9154082908849529,
+     "race": "ring",
+     "board": false
+    },
+    "x": [
+     2.000000000220462,
+     33.999999999999,
+     0.999999999999,
+     4.29695841072941,
+     0.0,
+     0.5290193542803676,
+     0.999999999999,
+     0.7901690810854731,
+     1.805388003478898,
+     0.4809991944436234,
+     0.3678689507009481,
+     2.4586953445482775,
+     0.9695540863846503,
+     0.7544030746552176,
+     1.813526337294753,
+     0.851452397701607,
+     35.66405717781359,
+     1.7597749325997045,
+     1.4810124356134942,
+     1.1177150625798078,
+     0.5600916168854243,
+     0.8313240770550733,
+     1.1352455219251705,
+     0.3265264131316511,
+     0.9154082908849529,
+     0.33887742122395
+    ]
+   }
+  },
+  "reach_per_watt": {
+   "best": {
+    "reach_mm": 2.000000000220462,
+    "typical_W": 0.009295730276174226,
+    "od_mm": 33.999999999999,
+    "reach_per_W_mm": 215.15254216730423
+   },
+   "best_by_reach_bin_od_le_24": {
+    "1.0-1.1": {
+     "reach_mm": 1.0001813733945386,
+     "typical_W": 0.018295155983757642,
+     "screen_W": 0.04846813651567898,
+     "od_mm": 23.66187759475143,
+     "length_mm": 151.58069992992515,
+     "reach_per_W_mm": 54.669190811081094
+    },
+    "1.1-1.2": {
+     "reach_mm": 1.1119988842274802,
+     "typical_W": 0.020856147472260163,
+     "screen_W": 0.05663765485169181,
+     "od_mm": 23.985106269672993,
+     "length_mm": 169.22432045271313,
+     "reach_per_W_mm": 53.317559520831956
+    },
+    "1.2-1.3": {
+     "reach_mm": 1.2143624225135699,
+     "typical_W": 0.023864385449523056,
+     "screen_W": 0.06533683360595097,
+     "od_mm": 23.88986286126608,
+     "length_mm": 150.54671621711495,
+     "reach_per_W_mm": 50.88597085737398
+    },
+    "1.3-1.4": {
+     "reach_mm": 1.3122388247915053,
+     "typical_W": 0.03278508097591002,
+     "screen_W": 0.09102654347855087,
+     "od_mm": 23.964736479807804,
+     "length_mm": 149.21398810270043,
+     "reach_per_W_mm": 40.02548676807352
+    },
+    "1.4-1.5": {
+     "reach_mm": 1.5,
+     "typical_W": 0.03425098840254389,
+     "screen_W": 0.09777338128954685,
+     "od_mm": 23.999999999983114,
+     "length_mm": 156.8199777209164,
+     "reach_per_W_mm": 43.79435659989865
+    },
+    "1.5-1.6": {
+     "reach_mm": 1.5000000001522285,
+     "typical_W": 0.03415680860763327,
+     "screen_W": 0.09720961341054621,
+     "od_mm": 23.99999891446106,
+     "length_mm": 156.63494841025928,
+     "reach_per_W_mm": 43.91510979210782
+    }
+   },
+   "label": "CALCULATION (typical-duty loss, weakest point x 0.7)"
+  },
+  "levers_ranked": [
+   "ink force x 1.5",
+   "force-constant convention: centre x 1.0",
+   "magnet derating 1",
+   "ink force x 0.5",
+   "magnet derating 0.85",
+   "moving mass +1 g",
+   "contact share 0.9",
+   "copper fill 0.45",
+   "face trimmed for the weight",
+   "moving mass -1 g",
+   "copper fill 0.65",
+   "face residual x 2",
+   "guide preload 4 N",
+   "refill slide friction 5 mN",
+   "guide rolling resistance x 2"
+  ],
+  "max_reach_by_od": {
+   "21": {
+    "reach_mm": 1.1607685769345988,
+    "typical_W": 0.08751931480630357,
+    "screen_W": 0.23849928353534602,
+    "od_mm": 20.882297636194586,
+    "length_mm": 160.01132444016218
+   },
+   "22": {
+    "reach_mm": 1.2921922810889834,
+    "typical_W": 0.07854158076207372,
+    "screen_W": 0.22215652519660659,
+    "od_mm": 21.999412724167282,
+    "length_mm": 166.73097157286824
+   },
+   "23": {
+    "reach_mm": 1.4558766854445442,
+    "typical_W": 0.08738958750427696,
+    "screen_W": 0.24975087520869074,
+    "od_mm": 22.749094092461366,
+    "length_mm": 158.90851500918296
+   },
+   "24": {
+    "reach_mm": 1.5955841202386003,
+    "typical_W": 0.08487691505334599,
+    "screen_W": 0.24480072897534844,
+    "od_mm": 23.659801838869857,
+    "length_mm": 157.2195259415474
+   },
+   "25": {
+    "reach_mm": 1.7281565098033513,
+    "typical_W": 0.07562124067260961,
+    "screen_W": 0.22908429370308306,
+    "od_mm": 24.78837319676807,
+    "length_mm": 158.87240055620921
+   },
+   "26": {
+    "reach_mm": 1.7846422166731744,
+    "typical_W": 0.059722369300825015,
+    "screen_W": 0.1837550818852381,
+    "od_mm": 25.848253324313944,
+    "length_mm": 168.38874469445238
+   }
+  }
+ },
+ "reconciliation_headline": {
+  "K_B1": {
+   "typical_worst07_W": 0.06464327345743612,
+   "typical_centre10_W": 0.019874755153228996,
+   "worst_typical_worst07_W": 0.12411130276061978,
+   "severe_P35_worst07_W": 0.10448113465631786,
+   "screen_worst07_W": 0.1679612303276815,
+   "screen_map07_W": 0.13736960467380682,
+   "skin_severe_worst07_C": 37.78419710249302,
+   "hours_steady_1mm_conservative": 18.08837168564338,
+   "feasible": false
+  },
+  "P_1059_24": {
+   "typical_worst07_W": 0.06365740929314234,
+   "typical_centre10_W": 0.021242491403909894,
+   "worst_typical_worst07_W": 0.12298050276616812,
+   "severe_P35_worst07_W": 0.10275402663853213,
+   "screen_worst07_W": 0.17143670910871667,
+   "screen_map07_W": 0.13983239411761042,
+   "skin_severe_worst07_C": 37.66488182905849,
+   "hours_steady_1mm_conservative": 17.938334947929427,
+   "feasible": true
+  },
+  "P_150_24": {
+   "typical_worst07_W": 0.1415580859894123,
+   "typical_centre10_W": 0.027280392866245923,
+   "worst_typical_worst07_W": 0.2716438908705069,
+   "severe_P35_worst07_W": 0.22731531646044711,
+   "screen_worst07_W": 0.4280345449074508,
+   "screen_map07_W": 0.270122598598197,
+   "skin_severe_worst07_C": 46.267286759067304,
+   "hours_steady_1mm_conservative": 10.83366268613954,
+   "feasible": false
+  },
+  "P_1059_20": {
+   "typical_worst07_W": 0.35414061560054017,
+   "typical_centre10_W": 0.07365920270202944,
+   "worst_typical_worst07_W": 0.6534818667436642,
+   "severe_P35_worst07_W": 0.5581830159182989,
+   "screen_worst07_W": 1.2462945318452365,
+   "screen_map07_W": 0.6911345320835829,
+   "skin_severe_worst07_C": 77.05153684503338,
+   "hours_steady_1mm_conservative": 5.304820587273579,
+   "feasible": false
+  }
+ },
+ "candidates_headline": {
+  "reach_first": {
+   "reach_mm": 1.5955841202386003,
+   "od_mm": 23.659801838869857,
+   "length_mm": 156.39943574049926,
+   "m_move_g": 3.0627770459618704,
+   "typical_W": 0.060413959547531176,
+   "screen_W": 0.17341070172022657,
+   "feasible": true
+  },
+  "balanced": {
+   "reach_mm": 1.5000000000857272,
+   "od_mm": 23.999998988803558,
+   "length_mm": 157.1568479136735,
+   "m_move_g": 3.2452193835934837,
+   "typical_W": 0.03737923903037511,
+   "screen_W": 0.10596908279990981,
+   "feasible": true
+  },
+  "slim": {
+   "reach_mm": 1.0017861450640837,
+   "od_mm": 20.9330822636419,
+   "length_mm": 167.90426225942434,
+   "m_move_g": 2.509427765270274,
+   "typical_W": 0.041237595376432484,
+   "screen_W": 0.108033157465249,
+   "feasible": true
+  }
+ },
+ "evidence_rows_check": {
+  "header_ok": true,
+  "n_columns": [
+   23,
+   23,
+   23,
+   23
+  ],
+  "crlf": true,
+  "ids": [
+   "AMF-260",
+   "AMF-261",
+   "AMF-262"
+  ],
+  "ids_in_range": true
+ },
+ "figures": [
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_reconciliation.png",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_reconciliation.csv",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_waterfall_K.png",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_waterfall_K.csv",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_waterfall_pass.png",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_waterfall_pass.csv",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_pareto.png",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_pareto.csv",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_levers.png",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_levers.csv",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_battery.png",
+  "/home/user/Stabilisation_Pen/results/nibopt/fig_battery.csv"
+ ],
+ "files": [
+  "/home/user/Stabilisation_Pen/results/nibopt/reconciliation.json",
+  "/home/user/Stabilisation_Pen/results/nibopt/pareto.json",
+  "/home/user/Stabilisation_Pen/results/nibopt/candidates.json",
+  "/home/user/Stabilisation_Pen/results/nibopt/levers.json",
+  "/home/user/Stabilisation_Pen/results/nibopt/budgets.json",
+  "/home/user/Stabilisation_Pen/results/nibopt/evidence_rows.csv"
+ ],
+ "times_s": {
+  "reconcile_s": 42.428860902786255,
+  "optimise_s": 554.9315252304077,
+  "refine_s": 78.26353025436401,
+  "candidates_s": 12.502148151397705,
+  "levers_s": 4.13965630531311,
+  "total_s": 698.8573069572449
+ },
+ "inputs": {
+  "loads": {
+   "F_n_N": {
+    "value": 0.1958,
+    "unit": "N",
+    "label": "PROPOSED DESIGN",
+    "source": "face force along the paper normal: N = F_n at every tilt (study B config/nib.yaml; Rev K's constant-force float, revk/params.B1 F_n_N); frozen only after gate G1 (EXP-B20)"
+   },
+   "tilts_mean_deg": {
+    "value": [
+     35.0,
+     50.0,
+     60.0,
+     75.0
+    ],
+    "unit": "deg",
+    "label": "PROPOSED DESIGN",
+    "source": "study B's four tilts for the mean over 35-75 deg (bnib/candidates.THETAS)"
+   },
+   "tilt_worst_deg": {
+    "value": 35.0,
+    "unit": "deg",
+    "label": "LITERATURE",
+    "source": "CON-02 / REQ-RVH-002 lower end of the 35-75 deg range (largest gravity and couple)"
+   },
+   "rolls_n": {
+    "value": 12,
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "roll sampled every 30 deg for the roll mean and the worst roll"
+   },
+   "residual_mean_mN": {
+    "value": 5.666,
+    "unit": "mN",
+    "label": "CALCULATION",
+    "source": "study K face-parallelism Monte Carlo (results/revK/revK.json face_parallelism_stack Q_mN.mean; contributors ASSUMPTION; EXP-B22 / EXP-B28)"
+   },
+   "residual_p95_mN": {
+    "value": 11.217,
+    "unit": "mN",
+    "label": "CALCULATION",
+    "source": "study K face-parallelism Monte Carlo, 95th percentile"
+   },
+   "contact_share": {
+    "value": 0.7,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study B duty: ball on the paper 70 % of the writing time (review section 4)"
+   },
+   "writing_speed_m_s": {
+    "value": 0.0305,
+    "unit": "m/s",
+    "label": "LITERATURE",
+    "source": "CON-20 (adult phrase writing on paper), study B duty A"
+   },
+   "ink": {
+    "value": "oil_common",
+    "unit": "-",
+    "label": "LITERATURE",
+    "source": "CON-13 friction of a common oil ballpoint (bnib/labels FRICTION)"
+   },
+   "slide_friction_N": {
+    "value": 0.01,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "refill-in-carrier slide friction (Rev J value, study B h_sl; REQ-BNIB-016)"
+   },
+   "face_mu": {
+    "value": 0.005,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "rolling shoe on the sapphire face (study B CounterFace.mu_face; EXP-B22)"
+   },
+   "face_guide_N": {
+    "value": 0.004,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "friction of the face's guide (study B CounterFace.h_face; K's float is a flexure)"
+   },
+   "couple_lever_mm": {
+    "value": 67.8,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "ball to the face contact along the refill (study K nib.summary L_lever_mm = holder z0 65.8 + stem 2.0 mm; couple M = F_n L cos(theta) = 10.87 mN m at 35 deg)"
+   },
+   "weight_trim": {
+    "value": false,
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "matched baseline: the face is set parallel to the paper (study K's head), so the coils hold the moving mass's weight in contact as well; study B's duty model trimmed the face to cancel it in contact (bnib/balance.CounterFace comp_weight=True), which study K's budget inherited"
+   }
+  },
+  "duties": {
+   "A": {
+    "value": {
+     "q_rms_mm": 0.2,
+     "f_Hz": 8.0
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study B duty A: 0.2 mm rms per axis at 8 Hz, writing 30.5 mm/s in every direction, 70 % contact (bnib/candidates.DUTY_A)"
+   },
+   "modes_K": {
+    "value": {
+     "steady_0mm": 0.0,
+     "steady_1mm": 0.7071,
+     "guide": 0.3,
+     "spelling_cue": 0.0
+    },
+    "unit": "mm rms per axis",
+    "label": "ASSUMPTION",
+    "source": "study K's REQ-RVJ-I01 modes (revk/budgets.modes; 8 Hz); steady_2mm is clipped at the reach"
+   },
+   "severe": {
+    "value": {
+     "f_Hz": 6.0,
+     "bw_Hz": 0.6,
+     "q_rms_2d_mm_by_reach": {
+      "1.0": 0.771,
+      "1.5": 0.93,
+      "2.0": 0.997,
+      "3.0": 1.031,
+      "6.0": 1.036
+     }
+    },
+    "unit": "-",
+    "label": "SIMULATION",
+    "source": "study F (results/readable/readable.json reach.rows '*|a_r2'): the nib's 2-D rms travel in contact when perfect knowledge is scaled to leave DEC-067's +2-words residual (0.65 mm), by usable reach; centre 6 Hz from study R's severe classes (PD 6.3 Hz, ET 5.7 Hz; docs/real_data.md), line width 0.6 Hz (study R's frequency SD); magnitude spread fitted to the perfect-knowledge command's p50/p90/p99 (1.21 / 2.50 / 3.81 mm, rms 1.60 mm)"
+   },
+   "screen": {
+    "value": {
+     "f_Hz": [
+      4.0,
+      8.0,
+      12.0
+     ],
+     "n_dir": 8
+    },
+    "unit": "-",
+    "label": "CALCULATION",
+    "source": "the independent pass's worst-case periodic screen (revk/improve.matched_force_duty): full-radius sinusoids at 4, 8, 12 Hz in eight directions"
+   },
+   "screen_pass_loads_mN": {
+    "value": [
+     20.0,
+     40.0,
+     80.0
+    ],
+    "unit": "mN",
+    "label": "ASSUMPTION",
+    "source": "the pass's constant residual loads (its sensitivity inputs)"
+   }
+  },
+  "F_reach": {
+   "value": {
+    "reach_mm": [
+     1.0,
+     1.5,
+     2.0,
+     3.0,
+     6.0
+    ],
+    "oracle_tip_mm": [
+     1.001,
+     0.674,
+     0.43,
+     0.153,
+     0.025
+    ],
+    "oracle_at_limit": [
+     0.638,
+     0.401,
+     0.225,
+     0.056,
+     0.001
+    ],
+    "a_r2_tip_mm": [
+     1.044,
+     0.818,
+     0.711,
+     0.654,
+     0.648
+    ],
+    "a_r2_at_limit": [
+     0.383,
+     0.149,
+     0.049,
+     0.004,
+     0.0
+    ]
+   },
+   "unit": "-",
+   "label": "SIMULATION",
+   "source": "study F reach check (docs/readable_target.md s8; tuning split, 20 severe cases, 5 writers, the Rev J nose with its travel cut): target DEC-067 0.55-0.65 mm"
+  },
+  "force_constant": {
+   "derating": {
+    "value": 0.7,
+    "unit": "x",
+    "label": "ASSUMPTION",
+    "source": "DEC-041 / study B / the pass: image-method magnetics is an upper bound; 0.7 x is the stated derating (EXP-B23 / EXP-K22 measure K_m)"
+   },
+   "Br_tempco_per_K": {
+    "value": -0.0012,
+    "unit": "1/K",
+    "label": "MANUFACTURER",
+    "source": "AMF-139 (N52 reversible Br coefficient -0.12 %/degC)"
+   },
+   "grades": {
+    "value": {
+     "N52": {
+      "Br_T": 1.42,
+      "T_max_C": 80.0
+     },
+     "N48SH": {
+      "Br_T": 1.38,
+      "T_max_C": 150.0
+     }
+    },
+    "unit": "-",
+    "label": "MANUFACTURER",
+    "source": "AMF-139 (N52 1.42-1.48 T, 80 degC class), AMF-28 (N48SH class, 150 degC); low ends used"
+   },
+   "quad_fast": {
+    "value": [
+     2,
+     1,
+     6
+    ],
+    "unit": "-",
+    "label": "CALCULATION",
+    "source": "filaments bundle x thickness x piece for the optimiser: within 0.1 % of the (8, 4, 32) reference on Rev K's coil (nibopt tests)"
+   },
+   "quad_fine": {
+    "value": [
+     5,
+     3,
+     24
+    ],
+    "unit": "-",
+    "label": "CALCULATION",
+    "source": "the pass's refinement quadrature (revk/improve.search_coil)"
+   },
+   "n_img_fast": {
+    "value": 2,
+    "unit": "-",
+    "label": "CALCULATION",
+    "source": "image periods for the optimiser (0.04 % from 3 periods on Rev K's coil)"
+   }
+  },
+  "electrical": {
+   "Cu_alpha_per_K": {
+    "value": 0.00393,
+    "unit": "1/K",
+    "label": "MANUFACTURER",
+    "source": "AMF-29"
+   },
+   "rho_Cu_ohm_m": {
+    "value": 1.7241e-08,
+    "unit": "ohm m",
+    "label": "MANUFACTURER",
+    "source": "AMF-29 (20 degC)"
+   },
+   "rho_C17200_ohm_m": {
+    "value": 7.836818181818181e-08,
+    "unit": "ohm m",
+    "label": "MANUFACTURER",
+    "source": "AMF-251 (C17200 AT(TF00) 22 % IACS minimum)"
+   },
+   "k_C17200_W_mK": {
+    "value": 105.0,
+    "unit": "W/m K",
+    "label": "MANUFACTURER",
+    "source": "Materion alloy 25 (the pass's value, quoted there; ASSUMPTION for 0.1 mm wire)"
+   },
+   "V_low_V": {
+    "value": 3.3,
+    "unit": "V",
+    "label": "ASSUMPTION",
+    "source": "low-battery bus (study B DRIVE V_low)"
+   },
+   "R_drv_ohm": {
+    "value": 0.24,
+    "unit": "ohm",
+    "label": "MANUFACTURER",
+    "source": "AMF-37 (DRV8214 HS + LS)"
+   },
+   "I_max_A": {
+    "value": 1.0,
+    "unit": "A",
+    "label": "CALCULATION",
+    "source": "study K: 3.3 V / (3.03 + 0.24) ohm with the C17200 leads"
+   },
+   "R_coil_K_ohm": {
+    "value": 2.5,
+    "unit": "ohm",
+    "label": "PROPOSED DESIGN",
+    "source": "study B / K coil wound for 2.5 ohm per axis"
+   },
+   "wire_rise_limit_K": {
+    "value": 45.0,
+    "unit": "K",
+    "label": "ASSUMPTION",
+    "source": "the pass's lead-heating screen (rise above the clamps, no convection)"
+   },
+   "coil_T_max_C": {
+    "value": 110.0,
+    "unit": "degC",
+    "label": "ASSUMPTION",
+    "source": "coil insulation limit with margin (study B T_coil_max 120 degC)"
+   }
+  },
+  "thermal": {
+   "room_C": {
+    "value": 30.0,
+    "unit": "degC",
+    "label": "PROPOSED DESIGN",
+    "source": "rated maximum room (REQ-THM-001; study K)"
+   },
+   "skin_target_C": {
+    "value": 41.0,
+    "unit": "degC",
+    "label": "LITERATURE",
+    "source": "AMF-34 (IEC 60601-1), study K's design target"
+   },
+   "h_W_m2K": {
+    "value": 10.0,
+    "unit": "W/m^2 K",
+    "label": "ASSUMPTION",
+    "source": "natural convection + radiation (study K fin model, Rev J)"
+   },
+   "k_shell_W_mK": {
+    "value": 0.3,
+    "unit": "W/m K",
+    "label": "MANUFACTURER",
+    "source": "AMF-24 (PEEK)"
+   },
+   "wall_mm": {
+    "value": 1.0,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "shell wall (study K)"
+   },
+   "R_int_K_W": {
+    "value": 15.0,
+    "unit": "K/W",
+    "label": "ASSUMPTION",
+    "source": "coil to shell through the bonded stator (study K THERMAL R_int_coil_K_W)"
+   }
+  },
+  "mechanics": {
+   "R_carrier_mm": {
+    "value": 1.6,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "Ti carrier tube 3.2 / 2.5 mm round the D1 refill (study B/K)"
+   },
+   "refill_r_mm": {
+    "value": 1.175,
+    "unit": "mm",
+    "label": "LITERATURE",
+    "source": "CON-22 (D1 refill 2.35 mm)"
+   },
+   "c_run_mm": {
+    "value": 0.3,
+    "unit": "mm",
+    "label": "ASSUMPTION",
+    "source": "running clearance rule (Rev J / K)"
+   },
+   "c_fixed_mm": {
+    "value": 0.2,
+    "unit": "mm",
+    "label": "ASSUMPTION",
+    "source": "fixed-part clearance rule (Rev J / K)"
+   },
+   "coil_p99_loss_mm": {
+    "value": 0.09,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study K tolerance Monte Carlo: the coil's 0.30 mm running clearance falls to 0.21 mm at the 99th percentile (revk/tolerance.mechanics, results/revK/revK.json tolerance)"
+   },
+   "clearance_p99_min_mm": {
+    "value": 0.2,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "brief: coil clearance >= 0.2 mm at the stop, 99th percentile"
+   },
+   "stop_margin_mm": {
+    "value": 0.2,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "hard stop 0.2 mm beyond the usable radius (study B / the pass)"
+   },
+   "goodman_min": {
+    "value": 1.5,
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "brief / study B FAT SF_min"
+   },
+   "servo_bw_min_Hz": {
+    "value": 40.0,
+    "unit": "Hz",
+    "label": "PROPOSED DESIGN",
+    "source": "REQ-BNIB-006"
+   },
+   "mode_ratio": {
+    "value": 2.5,
+    "unit": "x",
+    "label": "PROPOSED DESIGN",
+    "source": "DEC-050: lowest structural mode >= 2.5 x the servo bandwidth, ball free and stuck"
+   },
+   "cycles": {
+    "value": 43200000.0,
+    "unit": "cycles",
+    "label": "CALCULATION",
+    "source": "study B FAT (8 Hz x 2 h/day x 250 days x 3 yr)"
+   },
+   "C17200": {
+    "value": {
+     "E": 127600000000.0,
+     "S_f": 310000000.0,
+     "S_u": 1280000000.0,
+     "S_y": 1241000000.0,
+     "rho": 8250.0
+    },
+    "unit": "SI",
+    "label": "MANUFACTURER",
+    "source": "AMF-19 (CDA C17200 TH04: E, fatigue 310 MPa at 1e8); UTS 1280 MPa as the pass (feasibility.wire_anchor)"
+   },
+   "fatigue_knockdown": {
+    "value": 0.85,
+    "unit": "x",
+    "label": "ASSUMPTION",
+    "source": "size/surface knock-down on thin wire (study B FAT size_surface)"
+   },
+   "Kt_worst": {
+    "value": 2.5,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "stress concentration at a soldered clamp or sleeve edge, worst corner (the pass, study B)"
+   },
+   "tol_corner": {
+    "value": {
+     "d": 1.02,
+     "L_mm": -0.05,
+     "E": 1.04,
+     "anchor": 1.2,
+     "assembly_N": 0.005
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "the pass's worst fatigue corner (revk/improve.wire_design): diameter +2 %, length -0.05 mm, modulus +4 %, anchor stiffness +20 %, 5 mN assembly tension"
+   },
+   "strut_misfit_um": {
+    "value": 2.0,
+    "unit": "um",
+    "label": "ASSUMPTION",
+    "source": "axial length misfit between struts after jigged soldering (an over-constrained plane for n > 3); EXP-NB04 measures it"
+   },
+   "hertz_C0_GPa": {
+    "value": 4.2,
+    "unit": "GPa",
+    "label": "MANUFACTURER",
+    "source": "AMF-260 (MinebeaMitsumi: the basic static load rating is the load at which the contact stress at the centre of the most loaded ball-race contact is 4,200 MPa, a permanent deformation of about 0.0001 of the ball diameter; ISO 76's basis)"
+   },
+   "hertz_run_GPa": {
+    "value": 3.3335422091332187,
+    "unit": "GPa",
+    "label": "ASSUMPTION",
+    "source": "sustained writing load: static safety factor s0 >= 2 for quiet running and high accuracy (AMF-261, NES after ISO 76), i.e. 4.2 GPa / 2^(1/3) = 3.33 GPa; applying the ball-bearing rule to 440C sphere-on-flat races is an ASSUMPTION (EXP-K20 / EXP-NB05)"
+   },
+   "hertz_static_GPa": {
+    "value": 3.6690379518924554,
+    "unit": "GPa",
+    "label": "ASSUMPTION",
+    "source": "drop (the race springs' release load): s0 >= 1.5 for pronounced shock (AMF-261), 4.2 GPa / 1.5^(1/3) = 3.67 GPa; study K used 4 GPa"
+   },
+   "mu_roll": {
+    "value": 0.001,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "rolling resistance of Si3N4 balls on lapped 440C (study K / the pass; EXP-K20)"
+   },
+   "preload_min_margin": {
+    "value": 1.2,
+    "unit": "x",
+    "label": "PROPOSED DESIGN",
+    "source": "race preload >= 1.2 x the couple's largest change in ball load, so no ball unloads"
+   },
+   "holder_ext_g_per_mm": {
+    "value": 0.025,
+    "unit": "g/mm",
+    "label": "ASSUMPTION",
+    "source": "the pass's moving-mass charge for the refill-holder extension (revk/improve.matched_force_duty: 0.025e-3 kg per mm)"
+   },
+   "Ti_rho": {
+    "value": 4430.0,
+    "unit": "kg/m3",
+    "label": "MANUFACTURER",
+    "source": "AMF-21"
+   },
+   "Al_rho": {
+    "value": 2810.0,
+    "unit": "kg/m3",
+    "label": "ASSUMPTION",
+    "source": "7075 handbook value"
+   },
+   "CFRP_rho": {
+    "value": 1550.0,
+    "unit": "kg/m3",
+    "label": "ASSUMPTION",
+    "source": "pultruded carbon tube handbook value"
+   },
+   "Fe_rho": {
+    "value": 7870.0,
+    "unit": "kg/m3",
+    "label": "ASSUMPTION",
+    "source": "1010 steel handbook value (study B)"
+   },
+   "Hiperco_rho": {
+    "value": 8120.0,
+    "unit": "kg/m3",
+    "label": "ASSUMPTION",
+    "source": "Hiperco 50A handbook value (AMF-140 for B_sat)"
+   },
+   "B_plate_T": {
+    "value": {
+     "1010": 1.5,
+     "Hiperco50A": 2.1
+    },
+    "unit": "T",
+    "label": "ASSUMPTION",
+    "source": "working flux density in the back plate and keeper (1010 saturates near 1.6-1.7 T; Hiperco 50A 2.35 T, AMF-140), used to size the plate thickness"
+   }
+  },
+  "pen": {
+   "length_K_mm": {
+    "value": 145.13,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study K layout (results/revK/layout.json length)"
+   },
+   "length_limit_mm": {
+    "value": 175.0,
+    "unit": "mm",
+    "label": "ASSUMPTION",
+    "source": "Rev J envelope (docs/revJ_plan.md s6)"
+   },
+   "mass_K_g": {
+    "value": 66.4,
+    "unit": "g",
+    "label": "CALCULATION",
+    "source": "study K base pen (results/revK/budgets.json)"
+   },
+   "actuator_z0_mm": {
+    "value": 21.43,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study K back-plate front face (results/revK/layout.json back_plate z0)"
+   },
+   "actuator_stack_K_mm": {
+    "value": 8.48,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study K back plate 1.47 + magnets 3.5 + c0 0.3 + coils 1.6 + c1 0.15 + keeper 1.47 mm"
+   },
+   "guide_stack_K_mm": {
+    "value": 3.7,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study K front race 0.3 + balls 0.8 + flange 1.5 + balls 0.8 + rear race 0.3 mm"
+   },
+   "wire_K_mm": {
+    "value": 26.8,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study K C17200 lead length (z 31.8-58.6)"
+   },
+   "shell_g_per_mm": {
+    "value": 0.094,
+    "unit": "g/mm",
+    "label": "CALCULATION",
+    "source": "PEEK tube 24 / 22 mm (MANUFACTURER AMF-24 density 1.30 g/cc)"
+   },
+   "wiring_share": {
+    "value": 0.1,
+    "unit": "x",
+    "label": "ASSUMPTION",
+    "source": "+10 % wiring and adhesive (Rev J / K convention)"
+   }
+  }
+ },
+ "screen_topologies": {
+  "stop_mm": 1.7,
+  "couple_35_mNm": 10.874439984426996,
+  "rows": [
+   {
+    "topology": "wires alone (study B / K's four 0.10 mm C17200 wires on a 5.5 mm circle)",
+    "carries_couple": false,
+    "reason": "0.70 N of compression per wire against 34.4 mN fixed-fixed buckling (study K N14)",
+    "F_stop_mN": null,
+    "drag_mN": 0.0
+   },
+   {
+    "topology": "four wires pre-tensioned to 1.19 N each (circle 5.5 mm, 34.0 mm long)",
+    "carries_couple": true,
+    "k_N_m": 168.2429421047814,
+    "F_stop_mN": 286.0130015781284,
+    "drag_mN": 0.0,
+    "reason": "tension stiffening n T / L: the spring force at the stop exceeds the moving mass's weight"
+   },
+   {
+    "topology": "four wires pre-tensioned to 0.72 N each (circle 9.0 mm, 40.0 mm long)",
+    "carries_couple": true,
+    "k_N_m": 87.46528615189807,
+    "F_stop_mN": 148.69098645822672,
+    "drag_mN": 0.0,
+    "reason": "tension stiffening n T / L: the spring force at the stop exceeds the moving mass's weight"
+   },
+   {
+    "topology": "necked struts (stiff middle, short C17200 hinges) in place of wires and balls",
+    "carries_couple": true,
+    "best_with_buckling_margin_2": {
+     "n": 6,
+     "L_mm": 45.0,
+     "d_h_mm": 0.15,
+     "l_h_mm": 3.0,
+     "buckling_margin": 4.796530424603109,
+     "goodman_Kt1.8": 1.040111269751928,
+     "k_N_m": 7.071268925908953
+    },
+    "F_stop_mN": 12.02115717404522,
+    "drag_mN": 0.0,
+    "reason": "a hinge short enough to carry the couple's compression twice over bends to Goodman 1.04 at the stop (target 1.5)"
+   },
+   {
+    "topology": "two planar flexure stages (beams 15 x taller than wide, 5 N/m lateral each, 20 mm apart)",
+    "carries_couple": false,
+    "k_tilt_Nm_rad": 0.073,
+    "tilt_mrad": 148.96493129352052,
+    "drag_mN": 0.0,
+    "reason": "tilt 149 mrad under the couple (5.4 mm at the ball): the out-of-plane to in-plane stiffness ratio of a planar beam is only (height / width)^2"
+   },
+   {
+    "topology": "nested parallel-blade XY stage (two blades per axis, 16 mm apart)",
+    "carries_couple": true,
+    "best": {
+     "k_per_axis_N_m": 29.036088888888884,
+     "F_stop_mN": 49.3613511111111,
+     "blade_buckling_ff_N": 1.4328735534409978,
+     "couple_axial_N": 0.6796524990266872,
+     "buckling_margin": 2.1082443682513916,
+     "goodman": 3.4905092001916835,
+     "length_mm": 63.0,
+     "label": "CALCULATION (fixed-guided blades; C17200 AMF-19; Kt 1.3 etched fillet ASSUMPTION)",
+     "t_um": 80,
+     "b_mm": 6.0,
+     "L_mm": 30.0
+    },
+    "F_stop_mN": 49.3613511111111,
+    "drag_mN": 0.0,
+    "reason": "carries the couple, but its lateral spring force at the stop is several times the wires' and it needs two stages in series (about 35-60 mm)"
+   },
+   {
+    "topology": "ball thrust guide, 2 x 6 Si3N4 0.8 mm on 16.6 mm, 4 N preload per race + wires",
+    "carries_couple": true,
+    "drag_mN": 8.07190137956181,
+    "hertz_run_GPa": 2.639694562307397,
+    "F_stop_mN": null,
+    "reason": "rolling drag mu_roll x total normal load, Coulomb"
+   },
+   {
+    "topology": "ball thrust guide, 2 x 6 Si3N4 0.8 mm on 16.6 mm, 1 N preload per race + wires",
+    "carries_couple": true,
+    "drag_mN": 2.317922454562518,
+    "hertz_run_GPa": 2.0338031569440713,
+    "F_stop_mN": null,
+    "reason": "rolling drag mu_roll x total normal load, Coulomb"
+   }
+  ],
+  "label": "CALCULATION (beam models; C17200 AMF-19; tolerances and Kt ASSUMPTION)"
+ },
+ "label": "CALCULATION on PROPOSED DESIGNS; nothing built or measured"
+}
