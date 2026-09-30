@@ -204,27 +204,37 @@ def aggregate(cases: List[Dict], fr: Dict) -> Dict:
     for dev in devs:
         if not any(dev in c["devices"] for c in clean):
             continue
+        pw = H._per_writer(clean, dev, "false_correction_um")
+        vals = [float(v) for v in pw.values() if np.isfinite(v)]
         cd[dev] = {"words_of_10": H._boot(H._per_writer(clean, dev, "", fn=H._of10)),
-                   "false_correction_um": H._boot(H._per_writer(clean, dev, "false_correction_um"))}
+                   "false_correction_um": H._boot(pw),
+                   "false_correction_um_worst_writer": max(vals) if vals else float("nan")}
     out["clean"]["clean_real"] = cd
     return out
 
 
 def dec055(ag: Dict, dev: str = "revJ_new|deltapen") -> Dict:
     """DEC-055's line at the severe class (PD and ET pooled): >= +2 words of 10 over the ordinary pen with the 95 %
-    writer-bootstrap interval above 0, and <= 25 um of clean-writing change (mean over the test writers)."""
+    writer-bootstrap interval above 0, and <= 25 um of clean-writing change as the mean over the test writers with no
+    single writer above 50 um (docs/decisions.md, DEC-055 as now worded)."""
     c = ag["real"].get("all/severe", {}).get(dev)
-    fc = ag["clean"]["clean_real"].get(dev, {}).get("false_correction_um", {})
+    fcd = ag["clean"]["clean_real"].get(dev, {})
+    fc = fcd.get("false_correction_um", {})
+    worst = fcd.get("false_correction_um_worst_writer", float("nan"))
     if not c:
         return {"device": dev, "evaluated": False}
     g = c.get("words_of_10_gain", {})
     ok_words = bool(g.get("mean", -np.inf) >= 2.0 and g.get("lo", -np.inf) > 0.0)
-    ok_clean = bool(fc.get("mean", np.inf) <= 25.0)
+    ok_mean = bool(fc.get("mean", np.inf) <= 25.0)
+    ok_worst = bool(np.isfinite(worst) and worst <= 50.0)
     return {"device": dev, "evaluated": True, "words_gain_mean": g.get("mean"), "words_gain_lo": g.get("lo"),
             "words_gain_hi": g.get("hi"), "clean_change_um_mean": fc.get("mean"), "clean_change_um_hi": fc.get("hi"),
-            "passes_words": ok_words, "passes_clean": ok_clean, "passes": ok_words and ok_clean,
+            "clean_change_um_worst_writer": worst, "passes_words": ok_words, "passes_clean_mean": ok_mean,
+            "passes_clean_worst": ok_worst, "passes_clean": ok_mean and ok_worst,
+            "passes": ok_words and ok_mean and ok_worst,
             "rule": "DEC-055: severe class, PD and ET pooled, >= 2 more readable words out of 10 than the ordinary pen "
-                    "with the 95 % writer-bootstrap interval above 0, and <= 25 um of clean-writing change"}
+                    "with the 95 % writer-bootstrap interval above 0, and <= 25 um of clean-writing change as the mean "
+                    "over the test writers, with no single writer above 50 um"}
 
 
 # ------------------------------------------------------------------ the before/after pictures (CC BY cases of R)

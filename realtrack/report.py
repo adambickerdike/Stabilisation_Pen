@@ -74,7 +74,22 @@ def tuning_summary() -> Dict:
     s = _load(TU.TUNE_DIR / "auth_net_main.json")
     if s:
         out["net_authority"] = {"best_params": s["best"]["params"], "summary": s["best"]["summary"],
-                                "passes": TU.passes(s["best"]["summary"]), "front": front(s["history"])}
+                                "passes": TU.passes(s["best"]["summary"]), "front": front(s["history"]),
+                                "raw": s["history"][0]["summary"]}
+    s = _load(TU.TUNE_DIR / "auth_ai2tcn.json")
+    if s:
+        out["ai2tcn_authority"] = {"best_params": s["best"]["params"], "summary": s["best"]["summary"],
+                                   "passes": TU.passes(s["best"]["summary"]), "front": front(s["history"]),
+                                   "raw": s["history"][0]["summary"]}
+    s = _load(TU.TUNE_DIR / "gate_s2_glg.json")
+    if s:
+        out["glg"] = {"as_frozen_by_W": {"params": s["history"][0]["params"], "summary": s["history"][0]["summary"],
+                                         "passes": TU.passes(s["history"][0]["summary"])},
+                      "retuned": {"params": s["best"]["params"], "summary": s["best"]["summary"],
+                                  "passes": TU.passes(s["best"]["summary"])}, "n_evaluations": len(s["history"])}
+    s = _load(TU.TUNE_DIR / "gate_s2_gate_listen.json")
+    if s and out.get("binary_gate"):
+        out["binary_gate"]["R_setting_passes"] = TU.passes(s["history"][0]["summary"])
     return out
 
 
@@ -121,6 +136,33 @@ def one_number_table(ag: Dict, new: str = "revJ_new|deltapen") -> List[Dict]:
     return rows
 
 
+PER_NOTE_DEVS = ("none", "revJ_gated|deltapen", "revJ_tcn|deltapen", "revJ_g4|deltapen", "revJ_new|deltapen", "revJ_new",
+                 "revJ_info_net|deltapen", "revJ_info_listen_conf|deltapen", "revJ_info_glg|deltapen",
+                 "revJ_info_ungated_akf|deltapen", "revJ_oracle", "revJ_held")
+
+
+def per_note(cases: List[Dict]) -> List[Dict]:
+    """Statistics per test note (no writing): clean-writing change and words on the clean note, tip tremor and words
+    per tremor case, for the main pens (to show where a mean comes from)."""
+    out: Dict[int, Dict] = {}
+    for c in cases:
+        i = int(c["note"])
+        e = out.setdefault(i, {"note": i, "writer": str(c["writer"]).split("/")[-1].replace(".dat", ""),
+                               "clean": {}, "tremor": {}})
+        for dev in PER_NOTE_DEVS:
+            d = c["devices"].get(dev)
+            if not isinstance(d, dict):
+                continue
+            w = (10.0 * d["words_read"] / d["words_total"]) if d.get("words_total") and d.get("words_read") is not None \
+                else None
+            if c["set"] == "clean_real":
+                e["clean"][dev] = {"false_correction_um": d.get("false_correction_um"), "words_of_10": w}
+            else:
+                e["tremor"].setdefault(f"{c['kind']}/{c['class']}", {})[dev] = {"tip_tremor_mm": d.get("tip_tremor_mm"),
+                                                                               "words_of_10": w}
+    return [out[k] for k in sorted(out)]
+
+
 def write(quick: bool = False, log=print) -> Dict:
     from . import delay as DY
     from . import figures as FG
@@ -141,12 +183,14 @@ def write(quick: bool = False, log=print) -> Dict:
            "test": {"cards": ag, "one_number_table": one_number_table(ag),
                     "dec055": {"chosen": T.dec055(ag, "revJ_new|deltapen"), "g4": T.dec055(ag, "revJ_g4|deltapen"),
                                "R_gated": T.dec055(ag, "revJ_gated|deltapen"), "R_tcn": T.dec055(ag, "revJ_tcn|deltapen")},
-                    "n_cases": len(cases), "reuse_of_R": "R's pens read from R's cache (bit-identical re-run: repro)"},
+                    "n_cases": len(cases), "reuse_of_R": "R's pens read from R's cache (bit-identical re-run: repro)",
+                    "per_note": per_note(cases)},
            "mcu": MC.table()}
     # extra blocks produced by other stages (if present)
     for k, p in (("delay", BUILD_DIR / "delay.json"), ("separability", BUILD_DIR / "separability.json"),
                  ("learned", BUILD_DIR / "learned.json"), ("sim2", BUILD_DIR / "sim2.json"),
-                 ("chosen_mcu", BUILD_DIR / "chosen_mcu.json"), ("int8_ai2tcn", BUILD_DIR / "int8_ai2tcn.json")):
+                 ("chosen_mcu", BUILD_DIR / "chosen_mcu.json"), ("int8_ai2tcn", BUILD_DIR / "int8_ai2tcn.json"),
+                 ("raw_clean", BUILD_DIR / "raw_clean.json")):
         v = _load(p)
         if v is not None:
             out[k] = v

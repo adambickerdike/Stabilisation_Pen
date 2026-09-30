@@ -67,26 +67,56 @@ def rows(out: Dict) -> List[Dict]:
     te = (out.get("test") or {})
     d55 = (te.get("dec055") or {}).get("chosen") or {}
     tab = {(r["kind"], r["class"]): r for r in (te.get("one_number_table") or [])}
+    ag = te.get("cards") or {}
+    cln = ((ag.get("clean") or {}).get("clean_real") or {})
 
     def wd(kind, cls, key):
         v = (tab.get((kind, cls)) or {}).get(key) or {}
         return f"{_f(v.get('mean'), 1)} [{_f(v.get('lo'), 1)}-{_f(v.get('hi'), 1)}]" if v else "n/a"
-    fz = out.get("frozen") or {}
+
+    def tip(dev, cls):
+        v = (((ag.get("real") or {}).get(f"all/{cls}") or {}).get(dev) or {}).get("tip_tremor_ratio") or {}
+        return f"{_f(v.get('mean'), 2)} [{_f(v.get('lo'), 2)}-{_f(v.get('hi'), 2)}]" if v else "n/a"
+
+    def clean(dev):
+        v = cln.get(dev) or {}
+        m = (v.get("false_correction_um") or {}).get("mean")
+        return f"{_f(m, 0)} um mean, {_f(v.get('false_correction_um_worst_writer'), 0)} um worst writer"
     R.append(dict(
         id="EML-100", topic="The best causal tremor tracker found on real inputs, tested once on held-out writers and patients (study E simulation, HW1)",
         citation="This study's simulation (realtrack/): model HW1, study R's real-input library; every choice on R's tuning split, frozen, then R's test split run once",
         year="2026", doi_or_url="results/realtrack/realtrack.json", source_type="derived calculation", evidence_class="numerical simulation",
-        access_level="full text", task_or_setup=f"Chosen design: {fz.get('chosen_name')} ({fz.get('why')}); DeltaPen-class page sensor; R's measures and writer bootstrap",
-        participants_or_bench="Simulated (real recorded inputs; 9 test writers; PD and ET test patients)", comparator="Ordinary pen, R's Rev J gated tracker, sim2j's G4, perfect knowledge",
-        key_quantitative_findings=(f"Readable words of 10 (ordinary / best causal / perfect): severe pooled {wd('all', 'severe', 'ordinary')} / "
-                                   f"{wd('all', 'severe', 'best_causal')} / {wd('all', 'severe', 'perfect')}; gain {_f(d55.get('words_gain_mean'), 2)} "
-                                   f"[{_f(d55.get('words_gain_lo'), 2)}, {_f(d55.get('words_gain_hi'), 2)}]; clean writing moved {_f(d55.get('clean_change_um_mean'), 1)} um; "
-                                   f"DEC-055 passed: {d55.get('passes')}"),
-        units_and_conditions="words of 10; um RMS; SIMULATION", locator="docs/real_tracker.md; results/realtrack/fig_words_read.png",
-        limitations="Simulation; composed inputs (healthy writers' notes + patients' tremor); AI reader; PROPOSED DESIGN; the tracker sees the nose-held run's sensor streams (R's convention)",
-        relevance_to_design="Whether a causal estimator on the pen can deliver the legibility the Rev J nose could give",
+        access_level="full text",
+        task_or_setup="Frozen design (lowest objective on the tuning split among designs passing the clean-writing and no-harm rules): ai2's causal TCN (trained on synthetic writers) with a soft size gate tuned on R's tuning writers; Rev J nose; DeltaPen-class page sensor; R's measures, reader and writer bootstrap",
+        participants_or_bench="Simulated (real recorded inputs; 9 test writers; PD and ET test patients)", comparator="Ordinary pen, R's Rev J gated tracker, sim2j's G4 ported, perfect knowledge",
+        key_quantitative_findings=(f"Readable words of 10 at the severe class, PD and ET pooled (ordinary / frozen design / perfect knowledge): "
+                                   f"{wd('all', 'severe', 'ordinary')} / {wd('all', 'severe', 'best_causal')} / {wd('all', 'severe', 'perfect')}; "
+                                   f"gain {_f(d55.get('words_gain_mean'), 2)} [{_f(d55.get('words_gain_lo'), 2)}, {_f(d55.get('words_gain_hi'), 2)}]. "
+                                   f"Tip tremor x ordinary pen: severe {tip('revJ_new|deltapen', 'severe')}, moderate {tip('revJ_new|deltapen', 'moderate')}, "
+                                   f"mild {tip('revJ_new|deltapen', 'mild')}. Clean writing moved {clean('revJ_new|deltapen')}. DEC-055 passed: {d55.get('passes')}. "
+                                   f"Information row (not chosen; TCN trained on real tuning data + soft size gate): tip tremor severe {tip('revJ_info_net|deltapen', 'severe')}, "
+                                   f"mild {tip('revJ_info_net|deltapen', 'mild')}; clean {clean('revJ_info_net|deltapen')}"),
+        units_and_conditions="words of 10; amplitude ratios; um RMS; SIMULATION", locator="docs/real_tracker.md; results/realtrack/fig_words_read.png",
+        limitations="Simulation; composed inputs (healthy writers' notes + patients' tremor); AI reader; 5 tuning writers; PROPOSED DESIGN; the tracker sees the nose-held run's sensor streams (R's convention); the information rows were looked at after the test and are not a choice",
+        relevance_to_design="Whether a causal estimator on the pen can deliver the legibility the Rev J nose could give (perfect knowledge)",
         transferability="low", transferability_reason="Simulation with real inputs, not a measurement",
-        design_implication="See docs/real_tracker.md (DEC-060/061 proposals)", retrieved=DATE, search_query="n/a (derived)", stream="EML", lead_verification=""))
+        design_implication="No legibility claim at severe tremor (DEC-055 stands); a size gate tuned on a few writers does not transfer to new writers: gate thresholds need per-writer calibration or far more writers (docs/real_tracker.md, DEC-060/061 proposals)",
+        retrieved=DATE, search_query="n/a (derived)", stream="EML", lead_verification=""))
+    R.append(dict(
+        id="EML-103", topic="sim2j's G4 and study W's GLG on real inputs (study E, HW1 test split)",
+        citation="This study's simulation (realtrack/test.py): G4 as frozen in results/sim2j/rules.json, run tick by tick on the HW1 sensor streams; GLG with its gate retuned on R's tuning split",
+        year="2026", doi_or_url="results/realtrack/realtrack.json (test.cards)", source_type="derived calculation", evidence_class="numerical simulation",
+        access_level="full text", task_or_setup="Rev J nose; DeltaPen-class page sensor; R's test split",
+        participants_or_bench="Simulated (real recorded inputs; 9 test writers)", comparator="Ordinary pen; Rev J with the nose held",
+        key_quantitative_findings=(f"G4: tip tremor x ordinary pen severe {tip('revJ_g4|deltapen', 'severe')}, mild {tip('revJ_g4|deltapen', 'mild')} "
+                                   f"(nose held: severe {tip('revJ_held', 'severe')}); clean {clean('revJ_g4|deltapen')}; words at severe {wd('all', 'severe', 'g4')}. "
+                                   f"GLG: severe {tip('revJ_info_glg|deltapen', 'severe')}, mild {tip('revJ_info_glg|deltapen', 'mild')}; clean {clean('revJ_info_glg|deltapen')}"),
+        units_and_conditions="amplitude ratios; um RMS; words of 10; SIMULATION", locator="docs/real_tracker.md, every-pen table",
+        limitations="Simulation; composed inputs; GLG's words not read (tip tremor only)",
+        relevance_to_design="DEC-047's default tracker (G4) and DEC-052's candidate (GLG) on real inputs",
+        transferability="low", transferability_reason="Simulation with real inputs",
+        design_implication="G4 is safe on clean real writing but, on real tremor, almost never acts: its line detector does not see real tremor's wandering line",
+        retrieved=DATE, search_query="n/a (derived)", stream="EML", lead_verification=""))
     sep = out.get("separability") or {}
     k1 = "line ratio, page track 4 s (ai2's detector)"
     s1 = (sep.get(k1) or {}).get("_share_above") or {}
@@ -112,7 +142,7 @@ def rows(out: Dict) -> List[Dict]:
         participants_or_bench="Simulated (tuning writers, real tremor)", comparator="Ordinary pen",
         key_quantitative_findings=(f"Tip tremor of the nose-held Rev J vs the ordinary pen: severe {_f((dc.get('severe') or {}).get('held'), 3)}, "
                                    f"mild {_f((dc.get('mild') or {}).get('held'), 3)}; with the Rev H tracker: severe {_f((dc.get('severe') or {}).get('revh'), 3)}; "
-                                   f"command path lag {_f(((dl.get('servo_lag') or {}).get('rows') or [{}])[3].get('delay_ms'), 2)} ms at 6 Hz; IMU-to-tip chain {_f((dl.get('budget') or {}).get('imu_to_tip_ms'), 2)} ms"),
+                                   f"command path lag {_f(next((r for r in ((dl.get('servo_lag') or {}).get('rows') or []) if r.get('f_hz') == 6.0), {}).get('delay_ms'), 2)} ms at 6 Hz; IMU-to-tip chain {_f((dl.get('budget') or {}).get('imu_to_tip_ms'), 2)} ms"),
         units_and_conditions="amplitude ratios; ms", locator="fig_delay.png", limitations="HW1's hand-grip model (HAP-26 values); simulated pen masses",
         relevance_to_design="Nose-pen mass and the tracker's own authority set the baseline, not only latency",
         transferability="medium", transferability_reason="Mechanical model, literature hand impedance", design_implication="Report every tracker against the nose-held pen as well as the ordinary pen",
@@ -135,7 +165,10 @@ def rows(out: Dict) -> List[Dict]:
         year="2026", doi_or_url="results/realtrack/realtrack.json (learned)", source_type="derived calculation", evidence_class="numerical simulation",
         access_level="full text", task_or_setup="Same tuning cases, DeltaPen-class page sensor, surrogate of the HW1 command path",
         participants_or_bench="Simulated (5 tuning writers; tuning patients)", comparator="ai2's TCN; the listening AKF",
-        key_quantitative_findings=f"{ln.get('summary', 'n/a')}", units_and_conditions="amplitude ratios; um RMS",
+        key_quantitative_findings=(f"Tuning split (cross-fitted): {ln.get('summary', 'n/a')}. Test split (after the freeze; information): "
+                                   f"TCN on real data + gate: severe tip {tip('revJ_info_net|deltapen', 'severe')} x ordinary, clean {clean('revJ_info_net|deltapen')}; "
+                                   f"ai2's TCN + gate (frozen): severe {tip('revJ_new|deltapen', 'severe')}, clean {clean('revJ_new|deltapen')}"),
+        units_and_conditions="amplitude ratios; um RMS",
         locator="docs/real_tracker.md learned section", limitations="5 tuning writers and 20 tuning patients; simulation targets",
         relevance_to_design="Whether training on real data removes the TCN's domain shift", transferability="low",
         transferability_reason="Composed inputs; no patient's own writing", design_implication="Collect EXP-R01 recordings before any learned estimator drives the nose",

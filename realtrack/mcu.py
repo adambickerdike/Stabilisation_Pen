@@ -12,7 +12,7 @@ instruction counts, firmware/README.md: the stage tick with the frozen Kalman es
 from __future__ import annotations
 
 import math
-from typing import Dict
+from typing import Dict, Optional
 
 F_CLK = 128e6
 CYC_MAC = 2.0
@@ -96,7 +96,7 @@ def tcn_cost(cfg: Dict, n_params: int, fs: float = 250.0) -> Dict:
     layers = 2 + 2 * len(dil)
     int8_cyc = fs * (macs / 0.5 + layers * 300)
     hist = sum((k - 1) * d for d in dil) * ch            # int8 activation history of the dilated convolutions
-    return _pack(macs * fs, hist + 4 * 64, n_params, f"TCN int8 (CMSIS-NN): {macs} MAC per 4 ms step, "
+    return _pack(macs * fs, hist + 4 * 64, n_params, f"TCN int8 (CMSIS-NN): {macs} MAC per {1000.0 / fs:g} ms step, "
                  f"{layers} layer calls, {n_params} weights, {hist} B of activation history", int8_cycles_per_s=int8_cyc)
 
 
@@ -122,7 +122,19 @@ def table() -> Dict:
             "epll": epll_cost(True), "epll_fundamental_only": epll_cost(False), "wflc": wflc_cost(),
             "bmflc_19": bmflc_cost(19), "bmflc_kf_19": bmflc_kf_cost(19), "bmflc_kf_37": bmflc_kf_cost(37),
             "akf": akf_cost(True), "akf_imu_only": akf_cost(False), "g4": g4_cost(), "detector": detector_cost(),
-            "fir_128": fir_cost(128), "authority": authority_cost(), "ai2_tcn": ai2_tcn_cost()}
+            "fir_128": fir_cost(128), "authority": authority_cost(), "ai2_tcn": ai2_tcn_cost(),
+            "tcn_real_data": real_tcn_cost()}
+
+
+def real_tcn_cost() -> Optional[Dict]:
+    """The TCN trained here on real tuning data (its saved configuration), int8 CMSIS-NN at 250 Hz."""
+    import json
+    from . import netmodel as NM
+    p = NM.MODEL_DIR / "net_main_crossfit.json"
+    if not p.exists():
+        return None
+    c = json.loads(p.read_text())
+    return tcn_cost(c["cfg"], int(c["params"]), fs=250.0)
 
 
 def chosen(fr: Dict) -> Dict:

@@ -202,3 +202,24 @@ def int8_ai2tcn(log=print) -> Dict:
     p.write_text(json.dumps(out))
     log(f"[analysis] int8 ai2 TCN: {out['rms_diff_um']:.1f} um RMS change on {out['rms_out_um']:.0f} um output")
     return out
+
+
+def raw_clean(log=print) -> Dict:
+    """The capture-only (stage-1) setting of every classical family, no gate, on the clean and the mild tuning cases:
+    how much it moves clean writing and what it does to small tremor (explains why a gate is needed; not a choice)."""
+    from . import evaluate as EV
+    from . import search as SR
+    p = BUILD_DIR / "raw_clean.json"
+    if p.exists():
+        return json.loads(p.read_text())
+    t0 = time.time()
+    designs = [SR.best_design(fam) for fam in ("akf", "wflc", "bmflc", "bmflc_kf", "epll")]
+    specs = [s for s in C.tuning_specs() if s["level"] in ("clean", "mild")]
+    sm = EV.summarize(EV.eval_batch(designs, specs, "deltapen", log=log))
+    out = {d["name"].replace("_s1", ""): {k: sm[d["name"]].get(k) for k in ("clean_um_mean", "clean_um_max", "mild_ratio",
+                                                                             "mild_rheld")} for d in designs}
+    out["label"] = "SIM (surrogate of the HW1 command path), tuning split: 10 clean notes and 20 mild cases"
+    out["elapsed_s"] = time.time() - t0
+    p.write_text(json.dumps(out, default=float))
+    log(f"[analysis] raw clean: {out}")
+    return out
