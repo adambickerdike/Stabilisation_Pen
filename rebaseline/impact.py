@@ -369,7 +369,48 @@ FIELDS = ("id", "section", "claim", "evidence", "status", "model", "model_detail
 
 # What the rerun found, per AFFECTED_RERUN row (SIMULATION as labelled in docs/rebaseline.md; filled from
 # results/rebaseline/*.json after the runs).  SURVIVES / CHANGES / FAILS refer to the published claim.
-OUTCOMES: Dict[str, str] = {}
+OUTCOMES: Dict[str, str] = {
+    # task 5: studies R, E, F with page model version 2 (HW1, real inputs, spent test split)
+    "P-01": "SURVIVES: severe words ordinary 0.54, Rev H 0.43, Rev J gated 0.43, TCN 0.21, perfect knowledge 6.99 of 10 "
+            "(v1: 0.54 / 0.37 / 0.38 / 0.16 / 6.99)",
+    "P-02": "SURVIVES: E's frozen design 0.691x severe tip tremor (0.63-0.75), words 0.32 of 10, clean writing 68.9 um "
+            "mean / 504 um worst writer; DEC-055 still fails",
+    "P-03": "SURVIVES: the estimators with writing present leave 0.92-1.20 mm with v1 and v2 alike (largest change 0.012 "
+            "mm); the target is page-independent",
+    "T-02b": "SURVIVES: G4 in HW1 1.073x severe tip tremor (1.06-1.08), clean writing 0.3 um (worst 1.9 um)",
+    "T-03a": "SURVIVES: severe words 0.43 / 0.43 / 0.21 of 10, tip tremor 1.058x / 0.956x / 0.705x (Rev H / Rev J "
+             "gated / TCN)",
+    "T-04": "UNCHANGED (identical to the last digit): the real-data network reads the IMU and contact only, so the page "
+            "model cannot move it",
+    "T-05b": "SURVIVES: 1.118 mm (v1 1.117)",
+    "T-07b": "PARTLY CHANGES: estimators unchanged (<= 0.012 mm); the page-position predictor on the tremor alone gets "
+             "WORSE, 1.29-1.31 mm (v1 1.03-1.14); the refitted page sensing check 0.564 mm (v1 0.588)",
+    "T-09a": "SURVIVES: Rev J gated, moderate class, 5.67 words of 10 (v1 5.52)",
+    "T-13b": "CHANGES for Rev J's gated tracker: clean real writing moved 41.0 um mean, 105 um worst writer (v1 25.5 / "
+             "85 um; its gate opened on 2 of 9 clean notes); Rev H 24.7 um (survives)",
+    "T-16c": "SURVIVES: TCN 0.705x severe tip tremor, clean writing 169 um, -0.9 words on clean notes",
+    "H-18": "SURVIVES for words and tip tremor (ideal vs DeltaPen-class v2: 0.0 words, 0.006 mm) but NOT for clean "
+            "writing: +15.9 um for Rev J's gated tracker",
+    # task 2: sim2j's cards, causal sensing against the historical rows (synthetic writers and tremor)
+    "T-01b": "CHANGES slightly: perfect knowledge 0.11-0.22 of the ordinary pen at 8-12 Hz (was 0.10-0.20), 0.07-0.11 at "
+             "4 Hz (0.07-0.12); headline pool 0.169 (was 0.155)",
+    "T-02a": "SURVIVES (synthetic only): 0.612 (cases 0.58-0.64, writers 0.60-0.63) against 0.628; 0.43->0.28 mm at 1 "
+             "mm, 0.94->0.53 mm at 2 mm; words 75->100 %, letters 80->94 %. G4's own ink is unchanged (-1.1 um); the "
+             "ratio gains only because the ordinary pen writes 14 um worse",
+    "T-11": "SURVIVES: 1.012 (0.99-1.04); in one of 18 mild cases the recogniser misread one of the text's two words "
+            "on near-identical ink (5 instead of 10 of 10)",
+    "T-12": "SURVIVES: 1.000 (1.000-1.001)",
+    "T-13a": "SURVIVES: 0 um (max 0) on the 6 writers under causal sensing",
+    "P-05": "CHANGES: tremor-free writing draws 1.49 W with causal sensing (2.28 W with the legacy flags on the same code): "
+            "the servo-noise share is gone, the C1S static load remains; still SUSPENDED as hardware",
+    "H-02c": "CHANGES: about 1.5 W in every ET cell with causal sensing (was about 2.3 W)",
+    "H-03c": "CHANGES: about 1.4 h on the 2.22 Wh cell (CALC on SIM 1.54 W; was about 1 h); still SUSPENDED",
+    # task 4: study F's reach with B1's dynamics (HW1, real inputs, tuning split, perfect knowledge)
+    "P-04": "SURVIVES: with B1's 40/46 Hz servo and mass, +-1.06 mm gains +1.6 words (0.7 to 2.4; fails the +2 line), "
+            "+-1.5 mm +3.2 (2.6 to 3.8; passes); 0.02 mm worse than on the Rev J plant",
+    "T-08": "SURVIVES: +-1.0 mm leaves 1.02 mm (Rev J plant 1.00), +-1.5 mm 0.69 mm (0.67), +3.2 words read at +-1.5 mm "
+            "(the frozen curve: +2.0, 1.3 to 2.7); the command exceeds 1 mm 61 % and 1.5 mm 37 % of the contact time",
+}
 
 
 def rows() -> List[Dict]:
