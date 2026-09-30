@@ -19,69 +19,98 @@ accepted "se" suffixes with no hand on the pen but 0 of 20 against a 200 or 500 
 within 2 m/s² and 300 m/s³. Study P asks whether a desk platen that **moves the paper under a pen the user holds** does
 better at both jobs: cancelling tremor at the ink, and writing accepted words.
 
-**The answer in three points.**
+**The answer in four points.**
 
 1. **Reach is solved.** With perfect knowledge of the tremor, the ±5 mm platen leaves
    {{t:all/severe:P_oracle:tip_tremor_mm}} mm of tremor at the ink and the reader reads
    {{t:all/severe:P_oracle:words_read}} words of 10. The handheld nib leaves {{t:all/severe:F15_oracle:tip_tremor_mm}} mm
    ({{t:all/severe:F15_oracle:words_read}} words) at ±1.5 mm and {{t:all/severe:F10_oracle:tip_tremor_mm}} mm
-   ({{t:all/severe:F10_oracle:words_read}} words) at ±1.0 mm. The ordinary pen leaves
+   ({{t:all/severe:F10_oracle:words_read}} words) at ±1.0 mm. The ordinary pen, with the platen off, leaves
    {{t:all/severe:none:tip_tremor_mm}} mm ({{t:all/severe:none:words_read}} words) (SIM, tuning split).
 2. **The estimator still decides, and the platen does not change that.** Driven by study E's best causal estimator,
    the platen leaves {{t:all/severe:P_E_chosen:tip_tremor_mm}} mm and {{t:all/severe:P_E_chosen:words_read}} words are
-   read. The nib with the same estimator leaves {{t:all/severe:N15_E_chosen:tip_tremor_mm}} mm at ±1.5 mm. Sensing is not
-   the limit: with the tremor perfectly separated from the writing, a 250 frames/s camera that tracks the tip leaves
-   {{t:all/severe:P_cam_sep:tip_tremor_mm}} mm and {{t:all/severe:P_cam_sep:words_read}} words are read (SIM).
-3. **Accepted writing works when the pen is docked, and with a held pen only for a calm, firm hand.** Moving the page
-   under the user's own pen docked in a cradle on the palm rest wrote {{a:se|cradle|cradle:complete}} accepted "se"
-   suffixes to the five-bar's criterion, and {{a:library|cradle|cradle:complete}} "library" rewrites. With the pen held
-   in a firm grip on the palm rest, at 0.5 N and with the proposed controller, it wrote {{a:se|proposed|still:complete}}
-   suffixes for a still hand. Moderate tremor brought that down to {{a:se|proposed|mod_PD:complete}} and severe tremor
-   to {{a:se|proposed|sev_PD:complete}}. With HW1's relaxed hand, the moving page drags the pen through the ball's
-   friction. The platen cannot tell that drag from a hand movement, and it completes
-   {{a:se|relaxed_naive|still:complete}} (SIM).
+   read. The nib with the same estimator leaves {{t:all/severe:N15_E_chosen:tip_tremor_mm}} mm at ±1.5 mm
+   ({{t:all/severe:N15_E_chosen:words_read}} words). Sensing is not the limit: with the tremor perfectly separated from
+   the writing, a 250 frames/s camera that tracks the tip leaves {{t:all/severe:P_cam_sep:tip_tremor_mm}} mm, and
+   {{t:all/severe:P_cam_sep:words_read}} words are read (SIM).
+3. **Accepted writing works when the pen is docked, and with a held pen only for a calm, firm hand.**
+   - With the user's own pen docked in a cradle on the palm rest, moving the page wrote
+     {{a:se|cradle|cradle:complete}} accepted "se" suffixes to the five-bar's criterion and
+     {{a:library|cradle|cradle:complete}} "library" rewrites.
+   - With the pen held in a firm grip on the palm rest (0.5 N, the proposed controller), it wrote
+     {{a:se|proposed|still:complete}} suffixes for a still hand, {{a:se|proposed|mod_PD:complete}} with moderate
+     tremor and {{a:se|proposed|sev_PD:complete}} with severe tremor.
+   - With HW1's relaxed hand it completed {{a:se|relaxed_naive|still:complete}}.
+   - The five-bar wrote {{fb:0}} only with no hand on its pen (SIM).
+4. **One effect runs through both jobs: the ball's friction ties the page to the pen.** A moving page drags the pen
+   through the ball, and a compliant hand lets it follow. Every earlier study assumed, with HW1, that the writer's hand
+   cancels the ball's drag, and part (a) keeps that assumption. If the drag in the tremor band acts on the pen instead,
+   free writing gets worse:
+   - perfect knowledge leaves {{s:friction_intended|oracle:tip_tremor_mm}} mm;
+   - the camera loop leaves {{s:friction_intended|camera:tip_tremor_mm}} mm, or
+     {{s:friction_intended_firm_hand|camera:tip_tremor_mm}} mm with a firm grip;
+   - the stage works hard doing so ({{s:friction_intended|camera:force_rms_N:1}} N RMS).
+
+   In accepted writing the relaxed hand fails outright. A platen therefore needs the pen held firmly or docked, and
+   how far real hands let a moving page drag a pen is the first thing to measure (EXP-PL03).
 
 **The answers in more detail.**
 
 - **Tremor with the platen off** (an ordinary pen on a fixed page; the platen's ink is then exactly HW1's ordinary
   pen): {{t:all/severe:none:tip_tremor_mm:ci}} mm at the severe class and {{t:all/moderate:none:tip_tremor_mm:ci}} mm at
   the moderate class (SIM, study R's measure).
-- **Reach.** The fine stage stays inside its travel. With perfect knowledge at the severe class its 99th-percentile
-  travel is {{t:all/severe:P_oracle:travel_p99_mm}} mm, and it spends {{t:all/severe:P_oracle:at_limit_share:3}} of the
-  contact time at the ±5 mm soft limit. Its force is {{t:all/severe:P_oracle:force_rms_N}} N RMS, a copper loss of
-  about {{t:all/severe:P_oracle:copper_W_per_axis_rms}} W per axis (CALC on SIM forces). Scaled to leave study F's +2-word residual, the platen keeps the estimator's
-  result exactly ({{t:all/severe:P_a_r2:tip_tremor_mm}} mm). The ±1.5 mm nib loses some of it
-  ({{t:all/severe:F15_a_r2:tip_tremor_mm}} mm, F).
-- **Estimators.** Study E's real-data network on the platen leaves {{t:all/severe:P_E_net:tip_tremor_mm}} mm
-  ({{t:all/severe:P_E_net:words_read}} words). On clean writing the estimators move the ink by
-  {{r:tremor.clean.P_E_chosen.mean_over_writers.mean:1}} µm (E's frozen design) and
-  {{r:tremor.clean.P_E_net.mean_over_writers.mean:1}} µm (real-data network), mean over writers. Neither design was
-  built for an ordinary pen's sensor streams (§3.3).
+- **Reach.**
+  - *Travel.* The fine stage stays inside its travel. With perfect knowledge at the severe class its 99th-percentile
+    travel is {{t:all/severe:P_oracle:travel_p99_mm}} mm, and it spends {{t:all/severe:P_oracle:at_limit_share:pct}} of
+    the contact time at the ±5 mm soft limit. ±4 mm would leave {{s:travel_4mm|oracle:tip_tremor_mm}} mm and ±3 mm
+    {{s:travel_3mm|oracle:tip_tremor_mm}} mm.
+  - *Effort.* The stage's force is {{t:all/severe:P_oracle:force_rms_N}} N RMS, a copper loss of about
+    {{t:all/severe:P_oracle:copper_W_per_axis_rms}} W per axis (CALC on SIM forces).
+  - *Scaled to F's +2-word residual.* The platen keeps the estimator's result exactly
+    ({{t:all/severe:P_a_r2:tip_tremor_mm}} mm). The ±1.5 mm nib loses some of it
+    ({{t:all/severe:F15_a_r2:tip_tremor_mm}} mm, F).
+- **Estimators.**
+  - *Real-data network.* Study E's real-data network on the platen leaves {{t:all/severe:P_E_net:tip_tremor_mm}} mm
+    ({{t:all/severe:P_E_net:words_read}} words).
+  - *Clean writing.* The estimators move the ink by {{r:tremor.clean.P_E_chosen.mean_over_writers.mean:1}} µm (E's
+    frozen design) and {{r:tremor.clean.P_E_net.mean_over_writers.mean:1}} µm (real-data network), mean over writers.
+  - *Command content.* E's frozen design's command carries
+    {{r:command_bands.rms_mm.E_chosen_platen_horizon.above_12:2}} mm RMS above 12 Hz, against
+    {{r:command_bands.rms_mm.perfect_knowledge.above_12:3}} mm for perfect knowledge (one case). The stage follows it at
+    {{t:all/severe:P_E_chosen:force_rms_N:1}} N RMS, above the voice coil's 9.3 N continuous rating.
+  - Neither design was built for an ordinary pen's sensor streams or for the platen's lag (§3.3).
 - **Accepted writing.**
   - *Tremor.* The proposed configuration completes {{a:se|proposed|drift:complete}} "se" suffixes with a drifting hand,
     {{a:se|proposed|mod_PD:complete}} and {{a:se|proposed|mod_ET:complete}} with moderate Parkinson's and essential
     tremor, and {{a:se|proposed|sev_PD:complete}} and {{a:se|proposed|sev_ET:complete}} with severe tremor. The camera's
     residual and the pen's deflection pass the five-bar's 0.2 mm refusal limit, so a user with severe tremor docks the
     pen.
-  - *The longer rewrite "library".* The held pen completes {{a:library|proposed|still:complete}}. The refusals fall on
+  - *The longer rewrite "library".* The held pen completes {{a:library|proposed|still:complete}}. Its refusals fall on
     short strokes such as the dot of the i, where the pen's deflection must flip. The cradle completes
     {{a:library|cradle|cradle:complete}}.
   - *Smoothness.* After a 30 Hz low-pass the ink peaks at {{a:se|proposed|still:ink_lp30_max_acc_m_s2}} m/s² and
-    {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}} m/s³ (still hand). {{a:se|proposed|still:ink_lp30_passes_both}} of
-    {{a:se|proposed|still:n}} words stay within 2 m/s² and 300 m/s³, against
+    {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}} m/s³ with a still hand. {{a:se|proposed|still:ink_lp30_passes_both}}
+    of {{a:se|proposed|still:n}} words stay within 2 m/s² and 300 m/s³, against
     {{r:fivebar.derivative_check_same_definition.lp30_passes_both}} of
-    {{r:fivebar.derivative_check_same_definition.n}} for the five-bar's own traces on the same definition. Sampled
-    without filtering, as the five-bar's published check was, neither device passes: the platen's ink jerk is
-    dominated by camera noise and encoder steps ({{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³), the five-bar's reached
-    {{r:fivebar.derivative_check.summary.tip_page.peak_sampled_jerk_m_s3.maximum:0}} m/s³ (§4.4). With tremor the ink
-    carries residual tremor and fails both definitions.
-- **Sensitivity.** Camera latency matters most: 2 / 6 / 15 / 25 ms leave {{s:latency_2ms|camera:tip_tremor_mm}} /
-  {{s:baseline|camera:tip_tremor_mm}} / {{s:latency_15ms|camera:tip_tremor_mm}} / {{s:latency_25ms|camera:tip_tremor_mm}}
-  mm with perfect separation. A marker that reads 10 % of the hand's tremor as tip motion leaves
-  {{s:tilt_kappa_0.1|camera:tip_tremor_mm}} mm. A hand resting on paper held only by a clip lets the paper slip
-  ({{s:slip_hand_on_paper_clip_only|oracle:tip_tremor_mm}} mm with perfect knowledge); the palm rest and vacuum keep it
-  near the rigid-sheet result. A single belt stage cannot cancel tremor ({{s:belt_single_stage|oracle:tip_tremor_mm}} mm
-  with perfect knowledge) (SIM, §5).
+    {{r:fivebar.derivative_check_same_definition.n}} for the five-bar's own traces on the same definition. Sampled at
+    0.5 ms without filtering, as the five-bar's published check was, neither device passes. The platen's sampled peaks
+    ({{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³) come from touchdown and lift, where the ball's friction switches
+    within one sample, and from camera noise that the stage follows. With tremor the ink carries residual tremor and
+    fails every definition.
+- **Sensitivity** (SIM, §5):
+  - *Friction coupling* is the largest effect: the ball's drag (above) and a hand resting on the moving paper
+    (below).
+  - *Camera latency* comes next: 2 / 6 / 15 / 25 ms leave {{s:latency_2ms|camera:tip_tremor_mm}} /
+    {{s:baseline|camera:tip_tremor_mm}} / {{s:latency_15ms|camera:tip_tremor_mm}} /
+    {{s:latency_25ms|camera:tip_tremor_mm}} mm with perfect separation.
+  - *Camera noise and pen tilt.* Without camera noise the camera loop leaves {{s:noise_0um|camera:tip_tremor_mm}} mm. A
+    marker that reads 10 % of the hand's tremor as tip motion leaves {{s:tilt_kappa_0.1|camera:tip_tremor_mm}} mm.
+  - *A hand resting on the moving paper* is dragged by it. The camera loop then runs at the 20 N cap and leaves
+    {{s:slip_hand_on_paper_vacuum|camera:tip_tremor_mm}} mm. With only a clip, the hand carries the sheet away
+    ({{s:slip_hand_on_paper_clip_only|held:paper_slip_final_mm:0}} mm), so the palm rest and a firm hold-down are needed.
+  - *One belt stage* run at 15 Hz leaves {{s:belt_single_stage|oracle:tip_tremor_mm}} mm with perfect knowledge and
+    {{s:belt_single_stage|camera:tip_tremor_mm}} mm with the camera, against {{s:baseline|camera:tip_tremor_mm}} mm for
+    the voice-coil stage.
 
 **What it would be (PROPOSED DESIGN).** A desk appliance with a 380 × 300 mm base. An A5 sheet lies on a vacuum plate
 66 mm above the desk. The plate rides on a voice-coil fine stage (±5 mm, 40 Hz, 0.59 kg moving, 20 N cap), which sits on
@@ -95,8 +124,8 @@ about USD 1,500-3,000 (ASSUMPTION).
 **Who would use it.** It suits people who write at a desk: letters, cards, forms and signatures at home; therapy,
 assessment and research in clinics; a shared station in a special-needs classroom. For tremor it helps only once an
 estimator separates tremor from writing. That is the same gate as the pen's (DEC-055), but the platen removes the
-reach limit behind it. For accepted-word completion it works now in simulation, with the pen held firmly or docked.
-It is not portable: it needs a desk, mains power and loose sheets (§6).
+reach limit behind it. For accepted-word completion it works now in simulation with the pen docked, or held firmly
+by a calm hand. It is not portable: it needs a desk, mains power and loose sheets (§6).
 
 **What is not known.** Everything physical is still open:
 - how far real hands let a pen be dragged by a moving page (EXP-PL03);
@@ -111,7 +140,7 @@ It is not portable: it needs a desk, mains power and loose sheets (§6).
 | Part | Question | Model and inputs (SIMULATION unless stated) | Measures |
 |---|---|---|---|
 | Concept | What would a moving-paper platen be? | PROPOSED DESIGN with MFR data, LIT values and ASSUMPTIONS (`platen/design.py`); CAD layout (`mechanics/cad/platen.py`) | sizes, masses, forces, power, noise, cost, safety (CALC) |
-| (a) Tremor | Does moving the page cancel real tremor at the ink, and how does it compare with the nib? | HW1's hand and ordinary 12 g pen; the page moved by the fine stage; study E's selection set: the 10 tuning notes × PD and ET × severe and moderate class (40 cases) + the 10 notes without tremor; perfect knowledge, study E's estimators, camera sensing | study R's tip tremor and words read by R's literal reader (TrOCR base), F's curve for rows not read; stage travel, force, copper loss; clean writing moved |
+| (a) Tremor | Does moving the page cancel real tremor at the ink, and how does it compare with the nib? | HW1's hand and ordinary 12 g pen; the page moved by the fine stage; study E's selection set: the 10 tuning notes × PD and ET × severe and moderate class (40 cases) + the 10 notes without tremor; perfect knowledge, study E's estimators, camera sensing | study R's tip tremor and words read by R's literal reader, F's curve for rows not read; stage travel, force, copper loss; clean writing moved |
 | (b) Accepted | Can the platen write an accepted word under a pen the user holds still? | the independent pass's 20 'se' references and 20 'library' rewrites (ai3's functions); HW1's hand holding the pen, with drift and real tremor of tuning patients; the two-layer stage; camera sensing; 40 ms Z-drop | the five-bar's measures and criterion; ink, page and tip acceleration and jerk against 2 m/s² and 300 m/s³ |
 | (c) Sensitivity | What does the result depend on? | 20 severe cases; one change at a time: camera latency, noise, rate; stage bandwidth and travel; pen tilt; page slip under the hand; friction convention; pen mass; a single belt stage | tip tremor, words via F's curve (CALC), paper slip; accepted-mode variants |
 
@@ -134,8 +163,8 @@ stage, at HW1's 25 µs step:
   when the platen's own ink estimate is off by more than 0.2 mm for 10 ms.
 
 With the page held still, the model reproduces HW1's ordinary pen to 1e-17 m (a test checks it). The platen-off rows
-are therefore exactly the ordinary pen of every earlier study. The largest difference from study F's ordinary pen on
-the same cases is {{r:tremor.repro_ordinary_vs_F_max_abs_mm:4}} mm.
+are therefore exactly the ordinary pen of every earlier study: on the same cases their tip tremor differs from study
+F's by at most {{r:tremor.repro_ordinary_vs_F_max_abs_mm:6}} mm.
 
 **The writer convention: who cancels the page's drag.** Every earlier study used HW1's convention ('hw1'), in which
 the writer cancels whatever drag the ball meets, so the pen does not feel the paper. Part (a) keeps it, so the pen is
@@ -170,7 +199,7 @@ not by a 24 mm pen.
 | | Servo | 2nd-order reference follower at 40 Hz (ζ 0.7) after one 0.5 ms tick of latency, a group delay of 6.07 ms; inner PD loop at 250 Hz on 0.25 µm encoders; 20 N force cap | PROPOSED DESIGN; encoder class MFR (OPT-89) |
 | Coarse XY | Cross-slide on miniature rails; belt H-bot with two fixed NEMA 17 closed-loop steppers and 20-tooth GT2 pulleys | ±40 × ±20 mm, about 8 Hz, ≤ 50 mm/s, force capped at 20 N; moving mass {{d:masses.A5.coarse_moving_kg}} kg | PROPOSED DESIGN; motors MFR (AMF-92, AMF-286) |
 | | Force for a word | {{d:masses.A5.coarse_moving_kg}} kg × 2 m/s² + 1 N friction = {{d:coarse_force.needed_N_at_2_m_s2:1}} N, a fifth of the cap. One motor's stall force through the pulley is about {{d:coarse_force.stall_force_per_motor_N:0}} N, so the cap is a software and driver-current limit | CALC |
-| Why two layers | A belt axis rings at about 50 Hz (a desktop machine's example is 49.4 Hz, CON-112), so it cannot close the 40 Hz loop that tremor needs. The voice-coil stage cannot travel a whole word. A single long-travel linear-motor stage would do both but costs several times more (ASSUMPTION) | Part (c) runs a single belt stage at 15 Hz | LIT, SIM |
+| Why two layers | A belt axis rings at about 50 Hz (a desktop machine's example is 49.4 Hz, CON-112), so its position loop must stay well below that, while the camera loop gains from 40 Hz. The voice-coil stage cannot travel a whole word. A single long-travel linear-motor stage would do both but costs several times more (ASSUMPTION) | A single belt stage at 15 Hz leaves {{s:belt_single_stage|camera:tip_tremor_mm}} mm with the camera against {{s:baseline|camera:tip_tremor_mm}} mm for the fine stage (part c; its ringing is not modelled): a belt-only platen is the low-cost variant | LIT, SIM |
 
 ### 2.2 Paper hold-down and registration
 
@@ -198,9 +227,10 @@ writing with the palm raised are open (EXP-PL09).
 
 ### 2.4 Pen sensing: four options, with their delays and noise
 
-The delays and noise below are the inputs of the simulation's sweeps (`design.SENSING_OPTIONS`).
+The delays and noise below are the inputs of the simulation's sweeps (`design.SENSING_OPTIONS`; the label of each value
+is in the last column).
 
-{{tab:design}}
+{{tab:sensing}}
 
 - **The choice (PROPOSED DESIGN): a global-shutter camera on a side post,** running at 250 frames/s in a region of
   interest (the OV9281 class gives 640 × 400 at 253 frames/s, MFR AMF-281). It tracks a small retro-reflective or IR-LED
@@ -243,6 +273,18 @@ The delays and noise below are the inputs of the simulation's sweeps (`design.SE
 | Acoustic noise | target ≤ 40 dB(A) at 0.5 m | same | ASSUMPTION; steppers in a silent chopper mode (AMF-93). The blower is the loud part (a faster model of the same 97 mm blower is listed at 64 dB(A), AMF-285), so it must run slowly or give way to a tack mat |
 | Bill of materials | USD {{r:design.bom.bom_usd_low}}-{{r:design.bom.bom_usd_high}} (prototype quantities) | somewhat less | ASSUMPTION ranges, sums CALC |
 | Retail price | about USD 1,500-3,000 | about USD 1,200-2,500 | ASSUMPTION (2-3 × a volume bill of materials of USD 500-1,000; assistive device, low volume) |
+
+**Moving masses** (CALC; part masses ASSUMPTION except the voice coils, MFR)
+
+{{tab:masses}}
+
+**Bill of materials, prototype quantities** (ASSUMPTION ranges; the sums CALC)
+
+{{tab:bom}}
+
+**Power** (CALC on ASSUMPTION ranges)
+
+{{tab:power}}
 
 ### 2.7 Safety
 
@@ -323,28 +365,40 @@ knowledge (SIM; CSV twin `results/platen/fig_reach.csv`).*
   {{t:all/severe:F10_oracle:tip_tremor_mm}} mm on the ±1.0 mm nib. The words read follow:
   {{t:all/severe:P_oracle:words_read}} against {{t:all/severe:F15_oracle:words_read}} and
   {{t:all/severe:F10_oracle:words_read}} of 10. The ±5 mm travel is reached in
-  {{t:all/severe:P_oracle:at_limit_share:3}} of the contact time.
+  {{t:all/severe:P_oracle:at_limit_share:pct}} of the contact time.
 - **The estimator is the limit, as study F found.** Study E's design leaves {{t:all/severe:P_E_chosen:tip_tremor_mm}}
   mm on the platen and {{t:all/severe:N15_E_chosen:tip_tremor_mm}} mm on the ±1.5 mm nib, and the words read are
   {{t:all/severe:P_E_chosen:words_read}} and {{t:all/severe:N15_E_chosen:words_read}}. The platen removes the reach
   term, but E's estimate is about 1 mm wrong in the tremor band, and no stage can correct an error it is told to make.
 - **E's designs were not built for this pen.** They were tuned on the Rev J pen's streams. Here they read the ordinary
-  pen's IMU, whose tremor-band motion differs (the Rev J nose moves, the ordinary pen does not). This domain shift is
-  one reason the clean-writing change on the platen can differ from E's own numbers. A platen estimator should be
-  trained on the platen's own sensors; the camera sees the tip directly (§5).
+  pen's IMU, whose tremor-band motion differs (the Rev J nose moves, the ordinary pen does not). On clean writing, E's
+  frozen design moves the ink by {{r:tremor.clean.P_E_chosen.mean_over_writers.mean:1}} µm on the platen, against
+  {{r:tremor.clean.N6_E_chosen.mean_over_writers.mean:1}} µm on the Rev J nose. On the platen,
+  {{r:tremor.clean.P_E_chosen.notes_over_50um}} of {{r:tremor.clean.P_E_chosen.n_notes}} notes exceed REQ-CTRL-016's
+  50 µm. The real-data network stays low ({{r:tremor.clean.P_E_net.mean_over_writers.mean:1}} µm). A platen estimator
+  should be trained on the platen's own sensors; the camera sees the tip directly (§5).
 - **The camera is good enough if the tremor can be separated.** With the clean path known,
   camera sensing and prediction leave {{t:all/severe:P_cam_sep:tip_tremor_mm}} mm, far below F's near-normal level of
-  0.25 mm. The platen's sensing is therefore not what stands between the user and legible writing; separation is.
+  0.25 mm (under HW1's drag convention; §5 gives the alternative). The platen's sensing is therefore not what stands
+  between the user and legible writing; separation is.
 - **The stage's effort.** With perfect knowledge the fine stage needs {{t:all/severe:P_oracle:force_rms_N}} N RMS
   ({{t:all/severe:P_oracle:copper_W_per_axis_rms}} W of copper loss per axis), and with the camera
-  {{t:all/severe:P_cam_sep:force_rms_N}} N ({{t:all/severe:P_cam_sep:copper_W_per_axis_rms}} W), within the voice coil's
-  9.3 N continuous rating. Part of that is chatter of the inner loop on its 0.25 µm encoder steps; part (c) removes it
-  (the ideal inner loop). With study E's commands the stage works far harder:
-  {{t:all/severe:P_E_chosen:force_rms_N}} N RMS, at the 20 N cap for part of the time, and
-  {{t:all/severe:P_E_chosen:copper_W_per_axis_rms}} W per axis, near the coil's 14 W continuous limit. The cause is the
-  command, not the tremor. ai2's network gives an output every 2 ms, and predicting 2.7 ms beyond its build horizon
-  (to cover the platen's 6.07 ms lag instead of the Rev J servo's 3.39 ms) turns those outputs into a 2 ms sawtooth,
-  which the stage follows. Smoothing the command removes most of the effort (part c):
+  {{t:all/severe:P_cam_sep:force_rms_N}} N ({{t:all/severe:P_cam_sep:copper_W_per_axis_rms}} W). Both are within the
+  voice coil's 9.3 N continuous rating. Part of that force is chatter of the inner loop on its 0.25 µm encoder steps:
+  with an ideal inner loop, perfect knowledge needs {{s:ideal_inner_loop|oracle:force_rms_N}} N.
+
+  With study E's commands the stage works far harder: {{t:all/severe:P_E_chosen:force_rms_N:1}} N RMS, at the 20 N cap
+  for part of the time, and {{t:all/severe:P_E_chosen:copper_W_per_axis_rms:1}} W per axis, near the coil's 14 W
+  continuous limit. The cause is the command, not the tremor. E's frozen design carries
+  {{r:command_bands.rms_mm.E_chosen_platen_horizon.above_12:2}} mm RMS above 12 Hz at the platen's lag
+  ({{r:command_bands.rms_mm.E_chosen_own_horizon.above_12:2}} mm at its own, shorter horizon). Perfect knowledge
+  carries {{r:command_bands.rms_mm.perfect_knowledge.above_12:3}} mm there.
+
+  The content comes from jitter in the network's output, which grows when the output is predicted 2.7 ms further than
+  the network was built for. A 2 ms moving average does not remove it (part c). A platen estimator would have to
+  band-limit its output above the tremor band, and to be designed for the lag that such a filter adds.
+
+{{tab:bands}}
 
 {{tab:ecmd}}
 
@@ -443,9 +497,14 @@ naively completes {{a:se|relaxed_naive|still:complete}}.
 
 {{tab:acc_se}}
 
-**'library' (the rewrite for the 20 writers; ai3's preflight rejects the plan of {{r:accepted.library_rejected_text}}).**
+{{tab:smooth_se}}
+
+**'library' (the rewrite for the 20 writers; one writer's plan is rejected by ai3's checks:
+{{r:accepted.library_rejected_text}}).**
 
 {{tab:acc_library}}
+
+{{tab:smooth_library}}
 
 **Sensitivity of accepted writing ('se', the proposed configuration unless named).**
 
@@ -466,26 +525,45 @@ followed naively (SIM; CSV twin `results/platen/fig_accepted_example.csv`).*
   200 and 500 N/m grips. The platen does not push the hand, so a grip does not resist it in the same way. What matters
   is how stiffly the pen is held against the page's drag. The proposed platen completes
   {{a:se|proposed|still:complete}} with a still hand, the cradle {{a:se|cradle|cradle:complete}}.
-- **Smoothness.** The five-bar's ink on the page reached {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.maximum:2}}
-  m/s² (median word peak {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.median_word_peak:2}})
-  and a sampled jerk of {{r:fivebar.derivative_check.summary.tip_page.peak_sampled_jerk_m_s3.maximum:0}} m/s³, with
-  {{r:fivebar.derivative_check.summary.tip_page.both_gates_pass}} of {{r:fivebar.derivative_check.summary.tip_page.words}} words within both limits. On the platen
-  (proposed, still hand) the ink reached {{a:se|proposed|still:ink_max_acc_m_s2}} m/s² and
-  {{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³ sampled
-  ({{a:se|proposed|still:ink_passes_both}} of {{a:se|proposed|still:n}} within both). After a 30 Hz low-pass it reached
-  {{a:se|proposed|still:ink_lp30_max_acc_m_s2}} m/s² and {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}} m/s³
-  ({{a:se|proposed|still:ink_lp30_passes_both}} of {{a:se|proposed|still:n}}). The page itself (the stage) reached
-  {{a:se|proposed|still:page_max_acc_m_s2}} m/s² and {{a:se|proposed|still:page_max_jerk_m_s3}} m/s³ sampled. The
-  sampled jerk at 0.5 ms is dominated by the camera noise that the stage follows and by the 0.25 µm encoder steps of the
-  inner loop, not by the word. The five-bar's own stored traces, put through the same check, reproduce its published
-  sampled peaks ({{r:fivebar.derivative_check_same_definition.max_acc_m_s2:2}} m/s²,
-  {{r:fivebar.derivative_check_same_definition.max_jerk_m_s3:0}} m/s³). After the same 30 Hz low-pass they reach
-  {{r:fivebar.derivative_check_same_definition.lp30_max_acc_m_s2:2}} m/s² and
-  {{r:fivebar.derivative_check_same_definition.lp30_max_jerk_m_s3:0}} m/s³, with
-  {{r:fivebar.derivative_check_same_definition.lp30_passes_both}} of {{r:fivebar.derivative_check_same_definition.n}}
-  words within both limits (CALC on its SIM traces, no hand on its pen). On one definition the two devices are
-  therefore comparable in smoothness. The 2 m/s² and 300 m/s³ limits are reference-planning assumptions (the
-  five-bar's check says so), not hardware ratings.
+- **Smoothness.**
+  - *The five-bar.* Its ink on the page reached
+    {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.maximum:2}} m/s² (median word peak
+    {{r:fivebar.derivative_check.summary.tip_page.peak_acceleration_m_s2.median_word_peak:2}}) and a sampled jerk of
+    {{r:fivebar.derivative_check.summary.tip_page.peak_sampled_jerk_m_s3.maximum:0}} m/s³.
+    {{r:fivebar.derivative_check.summary.tip_page.both_gates_pass}} of
+    {{r:fivebar.derivative_check.summary.tip_page.words}} words stayed within both limits.
+  - *The platen, sampled.* The platen's ink (proposed, still hand) reached {{a:se|proposed|still:ink_max_acc_m_s2}}
+    m/s² and {{a:se|proposed|still:ink_max_jerk_m_s3}} m/s³ sampled, and
+    {{a:se|proposed|still:ink_passes_both}} of {{a:se|proposed|still:n}} words stayed within both.
+  - *Where those peaks come from.* The sampled jerk has three sources.
+    - *Touchdown and lift.* The ball's friction switches on or off within one 0.5 ms sample, so the pen's
+      acceleration steps. These are the largest peaks, and they remain with perfect sensing and a stiff cradle
+      ({{as:ideal_sensing|still:ink_max_jerk_m_s3}} and {{as:ideal_sensing_cradle|cradle:ink_max_jerk_m_s3}} m/s³).
+    - *Camera noise and encoder steps*, which the stage follows. With them, the cradle's ink jerk away from touchdown
+      and lift reaches {{a:se|cradle|cradle:ink_away_max_jerk_m_s3}} m/s³ (median 99th percentile
+      {{a:se|cradle|cradle:ink_median_p99_jerk_m_s3}}). Without them it is
+      {{as:ideal_sensing_cradle|cradle:ink_away_max_jerk_m_s3}} m/s³
+      ({{as:ideal_sensing_cradle|cradle:ink_median_p99_jerk_m_s3}}).
+    - *The held pen's stick-slip.* With ideal sensing the held pen's ink still reaches
+      {{as:ideal_sensing|still:ink_away_max_jerk_m_s3}} m/s³ away from touchdown and lift.
+  - *Away from touchdown and lift* (±1 ms) the ink reaches {{a:se|proposed|still:ink_away_max_acc_m_s2}} m/s² and
+    {{a:se|proposed|still:ink_away_max_jerk_m_s3}} m/s³ ({{a:se|proposed|still:ink_away_passes_both}} of
+    {{a:se|proposed|still:n}} words within both).
+  - *After a 30 Hz low-pass* it reaches {{a:se|proposed|still:ink_lp30_max_acc_m_s2}} m/s² and
+    {{a:se|proposed|still:ink_lp30_max_jerk_m_s3}} m/s³ ({{a:se|proposed|still:ink_lp30_passes_both}} of
+    {{a:se|proposed|still:n}}).
+  - *The five-bar on the same checks.* Its stored traces reproduce the published sampled peaks
+    ({{r:fivebar.derivative_check_same_definition.max_acc_m_s2:2}} m/s²,
+    {{r:fivebar.derivative_check_same_definition.max_jerk_m_s3:0}} m/s³). Away from its contact-flag changes the peaks
+    are the same ({{r:fivebar.derivative_check_same_definition.away_max_jerk_m_s3:0}} m/s³), because its plant has no
+    contact force step: they come from its own force updates. After the 30 Hz low-pass they reach
+    {{r:fivebar.derivative_check_same_definition.lp30_max_acc_m_s2:2}} m/s² and
+    {{r:fivebar.derivative_check_same_definition.lp30_max_jerk_m_s3:0}} m/s³, with
+    {{r:fivebar.derivative_check_same_definition.lp30_passes_both}} of {{r:fivebar.derivative_check_same_definition.n}}
+    words within both limits (CALC on its SIM traces, no hand on its pen).
+  - *On the low-passed definition*, the platen's ink with a still hand is at least as smooth as the five-bar's with no
+    hand. The 2 m/s² and 300 m/s³ limits are reference-planning assumptions (the five-bar's check says so), not
+    hardware ratings.
 
 ### 4.5 What it means
 
@@ -509,24 +587,42 @@ paper.
 
 ## 5. Part (c): sensitivity
 
-**Free writing (severe class, 20 cases, one change at a time; 'fixed page' is the ordinary pen under that variant's
-own convention).**
+The runs use the severe class (20 cases) and change one thing at a time from part (a)'s platen. Every camera
+predictor was refitted on the tuning split for its setting. "Fixed page" is the ordinary pen under that variant's own
+convention or hand.
 
 {{tab:sens}}
 
 ![Sensing](../results/platen/fig_sensing.png)
 
-*Figure 5. Tremor left against the camera's latency and noise and the stage's bandwidth, perfect separation (SIM;
-CSV twin `results/platen/fig_sensing.csv`).*
+*Figure 5. Tremor left against the camera's latency and noise and the fine stage's bandwidth (SIM; CSV twin
+`results/platen/fig_sensing.csv`).*
 
-- **Sensing delay** is the steepest dependence: 2 / 6 / 10 / 15 / 25 ms leave {{s:latency_2ms|camera:tip_tremor_mm}}
-  / {{s:baseline|camera:tip_tremor_mm}} / {{s:latency_10ms|camera:tip_tremor_mm}} /
-  {{s:latency_15ms|camera:tip_tremor_mm}} / {{s:latency_25ms|camera:tip_tremor_mm}} mm. Every predictor was refitted on
-  the tuning split for its latency. A Bluetooth LE link (7.5-15 ms) would cost a large share of the margin to F's
-  near-normal 0.25 mm; the platen's sensor should be wired.
-- **Sensing noise:** 0 / 15 / 30 / 60 µm leave {{s:noise_0um|camera:tip_tremor_mm}} /
-  {{s:baseline|camera:tip_tremor_mm}} / {{s:noise_30um|camera:tip_tremor_mm}} / {{s:noise_60um|camera:tip_tremor_mm}}
-  mm. **Frame rate:** 125 / 250 / 500 Hz leave {{s:rate_125Hz|camera:tip_tremor_mm}} /
+- **The ball's friction.** Under the 'intended' convention the writer compensates only the drag of the intended
+  motion, so the tremor-band drag acts on the pen.
+  - On the fixed page that drag damps the tip a little ({{s:friction_intended|fixed:tip_tremor_mm}} mm).
+  - Perfect knowledge (of the fixed-page tremor) leaves {{s:friction_intended|oracle:tip_tremor_mm}} mm, because a
+    moving page changes the drag and so the tip.
+  - The camera loop leaves {{s:friction_intended|camera:tip_tremor_mm}} mm at
+    {{s:friction_intended|camera:force_rms_N:1}} N RMS: it chases the tip motion that its own page motion causes, the
+    coupling found in part (b).
+  - With part (b)'s firm grip on the palm rest the same runs leave {{s:friction_intended_firm_hand|oracle:tip_tremor_mm}}
+    mm (perfect knowledge) and {{s:friction_intended_firm_hand|camera:tip_tremor_mm}} mm (camera), still at
+    {{s:friction_intended_firm_hand|camera:force_rms_N:1}} N RMS.
+
+  Which convention holds for real writers is unknown, and it is the largest uncertainty of the free-writing result
+  (EXP-PL03, EXP-PL06). A drag decoupling for free writing would need a model of the writer's own compensation; none
+  was built.
+- **Sensing delay:** 2 / 4 / 6 / 10 / 15 / 25 ms leave {{s:latency_2ms|camera:tip_tremor_mm}} /
+  {{s:latency_4ms|camera:tip_tremor_mm}} / {{s:baseline|camera:tip_tremor_mm}} / {{s:latency_10ms|camera:tip_tremor_mm}}
+  / {{s:latency_15ms|camera:tip_tremor_mm}} / {{s:latency_25ms|camera:tip_tremor_mm}} mm. A Bluetooth LE link (7.5-15
+  ms more) would take most of the margin to F's near-normal 0.25 mm, so the platen's sensor should be wired.
+- **Sensing noise:** 0 / 5 / 15 / 30 / 60 µm RMS per axis leave {{s:noise_0um|camera:tip_tremor_mm}} /
+  {{s:noise_5um|camera:tip_tremor_mm}} / {{s:baseline|camera:tip_tremor_mm}} / {{s:noise_30um|camera:tip_tremor_mm}} /
+  {{s:noise_60um|camera:tip_tremor_mm}} mm. Noise, not lag, makes most of the camera's residual at 6 ms. The predictor
+  extrapolates about 12 ms (camera latency plus the stage's lag) and amplifies frame noise. A model-based predictor
+  might do better than this pooled linear one.
+- **Frame rate:** 125 / 250 / 500 frames/s leave {{s:rate_125Hz|camera:tip_tremor_mm}} /
   {{s:baseline|camera:tip_tremor_mm}} / {{s:rate_500Hz|camera:tip_tremor_mm}} mm.
 - **Pen tilt.** The marker sits above the ball, so the pen's rotation reads as tip motion. A marker error of 5 / 10 /
   20 % of the hand's tremor leaves {{s:tilt_kappa_0.05|camera:tip_tremor_mm}} /
@@ -534,39 +630,68 @@ CSV twin `results/platen/fig_sensing.csv`).*
   ball, or correct it with the pen's measured tilt.
 - **Stage bandwidth:** 15 / 25 / 40 / 80 Hz leave {{s:bandwidth_15Hz|camera:tip_tremor_mm}} /
   {{s:bandwidth_25Hz|camera:tip_tremor_mm}} / {{s:baseline|camera:tip_tremor_mm}} /
-  {{s:bandwidth_80Hz|camera:tip_tremor_mm}} mm with the camera, and {{s:bandwidth_15Hz|oracle:tip_tremor_mm}} /
-  {{s:bandwidth_25Hz|oracle:tip_tremor_mm}} / {{s:baseline|oracle:tip_tremor_mm}} /
-  {{s:bandwidth_80Hz|oracle:tip_tremor_mm}} mm with perfect knowledge (previewed by each stage's own group delay).
-  **One belt stage** (15 Hz, 5 µm encoder, more friction) leaves {{s:belt_single_stage|oracle:tip_tremor_mm}} mm
-  (perfect knowledge) and {{s:belt_single_stage|camera:tip_tremor_mm}} mm (camera).
+  {{s:bandwidth_80Hz|camera:tip_tremor_mm}} mm with the camera, at {{s:bandwidth_15Hz|camera:force_rms_N}} /
+  {{s:bandwidth_25Hz|camera:force_rms_N}} / {{s:baseline|camera:force_rms_N}} / {{s:bandwidth_80Hz|camera:force_rms_N}}
+  N RMS. With perfect knowledge, previewed by each stage's own lag, they leave
+  {{s:bandwidth_15Hz|oracle:tip_tremor_mm}} / {{s:bandwidth_25Hz|oracle:tip_tremor_mm}} /
+  {{s:baseline|oracle:tip_tremor_mm}} / {{s:bandwidth_80Hz|oracle:tip_tremor_mm}} mm.
+- **One belt stage** (15 Hz, 5 µm encoder, more friction) leaves {{s:belt_single_stage|oracle:tip_tremor_mm}} mm (perfect
+  knowledge) and {{s:belt_single_stage|camera:tip_tremor_mm}} mm (camera). Its belt ringing is not modelled.
 - **Travel:** ±3 / ±4 / ±5 / ±6 mm leave {{s:travel_3mm|oracle:tip_tremor_mm}} / {{s:travel_4mm|oracle:tip_tremor_mm}}
   / {{s:baseline|oracle:tip_tremor_mm}} / {{s:travel_6mm|oracle:tip_tremor_mm}} mm with perfect knowledge.
-- **Page slip under the hand.** In these runs the sheet is a 3 g body on a friction hold-down, and the hand's skin
-  friction acts on it when the hand rests on the paper. With perfect knowledge, a hand on paper held by vacuum leaves
-  {{s:slip_hand_on_paper_vacuum|oracle:tip_tremor_mm}} mm, a hand on paper held only by a clip
-  {{s:slip_hand_on_paper_clip_only|oracle:tip_tremor_mm}} mm, and the palm rest with a clip only
-  {{s:slip_palm_rest_clip_only|oracle:tip_tremor_mm}} mm. The largest slips are in the table's last column.
-- **Friction convention.** Under 'intended', where the tremor-band drag acts on the pen, the fixed page leaves
-  {{s:friction_intended|fixed:tip_tremor_mm}} mm, and the platen {{s:friction_intended|oracle:tip_tremor_mm}} mm
-  (perfect knowledge) and {{s:friction_intended|camera:tip_tremor_mm}} mm (camera). **Pen mass** 20 g:
-  {{s:pen_20g|oracle:tip_tremor_mm}} mm (perfect knowledge).
-- **Accepted mode** (§4.3, last table):
-  - a 200 ms lift (the five-bar's) instead of 40 ms: {{as:lift_200ms|still:complete}} (still hand);
-  - camera noise 30 µm: {{as:camera_noise_30um|still:complete}}; camera latency 12 ms:
-    {{as:camera_latency_12ms|still:complete}};
-  - a compliance model 30 % off: {{as:model_x0.7|still:complete}} and {{as:model_x1.3|still:complete}};
-  - the naive controller on the firm hand: {{as:proposed_naive|still:complete}};
-  - 1.0 N instead of 0.5 N: {{as:firm_N1.0|still:complete}};
-  - a medium grip: {{as:medium_grip_N0.5|still:complete}};
-  - HW1's relaxed hand at 0.5 and 0.3 N: {{as:relaxed_N0.5|still:complete}} and {{as:relaxed_N0.3|still:complete}};
-  - the hand resting on the paper (vacuum hold): {{as:slip_hand_on_paper|still:complete}}.
+- **Pen mass** 20 g instead of 12 g: {{s:pen_20g|oracle:tip_tremor_mm}} mm (perfect knowledge) and
+  {{s:pen_20g|camera:tip_tremor_mm}} mm (camera).
+
+**Hold-down, palm rest and page slip.** In these runs the sheet is a 3 g body on a friction hold-down. When the hand
+rests on the paper, the hand's skin friction (2 N, μ 0.5; ASSUMPTION) acts between the hand and the sheet. "Held still"
+is the page with no command, which shows the sheet's own creep.
+
+{{tab:slip}}
+
+- **With the palm rest and a vacuum hold the sheet stays put** ({{s:slip_palm_rest_vacuum|camera:paper_slip_max_mm:2}}
+  mm at most with the camera loop), and part (a)'s results stand.
+- **With only a clip, the sheet walks.** It moves {{s:slip_palm_rest_clip_only|held:paper_slip_final_mm:1}} mm with
+  the page held and {{s:slip_palm_rest_clip_only|camera:paper_slip_final_mm:1}} mm under the camera loop. The clip's
+  capacity (0.2 N, CALC) is barely above the ball's drag (0.15-0.2 N), so real slip is plausible, though part of it is
+  the model's creep (below). The tremor measure does not see this slow drift, but the lines of writing do.
+- **A hand resting on the moving paper is dragged by it.**
+  - On a fixed page the resting hand damps the tremor ({{s:slip_hand_on_paper_vacuum|held:tip_tremor_mm}} mm).
+  - The camera loop runs at the 20 N cap and leaves {{s:slip_hand_on_paper_vacuum|camera:tip_tremor_mm}} mm.
+  - With a clip-only hold the hand carries the sheet away
+    ({{s:slip_hand_on_paper_clip_only|held:paper_slip_final_mm:0}} mm).
+  - This is why the palm rest is part of the design.
+- **Some of the simulated creep is not physical.** With the hand on a vacuum-held sheet the sheet creeps
+  {{s:slip_hand_on_paper_vacuum|held:paper_slip_final_mm:1}} mm over a note, although the hold's capacity (3 N) is well
+  above the hand's friction (1 N). Single-state friction laws such as LuGre drift under oscillating loads below
+  breakaway (LIT, CON-113), so creep must be measured (EXP-PL04).
+
+**Accepted mode ('se', the proposed configuration, 20 references; §4.3's last table):**
+- *Lift.* A 200 ms lift (the five-bar's) instead of 40 ms: {{as:lift_200ms|still:complete}} (still hand),
+  {{as:lift_200ms|mod_PD:complete}} (moderate PD).
+- *Camera.* Noise 30 µm: {{as:camera_noise_30um|still:complete}} and {{as:camera_noise_30um|mod_PD:complete}}. Latency
+  12 ms: {{as:camera_latency_12ms|still:complete}} and {{as:camera_latency_12ms|mod_PD:complete}}.
+- *Hand-compliance model 30 % off.* Too low: {{as:model_x0.7|still:complete}} and {{as:model_x0.7|mod_PD:complete}}.
+  Too high: {{as:model_x1.3|still:complete}} and {{as:model_x1.3|mod_PD:complete}}.
+- *Controller.* Drag decoupling only: {{as:decoupled_only|still:complete}}. The naive controller on the firm hand:
+  {{as:proposed_naive|still:complete}}.
+- *Normal force and grip.* 1.0 N instead of 0.5 N: {{as:firm_N1.0|still:complete}}. A medium grip:
+  {{as:medium_grip_N0.5|still:complete}}. HW1's relaxed hand at 0.5 and 0.3 N: {{as:relaxed_N0.5|still:complete}} and
+  {{as:relaxed_N0.3|still:complete}}.
+- *The hand resting on the paper* (vacuum hold): {{as:slip_hand_on_paper|still:complete}}.
+
+The accepted mode is therefore narrow for a held pen. It needs:
+- a firm grip at a low normal force;
+- a hand-compliance model within about 30 % (with tremor, tighter still);
+- a camera no worse than 15 µm and 6 ms.
+
+With the pen docked, only the cradle's stiffness matters (REQ-PLT-007).
 
 ## 6. Product fit
 
 **Who would use a desk platen (ASSUMPTION, from the simulated capabilities):**
 - **Home.** Letters, cards, forms and signatures written at a desk by people with severe tremor, once an estimator
   reaches the target. Accepted-word completion for people with dyslexia who want their own handwriting on paper, with
-  the pen held firmly or docked.
+  the pen docked, or held firmly by a calm hand.
 - **Clinics.** Occupational therapy, and research on handwriting under controlled tremor cancellation (the platen can
   replay perfect knowledge, which a pen cannot reach). Assessment of how much tremor matters to a person.
 - **Schools.** A shared desk station for children with dysgraphia or dyslexia. Size, price and supervision limit it
@@ -613,21 +738,47 @@ Two layout rules are tested: the palm posts clear the swept envelope, and the un
 
 - **Nothing was measured.** Every performance number is a simulation of model HW1 joined to a stage model.
 - **Tuning split only.** The test split is spent, so the results are on study R's tuning split, which studies E and F
-  also used for their choices. The platen's own choices, the predictor and the accepted-mode controller, were tuned on
-  the tuning split as well.
-- **Hand values in accepted mode are assumptions.** The hand's compliance under a firm grip (1.37 mm/N), the cradle's
-  stiffness, the drag measurement (1 ms, 5 mN) and the 0.5 N normal force for a gel refill are all ASSUMPTIONS.
-  Whether real hands can hold a pen that stiffly against a moving page, without fatigue, is the first thing to measure
-  (EXP-PL03).
-- **Friction.** The ball's friction is HW1's LuGre law with its constants. Paper, refill and plate change μ and
-  stiction (EXP-PL05).
-- **Camera model.** The camera has white noise and a fixed latency. Occlusion by the fingers, motion blur and marker
-  loss are not modelled (EXP-PL02).
-- **The estimators are not the platen's own.** Study E's estimators were designed for the Rev J pen's streams. A
-  platen estimator that uses the camera's absolute tip position was not built; that is the next estimator study, and
-  EXP-E10's held-out data decide it.
+  also used for their choices. The platen's own choices were tuned on the tuning split as well: the camera
+  predictors, the accepted-mode controller and the firm-grip configuration. The accepted references are UJI glyphs
+  already used in development.
+- **Who cancels the ball's drag.** The free-writing results use HW1's convention, in which the writer's hand cancels
+  the ball's drag. Under the alternative, perfect knowledge leaves {{s:friction_intended|oracle:tip_tremor_mm}} mm and
+  the camera loop {{s:friction_intended|camera:tip_tremor_mm}} mm instead of {{s:baseline|oracle:tip_tremor_mm}} and
+  {{s:baseline|camera:tip_tremor_mm}} mm (part c). Real writers lie somewhere between the two, and where is unknown.
+  No free-writing drag decoupling was built. This is the first open item (EXP-PL03, then EXP-PL06).
+- **Hand values are assumptions.** These include:
+  - the hand's compliance under a firm grip (1.37 mm/N) and the cradle's stiffness;
+  - the drag measurement (1 ms, 5 mN after the plate's inertial force is subtracted);
+  - the hand's skin friction on paper (2 N, μ 0.5);
+  - the 0.5 N normal force for a gel refill.
+
+  Whether real hands can hold a pen that stiffly against a moving page, without fatigue, is to be measured (EXP-PL03).
+- **Friction law.** The ball, the hold-down and the hand-on-paper contacts use HW1's LuGre law and constants. Paper,
+  refill and plate change μ and stiction (EXP-PL05). LuGre creeps under oscillating loads below breakaway (CON-113), so
+  the simulated sheet creep is an upper bound, to be measured (EXP-PL04).
+- **Camera model.** The camera has white noise and a fixed latency. Occlusion by the fingers, motion blur, marker loss
+  and lens distortion are not modelled (EXP-PL02). The predictor is a pooled linear one, refitted per setting; a
+  model-based predictor may extract more.
+- **Stage model.** The stage is rigid bodies with ideal guides. It has no structural modes, no belt ringing (the belt
+  variant is therefore optimistic), and no force-constant variation over the voice coil's stroke. The drawing's force
+  curve shows about 20 % less force 5 mm from mid-stroke (AMF-280).
+
+  A step command across the whole travel, at the 0.5 m/s slew limit and the 20 N cap, carries the plate into its
+  end-stop bumper: from 0.5 m/s the stopping distance exceeds the 1 mm between the soft limit and the stop. The tests
+  bound the overtravel below 0.5 mm. A 0.2 m/s slew limit would keep the plate off the stop, and tremor and accepted
+  words need less than 0.1 m/s (CALC).
+- **The estimators are not the platen's own.** Study E's estimators were designed for the Rev J pen's streams and the
+  Rev J servo's lag. On the platen they read the ordinary pen's IMU, and their commands carry large content above
+  12 Hz (§3.3). A platen estimator was not built: one that uses the camera's absolute tip position, band-limits its
+  output and is trained for the platen's lag. That is the next estimator study, and EXP-E10's held-out data decide it.
 - **Words are read by an AI reader** standing in for people (study R's instrument); people must read them (EXP-R03).
 - **Signatures by template** may not count as the user's own signature in law (EXP-PL09).
+- **Not designed.** The CAD's unresolved items are open (§7), as are:
+  - the Z-drop and its solenoids;
+  - the three-axis load cells with inertial compensation;
+  - the cradle;
+  - the calibration of the camera to the plate;
+  - a low-cost belt-only variant.
 
 ## 9. Files, commands, durations and tests
 
@@ -660,6 +811,11 @@ Two layout rules are tested: the palm posts clear the swept envelope, and the un
 - **Durations** (this machine: 4 cores shared with other studies; one process, one numerical thread):
 
 {{tab:timings}}
+
+  The second pass re-ran part (b) from empty caches with one added measure (the derivative peaks away from
+  touchdown and lift); its other numbers were identical. It also added part (c)'s firm-hand, held-page and
+  vacuum-with-palm-rest runs to the cached cases.
+- **Tests:** {{r:tests.summary}}.
 
 ## 10. Proposed rows (for the lead; not written into the shared files)
 

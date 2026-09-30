@@ -1,0 +1,13 @@
+id,requirement_id,experiment_id,metric,threshold,direction,basis,status,decision_gated
+AC-PL01-01,REQ-PLT-001,EXP-PL01,"Page error of the fine stage replaying study F's severe perfect-knowledge commands (R's in-band measure on page minus command, delay removed), mean over the 20 tuning cases",0.15 mm,<=,SIM: the platen leaves 0.02 (0.01 to 0.03) mm with perfect knowledge,hypothesis,DEC-086
+AC-PL01-02,REQ-PLT-002,EXP-PL01,Closed-loop -3 dB bandwidth of the fine stage with the A5 plate,25 Hz,>=,SIM sensitivity: 25 Hz leaves 0.13 (0.12 to 0.15) mm with the camera,requirement,DEC-086
+AC-PL02-01,REQ-PLT-004,EXP-PL02,End-to-end camera latency (acquisition to position available),6 ms,<=,MFR: 240 fps cameras reach 4.2 ms (AMF-282); SIM latency sweep,requirement,DEC-087
+AC-PL02-02,REQ-PLT-004,EXP-PL02,RMS position noise per axis of the tracked tip at rest,15 um,<=,SIM: 30 um leaves 0.13 (0.11 to 0.14) mm,requirement,DEC-087
+AC-PL03-01,REQ-PLT-007,EXP-PL03,"Tip deflection under sliding page drag with the firm grip on the palm rest at 0.5 N normal force, median over participants",0.15 mm,<=,ASSUMPTION: firm grip 1.37 mm/N x 0.15 x 0.5 N = 0.10 mm (CALC); HW1's relaxed hand 0.57 mm at 0.5 N,hypothesis,DEC-088
+AC-PL04-01,REQ-PLT-005,EXP-PL04,Shear force to slip the sheet with the chosen hold-down,3 N,>=,CALC: 3 x a resting hand's friction,requirement,REQ-PLT-005
+AC-PL05-01,REQ-PLT-007,EXP-PL05,"Accepted words meeting the five-bar's engineering criterion (coverage >= 98 %, RMS <= 0.10 mm, air ink <= 0.02 mm, no refusal), pen in a cradle",20 of 20,>=,"SIM: cradle 'se' 20/20, 'library' 19/19",hypothesis,DEC-088
+AC-PL05-02,REQ-PLT-007,EXP-PL05,The same with the pen held firmly on the palm rest by people without tremor,18 of 20,>=,SIM: proposed 'se' still 20/20,hypothesis,DEC-088
+AC-PL06-01,,EXP-PL06,"Tremor left at the ink with the rig's perfect knowledge, severe class",0.25 mm,<=,SIM 0.02 (0.01 to 0.03) mm; F's near-normal level 0.25 mm,hypothesis,DEC-085; DEC-089
+AC-PL07-01,REQ-PLT-010,EXP-PL07,A-weighted sound level at 0.5 m while writing,40 dB(A),<=,ASSUMPTION (quiet office),requirement,REQ-PLT-010
+AC-PL08-01,REQ-PLT-009,EXP-PL08,Largest pinch force at any moving edge with the stage stalled,20 N,<=,ISO/TS 15066 hands 140 N (CON-111); the cap is the design value,requirement,REQ-PLT-009
+AC-PL09-01,,EXP-PL09,"Share of participants who would choose the platen for at least one of the matched paper tasks over typing, dictation and a plotter",25 %,>=,ASSUMPTION: a niche worth a product; to be set with the panel before the study,hypothesis,DEC-085; DEC-089

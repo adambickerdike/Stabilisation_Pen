@@ -1,0 +1,664 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "PROPOSED DESIGN with CALCULATION, MANUFACTURER, LITERATURE and ASSUMPTION values (each labelled)",
+  "generated_utc": "2026-09-30T15:47:07+00:00",
+  "git_revision": "b162f1d-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --stages report",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": "per case: sha1 of the case id and the run tag (platen/common.h); bootstrap seed 20260929 (R's)",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "platen",
+  "quick": false,
+  "split": "study R's TUNING split only (study E's selection set); the test split is spent and was not used",
+  "inputs_sha256": {
+   "results/readable/frozen.json": "9cc39328a00f33f8701d83f68b522d8e16f6ccf83557924a9cb31001f6b55a6a",
+   "results/realtrack/frozen.json": "7e239da620b441d46fae205e01c2cf1b2a852092729f298addc2babfaa5b8cf1",
+   "results/improvement/mechanics/grounded_batch.json": "12ffcb73ca5abdf99d52bbd8f832bd82d43ddb8bbcf334cfebbf2d7c41176270",
+   "results/improvement/mechanics/grounded_derivative_check.json": "89dfb3b796fbf758be97ba50995218d5868c32889afb30bc7c744746faa13b08",
+   "results/improvement/writing/grounded_accepted/manifest.json": "eafcd7908c945ae51eb00cb4565debfb0fa8f7a52017bf909f09fd36d7600d37"
+  },
+  "reused_read_only": [
+   "handwriting/ (model HW1)",
+   "realdata/ (library, measures, reader)",
+   "realtrack/ (cases, estimators, frozen designs)",
+   "readable/ (common, reach, curve; per-case caches of study F)",
+   "ai3/ (accepted references)",
+   "aiprior/, fusion/, ai2/"
+  ],
+  "torch": "2.14.0+cpu"
+ },
+ "concept": {
+  "writing_area": {
+   "value": "A5 landscape (210 x 148 mm); an A6 variant (148 x 105 mm) for a smaller device",
+   "unit": "",
+   "label": "PROPOSED DESIGN",
+   "source": ""
+  },
+  "plate_mm": {
+   "value": [
+    230.0,
+    170.0,
+    6.0
+   ],
+   "unit": "mm",
+   "label": "PROPOSED DESIGN",
+   "source": "A5 sheet + 10 mm margin for the clip bar and edge stops; glass-fibre sandwich with a vacuum plenum (non-metallic, so an EMR digitiser can read through it)"
+  },
+  "fine": {
+   "actuator": {
+    "value": "2 x moving-coil voice-coil motor Moticont LVCM-032-025-02 (one per axis), stacked XY on miniature ball guides",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "stroke_mm": {
+    "value": 12.7,
+    "unit": "mm",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "force_continuous_N": {
+    "value": 9.3,
+    "unit": "N",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "force_intermittent_N": {
+    "value": 29.3,
+    "unit": "N",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232 (10 % duty cycle)"
+   },
+   "force_constant_N_per_A": {
+    "value": 3.9,
+    "unit": "N/A",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "resistance_ohm": {
+    "value": 2.5,
+    "unit": "ohm",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "inductance_mH": {
+    "value": 1.3,
+    "unit": "mH",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232 (at 120 Hz)"
+   },
+   "coil_mass_g": {
+    "value": 28.0,
+    "unit": "g",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "body_mass_g": {
+    "value": 127.0,
+    "unit": "g",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "max_continuous_power_W": {
+    "value": 14.0,
+    "unit": "W",
+    "label": "MANUFACTURER",
+    "source": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232"
+   },
+   "usable_travel_mm": {
+    "value": 5.0,
+    "unit": "mm radius",
+    "label": "PROPOSED DESIGN",
+    "source": "soft limit at 4.5-5 mm, end-stop bumpers at 6 mm (inside the +-6.35 mm stroke)"
+   },
+   "force_cap_N": {
+    "value": 20.0,
+    "unit": "N (radial)",
+    "label": "PROPOSED DESIGN",
+    "source": "current limit below the intermittent rating"
+   },
+   "servo_hz": {
+    "value": 40.0,
+    "unit": "Hz",
+    "label": "PROPOSED DESIGN",
+    "source": "2nd-order reference follower; the inner PD loop at 250 Hz on the encoders"
+   },
+   "encoder": {
+    "value": "magnetic linear encoder, 0.25 um",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "RLS LM13 magnetic linear encoder, 2 mm pole, down to about 0.244 um resolution (ledger OPT-89)"
+   },
+   "driver": {
+    "value": "linear current amplifier per axis",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "TI OPA548 linear power amplifier, 3 A continuous, 5 A peak (ledger AMF-233)"
+   },
+   "moving_mass_kg": {
+    "value": 0.59,
+    "unit": "kg (X axis; the Y axis moves 0.29 kg)",
+    "label": "CALCULATION",
+    "source": "masses('A5')"
+   }
+  },
+  "coarse": {
+   "actuator": {
+    "value": "H-bot, 2 x NEMA 17 closed-loop steppers, GT2 belts, 20-tooth pulleys, miniature rails",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "NEMA 17 hybrid stepper 17HS19-2004S1 (ledger AMF-92: 0.59 N m holding, 2.0 A, 1.4 ohm, 3.0 mH, rotor 82 g cm2); closed-loop variant with a 1000-line encoder, e.g. StepperOnline 17E1K series (https://www.omc-stepperonline.com/nema-17-closed-loop-stepper-motor, retrieved via a search listing 2026-09-30); ADI/Trinamic TMC2209 stepper driver, StealthChop2 'no-noise' chopper (ledger AMF-93)"
+   },
+   "travel_mm": {
+    "value": [
+     80.0,
+     40.0
+    ],
+    "unit": "mm (+-40 x +-20)",
+    "label": "PROPOSED DESIGN",
+    "source": "a whole accepted word up to about 80 mm long passes under a still pen; a line change of 2-3 lines"
+   },
+   "servo_hz": {
+    "value": 8.0,
+    "unit": "Hz",
+    "label": "PROPOSED DESIGN",
+    "source": "well below the belt ringing of desktop belt machines (Klipper resonance compensation guide: axis ringing below about 20-25 Hz calls for a stiffer frame or a lighter moving mass; example measurement 49.4 Hz; https://www.klipper3d.org/Resonance_Compensation.html (retrieved 2026-09-30))"
+   },
+   "force_cap_N": {
+    "value": 20.0,
+    "unit": "N",
+    "label": "PROPOSED DESIGN",
+    "source": "driver current limit"
+   },
+   "speed_cap_mm_s": {
+    "value": 50.0,
+    "unit": "mm/s",
+    "label": "PROPOSED DESIGN",
+    "source": "accepted writing needs <= 30 mm/s (the reference limit)"
+   },
+   "moving_mass_kg": {
+    "value": 1.42,
+    "unit": "kg",
+    "label": "CALCULATION",
+    "source": "masses('A5')"
+   }
+  },
+  "hold_down": {
+   "choice": {
+    "value": "low vacuum through a perforated plate (primary), with a hinged clip bar and three edge stops for registration; a low-tack adhesive carrier sheet as the silent alternative",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "Cricut LightGrip machine mat: low-tack adhesive carrier that holds printer paper in a cutting machine; https://cricut.com/en-us/tools-accessories/machine-tools/machine-mats/lightgrip-machine-mat-12-x-12/2001976.html (retrieved 2026-09-30)"
+   },
+   "shear_capacity_N": {
+    "value": 3.0,
+    "unit": "N",
+    "label": "PROPOSED DESIGN",
+    "source": "3 x the largest shear the paper meets (a hand resting on the paper, about 1 N; the ball drag is 0.15-0.4 N)"
+   },
+   "registration": {
+    "value": "two stops on the top edge, one on the left edge; the camera reads two printed or pencilled corner marks to register the sheet to about 0.2 mm",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": ""
+   },
+   "electroadhesion": {
+    "value": "not chosen: kV electrodes under the user's hand, humidity-dependent hold",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "Electroadhesion release pressures 1-100 kPa (conductive objects at 400 V; dielectric objects 1-100 x the pre-contact adhesion; ledger AMF-114)"
+   }
+  },
+  "palm_rest": {
+   "value": "a fixed bridge across the lower edge of the plate, padded, adjustable 15-35 mm above the paper; the hand rests on it and never touches the moving paper; the fingers reach over its front edge",
+   "unit": "",
+   "label": "PROPOSED DESIGN",
+   "source": ""
+  },
+  "sensing": {
+   "primary": {
+    "value": "global-shutter camera (250 fps region of interest) on a side arm, tracking a small retro-reflective or IR-LED marker ring within 3 mm of the ball; the same camera reads the sheet's registration marks",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "InnoMaker global-shutter camera modules for Raspberry Pi: OV9281 1280x800 at 120 fps (144 fps with the maker's driver), 640x400 at 253 fps; https://www.inno-maker.com/gs-camera/ (retrieved 2026-09-30)"
+   },
+   "alternative": {
+    "value": "EMR digitiser under the non-metallic plate, with an EMR ink pen; actuators kept outside its active area",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "Wacom EMR OEM digitiser boards (ledger AMF-98): resolution 0.01 mm, accuracy +-0.4 mm, reading height 5-14 mm, 133 points/s; Cintiq 12WX (ledger CON-84): +-0.5 mm, 133 points/s; Intuos Pro Paper Edition with ink pens on A5/A4 paper (ledger OPT-86); tablet digitisers about 200 Hz (ledger OPT-03)"
+   },
+   "contact": {
+    "value": "three load cells under the plate: pen normal force at 1 kHz; contact on above 50 mN",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": ""
+   },
+   "pen_imu": {
+    "value": "for free writing: the pen's IMU (clip-on on an ordinary pen, or built into a light stylus), wired or 2.4 GHz proprietary radio (BLE adds 7.5-15 ms)",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "TDK ICM-42688-P accelerometer noise 70 ug/sqrt(Hz) (ledger OPT-39); ST LSM6DSV16X 60 ug/sqrt(Hz) (OPT-37); study E's IMU budget: anti-aliasing 1.04 ms + FIFO/SPI 0.35 ms + pair averaging 0.13 ms = 1.52 ms (docs/readable_target.md section 6); Bluetooth LE: minimum connection interval 7.5 ms, reduced to 375 us by Core 6.2's Shorter Connection Intervals (https://www.bluetooth.com/bluetooth-core-6-2-feature-overview/, retrieved 2026-09-30; proposed row AMF-287)"
+   }
+  },
+  "lift": {
+   "choice": {
+    "value": "Z-drop of the paper plate by 3 mm (three push-pull solenoids on a flexure, or one voice coil); the user keeps the pen down; the load cells confirm the break before any air move",
+    "unit": "",
+    "label": "PROPOSED DESIGN",
+    "source": "Plotter pen lift by solenoid, 0.5-0.64 mm axial (CalComp patent, ledger PAT-41)"
+   },
+   "drop_s": {
+    "value": 0.04,
+    "unit": "s",
+    "label": "ASSUMPTION",
+    "source": "break of contact after the command; the gravity drop alone takes 25 ms (CALC, z_drop())"
+   },
+   "rise_s": {
+    "value": 0.04,
+    "unit": "s",
+    "label": "ASSUMPTION",
+    "source": "renewed contact after the command"
+   },
+   "drop_mm": {
+    "value": 3.0,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "exceeds the fingers' assumed 1-2 mm compliance at 1 N (ASSUMPTION)"
+   }
+  }
+ },
+ "masses": {
+  "A5": {
+   "label": "CALCULATION (part masses ASSUMPTION except the voice coils, MFR)",
+   "size": "A5",
+   "fine_y_kg": 0.2929999999999999,
+   "fine_x_kg": 0.588,
+   "coarse_moving_kg": 1.415,
+   "parts_y": {
+    "plate_with_plenum": 0.14999999999999997,
+    "z_drop_mechanism": 0.05,
+    "y_guide_carriages": 0.03,
+    "y_coil": 0.028,
+    "encoder_head_and_brackets": 0.03,
+    "paper": 0.005
+   },
+   "parts_x": {
+    "y_stage": 0.2929999999999999,
+    "y_voice_coil_body": 0.127,
+    "y_rails": 0.05,
+    "x_frame": 0.06,
+    "x_coil": 0.028,
+    "x_guide_carriages": 0.03
+   },
+   "parts_coarse": {
+    "fine_stage_moving": 0.588,
+    "fine_base_plate_and_x_rails": 0.35,
+    "x_voice_coil_body": 0.127,
+    "coarse_carriage_and_belt_clamps": 0.3,
+    "cable_chain_share": 0.05
+   }
+  },
+  "A6": {
+   "label": "CALCULATION (part masses ASSUMPTION except the voice coils, MFR)",
+   "size": "A6",
+   "fine_y_kg": 0.22485166240409207,
+   "fine_x_kg": 0.5198516624040921,
+   "coarse_moving_kg": 1.346851662404092,
+   "parts_y": {
+    "plate_with_plenum": 0.08185166240409206,
+    "z_drop_mechanism": 0.05,
+    "y_guide_carriages": 0.03,
+    "y_coil": 0.028,
+    "encoder_head_and_brackets": 0.03,
+    "paper": 0.005
+   },
+   "parts_x": {
+    "y_stage": 0.22485166240409207,
+    "y_voice_coil_body": 0.127,
+    "y_rails": 0.05,
+    "x_frame": 0.06,
+    "x_coil": 0.028,
+    "x_guide_carriages": 0.03
+   },
+   "parts_coarse": {
+    "fine_stage_moving": 0.5198516624040921,
+    "fine_base_plate_and_x_rails": 0.35,
+    "x_voice_coil_body": 0.127,
+    "coarse_carriage_and_belt_clamps": 0.3,
+    "cable_chain_share": 0.05
+   }
+  }
+ },
+ "coarse_force": {
+  "label": "CALCULATION",
+  "pulley_radius_mm": 6.366197723675814,
+  "stall_force_per_motor_N": 92.67698328089888,
+  "needed_N_at_2_m_s2": 3.83,
+  "cap_N": 20.0,
+  "margin_to_cap": 5.221932114882507
+ },
+ "z_drop": {
+  "label": "CALCULATION",
+  "drop_mm": 3.0,
+  "gravity_drop_s": 0.024730968341474896
+ },
+ "hold_down": {
+  "A5": {
+   "label": "CALCULATION",
+   "sheet_area_m2": 0.03108,
+   "shear_N": 3.0,
+   "mu_paper_plate": 0.4,
+   "vacuum_Pa": 241.3127413127413,
+   "note": "a few hundred pascals; a small blower or a diaphragm pump with a reservoir"
+  },
+  "A6": {
+   "label": "CALCULATION",
+   "sheet_area_m2": 0.01554,
+   "shear_N": 3.0,
+   "mu_paper_plate": 0.4,
+   "vacuum_Pa": 482.6254826254826,
+   "note": "a few hundred pascals; a small blower or a diaphragm pump with a reservoir"
+  }
+ },
+ "pinch": {
+  "label": "CALCULATION",
+  "kinetic_energy_J": 0.0017687500000000004,
+  "energy_limit_J": 4.0,
+  "force_cap_N": 20.0,
+  "iso15066_hand_finger_N": 140.0,
+  "iso13854_finger_gap_mm": 25.0,
+  "passes": true,
+  "sources": [
+   "ISO 13854:2017 minimum gaps to avoid crushing: finger 25 mm, hand 100 mm (as summarised at https://www.zt-grassberger.at/en/r/MD/Moving_Parts.html, retrieved 2026-09-30; the same page gives 75 N, 4 J and 25 N/cm2 as values below which an actuator is not a crushing hazard)",
+   "ISO/TS 15066 body model: hands and fingers, maximum permissible force 140 N, effective spring constant 75 N/mm, effective mass 0.6 kg (Table 1 of Ghanbarzadeh and Najafi, arXiv:2311.13814, 2023)"
+  ]
+ },
+ "paper_drag": {
+  "label": "CALCULATION",
+  "normal_force_N": 1.01,
+  "mu_range": [
+   0.1,
+   0.4
+  ],
+  "drag_N": [
+   0.101,
+   0.404
+  ],
+  "note": "the platen cannot push the hand harder than this: the page only slides under the ball",
+  "sources": [
+   "Writing (axial) force of healthy adults: mean of subject means 1.01 N, 0.56-2.08 N (ledger CON-01)",
+   "Kinetic friction of a pen on paper 0.10-0.40 (ledger CON-14); HW1 uses 0.15 (ASSUMPTION in handwriting/params.py)"
+  ]
+ },
+ "bom": {
+  "label": "ASSUMPTION (prototype quantities; CALCULATION of the sums)",
+  "items": [
+   {
+    "item": "voice-coil motors LVCM-032-025-02",
+    "qty": 2,
+    "usd_low": 150,
+    "usd_high": 300,
+    "label": "ASSUMPTION",
+    "note": "price not listed by the maker; low-volume estimate"
+   },
+   {
+    "item": "linear encoders (magnetic, 0.25 um)",
+    "qty": 2,
+    "usd_low": 50,
+    "usd_high": 120,
+    "label": "ASSUMPTION",
+    "note": "RLS LM13 class (OPT-89)"
+   },
+   {
+    "item": "miniature ball guides (fine XY)",
+    "qty": 4,
+    "usd_low": 15,
+    "usd_high": 40,
+    "label": "ASSUMPTION",
+    "note": ""
+   },
+   {
+    "item": "closed-loop NEMA 17 steppers + drivers",
+    "qty": 2,
+    "usd_low": 35,
+    "usd_high": 90,
+    "label": "ASSUMPTION",
+    "note": "17HS19 class (AMF-92), TMC2209 (AMF-93)"
+   },
+   {
+    "item": "belts, pulleys, rails (coarse)",
+    "qty": 1,
+    "usd_low": 40,
+    "usd_high": 90,
+    "label": "ASSUMPTION",
+    "note": ""
+   },
+   {
+    "item": "Z-drop solenoids/flexure + 3 load cells + ADC",
+    "qty": 1,
+    "usd_low": 30,
+    "usd_high": 90,
+    "label": "ASSUMPTION",
+    "note": ""
+   },
+   {
+    "item": "hold-down: blower or pump, plenum, clip bar",
+    "qty": 1,
+    "usd_low": 25,
+    "usd_high": 70,
+    "label": "ASSUMPTION",
+    "note": "tack-mat alternative 10-15 USD per sheet carrier"
+   },
+   {
+    "item": "camera (global shutter) + IR ring + marker",
+    "qty": 1,
+    "usd_low": 50,
+    "usd_high": 150,
+    "label": "ASSUMPTION",
+    "note": "OV9281 class (InnoMaker)"
+   },
+   {
+    "item": "compute (single-board computer) + real-time MCU",
+    "qty": 1,
+    "usd_low": 70,
+    "usd_high": 140,
+    "label": "ASSUMPTION",
+    "note": ""
+   },
+   {
+    "item": "current amplifiers, power stage, 24 V supply",
+    "qty": 1,
+    "usd_low": 40,
+    "usd_high": 100,
+    "label": "ASSUMPTION",
+    "note": "OPA548 class (AMF-233)"
+   },
+   {
+    "item": "base, frame, palm-rest bridge, covers",
+    "qty": 1,
+    "usd_low": 80,
+    "usd_high": 250,
+    "label": "ASSUMPTION",
+    "note": "low-volume machining / moulding"
+   },
+   {
+    "item": "pen sensing: clip-on IMU or stylus",
+    "qty": 1,
+    "usd_low": 30,
+    "usd_high": 90,
+    "label": "ASSUMPTION",
+    "note": ""
+   }
+  ],
+  "bom_usd_low": 895,
+  "bom_usd_high": 2160,
+  "retail_usd": [
+   1500,
+   3000
+  ],
+  "retail_label": "ASSUMPTION: 2-3 x a volume BOM of about 500-1,000 USD (assistive device, low volume, support and regulatory costs); comparators: AxiDraw V3 pen plotter: usable travel 300 x 218 mm, 38 cm/s, writes 'with your favorite pens', 'signature machine' use; https://shop.evilmadscientist.com/productsmenu/846 ; USD 475 (https://www.adafruit.com/product/3509, listing marked discontinued; retrieved 2026-09-30); Prusa CORE One+ CoreXY printer: USD 925 kit, USD 1,202.78 assembled (ledger AMF-231)"
+ },
+ "power": {
+  "label": "CALCULATION on ASSUMPTION ranges",
+  "items": [
+   {
+    "consumer": "fine voice coils (tremor duty, both axes)",
+    "W_low": 0.2,
+    "W_high": 2.0,
+    "label": "CALCULATION from the simulated RMS force (the stage table of part a; study E's raw commands would need far more)"
+   },
+   {
+    "consumer": "coarse steppers (holding at reduced current / moving)",
+    "W_low": 1.0,
+    "W_high": 5.0,
+    "label": "ASSUMPTION"
+   },
+   {
+    "consumer": "vision compute + camera",
+    "W_low": 3.0,
+    "W_high": 8.0,
+    "label": "ASSUMPTION"
+   },
+   {
+    "consumer": "real-time MCU, encoders, load cells",
+    "W_low": 0.5,
+    "W_high": 1.5,
+    "label": "ASSUMPTION"
+   },
+   {
+    "consumer": "vacuum blower or pump",
+    "W_low": 1.0,
+    "W_high": 6.6,
+    "label": "ASSUMPTION (a 97 mm blower is 6.6 W at full speed, MFR AMF-285)"
+   },
+   {
+    "consumer": "Z-drop solenoids (duty)",
+    "W_low": 0.2,
+    "W_high": 1.5,
+    "label": "ASSUMPTION"
+   }
+  ],
+  "total_W": [
+   5.9,
+   24.6
+  ],
+  "supply": "24 V, 60 W mains adapter (SELV); an A6 battery variant would need about 50-100 Wh for 4-8 h"
+ },
+ "noise": {
+  "target": {
+   "value": 40.0,
+   "unit": "dB(A) at 0.5 m",
+   "label": "ASSUMPTION",
+   "source": "a quiet office; to be measured (EXP-PL07)"
+  },
+  "sources": {
+   "value": "steppers in a silent chopper mode at writing speeds; voice coils move at 4-12 Hz (below hearing) but can buzz through the frame; the vacuum blower is the loudest part at full speed (a faster model of the same 97 mm blower is listed at 64 dB(A) in a search listing) and must run slow, be muffled, or be replaced by a tack mat",
+   "unit": "",
+   "label": "ASSUMPTION",
+   "source": "ADI/Trinamic TMC2209 stepper driver, StealthChop2 'no-noise' chopper (ledger AMF-93)"
+  }
+ },
+ "sizes": {
+  "A5": {
+   "base_mm": [
+    380,
+    300
+   ],
+   "paper_height_mm": 66,
+   "palm_rest_top_mm": 103,
+   "camera_post_mm": 200,
+   "mass_kg": [
+    4.0,
+    5.5
+   ],
+   "label": "PROPOSED DESIGN (the CAD layout, mechanics/cad/platen.py: plate + coarse travel + frame margins); mass ASSUMPTION range"
+  },
+  "A6": {
+   "base_mm": [
+    320,
+    260
+   ],
+   "paper_height_mm": 62,
+   "palm_rest_top_mm": 99,
+   "camera_post_mm": 200,
+   "mass_kg": [
+    3.0,
+    4.0
+   ],
+   "label": "CALCULATION (the A5 layout's margins around the A6 plate and the same coarse travel); mass ASSUMPTION range"
+  }
+ },
+ "sensing_options": [
+  {
+   "option": "Ordinary pen + instrumented clip-on IMU",
+   "measures": "pen acceleration and rotation (no absolute position)",
+   "delay_ms": "1.5 (study E's IMU path: anti-aliasing + FIFO + averaging) + link: 1-2 wired or proprietary radio, 7.5-15 with BLE",
+   "noise": "accelerometer 60-70 \u00b5g/\u221aHz (OPT-37, OPT-39); tremor-band position from the IMU alone about 0.29 mm with a linear filter on the tremor alone (study F)",
+   "pros": "any pen the user likes; cheap",
+   "cons": "no position: cannot write accepted text alone; clip adds 5-8 g off-axis; BLE latency",
+   "label": "MANUFACTURER / LITERATURE (ledger ids) and ASSUMPTION (link)"
+  },
+  {
+   "option": "Light stylus with IMU + contact (force) sensing",
+   "measures": "acceleration, rotation, refill force (contact) at 1 kHz",
+   "delay_ms": "1.5 IMU + <1 contact + link as above",
+   "noise": "as the IMU; contact force about 10 mN (ASSUMPTION)",
+   "pros": "known geometry and mass; contact known at the tip",
+   "cons": "not the user's own pen; still no absolute position",
+   "label": "ASSUMPTION on the IMU data above"
+  },
+  {
+   "option": "Tip tracking by an overhead or side camera",
+   "measures": "marker position near the tip in the desk frame (absolute, drift-free) and the sheet's marks",
+   "delay_ms": "4-8 (exposure + readout + processing; OptiTrack-class 4.2 at 240 fps, MANUFACTURER)",
+   "noise": "10-20 um RMS per axis with sub-pixel centroiding at about 0.1 mm per pixel (ASSUMPTION)",
+   "pros": "absolute; works with any pen fitted with a marker; also registers the sheet",
+   "cons": "occlusion by the fingers from above (a side arm is better); the marker sits above the ball, so pen rotation reads as motion (kappa, part c)",
+   "label": "MANUFACTURER (frame rates, latency) and ASSUMPTION (noise)"
+  },
+  {
+   "option": "Sensing through the platen (EMR digitiser under a non-metallic plate)",
+   "measures": "EMR pen coil position, pressure and tilt, absolute",
+   "delay_ms": "7.5-15 (one or two reports at 133-266 points/s + USB; ASSUMPTION on the reported rates)",
+   "noise": "resolution 0.01 mm; accuracy +-0.4-0.5 mm absolute (AMF-98, CON-84); jitter 10-50 um (ASSUMPTION)",
+   "pros": "no line of sight; pressure gives contact; proven with ink pens on paper (OPT-86)",
+   "cons": "needs an EMR pen; the coil is 5-10 mm above the ball (tilt error unless corrected with the reported tilt); metal and magnets of the stage distort the field; lower rate and higher delay than a camera",
+   "label": "MANUFACTURER / LITERATURE (ledger ids) and ASSUMPTION"
+  }
+ ],
+ "sources": {
+  "moticont_lvcm032": "Moticont LVCM-032-025-02 data sheet, https://www.moticont.com/pdf/lvcm-032-025-02.pdf and product page https://www.moticont.com/lvcm-032-025-02.htm (retrieved 2026-09-30); ledger AMF-232",
+  "stepper_17hs19": "NEMA 17 hybrid stepper 17HS19-2004S1 (ledger AMF-92: 0.59 N m holding, 2.0 A, 1.4 ohm, 3.0 mH, rotor 82 g cm2); closed-loop variant with a 1000-line encoder, e.g. StepperOnline 17E1K series (https://www.omc-stepperonline.com/nema-17-closed-loop-stepper-motor, retrieved via a search listing 2026-09-30)",
+  "tmc2209": "ADI/Trinamic TMC2209 stepper driver, StealthChop2 'no-noise' chopper (ledger AMF-93)",
+  "rls_lm13": "RLS LM13 magnetic linear encoder, 2 mm pole, down to about 0.244 um resolution (ledger OPT-89)",
+  "opa548": "TI OPA548 linear power amplifier, 3 A continuous, 5 A peak (ledger AMF-233)",
+  "klipper": "Klipper resonance compensation guide: axis ringing below about 20-25 Hz calls for a stiffer frame or a lighter moving mass; example measurement 49.4 Hz; https://www.klipper3d.org/Resonance_Compensation.html (retrieved 2026-09-30)",
+  "ov9281": "InnoMaker global-shutter camera modules for Raspberry Pi: OV9281 1280x800 at 120 fps (144 fps with the maker's driver), 640x400 at 253 fps; https://www.inno-maker.com/gs-camera/ (retrieved 2026-09-30)",
+  "optitrack": "OptiTrack Prime 13 motion-capture camera: 240 fps, 4.2 ms latency (manufacturer), https://optitrack.com/cameras/prime-13/specs.html (retrieved via a search listing 2026-09-30)",
+  "wacom_oem": "Wacom EMR OEM digitiser boards (ledger AMF-98): resolution 0.01 mm, accuracy +-0.4 mm, reading height 5-14 mm, 133 points/s; Cintiq 12WX (ledger CON-84): +-0.5 mm, 133 points/s; Intuos Pro Paper Edition with ink pens on A5/A4 paper (ledger OPT-86); tablet digitisers about 200 Hz (ledger OPT-03)",
+  "imu": "TDK ICM-42688-P accelerometer noise 70 ug/sqrt(Hz) (ledger OPT-39); ST LSM6DSV16X 60 ug/sqrt(Hz) (OPT-37); study E's IMU budget: anti-aliasing 1.04 ms + FIFO/SPI 0.35 ms + pair averaging 0.13 ms = 1.52 ms (docs/readable_target.md section 6)",
+  "digipen": "STABILO DigiPen: Bluetooth live streaming at 200 Hz (ledger OPT-15)",
+  "ble": "Bluetooth LE: minimum connection interval 7.5 ms, reduced to 375 us by Core 6.2's Shorter Connection Intervals (https://www.bluetooth.com/bluetooth-core-6-2-feature-overview/, retrieved 2026-09-30; proposed row AMF-287)",
+  "cricut": "Cricut LightGrip machine mat: low-tack adhesive carrier that holds printer paper in a cutting machine; https://cricut.com/en-us/tools-accessories/machine-tools/machine-mats/lightgrip-machine-mat-12-x-12/2001976.html (retrieved 2026-09-30)",
+  "electroadhesion": "Electroadhesion release pressures 1-100 kPa (conductive objects at 400 V; dielectric objects 1-100 x the pre-contact adhesion; ledger AMF-114)",
+  "delta_blower": "Delta Electronics BFB1012M-A 97 mm DC blower: 12 V, 0.55 A, 6.6 W, 3200 rpm, 0.777 m3/min; https://www.delta-fan.com/products/BFB1012M-A.html (retrieved 2026-09-30)",
+  "iso13854": "ISO 13854:2017 minimum gaps to avoid crushing: finger 25 mm, hand 100 mm (as summarised at https://www.zt-grassberger.at/en/r/MD/Moving_Parts.html, retrieved 2026-09-30; the same page gives 75 N, 4 J and 25 N/cm2 as values below which an actuator is not a crushing hazard)",
+  "iso15066": "ISO/TS 15066 body model: hands and fingers, maximum permissible force 140 N, effective spring constant 75 N/mm, effective mass 0.6 kg (Table 1 of Ghanbarzadeh and Najafi, arXiv:2311.13814, 2023)",
+  "iec60601_touch": "IEC 60601-1 touch-temperature limits (ledger AMF-34); IEC 62368-1 precursor: 43 C continuously held (ledger AMF-35)",
+  "writing_force": "Writing (axial) force of healthy adults: mean of subject means 1.01 N, 0.56-2.08 N (ledger CON-01)",
+  "friction": "Kinetic friction of a pen on paper 0.10-0.40 (ledger CON-14); HW1 uses 0.15 (ASSUMPTION in handwriting/params.py)",
+  "pen_tilt": "Pen altitude: mean 62.4 deg, SD 7.5 deg (ledger CON-12); HW1 uses 50 deg",
+  "signature": "Adult signatures: 3.2 +- 0.3 s, path 231.7 mm, height 19.8 mm, 87.7 mm/s (ledger CON-08)",
+  "axidraw": "AxiDraw V3 pen plotter: usable travel 300 x 218 mm, 38 cm/s, writes 'with your favorite pens', 'signature machine' use; https://shop.evilmadscientist.com/productsmenu/846 ; USD 475 (https://www.adafruit.com/product/3509, listing marked discontinued; retrieved 2026-09-30)",
+  "prusa": "Prusa CORE One+ CoreXY printer: USD 925 kit, USD 1,202.78 assembled (ledger AMF-231)",
+  "verily_patent": "Tremor-filtered handwriting redrawn by an actuated pen carriage (Verily patent, ledger PAT-04)",
+  "plotter_lift": "Plotter pen lift by solenoid, 0.5-0.64 mm axial (CalComp patent, ledger PAT-41)",
+  "fivebar": "The grounded five-bar of the independent engineering pass (docs/mechanics_improvement_audit.md; results/improvement/mechanics/grounded_batch.json and grounded_derivative_check.json)",
+  "study_f": "Study F (docs/readable_target.md section 8; results/readable/readable.json)"
+ }
+}

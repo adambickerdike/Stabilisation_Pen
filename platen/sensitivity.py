@@ -17,7 +17,9 @@ form a 2 ms sawtooth that the fine stage follows with large forces (part a's for
 reproduces part a's row) and with a causal 4-tick (2 ms) moving average after predicting 0.75 ms further (the average's
 delay), which turns the sawtooth into a continuous line ('E_chosen_smooth').
 
-Page slip under the hand: the sheet becomes a 3 g body held by a LuGre hold-down (normal force N_hold, mu 0.4) and,
+Page slip under the hand ('held' drive: the page held still, to separate the sheet's own creep from the page motion;
+note that single-state friction models such as LuGre creep under oscillating loads below breakaway, a known nonphysical
+drift, Dupont et al. 2002): the sheet becomes a 3 g body held by a LuGre hold-down (normal force N_hold, mu 0.4) and,
 where the hand rests on the paper (no palm rest), loaded by the hand's skin friction (N_hand, mu 0.5), whose reaction
 also drags the hand.  Pen tilt: the camera marker sits above the ball, so the pen's rotation reads as motion: the
 marker error is kappa x the imposed hand tremor (kappa = marker height / grip distance x the share of the finger
@@ -44,6 +46,7 @@ SLIPS = {   # name: (N_hold N, N_hand N)
     "hand_on_paper_vacuum": (7.5, 2.0),
     "hand_on_paper_clip_only": (0.5, 2.0),
     "palm_rest_clip_only": (0.5, 0.0),
+    "palm_rest_vacuum": (7.5, 0.0),
 }
 PEN_MASSES_G = (20.0,)
 FIRM_HAND = {"K_grip": 1150.0, "k_arm": 2000.0, "b_arm": 20.0}   # part (b)'s firm grip on the palm rest (ASSUMPTION)
@@ -69,9 +72,9 @@ def variants(quick: bool) -> List[Dict]:
     for k in KAPPAS:
         v.append({"name": f"tilt_kappa_{k:g}", "kappa": k, "drives": ["camera"]})
     v.append({"name": "friction_intended", "writer": "intended", "drives": ["oracle", "camera"]})
-    for name, (nh, nd) in SLIPS.items():
+    for name, (nh, nd) in SLIPS.items():         # 'held': the page held still (no command), the sheet's own creep
         v.append({"name": f"slip_{name}", "paper": {"rigid": False, "N_hold": nh, "N_hand": nd},
-                  "drives": ["oracle", "camera"]})
+                  "drives": ["oracle", "camera", "held"]})
     for mg in PEN_MASSES_G:
         v.append({"name": f"pen_{mg:g}g", "pen_mass": mg * 1e-3, "drives": ["oracle", "camera"]})
     v.append({"name": "belt_single_stage", "variant": "belt_single", "drives": ["oracle", "camera"]})
@@ -208,6 +211,9 @@ def run_note(i: int, quick: bool = False) -> List[str]:
                         cmd = T.e_command(des, refs["e_st"], RC.CaseLike(spec, None), g)
                     pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
                                 pen_mass=m_int, writer=writer, vint=vint, stage=st, paper=paper, cmd_ext=cmd)
+                elif drive == "held":
+                    pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
+                                pen_mass=m_int, writer=writer, vint=vint, stage=st, paper=paper, cmd_ext=None)
                 elif drive == "oracle":
                     cmd = T._oracle_ticks(held, clean, n_ticks, 5e-4, g)
                     pr = PP.run(scn_n.pref, scn_n.vref, scn_n.down, scn_n.dt, hand=hand, writing=PR.Writing(),
@@ -254,7 +260,7 @@ def aggregate(quick: bool) -> Dict:
                "words_via_curve": CM.boot(CM.per_writer(cases, lambda c: CM.words_via_curve(
                    (c["devices"].get(k) or {}).get("tip_tremor_mm"), fc["p"]) if k in c["devices"] else None))}
         for m in ("at_limit_share", "travel_p99_mm", "force_rms_N", "force_p99_N", "copper_W_per_axis_rms",
-                  "paper_slip_max_mm"):
+                  "paper_slip_max_mm", "paper_slip_final_mm"):
             b = CM.per_writer(cases, lambda c, m=m: (c["devices"].get(k) or {}).get(m))
             if b:
                 row[m] = CM.boot(b)

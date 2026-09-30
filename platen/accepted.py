@@ -360,19 +360,38 @@ def metrics(pr, ref_xy: np.ndarray, req_tick: np.ndarray, ph_tick: np.ndarray, t
     # derivative check (the five-bar's convention: adjacent differences at the stored 0.5 ms step)
     fs = 1.0 / dt
     der = {}
+    near_a, near_j = _near_changes(con)
     for name, x in (("ink_on_page", ink), ("page", pr.page), ("tip", pr.tip)):
         v, a, j = _derivs(x, dt)
         va, aa, ja = _derivs(_lp(x, fs), dt)
         m_ink = both[3:] if name == "ink_on_page" else np.ones(len(j), bool)
+        a_away = float(a[~near_a].max()) if (~near_a).any() else float("nan")
+        j_away = float(j[~near_j].max()) if (~near_j).any() else float("nan")
         der[name] = {"max_speed_mm_s": float(v.max() * 1e3), "max_acc_m_s2": float(a.max()),
                      "max_jerk_m_s3": float(j.max()),
                      "max_acc_requested_ink_m_s2": float(a[2:][m_ink[:len(a) - 2]].max()) if m_ink.any() else None,
                      "max_jerk_requested_ink_m_s3": float(j[m_ink].max()) if m_ink.any() else None,
                      "passes_both": bool(a.max() <= ACC_LIM and j.max() <= JERK_LIM),
+                     "away_max_acc_m_s2": a_away, "away_max_jerk_m_s3": j_away,
+                     "away_passes_both": bool(a_away <= ACC_LIM and j_away <= JERK_LIM),
+                     "p99_jerk_m_s3": float(np.percentile(j, 99)),
                      "lp30_max_acc_m_s2": float(aa.max()), "lp30_max_jerk_m_s3": float(ja.max()),
                      "lp30_passes_both": bool(aa.max() <= ACC_LIM and ja.max() <= JERK_LIM)}
     out["derivatives"] = der
     return out
+
+
+def _near_changes(con: np.ndarray, pad: int = 2):
+    """Masks of the acceleration and jerk samples that touch a contact change (touchdown or lift) within pad samples
+    (1 ms at the 0.5 ms step): there the ball's friction switches on or off within one sample, a step of force that
+    the sampled derivatives turn into a spike."""
+    con = np.asarray(con, bool)
+    near = np.zeros(len(con), bool)
+    for c in np.flatnonzero(np.diff(con.astype(int)) != 0):
+        near[max(0, c - pad): c + pad + 2] = True
+    near_a = near[:-2] | near[1:-1] | near[2:]
+    near_j = near[:-3] | near[1:-2] | near[2:-1] | near[3:]
+    return near_a, near_j
 
 
 # ------------------------------------------------------------------ the batch
@@ -435,7 +454,11 @@ SENS = {   # accepted-mode sensitivity (text 'se', the proposed configuration un
     "relaxed_N0.5": ("proposed", {"hand": {"K_grip": 575.0, "k_arm": 170.0, "b_arm": 11.0}}),
     "relaxed_N0.3": ("proposed", {"hand": {"K_grip": 575.0, "k_arm": 170.0, "b_arm": 11.0}, "N": 0.3}),
     "slip_hand_on_paper": ("proposed", {"paper": {"rigid": False, "N_hold": 7.5, "N_hand": 2.0}}),
+    # what makes the sampled jerk of the ink: no camera noise and an ideal inner loop (no encoder steps)
+    "ideal_sensing": ("proposed", {"ctl": {"cam_noise": 0.0}, "stage": {"enc_res": 0.0, "vel_filter_hz": 0.0}}),
+    "ideal_sensing_cradle": ("cradle", {"ctl": {"cam_noise": 0.0}, "stage": {"enc_res": 0.0, "vel_filter_hz": 0.0}}),
 }
+SENS_HANDS_ONLY = {"ideal_sensing": ("still",), "ideal_sensing_cradle": ("cradle",)}
 SENS_HANDS = ("still", "mod_PD", "sev_ET")
 
 
@@ -449,7 +472,7 @@ def run_sensitivity(quick: bool = False, log=CM.log) -> List[str]:
     done = []
     for name in names:
         cfg, ov = SENS[name]
-        for hk in hands:
+        for hk in SENS_HANDS_ONLY.get(name, hands):
             p = d / f"se_{name}_{hk}.json"
             if p.exists():
                 done.append(p.name)
@@ -461,7 +484,12 @@ def run_sensitivity(quick: bool = False, log=CM.log) -> List[str]:
                     wc, hov, N, ctl_name = saved
                     CONFIGS[cfg] = (wc, ov.get("hand", hov), ov.get("N", N), ctl_name)
                 paper = PP.Paper(**ov["paper"]) if "paper" in ov else None
-                rows = [run_one(ref, hk, cfg, preds, ctl_over=ov.get("ctl"), paper=paper,
+                stage = None
+                if "stage" in ov:
+                    stage = stage_for(hk)
+                    for k, v in ov["stage"].items():
+                        setattr(stage, k, v)
+                rows = [run_one(ref, hk, cfg, preds, stage=stage, ctl_over=ov.get("ctl"), paper=paper,
                                 controller=ov.get("controller")) for ref in refs]
             finally:
                 CONFIGS[cfg] = saved
@@ -495,6 +523,10 @@ def summarize(rows: List[Dict]) -> Dict:
             "ink_max_jerk_m_s3": float(np.max(der("ink_on_page", "max_jerk_m_s3"))),
             "ink_median_peak_acc_m_s2": float(np.median(der("ink_on_page", "max_acc_m_s2"))),
             "ink_median_peak_jerk_m_s3": float(np.median(der("ink_on_page", "max_jerk_m_s3"))),
+            "ink_away_max_acc_m_s2": float(np.nanmax(der("ink_on_page", "away_max_acc_m_s2"))),
+            "ink_away_max_jerk_m_s3": float(np.nanmax(der("ink_on_page", "away_max_jerk_m_s3"))),
+            "ink_away_passes_both": int(sum(der("ink_on_page", "away_passes_both"))),
+            "ink_median_p99_jerk_m_s3": float(np.median(der("ink_on_page", "p99_jerk_m_s3"))),
             "ink_lp30_max_acc_m_s2": float(np.max(der("ink_on_page", "lp30_max_acc_m_s2"))),
             "ink_lp30_max_jerk_m_s3": float(np.max(der("ink_on_page", "lp30_max_jerk_m_s3"))),
             "page_max_acc_m_s2": float(np.max(der("page", "max_acc_m_s2"))),
@@ -525,6 +557,13 @@ def aggregate(quick: bool) -> Dict:
         c = CM.jload(p)
         out["sensitivity"][f"{c['variant']}|{c['hand']}"] = summarize(c["rows"])
     out["refusal_context"] = refusal_context(quick)
+    air, n_runs = 0.0, 0
+    for f in list(d.glob("*.json")) + list(ds.glob("se_*.json")):
+        c = CM.jload(f) or {}
+        for r in c.get("rows") or []:
+            air = max(air, float(r["air_phase_ink_path_mm"]))
+            n_runs += 1
+    out["air_ink"] = {"runs": n_runs, "max_air_phase_ink_mm": air}
     ext = {}
     for text, rr in references(quick).items():
         if not rr:
@@ -592,15 +631,23 @@ def fivebar_lp30() -> Optional[Dict]:
     for f in files:
         with np.load(f) as z:
             t, xy = np.asarray(z["t"], float), np.asarray(z["actual_xy"], float)
+            ink = np.asarray(z["ink"], bool)
         dt = float(t[1] - t[0])
         _, a, j = _derivs(xy, dt)
         _, al, jl = _derivs(_lp(xy, 1.0 / dt), dt)
+        near_a, near_j = _near_changes(ink)
+        aw, jw = float(a[~near_a].max()), float(j[~near_j].max())
         rows.append({"file": f.name, "max_acc_m_s2": float(a.max()), "max_jerk_m_s3": float(j.max()),
+                     "away_max_acc_m_s2": aw, "away_max_jerk_m_s3": jw,
                      "lp30_max_acc_m_s2": float(al.max()), "lp30_max_jerk_m_s3": float(jl.max()),
                      "passes_both": bool(a.max() <= ACC_LIM and j.max() <= JERK_LIM),
+                     "away_passes_both": bool(aw <= ACC_LIM and jw <= JERK_LIM),
                      "lp30_passes_both": bool(al.max() <= ACC_LIM and jl.max() <= JERK_LIM)})
     return {"label": "CALC on the five-bar's stored SIMULATION traces (tip on the page, actual_xy)", "n": len(rows),
             "max_acc_m_s2": max(r["max_acc_m_s2"] for r in rows), "max_jerk_m_s3": max(r["max_jerk_m_s3"] for r in rows),
+            "away_max_acc_m_s2": max(r["away_max_acc_m_s2"] for r in rows),
+            "away_max_jerk_m_s3": max(r["away_max_jerk_m_s3"] for r in rows),
+            "away_passes_both": int(sum(r["away_passes_both"] for r in rows)),
             "lp30_max_acc_m_s2": max(r["lp30_max_acc_m_s2"] for r in rows),
             "lp30_max_jerk_m_s3": max(r["lp30_max_jerk_m_s3"] for r in rows),
             "passes_both": int(sum(r["passes_both"] for r in rows)),

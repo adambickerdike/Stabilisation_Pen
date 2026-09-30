@@ -20,9 +20,14 @@ ALL = ("tremor", "accepted", "sensitivity", "report")
 
 
 def _timings(quick: bool, stage: str, elapsed: float) -> None:
+    """The first pass of each stage (from empty caches) is kept; later passes, which reuse cached cases, go under
+    'reruns' (the last one)."""
     p = CM.cache_dir(quick) / "timings.json"
     d = CM.jload(p) or {"stages": {}}
-    d["stages"][stage] = round(elapsed, 1)
+    if stage in d["stages"]:
+        d.setdefault("reruns", {})[stage] = round(elapsed, 1)
+    else:
+        d["stages"][stage] = round(elapsed, 1)
     CM.jdump(p, d)
 
 

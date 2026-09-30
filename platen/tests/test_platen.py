@@ -76,6 +76,9 @@ def test_page_motion_moves_the_ink_not_the_pen_under_hw1_convention():
 
 
 def test_fine_stage_stays_inside_its_stop():
+    """A step command far beyond the travel: the soft limit holds the plate at 5 mm in the end; on the way, at the
+    0.5 m/s slew limit and the 20 N cap, the plate runs a few tenths of a millimetre into its end-stop bumper (the
+    stopping distance from 0.5 m/s at 20 N exceeds the 1 mm between soft limit and stop), and no further."""
     from handwriting import params as PR
     scn = _scenario(T=1.0, write=False)
     n_ticks = int(math.ceil(len(scn.t) / 20)) + 1
@@ -84,8 +87,8 @@ def test_fine_stage_stays_inside_its_stop():
     pr = PP.run(scn.pref, scn.vref, scn.down, scn.dt, hand=_hand(), writing=PR.Writing(), pen_mass=CM.PEN_MASS_HW1,
                 stage=st, cmd_ext=cmd)
     rel = np.hypot(pr["fx"], pr["fy"])
-    assert rel.max() <= st.q_stop_f + 0.2e-3
-    assert rel[-1] <= st.q_lim_f + 1e-6
+    assert rel.max() <= st.q_stop_f + 0.5e-3                        # into the bumper by less than 0.5 mm
+    assert rel[-1] <= st.q_lim_f + 1e-6                              # and back at the soft limit
 
 
 def test_hand_compliance_dc_gain():

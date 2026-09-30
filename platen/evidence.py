@@ -309,6 +309,26 @@ def source_rows() -> List[Dict]:
         transferability_reason="Same class of belt mechanism", transferability="medium",
         design_implication="Tremor cancellation on a voice-coil fine stage; the belt stage only repositions (8 Hz)",
         search_query="direct URL", stream="CON")
+    row(id="CON-113", topic="Nonphysical drift of single-state (LuGre-type) friction models under oscillating loads "
+        "below breakaway (why simulated sheet creep is not evidence of slip)",
+        citation="Dupont P, Hayward V, Armstrong B, Altpeter F. Single state elastoplastic friction models. IEEE "
+                 "Transactions on Automatic Control 47(5):787-792, 2002",
+        year="2002", doi_or_url="10.1109/TAC.2002.1000274", source_type="journal", evidence_class="theory and simulation",
+        access_level="abstract", task_or_setup="Analysis of single-state friction models (Dahl, LuGre) and an "
+        "elastoplastic class that limits presliding drift", participants_or_bench="n/a", comparator="LuGre, Dahl",
+        key_quantitative_findings="Existing single-state models exhibit a nonphysical drift when the applied force "
+                                  "oscillates below the breakaway force, because presliding is modelled as a combination "
+                                  "of elastic and plastic displacement; elastoplastic presliding substantially reduces "
+                                  "the drift",
+        units_and_conditions="qualitative (model property)", locator="Abstract",
+        limitations="Read in a search summary; no numbers for this plant", relevance_to_design="Part (c): the hold-down "
+        "and the hand-on-paper contacts are LuGre contacts; the simulated sheet creeps by millimetres over a note under "
+        "loads well below the hold's capacity (part c, the 'held' rows), which this property explains",
+        transferability_reason="A property of the friction law used here", transferability="high",
+        design_implication="Measure sheet slip on the bench (EXP-PL04); an elastoplastic friction law would be needed "
+                           "to simulate creep credibly", search_query="WebSearch: Dupont Hayward Armstrong Altpeter "
+        "single state elastoplastic friction models drift", stream="CON", retrieved="2026-09-30",
+        lead_verification="search summary only")
     return R
 
 

@@ -137,7 +137,7 @@ _READER = {"ready": False}
 
 
 def reader_ready() -> str:
-    """R's reader choice (realdata/build/cache/reader_choice.json, read-only): TrOCR base, literal."""
+    """R's reader choice (realdata/build/cache/reader_choice.json, read-only): the literal reader study R chose."""
     from realdata import ocr as OC
     if not _READER["ready"]:
         rc = OC.reader_choice(log=lambda *a, **k: None)

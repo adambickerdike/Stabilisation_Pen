@@ -256,11 +256,12 @@ def bom() -> Dict:
 
 
 POWER = [   # (consumer, W low, W high, label)
-    ("fine voice coils (tremor duty, both axes)", 0.2, 2.0, CALC + " from the simulated RMS force (see results)"),
+    ("fine voice coils (tremor duty, both axes)", 0.2, 2.0, CALC + " from the simulated RMS force (the stage table of "
+     "part a; study E's raw commands would need far more)"),
     ("coarse steppers (holding at reduced current / moving)", 1.0, 5.0, ASM),
     ("vision compute + camera", 3.0, 8.0, ASM),
     ("real-time MCU, encoders, load cells", 0.5, 1.5, ASM),
-    ("vacuum blower or pump", 1.0, 6.6, ASM + " (" + SRC["delta_blower"] + " is 6.6 W at full speed)"),
+    ("vacuum blower or pump", 1.0, 6.6, ASM + " (a 97 mm blower is 6.6 W at full speed, MFR AMF-285)"),
     ("Z-drop solenoids (duty)", 0.2, 1.5, ASM),
 ]
 
@@ -294,7 +295,7 @@ SENSING_OPTIONS = [
      "measures": "pen acceleration and rotation (no absolute position)",
      "delay_ms": "1.5 (study E's IMU path: anti-aliasing + FIFO + averaging) + link: 1-2 wired or proprietary radio, "
                  "7.5-15 with BLE",
-     "noise": "accelerometer 60-70 ug/sqrt(Hz) (OPT-37, OPT-39); tremor-band position from the IMU alone about 0.29 mm "
+     "noise": "accelerometer 60-70 µg/√Hz (OPT-37, OPT-39); tremor-band position from the IMU alone about 0.29 mm "
               "with a linear filter on the tremor alone (study F)",
      "pros": "any pen the user likes; cheap", "cons": "no position: cannot write accepted text alone; clip adds "
      "5-8 g off-axis; BLE latency", "label": "MANUFACTURER / LITERATURE (ledger ids) and ASSUMPTION (link)"},

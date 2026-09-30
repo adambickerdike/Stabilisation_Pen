@@ -91,8 +91,9 @@ def comparison(res: Dict) -> Dict:
              "fivebar": "Could draw a stored signature within its 60 x 40 mm patch if the hand does not resist; "
                         "grip resistance defeats it (SIM)",
              "platen": "Free signing: as free writing (estimator-limited). By template (the user's stored signature, "
-                       "written under the held pen) as accepted writing; legally a machine-made mark (like an autopen) "
-                       "unless the user's own motion drives it (ASSUMPTION; a legal question, EXP-PL09)",
+                       "written with the user's pen docked, or held by a calm hand) as accepted writing; legally a "
+                       "machine-made mark (like an autopen) unless the user's own motion drives it (ASSUMPTION; a legal "
+                       "question, EXP-PL09)",
              "typing_dictation": "Electronic signatures where accepted; paper forms still need ink"},
             {"need": "Accepted-word completion for dyslexia ('se' and 'library')",
              "nib": "0/20 'se' suffixes pass the whole-text preflight at +-1.06 mm (Rev K) and +-1.5 mm (the independent "
@@ -149,6 +150,11 @@ def write(quick: bool = False) -> Dict:
         d = CM.jload(p)
         res["predictors"][p.stem] = {k: d[k] for k in ("cam_hz", "cam_latency_s", "noise_m", "horizon_s", "order",
                                                          "ridge", "cv_rms_m", "hold_rms_m", "with_drift", "rule")}
+    try:
+        res["command_bands"] = T.command_bands(quick)
+    except Exception as e:                   # a diagnostic; never blocks the report
+        CM.log(f"[report] command bands skipped: {e!r}")
+    res["tests"] = CM.jload(CM.BUILD_DIR / "tests_summary.json") or {"summary": "not recorded"}
     res["comparison"] = comparison(res)
     res["f_curve"] = CM.f_curve()
     res["stabpen.provenance"] = provenance(quick, EVIDENCE_SIM + "; " + EVIDENCE_CALC)

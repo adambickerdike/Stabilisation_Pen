@@ -27,7 +27,7 @@ PLAN (fixed here before any platen case ran; TUNING SPLIT ONLY, because study R'
                                cached Rev J streams (ideal page sensor): the estimator on the nib at F's reach
           F rows               study F's perfect-knowledge runs of the same cases at +-6, +-3, +-2, +-1.5, +-1.0 mm
                                (readable/build/cache/reach and e13; read at +-6, +-1.5, +-1.0 mm)
-  Read    by study R's reader (TrOCR base, literal): P_oracle, P_E_chosen, P_E_net, P_cam_sep, N15_E_chosen,
+  Read    by study R's literal reader (its chosen OCR instrument): P_oracle, P_E_chosen, P_E_net, P_cam_sep, N15_E_chosen,
           N10_E_chosen at the severe class; every other row by tip tremor and study F's frozen curve (CALC).
   Measures study R's (realdata.hw1.measures): words of 10, tip tremor (sqrt(2) x RMS of the major axis of ink -
           intended in contact, f0 +- 2 Hz), ink error, coverage; E's broadband residual; the stage's travel, force,
@@ -374,4 +374,46 @@ def aggregate(quick: bool) -> Dict:
     diffs = [abs(c["devices"]["none"]["tip_tremor_mm"] - c["devices"]["none_F"]["tip_tremor_mm"])
              for c in cases if c["devices"].get("none_F")]
     out["repro_ordinary_vs_F_max_abs_mm"] = float(max(diffs)) if diffs else None
+    return out
+
+
+BANDS_HZ = ((0.0, 3.0), (3.0, 12.0), (12.0, 40.0), (40.0, 100.0), (100.0, 250.0), (250.0, 1000.0))
+
+
+def command_bands(quick: bool = False) -> Dict:
+    """Diagnostic (CALC on SIM signals): band RMS of the page commands of one severe case (note 0, ET; PD with
+    --quick): perfect knowledge, study E's frozen design predicted to the platen's lag (part a's command), and the same
+    design at its own horizon (the Rev J servo's).  Explains the fine stage's effort with E's commands."""
+    from scipy.signal import welch
+    from aiprior import core as CO
+    from handwriting import plant as PL
+    from readable import common as RC
+    from realtrack import estimators as E
+    from . import design as D
+    i, kind = 0, ("PD" if quick else "ET")
+    note = RC.tuning_note(i)
+    spec = RC.tuning_spec(i, kind, "severe")
+    dr = RC.tuning_tremor(note, spec)
+    scn_n = note.scenario("none", dr.d)
+    r_n = PL.run(scn_n, note.pens["none"], note.hand)
+    rc = PL.run(note.scenario("none", None), note.pens["none"], note.hand)
+    g = D.sim_stage(STAGE_VARIANT).group_delay()
+    n_ticks = int(np.ceil(len(scn_n.t) / 20)) + 1
+    st = CO.streams_for(r_n, scn_n, note.pens["none"], note.trk, CM.h(spec["id"], "platen-streams") % (2 ** 31))
+    des = designs()["E_chosen"]
+    own, _ = E.estimate(des, st, case=RC.CaseLike(spec, None), sensor="ideal", horizon=E.servo_delay())
+    cmds = {"perfect_knowledge": _oracle_ticks(r_n, rc, n_ticks, 5e-4, g),
+            "E_chosen_platen_horizon": e_command(des, st, RC.CaseLike(spec, None), g),
+            "E_chosen_own_horizon": np.asarray(own)}
+    out = {"label": "CALC (Welch spectra) on SIM command signals; one case", "case": spec["id"],
+           "bands_hz": [list(b) for b in BANDS_HZ], "rms_mm": {}}
+    for name, d in cmds.items():
+        d = np.asarray(d, float)[: n_ticks - 10]
+        f, P = welch(d, fs=2000.0, nperseg=4096, axis=0)
+        Pt, df = P.sum(axis=1), float(f[1] - f[0])
+        out["rms_mm"][name] = {f"{lo:g}-{hi:g}": float(np.sqrt(Pt[(f >= lo) & (f < hi)].sum() * df) * 1e3)
+                               for lo, hi in BANDS_HZ}
+        out["rms_mm"][name]["total"] = float(np.sqrt(np.mean(np.sum(d ** 2, axis=1))) * 1e3)
+        hi = [k for k in out["rms_mm"][name] if k not in ("total", "0-3", "3-12")]
+        out["rms_mm"][name]["above_12"] = float(np.sqrt(sum(out["rms_mm"][name][k] ** 2 for k in hi)))
     return out

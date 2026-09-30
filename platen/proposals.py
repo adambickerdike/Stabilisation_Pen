@@ -23,6 +23,10 @@ def numbers(res: Dict) -> Dict[str, str]:
     g = lambda k, m="tip_tremor_mm", nd=2: _v((tr.get(k) or {}).get(m), nd)               # noqa: E731
     s = lambda k, m="tip_tremor_mm": _v((ss.get(k) or {}).get(m))                          # noqa: E731
 
+    def sa(k):
+        x = ((res.get("accepted") or {}).get("sensitivity") or {}).get(k)
+        return f"{x['engineering_complete']}/{x['n']}" if x else "n/a"
+
     def a(t, c, h, key="engineering_complete"):
         x = acc.get(f"{t}|{c}|{h}")
         if not x:
@@ -54,6 +58,18 @@ def numbers(res: Dict) -> Dict[str, str]:
         "se_relaxed": a("se", "relaxed_naive", "still"), "se_relaxed_loop": a("se", "relaxed_ink_loop", "still"),
         "se_firm_still": a("se", "firm_ideal", "still"), "lib_prop_still": a("library", "proposed", "still"),
         "lib_cradle": a("library", "cradle", "cradle"),
+        "slip_pv_c": s("slip_palm_rest_vacuum|camera"),
+        "slip_pv_slip": _v((ss.get("slip_palm_rest_vacuum|camera") or {}).get("paper_slip_max_mm")),
+        "slip_pc_held": _v((ss.get("slip_palm_rest_clip_only|held") or {}).get("paper_slip_final_mm"), 1),
+        "slip_pc_cam": _v((ss.get("slip_palm_rest_clip_only|camera") or {}).get("paper_slip_final_mm"), 1),
+        "slip_hv_c": s("slip_hand_on_paper_vacuum|camera"),
+        "slip_hv_force": _v((ss.get("slip_hand_on_paper_vacuum|camera") or {}).get("force_rms_N"), 1),
+        "slip_hc_held": _v((ss.get("slip_hand_on_paper_clip_only|held") or {}).get("paper_slip_final_mm"), 0),
+        "air_runs": f"{((res.get('accepted') or {}).get('air_ink') or {}).get('runs', 0):,}",
+        "air_max": f"{((res.get('accepted') or {}).get('air_ink') or {}).get('max_air_phase_ink_mm', float('nan')):.3f}",
+        "sens_n10": sa("firm_N1.0|still"), "sens_medium": sa("medium_grip_N0.5|still"),
+        "sens_m07": sa("model_x0.7|still"), "sens_m13": sa("model_x1.3|still"),
+        "sens_m07_pd": sa("model_x0.7|mod_PD"), "sens_m13_pd": sa("model_x1.3|mod_PD"),
         "ext": "; ".join(f"'{t}' up to {e['max_width_mm']:.0f} x {e['max_height_mm']:.0f} mm and {e['max_duration_s']:.1f} s"
                          for t, e in ((res.get("accepted") or {}).get("reference_extent") or {}).items()) or "n/a",
     }
@@ -69,8 +85,10 @@ def decisions(n: Dict[str, str]) -> List[List[str]]:
          f"mm and {n['p_oracle_w']} words of 10 are read, where the +-1.5 mm nib leaves {n['f15']} mm ({n['f15_w']} "
          f"words) and the +-1.0 mm nib {n['f10']} mm ({n['f10_w']}); accepted 'se' with the pen held firmly "
          f"{n['se_prop_still']} and in a cradle {n['se_cradle']}, against the five-bar's 0/20 with a 200 or 500 N/m grip",
-         "EXP-PL01 (stage) and EXP-PL06 (tremor replay on the bench) contradict the simulated residual; EXP-PL09 finds "
-         "no user who prefers the platen to typing, dictation or a plotter"],
+         "EXP-PL01 (stage) and EXP-PL06 (tremor replay on the bench) contradict the simulated residual; EXP-PL03 finds "
+         "that writers do not cancel the tremor-band drag and no grip or decoupling restores the camera loop (part c: "
+         f"{n['fric_c']} mm under the 'intended' convention); EXP-PL09 finds no user who prefers the platen to typing, "
+         "dictation or a plotter"],
         ["DEC-086", "**The platen's stage is two-layer: a voice-coil fine XY stage (+-5 mm, 40 Hz, <= 0.6 kg moving, "
                     "20 N cap) on a belt H-bot coarse stage (+-40 x +-20 mm, about 8 Hz, 20 N cap)**; tremor is "
                     "cancelled on the fine stage only. Alternatives: one belt H-bot for everything; linear motors on "
@@ -99,7 +117,9 @@ def decisions(n: Dict[str, str]) -> List[List[str]]:
          f"SIM ('se', 20 UJI references): proposed {n['se_prop_still']} (still hand), {n['se_prop_drift']} (drift), "
          f"{n['se_prop_modpd']} (moderate PD), {n['se_prop_sevpd']} (severe PD), {n['se_prop_sevet']} (severe ET); cradle "
          f"{n['se_cradle']}; HW1's relaxed hand with tip following {n['se_relaxed']}, with the ink loop "
-         f"{n['se_relaxed_loop']}; 'library' proposed {n['lib_prop_still']}, cradle {n['lib_cradle']}",
+         f"{n['se_relaxed_loop']}; 'library' proposed {n['lib_prop_still']}, cradle {n['lib_cradle']}; sensitivity "
+         f"(still hand): 1.0 N {n['sens_n10']}, a medium grip {n['sens_medium']}, the compliance model 30 % low / high "
+         f"{n['sens_m07']} / {n['sens_m13']} (moderate PD {n['sens_m07_pd']} / {n['sens_m13_pd']})",
          "EXP-PL03 (people's pen deflection under page drag) or EXP-PL05 (bench accepted writing) disagree"],
         ["DEC-089", "**Severe-tremor legibility claims stay gated by the estimator (DEC-055, DEC-067), not by reach**: "
                     "with the platen the reach limit is gone, so every new estimator is first tested on the platen (in "
@@ -134,8 +154,11 @@ def requirements(n: Dict[str, str]) -> List[Dict]:
          f"um {n['n30']} mm; tilt 10 % {n['k10']} mm (SIM, perfect separation)", "EXP-PL02"),
         ("REQ-PLT-005", "Hold-down and registration", "The sheet is held against >= 3 N of shear (A5: about 240 Pa of "
          "vacuum, CALC) with no slip under the ball's drag, and registered to the platen frame within 0.2 mm",
-         f"With the hand on the paper and a clip only, perfect knowledge leaves {n['slip_clip_o']} mm; with vacuum "
-         f"{n['slip_vac_o']} mm; palm rest and clip {n['slip_palm_o']} mm (SIM)", "EXP-PL04"),
+         f"Palm rest and vacuum: the camera loop leaves {n['slip_pv_c']} mm, sheet slip {n['slip_pv_slip']} mm; palm "
+         f"rest and a clip only: the sheet walks {n['slip_pc_held']} mm (page held) and {n['slip_pc_cam']} mm (camera "
+         f"loop); hand on vacuum-held paper: the camera loop leaves {n['slip_hv_c']} mm at {n['slip_hv_force']} N RMS; "
+         f"hand on clip-held paper: the sheet travels {n['slip_hc_held']} mm (SIM; LuGre creep inflates slip, CON-113)",
+         "EXP-PL04"),
         ("REQ-PLT-006", "Palm rest", "A fixed palm-rest bridge keeps the hand off the moving paper; underside 15-35 mm "
          "above the paper (25 mm nominal, the ISO 13854 finger gap), posts outside the plate's swept envelope",
          "Design rule (CAD; ISO 13854 via CON-110); slip rows above", "EXP-PL04; EXP-PL08; EXP-PL09 (comfort)"),
@@ -146,7 +169,8 @@ def requirements(n: Dict[str, str]) -> List[Dict]:
          f"{n['se_relaxed']} (SIM)", "EXP-PL03; EXP-PL05"),
         ("REQ-PLT-008", "Contact and lift", "Load cells under the plate detect contact (>= 50 mN) within 2 ms; the "
          "Z-drop breaks contact within 40 ms and the page makes no air move until the break is confirmed",
-         "Air-phase ink 0 mm with a 40 ms lift in every simulated condition (SIM); five-bar comparison uses 200 ms",
+         f"Air-phase ink at most {n['air_max']} mm over all {n['air_runs']} simulated words (a 40 ms drop, 200 ms in "
+         "one variant, against the plan's 200 ms lift phases) (SIM); the five-bar's lift is 200 ms",
          "EXP-PL05; EXP-PL08"),
         ("REQ-PLT-009", "Safety", "Force caps 20 N (fine and coarse, in hardware current limits), speed cap 50 mm/s, "
          "moving kinetic energy <= 0.05 J, no fixed gap between 4 and 25 mm at a moving edge without a skirt, SELV "
@@ -174,9 +198,12 @@ def experiments() -> List[List[str]]:
         ["EXP-PL02", "How well does the camera see the pen tip?", "A pen tip moved by the fine stage (known motion) "
          "under the camera: latency (LED flash + stage), noise, occlusion by a hand, error from pen rotation with the "
          "marker at 3 and 10 mm above the ball; EMR digitiser as the comparator", "REQ-PLT-004"],
-        ["EXP-PL03", "How far does a moving page drag a held pen?", "People (with and without tremor) hold a pen on "
-         "the palm rest; the page slides and reverses at 5-30 mm/s with 0.3-1.0 N normal force; tip deflection by the "
-         "camera, drag by the plate; relaxed and firm grips; the hand-compliance model fitted per person", "REQ-PLT-007"],
+        ["EXP-PL03", "How far does a moving page drag a held pen, and does the writer cancel the drag?", "People (with "
+         "and without tremor) hold a pen on the palm rest; the page slides and reverses at 5-30 mm/s with 0.3-1.0 N "
+         "normal force; tip deflection by the camera, drag by the plate; relaxed and firm grips; the hand-compliance "
+         "model fitted per person. Then free writing on a page that follows the tip with a small known error: how much "
+         "of the tremor-band drag the writer's hand cancels (HW1's convention against 'intended', part c)",
+         "REQ-PLT-007; DEC-085; DEC-089"],
         ["EXP-PL04", "Does the sheet stay put?", "Vacuum, tack mat and clip-only hold-downs; shear to slip with and "
          "without a hand resting on the paper; registration repeatability over 20 sheet loads", "REQ-PLT-005, 006"],
         ["EXP-PL05", "Does the platen write accepted words on paper?", "The 20 'se' and 20 'library' references written "

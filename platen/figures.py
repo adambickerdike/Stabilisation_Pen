@@ -258,7 +258,7 @@ def fig_accepted(acc: Dict, five: Dict, out: Path) -> Optional[Path]:
         ax.set_xticks(x)
         ax.set_xticklabels([h[1] for h in HAND_ORDER], rotation=20, ha="right")
         ax.set_ylim(0, n + 3)
-        ax.set_ylabel(f"Words completed (of {n}; the five-bar's criterion)")
+        ax.set_ylabel(f"Words complete (of {n})")
         ax.set_title(f"'{text}' {'suffix' if text == 'se' else 'rewrite'}", fontsize=10, loc="left")
     # the five-bar (published, 'se' suffix)
     ax = axes[-1]
@@ -278,9 +278,9 @@ def fig_accepted(acc: Dict, five: Dict, out: Path) -> Optional[Path]:
     ax.set_ylim(0, 23)
     ax.set_title("grounded five-bar, 'se'\n(no tremor; published)", fontsize=9.5, loc="left")
     fig.legend(loc="lower center", ncol=2, fontsize=8, bbox_to_anchor=(0.45, -0.01))
-    fig.suptitle("Accepted writing by moving the page under a held pen (SIMULATION)", fontsize=10.5, x=0.02,
-                 ha="left", color=INK)
-    fig.subplots_adjust(left=0.06, right=0.99, top=0.86, bottom=0.34)
+    fig.suptitle("Accepted writing by moving the page under a held pen: words meeting the five-bar's criterion "
+                 "(SIMULATION)", fontsize=10.5, x=0.02, ha="left", color=INK)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.82, bottom=0.34)
     p = out / "fig_accepted.png"
     fig.savefig(p, dpi=150)
     plt.close(fig)
