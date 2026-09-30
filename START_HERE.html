@@ -43,13 +43,32 @@
       <li><b>Reviewable spelling support:</b> the offline application proposes corrections and requires selected acceptance while preserving original ink and recognition. Physical completion has separate reach, tracking and contact checks.</li>
     </ul>
     <p class="note">The studies use different physical models. Their favorable numbers cannot be combined into a specification for one validated device. Read the updated <a href="docs/claims_register.md">claims register</a> before quoting results.</p>
-    <p><b>Now running (lead, 30 September 2026; decisions DEC-070 to DEC-074):</b></p>
+    <p><b>Round 5 (lead, 30 September 2026; decisions DEC-070 to DEC-099):</b></p>
     <ul>
       <li>Reruns of the earlier headline simulations with realistic sensing (study X). Until then, those whole-pen simulation results count as upper bounds.</li>
       <li>A full optimisation of the balanced nib under matched loads (study N).</li>
       <li>A moving-paper writing surface as an alternative for severe tremor and for writing whole words (study P).</li>
-      <li>Users and market (study U).</li>
-      <li>An order-ready plan for the first bench build (study H).</li>
+      <li><b>Done:</b> <a href="docs/market_and_users.md">users and market</a> (study U).
+        <ul>
+          <li>People still write by hand: 62&nbsp;% of over-65s in Great Britain write lists by hand at least weekly, and some documents must be signed by hand.</li>
+          <li>Tremor affects typing too, and voice recognition struggles with Parkinson's speech.</li>
+          <li>But no one has yet shown a benefit from the active pen, and cheap aids compete. So the plan is:
+            <ul>
+              <li>ask first: a survey and interviews, with go/no-go numbers set in advance;</li>
+              <li>test the alternatives with people, with no new device;</li>
+              <li>offer measurement and practice products before the active pen.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><b>Done:</b> <a href="docs/bench_build_plan.md">the first bench build plan</a> (study H).
+        <ul>
+          <li>First build, a data box plus the contact-and-ink rig: about USD 4,350–7,750 and 4 weeks.</li>
+          <li>All five builds: about USD 14,000–35,400 over 12 weeks.</li>
+          <li>Parts lists with prices, safety rules and blank data sheets are included.</li>
+          <li>The calculated sideways load on the nib (about 50&nbsp;mN) favours the 1.06&nbsp;mm nib over the 1.5&nbsp;mm one, unless measurements show less.</li>
+        </ul>
+      </li>
     </ul>
   </div>
 
@@ -85,6 +104,8 @@
 
   <h2>3. The latest studies (29–30 September 2026)</h2>
   <ul>
+    <li><a href="docs/market_and_users.md">Users and market</a>: who still writes by hand, what they use instead, what they would pay, and how to test it before building.</li>
+    <li><a href="docs/bench_build_plan.md">The first bench build</a>: what to buy and build first, costs, schedule, safety, and what each test decides.</li>
     <li><a href="docs/revJ_simulation.md">Whole pen in the physics simulator</a>: results per condition on simulated writers and tremor, and why the tip uses too much power.</li>
     <li><a href="docs/real_data.md">Real recorded handwriting and tremor</a>: on real tremor no tracker helps yet. With perfect knowledge of the tremor, the same pen would make 7 of 10 words readable.</li>
     <li><a href="docs/readable_target.md">How much shake may be left</a>: the target any tracker must hit for readable words, why telling the shake from the writing is the hard part, and the reach a nib needs.</li>

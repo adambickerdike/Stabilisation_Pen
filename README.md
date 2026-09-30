@@ -18,6 +18,8 @@ This repository holds the research and development package: the audit of the sou
 |---|---|
 | **On your computer:** open `START_HERE.html` for one-click links to the claims register, the explainer, the spelling prototype and the latest studies | `START_HERE.html` |
 | **The latest improvement work:** proposed fine nib, grounded accepted-writing mechanism, causal controllers, physically constrained planning and verification | [`docs/engineering_improvement_2026_09_30.md`](docs/engineering_improvement_2026_09_30.md) |
+| **Users and market (round 5, study U):** do people still write by hand, who would pay, what the alternatives are, the go/no-go criteria and the pen vs typing vs dictation comparison | [`docs/market_and_users.md`](docs/market_and_users.md); instruments in [`results/market/`](results/market/) |
+| **The first bench build (round 5, study H):** what to buy and build first, what it costs, how long it takes and what each test decides | [`docs/bench_build_plan.md`](docs/bench_build_plan.md); parts lists and templates in [`results/benchbuild/`](results/benchbuild/) |
 | **The current upstream baseline, Rev K:** integrated balanced nib, its layout and unresolved fit/sensing issues | [`docs/revK_design.md`](docs/revK_design.md); read the new improvement report before quoting its budgets |
 | The earlier Rev J design: ±6 mm moving nose, optional grounded heel and reaction-mass tail; historical whole-pen simulations | [`docs/revJ_concept.md`](docs/revJ_concept.md); plan [`docs/revJ_plan.md`](docs/revJ_plan.md); integrated design [`docs/revJ_design.md`](docs/revJ_design.md); the 3-D explainer [`viewer/explainer/`](viewer/explainer/build.py) |
 | The Rev J studies | tip [`docs/nose_v2.md`](docs/nose_v2.md), heel [`docs/grounded_drive.md`](docs/grounded_drive.md), tail [`docs/inertial_endcap.md`](docs/inertial_endcap.md), algorithms and AI [`docs/ai_control_v2.md`](docs/ai_control_v2.md), physics simulator [`docs/sim_v2.md`](docs/sim_v2.md) |
@@ -29,7 +31,7 @@ This repository holds the research and development package: the audit of the sou
 | The independent review of 29 September 2026 and our response to each finding | [`docs/reviews/`](docs/reviews/2026-09-29_review_response.md) |
 | Current state, blockers and next actions | [`CHECKPOINT.md`](CHECKPOINT.md) |
 | The system and its budgets | [`docs/architecture.md`](docs/architecture.md), [`docs/icd.md`](docs/icd.md) |
-| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…044) |
+| Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) (DEC-001…099) |
 | What the simulations say | [`docs/sim_report.md`](docs/sim_report.md) |
 | What may be claimed for each feature | [`docs/features.md`](docs/features.md) |
 | The riskiest open questions | [`docs/research_questions.md`](docs/research_questions.md) |
@@ -158,6 +160,8 @@ States: **drafted** (text or design, not run) · **executable** (code runs, resu
 | Round 4 | Study B, the balanced nib (after the independent review): eleven load-balancing mechanisms designed for the 24 mm pen and a 12–16 mm core, magnetics, flexures, fatigue, thermal and ink-force models, multi-objective optimisation, closed-loop simulation in sim2, CAD of the recommended nib B1, interface file `config/nib.yaml` | executed (calculation, simulation) · bench pending | `docs/balanced_nib.md`, `bnib/`, `results/bnib/`, `mechanics/cad/bnib.py` |
 | Round 4 | Study W, shifting the whole pen against large tremor: tremor targets, grip pivoting, collar, tuned masses, gyroscopes, paper-grounded force and write-when-in-reach designed and optimised; closed-loop simulation against the same pen locked at three grips; real tremor sizes; CAD of the reference collar | executed (calculation, simulation) · bench pending | `docs/whole_pen_shift.md`, `wholepen/`, `results/wholepen/`, `mechanics/cad/wholepen.py` |
 | Round 4 | Study S, spelling help, prediction and clearer writing: causal streaming letter recogniser, recognition-aware spell checker from real misspellings, physical cues, personal word completion, why close tracing lowers legibility, shape assist, accepted-word writing planner, three separated outputs; a self-contained prototype page | executed (calculation, simulation) · people pending | `docs/spelling_and_clarity.md`, `ai3/`, `results/ai3/` |
+| Round 5 | Study U, users and market: sourced prevalence and handwriting-use evidence, sizing model, competitor scan, customer-discovery pack (interview guides, survey, waitlist plan, recruitment and ethics), pre-registered go/no-go criteria, the pen vs typing vs dictation comparison design, business-model order | executed (literature and calculation) · discovery pending (EXP-U01…U06) | `docs/market_and_users.md`, `results/market/` |
+| Round 5 | Study H, the first bench build plan: parts lists per gate with sourced prices, fabrication, safety (beryllium, magnets, the five-bar), test-to-decision map, budget and 12-week schedule, blank data templates, a synthetic pipeline check through the rig analyses | executed (plan) · nothing bought yet | `docs/bench_build_plan.md`, `results/benchbuild/` |
 | Round 4 | Study F, the readable target: tremor left at the tip against words read (amplitude, lag and random residuals; frozen on tuning writers, tested once), per-user gate calibration (information only), prediction vs sensing vs separation, the reach a nib needs | executed (simulation with real recorded inputs) · people pending (EXP-E20) | `docs/readable_target.md`, `readable/`, `results/readable/` |
 | Round 4 | Study K, the Rev K integrated layout: B1 in the Rev J body, buildable coils, C17200 wire leads, ball thrust guide, counter-face head and pen lift, 59 fit checks, centring tolerances, mass, power and battery per mode, skin temperature, nib modes against the 2.5 × rule, cost, heel module, simulator parameters; CAD with STEP; a servo-bandwidth check in sim2 | executed (calculation, one simulation check) · bench pending (EXP-K20…K25) | `docs/revK_design.md`, `revk/`, `results/revK/`, `mechanics/cad/revK_pen.py` |
 | Round 4 | Study E, tremor tracking on real data: filters, WFLC/BMFLC, oscillator trackers and EPLL, Kalman trackers with new gates, study W's GLG, networks trained on real and synthetic writing; delay analysis; pre-registered choice frozen on tuning writers and tested once on held-out writers; MCU cost | executed (simulation with real recorded inputs) · none passes DEC-055 | `docs/real_tracker.md`, `realtrack/`, `results/realtrack/` |
@@ -230,6 +234,8 @@ python3 -m wholepen.run_study                         # shifting the whole pen (
 python3 -m ai3.run_study                              # spelling, prediction and clarity (several hours; --quick about 8 min); tests: python3 -m pytest -q ai3/tests
 python3 -m realtrack.run                              # tremor tracking on real inputs (about 5 CPU h; --quick); tests: python3 -m pytest -q realtrack/tests
 python3 -m readable.run                               # the readable target, per-user gates, the gap, reach (about 110 min on 2 workers; --quick about 3 min); tests: python3 -m pytest -q readable/tests
+python3 results/market/sizing_model.py              # market sizing (study U; arithmetic only, regenerates market_sizing.csv)
+python3 results/benchbuild/tools/pipeline_check.py  # bench build: synthetic data through the rig analyses (study H; about 3 s)
 python3 -m realdata.run                               # real recorded inputs (downloads the open datasets; about 2.5 h; --quick about 15 min); tests: python3 -m pytest -q realdata/tests
 python3 -m sim2j.run_study                            # whole Rev J pen in simulator v2 (several CPU hours; one writer per process: SIM2J_WRITERS=4 ... --stages et); tests: python3 -m pytest -q sim2j/tests
 python3 mechanics/cad/revJ_pen.py [--no-endcap]       # Rev J CAD, STEP and drawing
@@ -270,6 +276,8 @@ Firmware, ML and app have their own build and test commands in their READMEs.
 | `ai3/` | Spelling help, prediction and clarity (study S), with the prototype page `ai3/demo/index.html` |
 | `realtrack/` | Tremor tracking on real data (study E): estimators, gates, learned networks, the frozen test |
 | `readable/` | The readable target (study F): residual sweeps, per-user gates, the prediction/separation split, reach |
+| `results/market/` | Users and market (study U): sizing model and CSV, competitors, interview guides, survey, go/no-go criteria |
+| `results/benchbuild/` | The first bench build (study H): parts lists, costs and schedule, test-to-decision map, data templates, tools |
 | `realdata/` | Real recorded data library (study R): handwriting and tremor sets, severity classes, page-sensor error model, reader, HW1 runs on real inputs |
 | `rig/` | Measurement rigs (study M): DAQ frame protocol, logger, analyses, self-test, Teensy firmware, tablet recorder |
 | `s2r/` | Sim-to-real: virtual bench, identification, calibrated twin |
