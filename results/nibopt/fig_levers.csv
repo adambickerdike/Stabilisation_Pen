@@ -1,16 +1,21 @@
-lever,typical_W,severe35_W,skin_C,screen_W,d_typical_pct,d_screen_pct
-magnet derating 0.85,0.02566,0.04172,32.74,0.07232,-32.7,-33.2
-magnet derating 1,0.01845,0.03000,32.29,0.05182,-51.6,-52.1
-face trimmed for the weight,0.03229,0.05241,33.28,0.07428,-15.4,-31.4
-moving mass -1 g,0.03269,0.05197,33.25,0.08688,-14.3,-19.7
-moving mass +1 g,0.04594,0.07661,34.50,0.13697,20.4,26.6
-ink force x 0.5,0.01938,0.03494,32.41,0.07040,-49.2,-34.9
-ink force x 1.5,0.07493,0.11645,36.52,0.18713,96.4,73.0
-refill slide friction 5 mN,0.03677,0.05849,33.58,0.10296,-3.6,-4.8
-guide rolling resistance x 2,0.03883,0.06286,33.81,0.10903,1.8,0.8
-guide preload 4 N,0.04006,0.06393,33.86,0.11011,5.0,1.8
-face residual x 2,0.04100,0.06490,33.91,0.13771,7.5,27.3
-contact share 0.9,0.04590,0.07364,34.35,0.10820,20.3,0.0
-copper fill 0.45,0.04538,0.07344,34.34,0.12781,19.0,18.1
-copper fill 0.65,0.03325,0.05432,33.37,0.09501,-12.8,-12.2
-force-constant convention: centre x 1.0,0.00804,0.01307,31.96,0.02292,-78.9,-78.8
+lever,kind,typical_W,severe35_W,skin_C,screen_W,d_typical_pct,d_screen_pct,feasible,fails
+magnet derating 0.85,input,0.02598,0.04218,32.74,0.07310,-32.7,-33.2,True,
+magnet derating 1,input,0.01868,0.03033,32.25,0.05237,-51.6,-52.1,True,
+face trimmed for the weight,input,0.03258,0.05276,33.27,0.07469,-15.7,-31.7,True,
+moving mass -1 g,input,0.03308,0.05247,33.25,0.08776,-14.4,-19.8,True,
+moving mass +1 g,input,0.04652,0.07748,34.52,0.13843,20.4,26.6,True,
+ink force x 0.5,input,0.01990,0.03572,32.42,0.07168,-48.5,-34.5,False,modes
+ink force x 1.5,input,0.07529,0.11690,36.51,0.18804,94.9,71.9,False,preload
+refill slide friction 5 mN,input,0.03725,0.05918,33.59,0.10413,-3.6,-4.8,True,
+guide rolling resistance x 2,input,0.04005,0.06426,33.85,0.11092,3.7,1.4,True,
+guide preload 4 N,input,0.04029,0.06438,33.85,0.11104,4.3,1.5,True,
+face residual x 2,input,0.04147,0.06558,33.91,0.13914,7.4,27.2,True,
+contact share 0.9,input,0.04637,0.07429,34.36,0.10937,20.0,0.0,True,
+copper fill 0.45,input,0.04596,0.07426,34.35,0.12924,19.0,18.2,True,
+copper fill 0.65,input,0.03366,0.05491,33.37,0.09600,-12.9,-12.2,True,
+single array + keeper,design,0.10683,0.17280,41.41,0.31480,176.5,187.8,False,skin voltage
+grade N48SH,design,0.04094,0.06646,33.98,0.11605,6.0,6.1,True,
+sublayers xyyx,design,0.04015,0.06509,33.89,0.11346,3.9,3.7,True,
+body diameter -1 mm,design,0.06294,0.10173,36.08,0.17891,62.9,63.6,False,wires_min wires_max
+usable radius +0.1 mm,design,0.05271,0.08544,34.94,0.15197,36.5,39.0,False,goodman wires_min wires_max
+force-constant convention: centre x 1.0,input,0.00837,0.01359,31.95,0.02378,-78.3,-78.3,,

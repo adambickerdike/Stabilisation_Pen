@@ -165,6 +165,7 @@ def constraints(ev: Dict) -> Dict:
         "goodman": ev["wires"]["goodman_worst_corner"] - val(P.MECH["goodman_min"]),
         "hertz_run": val(P.MECH["hertz_run_GPa"]) - ev["guide"]["hertz_run_GPa"],
         "hertz_static": val(P.MECH["hertz_static_GPa"]) - ev["guide"]["hertz_static_GPa"],
+        "preload": ev["guide"]["preload_per_race_N"] - ev["guide"]["min_preload_all_balls_loaded_N"],
         "modes": ev["modes"]["servo_bw_max_worst_Hz"] - val(P.MECH["servo_bw_min_Hz"]),
         "coil_p99": fit["coil_clearance_p99_mm"] - val(P.MECH["clearance_p99_min_mm"]),
         "skin": val(P.THERMAL["skin_target_C"]) - sev["skin"]["max_shell_C"],

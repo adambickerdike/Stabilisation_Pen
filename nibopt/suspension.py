@@ -109,12 +109,37 @@ def wire_joule_rise(I_rms_wire: float, L_mm: float, d_mm: float) -> float:
 
 
 # ------------------------------------------------------------------------------------------------ ball guide
-def min_preload(circle_r_mm: float, n_balls: int = 6, theta_deg: float = 35.0, lever_mm: float = None) -> float:
-    """Smallest internal preload per race (N) that keeps every ball loaded under the couple (rigid-race estimate):
-    the couple changes a ball's load by up to 2 M / (n rho) (sum of sin^2 over n balls = n / 2)."""
+def unloading_preload(circle_r_mm: float, n_balls: int = 6, ball_d_mm: float = 0.8, theta_deg: float = 35.0,
+                      lever_mm: float = None) -> float:
+    """Smallest internal preload per race (N) at which the opposed-race Hertz solver (revk/feasibility.thrust_guide)
+    still keeps every ball loaded under the counter-face couple at theta (bisection, 0.1 % in the load)."""
     M = couple_Nm(theta_deg, lever_mm)
-    dF = 2 * M / (n_balls * circle_r_mm * 1e-3)
-    return dF * n_balls * val(P.MECH["preload_min_margin"])
+    if M <= 0:
+        return 0.0
+
+    def loaded(P0: float) -> bool:
+        g = _guide(round(M, 12), round(P0, 6), n_balls, round(ball_d_mm * 0.5e-3, 9), round(circle_r_mm * 1e-3, 9),
+                   val(P.MECH["mu_roll"]))
+        return g["unloaded_contacts"] == 0
+    lo, hi = 1e-3, 1.0
+    while not loaded(hi):
+        lo, hi = hi, hi * 2
+        if hi > 1e3:
+            return float("inf")
+    while hi - lo > 1e-3 * hi:
+        mid = 0.5 * (lo + hi)
+        if loaded(mid):
+            hi = mid
+        else:
+            lo = mid
+    return hi
+
+
+def min_preload(circle_r_mm: float, n_balls: int = 6, theta_deg: float = 35.0, lever_mm: float = None,
+                ball_d_mm: float = 0.8) -> float:
+    """The preload floor (N per race): the solver's unloading preload at 35 deg x the margin (1.2: it also covers the
+    ink force's +20 % tolerance, REQ-BNIB-008), so no ball unloads in writing (PROPOSED DESIGN rule, CALC)."""
+    return unloading_preload(circle_r_mm, n_balls, ball_d_mm, theta_deg, lever_mm) * val(P.MECH["preload_min_margin"])
 
 
 @lru_cache(maxsize=4096)
@@ -150,7 +175,9 @@ def ball_guide(circle_r_mm: float, preload_N: float, ball_d_mm: float = 0.8, n_b
             "drag_mean_mN": float(np.mean([rows[k]["drag_mN"] for k in ("35", "50", "60", "75")])),
             "hertz_run_GPa": max(rows[k]["max_hertz_GPa"] for k in ("35", "50", "60", "75", "penup")),
             "hertz_static_GPa": p_rel, "tilt_stiffness_min_Nm_rad": min(r["min_tilt_stiffness_Nm_rad"] for r in rows.values()),
-            "min_preload_all_balls_loaded_N": min_preload(circle_r_mm, n_balls, lever_mm=lever_mm), "lever_mm": lever_mm,
+            "unloading_preload_N": unloading_preload(circle_r_mm, n_balls, ball_d_mm, lever_mm=lever_mm),
+            "min_preload_all_balls_loaded_N": min_preload(circle_r_mm, n_balls, lever_mm=lever_mm, ball_d_mm=ball_d_mm),
+            "lever_mm": lever_mm,
             "mass_balls_g": 2 * n_balls * 3200 * 4 / 3 * math.pi * R ** 3 * 1e3,
             "label": "CALCULATION (revk/feasibility.thrust_guide: opposed Hertz races, rigid supports; mu_roll ASSUMPTION)"}
 

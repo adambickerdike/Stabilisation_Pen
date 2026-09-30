@@ -2,14 +2,16 @@
 
 Run after `python3 -m nibopt.run` (it reads results/nibopt/candidates.json):
 
-    python3 mechanics/cad/nibopt.py [--candidate balanced] [--out results/nibopt]
+    python3 mechanics/cad/nibopt.py [--candidate balanced|reach_first|slim|k_envelope|all] [--out results/nibopt]
 
 Writes results/nibopt/nibopt_<candidate>.step (the nib sub-assembly, PROPOSED DESIGN), drawing_nibopt_<candidate>.png
-(a side section and a front view with the coils at rest and at the stop) and nibopt_cad_summary.json (partial solid
-masses, analytic clearances and a boolean interference check at rest and with the moving parts at the stop in eight
-directions).  Solid: back plate, poles, winding packs (every sublayer), keeper, races, balls, flange, carrier tube,
-wires, the floating anchor coupon and the refill envelope; the counter-face head is a swept keep-out only.  Not a
-manufacturing drawing: joints, solder pads, the flex lead, the Hall sensor and the head's mechanism are unresolved.
+(a side section and a front view with the coils at rest and at the stop) and nibopt_cad_summary_<candidate>.json
+(partial solid masses and a boolean interference check at rest and with the moving parts at the stop in eight
+directions; the fixed set includes a 0.2 mm keep-out ring inside the bore, so a clean check also shows >= 0.2 mm of
+nominal coil clearance at the stop).  Solid: back plate, poles, winding packs (every sublayer), keeper, races, balls,
+flange, carrier tube, wires, the floating anchor coupon and the refill envelope; the counter-face head is a swept
+keep-out only.  Not a manufacturing drawing: joints, solder pads, the flex lead, the Hall sensor and the head's
+mechanism are unresolved.
 """
 from __future__ import annotations
 
@@ -107,8 +109,10 @@ def build(c: dict):
         add(cq.Workplane("XY").circle(wr["d_mm"] / 2).extrude(L).translate((wr["circle_mm"] * math.cos(a),
                                                                               wr["circle_mm"] * math.sin(a), zw)),
             f"C17200_lead_{i + 1}", (.75, .53, .25), DENS["becu"])
-    # floating anchor coupon: four radial fixed-guided leaves sized for the beam share (76.6 %) of the anchor stiffness
-    k_beam = 0.766 * wr["anchor_N_m"]
+    # floating anchor coupon: four radial fixed-guided leaves carrying the anchor stiffness less the flex lead's
+    # allowance (the pass's 23.4 N/m, results/improvement/mechanics/cad_summary.json)
+    k_flex = 23.4
+    k_beam = max(wr["anchor_N_m"] - k_flex, 0.25 * wr["anchor_N_m"])
     ri = 1.175 + stop + 0.3
     hub = max(wr["circle_mm"] + 0.35, ri + 0.5)
     Lb = max(2.0, min(6.0, r_plate - 0.3 - hub - 0.3))
@@ -126,9 +130,11 @@ def build(c: dict):
     hr = head.get("od_min_head_mm", 18.0) / 2 - 1.3
     add(cq.Workplane("XY").circle(hr).extrude(85.03 - 60.67).translate((0, 0, 60.67 + shift)),
         "counterface_head_keepout_UNRESOLVED", (.12, .68, .68, .15))
-    add(ring(bore, bore - 0.2, 18.0, zw + L + 3 - 18.0), "bore_keepout", (.65, .70, .75, .10))
+    add(ring(bore, bore - 0.2, 18.0, zw + L + 3 - 18.0), "bore_keepout_0.2mm", (.65, .70, .75, .10), group="fixed")
     return assy, solids, fixed, moving, masses, {"z_actuator": (z0, zk + t_p), "z_flange": (zf, zf + ft),
                                                  "z_wires": (zw, zw + L), "anchor_leaf_t_mm": tb, "anchor_leaf_L_mm": Lb,
+                                                 "anchor_leaf_w_mm": wb, "anchor_beams_N_m": k_beam,
+                                                 "anchor_flex_allowance_N_m": k_flex,
                                                  "head_shift_mm": shift}
 
 
@@ -175,6 +181,11 @@ def drawing(c: dict, geo: dict, out: Path):
     for s in (-1, 1):
         ax.add_patch(Rectangle((z0 + t_p, s * cc - mg["w"] / 2), mg["t_m"], mg["w"], color="#b44a4a" if s > 0 else "#3a5fa8"))
     zc = z0 + t_p + mg["t_m"] + mg["c0"]
+    if mg.get("double"):
+        zk2 = zc + mg["t_cu"] + mg["c1"]
+        for s in (-1, 1):
+            ax.add_patch(Rectangle((zk2, s * cc - mg["w"] / 2), mg["t_m2"], mg["w"], color="#b44a4a" if s > 0 else "#3a5fa8",
+                                   alpha=0.75))
     for s in (-1, 1):
         ax.add_patch(Rectangle((zc, s * co["yc"] - (co["y_in"] + co["b"])), mg["t_cu"], 2 * (co["y_in"] + co["b"]),
                                fill=False, ec="#d07a28", lw=1.2))
@@ -195,7 +206,8 @@ def drawing(c: dict, geo: dict, out: Path):
     ax.set_aspect("equal")
     ax.set_xlabel("z from the ball tip (mm)")
     ax.set_ylabel("x (mm)")
-    ax.set_title(f"side section: actuator {z1 - z0:.2f} mm, wires {dsg['wires']['L_mm']:.1f} mm; coil at the stop dashed")
+    ax.set_title(f"side section: actuator {z1 - z0:.2f} mm ({'two arrays' if mg.get('double') else 'one array + keeper'}), "
+                 f"wires {dsg['wires']['L_mm']:.1f} mm; coil at the stop dashed", fontsize=10)
     ax = axs[1]
     ax.add_patch(Circle((0, 0), bore, fill=False, ec="#999", ls=":"))
     for sx, sy in [(1, 1), (-1, 1), (-1, -1), (1, -1)]:
@@ -225,19 +237,27 @@ def main(argv=None):
     ap.add_argument("--no-interference", action="store_true")
     args = ap.parse_args(argv)
     cands = json.loads((args.out / "candidates.json").read_text())
-    c = cands["candidates"][args.candidate]
+    names = list(cands["candidates"]) if args.candidate == "all" else [args.candidate]
+    for name in names:
+        one(cands["candidates"][name], name, args)
+
+
+def one(c: dict, name: str, args):
+    import time
+    t0 = time.time()
     assy, solids, fixed, moving, masses, geo = build(c)
-    step = args.out / f"nibopt_{args.candidate}.step"
+    step = args.out / f"nibopt_{name}.step"
     assy.export(str(step))
-    png = args.out / f"drawing_nibopt_{args.candidate}.png"
+    png = args.out / f"drawing_nibopt_{name}.png"
     drawing(c, geo, png)
     inter = [] if args.no_interference else interference(solids, fixed, moving, c["design"]["stop_mm"])
     from stabpen import provenance as PV
     import nibopt
     summ = {"stabpen.provenance": PV.metadata("PROPOSED DESIGN (CAD) with CALCULATION of fits; nothing built or measured",
-                                              extra={"script": "mechanics/cad/nibopt.py", "candidate": args.candidate,
-                                                     "own_sources_sha256_16": nibopt.own_digests()}),
-            "candidate": args.candidate, "step": str(step.relative_to(ROOT)), "drawing": str(png.relative_to(ROOT)),
+                                              extra={"script": "mechanics/cad/nibopt.py", "candidate": name,
+                                                     "own_sources_sha256_16": nibopt.own_digests(),
+                                                     "seconds": None}),
+            "candidate": name, "step": str(step.relative_to(ROOT)), "drawing": str(png.relative_to(ROOT)),
             "components": len(assy.children), "partial_solid_mass_g": sum(m["solid_mass_g"] for m in masses),
             "partial_mass_breakdown": masses, "geometry_mm": geo,
             "interference_rest_and_stop_8_directions": inter, "interference_free": len(inter) == 0,
@@ -245,7 +265,8 @@ def main(argv=None):
                              "counter-face head mechanism (a keep-out only)", "flex lead, solder pads and Hall sensor",
                              "coil former, turns and insulation build", "drop stops and dust protection"],
             "label": "PROPOSED DESIGN; interference by CadQuery boolean intersection (CALCULATION)"}
-    (args.out / "nibopt_cad_summary.json").write_text(json.dumps(summ, indent=2, default=float) + "\n")
+    summ["stabpen.provenance"]["seconds"] = time.time() - t0
+    (args.out / f"nibopt_cad_summary_{name}.json").write_text(json.dumps(summ, indent=2, default=float) + "\n")
     print(json.dumps({k: v for k, v in summ.items() if k not in ("partial_mass_breakdown", "stabpen.provenance")},
                      indent=1, default=float))
 

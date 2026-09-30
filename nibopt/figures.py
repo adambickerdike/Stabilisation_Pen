@@ -123,7 +123,7 @@ def waterfall(steps: List[Dict], key: str, unit: str, title: str, out: Path, sca
 
 
 def levers(study: Dict, out: Path) -> List[str]:
-    rows = sorted(study["rows"], key=lambda r: abs(r["d_typical_pct"]))
+    rows = sorted([r for r in study["rows"] if r.get("d_typical_pct") is not None], key=lambda r: abs(r["d_typical_pct"]))
     plt, fig, axs = _fig(9, 0.34 * len(rows) + 1.4)
     ax = axs[0]
     _style(ax)
@@ -141,15 +141,18 @@ def levers(study: Dict, out: Path) -> List[str]:
     ax.legend(handles=[Patch(color=NEG, label="lowers the loss"), Patch(color=POS, label="raises the loss")], frameon=False,
               fontsize=8, labelcolor=INK2, loc="lower right")
     ax.set_yticks(y)
-    ax.set_yticklabels([r["lever"] for r in rows], fontsize=8, color=INK2)
-    ax.set_xlabel("change in typical copper loss (duty A), %")
+    ax.set_yticklabels([r["lever"] + (" (design)" if r.get("kind") == "design" else "")
+                        + ("" if r.get("feasible", True) else " *") for r in rows], fontsize=8, color=INK2)
+    ax.set_xlabel("change in typical copper loss (duty A), %;  * breaks a constraint")
     ax.set_title(f"Levers, one at a time, around '{study['design']}' (CALCULATION)", fontsize=9, color=INK)
     fig.tight_layout()
     fig.savefig(out, dpi=150, facecolor=SURF)
     plt.close(fig)
-    _csv(out.with_suffix(".csv"), ["lever", "typical_W", "severe35_W", "skin_C", "screen_W", "d_typical_pct", "d_screen_pct"],
-         [[r["lever"], f"{r['typical_W']:.5f}", f"{r['severe35_W']:.5f}", f"{r['skin_C']:.2f}", f"{r['screen_W']:.5f}",
-           f"{r['d_typical_pct']:.1f}", f"{r['d_screen_pct']:.1f}"] for r in study["rows"]])
+    _csv(out.with_suffix(".csv"), ["lever", "kind", "typical_W", "severe35_W", "skin_C", "screen_W", "d_typical_pct",
+                                   "d_screen_pct", "feasible", "fails"],
+         [[r["lever"], r.get("kind", "input"), f"{r['typical_W']:.5f}", f"{r['severe35_W']:.5f}", f"{r['skin_C']:.2f}",
+           f"{r['screen_W']:.5f}", f"{r['d_typical_pct']:.1f}", f"{r['d_screen_pct']:.1f}", r.get("feasible", ""),
+           " ".join(r.get("fails", []))] for r in study["rows"] if r.get("d_typical_pct") is not None])
     return [str(out), str(out.with_suffix(".csv"))]
 
 

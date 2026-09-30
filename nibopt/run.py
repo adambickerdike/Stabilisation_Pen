@@ -225,13 +225,13 @@ def main(argv=None):
                           "refinement": r["history"], "selected_from": front_record(sel[name]),
                           "length_cap_mm": CA.length_cap_of(name),
                           "length_cap_met": bool(d.length_mm() <= CA.length_cap_of(name) + 1e-9),
-                          "genes": O.decode(np.array(r["best"]["x"]))}
+                          "genes": O.decode(np.array(r["best"]["x"])), "x_refined": list(map(float, r["best"]["x"]))}
     times["candidates_s"] = time.time() - t
     # targeted questions
     def best_of(arch, key):
         f = CA.feasible(arch)
         return front_record(min(f, key=key)) if f else None
-    inf15 = [p for p in r15["archive"] if p.get("ok") and p["V"] > 0]
+    inf15 = [p for p in r15["archive"] if p.get("ok") and p["V"] > 1e-9]
     q = {"reach15_od_le_24": {"n_evaluated": len(r15["archive"]), "n_feasible": len(CA.feasible(r15["archive"])),
                               "best_typical": best_of(r15["archive"], lambda p: p["F"][2]),
                               "closest_infeasible": front_record(min(inf15, key=lambda p: p["V"])) if inf15 else None,
@@ -240,10 +240,20 @@ def main(argv=None):
          "reach2": {"n_evaluated": len(a2), "n_feasible": len(CA.feasible(a2)),
                     "n_evaluated_24_29.8": len(r2s["archive"]), "n_feasible_24_29.8": len(CA.feasible(r2s["archive"])),
                     "smallest_od": best_of(a2, lambda p: (p["F"][3], p["F"][2])),
+                    "smallest_od_fill055": (front_record(min(CA.feasible(a2, fill055=True), key=lambda p: (p["F"][3],
+                                                                                                         p["F"][2])))
+                                            if CA.feasible(a2, fill055=True) else None),
+                    "lowest_typical_od_le_30_len_le_160": (front_record(min(
+                        [p for p in CA.feasible(a2, fill055=True) if p["F"][3] <= 30.0 and p["F"][4] <= 160.0],
+                        key=lambda p: p["F"][2])) if [p for p in CA.feasible(a2, fill055=True) if p["F"][3] <= 30.0
+                                                     and p["F"][4] <= 160.0] else None),
                     "lowest_typical": best_of(a2, lambda p: p["F"][2]),
                     "violations_below_smallest_od": _violations_by_od(a2),
                     "front_od_vs_typical": [front_record(p) for p in O.pareto(a2, obj=(3, 2))]},
-         "reach_per_watt": CA.reach_per_watt(pooled), "max_reach_by_od": CA.max_reach_by_od(pooled)}
+         "reach_per_watt": CA.reach_per_watt(pooled), "max_reach_by_od": CA.max_reach_by_od(pooled),
+         "reach_per_watt_fill055_len160": CA.reach_per_watt(pooled, fill055=True, length_cap=CA.LENGTH_CAP_MM),
+         "max_reach_by_od_fill055_len160": CA.max_reach_by_od(pooled, fill055=True, length_cap=CA.LENGTH_CAP_MM),
+         "length_limits": CA.length_limits(pooled)}
     par = {"n_evaluated": {"main": len(main_run["archive"]), "reach2": len(r2["archive"]),
                            "reach2_small": len(r2s["archive"]), "reach15": len(r15["archive"])},
            "n_feasible": {"main": len(CA.feasible(main_run["archive"])), "reach2": len(CA.feasible(r2["archive"])),
@@ -269,7 +279,7 @@ def main(argv=None):
     t = time.time()
     lev = {}
     focus = "balanced" if "balanced" in designs else next(iter(designs))
-    lev[focus] = LV.study(designs[focus])
+    lev[focus] = LV.study(designs[focus], x=refined[focus]["best"]["x"])
     files.append(write(out / "levers.json", {"studies": lev}, args))
     times["levers_s"] = time.time() - t
     bud = {}
@@ -299,7 +309,10 @@ def main(argv=None):
             "reach15_od_le_24": q["reach15_od_le_24"], "reach2": {k: v for k, v in q["reach2"].items()
                                                                    if k != "front_od_vs_typical"},
             "reach_per_watt": q["reach_per_watt"], "levers_ranked": lev[focus]["ranked_by_typical"],
-            "max_reach_by_od": q["max_reach_by_od"]},
+            "max_reach_by_od": q["max_reach_by_od"], "reach_per_watt_fill055_len160": q["reach_per_watt_fill055_len160"],
+            "max_reach_by_od_fill055_len160": q["max_reach_by_od_fill055_len160"], "length_limits": q["length_limits"],
+            "n_pooled": {"evaluated": len(pooled), "built": sum(1 for p in pooled if p.get("ok")),
+                         "feasible": len(CA.feasible(pooled)), "feasible_fill055": len(CA.feasible(pooled, fill055=True))}},
         "reconciliation_headline": {n: {"typical_worst07_W": t["dutyA"]["worst07"]["mean"],
                                         "typical_centre10_W": t["dutyA"]["centre10"]["mean"],
                                         "worst_typical_worst07_W": t["dutyA"]["worst07"]["worst"],

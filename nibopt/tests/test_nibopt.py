@@ -128,6 +128,14 @@ def test_guide_drag_falls_with_preload():
     assert 7.5 < hi < 8.5 and lo < hi / 2
 
 
+def test_preload_floor_keeps_every_ball_loaded():
+    u = SU.unloading_preload(6.98, 6, 0.8, lever_mm=79.8)
+    assert SU.ball_guide(6.98, 0.9 * u, lever_mm=79.8)["rows"]["35"]["unloaded_contacts"] > 0
+    g = SU.ball_guide(6.98, 1.2 * u, lever_mm=79.8)
+    assert g["rows"]["35"]["unloaded_contacts"] == 0
+    assert abs(g["min_preload_all_balls_loaded_N"] / u - 1.2) < 1e-9
+
+
 def test_screening_rejects_flexures():
     sc = SU.screen_topologies(1.7)
     struts = [r for r in sc["rows"] if r["topology"].startswith("necked")][0]

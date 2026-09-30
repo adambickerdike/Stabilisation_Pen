@@ -83,9 +83,23 @@ def reconciliation() -> str:
         lambda e: f"{e['electrical']['F_peak_N']:.3f} / {e['electrical']['I_peak_A']:.2f} / {e['electrical']['V_peak_V']:.2f}")
     row("servo bandwidth allowed, worst case (Hz; >= 40) (CALC)", lambda e: f(e["modes"]["servo_bw_max_worst_Hz"], 1))
     row("coil clearance at the stop, p99 (mm; >= 0.2) (CALC)", lambda e: f(e["fit"]["coil_clearance_p99_mm"], 2))
-    row("constraints failed (CALC)", lambda e: ", ".join(k for k, v in e["constraints"].items() if k != "feasible" and v < 0)
+    row("constraints failed (CALC)", lambda e: ", ".join(k for k, v in e["constraints"].items() if k != "feasible" and v < -1e-9)
         or "none")
     return head + "\n".join(rows) + "\n"
+
+
+def reconciliation_battery() -> str:
+    """Hours per mode for the four matched designs (study K's structure), and the skin per mode (CALC)."""
+    t = load("reconciliation.json")["table"]
+    ks = list(t)
+    modes = ("steady_0mm", "steady_1mm", "steady_2mm", "guide", "spelling_cue", "severe")
+    s = ("| mode: hours conservative - optimistic / hottest skin at 35 deg, weakest x 0.7 (degC) | "
+         + " | ".join(NAMES.get(k, k) for k in ks) + " |\n|---|" + "---|" * len(ks) + "\n")
+    for m in modes:
+        s += f"| {m} | " + " | ".join(
+            f"{t[k]['battery']['conservative'][m]['hours']:.1f} - {t[k]['battery']['optimistic'][m]['hours']:.1f} / "
+            f"{t[k]['nib_by_mode']['worst07'][m]['skin_max_C']:.1f}" for k in ks) + " |\n"
+    return s
 
 
 def waterfall_K() -> str:
@@ -127,13 +141,41 @@ def topologies() -> str:
 
 def pareto() -> str:
     r = load("pareto.json")
-    s = "| body OD <= (mm) | largest usable radius (mm) | its typical loss (mW) | its worst-case loss (W) | length (mm) |\n|---|---|---|---|---|\n"
-    for od, v in r["targeted"]["max_reach_by_od"].items():
-        s += f"| {od} | {v['reach_mm']:.2f} | {v['typical_W'] * 1e3:.1f} | {v['screen_W']:.3f} | {v['length_mm']:.1f} |\n"
-    s += "\n| usable radius bin (mm), OD <= 24 | best typical loss (mW) | its worst-case (W) | OD (mm) | length (mm) | reach per typical watt (mm/W) |\n|---|---|---|---|---|---|\n"
-    for b, v in r["targeted"]["reach_per_watt"].get("best_by_reach_bin_od_le_24", {}).items():
-        s += (f"| {b} | {v['typical_W'] * 1e3:.1f} | {v['screen_W']:.3f} | {v['od_mm']:.1f} | {v['length_mm']:.1f} | "
+    t = r["targeted"]
+    a, b = t["max_reach_by_od"], t.get("max_reach_by_od_fill055_len160", {})
+    s = ("| body OD <= (mm) | largest usable radius, any fill (mm) | its typical (mW) / worst case (W) / length (mm) | "
+         "largest usable radius, fill 0.55 and <= 160 mm (mm) | its typical (mW) / worst case (W) / length (mm) |\n"
+         "|---|---|---|---|---|\n")
+    for od in a:
+        v, w = a[od], b.get(od)
+        s += (f"| {od} | {v['reach_mm']:.2f} | {v['typical_W'] * 1e3:.1f} / {v['screen_W']:.3f} / {v['length_mm']:.1f} | "
+              + (f"{w['reach_mm']:.2f} | {w['typical_W'] * 1e3:.1f} / {w['screen_W']:.3f} / {w['length_mm']:.1f} |\n"
+                 if w else "- | - |\n"))
+    s += ("\n| usable radius bin (mm), OD <= 24, fill 0.55, <= 160 mm | lowest typical loss (mW) | its worst case (W) | "
+          "OD (mm) | length (mm) | reach per typical watt (mm/W) |\n|---|---|---|---|---|---|\n")
+    for bn, v in t.get("reach_per_watt_fill055_len160", {}).get("best_by_reach_bin_od_le_24", {}).items():
+        s += (f"| {bn} | {v['typical_W'] * 1e3:.1f} | {v['screen_W']:.3f} | {v['od_mm']:.1f} | {v['length_mm']:.1f} | "
               f"{v['reach_per_W_mm']:.1f} |\n")
+    ll = t.get("length_limits")
+    if ll:
+        s += ("\n| pen length cap (mm), OD <= 24, fill 0.55 | largest reach (mm) | lowest typical at +-1.0 / +-1.25 / "
+              "+-1.5 mm (mW) |\n|---|---|---|\n")
+        for cap, v in ll["at_length_cap"].items():
+            vals = " / ".join(f"{v[k] * 1e3:.1f}" if k in v else "-" for k in ("reach_1_min_typical_W",
+                                                                             "reach_1.25_min_typical_W",
+                                                                             "reach_1.5_min_typical_W"))
+            s += f"| {cap} | {v['max_reach_mm']:.3f} | {vals} |\n"
+        s += "\nShortest pen for a reach (OD <= 24, fill 0.55): " + "; ".join(
+            f"+-{r} mm: {v['length_mm']:.1f} mm ({v['typical_W'] * 1e3:.0f} mW)" for r, v in ll["shortest_for_reach"].items()) + "\n"
+    r2 = t["reach2"]
+    s += ("\n| +-2 mm, body band (mm) | evaluated | feasible | constraints failing most often (count) | the closest design's "
+          "failing margins (Goodman: factor - 1.5; skin: K; length: mm; voltage: V; lead heat: K) |\n|---|---|---|---|---|\n")
+    for band, v in r2.get("violations_below_smallest_od", {}).items():
+        fails = ", ".join(f"{k} {n}" for k, n in v["failing"].items())
+        lim = {"voltage": 20.0}
+        cl = ", ".join((f"{k} {x:.2f}" if abs(x) < lim.get(k, 150.0) else f"{k} (thermal runaway)") if x is not None
+                       else f"{k} (no convergence)" for k, x in (v["closest"] or {}).items())
+        s += f"| {band} | {v['n']} | {v['n_feasible']} | {fails} | {cl or '-'} |\n"
     return s
 
 
@@ -189,10 +231,12 @@ def levers() -> str:
     s = ""
     for name, st in lv.items():
         s += f"Around '{name}' (base: typical {st['base']['typical_W'] * 1e3:.1f} mW, screen {st['base']['screen_W']:.3f} W, "
-        s += f"skin {st['base']['skin_C']:.1f} degC)\n\n| lever | typical (mW) | change | screen (W) | skin (degC) |\n|---|---|---|---|---|\n"
-        for r in sorted(st["rows"], key=lambda r: -abs(r["d_typical_pct"])):
-            s += (f"| {r['lever']} | {r['typical_W'] * 1e3:.1f} | {r['d_typical_pct']:+.0f} % | {r['screen_W']:.3f} | "
-                  f"{r['skin_C']:.1f} |\n")
+        s += (f"skin {st['base']['skin_C']:.1f} degC)\n\n| lever | kind | typical (mW) | change | screen (W) | skin (degC) | "
+              "constraints broken |\n|---|---|---|---|---|---|---|\n")
+        for r in sorted([r for r in st["rows"] if r.get("d_typical_pct") is not None], key=lambda r: -abs(r["d_typical_pct"])):
+            kind = "convention" if r["lever"].startswith("force-constant convention") else r.get("kind", "input")
+            s += (f"| {r['lever']} | {kind} | {r['typical_W'] * 1e3:.1f} | {r['d_typical_pct']:+.0f} % | "
+                  f"{r['screen_W']:.3f} | {r['skin_C']:.1f} | {', '.join(r.get('fails', [])) or 'none'} |\n")
     return s
 
 
@@ -217,11 +261,29 @@ def budgets() -> str:
     return head + "\n".join(rows) + "\n"
 
 
+def cad() -> str:
+    names = ("reach_first", "balanced", "slim", "k_envelope")
+    rows = []
+    for n in names:
+        f = RESULTS / f"nibopt_cad_summary_{n}.json"
+        if not f.exists():
+            continue
+        c = json.loads(f.read_text())
+        g = c["geometry_mm"]
+        rows.append(f"| {n} | {c['components']} | {c['partial_solid_mass_g']:.1f} | "
+                    f"{g['z_actuator'][1] - g['z_actuator'][0]:.2f} | {g['z_wires'][1] - g['z_wires'][0]:.1f} | "
+                    f"{g['anchor_beams_N_m']:.0f} + {g['anchor_flex_allowance_N_m']:.1f} | {g['anchor_leaf_t_mm'] * 1e3:.0f} | "
+                    f"{g['head_shift_mm']:.1f} | {'none' if c['interference_free'] else len(c['interference_rest_and_stop_8_directions'])} |")
+    head = ("| candidate | solids | partial solid mass (g) | actuator stack (mm) | leads (mm) | anchor: leaves + flex (N/m) | "
+            "leaf thickness (um) | head moved back (mm) | interference, rest and stop x 8 |\n|---|---|---|---|---|---|---|---|---|\n")
+    return head + "\n".join(rows) + "\n" if rows else "(run mechanics/cad/nibopt.py --candidate all)\n"
+
+
 def main():
-    parts = [("Reconciliation", reconciliation), ("Waterfall K", waterfall_K), ("Waterfall pass 1.5", waterfall_pass),
+    parts = [("Reconciliation", reconciliation), ("Reconciliation battery", reconciliation_battery), ("Waterfall K", waterfall_K), ("Waterfall pass 1.5", waterfall_pass),
              ("Waterfall pass K", lambda: waterfall_pass("K_B1")), ("Pass summary", pass_summary),
              ("Topologies", topologies), ("Pareto", pareto), ("Candidates", candidates), ("Levers", levers),
-             ("Budgets", budgets)]
+             ("Budgets", budgets), ("CAD", cad)]
     for title, fn in parts:
         try:
             sys.stdout.write(f"\n## {title}\n\n{fn()}\n")

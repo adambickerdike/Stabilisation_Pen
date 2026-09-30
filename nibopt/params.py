@@ -161,7 +161,8 @@ MECH = {
     "hertz_static_GPa": V(4.2 / 1.5 ** (1 / 3), "GPa", ASM, "drop (the race springs' release load): s0 >= 1.5 for "
                           "pronounced shock (AMF-261), 4.2 GPa / 1.5^(1/3) = 3.67 GPa; study K used 4 GPa"),
     "mu_roll": V(0.001, "-", ASM, "rolling resistance of Si3N4 balls on lapped 440C (study K / the pass; EXP-K20)"),
-    "preload_min_margin": V(1.2, "x", PD, "race preload >= 1.2 x the couple's largest change in ball load, so no ball unloads"),
+    "preload_min_margin": V(1.2, "x", PD, "race preload >= 1.2 x the preload at which the Hertz solver first unloads a "
+                                          "ball under the 35 deg couple (covers F_n +20 %, REQ-BNIB-008)"),
     "holder_ext_g_per_mm": V(0.025, "g/mm", ASM, "the pass's moving-mass charge for the refill-holder extension "
                              "(revk/improve.matched_force_duty: 0.025e-3 kg per mm)"),
     "Ti_rho": V(4430.0, "kg/m3", MFR, "AMF-21"),

@@ -7,6 +7,9 @@ point x the derating).  The levers are inputs the design, the firmware or a meas
   contact (a schedule change), the moving mass (+-1 g), the ink force F_n (gate G1, EXP-B20), the refill's slide
   friction (REQ-BNIB-016), the guide's rolling resistance and preload, study K's face residual, the contact share, the
   copper fill, and the force-constant convention itself.
+Design levers (with the candidate's gene vector; every other gene held, the geometry rebuilt by optimise.build): the
+magnet layout (one array and a keeper in place of two arrays), the grade (N48SH), the sublayer order, the body diameter
+-1 mm and the usable radius +0.1 mm.  A design lever may break a constraint; the row says which.
 """
 from __future__ import annotations
 
@@ -38,11 +41,41 @@ def override(table: Dict, key: str, value):
 
 def _metrics(d: Design, fm=None) -> Dict:
     ev = E.evaluate(d, fine=False, full=False, fm=fm)
+    c = ev["constraints"]
     return {"typical_W": ev["dutyA"]["worst07"]["mean"], "severe35_W": ev["severe"]["worst07"]["P35_W"],
-            "skin_C": ev["severe"]["worst07"]["skin"]["max_shell_C"], "screen_W": ev["screen"]["worst07"]}
+            "skin_C": ev["severe"]["worst07"]["skin"]["max_shell_C"], "screen_W": ev["screen"]["worst07"],
+            "sv_min_N_sqrtW": ev["magnetics"]["sv_min_workspace_N_sqrtW"], "feasible": bool(c["feasible"]),
+            "fails": [k for k, v in c.items() if k != "feasible" and v < -1e-9]}
 
 
-def study(d: Design) -> Dict:
+def design_levers(x) -> list:
+    """(name, what, Design or None) for the design levers, from the candidate's gene vector."""
+    import numpy as np
+    from . import optimise as O
+    x = np.array(x, float)
+    out = []
+
+    def gene(name, value, what, label):
+        y = x.copy()
+        y[O.NAMES.index(name)] = value
+        d2, why = O.build(y, name=label)
+        out.append((label, what if d2 is not None else f"{what} (does not build: {why['reason']})", d2))
+    g = O.decode(x)
+    gene("layout", 0.25, "one magnet array and an iron keeper in place of two arrays (same poles, same winding)",
+         "single array + keeper") if g["layout"] == "double" else \
+        gene("layout", 0.75, "a second magnet array in place of the keeper", "double array")
+    gene("grade", 0.75 if g["grade"] == "N52" else 0.25, "the other magnet grade (Br 1.38 T, 150 degC class)"
+         if g["grade"] == "N52" else "N52 (Br 1.42 T, 80 degC class)", "grade N48SH" if g["grade"] == "N52" else "grade N52")
+    gene("order", 0.75 if g["order"] == "xy" else 0.25, "the other sublayer order", "sublayers xyyx"
+         if g["order"] == "xy" else "sublayers xy")
+    gene("od_mm", max(O.LO[O.NAMES.index("od_mm")], g["od_mm"] - 1.0), "body 1 mm narrower, every fraction held",
+         "body diameter -1 mm")
+    gene("reach_mm", min(O.HI[O.NAMES.index("reach_mm")] - 1e-9, g["reach_mm"] + 0.1),
+         "usable radius +0.1 mm (stop +0.1 mm), every fraction held", "usable radius +0.1 mm")
+    return out
+
+
+def study(d: Design, x=None) -> Dict:
     fm = E.force_map(d, fine=False)
     base = _metrics(d, fm)
     rows = []
@@ -91,13 +124,22 @@ def study(d: Design) -> Dict:
             d2 = replace(d, coil=replace(d.coil, k_fill=kf))
             add(f"copper fill {kf:g}", "etched flex (0.45) or bonded rectangular wire (0.65) (ASSUMPTION)",
                 _metrics(d2, E.force_map(d2, fine=False)))
+    if x is not None:
+        for name, what, d2 in design_levers(x):
+            if d2 is None:
+                rows.append({"lever": name, "what": what, "typical_W": None, "severe35_W": None, "skin_C": None,
+                             "screen_W": None, "d_typical_pct": None, "d_screen_pct": None, "feasible": False,
+                             "fails": ["build"], "label": "CALCULATION", "kind": "design"})
+                continue
+            add(name, what, _metrics(d2, E.force_map(d2, fine=False)))
+            rows[-1]["kind"] = "design"
     ev = E.evaluate(d, fine=False, full=True, fm=fm)
     rows.append({"lever": "force-constant convention: centre x 1.0", "what": "study K's optimistic convention",
                  "typical_W": ev["dutyA"]["centre10"]["mean"], "severe35_W": ev["severe"]["centre10"]["P35_W"],
                  "skin_C": ev["severe"]["centre10"]["skin"]["max_shell_C"], "screen_W": ev["screen"]["centre10"],
                  "d_typical_pct": 100 * (ev["dutyA"]["centre10"]["mean"] / base["typical_W"] - 1),
                  "d_screen_pct": 100 * (ev["screen"]["centre10"] / base["screen_W"] - 1), "label": "CALCULATION"})
-    ranked = sorted(rows, key=lambda r: -abs(r["d_typical_pct"]))
+    ranked = sorted([r for r in rows if r["d_typical_pct"] is not None], key=lambda r: -abs(r["d_typical_pct"]))
     return {"design": d.name, "base": base, "rows": rows, "ranked_by_typical": [r["lever"] for r in ranked],
             "items_base_W": ev["dutyA"]["worst07"]["mean_items_W"],
             "label": "CALCULATION (one-at-a-time; weakest point x derating unless stated)"}

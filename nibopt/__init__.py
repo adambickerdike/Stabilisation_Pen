@@ -7,9 +7,11 @@ What it does (docs/nib_optimisation.md, results/nibopt/):
               battery hours per mode in study K's budget structure and skin temperature on study K's fin model; every
               difference between study K's and the pass's numbers itemised
   optimise    a constrained multi-objective search (NSGA-II, written here) over the nib family: usable radius, body
-              diameter, magnets, iron path, winding, suspension (straight wire leads on a preloaded ball guide, or necked
-              flexure struts that carry the counter-face couple without a guide), moving-mass options
-  recommend   reach-first, balanced and slim candidates; CAD (mechanics/cad/nibopt.py) and pen-level budgets
+              diameter, magnets, iron path, winding, suspension (straight wire leads on a preloaded ball guide; the
+              flexure-guided carriers are screened first and rejected, nibopt/suspension.screen_topologies),
+              moving-mass options
+  recommend   reach-first, balanced, slim and Rev K-envelope candidates; CAD (mechanics/cad/nibopt.py) and pen-level
+              budgets
 
 Evidence labels (the programme's convention; every number in the results carries one):
   CALCULATION      a calculation in this package (closed forms, beam models, analytic magnet fields, fin model)

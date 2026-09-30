@@ -16,7 +16,10 @@ Objectives (minimised): -reach; worst-case copper loss (the pass's screen with t
 Constraints (evaluate.constraints): Goodman >= 1.5 at the stop, worst tolerance corner; Hertz <= 3.33 GPa for the
   sustained writing load and 3.67 GPa for a drop (ISO 76's 4.2 GPa at the static rating with s0 2 and 1.5); lowest mode >= 2.5 x 40 Hz ball free and stuck; coil clearance >= 0.2 mm at the stop (99th
   percentile); skin <= 41 degC (severe duty at 35 deg, 30 degC room); coil, magnets, guide, wires, board and
-  counter-face head inside the body; length <= 175 mm; 3.3 V headroom at the peak force; lead heating <= 45 K.
+  counter-face head inside the body; length <= 175 mm; 3.3 V headroom at the peak force; lead heating <= 45 K; guide
+  preload >= 1.2 x the preload at which a ball first unloads under the 35 deg couple (added after the NSGA-II archives in
+  nibopt/build/ were computed: the archives carry every other constraint, the refined candidates carry this one too;
+  the guide's drag is under 1 % of the typical loss, so the floor moves the front by well under 1 %).
 Constraint handling: Deb's rules (feasible first, then smaller normalised violation).  Every evaluated point is kept;
 the front is read off the pooled feasible points.
 """
@@ -120,7 +123,7 @@ def build(x: np.ndarray, name: str = "opt") -> Tuple[Optional[Design], Dict]:
     return d, {"reason": None}
 
 
-SCALES = {"goodman": 0.5, "hertz_run": 0.5, "hertz_static": 1.0, "modes": 10.0, "coil_p99": 0.1, "skin": 2.0,
+SCALES = {"goodman": 0.5, "hertz_run": 0.5, "hertz_static": 1.0, "preload": 0.5, "modes": 10.0, "coil_p99": 0.1, "skin": 2.0,
           "coil_inner": 0.1, "magnets": 0.2, "wires_min": 0.3, "wires_max": 0.3, "head": 0.5, "board": 1.0,
           "length": 5.0, "voltage": 0.5, "lead_heat": 10.0, "magnet_T": 5.0}
 
@@ -136,7 +139,7 @@ def score(x: np.ndarray, fine: bool = False) -> Dict:
         return {"x": x.tolist(), "ok": False, "reason": f"evaluation failed: {exc}", "F": [0.0, 10.0, 10.0, 30.0, 300.0],
                 "V": 1e3}
     c = ev["constraints"]
-    V = sum((1e3 if not np.isfinite(c[k]) else max(0.0, -c[k]) / SCALES[k]) for k in SCALES)
+    V = sum((1e3 if not np.isfinite(c[k]) else max(0.0, -c[k]) / SCALES[k]) for k in SCALES if k in c)
     extra = 0.0
     F = [-d.reach_mm, ev["screen"]["worst07"], ev["dutyA"]["worst07"]["mean"], d.od_mm, d.length_mm()]
     if not all(np.isfinite(F)):

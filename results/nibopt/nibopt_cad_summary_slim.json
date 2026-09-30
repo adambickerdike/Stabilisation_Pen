@@ -1,0 +1,231 @@
+{
+  "stabpen.provenance": {
+    "evidence_status": "PROPOSED DESIGN (CAD) with CALCULATION of fits; nothing built or measured",
+    "generated_utc": "2026-09-30T14:22:49+00:00",
+    "git_revision": "61f1395-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "nibopt.py --candidate all",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "script": "mechanics/cad/nibopt.py",
+    "candidate": "slim",
+    "own_sources_sha256_16": {
+      "nibopt/__init__.py": "d279b54e39e59117",
+      "nibopt/budgets.py": "a091069c05479338",
+      "nibopt/candidates.py": "d7c629328bf4577e",
+      "nibopt/design.py": "31159bd5ac7c6df1",
+      "nibopt/doc_tables.py": "c5a8289baafffe11",
+      "nibopt/duty.py": "4700b1065ace4136",
+      "nibopt/evaluate.py": "f217b394e76e4725",
+      "nibopt/evidence.py": "eedbb63236316531",
+      "nibopt/figures.py": "f360130e960ed7bb",
+      "nibopt/levers.py": "c2ecd811acf9937f",
+      "nibopt/magnet.py": "55922451b688d368",
+      "nibopt/optimise.py": "2490ed45358d9f5f",
+      "nibopt/params.py": "747a7807807a1e11",
+      "nibopt/pen.py": "d3b8ff208520a711",
+      "nibopt/reconcile.py": "42dab584627da830",
+      "nibopt/run.py": "ac8998e853444663",
+      "nibopt/suspension.py": "06b6827ff1247580",
+      "mechanics/cad/nibopt.py": "451ff3f2464e8cd1"
+    },
+    "seconds": 4.513681411743164
+  },
+  "candidate": "slim",
+  "step": "results/nibopt/nibopt_slim.step",
+  "drawing": "results/nibopt/drawing_nibopt_slim.png",
+  "components": 42,
+  "partial_solid_mass_g": 10.708590378152445,
+  "partial_mass_breakdown": [
+    {
+      "part": "back_plate",
+      "solid_mass_g": 1.9986573324629238
+    },
+    {
+      "part": "pole_1",
+      "solid_mass_g": 0.5767643848336519
+    },
+    {
+      "part": "pole_2",
+      "solid_mass_g": 0.5767643848336519
+    },
+    {
+      "part": "pole_3",
+      "solid_mass_g": 0.5767643848336519
+    },
+    {
+      "part": "pole_4",
+      "solid_mass_g": 0.5767643848336519
+    },
+    {
+      "part": "winding_0_x_n",
+      "solid_mass_g": 0.22385957792168246
+    },
+    {
+      "part": "winding_0_x_p",
+      "solid_mass_g": 0.22385957792168246
+    },
+    {
+      "part": "winding_1_y_n",
+      "solid_mass_g": 0.22385957792168246
+    },
+    {
+      "part": "winding_1_y_p",
+      "solid_mass_g": 0.22385957792168246
+    },
+    {
+      "part": "pole2_1",
+      "solid_mass_g": 0.5596199331079851
+    },
+    {
+      "part": "pole2_2",
+      "solid_mass_g": 0.5596199331079851
+    },
+    {
+      "part": "pole2_3",
+      "solid_mass_g": 0.5596199331079851
+    },
+    {
+      "part": "pole2_4",
+      "solid_mass_g": 0.5596199331079851
+    },
+    {
+      "part": "keeper",
+      "solid_mass_g": 1.9986573324629258
+    },
+    {
+      "part": "front_race",
+      "solid_mass_g": 0.23612798224111933
+    },
+    {
+      "part": "front_ball_1",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "rear_ball_1",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "front_ball_2",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "rear_ball_2",
+      "solid_mass_g": 0.0008578642339402545
+    },
+    {
+      "part": "front_ball_3",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "rear_ball_3",
+      "solid_mass_g": 0.0008578642339402545
+    },
+    {
+      "part": "front_ball_4",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "rear_ball_4",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "front_ball_5",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "rear_ball_5",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "front_ball_6",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "rear_ball_6",
+      "solid_mass_g": 0.0008578642339402546
+    },
+    {
+      "part": "carrier_flange",
+      "solid_mass_g": 0.6169687941823769
+    },
+    {
+      "part": "rear_race",
+      "solid_mass_g": 0.23612798224111933
+    },
+    {
+      "part": "carrier_tube",
+      "solid_mass_g": 0.13663570582745138
+    },
+    {
+      "part": "C17200_lead_1",
+      "solid_mass_g": 0.0017699517424584026
+    },
+    {
+      "part": "C17200_lead_2",
+      "solid_mass_g": 0.0017699517424584104
+    },
+    {
+      "part": "C17200_lead_3",
+      "solid_mass_g": 0.0017699517424584104
+    },
+    {
+      "part": "C17200_lead_4",
+      "solid_mass_g": 0.0017699517424584026
+    },
+    {
+      "part": "C17200_lead_5",
+      "solid_mass_g": 0.0017699517424584023
+    },
+    {
+      "part": "C17200_lead_6",
+      "solid_mass_g": 0.0017699517424584104
+    },
+    {
+      "part": "C17200_lead_7",
+      "solid_mass_g": 0.0017699517424584097
+    },
+    {
+      "part": "C17200_lead_8",
+      "solid_mass_g": 0.0017699517424584026
+    },
+    {
+      "part": "floating_anchor_301",
+      "solid_mass_g": 0.019985680534309453
+    }
+  ],
+  "geometry_mm": {
+    "z_actuator": [
+      21.43,
+      34.37652873270854
+    ],
+    "z_flange": [
+      35.47652873270854,
+      36.6299998192759
+    ],
+    "z_wires": [
+      36.6299998192759,
+      63.94603073771167
+    ],
+    "anchor_leaf_t_mm": 0.05098284633059366,
+    "anchor_leaf_L_mm": 4.749530503278161,
+    "anchor_leaf_w_mm": 0.5,
+    "anchor_beams_N_m": 477.4275708388568,
+    "anchor_flex_allowance_N_m": 23.4,
+    "head_shift_mm": 4.636030737711677
+  },
+  "interference_rest_and_stop_8_directions": [],
+  "interference_free": true,
+  "not_modelled": [
+    "wires bend and balls roll: left out of the interference check",
+    "counter-face head mechanism (a keep-out only)",
+    "flex lead, solder pads and Hall sensor",
+    "coil former, turns and insulation build",
+    "drop stops and dust protection"
+  ],
+  "label": "PROPOSED DESIGN; interference by CadQuery boolean intersection (CALCULATION)"
+}
