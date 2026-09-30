@@ -1,0 +1,35 @@
+# SIMULATION (model HW1) with real recorded inputs; curve = CALCULATION
+# tuning split, means over writers
+kind,set,device,type,tip_tremor_mm,words_of_10,n_cases
+PD,PD/severe,E13a_0.10,a,0.189054,7.1,10
+PD,PD/severe,E13a_0.18,a,0.337325,5.272727,10
+PD,PD/severe,E13a_0.27,a,0.505825,3.572727,10
+PD,PD/severe,E13a_0.38,a,0.712611,1.590909,10
+PD,PD/severe,E13a_0.55,a,1.032388,0.645455,10
+PD,PD/severe,E13a_1.00,a,1.879068,0.0,10
+PD,PD/severe,E13b_5.2ms,b,0.436179,3.7,10
+PD,PD/severe,E13b_13.4ms,b,1.067456,0.2,10
+PD,PD/severe,E13b_25ms,b,1.892308,0.090909,10
+PD,PD/severe,E13c_0.20mm,c,0.194391,6.518182,10
+PD,PD/severe,E13c_0.40mm,c,0.385452,4.145455,10
+PD,PD/severe,E13c_0.80mm,c,0.772745,0.645455,10
+PD,PD/severe,none,none,1.710051,0.090909,10
+PD,PD/moderate,none,none,0.235829,7.109091,10
+PD,PD/severe,E13a_0.00,oracle,0.031733,8.209091,10
+PD,PD/moderate,E13a_0.00,oracle,0.00303,8.490909,10
+ET,ET/severe,E13a_0.10,a,0.180022,8.036364,10
+ET,ET/severe,E13a_0.18,a,0.325045,7.063636,10
+ET,ET/severe,E13a_0.27,a,0.488468,5.345455,10
+ET,ET/severe,E13a_0.38,a,0.688306,4.318182,10
+ET,ET/severe,E13a_0.55,a,0.997213,2.372727,10
+ET,ET/severe,E13a_1.00,a,1.815011,1.154545,10
+ET,ET/severe,E13b_5.2ms,b,0.298132,6.772727,10
+ET,ET/severe,E13b_13.4ms,b,0.736532,3.472727,10
+ET,ET/severe,E13b_25ms,b,1.336357,1.427273,10
+ET,ET/severe,E13c_0.20mm,c,0.184441,7.663636,10
+ET,ET/severe,E13c_0.40mm,c,0.382453,4.827273,10
+ET,ET/severe,E13c_0.80mm,c,0.767348,1.527273,10
+ET,ET/severe,none,none,1.685225,1.427273,10
+ET,ET/moderate,none,none,0.235341,7.463636,10
+ET,ET/severe,E13a_0.00,oracle,0.017701,8.490909,10
+ET,ET/moderate,E13a_0.00,oracle,0.00284,8.490909,10

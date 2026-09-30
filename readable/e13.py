@@ -233,8 +233,7 @@ def model_free(real: List[Dict], clean: List[Dict]) -> Dict:
     them crosses the ordinary pen + 2 words and 80 % of the clean words (CALC; no model)."""
     sev = [c for c in real if c["class"] == "severe"]
     keys = sorted({k for c in sev for k, v in c["devices"].items()
-                   if isinstance(v, dict) and (v.get("param") or {}).get("type") == "a"},
-                  key=lambda k: float(k.split("_")[1]))
+                   if isinstance(v, dict) and (v.get("param") or {}).get("type") == "a"})
     pts = []
     for k in keys:
         r = CM.mean_finite(CM.per_writer(sev, k, "tip_tremor_mm").values())

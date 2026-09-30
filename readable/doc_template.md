@@ -24,19 +24,67 @@ followed:
 1. **The readable level (EXP-E13; SIM, with the curve a CALC).** Drive the Rev J nose with perfect knowledge of the
    tremor, then spoil it on purpose (cancel only part of the tremor, cancel it late, or add random error) and read the
    ink. Words read fall along one curve as more tremor is left at the tip.
-   - **DEC-055's words line (+2 words over the ordinary pen) is reached when no more than about {{T_R2}} mm of tremor is
-     left at the tip** (tuning split; 95 % interval {{T_R2_LO}}-{{T_R2_HI}} mm). The test split, run once after the
-     freeze, gives {{S_R2}} mm ({{S_R2_LO}}-{{S_R2_HI}} mm); at the level aimed at the tuning value it gained
-     {{S_GAIN_AT_R2}} words over the ordinary pen.
-   - **Near-normal reading (80 % of the words read without tremor) needs about {{T_R80}} mm or less** (tuning;
-     {{T_R80_LO}}-{{T_R80_HI}}; test {{S_R80}} mm).
+   - **DEC-055's words line (+2 words over the ordinary pen) needs no more than about 0.55-0.65 mm of tremor left at
+     the tip.** The tuning split puts it at {{T_R2}} mm (95 % interval {{T_R2_LO}}-{{T_R2_HI}}). The test split, run
+     once after that value was frozen, confirms it: with {{S_TIP_AT_R2}} mm left its writers gained {{S_GAIN_AT_R2}}
+     words, just at the line; its own curve, on notes that are harder to read, puts the line at {{S_R2}} mm
+     ({{S_R2_LO}}-{{S_R2_HI}}).
+   - **Near-normal reading (80 % of the words read without tremor) needs about 0.25 mm or less**: {{T_R80}} mm on the
+     tuning split ({{T_R80_LO}}-{{T_R80_HI}}), {{S_R80}} mm on the test split; within one word of the clean notes:
+     {{T_RW1}} and {{S_RW1}} mm.
    - **Study E's best causal tracker leaves 1.12 mm: about {{E_OVER_R2}} times too much** in amplitude
-     ({{E_POWER_OVER_R2}} times in power) for DEC-055's line.
+     ({{E_POWER_OVER_R2}} times in power) against the tuning value, and {{S_E_OVER_R2}} times against the test value.
    - **How the error is made matters.** At the same tip tremor, random error costs more words than a smaller copy of the
      tremor: the +2-words level is {{T_R2_a}} mm for an amplitude error, {{T_R2_b}} mm for a lag error and {{T_R2_c}} mm
-     for random error (tuning). The target is therefore quoted for the pooled curve, with that spread.
+     for random error (tuning). On the test split, with {{S_TIP_E13c_r2}} mm left, random error gained {{S_GAIN_E13c_r2}}
+     words where the amplitude error gained {{S_GAIN_E13a_r2}} with {{S_TIP_E13a_r2}} mm.
 
-<!-- ANSWERS2 -->
+2. **Per-writer gates (EXP-E11; SIM, information only: study E has already seen these test writers).** Setting the
+   gate from each writer's own clean writing (a different note from the one scored), with the rule chosen on the tuning
+   writers, **kept every test writer's clean writing within {{D1_cal_WORST}} µm** for study E's frozen design (from
+   {{D1_frozen_WORST}} µm) and within {{D2_cal_WORST}} µm for the network trained on real data, and removed the added
+   tremor at small tremor. **It does not make words readable:** the gain at the severe class stays at
+   {{D1_cal_GAIN}} and {{D2_cal_GAIN}} words, because the estimators still leave about 1 mm. A rule that may lower the
+   threshold as well as raise it let one writer reach {{D3_cal_WORST}} µm, so calibration should only ever raise it.
+   The real answer needs shadow-mode recordings of people (EXP-R01).
+
+3. **Prediction or separation? Separation (SIM; the split of the residual is a CALC).**
+   - **Predicting the tremor is not the problem.** Given the true tremor signal 1.52 ms late (the pen's sensor and filter
+     delays), a simple causal linear predictor covers the whole 4.9 ms to the moment the nib acts: it leaves
+     {{GS_pred_ar_imu_M}} mm, the same as perfect knowledge, and its ink was read as well ({{GS_pred_ar_imu_WR}} words of
+     10 on the test split). A 10 ms horizon costs almost nothing more, and raw broadband tremor recordings give the same
+     answer.
+   - **Telling tremor from writing is the problem.** With the tremor alone in the pen's own sensors, a plain linear
+     filter on the pen's accelerometer already gets down to {{GS_fir_trem_raw_M}} mm ({{GS_fir_trem_raw_WR}} words read).
+     Once the person writes, every estimator either backs off and leaves {{GS_net_full_gated_M}}-{{GS_ai2tcn_full_gated_M}}
+     mm (study E's, about half a word), or keeps acting and moves the writing itself (the same linear filter moved clean
+     writing by about {{GS_fir_raw_CLEAN}} µm, and 0 words were read).
+   - **Sensing is the smaller, second part.** From the accelerometer alone even a perfect sensor stalls near 0.3 mm (a
+     fixed filter cannot turn acceleration into position well enough near the bottom of the tremor band); an accurate,
+     drift-free position reference would allow about 0.1 mm; the page sensor modelled on the one measured pen-tip
+     sensor would not.
+   - **So the project should invest in separating tremor from writing first, and in position sensing in the tremor band
+     second. Prediction and latency need no investment.**
+
+**What it means for the pen.**
+- **A tracker now has a number to hit.** At the severe class (1.7 mm at the tip) it must leave no more than about 0.55
+  mm, a third of the tremor, while keeping clean writing within DEC-055's 25 µm on average and 50 µm for any writer;
+  about 0.25 mm for near-normal reading. Study E's best leaves 1.1 mm.
+- **Per-user gates make trackers safe, not useful.** Calibrating the gate on the user's own writing (only ever raising
+  it) keeps clean writing still for every simulated writer, but it cannot add tremor removal the estimator does not have.
+- **The work is in separation.** Better prediction or lower latency would not change the words. An estimator that
+  tells writing from tremor, or a drift-free position reference at tremor frequencies, would.
+- **Nothing here is a benefit to people yet.** It is a simulation with an AI reader standing in for a person.
+
+**What to test next.**
+- Whether people read these inks the way the AI reader does (a small blinded panel on the E13 inks; EXP-R03, proposed
+  EXP-E20).
+- How accurate a pen-tip position sensor must be in the tremor band to reach 0.25 mm with the tremor alone (a sensor
+  sweep in simulation, then the rig; proposed EXP-E21).
+- Per-user gates on people's own writing in shadow mode (EXP-R01), including users who cannot write without tremor
+  (proposed EXP-E22).
+- Estimators that separate writing from tremor, judged against the 0.55 mm target on new held-out data (EXP-E10,
+  EXP-E12).
 
 ## One number per condition: words you can read out of 10, against the tremor left at the tip
 
@@ -184,7 +232,25 @@ tuning numbers next to the frozen gates.
 **Test split** (SIM, full plant, INFORMATION ONLY: study E has already seen these writers; each writer calibrated on a
 different note of their own).
 
-<!-- E11_TEST_TEXT -->
+- **Every writer within 50 µm, for both networks.** With the gate calibrated on each writer's own clean note, the
+  largest clean-writing change is **{{D1_cal_WORST}} µm** for ai2's TCN (D1; study E's frozen gate: {{D1_frozen_WORST}}
+  µm, writer 'an') and **{{D2_cal_WORST}} µm** for the real-data TCN (D2; frozen: {{D2_frozen_WORST}} µm); the means
+  are {{D1_cal_CLEAN}} and {{D2_cal_CLEAN}} µm. For writer 'an', whose large fast letters look like tremor to ai2's
+  TCN, the calibration raised the gate's opening from {{E11_D1_FROZEN_ALO}} to {{E11_W0_D1_ALO}} mm; for most writers it
+  left the frozen threshold where it was.
+- **No harm at small tremor any more.** The worst writer's tip tremor at the mild class, as a share of the nose-held
+  pen's: {{D1_cal_MILDW}} for D1 calibrated (frozen: {{D1_frozen_MILDW}}), {{D2_cal_MILDW}} for D2 ({{D2_frozen_MILDW}});
+  at the moderate class {{D1_cal_MODW}} and {{D2_cal_MODW}} (REQ-CTRL-017 asks for at most 1.02).
+- **But the words do not come back.** At the severe class, words gained over the ordinary pen: {{D1_cal_GAIN}} (D1
+  calibrated) and {{D2_cal_GAIN}} (D2 calibrated), against DEC-055's +2. The estimators still leave
+  {{D1_cal_RATIO}} and {{D2_cal_RATIO}} of the ordinary pen's tip tremor, about 1 mm, far above the {{T_R2}} mm that
+  EXP-E13 asks for. For writer 'an' the calibrated gate simply stays shut: no harm, and no help.
+- **A rule that may also lower the threshold is not safe.** The listening AKF's chosen rule (D3, {{D3_RULE}}) lowered
+  the threshold for writer 'hu', whose calibration note was calmer than the scored note, and moved that writer's
+  clean writing {{D3_cal_WORST}} µm: above the 50 µm line.
+- **AC-E11-02** (the largest single writer ≤ 50 µm): met in this simulation for D1 and D2 with the raise-only rules,
+  not met for D3 with its per-user rule. Information only: the test split was seen by study E, one note per writer
+  calibrates, and people's own writing (EXP-R01 shadow mode) is the real test.
 
 {{TABLE:e11}}
 
@@ -255,7 +321,51 @@ and writing), in the full HW1 plant, at the severe class; the tremor left at the
     {{GT_ai2tcn_trem_gated_M}} mm on the tremor alone. The error that the writing itself puts into their estimates is
     {{GT_ai2tcn_gated_SEP}} mm (E's frozen design) and {{GT_net_gated_SEP}} mm (real-data TCN) at the tip (CALC).
 
-<!-- GAP_TEST -->
+**Test split** (SIM, 18 severe cases of R's 9 test writers, run once after the freeze; four configurations read
+directly; words also mapped through the test split's own curve, since the test notes are harder to read):
+
+| Step | Tremor left at the tip, mm | Words via the test curve | Words read directly |
+|---|---|---|---|
+| C0 perfect knowledge (R's reading) | {{GS_oracle_M}} | {{GS_oracle_WT}} | 7.0 (study R) |
+| C1 prediction only: AR on the true tremor, 4.9 ms | {{GS_pred_ar_imu_M}} | {{GS_pred_ar_imu_WT}} | {{GS_pred_ar_imu_WR}} |
+| C2 tremor alone: linear IMU filter | {{GS_fir_trem_raw_M}} | {{GS_fir_trem_raw_WT}} | {{GS_fir_trem_raw_WR}} |
+| C2 tremor alone: ideal page sensor + AR | {{GS_page_ar_trem_ideal_M}} | {{GS_page_ar_trem_ideal_WT}} | - |
+| C2 tremor alone: real-data TCN + gate | {{GS_net_trem_gated_M}} | {{GS_net_trem_gated_WT}} | {{GS_net_trem_gated_WR}} |
+| C3 full: the same IMU filter meets writing | {{GS_fir_full_raw_M}} | {{GS_fir_full_raw_WT}} | {{GS_fir_full_raw_WR}} |
+| C3 full: real-data TCN + gate | {{GS_net_full_gated_M}} | {{GS_net_full_gated_WT}} | - |
+| C3 full: E's frozen design | {{GS_ai2tcn_full_gated_M}} | {{GS_ai2tcn_full_gated_WT}} | 0.5 (study E) |
+
+- **The test split repeats the tuning split.** Prediction costs nothing ({{GS_pred_ar_imu_M}} mm left; read
+  {{GS_pred_ar_imu_WR}} words, as perfect knowledge). The IMU alone, with no writing, leaves {{GS_fir_trem_raw_M}} mm
+  ({{GS_fir_trem_raw_WR}} words read). With writing, the estimators leave {{GS_net_full_gated_M}}-{{GS_ai2tcn_full_gated_M}}
+  mm.
+- **The tip-tremor number is not enough on its own.** The IMU filter trained on the tremor alone leaves only
+  {{GS_fir_full_raw_M}} mm of tremor with writing present, which the curve would score at {{GS_fir_full_raw_WT}} words,
+  but it moves the writing itself (clean notes: {{GS_fir_raw_CLEAN}} µm on average) and {{GS_fir_full_raw_WR}} words are
+  read. DEC-055's second line, on clean writing, is what catches this.
+- **The mapping holds where the writing is left alone.** Read directly, the AR prediction, the IMU filter on the tremor
+  alone and the real-data TCN on the tremor alone give {{GS_pred_ar_imu_WR}}, {{GS_fir_trem_raw_WR}} and
+  {{GS_net_trem_gated_WR}} words, against {{GS_pred_ar_imu_WT}}, {{GS_fir_trem_raw_WT}} and {{GS_net_trem_gated_WT}}
+  from the test curve.
+
+**7.1 What the sensors allow with the tremor alone** (CALC on SIM, tuning split; `readable/gap.py`, sensing check).
+
+{{TABLE:sensing}}
+
+- **A perfect accelerometer is barely better than the pen's IMU** ({{SC_imu_perfect_SIG}} against {{SC_imu_pen_SIG}}
+  mm in the tremor band; {{SC_imu_perfect_TIP}} against {{SC_imu_pen_TIP}} mm at the tip): the limit of the IMU route is
+  turning acceleration into position causally with a fixed filter, not the sensor's noise, bias or the pen's rotation.
+- **An accurate, drift-free position sensor would do it.** With the ideal page sensor (3 µm, 2 ms; a bound) the AR
+  predictor fitted on the true tremor leaves {{GT_page_ar_trem_ideal_SIG}} mm in the tremor band and
+  {{GT_page_ar_trem_ideal_M}} mm at the tip (tuning; test {{GS_page_ar_trem_ideal_M}} mm).
+- **The DeltaPen-class page sensor does not.** Its window error grows with movement and accumulates (R's pessimistic
+  model of the one measured pen-tip sensor). With the same predictor its in-band error is
+  {{GT_page_ar_trem_deltapen_SIG}} mm, but its drift carries the nose away from centre and
+  {{GT_page_ar_trem_deltapen_M}} mm is left at the tip. Removing the drift with a causal high-pass (1.5 Hz) before a
+  linear predictor fitted to it leaves {{SC_page_deltapen_SIG}} mm (with the ideal sensor that high-passed estimator
+  gives {{SC_page_ideal_SIG}} mm: the high-pass itself costs accuracy with a 64 ms predictor). So, in R's model, the
+  relative page sensor is no better than the IMU for the tremor; an absolute, drift-free position reference in the
+  tremor band is what would help.
 
 {{TABLE:fir}}
 
@@ -265,7 +375,21 @@ and writing), in the full HW1 plant, at the severe class; the tremor left at the
 
 ### 8. What this means for the pen
 
-<!-- MEANING -->
+- **The target, in the pen's terms (CALC).** At the severe representative (1.72 mm at the tip) the nose-held Rev J
+  pen shows about 1.8 mm; leaving 0.55-0.65 mm means cancelling about two thirds of it: the nib must move about 1.1-1.2
+  mm (peak, along the tremor's major axis) in step with the tremor, and more at the tremor's bursts (its size wanders
+  by about 60 %, study R). Rev K's two-axis nib is ±1.0 mm (DEC-050, DEC-060), so an estimator that reached the target
+  would already need DEC-060's revisit of the ±1.5 mm nib; near-normal reading (0.25 mm) would need about 1.5 mm.
+- **The words line in tip-tremor terms.** With study R's ordinary pen at 1.64 mm (test split), 0.55 mm is a share of
+  0.34 (power −89 %); study E's best causal tracker reached 0.69 (power −52 %).
+- **A tip-tremor target is necessary, not sufficient.** The linear IMU filter shows that tremor left at the tip can fall
+  while the words vanish, because the correction moves the writing. Any estimator must pass both of DEC-055's lines.
+- **Per-user calibration belongs in the firmware as a raise-only rule** (proposed REQ-CTRL-019): it removed study E's
+  worst clean-writing case and the added tremor at small tremor at the cost of a few percent of severe-tremor removal;
+  a rule that can lower the threshold failed one writer.
+- **Where to spend the next estimator effort:** on separation (features and training that tell writing from tremor,
+  per-user adaptation in shadow mode), and on an absolute position reference in the tremor band; not on prediction,
+  latency or RL policies (study E §12 reached the same view from the other side).
 
 ### 9. Data discipline and reproduction checks
 

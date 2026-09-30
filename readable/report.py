@@ -123,7 +123,8 @@ def write(quick: bool, log=CM.log) -> Dict:
     e11a = e11.aggregate(quick, fr)
     p_curve = (fr or {}).get("e13", {}).get("fit", {}).get("p")
     ar = CM.jload(SG.predictor_path(quick))
-    gapa = gap.aggregate(quick, p_curve, ar)
+    p_test = (((e13a.get("test") or {}).get("fits") or {}).get("pooled") or {}).get("fit", {}).get("p")
+    gapa = gap.aggregate(quick, p_curve, ar, p_test)
     timings = CM.jload(CM.cache_dir(quick) / "timings.json") or {}
     out = {"stabpen.provenance": provenance(quick),
            "evidence": {"sim": EVIDENCE_SIM, "calc": EVIDENCE_CALC,

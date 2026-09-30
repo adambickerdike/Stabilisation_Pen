@@ -1,0 +1,19 @@
+# SIMULATION (model HW1) with real recorded inputs; curve = CALCULATION
+# means over writers
+split,estimator,step,config,tip_tremor_mm,words_via_curve,words_read_directly
+test,fir_raw,perfect knowledge (C0),oracle,0.029082,8.367576,
+test,fir_raw,"prediction only, AR, IMU horizon (C1)",pred_ar_imu,0.030431,8.36645,6.939394
+test,fir_raw,"sensing + prediction, tremor alone (C2)",fir_trem_raw,0.289704,6.304141,4.338384
+test,fir_raw,full: tremor + writing (C3),fir_full_raw,0.718771,2.895641,0.0
+test,ai2tcn_gated,perfect knowledge (C0),oracle,0.029082,8.367576,
+test,ai2tcn_gated,"prediction only, AR, IMU horizon (C1)",pred_ar_imu,0.030431,8.36645,6.939394
+test,ai2tcn_gated,"sensing + prediction, tremor alone (C2)",ai2tcn_trem_gated,1.053162,1.454492,
+test,ai2tcn_gated,full: tremor + writing (C3),ai2tcn_full_gated,1.116936,1.245871,
+test,net_gated,perfect knowledge (C0),oracle,0.029082,8.367576,
+test,net_gated,"prediction only, AR, IMU horizon (C1)",pred_ar_imu,0.030431,8.36645,6.939394
+test,net_gated,"sensing + prediction, tremor alone (C2)",net_trem_gated,0.887776,1.899877,1.121212
+test,net_gated,full: tremor + writing (C3),net_full_gated,0.971739,1.650289,
+test,akf_raw,perfect knowledge (C0),oracle,0.029082,8.367576,
+test,akf_raw,"prediction only, AR, IMU horizon (C1)",pred_ar_imu,0.030431,8.36645,6.939394
+test,akf_raw,"sensing + prediction, tremor alone (C2)",akf_trem_raw,0.750117,2.421696,
+test,akf_raw,full: tremor + writing (C3),akf_full_raw,0.952222,1.696818,

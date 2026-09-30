@@ -618,7 +618,8 @@ def load(quick: bool, split: str) -> List[Dict]:
     return [c for c in (CM.jload(p) for p in sorted(d.glob(f"{pre}_*.json"))) if c]
 
 
-def aggregate(quick: bool, p_curve: Optional[Sequence[float]], ar: Optional[Dict]) -> Dict:
+def aggregate(quick: bool, p_curve: Optional[Sequence[float]], ar: Optional[Dict],
+              p_curve_test: Optional[Sequence[float]] = None) -> Dict:
     from . import curve as CV
     out = {"method": __doc__.split("Method")[1].strip() if "Method" in __doc__ else "", "predictor": _ar_summary(ar)}
     sc = {k: CM.jload(CM.cache_dir(quick) / "gap" / f"sensing_{k}.json") for k in ("imu", "page")}
@@ -651,6 +652,13 @@ def aggregate(quick: bool, p_curve: Optional[Sequence[float]], ar: Optional[Dict
                     if v is not None and v.get("tip_tremor_mm") is not None:
                         ww.setdefault(c["writer"], []).append(float(CV.model(float(v["tip_tremor_mm"]), p_curve)))
                 row["words_via_curve"] = CM.boot({w: float(np.mean(v)) for w, v in ww.items()})
+            if split == "test" and p_curve_test is not None and np.all(np.isfinite(p_curve_test)):
+                ww = {}
+                for c in cases:
+                    v = c["configs"].get(k)
+                    if v is not None and v.get("tip_tremor_mm") is not None:
+                        ww.setdefault(c["writer"], []).append(float(CV.model(float(v["tip_tremor_mm"]), p_curve_test)))
+                row["words_via_test_curve"] = CM.boot({w: float(np.mean(v)) for w, v in ww.items()})
             rd = {}
             for c in cases:
                 v = c["configs"].get(k, {})
@@ -677,7 +685,8 @@ def aggregate(quick: bool, p_curve: Optional[Sequence[float]], ar: Optional[Dict
                 if key in tab:
                     ch["steps"].append({"step": step, "config": key, **{kk: tab[key].get(kk) for kk in
                                                                          ("tip_tremor_mm", "words_via_curve",
-                                                                          "signal_residual_mm", "words_read")}})
+                                                                          "words_via_test_curve", "signal_residual_mm",
+                                                                          "words_read")}})
             fam, gate = name.rsplit("_", 1)
             ch["separation_part_mm"] = parts.get(f"{fam}_{gate}_sep")
             if cleans:
@@ -761,19 +770,32 @@ def causal_highpass(x: np.ndarray, fs: float, fc: float = PAGE_HP_HZ) -> np.ndar
     return lfilter(b, a, x, axis=0)
 
 
+def _sensing_streams(kind: str, tc, note, variants):
+    import dataclasses as dc
+    from fusion import sensors as S
+    from handwriting import tracker as TR
+    from realdata import hw1 as H
+    from realdata import sensors as RSN
+    rec = tremor_only_record(tc.neutral, tc.scn, tc.clean, tc.scn_clean, tc.neutral.info["tick_decim"])
+    cfg = TR.sensor_config(tc.pen, note.trk["sensors"])
+    if kind == "imu":
+        cfg_p = dc.replace(cfg, comp="ideal", acc=dc.replace(cfg.acc, nd=0.0, bias_sd=0.0, drift_sd=0.0, scale_sd=0.0,
+                                                             misalign_sd=0.0))
+        return {"pen": S.make_streams(rec, cfg, tc.s_seed), "perfect": S.make_streams(rec, cfg_p, tc.s_seed)}
+    st_i = S.make_streams(rec, cfg, tc.s_seed)
+    return {"ideal": st_i, "deltapen": RSN.degrade_page(st_i, H.page_model(), tc.s_seed + 17)}
+
+
 def sensing_check(kind: str, quick: bool = False, log=CM.log) -> Dict:
     """What the pen's sensors allow when the tremor is alone (CALC on SIM streams, tuning split, cross-fitted by fold).
     kind 'imu':  the IMU filter (the chosen FIR) with the pen's IMU against a perfect accelerometer (no noise, bias,
                  drift, scale error or misalignment, and no pen rotation), same records and seeds
     kind 'page': a linear predictor on the page sensor's position, causally high-passed at PAGE_HP_HZ (the relative
                  DeltaPen-class sensor accumulates error), lags as the AR choice at the page path's delay (3 ms),
-                 target the true tremor at t + g, fitted per fold; ideal and DeltaPen-class page sensors.  Each estimate
-                 is also applied to the full case in the plant (tip tremor, R's measure)."""
-    import dataclasses as dc
-    from fusion import sensors as S
-    from handwriting import tracker as TR
+                 target the true tremor at t + g, fitted per fold; ideal and DeltaPen-class page sensors.
+    Pass 1 collects the fit statistics note by note; pass 2 rebuilds each severe case, applies the model of its held-out
+    fold and runs the full case in the plant (tip tremor, R's measure).  Memory: one note at a time."""
     from realdata import hw1 as H
-    from realdata import sensors as RSN
     from realtrack import cases as C
     from realtrack import learned as LE
     from . import stages as SG
@@ -791,65 +813,64 @@ def sensing_check(kind: str, quick: bool = False, log=CM.log) -> Dict:
     for s in specs:
         by_note.setdefault(s["note"], []).append(s)
     variants = ("pen", "perfect") if kind == "imu" else ("ideal", "deltapen")
+
+    def inputs(v, st):
+        return st if kind == "imu" else causal_highpass(page_known(st, st.tick_t), 1.0 / float(st.tick_t[1] - st.tick_t[0]))
     stats: Dict[str, List] = {v: [] for v in variants}
-    evals: Dict[str, List] = {v: [] for v in variants}
-    for i, ss in sorted(by_note.items()):
+    for i, ss in sorted(by_note.items()):                         # pass 1: the fit statistics
         note = CM.tuning_note(i)
         for s in ss:
             tc = CM.TuneCase(note, s)
-            rec = tremor_only_record(tc.neutral, tc.scn, tc.clean, tc.scn_clean, tc.neutral.info["tick_decim"])
-            cfg = TR.sensor_config(tc.pen, note.trk["sensors"])
-            fold = int(s["fold"])
-            if kind == "imu":
-                cfg_p = dc.replace(cfg, comp="ideal", acc=dc.replace(cfg.acc, nd=0.0, bias_sd=0.0, drift_sd=0.0,
-                                                                      scale_sd=0.0, misalign_sd=0.0))
-                sts = {"pen": S.make_streams(rec, cfg, tc.s_seed), "perfect": S.make_streams(rec, cfg_p, tc.s_seed)}
-            else:
-                st_i = S.make_streams(rec, cfg, tc.s_seed)
-                sts = {"ideal": st_i, "deltapen": RSN.degrade_page(st_i, H.page_model(), tc.s_seed + 17)}
+            sts = _sensing_streams(kind, tc, note, variants)
             truth = C.truth_at_ticks(tc.neutral, tc.clean, sts[variants[0]].tick_t)
             act = active_ticks(tc, len(truth))
             for v in variants:
                 st = sts[v]
-                tt = st.tick_t
                 if kind == "imu":
-                    stats[v].append((fold, LE.fir_stats(TremCase(st, truth, act, {"tremor": 1}), L, lead, "ideal", 0.0,
-                                                         0.0)))
-                    x = st
+                    stats[v].append((int(s["fold"]), LE.fir_stats(TremCase(st, truth, act, {"tremor": 1}), L, lead,
+                                                                   "ideal", 0.0, 0.0)))
                 else:
-                    x = causal_highpass(page_known(st, tt), 1.0 / float(tt[1] - tt[0]))
-                    stats[v].append((fold, normal_eq_xy(x, truth, tt, ds_page, dtau, order, lead)))
-                if s["level"] == "severe":
-                    g1k = CM.grid_1k(tc.neutral, tc.scn)
-                    evals[v].append({"fold": fold, "x": x, "tt": tt, "truth": truth, "f0": tc.f0, "tc": tc, **g1k})
+                    stats[v].append((int(s["fold"]), normal_eq_xy(inputs(v, st), truth, st.tick_t, ds_page, dtau, order,
+                                                                  lead)))
+            del tc, sts
+        del note
+    folds = sorted({f for f, _ in stats[variants[0]]})
+    models = {}
+    for v in variants:
+        for k in folds:
+            tr = [x for f, x in stats[v] if f != k]
+            models[(v, k)] = LE.fir_solve(tr, L, ridge) if kind == "imu" else solve(sum(x[0] for x in tr),
+                                                                                  sum(x[1] for x in tr))
+    res = {v: {"sig": [], "tip": []} for v in variants}
+    for i, ss in sorted(by_note.items()):                         # pass 2: score the severe cases, held-out fold
+        sev = [s for s in ss if s["level"] == "severe"]
+        if not sev:
+            continue
+        note = CM.tuning_note(i)
+        for s in sev:
+            tc = CM.TuneCase(note, s)
+            sts = _sensing_streams(kind, tc, note, variants)
+            k = int(s["fold"])
+            g1k = CM.grid_1k(tc.neutral, tc.scn)
+            for v in variants:
+                st = sts[v]
+                tt = st.tick_t
+                truth = C.truth_at_ticks(tc.neutral, tc.clean, tt)
+                dh = LE.fir_apply(st, models[(v, k)], 0.0) if kind == "imu" else \
+                    ar_apply(models[(v, k)], inputs(v, st), tt, ds_page, dtau)
+                err = target_at(truth, tt, tt, lead) - dh
+                res[v]["sig"].append(CM.signal_residual_mm(err, tt, g1k["t1k"], g1k["contact1k"], tc.f0))
+                r = tc.run(-fit_len(dh, tc.n_ticks))
+                res[v]["tip"].append(H.tip_tremor_mm(r, tc.scn, tc.f0))
+                del r
+            del tc, sts
         del note
     out = {"kind": kind, "variants": {}, "n_cases": len(specs),
            "label": "CALC on SIM streams of the tremor alone (tuning split, cross-fitted by fold); tip = SIM (full plant)"}
-    folds = sorted({f for f, _ in stats[variants[0]]})
     for v in variants:
-        sig, tip = [], []
-        for k in folds:
-            if kind == "imu":
-                Hk = LE.fir_solve([x for f, x in stats[v] if f != k], L, ridge)
-            else:
-                A = sum(x[0] for f, x in stats[v] if f != k)
-                b = sum(x[1] for f, x in stats[v] if f != k)
-                coef = solve(A, b)
-            for e in evals[v]:
-                if e["fold"] != k:
-                    continue
-                if kind == "imu":
-                    dh = LE.fir_apply(e["x"], Hk, 0.0)
-                else:
-                    dh = ar_apply(coef, e["x"], e["tt"], ds_page, dtau)
-                err = target_at(e["truth"], e["tt"], e["tt"], lead) - dh
-                sig.append(CM.signal_residual_mm(err, e["tt"], e["t1k"], e["contact1k"], e["f0"]))
-                r = e["tc"].run(-fit_len(dh, e["tc"].n_ticks))
-                from realdata import hw1 as H2
-                tip.append(H2.tip_tremor_mm(r, e["tc"].scn, e["f0"]))
-        out["variants"][v] = {"signal_residual_mm": float(np.mean(sig)), "tip_tremor_mm": float(np.mean(tip)),
-                              "n": len(sig), "per_case_signal_mm": [float(x) for x in sig],
-                              "per_case_tip_mm": [float(x) for x in tip]}
+        out["variants"][v] = {"signal_residual_mm": float(np.mean(res[v]["sig"])), "tip_tremor_mm": float(np.mean(res[v]["tip"])),
+                              "n": len(res[v]["sig"]), "per_case_signal_mm": [float(x) for x in res[v]["sig"]],
+                              "per_case_tip_mm": [float(x) for x in res[v]["tip"]]}
     out["elapsed_s"] = time.time() - t0
     log(f"[gap] sensing check ({kind}): " + ", ".join(
         f"{v} signal {x['signal_residual_mm']:.3f} mm, tip {x['tip_tremor_mm']:.3f} mm" for v, x in out["variants"].items())

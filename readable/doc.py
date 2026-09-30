@@ -234,29 +234,34 @@ def gap_tables(g: Dict) -> List[str]:
         if not blk:
             continue
         rows = []
+        tcurve = split == "test"
         for name, ch in blk["chains"].items():
             for s in ch["steps"]:
                 rows.append([ch["label"], s["step"], s["config"], ci(s.get("tip_tremor_mm")),
-                             ci(s.get("signal_residual_mm")), ci(s.get("words_via_curve"), 1),
-                             ci(s.get("words_read"), 1) if s.get("words_read") else "-"])
-            rows.append([ch["label"], "separation part alone (e_sep)", "-", "-", ci(ch.get("separation_part_mm")), "-",
-                         "-"])
+                             ci(s.get("signal_residual_mm")), ci(s.get("words_via_curve"), 1)]
+                            + ([ci(s.get("words_via_test_curve"), 1)] if tcurve else [])
+                            + [ci(s.get("words_read"), 1) if s.get("words_read") else "-"])
+            pad = ["-"] if tcurve else []
+            rows.append([ch["label"], "separation part alone (e_sep)", "-", "-", ci(ch.get("separation_part_mm")), "-"]
+                        + pad + ["-"])
             if ch.get("clean_change_um"):
                 cc = ch["clean_change_um"]
-                rows.append([ch["label"], "clean writing moved, um (tuning notes)", "-", ci(cc, 1) + f"; worst "
-                             f"note {f(cc.get('worst_note'), 1)}", "-", "-", "-"])
+                rows.append([ch["label"], f"clean writing moved, um ({split} notes)", "-", ci(cc, 1) + f"; worst "
+                             f"note {f(cc.get('worst_note'), 1)}", "-", "-"] + pad + ["-"])
         out.append(f"**Gap decomposition, {split} split, severe class** (SIM, full HW1 plant; words via the frozen E13 "
                    f"tuning curve = CALC; {blk['n_writers']} writers, {blk['n_cases']} cases)\n")
         out.append(table(["Estimator", "Step", "Configuration", "Tremor left at the tip, mm",
-                          "Error signal alone, mm (R's measure)", "Words of 10 via the curve", "Words read directly"],
-                         rows))
+                          "Error signal alone, mm (R's measure)", "Words of 10 via the tuning curve"]
+                         + (["Words of 10 via the test curve"] if tcurve else []) + ["Words read directly"], rows))
         out.append("")
         cf = blk["configs"]
         rows = [[k, ci(v.get("tip_tremor_mm")), ci(v.get("signal_residual_mm")), ci(v.get("words_via_curve"), 1)]
-                for k, v in sorted(cf.items())]
+                + ([ci(v.get("words_via_test_curve"), 1)] if tcurve else [])
+                + [ci(v.get("words_read"), 1) if v.get("words_read") else "-"] for k, v in sorted(cf.items())]
         out.append(f"**Every configuration, {split} split** (SIM)\n")
         out.append(table(["Configuration", "Tremor left at the tip, mm", "Error signal alone, mm",
-                          "Words via the curve"], rows))
+                          "Words via the tuning curve"] + (["Words via the test curve"] if tcurve else [])
+                         + ["Words read directly"], rows))
         out.append("")
     bb = pr.get("broadband") or g.get("broadband")
     return out
@@ -439,6 +444,21 @@ def values(out: Dict) -> Dict[str, str]:
         v["E_POWER_OVER_R2"] = f((1.12 / r2) ** 2, 1)
     except Exception:
         v["E_OVER_R2"] = v["E_POWER_OVER_R2"] = "-"
+    try:
+        v["S_E_OVER_R2"] = f(1.12 / float(_get(e, "test.fits.pooled.r_plus2_mm")), 1)
+    except Exception:
+        v["S_E_OVER_R2"] = "-"
+    for row in (_get(e, "test.tables") or {}).get("all/severe", [])[1:]:
+        if row.get("gain_vs_ordinary"):
+            v[f"S_GAIN_{row['device']}"] = f(row["gain_vs_ordinary"].get("mean"), 1)
+            v[f"S_TIP_{row['device']}"] = f(row["tip_tremor_mm"].get("mean"))
+    for row in (_get(out, "e11.test.per_writer") or []):
+        v[f"E11_W{row['note']}_D1_ALO"] = f(row.get("D1_a_lo_mm"))
+    try:
+        v["E11_D1_FROZEN_ALO"] = f(float(_get(out, "frozen.e11.choice.D1.frozen_gate_on_tuning") and
+                                         CM.frozen_e()["chosen"]["auth"]["a_lo"]) * 1e3)
+    except Exception:
+        v["E11_D1_FROZEN_ALO"] = "-"
     s11 = _get(out, "e11.test.summary") or {}
     for k, x in s11.items():
         t = k.replace("|", "_")
@@ -462,6 +482,7 @@ def values(out: Dict) -> Dict[str, str]:
             v[f"G{tag}_{k}_M"] = f(_get(x, "tip_tremor_mm.mean"))
             v[f"G{tag}_{k}_W"] = f(_get(x, "words_via_curve.mean"), 1)
             v[f"G{tag}_{k}_WR"] = f(_get(x, "words_read.mean"), 1)
+            v[f"G{tag}_{k}_WT"] = f(_get(x, "words_via_test_curve.mean"), 1)
             v[f"G{tag}_{k}_SIG"] = f(_get(x, "signal_residual_mm.mean"), 3)
         for name, ch in (_get(gp, f"{split}.chains") or {}).items():
             v[f"G{tag}_{name}_SEP"] = f(_get(ch, "separation_part_mm.mean"))
