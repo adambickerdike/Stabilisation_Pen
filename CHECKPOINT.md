@@ -14,7 +14,7 @@ Use this file to resume work without losing assumptions. Branch: `claude/pensive
 | Firmware | C control core with safety, logging, calibration and ML guard; parameters generated from the YAML with a freshness check; 60 test cases (1120 checks) on host (ASan/UBSan) and emulated Cortex-M33; nRF5340 image links (32.3 kB flash, 29.4 kB RAM) | Execution on nRF5340 hardware; cycle-accurate timing; register-level drivers (VERIFY); IMU, optics, USB, flash and BLE drivers |
 | ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines; causal TCN; int8 C export without f_est, bit-exact on 20 000 windows (16.2 k MAC, 7.3 kB weights); 22 tests | Any real-data training (no recordings exist) |
 | App | ICD log reader with CRC and resync; immutable note store with provenance; search with stroke citations; grounded assistant with refusal rules; capture-fidelity analysis; 137 tests | On-device recogniser (adapter specified only) |
-| Validation | 168 experiments with criteria (125 bench/offline, 43 human); 567 acceptance criteria against 169 requirements, generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
+| Validation | 173 experiments with criteria (130 bench/offline, 43 human); 581 acceptance criteria against 172 requirements, generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
 
 ## 2. Numbers the next session must not lose
 
