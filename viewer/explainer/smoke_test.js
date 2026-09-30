@@ -120,6 +120,9 @@ async function run(browser, label, viewport) {
     ["tremor", "real", "autowrite", "loops", "clean"].every(k => (rows.find(r => r.id === k) || {}).thumbs === 2), rows.map(r => `${r.id} ${r.thumbs}`).join(", "));
   const real = rows.find(r => r.id === "real");
   check(`${label}: the real-tremor row says the pen does not help yet on real tremor`, real && /No help yet on real tremor/.test(real.verdict), real ? `${real.val.replace(/\s+/g, " ").trim()} · ${real.verdict.slice(0, 60)}` : "missing");
+  check(`${label}: the real-tremor row gives study E's best tracker (1.6 to 1.1 mm at the tip, still too much to read, 0.5 mm on one writer's clean writing)`,
+    real && /study E/.test(real.verdict) && /from 1\.6 to 1\.1\s*mm/.test(real.verdict) && /still too much to read/.test(real.verdict) && /0\.5\s*mm\./.test(real.verdict),
+    real ? real.verdict.slice(100, 290) : "missing");
   check(`${label}: the rows from the physics simulation: fast shake, slow shake (no help yet), severe shake, loops, tracing, lead-through, tail, clean copy, normal writing`,
     ["tremor", "real", "slow", "autowrite", "loops", "tracing", "spell", "predict", "tail", "collar", "clean", "normal"].every(k => rows.some(r => r.id === k)) &&
     /No help yet/.test((rows.find(r => r.id === "slow") || {}).verdict || ""), rows.map(r => r.id).join(", "));
@@ -160,7 +163,8 @@ async function run(browser, label, viewport) {
   check(`${label}: known problems: heel wheel 0.4 mm, retracted; page sensor 3 µm against DeltaPen's 24–68 µm; made-up writers and shakes`,
     /0\.4\s*mm/.test(kH.text) && /retracted unless the writer turns guidance on/.test(kH.text) && kH.tags.some(t => /^Simulation/.test(t)) &&
     /3\s*µm/.test(kP.text) && /DeltaPen, 2022/.test(kP.text) && /24–68\s*µm/.test(kP.text) && /unproven/.test(kP.text) && kP.tags.some(t => /^Assumption/.test(t)) && kP.tags.some(t => /^Literature/.test(t)) &&
-    /made up/.test(kD.text) && /Real recordings/.test(kD.text) && /no tracker/.test(kD.text),
+    /made up/.test(kD.text) && /Real recordings/.test(kD.text) && /no tracker/.test(kD.text) &&
+    /about 30\s*% of the shake/.test(kD.text) && /no more words readable/.test(kD.text) && /about 0\.5\s*mm/.test(kD.text) && /EXP-E10/.test(kD.text) && !/—/.test(kD.text),
     `${kH.text.slice(0, 50)}… | ${kP.text.slice(0, 60)}… | ${kD.text.slice(0, 40)}…`);
   check(`${label}: side-load figure: spring along the pen, paper's push, its sideways part, the magnets' force, the two arms and the lever equation`,
     ["spring", "paper", "side", "mag"].every(a => kp.arrows.includes(a)) &&

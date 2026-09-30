@@ -1370,7 +1370,8 @@ function tagHTML(ev){
   else if(up.startsWith("MFR")){cls="mfr";word="Manufacturer";id=s.replace(/^MFR\s*/i,"");}
   else if(up.startsWith("ASS")){cls="asm";word="Assumption";id=s.replace(/^ASS(UMPTION)?\s*/i,"");}
   else if(s){word=s;}
-  id=id.replace(/^[\s·:(-]+|[)\s]+$/g,"");
+  id=id.replace(/^[\s·:-]+/,"").trim();
+  if(/^\([^()]*\)$/.test(id)) id=id.slice(1,-1).trim();
   return `<span class="tag ${cls}"><i></i>${esc(word)}${id?" · "+esc(id):""}</span>`;
 }
 

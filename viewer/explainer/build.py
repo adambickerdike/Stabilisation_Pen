@@ -80,6 +80,7 @@ SIM2J_ET = "results/sim2j/et.json"
 REALDATA_JSON = "results/realdata/realdata.json"         # study R: real recorded handwriting and tremor (HW1)
 REALDATA_SAMPLES = "results/realdata/samples.json"
 SIM_REAL = "SIMULATION (model HW1) with real recorded inputs"
+REALTRACK_JSON = "results/realtrack/realtrack.json"      # study E: tremor tracking on the real recordings (HW1)
 AI3_JSON = "results/ai3/ai3.json"                         # study S: spelling help, prediction, clarity
 WHOLEPEN_SUMMARY = "results/wholepen/summary.json"         # study W: shifting the whole pen
 SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
@@ -423,6 +424,23 @@ def facts_realdata() -> dict | None:
         return None
 
 
+def facts_realtrack() -> dict | None:
+    """Study E's best causal tracker on the held-out real recordings (results/realtrack/realtrack.json, test cards,
+    severe class, Parkinson's and essential tremor pooled) and its verdict against DEC-055's pass line."""
+    if not exists(REALTRACK_JSON):
+        return None
+    try:
+        t = load(REALTRACK_JSON)["test"]
+        c = t["cards"]["real"]["all/severe"]
+        best, d = c["revJ_new|deltapen"], t["dec055"]["chosen"]
+        return {"words": best["words_of_10"]["mean"], "none_words": c["none"]["words_of_10"]["mean"],
+                "ratio": best["tip_tremor_ratio"]["mean"], "clean_um": d["clean_change_um_mean"],
+                "clean_worst_um": d["clean_change_um_worst_writer"], "passes": bool(d["passes"]),
+                "label": "SIMULATION (model HW1) with real recorded inputs (study E)", "source": REALTRACK_JSON}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as ex:
+        warn(f"{REALTRACK_JSON} could not be read ({ex})")
+        return None
+
 def facts_ai3() -> dict | None:
     """Study S's headline numbers (results/ai3/ai3.json): misspellings put right on paper per cue, the spell checker's
     catch rate with the letters known and with the pen reading them, and word completion after one letter."""
@@ -617,6 +635,10 @@ def build_facts(lay: dict):
     if rd:
         facts["realdata"] = rd
         srcs.append(REALDATA_JSON)
+    rt = facts_realtrack()
+    if rt:
+        facts["realtrack"] = rt
+        srcs.append(REALTRACK_JSON)
     a3 = facts_ai3()
     if a3:
         facts["ai3"] = a3
@@ -1080,7 +1102,9 @@ def tag(ev: str, title: str = "") -> str:
                            (r"^ASS(UMPTION)?", "asm", "Assumption")):
         m = re.match(pat, s, re.I)
         if m:
-            rest = re.sub(r"^[\s·:(-]+|[)\s]+$", "", s[m.end():])
+            rest = re.sub(r"^[\s·:-]+", "", s[m.end():]).strip()
+            if re.fullmatch(r"\([^()]*\)", rest):          # "(sim2, ...)" loses its brackets; "(model HW1) with ..." keeps them
+                rest = rest[1:-1].strip()
             return f'<span class="tag {cls}"{ti}><i></i>{e(word)}{" · " + e(rest) if rest else ""}</span>'
     return f'<span class="tag asm"{ti}><i></i>{e(s or "Assumption")}</span>'
 
@@ -1292,9 +1316,13 @@ KNOWN_PROBLEMS = [
     {"key": "data",
      "lead": "Most writers and shakes so far are made up.",
      "text": ("Real recordings of patients' tremor and real handwriting show that no tracker built so far helps with a real, "
-              "irregular shake (see the real recorded shake row above). Finding one is the next piece of work."),
+              "irregular shake (see the real recorded shake row above). The best one found since takes out about {kp_rt_cut}&nbsp;% "
+              "of the shake at the pen tip but makes no more words readable, and it moved one writer's clean writing by about "
+              "{kp_rt_worst}&nbsp;mm. The next candidate, a small network trained on real recordings, must first pass a test on "
+              "new recordings (EXP-E10)."),
      "evidence": [("SIMULATION: synthetic writers and shakes", "most results"),
-                  ("SIMULATION (model HW1) with real recorded inputs", "docs/real_data.md; DEC-055")]},
+                  ("SIMULATION (model HW1) with real recorded inputs", "docs/real_data.md; DEC-055"),
+                  ("SIMULATION (model HW1) with real recorded inputs (study E)", "docs/real_tracker.md; DEC-060, DEC-061")]},
 ]
 MECH_CHIP = {"tip": ("Inner pen", "--g-nose"), "heel": ("Heel wheel", "--g-drive"), "tail": ("Tail weight", "--g-inertial"),
              "app": ("The app", "--accent")}
@@ -1320,6 +1348,7 @@ def known_tokens(f: dict) -> dict:
     by = sl.get("by_angle") or {}
     b50, b35 = by.get("50") or {}, by.get("35") or {}
     hm, dp = kn.get("heel_moved_mm"), kn.get("deltapen_um")
+    rt = f.get("realtrack") or {}
     return {"kp_ratio": f"{sl['ratio']:.0f}" if sl.get("ratio") else "—", "kp_ratio1": f"{sl['ratio']:.1f}" if sl.get("ratio") else "—",
             "kp_p50": f"{b50['P_W']:.1f}" if b50 else "—", "kp_p35": f"{b35['P_W']:.1f}" if b35 else "—",
             "kp_sim": f"{sl['sim_run_W']:g}" if sl.get("sim_run_W") else "—",
@@ -1327,7 +1356,9 @@ def known_tokens(f: dict) -> dict:
             "kp_heel_um": (f"{1000 * hm[0]:.0f}–{1000 * hm[1]:.0f} µm, mean {1000 * kn['heel_mean_mm']:.0f} µm"
                            + (f", test writers {kn['heel_writers']}" if kn.get("heel_writers") else "")) if hm else "—",
             "kp_page": f"{kn['page_assumed_um']:.0f}" if kn.get("page_assumed_um") else "—",
-            "kp_dp_lo": f"{dp[0]:.0f}" if dp else "—", "kp_dp_hi": f"{dp[1]:.0f}" if dp else "—"}
+            "kp_dp_lo": f"{dp[0]:.0f}" if dp else "—", "kp_dp_hi": f"{dp[1]:.0f}" if dp else "—",
+            "kp_rt_cut": f"{5 * round(100 * (1 - rt['ratio']) / 5):.0f}" if rt.get("ratio") else "—",
+            "kp_rt_worst": f"{rt['clean_worst_um'] / 1000:.1f}" if rt.get("clean_worst_um") else "—"}
 
 
 def _fill(s: str, toks: dict) -> str:
@@ -1607,6 +1638,10 @@ def simple_rows_revj(f: dict) -> list:
     rd = (f.get("realdata") or {}).get("severe") or {}
     if rd.get("none", {}).get("words") is not None and rd.get("gated", {}).get("words") is not None:
         lim, cw = rd.get("oracle", {}).get("words"), rd.get("clean_words")
+        rt, tip0 = f.get("realtrack") or {}, rd.get("none", {}).get("tip_mm")
+        since = (f" The best tracker found since (study E) cut the shake at the tip from {tip0:.1f} to {tip0 * rt['ratio']:.1f}\u00a0mm: "
+                 f"still too much to read, and it moved one writer's clean writing by {rt['clean_worst_um'] / 1000:.1f}\u00a0mm."
+                 if rt.get("ratio") and rt.get("clean_worst_um") and tip0 else "")
         rows.append({
             "id": "real", "mech": ["tip"], "who": "A shaky hand, real recorded shake", "sub": "Parkinson's and essential tremor recorded from patients: a severe shake at the pen tip (about 1.7 mm)",
             "help": "Real tremor of real patients, added to real handwriting, in the hand–pen simulation. The inner pen with today's tracker.",
@@ -1616,8 +1651,8 @@ def simple_rows_revj(f: dict) -> list:
             "num": {"label": "Words read correctly", "b": round(10 * rd["none"]["words"]), "a": round(10 * rd["gated"]["words"]), "unit": "%",
                     "sub": (f"with today's tracker; if the pen knew the shake exactly: {round(10 * lim)} %" if lim is not None else "with today's tracker")
                            + (f" (the same notes with no tremor: {round(10 * cw)} %)" if cw is not None else "") + ". 9 held-out writers"},
-            "verdict": "No help yet on real tremor. The pen has the reach; it cannot yet estimate a real, irregular shake in time.",
-            "ev": [SIM_REAL], "src": REALDATA_JSON,
+            "verdict": "No help yet on real tremor. The pen has the reach; it cannot yet estimate a real, irregular shake in time." + since,
+            "ev": [SIM_REAL], "src": REALDATA_JSON + (f" · {REALTRACK_JSON}" if since else ""),
             "ev_note": "Real handwriting and real tremor recorded by others, in the simpler hand–pen model (HW1); not a measurement of the pen or of any person."})
     if "slow_4hz" in C:
         c = C["slow_4hz"]
