@@ -1,0 +1,67 @@
+id,label,group,shape,z0_mm,z1_mm,d0_mm,d1_mm,d_in_mm,size_mm,offset_mm,moves_with,optional,mass_g,part,ledger
+ball,0.7 mm ball and tip cone,refill,cone,0.0,3.0,0.7,2.35,,,"[0.0, 0.0]",nib,False,0.0,ISO 12757-1 D1 refill tip,CON-22
+refill,D1 refill (67 mm),refill,cylinder,3.0,67.0,2.35,2.35,,,"[0.0, 0.0]",nib,False,0.84,metal D1 refill,CON-22; DEC-004
+carrier,Ti-6Al-4V carrier tube 3.2 / 2.5 mm,moving_nib,tube,9.0,33.015,3.2,3.2,2.5,,"[0.0, 0.0]",nib,False,0.3333920543515968,Ti-6Al-4V tube,AMF-21; docs/balanced_nib.md
+carrier_front_guide,front rolling guide station (three rollers),moving_nib,tube,9.0,11.0,4.0,4.0,3.2,,"[0.0, 0.0]",nib,False,0.03,jewel rollers in windows,REQ-BNIB-016
+carrier_rear_guide,rear rolling guide station (in the flange hub),moving_nib,tube,30.515,32.515,4.0,4.0,3.2,,"[0.0, 0.0]",nib,False,0.03,jewel rollers,REQ-BNIB-016
+coil_x,moving coil layer x (two concentric racetracks),actuator,box,26.7,27.5,,,3.4000000000000004,"[9.1, 16.545177166129214, 0.8]","[0.0, 0.0]",nib,False,0.43708238802667315,"bonded self-supporting coil or flex, polyimide former",AMF-29; nib.buildable_coil
+coil_y,moving coil layer y (two concentric racetracks),actuator,box,27.5,28.3,,,3.4000000000000004,"[16.545177166129214, 9.1, 0.8]","[0.0, 0.0]",nib,False,0.43708238802667315,"as coil_x, turned 90 deg",AMF-29; nib.buildable_coil
+carrier_flange,carrier flange: wire clamps and the ball-guide faces,moving_nib,tube,31.015,32.515,18.86,18.86,2.6,,"[0.0, 0.0]",nib,False,1.274773907322842,"Ti-6Al-4V, hardened faces (TiN) or 440C inserts",PROPOSED DESIGN
+position_magnet,1 mm N52 position magnet,sensor,box,32.515,33.515,,,,"[1.0, 1.0, 1.0]","[4.5, 0.0]",nib,False,0.0075,N52 cube 1 mm,AMF-139
+back_plate,1010 back plate,actuator,tube,21.435,22.9,21.399717157287522,21.399717157287522,6.3173919317642016,,"[0.0, 0.0]",handle,False,3.7863372065729055,"1010 steel, laser cut",AMF-140
+pole_magnet_1,N52 pole magnet 1 (checkerboard),magnet,box,22.9,26.4,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[4.793672930760958, 4.793672930760958]",handle,False,0.6973779985932816,N52 5.12 x 5.12 x 3.5 mm,AMF-139
+pole_magnet_2,N52 pole magnet 2 (checkerboard),magnet,box,22.9,26.4,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[-4.793672930760958, 4.793672930760958]",handle,False,0.6973779985932816,N52 5.12 x 5.12 x 3.5 mm,AMF-139
+pole_magnet_3,N52 pole magnet 3 (checkerboard),magnet,box,22.9,26.4,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[-4.793672930760958, -4.793672930760958]",handle,False,0.6973779985932816,N52 5.12 x 5.12 x 3.5 mm,AMF-139
+pole_magnet_4,N52 pole magnet 4 (checkerboard),magnet,box,22.9,26.4,,,,"[5.120275187158268, 5.120275187158268, 3.5]","[4.793672930760958, -4.793672930760958]",handle,False,0.6973779985932816,N52 5.12 x 5.12 x 3.5 mm,AMF-139
+keeper,1010 keeper,actuator,tube,28.45,29.915,21.399717157287522,21.399717157287522,6.3173919317642016,,"[0.0, 0.0]",handle,False,3.7863372065729055,1010 steel,AMF-140
+front_race,front race (on the keeper),mechanism,tube,29.915,30.215,18.86,18.86,14.340000000000002,,"[0.0, 0.0]",handle,False,0.2757923765814547,"440C ring, lapped",PROPOSED DESIGN
+front_balls,6 Si3N4 balls in a cage (front layer),mechanism,tube,30.215,31.015,17.400000000000002,17.400000000000002,15.8,,"[0.0, 0.0]",handle,False,0.015147185403641518,"Si3N4 grade 5 balls, PEEK cage",PROPOSED DESIGN
+rear_balls,6 Si3N4 balls in a cage (rear layer),mechanism,tube,32.515,33.315,17.400000000000002,17.400000000000002,15.8,,"[0.0, 0.0]",handle,False,0.015147185403641518,"Si3N4 balls, PEEK cage",PROPOSED DESIGN
+rear_race,rear race ring on four posts,mechanism,tube,33.315,33.615,18.86,18.86,14.340000000000002,,"[0.0, 0.0]",handle,False,0.35579237658145474,440C ring on four Ti posts to the shell (diagonals),PROPOSED DESIGN
+lateral_stop,"lateral stop bush round the carrier (in the cone, on three spokes)",mechanism,tube,16.5,18.5,8.0,8.0,5.7174,,"[0.0, 0.0]",handle,False,0.2678839395096732,"Ti bush, polyimide face, PEEK spokes",EXP-B25
+nose_hall,TMAG5170 nib Hall (3-axis),sensor,box,34.165,35.265,,,,"[3.0, 4.9, 1.1]","[4.5, 0.0]",handle,False,0.03,TMAG5170A1QDGKR,OPT-44; AMF-250
+wire_1,C17200 suspension wire 1 (a coil lead),mechanism,cylinder,31.765,58.565,0.1,0.1,,,"[3.8890872965260113, 3.8890872965260113]",handle,False,0.0017365153392717586,C17200 TH04 wire 0.10 mm,AMF-19; AMF-251
+wire_2,C17200 suspension wire 2 (a coil lead),mechanism,cylinder,31.765,58.565,0.1,0.1,,,"[-3.8890872965260113, 3.8890872965260113]",handle,False,0.0017365153392717586,C17200 TH04 wire 0.10 mm,AMF-19; AMF-251
+wire_3,C17200 suspension wire 3 (a coil lead),mechanism,cylinder,31.765,58.565,0.1,0.1,,,"[-3.8890872965260113, -3.8890872965260113]",handle,False,0.0017365153392717586,C17200 TH04 wire 0.10 mm,AMF-19; AMF-251
+wire_4,C17200 suspension wire 4 (a coil lead),mechanism,cylinder,31.765,58.565,0.1,0.1,,,"[3.8890872965260113, -3.8890872965260113]",handle,False,0.0017365153392717586,C17200 TH04 wire 0.10 mm,AMF-19; AMF-251
+anchor_ring,wire anchor ring (the coil leads' solder pads) on an axially soft diaphragm,structure,tube,58.565,60.065,13.0,13.0,9.0,,"[0.0, 0.0]",handle,False,0.3,FR4 / polyimide ring on a 301 steel spoked diaphragm to the shell (bottom 120 deg),PROPOSED DESIGN
+skid_ring,"skid ring (contact radius 6 mm, open 120 deg on top)",skid,tube,4.578,6.078,12.0,12.0,5.4674,,"[0.0, 0.0]",handle,False,0.12636398875112373,PTFE-coated POM,DEC-034
+front_cone_1,front cone 1 (clear hard-coated PC window over the top 240 deg),grip,tube,6.078,10.0,12.0,15.380731263602659,10.0,,"[0.0, 0.0]",handle,False,0.2613654914026052,"hard-coated PC (top 240 deg) and PEEK (bottom 120 deg, page-sensor window)",DEC-045; AMF-159
+front_cone_2,front cone 2 (clear hard-coated PC window over the top 240 deg),grip,tube,10.0,14.0,15.380731263602659,18.828438758161596,13.380731263602659,,"[0.0, 0.0]",handle,False,0.34536432767243247,"hard-coated PC (top 240 deg) and PEEK (bottom 120 deg, page-sensor window)",DEC-045; AMF-159
+front_cone_3,front cone 3 (clear hard-coated PC window over the top 240 deg),grip,tube,14.0,20.0,18.828438758161596,24.0,16.828438758161596,,"[0.0, 0.0]",handle,False,0.8034488748688059,"hard-coated PC (top 240 deg) and PEEK (bottom 120 deg, page-sensor window)",DEC-045; AMF-159
+front_sleeve,grip sleeve (24 mm),grip,tube,20.0,45.0,24.0,24.0,22.0,,"[0.0, 0.0]",handle,False,2.6229157064821194,PEEK with a TPE skin,AMF-24
+page_optics,page-sensor lens and 45 deg mirror block,sensor,box,6.128,8.128,,,,"[2.0, 1.8, 2.0]","[-3.719999999999999, 0.0]",handle,False,0.02,custom moulded lens + mirror,OPT-61
+page_sensor,PMW3610-class optical-flow die (on a flex),sensor,box,10.2,15.2,,,,"[2.0, 3.0, 5.0]","[-5.0, 0.0]",handle,False,0.5,"PMW3610-class die, chip on flex",OPT-61; AMF-109
+main_board,"main board (nRF54L15, 2 x DRV8214, charger, fuel gauge, 3 x NSD-2101)",electronics,box,35.5,58.3,,,,"[1.0, 14.0, 22.8]","[7.5, 0.0]",handle,False,5.0,4-layer board,OPT-60; AMF-37; AMF-15
+board_parts,components on the board's inner side,electronics,box,35.5,58.3,,,,"[1.2, 12.0, 22.8]","[6.4, 0.0]",handle,False,,-,-
+imu,LSM6DSV16X IMU,sensor,box,49.5,52.0,,,,"[0.83, 3.0, 2.5]","[8.415, 0.0]",handle,False,,LSM6DSV16XTR,OPT-37; AMF-254
+refill_holder,refill holder: vented PEEK cup + stem + 1.2 mm joint ball (the shoe is on the face),balance,cylinder,65.8,69.0,3.2,3.2,,,"[0.0, 0.0]",nib,False,0.05,"PEEK cup, Ti stem, Si3N4 ball",PROPOSED DESIGN
+head_cage,roll cage (turns +-30 deg; carries the tilt hinge and the tilt positioner),balance,tube,60.665,84.529,20.2,20.2,19.2,,"[0.0, 0.0]",head,False,1.0338347410090962,"PEEK-CF tube, jewel rollers",PROPOSED DESIGN
+head_carriage,follower carriage (slides <= 3 mm; slot at the bottom for the heel variant),balance,tube,60.665,85.029,21.4,21.4,20.8,,"[0.0, 0.0]",head,False,2.1463461863156956,Ti tube 0.3 mm wall,PROPOSED DESIGN
+head_shoe,captive shoe on three rolling balls (drawn at 50 deg),balance,box,68.0,70.0,,,,"[1.0, 4.0, 1.0]","[0.0, 0.0]",head,False,0.03,"PEEK-CF shoe, three 0.5 mm Si3N4 balls",PROPOSED DESIGN
+head_face,counter-face: sapphire tray on a Ti bracket (drawn at 50 deg),balance,box,65.979,73.477,,,,"[8.611585031571934, 7.917400000000001, 7.497995740130619]","[1.6215601290512744, 0.0]",head,False,0.3467525229561704,0.3 mm sapphire + Ti-6Al-4V bracket and hinge arms,AMF-160; AMF-21
+head_float,float flexure + constant-force spring (on the bracket),balance,box,73.477,74.977,,,,"[3.0, 4.0, 1.5]","[1.6215601290512744, 0.0]",head,False,0.1,"parallel strip flexure 301 steel, constant-force strip spring",PROPOSED DESIGN
+head_tilt_motor,tilt positioner SQL-RV-1.8 + crank,balance,box,78.029,84.029,,,,"[2.8, 2.8, 6.0]","[-7.3, 0.0]",head,False,0.19,New Scale SQL-RV-1.8 + NSD-2101,AMF-15; AMF-106
+head_balance_spring,tilt balance spring (torsion),balance,box,78.029,80.029,,,,"[1.0, 3.0, 2.0]","[-8.9, 0.0]",head,False,0.02,301 steel torsion spring,PROPOSED DESIGN
+face_hall,face-position Hall (TMAG5273 class) + 1 mm magnet,sensor,box,77.029,78.029,,,,"[1.0, 2.0, 1.0]","[3.0, 0.0]",head,False,0.03,TMAG5273 class,OPT-45
+head_roll_motor,roll positioner SQL-RV-1.8 (on a 5.5 mm crank of the cage),balance,box,85.329,91.329,,,,"[2.8, 2.8, 6.0]","[0.0, 7.3]",handle,False,0.21000000000000002,SQL-RV-1.8 + NSD-2101,AMF-15; AMF-106
+head_follower_motor,follower positioner SQL-RV-1.8 (the pen lift),balance,box,85.329,91.329,,,,"[2.8, 2.8, 6.0]","[0.0, -7.3]",handle,False,0.19,SQL-RV-1.8 + NSD-2101,AMF-15; AMF-106
+head_flex,"head flex (three motor drives, face Hall)",electronics,box,85.329,91.329,,,,"[0.3, 8.0, 6.0]","[7.5, 0.0]",handle,False,0.15,polyimide flex,-
+bulkhead,"bulkhead (head drop stop, cell stop)",structure,cylinder,91.829,92.629,21.8,21.8,,,"[0.0, 0.0]",handle,False,0.23649286204241493,PEEK disc,PROPOSED DESIGN
+battery,LIR14500 Li-ion cell (2.22 Wh usable),power,cylinder,93.129,141.629,14.1,14.1,,,"[3.0, 0.0]",handle,False,20.0,LIR14500 750 mAh,AMF-80
+lra,cue LRA 8 mm (on edge under the cell),haptic,box,93.629,101.629,,,,"[3.0, 8.0, 8.0]","[-8.3, 0.0]",handle,False,1.0,8 mm coin LRA,AMF-45
+shell,PEEK shell 24 / 22 mm,structure,tube,45.0,142.129,24.0,24.0,22.0,,"[0.0, 0.0]",handle,False,9.264042544553005,"PEEK, machined (100) / moulded (1000)",AMF-24
+rear_cap,rear cap with two charging pads,structure,cylinder,142.129,145.129,24.0,22.0,,,"[0.0, 0.0]",handle,False,0.5758492210140286,"PEEK cap, gold pads, pogo cradle",PROPOSED DESIGN
+charging_pads,two gold charging pads,electronics,box,144.829,145.129,,,,"[6.0, 10.0, 0.3]","[0.0, 0.0]",handle,False,0.1,gold-plated brass pads,PROPOSED DESIGN
+drive_wheel,2 mm heel wheel (O-ring tyre),drive,cylinder,3.868,4.868,2.0,2.0,,,"[-5.8, 0.0]",drive,True,0.01,"PTFE hub, O-ring tyre",AMF-111; AMF-112
+drive_fork,steering fork and crown,drive,cylinder,4.968,5.968,3.0,3.0,,,"[-4.8999999999999995, 0.0]",drive,True,0.08,module-0.1 crown,DEC-037
+drive_pod,"heel pod (sprung, with the retract latch)",drive,box,5.868,9.868,,,,"[2.1, 4.0, 4.0]","[-5.199999999999999, 0.0]",drive,True,0.12,"PEEK pod, 301 spring",DEC-037; DEC-048
+drive_inner_shaft_drive,inner drive shaft (in a sleeve groove),drive,cylinder,9.868,19.168,0.8,0.8,,,"[-5.5, 1.0]",handle,True,0.036696315468051445,0.8 mm steel shaft in a 1.0 mm liner,DEC-037
+drive_inner_shaft_steering,inner steering shaft (in a sleeve groove),drive,cylinder,9.868,19.168,0.8,0.8,,,"[-5.5, -1.0]",handle,True,0.036696315468051445,0.8 mm steel shaft in a 1.0 mm liner,DEC-037
+drive_front_transfer,front transfer mesh (two spur pairs),drive,box,19.168,21.168,,,,"[3.0, 6.0, 2.0]","[-9.0, 0.0]",handle,True,0.12,"module-0.1 gears, jewels",DEC-037
+drive_shaft_drive,outer drive shaft (in a groove of the bottom wall),drive,cylinder,21.168,101.929,0.8,0.8,,,"[-10.9, 1.6]",handle,True,0.3186702747092059,0.8 mm non-magnetic steel shaft in a 1.0 mm liner,DEC-037
+drive_shaft_steering,outer steering shaft (in a groove of the bottom wall),drive,cylinder,21.168,101.929,0.8,0.8,,,"[-10.9, -1.6]",handle,True,0.3186702747092059,0.8 mm non-magnetic steel shaft in a 1.0 mm liner,DEC-037
+drive_transfer,rear transfer (motor to shafts),drive,box,101.929,103.929,,,,"[4.0, 8.0, 2.0]","[-8.2, 0.0]",handle,True,0.25,gears,DEC-037
+drive_motor,Faulhaber 0620 B drive motor,drive,cylinder,104.129,124.129,6.0,6.0,,,"[-7.0, 3.2]",handle,True,2.5,Faulhaber 0620 B,AMF-100
+steer_motor,Faulhaber 0620 B steer motor,drive,cylinder,104.129,124.129,6.0,6.0,,,"[-7.0, -3.2]",handle,True,2.5,Faulhaber 0620 B,AMF-100
+drive_sensors,pod load and steering sensors,drive,box,6.368,7.368,,,,"[0.8, 1.5, 1.0]","[-3.6999999999999997, 2.0]",drive,True,0.04,Hall + strain,OPT-45; OPT-46

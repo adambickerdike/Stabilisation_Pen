@@ -1,0 +1,2619 @@
+{
+ "meta": {
+  "evidence_status": "PROPOSED DESIGN; CALC (fit checks)",
+  "generated_utc": "2026-09-30T04:13:57+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.run",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "times_s": {
+   "front_end_s": 3.9108023643493652,
+   "head_s": 4.14702296257019,
+   "nib_s": 2.815305709838867,
+   "layout_budgets_s": 0.16878223419189453
+  }
+ },
+ "stabpen.provenance": {
+  "evidence_status": "PROPOSED DESIGN; CALC (fit checks)",
+  "generated_utc": "2026-09-30T04:13:57+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.run",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "times_s": {
+   "front_end_s": 3.9108023643493652,
+   "head_s": 4.14702296257019,
+   "nib_s": 2.815305709838867,
+   "layout_budgets_s": 0.16878223419189453
+  }
+ },
+ "units": "mm, g",
+ "axis": "z along the pen axis from the ball tip at 50 deg (nib centred) toward the back; x in the tilt plane, positive away from the paper; y lateral",
+ "skid_contact_radius": 6.0,
+ "ball_protrusion_mm": 4.577705235797383,
+ "protrusion_by_tilt_mm": {
+  "35": 7.958681661985303,
+  "40": 6.6060182161641166,
+  "50": 4.577705235797383,
+  "60": 3.0599564267050177,
+  "70": 1.8113591852306454,
+  "75": 1.245348491443207
+ },
+ "handle_od": 24.0,
+ "length": 145.1289963095672,
+ "grip_zone": [
+  20.0,
+  45.0
+ ],
+ "hand": {
+  "finger_pads_z": [
+   26.0,
+   32.0,
+   38.0
+  ],
+  "web_z": 92.0
+ },
+ "tip_travel_mm": 1.0587,
+ "stop_mm": 1.2587,
+ "refill_slide_mm": 9.737293760017849,
+ "positions": {
+  "keeper_z": [
+   28.449999999999996,
+   29.91534012802591
+  ],
+  "flange_z": [
+   31.015340128025912,
+   32.51534012802591
+  ],
+  "front_race_z": [
+   29.91534012802591,
+   30.21534012802591
+  ],
+  "rear_race_z": [
+   33.31534012802591,
+   33.615340128025906
+  ],
+  "hall_die_z": 34.715340128025915,
+  "position_magnet_centre_z": 33.01534012802591,
+  "anchor_ring_z": [
+   58.56534012802591,
+   60.06534012802591
+  ],
+  "wire_z": [
+   31.765340128025912,
+   58.56534012802591
+  ],
+  "hinge_z": 69.79618940405899,
+  "head_z": [
+   60.66534012802591,
+   92.62899630956721
+  ],
+  "lra_z": [
+   93.62899630956721,
+   101.62899630956721
+  ],
+  "length": 145.1289963095672,
+  "battery_z": [
+   93.12899630956721,
+   141.6289963095672
+  ]
+ },
+ "components": [
+  {
+   "id": "ball",
+   "label": "0.7 mm ball and tip cone",
+   "group": "refill",
+   "shape": "cone",
+   "z0": 0.0,
+   "z1": 3.0,
+   "d0": 0.7,
+   "d1": 2.35,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "writes",
+   "part": "ISO 12757-1 D1 refill tip",
+   "ledger": "CON-22",
+   "mass_g": 0.0
+  },
+  {
+   "id": "refill",
+   "label": "D1 refill (67 mm)",
+   "group": "refill",
+   "shape": "cylinder",
+   "z0": 3.0,
+   "z1": 67.0,
+   "d0": 2.35,
+   "d1": 2.35,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "ink; slides in the carrier as the tilt changes (6.7 mm over 35-75 deg)",
+   "part": "metal D1 refill",
+   "ledger": "CON-22; DEC-004",
+   "mass_g": 0.84
+  },
+  {
+   "id": "carrier",
+   "label": "Ti-6Al-4V carrier tube 3.2 / 2.5 mm",
+   "group": "moving_nib",
+   "shape": "tube",
+   "z0": 9.0,
+   "z1": 33.01534012802591,
+   "d0": 3.2,
+   "d1": 3.2,
+   "d_in": 2.5,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "holds the refill on two rolling guide stations; carries the coils and the flange",
+   "part": "Ti-6Al-4V tube",
+   "ledger": "AMF-21; docs/balanced_nib.md",
+   "mass_g": 0.3333920543515968
+  },
+  {
+   "id": "carrier_front_guide",
+   "label": "front rolling guide station (three rollers)",
+   "group": "moving_nib",
+   "shape": "tube",
+   "z0": 9.0,
+   "z1": 11.0,
+   "d0": 4.0,
+   "d1": 4.0,
+   "d_in": 3.2,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "lets the refill slide with <= 0.01 friction (REQ-BNIB-016)",
+   "part": "jewel rollers in windows",
+   "ledger": "REQ-BNIB-016",
+   "mass_g": 0.03
+  },
+  {
+   "id": "carrier_rear_guide",
+   "label": "rear rolling guide station (in the flange hub)",
+   "group": "moving_nib",
+   "shape": "tube",
+   "z0": 30.515340128025912,
+   "z1": 32.51534012802591,
+   "d0": 4.0,
+   "d1": 4.0,
+   "d_in": 3.2,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "rear refill guide",
+   "part": "jewel rollers",
+   "ledger": "REQ-BNIB-016",
+   "mass_g": 0.03
+  },
+  {
+   "id": "coil_x",
+   "label": "moving coil layer x (two concentric racetracks)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 26.7,
+   "z1": 27.5,
+   "d_in": 3.4000000000000004,
+   "size": [
+    9.1,
+    16.545177166129214,
+    0.8
+   ],
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "x force on the carrier",
+   "part": "bonded self-supporting coil or flex, polyimide former",
+   "ledger": "AMF-29; nib.buildable_coil",
+   "mass_g": 0.43708238802667315,
+   "corner_r_mm": 9.441304034117898,
+   "inner_edge_mm": 1.7274114169353927
+  },
+  {
+   "id": "coil_y",
+   "label": "moving coil layer y (two concentric racetracks)",
+   "group": "actuator",
+   "shape": "box",
+   "z0": 27.5,
+   "z1": 28.3,
+   "d_in": 3.4000000000000004,
+   "size": [
+    16.545177166129214,
+    9.1,
+    0.8
+   ],
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "y force on the carrier",
+   "part": "as coil_x, turned 90 deg",
+   "ledger": "AMF-29; nib.buildable_coil",
+   "mass_g": 0.43708238802667315,
+   "corner_r_mm": 9.441304034117898,
+   "inner_edge_mm": 1.7274114169353927
+  },
+  {
+   "id": "carrier_flange",
+   "label": "carrier flange: wire clamps and the ball-guide faces",
+   "group": "moving_nib",
+   "shape": "tube",
+   "z0": 31.015340128025912,
+   "z1": 32.51534012802591,
+   "d0": 18.86,
+   "d1": 18.86,
+   "d_in": 2.6,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "clamps the four wires (coil leads soldered on); runs between the two ball layers",
+   "part": "Ti-6Al-4V, hardened faces (TiN) or 440C inserts",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 1.274773907322842
+  },
+  {
+   "id": "position_magnet",
+   "label": "1 mm N52 position magnet",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 32.51534012802591,
+   "z1": 33.51534012802591,
+   "size": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "offset": [
+    4.5,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "the nib Hall's target",
+   "part": "N52 cube 1 mm",
+   "ledger": "AMF-139",
+   "mass_g": 0.0075
+  },
+  {
+   "id": "back_plate",
+   "label": "1010 back plate",
+   "group": "actuator",
+   "shape": "tube",
+   "z0": 21.434659871974084,
+   "z1": 22.9,
+   "d0": 21.399717157287522,
+   "d1": 21.399717157287522,
+   "d_in": 6.3173919317642016,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "closes the magnets' flux",
+   "part": "1010 steel, laser cut",
+   "ledger": "AMF-140",
+   "mass_g": 3.7863372065729055
+  },
+  {
+   "id": "pole_magnet_1",
+   "label": "N52 pole magnet 1 (checkerboard)",
+   "group": "magnet",
+   "shape": "box",
+   "z0": 22.9,
+   "z1": 26.4,
+   "size": [
+    5.120275187158268,
+    5.120275187158268,
+    3.5
+   ],
+   "offset": [
+    4.793672930760958,
+    4.793672930760958
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "gap field",
+   "part": "N52 5.12 x 5.12 x 3.5 mm",
+   "ledger": "AMF-139",
+   "mass_g": 0.6973779985932816
+  },
+  {
+   "id": "pole_magnet_2",
+   "label": "N52 pole magnet 2 (checkerboard)",
+   "group": "magnet",
+   "shape": "box",
+   "z0": 22.9,
+   "z1": 26.4,
+   "size": [
+    5.120275187158268,
+    5.120275187158268,
+    3.5
+   ],
+   "offset": [
+    -4.793672930760958,
+    4.793672930760958
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "gap field",
+   "part": "N52 5.12 x 5.12 x 3.5 mm",
+   "ledger": "AMF-139",
+   "mass_g": 0.6973779985932816
+  },
+  {
+   "id": "pole_magnet_3",
+   "label": "N52 pole magnet 3 (checkerboard)",
+   "group": "magnet",
+   "shape": "box",
+   "z0": 22.9,
+   "z1": 26.4,
+   "size": [
+    5.120275187158268,
+    5.120275187158268,
+    3.5
+   ],
+   "offset": [
+    -4.793672930760958,
+    -4.793672930760958
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "gap field",
+   "part": "N52 5.12 x 5.12 x 3.5 mm",
+   "ledger": "AMF-139",
+   "mass_g": 0.6973779985932816
+  },
+  {
+   "id": "pole_magnet_4",
+   "label": "N52 pole magnet 4 (checkerboard)",
+   "group": "magnet",
+   "shape": "box",
+   "z0": 22.9,
+   "z1": 26.4,
+   "size": [
+    5.120275187158268,
+    5.120275187158268,
+    3.5
+   ],
+   "offset": [
+    4.793672930760958,
+    -4.793672930760958
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "gap field",
+   "part": "N52 5.12 x 5.12 x 3.5 mm",
+   "ledger": "AMF-139",
+   "mass_g": 0.6973779985932816
+  },
+  {
+   "id": "keeper",
+   "label": "1010 keeper",
+   "group": "actuator",
+   "shape": "tube",
+   "z0": 28.449999999999996,
+   "z1": 29.91534012802591,
+   "d0": 21.399717157287522,
+   "d1": 21.399717157287522,
+   "d_in": 6.3173919317642016,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "closes the flux behind the coils; carries the front race",
+   "part": "1010 steel",
+   "ledger": "AMF-140",
+   "mass_g": 3.7863372065729055
+  },
+  {
+   "id": "front_race",
+   "label": "front race (on the keeper)",
+   "group": "mechanism",
+   "shape": "tube",
+   "z0": 29.91534012802591,
+   "z1": 30.21534012802591,
+   "d0": 18.86,
+   "d1": 18.86,
+   "d_in": 14.340000000000002,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "ball-guide race",
+   "part": "440C ring, lapped",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.2757923765814547
+  },
+  {
+   "id": "front_balls",
+   "label": "6 Si3N4 balls in a cage (front layer)",
+   "group": "mechanism",
+   "shape": "tube",
+   "z0": 30.21534012802591,
+   "z1": 31.015340128025912,
+   "d0": 17.400000000000002,
+   "d1": 17.400000000000002,
+   "d_in": 15.8,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "carries the counter-face couple and the axial load; lets the carrier translate",
+   "part": "Si3N4 grade 5 balls, PEEK cage",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.015147185403641518
+  },
+  {
+   "id": "rear_balls",
+   "label": "6 Si3N4 balls in a cage (rear layer)",
+   "group": "mechanism",
+   "shape": "tube",
+   "z0": 32.51534012802591,
+   "z1": 33.31534012802591,
+   "d0": 17.400000000000002,
+   "d1": 17.400000000000002,
+   "d_in": 15.8,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "as the front layer",
+   "part": "Si3N4 balls, PEEK cage",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.015147185403641518
+  },
+  {
+   "id": "rear_race",
+   "label": "rear race ring on four posts",
+   "group": "mechanism",
+   "shape": "tube",
+   "z0": 33.31534012802591,
+   "z1": 33.615340128025906,
+   "d0": 18.86,
+   "d1": 18.86,
+   "d_in": 14.340000000000002,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "ball-guide race; carries the Hall tab",
+   "part": "440C ring on four Ti posts to the shell (diagonals)",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.35579237658145474
+  },
+  {
+   "id": "lateral_stop",
+   "label": "lateral stop bush round the carrier (in the cone, on three spokes)",
+   "group": "mechanism",
+   "shape": "tube",
+   "z0": 16.5,
+   "z1": 18.5,
+   "d0": 8.0,
+   "d1": 8.0,
+   "d_in": 5.7174,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "stops the carrier at 1.26 mm (drop, REQ-BNIB-012)",
+   "part": "Ti bush, polyimide face, PEEK spokes",
+   "ledger": "EXP-B25",
+   "mass_g": 0.2678839395096732
+  },
+  {
+   "id": "nose_hall",
+   "label": "TMAG5170 nib Hall (3-axis)",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 34.16534012802592,
+   "z1": 35.26534012802592,
+   "size": [
+    3.0,
+    4.9,
+    1.1
+   ],
+   "offset": [
+    4.5,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "nib position (x, y) at up to 10 kSPS",
+   "part": "TMAG5170A1QDGKR",
+   "ledger": "OPT-44; AMF-250",
+   "mass_g": 0.03
+  },
+  {
+   "id": "wire_1",
+   "label": "C17200 suspension wire 1 (a coil lead)",
+   "group": "mechanism",
+   "shape": "cylinder",
+   "z0": 31.765340128025912,
+   "z1": 58.56534012802591,
+   "d0": 0.1,
+   "d1": 0.1,
+   "offset": [
+    3.8890872965260113,
+    3.8890872965260113
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "suspension and a coil lead (two per coil)",
+   "part": "C17200 TH04 wire 0.10 mm",
+   "ledger": "AMF-19; AMF-251",
+   "mass_g": 0.0017365153392717586
+  },
+  {
+   "id": "wire_2",
+   "label": "C17200 suspension wire 2 (a coil lead)",
+   "group": "mechanism",
+   "shape": "cylinder",
+   "z0": 31.765340128025912,
+   "z1": 58.56534012802591,
+   "d0": 0.1,
+   "d1": 0.1,
+   "offset": [
+    -3.8890872965260113,
+    3.8890872965260113
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "suspension and a coil lead (two per coil)",
+   "part": "C17200 TH04 wire 0.10 mm",
+   "ledger": "AMF-19; AMF-251",
+   "mass_g": 0.0017365153392717586
+  },
+  {
+   "id": "wire_3",
+   "label": "C17200 suspension wire 3 (a coil lead)",
+   "group": "mechanism",
+   "shape": "cylinder",
+   "z0": 31.765340128025912,
+   "z1": 58.56534012802591,
+   "d0": 0.1,
+   "d1": 0.1,
+   "offset": [
+    -3.8890872965260113,
+    -3.8890872965260113
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "suspension and a coil lead (two per coil)",
+   "part": "C17200 TH04 wire 0.10 mm",
+   "ledger": "AMF-19; AMF-251",
+   "mass_g": 0.0017365153392717586
+  },
+  {
+   "id": "wire_4",
+   "label": "C17200 suspension wire 4 (a coil lead)",
+   "group": "mechanism",
+   "shape": "cylinder",
+   "z0": 31.765340128025912,
+   "z1": 58.56534012802591,
+   "d0": 0.1,
+   "d1": 0.1,
+   "offset": [
+    3.8890872965260113,
+    -3.8890872965260113
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "suspension and a coil lead (two per coil)",
+   "part": "C17200 TH04 wire 0.10 mm",
+   "ledger": "AMF-19; AMF-251",
+   "mass_g": 0.0017365153392717586
+  },
+  {
+   "id": "anchor_ring",
+   "label": "wire anchor ring (the coil leads' solder pads) on an axially soft diaphragm",
+   "group": "structure",
+   "shape": "tube",
+   "z0": 58.56534012802591,
+   "z1": 60.06534012802591,
+   "d0": 13.0,
+   "d1": 13.0,
+   "d_in": 9.0,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "fixes the wires' rear ends laterally; axially soft (about 0.01 N/um) so that the ball guide, not the wires, sets the flange's axial position (assembly preload <= 0.05 N); flex to the board",
+   "part": "FR4 / polyimide ring on a 301 steel spoked diaphragm to the shell (bottom 120 deg)",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.3
+  },
+  {
+   "id": "skid_ring",
+   "label": "skid ring (contact radius 6 mm, open 120 deg on top)",
+   "group": "skid",
+   "shape": "tube",
+   "z0": 4.577705235797383,
+   "z1": 6.077705235797383,
+   "d0": 12.0,
+   "d1": 12.0,
+   "d_in": 5.4674,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "rests on the paper and carries the writing force",
+   "part": "PTFE-coated POM",
+   "ledger": "DEC-034",
+   "mass_g": 0.12636398875112373,
+   "open_deg": 120.0
+  },
+  {
+   "id": "front_cone_1",
+   "label": "front cone 1 (clear hard-coated PC window over the top 240 deg)",
+   "group": "grip",
+   "shape": "tube",
+   "z0": 6.077705235797383,
+   "z1": 10.0,
+   "d0": 12.0,
+   "d1": 15.380731263602659,
+   "d_in": 10.0,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "the ink window (ink visibility, REQ-RVJ-I06) and the path to the paper",
+   "part": "hard-coated PC (top 240 deg) and PEEK (bottom 120 deg, page-sensor window)",
+   "ledger": "DEC-045; AMF-159",
+   "mass_g": 0.2613654914026052
+  },
+  {
+   "id": "front_cone_2",
+   "label": "front cone 2 (clear hard-coated PC window over the top 240 deg)",
+   "group": "grip",
+   "shape": "tube",
+   "z0": 10.0,
+   "z1": 14.0,
+   "d0": 15.380731263602659,
+   "d1": 18.828438758161596,
+   "d_in": 13.380731263602659,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "the ink window (ink visibility, REQ-RVJ-I06) and the path to the paper",
+   "part": "hard-coated PC (top 240 deg) and PEEK (bottom 120 deg, page-sensor window)",
+   "ledger": "DEC-045; AMF-159",
+   "mass_g": 0.34536432767243247
+  },
+  {
+   "id": "front_cone_3",
+   "label": "front cone 3 (clear hard-coated PC window over the top 240 deg)",
+   "group": "grip",
+   "shape": "tube",
+   "z0": 14.0,
+   "z1": 20.0,
+   "d0": 18.828438758161596,
+   "d1": 24.0,
+   "d_in": 16.828438758161596,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "the ink window (ink visibility, REQ-RVJ-I06) and the path to the paper",
+   "part": "hard-coated PC (top 240 deg) and PEEK (bottom 120 deg, page-sensor window)",
+   "ledger": "DEC-045; AMF-159",
+   "mass_g": 0.8034488748688059
+  },
+  {
+   "id": "front_sleeve",
+   "label": "grip sleeve (24 mm)",
+   "group": "grip",
+   "shape": "tube",
+   "z0": 20.0,
+   "z1": 45.0,
+   "d0": 24.0,
+   "d1": 24.0,
+   "d_in": 22.0,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "where the fingers hold (pads at z 26 / 32 / 38)",
+   "part": "PEEK with a TPE skin",
+   "ledger": "AMF-24",
+   "mass_g": 2.6229157064821194
+  },
+  {
+   "id": "page_optics",
+   "label": "page-sensor lens and 45 deg mirror block",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 6.127705235797385,
+   "z1": 8.127705235797386,
+   "size": [
+    2.0,
+    1.8,
+    2.0
+   ],
+   "offset": [
+    -3.719999999999999,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "images the paper 2.2-2.6 mm below the lens at every tilt (bottom of the ring: roll-insensitive)",
+   "part": "custom moulded lens + mirror",
+   "ledger": "OPT-61",
+   "mass_g": 0.02
+  },
+  {
+   "id": "page_sensor",
+   "label": "PMW3610-class optical-flow die (on a flex)",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 10.2,
+   "z1": 15.2,
+   "size": [
+    2.0,
+    3.0,
+    5.0
+   ],
+   "offset": [
+    -5.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "page position (paper-side sensor)",
+   "part": "PMW3610-class die, chip on flex",
+   "ledger": "OPT-61; AMF-109",
+   "mass_g": 0.5
+  },
+  {
+   "id": "main_board",
+   "label": "main board (nRF54L15, 2 x DRV8214, charger, fuel gauge, 3 x NSD-2101)",
+   "group": "electronics",
+   "shape": "box",
+   "z0": 35.5,
+   "z1": 58.3,
+   "size": [
+    1.0,
+    14.0,
+    22.8
+   ],
+   "offset": [
+    7.5,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "control, radio, drivers",
+   "part": "4-layer board",
+   "ledger": "OPT-60; AMF-37; AMF-15",
+   "mass_g": 5.0
+  },
+  {
+   "id": "board_parts",
+   "label": "components on the board's inner side",
+   "group": "electronics",
+   "shape": "box",
+   "z0": 35.5,
+   "z1": 58.3,
+   "size": [
+    1.2,
+    12.0,
+    22.8
+   ],
+   "offset": [
+    6.4,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "ICs and passives",
+   "part": "-",
+   "ledger": "-",
+   "mass_g": null
+  },
+  {
+   "id": "imu",
+   "label": "LSM6DSV16X IMU",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 49.5,
+   "z1": 52.0,
+   "size": [
+    0.83,
+    3.0,
+    2.5
+   ],
+   "offset": [
+    8.415,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "tilt, roll, motion",
+   "part": "LSM6DSV16XTR",
+   "ledger": "OPT-37; AMF-254",
+   "mass_g": null
+  },
+  {
+   "id": "refill_holder",
+   "label": "refill holder: vented PEEK cup + stem + 1.2 mm joint ball (the shoe is on the face)",
+   "group": "balance",
+   "shape": "cylinder",
+   "z0": 65.8,
+   "z1": 69.0,
+   "d0": 3.2,
+   "d1": 3.2,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "nib",
+   "optional": false,
+   "function": "takes the refill's plain rear end; its ball snaps into the face's shoe (pulls the refill back in a lift)",
+   "part": "PEEK cup, Ti stem, Si3N4 ball",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.05,
+   "cad": "cup_stem_ball",
+   "joint_z": 69.0,
+   "joint_ball_d": 1.2
+  },
+  {
+   "id": "head_cage",
+   "label": "roll cage (turns +-30 deg; carries the tilt hinge and the tilt positioner)",
+   "group": "balance",
+   "shape": "tube",
+   "z0": 60.66534012802591,
+   "z1": 84.52899630956722,
+   "d0": 20.2,
+   "d1": 20.2,
+   "d_in": 19.2,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "turns the face with the pen's roll",
+   "part": "PEEK-CF tube, jewel rollers",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 1.0338347410090962
+  },
+  {
+   "id": "head_carriage",
+   "label": "follower carriage (slides <= 3 mm; slot at the bottom for the heel variant)",
+   "group": "balance",
+   "shape": "tube",
+   "z0": 60.66534012802591,
+   "z1": 85.02899630956722,
+   "d0": 21.4,
+   "d1": 21.4,
+   "d_in": 20.8,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "moves the head along the pen (pen lift, refill length)",
+   "part": "Ti tube 0.3 mm wall",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 2.1463461863156956
+  },
+  {
+   "id": "head_shoe",
+   "label": "captive shoe on three rolling balls (drawn at 50 deg)",
+   "group": "balance",
+   "shape": "box",
+   "z0": 68.0,
+   "z1": 70.0,
+   "size": [
+    1.0,
+    4.0,
+    1.0
+   ],
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "rides on the face under the tray's rim; the refill's joint ball snaps into its slotted socket",
+   "part": "PEEK-CF shoe, three 0.5 mm Si3N4 balls",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.03,
+   "cad": "tilted_shoe",
+   "shoe_d": 4.0,
+   "r_pb": 1.0
+  },
+  {
+   "id": "head_face",
+   "label": "counter-face: sapphire tray on a Ti bracket (drawn at 50 deg)",
+   "group": "balance",
+   "shape": "box",
+   "z0": 65.97900328664764,
+   "z1": 73.47699902677826,
+   "size": [
+    8.611585031571934,
+    7.917400000000001,
+    7.497995740130619
+   ],
+   "offset": [
+    1.6215601290512744,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "parallel to the paper; pushes the puck with the ink force F_n",
+   "part": "0.3 mm sapphire + Ti-6Al-4V bracket and hinge arms",
+   "ledger": "AMF-160; AMF-21",
+   "mass_g": 0.3467525229561704,
+   "tilt_deg": 50.0,
+   "face_plate_mm": [
+    10.234706315506006,
+    7.917400000000001
+   ],
+   "plate_corners_50deg": [
+    [
+     -2.6842323867346924,
+     -3.9587000000000003,
+     72.55774569503548
+    ],
+    [
+     -1.9128872551108453,
+     -3.9587000000000003,
+     73.47699902677826
+    ],
+    [
+     -2.6842323867346924,
+     3.9587000000000003,
+     72.55774569503548
+    ],
+    [
+     -1.9128872551108453,
+     3.9587000000000003,
+     73.47699902677826
+    ],
+    [
+     5.156007513213394,
+     -3.9587000000000003,
+     65.97900328664764
+    ],
+    [
+     5.927352644837241,
+     -3.9587000000000003,
+     66.89825661839042
+    ],
+    [
+     5.156007513213394,
+     3.9587000000000003,
+     65.97900328664764
+    ],
+    [
+     5.927352644837241,
+     3.9587000000000003,
+     66.89825661839042
+    ]
+   ]
+  },
+  {
+   "id": "head_float",
+   "label": "float flexure + constant-force spring (on the bracket)",
+   "group": "balance",
+   "shape": "box",
+   "z0": 73.47699902677826,
+   "z1": 74.97699902677826,
+   "size": [
+    3.0,
+    4.0,
+    1.5
+   ],
+   "offset": [
+    1.6215601290512744,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "the face floats +-0.56 mm along its normal between two stops (front: the follower stop)",
+   "part": "parallel strip flexure 301 steel, constant-force strip spring",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.1
+  },
+  {
+   "id": "head_tilt_motor",
+   "label": "tilt positioner SQL-RV-1.8 + crank",
+   "group": "balance",
+   "shape": "box",
+   "z0": 78.02899630956722,
+   "z1": 84.02899630956722,
+   "size": [
+    2.8,
+    2.8,
+    6.0
+   ],
+   "offset": [
+    -7.3,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "sets the face's tilt (hinge 15-55 deg)",
+   "part": "New Scale SQL-RV-1.8 + NSD-2101",
+   "ledger": "AMF-15; AMF-106",
+   "mass_g": 0.19
+  },
+  {
+   "id": "head_balance_spring",
+   "label": "tilt balance spring (torsion)",
+   "group": "balance",
+   "shape": "box",
+   "z0": 78.02899630956722,
+   "z1": 80.02899630956722,
+   "size": [
+    1.0,
+    3.0,
+    2.0
+   ],
+   "offset": [
+    -8.9,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "carries the mean F_n x u so the tilt positioner moves the residual",
+   "part": "301 steel torsion spring",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.02
+  },
+  {
+   "id": "face_hall",
+   "label": "face-position Hall (TMAG5273 class) + 1 mm magnet",
+   "group": "sensor",
+   "shape": "box",
+   "z0": 77.02899630956722,
+   "z1": 78.02899630956722,
+   "size": [
+    1.0,
+    2.0,
+    1.0
+   ],
+   "offset": [
+    3.0,
+    0.0
+   ],
+   "moves_with": "head",
+   "optional": false,
+   "function": "float position: touchdown, lift, refill seated",
+   "part": "TMAG5273 class",
+   "ledger": "OPT-45",
+   "mass_g": 0.03
+  },
+  {
+   "id": "head_roll_motor",
+   "label": "roll positioner SQL-RV-1.8 (on a 5.5 mm crank of the cage)",
+   "group": "balance",
+   "shape": "box",
+   "z0": 85.32899630956722,
+   "z1": 91.32899630956722,
+   "size": [
+    2.8,
+    2.8,
+    6.0
+   ],
+   "offset": [
+    0.0,
+    7.3
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "turns the cage +-30 deg",
+   "part": "SQL-RV-1.8 + NSD-2101",
+   "ledger": "AMF-15; AMF-106",
+   "mass_g": 0.21000000000000002
+  },
+  {
+   "id": "head_follower_motor",
+   "label": "follower positioner SQL-RV-1.8 (the pen lift)",
+   "group": "balance",
+   "shape": "box",
+   "z0": 85.32899630956722,
+   "z1": 91.32899630956722,
+   "size": [
+    2.8,
+    2.8,
+    6.0
+   ],
+   "offset": [
+    0.0,
+    -7.3
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "moves the carriage: the pen lift (DEC-050) and the refill length",
+   "part": "SQL-RV-1.8 + NSD-2101",
+   "ledger": "AMF-15; AMF-106",
+   "mass_g": 0.19
+  },
+  {
+   "id": "head_flex",
+   "label": "head flex (three motor drives, face Hall)",
+   "group": "electronics",
+   "shape": "box",
+   "z0": 85.32899630956722,
+   "z1": 91.32899630956722,
+   "size": [
+    0.3,
+    8.0,
+    6.0
+   ],
+   "offset": [
+    7.5,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "to the main board",
+   "part": "polyimide flex",
+   "ledger": "-",
+   "mass_g": 0.15
+  },
+  {
+   "id": "bulkhead",
+   "label": "bulkhead (head drop stop, cell stop)",
+   "group": "structure",
+   "shape": "cylinder",
+   "z0": 91.82899630956722,
+   "z1": 92.62899630956721,
+   "d0": 21.8,
+   "d1": 21.8,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "carries the refill's blow in a drop through the head; locates the cell",
+   "part": "PEEK disc",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.23649286204241493
+  },
+  {
+   "id": "battery",
+   "label": "LIR14500 Li-ion cell (2.22 Wh usable)",
+   "group": "power",
+   "shape": "cylinder",
+   "z0": 93.12899630956721,
+   "z1": 141.6289963095672,
+   "d0": 14.1,
+   "d1": 14.1,
+   "offset": [
+    3.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "energy",
+   "part": "LIR14500 750 mAh",
+   "ledger": "AMF-80",
+   "mass_g": 20.0
+  },
+  {
+   "id": "lra",
+   "label": "cue LRA 8 mm (on edge under the cell)",
+   "group": "haptic",
+   "shape": "box",
+   "z0": 93.62899630956721,
+   "z1": 101.62899630956721,
+   "size": [
+    3.0,
+    8.0,
+    8.0
+   ],
+   "offset": [
+    -8.3,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "tick cues (spelling, guidance)",
+   "part": "8 mm coin LRA",
+   "ledger": "AMF-45",
+   "mass_g": 1.0
+  },
+  {
+   "id": "shell",
+   "label": "PEEK shell 24 / 22 mm",
+   "group": "structure",
+   "shape": "tube",
+   "z0": 45.0,
+   "z1": 142.1289963095672,
+   "d0": 24.0,
+   "d1": 24.0,
+   "d_in": 22.0,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "structure",
+   "part": "PEEK, machined (100) / moulded (1000)",
+   "ledger": "AMF-24",
+   "mass_g": 9.264042544553005
+  },
+  {
+   "id": "rear_cap",
+   "label": "rear cap with two charging pads",
+   "group": "structure",
+   "shape": "cylinder",
+   "z0": 142.1289963095672,
+   "z1": 145.1289963095672,
+   "d0": 24.0,
+   "d1": 22.0,
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "closes the pen; charging contacts; the button",
+   "part": "PEEK cap, gold pads, pogo cradle",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.5758492210140286
+  },
+  {
+   "id": "charging_pads",
+   "label": "two gold charging pads",
+   "group": "electronics",
+   "shape": "box",
+   "z0": 144.8289963095672,
+   "z1": 145.1289963095672,
+   "size": [
+    6.0,
+    10.0,
+    0.3
+   ],
+   "offset": [
+    0.0,
+    0.0
+   ],
+   "moves_with": "handle",
+   "optional": false,
+   "function": "cradle charging (5 V, pogo pins)",
+   "part": "gold-plated brass pads",
+   "ledger": "PROPOSED DESIGN",
+   "mass_g": 0.1
+  }
+ ],
+ "heel_variant": {
+  "components": [
+   {
+    "id": "drive_wheel",
+    "label": "2 mm heel wheel (O-ring tyre)",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 3.8679303280030632,
+    "z1": 4.867930328003063,
+    "d0": 2.0,
+    "d1": 2.0,
+    "offset": [
+     -5.8,
+     0.0
+    ],
+    "moves_with": "drive",
+    "optional": true,
+    "function": "steered and driven heel (retracted by default, DEC-048)",
+    "part": "PTFE hub, O-ring tyre",
+    "ledger": "AMF-111; AMF-112",
+    "mass_g": 0.01,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_fork",
+    "label": "steering fork and crown",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 4.967930328003063,
+    "z1": 5.967930328003064,
+    "d0": 3.0,
+    "d1": 3.0,
+    "offset": [
+     -4.8999999999999995,
+     0.0
+    ],
+    "moves_with": "drive",
+    "optional": true,
+    "function": "steers the wheel about the paper normal",
+    "part": "module-0.1 crown",
+    "ledger": "DEC-037",
+    "mass_g": 0.08,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_pod",
+    "label": "heel pod (sprung, with the retract latch)",
+    "group": "drive",
+    "shape": "box",
+    "z0": 5.867930328003063,
+    "z1": 9.867930328003062,
+    "size": [
+     2.1,
+     4.0,
+     4.0
+    ],
+    "offset": [
+     -5.199999999999999,
+     0.0
+    ],
+    "moves_with": "drive",
+    "optional": true,
+    "function": "0.55 N preload; a bistable latch lifts the wheel 0.5 mm (retracted)",
+    "part": "PEEK pod, 301 spring",
+    "ledger": "DEC-037; DEC-048",
+    "mass_g": 0.12,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_inner_shaft_drive",
+    "label": "inner drive shaft (in a sleeve groove)",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 9.867930328003062,
+    "z1": 19.16793032800301,
+    "d0": 0.8,
+    "d1": 0.8,
+    "offset": [
+     -5.5,
+     1.0
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "pod to the transfer mesh",
+    "part": "0.8 mm steel shaft in a 1.0 mm liner",
+    "ledger": "DEC-037",
+    "mass_g": 0.036696315468051445,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_inner_shaft_steering",
+    "label": "inner steering shaft (in a sleeve groove)",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 9.867930328003062,
+    "z1": 19.16793032800301,
+    "d0": 0.8,
+    "d1": 0.8,
+    "offset": [
+     -5.5,
+     -1.0
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "pod to the transfer mesh",
+    "part": "0.8 mm steel shaft in a 1.0 mm liner",
+    "ledger": "DEC-037",
+    "mass_g": 0.036696315468051445,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_front_transfer",
+    "label": "front transfer mesh (two spur pairs)",
+    "group": "drive",
+    "shape": "box",
+    "z0": 19.16793032800301,
+    "z1": 21.16793032800301,
+    "size": [
+     3.0,
+     6.0,
+     2.0
+    ],
+    "offset": [
+     -9.0,
+     0.0
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "inner to outer shafts",
+    "part": "module-0.1 gears, jewels",
+    "ledger": "DEC-037",
+    "mass_g": 0.12,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_shaft_drive",
+    "label": "outer drive shaft (in a groove of the bottom wall)",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 21.16793032800301,
+    "z1": 101.92899630956721,
+    "d0": 0.8,
+    "d1": 0.8,
+    "offset": [
+     -10.9,
+     1.6
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "motor to the front transfer",
+    "part": "0.8 mm non-magnetic steel shaft in a 1.0 mm liner",
+    "ledger": "DEC-037",
+    "mass_g": 0.3186702747092059,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_shaft_steering",
+    "label": "outer steering shaft (in a groove of the bottom wall)",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 21.16793032800301,
+    "z1": 101.92899630956721,
+    "d0": 0.8,
+    "d1": 0.8,
+    "offset": [
+     -10.9,
+     -1.6
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "motor to the front transfer",
+    "part": "0.8 mm non-magnetic steel shaft in a 1.0 mm liner",
+    "ledger": "DEC-037",
+    "mass_g": 0.3186702747092059,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_transfer",
+    "label": "rear transfer (motor to shafts)",
+    "group": "drive",
+    "shape": "box",
+    "z0": 101.92899630956721,
+    "z1": 103.92899630956721,
+    "size": [
+     4.0,
+     8.0,
+     2.0
+    ],
+    "offset": [
+     -8.2,
+     0.0
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "motor pinions to the shafts",
+    "part": "gears",
+    "ledger": "DEC-037",
+    "mass_g": 0.25,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_motor",
+    "label": "Faulhaber 0620 B drive motor",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 104.12899630956721,
+    "z1": 124.12899630956721,
+    "d0": 6.0,
+    "d1": 6.0,
+    "offset": [
+     -7.0,
+     3.2
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "heel drive / steering",
+    "part": "Faulhaber 0620 B",
+    "ledger": "AMF-100",
+    "mass_g": 2.5,
+    "variant": "heel"
+   },
+   {
+    "id": "steer_motor",
+    "label": "Faulhaber 0620 B steer motor",
+    "group": "drive",
+    "shape": "cylinder",
+    "z0": 104.12899630956721,
+    "z1": 124.12899630956721,
+    "d0": 6.0,
+    "d1": 6.0,
+    "offset": [
+     -7.0,
+     -3.2
+    ],
+    "moves_with": "handle",
+    "optional": true,
+    "function": "heel drive / steering",
+    "part": "Faulhaber 0620 B",
+    "ledger": "AMF-100",
+    "mass_g": 2.5,
+    "variant": "heel"
+   },
+   {
+    "id": "drive_sensors",
+    "label": "pod load and steering sensors",
+    "group": "drive",
+    "shape": "box",
+    "z0": 6.367930328003063,
+    "z1": 7.367930328003063,
+    "size": [
+     0.8,
+     1.5,
+     1.0
+    ],
+    "offset": [
+     -3.6999999999999997,
+     2.0
+    ],
+    "moves_with": "drive",
+    "optional": true,
+    "function": "load, steer angle",
+    "part": "Hall + strain",
+    "ledger": "OPT-45; OPT-46",
+    "mass_g": 0.04,
+    "variant": "heel"
+   }
+  ],
+  "shafts": {
+   "gearbox_z_mm": 19.16793032800301,
+   "inner_shaft_r_mm": 5.5,
+   "inner_shaft_len_mm": 9.299999999999947,
+   "skin_outside_inner_liners_mm": 1.5190260931516733,
+   "passes_skin_rule": true,
+   "note": "the inner shafts run in grooves of the sleeve wall (Rev J's rule: 0.3 mm of skin outside the liners); a transfer mesh (efficiency 0.9, ASSUMPTION) at the gearbox",
+   "label": "CALCULATION (geometry; study D shaft and liner sizes)"
+  },
+  "R_s_mm": 5.75,
+  "R_d_mm": 6.1,
+  "motor_z": [
+   104.12899630956721,
+   124.12899630956721
+  ]
+ },
+ "fit_checks": [
+  {
+   "id": "F1",
+   "what": "skid-ring lip (ring radius less its bore)",
+   "value": 3.2663,
+   "rule": ">= 1.0 (DEC-034)",
+   "margin": 2.2663,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F2",
+   "what": "page-sensor optics block vs the nib's envelope at the stop",
+   "value": 0.3221185854701898,
+   "rule": ">= 0.3 running",
+   "margin": 0.0221185854701898,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F3",
+   "what": "lens height over 35-75 deg (no roll)",
+   "value": [
+    2.2243463112095556,
+    2.4167952553391774
+   ],
+   "rule": "2.2-2.6 mm (MFR OPT-61)",
+   "margin": 0.024346311209555438,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (window height, revj/frontend.window_height)"
+  },
+  {
+   "id": "F4",
+   "what": "page sensor roll tolerance",
+   "value": 21.0,
+   "rule": ">= 20 deg (REQ-RVJ-N06)",
+   "margin": 1.0,
+   "unit": "deg",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F5",
+   "what": "lens depth of field vs the lifts between strokes (REQ-BNIB-017)",
+   "value": 0.20000000000000018,
+   "rule": ">= 2.0 mm tracked lift",
+   "margin": -1.7999999999999998,
+   "unit": "mm",
+   "status": "fail",
+   "passes": false,
+   "note": "a requirement conflict for any mouse-class die; EXP-J10 / EXP-T04",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F6",
+   "what": "sleeve cone above the paper at 35-75 deg",
+   "value": 0.8603646545265691,
+   "rule": ">= 0.3 (DEC-034)",
+   "margin": 0.560364654526569,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F7",
+   "what": "carrier nozzle above the paper, nib at travel",
+   "value": 4.9458959792124375,
+   "rule": ">= 0.3",
+   "margin": 4.645895979212438,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F8",
+   "what": "page-sensor die inside the cone",
+   "value": 0.5918998807388123,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.39189988073881227,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F9",
+   "what": "page-sensor die vs the nib's envelope at the stop",
+   "value": 0.7412999999999998,
+   "rule": ">= 0.3 running",
+   "margin": 0.44129999999999986,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "F10",
+   "what": "optics block inside the cone wall",
+   "value": 0.21650915014720695,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.01650915014720694,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N1",
+   "what": "buildable coil corner at the stop vs the 22 mm bore",
+   "value": 0.3000000000000007,
+   "rule": ">= 0.3 running",
+   "margin": 7.216449660063518e-16,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N2",
+   "what": "coil's inner end runs vs the carrier",
+   "value": 0.1274114169353926,
+   "rule": ">= 0.1 (former edge)",
+   "margin": 0.02741141693539259,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N3",
+   "what": "study B's idealised coil at the stop vs the bore (for the record)",
+   "value": 10.81008475345966,
+   "rule": "<= 10.7 (bore 11.0 less 0.3)",
+   "margin": -0.11008071934176203,
+   "unit": "mm",
+   "status": "fail",
+   "passes": false,
+   "note": "study B's zero-width end turns; a buildable coil with the same legs: -2.23 mm",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N4",
+   "what": "back plate and keeper hole vs the carrier at the stop",
+   "value": 0.299995965882101,
+   "rule": ">= 0.3 running",
+   "margin": -4.034117899009981e-06,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N5",
+   "what": "flange rim at the stop vs the bore",
+   "value": 0.311300000000001,
+   "rule": ">= 0.3 running",
+   "margin": 0.011300000000001031,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N6",
+   "what": "rear race ring vs the wires' envelope at the stop",
+   "value": 0.36130000000000084,
+   "rule": ">= 0.3 running",
+   "margin": 0.061300000000000854,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N7",
+   "what": "balls stay on the flange face and the races at the stop (they roll half the stroke)",
+   "value": 0.10064999999999813,
+   "rule": ">= 0.05",
+   "margin": 0.05064999999999813,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N20",
+   "what": "lateral stop bush vs the carrier tube (the stop gap)",
+   "value": 1.2586999999999997,
+   "rule": "= stop 1.26 mm",
+   "margin": 0.000999999999999778,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "the stop itself: the coils, flange and refill clearances are all counted at this stop",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N21",
+   "what": "1 m drop sideways: the stop's deflection vs the coil's clearance at the stop",
+   "value": 0.2597873728151912,
+   "rule": "<= 0.30 mm (the coil stays off the bore)",
+   "margin": 0.0402126271848095,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "stop 1e+06 N/m, 260 N, wire SF 6.6",
+   "label": "CALCULATION (energy method; stop stiffness ASSUMPTION; EXP-B25)"
+  },
+  {
+   "id": "N8",
+   "what": "board components vs the wires' envelope (x)",
+   "value": 0.602212703473989,
+   "rule": ">= 0.3 running",
+   "margin": 0.30221270347398904,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N9",
+   "what": "nib Hall package vs the refill at the stop",
+   "value": 0.5663,
+   "rule": ">= 0.3 running",
+   "margin": 0.26630000000000004,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N10",
+   "what": "nib Hall package vs the nearest wire at the stop",
+   "value": 0.38288164682242726,
+   "rule": ">= 0.3 running",
+   "margin": 0.08288164682242727,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N11",
+   "what": "board front vs the rear race ring (axial)",
+   "value": 1.884659871974094,
+   "rule": ">= 0.2 fixed",
+   "margin": 1.684659871974094,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N12",
+   "what": "board rear vs the anchor ring (axial)",
+   "value": 0.2653401280259118,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.06534012802591177,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N13",
+   "what": "anchor ring vs the counter-face's swept plate (axial)",
+   "value": 2.117939466470645,
+   "rule": ">= 0.3 running",
+   "margin": 1.817939466470645,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N14",
+   "what": "wire axial force from the counter-face couple vs sidesway buckling (without the ball guide)",
+   "value": 0.6990354776904056,
+   "rule": "<= P_cr 0.009 N",
+   "margin": -0.9876883072158295,
+   "unit": "x",
+   "status": "fail",
+   "passes": false,
+   "note": "fails for study B's wires as designed; Rev K's ball thrust guide carries the couple",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N15",
+   "what": "ball-guide Hertz stress at the race springs' release load (the most a drop puts on a ball)",
+   "value": 3.0495408753292272,
+   "rule": "<= 4.0 GPa (440C static, ASSUMPTION)",
+   "margin": 0.9504591246707728,
+   "unit": "GPa",
+   "status": "pass",
+   "passes": true,
+   "note": "rigid races would see 7.6 GPa in a 2000 g drop (brinelling): the sprung races are needed",
+   "label": "CALCULATION (Hertz; moduli ASSUMPTION)"
+  },
+  {
+   "id": "N16",
+   "what": "wire fatigue (Goodman SF at Kt 1.8) as coil leads",
+   "value": 2.1823212212602514,
+   "rule": ">= 1.5",
+   "margin": 0.454880814173501,
+   "unit": "x",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (bnib/flexure.wire_stage, C17200 AMF-19 x 0.85)"
+  },
+  {
+   "id": "N16b",
+   "what": "wire fatigue over study B's tolerance draws (5th percentile), axially soft anchor",
+   "value": 1.4008825518605572,
+   "rule": ">= 1.0 (no failure in 95 % of builds); 1.5 wanted",
+   "margin": 0.4008825518605572,
+   "unit": "x",
+   "status": "marginal",
+   "passes": true,
+   "note": "with study B's 0-0.3 N assembly preload the 5th percentile is 0.92 (C17200's fatigue strength is below Ti-6Al-4V's); 0.08 mm wire: 1.50",
+   "label": "CALCULATION (bnib/flexure Monte Carlo; tolerances ASSUMPTION; EXP-B25)"
+  },
+  {
+   "id": "N17",
+   "what": "study B's Ti-6Al-4V wires as coil leads (for the record)",
+   "value": 0.3375226923804775,
+   "rule": ">= 1.0 A at 3.3 V",
+   "margin": -0.6624773076195225,
+   "unit": "A",
+   "status": "fail",
+   "passes": false,
+   "note": "Ti-6Al-4V (170 uOhm cm) cannot carry the coil current; Rev K uses C17200",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N18",
+   "what": "DEC-050 2.5 x rule: servo bandwidth allowed (worst case, ball stuck or free)",
+   "value": 45.96852619110615,
+   "rule": ">= 40 Hz (REQ-BNIB-006)",
+   "margin": 0.14921315477765384,
+   "unit": "x",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (bnib/flexure.loaded_modes)"
+  },
+  {
+   "id": "N19",
+   "what": "the same for study B's wire suspension (for the record)",
+   "value": 40.79141588692639,
+   "rule": ">= 40 Hz",
+   "margin": 0.019785397173159636,
+   "unit": "x",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "N22",
+   "what": "unpowered rest position vs REQ-BNIB-011 (centred within 0.1 mm)",
+   "value": 17.6996136030235,
+   "rule": "<= 0.1 mm",
+   "margin": -17.5996136030235,
+   "unit": "mm",
+   "status": "fail",
+   "passes": false,
+   "note": "gravity across the pen (35 deg) on 1.56 N/m sags the carrier 18 mm: it rests on its soft stop, 1.26 mm off centre, and the pen still writes (study B's 3.8 N/m: 7 mm)",
+   "label": "CALCULATION (statics)"
+  },
+  {
+   "id": "H1",
+   "what": "swept face and bracket vs the roll cage's bore",
+   "value": 0.30214706903237243,
+   "rule": ">= 0.3 running",
+   "margin": 0.0021470690323724395,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "H2",
+   "what": "follower travel needed vs one SQL-RV-1.8",
+   "value": 3.1114358889963194,
+   "rule": "<= 6.0 (AMF-15)",
+   "margin": 2.8885641110036806,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "H3",
+   "what": "tilt positioner force margin (stall 0.30 N)",
+   "value": 0.08221962471467303,
+   "rule": ">= 1.5 x",
+   "margin": 1.4325092785823395,
+   "unit": "x",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (statics; stall MANUFACTURER AMF-15)"
+  },
+  {
+   "id": "H4",
+   "what": "roll positioner force margin (stall 0.30 N)",
+   "value": 0.042160519196562773,
+   "rule": ">= 1.5 x",
+   "margin": 3.743774597925383,
+   "unit": "x",
+   "status": "pass",
+   "passes": true,
+   "note": "re-set the roll only near nib centre (the peak needs the nib at its stop)",
+   "label": "CALCULATION (statics; stall MANUFACTURER AMF-15)"
+  },
+  {
+   "id": "H5",
+   "what": "follower positioner force margin (stall 0.30 N)",
+   "value": 0.19912827678739958,
+   "rule": ">= 1.5 x",
+   "margin": 0.004377696762429606,
+   "unit": "x",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (statics; stall MANUFACTURER AMF-15)"
+  },
+  {
+   "id": "H6",
+   "what": "touchdown travel of the refill (float gap / sin 35 deg) vs REQ-BNIB-002",
+   "value": 0.9823708314355003,
+   "rule": "<= 0.25 mm",
+   "margin": -0.7323708314355003,
+   "unit": "mm",
+   "status": "fail",
+   "passes": false,
+   "note": "the float must span the +-2.5 deg tilt wobble (0.46 mm); REQ-BNIB-002 allows 0.04 mm",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "H7",
+   "what": "face-parallelism residual (mean, 95th pct) vs REQ-BNIB-001",
+   "value": 0.1355638252279281,
+   "rule": "mean <= 0.10, p95 <= 0.25",
+   "margin": 0.04116306172371574,
+   "unit": "x",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (Monte Carlo; contributors ASSUMPTION)"
+  },
+  {
+   "id": "H8",
+   "what": "cage vs carriage vs shell (radial running gaps)",
+   "value": 0.3000000000000007,
+   "rule": ">= 0.3 running",
+   "margin": 7.216449660063518e-16,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "H9",
+   "what": "cage front vs the anchor ring (axial, the carriage's lift stroke included)",
+   "value": 0.6000000000000014,
+   "rule": ">= 0.3 running",
+   "margin": 0.30000000000000143,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "the lift moves the head backward (away from the ring)",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "H10",
+   "what": "cell vs the bulkhead (axial)",
+   "value": 0.5,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.3,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "E1",
+   "what": "board corners inside the bore",
+   "value": 0.36985418726535,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.16985418726535,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "E2",
+   "what": "cell inside the bore (axis 3 mm up)",
+   "value": 0.9499999999999993,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.7499999999999993,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "E3",
+   "what": "LRA corners inside the bore",
+   "value": 0.4151051020806058,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.2151051020806058,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "E4",
+   "what": "LRA vs the cell",
+   "value": 2.750000000000001,
+   "rule": ">= 0.2 fixed",
+   "margin": 2.5500000000000007,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "E5",
+   "what": "field at the nib Hall within the A1 range (pole magnets + position magnet)",
+   "value": 56.56014992325781,
+   "rule": "< 100 mT (TMAG5170-A1)",
+   "margin": 43.43985007674219,
+   "unit": "mT",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (magpylib, free space: an upper bound for the pole magnets)"
+  },
+  {
+   "id": "E6",
+   "what": "nib Hall noise at the tip (1 kHz bandwidth)",
+   "value": 0.8167844332064093,
+   "rule": "<= 5 um rms",
+   "margin": 4.18321556679359,
+   "unit": "um",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (magpylib gradient; noise MANUFACTURER OPT-44)"
+  },
+  {
+   "id": "L1",
+   "what": "pen length",
+   "value": 145.1289963095672,
+   "rule": "<= 175 mm",
+   "margin": 29.871003690432786,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "L2",
+   "what": "grip 24 mm under every finger pad",
+   "value": 24.0,
+   "rule": "= 24 mm (DEC-029)",
+   "margin": 0.0,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "L3",
+   "what": "handle underside at the front finger pad, 35 deg (vs an ordinary 9 mm pen)",
+   "value": 7.372411223579061,
+   "rule": ">= ordinary pen",
+   "margin": -3.2808154858966283,
+   "unit": "mm",
+   "status": "fail",
+   "passes": false,
+   "note": "the 24 mm grip sits 3.3 mm closer to the paper than an ordinary pen's at 35 deg: a feel question for EXP-K03-type tests",
+   "label": "CALCULATION (geometry; hand model ASSUMPTION)"
+  },
+  {
+   "id": "V1",
+   "what": "heel variant: page sensor roll tolerance (window beside the pod)",
+   "value": 0.5,
+   "rule": ">= 20 deg",
+   "margin": -19.5,
+   "unit": "deg",
+   "status": "fail",
+   "passes": false,
+   "note": "the window must leave the bottom of the ring for the pod",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "V2",
+   "what": "heel variant: inner shafts' skin in the cone",
+   "value": 1.5190260931516733,
+   "rule": ">= 0.3",
+   "margin": 1.2190260931516732,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "V3",
+   "what": "heel variant: outer shafts' liners vs the roll cage",
+   "value": 0.3000000000000007,
+   "rule": ">= 0.3 running",
+   "margin": 7.216449660063518e-16,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "V4",
+   "what": "heel variant: outer shafts vs the back plate and keeper (need 1.2 mm notches)",
+   "value": -0.29999999999999893,
+   "rule": ">= 0.2 fixed",
+   "margin": -0.49999999999999895,
+   "unit": "mm",
+   "status": "fail",
+   "passes": false,
+   "note": "notch both plates at the bottom (a few % of the iron; EXP-B23 checks Km)",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "V5",
+   "what": "heel variant: motors vs the cell",
+   "value": 0.44952379872535086,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.24952379872535085,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "V6",
+   "what": "heel variant: motors inside the bore",
+   "value": 0.30324743804245813,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.10324743804245812,
+   "unit": "mm",
+   "status": "pass",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  },
+  {
+   "id": "V7",
+   "what": "heel variant: rear transfer vs the LRA (axial)",
+   "value": 0.29999999999999716,
+   "rule": ">= 0.2 fixed",
+   "margin": 0.09999999999999715,
+   "unit": "mm",
+   "status": "marginal",
+   "passes": true,
+   "note": "",
+   "label": "CALCULATION (layout geometry)"
+  }
+ ],
+ "fit_summary": {
+  "n": 59,
+  "pass": 29,
+  "marginal": 21,
+  "fail": 9,
+  "fails": [
+   "F5",
+   "N3",
+   "N14",
+   "N17",
+   "N22",
+   "H6",
+   "L3",
+   "V1",
+   "V4"
+  ],
+  "marginals": [
+   "F2",
+   "F3",
+   "F4",
+   "F10",
+   "N1",
+   "N2",
+   "N4",
+   "N5",
+   "N6",
+   "N7",
+   "N21",
+   "N10",
+   "N12",
+   "N16b",
+   "N18",
+   "N19",
+   "H1",
+   "H5",
+   "H8",
+   "V3",
+   "V7"
+  ]
+ },
+ "tables": {
+  "layout": {
+   "actuator_shift_mm": {
+    "value": -4.5,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "study B's actuator stack moved forward so the wire anchor ring clears the counter-face head's swept face (study B: back plate at z 25.93; the bore is 22 mm from z 20)"
+   },
+   "wire_length_mm": {
+    "value": 26.8,
+    "unit": "mm",
+    "label": "CALCULATION",
+    "source": "study B's wire length (bnib optimiser), kept"
+   },
+   "ball_guide": {
+    "value": {
+     "ball_d_mm": 0.8,
+     "n_per_side": 6,
+     "circle_r_mm": 8.3,
+     "race_t_mm": 0.3,
+     "race_w_mm": 2.26,
+     "flange_d_mm": 18.86,
+     "flange_t_mm": 1.5,
+     "race_spring_preload_N": 4.0,
+     "hard_stop_um": 20.0
+    },
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "Rev K: a planar ball thrust guide on both faces of the carrier flange (Si3N4 balls on 440C races on preloaded wave springs, hard stops 20 um behind), <= 2 um play; the races as wide as the balls' rolling (half the flange's stroke) and clear of the wires' envelope"
+   },
+   "lateral_stop": {
+    "value": {
+     "z0_mm": 16.5,
+     "len_mm": 2.0,
+     "d_in_mm": 5.7174,
+     "d0_mm": 8.0,
+     "k_N_m": 1000000.0
+    },
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "the carrier's lateral stop moves to the carrier tube inside the cone: a Ti bush with a thin polyimide face on three spokes (stiff enough that the coils stay off the bore in a 1 m drop)"
+   },
+   "board": {
+    "value": {
+     "z0_mm": 35.5,
+     "len_mm": 22.8,
+     "t_mm": 1.0,
+     "w_mm": 14.0,
+     "x_mm": 7.5,
+     "comp_h_mm": 1.2
+    },
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "4-layer board on top above the wires (Rev J.1: 1 x 14 x 22 mm at x 7.5)"
+   },
+   "hall_pkg": {
+    "value": {
+     "x_mm": 3.0,
+     "y_mm": 4.9,
+     "z_mm": 1.1,
+     "r_mm": 4.5,
+     "die_gap_mm": 1.7
+    },
+    "unit": "mm",
+    "label": "MANUFACTURER",
+    "source": "TMAG5170A1QDGKR, VSSOP-8 3.0 x 3.0 mm body, 4.9 mm over the leads, 1.1 mm high (OPT-44 / AMF-250); on a flex tab carried by the rear race ring; die 1.7 mm behind the position magnet's centre (PROPOSED DESIGN: keeps the field inside the A1 range)"
+   },
+   "head_walls": {
+    "value": {
+     "carriage_od": 21.4,
+     "carriage_id": 20.8,
+     "cage_od": 20.2,
+     "cage_id": 19.2
+    },
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "follower carriage (Ti, slides in the 22 mm bore) and roll cage (PEEK-CF, turns in the carriage)"
+   },
+   "motor_box": {
+    "value": [
+     2.8,
+     2.8,
+     6.0
+    ],
+    "unit": "mm",
+    "label": "MANUFACTURER",
+    "source": "SQL-RV-1.8 housing (AMF-15 / AMF-106)"
+   },
+   "battery": {
+    "value": {
+     "d_mm": 14.1,
+     "l_mm": 48.5,
+     "x_mm": 3.0,
+     "g": 20.0
+    },
+    "unit": "-",
+    "label": "MANUFACTURER",
+    "source": "LIR14500 (AMF-80), axis 3 mm up (Rev J.1)"
+   },
+   "lra": {
+    "value": {
+     "size": [
+      3.0,
+      8.0,
+      8.0
+     ],
+     "x_mm": -8.3,
+     "g": 1.0
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "8 mm coin LRA on edge under the cell (AMF-45 class)"
+   },
+   "rear_cap_len_mm": {
+    "value": 3.0,
+    "unit": "mm",
+    "label": "PROPOSED DESIGN",
+    "source": "rear cap with two gold charging pads for a cradle (pogo pins)"
+   },
+   "rho_g_cc": {
+    "value": {
+     "PEEK": 1.32,
+     "PEEK_CF": 1.4,
+     "TPE": 1.1,
+     "PC": 1.2,
+     "Ti": 4.43,
+     "steel": 7.85,
+     "440C": 7.8,
+     "Si3N4": 3.2,
+     "sapphire": 3.98,
+     "N52": 7.5,
+     "Cu": 8.89,
+     "C17200": 8.25,
+     "POM": 1.41
+    },
+    "unit": "g/cm3",
+    "label": "MANUFACTURER",
+    "source": "handbook densities (AMF-24 PEEK, AMF-21 Ti; others catalogue)"
+   }
+  }
+ },
+ "label": "PROPOSED DESIGN (layout); fit checks CALCULATION; nothing built or measured",
+ "pivot_z": 10000.0,
+ "pivot_note": "virtual pivot (mm) for sim2j's gimbal model: B1 is a translation nib (revk/simparams.py)"
+}

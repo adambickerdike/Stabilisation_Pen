@@ -1,0 +1,314 @@
+{
+ "meta": {
+  "evidence_status": "SIMULATION (tuning writers 100-101, seed 300)",
+  "generated_utc": "2026-09-30T04:11:43+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.servo_sim --variant A|B|C; --collect",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "e802ebdecd251de1",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2"
+ },
+ "stabpen.provenance": {
+  "evidence_status": "SIMULATION (tuning writers 100-101, seed 300)",
+  "generated_utc": "2026-09-30T04:11:43+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.servo_sim --variant A|B|C; --collect",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "e802ebdecd251de1",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2"
+ },
+ "variants": {
+  "A": {
+   "variant": "A",
+   "servo_hz": 80.0,
+   "inner_hz": 100.0,
+   "cells": [
+    {
+     "writer": 100,
+     "cell": "ET 8 Hz 1 mm",
+     "ink_err_none_um": 431.2371777097898,
+     "ink_err_nib_um": 392.02940491056296,
+     "P_nib_W": 0.01796762885621068
+    },
+    {
+     "writer": 100,
+     "cell": "PD 5 Hz 1 mm",
+     "ink_err_none_um": 647.5986705912502,
+     "ink_err_nib_um": 643.8046757325445,
+     "P_nib_W": 0.016979320979738106
+    },
+    {
+     "writer": 101,
+     "cell": "ET 8 Hz 1 mm",
+     "ink_err_none_um": 485.0415894438533,
+     "ink_err_nib_um": 280.5188572120164,
+     "P_nib_W": 0.025302518564034274
+    },
+    {
+     "writer": 101,
+     "cell": "PD 5 Hz 1 mm",
+     "ink_err_none_um": 553.5313623165127,
+     "ink_err_nib_um": 549.0230067966245,
+     "P_nib_W": 0.02397741595913959
+    }
+   ],
+   "clean": [
+    {
+     "writer": 100,
+     "moved_um": 0.0,
+     "P_nib_W": 0.014632203222032647
+    },
+    {
+     "writer": 101,
+     "moved_um": 0.0,
+     "P_nib_W": 0.019651047522117045
+    }
+   ],
+   "runtime_s": 535.2286269664764
+  },
+  "B": {
+   "variant": "B",
+   "servo_hz": 40.0,
+   "inner_hz": 100.0,
+   "cells": [
+    {
+     "writer": 100,
+     "cell": "ET 8 Hz 1 mm",
+     "ink_err_none_um": 431.2371777097898,
+     "ink_err_nib_um": 395.84804302139605,
+     "P_nib_W": 0.01782065431209243
+    },
+    {
+     "writer": 100,
+     "cell": "PD 5 Hz 1 mm",
+     "ink_err_none_um": 647.5986705912502,
+     "ink_err_nib_um": 643.8887333338881,
+     "P_nib_W": 0.016978282922045337
+    },
+    {
+     "writer": 101,
+     "cell": "ET 8 Hz 1 mm",
+     "ink_err_none_um": 485.0415894438533,
+     "ink_err_nib_um": 286.1389378193792,
+     "P_nib_W": 0.024962936374931514
+    },
+    {
+     "writer": 101,
+     "cell": "PD 5 Hz 1 mm",
+     "ink_err_none_um": 553.5313623165127,
+     "ink_err_nib_um": 549.4655240209669,
+     "P_nib_W": 0.023932281969929935
+    }
+   ],
+   "clean": [
+    {
+     "writer": 100,
+     "moved_um": 0.0,
+     "P_nib_W": 0.014632203222032647
+    },
+    {
+     "writer": 101,
+     "moved_um": 0.0,
+     "P_nib_W": 0.019651047522117045
+    }
+   ],
+   "runtime_s": 531.57164311409
+  },
+  "C": {
+   "variant": "C",
+   "servo_hz": 40.0,
+   "inner_hz": 46.0,
+   "cells": [
+    {
+     "writer": 100,
+     "cell": "ET 8 Hz 1 mm",
+     "ink_err_none_um": 483.4974597235334,
+     "ink_err_nib_um": 440.2311894197422,
+     "P_nib_W": 0.01100043955103504
+    },
+    {
+     "writer": 100,
+     "cell": "PD 5 Hz 1 mm",
+     "ink_err_none_um": 690.3214254349253,
+     "ink_err_nib_um": 684.1389223785624,
+     "P_nib_W": 0.010135714353193881
+    },
+    {
+     "writer": 101,
+     "cell": "ET 8 Hz 1 mm",
+     "ink_err_none_um": 509.232346924298,
+     "ink_err_nib_um": 280.94003993674943,
+     "P_nib_W": 0.019811013247876028
+    },
+    {
+     "writer": 101,
+     "cell": "PD 5 Hz 1 mm",
+     "ink_err_none_um": 591.1176833372085,
+     "ink_err_nib_um": 586.135894885925,
+     "P_nib_W": 0.01907095951449089
+    }
+   ],
+   "clean": [
+    {
+     "writer": 100,
+     "moved_um": 0.0,
+     "P_nib_W": 0.007331360326232339
+    },
+    {
+     "writer": 101,
+     "moved_um": 0.0,
+     "P_nib_W": 0.01400733847469006
+    }
+   ],
+   "runtime_s": 357.55658507347107
+  }
+ },
+ "summary": {
+  "A": {
+   "servo_hz": 80.0,
+   "inner_hz": 100.0,
+   "ink_err_nib_um_mean": 466.3439861629371,
+   "ink_err_none_um_mean": 529.3522000153515,
+   "ratio_mean": 0.8683543126511202,
+   "moved_um_mean": 0.0,
+   "P_nib_mW_mean": 21.056721089780662,
+   "runtime_s": 535.2286269664764
+  },
+  "B": {
+   "servo_hz": 40.0,
+   "inner_hz": 100.0,
+   "ink_err_nib_um_mean": 468.8353095489076,
+   "ink_err_none_um_mean": 529.3522000153515,
+   "ratio_mean": 0.8736970927772301,
+   "moved_um_mean": 0.0,
+   "P_nib_mW_mean": 20.923538894749804,
+   "runtime_s": 531.57164311409
+  },
+  "C": {
+   "servo_hz": 40.0,
+   "inner_hz": 46.0,
+   "ink_err_nib_um_mean": 497.8615116552447,
+   "ink_err_none_um_mean": 568.5422288549912,
+   "ratio_mean": 0.8612058693955229,
+   "moved_um_mean": 0.0,
+   "P_nib_mW_mean": 15.00453166664896,
+   "runtime_s": 357.55658507347107
+  }
+ },
+ "setup": {
+  "writers": [
+   100,
+   101
+  ],
+  "seed": 300,
+  "cells": "bnib.sim.TUNE_CELLS + tremor-free writing",
+  "nib": {
+   "Km_tip": 0.3335,
+   "k_tip_N_m": 1.5617
+  },
+  "note": "SIMULATION check of the servo bandwidth that DEC-050's 2.5 x rule allows (study B's sim2 set-up, read-only, on the\nTUNING writers only; nothing here touches the test writers).\n\nStudy B's frozen controller ran the nib's position loop at 80 Hz with a 100 Hz inner loop (bnib/sim.py config, rules.json\nservo_fi 100).  Rev K's lowest structural mode (ball stuck, worst case over tilt, refill stiffness and pre-sliding) allows\nabout 46 Hz under the 2.5 x rule (revk/nib.modes_grid).  This runs study B's B1 pen in sim2 with Rev K's nib constants\n(Km 0.334 N/sqrt(W) x layer, k 1.56 N/m of the C17200 wires) at three controller settings:\n  A  80 Hz position loop, 100 Hz inner loop (study B's frozen setting)\n  B  40 Hz position loop, 100 Hz inner loop\n  C  40 Hz position loop, 46 Hz inner loop (both loops inside the 2.5 x rule)\non tuning writers 100-101, seed 300, the tuning cells (ET 8 Hz 1 mm, PD 5 Hz 1 mm) and tremor-free writing.\nThe sim2 model has no structural modes of the carrier: it measures what the lower bandwidth costs in tracking, not the\nstability margin (that is the CALC of nib.modes_grid).  Caches and rows in revk/build/ (study B's build folder is never\nwritten).  Run: python3 -m revk.servo_sim --variant A|B|C  then  python3 -m revk.servo_sim --collect\n"
+ },
+ "label": "SIMULATION (sim2 via bnib/sim.py, tuning writers only; synthetic tremor; no carrier structural modes in the model)"
+}

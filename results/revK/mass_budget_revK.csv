@@ -1,0 +1,18 @@
+kind,name,mass_g,com_z_mm
+group,power,22.0,
+group,structure,11.414,
+group,actuator,9.292,
+group,electronics,5.775,
+group,balance,4.749,
+group,grip,4.436,
+group,magnet,3.068,
+group,moving_nib,1.835,
+group,haptic,1.1,
+group,mechanism,1.03,
+group,refill,0.924,
+group,sensor,0.646,
+group,skid,0.139,
+pen,Rev K base,66.41,74.95
+pen,Rev K + heel,73.37,77.44
+pen,study B's Rev K,68.76,74.24
+pen,Rev J.1 base,84.31,85.97

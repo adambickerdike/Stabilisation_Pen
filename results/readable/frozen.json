@@ -1,0 +1,371 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "SIMULATION (tuning split only); frozen before the test run",
+  "generated_utc": "2026-09-30T03:57:01+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "run.py --workers 2",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": {
+   "splits": "study R's tuning/test split of writers, texts and patients (realdata.writinglib, tremorlib); study E's tuning selection set and folds (realtrack.cases); every choice on the tuning split, the test split run once after frozen.json",
+   "cards_bootstrap": "R's: 2000 writer resamples, seed 20260929",
+   "curve_bootstrap": "2000 writer resamples, seed 20260930 (curve.py)",
+   "sensor_seeds": "R's case keys (test) and E's case ids (tuning), realdata.hw1._seed / realtrack.cases._h",
+   "noise_seeds": "sha1 of (case id, 'noise', level) (e13.py)",
+   "calibration_notes": "the first note with seed i + K k (K = writers in the split) sharing no line with the scored note (e11.py)"
+  },
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "readable-0.1.0",
+  "inputs_sha256": {
+   "results/realtrack/frozen.json": "7e239da620b441d46fae205e01c2cf1b2a852092729f298addc2babfaa5b8cf1",
+   "results/realtrack/realtrack.json": "08f4d8ae6e3e7239480dc4fd090feb052f72b4afd62a17f02c688eb007858cb5",
+   "results/realdata/realdata.json": "46667eaeb840fc8c33fc6f32f59ccace2d30a603f31ff7fa5a1081554c1db1c5",
+   "results/nose2/nose2.json": "e82b87538d28128613231baf8c4c03a9f182321c9c79262beeb356ecb0e48487",
+   "results/opt/inertial_tracker_revh.json": "29dc0eb537f2380768ba23d4a2a2c37cc3596aa762fffabf1a7b2af984640c62",
+   "results/sim2j/rules.json": "8b3b57ef5cdf4c3f6c1cfdb2d2eab8bad32992c0d3932ab9a97f87552d59f92d",
+   "realtrack/build/models/net_net_main.pt": "aaa74c2b9cf13c151272cae365ceceecc0967a264a74a10f6f04ad35db2b62f1",
+   "realtrack/build/models/net_net_main_f0.pt": "ae359e957f1ab153cec0913035d4e9b12b97f286018161e694f0df8d2476f0bd",
+   "realtrack/build/models/net_net_main_f1.pt": "97e7e57f971ff9ac873702ca09a8c93777abf576d27dc53618cab36f49d4b03b",
+   "realtrack/build/models/net_net_main_f2.pt": "732cb1a4546cac1301f98d9ec3fd45331cc61e2f8360e5d7927e58078c4c6c7d",
+   "realtrack/build/models/net_net_main_f3.pt": "bc7a4b2b338fe022206db0a5bb6cc8c5a7409ddd79f12060e9513c4903b2856e",
+   "realtrack/build/models/net_net_main_f4.pt": "251beb33f9f10f00761958d9b54bbd9e1387b9cb8920d8a19781684ceea3f613",
+   "ai2/build/models/tcn.pt": "7eeb264558bb9432ba3eb7512dcb0200e4559b5d1025b32903bae72964150439",
+   "realdata/build/cache/reader_choice.json": "e4f2297364923a75bb36f186a338d9c5c4a46eaf3d7528cfa361138454d259ca",
+   "realdata/build/cache/page_model.json": "aafe5fae710ff6a5151b92670549006d5fac0e8a003288caf5a4cb792aa38bfe",
+   "realdata/build/cache/tremorlib.json": "943ccb42fd0a7d331f5ef1b74937e90907a4c0fa4bef2e3e8ab1cf78a6859b3d",
+   "realdata/build/cache/tremor_waveforms.npz": "67336a57c0c0a57bb370627ac175a9f498fa33f1b50aa724714a851b2dc2459b",
+   "realdata/build/cache/unipen_index.json": "a0b954e18809a06850e8a417cb5ebf063d9c00880dd36254579784cab6b4f3ee",
+   "realdata/build/hf/hub/models--microsoft--trocr-base-handwritten/snapshots/eaacaf452b06415df8f10bb6fad3a4c11e609406/model.safetensors": "25a40cddc7e6120140a3d5b9e3dd3878a92ada7b4f312953ab22edc19c2a5acc"
+  },
+  "parameters": {
+   "e13": {
+    "tuning": {
+     "notes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+     ],
+     "kinds": [
+      "PD",
+      "ET"
+     ],
+     "classes": [
+      "severe",
+      "moderate"
+     ],
+     "severe": {
+      "remain": [
+       0.0,
+       0.1,
+       0.18,
+       0.27,
+       0.38,
+       0.55,
+       1.0
+      ],
+      "delay_ms": [
+       5.2,
+       13.4,
+       25.0
+      ],
+      "noise_mm": [
+       0.2,
+       0.4,
+       0.8
+      ]
+     },
+     "moderate": {
+      "remain": [
+       0.0
+      ],
+      "delay_ms": [],
+      "noise_mm": []
+     },
+     "reference": "the ordinary pen on the same case; the same notes without tremor (ordinary pen)"
+    },
+    "test": {
+     "notes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ],
+     "kinds": [
+      "PD",
+      "ET"
+     ],
+     "classes": [
+      "severe"
+     ],
+     "variants": [
+      "E13a_r80",
+      "E13a_mid",
+      "E13a_r2",
+      "E13a_r2x1.3",
+      "E13b_r2",
+      "E13c_r2"
+     ]
+    },
+    "curve_model": "Words read out of 10 against the tremor left at the tip: the model, its fit, its inversion, the writer bootstrap.\n\nModel (fixed before any reading; CALC on SIM points): a log-logistic fall from the tremor-free level to a floor,\n    w(r) = w_lo + (w_hi - w_lo) / (1 + (r / r50)^s),        r = tremor left at the tip, mm (R's measure)\nwith w_hi the words read with no tremor left, w_lo the floor at large tremor, r50 the residual at the midpoint and s the\nsteepness.  Fitted by least squares on the per-case points (every run of every case: its measured tip tremor and its\nwords out of 10), with bounds w_lo in [0, 3], w_hi in [0.5, 10], r50 in [0.01, 5] mm, s in [0.5, 15], from a small\nfixed grid of starts (the lowest cost wins).  Clean notes enter at r = 0."
+   },
+   "e11": {
+    "p": [
+     0.99,
+     0.999,
+     1.0
+    ],
+    "kappa": [
+     1.0,
+     1.25,
+     1.5,
+     2.0
+    ],
+    "modes": [
+     "per_user",
+     "raise_only"
+    ],
+    "clean_note_max_um": 40.0,
+    "clean_mean_um": 20.0
+   },
+   "gap": {
+    "delta_s": {
+     "imu": 0.00152,
+     "servo_only": 0.0,
+     "page": 0.003,
+     "h10": 0.0066
+    },
+    "dtau_ms": [
+     0.5,
+     1.0,
+     2.0,
+     4.0
+    ],
+    "order": [
+     4,
+     8,
+     16,
+     32,
+     64
+    ],
+    "ridge": 1e-06,
+    "fit_levels": [
+     "severe",
+     "edge"
+    ]
+   }
+  },
+  "quick": false,
+  "torch": "2.14.0+cpu",
+  "command_line": "python3 -m readable.run"
+ },
+ "frozen_utc": "2026-09-30T03:57:01Z",
+ "e13": {
+  "fit": {
+   "p": [
+    0.15342063024146774,
+    8.420183146514889,
+    0.46242866450227976,
+    2.2840030634613364
+   ],
+   "cost": 456.37911186484126,
+   "n": 330,
+   "ok": true,
+   "rmse_words": 1.663109741208339,
+   "params": {
+    "w_lo": 0.15342063024146774,
+    "w_hi": 8.420183146514889,
+    "r50_mm": 0.46242866450227976,
+    "steepness": 2.2840030634613364
+   }
+  },
+  "r_plus2_mm": 0.649507680975895,
+  "r_80_mm": 0.24986256206659807,
+  "ci95": {
+   "r_plus2_mm": {
+    "lo": 0.5576534061306975,
+    "hi": 0.6954378318945962,
+    "n": 2000,
+    "n_unreachable": 0
+   },
+   "r_80_mm": {
+    "lo": 0.1978011234733354,
+    "hi": 0.2964177262651349,
+    "n": 2000,
+    "n_unreachable": 0
+   },
+   "r_within1_mm": {
+    "lo": 0.15244321718756204,
+    "hi": 0.2210707493068456,
+    "n": 2000,
+    "n_unreachable": 0
+   },
+   "w_lo": {
+    "lo": 3.263825735608644e-17,
+    "hi": 0.4771192224285732,
+    "n": 2000,
+    "n_unreachable": 0
+   },
+   "w_hi": {
+    "lo": 7.525515842549409,
+    "hi": 9.317520909656741,
+    "n": 2000,
+    "n_unreachable": 0
+   },
+   "r50_mm": {
+    "lo": 0.3867169229203756,
+    "hi": 0.5183309058397858,
+    "n": 2000,
+    "n_unreachable": 0
+   },
+   "steepness": {
+    "lo": 2.0532295086546446,
+    "hi": 2.710201782174873,
+    "n": 2000,
+    "n_unreachable": 0
+   }
+  },
+  "w_ord_severe": 0.759090909090909,
+  "w_clean": 8.49090909090909,
+  "test_levels": {
+   "targets_mm": {
+    "E13a_r80": 0.24986256206659807,
+    "E13a_mid": 0.4496851215212465,
+    "E13a_r2": 0.649507680975895,
+    "E13a_r2x1.3": 0.8443599852686635,
+    "E13b_r2": 0.649507680975895,
+    "E13c_r2": 0.649507680975895
+   },
+   "rule": "(a): rho = target / the case's nose-held tip tremor (clipped to 0.02-1); (b): tau such that 2 sin(pi f0 tau) x the nose-held tip tremor = target; (c): sigma = target",
+   "fallback_used": []
+  },
+  "n_cases": 40,
+  "n_clean": 10
+ },
+ "e11": {
+  "choice": {
+   "D1": {
+    "rule": "q0.99_k1_raise_only",
+    "p": 0.99,
+    "kappa": 1.0,
+    "mode": "raise_only",
+    "passes": true,
+    "severe_ratio": 0.6911719347109454,
+    "severe_bb": 0.6971634476262619,
+    "clean_um_mean": 11.727541977530187,
+    "clean_um_note_max": 34.13005561709997,
+    "moderate_rheld": 0.9984706364255691,
+    "mild_rheld": 0.9996972866761329,
+    "frozen_gate_on_tuning": {
+     "severe_ratio": 0.6600725060701433,
+     "severe_bb": 0.6787116296583734,
+     "clean_um_mean": 17.82732614910571,
+     "clean_um_note_max": 40.96549391760468,
+     "moderate_rheld": 0.9968796875040666,
+     "mild_rheld": 0.9988092473763099
+    }
+   },
+   "D2": {
+    "rule": "q1_k2_raise_only",
+    "p": 1.0,
+    "kappa": 2.0,
+    "mode": "raise_only",
+    "passes": true,
+    "severe_ratio": 0.6809381713887828,
+    "severe_bb": 0.7097726636708453,
+    "clean_um_mean": 0.9884719653334082,
+    "clean_um_note_max": 7.362006775323871,
+    "moderate_rheld": 0.9893014639251273,
+    "mild_rheld": 1.0002970906327664,
+    "frozen_gate_on_tuning": {
+     "severe_ratio": 0.6734252190026101,
+     "severe_bb": 0.7051555084384472,
+     "clean_um_mean": 4.336411377067769,
+     "clean_um_note_max": 19.837278832233856,
+     "moderate_rheld": 0.9862250576665303,
+     "mild_rheld": 1.0003924573331817
+    }
+   },
+   "D3": {
+    "rule": "q0.99_k1_per_user",
+    "p": 0.99,
+    "kappa": 1.0,
+    "mode": "per_user",
+    "passes": true,
+    "severe_ratio": 0.9157902107351494,
+    "severe_bb": 0.8579570671242521,
+    "clean_um_mean": 9.36176104647421,
+    "clean_um_note_max": 27.923666144116208,
+    "moderate_rheld": 1.0003743246780652,
+    "mild_rheld": 1.0073430656156521,
+    "frozen_gate_on_tuning": {
+     "severe_ratio": 0.8490387557846102,
+     "severe_bb": 0.8030848300293233,
+     "clean_um_mean": 19.54381909376884,
+     "clean_um_note_max": 39.570991901921765,
+     "moderate_rheld": 1.0009410324695125,
+     "mild_rheld": 1.0004286747821163
+    }
+   }
+  },
+  "grid": [
+   "q0.99_k1_per_user",
+   "q0.99_k1_raise_only",
+   "q0.99_k1.25_per_user",
+   "q0.99_k1.25_raise_only",
+   "q0.99_k1.5_per_user",
+   "q0.99_k1.5_raise_only",
+   "q0.99_k2_per_user",
+   "q0.99_k2_raise_only",
+   "q0.999_k1_per_user",
+   "q0.999_k1_raise_only",
+   "q0.999_k1.25_per_user",
+   "q0.999_k1.25_raise_only",
+   "q0.999_k1.5_per_user",
+   "q0.999_k1.5_raise_only",
+   "q0.999_k2_per_user",
+   "q0.999_k2_raise_only",
+   "q1_k1_per_user",
+   "q1_k1_raise_only",
+   "q1_k1.25_per_user",
+   "q1_k1.25_raise_only",
+   "q1_k1.5_per_user",
+   "q1_k1.5_raise_only",
+   "q1_k2_per_user",
+   "q1_k2_raise_only"
+  ],
+  "rule_text": "(grid fixed here before any run):\n  For the scored note of a writer, the calibration note is ANOTHER note of the same writer: the first note with seed\n  i + K k (K = the number of writers of the split, k = 1, 2, ...) that shares no recorded line with the scored note.  The\n  design's raw estimate runs on the calibration note written WITHOUT tremor (Rev J nose held, the DeltaPen-class page\n  sensor, its own sensor seed); Q_p = the p-quantile of A over its pen-down ticks after the first second.\n    a_lo,w = kappa x Q_p                         ('per_user': the threshold follows the writer, up or down), or\n    a_lo,w = max(a_lo,frozen, kappa x Q_p)       ('raise_only': it may only rise above the frozen threshold);\n    a_hi,w = a_lo,w x (a_hi / a_lo)_frozen       (the ramp keeps its relative width).\n  Grid: p in {0.99, 0.999, 1.0 (the maximum)} x kappa in {1.0, 1.25, 1.5, 2.0} x the two modes: 24 rules per design.\nCHOICE on the tuning split (E's selection set, surrogate of the Rev J command path, DeltaPen-class sensor; the learned\n  model of each tuning note is its cross-fitted fold model, which never saw that writer): every tuning note calibrated\n  on its writer's other note.  A rule passes if the clean-writing change is <= 40 um on EVERY tuning note (DEC-055's\n  50 um per writer, with a 10 um margin) and <= 20 um on average (E's T2), with E's T3 (the mild and moderate tip\n  tremor <= 1.02 x the nose-held pen's) and T4 (0.6 mm: broadband <= the held pen's).  Among passing rules the lowest\n  severe broadband residual (E's T1) wins; within 0.01 of it the most conservative (higher p, then higher kappa, then\n  raise_only).  If none passes, the rule with the smallest worst-note change is reported and flagged."
+ },
+ "gap": {
+  "predictor": {
+   "choice": {
+    "dtau_ms": 1.0,
+    "order": 64,
+    "cv_residual_mm": 0.002650573806992927,
+    "rule": "the lowest cross-fitted in-band residual (R's measure on d(t + g) - prediction) over the severe tuning cases at the IMU-path horizon; ties: the first in grid order"
+   },
+   "delta_s": {
+    "imu": 0.00152,
+    "servo_only": 0.0,
+    "page": 0.003,
+    "h10": 0.0066
+   },
+   "lead_s": 0.0033852115041081684
+  }
+ },
+ "note": "Written after the tuning runs and before any test case was built; the test runs once."
+}

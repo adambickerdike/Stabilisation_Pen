@@ -11,6 +11,7 @@ Read off the curve (DEC-055 and the target of any estimator):
   r_plus2  the residual at which w(r) = w_ord + 2, w_ord = the ordinary pen's mean words at the severe class of the
            same split (DEC-055: at least 2 more readable words out of 10 than the ordinary pen)
   r_80     the residual at which w(r) = 0.8 x w_clean, w_clean = the mean words on the same notes without tremor
+  r_within1  the residual at which w(r) = w_clean - 1 (EXP-E13's protocol measurand: within 1 word of the clean notes)
 Uncertainty: 2000 bootstrap resamples of WRITERS (the participant level, as R's cards), each refitted, with w_ord and
 w_clean recomputed on the resample; 95 % percentile intervals.  An unreachable target gives NaN (counted).
 """
@@ -75,7 +76,8 @@ def fit(r: Sequence[float], w: Sequence[float], p_init: Optional[Sequence[float]
 
 def thresholds(p, w_ord: float, w_clean: float) -> Dict[str, float]:
     return {"r_plus2_mm": invert(p, w_ord + 2.0), "r_80_mm": invert(p, 0.8 * w_clean),
-            "w_target_plus2": w_ord + 2.0, "w_target_80": 0.8 * w_clean}
+            "r_within1_mm": invert(p, w_clean - 1.0),
+            "w_target_plus2": w_ord + 2.0, "w_target_80": 0.8 * w_clean, "w_target_within1": w_clean - 1.0}
 
 
 def _stack(points: Dict[str, List[Tuple[float, float]]], writers: Sequence[str]):
@@ -97,11 +99,12 @@ def fit_with_ci(points: Dict[str, List[Tuple[float, float]]], ord_by_writer: Dic
     w_ord = float(np.mean([ord_by_writer[x] for x in writers if x in ord_by_writer])) if ord_by_writer else float("nan")
     w_clean = float(np.mean([clean_by_writer[x] for x in writers if x in clean_by_writer])) if clean_by_writer else float("nan")
     th = thresholds(f["p"], w_ord, w_clean) if f["ok"] or np.all(np.isfinite(f["p"])) else \
-        {"r_plus2_mm": float("nan"), "r_80_mm": float("nan")}
+        {"r_plus2_mm": float("nan"), "r_80_mm": float("nan"), "r_within1_mm": float("nan")}
     out = {"fit": f, "w_ord_severe": w_ord, "w_clean": w_clean, **th, "n_writers": len(writers), "n_points": int(len(r))}
     if n_boot and len(writers) > 1 and np.all(np.isfinite(f["p"])):
         rng = np.random.default_rng(seed)
-        bs = {"r_plus2_mm": [], "r_80_mm": [], "w_lo": [], "w_hi": [], "r50_mm": [], "steepness": []}
+        bs = {"r_plus2_mm": [], "r_80_mm": [], "r_within1_mm": [], "w_lo": [], "w_hi": [], "r50_mm": [],
+              "steepness": []}
         for _ in range(n_boot):
             pick = [writers[j] for j in rng.integers(0, len(writers), len(writers))]
             rb, wb = _stack(points, pick)
@@ -113,6 +116,7 @@ def fit_with_ci(points: Dict[str, List[Tuple[float, float]]], ord_by_writer: Dic
             tb = thresholds(fb["p"], wo, wc)
             bs["r_plus2_mm"].append(tb["r_plus2_mm"])
             bs["r_80_mm"].append(tb["r_80_mm"])
+            bs["r_within1_mm"].append(tb["r_within1_mm"])
             for k, v in zip(("w_lo", "w_hi", "r50_mm", "steepness"), fb["p"]):
                 bs[k].append(v)
         ci = {}

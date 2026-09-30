@@ -1,0 +1,777 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION from the Rev K layout; values labelled",
+  "generated_utc": "2026-09-30T04:13:57+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.run",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "times_s": {
+   "front_end_s": 3.9108023643493652,
+   "head_s": 4.14702296257019,
+   "nib_s": 2.815305709838867,
+   "layout_budgets_s": 0.16878223419189453
+  }
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION from the Rev K layout; values labelled",
+  "generated_utc": "2026-09-30T04:13:57+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.run",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "times_s": {
+   "front_end_s": 3.9108023643493652,
+   "head_s": 4.14702296257019,
+   "nib_s": 2.815305709838867,
+   "layout_budgets_s": 0.16878223419189453
+  }
+ },
+ "sim_params": {
+  "frames": {
+   "pen": "z from the ball tip at 50 deg (nib centred) toward the back; x in the tilt plane away from the paper; y lateral; metres",
+   "gimbal_z": 10.0,
+   "gimbal_note": "virtual pivot for a translation nib (see 'nose' and 'nib')"
+  },
+  "handle": {
+   "mass_base_kg": {
+    "value": 0.06262483919936573,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revk/layout + revj/budgets.mass_properties (+10 % wiring)",
+    "note": "handle = every part except the moving nib (carrier, coils, flange, position magnet, refill, puck)"
+   },
+   "com_base_m": {
+    "value": [
+     0.0015305195336553844,
+     2.5644776426288476e-06,
+     0.07761897845768191
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/layout"
+   },
+   "inertia_base_kg_m2": {
+    "value": [
+     [
+      0.00011056093138433105,
+      2.458014371050532e-10,
+      -1.3545171872448479e-06
+     ],
+     [
+      2.458014371050532e-10,
+      0.00011091649873110594,
+      -1.7200288670128205e-09
+     ],
+     [
+      -1.3545171872448479e-06,
+      -1.7200288670128205e-09,
+      4.16919444869594e-06
+     ]
+    ],
+    "unit": "kg m^2",
+    "label": "CALC",
+    "source": "revk/layout"
+   },
+   "mass_with_heel_kg": {
+    "value": 0.06958864569775569,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revk/layout heel-module variant"
+   },
+   "com_with_heel_m": {
+    "value": [
+     0.0006391215209897505,
+     3.5724218729553198e-06,
+     0.07998065222909034
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/layout"
+   },
+   "inertia_with_heel_kg_m2": {
+    "value": [
+     [
+      0.00012063631828274024,
+      4.844856101180463e-10,
+      -1.0102746990881844e-07
+     ],
+     [
+      4.844856101180463e-10,
+      0.00012144133135154038,
+      5.093175467971103e-09
+     ],
+     [
+      -1.0102746990881844e-07,
+      5.093175467971103e-09,
+      4.764393061838807e-06
+     ]
+    ],
+    "unit": "kg m^2",
+    "label": "CALC",
+    "source": "revk/layout"
+   },
+   "finger_pads_z_m": {
+    "value": [
+     0.026000000000000002,
+     0.032,
+     0.038
+    ],
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "Rev H hand model (unchanged)"
+   },
+   "web_z_m": {
+    "value": 0.092,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "Rev H hand model"
+   }
+  },
+  "skid_ring": {
+   "contact_radius_m": {
+    "value": 0.006,
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/frontend.front_close (page sensor at the bottom)"
+   },
+   "ring_plane_z_m": {
+    "value": 0.004577705235797383,
+    "unit": "m",
+    "label": "CALC",
+    "source": "p(50 deg) = (R cos 50 - r_b) / sin 50"
+   },
+   "open_deg_top": {
+    "value": 120.0,
+    "unit": "deg",
+    "label": "ASSUMPTION",
+    "source": "DEC-034"
+   },
+   "tube_radius_m": {
+    "value": 0.0006,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "sim2 native C ring (31 capsules)"
+   },
+   "mu": {
+    "value": 0.12,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "sim2 / HW1 skid friction (EXP-Q01)"
+   }
+  },
+  "nose": {
+   "joint": {
+    "value": "two hinges (x, y) about a virtual pivot 10 m behind the tip: a translation nib",
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "revk/simparams (maps B1's two prismatic joints within 0.7 %)"
+   },
+   "mass_kg": {
+    "value": 0.0037838138115005647,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revk/layout moving parts (+10 %)"
+   },
+   "com_z_m": {
+    "value": 0.030757334210688443,
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/layout"
+   },
+   "inertia_about_pivot_kg_m2": {
+    "value": 0.3783813811500563,
+    "unit": "kg m^2",
+    "label": "CALC",
+    "source": "m_eff x z_p^2 (virtual pivot)"
+   },
+   "m_eff_tip_kg_layout": {
+    "value": 0.0037838138115005634,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "revk/nib.summary (moving parts +10 %)"
+   },
+   "m_eff_tip_kg_studyB": {
+    "value": 0.0034900000000000005,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "config/nib.yaml"
+   },
+   "flexure_k_Nm_per_rad": {
+    "value": 156.17330974446224,
+    "unit": "N m/rad",
+    "label": "CALC",
+    "source": "k_tip x z_p^2; k_tip of four 0.10 mm C17200 wires (1.562 N/m, bnib/flexure.wire_stage)"
+   },
+   "magnetic_negative_k_Nm_per_rad": {
+    "value": [
+     0.0,
+     0.0
+    ],
+    "unit": "N m/rad",
+    "label": "CALC",
+    "source": "moving coil between fixed magnets: no pull on the moving part (study B)"
+   },
+   "axial_magnetic_pull_N": {
+    "value": 0.0,
+    "unit": "N",
+    "label": "CALC",
+    "source": "the keeper's pull stays inside the stator (handle)"
+   },
+   "damping_ratio": {
+    "value": 0.02,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "sim2 structural damping (the ball guide's rolling friction is added as Coulomb friction in 'nib')"
+   },
+   "usable_angle_rad": {
+    "value": 0.00010587000000000001,
+    "unit": "rad",
+    "label": "CALC",
+    "source": "travel / z_p"
+   },
+   "stop_angle_rad": {
+    "value": 0.00012586999999999999,
+    "unit": "rad",
+    "label": "CALC",
+    "source": "stop / z_p"
+   },
+   "actuator_z_m": {
+    "value": 0.0275,
+    "unit": "m",
+    "label": "CALC",
+    "source": "the coils' plane (in front of the virtual pivot; lever ratio 0.9972)"
+   },
+   "Km_act_N_per_sqrtW": {
+    "value": 0.33354573489671424,
+    "unit": "N/sqrt(W)",
+    "label": "CALC",
+    "source": "Rev K buildable coil, x layer (image method: upper bound)"
+   },
+   "Km_tip_N_per_sqrtW": {
+    "value": 0.33354573489671424,
+    "unit": "N/sqrt(W)",
+    "label": "CALC",
+    "source": "translation: tip = actuator; y layer 0.272, min over the stroke 0.251"
+   },
+   "coil_R_ohm": {
+    "value": 3.034849446522717,
+    "unit": "ohm",
+    "label": "CALC",
+    "source": "2.5 ohm coil + two C17200 wire leads"
+   },
+   "K_f_N_per_A": {
+    "value": 0.527382113054162,
+    "unit": "N/A",
+    "label": "CALC",
+    "source": "Km sqrt(R_coil)"
+   },
+   "coil_L_H": {
+    "value": 0.0001,
+    "unit": "H",
+    "label": "ASSUMPTION",
+    "source": "sim2 value"
+   },
+   "coil_Rth_K_W": {
+    "value": 84.0,
+    "unit": "K/W",
+    "label": "CALC",
+    "source": "R_int 15 K/W + the shell fin over the 8.5 mm stator (revk/budgets.fin_R)"
+   },
+   "coil_Cth_J_K": {
+    "value": 0.5,
+    "unit": "J/K",
+    "label": "ASSUMPTION",
+    "source": "sim2 value"
+   },
+   "I_max_A": {
+    "value": 1.00767991136325,
+    "unit": "A",
+    "label": "CALC",
+    "source": "3.3 V over the coil, leads and the DRV8214's 0.24 ohm"
+   },
+   "V_bus_V": {
+    "value": 3.3,
+    "unit": "V",
+    "label": "ASSUMPTION",
+    "source": "regulated drive rail"
+   },
+   "servo_hz": {
+    "value": 40.0,
+    "unit": "Hz",
+    "label": "PROPOSED DESIGN",
+    "source": "DEC-050 2.5 x rule: the lowest mode (ball stuck, worst case) allows 46.0 Hz, nominal 65.2 Hz; REQ-BNIB-006 asks >= 40 Hz",
+    "note": "study B's SIM ran an 80 Hz position loop with a 100 Hz inner loop; on the tuning writers 40 / 100 Hz changed the ink error by +0.5 % and 40 / 46 Hz by +7 % (results/revK/servo_bandwidth_sim.json, SIM); the test writers remain (EXP-K25, proposed)"
+   },
+   "inner_hz": {
+    "value": 46.0,
+    "unit": "Hz",
+    "label": "PROPOSED DESIGN",
+    "source": "the inner loop also inside the 2.5 x rule (the conservative reading; setting C of results/revK/servo_bandwidth_sim.json: +7 % ink error, -29 % nib power on the tuning cells, SIM)"
+   },
+   "servo_zeta": {
+    "value": 0.7,
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "Rev H"
+   },
+   "slew_m_s": {
+    "value": 0.6,
+    "unit": "m/s",
+    "label": "ASSUMPTION",
+    "source": "Rev H"
+   },
+   "latency_s": {
+    "value": 0.0006,
+    "unit": "s",
+    "label": "ASSUMPTION",
+    "source": "study N"
+   },
+   "first_parasitic_mode_hz": {
+    "value": 114.92131547776538,
+    "unit": "Hz",
+    "label": "CALC",
+    "source": "bnib/flexure.loaded_modes, ball stuck, worst of tilt x refill EI x pre-sliding (ball free: first structural 1206 Hz)"
+   }
+  },
+  "nib": {
+   "joint": {
+    "value": "two prismatic joints (x, y) across the pen; axial and tilt fixed by the ball thrust guide",
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "revk/layout"
+   },
+   "moving_mass_kg": {
+    "value": 0.0037838138115005634,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "carrier, coils, flange, magnet, refill, puck (+10 %)"
+   },
+   "k_N_per_m": {
+    "value": 1.5617330974446224,
+    "unit": "N/m",
+    "label": "CALC",
+    "source": "four 0.10 mm C17200 wires (bnib/flexure.wire_stage)"
+   },
+   "travel_m": {
+    "value": 0.0010587,
+    "unit": "m",
+    "label": "CALC",
+    "source": "study B"
+   },
+   "stop_m": {
+    "value": 0.0012587,
+    "unit": "m",
+    "label": "PROPOSED DESIGN",
+    "source": "study B soft stops; Rev K lateral stop bush (1e6 N/m, ASSUMPTION)"
+   },
+   "Km_x_y_N_per_sqrtW": {
+    "value": [
+     0.33354573489671424,
+     0.27169865452228603
+    ],
+    "unit": "N/sqrt(W)",
+    "label": "CALC",
+    "source": "revk/nib.buildable_coil (upper bound)"
+   },
+   "Km_scale_range": {
+    "value": [
+     0.7,
+     1.0
+    ],
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "DEC-041 (EXP-B23 measures)"
+   },
+   "Km_variation_over_stroke": {
+    "value": 0.24820951613992523,
+    "unit": "-",
+    "label": "CALC",
+    "source": "force map over +-stop"
+   },
+   "coulomb_friction_N": {
+    "value": 0.0026203469841992763,
+    "unit": "N",
+    "label": "CALC",
+    "source": "ball guide: rolling resistance 0.001 (ASSUMPTION) x the couple's ball load at 35 deg"
+   },
+   "modes_Hz": {
+    "value": {
+     "free_first_structural_nominal": 1206.366557744423,
+     "stuck_lowest_nominal": 162.91471342358537,
+     "stuck_lowest_worst": 114.92131547776538
+    },
+    "unit": "Hz",
+    "label": "CALC",
+    "source": "revk/nib.modes_grid"
+   },
+   "servo_bw_allowed_Hz": {
+    "value": {
+     "nominal": 65.16588536943415,
+     "worst": 45.96852619110615
+    },
+    "unit": "Hz",
+    "label": "CALC",
+    "source": "DEC-050 2.5 x rule"
+   }
+  },
+  "refill": {
+   "joint": {
+    "value": "slide along the carrier axis (rolling guides)",
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "study B"
+   },
+   "moving_mass_kg": {
+    "value": 0.0009199999999999999,
+    "unit": "kg",
+    "label": "CALC",
+    "source": "refill 0.84 g + puck 0.06 g"
+   },
+   "slide_range_m": {
+    "value": [
+     -0.0048809764261879204,
+     0.004832356744354177
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/frontend (35-75 deg) +- the nib correction's 1.5 mm at 35 deg"
+   },
+   "spring_force_N": {
+    "value": 0.15,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "study B design ink force (frozen after G1)"
+   },
+   "face_force_normal_N": {
+    "value": 0.1958,
+    "unit": "N",
+    "label": "PROPOSED DESIGN",
+    "source": "the float's constant-force spring along the paper normal (study B: N = F_n at every tilt)"
+   },
+   "spring_force_range_N": {
+    "value": [
+     0.15664,
+     0.23496
+    ],
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "+-20 % (study B's Monte Carlo)"
+   },
+   "spring_gradient_N_per_m": {
+    "value": 0.0,
+    "unit": "N/m",
+    "label": "PROPOSED DESIGN",
+    "source": "constant-force strip spring"
+   },
+   "friction_hysteresis_N": {
+    "value": 0.005,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "rolling guides (REQ-BNIB-016)"
+   },
+   "front_stop": {
+    "value": {
+     "type": "counter-face float's front stop (follower stop)",
+     "margin_m": 0.0005634647606699884,
+     "brake_engage_s": null,
+     "detect": "face-position Hall"
+    },
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "revk/counterface (float gap sized to the +-2.5 deg tilt wobble)"
+   },
+   "counter_face": {
+    "value": {
+     "L_O_m": -0.006,
+     "x_h_m": -0.009000000000000001,
+     "float_gap_m": 0.0005634647606699884,
+     "face_parallel_residual_mean_N": null,
+     "reset_deadband_deg": 1.5
+    },
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "revk/counterface.design"
+   },
+   "hard_stop_extension_m": {
+    "value": 0.005695821505024164,
+    "unit": "m",
+    "label": "CALC",
+    "source": "largest extension + float gap + 0.3 mm"
+   },
+   "pen_lift": {
+    "value": {
+     "stroke_m": 0.0005,
+     "switch_s": 0.17879870128569259,
+     "command_to_contact_s": 0.07157273200458644,
+     "holding_power_W": 0.0,
+     "energy_per_cycle_J": 0.31388270941647617
+    },
+    "unit": "-",
+    "label": "CALC",
+    "source": "revk/counterface.pen_lift (follower SQUIGGLE; speed-force line ASSUMPTION)"
+   },
+   "slide_sensor": {
+    "value": {
+     "rate_hz": 1000.0,
+     "noise_m": 2e-06,
+     "delay_s": 0.001
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "face-position Hall (TMAG5273 class), as Rev J's slide sensor"
+   }
+  },
+  "heel_wheel": {
+   "fitted": false,
+   "note": "base Rev K has no heel; the values are the heel-module variant's (study D's, at Rev K's radius)",
+   "contact_point_m": {
+    "value": [
+     -0.0060999999999999995,
+     0.0,
+     0.004367930328003063
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/frontend.front_close(heel=True)"
+   },
+   "radius_m": {
+    "value": 0.001,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "protrusion_beyond_ring_m": {
+    "value": 0.00035,
+    "unit": "m",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "preload_N": {
+    "value": 0.55,
+    "unit": "N",
+    "label": "ASSUMPTION",
+    "source": "study D"
+   },
+   "retracted_by_default": {
+    "value": true,
+    "unit": "-",
+    "label": "PROPOSED DESIGN",
+    "source": "DEC-048 (latch lifts the wheel 0.5 mm)"
+   },
+   "mu_range": {
+    "value": [
+     0.6,
+     1.2
+    ],
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "study D (EXP-D01)"
+   },
+   "shaft_length_m": {
+    "value": 0.08496106598156421,
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/layout heel variant (outer shafts)"
+   }
+  },
+  "endcap": {
+   "optional": false,
+   "fitted": false,
+   "note": "no tail (DEC-051)"
+  },
+  "sensors": {
+   "imu_position_m": {
+    "value": [
+     0.008414999999999999,
+     0.0,
+     0.05075
+    ],
+    "unit": "m",
+    "label": "CALC",
+    "source": "revk/layout"
+   },
+   "imu_model": {
+    "value": "LSM6DSV16X",
+    "unit": "-",
+    "label": "MFR",
+    "source": "OPT-37"
+   },
+   "nose_position_noise_m": {
+    "value": [
+     8.167844332064092e-07,
+     8.167844332064092e-07
+    ],
+    "unit": "m rms at the tip",
+    "label": "CALC",
+    "source": "revk/nib.hall_fields (TMAG5170 140 uT rms at 20 kSPS, MFR OPT-44; 1 kHz band)"
+   },
+   "nose_position_delay_s": {
+    "value": 0.0001,
+    "unit": "s",
+    "label": "ASSUMPTION",
+    "source": "TMAG5170 conversion at 10 kSPS"
+   },
+   "page_sensor": {
+    "value": {
+     "window_m": [
+      0.004719999999999999,
+      0.0,
+      0.006627705235797385
+     ],
+     "window_note": "[radius m, azimuth deg from the bottom, z m]",
+     "rate_hz": 1000.0,
+     "latency_s": 0.002,
+     "noise_m": 1e-05,
+     "lift_cutoff_m": [
+      0.0002,
+      0.0002
+     ],
+     "lens_band_m": [
+      0.0022,
+      0.0026
+     ]
+    },
+    "unit": "-",
+    "label": "ASSUMPTION",
+    "source": "PMW3610 class (MFR OPT-61 lens band +-0.2 mm); rate and noise as Rev J's assumption (EXP-J10)"
+   }
+  },
+  "domain_randomisation_added": {
+   "refill_face_force_N": [
+    0.15664,
+    0.23496
+   ],
+   "Km_scale": [
+    0.7,
+    1.0
+   ],
+   "x_pre_um": [
+    5.0,
+    10.0,
+    20.0
+   ],
+   "face_parallel_error_deg": [
+    0.0,
+    3.3
+   ],
+   "pen_roll_deg": [
+    -20.0,
+    20.0
+   ],
+   "note": "ranges ASSUMPTION; face error up to the 95th percentile of revk/counterface.face_stack"
+  },
+  "adapter_for_sim2j": [
+   "sim2j/revj.lead() reads results/revJ/*; point it at results/revK/ (layout.json, sim_params.json)",
+   "geometry(): the layout's 'pivot_z' is the virtual 10 m pivot (layout.json carries it); comp['ec_shell'] does not exist (no end-cap): skip it when endcap is False",
+   "_lead_part(): the refill holder is 'refill_holder' (the captive puck); there is no pen-lift drum",
+   "nose(): use servo_hz and inner_hz from this file (both inside the 2.5 x rule; sim2j's loader fixes inner_hz at 400 Hz) and add the ball guide's Coulomb friction (nib.coulomb_friction_N)",
+   "the counter-face: the ink force acts along the paper normal at the puck (study B's sim2 model, bnib/sim.py)"
+  ]
+ },
+ "label": "CALCULATION from the Rev K layout and study B; labels on each value"
+}

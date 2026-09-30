@@ -1,0 +1,61 @@
+end,mode,part,mW
+low end,steady_0mm,electronics,21.869
+low end,steady_1mm,electronics,21.869
+low end,steady_2mm,electronics,21.869
+low end,guide,electronics,21.869
+low end,spelling_cue,electronics,21.869
+low end,steady_0mm,page sensor,1.271
+low end,steady_1mm,page sensor,1.271
+low end,steady_2mm,page sensor,1.271
+low end,guide,page sensor,1.271
+low end,spelling_cue,page sensor,1.271
+low end,steady_0mm,face sensor,4.0
+low end,steady_1mm,face sensor,4.0
+low end,steady_2mm,face sensor,4.0
+low end,guide,face sensor,4.0
+low end,spelling_cue,face sensor,4.0
+low end,steady_0mm,head positioners,0.753
+low end,steady_1mm,head positioners,0.753
+low end,steady_2mm,head positioners,0.753
+low end,guide,head positioners,0.753
+low end,spelling_cue,head positioners,0.753
+low end,steady_0mm,nib coils,16.452
+low end,steady_1mm,nib coils,17.787
+low end,steady_2mm,nib coils,17.945
+low end,guide,nib coils,16.754
+low end,spelling_cue,nib coils,16.452
+low end,steady_0mm,"mode extras (lifts, cues)",0.0
+low end,steady_1mm,"mode extras (lifts, cues)",0.0
+low end,steady_2mm,"mode extras (lifts, cues)",0.0
+low end,guide,"mode extras (lifts, cues)",0.75
+low end,spelling_cue,"mode extras (lifts, cues)",0.089
+high end,steady_0mm,electronics,43.134
+high end,steady_1mm,electronics,43.134
+high end,steady_2mm,electronics,43.134
+high end,guide,electronics,43.134
+high end,spelling_cue,electronics,43.134
+high end,steady_0mm,page sensor,1.906
+high end,steady_1mm,page sensor,1.906
+high end,steady_2mm,page sensor,1.906
+high end,guide,page sensor,1.906
+high end,spelling_cue,page sensor,1.906
+high end,steady_0mm,face sensor,8.0
+high end,steady_1mm,face sensor,8.0
+high end,steady_2mm,face sensor,8.0
+high end,guide,face sensor,8.0
+high end,spelling_cue,face sensor,8.0
+high end,steady_0mm,head positioners,5.08
+high end,steady_1mm,head positioners,5.08
+high end,steady_2mm,head positioners,5.08
+high end,guide,head positioners,5.08
+high end,spelling_cue,head positioners,5.08
+high end,steady_0mm,nib coils,33.575
+high end,steady_1mm,nib coils,36.3
+high end,steady_2mm,nib coils,47.608
+high end,guide,nib coils,34.191
+high end,spelling_cue,nib coils,33.575
+high end,steady_0mm,"mode extras (lifts, cues)",0.0
+high end,steady_1mm,"mode extras (lifts, cues)",0.0
+high end,steady_2mm,"mode extras (lifts, cues)",0.0
+high end,guide,"mode extras (lifts, cues)",3.5
+high end,spelling_cue,"mode extras (lifts, cues)",1.872

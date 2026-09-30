@@ -1,0 +1,2167 @@
+{
+ "meta": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev K integrated layout, study K of round 4); inputs from study B (bnib/, results/bnib/, config/nib.yaml), Rev J / J.1 (revj/, revj1/), datasheets (MANUFACTURER) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-30T04:13:57+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.run",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "times_s": {
+   "front_end_s": 3.9108023643493652,
+   "head_s": 4.14702296257019,
+   "nib_s": 2.815305709838867,
+   "layout_budgets_s": 0.16878223419189453
+  }
+ },
+ "stabpen.provenance": {
+  "evidence_status": "CALCULATION on a PROPOSED DESIGN (Rev K integrated layout, study K of round 4); inputs from study B (bnib/, results/bnib/, config/nib.yaml), Rev J / J.1 (revj/, revj1/), datasheets (MANUFACTURER) or ASSUMPTION; nothing built or measured",
+  "generated_utc": "2026-09-30T04:13:57+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 -m revk.run",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "revk/run.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2",
+  "times_s": {
+   "front_end_s": 3.9108023643493652,
+   "head_s": 4.14702296257019,
+   "nib_s": 2.815305709838867,
+   "layout_budgets_s": 0.16878223419189453
+  }
+ },
+ "budgets": {
+  "mass": {
+   "base": {
+    "mass_g": 66.4086530108663,
+    "com_mm": [
+     1.4438730547804832,
+     0.0024183595468157057,
+     74.94890868978003
+    ],
+    "inertia_g_mm2": [
+     [
+      118928.4880005704,
+      0.23188601259774688,
+      -1608.8826916268777
+     ],
+     [
+      0.23188601259774688,
+      119292.47372106071,
+      -2.14884207173785
+     ],
+     [
+      -1608.8826916268777,
+      -2.14884207173785,
+      4271.398542854305
+     ]
+    ]
+   },
+   "with_heel_module": {
+    "mass_g": 73.37245950925627,
+    "com_mm": [
+     0.6066680383850426,
+     0.0033881922680898888,
+     77.44220835230551
+    ],
+    "inertia_g_mm2": [
+     [
+      129863.15847124232,
+      0.4764176743424956,
+      -212.27693965883373
+     ],
+     [
+      0.4764176743424956,
+      130669.75942233804,
+      4.462118320202343
+     ],
+     [
+      -212.27693965883373,
+      4.462118320202343,
+      4859.766709243222
+     ]
+    ]
+   },
+   "by_group_base_g": {
+    "refill": 0.924,
+    "moving_nib": 1.835,
+    "actuator": 9.292,
+    "sensor": 0.646,
+    "magnet": 3.068,
+    "mechanism": 1.03,
+    "structure": 11.414,
+    "skid": 0.139,
+    "grip": 4.436,
+    "electronics": 5.775,
+    "balance": 4.749,
+    "power": 22.0,
+    "haptic": 1.1
+   },
+   "heel_module_g": 6.963806498389967,
+   "moving_nib_g": 3.439830737727785,
+   "head_g": 4.316933450280962,
+   "balance_point_mm": {
+    "base": 74.94890868978003,
+    "with_heel": 77.44220835230551
+   },
+   "limit_g": 120.0,
+   "compare": {
+    "revJ1_base": {
+     "mass_g": 84.3073,
+     "com_z_mm": 85.96818475920827,
+     "I_transverse_g_mm2": 97573.59288172051,
+     "source": "results/revJ1/budgets.json (CALC)"
+    },
+    "studyB_revK_estimate": {
+     "mass_g": 68.76,
+     "com_z_mm": 74.24,
+     "source": "results/bnib/bnib.json recommended (CALC)"
+    }
+   },
+   "label": "CALCULATION (layout parts' masses: volumes x handbook densities, datasheet masses, study B's parts; +10 % wiring and adhesive, ASSUMPTION as Rev J)"
+  },
+  "electronics": {
+   "soc_W": [
+    0.007856470588235295,
+    0.01411764705882353
+   ],
+   "imu_W": 0.0013764705882352945,
+   "nib_hall_W": [
+    0.002516,
+    0.01258
+   ],
+   "coil_drivers_W": [
+    0.009620000000000002,
+    0.014060000000000001
+   ],
+   "misc_W": [
+    0.0005,
+    0.001
+   ],
+   "total_W": [
+    0.02186894117647059,
+    0.04313411764705883
+   ],
+   "revJ1_total_W": [
+    0.034152941176470594,
+    0.06015411764705883
+   ],
+   "label": "CALCULATION (revj1/power.electronics, MANUFACTURER OPT-60 / OPT-37 / AMF-37 with duty ASSUMPTION; TMAG5170 MANUFACTURER OPT-44 at a 0.2-1.0 duty, ASSUMPTION)"
+  },
+  "power": {
+   "rows": {
+    "steady_0mm": {
+     "q_rms_mm": 0.0,
+     "nib_W": [
+      0.016451749389389283,
+      0.03357499875385568
+     ],
+     "nib_35deg_W": [
+      0.038531282220145596,
+      0.07863526983703183
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.0,
+      0.0
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.04434430256434897,
+      0.09169462019381139
+     ],
+     "hours": [
+      24.210798793949653,
+      50.06280111810329
+     ],
+     "note": "writing with no tremor: holding and the balance residual"
+    },
+    "steady_1mm": {
+     "q_rms_mm": 0.7071067811865475,
+     "nib_W": [
+      0.017786946519336103,
+      0.036299890855787977
+     ],
+     "nib_35deg_W": [
+      0.03986647935009242,
+      0.08136016193896414
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.0,
+      0.0
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.045679499694295786,
+      0.09441951229574368
+     ],
+     "hours": [
+      23.512089249586975,
+      48.59948149294687
+     ],
+     "note": "1 mm rms at the tip (0.71 mm per axis) corrected"
+    },
+    "steady_2mm": {
+     "q_rms_mm": 0.75,
+     "nib_W": [
+      0.01794450822418836,
+      0.047607878962132394
+     ],
+     "nib_35deg_W": [
+      0.04002404105494468,
+      0.1061862313702614
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.0,
+      0.0
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.045837061399148046,
+      0.10572750040208809
+     ],
+     "hours": [
+      20.9973752482297,
+      48.4324241614944
+     ],
+     "note": "2 mm rms: the +-1.06 mm nib clips (0.75 mm rms per axis); high end x1.3 for the servo pushing into the soft stops (ASSUMPTION)"
+    },
+    "guide": {
+     "q_rms_mm": 0.3,
+     "nib_W": [
+      0.016753524480051022,
+      0.034190866285818425
+     ],
+     "nib_35deg_W": [
+      0.03883305731080734,
+      0.07925113736899458
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.00075,
+      0.0035
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.045396077655010705,
+      0.09581048772577413
+     ],
+     "hours": [
+      23.170741039895514,
+      48.90290339334994
+     ],
+     "note": "guidance nudges within the nib's reach (0.3 mm rms) and 0.5-1 LRA cue per second"
+    },
+    "spelling_cue": {
+     "q_rms_mm": 0.0,
+     "nib_W": [
+      0.016451749389389283,
+      0.03357499875385568
+     ],
+     "nib_35deg_W": [
+      0.038531282220145596,
+      0.07863526983703183
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      8.866509090120143e-05,
+      0.0018722005791447379
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.04443296765525018,
+      0.09356682077295612
+     ],
+     "hours": [
+      23.72635921217121,
+      49.962901808060664
+     ],
+     "note": "steady writing + pen lifts (0.3, 2.3) and ticks (2.3, 7.7) per 100 words at 15 words/min (SIM study S rates; 0.11-0.31 J per lift, CALC)"
+    },
+    "hover_awake": {
+     "total_W": [
+      0.004868705882352942,
+      0.017341176470588235
+     ],
+     "hours": [
+      128.01899592944372,
+      455.97332302339066
+     ],
+     "note": "held, not writing: SoC at 30-50 % of its writing duty, IMU and page sensor on, nib Hall and coil drivers off (the carrier rests on its soft stops), face sensor at half duty (ASSUMPTION)"
+    },
+    "standby_desk": {
+     "total_W": [
+      0.0001,
+      0.0003
+     ],
+     "hours": [
+      7400.000000000001,
+      22200.0
+     ],
+     "days": [
+      308.33333333333337,
+      925.0
+     ],
+     "note": "on the desk (IMU wake-up, SoC idle, BLE advertising slowly): the cell's own self-discharge (a few % per month, ASSUMPTION) matters as much"
+    }
+   },
+   "E_usable_Wh": 2.22,
+   "vs_REQ_RVJ_I01": {
+    "steady_0mm": {
+     "target_h": 8.0,
+     "hours_low": 24.210798793949653,
+     "passes": true
+    },
+    "steady_1mm": {
+     "target_h": 8.0,
+     "hours_low": 23.512089249586975,
+     "passes": true
+    },
+    "guide": {
+     "target_h": 8.0,
+     "hours_low": 23.170741039895514,
+     "passes": true
+    }
+   },
+   "factors": {
+    "coil_power_factor_vs_studyB": 1.8034291536220757,
+    "lead_power_factor": 1.2139397786090869,
+    "Km_scale": [
+     1.0,
+     0.7
+    ],
+    "ball_guide_friction_mN": 2.6203469841992764
+   },
+   "label": "CALCULATION (datasheet electronics MANUFACTURER with duty ASSUMPTION; nib: study B's duty model x Rev K's coil and leads; positioners MANUFACTURER AMF-15 with rates ASSUMPTION; SIM rates from study S)"
+  },
+  "power_heel_variant": {
+   "rows": {
+    "steady_0mm": {
+     "q_rms_mm": 0.0,
+     "nib_W": [
+      0.016451749389389283,
+      0.03357499875385568
+     ],
+     "nib_35deg_W": [
+      0.038531282220145596,
+      0.07863526983703183
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.0,
+      0.0
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.002
+     ],
+     "total_W": [
+      0.04434430256434897,
+      0.09369462019381139
+     ],
+     "hours": [
+      23.69399646861083,
+      50.06280111810329
+     ],
+     "note": "writing with no tremor: holding and the balance residual"
+    },
+    "steady_1mm": {
+     "q_rms_mm": 0.7071067811865475,
+     "nib_W": [
+      0.017786946519336103,
+      0.036299890855787977
+     ],
+     "nib_35deg_W": [
+      0.03986647935009242,
+      0.08136016193896414
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.0,
+      0.0
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.002
+     ],
+     "total_W": [
+      0.045679499694295786,
+      0.09641951229574368
+     ],
+     "hours": [
+      23.02438528407698,
+      48.59948149294687
+     ],
+     "note": "1 mm rms at the tip (0.71 mm per axis) corrected"
+    },
+    "steady_2mm": {
+     "q_rms_mm": 0.75,
+     "nib_W": [
+      0.01794450822418836,
+      0.047607878962132394
+     ],
+     "nib_35deg_W": [
+      0.04002404105494468,
+      0.1061862313702614
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.0,
+      0.0
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.002
+     ],
+     "total_W": [
+      0.045837061399148046,
+      0.10772750040208809
+     ],
+     "hours": [
+      20.607551383945133,
+      48.4324241614944
+     ],
+     "note": "2 mm rms: the +-1.06 mm nib clips (0.75 mm rms per axis); high end x1.3 for the servo pushing into the soft stops (ASSUMPTION)"
+    },
+    "guide": {
+     "q_rms_mm": 0.3,
+     "nib_W": [
+      0.016753524480051022,
+      0.034190866285818425
+     ],
+     "nib_35deg_W": [
+      0.03883305731080734,
+      0.07925113736899458
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.01175,
+      0.0295
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.0563960776550107,
+      0.12181048772577413
+     ],
+     "hours": [
+      18.22503169840166,
+      39.364439732498965
+     ],
+     "note": "guidance nudges within the nib's reach (0.3 mm rms) and 0.5-1 LRA cue per second; heel steered (study D 1-6 mW + drivers)"
+    },
+    "spelling_cue": {
+     "q_rms_mm": 0.0,
+     "nib_W": [
+      0.016451749389389283,
+      0.03357499875385568
+     ],
+     "nib_35deg_W": [
+      0.038531282220145596,
+      0.07863526983703183
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      8.866509090120143e-05,
+      0.0018722005791447379
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.002
+     ],
+     "total_W": [
+      0.04443296765525018,
+      0.09556682077295613
+     ],
+     "hours": [
+      23.229819534063903,
+      49.962901808060664
+     ],
+     "note": "steady writing + pen lifts (0.3, 2.3) and ticks (2.3, 7.7) per 100 words at 15 words/min (SIM study S rates; 0.11-0.31 J per lift, CALC)"
+    },
+    "lead_through": {
+     "q_rms_mm": 0.3,
+     "nib_W": [
+      0.016753524480051022,
+      0.034190866285818425
+     ],
+     "nib_35deg_W": [
+      0.03883305731080734,
+      0.07925113736899458
+     ],
+     "electronics_W": [
+      0.02186894117647059,
+      0.04313411764705883
+     ],
+     "page_W": [
+      0.0012705882352941178,
+      0.0019058823529411765
+     ],
+     "face_sensor_W": [
+      0.004,
+      0.008
+     ],
+     "positioners_W": [
+      0.0007530237631949791,
+      0.005079621439955697
+     ],
+     "mode_extra_W": [
+      0.10333333333333333,
+      0.11333333333333334
+     ],
+     "heel_sleep_W": [
+      0.0,
+      0.0
+     ],
+     "total_W": [
+      0.14797941098834405,
+      0.20564382105910747
+     ],
+     "hours": [
+      10.795364473226323,
+      15.002087014489224
+     ],
+     "note": "heel module driving (study D SIM 84 mW / 0.9 mesh) + drivers 10-20 mW"
+    },
+    "hover_awake": {
+     "total_W": [
+      0.004868705882352942,
+      0.017341176470588235
+     ],
+     "hours": [
+      128.01899592944372,
+      455.97332302339066
+     ],
+     "note": "held, not writing: SoC at 30-50 % of its writing duty, IMU and page sensor on, nib Hall and coil drivers off (the carrier rests on its soft stops), face sensor at half duty (ASSUMPTION)"
+    },
+    "standby_desk": {
+     "total_W": [
+      0.0001,
+      0.0003
+     ],
+     "hours": [
+      7400.000000000001,
+      22200.0
+     ],
+     "days": [
+      308.33333333333337,
+      925.0
+     ],
+     "note": "on the desk (IMU wake-up, SoC idle, BLE advertising slowly): the cell's own self-discharge (a few % per month, ASSUMPTION) matters as much"
+    }
+   },
+   "E_usable_Wh": 2.22,
+   "vs_REQ_RVJ_I01": {
+    "steady_0mm": {
+     "target_h": 8.0,
+     "hours_low": 23.69399646861083,
+     "passes": true
+    },
+    "steady_1mm": {
+     "target_h": 8.0,
+     "hours_low": 23.02438528407698,
+     "passes": true
+    },
+    "guide": {
+     "target_h": 8.0,
+     "hours_low": 18.22503169840166,
+     "passes": true
+    },
+    "lead_through": {
+     "target_h": 7.5,
+     "hours_low": 10.795364473226323,
+     "passes": true
+    }
+   },
+   "factors": {
+    "coil_power_factor_vs_studyB": 1.8034291536220757,
+    "lead_power_factor": 1.2139397786090869,
+    "Km_scale": [
+     1.0,
+     0.7
+    ],
+    "ball_guide_friction_mN": 2.6203469841992764
+   },
+   "label": "CALCULATION (datasheet electronics MANUFACTURER with duty ASSUMPTION; nib: study B's duty model x Rev K's coil and leads; positioners MANUFACTURER AMF-15 with rates ASSUMPTION; SIM rates from study S)"
+  },
+  "power_compare": {
+   "revJ1": {
+    "steady_no_tremor_h": [
+     14.807431488157151,
+     18.92772751251192
+    ],
+    "steady_1mm_h": [
+     8.457582942044349,
+     9.658478363320848
+    ],
+    "guide_h": [
+     12.073872007392652,
+     16.059999320979394
+    ],
+    "lead_h": [
+     7.546274268233231,
+     8.755723459470191
+    ],
+    "status": "suspended (DEC-046: the static side load was left out; with it about 1 h)",
+    "source": "results/revJ1/budgets.json (CALC)"
+   },
+   "studyB": {
+    "battery_h_CALC": 38.35,
+    "battery_h_SIM": 33.5,
+    "basis": "electronics 47 mW mid + nib 7.6 / 0.85 + 2 mW positioners (study B)",
+    "source": "results/bnib/bnib.json; docs/balanced_nib.md"
+   },
+   "revK_steady_1mm_h": [
+    23.512089249586975,
+    48.59948149294687
+   ],
+   "why_different_from_studyB": "Rev K counts the TMAG5170 at up to full duty, a face-position sensor (4-8 mW, Rev J value), the buildable coil (x1.80 copper loss) and the wire leads (x1.21)"
+  },
+  "heat": {
+   "room_C": 30.0,
+   "rows": {
+    "steady_0mm": {
+     "web_C": 30.640384231266168,
+     "pads_C": [
+      35.74232828043754,
+      34.576884244541795,
+      32.91153793436453
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 35.99927431938861,
+     "coil_C": 36.906129900985775,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07863526983703183,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.013079621439955696
+     }
+    },
+    "steady_1mm": {
+     "web_C": 30.640385993061237,
+     "pads_C": [
+      35.93051350339282,
+      34.704450468769835,
+      32.95320161851052
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 36.18745954234389,
+     "coil_C": 37.13518850547004,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.08136016193896414,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.013079621439955696
+     }
+    },
+    "steady_2mm": {
+     "web_C": 30.64040204450295,
+     "pads_C": [
+      37.64503989059136,
+      35.86668655787146,
+      33.332792984582696
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 37.901985929542434,
+     "coil_C": 39.22210593413804,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.1061862313702614,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.013079621439955696
+     }
+    },
+    "guide": {
+     "web_C": 30.8108814515348,
+     "pads_C": [
+      35.78487283634982,
+      34.60575230497889,
+      32.92106519536637
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 36.041829741627446,
+     "coil_C": 36.95791177585117,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07925113736899458,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.016579621439955696
+     }
+    },
+    "spelling_cue": {
+     "web_C": 30.73158544527552,
+     "pads_C": [
+      35.74233459279034,
+      34.576903571757555,
+      32.91159711059894
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 35.999286444296516,
+     "coil_C": 36.90613584209386,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07863526983703183,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.014951822019100435
+     }
+    }
+   },
+   "worst_shell_C": 37.901985929542434,
+   "fin_length_constant_mm": 5.3619026473818066,
+   "limits": {
+    "held_max_C": 43.0,
+    "design_target_C": 41.0
+   },
+   "passes_41C": true,
+   "compare": {
+    "revJ1_web_1mm_C": 35.9,
+    "revJ1_source": "DEC-045 (CALC; suspended by DEC-046)",
+    "studyB_skin_C": 30.59
+   },
+   "pen_lift_motor_rise_K": 3.75,
+   "label": "CALCULATION (1-D fin model of the PEEK shell, h 10 W/m2K ASSUMPTION, k MANUFACTURER AMF-24; high-end powers; no hand contact counted: conservative)"
+  },
+  "heat_heel_variant": {
+   "room_C": 30.0,
+   "rows": {
+    "steady_0mm": {
+     "web_C": 30.640384231266168,
+     "pads_C": [
+      35.74232828043754,
+      34.576884244541795,
+      32.91153793436453
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 35.99927431938861,
+     "coil_C": 36.906129900985775,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07863526983703183,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.013079621439955696
+     }
+    },
+    "steady_1mm": {
+     "web_C": 30.640385993061237,
+     "pads_C": [
+      35.93051350339282,
+      34.704450468769835,
+      32.95320161851052
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 36.18745954234389,
+     "coil_C": 37.13518850547004,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.08136016193896414,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.013079621439955696
+     }
+    },
+    "steady_2mm": {
+     "web_C": 30.64040204450295,
+     "pads_C": [
+      37.64503989059136,
+      35.86668655787146,
+      33.332792984582696
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 37.901985929542434,
+     "coil_C": 39.22210593413804,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.1061862313702614,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.013079621439955696
+     }
+    },
+    "guide": {
+     "web_C": 32.077429272669654,
+     "pads_C": [
+      35.784960498523766,
+      34.606020709772345,
+      32.921886999457094
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 36.04199812508437,
+     "coil_C": 36.95799428240099,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07925113736899458,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.042579621439955695
+     }
+    },
+    "spelling_cue": {
+     "web_C": 30.73158544527552,
+     "pads_C": [
+      35.74233459279034,
+      34.576903571757555,
+      32.91159711059894
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 35.999286444296516,
+     "coil_C": 36.90613584209386,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07863526983703183,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.014951822019100435
+     }
+    },
+    "lead_through": {
+     "web_C": 36.6831078909914,
+     "pads_C": [
+      35.78524550684473,
+      34.60689335068551,
+      32.924558858863705
+     ],
+     "basis": "35 deg nib power at the high end (Km 0.7 x, high electronics): the worst steady case",
+     "max_over_shell_C": 37.415902976141695,
+     "coil_C": 36.958262528694384,
+     "sources_W": {
+      "coils (through the bonded stator)": 0.07925113736899458,
+      "board": 0.04313411764705883,
+      "page sensor": 0.0019058823529411765,
+      "head motors and face sensor": 0.12641295477328904,
+      "heel motors": 0.11333333333333334
+     }
+    }
+   },
+   "worst_shell_C": 37.901985929542434,
+   "fin_length_constant_mm": 5.3619026473818066,
+   "limits": {
+    "held_max_C": 43.0,
+    "design_target_C": 41.0
+   },
+   "passes_41C": true,
+   "compare": {
+    "revJ1_web_1mm_C": 35.9,
+    "revJ1_source": "DEC-045 (CALC; suspended by DEC-046)",
+    "studyB_skin_C": 30.59
+   },
+   "pen_lift_motor_rise_K": 3.75,
+   "label": "CALCULATION (1-D fin model of the PEEK shell, h 10 W/m2K ASSUMPTION, k MANUFACTURER AMF-24; high-end powers; no hand contact counted: conservative)"
+  },
+  "cost": {
+   "rows": [
+    {
+     "item": "nRF54L15-QFAA (SoC)",
+     "qty": 1,
+     "unit_100_usd": [
+      3.49,
+      3.49
+     ],
+     "unit_1000_usd": [
+      3.06,
+      3.06
+     ],
+     "line_100_usd": [
+      3.49,
+      3.49
+     ],
+     "line_1000_usd": [
+      3.06,
+      3.06
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-252 (DigiKey NRF54L15-QFAA-R, 2026-09-30: 3.49 @100, 3.06 @1000)"
+    },
+    {
+     "item": "DRV8214 coil drivers",
+     "qty": 2,
+     "unit_100_usd": [
+      2.59,
+      2.59
+     ],
+     "unit_1000_usd": [
+      2.24,
+      2.45
+     ],
+     "line_100_usd": [
+      5.18,
+      5.18
+     ],
+     "line_1000_usd": [
+      4.48,
+      4.9
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-253 (DigiKey DRV8214RTER: 2.59 @100, 2.45 @500, 2.24 reel)"
+    },
+    {
+     "item": "TMAG5170-A1 nib Hall",
+     "qty": 1,
+     "unit_100_usd": [
+      1.97,
+      1.97
+     ],
+     "unit_1000_usd": [
+      1.74,
+      1.74
+     ],
+     "line_100_usd": [
+      1.97,
+      1.97
+     ],
+     "line_1000_usd": [
+      1.74,
+      1.74
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-250 (DigiKey TMAG5170A1QDGKR: 1.97 @100, 1.74 @1000)"
+    },
+    {
+     "item": "LSM6DSV16X IMU",
+     "qty": 1,
+     "unit_100_usd": [
+      4.34,
+      4.34
+     ],
+     "unit_1000_usd": [
+      3.89,
+      3.89
+     ],
+     "line_100_usd": [
+      4.34,
+      4.34
+     ],
+     "line_1000_usd": [
+      3.89,
+      3.89
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-254 (DigiKey LSM6DSV16XTR: 4.34 @100, 3.89 @1000)"
+    },
+    {
+     "item": "page sensor die + custom lens and mirror",
+     "qty": 1,
+     "unit_100_usd": [
+      15.0,
+      40.0
+     ],
+     "unit_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "line_100_usd": [
+      15.0,
+      40.0
+     ],
+     "line_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "PMW3610-class die (no distributor price found) + custom optics"
+    },
+    {
+     "item": "LIR14500 cell",
+     "qty": 1,
+     "unit_100_usd": [
+      3.0,
+      6.0
+     ],
+     "unit_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "line_100_usd": [
+      3.0,
+      6.0
+     ],
+     "line_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue Li-ion 14500 (no price opened)"
+    },
+    {
+     "item": "charger, fuel gauge, regulators, passives",
+     "qty": 1,
+     "unit_100_usd": [
+      4.0,
+      8.0
+     ],
+     "unit_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "line_100_usd": [
+      4.0,
+      8.0
+     ],
+     "line_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue ICs"
+    },
+    {
+     "item": "main board (4-layer rigid-flex) and assembly",
+     "qty": 1,
+     "unit_100_usd": [
+      35.0,
+      70.0
+     ],
+     "unit_1000_usd": [
+      10.0,
+      20.0
+     ],
+     "line_100_usd": [
+      35.0,
+      70.0
+     ],
+     "line_1000_usd": [
+      10.0,
+      20.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "prototype vs small-batch PCBA"
+    },
+    {
+     "item": "face-position Hall (TMAG5273 class)",
+     "qty": 1,
+     "unit_100_usd": [
+      1.5,
+      2.5
+     ],
+     "unit_1000_usd": [
+      1.2,
+      2.0
+     ],
+     "line_100_usd": [
+      1.5,
+      2.5
+     ],
+     "line_1000_usd": [
+      1.2,
+      2.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue (OPT-45 class)"
+    },
+    {
+     "item": "SQUIGGLE SQL-RV-1.8 + NSD-2101 driver",
+     "qty": 3,
+     "unit_100_usd": [
+      80.0,
+      200.0
+     ],
+     "unit_1000_usd": [
+      25.0,
+      60.0
+     ],
+     "line_100_usd": [
+      240.0,
+      600.0
+     ],
+     "line_1000_usd": [
+      75.0,
+      180.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "volume-only supply (AMF-15): no public price; micro-stepper fallback"
+    },
+    {
+     "item": "N52 pole magnets 5.12 x 5.12 x 3.5 mm (custom size)",
+     "qty": 4,
+     "unit_100_usd": [
+      2.0,
+      5.0
+     ],
+     "unit_1000_usd": [
+      0.4,
+      1.0
+     ],
+     "line_100_usd": [
+      8.0,
+      20.0
+     ],
+     "line_1000_usd": [
+      1.6,
+      4.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom cut N52"
+    },
+    {
+     "item": "moving coils (two flat layers, flex or bonded wire)",
+     "qty": 1,
+     "unit_100_usd": [
+      40.0,
+      120.0
+     ],
+     "unit_1000_usd": [
+      8.0,
+      20.0
+     ],
+     "line_100_usd": [
+      40.0,
+      120.0
+     ],
+     "line_1000_usd": [
+      8.0,
+      20.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom (NRE excluded)"
+    },
+    {
+     "item": "1010 back plate and keeper (laser cut)",
+     "qty": 2,
+     "unit_100_usd": [
+      3.0,
+      8.0
+     ],
+     "unit_1000_usd": [
+      0.5,
+      1.5
+     ],
+     "line_100_usd": [
+      6.0,
+      16.0
+     ],
+     "line_1000_usd": [
+      1.0,
+      3.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom"
+    },
+    {
+     "item": "Ti-6Al-4V carrier with two rolling guide stations",
+     "qty": 1,
+     "unit_100_usd": [
+      60.0,
+      150.0
+     ],
+     "unit_1000_usd": [
+      15.0,
+      35.0
+     ],
+     "line_100_usd": [
+      60.0,
+      150.0
+     ],
+     "line_1000_usd": [
+      15.0,
+      35.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "micro-machined + jewel rollers"
+    },
+    {
+     "item": "C17200 suspension wires, clamps and PCB flange / anchor",
+     "qty": 1,
+     "unit_100_usd": [
+      20.0,
+      50.0
+     ],
+     "unit_1000_usd": [
+      5.0,
+      12.0
+     ],
+     "line_100_usd": [
+      20.0,
+      50.0
+     ],
+     "line_1000_usd": [
+      5.0,
+      12.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "hand soldering / laser welding"
+    },
+    {
+     "item": "ball thrust guide: 12 Si3N4 balls, two 440C races, wave springs, hard stops; lateral stop bush",
+     "qty": 1,
+     "unit_100_usd": [
+      30.0,
+      80.0
+     ],
+     "unit_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "line_100_usd": [
+      30.0,
+      80.0
+     ],
+     "line_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue grade-5 balls; lapped custom races"
+    },
+    {
+     "item": "counter-face head (roll ring, hinge, sapphire face, float, puck)",
+     "qty": 1,
+     "unit_100_usd": [
+      120.0,
+      300.0
+     ],
+     "unit_1000_usd": [
+      30.0,
+      70.0
+     ],
+     "line_100_usd": [
+      120.0,
+      300.0
+     ],
+     "line_1000_usd": [
+      30.0,
+      70.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom micro-mechanism"
+    },
+    {
+     "item": "PEEK shell, front sleeve (TPE), skid ring, rear cap",
+     "qty": 1,
+     "unit_100_usd": [
+      60.0,
+      140.0
+     ],
+     "unit_1000_usd": [
+      8.0,
+      18.0
+     ],
+     "line_100_usd": [
+      60.0,
+      140.0
+     ],
+     "line_1000_usd": [
+      8.0,
+      18.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "machined at 100, moulded at 1000 (tooling excluded)"
+    },
+    {
+     "item": "cue LRA 8 mm",
+     "qty": 1,
+     "unit_100_usd": [
+      2.0,
+      4.0
+     ],
+     "unit_1000_usd": [
+      1.0,
+      2.0
+     ],
+     "line_100_usd": [
+      2.0,
+      4.0
+     ],
+     "line_1000_usd": [
+      1.0,
+      2.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "AMF-45 class"
+    },
+    {
+     "item": "charging contacts (gold pads) and cradle share",
+     "qty": 1,
+     "unit_100_usd": [
+      3.0,
+      8.0
+     ],
+     "unit_1000_usd": [
+      1.0,
+      3.0
+     ],
+     "line_100_usd": [
+      3.0,
+      8.0
+     ],
+     "line_1000_usd": [
+      1.0,
+      3.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom"
+    },
+    {
+     "item": "assembly, calibration and test (hours x rate)",
+     "qty": 1,
+     "unit_100_usd": [
+      150.0,
+      300.0
+     ],
+     "unit_1000_usd": [
+      40.0,
+      80.0
+     ],
+     "line_100_usd": [
+      150.0,
+      300.0
+     ],
+     "line_1000_usd": [
+      40.0,
+      80.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "3-6 h at 50 USD/h (100) .. 1-1.5 h (1000)"
+    }
+   ],
+   "unit_cost_usd": {
+    "100": [
+     812.48,
+     1929.48
+    ],
+    "1000": [
+     225.97,
+     500.59000000000003
+    ]
+   },
+   "catalogue_share_of_low": {
+    "100": 0.018437376920047262,
+    "1000": 0.05828207284152764
+   },
+   "nre_usd": [
+    28000.0,
+    70000.0
+   ],
+   "nre_per_unit_at_1000_usd": [
+    28.0,
+    70.0
+   ],
+   "largest_at_1000": [
+    "SQUIGGLE SQL-RV-1.8 + NSD-2101 driver",
+    "assembly, calibration and test (hours x rate)",
+    "counter-face head (roll ring, hinge, sapphire face, float, puck)",
+    "Ti-6Al-4V carrier with two rolling guide stations",
+    "main board (4-layer rigid-flex) and assembly"
+   ],
+   "compare": {
+    "revJ1": "cost classes only (no prices seen): heel drive and spherical actuator 'high' (revj/budgets.COST)",
+    "studyB": "a 16-line bill of materials without prices (results/bnib/bnib.json bom)"
+   },
+   "label": "MANUFACTURER prices for five catalogue ICs (distributor pages opened 2026-09-30, AMF-250..254 proposed); every other line ASSUMPTION (a request for quotation pins it)"
+  },
+  "cost_heel_variant": {
+   "rows": [
+    {
+     "item": "nRF54L15-QFAA (SoC)",
+     "qty": 1,
+     "unit_100_usd": [
+      3.49,
+      3.49
+     ],
+     "unit_1000_usd": [
+      3.06,
+      3.06
+     ],
+     "line_100_usd": [
+      3.49,
+      3.49
+     ],
+     "line_1000_usd": [
+      3.06,
+      3.06
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-252 (DigiKey NRF54L15-QFAA-R, 2026-09-30: 3.49 @100, 3.06 @1000)"
+    },
+    {
+     "item": "DRV8214 coil drivers",
+     "qty": 2,
+     "unit_100_usd": [
+      2.59,
+      2.59
+     ],
+     "unit_1000_usd": [
+      2.24,
+      2.45
+     ],
+     "line_100_usd": [
+      5.18,
+      5.18
+     ],
+     "line_1000_usd": [
+      4.48,
+      4.9
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-253 (DigiKey DRV8214RTER: 2.59 @100, 2.45 @500, 2.24 reel)"
+    },
+    {
+     "item": "TMAG5170-A1 nib Hall",
+     "qty": 1,
+     "unit_100_usd": [
+      1.97,
+      1.97
+     ],
+     "unit_1000_usd": [
+      1.74,
+      1.74
+     ],
+     "line_100_usd": [
+      1.97,
+      1.97
+     ],
+     "line_1000_usd": [
+      1.74,
+      1.74
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-250 (DigiKey TMAG5170A1QDGKR: 1.97 @100, 1.74 @1000)"
+    },
+    {
+     "item": "LSM6DSV16X IMU",
+     "qty": 1,
+     "unit_100_usd": [
+      4.34,
+      4.34
+     ],
+     "unit_1000_usd": [
+      3.89,
+      3.89
+     ],
+     "line_100_usd": [
+      4.34,
+      4.34
+     ],
+     "line_1000_usd": [
+      3.89,
+      3.89
+     ],
+     "label": "MANUFACTURER",
+     "source": "AMF-254 (DigiKey LSM6DSV16XTR: 4.34 @100, 3.89 @1000)"
+    },
+    {
+     "item": "page sensor die + custom lens and mirror",
+     "qty": 1,
+     "unit_100_usd": [
+      15.0,
+      40.0
+     ],
+     "unit_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "line_100_usd": [
+      15.0,
+      40.0
+     ],
+     "line_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "PMW3610-class die (no distributor price found) + custom optics"
+    },
+    {
+     "item": "LIR14500 cell",
+     "qty": 1,
+     "unit_100_usd": [
+      3.0,
+      6.0
+     ],
+     "unit_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "line_100_usd": [
+      3.0,
+      6.0
+     ],
+     "line_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue Li-ion 14500 (no price opened)"
+    },
+    {
+     "item": "charger, fuel gauge, regulators, passives",
+     "qty": 1,
+     "unit_100_usd": [
+      4.0,
+      8.0
+     ],
+     "unit_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "line_100_usd": [
+      4.0,
+      8.0
+     ],
+     "line_1000_usd": [
+      2.0,
+      4.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue ICs"
+    },
+    {
+     "item": "main board (4-layer rigid-flex) and assembly",
+     "qty": 1,
+     "unit_100_usd": [
+      35.0,
+      70.0
+     ],
+     "unit_1000_usd": [
+      10.0,
+      20.0
+     ],
+     "line_100_usd": [
+      35.0,
+      70.0
+     ],
+     "line_1000_usd": [
+      10.0,
+      20.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "prototype vs small-batch PCBA"
+    },
+    {
+     "item": "face-position Hall (TMAG5273 class)",
+     "qty": 1,
+     "unit_100_usd": [
+      1.5,
+      2.5
+     ],
+     "unit_1000_usd": [
+      1.2,
+      2.0
+     ],
+     "line_100_usd": [
+      1.5,
+      2.5
+     ],
+     "line_1000_usd": [
+      1.2,
+      2.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue (OPT-45 class)"
+    },
+    {
+     "item": "SQUIGGLE SQL-RV-1.8 + NSD-2101 driver",
+     "qty": 3,
+     "unit_100_usd": [
+      80.0,
+      200.0
+     ],
+     "unit_1000_usd": [
+      25.0,
+      60.0
+     ],
+     "line_100_usd": [
+      240.0,
+      600.0
+     ],
+     "line_1000_usd": [
+      75.0,
+      180.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "volume-only supply (AMF-15): no public price; micro-stepper fallback"
+    },
+    {
+     "item": "N52 pole magnets 5.12 x 5.12 x 3.5 mm (custom size)",
+     "qty": 4,
+     "unit_100_usd": [
+      2.0,
+      5.0
+     ],
+     "unit_1000_usd": [
+      0.4,
+      1.0
+     ],
+     "line_100_usd": [
+      8.0,
+      20.0
+     ],
+     "line_1000_usd": [
+      1.6,
+      4.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom cut N52"
+    },
+    {
+     "item": "moving coils (two flat layers, flex or bonded wire)",
+     "qty": 1,
+     "unit_100_usd": [
+      40.0,
+      120.0
+     ],
+     "unit_1000_usd": [
+      8.0,
+      20.0
+     ],
+     "line_100_usd": [
+      40.0,
+      120.0
+     ],
+     "line_1000_usd": [
+      8.0,
+      20.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom (NRE excluded)"
+    },
+    {
+     "item": "1010 back plate and keeper (laser cut)",
+     "qty": 2,
+     "unit_100_usd": [
+      3.0,
+      8.0
+     ],
+     "unit_1000_usd": [
+      0.5,
+      1.5
+     ],
+     "line_100_usd": [
+      6.0,
+      16.0
+     ],
+     "line_1000_usd": [
+      1.0,
+      3.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom"
+    },
+    {
+     "item": "Ti-6Al-4V carrier with two rolling guide stations",
+     "qty": 1,
+     "unit_100_usd": [
+      60.0,
+      150.0
+     ],
+     "unit_1000_usd": [
+      15.0,
+      35.0
+     ],
+     "line_100_usd": [
+      60.0,
+      150.0
+     ],
+     "line_1000_usd": [
+      15.0,
+      35.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "micro-machined + jewel rollers"
+    },
+    {
+     "item": "C17200 suspension wires, clamps and PCB flange / anchor",
+     "qty": 1,
+     "unit_100_usd": [
+      20.0,
+      50.0
+     ],
+     "unit_1000_usd": [
+      5.0,
+      12.0
+     ],
+     "line_100_usd": [
+      20.0,
+      50.0
+     ],
+     "line_1000_usd": [
+      5.0,
+      12.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "hand soldering / laser welding"
+    },
+    {
+     "item": "ball thrust guide: 12 Si3N4 balls, two 440C races, wave springs, hard stops; lateral stop bush",
+     "qty": 1,
+     "unit_100_usd": [
+      30.0,
+      80.0
+     ],
+     "unit_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "line_100_usd": [
+      30.0,
+      80.0
+     ],
+     "line_1000_usd": [
+      6.0,
+      15.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "catalogue grade-5 balls; lapped custom races"
+    },
+    {
+     "item": "counter-face head (roll ring, hinge, sapphire face, float, puck)",
+     "qty": 1,
+     "unit_100_usd": [
+      120.0,
+      300.0
+     ],
+     "unit_1000_usd": [
+      30.0,
+      70.0
+     ],
+     "line_100_usd": [
+      120.0,
+      300.0
+     ],
+     "line_1000_usd": [
+      30.0,
+      70.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom micro-mechanism"
+    },
+    {
+     "item": "PEEK shell, front sleeve (TPE), skid ring, rear cap",
+     "qty": 1,
+     "unit_100_usd": [
+      60.0,
+      140.0
+     ],
+     "unit_1000_usd": [
+      8.0,
+      18.0
+     ],
+     "line_100_usd": [
+      60.0,
+      140.0
+     ],
+     "line_1000_usd": [
+      8.0,
+      18.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "machined at 100, moulded at 1000 (tooling excluded)"
+    },
+    {
+     "item": "cue LRA 8 mm",
+     "qty": 1,
+     "unit_100_usd": [
+      2.0,
+      4.0
+     ],
+     "unit_1000_usd": [
+      1.0,
+      2.0
+     ],
+     "line_100_usd": [
+      2.0,
+      4.0
+     ],
+     "line_1000_usd": [
+      1.0,
+      2.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "AMF-45 class"
+    },
+    {
+     "item": "charging contacts (gold pads) and cradle share",
+     "qty": 1,
+     "unit_100_usd": [
+      3.0,
+      8.0
+     ],
+     "unit_1000_usd": [
+      1.0,
+      3.0
+     ],
+     "line_100_usd": [
+      3.0,
+      8.0
+     ],
+     "line_1000_usd": [
+      1.0,
+      3.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom"
+    },
+    {
+     "item": "assembly, calibration and test (hours x rate)",
+     "qty": 1,
+     "unit_100_usd": [
+      150.0,
+      300.0
+     ],
+     "unit_1000_usd": [
+      40.0,
+      80.0
+     ],
+     "line_100_usd": [
+      150.0,
+      300.0
+     ],
+     "line_1000_usd": [
+      40.0,
+      80.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "3-6 h at 50 USD/h (100) .. 1-1.5 h (1000)"
+    },
+    {
+     "item": "Faulhaber 0620 B motors (heel module)",
+     "qty": 2,
+     "unit_100_usd": [
+      120.0,
+      200.0
+     ],
+     "unit_1000_usd": [
+      80.0,
+      140.0
+     ],
+     "line_100_usd": [
+      240.0,
+      400.0
+     ],
+     "line_1000_usd": [
+      160.0,
+      280.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "AMF-100 part; no price opened"
+    },
+    {
+     "item": "heel pod, wheel, fork, gears, shafts, sensors, drivers",
+     "qty": 1,
+     "unit_100_usd": [
+      150.0,
+      300.0
+     ],
+     "unit_1000_usd": [
+      40.0,
+      80.0
+     ],
+     "line_100_usd": [
+      150.0,
+      300.0
+     ],
+     "line_1000_usd": [
+      40.0,
+      80.0
+     ],
+     "label": "ASSUMPTION",
+     "source": "custom module-0.1 gears, jewels"
+    }
+   ],
+   "unit_cost_usd": {
+    "100": [
+     1202.48,
+     2629.48
+    ],
+    "1000": [
+     425.97,
+     860.59
+    ]
+   },
+   "catalogue_share_of_low": {
+    "100": 0.012457587652185484,
+    "1000": 0.030917670258468907
+   },
+   "nre_usd": [
+    28000.0,
+    70000.0
+   ],
+   "nre_per_unit_at_1000_usd": [
+    28.0,
+    70.0
+   ],
+   "largest_at_1000": [
+    "Faulhaber 0620 B motors (heel module)",
+    "SQUIGGLE SQL-RV-1.8 + NSD-2101 driver",
+    "assembly, calibration and test (hours x rate)",
+    "heel pod, wheel, fork, gears, shafts, sensors, drivers",
+    "counter-face head (roll ring, hinge, sapphire face, float, puck)"
+   ],
+   "compare": {
+    "revJ1": "cost classes only (no prices seen): heel drive and spherical actuator 'high' (revj/budgets.COST)",
+    "studyB": "a 16-line bill of materials without prices (results/bnib/bnib.json bom)"
+   },
+   "label": "MANUFACTURER prices for five catalogue ICs (distributor pages opened 2026-09-30, AMF-250..254 proposed); every other line ASSUMPTION (a request for quotation pins it)"
+  },
+  "length_mm": 145.1289963095672,
+  "length_compare": {
+   "revJ1_base_mm": 143.9,
+   "studyB_mm": 148.0,
+   "limit_mm": 175.0
+  }
+ }
+}

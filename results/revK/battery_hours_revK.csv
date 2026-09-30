@@ -1,0 +1,7 @@
+mode,pen,hours_low,hours_high,REQ_RVJ_I01_target_h,revJ1_low_h,revJ1_high_h
+steady_0mm,base,24.21,50.06,8.0,14.807431488157151,18.92772751251192
+steady_1mm,base,23.51,48.6,8.0,8.457582942044349,9.658478363320848
+steady_2mm,base,21.0,48.43,,,
+guide,base,23.17,48.9,8.0,12.073872007392652,16.059999320979394
+spelling_cue,base,23.73,49.96,,,
+lead_through,heel variant,10.8,15.0,7.5,7.546274268233231,8.755723459470191

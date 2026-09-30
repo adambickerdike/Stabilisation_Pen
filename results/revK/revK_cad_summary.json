@@ -1,0 +1,649 @@
+{
+ "meta": {
+  "evidence_status": "PROPOSED DESIGN (dimensioned concept); CALC (solid checks); nothing built or measured",
+  "generated_utc": "2026-09-30T04:14:06+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 mechanics/cad/revK_pen.py --heel",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "mechanics/cad/revK_pen.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2"
+ },
+ "stabpen.provenance": {
+  "evidence_status": "PROPOSED DESIGN (dimensioned concept); CALC (solid checks); nothing built or measured",
+  "generated_utc": "2026-09-30T04:14:06+00:00",
+  "git_revision": "46c1ee1-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "python3 mechanics/cad/revK_pen.py --heel",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "package": "revk",
+  "version": "revk-0.1",
+  "script": "mechanics/cad/revK_pen.py",
+  "doc": "docs/revK_design.md",
+  "quick": false,
+  "read_only_inputs_sha256_16": {
+   "results/bnib/bnib.json": "c68d41f2837ac849",
+   "results/bnib/layout_parts.json": "79cd2d9d35a9d5a2",
+   "config/nib.yaml": "a4f19b4139a3b356",
+   "bnib/flexure.py": "4fa53b3f0a47bfea",
+   "bnib/magnetics.py": "07a22c05a62e5c05",
+   "bnib/candidates.py": "50ce88a3227fb3be",
+   "bnib/loads.py": "f140b846d282ba57",
+   "bnib/labels.py": "3465f8d03ff0e4d3",
+   "bnib/balance.py": "485396a48fcb4902",
+   "revj/params.py": "89cf6afb7c379ff8",
+   "revj/budgets.py": "327685ed2451295c",
+   "revj/frontend.py": "6a1358d25815adec",
+   "revj1/params.py": "8fa9fc431ade9827",
+   "revj1/power.py": "c9107f35d709d694",
+   "revj1/thermal.py": "e3d2a6dcde4d59f2",
+   "results/revJ/layout.json": "a5f4928697654cab",
+   "results/revJ/sim_params.json": "e4d769dd72035480",
+   "results/revJ1/layout.json": "29e4f24233b548d2",
+   "results/revJ1/budgets.json": "b0a426660401c77c",
+   "opt/inertial/front_end.py": "25d52e9bef14a0af",
+   "docs/decisions.md": "a96858d29b50d7fe",
+   "docs/requirements.csv": "aa47ae0ad16b959c"
+  },
+  "revk_sources_sha256_16": {
+   "revk/__init__.py": "d953f8634b1e74d8",
+   "revk/budgets.py": "f591462172ee5577",
+   "revk/counterface.py": "b4f28895b2aa82ee",
+   "revk/evidence.py": "b747b4cc8ddbf7cf",
+   "revk/figures.py": "9de85f6cb1ce809e",
+   "revk/frontend.py": "6bc9414716b79d56",
+   "revk/layout.py": "c9433ee0f46696da",
+   "revk/nib.py": "2dbb4b67cd375532",
+   "revk/params.py": "6dda27e9ed269cf8",
+   "revk/run.py": "fcab64425766d2ee",
+   "revk/servo_sim.py": "0d9fd3b24d750b06",
+   "revk/simparams.py": "2bfecebb66be147d",
+   "revk/tolerance.py": "25a202e322456ce6"
+  },
+  "parameters": "every input with its label and source is in revK.json -> inputs (revk/params.py, revk/layout.LAY, revk/tolerance tables)",
+  "magpylib": "5.2.3",
+  "matplotlib": "3.11.2"
+ },
+ "variant": "base pen + heel-module variant",
+ "step": {
+  "base": true,
+  "heel": true
+ },
+ "solid_checks": {
+  "base": {
+   "n_solids": 54,
+   "failed": [],
+   "interferences_at_rest": [],
+   "interferences_at_stop": []
+  },
+  "heel": {
+   "n_solids": 12,
+   "failed": [],
+   "interferences_at_rest": [
+    {
+     "a": "drive_wheel",
+     "b": "skid_ring",
+     "volume_mm3": 0.5556291675522588
+    },
+    {
+     "a": "drive_fork",
+     "b": "skid_ring",
+     "volume_mm3": 6.43974125640086
+    },
+    {
+     "a": "drive_pod",
+     "b": "skid_ring",
+     "volume_mm3": 1.4574819162510555
+    },
+    {
+     "a": "drive_pod",
+     "b": "front_cone_1",
+     "volume_mm3": 20.382156168679185
+    },
+    {
+     "a": "drive_pod",
+     "b": "page_optics",
+     "volume_mm3": 2.0519999999999987
+    },
+    {
+     "a": "drive_inner_shaft_drive",
+     "b": "front_cone_1",
+     "volume_mm3": 0.06638545780921487
+    },
+    {
+     "a": "drive_inner_shaft_drive",
+     "b": "page_sensor",
+     "volume_mm3": 2.5132741228718345
+    },
+    {
+     "a": "drive_inner_shaft_steering",
+     "b": "front_cone_1",
+     "volume_mm3": 0.06638545780921487
+    },
+    {
+     "a": "drive_inner_shaft_steering",
+     "b": "page_sensor",
+     "volume_mm3": 2.5132741228718345
+    },
+    {
+     "a": "drive_front_transfer",
+     "b": "front_cone_3",
+     "volume_mm3": 11.320877770049243
+    },
+    {
+     "a": "drive_shaft_drive",
+     "b": "back_plate",
+     "volume_mm3": 0.039850226875827274
+    },
+    {
+     "a": "drive_shaft_drive",
+     "b": "keeper",
+     "volume_mm3": 0.03985022687582727
+    },
+    {
+     "a": "drive_shaft_drive",
+     "b": "front_sleeve",
+     "volume_mm3": 6.356009245138228
+    },
+    {
+     "a": "drive_shaft_drive",
+     "b": "head_carriage",
+     "volume_mm3": 0.6642324991486966
+    },
+    {
+     "a": "drive_shaft_drive",
+     "b": "bulkhead",
+     "volume_mm3": 0.12602401254685788
+    },
+    {
+     "a": "drive_shaft_drive",
+     "b": "shell",
+     "volume_mm3": 15.182954390453869
+    },
+    {
+     "a": "drive_shaft_steering",
+     "b": "back_plate",
+     "volume_mm3": 0.03985022687582723
+    },
+    {
+     "a": "drive_shaft_steering",
+     "b": "keeper",
+     "volume_mm3": 0.03985022687582723
+    },
+    {
+     "a": "drive_shaft_steering",
+     "b": "front_sleeve",
+     "volume_mm3": 6.356009245138187
+    },
+    {
+     "a": "drive_shaft_steering",
+     "b": "head_carriage",
+     "volume_mm3": 0.6642324991486983
+    },
+    {
+     "a": "drive_shaft_steering",
+     "b": "bulkhead",
+     "volume_mm3": 0.126024012546858
+    },
+    {
+     "a": "drive_shaft_steering",
+     "b": "shell",
+     "volume_mm3": 15.182954390453775
+    }
+   ]
+  }
+ },
+ "geometry": {
+  "units": "mm, g",
+  "axis": "z along the pen axis from the ball tip at 50 deg (nib centred) toward the back; x in the tilt plane, positive away from the paper; y lateral",
+  "skid_contact_radius": 6.0,
+  "ball_protrusion_mm": 4.577705235797383,
+  "protrusion_by_tilt_mm": {
+   "35": 7.958681661985303,
+   "40": 6.6060182161641166,
+   "50": 4.577705235797383,
+   "60": 3.0599564267050177,
+   "70": 1.8113591852306454,
+   "75": 1.245348491443207
+  },
+  "handle_od": 24.0,
+  "length": 145.1289963095672,
+  "grip_zone": [
+   20.0,
+   45.0
+  ],
+  "hand": {
+   "finger_pads_z": [
+    26.0,
+    32.0,
+    38.0
+   ],
+   "web_z": 92.0
+  },
+  "tip_travel_mm": 1.0587,
+  "stop_mm": 1.2587,
+  "refill_slide_mm": 9.737293760017849,
+  "positions": {
+   "keeper_z": [
+    28.449999999999996,
+    29.91534012802591
+   ],
+   "flange_z": [
+    31.015340128025912,
+    32.51534012802591
+   ],
+   "front_race_z": [
+    29.91534012802591,
+    30.21534012802591
+   ],
+   "rear_race_z": [
+    33.31534012802591,
+    33.615340128025906
+   ],
+   "hall_die_z": 34.715340128025915,
+   "position_magnet_centre_z": 33.01534012802591,
+   "anchor_ring_z": [
+    58.56534012802591,
+    60.06534012802591
+   ],
+   "wire_z": [
+    31.765340128025912,
+    58.56534012802591
+   ],
+   "hinge_z": 69.79618940405899,
+   "head_z": [
+    60.66534012802591,
+    92.62899630956721
+   ],
+   "lra_z": [
+    93.62899630956721,
+    101.62899630956721
+   ],
+   "length": 145.1289963095672,
+   "battery_z": [
+    93.12899630956721,
+    141.6289963095672
+   ]
+  },
+  "fit_summary": {
+   "n": 59,
+   "pass": 29,
+   "marginal": 21,
+   "fail": 9,
+   "fails": [
+    "F5",
+    "N3",
+    "N14",
+    "N17",
+    "N22",
+    "H6",
+    "L3",
+    "V1",
+    "V4"
+   ],
+   "marginals": [
+    "F2",
+    "F3",
+    "F4",
+    "F10",
+    "N1",
+    "N2",
+    "N4",
+    "N5",
+    "N6",
+    "N7",
+    "N21",
+    "N10",
+    "N12",
+    "N16b",
+    "N18",
+    "N19",
+    "H1",
+    "H5",
+    "H8",
+    "V3",
+    "V7"
+   ]
+  },
+  "label": "PROPOSED DESIGN (layout); fit checks CALCULATION; nothing built or measured",
+  "pivot_z": 10000.0,
+  "pivot_note": "virtual pivot (mm) for sim2j's gimbal model: B1 is a translation nib (revk/simparams.py)"
+ },
+ "layout_fit_summary": {
+  "n": 59,
+  "pass": 29,
+  "marginal": 21,
+  "fail": 9,
+  "fails": [
+   "F5",
+   "N3",
+   "N14",
+   "N17",
+   "N22",
+   "H6",
+   "L3",
+   "V1",
+   "V4"
+  ],
+  "marginals": [
+   "F2",
+   "F3",
+   "F4",
+   "F10",
+   "N1",
+   "N2",
+   "N4",
+   "N5",
+   "N6",
+   "N7",
+   "N21",
+   "N10",
+   "N12",
+   "N16b",
+   "N18",
+   "N19",
+   "H1",
+   "H5",
+   "H8",
+   "V3",
+   "V7"
+  ]
+ },
+ "n_components": 54,
+ "n_heel_components": 12,
+ "intended_contacts": [
+  [
+   "anchor_ring",
+   "wire_1"
+  ],
+  [
+   "anchor_ring",
+   "wire_2"
+  ],
+  [
+   "anchor_ring",
+   "wire_3"
+  ],
+  [
+   "anchor_ring",
+   "wire_4"
+  ],
+  [
+   "back_plate",
+   "pole_magnet_1"
+  ],
+  [
+   "back_plate",
+   "pole_magnet_2"
+  ],
+  [
+   "back_plate",
+   "pole_magnet_3"
+  ],
+  [
+   "back_plate",
+   "pole_magnet_4"
+  ],
+  [
+   "battery",
+   "lra"
+  ],
+  [
+   "board_parts",
+   "main_board"
+  ],
+  [
+   "bulkhead",
+   "head_flex"
+  ],
+  [
+   "bulkhead",
+   "head_follower_motor"
+  ],
+  [
+   "bulkhead",
+   "head_roll_motor"
+  ],
+  [
+   "carrier",
+   "carrier_flange"
+  ],
+  [
+   "carrier",
+   "carrier_front_guide"
+  ],
+  [
+   "carrier",
+   "carrier_rear_guide"
+  ],
+  [
+   "carrier",
+   "coil_x"
+  ],
+  [
+   "carrier",
+   "coil_y"
+  ],
+  [
+   "carrier_flange",
+   "carrier_rear_guide"
+  ],
+  [
+   "carrier_flange",
+   "front_balls"
+  ],
+  [
+   "carrier_flange",
+   "position_magnet"
+  ],
+  [
+   "carrier_flange",
+   "rear_balls"
+  ],
+  [
+   "carrier_flange",
+   "wire_1"
+  ],
+  [
+   "carrier_flange",
+   "wire_2"
+  ],
+  [
+   "carrier_flange",
+   "wire_3"
+  ],
+  [
+   "carrier_flange",
+   "wire_4"
+  ],
+  [
+   "charging_pads",
+   "rear_cap"
+  ],
+  [
+   "coil_x",
+   "coil_y"
+  ],
+  [
+   "drive_fork",
+   "drive_pod"
+  ],
+  [
+   "drive_fork",
+   "drive_wheel"
+  ],
+  [
+   "drive_front_transfer",
+   "drive_inner_shaft_drive"
+  ],
+  [
+   "drive_front_transfer",
+   "drive_inner_shaft_steering"
+  ],
+  [
+   "drive_front_transfer",
+   "drive_shaft_drive"
+  ],
+  [
+   "drive_front_transfer",
+   "drive_shaft_steering"
+  ],
+  [
+   "drive_inner_shaft_drive",
+   "drive_pod"
+  ],
+  [
+   "drive_inner_shaft_steering",
+   "drive_pod"
+  ],
+  [
+   "drive_motor",
+   "drive_transfer"
+  ],
+  [
+   "drive_pod",
+   "drive_sensors"
+  ],
+  [
+   "drive_shaft_drive",
+   "drive_transfer"
+  ],
+  [
+   "drive_shaft_steering",
+   "drive_transfer"
+  ],
+  [
+   "drive_transfer",
+   "steer_motor"
+  ],
+  [
+   "front_balls",
+   "front_race"
+  ],
+  [
+   "front_cone_1",
+   "front_cone_2"
+  ],
+  [
+   "front_cone_1",
+   "skid_ring"
+  ],
+  [
+   "front_cone_2",
+   "front_cone_3"
+  ],
+  [
+   "front_cone_3",
+   "front_sleeve"
+  ],
+  [
+   "front_race",
+   "keeper"
+  ],
+  [
+   "front_sleeve",
+   "shell"
+  ],
+  [
+   "head_balance_spring",
+   "head_cage"
+  ],
+  [
+   "head_balance_spring",
+   "head_tilt_motor"
+  ],
+  [
+   "head_cage",
+   "head_carriage"
+  ],
+  [
+   "head_cage",
+   "head_tilt_motor"
+  ],
+  [
+   "head_face",
+   "head_float"
+  ],
+  [
+   "head_face",
+   "head_shoe"
+  ],
+  [
+   "head_shoe",
+   "refill_holder"
+  ],
+  [
+   "imu",
+   "main_board"
+  ],
+  [
+   "rear_balls",
+   "rear_race"
+  ],
+  [
+   "rear_cap",
+   "shell"
+  ],
+  [
+   "refill",
+   "refill_holder"
+  ]
+ ],
+ "runtime_s": 6.68825364112854,
+ "note": "solid checks: boolean intersections > 0.001 mm3 between parts that should not touch, at rest and with the moving nib translated to its stop in eight directions (the wires bend and the balls roll: skipped)"
+}
