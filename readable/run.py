@@ -9,8 +9,8 @@ Stages (each resumes from its caches in readable/build; one JSON per case):
   extras     the sensing check on the tuning split (the IMU filter with a perfect accelerometer; a linear estimator on
              the page position) and the clean-writing change of every full estimator on R's clean test notes
   report     readable.json with stabpen.provenance, the figures with CSV twins, the doc tables, the ledger rows
---quick: one tuning note (PD, severe, 3 residual levels), one test note, a reduced E11 grid; outputs go to
-readable/build/quick/ and never overwrite results/readable/.
+--quick: one tuning note (PD, severe: the ordinary pen and 2 residual levels, read), one test note (not read), a
+reduced E11 grid, no sensing check; outputs go to readable/build/quick/ and never overwrite results/readable/.
 """
 from __future__ import annotations
 
@@ -68,9 +68,13 @@ def stage_extras(a):
     from . import e13
     from . import jobs as JB
     P = e13.plan(a.quick)
-    specs = [JB.job(f"sensing_{k}", "readable.stages", "job_sensing", kind=k, quick=a.quick) for k in ("imu", "page")]
+    specs = [] if a.quick else [JB.job(f"sensing_{k}", "readable.stages", "job_sensing", kind=k, quick=a.quick)
+                                for k in ("imu", "page")]          # (full runs only: about 2 minutes each)
     specs += [JB.job(f"gap_test_clean_w{i}", "readable.stages", "job_gap_test_clean", i=i, quick=a.quick)
               for i in P["test"]["notes"]]
+    from . import reach
+    specs += [JB.job(f"reach_n{i}", "readable.stages", "job_reach", i=i, quick=a.quick)
+              for i in reach.plan(a.quick)["notes"]]          # tuning split only; after the freeze
     return JB.run(specs, a.workers, CM.log)
 
 

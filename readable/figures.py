@@ -79,7 +79,7 @@ def fig_e13_curve(out: Dict, d: Path) -> Optional[Path]:
         return None
     plt, PS = _plt()
     splits = [("tuning", tun)] + ([("test", e["test"])] if (e.get("test") or {}).get("fits") else [])
-    fig, axs = plt.subplots(1, len(splits), figsize=(6.2 * len(splits), 4.9), sharey=True, squeeze=False)
+    fig, axs = plt.subplots(1, len(splits), figsize=(6.2 * len(splits), 5.6), sharey=True, squeeze=False)
     rows_csv = []
     rr = np.linspace(0.0, 1.95, 160)
     for ax, (name, blk) in zip(axs[0], splits):
@@ -122,9 +122,8 @@ def fig_e13_curve(out: Dict, d: Path) -> Optional[Path]:
                 if np.isfinite(c.get("lo", np.nan)) and np.isfinite(c.get("hi", np.nan)):
                     ax.axvspan(c["lo"], c["hi"], color=PS.GRID, alpha=0.7, zorder=0, lw=0)
                 ax.axvline(v, color=PS.INK2, lw=1.0, ls=ls, zorder=1)
-                right = key == "r_plus2_mm"
-                ax.text(v + (0.015 if right else -0.015), 9.4, f"{lab}: {v:.2f} mm", fontsize=7.8, color=PS.INK,
-                        ha="left" if right else "right")
+                ax.text(v + 0.015, 9.45 if key == "r_plus2_mm" else 8.95, f"{lab}: {v:.2f} mm", fontsize=7.8,
+                        color=PS.INK, ha="left")
         ax.set_xlim(0, 1.95)
         ax.set_ylim(0, 10)
         ax.set_xlabel("tremor left at the pen tip, mm (peak, f0 +- 2 Hz; R's measure)")
@@ -132,12 +131,13 @@ def fig_e13_curve(out: Dict, d: Path) -> Optional[Path]:
         ax.set_title(f"{'Tuning split' if name == 'tuning' else 'Test split (confirmation, run once)'}: "
                      f"{n_w} writers, PD and ET, severe and moderate", fontsize=10, loc="left")
     axs[0][0].set_ylabel("words read out of 10 (AI reader, literal)")
-    axs[0][0].legend(loc="lower left", fontsize=7.6)
+    h, lab = axs[0][0].get_legend_handles_labels()
+    fig.legend(h, lab, loc="lower center", ncol=3, fontsize=7.8, bbox_to_anchor=(0.5, 0.035))
     fig.suptitle("How much tremor may be left at the tip for words to be readable (EXP-E13)", fontsize=11.5, x=0.01,
                  ha="left")
     PS.stamp(fig, SIM_TAG, "points: mean over writers, 95 % writer-bootstrap interval; grey band: 95 % interval of "
                            "the threshold")
-    fig.tight_layout(rect=(0, 0.02, 1, 0.95))
+    fig.tight_layout(rect=(0, 0.13, 1, 0.95))
     path = d / "fig_e13_curve.png"
     fig.savefig(path)
     plt.close(fig)
@@ -171,7 +171,7 @@ def fig_e13_kinds(out: Dict, d: Path) -> Optional[Path]:
                 rows_csv.append([kind, x["set"], x["device"], ty, x["r"], x["w"], x["n"]])
         ax.plot(rr, CV.model(rr, pooled), color=PS.MUTED, lw=1.4, label="pooled curve (PD + ET)")
         if f and np.all(np.isfinite(f["fit"]["p"])):
-            ax.plot(rr, CV.model(rr, f["fit"]["p"]), color=COL["curve"], lw=1.8, label=f"{kind} curve")
+            ax.plot(rr, CV.model(rr, f["fit"]["p"]), color=COL["curve"], lw=1.8, label="curve for this tremor kind")
             v = f.get("r_plus2_mm")
             if v is not None and np.isfinite(v):
                 ax.axvline(v, color=PS.INK2, lw=1.0, ls=(0, (4, 3)))
@@ -201,7 +201,7 @@ def fig_e11(out: Dict, d: Path) -> Optional[Path]:
         return None
     plt, PS = _plt()
     designs = [k for k in ("D1", "D2", "D3") if any(r.get(f"{k}_frozen_um") is not None for r in pw)]
-    fig, axs = plt.subplots(1, len(designs), figsize=(4.4 * len(designs), 4.4), sharey=True, squeeze=False)
+    fig, axs = plt.subplots(1, len(designs), figsize=(4.4 * len(designs), 4.9), sharey=True, squeeze=False)
     rows_csv = []
     names = [r["writer"].replace(".dat", "").replace("hpb2-", "") for r in pw]
     y = np.arange(len(pw))
@@ -229,12 +229,13 @@ def fig_e11(out: Dict, d: Path) -> Optional[Path]:
     axs[0][0].set_yticks(y)
     axs[0][0].set_yticklabels([f"test note {r['note']} ({n})" for r, n in zip(pw, names)])
     axs[0][0].invert_yaxis()
-    axs[0][0].legend(loc="lower right", fontsize=7.2)
+    h, l = axs[0][0].get_legend_handles_labels()
+    fig.legend(h, l, loc="lower center", ncol=2, fontsize=7.8, bbox_to_anchor=(0.5, 0.045))
     fig.suptitle("Per-writer gate calibration (EXP-E11): clean writing moved on each held-out writer's note "
                  "(INFORMATION ONLY)", fontsize=10.5, x=0.01, ha="left")
-    PS.stamp(fig, SIM_TAG, "test split already seen by study E: a feasibility check, not a claim; values below "
-                           "0.05 um are drawn at 0.05 um")
-    fig.tight_layout(rect=(0, 0.05, 1, 0.93))
+    PS.stamp(fig, "SIMULATION (model HW1) with real recorded inputs", "test split already seen by study E: a "
+                  "feasibility check, not a claim; values below 0.05 um are drawn at 0.05 um")
+    fig.tight_layout(rect=(0, 0.12, 1, 0.93))
     path = d / "fig_e11_clean.png"
     fig.savefig(path)
     plt.close(fig)
@@ -256,51 +257,72 @@ def fig_gap(out: Dict, d: Path) -> Optional[Path]:
     plt, PS = _plt()
     chains = g[split]["chains"]
     order = [k for k in ("fir_raw", "ai2tcn_gated", "net_gated", "akf_raw") if k in chains]
-    fig, axs = plt.subplots(1, 2, figsize=(12.0, 4.6))
+    fig, axs = plt.subplots(1, 2, figsize=(12.4, 5.2))
     rows_csv = []
     x = np.arange(4)
-    fr = (out.get("frozen") or {}).get("e13") or {}
+    wkey = "words_via_test_curve" if split == "test" else "words_via_curve"
+    lab = {"fir_raw": "linear IMU filter trained on the tremor alone",
+           "ai2tcn_gated": "E's frozen tracker (ai2's TCN + gate)",
+           "net_gated": "TCN trained on real data + gate (E, info)",
+           "akf_raw": "listening AKF, capture-tuned (E)"}
     for j, k in enumerate(order):
-        ch = chains[k]
-        steps = ch["steps"]
+        steps = chains[k]["steps"]
         off = (j - (len(order) - 1) / 2) * 0.12
         r = [s["tip_tremor_mm"]["mean"] if s.get("tip_tremor_mm") else np.nan for s in steps]
-        w = [s["words_via_curve"]["mean"] if s.get("words_via_curve") else np.nan for s in steps]
-        lab = {"fir_raw": "linear IMU filter trained on the tremor alone",
-               "ai2tcn_gated": "E's frozen tracker (ai2's TCN + gate)",
-               "net_gated": "TCN trained on real data + gate (E, info)",
-               "akf_raw": "listening AKF, capture-tuned (E)"}[k]
-        axs[0].plot(x[:len(r)] + off, r, color=COL[k], lw=1.4, **{kk: v for kk, v in _mk(PS, COL[k], "o", 8).items()
-                                                                   if kk != "linestyle"}, label=lab)
-        axs[1].plot(x[:len(w)] + off, w, color=COL[k], lw=1.4, **{kk: v for kk, v in _mk(PS, COL[k], "o", 8).items()
-                                                                   if kk != "linestyle"}, label=lab)
-        for s, a, b in zip(steps, r, w):
-            rows_csv.append([split, k, s["step"], s["config"], a, b,
-                             (s.get("words_read") or {}).get("mean") if s.get("words_read") else ""])
-    for key, lab, ls in (("r_plus2_mm", "+2 words", (0, (4, 3))), ("r_80_mm", "80 % of tremor-free", (0, (1, 2)))):
-        v = fr.get(key)
+        w = [s[wkey]["mean"] if s.get(wkey) else np.nan for s in steps]
+        wr = [s["words_read"]["mean"] if s.get("words_read") else np.nan for s in steps]
+        mk = {kk: v for kk, v in _mk(PS, COL[k], "o", 8).items() if kk != "linestyle"}
+        axs[0].plot(x[:len(r)] + off, r, color=COL[k], lw=1.4, label=lab[k], **mk)
+        axs[1].plot(x[:len(w)] + off, w, color=COL[k], lw=1.4, label=lab[k], **mk)
+        for xi, v in zip(x[:len(wr)] + off, wr):
+            if np.isfinite(v):
+                axs[1].plot(xi, v, marker="o", markersize=8, markerfacecolor=PS.SURFACE, markeredgecolor=COL[k],
+                            markeredgewidth=1.6, linestyle="none", zorder=5)
+        for s_, a, b, c in zip(steps, r, w, wr):
+            rows_csv.append([split, k, s_["step"], s_["config"], a, b, c])
+    axs[1].plot([], [], marker="o", markersize=8, markerfacecolor=PS.SURFACE, markeredgecolor=PS.INK2,
+                markeredgewidth=1.6, linestyle="none", label="read directly by the AI reader")
+    e = out.get("e13") or {}
+    thr = [("tuning", ((e.get("tuning") or {}).get("fits") or {}).get("pooled") or {}),
+           ("test", ((e.get("test") or {}).get("fits") or {}).get("pooled") or {})]
+    for nm, fp in thr:
+        v = fp.get("r_plus2_mm")
         if v is not None and np.isfinite(v):
-            axs[0].axhline(v, color=PS.INK2, lw=1.0, ls=ls)
-            axs[0].text(3.45, v, f"{lab} ({v:.2f} mm)", fontsize=7.4, color=PS.INK2, va="bottom", ha="right")
+            axs[0].axhline(v, color=PS.INK2, lw=1.0, ls=(0, (4, 3)) if nm == "tuning" else (0, (6, 2, 1, 2)))
+            axs[0].text(-0.35, v + 0.012, f"+2 words, {nm} ({v:.2f} mm)", fontsize=7.4, color=PS.INK2,
+                        va="bottom", ha="left")
+    v = (thr[0][1] or {}).get("r_80_mm")
+    if v is not None and np.isfinite(v):
+        axs[0].axhline(v, color=PS.INK2, lw=1.0, ls=(0, (1, 2)))
+        axs[0].text(-0.35, v + 0.012, f"80 % of tremor-free words ({v:.2f} mm)", fontsize=7.4, color=PS.INK2,
+                    va="bottom", ha="left")
+    cc = (chains.get("fir_raw") or {}).get("clean_change_um")
+    if cc and np.isfinite(cc.get("mean", np.nan)):
+        axs[1].annotate(f"it also moves clean writing\nabout {cc['mean'] / 1000:.1f} mm: nothing is read",
+                        xy=(3 - 0.18, 0.15), xytext=(2.45, 8.3), fontsize=7.4, color=PS.INK2,
+                        arrowprops=dict(arrowstyle="-", color=PS.MUTED, lw=0.8))
     for ax in axs:
         ax.set_xticks(x)
         ax.set_xticklabels(STEP_LABEL, fontsize=8.2)
         ax.set_xlim(-0.4, 3.5)
     axs[0].set_ylabel("tremor left at the tip, mm")
     axs[0].set_ylim(0, 2.0)
-    axs[1].set_ylabel("words read out of 10, via the E13 curve")
+    axs[1].set_ylabel("words read out of 10")
     axs[1].set_ylim(0, 10)
     axs[0].set_title("Tremor left at the tip (severe class, 1.72 mm)", fontsize=10, loc="left")
-    axs[1].set_title("What that means for words (frozen E13 tuning curve)", fontsize=10, loc="left")
-    axs[1].legend(loc="upper right", fontsize=7.2)
+    axs[1].set_title("Words: via the " + ("test split's curve" if split == "test" else "tuning curve")
+                     + " (filled) and read directly (open)", fontsize=10, loc="left")
+    h, l = axs[1].get_legend_handles_labels()
+    fig.legend(h, l, loc="lower center", ncol=3, fontsize=7.6, bbox_to_anchor=(0.5, 0.04))
     fig.suptitle(f"Where the gap lies: prediction, sensing or separating tremor from writing ({split} split)",
                  fontsize=11, x=0.01, ha="left")
-    PS.stamp(fig, SIM_TAG, "means over writers; each estimate drives the nose on the full case")
-    fig.tight_layout(rect=(0, 0.03, 1, 0.94))
+    PS.stamp(fig, SIM_TAG, "means over writers; each estimate drives the nose on the full case (tremor + writing)")
+    fig.tight_layout(rect=(0, 0.13, 1, 0.94))
     path = d / "fig_gap.png"
     fig.savefig(path)
     plt.close(fig)
-    write_csv(d / "fig_gap.csv", ["split", "estimator", "step", "config", "tip_tremor_mm", "words_via_curve",
+    write_csv(d / "fig_gap.csv", ["split", "estimator", "step", "config", "tip_tremor_mm",
+                                  "words_via_" + ("test_curve" if split == "test" else "tuning_curve"),
                                   "words_read_directly"], rows_csv, [SIM_TAG, "means over writers"])
     return path
 

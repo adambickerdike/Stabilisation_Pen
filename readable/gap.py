@@ -47,8 +47,8 @@ makes to the same notes without tremor: the other face of separation.
 Words: every full-plant residual is mapped to words of 10 through the frozen E13 tuning curve; on the test split four
 configurations are also read directly as a check of the mapping (C1-AR; the linear IMU filter on the tremor alone and
 on the full case, where it also moves the writing; the real-data TCN gated on the tremor alone).
-Broadband check (CALC on DATA): R's tremor waveforms keep only f0 +- 2 Hz and 2 f0 +- 2 Hz (R's ASSUMPTION), which makes
-them smooth and easy to predict.  The chosen AR predictor is refitted on the tuning ET recordings (Zenodo, hand
+Broadband check (CALCULATION on real recorded inputs): R's tremor waveforms keep only f0 +- 2 Hz and 2 f0 +- 2 Hz
+(R's ASSUMPTION), which makes them smooth and easy to predict.  The chosen AR predictor is refitted on the tuning ET recordings (Zenodo, hand
 acceleration) converted to displacement in the library's bands and in one broad band (f0 - 2 Hz to 20 Hz), cross-fitted
 by subject, and its residual at the IMU horizon is compared (as a share of the tremor, then at 1.72 mm).
 """
@@ -226,7 +226,7 @@ def fit_imu_fir(quick: bool, log=CM.log) -> Dict:
     specs = [s for s in C.tuning_specs() if s.get("kind") and s["level"] in FIT_LEVELS]
     grid = [(256, 1e-5)] if quick else FIR_GRID
     if quick:
-        specs = [s for s in specs if s["note"] in (0, 1, 2)]
+        specs = [s for s in specs if s["note"] in (0, 1)]
     by_note: Dict[int, List[Dict]] = {}
     for s in specs:
         by_note.setdefault(s["note"], []).append(s)
@@ -285,7 +285,8 @@ def fir_estimate(ar: Dict, st, fold_key: Optional[str]) -> np.ndarray:
 def broadband_check(ar: Dict, quick: bool, log=CM.log) -> Dict:
     """The chosen AR structure refitted on the tuning ET recordings made displacement (a) in the library's bands and
     (b) in one broad band; subject-wise cross-fitting (5 groups); residual at each horizon as a share of the tremor's
-    power amplitude (f0 +- 2 Hz), and the broadband RMS share.  CALC on DATA (hand acceleration, Zenodo ET)."""
+    power amplitude (f0 +- 2 Hz), and the broadband RMS share.  CALCULATION on real recorded inputs (hand
+    acceleration, Zenodo ET)."""
     from realdata import dsp as D
     from realdata import loaders as L
     from realdata import tremorlib as TL

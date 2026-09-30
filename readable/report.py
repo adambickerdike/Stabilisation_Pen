@@ -125,6 +125,8 @@ def write(quick: bool, log=CM.log) -> Dict:
     ar = CM.jload(SG.predictor_path(quick))
     p_test = (((e13a.get("test") or {}).get("fits") or {}).get("pooled") or {}).get("fit", {}).get("p")
     gapa = gap.aggregate(quick, p_curve, ar, p_test)
+    from . import reach
+    reacha = reach.aggregate(quick, p_curve)
     timings = CM.jload(CM.cache_dir(quick) / "timings.json") or {}
     out = {"stabpen.provenance": provenance(quick),
            "evidence": {"sim": EVIDENCE_SIM, "calc": EVIDENCE_CALC,
@@ -135,9 +137,11 @@ def write(quick: bool, log=CM.log) -> Dict:
                "e11": "EXP-E11: does calibrating the estimator's authority gate on the user's own clean writing keep every "
                       "writer under 50 um? (REQ-CTRL-016)",
                "gap": "Where is the gap between the best causal estimator and perfect knowledge: prediction or "
-                      "separation?"},
+                      "separation?",
+               "reach": "(added) Can a nib with Rev K's reach (+-1.0 / +-1.5 mm) deliver the readable target at the "
+                        "severe class? (tuning split only)"},
            "answers": answers(e13a, e11a, gapa),
-           "e13": e13a, "e11": e11a, "gap": gapa, "frozen": fr, "compute": timings,
+           "e13": e13a, "e11": e11a, "gap": gapa, "reach": reacha, "frozen": fr, "compute": timings,
            "generated_in_s": None}
     out["generated_in_s"] = time.time() - t0
     d = SG.results_dir(quick)

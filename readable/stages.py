@@ -78,6 +78,14 @@ def job_gap_test_clean(i: int, quick: bool = False) -> Dict:
     return {"job": f"gap_test_clean_w{i}", "files": files, "elapsed_s": time.time() - t0}
 
 
+def job_reach(i: int, quick: bool = False) -> Dict:
+    """After the freeze: the reach check on tuning note i (the Rev J nose limited to Rev K's +-1.5 / +-1.0 mm)."""
+    from . import reach
+    t0 = time.time()
+    files = reach.reach_note(i, CM.jload(frozen_path(quick)), quick)
+    return {"job": f"reach_n{i}", "files": files, "elapsed_s": time.time() - t0}
+
+
 def job_sensing(kind: str, quick: bool = False) -> Dict:
     """After the test stage: what the pen's sensors allow with the tremor alone (tuning split only)."""
     from . import gap

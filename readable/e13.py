@@ -304,14 +304,14 @@ def test_note(wr, i: int, frozen: Dict, quick: bool = False) -> List[str]:
                                                                                    "seed": seed}
             prm["target_mm"] = target
             r = tc.run(q)
-            m = CM.measures(tc.written, r, tc.scn, tc.pen, tc.f0, read=True)
+            m = CM.measures(tc.written, r, tc.scn, tc.pen, tc.f0, read=not quick)
             m["param"] = prm
             dev[key] = m
         res = {"set": "real", "split": "test", "writer": wr.written.real["writer"], "note": i, "kind": kind,
                "class": "severe", "tremor": tc.tremor_meta(), "held_tip_tremor_mm": held, "devices": dev,
                "_elapsed_s": time.time() - t1}
         CM.jdump(p, res)
-        CM.log(f"[e13] test w{i} {kind}: " + ", ".join(f"{k} {v['words_read']} {v['tip_tremor_mm']:.2f}"
+        CM.log(f"[e13] test w{i} {kind}: " + ", ".join(f"{k} {v.get('words_read', '-')} {v['tip_tremor_mm']:.2f}"
                                                         for k, v in dev.items() if isinstance(v, dict))
                + f" ({time.time() - t1:.0f} s)")
         done.append(p.name)

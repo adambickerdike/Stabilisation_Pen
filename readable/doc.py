@@ -148,9 +148,11 @@ def e13_tables(e: Dict) -> List[str]:
                               "r50, mm", "steepness", "w_lo", "RMSE, words", "points"], rows))
             mf = blk.get("model_free_type_a")
             if mf:
+                def mfv(k):
+                    x = mf.get(k)
+                    return f"{f(x)} mm" if x is not None and np.isfinite(x) else "not bracketed by the levels run"
                 out.append(f"\nModel-free check (type (a) per-level means, piecewise linear): +2 words at "
-                           f"{f(mf.get('r_plus2_mm'))} mm, 80 % at {f(mf.get('r_80_mm'))} mm, within 1 word at "
-                           f"{f(mf.get('r_within1_mm'))} mm.")
+                           f"{mfv('r_plus2_mm')}, 80 % at {mfv('r_80_mm')}, within 1 word at {mfv('r_within1_mm')}.")
             p = fits.get("pooled", {})
             out.append(f"\nOrdinary pen at the severe class: {f(p.get('w_ord_severe'), 2)} words of 10 (target "
                        f"{f((p.get('w_ord_severe') or np.nan) + 2, 2)}); the same notes without tremor: "
@@ -158,18 +160,27 @@ def e13_tables(e: Dict) -> List[str]:
     te = e.get("test") or {}
     if te.get("prediction_check"):
         pc = te["prediction_check"]
-        rows = [[k, f(v["r_mm_mean"]), f(v["words_mean"], 2), f(v["predicted_mean"], 2), str(v["n"])]
-                for k, v in pc["by_device"].items()]
-        out.append("**E13 test split against the frozen tuning curve** (words read vs the curve's words at the measured "
-                   f"residual; mean error {f(pc['mean_error_words'], 2)} words, mean absolute error "
-                   f"{f(pc['mae_words'], 2)} per run)\n")
-        out.append(table(["Run", "Tip tremor, mm", "Words read", "Tuning curve predicts", "Runs"], rows))
+        lab = {"none": "ordinary pen (severe and moderate)", "revJ_oracle": "perfect knowledge (severe and moderate)",
+               "E13a_r80": "(a) aimed at the 80 % level", "E13a_mid": "(a) midway", "E13a_r2": "(a) aimed at +2 words",
+               "E13a_r2x1.3": "(a) 1.3 x the +2 level", "E13b_r2": "(b) lag, aimed at +2", "E13c_r2": "(c) noise, aimed at +2"}
+        order = ["revJ_oracle", "E13a_r80", "E13a_mid", "E13a_r2", "E13b_r2", "E13c_r2", "E13a_r2x1.3", "none"]
+        keys = [k for k in order if k in pc["by_device"]] + [k for k in pc["by_device"] if k not in order]
+        rows = [[lab.get(k, k), f(v["r_mm_mean"]), f(v["words_mean"], 2), f(v["predicted_mean"], 2),
+                 f(v["words_mean"] - v["predicted_mean"], 2), str(v["n"])]
+                for k, v in ((k, pc["by_device"][k]) for k in keys)]
+        out.append("**E13 test split against the frozen tuning curve** (CALC on SIM; words read against the tuning "
+                   f"curve's words at the measured residual; mean error {f(pc['mean_error_words'], 2)} words, mean "
+                   f"absolute error {f(pc['mae_words'], 2)} per run)\n")
+        out.append(table(["Run", "Tip tremor, mm", "Words read", "Tuning curve predicts", "Read minus predicted", "Runs"],
+                         rows))
         out.append("")
     g = te.get("gain_at_r_plus2")
     if g:
-        out.append(f"At the level aimed at the tuning r_plus2 ({g['device']}): tip tremor {ci(g['tip_tremor_mm'])} mm, "
-                   f"words {ci(g['words_of_10'], 1)}, gain over the ordinary pen {ci(g['gain'], 2)}; DEC-055's words "
-                   f"line {'met' if g['meets_dec055_words_line'] else 'not met'}.\n")
+        gm = (g.get("gain") or {}).get("mean")
+        out.append(f"At the level aimed at the tuning +2 residual ((a), {g['device']}): tip tremor "
+                   f"{ci(g['tip_tremor_mm'])} mm, words {ci(g['words_of_10'], 1)}, gain over the ordinary pen "
+                   f"{ci(g['gain'], 2)}; DEC-055's words line (a mean gain of at least 2 with the interval above 0) "
+                   + ("met" if g['meets_dec055_words_line'] else f"not met by the mean ({f(gm, 2)} against 2)") + ".\n")
     return out
 
 
@@ -276,7 +287,7 @@ def broadband_table(ar: Optional[Dict]) -> List[str]:
         rows.append([h, f(v["horizon_ms"], 1), f(100 * v["narrow"]["ar_inband_share_mean"], 2),
                      f(100 * v["broad"]["ar_inband_share_mean"], 2), f(100 * v["broad"]["ar_rms_share_mean"], 2),
                      f(100 * v["broad"]["hold_inband_share_mean"], 1), f(v["broad"]["ar_at_1p72mm_mm"] * 1e3, 1)])
-    return ["**Prediction on broadband tremor** (CALC on DATA: " + f"{b['n_records']} tuning ET recordings, "
+    return ["**Prediction on broadband tremor** (CALC on real recorded inputs: " + f"{b['n_records']} tuning ET recordings, "
             f"{b['n_subjects']} subjects; AR structure as chosen, refitted per band, cross-fitted by subject)\n",
             table(["Horizon", "ms", "AR residual, library bands, % (in band)", "AR residual, broad band, % (in band)",
                    "AR residual, broad band, % (RMS, 1.5-20 Hz)", "no prediction, broad band, % (in band)",
@@ -312,12 +323,12 @@ def _card_rows(cd: Dict, cols: List[str]) -> List[List[str]]:
     return rows
 
 
-def results_cards(out: Dict) -> List[str]:
+def results_cards(out: Dict, which: str = "both") -> List[str]:
     """R's and E's results card (writer-bootstrap 95 % intervals) for the key rows of the test split, severe class,
-    PD and ET pooled."""
+    PD and ET pooled.  which: 'e13', 'e11' or 'both'."""
     res = []
     cd = (((out.get("e13") or {}).get("test") or {}).get("cards") or {}).get("all/severe")
-    if cd:
+    if cd and which in ("e13", "both"):
         cols = [c for c in ("none", "E13a_r80", "E13a_mid", "E13a_r2", "E13b_r2", "E13c_r2", "E13a_r2x1.3", "revJ_oracle")
                 if c in cd]
         head = {"none": "Ordinary pen", "E13a_r80": "(a) aimed at the 80 % level", "E13a_mid": "(a) midway",
@@ -328,7 +339,7 @@ def results_cards(out: Dict) -> List[str]:
                 "they move no clean writing by construction)\n",
                 table([""] + [head[c] for c in cols], _card_rows(cd, cols)), ""]
     cd = (((out.get("e11") or {}).get("test") or {}).get("cards") or {}).get("severe")
-    if cd:
+    if cd and which in ("e11", "both"):
         cols = [c for c in ("none", "D1|frozen_E", "D1|cal", "D2|frozen", "D2|cal", "D3|frozen", "D3|cal") if c in cd]
         head = {"none": "Ordinary pen", "D1|frozen_E": "D1 frozen gate (E's reading)", "D1|cal": "D1 calibrated",
                 "D2|frozen": "D2 frozen gate", "D2|cal": "D2 calibrated", "D3|frozen": "D3 frozen gate",
@@ -353,6 +364,7 @@ def sections(out: Dict, quick: bool) -> Dict[str, List[str]]:
     return {"curve": curve_table(out.get("e13") or {}), "e13": e13_tables(out.get("e13") or {})[
         len(curve_table(out.get("e13") or {})):], "e11": e11_tables(out.get("e11") or {}), "fir": fir_table(ar),
         "broadband": broadband_table(ar), "gap": gap_tables(out.get("gap") or {}), "cards": results_cards(out),
+        "cards_e13": results_cards(out, "e13"), "cards_e11": results_cards(out, "e11"),
         "sensing": sensing_table(out.get("gap") or {})}
 
 
@@ -378,7 +390,7 @@ def sensing_table(g: Dict) -> List[str]:
 def write_tables(out: Dict, quick: bool) -> str:
     sec = sections(out, quick)
     parts = ["# Generated tables for docs/readable_target.md", ""]
-    for k in ("curve", "cards", "e13", "e11", "fir", "sensing", "broadband", "gap"):
+    for k in ("curve", "cards_e13", "e13", "cards_e11", "e11", "fir", "sensing", "broadband", "gap"):
         parts += sec[k]
     txt = "\n".join(parts) + "\n"
     p = (CM.QUICK_DIR if quick else BUILD_DIR) / "doc_tables.md"
@@ -508,6 +520,51 @@ def values(out: Dict) -> Dict[str, str]:
     fi = pr.get("imu_fir") or {}
     v["FIR_L"] = str(fi.get("L"))
     v["FIR_RIDGE"] = f"{fi.get('ridge'):g}" if fi.get("ridge") is not None else "-"
+    # --- further keys for the text: intervals by kind and type, the prediction check per level, E11 thresholds
+    for split, tag in (("tuning", "T"), ("test", "S")):
+        for name in ("kind_PD", "kind_ET", "type_a", "type_b", "type_c"):
+            ft = _get(e, f"{split}.fits.{name}") or {}
+            c = ft.get("ci95") or {}
+            sfx = name.split("_")[1]
+            for key, nm in (("r_plus2_mm", "R2"), ("r_80_mm", "R80")):
+                v[f"{tag}_{nm}_{sfx}_LO"] = f((c.get(key) or {}).get("lo"))
+                v[f"{tag}_{nm}_{sfx}_HI"] = f((c.get(key) or {}).get("hi"))
+            if name.startswith("type"):
+                v[f"{tag}_R80_{sfx}"] = f(ft.get("r_80_mm"))
+        for kd, kn in (("PD", "PD"), ("ET", "ET")):
+            for row in (_get(e, f"{split}.tables") or {}).get(f"{kn}/severe", [])[1:]:
+                if row.get("gain_vs_ordinary"):
+                    v[f"{tag}_GAIN_{kd}_{row['device']}"] = f(row["gain_vs_ordinary"].get("mean"), 1)
+    v["S_GAIN_AT_R2"] = ci(g.get("gain"), 2)
+    v["S_GAIN_AT_R2_M"] = f((g.get("gain") or {}).get("mean"), 2)
+    v["S_TIP_AT_R2_M"] = f((g.get("tip_tremor_mm") or {}).get("mean"))
+    for k, x in (pc.get("by_device") or {}).items():
+        v[f"S_PREDDIFF_{k}"] = f(x["words_mean"] - x["predicted_mean"], 1)
+        v[f"S_PREDDIFF_{k}_NEG"] = f(x["predicted_mean"] - x["words_mean"], 1)
+    try:
+        fe = CM.frozen_e()
+        a_fro = {"D1": fe["chosen"]["auth"]["a_lo"] * 1e3, "D2": fe["info"]["net"]["auth"]["a_lo"] * 1e3,
+                 "D3": fe["info"]["listen_conf"]["auth"]["a_lo"] * 1e3}
+    except Exception:
+        a_fro = {}
+    for dn, a0 in a_fro.items():
+        v[f"E11_{dn}_FROZEN_ALO"] = f(a0)
+        rows = _get(out, "e11.test.per_writer") or []
+        al = [(r.get("writer", "").split("/")[-1].replace(".dat", ""), r.get(f"{dn}_a_lo_mm")) for r in rows]
+        al = [(w, a) for w, a in al if a is not None]
+        v[f"E11_{dn}_N_RAISED"] = str(sum(1 for _, a in al if a > a0 + 1e-3))
+        v[f"E11_{dn}_N_KEPT"] = str(sum(1 for _, a in al if abs(a - a0) <= 1e-3))
+        v[f"E11_{dn}_N_LOWERED"] = str(sum(1 for _, a in al if a < a0 - 1e-3))
+        v[f"E11_{dn}_N"] = str(len(al))
+        for w, a in al:
+            v[f"E11_{dn}_ALO_{w}"] = f(a)
+        mod = [a for _, a in al if a0 + 1e-3 < a < 1.0]
+        v[f"E11_{dn}_RAISED_MIN"] = f(min(mod)) if mod else "-"
+        v[f"E11_{dn}_RAISED_MAX"] = f(max(mod)) if mod else "-"
+    for k, x in s11.items():
+        t = k.replace("|", "_")
+        v[f"{t}_RATIO_M"] = f((x.get("severe_ratio_to_ordinary") or {}).get("mean"))
+        v[f"{t}_GAIN_M"] = f((x.get("severe_words_gain") or {}).get("mean"), 2)
     comp = out.get("compute") or {}
     for k, x in (comp.get("stages") or {}).items():
         v[f"T_{k}"] = f(x / 60.0, 1)
