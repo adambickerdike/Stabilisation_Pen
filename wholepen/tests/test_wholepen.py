@@ -163,6 +163,31 @@ def test_collar_hinges_on_t1_t2_and_skid_on_collar():
     assert pm.m.geom_bodyid[pm.ids["geom:skid0"]] == pm.ids["body:collar"]
 
 
+def test_servo_gate_gets_the_firmware_contact():
+    """DEC-076: the servo's bias/authority gate gets the firmware's delayed measured contact, as sim2j's RevJStepper;
+    the true contact force only with contact_source 'legacy_force'."""
+    from sim2j import tasks as TK
+    from sim2j.firmware import FWConfig
+    from wholepen import cases as CS, control as C, stepper as WS
+    pm = CS.PenVariant("base").build()
+    scn = TK.WriterCase(0, version="v2", text="r", pre_s=0.2).scenario()
+    for source in ("measured", "legacy_force"):
+        st = WS.WPStepper(pm, scn, FWConfig(seed=1), C.WPConfig(), t_end=0.05, seed=1)
+        st.contact_source = source
+        seen, ref_tick = [], st.servo.ref_tick
+
+        def spy(t, tick, tip, in_contact, direct_q=None, st=st, seen=seen, ref_tick=ref_tick):
+            seen.append((bool(in_contact), bool(st.fw.contact), bool(st._in_c)))
+            return ref_tick(t, tick, tip, in_contact, direct_q=direct_q)
+        st.servo.ref_tick = spy
+        st.advance(st.n)
+        gate, firmware, true = np.array(seen).T
+        if source == "measured":
+            assert np.array_equal(gate, firmware) and np.any(gate != true)
+        else:
+            assert np.array_equal(gate, true)
+
+
 # ----------------------------------------------------------------------------- deliverables
 def test_evidence_rows_header_and_ids():
     from wholepen import evidence as E

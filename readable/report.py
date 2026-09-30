@@ -22,8 +22,8 @@ INPUT_FILES = (
     "realtrack/build/models/net_net_main_f1.pt", "realtrack/build/models/net_net_main_f2.pt",
     "realtrack/build/models/net_net_main_f3.pt", "realtrack/build/models/net_net_main_f4.pt",
     "ai2/build/models/tcn.pt", "realdata/build/cache/reader_choice.json", "realdata/build/cache/page_model.json",
-    "realdata/build/cache/tremorlib.json", "realdata/build/cache/tremor_waveforms.npz",
-    "realdata/build/cache/unipen_index.json",
+    "realdata/build/cache/page_model_v2.json", "realdata/build/cache/tremorlib.json",
+    "realdata/build/cache/tremor_waveforms.npz", "realdata/build/cache/unipen_index.json",
 )
 _SHA: Dict[str, Optional[str]] = {}
 

@@ -277,6 +277,8 @@ class Sensors:
     slide_noise: float = 2e-6
     slide_latency: float = 1e-3
     slide_thr: float = 0.1e-3
+    firmware_contact: str = "delayed"   # sim2j firmware's contact flag: the slide channel above (sampled, delivered late);
+                                        # 'legacy_immediate' = the historical flag (the same 2 kHz tick, no delay)
 
 
 lab("sensors.imu", "MFR (OPT-37) + ASSUMPTION", "LSM6DSV16X: 60 ug/sqrt(Hz), 2.8 mdps/sqrt(Hz), ODR 3840 Hz, bias/scale/"

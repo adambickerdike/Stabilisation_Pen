@@ -219,6 +219,25 @@ def test_calibration_keeps_writer_when_seed_stride_differs_from_writer_count(mon
     assert note.real["recordings"] == ["independent"]
 
 
+def test_gap_aggregation_refuses_mixed_page_model_versions(tmp_path, monkeypatch):
+    """DEC-076: the gap's case files record the page-model version of their DeltaPen-class streams; files of different
+    versions are not aggregated together (files written without the field: version 1)."""
+    import json
+    from readable import common as CM
+    from readable import gap as G
+    monkeypatch.setattr(CM, "cache_dir", lambda quick: tmp_path)
+    (tmp_path / "gap").mkdir()
+    case = {"split": "tuning", "writer": "w0", "note": 0, "kind": "PD", "class": "severe", "parts": {},
+            "configs": {"oracle": {"tip_tremor_mm": 0.05}, "akf_full_raw": {"tip_tremor_mm": 1.1}}}
+    (tmp_path / "gap" / "tune_n0_PD_severe.json").write_text(json.dumps(case))
+    (tmp_path / "gap" / "tune_n1_PD_severe.json").write_text(json.dumps(dict(case, writer="w1", note=1)))
+    assert G.aggregate(True, None, None)["tuning"]["n_cases"] == 2
+    (tmp_path / "gap" / "tune_n1_PD_severe.json").write_text(json.dumps(dict(case, writer="w1", note=1,
+                                                                              page_model_version=2)))
+    with pytest.raises(ValueError, match="page-model versions"):
+        G.aggregate(True, None, None)
+
+
 # ------------------------------------------------------------------ the job runner
 def test_job_runner_two_workers():
     from readable import jobs as JB

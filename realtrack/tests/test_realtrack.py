@@ -155,6 +155,27 @@ def test_surrogate_matches_full_plant_on_a_cached_case():
     assert abs(m["tip_tremor_mm"] / full - 1) < 0.01
 
 
+def test_merge_and_aggregation_refuse_mixed_page_model_versions(tmp_path, monkeypatch):
+    """DEC-076: the test run's case files record the page-model version; merging one with R's cached case, or
+    aggregating cases, refuses a mix of versions (files written without the field: version 1)."""
+    import json
+    from realtrack import test as T
+    monkeypatch.setattr(T, "R_CACHE", tmp_path)
+    tremor = {"rid": "r0", "amp_mm": 1.7, "f0": 6.0}
+    r = {"set": "real", "writer": "w0", "note": 0, "kind": "PD", "class": "severe", "tremor": tremor,
+         "devices": {"none": {"words_read": 2, "words_total": 10, "tip_tremor_mm": 1.7}}}
+    (tmp_path / "real_w0_PD_severe.json").write_text(json.dumps(r))
+    mine = dict(r, devices={"revJ_new|deltapen": {"words_read": 3, "words_total": 10, "tip_tremor_mm": 1.2}})
+    merged = T.merge_r("real_w0_PD_severe", mine)
+    assert merged["page_model_version"] == 1 and set(merged["devices"]) == {"none", "revJ_new|deltapen"}
+    with pytest.raises(ValueError, match="page-model versions"):
+        T.merge_r("real_w0_PD_severe", dict(mine, page_model_version=2))
+    fr = {"g4": {}, "chosen": {}}
+    assert "all/severe" in T.aggregate([merged], fr)["real"]
+    with pytest.raises(ValueError, match="page-model versions"):
+        T.aggregate([merged, dict(merged, writer="w1", page_model_version=2)], fr)
+
+
 def test_polyphase_tick_index():
     from realtrack import learned as LE
     tick = np.arange(0, 0.1, 0.5e-3)

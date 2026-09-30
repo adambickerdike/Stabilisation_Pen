@@ -97,3 +97,41 @@ def test_declared_latency_and_validity_are_preserved():
     assert np.all(out.pos_av >= out.pos_t + .002)
     assert np.all(np.diff(out.pos_av) >= 0)
     assert out.meta['page_model_version'] == 2
+
+
+def test_record_starting_lifted_is_anchored_at_its_first_valid_report():
+    """DEC-076: a record whose first reports are invalid (every recorded note starts with the pen lifted) is anchored at
+    its first valid report instead of raising; from there it equals version 2 on the suffix, before it the reports are
+    invalid with monotone availability and no absolute reference.  Only a record with no valid report raises."""
+    import dataclasses
+    m = PageModel(drop_rate_hz=4, outlier_p=.02)
+    source = stream(gap=(0, 37))
+    out = degrade_page(source, m, 11)
+    suffix = dataclasses.replace(source, pos_t=source.pos_t[37:], pos_av=source.pos_av[37:], pos=source.pos[37:],
+                                 pos_ok=source.pos_ok[37:])
+    ref = degrade_page(suffix, m, 11)
+    for name in ('pos', 'pos_ok', 'pos_av'):
+        np.testing.assert_array_equal(getattr(out, name)[37:], getattr(ref, name))
+    assert not np.any(out.pos_ok[:37]) and np.all(np.diff(out.pos_av) >= 0)
+    assert np.all(out.pos_av >= out.pos_t + m.latency_s)
+    rv = out.meta['page_reference_valid']
+    assert not any(rv[:37]) and rv[37:] == ref.meta['page_reference_valid'] and out.meta['page_anchor_index'] == 37
+    assert degrade_page(stream(gap=(0, 499)), noiseless(), 1).pos_ok.tolist() == [0.] * 499 + [1.]
+    with pytest.raises(ValueError):
+        degrade_page(stream(gap=(0, 500)), m, 11)
+
+
+def test_record_starting_valid_and_version_1_are_unchanged_by_the_anchor():
+    """The anchoring leaves a record that starts valid as version 2 gave it before (values of the unpatched code for
+    this record, model and seed), and version 1 passes through to the legacy model."""
+    out = degrade_page(stream(), PageModel(drop_rate_hz=4, outlier_p=.02), 11)
+    assert out.pos[:, 0].sum() == pytest.approx(2.2849204999999997, rel=1e-12)
+    assert out.pos[:, 1].sum() == pytest.approx(0.3067558, rel=1e-12)
+    assert out.pos_av.sum() == pytest.approx(125.98967465780423, rel=1e-12)
+    assert out.pos_ok.sum() == 401 and sum(out.meta['page_reference_valid']) == 64
+    assert out.meta['page_dropouts'] == 1 and 'page_anchor_index' not in out.meta
+    source = stream(gap=(0, 37))
+    m1 = PageModel(version=1)
+    a, b = degrade_page(source, m1, 3), degrade_page_legacy(source, m1, 3)
+    for name in ('pos', 'pos_ok', 'pos_av'):
+        np.testing.assert_array_equal(getattr(a, name), getattr(b, name))

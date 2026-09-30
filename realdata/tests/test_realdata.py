@@ -223,6 +223,43 @@ def test_page_model_fit_reproduces_the_deltapen_statistics():
     assert m.fitted["mean_um"] == pytest.approx(68.3, rel=0.02)
 
 
+def test_page_model_v2_is_saved_beside_the_version_1_fit(tmp_path, monkeypatch):
+    """DEC-076: realdata.hw1.page_model() saves its version-2 fit as page_model_v2.json; the version-1 file that studies
+    R, E and F used (page_model.json) is kept, not overwritten."""
+    from dataclasses import asdict
+    from realdata import hw1 as H
+    from realdata import library as RL
+    from realdata import sensors as RS
+    from realdata import writinglib as WL
+    v1p, v2p = tmp_path / "page_model.json", tmp_path / "page_model_v2.json"
+    monkeypatch.setattr(RS, "PAGE_MODEL_JSON", v1p)
+    monkeypatch.setattr(RS, "PAGE_MODEL_V2_JSON", v2p)
+    monkeypatch.setattr(H, "_PAGE", {})
+    monkeypatch.setattr(WL, "unipen_writers", lambda *a, **k: ["toy/0"])
+    monkeypatch.setattr(RL, "writing", lambda *a, **k: _toy_note())
+    v1 = {k: v for k, v in asdict(RS.PageModel(name="deltapen", c=20.48e-6, sigma=1.354)).items() if k != "version"}
+    v1p.write_text(json.dumps(v1))
+    before = v1p.read_bytes()
+    m = H.page_model(log=lambda *a: None)
+    assert m.version == 2 and v1p.read_bytes() == before and v2p.exists()
+    assert RS.load_model().c == m.c and RS.load_model().version == 2
+    old = RS.load_model(allow_legacy=True)
+    assert old.version == 1 and old.c == 20.48e-6
+
+
+def test_aggregation_refuses_mixed_page_model_versions():
+    """DEC-076: every case file records its page-model version (files without it: version 1); cases of different
+    versions are not aggregated together (a partial rerun on newer code must not mix them silently)."""
+    from realdata import hw1 as H
+    cases = [{"set": "real", "writer": f"w{w}", "kind": "PD", "class": "severe", "tremor": {"amp_mm": 1.7, "f0": 6.0},
+              "devices": {"none": {"words_read": 2, "words_total": 10, "tip_tremor_mm": 1.7}}} for w in range(4)]
+    assert H.page_model_version(cases[0]) == 1
+    H.aggregate(cases)                                          # the existing case files: version 1
+    H.aggregate([dict(c, page_model_version=2) for c in cases])
+    with pytest.raises(ValueError, match="page-model versions"):
+        H.aggregate(cases[:3] + [dict(cases[3], page_model_version=2)])
+
+
 def test_degraded_page_stream_keeps_times_and_carries_the_window_error():
     from fusion import sensors as FS
     from realdata import sensors as RS

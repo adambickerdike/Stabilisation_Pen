@@ -215,7 +215,8 @@ _PAGE: Dict = {}
 
 
 def page_model(quick: bool = False, log=print):
-    """The DeltaPen-class page model, fitted once on the TUNING writers' clean notes (cached)."""
+    """The DeltaPen-class page model, fitted once on the TUNING writers' clean notes (cached: version 2 in
+    page_model_v2.json, beside the version-1 fit of page_model.json, which is kept)."""
     from . import sensors as RS
     if "m" in _PAGE:
         return _PAGE["m"]
@@ -230,6 +231,20 @@ def page_model(quick: bool = False, log=print):
             f"median {m.fitted['median_um']:.1f} um, mean {m.fitted['mean_um']:.1f} um")
     _PAGE["m"] = m
     return m
+
+
+def page_model_version(case: Dict) -> int:
+    """The page-model version a case file was computed with (files written before it was recorded: version 1)."""
+    return int(case.get("page_model_version", 1))
+
+
+def one_page_model_version(cases: Sequence[Dict], what: str = "case files") -> Optional[int]:
+    """The one page-model version of cases aggregated together: a partial rerun on newer code must not mix version-1
+    and version-2 rows silently, so a mix is refused."""
+    vs = sorted({page_model_version(c) for c in cases})
+    if len(vs) > 1:
+        raise ValueError(f"{what} mix page-model versions {vs}: rerun them with one version")
+    return vs[0] if vs else None
 
 
 # ------------------------------------------------------------------ measures
@@ -441,7 +456,7 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
     base = HW1_DIR / (("quick" if quick else "full") + "_" + RUN_TAG)
     base.mkdir(parents=True, exist_ok=True)
     ai2_models()
-    page_model(quick, log)
+    pm = page_model(quick, log)
     rc = OC.reader_choice(log=log)
     P["reader"] = rc["chosen"]
     out = {"plan": P, "cases": [], "reader": {k: rc.get(k) for k in ("chosen", "rule", "reliable")}}
@@ -465,7 +480,8 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
                     # the class's representative amplitude (median of its tuning subjects), a test-split waveform
                     dr = RL.tremor_for(wr.written, cls, seed=i, kind=kind, split="test",
                                        amp_mm=RL.classes(quick)[cls]["representative_mm"])
-                    res = {"set": "real", "writer": wr.written.real["writer"], "note": i, "kind": kind, "class": cls,
+                    res = {"set": "real", "page_model_version": pm.version, "writer": wr.written.real["writer"],
+                           "note": i, "kind": kind, "class": cls,
                            "tremor": {k: dr.meta[k] for k in ("rid", "amp_mm", "f0", "subject", "looped")},
                            "devices": run_case(wr, dr.d, dr.meta["f0"], dr.meta["amp_mm"] * 1e-3, f"real:{i}:{kind}:{cls}",
                                                ocr_devices=OCR_BY_CLASS.get(cls, OCR_REAL))}
@@ -480,7 +496,8 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
             res = _cache(cp)
             if res is None and "clean" in sets:
                 wr = W_(i)
-                res = {"set": "clean_real", "writer": wr.written.real["writer"], "note": i, "text": wr.written.text,
+                res = {"set": "clean_real", "page_model_version": pm.version, "writer": wr.written.real["writer"],
+                       "note": i, "text": wr.written.text,
                        "devices": run_case(wr, None, 0.0, 0.0, f"clean:{i}")}
                 cp.write_text(json.dumps(res, default=_jd))
                 log(f"[hw1] clean real note {i} ({res['writer']}): " + _fmt(res["devices"]))
@@ -505,7 +522,8 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
                     dr = RL.tremor_for(wr.written, "moderate", seed=1000 + i, kind=kind, split="test", amp_mm=amp)
                     if variant == "real_syn":
                         dr = RL.synthetic_like(dr, seed=i)
-                    res = {"set": "bridge", "variant": variant, "writer": wr.written.real["writer"], "note": i, "kind": kind,
+                    res = {"set": "bridge", "page_model_version": pm.version, "variant": variant,
+                           "writer": wr.written.real["writer"], "note": i, "kind": kind,
                            "tremor": {"rid": dr.meta["rid"], "amp_mm": amp, "f0": dr.meta["f0"]},
                            "devices": run_case(wr, dr.d, dr.meta["f0"], amp * 1e-3, f"bridge:{variant}:{i}:{kind}",
                                                sensors=B["sensors"][variant], ocr_devices=OCR_BRIDGE)}
@@ -519,7 +537,8 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
         res = _cache(p0)
         if res is None and comp:
             ws = ws or synthetic_writer(w)
-            res = {"set": "clean_syn", "writer": f"aiguide/{w}", "text": ws.written.text,
+            res = {"set": "clean_syn", "page_model_version": pm.version, "writer": f"aiguide/{w}",
+                   "text": ws.written.text,
                    "devices": run_case(ws, None, 0.0, 0.0, f"clean_syn:{w}", sensors=("ideal",), ocr_devices=OCR_BRIDGE)}
             p0.write_text(json.dumps(res, default=_jd))
             log(f"[hw1] clean synthetic writer {w}: " + _fmt(res["devices"]))
@@ -533,7 +552,8 @@ def run(quick: bool = False, log=print, sets: Sequence[str] = ("real", "bridge",
                 # the frequency of a real test recording of this kind (as the other bridge rows), synthetic waveform
                 dr = RL.tremor(t=ws.written.intended.t, cls="moderate", seed=1000 + j, kind=kind, split="test", amp_mm=amp)
                 dr = RL.synthetic_like(dr, seed=w)
-                res = {"set": "bridge", "variant": "syn_syn", "writer": f"aiguide/{w}", "kind": kind,
+                res = {"set": "bridge", "page_model_version": pm.version, "variant": "syn_syn", "writer": f"aiguide/{w}",
+                       "kind": kind,
                        "tremor": {"rid": dr.meta["rid"], "amp_mm": amp, "f0": dr.meta["f0"]},
                        "devices": run_case(ws, dr.d, dr.meta["f0"], amp * 1e-3, f"bridge:syn_syn:{w}:{kind}",
                                            sensors=B["sensors"]["syn_syn"], ocr_devices=OCR_BRIDGE)}
@@ -651,6 +671,7 @@ def card(sel: List[Dict], devices: Sequence[str], clean: Optional[List[Dict]] = 
 
 def aggregate(cases: List[Dict]) -> Dict:
     """Results cards per set, kind and class, with writer-level bootstrap intervals."""
+    one_page_model_version(cases, "realdata.hw1 case files")
     out: Dict = {"real": {}, "bridge": {}, "clean": {}, "devices": DEVICES, "headline": HEADLINE, "bound": BOUND}
     real = [c for c in cases if c["set"] == "real"]
     clean = [c for c in cases if c["set"] == "clean_real"]

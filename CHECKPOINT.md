@@ -26,7 +26,7 @@ Use this file to resume work without losing assumptions. Branch: `claude/pensive
 | Firmware | C control core with safety, logging, calibration and ML guard; parameters generated from the YAML with a freshness check; 60 test cases (1120 checks) on host (ASan/UBSan) and emulated Cortex-M33; nRF5340 image links (32.3 kB flash, 29.4 kB RAM) | Execution on nRF5340 hardware; cycle-accurate timing; register-level drivers (VERIFY); IMU, optics, USB, flash and BLE drivers |
 | ML | Synthetic data pipeline with writer-disjoint splits; six conventional baselines; causal TCN; int8 C export without f_est, bit-exact on 20 000 windows (16.2 k MAC, 7.3 kB weights); 22 tests | Any real-data training (no recordings exist) |
 | App | ICD log reader with CRC and resync; immutable note store with provenance; search with stroke citations; grounded assistant with refusal rules; capture-fidelity analysis; 137 tests | On-device recogniser (adapter specified only) |
-| Validation | 218 experiments with criteria (163 bench/offline, 55 human); 746 acceptance criteria against 218 requirements, generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
+| Validation | 227 experiments with criteria (172 bench/offline, 55 human); 755 acceptance criteria against 218 requirements, generated into the protocols (checker passes); prototype stages and claim gates; human study plan | Every experiment and study |
 
 ## 2. Numbers the next session must not lose
 
@@ -353,7 +353,7 @@ The user asked for the independent engineering pass (commit `e09a15f`, `docs/eng
   - *Reach, with B1's own servo and mass (real inputs, perfect knowledge):* ±1.06 mm gains +1.6 words, failing DEC-055; ±1.5 mm gains +3.2 (DEC-078).
   - *Real inputs under page model v2:* studies R, E and F move by at most 0.011 mm and 0.2 words; their conclusions stand (DEC-079).
   - *Six code defects in imported packages* (DEC-076): the legacy flags do not restore the old contact channel; the sim2j setup cache ignores the sensing mode; bnib and wholepen still pass the true contact to the servo; the page-model fit overwrites version 1; case caches do not record the page-model version; and page model v2 raises on every recorded note. The patches are being applied in a separate lead pass.
-- **Validation.** Passes 13 (U and H) and 14 (N and P; DEC-070…074, DEC-080…089; the platen safety gate G-SP) are done; pass 15 (study X, DEC-075…079) is running.
+- **Validation.** Passes 13 (U and H), 14 (N and P; DEC-070…074, DEC-080…089; the platen safety gate G-SP) and 15 (study X, DEC-075…079; EXP-X01…X09) are done.
 - **Open problems changed by round 5** (the numbers refer to §9).
   1. *Nose-coil power:* study N's balanced candidate replaces Rev K's B1 as the next nib. It is unproven until the coupon and rig experiments EXP-NB01…09.
   2. *Reach for severe tremor (10):* two answers exist on paper. Study N's ±1.5 mm nib fits in 24 mm (157 mm long), and study P's platen removes the reach limit at a desk. Both still wait on problem 7, the estimator.

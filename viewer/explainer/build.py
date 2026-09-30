@@ -760,7 +760,7 @@ def build_facts(lay: dict):
     s2 = facts_sim2j()
     if s2:
         facts["sim2j"] = s2
-        srcs.append(SIM2J_ET + (f" + {SIM2J_CARDS}" if s2.get("cards") else ""))
+        srcs.append(SIM2J_ET + (f" + {SIM2J_CARDS}" if s2.get("cards") else "") + (f" + {REBASELINE_CARDS}" if s2.get("rerun") else ""))
     return facts, {"file": "pen.json", "source": " + ".join(srcs), "status": "final" if all(
         facts.get(k) for k in ("pen", "ai2", "nose2", "drive", "endcap", "endcap_j1", "sideload", "known")) else "provisional",
         "modified": mtime_utc(BUDGETS) if exists(BUDGETS) else "",

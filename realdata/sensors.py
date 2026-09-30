@@ -53,7 +53,8 @@ OPT02_MAE_M = 68.3e-6             # LIT OPT-02
 OPT02_IDLE_DRIFT_M_S = 43.75e-6   # LIT OPT-02 (per axis)
 OPT01_COUNT_M = 25.4e-3 / 6000.0  # LIT OPT-01 (6000 dpi nominal; derived)
 OPT01_OUTLIER_P = 5e-4            # LIT OPT-01
-PAGE_MODEL_JSON = CACHE_DIR / "page_model.json"
+PAGE_MODEL_JSON = CACHE_DIR / "page_model.json"          # version 1: the fit studies R, E and F used (kept)
+PAGE_MODEL_V2_JSON = CACHE_DIR / "page_model_v2.json"    # version 2, saved beside it (never over it)
 
 
 @dataclass
@@ -139,14 +140,17 @@ def fit_window_error(notes: Sequence, model: Optional[PageModel] = None, n_mc: i
 
 
 def save_model(model: PageModel) -> None:
-    PAGE_MODEL_JSON.parent.mkdir(parents=True, exist_ok=True)
-    PAGE_MODEL_JSON.write_text(json.dumps(asdict(model)))
+    p = PAGE_MODEL_V2_JSON if model.version >= 2 else PAGE_MODEL_JSON
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(asdict(model)))
 
 
 def load_model(allow_legacy: bool = False) -> Optional[PageModel]:
-    if not PAGE_MODEL_JSON.exists():
+    """The cached version-2 fit (page_model_v2.json); allow_legacy: the version-1 file (page_model.json) instead."""
+    p = PAGE_MODEL_JSON if allow_legacy else PAGE_MODEL_V2_JSON
+    if not p.exists():
         return None
-    d = json.loads(PAGE_MODEL_JSON.read_text())
+    d = json.loads(p.read_text())
     if d.get("version", 1) < 2:
         if not allow_legacy:
             return None  # Refit, rather than silently reusing the old model's calibration.
@@ -229,6 +233,12 @@ def degrade_page(st, model: PageModel, seed: int):
     anchor. The error magnitudes remain an ASSUMPTION inspired by DeltaPen, not a
     calibrated ordinary-paper sensor. Historical studies use the explicit legacy
     implementation only with ``model.version=1``.
+
+    A record whose first reports are invalid (every recorded note starts with the
+    pen lifted) is anchored at its first valid report: from there the output is
+    exactly that of the record starting there; the earlier samples are reported
+    invalid, with monotone availability and no absolute reference. Only a record
+    with no valid report raises.
     """
     if model.version == 1:
         out = degrade_page_legacy(st, model, seed)
@@ -260,22 +270,28 @@ def degrade_page(st, model: PageModel, seed: int):
     if model.c < 0 or model.sigma < 0 or model.scale_sd < 0 or model.d_ref <= 0 or model.gamma < 0:
         raise ValueError("Invalid noise-model parameters")
     source_ok = source_ok & np.all(np.isfinite(P), axis=1)
-    if not source_ok[0]:
-        raise ValueError("Initial optical position needs a valid anchor")
+    if not source_ok.any():
+        raise ValueError("The optical position needs at least one valid report as its anchor")
+    # The anchor: the first valid report (the samples before it stay invalid, without an absolute reference).
+    k = int(np.argmax(source_ok))
     # SeedSequence substreams do not depend on recording length or future motion.
     seeds = np.random.SeedSequence(seed).spawn(6)
     rg_scale, rg_drift, rg_noise, rg_outlier, rg_drop, rg_latency = [np.random.default_rng(s) for s in seeds]
     scale = 1 + rg_scale.normal(0, model.scale_sd, 2)
     drift = model.drift_m_s * rg_drift.choice([-1., 1.], 2)
-    outlier = rg_outlier.random(n) < model.outlier_p
-    jitter = rg_latency.uniform(0, model.jitter_s, n)
+    outlier = np.zeros(n, dtype=bool)
+    outlier[k:] = rg_outlier.random(n - k) < model.outlier_p
+    jitter = np.zeros(n)
+    jitter[k:] = rg_latency.uniform(0, model.jitter_s, n - k)
     M = np.empty_like(P)
-    M[0] = P[0]
+    M[:k + 1] = P[k]
     ok = np.zeros(n, dtype=bool)
-    ok[0] = True
-    reference_valid = np.ones(n, dtype=bool)
+    ok[k] = True
+    reference_valid = np.zeros(n, dtype=bool)
+    reference_valid[k] = True
     available = np.empty(n)
-    available[0] = t[0] + model.latency_s + jitter[0]
+    available[k] = t[k] + model.latency_s + jitter[k]
+    available[:k] = np.minimum(t[:k] + model.latency_s, available[k])
     drop_until = -float("inf")
     drops = 0
     active_window = -1
@@ -283,7 +299,7 @@ def degrade_page(st, model: PageModel, seed: int):
     lost = np.zeros(2)
     lost_intervals = 0
     anchored = True
-    for i in range(1, n):
+    for i in range(k + 1, n):
         dt = t[i] - t[i - 1]
         # Poisson hazard per eligible interval, with a separately sampled duration.
         if t[i] >= drop_until and source_ok[i] and rg_drop.random() < -math.expm1(-model.drop_rate_hz * dt):
@@ -291,7 +307,7 @@ def degrade_page(st, model: PageModel, seed: int):
             drops += 1
         ok[i] = source_ok[i] and not outlier[i] and t[i] >= drop_until
         have_increment = bool(ok[i] and ok[i - 1])
-        win = int(math.floor((t[i] - t[0]) / model.window_s))
+        win = int(math.floor((t[i] - t[k]) / model.window_s))
         if win != active_window:
             z = rg_noise.normal()
             angle = rg_noise.uniform(0, 2 * math.pi)
@@ -326,6 +342,8 @@ def degrade_page(st, model: PageModel, seed: int):
                 page_reacquisition="relative counts only; external anchor required for absolute position",
                 page_latency=model.latency_s, page_jitter=model.jitter_s,
                 page_metric_basis="assumed causal vector-error model; DeltaPen magnitude statistics alone do not identify it")
+    if k:
+        meta.update(page_anchor_index=k, page_anchor_t=float(t[k]))
     return FS.Streams(tick_t=st.tick_t, acc_t=st.acc_t, acc_av=st.acc_av, acc=st.acc,
                       pos_t=t, pos_av=available, pos=np.ascontiguousarray(np.round(M / model.quant_m) * model.quant_m),
                       pos_ok=ok.astype(float), con_t=st.con_t, con_av=st.con_av, con=st.con, meta=meta)

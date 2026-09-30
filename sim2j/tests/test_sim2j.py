@@ -137,6 +137,60 @@ def test_false_correction_reference_is_exact_for_the_device_off_pen(pm):
     assert TK.moved(a, b) == 0.0
 
 
+def test_firmware_contact_is_delayed_or_the_legacy_immediate_channel(pm):
+    """DEC-076: Sensors.firmware_contact 'delayed' (default: the slide sampled at 1 kHz, delivered 1 ms late) or
+    'legacy_immediate' (the historical flag: the slide reading of the same 2 kHz tick, 0.1 mm beyond the front stop)."""
+    from dataclasses import replace
+    import mujoco
+    from sim2 import params as P
+    from sim2j import sensing as SE
+    assert P.Sensors().firmware_contact == "delayed"
+    js, stop = pm.jnt_qadr("refill_s"), float(pm.m.jnt_range[pm.ids["jnt:refill_s"], 0])
+
+    def flags(mode):
+        cfg0 = pm.cfg
+        pm.cfg = cfg0.replace(sensors=replace(cfg0.sensors, firmware_contact=mode, slide_noise=0.0))
+        try:
+            sens = SE.OnlineSensors(pm, 0.5e-3, seed=3)
+        finally:
+            pm.cfg = cfg0
+        mujoco.mj_resetData(pm.m, pm.d)
+        mujoco.mj_forward(pm.m, pm.d)
+        out = []
+        for k in range(10):                     # touchdown at tick 4: the slide leaves the front stop
+            pm.d.qpos[js] = stop + (0.3e-3 if k >= 4 else 0.0)
+            out.append(sens.read(k * 0.5e-3)["contact"])
+        return out
+    assert flags("legacy_immediate") == [False] * 4 + [True] * 6        # the same tick
+    assert flags("delayed") == [False] * 6 + [True] * 4                 # sampled at tick 4, available 1 ms later
+    with pytest.raises(ValueError):
+        flags("immediate")
+
+
+def test_writer_setup_cache_key_includes_the_sensing_mode(tmp_path, monkeypatch):
+    """DEC-076: the adapted hand path is cached per sensing mode of the nib (velocity and contact sources, inner loop)
+    and per firmware contact channel, so a causal run never reuses a path the writer learned on the legacy pen."""
+    from dataclasses import replace
+    from types import SimpleNamespace
+    from sim2j import et as ET
+    from sim2j import revj as RJ
+    monkeypatch.setattr(ET, "BUILD", str(tmp_path))
+    base = RJ.config(heel=True, dt=50e-6)
+
+    def key(firmware_contact="delayed", **nose):
+        cfg = base.replace(nose=replace(base.nose, **nose),
+                           sensors=replace(base.sensors, firmware_contact=firmware_contact))
+        su = ET.WriterSetup.__new__(ET.WriterSetup)
+        su.w, su.version, su.text, su.pen, su.pre_s, su.adapt_ctl = 0, "v2", ET.ET_TEXT, "base", ET.ET_PRE_S, "none"
+        su.pm = SimpleNamespace(cfg=cfg, m=SimpleNamespace(opt=SimpleNamespace(timestep=50e-6)), info={})
+        return su._cache_path(3)
+    k0 = key()
+    assert key() == k0 and k0.startswith(str(tmp_path))
+    others = {key(velocity_source="legacy_true"), key(contact_source="legacy_force"), key(inner_hz=400.0),
+              key("legacy_immediate")}
+    assert len(others) == 4 and k0 not in others
+
+
 # ----------------------------------------------------------------------------- results
 def test_results_carry_provenance():
     if not os.path.isdir(RESULTS):

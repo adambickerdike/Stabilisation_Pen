@@ -90,6 +90,19 @@ def frozen_e() -> Dict:
     return json.loads(E_FROZEN.read_text())
 
 
+def page_model_version() -> int:
+    """The version of the page model (realdata.hw1.page_model) that this process's DeltaPen-class streams use: recorded
+    in every case file whose rows read that sensor."""
+    from realdata import hw1 as H
+    return H.page_model().version
+
+
+def one_page_model_version(files: Sequence[Dict], what: str) -> Optional[int]:
+    """Case files aggregated together must share one page-model version (realdata.hw1.one_page_model_version)."""
+    from realdata import hw1 as H
+    return H.one_page_model_version(files, what)
+
+
 # ------------------------------------------------------------------ the reader (R's instrument, unchanged)
 _READER = {"ready": False}
 

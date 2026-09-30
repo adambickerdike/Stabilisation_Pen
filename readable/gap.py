@@ -518,7 +518,8 @@ def tune_note(i: int, ar: Dict, quick: bool = False) -> Dict:
         tc = CM.TuneCase(note, spec, streams=True)
         res = run_case(tc, spec, str(spec["fold"]), ar, quick=quick)
         res.update({"split": "tuning", "writer": note.written.real["writer"], "note": i, "kind": kind,
-                    "class": "severe", "case_id": spec["id"], "tremor": tc.tremor_meta(), "_elapsed_s": time.time() - t1})
+                    "class": "severe", "case_id": spec["id"], "tremor": tc.tremor_meta(),
+                    "page_model_version": CM.page_model_version(), "_elapsed_s": time.time() - t1})
         res["streams_repro_vs_E"] = streams_repro(tc, spec)
         CM.jdump(p, res)
         CM.log(f"[gap] tune n{i} {kind}: " + ", ".join(f"{k} {v['tip_tremor_mm']:.2f}" for k, v in res["configs"].items())
@@ -534,6 +535,7 @@ def tune_note(i: int, ar: Dict, quick: bool = False) -> Dict:
 def clean_note(i: int, ar: Dict) -> Dict:
     """The clean-writing change of every estimator on tuning note i without tremor (E's cached clean case, E's
     surrogate of the Rev J command path: SIMULATION)."""
+    from realdata import hw1 as H
     from realtrack import cases as C
     from realtrack import estimators as E
     from realtrack import servo as SV
@@ -543,7 +545,8 @@ def clean_note(i: int, ar: Dict) -> Dict:
     n = len(case.tick_t)
     Ts = float(case.tick_t[1] - case.tick_t[0])
     pp = SV.pen_params()
-    out = {"split": "tuning", "note": i, "writer": case.meta.get("writer"), "case_id": spec["id"], "clean_change_um": {}}
+    out = {"split": "tuning", "note": i, "writer": case.meta.get("writer"), "case_id": spec["id"],
+           "page_model_version": H.page_model_version(case.meta), "clean_change_um": {}}     # E's cached streams
     for fam, d in designs().items():
         raw, _ = E.estimate(_raw(d), st_d, case=case, sensor="deltapen")
         raw = fit_len(raw, n)
@@ -587,7 +590,8 @@ def test_note(wr, i: int, ar: Dict, quick: bool = False) -> List[str]:
         tc = CM.TestCase(wr, i, kind, "severe")
         res = run_case(tc, {"split": "test"}, None, ar, read_keys=() if quick else TEST_READ, quick=quick)
         res.update({"split": "test", "writer": wr.written.real["writer"], "note": i, "kind": kind, "class": "severe",
-                    "tremor": tc.tremor_meta(), "_elapsed_s": time.time() - t1})
+                    "tremor": tc.tremor_meta(), "page_model_version": CM.page_model_version(),
+                    "_elapsed_s": time.time() - t1})
         e = tc.e_cached() or {}
         res["repro_vs_E"] = {k: {"mine": res["configs"].get(m, {}).get("tip_tremor_mm"),
                                  "E": (e.get("devices", {}).get(k) or {}).get("tip_tremor_mm")}
@@ -625,6 +629,8 @@ def aggregate(quick: bool, p_curve: Optional[Sequence[float]], ar: Optional[Dict
     out = {"method": __doc__.split("Method")[1].strip() if "Method" in __doc__ else "", "predictor": _ar_summary(ar)}
     sc = {k: CM.jload(CM.cache_dir(quick) / "gap" / f"sensing_{k}.json") for k in ("imu", "page")}
     out["sensing_check"] = {k: v for k, v in sc.items() if v}
+    CM.one_page_model_version(load(quick, "tuning") + load(quick, "test") + ([sc["page"]] if sc["page"] else []),
+                              "gap case files")
     for split in ("tuning", "test"):
         cases = [c for c in load(quick, split) if "configs" in c]
         cleans = [c for c in load(quick, split) if "clean_change_um" in c]
@@ -740,7 +746,8 @@ def test_clean(wr, i: int, ar: Dict, quick: bool = False) -> List[str]:
     if ar.get("imu_fir"):
         # the FIR reads the IMU only (the DeltaPen-class streams carry the same IMU samples as the ideal ones)
         ests["fir_full_raw"] = fit_len(fir_estimate(ar, st, None), n)
-    out = {"split": "test", "note": i, "writer": wr.written.real["writer"], "clean_change_um": {},
+    out = {"split": "test", "note": i, "writer": wr.written.real["writer"],
+           "page_model_version": CM.page_model_version(), "clean_change_um": {},
            "label": "SIMULATION (full HW1 plant; ai2's false-correction measure against the nose-held run)"}
     for k, dh in ests.items():
         r = tc.run(-dh)
@@ -868,6 +875,8 @@ def sensing_check(kind: str, quick: bool = False, log=CM.log) -> Dict:
         del note
     out = {"kind": kind, "variants": {}, "n_cases": len(specs),
            "label": "CALC on SIM streams of the tremor alone (tuning split, cross-fitted by fold); tip = SIM (full plant)"}
+    if kind == "page":
+        out["page_model_version"] = CM.page_model_version()
     for v in variants:
         out["variants"][v] = {"signal_residual_mm": float(np.mean(res[v]["sig"])), "tip_tremor_mm": float(np.mean(res[v]["tip"])),
                               "n": len(res[v]["sig"]), "per_case_signal_mm": [float(x) for x in res[v]["sig"]],

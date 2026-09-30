@@ -277,8 +277,9 @@ def test_anchored_version2_starts_at_the_first_valid_report():
     st = Streams(tick_t=t, acc_t=t, acc_av=t, acc=np.zeros((n, 2)), pos_t=t, pos_av=t + 2e-3, pos=xy, pos_ok=ok,
                  con_t=t, con_av=t, con=np.ones(n), meta={})
     m = RS.PageModel()
+    # DEC-076 anchors degrade_page itself, so this record no longer raises; a record with no valid report still does
     with pytest.raises(ValueError):
-        orig(st, m, 5)
+        orig(dataclasses.replace(st, pos_ok=np.zeros(n)), m, 5)
     out = wrapped(st, m, 5)
     ref = orig(dataclasses.replace(st, pos_t=t[37:], pos_av=(t + 2e-3)[37:], pos=xy[37:], pos_ok=ok[37:]), m, 5)
     assert len(out.pos_t) == n and np.array_equal(np.asarray(out.pos)[37:], np.asarray(ref.pos))

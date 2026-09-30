@@ -200,7 +200,8 @@ class RevJStepper(S.Stepper):
             res.info["streams"] = self.fw.streams
             res.info["n_ticks"] = int(self.fw.k)
         res.info["guard_events"] = list(self.fw.tracker.events) if self.fw.tracker is not None else []
-        res.info["online_sensor_version"] = "contact-delayed-v2-2026-09-30"
+        legacy = self.pm.cfg.sensors.firmware_contact == "legacy_immediate"
+        res.info["online_sensor_version"] = "contact-legacy-immediate" if legacy else "contact-delayed-v2-2026-09-30"
         if self.fw.aw is not None:
             res.info["aw_tau"] = np.array(self.fw.aw["tau_log"])
         return res

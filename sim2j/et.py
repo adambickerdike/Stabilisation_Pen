@@ -165,13 +165,16 @@ class WriterSetup:
                 f"clean floor {self.clean_floor['ink_to_intended_um']:.0f} um, {self.setup_s:.0f} s")
 
     def _cache_path(self, n_adapt: int) -> Optional[str]:
-        """The adapted hand path depends on the writer, the text, the pen model and the step: cached per key."""
+        """The adapted hand path depends on the writer, the text, the pen model, the step and the nib's sensing mode (the
+        servo's velocity and contact sources, its inner loop, the firmware's contact channel): cached per key."""
         import hashlib
         pm = self.pm
+        nz = pm.cfg.nose
         key = f"{self.w}|{self.version}|{self.text}|{self.pen}|{pm.cfg.label}|{pm.m.opt.timestep}|{n_adapt}|{self.pre_s}|" \
               f"{'' if self.adapt_ctl == 'none' else self.adapt_ctl}|" \
               f"{(pm.info.get('revj') or {}).get('lead')}|{pm.cfg.hand}|{pm.cfg.hand_model}|{pm.cfg.contact}|{pm.cfg.refill}" \
-              f"{'' if pm.cfg.nose.Km_act > 0.6 and pm.cfg.nose.k_r > 0.0027 else '|' + str(pm.cfg.nose)}"
+              f"{'' if pm.cfg.nose.Km_act > 0.6 and pm.cfg.nose.k_r > 0.0027 else '|' + str(pm.cfg.nose)}" \
+              f"|{nz.velocity_source}|{nz.contact_source}|{nz.inner_hz}|{pm.cfg.sensors.firmware_contact}"
         h = hashlib.sha256(key.encode()).hexdigest()[:16]
         d = os.path.join(BUILD, "setups")
         os.makedirs(d, exist_ok=True)

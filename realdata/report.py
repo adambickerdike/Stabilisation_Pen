@@ -92,7 +92,8 @@ def picture_run(pc: Dict, log=print) -> Dict:
         m = (it.t >= a) & (it.t <= b) & it.pen_down
         if m.any():
             base.append(float(np.percentile(it.xy[m, 1], 12) * 1e3))
-    out = {"case": pc, "text": wr_.text, "lines": wr_.real.get("lines"), "writer": wr_.real.get("writer"),
+    out = {"case": pc, "page_model_version": H.page_model().version, "text": wr_.text, "lines": wr_.real.get("lines"),
+           "writer": wr_.real.get("writer"),
            "letter_height_mm": wr_.real.get("letter_height_mm"), "baselines_mm": base,
            "tremor": {k: dr.meta[k] for k in ("rid", "amp_mm", "f0", "subject", "source", "looped")},
            "devices": {k: v for k, v in res.items() if not k.startswith("_")}, "clean": clean["none"],

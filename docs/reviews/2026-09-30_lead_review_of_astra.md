@@ -50,3 +50,25 @@ Five studies run in parallel. Each writes only to its own folders, and the lead 
 - **Study P, friction integration.** The pass found that its new accepted-writing replay could create energy: an explicit 0.5 ms update of smoothed friction on a 3.44 g mass. Study P's plant is not that code. It uses HW1's LuGre law with the exact exponential bristle step at HW1's 25 µs, and with the page held still it reproduces HW1's ordinary pen to 1e-17 m (`platen/tests`). So this check does not suspend its results. They remain simulation on the tuning split.
 - **Study P, a shared cache.** Study P refitted the git-ignored `realdata/build/cache/page_model.json` to page model v2, the current code's default. The lead kept v2; the v1 values remain in `results/realdata/realdata.json`. Anyone rerunning study R's page-sensor rows should expect v2 values (study X reports the difference).
 - **Test fixes.** Study P's evidence-row test refused rows that the lead had already merged into the ledger. Its check now matches studies K and F: a new id, or a row merged verbatim.
+
+## Study X and the six code fixes (DEC-075…079)
+
+**Checks on study X.** The lead read the headline numbers back from `results/rebaseline/sim2j_cards.json`:
+- the causal headline card: 0.612 of the ordinary pen's ink error (cases 0.585–0.644, writers 0.596–0.627);
+- words 7.5 → 10 of 10, and tremor-free writing moved 0 µm;
+- perfect knowledge 0.169, and 1.54 W;
+- autowrite at 3 mm: 6.8 of 10 words;
+- the 1 mm and 2 mm cell means (0.43 → 0.28 mm and 0.94 → 0.53 mm).
+
+All match the study's text. Every rerun first reproduced the historical result. This takes the historical firmware contact channel, which the pass had replaced without a switch: sim2j to 0.4 µm, study B exactly. So each change can be attributed to the correction and not to a drift in the code. DEC-075…079 are accepted. DEC-077 is accepted for the correction benefit and the mechanism limit only: its SIM power figures carry no gravity load, so the nib's power, heat and battery claims stay with DEC-080's matched CALC model.
+
+**The six fixes (DEC-076)** were applied by a separate lead pass to the owning packages. Study X's runtime workarounds stay in place, and a new test file, `rebaseline/tests/test_patch_agreement.py`, checks each workaround against the patched code.
+
+1. **The historical contact channel.** `sim2/params.py` Sensors and `sim2j/sensing.py` gain `firmware_contact = "delayed" | "legacy_immediate"` (default "delayed"). With the legacy flags plus `legacy_immediate`, writer 0, seed 200, 8 Hz × 1 mm reproduces study X's historical row bit for bit: ordinary pen 440.606 µm, G4 377.055 µm. The legacy flags alone give 316.56 µm.
+2. **The sim2j writer-setup cache key** now includes the velocity source, the contact source, the inner loop and the contact channel. Existing setup caches are orphaned and re-learned on the next run, at about 55 s per writer.
+3. **`bnib/sim.py` and `wholepen/stepper.py`** now pass the firmware's delayed contact to the servo's gate, as sim2j does. No pinned value moved: B1 has no bias current.
+4. **The version-2 page-model fit** is saved as `page_model_v2.json` beside the version-1 file. On this machine the version-1 cache, overwritten earlier by study P's run, was restored from study X's record: c 20.48 µm, σ 1.354, 31,757 windows. It agrees with `results/realdata/realdata.json`. This supersedes the lead's earlier "keep v2" note above: both versions are now kept.
+5. **Case caches** (studies R, E and F) record the page-model version, and aggregation refuses a mix. Existing caches read as version 1.
+6. **`degrade_page` version 2** anchors at the first valid report instead of raising. Records that start valid are unchanged bit for bit. Every recorded note starts with the pen lifted, so without this fix studies R, E and F could not run on current code.
+
+Tests: the full default suite passed <!--SUITE--> on Linux after the fixes; before them it passed 942, with 5 skipped.

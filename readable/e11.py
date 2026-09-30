@@ -155,6 +155,7 @@ def tune(quick: bool = False, log=CM.log) -> Dict:
     specs = [s for s in C.tuning_specs() if s["note"] in notes]
     dz = {k: design(k) for k in DESIGNS}
     pp = SV.pen_params()
+    pmv = {"page_model_version": CM.page_model_version()}      # the calibration notes' streams
     # pass 1: calibration notes and their statistics
     calib = {}
     for i in notes:
@@ -173,6 +174,7 @@ def tune(quick: bool = False, log=CM.log) -> Dict:
     rows: Dict[str, Dict[str, List[Dict]]] = {k: {} for k in dz}
     for s in specs:
         case = C.load_case(s)
+        CM.one_page_model_version([pmv, case.meta], f"e11 tuning: the calibration notes and E's cached case {s['id']}")
         st = case.streams("deltapen")
         for k, d in dz.items():
             raw = raw_estimate(d, st, case)
@@ -188,8 +190,8 @@ def tune(quick: bool = False, log=CM.log) -> Dict:
                 m["auth_mean"] = float(np.mean(g[con])) if con.any() else float("nan")
                 rows[k].setdefault(vk, []).append(m)
         del case
-    out = {"notes": notes, "calibration": calib, "designs": {}, "rules": [rule_key(*r) for r in rules(quick)],
-           "elapsed_s": None}
+    out = {"notes": notes, "page_model_version": pmv["page_model_version"], "calibration": calib, "designs": {},
+           "rules": [rule_key(*r) for r in rules(quick)], "elapsed_s": None}
     for k in dz:
         summ = {}
         for vk, rr in rows[k].items():
@@ -268,7 +270,8 @@ def test_note(wr, i: int, frozen: Dict, quick: bool = False) -> List[str]:
                                        for kind in (("PD",) if quick else CM.KINDS)]
     if quick:
         cases = cases[:2]
-    res = {"writer": wr.written.real["writer"], "note": i, "calibration": cal, "cases": {}}
+    res = {"writer": wr.written.real["writer"], "note": i, "page_model_version": CM.page_model_version(),
+           "calibration": cal, "cases": {}}
     for tag, kind, cls in cases:
         tc = CM.TestCase(wr, i, kind, cls)
         clc = CM.CaseLike({"split": "test"}, dh=tc.dh_revh)
@@ -330,7 +333,7 @@ def aggregate(quick: bool, frozen: Optional[Dict]) -> Dict:
     if not tests:
         return out
     # R-format cases: R's ordinary pen and clean readings merged with the E11 devices
-    real, clean = [], []
+    real, clean, used_e = [], [], []
     for t in tests:
         for name, c in t["cases"].items():
             r = CM.jload(CM.R_CACHE / f"{name}.json") or {}
@@ -339,12 +342,14 @@ def aggregate(quick: bool, frozen: Optional[Dict]) -> Dict:
             ed = (e.get("devices") or {}).get("revJ_new|deltapen")
             if ed:
                 dev["D1|frozen_E"] = ed                       # E's reading of the frozen design (same case)
+                used_e.append(e)
             dev.update(c["devices"])
             if c["kind"] is None:
                 clean.append({"set": "clean_real", "writer": t["writer"], "note": t["note"], "devices": dev})
             else:
                 real.append({"set": "real", "writer": t["writer"], "note": t["note"], "kind": c["kind"],
                              "class": c["class"], "tremor": r.get("tremor"), "devices": dev})
+    CM.one_page_model_version(tests + ([tu] if tu else []) + used_e, "e11 case files (with E's cached rows)")
     per_writer = []
     for t in tests:
         row = {"note": t["note"], "writer": t["writer"].split("/")[-1], "calibration_seed": t["calibration"]["seed"]}

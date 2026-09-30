@@ -12,7 +12,8 @@ r"""The pen's own sensors, online, one 2 kHz firmware tick at a time (SIMULATION
   page sensor  optical flow at the handle tip: 1 kHz, 2 ms latency, 3 um rms, valid below 0.8 mm lift (sim2 Sensors;
                ASSUMPTION, EXP-S01/N07).
   refill slide Hall on the refill slide, 1 kHz, 2 um, 1 ms (sim2 Sensors): the ball's contact flag = slide beyond the
-               front stop by 0.1 mm.
+               front stop by 0.1 mm.  Sensors.firmware_contact 'legacy_immediate' restores the historical flag (the
+               slide reading of the same 2 kHz tick, no delay; sim2j at 4ad62b6) for reproductions of earlier rows.
   wheel        load (pod flexure Hall, 10 mN rms), lateral force across the heading (5 mN rms), heading (fork Hall,
                exact), rolling speed (odometry) (drive/plant.py sensing noise; ASSUMPTION).
 The firmware only reads these values (REQ-SIM-004: nothing privileged).
@@ -76,6 +77,9 @@ class OnlineSensors:
         self.slide_every = max(int(round(1.0 / (s.slide_rate * Ts))), 1)
         self.slide_latency = s.slide_latency
         self.slide_threshold = s.slide_thr
+        self.firmware_contact = s.firmware_contact
+        if self.firmware_contact not in ("delayed", "legacy_immediate"):
+            raise ValueError(f"unknown firmware_contact {self.firmware_contact!r}")
         self.slide_q = deque()
         self.last_slide = -1e-3
         self.last_contact = False
@@ -215,6 +219,12 @@ class OnlineSensors:
         out["slide"] = self.last_slide
         out["contact"] = self.last_contact
         out["contact_t"] = self.last_contact_t
+        if self.firmware_contact == "legacy_immediate":
+            # the historical channel: this tick's slide reading (the same noise draw), the fixed 0.1 mm, no delay
+            s_now = float(d.qpos[self.js] + nz[8] * self.slide_noise)
+            out["slide"] = s_now
+            out["contact"] = bool(s_now > self.pm.m.jnt_range[self.j_refill, 0] + 0.1e-3)
+            out["contact_t"] = t
         self.k += 1
         return out
 

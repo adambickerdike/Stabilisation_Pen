@@ -699,7 +699,10 @@ class BStepper(SJ.RevJStepper):
             self._tick_extra()
             tip = d.site_xpos[self.s_tip]
             direct = opt.policy(k * dt, pm, servo)
-            servo.ref_tick(k * dt, self.tick, tip, in_c, direct_q=direct)
+            # the servo's bias/authority gate sees the firmware's delayed measured contact, as in sim2j's RevJStepper
+            # (the true force only with contact_source 'force' / 'legacy_force')
+            gate_contact = in_c if self.contact_source in ("force", "legacy_force") else self.fw.contact
+            servo.ref_tick(k * dt, self.tick, tip, gate_contact, direct_q=direct)
             self.gate = servo.g_eff
             self.tick += 1
         if k % self.sdec == 0:

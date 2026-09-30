@@ -188,6 +188,33 @@ def test_sim_builds_and_steps():
     assert np.mean(r["Fface"][c]) == pytest.approx(0.15 / math.sin(50 * D2R), rel=0.05)
 
 
+def test_servo_gate_gets_the_firmware_contact():
+    """DEC-076: the servo's bias/authority gate gets the firmware's delayed measured contact, as sim2j's RevJStepper;
+    the true contact force only with contact_source 'legacy_force'."""
+    from bnib import sim as SM
+    import sim2j.tasks as TK
+    sd = SM.sim_designs()["B1"]
+    pm = SM.build(sd, 50.0)
+    case = TK.WriterCase(0, version="v2", text="r", pre_s=0.2)
+    env = SM.case_env(0, 200)
+    for source in ("measured", "legacy_force"):
+        st = SM.BStepper(pm, case.scenario(), SM.fw_config("none", 200, 0), sd, seed=200, ink=env["ink"],
+                         paper=env["paper"], face_err=env["face_err"], t_end=0.05)
+        st.contact_source = source
+        seen, ref_tick = [], st.servo.ref_tick
+
+        def spy(t, tick, tip, in_contact, direct_q=None, st=st, seen=seen, ref_tick=ref_tick):
+            seen.append((bool(in_contact), bool(st.fw.contact), bool(st._in_c)))
+            return ref_tick(t, tick, tip, in_contact, direct_q=direct_q)
+        st.servo.ref_tick = spy
+        st.advance(st.n)
+        gate, firmware, true = np.array(seen).T
+        if source == "measured":
+            assert np.array_equal(gate, firmware) and np.any(gate != true)
+        else:
+            assert np.array_equal(gate, true)
+
+
 def _refill_lateral(theta, face, F, h, fh, ft2=0.0):
     """Solve the refill's force balance (unknowns N, R1, R2: bushing forces along t1, t2) for a face push -F n
     (face=True) or a spring push -F a from the carrier (face=False), axial guide friction h along a, and the ball's

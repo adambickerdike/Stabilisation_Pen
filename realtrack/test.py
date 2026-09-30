@@ -132,7 +132,7 @@ def run(log=print, quick: bool = False) -> List[Dict]:
     tdir.mkdir(parents=True, exist_ok=True)
     OC.reader_choice(log=log)
     H.ai2_models()
-    H.page_model(False, log)
+    pm = H.page_model(False, log)
     P = H.plan(False)
     notes = P["real"]["writers"][:1] if quick else P["real"]["writers"]
     classes = ["severe"] if quick else ["severe", "moderate", "mild"]
@@ -160,6 +160,7 @@ def run(log=print, quick: bool = False) -> List[Dict]:
                            "tremor": {k: dr.meta[k] for k in ("rid", "amp_mm", "f0", "subject", "looped")},
                            "devices": dev}
                 res["_elapsed_s"] = time.time() - t0
+                res["page_model_version"] = pm.version
                 p.write_text(json.dumps(res, default=H._jd))
                 log(f"[test] {name} in {res['_elapsed_s']:.0f} s: " + H._fmt(res["devices"]))
             merged.append(merge_r(name, res))
@@ -167,12 +168,14 @@ def run(log=print, quick: bool = False) -> List[Dict]:
 
 
 def merge_r(name: str, mine: Dict) -> Dict:
-    """R's cached per-case results (its pens) + the new rows; the case identity is checked."""
+    """R's cached per-case results (its pens) + the new rows; the case identity and page-model version are checked."""
+    from realdata import hw1 as H
     r = json.loads((R_CACHE / f"{name}.json").read_text())
     assert r["writer"] == mine["writer"] and r.get("kind") == mine.get("kind"), name
     if mine.get("tremor"):
         assert r["tremor"]["rid"] == mine["tremor"]["rid"] and abs(r["tremor"]["amp_mm"] - mine["tremor"]["amp_mm"]) < 1e-12
     out = dict(r)
+    out["page_model_version"] = H.one_page_model_version([r, mine], f"{name}: R's case file and this study's")
     out["devices"] = dict(r["devices"])
     out["devices"].update({k: v for k, v in mine["devices"].items() if not k.startswith("_")})
     return out
@@ -186,6 +189,7 @@ def devices_all(fr: Dict) -> List[str]:
 
 def aggregate(cases: List[Dict], fr: Dict) -> Dict:
     from realdata import hw1 as H
+    H.one_page_model_version(cases, "realtrack test cases")
     devs = devices_all(fr)
     out = {"real": {}, "clean": {}, "devices": devs}
     real = [c for c in cases if c["set"] == "real"]
@@ -260,6 +264,8 @@ def picture_runs(log=print, ids: Sequence[str] = PIC_IDS) -> List[Dict]:
             out.append(json.loads(p.read_text()))
             continue
         r = json.loads((R_PIC / f"{pid}.json").read_text())
+        v = H.one_page_model_version([r, {"page_model_version": H.page_model().version}],
+                                     f"picture {pid}: R's case file and this study's row")
         pc = r["case"]
         OC.reader_choice(log=log)
         wr_ = RL.writing("test", seed=pc["seed"], source=pc["source"])
@@ -270,6 +276,7 @@ def picture_runs(log=print, ids: Sequence[str] = PIC_IDS) -> List[Dict]:
                        {"revJ_new|deltapen"}, keep=True)
         runs = res.pop("_runs")
         merged = dict(r)
+        merged["page_model_version"] = v
         merged["devices"] = dict(r["devices"])
         merged["devices"].update({k: v for k, v in res.items() if not k.startswith("_")})
         merged["paths"] = dict(r["paths"])

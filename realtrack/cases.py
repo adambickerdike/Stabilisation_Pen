@@ -184,7 +184,8 @@ def build_case(note: Note, spec: Dict, log=print) -> Case:
     neutral = note.clean["revJ"] if tremor is None else PL.run(scn, pen, note.hand, ctl=PL.Controls())
     s_seed = _h(spec["id"], "revJ") % (2 ** 31)
     st = CO.streams_for(neutral, scn, pen, note.trk, s_seed)
-    std = RS.degrade_page(st, H.page_model(), s_seed + 17)
+    pm = H.page_model()
+    std = RS.degrade_page(st, pm, s_seed + 17)
     tp = CO.tracker_params(pen, note.trk)
     dh_i, _ = ES.akf(st, tp)
     dh_d, _ = ES.akf(std, tp)
@@ -211,7 +212,7 @@ def build_case(note: Note, spec: Dict, log=print) -> Case:
     meta = {"spec": spec, "writer": written.real.get("writer"), "text": written.text,
             "duration_s": float(written.intended.t[-1]), "Ts": float(neutral.info["Ts"]),
             "tick_decim": int(tick_decim), "dt": float(scn.dt), "s_seed": int(s_seed),
-            "servo_group_delay_s": float(_gd(pen))}
+            "servo_group_delay_s": float(_gd(pen)), "page_model_version": pm.version}
     ref = {}
     if dr is not None:
         meta["tremor"] = {k: dr.meta[k] for k in ("rid", "amp_mm", "f0", "subject", "source", "looped", "kind")}
