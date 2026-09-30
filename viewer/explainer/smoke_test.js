@@ -164,7 +164,8 @@ async function run(browser, label, viewport) {
     /0\.4\s*mm/.test(kH.text) && /retracted unless the writer turns guidance on/.test(kH.text) && kH.tags.some(t => /^Simulation/.test(t)) &&
     /3\s*µm/.test(kP.text) && /DeltaPen, 2022/.test(kP.text) && /24–68\s*µm/.test(kP.text) && /unproven/.test(kP.text) && kP.tags.some(t => /^Assumption/.test(t)) && kP.tags.some(t => /^Literature/.test(t)) &&
     /made up/.test(kD.text) && /Real recordings/.test(kD.text) && /no tracker/.test(kD.text) &&
-    /about 30\s*% of the shake/.test(kD.text) && /no more words readable/.test(kD.text) && /about 0\.5\s*mm/.test(kD.text) && /EXP-E10/.test(kD.text) && !/—/.test(kD.text),
+    /about 30\s*% of the shake/.test(kD.text) && /no more words readable/.test(kD.text) && /about 0\.5\s*mm/.test(kD.text) && /EXP-E10/.test(kD.text) && !/—/.test(kD.text) &&
+    /less than about 0\.55\s*mm/.test(kD.text) && /telling the shake apart from the writing/.test(kD.text) && /1\.4 more words in 10/.test(kD.text),
     `${kH.text.slice(0, 50)}… | ${kP.text.slice(0, 60)}… | ${kD.text.slice(0, 40)}…`);
   check(`${label}: side-load figure: spring along the pen, paper's push, its sideways part, the magnets' force, the two arms and the lever equation`,
     ["spring", "paper", "side", "mag"].every(a => kp.arrows.includes(a)) &&

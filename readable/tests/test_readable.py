@@ -248,9 +248,10 @@ def test_evidence_rows_format():
     rows = list(csv.reader(open(RES / "evidence_rows.csv", newline="", encoding="utf-8")))
     ledger = list(csv.reader(open(ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8")))
     assert rows[0] == ledger[0] and len(rows[0]) == 23
-    used = {r[0] for r in ledger[1:]}
+    used = {r[0]: r for r in ledger[1:]}
     for r in rows[1:]:
-        assert len(r) == 23 and r[0] not in used
+        # a new id, or one the lead has already merged into the ledger verbatim
+        assert len(r) == 23 and (r[0] not in used or used[r[0]] == r)
 
 
 def test_limited_pen_scales_only_the_travel():
