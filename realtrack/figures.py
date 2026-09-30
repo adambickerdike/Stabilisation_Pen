@@ -262,6 +262,11 @@ def picture(od: Path, pr: Dict, new_key: str = "revJ_new|deltapen") -> Path:
         {"title": "With the same tremor, Rev J pen with this study's best causal tracker (realistic page sensor)",
          "ink": pr["paths"][new_key], "caption": f"words you can read: {dj['words_read']} of {n}"},
     ]
+    do = pr["devices"].get("revJ_oracle")
+    if do and "revJ_oracle" in pr.get("paths", {}):
+        panels.append({"title": "With the same tremor, Rev J pen with perfect knowledge of the tremor (the nose's limit, "
+                                "not a design)", "ink": pr["paths"]["revJ_oracle"],
+                       "caption": f"words you can read: {do.get('words_read')} of {n}"})
     for p_ in panels:
         p_["baselines_mm"] = pr.get("baselines_mm") or []
     trem = (f"tremor: {'UCI Parkinson spiral tablet data (Isenkul et al. 2014, CC BY 4.0)' if pc['kind'] == 'PD' else 'Zenodo ET accelerometry (Pardo-Valencia, Ammann, Foffani 2026, CC BY 4.0)'}, "
@@ -271,7 +276,8 @@ def picture(od: Path, pr: Dict, new_key: str = "revJ_new|deltapen") -> Path:
               f"fixed scale (mm on the page, 10 mm bar). Writing: letters written by one real adult (UCI Character "
               f"Trajectories, Williams 2008, CC BY 4.0), placed on the line by the simulation. {trem}. Tremor left at "
               f"the tip (peak, f0 +- 2 Hz): ordinary pen {dn.get('tip_tremor_mm', float('nan')):.2f} mm, Rev J with "
-              f"the tracker {dj.get('tip_tremor_mm', float('nan')):.2f} mm. Words read by an AI handwriting reader "
+              f"the tracker {dj.get('tip_tremor_mm', float('nan')):.2f} mm, perfect knowledge "
+              f"{(do or {}).get('tip_tremor_mm', float('nan')):.2f} mm. Words read by an AI handwriting reader "
               f"(TrOCR, literal) standing in for a person. PROPOSED DESIGN, not built. Not an observed improvement of "
               f"any user.")
     name = f"fig_before_after_chartraj_{pc['kind'].lower()}_{pc['class']}.png"
