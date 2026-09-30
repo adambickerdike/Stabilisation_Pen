@@ -45,7 +45,15 @@
     <p class="note">The studies use different physical models. Their favorable numbers cannot be combined into a specification for one validated device. Read the updated <a href="docs/claims_register.md">claims register</a> before quoting results.</p>
     <p><b>Round 5 (lead, 30 September 2026; decisions DEC-070 to DEC-099):</b></p>
     <ul>
-      <li>Reruns of the earlier headline simulations with realistic sensing (study X). Until then, those whole-pen simulation results count as upper bounds.</li>
+      <li><b>Done:</b> <a href="docs/rebaseline.md">the earlier results rerun with realistic sensing</a> (study X).
+        <ul>
+          <li>The main simulated result survives: with made-up tremor, the Rev J pen leaves 0.61 of an ordinary pen's ink error (0.63 before), and all 10 of 10 words are read, against 7.5.</li>
+          <li>The reach answer survives the nib's own motor and mass: severe tremor needs about ±1.5&nbsp;mm; ±1.06&nbsp;mm gains only 1.6 of the 2 words needed, even with perfect knowledge.</li>
+          <li>The real-recording conclusions stand: no tracker yet makes more words readable at the severe size.</li>
+          <li>Some numbers got worse: automatic writing through 3&nbsp;mm of tremor now manages 68&nbsp;% of words (88&nbsp;% before), and one tracker disturbs clean real writing more (41&nbsp;µm, was 25).</li>
+          <li>It found six code defects in the earlier studies' packages, each with a proposed fix.</li>
+        </ul>
+      </li>
       <li><b>Done:</b> <a href="docs/nib_optimisation.md">the nib optimised</a> (study N).
         <ul>
           <li>With two magnet sets, a ±1.5&nbsp;mm nib fits the 24&nbsp;mm pen within its heat limits: about 0.04&nbsp;W in normal writing, 0.11&nbsp;W at worst, skin 34&nbsp;°C, about 23 hours per charge.</li>
@@ -124,6 +132,7 @@
     <li><a href="docs/nib_optimisation.md">The nib optimised</a>: every nib design under one set of rules, a search of 13,200 designs, and the recommended ±1.5&nbsp;mm nib with CAD.</li>
     <li><a href="docs/bench_build_plan.md">The first bench build</a>: what to buy and build first, costs, schedule, safety, and what each test decides.</li>
     <li><a href="docs/platen_concept.md">A moving-paper writing surface</a>: a desk platen that moves the page under the pen, for severe tremor and for writing accepted words, with CAD.</li>
+    <li><a href="docs/rebaseline.md">Which earlier results survive realistic sensing</a>: the headline simulations rerun case by case, what survives, what changed, and six code fixes.</li>
     <li><a href="docs/revJ_simulation.md">Whole pen in the physics simulator</a>: results per condition on simulated writers and tremor, and why the tip uses too much power.</li>
     <li><a href="docs/real_data.md">Real recorded handwriting and tremor</a>: on real tremor no tracker helps yet. With perfect knowledge of the tremor, the same pen would make 7 of 10 words readable.</li>
     <li><a href="docs/readable_target.md">How much shake may be left</a>: the target any tracker must hit for readable words, why telling the shake from the writing is the hard part, and the reach a nib needs.</li>

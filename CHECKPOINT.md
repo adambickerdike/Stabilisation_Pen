@@ -346,8 +346,14 @@ The user asked for the independent engineering pass (commit `e09a15f`, `docs/eng
   - *Side load:* the calculated side load, about 49–51 mN, favours the 1.059 mm nib unless measured lower. Study N's two-array ±1.5 mm design passes at matched loads; DEC-096 decides on the measured loads.
   - *Fatigue coupons:* driven at no more than 0.2 × their first mode.
   - *Safety:* beryllium handling rules (DEC-097), and the five-bar is used on the bench only (DEC-099).
-- **Study X, the re-baseline** (DEC-075…079): running. It reruns sim2j's cards, B1 in sim2, study F's reach check and the page-sensor rows under causal sensing, the corrected loads and page model v2.
-- **Validation.** Pass 13 (U and H) is done; pass 14 (N, P and DEC-070…074) is running.
+- **Study X, the re-baseline** (DEC-075…079, accepted; SIM, each rerun first reproducing the old result; `docs/rebaseline.md`, `rebaseline/`). Of 69 simulation claims, 29 were rerun, 15 are affected but not rerun (each with its reason), 23 are unaffected and 2 superseded.
+  - *Rev J + G4 in sim2j, causal sensing (synthetic tremor):* 0.61 of the ordinary pen's ink error (writers 0.60–0.63; published 0.63); words 7.5 → 10 of 10; tremor-free writing unmoved; perfect knowledge 0.17; mild 1.01 and slow 1.00 stand; 1.5 W instead of 2.36 W.
+  - *Worse:* autowrite at 3 mm writes 68 % of words (was 88 %). Rev J's gated tracker moves clean real writing 41 µm (was 25 µm). At mild tremor, G4 is slightly worse than the ordinary pen in 10 of 18 cases.
+  - *The balanced nib in sim2* (DEC-066's 40/46 Hz servo, causal contact, corrected loads): G4 leaves 0.57 of the held nib's error on Rev K and 0.52 on the 1.5 mm candidate. Perfect knowledge leaves 0.38 and 0.27. Study N's balanced candidate, a first look on 2 writers: G4 0.51. The SIM power figures have no gravity load, so power claims stay with DEC-080's CALC.
+  - *Reach, with B1's own servo and mass (real inputs, perfect knowledge):* ±1.06 mm gains +1.6 words, failing DEC-055; ±1.5 mm gains +3.2 (DEC-078).
+  - *Real inputs under page model v2:* studies R, E and F move by at most 0.011 mm and 0.2 words; their conclusions stand (DEC-079).
+  - *Six code defects in imported packages* (DEC-076): the legacy flags do not restore the old contact channel; the sim2j setup cache ignores the sensing mode; bnib and wholepen still pass the true contact to the servo; the page-model fit overwrites version 1; case caches do not record the page-model version; and page model v2 raises on every recorded note. The patches are being applied in a separate lead pass.
+- **Validation.** Passes 13 (U and H) and 14 (N and P; DEC-070…074, DEC-080…089; the platen safety gate G-SP) are done; pass 15 (study X, DEC-075…079) is running.
 - **Open problems changed by round 5** (the numbers refer to §9).
   1. *Nose-coil power:* study N's balanced candidate replaces Rev K's B1 as the next nib. It is unproven until the coupon and rig experiments EXP-NB01…09.
   2. *Reach for severe tremor (10):* two answers exist on paper. Study N's ±1.5 mm nib fits in 24 mm (157 mm long), and study P's platen removes the reach limit at a desk. Both still wait on problem 7, the estimator.

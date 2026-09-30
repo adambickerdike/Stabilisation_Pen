@@ -126,6 +126,13 @@ async function run(browser, label, viewport) {
   check(`${label}: the rows from the physics simulation: fast shake, slow shake (no help yet), severe shake, loops, tracing, lead-through, tail, clean copy, normal writing`,
     ["tremor", "real", "slow", "autowrite", "loops", "tracing", "spell", "predict", "tail", "collar", "clean", "normal"].every(k => rows.some(r => r.id === k)) &&
     /No help yet/.test((rows.find(r => r.id === "slow") || {}).verdict || ""), rows.map(r => r.id).join(", "));
+  const rerun = await page.evaluate(() => Object.fromEntries(["tremor", "slow", "autowrite", "loops"].map(id => {
+    const r = document.querySelector(`#better .brow[data-row="${id}"]`);
+    return [id, r ? { text: r.textContent.replace(/\s+/g, " "), notes: [...r.querySelectorAll(".bnote")].map(n => n.textContent).join(" | ") } : null]; })));
+  check(`${label}: the fast, slow and severe shake rows show study X's rerun with realistic sensing (0.61 of the ordinary pen's shake); the loops row is still marked not yet rerun`,
+    ["tremor", "slow", "autowrite"].every(k => rerun[k] && /rerun with realistic sensing/.test(rerun[k].notes) && /rebaseline\/sim2j_cards\.json/.test(rerun[k].notes)) &&
+    /0\.61 of the ordinary pen/.test(rerun.tremor.text) && rerun.loops && /Not yet rerun/.test(rerun.loops.notes) && /DEC-071/.test(rerun.autowrite.text),
+    ["tremor", "slow", "autowrite", "loops"].map(k => `${k}: ${rerun[k] ? rerun[k].notes.slice(0, 60) : "missing"}`).join("; "));
   const trc = rows.find(r => r.id === "tracing");
   check(`${label}: the tracing row: the half-way nib brings the ink closer (0.83 → 0.64 mm) and stays as readable`, trc && /0\.83\D+0\.64/.test(trc.val) && /readable/.test(trc.verdict), trc ? `${trc.val.trim()} · ${trc.verdict}` : "missing");
   const sure = await page.$eval("#sure", el => el.textContent).catch(() => "");

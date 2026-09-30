@@ -562,6 +562,7 @@ ul.movekey li{display:flex;align-items:center;gap:0}
 .bnum .bs{font-size:14.5px;color:var(--muted)}
 .bnum .verdict{font-size:15px;font-weight:600}
 .bnote{font-size:14.5px;color:var(--muted)}
+.bnote.mono{overflow-wrap:anywhere}
 .sure{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;align-items:center;border:2px solid var(--t-prop);background:var(--panel);padding:14px 18px}
 .sure h2{font-size:26px}
 .sure p{font-size:18px;max-width:none}
@@ -792,7 +793,7 @@ details.det[open]>summary{border-bottom:1px solid var(--rule)}
   <section class="sec" id="better" aria-labelledby="better-h">
     <div class="sec-head">
       <h2 id="better-h">How much better is the writing?</h2>
-      <p>For each problem: writing without and with the pen's help, and one number. “Read correctly” means a handwriting-reading program read it right, standing in for a person. These results assume the pen's parts work as designed; see the known problems below. <b>Most rows below are upper bounds:</b> an independent review (30 September 2026) found that the whole-pen simulation gave the pen's controller its exact speed and instant contact, which a real pen will not have. They are being rerun with realistic sensing; the rows from real recorded tremor and the app's spelling help are not affected by this.</p>
+      <p>For each problem: writing without and with the pen's help, and one number. “Read correctly” means a handwriting-reading program read it right, standing in for a person. These results assume the pen's parts work as designed; see the known problems below. <b>Some rows are upper bounds:</b> an independent review (30 September 2026) found that the whole-pen simulation gave the pen's controller its exact speed and instant contact, which a real pen will not have. The fast-shake, slow-shake and severe-shake rows have since been rerun with realistic sensing (study X), and their numbers are the rerun's; the fast-shake result held ([[rerun_fast]] of the ordinary pen's error, was [[rerun_fast_old]]). Rows marked “not yet rerun” in their evidence note are still upper bounds. The rows from real recorded tremor and the app's spelling help are not affected.</p>
     </div>
     <div class="better" id="better-rows">
 <!--BUILD:SIMPLE_RESULTS-->

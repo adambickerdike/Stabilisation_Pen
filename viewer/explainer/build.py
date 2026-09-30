@@ -90,6 +90,7 @@ PLATEN_JSON = "results/platen/platen.json"                # study P: the moving-
 AI3_JSON = "results/ai3/ai3.json"                         # study S: spelling help, prediction, clarity
 WHOLEPEN_SUMMARY = "results/wholepen/summary.json"         # study W: shifting the whole pen
 SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
+REBASELINE_CARDS = "results/rebaseline/sim2j_cards.json"  # study X: the same cards rerun with causal sensing (DEC-075)
 SIM2J_PARTIAL: list = []      # coverage notes when the study finished with parts still to run
 SIM2J_PENDING: list = []      # why whole-pen results were left out (a partial summary of a run in progress)
 SIM_PARAMS = "results/revJ/sim_params.json"                 # inputs of the static nib load (refill spring, Km, coil)
@@ -394,6 +395,11 @@ def facts_sim2j() -> dict | None:
             out["generated_utc"] = (et.get("stabpen.provenance") or {}).get("generated_utc")
         if exists(SIM2J_CARDS):
             out["cards"] = {c["id"]: c for c in (load(SIM2J_CARDS).get("cards") or []) if isinstance(c, dict) and c.get("id")}
+        if exists(REBASELINE_CARDS):              # study X's causal rerun replaces the cards it covers (DEC-075)
+            cz = ((load(REBASELINE_CARDS).get("by_mode") or {}).get("causal") or {}).get("cards") or {}
+            out["rerun"] = {k: {"words": list(v["words_of_10"]), "n": v.get("n_cases"), "ratio": v.get("ratio_mean"),
+                                "limit": v.get("oracle_ratio_mean")}
+                            for k, v in cz.items() if isinstance(v, dict) and v.get("words_of_10")}
         return out
     except (OSError, ValueError, TypeError, AttributeError, KeyError, ZeroDivisionError) as ex:
         warn(f"{SIM2J_ET} could not be read ({ex})")
@@ -1751,7 +1757,11 @@ def simple_rows_revj(f: dict) -> list:
     src = SIM2J_CARDS
     ev_note = ("Physics simulation of the whole Rev J pen, with simulated writers and simulated shakes. An upper bound: "
                "this simulation gave the pen's controller its exact speed and instant contact, which a real pen will not "
-               "have (independent review, 30 September 2026; DEC-070). Being rerun with realistic sensing.")
+               "have (independent review, 30 September 2026; DEC-070). Not yet rerun with realistic sensing.")
+    R = s2.get("rerun") or {}
+    ev_rerun = ("Physics simulation of the whole Rev J pen, with simulated writers and simulated shakes, rerun with realistic "
+                "sensing: the controller sees only what a real pen could measure (study X, 30 September 2026; DEC-075). "
+                "The pictures are from the original run.")
     rows = []
 
     def pc10(x):                      # words or letters out of 10 -> per cent
@@ -1762,20 +1772,22 @@ def simple_rows_revj(f: dict) -> list:
         n = sum(c["n"] for c in cs)
         return sum(c[key][i] * c["n"] for c in cs) / n if n else None
     fast = [k for k in ("et_moderate", "et_strong") if k in C]
-    if fast:
-        n = sum(C[k]["n"] for k in fast)
-        rf = s2.get("ratio_fast")
+    hr = R.get("headline_8_12Hz_1_2mm")
+    if fast or hr:
+        n = hr["n"] if hr else sum(C[k]["n"] for k in fast)
+        rf = hr["ratio"] if hr else s2.get("ratio_fast")
+        wb, wa = (hr["words"][0], hr["words"][1]) if hr else (pooled(fast, 0), pooled(fast, 1))
         rows.append({
             "id": "tremor", "mech": ["tip"], "who": "A shaky hand, simulated shake", "sub": "A fast shake of 1–2 mm, 8–12 times a second, made up by the computer",
             "help": "The inner pen tilts against the shake, so the ball stays on the letters.",
             "pic": {"panel": "sim2j_8Hz_2mm", "before": "none", "after": "nose", "x": (-1.5, 40.0),
                     "cap": ("Ordinary pen", "With the inner pen"),
                     "note": "One simulated writer writing “return library” with a 2 mm shake, 8 times a second. Grey: what the writer meant."},
-            "num": {"label": "Words read correctly", "b": pc10(pooled(fast, 0)), "a": pc10(pooled(fast, 1)), "unit": "%",
+            "num": {"label": "Words read correctly", "b": pc10(wb), "a": pc10(wa), "unit": "%",
                     "sub": (f"shake left at the tip: {rf:.2f} of the ordinary pen's; " if rf is not None else "")
-                           + f"average of {n} simulated cases" + (f" ({part})" if part else "")},
+                           + f"average of {n} simulated cases" + (f" ({part})" if part and not hr else "")},
             "verdict": "Clearly better for a simulated fast shake. Not yet for a real one (next row).",
-            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+            "ev": [SIM_SIM2], "src": REBASELINE_CARDS if hr else src, "ev_note": ev_rerun if hr else ev_note})
     rd = (f.get("realdata") or {}).get("severe") or {}
     if rd.get("none", {}).get("words") is not None and rd.get("gated", {}).get("words") is not None:
         lim, cw = rd.get("oracle", {}).get("words"), rd.get("clean_words")
@@ -1795,9 +1807,9 @@ def simple_rows_revj(f: dict) -> list:
             "verdict": "No help yet on real tremor. The pen has the reach; it cannot yet estimate a real, irregular shake in time." + since,
             "ev": [SIM_REAL], "src": REALDATA_JSON + (f" · {REALTRACK_JSON}" if since else ""),
             "ev_note": "Real handwriting and real tremor recorded by others, in the simpler hand–pen model (HW1); not a measurement of the pen or of any person."})
-    if "slow_4hz" in C:
-        c = C["slow_4hz"]
-        lim = s2.get("ratio_slow_limit")
+    if "slow_4hz" in C or "slow_4hz" in R:
+        c = R.get("slow_4hz") or C["slow_4hz"]
+        lim = c["limit"] if "slow_4hz" in R else s2.get("ratio_slow_limit")
         rows.append({
             "id": "slow", "mech": ["tip"], "who": "A slow shake", "sub": "Parkinson's-type tremor: 1–2 mm, 4 times a second",
             "help": "The inner pen could cancel it, but the pen cannot yet tell a slow shake from the writing itself, so it stays still.",
@@ -1807,9 +1819,11 @@ def simple_rows_revj(f: dict) -> list:
                             "telling shake from writing is the missing piece" if lim is not None else "")
                            + f"; {c['n']} simulated cases"},
             "verdict": "No help yet. This is the biggest open gap.",
-            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
-    if "severe_autowrite" in C:
-        c, t = C["severe_autowrite"], C.get("severe_through")
+            "ev": [SIM_SIM2], "src": REBASELINE_CARDS if "slow_4hz" in R else src,
+            "ev_note": ev_rerun if "slow_4hz" in R else ev_note})
+    if "severe_autowrite" in C or "severe_autowrite" in R:
+        c = R.get("severe_autowrite") or C["severe_autowrite"]
+        t = R.get("severe_through") or C.get("severe_through")
         rows.append({
             "id": "autowrite", "mech": ["tip"], "who": "Too shaky to write", "sub": "A severe shake of 3 mm: autowrite, a mode you turn on",
             "help": "You sweep the pen along the line; the inner pen writes a text you chose: typed, spoken, or a suggestion you accepted.",
@@ -1819,9 +1833,12 @@ def simple_rows_revj(f: dict) -> list:
             "num": {"label": "Words read correctly", "b": pc10(c["words"][0]), "a": pc10(c["words"][1]), "unit": "%",
                     "sub": (f"writing through the shake with the inner pen instead: {pc10(t['words'][1])} %; " if t else "")
                            + f"{c['n']} simulated cases (6 writers, 2 shake speeds)"},
-            "verdict": "Readable. It writes only text you chose.",
-            "status": "Suspended as a hardware claim: the current inner pen would overheat (see Known problems).",
-            "ev": [SIM_SIM2], "src": src, "ev_note": ev_note})
+            "verdict": ("Mostly readable. It writes only text you chose." if pc10(c["words"][1]) < 80
+                        else "Readable. It writes only text you chose."),
+            "status": ("Not in the next pen: its nib reaches about ±1.5 mm, and whole words need a desk stage or a moving "
+                       "page (DEC-071). This inner pen would also overheat (see Known problems)."),
+            "ev": [SIM_SIM2], "src": REBASELINE_CARDS if "severe_autowrite" in R else src,
+            "ev_note": ev_rerun if "severe_autowrite" in R else ev_note})
     if "loops_relaxed" in C:
         c, r2 = C["loops_relaxed"], C.get("loops_resisting")
         hb, ha = (c.get("loop_heights_mm") or [[], []])
@@ -2135,7 +2152,10 @@ def fact_tokens(f: dict, lay: dict) -> dict:
     h, hec, hg = p.get("hours", {}), p.get("hours_endcap", {}), p.get("hours_gated", {})
     heat = p.get("heat_1mm") or {}
     t055 = sorted(d.get("traction_055") or [], key=lambda x: x["mu"])
+    s2 = f.get("sim2j") or {}
+    hr = (s2.get("rerun") or {}).get("headline_8_12Hz_1_2mm") or {}
     tok = {
+        "rerun_fast": fmt_num(hr.get("ratio"), 2), "rerun_fast_old": fmt_num(s2.get("ratio_fast"), 2),
         "od": fmt_num(p.get("od_mm"), 0), "len": fmt_num(p.get("length_mm")), "len_ec": fmt_num(p.get("length_endcap_mm")),
         "mass": fmt_num(p.get("mass_g")), "mass_ec": fmt_num(p.get("mass_endcap_g")), "ec_g": fmt_num(p.get("endcap_g")),
         "com": fmt_num(p.get("com_mm"), 0), "com_ec": fmt_num(p.get("com_endcap_mm"), 0),
