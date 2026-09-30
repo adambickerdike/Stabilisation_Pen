@@ -1676,7 +1676,9 @@ def simple_rows_revj(f: dict) -> list:
     a, j1 = f.get("ai2") or {}, f.get("endcap_j1") or {}
     part = s2.get("partial_note")
     src = SIM2J_CARDS
-    ev_note = "Physics simulation of the whole Rev J pen, with simulated writers and simulated shakes."
+    ev_note = ("Physics simulation of the whole Rev J pen, with simulated writers and simulated shakes. An upper bound: "
+               "this simulation gave the pen's controller its exact speed and instant contact, which a real pen will not "
+               "have (independent review, 30 September 2026; DEC-070). Being rerun with realistic sensing.")
     rows = []
 
     def pc10(x):                      # words or letters out of 10 -> per cent
