@@ -1,0 +1,243 @@
+{
+  "evidence": "CALCULATION and SIMULATION only; no hardware, clinical, participant writing or reader outcomes",
+  "base_git_commit": "4ad62b6acdcda1fa1102362f32780168297f5bb3",
+  "implemented_controller": "Causal timestamped Hall velocity, measured delayed contact and 80 Hz inner loop selected by separate discrete-time uncertainty grid",
+  "final_controller_cases": 45,
+  "controller_summary": {
+    "clean": {
+      "n_cases": 15,
+      "old_mean_rms_um": 327.9918464514514,
+      "new_mean_rms_um": 103.29823308147543,
+      "new_worst_rms_um": 339.12768118313056,
+      "paired_rms_ratio": {
+        "mean": 0.33273420787929064,
+        "bootstrap_95pct": [
+          0.26545045566855485,
+          0.41851940251679653
+        ],
+        "synthetic_writer_clusters": 5
+      },
+      "old_mean_coil_power_W": 8.216198362333312,
+      "new_mean_coil_power_W": 1.5569931025884824,
+      "new_max_coil_temperature_C": 65.6800783886955,
+      "old_mean_missing_fraction": 0.16766666666666674,
+      "new_mean_missing_fraction": 0.009613333333333333,
+      "old_mean_extra_fraction": 0.004573333333333332,
+      "new_mean_extra_fraction": 0.00652,
+      "new_worse_error_cases": 0
+    },
+    "mild": {
+      "n_cases": 15,
+      "old_mean_rms_um": 441.82096753517715,
+      "new_mean_rms_um": 251.49938576726456,
+      "new_worst_rms_um": 430.7798010336037,
+      "paired_rms_ratio": {
+        "mean": 0.6384766548296503,
+        "bootstrap_95pct": [
+          0.5340261273093255,
+          0.8169083059460738
+        ],
+        "synthetic_writer_clusters": 5
+      },
+      "old_mean_coil_power_W": 8.211934284904022,
+      "new_mean_coil_power_W": 1.5693698129426477,
+      "new_max_coil_temperature_C": 65.65779864780951,
+      "old_mean_missing_fraction": 0.15657333333333337,
+      "new_mean_missing_fraction": 0.010853333333333333,
+      "old_mean_extra_fraction": 0.004546666666666667,
+      "new_mean_extra_fraction": 0.006013333333333333,
+      "new_worse_error_cases": 1
+    },
+    "large": {
+      "n_cases": 15,
+      "old_mean_rms_um": 1060.7176072780746,
+      "new_mean_rms_um": 963.2405735369233,
+      "new_worst_rms_um": 2180.9876880756797,
+      "paired_rms_ratio": {
+        "mean": 0.9160442367593774,
+        "bootstrap_95pct": [
+          0.8503870814186497,
+          0.9722656504616527
+        ],
+        "synthetic_writer_clusters": 5
+      },
+      "old_mean_coil_power_W": 8.240615945330662,
+      "new_mean_coil_power_W": 1.6630589433234386,
+      "new_max_coil_temperature_C": 65.13979778004486,
+      "old_mean_missing_fraction": 0.1611066666666667,
+      "new_mean_missing_fraction": 0.01865333333333333,
+      "old_mean_extra_fraction": 0.005626666666666667,
+      "new_mean_extra_fraction": 0.008786666666666665,
+      "new_worse_error_cases": 4
+    },
+    "all": {
+      "n_cases": 45,
+      "old_mean_rms_um": 610.1768070882343,
+      "new_mean_rms_um": 439.3460641285544,
+      "new_worst_rms_um": 2180.9876880756797,
+      "paired_rms_ratio": {
+        "mean": 0.6290850331561062,
+        "bootstrap_95pct": [
+          0.5718361496570471,
+          0.6980534404363959
+        ],
+        "synthetic_writer_clusters": 5
+      },
+      "old_mean_coil_power_W": 8.222916197522665,
+      "new_mean_coil_power_W": 1.5964739529515233,
+      "new_max_coil_temperature_C": 65.6800783886955,
+      "old_mean_missing_fraction": 0.1617822222222223,
+      "new_mean_missing_fraction": 0.01304,
+      "old_mean_extra_fraction": 0.004915555555555554,
+      "new_mean_extra_fraction": 0.007106666666666666,
+      "new_worse_error_cases": 5
+    }
+  },
+  "ink_denominators": {
+    "scored_seconds": 112.50000000000001,
+    "required_ink_seconds": 64.76850000000005,
+    "required_lift_seconds": 47.73149999999997,
+    "ink_rates": {
+      "old_causal400": {
+        "missing_seconds": 18.20050000000001,
+        "missing_percent_required_ink": 28.100851494167685,
+        "extra_seconds": 0.553,
+        "extra_percent_required_lift": 1.1585640509935795
+      },
+      "causal80": {
+        "missing_seconds": 1.467,
+        "missing_percent_required_ink": 2.2649899256583046,
+        "extra_seconds": 0.7995,
+        "extra_percent_required_lift": 1.674994500487101
+      }
+    },
+    "source": "causal_controller_results.json"
+  },
+  "ppo_initial_actual_transitions": 49152,
+  "ppo_causal_actual_transitions": 196608,
+  "ppo_total_transitions_across_distinct_studies": 245760,
+  "ppo_causal_candidates": [
+    {
+      "seed": 0,
+      "clean_delta_mean_um": 5.514663932425765,
+      "clean_delta_worst_um": 15.8211513461406,
+      "clean_error_mean_increase_um": 2.279829818191814,
+      "clean_error_worst_increase_um": 6.9894877595095295,
+      "mild_ratio": 1.0045700234093842,
+      "large_ratio": 1.001857821830361,
+      "large_worst_ratio": 1.0323647430015603,
+      "large_cluster_ratio_95_upper": 1.0183422997863283,
+      "missing_increase": 0.0017999999999999995,
+      "extra_increase": 0.0003999999999999993,
+      "power_ratio": 1.0056146319099426,
+      "temperature_increase_C": 0.07411789593209761,
+      "clean_displacement_by_case_um": [
+        2.657960434262042,
+        0.8350605472751228,
+        2.4697541653932458,
+        11.283706032515587,
+        15.8211513461406,
+        0.02035106896799279
+      ],
+      "large_ratio_by_writer": {
+        "42001": 1.0077691624562395,
+        "42002": 0.9794620032485162,
+        "42003": 1.0183422997863283
+      },
+      "failed_rules": [
+        "large_ratio_max",
+        "large_cluster_ratio_95_upper_max"
+      ],
+      "passes": false
+    },
+    {
+      "seed": 1,
+      "clean_delta_mean_um": 0.5776430532025926,
+      "clean_delta_worst_um": 1.9455214119134328,
+      "clean_error_mean_increase_um": 0.03543126616404398,
+      "clean_error_worst_increase_um": 0.22550325899145207,
+      "mild_ratio": 0.9994007980045337,
+      "large_ratio": 0.9980767127220359,
+      "large_worst_ratio": 1.000495964577224,
+      "large_cluster_ratio_95_upper": 0.99997272814324,
+      "missing_increase": 0.0005999999999999998,
+      "extra_increase": 0.00019999999999999966,
+      "power_ratio": 1.0005910200260046,
+      "temperature_increase_C": 0.0037184945049162366,
+      "clean_displacement_by_case_um": [
+        1.0953573324724994,
+        0.053648171484348625,
+        0.16979457241427875,
+        0.1630734931168619,
+        1.9455214119134328,
+        0.03846333781413461
+      ],
+      "large_ratio_by_writer": {
+        "42001": 0.9982986264523281,
+        "42002": 0.99997272814324,
+        "42003": 0.9959587835705399
+      },
+      "failed_rules": [
+        "large_ratio_max"
+      ],
+      "passes": false
+    },
+    {
+      "seed": 2,
+      "clean_delta_mean_um": 9.12073172231594,
+      "clean_delta_worst_um": 24.045508073841468,
+      "clean_error_mean_increase_um": 2.9854452799925233,
+      "clean_error_worst_increase_um": 7.809562644036305,
+      "mild_ratio": 1.0017716335233025,
+      "large_ratio": 1.0148084721223203,
+      "large_worst_ratio": 1.044297783951039,
+      "large_cluster_ratio_95_upper": 1.0236304259952,
+      "missing_increase": 0.0007999999999999986,
+      "extra_increase": 0.0007999999999999986,
+      "power_ratio": 1.0041649670698043,
+      "temperature_increase_C": 0.05259487204909874,
+      "clean_displacement_by_case_um": [
+        1.603693497447122,
+        1.3232279918931003,
+        24.045508073841468,
+        9.084288073404455,
+        15.95554313651095,
+        2.7121295607985365
+      ],
+      "large_ratio_by_writer": {
+        "42001": 1.0236304259952,
+        "42002": 1.0221583371739325,
+        "42003": 0.9986366531978286
+      },
+      "failed_rules": [
+        "large_ratio_max",
+        "large_cluster_ratio_95_upper_max"
+      ],
+      "passes": false
+    }
+  ],
+  "ppo_causal_selected_seed": null,
+  "ppo_causal_fresh_test_consumed": false,
+  "ppo_adopted": false,
+  "firmware_policy_deployed": false,
+  "causal_source_snapshot_files": 82,
+  "same_host_smoke_replayed_numeric_fields": [
+    "rms_um",
+    "cost",
+    "missing_fraction",
+    "extra_fraction",
+    "coil_power_W",
+    "coil_temperature_C"
+  ],
+  "same_host_smoke_maximum_absolute_difference": 0.0,
+  "timestep_max_observed_50us_vs12p5us_path_difference_um": 32.51835792071369,
+  "claim_limits": [
+    "Rev J model only; no transfer validation to balanced nib or five-bar",
+    "Five synthetic writer clusters do not represent patient-population uncertainty",
+    "Five of 45 final cases have worse tracking; extra ink increases",
+    "Worst new RMS 2.181 mm; no usable handwriting claim",
+    "Maximum modeled winding 65.68C; no long-duration or grip-temperature qualification",
+    "All tested PPO candidates rejected; not a proof that RL cannot help",
+    "Numerical sensitivity studied only in three post-hoc cases"
+  ]
+}

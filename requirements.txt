@@ -9,6 +9,7 @@ matplotlib==3.11.2
 pandas==3.0.6
 PyYAML==6.0.1
 pytest==9.1.1
+jsonschema==4.26.0
 cadquery==2.8.0
 magpylib==5.2.3
 torch==2.14.0

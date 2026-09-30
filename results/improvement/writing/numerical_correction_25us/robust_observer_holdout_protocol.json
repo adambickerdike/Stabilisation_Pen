@@ -1,0 +1,1064 @@
+{
+  "scope": "Numerical correction of already-spent frozen observer replay cases.\n\nAll case specifications and controller designs are loaded from their original\nrecorded protocols. This corrects unstable explicit friction without retuning.\nThe old holdout is already spent; this rerun is not new blind validation. It is simulator\ngeneralization only; the glyph writers and synthetic acceptance are not new\nhuman validation data. Results count supervisor completion and retrospectively\nchecked true tracking separately, so observer optimism cannot hide a failure.\n",
+  "phase": "holdout",
+  "design": {
+    "measured_position_std_m": 1e-05,
+    "disturbance_random_walk_m_s2_sqrt_s": 2.0,
+    "innovation_trigger_sigma": 2.5,
+    "disturbance_jump_std_N": 0.02,
+    "innovation_refractory_s": 0.02,
+    "contact_drag_prior_N": 0.0,
+    "contact_velocity_scale_m_s": 0.0005,
+    "disturbance_force_cap_N": 0.06,
+    "maximum_bandwidth_hz": 40.0,
+    "recovery_force_cap_N": 0.04,
+    "recovery_force_slew_N_s": 10.0,
+    "damping_ratio": 0.9,
+    "initial_velocity_std_m_s": 0.003,
+    "initial_disturbance_std_N": 0.01
+  },
+  "code_sha256": {
+    "ai3/reachable.py": "0e8fa9cdc36a07c280ac13151724f1344f32c46d0ed053c6bc24292781185de2",
+    "ai3/layers.py": "0a118e3ddd528e75ff286046ea7980ebb406efdf23df3df9161b09fb1c5a4b2e",
+    "ai3/accepted_completion.py": "d4686dcfaa1415ef7dde36d5a33c69842a832307c46039aa8705bd256eb6f441",
+    "ai3/completion_replay.py": "5134a05487b138b8721df4d5e34f5e0df7bae51079e3b2d7e235cd003800c28d",
+    "ai3/robust_completion.py": "3dc1dcdb036395dfb572f44d1f1fb04a007b5856294e820f2ae5bfe78faed41a",
+    "ai3/planar_integrator.py": "ad874ae34e3f51b66fdc6894bfc45a0a35be2bea27cfaec0bab92c2bdfb43bb3",
+    "ai3/run_numerical_completion.py": "2886f0babd5fb50337023c2164075ce5e8738037113a20d2dfbc7cc6c9a974e8"
+  },
+  "radius_mm": 3.0,
+  "xheight_mm": 3.0,
+  "calibration_session": 1,
+  "specifications": [
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8080486490330319,
+        "stiffness_scale": 0.8415827678501828,
+        "damping_scale": 1.2787880003564944,
+        "force_constant_scale": 0.8567915146637566,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 6.337875499261629e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01982962368044377,
+        "seed": 490001
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.1441948540107798,
+        "stiffness_scale": 0.9495275561761146,
+        "damping_scale": 1.28947646912294,
+        "force_constant_scale": 0.7524338239922042,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 6.240076413336143e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.004541649533679848,
+        "seed": 490002
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0738604019893754,
+        "stiffness_scale": 1.011994935480588,
+        "damping_scale": 1.1302647708448952,
+        "force_constant_scale": 1.0818857505244395,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 4.907995636038663e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0090214902000593,
+        "seed": 490003
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9181964888437046,
+        "stiffness_scale": 0.8386491708062964,
+        "damping_scale": 1.2631869747151998,
+        "force_constant_scale": 0.7443439851651241,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 2.9902777481554968e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0017755618791854444,
+        "seed": 490018
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.7805920807043357,
+        "stiffness_scale": 1.298290167046015,
+        "damping_scale": 1.1076173485034637,
+        "force_constant_scale": 0.7079923489867459,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 7.582509794563385e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.011969761780833671,
+        "seed": 490019
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8592698574184038,
+        "stiffness_scale": 0.928559695194893,
+        "damping_scale": 0.8439272239747169,
+        "force_constant_scale": 0.7077293833004702,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 5.574141868528099e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.008489873310935453,
+        "seed": 490020
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.2696904716737125,
+        "stiffness_scale": 1.1387135224560812,
+        "damping_scale": 0.9351825435263954,
+        "force_constant_scale": 0.7740535498556634,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 7.08976985010736e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.010953033012204981,
+        "seed": 490035
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.11381343553399,
+        "stiffness_scale": 0.9444613386983935,
+        "damping_scale": 0.8895051195739008,
+        "force_constant_scale": 0.9207570607189284,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 3.3345531049691636e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.00868548102639481,
+        "seed": 490036
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.004318172178332,
+        "stiffness_scale": 0.8740341662780736,
+        "damping_scale": 0.7458849399960048,
+        "force_constant_scale": 1.0281291359304996,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 7.153566381048185e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.003114396695574773,
+        "seed": 490037
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8013762231240555,
+        "stiffness_scale": 1.0386964741868678,
+        "damping_scale": 1.1589471327770513,
+        "force_constant_scale": 0.7347405181671484,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 2.2871078031241057e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01896361595906962,
+        "seed": 490052
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.7732499935453941,
+        "stiffness_scale": 1.2513701486579918,
+        "damping_scale": 1.1759584895264346,
+        "force_constant_scale": 0.8540792585031362,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 6.601503299365954e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0069871236441198725,
+        "seed": 490053
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.1645143413676735,
+        "stiffness_scale": 0.709888043707982,
+        "damping_scale": 0.7914787222172305,
+        "force_constant_scale": 0.7633822984150905,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5.230338356981197e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0007856350453713884,
+        "seed": 490054
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8203815321912219,
+        "stiffness_scale": 1.1207143057173952,
+        "damping_scale": 1.2594959633379106,
+        "force_constant_scale": 1.0486177610302185,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 7.902796122487518e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.010633634389731748,
+        "seed": 490069
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.7091458247437389,
+        "stiffness_scale": 0.9637674311524972,
+        "damping_scale": 0.9920538530314863,
+        "force_constant_scale": 1.0672962146685527,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 5.96823912295445e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01925141760229943,
+        "seed": 490070
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9672362545122587,
+        "stiffness_scale": 0.7648399594657753,
+        "damping_scale": 0.7381711753032719,
+        "force_constant_scale": 1.0559621510066983,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 6.403112514253517e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.022548039511607398,
+        "seed": 490071
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.150392550089514,
+        "stiffness_scale": 1.0398359636166514,
+        "damping_scale": 1.2901117595912512,
+        "force_constant_scale": 1.0217250533941005,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 3.646985472824655e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0016119757896155109,
+        "seed": 490086
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.7573331435513364,
+        "stiffness_scale": 0.7902556077289775,
+        "damping_scale": 0.8288658423489262,
+        "force_constant_scale": 0.8078407927402004,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 8.952411952941918e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.010567531361645828,
+        "seed": 490087
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0724465186070837,
+        "stiffness_scale": 0.9390790121912643,
+        "damping_scale": 1.1746772060066848,
+        "force_constant_scale": 0.8965929551232074,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5.116441378240501e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.009941756482635844,
+        "seed": 490088
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.1326156097083802,
+        "stiffness_scale": 0.9532146955497907,
+        "damping_scale": 1.1325231456463123,
+        "force_constant_scale": 0.66043629741798,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 3.6459159432809765e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.013690711238356157,
+        "seed": 490103
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.043595487177523,
+        "stiffness_scale": 0.7338865007857825,
+        "damping_scale": 1.0158262579325086,
+        "force_constant_scale": 0.6734096109668166,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 4.274461164131605e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0009348504840058864,
+        "seed": 490104
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8609560108463162,
+        "stiffness_scale": 0.9869489960501255,
+        "damping_scale": 0.9613951421538377,
+        "force_constant_scale": 0.664275451402184,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 8.754376449005445e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.018518544921476653,
+        "seed": 490105
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.2959979711663274,
+        "stiffness_scale": 1.2568010108589174,
+        "damping_scale": 0.7296274242523473,
+        "force_constant_scale": 0.7497325872735464,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 9.797635119263947e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.011142406152356175,
+        "seed": 490120
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0406929975650367,
+        "stiffness_scale": 0.874188103461722,
+        "damping_scale": 1.0038507840686695,
+        "force_constant_scale": 1.0543817788215815,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 2.412693352213968e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01951040580757943,
+        "seed": 490121
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.241036108484899,
+        "stiffness_scale": 0.754160350722682,
+        "damping_scale": 1.2569041483084449,
+        "force_constant_scale": 1.0070765096207788,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 6.973574993100111e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.018230335292101923,
+        "seed": 490122
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8312622643539417,
+        "stiffness_scale": 1.121590384132499,
+        "damping_scale": 0.8932213455765804,
+        "force_constant_scale": 0.6784804518299504,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 2.7428304321978187e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.007031395527516044,
+        "seed": 490137
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.280623536195365,
+        "stiffness_scale": 1.099867808499016,
+        "damping_scale": 0.8312412775325057,
+        "force_constant_scale": 0.713399097240427,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 5.892636264960413e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.016203335140623373,
+        "seed": 490138
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9074033065606107,
+        "stiffness_scale": 1.257808900697286,
+        "damping_scale": 0.7684450746936835,
+        "force_constant_scale": 0.7998951565300625,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 4.900548280286188e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0184057019315374,
+        "seed": 490139
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9271045292852107,
+        "stiffness_scale": 1.1094679459952126,
+        "damping_scale": 1.118994282454592,
+        "force_constant_scale": 0.8274084282488396,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 6.649188032208736e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.021058207478040745,
+        "seed": 490154
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0598651017298606,
+        "stiffness_scale": 1.1788516812150827,
+        "damping_scale": 1.0676527372488929,
+        "force_constant_scale": 0.9133199810936453,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 7.66725939909144e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.004209850437692883,
+        "seed": 490155
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.2551211600083887,
+        "stiffness_scale": 1.2108043981018102,
+        "damping_scale": 1.1044147880648665,
+        "force_constant_scale": 0.8156764573734917,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 4.056949671826772e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.005861747068940593,
+        "seed": 490156
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8344064640806308,
+        "stiffness_scale": 1.2593496139444067,
+        "damping_scale": 1.019941040717398,
+        "force_constant_scale": 0.676736370280862,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 3.0675381994142593e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.004795663675497811,
+        "seed": 490171
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8598596694519841,
+        "stiffness_scale": 1.2298154184377459,
+        "damping_scale": 1.0525717449796124,
+        "force_constant_scale": 1.0295024979604646,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 3.895629071019319e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.015963042937129978,
+        "seed": 490172
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.1721218700443528,
+        "stiffness_scale": 1.0680397586028427,
+        "damping_scale": 1.1716728478477463,
+        "force_constant_scale": 0.8498777451034312,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 9.587301296414663e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0005343639704788516,
+        "seed": 490173
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9487366222609828,
+        "stiffness_scale": 1.1382685926550657,
+        "damping_scale": 1.0946620696125255,
+        "force_constant_scale": 0.8544574896722158,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 4.758579628029001e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0015891991833812125,
+        "seed": 490188
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0248417856995904,
+        "stiffness_scale": 1.2966763669391728,
+        "damping_scale": 1.2214843298027727,
+        "force_constant_scale": 1.076932888137589,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 2.9281967614718026e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02419006921387154,
+        "seed": 490189
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8426428167498877,
+        "stiffness_scale": 1.1100609523503286,
+        "damping_scale": 1.204177796086406,
+        "force_constant_scale": 0.9099121480323691,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 9.880640296609641e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.015166147384269744,
+        "seed": 490190
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8623370825635658,
+        "stiffness_scale": 1.194734342520193,
+        "damping_scale": 0.958514283384935,
+        "force_constant_scale": 0.6859726498875168,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 3.335855425704785e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02125402910865537,
+        "seed": 490205
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9002140412126507,
+        "stiffness_scale": 1.1436258480934223,
+        "damping_scale": 0.8313567174998621,
+        "force_constant_scale": 0.6675805993522345,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 3.922070992056083e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.020893316288841748,
+        "seed": 490206
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9941714892946014,
+        "stiffness_scale": 0.8163388078072064,
+        "damping_scale": 0.8857909807620243,
+        "force_constant_scale": 0.7809590142992127,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 7.467806633704919e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.007392048384659531,
+        "seed": 490207
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9234135941844417,
+        "stiffness_scale": 0.7205088279436809,
+        "damping_scale": 0.724813055837199,
+        "force_constant_scale": 0.7578349303345122,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 7.5993405065640956e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0057644908455370516,
+        "seed": 490222
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9984269939701848,
+        "stiffness_scale": 0.9191894415012738,
+        "damping_scale": 0.896563718476554,
+        "force_constant_scale": 0.6860956331473107,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 4.3176663085529765e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.011523328731917021,
+        "seed": 490223
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.2595815339963443,
+        "stiffness_scale": 0.9704987422731498,
+        "damping_scale": 0.8720332561656202,
+        "force_constant_scale": 0.8963992496883575,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 6.436643270975471e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.017513472274023032,
+        "seed": 490224
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.2729939124481806,
+        "stiffness_scale": 1.1771086531172181,
+        "damping_scale": 0.9878731808003328,
+        "force_constant_scale": 0.8248662520873938,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 3.468723902416404e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.008628481939045893,
+        "seed": 490239
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0227007328841742,
+        "stiffness_scale": 1.1498096243813591,
+        "damping_scale": 0.9959341700744548,
+        "force_constant_scale": 0.9053834136910057,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 8.152430850816705e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.009561786594157429,
+        "seed": 490240
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.1636682937047542,
+        "stiffness_scale": 0.9411051270149117,
+        "damping_scale": 0.8300587519627782,
+        "force_constant_scale": 0.9464572619127322,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 9.432981642670498e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.024593375425834035,
+        "seed": 490241
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0449348040147557,
+        "stiffness_scale": 1.089518034882075,
+        "damping_scale": 0.7926005156883704,
+        "force_constant_scale": 0.8457036833991847,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 3.3313247887726833e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.021635050214450904,
+        "seed": 490256
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9061502673224378,
+        "stiffness_scale": 1.0076210681615345,
+        "damping_scale": 1.0776410368977218,
+        "force_constant_scale": 0.7977794527568731,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 7.828182562786478e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.012024039131843148,
+        "seed": 490257
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.2207145537343405,
+        "stiffness_scale": 1.088238531540009,
+        "damping_scale": 0.9367292682757306,
+        "force_constant_scale": 0.6584557164561504,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 3.892432563316296e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.020081089545379783,
+        "seed": 490258
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0804137888913958,
+        "stiffness_scale": 1.0338122157641196,
+        "damping_scale": 0.9645230637137755,
+        "force_constant_scale": 1.059915891448058,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 6.2183066773315946e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.009671222624232851,
+        "seed": 490273
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.099165650386734,
+        "stiffness_scale": 1.2111007016701816,
+        "damping_scale": 1.1878296519973022,
+        "force_constant_scale": 0.7440144337821335,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 8.51080718783638e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01652557181358494,
+        "seed": 490274
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9678797106211909,
+        "stiffness_scale": 1.1460232826523973,
+        "damping_scale": 0.9648901692750234,
+        "force_constant_scale": 0.9720428819148349,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 3.2469856305253897e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.013451263644003387,
+        "seed": 490275
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.9812377790066221,
+        "stiffness_scale": 0.9544597816243361,
+        "damping_scale": 0.9531298803984626,
+        "force_constant_scale": 0.8638917733871274,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 7.758266308878745e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.011394628650457607,
+        "seed": 490290
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.193775645802672,
+        "stiffness_scale": 1.215801602493454,
+        "damping_scale": 0.9518195407351152,
+        "force_constant_scale": 1.0720398636864952,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 5.974502579745864e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.023792647105958246,
+        "seed": 490291
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0776049714350153,
+        "stiffness_scale": 1.0018454190480446,
+        "damping_scale": 0.7752941938182832,
+        "force_constant_scale": 0.8570757349721121,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 5.450205811696719e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0012736989187991906,
+        "seed": 490292
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.026750157726676,
+        "stiffness_scale": 1.2659903970482014,
+        "damping_scale": 1.09681496443338,
+        "force_constant_scale": 0.7052891022417257,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5.268609759594545e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.018838457892991503,
+        "seed": 490307
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.7867089582280145,
+        "stiffness_scale": 1.0315359332182321,
+        "damping_scale": 1.2371237846824237,
+        "force_constant_scale": 0.920745066133389,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 5.019761917282026e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0021221806416829164,
+        "seed": 490308
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.1817448631630232,
+        "stiffness_scale": 1.026356986348166,
+        "damping_scale": 0.719499622128331,
+        "force_constant_scale": 0.785905814329915,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 4.311812087108396e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.003892412895538261,
+        "seed": 490309
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8517879868142869,
+        "stiffness_scale": 1.2814207234960544,
+        "damping_scale": 1.2503733527948269,
+        "force_constant_scale": 0.6594482370741447,
+        "position_delay_s": 0.001,
+        "position_noise_std_m": 4.796911931940647e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.013370819500674598,
+        "seed": 490324
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.8185117231976183,
+        "stiffness_scale": 0.8625416145335425,
+        "damping_scale": 1.007084894349099,
+        "force_constant_scale": 0.7419344921161305,
+        "position_delay_s": 0.003,
+        "position_noise_std_m": 9.902651280590675e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.008262610234601812,
+        "seed": 490325
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "new_mixed_perturbations_200ms_contact",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 0.7655283540319363,
+        "stiffness_scale": 0.7756837731911761,
+        "damping_scale": 1.271201460519836,
+        "force_constant_scale": 0.7213037799825518,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 4.650028784667278e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.012562910566168884,
+        "seed": 490326
+      }
+    }
+  ],
+  "primary_endpoint": "whole accepted suffix completed AND actual stage tracking error <=150um and radius <=3mm at every simulated sample",
+  "no_human_efficacy": true,
+  "no_fresh_writer_validation": true,
+  "numerical_correction_of_spent_cases": true,
+  "original_protocol_sha256": "ab28b7aa59d274cbff9f93ec7acedb2fb2dabf4d0af639625ce4d9394b78226d",
+  "internal_max_dt_s": 2.5e-05,
+  "policy_tick_s": 0.0005,
+  "sensor_control_tick_s": 0.002,
+  "integrator": "coupled implicit midpoint, active current-limit solve, substep copper integration",
+  "numerical_scope": "same controller gains, source case specifications, seeds and acquisition schedule; mean applied-current observation corrects legacy endpoint-as-held approximation"
+}

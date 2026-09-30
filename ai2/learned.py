@@ -86,7 +86,9 @@ def make_tcn(n_in: int, n_out: int, ch: int = 32, k: int = 3, dil=(1, 2, 4, 8, 1
                 y = y + x[..., -residual_in:]
             return y
 
-    return TCN()
+    # Inference features and saved weights are float32. Do not inherit a
+    # process-global float64 default set by an unrelated physics optimiser.
+    return TCN().float()
 
 
 def tcn_macs(cfg: Dict) -> int:
@@ -141,7 +143,8 @@ def make_transformer(n_in: int, n_out: int, d: int = 48, heads: int = 4, layers:
             self.head = nn.Linear(d, n_out)
             nn.init.normal_(self.head.weight, std=0.01)
             nn.init.zeros_(self.head.bias)
-            self.slopes = torch.tensor([2.0 ** (-8.0 * (i + 1) / heads) for i in range(heads)])
+            self.register_buffer("slopes", torch.tensor([2.0 ** (-8.0 * (i + 1) / heads) for i in range(heads)],
+                                                        dtype=torch.float32), persistent=False)
             self.cfg = {"arch": "transformer", "n_in": n_in, "n_out": n_out, "d": d, "heads": heads, "layers": layers,
                         "window": window, "ff": ff, "residual_in": residual_in}
             self.rf = window * layers + 13
@@ -166,7 +169,7 @@ def make_transformer(n_in: int, n_out: int, d: int = 48, heads: int = 4, layers:
                 y = y + x[..., -residual_in:]
             return y
 
-    return TF()
+    return TF().float()
 
 
 def model_macs(cfg: Dict) -> int:

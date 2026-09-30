@@ -1,0 +1,119 @@
+{
+  "status": "PROPOSED layout, no interference certification or manufactured hardware",
+  "parts": [
+    {
+      "name": "desk_reaction_base",
+      "role": "grounded base, bolted or clamped to desk",
+      "volume_mm3": 140250.0
+    },
+    {
+      "name": "motor_0_2224_envelope",
+      "role": "MFR envelope22\u00d724.2mm; mass46g",
+      "volume_mm3": 9199.211608241632
+    },
+    {
+      "name": "output_bearing_support_0",
+      "role": "bearing specification and preload unresolved",
+      "volume_mm3": 3491.8802344650558
+    },
+    {
+      "name": "output_capstan_0",
+      "role": "proposed outputradius18mm",
+      "volume_mm3": 3032.422308877548
+    },
+    {
+      "name": "motor_capstan_0",
+      "role": "proposed inputradius3mm; ratio6:1; routing notresolved",
+      "volume_mm3": 75.39822368615503
+    },
+    {
+      "name": "proximal_link_0",
+      "role": "60mm pin spacing, massmodel6g",
+      "volume_mm3": 1333.0420291959624
+    },
+    {
+      "name": "distal_link_0",
+      "role": "90mm pin spacing, massmodel8g",
+      "volume_mm3": 1963.0420291959622
+    },
+    {
+      "name": "base_shaft_0",
+      "role": "shaft and bearing load path concept",
+      "volume_mm3": 176.71458676442586
+    },
+    {
+      "name": "elbow_shaft_0",
+      "role": "shaft and bearing load path concept",
+      "volume_mm3": 176.7145867644259
+    },
+    {
+      "name": "motor_1_2224_envelope",
+      "role": "MFR envelope22\u00d724.2mm; mass46g",
+      "volume_mm3": 9199.211608241632
+    },
+    {
+      "name": "output_bearing_support_1",
+      "role": "bearing specification and preload unresolved",
+      "volume_mm3": 3491.8802344650558
+    },
+    {
+      "name": "output_capstan_1",
+      "role": "proposed outputradius18mm",
+      "volume_mm3": 3032.4223088775484
+    },
+    {
+      "name": "motor_capstan_1",
+      "role": "proposed inputradius3mm; ratio6:1; routing notresolved",
+      "volume_mm3": 75.39822368615503
+    },
+    {
+      "name": "proximal_link_1",
+      "role": "60mm pin spacing, massmodel6g",
+      "volume_mm3": 1333.0420291959629
+    },
+    {
+      "name": "distal_link_1",
+      "role": "90mm pin spacing, massmodel8g",
+      "volume_mm3": 1963.042029195963
+    },
+    {
+      "name": "base_shaft_1",
+      "role": "shaft and bearing load path concept",
+      "volume_mm3": 176.71458676442586
+    },
+    {
+      "name": "elbow_shaft_1",
+      "role": "shaft and bearing load path concept",
+      "volume_mm3": 176.7145867644259
+    },
+    {
+      "name": "24mm_pen_holder_keepout",
+      "role": "holder forfine-stagepen; gimbal/loadcellgeometryunresolved",
+      "volume_mm3": 842.7636452519978
+    },
+    {
+      "name": "calculated_workspace_keepout",
+      "role": "60\u00d740mm linkage endpoint workspace; pen-tipfixedoffsetnotshown",
+      "volume_mm3": 240.0
+    }
+  ],
+  "drive": "two2224 U012SR;6:1 capstan/belt concept,80% efficiency ASSUMPTION",
+  "unresolved": [
+    "belt routing and tensioner",
+    "output encoders and bearing preload",
+    "pen gimbal and axial lift",
+    "link flexibility, backlash, fatigue and guards",
+    "supply, drivers and emergency force release"
+  ],
+  "board_mm": [
+    170,
+    165,
+    5
+  ],
+  "endpoint_link_spacing_mm": [
+    60,
+    90,
+    50
+  ],
+  "note": "Existing24mm pen retained; this deliberately exports reaction and travel to a board, not inside a slim collar"
+}

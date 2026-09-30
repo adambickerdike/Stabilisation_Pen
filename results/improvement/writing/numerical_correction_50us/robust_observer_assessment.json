@@ -1,0 +1,49 @@
+{
+  "scope": "Post-evaluation accounting of a frozen holdout; never changes its controller.\n\nThe registered primary endpoint is completion within the true position tube.\nThis secondary audit additionally asks whether actual acceleration and jerk\nstay inside the provisional reference limits. These distinct endpoints must not\nbe merged into a claim of physical feasibility.\n",
+  "source_sha256": "7a45a51bd3db4fb146473da53ed2b6b0bc82d9e3a119216bbf907b524f26ee5b",
+  "reference_acceleration_limit_m_s2": 2.0,
+  "reference_jerk_limit_m_s3": 300.0,
+  "summary": {
+    "gain_matched_path_feedforward": {
+      "all_fixed_cases": 60,
+      "preflight_admitted": 48,
+      "completed_position_tube": 0,
+      "completed_position_and_actual_rate_limits": 0,
+      "median_required_ink_contact_fraction_all_admitted": 0.0,
+      "median_post_abort_contact_seconds_aborted": null,
+      "median_extra_contact_seconds_all_admitted": 0.0,
+      "peak_actual_acceleration_m_s2_all_attempts": 9.129348172636243,
+      "peak_actual_jerk_m_s3_all_attempts": 32474.123733854165,
+      "peak_voltage_V_all_attempts": 0.28776179290290044,
+      "peak_current_A_all_attempts": 0.06250709329370278
+    },
+    "bounded_observer": {
+      "all_fixed_cases": 60,
+      "preflight_admitted": 48,
+      "completed_position_tube": 11,
+      "completed_position_and_actual_rate_limits": 0,
+      "median_required_ink_contact_fraction_all_admitted": 0.2891444280245751,
+      "median_post_abort_contact_seconds_aborted": 0.2,
+      "median_extra_contact_seconds_all_admitted": 0.004,
+      "peak_actual_acceleration_m_s2_all_attempts": 20.652743902870643,
+      "peak_actual_jerk_m_s3_all_attempts": 78230.76735459092,
+      "peak_voltage_V_all_attempts": 0.6915264857380783,
+      "peak_current_A_all_attempts": 0.206816356450891,
+      "successful_peak_actual_acceleration_range_m_s2": [
+        5.649247445539517,
+        13.585981926931465
+      ],
+      "successful_peak_actual_jerk_range_m_s3": [
+        15565.879739446578,
+        31936.920722634884
+      ]
+    }
+  },
+  "position_endpoint_writer_cluster_bootstrap_95pct": [
+    0.08333333333333333,
+    0.2833333333333333
+  ],
+  "bootstrap_scope": "20 already-seen UJI writers with3 fixed simulated cases each. Same spent protocol after numerical correction; not fresh validation or a clinical confidence interval.",
+  "jerk_scope": "Peak internal finite differences hold contact fixed; binary contact acceleration jumps are separately reported and do not have a finite physical jerk bound. No completed case even passes the constant-contact rate screen.",
+  "conclusion": "Bounded observer/recovery improves position tracking in some cases, but no holdout completion meets both actual rate limits. Unready for physical deployment; no claimed human handwriting benefit."
+}

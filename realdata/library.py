@@ -165,13 +165,25 @@ def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words:
     if source == "unipen":
         idx = WL.unipen_index()
         ws = WL.unipen_writers(split, idx)
+        if not ws:
+            raise FileNotFoundError(
+                f"No licensed UNIPEN writers indexed for split {split!r}; obtain the dataset "
+                "under its licence and rebuild the writing index before running this study")
+        if writer is not None and writer not in ws:
+            raise ValueError(f"UNIPEN writer {writer!r} is not in split {split!r}")
         w = writer or ws[seed % len(ws)]
         out = WL.unipen_note(w, seed=seed, n_words=n_words, dt=dt, index=idx, **kw)
         if out is None:
             raise ValueError(f"UNIPEN writer {w} has too few lines in its split")
         return out
+    if source != "brush":
+        raise ValueError(f"Unknown handwriting source {source!r}")
     stats = WL.brush_writer_stats()
     ws = WL.brush_writers(split, stats)
+    if not ws:
+        raise FileNotFoundError(f"No BRUSH writers indexed for split {split!r}; rebuild the writing index")
+    if writer is not None and writer not in ws:
+        raise ValueError(f"BRUSH writer {writer!r} is not in split {split!r}")
     w = writer or ws[seed % len(ws)]
     out = WL.brush_note(w, seed=seed, n_words=n_words, dt=dt, stats=stats, **kw)
     if out is None:
@@ -193,6 +205,8 @@ class RealWriter:
             return WL.ct_note(text or WL.CT_SENTENCE, seed=seed, split=self.split, dt=dt)
         if self.source == "unipen":
             ws = WL.unipen_writers(self.split)
+            if not ws:
+                raise FileNotFoundError(f"No licensed UNIPEN writers indexed for split {self.split!r}")
             w = ws[int(self.id) % len(ws)] if self.id.isdigit() else self.id
             return writing(self.split, seed=seed, source="unipen", dt=dt, writer=w, **kw)
         return writing(self.split, seed=seed, source="brush", dt=dt, writer=self.id)

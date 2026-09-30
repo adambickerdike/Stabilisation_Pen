@@ -1,0 +1,191 @@
+{
+  "none_clean": {
+    "rec_sha256": "3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 0.0
+  },
+  "none_tremor": {
+    "rec_sha256": "eb6a36aa739cd04fc5166c2d26a39f0fe05f832614158c27a786a1f834733c05",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 191.68387497433403
+  },
+  "stage": {
+    "rec_sha256": "b3ec6f598415ed364306c81ab5370e0f36638b142cfd64c8854564581da62c39",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 26.606386127914945
+  },
+  "rm_slug3_uff": {
+    "rec_sha256": "d740fdb1f16b13c1c07f308b5545dd0fd7111a273ff906f4911e4b65da907549",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 269.728716821907
+  },
+  "rm_slug3_uff_stage": {
+    "rec_sha256": "d74e2a38e87088e8ae80679b095bb27382eb572ed8634d042805f66b3b27c080",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 54.95393315104665
+  },
+  "rm_cell": {
+    "rec_sha256": "7e1d4b2856f13457c32f598952f3e35b74700c1bfb1b85adb6f9c0601383d5a2",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 190.78305730162208
+  },
+  "cmg_2ax_uff": {
+    "rec_sha256": "c6182a947bd6e3dbfed7c1dabe2669e08fa35f629a797ce7ebaf7d1f9b17f8ad",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 168.93873009899264
+  },
+  "cmg_lat_stage": {
+    "rec_sha256": "340b6e7fd0fec2cf9260c8c79fb25ced4d196f584dce2a09f84af74ebc75cd1b",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 24.300780247877807
+  },
+  "tmd_8": {
+    "rec_sha256": "1dca91c77a7930eab3cfa841a537711c2b1ab89bba888462d3b3108f4d3c74ef",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 181.24133765104511
+  },
+  "gyro_30k": {
+    "rec_sha256": "419e96b39d4a4abaa6cbd13b55ec5bf46849d5a19d22fe6d03ed63e010522eb7",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 186.47232734667497
+  },
+  "cap_10g": {
+    "rec_sha256": "ca9309cbf07a355aba1c0f5010e62fc874234079e2bfb6f576985f4908c62046",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 178.41832753870196
+  },
+  "locked": {
+    "rec_sha256": "1d9c2cefb0b92d293264ae8d274d0a70839c6abe5a5de2a1ef9988840da74c7b",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 193.4840080145473
+  },
+  "rot_yaw_stage": {
+    "rec_sha256": "575da56ed87534b770901f72da31c6c813449226418c6c77767d540d266e4bf7",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 66.32020413746841
+  },
+  "rot_pitch": {
+    "rec_sha256": "2d66d2cd2f0c7db3d8c5ad2f519e8a30688f25210bd8ca534c6acd44f31612fc",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 37.03891609076739
+  },
+  "voluntary": {
+    "rec_sha256": "8aaa5223e95eeb0b1dc82f1a6a05c71787de189fdfb3b4490c9b35a2f447ae53",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 164.75357227399147
+  },
+  "visc_soft": {
+    "rec_sha256": "86a892934840fe283102beec117cff15fdea3c39ca2ada60f09350ce4ae830dc",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 83.42454688068942
+  },
+  "split_0.7_0.1_mu": {
+    "rec_sha256": "f66ff6e4d24bb7d62c0641691c709368ec33408396968ef5f4d38f1665914ec0",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 252.9472308655709
+  },
+  "tilt35": {
+    "rec_sha256": "184a468ec055e03aaa26d2ca47340c9dbc1f2c46ea9a5ec5e857ed0e9d67f0a1",
+    "shape": [
+      3000,
+      57
+    ],
+    "appended_all_zero": true,
+    "ink_rms_um": 194.33067808216077
+  },
+  "ilc_rm": {
+    "rec_sha256": "466aabc4f2e342a33cff34b3699e3b2adb33e83ba28d7690994698667d91ac23",
+    "u_sha256": "b146324270908972d869c3d122933ecbb70313a7e5c11397bcfdea3f5149d290",
+    "hist": [
+      0.0001709365138581963,
+      0.00015286320331695224,
+      0.00015426754825183212
+    ]
+  },
+  "ilc_cmg": {
+    "rec_sha256": "ea1379c9880e083e7f1e907a01774d50071f63fb1a61539ecd35cc89f1eb30f9",
+    "u_sha256": "75bbe777c98eab07920fc91001e4b76436c4f375c62fade832f079752ee4ba69",
+    "hist": [
+      0.00015642207715632422,
+      0.00013316223990966105,
+      0.00013194760899574428
+    ]
+  },
+  "lin_none": {
+    "frf_sha256": "dd5ad931b0d11d835066867a5283a63b15435512bf73e75b12dca28bd1589a4d"
+  },
+  "lin_rm": {
+    "frf_sha256": "9f19b2196f45e35830aa55adee946490993d692aa95804949e186c9e7f6298d1"
+  },
+  "lin_gyro": {
+    "frf_sha256": "6b674a155cbb03d2bfd1bea83a74c76266e7b10e16658f19286351767d7604f7"
+  }
+}

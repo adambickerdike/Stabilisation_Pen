@@ -1,0 +1,183 @@
+{
+  "scope": "Bounded-observer development and separately frozen mixed-sensitivity replay.\n\nDevelopment reuses the published failure matrix. The holdout contains new\nperturbation combinations and noise seeds, fixed before replay. It is simulator\ngeneralization only; the glyph writers and synthetic acceptance are not new\nhuman validation data. Results count supervisor completion and retrospectively\nchecked true tracking separately, so observer optimism cannot hide a failure.\n",
+  "phase": "development",
+  "design": {
+    "measured_position_std_m": 5e-06,
+    "disturbance_random_walk_m_s2_sqrt_s": 80.0,
+    "disturbance_force_cap_N": 0.06,
+    "maximum_bandwidth_hz": 20.0,
+    "damping_ratio": 0.9,
+    "delay_phase_budget_rad": 0.5235987755982988,
+    "initial_velocity_std_m_s": 0.003,
+    "initial_disturbance_std_N": 0.01
+  },
+  "code_sha256": {
+    "ai3/reachable.py": "0e8fa9cdc36a07c280ac13151724f1344f32c46d0ed053c6bc24292781185de2",
+    "ai3/layers.py": "0a118e3ddd528e75ff286046ea7980ebb406efdf23df3df9161b09fb1c5a4b2e",
+    "ai3/accepted_completion.py": "d4686dcfaa1415ef7dde36d5a33c69842a832307c46039aa8705bd256eb6f441",
+    "ai3/completion_replay.py": "2c80492484545d64a5fa5ce7354f9194fe946762b09479835ba96d69389fca0b",
+    "ai3/robust_completion.py": "f514d87f80860b6e1cbb15ea31c02e2aa48fa0f625f6338f387d500efcfeac11",
+    "ai3/run_robust_completion.py": "fd7dc67386a18b30ae8136697d8a750b0f01274c9a0f5c189e4bf90eafdc8e3d"
+  },
+  "radius_mm": 3.0,
+  "xheight_mm": 3.0,
+  "calibration_session": 1,
+  "specifications": [
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    }
+  ],
+  "primary_endpoint": "whole accepted suffix completed AND actual stage tracking error <=150um and radius <=3mm at every simulated sample",
+  "no_human_efficacy": true,
+  "no_fresh_writer_validation": true
+}

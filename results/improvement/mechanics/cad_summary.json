@@ -1,0 +1,175 @@
+{
+  "evidence_status": "PROPOSED CAD and calculations, not manufactured or collision-certified",
+  "radius_mm": 1.5,
+  "body_od_mm": 24.0,
+  "wire_count": 8,
+  "wire_length_mm": 34,
+  "wire_circle_radius_mm": 3.7624999999999997,
+  "head_swept_axial_gap_from_anchor_mm": 3.9697757852300555,
+  "body_length_estimate_mm": 152.299,
+  "holder_extension_mm": 7.199000000000002,
+  "diaphragm": {
+    "material": "301 steel, E193GPa ASSUMPTION",
+    "beam_count": 4,
+    "beam_length_mm": 6.0,
+    "beam_width_mm": 0.5,
+    "thickness_mm": 0.035,
+    "calculated_axial_stiffness_N_m": 76.61921296296299,
+    "target_total_including_flex_cable_N_m": 100.0,
+    "nominal_flex_cable_stiffness_allowance_N_m": 23.38078703703701,
+    "target_tolerance_N_m": [
+      80.0,
+      120.0
+    ],
+    "requires_measured_clamp_stiffness": true
+  },
+  "swept_clearance_checks": {
+    "radius_mm": 1.5,
+    "stop_mm": 1.7,
+    "body_od_mm": 24.0,
+    "bore_radius_mm": 11.0,
+    "flange_radius_mm": 9.0,
+    "ball_circle_radius_mm": 7.55,
+    "race_width_mm": 2.9,
+    "race_inner_radius_mm": 6.1,
+    "wire_circle_min_mm": 3.4749999999999996,
+    "wire_circle_max_mm": 4.05,
+    "wire_circle_mm": 3.7624999999999997,
+    "guide_wire_fit": true,
+    "minimum_body_od_mm": 22.85,
+    "limitation": "full circular races + rearward straight wire leads; different guide topology may change bound"
+  },
+  "solid_mass_partial_g": 6.719242330740781,
+  "partial_mass_breakdown": [
+    {
+      "part": "back_iron",
+      "solid_mass_g": 1.2256766658347904
+    },
+    {
+      "part": "keeper_with_front_race_surface",
+      "solid_mass_g": 0.7354059995008747
+    },
+    {
+      "part": "N52_pole_1",
+      "solid_mass_g": 0.6069000000000002
+    },
+    {
+      "part": "N52_pole_2",
+      "solid_mass_g": 0.6069000000000002
+    },
+    {
+      "part": "N52_pole_3",
+      "solid_mass_g": 0.6069000000000002
+    },
+    {
+      "part": "N52_pole_4",
+      "solid_mass_g": 0.6069000000000002
+    },
+    {
+      "part": "carrier_tube",
+      "solid_mass_g": 0.31027303277968166
+    },
+    {
+      "part": "moving_flange",
+      "solid_mass_g": 1.6556662952519923
+    },
+    {
+      "part": "front_Si3N4_ball_1",
+      "solid_mass_g": 0.0008578642339402534
+    },
+    {
+      "part": "front_Si3N4_ball_2",
+      "solid_mass_g": 0.0008578642339402532
+    },
+    {
+      "part": "front_Si3N4_ball_3",
+      "solid_mass_g": 0.0008578642339402532
+    },
+    {
+      "part": "front_Si3N4_ball_4",
+      "solid_mass_g": 0.0008578642339402534
+    },
+    {
+      "part": "front_Si3N4_ball_5",
+      "solid_mass_g": 0.0008578642339402532
+    },
+    {
+      "part": "front_Si3N4_ball_6",
+      "solid_mass_g": 0.0008578642339402528
+    },
+    {
+      "part": "rear_race",
+      "solid_mass_g": 0.3219146009836301
+    },
+    {
+      "part": "rear_Si3N4_ball_1",
+      "solid_mass_g": 0.0008578642339402536
+    },
+    {
+      "part": "rear_Si3N4_ball_2",
+      "solid_mass_g": 0.0008578642339402534
+    },
+    {
+      "part": "rear_Si3N4_ball_3",
+      "solid_mass_g": 0.0008578642339402536
+    },
+    {
+      "part": "rear_Si3N4_ball_4",
+      "solid_mass_g": 0.0008578642339402536
+    },
+    {
+      "part": "rear_Si3N4_ball_5",
+      "solid_mass_g": 0.0008578642339402534
+    },
+    {
+      "part": "rear_Si3N4_ball_6",
+      "solid_mass_g": 0.0008578642339402534
+    },
+    {
+      "part": "C17200_lead_suspension_1",
+      "solid_mass_g": 0.0022030418483298363
+    },
+    {
+      "part": "C17200_lead_suspension_2",
+      "solid_mass_g": 0.0022030418483298454
+    },
+    {
+      "part": "C17200_lead_suspension_3",
+      "solid_mass_g": 0.0022030418483298454
+    },
+    {
+      "part": "C17200_lead_suspension_4",
+      "solid_mass_g": 0.0022030418483298367
+    },
+    {
+      "part": "C17200_lead_suspension_5",
+      "solid_mass_g": 0.0022030418483298363
+    },
+    {
+      "part": "C17200_lead_suspension_6",
+      "solid_mass_g": 0.0022030418483298445
+    },
+    {
+      "part": "C17200_lead_suspension_7",
+      "solid_mass_g": 0.0022030418483298454
+    },
+    {
+      "part": "C17200_lead_suspension_8",
+      "solid_mass_g": 0.0022030418483298367
+    },
+    {
+      "part": "301_steel_floating_anchor",
+      "solid_mass_g": 0.014787030795888991
+    }
+  ],
+  "unresolved": [
+    "full head joints/float",
+    "diaphragm flex cable and solder pads",
+    "3D package with electronics",
+    "Hall sensor relocation and field calibration",
+    "guide race/support compliance",
+    "coil former, actual winding turns and insulation processing",
+    "drop stops and dust protection"
+  ],
+  "components": 37
+}

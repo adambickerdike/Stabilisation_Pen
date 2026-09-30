@@ -27,7 +27,7 @@ import torch
 
 from sim.pencil.layout import IDX
 
-torch.set_default_dtype(torch.float64)
+# Keep physical calculations in float64 without changing the caller's ML defaults.
 
 
 def _softplus(x, width):
@@ -111,14 +111,14 @@ class ReducedTouchdown:
         # initial state: in the air on the stop, or in writing contact at the working slide
         N_sk0 = max(1.0 - self.F_sp0 / st, 0.0)
         hz = torch.where(down > 0, T(self.z0 - self.r_b + 0.0), zr[:, 0] + self.z0 - self.r_b)
-        hx = xr[:, 0].clone(); vx = torch.zeros(B); vz = torch.zeros(B); ax_ = torch.zeros(B); az_ = torch.zeros(B)
-        dMx = torch.zeros(B); dMz = torch.zeros(B); vMx = torch.zeros(B); vMz = torch.zeros(B)
-        s = torch.where(down > 0, T(self.s_ref0), T(self.s_min)); sd = torch.zeros(B); sdd = torch.zeros(B)
-        q = torch.zeros(B); qd = torch.zeros(B); qdd = torch.zeros(B)
-        Fdrv = down * self.Fb0; eint = torch.zeros(B); edf = torch.zeros(B); qm_prev = torch.zeros(B)
-        qr = torch.zeros(B); qr1 = torch.zeros(B); qr2 = torch.zeros(B)
+        hx = xr[:, 0].clone(); vx = torch.zeros(B, dtype=torch.float64); vz = torch.zeros(B, dtype=torch.float64); ax_ = torch.zeros(B, dtype=torch.float64); az_ = torch.zeros(B, dtype=torch.float64)
+        dMx = torch.zeros(B, dtype=torch.float64); dMz = torch.zeros(B, dtype=torch.float64); vMx = torch.zeros(B, dtype=torch.float64); vMz = torch.zeros(B, dtype=torch.float64)
+        s = torch.where(down > 0, T(self.s_ref0), T(self.s_min)); sd = torch.zeros(B, dtype=torch.float64); sdd = torch.zeros(B, dtype=torch.float64)
+        q = torch.zeros(B, dtype=torch.float64); qd = torch.zeros(B, dtype=torch.float64); qdd = torch.zeros(B, dtype=torch.float64)
+        Fdrv = down * self.Fb0; eint = torch.zeros(B, dtype=torch.float64); edf = torch.zeros(B, dtype=torch.float64); qm_prev = torch.zeros(B, dtype=torch.float64)
+        qr = torch.zeros(B, dtype=torch.float64); qr1 = torch.zeros(B, dtype=torch.float64); qr2 = torch.zeros(B, dtype=torch.float64)
         s_hist, q_hist = [], []
-        s_meas = s.clone(); x_ab = torch.zeros(B); v_ab = torch.zeros(B); k_samp = 0; c_w = down.clone()
+        s_meas = s.clone(); x_ab = torch.zeros(B, dtype=torch.float64); v_ab = torch.zeros(B, dtype=torch.float64); k_samp = 0; c_w = down.clone()
         lp = law.get("lp_hz", T(200.0))
         Ta = self.adec * dt
         r_ab = torch.exp(-2 * math.pi * lp * Ta); a_ab = 1 - r_ab ** 2; b_ab = (1 - r_ab) ** 2
@@ -127,7 +127,7 @@ class ReducedTouchdown:
         ex_drv = 1 - math.exp(-dt / self.drv_tau)
         Ts = self.sdec * dt; Tv = self.vdec * dt
         rec = {k: [] for k in ("Cx", "Cz", "N", "Ns", "s", "q", "qr", "hx", "hz", "cw")} if record else None
-        loss_num = torch.zeros(B); loss_den = torch.zeros(B); travel_pen = torch.zeros(B)
+        loss_num = torch.zeros(B, dtype=torch.float64); loss_den = torch.zeros(B, dtype=torch.float64); travel_pen = torch.zeros(B, dtype=torch.float64)
         for k in range(n):
             if k % self.sdec == 0:
                 if ff_on:
@@ -139,7 +139,7 @@ class ReducedTouchdown:
                     a = torch.abs(q_ff)
                     q_ff = torch.sign(q_ff) * torch.where(a > knee, knee + self.q_tap * torch.tanh((a - knee) / self.q_tap), a)
                 else:
-                    q_ff = torch.zeros(B)
+                    q_ff = torch.zeros(B, dtype=torch.float64)
                 qr2, qr1, qr = qr1, qr, q_ff
             qddr = (qr - 2 * qr1 + qr2) / Ts ** 2; qdr = (qr - qr1) / Ts
             if k % self.vdec == 0:
@@ -230,12 +230,12 @@ def fit_law(model: ReducedTouchdown, ev: Events, free=("gain", "kappa", "lead_s"
             fixed: Optional[Dict[str, float]] = None, verbose=True, handover=True):
     """Adam on the adjoint (BPTT) gradient of the mean RMS ink deviation over the batch."""
     fixed = dict(fixed or {})
-    z = {k: torch.tensor(PARAM_INIT[k] / SCALE[k], requires_grad=True) for k in free}
+    z = {k: torch.tensor(PARAM_INIT[k] / SCALE[k], requires_grad=True, dtype=torch.float64) for k in free}
     opt = torch.optim.Adam(list(z.values()), lr=lr)
     hist = []
     for it in range(iters):
         law = {k: v * SCALE[k] for k, v in z.items()}
-        law.update({k: torch.tensor(v) for k, v in fixed.items()})
+        law.update({k: torch.tensor(v, dtype=torch.float64) for k, v in fixed.items()})
         out = model.simulate(ev, law, handover=handover)
         loss = (out["rms_ink"] * 1e6).mean() + 1e12 * out["travel_pen"].mean()
         opt.zero_grad()
@@ -257,7 +257,7 @@ def fit_law(model: ReducedTouchdown, ev: Events, free=("gain", "kappa", "lead_s"
 
 def evaluate_law(model, ev, law_values: Dict[str, float], ff_on=True, record=False, handover=True):
     with torch.no_grad():
-        law = {k: torch.tensor(v) for k, v in law_values.items()}
+        law = {k: torch.tensor(v, dtype=torch.float64) for k, v in law_values.items()}
         out = model.simulate(ev, law, ff_on=ff_on, record=record, handover=handover)
     res = {"rms_ink_um": [float(v) * 1e6 for v in out["rms_ink"]], "mean_rms_ink_um": float(out["rms_ink"].mean()) * 1e6}
     if record:

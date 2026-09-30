@@ -1,0 +1,1073 @@
+{
+  "evidence_class": "CALCULATION; no physical or clinical validation",
+  "source_commit": "b1694a3a35fe134026c93786dbae673c3fdbfd85",
+  "assumptions": {
+    "axial_force_N": 0.15,
+    "tip_arm_m": 0.07648,
+    "actuator_arm_m": 0.0115,
+    "motor_constant_N_sqrtW": 0.656,
+    "resistance_ohm": 2.47,
+    "reaction_mass_kg": 0.03,
+    "radial_half_stroke_m": 0.004,
+    "thermal_resistance_K_W": 100,
+    "thermal_capacity_J_K": 0.5,
+    "ambient_C": 25,
+    "coil_limit_C": 120,
+    "usable_energy_Wh": 2.22
+  },
+  "static": [
+    {
+      "tilt_deg": 35,
+      "transverse_N": 0.2142222010113172,
+      "torque_Nm": 0.01638371393334554,
+      "actuator_force_N": 1.4246707768126559,
+      "copper_W": 4.716516448319396,
+      "current_A": 1.3818541273517648
+    },
+    {
+      "tilt_deg": 50,
+      "transverse_N": 0.125864944676592,
+      "torque_Nm": 0.009626150968865758,
+      "actuator_force_N": 0.8370566059883269,
+      "copper_W": 1.6281783574432465,
+      "current_A": 0.8118999453332187
+    },
+    {
+      "tilt_deg": 75,
+      "transverse_N": 0.0401923788646684,
+      "torque_Nm": 0.0030739131355698394,
+      "actuator_force_N": 0.26729679439737736,
+      "copper_W": 0.16602742112004065,
+      "current_A": 0.2592635327245738
+    }
+  ],
+  "static_curve": [
+    {
+      "tilt_deg": 35,
+      "transverse_N": 0.2142222010113172,
+      "torque_Nm": 0.01638371393334554,
+      "actuator_force_N": 1.4246707768126559,
+      "copper_W": 4.716516448319396,
+      "current_A": 1.3818541273517648
+    },
+    {
+      "tilt_deg": 36,
+      "transverse_N": 0.206457288070676,
+      "torque_Nm": 0.015789853391645303,
+      "actuator_force_N": 1.373030729708287,
+      "copper_W": 4.380794041686661,
+      "current_A": 1.3317660555044155
+    },
+    {
+      "tilt_deg": 37,
+      "transverse_N": 0.19905672324306148,
+      "torque_Nm": 0.015223858193629343,
+      "actuator_force_N": 1.323813755967769,
+      "copper_W": 4.072359413317714,
+      "current_A": 1.2840282346646736
+    },
+    {
+      "tilt_deg": 38,
+      "transverse_N": 0.1919912448289618,
+      "torque_Nm": 0.014683490404518999,
+      "actuator_force_N": 1.2768252525668695,
+      "copper_W": 3.788394941609463,
+      "current_A": 1.2384519103521312
+    },
+    {
+      "tilt_deg": 39,
+      "transverse_N": 0.18523457348025774,
+      "torque_Nm": 0.014166740179770113,
+      "actuator_force_N": 1.2318904504147925,
+      "copper_W": 3.5264399953133365,
+      "current_A": 1.1948675659364334
+    },
+    {
+      "tilt_deg": 40,
+      "transverse_N": 0.1787630388891315,
+      "torque_Nm": 0.013671797214240779,
+      "actuator_force_N": 1.1888519316731112,
+      "copper_W": 3.2843380880123623,
+      "current_A": 1.1531225145700017
+    },
+    {
+      "tilt_deg": 41,
+      "transverse_N": 0.17255526108315142,
+      "torque_Nm": 0.013197026367639421,
+      "actuator_force_N": 1.1475675102295149,
+      "copper_W": 3.0601929435008173,
+      "current_A": 1.113078843361418
+    },
+    {
+      "tilt_deg": 42,
+      "transverse_N": 0.16659187722437893,
+      "torque_Nm": 0.012740946770120502,
+      "actuator_force_N": 1.107908414793087,
+      "copper_W": 2.852331795548899,
+      "current_A": 1.0746116510754407
+    },
+    {
+      "tilt_deg": 43,
+      "transverse_N": 0.1608553065037024,
+      "torque_Nm": 0.01230221384140316,
+      "actuator_force_N": 1.0697577253394053,
+      "copper_W": 2.659274592233367,
+      "current_A": 1.0376075315687356
+    },
+    {
+      "tilt_deg": 44,
+      "transverse_N": 0.15532954706858543,
+      "torque_Nm": 0.011879603759805414,
+      "actuator_force_N": 1.0330090225917752,
+      "copper_W": 2.4797080438448433,
+      "current_A": 1.0019632638592186
+    },
+    {
+      "tilt_deg": 45,
+      "transverse_N": 0.15000000000000002,
+      "torque_Nm": 0.011472000000000003,
+      "actuator_force_N": 0.9975652173913047,
+      "copper_W": 2.3124636631584643,
+      "current_A": 0.9675846766779062
+    },
+    {
+      "tilt_deg": 46,
+      "transverse_N": 0.14485331622106112,
+      "torque_Nm": 0.011078381624586756,
+      "actuator_force_N": 0.9633375325727613,
+      "copper_W": 2.1564991115392993,
+      "current_A": 0.934385660943186
+    },
+    {
+      "tilt_deg": 47,
+      "transverse_N": 0.13987726292064925,
+      "torque_Nm": 0.010697813068171256,
+      "actuator_force_N": 0.9302446146235874,
+      "copper_W": 2.0108822943843565,
+      "current_A": 0.9022873081177789
+    },
+    {
+      "tilt_deg": 48,
+      "transverse_N": 0.135060606644676,
+      "torque_Nm": 0.010329435196184822,
+      "actuator_force_N": 0.8982117561899845,
+      "copper_W": 1.8747777526349088,
+      "current_A": 0.8712171560814045
+    },
+    {
+      "tilt_deg": 49,
+      "transverse_N": 0.130393010672434,
+      "torque_Nm": 0.009972457456227754,
+      "actuator_force_N": 0.8671702135850221,
+      "copper_W": 1.7474349794790418,
+      "current_A": 0.8411085271503055
+    },
+    {
+      "tilt_deg": 50,
+      "transverse_N": 0.125864944676592,
+      "torque_Nm": 0.009626150968865758,
+      "actuator_force_N": 0.8370566059883269,
+      "copper_W": 1.6281783574432465,
+      "current_A": 0.8118999453332187
+    },
+    {
+      "tilt_deg": 51,
+      "transverse_N": 0.1214676049792511,
+      "torque_Nm": 0.009289842428813125,
+      "actuator_force_N": 0.8078123851141848,
+      "copper_W": 1.5163984643252437,
+      "current_A": 0.7835346219379219
+    },
+    {
+      "tilt_deg": 52,
+      "transverse_N": 0.11719284397600761,
+      "torque_Nm": 0.008962908707285062,
+      "actuator_force_N": 0.779383365850875,
+      "copper_W": 1.4115445395343145,
+      "current_A": 0.7559600003165973
+    },
+    {
+      "tilt_deg": 53,
+      "transverse_N": 0.11303310751541913,
+      "torque_Nm": 0.008644772062779256,
+      "actuator_force_N": 0.7517193098068918,
+      "copper_W": 1.3131179374640973,
+      "current_A": 0.7291273519280388
+    },
+    {
+      "tilt_deg": 54,
+      "transverse_N": 0.10898137920080415,
+      "torque_Nm": 0.008334895881277503,
+      "actuator_force_N": 0.7247735548936959,
+      "copper_W": 1.220666423151317,
+      "current_A": 0.7029914170528156
+    },
+    {
+      "tilt_deg": 55,
+      "transverse_N": 0.10503113073145647,
+      "torque_Nm": 0.008032780878341791,
+      "actuator_force_N": 0.6985026850731992,
+      "copper_W": 1.1337791889464721,
+      "current_A": 0.6775100844660746
+    },
+    {
+      "tilt_deg": 56,
+      "transverse_N": 0.101176277526364,
+      "torque_Nm": 0.007737961705216319,
+      "actuator_force_N": 0.6728662352362017,
+      "copper_W": 1.0520824902423676,
+      "current_A": 0.6526441051854733
+    },
+    {
+      "tilt_deg": 57,
+      "transverse_N": 0.09741113897962658,
+      "torque_Nm": 0.0074500039091618415,
+      "actuator_force_N": 0.6478264268836385,
+      "copper_W": 0.9752358142679722,
+      "current_A": 0.6283568360961904
+    },
+    {
+      "tilt_deg": 58,
+      "transverse_N": 0.09373040278639912,
+      "torque_Nm": 0.007168501205103805,
+      "actuator_force_N": 0.6233479308785917,
+      "copper_W": 0.9029285091896136,
+      "current_A": 0.6046140098331192
+    },
+    {
+      "tilt_deg": 59,
+      "transverse_N": 0.09012909285413404,
+      "torque_Nm": 0.006893073021484172,
+      "actuator_force_N": 0.5993976540421019,
+      "copper_W": 0.8348768117730685,
+      "current_A": 0.5813835277902683
+    },
+    {
+      "tilt_deg": 60,
+      "transverse_N": 0.08660254037844389,
+      "torque_Nm": 0.006623362288143389,
+      "actuator_force_N": 0.5759445467950773,
+      "copper_W": 0.7708212210528215,
+      "current_A": 0.5586352735437462
+    },
+    {
+      "tilt_deg": 61,
+      "transverse_N": 0.08314635771791536,
+      "torque_Nm": 0.006359033438266167,
+      "actuator_force_N": 0.5529594294144493,
+      "copper_W": 0.7105241731538922,
+      "current_A": 0.5363409443295643
+    },
+    {
+      "tilt_deg": 62,
+      "transverse_N": 0.07975641474922182,
+      "torque_Nm": 0.006099770600020486,
+      "actuator_force_N": 0.5304148347843901,
+      "copper_W": 0.6537679788801118,
+      "current_A": 0.5144738985207652
+    },
+    {
+      "tilt_deg": 63,
+      "transverse_N": 0.07642881742416432,
+      "torque_Nm": 0.005845275956600088,
+      "actuator_force_N": 0.508284865791312,
+      "copper_W": 0.6003529911336538,
+      "current_A": 0.49300901730823166
+    },
+    {
+      "tilt_deg": 64,
+      "transverse_N": 0.07315988828487922,
+      "torque_Nm": 0.005595268256027563,
+      "actuator_force_N": 0.4865450657415272,
+      "copper_W": 0.5500959738377152,
+      "current_A": 0.4719225790127772
+    },
+    {
+      "tilt_deg": 65,
+      "transverse_N": 0.06994614872324979,
+      "torque_Nm": 0.005349481454354144,
+      "actuator_force_N": 0.46517230037862123,
+      "copper_W": 0.5028286479391411,
+      "current_A": 0.45119214464833585
+    },
+    {
+      "tilt_deg": 66,
+      "transverse_N": 0.0667843027962804,
+      "torque_Nm": 0.0051076634778595255,
+      "actuator_force_N": 0.4441446502486544,
+      "copper_W": 0.45839639338679433,
+      "current_A": 0.430796453521989
+    },
+    {
+      "tilt_deg": 67,
+      "transverse_N": 0.0636712224314407,
+      "torque_Nm": 0.004869575091556585,
+      "actuator_force_N": 0.4234413123092683,
+      "copper_W": 0.41665708881012803,
+      "current_A": 0.4107153278000839
+    },
+    {
+      "tilt_deg": 68,
+      "transverse_N": 0.060603933875273505,
+      "torque_Nm": 0.004634988862780918,
+      "actuator_force_N": 0.4030425098070364,
+      "copper_W": 0.37748007303956677,
+      "current_A": 0.39092958509410475
+    },
+    {
+      "tilt_deg": 69,
+      "transverse_N": 0.05757960525531238,
+      "torque_Nm": 0.004403688209926291,
+      "actuator_force_N": 0.38292940955880794,
+      "copper_W": 0.3407452146812194,
+      "current_A": 0.3714209582280192
+    },
+    {
+      "tilt_deg": 70,
+      "transverse_N": 0.05459553513993037,
+      "torque_Nm": 0.004175466527501876,
+      "actuator_force_N": 0.3630840458697283,
+      "copper_W": 0.30634207773723543,
+      "current_A": 0.3521720214428452
+    },
+    {
+      "tilt_deg": 71,
+      "transverse_N": 0.051649141993449804,
+      "torque_Nm": 0.003950126379659041,
+      "actuator_force_N": 0.343489250405134,
+      "copper_W": 0.2741691727949343,
+      "current_A": 0.3331661223761559
+    },
+    {
+      "tilt_deg": 72,
+      "transverse_N": 0.04873795443493595,
+      "torque_Nm": 0.0037274787551839017,
+      "actuator_force_N": 0.32412858740729583,
+      "copper_W": 0.24413328463026335,
+      "current_A": 0.3143873192258001
+    },
+    {
+      "tilt_deg": 73,
+      "transverse_N": 0.045859602218799055,
+      "torque_Nm": 0.003507342377693752,
+      "actuator_force_N": 0.3049862937125002,
+      "copper_W": 0.21614886821573706,
+      "current_A": 0.29582032256969376
+    },
+    {
+      "tilt_deg": 74,
+      "transverse_N": 0.04301180786382118,
+      "torque_Nm": 0.003289543065425044,
+      "actuator_force_N": 0.2860472230804386,
+      "copper_W": 0.1901375061162213,
+      "current_A": 0.27745044136831754
+    },
+    {
+      "tilt_deg": 75,
+      "transverse_N": 0.0401923788646684,
+      "torque_Nm": 0.0030739131355698394,
+      "actuator_force_N": 0.26729679439737736,
+      "copper_W": 0.16602742112004065,
+      "current_A": 0.2592635327245738
+    }
+  ],
+  "balanced_static_50deg_W": 0.016281783574432468,
+  "half_axial_force_50deg_W": 0.4070445893608116,
+  "longer_arm_34mm_50deg_W": 0.18626867454313956,
+  "reaction": [
+    {
+      "frequency_Hz": 1,
+      "force_N": 0.004737410112522892,
+      "stroke_for_0_5N_mm": 422.1715985097407,
+      "tail_torque_70mm_Nm": 0.0003316187078766025
+    },
+    {
+      "frequency_Hz": 3,
+      "force_N": 0.04263669101270602,
+      "stroke_for_0_5N_mm": 46.9079553899712,
+      "tail_torque_70mm_Nm": 0.0029845683708894215
+    },
+    {
+      "frequency_Hz": 5,
+      "force_N": 0.1184352528130723,
+      "stroke_for_0_5N_mm": 16.88686394038963,
+      "tail_torque_70mm_Nm": 0.008290467696915061
+    },
+    {
+      "frequency_Hz": 8,
+      "force_N": 0.3031942472014651,
+      "stroke_for_0_5N_mm": 6.5964312267146985,
+      "tail_torque_70mm_Nm": 0.02122359730410256
+    },
+    {
+      "frequency_Hz": 10,
+      "force_N": 0.4737410112522892,
+      "stroke_for_0_5N_mm": 4.221715985097408,
+      "tail_torque_70mm_Nm": 0.033161870787660246
+    },
+    {
+      "frequency_Hz": 12,
+      "force_N": 0.6821870562032963,
+      "stroke_for_0_5N_mm": 2.9317472118732,
+      "tail_torque_70mm_Nm": 0.047753093934230745
+    }
+  ],
+  "reaction_curve": [
+    {
+      "frequency_Hz": 0.1,
+      "force_N": 4.7374101125228916e-05
+    },
+    {
+      "frequency_Hz": 0.2,
+      "force_N": 0.00018949640450091566
+    },
+    {
+      "frequency_Hz": 0.3,
+      "force_N": 0.00042636691012706027
+    },
+    {
+      "frequency_Hz": 0.4,
+      "force_N": 0.0007579856180036626
+    },
+    {
+      "frequency_Hz": 0.5,
+      "force_N": 0.001184352528130723
+    },
+    {
+      "frequency_Hz": 0.6,
+      "force_N": 0.001705467640508241
+    },
+    {
+      "frequency_Hz": 0.7,
+      "force_N": 0.002321330955136217
+    },
+    {
+      "frequency_Hz": 0.8,
+      "force_N": 0.0030319424720146506
+    },
+    {
+      "frequency_Hz": 0.9,
+      "force_N": 0.0038373021911435423
+    },
+    {
+      "frequency_Hz": 1.0,
+      "force_N": 0.004737410112522892
+    },
+    {
+      "frequency_Hz": 1.1,
+      "force_N": 0.0057322662361527004
+    },
+    {
+      "frequency_Hz": 1.2,
+      "force_N": 0.006821870562032964
+    },
+    {
+      "frequency_Hz": 1.3,
+      "force_N": 0.008006223090163687
+    },
+    {
+      "frequency_Hz": 1.4,
+      "force_N": 0.009285323820544868
+    },
+    {
+      "frequency_Hz": 1.5,
+      "force_N": 0.010659172753176505
+    },
+    {
+      "frequency_Hz": 1.6,
+      "force_N": 0.012127769888058602
+    },
+    {
+      "frequency_Hz": 1.7,
+      "force_N": 0.013691115225191156
+    },
+    {
+      "frequency_Hz": 1.8,
+      "force_N": 0.01534920876457417
+    },
+    {
+      "frequency_Hz": 1.9,
+      "force_N": 0.01710205050620764
+    },
+    {
+      "frequency_Hz": 2.0,
+      "force_N": 0.01894964045009157
+    },
+    {
+      "frequency_Hz": 2.1,
+      "force_N": 0.02089197859622595
+    },
+    {
+      "frequency_Hz": 2.2,
+      "force_N": 0.022929064944610802
+    },
+    {
+      "frequency_Hz": 2.3,
+      "force_N": 0.02506089949524609
+    },
+    {
+      "frequency_Hz": 2.4,
+      "force_N": 0.027287482248131857
+    },
+    {
+      "frequency_Hz": 2.5,
+      "force_N": 0.029608813203268074
+    },
+    {
+      "frequency_Hz": 2.6,
+      "force_N": 0.03202489236065475
+    },
+    {
+      "frequency_Hz": 2.7,
+      "force_N": 0.03453571972029188
+    },
+    {
+      "frequency_Hz": 2.8,
+      "force_N": 0.03714129528217947
+    },
+    {
+      "frequency_Hz": 2.9,
+      "force_N": 0.03984161904631752
+    },
+    {
+      "frequency_Hz": 3.0,
+      "force_N": 0.04263669101270602
+    },
+    {
+      "frequency_Hz": 3.1,
+      "force_N": 0.045526511181344986
+    },
+    {
+      "frequency_Hz": 3.2,
+      "force_N": 0.04851107955223441
+    },
+    {
+      "frequency_Hz": 3.3,
+      "force_N": 0.05159039612537429
+    },
+    {
+      "frequency_Hz": 3.4,
+      "force_N": 0.054764460900764624
+    },
+    {
+      "frequency_Hz": 3.5,
+      "force_N": 0.05803327387840543
+    },
+    {
+      "frequency_Hz": 3.6,
+      "force_N": 0.06139683505829668
+    },
+    {
+      "frequency_Hz": 3.7,
+      "force_N": 0.0648551444404384
+    },
+    {
+      "frequency_Hz": 3.8,
+      "force_N": 0.06840820202483056
+    },
+    {
+      "frequency_Hz": 3.9,
+      "force_N": 0.07205600781147319
+    },
+    {
+      "frequency_Hz": 4.0,
+      "force_N": 0.07579856180036627
+    },
+    {
+      "frequency_Hz": 4.1,
+      "force_N": 0.07963586399150979
+    },
+    {
+      "frequency_Hz": 4.2,
+      "force_N": 0.0835679143849038
+    },
+    {
+      "frequency_Hz": 4.3,
+      "force_N": 0.08759471298054827
+    },
+    {
+      "frequency_Hz": 4.4,
+      "force_N": 0.09171625977844321
+    },
+    {
+      "frequency_Hz": 4.5,
+      "force_N": 0.09593255477858856
+    },
+    {
+      "frequency_Hz": 4.6,
+      "force_N": 0.10024359798098437
+    },
+    {
+      "frequency_Hz": 4.7,
+      "force_N": 0.10464938938563068
+    },
+    {
+      "frequency_Hz": 4.8,
+      "force_N": 0.10914992899252743
+    },
+    {
+      "frequency_Hz": 4.9,
+      "force_N": 0.11374521680167467
+    },
+    {
+      "frequency_Hz": 5.0,
+      "force_N": 0.1184352528130723
+    },
+    {
+      "frequency_Hz": 5.1,
+      "force_N": 0.1232200370267204
+    },
+    {
+      "frequency_Hz": 5.2,
+      "force_N": 0.128099569442619
+    },
+    {
+      "frequency_Hz": 5.3,
+      "force_N": 0.133073850060768
+    },
+    {
+      "frequency_Hz": 5.4,
+      "force_N": 0.13814287888116752
+    },
+    {
+      "frequency_Hz": 5.5,
+      "force_N": 0.14330665590381744
+    },
+    {
+      "frequency_Hz": 5.6,
+      "force_N": 0.1485651811287179
+    },
+    {
+      "frequency_Hz": 5.7,
+      "force_N": 0.15391845455586878
+    },
+    {
+      "frequency_Hz": 5.8,
+      "force_N": 0.15936647618527008
+    },
+    {
+      "frequency_Hz": 5.9,
+      "force_N": 0.1649092460169219
+    },
+    {
+      "frequency_Hz": 6.0,
+      "force_N": 0.17054676405082408
+    },
+    {
+      "frequency_Hz": 6.1,
+      "force_N": 0.17627903028697678
+    },
+    {
+      "frequency_Hz": 6.2,
+      "force_N": 0.18210604472537995
+    },
+    {
+      "frequency_Hz": 6.3,
+      "force_N": 0.18802780736603353
+    },
+    {
+      "frequency_Hz": 6.4,
+      "force_N": 0.19404431820893764
+    },
+    {
+      "frequency_Hz": 6.5,
+      "force_N": 0.20015557725409222
+    },
+    {
+      "frequency_Hz": 6.6,
+      "force_N": 0.20636158450149716
+    },
+    {
+      "frequency_Hz": 6.7,
+      "force_N": 0.21266233995115263
+    },
+    {
+      "frequency_Hz": 6.8,
+      "force_N": 0.2190578436030585
+    },
+    {
+      "frequency_Hz": 6.9,
+      "force_N": 0.22554809545721488
+    },
+    {
+      "frequency_Hz": 7.0,
+      "force_N": 0.2321330955136217
+    },
+    {
+      "frequency_Hz": 7.1,
+      "force_N": 0.2388128437722789
+    },
+    {
+      "frequency_Hz": 7.2,
+      "force_N": 0.2455873402331867
+    },
+    {
+      "frequency_Hz": 7.3,
+      "force_N": 0.25245658489634487
+    },
+    {
+      "frequency_Hz": 7.4,
+      "force_N": 0.2594205777617536
+    },
+    {
+      "frequency_Hz": 7.5,
+      "force_N": 0.2664793188294126
+    },
+    {
+      "frequency_Hz": 7.6,
+      "force_N": 0.2736328080993222
+    },
+    {
+      "frequency_Hz": 7.7,
+      "force_N": 0.2808810455714823
+    },
+    {
+      "frequency_Hz": 7.8,
+      "force_N": 0.28822403124589274
+    },
+    {
+      "frequency_Hz": 7.9,
+      "force_N": 0.2956617651225537
+    },
+    {
+      "frequency_Hz": 8.0,
+      "force_N": 0.3031942472014651
+    },
+    {
+      "frequency_Hz": 8.1,
+      "force_N": 0.3108214774826269
+    },
+    {
+      "frequency_Hz": 8.2,
+      "force_N": 0.31854345596603917
+    },
+    {
+      "frequency_Hz": 8.3,
+      "force_N": 0.3263601826517021
+    },
+    {
+      "frequency_Hz": 8.4,
+      "force_N": 0.3342716575396152
+    },
+    {
+      "frequency_Hz": 8.5,
+      "force_N": 0.342277880629779
+    },
+    {
+      "frequency_Hz": 8.6,
+      "force_N": 0.3503788519221931
+    },
+    {
+      "frequency_Hz": 8.7,
+      "force_N": 0.3585745714168576
+    },
+    {
+      "frequency_Hz": 8.8,
+      "force_N": 0.36686503911377283
+    },
+    {
+      "frequency_Hz": 8.9,
+      "force_N": 0.3752502550129383
+    },
+    {
+      "frequency_Hz": 9.0,
+      "force_N": 0.38373021911435423
+    },
+    {
+      "frequency_Hz": 9.1,
+      "force_N": 0.3923049314180206
+    },
+    {
+      "frequency_Hz": 9.2,
+      "force_N": 0.40097439192393747
+    },
+    {
+      "frequency_Hz": 9.3,
+      "force_N": 0.40973860063210493
+    },
+    {
+      "frequency_Hz": 9.4,
+      "force_N": 0.4185975575425227
+    },
+    {
+      "frequency_Hz": 9.5,
+      "force_N": 0.4275512626551909
+    },
+    {
+      "frequency_Hz": 9.6,
+      "force_N": 0.4365997159701097
+    },
+    {
+      "frequency_Hz": 9.7,
+      "force_N": 0.44574291748727884
+    },
+    {
+      "frequency_Hz": 9.8,
+      "force_N": 0.45498086720669867
+    },
+    {
+      "frequency_Hz": 9.9,
+      "force_N": 0.4643135651283687
+    },
+    {
+      "frequency_Hz": 10.0,
+      "force_N": 0.4737410112522892
+    },
+    {
+      "frequency_Hz": 10.1,
+      "force_N": 0.4832632055784601
+    },
+    {
+      "frequency_Hz": 10.2,
+      "force_N": 0.4928801481068816
+    },
+    {
+      "frequency_Hz": 10.3,
+      "force_N": 0.5025918388375538
+    },
+    {
+      "frequency_Hz": 10.4,
+      "force_N": 0.512398277770476
+    },
+    {
+      "frequency_Hz": 10.5,
+      "force_N": 0.5222994649056488
+    },
+    {
+      "frequency_Hz": 10.6,
+      "force_N": 0.532295400243072
+    },
+    {
+      "frequency_Hz": 10.7,
+      "force_N": 0.5423860837827458
+    },
+    {
+      "frequency_Hz": 10.8,
+      "force_N": 0.5525715155246701
+    },
+    {
+      "frequency_Hz": 10.9,
+      "force_N": 0.5628516954688448
+    },
+    {
+      "frequency_Hz": 11.0,
+      "force_N": 0.5732266236152698
+    },
+    {
+      "frequency_Hz": 11.1,
+      "force_N": 0.5836962999639455
+    },
+    {
+      "frequency_Hz": 11.2,
+      "force_N": 0.5942607245148716
+    },
+    {
+      "frequency_Hz": 11.3,
+      "force_N": 0.6049198972680481
+    },
+    {
+      "frequency_Hz": 11.4,
+      "force_N": 0.6156738182234751
+    },
+    {
+      "frequency_Hz": 11.5,
+      "force_N": 0.6265224873811523
+    },
+    {
+      "frequency_Hz": 11.6,
+      "force_N": 0.6374659047410803
+    },
+    {
+      "frequency_Hz": 11.7,
+      "force_N": 0.6485040703032585
+    },
+    {
+      "frequency_Hz": 11.8,
+      "force_N": 0.6596369840676876
+    },
+    {
+      "frequency_Hz": 11.9,
+      "force_N": 0.6708646460343666
+    },
+    {
+      "frequency_Hz": 12.0,
+      "force_N": 0.6821870562032963
+    }
+  ],
+  "delay": [
+    {
+      "frequency_Hz": 4,
+      "latency_ms": 2,
+      "residual_amplitude_ratio": 0.05026019088667496
+    },
+    {
+      "frequency_Hz": 4,
+      "latency_ms": 5,
+      "residual_amplitude_ratio": 0.12558103905862675
+    },
+    {
+      "frequency_Hz": 4,
+      "latency_ms": 10,
+      "residual_amplitude_ratio": 0.2506664671286085
+    },
+    {
+      "frequency_Hz": 6,
+      "latency_ms": 2,
+      "residual_amplitude_ratio": 0.07538036533986908
+    },
+    {
+      "frequency_Hz": 6,
+      "latency_ms": 5,
+      "residual_amplitude_ratio": 0.18821662663702865
+    },
+    {
+      "frequency_Hz": 6,
+      "latency_ms": 10,
+      "residual_amplitude_ratio": 0.37476262917144926
+    },
+    {
+      "frequency_Hz": 8,
+      "latency_ms": 2,
+      "residual_amplitude_ratio": 0.10048863635953911
+    },
+    {
+      "frequency_Hz": 8,
+      "latency_ms": 5,
+      "residual_amplitude_ratio": 0.2506664671286085
+    },
+    {
+      "frequency_Hz": 8,
+      "latency_ms": 10,
+      "residual_amplitude_ratio": 0.4973797743297096
+    },
+    {
+      "frequency_Hz": 10,
+      "latency_ms": 2,
+      "residual_amplitude_ratio": 0.12558103905862675
+    },
+    {
+      "frequency_Hz": 10,
+      "latency_ms": 5,
+      "residual_amplitude_ratio": 0.31286893008046174
+    },
+    {
+      "frequency_Hz": 10,
+      "latency_ms": 10,
+      "residual_amplitude_ratio": 0.6180339887498948
+    },
+    {
+      "frequency_Hz": 12,
+      "latency_ms": 2,
+      "residual_amplitude_ratio": 0.15065361105586544
+    },
+    {
+      "frequency_Hz": 12,
+      "latency_ms": 5,
+      "residual_amplitude_ratio": 0.37476262917144926
+    },
+    {
+      "frequency_Hz": 12,
+      "latency_ms": 10,
+      "residual_amplitude_ratio": 0.736249105369356
+    }
+  ],
+  "delay_70pct_reduction_10Hz_ms": 4.792736977043688,
+  "thermal": [
+    {
+      "power_W": 1.6281783574432465,
+      "time_to_120C_s": 43.79033896550119,
+      "extrapolated_steady_coil_C": 187.81783574432464
+    },
+    {
+      "power_W": 2.68,
+      "time_to_120C_s": 21.88476930065389,
+      "extrapolated_steady_coil_C": 293.0
+    }
+  ],
+  "battery": [
+    {
+      "total_power_W": 0.25,
+      "ideal_runtime_h": 8.88
+    },
+    {
+      "total_power_W": 0.5,
+      "ideal_runtime_h": 4.44
+    },
+    {
+      "total_power_W": 1,
+      "ideal_runtime_h": 2.22
+    },
+    {
+      "total_power_W": 2.3,
+      "ideal_runtime_h": 0.965217391304348
+    }
+  ],
+  "rotor": {
+    "mass_kg": 0.02,
+    "radius_m": 0.006,
+    "speed_rpm": 30000,
+    "inertia_kg_m2": 3.6e-07,
+    "momentum_Nm_s": 0.0011309733552923257,
+    "energy_J": 1.7765287921960846,
+    "torque_at_5Hz_20deg_Nm": 0.012402510672119928,
+    "diameter_for_0_005_Nm_s_mm": 25.231325220201597,
+    "energy_for_0_005_Nm_s_J": 7.853981633974484
+  },
+  "packing": [
+    {
+      "outer_diameter_mm": 14,
+      "wall_mm": 1,
+      "radial_half_stroke_mm": 4,
+      "slug_diameter_mm": 4,
+      "slug_length_mm": 123.69555162582539
+    },
+    {
+      "outer_diameter_mm": 16,
+      "wall_mm": 1,
+      "radial_half_stroke_mm": 4,
+      "slug_diameter_mm": 6,
+      "slug_length_mm": 54.975800722589064
+    },
+    {
+      "outer_diameter_mm": 18,
+      "wall_mm": 1,
+      "radial_half_stroke_mm": 4,
+      "slug_diameter_mm": 8,
+      "slug_length_mm": 30.923887906456347
+    },
+    {
+      "outer_diameter_mm": 20,
+      "wall_mm": 1,
+      "radial_half_stroke_mm": 4,
+      "slug_diameter_mm": 10,
+      "slug_length_mm": 19.791288260132063
+    },
+    {
+      "outer_diameter_mm": 22,
+      "wall_mm": 1,
+      "radial_half_stroke_mm": 4,
+      "slug_diameter_mm": 12,
+      "slug_length_mm": 13.743950180647266
+    },
+    {
+      "outer_diameter_mm": 24,
+      "wall_mm": 1,
+      "radial_half_stroke_mm": 4,
+      "slug_diameter_mm": 14,
+      "slug_length_mm": 10.097596051087788
+    }
+  ],
+  "free_body_peak_shift_mm": 1.3333333333333335,
+  "gravity_torque_Nm": 0.0011772,
+  "imu_bias_1mg_drift_1s_mm": 4.904999999999999,
+  "attitude_0_1deg_lever50mm_um": 87.26646259971648,
+  "gravity_leak_0_1deg_drift_1s_mm": 8.560835634731205,
+  "flexure_cycles_8Hz_2h_250days_3years": 43200000,
+  "i2c_read_9bytes_at_1MHz_us": 81,
+  "script_sha256": "1798752c5695f78353eb66b5576bd4c11d2a74dfb2f6d71e8f5e52ac1d4ea57b",
+  "verification": {
+    "checks_run": 8,
+    "failures": 0,
+    "errors": 0
+  }
+}

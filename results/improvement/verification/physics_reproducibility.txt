@@ -1,0 +1,28 @@
+...........................F.....................                        [100%]
+=================================== FAILURES ===================================
+________________________ test_review_gyroscope_example _________________________
+wholepen/tests/test_wholepen.py:62: in test_review_gyroscope_example
+    r = next(x for x in K.cmg_sizing()["rows"] if x["name"].startswith("review 20 g"))
+                        ^^^^^^^^^^^^^^
+wholepen/calc.py:346: in cmg_sizing
+    tpm = _torque_per_mm(f, m_tail)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+wholepen/calc.py:316: in _torque_per_mm
+    c = OP.ceiling_cmg_turret(1.0, f, 1e-3, r_rot, m_tail, grip_scale=gs, tau_g_max=1e9)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wholepen/optimise.py:81: in ceiling_cmg_turret
+    amp_r = L.amp(torch.tensor(r, dtype=torch.float64))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wholepen/lin.py:452: in amp
+    vr, vi = v.real.detach().numpy(), v.imag.detach().numpy()
+                                      ^^^^^^
+E   RuntimeError: imag is not implemented for tensors with non-complex dtypes.
+=============================== warnings summary ===============================
+wholepen/tests/test_wholepen.py::test_review_gyroscope_example
+  /Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/wholepen/optimise.py:81: UserWarning: Casting complex values to real discards the imaginary part (Triggered internally at /Users/runner/work/pytorch/pytorch/aten/src/ATen/native/Copy.cpp:308.)
+    amp_r = L.amp(torch.tensor(r, dtype=torch.float64))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED wholepen/tests/test_wholepen.py::test_review_gyroscope_example - Runti...
+1 failed, 48 passed, 1 warning in 39.42s

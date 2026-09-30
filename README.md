@@ -6,12 +6,20 @@ This repository holds the research and development package: the audit of the sou
 
 **Evidence status.** Everything here is **calculation, simulation, literature or proposed design**. Nothing has been built, and there are **no physical or human measurements**. Every figure carries a stamp saying what it is, and every result file records its code revision, parameter version, seeds and command.
 
+**Astra publication handoff:** [PDF, GitHub-readable report, reproduction commands and result locations](docs/reviews/2026-09-30_astra_handoff.md). This publishes the implemented pass based on `4ad62b6`, including its corrected numerical evidence and explicit limitations.
+
+**Implemented engineering review, 30 September 2026:** Start with [the new improvement report](docs/engineering_improvement_2026_09_30.md) and the detailed [integration audit](docs/integration_improvement_audit.md). The working tree now includes corrected mechanical load/support models, an extended-travel nib candidate and CAD, a grounded coarse-stage design, causal sensing and controller revisions, constrained accepted-text execution, and explicit correction acceptance. New experiments, rejected RL candidates, source hashes and verification reports are in `results/improvement/`. These are distinct models and evidence levels; do not combine their best numbers into a claim about one built pen. Historical results below remain available for comparison and require the qualifications in the new report.
+
+**Independent review, 29 September 2026:** Read [the research and engineering review](docs/independent_research_review_2026_09_29.md) before using the earlier headline performance or runtime figures below. The later [integrated Rev J simulation, sections 5 and 8](docs/revJ_simulation.md) reports a static nib-load problem omitted by the earlier nose optimization: autowrite nose-coil power changes from 0.09-0.17 W in the simplified study to 2.13 W in the integrated study. Independent statics reproduce approximately 4.717 / 1.628 / 0.166 W of holding loss at 35 / 50 / 75 degrees with the stated geometry. These are calculations on unmeasured inputs, not hardware results. The review prioritizes load balancing, real page-relative sensing, an optional collar/body experiment, and equal-mass comparisons for the inertial tail. Earlier studies remain here as historical evidence; their claims require reconciliation with the integrated findings.
+
 ## Start here
 
 | If you want… | Read |
 |---|---|
 | **On your computer:** open `START_HERE.html` for one-click links to the claims register, the explainer, the spelling prototype and the latest studies | `START_HERE.html` |
-| **The current design, Rev J:** a pen that acts at the tip (a ±6 mm moving nose), the heel (a wheel that uses the paper as ground) and the tail (a detachable reaction-mass end-cap); what each can do, whether it can write for you, what to test first | [`docs/revJ_concept.md`](docs/revJ_concept.md); plan [`docs/revJ_plan.md`](docs/revJ_plan.md); integrated design [`docs/revJ_design.md`](docs/revJ_design.md); the 3-D explainer [`viewer/explainer/`](viewer/explainer/build.py) |
+| **The latest improvement work:** proposed fine nib, grounded accepted-writing mechanism, causal controllers, physically constrained planning and verification | [`docs/engineering_improvement_2026_09_30.md`](docs/engineering_improvement_2026_09_30.md) |
+| **The current upstream baseline, Rev K:** integrated balanced nib, its layout and unresolved fit/sensing issues | [`docs/revK_design.md`](docs/revK_design.md); read the new improvement report before quoting its budgets |
+| The earlier Rev J design: ±6 mm moving nose, optional grounded heel and reaction-mass tail; historical whole-pen simulations | [`docs/revJ_concept.md`](docs/revJ_concept.md); plan [`docs/revJ_plan.md`](docs/revJ_plan.md); integrated design [`docs/revJ_design.md`](docs/revJ_design.md); the 3-D explainer [`viewer/explainer/`](viewer/explainer/build.py) |
 | The Rev J studies | tip [`docs/nose_v2.md`](docs/nose_v2.md), heel [`docs/grounded_drive.md`](docs/grounded_drive.md), tail [`docs/inertial_endcap.md`](docs/inertial_endcap.md), algorithms and AI [`docs/ai_control_v2.md`](docs/ai_control_v2.md), physics simulator [`docs/sim_v2.md`](docs/sim_v2.md) |
 | The previous design, Rev H (bigger grip, ±3 mm nose): what is inside, how much it helps each condition | [`docs/revH_concept.md`](docs/revH_concept.md) |
 | The recommended route: what to build, where custom hardware and our own data are unavoidable, what evidence each benefit needs | [`docs/recommendation.md`](docs/recommendation.md) |
@@ -27,7 +35,9 @@ This repository holds the research and development package: the audit of the sou
 | The riskiest open questions | [`docs/research_questions.md`](docs/research_questions.md) |
 | How to proceed | [`docs/plan.md`](docs/plan.md), [`validation/`](validation/README.md) |
 
-## Key conclusions so far
+## Historical conclusions and study summaries
+
+The studies below used different mechanisms, sensor assumptions and evaluation protocols. Their numbers are preserved for provenance. The report linked above identifies changed code and the experiments that were actually rerun; a passing software test does not validate an older physical or clinical claim.
 
 > **Correction, 29 September 2026.** The moving nose's coils must hold the ball against a static sideways push from the paper. The refill spring presses the ball along the tilted pen, and the paper pushes back partly sideways. This was left out of the power budgets.
 >

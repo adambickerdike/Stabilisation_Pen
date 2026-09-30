@@ -1,0 +1,20 @@
+{
+  "writer": 35001,
+  "seed": 102000,
+  "f0": 5.5,
+  "amp": 0.0,
+  "class": "clean",
+  "policy": "integrity_smoke",
+  "model_sha256": null,
+  "actual_f0_hz": null,
+  "duration_s": 2.5000000000000004,
+  "rms_um": 42.00972539713602,
+  "cost": 0.19584379498980356,
+  "missing_fraction": 0.007999999999999998,
+  "extra_fraction": 0.012599999999999998,
+  "coil_power_W": 0.6952475243802922,
+  "coil_temperature_C": 33.246654925760126,
+  "reference_sha256": "03e90875a8c5b5c813141dd0bae1f4ae72c39e86349734736ec5a303d85cb7b4",
+  "trace_path": "traces/integrity_smoke/35001_102000_clean.npz",
+  "trace_sha256": "440ee1772b3307f3148acaa66d042210d1d8200b97103e0c6a3301b7d1e24077"
+}

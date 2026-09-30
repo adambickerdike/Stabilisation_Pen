@@ -1,0 +1,41 @@
+{
+  "seed": 0,
+  "selected": "PPO",
+  "candidates": [
+    {
+      "seed": 0,
+      "clean_mean_um": 1.5651950679262074,
+      "clean_worst_um": 2.8679841934279664,
+      "mild_ratio": 0.9944780916648298,
+      "severe_ratio": 0.9765561597864219,
+      "missing_ink_increase": 0.0004000000000000002,
+      "extra_ink_increase": 0.0008000000000000004,
+      "coil_power_ratio": 1.0162382030539616,
+      "passes": true
+    },
+    {
+      "seed": 1,
+      "clean_mean_um": 0.41263363263561814,
+      "clean_worst_um": 0.6329252865292281,
+      "mild_ratio": 0.9989630710198624,
+      "severe_ratio": 0.9853620873457148,
+      "missing_ink_increase": 0.001599999999999999,
+      "extra_ink_increase": 0.00020000000000000052,
+      "coil_power_ratio": 1.01005581569565,
+      "passes": false
+    },
+    {
+      "seed": 2,
+      "clean_mean_um": 3.7030029355691996,
+      "clean_worst_um": 8.062034560451934,
+      "mild_ratio": 0.9982561691711284,
+      "severe_ratio": 1.0056706469925518,
+      "missing_ink_increase": 0.0004000000000000002,
+      "extra_ink_increase": 0.0003999999999999993,
+      "coil_power_ratio": 1.025547625497827,
+      "passes": false
+    }
+  ],
+  "frozen_utc": "2026-09-30T08:45:58Z",
+  "protocol_sha256": "a92b5c58822b73f628572a6fe2960008bc7c0dd86923da61998078fbe9736555"
+}

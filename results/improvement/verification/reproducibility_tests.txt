@@ -1,0 +1,59 @@
+........................................................................ [ 43%]
+FF....F........................F.F.........F...............s.....sss.... [ 87%]
+.....................                                                    [100%]
+=================================== FAILURES ===================================
+________________________ test_lrm_parts_sum_and_stroke _________________________
+endcap/tests/test_design.py:14: in test_lrm_parts_sum_and_stroke
+    assert abs(s - float(d["m_total"])) < 1e-9
+E   assert 2.3010334540551902e-09 < 1e-09
+E    +  where 2.3010334540551902e-09 = abs((0.03632641068726392 - 0.03632640838623047))
+E    +    where 0.03632640838623047 = float(tensor(0.0363))
+_____________________ test_cmg_parts_sum_momentum_and_fit ______________________
+endcap/tests/test_design.py:22: in test_cmg_parts_sum_momentum_and_fit
+    assert abs(s - float(d["m_total"])) < 1e-9
+E   assert 3.254707774125176e-09 < 1e-09
+E    +  where 3.254707774125176e-09 = abs((0.03466625837117048 - 0.03466625511646271))
+E    +    where 0.03466625511646271 = float(tensor(0.0347))
+___________________ test_gradient_matches_central_difference ___________________
+endcap/tests/test_linear_torch.py:57: in test_gradient_matches_central_difference
+    assert float(m.grad) == pytest.approx(float(fd), rel=1e-5)
+E   assert 10.247931480407715 == 10.250395845179394 ± 1.0e-04
+E     
+E     comparison failed
+E     Obtained: 10.247931480407715
+E     Expected: 10.250395845179394 ± 1.0e-04
+___________________ test_lin_gradient_in_the_pivot_position ____________________
+wholepen/tests/test_wholepen.py:151: in test_lin_gradient_in_the_pivot_position
+    v = resid(z)
+        ^^^^^^^^
+wholepen/tests/test_wholepen.py:146: in resid
+    asm = L.Assembly(mdl, par={"z_p": zp})
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wholepen/lin.py:181: in __init__
+    self._collar()
+wholepen/lin.py:270: in _collar
+    self.add_spring(Jd, 1e6 * torch.eye(3, dtype=torch.float64), 5.0 * torch.eye(3, dtype=torch.float64))
+wholepen/lin.py:217: in add_spring
+    self.K = self.K + J.T @ K3 @ J
+                      ^^^^^^^^
+E   RuntimeError: expected m1 and m2 to have the same dtype, but got: float != double
+______________________ test_evidence_rows_header_and_ids _______________________
+wholepen/tests/test_wholepen.py:181: in test_evidence_rows_header_and_ids
+    assert i not in ledger, i
+E   AssertionError: PDT-63
+E   assert 'PDT-63' not in {'ACT-01', 'ACT-02', 'ACT-03', 'ACT-04', 'ACT-05', 'ACT-06', ...}
+_____________________ test_gp_bo_and_cmaes_on_toy_problems _____________________
+opt/touchdown/tests/test_touchdown.py:122: in test_gp_bo_and_cmaes_on_toy_problems
+    assert fb < 1e-4
+E   assert 0.00012103220698130376 < 0.0001
+=========================== short test summary info ============================
+SKIPPED [1] ml/tests/test_ml.py:150: datasets not built
+SKIPPED [2] ml/tests/test_ml.py:234: data not built
+SKIPPED [1] ml/tests/test_ml.py:249: C test not built
+FAILED endcap/tests/test_design.py::test_lrm_parts_sum_and_stroke - assert 2....
+FAILED endcap/tests/test_design.py::test_cmg_parts_sum_momentum_and_fit - ass...
+FAILED endcap/tests/test_linear_torch.py::test_gradient_matches_central_difference
+FAILED wholepen/tests/test_wholepen.py::test_lin_gradient_in_the_pivot_position
+FAILED wholepen/tests/test_wholepen.py::test_evidence_rows_header_and_ids - A...
+FAILED opt/touchdown/tests/test_touchdown.py::test_gp_bo_and_cmaes_on_toy_problems
+6 failed, 155 passed, 4 skipped in 40.18s

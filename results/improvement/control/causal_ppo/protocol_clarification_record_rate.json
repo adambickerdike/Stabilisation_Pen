@@ -1,0 +1,8 @@
+{
+  "status": "Issued during training, before any tuning case results",
+  "field": "protocol.clean_gate sampling-rate wording",
+  "previous_wording": "4kHz",
+  "correct_wording": "2kHz (5000samples over2.5s) as fixed by sim2j.revj.config.record_hz",
+  "effect": "Metadata correction only. Numerical criteria, dynamics, rewards, models and source remain unchanged. Trajectory RMS is calculated at every2kHz reference tick, eight samples per250Hz policy action.",
+  "evidence": "evaluation_integrity_verification.json"
+}

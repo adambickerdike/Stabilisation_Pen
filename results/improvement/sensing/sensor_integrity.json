@@ -1,0 +1,39 @@
+{
+  "stabpen.provenance": {
+    "evidence_status": "SOFTWARE VERIFICATION with synthetic trajectories; no physical measurements",
+    "generated_utc": "2026-09-30T08:41:07+00:00",
+    "git_revision": "4ad62b6-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "sensor_integrity_study.py",
+    "python": "3.12.14",
+    "platform": "macOS-15.7.4-arm64-arm-64bit",
+    "seeds": [
+      19
+    ],
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "gap_case": {
+    "speed_x_mm_s": 20.0,
+    "invalid_reports": 100,
+    "lost_intervals": 101,
+    "legacy_final_x_error_mm": 0.0,
+    "causal_final_x_error_mm": 2.020000000000001,
+    "expected_unobserved_x_mm": 2.02,
+    "absolute_reference_valid_after_gap": false,
+    "meaning": "A larger reported error is an honesty correction: missing motion is no longer supplied by ground truth."
+  },
+  "future_mutation_max_change_in_past_um": {
+    "legacy": 284.39053156609197,
+    "causal_v2": 0.0
+  },
+  "all_invalid_metrology": {
+    "stroke_valid": false,
+    "window_valid": false,
+    "n_windows": 0,
+    "rms_um": null,
+    "reason": "No valid measurement; never score zero error."
+  },
+  "interpretation": "DeltaPen's translation-magnitude summary cannot identify a causal vector-error distribution. Both model shape and ordinary-paper transfer remain assumptions."
+}

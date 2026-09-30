@@ -191,13 +191,13 @@ def collar_control(pen: Optional[Dict] = None, pen_name: str = "revJ", z_p: floa
                            "transmission_min": float(sv[-1]), "transmission_max": float(sv[0]),
                            "model_gain_ratio": [float(abs(e)) for e in ev],
                            "model_phase_err_deg": [float(math.degrees(np.angle(e))) for e in ev],
-                           "angle_mrad_per_mm_tip": float(np.max(np.abs(th))) / (L.amp(torch.tensor(d)) * 1e3) * 1e3,
-                           "torque_mNm_per_mm_tip": float(np.max(np.abs(tau))) / (L.amp(torch.tensor(d)) * 1e3) * 1e3}
+                           "angle_mrad_per_mm_tip": float(np.max(np.abs(th))) / (L.amp(torch.tensor(d, dtype=torch.complex128)) * 1e3) * 1e3,
+                           "torque_mNm_per_mm_tip": float(np.max(np.abs(tau))) / (L.amp(torch.tensor(d, dtype=torch.complex128)) * 1e3) * 1e3}
                     for g in gains:
                         A = np.eye(2) + g * (M - np.eye(2))
                         R = np.eye(2) - g * G @ np.linalg.solve(A, np.linalg.inv(G0))
                         res = R @ d
-                        row[f"residual_g{g:g}"] = L.amp(torch.tensor(res)) / max(L.amp(torch.tensor(d)), 1e-30)
+                        row[f"residual_g{g:g}"] = L.amp(torch.tensor(res, dtype=torch.complex128)) / max(L.amp(torch.tensor(d, dtype=torch.complex128)), 1e-30)
                         row[f"loop_margin_g{g:g}"] = float(1.0 - np.max(np.abs(g * (ev - 1.0))))
                     rows.append(row)
     return {"rows": rows, "pen": pen_name, "design": {"z_p": z_p, "K_s": K_s, "C_s": C_s, "m_c": m_c, "z_cm": z_cm, "J_c": J_c},
@@ -261,7 +261,7 @@ def _tmd_ceiling(m, z, f, A, r_rot, gs, X_max, F_max, k=None, c=None):
     stroke = s0 + S @ u
     sc = min(1.0, F_max / max(np.max(np.abs(u)), 1e-30), X_max / max(np.max(np.abs(stroke)), 1e-30))
     r = x0 + G @ (u * sc)
-    return {"res": L.amp(torch.tensor(r)), "free": L.amp(torch.tensor(x0)), "F_needed": float(np.max(np.abs(u))),
+    return {"res": L.amp(torch.tensor(r, dtype=torch.complex128)), "free": L.amp(torch.tensor(x0, dtype=torch.complex128)), "F_needed": float(np.max(np.abs(u))),
             "stroke_needed": float(np.max(np.abs(stroke))), "scale": sc}
 
 

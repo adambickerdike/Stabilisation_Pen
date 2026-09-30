@@ -1,0 +1,34 @@
+{
+  "evidence": "Post-hoc numerical sensitivity, not unseen validation",
+  "cases": [
+    {
+      "writer": 35001,
+      "seed": 102000,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35005,
+      "seed": 102117,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35005,
+      "seed": 102117,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    }
+  ],
+  "steps_us": [
+    12.5,
+    25.0,
+    50.0
+  ],
+  "reference": "Same12.5us ideal clean target for all steps in each case",
+  "controller": "Frozen80Hz causalHall and measuredcontact; no tuning",
+  "script_sha256": "e545f8c5e151c4a65d2d0bfa94a7e5c2f1df82ef4587de2de7b6343e4e24997c"
+}

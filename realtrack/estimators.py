@@ -445,6 +445,8 @@ def ai2_tcn(st, shift: float = 0.0):
     from ai2 import learned as L2
     from fusion import learned as FL
     M = H.ai2_models()
+    if M.get("tcn") is None:
+        raise FileNotFoundError("ai2 trained TCN checkpoint is absent; rebuild the learned model before inference")
     X, tk = FL.features(st, DA.NET_HZ)
     key = hashlib.sha1(X.tobytes()).hexdigest()           # the same inputs give the same outputs: reuse them (the
     Y = _TCN_MEMO.get(key)                                 # horizon sweep runs one case at several shifts)
@@ -581,8 +583,14 @@ _RATIO: Dict = {}
 def _ratio_cached(st) -> np.ndarray:
     """det_ratio(st, DET_CONF_DEFAULTS)['ratio'], memoised on a fingerprint of the page and contact streams (the
     horizon sweeps evaluate one stream many times; the detector does not depend on the horizon)."""
-    key = (len(st.pos), float(st.pos[0, 0]), float(st.pos[-1, 1]), float(st.pos_av[-1]), float(np.sum(st.pos_ok)),
-           len(st.con), float(st.tick_t[-1]))
+    digest = hashlib.sha256()
+    # Endpoint/sum signatures collide for different handwriting, validity and
+    # contact sequences. A collision used to reuse a different case's gate.
+    for values in (st.tick_t, st.pos_t, st.pos_av, st.pos, st.pos_ok, st.con_t, st.con_av, st.con):
+        arr = np.ascontiguousarray(values)
+        digest.update(str((arr.dtype.str, arr.shape)).encode("ascii"))
+        digest.update(arr.tobytes())
+    key = digest.digest()
     if key not in _RATIO:
         if len(_RATIO) > 8:
             _RATIO.clear()

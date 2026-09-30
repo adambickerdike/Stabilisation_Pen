@@ -26,6 +26,27 @@ def test_schema_is_a_valid_draft_2020_12_schema():
     Draft202012Validator.check_schema(load_schema())
 
 
+def test_missing_schema_dependency_never_claims_valid(monkeypatch):
+    import builtins
+    from penapp import notes
+    original_import = builtins.__import__
+
+    def without_schema(name, *args, **kwargs):
+        if name == "jsonschema":
+            raise ImportError("dependency unavailable")
+        return original_import(name, *args, **kwargs)
+
+    notes._validator.cache_clear()
+    try:
+        with monkeypatch.context() as m:
+            m.setattr(builtins, "__import__", without_schema)
+            assert not notes.schema_available()
+            with pytest.raises(ValidationError, match="validation is unavailable"):
+                notes.schema_errors({"this": "is not a valid note"})
+    finally:
+        notes._validator.cache_clear()
+
+
 def test_content_address_is_sha256_of_logged_payloads(store, files):
     data = files["a"].read_bytes()
     # independent extraction: walk the records and concatenate the 0x02 payload bytes

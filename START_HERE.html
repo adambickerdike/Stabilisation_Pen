@@ -35,6 +35,19 @@
 
   <h2>Where things stand (30 September 2026)</h2>
   <div class="card">
+    <p><b><a href="docs/engineering_improvement_2026_09_30.md">New engineering improvement report</a></b>: implemented code, proposed CAD, corrected simulations and the remaining physical limits.</p>
+    <ul class="status">
+      <li><b>A more explicit nib design:</b> a conditional 24 mm body / 1.5 mm travel candidate and a separately resized 20 mm body / 1.059 mm travel candidate. Force, guide friction and heat constrain both; neither is a complete manufactured pen.</li>
+      <li><b>A concrete route to accepted letters:</b> a desk-supported five-bar plus fine nib completes the ink/tracking gate for all 20 tested suffixes without grip resistance, but none under either tested resisting grip. None of the unloaded traces also meets the selected actual acceleration/jerk limits. This is simulated mechanism performance, not patient benefit.</li>
+      <li><b>More realistic control:</b> causal Hall and contact sensing, repaired gains, explicit missing/extra ink, and frozen comparisons. Six trained RL policies were rejected by their performance rules.</li>
+      <li><b>Reviewable spelling support:</b> the offline application proposes corrections and requires selected acceptance while preserving original ink and recognition. Physical completion has separate reach, tracking and contact checks.</li>
+    </ul>
+    <p class="note">The studies use different physical models. Their favorable numbers cannot be combined into a specification for one validated device. Read the updated <a href="docs/claims_register.md">claims register</a> before quoting results.</p>
+  </div>
+
+  <h2>Earlier upstream summary, preserved for context</h2>
+  <p class="small">The statements below describe the original studies before the new sensor, control, dynamics and mechanism corrections. The improvement report states which results were rerun and which remain historical.</p>
+  <div class="card">
     <ul class="status">
       <li><span class="yes">The moving tip can do the job if it knows the shake.</span> With real recorded Parkinson's and essential tremor at the severe size, knowing the shake exactly would make about 7 of 10 words readable, against about 0.5 of 10 with an ordinary pen. <span class="ev">simulation</span></li>
       <li><span class="no">Knowing the shake in time is the open problem.</span> On real recorded tremor, no tracker built so far makes more words readable. For a clear gain at the severe size, a tracker must leave less than about 0.55&nbsp;mm of the 1.7&nbsp;mm shake at the tip. The best one leaves 1.1&nbsp;mm. Predicting the shake is not the hard part: telling the shake apart from the writing is. Next: a small network trained on real recordings, tested once on new recordings (EXP-E10). <span class="ev">simulation</span></li>
@@ -49,7 +62,8 @@
   <h2>1. Read this first</h2>
   <div class="card"><b><a href="docs/claims_register.md">Claims register</a></b>: every headline number, whether it still stands, and what would change it. Check here before quoting a number.</div>
   <div class="card"><b><a href="README.md">README</a></b>: the whole programme, the key conclusions and how to run everything.</div>
-  <div class="card"><b><a href="docs/revJ_concept.md">The current pen (Rev J) in plain words</a></b>: what moves, how much better the writing is, what is not solved yet, and the fix planned for the next prototype.</div>
+  <div class="card"><b><a href="docs/revK_design.md">The upstream Rev K design</a></b>: the balanced nib and unresolved layout checks. Read the new improvement report for subsequent changes.</div>
+  <div class="card"><b><a href="docs/revJ_concept.md">The earlier Rev J concept</a></b>: the historical tip, heel and tail architecture.</div>
 
   <h2>2. Pages to look at</h2>
   <div class="card"><b><a href="ai3/demo/index.html">Spelling pen prototype</a></b>: try the spell checker, word completion and the pen's writing plan. Open it by double-clicking; it needs no internet.</div>

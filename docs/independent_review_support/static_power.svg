@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="509.27599999999995" height="258" preserveAspectRatio="xMinYMin meet" viewBox="0 0 509 258" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="509.27599999999995" height="258"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-258)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="0" y="242" style="font-family: Body-Bold; font-size: 11px;fill: rgb(7%,18%,27%); stroke:none;" transform="translate(0,484) scale(1,-1)">Static nib holding heat: geometry dominates</text>
+			<path d="M 54,57 L 491.276,57 Z" style="stroke: rgb(86%,89%,92%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="41.55078125" y="54.0" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,108) scale(1,-1)">0</text>
+			<path d="M 54,87.6 L 491.276,87.6 Z" style="stroke: rgb(86%,89%,92%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="41.55078125" y="84.6" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,169) scale(1,-1)">1</text>
+			<path d="M 54,118.2 L 491.276,118.2 Z" style="stroke: rgb(86%,89%,92%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="41.55078125" y="115.2" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,230) scale(1,-1)">2</text>
+			<path d="M 54,148.8 L 491.276,148.8 Z" style="stroke: rgb(86%,89%,92%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="41.55078125" y="145.8" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,291) scale(1,-1)">3</text>
+			<path d="M 54,179.4 L 491.276,179.4 Z" style="stroke: rgb(86%,89%,92%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="41.55078125" y="176.4" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,352) scale(1,-1)">4</text>
+			<path d="M 54,210 L 491.276,210 Z" style="stroke: rgb(86%,89%,92%); stroke-linecap: butt; stroke-width: 0.5;"/>
+			<text x="41.55078125" y="207.0" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,414) scale(1,-1)">5</text>
+			<text x="240.85903125" y="42" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,84) scale(1,-1)">35</text>
+			<text x="322.84828125" y="42" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,84) scale(1,-1)">50</text>
+			<text x="404.83753125" y="42" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,84) scale(1,-1)">65</text>
+			<text x="459.49703124999996" y="42" style="font-family: Body; font-size: 8px;fill: rgb(38%,44%,52%); stroke:none;" transform="translate(0,84) scale(1,-1)">75</text>
+			<path d="M 54,57 L 491.276,57 Z" style="stroke: rgb(38%,44%,52%); stroke-linecap: butt; stroke-width: 0.8;"/>
+			<path d="M 54,57 L 54,210 Z" style="stroke: rgb(38%,44%,52%); stroke-linecap: butt; stroke-width: 0.8;"/>
+			<text x="211.26104687499998" y="23" style="font-family: Body; font-size: 8px;fill: rgb(14%,21%,27%); stroke:none;" transform="translate(0,46) scale(1,-1)">Pen altitude above page (degrees)</text>
+			<text x="0" y="220" style="font-family: Body; font-size: 8px;fill: rgb(14%,21%,27%); stroke:none;" transform="translate(0,440) scale(1,-1)">Copper loss while in contact (W)</text>
+			<polyline points="245.3082 201.3254, 250.7742 191.0523, 256.2401 181.6142, 261.7061 172.9249, 267.1721 164.9091, 272.638 157.5007, 278.1039 150.6419, 283.5699 144.2814, 289.0358 138.3738, 294.5018 132.8791, 299.9677 127.7614, 305.4337 122.9889, 310.8996 118.533, 316.3656 114.3682, 321.8315 110.4715, 327.2975 106.8223, 332.7634 103.4018, 338.2294 100.1933, 343.6953 97.18141, 349.1613 94.35239, 354.6272 91.69364, 360.0932 89.19372, 365.5591 86.84222, 371.0251 84.62961, 376.491 82.54723, 381.957 80.58713, 387.4229 78.74204, 392.8889 77.0053, 398.3548 75.3708, 403.8208 73.83294, 409.2867 72.38656, 414.7527 71.02693, 420.2186 69.74971, 425.6846 68.55089, 431.1505 67.4268, 436.6165 66.37407, 442.0824 65.38958, 447.5484 64.47048, 453.0143 63.61416, 458.4803 62.81821, 463.9462 62.08044" style="stroke: rgb(0%,49%,52%); stroke-linecap: butt; stroke-width: 1.7; fill: None; fill-rule: evenodd;"/>
+			<path d="M 0,7 L 17,7 Z" style="stroke: rgb(0%,49%,52%); stroke-linecap: butt; stroke-width: 2;"/>
+			<text x="22" y="4" style="font-family: Body; font-size: 7.7px;fill: rgb(14%,21%,27%); stroke:none;" transform="translate(0,8) scale(1,-1)">Current 11.5 mm arm</text>
+			<polyline points="245.3082 73.51128, 250.7742 72.336, 256.2401 71.25625, 261.7061 70.26217, 267.1721 69.34513, 272.638 68.4976, 278.1039 67.71293, 283.5699 66.98526, 289.0358 66.30942, 294.5018 65.6808, 299.9677 65.09532, 305.4337 64.54933, 310.8996 64.03957, 316.3656 63.5631, 321.8315 63.11731, 327.2975 62.69982, 332.7634 62.30851, 338.2294 61.94144, 343.6953 61.59688, 349.1613 61.27323, 354.6272 60.96906, 360.0932 60.68306, 365.5591 60.41404, 371.0251 60.16091, 376.491 59.92268, 381.957 59.69844, 387.4229 59.48736, 392.8889 59.28867, 398.3548 59.10168, 403.8208 58.92574, 409.2867 58.76027, 414.7527 58.60472, 420.2186 58.45861, 425.6846 58.32146, 431.1505 58.19286, 436.6165 58.07242, 442.0824 57.95979, 447.5484 57.85465, 453.0143 57.75668, 458.4803 57.66562, 463.9462 57.58122" style="stroke: rgb(72%,46%,15%); stroke-linecap: butt; stroke-width: 1.7; fill: None; fill-rule: evenodd;"/>
+			<path d="M 254.638,7 L 271.638,7 Z" style="stroke: rgb(72%,46%,15%); stroke-linecap: butt; stroke-width: 2;"/>
+			<text x="276.638" y="4" style="font-family: Body; font-size: 7.7px;fill: rgb(14%,21%,27%); stroke:none;" transform="translate(0,8) scale(1,-1)">34 mm arm, same K_m</text>
+		</g>
+	</g>
+</svg>

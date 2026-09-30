@@ -44,7 +44,7 @@ DATASETS: Dict[str, Dict] = {
              "file": "uji2.zip", "sha256": "0881b522911b99d9922820289441b50fd3d307f71cd7f9cc70e86872424a5f90",
              "licence": "CC BY 4.0 (UCI dataset page)", "ledger": "CON-48",
              "citation": "Prat F, Castro MJ, Llorens D, Marzal A, Vilar JM. UJI Pen Characters (Version 2). UCI Machine "
-                         "Learning Repository, 2009. doi:10.24432/C5GS5V"},
+                         "Learning Repository, 2008. doi:10.24432/C5FG8S"},
     "chartraj": {"url": "https://archive.ics.uci.edu/static/public/175/character+trajectories.zip",
                  "file": "chartraj.zip", "sha256": "5d2db017ef0d8cf0e65ed060c9e90399f78eb9f1e3cb63e22ca8c3ef4ba67d52",
                  "licence": "CC BY 4.0 (UCI dataset page)", "ledger": "CON-25",

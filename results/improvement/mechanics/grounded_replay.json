@@ -1,0 +1,734 @@
+{
+  "cases": [
+    {
+      "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+      "grip_stiffness_N_m": 0.0,
+      "feedforward": false,
+      "dt_s": 0.0005,
+      "seed": 31,
+      "duration_s": 0.9990592475808582,
+      "requested_ink_samples": 1183,
+      "actual_ink_samples": 604,
+      "ink_coverage_fraction": 0.503803888419273,
+      "actual_ink_rms_error_mm": 1.1364569189438536,
+      "actual_requested_ink_rms_error_mm": 1.1439707701804605,
+      "air_phase_ink_path_mm": 0.0,
+      "all_trajectory_rms_error_mm": 1.9415172195663397,
+      "all_trajectory_max_error_mm": 3.044612323710467,
+      "refusal_time_s": 0.302,
+      "refusal_reason": "tracking error>0.20mm for10ms or radial reserve exhausted",
+      "coarse_force_peak_N": 0.09620462052453298,
+      "hand_reaction_peak_N": 0.0,
+      "coarse_current_peak_A": 0.08728583880901913,
+      "coarse_voltage_peak_V": 0.9011217973427031,
+      "fine_current_peak_A": 0.06716388481080925,
+      "fine_radial_peak_mm": 0.3894209738495233,
+      "minimum_authority": [
+        1.0,
+        1.0
+      ],
+      "fine_wire_heat": {
+        "current_rms_A": [
+          0.037538034343145565,
+          0.030289961306771227
+        ],
+        "wire_rise_above_clamps_K": [
+          0.6174106630367118,
+          0.40166224340244855
+        ],
+        "lead_thermal_pass": true,
+        "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+      },
+      "hard_stop_contacts": 0,
+      "maximum_stop_impulse_Ns": 0.0,
+      "stop_dissipated_energy_J": 0.0,
+      "model_assumptions": {
+        "stage": {
+          "base": 0.05,
+          "proximal": 0.06,
+          "distal": 0.09,
+          "centre_y": 0.09,
+          "workspace_half_x": 0.03,
+          "workspace_half_y": 0.02,
+          "payload_mass": 0.08,
+          "proximal_mass": 0.006,
+          "distal_mass": 0.008,
+          "ratio": 6.0,
+          "transmission_efficiency": 0.8,
+          "torque_constant": 0.0146,
+          "resistance": 8.77,
+          "inductance": 0.000203,
+          "rotor_inertia": 2.7e-07,
+          "motor_friction": 0.0002,
+          "rated_torque": 0.00621,
+          "rated_current": 0.485,
+          "supply": 12.0,
+          "winding_rise": 45.0,
+          "force_cap": 0.4,
+          "residual_friction": 0.08,
+          "output_encoder_counts": 65536
+        },
+        "tilt_deg": 50,
+        "fine_mass_kg": 0.0036699750000000002,
+        "field_scale": 0.7,
+        "sensor_delay_s": 0.002,
+        "sensor_noise_std_m": [
+          3e-06,
+          3e-06,
+          1.5e-06,
+          1.5e-06
+        ],
+        "velocity_filter_Hz": 100,
+        "lift_delay_s": 0.2,
+        "lift_feedback": "ideal binary model after commanded phase delay",
+        "noise_factor": 1.0,
+        "fine_bandwidth_Hz": 25.0,
+        "coarse_bandwidth_Hz": 9.0,
+        "hand_neutral_position_m": [
+          -0.0007363636363636363,
+          8.808381021819422e-19
+        ],
+        "hand_neutral_rule": "placed start; no artificial initial spring preload",
+        "fine_nominal_bias_N": [
+          0.012,
+          -0.008
+        ],
+        "coarse_refusal_error_m": 0.0002
+      },
+      "limitations": [
+        "rigid links and perfect current loops",
+        "sampled/interpolated static magnetic map",
+        "no human trial, friction/hand/load assumptions",
+        "time-discrete servo validation only",
+        "constant tilt, normal support and delayed contact are idealized",
+        "electrical inductance not in current-loop plant"
+      ]
+    },
+    {
+      "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+      "grip_stiffness_N_m": 0.0,
+      "feedforward": true,
+      "dt_s": 0.0005,
+      "seed": 31,
+      "duration_s": 0.9990592475808582,
+      "requested_ink_samples": 1183,
+      "actual_ink_samples": 1591,
+      "ink_coverage_fraction": 1.0,
+      "actual_ink_rms_error_mm": 0.045993767397896276,
+      "actual_requested_ink_rms_error_mm": 0.04855889654779729,
+      "air_phase_ink_path_mm": 0.0,
+      "all_trajectory_rms_error_mm": 0.04192868430668605,
+      "all_trajectory_max_error_mm": 0.09734757341179984,
+      "refusal_time_s": null,
+      "refusal_reason": null,
+      "coarse_force_peak_N": 0.22291830704375865,
+      "hand_reaction_peak_N": 0.0,
+      "coarse_current_peak_A": 0.18862727592114473,
+      "coarse_voltage_peak_V": 1.9645370573451675,
+      "fine_current_peak_A": 0.09192730248832609,
+      "fine_radial_peak_mm": 0.4753469289555191,
+      "minimum_authority": [
+        1.0,
+        1.0
+      ],
+      "fine_wire_heat": {
+        "current_rms_A": [
+          0.050414131876432865,
+          0.042323181689814825
+        ],
+        "wire_rise_above_clamps_K": [
+          1.1157923950331718,
+          0.7853686613970664
+        ],
+        "lead_thermal_pass": true,
+        "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+      },
+      "hard_stop_contacts": 0,
+      "maximum_stop_impulse_Ns": 0.0,
+      "stop_dissipated_energy_J": 0.0,
+      "model_assumptions": {
+        "stage": {
+          "base": 0.05,
+          "proximal": 0.06,
+          "distal": 0.09,
+          "centre_y": 0.09,
+          "workspace_half_x": 0.03,
+          "workspace_half_y": 0.02,
+          "payload_mass": 0.08,
+          "proximal_mass": 0.006,
+          "distal_mass": 0.008,
+          "ratio": 6.0,
+          "transmission_efficiency": 0.8,
+          "torque_constant": 0.0146,
+          "resistance": 8.77,
+          "inductance": 0.000203,
+          "rotor_inertia": 2.7e-07,
+          "motor_friction": 0.0002,
+          "rated_torque": 0.00621,
+          "rated_current": 0.485,
+          "supply": 12.0,
+          "winding_rise": 45.0,
+          "force_cap": 0.4,
+          "residual_friction": 0.08,
+          "output_encoder_counts": 65536
+        },
+        "tilt_deg": 50,
+        "fine_mass_kg": 0.0036699750000000002,
+        "field_scale": 0.7,
+        "sensor_delay_s": 0.002,
+        "sensor_noise_std_m": [
+          3e-06,
+          3e-06,
+          1.5e-06,
+          1.5e-06
+        ],
+        "velocity_filter_Hz": 100,
+        "lift_delay_s": 0.2,
+        "lift_feedback": "ideal binary model after commanded phase delay",
+        "noise_factor": 1.0,
+        "fine_bandwidth_Hz": 25.0,
+        "coarse_bandwidth_Hz": 9.0,
+        "hand_neutral_position_m": [
+          -0.0007363636363636363,
+          8.808381021819422e-19
+        ],
+        "hand_neutral_rule": "placed start; no artificial initial spring preload",
+        "fine_nominal_bias_N": [
+          0.012,
+          -0.008
+        ],
+        "coarse_refusal_error_m": 0.0002
+      },
+      "limitations": [
+        "rigid links and perfect current loops",
+        "sampled/interpolated static magnetic map",
+        "no human trial, friction/hand/load assumptions",
+        "time-discrete servo validation only",
+        "constant tilt, normal support and delayed contact are idealized",
+        "electrical inductance not in current-loop plant"
+      ]
+    },
+    {
+      "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+      "grip_stiffness_N_m": 50.0,
+      "feedforward": true,
+      "dt_s": 0.0005,
+      "seed": 31,
+      "duration_s": 0.9990592475808582,
+      "requested_ink_samples": 1183,
+      "actual_ink_samples": 871,
+      "ink_coverage_fraction": 0.7295012679628065,
+      "actual_ink_rms_error_mm": 1.3242838767773875,
+      "actual_requested_ink_rms_error_mm": 1.33040560377802,
+      "air_phase_ink_path_mm": 0.0,
+      "all_trajectory_rms_error_mm": 2.0496043591323145,
+      "all_trajectory_max_error_mm": 3.1133525091865564,
+      "refusal_time_s": 0.4355,
+      "refusal_reason": "tracking error>0.20mm for10ms or radial reserve exhausted",
+      "coarse_force_peak_N": 0.2072767947714656,
+      "hand_reaction_peak_N": 0.0710337249053544,
+      "coarse_current_peak_A": 0.173278262212279,
+      "coarse_voltage_peak_V": 1.8085540313606863,
+      "fine_current_peak_A": 0.08372969447159706,
+      "fine_radial_peak_mm": 0.4419787753469937,
+      "minimum_authority": [
+        1.0,
+        1.0
+      ],
+      "fine_wire_heat": {
+        "current_rms_A": [
+          0.04485688116605591,
+          0.029528742829339406
+        ],
+        "wire_rise_above_clamps_K": [
+          0.8825522525899582,
+          0.3816976311716464
+        ],
+        "lead_thermal_pass": true,
+        "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+      },
+      "hard_stop_contacts": 0,
+      "maximum_stop_impulse_Ns": 0.0,
+      "stop_dissipated_energy_J": 0.0,
+      "model_assumptions": {
+        "stage": {
+          "base": 0.05,
+          "proximal": 0.06,
+          "distal": 0.09,
+          "centre_y": 0.09,
+          "workspace_half_x": 0.03,
+          "workspace_half_y": 0.02,
+          "payload_mass": 0.08,
+          "proximal_mass": 0.006,
+          "distal_mass": 0.008,
+          "ratio": 6.0,
+          "transmission_efficiency": 0.8,
+          "torque_constant": 0.0146,
+          "resistance": 8.77,
+          "inductance": 0.000203,
+          "rotor_inertia": 2.7e-07,
+          "motor_friction": 0.0002,
+          "rated_torque": 0.00621,
+          "rated_current": 0.485,
+          "supply": 12.0,
+          "winding_rise": 45.0,
+          "force_cap": 0.4,
+          "residual_friction": 0.08,
+          "output_encoder_counts": 65536
+        },
+        "tilt_deg": 50,
+        "fine_mass_kg": 0.0036699750000000002,
+        "field_scale": 0.7,
+        "sensor_delay_s": 0.002,
+        "sensor_noise_std_m": [
+          3e-06,
+          3e-06,
+          1.5e-06,
+          1.5e-06
+        ],
+        "velocity_filter_Hz": 100,
+        "lift_delay_s": 0.2,
+        "lift_feedback": "ideal binary model after commanded phase delay",
+        "noise_factor": 1.0,
+        "fine_bandwidth_Hz": 25.0,
+        "coarse_bandwidth_Hz": 9.0,
+        "hand_neutral_position_m": [
+          -0.0007363636363636363,
+          8.808381021819422e-19
+        ],
+        "hand_neutral_rule": "placed start; no artificial initial spring preload",
+        "fine_nominal_bias_N": [
+          0.012,
+          -0.008
+        ],
+        "coarse_refusal_error_m": 0.0002
+      },
+      "limitations": [
+        "rigid links and perfect current loops",
+        "sampled/interpolated static magnetic map",
+        "no human trial, friction/hand/load assumptions",
+        "time-discrete servo validation only",
+        "constant tilt, normal support and delayed contact are idealized",
+        "electrical inductance not in current-loop plant"
+      ]
+    },
+    {
+      "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+      "grip_stiffness_N_m": 200.0,
+      "feedforward": true,
+      "dt_s": 0.0005,
+      "seed": 31,
+      "duration_s": 0.9990592475808582,
+      "requested_ink_samples": 1183,
+      "actual_ink_samples": 759,
+      "ink_coverage_fraction": 0.6348267117497887,
+      "actual_ink_rms_error_mm": 0.7785617571000031,
+      "actual_requested_ink_rms_error_mm": 0.7826933453528614,
+      "air_phase_ink_path_mm": 0.0,
+      "all_trajectory_rms_error_mm": 1.6151004635929525,
+      "all_trajectory_max_error_mm": 2.542493890821148,
+      "refusal_time_s": 0.3795,
+      "refusal_reason": "tracking error>0.20mm for10ms or radial reserve exhausted",
+      "coarse_force_peak_N": 0.24749554532154058,
+      "hand_reaction_peak_N": 0.12646080284290748,
+      "coarse_current_peak_A": 0.21732875999935103,
+      "coarse_voltage_peak_V": 2.2575176932170047,
+      "fine_current_peak_A": 0.08331361198720702,
+      "fine_radial_peak_mm": 0.2299298547369652,
+      "minimum_authority": [
+        1.0,
+        1.0
+      ],
+      "fine_wire_heat": {
+        "current_rms_A": [
+          0.04276828867727784,
+          0.03171680940353788
+        ],
+        "wire_rise_above_clamps_K": [
+          0.8020270933507256,
+          0.4404622275214579
+        ],
+        "lead_thermal_pass": true,
+        "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+      },
+      "hard_stop_contacts": 0,
+      "maximum_stop_impulse_Ns": 0.0,
+      "stop_dissipated_energy_J": 0.0,
+      "model_assumptions": {
+        "stage": {
+          "base": 0.05,
+          "proximal": 0.06,
+          "distal": 0.09,
+          "centre_y": 0.09,
+          "workspace_half_x": 0.03,
+          "workspace_half_y": 0.02,
+          "payload_mass": 0.08,
+          "proximal_mass": 0.006,
+          "distal_mass": 0.008,
+          "ratio": 6.0,
+          "transmission_efficiency": 0.8,
+          "torque_constant": 0.0146,
+          "resistance": 8.77,
+          "inductance": 0.000203,
+          "rotor_inertia": 2.7e-07,
+          "motor_friction": 0.0002,
+          "rated_torque": 0.00621,
+          "rated_current": 0.485,
+          "supply": 12.0,
+          "winding_rise": 45.0,
+          "force_cap": 0.4,
+          "residual_friction": 0.08,
+          "output_encoder_counts": 65536
+        },
+        "tilt_deg": 50,
+        "fine_mass_kg": 0.0036699750000000002,
+        "field_scale": 0.7,
+        "sensor_delay_s": 0.002,
+        "sensor_noise_std_m": [
+          3e-06,
+          3e-06,
+          1.5e-06,
+          1.5e-06
+        ],
+        "velocity_filter_Hz": 100,
+        "lift_delay_s": 0.2,
+        "lift_feedback": "ideal binary model after commanded phase delay",
+        "noise_factor": 1.0,
+        "fine_bandwidth_Hz": 25.0,
+        "coarse_bandwidth_Hz": 9.0,
+        "hand_neutral_position_m": [
+          -0.0007363636363636363,
+          8.808381021819422e-19
+        ],
+        "hand_neutral_rule": "placed start; no artificial initial spring preload",
+        "fine_nominal_bias_N": [
+          0.012,
+          -0.008
+        ],
+        "coarse_refusal_error_m": 0.0002
+      },
+      "limitations": [
+        "rigid links and perfect current loops",
+        "sampled/interpolated static magnetic map",
+        "no human trial, friction/hand/load assumptions",
+        "time-discrete servo validation only",
+        "constant tilt, normal support and delayed contact are idealized",
+        "electrical inductance not in current-loop plant"
+      ]
+    },
+    {
+      "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+      "grip_stiffness_N_m": 500.0,
+      "feedforward": true,
+      "dt_s": 0.0005,
+      "seed": 31,
+      "duration_s": 0.9990592475808582,
+      "requested_ink_samples": 1183,
+      "actual_ink_samples": 714,
+      "ink_coverage_fraction": 0.5967878275570583,
+      "actual_ink_rms_error_mm": 0.8663963729135711,
+      "actual_requested_ink_rms_error_mm": 0.8712872603169328,
+      "air_phase_ink_path_mm": 0.0,
+      "all_trajectory_rms_error_mm": 1.6898567550136134,
+      "all_trajectory_max_error_mm": 2.6689152644545677,
+      "refusal_time_s": 0.357,
+      "refusal_reason": "tracking error>0.20mm for10ms or radial reserve exhausted",
+      "coarse_force_peak_N": 0.27570257037002965,
+      "hand_reaction_peak_N": 0.15359434206257758,
+      "coarse_current_peak_A": 0.22543433569463253,
+      "coarse_voltage_peak_V": 2.3340966586742278,
+      "fine_current_peak_A": 0.08268203456123976,
+      "fine_radial_peak_mm": 0.2299419726859012,
+      "minimum_authority": [
+        1.0,
+        1.0
+      ],
+      "fine_wire_heat": {
+        "current_rms_A": [
+          0.041864440216928825,
+          0.032240354293856244
+        ],
+        "wire_rise_above_clamps_K": [
+          0.7683845557842522,
+          0.45514976380789746
+        ],
+        "lead_thermal_pass": true,
+        "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+      },
+      "hard_stop_contacts": 0,
+      "maximum_stop_impulse_Ns": 0.0,
+      "stop_dissipated_energy_J": 0.0,
+      "model_assumptions": {
+        "stage": {
+          "base": 0.05,
+          "proximal": 0.06,
+          "distal": 0.09,
+          "centre_y": 0.09,
+          "workspace_half_x": 0.03,
+          "workspace_half_y": 0.02,
+          "payload_mass": 0.08,
+          "proximal_mass": 0.006,
+          "distal_mass": 0.008,
+          "ratio": 6.0,
+          "transmission_efficiency": 0.8,
+          "torque_constant": 0.0146,
+          "resistance": 8.77,
+          "inductance": 0.000203,
+          "rotor_inertia": 2.7e-07,
+          "motor_friction": 0.0002,
+          "rated_torque": 0.00621,
+          "rated_current": 0.485,
+          "supply": 12.0,
+          "winding_rise": 45.0,
+          "force_cap": 0.4,
+          "residual_friction": 0.08,
+          "output_encoder_counts": 65536
+        },
+        "tilt_deg": 50,
+        "fine_mass_kg": 0.0036699750000000002,
+        "field_scale": 0.7,
+        "sensor_delay_s": 0.002,
+        "sensor_noise_std_m": [
+          3e-06,
+          3e-06,
+          1.5e-06,
+          1.5e-06
+        ],
+        "velocity_filter_Hz": 100,
+        "lift_delay_s": 0.2,
+        "lift_feedback": "ideal binary model after commanded phase delay",
+        "noise_factor": 1.0,
+        "fine_bandwidth_Hz": 25.0,
+        "coarse_bandwidth_Hz": 9.0,
+        "hand_neutral_position_m": [
+          -0.0007363636363636363,
+          8.808381021819422e-19
+        ],
+        "hand_neutral_rule": "placed start; no artificial initial spring preload",
+        "fine_nominal_bias_N": [
+          0.012,
+          -0.008
+        ],
+        "coarse_refusal_error_m": 0.0002
+      },
+      "limitations": [
+        "rigid links and perfect current loops",
+        "sampled/interpolated static magnetic map",
+        "no human trial, friction/hand/load assumptions",
+        "time-discrete servo validation only",
+        "constant tilt, normal support and delayed contact are idealized",
+        "electrical inductance not in current-loop plant"
+      ]
+    }
+  ],
+  "noise_free": {
+    "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+    "grip_stiffness_N_m": 0.0,
+    "feedforward": true,
+    "dt_s": 0.0005,
+    "seed": 31,
+    "duration_s": 0.9990592475808582,
+    "requested_ink_samples": 1183,
+    "actual_ink_samples": 1591,
+    "ink_coverage_fraction": 1.0,
+    "actual_ink_rms_error_mm": 0.046283408577600715,
+    "actual_requested_ink_rms_error_mm": 0.048812515049725246,
+    "air_phase_ink_path_mm": 0.0,
+    "all_trajectory_rms_error_mm": 0.04216737907659903,
+    "all_trajectory_max_error_mm": 0.09946038604815188,
+    "refusal_time_s": null,
+    "refusal_reason": null,
+    "coarse_force_peak_N": 0.1995575375054111,
+    "hand_reaction_peak_N": 0.0,
+    "coarse_current_peak_A": 0.16771093698778228,
+    "coarse_voltage_peak_V": 1.7444207822417377,
+    "fine_current_peak_A": 0.07344767561358378,
+    "fine_radial_peak_mm": 0.4750010021030108,
+    "minimum_authority": [
+      1.0,
+      1.0
+    ],
+    "fine_wire_heat": {
+      "current_rms_A": [
+        0.05000269816554441,
+        0.04206123326065381
+      ],
+      "wire_rise_above_clamps_K": [
+        1.0975763336612867,
+        0.7756475294913384
+      ],
+      "lead_thermal_pass": true,
+      "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+    },
+    "hard_stop_contacts": 0,
+    "maximum_stop_impulse_Ns": 0.0,
+    "stop_dissipated_energy_J": 0.0,
+    "model_assumptions": {
+      "stage": {
+        "base": 0.05,
+        "proximal": 0.06,
+        "distal": 0.09,
+        "centre_y": 0.09,
+        "workspace_half_x": 0.03,
+        "workspace_half_y": 0.02,
+        "payload_mass": 0.08,
+        "proximal_mass": 0.006,
+        "distal_mass": 0.008,
+        "ratio": 6.0,
+        "transmission_efficiency": 0.8,
+        "torque_constant": 0.0146,
+        "resistance": 8.77,
+        "inductance": 0.000203,
+        "rotor_inertia": 2.7e-07,
+        "motor_friction": 0.0002,
+        "rated_torque": 0.00621,
+        "rated_current": 0.485,
+        "supply": 12.0,
+        "winding_rise": 45.0,
+        "force_cap": 0.4,
+        "residual_friction": 0.08,
+        "output_encoder_counts": 65536
+      },
+      "tilt_deg": 50,
+      "fine_mass_kg": 0.0036699750000000002,
+      "field_scale": 0.7,
+      "sensor_delay_s": 0.002,
+      "sensor_noise_std_m": [
+        3e-06,
+        3e-06,
+        1.5e-06,
+        1.5e-06
+      ],
+      "velocity_filter_Hz": 100,
+      "lift_delay_s": 0.2,
+      "lift_feedback": "ideal binary model after commanded phase delay",
+      "noise_factor": 0.0,
+      "fine_bandwidth_Hz": 25.0,
+      "coarse_bandwidth_Hz": 9.0,
+      "hand_neutral_position_m": [
+        -0.0007363636363636363,
+        8.808381021819422e-19
+      ],
+      "hand_neutral_rule": "placed start; no artificial initial spring preload",
+      "fine_nominal_bias_N": [
+        0.012,
+        -0.008
+      ],
+      "coarse_refusal_error_m": 0.0002
+    },
+    "limitations": [
+      "rigid links and perfect current loops",
+      "sampled/interpolated static magnetic map",
+      "no human trial, friction/hand/load assumptions",
+      "time-discrete servo validation only",
+      "constant tilt, normal support and delayed contact are idealized",
+      "electrical inductance not in current-loop plant"
+    ]
+  },
+  "noise_free_half_step": {
+    "status": "COUPLED SIMULATION of proposed grounded stage +1.5mm fine stage; not measured",
+    "grip_stiffness_N_m": 0.0,
+    "feedforward": true,
+    "dt_s": 0.00025,
+    "seed": 31,
+    "duration_s": 0.9990592475808582,
+    "requested_ink_samples": 2365,
+    "actual_ink_samples": 3181,
+    "ink_coverage_fraction": 1.0,
+    "actual_ink_rms_error_mm": 0.046012103778332085,
+    "actual_requested_ink_rms_error_mm": 0.0485160634320364,
+    "air_phase_ink_path_mm": 0.0,
+    "all_trajectory_rms_error_mm": 0.041927169285100006,
+    "all_trajectory_max_error_mm": 0.09113054584562039,
+    "refusal_time_s": null,
+    "refusal_reason": null,
+    "coarse_force_peak_N": 0.20022321886662237,
+    "hand_reaction_peak_N": 0.0,
+    "coarse_current_peak_A": 0.16817601773950347,
+    "coarse_voltage_peak_V": 1.749999670496449,
+    "fine_current_peak_A": 0.0734757441532736,
+    "fine_radial_peak_mm": 0.47500539210980225,
+    "minimum_authority": [
+      1.0,
+      1.0
+    ],
+    "fine_wire_heat": {
+      "current_rms_A": [
+        0.05000646357147163,
+        0.04206000526040265
+      ],
+      "wire_rise_above_clamps_K": [
+        1.0977423569511944,
+        0.7756021012118103
+      ],
+      "lead_thermal_pass": true,
+      "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+    },
+    "hard_stop_contacts": 0,
+    "maximum_stop_impulse_Ns": 0.0,
+    "stop_dissipated_energy_J": 0.0,
+    "model_assumptions": {
+      "stage": {
+        "base": 0.05,
+        "proximal": 0.06,
+        "distal": 0.09,
+        "centre_y": 0.09,
+        "workspace_half_x": 0.03,
+        "workspace_half_y": 0.02,
+        "payload_mass": 0.08,
+        "proximal_mass": 0.006,
+        "distal_mass": 0.008,
+        "ratio": 6.0,
+        "transmission_efficiency": 0.8,
+        "torque_constant": 0.0146,
+        "resistance": 8.77,
+        "inductance": 0.000203,
+        "rotor_inertia": 2.7e-07,
+        "motor_friction": 0.0002,
+        "rated_torque": 0.00621,
+        "rated_current": 0.485,
+        "supply": 12.0,
+        "winding_rise": 45.0,
+        "force_cap": 0.4,
+        "residual_friction": 0.08,
+        "output_encoder_counts": 65536
+      },
+      "tilt_deg": 50,
+      "fine_mass_kg": 0.0036699750000000002,
+      "field_scale": 0.7,
+      "sensor_delay_s": 0.002,
+      "sensor_noise_std_m": [
+        3e-06,
+        3e-06,
+        1.5e-06,
+        1.5e-06
+      ],
+      "velocity_filter_Hz": 100,
+      "lift_delay_s": 0.2,
+      "lift_feedback": "ideal binary model after commanded phase delay",
+      "noise_factor": 0.0,
+      "fine_bandwidth_Hz": 25.0,
+      "coarse_bandwidth_Hz": 9.0,
+      "hand_neutral_position_m": [
+        -0.0007363636363636363,
+        8.808381021819422e-19
+      ],
+      "hand_neutral_rule": "placed start; no artificial initial spring preload",
+      "fine_nominal_bias_N": [
+        0.012,
+        -0.008
+      ],
+      "coarse_refusal_error_m": 0.0002
+    },
+    "limitations": [
+      "rigid links and perfect current loops",
+      "sampled/interpolated static magnetic map",
+      "no human trial, friction/hand/load assumptions",
+      "time-discrete servo validation only",
+      "constant tilt, normal support and delayed contact are idealized",
+      "electrical inductance not in current-loop plant"
+    ]
+  },
+  "source": "/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/results/improvement/writing/coarse_fine_reference_200ms.npz",
+  "evidence": "Simulated actual contact/trajectory under explicit assumed dynamics; no patient outcomes"
+}

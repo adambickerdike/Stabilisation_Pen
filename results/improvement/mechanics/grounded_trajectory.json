@@ -1,0 +1,53 @@
+{
+  "status": "CALC inverse dynamics, not measured tracking or clinical benefit",
+  "input": "results/improvement/writing/coarse_fine_reference_200ms.npz",
+  "samples": 2026,
+  "stage": {
+    "base": 0.05,
+    "proximal": 0.06,
+    "distal": 0.09,
+    "centre_y": 0.09,
+    "workspace_half_x": 0.03,
+    "workspace_half_y": 0.02,
+    "payload_mass": 0.08,
+    "proximal_mass": 0.006,
+    "distal_mass": 0.008,
+    "ratio": 6.0,
+    "transmission_efficiency": 0.8,
+    "torque_constant": 0.0146,
+    "resistance": 8.77,
+    "inductance": 0.000203,
+    "rotor_inertia": 2.7e-07,
+    "motor_friction": 0.0002,
+    "rated_torque": 0.00621,
+    "rated_current": 0.485,
+    "supply": 12.0,
+    "winding_rise": 45.0,
+    "force_cap": 0.4,
+    "residual_friction": 0.08,
+    "output_encoder_counts": 65536
+  },
+  "motor_source": "https://www.faulhaber.com/fileadmin/Import/Media/EN_2224_SR_DFF.pdf",
+  "workspace_pass": true,
+  "current_peak_A": 0.14036761920845534,
+  "current_rms_A": [
+    0.06418792651933475,
+    0.053339578605113805
+  ],
+  "voltage_peak_including_sampled_Ldi_dt_V": 1.4613230251863838,
+  "copper_average_W": 0.07188765733228768,
+  "min_continuous_force_disk_N": 0.4926614375405617,
+  "effective_mass_eigenvalue_range_kg": [
+    0.09348715095209556,
+    0.09864675064439403
+  ],
+  "force_assumption": "0.08N opposing motion; no person grip force in this inverse-dynamics check",
+  "limitations": [
+    "transmission efficiency and friction unmeasured",
+    "rigid links and bearings",
+    "no backlash/flexibility in model",
+    "manufacturer rated torque at22C; mounting required",
+    "16-bit output encoder assumption, not measured positioning accuracy"
+  ],
+  "electrical_pass": true
+}

@@ -1,0 +1,32 @@
+........................................................................ [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 24%]
+........................................................................ [ 32%]
+........................................................................ [ 40%]
+.......................................................s.....sss........ [ 48%]
+........................................................................ [ 56%]
+...................................s...................sssss......s..... [ 64%]
+............ssss....s................................................... [ 72%]
+........................................................................ [ 80%]
+........................................................................ [ 88%]
+...................................................ssss................. [ 96%]
+...........................                                              [100%]
+=========================== short test summary info ============================
+SKIPPED [1] ml/tests/test_ml.py:150: datasets not built
+SKIPPED [2] ml/tests/test_ml.py:234: data not built
+SKIPPED [1] ml/tests/test_ml.py:249: C test not built
+SKIPPED [1] readable/tests/test_readable.py:197: licensed UNIPEN writing index not built
+SKIPPED [1] realdata/tests/test_realdata.py:118: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:134: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:144: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:164: licensed UNIPEN corpus absent or writing index empty
+SKIPPED [1] realdata/tests/test_realdata.py:179: licensed UNIPEN corpus absent or writing index empty
+SKIPPED [1] realdata/tests/test_realdata.py:280: tremor library not built
+SKIPPED [3] realtrack/tests/test_realtrack.py:89: model not built: ai2 frozen tuning caches d01/d2b are absent from this checkout; rebuild the tuning stages before loading their estimators
+SKIPPED [1] realtrack/tests/test_realtrack.py:89: model not built: [Errno 2] No such file or directory: '/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/realtrack/build/models/net_net_main.json'
+SKIPPED [1] realtrack/tests/test_realtrack.py:150: tuning cache not built (python3 -m realtrack.run --stages cases)
+SKIPPED [1] sim2/tests/test_slow.py:8: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:19: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:28: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:34: slow: use --runslow
+871 passed, 20 skipped in 183.40s (0:03:03)

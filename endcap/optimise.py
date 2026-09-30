@@ -147,8 +147,8 @@ def metrics(d, splits=P.SPLITS, f_tremor=F_TREMOR, A=A_TREMOR, f_steer=F_STEER_A
                 P_act.append(actuation_power(d, f, torch.abs(u)))
         for f in f_steer:
             if not ins:
-                out["steer_mm"][(rr, f)] = torch.zeros(())
-                out["steer_axis_mm"][(rr, f)] = torch.zeros(2)
+                out["steer_mm"][(rr, f)] = torch.zeros((), dtype=torch.float64)
+                out["steer_axis_mm"][(rr, f)] = torch.zeros(2, dtype=torch.float64)
                 continue
             x0, G = el.responses(dv, f, A, inputs=ins)
             L = limits(d, f)
@@ -157,7 +157,7 @@ def metrics(d, splits=P.SPLITS, f_tremor=F_TREMOR, A=A_TREMOR, f_steer=F_STEER_A
             out["steer_axis_mm"][(rr, f)] = per * 1e3
     out["tremor_mean"] = torch.stack(list(out["tremor"].values())).mean()
     out["steer_3Hz_mm"] = torch.stack([out["steer_mm"][(rr, F_STEER)] for rr in splits]).mean() if F_STEER in f_steer else None
-    out["P_act_10Hz_1mm"] = torch.stack(P_act).max() if P_act else torch.zeros(())
+    out["P_act_10Hz_1mm"] = torch.stack(P_act).max() if P_act else torch.zeros((), dtype=torch.float64)
     out["P_avg"] = d["P_spin"] + out["P_act_10Hz_1mm"]
     out["P_peak"] = peak_power(d)
     return out
@@ -172,12 +172,12 @@ def actuation_power(d, f, u_amp):
         return torch.sum((u_amp / math.sqrt(2) / m.kM) ** 2 * m.R)
     if d["cls"] in CMG_ARRS:
         return DS.cmg_gimbal_power(d, f, u_amp)
-    return torch.zeros(())
+    return torch.zeros((), dtype=torch.float64)
 
 
 def peak_power(d):
     if d["cls"] == "LRM2":
-        return torch.tensor(1.0)                      # 0.5 W per axis by construction
+        return torch.tensor(1.0, dtype=torch.float64)                      # 0.5 W per axis by construction
     if d["cls"] == "RW2":
         m = d["mot"]
         return d["P_spin"] + 2 * (d["tau_pk"] / m.kM) ** 2 * m.R
@@ -221,7 +221,7 @@ def grad_opt(cls, choice, cap, which="tremor", starts=4, iters=160, seed=0, lr=0
     for s in range(starts):
         warm = z0 is not None and s == 0
         zi = np.asarray(z0, float) if warm else rng.normal(0, 1.2, len(sp.names))
-        z = torch.tensor(zi, requires_grad=True)
+        z = torch.tensor(zi, requires_grad=True, dtype=torch.float64)
         opt = torch.optim.Adam([z], lr=lr * (0.25 if warm else 1.0))
         cand = None
         for it in range(iters + 1):
@@ -276,7 +276,7 @@ def _cma_once(cls, cap, which, choices, max_evals, seed, f_tremor):
     def fun(v):
         x, ch = decode(v)
         with torch.no_grad():
-            d = build(cls, {k: torch.tensor(float(vv)) for k, vv in x.items()}, ch)
+            d = build(cls, {k: torch.tensor(float(vv), dtype=torch.float64) for k, vv in x.items()}, ch)
             m = metrics(d, hard=True, f_tremor=f_tremor, f_steer=(F_STEER,))
             pen = float(penalty(d, m, cap))
             return float(objective(m, which, d)) + 10.0 * pen + (1e3 if pen > 0.5 else 0.0)
@@ -284,7 +284,7 @@ def _cma_once(cls, cap, which, choices, max_evals, seed, f_tremor):
     r = cmaes(fun, np.zeros(len(sp.names) + nd), sigma0=1.0, max_evals=max_evals, seed=seed)
     x, ch = decode(r["x"])
     with torch.no_grad():
-        d = build(cls, {k: torch.tensor(float(vv)) for k, vv in x.items()}, ch)
+        d = build(cls, {k: torch.tensor(float(vv), dtype=torch.float64) for k, vv in x.items()}, ch)
         m = metrics(d, hard=True, f_tremor=f_tremor, f_steer=(F_STEER,))
         pen = float(penalty(d, m, cap))
     return dict(x={k: float(v) for k, v in x.items()}, choice=ch, f=float(objective(m, which, d)), pen=pen, evals=r["evals"],
@@ -295,7 +295,7 @@ def _cma_once(cls, cap, which, choices, max_evals, seed, f_tremor):
 def summarize(cls, x, choice, splits=P.SPLITS):
     """Full metrics (hard minima, all frequencies) of a design, as floats for JSON."""
     with torch.no_grad():
-        d = build(cls, {k: torch.tensor(float(v)) for k, v in x.items()}, choice)
+        d = build(cls, {k: torch.tensor(float(v), dtype=torch.float64) for k, v in x.items()}, choice)
         m = metrics(d, splits=splits, hard=True)
     out = {"class": d["cls"], "choice": list(choice), "x": x, "mass_g": float(d["m_total"]) * 1e3,
            "moving_mass_g": float(d["m_r"]) * 1e3, "P_spin_W": float(d["P_spin"]), "P_avg_W": float(m["P_avg"]),

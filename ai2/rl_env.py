@@ -49,7 +49,9 @@ class ReplayBackend:
     """Episodes from precomputed HW1 samples (data.py npz with the model-based arrays)."""
 
     def __init__(self, samples: List[Dict]):
-        self.samples = [s for s in samples if all(k in s for k in REQUIRED_KEYS)]
+        if not samples or any(not all(k in s for k in REQUIRED_KEYS) for s in samples):
+            raise ValueError("replay requires nonempty complete episodes; do not silently drop malformed data")
+        self.samples = list(samples)
 
     def n_episodes(self) -> int:
         return len(self.samples)
@@ -70,7 +72,7 @@ def features(ep: Dict) -> np.ndarray:
         c = np.cumsum(np.r_[0.0, np.sum(np.asarray(x, float) ** 2, axis=-1) if np.ndim(x) > 1 else np.asarray(x, float) ** 2])
         i = np.arange(1, T + 1)
         j = np.maximum(0, i - n)
-        return np.sqrt((c[i] - c[j]) / np.maximum(i - j, 1))
+        return np.sqrt(np.maximum(0.0, c[i] - c[j]) / np.maximum(i - j, 1))
     con = ep["X"][:, 6]
     cc = np.cumsum(np.r_[0.0, con])
     i = np.arange(1, T + 1); j = np.maximum(0, i - DECIM)
@@ -101,8 +103,8 @@ class GateEnv(gym.Env):
 
     def _obs(self):
         k = self.k0 + self.j * DECIM - 1
-        f = self.F[max(k, 0)]
-        return np.r_[f, self.w_prev].astype(np.float32)
+        f = self.F[np.clip(k, 0, len(self.F) - 1)]
+        return np.clip(np.r_[f, self.w_prev], -10.0, 10.0).astype(np.float32)
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
         super().reset(seed=seed)
@@ -114,21 +116,28 @@ class GateEnv(gym.Env):
             self._cache[i] = features(self.ep)
         self.F = self._cache[i]
         T = len(self.F)
+        if T <= DECIM:
+            raise ValueError("episode must exceed the initial causal history")
         need = self.n_dec * DECIM + DECIM
         if options and options.get("full"):
             self.k0 = DECIM
-            self.n_run = (T - DECIM) // DECIM - 1
+            self.n_run = (T - DECIM + DECIM - 1) // DECIM
         else:
             self.k0 = DECIM if (self.deterministic_start or T <= need + DECIM) else int(self.rng.integers(DECIM, T - need))
-            self.n_run = min(self.n_dec, (T - self.k0) // DECIM - 1)
+            self.n_run = min(self.n_dec, (T - self.k0 + DECIM - 1) // DECIM)
         self.j = 0
         self.w_prev = 0.0
         return self._obs(), {}
 
     def step(self, action):
-        w = float(np.clip(np.asarray(action).reshape(-1)[0], 0.0, 1.0)) * self.w_max
+        if self.j >= self.n_run:
+            raise RuntimeError("episode exhausted; reset first")
+        action = np.asarray(action).reshape(-1)
+        if action.shape != (1,) or not np.all(np.isfinite(action)):
+            raise ValueError("action must be a finite one-vector")
+        w = float(np.clip(action[0], 0.0, 1.0)) * self.w_max
         a = self.k0 + self.j * DECIM
-        b = a + DECIM
+        b = min(a + DECIM, len(self.F))
         m = self.ep["mask"][a:b] > 0.5
         r = 0.0
         if m.any():
@@ -144,7 +153,9 @@ class GateEnv(gym.Env):
         self.w_prev = w
         self.j += 1
         done = self.j >= self.n_run
-        return self._obs(), r, done, False, {"w": w}
+        # A sampled replay window ending is a time limit, not an absorbing
+        # physical state. PPO must retain its value bootstrap here.
+        return self._obs(), r, False, done, {"w": w}
 
 
 def policy_weights(policy_fn, ep: Dict) -> np.ndarray:
@@ -157,7 +168,8 @@ def policy_weights(policy_fn, ep: Dict) -> np.ndarray:
     while not done:
         a = policy_fn(obs)
         k = env.k0 + env.j * DECIM
-        obs, r, done, _, info = env.step(a)
+        obs, r, terminated, truncated, info = env.step(a)
+        done = terminated or truncated
         w[k:k + DECIM] = info["w"]
     return w
 
@@ -212,7 +224,7 @@ class ResidualEnv(gym.Env):
         self._cache: Dict[int, tuple] = {}
 
     def _obs(self):
-        return np.r_[self.F[self.k - 1], self.a_prev].astype(np.float32)
+        return np.clip(np.r_[self.F[self.k - 1], self.a_prev], -50.0, 50.0).astype(np.float32)
 
     def reset(self, *, seed: Optional[int] = None, options: Optional[Dict] = None):
         super().reset(seed=seed)
@@ -224,6 +236,8 @@ class ResidualEnv(gym.Env):
             self._cache[i] = residual_features(self.ep, self.amp_gate)
         self.F, self.b = self._cache[i]
         T = len(self.F)
+        if T <= RES_HIST:
+            raise ValueError("episode must exceed the initial causal history")
         if options and options.get("full"):
             self.k, self.k_end = RES_HIST, T
         else:
@@ -233,7 +247,12 @@ class ResidualEnv(gym.Env):
         return self._obs(), {}
 
     def step(self, action):
-        a = np.clip(np.asarray(action, np.float32).reshape(-1)[:2], -1.0, 1.0)
+        if self.k >= self.k_end:
+            raise RuntimeError("episode exhausted; reset first")
+        a = np.asarray(action, np.float32).reshape(-1)
+        if a.shape != (2,) or not np.all(np.isfinite(a)):
+            raise ValueError("action must be a finite two-vector")
+        a = np.clip(a, -1.0, 1.0)
         k = self.k
         r = 0.0
         if self.ep["mask"][k] > 0.5:
@@ -247,7 +266,7 @@ class ResidualEnv(gym.Env):
         self.a_prev = a
         self.k += 1
         done = self.k >= self.k_end
-        return (self._obs() if not done else np.r_[self.F[self.k - 1], a].astype(np.float32)), r, done, False, {}
+        return self._obs(), r, False, done, {}
 
 
 def residual_actions(policy_fn, ep: Dict, amp_gate=(0.0, 0.0)) -> np.ndarray:
@@ -258,7 +277,8 @@ def residual_actions(policy_fn, ep: Dict, amp_gate=(0.0, 0.0)) -> np.ndarray:
     A = np.zeros((T, 2))
     a_prev = np.zeros(2, np.float32)
     for k in range(RES_HIST, T):
-        a = np.clip(np.asarray(policy_fn(np.r_[F[k - 1], a_prev].astype(np.float32)), np.float32).reshape(-1)[:2], -1, 1)
+        obs = np.clip(np.r_[F[k - 1], a_prev], -50.0, 50.0).astype(np.float32)
+        a = np.clip(np.asarray(policy_fn(obs), np.float32).reshape(-1)[:2], -1, 1)
         A[k] = a
         a_prev = a
     return A

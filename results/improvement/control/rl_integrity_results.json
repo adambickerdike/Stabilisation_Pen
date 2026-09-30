@@ -1,0 +1,893 @@
+{
+  "protocol": {
+    "evidence": "SIM: fresh synthetic writers and tremor; no hardware or clinical evidence",
+    "protocol_version": 1,
+    "created_utc": "2026-09-30T08:31:28Z",
+    "requested_steps_per_seed": 16384,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "train_writers": [
+      20000,
+      20399
+    ],
+    "tune_cases": [
+      {
+        "writer": 31001,
+        "seed": 81000,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 31001,
+        "seed": 81000,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 31001,
+        "seed": 81000,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 31001,
+        "seed": 81001,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 31001,
+        "seed": 81001,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 31001,
+        "seed": 81001,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 31002,
+        "seed": 81019,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 31002,
+        "seed": 81019,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 31002,
+        "seed": 81019,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 31002,
+        "seed": 81020,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 31002,
+        "seed": 81020,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 31002,
+        "seed": 81020,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe"
+      }
+    ],
+    "test_cases": [
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe"
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild"
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe"
+      }
+    ],
+    "rule": {
+      "clean_mean_um_max": 25.0,
+      "clean_worst_um_max": 50.0,
+      "mild_ratio_max": 1.02,
+      "severe_ratio_max": 0.98,
+      "missing_ink_increase_max": 0.005,
+      "extra_ink_increase_max": 0.005,
+      "coil_power_ratio_max": 1.05
+    },
+    "selection": "Eligible final policy with lowest tuning severe RMS ratio; otherwise zero residual. Evaluate selected policy on test only after freeze; retain every seed's tuning failure.",
+    "p_free": 0.5,
+    "plant": "Rev J no heel, same frozen DR for matched comparisons; not Rev K",
+    "reward": "reference-tick contact-complete tracking, scale0.3mm, missing/extra9; action cost0.005",
+    "budget": "Three final checkpoints only; no test-driven hyperparameter search",
+    "hashes": {
+      "sim2j/rl_integrity_study.py": "19127dcaf49c2f4c3636b7bca231f11f950e3a41d6064155625e342022b96548",
+      "sim2j/rl.py": "32b9c0b32e80cd78591344972a8931eb502ec888fab54ab2122cbd0dbc1cea12",
+      "sim2/reward.py": "477a231f806829f46405b634e8d0893ff649afdd84b9c732fd6c6fad3ef1e327",
+      "sim2j/sensing.py": "afb89bfee582e88e594c4f932b5f29dd65f88d4c88141d02d9aacd3eefb96233",
+      "sim2j/firmware.py": "1dad86bfd4de6488f87b3324efad3dc1c2025bfc3c63f693a44144c8990593ec",
+      "sim2j/stepper.py": "94d9a5f94c381e4b053c8548dbc8bcac4cc0eef3bdd236bfd0733fd98f925f5e",
+      "sim2/sim.py": "5292af88473955764872b8770db7184d755524962926f5ec1568918871cb80c6",
+      "sim2/plugins.py": "c4561463d78b925c98c5ac7b87c539d821e09b8027dc525c7d9923687327a223"
+    },
+    "head": "4ad62b6acdcda1fa1102362f32780168297f5bb3",
+    "runtime": {
+      "python": "3.12.14",
+      "platform": "macOS-15.7.4-arm64-arm-64bit",
+      "numpy": "2.4.6",
+      "torch": "2.14.0",
+      "scipy": "1.17.1",
+      "gymnasium": "1.2.3",
+      "mujoco": "3.6.0",
+      "stable_baselines3": "2.9.0"
+    }
+  },
+  "training": [
+    {
+      "seed": 0,
+      "actual_steps": 16384,
+      "requested_steps": 16384,
+      "wall_seconds": 136.41987681388855,
+      "episodes": 26,
+      "model_sha256": "1c3031b604b86ef3a66f8543a4b80dd14845ab89a4f140e9f6cde589ade44d78"
+    },
+    {
+      "seed": 1,
+      "actual_steps": 16384,
+      "requested_steps": 16384,
+      "wall_seconds": 158.14211201667786,
+      "episodes": 26,
+      "model_sha256": "a80c50b662319153d31773edda44fb5fa52fe029c7fe0b269abd418c69376572"
+    },
+    {
+      "seed": 2,
+      "actual_steps": 16384,
+      "requested_steps": 16384,
+      "wall_seconds": 143.91057300567627,
+      "episodes": 26,
+      "model_sha256": "95a63f4e3c1353c69e354a265299333612c33148e8ed8d97157299d1ae107cb2"
+    }
+  ],
+  "selection": {
+    "seed": 0,
+    "selected": "PPO",
+    "candidates": [
+      {
+        "seed": 0,
+        "clean_mean_um": 1.5651950679262074,
+        "clean_worst_um": 2.8679841934279664,
+        "mild_ratio": 0.9944780916648298,
+        "severe_ratio": 0.9765561597864219,
+        "missing_ink_increase": 0.0004000000000000002,
+        "extra_ink_increase": 0.0008000000000000004,
+        "coil_power_ratio": 1.0162382030539616,
+        "passes": true
+      },
+      {
+        "seed": 1,
+        "clean_mean_um": 0.41263363263561814,
+        "clean_worst_um": 0.6329252865292281,
+        "mild_ratio": 0.9989630710198624,
+        "severe_ratio": 0.9853620873457148,
+        "missing_ink_increase": 0.001599999999999999,
+        "extra_ink_increase": 0.00020000000000000052,
+        "coil_power_ratio": 1.01005581569565,
+        "passes": false
+      },
+      {
+        "seed": 2,
+        "clean_mean_um": 3.7030029355691996,
+        "clean_worst_um": 8.062034560451934,
+        "mild_ratio": 0.9982561691711284,
+        "severe_ratio": 1.0056706469925518,
+        "missing_ink_increase": 0.0004000000000000002,
+        "extra_ink_increase": 0.0003999999999999993,
+        "coil_power_ratio": 1.025547625497827,
+        "passes": false
+      }
+    ],
+    "frozen_utc": "2026-09-30T08:45:58Z",
+    "protocol_sha256": "a92b5c58822b73f628572a6fe2960008bc7c0dd86923da61998078fbe9736555"
+  },
+  "test": {
+    "baseline": [
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5640000000000012,
+        "rms_um": 0.23424254769068728,
+        "cost": 0.09900038140448565,
+        "missing_fraction": 0.0052,
+        "extra_fraction": 0.0058,
+        "coil_power_W": 3.2212400761803384,
+        "coil_temperature_C": 59.81003045314602
+      },
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5640000000000012,
+        "rms_um": 238.3703410260598,
+        "cost": 0.48676504919153973,
+        "missing_fraction": 0.005799999999999999,
+        "extra_fraction": 0.0043999999999999985,
+        "coil_power_W": 3.254534060281649,
+        "coil_temperature_C": 60.78664643036825
+      },
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5640000000000012,
+        "rms_um": 891.8721016480283,
+        "cost": 5.685762945207929,
+        "missing_fraction": 0.0136,
+        "extra_fraction": 0.0038,
+        "coil_power_W": 3.3332801141790975,
+        "coil_temperature_C": 61.49192313608379
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.399500000000001,
+        "rms_um": 0.38734406240315106,
+        "cost": 0.17820093322032904,
+        "missing_fraction": 0.009799999999999998,
+        "extra_fraction": 0.009999999999999998,
+        "coil_power_W": 2.948140890289866,
+        "coil_temperature_C": 54.227974863906724
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.399500000000001,
+        "rms_um": 163.2099735664048,
+        "cost": 0.3366852218330197,
+        "missing_fraction": 0.0086,
+        "extra_fraction": 0.0104,
+        "coil_power_W": 2.9891645955157653,
+        "coil_temperature_C": 55.32707019169217
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.399500000000001,
+        "rms_um": 706.407876688482,
+        "cost": 3.3036551888996364,
+        "missing_fraction": 0.0072,
+        "extra_fraction": 0.015,
+        "coil_power_W": 3.2144575670022877,
+        "coil_temperature_C": 57.49771665108421
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.1600000000000008,
+        "rms_um": 0.25768503970141027,
+        "cost": 0.174600342337033,
+        "missing_fraction": 0.009999999999999998,
+        "extra_fraction": 0.009399999999999999,
+        "coil_power_W": 1.3816183089954166,
+        "coil_temperature_C": 40.12943217636165
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.1600000000000008,
+        "rms_um": 187.7135712670201,
+        "cost": 0.3364631396083095,
+        "missing_fraction": 0.0096,
+        "extra_fraction": 0.0076,
+        "coil_power_W": 1.3790828081524953,
+        "coil_temperature_C": 40.09900755161194
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.1600000000000008,
+        "rms_um": 1153.9170857760835,
+        "cost": 7.017749259472557,
+        "missing_fraction": 0.009999999999999998,
+        "extra_fraction": 0.006999999999999999,
+        "coil_power_W": 1.3670585744576262,
+        "coil_temperature_C": 40.768868531157736
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.315500000000001,
+        "rms_um": 0.18344987065170137,
+        "cost": 0.2286001967628724,
+        "missing_fraction": 0.012599999999999998,
+        "extra_fraction": 0.012799999999999997,
+        "coil_power_W": 1.5171617319082866,
+        "coil_temperature_C": 41.92003881537739
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.315500000000001,
+        "rms_um": 277.27692867084573,
+        "cost": 0.6457063217789429,
+        "missing_fraction": 0.011999999999999997,
+        "extra_fraction": 0.009799999999999998,
+        "coil_power_W": 1.5441005952297575,
+        "coil_temperature_C": 42.0307156364351
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.315500000000001,
+        "rms_um": 971.9911885006043,
+        "cost": 5.824336969656743,
+        "missing_fraction": 0.0154,
+        "extra_fraction": 0.017999999999999995,
+        "coil_power_W": 1.5694490510832844,
+        "coil_temperature_C": 43.3323481451469
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.6440000000000012,
+        "rms_um": 0.33007446829322806,
+        "cost": 0.1098007960551564,
+        "missing_fraction": 0.0068,
+        "extra_fraction": 0.0053999999999999986,
+        "coil_power_W": 1.564366730530496,
+        "coil_temperature_C": 38.410378459137014
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.6440000000000012,
+        "rms_um": 173.03391502706032,
+        "cost": 0.33216697587701854,
+        "missing_fraction": 0.0072,
+        "extra_fraction": 0.005399999999999999,
+        "coil_power_W": 1.564583278817972,
+        "coil_temperature_C": 38.452408976353674
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.6440000000000012,
+        "rms_um": 975.4674716482627,
+        "cost": 7.0605621327684345,
+        "missing_fraction": 0.006999999999999999,
+        "extra_fraction": 0.004999999999999999,
+        "coil_power_W": 1.660250385425685,
+        "coil_temperature_C": 38.95877075770752
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5380000000000011,
+        "rms_um": 0.2685198367914524,
+        "cost": 0.11160049286339745,
+        "missing_fraction": 0.006599999999999999,
+        "extra_fraction": 0.0058,
+        "coil_power_W": 4.23604826662745,
+        "coil_temperature_C": 71.2000979829819
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5380000000000011,
+        "rms_um": 436.82384229241455,
+        "cost": 1.448327006320341,
+        "missing_fraction": 0.007999999999999998,
+        "extra_fraction": 0.007999999999999998,
+        "coil_power_W": 4.226759478662471,
+        "coil_temperature_C": 71.1720893907288
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5380000000000011,
+        "rms_um": 2017.3123881891127,
+        "cost": 28.123630131690955,
+        "missing_fraction": 0.024199999999999996,
+        "extra_fraction": 0.009799999999999998,
+        "coil_power_W": 4.255897804357154,
+        "coil_temperature_C": 71.1339139504523
+      }
+    ],
+    "selected": [
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5640000000000012,
+        "rms_um": 5.890312729341626,
+        "cost": 0.10284117425001481,
+        "missing_fraction": 0.005399999999999999,
+        "extra_fraction": 0.005999999999999999,
+        "coil_power_W": 3.222627220167352,
+        "coil_temperature_C": 59.8044094271007
+      },
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5640000000000012,
+        "rms_um": 237.0281698724974,
+        "cost": 0.4859297803630979,
+        "missing_fraction": 0.005999999999999998,
+        "extra_fraction": 0.004599999999999999,
+        "coil_power_W": 3.254389685059273,
+        "coil_temperature_C": 60.8050402703376
+      },
+      {
+        "writer": 32001,
+        "seed": 82000,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5640000000000012,
+        "rms_um": 899.4685004227379,
+        "cost": 5.782151840921195,
+        "missing_fraction": 0.014199999999999999,
+        "extra_fraction": 0.0034,
+        "coil_power_W": 3.335907030539253,
+        "coil_temperature_C": 61.49233049344302
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.399500000000001,
+        "rms_um": 1.2899179511250696,
+        "cost": 0.16921034938535431,
+        "missing_fraction": 0.009,
+        "extra_fraction": 0.009799999999999998,
+        "coil_power_W": 2.9482807063075684,
+        "coil_temperature_C": 54.228611694817324
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.399500000000001,
+        "rms_um": 163.6453191909173,
+        "cost": 0.3429702968670647,
+        "missing_fraction": 0.0086,
+        "extra_fraction": 0.011,
+        "coil_power_W": 2.9961897999672313,
+        "coil_temperature_C": 55.33547481507006
+      },
+      {
+        "writer": 32001,
+        "seed": 82001,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.399500000000001,
+        "rms_um": 723.1160230595635,
+        "cost": 3.450417989050084,
+        "missing_fraction": 0.0076,
+        "extra_fraction": 0.0144,
+        "coil_power_W": 3.216003041555789,
+        "coil_temperature_C": 57.479847116655684
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.1600000000000008,
+        "rms_um": 0.867818467507158,
+        "cost": 0.17280388269473487,
+        "missing_fraction": 0.009799999999999998,
+        "extra_fraction": 0.009399999999999999,
+        "coil_power_W": 1.3767742073138285,
+        "coil_temperature_C": 40.130482243013866
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.1600000000000008,
+        "rms_um": 188.2953984883726,
+        "cost": 0.3321910321182145,
+        "missing_fraction": 0.009999999999999998,
+        "extra_fraction": 0.006599999999999999,
+        "coil_power_W": 1.3739375894583123,
+        "coil_temperature_C": 40.10711725665902
+      },
+      {
+        "writer": 32002,
+        "seed": 82019,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.1600000000000008,
+        "rms_um": 1152.354028443949,
+        "cost": 7.004564337646038,
+        "missing_fraction": 0.0106,
+        "extra_fraction": 0.006999999999999999,
+        "coil_power_W": 1.3720963718194423,
+        "coil_temperature_C": 40.77143414662892
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.315500000000001,
+        "rms_um": 1.420800711479979,
+        "cost": 0.22501180251785563,
+        "missing_fraction": 0.0124,
+        "extra_fraction": 0.012599999999999998,
+        "coil_power_W": 1.5201487906161741,
+        "coil_temperature_C": 41.92441868281512
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.315500000000001,
+        "rms_um": 276.8913858335862,
+        "cost": 0.651657148562241,
+        "missing_fraction": 0.011999999999999999,
+        "extra_fraction": 0.0106,
+        "coil_power_W": 1.5526008513624148,
+        "coil_temperature_C": 42.03040059310505
+      },
+      {
+        "writer": 32002,
+        "seed": 82020,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.315500000000001,
+        "rms_um": 963.226769436773,
+        "cost": 5.716171298722478,
+        "missing_fraction": 0.0168,
+        "extra_fraction": 0.015599999999999998,
+        "coil_power_W": 1.5937055825131696,
+        "coil_temperature_C": 43.34693394252754
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.6440000000000012,
+        "rms_um": 0.36202804881805245,
+        "cost": 0.1098009576432114,
+        "missing_fraction": 0.0068,
+        "extra_fraction": 0.0053999999999999986,
+        "coil_power_W": 1.5644539857764195,
+        "coil_temperature_C": 38.41020494862306
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.6440000000000012,
+        "rms_um": 173.08267507748846,
+        "cost": 0.33589028802353,
+        "missing_fraction": 0.0076,
+        "extra_fraction": 0.005399999999999999,
+        "coil_power_W": 1.564797930914865,
+        "coil_temperature_C": 38.45234511242325
+      },
+      {
+        "writer": 32003,
+        "seed": 82038,
+        "f0": 5.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.6440000000000012,
+        "rms_um": 975.239046641523,
+        "cost": 7.053706354075446,
+        "missing_fraction": 0.0068,
+        "extra_fraction": 0.0048,
+        "coil_power_W": 1.6601374032993808,
+        "coil_temperature_C": 38.9579040975484
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.0,
+        "class": "clean",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5380000000000011,
+        "rms_um": 24.8162294200409,
+        "cost": 0.126609644369609,
+        "missing_fraction": 0.007399999999999999,
+        "extra_fraction": 0.0062,
+        "coil_power_W": 4.23209451899585,
+        "coil_temperature_C": 71.20192499363962
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.0003,
+        "class": "mild",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5380000000000011,
+        "rms_um": 453.0509630015491,
+        "cost": 1.5344331523015948,
+        "missing_fraction": 0.006999999999999999,
+        "extra_fraction": 0.0076,
+        "coil_power_W": 4.22886792951142,
+        "coil_temperature_C": 71.17073146299562
+      },
+      {
+        "writer": 32003,
+        "seed": 82039,
+        "f0": 9.0,
+        "amp": 0.00172,
+        "class": "severe",
+        "duration_s": 2.5000000000000004,
+        "reference_ink_s": 1.5380000000000011,
+        "rms_um": 2027.9875195752525,
+        "cost": 28.4296175011222,
+        "missing_fraction": 0.025599999999999994,
+        "extra_fraction": 0.0096,
+        "coil_power_W": 4.253742661673403,
+        "coil_temperature_C": 71.13945677509751
+      }
+    ],
+    "comparison": {
+      "clean_mean_um": 5.774517888052131,
+      "clean_worst_um": 24.8162294200409,
+      "mild_ratio": 1.0060292730493803,
+      "severe_ratio": 1.0044759462825603,
+      "missing_ink_increase": 0.0013999999999999985,
+      "extra_ink_increase": 0.0008000000000000021,
+      "coil_power_ratio": 1.0154554436877976,
+      "passes": false
+    },
+    "selected_policy": "PPO",
+    "selected_seed": 0
+  },
+  "wall_this_invocation_seconds": 1106.3141648769379,
+  "conclusion": "Selected learned policy is synthetic evidence only; hardware and human validation pending"
+}

@@ -45,7 +45,7 @@ from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
 import numpy as np
 
 from . import __version__
-from ._util import ensure_stabpen_importable, ids_from_ranges, ranges_from_ids
+from ._util import ensure_stabpen_importable, ids_from_ranges, ranges_from_ids, canonical_json, sha256_hex
 from .notes import NoteStore, ValidationError
 
 AUTOCORRECT_ID = "penapp.autocorrect"
@@ -189,6 +189,12 @@ class NgramWordModel:
         return lp
 
     def logprior(self, w: str, prev: Optional[str]) -> float:
+        from aiguide.corpus import ALPHABET
+        if any(c not in ALPHABET for c in w):
+            # The ASCII research model cannot spell this token. Treat it as one
+            # opaque OOV bucket rather than feeding unsupported text to CharKN.
+            # correct_tokens keeps these literal tokens out of correction.
+            return math.log(self.p_oov)
         if w in self.personal and w not in self.lexicon:
             return math.log(self.p_personal)
         if w in self.lexicon:
@@ -246,7 +252,7 @@ class Autocorrector:
         """Posterior decoding over a line (forward-backward on a bigram lattice)."""
         parts = [_split_token(t.lower()) for t in tokens]
         cores = [p[1] for p in parts]
-        active = [bool(c) and c.isalpha() for c in cores]
+        active = [bool(c) and all(letter in LETTERS for letter in c) for c in cores]
         lat: List[List[str]] = [self._cands(c) if a else [c] for c, a in zip(cores, active)]
         emis = [np.array([channel_logp(c, w, self.cer) if a else 0.0 for w in L]) for c, a, L in zip(cores, active, lat)]
         n = len(lat)
@@ -307,9 +313,85 @@ class AutocorrectResult:
     layer: Optional[dict] = None
 
 
+@dataclass(frozen=True)
+class CorrectionChoice:
+    span_id: str
+    observed: str
+    suggested: str
+    model_posterior: float          # model score, not validated probability of a writer's intention
+
+
+@dataclass(frozen=True)
+class CorrectionProposal:
+    note_id: str
+    recognition_layer_id: str
+    effective_snapshot_sha256: str
+    choices: Tuple[CorrectionChoice, ...]
+    proposal_id: str
+
+
+def _proposal_digest(note_id, layer_id, snapshot, choices):
+    return sha256_hex(canonical_json({"note_id": note_id, "recognition_layer_id": layer_id,
+                                     "effective_snapshot_sha256": snapshot,
+                                     "choices": [c.__dict__ for c in choices]}))
+
+
+def propose_autocorrect(store: NoteStore, note_id: str, corrector: Autocorrector) -> CorrectionProposal:
+    """Suggest against current effective text without writing ANY layer.
+
+    Existing user edits supply language context but are protected from new model
+    proposals. Confidence is a noisy-channel model score; a writer must select
+    individual proposals before accept_autocorrect records a user_edit. This is
+    the recommended interactive API; autocorrect_note retains its historic
+    explicitly computational layer behaviour for reproducible old experiments.
+    """
+    effective = store.effective_text(note_id)
+    if effective is None:
+        raise ValidationError("note has no recognition layer")
+    groups = defaultdict(list)
+    for span in effective["spans"]:
+        if span["level"] == "word" and span.get("parent") and not span.get("superseded"):
+            groups[span["parent"]].append(span)
+    choices = []
+    for words in groups.values():
+        corrections = corrector.correct_tokens([w["text"] for w in words])
+        for word, change in zip(words, corrections):
+            if change.changed and not word.get("edited_by"):
+                choices.append(CorrectionChoice(word["span_id"], word["text"], change.chosen, float(change.posterior)))
+    choices = tuple(choices)
+    snapshot = sha256_hex(canonical_json(effective))
+    layer = effective["recognition_layer_id"]
+    return CorrectionProposal(note_id, layer, snapshot, choices, _proposal_digest(note_id, layer, snapshot, choices))
+
+
+def accept_autocorrect(store: NoteStore, proposal: CorrectionProposal, *, accepted_span_ids: Sequence[str]) -> dict:
+    """Persist only individually accepted suggestions, as an audited user edit.
+
+    A changed recognizer output or user edit makes the proposal stale; regenerate
+    and show it again. No new recognition layer is created, and no physical plan
+    is created. This relies on NoteStore's existing single-writer contract.
+    """
+    digest = _proposal_digest(proposal.note_id, proposal.recognition_layer_id,
+                              proposal.effective_snapshot_sha256, proposal.choices)
+    if digest != proposal.proposal_id:
+        raise ValidationError("correction proposal changed after it was shown")
+    selected = set(accepted_span_ids)
+    by_id = {c.span_id: c for c in proposal.choices}
+    if not selected or not selected <= set(by_id):
+        raise ValidationError("explicitly select one or more offered corrections")
+    effective = store.effective_text(proposal.note_id)
+    if effective is None or sha256_hex(canonical_json(effective)) != proposal.effective_snapshot_sha256:
+        raise ValidationError("correction proposal is stale; show a fresh proposal")
+    return store.add_user_edit(proposal.note_id, {sid: by_id[sid].suggested for sid in sorted(selected)})
+
+
 def autocorrect_note(store: NoteStore, note_id: str, corrector: Autocorrector, *,
                      recognition_layer_id: Optional[str] = None, write: bool = True) -> AutocorrectResult:
-    """Correct a note's recognised text; optionally store it as a derived recognition layer."""
+    """Historic evaluation API: optionally store a derived recognition layer.
+
+    Interactive applications should use propose_autocorrect / accept_autocorrect
+    so merely generating suggestions cannot replace the effective transcript.
+    """
     base = _base_layer(store, note_id, recognition_layer_id)
     spans = [dict(s) for s in base["payload"]["spans"]]
     words_by_line: Dict[str, List[dict]] = defaultdict(list)

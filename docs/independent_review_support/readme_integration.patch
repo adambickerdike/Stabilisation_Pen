@@ -1,0 +1,13 @@
+diff --git a/README.md b/README.md
+index 5add32c..357cb7f 100644
+--- a/README.md
++++ b/README.md
+@@ -6,6 +6,8 @@ This repository holds the research and development package: the audit of the sou
+ 
+ **Evidence status.** Everything here is **calculation, simulation, literature or proposed design**. Nothing has been built, and there are **no physical or human measurements**. Every figure carries a stamp saying what it is, and every result file records its code revision, parameter version, seeds and command.
+ 
++**Independent review, 29 September 2026:** Read [the research and engineering review](docs/independent_research_review_2026_09_29.md) before using the earlier headline performance or runtime figures below. The later [integrated Rev J simulation, sections 5 and 8](docs/revJ_simulation.md) reports a static nib-load problem omitted by the earlier nose optimization: autowrite nose-coil power changes from 0.09-0.17 W in the simplified study to 2.13 W in the integrated study. Independent statics reproduce approximately 4.717 / 1.628 / 0.166 W of holding loss at 35 / 50 / 75 degrees with the stated geometry. These are calculations on unmeasured inputs, not hardware results. The review prioritizes load balancing, real page-relative sensing, an optional collar/body experiment, and equal-mass comparisons for the inertial tail. Earlier studies remain here as historical evidence; their claims require reconciliation with the integrated findings.
++
+ ## Start here
+ 
+ | If you want… | Read |

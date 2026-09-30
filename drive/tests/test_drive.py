@@ -32,10 +32,14 @@ def test_evidence_rows_match_the_ledger_header(tmp_path):
     with open(p, newline="", encoding="utf-8") as f:
         rows = list(csv.reader(f))
     assert rows[0] == header and all(len(r) == 23 for r in rows)
-    # no proposed id may collide with an id already in the ledger
+    # Study rows have now been merged into the ledger. Reusing their IDs is
+    # legitimate only for the same source, never for an unrelated citation.
     with open(REPO_ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8") as f:
-        existing = {r["id"] for r in csv.DictReader(f)}
-    assert not (set(ids) & existing)
+        existing = {r["id"]: r for r in csv.DictReader(f)}
+    for row in EV.ROWS:
+        if row["id"] in existing:
+            for key in ("citation", "doi_or_url"):
+                assert row[key] == existing[row["id"]][key]
 
 
 # ----------------------------------------------------------------------------- geometry and contact (CALC)

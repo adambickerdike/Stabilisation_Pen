@@ -87,8 +87,10 @@ def _validator(defname: Optional[str]):
     try:
         from jsonschema import Draft202012Validator
         from referencing import Registry, Resource
-    except ImportError:          # pragma: no cover - jsonschema is a test dependency
-        return None
+    except ImportError as exc:
+        raise ValidationError(
+            "Schema validation is unavailable; install the declared jsonschema dependency before loading or saving notes."
+        ) from exc
     schema = load_schema()
     registry = Registry().with_resource(schema["$id"], Resource.from_contents(schema))
     target = schema if defname is None else {"$ref": f"{schema['$id']}#/$defs/{defname}"}
@@ -98,8 +100,6 @@ def _validator(defname: Optional[str]):
 def schema_errors(obj, defname: Optional[str] = None) -> List[str]:
     """Schema violations of ``obj`` against ``$defs/<defname>`` (root if None)."""
     v = _validator(defname)
-    if v is None:                 # pragma: no cover
-        return []
     return [f"{'/'.join(map(str, e.absolute_path)) or '<root>'}: {e.message}"
             for e in sorted(v.iter_errors(obj), key=lambda e: list(map(str, e.absolute_path)))]
 
@@ -111,7 +111,11 @@ def validate(obj, defname: Optional[str] = None) -> None:
 
 
 def schema_available() -> bool:
-    return _validator(None) is not None
+    try:
+        _validator(None)
+    except ValidationError:
+        return False
+    return True
 
 
 SCHEMA_ROW_SAMPLE = 200

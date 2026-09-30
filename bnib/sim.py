@@ -117,15 +117,18 @@ class SimDesign:
 
 def _opt_point(pid: str, eps_T_mm: float) -> Optional[Dict]:
     p = BUILD / "opt_cache.json"
-    if not p.exists():
-        return None
-    try:
-        c = json.load(open(p))
-        for run in c[pid]["runs"]:
-            if abs(run["eps_T_mm"] - eps_T_mm) < 1e-6 and run["feasible"]:
-                return run["best"]["x"]
-    except Exception:
-        return None
+    if p.exists():
+        c = json.loads(p.read_text())
+        runs = c.get(pid, {}).get("runs", [])
+    else:
+        # The cache is git-ignored. A clean clone must still select the committed
+        # studied design instead of silently substituting the hand-sized default.
+        from . import RESULTS
+        recorded = RESULTS / "bnib.json"
+        runs = json.loads(recorded.read_text()).get("optimisation", {}).get("runs", {}).get(pid, []) if recorded.exists() else []
+    for run in runs:
+        if abs(run["eps_T_mm"] - eps_T_mm) < 1e-6 and run["feasible"]:
+            return run["best"]["x"]
     return None
 
 

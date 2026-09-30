@@ -40,6 +40,7 @@ void test_current_loop_bridge_mapping(void)
             }
         }
         const float mean = (float)(fwd - rev) / (float)PLANT_TICKS;
+        if (fwd + rev + brk + cst != PLANT_TICKS) bad++;              /* every tick has exactly one bridge state */
         if (fabsf(mean - da) > 1e-6f) bad++;                         /* applied duty = mean bridge voltage / V_M */
         if (cst != 0) bad++;                                         /* never coasts while regulating */
         if (fwd > 0 && rev > 0) bad++;                               /* one direction per period */

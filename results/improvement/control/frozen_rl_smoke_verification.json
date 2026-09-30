@@ -1,0 +1,54 @@
+[
+  {
+    "policy": "baseline",
+    "metrics": {
+      "writer": 32001,
+      "seed": 82000,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean",
+      "duration_s": 2.5000000000000004,
+      "reference_ink_s": 1.5640000000000012,
+      "rms_um": 0.23424254769068728,
+      "cost": 0.09900038140448565,
+      "missing_fraction": 0.0052,
+      "extra_fraction": 0.0058,
+      "coil_power_W": 3.2212400761803384,
+      "coil_temperature_C": 59.81003045314602
+    },
+    "absolute_difference": {
+      "rms_um": 0.0,
+      "cost": 0.0,
+      "missing_fraction": 0.0,
+      "extra_fraction": 0.0,
+      "coil_power_W": 0.0,
+      "coil_temperature_C": 0.0
+    }
+  },
+  {
+    "policy": "selected",
+    "metrics": {
+      "writer": 32001,
+      "seed": 82000,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean",
+      "duration_s": 2.5000000000000004,
+      "reference_ink_s": 1.5640000000000012,
+      "rms_um": 5.890312729341626,
+      "cost": 0.10284117425001481,
+      "missing_fraction": 0.005399999999999999,
+      "extra_fraction": 0.005999999999999999,
+      "coil_power_W": 3.222627220167352,
+      "coil_temperature_C": 59.8044094271007
+    },
+    "absolute_difference": {
+      "rms_um": 0.0,
+      "cost": 0.0,
+      "missing_fraction": 0.0,
+      "extra_fraction": 0.0,
+      "coil_power_W": 0.0,
+      "coil_temperature_C": 0.0
+    }
+  }
+]

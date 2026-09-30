@@ -1,0 +1,82 @@
+[
+  {
+    "radius_mm": 1.0587,
+    "n_glyphs": 520,
+    "writers": 20,
+    "legacy_complete": 0,
+    "legacy_complete_with_sampled_dynamics_pass": 0,
+    "new_admitted": 0,
+    "new_admitted_share": 0.0,
+    "writer_cluster_bootstrap_95pct": [
+      0.0,
+      0.0
+    ],
+    "median_new_time_s": null,
+    "matched_new_over_legacy_time_median": null,
+    "legacy_peak_acceleration_p95_m_s2": null
+  },
+  {
+    "radius_mm": 1.5,
+    "n_glyphs": 520,
+    "writers": 20,
+    "legacy_complete": 0,
+    "legacy_complete_with_sampled_dynamics_pass": 0,
+    "new_admitted": 5,
+    "new_admitted_share": 0.009615384615384616,
+    "writer_cluster_bootstrap_95pct": [
+      0.0019230769230769232,
+      0.019230769230769232
+    ],
+    "median_new_time_s": 0.7037898410811118,
+    "matched_new_over_legacy_time_median": null,
+    "legacy_peak_acceleration_p95_m_s2": null
+  },
+  {
+    "radius_mm": 2.0,
+    "n_glyphs": 520,
+    "writers": 20,
+    "legacy_complete": 17,
+    "legacy_complete_with_sampled_dynamics_pass": 0,
+    "new_admitted": 60,
+    "new_admitted_share": 0.11538461538461539,
+    "writer_cluster_bootstrap_95pct": [
+      0.08846153846153847,
+      0.14423076923076922
+    ],
+    "median_new_time_s": 0.8682088436964019,
+    "matched_new_over_legacy_time_median": 2.450583657824578,
+    "legacy_peak_acceleration_p95_m_s2": 28.108491326630144
+  },
+  {
+    "radius_mm": 3.0,
+    "n_glyphs": 520,
+    "writers": 20,
+    "legacy_complete": 262,
+    "legacy_complete_with_sampled_dynamics_pass": 0,
+    "new_admitted": 248,
+    "new_admitted_share": 0.47692307692307695,
+    "writer_cluster_bootstrap_95pct": [
+      0.4153846153846154,
+      0.5346153846153846
+    ],
+    "median_new_time_s": 1.1557155398195178,
+    "matched_new_over_legacy_time_median": 3.5656215268880818,
+    "legacy_peak_acceleration_p95_m_s2": 36.901108322125765
+  },
+  {
+    "radius_mm": 6.0,
+    "n_glyphs": 520,
+    "writers": 20,
+    "legacy_complete": 517,
+    "legacy_complete_with_sampled_dynamics_pass": 0,
+    "new_admitted": 495,
+    "new_admitted_share": 0.9519230769230769,
+    "writer_cluster_bootstrap_95pct": [
+      0.9191826923076921,
+      0.9788461538461537
+    ],
+    "median_new_time_s": 1.5853930782591572,
+    "matched_new_over_legacy_time_median": 3.756842266650018,
+    "legacy_peak_acceleration_p95_m_s2": 36.72859568676742
+  }
+]

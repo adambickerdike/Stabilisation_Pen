@@ -26,6 +26,44 @@ python3 -m penapp list | verify | edit <note_id> <span_id> "<text>"
 
 No code path in the tests, the demo or the CLI makes a network call.
 
+## Review and accept spelling suggestions
+
+The 30 September engineering update adds an explicit proposal/acceptance path.
+Supply a local UTF-8 training corpus, one sentence per line, then inspect the
+offered span IDs and before/after text in the JSON output:
+
+```bash
+export PYTHONPATH=app PENAPP_STORE=/tmp/penstore
+python3 -m penapp propose-corrections <note_id> --corpus sentences.txt --out proposal.json
+python3 -m penapp accept-corrections proposal.json --span-id <offered_span_id>
+```
+
+Repeat `--span-id` for additional choices. Generating a proposal leaves the note
+unchanged and refuses to overwrite an existing proposal file. Acceptance records
+only selected changes as `user_edit` and refreshes search. The captured ink and
+literal recognition remain intact. Changed note text or a tampered proposal
+invalidates acceptance; generate and review a fresh proposal instead. Existing
+user-edited spans are protected. This workflow changes digital text; physical
+future-stroke execution uses the separate `ai3.accepted_completion` planner.
+
+The CLI uses a local word/character ngram research model and makes no corpus
+download. Its scores are not calibrated probabilities of writer intention or
+validated dyslexia outcomes. Known words are protected by default; the explicit
+`--allow-known-word-changes` option enables that additional research behavior.
+`--personal-word` adds vocabulary and can be repeated. The proposal records the
+corpus hash, assumed recognition-error rate and score threshold. The historical
+`autocorrect_note` evaluation API remains available for reproducing older studies;
+new interactive work should use proposal and explicit acceptance.
+
+Training text is normalized through the existing lowercase ASCII corpus
+normalizer (including accent folding and punctuation mappings); the proposal
+records both raw and normalized corpus hashes. This does not establish
+multilingual support. Note tokens outside the model alphabet are kept exactly
+as written. Keep the proposal JSON for the model/corpus audit trail: the accepted
+note layer records the user edit, while training provenance remains in that
+proposal. Its digest detects changed local proposal content, not authenticated
+approval by a remote service or another person.
+
 ## Architecture
 
 ```

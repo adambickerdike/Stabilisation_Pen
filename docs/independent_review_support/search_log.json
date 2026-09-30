@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-29",
+  "method": "Targeted scoping search plus primary-source retrieval and citation chasing; not a systematic review",
+  "queries": [
+    "active tremor compensation pen handwriting moving tip micromanipulator research",
+    "handwriting assistance pen moving mass haptic pen MovePen research",
+    "site.pubmed.ncbi.nlm.nih.gov handwriting weighted pen tremor randomized",
+    "site.arxiv.org pen moving mass force haptic weight shifting",
+    "site.acm.org pen internal moving mass handwriting haptic guidance pen",
+    "site.pubmed.ncbi.nlm.nih.gov gyroscopic tremor suppression glove study",
+    "site.arxiv.org handwriting recognition inertial pen dataset OnHW",
+    "site.acm.org \"Shifty\" weight shifting",
+    "\"State Estimation and Feedforward Tremor Suppression\" pdf",
+    "site.pubmed.ncbi.nlm.nih.gov dyslexia word prediction spelling assistive technology study",
+    "site.pubmed.ncbi.nlm.nih.gov Nackaerts handwriting training randomized 38 2016",
+    "DeltaPen Exploring 6DoF Pen Interaction Uninstrumented Surfaces pdf ETH",
+    "site.ti.com TMAG5273 20 kSPS conversion 3 axis",
+    "site.ti.com DRV8214 datasheet current regulation sensing",
+    "site.st.com LSM6DSV16X datasheet gyro accelerometer noise power",
+    "site.cs.toronto.edu graves connectionist temporal classification 2006 pdf",
+    "site.proceedings.mlr.press Guo calibration modern neural networks 2017",
+    "site.arxiv.org \"Generating Sequences With Recurrent Neural Networks\"",
+    "site.physikinstrumente.com piezo bending actuators PL112 displacement blocking force",
+    "\"Human-arm-and-hand-dynamic model\" \"pdf\"",
+    "\"Haptic Guidance Improves\" \"PLOS\" 2008",
+    "\"dyslexia\" \"word prediction\" randomized trial writing"
+  ],
+  "log_scope": "Selected exact substantive queries; navigational retries and all search hits are not exhaustively enumerated",
+  "inclusion": "Primary experiments, methods, author datasets and manufacturer specifications directly relevant to the design",
+  "exclusions": "Commercial efficacy claims without usable methods; secondary summaries not used as decision-driving evidence",
+  "retrieval_limits": "Some PubMed/PMC, publisher and institutional full-text requests were blocked. The source register distinguishes indexed abstracts/excerpts, full text and unverified leads. No failure was treated as evidence of absence."
+}

@@ -1,0 +1,6 @@
+{
+  "status": "failed_before_any_training",
+  "cause": "Parent optional OpenCV import polluted child sys.path via incompatible x86_64 user-site cv2; workers imported cv2.typing instead of standard typing.",
+  "resolution": "Relaunch exact frozen source with PYTHONNOUSERSITE=1; validated clean spawn import path. No global packages modified.",
+  "actual_training_transitions_before_failure": 0
+}

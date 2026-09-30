@@ -1,0 +1,44 @@
+{
+  "repository": "https://github.com/adambickerdike/Stabilisation_Pen.git",
+  "branch": "claude/pensive-shannon-wzm6ls",
+  "reviewed_commit": "b1694a3a35fe134026c93786dbae673c3fdbfd85",
+  "current_head": "b1694a3a35fe134026c93786dbae673c3fdbfd85",
+  "tracked_files_at_review": 1583,
+  "retrieval_date": "2026-09-29",
+  "local_clone": "/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen",
+  "pull_result": "Already up to date",
+  "independent_calculations": "8 independent numerical/physical identity checks passed",
+  "repository_check": "422 criteria / 111 experiments; reference coverage passed",
+  "not_run": [
+    "Full pinned MuJoCo simulation suite",
+    "Hardware tests",
+    "Human evaluation",
+    "Complete citation audit of all 581 ledger rows"
+  ],
+  "file_sha256": {
+    "battery.csv": "40f6e9ac8f43893bb8e55d007bab789367349cb64c1f5aaca2459c2ae65e24a3",
+    "control_architecture.svg": "70d0e729a69e6974dcb21183447f659f21e04ceabc794c9fcedf5413c83e12e1",
+    "delay.csv": "3946aac40538d1d83f7bb7a1de94da75b24f3cfff6c6d0cfaebead9a083be2e5",
+    "document_validation.json": "40ddd880b2b285670baf3453326ef14e7b4bf60ca234ca14974ad3e12f035b42",
+    "findings.csv": "7ec3b05b1d95c4f3a63cbf9ca8cc1b22ae745d38d4d0e7567e89fe596ace1d90",
+    "independent_physics.py": "1798752c5695f78353eb66b5576bd4c11d2a74dfb2f6d71e8f5e52ac1d4ea57b",
+    "latency.svg": "b3359d3cc66039610d62d0b7004d10da0ae7c36c2cbb1d217c4e96d7f88b02ab",
+    "mechanisms.svg": "59dcb4b5914436b4515685fb48938b21c885baffc33e6bbde773cdd1701093b0",
+    "packing.csv": "7cfe08604dd37c851169582279449f03ede9a9733f421fea7a27e35a45f79e05",
+    "physics_results.json": "9f35db5552fa6056f72a6d6ffccec3ba765731c1024b961419dfe1cc3cc89f14",
+    "reaction.csv": "f3208284ead8b04a889ef77cb7e882253d486fabf4a04d9106c67fc88a7717ba",
+    "reaction_force.svg": "c6c1114225ececbe0c4b5db9188f3181ef5327a328dc31ebd3e5034e90b627eb",
+    "readme_integration.patch": "13b08c2cafcbdf7fdf246617e93dfd8a1630e5273211d187adb16a8d68f30a25",
+    "repository_check.txt": "6f2200952c64e527819a1c34baed8fadd9315a5461a1be664e8b1ceaf3b9bc14",
+    "search_log.json": "9c4b835f041235a8510ae1ad6200a750e8be01cc138b59fde8d9f5333f443e7e",
+    "sources.csv": "8beb3b90de705852103e1f794ace77ec666b467784b042d1ca910c727f8ef818",
+    "sources.json": "c366e7d32fc5d6f54444e2879e996e565dcae50038ff19c09e512b71519b37f4",
+    "static.csv": "bc969b64698e23e86137ec00407a2087c8853f15e614f8d6f0c29e185a912f49",
+    "static_power.svg": "05e9060983e79aabf7633acac7fede1485c84114fadf8491d4dbe622b145c8a4",
+    "thermal.csv": "140a4938e78b5063b0fb5fae658b02d95fdd24ab3b1706bf038b4154699b04a0"
+  },
+  "deliverable_sha256": {
+    "Stabilisation_Pen_Research_Review.pdf": "8b6c8f1195f51c86c410a275435b4e13507cfa465f2b8840d750b6a4113e0c59",
+    "Stabilisation_Pen_Research_Review.md": "9547dde0db3a7bc5511a11641cedfef25792181c44d37f193cd802187ecff00a"
+  }
+}

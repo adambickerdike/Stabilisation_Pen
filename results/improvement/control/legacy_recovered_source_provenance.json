@@ -1,0 +1,7 @@
+{
+  "sim2j/revj.py": {
+    "source": "git show4ad62b6:sim2j/revj.py",
+    "reason": "This file remained unchanged during the original PPO run; causal gain change occurred afterwards.",
+    "sha256": "1f285ddfe361c2840742e654215bbf04dd0654151337b7e16162d5083d4668f4"
+  }
+}

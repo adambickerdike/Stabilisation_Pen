@@ -1,0 +1,13 @@
+{
+  "verification": "Read-only trace recording leaves prior physics metrics unchanged; self-displacement zero",
+  "absolute_metric_difference": {
+    "rms_um": 0.0,
+    "missing_fraction": 0.0,
+    "extra_fraction": 0.0,
+    "coil_power_W": 0.0,
+    "coil_temperature_C": 0.0
+  },
+  "trace_samples": 5000,
+  "effective_trace_hz": 2000.0000000011084,
+  "test_set_usage": "Previously spent controller case only"
+}

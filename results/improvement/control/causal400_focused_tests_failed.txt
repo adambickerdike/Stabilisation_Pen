@@ -1,0 +1,41 @@
+.............................ssss....s.............................F.... [ 73%]
+..........ssss........F...                                               [100%]
+=================================== FAILURES ===================================
+_______________________ test_both_hand_models_step[arm] ________________________
+
+hand_model = 'arm'
+
+    @pytest.mark.parametrize("hand_model", ["h1", "arm"])
+    def test_both_hand_models_step(hand_model):
+        from sim2 import sim as S
+        from sim.pensim import scenarios as SCN
+        pm = B.build(P.Config(hand_model=hand_model))
+        r = S.run(pm, SCN.static_hold(duration=0.15))
+        assert np.all(np.isfinite(r.rec))
+>       assert r["Nb"][-1] > 0.0
+E       assert np.float64(0.0) > 0.0
+
+sim2/tests/test_model.py:56: AssertionError
+___________ test_closed_loop_runs_with_wheel_nose_and_relaxed_writer ___________
+
+pm = PenModel(cfg=Config(geom=Geometry(theta_deg=50.0, phi_deg=0.0, length=0.14472000000000002, handle_od=0.024, r_b=0.0003...ASSUMPTION; nothing built or measured (parameters for sim2)'}}}, plugins=[<sim2j.revj.HeelMass object at 0x13c2e7a10>])
+
+    def test_closed_loop_runs_with_wheel_nose_and_relaxed_writer(pm):
+        from sim2j import stepper as ST
+        from sim2j.firmware import FWConfig
+        from sim2 import sensors as SS
+        sc = _short_scenario()
+        fw = FWConfig(nose="tremor", wheel="tremor", akf=SS.revh_params(), seed=1)
+        r = ST.run(pm, sc, fw, {}, mu=0.9, seed=1)
+        assert np.all(np.isfinite(r.ink()))
+        c = r["contact"] > 0.5
+>       assert c.mean() > 0.5
+E       assert np.float64(0.16916666666666666) > 0.5
+E        +  where np.float64(0.16916666666666666) = <built-in method mean of numpy.ndarray object at 0x13c47e190>()
+E        +    where <built-in method mean of numpy.ndarray object at 0x13c47e190> = array([False,  True,  True, ..., False,  True, False], shape=(1200,)).mean
+
+sim2j/tests/test_sim2j.py:122: AssertionError
+=========================== short test summary info ============================
+FAILED sim2/tests/test_model.py::test_both_hand_models_step[arm] - assert np....
+FAILED sim2j/tests/test_sim2j.py::test_closed_loop_runs_with_wheel_nose_and_relaxed_writer
+2 failed, 87 passed, 9 skipped in 18.38s

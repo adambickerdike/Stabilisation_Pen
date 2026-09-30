@@ -274,8 +274,15 @@ def cmaes(f: Callable[[np.ndarray], float], x0, sigma0=0.2, popsize=None, iters=
     best = (None, np.inf); hist = []
     for g in range(iters):
         Dg, B = np.linalg.eigh(C); Dg = np.sqrt(np.maximum(Dg, 1e-20))
+        # Eigenvectors have arbitrary signs across LAPACK implementations.
+        # Canonical signs make seeded proposals more reproducible across hosts.
+        piv = np.argmax(np.abs(B), axis=0)
+        B *= np.where(B[piv, np.arange(d)] < 0.0, -1.0, 1.0)
         Z = rng.standard_normal((lam, d)); Y = Z @ (B * Dg).T
         X = np.clip(m + sigma * Y, lo, hi)
+        # Recombination and covariance must use the candidates actually scored.
+        # The old code adapted to unbounded proposals after evaluating clipped X.
+        Y = (X - m) / sigma
         fx = np.array([f(x) for x in X])
         idx = np.argsort(fx)
         if fx[idx[0]] < best[1]:

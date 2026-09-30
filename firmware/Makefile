@@ -26,6 +26,9 @@ QEMU_SRC  := $(sort $(wildcard $(FW)/port/qemu_an505/*.c))
 
 WARN := -Wall -Wextra -Werror -Wdouble-promotion -Wconversion -Wsign-conversion -Wshadow \
         -Wstrict-prototypes -Wmissing-prototypes -Wundef -Wcast-align -Wformat=2 -Wvla
+# Match the golden float32 operation sequence on compilers with different FMA
+# defaults. This applies to target builds too; target timing still needs testing.
+WARN += -ffp-contract=off
 INC_CORE := -I$(FW)/include
 INC_TEST := $(INC_CORE) -I$(FW)/port/host -I$(FW)/tests
 
@@ -39,7 +42,7 @@ HOST_OBJ    := $(patsubst $(FW)/%.c,$(BUILD)/host/%.o,$(CORE_SRC) $(TEST_SRC) $(
 # test sources use double precision for references: -Wno-double-promotion there only
 TEST_EXTRA = $(if $(findstring /tests/,$<),-Wno-double-promotion,)
 
-$(BUILD)/host/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h) $(FW)/port/host/hal_host.h
+$(BUILD)/host/%.o: $(FW)/%.c $(FW)/Makefile $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h) $(FW)/port/host/hal_host.h
 	@mkdir -p $(dir $@)
 	$(HOST_CC) $(HOST_CFLAGS) $(TEST_EXTRA) $(INC_TEST) -c $< -o $@
 
@@ -50,8 +53,8 @@ $(HOST_BIN): $(HOST_OBJ)
 test: $(HOST_BIN)
 	@mkdir -p $(RESULTS)
 	@cd $(FW) && $(PY) tools/check_inputs.py > $(BUILD)/input_check.txt 2>&1; ic=$$?; \
-	 ( echo "# Host unit tests - firmware/tests (gcc $$($(HOST_CC) -dumpfullversion), -fsanitize=address,undefined)"; \
-	   echo "# Evidence status: HOST TEST (x86-64, float32 code paths); not hardware, not target timing."; \
+	 ( echo "# Host unit tests - firmware/tests ($(HOST_CC) $$($(HOST_CC) -dumpversion), -fsanitize=address,undefined, -ffp-contract=off)"; \
+	   echo "# Evidence status: HOST TEST ($$(uname -m), float32 code paths); not hardware, not target timing."; \
 	   echo "# params: $$(grep -m1 PEN_PARAMS_YAML_VERSION include/params_gen.h | cut -d'"' -f2) yaml sha $$(grep -m1 PEN_PARAMS_YAML_SHA16 include/params_gen.h | cut -d'"' -f2)"; \
 	   cat $(BUILD)/input_check.txt; \
 	   $(HOST_BIN) tests/vectors ) > $(RESULTS)/test_report.txt 2>&1; rc=$$?; \
@@ -66,7 +69,7 @@ ARM_OBJ  := $(patsubst $(FW)/%.c,$(BUILD)/arm/%.o,$(CORE_SRC) $(NRF_SRC))
 ARM_ELF  := $(BUILD)/arm/pen_fw_nrf5340.elf
 ARM_LD   := $(FW)/port/nrf5340/nrf5340_app.ld
 
-$(BUILD)/arm/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/port/nrf5340/*.h)
+$(BUILD)/arm/%.o: $(FW)/%.c $(FW)/Makefile $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/port/nrf5340/*.h)
 	@mkdir -p $(dir $@)
 	$(ARM_CC) $(ARM_CFLAGS) $(INC_CORE) -I$(FW)/port/nrf5340 -c $< -o $@
 
@@ -89,7 +92,7 @@ QEMU_ELF  := $(BUILD)/qemu/pen_tests_an505.elf
 QEMU_LD   := $(FW)/port/qemu_an505/an505.ld
 QEMU_CFLAGS := -std=c11 -O2 -g $(ARM_CPU) -ffunction-sections -fdata-sections -fno-common -fno-math-errno $(WARN) -DPEN_TARGET_QEMU=1
 
-$(BUILD)/qemu/%.o: $(FW)/%.c $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h) $(wildcard $(FW)/port/qemu_an505/*.h)
+$(BUILD)/qemu/%.o: $(FW)/%.c $(FW)/Makefile $(wildcard $(FW)/include/*.h) $(wildcard $(FW)/tests/*.h) $(wildcard $(FW)/port/qemu_an505/*.h)
 	@mkdir -p $(dir $@)
 	$(ARM_CC) $(QEMU_CFLAGS) $(TEST_EXTRA) $(INC_TEST) -I$(FW)/port/qemu_an505 -c $< -o $@
 

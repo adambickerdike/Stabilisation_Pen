@@ -34,7 +34,7 @@ import torch
 from . import catalog as CT
 from .params import CONTACT, WRITING
 
-torch.set_default_dtype(torch.float64)
+# Keep physical calculations in float64 without changing the caller's ML defaults.
 torch.set_num_threads(1)
 
 V_BATT = 3.7
@@ -59,7 +59,7 @@ _Q = np.linspace(0.005, 0.995, 99)
 from scipy.stats import norm as _norm  # noqa: E402
 
 WRITER_N = torch.tensor(np.clip(np.exp(LN_MU + LN_SIG * _norm.ppf(_Q)), WRITING["N_min_writer"].value,
-                                WRITING["N_max_writer"].value))
+                                WRITING["N_max_writer"].value), dtype=torch.float64)
 
 
 def softmin(a, b, k=40.0):
@@ -98,12 +98,12 @@ def evaluate(x: torch.Tensor, motor: CT.Motor, concept: str = "wheel") -> Dict[s
     R_d = (RD_WHEEL[0] + RD_WHEEL[1] * r_e * 1e3 if concept == "wheel"
            else RD_BALL[0] + RD_BALL[1] * r_e * 1e3 + RD_BALL[2] * r_r * 1e3)
     dR = R_d - 6.75
-    scrub = torch.tensor(0.3 * (0.6 / 0.8) if concept == "ball" else 0.0)
+    scrub = torch.tensor(0.3 * (0.6 / 0.8) if concept == "ball" else 0.0, dtype=torch.float64)
     mass = motor.mass_g * (2.0 if concept in ("wheel", "ball") else 1.0) + 2.0 + 0.4 * stages * 2.0
     return {"r_e_mm": r_e * 1e3, "G": G, "P_N": P, "r_r_mm": r_r * 1e3, "eta": eta, "F_mot_N": F_mot,
             "v_max_m_s": v_max, "m_r_g": m_r * 1e3, "F_bd_N": F_bd, "P_cu_W": P_cu, "F_use_mean_N": F_use.mean(),
             "F_use_p10_N": torch.quantile(F_use, 0.10), "share_full": share_full, "F_rr_N": F_rr, "R_d_mm": R_d,
-            "dR_mm": dR, "scrub_N": scrub, "mass_g": torch.as_tensor(mass), "mu_rr": mu_rr}
+            "dR_mm": dR, "scrub_N": scrub, "mass_g": torch.as_tensor(mass, dtype=torch.float64), "mu_rr": mu_rr}
 
 
 def objective(x, motor, concept, w: Dict[str, float]):
@@ -135,7 +135,7 @@ def optimise(motor_key: str, concept: str = "wheel", w: Optional[Dict] = None, s
     for s in range(starts):
         x0 = np.array([math.log(rng.uniform(1.0, 2.5)), math.log(rng.uniform(1.5, 30.0)), rng.uniform(0.3, 0.8),
                        math.log(rng.uniform(0.5, 1.0))])
-        x = torch.tensor(x0, requires_grad=True)
+        x = torch.tensor(x0, requires_grad=True, dtype=torch.float64)
         opt = torch.optim.Adam([x], lr=0.03)
         for _ in range(iters):
             opt.zero_grad()
@@ -144,21 +144,21 @@ def optimise(motor_key: str, concept: str = "wheel", w: Optional[Dict] = None, s
             opt.step()
         J, t = objective(x, motor, concept, w)
         if best is None or float(J.detach()) < best[0]:
-            best = (float(J.detach()), x.detach().clone(), {k: float(torch.as_tensor(v).detach()) for k, v in t.items()})
+            best = (float(J.detach()), x.detach().clone(), {k: float(torch.as_tensor(v, dtype=torch.float64).detach()) for k, v in t.items()})
     return {"motor": motor_key, "concept": concept, "J": best[0], "x": best[1].tolist(), "terms": best[2], "weights": w}
 
 
 def grad_check(motor_key: str = "fh0620B", concept: str = "wheel", h: float = 1e-6) -> Dict:
     """Autograd (adjoint) gradient against central finite differences at a random design (CALC)."""
     motor = CT.MOTORS[motor_key]
-    x0 = torch.tensor([math.log(1.4), math.log(5.0), 0.45, math.log(0.8)])
+    x0 = torch.tensor([math.log(1.4), math.log(5.0), 0.45, math.log(0.8)], dtype=torch.float64)
     x = x0.clone().requires_grad_(True)
     J, _ = objective(x, motor, concept, {})
     J.backward()
     g_ad = x.grad.detach().numpy()
     g_fd = np.zeros(4)
     for i in range(4):
-        e = torch.zeros(4); e[i] = h
+        e = torch.zeros(4, dtype=torch.float64); e[i] = h
         Jp, _ = objective(x0 + e, motor, concept, {})
         Jm, _ = objective(x0 - e, motor, concept, {})
         g_fd[i] = float(Jp - Jm) / (2 * h)
@@ -177,15 +177,15 @@ def snap(res: Dict) -> Dict:
     opts += [(g.key + " + bevel 1:1", g.ratio, g.eta * 0.9) for g in CT.GEARHEADS.values()
              if g.d_mm <= motor.d_mm + 0.5 and not g.key.startswith("SPG04")]
     for name, ratio, eta_cat in opts:
-        x = torch.tensor(res["x"], requires_grad=True)
+        x = torch.tensor(res["x"], requires_grad=True, dtype=torch.float64)
         opt = torch.optim.Adam([x], lr=0.02)
         for _ in range(300):
             opt.zero_grad()
-            xx = torch.cat([x[:1], torch.tensor([math.log(ratio)]), x[2:]])
+            xx = torch.cat([x[:1], torch.tensor([math.log(ratio)], dtype=torch.float64), x[2:]])
             J, _ = objective(xx, motor, concept, res["weights"])
             J.backward()
             opt.step()
-        xx = torch.cat([x[:1], torch.tensor([math.log(ratio)]), x[2:]]).detach()
+        xx = torch.cat([x[:1], torch.tensor([math.log(ratio)], dtype=torch.float64), x[2:]]).detach()
         J, t = objective(xx, motor, concept, res["weights"])
         out.append({"gear": name, "ratio": ratio, "eta_catalogue_with_bevel": eta_cat, "J": float(J),
                     "terms": {k: float(v) for k, v in t.items()}})

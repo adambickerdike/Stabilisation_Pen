@@ -1,0 +1,410 @@
+........................................................................ [  8%]
+........................................................................ [ 17%]
+........................................................................ [ 26%]
+...................................................F.................... [ 35%]
+........................................................................ [ 44%]
+.....................s.....sss.......................................... [ 53%]
+.................................................F...............sssss.. [ 62%]
+....s.................ssss....s......................................... [ 71%]
+........................................................................ [ 80%]
+...............................................FFFFFFFFFFFFF
+=================================== FAILURES ===================================
+________________________ test_interface_file_consistent ________________________
+
+    def test_interface_file_consistent():
+        from bnib import CONFIG_NIB
+        from bnib import interface as IF
+        if not os.path.exists(CONFIG_NIB):
+            pytest.skip("config/nib.yaml not generated yet")
+        doc = IF.load()
+        assert doc["schema"] == IF.SCHEMA
+        assert IF.leaves_missing_status(doc) == []
+        d, _ = IF.recommended_design()
+        ev = CD.evaluate(d, detail=False, fast=True)
+>       assert doc["actuator"]["Km_tip_centre"]["value"] == pytest.approx(ev["Km_tip"], rel=1e-4)
+E       assert 0.40007 == 0.3521728060206969 ± 3.5e-05
+E         
+E         comparison failed
+E         Obtained: 0.40007
+E         Expected: 0.3521728060206969 ± 3.5e-05
+
+bnib/tests/test_bnib.py:150: AssertionError
+___________ test_calibration_note_is_another_note_of_the_same_writer ___________
+
+    def test_calibration_note_is_another_note_of_the_same_writer():
+        from readable import e11
+        from realdata import library as RL
+>       base = RL.writing("test", seed=0)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+readable/tests/test_readable.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+split = 'test', seed = 0, source = 'unipen', n_words = 10, dt = 2.5e-05
+writer = None, kw = {}
+
+    def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words: int = 10, dt: float = WL.SIM_DT,
+                writer: Optional[str] = None, **kw) -> WL.RealWritten:
+        """Real handwriting with timing in the aiguide Written format.
+        source 'unipen' (default): ballpoint on paper, HP Labs 1992 (UNIPEN hpp/hpb2), writer- and text-disjoint splits;
+               writer i of the split = seed % n_writers, a different choice of lines per seed
+        source 'chartraj': one writer's recorded letters composed into a sentence (CC BY; for committed pictures)
+        source 'brush': BRUSH words (timing artefact at 8-12 Hz: NOT for tracker evaluation; kept for the diagnostic)"""
+        if source == "chartraj":
+            return WL.ct_note(seed=seed, split=split, dt=dt, **kw)
+        if source == "unipen":
+            idx = WL.unipen_index()
+            ws = WL.unipen_writers(split, idx)
+>           w = writer or ws[seed % len(ws)]
+                             ^^^^^^^^^^^^^^
+E           ZeroDivisionError: integer modulo by zero
+
+realdata/library.py:168: ZeroDivisionError
+________ test_core_default_run_is_bit_identical[neutral_tiltrange_s200] ________
+
+key = 'neutral_tiltrange_s200'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964604e-04,  1.71269089e-10],\n       [-7.79642564e-04,  2.50362720e-07],\n       [-7.59782235e-04,  2.5845....74778630e-03,  2.70212194e-05],\n       [ 8.75633874e-03,  2.70802586e-05],\n       [ 8.72664205e-03,  2.74659275e-05]]), array([[-8.68964604e-04,  1.71269089e-10],\n       [-7.79642564e-04,  2.50362720e-07],\n       [-7.59782235e-04,  2.5845....74778630e-03,  2.70212213e-05],\n       [ 8.75633875e-03,  2.70802601e-05],\n       [ 8.72664205e-03,  2.74659288e-05]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+_______ test_core_default_run_is_bit_identical[neutral_adaptive030_s200] _______
+
+key = 'neutral_adaptive030_s200'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-1.92897603e-04,  1.71269089e-10],\n       [-1.87611644e-04, -6.84134698e-08],\n       [-1.95810793e-04,  5.5550....41797234e-03,  2.74632429e-05],\n       [ 9.42666804e-03,  2.75937610e-05],\n       [ 9.43286210e-03,  2.72009183e-05]]), array([[-1.92897603e-04,  1.71269089e-10],\n       [-1.87611644e-04, -6.84134698e-08],\n       [-1.95810793e-04,  5.5550....41797233e-03,  2.74632425e-05],\n       [ 9.42666804e-03,  2.75937606e-05],\n       [ 9.43286209e-03,  2.72009179e-05]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+_____________ test_core_default_run_is_bit_identical[locked_s200] ______________
+
+key = 'locked_s200'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000...61120862e-003, 2.73132390e-005],\n       [9.61904106e-003, 2.73161265e-005],\n       [9.62543236e-003, 2.73174676e-005]]), array([[0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000...61120862e-003, 2.73132390e-005],\n       [9.61904106e-003, 2.73161265e-005],\n       [9.62543236e-003, 2.73174676e-005]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+___________ test_core_default_run_is_bit_identical[kalman_6Hz_s201] ____________
+
+key = 'kalman_6Hz_s201'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964368e-04,  2.79138509e-10],\n       [-7.84092186e-04, -3.03107764e-06],\n       [-8.43999613e-04, -1.1491....98950268e-03,  2.84119358e-03],\n       [ 6.97513383e-03,  2.80262260e-03],\n       [ 7.04971241e-03,  2.77907724e-03]]), array([[-8.68964368e-04,  2.79138509e-10],\n       [-7.84092186e-04, -3.03107764e-06],\n       [-8.43999613e-04, -1.1491....98951232e-03,  2.84117474e-03],\n       [ 6.97513304e-03,  2.80260841e-03],\n       [ 7.04971365e-03,  2.77906401e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+__________ test_core_default_run_is_bit_identical[external_6Hz_s201] ___________
+
+key = 'external_6Hz_s201'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964471e-04, -1.55325704e-10],\n       [-7.83943447e-04, -2.23127160e-06],\n       [-7.74516438e-04, -9.5199....01001116e-03,  2.84889160e-03],\n       [ 6.99420594e-03,  2.81610915e-03],\n       [ 7.07634506e-03,  2.79489829e-03]]), array([[-8.68964471e-04, -1.55325704e-10],\n       [-7.83943447e-04, -2.23127160e-06],\n       [-7.74516438e-04, -9.5199....01002206e-03,  2.84889601e-03],\n       [ 6.99421443e-03,  2.81611267e-03],\n       [ 7.07635156e-03,  2.79490127e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+___________ test_core_default_run_is_bit_identical[guided_6Hz_s201] ____________
+
+key = 'guided_6Hz_s201'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964516e-04, -2.44230547e-10],\n       [-7.94057354e-04,  4.97685826e-06],\n       [-7.71218013e-04, -6.8160....98925024e-03,  2.84106958e-03],\n       [ 6.97508835e-03,  2.80226134e-03],\n       [ 7.04898215e-03,  2.77911364e-03]]), array([[-8.68964516e-04, -2.44230547e-10],\n       [-7.94057354e-04,  4.97685826e-06],\n       [-7.71218013e-04, -6.8160....98926596e-03,  2.84108072e-03],\n       [ 6.97510089e-03,  2.80226915e-03],\n       [ 7.04898461e-03,  2.77912053e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+_________ test_core_default_run_is_bit_identical[neutral_theta35_s202] _________
+
+key = 'neutral_theta35_s202'
+
+    @pytest.mark.parametrize("key", CORE_CASES)
+    def test_core_default_run_is_bit_identical(key):
+        scn = _scenario(key)
+        Pold = ARR[key + "__P"]
+        Pv = np.zeros(NP)
+        for i, n in enumerate(META["names"]):
+            Pv[IDX[n]] = Pold[i]
+        n = len(scn.t)
+        nrec = int(math.ceil(n / Pv[IDX["rec_decim"]])) + 1
+        rec = np.zeros((nrec, NREC))
+        sdec = int(Pv[IDX["stage_decim"]])
+        m = core.simulate(Pv, np.ascontiguousarray(scn.pref), np.ascontiguousarray(scn.vref), np.ascontiguousarray(scn.fpush),
+                          np.ascontiguousarray(scn.dtrue), np.ascontiguousarray(scn.intended[::sdec]),
+                          np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
+        rec = rec[:m]
+        assert rec.shape[0] == META["cases"][key]["nrec"]
+>       assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-5.49927125e-04, -1.87371408e-10],\n       [-5.61495303e-04,  1.50597171e-08],\n       [-5.50459047e-04, -6.9139....41773836e-03, -2.22010947e-03],\n       [ 8.43945861e-03, -2.22039578e-03],\n       [ 8.45670622e-03, -2.22025339e-03]]), array([[-5.49927125e-04, -1.87371408e-10],\n       [-5.61495303e-04,  1.50597171e-08],\n       [-5.50459047e-04, -6.9139....41773842e-03, -2.22010945e-03],\n       [ 8.43945866e-03, -2.22039576e-03],\n       [ 8.45670627e-03, -2.22025337e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:117: AssertionError
+_______ test_model_default_run_is_bit_identical[neutral_tiltrange_s200] ________
+
+key = 'neutral_tiltrange_s200'
+
+    @pytest.mark.parametrize("key", list(META["cases"]))
+    def test_model_default_run_is_bit_identical(key):
+        scn, ctrl, cfg = _model_case(key)
+        r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
+        Pold = ARR[key + "__P"]
+        Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
+        if not np.array_equal(Pold, Pnow):
+            diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
+            pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
+        assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
+>       assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964604e-04,  1.71269089e-10],\n       [-7.79642564e-04,  2.50362720e-07],\n       [-7.59782235e-04,  2.5845....74778630e-03,  2.70212194e-05],\n       [ 8.75633874e-03,  2.70802586e-05],\n       [ 8.72664205e-03,  2.74659275e-05]]), array([[-8.68964604e-04,  1.71269089e-10],\n       [-7.79642564e-04,  2.50362720e-07],\n       [-7.59782235e-04,  2.5845....74778630e-03,  2.70212213e-05],\n       [ 8.75633875e-03,  2.70802601e-05],\n       [ 8.72664205e-03,  2.74659288e-05]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:133: AssertionError
+______ test_model_default_run_is_bit_identical[neutral_adaptive030_s200] _______
+
+key = 'neutral_adaptive030_s200'
+
+    @pytest.mark.parametrize("key", list(META["cases"]))
+    def test_model_default_run_is_bit_identical(key):
+        scn, ctrl, cfg = _model_case(key)
+        r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
+        Pold = ARR[key + "__P"]
+        Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
+        if not np.array_equal(Pold, Pnow):
+            diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
+            pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
+        assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
+>       assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-1.92897603e-04,  1.71269089e-10],\n       [-1.87611644e-04, -6.84134698e-08],\n       [-1.95810793e-04,  5.5550....41797234e-03,  2.74632429e-05],\n       [ 9.42666804e-03,  2.75937610e-05],\n       [ 9.43286210e-03,  2.72009183e-05]]), array([[-1.92897603e-04,  1.71269089e-10],\n       [-1.87611644e-04, -6.84134698e-08],\n       [-1.95810793e-04,  5.5550....41797233e-03,  2.74632425e-05],\n       [ 9.42666804e-03,  2.75937606e-05],\n       [ 9.43286209e-03,  2.72009179e-05]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:133: AssertionError
+_____________ test_model_default_run_is_bit_identical[locked_s200] _____________
+
+key = 'locked_s200'
+
+    @pytest.mark.parametrize("key", list(META["cases"]))
+    def test_model_default_run_is_bit_identical(key):
+        scn, ctrl, cfg = _model_case(key)
+        r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
+        Pold = ARR[key + "__P"]
+        Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
+        if not np.array_equal(Pold, Pnow):
+            diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
+            pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
+        assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
+>       assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000...61120862e-003, 2.73132390e-005],\n       [9.61904106e-003, 2.73161265e-005],\n       [9.62543236e-003, 2.73174676e-005]]), array([[0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000000e+000],\n       [0.00000000e+000, 0.00000...61120862e-003, 2.73132390e-005],\n       [9.61904106e-003, 2.73161265e-005],\n       [9.62543236e-003, 2.73174676e-005]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:133: AssertionError
+___________ test_model_default_run_is_bit_identical[oracle_6Hz_s201] ___________
+
+key = 'oracle_6Hz_s201'
+
+    @pytest.mark.parametrize("key", list(META["cases"]))
+    def test_model_default_run_is_bit_identical(key):
+        scn, ctrl, cfg = _model_case(key)
+        r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
+        Pold = ARR[key + "__P"]
+        Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
+        if not np.array_equal(Pold, Pnow):
+            diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
+            pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
+        assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
+>       assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964368e-04,  2.79138509e-10],\n       [-7.84992553e-04, -2.35250678e-06],\n       [-7.72447218e-04, -8.4677....01212997e-03,  2.85037763e-03],\n       [ 6.95000416e-03,  2.82707472e-03],\n       [ 7.12746036e-03,  2.80911614e-03]]), array([[-8.68964368e-04,  2.79138509e-10],\n       [-7.84992553e-04, -2.35250678e-06],\n       [-7.72447218e-04, -8.4677....01213776e-03,  2.85038123e-03],\n       [ 6.94998521e-03,  2.82708021e-03],\n       [ 7.12748225e-03,  2.80912221e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:133: AssertionError
+___________ test_model_default_run_is_bit_identical[kalman_6Hz_s201] ___________
+
+key = 'kalman_6Hz_s201'
+
+    @pytest.mark.parametrize("key", list(META["cases"]))
+    def test_model_default_run_is_bit_identical(key):
+        scn, ctrl, cfg = _model_case(key)
+        r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
+        Pold = ARR[key + "__P"]
+        Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
+        if not np.array_equal(Pold, Pnow):
+            diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
+            pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
+        assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
+>       assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964368e-04,  2.79138509e-10],\n       [-7.84092186e-04, -3.03107764e-06],\n       [-8.43999613e-04, -1.1491....98950268e-03,  2.84119358e-03],\n       [ 6.97513383e-03,  2.80262260e-03],\n       [ 7.04971241e-03,  2.77907724e-03]]), array([[-8.68964368e-04,  2.79138509e-10],\n       [-7.84092186e-04, -3.03107764e-06],\n       [-8.43999613e-04, -1.1491....98951232e-03,  2.84117474e-03],\n       [ 6.97513304e-03,  2.80260841e-03],\n       [ 7.04971365e-03,  2.77906401e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:133: AssertionError
+__________ test_model_default_run_is_bit_identical[external_6Hz_s201] __________
+
+key = 'external_6Hz_s201'
+
+    @pytest.mark.parametrize("key", list(META["cases"]))
+    def test_model_default_run_is_bit_identical(key):
+        scn, ctrl, cfg = _model_case(key)
+        r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
+        Pold = ARR[key + "__P"]
+        Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
+        if not np.array_equal(Pold, Pnow):
+            diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
+            pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
+        assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
+>       assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
+E       assert False
+E        +  where False = <function array_equal at 0x10342f2b0>(array([[-8.68964471e-04, -1.55325704e-10],\n       [-7.83943447e-04, -2.23127160e-06],\n       [-7.74516438e-04, -9.5199....01001116e-03,  2.84889160e-03],\n       [ 6.99420594e-03,  2.81610915e-03],\n       [ 7.07634506e-03,  2.79489829e-03]]), array([[-8.68964471e-04, -1.55325704e-10],\n       [-7.83943447e-04, -2.23127160e-06],\n       [-7.74516438e-04, -9.5199....01002206e-03,  2.84889601e-03],\n       [ 6.99421443e-03,  2.81611267e-03],\n       [ 7.07635156e-03,  2.79490127e-03]]))
+E        +    where <function array_equal at 0x10342f2b0> = np.array_equal
+
+sim/pencil/tests/test_default_regression.py:133: AssertionError
+============================= slowest 15 durations =============================
+138.56s call     opt/tracker/tests/test_tracker.py::test_adjoint_gradient_equals_autograd
+114.34s call     opt/tracker/tests/test_tracker.py::test_adjoint_core_reproduces_numba[grid_like-1k]
+28.48s call     opt/tracker/tests/test_tracker.py::test_seed_plan_never_uses_test_data
+14.88s call     fusion/tests/test_fusion.py::test_seed_plan_is_disjoint_from_test_seeds
+9.26s call     opt/hardware/tests/test_hardware.py::test_cad_overlay_default_is_identity
+7.80s call     s2r/tests/test_core_tools.py::test_truth_draws_inside_and_outside
+6.33s call     s2r/tests/test_experiments.py::test_fastharness_matches_repository_harness
+6.26s call     opt/touchdown/tests/test_touchdown.py::test_reduced_model_adjoint_gradient_matches_finite_differences
+4.99s call     opt/inertial/tests/test_revh.py::test_front_end_closes_over_writing_tilts
+3.84s call     opt/hardware/tests/test_hardware.py::test_augmented_lagrangian_improves_a_small_problem
+3.43s call     rig/tests/test_firmware.py::test_header_frames_match_python
+3.10s call     s2r/tests/test_experiments.py::test_b01b02_reduced_identification
+3.01s call     revj1/tests/test_revj1.py::test_detent_falls_when_the_motors_move_back
+2.87s call     s2r/tests/test_modelform_piezo.py::test_diagnostics_pass_control_and_flag_coulomb
+2.77s call     aiprior/tests/test_aiprior.py::test_tracker_reproduces_handwriting_study
+=========================== short test summary info ============================
+SKIPPED [1] ml/tests/test_ml.py:150: datasets not built
+SKIPPED [2] ml/tests/test_ml.py:234: data not built
+SKIPPED [1] ml/tests/test_ml.py:249: C test not built
+SKIPPED [1] realdata/tests/test_realdata.py:117: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:133: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:143: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:155: UNIPEN index not built
+SKIPPED [1] realdata/tests/test_realdata.py:170: UNIPEN index not built
+SKIPPED [1] realdata/tests/test_realdata.py:271: tremor library not built
+SKIPPED [3] realtrack/tests/test_realtrack.py:89: model not built: ai2 frozen tuning caches d01/d2b are absent from this checkout; rebuild the tuning stages before loading their estimators
+SKIPPED [1] realtrack/tests/test_realtrack.py:89: model not built: [Errno 2] No such file or directory: '/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/realtrack/build/models/net_net_main.json'
+SKIPPED [1] realtrack/tests/test_realtrack.py:150: tuning cache not built (python3 -m realtrack.run --stages cases)
+FAILED bnib/tests/test_bnib.py::test_interface_file_consistent - assert 0.400...
+FAILED readable/tests/test_readable.py::test_calibration_note_is_another_note_of_the_same_writer
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[neutral_tiltrange_s200]
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[neutral_adaptive030_s200]
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[locked_s200]
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[kalman_6Hz_s201]
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[external_6Hz_s201]
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[guided_6Hz_s201]
+FAILED sim/pencil/tests/test_default_regression.py::test_core_default_run_is_bit_identical[neutral_theta35_s202]
+FAILED sim/pencil/tests/test_default_regression.py::test_model_default_run_is_bit_identical[neutral_tiltrange_s200]
+FAILED sim/pencil/tests/test_default_regression.py::test_model_default_run_is_bit_identical[neutral_adaptive030_s200]
+FAILED sim/pencil/tests/test_default_regression.py::test_model_default_run_is_bit_identical[locked_s200]
+FAILED sim/pencil/tests/test_default_regression.py::test_model_default_run_is_bit_identical[oracle_6Hz_s201]
+FAILED sim/pencil/tests/test_default_regression.py::test_model_default_run_is_bit_identical[kalman_6Hz_s201]
+FAILED sim/pencil/tests/test_default_regression.py::test_model_default_run_is_bit_identical[external_6Hz_s201]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 15 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+15 failed, 678 passed, 15 skipped in 413.43s (0:06:53)

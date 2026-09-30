@@ -17,11 +17,17 @@ def test_evidence_header_and_ids(tmp_path):
     rows = EV.write(str(tmp_path / "rows.csv"), {"headline": {}})
     ids = [r["id"] for r in rows]
     assert len(ids) == len(set(ids))
-    existing = {r["id"] for r in csv.DictReader(open(os.path.join(ROOT, "docs", "evidence.csv")))}
+    existing = {r["id"]: r for r in csv.DictReader(open(os.path.join(ROOT, "docs", "evidence.csv")))}
     for i in ids:
         pre, num = i.split("-")
         lo, hi = RANGES[pre]
-        assert lo <= int(num) <= hi and i not in existing
+        assert lo <= int(num) <= hi
+    # Merged study rows retain their IDs. A collision is a different source
+    # under the same ID, not a faithful regeneration of an existing row.
+    for row in rows:
+        if row["id"] in existing:
+            for key in ("citation", "doi_or_url"):
+                assert row[key] == existing[row["id"]][key]
     lit = [r for r in rows if r["search_query"] != "n/a (derived)"]
     assert len(lit) >= 25
     for r in lit:

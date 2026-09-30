@@ -1,0 +1,67 @@
+{
+  "evidence": "Independent mathematical friction-step diagnostic; not a full closed-loop or hardware certificate",
+  "parameters": {
+    "fine_mass_kg": 0.0036699750000000002,
+    "tilt_deg": 50.0,
+    "dt_s": 0.0005,
+    "max_damping_diagonal_N_s_m": [
+      80.8,
+      80.8,
+      8.0,
+      8.0
+    ],
+    "sampled_patch_points": 425
+  },
+  "derivation": "For fixed H and friction f=gradient(phi) with0<=Jacobian(f)<=Dmax, explicit velocity-step energy decreases if dt*lambda_max(Dmax,H)<=2. DeltaE=-dt*v.T*f+dt^2/2*f.T*H^-1*f.",
+  "worst_patch_point": {
+    "x_m": 0.0,
+    "y_m": 0.07500000000000001,
+    "lambda_max_per_s": 2316.9742163624524,
+    "energy_nonincrease_dt_max_s": 0.0008631947588695709
+  },
+  "maximum_dt_lambda": 1.1584871081812262,
+  "nonlinear_velocity_samples": 20200,
+  "maximum_sampled_energy_ratio": 0.9913692730988964,
+  "sampled_kinetic_energy_nonincrease": true,
+  "free_decay_checks": [
+    {
+      "initial_speed_m_s": 1e-06,
+      "energy_nonincreasing": true,
+      "peak_energy_over_initial": 1.0,
+      "max_velocity_difference_from_Radau_m_s": 4.724475743060367e-07,
+      "largest_zero_speed_euler_multiplier": -0.15848710818122624
+    },
+    {
+      "initial_speed_m_s": 0.003,
+      "energy_nonincreasing": true,
+      "peak_energy_over_initial": 1.0,
+      "max_velocity_difference_from_Radau_m_s": 0.00028534773366897906,
+      "largest_zero_speed_euler_multiplier": -0.15848710818122624
+    },
+    {
+      "initial_speed_m_s": 0.03,
+      "energy_nonincreasing": true,
+      "peak_energy_over_initial": 1.0,
+      "max_velocity_difference_from_Radau_m_s": 0.00026562454513792173,
+      "largest_zero_speed_euler_multiplier": -0.15848710818122624
+    }
+  ],
+  "observed_trace_count": 80,
+  "observed_max_abs_coarse_offset_m": [
+    0.004710478485440314,
+    0.002829638096674026
+  ],
+  "observed_coarse_positions_inside_checked_patch": true,
+  "limitations": [
+    "fixed-mass isolated friction step only",
+    "sign reversal near zero is possible at0.5ms",
+    "not an accuracy certificate for forced feedback dynamics",
+    "mass variation sampled on425points, not a continuous interval proof",
+    "friction and hand damping remain unmeasured assumptions"
+  ],
+  "source_sha256": {
+    "wholepen/grounded_friction_check.py": "3a9c8f454573e0a7a8c0b964634876a715f1ff3b49b0381ecddc63b8b5c3213a",
+    "wholepen/grounded.py": "93054defc88ac2af7606cca6fb018d8176b56076093727e3fad63cf36e4fa4f6",
+    "wholepen/grounded_replay.py": "96a7f7fd095430b5556fa029dc06c93e37af100ad5e6a1dbbf2a4ad626519969"
+  }
+}

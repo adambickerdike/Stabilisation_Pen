@@ -197,7 +197,7 @@ def stage_optimise(quick=False):
         s = [x for x in res["fronts"][key] if x["cap_g"] == 45.0][0]
         cls = "LRM2" if key.startswith("LRM2") else "CMG"
         with torch.no_grad():
-            d = OP.build(cls, {k: torch.tensor(float(v)) for k, v in s["x"].items()}, tuple(s["choice"]))
+            d = OP.build(cls, {k: torch.tensor(float(v), dtype=torch.float64) for k, v in s["x"].items()}, tuple(s["choice"]))
             m2 = OP.metrics(d, hard=True, hand_scale=2.0)
         res["sensitivity"][f"{key}_hand_x2"] = {"tremor_mean": float(m2["tremor_mean"]), "steer_3Hz_mm": float(m2["steer_3Hz_mm"]),
                                                 "steer_worst_mm": {f"r{rr}_{f:g}Hz": float(v) for (rr, f), v in m2["steer_mm"].items()}}

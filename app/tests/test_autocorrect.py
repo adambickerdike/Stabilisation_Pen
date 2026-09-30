@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import math
+from dataclasses import replace
 
 import numpy as np
 import pytest
@@ -61,6 +62,14 @@ def test_out_of_vocabulary_names_can_survive(toy_model):
     """A correctly recognised name far from every lexicon word is not 'corrected'."""
     out = AC.Autocorrector(toy_model, cer=0.05, threshold=0.9).correct_tokens(["call", "zoltan", "at", "nine"])
     assert out[1].chosen == "zoltan"
+
+
+def test_outside_model_alphabet_is_preserved_without_losing_context(toy_model):
+    tokens = ["François", "wrote", "東京", "buy", "mlik", "eggs", "and", "bread", "🖊️"]
+    out = AC.Autocorrector(toy_model, cer=.1, threshold=.9).correct_tokens(tokens)
+    assert [out[i].chosen for i in [0, 2, 8]] == [tokens[i] for i in [0, 2, 8]]
+    assert not any(out[i].changed for i in [0, 2, 8])
+    assert out[4].chosen == "milk"
 
 
 def test_personal_dictionary_enables_fixing_names(toy_model):
@@ -142,3 +151,39 @@ def test_corpus_model_end_to_end():
     assert "CC0" in m.source["licence"]
     out = AC.Autocorrector(m, cer=0.1).correct_tokens(["buy", "mlilk", "eggs", "and", "bread"])
     assert out[1].chosen == "milk"
+
+
+def test_interactive_correction_is_proposal_then_explicit_user_edit(loaded, toy_model):
+    store, ids = loaded
+    nid = ids["a"]
+    noisy = _noisy(store, nid, cer=.15, seed=8)
+    before = store.effective_text(nid)
+    count = len(store.list_layers(note_id=nid))
+    proposal = AC.propose_autocorrect(store, nid, AC.Autocorrector(toy_model, cer=.15, threshold=.5))
+    assert proposal.choices
+    assert len(store.list_layers(note_id=nid)) == count and store.effective_text(nid) == before
+    chosen = proposal.choices[0]
+    edit = AC.accept_autocorrect(store, proposal, accepted_span_ids=[chosen.span_id])
+    assert edit["kind"] == "user_edit" and edit["created_by"] == "user"
+    assert store.effective_text(nid)["recognition_layer_id"] == noisy["layer_id"]
+    assert store.get_layer(noisy["layer_id"]) == noisy
+    assert len(edit["payload"]["edits"]) == 1
+    with pytest.raises(AC.ValidationError, match="stale"):
+        AC.accept_autocorrect(store, proposal, accepted_span_ids=[chosen.span_id])
+
+
+def test_interactive_correction_protects_user_edits_and_rejects_tampering(loaded, toy_model):
+    store, ids = loaded
+    nid = ids["a"]
+    _noisy(store, nid, cer=.15, seed=8)
+    corrector = AC.Autocorrector(toy_model, cer=.15, threshold=.5)
+    proposal = AC.propose_autocorrect(store, nid, corrector)
+    chosen = proposal.choices[0]
+    with pytest.raises(AC.ValidationError, match="select"):
+        AC.accept_autocorrect(store, proposal, accepted_span_ids=[])
+    bad = replace(proposal, choices=(replace(chosen, suggested="unoffered"),))
+    with pytest.raises(AC.ValidationError, match="changed"):
+        AC.accept_autocorrect(store, bad, accepted_span_ids=[chosen.span_id])
+    store.add_user_edit(nid, {chosen.span_id: chosen.observed})   # intentional spelling/name as written
+    fresh = AC.propose_autocorrect(store, nid, corrector)
+    assert chosen.span_id not in {c.span_id for c in fresh.choices}

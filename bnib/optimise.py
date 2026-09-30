@@ -190,7 +190,7 @@ def p_cont_torch(key: str, gclass: str, x: Dict[str, float], z: Dict[str, torch.
             Bu = torch.zeros(2, dtype=DT_)
         hold_c = Qm + Bc + G
         hold_u = Bu + G
-        D_rms2 = (m_eff * w8 * w8 * duty.q_rms) ** 2 + (k_tip * duty.q_rms) ** 2 + (k_add * duty.q_rms) ** 2
+        D_rms2 = ((k_tip + k_add - m_eff * w8 * w8) * duty.q_rms) ** 2
         c = duty.contact
         EF2 = c * hold_c ** 2 + (1 - c) * hold_u ** 2 + c * sig ** 2 + D_rms2
         rows.append(torch.sum(EF2) / Km ** 2)

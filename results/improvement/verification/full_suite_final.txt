@@ -1,0 +1,99 @@
+........................................................................ [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 24%]
+........................................................................ [ 33%]
+........................................................................ [ 41%]
+.....................................s.....sss.......................... [ 49%]
+........................................................................ [ 57%]
+.................s...................sssFF......s.................ssss.. [ 66%]
+..s..................................................................... [ 74%]
+........................................................................ [ 82%]
+........................................................................ [ 91%]
+.................................ssss................................... [ 99%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_______ test_real_note_runs_in_hw1_and_the_clean_ink_follows_the_letters _______
+
+    @needs_unipen
+    def test_real_note_runs_in_hw1_and_the_clean_ink_follows_the_letters():
+        from handwriting import params as PR, plant as PL
+        from realdata import hw1 as H, library as RL
+>       wr = RL.writing("tuning", seed=0, n_words=2, dt=1e-4, max_lines=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+realdata/tests/test_realdata.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+split = 'tuning', seed = 0, source = 'unipen', n_words = 2, dt = 0.0001
+writer = None, kw = {'max_lines': 1}
+
+    def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words: int = 10, dt: float = WL.SIM_DT,
+                writer: Optional[str] = None, **kw) -> WL.RealWritten:
+        """Real handwriting with timing in the aiguide Written format.
+        source 'unipen' (default): ballpoint on paper, HP Labs 1992 (UNIPEN hpp/hpb2), writer- and text-disjoint splits;
+               writer i of the split = seed % n_writers, a different choice of lines per seed
+        source 'chartraj': one writer's recorded letters composed into a sentence (CC BY; for committed pictures)
+        source 'brush': BRUSH words (timing artefact at 8-12 Hz: NOT for tracker evaluation; kept for the diagnostic)"""
+        if source == "chartraj":
+            return WL.ct_note(seed=seed, split=split, dt=dt, **kw)
+        if source == "unipen":
+            idx = WL.unipen_index()
+            ws = WL.unipen_writers(split, idx)
+            if not ws:
+>               raise FileNotFoundError(
+                    f"No licensed UNIPEN writers indexed for split {split!r}; obtain the dataset "
+                    "under its licence and rebuild the writing index before running this study")
+E               FileNotFoundError: No licensed UNIPEN writers indexed for split 'tuning'; obtain the dataset under its licence and rebuild the writing index before running this study
+
+realdata/library.py:169: FileNotFoundError
+__________ test_unipen_notes_are_writer_and_text_disjoint_and_upright __________
+
+    @needs_unipen
+    def test_unipen_notes_are_writer_and_text_disjoint_and_upright():
+        from realdata import writinglib as WL
+        idx = WL.unipen_index()
+        tun, tst = WL.unipen_writers("tuning", idx), WL.unipen_writers("test", idx)
+>       assert tun and tst and not (set(tun) & set(tst))
+E       assert ([])
+
+realdata/tests/test_realdata.py:175: AssertionError
+============================= slowest 20 durations =============================
+49.37s call     opt/tracker/tests/test_tracker.py::test_seed_plan_never_uses_test_data
+26.50s call     fusion/tests/test_fusion.py::test_seed_plan_is_disjoint_from_test_seeds
+13.84s call     opt/hardware/tests/test_hardware.py::test_cad_overlay_default_is_identity
+11.28s call     opt/touchdown/tests/test_touchdown.py::test_reduced_model_adjoint_gradient_matches_finite_differences
+9.38s call     s2r/tests/test_core_tools.py::test_truth_draws_inside_and_outside
+7.85s call     opt/hardware/tests/test_hardware.py::test_augmented_lagrangian_improves_a_small_problem
+7.34s call     opt/inertial/tests/test_revh.py::test_front_end_closes_over_writing_tilts
+6.51s call     sim2/tests/test_interfaces.py::test_gymnasium_env_checker
+6.08s call     opt/tracker/tests/test_tracker.py::test_torch_akf_reproduces_numba[grid_like-120]
+5.18s call     aiprior/tests/test_aiprior.py::test_tracker_reproduces_handwriting_study
+5.17s call     s2r/tests/test_experiments.py::test_b01b02_reduced_identification
+5.02s call     s2r/tests/test_modelform_piezo.py::test_diagnostics_pass_control_and_flag_coulomb
+4.84s call     opt/tracker/tests/test_tracker.py::test_torch_and_adjoint_trackers_are_causal
+4.68s call     opt/hardware/tests/test_hardware.py::test_gradients_match_finite_differences[Q]
+4.63s call     opt/hardware/tests/test_hardware.py::test_gradients_match_finite_differences[Q2L]
+4.56s call     opt/tracker/tests/test_tracker.py::test_adjoint_gradient_equals_autograd
+4.54s call     opt/tracker/tests/test_tracker.py::test_torch_akf_reproduces_numba[robust_like-1k]
+4.30s call     opt/tracker/tests/test_tracker.py::test_torch_akf_reproduces_numba[grid_like-1k]
+3.96s call     aiguide/tests/test_lm.py::test_splits_deterministic_disjoint_and_sized
+3.85s call     board/tests/test_magnetics.py::test_lateral_capability_falls_with_gap
+=========================== short test summary info ============================
+SKIPPED [1] ml/tests/test_ml.py:150: datasets not built
+SKIPPED [2] ml/tests/test_ml.py:234: data not built
+SKIPPED [1] ml/tests/test_ml.py:249: C test not built
+SKIPPED [1] readable/tests/test_readable.py:197: licensed UNIPEN writing index not built
+SKIPPED [1] realdata/tests/test_realdata.py:117: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:133: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:143: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:271: tremor library not built
+SKIPPED [3] realtrack/tests/test_realtrack.py:89: model not built: ai2 frozen tuning caches d01/d2b are absent from this checkout; rebuild the tuning stages before loading their estimators
+SKIPPED [1] realtrack/tests/test_realtrack.py:89: model not built: [Errno 2] No such file or directory: '/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/realtrack/build/models/net_net_main.json'
+SKIPPED [1] realtrack/tests/test_realtrack.py:150: tuning cache not built (python3 -m realtrack.run --stages cases)
+SKIPPED [1] sim2/tests/test_slow.py:8: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:19: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:28: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:34: slow: use --runslow
+FAILED realdata/tests/test_realdata.py::test_real_note_runs_in_hw1_and_the_clean_ink_follows_the_letters
+FAILED realdata/tests/test_realdata.py::test_unipen_notes_are_writer_and_text_disjoint_and_upright
+2 failed, 850 passed, 18 skipped in 293.84s (0:04:53)

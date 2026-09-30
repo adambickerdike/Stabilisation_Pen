@@ -1,0 +1,41 @@
+{
+  "evidence": "Analytic numerical-integrity diagnostic; no hardware measurement",
+  "parameters": {
+    "mass_kg": 0.00344,
+    "drag_N": 0.02,
+    "velocity_scale_m_s": 0.0005,
+    "initial_velocity_m_s": 1e-06,
+    "duration_s": 0.02
+  },
+  "forward_euler_linear_stability_dt_max_s": 0.000172,
+  "exact_solution": "v=vs*asinh(sinh(v0/vs)*exp(-F*t/(m*vs)))",
+  "rows": [
+    {
+      "dt_s": 0.0005,
+      "near_zero_euler_multiplier": -4.813953488372094,
+      "peak_velocity_m_s": 0.0017489894113114322,
+      "peak_energy_over_initial": 3058963.9608795103,
+      "maximum_error_against_exact_m_s": 0.0017489894113114325,
+      "exact_energy_monotone": true,
+      "numerical_energy_monotone": false
+    },
+    {
+      "dt_s": 0.0001,
+      "near_zero_euler_multiplier": -0.16279069767441867,
+      "peak_velocity_m_s": 1e-06,
+      "peak_energy_over_initial": 1.0,
+      "maximum_error_against_exact_m_s": 4.7540189063670245e-07,
+      "exact_energy_monotone": true,
+      "numerical_energy_monotone": true
+    },
+    {
+      "dt_s": 5e-05,
+      "near_zero_euler_multiplier": 0.41860465116279066,
+      "peak_velocity_m_s": 1e-06,
+      "peak_energy_over_initial": 1.0,
+      "maximum_error_against_exact_m_s": 1.4051248770270092e-07,
+      "exact_energy_monotone": true,
+      "numerical_energy_monotone": true
+    }
+  ]
+}

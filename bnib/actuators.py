@@ -24,6 +24,7 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, Optional
 
 import numpy as np
@@ -50,18 +51,28 @@ def eta_axial(w, t_m, G, t_c):
 
 
 CAL_PATH = BUILD / "vc_calibration.json"
+CAL_SNAPSHOT = Path(__file__).resolve().parent / "data" / "vc_calibration.json"
 R_CARRIER = 1.6e-3          # m outer radius of the nib carrier where it passes the magnets (Ti tube 3.2/2.5 mm around the
                             # refill: PROPOSED DESIGN); the magnet array's central hole clears it at the stop travel
 _CAL = None
 
 
 def calibration() -> Dict:
+    """Use the fitted magnetic model on a clean checkout as well as after a run.
+
+    Previously an absent ignored build cache silently substituted kappa=1 and
+    changed the recorded design's force constant by about 22%. The committed
+    snapshot is a reproducible numerical fit, NOT hardware calibration.
+    """
     global _CAL
     if _CAL is None:
-        if CAL_PATH.exists():
-            _CAL = json.load(open(CAL_PATH))
-        else:
-            _CAL = {"kappa": 1.0, "nu": 0.8, "fitted": False}
+        path = CAL_PATH if CAL_PATH.exists() else CAL_SNAPSHOT
+        if not path.exists():
+            raise FileNotFoundError("magnetic calibration missing; run bnib.actuators.fit_calibration()")
+        _CAL = json.loads(path.read_text())
+        if not _CAL.get("fitted") or len(_CAL.get("coef", [])) != 9:
+            _CAL = None
+            raise ValueError(f"invalid fitted magnetic calibration: {path}")
     return _CAL
 
 

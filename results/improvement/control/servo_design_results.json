@@ -1,0 +1,2732 @@
+{
+  "protocol": {
+    "evidence": "CALC and SIM, proposed RevJ plant; no hardware or RevK validation",
+    "linear_model": "Exact ZOH mechanics and coil, discrete PI-D and delayed Hall samples; no contact",
+    "candidates_hz": [
+      60,
+      80,
+      100,
+      125,
+      150,
+      200,
+      400
+    ],
+    "delay_ticks": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "inertia_ratio": [
+      0.7,
+      1.0,
+      1.3
+    ],
+    "torque_ratio": [
+      0.7,
+      1.0,
+      1.3
+    ],
+    "hall_cutoff_hz": 300.0,
+    "sample_hz": 10000.0,
+    "radius_max": 0.998,
+    "rule": "Highest candidate bandwidth with all uncertainty-grid pole radii<=0.998; freeze before bench",
+    "uncertainty_note": "Declared engineering stress bounds, not measured uncertainty or a continuous robust proof",
+    "physical": {
+      "inertia": 8.784373580981247e-06,
+      "spring": 0.0027951884517445034,
+      "damping": 6.2678838010120505e-06,
+      "resistance": 2.466666666666667,
+      "inductance": 0.0001
+    },
+    "bench_cases": [
+      {
+        "seed": 117,
+        "frequency_hz": 0.0,
+        "amplitude_m": 0.0
+      },
+      {
+        "seed": 117,
+        "frequency_hz": 6.0,
+        "amplitude_m": 0.0005
+      },
+      {
+        "seed": 117,
+        "frequency_hz": 10.0,
+        "amplitude_m": 0.0015
+      },
+      {
+        "seed": 211,
+        "frequency_hz": 0.0,
+        "amplitude_m": 0.0
+      },
+      {
+        "seed": 211,
+        "frequency_hz": 6.0,
+        "amplitude_m": 0.0005
+      },
+      {
+        "seed": 211,
+        "frequency_hz": 10.0,
+        "amplitude_m": 0.0015
+      },
+      {
+        "seed": 419,
+        "frequency_hz": 0.0,
+        "amplitude_m": 0.0
+      },
+      {
+        "seed": 419,
+        "frequency_hz": 6.0,
+        "amplitude_m": 0.0005
+      },
+      {
+        "seed": 419,
+        "frequency_hz": 10.0,
+        "amplitude_m": 0.0015
+      }
+    ],
+    "bench_duration_s": 1.2,
+    "bench_scoring_start_s": 0.4,
+    "source_sha256": {
+      "servo_design.py": "b932612c160b880de71d162402b3b72734317294673aca677a553a2a624b9c79",
+      "servo_design_study.py": "afbae89138c350983587a5212949e3a020983c99afe4621c193cf26da5b01b15",
+      "sim.py": "5375d106c61cf71bcc2c416e66c81584bfeace08f6641a24998e2f7cd83fabc4",
+      "params.py": "06491a0550c6b9df3728171ac45975512b04e93e5c4916646afcf99274815aae"
+    }
+  },
+  "selection": {
+    "selected_inner_hz": 80,
+    "worst_radius_by_hz": {
+      "60": 0.9904607005073969,
+      "80": 0.9975421037898219,
+      "100": 1.0138483300037844,
+      "125": 1.0324992309896812,
+      "150": 1.0496597302384938,
+      "200": 1.0806560486106145,
+      "400": 1.1790050914644288
+    },
+    "linear_grid": [
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9861286089366496,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -139.6849785838219
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9871888663548896,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -128.939038981668
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9876571024003661,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -124.19703822151924
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9858929460068749,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -142.07504303626854
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9861385419613045,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -139.58425161434957
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.986971762568075,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -131.13849311431647
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9904607005073969,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -95.8509004924098
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9853437149428772,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -147.64749498067872
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9861438979079931,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -139.5299394470824
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9860883419176729,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.09332127618939
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9871834437532424,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -128.99396886109758
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9876554754753059,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -124.2135108049316
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9853204354150621,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -147.88375571350798
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.986097269878902,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.00278252389603
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9869626933807676,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -131.2303825616089
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.990242044812889,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -98.05876026251093
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9850076402293041,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -151.05881262156566
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9861020842657489,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -139.95396000667185
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.986059283955791,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.38800471167653
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9871801624322945,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -129.0272081381758
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9876548018504248,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -124.22033125120609
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9847046186137524,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -154.13562362867438
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9860672645693348,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.30707061999968
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9869567059644524,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -131.29104781792273
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9900017636779294,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -100.4855436223036
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9847194608355796,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -153.98489710935948
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9860715682483986,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.26342583199408
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9860402721145551,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.5808128402311
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9871788518426746,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -129.04048424054986
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9876550211387655,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -124.2181109580839
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9840862731710929,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -160.41709786315323
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.986047371498192,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.5088141776982
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.986953534074413,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -131.323185956477
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9897375335830703,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -103.1548859624149
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.984495445686155,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -156.2600693076709
+      },
+      {
+        "inner_hz": 60,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9860511999321139,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -140.46998818819293
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9816106908438873,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -185.60494401990547
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9833494330199833,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -167.90745887715252
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9840341935912204,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -160.94632949062927
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9757056317304932,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -245.9434489504412
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9816129487370744,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -185.5819421250468
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9830140682862086,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -171.31847354258528
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9800090222137036,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -201.93501019383703
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9784598834422272,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -217.7549100154509
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9816141657800476,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -185.5695437329894
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.981722298820401,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -184.46802045959834
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9833927288259278,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -167.46717944661668
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9840601621479965,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -160.6824340457595
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9765515377253354,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -237.27752049577492
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9817241575495855,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -184.44908712756336
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9830674509674131,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -170.77543724734707
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.978757020254758,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -214.71859028765482
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9788326518401834,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -213.94588917933578
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9817251592900937,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -184.4388832430055
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9818303710533506,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -183.36723783515572
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9834355370655209,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -167.0318771851812
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9863699585941875,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -137.23783197783445
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9772337811244729,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -230.29370891438094
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.981831886516348,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -183.35180276742364
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9831200751051153,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -170.24014611141027
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9773782135599107,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -228.81584593089894
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9791691313949122,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -210.50892031728333
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9818327031138483,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -183.34348569021404
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9819347686076929,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -182.30399913789788
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9858239173573093,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -142.77523129226407
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9975421037898219,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -24.60921795801871
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9777966344089108,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -224.5357084708395
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9819359867492967,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -182.29159362088018
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9831718587835501,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -169.713432071097
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9763867699304118,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -238.96490401084677
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9794730074484912,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -207.40599457101573
+      },
+      {
+        "inner_hz": 80,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9819366429954458,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -182.28491043645008
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9782008490042212,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -220.40262952270976
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9800725340463626,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -201.28695723421956
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9808422720325932,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -193.43615185113902
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9732372673605377,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -271.2737517613501
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9782007075748445,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -220.40407533403913
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9797000298568833,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -205.08846156004216
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9795885684248309,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -206.22623607953278
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9752287460015543,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -250.83224217567886
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9782006313151984,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -220.40485492506195
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9783906806511677,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -218.4621974533181
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.980153091777791,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -200.46503418197068
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9870230279186188,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -130.61908596286418
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9740572331617018,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -262.85216119652995
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9783904389624668,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -218.46466772143876
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9797981453099143,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -204.08702706669695
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9793278739566799,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -208.8878551670024
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9757249463007519,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -245.74549601809719
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9783903086464268,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -218.4659996646329
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.978566223244514,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -216.66816107502416
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9895413756344161,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -105.13700125079434
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0021823538799863,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 21.799760047060452
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9747140821610638,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -256.1110005578052
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9785658945004043,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -216.67152052231677
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9855792780558004,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -145.25711123781696
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9790388000080461,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -211.84004950911745
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9761496424433391,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -241.3938214613566
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.978565717254288,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -216.67333180690562
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9858239507464395,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -142.77489259963372
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0005383146840128,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 5.381698446403727
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0138483300037844,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 137.53318048244424
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9759400814078709,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -243.54086453742795
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9858368195419975,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -142.64435497620306
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9962677521872736,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -37.39230027913228
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9787130705456006,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -215.16763632285372
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9779531999488915,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -222.9346290529646
+      },
+      {
+        "inner_hz": 100,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9858437493026037,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -142.57406204218879
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9786680274006756,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -215.62787521021448
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9765139955053304,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -237.66196453383643
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9824812144603685,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -176.7405556363156
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9809167425216038,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -192.6769302699578
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9786538724516612,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -215.77251109269932
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.976138872593334,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -241.50415197779722
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9820497476886271,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -181.13312350103342
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9804342946063491,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -197.5964772133877
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9786462299252434,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -215.85060362852033
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9784543552608268,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -217.81140897990326
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9910031172707855,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -90.37599076081766
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0042582876659294,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 42.492468156137186
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9808227287380277,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -193.6354039615505
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9784391140051687,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -217.96717888662312
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9869140893978346,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -131.7228548716012
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9819771214196037,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -181.87268842449558
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9803268598594506,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -198.69232457614658
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.978430880609663,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -218.0513275069036
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9899289433688611,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -101.22112804292964
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0059659962676706,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 59.4827017951446
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0206808747828953,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 204.69928897889824
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9807258538821939,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -194.6231424939617
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9899427492872365,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -101.08166528454136
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0012893761834343,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 12.885456517982245
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9819031299094712,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -182.62621206849045
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9812949473308861,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -188.82204737509332
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9899501836157213,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -101.00656699653487
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0003867961896706,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 3.867214033085617
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0174394411651584,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 172.8911928098965
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0324992309896812,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 319.82301048590557
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9878196034605902,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -122.55185495908448
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0004000579226566,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 3.9997792082208745
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0125502132029425,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 124.72112055707522
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9825317167113383,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -176.22654119722677
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.990650740918649,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -93.93237730526131
+      },
+      {
+        "inner_hz": 125,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0004071992394963,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 4.071163563851543
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9824123729362916,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -177.4412706729636
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9843671418550869,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -157.5633987737455
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9965062838034526,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -34.998334751579115
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9829690017946063,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -171.77693620481298
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9824085545118887,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -177.48013858555097
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9820409742371173,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -181.22246205766783
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9834207220704458,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -167.18252362928732
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9828117791970546,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -173.37653061948225
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9824064977113635,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -177.50107491259004
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9891006829984486,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -109.59149711407464
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0054451318679372,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 54.303607336630336
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0208596222894046,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 206.4503931791084
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9829404070909015,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -172.0678418139691
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.989115171934207,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -109.44501223253326
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0006278915642555,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 6.276945228233567
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9833907046307988,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -167.48776325970488
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.982783806137726,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -173.66115742205815
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9891229739635087,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -109.36613366760469
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0029860622898061,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 29.816128611203865
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0214580337404302,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 212.31051456016627
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0380477823224636,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 373.41816750165094
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9894665658092967,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -105.89303485317075
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.002999882358072,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 29.953916897336885
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0161276051682309,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 159.9893690784084
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9833607143316111,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -167.79273621054026
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9925348727782858,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -74.93130737517092
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0030073242311726,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 30.028112773365983
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0139260960024123,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 138.3001888603855
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0330606936103301,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 325.2594311657449
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0496597302384938,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 484.66045209026527
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.999098223687684,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -9.02183157181852
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0139393217318964,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 138.43062877388826
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0276224149345836,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 272.4779891427638
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9914992754886751,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -85.37061745019209
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0025735396929552,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 25.702338103448877
+      },
+      {
+        "inner_hz": 150,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0139464435816696,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 138.50086793523644
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9910999104696124,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -89.39931903841759
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0079358072448898,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 79.04484332510388
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0242409642451011,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 239.51815580303474
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9846620913979943,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -154.56751084956068
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9911149591767057,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -89.24748174444946
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0029278388028797,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 29.235610305696863
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9848115788151109,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -153.04946651452246
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9846139444755678,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -155.05649179036342
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 0.9911230625240125,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -89.16572216544671
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0118601455120004,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 117.9036518092124
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0331409447268503,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 326.03622966470493
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0525215784458863,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 511.8878845058735
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9962062439851842,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -38.00970559761658
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0118744179146488,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 118.04470195389607
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.02697129317753,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 266.1397844039823
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.988342635882743,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -117.25843902437347
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 0.9998139664234434,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -1.8605088294877115
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0118821032541727,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 118.12065318067198
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0275013367886052,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 271.2996839821431
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0502795375125416,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 490.5635493994556
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.070151904304901,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 678.0060503759944
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0096640618673545,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 96.1766351300355
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0275148579051294,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 271.43127532005377
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0437955541565607,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 428.63640931422384
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 0.9998629459152504,
+        "stable_local_linear": true,
+        "max_continuous_growth_per_s": -1.3706347751891623
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0139019113541519,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 138.06166125179254
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.02752213871202,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 271.5021334788364
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0387414475080379,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 380.0983370769364
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0614357108056198,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 596.2243584814541
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0806560486106145,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 775.6830912882666
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0201885224597154,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 199.87436158867212
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0387543316023107,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 380.22237193084584
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.05505853504317,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 535.962488421217
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0094045631208544,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 93.60615540767877
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.024686175819996,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 243.8639577907785
+      },
+      {
+        "inner_hz": 200,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.038761269404817,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 380.28916134511474
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0656809016881401,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 636.1393917600035
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.100832869243121,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 960.6704716533121
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1325531450457123,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1244.7450446668768
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0386674956363733,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 379.38637449547286
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0656952498375514,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 636.2740291810068
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0906981110108007,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 868.1796004567923
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0233644805092306,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 230.95709447504765
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0450935369226928,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 441.06390428012213
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 1,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.06570297588105,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 636.3465265998874
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.095903628254068,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 915.7925423459684
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.133206424479332,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1250.511582833675
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1652111162576935,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1529.0228627192732
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0653684957079241,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 633.207446748915
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0959169214818822,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 915.9138408511408
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.122674927865919,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1157.1416623529944
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0469758689577937,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 459.0588382699175
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0728202247718537,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 702.9090513038589
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 2,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.0959240795007295,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 915.9791559797841
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.1120007783226162,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1061.6089575855597
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.1474474428414552,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1375.3986045828997
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1769104294827246,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1628.9272468796328
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0817695083357957,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 785.9813401228683
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.1120131958728154,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1061.7206255008102
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1375748500896097,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1288.9867195467352
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0628007350292894,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 609.0762650028016
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0892727305364365,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 855.102538595904
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 3,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1120198823845853,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1061.780755108011
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.1198842504626592,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1132.25332165054
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.1524711407753416,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1419.0845503314401
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 0.7,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1790050914644288,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1646.7094000598465
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.091329482821755,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 873.9666201109815
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.1198959858079525,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1132.358111800068
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.0,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.1434759456628556,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1340.7269854703197
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 0.7,
+        "spectral_radius": 1.0729140603352607,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 703.7836755676191
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.0,
+        "spectral_radius": 1.0984967787292972,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 939.4268041155298
+      },
+      {
+        "inner_hz": 400,
+        "delay_ticks": 4,
+        "inertia_ratio": 1.3,
+        "torque_ratio": 1.3,
+        "spectral_radius": 1.119902304990751,
+        "stable_local_linear": false,
+        "max_continuous_growth_per_s": 1132.4145381561784
+      }
+    ]
+  },
+  "bench": [
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 117,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 2.488237389226983,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.4204208091142596,
+      "coil_temperature_C": 29.7365112887429,
+      "travel_rms_mm": 0.002488237389226983
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 117,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 4.082344946391255,
+      "contact_fraction": 0.999375,
+      "coil_power_W": 2.6463694846880843,
+      "coil_temperature_C": 30.194994024772424,
+      "travel_rms_mm": 0.34933623842803474
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 117,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 9.709999408850077,
+      "contact_fraction": 0.99875,
+      "coil_power_W": 2.758546248497778,
+      "coil_temperature_C": 30.385748530928822,
+      "travel_rms_mm": 1.0631365515527624
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 211,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 2.434446421533141,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.3889806158232862,
+      "coil_temperature_C": 29.737130575619435,
+      "travel_rms_mm": 0.002434446421533141
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 211,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 3.933225303262985,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.628036153783977,
+      "coil_temperature_C": 30.187529716429324,
+      "travel_rms_mm": 0.3492307212706239
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 211,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 9.940969098070225,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.7263141102085298,
+      "coil_temperature_C": 30.39562533585061,
+      "travel_rms_mm": 1.0632422710423701
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 419,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 2.408388482855179,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.4018701183596662,
+      "coil_temperature_C": 29.740299958152963,
+      "travel_rms_mm": 0.002408388482855179
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 419,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 3.9978627768487525,
+      "contact_fraction": 0.999375,
+      "coil_power_W": 2.621113021124104,
+      "coil_temperature_C": 30.203611113837816,
+      "travel_rms_mm": 0.3493543192584264
+    },
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "seed": 419,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 9.739002467995588,
+      "contact_fraction": 0.999375,
+      "coil_power_W": 2.7155858065720047,
+      "coil_temperature_C": 30.382451903857586,
+      "travel_rms_mm": 1.0630114650699918
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 117,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 71.65682342245734,
+      "contact_fraction": 0.136875,
+      "coil_power_W": 9.245103891243621,
+      "coil_temperature_C": 36.184112265444334,
+      "travel_rms_mm": 0.07165682342245734
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 117,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 71.45625318520149,
+      "contact_fraction": 0.13875,
+      "coil_power_W": 9.268958071613511,
+      "coil_temperature_C": 36.18934763025279,
+      "travel_rms_mm": 0.36148555821315403
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 117,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 59.768611644524874,
+      "contact_fraction": 0.30625,
+      "coil_power_W": 8.787238216123855,
+      "coil_temperature_C": 35.39564030719497,
+      "travel_rms_mm": 1.0705384361881318
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 211,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 69.65069434502622,
+      "contact_fraction": 0.144375,
+      "coil_power_W": 9.184499235407891,
+      "coil_temperature_C": 36.12291070454952,
+      "travel_rms_mm": 0.06965069434502622
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 211,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 71.68783485510129,
+      "contact_fraction": 0.143125,
+      "coil_power_W": 9.281126166573678,
+      "coil_temperature_C": 36.16751775958099,
+      "travel_rms_mm": 0.3619807935963995
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 211,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 57.32345830994278,
+      "contact_fraction": 0.32375,
+      "coil_power_W": 8.81704618638188,
+      "coil_temperature_C": 35.37284322116999,
+      "travel_rms_mm": 1.0720440891180372
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 419,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 71.42935741739274,
+      "contact_fraction": 0.14,
+      "coil_power_W": 9.28986960800502,
+      "coil_temperature_C": 36.17834723985576,
+      "travel_rms_mm": 0.07142935741739274
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 419,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 72.27313588761226,
+      "contact_fraction": 0.14625,
+      "coil_power_W": 9.326252196175368,
+      "coil_temperature_C": 36.188910761734036,
+      "travel_rms_mm": 0.3607962389194613
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "seed": 419,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 56.5601687044741,
+      "contact_fraction": 0.23875,
+      "coil_power_W": 8.9247626059844,
+      "coil_temperature_C": 35.56694629909686,
+      "travel_rms_mm": 1.0670646355567206
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 117,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 1.8942346850794054,
+      "contact_fraction": 1.0,
+      "coil_power_W": 1.7063798121272629,
+      "coil_temperature_C": 28.99960903423565,
+      "travel_rms_mm": 0.0018942346850794054
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 117,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 38.45209274892806,
+      "contact_fraction": 1.0,
+      "coil_power_W": 1.954895007940028,
+      "coil_temperature_C": 29.542402087223827,
+      "travel_rms_mm": 0.37280375591235465
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 117,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 80.81741720827986,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.070376880606507,
+      "coil_temperature_C": 29.756732389974854,
+      "travel_rms_mm": 1.1164482672017673
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 211,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 1.8406877628063885,
+      "contact_fraction": 1.0,
+      "coil_power_W": 1.7086620168581186,
+      "coil_temperature_C": 29.002570149163752,
+      "travel_rms_mm": 0.0018406877628063883
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 211,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 38.36175753937387,
+      "contact_fraction": 1.0,
+      "coil_power_W": 1.9587987329903995,
+      "coil_temperature_C": 29.539030174004413,
+      "travel_rms_mm": 0.37245521001751775
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 211,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 80.5751023907921,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.0722079451389184,
+      "coil_temperature_C": 29.745510860626204,
+      "travel_rms_mm": 1.1164616838640284
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 419,
+      "frequency_hz": 0.0,
+      "amplitude_m": 0.0,
+      "follower_error_rms_um": 1.908787538237748,
+      "contact_fraction": 1.0,
+      "coil_power_W": 1.695765142837858,
+      "coil_temperature_C": 29.002354589985973,
+      "travel_rms_mm": 0.0019087875382377479
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 419,
+      "frequency_hz": 6.0,
+      "amplitude_m": 0.0005,
+      "follower_error_rms_um": 37.96415952710411,
+      "contact_fraction": 1.0,
+      "coil_power_W": 1.9417615977554106,
+      "coil_temperature_C": 29.542762450037408,
+      "travel_rms_mm": 0.37246548052650313
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "seed": 419,
+      "frequency_hz": 10.0,
+      "amplitude_m": 0.0015,
+      "follower_error_rms_um": 80.5031430329288,
+      "contact_fraction": 1.0,
+      "coil_power_W": 2.0675137659329454,
+      "coil_temperature_C": 29.751684931153676,
+      "travel_rms_mm": 1.116071335586495
+    }
+  ],
+  "summary": [
+    {
+      "velocity_source": "legacy_true",
+      "inner_hz": 400.0,
+      "mean_follower_error_rms_um": 5.414941810559354,
+      "min_contact_fraction": 0.99875,
+      "mean_coil_power_W": 2.5896929297968545,
+      "max_coil_temperature_C": 30.39562533585061
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 400.0,
+      "mean_follower_error_rms_um": 66.86737086352589,
+      "min_contact_fraction": 0.136875,
+      "mean_coil_power_W": 9.124984019723248,
+      "max_coil_temperature_C": 36.18934763025279
+    },
+    {
+      "velocity_source": "hall",
+      "inner_hz": 80.0,
+      "mean_follower_error_rms_um": 40.25748693705893,
+      "min_contact_fraction": 1.0,
+      "mean_coil_power_W": 1.908484544687494,
+      "max_coil_temperature_C": 29.756732389974854
+    }
+  ]
+}

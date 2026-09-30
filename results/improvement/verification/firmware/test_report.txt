@@ -1,0 +1,233 @@
+# Host unit tests - firmware/tests (clang 17.0.0, -fsanitize=address,undefined, -ffp-contract=off)
+# Evidence status: HOST TEST (arm64, float32 code paths); not hardware, not target timing.
+# params: 0.4.4 yaml sha a9d3d0016461d690
+input check: yaml 0.4.4 [a9d3d0016461d690], estimator_selection [eace6b899bb37c3a], model.py [d8e582e84966892f], core.py [7b86d3e72d535bce]
+params_gen.h and all golden vectors match the current sources
+pen firmware unit tests: params yaml 0.4.4 [a9d3d0016461d690], model M1.0
+[ RUN  ] test_crc_known_answer
+    CRC-16/CCITT-FALSE("123456789") = 0x29B1; 64 random vectors vs binascii.crc_hqx: 0 mismatches
+[  OK  ] test_crc_known_answer (5 checks)
+[ RUN  ] test_log_header_roundtrip
+[  OK  ] test_log_header_roundtrip (9 checks)
+[ RUN  ] test_log_records_roundtrip
+[  OK  ] test_log_records_roundtrip (17 checks)
+[ RUN  ] test_log_unit_conversion
+[  OK  ] test_log_unit_conversion (18 checks)
+[ RUN  ] test_log_corruption_detected
+    single-bit corruptions detected: 448 / 448
+[  OK  ] test_log_corruption_detected (2 checks)
+[ RUN  ] test_log_golden_file
+    golden_log_v1.bin: 491 bytes, records research 3 stroke 4 event 7 calsnap 1 annot 2
+[  OK  ] test_log_golden_file (26 checks)
+[ RUN  ] test_log_session_clock
+    session clock: hardware counter wrap transparent (t_ms monotonic); 4 session wraps in 20000 s, event 0x0009 arg = cumulative count (last 4); stroke t_ms = 20000000
+[  OK  ] test_log_session_clock (5 checks)
+[ RUN  ] test_biquad_vs_scipy
+    ffc 60 Hz biquad vs scipy sosfilt: max |err| 3.93e-06 (signal max 1.31)
+    bp1 high-pass biquad vs scipy: max |err| 3.28e-05 (poles near z = 1: float32 DF2T)
+    bp2 low-pass biquad vs scipy: max |err| 3.93e-05
+[  OK  ] test_biquad_vs_scipy (6 checks)
+[ RUN  ] test_jacobian_vs_frames
+    J and J^-1 vs stabpen/frames.py (gamma = 1) and numeric 3-D construction (0 <= gamma <= 1), 240 poses: max |err| J 2.4e-07, J^-1 2.1e-07
+[  OK  ] test_jacobian_vs_frames (3 checks)
+[ RUN  ] test_jacobian_properties
+    J J^-1 = I within 2.3e-07 over 500 random poses; det J = J_t1
+[  OK  ] test_jacobian_properties (505 checks)
+[ RUN  ] test_limiter_radial_properties
+    radial taper: |q| <= q_lim (+4 ulp) = 0.00055 m for 4000 radii up to 5 mm, identity inside the knee, monotonic, C1
+[  OK  ] test_limiter_radial_properties (3 checks)
+[ RUN  ] test_limiter_slew_properties
+    slew: step <= 4e-05 m per tick (0.08 m/s) in 2000 random cases
+[  OK  ] test_limiter_slew_properties (1 checks)
+[ RUN  ] test_authority_smoothing
+[  OK  ] test_authority_smoothing (2 checks)
+[ RUN  ] test_kf_step_golden
+    _kf_step golden (114 realistic states): max |dx|/sd 2.6e-05, |dP|/(sd sd) 9.4e-06, |d innov|/sqrt(S) 4.2e-05, |dS|/S 6.5e-05
+[  OK  ] test_kf_step_golden (5 checks)
+[ RUN  ] test_kf_estimator_sequence_golden
+    balanced: 6000 ticks (tremor 8->10 Hz, dropout): max |d dhat| 1.06e-08 m, rel |d w| 1.9e-06, |d conf| 8.8e-06, rel |d nis| 1.1e-05
+    assertive: max |d dhat| 1.06e-08 m, rel |d w| 1.9e-06, |d conf| 8.8e-06, rel |d nis| 1.1e-05
+[  OK  ] test_kf_estimator_sequence_golden (10 checks)
+[ RUN  ] test_kf_float32_covariance_health
+    float32 P after 6000 ticks: symmetric and positive definite (Cholesky) on both axes: yes
+[  OK  ] test_kf_float32_covariance_health (2 checks)
+[ RUN  ] test_bpf_estimator_golden
+    band-pass estimator vs mode==2 transcription: max |d dhat| 1.02e-07 m over 6000 ticks
+[  OK  ] test_bpf_estimator_golden (2 checks)
+[ RUN  ] test_replay_sim_kf
+    Kalman (balanced), local origin on (shift invariance): 3999 ticks vs core.simulate(): max |d dhat| 1.36e-08 m, |d f_est| 5.82e-05 Hz, |d g| 3.46e-06, |d q_r| 3.78e-09 m, |d i_ref| 3.11e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
+    Kalman (balanced), local origin off: 3999 ticks vs core.simulate(): max |d dhat| 1.13e-08 m, |d f_est| 4.86e-05 Hz, |d g| 3.17e-06, |d q_r| 3.11e-09 m, |d i_ref| 3.51e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 0.987), max |q_r| 229 um
+[  OK  ] test_replay_sim_kf (18 checks)
+[ RUN  ] test_replay_sim_bpf
+    band-pass, local origin off (as simulator): 3999 ticks vs core.simulate(): max |d dhat| 1.85e-07 m, |d f_est| 0 Hz, |d g| 2.98e-06, |d q_r| 2.15e-07 m, |d i_ref| 0.00127 A; reference authority g_eff > 0 on 93 % of ticks (max 1.000), max |q_r| 532 um
+[  OK  ] test_replay_sim_bpf (9 checks)
+[ RUN  ] test_replay_sim_ffc
+    Kalman + contact FF (bench option): 3999 ticks vs core.simulate(): max |d dhat| 2.94e-08 m, |d f_est| 7.49e-05 Hz, |d g| 1.7e-05, |d q_r| 8.47e-09 m, |d i_ref| 1.89e-05 A; reference authority g_eff > 0 on 92 % of ticks (max 1.000), max |q_r| 346 um
+[  OK  ] test_replay_sim_ffc (9 checks)
+[ RUN  ] test_replay_sim_kf_authority
+    Kalman (balanced) 4 s / 9 Hz, local origin on: 7999 ticks vs core.simulate(): max |d dhat| 1.83e-08 m, |d f_est| 6.82e-05 Hz, |d g| 7.87e-06, |d q_r| 6.99e-09 m, |d i_ref| 4.61e-05 A; reference authority g_eff > 0 on 96 % of ticks (max 1.000), max |q_r| 399 um
+[  OK  ] test_replay_sim_kf_authority (9 checks)
+[ RUN  ] test_bpf_reacquisition_transient
+    band-pass after re-acquisition at 20 mm: peak |dhat| 9.86 mm (simulator scheme) vs 0.270 mm (local origin)
+[  OK  ] test_bpf_reacquisition_transient (2 checks)
+[ RUN  ] test_guided_tracks_template
+[  OK  ] test_guided_tracks_template (6 checks)
+[ RUN  ] test_current_loop_bridge_mapping
+    duty -> IN1/IN2: drive/brake slow decay, drive phase centred, duty clamped to 0.97, resolution 1/200
+[  OK  ] test_current_loop_bridge_mapping (2 checks)
+[ RUN  ] test_current_loop_step_response
+    current step 0 -> 0.30 A (3.7 V, 25 degC, stage locked, period-mean true current, noise off):
+      PI (default, drive_sense design): 10-90% rise 125 us, overshoot 13.2 %, steady error -0.53 mA
+      PI + R i_ref feedforward (simulator form): rise 50 us, overshoot 54.7 %, steady error -0.44 mA
+[  OK  ] test_current_loop_step_response (4 checks)
+[ RUN  ] test_current_loop_voltage_clamp
+    3.0 V, 85 degC coil, i_ref 0.60 A: duty clamped at 0.970, current 0.361 A (voltage limited); reference 0.20 A reached within +/-5 mA after 400 us (conditional-integration anti-windup)
+[  OK  ] test_current_loop_voltage_clamp (4 checks)
+[ RUN  ] test_current_loop_offset_calibration
+    ISNS offset (+8, -5 mA injected): before cal true current -9.40 mA; coast window 26 periods (650 us); estimated 8.06 / -5.04 mA; after cal true current 0.039 mA
+[  OK  ] test_current_loop_offset_calibration (6 checks)
+[ RUN  ] test_closed_loop_step_response
+    50 um step, feedback only (ff_ref = 0), 3.7 V, noise off: 10-90% rise 1.5 ms, overshoot 45.8 %, 2% settling 23.0 ms, final error -0.038 um; no current or voltage saturation
+    (the PID acts on the error, so its zeros at ~0.38 x pos_bw give overshoot even with zeta 0.7; the firmware reference passes the 0.08 m/s slew limit and the reference feedforward)
+[  OK  ] test_closed_loop_step_response (6 checks)
+[ RUN  ] test_closed_loop_bandwidth
+    f   5.0 Hz: feedback only |T| 0.997 (    0.4 deg) | with reference FF |T| 1.002 (    1.1 deg)
+    f  10.0 Hz: feedback only |T| 1.002 (    1.3 deg) | with reference FF |T| 1.007 (    1.8 deg)
+    f  20.0 Hz: feedback only |T| 1.074 (    5.0 deg) | with reference FF |T| 0.996 (    5.3 deg)
+    f  40.0 Hz: feedback only |T| 1.366 (   -2.1 deg) | with reference FF |T| 1.071 (   13.4 deg)
+    f  60.0 Hz: feedback only |T| 1.574 (  -17.0 deg) | with reference FF |T| 1.297 (   17.8 deg)
+    f  80.0 Hz: feedback only |T| 1.666 (  -34.5 deg) | with reference FF |T| 1.609 (   14.0 deg)
+    f 100.0 Hz: feedback only |T| 1.624 (  -53.2 deg) | with reference FF |T| 1.866 (    4.5 deg)
+    f 130.0 Hz: feedback only |T| 1.341 (  -79.0 deg) | with reference FF |T| 1.969 (  -12.5 deg)
+    f 160.0 Hz: feedback only |T| 0.997 (  -97.7 deg) | with reference FF |T| 1.825 (  -25.6 deg)
+    f 200.0 Hz: feedback only |T| 0.662 ( -112.7 deg) | with reference FF |T| 1.574 (  -36.4 deg)
+    f 250.0 Hz: feedback only |T| 0.422 ( -122.5 deg) | with reference FF |T| 1.333 (  -44.1 deg)
+    f 300.0 Hz: feedback only |T| 0.288 ( -127.3 deg) | with reference FF |T| 1.166 (  -49.3 deg)
+    closed-loop q/q_r (feedback only): -3 dB at 193 Hz, resonance peak 4.43 dB at 80 Hz; design pos_bw 60 Hz is the PID natural frequency
+[  OK  ] test_closed_loop_bandwidth (4 checks)
+[ RUN  ] test_closed_loop_margins
+    L(j2pi  30.0 Hz): |L| 5.241  phase  -165.8 deg
+    L(j2pi  45.0 Hz): |L| 2.673  phase  -150.7 deg
+    L(j2pi  60.0 Hz): |L| 1.819  phase  -144.8 deg
+    L(j2pi  75.0 Hz): |L| 1.380  phase  -143.2 deg
+    L(j2pi  90.0 Hz): |L| 1.109  phase  -143.6 deg
+    L(j2pi 110.0 Hz): |L| 0.872  phase  -146.1 deg
+    L(j2pi 130.0 Hz): |L| 0.714  phase  -149.7 deg
+    L(j2pi 160.0 Hz): |L| 0.551  phase  -156.2 deg
+    L(j2pi 200.0 Hz): |L| 0.412  phase  -165.6 deg
+    L(j2pi 250.0 Hz): |L| 0.300  phase  -177.6 deg
+    L(j2pi 320.0 Hz): |L| 0.206  phase  -194.2 deg
+    L(j2pi 400.0 Hz): |L| 0.141  phase  -212.3 deg
+    loop margins (unloaded host plant; Hall 0.1 ms delay, 2 kHz ZOH, 40 kHz current loop, derivative filter): crossover 98.1 Hz, phase margin 35.3 deg, phase crossover 259.0 Hz, gain margin 10.9 dB -> REQ-CTRL-002 (PM >= 40 deg, GM >= 6 dB) NOT MET on this model
+[  OK  ] test_closed_loop_margins (3 checks)
+[ RUN  ] test_closed_loop_hold_no_vsat
+    design hold force 0.760 N (i = 0.335 A at Kf20):
+      3.7 V, 25 degC: mean 0.337 A, DC duty 0.608; max |duty| static 0.650, with 0.3 mm 8 Hz motion 0.660; clamp ticks 0/0
+      3.3 V, coil 96.6 degC (R x1.301), magnets 36.1 degC (Kf x0.981): mean 0.341 A, V 2.84 V, DC duty 0.868; noise off: max |duty| 0.865, clamp ticks 0
+      same corner with Hall/ADC noise: max |duty| static 0.925 (clamp ticks 0); with 0.3 mm 8 Hz motion 0.930, clamp ticks 0 of 2000, longest run > 0.95: 0.0 ms (fault needs > 50 ms)
+      (drive_sense.json v0.4.3: the 6 ohm winding binds at 3.3 V in 0.5 % of the thermally allowed envelope; sim/pensim/core.py applies the Br tempco at the coil temperature, the pessimistic convention)
+[  OK  ] test_closed_loop_hold_no_vsat (7 checks)
+[ RUN  ] test_thermal_model_steady_state
+    two-node steady state: 0.20 W -> coil 62.400 degC (closed form 62.400), structure 33.400 (33.400); 0.15 A on one coil with copper tempco -> 55.095 degC (closed form 55.095); no loss -> coil 30.900 degC (T_amb + 5.9 K = 30.900); R_coil-struct 145 K/W + R_struct-amb 12.5 K/W = 157.5 K/W (README D6)
+[  OK  ] test_thermal_model_steady_state (6 checks)
+[ RUN  ] test_thermal_two_time_constants
+    0.30 W step: time constants from the response 35.5 s and 190.1 s (network eigenvalues 35.5 s and 190.1 s; uncoupled R C products 36.25 s and 186.25 s); max |T - analytic| 0.022 K over 900 s
+[  OK  ] test_thermal_two_time_constants (4 checks)
+[ RUN  ] test_thermal_resistance_estimate
+    resistance thermometry (NTC invalid; V/I - r_bridge - r_shunt): T_R = 70.00 degC for a 70 degC coil; estimate within 2 degC after 0.30 s; systematic error from r_bridge spread 0.28-0.60 ohm: +/-6.8 degC (VERIFY EXP-B07)
+[  OK  ] test_thermal_resistance_estimate (5 checks)
+[ RUN  ] test_thermal_ntc_and_derating
+    NTC 50 degC -> 50.00 degC; the coil-former NTC is preferred when valid (90 -> 40 degC within 0.43 s; resistance thermometry only without it); derate 1 at <= 100 degC -> 0 at 115 degC (fault), clears < 90 degC (unchanged)
+[  OK  ] test_thermal_ntc_and_derating (15 checks)
+[ RUN  ] test_safety_hall_stuck
+    frozen Hall frame detected 4.0 ms after the first repeated frame (budget 5 ms, ICD s6); no false trip in 10 s of live frames with ~3 LSB noise
+[  OK  ] test_safety_hall_stuck (6 checks)
+[ RUN  ] test_safety_hall_residual_and_range
+    model residual: max 10.37 um over 2 s of consistent 0.3 mm 8 Hz motion (threshold 100 um); 150 um jump detected on the 2nd residual tick; |q| beyond the stop detected
+[  OK  ] test_safety_hall_residual_and_range (3 checks)
+[ RUN  ] test_safety_headroom
+    headroom: duty > 0.95 on every tick trips at 50.5 ms (ICD: > 50 ms); runs of 44.5 ms never trip
+[  OK  ] test_safety_headroom (2 checks)
+[ RUN  ] test_safety_optical
+[  OK  ] test_safety_optical (2 checks)
+[ RUN  ] test_safety_battery
+    low battery: 3.35 V no fault (recover >= 3.45 V); step to 3.20 V trips after 230 ms (LPF 50 ms + debounce 200 ms)
+[  OK  ] test_safety_battery (4 checks)
+[ RUN  ] test_safety_overcurrent_latch_clear
+    over-current latch: trip removes ACT_EN in hardware; clear = ACT_EN_REQ low -> FAULT_CLR_N pulse -> FAULT_N check; 4 pulses, none with ACT_EN_REQ high; persistent fault -> FAILED after 3 retries
+[  OK  ] test_safety_overcurrent_latch_clear (19 checks)
+[ RUN  ] test_safety_ml_trips
+[  OK  ] test_safety_ml_trips (3 checks)
+[ RUN  ] test_sm_transition_table
+    OFF->STANDBY->NEUTRAL_HOLD->{ASSIST_KF, ASSIST_ML, GUIDED, TRAINING_FADE}, permissions, disarm/off with ramp-down 30 ms at pen-up: as specified
+[  OK  ] test_sm_transition_table (18 checks)
+[ RUN  ] test_sm_fault_policies
+    fault bit 0 over-current (hard, VMOT removed): SAFE_PASSIVE, in contact act=0, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 1 Hall frozen (hard, hold open loop): SAFE_PASSIVE, in contact act=3, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 2 over-temperature (fade, wait pen-up): SAFE_PASSIVE, in contact act=2, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 3 low battery (fade, wait pen-up): SAFE_PASSIVE, in contact act=2, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 4 optical invalid (fade, wait pen-up): SAFE_PASSIVE, in contact act=2, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 5 watchdog (hard): SAFE_PASSIVE, in contact act=0, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 6 headroom (fade, wait pen-up): SAFE_PASSIVE, in contact act=2, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 7 charging (VMOT removed): SAFE_PASSIVE, in contact act=0, pen-up -> ramp -> off, self-check -> STANDBY
+    fault bit 8 ML guard (fade, wait pen-up): SAFE_PASSIVE, in contact act=2, pen-up -> ramp -> off, self-check -> STANDBY
+    soft fault in contact: de-energised after the 5 s pen-up timeout with a 30 ms ramp; escalation NEUTRAL -> HOLD_OL -> OFF; fault at pen-up ramps immediately
+[  OK  ] test_sm_fault_policies (98 checks)
+[ RUN  ] test_ml_guard_rejects
+    rules 1-3: NaN/Inf and int16 output saturation (flag, or |d| at 3276.7 um full scale) reject that inference only; |d| clipped to q_lim; slew limited to 50 mm/s (400 um in 4 ms -> 200 um)
+    the v1 rule |d - d_KF| > 150 um is not implemented (removed in ICD s5 v1.1)
+[  OK  ] test_ml_guard_rejects (12 checks)
+[ RUN  ] test_ml_guard_fallback_within_20ms
+    a-posteriori (rule 4): good predictor admitted at 518.0 ms (RMS error 0.0 um vs realised 145.0 um); sign-inverted predictor -> fallback 38.5 ms after the switch, Kalman fully in use 20.0 ms later; re-admitted 1000 ms after the last failing evaluation (hold >= 1 s)
+    expiry: output expired when its newest input was 8.5 ms old (contract: t_acq_newest + 8 ms, 2 kHz tick granularity); Kalman fully in use 20.0 ms later
+[  OK  ] test_ml_guard_fallback_within_20ms (12 checks)
+[ RUN  ] test_ml_guard_confidence
+    rule 5 (c^ = byte/255): defaults c_min 0, c_full 1: byte 255 leaves the ML share unchanged (w = mix on every tick), byte 0 removes it within 20.0 ms (Kalman only) and 255 restores it within 20.0 ms; c_full 0.4: byte 51 -> share 0.5 within 10.0 ms, byte 204 -> 1; c_min 0.3 rejects byte 51 (reason 0x40), accepts 102
+[  OK  ] test_ml_guard_confidence (11 checks)
+[ RUN  ] test_ml_window
+    input window: 64 x (dx, dy) um increments, oldest first, newest acquisition stamp exported (no f_est, ICD s5 v1.1); reset on optical dropout
+[  OK  ] test_ml_window (69 checks)
+[ RUN  ] test_calib_record_roundtrip
+    CAL_USER v2 (r_n = K_n/k_ax) flash record and log payload round-trip bit-exactly; r_n outside 0.02-10 and other out-of-range fields are never written
+[  OK  ] test_calib_record_roundtrip (12 checks)
+[ RUN  ] test_calib_record_corruption
+    CAL_USER record: 328/328 single-bit corruptions rejected; wrong version/type/range rejected
+[  OK  ] test_calib_record_corruption (5 checks)
+[ RUN  ] test_calib_user_v1_conversion
+    CAL_USER v1 -> v2: r_n = gamma / ((1 - gamma) sin^2 50 deg); gamma(50 deg) recomputed from r_n within 3.0e-08 for gamma 0.05-0.8; v1 gamma outside 0.0116-0.854 is clamped to r_n 0.02 / 10 (flagged); re-encoded as version 2
+[  OK  ] test_calib_user_v1_conversion (22 checks)
+[ RUN  ] test_jacobian_gamma_of_theta
+    theta 35 deg: gamma 0.11629 (simulator formula 0.11629), J_t1 0.70962 (0.70962)
+    theta 50 deg: gamma 0.19011 (simulator formula 0.19011), J_t1 0.86858 (0.86858)
+    theta 75 deg: gamma 0.27178 (simulator formula 0.27178), J_t1 0.98477 (0.98477)
+    gamma(theta) and J_t1 vs the simulator formula at 35/50/75 deg: max |d gamma| 1.5e-08, rel |d J_t1| 4.1e-08 (r_n = K_n/k_ax = 0.400)
+[  OK  ] test_jacobian_gamma_of_theta (11 checks)
+[ RUN  ] test_calib_spectral_f0
+    Goertzel bank 2-14 Hz (0.1 Hz bins, Hann, 4.1 s at 250 Hz): tremor peak error <= 0.000 Hz for 5.3/8.3/11.7 Hz; stroke peak 4.60 Hz (true 4.6); noise-only window -> no peak
+[  OK  ] test_calib_spectral_f0 (5 checks)
+[ RUN  ] test_calib_gate_rule
+    gate rule: f0 8.3 / stroke 4.6 Hz -> f_gate 6.45 Hz; f0 5.0 / 4.5 Hz -> not separable, ASSIST_KF withdrawn
+[  OK  ] test_calib_gate_rule (8 checks)
+[ RUN  ] test_hall_conversion
+    Hall: default (UNCALIBRATED placeholder) LSB = 19.1 nm at the tip; crosstalk and cubic terms applied
+[  OK  ] test_hall_conversion (7 checks)
+[ RUN  ] test_fusion_matches_sim_scheme
+    fusion (simulator scheme): float32 vs double reference 1.1e-09 m; max error vs truth(t - 1 ms) 20.7 um (optical sample-and-hold staleness remains) vs raw delayed optics 30.1 um
+[  OK  ] test_fusion_matches_sim_scheme (2 checks)
+[ RUN  ] test_attitude_from_gravity
+    attitude from gravity: theta 50.000 deg (50), rho 30.000 deg (30); yaw about n integrates to phi 0.5000 rad (0.5)
+[  OK  ] test_attitude_from_gravity (3 checks)
+[ RUN  ] test_system_hall_frozen_detect
+    system (app + plant): frozen TMAG5170 detected 4.0 ms after the freeze (budget 5 ms); held i_ref 0.2194 A (8 ms mean before the stuck run; last servo value 0.2168 A); stage drift over 200 ms of open-loop hold under a constant 0.50 N load 33.4 um (de-energising would move it 600 um, to the stop); de-energised only after the optical pen-up + 30 ms ramp; recovery via self-check
+    log stream: 2742 research frames, 263 stroke samples, 9 events, 0 bad records
+[  OK  ] test_system_hall_frozen_detect (16 checks)
+[ RUN  ] test_system_fault_sequences
+    (a) over-current: coast within 1 tick, latch cleared at pen-up (ACT_EN_REQ low -> FAULT_CLR_N -> FAULT_N high), STANDBY
+    (b) low battery at 3.20 V: fault after 276 ms, neutral hold in contact (stage held, authority 0), de-energised after pen-up + ramp, STANDBY when VBAT recovers
+    (c) soft fault with the pen kept down: de-energised after the 5 s timeout (ICD s6)
+    (d) watchdog-reset boot -> SAFE_PASSIVE -> STANDBY; (e) charging: off, re-arm only after unplug; watchdog kicked 2236 times (only while the current ISR runs)
+[  OK  ] test_system_fault_sequences (22 checks)
+[ RUN  ] test_system_capture_boundaries
+    capture: 102 stroke samples for a 501.5 ms stroke (pen-down sample, 200 Hz, pen-up sample at the last in-contact tick); t_ms monotonic across the hardware counter wrap (55 -> 556 ms); research p_H undefined (INT32_MIN) in 111 frames before the first pen-down, page-origin relative afterwards
+[  OK  ] test_system_capture_boundaries (8 checks)
+SUMMARY: 60 test cases, 60 passed, 0 failed; 1120 checks, 0 failed checks

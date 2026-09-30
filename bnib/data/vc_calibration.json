@@ -1,0 +1,37 @@
+{
+  "kappa": 1.4182140228796247,
+  "coef": [
+    1.4578869820871996,
+    1.3016695473470323,
+    0.09886967122925841,
+    0.30192623558537285,
+    0.2365724291340586,
+    -0.010381384708907131,
+    0.05246994465067167,
+    -0.2217389342744699,
+    0.03916310869202451
+  ],
+  "nu": 0.8514962059239218,
+  "fitted": true,
+  "recovered_from_committed_numerical_observations": true,
+  "recovery": {
+    "n_observations": 632,
+    "matrix_rank": 9,
+    "max_log_residual": 6.6682770416548465e-15,
+    "nu_n_observations": 632,
+    "nu_std": 1.2831789462700862e-15,
+    "source": "results/bnib/bnib.json",
+    "source_sha256": "c68d41f2837ac84911977512b58400307c977ff20a60c8eee1929b52d56835a3"
+  },
+  "label": "RECOVERED NUMERICAL SURROGATE: legacy full-coil magnetostatic approximation, not hardware calibration",
+  "n_fit": 632,
+  "n_holdout": 50,
+  "rel_rms_fit": 3.8651333777261344e-15,
+  "rel_rms_holdout": 0.006081223783218482,
+  "rel_max_holdout": 0.013333089398366083,
+  "independent_validation": {
+    "source": "bnib/data/vc_calibration_refit.json",
+    "note": "50 newly executed cuboid/image force maps not used for coefficient recovery",
+    "sha256": "6795bdd4a68e5a902973612eec545edd66bf7d404cf023c1c7b1ec0976be5067"
+  }
+}

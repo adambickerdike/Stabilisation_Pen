@@ -115,7 +115,10 @@ def loads_at(nib: NibModel, theta: float, phi: float, F_s: float, duty: Duty, ba
     D_inert = nib.m_eff_tip * w * w * duty.q_rms
     k_net = nib.k_tip - nib.k_mag_tip + geometric_stiffness(nib, theta, F_s)
     D_flex = k_net * duty.q_rms
-    D_rms = math.sqrt(D_inert ** 2 + D_flex ** 2)
+    # A prescribed sinusoidal displacement and its acceleration are anti-phase.
+    # Sum their signed force coefficients before squaring; RSS would falsely
+    # charge copper loss even at the undamped mechanical resonance.
+    k_add = 0.0
     Bc = np.zeros(2)
     Bu = np.zeros(2)
     extra = {}
@@ -123,8 +126,9 @@ def loads_at(nib: NibModel, theta: float, phi: float, F_s: float, duty: Duty, ba
         bb = balance.balance_force(nib, theta, phi, F_s, duty)
         Bc, Bu = bb["B_contact"], bb["B_penup"]
         sig_fric = np.sqrt(sig_fric ** 2 + bb.get("sigma_extra", np.zeros(2)) ** 2)
-        D_rms = math.sqrt(D_rms ** 2 + (bb.get("k_add", 0.0) * duty.q_rms) ** 2)
+        k_add = bb.get("k_add", 0.0)
         extra = {k: v for k, v in bb.items() if k not in ("B_contact", "B_penup")}
+    D_rms = abs(k_net + k_add - nib.m_eff_tip * w * w) * duty.q_rms
     par = np.array([nib.F_par, 0.0])
     hold_c = Q_mean + Bc + G + par
     hold_u = Bu + G + par
@@ -134,7 +138,9 @@ def loads_at(nib: NibModel, theta: float, phi: float, F_s: float, duty: Duty, ba
     out = {
         "theta_deg": theta / D2R, "phi_deg": phi / D2R, "F_s": F_s, "mu": st["mu"],
         "Q_static": Q_static.tolist(), "Q_mean_sliding": Q_mean.tolist(), "sigma_friction": sig_fric.tolist(),
-        "gravity": G.tolist(), "D_inertia_rms": D_inert, "D_flexure_rms": D_flex, "k_net_tip": k_net,
+        "gravity": G.tolist(), "D_inertia_rms": D_inert, "D_flexure_rms": D_flex,
+        "D_dynamic_rms": D_rms, "dynamic_model": "coherent harmonic (k_total - m omega^2) q_rms",
+        "k_net_tip": k_net + k_add,
         "balance_contact": Bc.tolist(), "balance_penup": Bu.tolist(), "parasitic": par.tolist(),
         "P_hold_contact_W": float(np.sum(hold_c ** 2) / Km2), "P_penup_W": float(np.sum(hold_u ** 2) / Km2),
         "P_friction_W": float(c * np.sum(sig_fric ** 2) / Km2), "P_dynamic_W": float(2 * D_rms ** 2 / Km2),

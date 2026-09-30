@@ -1,0 +1,387 @@
+{
+  "evidence": "SIM, fresh synthetic engineering cases; no patient, handwriting-reader or RevK validation",
+  "created_utc": "2026-09-30T09:12:19Z",
+  "version": 2,
+  "freeze_sha256": "786dd141f0b2823eaee2784eacacf6cc0641ed89eea9fc842ebc3fd8a4731dcc",
+  "selection": "80Hz frozen from independent linear uncertainty grid before engineering bench and final cases",
+  "candidates": {
+    "old_causal400": 400.0,
+    "causal80": 80.0
+  },
+  "cases": [
+    {
+      "writer": 35001,
+      "seed": 102000,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35001,
+      "seed": 102000,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35001,
+      "seed": 102000,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35001,
+      "seed": 102001,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35001,
+      "seed": 102001,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35001,
+      "seed": 102001,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35001,
+      "seed": 102002,
+      "f0": 10.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35001,
+      "seed": 102002,
+      "f0": 10.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35001,
+      "seed": 102002,
+      "f0": 10.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35002,
+      "seed": 102029,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35002,
+      "seed": 102029,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35002,
+      "seed": 102029,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35002,
+      "seed": 102030,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35002,
+      "seed": 102030,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35002,
+      "seed": 102030,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35002,
+      "seed": 102031,
+      "f0": 10.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35002,
+      "seed": 102031,
+      "f0": 10.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35002,
+      "seed": 102031,
+      "f0": 10.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35003,
+      "seed": 102058,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35003,
+      "seed": 102058,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35003,
+      "seed": 102058,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35003,
+      "seed": 102059,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35003,
+      "seed": 102059,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35003,
+      "seed": 102059,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35003,
+      "seed": 102060,
+      "f0": 10.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35003,
+      "seed": 102060,
+      "f0": 10.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35003,
+      "seed": 102060,
+      "f0": 10.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35004,
+      "seed": 102087,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35004,
+      "seed": 102087,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35004,
+      "seed": 102087,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35004,
+      "seed": 102088,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35004,
+      "seed": 102088,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35004,
+      "seed": 102088,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35004,
+      "seed": 102089,
+      "f0": 10.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35004,
+      "seed": 102089,
+      "f0": 10.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35004,
+      "seed": 102089,
+      "f0": 10.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35005,
+      "seed": 102116,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35005,
+      "seed": 102116,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35005,
+      "seed": 102116,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35005,
+      "seed": 102117,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35005,
+      "seed": 102117,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35005,
+      "seed": 102117,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 35005,
+      "seed": 102118,
+      "f0": 10.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 35005,
+      "seed": 102118,
+      "f0": 10.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 35005,
+      "seed": 102118,
+      "f0": 10.5,
+      "amp": 0.00172,
+      "class": "large"
+    }
+  ],
+  "reference": "Same ideal clean physical trajectory for both candidates; noiseless Hall, true velocity400Hz only in reference",
+  "observations": "Both candidates causal Hall300Hz derivative filter, declared noise and latency, 1ms freshness; delayed measured refill contact gates servo bias/authority",
+  "aborted_previous_run": "aborted_hall_only_final: stopped after11pairs because true contact remained in servo gating; no gain retuning; all final writerIDs and seeds changed",
+  "policy": "Zero residual; existing guarded tracker identical for both; no PPO or tuning on these cases",
+  "power": "Copper energy accumulated at10kHz servo/thermal ticks, divided by scored duration",
+  "limits": "Short notes, starts nominal ambient then3s rest; coil temperature is not grip surface temperature",
+  "uncertainty": "5000 paired resamples by5synthetic writer clusters, descriptive only; shared glyph family",
+  "rejection_reporting": "Report every case, including worse tracking, extra or missing ink and high temperature; no case exclusion",
+  "parallel_workers": 2,
+  "source_sha256": {
+    "sim2/__init__.py": "851203fbc8fb95675f19434c3f532fedce203c23e7ae4d65782f9a019b51dc56",
+    "sim2/builder.py": "ddac7835073bfe4c395df3290c2bb96e2bf3f08b0d1e6054da4b423db4340f31",
+    "sim2/contact.py": "0e43b94b14449acd373fa33a2ac5589587afcd6dd02f9f0052539b6e78527329",
+    "sim2/contact_sensor.py": "191c8f2486489de250b263561abe41c1017f1d69028dba34032c7a4065ba2fe3",
+    "sim2/env.py": "1941842b56ddba7db11033247eea13f3146d979191bcb60f5a8665b58426990a",
+    "sim2/evidence.py": "51be55c50d67749822f923eddebbec59ee4692445663e4dd0e04a522a56587d4",
+    "sim2/h1compare.py": "23fd76339aa6d92a3b443bc12981ea7c648c2b22bc8afebc9decdf40a787e3aa",
+    "sim2/hall_velocity.py": "6ad17a5d4fc3afaed6ae0781c8eb915ecf78b5667add7e9e5e0b50c1155e590f",
+    "sim2/hand.py": "2390cd981467f0e5e1770883639cec0429821922443cd96285195b386f3e7f21",
+    "sim2/myo.py": "47a459ab3f81149a0d38a0321da61e07470c26e12f438c44f512c245ce70f468",
+    "sim2/params.py": "aba1994b45e1bec83f528fea0b87da798c594915239849f241e4c4d92a0f2cda",
+    "sim2/plugins.py": "c4561463d78b925c98c5ac7b87c539d821e09b8027dc525c7d9923687327a223",
+    "sim2/report.py": "8ee1e78b80da5a464b43bb2639bc70244d4a2cd8f9d61e3d751325302e26d88f",
+    "sim2/reward.py": "477a231f806829f46405b634e8d0893ff649afdd84b9c732fd6c6fad3ef1e327",
+    "sim2/run_study.py": "c83f5b477d0f2eccc85835ecfbe309e8797aa468fa348ddd0ebc931dfafc3c6c",
+    "sim2/sensors.py": "28ab54dcede2e82557923bce05adbebd7d25282e668c70192e9cb042f116a8cc",
+    "sim2/servo_design.py": "b932612c160b880de71d162402b3b72734317294673aca677a553a2a624b9c79",
+    "sim2/servo_design_study.py": "afbae89138c350983587a5212949e3a020983c99afe4621c193cf26da5b01b15",
+    "sim2/sim.py": "f2f7e4f928d5118435353862958391e4fbaed1fcbdaccfe2c801cb5030450214",
+    "sim2/tremor.py": "573199dd16f81a25e7f5808dd5dca0a34af4eea4d4c2e5ab751e3fb739dbec7a",
+    "sim2/validate.py": "f62bb7bbca473823bdabb0300b6e50c809d0fa285df73876704f6086843b61d9",
+    "sim2/verify.py": "57aae7c6228ebed3b3c726754f7fdcfbdd5fc5d1802e888c25be852e78ffb33d",
+    "sim2j/__init__.py": "335abfabd0ad14323b83d95583768d06c99f19b638246f430c11c7c51f895b67",
+    "sim2j/akf_online.py": "4d32b634d67bd1ce3c2a18cca4b9a25d971989441dba0d3732e4cce97f49c072",
+    "sim2j/causal_controller_study.py": "e8722b512f66f31267791a8581d392b1150a62864804bb9c4a01fb3e92fb435c",
+    "sim2j/et.py": "6aa496d1714b131199fbd99745103ddff338e25e181b08bdb555838496b13988",
+    "sim2j/firmware.py": "1dad86bfd4de6488f87b3324efad3dc1c2025bfc3c63f693a44144c8990593ec",
+    "sim2j/guided.py": "d768935eda487f4448630706898c34231b6f5a40e76b5e22bb178fad01b8b660",
+    "sim2j/hall_sensitivity.py": "cc07410fa1fdfb8100baa859101f2851231af193ea7fd5ef209a6f4691192407",
+    "sim2j/learned_replay.py": "d70c0d092d35978e7da2ce52231723503ad23fdc9ae289154a716066a9643f3b",
+    "sim2j/plant_frf.py": "fa65630dfde9a9bca380ad50e043dd716642b5a85654b82d1ea121e6de9107b3",
+    "sim2j/report.py": "9d3e4f63cd15009bf8ce363553493f0114b2761148976da4be4e060a703fb5c5",
+    "sim2j/revj.py": "45179dcd1f65353c459e9759a31218ffeea1e219993fd12829a67fa3eae07461",
+    "sim2j/rl.py": "bc13d93031dc0ebdbadb2ae2b4fd12e578ea84356c0aea58ee3d040314b5f08a",
+    "sim2j/rl_integrity_study.py": "5cc19e377683dedcf6faf13275d78d574f6382bb34b4b11046971fd66935d569",
+    "sim2j/run_study.py": "89b0a77d72e91878c439c053dbefd05aa66e82173e3c2ccfa8714251e709529d",
+    "sim2j/sensing.py": "afb89bfee582e88e594c4f932b5f29dd65f88d4c88141d02d9aacd3eefb96233",
+    "sim2j/stepper.py": "2bd052ba31570d92d09d7405c04310d3d76c4d9dfab9249191ae1cc7658a5c23",
+    "sim2j/tasks.py": "ea8509617f1ea65b5f26d1c5bf50e806032d046cf83754c18e7c771d403bed63",
+    "sim2j/tuning.py": "da3e4d89478b692eac7356dc1fad8ae048df8c18dce0a7cb3bed31378f8a1dc4",
+    "sim2j/verify.py": "d78e9354cb03d638c3d25ce42fac0a0a5019e80b342ef17212431a29651bf989",
+    "sim2j/wheel.py": "6871f0086624e981510e009ab40c88a8c2011c22f8ef032c4a1c14065c497274",
+    "sim2j/writers.py": "260943c20beb6761e4c21e248a59b8091478bdae31cca40109e99004500395c2"
+  },
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "macOS-15.7.4-arm64-arm-64bit",
+    "numpy": "2.4.6"
+  }
+}

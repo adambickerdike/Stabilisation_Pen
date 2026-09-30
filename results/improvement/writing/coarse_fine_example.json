@@ -1,0 +1,45 @@
+{
+  "writer": "tst_UJI_W12",
+  "session": 2,
+  "char": "e",
+  "evidence": "Conditional accepted-writing architecture: externally reacted coarse + fine motion.\n\nCALCULATION ONLY. A 4 mm page-XY coarse stage plus a 1.5 mm radial nib is NOT the\ncurrent Rev K mechanism. The coarse path needs a grounded carriage. A collar\naround the improved 24 mm nib has not been packaged. Internal mass does not supply this\nsustained translation. Forces below are a transparent engineering screen with\nassumed mass, drag, spring/grip and friction; not a validated carriage design.\n",
+  "parameters": {
+    "radius_m": 0.004,
+    "payload_mass_kg": 0.15,
+    "drag_N_s_m": 0.2,
+    "spring_N_m": 0.0,
+    "friction_bound_N": 0.08,
+    "force_limit_N": 0.4,
+    "speed_m_s": 0.03,
+    "acceleration_m_s2": 2.0,
+    "reserve_m": 0.0002,
+    "fine_radius_m": 0.0015,
+    "fine_reserve_m": 0.0002,
+    "fine_mass_kg": 0.00367
+  },
+  "bounds": {
+    "coarse_radius_m": 0.0016851348602358767,
+    "fine_radius_m": 0.0007052677172380895,
+    "coarse_speed_m_s": 0.020554724125675692,
+    "fine_speed_m_s": 0.007553775892875845,
+    "coarse_acceleration_m_s2": 1.5496826277350815,
+    "fine_acceleration_m_s2": 0.507070132287383,
+    "coarse_force_N": 0.3181866740643805,
+    "fine_force_N": 0.03454947669940238,
+    "passed": true,
+    "failed": [],
+    "thresholds": {
+      "coarse_radius_m": 0.004,
+      "fine_radius_m": 0.0015,
+      "coarse_speed_m_s": 0.03,
+      "fine_speed_m_s": 0.03,
+      "coarse_acceleration_m_s2": 2.0,
+      "fine_acceleration_m_s2": 2.0,
+      "coarse_force_N": 0.4
+    },
+    "beta": 0.7272727272727273,
+    "duration_s": 0.6390592475808583,
+    "time_scale": 1.0,
+    "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+  }
+}

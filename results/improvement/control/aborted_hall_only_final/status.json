@@ -1,0 +1,9 @@
+{
+  "status": "ABORTED_METHOD_DEFECT",
+  "complete_pairs": 11,
+  "reason": "Review discovered true ball-force contact still feeds inner-servo authority/load-bias gate. Final cases must use measured delayed contact. Gain80Hz remains frozen; no selection from partial outcomes.",
+  "seen_writer_ids": [
+    34001,
+    34002
+  ]
+}

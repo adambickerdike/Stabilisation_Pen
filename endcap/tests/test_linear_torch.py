@@ -42,16 +42,16 @@ def test_matches_linear_ext_gyro_exactly():
 def test_gradient_matches_central_difference():
     el = LT.EndcapLinear(0.5)
     xref = el.x0_nodev(10.0, 1e-3)
-    L = torch.tensor([5e-3, 5e-3])
+    L = torch.tensor([5e-3, 5e-3], dtype=torch.float64)
 
     def ratio(m):
         x0, G = el.responses(dict(m_fix=m, z_fix=0.1525), 10.0, 1e-3)
         return LT.scaled_inverse_ratio(x0, G, L, xref)
 
-    m = torch.tensor(0.02, requires_grad=True)
+    m = torch.tensor(0.02, requires_grad=True, dtype=torch.float64)
     r = ratio(m)
     r.backward()
     eps = 1e-6
     with torch.no_grad():
-        fd = (ratio(torch.tensor(0.02 + eps)) - ratio(torch.tensor(0.02 - eps))) / (2 * eps)
+        fd = (ratio(torch.tensor(0.02 + eps, dtype=torch.float64)) - ratio(torch.tensor(0.02 - eps, dtype=torch.float64))) / (2 * eps)
     assert float(m.grad) == pytest.approx(float(fd), rel=1e-5)

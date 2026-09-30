@@ -1,6 +1,6 @@
 """The extension of sim/handpen by opt/inertial (grip sleeve, actuated pivot, in-loop controller hook) must leave every
-default output unchanged, bit for bit.  The baseline hashes were recorded on the unmodified sim/handpen
-(tests/data/h1_baseline.json, see h1_regression_cases.py).  Evidence status: code verification only."""
+default output unchanged, bit for bit within one numerical runtime. The original source revision is replayed
+on this host; historical Linux hashes remain unchanged. Evidence status: code verification only."""
 import json
 import os
 import sys
@@ -18,6 +18,12 @@ def now():
     return C.compute()
 
 
+@pytest.fixture(scope="module")
+def original():
+    from opt.inertial.tests.h1_same_host_reference import reference
+    return reference()
+
+
 def test_baseline_was_recorded_on_unmodified_tree():
     d = json.load(open(C.BASELINE))
     assert d["sim_handpen_modified_at_recording"] is False
@@ -25,8 +31,8 @@ def test_baseline_was_recorded_on_unmodified_tree():
 
 
 @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
-def test_default_outputs_bit_for_bit(now, name):
-    base = json.load(open(C.BASELINE))["cases"][name]
+def test_default_outputs_bit_for_bit(now, original, name):
+    base = original[name]
     got = now[name]
     for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
         if key in base:

@@ -202,7 +202,7 @@ def make_tcn(ch: int = 24, k: int = 3, dil=(1, 2, 4, 8, 16, 32, 64)):
                 h = b(h)
             return self.head(h).transpose(1, 2)
 
-    return TCN()
+    return TCN().float()  # float32 features/checkpoints, independent of physics modules' default dtype
 
 
 def n_params(model) -> int:

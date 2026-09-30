@@ -69,3 +69,63 @@ def test_module_entry_point(tmp_path, files):
     r = subprocess.run([sys.executable, "-m", "penapp", "search", "plumber"], env=env, capture_output=True,
                        text=True, timeout=60)
     assert r.returncode == 0 and "plumber" in r.stdout
+
+
+def test_proposal_review_acceptance_keeps_ink_and_reindexes(loaded, tmp_path, capsys):
+    from penapp import recognize
+    from penapp.notes import NoteStore, ValidationError
+    from conftest import LINES_A, LINES_B
+    store, ids = loaded
+    nid = ids["a"]
+    original = store.original_for_note(nid).payload
+    base = store.list_layers(note_id=nid, kind="recognition")[-1]
+    lines = []
+    for line in [s for s in base["payload"]["spans"] if s["level"] == "line"]:
+        words = [{"text": "libary" if w["text"] == "library" else w["text"],
+                  "stroke_ranges": w["stroke_ranges"]}
+                 for w in base["payload"]["spans"] if w.get("parent") == line["span_id"]]
+        lines.append({"text": " ".join(w["text"] for w in words), "words": words})
+    literal = recognize.run_recognizer(store, nid, recognize.GroundTruthRecognizer({"lines": lines}))
+    corpus = tmp_path / "training.txt"
+    corpus.write_text("\n".join((LINES_A + LINES_B) * 5 +
+                              ["Buy milk & bread!", "Café orders; Friday?", "🖊️ ✨"]))
+    proposal = tmp_path / "proposal.json"
+    before_layers = len(store.list_layers(note_id=nid))
+    code, out = _run(capsys, "--store", str(store.root), "propose-corrections", nid,
+                     "--corpus", str(corpus), "--out", str(proposal))
+    assert code == 0 and len(store.list_layers(note_id=nid)) == before_layers
+    metadata = json.loads(proposal.read_text())["model"]
+    assert metadata["corpus_lines"] == len((LINES_A + LINES_B) * 5) + 2
+    assert metadata["corpus_sha256"] != metadata["normalized_corpus_sha256"]
+    choice = next(c for c in json.loads(out)["choices"] if c["observed"] == "libary")
+    assert choice["suggested"] == "library"
+    assert store.effective_text(nid)["recognition_layer_id"] == literal["layer_id"]
+    with pytest.raises(SystemExit):
+        main(["--store", str(store.root), "accept-corrections", str(proposal)])
+    capsys.readouterr()
+    assert len(store.list_layers(note_id=nid)) == before_layers
+    code, out = _run(capsys, "--store", str(store.root), "accept-corrections", str(proposal),
+                     "--span-id", choice["span_id"])
+    assert code == 0 and json.loads(out)["user_edit_layer"].startswith("user_edit-")
+    # CLI commands open their own single-writer NoteStore. Refresh the fixture's
+    # read cache before inspecting files persisted by that separate instance.
+    store = NoteStore(store.root)
+    assert store.get_layer(literal["layer_id"]) == literal
+    assert store.original_for_note(nid).payload == original
+    code, out = _run(capsys, "--store", str(store.root), "search", "library", "--json")
+    assert code == 0 and any(h["note_id"] == nid for h in json.loads(out))
+    with pytest.raises(ValidationError, match="stale"):
+        main(["--store", str(store.root), "accept-corrections", str(proposal),
+              "--span-id", choice["span_id"]])
+    assert len(store.list_layers(note_id=nid)) == before_layers + 1
+
+
+@pytest.mark.parametrize("content", ["\n \n", "🖊️ ✨\n"])
+def test_proposal_rejects_empty_local_corpus(tmp_path, content):
+    corpus = tmp_path / "empty.txt"
+    corpus.write_text(content)
+    out = tmp_path / "proposal.json"
+    with pytest.raises(SystemExit, match="empty"):
+        main(["--store", str(tmp_path / "store"), "propose-corrections", "unused-note",
+              "--corpus", str(corpus), "--out", str(out)])
+    assert not out.exists()

@@ -1,0 +1,9 @@
+...................sssss......s.                                         [100%]
+=========================== short test summary info ============================
+SKIPPED [1] realdata/tests/test_realdata.py:117: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:133: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:143: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:155: UNIPEN index not built
+SKIPPED [1] realdata/tests/test_realdata.py:170: UNIPEN index not built
+SKIPPED [1] realdata/tests/test_realdata.py:271: tremor library not built
+26 passed, 6 skipped in 1.50s

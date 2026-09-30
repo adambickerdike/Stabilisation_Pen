@@ -1,0 +1,20 @@
+{
+  "writer": 42002,
+  "seed": 212030,
+  "f0": 9.5,
+  "amp": 0.0003,
+  "class": "mild",
+  "policy": "zero",
+  "model_sha256": null,
+  "actual_f0_hz": 9.5,
+  "duration_s": 2.5000000000000004,
+  "rms_um": 443.035890963219,
+  "cost": 1.4719456241917692,
+  "missing_fraction": 0.008999999999999998,
+  "extra_fraction": 0.006199999999999999,
+  "coil_power_W": 2.6766487881726935,
+  "coil_temperature_C": 58.72370477155779,
+  "reference_sha256": "d3d53717514e1d823375b208b8aa1cc536c55472433eaa32693dc357a7041f54",
+  "trace_path": "traces/zero/42002_212030_mild.npz",
+  "trace_sha256": "2db3f448ef08800a72db5b47d3d89c3a34d4ed6cd0c734c07558652a822ecdbd"
+}

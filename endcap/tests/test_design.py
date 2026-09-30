@@ -44,7 +44,7 @@ def test_lrm_coil_cap_is_flexure_aware():
     import math
     import torch
     from endcap import design as DS
-    x = {"d_s": torch.tensor(10e-3), "L_s": torch.tensor(18e-3), "t_c": torch.tensor(1.4e-3)}
+    x = {"d_s": torch.tensor(10e-3, dtype=torch.float64), "L_s": torch.tensor(18e-3, dtype=torch.float64), "t_c": torch.tensor(1.4e-3, dtype=torch.float64)}
     d = DS.lrm2(x)
     m, X = float(d["m_r"]), float(d["X"])
     for f, lo, hi in ((1.0, 20.0, 30.0), (10.0, 0.9, 1.1)):

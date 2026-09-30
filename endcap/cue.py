@@ -30,10 +30,10 @@ def grip_accel_per_N(f, r_rot=0.5, z_force=P.Z_CAP, z_grip=0.032):
     M, D, K, n = el.matrices({})
     w = 2 * math.pi * f
     out = []
-    Jg = torch.tensor(LT.point_jac8(el.lm, z_grip))
-    Jf = torch.tensor(LT.point_jac8(el.lm, z_force))
+    Jg = torch.tensor(LT.point_jac8(el.lm, z_grip), dtype=torch.float64)
+    Jf = torch.tensor(LT.point_jac8(el.lm, z_force), dtype=torch.float64)
     for t in (el.t1, el.t2):
-        F = (Jf.T @ torch.tensor(t)).to(torch.complex128)
+        F = (Jf.T @ torch.tensor(t, dtype=torch.float64)).to(torch.complex128)
         X = el.solve(M, D, K, w, F)
         a = (w * w) * torch.linalg.norm(torch.abs(Jg.to(torch.complex128) @ X))
         out.append(float(a))

@@ -1,0 +1,27 @@
+{
+  "decision": "Do not adopt PPO policy",
+  "reason": "Frozen selected seed0 failed fresh test benefit requirement; later causal-sensor sensitivity also fails clean and ink completeness limits.",
+  "actual_training_transitions": 49152,
+  "original_test": {
+    "clean_mean_um": 5.774517888052131,
+    "clean_worst_um": 24.8162294200409,
+    "mild_ratio": 1.0060292730493803,
+    "severe_ratio": 1.0044759462825603,
+    "missing_ink_increase": 0.0013999999999999985,
+    "extra_ink_increase": 0.0008000000000000021,
+    "coil_power_ratio": 1.0154554436877976,
+    "passes": false
+  },
+  "posthoc_causal400_sensitivity": {
+    "clean_mean_um": 111.96883446920151,
+    "clean_worst_um": 297.7255410819228,
+    "mild_ratio": 0.9883791620093159,
+    "severe_ratio": 0.9873040438766667,
+    "missing_ink_increase": 0.034200000000000036,
+    "extra_ink_increase": 0.035799999999999985,
+    "coil_power_ratio": 1.0192607076731026,
+    "passes": false
+  },
+  "saved_model_status": "Research checkpoints; never installed into firmware",
+  "frozen_sources": "legacy_source_snapshot and causal400_source_snapshot preserve the executed model definitions"
+}

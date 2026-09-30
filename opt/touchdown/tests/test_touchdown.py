@@ -147,7 +147,7 @@ def test_reduced_model_adjoint_gradient_matches_finite_differences():
     model = R.ReducedTouchdown(Pv)
     ev = R.make_events(T=0.1, vx=(0.0,), t_up=1.0)
     law = {"gain": 1.0, "lead_s": 0.8e-3, "k_load": 1.0}
-    z = {k: torch.tensor(v, requires_grad=True) for k, v in law.items()}
+    z = {k: torch.tensor(v, requires_grad=True, dtype=torch.float64) for k, v in law.items()}
     loss = model.simulate(ev, dict(z))["rms_ink"].mean() * 1e6
     loss.backward()
     # the loss of the event-driven model is rough at the scale of a few % of a gain (contact and stop switching), so
@@ -158,6 +158,6 @@ def test_reduced_model_adjoint_gradient_matches_finite_differences():
         for sgn in (1, -1):
             l2 = dict(law); l2[k] += sgn * h
             with torch.no_grad():
-                vals.append(float(model.simulate(ev, {kk: torch.tensor(v) for kk, v in l2.items()})["rms_ink"].mean()) * 1e6)
+                vals.append(float(model.simulate(ev, {kk: torch.tensor(v, dtype=torch.float64) for kk, v in l2.items()})["rms_ink"].mean()) * 1e6)
         fd = (vals[0] - vals[1]) / (2 * h)
         assert float(z[k].grad) == pytest.approx(fd, rel=0.05, abs=0.2)

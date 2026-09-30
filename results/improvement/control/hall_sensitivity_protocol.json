@@ -1,0 +1,182 @@
+{
+  "evidence": "SIM post-hoc sensitivity, reused synthetic test cases; no new independent validation",
+  "version": 1,
+  "created_utc": "2026-09-30T08:55:15Z",
+  "model_sha256": "1c3031b604b86ef3a66f8543a4b80dd14845ab89a4f140e9f6cde589ade44d78",
+  "original_protocol_sha256": "a92b5c58822b73f628572a6fe2960008bc7c0dd86923da61998078fbe9736555",
+  "original_test_sha256": "0adbf0fdc01f2a65d48b4280ff40f6e2b8f9bb7631b8ce852a36b8405d05b47a",
+  "source_sha256": {
+    "sim2/__init__.py": "851203fbc8fb95675f19434c3f532fedce203c23e7ae4d65782f9a019b51dc56",
+    "sim2/builder.py": "ddac7835073bfe4c395df3290c2bb96e2bf3f08b0d1e6054da4b423db4340f31",
+    "sim2/contact.py": "0e43b94b14449acd373fa33a2ac5589587afcd6dd02f9f0052539b6e78527329",
+    "sim2/env.py": "1941842b56ddba7db11033247eea13f3146d979191bcb60f5a8665b58426990a",
+    "sim2/evidence.py": "51be55c50d67749822f923eddebbec59ee4692445663e4dd0e04a522a56587d4",
+    "sim2/h1compare.py": "23fd76339aa6d92a3b443bc12981ea7c648c2b22bc8afebc9decdf40a787e3aa",
+    "sim2/hall_velocity.py": "6ad17a5d4fc3afaed6ae0781c8eb915ecf78b5667add7e9e5e0b50c1155e590f",
+    "sim2/hand.py": "2390cd981467f0e5e1770883639cec0429821922443cd96285195b386f3e7f21",
+    "sim2/myo.py": "47a459ab3f81149a0d38a0321da61e07470c26e12f438c44f512c245ce70f468",
+    "sim2/params.py": "06491a0550c6b9df3728171ac45975512b04e93e5c4916646afcf99274815aae",
+    "sim2/plugins.py": "c4561463d78b925c98c5ac7b87c539d821e09b8027dc525c7d9923687327a223",
+    "sim2/report.py": "8ee1e78b80da5a464b43bb2639bc70244d4a2cd8f9d61e3d751325302e26d88f",
+    "sim2/reward.py": "477a231f806829f46405b634e8d0893ff649afdd84b9c732fd6c6fad3ef1e327",
+    "sim2/run_study.py": "c83f5b477d0f2eccc85835ecfbe309e8797aa468fa348ddd0ebc931dfafc3c6c",
+    "sim2/sensors.py": "28ab54dcede2e82557923bce05adbebd7d25282e668c70192e9cb042f116a8cc",
+    "sim2/sim.py": "5375d106c61cf71bcc2c416e66c81584bfeace08f6641a24998e2f7cd83fabc4",
+    "sim2/tremor.py": "573199dd16f81a25e7f5808dd5dca0a34af4eea4d4c2e5ab751e3fb739dbec7a",
+    "sim2/validate.py": "f62bb7bbca473823bdabb0300b6e50c809d0fa285df73876704f6086843b61d9",
+    "sim2/verify.py": "57aae7c6228ebed3b3c726754f7fdcfbdd5fc5d1802e888c25be852e78ffb33d",
+    "sim2j/__init__.py": "335abfabd0ad14323b83d95583768d06c99f19b638246f430c11c7c51f895b67",
+    "sim2j/akf_online.py": "4d32b634d67bd1ce3c2a18cca4b9a25d971989441dba0d3732e4cce97f49c072",
+    "sim2j/et.py": "6aa496d1714b131199fbd99745103ddff338e25e181b08bdb555838496b13988",
+    "sim2j/firmware.py": "1dad86bfd4de6488f87b3324efad3dc1c2025bfc3c63f693a44144c8990593ec",
+    "sim2j/guided.py": "d768935eda487f4448630706898c34231b6f5a40e76b5e22bb178fad01b8b660",
+    "sim2j/hall_sensitivity.py": "cc07410fa1fdfb8100baa859101f2851231af193ea7fd5ef209a6f4691192407",
+    "sim2j/learned_replay.py": "d70c0d092d35978e7da2ce52231723503ad23fdc9ae289154a716066a9643f3b",
+    "sim2j/plant_frf.py": "fa65630dfde9a9bca380ad50e043dd716642b5a85654b82d1ea121e6de9107b3",
+    "sim2j/report.py": "9d3e4f63cd15009bf8ce363553493f0114b2761148976da4be4e060a703fb5c5",
+    "sim2j/revj.py": "1f285ddfe361c2840742e654215bbf04dd0654151337b7e16162d5083d4668f4",
+    "sim2j/rl.py": "c58465cecc9e1c3cbc4aa05da02f895ca4b135b0e5f11e400f2f15424cce2f58",
+    "sim2j/rl_integrity_study.py": "60ee517ec7c705d12ef8921ed1577119405fb63cc3becffb247f3ff31dc5ce0f",
+    "sim2j/run_study.py": "89b0a77d72e91878c439c053dbefd05aa66e82173e3c2ccfa8714251e709529d",
+    "sim2j/sensing.py": "afb89bfee582e88e594c4f932b5f29dd65f88d4c88141d02d9aacd3eefb96233",
+    "sim2j/stepper.py": "94d9a5f94c381e4b053c8548dbc8bcac4cc0eef3bdd236bfd0733fd98f925f5e",
+    "sim2j/tasks.py": "ea8509617f1ea65b5f26d1c5bf50e806032d046cf83754c18e7c771d403bed63",
+    "sim2j/tuning.py": "da3e4d89478b692eac7356dc1fad8ae048df8c18dce0a7cb3bed31378f8a1dc4",
+    "sim2j/verify.py": "d78e9354cb03d638c3d25ce42fac0a0a5019e80b342ef17212431a29651bf989",
+    "sim2j/wheel.py": "6871f0086624e981510e009ab40c88a8c2011c22f8ef032c4a1c14065c497274",
+    "sim2j/writers.py": "260943c20beb6761e4c21e248a59b8091478bdae31cca40109e99004500395c2"
+  },
+  "change": "True derivative feedback replaced by causal Hall velocity: 300Hz LP, actual acquisition intervals, declared Hall noise/delay, 1ms maximum age; no controller or policy retuning",
+  "metrics": "Each plant is compared with its own matched clean physical reference; this is not absolute page-registration accuracy. Power is sampled once per 4ms policy decision.",
+  "thermal_note": "2.5s writing after3s rest; reported winding temperature is not barrel temperature",
+  "cases": [
+    {
+      "writer": 32001,
+      "seed": 82000,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 32001,
+      "seed": 82000,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 32001,
+      "seed": 82000,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "severe"
+    },
+    {
+      "writer": 32001,
+      "seed": 82001,
+      "f0": 9.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 32001,
+      "seed": 82001,
+      "f0": 9.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 32001,
+      "seed": 82001,
+      "f0": 9.0,
+      "amp": 0.00172,
+      "class": "severe"
+    },
+    {
+      "writer": 32002,
+      "seed": 82019,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 32002,
+      "seed": 82019,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 32002,
+      "seed": 82019,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "severe"
+    },
+    {
+      "writer": 32002,
+      "seed": 82020,
+      "f0": 9.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 32002,
+      "seed": 82020,
+      "f0": 9.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 32002,
+      "seed": 82020,
+      "f0": 9.0,
+      "amp": 0.00172,
+      "class": "severe"
+    },
+    {
+      "writer": 32003,
+      "seed": 82038,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 32003,
+      "seed": 82038,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 32003,
+      "seed": 82038,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "severe"
+    },
+    {
+      "writer": 32003,
+      "seed": 82039,
+      "f0": 9.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 32003,
+      "seed": 82039,
+      "f0": 9.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 32003,
+      "seed": 82039,
+      "f0": 9.0,
+      "amp": 0.00172,
+      "class": "severe"
+    }
+  ],
+  "nominal_frequency_note": "Env retains a10% random redraw; record actual f0 on each case.",
+  "adoption": "No; frozen candidate already failed original independent-test benefit requirement"
+}

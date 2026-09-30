@@ -1,0 +1,17 @@
+{
+  "status": "INVALID NUMERICAL FRICTION INTEGRATION; diagnostic evidence only",
+  "reason": "Explicit drag at 0.5ms can create energy for tanh(speed/0.5mm/s) with 20mN drag and3.44g mass. Old controller gains and case specifications are retained for corrected numerical replay. These archived results are not controller promotion evidence.",
+  "affected_original_result_files": [
+    "accepted_robustness.json",
+    "robust_observer_development.json",
+    "robust_observer_holdout.json",
+    "robust_observer_assessment.json"
+  ],
+  "archived_source_sha256": {
+    "ai3/completion_replay.py": "2c80492484545d64a5fa5ce7354f9194fe946762b09479835ba96d69389fca0b",
+    "ai3/robust_completion.py": "f3b158f6c390112a033609fc2024f56fad4c5c50097e4da316446383d1bc5deb",
+    "ai3/run_robust_completion.py": "76f139322781e07ea25f87d8840d09d873b9c4756e2354061d0631d9b446357e",
+    "ai3/assess_robust_writing.py": "56d77bba2c3b89f9a2659a0ea29695e35744ee46c6c0fa52bc179b12bccf2954",
+    "ai3/plot_writing_audit.py": "81211cd4a65e9bcf7b281d5d28f17b0702bdfce2118e5df2ed3743523aea5682"
+  }
+}

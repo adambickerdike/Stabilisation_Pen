@@ -78,10 +78,10 @@ def ceiling_cmg_turret(h: float, f: float, A: float, r_rot: float, m_tail: float
             else:
                 break
         r = x0 + (s * sc) * g
-        amp_r = L.amp(torch.tensor(r))
+        amp_r = L.amp(torch.tensor(r, dtype=torch.complex128))
         if best is None or amp_r < best["res"]:
             best = {"res": amp_r, "ang": ang, "scale": sc, "tau": abs(s * sc), "tau_needed": abs(s), "tq_g": tq_g}
-    best["x0"] = L.amp(torch.tensor(x0))
+    best["x0"] = L.amp(torch.tensor(x0, dtype=torch.complex128))
     return best
 
 
@@ -99,7 +99,7 @@ def ceiling_force(kind: str, F_cap: float, f: float, A: float, r_rot: float, m_t
     u = -np.linalg.solve(G, x0)
     sc = min(1.0, F_cap / max(np.max(np.abs(u)), 1e-30))
     r = x0 + G @ (u * sc)
-    return {"res": L.amp(torch.tensor(r)), "x0": L.amp(torch.tensor(x0)), "F_needed": float(np.max(np.abs(u))), "scale": sc}
+    return {"res": L.amp(torch.tensor(r, dtype=torch.complex128)), "x0": L.amp(torch.tensor(x0, dtype=torch.complex128)), "F_needed": float(np.max(np.abs(u))), "scale": sc}
 
 
 def ceiling_collar(tau_cap: float, f: float, A: float, r_rot: float, z_p: float = 0.060, K_c: float = 0.2) -> Dict:
@@ -115,7 +115,7 @@ def ceiling_collar(tau_cap: float, f: float, A: float, r_rot: float, z_p: float 
     u = -np.linalg.solve(G, x0)
     sc = min(1.0, tau_cap / max(np.max(np.abs(u)), 1e-30))
     r = x0 + G @ (u * sc)
-    return {"res": L.amp(torch.tensor(r)), "x0": L.amp(torch.tensor(x0)), "tau_needed": float(np.max(np.abs(u))), "scale": sc}
+    return {"res": L.amp(torch.tensor(r, dtype=torch.complex128)), "x0": L.amp(torch.tensor(x0, dtype=torch.complex128)), "tau_needed": float(np.max(np.abs(u))), "scale": sc}
 
 
 def tmd_response(m: float, f_tune: float, zeta: float, f: float, r_rot: float, A: float = 1e-3, z: float = 0.160,
@@ -273,16 +273,16 @@ def gradient_check(det: Dict) -> Dict:
                 s = -(torch.conj(g) @ x0) / (torch.conj(g) @ g).real
                 cap = 2 * h_t * w * 0.88
                 mag = torch.abs(s)
-                s_eff = s * torch.minimum(torch.ones(()), cap / mag)
+                s_eff = s * torch.minimum(torch.ones((), dtype=torch.float64), cap / mag)
                 rr = x0 + s_eff * g
                 return torch.sqrt((torch.abs(rr) ** 2).sum())
-            h_t = torch.tensor(h0, requires_grad=True)
-            m_t = torch.tensor(0.1, requires_grad=True)
+            h_t = torch.tensor(h0, requires_grad=True, dtype=torch.float64)
+            m_t = torch.tensor(0.1, requires_grad=True, dtype=torch.float64)
             v = resid(h_t, m_t)
             v.backward()
             eps = 1e-7
-            fd_h = (resid(torch.tensor(h0 + eps), torch.tensor(0.1)) - resid(torch.tensor(h0 - eps), torch.tensor(0.1))) / (2 * eps)
-            fd_m = (resid(torch.tensor(h0), torch.tensor(0.1 + 1e-6)) - resid(torch.tensor(h0), torch.tensor(0.1 - 1e-6))) / 2e-6
+            fd_h = (resid(torch.tensor(h0 + eps, dtype=torch.float64), torch.tensor(0.1, dtype=torch.float64)) - resid(torch.tensor(h0 - eps, dtype=torch.float64), torch.tensor(0.1, dtype=torch.float64))) / (2 * eps)
+            fd_m = (resid(torch.tensor(h0, dtype=torch.float64), torch.tensor(0.1 + 1e-6, dtype=torch.float64)) - resid(torch.tensor(h0, dtype=torch.float64), torch.tensor(0.1 - 1e-6, dtype=torch.float64))) / 2e-6
             out[f"{f}Hz_r{r}"] = {"residual_m": float(v), "d_dh_autograd": float(h_t.grad), "d_dh_fd": float(fd_h),
                                   "d_dm_autograd": float(m_t.grad), "d_dm_fd": float(fd_m)}
     return out
@@ -329,12 +329,12 @@ def _collar_eval(x: np.ndarray, detail: bool = False, fine_reach: float = 1.0e-3
             for (ff, A) in COLLAR_CONDS:
                 if ff != f:
                     continue
-                d = d1 * (A / 1e-3) / max(L.amp(torch.tensor(d1)), 1e-12) * 1e-3 / 1e-3
-                sc = A / max(L.amp(torch.tensor(d1)), 1e-12)
+                d = d1 * (A / 1e-3) / max(L.amp(torch.tensor(d1, dtype=torch.complex128)), 1e-12) * 1e-3 / 1e-3
+                sc = A / max(L.amp(torch.tensor(d1, dtype=torch.complex128)), 1e-12)
                 u = u1 * sc
                 s_lim = min(1.0, phi_max / max(np.max(np.abs(u)), 1e-12))
                 rres = d1 * sc + G @ (u * s_lim)
-                rr = L.amp(torch.tensor(rres))
+                rr = L.amp(torch.tensor(rres, dtype=torch.complex128))
                 after = max(0.0, rr - fine_reach)
                 res.append((after + 0.2 * rr) / A)
                 taus.append(Ks * np.max(np.abs(u * s_lim)))
@@ -368,11 +368,11 @@ def optimise_collar(evals: int = 120, seed: int = 0) -> Dict:
         g = asm.ink(asm.solve(w, asm.u_collar(asm.t1) * det["K_s"]))
         s = -(torch.conj(g) @ d) / (torch.conj(g) @ g).real
         return torch.sqrt((torch.abs(d + s * g) ** 2).sum())
-    z = torch.tensor(det["z_p_mm"] * 1e-3, requires_grad=True)
+    z = torch.tensor(det["z_p_mm"] * 1e-3, requires_grad=True, dtype=torch.float64)
     v = resid(z)
     v.backward()
     e = 1e-5
-    fd = (resid(torch.tensor(det["z_p_mm"] * 1e-3 + e)) - resid(torch.tensor(det["z_p_mm"] * 1e-3 - e))) / (2 * e)
+    fd = (resid(torch.tensor(det["z_p_mm"] * 1e-3 + e, dtype=torch.float64)) - resid(torch.tensor(det["z_p_mm"] * 1e-3 - e, dtype=torch.float64))) / (2 * e)
     return {"nominal": {"f": f_nom, **{k: v_ for k, v_ in det_nom.items() if k != "rows"}},
             "best": {"f": f_best, **det}, "cmaes": {"evals": res["evals"], "history": res["history"][-10:]},
             "gradient_check_zp": {"residual_m": float(v), "d_dzp_autograd": float(z.grad), "d_dzp_fd": float(fd)},

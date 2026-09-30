@@ -1,0 +1,24 @@
+[
+  {
+    "policy": "smoke_zero",
+    "absolute_difference": {
+      "rms_um": 0.0,
+      "cost": 0.0,
+      "missing_fraction": 0.0,
+      "extra_fraction": 0.0,
+      "coil_power_W": 0.0,
+      "coil_temperature_C": 0.0
+    }
+  },
+  {
+    "policy": "smoke_seed_1",
+    "absolute_difference": {
+      "rms_um": 0.0,
+      "cost": 0.0,
+      "missing_fraction": 0.0,
+      "extra_fraction": 0.0,
+      "coil_power_W": 0.0,
+      "coil_temperature_C": 0.0
+    }
+  }
+]

@@ -106,12 +106,17 @@ def calibrated(auth: Dict, stats: Dict, p: float, kappa: float, mode: str) -> Di
 
 # ------------------------------------------------------------------ calibration notes
 def calibration_note(split: str, i: int, K: int, scored_recordings: Sequence[str], max_k: int = 30):
-    """(seed, Written): the first note of the same writer (seed i + K k) with no recorded line in common."""
+    """Disjoint note of the same writer; a seed stride never establishes writer identity."""
     from realdata import library as RL
+    if K < 1 or max_k < 2:
+        raise ValueError("Calibration requires a positive seed stride and at least one alternative note")
+    writer = RL.writing(split, seed=i).real["writer"]
     rec0 = set(scored_recordings)
     for k in range(1, max_k):
         s = i + K * k
-        w = RL.writing(split, seed=s)
+        w = RL.writing(split, seed=s, writer=writer)
+        if w.real["writer"] != writer:
+            raise ValueError("Calibration data returned a different writer")
         if rec0.isdisjoint(w.real["recordings"]):
             return s, w
     raise RuntimeError(f"no disjoint calibration note for {split} note {i}")

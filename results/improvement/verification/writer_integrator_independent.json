@@ -1,0 +1,51 @@
+{
+  "evidence": "Independent numerical-integrity checks; physical parameters and clinical efficacy are unvalidated",
+  "midpoint_energy_and_force": [
+    {
+      "case": "unclipped",
+      "states": 500,
+      "active_limit_axis_substeps": 0,
+      "max_energy_work_balance_residual_J": 8.470329472543003e-21,
+      "max_mechanical_impulse_residual_N_s": 3.974253778662832e-18,
+      "max_copper_energy_integral_error_J": 8.470329472543003e-22,
+      "max_effective_voltage_V": 2.9993165142863805,
+      "max_unpowered_energy_change_J": -9.049279336909317e-09
+    },
+    {
+      "case": "current_limited",
+      "states": 500,
+      "active_limit_axis_substeps": 695,
+      "max_energy_work_balance_residual_J": 1.2415650122175924e-19,
+      "max_mechanical_impulse_residual_N_s": 4.614155606287877e-18,
+      "max_copper_energy_integral_error_J": 5.293955920339377e-23,
+      "max_effective_voltage_V": 1.5997289374872719,
+      "max_unpowered_energy_change_J": null
+    }
+  ],
+  "analytic_radial_friction": [
+    {
+      "internal_dt_s": 0.0001,
+      "max_velocity_error_m_s": 1.973039685548383e-05,
+      "displacement_error_m": 1.164605626304631e-09,
+      "kinetic_energy_nonincreasing": true
+    },
+    {
+      "internal_dt_s": 5e-05,
+      "max_velocity_error_m_s": 4.845344500576933e-06,
+      "displacement_error_m": 2.848390040469949e-10,
+      "kinetic_energy_nonincreasing": true
+    },
+    {
+      "internal_dt_s": 2.5e-05,
+      "max_velocity_error_m_s": 1.2045323882349837e-06,
+      "displacement_error_m": 7.086126674602207e-11,
+      "kinetic_energy_nonincreasing": true
+    }
+  ],
+  "binary_contact_acceleration_jump_residual_m_s2": 8.881784197001252e-16,
+  "infeasible_regenerative_current_limit_refused": true,
+  "source_sha256": {
+    "validation/writer_integrator_review.py": "36ea748e4efb8e1cfb32ca45b3b6184de7d9bdddae91c133dd6470c4df13de69",
+    "ai3/planar_integrator.py": "ad874ae34e3f51b66fdc6894bfc45a0a35be2bea27cfaec0bab92c2bdfb43bb3"
+  }
+}

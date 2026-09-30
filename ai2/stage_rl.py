@@ -13,6 +13,7 @@ Selection rules (fixed before training; tuning writers 100-103, seed 300, replay
 from __future__ import annotations
 
 import time
+import hashlib
 from pathlib import Path
 from typing import Dict, List
 
@@ -28,6 +29,13 @@ from . import stage_learn_data as SLD
 ensure_paths()
 
 POLICY_DIR = BUILD_DIR / "rl"
+
+
+def training_implementation_hash():
+    digest = hashlib.sha256()
+    for name in ("rl_env.py", "stage_rl.py"):
+        digest.update((Path(__file__).parent / name).read_bytes())
+    return digest.hexdigest()
 
 
 def _res(e, m):
@@ -104,9 +112,11 @@ def _train(algo: str, make_env, budget: int, n_eval: int, evaluate, name: str, o
     chunk = budget // n_eval
     while done < budget:
         t1 = time.time()
-        model.learn(total_timesteps=chunk, reset_num_timesteps=False)
+        model.learn(total_timesteps=min(chunk, budget - done), reset_num_timesteps=False)
         t_train += time.time() - t1
-        done += chunk
+        # SB3 rounds to complete rollout batches; requested chunks are not the
+        # actual number of transitions. Record the model's counter.
+        done = int(model.num_timesteps)
         sc = evaluate(fast_policy(model))
         path = POLICY_DIR / f"{name}_{done}.zip"
         model.save(path)
@@ -118,7 +128,8 @@ def _train(algo: str, make_env, budget: int, n_eval: int, evaluate, name: str, o
     ok = [c for c in checkpoints if c["ok"]]
     best = max(ok or checkpoints, key=lambda c: c["reward_mean"])
     return {"algorithm": algo, "checkpoints": checkpoints, "best": best, "passes_rule": bool(ok),
-            "wall_min": (time.time() - t0) / 60.0, "train_min": t_train / 60.0, "env_steps": done, "threads": 1}
+            "wall_min": (time.time() - t0) / 60.0, "train_min": t_train / 60.0, "env_steps": done,
+            "requested_steps": budget, "implementation_sha256": training_implementation_hash(), "threads": 1}
 
 
 def run(quick: bool, workers: int):
@@ -158,7 +169,10 @@ def run(quick: bool, workers: int):
     prev = C.load("rl", quick) or {}
     for name, algo, mk, budget, n_eval, ev, ok_fn in specs:
         old = (prev.get("policies") or {}).get(name)
-        if old and old.get("env_steps") == budget and all(Path(c["path"]).exists() for c in old["checkpoints"]):
+        if (old and old.get("requested_steps") == budget
+                and old.get("implementation_sha256") == training_implementation_hash()
+                and old.get("env_steps", 0) >= budget
+                and all(Path(c["path"]).exists() for c in old["checkpoints"])):
             out["policies"][name] = old                     # already trained with this budget (resume)
             C.log(f"[rl] {name}: reusing the trained run ({budget} steps)")
             continue

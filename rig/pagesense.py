@@ -64,13 +64,22 @@ def window_errors(t_truth, g_xy, t_sens, s_xy, window_s=0.010, delay_s=0.0, vali
     ds = np.diff(s, axis=0)
     keep = np.ones(len(dg), bool)
     if valid is not None:
-        bad_t = np.asarray(t_sens)[~np.asarray(valid, bool)] - delay_s
-        idx = np.searchsorted(edges, bad_t) - 1
-        idx = idx[(idx >= 0) & (idx < len(keep))]
-        keep[idx] = False
+        # Include interpolation brackets and both shared window endpoints. A bad
+        # sample exactly on a boundary invalidates each window that uses it.
+        ts = np.asarray(t_sens)
+        vv = np.asarray(valid, bool)
+        lo = np.maximum(0, np.searchsorted(ts, edges[:-1] + delay_s, side="right") - 1)
+        hi = np.minimum(len(ts) - 1, np.searchsorted(ts, edges[1:] + delay_s, side="left"))
+        bad_prefix = np.concatenate(([0], np.cumsum(~vv)))
+        keep &= (bad_prefix[hi + 1] - bad_prefix[lo]) == 0
     e_mag = np.abs(np.linalg.norm(ds, axis=1) - np.linalg.norm(dg, axis=1))[keep]
     e_vec = np.linalg.norm(ds - dg, axis=1)[keep]
-    return {"n_windows": int(keep.sum()), "excluded_windows": int((~keep).sum()),
+    if not len(e_mag):
+        return {"valid": False, "reason": "no complete valid windows", "n_windows": 0,
+                "excluded_windows": int((~keep).sum()),
+                **{key: float("nan") for key in ("mag_mae_um", "mag_median_um", "vec_mae_um", "vec_median_um",
+                                                "vec_p95_um", "vs_deltapen_mae", "vs_deltapen_median")}}
+    return {"valid": True, "n_windows": int(keep.sum()), "excluded_windows": int((~keep).sum()),
             "mag_mae_um": float(np.mean(e_mag)), "mag_median_um": float(np.median(e_mag)),
             "vec_mae_um": float(np.mean(e_vec)), "vec_median_um": float(np.median(e_vec)),
             "vec_p95_um": float(np.percentile(e_vec, 95)),
@@ -105,7 +114,7 @@ def stroke_error(t_truth, g_xy, t_sens, s_xy, delay_s=0.0, valid=None) -> Dict:
     """RMS position error over the longest dropout-free run after removing its start offset
     (REQ-RVJ-N06 style), and the end-point drift per mm travelled."""
     v = np.ones(len(t_sens), bool) if valid is None else np.asarray(valid, bool)
-    best, k, a0, a1 = 0, 0, 0, len(v)
+    best, k, a0, a1 = 0, 0, 0, 0
     while k < len(v):
         if v[k]:
             j = k
@@ -116,11 +125,14 @@ def stroke_error(t_truth, g_xy, t_sens, s_xy, delay_s=0.0, valid=None) -> Dict:
             k = j
         else:
             k += 1
+    if best < 2:
+        return {"valid": False, "reason": "no valid run of at least two samples", "run_s": 0., "path_mm": 0.,
+                "rms_um": float("nan"), "end_drift_um": float("nan"), "drift_um_per_mm": float("nan")}
     t_sens, s_xy = np.asarray(t_sens)[a0:a1], np.asarray(s_xy)[a0:a1]
     g = np.column_stack([np.interp(t_sens - delay_s, t_truth, g_xy[:, k]) for k in range(2)])
     e = (s_xy - s_xy[0]) - (g - g[0])
     L = np.sum(np.linalg.norm(np.diff(g, axis=0), axis=1))
-    return {"run_s": float(t_sens[-1] - t_sens[0]), "rms_um": float(np.sqrt(np.mean(np.sum(e ** 2, axis=1)))),
+    return {"valid": True, "run_s": float(t_sens[-1] - t_sens[0]), "rms_um": float(np.sqrt(np.mean(np.sum(e ** 2, axis=1)))),
             "end_drift_um": float(np.linalg.norm(e[-1])),
             "drift_um_per_mm": float(np.linalg.norm(e[-1]) / max(L / 1000.0, 1e-9)), "path_mm": float(L / 1000.0)}
 

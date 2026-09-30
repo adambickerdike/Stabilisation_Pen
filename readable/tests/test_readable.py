@@ -193,11 +193,30 @@ def test_gate_calibration_rule():
 def test_calibration_note_is_another_note_of_the_same_writer():
     from readable import e11
     from realdata import library as RL
+    if not RL.WL.unipen_writers("test"):
+        pytest.skip("licensed UNIPEN writing index not built")
     base = RL.writing("test", seed=0)
     s, w = e11.calibration_note("test", 0, 9, base.real["recordings"])
     assert s % 9 == 0 and s > 0
     assert w.real["writer"] == base.real["writer"]
     assert set(w.real["recordings"]).isdisjoint(base.real["recordings"])
+
+
+def test_calibration_keeps_writer_when_seed_stride_differs_from_writer_count(monkeypatch):
+    from types import SimpleNamespace
+    from readable import e11
+    from realdata import library as RL
+
+    def draw(split, seed, writer=None):
+        identity = writer if writer is not None else f"writer{seed % 3}"
+        recordings = ["scored"] if seed < 4 else ["independent"]
+        return SimpleNamespace(real={"writer": identity, "recordings": recordings})
+
+    monkeypatch.setattr(RL, "writing", draw)
+    seed, note = e11.calibration_note("test", 0, 2, ["scored"])
+    assert seed == 4
+    assert note.real["writer"] == "writer0"
+    assert note.real["recordings"] == ["independent"]
 
 
 # ------------------------------------------------------------------ the job runner

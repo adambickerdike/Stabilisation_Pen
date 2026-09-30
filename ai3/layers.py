@@ -23,7 +23,7 @@ from __future__ import annotations
 import hashlib
 import json
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -53,10 +53,10 @@ class StrokeRecord:
         self._entries: List[StrokeEntry] = []
 
     @staticmethod
-    def _hash(prev: str, pts, action: str, plan_id) -> str:
+    def _hash(prev: str, index: int, t0: float, pts, action: str, plan_id) -> str:
         h = hashlib.sha256(prev.encode())
         h.update(np.asarray(pts, np.float64).tobytes())
-        h.update(f"{action}|{plan_id}".encode())
+        h.update(f"{index}|{t0!r}|{action}|{plan_id}".encode())
         return h.hexdigest()
 
     def append(self, points: Sequence[Sequence[float]], device_action: str = "none",
@@ -66,9 +66,15 @@ class StrokeRecord:
         if device_action == "autowritten" and plan_id is None:
             raise LayerError("ink written by the pen must name the accepted writing plan it came from")
         pts = tuple((float(t), float(x), float(y)) for t, x, y in points)
+        if not pts or not np.isfinite(pts).all():
+            raise LayerError("a stroke needs finite timestamped points")
+        if any(b[0] < a[0] for a, b in zip(pts, pts[1:])):
+            raise LayerError("stroke timestamps must not run backwards")
+        if self._entries and pts[0][0] < self._entries[-1].points[-1][0]:
+            raise LayerError("a new stroke cannot precede recorded ink")
         prev = self._entries[-1].digest if self._entries else "genesis"
         e = StrokeEntry(len(self._entries), pts[0][0] if pts else 0.0, pts, device_action, plan_id,
-                        self._hash(prev, pts, device_action, plan_id))
+                        self._hash(prev, len(self._entries), pts[0][0], pts, device_action, plan_id))
         self._entries.append(e)
         return e
 
@@ -78,8 +84,10 @@ class StrokeRecord:
 
     def verify(self) -> bool:
         prev = "genesis"
-        for e in self._entries:
-            if self._hash(prev, e.points, e.device_action, e.plan_id) != e.digest:
+        for index, e in enumerate(self._entries):
+            if not e.points or e.index != index or e.t0 != e.points[0][0]:
+                return False
+            if self._hash(prev, e.index, e.t0, e.points, e.device_action, e.plan_id) != e.digest:
                 return False
             prev = e.digest
         return True
@@ -148,7 +156,9 @@ class Transcript:
     def propose(self, s: Suggestion) -> bool:
         """Show a suggestion (no change).  Returns True if the auto mode applied it (logged, reversible)."""
         w = self.words[s.word_index]
-        if w.protected and s.kind == "spelling":
+        if not np.isfinite(s.p) or not 0 <= s.p <= 1:
+            raise LayerError("a suggestion probability must be finite and in [0, 1]")
+        if w.protected and s.kind in ("spelling", "recognition"):
             return False                              # names, numbers and marked words are never flagged
         w.flags.append({"kind": s.kind, "text": s.text, "p": s.p, "reason": s.reason})
         if self.auto_correct and s.kind in ("spelling", "recognition") and s.p >= self.auto_min_p:
@@ -186,11 +196,23 @@ class Transcript:
 
 
 # ============================================================================================ 3 writing plan
-@dataclass
+@dataclass(frozen=True)
 class PlanLetter:
     char: str
     strokes: List[np.ndarray]           # the letter's path (m), in page coordinates, pen-down strokes
     state: str = "queued"               # queued | writing | done | abandoned
+
+    def __post_init__(self):
+        if len(self.char) != 1 or not self.strokes:
+            raise LayerError("each planned letter needs one character and at least one stroke")
+        copies = []
+        for stroke in self.strokes:
+            a = np.array(stroke, dtype=float, copy=True)
+            if a.ndim != 2 or a.shape[1] != 2 or len(a) < 1 or not np.isfinite(a).all():
+                raise LayerError("planned strokes need finite N by 2 page coordinates")
+            a.setflags(write=False)
+            copies.append(a)
+        object.__setattr__(self, "strokes", tuple(copies))
 
 
 class WritingPlan:
@@ -202,32 +224,52 @@ class WritingPlan:
     def __init__(self, acceptance: Revision, letters: List[PlanLetter], gates: Dict[str, bool]):
         if acceptance.accepted_by != "writer" or acceptance.kind not in ("completion", "spelling", "writer_edit"):
             raise LayerError("a writing plan needs text the writer accepted explicitly (not an automatic change)")
-        if not all(gates.values()):
+        if not {"reach", "tracking"}.issubset(gates):
+            raise LayerError("a writing plan needs explicit reach and tracking gates")
+        if any(type(v) is not bool or not v for v in gates.values()):
             failed = [k for k, v in gates.items() if not v]
             raise LayerError(f"writing plan refused: gates not passed {failed}")
+        if not letters or any(L.state != "queued" for L in letters):
+            raise LayerError("a new writing plan needs queued letters")
+        text = "".join(L.char for L in letters)
+        if acceptance.kind == "completion":
+            if not acceptance.after.startswith(acceptance.before):
+                raise LayerError("a completion must extend the accepted prefix; use a rewrite for changed ink")
+            expected = acceptance.after[len(acceptance.before):]
+        else:
+            expected = acceptance.after
+        if text != expected or not expected:
+            raise LayerError("planned letters must match the explicitly accepted suffix or rewrite")
         WritingPlan._next_id += 1
         self.plan_id = WritingPlan._next_id
         self.acceptance = acceptance
-        self._letters = letters
-        self.text = "".join(L.char for L in letters)
+        self._letters = [PlanLetter(L.char, L.strokes, L.state) for L in letters]
+        self.text = text
         self.state = "planned"
         self.log: List[Tuple[float, str]] = []
 
     @property
     def letters(self) -> Tuple[PlanLetter, ...]:
-        return tuple(self._letters)
+        # Return detached snapshots: even forcing a NumPy array writable cannot redirect an active plan.
+        return tuple(PlanLetter(L.char, L.strokes, L.state) for L in self._letters)
 
     def start_letter(self, k: int) -> None:
         if self.state not in ("planned", "writing"):
             raise LayerError(f"plan is {self.state}")
         if any(L.state == "writing" for L in self._letters):
             raise LayerError("one letter at a time")
-        self._letters[k].state = "writing"
+        if k < 0 or k >= len(self._letters) or self._letters[k].state != "queued":
+            raise LayerError("letter is unavailable")
+        if any(L.state != "done" for L in self._letters[:k]):
+            raise LayerError("letters must be written in their accepted order")
+        self._letters[k] = replace(self._letters[k], state="writing")
         self.state = "writing"
 
     def finish_letter(self, k: int) -> None:
-        self._letters[k].state = "done"
-        if all(L.state in ("done", "abandoned") for L in self._letters):
+        if self.state != "writing" or k < 0 or k >= len(self._letters) or self._letters[k].state != "writing":
+            raise LayerError("only the currently writing letter can finish")
+        self._letters[k] = replace(self._letters[k], state="done")
+        if all(L.state == "done" for L in self._letters):
             self.state = "done"
 
     def replace(self, new_text: str, by_writer: bool = False) -> None:
@@ -237,16 +279,16 @@ class WritingPlan:
         self.cancel("writer replaced the plan")
 
     def cancel(self, reason: str) -> None:
-        for L in self._letters:
+        for i, L in enumerate(self._letters):
             if L.state == "writing":
-                L.state = "abandoned"              # the pen lifts; the started letter is not re-routed
+                self._letters[i] = replace(L, state="abandoned")
         self.state = "cancelled"
         self.log.append((time.time(), reason))
 
     def hand_back(self, reason: str) -> None:
-        for L in self._letters:
+        for i, L in enumerate(self._letters):
             if L.state == "writing":
-                L.state = "abandoned"
+                self._letters[i] = replace(L, state="abandoned")
         self.state = "handed_back"
         self.log.append((time.time(), reason))
 

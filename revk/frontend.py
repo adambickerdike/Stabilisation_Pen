@@ -63,7 +63,7 @@ def window_height(R_s, s, r, phi_deg, theta_deg, roll_deg=0.0, lift=0.0):
 
 
 def best_window(R_s: float, phi_set: Sequence[float] = (0.0,), target: float = 2.4, band: float = 0.2,
-                roll_design: float = 20.0, y_min: float = 0.0) -> Optional[Dict]:
+                roll_design: float = 20.0, y_min: float = 0.0, stop: Optional[float] = None) -> Optional[Dict]:
     """The page-sensor window (azimuth phi from the bottom, s behind the ring plane, radius r) whose lens height stays
     closest to 2.4 mm over 35-75 deg and +-roll_design, subject to: inside the band with no roll, the optics block
     clear of the nib's envelope at the stop by 0.3 mm, the window on the part's surface (CALC)."""
@@ -82,7 +82,7 @@ def best_window(R_s: float, phi_set: Sequence[float] = (0.0,), target: float = 2
                     continue
                 r_in = r - ob["normal_mm"] * math.cos(math.radians(50.0)) - ob["half_width_mm"]
                 s_in = s + ob["normal_mm"] * math.sin(math.radians(50.0))
-                if r_in < float(nib_envelope(R_s, np.array([s_in]))[0]) + c:
+                if r_in < float(nib_envelope(R_s, np.array([s_in]), stop=stop)[0]) + c:
                     continue
                 H0 = window_height(R_s, s, r, phi, thetas)
                 if float(np.max(np.abs(H0 - target))) > band - 0.02:
@@ -110,7 +110,8 @@ def roll_tolerance(R_s: float, w: Dict, target: float = 2.4, band: float = 0.2) 
     return 45.0
 
 
-def front_close(heel: bool = False, quick: bool = False) -> Dict:
+def front_close(heel: bool = False, quick: bool = False, travel: Optional[float] = None,
+                stop: Optional[float] = None, body_od_mm: Optional[float] = None) -> Dict:
     """The smallest ring (0.25 mm grid) that passes every front-end rule; without a heel the window is at the bottom
     (azimuth 0), with the heel pod it goes beside the pod (|y| >= 2.7 mm, Rev J's rule) (CALC)."""
     step = val(PR.FRONT["R_step_mm"])
@@ -120,22 +121,24 @@ def front_close(heel: bool = False, quick: bool = False) -> Dict:
     R = 3.75
     chosen = None
     while R <= 12.0:
-        env_ring = float(np.max(nib_envelope(R, np.linspace(0.0, val(PR.FRONT["ring_len_mm"]), 16))))
+        env_ring = float(np.max(nib_envelope(R, np.linspace(0.0, val(PR.FRONT["ring_len_mm"]), 16), stop=stop)))
         bore = env_ring + c
         ok_lip = R - bore >= lip
         if heel:
             pr = heel_pod(R)
             ok_heel = pr["R_d_needed_mm"] <= R + 0.35 + 1e-9
             phis = np.arange(20.0, 46.0, 1.0 if not quick else 2.5)
-            w = best_window(R, phis, y_min=2.7) if ok_heel else None
+            w = best_window(R, phis, y_min=2.7, stop=stop) if ok_heel else None
         else:
             ok_heel = True
-            w = best_window(R, (0.0,))
+            w = best_window(R, (0.0,), stop=stop)
         hist.append({"R_s_mm": R, "ring_bore_r_mm": bore, "lip_ok": ok_lip, "heel_ok": ok_heel, "window": w})
         if ok_lip and ok_heel and w is not None:
             chosen = R
             break
         R += step
+    if chosen is None:
+        raise ValueError("no front-end layout within 12 mm contact radius")
     w = hist[-1]["window"]
     z_ring = protrusion(50.0, chosen)
     out = {"R_s_mm": chosen, "R_d_mm": chosen + 0.35 if heel else None, "z_ring_mm": z_ring,
@@ -146,16 +149,17 @@ def front_close(heel: bool = False, quick: bool = False) -> Dict:
            "protrusion_mm": {f"{t:g}": protrusion(t, chosen) for t in (35.0, 40.0, 50.0, 60.0, 70.0, 75.0)},
            "label": "CALCULATION (front-end closure, rules ASSUMPTION: DEC-034 lip 1.0 mm, 0.3 mm running clearances; "
                     "optics block ASSUMPTION; lens band MANUFACTURER OPT-61)"}
-    out.update(checks(chosen, w))
+    out.update(checks(chosen, w, travel=travel, body_od_mm=body_od_mm))
     return out
 
 
-def checks(R_s: float, w: Dict) -> Dict:
+def checks(R_s: float, w: Dict, travel: Optional[float] = None,
+           body_od_mm: Optional[float] = None) -> Dict:
     """Front-end rules at the chosen ring: the nozzle (carrier front) above the paper over 35-75 deg with the nib at its
     usable travel toward the paper, the refill slide, the sleeve cone above the paper, the lens depth of field against
     the lifts between strokes (CALC)."""
     z_ring = protrusion(50.0, R_s)
-    trav = val(PR.B1["travel_mm"])
+    trav = val(PR.B1["travel_mm"]) if travel is None else travel
     zc = val(PR.FRONT["carrier_front_z_mm"])
     gs = val(PR.FRONT["guide_station"])
     s_cf = zc - z_ring
@@ -171,7 +175,9 @@ def checks(R_s: float, w: Dict) -> Dict:
     slide_tilt = p[35.0] - p[75.0]
     corr = {t: trav / math.tan(math.radians(t)) for t in (35.0, 50.0, 75.0)}
     zg = val(PR.ENVELOPE["grip_full_od_from_z_mm"])
-    r_grip = val(PR.ENVELOPE["handle_od_held_mm"]) / 2
+    r_grip = (val(PR.ENVELOPE["handle_od_held_mm"]) if body_od_mm is None else body_od_mm) / 2
+    if r_grip < R_s:
+        raise ValueError("body radius must accommodate the selected front ring")
     L_c = zg - (z_ring + val(PR.FRONT["ring_len_mm"]))
     slope = (r_grip - R_s) / L_c
     cone_clear = min((R_s - (R_s + slope * max(s - 1.5, 0.0))) * math.cos(math.radians(t)) + s * math.sin(math.radians(t))
@@ -183,7 +189,8 @@ def checks(R_s: float, w: Dict) -> Dict:
             "refill_slide_tilt_35_75_mm": slide_tilt,
             "refill_slide_correction_mm": {f"{k:g}": v for k, v in corr.items()},
             "refill_slide_total_mm": slide_tilt + 2 * corr[35.0],
-            "sleeve_cone": {"from_z_mm": z_ring + 1.5, "to_z_mm": zg, "front_d_mm": 2 * R_s, "half_angle_deg":
+            "sleeve_cone": {"from_z_mm": z_ring + 1.5, "to_z_mm": zg, "front_d_mm": 2 * R_s,
+                            "body_od_mm": 2 * r_grip, "half_angle_deg":
                             math.degrees(math.atan(slope)), "min_height_above_paper_mm": cone_clear},
             "lens_dof": {"band_mm": dof, "lift_tracked_mm": lift_tracked, "lift_needed_mm": lift_needed,
                          "passes_REQ_BNIB_017": lift_tracked >= lift_needed,

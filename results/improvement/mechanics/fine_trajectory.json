@@ -1,0 +1,31 @@
+{
+  "status": "CALC sampled spatial magnetic-map force screen, not tracking or a worst-case proof",
+  "source": "/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/results/improvement/writing/coarse_fine_reference_200ms.npz",
+  "mass_kg": 0.0036699750000000002,
+  "field_scale": 0.7,
+  "force_peak_N": 0.022666086855624237,
+  "current_peak_A": 0.06947443909704692,
+  "copper_mean_W": 0.016018557890910928,
+  "copper_peak_W": 0.02683995096066689,
+  "minimum_authority": 1.0,
+  "radial_peak_mm": 0.5026358835411597,
+  "limitations": [
+    "linear interpolation of97 calculated map points",
+    "constant50degree pose",
+    "20mN nominal combined guide/balance load, not measured",
+    "no inductive voltage"
+  ],
+  "heat": {
+    "current_rms_A": [
+      0.049625677312350326,
+      0.04129153111872905
+    ],
+    "wire_rise_above_clamps_K": [
+      1.0810172071981103,
+      0.7474366289610309
+    ],
+    "lead_thermal_pass": true,
+    "clamp_temperature": "unknown; temperature is rise above assumed equal-temperature ends"
+  },
+  "screen_pass": true
+}

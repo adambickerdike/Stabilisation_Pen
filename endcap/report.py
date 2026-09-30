@@ -451,7 +451,7 @@ def single_axis_lrm(s):
     from . import optimise as OP
     out = {}
     with torch.no_grad():
-        d = OP.build("LRM2", {k: torch.tensor(float(v)) for k, v in s["x"].items()}, ())
+        d = OP.build("LRM2", {k: torch.tensor(float(v), dtype=torch.float64) for k, v in s["x"].items()}, ())
         base = float(OP.metrics(d, hard=True)["tremor_mean"])
         out["both_axes"] = base
         orig = OP.limits

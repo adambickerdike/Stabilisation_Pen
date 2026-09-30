@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="15" skipped="0" tests="350" time="189.442" timestamp="2026-09-30T09:28:15.312900+01:00" hostname="Adams-MacBook-Pro-5.local"><testcase classname="ai2.tests.test_ai2" name="test_fixed_lag_smoother_is_causal" time="3.294" /><testcase classname="ai2.tests.test_ai2" name="test_fixed_lag_smoother_tracks_a_tremor" time="0.125" /><testcase classname="ai2.tests.test_ai2" name="test_detector_gate_closed_on_writing_open_on_tremor" time="0.249" /><testcase classname="ai2.tests.test_ai2" name="test_detector_is_causal" time="0.199" /><testcase classname="ai2.tests.test_ai2" name="test_learned_models_are_causal[tcn]" time="0.030" /><testcase classname="ai2.tests.test_ai2" name="test_learned_models_are_causal[transformer]" time="0.048" /><testcase classname="ai2.tests.test_ai2" name="test_transformer_chunked_inference_matches_full" time="0.006"><failure message="RuntimeError: Input type (float) and bias type (double) should be the same">def test_transformer_chunked_inference_matches_full():
+        import torch
+        torch.manual_seed(1)
+        m = LE.make_transformer(7, 8, d=16, heads=2, window=64, ff=32)
+        Z = np.random.default_rng(0).standard_normal((1500, 7)).astype(np.float32)
+        with torch.no_grad():
+&gt;           full = m(torch.from_numpy(Z)[None])[0].numpy()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ai2/tests/test_ai2.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ai2/learned.py:160: in forward
+    h = self.c2(nn.functional.gelu(self.c1(x.transpose(1, 2)))).transpose(1, 2)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ai2/learned.py:116: in forward
+    return self.conv(nn.functional.pad(x, (self.pad, 0)))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/conv.py:385: in forward
+    return self._conv_forward(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Conv1d(7, 16, kernel_size=(5,), stride=(1,))
+input = tensor([[[ 0.0000,  0.0000,  0.0000,  ...,  0.8434, -0.8172,  0.5913],
+         [ 0.0000,  0.0000,  0.0000,  ...,  0.4... 0.7341, -0.9765],
+         [ 0.0000,  0.0000,  0.0000,  ..., -2.2276, -0.0154,  0.5557]]],
+       dtype=torch.float32)
+weight = Parameter containing:
+tensor([[[-1.4839e-01, -9.3118e-02, -8.9839e-02, -1.0916e-01,  1.8954e-02],
+         [-1.3203e-0...  4.6170e-02],
+         [-1.6807e-01, -8.2738e-02, -1.5458e-01, -7.8731e-02,  1.4458e-01]]],
+       requires_grad=True)
+bias = Parameter containing:
+tensor([ 0.1454, -0.1418,  0.1206,  0.1056, -0.0953,  0.0281, -0.1496, -0.0043,
+         0.0512,  0.0782, -0.1320,  0.1294,  0.0535, -0.0109,  0.0792,  0.0903],
+       requires_grad=True)
+
+    def _conv_forward(self, input: Tensor, weight: Tensor, bias: Tensor | None):
+        if self.padding_mode != "zeros":
+            return F.conv1d(
+                F.pad(
+                    input, self._reversed_padding_repeated_twice, mode=self.padding_mode
+                ),
+                weight,
+                bias,
+                self.stride,
+                _single(0),
+                self.dilation,
+                self.groups,
+            )
+    
+&gt;       return F.conv1d(
+            input, weight, bias, self.stride, self.padding, self.dilation, self.groups
+        )
+E       RuntimeError: Input type (float) and bias type (double) should be the same
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/conv.py:380: RuntimeError</failure></testcase><testcase classname="ai2.tests.test_ai2" name="test_hold_extrapolate_is_causal_and_accurate" time="0.001" /><testcase classname="ai2.tests.test_ai2" name="test_base_estimate_falls_back_to_revh_when_gate_closed" time="0.001" /><testcase classname="ai2.tests.test_ai2" name="test_rl_env_api[GateEnv]" time="0.004" /><testcase classname="ai2.tests.test_ai2" name="test_rl_env_api[ResidualEnv]" time="0.004" /><testcase classname="ai2.tests.test_ai2" name="test_gate_env_rewards_trusting_a_good_estimate" time="0.015" /><testcase classname="ai2.tests.test_ai2" name="test_policy_weights_and_residual_are_causal" time="0.022" /><testcase classname="ai2.tests.test_ai2" name="test_sigma_lognormal_recovery" time="0.016" /><testcase classname="ai2.tests.test_ai2" name="test_aan_gain_law" time="0.001" /><testcase classname="ai2.tests.test_ai2" name="test_evidence_rows_header_and_ids" time="0.001" /><testcase classname="ai2.tests.test_ai2" name="test_output_files_schema" time="0.026" /><testcase classname="ai3.tests.test_ai3" name="test_alignment_and_first_deviation" time="0.001" /><testcase classname="ai3.tests.test_ai3" name="test_checker_flags_nonword_and_passes_correct_word" time="0.003" /><testcase classname="ai3.tests.test_ai3" name="test_trie_prefix_ranges" time="0.000" /><testcase classname="ai3.tests.test_ai3" name="test_encode_features_and_causality" time="0.003"><failure message="RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double">def test_encode_features_and_causality():
+        import torch
+        s1 = np.column_stack([np.linspace(0, 1, 20), np.sin(np.linspace(0, 3, 20))])
+        s2 = np.column_stack([np.linspace(1, 1.2, 5), np.linspace(1, 0, 5)])
+        F, fr = O.encode([s1, s2], 1.0)
+        assert F.shape[1] == O.N_FEAT and np.all(np.diff(fr) &gt;= -1e-12) and fr[-1] == pytest.approx(1.0)
+        assert (F[:, 4] == 0).sum() == 1                        # one pen-up jump
+        m = O.make_model(16, 1)
+        m.eval()
+        with torch.no_grad():
+&gt;           a, _ = m(torch.from_numpy(F[None]))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ai3/tests/test_ai3.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ai3/online.py:183: in forward
+    z = torch.tanh(self.inp(x))
+                   ^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Linear(in_features=5, out_features=16, bias=True)
+input = tensor([[[ 0.0000,  0.0000,  0.0000,  0.0000,  1.0000],
+         [ 0.0314,  0.0939,  0.0314,  0.0939,  1.0000],
+      ...18,  0.0909,  0.0182, -0.0909,  1.0000],
+         [ 1.2000,  0.0000,  0.0182, -0.0909,  1.0000]]], dtype=torch.float32)
+
+    def forward(self, input: Tensor) -&gt; Tensor:
+        """
+        Runs the forward pass.
+        """
+&gt;       return F.linear(input, self.weight, self.bias)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/linear.py:134: RuntimeError</failure></testcase><testcase classname="ai3.tests.test_ai3" name="test_tremor_augmentation_amplitude" time="0.001" /><testcase classname="ai3.tests.test_ai3" name="test_calibration_fusion_prefers_matching_template" time="0.182" /><testcase classname="ai3.tests.test_ai3" name="test_open_end_dtw_moves_forward" time="0.236" /><testcase classname="ai3.tests.test_ai3" name="test_command_dead_band_and_limit" time="0.001" /><testcase classname="ai3.tests.test_ai3" name="test_render_centred" time="0.001" /><testcase classname="ai3.tests.test_ai3" name="test_cues_invariants" time="0.002" /><testcase classname="ai3.tests.test_ai3" name="test_personal_cache_learns_user_words" time="0.000" /><testcase classname="ai3.tests.test_ai3" name="test_rules_hash_and_evidence_header" time="0.003" /><testcase classname="ai3.tests.test_layers" name="test_stroke_record_is_append_only_and_tamper_evident" time="0.000" /><testcase classname="ai3.tests.test_layers" name="test_transcript_keeps_literal_audits_and_undoes" time="0.000" /><testcase classname="ai3.tests.test_layers" name="test_protected_words_and_opt_in_auto_mode" time="0.000" /><testcase classname="ai3.tests.test_layers" name="test_writing_plan_needs_writer_acceptance_and_is_fixed" time="0.001" /><testcase classname="ai3.tests.test_words_plan" name="test_segment_rule_joins_dots_and_overlaps" time="0.001" /><testcase classname="ai3.tests.test_words_plan" name="test_edit_distance_and_nbest" time="0.001" /><testcase classname="ai3.tests.test_words_plan" name="test_combine_separates_recognition_from_spelling" time="0.000" /><testcase classname="ai3.tests.test_words_plan" name="test_temperature_scaling_reduces_calibration_error" time="0.011" /><testcase classname="ai3.tests.test_words_plan" name="test_planner_respects_reach_and_hands_back" time="0.029" /><testcase classname="aiguide.tests.test_geometry" name="test_writer_strokes_letters_and_micrographia" time="0.007" /><testcase classname="aiguide.tests.test_geometry" name="test_writer_is_deterministic" time="0.002" /><testcase classname="aiguide.tests.test_geometry" name="test_fit_letter_recovers_exact_affine[a]" time="0.007" /><testcase classname="aiguide.tests.test_geometry" name="test_fit_letter_recovers_exact_affine[k]" time="0.003" /><testcase classname="aiguide.tests.test_geometry" name="test_fit_letter_recovers_exact_affine[s]" time="0.004" /><testcase classname="aiguide.tests.test_geometry" name="test_fit_letter_recovers_exact_affine[t]" time="0.004" /><testcase classname="aiguide.tests.test_geometry" name="test_fit_degenerate_glyph_uses_prior" time="0.002" /><testcase classname="aiguide.tests.test_geometry" name="test_style_estimator_on_clean_pangram" time="0.093"><failure message="assert 1.1418255276071099 == 1.05 ± 0.084&#10;  &#10;  comparison failed&#10;  Obtained: 1.1418255276071099&#10;  Expected: 1.05 ± 0.084">def test_style_estimator_on_clean_pangram():
+        st = WriterStyle(x_height_mm=2.8, slant_deg=15.0, width=1.05)
+        wr = SyntheticWriter(st, seed=7).write(CALIB_SENTENCE, dt=1e-3, seed=3)
+        obs, _ = observe(wr, 0.0, 6.0, np.random.default_rng(0))
+        est = StyleEstimator()
+        for L, (strokes, times, _d) in zip(wr.letters, obs):
+            est.update(L.char, strokes, t_strokes=times)
+        e = est.estimate()
+        assert e.h == pytest.approx(2.8e-3, rel=0.08)
+        assert math.degrees(e.slant) == pytest.approx(15.0, abs=3.0)
+&gt;       assert e.width == pytest.approx(1.05, rel=0.08)
+E       assert 1.1418255276071099 == 1.05 ± 0.084
+E         
+E         comparison failed
+E         Obtained: 1.1418255276071099
+E         Expected: 1.05 ± 0.084
+
+aiguide/tests/test_geometry.py:70: AssertionError</failure></testcase><testcase classname="aiguide.tests.test_geometry" name="test_template_anchor_track_and_error" time="0.016" /><testcase classname="aiguide.tests.test_geometry" name="test_kinematic_predictors_exact_on_lines_and_circles" time="0.001" /><testcase classname="aiguide.tests.test_geometry" name="test_windows_and_budget" time="0.002" /><testcase classname="aiguide.tests.test_geometry" name="test_dtw_and_recogniser_on_clean_glyphs" time="0.143" /><testcase classname="aiguide.tests.test_geometry" name="test_letter_metrics_and_travel_limit" time="0.001" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_guided_mode_engages_with_default_template" time="6.328" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_splice_of_identical_runs_is_identity" time="0.001" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_nib_offset_matches_simulated_ink_minus_housing" time="0.031" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_p1_dispatch_maps_channels_and_guided_mode_engages" time="6.080" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_p1_static_offset_is_measured_from_the_clean_neutral_run" time="0.102" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_p1_touchdown_and_lift_tails_are_scored_separately" time="0.001" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_authority_rule" time="0.000" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_template_record_roundtrip_and_legacy_reader" time="0.003" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_bandwidth_calculation" time="0.004" /><testcase classname="aiguide.tests.test_guidance_icd" name="test_adapter_protocol_and_spec" time="0.001" /><testcase classname="aiguide.tests.test_lm" name="test_normalize_maps_to_glyph_alphabet" time="0.000" /><testcase classname="aiguide.tests.test_lm" name="test_splits_deterministic_disjoint_and_sized" time="1.701" /><testcase classname="aiguide.tests.test_lm" name="test_corpus_provenance_matches_snapshot" time="0.001" /><testcase classname="aiguide.tests.test_lm" name="test_charkn_matches_bruteforce_reference" time="0.003" /><testcase classname="aiguide.tests.test_lm" name="test_wordkn_distributions_and_prefix_range" time="0.001" /><testcase classname="aiguide.tests.test_lm" name="test_glyph_ahead_skips_spaces_and_sums_to_one" time="0.009" /><testcase classname="aiguide.tests.test_lm" name="test_glyph_positions_depth_semantics" time="0.000" /><testcase classname="aiguide.tests.test_lm" name="test_calibration_of_calibrated_scores_is_small" time="0.017" /><testcase classname="aiguide.tests.test_lm" name="test_temperature_fit_detects_overconfidence" time="0.218" /><testcase classname="aiprior.tests.test_aiprior" name="test_guidance_is_causal" time="0.473" /><testcase classname="aiprior.tests.test_aiprior" name="test_guidance_off_without_tremor_and_moves_toward_template" time="0.008" /><testcase classname="aiprior.tests.test_aiprior" name="test_tremor_peak_and_wiener_clean" time="0.020" /><testcase classname="aiprior.tests.test_aiprior" name="test_wiener_leaves_clean_writing_alone" time="0.011" /><testcase classname="aiprior.tests.test_aiprior" name="test_select_ai_rules" time="0.001" /><testcase classname="aiprior.tests.test_aiprior" name="test_tracker_reproduces_handwriting_study" time="117.949" /><testcase classname="aiprior.tests.test_aiprior" name="test_outputs_schema" time="0.016" /><testcase classname="app.tests.test_autocorrect" name="test_channel_prefers_fewer_edits_and_scales_with_cer" time="0.000" /><testcase classname="app.tests.test_autocorrect" name="test_delete_index_finds_words_within_two_edits" time="0.000" /><testcase classname="app.tests.test_autocorrect" name="test_corrector_fixes_non_words_keeps_known_words" time="0.003" /><testcase classname="app.tests.test_autocorrect" name="test_punctuation_is_kept_and_digits_untouched" time="0.002" /><testcase classname="app.tests.test_autocorrect" name="test_out_of_vocabulary_names_can_survive" time="0.001" /><testcase classname="app.tests.test_autocorrect" name="test_personal_dictionary_enables_fixing_names" time="0.001" /><testcase classname="app.tests.test_autocorrect" name="test_autocorrect_layer_keeps_links_and_never_touches_the_original" time="0.376" /><testcase classname="app.tests.test_autocorrect" name="test_autocorrect_is_idempotent_on_its_base_and_can_stay_in_memory" time="0.026" /><testcase classname="app.tests.test_autocorrect" name="test_rerender_in_writer_style" time="0.082" /><testcase classname="app.tests.test_autocorrect" name="test_corpus_model_end_to_end" time="0.992" /><testcase classname="app.tests.test_capture" name="test_contact_intervals" time="0.000" /><testcase classname="app.tests.test_capture" name="test_stroke_table_flags" time="0.001" /><testcase classname="app.tests.test_capture" name="test_segmentation_recovers_ground_truth_words" time="0.344" /><testcase classname="app.tests.test_capture" name="test_resampling_and_densify" time="0.001" /><testcase classname="app.tests.test_capture" name="test_frechet_known_values" time="0.248" /><testcase classname="app.tests.test_capture" name="test_frechet_implementations_agree[0]" time="0.030" /><testcase classname="app.tests.test_capture" name="test_frechet_implementations_agree[1]" time="0.029" /><testcase classname="app.tests.test_capture" name="test_frechet_implementations_agree[2]" time="0.030" /><testcase classname="app.tests.test_capture" name="test_frechet_implementations_agree[3]" time="0.028" /><testcase classname="app.tests.test_capture" name="test_fidelity_straight_line_only_rounding_and_end_truncation" time="0.068" /><testcase classname="app.tests.test_capture" name="test_fidelity_circle_matches_chord_sagitta" time="0.026" /><testcase classname="app.tests.test_capture" name="test_quantisation_only_rms_matches_uniform_rounding_theory" time="0.003" /><testcase classname="app.tests.test_capture" name="test_fidelity_on_simulator_trace_is_self_consistent" time="1.373" /><testcase classname="app.tests.test_capture" name="test_hand_path_fit_recovers_origin_and_jacobian" time="0.003" /><testcase classname="app.tests.test_capture" name="test_hand_path_other_origin_modes" time="0.001" /><testcase classname="app.tests.test_cli" name="test_import_search_ask_render_list_verify_edit" time="0.171" /><testcase classname="app.tests.test_cli" name="test_store_is_required" time="0.002" /><testcase classname="app.tests.test_cli" name="test_fidelity_command" time="0.104" /><testcase classname="app.tests.test_cli" name="test_module_entry_point" time="0.494" /><testcase classname="app.tests.test_golden_vector" name="test_golden_log_parses_strictly" time="0.001" /><testcase classname="app.tests.test_golden_vector" name="test_golden_log_values_match_c_source" time="0.001" /><testcase classname="app.tests.test_golden_vector" name="test_golden_log_imports_into_note_store" time="0.005" /><testcase classname="app.tests.test_golden_vector" name="test_golden_log_matches_firmware_json" time="0.001" /><testcase classname="app.tests.test_grounded" name="test_extractive_answer_is_cited_down_to_strokes" time="0.015" /><testcase classname="app.tests.test_grounded" name="test_answer_is_deterministic" time="0.015" /><testcase classname="app.tests.test_grounded" name="test_cross_note_answer_cites_both_notes" time="0.018" /><testcase classname="app.tests.test_grounded" name="test_refuses_without_supporting_notes_and_never_calls_the_model" time="0.006" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[return library books by friday-uncited]" time="0.007" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[return library books by friday [S1]\nThe library also sells coffee.-uncited]" time="0.006" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[Return library books by friday. It is overdue. [S1]-uncited]" time="0.007" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[return library books by friday [S7]-unknown sources]" time="0.006" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[The plumber comes on sunday [S1]-unsupported]" time="0.006" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[return library books by friday at 10 [S1]-numbers]" time="0.006" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[[S1]-citation without text]" time="0.005" /><testcase classname="app.tests.test_grounded" name="test_rejects_ungrounded_model_output_and_stores_nothing[-empty_output]" time="0.008" /><testcase classname="app.tests.test_grounded" name="test_accepts_cited_paraphrase_with_markers_after_the_period" time="0.015" /><testcase classname="app.tests.test_grounded" name="test_model_declining_is_a_refusal" time="0.004" /><testcase classname="app.tests.test_grounded" name="test_model_sees_only_question_and_excerpt_text" time="0.015" /><testcase classname="app.tests.test_grounded" name="test_non_local_model_needs_explicit_consent" time="0.014" /><testcase classname="app.tests.test_grounded" name="test_clinical_questions_are_refused[Is my tremor getting worse?]" time="0.005" /><testcase classname="app.tests.test_grounded" name="test_clinical_questions_are_refused[Does my handwriting show signs of Parkinson's?]" time="0.005" /><testcase classname="app.tests.test_grounded" name="test_clinical_questions_are_refused[Can you diagnose me from my strokes?]" time="0.005" /><testcase classname="app.tests.test_grounded" name="test_clinical_questions_are_refused[Is my handwriting normal?]" time="0.004" /><testcase classname="app.tests.test_grounded" name="test_ordinary_questions_pass_the_scope_screen[When do I take my pills?]" time="0.000" /><testcase classname="app.tests.test_grounded" name="test_ordinary_questions_pass_the_scope_screen[What did I note about the bench test?]" time="0.000" /><testcase classname="app.tests.test_grounded" name="test_ordinary_questions_pass_the_scope_screen[What is on the hall sensor list?]" time="0.000" /><testcase classname="app.tests.test_grounded" name="test_split_claims" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_crc_catalogue_check_value" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_crc_matches_independent_implementation" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_header_layout_by_hand" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_stroke_record_layout_by_hand" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_event_and_research_layout_by_hand" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_round_trip_all_record_types" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_encoder_rejects_out_of_range_and_wrong_lengths" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_header_errors" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[type-0]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[type-3]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[type-17]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[type--1]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[length-0]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[length-3]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[length-17]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[length--1]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[payload-0]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[payload-3]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[payload-17]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[payload--1]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[crc-0]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[crc-3]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[crc-17]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_single_corruption_loses_only_that_record[crc--1]" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_random_corruption_never_yields_false_records[0]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_random_corruption_never_yields_false_records[1]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_random_corruption_never_yields_false_records[2]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_random_corruption_never_yields_false_records[3]" time="0.003" /><testcase classname="app.tests.test_logfmt" name="test_random_corruption_never_yields_false_records[4]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_random_corruption_never_yields_false_records[5]" time="0.002" /><testcase classname="app.tests.test_logfmt" name="test_garbage_that_looks_like_a_record_header_is_rejected" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_variable_length_candidate_needs_a_valid_successor" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_truncated_tail_and_unknown_type" time="0.001" /><testcase classname="app.tests.test_logfmt" name="test_t_us_wrap_explicit_event" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_t_us_wrap_inferred_without_event" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_t_us_multiple_wraps_during_silent_gap_use_event_count" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_wrap_count_mismatch_is_reported_and_event_wins" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_wrap_marker_arg0_as_emitted_by_firmware" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_wrap_marker_after_silent_gap_counts_one_wrap" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_stroke_t_ms_derived_from_wrapping_t_us_is_corrected" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_annotation_and_calibration_layouts" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_t_ms_wrap_of_stroke_samples" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_angle_encoding_interpretation" time="0.000" /><testcase classname="app.tests.test_logfmt" name="test_example_vector_is_reproducible" time="0.002" /><testcase classname="app.tests.test_notes" name="test_schema_is_a_valid_draft_2020_12_schema" time="0.001"><failure message="ModuleNotFoundError: No module named 'jsonschema'">def test_schema_is_a_valid_draft_2020_12_schema():
+&gt;       from jsonschema import Draft202012Validator
+E       ModuleNotFoundError: No module named 'jsonschema'
+
+app/tests/test_notes.py:25: ModuleNotFoundError</failure></testcase><testcase classname="app.tests.test_notes" name="test_content_address_is_sha256_of_logged_payloads" time="0.037" /><testcase classname="app.tests.test_notes" name="test_original_layer_refuses_every_modification" time="0.034" /><testcase classname="app.tests.test_notes" name="test_put_original_is_idempotent_and_never_rewrites" time="0.062" /><testcase classname="app.tests.test_notes" name="test_tampered_original_is_detected" time="0.044" /><testcase classname="app.tests.test_notes" name="test_tampered_note_manifest_is_detected" time="0.033" /><testcase classname="app.tests.test_notes" name="test_manifest_records_session_events_and_synthetic_label" time="0.031" /><testcase classname="app.tests.test_notes" name="test_derived_layer_has_icd_provenance_fields_and_stable_id" time="0.053" /><testcase classname="app.tests.test_notes" name="test_add_layer_rejects_broken_links_and_provenance" time="0.043"><failure message="Failed: DID NOT RAISE ValidationError">store = &lt;penapp.notes.NoteStore object at 0x146fb40e0&gt;
+files = {'a': PosixPath('/private/var/folders/m5/v9bwr77x55vd6d95wdx_hvsc0000gn/T/pytest-of-adambickerdike/pytest-1/samples0/a...th('/private/var/folders/m5/v9bwr77x55vd6d95wdx_hvsc0000gn/T/pytest-of-adambickerdike/pytest-1/samples0/b.truth.json')}
+
+    def test_add_layer_rejects_broken_links_and_provenance(store, files):
+        note = _import(store, files["a"])
+        nid, sha = note["note_id"], note["original_sha256"]
+        ok_span = {"span_id": "l0", "level": "line", "text": "x", "stroke_ranges": [[0, 1]], "bbox_um": [0, 0, 1, 1]}
+        base = dict(kind="recognition", note_ids=[nid], created_by="penapp.test@1",
+                    inputs=[{"type": "original", "sha256": sha}],
+                    payload={"language": "en", "evidence_status": "test", "spans": [ok_span]})
+        store.add_layer(**base)
+        bad = copy.deepcopy(base)
+        bad["payload"]["spans"][0]["stroke_ranges"] = [[0, 99999]]          # strokes that do not exist
+        with pytest.raises(ValidationError):
+            store.add_layer(**bad)
+        bad = copy.deepcopy(base)
+        bad["payload"]["spans"][0]["stroke_ranges"] = []                    # a span without stroke links
+        with pytest.raises(ValidationError):
+            store.add_layer(**bad)
+        with pytest.raises(ValidationError):
+            store.add_layer(**{**base, "created_by": "somebody"})           # no algorithm@version
+        with pytest.raises(ValidationError):
+            store.add_layer(**{**base, "kind": "original"})
+        with pytest.raises(ValidationError):
+            store.add_layer(**{**base, "inputs": []})
+        with pytest.raises(ValidationError):
+            store.add_layer(**{**base, "inputs": [{"type": "original", "sha256": "0" * 64}]})
+&gt;       with pytest.raises(ValidationError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValidationError
+
+app/tests/test_notes.py:155: Failed</failure></testcase><testcase classname="app.tests.test_notes" name="test_ai_summary_requires_citations_at_store_level" time="0.012" /><testcase classname="app.tests.test_notes" name="test_assistant_output_cannot_feed_note_content_layers" time="0.014" /><testcase classname="app.tests.test_notes" name="test_user_edit_is_a_new_layer_that_keeps_stroke_links" time="0.015" /><testcase classname="app.tests.test_notes" name="test_user_edits_become_stale_after_new_recognition" time="0.017" /><testcase classname="app.tests.test_notes" name="test_export_bundle_validates_and_broken_bundle_fails" time="0.027"><failure message="AssertionError: assert []&#10; +  where [] = schema_errors({'object': 'note_store_bundle', 'schema_version': 1, 'exported_utc': '2026-09-02T09:00:00.000Z', 'exported_by': 'penapp.export@0.1.0', ...})">loaded = (&lt;penapp.notes.NoteStore object at 0x146de8f80&gt;, {'a': 'note-f8094823c1a7b965', 'b': 'note-b7ae997b289ebefc'})
+
+    def test_export_bundle_validates_and_broken_bundle_fails(loaded):
+        store, _ = loaded
+        b = store.export_bundle()                     # validated on export (envelope + sampled rows)
+        assert {l["kind"] for l in b["layers"]} &gt;= {"segmentation", "recognition"}
+        assert len(b["notes"]) == len(b["originals"]) == 2
+        # full-schema checks on a reduced copy (per-row jsonschema validation of every sample is slow)
+        small = copy.deepcopy({**b, "originals": [{**o, "samples": o["samples"][:50]} for o in b["originals"]]})
+        assert not schema_errors(small)
+        broken = copy.deepcopy(small)
+        del broken["layers"][0]["created_by"]
+&gt;       assert schema_errors(broken)
+E       AssertionError: assert []
+E        +  where [] = schema_errors({'object': 'note_store_bundle', 'schema_version': 1, 'exported_utc': '2026-09-02T09:00:00.000Z', 'exported_by': 'penapp.export@0.1.0', ...})
+
+app/tests/test_notes.py:221: AssertionError</failure></testcase><testcase classname="app.tests.test_notes" name="test_verify_ok_and_purge_requires_confirmation" time="0.024" /><testcase classname="app.tests.test_notes" name="test_original_from_json_rejects_out_of_range_rows" time="0.034" /><testcase classname="app.tests.test_recognize" name="test_edit_distance_metrics" time="0.000" /><testcase classname="app.tests.test_recognize" name="test_protocol_conformance" time="0.000" /><testcase classname="app.tests.test_recognize" name="test_null_recogniser_layer" time="0.013" /><testcase classname="app.tests.test_recognize" name="test_ground_truth_passthrough_links_words_to_strokes" time="0.013" /><testcase classname="app.tests.test_recognize" name="test_ground_truth_drops_strokes_lost_to_corruption" time="0.024" /><testcase classname="app.tests.test_recognize" name="test_error_injection_is_deterministic_and_hits_target_cer" time="0.071" /><testcase classname="app.tests.test_recognize" name="test_mlkit_adapter_mapping_and_guards" time="0.022" /><testcase classname="app.tests.test_render" name="test_svg_is_well_formed_and_draws_every_stroke" time="0.016" /><testcase classname="app.tests.test_render" name="test_geometry_is_exact_and_y_is_flipped" time="0.016" /><testcase classname="app.tests.test_render" name="test_force_width_varies_with_force" time="0.019" /><testcase classname="app.tests.test_render" name="test_overlays_and_highlight" time="0.041" /><testcase classname="app.tests.test_render" name="test_hand_path_overlay_on_research_session" time="0.153" /><testcase classname="app.tests.test_render" name="test_rendering_is_deterministic_and_leaves_original_untouched" time="0.034" /><testcase classname="app.tests.test_render" name="test_single_sample_stroke_renders_as_dot" time="0.001" /><testcase classname="app.tests.test_search" name="test_hit_links_word_to_strokes_and_box" time="0.010" /><testcase classname="app.tests.test_search" name="test_phrase_and_boolean_modes" time="0.006" /><testcase classname="app.tests.test_search" name="test_case_and_diacritics_insensitive" time="0.005" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[&quot;]" time="0.006" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[NEAR(]" time="0.005" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[a OR]" time="0.006" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[*]" time="0.006" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[()]" time="0.004" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[library AND]" time="0.005" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[-]" time="0.006" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert[\xb5m]" time="0.007" /><testcase classname="app.tests.test_search" name="test_hostile_queries_are_inert['; DROP TABLE lines;--]" time="0.007" /><testcase classname="app.tests.test_search" name="test_match_expression_quotes_everything" time="0.000" /><testcase classname="app.tests.test_search" name="test_user_edit_reindex_and_staleness" time="0.021" /><testcase classname="app.tests.test_search" name="test_assistant_output_is_not_indexed" time="0.019" /><testcase classname="app.tests.test_search" name="test_purge_and_remove_note" time="0.009" /><testcase classname="bnib.tests.test_bnib" name="test_review_static_power_reproduced" time="0.001" /><testcase classname="bnib.tests.test_bnib" name="test_vector_statics_frictionless[35.0]" time="0.001" /><testcase classname="bnib.tests.test_bnib" name="test_vector_statics_frictionless[50.0]" time="0.000" /><testcase classname="bnib.tests.test_bnib" name="test_vector_statics_frictionless[75.0]" time="0.000" /><testcase classname="bnib.tests.test_bnib" name="test_friction_band_and_vectorised_stats" time="0.003" /><testcase classname="bnib.tests.test_bnib" name="test_contact_jacobian" time="0.000" /><testcase classname="bnib.tests.test_bnib" name="test_counterface_cancels_static_load_exactly" time="0.004" /><testcase classname="bnib.tests.test_bnib" name="test_counterface_weight_compensation" time="0.001" /><testcase classname="bnib.tests.test_bnib" name="test_duty_model_had_no_static_term" time="0.004" /><testcase classname="bnib.tests.test_bnib" name="test_surrogate_calibration_quality" time="0.001"><failure message="AssertionError: assert False&#10; +  where False = &lt;built-in method get of dict object at 0x32f056440&gt;('fitted')&#10; +    where &lt;built-in method get of dict object at 0x32f056440&gt; = {'kappa': 1.0, 'nu': 0.8, 'fitted': False}.get">def test_surrogate_calibration_quality():
+        from bnib import actuators as A
+        cal = A.calibration()
+&gt;       assert cal.get("fitted")
+E       AssertionError: assert False
+E        +  where False = &lt;built-in method get of dict object at 0x32f056440&gt;('fitted')
+E        +    where &lt;built-in method get of dict object at 0x32f056440&gt; = {'kappa': 1.0, 'nu': 0.8, 'fitted': False}.get
+
+bnib/tests/test_bnib.py:93: AssertionError</failure></testcase><testcase classname="bnib.tests.test_bnib" name="test_wire_stiffness_limits" time="0.000" /><testcase classname="bnib.tests.test_bnib" name="test_torch_chain_matches_evaluator_and_gradients" time="0.035" /><testcase classname="bnib.tests.test_bnib" name="test_counterface_beats_unbalanced" time="0.005" /><testcase classname="bnib.tests.test_bnib" name="test_governor_caps_skin" time="0.087" /><testcase classname="bnib.tests.test_bnib" name="test_deltapen_calibration" time="0.140" /><testcase classname="bnib.tests.test_bnib" name="test_interface_file_consistent" time="0.045"><failure message="assert 0.40007 == 0.31326707823796335 ± 3.1e-05&#10;  &#10;  comparison failed&#10;  Obtained: 0.40007&#10;  Expected: 0.31326707823796335 ± 3.1e-05">def test_interface_file_consistent():
+        from bnib import CONFIG_NIB
+        from bnib import interface as IF
+        if not os.path.exists(CONFIG_NIB):
+            pytest.skip("config/nib.yaml not generated yet")
+        doc = IF.load()
+        assert doc["schema"] == IF.SCHEMA
+        assert IF.leaves_missing_status(doc) == []
+        d, _ = IF.recommended_design()
+        ev = CD.evaluate(d, detail=False, fast=True)
+&gt;       assert doc["actuator"]["Km_tip_centre"]["value"] == pytest.approx(ev["Km_tip"], rel=1e-4)
+E       assert 0.40007 == 0.31326707823796335 ± 3.1e-05
+E         
+E         comparison failed
+E         Obtained: 0.40007
+E         Expected: 0.31326707823796335 ± 3.1e-05
+
+bnib/tests/test_bnib.py:150: AssertionError</failure></testcase><testcase classname="bnib.tests.test_bnib" name="test_evidence_rows_header_and_ids" time="0.001" /><testcase classname="bnib.tests.test_bnib" name="test_layout_fits" time="0.004" /><testcase classname="bnib.tests.test_bnib" name="test_sim_builds_and_steps" time="0.800" /><testcase classname="bnib.tests.test_bnib" name="test_counterface_statics_independent[35.0]" time="0.001" /><testcase classname="bnib.tests.test_bnib" name="test_counterface_statics_independent[50.0]" time="0.000" /><testcase classname="bnib.tests.test_bnib" name="test_counterface_statics_independent[75.0]" time="0.001" /><testcase classname="bnib.tests.test_bnib" name="test_travel_summary_and_sim_findings" time="0.002" /><testcase classname="board.tests.test_control" name="test_projection_on_a_line" time="0.001" /><testcase classname="board.tests.test_control" name="test_partial_guidance_has_a_deadband_and_points_to_the_path" time="0.000" /><testcase classname="board.tests.test_control" name="test_supervisor_caps_slew_limits_and_yields" time="0.013" /><testcase classname="board.tests.test_control" name="test_full_guidance_reduces_tracing_error" time="0.870" /><testcase classname="board.tests.test_control" name="test_guidance_cannot_flip_a_reversal_but_lead_through_can" time="0.818" /><testcase classname="board.tests.test_hand_stage" name="test_static_compliance_is_springs_in_series" time="0.000" /><testcase classname="board.tests.test_hand_stage" name="test_force_for_correction_inverts_compliance" time="0.000" /><testcase classname="board.tests.test_hand_stage" name="test_step_response_settles_to_static_deflection" time="0.004" /><testcase classname="board.tests.test_hand_stage" name="test_stepper_torque_falls_with_speed_and_stage_modes_positive" time="0.000" /><testcase classname="board.tests.test_hand_stage" name="test_plate_centre_deflection_matches_square_plate_table" time="0.001" /><testcase classname="board.tests.test_hand_stage" name="test_design_gap_is_stack_sum" time="0.000" /><testcase classname="board.tests.test_magnetics" name="test_getFT_matches_point_dipoles_far_apart" time="0.004" /><testcase classname="board.tests.test_magnetics" name="test_vertical_pen_magnet_above_axial_head_has_no_lateral_force" time="0.002" /><testcase classname="board.tests.test_magnetics" name="test_lateral_capability_falls_with_gap" time="1.940" /><testcase classname="board.tests.test_magnetics" name="test_antiphase_coil_pair_gives_no_normal_force_above_midpoint" time="0.007" /><testcase classname="board.tests.test_outputs" name="test_layout_components_follow_the_schema" time="0.001" /><testcase classname="board.tests.test_outputs" name="test_evidence_rows_header_and_ids" time="0.001" /><testcase classname="board.tests.test_outputs" name="test_hall_ring_localises_without_noise_and_fits_range" time="0.021" /><testcase classname="board.tests.test_outputs" name="test_results_files_exist_after_a_run" time="0.001" /><testcase classname="drive.tests.test_drive" name="test_evidence_rows_match_the_ledger_header" time="0.014"><failure message="AssertionError: assert not ({'AMF-100', 'AMF-101', 'AMF-102', 'AMF-103', 'AMF-104', 'AMF-105', ...} &amp; {'ACT-01', 'ACT-02', 'ACT-03', 'ACT-04', 'ACT-05', 'ACT-06', ...})&#10; +  where {'AMF-100', 'AMF-101', 'AMF-102', 'AMF-103', 'AMF-104', 'AMF-105', ...} = set(['HAP-60', 'HAP-61', 'HAP-62', 'HAP-63', 'HAP-64', 'HAP-65', ...])">tmp_path = PosixPath('/private/var/folders/m5/v9bwr77x55vd6d95wdx_hvsc0000gn/T/pytest-of-adambickerdike/pytest-1/test_evidence_rows_match_the_l0')
+
+    def test_evidence_rows_match_the_ledger_header(tmp_path):
+        from drive import evidence as EV
+        with open(REPO_ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8") as f:
+            header = next(csv.reader(f))
+        assert EV.HEADER == header and len(header) == 23
+        ids = [r["id"] for r in EV.ROWS]
+        assert len(ids) == len(set(ids)) &gt;= 25
+        for i in ids:
+            pre, num = i.split("-")
+            num = int(num)
+            assert (pre, True) in {("HAP", 60 &lt;= num &lt;= 79), ("AMF", 100 &lt;= num &lt;= 119), ("CON", 36 &lt;= num &lt;= 45),
+                                   ("PAT", 30 &lt;= num &lt;= 34)}
+        p = tmp_path / "rows.csv"
+        EV.write_rows(p)
+        with open(p, newline="", encoding="utf-8") as f:
+            rows = list(csv.reader(f))
+        assert rows[0] == header and all(len(r) == 23 for r in rows)
+        # no proposed id may collide with an id already in the ledger
+        with open(REPO_ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8") as f:
+            existing = {r["id"] for r in csv.DictReader(f)}
+&gt;       assert not (set(ids) &amp; existing)
+E       AssertionError: assert not ({'AMF-100', 'AMF-101', 'AMF-102', 'AMF-103', 'AMF-104', 'AMF-105', ...} &amp; {'ACT-01', 'ACT-02', 'ACT-03', 'ACT-04', 'ACT-05', 'ACT-06', ...})
+E        +  where {'AMF-100', 'AMF-101', 'AMF-102', 'AMF-103', 'AMF-104', 'AMF-105', ...} = set(['HAP-60', 'HAP-61', 'HAP-62', 'HAP-63', 'HAP-64', 'HAP-65', ...])
+
+drive/tests/test_drive.py:38: AssertionError</failure></testcase><testcase classname="drive.tests.test_drive" name="test_heel_geometry" time="0.006" /><testcase classname="drive.tests.test_drive" name="test_contact_mechanics" time="0.006" /><testcase classname="drive.tests.test_drive" name="test_design_gradient_matches_finite_differences" time="0.025" /><testcase classname="drive.tests.test_drive" name="test_bayes_opt_finds_a_toy_minimum" time="0.052" /><testcase classname="drive.tests.test_drive" name="test_plant_matches_hw1_when_the_drive_is_off" time="6.054" /><testcase classname="drive.tests.test_drive" name="test_drive_force_stays_under_its_caps" time="0.577" /><testcase classname="drive.tests.test_drive" name="test_layout_parts_schema" time="0.817" /><testcase classname="drive.tests.test_drive" name="test_frozen_rules_are_intact" time="0.001" /><testcase classname="drive.tests.test_drive" name="test_lateral_release_lowers_the_steered_hold" time="0.224" /><testcase classname="endcap.tests.test_cmaes" name="test_sphere" time="0.019" /><testcase classname="endcap.tests.test_cmaes" name="test_rosenbrock" time="0.014" /><testcase classname="endcap.tests.test_cmaes" name="test_negative_objective_runs_to_the_optimum" time="0.015" /><testcase classname="endcap.tests.test_design" name="test_lrm_parts_sum_and_stroke" time="0.001" /><testcase classname="endcap.tests.test_design" name="test_cmg_parts_sum_momentum_and_fit" time="0.003" /><testcase classname="endcap.tests.test_design" name="test_summary_consistency" time="0.030" /><testcase classname="endcap.tests.test_design" name="test_lrm_coil_cap_is_flexure_aware" time="0.001" /><testcase classname="endcap.tests.test_linear_torch" name="test_matches_linear_ext_reaction_mass" time="0.006" /><testcase classname="endcap.tests.test_linear_torch" name="test_matches_linear_ext_gyro_exactly" time="0.002" /><testcase classname="endcap.tests.test_linear_torch" name="test_gradient_matches_central_difference" time="0.003" /><testcase classname="endcap.tests.test_outputs" name="test_evidence_header_and_ids" time="0.010"><failure message="AssertionError: assert (80 &lt;= 89 and 'HAP-80' not in {'ACT-01', 'ACT-02', 'ACT-03', 'ACT-04', 'ACT-05', 'ACT-06', ...})&#10; +  where 80 = int('80')">tmp_path = PosixPath('/private/var/folders/m5/v9bwr77x55vd6d95wdx_hvsc0000gn/T/pytest-of-adambickerdike/pytest-1/test_evidence_header_and_ids0')
+
+    def test_evidence_header_and_ids(tmp_path):
+        hdr = next(csv.reader(open(os.path.join(ROOT, "docs", "evidence.csv"))))
+        assert EV.HEADER == hdr and len(hdr) == 23
+        rows = EV.write(str(tmp_path / "rows.csv"), {"headline": {}})
+        ids = [r["id"] for r in rows]
+        assert len(ids) == len(set(ids))
+        existing = {r["id"] for r in csv.DictReader(open(os.path.join(ROOT, "docs", "evidence.csv")))}
+        for i in ids:
+            pre, num = i.split("-")
+            lo, hi = RANGES[pre]
+&gt;           assert lo &lt;= int(num) &lt;= hi and i not in existing
+E           AssertionError: assert (80 &lt;= 89 and 'HAP-80' not in {'ACT-01', 'ACT-02', 'ACT-03', 'ACT-04', 'ACT-05', 'ACT-06', ...})
+E            +  where 80 = int('80')
+
+endcap/tests/test_outputs.py:24: AssertionError</failure></testcase><testcase classname="endcap.tests.test_outputs" name="test_layout_schema" time="0.000" /><testcase classname="endcap.tests.test_outputs" name="test_layout_schema_cmg" time="0.000" /><testcase classname="endcap.tests.test_outputs" name="test_layout_compact_behind_the_cell" time="0.001" /><testcase classname="endcap.tests.test_scaling" name="test_reaction_mass_force_and_corner" time="0.000" /><testcase classname="endcap.tests.test_scaling" name="test_cmg_torque_impulse_corner" time="0.000" /><testcase classname="endcap.tests.test_scaling" name="test_com_bound_and_weight_shift" time="0.000" /><testcase classname="endcap.tests.test_scaling" name="test_rotor_energy_stress_imbalance" time="0.000" /><testcase classname="endcap.tests.test_scaling" name="test_gyro_ratio_and_modes" time="0.000" /><testcase classname="endcap.tests.test_scaling" name="test_propeller_momentum_theory" time="0.000" /><testcase classname="endcap.tests.test_sim_quick" name="test_torque_feedforward_cancels_in_the_linear_model" time="0.003" /><testcase classname="endcap.tests.test_sim_quick" name="test_cmg_moves_the_tip_more_than_a_mass_at_3Hz" time="8.321" /><testcase classname="endcap.tests.test_sim_quick" name="test_rm_feedforward_matches_revh_when_the_cap_is_loose" time="0.012" /><testcase classname="fusion.tests.test_fusion" name="test_fast_handwriting_equals_reference" time="0.125" /><testcase classname="fusion.tests.test_fusion" name="test_test_scenario_is_harness_scenario" time="0.110" /><testcase classname="fusion.tests.test_fusion" name="test_seed_plan_is_disjoint_from_test_seeds" time="15.587" /><testcase classname="fusion.tests.test_fusion" name="test_streams_are_causal_and_consistent" time="0.197" /><testcase classname="fusion.tests.test_fusion" name="test_compensation_options" time="0.028" /><testcase classname="fusion.tests.test_fusion" name="test_expand_to_steps" time="0.000" /><testcase classname="fusion.tests.test_fusion" name="test_parts_snr_arithmetic" time="0.000" /><testcase classname="fusion.tests.test_fusion" name="test_kf_step_is_the_core_copy" time="0.558" /><testcase classname="fusion.tests.test_fusion" name="test_estimators_are_causal[akf-params0]" time="0.013" /><testcase classname="fusion.tests.test_fusion" name="test_estimators_are_causal[wflc-params1]" time="0.770" /><testcase classname="fusion.tests.test_fusion" name="test_estimators_are_causal[bmflc-params2]" time="0.012" /><testcase classname="fusion.tests.test_fusion" name="test_estimators_are_causal[kfosc-params3]" time="0.595" /><testcase classname="fusion.tests.test_fusion" name="test_learned_estimator_is_causal" time="0.006"><failure message="ValueError: RNN input dtype (torch.float32) does not match weight dtype (torch.float64). Convert input: input.to(torch.float64), or convert model: model.to(torch.float32)">def test_learned_estimator_is_causal():
+        """The GRU path (features, network, output low-pass) with a small random network: no output before T may change
+        when samples that become available after T change."""
+        torch = pytest.importorskip("torch")
+        from fusion import learned as L
+        torch.manual_seed(0)
+        m = L.build_model(8)
+        torch.nn.init.normal_(m.head.weight, std=0.5)
+        m.eval()
+        L._MODELS["_tiny_test"] = (m, {"net_hz": 1000.0, "out_scale": 100e-6, "lp_hz": 60.0, "hidden": 8})
+        st, _ = _synthetic_streams(dur=1.5)
+&gt;       a, _ = L.estimate(st, {"model": "_tiny_test"})
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+fusion/tests/test_fusion.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+fusion/learned.py:313: in estimate
+    y, _ = m(torch.from_numpy(X[None]))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+fusion/learned.py:120: in forward
+    y, h = self.gru(x, h0)
+           ^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/rnn.py:1437: in forward
+    self.check_forward_args(input, hx, batch_sizes)
+../venv/lib/python3.12/site-packages/torch/nn/modules/rnn.py:380: in check_forward_args
+    self.check_input(input, batch_sizes)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = GRU(7, 8, batch_first=True)
+input = tensor([[[ 0.0000,  0.0000,  0.0000,  ...,  0.0000,  0.0000,  0.0000],
+         [ 0.0103, -0.0420,  0.0000,  ...,  0.0... 1.0000,  1.0000],
+         [-1.1009,  0.0236,  0.9374,  ...,  1.0000,  1.0000,  1.0000]]],
+       dtype=torch.float32)
+batch_sizes = None
+
+    def check_input(self, input: Tensor, batch_sizes: Tensor | None) -&gt; None:
+        if not torch.jit.is_scripting():
+            if (
+                input.dtype != self._flat_weights[0].dtype  # type: ignore[union-attr]
+                and not torch._C._is_any_autocast_enabled()
+            ):
+&gt;               raise ValueError(
+                    f"RNN input dtype ({input.dtype}) does not match weight dtype ({self._flat_weights[0].dtype}). "  # type: ignore[union-attr]
+                    f"Convert input: input.to({self._flat_weights[0].dtype}), or convert model: model.to({input.dtype})"  # type: ignore[union-attr]
+                )
+E               ValueError: RNN input dtype (torch.float32) does not match weight dtype (torch.float64). Convert input: input.to(torch.float64), or convert model: model.to(torch.float32)
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/rnn.py:319: ValueError</failure></testcase><testcase classname="fusion.tests.test_fusion" name="test_akf_tracks_a_sinusoid_with_the_accelerometer" time="0.012" /><testcase classname="fusion.tests.test_fusion" name="test_wflc_converges_to_the_tremor_frequency" time="0.006" /><testcase classname="fusion.tests.test_fusion" name="test_output_lowpass_is_unity_at_dc" time="0.000" /><testcase classname="fusion.tests.test_fusion" name="test_context_without_template_equals_akf[opts0]" time="0.020" /><testcase classname="fusion.tests.test_fusion" name="test_context_without_template_equals_akf[opts1]" time="0.020" /><testcase classname="fusion.tests.test_fusion" name="test_context_without_template_equals_akf[opts2]" time="0.021" /><testcase classname="fusion.tests.test_fusion" name="test_amplitude_cap_blocks_output_without_slow_motion_tremor" time="0.018" /><testcase classname="fusion.tests.test_fusion" name="test_template_arrays_geometry" time="0.001" /><testcase classname="fusion.tests.test_fusion" name="test_context_template_prior_helps_and_wrong_template_is_bounded" time="0.095" /><testcase classname="fusion.tests.test_fusion" name="test_calibration_label_recovers_the_tremor_without_timing" time="0.210" /><testcase classname="fusion.tests.test_fusion" name="test_budget_is_positive" time="0.002" /><testcase classname="fusion.tests.test_fusion" name="test_evidence_rows_format" time="0.001" /><testcase classname="handwriting.tests.test_model" name="test_scheduled_writer_reproduces_aiguide" time="0.003" /><testcase classname="handwriting.tests.test_model" name="test_reversal_and_size_schedule" time="0.001" /><testcase classname="handwriting.tests.test_model" name="test_pd_schedule_cue_and_lines" time="0.000" /><testcase classname="handwriting.tests.test_model" name="test_adapted_writer_reproduces_letters" time="0.022" /><testcase classname="handwriting.tests.test_model" name="test_tremor_transmission_matches_linear_model" time="0.008" /><testcase classname="handwriting.tests.test_model" name="test_oracle_cancels_with_rev_h_and_saturates_pencil" time="0.077" /><testcase classname="handwriting.tests.test_model" name="test_force_limit_and_stop" time="0.006" /><testcase classname="handwriting.tests.test_model" name="test_guidance_authorship" time="0.023" /><testcase classname="handwriting.tests.test_model" name="test_stroke_ranges" time="0.000" /><testcase classname="handwriting.tests.test_model" name="test_rev_h_parameters_are_labelled" time="0.001" /><testcase classname="handwriting.tests.test_model" name="test_board_law_band_cap_handle_and_yield" time="0.031" /><testcase classname="handwriting.tests.test_outputs" name="test_evidence_rows_header_and_ids" time="0.001" /><testcase classname="handwriting.tests.test_outputs" name="test_written_evidence_csv_matches_header" time="0.001" /><testcase classname="handwriting.tests.test_outputs" name="test_samples_schema_and_size" time="0.032" /><testcase classname="handwriting.tests.test_score" name="test_tremor_frequency_and_band" time="0.054" /><testcase classname="handwriting.tests.test_score" name="test_size_trend_flags_progressive_micrographia" time="0.035" /><testcase classname="ml.tests.test_ml" name="test_kf_step_is_a_verbatim_port_of_the_simulator" time="0.312" /><testcase classname="ml.tests.test_ml" name="test_tremor_wrapper_reproduces_stabpen[0.0-0.0]" time="0.004" /><testcase classname="ml.tests.test_ml" name="test_tremor_wrapper_reproduces_stabpen[0.3-0.0]" time="0.004" /><testcase classname="ml.tests.test_ml" name="test_tremor_wrapper_reproduces_stabpen[0.0-2e-05]" time="0.006" /><testcase classname="ml.tests.test_ml" name="test_tremor_wrapper_reproduces_stabpen[0.2-1e-05]" time="0.006" /><testcase classname="ml.tests.test_ml" name="test_oscillator_oracle_is_exact_at_zero_horizon" time="0.002" /><testcase classname="ml.tests.test_ml" name="test_tcn_output_depends_only_on_the_window[2]" time="0.003"><failure message="RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double">c_in = 2
+
+    @pytest.mark.parametrize("c_in", [2, 3])
+    def test_tcn_output_depends_only_on_the_window(c_in):
+        torch = pytest.importorskip("torch")
+        torch.manual_seed(0)
+        model = M.TCNTree(**M.CONFIGS["tcn_s"], c_in=c_in)
+        rng = np.random.default_rng(2)
+        n = 300
+        rec = {"dp_um": rng.normal(0, 50, (n, 2)).astype(np.float32), "f_est": rng.uniform(4, 10, n).astype(np.float32)}
+&gt;       base = M.predict(model, rec)
+               ^^^^^^^^^^^^^^^^^^^^^
+
+ml/tests/test_ml.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../venv/lib/python3.12/site-packages/torch/utils/_contextlib.py:124: in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:179: in predict
+    out[a:a + batch] = model(torch.from_numpy(X[a:a + batch])).numpy()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:85: in forward
+    h = F.relu(lin(h.reshape(b, L // 2, 2 * c)))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Linear(in_features=4, out_features=8, bias=True)
+input = tensor([[[ 0.0000,  0.0000,  0.0000,  0.0000],
+         [ 0.0000,  0.0000,  0.0000,  0.0000],
+         [ 0.0000,  0.00...],
+         [-0.7631, -0.7811, -0.1349,  0.7358],
+         [-0.5233, -0.4171,  0.8038, -0.9467]]], dtype=torch.float32)
+
+    def forward(self, input: Tensor) -&gt; Tensor:
+        """
+        Runs the forward pass.
+        """
+&gt;       return F.linear(input, self.weight, self.bias)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/linear.py:134: RuntimeError</failure></testcase><testcase classname="ml.tests.test_ml" name="test_tcn_output_depends_only_on_the_window[3]" time="0.002"><failure message="RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double">c_in = 3
+
+    @pytest.mark.parametrize("c_in", [2, 3])
+    def test_tcn_output_depends_only_on_the_window(c_in):
+        torch = pytest.importorskip("torch")
+        torch.manual_seed(0)
+        model = M.TCNTree(**M.CONFIGS["tcn_s"], c_in=c_in)
+        rng = np.random.default_rng(2)
+        n = 300
+        rec = {"dp_um": rng.normal(0, 50, (n, 2)).astype(np.float32), "f_est": rng.uniform(4, 10, n).astype(np.float32)}
+&gt;       base = M.predict(model, rec)
+               ^^^^^^^^^^^^^^^^^^^^^
+
+ml/tests/test_ml.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../venv/lib/python3.12/site-packages/torch/utils/_contextlib.py:124: in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:179: in predict
+    out[a:a + batch] = model(torch.from_numpy(X[a:a + batch])).numpy()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:85: in forward
+    h = F.relu(lin(h.reshape(b, L // 2, 2 * c)))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Linear(in_features=6, out_features=8, bias=True)
+input = tensor([[[ 0.0000,  0.0000,  0.8013,  0.0000,  0.0000,  0.8013],
+         [ 0.0000,  0.0000,  0.8013,  0.0000,  0.0000...1349,  0.7358, -0.4875],
+         [-0.5233, -0.4171, -0.4875,  0.8038, -0.9467, -0.4875]]],
+       dtype=torch.float32)
+
+    def forward(self, input: Tensor) -&gt; Tensor:
+        """
+        Runs the forward pass.
+        """
+&gt;       return F.linear(input, self.weight, self.bias)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/linear.py:134: RuntimeError</failure></testcase><testcase classname="ml.tests.test_ml" name="test_tree_equals_streaming_dilated_tcn[2]" time="0.003"><failure message="RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double">c_in = 2
+
+    @pytest.mark.parametrize("c_in", [2, 3])
+    def test_tree_equals_streaming_dilated_tcn(c_in):
+        torch = pytest.importorskip("torch")
+        torch.manual_seed(1)
+        model = M.TCNTree(**M.CONFIGS["tcn_s"], c_in=c_in)
+        rng = np.random.default_rng(3)
+        n = 400
+        dp = rng.normal(0, 60, (n, 2)).astype(np.float32)
+        f = np.full(n, 6.5, np.float32)                  # constant f_est (3 channels) or none (2): exact equivalence
+        ch = M.input_channels(dp, f, c_in)
+        stream = M.stream_reference(model, ch) * C.S_OUT
+&gt;       tree = M.predict(model, {"dp_um": dp, "f_est": f})
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ml/tests/test_ml.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../venv/lib/python3.12/site-packages/torch/utils/_contextlib.py:124: in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:179: in predict
+    out[a:a + batch] = model(torch.from_numpy(X[a:a + batch])).numpy()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:85: in forward
+    h = F.relu(lin(h.reshape(b, L // 2, 2 * c)))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Linear(in_features=4, out_features=8, bias=True)
+input = tensor([[[ 0.0000,  0.0000,  0.0000,  0.0000],
+         [ 0.0000,  0.0000,  0.0000,  0.0000],
+         [ 0.0000,  0.00...],
+         [ 0.1172,  0.0942, -0.0292, -1.1115],
+         [-1.7971, -0.4741, -0.9809,  0.1515]]], dtype=torch.float32)
+
+    def forward(self, input: Tensor) -&gt; Tensor:
+        """
+        Runs the forward pass.
+        """
+&gt;       return F.linear(input, self.weight, self.bias)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/linear.py:134: RuntimeError</failure></testcase><testcase classname="ml.tests.test_ml" name="test_tree_equals_streaming_dilated_tcn[3]" time="0.003"><failure message="RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double">c_in = 3
+
+    @pytest.mark.parametrize("c_in", [2, 3])
+    def test_tree_equals_streaming_dilated_tcn(c_in):
+        torch = pytest.importorskip("torch")
+        torch.manual_seed(1)
+        model = M.TCNTree(**M.CONFIGS["tcn_s"], c_in=c_in)
+        rng = np.random.default_rng(3)
+        n = 400
+        dp = rng.normal(0, 60, (n, 2)).astype(np.float32)
+        f = np.full(n, 6.5, np.float32)                  # constant f_est (3 channels) or none (2): exact equivalence
+        ch = M.input_channels(dp, f, c_in)
+        stream = M.stream_reference(model, ch) * C.S_OUT
+&gt;       tree = M.predict(model, {"dp_um": dp, "f_est": f})
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+ml/tests/test_ml.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../venv/lib/python3.12/site-packages/torch/utils/_contextlib.py:124: in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:179: in predict
+    out[a:a + batch] = model(torch.from_numpy(X[a:a + batch])).numpy()
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ml/models.py:85: in forward
+    h = F.relu(lin(h.reshape(b, L // 2, 2 * c)))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1783: in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../venv/lib/python3.12/site-packages/torch/nn/modules/module.py:1794: in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Linear(in_features=6, out_features=8, bias=True)
+input = tensor([[[ 0.0000,  0.0000, -0.7500,  0.0000,  0.0000, -0.7500],
+         [ 0.0000,  0.0000, -0.7500,  0.0000,  0.0000...0292, -1.1115, -0.7500],
+         [-1.7971, -0.4741, -0.7500, -0.9809,  0.1515, -0.7500]]],
+       dtype=torch.float32)
+
+    def forward(self, input: Tensor) -&gt; Tensor:
+        """
+        Runs the forward pass.
+        """
+&gt;       return F.linear(input, self.weight, self.bias)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: mat1 and mat2 must have the same dtype, but got Float and Double
+
+../venv/lib/python3.12/site-packages/torch/nn/modules/linear.py:134: RuntimeError</failure></testcase></testsuite></testsuites>

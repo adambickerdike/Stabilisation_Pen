@@ -1,0 +1,152 @@
+{
+  "protocol": {
+    "evidence": "Post-hoc numerical sensitivity, not unseen validation",
+    "cases": [
+      {
+        "writer": 35001,
+        "seed": 102000,
+        "f0": 5.5,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      {
+        "writer": 35005,
+        "seed": 102117,
+        "f0": 8.0,
+        "amp": 0.00172,
+        "class": "large"
+      },
+      {
+        "writer": 35005,
+        "seed": 102117,
+        "f0": 8.0,
+        "amp": 0.0,
+        "class": "clean"
+      }
+    ],
+    "steps_us": [
+      12.5,
+      25.0,
+      50.0
+    ],
+    "reference": "Same12.5us ideal clean target for all steps in each case",
+    "controller": "Frozen80Hz causalHall and measuredcontact; no tuning",
+    "script_sha256": "e545f8c5e151c4a65d2d0bfa94a7e5c2f1df82ef4587de2de7b6343e4e24997c"
+  },
+  "cases": [
+    {
+      "case": {
+        "writer": 35001,
+        "seed": 102000,
+        "f0": 5.5,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      "results": [
+        {
+          "dt_us": 12.5,
+          "rms_um": 42.30201208368892,
+          "missing_fraction": 0.008200041000205,
+          "extra_fraction": 0.009600048000239999,
+          "coil_power_W": 0.6942673789278373,
+          "coil_temperature_C": 33.24289290497549,
+          "trajectory_difference_from12p5us_um": 0.0
+        },
+        {
+          "dt_us": 25.0,
+          "rms_um": 42.223927781984074,
+          "missing_fraction": 0.007999999999999998,
+          "extra_fraction": 0.009399999999999999,
+          "coil_power_W": 0.6946565861692607,
+          "coil_temperature_C": 33.24464735784856,
+          "trajectory_difference_from12p5us_um": 1.4330765165400432
+        },
+        {
+          "dt_us": 50.0,
+          "rms_um": 41.824103805195826,
+          "missing_fraction": 0.0076,
+          "extra_fraction": 0.0106,
+          "coil_power_W": 0.6952475243802922,
+          "coil_temperature_C": 33.246654925760126,
+          "trajectory_difference_from12p5us_um": 2.304386272115932
+        }
+      ]
+    },
+    {
+      "case": {
+        "writer": 35005,
+        "seed": 102117,
+        "f0": 8.0,
+        "amp": 0.00172,
+        "class": "large"
+      },
+      "results": [
+        {
+          "dt_us": 12.5,
+          "rms_um": 2172.700039662284,
+          "missing_fraction": 0.01880009400047,
+          "extra_fraction": 0.003400017000085,
+          "coil_power_W": 2.650056042025088,
+          "coil_temperature_C": 65.13670541421861,
+          "trajectory_difference_from12p5us_um": 0.0
+        },
+        {
+          "dt_us": 25.0,
+          "rms_um": 2175.2720310605396,
+          "missing_fraction": 0.0178,
+          "extra_fraction": 0.0036,
+          "coil_power_W": 2.650299599598787,
+          "coil_temperature_C": 65.13715225201972,
+          "trajectory_difference_from12p5us_um": 8.795558269085642
+        },
+        {
+          "dt_us": 50.0,
+          "rms_um": 2182.7585152971355,
+          "missing_fraction": 0.018199999999999997,
+          "extra_fraction": 0.0029999999999999996,
+          "coil_power_W": 2.6523162011142043,
+          "coil_temperature_C": 65.13979778004486,
+          "trajectory_difference_from12p5us_um": 32.51835792071369
+        }
+      ]
+    },
+    {
+      "case": {
+        "writer": 35005,
+        "seed": 102117,
+        "f0": 8.0,
+        "amp": 0.0,
+        "class": "clean"
+      },
+      "results": [
+        {
+          "dt_us": 12.5,
+          "rms_um": 337.59013115210485,
+          "missing_fraction": 0.01120005600028,
+          "extra_fraction": 0.00200001000005,
+          "coil_power_W": 2.609060254946085,
+          "coil_temperature_C": 65.67567365682038,
+          "trajectory_difference_from12p5us_um": 0.0
+        },
+        {
+          "dt_us": 25.0,
+          "rms_um": 336.76634374275375,
+          "missing_fraction": 0.0116,
+          "extra_fraction": 0.0018,
+          "coil_power_W": 2.6089925476185347,
+          "coil_temperature_C": 65.67551429130297,
+          "trajectory_difference_from12p5us_um": 2.6835697074994154
+        },
+        {
+          "dt_us": 50.0,
+          "rms_um": 342.47844446384374,
+          "missing_fraction": 0.010799999999999997,
+          "extra_fraction": 0.0024,
+          "coil_power_W": 2.6099347555662478,
+          "coil_temperature_C": 65.6800783886955,
+          "trajectory_difference_from12p5us_um": 10.794700299248918
+        }
+      ]
+    }
+  ]
+}

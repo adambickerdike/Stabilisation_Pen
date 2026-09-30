@@ -1,0 +1,22 @@
+{
+  "decision": "Reject every trained residual policy from this causal PPO screen; retain zero residual",
+  "reason": "No final checkpoint passed all prewritten tuning rules",
+  "actual_transitions": 196608,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "tuning_large_rms_ratios": {
+    "0": 1.001857821830361,
+    "1": 0.9980767127220359,
+    "2": 1.0148084721223203
+  },
+  "required_large_ratio_max": 0.98,
+  "selected_seed": null,
+  "planned_fresh_test_cases": 45,
+  "fresh_test_cases_evaluated": 0,
+  "hardware_or_firmware_deployment": false,
+  "claim_boundary": "Failure of this bounded residual architecture and budget; no universal conclusion about RL",
+  "results_sha256": "9e9e3f3a77978d4ba7f96d7339b9e26acfd149bc31f88e21f31ffc930cdc2cf1"
+}

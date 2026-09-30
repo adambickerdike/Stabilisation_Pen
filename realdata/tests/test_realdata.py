@@ -3,6 +3,7 @@ library caches are skipped when those are absent (fresh clone): run python3 -m r
 from __future__ import annotations
 
 import math
+import json
 
 import numpy as np
 import pytest
@@ -149,7 +150,15 @@ def test_classes_are_ordered_and_from_the_data():
     assert c["mild"]["representative_mm"] < c["moderate"]["representative_mm"] < c["severe"]["representative_mm"]
 
 
-needs_unipen = pytest.mark.skipif(not (CACHE_DIR / "unipen_index.json").exists(), reason="UNIPEN index not built")
+_unipen_index_path = CACHE_DIR / "unipen_index.json"
+_unipen_available = (
+    _unipen_index_path.exists()
+    and bool(json.loads(_unipen_index_path.read_text())["writers"])
+)
+# Index construction also writes an empty index when no licensed files exist.
+# A malformed or partially populated index should still fail, not be hidden.
+needs_unipen = pytest.mark.skipif(
+    not _unipen_available, reason="licensed UNIPEN corpus absent or writing index empty")
 
 
 @needs_unipen

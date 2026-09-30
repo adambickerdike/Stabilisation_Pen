@@ -1,0 +1,25 @@
+{
+  "base_revision": "4ad62b6acdcda1fa1102362f32780168297f5bb3",
+  "default_suite": {
+    "passed": 871,
+    "skipped": 20,
+    "seconds": 183.4,
+    "log": "full_suite_delivery.txt"
+  },
+  "optional_slow_suite": {
+    "passed": 4,
+    "seconds": 22.8,
+    "log": "slow_suite_delivery.txt"
+  },
+  "distinct_python_passes": 875,
+  "unavailable_artifact_checks": 16,
+  "host_firmware": {
+    "cases": 60,
+    "checks": 1120,
+    "sanitizers": [
+      "address",
+      "undefined-behaviour"
+    ]
+  },
+  "scope": "Software/numerical verification, not hardware or participant efficacy"
+}

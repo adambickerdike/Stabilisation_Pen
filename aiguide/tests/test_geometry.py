@@ -58,7 +58,12 @@ def test_fit_degenerate_glyph_uses_prior():
 
 
 def test_style_estimator_on_clean_pangram():
-    st = WriterStyle(x_height_mm=2.8, slant_deg=15.0, width=1.05)
+    # A clean affine-recovery test must disable glyph deformations: those include
+    # random affine width/slant changes, so the nominal latent style is not the
+    # actual written geometry when the default allograph warp is enabled.
+    st = WriterStyle(x_height_mm=2.8, slant_deg=15.0, width=1.05,
+                     allograph_amp=0.0, instance_amp=0.0, scale_jitter=0.0,
+                     offset_jitter=0.0, baseline_wander=0.0)
     wr = SyntheticWriter(st, seed=7).write(CALIB_SENTENCE, dt=1e-3, seed=3)
     obs, _ = observe(wr, 0.0, 6.0, np.random.default_rng(0))
     est = StyleEstimator()

@@ -1,0 +1,38 @@
+{
+  "evidence": "CALCULATION: reference-generation replay on real UJI glyph shapes; assumed scale, timing, body motion and actuator model. Not a built pen, closed-loop plant result, recognition result or human handwriting improvement.",
+  "writer": "tst_UJI_W12",
+  "session": 2,
+  "char": "a",
+  "radius_mm": 3.0,
+  "bound": {
+    "radial_m": 0.002267329476197102,
+    "radial_with_reserve_m": 0.0029763196981884184,
+    "speed_m_s": 0.012693085336862945,
+    "acceleration_m_s2": 1.399901325214853,
+    "jerk_m_s3": 276.48270316797016,
+    "current_A": 0.06563757668479432,
+    "voltage_V": 0.20298144345444666,
+    "coil_energy_J": 0.010453894439148143,
+    "braking_reserve_m": 0.00040052581619268407,
+    "braking_current_A": 0.1002007013600278,
+    "braking_voltage_V": 0.32196302213042105,
+    "geometry_error_m": 3.573971603387259e-05,
+    "duration_s": 1.8581001274767959,
+    "passed": true,
+    "failures": [],
+    "thresholds": {
+      "radial_with_reserve_m": 0.003,
+      "speed_m_s": 0.03,
+      "acceleration_m_s2": 2.0,
+      "jerk_m_s3": 300.0,
+      "current_A": 0.7,
+      "voltage_V": 3.0,
+      "braking_current_A": 0.7,
+      "braking_voltage_V": 3.0
+    },
+    "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+  },
+  "source_path_digest": "03b03da63558506e0d86101da15ca5c5a89b6516aebe4d2c15e294c0501c6eef",
+  "certificate_digest": "ec86b70ef674d00319484b5b7244f5ec60cdf4fb5df2bd4fab381c5300268c5d",
+  "meaning": "desired recorded glyph compared with planned reference; not before/after patient handwriting"
+}

@@ -1,0 +1,20 @@
+{
+  "scored_seconds": 112.50000000000001,
+  "required_ink_seconds": 64.76850000000005,
+  "required_lift_seconds": 47.73149999999997,
+  "ink_rates": {
+    "old_causal400": {
+      "missing_seconds": 18.20050000000001,
+      "missing_percent_required_ink": 28.100851494167685,
+      "extra_seconds": 0.553,
+      "extra_percent_required_lift": 1.1585640509935795
+    },
+    "causal80": {
+      "missing_seconds": 1.467,
+      "missing_percent_required_ink": 2.2649899256583046,
+      "extra_seconds": 0.7995,
+      "extra_percent_required_lift": 1.674994500487101
+    }
+  },
+  "source": "causal_controller_results.json"
+}

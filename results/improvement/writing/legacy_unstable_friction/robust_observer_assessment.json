@@ -1,0 +1,46 @@
+{
+  "scope": "Post-evaluation accounting of a frozen holdout; never changes its controller.\n\nThe registered primary endpoint is completion within the true position tube.\nThis secondary audit additionally asks whether actual acceleration and jerk\nstay inside the provisional reference limits. These distinct endpoints must not\nbe merged into a claim of physical feasibility.\n",
+  "source_sha256": "6ae16d02211edd4c01001aea10e72ac5a91695e311ec211ef06b6367b39ebc9b",
+  "reference_acceleration_limit_m_s2": 2.0,
+  "reference_jerk_limit_m_s3": 300.0,
+  "summary": {
+    "gain_matched_path_feedforward": {
+      "all_fixed_cases": 60,
+      "preflight_admitted": 48,
+      "completed_position_tube": 0,
+      "completed_position_and_actual_rate_limits": 0,
+      "median_required_ink_contact_fraction_all_admitted": 0.0,
+      "median_extra_contact_seconds_all_admitted": 0.0,
+      "peak_actual_acceleration_m_s2_all_attempts": 2.792092787500851,
+      "peak_actual_jerk_m_s3_all_attempts": 1617.523198991112,
+      "peak_voltage_V_all_attempts": 0.29993895317309194,
+      "peak_current_A_all_attempts": 0.0655256552690935
+    },
+    "bounded_observer": {
+      "all_fixed_cases": 60,
+      "preflight_admitted": 48,
+      "completed_position_tube": 12,
+      "completed_position_and_actual_rate_limits": 0,
+      "median_required_ink_contact_fraction_all_admitted": 0.3167147928921141,
+      "median_extra_contact_seconds_all_admitted": 0.004,
+      "peak_actual_acceleration_m_s2_all_attempts": 24.4445327922721,
+      "peak_actual_jerk_m_s3_all_attempts": 36058.16484731791,
+      "peak_voltage_V_all_attempts": 0.7204370097680253,
+      "peak_current_A_all_attempts": 0.2154160262385471,
+      "successful_peak_actual_acceleration_range_m_s2": [
+        2.5834783897744753,
+        24.4445327922721
+      ],
+      "successful_peak_actual_jerk_range_m_s3": [
+        3136.63901500111,
+        35566.83036945275
+      ]
+    }
+  },
+  "position_endpoint_writer_cluster_bootstrap_95pct": [
+    0.09999999999999999,
+    0.3166666666666666
+  ],
+  "bootstrap_scope": "20 already-seen UJI writers with3 fresh simulated perturbation/noise cases each. Variation of this simulation distribution, not a clinical confidence interval.",
+  "conclusion": "Bounded observer/recovery improves position tracking in some cases, but no holdout completion meets both actual rate limits. Unready for physical deployment; no claimed human handwriting benefit."
+}

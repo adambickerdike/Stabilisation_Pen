@@ -9,6 +9,8 @@ search    full-text search; hits carry stroke-id ranges and page boxes
 ask       source-grounded question answering over the notes (local, extractive)
 fidelity  capture-fidelity analysis of the 200 Hz / 1 um stroke format
 list, verify, edit   list notes, re-verify every content address, record a user edit
+propose-corrections, accept-corrections   review suggestions and explicitly
+          accept selected digital edits without replacing captured ink
 
 The store directory comes from ``--store`` or the ``PENAPP_STORE`` variable.
 No command makes network calls.
@@ -172,6 +174,64 @@ def cmd_edit(args) -> int:
     return 0
 
 
+def cmd_propose_corrections(args) -> int:
+    """An offline, nonmutating proposal from an explicitly supplied text corpus."""
+    from dataclasses import asdict
+    from . import autocorrect as AC
+    from ._util import ensure_stabpen_importable
+    ensure_stabpen_importable()
+    from aiguide import corpus, lm
+    if not 0 < args.cer <= .5 or not .5 <= args.threshold <= 1:
+        raise SystemExit("error: CER must be in (0, 0.5] and threshold in [0.5, 1]")
+    corpus_path = Path(args.corpus)
+    raw = corpus_path.read_bytes()
+    sentences = [normalized for line in raw.decode("utf-8").splitlines()
+                 if (normalized := corpus.normalize(line))]
+    if not sentences:
+        raise SystemExit("error: the supplied local corpus is empty after alphabet normalization")
+    model = AC.NgramWordModel(lm.WordKN().fit(sentences), lm.CharKN(5).fit(sentences),
+                             min_count=1, personal={w.lower() for w in args.personal_word})
+    corrector = AC.Autocorrector(model, cer=args.cer, threshold=args.threshold,
+                                change_known_words=args.allow_known_word_changes)
+    proposal = AC.propose_autocorrect(_store(args), args.note_id, corrector)
+    record = {"format": "penapp.correction_proposal.v1", "proposal": asdict(proposal),
+              "model": {"kind": "local word/character ngram research model",
+                        "corpus_name": corpus_path.name, "corpus_sha256": sha256_hex(raw),
+                        "normalized_corpus_sha256": sha256_hex("\n".join(sentences).encode("utf-8")),
+                        "normalization": "aiguide.corpus.normalize: lowercase ASCII alphabet, accent folding and punctuation mapping",
+                        "corpus_lines": len(sentences), "cer_assumed": args.cer,
+                        "threshold": args.threshold,
+                        "change_known_words": args.allow_known_word_changes,
+                        "personal_words": sorted(model.personal)},
+              "score_meaning": "model posterior, not a validated probability of writer intent"}
+    target = Path(args.out)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("x", encoding="utf-8") as f:
+        json.dump(record, f, indent=2, allow_nan=False)
+        f.write("\n")
+    print(json.dumps({"proposal_file": str(target), "note_id": proposal.note_id,
+                      "choices": record["proposal"]["choices"]}, indent=2))
+    return 0
+
+
+def cmd_accept_corrections(args) -> int:
+    from . import autocorrect as AC
+    from .search import SearchIndex
+    record = json.loads(Path(args.proposal).read_text())
+    if record.get("format") != "penapp.correction_proposal.v1":
+        raise SystemExit("error: unsupported correction proposal format")
+    raw = dict(record["proposal"])
+    raw["choices"] = tuple(AC.CorrectionChoice(**choice) for choice in raw["choices"])
+    proposal = AC.CorrectionProposal(**raw)
+    store = _store(args)
+    layer = AC.accept_autocorrect(store, proposal, accepted_span_ids=args.span_id)
+    with SearchIndex.for_store(store) as idx:
+        idx.index_note(store, proposal.note_id)
+    print(json.dumps({"note_id": proposal.note_id, "user_edit_layer": layer["layer_id"],
+                      "accepted_span_ids": sorted(set(args.span_id))}, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="penapp", description=f"research-pen companion app v{__version__} "
                                  "(reference implementation; synthetic data only)")
@@ -219,6 +279,19 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("span_id")
     p.add_argument("text")
     p.set_defaults(fn=cmd_edit)
+    p = sub.add_parser("propose-corrections", help="review digital spelling suggestions from a supplied local corpus")
+    p.add_argument("note_id")
+    p.add_argument("--corpus", required=True, help="local UTF-8 training sentences, one per line")
+    p.add_argument("-o", "--out", required=True, help="new proposal JSON file; an existing file is never overwritten")
+    p.add_argument("--cer", type=float, default=.08, help="assumed recognition error rate, not a measurement")
+    p.add_argument("--threshold", type=float, default=.9, help="research model score threshold")
+    p.add_argument("--personal-word", action="append", default=[])
+    p.add_argument("--allow-known-word-changes", action="store_true")
+    p.set_defaults(fn=cmd_propose_corrections)
+    p = sub.add_parser("accept-corrections", help="record explicitly selected suggestions as digital user edits")
+    p.add_argument("proposal", help="previously reviewed proposal JSON")
+    p.add_argument("--span-id", action="append", required=True, help="offered span to accept; repeat for multiple choices")
+    p.set_defaults(fn=cmd_accept_corrections)
     return ap
 
 

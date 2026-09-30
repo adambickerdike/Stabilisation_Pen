@@ -1,0 +1,1 @@
+422 criteria, 111 experiments; status {'requirement': 158, 'hypothesis': 211, 'derived': 53}; requirements without criteria: none

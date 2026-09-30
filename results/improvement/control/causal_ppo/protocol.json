@@ -1,0 +1,598 @@
+{
+  "version": 1,
+  "created_utc": "2026-09-30T09:25:00Z",
+  "evidence": "SIMULATION with synthetic writers; no hardware or clinical outcomes",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "requested_steps_per_seed": 65536,
+  "train_writers": [
+    40000,
+    40799
+  ],
+  "tune_cases": [
+    {
+      "writer": 42001,
+      "seed": 212000,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 42001,
+      "seed": 212000,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 42001,
+      "seed": 212000,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 42001,
+      "seed": 212001,
+      "f0": 9.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 42001,
+      "seed": 212001,
+      "f0": 9.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 42001,
+      "seed": 212001,
+      "f0": 9.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 42002,
+      "seed": 212029,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 42002,
+      "seed": 212029,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 42002,
+      "seed": 212029,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 42002,
+      "seed": 212030,
+      "f0": 9.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 42002,
+      "seed": 212030,
+      "f0": 9.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 42002,
+      "seed": 212030,
+      "f0": 9.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 42003,
+      "seed": 212058,
+      "f0": 5.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 42003,
+      "seed": 212058,
+      "f0": 5.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 42003,
+      "seed": 212058,
+      "f0": 5.5,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 42003,
+      "seed": 212059,
+      "f0": 9.5,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 42003,
+      "seed": 212059,
+      "f0": 9.5,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 42003,
+      "seed": 212059,
+      "f0": 9.5,
+      "amp": 0.00172,
+      "class": "large"
+    }
+  ],
+  "test_cases": [
+    {
+      "writer": 43001,
+      "seed": 223000,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43001,
+      "seed": 223000,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43001,
+      "seed": 223000,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43001,
+      "seed": 223001,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43001,
+      "seed": 223001,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43001,
+      "seed": 223001,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43001,
+      "seed": 223002,
+      "f0": 11.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43001,
+      "seed": 223002,
+      "f0": 11.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43001,
+      "seed": 223002,
+      "f0": 11.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43002,
+      "seed": 223029,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43002,
+      "seed": 223029,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43002,
+      "seed": 223029,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43002,
+      "seed": 223030,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43002,
+      "seed": 223030,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43002,
+      "seed": 223030,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43002,
+      "seed": 223031,
+      "f0": 11.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43002,
+      "seed": 223031,
+      "f0": 11.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43002,
+      "seed": 223031,
+      "f0": 11.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43003,
+      "seed": 223058,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43003,
+      "seed": 223058,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43003,
+      "seed": 223058,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43003,
+      "seed": 223059,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43003,
+      "seed": 223059,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43003,
+      "seed": 223059,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43003,
+      "seed": 223060,
+      "f0": 11.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43003,
+      "seed": 223060,
+      "f0": 11.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43003,
+      "seed": 223060,
+      "f0": 11.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43004,
+      "seed": 223087,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43004,
+      "seed": 223087,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43004,
+      "seed": 223087,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43004,
+      "seed": 223088,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43004,
+      "seed": 223088,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43004,
+      "seed": 223088,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43004,
+      "seed": 223089,
+      "f0": 11.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43004,
+      "seed": 223089,
+      "f0": 11.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43004,
+      "seed": 223089,
+      "f0": 11.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43005,
+      "seed": 223116,
+      "f0": 5.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43005,
+      "seed": 223116,
+      "f0": 5.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43005,
+      "seed": 223116,
+      "f0": 5.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43005,
+      "seed": 223117,
+      "f0": 8.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43005,
+      "seed": 223117,
+      "f0": 8.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43005,
+      "seed": 223117,
+      "f0": 8.0,
+      "amp": 0.00172,
+      "class": "large"
+    },
+    {
+      "writer": 43005,
+      "seed": 223118,
+      "f0": 11.0,
+      "amp": 0.0,
+      "class": "clean"
+    },
+    {
+      "writer": 43005,
+      "seed": 223118,
+      "f0": 11.0,
+      "amp": 0.0003,
+      "class": "mild"
+    },
+    {
+      "writer": 43005,
+      "seed": 223118,
+      "f0": 11.0,
+      "amp": 0.00172,
+      "class": "large"
+    }
+  ],
+  "rules": {
+    "clean_delta_mean_um_max": 25.0,
+    "clean_delta_worst_um_max": 50.0,
+    "clean_error_mean_increase_um_max": 5.0,
+    "clean_error_worst_increase_um_max": 10.0,
+    "mild_ratio_max": 1.02,
+    "large_ratio_max": 0.98,
+    "large_worst_ratio_max": 1.05,
+    "large_cluster_ratio_95_upper_max": 1.0,
+    "missing_increase_max": 0.005,
+    "extra_increase_max": 0.005,
+    "power_ratio_max": 1.05,
+    "temperature_increase_C_max": 2.0
+  },
+  "plant": "RevJ no heel; causalHall300Hz, inner80Hz, measured delayedcontact; fixedbeforethisexperiment",
+  "reference": "Common noiseless ideal-clean physical reference; privileged only in scoring",
+  "training": {
+    "p_free": 0.5,
+    "episode_s": 2.5,
+    "settle_s": 3.0,
+    "n_steps": 1024,
+    "batch_size": 256,
+    "n_epochs": 5,
+    "learning_rate": 0.0003,
+    "gamma": 0.98,
+    "gae_lambda": 0.95,
+    "clip_range": 0.2,
+    "ent_coef": 0.0,
+    "log_std_init": -2.0,
+    "MLP": [
+      64,
+      64
+    ]
+  },
+  "reward": "Contact-complete reference tracking /0.3mm, missing/extra ink9, actioncost0.005; 2kHz scoring",
+  "selection": "Final checkpoint perseedonly; eligible lowest tuning large ratio; freeze then test only selectedcandidate",
+  "no_eligible_candidate": "Retainzero residual and do not consume the fresh test set",
+  "clean_gate": "Actual4kHz policy-minus-baseline path RMS on reference-requiredink; separate common-target-error constraints",
+  "statistics": "Paired cases and5000 synthetic-writer-cluster resamples, descriptive uncertainty under this generator",
+  "workers": {
+    "training": 3,
+    "evaluation": 2
+  },
+  "source_sha256": {
+    "sim2/__init__.py": "851203fbc8fb95675f19434c3f532fedce203c23e7ae4d65782f9a019b51dc56",
+    "sim2/builder.py": "ddac7835073bfe4c395df3290c2bb96e2bf3f08b0d1e6054da4b423db4340f31",
+    "sim2/contact.py": "0e43b94b14449acd373fa33a2ac5589587afcd6dd02f9f0052539b6e78527329",
+    "sim2/contact_sensor.py": "191c8f2486489de250b263561abe41c1017f1d69028dba34032c7a4065ba2fe3",
+    "sim2/env.py": "1941842b56ddba7db11033247eea13f3146d979191bcb60f5a8665b58426990a",
+    "sim2/evidence.py": "51be55c50d67749822f923eddebbec59ee4692445663e4dd0e04a522a56587d4",
+    "sim2/h1compare.py": "23fd76339aa6d92a3b443bc12981ea7c648c2b22bc8afebc9decdf40a787e3aa",
+    "sim2/hall_velocity.py": "6ad17a5d4fc3afaed6ae0781c8eb915ecf78b5667add7e9e5e0b50c1155e590f",
+    "sim2/hand.py": "2390cd981467f0e5e1770883639cec0429821922443cd96285195b386f3e7f21",
+    "sim2/myo.py": "47a459ab3f81149a0d38a0321da61e07470c26e12f438c44f512c245ce70f468",
+    "sim2/params.py": "aba1994b45e1bec83f528fea0b87da798c594915239849f241e4c4d92a0f2cda",
+    "sim2/plugins.py": "c4561463d78b925c98c5ac7b87c539d821e09b8027dc525c7d9923687327a223",
+    "sim2/report.py": "8ee1e78b80da5a464b43bb2639bc70244d4a2cd8f9d61e3d751325302e26d88f",
+    "sim2/reward.py": "477a231f806829f46405b634e8d0893ff649afdd84b9c732fd6c6fad3ef1e327",
+    "sim2/run_study.py": "c83f5b477d0f2eccc85835ecfbe309e8797aa468fa348ddd0ebc931dfafc3c6c",
+    "sim2/sensors.py": "28ab54dcede2e82557923bce05adbebd7d25282e668c70192e9cb042f116a8cc",
+    "sim2/servo_design.py": "b932612c160b880de71d162402b3b72734317294673aca677a553a2a624b9c79",
+    "sim2/servo_design_study.py": "afbae89138c350983587a5212949e3a020983c99afe4621c193cf26da5b01b15",
+    "sim2/sim.py": "f2f7e4f928d5118435353862958391e4fbaed1fcbdaccfe2c801cb5030450214",
+    "sim2/tremor.py": "573199dd16f81a25e7f5808dd5dca0a34af4eea4d4c2e5ab751e3fb739dbec7a",
+    "sim2/validate.py": "f62bb7bbca473823bdabb0300b6e50c809d0fa285df73876704f6086843b61d9",
+    "sim2/verify.py": "57aae7c6228ebed3b3c726754f7fdcfbdd5fc5d1802e888c25be852e78ffb33d",
+    "sim2j/__init__.py": "335abfabd0ad14323b83d95583768d06c99f19b638246f430c11c7c51f895b67",
+    "sim2j/akf_online.py": "4d32b634d67bd1ce3c2a18cca4b9a25d971989441dba0d3732e4cce97f49c072",
+    "sim2j/causal_controller_study.py": "e8722b512f66f31267791a8581d392b1150a62864804bb9c4a01fb3e92fb435c",
+    "sim2j/causal_ppo_study.py": "b1f81a93e4c333c7576fe495b3abacd70a9f4e11bf60536a243e24702a1590d2",
+    "sim2j/et.py": "6aa496d1714b131199fbd99745103ddff338e25e181b08bdb555838496b13988",
+    "sim2j/firmware.py": "1dad86bfd4de6488f87b3324efad3dc1c2025bfc3c63f693a44144c8990593ec",
+    "sim2j/guided.py": "d768935eda487f4448630706898c34231b6f5a40e76b5e22bb178fad01b8b660",
+    "sim2j/hall_sensitivity.py": "cc07410fa1fdfb8100baa859101f2851231af193ea7fd5ef209a6f4691192407",
+    "sim2j/learned_replay.py": "d70c0d092d35978e7da2ce52231723503ad23fdc9ae289154a716066a9643f3b",
+    "sim2j/plant_frf.py": "fa65630dfde9a9bca380ad50e043dd716642b5a85654b82d1ea121e6de9107b3",
+    "sim2j/report.py": "9d3e4f63cd15009bf8ce363553493f0114b2761148976da4be4e060a703fb5c5",
+    "sim2j/revj.py": "45179dcd1f65353c459e9759a31218ffeea1e219993fd12829a67fa3eae07461",
+    "sim2j/rl.py": "bc13d93031dc0ebdbadb2ae2b4fd12e578ea84356c0aea58ee3d040314b5f08a",
+    "sim2j/rl_integrity_study.py": "5cc19e377683dedcf6faf13275d78d574f6382bb34b4b11046971fd66935d569",
+    "sim2j/run_study.py": "89b0a77d72e91878c439c053dbefd05aa66e82173e3c2ccfa8714251e709529d",
+    "sim2j/sensing.py": "afb89bfee582e88e594c4f932b5f29dd65f88d4c88141d02d9aacd3eefb96233",
+    "sim2j/stepper.py": "2bd052ba31570d92d09d7405c04310d3d76c4d9dfab9249191ae1cc7658a5c23",
+    "sim2j/tasks.py": "ea8509617f1ea65b5f26d1c5bf50e806032d046cf83754c18e7c771d403bed63",
+    "sim2j/tuning.py": "da3e4d89478b692eac7356dc1fad8ae048df8c18dce0a7cb3bed31378f8a1dc4",
+    "sim2j/verify.py": "d78e9354cb03d638c3d25ce42fac0a0a5019e80b342ef17212431a29651bf989",
+    "sim2j/wheel.py": "6871f0086624e981510e009ab40c88a8c2011c22f8ef032c4a1c14065c497274",
+    "sim2j/writers.py": "260943c20beb6761e4c21e248a59b8091478bdae31cca40109e99004500395c2",
+    "handwriting/__init__.py": "369eed31154806677218e6021367673ff2bf0179687428f631fb4c97b128a233",
+    "handwriting/crosscheck.py": "751bdbfc21260e9b976f02f19309c7a48160adccfc78a89a913ccdc19901ffd9",
+    "handwriting/et_study.py": "e7ad79631fa1b2211b2ea58cd50d56a22b1418e5d468ec19f8a7b6418a6e3e4e",
+    "handwriting/evidence.py": "1e787dd8192e9b4f95fd5006dbaceb38b8639fcb9dc60cab8c0563754071c2b1",
+    "handwriting/figures.py": "fbcc40dc192d685e451bc5c1161bdf691838f9d44dda20b4c65f80015401946a",
+    "handwriting/metrics.py": "5d0db13d4d4cfd015700f6a863c9b51b1eacaf9a8bb8c4da94556abb4a30e59e",
+    "handwriting/params.py": "ce623aa73b2370e4e85cd7d5750059bf517ae3033c3ea8b0e4f194b2c946e81e",
+    "handwriting/pd_study.py": "1c4d197f370cca593b0a1f6a3cabfa0fe34a233199df29dee1c6ae454d0e051e",
+    "handwriting/plant.py": "7b3af8f60a19bb790dd8b56397234c2fd5a07d649bcf072100c8882c9ef3cca1",
+    "handwriting/practice.py": "2f91d1e09c31c35798fa0cef0ea71c8fc54c542066d4d959e855342f21c91bcc",
+    "handwriting/primer.py": "53b0a82de6770527ff2eeb6c6d035450e71623b885d02331a91eb68e7681f7ce",
+    "handwriting/report.py": "f30b85f4228892139c14e47b04856e0d37ea6caeb74e4b3b79c625ba8bfdf8be",
+    "handwriting/run_study.py": "976da3825feedf67e3c3193449b729f7126bc7521652ac3e76dad083a4cf808f",
+    "handwriting/score_recording.py": "63c04dd91e9386f07ec8059d9c151bde214f7c94fe2f37231778e1012373ffc6",
+    "handwriting/tracker.py": "7de3cd6b07aafcd56caaca0c17fcb44a94296eb12287e25e63f3ec726a9d02e8",
+    "handwriting/tuning.py": "e69b0d70fec9e29cedcb6eb363d4c1d2e8955afa877fc3d4cf2c2bebc28dc5f2",
+    "handwriting/writers.py": "49784169298db75b3ad82b62dbfcce02ca7231453cdf0aeb639c4fe48ae456e8",
+    "aiguide/__init__.py": "0556e561408f6f910eef35651b2d4197b260c0bc247fabb909c11be62c8d9a92",
+    "aiguide/adapter.py": "31f8dd8fddcbd05403cd958b7b03cf2c16a09a1a38470970011b45b5b2527399",
+    "aiguide/corpus.py": "78fbaf998a4034e43206537ab500cf77d58dd1d7fa570560f86f86be0e2967ce",
+    "aiguide/glyphs.py": "7b1d72b6d1cfe66e5a6f34912837528c92891e79594003d29dcdb04ce1abcdce",
+    "aiguide/guidance.py": "81031e19cd34409d379a6f6c497e7679daaef9c8f12476f7d3528f3d2bc4d438",
+    "aiguide/icd_template.py": "c20faaec2644262aae1d7a6417555b64857653202531a5e74e667ca3877a8f4d",
+    "aiguide/lm.py": "82097dc73e4895675662f8a286221bbb40bae06a2f2b51ebb83f8ad888fe78f2",
+    "aiguide/metrics.py": "d404ea824dd7fd307f38bb0be94f711229aa23e265a037b07ac639b0677dd4ff",
+    "aiguide/run_autocorrect.py": "3f9c229b3bd8cd792d56b74eef47c99643e874c6a899e1607db0bbcd7cb5ec9a",
+    "aiguide/run_deploy.py": "e9cee87b9be16e1c6cd66a5020836e9b5071555af458ae13d799719f4971c786",
+    "aiguide/run_guidance.py": "4ae443d64f6da39a3389d26aa4411423a60deac10d8639830c4aba912499337f",
+    "aiguide/run_stroke.py": "ecf2233391014dcf9dea75e1a56a852fa41be78ba73ff25d78ef74ec9861d4a5",
+    "aiguide/run_style.py": "740afb4fefd04e39c336e43d9351e6a4355c110c9222d0db713048d860dcf399",
+    "aiguide/run_text.py": "76b1d01366af71185f877a3f85e67a5b1769371619b76caff054ef6c56ab48cf",
+    "aiguide/sentences.py": "ce229e3528ec4dd3a40a87ccb6c2daa5b8ce72b0fa182c11772eec926456a3b6",
+    "aiguide/stroke_predict.py": "c9cc43770da5bd3ca71d3934dccc94228b524b5e1cee4ecbffeb344565776c70",
+    "aiguide/style.py": "442eabc202fe061c08d35ac47a5248636860c7ab25d501b835d5f865b5108dd1",
+    "aiguide/template.py": "5d3ac64848bcb99b41449b856f758266de7b5e70f277f56f61f5669c09d2de74",
+    "aiguide/writer.py": "533bbd538d0c56ca0959d75be5828b06cb3daf1c19b42e917ee0e0f587ce6424",
+    "app/penapp/synth.py": "2358d28d7c9f2cfc843792650e02b5c71eea94e34f5602412b817d2a9b24a791",
+    "sim/pensim/scenarios.py": "f4e0fc4e6658f3303cdd04a2e623e49dd6a8cda4bacd96244e6909c3fff82656"
+  },
+  "head": "4ad62b6acdcda1fa1102362f32780168297f5bb3",
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "macOS-15.7.4-arm64-arm-64bit",
+    "numpy": "2.4.6",
+    "torch": "2.14.0",
+    "mujoco": "3.6.0",
+    "gymnasium": "1.2.3",
+    "scipy": "1.17.1",
+    "stable_baselines3": "2.9.0"
+  }
+}

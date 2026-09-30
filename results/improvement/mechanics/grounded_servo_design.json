@@ -1,0 +1,62 @@
+{
+  "status": "CALC local delayed-controller pole screen, not full nonlinear proof",
+  "cases_per_gain": 24,
+  "rows": [
+    {
+      "fine_bandwidth_Hz": 15.0,
+      "worst_pole_radius": 0.9983332072399476,
+      "stable_all_linear_corners": true
+    },
+    {
+      "fine_bandwidth_Hz": 20.0,
+      "worst_pole_radius": 0.9983332064308129,
+      "stable_all_linear_corners": true
+    },
+    {
+      "fine_bandwidth_Hz": 25.0,
+      "worst_pole_radius": 0.9983332063315913,
+      "stable_all_linear_corners": true
+    },
+    {
+      "fine_bandwidth_Hz": 30.0,
+      "worst_pole_radius": 1.0186669557944477,
+      "stable_all_linear_corners": false
+    },
+    {
+      "fine_bandwidth_Hz": 35.0,
+      "worst_pole_radius": 1.0378982503855363,
+      "stable_all_linear_corners": false
+    },
+    {
+      "fine_bandwidth_Hz": 40.0,
+      "worst_pole_radius": 1.0561506279590014,
+      "stable_all_linear_corners": false
+    },
+    {
+      "fine_bandwidth_Hz": 45.0,
+      "worst_pole_radius": 1.0735602101007835,
+      "stable_all_linear_corners": false
+    }
+  ],
+  "parameters": {
+    "mass_scale": [
+      0.8,
+      1.0,
+      1.2
+    ],
+    "fine_drag_Ns_m": [
+      0.0,
+      0.2,
+      2.0,
+      8.0
+    ],
+    "coarse_drag_Ns_m": [
+      0.0,
+      80.2
+    ],
+    "coarse_bandwidth_Hz": 9.0,
+    "sensor_delay_s": 0.002,
+    "velocity_filter_Hz": 100.0,
+    "dt_s": 0.0005
+  }
+}

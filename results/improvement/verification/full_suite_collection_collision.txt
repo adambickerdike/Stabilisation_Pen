@@ -1,0 +1,13 @@
+
+==================================== ERRORS ====================================
+_______________ ERROR collecting wholepen/tests/test_grounded.py _______________
+import file mismatch:
+imported module 'test_grounded' has this __file__ attribute:
+  /Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/app/tests/test_grounded.py
+which is not the same as the test file we want to collect:
+  /Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/wholepen/tests/test_grounded.py
+HINT: remove __pycache__ / .pyc files and/or use a unique basename for your test file modules
+=========================== short test summary info ============================
+ERROR wholepen/tests/test_grounded.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 10.71s

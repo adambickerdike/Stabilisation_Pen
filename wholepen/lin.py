@@ -41,7 +41,7 @@ import torch
 
 from . import ROOT  # noqa: F401
 
-torch.set_default_dtype(torch.float64)
+# Keep physical calculations in float64 without changing the caller's ML defaults.
 CT = torch.complex128
 
 # ------------------------------------------------------------------------------------------------ parameters
@@ -157,7 +157,7 @@ class Assembly:
         self.par = par
         a, t1, t2 = vectors(mdl.theta_deg)
         self.a, self.t1, self.t2 = a, t1, t2
-        self.T = torch.tensor(np.column_stack([t1, t2]))            # 3x2 transverse basis
+        self.T = torch.tensor(np.column_stack([t1, t2]), dtype=torch.float64)            # 3x2 transverse basis
         self.blocks = []
         names = ["hand", "pen"]
         if mdl.collar is not None:
@@ -173,7 +173,7 @@ class Assembly:
             self.i_cmg.append(n)
             n += 1
         self.n = n
-        z = lambda: torch.zeros(n, n)
+        z = lambda: torch.zeros(n, n, dtype=torch.float64)
         self.M, self.D, self.K = z(), z(), z()
         self._pen()
         self._hand()
@@ -189,14 +189,14 @@ class Assembly:
     # ---- helpers
     def g(self, name, default):
         v = self.par.get(name, default)
-        return v if torch.is_tensor(v) else torch.tensor(float(v))
+        return torch.as_tensor(v, dtype=torch.float64)
 
     def J(self, body: str, P, torch_ok=False):
         """3 x n point Jacobian of the material point P (page frame, at rest) of a body (origin at the ball).  P may be
         a torch vector (then the Jacobian is differentiable with respect to it, e.g. the collar's pivot position)."""
-        Jm = torch.zeros(3, self.n)
+        Jm = torch.zeros(3, self.n, dtype=torch.float64)
         i = self.bodies[body]
-        Jm[:, i:i + 3] = torch.eye(3)
+        Jm[:, i:i + 3] = torch.eye(3, dtype=torch.float64)
         if torch.is_tensor(P):
             z0 = torch.zeros((), dtype=P.dtype)
             Sk = torch.stack([torch.stack([z0, -P[2], P[1]]), torch.stack([P[2], z0, -P[0]]),
@@ -204,13 +204,13 @@ class Assembly:
             Jm = Jm.to(P.dtype) if Jm.dtype != P.dtype else Jm
             Jm[:, i + 3:i + 6] = -Sk
         else:
-            Jm[:, i + 3:i + 6] = torch.tensor(-skew(P))
+            Jm[:, i + 3:i + 6] = torch.tensor(-skew(P), dtype=torch.float64)
         return Jm
 
     def Jrot(self, body: str):
-        Jm = torch.zeros(3, self.n)
+        Jm = torch.zeros(3, self.n, dtype=torch.float64)
         i = self.bodies[body]
-        Jm[:, i + 3:i + 6] = torch.eye(3)
+        Jm[:, i + 3:i + 6] = torch.eye(3, dtype=torch.float64)
         return Jm
 
     def add_spring(self, J: torch.Tensor, K3: torch.Tensor, C3: Optional[torch.Tensor] = None):
@@ -221,59 +221,59 @@ class Assembly:
     def add_rigid(self, body: str, m, zc, Jt, Ja, origin_note=""):
         """Rigid body mass about the ball origin: centre of mass at zc on the axis, inertia Jt (transverse) and Ja
         (axial) about the centre of mass."""
-        a = torch.tensor(self.a)
-        c = zc * a if torch.is_tensor(zc) else torch.tensor(float(zc) * self.a)
-        S = torch.stack([torch.stack([torch.zeros(()), -c[2], c[1]]), torch.stack([c[2], torch.zeros(()), -c[0]]),
-                         torch.stack([-c[1], c[0], torch.zeros(())])])
+        a = torch.tensor(self.a, dtype=torch.float64)
+        c = zc * a if torch.is_tensor(zc) else torch.tensor(float(zc) * self.a, dtype=torch.float64)
+        S = torch.stack([torch.stack([torch.zeros((), dtype=torch.float64), -c[2], c[1]]), torch.stack([c[2], torch.zeros((), dtype=torch.float64), -c[0]]),
+                         torch.stack([-c[1], c[0], torch.zeros((), dtype=torch.float64)])])
         aa = torch.outer(a, a)
-        Jc = Jt * (torch.eye(3) - aa) + Ja * aa
-        Mb = torch.zeros(6, 6)
+        Jc = Jt * (torch.eye(3, dtype=torch.float64) - aa) + Ja * aa
+        Mb = torch.zeros(6, 6, dtype=torch.float64)
         Mb = Mb.clone()
-        top = torch.cat([m * torch.eye(3), -m * S], dim=1)
+        top = torch.cat([m * torch.eye(3, dtype=torch.float64), -m * S], dim=1)
         bot = torch.cat([m * S, Jc - m * (S @ S)], dim=1)
         Mb = torch.cat([top, bot], dim=0)
         i = self.bodies[body]
-        E = torch.zeros(6, self.n)
-        E[:, i:i + 6] = torch.eye(6)
+        E = torch.zeros(6, self.n, dtype=torch.float64)
+        E[:, i:i + 6] = torch.eye(6, dtype=torch.float64)
         self.M = self.M + E.T @ Mb @ E
 
     # ---- bodies
     def _pen(self):
         mdl = self.mdl
         p = mdl.pen
-        self.add_rigid("pen", torch.tensor(p["m"]), p["z_g"], torch.tensor(p["J_t"]), torch.tensor(p["J_a"]))
+        self.add_rigid("pen", torch.tensor(p["m"], dtype=torch.float64), p["z_g"], torch.tensor(p["J_t"], dtype=torch.float64), torch.tensor(p["J_a"], dtype=torch.float64))
         tm = self.g("tail_m", mdl.tail.m)
         if float(tm) > 0 or torch.is_tensor(self.par.get("tail_m")):
-            self.add_rigid("pen", tm, mdl.tail.z, self.g("tail_J", mdl.tail.J_t), torch.tensor(1e-9))
+            self.add_rigid("pen", tm, mdl.tail.z, self.g("tail_J", mdl.tail.J_t), torch.tensor(1e-9, dtype=torch.float64))
 
     def _hand(self):
         h = self.mdl.hand
         # the hand mass at the grip's elastic centre (a point mass: its position does not matter for a translating body)
-        self.add_rigid("hand", torch.tensor(h.M), 0.06, torch.tensor(1e-9), torch.tensor(1e-9))
+        self.add_rigid("hand", torch.tensor(h.M, dtype=torch.float64), 0.06, torch.tensor(1e-9, dtype=torch.float64), torch.tensor(1e-9, dtype=torch.float64))
         i = self.bodies["hand"]
         # arm spring to the (moving) ground; rotations locked (H1)
-        Ja = torch.zeros(3, self.n)
-        Ja[:, i:i + 3] = torch.eye(3)
+        Ja = torch.zeros(3, self.n, dtype=torch.float64)
+        Ja[:, i:i + 3] = torch.eye(3, dtype=torch.float64)
         self.J_arm = Ja
-        self.add_spring(Ja, h.k_arm * torch.eye(3), h.b_arm * torch.eye(3))
+        self.add_spring(Ja, h.k_arm * torch.eye(3, dtype=torch.float64), h.b_arm * torch.eye(3, dtype=torch.float64))
         Jr = self.Jrot("hand")
-        self.add_spring(Jr, 1e4 * torch.eye(3), 1.0 * torch.eye(3))
+        self.add_spring(Jr, 1e4 * torch.eye(3, dtype=torch.float64), 1.0 * torch.eye(3, dtype=torch.float64))
 
     def _collar(self):
         c = self.mdl.collar
         a = self.a
-        self.add_rigid("collar", torch.tensor(c.m), c.z_cm, torch.tensor(c.J), torch.tensor(c.J))
+        self.add_rigid("collar", torch.tensor(c.m, dtype=torch.float64), c.z_cm, torch.tensor(c.J, dtype=torch.float64), torch.tensor(c.J, dtype=torch.float64))
         zp = self.par.get("z_p")
         Pp = zp * torch.tensor(a, dtype=zp.dtype) if torch.is_tensor(zp) else c.z_p * a
         # translational constraint at the pivot (penalty), both bodies' material point at the pivot
         Jd = self.J("pen", Pp) - self.J("collar", Pp)
-        self.add_spring(Jd, 1e6 * torch.eye(3), 5.0 * torch.eye(3))
+        self.add_spring(Jd, 1e6 * torch.eye(3, dtype=torch.float64), 5.0 * torch.eye(3, dtype=torch.float64))
         # rotational spring about t1, t2 (K_c, c_c); roll locked
         Jr = self.Jrot("pen") - self.Jrot("collar")
         T = self.T
         Kc = self.g("K_c", c.K_c)
         cc = self.g("c_c", c.c_c)
-        aa = torch.outer(torch.tensor(a), torch.tensor(a))
+        aa = torch.outer(torch.tensor(a, dtype=torch.float64), torch.tensor(a, dtype=torch.float64))
         self.add_spring(Jr, Kc * (T @ T.T) + 1e3 * aa, cc * (T @ T.T) + 0.01 * aa)
         self.J_piv_rel = Jr                                           # relative rotation pen - collar
 
@@ -281,7 +281,7 @@ class Assembly:
         h = self.mdl.hand
         gz = grip_zones(h)
         self.gz = gz
-        a, T = torch.tensor(self.a), self.T
+        a, T = torch.tensor(self.a, dtype=torch.float64), self.T
         target = "collar" if self.mdl.collar is not None else "pen"
         Pf = h.z_f * self.a
         Pw = h.z_w * self.a
@@ -304,10 +304,10 @@ class Assembly:
         mdl = self.mdl
         Jt = self.J("pen", np.zeros(3))
         self.J_tip = Jt
-        n = torch.tensor([0.0, 0.0, 1.0])
+        n = torch.tensor([0.0, 0.0, 1.0], dtype=torch.float64)
         Kn = mdl.k_n * torch.outer(n, n)
         Cn = mdl.c_n * torch.outer(n, n)
-        P2 = torch.eye(3) - torch.outer(n, n)
+        P2 = torch.eye(3, dtype=torch.float64) - torch.outer(n, n)
         cp = self.g("c_heel", mdl.c_heel) + mdl.c_paper
         if mdl.collar is not None and mdl.collar.skid_on_collar:
             # V2: the ball on its refill spring (soft normal) with its in-plane drag; the skid ring on the collar
@@ -318,9 +318,9 @@ class Assembly:
         else:
             self.add_spring(Jt, Kn, Cn + cp * P2)
         cs = self.g("c_sled", mdl.c_sled)
-        Jh = torch.zeros(3, self.n)
+        Jh = torch.zeros(3, self.n, dtype=torch.float64)
         i = self.bodies["hand"]
-        Jh[:, i:i + 3] = torch.eye(3)
+        Jh[:, i:i + 3] = torch.eye(3, dtype=torch.float64)
         self.D = self.D + Jh.T @ (cs * P2) @ Jh
 
     def _tmd(self):
@@ -332,12 +332,12 @@ class Assembly:
         Pm = t.z * self.a
         # absolute displacement of the mass (transverse) = pen point transverse + relative coordinate
         Jp = self.J("pen", Pm)
-        Jabs = torch.zeros(3, self.n)
+        Jabs = torch.zeros(3, self.n, dtype=torch.float64)
         Jabs = Jabs + Jp
-        Jabs[:, i] += torch.tensor(self.t1)
-        Jabs[:, i + 1] += torch.tensor(self.t2)
+        Jabs[:, i] += torch.tensor(self.t1, dtype=torch.float64)
+        Jabs[:, i + 1] += torch.tensor(self.t2, dtype=torch.float64)
         self.M = self.M + m * (Jabs.T @ Jabs)
-        E = torch.zeros(2, self.n)
+        E = torch.zeros(2, self.n, dtype=torch.float64)
         E[0, i] = 1.0
         E[1, i + 1] = 1.0
         self.K = self.K + k * (E.T @ E)
@@ -355,11 +355,11 @@ class Assembly:
         Jg = self.g(f"cmg_Jg{k}", cp.J_g)
         kg = self.g(f"cmg_kg{k}", cp.k_g)
         cg = self.g(f"cmg_cg{k}", cp.c_g)
-        e = torch.zeros(self.n)
+        e = torch.zeros(self.n, dtype=torch.float64)
         e[i] = 1.0
         ip = self.bodies["pen"]
-        ov = torch.zeros(self.n)
-        ov[ip + 3:ip + 6] = torch.tensor(o)
+        ov = torch.zeros(self.n, dtype=torch.float64)
+        ov[ip + 3:ip + 6] = torch.tensor(o, dtype=torch.float64)
         self.M = self.M + Jg * torch.outer(e, e)
         self.K = self.K + kg * torch.outer(e, e)
         self.D = self.D + cg * torch.outer(e, e) + 2 * h * (torch.outer(ov, e) - torch.outer(e, ov))

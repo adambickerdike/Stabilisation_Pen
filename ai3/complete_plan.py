@@ -94,7 +94,7 @@ def _letter_end(lid: np.ndarray) -> Dict[int, int]:
     return ends
 
 
-def simulate(P, pen, lid, s, B, R_mm: float, policy: str) -> Dict:
+def simulate(P, pen, lid, s, B, R_mm: float, policy: str, *, return_trace: bool = False) -> Dict:
     """One accepted completion.  The pen-down nib point must be within R_u of the hand; if it falls out of reach
     mid-letter the pen is forced to lift (an ink gap: a defect).  'pointwise' starts a letter as soon as its first
     point is in reach; 'letter_admission' only when the whole letter is predicted to stay in reach (hand velocity
@@ -110,6 +110,7 @@ def simulate(P, pen, lid, s, B, R_mm: float, policy: str) -> Dict:
     q_max = 0.0
     state = "writing"
     hvx = np.zeros(n_t)
+    trace = []                         # optional diagnostic; does not change historical policy/results
     k_t = 0
     for k_t in range(1, n_t):
         t = k_t * DT
@@ -170,11 +171,15 @@ def simulate(P, pen, lid, s, B, R_mm: float, policy: str) -> Dict:
             if stall > 2.0:
                 state = "handed_back_no_progress"
                 break
+            if return_trace:
+                trace.append((t, P[si, 0], P[si, 1], b[0], b[1], bool(pen[si] > .5 and not lifted_now)))
             continue
         stall = 0.0
         lifted_now = False
         if pen[si] > 0.5:
             q_max = max(q_max, float(np.hypot(*(P[si] - b))))
+        if return_trace:
+            trace.append((t, P[si, 0], P[si, 1], b[0], b[1], bool(pen[si] > .5)))
         for Lq in list(started - finished):
             if si >= ends[Lq]:
                 finished.add(Lq)
@@ -184,9 +189,12 @@ def simulate(P, pen, lid, s, B, R_mm: float, policy: str) -> Dict:
             finished |= started
             break
     partial = len(started - finished)
-    return {"state": state, "time_s": k_t * DT, "own_time_s": s[-1] / V_MAX, "share_written": s[si] / max(s[-1], 1e-12),
+    result = {"state": state, "time_s": k_t * DT, "own_time_s": s[-1] / V_MAX, "share_written": s[si] / max(s[-1], 1e-12),
             "q_max_mm": q_max * 1e3, "lifts": lifts, "defects": defects, "letters": int(len(np.unique(lid))),
             "letters_done": len(finished), "partial_letters": partial}
+    if return_trace:
+        result["command_trace"] = np.array(trace, float).reshape(-1, 6)
+    return result
 
 
 def completions(n: int, seed: int, sentences: Sequence[str]) -> List[Tuple[str, int]]:

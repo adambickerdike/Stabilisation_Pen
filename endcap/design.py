@@ -27,7 +27,8 @@ import torch
 
 from . import params as P
 
-T = torch.as_tensor
+def T(x):
+    return torch.as_tensor(x, dtype=torch.float64)
 SHELL_M = P.RHO_PEEK * math.pi / 4 * (P.ENV["od"] ** 2 - P.D_IN ** 2) * P.ENV["length"]   # 4.6 g end-cap shell (CALC)
 ELEC_M = 1.5e-3            # drivers and wiring (ASSUMPTION)
 CLEAR = 0.5e-3             # radial clearance (ASSUMPTION)
@@ -36,7 +37,7 @@ FRAME_RADIAL = 1.5e-3      # radial space taken by each gimbal ring around a rot
 
 
 def _t(x):
-    return x if torch.is_tensor(x) else torch.tensor(float(x))
+    return torch.as_tensor(x, dtype=torch.float64)
 
 
 def relu(x):

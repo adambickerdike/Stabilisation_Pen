@@ -24,6 +24,8 @@ def model_params(quick: bool):
     from . import delayed as DL
     from . import tuning as TU
     d01 = C.load("d01", quick) or C.load("d01", False)
+    if d01 is None:
+        raise FileNotFoundError("ai2 frozen tuning cache d01 is missing; rebuild it before loading model parameters")
     tp = dict(DL.TREMOR_DEFAULTS); tp.update(d01["chosen_tremor"])
     dp = dict(DL.DET_DEFAULTS); dp.update(d01["chosen_det"] or {})
     out = {"tremor": tp, "det": dp, "amp_gate": (0.0, 0.0)}

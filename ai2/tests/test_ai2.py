@@ -181,7 +181,8 @@ def test_gate_env_rewards_trusting_a_good_estimate():
         env.reset(seed=0, options={"episode": 0, "full": True})
         s, done = 0.0, False
         while not done:
-            _, r, done, _, _ = env.step(np.array([w], np.float32)); s += r
+            _, r, terminated, truncated, _ = env.step(np.array([w], np.float32)); s += r
+            done = terminated or truncated
         tot[w] = s
     assert tot[1.0] > tot[0.0] + 1.0          # the listening estimate is better than Rev H here
 

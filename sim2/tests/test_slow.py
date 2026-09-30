@@ -28,6 +28,8 @@ def test_h1_comparison_one_case_within_tolerance():
 @pytest.mark.slow
 def test_run_study_quick_stage(tmp_path, monkeypatch):
     from sim2 import run_study as RS
+    # Test execution must not overwrite the committed historical study cache.
+    monkeypatch.setattr(RS, "CACHE", str(tmp_path / "cache"))
     RS.main(["--quick", "--stages", "gyro"])
 
 

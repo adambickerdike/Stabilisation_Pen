@@ -1,4 +1,14 @@
-# Checkpoint — 2026-09-29
+# Checkpoint - engineering update, 2026-09-30
+
+Start with [the implemented improvement report](docs/engineering_improvement_2026_09_30.md) and the [publication handoff](docs/reviews/2026-09-30_astra_handoff.md). The branch was fetched and fast-forwarded to `4ad62b6acdcda1fa1102362f32780168297f5bb3`; earlier local review files were preserved and reapplied. The new code, CAD, research audits and experiment results are included in the Astra publication commit directly above that base. The report's statements about uncommitted work describe its original local delivery snapshot. The preservation stash remains available locally.
+
+The current work develops a conditional 24 mm / 1.5 mm fine-stage candidate, a separately resized 20 mm / 1.059 mm candidate, and a desk-supported five-bar for accepted whole-letter motion. It also repairs causal sensing, sampled servo gains, RL evaluation, accepted-text execution, numerical friction integration and application correction provenance. No mechanism was manufactured, no target board was tested, and no participant outcome was measured.
+
+The decisive remaining gaps are loaded force/friction and guide life, current-loop and contact identification, page registration through lift, complete packaging, and actual benefit under human grip. The grounded 20/20 unloaded ink/tracking result does not extend to either tested resisting grip, and no unloaded trace also passes the selected actual acceleration/jerk comparisons. No learned policy qualified for adoption. Detailed limits, frozen protocols, test logs and reproduction commands are in the report and `results/improvement/`.
+
+## Historical checkpoint, 29 September 2026
+
+The record below is preserved for its original assumptions and experiment history. Its statements about the primary design, completed checks and regenerated results describe that earlier state, not the current improvement work.
 
 Use this file to resume work without losing assumptions. Branch: `claude/pensive-shannon-wzm6ls`. Parameter file: **v0.4.4**; all simulation, trade, thermal and drive results are regenerated on it. The pencil-class concept has its own overlay, `config/pencil.yaml` **P0.1.2** (§7). **The primary design is now Rev J, which acts at the tip, the heel and the tail (§9); Rev H, the bigger-grip pen, is §8.**
 

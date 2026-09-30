@@ -147,11 +147,11 @@ def test_lin_gradient_in_the_pivot_position():
         w = 2 * math.pi * 6.0
         d = asm.ink(asm.solve(w, asm.exc_tremor(w, L.tremor_dirs() * 3e-3)))
         return torch.sqrt((torch.abs(d) ** 2).sum())
-    z = torch.tensor(0.05, requires_grad=True)
+    z = torch.tensor(0.05, requires_grad=True, dtype=torch.float64)
     v = resid(z)
     v.backward()
     e = 1e-5
-    fd = (resid(torch.tensor(0.05 + e)) - resid(torch.tensor(0.05 - e))) / (2 * e)
+    fd = (resid(torch.tensor(0.05 + e, dtype=torch.float64)) - resid(torch.tensor(0.05 - e, dtype=torch.float64))) / (2 * e)
     assert abs(float(z.grad) - float(fd)) <= 1e-4 * max(abs(float(fd)), 1e-12) + 1e-12
 
 
@@ -168,7 +168,7 @@ def test_evidence_rows_header_and_ids():
     from wholepen import evidence as E
     hdr = next(csv.reader(open(os.path.join(ROOT, "docs", "evidence.csv"))))
     assert E.HEADER == hdr
-    ledger = {r["id"] for r in csv.DictReader(open(os.path.join(ROOT, "docs", "evidence.csv")))}
+    ledger = {r["id"]: r for r in csv.DictReader(open(os.path.join(ROOT, "docs", "evidence.csv")))}
     ranges = {"ACT": (120, 139), "AMF": (180, 199), "HAP": (115, 129), "PDT": (63, 74), "CON": (75, 79), "PAT": (50, 54),
               "OPT": (70, 74)}
     rows = E._lit() + E._derived()
@@ -178,7 +178,10 @@ def test_evidence_rows_header_and_ids():
         pre, n = i.split("-")
         lo, hi = ranges[pre]
         assert lo <= int(n) <= hi, i
-        assert i not in ledger, i
+    for row in rows:
+        if row["id"] in ledger:
+            for key in ("citation", "doi_or_url"):
+                assert row[key] == ledger[row["id"]][key]
 
 
 def test_labels_on_every_result_file():

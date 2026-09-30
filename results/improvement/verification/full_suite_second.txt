@@ -1,0 +1,436 @@
+........................................................................ [  8%]
+........................................................................ [ 17%]
+........................................................................ [ 26%]
+...................................................F.................... [ 34%]
+........................................................................ [ 43%]
+.....................s.....sss........................................FF [ 52%]
+FFFFFFFFFFFFFFFFF
+=================================== FAILURES ===================================
+________________________ test_interface_file_consistent ________________________
+
+    def test_interface_file_consistent():
+        from bnib import CONFIG_NIB
+        from bnib import interface as IF
+        if not os.path.exists(CONFIG_NIB):
+            pytest.skip("config/nib.yaml not generated yet")
+        doc = IF.load()
+        assert doc["schema"] == IF.SCHEMA
+        assert IF.leaves_missing_status(doc) == []
+        d, _ = IF.recommended_design()
+        ev = CD.evaluate(d, detail=False, fast=True)
+>       assert doc["actuator"]["Km_tip_centre"]["value"] == pytest.approx(ev["Km_tip"], rel=1e-4)
+E       assert 0.40007 == 0.3521728060206969 ± 3.5e-05
+E         
+E         comparison failed
+E         Obtained: 0.40007
+E         Expected: 0.3521728060206969 ± 3.5e-05
+
+bnib/tests/test_bnib.py:150: AssertionError
+_________________ test_default_outputs_bit_for_bit[none_clean] _________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'none_clean'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: none_clean: rec_sha256 changed
+E               assert '3f58a59e1336...187cf47727dbc' == 'a70492514868...b4273a37f6d77'
+E                 
+E                 - a7049251486825c22f4bb539c6a46f0674dc6b3d7daf5bc1555b4273a37f6d77
+E                 + 3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+________________ test_default_outputs_bit_for_bit[none_tremor] _________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'none_tremor'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: none_tremor: rec_sha256 changed
+E               assert 'eb6a36aa739c...6a1f834733c05' == '1c7f575026bc...050c4c9f3761b'
+E                 
+E                 - 1c7f575026bc27aa4b282d825d7254e02db09cbc3b9b1389389050c4c9f3761b
+E                 + eb6a36aa739cd04fc5166c2d26a39f0fe05f832614158c27a786a1f834733c05
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+___________________ test_default_outputs_bit_for_bit[stage] ____________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'stage'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: stage: rec_sha256 changed
+E               assert 'b3ec6f598415...564581da62c39' == 'e74a6ea2aded...ac3400c10a2f4'
+E                 
+E                 - e74a6ea2aded2b5abcf8c06c4c85c2387018355455a7973a16fac3400c10a2f4
+E                 + b3ec6f598415ed364306c81ab5370e0f36638b142cfd64c8854564581da62c39
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+________________ test_default_outputs_bit_for_bit[rm_slug3_uff] ________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'rm_slug3_uff'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: rm_slug3_uff: rec_sha256 changed
+E               assert 'd740fdb1f16b...e4b65da907549' == 'acd0893bd29b...fe2ecedf71c5f'
+E                 
+E                 - acd0893bd29befdfb2af33c96e6c64ce2b8ea76ab32228f48aefe2ecedf71c5f
+E                 + d740fdb1f16b13c1c07f308b5545dd0fd7111a273ff906f4911e4b65da907549
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+_____________ test_default_outputs_bit_for_bit[rm_slug3_uff_stage] _____________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'rm_slug3_uff_stage'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: rm_slug3_uff_stage: rec_sha256 changed
+E               assert 'd74e2a38e870...5f66b3b27c080' == '64268d217f68...6b32f1da33406'
+E                 
+E                 - 64268d217f6831e06a7a199e8d83fad98151aa41512bc88b67b6b32f1da33406
+E                 + d74e2a38e87088e8ae80679b095bb27382eb572ed8634d042805f66b3b27c080
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+__________________ test_default_outputs_bit_for_bit[rm_cell] ___________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'rm_cell'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: rm_cell: rec_sha256 changed
+E               assert '7e1d4b2856f1...9c0601383d5a2' == '8d4b787718fb...15c5e8b1ad9e8'
+E                 
+E                 - 8d4b787718fbc5bad5264e108135719c0589c7dd08dd7116b2e15c5e8b1ad9e8
+E                 + 7e1d4b2856f13457c32f598952f3e35b74700c1bfb1b85adb6f9c0601383d5a2
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+________________ test_default_outputs_bit_for_bit[cmg_2ax_uff] _________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'cmg_2ax_uff'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: cmg_2ax_uff: rec_sha256 changed
+E               assert 'c6182a947bd6...f7d1f9b17f8ad' == 'e46c69d2beea...2c3369913f549'
+E                 
+E                 - e46c69d2beea0d5c736fad438a34844a2c6c16dc0d86c7aaad22c3369913f549
+E                 + c6182a947bd6e3dbfed7c1dabe2669e08fa35f629a797ce7ebaf7d1f9b17f8ad
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+_______________ test_default_outputs_bit_for_bit[cmg_lat_stage] ________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'cmg_lat_stage'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: cmg_lat_stage: rec_sha256 changed
+E               assert '340b6e7fd0fe...af74ebc75cd1b' == 'ef183bf32367...be917b128092d'
+E                 
+E                 - ef183bf323677a034227c1353b54644cebe7b9f286d1e3e2e69be917b128092d
+E                 + 340b6e7fd0fec2cf9260c8c79fb25ced4d196f584dce2a09f84af74ebc75cd1b
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+___________________ test_default_outputs_bit_for_bit[tmd_8] ____________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'tmd_8'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: tmd_8: rec_sha256 changed
+E               assert '1dca91c77a79...3108f4d3c74ef' == '21ddfca36bee...d7075db20c6b3'
+E                 
+E                 - 21ddfca36bee9d53fc0e288f009fcb0053ea8930844520482e5d7075db20c6b3
+E                 + 1dca91c77a7930eab3cfa841a537711c2b1ab89bba888462d3b3108f4d3c74ef
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+__________________ test_default_outputs_bit_for_bit[gyro_30k] __________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'gyro_30k'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: gyro_30k: rec_sha256 changed
+E               assert '419e96b39d4a...d63e010522eb7' == 'ad011f589d3e...7f2d955977f54'
+E                 
+E                 - ad011f589d3e3cfb02ee870c0a52f4f34293abe43e4c5c43ea17f2d955977f54
+E                 + 419e96b39d4a4abaa6cbd13b55ec5bf46849d5a19d22fe6d03ed63e010522eb7
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+__________________ test_default_outputs_bit_for_bit[cap_10g] ___________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'cap_10g'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: cap_10g: rec_sha256 changed
+E               assert 'ca9309cbf07a...85f4908c62046' == '6b6cc11e7ac7...41f2c7503f794'
+E                 
+E                 - 6b6cc11e7ac7ee64d3aa1f14a1e847cdd02b4b091d93e46352e41f2c7503f794
+E                 + ca9309cbf07a355aba1c0f5010e62fc874234079e2bfb6f576985f4908c62046
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+___________________ test_default_outputs_bit_for_bit[locked] ___________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'locked'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: locked: rec_sha256 changed
+E               assert '1d9c2cefb0b9...988840da74c7b' == '7db5ce531e2b...e50937d66f2f1'
+E                 
+E                 - 7db5ce531e2ba9bc367816c64bb087b6a58140adb27613ab22be50937d66f2f1
+E                 + 1d9c2cefb0b92d293264ae8d274d0a70839c6abe5a5de2a1ef9988840da74c7b
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+_______________ test_default_outputs_bit_for_bit[rot_yaw_stage] ________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'rot_yaw_stage'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: rot_yaw_stage: rec_sha256 changed
+E               assert '575da56ed875...d540d266e4bf7' == '4bd7ec2bf097...0844a3ffe5cc2'
+E                 
+E                 - 4bd7ec2bf09732b85ec6279904229f48af1a193bdd568e615590844a3ffe5cc2
+E                 + 575da56ed87534b770901f72da31c6c813449226418c6c77767d540d266e4bf7
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+_________________ test_default_outputs_bit_for_bit[rot_pitch] __________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'rot_pitch'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: rot_pitch: rec_sha256 changed
+E               assert '2d66d2cd2f0c...acd44f31612fc' == '22b6fc4d5f21...21cf2c42adfb1'
+E                 
+E                 - 22b6fc4d5f21f391064ed7caa9486bf97737ea3129d9b58fe2c21cf2c42adfb1
+E                 + 2d66d2cd2f0c7db3d8c5ad2f519e8a30688f25210bd8ca534c6acd44f31612fc
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+_________________ test_default_outputs_bit_for_bit[voluntary] __________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'voluntary'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: voluntary: rec_sha256 changed
+E               assert '8aaa5223e95e...b35a2f447ae53' == 'eec9c9fa8034...ce8469f2e1b47'
+E                 
+E                 - eec9c9fa803403d08a7cafabc6b3e1627f7e625253fe91e3bcace8469f2e1b47
+E                 + 8aaa5223e95eeb0b1dc82f1a6a05c71787de189fdfb3b4490c9b35a2f447ae53
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+_________________ test_default_outputs_bit_for_bit[visc_soft] __________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'visc_soft'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: visc_soft: rec_sha256 changed
+E               assert '86a892934840...350ce4ae830dc' == '1c0f2d5125f8...a218d2bac41e0'
+E                 
+E                 - 1c0f2d5125f8c77b30db871fc83e98e6893545b922510eb284ca218d2bac41e0
+E                 + 86a892934840fe283102beec117cff15fdea3c39ca2ada60f09350ce4ae830dc
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+______________ test_default_outputs_bit_for_bit[split_0.7_0.1_mu] ______________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'split_0.7_0.1_mu'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: split_0.7_0.1_mu: rec_sha256 changed
+E               assert 'f66ff6e4d24b...38f1665914ec0' == '9312dfeb198c...1b2b6a3ba5fdb'
+E                 
+E                 - 9312dfeb198ce0a0c87ee28ee7e3d549ac777cbb5ec15ffafd71b2b6a3ba5fdb
+E                 + f66ff6e4d24bb7d62c0641691c709368ec33408396968ef5f4d38f1665914ec0
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+___________________ test_default_outputs_bit_for_bit[tilt35] ___________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'tilt35'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: tilt35: rec_sha256 changed
+E               assert '184a468ec055...7ed0e9d67f0a1' == '91bf89c72497...1d6a22dda3f58'
+E                 
+E                 - 91bf89c724979f1166fb83464ab33e4f29f106afeaae72901ed1d6a22dda3f58
+E                 + 184a468ec055e03aaa26d2ca47340c9dbc1f2c46ea9a5ec5e857ed0e9d67f0a1
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+___________________ test_default_outputs_bit_for_bit[ilc_rm] ___________________
+
+now = {'none_clean': {'rec_sha256': '3f58a59e1336563e52e0708627853ee9ee2c3b022136bf6be9c187cf47727dbc', 'shape': [3000, 57],...7111a273ff906f4911e4b65da907549', 'shape': [3000, 57], 'appended_all_zero': True, 'ink_rms_um': 269.728716821907}, ...}
+name = 'ilc_rm'
+
+    @pytest.mark.parametrize("name", list(json.load(open(C.BASELINE))["cases"]))
+    def test_default_outputs_bit_for_bit(now, name):
+        base = json.load(open(C.BASELINE))["cases"][name]
+        got = now[name]
+        for key in ("rec_sha256", "u_sha256", "frf_sha256", "shape", "hist"):
+            if key in base:
+>               assert got[key] == base[key], f"{name}: {key} changed"
+E               AssertionError: ilc_rm: rec_sha256 changed
+E               assert '466aabc4f2e3...698667d91ac23' == '37cd21bea6b5...5a2ceb968dbab'
+E                 
+E                 - 37cd21bea6b5700395d43bdc051496aa53efce3ac3ed33565415a2ceb968dbab
+E                 + 466aabc4f2e342a33cff34b3699e3b2adb33e83ba28d7690994698667d91ac23
+
+opt/inertial/tests/test_h1_regression.py:33: AssertionError
+============================= slowest 20 durations =============================
+91.99s call     opt/hardware/tests/test_hardware.py::test_cad_overlay_default_is_identity
+22.33s call     fusion/tests/test_fusion.py::test_seed_plan_is_disjoint_from_test_seeds
+8.57s call     aiprior/tests/test_aiprior.py::test_tracker_reproduces_handwriting_study
+6.31s call     board/tests/test_magnetics.py::test_lateral_capability_falls_with_gap
+4.96s call     aiguide/tests/test_lm.py::test_splits_deterministic_disjoint_and_sized
+4.81s call     opt/hardware/tests/test_hardware.py::test_augmented_lagrangian_improves_a_small_problem
+4.47s call     opt/hardware/tests/test_hardware.py::test_gradients_match_finite_differences[Q2L]
+4.16s call     opt/hardware/tests/test_hardware.py::test_gradients_match_finite_differences[Q]
+2.75s call     app/tests/test_cli.py::test_module_entry_point
+2.29s setup    app/tests/test_autocorrect.py::test_autocorrect_layer_keeps_links_and_never_touches_the_original
+2.26s call     board/tests/test_control.py::test_full_guidance_reduces_tracing_error
+2.21s setup    opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[none_clean]
+1.83s call     app/tests/test_autocorrect.py::test_corpus_model_end_to_end
+1.72s call     board/tests/test_control.py::test_guidance_cannot_flip_a_reversal_but_lead_through_can
+1.64s call     ai2/tests/test_ai2.py::test_detector_gate_closed_on_writing_open_on_tremor
+1.44s call     drive/tests/test_drive.py::test_layout_parts_schema
+1.42s call     nose2/tests/test_autowrite.py::test_two_letters_no_tremor
+1.02s call     app/tests/test_notes.py::test_original_layer_refuses_every_modification
+0.86s call     nose2/tests/test_frontend.py::test_matches_original_at_revh
+0.73s call     app/tests/test_capture.py::test_fidelity_on_simulator_trace_is_self_consistent
+=========================== short test summary info ============================
+SKIPPED [1] ml/tests/test_ml.py:150: datasets not built
+SKIPPED [2] ml/tests/test_ml.py:234: data not built
+SKIPPED [1] ml/tests/test_ml.py:249: C test not built
+FAILED bnib/tests/test_bnib.py::test_interface_file_consistent - assert 0.400...
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[none_clean]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[none_tremor]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[stage]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[rm_slug3_uff]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[rm_slug3_uff_stage]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[rm_cell]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[cmg_2ax_uff]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[cmg_lat_stage]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[tmd_8]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[gyro_30k]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[cap_10g]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[locked]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[rot_yaw_stage]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[rot_pitch]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[voluntary]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[visc_soft]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[split_0.7_0.1_mu]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[tilt35]
+FAILED opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[ilc_rm]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 20 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+20 failed, 425 passed, 4 skipped in 196.68s (0:03:16)

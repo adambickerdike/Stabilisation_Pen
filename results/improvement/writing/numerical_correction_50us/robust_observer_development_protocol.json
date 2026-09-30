@@ -1,0 +1,3104 @@
+{
+  "scope": "Numerical correction of already-spent frozen observer replay cases.\n\nAll case specifications and controller designs are loaded from their original\nrecorded protocols. This corrects unstable explicit friction without retuning.\nThe old holdout is already spent; this rerun is not new blind validation. It is simulator\ngeneralization only; the glyph writers and synthetic acceptance are not new\nhuman validation data. Results count supervisor completion and retrospectively\nchecked true tracking separately, so observer optimism cannot hide a failure.\n",
+  "phase": "development",
+  "design": {
+    "measured_position_std_m": 1e-05,
+    "disturbance_random_walk_m_s2_sqrt_s": 2.0,
+    "innovation_trigger_sigma": 2.5,
+    "disturbance_jump_std_N": 0.02,
+    "innovation_refractory_s": 0.02,
+    "contact_drag_prior_N": 0.0,
+    "contact_velocity_scale_m_s": 0.0005,
+    "disturbance_force_cap_N": 0.06,
+    "maximum_bandwidth_hz": 40.0,
+    "recovery_force_cap_N": 0.04,
+    "recovery_force_slew_N_s": 10.0,
+    "damping_ratio": 0.9,
+    "initial_velocity_std_m_s": 0.003,
+    "initial_disturbance_std_N": 0.01
+  },
+  "code_sha256": {
+    "ai3/reachable.py": "0e8fa9cdc36a07c280ac13151724f1344f32c46d0ed053c6bc24292781185de2",
+    "ai3/layers.py": "0a118e3ddd528e75ff286046ea7980ebb406efdf23df3df9161b09fb1c5a4b2e",
+    "ai3/accepted_completion.py": "d4686dcfaa1415ef7dde36d5a33c69842a832307c46039aa8705bd256eb6f441",
+    "ai3/completion_replay.py": "5134a05487b138b8721df4d5e34f5e0df7bae51079e3b2d7e235cd003800c28d",
+    "ai3/robust_completion.py": "3dc1dcdb036395dfb572f44d1f1fb04a007b5856294e820f2ae5bfe78faed41a",
+    "ai3/planar_integrator.py": "ad874ae34e3f51b66fdc6894bfc45a0a35be2bea27cfaec0bab92c2bdfb43bb3",
+    "ai3/run_numerical_completion.py": "2886f0babd5fb50337023c2164075ce5e8738037113a20d2dfbc7cc6c9a974e8"
+  },
+  "radius_mm": 3.0,
+  "xheight_mm": 3.0,
+  "calibration_session": 1,
+  "specifications": [
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W12",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 812
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 813
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 814
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 815
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 816
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 817
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 818
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 819
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 820
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 821
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 822
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 823
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 824
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 825
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 826
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 827
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 828
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 829
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 830
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "nominal_ideal_sensing",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "mass_stiffness_damping_plus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "mass_stiffness_damping_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 0.7,
+        "stiffness_scale": 0.7,
+        "damping_scale": 0.7,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "force_constant_minus30pct",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "position_delay2ms_noise5um",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "position_delay4ms_noise10um_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.004,
+        "position_noise_std_m": 1e-05,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "contact_drag20mN",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.02,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "combined_gain20Hz",
+      "contact_delay_s": 0.02,
+      "perturbation": {
+        "mass_scale": 1.3,
+        "stiffness_scale": 1.3,
+        "damping_scale": 1.3,
+        "force_constant_scale": 0.7,
+        "position_delay_s": 0.002,
+        "position_noise_std_m": 5e-06,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.01,
+        "seed": 831
+      }
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "scenario": "slow_contact200ms",
+      "contact_delay_s": 0.2,
+      "perturbation": {
+        "mass_scale": 1.0,
+        "stiffness_scale": 1.0,
+        "damping_scale": 1.0,
+        "force_constant_scale": 1.0,
+        "position_delay_s": 0.0,
+        "position_noise_std_m": 0.0,
+        "causal_position_feedback": false,
+        "velocity_filter_hz": 80.0,
+        "lateral_drag_N": 0.0,
+        "seed": 831
+      }
+    }
+  ],
+  "primary_endpoint": "whole accepted suffix completed AND actual stage tracking error <=150um and radius <=3mm at every simulated sample",
+  "no_human_efficacy": true,
+  "no_fresh_writer_validation": true,
+  "numerical_correction_of_spent_cases": true,
+  "original_protocol_sha256": "f96b8cb66f6c58a795e35a15cbe7bfdb9433a4aba428f852b7becea60d0282fd",
+  "internal_max_dt_s": 5e-05,
+  "policy_tick_s": 0.0005,
+  "sensor_control_tick_s": 0.002,
+  "integrator": "coupled implicit midpoint, active current-limit solve, substep copper integration",
+  "numerical_scope": "same controller gains, source case specifications, seeds and acquisition schedule; mean applied-current observation corrects legacy endpoint-as-held approximation"
+}

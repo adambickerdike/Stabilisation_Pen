@@ -1,0 +1,10 @@
+.............sssss......s......................s......                   [100%]
+=========================== short test summary info ============================
+SKIPPED [1] realdata/tests/test_realdata.py:118: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:134: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:144: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:164: licensed UNIPEN corpus absent or writing index empty
+SKIPPED [1] realdata/tests/test_realdata.py:179: licensed UNIPEN corpus absent or writing index empty
+SKIPPED [1] realdata/tests/test_realdata.py:280: tremor library not built
+SKIPPED [1] readable/tests/test_readable.py:197: licensed UNIPEN writing index not built
+47 passed, 7 skipped in 3.38s

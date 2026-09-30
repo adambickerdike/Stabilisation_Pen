@@ -120,8 +120,8 @@ class Head:
         return pts
 
 
-def _row(R_s: float, L_O: float, x_h: float, ths, angs) -> Dict:
-    stop = val(PR.B1["stop_mm"])
+def _row(R_s: float, L_O: float, x_h: float, ths, angs, stop_mm: Optional[float] = None) -> Dict:
+    stop = val(PR.B1["stop_mm"]) if stop_mm is None else stop_mm
     wob = val(PR.FRONT["tilt_wobble_deg"])
     lift = val(PR.HEAD["lift_mm"])
     F_n = val(PR.B1["F_n_N"])
@@ -169,7 +169,7 @@ def _row(R_s: float, L_O: float, x_h: float, ths, angs) -> Dict:
             "tilt_moment_max_Nmm": float(max(M)), "tilt_moment_residual_with_balance_spring_Nmm": M_res}
 
 
-def sweep(R_s: float, quick: bool = False) -> Dict:
+def sweep(R_s: float, quick: bool = False, stop_mm: Optional[float] = None) -> Dict:
     """Head layouts over the face offset L_O and the hinge offset x_h: the follower's travel over 35-75 deg, the contact
     region on the face (nib at the stop, any direction), the float excursion from the tilt wobble, the plate's swept
     envelope against the bore, the tilt-hinge moment; the chosen head is the smallest face whose follower travel + lift
@@ -181,7 +181,7 @@ def sweep(R_s: float, quick: bool = False) -> Dict:
     spare = val(PR.HEAD["follower_spare_mm"])
     for x_h in xhs:
         for L_O in np.arange(-7.0, 8.01, 0.5 if not quick else 1.0):
-            r = _row(R_s, float(L_O), float(x_h), ths, angs)
+            r = _row(R_s, float(L_O), float(x_h), ths, angs, stop_mm=stop_mm)
             r["keeps_spare_travel"] = r["positioner_travel_needed_mm"] <= val(PR.HEAD["pos_travel_mm"]) - spare
             rows.append(r)
     fit = [r for r in rows if r["keeps_spare_travel"] and r["fits_bore"]]

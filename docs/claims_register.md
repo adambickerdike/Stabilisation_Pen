@@ -1,5 +1,22 @@
 # Claims register: every headline claim and its current status
 
+## Engineering update, 30 September 2026
+
+The [implemented improvement report](engineering_improvement_2026_09_30.md) and its four detailed audits take precedence for the changed models. The earlier register below remains a record of upstream studies at `4ad62b6`; its CURRENT labels refer to that baseline, not automatic revalidation after the changes. No new hardware or participant evidence was obtained.
+
+| Changed claim or evidence | Current interpretation | Source |
+|---|---|---|
+| Rev J inner-loop performance with exact velocity/contact | SUSPENDED for causal hardware interpretation. Timestamped Hall/contact sensing requires different gains. A frozen 45-case comparison of 400 to 80 Hz improves mean tracking and copper loss but worsens five cases and unwanted ink; worst revised RMS remains 2.181 mm. | [Control audit](control_improvement_audit.md) |
+| Relative page sensing after dropout | SUSPENDED where missing motion was silently recovered from ground truth or future samples changed past noise. New model retains an invalid absolute anchor until independently restored. | [Integration audit](integration_improvement_audit.md) |
+| Rev K wire, guide, copper loss and complete-pen budgets | REQUIRES RECOMPUTATION for either new candidate. The 24 mm / 1.5 mm candidate passes the assumed 20 mN duty screen but fails 40 mN; the 20 mm / 1.059 mm candidate has still less heat margin. No complete assembly mass, battery life or skin-temperature claim follows. | [Mechanics audit](mechanics_improvement_audit.md) |
+| Almost complete automatic writing at a hypothetical 6 mm radius | SUPERSEDED as an executable-motion claim. All historic completed command traces fail the sampled motion screen. The new planner admits 495/520 bounded references; actual execution is a separate test. | [Writing audit](writing_improvement_audit.md) |
+| Small nib alone can write ordinary accepted letters | UNPROVEN and severely workspace-limited: only 5/520 references fit the new 1.5 mm candidate under declared margins. The proposed grounded mechanism completes the ink/tracking gate for 20/20 tested suffixes without grip resistance, but 0/20 at either resisting-grip setting. None of the unloaded traces also meets the selected actual acceleration/jerk limits. | [Writing audit](writing_improvement_audit.md), [mechanics audit](mechanics_improvement_audit.md) |
+| Learning improves the repaired controller | NOT ESTABLISHED. Six PPO seeds across two distinct protocols ran; none qualified for adoption. The later experiment's reserved test set was not consumed. | [Control audit](control_improvement_audit.md) |
+| Generic replay results using the newly added 0.5 ms explicit friction update | INVALID NUMERICAL DIAGNOSTICS. An independent decay check exposed energy creation. The repaired implicit solver and same-case 50/25 microsecond comparisons replace these numbers; the already inspected cases are not called fresh validation. | [Writing audit](writing_improvement_audit.md), [integration audit](integration_improvement_audit.md) |
+| Spelling changes and physical accepted text | IMPLEMENTED SOFTWARE INTERFACE, not dyslexia efficacy. Explicit selected acceptance preserves original recognition and ink; the physical planner checks accepted future motion separately and cannot erase permanent ink. | [Application instructions](../app/README.md), [writing audit](writing_improvement_audit.md) |
+
+## Preserved upstream register
+
 **Updated 2026-09-30 by the lead** (after the whole-pen physics study sim2j, the real-data studies R and E, the balanced nib B and the Rev K layout K). This is the one place to check before quoting a number. Nothing in this programme has been built or measured. Every claim below is a calculation (CALC), a simulation (SIM), literature (LIT) or an assumption (ASSUMPTION).
 
 **Status words**

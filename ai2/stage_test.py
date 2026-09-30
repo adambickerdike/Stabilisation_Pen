@@ -35,6 +35,9 @@ def settings(quick: bool) -> Dict:
     """The settings fixed on tuning data (d01, d2b), with the adoption status."""
     d01 = C.load("d01", quick) or C.load("d01", False)
     d2b = C.load("d2b", quick) or C.load("d2b", False)
+    if d01 is None or d2b is None:
+        raise FileNotFoundError("ai2 frozen tuning caches d01/d2b are absent from this checkout; "
+                                "rebuild the tuning stages before loading their estimators")
     sel = d2b["selection"]
     tab = sel["table"]
     cands = {TU.key(c): c for c in d2b["candidates"]}

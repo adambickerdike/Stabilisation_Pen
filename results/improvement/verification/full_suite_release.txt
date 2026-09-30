@@ -1,0 +1,53 @@
+........................................................................ [  8%]
+........................................................................ [ 16%]
+........................................................................ [ 24%]
+........................................................................ [ 32%]
+........................................................................ [ 40%]
+............................................s.....sss................... [ 49%]
+........................................................................ [ 57%]
+........................s...................sssss......s................ [ 65%]
+.ssss....s.............................................................. [ 73%]
+........................................................................ [ 81%]
+........................................................................ [ 90%]
+........................................ssss............................ [ 98%]
+................                                                         [100%]
+============================= slowest 20 durations =============================
+33.65s call     opt/tracker/tests/test_tracker.py::test_seed_plan_never_uses_test_data
+13.44s call     fusion/tests/test_fusion.py::test_seed_plan_is_disjoint_from_test_seeds
+7.01s call     opt/touchdown/tests/test_touchdown.py::test_reduced_model_adjoint_gradient_matches_finite_differences
+6.98s call     s2r/tests/test_core_tools.py::test_truth_draws_inside_and_outside
+4.22s call     opt/hardware/tests/test_hardware.py::test_augmented_lagrangian_improves_a_small_problem
+4.10s call     opt/inertial/tests/test_revh.py::test_front_end_closes_over_writing_tilts
+3.73s call     sim2/tests/test_interfaces.py::test_gymnasium_env_checker
+3.18s call     opt/tracker/tests/test_tracker.py::test_adjoint_gradient_equals_autograd
+3.17s call     opt/hardware/tests/test_hardware.py::test_cad_overlay_default_is_identity
+3.12s call     opt/hardware/tests/test_hardware.py::test_gradients_match_finite_differences[Q2L]
+2.99s call     opt/tracker/tests/test_tracker.py::test_torch_and_adjoint_trackers_are_causal
+2.90s call     s2r/tests/test_experiments.py::test_b01b02_reduced_identification
+2.89s call     opt/tracker/tests/test_tracker.py::test_torch_akf_reproduces_numba[grid_like-120]
+2.79s call     aiprior/tests/test_aiprior.py::test_tracker_reproduces_handwriting_study
+2.66s call     s2r/tests/test_modelform_piezo.py::test_diagnostics_pass_control_and_flag_coulomb
+2.60s call     revj1/tests/test_revj1.py::test_detent_falls_when_the_motors_move_back
+2.53s call     opt/tracker/tests/test_tracker.py::test_torch_akf_reproduces_numba[robust_like-1k]
+2.44s call     opt/tracker/tests/test_tracker.py::test_torch_akf_reproduces_numba[grid_like-1k]
+2.43s call     opt/hardware/tests/test_hardware.py::test_gradients_match_finite_differences[Q]
+2.09s setup    opt/inertial/tests/test_h1_regression.py::test_default_outputs_bit_for_bit[none_clean]
+=========================== short test summary info ============================
+SKIPPED [1] ml/tests/test_ml.py:150: datasets not built
+SKIPPED [2] ml/tests/test_ml.py:234: data not built
+SKIPPED [1] ml/tests/test_ml.py:249: C test not built
+SKIPPED [1] readable/tests/test_readable.py:197: licensed UNIPEN writing index not built
+SKIPPED [1] realdata/tests/test_realdata.py:118: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:134: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:144: tremor library not built
+SKIPPED [1] realdata/tests/test_realdata.py:164: licensed UNIPEN corpus absent or writing index empty
+SKIPPED [1] realdata/tests/test_realdata.py:179: licensed UNIPEN corpus absent or writing index empty
+SKIPPED [1] realdata/tests/test_realdata.py:280: tremor library not built
+SKIPPED [3] realtrack/tests/test_realtrack.py:89: model not built: ai2 frozen tuning caches d01/d2b are absent from this checkout; rebuild the tuning stages before loading their estimators
+SKIPPED [1] realtrack/tests/test_realtrack.py:89: model not built: [Errno 2] No such file or directory: '/Users/adambickerdike/Documents/Codex/2026-09-29/pleas/work/Stabilisation_Pen/realtrack/build/models/net_net_main.json'
+SKIPPED [1] realtrack/tests/test_realtrack.py:150: tuning cache not built (python3 -m realtrack.run --stages cases)
+SKIPPED [1] sim2/tests/test_slow.py:8: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:19: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:28: slow: use --runslow
+SKIPPED [1] sim2/tests/test_slow.py:34: slow: use --runslow
+860 passed, 20 skipped in 168.98s (0:02:48)

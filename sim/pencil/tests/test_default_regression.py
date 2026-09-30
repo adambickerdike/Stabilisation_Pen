@@ -8,12 +8,15 @@ It holds, per case, the packed parameter vector, the SHA-256 of the full recorde
 
 Two levels:
   * core: the stored parameter vector (new entries zero) through core.simulate with the scenario
-    rebuilt from its seed must reproduce the recorded channels bit for bit.  It does not depend on
+    rebuilt from its seed must reproduce the original source on this numerical host bit for bit. It does not depend on
     sim/pencil/design.py, so it holds while other studies change the design model.
   * model: M.run with default settings must give the same parameter vector and the same record.
     If the design model's defaults were changed elsewhere, the parameter vector differs and the
     case is skipped with that reason (the core level still guards the simulator).
 Run: python3 -m pytest -q sim/pencil/tests/test_default_regression.py
+
+Historical Linux arrays/hashes are preserved. Replaying the unchanged source on
+this host avoids mistaking libm/LLVM differences for a simulator-core change.
 """
 import hashlib
 import json
@@ -38,6 +41,12 @@ FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "p1_defau
 META = json.load(open(FIX + ".json"))
 ARR = np.load(FIX + ".npz")
 TREMOR = sg.TremorSpec(f0=6.0, amp_pk=3e-4)
+
+
+@pytest.fixture(scope="module")
+def original():
+    from sim.pencil.tests.p1_same_host_reference import reference
+    return reference()
 
 
 def _scenario(key):
@@ -99,9 +108,10 @@ CORE_CASES = [k for k in META["cases"] if _scenario(k) is not None]
 
 
 @pytest.mark.parametrize("key", CORE_CASES)
-def test_core_default_run_is_bit_identical(key):
+def test_core_default_run_is_bit_identical(key, original):
+    meta, arrays = original
     scn = _scenario(key)
-    Pold = ARR[key + "__P"]
+    Pold = arrays[key + "__P"]
     Pv = np.zeros(NP)
     for i, n in enumerate(META["names"]):
         Pv[IDX[n]] = Pold[i]
@@ -114,24 +124,25 @@ def test_core_default_run_is_bit_identical(key):
                       np.ascontiguousarray(scn.opt_ok.astype(np.float64)), META["cases"][key]["seed"], rec)
     rec = rec[:m]
     assert rec.shape[0] == META["cases"][key]["nrec"]
-    assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], ARR[key + "__ink"])
-    assert _old_channels_hash(rec) == META["cases"][key]["sha256_rec"]
+    assert np.array_equal(rec[::20][:, [RIDX["Cx"], RIDX["Cy"]]], arrays[key + "__ink"])
+    assert _old_channels_hash(rec) == meta["cases"][key]["sha256_rec"]
     for ch in ("qff1", "qff2", "td_sh", "td_state"):
         assert not np.any(rec[:, RIDX[ch]])
 
 
 @pytest.mark.parametrize("key", list(META["cases"]))
-def test_model_default_run_is_bit_identical(key):
+def test_model_default_run_is_bit_identical(key, original):
+    meta, arrays = original
     scn, ctrl, cfg = _model_case(key)
     r = M.run(scn, ctrl, cfg, seed=META["cases"][key]["seed"])
-    Pold = ARR[key + "__P"]
+    Pold = arrays[key + "__P"]
     Pnow = np.array([r.P[IDX[n]] for n in META["names"]])
     if not np.array_equal(Pold, Pnow):
         diff = [n for n, a, b in zip(META["names"], Pold, Pnow) if a != b]
         pytest.skip(f"design-model inputs changed outside the simulator core ({diff[:6]}); the core-level test still applies")
     assert all(r.P[IDX[n]] == 0.0 for n in NAMES if n.startswith("td_"))
-    assert np.array_equal(r.ink()[::20], ARR[key + "__ink"])
-    assert _old_channels_hash(r.rec) == META["cases"][key]["sha256_rec"]
+    assert np.array_equal(r.ink()[::20], arrays[key + "__ink"])
+    assert _old_channels_hash(r.rec) == meta["cases"][key]["sha256_rec"]
 
 
 def test_feedforward_is_active_only_when_enabled():

@@ -28,7 +28,7 @@ import torch
 from opt.inertial import revh as RH
 from opt.inertial.linear_ext import LinearExt, tremor_direction
 
-torch.set_default_dtype(torch.float64)
+# Keep physical calculations in float64 without changing the caller's ML defaults.
 
 
 @lru_cache(maxsize=16)
@@ -64,7 +64,7 @@ class EndcapLinear:
             K = K + (hand_scale - 1.0) * Kh
             D = D + (hand_scale - 1.0) * Dh
         self.hand_scale = hand_scale
-        self.M0 = torch.tensor(M); self.D0 = torch.tensor(D); self.K0 = torch.tensor(K)
+        self.M0 = torch.tensor(M, dtype=torch.float64); self.D0 = torch.tensor(D, dtype=torch.float64); self.K0 = torch.tensor(K, dtype=torch.float64)
         self.t1 = lm.t1; self.t2 = lm.t2; self.a = lm.a
         self._exc = {}
 
@@ -82,29 +82,29 @@ class EndcapLinear:
     # -------------------------------------------------------------------------------------------- assembly
     def matrices(self, dev: Dict):
         """(M, D, K, n) with the device's differentiable parameters (torch scalars or floats)."""
-        m_fix = torch.as_tensor(dev.get("m_fix", 0.0)); z_fix = float(dev.get("z_fix", 0.1525))
-        Jf = torch.tensor(point_jac8(self.lm, z_fix))
+        m_fix = torch.as_tensor(dev.get("m_fix", 0.0), dtype=torch.float64); z_fix = float(dev.get("z_fix", 0.1525))
+        Jf = torch.tensor(point_jac8(self.lm, z_fix), dtype=torch.float64)
         M = self.M0 + m_fix * (Jf.T @ Jf)
         D = self.D0.clone(); K = self.K0.clone()
         Hg = dev.get("H_gyro", 0.0)
         if torch.is_tensor(Hg) or Hg != 0.0:
-            Hg = torch.as_tensor(Hg)
-            E = torch.zeros(8, 8); E[3, 4] = 1.0; E[4, 3] = -1.0
+            Hg = torch.as_tensor(Hg, dtype=torch.float64)
+            E = torch.zeros(8, 8, dtype=torch.float64); E[3, 4] = 1.0; E[4, 3] = -1.0
             D = D + Hg * E
         m_r = dev.get("m_r", 0.0)
         if torch.is_tensor(m_r) or m_r > 0.0:
-            m_r = torch.as_tensor(m_r)
+            m_r = torch.as_tensor(m_r, dtype=torch.float64)
             z_r = float(dev.get("z_r", 0.1525))
             Jd = np.zeros((3, 10))
             Jd[:, 0:8] = point_jac8(self.lm, z_r)
             Jd[:, 8] = self.t1; Jd[:, 9] = self.t2
-            Jd = torch.tensor(Jd)
-            Mz = torch.zeros(10, 10); Mz[0:8, 0:8] = M
-            Dz = torch.zeros(10, 10); Dz[0:8, 0:8] = D
-            Kz = torch.zeros(10, 10); Kz[0:8, 0:8] = K
+            Jd = torch.tensor(Jd, dtype=torch.float64)
+            Mz = torch.zeros(10, 10, dtype=torch.float64); Mz[0:8, 0:8] = M
+            Dz = torch.zeros(10, 10, dtype=torch.float64); Dz[0:8, 0:8] = D
+            Kz = torch.zeros(10, 10, dtype=torch.float64); Kz[0:8, 0:8] = K
             M = Mz + m_r * (Jd.T @ Jd)
-            k_c = torch.as_tensor(dev.get("k_c", 0.0)); c_c = torch.as_tensor(dev.get("c_c", 0.0))
-            I2 = torch.zeros(10, 10); I2[8, 8] = 1.0; I2[9, 9] = 1.0
+            k_c = torch.as_tensor(dev.get("k_c", 0.0), dtype=torch.float64); c_c = torch.as_tensor(dev.get("c_c", 0.0), dtype=torch.float64)
+            I2 = torch.zeros(10, 10, dtype=torch.float64); I2[8, 8] = 1.0; I2[9, 9] = 1.0
             K = Kz + k_c * I2
             D = Dz + c_c * I2
             return M, D, K, 10
@@ -135,8 +135,8 @@ class EndcapLinear:
             elif nm == "F_t2":
                 u[9] = 1.0
             elif nm in ("Fcap_t1", "Fcap_t2"):         # a force on the pen at the end-cap centre (e.g. a propeller)
-                J = torch.tensor(point_jac8(self.lm, float(dev.get("z_fix", 0.1525))))
-                d = torch.tensor(self.t1 if nm == "Fcap_t1" else self.t2)
+                J = torch.tensor(point_jac8(self.lm, float(dev.get("z_fix", 0.1525))), dtype=torch.float64)
+                d = torch.tensor(self.t1 if nm == "Fcap_t1" else self.t2, dtype=torch.float64)
                 u[0:8] = (J.T @ d).to(torch.complex128)
             else:
                 raise KeyError(nm)

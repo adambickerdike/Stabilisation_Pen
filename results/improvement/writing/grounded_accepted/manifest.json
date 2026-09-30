@@ -1,0 +1,4371 @@
+{
+  "evidence": "Export accepted future 'se' for the concrete grounded-mechanism postcheck.\n\nUJI session-1 glyphs and synthetic explicit acceptances only. Each word includes\n200 ms lower/lift phases and a commanded, pen-up, 500 ms minimum-jerk move between\nletters. The external coarse mechanism supplies that translation. All position,\nvelocity and acceleration channels share the same analytic piecewise reference.\nNo claim is made that a freehand person follows this body trajectory.\n",
+  "dataset": {
+    "name": "uji2",
+    "url": "https://archive.ics.uci.edu/static/public/177/uji+pen+characters+version+2.zip",
+    "file": "uji2.zip",
+    "bytes": 2304811,
+    "sha256": "0881b522911b99d9922820289441b50fd3d307f71cd7f9cc70e86872424a5f90",
+    "licence": "CC BY 4.0 (UCI dataset page)",
+    "citation": "Prat F, Castro MJ, Llorens D, Marzal A, Vilar JM. UJI Pen Characters (Version 2). UCI Machine Learning Repository, 2008. doi:10.24432/C5FG8S",
+    "retrieved_utc": "2026-09-30T08:31Z",
+    "n_letters_used": 3120,
+    "writers": 60
+  },
+  "new_blind_validation": false,
+  "assumed_lift_and_lower_s": 0.2,
+  "assumed_interletter_air_move_s": 0.5,
+  "xheight_mm": 3.0,
+  "reference_only_envelope_m": 0.1,
+  "note": "The 100mm envelope only generates references; it is not a pen-stage feasibility claim. Each 4+1.5mm split is screened separately, and full words require the actual five-bar and fine-stage postcheck.",
+  "writers": 20,
+  "whole_suffix_exported": 20,
+  "rows": [
+    {
+      "writer": "tst_UJI_W12",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 1,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0011795454545454542,
+              0.0014768181818181827
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0017002106906865502,
+              "radial_with_reserve_m": 0.001880529308435025,
+              "speed_m_s": 0.009564879586921064,
+              "acceleration_m_s2": 0.6963424545790948,
+              "jerk_m_s3": 279.7916357636461,
+              "current_A": 0.06390975044438037,
+              "voltage_V": 0.19878398560858243,
+              "coil_energy_J": 0.009405661135830473,
+              "braking_reserve_m": 0.00015988097509580417,
+              "braking_current_A": 0.450312562857528,
+              "braking_voltage_V": 1.3781024938930229,
+              "geometry_error_m": 3.0746384311406544e-05,
+              "duration_s": 1.8103304867852974,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.0746384311406544e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004851136363636363,
+              0.0014863636363636368
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.001735485014090267,
+              "radial_with_reserve_m": 0.002315677264532727,
+              "speed_m_s": 0.02912821945995547,
+              "acceleration_m_s2": 1.0301067645711086,
+              "jerk_m_s3": 49.79923110433839,
+              "current_A": 0.06396851314964318,
+              "voltage_V": 0.20126146429499403,
+              "coil_energy_J": 0.005808211765606927,
+              "braking_reserve_m": 0.0007716141413766765,
+              "braking_current_A": 0.45409621058953936,
+              "braking_voltage_V": 1.4003825035629718,
+              "geometry_error_m": 4.239227722914243e-05,
+              "duration_s": 1.0874882131585195,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.239227722914243e-05
+          }
+        ],
+        "required_body_travel_m": 0.003671603317274551,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0015442106902678128,
+            "fine_radius_m": 0.0006636938247326955,
+            "coarse_speed_m_s": 0.007075044280314967,
+            "fine_speed_m_s": 0.002608603523705728,
+            "coarse_acceleration_m_s2": 0.6552728753169087,
+            "fine_acceleration_m_s2": 0.18991157852157622,
+            "coarse_force_N": 0.18004438086357238,
+            "fine_force_N": 0.03583804648744306,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.8103304867852974,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W12_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0016987514441503557,
+            "fine_radius_m": 0.0006733140947518911,
+            "coarse_speed_m_s": 0.021633867046476903,
+            "fine_speed_m_s": 0.007944059852715126,
+            "coarse_acceleration_m_s2": 0.8747018116328752,
+            "fine_acceleration_m_s2": 0.2809382085193786,
+            "coarse_force_N": 0.21594273765466443,
+            "fine_force_N": 0.035246085971355104,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.0874882131585195,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W12_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UJI_W12_accepted_se.npz",
+      "global_page_origin_m": [
+        0.003297763794276315,
+        0.0014843306374759538
+      ],
+      "duration_s": 3.3978186999438167,
+      "coarse_max_xy_m": [
+        0.0029743635645851467,
+        0.001097885117042781
+      ],
+      "fine_max_radius_m": 0.0004725602562626426
+    },
+    {
+      "writer": "tst_UJI_W13",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 2,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0014999999999999994,
+              0.0018009375000000002
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.001846284472903013,
+              "radial_with_reserve_m": 0.003034350790902504,
+              "speed_m_s": 0.02856076754428356,
+              "acceleration_m_s2": 1.6871169282736918,
+              "jerk_m_s3": 150.96502443657826,
+              "current_A": 0.0663373872027615,
+              "voltage_V": 0.21355199435911032,
+              "coil_energy_J": 0.0052286429322319,
+              "braking_reserve_m": 0.0011342828989251777,
+              "braking_current_A": 0.46043729323773214,
+              "braking_voltage_V": 1.4229847087812348,
+              "geometry_error_m": 7.494013099107051e-05,
+              "duration_s": 0.9817137387445201,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 7.494013099107051e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.006876562499999998,
+              0.0011531250000000005
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.002565255872555959,
+              "radial_with_reserve_m": 0.0035698849952008633,
+              "speed_m_s": 0.029956198080995138,
+              "acceleration_m_s2": 1.7133911378686666,
+              "jerk_m_s3": 140.4033331398679,
+              "current_A": 0.06710151319149324,
+              "voltage_V": 0.20961986538664598,
+              "coil_energy_J": 0.006237659669352471,
+              "braking_reserve_m": 0.0011889470195765865,
+              "braking_current_A": 0.46016511183651154,
+              "braking_voltage_V": 1.4212317975668245,
+              "geometry_error_m": 4.9271182597183714e-05,
+              "duration_s": 1.1946604676021317,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.9271182597183714e-05
+          }
+        ],
+        "required_body_travel_m": 0.005415448767328751,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0017071767949803712,
+            "fine_radius_m": 0.000703532128973549,
+            "coarse_speed_m_s": 0.02168174252814914,
+            "fine_speed_m_s": 0.007789300239350071,
+            "coarse_acceleration_m_s2": 1.4109802594376504,
+            "fine_acceleration_m_s2": 0.460122798620165,
+            "coarse_force_N": 0.2984624231283728,
+            "fine_force_N": 0.038052822953494346,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9817137387445201,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W13_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.002570004805675641,
+            "fine_radius_m": 0.0008996152379698069,
+            "coarse_speed_m_s": 0.022110972798563187,
+            "fine_speed_m_s": 0.008169872203907762,
+            "coarse_acceleration_m_s2": 1.5651807933755486,
+            "fine_acceleration_m_s2": 0.4672884921458352,
+            "coarse_force_N": 0.3221479565526477,
+            "fine_force_N": 0.03973320368255413,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.1946604676021317,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W13_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UJI_W13_accepted_se.npz",
+      "global_page_origin_m": [
+        0.005010136708368379,
+        0.0018003569519926036
+      ],
+      "duration_s": 2.676374206346652,
+      "coarse_max_xy_m": [
+        0.004588574223468924,
+        0.0014909450201176671
+      ],
+      "fine_max_radius_m": 0.0006996152379698079
+    },
+    {
+      "writer": "tst_UJI_W14",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 3,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0013499999999999996,
+              0.0017071428571428567
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0019468291964781206,
+              "radial_with_reserve_m": 0.0023281226555570216,
+              "speed_m_s": 0.025724971095572008,
+              "acceleration_m_s2": 1.4892139260656516,
+              "jerk_m_s3": 288.3676192702952,
+              "current_A": 0.0684772489910515,
+              "voltage_V": 0.21383990882703183,
+              "coil_energy_J": 0.00514376248543625,
+              "braking_reserve_m": 0.0009690840587470212,
+              "braking_current_A": 0.4585608211896362,
+              "braking_voltage_V": 1.415577835504348,
+              "geometry_error_m": 7.317437800297163e-05,
+              "duration_s": 0.979839644048162,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 7.317437800297163e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004967857142857142,
+              0.001586785714285714
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.001768214614095047,
+              "radial_with_reserve_m": 0.002177892903209452,
+              "speed_m_s": 0.016386155354102473,
+              "acceleration_m_s2": 0.9922369290889849,
+              "jerk_m_s3": 291.82396514252395,
+              "current_A": 0.06346120123737187,
+              "voltage_V": 0.19939989773492847,
+              "coil_energy_J": 0.008128364469235698,
+              "braking_reserve_m": 0.0003800058617097142,
+              "braking_current_A": 0.45189634814488877,
+              "braking_voltage_V": 1.3874286135576468,
+              "geometry_error_m": 3.9284930699682936e-05,
+              "duration_s": 1.5477682155263648,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.9284930699682936e-05
+          }
+        ],
+        "required_body_travel_m": 0.0036198585812099314,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0017348992958066396,
+            "fine_radius_m": 0.0007309534172213056,
+            "coarse_speed_m_s": 0.018787910342433052,
+            "fine_speed_m_s": 0.007015901207883268,
+            "coarse_acceleration_m_s2": 1.3356893808296812,
+            "fine_acceleration_m_s2": 0.40614925256338036,
+            "coarse_force_N": 0.28424627253055923,
+            "fine_force_N": 0.040218775554663064,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.979839644048162,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W14_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.001668747916388571,
+            "fine_radius_m": 0.0006822403492986491,
+            "coarse_speed_m_s": 0.012312975709100005,
+            "fine_speed_m_s": 0.004468951460209773,
+            "coarse_acceleration_m_s2": 0.9061227642487892,
+            "fine_acceleration_m_s2": 0.27061007157014266,
+            "coarse_force_N": 0.2194687186507681,
+            "fine_force_N": 0.03483222530520269,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.5477682155263648,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W14_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UJI_W14_accepted_se.npz",
+      "global_page_origin_m": [
+        0.003278928843450839,
+        0.0016946832338975092
+      ],
+      "duration_s": 3.027607859574527,
+      "coarse_max_xy_m": [
+        0.002858279097132738,
+        0.0012785873063150702
+      ],
+      "fine_max_radius_m": 0.0005309096469300762
+    },
+    {
+      "writer": "tst_UJI_W15",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 4,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0016376470588235295,
+              0.001627058823529412
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.002038800601362471,
+              "radial_with_reserve_m": 0.0024247429996599257,
+              "speed_m_s": 0.029272195067819272,
+              "acceleration_m_s2": 1.4542266088347258,
+              "jerk_m_s3": 92.7129759603288,
+              "current_A": 0.06665028001792771,
+              "voltage_V": 0.20837263348670948,
+              "coil_energy_J": 0.004404407036896026,
+              "braking_reserve_m": 0.001018691477268567,
+              "braking_current_A": 0.45825034190488,
+              "braking_voltage_V": 1.415253345452259,
+              "geometry_error_m": 3.8413936047907506e-05,
+              "duration_s": 0.8559755028004232,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.8413936047907506e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005366470588235295,
+              0.0018088235294117644
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0019286814999933432,
+              "radial_with_reserve_m": 0.0031137531929166067,
+              "speed_m_s": 0.0293898244027985,
+              "acceleration_m_s2": 1.659503246688616,
+              "jerk_m_s3": 96.21318734153935,
+              "current_A": 0.06415533343134719,
+              "voltage_V": 0.2062071134888964,
+              "coil_energy_J": 0.0054360806202756315,
+              "braking_reserve_m": 0.0010425083069149094,
+              "braking_current_A": 0.45987137355110835,
+              "braking_voltage_V": 1.4202886813054252,
+              "geometry_error_m": 4.973767251782832e-05,
+              "duration_s": 1.0436885699299563,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.973767251782832e-05
+          }
+        ],
+        "required_body_travel_m": 0.003733251039214924,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0018680957256177267,
+            "fine_radius_m": 0.0007560365276443102,
+            "coarse_speed_m_s": 0.022928059401631038,
+            "fine_speed_m_s": 0.007983325927587085,
+            "coarse_acceleration_m_s2": 1.2795257258598027,
+            "fine_acceleration_m_s2": 0.39660725695484605,
+            "coarse_force_N": 0.2785075518070839,
+            "fine_force_N": 0.03918885617282966,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.8559755028004232,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W15_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0016589021123945458,
+            "fine_radius_m": 0.0007260040454527299,
+            "coarse_speed_m_s": 0.02342811793297648,
+            "fine_speed_m_s": 0.008015406655308687,
+            "coarse_acceleration_m_s2": 1.2379136823409276,
+            "fine_acceleration_m_s2": 0.452591794551376,
+            "coarse_force_N": 0.2721492386662908,
+            "fine_force_N": 0.034557177580300066,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.0436885699299563,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W15_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UJI_W15_accepted_se.npz",
+      "global_page_origin_m": [
+        0.0033519147457575405,
+        0.0018133131996056887
+      ],
+      "duration_s": 2.3996640727303795,
+      "coarse_max_xy_m": [
+        0.002987180499408508,
+        0.001387355158038677
+      ],
+      "fine_max_radius_m": 0.0005557658482106387
+    },
+    {
+      "writer": "tst_UJI_W16",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 5,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0015328467153284666,
+              0.001353284671532846
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.001476994755674858,
+              "radial_with_reserve_m": 0.0018136456609844699,
+              "speed_m_s": 0.007979713003185151,
+              "acceleration_m_s2": 1.110806803911833,
+              "jerk_m_s3": 284.5824741070338,
+              "current_A": 0.06383715277311142,
+              "voltage_V": 0.1984141100442064,
+              "coil_energy_J": 0.012578224484243675,
+              "braking_reserve_m": 0.00021195220586253246,
+              "braking_current_A": 0.4512252487032952,
+              "braking_voltage_V": 1.381978485604554,
+              "geometry_error_m": 4.3343803406156904e-05,
+              "duration_s": 2.4303873343175684,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.3343803406156904e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005487226277372262,
+              0.001625912408759123
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.001869938949192044,
+              "radial_with_reserve_m": 0.0028318663766861464,
+              "speed_m_s": 0.0275041205597497,
+              "acceleration_m_s2": 1.8070400041368198,
+              "jerk_m_s3": 114.11677439524696,
+              "current_A": 0.06380895137031513,
+              "voltage_V": 0.20017083916844952,
+              "coil_energy_J": 0.006075582183335714,
+              "braking_reserve_m": 0.0009448375926665727,
+              "braking_current_A": 0.46090420214962113,
+              "braking_voltage_V": 1.4221968820761188,
+              "geometry_error_m": 3.667868797563141e-05,
+              "duration_s": 1.1671934174576004,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.667868797563141e-05
+          }
+        ],
+        "required_body_travel_m": 0.003963766340718736,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0014135632981631873,
+            "fine_radius_m": 0.0006028167515476885,
+            "coarse_speed_m_s": 0.005805207166112564,
+            "fine_speed_m_s": 0.0021762853645050442,
+            "coarse_acceleration_m_s2": 0.8369864413078829,
+            "fine_acceleration_m_s2": 0.30294731015763066,
+            "coarse_force_N": 0.2080180756978499,
+            "fine_force_N": 0.03393420990599338,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 2.4303873343175684,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W16_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0016694406257507903,
+            "fine_radius_m": 0.0007099833497796482,
+            "coarse_speed_m_s": 0.021834267467351922,
+            "fine_speed_m_s": 0.0075011237890226555,
+            "coarse_acceleration_m_s2": 1.3830625177735885,
+            "fine_acceleration_m_s2": 0.4928290920403288,
+            "coarse_force_N": 0.29403012603255263,
+            "fine_force_N": 0.03573162670553965,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.1671934174576004,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UJI_W16_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UJI_W16_accepted_se.npz",
+      "global_page_origin_m": [
+        0.003580985978362213,
+        0.0016236927173643551
+      ],
+      "duration_s": 4.097580751775169,
+      "coarse_max_xy_m": [
+        0.0031606002686276604,
+        0.0012786744284860338
+      ],
+      "fine_max_radius_m": 0.0005097891954957169
+    },
+    {
+      "writer": "tst_UPV_W18",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 6,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.001275423728813559,
+              0.001377118644067796
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0016438232971092736,
+              "radial_with_reserve_m": 0.002259911298336169,
+              "speed_m_s": 0.029054116005199852,
+              "acceleration_m_s2": 1.5932648185986935,
+              "jerk_m_s3": 122.40217793614804,
+              "current_A": 0.06865239806614899,
+              "voltage_V": 0.21576250344993758,
+              "coil_energy_J": 0.0046568567364443855,
+              "braking_reserve_m": 0.0010840262051437079,
+              "braking_current_A": 0.4595568733233352,
+              "braking_voltage_V": 1.4198375500949836,
+              "geometry_error_m": 6.759406470980329e-05,
+              "duration_s": 0.9056361446960863,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 6.759406470980329e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004476694915254236,
+              0.0013838983050847458
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0014983574977391308,
+              "radial_with_reserve_m": 0.002389964908390006,
+              "speed_m_s": 0.029760818987506998,
+              "acceleration_m_s2": 1.3557451947553387,
+              "jerk_m_s3": 84.77963448136444,
+              "current_A": 0.06415655197427661,
+              "voltage_V": 0.2062842628011854,
+              "coil_energy_J": 0.004975318258068287,
+              "braking_reserve_m": 0.0009010620600951836,
+              "braking_current_A": 0.45718833702273404,
+              "braking_voltage_V": 1.4105228029786512,
+              "geometry_error_m": 3.632319795738425e-05,
+              "duration_s": 0.948282752521991,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.632319795738425e-05
+          }
+        ],
+        "required_body_travel_m": 0.003201278365425101,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0015262282419618266,
+            "fine_radius_m": 0.0006483154446661655,
+            "coarse_speed_m_s": 0.022793208769363273,
+            "fine_speed_m_s": 0.007923849819599985,
+            "coarse_acceleration_m_s2": 1.4746269432210144,
+            "fine_acceleration_m_s2": 0.43452676870862256,
+            "coarse_force_N": 0.30880506145565567,
+            "fine_force_N": 0.041129670636293615,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9056361446960863,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W18_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.001395734316675972,
+            "fine_radius_m": 0.0006086429539288538,
+            "coarse_speed_m_s": 0.0229408613308797,
+            "fine_speed_m_s": 0.008116586996592814,
+            "coarse_acceleration_m_s2": 1.2128799383937867,
+            "fine_acceleration_m_s2": 0.36974868947879636,
+            "coarse_force_N": 0.26793118409057964,
+            "fine_force_N": 0.03439096525347634,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.948282752521991,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W18_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W18_accepted_se.npz",
+      "global_page_origin_m": [
+        0.002813859397431212,
+        0.0013770470028143568
+      ],
+      "duration_s": 2.3539188972180773,
+      "coarse_max_xy_m": [
+        0.0024999437939017062,
+        0.001024576428973462
+      ],
+      "fine_max_radius_m": 0.0004474983233723139
+    },
+    {
+      "writer": "tst_UPV_W21",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 7,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0008652751423149909,
+              0.001429981024667932
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0015889252510305446,
+              "radial_with_reserve_m": 0.0017733571230588063,
+              "speed_m_s": 0.012940175570199455,
+              "acceleration_m_s2": 1.1324469401748394,
+              "jerk_m_s3": 271.3302639886555,
+              "current_A": 0.06315534917245445,
+              "voltage_V": 0.1990965783898404,
+              "coil_energy_J": 0.006514838938912725,
+              "braking_reserve_m": 0.00035535045362762363,
+              "braking_current_A": 0.45271196183283047,
+              "braking_voltage_V": 1.3893755599983582,
+              "geometry_error_m": 5.554277379119499e-05,
+              "duration_s": 1.2558779567970992,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 5.554277379119499e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.003619070208728654,
+              0.002023149905123342
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.002093662345241323,
+              "radial_with_reserve_m": 0.0031291537682280037,
+              "speed_m_s": 0.029462295820600108,
+              "acceleration_m_s2": 1.6407969793622683,
+              "jerk_m_s3": 151.7356988033931,
+              "current_A": 0.06260487192584306,
+              "voltage_V": 0.19960089137558404,
+              "coil_energy_J": 0.005285752515429025,
+              "braking_reserve_m": 0.0009114552434530127,
+              "braking_current_A": 0.45921602344341383,
+              "braking_voltage_V": 1.4168112132290405,
+              "geometry_error_m": 4.9863033817007015e-05,
+              "duration_s": 0.9956241653936158,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.9863033817007015e-05
+          }
+        ],
+        "required_body_travel_m": 0.0028169551981785147,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0014188745697913273,
+            "fine_radius_m": 0.0006333432502810577,
+            "coarse_speed_m_s": 0.009519765823100686,
+            "fine_speed_m_s": 0.0035291387918725795,
+            "coarse_acceleration_m_s2": 1.0046086587837562,
+            "fine_acceleration_m_s2": 0.30884916550216884,
+            "coarse_force_N": 0.2340754493234925,
+            "fine_force_N": 0.033500739297279925,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.2558779567970992,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W21_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0017232805717883434,
+            "fine_radius_m": 0.0007709988214294516,
+            "coarse_speed_m_s": 0.021720120448635073,
+            "fine_speed_m_s": 0.008035171587436387,
+            "coarse_acceleration_m_s2": 1.2009261782603504,
+            "fine_acceleration_m_s2": 0.4474900852805926,
+            "coarse_force_N": 0.26642398203539935,
+            "fine_force_N": 0.03371714864636905,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9956241653936158,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W21_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W21_accepted_se.npz",
+      "global_page_origin_m": [
+        0.002396073996738572,
+        0.0020256611106086934
+      ],
+      "duration_s": 2.7515021221907148,
+      "coarse_max_xy_m": [
+        0.002134956877452801,
+        0.0016555604453429048
+      ],
+      "fine_max_radius_m": 0.0005709206156024327
+    },
+    {
+      "writer": "tst_UPV_W24",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 8,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0016673306772908368,
+              0.0017704183266932286
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.002149416182889608,
+              "radial_with_reserve_m": 0.0023326780444441384,
+              "speed_m_s": 0.014645576268412383,
+              "acceleration_m_s2": 1.3242051117460811,
+              "jerk_m_s3": 275.1405208562494,
+              "current_A": 0.06477314871595234,
+              "voltage_V": 0.20502896162411555,
+              "coil_energy_J": 0.008669044720211268,
+              "braking_reserve_m": 0.00046531279166510896,
+              "braking_current_A": 0.4549133123603872,
+              "braking_voltage_V": 1.3978415949064549,
+              "geometry_error_m": 4.6006758409275444e-05,
+              "duration_s": 1.7075352360258744,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.6006758409275444e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005880478087649402,
+              0.0014288844621513953
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0018661439822805796,
+              "radial_with_reserve_m": 0.0020201922841179376,
+              "speed_m_s": 0.009184853608895753,
+              "acceleration_m_s2": 0.7290597204968401,
+              "jerk_m_s3": 296.20347060416486,
+              "current_A": 0.06410582535153236,
+              "voltage_V": 0.20071364909625533,
+              "coil_energy_J": 0.013945317995744668,
+              "braking_reserve_m": 0.00017474288413927763,
+              "braking_current_A": 0.4504473179788457,
+              "braking_voltage_V": 1.3788959994249022,
+              "geometry_error_m": 2.9904288331725558e-05,
+              "duration_s": 2.6856925613999407,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 2.9904288331725558e-05
+          }
+        ],
+        "required_body_travel_m": 0.004226967764490281,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0019342245539666976,
+            "fine_radius_m": 0.0007862044135153476,
+            "coarse_speed_m_s": 0.01067349529272774,
+            "fine_speed_m_s": 0.003994248073203381,
+            "coarse_acceleration_m_s2": 1.2203684788310232,
+            "fine_acceleration_m_s2": 0.36114684865805896,
+            "coarse_force_N": 0.25956426919477915,
+            "fine_force_N": 0.036392331871061404,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.7075352360258744,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W24_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0017958571513429285,
+            "fine_radius_m": 0.0007089483588037943,
+            "coarse_speed_m_s": 0.007018830968999654,
+            "fine_speed_m_s": 0.002504960075153418,
+            "coarse_acceleration_m_s2": 0.597818257221034,
+            "fine_acceleration_m_s2": 0.19883446922665265,
+            "coarse_force_N": 0.1715884294856932,
+            "fine_force_N": 0.03385049850939651,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 2.6856925613999407,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W24_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W24_accepted_se.npz",
+      "global_page_origin_m": [
+        0.00384422201968475,
+        0.001766365878747635
+      ],
+      "duration_s": 4.893227797425816,
+      "coarse_max_xy_m": [
+        0.003380659675949167,
+        0.0014237480373043023
+      ],
+      "fine_max_radius_m": 0.0005860876500454293
+    },
+    {
+      "writer": "tst_UPV_W27",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 9,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0012386363636363638,
+              0.0016895454545454557
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0017959116457491086,
+              "radial_with_reserve_m": 0.0020297173143972017,
+              "speed_m_s": 0.0071431614107165765,
+              "acceleration_m_s2": 0.9588443525245967,
+              "jerk_m_s3": 271.79840404210967,
+              "current_A": 0.06391939677134686,
+              "voltage_V": 0.19736453607509308,
+              "coil_energy_J": 0.013752847616351815,
+              "braking_reserve_m": 0.00015801801629994797,
+              "braking_current_A": 0.45025624060903563,
+              "braking_voltage_V": 1.3777708403327753,
+              "geometry_error_m": 4.9164530471270194e-05,
+              "duration_s": 2.719553042268726,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.9164530471270194e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005836363636363638,
+              0.001588863636363636
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0020548745386713145,
+              "radial_with_reserve_m": 0.0027836342635963983,
+              "speed_m_s": 0.02955588072098851,
+              "acceleration_m_s2": 1.6007289135587892,
+              "jerk_m_s3": 116.50076753796462,
+              "current_A": 0.06593053554170768,
+              "voltage_V": 0.20525748331335317,
+              "coil_energy_J": 0.006747197688798525,
+              "braking_reserve_m": 0.0010759220582320188,
+              "braking_current_A": 0.45960079649474433,
+              "braking_voltage_V": 1.4191727626202493,
+              "geometry_error_m": 6.129805626298263e-05,
+              "duration_s": 1.2888590122512673,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 6.129805626298263e-05
+          }
+        ],
+        "required_body_travel_m": 0.004598829514440884,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001585875491110596,
+            "fine_radius_m": 0.0006897940852043022,
+            "coarse_speed_m_s": 0.005738736457304438,
+            "fine_speed_m_s": 0.001948134930195425,
+            "coarse_acceleration_m_s2": 0.7254666741809663,
+            "fine_acceleration_m_s2": 0.2615030052341279,
+            "coarse_force_N": 0.19195688566443164,
+            "fine_force_N": 0.035838252812289875,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 2.719553042268726,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W27_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0021290070588373166,
+            "fine_radius_m": 0.0007604203287285402,
+            "coarse_speed_m_s": 0.021908539408603253,
+            "fine_speed_m_s": 0.008060694742087773,
+            "coarse_acceleration_m_s2": 1.3840122530963035,
+            "fine_acceleration_m_s2": 0.4365624309704935,
+            "coarse_force_N": 0.2939798507084891,
+            "fine_force_N": 0.033954824600302115,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.2888590122512673,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W27_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W27_accepted_se.npz",
+      "global_page_origin_m": [
+        0.004222727272727277,
+        0.001636259732361206
+      ],
+      "duration_s": 4.508412054519994,
+      "coarse_max_xy_m": [
+        0.0038849173553719054,
+        0.0013005544209668109
+      ],
+      "fine_max_radius_m": 0.0005604203287285403
+    },
+    {
+      "writer": "tst_UPV_W30",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 10,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0017751479289940836,
+              0.0015079881656804735
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0020017343981269474,
+              "radial_with_reserve_m": 0.0021654255268788018,
+              "speed_m_s": 0.014293678747315299,
+              "acceleration_m_s2": 0.9822656578038528,
+              "jerk_m_s3": 277.9283492673544,
+              "current_A": 0.0643217652327496,
+              "voltage_V": 0.19929275405167513,
+              "coil_energy_J": 0.00775025182939002,
+              "braking_reserve_m": 0.0003577701727562232,
+              "braking_current_A": 0.45175504530578947,
+              "braking_voltage_V": 1.3865965517896104,
+              "geometry_error_m": 2.8093512022728886e-05,
+              "duration_s": 1.5082686154711815,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 2.8093512022728886e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.0067144970414201215,
+              0.00323431952662722
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0034813946911839045,
+              "radial_with_reserve_m": 0.003645674040186714,
+              "speed_m_s": 0.009520485330563166,
+              "acceleration_m_s2": 0.684798546467818,
+              "jerk_m_s3": 261.7590258295295,
+              "current_A": 0.0654895229007653,
+              "voltage_V": 0.2023017244950803,
+              "coil_energy_J": 0.020251836150184867,
+              "braking_reserve_m": 0.00016012563391946702,
+              "braking_current_A": 0.4503275722104087,
+              "braking_voltage_V": 1.378190876467461,
+              "geometry_error_m": 2.5457982182452035e-05,
+              "duration_s": 3.688402871321309,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 2.5457982182452035e-05
+          }
+        ],
+        "required_body_travel_m": 0.005232340740262634,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0018757158982512108,
+            "fine_radius_m": 0.0007459275631255311,
+            "coarse_speed_m_s": 0.010601998569461785,
+            "fine_speed_m_s": 0.003898276021995086,
+            "coarse_acceleration_m_s2": 0.9264908659804322,
+            "fine_acceleration_m_s2": 0.26789063394610796,
+            "coarse_force_N": 0.223582429331036,
+            "fine_force_N": 0.037462896444296574,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.5082686154711815,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W30_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0029505624585610254,
+            "fine_radius_m": 0.001149471279413792,
+            "coarse_speed_m_s": 0.007021238065377774,
+            "fine_speed_m_s": 0.002596495999244499,
+            "coarse_acceleration_m_s2": 0.6181777821906673,
+            "fine_acceleration_m_s2": 0.18676323994582145,
+            "coarse_force_N": 0.17509347211433335,
+            "fine_force_N": 0.034728964873009194,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 3.688402871321309,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W30_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W30_accepted_se.npz",
+      "global_page_origin_m": [
+        0.004565579893361071,
+        0.0032344287984439647
+      ],
+      "duration_s": 5.696671486792491,
+      "coarse_max_xy_m": [
+        0.004079658413184461,
+        0.002839117818102398
+      ],
+      "fine_max_radius_m": 0.0009494597233306328
+    },
+    {
+      "writer": "tst_UPV_W33",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 11,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0011615720524017468,
+              0.0014148471615720525
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0016667327384166702,
+              "radial_with_reserve_m": 0.0019303431877048223,
+              "speed_m_s": 0.016575617418949824,
+              "acceleration_m_s2": 1.6079194172888773,
+              "jerk_m_s3": 296.0811569891744,
+              "current_A": 0.06832860416112461,
+              "voltage_V": 0.21193176783461498,
+              "coil_energy_J": 0.0068112304550376306,
+              "braking_reserve_m": 0.000582586405702517,
+              "braking_current_A": 0.45774418542673967,
+              "braking_voltage_V": 1.4080770401307898,
+              "geometry_error_m": 7.34300974062778e-05,
+              "duration_s": 1.3242268971770468,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 7.34300974062778e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004247816593886464,
+              0.00154585152838428
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0018092054911734363,
+              "radial_with_reserve_m": 0.001991466035729142,
+              "speed_m_s": 0.015838493425117225,
+              "acceleration_m_s2": 0.5787807856043365,
+              "jerk_m_s3": 265.4024494434953,
+              "current_A": 0.06286610223955787,
+              "voltage_V": 0.198453382133887,
+              "coil_energy_J": 0.007802580056884065,
+              "braking_reserve_m": 0.0003069797739565336,
+              "braking_current_A": 0.45152642651739217,
+              "braking_voltage_V": 1.385250330054133,
+              "geometry_error_m": 6.463153987881246e-05,
+              "duration_s": 1.496846680864909,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 6.463153987881246e-05
+          }
+        ],
+        "required_body_travel_m": 0.003089023715345689,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001524748743235482,
+            "fine_radius_m": 0.0006545634741136373,
+            "coarse_speed_m_s": 0.012368611938619031,
+            "fine_speed_m_s": 0.004520622932440863,
+            "coarse_acceleration_m_s2": 1.4960531857045476,
+            "fine_acceleration_m_s2": 0.4385234774424268,
+            "coarse_force_N": 0.30877450926877037,
+            "fine_force_N": 0.0410315682381683,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.3242268971770468,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W33_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.001621096581872158,
+            "fine_radius_m": 0.0006934196794109371,
+            "coarse_speed_m_s": 0.011778523831147513,
+            "fine_speed_m_s": 0.004319589115941061,
+            "coarse_acceleration_m_s2": 0.5494605283333809,
+            "fine_acceleration_m_s2": 0.15784930515341403,
+            "coarse_force_N": 0.16517138406309798,
+            "fine_force_N": 0.03492940799822122,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.496846680864909,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W33_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W33_accepted_se.npz",
+      "global_page_origin_m": [
+        0.0027118420006122432,
+        0.0015483310675268019
+      ],
+      "duration_s": 3.321073578041956,
+      "coarse_max_xy_m": [
+        0.0023944528854210815,
+        0.0011835148158967626
+      ],
+      "fine_max_radius_m": 0.0004932027741531319
+    },
+    {
+      "writer": "tst_UPV_W36",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 12,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0013524096385542164,
+              0.0013072289156626502
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0016519664728957008,
+              "radial_with_reserve_m": 0.0019326206178587023,
+              "speed_m_s": 0.01879518630633675,
+              "acceleration_m_s2": 0.7897579245195707,
+              "jerk_m_s3": 282.23994907823715,
+              "current_A": 0.06498913261621551,
+              "voltage_V": 0.20068084719404045,
+              "coil_energy_J": 0.004612243924872575,
+              "braking_reserve_m": 0.0004349993287700723,
+              "braking_current_A": 0.4523025545073326,
+              "braking_voltage_V": 1.389820559722897,
+              "geometry_error_m": 3.970675914748539e-05,
+              "duration_s": 0.9048761270496586,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.970675914748539e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004596385542168673,
+              0.00177710843373494
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0019806180876183604,
+              "radial_with_reserve_m": 0.003083450829318891,
+              "speed_m_s": 0.0285247517642781,
+              "acceleration_m_s2": 1.9305872790434153,
+              "jerk_m_s3": 122.48692095645644,
+              "current_A": 0.06338961152839144,
+              "voltage_V": 0.20135452975296234,
+              "coil_energy_J": 0.005210282519407567,
+              "braking_reserve_m": 0.0010487029771305521,
+              "braking_current_A": 0.4616591739680459,
+              "braking_voltage_V": 1.4245310389160961,
+              "geometry_error_m": 5.5904111078245864e-05,
+              "duration_s": 0.9771598199740417,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 5.5904111078245864e-05
+          }
+        ],
+        "required_body_travel_m": 0.0032778295295416266,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001549095427231406,
+            "fine_radius_m": 0.0006505363107897366,
+            "coarse_speed_m_s": 0.013774450836458937,
+            "fine_speed_m_s": 0.0051259599017282045,
+            "coarse_acceleration_m_s2": 0.7170094679686538,
+            "fine_acceleration_m_s2": 0.21538852486897048,
+            "coarse_force_N": 0.1900981204438636,
+            "fine_force_N": 0.03607722123093201,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9048761270496586,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W36_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0017361280805372663,
+            "fine_radius_m": 0.0007401685693504619,
+            "coarse_speed_m_s": 0.02302905420734574,
+            "fine_speed_m_s": 0.007779477753894027,
+            "coarse_acceleration_m_s2": 1.4807513728519741,
+            "fine_acceleration_m_s2": 0.5265238033757267,
+            "coarse_force_N": 0.3098812180462929,
+            "fine_force_N": 0.034493766087494306,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9771598199740417,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W36_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W36_accepted_se.npz",
+      "global_page_origin_m": [
+        0.002867196201882649,
+        0.0017795299921938839
+      ],
+      "duration_s": 2.3820359470237005,
+      "coarse_max_xy_m": [
+        0.0025594193512389262,
+        0.001447110604164839
+      ],
+      "fine_max_radius_m": 0.000540168569350462
+    },
+    {
+      "writer": "tst_UPV_W39",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 13,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0013898858075040784,
+              0.0015959216965742242
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0017945945062758887,
+              "radial_with_reserve_m": 0.0023300466293570935,
+              "speed_m_s": 0.023313463203134908,
+              "acceleration_m_s2": 1.8893719875602533,
+              "jerk_m_s3": 179.75198888430967,
+              "current_A": 0.06778128428717292,
+              "voltage_V": 0.21736269821350457,
+              "coil_energy_J": 0.005113687349639719,
+              "braking_reserve_m": 0.0009285872673308566,
+              "braking_current_A": 0.4614202264024846,
+              "braking_voltage_V": 1.4235321694358662,
+              "geometry_error_m": 4.810309439651541e-05,
+              "duration_s": 0.9925826543314065,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.810309439651541e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005007748776508973,
+              0.0011691680261011425
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0013676748566722023,
+              "radial_with_reserve_m": 0.002672497678956255,
+              "speed_m_s": 0.026803227576195444,
+              "acceleration_m_s2": 1.8325912917283436,
+              "jerk_m_s3": 264.81607268912455,
+              "current_A": 0.06520855436731099,
+              "voltage_V": 0.21079907173185247,
+              "coil_energy_J": 0.005505345111784004,
+              "braking_reserve_m": 0.0012086688703343588,
+              "braking_current_A": 0.46211709022451375,
+              "braking_voltage_V": 1.4287317196499525,
+              "geometry_error_m": 6.428186164115299e-05,
+              "duration_s": 1.0656505826746543,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 6.428186164115299e-05
+          }
+        ],
+        "required_body_travel_m": 0.0036429453959343334,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001562532652126408,
+            "fine_radius_m": 0.0006894348653479697,
+            "coarse_speed_m_s": 0.020856070212678057,
+            "fine_speed_m_s": 0.006358217237218616,
+            "coarse_acceleration_m_s2": 1.7061763194690027,
+            "fine_acceleration_m_s2": 0.5152832693347551,
+            "coarse_force_N": 0.34403516542457974,
+            "fine_force_N": 0.04085573440190772,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9925826543314065,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W39_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0013754747318704122,
+            "fine_radius_m": 0.0005730022336378732,
+            "coarse_speed_m_s": 0.02055309548097202,
+            "fine_speed_m_s": 0.007309971157144204,
+            "coarse_acceleration_m_s2": 1.6826906534296118,
+            "fine_acceleration_m_s2": 0.4997976250168115,
+            "coarse_force_N": 0.3364584487852567,
+            "fine_force_N": 0.03523710942004688,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.0656505826746543,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W39_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W39_accepted_se.npz",
+      "global_page_origin_m": [
+        0.0032577062526931606,
+        0.0015942289288621047
+      ],
+      "duration_s": 2.5582332370060605,
+      "coarse_max_xy_m": [
+        0.002860493458732093,
+        0.0012964303545581462
+      ],
+      "fine_max_radius_m": 0.0004894348653479697
+    },
+    {
+      "writer": "tst_UPV_W42",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 14,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.002272881355932203,
+              0.0016568644067796604
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.001956968388810189,
+              "radial_with_reserve_m": 0.0022253455626512035,
+              "speed_m_s": 0.014041753651495016,
+              "acceleration_m_s2": 0.6593393158467701,
+              "jerk_m_s3": 297.48064934659135,
+              "current_A": 0.06628916798578309,
+              "voltage_V": 0.20970173334931788,
+              "coil_energy_J": 0.01073009915541843,
+              "braking_reserve_m": 0.00024186282344604315,
+              "braking_current_A": 0.45102634779849765,
+              "braking_voltage_V": 1.3823056165179226,
+              "geometry_error_m": 5.5365593296104556e-05,
+              "duration_s": 2.0970591135984553,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 5.5365593296104556e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.007985593220338982,
+              0.0019766949152542367
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0023893027403006544,
+              "radial_with_reserve_m": 0.002992379210100051,
+              "speed_m_s": 0.029351408642803202,
+              "acceleration_m_s2": 0.7809789897801975,
+              "jerk_m_s3": 36.186059532260074,
+              "current_A": 0.0661132398060419,
+              "voltage_V": 0.2062028818984855,
+              "coil_energy_J": 0.007327390397201812,
+              "braking_reserve_m": 0.0006991355840068204,
+              "braking_current_A": 0.4538633132239801,
+              "braking_voltage_V": 1.3990110874258759,
+              "geometry_error_m": 4.786136018342334e-05,
+              "duration_s": 1.3905019091074513,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.786136018342334e-05
+          }
+        ],
+        "required_body_travel_m": 0.005721657836666318,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0019464089218802722,
+            "fine_radius_m": 0.0007337186514936878,
+            "coarse_speed_m_s": 0.010667296196361585,
+            "fine_speed_m_s": 0.0038295691776804594,
+            "coarse_acceleration_m_s2": 0.5089338898328838,
+            "fine_acceleration_m_s2": 0.1798198134126959,
+            "coarse_force_N": 0.15882869779550374,
+            "fine_force_N": 0.03340818544430158,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 2.0970591135984553,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W42_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0023385462388566644,
+            "fine_radius_m": 0.0008516280200819965,
+            "coarse_speed_m_s": 0.021610372192927677,
+            "fine_speed_m_s": 0.008004929629855419,
+            "coarse_acceleration_m_s2": 0.7145080271115565,
+            "fine_acceleration_m_s2": 0.21299426994001344,
+            "coarse_force_N": 0.19074651547310364,
+            "fine_force_N": 0.033511219978585916,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.3905019091074513,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W42_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W42_accepted_se.npz",
+      "global_page_origin_m": [
+        0.005337800816507388,
+        0.0019718457624650202
+      ],
+      "duration_s": 3.987561022705907,
+      "coarse_max_xy_m": [
+        0.004717794698197723,
+        0.0015726473266365938
+      ],
+      "fine_max_radius_m": 0.0006491218645563836
+    },
+    {
+      "writer": "tst_UPV_W45",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 15,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0011576923076923075,
+              0.0013607692307692312
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0015510726898449593,
+              "radial_with_reserve_m": 0.0023541059799879766,
+              "speed_m_s": 0.026090142189024133,
+              "acceleration_m_s2": 1.9068000716772235,
+              "jerk_m_s3": 229.21634538300245,
+              "current_A": 0.06999147297340982,
+              "voltage_V": 0.21873558791316888,
+              "coil_energy_J": 0.005344330882967434,
+              "braking_reserve_m": 0.0010543745539630153,
+              "braking_current_A": 0.462116385813828,
+              "braking_voltage_V": 1.4270446446649407,
+              "geometry_error_m": 7.268732969387108e-05,
+              "duration_s": 1.028930447430706,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 7.268732969387108e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004244230769230769,
+              0.001379615384615384
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0014751480801787932,
+              "radial_with_reserve_m": 0.0025210507241484,
+              "speed_m_s": 0.02790602532445312,
+              "acceleration_m_s2": 1.9128169505758026,
+              "jerk_m_s3": 180.88413627283308,
+              "current_A": 0.06567767608098463,
+              "voltage_V": 0.2114323314888704,
+              "coil_energy_J": 0.005190580996922348,
+              "braking_reserve_m": 0.0010190943940773841,
+              "braking_current_A": 0.4619967792070238,
+              "braking_voltage_V": 1.4262893817425406,
+              "geometry_error_m": 6.884335115925015e-05,
+              "duration_s": 0.9926738681343603,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 6.884335115925015e-05
+          }
+        ],
+        "required_body_travel_m": 0.0030865959975466513,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001416234328997696,
+            "fine_radius_m": 0.0006230198245031708,
+            "coarse_speed_m_s": 0.019791058249497406,
+            "fine_speed_m_s": 0.0071154933242793105,
+            "coarse_acceleration_m_s2": 1.7751528226380204,
+            "fine_acceleration_m_s2": 0.5200363831847071,
+            "coarse_force_N": 0.35451953683057397,
+            "fine_force_N": 0.04288197699257705,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.028930447430706,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W45_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0013742612553109131,
+            "fine_radius_m": 0.0006023131127760344,
+            "coarse_speed_m_s": 0.020633301499160928,
+            "fine_speed_m_s": 0.007610734179396347,
+            "coarse_acceleration_m_s2": 1.7974972002188803,
+            "fine_acceleration_m_s2": 0.5216773501557442,
+            "coarse_force_N": 0.3590078861727962,
+            "fine_force_N": 0.03538701304301128,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9926738681343603,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W45_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W45_accepted_se.npz",
+      "global_page_origin_m": [
+        0.0026847190414921577,
+        0.001372730479072694
+      ],
+      "duration_s": 2.5216043155650665,
+      "coarse_max_xy_m": [
+        0.0023723764743222874,
+        0.0010376518632066946
+      ],
+      "fine_max_radius_m": 0.00042286254798704976
+    },
+    {
+      "writer": "tst_UPV_W48",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 16,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0011184466019417477,
+              0.001663106796116505
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0018778245213251095,
+              "radial_with_reserve_m": 0.002115090252091412,
+              "speed_m_s": 0.01612938067824312,
+              "acceleration_m_s2": 0.7678296982886335,
+              "jerk_m_s3": 261.9396422245466,
+              "current_A": 0.06482145082125797,
+              "voltage_V": 0.20363904054422458,
+              "coil_energy_J": 0.0061902954023282004,
+              "braking_reserve_m": 0.0003269128541184425,
+              "braking_current_A": 0.4516515845678632,
+              "braking_voltage_V": 1.3859873232343316,
+              "geometry_error_m": 3.811011434133022e-05,
+              "duration_s": 1.1954689395233242,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.811011434133022e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004449029126213592,
+              0.001345631067961166
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0016366766981964916,
+              "radial_with_reserve_m": 0.002757482492485243,
+              "speed_m_s": 0.02792643146624821,
+              "acceleration_m_s2": 1.8289699372614254,
+              "jerk_m_s3": 151.86151264483564,
+              "current_A": 0.06446178467313775,
+              "voltage_V": 0.20650182821978233,
+              "coil_energy_J": 0.005400842929369701,
+              "braking_reserve_m": 0.0010055994289269623,
+              "braking_current_A": 0.46057110331329626,
+              "braking_voltage_V": 1.4198163288967465,
+              "geometry_error_m": 3.1256687028467184e-05,
+              "duration_s": 1.01838091259307,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.1256687028467184e-05
+          }
+        ],
+        "required_body_travel_m": 0.003345679421127011,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0016540472549573728,
+            "fine_radius_m": 0.0007121339603613935,
+            "coarse_speed_m_s": 0.011888020269565987,
+            "fine_speed_m_s": 0.00439892200315722,
+            "coarse_acceleration_m_s2": 0.6776485674255537,
+            "fine_acceleration_m_s2": 0.20940809953326575,
+            "coarse_force_N": 0.18216320691544652,
+            "fine_force_N": 0.035851560315776104,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.1954689395233242,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W48_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0015325026352996812,
+            "fine_radius_m": 0.0006463663722354068,
+            "coarse_speed_m_s": 0.0205796669023668,
+            "fine_speed_m_s": 0.007616299490794963,
+            "coarse_acceleration_m_s2": 1.5019250631461798,
+            "fine_acceleration_m_s2": 0.49880998288946077,
+            "coarse_force_N": 0.3123769521004896,
+            "fine_force_N": 0.037126393255698074,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.01838091259307,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W48_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W48_accepted_se.npz",
+      "global_page_origin_m": [
+        0.0029503826383324183,
+        0.0016570763912659462
+      ],
+      "duration_s": 2.713849852116394,
+      "coarse_max_xy_m": [
+        0.0026529152173511133,
+        0.001327762963298809
+      ],
+      "fine_max_radius_m": 0.0005119779745001303
+    },
+    {
+      "writer": "tst_UPV_W51",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 17,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0009124015748031497,
+              0.001451574803149608
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0015925544821858697,
+              "radial_with_reserve_m": 0.001766852191054208,
+              "speed_m_s": 0.0078115839472385285,
+              "acceleration_m_s2": 0.731254973783146,
+              "jerk_m_s3": 288.4406617849953,
+              "current_A": 0.06392924056844816,
+              "voltage_V": 0.19847428877494483,
+              "coil_energy_J": 0.010510490768329172,
+              "braking_reserve_m": 0.00015123251690521688,
+              "braking_current_A": 0.4502259615814959,
+              "braking_voltage_V": 1.377592542279108,
+              "geometry_error_m": 3.4671019085458014e-05,
+              "duration_s": 2.021292992230151,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.4671019085458014e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.003785433070866142,
+              0.0014143700787401562
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0014534223113032557,
+              "radial_with_reserve_m": 0.002539324122258867,
+              "speed_m_s": 0.02815093593998267,
+              "acceleration_m_s2": 1.8562991778895765,
+              "jerk_m_s3": 124.48275025446661,
+              "current_A": 0.06305841949453993,
+              "voltage_V": 0.20149973164187945,
+              "coil_energy_J": 0.004836480848328424,
+              "braking_reserve_m": 0.000977499040088072,
+              "braking_current_A": 0.46108185612893127,
+              "braking_voltage_V": 1.4228266988072114,
+              "geometry_error_m": 3.835451268622041e-05,
+              "duration_s": 0.9273630556213219,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.835451268622041e-05
+          }
+        ],
+        "required_body_travel_m": 0.0028732723798638267,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001426705681338989,
+            "fine_radius_m": 0.0006343330405961463,
+            "coarse_speed_m_s": 0.005776965561940667,
+            "fine_speed_m_s": 0.00213043198561051,
+            "coarse_acceleration_m_s2": 0.6854154582130886,
+            "fine_acceleration_m_s2": 0.19943317466487545,
+            "coarse_force_N": 0.18623423674375686,
+            "fine_force_N": 0.0336816934531453,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 2.021292992230151,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W51_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0013990072543141464,
+            "fine_radius_m": 0.0005963879030827061,
+            "coarse_speed_m_s": 0.02179560114301544,
+            "fine_speed_m_s": 0.007677527983631641,
+            "coarse_acceleration_m_s2": 1.3834890440422825,
+            "fine_acceleration_m_s2": 0.5062634121517336,
+            "coarse_force_N": 0.29441532456618885,
+            "fine_force_N": 0.03377654406647546,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9273630556213219,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W51_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W51_accepted_se.npz",
+      "global_page_origin_m": [
+        0.002501897157359476,
+        0.0014516438842811824
+      ],
+      "duration_s": 3.4486560478514727,
+      "coarse_max_xy_m": [
+        0.0022474375841637327,
+        0.001071416664306868
+      ],
+      "fine_max_radius_m": 0.00043431154353063163
+    },
+    {
+      "writer": "tst_UPV_W54",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 18,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0009158097686375325,
+              0.0017392673521850898
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0018217880300060003,
+              "radial_with_reserve_m": 0.0026288826043306497,
+              "speed_m_s": 0.023760641092888224,
+              "acceleration_m_s2": 1.8166535460753377,
+              "jerk_m_s3": 139.68378346338997,
+              "current_A": 0.06407925442878883,
+              "voltage_V": 0.20287601167053826,
+              "coil_energy_J": 0.004818687189540334,
+              "braking_reserve_m": 0.0007604138345214206,
+              "braking_current_A": 0.45948438934008234,
+              "braking_voltage_V": 1.4150634679089324,
+              "geometry_error_m": 6.812579999440528e-05,
+              "duration_s": 0.9311937797899947,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 6.812579999440528e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.004160668380462726,
+              0.0022879820051413882
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0024888693590170733,
+              "radial_with_reserve_m": 0.0032334375598686025,
+              "speed_m_s": 0.029521396883781897,
+              "acceleration_m_s2": 1.1075834632743857,
+              "jerk_m_s3": 70.77629060299337,
+              "current_A": 0.06448892192596996,
+              "voltage_V": 0.20540642156561653,
+              "coil_energy_J": 0.006373658618497968,
+              "braking_reserve_m": 0.0008757470321527262,
+              "braking_current_A": 0.45506461940505444,
+              "braking_voltage_V": 1.404044453313011,
+              "geometry_error_m": 5.937282799456771e-05,
+              "duration_s": 1.1975058928644684,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 5.937282799456771e-05
+          }
+        ],
+        "required_body_travel_m": 0.003290926188948192,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.001533754127245555,
+            "fine_radius_m": 0.0006968512809107273,
+            "coarse_speed_m_s": 0.018220576415640836,
+            "fine_speed_m_s": 0.0064801748435150104,
+            "coarse_acceleration_m_s2": 1.3215923577561244,
+            "fine_acceleration_m_s2": 0.4954509671115162,
+            "coarse_force_N": 0.2847083847761477,
+            "fine_force_N": 0.03446213582713633,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.9311937797899947,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W54_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.002116854530929155,
+            "fine_radius_m": 0.0008787825524592018,
+            "coarse_speed_m_s": 0.022757898766855588,
+            "fine_speed_m_s": 0.008051290059213236,
+            "coarse_acceleration_m_s2": 0.9447186685053666,
+            "fine_acceleration_m_s2": 0.3020682172566544,
+            "coarse_force_N": 0.22608503004314634,
+            "fine_force_N": 0.03325167660278538,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.1975058928644684,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W54_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W54_accepted_se.npz",
+      "global_page_origin_m": [
+        0.002875452648794117,
+        0.0022785780510813348
+      ],
+      "duration_s": 2.628699672654463,
+      "coarse_max_xy_m": [
+        0.002625686348256608,
+        0.0018507816488722597
+      ],
+      "fine_max_radius_m": 0.0006786074918673549
+    },
+    {
+      "writer": "tst_UPV_W57",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 19,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.001332386363636364,
+              0.0013715909090909102
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0016505864442918293,
+              "radial_with_reserve_m": 0.002711410904705269,
+              "speed_m_s": 0.028716353480246745,
+              "acceleration_m_s2": 1.773105332512195,
+              "jerk_m_s3": 150.59155163435386,
+              "current_A": 0.07106532415950853,
+              "voltage_V": 0.2232684350289804,
+              "coil_energy_J": 0.0042340815649154545,
+              "braking_reserve_m": 0.0012216642034480495,
+              "braking_current_A": 0.4617059330543493,
+              "braking_voltage_V": 1.4276596595499664,
+              "geometry_error_m": 4.391287229126558e-05,
+              "duration_s": 0.8203215019451588,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.391287229126558e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005125000000000001,
+              0.001719318181818182
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0019434792202162581,
+              "radial_with_reserve_m": 0.002769228307309842,
+              "speed_m_s": 0.02869346676932762,
+              "acceleration_m_s2": 1.5840497302921244,
+              "jerk_m_s3": 103.20610186964753,
+              "current_A": 0.06513741772391399,
+              "voltage_V": 0.20859591469709013,
+              "coil_energy_J": 0.006155348520005525,
+              "braking_reserve_m": 0.0009261343595949243,
+              "braking_current_A": 0.458706097878116,
+              "braking_voltage_V": 1.414563421725198,
+              "geometry_error_m": 3.927297879137601e-05,
+              "duration_s": 1.1826523143372276,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 3.927297879137601e-05
+          }
+        ],
+        "required_body_travel_m": 0.003808521031966314,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0015368013787616832,
+            "fine_radius_m": 0.000650159939352317,
+            "coarse_speed_m_s": 0.02200441628028974,
+            "fine_speed_m_s": 0.007831732767340036,
+            "coarse_acceleration_m_s2": 1.5772774008434016,
+            "fine_acceleration_m_s2": 0.4835741815941362,
+            "coarse_force_N": 0.32288585287488314,
+            "fine_force_N": 0.041591441866870985,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 0.8203215019451588,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W57_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.001737034272320816,
+            "fine_radius_m": 0.0007300397873317067,
+            "coarse_speed_m_s": 0.02196363936144208,
+            "fine_speed_m_s": 0.007825490937089348,
+            "coarse_acceleration_m_s2": 1.457406185168668,
+            "fine_acceleration_m_s2": 0.43201356280691583,
+            "coarse_force_N": 0.30614674916703083,
+            "fine_force_N": 0.034708793633424356,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.1826523143372276,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W57_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W57_accepted_se.npz",
+      "global_page_origin_m": [
+        0.003421247160377753,
+        0.0017250383743764742
+      ],
+      "duration_s": 2.5029738162823865,
+      "coarse_max_xy_m": [
+        0.003052583935365488,
+        0.0013618975219131016
+      ],
+      "fine_max_radius_m": 0.0005294587485877187
+    },
+    {
+      "writer": "tst_UPV_W60",
+      "session": 1,
+      "acceptance": {
+        "rev_id": 0,
+        "word_index": 0,
+        "before": "becau",
+        "after": "because",
+        "kind": "completion",
+        "source": "writer",
+        "accepted_by": "writer",
+        "reason": "ASSUMED explicit acceptance for mechanical replay",
+        "t": 0.0
+      },
+      "future_text": "se",
+      "reference_preflight": {
+        "evidence": "CALCULATION: offline accepted-geometry preflight, proposed body repositioning; no physical execution",
+        "plan_id": 20,
+        "acceptance": {
+          "rev_id": 0,
+          "word_index": 0,
+          "before": "becau",
+          "after": "because",
+          "kind": "completion",
+          "source": "writer",
+          "accepted_by": "writer",
+          "reason": "ASSUMED explicit acceptance for mechanical replay",
+          "t": 0.0
+        },
+        "future_text": "se",
+        "page_origin_m": [
+          0.0,
+          0.0
+        ],
+        "xheight_m": 0.003,
+        "limits": {
+          "radius_m": 0.1,
+          "hard_stop_m": 0.101,
+          "tilt_deg": 50.0,
+          "tracking_reserve_m": 0.00015,
+          "speed_m_s": 0.03,
+          "acceleration_m_s2": 2.0,
+          "jerk_m_s3": 300.0,
+          "brake_acceleration_m_s2": 1.0,
+          "reaction_delay_s": 0.004,
+          "lift_delay_s": 0.2,
+          "lower_delay_s": 0.2,
+          "position_error_m": 0.0,
+          "velocity_error_m_s": 0.0,
+          "acceleration_error_m_s2": 0.0,
+          "jerk_error_m_s3": 0.05,
+          "geometry_error_m": 7.5e-05,
+          "max_sensor_age_s": 0.006,
+          "min_contact_N": 0.02,
+          "max_contact_N": 0.4,
+          "max_temperature_C": 60.0
+        },
+        "ready_for_fresh_measured_admission": true,
+        "letters": [
+          {
+            "letter_index": 0,
+            "char": "s",
+            "proposed_body_position_m": [
+              0.0016418918918918914,
+              0.001524774774774775
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0015651634016916654,
+              "radial_with_reserve_m": 0.0022289136087019386,
+              "speed_m_s": 0.028812650583272644,
+              "acceleration_m_s2": 1.4942863559580877,
+              "jerk_m_s3": 115.52474582258368,
+              "current_A": 0.06853403339818873,
+              "voltage_V": 0.21432535122107677,
+              "coil_energy_J": 0.010575085757674322,
+              "braking_reserve_m": 0.000684412354681773,
+              "braking_current_A": 0.45637578176368754,
+              "braking_voltage_V": 1.4040012120644914,
+              "geometry_error_m": 7.15384980270198e-05,
+              "duration_s": 2.066491701716978,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 7.15384980270198e-05
+          },
+          {
+            "letter_index": 1,
+            "char": "e",
+            "proposed_body_position_m": [
+              0.005695945945945946,
+              0.0015952702702702703
+            ],
+            "admitted_at_proposed_position": true,
+            "reason": "admitted",
+            "bounds": {
+              "radial_m": 0.0017764943561477105,
+              "radial_with_reserve_m": 0.002845972131789904,
+              "speed_m_s": 0.029724454610812863,
+              "acceleration_m_s2": 1.7812826250031082,
+              "jerk_m_s3": 242.05058270545436,
+              "current_A": 0.0640037047908594,
+              "voltage_V": 0.20548546510822074,
+              "coil_energy_J": 0.005608462704779472,
+              "braking_reserve_m": 0.0011295051407647686,
+              "braking_current_A": 0.4614311404220338,
+              "braking_voltage_V": 1.4258560962529279,
+              "geometry_error_m": 4.630860454731002e-05,
+              "duration_s": 1.0659430638187772,
+              "passed": true,
+              "failures": [],
+              "thresholds": {
+                "radial_with_reserve_m": 0.1,
+                "speed_m_s": 0.03,
+                "acceleration_m_s2": 2.0,
+                "jerk_m_s3": 300.0,
+                "current_A": 0.7,
+                "voltage_V": 3.0,
+                "braking_current_A": 0.7,
+                "braking_voltage_V": 3.0
+              },
+              "scope": "CALC: reference within assumed motion/load/slew envelope; no plant or ink validation"
+            },
+            "geometry_bound_m": 4.630860454731002e-05
+          }
+        ],
+        "required_body_travel_m": 0.004054666926897605,
+        "repositioning": "The person or an external grounded actuator must supply these pen-up body translations; an internal stage cannot supply them indefinitely.",
+        "execution": "Every letter requires fresh anchored observations and CompletionExecutor; this file commands no motor.",
+        "ink": "Only future suffix strokes or a separately placed rewrite. Existing ink is untouched."
+      },
+      "letters": [
+        {
+          "letter_index": 0,
+          "char": "s",
+          "bounds": {
+            "coarse_radius_m": 0.0014046274318863278,
+            "fine_radius_m": 0.0006268627459159087,
+            "coarse_speed_m_s": 0.024242424242424242,
+            "fine_speed_m_s": 0.00785799561361981,
+            "coarse_acceleration_m_s2": 1.3812711431096785,
+            "fine_acceleration_m_s2": 0.4075326425339768,
+            "coarse_force_N": 0.2942875947973871,
+            "fine_force_N": 0.04034528093664908,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 2.066491701716978,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W60_0_s.npz"
+        },
+        {
+          "letter_index": 1,
+          "char": "e",
+          "bounds": {
+            "coarse_radius_m": 0.0015418782200314345,
+            "fine_radius_m": 0.0006844984607675573,
+            "coarse_speed_m_s": 0.021730749087904445,
+            "fine_speed_m_s": 0.00810666943931259,
+            "coarse_acceleration_m_s2": 1.5970859281200511,
+            "fine_acceleration_m_s2": 0.48580435227358826,
+            "coarse_force_N": 0.32542359376477936,
+            "fine_force_N": 0.03789740595770045,
+            "passed": true,
+            "failed": [],
+            "thresholds": {
+              "coarse_radius_m": 0.004,
+              "fine_radius_m": 0.0015,
+              "coarse_speed_m_s": 0.03,
+              "fine_speed_m_s": 0.03,
+              "coarse_acceleration_m_s2": 2.0,
+              "fine_acceleration_m_s2": 2.0,
+              "coarse_force_N": 0.4
+            },
+            "beta": 0.7272727272727273,
+            "duration_s": 1.0659430638187772,
+            "time_scale": 1.0,
+            "fine_force_scope": "required force only; use the mechanics spatial allocator and wire heat model to judge authority"
+          },
+          "reference": "results/improvement/writing/grounded_accepted/tst_UPV_W60_1_e.npz"
+        }
+      ],
+      "word_reference": "results/improvement/writing/grounded_accepted/tst_UPV_W60_accepted_se.npz",
+      "global_page_origin_m": [
+        0.003685342898104975,
+        0.001600983135491997
+      ],
+      "duration_s": 3.632434765535755,
+      "coarse_max_xy_m": [
+        0.0032284067907876702,
+        0.0012466355876855721
+      ],
+      "fine_max_radius_m": 0.00048442063491713373
+    }
+  ],
+  "code_sha256": {
+    "ai3/reachable.py": "0e8fa9cdc36a07c280ac13151724f1344f32c46d0ed053c6bc24292781185de2",
+    "ai3/coarse_fine.py": "e7c800ef6c3dc615413e955b52487462127412cdcbe154d5755fa9da0e17031d",
+    "ai3/accepted_completion.py": "d4686dcfaa1415ef7dde36d5a33c69842a832307c46039aa8705bd256eb6f441",
+    "ai3/export_grounded_completion.py": "63509522fd24219086c43af9073ecd4e2b2feed755fd43aab5799edefc5ba267"
+  }
+}
