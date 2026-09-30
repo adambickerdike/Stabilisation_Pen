@@ -71,6 +71,7 @@ def row_bnib(s: Dict) -> Optional[Dict]:
     if not rk:
         return None
     rkc = ((cf.get("revK_corrected") or {}).get("all_writers") or {}).get("clean") or {}
+    cN = ((cf.get("candN_corrected") or {}).get("all_writers") or {}).get("pooled_4_cells")
     return dict(BASE, id="EML-111",
                 topic="The balanced nib (Rev K and the 24 mm / 1.5 mm candidate) in sim2 with causal contact, DEC-066's "
                       "40/46 Hz servo and corrected loads (study X; synthetic-input half of EXP-E23)",
@@ -87,7 +88,11 @@ def row_bnib(s: Dict) -> Optional[Dict]:
                     f"nib power {_f(rk.get('P_nib_mW_G4'), 1)} mW, clean writing moved {_f(rkc.get('moved_um_mean'), 1)} um. "
                     + (f"1.5 mm candidate: G4 {_f(c15.get('ratio_G4'), 3)}, perfect knowledge {_f(c15.get('ratio_oracle'), 3)}, "
                        f"words {_f(c15.get('words_off'), 1)} -> {_f(c15.get('words_G4'), 1)}, {_f(c15.get('P_nib_mW_G4'), 1)} mW"
-                       if c15 else "")),
+                       if c15 else "")
+                    + (f". Study N's balanced candidate (writers 0-1 only): G4 {_f(cN.get('ratio_G4'), 3)}, perfect knowledge "
+                       f"{_f(cN.get('ratio_oracle'), 3)}, {_f(cN.get('P_nib_mW_G4'), 1)} mW"
+                       if cN else "")
+                    + ". Powers at the x-axis centre force constant; DEC-080's weakest x 0.7 values in the JSON (power_bands)"),
                 units_and_conditions="Ratios of rms ink error to the held nib's; words of 10 (app recogniser); mW copper "
                                      "loss at the x-axis force constant; SIMULATION",
                 locator="docs/rebaseline.md section 4",

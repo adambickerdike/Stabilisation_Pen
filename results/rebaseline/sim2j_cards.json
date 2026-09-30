@@ -2,10 +2,10 @@
  "stabpen.provenance": {
   "evidence_status": "SIMULATION (sim2 / MuJoCo 3.6 with the Rev J PROPOSED DESIGN parameters; synthetic writers and synthetic tremor); sensing mode per block; ranks concepts only (COU-1), not evidence of benefit to people",
   "package": "rebaseline 0.1.0",
-  "generated_utc": "2026-09-30T16:58:34+00:00",
+  "generated_utc": "2026-09-30T17:19:00+00:00",
   "git": {
-   "head": "eb851a46f043bc8ff7d19b4cebd28a8f45a8f0b1",
-   "short": "eb851a4",
+   "head": "03862eeb49f1dfd651245d5a0767dea955911192",
+   "short": "03862ee",
    "dirty_tree": true,
    "note": "other agents work in this clone at the same time; the source hashes below pin the code that ran"
   },

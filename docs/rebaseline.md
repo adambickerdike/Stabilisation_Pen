@@ -15,20 +15,23 @@ sensor whose error could look ahead and whose lost motion came back), ran an inn
 sensing is realistic, and under-counted the balanced nib's loads (wire tension against a stiff anchor, about 8 mN of
 guide drag). DEC-070 suspended those results. This study went through all 69 simulation rows of the preserved claims
 register (task 1: 29 rerun here, 23 unaffected, 15 affected but not rerun, each with its reason, 2 superseded by the
-pass) and reran the affected ones on the current code, case by case on the same writers, cells and
-seeds, after first checking that the old settings reproduce the published numbers (they do, exactly, once the old
-firmware contact channel, which the pass replaced without a switch, is restored at run time).
+pass) and reran the affected ones on the current code, case by case on the same writers, cells and seeds, after
+first checking that the old settings reproduce the published numbers (they do — to 0.4 µm in sim2j and exactly in
+study B's set-up — once the old firmware contact channel, which the pass replaced without a switch, is restored at
+run time).
 
 **What survives.**
 - **Rev J + G4 in the whole-pen simulator (synthetic tremor) survives causal sensing:** ink error 0.61 of the
   ordinary pen at 8–12 Hz × 1–2 mm (published 0.63), words read 7.5 → 10 of 10 (7.7 → 10), tremor-free writing
   untouched. The small "improvement" is not real: G4's own ink is unchanged and the comparison pen got slightly worse.
   The mild-tremor (1.01) and slow-tremor (1.00) cards are unchanged, and writing through 3 mm of tremor also
-  survives (words 4 → 42 %, published 4 → 38 %). **Autowrite does not survive unchanged**: at 3 mm the C1S nose now writes 68 % of words instead of 88 %, about
-  25 µm less accurately in every case (a bench-module mechanism result; in-pen autowrite is superseded by DEC-071).
+  survives (words 4 → 42 %, published 4 → 38 %). **Autowrite does not survive unchanged**: at 3 mm the C1S nose
+  now writes 68 % of words instead of 88 %, about 25 µm less accurately in every case (a bench-module mechanism
+  result; in-pen autowrite is superseded by DEC-071).
 - **Study F's reach answer survives the balanced nib's own servo and mass:** with perfect knowledge at the severe
-  class (real inputs, tuning split), ±1.5 mm still gains +3.2 words of 10 (2.6 to 3.8) and clears DEC-055's +2 line;
-  Rev K's ±1.06 mm gains +1.6 (0.7 to 2.4) and does not. The dynamics cost only 0.02 mm.
+  class (real inputs, tuning split), ±1.5 mm still gains +3.2 words of 10 (2.6 to 3.8) as read and clears DEC-055's
+  +2 line (the frozen tuning curve puts it just short, +1.95); Rev K's ±1.06 mm gains +1.6 (0.7 to 2.4) and does
+  not. The dynamics cost only 0.02 mm.
 - **The real-input conclusions of studies R, E and F survive the causal page model:** no tracker helps at the
   severe class (words 0.1–0.4 of 10 against the ordinary pen's 0.5); E's frozen design still fails DEC-055; the
   estimators still leave about 1.1 mm.
@@ -53,8 +56,8 @@ firmware contact channel, which the pass replaced without a switch, is restored 
   position also becomes a worse tremor reference when used without refitting (1.3 mm left instead of 1.0–1.1 mm).
 - **The balanced nib's power moves both ways.** In simulation it is lower than study B said (14.1 against 16.4 mW on
   study B's cases) because the 40/46 Hz servo draws 38 % less; but the 1.5 mm candidate costs 1.6 × Rev K's power
-  (weaker force constant), and at the weaker axis, the disk minimum and the 0.7 derating its correcting power reaches
-  about 190 mW (CALC on SIM). Its tremor-free writing alone costs about 29 mW at the weaker axis, above
+  (weaker force constant), and in DEC-080's convention (the weakest point of the disk × 0.7) its correcting power
+  reaches about 190 mW (CALC on SIM). Its tremor-free writing alone costs about 29 mW at the weaker axis, above
   REQ-BNIB-004's 20 mW for duty A: an input to DEC-072's choice.
 - **The rerun exposed six defects in the packages it imported** (§8), two of which change results silently: the
   "legacy" flags do not restore the old contact channel, so they do not reproduce G4's published rows; and the causal
@@ -66,9 +69,11 @@ firmware contact channel, which the pass replaced without a switch, is restored 
   75 → 100 %, tremor-free writing 0 µm, 1.5 W; perfect knowledge 0.17; autowrite at 3 mm 68 % of words.
 - Balanced nib in sim2 (DEC-066 servo, causal contact, corrected loads): G4 0.57 (Rev K) and 0.52 (the pass's 1.5 mm
   candidate) of the held nib, perfect knowledge 0.38 and 0.27, copper loss 20.5 and 32.1 mW at the x-axis centre while
-  correcting 1–2 mm (84 and 194 mW in DEC-080's weakest × 0.7 convention, CALC on SIM). CANDN_SENTENCE
+  correcting 1–2 mm (84 and 194 mW in DEC-080's weakest × 0.7 convention, CALC on SIM). Study N's balanced candidate
+  (DEC-083; a first look on 2 writers): G4 0.51, perfect knowledge 0.28, 11.6 mW at the centre (51 mW in DEC-080's
+  convention).
 - Reach with B1's dynamics (HW1, real inputs, perfect knowledge, severe class): ±1.06 mm +1.6 words of 10 (fails
-  DEC-055's +2), ±1.5 mm +3.2 (passes).
+  DEC-055's +2), ±1.5 mm +3.2 (passes as read; +1.95 via the frozen curve).
 - Real inputs with page model version 2 (HW1): E's frozen design 0.69 × the ordinary pen's tip tremor, −0.2 words,
   DEC-055 still fails; Rev J's gated tracker moves clean writing 41 µm (was 25 µm); a DeltaPen-class page-position
   predictor leaves 1.3 mm (was 1.0–1.1 mm).
@@ -147,7 +152,7 @@ number.
 | P-01 | Study R: no tracker helps on real tremor (severe: ordinary 0.5, Rev H 0.4, Rev J gated 0.4, TCN 0.2 words of 10; perfect knowledge 7.0) | hw1-real-v1 | F4 | AFFECTED_RERUN | results/rebaseline/page_v2.json (R's \|deltapen trackers with page v2) | SURVIVES: severe words ordinary 0.54, Rev H 0.43, Rev J gated 0.43, TCN 0.21, perfect knowledge 6.99 of 10 (v1: 0.54 / 0.37 / 0.38 / 0.16 / 6.99) |
 | P-02 | Study E's best causal tracker: severe tip tremor 0.69x, words 0.5, clean writing moved 68 um mean / 493 um worst writer | hw1-real-v1 | F4 | AFFECTED_RERUN | results/rebaseline/page_v2.json (E's revJ_new\|deltapen with page v2) | SURVIVES: E's frozen design 0.691x severe tip tremor (0.63-0.75), words 0.32 of 10, clean writing 68.9 um mean / 504 um worst writer; DEC-055 still fails |
 | P-03 | Study F: +2 words needs <= 0.55 mm left (0.25 mm near-normal); best estimator leaves 1.1 mm; prediction is not the problem, separation is | hw1-real-nopage | F4 (the 1.1 mm and the separation rows only) | AFFECTED_RERUN | results/rebaseline/page_v2.json (F gap rows, E's 1.12 mm) | SURVIVES: the estimators with writing present leave 0.92-1.20 mm with v1 and v2 alike (largest change 0.012 mm); the target is page-independent |
-| P-04 | Study F reach: Rev K's +-1 mm nib gains 1.4 words with perfect knowledge at the severe class; about +-1.5 mm needed | hw1-real-revj-plant | F10, F8 | AFFECTED_RERUN | results/rebaseline/reach_b1.json (B1's 40/46 Hz servo and moving mass) | SURVIVES: with B1's 40/46 Hz servo and mass, +-1.06 mm gains +1.6 words (0.7 to 2.4; fails the +2 line), +-1.5 mm +3.2 (2.6 to 3.8; passes); 0.02 mm worse than on the Rev J plant |
+| P-04 | Study F reach: Rev K's +-1 mm nib gains 1.4 words with perfect knowledge at the severe class; about +-1.5 mm needed | hw1-real-revj-plant | F10, F8 | AFFECTED_RERUN | results/rebaseline/reach_b1.json (B1's 40/46 Hz servo and moving mass) | SURVIVES: with B1's 40/46 Hz servo and mass, +-1.06 mm gains +1.6 words (0.7 to 2.4; fails the +2 line), +-1.5 mm +3.2 (2.6 to 3.8; passes as read, +1.95 via the frozen curve); 0.02 mm worse than on the Rev J plant |
 | P-05 | Big correction: in the physics simulation the Rev J nose drew 2.25 W in tremor-free writing (1.1 W static load, 0.74 W servo noise, 0.4 W friction/holding) | sim2j-legacy | F1, F2 | AFFECTED_RERUN | results/rebaseline/sim2j_cards.json (power of the same pen, nose held and G4, causal servo) | CHANGES: tremor-free writing draws 1.49 W with causal sensing (2.28 W with the legacy flags on the same code): the servo-noise share is gone, the C1S static load remains; still SUSPENDED as hardware |
 | P-06 | B1 balanced nib: holding heat <= 1.6 mW, continuous 7.6 mW, about 38 h (CALC; 33.5 h in simulation) | sim2-bnib | F5, F6, F7, F8 | AFFECTED_RERUN | results/rebaseline/bnib_rerun.json (SIM power and battery hours with DEC-066 servo and corrected loads) | CHANGES (SIM part): Rev K with 40/46 Hz and the corrected loads runs 34.0 h on study B's ET cells (study B 32.6 h there) and 30.9 h at 8-12 Hz x 1-2 mm, at the x-axis centre Km and without gravity on the moving mass (as study B); the CALC 7.6 mW / 38 h used the quadrature load and is superseded by DEC-080's matched model |
 | T-01a | Perfect knowledge removes most ink error: Rev H 87-99 % up to 2 mm (H1) | h1 | - | UNAFFECTED |  | – |
@@ -261,13 +266,13 @@ What moved, case by case (paired, 95 % intervals resampling the 6 writers; SIM):
 - **Legacy flags reproduce the old numbers for the pen without a tracker, not for G4.** The ordinary pen and perfect
   knowledge match the historical rows to within 0.03 µm (to 10⁻⁹ µm in 75 % and 58 % of the cases). G4 does not: its
   detector is gated by the firmware's contact flag, which the pass also delayed, with no switch. That alone moved G4's
-  ratio by −0.008 on average (−0.019 to −0.000), by −0.14 and −0.04 in two cases, and left G4's ink identical (to
-  10⁻⁹ µm) in only 4 of 24 cases. So `legacy_flags` separates the servo's sensing change (causal against legacy flags: −0.008,
-  −0.020 to 0.000, not distinguishable from zero) from the firmware contact change (legacy flags against history:
-  −0.008). With the historical flag restored at run time (`legacy_exact`, writers 0–1, 24 rows), every row reproduces
-  the historical ink error to within 0.4 µm (0.1 %; identical to 10⁻⁹ µm in 11 of 24) and G4's ratio to within 0.0005,
-  against 0.14 for `legacy_flags` on the same cases: the contact channel explains the whole difference (patch
-  proposal 1).
+  ratio by −0.008 on average (−0.019 to −0.000), by −0.14 and −0.04 in two cases, and left G4's ink identical (to 10⁻⁹
+  µm) in only 4 of 24 cases. So `legacy_flags` separates the servo's sensing change (causal against legacy flags:
+  −0.008, −0.020 to 0.000, not distinguishable from zero) from the firmware contact change (legacy flags against
+  history: −0.008). With the historical flag restored at run time (`legacy_exact`, writers 0–1, 24 rows), every row
+  reproduces the historical ink error to within 0.4 µm (0.1 %; identical to 10⁻⁹ µm in 11 of 24) and G4's ratio to
+  within 0.0005, against 0.14 for `legacy_flags` on the same cases: the contact channel explains the whole difference
+  (patch proposal 1).
 - **The move is small by DEC-047's own yardstick**: 0.016, below the 0.05 that DEC-047 uses as its revisit line for
   new writers or seeds.
 
@@ -345,16 +350,17 @@ How the corrected loads enter: the wires' force beyond their linear stiffness (f
 the pass's beam-column with the anchor in series) and the guide's rolling drag (−8.07 mN·v/|v|·tanh(|v|/0.5 mm/s),
 ASSUMPTION on the regularisation) are applied as generalised forces on the nib's two joints at every 50 µs physics
 step. The explicit update is stable at this step (CALC: velocity multiplier 0.77 per step for Rev K near zero speed,
-in (0, 1]; 0.78 for the candidate). The harmonic-load fix of `bnib/loads.py` (spring and inertia added coherently,
-not in quadrature) needs no switch in a time-domain simulation: the simulated force is the physical sum. It matters for the CALC budgets, which
-the pass has already recomputed (DEC-072). The servo's authority gate of `bnib/sim.py` still receives the TRUE contact
-(its copy of the Rev J step predates the causal change); here it receives the firmware's delayed measured contact,
-as `sim2j/stepper.py` now does (patch proposal 3). The sim2 nib is isotropic, so the simulation uses the x-axis force
-constant at the centre on both axes; the weaker y-axis, the disk minimum and the 0.7 derating are CALC rescalings of
-the simulated copper loss (P = F²/Km² at the same force demand). DEC-080 (study N, after this study's brief) makes
-the weakest singular value over the usable disk × 0.7 the headline convention for every nib power claim, with the
-centre value stated beside it: here that is the "disk minimum × 0.7" column. Like study B's, this simulation carries
-no gravity load on the moving mass and no counter-face residual, which DEC-080's matched model adds (§9).
+in (0, 1]; 0.78 for the candidate). The harmonic-load fix of `bnib/loads.py` (spring and inertia added coherently, not
+in quadrature) needs no switch in a time-domain simulation: the simulated force is the physical sum. It matters for
+the CALC budgets, which the pass has already recomputed (DEC-072). The servo's authority gate of `bnib/sim.py` still
+receives the TRUE contact (its copy of the Rev J step predates the causal change); here it receives the firmware's
+delayed measured contact, as `sim2j/stepper.py` now does (patch proposal 3). The sim2 nib is isotropic, so the
+simulation uses the x-axis force constant at the centre on both axes; the weaker y-axis, the disk minimum and the 0.7
+derating are CALC rescalings of the simulated copper loss (P = F²/Km² at the same force demand). DEC-080 (study N,
+after this study's brief) makes the weakest singular value over the usable disk × 0.7 the headline convention for
+every nib power claim, with the centre value stated beside it: here that is the "disk minimum × 0.7" column. Like
+study B's, this simulation carries no gravity load on the moving mass and no counter-face residual, which DEC-080's
+matched model adds (§9).
 
 **Against study B as published, on study B's writers and cells** (SIMULATION as above; writers 0–3, ET 8 Hz × 1 and
 2 mm and 12 Hz × 1 mm, 12 cases per controller; study B's figures are its own rows, `bnib/build/sim_rows.json`,
@@ -394,12 +400,13 @@ channel (the ladder below), and the held nib, the comparison, now yields more. *
 on Rev K: perfect knowledge leaves 0.33 of the held nib's error instead of 0.27 (the slower servo and the loads),
 and 0.54 at 12 Hz × 2 mm, where ±1.06 mm saturates. The candidate's ±1.5 mm keeps the limit at 0.24–0.27.
 **Power:** in simulation the nib draws less than study B said (14.1 against 16.4 mW on study B's cases): DEC-066's
-slower servo draws 38 % less (the ladder below), more than Rev K's weaker force constant (+43 %) and the loads add.
-In DEC-080's convention (weakest point × 0.7) the same force demand costs 84 mW (Rev K) and 194 mW (the candidate)
-with 1–2 mm tremor, and 48 and 111 mW in tremor-free writing (CALC on SIM) — the same range as the pass's duty screen for the candidate (81 mW at 20 mN, 189 mW
-at 40 mN). **A flag for DEC-072:** the candidate's tremor-free writing alone costs 18 mW at the x-axis centre and
-about 29 mW at its weaker axis (CALC on SIM, 50° tilt), above REQ-BNIB-004's 20 mW for duty A (0.2 mm rms tremor, mean
-over 35–75°); Rev K's costs 12 and 18 mW. These are simulated force demands of a proposed design, not measurements.
+slower servo draws 38 % less (the ladder below), more than Rev K's weaker force constant (+43 %) and the loads add. In
+DEC-080's convention (weakest point × 0.7) the same force demand costs 84 mW (Rev K) and 194 mW (the candidate) with
+1–2 mm tremor, and 48 and 111 mW in tremor-free writing (CALC on SIM) — the same range as the pass's duty screen for
+the candidate (81 mW at 20 mN, 189 mW at 40 mN). **A flag for DEC-072:** the candidate's tremor-free writing alone
+costs 18 mW at the x-axis centre and about 29 mW at its weaker axis (CALC on SIM, 50° tilt), above REQ-BNIB-004's 20
+mW for duty A (0.2 mm rms tremor, mean over 35–75°); Rev K's costs 12 and 18 mW. These are simulated force demands of
+a proposed design, not measurements.
 
 **What each correction did, one at a time** (SIMULATION as above; writers 0–1, study B's three cells ET 8 Hz × 1 and
 2 mm and 12 Hz × 1 mm, 6 cases per controller; the fourth cell, 12 Hz × 2 mm, in brackets where it matters):
@@ -444,9 +451,27 @@ brief; SIMULATION as above, writers 0–1, the four ET cells; its constants from
 Km 0.398 N/√W at the x-axis centre and 0.272 at the weakest point of the disk, 3.29 g, eight 0.10 × 32.1 mm wires on
 a 50 N/m anchor with 5 mN assembly tension, 3.83 mN of guide drag from its 1.82 N preload, ±1.5 mm, stop 1.7 mm):
 
-CANDN_TABLE
+| Writers 0–1, the four ET cells (8 cases per controller) | Rev K, corrected | the pass's 1.5 mm candidate | **study N's balanced candidate** |
+|---|---|---|---|
+| Ink error with G4 ÷ held nib (95 % writer interval) | 0.562 (0.544–0.581) | 0.515 (0.496–0.535) | **0.512 (0.491–0.532)** |
+| Perfect knowledge ÷ held nib | 0.395 | 0.291 | **0.282** |
+| Words of 10: held → G4 (perfect knowledge) | 5.6 → 8.8 (8.8) | 5.6 → 9.4 (9.4) | **5.6 → 9.4 (10.0)** |
+| Tremor-free writing moved by G4 | 0 µm | 0 µm | **0 µm** |
+| Nib copper loss with G4 / tremor-free, x-axis centre Km (SIM) | 17.8 / 8.9 mW | 27.9 / 14.1 mW | **11.6 / 5.8 mW** |
+| … in DEC-080's convention, weakest point × 0.7 (CALC on SIM) | 73 / 37 mW | 169 / 86 mW | **51 / 25 mW** |
+| Hours per charge with G4 / tremor-free (CALC on SIM) | 32.3 / 37.4 h | 27.9 / 34.0 h | **35.7 / 39.8 h** |
+| Wire and guide load on the carrier while correcting, rms | 8.0–8.6 mN | 8.0–8.1 mN | 3.8 mN |
 
-CANDN_BULLETS
+- **It corrects as well as the pass's candidate, for about 40 % of its copper loss.** On the same two writers G4
+  leaves 0.512 of the held nib's error (0.515 for the pass's candidate, 0.562 for Rev K) and perfect knowledge 0.28;
+  the nib draws 11.6 mW while correcting 1–2 mm at the centre force constant (27.9 and 17.8 mW for the others) and
+  51 mW in DEC-080's convention (169 and 73 mW). Its stronger force constant (0.398 against 0.273 N/√W at the
+  centre; 0.272 against 0.158 at the weakest point) and half the guide drag (its 1.82 N preload) do what study N
+  designed them to do.
+- **Tremor-free writing costs 5.8 mW at the centre and about 25 mW at the weakest point × 0.7** (CALC on SIM), the
+  same order as study N's matched duty A (37.9 mW), which adds the gravity and face-residual loads this simulation
+  does not carry and 0.2 mm of tremor.
+- Two writers and one seed: a first look, not a card. EXP-X02 should run it on all six writers with measured loads.
 
 ## 5. Study F's reach check with the balanced nib's dynamics (task 4)
 
@@ -479,7 +504,8 @@ ordinary pen at the severe class, 95 % writer-bootstrap interval above 0) is app
 (SIMULATION, HW1 + real inputs, tuning split, perfect knowledge; 20 cases, 5 writers; intervals resample writers.)
 
 **Answer: yes — with the balanced nib's own servo and mass, ±1.5 mm still clears DEC-055's +2 words at the severe
-class, as a mechanism bound, and ±1.06 mm still does not.**
+class as read by study R's reader (the frozen tuning curve puts it just short, +1.95), as a mechanism bound; ±1.06 mm
+still does not.**
 - **The B1 dynamics cost almost nothing under perfect knowledge**: 0.017 mm more tremor left at ±1.5 mm (0.691
   against 0.674 mm) and 0.016 mm at ±1.0 mm. The 40 Hz servo's longer group delay is previewed exactly by perfect
   knowledge, and the moving mass (3.44 or 3.67 g against 2.10 g) and the force constant do not separate the two nibs
@@ -491,8 +517,8 @@ class, as a mechanism bound, and ±1.06 mm still does not.**
 - **By tremor type** (case means, SIM): at ±1.5 mm the PD cases gain +2.1 words (0.1 → 2.2) and the ET cases +4.4
   (1.4 → 5.8); at ±1.06 mm PD gains +1.0 and ET +2.2. The PD half of the severe class is the binding one: at ±1.5 mm
   it sits at the line.
-- **The literal reader and the frozen curve disagree by about 1.3 words** at ±1.5 mm (+3.2 read, +2.0 via the curve,
-  whose lower bound 1.3 is below the line). Study F saw the same gap. The curve was fitted on the tuning split and is
+- **The literal reader and the frozen curve disagree by about 1.3 words** at ±1.5 mm (+3.2 read; +1.95 via the curve,
+  just below the +2 line, interval 1.3–2.7). Study F saw the same gap. The curve was fitted on the tuning split and is
   the more conservative of the two; both keep ±1.06 mm below the line.
 - **The command exceeds 1 mm 61 % and 1.5 mm 37 % of the contact time for every pen** (as in study F: the severe
   class asks for more than any of these nibs has); at ±1.5 mm the nib sits at its travel limit 40 % of the time.
@@ -617,8 +643,8 @@ position, refitted per fold on the sensor's own streams; SIM streams, tip = SIM)
 leaves 0.588 mm at the tip with version 1 and **0.564 mm** with version 2 (signal residual 0.591 → 0.566 mm); the
 ideal-sensor row is unchanged (0.340 mm), as it must be. So when the predictor is refitted to version 2's streams the
 page sensor supports about the same 0.56–0.59 mm as before; the gap rows above apply F's predictor fitted on the true
-tremor, without refitting it to the sensor, and those get worse. Either way the DeltaPen-class page position alone stays above the 0.55 mm target of
-DEC-067 with the writing removed, and far above it with the writing present.
+tremor, without refitting it to the sensor, and those get worse. Either way the DeltaPen-class page position alone
+stays above the 0.55 mm target of DEC-067 with the writing removed, and far above it with the writing present.
 
 ## 7. Which headline claims survive
 
@@ -657,8 +683,8 @@ substitution in its own process) and names the workaround.
    delivered 1 ms late", with no switch. With `legacy_true` / `legacy_force` / 400 Hz the ordinary pen and perfect
    knowledge reproduce the historical rows to 0.03 µm, but G4 does not (its detector is gated by that flag): in two of
    the 24 headline cases the ratio moved by 0.04–0.14 (and by 0.23 in one case of study B's set-up, which shares the
-   channel). Proposed: an explicit `Sensors.firmware_contact =
-   "delayed" | "legacy_immediate"` (default "delayed"), read in `OnlineSensors.read`:
+   channel). Proposed: an explicit `Sensors.firmware_contact = "delayed" | "legacy_immediate"` (default
+   "delayed"), read in `OnlineSensors.read`:
    `if self.pm.cfg.sensors.firmware_contact == "legacy_immediate": out["contact"] = bool(s_now > stop + 0.1e-3)` with
    `s_now = d.qpos[self.js] + nz[8] * self.slide_noise` every tick. Workaround here:
    `rebaseline.sim2j_cards._historical_contact_read` (mode `legacy_exact`), which reproduces the historical rows to
@@ -688,7 +714,8 @@ substitution in its own process) and names the workaround.
    the full version-2 set.
 6. **`realdata/sensors.py`: version 2 cannot run on the recorded notes at all.** `degrade_page` (version 2) raises
    "Initial optical position needs a valid anchor" when the first page sample is invalid, and every recorded note of
-   studies R, E and F starts with the pen lifted (note 0 of the tuning split: first valid sample 262 of 32,996). So on
+   studies R, E and F starts with the pen lifted (all 71 of R's and E's cases and all 38 of F's gap cases: first
+   valid sample 262–263; tuning note 0 has 32,996 samples). So on
    current code none of the DeltaPen-class rows of R, E or F can be recomputed: they fail rather than change. Proposed
    (in `degrade_page`, version 2 only): anchor at the first valid report instead of raising, i.e. run the model from
    the first valid index `k`, report the samples before `k` as invalid with their availability monotone, and mark the
@@ -718,9 +745,10 @@ substitution in its own process) and names the workaround.
   disk minimum and the 0.7 field derating are CALC rescalings of the simulated copper loss (EXP-X05).
 - **HW1 cannot carry the nib's nonlinear loads.** Task 4 changes the servo bandwidth, the moving mass, the linear wire
   stiffness and the force limit; the wires' hardening and the guide's rolling drag enter only in task 3 (EXP-X06).
-- **The guide drag and the wire anchor are the pass's CALC values** (8.07 mN at 4 N preload with an ASSUMED rolling
-  coefficient; the stated 10,000 N/m and 100 N/m anchors); EXP-J17 and EXP-K20 measure them (EXP-X02 reruns task 3
-  with the measured values).
+- **The guide drag and the wire anchors are CALC inputs** (8.07 mN at the pass's 4 N preload and 3.83 mN at study
+  N's 1.82 N, both with an ASSUMED rolling coefficient; the stated 10,000, 100 and 50 N/m anchors); EXP-J17 and
+  EXP-K20 measure them, and DEC-082 proposes a softer anchor and at most 2 N of preload (EXP-X02 reruns task 3 with
+  the measured values).
 - **Not rerun (reasons per row in the register):** sim2j's heel-wheel, end-cap, gated-listening and TCN-replay
   columns (devices or trackers already dropped); guided tracing, write-big loops and lead-through (wheel-driven or not
   carried forward: EXP-X04); study W's tails and collar (not adopted, DEC-051); study E11's per-user gates
@@ -770,23 +798,34 @@ OPENBLAS_NUM_THREADS=1`; do not set `PYTHONNOUSERSITE` on this machine):
 | `python3 -m rebaseline.sim2j_cards --mode legacy_flags --phase headline` (then `--phase other`) | task 2, legacy flags on the current code | 33 + 32 min |
 | `python3 -m rebaseline.sim2j_cards --mode legacy_exact --phase headline --writers 0,1` | task 2, the reproduction check | 10 min |
 | `python3 -m rebaseline.bnib_rerun --config revK_corrected` (and `cand15_corrected`) | task 3, writers 0–5 | 42 + 20 min each |
-| `python3 -m rebaseline.bnib_rerun --config <B1_studyB_exact / B1_studyB_now / B1_dec066 / revK_linear / revK_linear_80 / candN_corrected> --writers 0,1` | task 3, the reproduction, the ladder and study N's candidate (`B1_studyB_exact` on writer 0) | 7 / 14 / 14 / 14 / 13 / CANDN_MIN min |
+| `python3 -m rebaseline.bnib_rerun --config <B1_studyB_exact / B1_studyB_now / B1_dec066 / revK_linear / revK_linear_80 / candN_corrected> --writers 0,1` | task 3, the reproduction, the ladder and study N's candidate (`B1_studyB_exact` on writer 0) | 7 / 14 / 14 / 14 / 13 / 19 min |
 | `python3 -m rebaseline.reach_b1 --run` | task 4 | 17 min |
 | `python3 -m rebaseline.page_v2 --gap`, `--sensing`, `--re --notes 0,1,2,3,4`, `--re --notes 5,6,7,8` | task 5 (the reader dominates R's and E's cases: about 2 min each) | 12 / 4 / 75 / 59 min |
 | `python3 -m rebaseline.<sim2j_cards / bnib_rerun / reach_b1 / page_v2> --summarise` | the results JSONs from the cached rows | under a minute each |
 | `python3 -m rebaseline.report` | `results/rebaseline/evidence_rows.csv` and `rebaseline/build/doc_tables.md` | seconds |
-| `python3 -m rebaseline.run [--quick] [--jobs 2]` | everything in order, resumable; `--quick` is a smoke run of every stage that writes only under `rebaseline/build/quick` | about QUICK_MIN min with `--quick` |
+| `python3 -m rebaseline.run [--quick] [--jobs 2]` | everything in order, resumable; `--quick` is a smoke run of every stage that writes only under `rebaseline/build/` (never `results/`) | 27 min with `--quick` (all stages passed) |
 
 Two operational faults, both fixed: the first attempt at task 5 failed on every recorded note (patch proposal 6; the
 anchored wrapper was added and the runs repeated), and the causal autowrite block ran twice because its first rows
 were overwritten by the severe block, which ran beside it on the same row file (row saves now merge under a file
-lock). In all, about 9.7 CPU-hours over 5.2 hours of wall time with at most two of this study's processes at a time (once,
-for about two minutes, the scheduler started a third while the smoke run switched stages). The CPU for task 2 was
+lock). In all, about 9.7 CPU-hours over 5 hours of wall time with at most two of this study's processes at a
+time (once, for about two minutes, the scheduler started a third while the smoke run switched stages). The CPU for task 2 was
 estimated first from the historical rows' own wall times (12.6 s median per ET run, so about 25–30 min per sensing
-mode for the 84 headline runs); the runs took 33–36 min. New files: about 150 MB, all in the git-ignored
-`rebaseline/build/` except the results (under 1 MB).
+mode for the 84 headline runs); the runs took 33–36 min. New files: about 260 MB, all in the git-ignored
+`rebaseline/build/` (mostly the adapted hand paths: 167 MB for the nib runs, 88 MB for sim2j) except the results
+(under 1 MB).
 
-**Tests.** `python3 -m pytest rebaseline/tests -q`: TESTS_PLACEHOLDER
+**Tests.** `python3 -m pytest rebaseline/tests -q`: 23 passed, 1 skipped (7 s); with `REBASELINE_SLOW=1` the skipped
+test (a legacy-exact rerun of one historical case, bit for bit) also passes (59 s). They check: the environment
+(one thread, caches inside `rebaseline/`); the register's integrity and that it covers every row of the preserved
+tables (by position, so a row added later fails the test until it is classified); the CSV, markdown and strict JSON;
+the provenance block of every results JSON; the bootstraps; the sensing modes' flags and sim2's causal defaults; the
+historical contact wrapper; the cards and paired comparisons on synthetic rows; the wire law (18.2 mN at Rev K's
+stop, 1.56 N/m at the centre), the force directions, the drag step's stability and the power bands; the B1 pens of
+task 4; which gap configurations read the page position; the size of task 5's plan; that page model version 2 is
+causal and that the anchored wrapper equals version 2 on the suffix, leaves a record that starts valid untouched and
+passes version 1 through; the ledger rows' format (23 columns, CRLF, EML-110…119 / ACT-150…159); and that no written
+file names an AI model.
 
 ## 11. Proposals for the lead
 
@@ -802,7 +841,7 @@ These are proposals only: this study did not edit `docs/claims_register.md`, `do
 | Mild (T-11), slow (T-12), tremor-free (T-13a) Rev J + G4 | CURRENT (synthetic); suspended with the cards | CURRENT: 1.01, 1.00 and 0 µm stand under causal sensing; add the mild-tremor note (one case of 18 lost a word to the recogniser) |
 | Rev J's simulated power and battery (P-05, H-02c, H-03c) | SUSPENDED (hardware) | SUPERSEDED numbers, still SUSPENDED as hardware: 1.5 W in every cell with causal sensing (1.49 W tremor-free), about 1.4 h on a 2.22 Wh cell (CALC on SIM); the 0.74 W "servo noise" share is gone |
 | B1 / Rev K nib in simulation: power, battery, servo bandwidth (P-06 SIM part, H-02b, H-03b, H-09) | SUSPENDED (DEC-070); REQUIRES RECOMPUTATION (DEC-072) | **SUPERSEDED SIM numbers** (synthetic simulation of a proposed design): with causal contact, 40/46 Hz and the corrected loads Rev K's nib draws 14.1 mW while correcting on study B's cases (study B 16.4 mW there) and 20.5 mW at 8–12 Hz × 1–2 mm at the x-axis centre force constant (84 mW in DEC-080's weakest × 0.7 convention, CALC on SIM), 34.0 h per charge on study B's cases; the 1.5 mm candidate costs 1.6 × Rev K. The servo-bandwidth statement (H-09) survives in direction (+8 % ink, −38 % power at 40/46 Hz). All without gravity on the moving mass, which DEC-080's matched model adds; the CALC budgets stay with DEC-080 / study N |
-| Study F's reach (P-04, T-08) | CURRENT; suspended for the plant mismatch | CURRENT (perfect knowledge only): with B1's own servo and mass ±1.06 mm gains +1.6 words (0.7 to 2.4; fails DEC-055's line), ±1.5 mm +3.2 (2.6 to 3.8; passes; +2.0 via the frozen curve) (SIM, HW1, real inputs, tuning split) |
+| Study F's reach (P-04, T-08) | CURRENT; suspended for the plant mismatch | CURRENT (perfect knowledge only): with B1's own servo and mass ±1.06 mm gains +1.6 words (0.7 to 2.4; fails DEC-055's line), ±1.5 mm +3.2 (2.6 to 3.8; passes as read; +1.95 via the frozen curve, just short) (SIM, HW1, real inputs, tuning split) |
 | Studies R and E on real inputs (P-01, P-02, T-02b, T-03a, T-05b, T-09a, T-16c) | CURRENT; SUSPENDED as evidence (DEC-070) for the DeltaPen-class rows | CURRENT (re-analysis of a spent split): the numbers move by at most 0.01 mm and 0.2 words of 10 (§6 table); DEC-055 still fails for E's frozen design (−0.22 words; clean writing 69 µm mean, 504 µm worst writer) |
 | Real-data network (T-04) | CURRENT | CURRENT, and not page-dependent (reads the IMU and contact only): remove it from DEC-070's list |
 | Trackers on real clean writing (T-13b) | CURRENT (25 µm, gate shut 99.8 %) | **CHANGED for Rev J's gated tracker**: 41 µm mean, 105 µm worst writer with the causal page model (its gate opens on 2 of 9 clean notes); Rev H 25 µm stands |
@@ -817,8 +856,8 @@ These are proposals only: this study did not edit `docs/claims_register.md`, `do
 |---|---|---|---|---|---|
 | DEC-075 | **The causal reruns replace the suspended synthetic cards; the legacy numbers stay only as labelled optimistic bounds** (proposed; closes DEC-070 for the rows study X reran). Quote Rev J + G4 in sim2j as ink error 0.61 of the ordinary pen at 8–12 Hz × 1–2 mm (writer interval 0.60–0.63), words 7.5 → 10 of 10, tremor-free writing unmoved, synthetic tremor only (DEC-047); Rev J's simulated power as 1.5 W, still SUSPENDED as a hardware claim (the C1S nose is not carried forward, DEC-050). Quote the balanced nib's synthetic card from §4 and study F's reach from §5 | Keep quoting the historical cards with a caveat (they are optimistic in a known direction for the mechanism limit and the power); rerun nothing (DEC-070 would then suspend them indefinitely) | SIMULATION, this study (`results/rebaseline/sim2j_cards.json`, `bnib_rerun.json`, `reach_b1.json`): paired reruns with a reproduction check of the old settings | proposed | EXP-T09/T10 measure a Hall delay or contact latency outside the modelled ones; EXP-X01 moves the card by more than 0.03 |
 | DEC-076 | **A rerun of a suspended result reproduces the old one first and pairs its cases; the owners fix the six defects the reproduction exposed** (proposed). (1) sim2j gets an explicit `firmware_contact` flag, because the legacy flags do not restore the old firmware contact channel and so do not reproduce G4; (2) the sim2j writer-setup cache key includes the nib's sensing mode; (3) `bnib/sim.py` and `wholepen/stepper.py` pass the measured contact to the servo, as `sim2j/stepper.py` does; (4) the page-model fit saves version 2 beside version 1, not over it; (5) case caches record the page-model version and refuse mixed aggregation; (6) `degrade_page` version 2 anchors at the first valid report instead of raising | Accept the legacy flags as the reproduction (they leave G4's detector on the new contact channel: −0.008 on the ratio, up to −0.14 in one case); keep the workarounds only inside `rebaseline/` | CALC on code, and this study's reproduction runs (`legacy_exact` reproduced the historical G4 rows; `legacy_flags` did not); patch texts in §8 | proposed | a patched package reproduces the historical rows through its own flags (then retire `rebaseline`'s runtime substitutions) |
-| DEC-077 | **The balanced nib's synthetic benefit survives DEC-066's servo and the corrected loads; its mechanism limit and power are quoted from the corrected runs** (proposed; refines DEC-050, DEC-066, DEC-072). In sim2 with causal contact, 40 / 46 Hz and the corrected loads (nonlinear wires on the stated anchors, 8 mN guide drag), G4 leaves 0.566 of the held nib's ink error on Rev K (writer interval 0.552–0.581) and 0.521 on the 1.5 mm candidate (0.507–0.534) at 8–12 Hz × 1–2 mm, words about 6 → 9 of 10, tremor-free writing unmoved; perfect knowledge leaves 0.38 on Rev K (0.54 at 12 Hz × 2 mm, where ±1.06 mm saturates) and 0.27 on the candidate. Nib copper loss while correcting 20.5 mW (Rev K) and 32.1 mW (candidate) at the x-axis force constant, up to 84 and 194 mW at the derated disk minimum (CALC on SIM); tremor-free writing 11.7 and 18.3 mW (about 18 and 29 mW at the weaker axis). DEC-066's slower servo is what lowers the power (−38 %) and raises the mechanism limit (0.27 → 0.31); the loads add 0.02–0.03 to the ratios. These replace study B's SIM figures (14.8 mW, 33.5 h), which stay as the record of study B. The candidate's tremor-free power at its weaker axis above REQ-BNIB-004's 20 mW is an input to DEC-072's choice | Keep study B's numbers (80/100 Hz, linear wires, no drag, true-contact gate); wait for measured loads before quoting anything | SIMULATION (`results/rebaseline/bnib_rerun.json`; synthetic inputs, sim2 with study B's set-up and the loads added per step); CALC power bands | proposed | EXP-X02 (measured drag, anchor, Km map); EXP-J17 / EXP-K20 outside the modelled values |
-| DEC-078 | **DEC-055's words line at the severe class needs about ±1.5 mm of reach even with B1's own servo and mass; ±1.06 mm cannot meet it with perfect knowledge** (proposed; refines DEC-060, DEC-072). With B1's 40/46 Hz servo and moving mass, perfect knowledge gains +1.6 words of 10 (0.7 to 2.4) at ±1.06 mm (fails: mean below +2) and +3.2 (2.6 to 3.8) at ±1.5 mm (passes; +2.0, 1.3 to 2.7, through the frozen curve). The reach candidate of DEC-072 is the only one that could carry a severe-class claim; the margin candidate is a moderate-tremor nib. Neither matters until a causal tracker meets DEC-067 on real inputs | Treat ±1.06 mm as sufficient (study F's ±1.0 mm result already said no); size the nib so that the frozen curve's lower bound also clears +2 (a larger reach, not computed here) | SIMULATION (HW1, real inputs, tuning split, perfect knowledge; `results/rebaseline/reach_b1.json`); AC-E23-01's HW1 counterpart | proposed | EXP-E23 in sim2 with B1's adapter; EXP-X06 (loads in HW1); a tracker passing EXP-E10 |
+| DEC-077 | **The balanced nib's synthetic benefit survives DEC-066's servo and the corrected loads; its mechanism limit and power are quoted from the corrected runs** (proposed; refines DEC-050, DEC-066, DEC-072). In sim2 with causal contact, 40 / 46 Hz and the corrected loads (nonlinear wires on the stated anchors, 8 mN guide drag), G4 leaves 0.566 of the held nib's ink error on Rev K (writer interval 0.552–0.581) and 0.521 on the 1.5 mm candidate (0.507–0.534) at 8–12 Hz × 1–2 mm, words about 6 → 9 of 10, tremor-free writing unmoved; perfect knowledge leaves 0.38 on Rev K (0.54 at 12 Hz × 2 mm, where ±1.06 mm saturates) and 0.27 on the candidate. Nib copper loss while correcting 20.5 mW (Rev K) and 32.1 mW (candidate) at the x-axis force constant, up to 84 and 194 mW at the derated disk minimum (CALC on SIM); tremor-free writing 11.7 and 18.3 mW (about 18 and 29 mW at the weaker axis). DEC-066's slower servo is what lowers the power (−38 %) and raises the mechanism limit (0.27 → 0.31); the loads add 0.02–0.03 to the ratios. These replace study B's SIM figures (14.8 mW, 33.5 h), which stay as the record of study B. The pass's candidate's tremor-free power at its weaker axis above REQ-BNIB-004's 20 mW is an input to DEC-072's choice; study N's balanced candidate (DEC-083), in a first look on two writers, corrects as well (G4 0.51, perfect knowledge 0.28) for about 40 % of that loss (11.6 mW at the centre, 51 mW in DEC-080's convention) | Keep study B's numbers (80/100 Hz, linear wires, no drag, true-contact gate); wait for measured loads before quoting anything | SIMULATION (`results/rebaseline/bnib_rerun.json`; synthetic inputs, sim2 with study B's set-up and the loads added per step); CALC power bands | proposed | EXP-X02 (measured drag, anchor, Km map); EXP-J17 / EXP-K20 outside the modelled values |
+| DEC-078 | **DEC-055's words line at the severe class needs about ±1.5 mm of reach even with B1's own servo and mass; ±1.06 mm cannot meet it with perfect knowledge** (proposed; refines DEC-060, DEC-072). With B1's 40/46 Hz servo and moving mass, perfect knowledge gains +1.6 words of 10 (0.7 to 2.4) at ±1.06 mm (fails: mean below +2) and +3.2 (2.6 to 3.8) at ±1.5 mm (passes as read; through the frozen curve +1.95, 1.3 to 2.7, just short of +2). Only a ±1.5 mm nib (DEC-072's reach candidate, or study N's balanced candidate adopted by DEC-083) could carry a severe-class claim; a ±1.06 mm nib (Rev K, DEC-072's margin candidate) is a moderate-tremor nib. None of this matters until a causal tracker meets DEC-067 on real inputs | Treat ±1.06 mm as sufficient (study F's ±1.0 mm result already said no); size the nib so that the frozen curve's lower bound also clears +2 (a larger reach, not computed here) | SIMULATION (HW1, real inputs, tuning split, perfect knowledge; `results/rebaseline/reach_b1.json`); AC-E23-01's HW1 counterpart | proposed | EXP-E23 in sim2 with B1's adapter; EXP-X06 (loads in HW1); a tracker passing EXP-E10 |
 | DEC-079 | **The real-input tracker conclusions of studies R, E and F stand under the causal page model; the DeltaPen-class page position is not a tremor reference** (proposed; refines DEC-059, DEC-069). With the causal page model (version 2, anchored at the first valid report), study R's and E's severe-class results move by at most 0.011 mm and 0.2 words of 10, E's frozen design still fails DEC-055 (−0.22 words; clean writing 69 µm mean, 504 µm worst writer), and study F's estimators still leave about 1.1 mm. Two rows change: Rev J's gated tracker moves clean real writing 41 µm on average (105 µm for the worst writer; was 25 / 85 µm), and a page-position predictor used without refitting leaves 1.3 mm instead of 1.0–1.1 mm (refitted: 0.56 mm). The DeltaPen-class page position is not used as the tremor reference; any use of the absolute page position needs an external re-anchor (version 2 loses it at the first lift: it is valid for about 2 % of a record) | Re-open R's and E's conclusions until a bench page sensor is characterised | SIMULATION (HW1, real inputs, page model version 2 anchored at the first valid report; `results/rebaseline/page_v2.json`); the test split is spent (re-analysis) | proposed | EXP-X09 (measured loss behaviour); EXP-T04; a fresh split (EXP-X08) |
 
 ### Experiments EXP-X01…X09 (proposed; each criterion is a hypothesis to test, not a result)
@@ -826,7 +865,7 @@ These are proposals only: this study did not edit `docs/claims_register.md`, `do
 | Id | What | How | Criterion (hypothesis) | What it decides |
 |---|---|---|---|---|
 | EXP-X01 | Seed robustness of the causal sim2j card | `python3 -m rebaseline.sim2j_cards --mode causal --phase headline --seed-index 1` (the historical second test seed of each writer), paired with this study's first-seed rows | The pooled G4 ratio at 8–12 Hz × 1–2 mm stays within ±0.03 of 0.612 and G4's words stay ≥ 9.5 of 10 | whether DEC-075's quoted card needs a seed interval |
-| EXP-X02 | The balanced nib's synthetic card with measured loads | Rerun task 3 (`rebaseline.bnib_rerun`) with the guide drag and wire anchor measured by EXP-J17 / EXP-K20 and the force-constant map measured by EXP-T07 | G4 ratio ≤ 0.65 in every ET cell at 8–12 Hz × 1–2 mm; clean writing moved ≤ 25 µm; nib copper loss at the measured disk-minimum Km within REQ-BNIB-004's allowance at duty A | DEC-077; DEC-072's choice between the two candidates |
+| EXP-X02 | The balanced nib's synthetic card with measured loads | Rerun task 3 (`rebaseline.bnib_rerun`) with the guide drag and wire anchor measured by EXP-J17 / EXP-K20 and the force-constant map measured by EXP-T07 | G4 ratio ≤ 0.65 in every ET cell at 8–12 Hz × 1–2 mm; clean writing moved ≤ 25 µm; nib copper loss at the measured weakest-point Km (DEC-080) within REQ-BNIB-004's allowance at duty A; run on all six writers, study N's balanced candidate included | DEC-077; DEC-072 / DEC-083 (the nib to build) |
 | EXP-X03 | Autowrite with a realistic page sensor under causal sensing (W-02) | Rerun sim2j's page-noise autowrite block (`sim2j/build/page_noise_rows.json`'s cases) with causal sensing, on the C1S bench module only | Words read with the accumulating-error sensor within 1 of 10 of the legacy result (7 of 10) | whether the C1S bench module's autowrite claim needs a new number (in-pen autowrite is superseded, DEC-071) |
 | EXP-X04 | Guidance, write-big loops and lead-through under causal sensing | Rerun sim2j's guided, arm and lead-through blocks with causal sensing, only for the modes a decision carries forward | Each carried-forward card within its historical 95 % interval; else the card is replaced | W-03a, W-04a, W-05b, W-06 |
 | EXP-X05 | An anisotropic force-constant map in sim2 | Give sim2's nib an x/y Km and a position-dependent map (EXP-T07's measured map, or the pass's coil map until then) instead of the isotropic x-axis value | Copper loss within ±15 % of this study's CALC rescaling (P × (Km_x/Km)²) at the weaker axis | whether §4's CALC power bands can stand in for simulation |
@@ -837,10 +876,18 @@ These are proposals only: this study did not edit `docs/claims_register.md`, `do
 
 ### Ledger rows (proposed)
 
-`results/rebaseline/evidence_rows.csv` holds LEDGER_N rows in `docs/evidence.csv`'s 23-column format (CRLF line
+`results/rebaseline/evidence_rows.csv` holds 7 rows in `docs/evidence.csv`'s 23-column format (CRLF line
 endings; stream EML; source type "derived calculation", evidence class "numerical simulation", transferability low),
 generated from the results files by `python3 -m rebaseline.report`, so their numbers always match the JSON:
 
-LEDGER_LIST
+| Id | Topic |
+|---|---|
+| EML-110 | Rev J + G4 in the whole-pen simulator, rerun with causal sensing (the headline card; legacy flags and the historical rows beside it) |
+| EML-111 | The balanced nib (Rev K and the pass's 1.5 mm candidate) in sim2 with causal contact, DEC-066's servo and the corrected loads |
+| EML-112 | The reach a balanced nib needs at the severe class, with its own servo and moving mass (HW1, real inputs, perfect knowledge) |
+| EML-113 | Studies R and E's DeltaPen-class rows re-analysed with the causal page model v2 (incl. the clean-writing change) |
+| EML-114 | Which correction moved the balanced nib's card: the attribution ladder, after an exact reproduction of study B's rows |
+| EML-115 | Study F's gap decomposition and page sensing check with page model v2 |
+| EML-116 | Rev J's other synthetic cards under causal sensing: mild, slow, severe tremor, autowrite |
 
-No ACT row is proposed: this study found no new literature. The ids EML-LEDGER_NEXT…119 and ACT-150…159 stay free.
+No ACT row is proposed: this study found no new literature. The ids EML-117…119 and ACT-150…159 stay free.

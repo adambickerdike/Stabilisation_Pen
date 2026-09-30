@@ -2,11 +2,11 @@
  "stabpen.provenance": {
   "evidence_status": "CALCULATION (a reading of documents and code paths); no simulation",
   "package": "rebaseline 0.1.0",
-  "generated_utc": "2026-09-30T12:22:29+00:00",
+  "generated_utc": "2026-09-30T17:22:39+00:00",
   "git": {
-   "head": "967ea0af4a57e77e80378f0a26e6463762bd175f",
-   "short": "967ea0a",
-   "dirty_tree": false,
+   "head": "03862eeb49f1dfd651245d5a0767dea955911192",
+   "short": "03862ee",
+   "dirty_tree": true,
    "note": "other agents work in this clone at the same time; the source hashes below pin the code that ran"
   },
   "command": "impact.py",
@@ -14,8 +14,8 @@
   "seeds": null,
   "parameters": {},
   "input_sha256": {
-   "docs/claims_register.md": "0b46efdc1aad9bdfda1e4793c4da607797ed47a9f65070eb8f97b3f6fc838e83",
-   "rebaseline/impact.py": "4e6c8fddca88b604d9dcf764a2d646cfb2b185b94a5668e9ad98689fd4eb3d6a"
+   "docs/claims_register.md": "0abb46221127b2aefdd0fb38f2c3c2a8b58b1dcaab61aba461c103e23ea84bd1",
+   "rebaseline/impact.py": "ce23963ccdd1f9ccf3b903b17f0f26694b35bcc6cfc0416bb54e2a928a59c226"
   },
   "threads": {
    "OMP_NUM_THREADS": "1",
@@ -65,18 +65,18 @@
   "F12": "readable/e11.py calibration notes chosen by a seed stride that need not keep the writer"
  },
  "summary": {
-  "n_rows": 84,
-  "n_sim_rows": 67,
+  "n_rows": 92,
+  "n_sim_rows": 69,
   "by_classification": {
-   "AFFECTED_RERUN": 25,
-   "NOT_SIM": 17,
+   "AFFECTED_RERUN": 29,
+   "NOT_SIM": 23,
    "UNAFFECTED": 23,
-   "AFFECTED_NOT_RERUN": 17,
+   "AFFECTED_NOT_RERUN": 15,
    "SUPERSEDED_ASTRA": 2
   },
   "by_model": {
-   "sim2j-legacy": 21,
-   "sim2-bnib": 3,
+   "sim2j-legacy": 22,
+   "sim2-bnib": 4,
    "sim2-revk-servo": 1,
    "wholepen-sim2j-legacy": 2,
    "hw1-real-v1": 12,
@@ -104,6 +104,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (R's |deltapen trackers with page v2)",
+   "outcome": "SURVIVES: severe words ordinary 0.54, Rev H 0.43, Rev J gated 0.43, TCN 0.21, perfect knowledge 6.99 of 10 (v1: 0.54 / 0.37 / 0.38 / 0.16 / 6.99)",
    "note": "ordinary pen and perfect knowledge use no page sensor and are unaffected"
   },
   {
@@ -117,6 +118,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (E's revJ_new|deltapen with page v2)",
+   "outcome": "SURVIVES: E's frozen design 0.691x severe tip tremor (0.63-0.75), words 0.32 of 10, clean writing 68.9 um mean / 504 um worst writer; DEC-055 still fails",
    "note": "the test split is spent: a re-analysis, not a new test"
   },
   {
@@ -130,6 +132,7 @@
    "faults": "F4 (the 1.1 mm and the separation rows only)",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (F gap rows, E's 1.12 mm)",
+   "outcome": "SURVIVES: the estimators with writing present leave 0.92-1.20 mm with v1 and v2 alike (largest change 0.012 mm); the target is page-independent",
    "note": "the target (E13 curve) uses perfect-knowledge residuals and is unaffected"
   },
   {
@@ -143,6 +146,7 @@
    "faults": "F10, F8",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/reach_b1.json (B1's 40/46 Hz servo and moving mass)",
+   "outcome": "SURVIVES: with B1's 40/46 Hz servo and mass, +-1.06 mm gains +1.6 words (0.7 to 2.4; fails the +2 line), +-1.5 mm +3.2 (2.6 to 3.8; passes as read, +1.95 via the frozen curve); 0.02 mm worse than on the Rev J plant",
    "note": ""
   },
   {
@@ -156,6 +160,7 @@
    "faults": "F1, F2",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (power of the same pen, nose held and G4, causal servo)",
+   "outcome": "CHANGES: tremor-free writing draws 1.49 W with causal sensing (2.28 W with the legacy flags on the same code): the servo-noise share is gone, the C1S static load remains; still SUSPENDED as hardware",
    "note": "the three-way split itself (power_split) was not rerun; the total power is"
   },
   {
@@ -169,6 +174,7 @@
    "faults": "F5, F6, F7, F8",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/bnib_rerun.json (SIM power and battery hours with DEC-066 servo and corrected loads)",
+   "outcome": "CHANGES (SIM part): Rev K with 40/46 Hz and the corrected loads runs 34.0 h on study B's ET cells (study B 32.6 h there) and 30.9 h at 8-12 Hz x 1-2 mm, at the x-axis centre Km and without gravity on the moving mass (as study B); the CALC 7.6 mW / 38 h used the quadrature load and is superseded by DEC-080's matched model",
    "note": "the CALC 7.6 mW used the quadrature load (F5); Rev K's CALC budgets REQUIRE RECOMPUTATION per the pass"
   },
   {
@@ -182,6 +188,7 @@
    "faults": "F5, F6, F7",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": "CALC; the engineering pass marks Rev K budgets REQUIRES RECOMPUTATION"
   },
   {
@@ -195,6 +202,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -208,6 +216,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (oracle column)",
+   "outcome": "CHANGES slightly: perfect knowledge 0.11-0.22 of the ordinary pen at 8-12 Hz (was 0.10-0.20), 0.07-0.11 at 4 Hz (0.07-0.12); headline pool 0.169 (was 0.155)",
    "note": ""
   },
   {
@@ -221,6 +230,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (causal, legacy_flags, legacy_exact; paired)",
+   "outcome": "SURVIVES (synthetic only): 0.612 (cases 0.58-0.64, writers 0.60-0.63) against 0.628; 0.43->0.28 mm at 1 mm, 0.94->0.53 mm at 2 mm; words 75->100 %, letters 80->94 %. G4's own ink is unchanged (-1.1 um); the ratio gains only because the ordinary pen writes 14 um worse",
    "note": ""
   },
   {
@@ -234,6 +244,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (revJ_g4|deltapen)",
+   "outcome": "SURVIVES: G4 in HW1 1.073x severe tip tremor (1.06-1.08), clean writing 0.3 um (worst 1.9 um)",
    "note": ""
   },
   {
@@ -247,6 +258,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json",
+   "outcome": "SURVIVES: severe words 0.43 / 0.43 / 0.21 of 10, tip tremor 1.058x / 0.956x / 0.705x (Rev H / Rev J gated / TCN)",
    "note": ""
   },
   {
@@ -260,6 +272,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -273,6 +286,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (E's information row 'net' with page v2)",
+   "outcome": "UNCHANGED (identical to the last digit): the real-data network reads the IMU and contact only, so the page model cannot move it",
    "note": ""
   },
   {
@@ -286,6 +300,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": "E13 residuals are built on perfect knowledge; no page sensor, no sim2"
   },
   {
@@ -299,6 +314,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (revJ_new|deltapen severe tip tremor)",
+   "outcome": "SURVIVES: 1.118 mm (v1 1.117)",
    "note": ""
   },
   {
@@ -312,6 +328,7 @@
    "faults": "F4, F12",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: information only on a spent split, and two faults touch it (page v1 and the calibration-note selection repaired by the pass); a rerun must refit its gate on v2 streams with the repaired note choice (proposed EXP-X07)"
   },
   {
@@ -325,6 +342,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": "IMU and ideal page-sensor paths do not use the DeltaPen-class model"
   },
   {
@@ -338,6 +356,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (F gap page rows)",
+   "outcome": "PARTLY CHANGES: estimators unchanged (<= 0.012 mm); the page-position predictor on the tremor alone gets WORSE, 1.29-1.31 mm (v1 1.03-1.14); the refitted page sensing check 0.564 mm (v1 0.588)",
    "note": ""
   },
   {
@@ -351,6 +370,7 @@
    "faults": "F10, F8",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/reach_b1.json",
+   "outcome": "SURVIVES: +-1.0 mm leaves 1.02 mm (Rev J plant 1.00), +-1.5 mm 0.69 mm (0.67), +3.2 words read at +-1.5 mm (the frozen curve: +2.0, 1.3 to 2.7); the command exceeds 1 mm 61 % and 1.5 mm 37 % of the contact time",
    "note": ""
   },
   {
@@ -364,6 +384,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (revJ_gated|deltapen moderate/mild)",
+   "outcome": "SURVIVES: Rev J gated, moderate class, 5.67 words of 10 (v1 5.52)",
    "note": ""
   },
   {
@@ -377,6 +398,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -390,6 +412,7 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -403,6 +426,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (et_mild card)",
+   "outcome": "SURVIVES: 1.012 (0.99-1.04); in one of 18 mild cases the recogniser misread one of the text's two words on near-identical ink (5 instead of 10 of 10)",
    "note": ""
   },
   {
@@ -416,6 +440,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (slow_4hz card)",
+   "outcome": "SURVIVES: 1.000 (1.000-1.001)",
    "note": ""
   },
   {
@@ -429,6 +454,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (clean_writing)",
+   "outcome": "SURVIVES: 0 um (max 0) on the 6 writers under causal sensing",
    "note": ""
   },
   {
@@ -442,6 +468,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (clean notes)",
+   "outcome": "CHANGES for Rev J's gated tracker: clean real writing moved 41.0 um mean, 105 um worst writer (v1 25.5 / 85 um; its gate opened on 2 of 9 clean notes); Rev H 24.7 um (survives)",
    "note": ""
   },
   {
@@ -455,6 +482,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -468,6 +496,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: the tracker is not adopted (DEC-042 superseded by G4) and the row is already CONTESTED; its verdict (fails the 25 um rule) is a tracker property the causal servo is unlikely to rescue"
   },
   {
@@ -481,6 +510,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": "the DeltaPen-class bridge row (1.04x) is rerun in page_v2.json"
   },
   {
@@ -494,6 +524,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -507,6 +538,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -520,6 +552,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: shadow mode only; the replay's failure is in the estimator, the servo change does not bear on the adoption decision"
   },
   {
@@ -533,6 +566,7 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (revJ_tcn|deltapen)",
+   "outcome": "SURVIVES: TCN 0.705x severe tip tremor, clean writing 169 um, -0.9 words on clean notes",
    "note": ""
   },
   {
@@ -546,6 +580,7 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -559,6 +594,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -572,6 +608,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: rejected for the product (DEC-051)"
   },
   {
@@ -585,6 +622,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -598,6 +636,7 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -611,6 +650,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: tails are out of the product (DEC-051); comparisons are against a locked mass on the same servo, and wholepen/stepper.py's own step copy still passes the true contact (patch proposal in the doc)"
   },
   {
@@ -622,9 +662,10 @@
    "model": "sim2j-legacy",
    "model_detail": "sim2 / MuJoCo whole Rev J pen (study sim2j): nib servo with the exact simulator velocity (legacy_true), the true ball force as its contact gate (legacy_force), a 400 Hz inner loop, and an immediate firmware contact flag",
    "faults": "F1, F2, F3",
-   "classification": "AFFECTED_NOT_RERUN",
-   "rerun": "",
-   "note": "not rerun here (compute given to the four headline tasks); proposed EXP-X03"
+   "classification": "AFFECTED_RERUN",
+   "rerun": "results/rebaseline/sim2j_cards.json (severe_through card, causal sensing, paired with the historical rows)",
+   "outcome": "SURVIVES: writing through 3 mm at 5 and 8 Hz, words 4 -> 42 % (was 4 -> 38 %), ink 1.49 -> 1.17 mm (1.47 -> 1.15), ratio 0.773 (0.776); the held nose writes 27 um worse; power 1.5 W (2.3 W)",
+   "note": ""
   },
   {
    "id": "T-22",
@@ -635,9 +676,10 @@
    "model": "sim2j-legacy",
    "model_detail": "sim2 / MuJoCo whole Rev J pen (study sim2j): nib servo with the exact simulator velocity (legacy_true), the true ball force as its contact gate (legacy_force), a 400 Hz inner loop, and an immediate firmware contact flag",
    "faults": "F1, F2, F3",
-   "classification": "AFFECTED_NOT_RERUN",
-   "rerun": "",
-   "note": "not rerun: autowrite is a C1S bench mode with no hardware in the next prototype (DEC-050); EXP-X03"
+   "classification": "AFFECTED_RERUN",
+   "rerun": "results/rebaseline/sim2j_cards.json (autowrite block, causal sensing, paired with the historical rows)",
+   "outcome": "SURVIVES (the autowrite half): the nose uses 6.56-6.57 of its 6.57 mm at 3 mm with causal sensing (was 6.55); the 8 mm half (study W) is not rerun",
+   "note": "the 8 mm half (study W's rows) is not rerun; autowrite is a C1S bench mode (DEC-050), superseded in the pen by DEC-071"
   },
   {
    "id": "T-23",
@@ -650,6 +692,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: not adopted (DEC-051); its bench test EXP-W11 decides"
   },
   {
@@ -663,6 +706,7 @@
    "faults": "F11",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": "HW1 unchanged; the pass's motion-rate screen (F11) was applied to ai3's planner, not to nose2's HW1 autowrite, so the rate caution applies by analogy"
   },
   {
@@ -674,9 +718,10 @@
    "model": "sim2j-legacy",
    "model_detail": "sim2 / MuJoCo whole Rev J pen (study sim2j): nib servo with the exact simulator velocity (legacy_true), the true ball force as its contact gate (legacy_force), a 400 Hz inner loop, and an immediate firmware contact flag",
    "faults": "F1, F2, F3",
-   "classification": "AFFECTED_NOT_RERUN",
-   "rerun": "",
-   "note": "not rerun: the +-6 mm C1S nose has no hardware in the next prototype; EXP-X03 (autowrite under causal sensing) proposed"
+   "classification": "AFFECTED_RERUN",
+   "rerun": "results/rebaseline/sim2j_cards.json (severe_autowrite and autowrite_no_tremor cards, causal sensing)",
+   "outcome": "CHANGES (worse): with causal sensing autowrite reads 68 % of words at 3 mm tremor (was 88 %) and 100 % with no tremor (100 %); its ink error to the planned letters rises about 25 um in every case (75 -> 101 um at 3 mm, 45 -> 70 um with no tremor); power 1.5 W (2.3 W)",
+   "note": "a mechanism result for the C1S bench module only: in-pen autowrite is superseded by DEC-071"
   },
   {
    "id": "W-02",
@@ -689,7 +734,8 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
-   "note": "not rerun, for the same reason as W-01b; sim2j's own page-error model is causal (held/walk draws), so only the servo sensing touches this row"
+   "outcome": "",
+   "note": "not rerun: in-pen autowrite is superseded by DEC-071 and the C1S nose is a bench module (DEC-050); sim2j's own page-error model is causal (held/walk draws), so only the servo sensing touches this row, and W-01b's rerun shows it costs autowrite about 25 um; EXP-X03"
   },
   {
    "id": "W-03a",
@@ -702,6 +748,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: the wheel does the work; the nib servo only holds the nose centred (small effect expected)"
   },
   {
@@ -715,6 +762,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -728,6 +776,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun (compute); the nose's guidance goes through the servo, so a rerun is proposed (EXP-X04)"
   },
   {
@@ -741,6 +790,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -754,6 +804,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -767,6 +818,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: wheel-driven; lead-through already judged of little help"
   },
   {
@@ -780,6 +832,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: the wheel stays retracted by default (DEC-048)"
   },
   {
@@ -793,6 +846,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -806,6 +860,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -819,6 +874,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -832,6 +888,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -845,6 +902,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -858,6 +916,7 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -871,6 +930,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -884,6 +944,7 @@
    "faults": "F11",
    "classification": "SUPERSEDED_ASTRA",
    "rerun": "",
+   "outcome": "",
    "note": "the pass: every historic completion fails the sampled motion screen; bounded references admitted 0/520 at 1.059 mm, 5/520 at 1.5 mm, 495/520 at 6 mm (references, not execution)"
   },
   {
@@ -897,6 +958,7 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": "the pass adds a 24 mm / 1.5 mm conditional candidate (CALC)"
   },
   {
@@ -910,6 +972,7 @@
    "faults": "F5, F6, F7",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": "the pass: REQUIRES RECOMPUTATION; this study reports the SIM power of the corrected nib instead"
   },
   {
@@ -923,6 +986,7 @@
    "faults": "F5, F6, F7, F8",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/bnib_rerun.json",
+   "outcome": "CHANGES: 14.1 mW while correcting on study B's cells (study B 16.4 mW on the same cells, 14.8 mW over all its cells), 20.5 mW at 8-12 Hz x 1-2 mm (x-axis centre Km); 84 mW under DEC-080's weakest x 0.7 (CALC on SIM); the 1.5 mm candidate 1.6x Rev K",
    "note": ""
   },
   {
@@ -936,6 +1000,7 @@
    "faults": "F1, F2",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/sim2j_cards.json (P_total, P_nose)",
+   "outcome": "CHANGES: about 1.5 W in every ET cell with causal sensing (was about 2.3 W)",
    "note": ""
   },
   {
@@ -949,6 +1014,7 @@
    "faults": "F5, F6, F7",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": "the pass: REQUIRES RECOMPUTATION"
   },
   {
@@ -962,10 +1028,25 @@
    "faults": "F5, F6, F7, F8",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/bnib_rerun.json (battery_h from the simulated nib power)",
+   "outcome": "CHANGES: 34.0 h on study B's cells, 30.9 h at 8-12 Hz x 1-2 mm (CALC on SIM, x-axis centre Km, no gravity load); the candidate 29.7 / 26.3 h",
    "note": ""
   },
   {
-   "id": "H-04",
+   "id": "H-03c",
+   "section": "Hardware",
+   "claim": "Rev J at the simulated 2.3 W: the 2.22 Wh cell lasts about 1 h",
+   "evidence": "CALC on SIM (sim2j)",
+   "status": "SUSPENDED",
+   "model": "sim2j-legacy",
+   "model_detail": "sim2 / MuJoCo whole Rev J pen (study sim2j): nib servo with the exact simulator velocity (legacy_true), the true ball force as its contact gate (legacy_force), a 400 Hz inner loop, and an immediate firmware contact flag",
+   "faults": "F1, F2",
+   "classification": "AFFECTED_RERUN",
+   "rerun": "results/rebaseline/sim2j_cards.json (P_total under causal sensing; hours = 2.22 Wh / P)",
+   "outcome": "CHANGES: about 1.4 h on the 2.22 Wh cell (CALC on SIM 1.54 W; was about 1 h); still SUSPENDED",
+   "note": ""
+  },
+  {
+   "id": "H-04a",
    "section": "Hardware",
    "claim": "Rev J.1 at the simulated 2.68 W: C1S coil passes 120 C after about 22 s",
    "evidence": "CALC; SIM (sim2j)",
@@ -975,12 +1056,27 @@
    "faults": "F1, F2",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: the C1S nose is not carried forward (DEC-050); sim2j_cards.json gives the causal servo's power for the same pen, which a thermal update can use"
   },
   {
-   "id": "H-05",
+   "id": "H-04b",
    "section": "Hardware",
-   "claim": "Skin and coil temperature of Rev K (fin model) and study B (two-node)",
+   "claim": "Study B's two-node model: skin 30.6 C; coil 31.2 C after 30 min at 35 deg with 2 mm tremor (at the simulated nib power)",
+   "evidence": "CALC; SIM (bnib thermal run)",
+   "status": "CURRENT (Rev K unproven)",
+   "model": "sim2-bnib",
+   "model_detail": "bnib/sim.py (study B's set-up in sim2): observer servo on the Hall reading (causal velocity), the true contact as the servo's authority gate, the immediate firmware contact flag, linear wire suspension, no guide drag; its CALC side used the quadrature harmonic load (bnib/loads.py)",
+   "faults": "F5, F6, F7, F8",
+   "classification": "AFFECTED_NOT_RERUN",
+   "rerun": "",
+   "outcome": "",
+   "note": "not rerun: the thermal run was not repeated; the coil rise scales with the nib power, which task 3 re-simulates (bnib_rerun.json), so a CALC update follows from it"
+  },
+  {
+   "id": "H-04c",
+   "section": "Hardware",
+   "claim": "Rev K: web of the hand 30.6 C; front finger pad 35.9 / 37.6 C (fin model)",
    "evidence": "CALC",
    "status": "CURRENT (unproven)",
    "model": "calc",
@@ -988,10 +1084,11 @@
    "faults": "F5, F6, F7",
    "classification": "NOT_SIM",
    "rerun": "",
-   "note": ""
+   "outcome": "",
+   "note": "the engineering pass marks Rev K budgets REQUIRES RECOMPUTATION"
   },
   {
-   "id": "H-06",
+   "id": "H-05",
    "section": "Hardware",
    "claim": "Mass and length",
    "evidence": "CALC",
@@ -1001,10 +1098,11 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-07",
+   "id": "H-06",
    "section": "Hardware",
    "claim": "Gimbal strength",
    "evidence": "CALC",
@@ -1014,10 +1112,11 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-08",
+   "id": "H-07",
    "section": "Hardware",
    "claim": "Heel-wheel push on the hand",
    "evidence": "CALC",
@@ -1027,10 +1126,11 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-09",
+   "id": "H-08",
    "section": "Hardware",
    "claim": "Rev K fit checks",
    "evidence": "CALC; PROPOSED DESIGN",
@@ -1040,10 +1140,11 @@
    "faults": "F6",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-10",
+   "id": "H-09",
    "section": "Hardware",
    "claim": "Servo bandwidth: Rev K 46 Hz at the worst stuck-ball mode; at 40/46 Hz the corrected ink error rose 7 % and power fell 29 % (2 tuning writers, one seed)",
    "evidence": "CALC; SIM",
@@ -1053,10 +1154,11 @@
    "faults": "F6, F7, F3",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/bnib_rerun.json (servo ladder: 80/100 against 40/46 Hz, corrected loads)",
+   "outcome": "SURVIVES in direction: with causal contact and Rev K's constants on test writers 0-1, 80/100 -> 40/46 Hz raises G4's ink error 8 % (12 % with the 12 Hz x 2 mm cell) and cuts the nib's power 38 % (tremor-free 49 %); perfect knowledge 0.27 -> 0.31; G4's words 10 -> 8.3 of 10",
    "note": ""
   },
   {
-   "id": "H-11",
+   "id": "H-10",
    "section": "Hardware",
    "claim": "Seeing the fresh ink (Rev K)",
    "evidence": "CALC",
@@ -1066,10 +1168,11 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-12",
+   "id": "H-11",
    "section": "Hardware",
    "claim": "Rev K pen lift",
    "evidence": "CALC",
@@ -1079,10 +1182,11 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-13",
+   "id": "H-12",
    "section": "Hardware",
    "claim": "Unit cost",
    "evidence": "MFR; ASSUMPTION",
@@ -1092,10 +1196,11 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
-   "id": "H-14",
+   "id": "H-13",
    "section": "Hardware",
    "claim": "Beryllium in the nib's wires",
    "evidence": "MFR/LIT",
@@ -1105,10 +1210,95 @@
    "faults": "",
    "classification": "NOT_SIM",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
+   "id": "H-14",
+   "section": "Hardware",
+   "claim": "Sideways load on the fine nib at 35 deg: about 49-51 mN (study H)",
+   "evidence": "CALC",
+   "status": "UNPROVEN",
+   "model": "calc",
+   "model_detail": "a calculation, not a simulation",
+   "faults": "",
+   "classification": "NOT_SIM",
+   "rerun": "",
+   "outcome": "",
+   "note": "study H's calculation already uses the pass's corrected guide drag (8.1 mN)"
+  },
+  {
    "id": "H-15",
+   "section": "Hardware",
+   "claim": "The ball guide's contact: ~8 mN rolling drag at 4 N preload (study H)",
+   "evidence": "CALC",
+   "status": "UNPROVEN",
+   "model": "calc",
+   "model_detail": "a calculation, not a simulation",
+   "faults": "",
+   "classification": "NOT_SIM",
+   "rerun": "",
+   "outcome": "",
+   "note": ""
+  },
+  {
+   "id": "H-16",
+   "section": "Hardware",
+   "claim": "What makes the nib's heat: the ball's writing drag about two thirds (study N)",
+   "evidence": "CALC",
+   "status": "CURRENT",
+   "model": "calc",
+   "model_detail": "a calculation, not a simulation",
+   "faults": "",
+   "classification": "NOT_SIM",
+   "rerun": "",
+   "outcome": "",
+   "note": ""
+  },
+  {
+   "id": "H-17",
+   "section": "Hardware",
+   "claim": "How much the force-constant convention matters: weakest x 0.7 for every nib claim (study N, DEC-080)",
+   "evidence": "CALC",
+   "status": "CURRENT",
+   "model": "calc",
+   "model_detail": "a calculation, not a simulation",
+   "faults": "",
+   "classification": "NOT_SIM",
+   "rerun": "",
+   "outcome": "",
+   "note": "this study's SIM powers are at the x-axis centre; its CALC bands give DEC-080's convention"
+  },
+  {
+   "id": "H-18",
+   "section": "Hardware",
+   "claim": "Wire fatigue test drive: resonance adds 12-90 % at 200 Hz (study H)",
+   "evidence": "CALC",
+   "status": "CURRENT (test-method correction)",
+   "model": "calc",
+   "model_detail": "a calculation, not a simulation",
+   "faults": "",
+   "classification": "NOT_SIM",
+   "rerun": "",
+   "outcome": "",
+   "note": ""
+  },
+  {
+   "id": "H-19",
+   "section": "Hardware",
+   "claim": "Cost and time of the first bench build (study H)",
+   "evidence": "MFR; ASSUMPTION",
+   "status": "UNPROVEN",
+   "model": "calc",
+   "model_detail": "a calculation, not a simulation",
+   "faults": "",
+   "classification": "NOT_SIM",
+   "rerun": "",
+   "outcome": "",
+   "note": ""
+  },
+  {
+   "id": "H-20",
    "section": "Hardware",
    "claim": "Page sensor: for the trackers on real inputs a DeltaPen-class sensor changed results by at most 0.1 word and 0.01 mm (study R)",
    "evidence": "ASSUMPTION; SIM",
@@ -1118,10 +1308,11 @@
    "faults": "F4",
    "classification": "AFFECTED_RERUN",
    "rerun": "results/rebaseline/page_v2.json (ideal vs v1 vs v2)",
+   "outcome": "SURVIVES for words and tip tremor (ideal vs DeltaPen-class v2: 0.0 words, 0.006 mm) but NOT for clean writing: +15.9 um for Rev J's gated tracker",
    "note": ""
   },
   {
-   "id": "H-16",
+   "id": "H-21",
    "section": "Hardware",
    "claim": "Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters in tremor-free writing, SIM)",
    "evidence": "CALC; SIM",
@@ -1131,6 +1322,7 @@
    "faults": "F1, F2",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: C1S nose not carried forward (DEC-050)"
   },
   {
@@ -1144,6 +1336,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": "the H1 check keeps the legacy optimistic settings on purpose (h1_check_config); the pass reran the H1 comparison (slow test) and it passes; it is verification, not validation"
   },
   {
@@ -1157,6 +1350,7 @@
    "faults": "",
    "classification": "UNAFFECTED",
    "rerun": "",
+   "outcome": "",
    "note": ""
   },
   {
@@ -1170,6 +1364,7 @@
    "faults": "F1, F2, F3",
    "classification": "AFFECTED_NOT_RERUN",
    "rerun": "",
+   "outcome": "",
    "note": "not rerun: a ranking of estimators on the same servo; minor"
   },
   {
@@ -1183,6 +1378,7 @@
    "faults": "F9, F1, F2",
    "classification": "SUPERSEDED_ASTRA",
    "rerun": "",
+   "outcome": "",
    "note": "the pass trained six PPO policies in two protocols with the repaired reward; none qualified"
   }
  ]

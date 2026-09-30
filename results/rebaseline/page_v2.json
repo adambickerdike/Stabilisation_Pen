@@ -2,10 +2,10 @@
  "stabpen.provenance": {
   "evidence_status": "SIMULATION (model HW1 with real recorded inputs; page model realdata/sensors.py version 2, an ASSUMPTION informed by LIT OPT-02); re-analysis of the spent test split, not a new test",
   "package": "rebaseline 0.1.0",
-  "generated_utc": "2026-09-30T15:23:48+00:00",
+  "generated_utc": "2026-09-30T17:18:42+00:00",
   "git": {
-   "head": "b162f1d8428c12ebb955707aefc9800a0a5586d6",
-   "short": "b162f1d",
+   "head": "03862eeb49f1dfd651245d5a0767dea955911192",
+   "short": "03862ee",
    "dirty_tree": true,
    "note": "other agents work in this clone at the same time; the source hashes below pin the code that ran"
   },
@@ -465,7 +465,7 @@
    "results/realtrack/frozen.json": "7e239da620b441d46fae205e01c2cf1b2a852092729f298addc2babfaa5b8cf1",
    "results/readable/frozen.json": "9cc39328a00f33f8701d83f68b522d8e16f6ccf83557924a9cb31001f6b55a6a",
    "rebaseline/page_v2.py": "e95379fd6ccacfc80c103711728ec654bbf71f6913ee83f8e4512bab77751fc7",
-   "rebaseline/common.py": "7a964741aea7d73c4877350a7510a0dae75fe3a34b52b6f35a74546219bb8f44"
+   "rebaseline/common.py": "6be6eedfd68c942d0b6f7446fce31d60b45865750f3327e9e63fbe3f7e1988dc"
   },
   "threads": {
    "OMP_NUM_THREADS": "1",

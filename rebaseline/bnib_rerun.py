@@ -412,6 +412,9 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
         s["power_bands"] = calc_power_bands(P, d)
         Pc = ((s["all_writers"].get("clean") or {}).get("P_nib_mW"))
         s["power_bands_clean"] = calc_power_bands(Pc, d)
+        s["power_bands_writers_0_1"] = {
+            "G4": calc_power_bands(((s["writers_0_1"].get("pooled_4_cells") or {}).get("P_nib_mW_G4")), d),
+            "tremor_free": calc_power_bands(((s["writers_0_1"].get("clean") or {}).get("P_nib_mW")), d)}
         s["wall_s_total"] = float(sum((r.get("wall_s") or 0.0) for r in R.values()))
         out["configs"][c] = s
     hist = CM.jload(HIST_ROWS) if HIST_ROWS.exists() else None

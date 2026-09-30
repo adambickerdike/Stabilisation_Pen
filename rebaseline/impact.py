@@ -435,7 +435,7 @@ OUTCOMES: Dict[str, str] = {
             "49 %); perfect knowledge 0.27 -> 0.31; G4's words 10 -> 8.3 of 10",
     # task 4: study F's reach with B1's dynamics (HW1, real inputs, tuning split, perfect knowledge)
     "P-04": "SURVIVES: with B1's 40/46 Hz servo and mass, +-1.06 mm gains +1.6 words (0.7 to 2.4; fails the +2 line), "
-            "+-1.5 mm +3.2 (2.6 to 3.8; passes); 0.02 mm worse than on the Rev J plant",
+            "+-1.5 mm +3.2 (2.6 to 3.8; passes as read, +1.95 via the frozen curve); 0.02 mm worse than on the Rev J plant",
     "T-08": "SURVIVES: +-1.0 mm leaves 1.02 mm (Rev J plant 1.00), +-1.5 mm 0.69 mm (0.67), +3.2 words read at +-1.5 mm "
             "(the frozen curve: +2.0, 1.3 to 2.7); the command exceeds 1 mm 61 % and 1.5 mm 37 % of the contact time",
 }
