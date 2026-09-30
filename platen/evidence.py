@@ -193,6 +193,28 @@ def source_rows() -> List[Dict]:
         transferability_reason="Manufacturer data of a different class of camera", transferability="medium",
         design_implication="4-8 ms is a realistic camera latency band", search_query="WebSearch: OptiTrack Prime 13 latency",
         stream="AMF", lead_verification="search summary only")
+    row(id="AMF-287", topic="Bluetooth LE connection interval: 7.5 ms minimum, 375 us with Core 6.2's Shorter "
+        "Connection Intervals (radio latency of a wireless pen sensor)",
+        citation="Bluetooth SIG. Bluetooth Core 6.2 feature overview; blog 'How Bluetooth Shorter Connection Intervals "
+                 "will impact the next generation of wireless innovations'.",
+        doi_or_url="https://www.bluetooth.com/bluetooth-core-6-2-feature-overview/ ; "
+                   "https://www.bluetooth.com/blog/how-bluetooth-shorter-connection-intervals-will-impact-the-next-"
+                   "generation-of-wireless-innovations/",
+        source_type="standards body web page", evidence_class="manufacturer statement",
+        task_or_setup="Feature overview of the Bluetooth Core Specification 6.2",
+        comparator="Wired or proprietary 2.4 GHz links (ASSUMPTION 1-2 ms)",
+        key_quantitative_findings="Shorter Connection Intervals reduce the minimum Bluetooth LE connection interval "
+                                  "from 7.5 ms to 375 us (a factor of 20), in steps of 125 us; report rates above "
+                                  "2 kHz over a secure connection",
+        units_and_conditions="ms, us; specification feature (both ends must support Core 6.2)",
+        locator="Feature overview; blog", limitations="Read in a search listing; silicon support in 2026 is limited; "
+        "the interval is a lower bound on the added latency, not the latency",
+        relevance_to_design="The latency a clip-on IMU or a stylus adds over Bluetooth LE (sensing options, section 2.4)",
+        transferability_reason="Specification of the link layer", transferability="high",
+        design_implication="Budget 7.5-15 ms for a Bluetooth LE pen sensor unless both ends support Core 6.2; prefer a "
+                           "wire or a proprietary link for the pen's IMU",
+        search_query="WebSearch: Bluetooth Core 6.2 shorter connection interval 375 microseconds", stream="AMF",
+        lead_verification="search summary only")
     row(id="AMF-283", topic="Pen plotter as a comparator for accepted writing: AxiDraw V3",
         citation="Evil Mad Scientist Laboratories. AxiDraw V3, product page; Adafruit listing (discontinued).",
         doi_or_url="https://shop.evilmadscientist.com/productsmenu/846 ; https://www.adafruit.com/product/3509",
@@ -290,8 +312,13 @@ def source_rows() -> List[Dict]:
     return R
 
 
+def _key(r: Dict):
+    pre, num = r["id"].split("-")
+    return ({"ACT": 0, "AMF": 1, "CON": 2}.get(pre, 3), int(num))
+
+
 def write(res: Dict, path: Path) -> List[Dict]:
-    rows = derived_rows(res) + source_rows()
+    rows = sorted(derived_rows(res) + source_rows(), key=_key)
     buf = io.StringIO()
     w = csv.DictWriter(buf, fieldnames=HEADER, lineterminator="\r\n")
     w.writeheader()

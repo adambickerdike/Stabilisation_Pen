@@ -44,6 +44,9 @@ SRC = {
            "study E's IMU budget: anti-aliasing 1.04 ms + FIFO/SPI 0.35 ms + pair averaging 0.13 ms = 1.52 ms "
            "(docs/readable_target.md section 6)",
     "digipen": "STABILO DigiPen: Bluetooth live streaming at 200 Hz (ledger OPT-15)",
+    "ble": "Bluetooth LE: minimum connection interval 7.5 ms, reduced to 375 us by Core 6.2's Shorter Connection "
+           "Intervals (https://www.bluetooth.com/bluetooth-core-6-2-feature-overview/, retrieved 2026-09-30; "
+           "proposed row AMF-287)",
     "cricut": "Cricut LightGrip machine mat: low-tack adhesive carrier that holds printer paper in a cutting machine; "
               "https://cricut.com/en-us/tools-accessories/machine-tools/machine-mats/lightgrip-machine-mat-12-x-12/2001976.html "
               "(retrieved 2026-09-30)",
@@ -110,7 +113,7 @@ CONCEPT = {
         "servo_hz": item(40.0, "Hz", PD, "2nd-order reference follower; the inner PD loop at 250 Hz on the encoders"),
         "encoder": item("magnetic linear encoder, 0.25 um", "", PD, SRC["rls_lm13"]),
         "driver": item("linear current amplifier per axis", "", PD, SRC["opa548"]),
-        "moving_mass_kg": item(0.60, "kg (X axis; Y carries 0.33 kg)", CALC, "see masses()"),
+        "moving_mass_kg": item(0.59, "kg (X axis; the Y axis moves 0.29 kg)", CALC, "masses('A5')"),
     },
     "coarse": {
         "actuator": item("H-bot, 2 x NEMA 17 closed-loop steppers, GT2 belts, 20-tooth pulleys, miniature rails", "",
@@ -120,7 +123,7 @@ CONCEPT = {
         "servo_hz": item(8.0, "Hz", PD, "well below the belt ringing of desktop belt machines (" + SRC["klipper"] + ")"),
         "force_cap_N": item(20.0, "N", PD, "driver current limit"),
         "speed_cap_mm_s": item(50.0, "mm/s", PD, "accepted writing needs <= 30 mm/s (the reference limit)"),
-        "moving_mass_kg": item(1.45, "kg", CALC, "see masses()"),
+        "moving_mass_kg": item(1.42, "kg", CALC, "masses('A5')"),
     },
     "hold_down": {
         "choice": item("low vacuum through a perforated plate (primary), with a hinged clip bar and three edge stops "
@@ -145,7 +148,8 @@ CONCEPT = {
         "contact": item("three load cells under the plate: pen normal force at 1 kHz; contact on above 50 mN", "",
                         PD),
         "pen_imu": item("for free writing: the pen's IMU (clip-on on an ordinary pen, or built into a light stylus), "
-                        "wired or 2.4 GHz proprietary radio (BLE adds 7.5-15 ms)", "", PD, SRC["imu"]),
+                        "wired or 2.4 GHz proprietary radio (BLE adds 7.5-15 ms)", "", PD, SRC["imu"] + "; " +
+                        SRC["ble"]),
     },
     "lift": {
         "choice": item("Z-drop of the paper plate by 3 mm (three push-pull solenoids on a flexure, or one voice coil); "
@@ -272,15 +276,17 @@ NOISE = {
     "target": item(40.0, "dB(A) at 0.5 m", ASM, "a quiet office; to be measured (EXP-PL07)"),
     "sources": item("steppers in a silent chopper mode at writing speeds; voice coils move at 4-12 Hz (below "
                     "hearing) but can buzz through the frame; the vacuum blower is the loudest part at full speed "
-                    "(a 97 mm blower is rated up to 64 dB(A) in a vendor listing) and must run slow, be muffled, or "
-                    "be replaced by a tack mat", "", ASM, SRC["tmc2209"]),
+                    "(a faster model of the same 97 mm blower is listed at 64 dB(A) in a search listing) and must run "
+                    "slow, be muffled, or be replaced by a tack mat", "", ASM, SRC["tmc2209"]),
 }
 
 SIZES = {
-    "A5": {"base_mm": [360, 280, 75], "mass_kg": [4.0, 5.5], "label": CALC + " on PROPOSED dimensions (plate + "
-           "coarse travel + frame); mass ASSUMPTION range"},
-    "A6": {"base_mm": [290, 230, 70], "mass_kg": [3.0, 4.0], "label": CALC + " on PROPOSED dimensions; mass "
-           "ASSUMPTION range"},
+    "A5": {"base_mm": [380, 300], "paper_height_mm": 66, "palm_rest_top_mm": 103, "camera_post_mm": 200,
+           "mass_kg": [4.0, 5.5], "label": PD + " (the CAD layout, mechanics/cad/platen.py: plate + coarse travel + "
+           "frame margins); mass ASSUMPTION range"},
+    "A6": {"base_mm": [320, 260], "paper_height_mm": 62, "palm_rest_top_mm": 99, "camera_post_mm": 200,
+           "mass_kg": [3.0, 4.0], "label": CALC + " (the A5 layout's margins around the A6 plate and the same coarse "
+           "travel); mass ASSUMPTION range"},
 }
 
 SENSING_OPTIONS = [

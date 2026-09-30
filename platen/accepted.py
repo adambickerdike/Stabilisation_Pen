@@ -524,6 +524,17 @@ def aggregate(quick: bool) -> Dict:
     for p in sorted(ds.glob("se_*.json")):
         c = CM.jload(p)
         out["sensitivity"][f"{c['variant']}|{c['hand']}"] = summarize(c["rows"])
+    ext = {}
+    for text, rr in references(quick).items():
+        if not rr:
+            continue
+        xy = [np.asarray(r["xy"], float) for r in rr]
+        ext[text] = {"n": len(rr), "max_width_mm": float(max(np.ptp(a[:, 0]) for a in xy) * 1e3),
+                     "max_height_mm": float(max(np.ptp(a[:, 1]) for a in xy) * 1e3),
+                     "median_width_mm": float(np.median([np.ptp(a[:, 0]) for a in xy]) * 1e3),
+                     "max_duration_s": float(max(float(np.asarray(r["t"])[-1]) for r in rr)),
+                     "median_duration_s": float(np.median([float(np.asarray(r["t"])[-1]) for r in rr]))}
+    out["reference_extent"] = ext
     return out
 
 

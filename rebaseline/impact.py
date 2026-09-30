@@ -329,11 +329,22 @@ ROWS: List[Dict] = [
          faults="", classification=NS, rerun=""),
     dict(id="H-13", section="Hardware", claim="Beryllium in the nib's wires", evidence="MFR/LIT", status="CURRENT",
          model="calc", faults="", classification=NS, rerun=""),
-    dict(id="H-14", section="Hardware", claim="Page sensor: for the trackers on real inputs a DeltaPen-class sensor "
+    # rows 14-17 were added to the preserved table by the lead on 30 September (study H, commit c002181): not SIM
+    dict(id="H-14", section="Hardware", claim="Sideways load on the fine nib at 35 deg: about 49-51 mN (study H)",
+         evidence="CALC", status="UNPROVEN", model="calc", faults="", classification=NS, rerun="",
+         note="study H's calculation already uses the pass's corrected guide drag (8.1 mN)"),
+    dict(id="H-15", section="Hardware", claim="The ball guide's contact: ~8 mN rolling drag at 4 N preload (study H)",
+         evidence="CALC", status="UNPROVEN", model="calc", faults="", classification=NS, rerun=""),
+    dict(id="H-16", section="Hardware", claim="Wire fatigue test drive: resonance adds 12-90 % at 200 Hz (study H)",
+         evidence="CALC", status="CURRENT (test-method correction)", model="calc", faults="", classification=NS,
+         rerun=""),
+    dict(id="H-17", section="Hardware", claim="Cost and time of the first bench build (study H)", evidence="MFR; ASSUMPTION",
+         status="UNPROVEN", model="calc", faults="", classification=NS, rerun=""),
+    dict(id="H-18", section="Hardware", claim="Page sensor: for the trackers on real inputs a DeltaPen-class sensor "
          "changed results by at most 0.1 word and 0.01 mm (study R)", evidence="ASSUMPTION; SIM",
          status="UNPROVEN", model="hw1-real-v1", faults="F4", classification=RR,
          rerun="results/rebaseline/page_v2.json (ideal vs v1 vs v2)"),
-    dict(id="H-15", section="Hardware", claim="Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters "
+    dict(id="H-19", section="Hardware", claim="Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters "
          "in tremor-free writing, SIM)", evidence="CALC; SIM", status="UNPROVEN, contested", model="sim2j-legacy",
          faults="F1, F2", classification=NR, rerun="", note="not rerun: C1S nose not carried forward (DEC-050)"),
     # ------------------------------------------------------------------ Simulation
@@ -354,7 +365,11 @@ ROWS: List[Dict] = [
 ]
 
 FIELDS = ("id", "section", "claim", "evidence", "status", "model", "model_detail", "faults", "classification",
-          "rerun", "note")
+          "rerun", "outcome", "note")
+
+# What the rerun found, per AFFECTED_RERUN row (SIMULATION as labelled in docs/rebaseline.md; filled from
+# results/rebaseline/*.json after the runs).  SURVIVES / CHANGES / FAILS refer to the published claim.
+OUTCOMES: Dict[str, str] = {}
 
 
 def rows() -> List[Dict]:
@@ -362,6 +377,7 @@ def rows() -> List[Dict]:
     for r in ROWS:
         d = {k: r.get(k, "") for k in FIELDS}
         d["model_detail"] = MODELS[r["model"]]
+        d["outcome"] = OUTCOMES.get(r["id"], "") if r["classification"] == RR else ""
         out.append(d)
     return out
 
@@ -409,31 +425,37 @@ def summary() -> Dict:
 
 
 def markdown_table(include_not_sim: bool = False) -> str:
-    lines = ["| Id | Claim (short) | Model | Faults | Classification | Rerun / reason |", "|---|---|---|---|---|---|"]
+    lines = ["| Id | Claim (short) | Model | Faults | Classification | Rerun / reason | Outcome of the rerun |",
+             "|---|---|---|---|---|---|---|"]
     esc = lambda s: str(s).replace("|", "\\|")          # noqa: E731  (a '|' inside a cell ends the cell)
     for r in ROWS:
         if r["classification"] == NS and not include_not_sim:
             continue
         why = r.get("rerun") or r.get("note") or ""
+        oc = OUTCOMES.get(r["id"], "") if r["classification"] == RR else "–"
         lines.append(f"| {r['id']} | {esc(r['claim'])} | {r['model']} | {esc(r['faults'] or '-')} | "
-                     f"{r['classification']} | {esc(why)} |")
+                     f"{r['classification']} | {esc(why)} | {esc(oc)} |")
     return "\n".join(lines)
 
 
-def write(out_dir=RESULTS_DIR) -> Dict:
+def write(out_dir=RESULTS_DIR, quick: bool = False) -> Dict:
+    from . import BUILD_DIR
     from . import common as CM
+    if quick:
+        out_dir = BUILD_DIR / "quick"
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "impact_register.csv").write_text(to_csv())
     body = {"what": "impact register of the preserved upstream claims register (docs/claims_register.md)",
             "evidence": "CALCULATION (a reading of documents and code paths); no simulation",
             "models": MODELS, "faults": FAULTS, "summary": summary(), "rows": rows()}
     CM.write_result("impact_register", body, body["evidence"],
-                    inputs=("docs/claims_register.md", "rebaseline/impact.py"))
+                    inputs=("docs/claims_register.md", "rebaseline/impact.py"), quick=quick)
     return body["summary"]
 
 
 if __name__ == "__main__":
     import json
+    import sys
     errs = check()
-    print(json.dumps(write(), indent=1))
+    print(json.dumps(write(quick="--quick" in sys.argv[1:]), indent=1))
     print("integrity:", errs or "ok")

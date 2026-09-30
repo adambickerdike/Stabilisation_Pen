@@ -1,0 +1,32 @@
+name,role,shape,dims_mm,centre_mm,label
+base_plate,"grounded base, rubber feet, reaction to the desk",box,380 x 300 x 6,"0, 0, 3",PROPOSED DESIGN
+foot_-1_-1,rubber foot,cyl,20 x 5,"-170, -130, -2.5",PROPOSED DESIGN
+foot_-1_1,rubber foot,cyl,20 x 5,"-170, 130, -2.5",PROPOSED DESIGN
+foot_1_-1,rubber foot,cyl,20 x 5,"170, -130, -2.5",PROPOSED DESIGN
+foot_1_1,rubber foot,cyl,20 x 5,"170, 130, -2.5",PROPOSED DESIGN
+coarse_x_rail_-1,coarse X miniature rail (9 mm),box,330 x 9 x 10,"0, -80, 11",PROPOSED DESIGN
+coarse_x_rail_1,coarse X miniature rail (9 mm),box,330 x 9 x 10,"0, 80, 11",PROPOSED DESIGN
+coarse_x_carriage,coarse X carriage plate (moves +-40 mm),box,250 x 200 x 5,"0, 0, 18.5",PROPOSED DESIGN
+coarse_y_rail_-1,coarse Y miniature rail,box,9 x 230 x 10,"-95, 0, 26",PROPOSED DESIGN
+coarse_y_rail_1,coarse Y miniature rail,box,9 x 230 x 10,"95, 0, 26",PROPOSED DESIGN
+coarse_y_carriage,coarse Y carriage = fine-stage base (moves +-20 mm),box,260 x 190 x 5,"0, 0, 33.5",PROPOSED DESIGN
+hbot_motor_-1,"NEMA 17 closed-loop stepper, fixed to the base (H-bot)",box,42.3 x 42.3 x 48,"-160, 120, 30",PROPOSED DESIGN (MANUFACTURER envelope)
+hbot_motor_1,"NEMA 17 closed-loop stepper, fixed to the base (H-bot)",box,42.3 x 42.3 x 48,"160, 120, 30",PROPOSED DESIGN (MANUFACTURER envelope)
+hbot_belt_keepout,GT2 belt path of the H-bot (routing unresolved),box,340 x 6 x 8,"0, 120, 36",PROPOSED DESIGN
+fine_x_frame,fine X frame on miniature guides (moves +-5 mm),box,240 x 180 x 4,"0, 0, 42",PROPOSED DESIGN
+fine_y_carrier,fine Y carrier on miniature guides (moves +-5 mm),box,234 x 174 x 4,"0, 0, 50",PROPOSED DESIGN
+vca_x,"voice coil X (LVCM-032-025-02), beside the plate",cyl_x,31.8 x 38.1,"139, 0, 42",MANUFACTURER envelope
+vca_y,"voice coil Y (LVCM-032-025-02), behind the plate",cyl_y,31.8 x 38.1,"0, 109, 50",MANUFACTURER envelope
+load_cell_zdrop_0,"load cell + Z-drop solenoid under the plate (contact force, 3 mm lift)",cyl,14 x 8,"-90, -60, 56",PROPOSED DESIGN
+load_cell_zdrop_1,"load cell + Z-drop solenoid under the plate (contact force, 3 mm lift)",cyl,14 x 8,"90, -60, 56",PROPOSED DESIGN
+load_cell_zdrop_2,"load cell + Z-drop solenoid under the plate (contact force, 3 mm lift)",cyl,14 x 8,"0, 65, 56",PROPOSED DESIGN
+paper_plate,"paper plate with vacuum plenum (glass-fibre sandwich, non-metallic)",box,230 x 170 x 6,"0, 0, 63",PROPOSED DESIGN
+paper_A5,A5 sheet (210 x 148 mm),box,210 x 148 x 0.1,"0, -5, 66.05",PROPOSED DESIGN
+clip_bar,hinged clip bar with two edge stops (registration),box,230 x 12 x 4,"0, 79, 68",PROPOSED DESIGN
+plate_swept_envelope,keep-out: plate swept by coarse + fine travel,box,320 x 220 x 0.5,"0, 0, 66.25",PROPOSED DESIGN
+palm_post_-1,"palm-rest post (fixed to the base, outside the swept envelope)",box,20 x 30 x 95,"-175, -125, 53.5",PROPOSED DESIGN
+palm_post_1,"palm-rest post (fixed to the base, outside the swept envelope)",box,20 x 30 x 95,"175, -125, 53.5",PROPOSED DESIGN
+palm_rest_bridge,"palm-rest bridge, padded, 25 mm above the paper (adjustable 15-35 mm)",box,380 x 60 x 10,"0, -125, 96",PROPOSED DESIGN
+camera_post,camera post (side arm),box,16 x 16 x 190,"178, -20, 101",PROPOSED DESIGN
+camera,global-shutter camera looking down at about 45 deg at the tip region,box,30 x 40 x 30,"160, -20, 186",PROPOSED DESIGN (MANUFACTURER class: OV9281)
+electronics_box,"drivers, MCU, single-board computer, 24 V supply entry",box,300 x 30 x 34,"0, 80, 23",PROPOSED DESIGN

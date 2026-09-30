@@ -160,9 +160,81 @@ def row_page(s: Dict) -> Optional[Dict]:
                 design_implication="See DEC-079 (proposed)")
 
 
+def row_ladder(s: Dict) -> Optional[Dict]:
+    """EML-114: what each correction did to the balanced nib (the attribution ladder, writers 0-1)."""
+    cf = (s or {}).get("configs") or {}
+    steps = [c for c in ("B1_studyB_now", "B1_dec066", "revK_linear", "revK_corrected", "cand15_corrected") if c in cf]
+    if len(steps) < 3:
+        return None
+    rp = (s or {}).get("reproduction_vs_studyB_rows") or {}
+    sb = (((s or {}).get("studyB_rows") or {}).get("writers_0_1") or {}).get("pooled_4_cells") or {}
+
+    def one(c):
+        p = ((cf[c].get("studyB_cells_writers_0_1") or {}).get("pooled_4_cells")) or {}
+        return (f"{c}: G4 {_f(p.get('ratio_G4'), 3)}, perfect knowledge {_f(p.get('ratio_oracle'), 3)}, words "
+                f"{_f(p.get('words_off'), 1)} -> {_f(p.get('words_G4'), 1)}, nib {_f(p.get('P_nib_mW_G4'), 1)} mW")
+    return dict(BASE, id="EML-114",
+                topic="Which correction moved the balanced nib's simulated card: sensing, servo bandwidth, nib constants, "
+                      "loads (study X attribution ladder)",
+                citation="This study's simulation (rebaseline/bnib_rerun.py): study B's bnib/sim.py configured one change "
+                         "at a time, with a reproduction of study B's own rows first",
+                doi_or_url="results/rebaseline/bnib_rerun.json",
+                task_or_setup="ET 8 Hz x 1 and 2 mm and 12 Hz x 1 mm (study B's cells), writers 0-1, G4 and perfect knowledge",
+                participants_or_bench="Simulated (synthetic writers and tremor)",
+                comparator="Study B's rows (bnib/build/sim_rows.json)",
+                key_quantitative_findings=(
+                    f"Reproduction of study B's rows: {rp.get('n')} rows, largest ink difference "
+                    f"{_f(rp.get('max_abs_diff_um'), 4)} um. Study B: G4 {_f(sb.get('ratio_G4'), 3)}, perfect knowledge "
+                    f"{_f(sb.get('ratio_oracle'), 3)}, {_f(sb.get('P_nib_mW_G4'), 1)} mW. " + "; ".join(one(c) for c in steps)),
+                units_and_conditions="Ratios of rms ink error to the held nib's; words of 10 (app recogniser); mW copper "
+                                     "loss at the simulated force constant; SIMULATION",
+                locator="docs/rebaseline.md section 4",
+                limitations="Two writers, one seed; synthetic inputs; isotropic force constant",
+                relevance_to_design="Separates the effect of causal sensing, DEC-066's servo, Rev K's constants and the loads",
+                design_implication="See DEC-077 (proposed)")
+
+
+def row_gap(s: Dict) -> Optional[Dict]:
+    """EML-115: study F's gap rows and page sensing check with page model version 2."""
+    g = (s or {}).get("F_gap") or {}
+    sp = g.get("splits") or {}
+    if not sp:
+        return None
+    te = (sp.get("test") or {}).get("configs") or {}
+    tu = (sp.get("tuning") or {}).get("configs") or {}
+    pa = lambda d: (d.get("page_ar_trem_deltapen") or {})          # noqa: E731
+    sc = (g.get("sensing_check_page") or {})
+    v2 = ((sc.get("v2") or {}).get("deltapen") or {})
+    v1 = ((sc.get("v1_published") or {}).get("deltapen") or {})
+    est = [abs((v.get("tip_tremor_mm_v2") or 0) - (v.get("tip_tremor_mm_v1") or 0))
+           for d in (te, tu) for k, v in d.items() if v.get("page_dependent") and not k.startswith("page_ar")]
+    return dict(BASE, id="EML-115",
+                topic="Study F's gap decomposition and page sensing check with the causal page model v2 (study X)",
+                citation="This study's simulation (rebaseline/page_v2.py): readable/gap.py's cases with realdata/sensors.py "
+                         "version 2 installed (anchored at the first valid report)",
+                doi_or_url="results/rebaseline/page_v2.json",
+                task_or_setup="Study F's 20 tuning and 18 test severe cases (PD and ET); the page sensing check on the "
+                              "tuning split (tremor alone, cross-fitted)",
+                participants_or_bench="Simulated (real recorded inputs)",
+                comparator="Study F's published version-1 values; the ideal page sensor",
+                key_quantitative_findings=(
+                    f"Estimators fed the DeltaPen-class streams change by at most {_f(max(est) if est else None, 3)} mm; "
+                    f"page-position predictor on the tremor alone {_f(pa(tu).get('tip_tremor_mm_v1'), 3)} -> "
+                    f"{_f(pa(tu).get('tip_tremor_mm_v2'), 3)} mm (tuning), {_f(pa(te).get('tip_tremor_mm_v1'), 3)} -> "
+                    f"{_f(pa(te).get('tip_tremor_mm_v2'), 3)} mm (test); sensing check tip tremor "
+                    f"{_f(v1.get('tip_tremor_mm'), 3)} -> {_f(v2.get('tip_tremor_mm'), 3)} mm; configurations that do not "
+                    f"read the page position unchanged (0.000 mm)"),
+                units_and_conditions="mm peak at the tip (R's measure); SIMULATION",
+                locator="docs/rebaseline.md section 6",
+                limitations="Spent test split; page model v2 is an ASSUMPTION; version 2 needed an anchoring workaround",
+                relevance_to_design="Whether the DeltaPen-class sensor can serve as the tremor reference",
+                design_implication="See DEC-079 (proposed)")
+
+
 def rows() -> List[Dict]:
     out = []
-    for fn, name in ((row_sim2j, "sim2j_cards"), (row_bnib, "bnib_rerun"), (row_reach, "reach_b1"), (row_page, "page_v2")):
+    for fn, name in ((row_sim2j, "sim2j_cards"), (row_bnib, "bnib_rerun"), (row_reach, "reach_b1"), (row_page, "page_v2"),
+                     (row_ladder, "bnib_rerun"), (row_gap, "page_v2")):
         r = fn(_r(name))
         if r:
             out.append(r)

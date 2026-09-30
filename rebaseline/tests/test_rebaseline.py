@@ -41,6 +41,9 @@ def _register_tables():
             sec = m.group(1)
             out[sec] = []
             continue
+        if line.startswith("## "):          # any other section (e.g. the market tables added later) ends the register
+            sec = None
+            continue
         if sec and line.startswith("|") and not line.startswith("| Claim") and not line.startswith("|---"):
             cells = [c.strip() for c in line.strip().strip("|").split("|")]
             out[sec].append(cells)
@@ -227,9 +230,10 @@ def test_b1_pen_changes_only_servo_mass_suspension_and_force():
 # ------------------------------------------------------------------ task 5 (page model v2)
 def test_page_dependent_configs():
     from rebaseline import page_v2 as PV
-    for k in ("oracle", "held", "pred_ar_imu", "fir_full_raw", "page_ar_trem_ideal", "akf_trem_raw_idealpage"):
+    for k in ("oracle", "held", "pred_ar_imu", "fir_full_raw", "page_ar_trem_ideal", "akf_trem_raw_idealpage",
+              "net_trem_raw", "net_full_gated"):
         assert not PV._page_dependent(k), k
-    for k in ("page_ar_trem_deltapen", "ai2tcn_full_gated", "net_trem_raw", "akf_full_raw"):
+    for k in ("page_ar_trem_deltapen", "ai2tcn_full_gated", "akf_full_raw", "akf_trem_raw"):
         assert PV._page_dependent(k), k
 
 

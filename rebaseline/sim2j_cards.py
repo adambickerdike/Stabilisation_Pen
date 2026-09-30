@@ -424,7 +424,9 @@ def paired(rows_a: Dict[str, Dict], rows_b: Dict[str, Dict], sel=None, kinds=("t
                         "ratio_diff": CM.cluster_boot_mean(diffs_r, ws) if diffs_r else None,
                         "words_of_10_diff": CM.cluster_boot_mean(diffs_w, ws),
                         "ink_err_um_diff": CM.cluster_boot_mean(diffs_e, ws),
-                        "exactly_equal_ink_share": float(np.mean(np.abs(np.array(diffs_e)) < 1e-9))}
+                        "exactly_equal_ink_share": float(np.mean(np.abs(np.array(diffs_e)) < 1e-9)),
+                        "ink_err_um_absdiff_max": float(np.max(np.abs(np.array(diffs_e)))),
+                        "ratio_absdiff_max": float(np.max(np.abs(np.array(diffs_r)))) if diffs_r else None}
     return out
 
 

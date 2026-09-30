@@ -15,9 +15,10 @@ Stages (each simulation stage runs in its own process: sim2j and bnib are config
   bnib_ladder         task 3, the attribution ladder (study B now / exact / DEC-066 / Rev K linear; writers 0-1)
   reach               task 4, study F's reach cases with the balanced nib's servo and mass
   page_re             task 5, studies R and E with the version-2 page model
-  page_gap            task 5, study F's gap rows with the version-2 page model
+  page_gap            task 5, study F's gap rows and its page sensing check with the version-2 page model
   summary             results/rebaseline/*.json from the cached rows
   report              the evidence rows and the tables quoted by docs/rebaseline.md
+With --quick every stage writes only under rebaseline/build/quick (the impact register and the report included).
 At most two worker processes (--jobs 1 or 2); one numerical thread each.
 """
 from __future__ import annotations
@@ -47,7 +48,7 @@ STAGES: Dict[str, List[List[str]]] = {
                      ("B1_studyB_exact", "0"))],
     "reach": [["-m", "rebaseline.reach_b1", "--run"]],
     "page_re": [["-m", "rebaseline.page_v2", "--re"]],
-    "page_gap": [["-m", "rebaseline.page_v2", "--gap"]],
+    "page_gap": [["-m", "rebaseline.page_v2", "--gap"], ["-m", "rebaseline.page_v2", "--sensing"]],
     "summary": [["-m", "rebaseline.sim2j_cards", "--summarise"], ["-m", "rebaseline.bnib_rerun", "--summarise"],
                 ["-m", "rebaseline.reach_b1", "--summarise"], ["-m", "rebaseline.page_v2", "--summarise"]],
     "report": [["-m", "rebaseline.report"]],
@@ -71,7 +72,7 @@ def main(argv=None) -> int:
     queue = []
     for s in a.stages:
         for k, cmd in enumerate(STAGES[s]):
-            queue.append((s, k, [PY] + cmd + (["--quick"] if a.quick and s not in ("impact", "report") else [])))
+            queue.append((s, k, [PY] + cmd + (["--quick"] if a.quick else [])))
     running: List = []
     failed = []
     t0 = time.time()

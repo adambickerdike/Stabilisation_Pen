@@ -1,0 +1,249 @@
+{
+  "stabpen.provenance": {
+    "evidence_status": "PROPOSED DESIGN (concept layout; keep-outs; no interference certification)",
+    "generated_utc": "2026-09-30T13:55:43+00:00",
+    "git_revision": "61f1395-dirty",
+    "parameters_version": "0.4.4",
+    "parameters_sha256_16": "a9d3d0016461d690",
+    "command": "platen.py",
+    "python": "3.11.15",
+    "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+    "seeds": null,
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "package": "mechanics.cad.platen",
+    "step": "results/platen/platen_assembly.step"
+  },
+  "status": "PROPOSED layout; nothing built or measured",
+  "parameters_mm": {
+    "base": [
+      380.0,
+      300.0,
+      6.0
+    ],
+    "plate": [
+      230.0,
+      170.0,
+      6.0
+    ],
+    "paper": [
+      210.0,
+      148.0,
+      0.1
+    ],
+    "coarse_travel": [
+      40.0,
+      20.0
+    ],
+    "fine_travel": 5.0,
+    "z": {
+      "base_top": 6.0,
+      "x_rails_top": 16.0,
+      "x_carriage_top": 21.0,
+      "y_rails_top": 31.0,
+      "y_carriage_top": 36.0,
+      "fine_x_top": 44.0,
+      "fine_y_top": 52.0,
+      "zdrop_top": 60.0,
+      "plate_top": 66.0
+    },
+    "palm_gap": 25.0
+  },
+  "parts": [
+    {
+      "name": "base_plate",
+      "role": "grounded base, rubber feet, reaction to the desk",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 684000.0
+    },
+    {
+      "name": "foot_-1_-1",
+      "role": "rubber foot",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1570.7963267948967
+    },
+    {
+      "name": "foot_-1_1",
+      "role": "rubber foot",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1570.7963267948967
+    },
+    {
+      "name": "foot_1_-1",
+      "role": "rubber foot",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1570.7963267948967
+    },
+    {
+      "name": "foot_1_1",
+      "role": "rubber foot",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1570.7963267948967
+    },
+    {
+      "name": "coarse_x_rail_-1",
+      "role": "coarse X miniature rail (9 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 29700.0
+    },
+    {
+      "name": "coarse_x_rail_1",
+      "role": "coarse X miniature rail (9 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 29700.0
+    },
+    {
+      "name": "coarse_x_carriage",
+      "role": "coarse X carriage plate (moves +-40 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 249999.99999999997
+    },
+    {
+      "name": "coarse_y_rail_-1",
+      "role": "coarse Y miniature rail",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 20700.0
+    },
+    {
+      "name": "coarse_y_rail_1",
+      "role": "coarse Y miniature rail",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 20700.0
+    },
+    {
+      "name": "coarse_y_carriage",
+      "role": "coarse Y carriage = fine-stage base (moves +-20 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 247000.0
+    },
+    {
+      "name": "hbot_motor_-1",
+      "role": "NEMA 17 closed-loop stepper, fixed to the base (H-bot)",
+      "label": "PROPOSED DESIGN (MANUFACTURER envelope)",
+      "volume_mm3": 85885.92000000003
+    },
+    {
+      "name": "hbot_motor_1",
+      "role": "NEMA 17 closed-loop stepper, fixed to the base (H-bot)",
+      "label": "PROPOSED DESIGN (MANUFACTURER envelope)",
+      "volume_mm3": 85885.92000000003
+    },
+    {
+      "name": "hbot_belt_keepout",
+      "role": "GT2 belt path of the H-bot (routing unresolved)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 16320.0
+    },
+    {
+      "name": "fine_x_frame",
+      "role": "fine X frame on miniature guides (moves +-5 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 172800.0
+    },
+    {
+      "name": "fine_y_carrier",
+      "role": "fine Y carrier on miniature guides (moves +-5 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 162864.0
+    },
+    {
+      "name": "vca_x",
+      "role": "voice coil X (LVCM-032-025-02), beside the plate",
+      "label": "MANUFACTURER envelope",
+      "volume_mm3": 30260.012076528765
+    },
+    {
+      "name": "vca_y",
+      "role": "voice coil Y (LVCM-032-025-02), behind the plate",
+      "label": "MANUFACTURER envelope",
+      "volume_mm3": 30260.012076528765
+    },
+    {
+      "name": "load_cell_zdrop_0",
+      "role": "load cell + Z-drop solenoid under the plate (contact force, 3 mm lift)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1231.5043202071988
+    },
+    {
+      "name": "load_cell_zdrop_1",
+      "role": "load cell + Z-drop solenoid under the plate (contact force, 3 mm lift)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1231.5043202071988
+    },
+    {
+      "name": "load_cell_zdrop_2",
+      "role": "load cell + Z-drop solenoid under the plate (contact force, 3 mm lift)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 1231.5043202071988
+    },
+    {
+      "name": "paper_plate",
+      "role": "paper plate with vacuum plenum (glass-fibre sandwich, non-metallic)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 234599.99999999997
+    },
+    {
+      "name": "paper_A5",
+      "role": "A5 sheet (210 x 148 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 3107.999999999823
+    },
+    {
+      "name": "clip_bar",
+      "role": "hinged clip bar with two edge stops (registration)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 11040.0
+    },
+    {
+      "name": "plate_swept_envelope",
+      "role": "keep-out: plate swept by coarse + fine travel",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 35200.0
+    },
+    {
+      "name": "palm_post_-1",
+      "role": "palm-rest post (fixed to the base, outside the swept envelope)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 57000.0
+    },
+    {
+      "name": "palm_post_1",
+      "role": "palm-rest post (fixed to the base, outside the swept envelope)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 57000.0
+    },
+    {
+      "name": "palm_rest_bridge",
+      "role": "palm-rest bridge, padded, 25 mm above the paper (adjustable 15-35 mm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 228000.0
+    },
+    {
+      "name": "camera_post",
+      "role": "camera post (side arm)",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 48639.99999999999
+    },
+    {
+      "name": "camera",
+      "role": "global-shutter camera looking down at about 45 deg at the tip region",
+      "label": "PROPOSED DESIGN (MANUFACTURER class: OV9281)",
+      "volume_mm3": 36000.0
+    },
+    {
+      "name": "electronics_box",
+      "role": "drivers, MCU, single-board computer, 24 V supply entry",
+      "label": "PROPOSED DESIGN",
+      "volume_mm3": 306000.0
+    }
+  ],
+  "unresolved": [
+    "belt routing and tensioners of the H-bot",
+    "cable chain to the moving stages",
+    "encoder scales and read heads",
+    "vacuum plenum and seals",
+    "Z-drop flexures and solenoid mounts",
+    "guards, skirts and covers (pinch points at the plate edges)",
+    "ergonomics of the palm-rest height"
+  ]
+}

@@ -1,0 +1,615 @@
+{
+ "stabpen.provenance": {
+  "evidence_status": "SIMULATION (model HW1 with real recorded inputs, tuning split only, perfect knowledge; the nib constants are CALC / PROPOSED DESIGN); words read by study R's literal AI reader; words via the frozen E13 tuning curve are CALC",
+  "package": "rebaseline 0.1.0",
+  "generated_utc": "2026-09-30T14:01:47+00:00",
+  "git": {
+   "head": "61f1395f3bfca5866af63aa580285fa62c47b733",
+   "short": "61f1395",
+   "dirty_tree": true,
+   "note": "other agents work in this clone at the same time; the source hashes below pin the code that ran"
+  },
+  "command": "reach_b1.py --summarise",
+  "cwd": "/home/user/Stabilisation_Pen",
+  "seeds": "study E's tuning specs (realtrack.cases.tuning_specs: tseed per case)",
+  "parameters": {
+   "runs": [
+    [
+     "revJ",
+     1.0,
+     [
+      "oracle"
+     ]
+    ],
+    [
+     "revJ",
+     1.5,
+     [
+      "oracle"
+     ]
+    ],
+    [
+     "B1k",
+     1.0,
+     [
+      "oracle",
+      "a_r2"
+     ]
+    ],
+    [
+     "B1k",
+     1.0587,
+     [
+      "oracle",
+      "a_r2"
+     ]
+    ],
+    [
+     "B1k",
+     1.5,
+     [
+      "oracle"
+     ]
+    ],
+    [
+     "B1c",
+     1.5,
+     [
+      "oracle",
+      "a_r2"
+     ]
+    ]
+   ],
+   "read": [
+    [
+     "B1c",
+     1.5,
+     "oracle"
+    ],
+    [
+     "B1k",
+     1.0587,
+     "oracle"
+    ]
+   ],
+   "nibs": {
+    "B1k": {
+     "m_tip": 0.003439830737727785,
+     "k_tip": 1.5617,
+     "Km": 0.33354573489671424,
+     "label": "Rev K's nib (results/revK/revK.json m_move_g, Km_tip_revK x; revk/servo_sim.py k)"
+    },
+    "B1c": {
+     "m_tip": 0.0036699750000000002,
+     "k_tip": 1.5302,
+     "Km": 0.2728601029645367,
+     "label": "the 24 mm / 1.5 mm candidate (results/improvement/mechanics/mechanics_study.json)"
+    }
+   },
+   "kinds": [
+    "PD",
+    "ET"
+   ]
+  },
+  "input_sha256": {
+   "readable/reach.py": "bb06e6699656c9d0938ceac9a66207badfa5bbf371f059841b5ef3e29e6ac6e9",
+   "readable/common.py": "96540a3e4a8f99c1d40df8a37fca541f2125e947f17b3a011610e949ba3c36b5",
+   "readable/curve.py": "3dce64c01ec4e6f9e5fd4cd042274861e38d31042243dc1d4f4fb3d8d057e17b",
+   "readable/residual.py": "6c2cb682112d3173e7512488a881db03a1089fa7b388136ffb7590832772c4f5",
+   "realtrack/cases.py": "34207888ccbfe7faa5c329edae958b39ba4e188035d02b66a007354981d9d669",
+   "realdata/hw1.py": "e8e357b0f69933025ce3affd684d0147621ae13d5ea8445921e6bb0e640dd96a",
+   "realdata/library.py": "43ff0a5c3b24a785246df9635698bc7f747027a845db6d9f89f1cc2da48fa6c9",
+   "realdata/ocr.py": "5957bd8f48fa7035081b443394bb966fab726cb103767595574bdc25e1a25bce",
+   "handwriting/plant.py": "7b3af8f60a19bb790dd8b56397234c2fd5a07d649bcf072100c8882c9ef3cca1",
+   "handwriting/params.py": "ce623aa73b2370e4e85cd7d5750059bf517ae3033c3ea8b0e4f194b2c946e81e",
+   "handwriting/tracker.py": "7de3cd6b07aafcd56caaca0c17fcb44a94296eb12287e25e63f3ec726a9d02e8",
+   "results/nose2/nose2.json": "e82b87538d28128613231baf8c4c03a9f182321c9c79262beeb356ecb0e48487",
+   "results/readable/frozen.json": "9cc39328a00f33f8701d83f68b522d8e16f6ccf83557924a9cb31001f6b55a6a",
+   "rebaseline/reach_b1.py": "24df2dad8a58629f17f41d1a2ef4fc615123057d0b96b8cdd1bd11b1149f0463",
+   "rebaseline/common.py": "7a964741aea7d73c4877350a7510a0dae75fe3a34b52b6f35a74546219bb8f44"
+  },
+  "threads": {
+   "OMP_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1",
+   "NUMBA_NUM_THREADS": "1"
+  },
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "mujoco": "3.6.0",
+  "numba": "0.67.0",
+  "torch": "2.14.0+cpu"
+ },
+ "what": "study F's perfect-knowledge reach check with the balanced nib's servo (40/46 Hz) and moving mass",
+ "evidence": "SIMULATION (model HW1 with real recorded inputs, tuning split only, perfect knowledge; the nib constants are CALC / PROPOSED DESIGN); words read by study R's literal AI reader; words via the frozen E13 tuning curve are CALC",
+ "nibs": {
+  "B1k": {
+   "m_tip": 0.003439830737727785,
+   "k_tip": 1.5617,
+   "Km": 0.33354573489671424,
+   "label": "Rev K's nib (results/revK/revK.json m_move_g, Km_tip_revK x; revk/servo_sim.py k)"
+  },
+  "B1c": {
+   "m_tip": 0.0036699750000000002,
+   "k_tip": 1.5302,
+   "Km": 0.2728601029645367,
+   "label": "the 24 mm / 1.5 mm candidate (results/improvement/mechanics/mechanics_study.json)"
+  }
+ },
+ "servo": {
+  "position_hz": 40.0,
+  "inner_hz": 46.0,
+  "rule": "DEC-066"
+ },
+ "studyF_published": {
+  "1.5|oracle": {
+   "reach_mm": 1.5,
+   "command": "oracle",
+   "tip_tremor_mm": 0.6742271885314872,
+   "at_travel_limit": 0.4010869439052174,
+   "q_rms_mm": 1.1713558173558425,
+   "words_via_curve": 2.8003462670198305,
+   "words_read": 3.9727272727272727,
+   "gain_read": 3.2136363636363634
+  },
+  "1.5|a_r2": {
+   "reach_mm": 1.5,
+   "command": "a_r2",
+   "tip_tremor_mm": 0.8176950749158651,
+   "at_travel_limit": 0.14921569490344502,
+   "q_rms_mm": 0.9300967258488896,
+   "words_via_curve": 1.9716594811731933
+  },
+  "1|oracle": {
+   "reach_mm": 1.0,
+   "command": "oracle",
+   "tip_tremor_mm": 1.0012295449959852,
+   "at_travel_limit": 0.6379596537345106,
+   "q_rms_mm": 0.8822882782554714,
+   "words_via_curve": 1.4151817946264444,
+   "words_read": 2.163636363636363,
+   "gain_read": 1.4045454545454548
+  },
+  "1|a_r2": {
+   "reach_mm": 1.0,
+   "command": "a_r2",
+   "tip_tremor_mm": 1.0435163616257426,
+   "at_travel_limit": 0.3830064732757664,
+   "q_rms_mm": 0.7708653771403455,
+   "words_via_curve": 1.3051783622874011
+  }
+ },
+ "aggregate": {
+  "n_cases": 20,
+  "n_writers": 5,
+  "rows": {
+   "B1c|1.5|a_r2": {
+    "tip_tremor_mm": {
+     "mean": 0.8302045132248523,
+     "lo": 0.7798524885220892,
+     "hi": 0.8742525092263154,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.1504263093248394,
+     "lo": 0.12925062550984517,
+     "hi": 0.1718264849116906,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.9237660782450694,
+     "lo": 0.9087279453218077,
+     "hi": 0.9361515978072783,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.929235220323833,
+     "lo": 1.7624658496203107,
+     "hi": 2.1287288780726064,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 710.3272749133112,
+     "lo": 661.4707570620747,
+     "hi": 754.2798939577199,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 1.170144311232924,
+     "lo": 0.7039379501826974,
+     "hi": 1.6550955001182643,
+     "n_writers": 5
+    }
+   },
+   "B1c|1.5|oracle": {
+    "tip_tremor_mm": {
+     "mean": 0.6909407327985386,
+     "lo": 0.6093883765837433,
+     "hi": 0.7606332753833591,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.4003638787398568,
+     "lo": 0.39081388436998576,
+     "hi": 0.40741590674241224,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.152077704117514,
+     "lo": 1.135186118469428,
+     "hi": 1.1706326518566859,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.711538344294892,
+     "lo": 2.2946171928449823,
+     "hi": 3.235919029667265,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 595.0949660443719,
+     "lo": 524.2722076875523,
+     "hi": 655.1480503249388,
+     "n_writers": 5
+    },
+    "words_read": {
+     "mean": 4.000000000000001,
+     "lo": 3.159090909090909,
+     "hi": 4.718181818181818,
+     "n_writers": 5
+    },
+    "gain_read": {
+     "mean": 3.2409090909090907,
+     "lo": 2.640909090909091,
+     "hi": 3.840909090909091,
+     "n_writers": 5
+    },
+    "dec055_mechanism_line": {
+     "gain_mean": 3.2409090909090907,
+     "gain_lo": 2.640909090909091,
+     "passes": true,
+     "rule": "+2 words of 10 over the ordinary pen, 95 % writer-bootstrap interval above 0 (DEC-055's words line applied to perfect knowledge)"
+    },
+    "gain_via_curve": {
+     "mean": 1.9524474352039831,
+     "lo": 1.2774490866433053,
+     "hi": 2.6875504048357115,
+     "n_writers": 5
+    }
+   },
+   "B1k|1.0587|a_r2": {
+    "tip_tremor_mm": {
+     "mean": 1.0224995047893244,
+     "lo": 0.9601562229114083,
+     "hi": 1.07716621867974,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.34852426636664824,
+     "lo": 0.3328496200394013,
+     "hi": 0.36612737053823896,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.7918409428221064,
+     "lo": 0.7778896112093461,
+     "hi": 0.804677425627548,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.358634908405025,
+     "lo": 1.2321260749925202,
+     "hi": 1.5007146662941409,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 868.9629017259671,
+     "lo": 808.5042632414343,
+     "hi": 922.7389813136635,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 0.5995439993141161,
+     "lo": 0.18934877658029733,
+     "hi": 1.0611480626981522,
+     "n_writers": 5
+    }
+   },
+   "B1k|1.0587|oracle": {
+    "tip_tremor_mm": {
+     "mean": 0.9742068481124597,
+     "lo": 0.902872099251659,
+     "hi": 1.0351522288248443,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.6071716820877624,
+     "lo": 0.5892220850765459,
+     "hi": 0.625783611581974,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.907476323755712,
+     "lo": 0.8924660899154334,
+     "hi": 0.9246279954672214,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.4958529710106512,
+     "lo": 1.3325285742261859,
+     "hi": 1.6825972561767888,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 827.9429679163183,
+     "lo": 760.4662765046717,
+     "hi": 885.6869709047239,
+     "n_writers": 5
+    },
+    "words_read": {
+     "mean": 2.4,
+     "lo": 1.4863636363636363,
+     "hi": 3.2590909090909093,
+     "n_writers": 5
+    },
+    "gain_read": {
+     "mean": 1.640909090909091,
+     "lo": 0.657840909090909,
+     "hi": 2.381818181818182,
+     "n_writers": 5
+    },
+    "dec055_mechanism_line": {
+     "gain_mean": 1.640909090909091,
+     "gain_lo": 0.657840909090909,
+     "passes": false,
+     "rule": "+2 words of 10 over the ordinary pen, 95 % writer-bootstrap interval above 0 (DEC-055's words line applied to perfect knowledge)"
+    },
+    "gain_via_curve": {
+     "mean": 0.7367620619197419,
+     "lo": 0.30551736799332,
+     "hi": 1.2233296847754387,
+     "n_writers": 5
+    }
+   },
+   "B1k|1.5|oracle": {
+    "tip_tremor_mm": {
+     "mean": 0.6906015064605944,
+     "lo": 0.6090363890588936,
+     "hi": 0.7602428057199362,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.4003820499023257,
+     "lo": 0.3908269291804972,
+     "hi": 0.40745090970685427,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.153202983298009,
+     "lo": 1.1362911923477648,
+     "hi": 1.1717911975124502,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.7132462860995568,
+     "lo": 2.296615100128002,
+     "hi": 3.237980781142235,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 595.101158726999,
+     "lo": 524.3394175812884,
+     "hi": 655.0635013280962,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 1.9541553770086473,
+     "lo": 1.279565430232223,
+     "hi": 2.68896838116202,
+     "n_writers": 5
+    }
+   },
+   "B1k|1|a_r2": {
+    "tip_tremor_mm": {
+     "mean": 1.05687792119231,
+     "lo": 0.9949004468849914,
+     "hi": 1.111327288269936,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.38403138457003877,
+     "lo": 0.36779631198092694,
+     "hi": 0.40025749305536296,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.7661655370149709,
+     "lo": 0.7524451123294736,
+     "hi": 0.7791836254940612,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.2811733073902247,
+     "lo": 1.163731110666734,
+     "hi": 1.4110477647295965,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 897.6730894958522,
+     "lo": 836.741706343475,
+     "hi": 951.6796531252585,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 0.5220823982993155,
+     "lo": 0.12314745165825369,
+     "hi": 0.9797872676128041,
+     "n_writers": 5
+    }
+   },
+   "B1k|1|oracle": {
+    "tip_tremor_mm": {
+     "mean": 1.0169537852802708,
+     "lo": 0.9478416727185142,
+     "hi": 1.0762824461481402,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.6373135900978362,
+     "lo": 0.617906397740451,
+     "hi": 0.6574191954542946,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.8681358977457545,
+     "lo": 0.8538686368585549,
+     "hi": 0.8845689561553425,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.3829535118313885,
+     "lo": 1.2369232904832224,
+     "hi": 1.5439673536992156,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 863.5162941573392,
+     "lo": 796.9724379825724,
+     "hi": 920.5075067343744,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 0.6238626027404794,
+     "lo": 0.21235538265444331,
+     "hi": 1.102799844398983,
+     "n_writers": 5
+    }
+   },
+   "revJ|1.5|oracle": {
+    "tip_tremor_mm": {
+     "mean": 0.6742271885314872,
+     "lo": 0.5949586659696373,
+     "hi": 0.7401322190455346,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.4010869439052174,
+     "lo": 0.39169061285528267,
+     "hi": 0.40819632221421615,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.1713558173558425,
+     "lo": 1.1574185670556398,
+     "hi": 1.1854811938792416,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.8003462670198305,
+     "lo": 2.3832291918848534,
+     "hi": 3.3385830360991107,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 578.85921908989,
+     "lo": 510.3005441338026,
+     "hi": 633.9682817518094,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 2.0412553579289217,
+     "lo": 1.3600642712645346,
+     "hi": 2.7765542512457175,
+     "n_writers": 5
+    }
+   },
+   "revJ|1|oracle": {
+    "tip_tremor_mm": {
+     "mean": 1.0012295449959852,
+     "lo": 0.935157292405411,
+     "hi": 1.0561975992152095,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.6379596537345106,
+     "lo": 0.6185041618705549,
+     "hi": 0.6581076135543947,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.8822882782554714,
+     "lo": 0.8709920896725792,
+     "hi": 0.895136296720095,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.4151817946264444,
+     "lo": 1.2735180145228422,
+     "hi": 1.5689583166842744,
+     "n_writers": 5
+    },
+    "bb_um": {
+     "mean": 848.357445533431,
+     "lo": 785.0571181558287,
+     "hi": 899.6133280874892,
+     "n_writers": 5
+    },
+    "gain_via_curve": {
+     "mean": 0.6560908855355354,
+     "lo": 0.24773980850137384,
+     "hi": 1.1276288721091103,
+     "n_writers": 5
+    }
+   }
+  },
+  "repro_vs_studyF_max_abs_mm": 0.0,
+  "ordinary_words_of_10": {
+   "mean": 0.759090909090909,
+   "lo": 0.3727272727272727,
+   "hi": 1.0772727272727274,
+   "n_writers": 5
+  },
+  "held_tip_tremor_mm": {
+   "revJ": {
+    "mean": 1.8470391583870582,
+    "lo": 1.80286833389606,
+    "hi": 1.893841267712115,
+    "n_writers": 5
+   },
+   "B1k": {
+    "mean": 1.857134561775822,
+    "lo": 1.810797862830676,
+    "hi": 1.9074566720245474,
+    "n_writers": 5
+   },
+   "B1c": {
+    "mean": 1.8584855837020744,
+    "lo": 1.8120861697191344,
+    "hi": 1.9088033152877713,
+    "n_writers": 5
+   }
+  },
+  "q_oracle_share_above_1p5mm": {
+   "revJ": {
+    "mean": 0.37193525137016004,
+    "lo": 0.36367067010994064,
+    "hi": 0.3795719436759161,
+    "n_writers": 5
+   },
+   "B1k": {
+    "mean": 0.3712622847088153,
+    "lo": 0.3629568611408974,
+    "hi": 0.37902203081327146,
+    "n_writers": 5
+   },
+   "B1c": {
+    "mean": 0.3712527395249049,
+    "lo": 0.36294415914241973,
+    "hi": 0.37899820408535206,
+    "n_writers": 5
+   }
+  }
+ },
+ "wall_s_total": 1000.811799287796
+}

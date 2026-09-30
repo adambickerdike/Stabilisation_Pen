@@ -334,6 +334,25 @@ def run_gap(splits=("tuning", "test"), quick: bool = False, log=CM.log) -> Dict:
     return {"wall_s": time.time() - t0}
 
 
+def run_sensing(quick: bool = False, log=CM.log) -> Dict:
+    """Study F's page sensing check (readable.gap.sensing_check('page'): a linear predictor on the page position of the
+    tremor alone, ideal and DeltaPen-class sensors, tuning split, cross-fitted) with version 2 installed."""
+    from readable import gap as G
+    from readable import stages as SG
+    install_v2(log)
+    p = OUT / ("quick_sensing_page.json" if quick else "sensing_page.json")
+    if p.exists():
+        return CM.jload(p)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    ar = CM.jload(F_CACHE / "gap" / "predictor.json")
+    if ar is None:
+        raise RuntimeError("study F's AR predictor cache (readable/build/cache/gap/predictor.json) is missing")
+    SG.load_predictor = lambda q: ar          # always study F's fitted predictor (read-only), also in a quick run
+    out = G.sensing_check("page", quick=quick, log=log)
+    CM.jdump(p, out, indent=None)
+    return out
+
+
 # ------------------------------------------------------------------ aggregation
 def _load_dir(d: Path) -> Dict[str, Dict]:
     return {p.stem: json.loads(p.read_text()) for p in sorted(Path(d).glob("*.json"))}
@@ -509,12 +528,24 @@ def summarise_gap(d: Path = OUT / "gap") -> Dict:
                       "page_dependent": _page_dependent(k), "n_writers": len(acc_v2)}
         out["splits"][split] = {"n_cases": len(cases), "configs": tab,
                                 "page_independent_max_abs_change_mm": unchanged_max}
+    pub = ((CM.jload(REPO_ROOT / "results" / "readable" / "readable.json") or {}).get("gap") or {})
+    out["published_v1"] = {sp: {k: (v.get("tip_tremor_mm") or {}) for k, v in ((pub.get(sp) or {}).get("configs") or {}).items()}
+                           for sp in ("tuning", "test")}
+    sc_v2 = CM.jload(OUT / "sensing_page.json")
+    sc_v1 = (pub.get("sensing_check") or {}).get("page") or {}
+    out["sensing_check_page"] = {
+        ver: {v: {"signal_residual_mm": x.get("signal_residual_mm"), "tip_tremor_mm": x.get("tip_tremor_mm"), "n": x.get("n")}
+              for v, x in ((sc or {}).get("variants") or {}).items()}
+        for ver, sc in (("v1_published", sc_v1), ("v2", sc_v2)) if sc}
     return out
 
 
 def _page_dependent(k: str) -> bool:
-    """Configurations that read the DeltaPen-class page streams (study F's naming)."""
+    """Configurations that read the DeltaPen-class page position (study F's naming).  The real-data network ('net_*',
+    realtrack/netmodel.features) reads the IMU and the contact channel only, so the page model cannot move it."""
     if k in ("oracle", "held") or k.startswith("pred_") or k.startswith("fir_") or k.endswith("idealpage"):
+        return False
+    if k.startswith("net_"):
         return False
     if k == "page_ar_trem_ideal":
         return False
@@ -539,6 +570,7 @@ def main(argv=None) -> int:
     ap.add_argument("--re", action="store_true", help="R and E cases")
     ap.add_argument("--notes", default="", help="comma list of test notes (R/E)")
     ap.add_argument("--gap", action="store_true", help="F's gap cases")
+    ap.add_argument("--sensing", action="store_true", help="F's page sensing check")
     ap.add_argument("--quick", action="store_true")
     ap.add_argument("--summarise", action="store_true")
     a = ap.parse_args(argv)
@@ -546,6 +578,8 @@ def main(argv=None) -> int:
         run_re([int(x) for x in a.notes.split(",") if x.strip()] or None, a.quick)
     if a.gap:
         run_gap(quick=a.quick)
+    if a.sensing:
+        run_sensing(quick=a.quick)
     if a.summarise:
         install_v2()
         s = summarise(write=not a.quick)
