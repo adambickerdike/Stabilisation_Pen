@@ -1,0 +1,127 @@
+{
+ "currency": "USD",
+ "eur_rate_assumption": [
+  1.05,
+  1.25
+ ],
+ "note": "sums of line ranges; MANUFACTURER lines enter at the seen price (EUR lines at the rate range); ASSUMPTION lines at their range; shipping, tax, duty and labour excluded",
+ "by_build": {
+  "B0": {
+   "name": "DAQ-1 (shared data acquisition, one clock)",
+   "core_low": 859,
+   "core_high": 1179,
+   "instruments_if_lab_lacks_low": 1716,
+   "instruments_if_lab_lacks_high": 2416,
+   "share_of_core_priced_as_MANUFACTURER": 0.779,
+   "n_lines": 15
+  },
+  "B1": {
+   "name": "R9 contact and ink rig (G1)",
+   "core_low": 5686,
+   "core_high": 11746,
+   "instruments_if_lab_lacks_low": 0,
+   "instruments_if_lab_lacks_high": 0,
+   "share_of_core_priced_as_MANUFACTURER": 0.28,
+   "n_lines": 25
+  },
+  "B2": {
+   "name": "G2 coupons (force constant, wires, ball guides, anchor, counter-face bench)",
+   "core_low": 5808,
+   "core_high": 17936,
+   "instruments_if_lab_lacks_low": 1040,
+   "instruments_if_lab_lacks_high": 5040,
+   "share_of_core_priced_as_MANUFACTURER": 0.142,
+   "n_lines": 33
+  },
+  "B3": {
+   "name": "Grounded five-bar demonstrator",
+   "core_low": 987,
+   "core_high": 2103,
+   "instruments_if_lab_lacks_low": 0,
+   "instruments_if_lab_lacks_high": 0,
+   "share_of_core_priced_as_MANUFACTURER": 0.573,
+   "n_lines": 18
+  },
+  "B4": {
+   "name": "R10 page-sensing rig",
+   "core_low": 628,
+   "core_high": 2475,
+   "instruments_if_lab_lacks_low": 0,
+   "instruments_if_lab_lacks_high": 0,
+   "share_of_core_priced_as_MANUFACTURER": 0.1,
+   "n_lines": 12
+  }
+ },
+ "by_stage": {
+  "S0": {
+   "core_low": 4352,
+   "core_high": 7732,
+   "with_instruments_low": 6068,
+   "with_instruments_high": 10148
+  },
+  "S1": {
+   "core_low": 2193,
+   "core_high": 5193,
+   "with_instruments_low": 2193,
+   "with_instruments_high": 5193
+  },
+  "S2": {
+   "core_low": 5808,
+   "core_high": 17936,
+   "with_instruments_low": 6848,
+   "with_instruments_high": 22976
+  },
+  "S2b": {
+   "core_low": 150,
+   "core_high": 600,
+   "with_instruments_low": 150,
+   "with_instruments_high": 600
+  },
+  "S3": {
+   "core_low": 987,
+   "core_high": 2103,
+   "with_instruments_low": 987,
+   "with_instruments_high": 2103
+  },
+  "S4": {
+   "core_low": 628,
+   "core_high": 2475,
+   "with_instruments_low": 628,
+   "with_instruments_high": 2475
+  }
+ },
+ "mvp": {
+  "what": "DAQ-1 + R9 minimum viable G1 build (dead-weight F_c, no encoders, printed arc; K3D40 +-2 N and LSB200 100 g)",
+  "core_low": 4352,
+  "core_high": 7732,
+  "with_hand_tools_low": 4602,
+  "with_hand_tools_high": 8382,
+  "manufacturer_priced_low": 2220,
+  "largest_assumption_lines": [
+   [
+    "3-axis force sensor +-2 N under the paper (N and friction in",
+    900,
+    1900
+   ],
+   [
+    "In-line axial load cell 100 g (1 N), 2 mV/V",
+    450,
+    900
+   ],
+   [
+    "Cartridge frame with leaf clamps, refill holder/collet (D1 2",
+    150,
+    500
+   ],
+   [
+    "Refills: Schmidt S 635 M x20, easyFLOW 9000 x10, P 8126 x10,",
+    70,
+    360
+   ]
+  ]
+ },
+ "all_builds_core_low": 13968,
+ "all_builds_core_high": 35439,
+ "all_builds_instruments_low": 2756,
+ "all_builds_instruments_high": 7456
+}

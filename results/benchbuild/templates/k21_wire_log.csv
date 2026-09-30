@@ -1,0 +1,2 @@
+# failure = open circuit or > 2 % resistance step over the running median (pipeline_check.wire_failure); 50x inspection at every stop
+coupon_id,wire_id,clamp_type,wire_diameter_mm,free_length_mm,stop_mm,cycles,R_4w_ohm,T_clamp_C,I_A,drive_Hz,status,note

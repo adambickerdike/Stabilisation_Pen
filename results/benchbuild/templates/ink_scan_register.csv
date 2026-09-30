@@ -1,0 +1,2 @@
+# blind codes kept outside the analysis tree (bench_protocols.md s0.6); p0/p1 from fiducial registration -> rig.ink.analyse_line
+sheet_code,blind_code,record_id,refill_type,paper,theta_deg,v_mm_s,Fc_profile,line_id,p0_row,p0_col,p1_row,p1_col,dpi,scanner,scan_utc,scan_file_sha256

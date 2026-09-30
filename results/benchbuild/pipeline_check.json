@@ -1,0 +1,227 @@
+{
+ "evidence_status": "SIMULATION (synthetic data through the file formats and rig/ analyses; no rig exists)",
+ "generated_utc": "2026-09-30T13:11:31Z",
+ "steps": {
+  "A_R9_G1_chain": {
+   "files": [
+    "raw.bin (write-once)",
+    "session.npz",
+    "session.json",
+    "r9_axial_cell_calibration.csv",
+    "r9_plate_calibration.csv",
+    "s2r-bench-1: manifest.json + strokes/nnnn_k.npz + nnnn.json"
+   ],
+   "readers": [
+    "python3 -m rig.logger --replay",
+    "rig.logger.load_session",
+    "rig.convert.to_units (R9 map)",
+    "rig.convert.events_by_kind / split_by_markers",
+    "rig.calib.fit_bridge / fit_plate / apply_plate / fit_guide_stiffness",
+    "rig.contact.analyse_stroke",
+    "rig.convert.to_bench",
+    "s2r.io.load"
+   ],
+   "logger_stats": {
+    "frames": 3205,
+    "crc_errors": 0,
+    "missing_frames": 0,
+    "samples": 3201,
+    "events": 3
+   },
+   "n_conditions": 3,
+   "mu_worst_rel_error": 0.00801159944201879,
+   "R_perp_over_Fc_worst_rel_error": 0.005378625488825395,
+   "closure_worst_mN": 0.05537676630654187,
+   "bench_round_trip_identical": true,
+   "pass": true,
+   "gap": "rig.contact.analyse_stroke takes one time vector: forces logged at t_adc_s must be resampled onto the encoder clock t_s first (done here with np.interp); rig.convert does not do it",
+   "seconds": 0.48
+  },
+  "B_ink_scan": {
+   "files": [
+    "scan_<code>.tif (16-bit lossless, R3)",
+    "ink_scan_register.csv (line end points, dpi, blind code)"
+   ],
+   "readers": [
+    "PIL.Image.open -> numpy",
+    "rig.ink.analyse_line",
+    "rig.ink.minimum_ink_force"
+   ],
+   "F_min_N": 0.14105022222222222,
+   "truth_N": 0.14514143820161507,
+   "abs_error_N": 0.004091215979392854,
+   "pass": true,
+   "note": "force along the line comes from the R9 record (force_of_s); line end points from the fiducial registration",
+   "seconds": 0.22
+  },
+  "C_coupon_Km_map": {
+   "files": [
+    "t07_force_map.csv"
+   ],
+   "readers": [
+    "csv -> per-node arrays (here)",
+    "rig.coupon.km_map"
+   ],
+   "Km_centre": 0.6621685400187731,
+   "Km_centre_truth": 0.6617361534948089,
+   "Kf_worst_rel_error": 0.0024901523966596173,
+   "pass": true,
+   "seconds": 0.01
+  },
+  "D_anchor_stiffness": {
+   "files": [
+    "anchor_stiffness.csv (displacement against balance reading)"
+   ],
+   "readers": [
+    "csv (here)",
+    "rig.calib.fit_guide_stiffness (slope = axial stiffness)"
+   ],
+   "k_N_per_m": 95.97201140823547,
+   "u_k": 0.051575795934848866,
+   "truth": 96.0,
+   "pass": true,
+   "seconds": 0.0
+  },
+  "E_guide_drag": {
+   "files": [
+    "guide_drag_sweep.csv"
+   ],
+   "readers": [
+    "csv (here)",
+    "guide_drag() in this file (no rig/ function)"
+   ],
+   "drag_mN": 5.9826039172339165,
+   "drag_sd_mN": 0.10328504018844221,
+   "spring_slope_mN_per_mm": 2.129571669620497,
+   "truth_drag_mN": 6.0,
+   "truth_spring_mN_per_mm": 2.1,
+   "pass": true,
+   "seconds": 0.02
+  },
+  "F_wire_log": {
+   "files": [
+    "k21_wire_log.csv"
+   ],
+   "readers": [
+    "csv (here)",
+    "wire_failure() in this file (no rig/ function)"
+   ],
+   "detected": {
+    "W1": null,
+    "W2": 31400000
+   },
+   "truth": {
+    "W1": null,
+    "W2": 31400000
+   },
+   "pass": true,
+   "seconds": 0.02
+  },
+  "G_thermal": {
+   "files": [
+    "thermal_run.csv"
+   ],
+   "readers": [
+    "csv (here)",
+    "rig.thermal.fit_2node"
+   ],
+   "R12": 35.00315860000045,
+   "R2a": 55.38383425946701,
+   "worst_rel_error": 0.0069788047175820545,
+   "pass": true,
+   "seconds": 0.26
+  },
+  "H_fivebar": {
+   "files": [
+    "fivebar_encoder_truth.csv",
+    "fivebar_force_map.csv"
+   ],
+   "readers": [
+    "csv (here)",
+    "fivebar_fk() in this file (no rig/ function)",
+    "wholepen.grounded.FiveBar.kinematics (J)"
+   ],
+   "endpoint_error_rms_um": 11.59362421062085,
+   "endpoint_error_max_um": 18.681380607540692,
+   "output_torque_for_0p4N_max_mNm": 23.891278205115057,
+   "pass": true,
+   "note": "14-bit output encoders and ideal link lengths; the bench fits link lengths and encoder offsets against camera truth before judging (EXP-BB06)",
+   "seconds": 0.02
+  },
+  "I_R10_page_sensing": {
+   "files": [
+    "raw.bin with SAMPLE (encoder truth) and PAGE frames",
+    "session.npz",
+    "session.json",
+    "r10_pose_matrix.csv (run plan)"
+   ],
+   "readers": [
+    "python3 -m rig.logger --replay",
+    "rig.convert.to_units (R10 map)",
+    "PAGE frame time base (here: (t_cyc - t0)/f_cpu)",
+    "rig.pagesense.qualify"
+   ],
+   "latency_ms": 1.598533043857762,
+   "latency_truth_ms": 1.6,
+   "per_sample_noise_um": 6.237382041955401,
+   "window_mag_median_um": 4.782609540053542,
+   "n_page_frames": 5900,
+   "pass": true,
+   "gap": "rig.convert converts SAMPLE frames only; PAGE and IMU frames need their time base mapped onto the SAMPLE clock (3 lines, shown here) before rig.pagesense",
+   "seconds": 1.74
+  },
+  "J_sync": {
+   "files": [
+    "device log with its own time stamps of the SYNC edges (five-bar controller, page-sensor MCU)"
+   ],
+   "readers": [
+    "rig.sync.decode_widths",
+    "rig.sync.fit_clock"
+   ],
+   "residual_max_us": 5.896223001400358,
+   "pass": true,
+   "seconds": 0.0
+  },
+  "K_verdict": {
+   "readers": [
+    "rig.uncertainty.decide"
+   ],
+   "example_simple": {
+    "value": 0.118,
+    "limit": 0.3,
+    "direction": "<=",
+    "U": 0.006,
+    "TUR": 30.333333333333332,
+    "rule": "simple",
+    "verdict": "pass"
+   },
+   "example_guarded": {
+    "value": 0.29,
+    "limit": 0.3,
+    "direction": "<=",
+    "U": 0.006,
+    "TUR": 1.666666666666668,
+    "rule": "guarded",
+    "verdict": "pass"
+   },
+   "pass": true,
+   "seconds": 0.0
+  }
+ },
+ "n_steps": 11,
+ "n_pass": 11,
+ "seconds": 2.8,
+ "meta": {
+  "evidence_status": "SIMULATION (synthetic data through the file formats and rig/ analyses; no rig exists)",
+  "generated_utc": "2026-09-30T13:11:34+00:00",
+  "git_revision": "a407fc4-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "pipeline_check.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": "fixed per step (see this file)",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1"
+ }
+}

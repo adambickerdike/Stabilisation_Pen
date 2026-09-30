@@ -1,0 +1,12 @@
+# analysis/verdict.yaml template (validation/records/README.md s3): one entry per criterion
+- id: AC-T01-01
+  measured_value: null
+  unit: mN
+  expanded_uncertainty_k2: null
+  budget_ref: rig/uncertainty.py axial_force_budget
+  decision_rule: simple      # simple (TUR >= 4) | guarded (bench_protocols.md s0.5)
+  tur: null
+  verdict: null              # pass | fail | inconclusive (rig.uncertainty.decide)
+  prediction: {file: null, value: null}
+  analysis_commit: null
+  notes: ""

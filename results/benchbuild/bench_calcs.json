@@ -1,0 +1,402 @@
+{
+ "evidence_status": "CALCULATION (study H bench build plan); nothing measured",
+ "wire_modes_and_fatigue_drive": {
+  "label": "CALCULATION (Rayleigh first mode of a clamped-clamped wire with tension; single-mode base-excitation estimate of the clamp stress rise, ASSUMPTION); inputs MFR AMF-19, DEC-063, results/improvement/mechanics/mechanics_study.json",
+  "EI_Nm2": 6.263550353094652e-07,
+  "mu_kg_per_m": 6.487388829662923e-05,
+  "cases": [
+   {
+    "case": "Rev K wire, 26.8 mm, no preload",
+    "L_mm": 26.8,
+    "tension_N": 0.0,
+    "f1_beam_only_Hz": 487.07052587933595,
+    "f1_with_tension_Hz": 487.07052587933595,
+    "basis": "DEC-063 geometry; preload 0",
+    "drive": [
+     {
+      "drive_Hz": 60,
+      "ratio": 0.12318544607411547,
+      "clamp_stress_rise": 0.025269894675609632,
+      "hours_for_43p2M_cycles": 200.0
+     },
+     {
+      "drive_Hz": 100,
+      "ratio": 0.20530907679019245,
+      "clamp_stress_rise": 0.07217112390899776,
+      "hours_for_43p2M_cycles": 120.0
+     },
+     {
+      "drive_Hz": 150,
+      "ratio": 0.30796361518528864,
+      "clamp_stress_rise": 0.17183755104258733,
+      "hours_for_43p2M_cycles": 80.0
+     },
+     {
+      "drive_Hz": 200,
+      "ratio": 0.4106181535803849,
+      "clamp_stress_rise": 0.33259362149218935,
+      "hours_for_43p2M_cycles": 60.0
+     }
+    ],
+    "max_drive_Hz_at_0p2_f1": 97.41410517586719,
+    "hours_at_0p2_f1": 123.18544607411546
+   },
+   {
+    "case": "Rev K wire, 26.8 mm, 0.05 N preload",
+    "L_mm": 26.8,
+    "tension_N": 0.05,
+    "f1_beam_only_Hz": 487.07052587933595,
+    "f1_with_tension_Hz": 762.7452663542444,
+    "basis": "AC-K21-03's preload limit",
+    "drive": [
+     {
+      "drive_Hz": 60,
+      "ratio": 0.07866322171592999,
+      "clamp_stress_rise": 0.010211346837316356,
+      "hours_for_43p2M_cycles": 200.0
+     },
+     {
+      "drive_Hz": 100,
+      "ratio": 0.13110536952654997,
+      "clamp_stress_rise": 0.02868234322537059,
+      "hours_for_43p2M_cycles": 120.0
+     },
+     {
+      "drive_Hz": 150,
+      "ratio": 0.19665805428982494,
+      "clamp_stress_rise": 0.06597764532757723,
+      "hours_for_43p2M_cycles": 80.0
+     },
+     {
+      "drive_Hz": 200,
+      "ratio": 0.26221073905309994,
+      "clamp_stress_rise": 0.12108228186546338,
+      "hours_for_43p2M_cycles": 60.0
+     }
+    ],
+    "max_drive_Hz_at_0p2_f1": 152.5490532708489,
+    "hours_at_0p2_f1": 78.66322171592998
+   },
+   {
+    "case": "reach wire, 34 mm, 5 mN assembly tension",
+    "L_mm": 34.0,
+    "tension_N": 0.005,
+    "f1_beam_only_Hz": 302.6241647989396,
+    "f1_with_tension_Hz": 336.13737109039016,
+    "basis": "results/improvement/mechanics/mechanics_study.json",
+    "drive": [
+     {
+      "drive_Hz": 60,
+      "ratio": 0.1784984508130323,
+      "clamp_stress_rise": 0.05397284956182021,
+      "hours_for_43p2M_cycles": 200.0
+     },
+     {
+      "drive_Hz": 100,
+      "ratio": 0.2974974180217205,
+      "clamp_stress_rise": 0.15924133970065066,
+      "hours_for_43p2M_cycles": 120.0
+     },
+     {
+      "drive_Hz": 150,
+      "ratio": 0.4462461270325808,
+      "clamp_stress_rise": 0.40778738081590293,
+      "hours_for_43p2M_cycles": 80.0
+     },
+     {
+      "drive_Hz": 200,
+      "ratio": 0.594994836043441,
+      "clamp_stress_rise": 0.8987737900503858,
+      "hours_for_43p2M_cycles": 60.0
+     }
+    ],
+    "max_drive_Hz_at_0p2_f1": 67.22747421807803,
+    "hours_at_0p2_f1": 178.49845081303232
+   },
+   {
+    "case": "reach wire, 34 mm, 11 mN at the 1.7 mm stop",
+    "L_mm": 34.0,
+    "tension_N": 0.0111,
+    "f1_beam_only_Hz": 302.6241647989396,
+    "f1_with_tension_Hz": 372.9675692791374,
+    "basis": "same file, worst_corner tension_total_N",
+    "drive": [
+     {
+      "drive_Hz": 60,
+      "ratio": 0.1608718959559045,
+      "clamp_stress_rise": 0.04357040977904078,
+      "hours_for_43p2M_cycles": 200.0
+     },
+     {
+      "drive_Hz": 100,
+      "ratio": 0.2681198265931742,
+      "clamp_stress_rise": 0.12702857692016478,
+      "hours_for_43p2M_cycles": 120.0
+     },
+     {
+      "drive_Hz": 150,
+      "ratio": 0.40217973988976125,
+      "clamp_stress_rise": 0.3164535040800408,
+      "hours_for_43p2M_cycles": 80.0
+     },
+     {
+      "drive_Hz": 200,
+      "ratio": 0.5362396531863484,
+      "clamp_stress_rise": 0.6619255059358977,
+      "hours_for_43p2M_cycles": 60.0
+     }
+    ],
+    "max_drive_Hz_at_0p2_f1": 74.59351385582748,
+    "hours_at_0p2_f1": 160.87189595590453
+   }
+  ],
+  "reading": "bench_protocols.md's 'about 60 h at 200 Hz' raises the clamp stress of a 34 mm reach wire by ~90 % over the quasi-static stress the pen sees (tremor <= 12 Hz), and a 26.8 mm Rev K wire by 12-33 %; at <= 0.2 x the measured first mode the rise is <= ~7 %: 43.2 M cycles then take 3-8 days per batch"
+ },
+ "anchor_foil": {
+  "label": "CALCULATION (fixed-guided beams; E 193 GPa ASSUMPTION as the pass's CAD); 25.4 and 38.1 um are the US 0.001/0.0015 inch shim gauges",
+  "k_design_N_per_m": 76.61921296296293,
+  "sensitivity": {
+   "dk_over_k_per_dt_over_t": 3.0,
+   "dk_over_k_per_dw_over_w": 1.0,
+   "dk_over_k_per_dL_over_L": -3.0
+  },
+  "example": "a +-1 um foil thickness error on 35 um moves the beam stiffness by +-8.6 %; measure the foil, then set the artwork's beam width",
+  "table": [
+   {
+    "foil_um": 25.4,
+    "k_beams_N_per_m_at_w0p5mm": 29.284290296296287,
+    "beam_width_mm_for_76p6_N_per_m": 1.3081965140308234
+   },
+   {
+    "foil_um": 30.0,
+    "k_beams_N_per_m_at_w0p5mm": 48.24999999999999,
+    "beam_width_mm_for_76p6_N_per_m": 0.7939814814814816
+   },
+   {
+    "foil_um": 35.0,
+    "k_beams_N_per_m_at_w0p5mm": 76.61921296296293,
+    "beam_width_mm_for_76p6_N_per_m": 0.5
+   },
+   {
+    "foil_um": 38.1,
+    "k_beams_N_per_m_at_w0p5mm": 98.83447974999999,
+    "beam_width_mm_for_76p6_N_per_m": 0.3876137819350587
+   },
+   {
+    "foil_um": 40.0,
+    "k_beams_N_per_m_at_w0p5mm": 114.37037037037034,
+    "beam_width_mm_for_76p6_N_per_m": 0.3349609375
+   },
+   {
+    "foil_um": 50.0,
+    "k_beams_N_per_m_at_w0p5mm": 223.37962962962956,
+    "beam_width_mm_for_76p6_N_per_m": 0.17149999999999996
+   }
+  ],
+  "beam_stress_at_50um_axial_MPa": 28.145833333333332,
+  "note": "bending stress of a fixed-guided beam 3 E t delta / L^2 at the 50 um anchor motion of the worst corner (mechanics_study.json): far below 301 full-hard's 540 MPa fatigue strength (LIT AMF-20)"
+ },
+ "candidate_selection_thresholds": {
+  "label": "CALCULATION: linear interpolation of sqrt(worst copper loss) between the pass's duty-screen points (20/40/80 mN residual, 0.7 field scale, 4/8/12 Hz full-radius motion; results/improvement/mechanics/mechanics_study.json); the 0.15 W allocation is the pass's ASSUMPTION",
+  "candidates": [
+   {
+    "radius_mm": 1.058695965882101,
+    "worst_copper_W_by_residual_mN": {
+     "20": 0.029882856128670206,
+     "40": 0.09021657458848262,
+     "80": 0.33155144842773226
+    },
+    "residual_mN_at_0p15W": 52.62507053704914
+   },
+   {
+    "radius_mm": 1.5,
+    "worst_copper_W_by_residual_mN": {
+     "20": 0.08088128639137677,
+     "40": 0.1889560583505218,
+     "80": 0.6212551461871018
+    },
+    "residual_mN_at_0p15W": 33.6933878030327
+   },
+   {
+    "radius_mm": 2.0,
+    "worst_copper_W_by_residual_mN": {
+     "20": 0.4872170432228853,
+     "40": 0.866219226321505,
+     "80": 2.382227958715982
+    },
+    "residual_mN_at_0p15W": "below 20 mN"
+   },
+   {
+    "radius_mm": 2.5,
+    "worst_copper_W_by_residual_mN": {
+     "20": 2.7992919401350194,
+     "40": 4.137363127285431,
+     "80": 9.489647875887073
+    },
+    "residual_mN_at_0p15W": "below 20 mN"
+   },
+   {
+    "radius_mm": 3.0,
+    "worst_copper_W_by_residual_mN": {
+     "20": 10.264927605793309,
+     "40": 13.806831031044043,
+     "80": 27.974444732046976
+    },
+    "residual_mN_at_0p15W": "below 20 mN"
+   }
+  ],
+  "use": "provisional reading only: DEC-096 re-runs the duty screen (python -m revk.improve) with the measured residual load, force map and guide drag instead of this interpolation"
+ },
+ "gravity_lateral_load": {
+  "label": "CALCULATION: component of the moving mass's weight across the pen axis, m g cos(theta)",
+  "rows": [
+   {
+    "moving_mass_g": 3.57,
+    "source": "1.059 mm candidate moving mass (mechanics_study.json, ASSUMPTION estimate)",
+    "lateral_mN": {
+     "35": 28.688097149475787,
+     "50": 22.511514830159076,
+     "75": 9.064282951866952
+    }
+   },
+   {
+    "moving_mass_g": 3.67,
+    "source": "1.5 mm candidate moving mass (mechanics_study.json, ASSUMPTION estimate)",
+    "lateral_mN": {
+     "35": 29.491685304923287,
+     "50": 23.142089475261574,
+     "75": 9.318184435112524
+    }
+   }
+  ]
+ },
+ "residual_sum_35deg": {
+  "label": "CALCULATION: sum of magnitudes (conservative: the duty screen applies residual_N along the motion direction, gravity has a fixed direction); inputs are themselves CALCULATIONS",
+  "parts": {
+   "gravity_35deg_mN": 29.491685304923287,
+   "counterface_residual_p95_mN": {
+    "Rev K head (docs/revK_design.md s3.4, CALC)": 11.2,
+    "study B face (docs/balanced_nib.md s1, CALC)": 13.1
+   },
+   "guide_drag_4N_mN": 8.07
+  },
+  "sum_mN": {
+   "Rev K head (docs/revK_design.md s3.4, CALC)": 48.76168530492328,
+   "study B face (docs/balanced_nib.md s1, CALC)": 50.66168530492329
+  },
+  "reading": "about 49-51 mN, above the ~34 mN at which the 1.5 mm candidate reaches 0.15 W and near the ~53 mN of the 1.059 mm candidate: the measured residual and drag decide (DEC-096)"
+ },
+ "fivebar_encoder_resolution": {
+  "label": "CALCULATION with wholepen.grounded.FiveBar (read-only): uniform quantisation of both output angles mapped through the Jacobian over the 60 x 40 mm patch; encoder integral non-linearity is not included (to measure: EXP-BB06)",
+  "rows": [
+   {
+    "bits": 12,
+    "worst_1sigma_endpoint_quantisation_um": 31.919232444686678
+   },
+   {
+    "bits": 14,
+    "worst_1sigma_endpoint_quantisation_um": 7.979808111171669
+   },
+   {
+    "bits": 16,
+    "worst_1sigma_endpoint_quantisation_um": 1.9949520277929174
+   }
+  ]
+ },
+ "fivebar_force_bounds": {
+  "label": "CALCULATION with wholepen.grounded.FiveBar (rated torque 6.21 mNm, 6:1, 80 % efficiency: MFR sheet and ASSUMPTIONS of the pass)",
+  "output_torque_at_rated_mNm": 29.808,
+  "largest_endpoint_force_N": 1.060522619779834,
+  "guaranteed_force_disk_N": 0.47994521035264165,
+  "current_fraction_for_0p6N_worst_case": 0.5657587955309815,
+  "disk_at_that_fraction_N": 0.2715332241299741,
+  "reading": "a hardware current limit that bounds the worst case below ~0.6 N leaves a disk below the 0.4 N cap, so the cap is software and a breakaway coupling (0.5-0.8 N) is the physical backstop (DEC-099)"
+ },
+ "test_uncertainty_ratios": {
+  "label": "CALCULATION (simple GUM-style bounds; ASSUMPTION that the cell's hysteresis dominates)",
+  "drag_line_mN": 5.0,
+  "distance_to_line_mN": [
+   2.4,
+   3.07
+  ],
+  "LSB200_10g_U_mN_bound": 0.2,
+  "TUR_LSB200_10g": [
+   11.999999999999998,
+   15.349999999999998
+  ],
+  "K3D40_2N_U_mN": 4.3,
+  "TUR_K3D40_2N": [
+   0.5581395348837209,
+   0.713953488372093
+  ],
+  "anchor": {
+   "band_N_per_m": [
+    80,
+    120
+   ],
+   "force_at_50um_mN_for_100N_per_m": 5.0,
+   "balance_1mg_resolution_mN": 0.00981,
+   "micrometer_1um_on_100um_span": 0.01,
+   "note": "slope over 0-100 um in 10 um steps: displacement error dominates, ~1 % per step; TUR against the +-20 N/m half band > 10"
+  },
+  "reading": "measure guide drag with a 10 g (0.1 N) cell, not with a K3D40 plate (TUR < 1)"
+ },
+ "r9_normal_force_reach": {
+  "label": "CALCULATION: N = F_c / (sin theta - mu cos beta cos theta) (validation/bench_protocols.md s0.11), mu 0.15 (ASSUMPTION, the protocols' design value)",
+  "rows": [
+   {
+    "theta_deg": 35,
+    "N_every_direction_N": {
+     "LSB200 100 g (design use F_c <= 0.5 N)": 0.7179274082490805,
+     "LSB200 250 g (rated 2.45 N)": 3.517844300420495
+    },
+    "N_best_direction_N": {
+     "LSB200 100 g (design use F_c <= 0.5 N)": 1.1093764661364582,
+     "LSB200 250 g (rated 2.45 N)": 5.435944684068645
+    },
+    "F_c_for_N_2N_every_direction_N": 1.3928984859887896,
+    "F_c_for_N_4N_every_direction_N": 2.7857969719775793
+   },
+   {
+    "theta_deg": 50,
+    "N_every_direction_N": {
+     "LSB200 100 g (design use F_c <= 0.5 N)": 0.5797352939642599,
+     "LSB200 250 g (rated 2.45 N)": 2.840702940424874
+    },
+    "N_best_direction_N": {
+     "LSB200 100 g (design use F_c <= 0.5 N)": 0.7466851268476533,
+     "LSB200 250 g (rated 2.45 N)": 3.6587571215535015
+    },
+    "F_c_for_N_2N_every_direction_N": 1.7249251691439178,
+    "F_c_for_N_4N_every_direction_N": 3.4498503382878356
+   },
+   {
+    "theta_deg": 75,
+    "N_every_direction_N": {
+     "LSB200 100 g (design use F_c <= 0.5 N)": 0.49763688017982244,
+     "LSB200 250 g (rated 2.45 N)": 2.43842071288113
+    },
+    "N_best_direction_N": {
+     "LSB200 100 g (design use F_c <= 0.5 N)": 0.5393144196883338,
+     "LSB200 250 g (rated 2.45 N)": 2.6426406564728357
+    },
+    "F_c_for_N_2N_every_direction_N": 2.009497366108893,
+    "F_c_for_N_4N_every_direction_N": 4.018994732217786
+   }
+  ],
+  "reading": "the first build (100 g cell, F_c <= 0.5 N) reaches N of about 0.5 N at 75 deg and 0.7 N at 35 deg in every direction: EXP-T01's grid (F_c 0.08-0.30 N) but not AC-B01-20's 0.2-2.0 N envelope, which needs the 250 g cell (F_c 2.0 N at 75 deg) and the +-10 N plate (2 N is the +-2 N plate's full scale); EXP-B01's 4 N level needs F_c 2.8-4.0 N, beyond the 250 g cell at most tilts"
+ },
+ "meta": {
+  "evidence_status": "CALCULATION (study H bench build plan); nothing measured",
+  "generated_utc": "2026-09-30T13:07:57+00:00",
+  "git_revision": "a6a5b85-dirty",
+  "parameters_version": "0.4.4",
+  "parameters_sha256_16": "a9d3d0016461d690",
+  "command": "bench_calcs.py",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v50-x86_64-with-glibc2.39",
+  "seeds": null,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1"
+ }
+}

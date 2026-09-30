@@ -1,0 +1,2 @@
+# coil temperature from resistance (rig.thermal.coil_temperature) -> rig.thermal.fit_1node / fit_2node
+t_s,P_W,R_coil_ohm,T_coil_C,T_web_C,T_amb_C

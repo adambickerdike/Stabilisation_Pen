@@ -1,0 +1,40 @@
+# record.yaml template (validation/records/README.md s3). Fill every field; 'null' only where the README allows it.
+record_id: EXP-T01_YYYYMMDD_R9-<plate serial>-<refill lot>_core_01
+experiment_id: EXP-T01
+status: executed            # executed | aborted | superseded (with superseded_by)
+protocol:
+  file: validation/bench_protocols.md
+  git_commit: <hash at which the protocol was frozen>
+acceptance_criteria:
+  file: validation/acceptance_criteria.csv
+  git_commit: <hash>
+  ids: [AC-T01-01, AC-T01-02, AC-T01-04, AC-T01-05, AC-B01-03]
+prediction:
+  file: <frozen prediction file>
+  parameters_version: <from stabpen.provenance>
+  parameters_sha256_16: <from stabpen.provenance>
+analysis_code:
+  path: rig/contact.py
+  git_commit: <hash>
+operators: [<initials or staff id>]
+location: <lab>, rig R9 on DAQ-1
+start_utc: YYYY-MM-DDThh:mm:ssZ
+end_utc: YYYY-MM-DDThh:mm:ssZ
+environment: {temperature_C: null, rh_pct: null, notes: ""}
+dut:
+  refill: {type: D1-oil, lot: <lot>, ids: [<ids>]}
+  paper: {type: copy-80gsm, batch: <batch>, conditioning_h: 24}
+  underlay: hard
+instruments:                # ids from instruments.csv
+  - {id: K3D40-2N-01, model_class: "3-axis force sensor +-2 N", cal_cert: <id>, cal_due: YYYY-MM-DD}
+  - {id: LSB200-100g-01, model_class: "in-line axial cell 1 N", cal_cert: <id>, cal_due: YYYY-MM-DD}
+  - {id: DAQ-1, model_class: "Teensy 4.1 + ADS131M08EVM", firmware_commit: <hash>}
+check_standards:
+  - {id: DW-0050, nominal: 0.4903 N, measured: null, within_control_limits: null}
+sync: {method: "TTL 1 Hz coded", alignment_check_us: null}
+calibration_files: [analysis/r9_axial_cell_calibration.csv, analysis/r9_plate_calibration.csv, analysis/r9_guide_stiffness.csv]
+tap_test: {f1_Hz: null, file: analysis/r9_tap_test.csv}
+randomisation: {seed: null, order_file: raw/run_order_EXP-T01.csv}
+blinding: {image_codes_file: null, unblinded_utc: null}
+deviations: []              # each: {time_utc, description, impact, approved_by}
+verdicts_file: analysis/verdict.yaml

@@ -1,0 +1,2 @@
+# AC-BB04-05 / DEC-098: every fatigue coupon, drive <= 0.2 x f1
+coupon_id,wire_length_mm,tension_N,f1_measured_Hz,method,drive_Hz,ratio_drive_over_f1

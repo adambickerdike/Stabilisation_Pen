@@ -1,0 +1,2 @@
+# 20 fit poses + 35 held-out poses; forward kinematics as pipeline_check.fivebar_fk -> AC-BB06-01
+pose_id,enc0_counts,enc1_counts,cam_x_mm,cam_y_mm,T_C,fit_or_holdout

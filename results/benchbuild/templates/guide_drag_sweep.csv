@@ -1,0 +1,2 @@
+# drag = half the forward/return difference at the same x (pipeline_check.guide_drag); 10 g cell
+coupon_id,guide,preload_N,couple_mNm,cycle,x_mm,F_lat_mN,direction,v_mm_s

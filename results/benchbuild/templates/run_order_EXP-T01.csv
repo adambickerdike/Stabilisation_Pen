@@ -1,0 +1,2 @@
+# randomised run order (bench_protocols.md s0.6); marker_value is sent with the MARK command and cuts the session (rig.convert.split_by_markers)
+order,condition_code,theta_deg,beta_deg,v_mm_s,Fc_N,refill_type,refill_id,refill_lot,paper,paper_batch,underlay,repeat,marker_value,seed

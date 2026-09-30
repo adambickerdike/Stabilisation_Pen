@@ -1,0 +1,2 @@
+# EXP-BB08: a silent recovery is an absolute position output before re-anchoring
+trial,sensor,outage_type,lift_height_mm,outage_s,displacement_mm,anchor_invalid_t_s,reanchor_method,reanchor_t_s,abs_error_um,lost_motion_mm

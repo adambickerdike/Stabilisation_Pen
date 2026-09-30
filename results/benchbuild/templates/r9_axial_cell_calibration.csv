@@ -1,0 +1,2 @@
+# dead weights on the cartridge at the test angle; direction +1 loading, -1 unloading -> rig.calib.fit_bridge
+load_N,reading_mVV,direction,theta_deg,T_C,note

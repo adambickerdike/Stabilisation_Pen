@@ -1,0 +1,2 @@
+# EXP-T04/T05 pose and motion plan -> rig.pagesense.qualify / sim2j_page_model
+run_id,sensor,mode,theta_deg,roll_deg,height_mm,paper,motion,speed_mm_s,truth,order,seed

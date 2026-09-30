@@ -1,0 +1,2 @@
+# hub pushed in 10 um steps; force = reading x g -> rig.calib.fit_guide_stiffness (slope = axial stiffness)
+coupon_id,foil_thickness_um,beam_width_um,beam_length_mm,with_interconnect,disp_um,balance_reading_g,direction,T_C

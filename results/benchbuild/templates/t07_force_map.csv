@@ -1,0 +1,2 @@
+# reversal order of currents at each node, 0.2 s holds, >= 30 s cooling above 0.3 I_max -> rig.coupon.km_map (pipeline_check step C)
+node_id,x_mm,y_mm,I_A,Fx_N,Fy_N,Fz_N,R_coil_ohm,T_coil_C,t_s,coupon_id,magnet_lot

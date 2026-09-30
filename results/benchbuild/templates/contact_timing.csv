@@ -1,0 +1,2 @@
+# EXP-BB09: plate truth crossing 20 mN against the pen-side decision
+event_id,type,theta_deg,paper,t_plate_s,t_channel_s,delay_ms,threshold_mN,false_event

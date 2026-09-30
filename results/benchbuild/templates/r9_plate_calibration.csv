@@ -1,0 +1,2 @@
+# page frame, force ON the platen (weights: Fz negative); horizontal pulls over the jewel-bearing pulley -> rig.calib.fit_plate / apply_plate
+Fx_N,Fy_N,Fz_N,raw_x_mVV,raw_y_mVV,raw_z_mVV,pos_x_mm,pos_y_mm,theta_deg
