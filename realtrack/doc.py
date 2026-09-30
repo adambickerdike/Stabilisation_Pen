@@ -288,7 +288,7 @@ def sim2(out: Dict) -> str:
     if not rows:
         return "(sim2 check missing)"
     L = ["| ET cell (f0, size) | Ink error, device off, um | G4 (sim2j) | ai2's TCN (sim2j) | Best causal (frozen) | "
-         "Perfect knowledge (sim2j) | Words readable (device off / G4 / frozen / perfect) |", "|---|---|---|---|---|---|---|"]
+         "Perfect knowledge (sim2j) | App reader's word accuracy, sim2j's measure (device off / G4 / frozen / perfect) |", "|---|---|---|---|---|---|---|"]
     clean = None
     for r in rows:
         if not r.get("amp_mm"):
@@ -301,7 +301,7 @@ def sim2(out: Dict) -> str:
     if clean:
         L.append(f"\nNo tremor (same writer and seed): writing moved {f(clean.get('nose_moved_um'))} um by G4, "
                  f"{f(clean.get('tcn_moved_um'))} um by ai2's TCN (no gate), {f(clean.get('new_moved_um'))} um by the frozen "
-                 f"design; words readable: G4 {clean.get('nose_words_app', '-')}, frozen {clean.get('new_words_app', '-')}.")
+                 f"design; app reader's word accuracy: G4 {clean.get('nose_words_app', '-')}, frozen {clean.get('new_words_app', '-')}.")
     return "\n".join(L)
 
 

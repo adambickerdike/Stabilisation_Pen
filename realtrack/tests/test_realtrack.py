@@ -72,6 +72,27 @@ def test_estimators_are_causal(design):
     assert not np.allclose(d0[~k], d1[~k])            # the perturbation does reach the later outputs
 
 
+@pytest.mark.parametrize("design,horizon", [
+    ({"family": "ai2tcn", "params": {}}, None),                                    # as built and as frozen
+    ({"family": "ai2tcn", "params": {}}, 8.0e-3),                                  # the delay sweep's extra prediction
+    ({"family": "ai2tcn", "params": {}, "auth": {"a_lo": 0.51e-3, "a_hi": 1.06e-3, "tau_amp": 0.81, "tau_up": 0.027,
+                                                 "tau_down": 0.106, "gain": 1.18}}, None),
+    ({"family": "net", "params": {"tag": "net_main", "fold": None}}, None),
+])
+def test_learned_estimators_are_causal(design, horizon):
+    """The TCNs (ai2's, as frozen with its gate, and the one trained here) never use samples not yet available."""
+    try:
+        st = synth_streams()
+        T0 = 5.0
+        d0, _ = E.estimate(design, st, horizon=horizon)
+    except (FileNotFoundError, OSError) as e:                   # models are build products (git-ignored)
+        pytest.skip(f"model not built: {e}")
+    d1, _ = E.estimate(design, perturb_after(st, T0), horizon=horizon)
+    k = st.tick_t <= T0 - 1e-9
+    assert np.allclose(d0[k], d1[k], atol=1e-12)
+    assert not np.allclose(d0[~k], d1[~k])
+
+
 def test_epll_locks_on_a_sinusoid():
     st = synth_streams(T=10.0, f0=6.0, amp=1e-3)
     d, info = E.epll(st, {}, horizon=0.0)
