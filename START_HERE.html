@@ -46,7 +46,15 @@
     <p><b>Round 5 (lead, 30 September 2026; decisions DEC-070 to DEC-099):</b></p>
     <ul>
       <li>Reruns of the earlier headline simulations with realistic sensing (study X). Until then, those whole-pen simulation results count as upper bounds.</li>
-      <li>A full optimisation of the balanced nib under matched loads (study N).</li>
+      <li><b>Done:</b> <a href="docs/nib_optimisation.md">the nib optimised</a> (study N).
+        <ul>
+          <li>With two magnet sets, a ±1.5&nbsp;mm nib fits the 24&nbsp;mm pen within its heat limits: about 0.04&nbsp;W in normal writing, 0.11&nbsp;W at worst, skin 34&nbsp;°C, about 23 hours per charge.</li>
+          <li>That is the reach study F found severe tremor needs, with perfect tremor knowledge.</li>
+          <li>The price is length: 157&nbsp;mm against Rev K's 145&nbsp;mm.</li>
+          <li>±2&nbsp;mm would need a body about 28&nbsp;mm across.</li>
+          <li>The next step is to wind one and measure its force (EXP-NB01).</li>
+        </ul>
+      </li>
       <li>A moving-paper writing surface as an alternative for severe tremor and for writing whole words (study P).</li>
       <li><b>Done:</b> <a href="docs/market_and_users.md">users and market</a> (study U).
         <ul>
@@ -105,6 +113,7 @@
   <h2>3. The latest studies (29–30 September 2026)</h2>
   <ul>
     <li><a href="docs/market_and_users.md">Users and market</a>: who still writes by hand, what they use instead, what they would pay, and how to test it before building.</li>
+    <li><a href="docs/nib_optimisation.md">The nib optimised</a>: every nib design under one set of rules, a search of 13,200 designs, and the recommended ±1.5&nbsp;mm nib with CAD.</li>
     <li><a href="docs/bench_build_plan.md">The first bench build</a>: what to buy and build first, costs, schedule, safety, and what each test decides.</li>
     <li><a href="docs/revJ_simulation.md">Whole pen in the physics simulator</a>: results per condition on simulated writers and tremor, and why the tip uses too much power.</li>
     <li><a href="docs/real_data.md">Real recorded handwriting and tremor</a>: on real tremor no tracker helps yet. With perfect knowledge of the tremor, the same pen would make 7 of 10 words readable.</li>
