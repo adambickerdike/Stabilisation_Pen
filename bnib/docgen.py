@@ -244,8 +244,10 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
           f"With the project's frozen tracker it leaves {rr('ET 8 Hz 1 mm')} of the tremor's ink error at 8 Hz 1 mm and "
           f"{rr('ET 12 Hz 1 mm')} at 12 Hz 1 mm (the Rev J nose: {jr('ET 8 Hz 1 mm')} and {jr('ET 12 Hz 1 mm')}), but the "
           f"tracker does not act at 4 Hz, at 0.3 mm or on the Parkinsonian tremor ({F['idle_rng']} left). With perfect "
-          f"knowledge of the tremor the same nib leaves {F['o_small_rng']} up to 1 mm and {F['o_big_rng']} at 2 mm: the "
-          f"handle's tremor already passes the nib's +-1 mm reach at the peaks of the 1 mm cells"
+          f"knowledge of the tremor the same nib leaves {F['o_small_rng']} up to 1 mm"
+          + (f" (the Rev J nose: {_ref_rng(F, small=True)})" if _ref_rng(F, small=True) else "")
+          + f" and {F['o_big_rng']} at 2 mm, where its +-1 mm reach clips"
+          + (f" (the Rev J nose, +-6 mm: {_ref_rng(F, small=False)})" if _ref_rng(F, small=False) else "")
           + (f"; a +-1.5 mm version leaves {f(t82.get('ratio_B1w'), 2)} at 8 Hz 2 mm (+-1 mm: {f(t82.get('ratio_B1'), 2)}) "
              f"for {f(t82.get('P_B1w_mW'), 0)} mW" if t82 else "") + ". "
           f"Readable words out of 10: {f(B1.get('words_per10_off'), 1)} without the nib, {f(B1.get('words_per10_nib'), 1)} "
@@ -520,8 +522,8 @@ def write(res: Dict, S: Dict, quick: bool = False) -> str:
       f"23.6 um, mean 68.3 um; held errors of lognormal size, median {f((sim.get('deltapen_calibration') or {}).get('median_m', 0) * 1e6, 1)} um, "
       f"log-sd {f((sim.get('deltapen_calibration') or {}).get('sigma'), 2)}, reproduce both; plus DeltaPen's idle drift and a 1.2 % "
       "scale error, OPT-75). The ideal 3 um sensor appears only as a labelled bound. Rules (servo bandwidth, face gap) were "
-      "chosen on tuning writers 100-101 / seed 300 and frozen in `results/bnib/rules.json` before the test writers 0-5 "
-      "(seeds 200-203) ran. Tasks: tremor-free writing (false correction), ET 4-12 Hz and PD 4.5-5.5 Hz tremor at "
+      "chosen on tuning writers 100-101 / seed 300 and frozen in `results/bnib/rules.json` before the test writers ran "
+      "(B1 and B2: writers 0-3, B3: 0-2, seeds 200-203; the grid was shortened after two container restarts). Tasks: tremor-free writing (false correction), ET 4-12 Hz and PD 4.5-5.5 Hz tremor at "
       "0.3-2 mm, a thermal run at 35 deg with 2 mm tremor. The page sensor loses the page above 2 mm of lift (MFR OPT-54, "
       "as Rev J's parameters). Idealisations: the face is massless with a 5 um engagement "
       "ramp; the carrier cannot tilt (virtual pivot), so the couple's static 0.1-0.17 mm offset is not in these runs; the "
@@ -740,6 +742,20 @@ def sim_analysis_md(sim: Dict, cards: Dict) -> str:
             L.append(f"B1w in tremor-free writing: moved {f(tsum['clean_moved_um_B1w'], 1)} um, {f(tsum.get('clean_P_mW_B1w'), 1)} mW.")
             L.append("")
     return "\n".join(L)
+
+
+def _ref_rng(F: Dict, small: bool = True) -> str:
+    """The Rev J nose's perfect-knowledge ratios (sim2j, paired writers) in the cells up to 1 mm / at 2 mm."""
+    v = []
+    for k, r in (F.get("ref") or {}).items():
+        if r.get("ratio_oracle") is None:
+            continue
+        amp = _parse_cell(k)[2]
+        if (amp <= 1.0) == small:
+            v.append(r["ratio_oracle"])
+    if not v:
+        return ""
+    return f"{min(v):.2f}-{max(v):.2f}" if len(v) > 1 else f"{v[0]:.2f}"
 
 
 def _c1s_ref_P(sim: Dict):

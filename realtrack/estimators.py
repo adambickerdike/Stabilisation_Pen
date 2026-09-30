@@ -427,21 +427,30 @@ def raw_estimate(name: str, st, p: Optional[Dict] = None, horizon: Optional[floa
     if name == "gatefast":
         return gatefast(st, p, case=case, sensor=sensor, horizon=horizon)
     if name == "ai2tcn":
-        return ai2_tcn(st)
+        return ai2_tcn(st, shift=0.0 if horizon is None else horizon - servo_delay())
     raise KeyError(name)
 
 
-def ai2_tcn(st):
+def ai2_tcn(st, shift: float = 0.0):
     """ai2's causal TCN (trained on synthetic writers; R's 'Rev J + AI' row) at lag 0: its 500 Hz outputs held and
-    linearly extrapolated to the ticks (ai2.candidates.commands at lag 0, which is what R ran)."""
+    linearly extrapolated to the ticks (ai2.candidates.commands at lag 0, which is what R ran).  shift (s): extra
+    prediction (+) or less (-) than as built, by causal linear extrapolation from the two latest outputs available at
+    the tick (used only by the horizon sweep of delay.py; 0 = as built and as frozen)."""
     from realdata import hw1 as H
     from ai2 import data as DA
     from ai2 import learned as L2
     from fusion import learned as FL
     M = H.ai2_models()
     X, tk = FL.features(st, DA.NET_HZ)
-    Y = L2.predict(M["tcn"], L2.make_inputs("tcn", X))
-    return np.ascontiguousarray(L2.hold_extrapolate(tk, Y[:, 0, :], st.tick_t)), {"tcn_info": "ai2 build/models tcn"}
+    Y = L2.predict(M["tcn"], L2.make_inputs("tcn", X))[:, 0, :]
+    if shift == 0.0:
+        return np.ascontiguousarray(L2.hold_extrapolate(tk, Y, st.tick_t)), {"tcn_info": "ai2 build/models tcn"}
+    t = st.tick_t
+    k = np.clip(np.searchsorted(tk, t + 1e-9, side="right") - 1, 0, len(tk) - 1)      # newest output at or before t
+    k0 = np.maximum(k - 1, 0)
+    dt = np.maximum(tk[k] - tk[k0], 1e-12)
+    w = np.where(k > k0, (t + shift - tk[k]) / dt, 0.0)[:, None]
+    return np.ascontiguousarray(Y[k] + w * (Y[k] - Y[k0])), {"tcn_info": "ai2 build/models tcn", "shift_s": shift}
 
 
 def gatefast(st, p: Dict, case=None, sensor: str = "deltapen", horizon: Optional[float] = None):

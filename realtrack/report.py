@@ -146,7 +146,7 @@ def write(quick: bool = False, log=print) -> Dict:
     # extra blocks produced by other stages (if present)
     for k, p in (("delay", BUILD_DIR / "delay.json"), ("separability", BUILD_DIR / "separability.json"),
                  ("learned", BUILD_DIR / "learned.json"), ("sim2", BUILD_DIR / "sim2.json"),
-                 ("chosen_mcu", BUILD_DIR / "chosen_mcu.json")):
+                 ("chosen_mcu", BUILD_DIR / "chosen_mcu.json"), ("int8_ai2tcn", BUILD_DIR / "int8_ai2tcn.json")):
         v = _load(p)
         if v is not None:
             out[k] = v

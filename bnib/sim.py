@@ -86,7 +86,7 @@ CELLS = (("ET", 4.0, 1.0e-3), ("ET", 6.0, 2.0e-3), ("ET", 8.0, 0.3e-3), ("ET", 8
          ("ET", 12.0, 1.0e-3), ("PD", 4.5, 1.0e-3), ("PD", 5.5, 2.0e-3), ("PD", 5.0, 0.3e-3))
 TUNE_CELLS = (("ET", 8.0, 1.0e-3), ("PD", 5.0, 1.0e-3))
 # the slim piezo stage (B3) runs on writers 0-2 only (compute; the four cores are shared)
-WRITERS_FOR = {"B3": TEST_WRITERS[:3]}
+WRITERS_FOR = {"B1": TEST_WRITERS[:4], "B2": TEST_WRITERS[:4], "B3": TEST_WRITERS[:3]}   # two container restarts: shortened
 ROWS_LIFT08 = BUILD / "sim_rows_lift08.json"     # the first grid, run with sim2's default 0.8 mm page lift cut-off
 # travel variant (B1w, +-1.5 mm) against B1 (+-1.0 mm): the cells where the handle's tremor reaches beyond +-1 mm
 TRAVEL_CELLS = (("ET", 8.0, 1.0e-3), ("ET", 8.0, 2.0e-3), ("ET", 6.0, 2.0e-3), ("PD", 5.5, 2.0e-3))
@@ -1074,9 +1074,9 @@ def stage_test(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, n
 
 
 def stage_ideal(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False, log=print) -> None:
-    """The ideal page sensor (sim2's 3 um white noise) as a labelled bound: B1, writers 0-2, three cells."""
+    """The ideal page sensor (sim2's 3 um white noise) as a labelled bound: B1, writers 0-1, three cells."""
     pens = Pens(designs)
-    for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:3]):
+    for w in (TEST_WRITERS[:1] if quick else TEST_WRITERS[:2]):
         seed = TEST_SEEDS[w % len(TEST_SEEDS)]
         icells = (CELLS[3],) if quick else (CELLS[0], CELLS[3], CELLS[6])
         if _done(rows, "ideal", "B1", w, seed, icells, ("nose",), page_mode="ideal"):
@@ -1316,9 +1316,9 @@ def stage_thermal(designs: Dict[str, SimDesign], rows: Rows, quick: bool = False
 
 
 # ================================================================================================ summary / cards
-def _sim2j_reference(cells) -> Dict:
-    """sim2j's Rev J C1S runs in the same cells (writers 0-5, the same frozen tracker; sim2j/build/et_rows.json, read-only,
-    SIM) as a reference: ink ratio, words and nose power."""
+def _sim2j_reference(cells, writers=None) -> Dict:
+    """sim2j's Rev J C1S runs in the same cells (the same writers and seeds when `writers` is given, the same frozen
+    tracker; sim2j/build/et_rows.json, read-only, SIM) as a reference: ink ratio, words and nose power."""
     p = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "sim2j", "build", "et_rows.json")
     if not os.path.exists(p):
         return {}
@@ -1327,6 +1327,8 @@ def _sim2j_reference(cells) -> Dict:
     except Exception:
         return {}
     R = list(R.values()) if isinstance(R, dict) else R
+    if writers is not None:
+        R = [r for r in R if r.get("w") in writers and r.get("seed") == TEST_SEEDS[r["w"] % len(TEST_SEEDS)]]
     out = {}
     for kind, f0, amp in cells:
         if kind != "ET":
@@ -1341,7 +1343,8 @@ def _sim2j_reference(cells) -> Dict:
                 "ratio_oracle": float(np.mean([r["ratio"] for r in ro if r.get("ratio") is not None])) if ro else None,
                 "words_nose": float(np.mean([r["words_app"] for r in rn])), "P_nose_W": float(np.mean([r["P_nose_W"] for r in rn])),
                 "n": len(rn)}
-    return {"cells": out, "label": "SIMULATION (sim2j, Rev J C1S nose, same writers/tracker; read-only reference)"}
+    return {"cells": out, "writers": sorted(writers) if writers is not None else None,
+            "label": "SIMULATION (sim2j, Rev J C1S nose, same writers, seeds and tracker; read-only reference)"}
 
 
 def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
@@ -1374,7 +1377,7 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
             "P_nib_mW_oracle_mean": 1e3 * mean(to, "P_nib_W") if to else None,
             "P_nib_mW_clean_mean": 1e3 * mean(cl, "P_nib_W") if cl else None,
             "battery_h_tremor": mean(tr, "battery_h"), "battery_h_clean": mean(cl, "battery_h"),
-            "label": "SIMULATION (sim2; synthetic writers 0-5 and synthetic ET/PD tremor; DeltaPen-calibrated page sensor)",
+            "label": "SIMULATION (sim2; synthetic writers (see n_writers) and synthetic ET/PD tremor; DeltaPen-calibrated page sensor)",
         }
         if sd.family == "translation":
             card["T_coil_end_C_max"] = float(np.nanmax([r.get("T_coil_end_C", float("nan")) for r in tr]))
@@ -1414,7 +1417,8 @@ def summarise(rows: Rows, designs: Dict[str, SimDesign]) -> Dict:
             out["ideal"] = {"n": len(pairs), "ink_err_um_ideal": float(P_[:, 0].mean()), "ink_err_um_deltapen": float(P_[:, 1].mean()),
                             "ratio_ideal": float(P_[:, 2].mean()), "ratio_deltapen": float(P_[:, 3].mean()),
                             "label": "SIMULATION: the ideal page sensor (3 um white) is a BOUND, not a prediction"}
-    out["sim2j_revJ_reference"] = _sim2j_reference(CELLS)
+    wb1 = sorted({r["w"] for k, r in rows.rows.items() if k.startswith("test|B1|") and r.get("kind") in ("ET", "PD")})
+    out["sim2j_revJ_reference"] = _sim2j_reference(CELLS, writers=wb1 or None)
     out["travel"] = _travel_summary(rows)
     out["lift_cutoff_sensitivity"] = _lift_sensitivity(rows)
     out["oracle_diagnosis"] = {r["design"]: r for k, r in rows.rows.items() if k.startswith("diag5|")}

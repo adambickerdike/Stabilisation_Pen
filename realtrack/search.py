@@ -375,3 +375,94 @@ def glg_search(log=print) -> Dict:
         return json.loads(p.read_text())
     return gate_search(listening_design(), n_random=20, n_local=12, seed=43, tag="s2_glg", log=log,
                        fallbacks=("g4", "revh", "none"), init=GLG_INIT, det_configs=("ai2",))
+
+
+# ======================================================================================== restart-proof GLG search
+def glg_search_resumable(log=print, n_random: int = 20, n_local: int = 12, seed: int = 43) -> Dict:
+    """glg_search with every per-case input cached to disk (realtrack/build/glg_cache/<case>.npz: the listening estimate,
+    ai2's detector output, the Rev H tracker's and G4's outputs) and every evaluated setting appended to
+    realtrack/build/tune/gate_s2_glg.jsonl, so a container restart loses at most one case or one setting.  The settings
+    are the same deterministic sequence as gate_search's (init, random draws, two local rounds around the best 3)."""
+    import time
+    from . import BUILD_DIR as _B
+    from . import cases as C
+    from . import evaluate as EV
+    from . import servo as SV
+    from ai2 import smoothers as SM
+    out_p = TU.TUNE_DIR / "gate_s2_glg.json"
+    if out_p.exists():
+        return json.loads(out_p.read_text())
+    cdir = _B / "glg_cache"
+    cdir.mkdir(parents=True, exist_ok=True)
+    specs = C.tuning_specs()
+    t0 = time.time()
+    D_design = listening_design()
+    dp = dict(SM.DET_DEFAULTS); dp.update(DET_CONFIGS["ai2"])
+    for s in specs:
+        f = cdir / f"{s['id']}.npz"
+        if f.exists():
+            continue
+        case = C.load_case(s)
+        st = case.streams("deltapen")
+        D, _ = E.raw_estimate(D_design["family"], st, D_design.get("params"), case=case, sensor="deltapen")
+        det = SM.detector(st, dp)
+        g4, _ = E.g4(st)
+        np.savez(f, D=D, t_up=det["t"], ratio=det["ratio"], amp=det["amp"], revh=case.dh_revh("deltapen"), g4=g4)
+        del case, st
+    log(f"[glg] per-case inputs ready ({time.time() - t0:.0f} s)")
+    data = []
+    for s in specs:
+        with np.load(cdir / f"{s['id']}.npz") as z:
+            dd = {k: z[k] for k in z.files}
+        case = C.load_case(s)
+        data.append((s, dd, TU._light(case)))
+        del case
+    pp = SV.pen_params()
+    hist_p = TU.TUNE_DIR / "gate_s2_glg.jsonl"
+    hist = [json.loads(line) for line in hist_p.read_text().splitlines()] if hist_p.exists() else []
+
+    def evaluate(p):
+        rows = []
+        for s, dd, lc in data:
+            gu = hyst_gate(dd["t_up"], dd["ratio"], dd["amp"], p)
+            k = np.searchsorted(dd["t_up"], lc.tick_t, side="right") - 1
+            g = np.where(k >= 0, gu[np.clip(k, 0, len(gu) - 1)], 0.0)[:, None]
+            fb = dd.get(p["fallback"]) if p["fallback"] in ("revh", "g4") else None
+            d = p["gain"] * g * dd["D"] + ((1.0 - g) * fb if fb is not None else 0.0)
+            m = SV.fast_measures(lc, -d, pp)
+            m.update({"design": "x", "case": s["id"], "level": s["level"], "kind": s.get("kind"),
+                      "gate_open": float(np.mean(g[lc.arrays["down_ticks"] > 0.5] > 0.5))})
+            rows.append(m)
+        sm = EV.summarize(rows)["x"]
+        return {"params": dict(p), "summary": sm, "score": TU.score(sm, True)}
+
+    rng = np.random.default_rng(seed)
+    space = dict(GATE_SPACE)
+    space["fallback"] = ("choice", ("g4", "revh", "none"))
+    space["det"] = ("choice", ("ai2",))
+    plan = list(GLG_INIT) + [TU.sample(space, rng) for _ in range(n_random)]
+
+    def run(plist, offset):
+        for i, p in enumerate(plist):
+            if offset + i < len(hist):
+                continue
+            h = evaluate(p)
+            hist.append(h)
+            with open(hist_p, "a") as fh:
+                fh.write(json.dumps(h, default=float) + "\n")
+    run(plan, 0)
+    n_done = len(plan)
+    for rnd in range(2):
+        best = sorted(hist[:n_done], key=lambda h: h["score"])[:3]
+        cand = [TU.perturb(b["params"], space, rng, 0.3 if rnd == 0 else 0.15) for b in best
+                for _ in range(max(1, n_local // 3))]
+        run(cand, n_done)
+        n_done += len(cand)
+    best = min(hist, key=lambda h: h["score"])
+    out = {"tag": "s2_glg", "D_design": D_design, "best": best, "history": hist,
+           "init_scores": [hist[0]["score"]], "elapsed_s_last_run": time.time() - t0,
+           "note": "study W's GLG: ai2's gated listening estimate with sim2j's guarded tracker G4 as the fallback; "
+                   "history[0] = GLG as frozen (ai2's detector and amplitude gate, fallback G4)"}
+    out_p.write_text(json.dumps(out, default=float))
+    log(f"[glg] {len(hist)} settings; frozen GLG score {hist[0]['score']:.3f}, best {best['score']:.3f}")
+    return out

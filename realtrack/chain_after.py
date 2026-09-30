@@ -29,7 +29,7 @@ def main():
     if not (TU.TUNE_DIR / "auth_ai2tcn.json").exists():
         TU.auth_search({"family": "ai2tcn", "params": {}}, n_random=36, n_local=18, seed=67, tag="ai2tcn", log=log)
     log("[chain] learn done")
-    SR.glg_search(log=log)
+    SR.glg_search_resumable(log=log)
     log("[chain] glg done")
 
 

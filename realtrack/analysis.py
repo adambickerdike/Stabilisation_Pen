@@ -25,28 +25,35 @@ Q = [0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 0.999]
 
 
 def separability(log=print) -> Dict:
+    """Per case cached (realtrack/build/sep_cache/<case>.npz, pen-down ticks, every 10th): restart-proof."""
     p = BUILD_DIR / "separability.json"
     if p.exists():
         return json.loads(p.read_text())
     from . import search as SR
     t0 = time.time()
     L = SR.listening_design()
+    cdir = BUILD_DIR / "sep_cache"
+    cdir.mkdir(parents=True, exist_ok=True)
+    feats = ("line ratio, page track 4 s (ai2's detector)", "line ratio, accelerometer track 2 s",
+             "amplitude of the listening estimate, mm (1 s)")
     acc: Dict = {}
     for s in C.tuning_specs():
         if s["level"] not in ("clean", "moderate", "severe"):
             continue
-        c = C.load_case(s)
-        st = c.streams("deltapen")
-        down = c.arrays["down_ticks"] > 0.5
-        lev = s["level"]
-        acc.setdefault(("line ratio, page track 4 s (ai2's detector)", lev), []).append(
-            E.det_ratio(st, {"win": 4.0, "seg": 2.0, "band_lo": 4.5, "band_hi": 13.5}, contact_only=False)["ratio"][down])
-        acc.setdefault(("line ratio, accelerometer track 2 s", lev), []).append(
-            E.det_ratio_imu(st, {"win": 2.0, "seg": 1.0, "band_lo": 3.5, "band_hi": 12.0})["ratio"][down])
-        d, _ = E.raw_estimate("akf", st, L["params"])
-        _, _, A = E.authority(d, float(c.meta["Ts"]), {"tau_amp": 1.0})
-        acc.setdefault(("amplitude of the listening estimate, mm (1 s)", lev), []).append(A[down] * 1e3)
-        del c, st
+        f = cdir / f"{s['id']}.npz"
+        if not f.exists():
+            c = C.load_case(s)
+            st = c.streams("deltapen")
+            down = c.arrays["down_ticks"] > 0.5
+            r1 = E.det_ratio(st, {"win": 4.0, "seg": 2.0, "band_lo": 4.5, "band_hi": 13.5}, contact_only=False)["ratio"]
+            r2 = E.det_ratio_imu(st, {"win": 2.0, "seg": 1.0, "band_lo": 3.5, "band_hi": 12.0})["ratio"]
+            d, _ = E.raw_estimate("akf", st, L["params"])
+            _, _, A = E.authority(d, float(c.meta["Ts"]), {"tau_amp": 1.0})
+            np.savez(f, r1=r1[down][::10], r2=r2[down][::10], A=A[down][::10] * 1e3)
+            del c, st
+        with np.load(f) as z:
+            for feat, key in zip(feats, ("r1", "r2", "A")):
+                acc.setdefault((feat, s["level"]), []).append(z[key])
     out = {"q": Q}
     for (feat, lev), v in acc.items():
         x = np.concatenate(v)
@@ -54,38 +61,68 @@ def separability(log=print) -> Dict:
         out[feat].setdefault("_share_above", {})
         if "ratio" in feat:
             out[feat]["_share_above"][lev] = {str(t): float(np.mean(x > t)) for t in (3, 5, 8)}
-    out["label"] = "SIMULATION (HW1) with real inputs, tuning split, DeltaPen-class page sensor; pen-down ticks"
-    out["elapsed_s"] = time.time() - t0
+        else:
+            out[feat]["_share_above"][lev] = {str(t): float(np.mean(x > t)) for t in (0.5, 1.0, 1.5)}
+    out["label"] = ("SIMULATION (HW1) with real inputs, tuning split, DeltaPen-class page sensor; pen-down ticks (every "
+                    "10th)")
+    out["elapsed_s_last_run"] = time.time() - t0
     p.write_text(json.dumps(out, default=float))
-    log(f"[analysis] separability in {out['elapsed_s']:.0f} s")
+    log(f"[analysis] separability ({out['elapsed_s_last_run']:.0f} s)")
     return out
 
 
 def delay(chosen: Dict, log=print) -> Dict:
+    """Restart-proof: every horizon point and every lag estimate is cached (realtrack/build/delay_cache)."""
     from . import delay as DY
+    from . import evaluate as EV
     p = BUILD_DIR / "delay.json"
     if p.exists():
         return json.loads(p.read_text())
     t0 = time.time()
-    out = {"servo_lag": DY.servo_lag(), "budget": DY.budget(), "decompose": DY.decompose(),
-           "horizon": {"Rev H tracker (as built)": DY.horizon_sweep({"family": "revh", "name": "revh"}, log=log),
-                       "chosen design": DY.horizon_sweep(chosen, log=log)}}
-    # the effective lag of the Rev H tracker and of the chosen design against the truth (severe cases)
+    cdir = BUILD_DIR / "delay_cache"
+    cdir.mkdir(parents=True, exist_ok=True)
+    gd = E.servo_delay()
+    offsets = (-3, -1.5, 0, 1.5, 3, 5, 7.5, 10)
+    specs = [s for s in C.tuning_specs() if s["level"] in ("severe", "moderate", "mild")]
+    horizon = {}
+    for label, dz in (("Rev H tracker (as built)", {"family": "revh"}), ("chosen design", chosen)):
+        key = "revh" if dz.get("family") == "revh" else "chosen"
+        by = {}
+        for o in offsets:
+            f = cdir / f"{key}_{o:+g}.json"
+            if not f.exists():
+                d = dict(dz)
+                d["name"] = "x"
+                d["horizon"] = gd + o * 1e-3
+                sm = EV.summarize(EV.eval_batch([d], specs, "deltapen", log=lambda *a: None))["x"]
+                f.write_text(json.dumps({k: sm.get(k) for k in ("severe_ratio", "severe_bb", "moderate_ratio",
+                                                                 "moderate_rheld", "mild_ratio", "mild_rheld")}))
+            by[str(o)] = json.loads(f.read_text())
+        horizon[label] = {"offsets_ms": list(offsets), "nominal_ms": gd * 1e3, "by_offset": by}
+        log(f"[analysis] horizon sweep {label} ({time.time() - t0:.0f} s)")
     lags = {"revh": [], "chosen": []}
     for s in C.tuning_specs():
         if s["level"] != "severe":
             continue
-        c = C.load_case(s)
-        st = c.streams("deltapen")
-        for nm, dz in (("revh", {"family": "revh"}), ("chosen", chosen)):
-            d, _ = E.estimate(dz, st, case=c)
-            lags[nm].append(DY.xcorr_lag(d, c))
-        del c, st
-    out["xcorr"] = {k: {"lag_ms_median": float(np.median([x["lag_ms"] for x in v])),
-                        "gain_median": float(np.median([x["gain"] for x in v])), "cases": v} for k, v in lags.items()}
-    out["elapsed_s"] = time.time() - t0
+        f = cdir / f"xcorr_{s['id']}.json"
+        if not f.exists():
+            c = C.load_case(s)
+            st = c.streams("deltapen")
+            r = {}
+            for nm, dz in (("revh", {"family": "revh"}), ("chosen", chosen)):
+                d, _ = E.estimate(dz, st, case=c)
+                r[nm] = DY.xcorr_lag(d, c)
+            f.write_text(json.dumps(r))
+            del c, st
+        r = json.loads(f.read_text())
+        for nm in lags:
+            lags[nm].append(r[nm])
+    out = {"servo_lag": DY.servo_lag(), "budget": DY.budget(), "decompose": DY.decompose(), "horizon": horizon,
+           "xcorr": {k: {"lag_ms_median": float(np.median([x["lag_ms"] for x in v])),
+                         "gain_median": float(np.median([x["gain"] for x in v])), "cases": v} for k, v in lags.items()},
+           "elapsed_s_last_run": time.time() - t0}
     p.write_text(json.dumps(out, default=float))
-    log(f"[analysis] delay in {out['elapsed_s']:.0f} s")
+    log(f"[analysis] delay ({out['elapsed_s_last_run']:.0f} s)")
     return out
 
 
@@ -125,4 +162,43 @@ def learned(log=print) -> Dict:
                                for k in ("fir_raw", "net_raw", "net_gated", "ai2_tcn_raw", "ai2_tcn_gated") if k in out)
     p.write_text(json.dumps(out, default=float))
     log(f"[analysis] learned: {out['summary']}")
+    return out
+
+
+def int8_ai2tcn(log=print) -> Dict:
+    """Per-channel symmetric int8 quantisation of ai2's TCN weights (activations float): the change of its lag-0 output
+    on the severe tuning cases (RMS, um) against the output's RMS (CALC)."""
+    p = BUILD_DIR / "int8_ai2tcn.json"
+    if p.exists():
+        return json.loads(p.read_text())
+    import copy
+    import torch
+    from realdata import hw1 as H
+    from ai2 import data as DA
+    from ai2 import learned as L2
+    from fusion import learned as FL
+    torch.set_num_threads(1)
+    m = H.ai2_models()["tcn"]
+    q = copy.deepcopy(m)
+    with torch.no_grad():
+        for name, w in q.named_parameters():
+            if w.dim() >= 2:
+                s = w.abs().amax(dim=tuple(range(1, w.dim())), keepdim=True).clamp(min=1e-12) / 127.0
+                w.copy_(torch.round(w / s).clamp(-127, 127) * s)
+    num = den = 0.0
+    n = 0
+    for s in C.tuning_specs():
+        if s["level"] != "severe":
+            continue
+        c = C.load_case(s)
+        X, tk = FL.features(c.streams("deltapen"), DA.NET_HZ)
+        Z = L2.make_inputs("tcn", X)
+        a = L2.predict(m, Z)[:, 0, :]
+        b = L2.predict(q, Z)[:, 0, :]
+        num += float(np.sum((a - b) ** 2)); den += float(np.sum(a ** 2)); n += a.size
+        del c
+    out = {"rms_diff_um": float(np.sqrt(num / n) * 1e6), "rms_out_um": float(np.sqrt(den / n) * 1e6),
+           "label": "CALC: ai2's TCN, weights per-channel int8, activations float; severe tuning cases"}
+    p.write_text(json.dumps(out))
+    log(f"[analysis] int8 ai2 TCN: {out['rms_diff_um']:.1f} um RMS change on {out['rms_out_um']:.0f} um output")
     return out
