@@ -112,7 +112,9 @@ def rows(out: Dict) -> List[Dict]:
                           "per writer; a severe-tremor user has no tremor-free writing to calibrate on; EXP-R01 "
                           "shadow-mode data are needed",
               relevance_to_design="REQ-CTRL-016 (per-user gates) and DEC-061's revisit trigger",
-              design_implication="See docs/readable_target.md: per-user calibration and the words it costs",
+              design_implication="Calibrate the gate on the user's own writing and only ever raise its threshold: it "
+                                 "kept every simulated test writer within 50 um for both networks; it adds no tremor "
+                                 "removal, so no words are gained (docs/readable_target.md s5)",
               stream="EML")
     gp = (a.get("gap") or {}).get("chains") or {}
     tt = gp.get("test") or gp.get("tuning") or {}
@@ -138,7 +140,9 @@ def rows(out: Dict) -> List[Dict]:
               limitations="R's tremor waveforms are band-limited by construction (a broadband check on raw ET "
                           "recordings is reported); the linear filter is one estimator design; composed inputs",
               relevance_to_design="Whether to invest in prediction or in sensing and separation",
-              design_implication="See docs/readable_target.md",
+              design_implication="Invest in separating tremor from writing first and in a drift-free position reference "
+                                 "in the tremor band second; prediction and latency need no investment "
+                                 "(docs/readable_target.md s7)",
               stream="EML")
     bb = ((out.get("gap") or {}).get("predictor") or {})
     r4 = dict(common, id="ACT-145",
@@ -153,7 +157,8 @@ def rows(out: Dict) -> List[Dict]:
               comparator="No prediction (hold)",
               key_quantitative_findings=(f"Cross-fitted in-band residual on the severe tuning cases: AR "
                                          f"{_f((bb.get('choice') or {}).get('cv_residual_mm', np.nan) * 1e3, 1)} um, "
-                                         f"hold {_f((bb.get('hold_cv_residual_mm') or np.nan) * 1e3, 1)} um (at 1.72 mm)"),
+                                         f"hold {_f((bb.get('hold_cv_residual_mm') or np.nan) * 1e3, 1)} um (at 1.72 mm)"
+                                         + _bb_txt(bb)),
               units_and_conditions="um (R's measure on the prediction error); CALC",
               locator="docs/readable_target.md",
               limitations="Band-limited library waveforms; broadband check on ET hand recordings only (PD tip data are "
@@ -161,7 +166,56 @@ def rows(out: Dict) -> List[Dict]:
               relevance_to_design="The prediction horizon of the Rev J/Rev K command path",
               design_implication="Prediction does not need investment; the estimate itself does",
               stream="ACT")
-    return [r1, r2, r3, r4]
+    rc = out.get("reach") or {}
+    rr = rc.get("rows") or {}
+    rs = [r1, r2, r3, r4]
+    if rr:
+        def t(k):
+            return _ci((rr.get(k) or {}).get("tip_tremor_mm"))
+        qm = rc.get("q_oracle_contact") or {}
+        r5 = dict(common, id="EML-107",
+                  topic="Reach a nib needs for the readable target at the severe class (study F simulation, HW1; "
+                        "tuning split)",
+                  citation="This study's simulation (readable/reach.py): the Rev J nose with its usable travel limited "
+                           "to +-3, +-2, +-1.5 and +-1.0 mm, driven with perfect knowledge on R's tuning cases",
+                  doi_or_url="results/readable/readable.json (reach); results/readable/fig_reach.png",
+                  task_or_setup="Severe class (1.72 mm), 20 tuning cases (5 writers, PD and ET); perfect knowledge and "
+                                "perfect knowledge scaled to the frozen +2-words residual; tip tremor (R's measure); "
+                                "words read for perfect knowledge at +-1.5 and +-1.0 mm",
+                  comparator="The same runs with the +-6 mm Rev J nose",
+                  key_quantitative_findings=(
+                      f"Perfect knowledge leaves at the tip: +-6 mm {t('6|oracle')} mm; +-3 mm {t('3|oracle')}; "
+                      f"+-2 mm {t('2|oracle')}; +-1.5 mm {t('1.5|oracle')}; +-1.0 mm {t('1|oracle')}. Words read "
+                      f"at +-1.5 mm {_ci((rr.get('1.5|oracle') or {}).get('words_read'), 1)} of 10 (gain over the "
+                      f"ordinary pen {_ci((rr.get('1.5|oracle') or {}).get('gain_read'), 1)}), at +-1.0 mm "
+                      f"{_ci((rr.get('1|oracle') or {}).get('words_read'), 1)} (gain "
+                      f"{_ci((rr.get('1|oracle') or {}).get('gain_read'), 1)}): below DEC-055's +2 at +-1.0 mm. An "
+                      f"estimate that leaves the +2 residual at full reach leaves {t('1.5|a_r2')} mm at +-1.5 mm, "
+                      f"{t('2|a_r2')} at +-2 mm, {t('3|a_r2')} at +-3 mm. The "
+                      f"perfect-knowledge command in contact: 99th percentile of its 2-D magnitude "
+                      f"{_f((qm.get('p99_mm') or {}).get('mean'), 1)} mm, above 1.0 mm "
+                      f"{_f(100 * ((qm.get('share_above_1mm') or {}).get('mean') or np.nan), 0)} % of the time"),
+                  units_and_conditions="mm (R's measure); words of 10; SIMULATION",
+                  locator="docs/readable_target.md s8",
+                  limitations="The Rev J nose's mass and servo with its travel cut, not the B1 nib's own dynamics; "
+                              "tuning split only; one seed per case",
+                  relevance_to_design="DEC-050 / DEC-060 (the nib's reach) against the readable target",
+                  design_implication="At the severe class a +-1.0 mm nib cannot meet DEC-055's words line even with "
+                                     "perfect knowledge; +-1.5 mm can with perfect knowledge; an estimator with its own "
+                                     "error needs about +-2-3 mm (docs/readable_target.md s8)",
+                  stream="EML")
+        rs.append(r5)
+    return rs
+
+
+def _bb_txt(bb: Dict) -> str:
+    b = ((bb.get("broadband") or {}).get("by_horizon") or {}).get("imu") or {}
+    if not b:
+        return ""
+    return (f"; on {(bb.get('broadband') or {}).get('n_records')} raw ET recordings made displacement in a broad band "
+            f"(f0 - 2 Hz to 20 Hz) the AR's in-band error at 4.9 ms is "
+            f"{_f(100 * ((b.get('broad') or {}).get('ar_inband_share_mean') or np.nan), 2)} % of the tremor, "
+            f"{_f(100 * ((b.get('broad') or {}).get('hold_inband_share_mean') or np.nan), 1)} % with no prediction")
 
 
 def write(out: Dict, path) -> int:

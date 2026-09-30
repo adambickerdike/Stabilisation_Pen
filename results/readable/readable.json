@@ -1,8 +1,8 @@
 {
  "stabpen.provenance": {
   "evidence_status": "SIMULATION (model HW1 of handwriting/, used read-only) with REAL recorded inputs (study R's library: UNIPEN hpb2 writing, UCI PD tip tremor, Zenodo ET hand tremor); not a measurement of the pen or of any person",
-  "generated_utc": "2026-09-30T04:48:44+00:00",
-  "git_revision": "db052d8",
+  "generated_utc": "2026-09-30T05:29:02+00:00",
+  "git_revision": "5056b8e-dirty",
   "parameters_version": "0.4.4",
   "parameters_sha256_16": "a9d3d0016461d690",
   "command": "run.py --stages report",
@@ -167,6 +167,39 @@
      "severe",
      "edge"
     ]
+   },
+   "reach": {
+    "notes": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9
+    ],
+    "kinds": [
+     "PD",
+     "ET"
+    ],
+    "reach_mm": [
+     6.0,
+     3.0,
+     2.0,
+     1.5,
+     1.0
+    ],
+    "commands": [
+     "oracle",
+     "a_r2"
+    ],
+    "read": [
+     "1.5|oracle",
+     "1|oracle"
+    ]
    }
   },
   "quick": false,
@@ -181,7 +214,8 @@
  "questions": {
   "e13": "EXP-E13: how much tremor may be left at the tip for words to be readable?",
   "e11": "EXP-E11: does calibrating the estimator's authority gate on the user's own clean writing keep every writer under 50 um? (REQ-CTRL-016)",
-  "gap": "Where is the gap between the best causal estimator and perfect knowledge: prediction or separation?"
+  "gap": "Where is the gap between the best causal estimator and perfect knowledge: prediction or separation?",
+  "reach": "(added) Can a nib with Rev K's reach (+-1.0 / +-1.5 mm) deliver the readable target at the severe class? (tuning split only)"
  },
  "answers": {
   "e13": {
@@ -16594,7 +16628,7 @@
   }
  },
  "gap": {
-  "method": "(fixed in this file before the runs; severe class, 1.72 mm at the tip, PD and ET):\n  C0 perfect knowledge   R's oracle: the nose gets -d(t + g), d = the true handle tremor, g = the servo group delay\n                         (3.39 ms).  What is left is the mechanism's floor.\n  C1 prediction only     the TRUE tremor signal d is known causally, but late: its newest sample at the control tick t\n                         is d(t - delta_s), delta_s = the sensor and filter delays of E's budget on the IMU path (anti-\n                         aliasing 1.04 ms + FIFO/SPI 0.35 ms + pair averaging 0.13 ms = 1.52 ms); the predictor must\n                         give d(t + g): a horizon of 4.9 ms.  Predictors:\n                           hold   no prediction (d(t - delta_s)): a pure lag of 4.9 ms\n                           AR     the causal linear predictor: d(t + g) = sum_j a_j d(t - delta_s - j Delta), one set of\n                                  coefficients for both page axes, ridge least squares on the true tremor of the TUNING\n                                  cases (severe and 0.6 mm), cross-fitted by E's folds (the model scoring fold k never\n                                  saw fold k's writer or patients); (Delta, order) chosen on the tuning split by the\n                                  cross-fitted in-band residual; the model used on the test split is fitted on all\n                                  tuning cases.  (With a noise-free input, a Kalman predictor of an AR state-space model\n                                  gives the same prediction, so AR stands for \"AR or Kalman\".)\n                         Sensitivity (no reading): delta_s = 0 (the servo lag alone), 3.0 ms (the page sensor path: 2 ms\n                         latency + up to 1 ms jitter) and 6.6 ms (a 10 ms horizon).\n  C2 sensing, no writing the pen's sensor streams of the TREMOR ALONE: the same case, the same sensor models and noise\n                         draws, the note's own contact pattern, but the handle motion is the tremor part only (handle\n                         with tremor - handle without, nose held); the writing's pen rotation is removed from the IMU\n                         model.  Estimators:\n                           FIR    a linear causal filter on the IMU (study E's polyphase FIR at 250 Hz, predicting to\n                                  t + g), trained here on the tremor-only streams of the tuning cases (severe and\n                                  0.6 mm), cross-fitted by fold; its length and ridge chosen on the tuning split from\n                                  FIR_GRID by the cross-fitted in-band residual: what the pen's IMU allows when there is\n                                  no writing to reject (sensing: turning acceleration into displacement causally, IMU\n                                  noise, bias, drift, anti-aliasing, delays)\n                           page   the AR predictor (IMU-path choice of Delta and order, refitted for the page path's\n                                  delay of 3 ms) on the page sensor's position of the tremor alone, sample-and-hold of\n                                  the valid samples: the ideal page sensor (3 um, 2 ms; a bound) and the DeltaPen-class\n                                  one (R's headline sensor)\n                           E's families as E froze them: ai2's TCN and the real-data TCN, each raw and with its soft\n                                  size gate, and the capture-tuned listening AKF (E's 'ungated_akf'; DeltaPen-class and\n                                  ideal page sensor).  They were built to reject writing, so on the tremor alone their\n                                  residual still carries that design's caution.\n  C3 full                the same estimators on the real streams (tremor + writing): study E's configuration; for the\n                         FIR, the filter trained on the tremor alone meets writing it has never seen.\nEach estimate is applied as the nose command to the FULL case (tremor + writing), so the tip residual of C1/C2 is what\nthe prediction or the sensing leaves; C3 - C2 is what separating tremor from writing costs.  Part residuals (CALC): R's\ntip-tremor measure applied to the error signals at the action time: e_pred = d(t + g) - d_hat_C1, e_trem = d(t + g) -\nd_hat_C2, e_sep = d_hat_C2 - d_hat_C3 (what the writing changes in the estimate), e_full = d(t + g) - d_hat_C3.\nClean writing (tuning notes, E's cached clean cases, E's surrogate of the command path): the change each estimator\nmakes to the same notes without tremor: the other face of separation.\nWords: every full-plant residual is mapped to words of 10 through the frozen E13 tuning curve; on the test split four\nconfigurations are also read directly as a check of the mapping (C1-AR; the linear IMU filter on the tremor alone and\non the full case, where it also moves the writing; the real-data TCN gated on the tremor alone).\nBroadband check (CALC on DATA): R's tremor waveforms keep only f0 +- 2 Hz and 2 f0 +- 2 Hz (R's ASSUMPTION), which makes\nthem smooth and easy to predict.  The chosen AR predictor is refitted on the tuning ET recordings (Zenodo, hand\nacceleration) converted to displacement in the library's bands and in one broad band (f0 - 2 Hz to 20 Hz), cross-fitted\nby subject, and its residual at the IMU horizon is compared (as a share of the tremor, then at 1.72 mm).",
+  "method": "(fixed in this file before the runs; severe class, 1.72 mm at the tip, PD and ET):\n  C0 perfect knowledge   R's oracle: the nose gets -d(t + g), d = the true handle tremor, g = the servo group delay\n                         (3.39 ms).  What is left is the mechanism's floor.\n  C1 prediction only     the TRUE tremor signal d is known causally, but late: its newest sample at the control tick t\n                         is d(t - delta_s), delta_s = the sensor and filter delays of E's budget on the IMU path (anti-\n                         aliasing 1.04 ms + FIFO/SPI 0.35 ms + pair averaging 0.13 ms = 1.52 ms); the predictor must\n                         give d(t + g): a horizon of 4.9 ms.  Predictors:\n                           hold   no prediction (d(t - delta_s)): a pure lag of 4.9 ms\n                           AR     the causal linear predictor: d(t + g) = sum_j a_j d(t - delta_s - j Delta), one set of\n                                  coefficients for both page axes, ridge least squares on the true tremor of the TUNING\n                                  cases (severe and 0.6 mm), cross-fitted by E's folds (the model scoring fold k never\n                                  saw fold k's writer or patients); (Delta, order) chosen on the tuning split by the\n                                  cross-fitted in-band residual; the model used on the test split is fitted on all\n                                  tuning cases.  (With a noise-free input, a Kalman predictor of an AR state-space model\n                                  gives the same prediction, so AR stands for \"AR or Kalman\".)\n                         Sensitivity (no reading): delta_s = 0 (the servo lag alone), 3.0 ms (the page sensor path: 2 ms\n                         latency + up to 1 ms jitter) and 6.6 ms (a 10 ms horizon).\n  C2 sensing, no writing the pen's sensor streams of the TREMOR ALONE: the same case, the same sensor models and noise\n                         draws, the note's own contact pattern, but the handle motion is the tremor part only (handle\n                         with tremor - handle without, nose held); the writing's pen rotation is removed from the IMU\n                         model.  Estimators:\n                           FIR    a linear causal filter on the IMU (study E's polyphase FIR at 250 Hz, predicting to\n                                  t + g), trained here on the tremor-only streams of the tuning cases (severe and\n                                  0.6 mm), cross-fitted by fold; its length and ridge chosen on the tuning split from\n                                  FIR_GRID by the cross-fitted in-band residual: what the pen's IMU allows when there is\n                                  no writing to reject (sensing: turning acceleration into displacement causally, IMU\n                                  noise, bias, drift, anti-aliasing, delays)\n                           page   the AR predictor (IMU-path choice of Delta and order, refitted for the page path's\n                                  delay of 3 ms) on the page sensor's position of the tremor alone, sample-and-hold of\n                                  the valid samples: the ideal page sensor (3 um, 2 ms; a bound) and the DeltaPen-class\n                                  one (R's headline sensor)\n                           E's families as E froze them: ai2's TCN and the real-data TCN, each raw and with its soft\n                                  size gate, and the capture-tuned listening AKF (E's 'ungated_akf'; DeltaPen-class and\n                                  ideal page sensor).  They were built to reject writing, so on the tremor alone their\n                                  residual still carries that design's caution.\n  C3 full                the same estimators on the real streams (tremor + writing): study E's configuration; for the\n                         FIR, the filter trained on the tremor alone meets writing it has never seen.\nEach estimate is applied as the nose command to the FULL case (tremor + writing), so the tip residual of C1/C2 is what\nthe prediction or the sensing leaves; C3 - C2 is what separating tremor from writing costs.  Part residuals (CALC): R's\ntip-tremor measure applied to the error signals at the action time: e_pred = d(t + g) - d_hat_C1, e_trem = d(t + g) -\nd_hat_C2, e_sep = d_hat_C2 - d_hat_C3 (what the writing changes in the estimate), e_full = d(t + g) - d_hat_C3.\nClean writing (tuning notes, E's cached clean cases, E's surrogate of the command path): the change each estimator\nmakes to the same notes without tremor: the other face of separation.\nWords: every full-plant residual is mapped to words of 10 through the frozen E13 tuning curve; on the test split four\nconfigurations are also read directly as a check of the mapping (C1-AR; the linear IMU filter on the tremor alone and\non the full case, where it also moves the writing; the real-data TCN gated on the tremor alone).\nBroadband check (CALCULATION on real recorded inputs): R's tremor waveforms keep only f0 +- 2 Hz and 2 f0 +- 2 Hz\n(R's ASSUMPTION), which makes them smooth and easy to predict.  The chosen AR predictor is refitted on the tuning ET recordings (Zenodo, hand\nacceleration) converted to displacement in the library's bands and in one broad band (f0 - 2 Hz to 20 Hz), cross-fitted\nby subject, and its residual at the IMU horizon is compared (as a share of the tremor, then at 1.72 mm).",
   "predictor": {
    "lead_s": 0.0033852115041081684,
    "delta_s": {
@@ -19911,6 +19945,415 @@
    ]
   }
  },
+ "reach": {
+  "n_cases": 20,
+  "n_writers": 5,
+  "label": "SIMULATION (model HW1) with real recorded inputs; tuning split only; the Rev J nose with its travel limited (Rev J's mass and servo); words via the frozen tuning curve = CALC",
+  "plan": {
+   "notes": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "kinds": [
+    "PD",
+    "ET"
+   ],
+   "reach_mm": [
+    6.0,
+    3.0,
+    2.0,
+    1.5,
+    1.0
+   ],
+   "commands": [
+    "oracle",
+    "a_r2"
+   ],
+   "read": [
+    "1.5|oracle",
+    "1|oracle"
+   ]
+  },
+  "rows": {
+   "6|oracle": {
+    "reach_mm": 6.0,
+    "command": "oracle",
+    "tip_tremor_mm": {
+     "mean": 0.024717419370266013,
+     "lo": 0.02103613969323897,
+     "hi": 0.030146408369355327,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.0005029130795812418,
+     "lo": 0.00013041643175942124,
+     "hi": 0.0010854269782996063,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.5973968629844832,
+     "lo": 1.5540983459803572,
+     "hi": 1.6365227271439842,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 8.403483618824941,
+     "lo": 8.387322229123663,
+     "hi": 8.412576829817933,
+     "n_writers": 5
+    }
+   },
+   "6|a_r2": {
+    "reach_mm": 6.0,
+    "command": "a_r2",
+    "tip_tremor_mm": {
+     "mean": 0.6480465178954951,
+     "lo": 0.6479509704281738,
+     "hi": 0.6481627197567171,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.0,
+     "lo": 0.0,
+     "hi": 0.0,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.0358014794774038,
+     "lo": 1.002930356976584,
+     "hi": 1.0769087780881035,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.7682794682222025,
+     "lo": 2.767547257572133,
+     "hi": 2.7688814589067343,
+     "n_writers": 5
+    }
+   },
+   "3|oracle": {
+    "reach_mm": 3.0,
+    "command": "oracle",
+    "tip_tremor_mm": {
+     "mean": 0.1532126222217176,
+     "lo": 0.10506760334083771,
+     "hi": 0.19035328236397886,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.05573061867661542,
+     "lo": 0.039227979513967434,
+     "hi": 0.07189993265261183,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.532895007199787,
+     "lo": 1.5113667302061282,
+     "hi": 1.5572550880555995,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 7.5362761493457855,
+     "lo": 7.2316514439764505,
+     "hi": 7.899391192219264,
+     "n_writers": 5
+    }
+   },
+   "3|a_r2": {
+    "reach_mm": 3.0,
+    "command": "a_r2",
+    "tip_tremor_mm": {
+     "mean": 0.6544423210924044,
+     "lo": 0.6501448357015714,
+     "hi": 0.6603154544989767,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.00436626187196236,
+     "lo": 0.0020941895152885547,
+     "hi": 0.00688511326986163,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.0310818262304804,
+     "lo": 0.9988357272782672,
+     "hi": 1.0705770184694183,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.7302907120064726,
+     "lo": 2.697244259150267,
+     "hi": 2.755180179749561,
+     "n_writers": 5
+    }
+   },
+   "2|oracle": {
+    "reach_mm": 2.0,
+    "command": "oracle",
+    "tip_tremor_mm": {
+     "mean": 0.43015475776954054,
+     "lo": 0.35097638394632763,
+     "hi": 0.49348318738092284,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.2252851261422963,
+     "lo": 0.21117956095765136,
+     "hi": 0.23901632391298797,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.3596397512514677,
+     "lo": 1.3485152551674897,
+     "hi": 1.3706197123289492,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 4.821348418010512,
+     "lo": 4.143477006374599,
+     "hi": 5.6600611780369,
+     "n_writers": 5
+    }
+   },
+   "2|a_r2": {
+    "reach_mm": 2.0,
+    "command": "a_r2",
+    "tip_tremor_mm": {
+     "mean": 0.7114168948801789,
+     "lo": 0.6861167616766874,
+     "hi": 0.729781003842856,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.04939590914353988,
+     "lo": 0.032752645609856385,
+     "hi": 0.06506894063467022,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.9969529521926594,
+     "lo": 0.9759460176907304,
+     "hi": 1.0249885738681788,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.426105316973528,
+     "lo": 2.326266673380446,
+     "hi": 2.561392811423407,
+     "n_writers": 5
+    }
+   },
+   "1.5|oracle": {
+    "reach_mm": 1.5,
+    "command": "oracle",
+    "tip_tremor_mm": {
+     "mean": 0.6742271885314872,
+     "lo": 0.5949586659696373,
+     "hi": 0.7401322190455346,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.4010869439052174,
+     "lo": 0.39169061285528267,
+     "hi": 0.40819632221421615,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 1.1713558173558425,
+     "lo": 1.1574185670556398,
+     "hi": 1.1854811938792416,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 2.8003462670198305,
+     "lo": 2.3832291918848534,
+     "hi": 3.3385830360991107,
+     "n_writers": 5
+    },
+    "words_read": {
+     "mean": 3.9727272727272727,
+     "lo": 3.281818181818182,
+     "hi": 4.590909090909091,
+     "n_writers": 5
+    },
+    "gain_read": {
+     "mean": 3.2136363636363634,
+     "lo": 2.6454545454545455,
+     "hi": 3.6772727272727272,
+     "n_writers": 5
+    }
+   },
+   "1.5|a_r2": {
+    "reach_mm": 1.5,
+    "command": "a_r2",
+    "tip_tremor_mm": {
+     "mean": 0.8176950749158651,
+     "lo": 0.7709030605636265,
+     "hi": 0.8567802647372496,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.14921569490344502,
+     "lo": 0.12864222650951657,
+     "hi": 0.17003908938117768,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.9300967258488896,
+     "lo": 0.9165824815046634,
+     "hi": 0.946282905967841,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.9716594811731933,
+     "lo": 1.8169253625944528,
+     "hi": 2.1632738785274745,
+     "n_writers": 5
+    }
+   },
+   "1|oracle": {
+    "reach_mm": 1.0,
+    "command": "oracle",
+    "tip_tremor_mm": {
+     "mean": 1.0012295449959852,
+     "lo": 0.935157292405411,
+     "hi": 1.0561975992152095,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.6379596537345106,
+     "lo": 0.6185041618705549,
+     "hi": 0.6581076135543947,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.8822882782554714,
+     "lo": 0.8709920896725792,
+     "hi": 0.895136296720095,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.4151817946264444,
+     "lo": 1.2735180145228422,
+     "hi": 1.5689583166842744,
+     "n_writers": 5
+    },
+    "words_read": {
+     "mean": 2.163636363636363,
+     "lo": 1.4909090909090907,
+     "hi": 2.836363636363637,
+     "n_writers": 5
+    },
+    "gain_read": {
+     "mean": 1.4045454545454548,
+     "lo": 0.7909090909090908,
+     "hi": 1.9181818181818184,
+     "n_writers": 5
+    }
+   },
+   "1|a_r2": {
+    "reach_mm": 1.0,
+    "command": "a_r2",
+    "tip_tremor_mm": {
+     "mean": 1.0435163616257426,
+     "lo": 0.984894436035099,
+     "hi": 1.0926756512762197,
+     "n_writers": 5
+    },
+    "at_travel_limit": {
+     "mean": 0.3830064732757664,
+     "lo": 0.3669944323807807,
+     "hi": 0.39888847904891234,
+     "n_writers": 5
+    },
+    "q_rms_mm": {
+     "mean": 0.7708653771403455,
+     "lo": 0.7587599651849514,
+     "hi": 0.7815217346115454,
+     "n_writers": 5
+    },
+    "words_via_curve": {
+     "mean": 1.3051783622874011,
+     "lo": 1.192611375617622,
+     "hi": 1.4263529321012025,
+     "n_writers": 5
+    }
+   }
+  },
+  "q_oracle_contact": {
+   "p50_mm": {
+    "mean": 1.2121146923774222,
+    "lo": 1.1875361611057795,
+    "hi": 1.2328111225898892,
+    "n_writers": 5
+   },
+   "p90_mm": {
+    "mean": 2.4984504153970666,
+    "lo": 2.378758569274458,
+    "hi": 2.617804187172843,
+    "n_writers": 5
+   },
+   "p99_mm": {
+    "mean": 3.812603013077144,
+    "lo": 3.4840972650738977,
+    "hi": 4.051603235318099,
+    "n_writers": 5
+   },
+   "rms_mm": {
+    "mean": 1.5990180839638382,
+    "lo": 1.5558908676993757,
+    "hi": 1.638455521999358,
+    "n_writers": 5
+   },
+   "share_above_1mm": {
+    "mean": 0.613657036852362,
+    "lo": 0.5954091911768735,
+    "hi": 0.6324943461859446,
+    "n_writers": 5
+   },
+   "share_above_1.5mm": {
+    "mean": 0.37193525137016004,
+    "lo": 0.36367067010994064,
+    "hi": 0.3795719436759161,
+    "n_writers": 5
+   },
+   "share_above_2mm": {
+    "mean": 0.19918962945404672,
+    "lo": 0.18282538801229647,
+    "hi": 0.21442101220921858,
+    "n_writers": 5
+   },
+   "share_above_3mm": {
+    "mean": 0.04440700365064988,
+    "lo": 0.02920593486685897,
+    "hi": 0.05924531683013614,
+    "n_writers": 5
+   }
+  },
+  "oracle_q_rms_mm_by_class": {
+   "severe": {
+    "mean": 1.5973968629844832,
+    "lo": 1.5540983459803572,
+    "hi": 1.6365227271439842,
+    "n_writers": 5
+   },
+   "moderate": {
+    "mean": 0.21986574596240033,
+    "lo": 0.21624230850211967,
+    "hi": 0.22348918342268095,
+    "n_writers": 5
+   }
+  },
+  "repro_vs_e13_oracle_max_abs_mm": 0.0
+ },
  "frozen": {
   "stabpen.provenance": {
    "evidence_status": "SIMULATION (tuning split only); frozen before the test run",
@@ -20288,9 +20731,9 @@
    "tuning": 2932.1,
    "freeze": 32.4,
    "test": 2720.9,
-   "report": 42.6,
-   "total_this_call": 5904.9,
-   "extras": 153.1
+   "report": 64.5,
+   "total_this_call": 64.5,
+   "extras": 478.0
   },
   "jobs": {
    "e13_tune_n0": {
@@ -20415,49 +20858,89 @@
    },
    "sensing_page": {
     "ok": true,
-    "elapsed_s": 126.4
+    "elapsed_s": 1.6
    },
    "sensing_imu": {
     "ok": true,
-    "elapsed_s": 129.0
+    "elapsed_s": 1.5
    },
    "gap_test_clean_w0": {
     "ok": true,
-    "elapsed_s": 4.7
+    "elapsed_s": 6.0
    },
    "gap_test_clean_w1": {
     "ok": true,
-    "elapsed_s": 3.3
+    "elapsed_s": 5.4
    },
    "gap_test_clean_w2": {
     "ok": true,
-    "elapsed_s": 3.4
+    "elapsed_s": 2.1
    },
    "gap_test_clean_w3": {
     "ok": true,
-    "elapsed_s": 5.0
+    "elapsed_s": 1.9
    },
    "gap_test_clean_w4": {
     "ok": true,
-    "elapsed_s": 7.1
+    "elapsed_s": 2.9
    },
    "gap_test_clean_w5": {
     "ok": true,
-    "elapsed_s": 5.7
+    "elapsed_s": 2.9
    },
    "gap_test_clean_w6": {
     "ok": true,
-    "elapsed_s": 7.7
+    "elapsed_s": 2.9
    },
    "gap_test_clean_w7": {
     "ok": true,
-    "elapsed_s": 6.5
+    "elapsed_s": 2.2
    },
    "gap_test_clean_w8": {
     "ok": true,
-    "elapsed_s": 3.4
+    "elapsed_s": 1.2
+   },
+   "reach_n0": {
+    "ok": true,
+    "elapsed_s": 86.9
+   },
+   "reach_n1": {
+    "ok": true,
+    "elapsed_s": 113.1
+   },
+   "reach_n2": {
+    "ok": true,
+    "elapsed_s": 94.7
+   },
+   "reach_n3": {
+    "ok": true,
+    "elapsed_s": 92.2
+   },
+   "reach_n4": {
+    "ok": true,
+    "elapsed_s": 57.7
+   },
+   "reach_n5": {
+    "ok": true,
+    "elapsed_s": 77.5
+   },
+   "reach_n6": {
+    "ok": true,
+    "elapsed_s": 75.7
+   },
+   "reach_n7": {
+    "ok": true,
+    "elapsed_s": 100.0
+   },
+   "reach_n8": {
+    "ok": true,
+    "elapsed_s": 73.6
+   },
+   "reach_n9": {
+    "ok": true,
+    "elapsed_s": 79.2
    }
   }
  },
- "generated_in_s": 64.79430890083313
+ "generated_in_s": 60.43801403045654
 }

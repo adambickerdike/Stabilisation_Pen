@@ -48,7 +48,7 @@ def inputs_sha256() -> Dict[str, Optional[str]]:
 
 def provenance(quick: bool, status: str = EVIDENCE_SIM, extra: Optional[Dict] = None) -> Dict:
     from stabpen import provenance as PV
-    from . import e11, e13, gap
+    from . import e11, e13, gap, reach
     seeds = {"splits": "study R's tuning/test split of writers, texts and patients (realdata.writinglib, tremorlib); "
                        "study E's tuning selection set and folds (realtrack.cases); every choice on the tuning split, "
                        "the test split run once after frozen.json",
@@ -62,7 +62,8 @@ def provenance(quick: bool, status: str = EVIDENCE_SIM, extra: Optional[Dict] = 
                                                "clean_note_max_um": e11.CLEAN_NOTE_MAX_UM,
                                                "clean_mean_um": e11.CLEAN_MEAN_UM},
               "gap": {"delta_s": gap.DELTA_S, "dtau_ms": list(gap.DTAU_GRID_MS), "order": list(gap.ORDER_GRID),
-                      "ridge": gap.RIDGE, "fit_levels": list(gap.FIT_LEVELS)}}
+                      "ridge": gap.RIDGE, "fit_levels": list(gap.FIT_LEVELS)},
+              "reach": reach.plan(quick)}
     try:
         import torch
         tv = torch.__version__

@@ -251,3 +251,17 @@ def test_evidence_rows_format():
     used = {r[0] for r in ledger[1:]}
     for r in rows[1:]:
         assert len(r) == 23 and r[0] not in used
+
+
+def test_limited_pen_scales_only_the_travel():
+    from dataclasses import fields
+    from realdata import hw1 as H
+    from readable import reach
+    pen = H.revj_pen()
+    lim = reach.limited_pen(pen, 1.0)
+    assert abs(lim.q_lim - 1.0e-3) < 1e-12
+    assert abs(lim.q_taper / lim.q_lim - pen.q_taper / pen.q_lim) < 1e-12
+    assert abs(lim.q_stop / lim.q_lim - pen.q_stop / pen.q_lim) < 1e-12
+    same = [f.name for f in fields(pen) if f.name not in ("q_lim", "q_taper", "q_stop", "label")]
+    assert all(getattr(lim, n) == getattr(pen, n) for n in same)
+    assert reach.limited_pen(pen, pen.q_lim * 1e3) is pen

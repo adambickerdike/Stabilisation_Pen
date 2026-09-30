@@ -1,0 +1,12 @@
+# SIMULATION (model HW1) with real recorded inputs; tuning split (20 severe cases, 5 writers); the Rev J nose with its usable travel limited; words via the frozen tuning curve = CALCULATION
+command,reach_mm,tip_tremor_mm,tip_lo,tip_hi,share_at_travel_limit,words_via_tuning_curve,words_read,words_read_lo,words_read_hi
+oracle,1.0,1.00123,0.935157,1.056198,0.63796,1.415182,2.163636,1.490909,2.836364
+oracle,1.5,0.674227,0.594959,0.740132,0.401087,2.800346,3.972727,3.281818,4.590909
+oracle,2.0,0.430155,0.350976,0.493483,0.225285,4.821348,,,
+oracle,3.0,0.153213,0.105068,0.190353,0.055731,7.536276,,,
+oracle,6.0,0.024717,0.021036,0.030146,0.000503,8.403484,,,
+a_r2,1.0,1.043516,0.984894,1.092676,0.383006,1.305178,,,
+a_r2,1.5,0.817695,0.770903,0.85678,0.149216,1.971659,,,
+a_r2,2.0,0.711417,0.686117,0.729781,0.049396,2.426105,,,
+a_r2,3.0,0.654442,0.650145,0.660315,0.004366,2.730291,,,
+a_r2,6.0,0.648047,0.647951,0.648163,0.0,2.768279,,,

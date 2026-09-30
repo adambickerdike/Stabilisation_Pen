@@ -9,7 +9,7 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-from . import BUILD_DIR
+from . import BUILD_DIR, RESULTS_DIR
 from . import common as CM
 
 
@@ -148,11 +148,12 @@ def e13_tables(e: Dict) -> List[str]:
                               "r50, mm", "steepness", "w_lo", "RMSE, words", "points"], rows))
             mf = blk.get("model_free_type_a")
             if mf:
-                def mfv(k):
-                    x = mf.get(k)
-                    return f"{f(x)} mm" if x is not None and np.isfinite(x) else "not bracketed by the levels run"
-                out.append(f"\nModel-free check (type (a) per-level means, piecewise linear): +2 words at "
-                           f"{mfv('r_plus2_mm')}, 80 % at {mfv('r_80_mm')}, within 1 word at {mfv('r_within1_mm')}.")
+                names = (("r_plus2_mm", "+2 words"), ("r_80_mm", "80 %"), ("r_within1_mm", "within 1 word"))
+                have = [f"{lab} at {f(mf.get(k))} mm" for k, lab in names
+                        if mf.get(k) is not None and np.isfinite(mf.get(k))]
+                miss = [lab for k, lab in names if not (mf.get(k) is not None and np.isfinite(mf.get(k)))]
+                out.append("\nModel-free check (type (a) per-level means, piecewise linear): " + ", ".join(have) +
+                           ("" if not miss else "; not bracketed by the levels run: " + ", ".join(miss)) + ".")
             p = fits.get("pooled", {})
             out.append(f"\nOrdinary pen at the severe class: {f(p.get('w_ord_severe'), 2)} words of 10 (target "
                        f"{f((p.get('w_ord_severe') or np.nan) + 2, 2)}); the same notes without tremor: "
@@ -364,7 +365,7 @@ def sections(out: Dict, quick: bool) -> Dict[str, List[str]]:
     return {"curve": curve_table(out.get("e13") or {}), "e13": e13_tables(out.get("e13") or {})[
         len(curve_table(out.get("e13") or {})):], "e11": e11_tables(out.get("e11") or {}), "fir": fir_table(ar),
         "broadband": broadband_table(ar), "gap": gap_tables(out.get("gap") or {}), "cards": results_cards(out),
-        "cards_e13": results_cards(out, "e13"), "cards_e11": results_cards(out, "e11"),
+        "cards_e13": results_cards(out, "e13"), "cards_e11": results_cards(out, "e11"), "reach": reach_table(out),
         "sensing": sensing_table(out.get("gap") or {})}
 
 
@@ -387,10 +388,43 @@ def sensing_table(g: Dict) -> List[str]:
                    "Tremor left at the tip, mm", "Cases"], rows), ""]
 
 
+def reach_table(out: Dict) -> List[str]:
+    rc = out.get("reach") or {}
+    rows = rc.get("rows") or {}
+    if not rows:
+        return []
+    body = []
+    for r_mm in sorted({r["reach_mm"] for r in rows.values()}, reverse=True):
+        o = rows.get(f"{r_mm:g}|oracle") or {}
+        a = rows.get(f"{r_mm:g}|a_r2") or {}
+        lab = f"+-{r_mm:g} mm" + (" (the Rev J nose as modelled)" if r_mm >= 6 else
+                                  " (Rev K's nib, DEC-060)" if abs(r_mm - 1.0) < 1e-9 else
+                                  " (Rev K's two-axis option, DEC-050)" if abs(r_mm - 1.5) < 1e-9 else "")
+        body.append([lab, ci(o.get("tip_tremor_mm")), f((o.get("at_travel_limit") or {}).get("mean"), 2),
+                     ci(o.get("words_via_curve"), 1), ci(o.get("words_read"), 1), ci(o.get("gain_read"), 1),
+                     ci(a.get("tip_tremor_mm")), ci(a.get("words_via_curve"), 1)])
+    qm = rc.get("q_oracle_contact") or {}
+    g = lambda k, nd=2: f((qm.get(k) or {}).get("mean"), nd)          # noqa: E731
+    return ["**Reach: perfect knowledge with less travel** (SIM, model HW1 with real recorded inputs; tuning split, "
+            f"{rc.get('n_cases')} severe cases, {rc.get('n_writers')} writers; the Rev J nose with its usable travel "
+            "limited, its mass and servo unchanged; words via the frozen tuning curve = CALC; 95 % writer-bootstrap "
+            "intervals)\n",
+            table(["Usable travel", "Perfect knowledge: tremor left at the tip, mm", "share of contact time at the "
+                   "travel limit", "words of 10 via the curve", "words read", "gain read over the ordinary pen",
+                   "Scaled to the +2 residual: tip, mm", "words via the curve"], body),
+            "",
+            f"The perfect-knowledge command itself (CALC on SIM signals, in contact): 2-D magnitude median {g('p50_mm')} "
+            f"mm, 90th percentile {g('p90_mm')} mm, 99th percentile {g('p99_mm')} mm; above 1.0 mm "
+            f"{f(100 * ((qm.get('share_above_1mm') or {}).get('mean') or np.nan), 0)} % of the time, above 1.5 mm "
+            f"{f(100 * ((qm.get('share_above_1.5mm') or {}).get('mean') or np.nan), 0)} %, above 3 mm "
+            f"{f(100 * ((qm.get('share_above_3mm') or {}).get('mean') or np.nan), 0)} %. Check: the +-6 mm runs repeat "
+            f"EXP-E13's perfect-knowledge tip tremor within {f(rc.get('repro_vs_e13_oracle_max_abs_mm'), 4)} mm.", ""]
+
+
 def write_tables(out: Dict, quick: bool) -> str:
     sec = sections(out, quick)
     parts = ["# Generated tables for docs/readable_target.md", ""]
-    for k in ("curve", "cards_e13", "e13", "cards_e11", "e11", "fir", "sensing", "broadband", "gap"):
+    for k in ("curve", "cards_e13", "e13", "cards_e11", "e11", "fir", "sensing", "broadband", "gap", "reach"):
         parts += sec[k]
     txt = "\n".join(parts) + "\n"
     p = (CM.QUICK_DIR if quick else BUILD_DIR) / "doc_tables.md"
@@ -407,6 +441,32 @@ def _get(d, path: str):
             return None
         d = d.get(k) if isinstance(d, dict) else None
     return d
+
+
+def count_readings() -> int:
+    """Readings made by this study's full run (entries with words_read in the per-case caches)."""
+    import json
+
+    def cnt(o) -> int:
+        if isinstance(o, dict):
+            return int("words_read" in o and o.get("words_read") is not None and "words_total" in o) + \
+                sum(cnt(x) for x in o.values() if isinstance(x, (dict, list)))
+        if isinstance(o, list):
+            return sum(cnt(x) for x in o)
+        return 0
+    n = 0
+    for sub in ("e13", "e11", "gap", "reach"):
+        for fp in sorted((CM.cache_dir(False) / sub).glob("*.json")):
+            try:
+                n += cnt(json.loads(fp.read_text()))
+            except Exception:
+                pass
+    return n
+
+
+def dir_mb(d) -> float:
+    from pathlib import Path
+    return sum(p.stat().st_size for p in Path(d).rglob("*") if p.is_file()) / 1e6
 
 
 def values(out: Dict) -> Dict[str, str]:
@@ -499,6 +559,8 @@ def values(out: Dict) -> Dict[str, str]:
         for name, ch in (_get(gp, f"{split}.chains") or {}).items():
             v[f"G{tag}_{name}_SEP"] = f(_get(ch, "separation_part_mm.mean"))
             v[f"G{tag}_{name}_CLEAN"] = f(_get(ch, "clean_change_um.mean"), 0)
+            cu = _get(ch, "clean_change_um.mean")
+            v[f"G{tag}_{name}_CLEAN_MM"] = f(cu / 1e3 if cu is not None else None, 1)
             v[f"G{tag}_{name}_CLEANW"] = f(_get(ch, "clean_change_um.worst_note"), 0)
     pr = gp.get("predictor") or {}
     v["AR_CV_UM"] = f(_get(pr, "choice.cv_residual_mm") * 1e3 if _get(pr, "choice.cv_residual_mm") is not None else None, 1)
@@ -535,6 +597,11 @@ def values(out: Dict) -> Dict[str, str]:
             for row in (_get(e, f"{split}.tables") or {}).get(f"{kn}/severe", [])[1:]:
                 if row.get("gain_vs_ordinary"):
                     v[f"{tag}_GAIN_{kd}_{row['device']}"] = f(row["gain_vs_ordinary"].get("mean"), 1)
+    for split, tag in (("tuning", "T"), ("test", "S")):
+        for row in (_get(e, f"{split}.tables") or {}).get("all/severe", []):
+            if isinstance(row, dict) and row.get("device"):
+                v[f"{tag}_WORDS_{row['device']}"] = f((row.get("words_of_10") or {}).get("mean"), 1)
+                v[f"{tag}_TIPM_{row['device']}"] = f((row.get("tip_tremor_mm") or {}).get("mean"))
     v["S_GAIN_AT_R2"] = ci(g.get("gain"), 2)
     v["S_GAIN_AT_R2_M"] = f((g.get("gain") or {}).get("mean"), 2)
     v["S_TIP_AT_R2_M"] = f((g.get("tip_tremor_mm") or {}).get("mean"))
@@ -565,6 +632,31 @@ def values(out: Dict) -> Dict[str, str]:
         t = k.replace("|", "_")
         v[f"{t}_RATIO_M"] = f((x.get("severe_ratio_to_ordinary") or {}).get("mean"))
         v[f"{t}_GAIN_M"] = f((x.get("severe_words_gain") or {}).get("mean"), 2)
+    # compute facts for the files section: readings made, disk used, and run facts recorded by hand in
+    # readable/build/doc_extra.json (the quick run's duration, the test result)
+    v["X_NREAD"] = str(count_readings())
+    v["X_DISK"] = f"{dir_mb(BUILD_DIR):.0f} MB"
+    v["X_DISK_RES"] = f"{dir_mb(RESULTS_DIR):.1f} MB"
+    for k, x in (CM.jload(BUILD_DIR / "doc_extra.json") or {}).items():
+        v[f"X_{k}"] = str(x)
+    rc = out.get("reach") or {}
+    for dk, r in (rc.get("rows") or {}).items():
+        t = dk.replace("|", "_")
+        v[f"RC_{t}_M"] = f((r.get("tip_tremor_mm") or {}).get("mean"))
+        v[f"RC_{t}_MM"] = ci(r.get("tip_tremor_mm"))
+        v[f"RC_{t}_LIM"] = f(100 * ((r.get("at_travel_limit") or {}).get("mean") or np.nan), 0)
+        v[f"RC_{t}_W"] = f((r.get("words_via_curve") or {}).get("mean"), 1)
+        v[f"RC_{t}_WR"] = f((r.get("words_read") or {}).get("mean"), 1)
+        v[f"RC_{t}_WRR"] = ci(r.get("words_read"), 1)
+        v[f"RC_{t}_GR"] = ci(r.get("gain_read"), 1)
+    qm = rc.get("q_oracle_contact") or {}
+    for k in ("p50_mm", "p90_mm", "p99_mm", "rms_mm"):
+        v[f"RC_Q_{k.split('_')[0].upper()}"] = f((qm.get(k) or {}).get("mean"), 1)
+    for a in ("1", "1.5", "2", "3"):
+        v[f"RC_Q_ABOVE_{a}"] = f(100 * ((qm.get(f"share_above_{a}mm") or {}).get("mean") or np.nan), 0)
+    v["RC_N"] = str(rc.get("n_cases"))
+    for cls, t in (("severe", "SEV"), ("moderate", "MOD")):
+        v[f"RC_QRMS_{t}"] = f(((rc.get("oracle_q_rms_mm_by_class") or {}).get(cls) or {}).get("mean"), 2)
     comp = out.get("compute") or {}
     for k, x in (comp.get("stages") or {}).items():
         v[f"T_{k}"] = f(x / 60.0, 1)

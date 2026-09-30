@@ -327,9 +327,81 @@ def fig_gap(out: Dict, d: Path) -> Optional[Path]:
     return path
 
 
+# ------------------------------------------------------------------ reach (added check, tuning split)
+def fig_reach(out: Dict, d: Path) -> Optional[Path]:
+    rc = out.get("reach") or {}
+    rows = rc.get("rows") or {}
+    if not rows:
+        return None
+    plt, PS = _plt()
+    fr = (out.get("frozen") or {}).get("e13") or {}
+    r2, r80 = fr.get("r_plus2_mm"), fr.get("r_80_mm")
+    fig, ax = plt.subplots(1, 1, figsize=(7.6, 5.0))
+    series = [("oracle", "perfect knowledge", COL["oracle"], "o"),
+              ("a_r2", "perfect knowledge scaled to leave the +2-words residual (at full reach)", COL["a"], "s")]
+    rows_csv = []
+    for key, lab, col, mk in series:
+        xs, ys, lo, hi = [], [], [], []
+        for dk, r in sorted(rows.items(), key=lambda kv: kv[1]["reach_mm"]):
+            if r["command"] != key or not r.get("tip_tremor_mm"):
+                continue
+            t = r["tip_tremor_mm"]
+            xs.append(r["reach_mm"]); ys.append(t["mean"]); lo.append(t["lo"]); hi.append(t["hi"])
+            wc = (r.get("words_via_curve") or {}).get("mean")
+            wr = r.get("words_read") or {}
+            lim = (r.get("at_travel_limit") or {}).get("mean")
+            rows_csv.append([key, r["reach_mm"], t["mean"], t["lo"], t["hi"], lim, wc, wr.get("mean"), wr.get("lo"),
+                             wr.get("hi")])
+        xs, ys = np.array(xs), np.array(ys)
+        ax.plot(xs, ys, color=col, lw=2.0, zorder=2)
+        ax.errorbar(xs, ys, yerr=[ys - np.array(lo), np.array(hi) - ys], fmt="none", ecolor=col, elinewidth=1.2,
+                    capsize=3, zorder=2)
+        ax.plot(xs, ys, **_mk(PS, col, mk, 8), label=lab, zorder=3)
+        if key == "oracle":
+            for dk, r in rows.items():
+                if r["command"] == key and r.get("words_read"):
+                    g = (r.get("gain_read") or {}).get("mean")
+                    ytxt = 0.60 if r["reach_mm"] < 1.2 else 0.36
+                    ax.annotate(f"at +-{r['reach_mm']:g} mm, read: {r['words_read']['mean']:.1f} of 10 words" +
+                                (f"\n({g:+.1f} over the ordinary pen)" if g is not None else ""),
+                                (r["reach_mm"], r["tip_tremor_mm"]["mean"]), xytext=(1.02, ytxt), textcoords="data",
+                                fontsize=7.2, color=PS.INK2, ha="left", va="top",
+                                arrowprops=dict(arrowstyle="-", color=PS.MUTED, lw=0.8, shrinkA=2, shrinkB=5))
+    for val, txt in ((r2, "+2 words (tuning, frozen)"), (r80, "80 % of tremor-free words")):
+        if val:
+            ax.axhline(val, color=PS.INK2, lw=1.0, ls=(0, (4, 3)), zorder=1)
+            ax.text(5.9, val + 0.02, f"{txt}: {val:.2f} mm", fontsize=7.4, color=PS.INK2, ha="right", va="bottom")
+    ax.axvspan(0.95, 1.55, color=PS.GRID, alpha=0.45, lw=0, zorder=0)
+    ax.text(1.22, 0.02, "Rev K nib: +-1.0 mm (DEC-060),\n+-1.5 mm option (DEC-050)", transform=ax.get_xaxis_transform(),
+            fontsize=7.2, color=PS.INK2, ha="center", va="bottom")
+    ax.set_xscale("log")
+    from matplotlib.ticker import NullFormatter, NullLocator
+    ax.xaxis.set_minor_locator(NullLocator())
+    ax.xaxis.set_minor_formatter(NullFormatter())
+    ax.set_xticks([1.0, 1.5, 2.0, 3.0, 6.0])
+    ax.set_xticklabels(["+-1.0", "+-1.5", "+-2", "+-3", "+-6\n(Rev J nose)"])
+    ax.set_xlim(0.9, 7.0)
+    ax.set_ylim(0, None)
+    ax.set_xlabel("usable nib travel, mm (the Rev J nose's own mass and servo)")
+    ax.set_ylabel("tremor left at the tip, mm (severe class)")
+    ax.legend(loc="lower center", bbox_to_anchor=(0.5, -0.36), fontsize=7.8, ncol=1)
+    fig.suptitle("Reach: can a smaller nib deliver the readable target? (tuning split, severe class)", fontsize=10.5,
+                 x=0.01, ha="left")
+    PS.stamp(fig, "SIMULATION (model HW1) with real recorded inputs", "tuning split only; words read by the AI reader")
+    fig.tight_layout(rect=(0, 0.02, 1, 0.95))
+    path = d / "fig_reach.png"
+    fig.savefig(path)
+    plt.close(fig)
+    write_csv(d / "fig_reach.csv", ["command", "reach_mm", "tip_tremor_mm", "tip_lo", "tip_hi", "share_at_travel_limit",
+                                    "words_via_tuning_curve", "words_read", "words_read_lo", "words_read_hi"], rows_csv,
+              ["SIMULATION (model HW1) with real recorded inputs; tuning split (20 severe cases, 5 writers); the Rev J "
+               "nose with its usable travel limited; words via the frozen tuning curve = CALCULATION"])
+    return path
+
+
 def all_figures(out: Dict, d: Path) -> List[Path]:
     made = []
-    for fn in (fig_e13_curve, fig_e13_kinds, fig_e11, fig_gap):
+    for fn in (fig_e13_curve, fig_e13_kinds, fig_e11, fig_gap, fig_reach):
         try:
             p = fn(out, d)
             if p:
