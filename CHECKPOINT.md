@@ -6,6 +6,8 @@ The current work develops a conditional 24 mm / 1.5 mm fine-stage candidate, a s
 
 The decisive remaining gaps are loaded force/friction and guide life, current-loop and contact identification, page registration through lift, complete packaging, and actual benefit under human grip. The grounded 20/20 unloaded ink/tracking result does not extend to either tested resisting grip, and no unloaded trace also passes the selected actual acceleration/jerk comparisons. No learned policy qualified for adoption. Detailed limits, frozen protocols, test logs and reproduction commands are in the report and `results/improvement/`.
 
+**Round 5 (the lead, 30 September 2026)** develops the pass further: the lead's review and decisions DEC-070…074, the nib optimised (study N), a moving-paper platen (study P), users and market (study U), the first bench build (study H) and a re-baseline of earlier results (study X). See §10.
+
 ## Historical checkpoint, 29 September 2026
 
 The record below is preserved for its original assumptions and experiment history. Its statements about the primary design, completed checks and regenerated results describe that earlier state, not the current improvement work.
@@ -285,7 +287,7 @@ The user asked for far more physical effect on the writing: more advanced tip ma
   9. **Beryllium.** Rev K's C17200 wire leads must be soldered or crimped, never welded or ground without fume extraction (AMF-18, DEC-063); a beryllium-free alternative is still to be found.
   10. **Reach for severe tremor** (study F, SIM): with Rev K's ±1 mm nib even perfect knowledge gains only 1.4 words at the severe class (DEC-055 needs 2); ±1.5 mm gains 3.2; a real tracker would need about ±2–3 mm. Rev K makes no severe-tremor legibility claim for its nib; EXP-E23 checks the B1 nib's own reach in sim2.
 - **Done in round 4 (2026-09-29/30):** sim2j (whole Rev J pen in simulator v2), studies R (real recordings), E (tracking real tremor), S (spelling, prediction, clarity), W (shifting the whole pen), B (the balanced nib), M (measurement rigs), K (the Rev K layout) and F (the readable target); validation passes 5–11; the explainer (v10).
-- **Running.** Nothing. Study F finished on 2026-09-30 (`docs/readable_target.md`, DEC-067…069).
+- **Running.** See §10 (round 5). Study F finished on 2026-09-30 (`docs/readable_target.md`, DEC-067…069).
 
 **Next, in order (`validation/prototype_stages.md` §0; the Rev J list in `docs/revJ_concept.md` §7 is superseded).**
 1. DAQ-1 bring-up, then rig R9 (gate G1): EXP-T01, T02 (friction; the lowest ink force, which sets B1's power) and EXP-J17 (the static side load; part (c) the counter-face bench, with EXP-K23's head mock-up).
@@ -310,3 +312,51 @@ python3 validation/check_criteria.py --check
 ```
 
 The studies' dependencies are pinned in `requirements.txt` (mujoco 3.6.0, MyoSuite 2.12.2, gymnasium 1.2.3, stable-baselines3 2.9.0); see `ENVIRONMENT.md`.
+
+## 10. Round 5: developing the independent pass further (added 2026-09-30)
+
+The user asked for the independent engineering pass (commit `e09a15f`, `docs/engineering_improvement_2026_09_30.md`) to be developed further, in full. The lead's review is in `docs/reviews/2026-09-30_lead_review_of_astra.md`: the full suite was rerun on Linux (886 passed, 4 slow skipped, 1 failure). The failure was a defect in the pass's writer-split check, now fixed and covered by a test. Decisions DEC-070…099. Five studies ran in parallel, each writing only to its own folders.
+
+- **The lead's decisions on the pass (DEC-070…074).**
+  - Causal sensing is the default, and closed-loop results computed with ideal sensing are suspended as device evidence until study X reruns them.
+  - The fine nib makes local corrections; whole words need a grounded stage or a moving page.
+  - Two nib candidates go to the bench.
+  - No learned policy drives the nib.
+  - Corrections are proposed, then explicitly accepted.
+- **Study N, the nib optimised** (DEC-080…084; CALC; `docs/nib_optimisation.md`, `nibopt/`).
+  - *One matched model* for every nib: the force constant at its weakest point × 0.7. The ball's writing drag makes about two thirds of the heat.
+  - *Rev K's B1, matched:* about 65 mW typical and 0.168 W at worst, 18.1–46.5 h per charge. Its wire anchor fails fatigue (Goodman 0.71).
+  - *The recommended balanced candidate:* ±1.50 mm, Ø24.0 mm, 157.1 mm, 70.4 g; 37.9 mW typical and 0.107 W at worst; skin 33.7 °C; 22.8 h at the conservative end.
+  - *Magnets and reach limits:* two magnet arrays are needed beyond ±1.25 mm; ±2 mm needs a body of at least 27.5 mm.
+  - *Length:* REQ-RVK-001's 150 mm stays until a 157 mm dummy pen has been tried in the hand (lead note on DEC-083).
+  - *Next:* the actuator coupon, EXP-NB01.
+- **Study P, the moving-paper platen** (DEC-085…089, proposed; SIM with real recorded inputs on the tuning split; `docs/platen_concept.md`, `platen/`).
+  - *Reach:* with perfect knowledge the ±5 mm platen leaves 0.02 mm and 8.3 words of 10 are read, against the ±1.5 mm nib's 0.67 mm and 4.0 words.
+  - *The estimator still decides:* study E's frozen design leaves 1.04 mm (0.7 words). A tip camera with perfect separation leaves 0.09 mm (7.9 words).
+  - *Accepted writing:* with the pen docked, 20/20 "se" and 19/19 "library". With the pen held, only a firm, calm hand succeeds.
+  - *The largest uncertainty:* the ball's friction coupling between the page and the pen (EXP-PL03).
+  - *Cost and size:* BOM USD 895–2,160; retail USD 1,500–3,000 (ASSUMPTION); a 380 × 300 mm desk device.
+- **Study U, users and market** (DEC-090…094; LIT and CALC; `docs/market_and_users.md`).
+  - *Handwriting is still used:* 62 % of GB adults aged 65+ write lists by hand weekly.
+  - *Tremor affects the alternatives too:* 80 % of a tremor charity's surveyed members had writing affected and 54 % typing.
+  - *No shown benefit yet:* the active pen has 0 users with a shown benefit.
+  - *Plan:* discovery first, with the go/no-go criteria GNG-1…10 fixed in advance. Typing and dictation are mandatory comparators. A measuring pen and a practice tool come before the active pen.
+- **Study H, the first bench build** (DEC-095…099; `docs/bench_build_plan.md`, `results/benchbuild/`).
+  - *Cost:* DAQ-1 and R9 cost USD 4,350–7,750 over 4 weeks; all five builds cost USD 14,000–35,400 over 12 weeks.
+  - *Side load:* the calculated side load, about 49–51 mN, favours the 1.059 mm nib unless measured lower. Study N's two-array ±1.5 mm design passes at matched loads; DEC-096 decides on the measured loads.
+  - *Fatigue coupons:* driven at no more than 0.2 × their first mode.
+  - *Safety:* beryllium handling rules (DEC-097), and the five-bar is used on the bench only (DEC-099).
+- **Study X, the re-baseline** (DEC-075…079): running. It reruns sim2j's cards, B1 in sim2, study F's reach check and the page-sensor rows under causal sensing, the corrected loads and page model v2.
+- **Validation.** Pass 13 (U and H) is done; pass 14 (N, P and DEC-070…074) is running.
+- **Open problems changed by round 5** (the numbers refer to §9).
+  1. *Nose-coil power:* study N's balanced candidate replaces Rev K's B1 as the next nib. It is unproven until the coupon and rig experiments EXP-NB01…09.
+  2. *Reach for severe tremor (10):* two answers exist on paper. Study N's ±1.5 mm nib fits in 24 mm (157 mm long), and study P's platen removes the reach limit at a desk. Both still wait on problem 7, the estimator.
+  3. *New:* how far a moving page drags a held pen through the ball (EXP-PL03). This decides the platen's accepted-writing mode.
+  4. *New:* no benefit has been shown to any user. Discovery (EXP-U01…U06) and the comparison study (EXP-U07) come before any product claim (DEC-090…092).
+
+**Next, in order (round 5; `validation/prototype_stages.md` §0 for the gates).**
+1. Discovery, in parallel with the bench because it is cheap: the survey and interviews, EXP-U01…U05, scored against GNG-1…5.
+2. DAQ-1 and rig R9 (G1): EXP-T02 (the minimum ink force), EXP-T01 and EXP-J17 (c). The measured side load decides DEC-096 between the two nib candidates.
+3. EXP-NB01: the balanced candidate's actuator coupon (force map, K_m at its weakest point), then the G2 coupons.
+4. Rig R10 (page sensing), the EXP-H01 recordings and EXP-E10 on new recordings.
+5. For the platen, EXP-PL03 first: a sliding page under a held pen with a force sensor, before any platen is built.
