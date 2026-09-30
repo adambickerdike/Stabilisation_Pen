@@ -8,7 +8,7 @@
 
 ## 0. Current order for Rev J (2026-09-29): the review's gates on study M's rigs
 
-This section supersedes the Stage A equipment and critical path below for the Rev J nib; the stage structure (bench → tethered pen → untethered pen → product form) and the principles stand. Sources: the independent review of 29 September 2026 and the lead's response (`docs/reviews/2026-09-29_review_response.md` §3–§4), study M's rigs (`docs/measurement_rig.md`, DEC-058, DEC-059) and `bench_protocols.md` §47. Nothing has been built.
+This section supersedes the Stage A equipment and critical path below. **The nib to build is Rev K's balanced nib B1** (DEC-050, `docs/balanced_nib.md`): gate G2 tests its coupon, G3 the one-axis nib at ±1.0 mm, G4 the two-axis nib (±1.5 mm only if study E finds an estimator that uses the extra reach). The C1S nose is built only as a bench research module (autowrite, EXP-N08/N09/S19, and EXP-J17's check of the static-load model). For the Rev J nib and earlier notes, the stage structure (bench → tethered pen → untethered pen → product form) and the principles stand. Sources: the independent review of 29 September 2026 and the lead's response (`docs/reviews/2026-09-29_review_response.md` §3–§4), study M's rigs (`docs/measurement_rig.md`, DEC-058, DEC-059) and `bench_protocols.md` §47. Nothing has been built.
 
 | Order | Review gate | Rig (study M) | Experiments | What passing decides |
 |---|---|---|---|---|
