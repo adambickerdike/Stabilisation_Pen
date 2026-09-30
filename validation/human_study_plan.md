@@ -26,6 +26,7 @@ Contents:
 - §23 Shifting the whole pen with people (study W; DEC-051…DEC-053): EXP-W10 (tremor at the ink while writing, with EXP-H01/R01), EXP-W12 (holding and writing with the collar), EXP-W16 (the cost of writing only when in reach, on Rev K's B1 nib since DEC-050)
 - §24 The Rev K grip with people (study K; DEC-062): EXP-K24 (do the writers' fingers touch the paper?)
 - §25 The readable target with people (study F; DEC-067): EXP-E20 (do people read the E13 inks as the AI reader does? inside EXP-R03's panel)
+- §26 Users and market (study U; DEC-090…094): EXP-U01…U05 (customer discovery: a survey; interviews with people with ET or PD, with clinicians, and with parents or teachers; honest waitlist pages), EXP-U06 (the no-device pilot), EXP-U07 (the full comparison, which extends EXP-H06's conditions), EXP-U08 (a measuring pen) and EXP-U09 (a practice tool)
 
 ---
 
@@ -122,6 +123,15 @@ For that reason the immediate-assistance study (EXP-H06) has two pre-specified v
 | EXP-W16 (§23) | What does "write only when in reach" cost people? | people with tremor (n from a pilot, §11 rule) | The Rev K pen (the B1 nib, ±1.0 mm, and a pen lift fast enough for the gate; DEC-050, DEC-064) with the gate on and off, random order | Words read; coverage; missing strokes; completion time | IA; device burden | after G-S on the Rev K build and a bench test of a lift fast enough for the gate (DEC-064: not the follower's; a latching lift coil, not designed); ethics |
 | EXP-K24 (§24) | Do writers' fingers touch the paper with Rev K's grip, which sits 3.3 mm closer to the paper at 35° than an ordinary pen's? | 20 writers | Within-subject: printed mock-ups of the Rev K grip, an ordinary pen and Rev J's front, a sentence with each | Writers who never touch the paper with a finger; ratings | device burden | unpowered mock-ups; ethics |
 | EXP-E20 (§25) | Do people read the E13 inks as the AI reader does: how much tremor may be left at the tip for readable words? | EXP-R03's panel | Blinded literal transcription of the E13 test inks (clean, ordinary pen, perfect knowledge, four amplitude levels), inside EXP-R03's sessions | The residual at which the panel's words reach the ordinary pen's plus 2 | none (the target's validity) | with EXP-R03; ethics |
+| EXP-U01 (§26) | Do people with ET or PD whose writing is affected still write by hand weekly? Which paper jobs are unserved, and what would they pay? | ≥ 100 ET + ≥ 100 PD (UK, US) | Cross-sectional survey via charities; thresholds fixed in advance (DEC-091) | GNG-1 to GNG-5 proportions with Wilson 95 % CIs | none (market) | Ethics (non-NHS); before any tooling |
+| EXP-U02 (§26) | Which writing jobs matter, what is used instead, and why are aids abandoned? | 12–16 ET + 12–16 PD | Semi-structured interviews to saturation | Coded unserved jobs; adoption barriers | none | Ethics |
+| EXP-U03 (§26) | How do clinicians assess and support writing, who pays, and would they use a measuring pen? | 12–16 clinicians | Semi-structured interviews | GNG-7; GNG-8 | none | Ethics; HRA if at NHS sites |
+| EXP-U04 (§26) | How much must children with writing difficulties handwrite, and what is unmet? | 12–16 adults interviewed + ≥ 100 surveyed | Interviews and survey, adults only | GNG-9 | none | Ethics |
+| EXP-U05 (§26) | Do people ask to be kept informed after an honest description, and does price matter? | ≥ 400 visitors per arm per page | Randomised price arms on waitlist pages; no payments (DEC-094) | GNG-6 | none | Ethics review of the copy; CAP Code |
+| EXP-U06 (§26) | How do people with ET or PD perform six everyday tasks with an ordinary pen, a weighted pen, typing with accessibility settings and dictation? | 12–16 ET + 12–16 PD | Within-subject, Williams order, blinded readers; no investigational device | Feasibility; pilot SD of log useful words per minute | none (feasibility) | Ethics; can start now |
+| EXP-U07 (§26) | While active, does the pen give more useful writing than the same pen locked with matched mass, than a weighted pen, and than typing or dictation where they apply? | n from EXP-U06, per group | Within-subject crossover, 2 sessions, 7 conditions; blinded readers and device states; extends EXP-H06 (DEC-092) | GM ratio of useful words per minute, on / locked | IA | After G-S on the build and the EXP-H06 pilot; severe-class claims also need DEC-055 |
+| EXP-U08 (§26) | Is a measuring pen reliable and quick enough for clinics and trials? | 15 ET + 15 PD + 10 controls | Test-retest over 1–2 weeks; blinded clinical ratings | ICC of the primary writing metrics | none (measurement) | Stage A passive instrumented pen (as EXP-H01) |
+| EXP-U09 (§26) | Is a tablet or therapist-led practice tool usable, and used, at home or school? | 20 PD with micrographia + 20 children with DCD (with their OT) | Single-arm, 4-week usability and adherence pilot | Adherence; System Usability Scale; drop-out | none (no lasting-improvement claim) | Ethics; child safeguards |
 
 EXP-B06 (grip impedance) is a bench study with 12 healthy participants (`bench_protocols.md` §7). It is covered by the same ethics approval and the common elements of §3. The same holds for the Rev J bench studies with participants: EXP-K04 and EXP-K08 (`bench_protocols.md` §42), and EXP-V03 (inside EXP-H01 sessions) and EXP-V04 (§44). So does study B's EXP-B30 (the roll of a keyed grip, 10 writers with motion capture; `bench_protocols.md` §51). EXP-L01, L02 and L04 (§45) re-use EXP-H01 recordings under the consents of §3.3; EXP-L04 trains a model, so it uses only recordings whose consent covers model training (item iii). The same holds for EXP-R02 and R05 (`bench_protocols.md` §48); R05 also trains a model. EXP-S20 (`bench_protocols.md` §49) re-uses EXP-S18's data, and EXP-W15 (§50) the EXP-H01/R01 and EXP-W10 recordings, under the same consents.
 
@@ -808,6 +818,8 @@ The ASSIST_KF profile used for ON must have passed AC-B09-15 (gate behaviour). I
 
 The OFF condition needs a stage lock or a mass-matched rigid replica. Without a lock the unpowered nib rests at its stop under the contact load (COR-19). This is a Stage C design input.
 
+**Comparators (DEC-092, REQ-MKT-001).** Every benefit study now compares against an ordinary pen, a weighted pen, typing with accessibility settings and dictation, and device studies add the device unpowered and locked with matched mass. EXP-U07 (§26) does this after this study's pilot. Its "locked" is this study's OFF, and its "on" this study's ON; it adds the unpowered, weighted-pen, typing and dictation conditions, and does not repeat NEUTRAL. EXP-H06 stays the efficacy study against the sham. A claim that the pen is more useful than those alternatives needs EXP-U07.
+
 ### Design
 
 - Randomised **3-period crossover**, Williams design (6 sequences for 3 conditions), in one session: a 5 min practice run-in, then three periods of about 12 min separated by 5 min rests.
@@ -953,6 +965,13 @@ These notes are for planning. The project lead must confirm each item with the i
 | EXP-A02 | 60 (20 per group) | Paired legibility, σ_D 8 points, δ 4 points → 34 (t); agency non-inferiority, σ_D 1.0, margin 0.5 → 34 (t); ≈ 9000 AI-guided letters keep the upper bound of a 0.3 % misread excess below 1 % |
 | EXP-I02 | EXP-H01 participants (80) | Descriptive: per-group median rotational share with a bootstrap CI; no hypothesis test |
 | EXP-I03 | 20 ET + 12 healthy | Paired log-ratio of in-band ink tremor, detect 0.85 with SD 0.3, α 0.05, power 0.8 → 17 (t) + attrition → 20 ET; healthy for letter size and drag |
+| EXP-U01 | ≥ 100 per diagnosis | Widest 95 % CI about ±10 points at n = 100 (CALCULATION) |
+| EXP-U02–U04 | 12–16 per group | Saturation within 9–17 interviews (HAP-164) |
+| EXP-U05 | ≥ 400 visitors per arm | ±3 points at 10 % conversion (CALCULATION) |
+| EXP-U06 | 12–16 per diagnosis | Pilot for the SD (HAP-165) |
+| EXP-U07 | from EXP-U06; for example 37 per diagnosis for a ratio of 1.3 at a pilot σ_D of 0.40 (40 after rounding to four sequences) | Exact paired t on the upper 80 % limit of the pilot SD, + 15 % attrition (`docs/market_and_users.md` §8.7) |
+| EXP-U08 | 30 patients + 10 controls | Precision of an ICC near 0.8 (ASSUMPTION; to be computed at the protocol stage) |
+| EXP-U09 | 20 + 20 | Feasibility (ASSUMPTION) |
 
 All assumed variances are replaced by pilot or internal-pilot estimates before the full studies. Every re-estimation rule is pre-registered.
 
@@ -1857,3 +1876,225 @@ Study F (`docs/readable_target.md`) found how much tremor may be left at the pen
 
 Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (1 rows for EXP-E20).
 <!-- AC-TABLE:EXP-E20:END -->
+
+---
+
+## 26. Users and market: EXP-U01…U09 (study U; DEC-090…094)
+
+Study U (`docs/market_and_users.md`) asked whether there is a market, and what the project should do first. **Nothing was measured on people.** Its numbers are literature values with ledger ids (PDT-90…119, HAP-150…166), CALCULATIONS (the sizing model, `results/market/sizing_model.py`) or ASSUMPTIONS, each labelled. People still write by hand: 62 % of adults aged 65 and over in Great Britain write lists by hand at least weekly (HAP-158). In a tremor charity's survey, tremor affected writing for 80 % and typing for 54 % (PDT-99). The active pen has no shown benefit today.
+- **DEC-090 (2026-09-30).** Measurement and practice come before the active pen, which stays the long-term flagship behind hard gates. The order:
+  1. customer discovery and the no-device pilot (EXP-U01…U06) now;
+  2. a measuring pen for research, clinics and trials, built from the passive instrumented pen that EXP-H01/R01 already needs;
+  3. a tablet app for measurement, practice and clearer on-screen writing;
+  4. a clinician-led practice tool, after an unassisted-retention study;
+  5. the desk surface, after its own study and GNG-2;
+  6. the active consumer pen, only after GNG-10 (DEC-055) and GNG-1…5 pass and EXP-U07 shows benefit.
+- **DEC-091.** The go/no-go criteria GNG-1…10 (`results/market/go_no_go_criteria.csv`) are adopted before discovery starts. A grey or no-go result never releases tooling or volume funds. After the first wave only the sample size may change, not the thresholds. The criteria that carry them are therefore `derived` (AC-U01-01…04, U03-01, U03-02, U04-01, U05-01); AC-U01-05 is REQ-MKT-003's own number.
+- **DEC-092.** Typing with configured accessibility settings and dictation are mandatory comparators, with an ordinary pen and a weighted pen, in every benefit study. Device studies add the device unpowered and the device locked with matched mass (REQ-MKT-001). EXP-U07 extends EXP-H06's conditions in this way (§9).
+- **DEC-093.** The first customers are researchers, clinicians and trial sponsors (the measuring pen and the practice tool) in the UK and US, not consumers. Any consumer launch waits for EXP-U07.
+- **DEC-094.** Honest discovery: waitlists only, and no deposits or payments from patients or families before a benefit is shown. Every participant-facing text says "in development, not proven". All results are reported, including no-go results (REQ-MKT-009).
+- **Requirements.** REQ-MKT-001…010 (a new area, market), with REQ-USR-001, REQ-USR-003 and REQ-VAL-002.
+- **Ethics and data.**
+  - Discovery with patients is research with vulnerable adults. It needs ethics approval before charity recruitment, and HRA and HCRW Approval as well if it runs in the NHS in England or Wales (PDT-119).
+  - It follows the Market Research Society's Code of Conduct 2023 (PDT-119): vulnerable participants are never pressured; incentive terms are stated, and incentives are never paid in the project's own products; nothing is run "under the guise of research".
+  - No child is interviewed or asked for data in discovery; EXP-U04 is adults only.
+  - Real signatures or documents are never collected: a pseudo-signature is used instead (§10).
+  - The instruments, recruitment routes and consent notes are in `results/market/`. Results are reported per diagnosis, country and recruitment route, because charity members are more engaged than the population (PDT-97).
+- **Claim types.** EXP-U01…U05 give market evidence, not benefit. EXP-U06 is feasibility. EXP-U07 is the only benefit study here: immediate assistance at task level. EXP-U08 is measurement. EXP-U09 is a feasibility pilot and makes no lasting-improvement claim (REQ-VAL-002).
+
+### EXP-U01: Do people with ET or PD whose writing is affected still write by hand, and what would they pay?
+- **Design.** A cross-sectional screening survey (`results/market/screening_survey.md`) through charities in the UK and US: at least 100 ET and 100 PD respondents, with the thresholds fixed in advance (DEC-091).
+- **Measurands.** GNG-1…5 as proportions with Wilson 95 % intervals:
+  - writing by hand (lists, notes, forms, signatures, cards) at least a few times a week;
+  - a paper task in the last 3 months that was avoided, delegated or rejected and could not have been typed, dictated or done online;
+  - the score given to a weighted or grip pen tried before;
+  - how much of their writing typing or dictation already covers;
+  - "definitely buy" at each price arm, in the serviceable subgroup.
+- **Predictions (LITERATURE; the general population only).** 62 % of adults aged 65 and over write lists by hand at least weekly (HAP-158). No data exist for people with tremor or PD. At 100 answers the widest 95 % interval is about ±10 points, and about ±7 at 200 (CALC).
+- **Claim type.** None (market evidence).
+- **Decision.** The rules of `docs/market_and_users.md` §7.2. The active pen's consumer path needs GNG-1, 2, 3 and 5 to pass, GNG-4 not to fail, and GNG-10 to pass. A grey result buys a second survey wave, never tooling (REQ-MKT-002).
+
+<!-- AC-TABLE:EXP-U01:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U01-01 | REQ-MKT-002 | GNG-1: share of respondents with writing affected (S7 ≥ 1) who write lists, notes, forms, signatures or cards by hand at least a few times a week; lower 95 % Wilson bound, per diagnosis | ≥ 40 % | derived | GNG-1's go line for the lower 95 % bound (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived; reference 62 % of GB adults 65+ write lists weekly (HAP-158) | DEC-090; DEC-091; paper-based options |
+| AC-U01-02 | REQ-MKT-005 | GNG-2: share with at least one avoided, delegated or rejected paper task in 3 months that could not have been typed, dictated or done online (point estimate) | ≥ 30 % | derived | GNG-2's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived | active pen; desk surface |
+| AC-U01-03 | REQ-MKT-001 | GNG-3: among those who tried a weighted or grip pen, share scoring it ≤ 5 of 10 | ≥ 40 % | derived | GNG-3's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived; ACT-18, ACT-19 | active pen; desk surface |
+| AC-U01-04 | REQ-MKT-005 | GNG-4: share for whom typing or dictation already meets almost all or most writing needs | ≤ 50 % | derived | GNG-4's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived; PDT-99, PDT-104 | active pen; desk surface |
+| AC-U01-05 | REQ-MKT-003 | GNG-5: in the serviceable subgroup, share answering 'Definitely' at the 500 price arm | ≥ 20 % | requirement | REQ-MKT-003's 20 % (GNG-5's go line, an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv; DEC-091); implied price from docs/revK_design.md s5.4 (CALCULATION) | active pen; REQ-MKT-003 |
+| AC-U01-06 | REQ-USR-001 | Responses per diagnosis group (ET, PD) | ≥ 100 | derived | CALCULATION: about ±10 percentage points on a proportion at n = 100 | validity of GNG-1 to GNG-5 |
+| AC-U01-07 | REQ-USR-001 | Results reported per diagnosis, country and recruitment route; no pooled ET-PD claim | conforms | requirement | REQ-USR-001 | claims |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (7 rows for EXP-U01).
+<!-- AC-TABLE:EXP-U01:END -->
+
+### EXP-U02: Which writing jobs matter to people with ET or PD?
+- **Design.** Semi-structured interviews (`results/market/interview_guide_people_with_tremor_or_pd.md`), 12–16 per diagnosis, stopping after 3 interviews in a row with no new job code. Homogeneous groups reach saturation within 9–17 interviews (HAP-164).
+- **Measurands.** The writing jobs, coded; what people use instead; why aids are abandoned; the unserved paper-bound jobs, and the share of each group that names each one.
+- **Predictions.** Signatures, paper forms, cards and lists are the expected unserved jobs (`docs/market_and_users.md` §2.5). None has been measured in the target group.
+- **Claim type.** None.
+- **Decision.** The jobs found steer REQ-MKT-005 (design for paper-bound jobs, not text speed), EXP-U07's tasks and the desk surface. Pseudo-signatures only (AC-U02-03).
+
+<!-- AC-TABLE:EXP-U02:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U02-01 | REQ-MKT-005 | Interviews per diagnosis group, stopping after 3 consecutive interviews with no new job code | ≥ 12 | derived | HAP-164 (saturation within 9-17 interviews) | validity of the job list |
+| AC-U02-02 | REQ-MKT-005 | Distinct unserved paper-bound jobs each named by at least 25 % of interviewees in a group | ≥ 1 | hypothesis | ASSUMPTION | REQ-MKT-005; active pen; desk surface |
+| AC-U02-03 | REQ-MKT-009 | Real signatures, forms or cheques collected or photographed | = 0 | derived | the data rule of validation/human_study_plan.md s10 (no signatures; a pseudo-signature task instead; docs/market_and_users.md s7.4), so derived: REQ-MKT-009 states no such line | study conduct |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-U02).
+<!-- AC-TABLE:EXP-U02:END -->
+
+### EXP-U03: How do clinicians support writing, who pays, and would they use a measuring pen?
+- **Design.** Semi-structured interviews with 12–16 clinicians: occupational therapists, PD nurses, neurologists, and speech and language therapists (`results/market/interview_guide_clinicians.md`). At least 10 trial sponsors, contract research organisations and academic groups are approached about the measuring pen. HRA approval applies at NHS sites.
+- **Measurands.** GNG-7: clinicians who would recommend trying a proven device, and services willing to host EXP-U06 or U08. GNG-8: written expressions of interest, and co-funded pilots within 6 months. The payer or provision routes for each product option.
+- **Predictions (LITERATURE).** 80 industry-sponsored PD drug trials in phase 2 or 3 are open or active (PDT-116). NICE lists PD monitors at £64 per patient-month to £225 per use (PDT-115). US Medicare is unlikely to pay for a pen (PDT-117).
+- **Claim type.** None.
+- **Decision.** GNG-7 and GNG-8 set the measuring pen's priority and confirm or revisit DEC-093's first customers.
+
+<!-- AC-TABLE:EXP-U03:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U03-01 | REQ-MKT-006 | GNG-7: clinicians (of 12-16) who would recommend trying a proven device / services willing to host EXP-U06 or EXP-U08 | ≥ 6 / 3 | derived | GNG-7's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived | therapy tool; measuring pen; tablet app |
+| AC-U03-02 | REQ-MKT-006 | GNG-8: written expressions of interest from sponsors, CROs or academic groups (of ≥ 10 approached) / co-funded pilots within 6 months | ≥ 3 / 1 | derived | GNG-8's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived; PDT-116 | measuring pen |
+| AC-U03-03 | REQ-MKT-008 | Payer or provision routes documented per product option | ≥ 2 | hypothesis | ASSUMPTION | business model (docs/market_and_users.md s6.2) |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (3 rows for EXP-U03).
+<!-- AC-TABLE:EXP-U03:END -->
+
+### EXP-U04: How much must children with writing difficulties handwrite, and what is unmet?
+- **Design.** Adults only: 12–16 parents and teachers interviewed (`results/market/interview_guide_parents_teachers.md`), and at least 100 surveyed. No child is interviewed or asked for data (MRS Code rules 16–22, PDT-119).
+- **Measurands.** GNG-9: the share reporting daily handwriting at school, and the share reporting an unmet writing job.
+- **Predictions (LITERATURE).** HAP-153 and HAP-154 cover children, school and tablets. There are no data on unmet jobs.
+- **Claim type.** None.
+- **Decision.** GNG-9 decides the tablet app and the practice tool for children. Any children's study then follows REQ-MKT-010.
+
+<!-- AC-TABLE:EXP-U04:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U04-01 | REQ-MKT-010 | GNG-9: among ≥ 100 parents or teachers, share reporting daily handwriting at school / share reporting an unmet writing job | ≥ 50 % / 30 % | derived | GNG-9's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived; HAP-153, HAP-154 | tablet app; therapy tool (children) |
+| AC-U04-02 | REQ-MKT-010 | Children interviewed or asked for data | = 0 | derived | EXP-U04's adults-only design (docs/market_and_users.md s7.4) under MRS Code rules 16-22 (PDT-119), so derived: REQ-MKT-010 sets the safeguards for children's studies, not this line | study conduct |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (2 rows for EXP-U04).
+<!-- AC-TABLE:EXP-U04:END -->
+
+### EXP-U05: Do people ask to be kept informed after an honest description, and does price matter?
+- **Design.** Honest waitlist pages (`results/market/landing_page_test_plan.md`) with randomised price arms, at least 400 unique visitors per arm. Every page says the product is in development and unproven (CAP Code 12). Waitlists only: no payments or deposits (DEC-094). The copy passes an ethics review first.
+- **Measurands.** GNG-6: confirmed sign-ups per unique visitor in each arm. Sign-ups in the 500–700 price arm as a fraction of the no-price arm. Payments taken. Upheld complaints that a page misleads.
+- **Predictions.** None. Stated intent overstates buying (ASSUMPTION), so this is the behavioural check, and a weak one. At 10 % conversion, 400 visitors give about ±3 points (CALC).
+- **Claim type.** None.
+- **Decision.** GNG-6 feeds the rules for the active pen, the tablet app and the desk surface; the price arms feed REQ-MKT-003.
+
+<!-- AC-TABLE:EXP-U05:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U05-01 | REQ-MKT-002 | GNG-6: confirmed waitlist sign-ups / unique visitors in at least one arm of a consumer page (≥ 400 visitors per arm) | ≥ 10 % | derived | GNG-6's go line (an ASSUMPTION fixed in advance, results/market/go_no_go_criteria.csv), adopted by DEC-091, so derived | active pen; tablet app; desk surface |
+| AC-U05-02 | REQ-MKT-009 | Payments or deposits taken from patients or families | = 0 | requirement | REQ-MKT-009 (no money or deposits from patients or families before a benefit is shown); DEC-094; PDT-119 | study conduct |
+| AC-U05-03 | REQ-MKT-009 | Upheld complaints that a page misleads | = 0 | derived | CAP Code 12 (PDT-119) and DEC-094, so derived: REQ-MKT-009 asks for the 'in development, unproven' statement, not this count | study conduct |
+| AC-U05-04 | REQ-MKT-003 | Sign-up rate in price arm 2 (500-700) as a fraction of the no-price arm | ≥ 0.5 | hypothesis | ASSUMPTION | REQ-MKT-003; DEC-091 |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (4 rows for EXP-U05).
+<!-- AC-TABLE:EXP-U05:END -->
+
+### EXP-U06: How do people with ET or PD do everyday tasks with an ordinary pen, a weighted pen, typing and dictation? (the no-device pilot)
+- **Relation to EXP-U07.** Its session is session 1 of EXP-U07, run alone. It uses no investigational device, so it can start as soon as ethics approval is in place (DEC-090).
+- **Design.**
+  - 12–16 ET and 12–16 PD (the groups of §3.1 and the criteria of §3.2), with self-reported writing difficulty, able to write a few words and to use a phone or tablet with instruction. Speech intelligibility is recorded, not screened.
+  - Within-subject: an ordinary pen; a weighted pen (the same commercial model for everyone); typing on a phone or tablet with accessibility settings configured from a written checklist; and dictation.
+  - Condition order by a Williams design for four conditions (§3.5); task order fixed.
+  - Six tasks: a pseudo-signature, a form, a shopping list, sentence copying, 2 minutes of free writing and a simple drawing. Not every condition applies to every task (`docs/market_and_users.md` §8.2).
+  - One session of at most 90 minutes, with breaks every 15 minutes (§10). Blinded readers use EXP-R03's panel procedure.
+- **Measurands.** Two outcomes are new here:
+  - useful words per minute: words that match the intended text (for handwriting, read correctly by at least 2 of 3 blinded readers) divided by the task time, corrections included;
+  - setup time: from being handed the tool, with the phone locked or the pen off, to the first useful word.
+
+  Also legibility (§3.6), errors, NASA-TLX, Borg CR10, preference, and the readers' agreement.
+- **Predictions (LITERATURE).** For clear speakers dictation is about 3 times faster than a phone keyboard: 153 against 52 words per minute (HAP-161). But it made 36.3 % word errors on PD speech in a research test (PDT-104). No study has measured accessibility settings in tremor.
+- **Claim type.** None (feasibility).
+- **Decision.** The pilot's SD of the within-participant differences in log useful words per minute, with its upper 80 % limit, sizes EXP-U07 (§11; `docs/market_and_users.md` §8.7). The share of cells completed and the readers' agreement decide whether EXP-U07 goes ahead as designed.
+
+<!-- AC-TABLE:EXP-U06:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U06-01 | REQ-MKT-001 | Task x condition cells completed | ≥ 90 % | hypothesis | ASSUMPTION (feasibility) | go to EXP-U07 |
+| AC-U06-02 | — | Session length including breaks | ≤ 90 min | derived | validation/human_study_plan.md s10 (participant burden: sessions of at most 90 min with breaks), so derived; no requirement states it | go to EXP-U07 |
+| AC-U06-03 | REQ-MKT-001 | Agreement of blinded readers on words read (ICC, participant level) | ≥ 0.80 | hypothesis | ASSUMPTION; method as EXP-R03 | legibility measure qualification |
+| AC-U06-04 | REQ-MKT-001 | Pilot SD of within-participant log useful-words-per-minute differences reported with its upper 80 % confidence limit | conforms | derived | HAP-165; docs/market_and_users.md s8.7 | EXP-U07 sample size |
+| AC-U06-05 | REQ-MKT-004 | Setup time recorded for every condition | conforms | derived | recorded so that REQ-MKT-004's setup time can be judged in EXP-U07 (AC-U07-07), so derived: REQ-MKT-004's own line is the 10 s median | EXP-U07 design |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-U06).
+<!-- AC-TABLE:EXP-U06:END -->
+
+### EXP-U07: While active, does the pen give more useful writing than the same pen locked, a weighted pen, typing or dictation?
+- **Relation to EXP-H06 (DEC-092).** EXP-U07 extends EXP-H06's device conditions (§9). Its "locked with matched mass" is H06's OFF, and its "on" is H06's ON. It adds the device unpowered, a weighted pen, typing with accessibility settings and dictation, and asks a task-level question. The unpowered pen is the flat-battery case: Rev K's unpowered nib rests on its stop 1.26 mm off centre (CALC). H06's powered sham (NEUTRAL) is not repeated, to limit the burden, so the blinding of the device states relies on H06's validation.
+- **When.** Only on a build that has passed G-S (`prototype_stages.md`), after EXP-H06's pilot shows that the device works as intended. Mass, balance and grip should pass first (EXP-W01, J09, K24). Any claim at the severe class also needs GNG-10 (DEC-055).
+- **Design.**
+  - Per diagnosis, with n from EXP-U06: for example 37 per diagnosis for a ratio of 1.3 at a pilot SD of 0.40, or 40 after rounding to four sequences (CALC).
+  - Two sessions of at most 90 minutes. Session 1 as EXP-U06. Session 2: the device on, locked and unpowered, and the ordinary pen again as a bridge.
+  - Williams order within each session. Participant and operator are blinded to the device states as far as possible, and the participant's guess is recorded (Bang's index). Readers are blinded.
+  - Extra eligibility: tip tremor measured by the EXP-H01 method, and the actuated-device exclusions (active implants, until the magnetic-field assessment permits them).
+  - A clinical investigation of an investigational device: ethics approval, the device route (the MHRA in the UK), ISO 14155, and the stopping rules of §3.4 and §10.
+- **Measurands.** As EXP-U06, plus adverse events, and the outcomes payers read, before and after: the Bain-Findley ADL writing item (or TETRAS's), MDS-UPDRS item 2.7, and QUEST 2.0 at the end (REQ-MKT-007; the scales' licences are confirmed first).
+- **Analysis.** A linear mixed model on log useful words per minute for the text tasks, per group: condition, session, period and task as fixed effects, and the participant as a random effect.
+  - Primary: on against locked, as a geometric-mean ratio with a 95 % interval.
+  - Then, in a fixed sequence: on against the weighted pen; on against the ordinary pen; unpowered against the ordinary pen (non-inferiority on legibility, margin −5 points, as AC-H06-05).
+  - The pen against typing and dictation is estimated per task, with no superiority test. The pen is not expected to beat dictation on text speed; the question is what each person would choose for each task.
+- **Predictions.** None for people. Passive utensils matched or beat active ones on preference (ACT-18, ACT-19).
+- **Claim type.** **Immediate assistance**, at task level ("while the pen was in use …"). Nothing about writing without the device.
+- **Decision.** A primary lower bound above 1.0 supports a task-level usefulness claim for that group, and a point estimate of at least 1.2 lets the gain be called meaningful (AC-U07-01, U07-02). DEC-090's consumer path also needs GNG-1…5 and GNG-10. If the pen does not beat the weighted pen, it has no value over a passive aid for that group (DEC-092).
+
+<!-- AC-TABLE:EXP-U07:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U07-01 | REQ-MKT-001 | Primary: geometric-mean ratio of useful words per minute, device ON / device locked with matched mass, text tasks, lower 95 % CI bound, per group | > 1.0 | hypothesis | superiority, two-sided alpha 0.05; n from EXP-U06 (docs/market_and_users.md s8.7) | task-level usefulness claim; DEC-090 |
+| AC-U07-02 | REQ-MKT-001 | Primary point estimate needed to call the gain meaningful | ≥ 1.20 | hypothesis | ASSUMPTION (smallest user-relevant gain) | wording of the claim |
+| AC-U07-03 | REQ-MKT-001 | Key secondary (fixed sequence): GM ratio of useful words per minute, device ON / weighted pen, lower 95 % CI bound | > 1.0 | hypothesis | ACT-18, ACT-19 (passive aids are strong comparators) | active pen value proposition |
+| AC-U07-04 | REQ-MKT-001 | Share of words read correctly by blinded readers, device ON minus locked, point estimate | ≥ 10 percentage points | hypothesis | ASSUMPTION | legibility claim |
+| AC-U07-05 | — | NASA-TLX (raw), device ON minus ordinary pen, upper 95 % CI bound (non-inferiority) | ≤ 10 points | hypothesis | ASSUMPTION | device burden |
+| AC-U07-06 | REQ-MKT-005 | Participants who choose the device for at least one paper-bound task at the end | ≥ 50 % | hypothesis | ASSUMPTION | adoption; DEC-090 |
+| AC-U07-07 | REQ-MKT-004 | Median setup time, device ON | ≤ 10 s | requirement | REQ-MKT-004's 10 s (itself an ASSUMPTION) | REQ-MKT-004 |
+| AC-U07-08 | REQ-MKT-004 | Device unpowered minus ordinary pen, share of words read correctly, lower 95 % CI bound (non-inferiority) | ≥ -5 percentage points | requirement | REQ-MKT-004's non-inferiority margin; AC-H06-05 uses the same margin | REQ-MKT-004 |
+| AC-U07-09 | — | Serious adverse device effects | = 0 | derived | ISO 14155; validation/human_study_plan.md s3.4 | study continuation |
+| AC-U07-10 | REQ-USR-001 | Results reported and claimed per group (ET, PD) and per tremor class; no pooled claim | conforms | requirement | REQ-USR-001; REQ-DATA-004 | claims |
+| AC-U07-11 | REQ-MKT-007 | Bain-Findley (or TETRAS) ADL writing and MDS-UPDRS 2.7 recorded before and after | conforms | requirement | REQ-MKT-007; PDT-113 | payer evidence |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (11 rows for EXP-U07).
+<!-- AC-TABLE:EXP-U07:END -->
+
+### EXP-U08: Is a measuring pen reliable and quick enough for clinics and trials?
+- **Design.** 15 ET, 15 PD and 10 controls, tested twice 1–2 weeks apart with the passive instrumented pen (Stage A, as EXP-H01), with blinded clinical writing and spiral ratings. The measuring pen is a separate product with its own intended purpose and regulatory route (REQ-MKT-006). Participants see no diagnostic or disease-scoring output (REQ-USR-003).
+- **Measurands.** The test-retest ICC of the primary writing metrics (tremor amplitude in the ink, letter size, speed), per group; |Spearman ρ| against the blinded clinical items; the time for a complete assessment; the clinicians' System Usability Scale score.
+- **Predictions (LITERATURE).** Tablet spiral measurement reached an ICC of 0.97 (PDT-12). A tremor-measuring device is Class II in the US (21 CFR 882.1950), and monitoring software is class IIa in the EU (PDT-114).
+- **Claim type.** None (measurement).
+- **Decision.** The measuring pen goes forward only if it meets REQ-MKT-006 (AC-U08-01…03) and GNG-8 passes (DEC-093).
+
+<!-- AC-TABLE:EXP-U08:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U08-01 | REQ-MKT-006 | Test-retest ICC over 1-2 weeks for each primary writing metric (tremor amplitude in ink, letter size, speed), per group | ≥ 0.80 | requirement | REQ-MKT-006's 0.80; PDT-12 (tablet ICC 0.97 for spirals) | measuring pen |
+| AC-U08-02 | REQ-MKT-006 | \|Spearman rho\| between the pen's metric and the blinded clinical writing or spiral item | ≥ 0.5 | requirement | REQ-MKT-006's 0.5 (itself an ASSUMPTION) | measuring pen |
+| AC-U08-03 | REQ-MKT-006 | Median time for a complete assessment | ≤ 10 min | requirement | REQ-MKT-006's 10 min (itself an ASSUMPTION) | measuring pen |
+| AC-U08-04 | REQ-MKT-006 | Median clinician System Usability Scale score | ≥ 70 | hypothesis | ASSUMPTION | measuring pen |
+| AC-U08-05 | REQ-USR-003 | Diagnostic or disease-scoring output shown to participants | = 0 | requirement | REQ-USR-003 | regulatory scope |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-U08).
+<!-- AC-TABLE:EXP-U08:END -->
+
+### EXP-U09: Is a practice tool usable, and used, at home or at school?
+- **Design.** A single-arm, 4-week usability and adherence pilot: 20 people with PD and micrographia, and 20 children with developmental coordination disorder with their occupational therapist. Children take part only with verified responsible-adult permission and their own right to decline, in school too (MRS Code rules 16–22; REQ-MKT-010).
+- **Measurands.** Adherence (the share of planned sessions completed); the System Usability Scale (participants or parents); drop-out; unassisted writing at the end, for planning only.
+- **Predictions (LITERATURE).** Effective handwriting programmes need practice (HAP-41). In dyslexia, spelling, not movement, limits writing (HAP-47, HAP-48).
+- **Claim type.** None. The pilot makes no lasting-improvement claim (REQ-VAL-002); an efficacy study with unassisted retention comes first (DEC-090). No material claims to treat dyslexia (REQ-MKT-010).
+- **Decision.** Adherence, usability and drop-out decide whether an efficacy study is planned.
+
+<!-- AC-TABLE:EXP-U09:BEGIN -->
+| ID | Req. | Metric | Threshold | Status | Basis | Gates |
+|---|---|---|---|---|---|---|
+| AC-U09-01 | REQ-MKT-010 | Median share of planned practice sessions completed over 4 weeks | ≥ 70 % | hypothesis | ASSUMPTION; HAP-41 (practice dose matters) | tablet app; therapy tool |
+| AC-U09-02 | — | Median System Usability Scale score (participants or parents) | ≥ 70 | hypothesis | ASSUMPTION | tablet app; therapy tool |
+| AC-U09-03 | — | Drop-out over 4 weeks | ≤ 20 % | hypothesis | ASSUMPTION | efficacy study planning |
+| AC-U09-04 | REQ-VAL-002 | No lasting-improvement claim from the pilot; unassisted writing measured at the end for planning only | conforms | requirement | REQ-VAL-002 | claims |
+| AC-U09-05 | REQ-MKT-010 | Materials that claim to treat dyslexia | = 0 | requirement | REQ-MKT-010; HAP-47 | claims |
+
+Source of truth: [`acceptance_criteria.csv`](acceptance_criteria.csv) (5 rows for EXP-U09).
+<!-- AC-TABLE:EXP-U09:END -->

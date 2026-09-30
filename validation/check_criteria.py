@@ -8,6 +8,11 @@ from it, so edit the CSV and re-run:
 
     python3 validation/check_criteria.py            # check, then rewrite the tables
     python3 validation/check_criteria.py --check    # check only (exit 1 on any problem)
+    python3 validation/check_criteria.py --selftest # test the checker's own rules
+
+Ids: an experiment is EXP- plus one or two capital letters and two digits
+(EXP-B25, EXP-BB01); its criteria are AC-<same letters and digits>-<two digits>
+(AC-B25-01, AC-BB01-01).
 
 Checks: unique ids; id prefix matches the experiment; requirement ids exist in
 docs/requirements.csv; status in {requirement, derived, hypothesis}; status
@@ -15,6 +20,7 @@ docs/requirements.csv; status in {requirement, derived, hypothesis}; status
 repeat the leading operator given in 'direction'; no empty fields; every
 experiment with criteria has a table and every table has criteria; coverage of
 requirements. Reads docs/ only; writes only the two markdown files above.
+Every run first runs the self-test on made-up rows and stops if it fails.
 """
 from __future__ import annotations
 
@@ -33,7 +39,9 @@ COLS = ["id", "requirement_id", "experiment_id", "metric", "threshold", "directi
 DIRS = {"<=", ">=", "<", ">", "=", "within", "pass/fail"}
 STATUS = {"hypothesis", "derived", "requirement"}
 SYM = {"<=": "≤ ", ">=": "≥ ", "<": "< ", ">": "> ", "=": "= ", "within": "within ", "pass/fail": ""}
-MARK = re.compile(r"(<!-- AC-TABLE:(EXP-[A-Z]\d\d):BEGIN -->)(.*?)(<!-- AC-TABLE:\2:END -->)", re.S)
+EXP_ID = re.compile(r"EXP-([A-Z]{1,2}\d\d)")
+AC_ID = re.compile(r"AC-([A-Z]{1,2}\d\d)-\d\d")
+MARK = re.compile(r"(<!-- AC-TABLE:(EXP-[A-Z]{1,2}\d\d):BEGIN -->)(.*?)(<!-- AC-TABLE:\2:END -->)", re.S)
 
 
 def load():
@@ -42,6 +50,12 @@ def load():
         if rd.fieldnames != COLS:
             sys.exit(f"unexpected columns: {rd.fieldnames}")
         return list(rd)
+
+
+def id_matches(ac_id, exp_id):
+    """True when both ids are well formed and the criterion's prefix is the experiment's."""
+    a, e = AC_ID.fullmatch(ac_id), EXP_ID.fullmatch(exp_id)
+    return bool(a and e and a.group(1) == e.group(1))
 
 
 def check(rows):
@@ -53,7 +67,7 @@ def check(rows):
         if i in seen:
             errs.append(f"duplicate id {i}")
         seen.add(i)
-        if not re.fullmatch(r"AC-[A-Z]\d\d-\d\d", i) or i[3:6] != r["experiment_id"][4:7]:
+        if not id_matches(i, r["experiment_id"]):
             errs.append(f"{i}: id does not match experiment {r['experiment_id']}")
         if r["requirement_id"] and r["requirement_id"] not in reqs:
             errs.append(f"{i}: {r['requirement_id']} not in docs/requirements.csv")
@@ -94,7 +108,60 @@ def table(exp, rows):
     return "\n".join(out)
 
 
+def selftest():
+    """Run the checks on made-up rows. Returns a list of failures (empty when all pass)."""
+    def row(i, e, **kw):
+        r = dict(id=i, requirement_id="", experiment_id=e, metric="m", threshold="1", direction="<=",
+                 basis="b", status="hypothesis", decision_gated="g")
+        r.update(kw)
+        return r
+
+    def errs_of(*rows):
+        return check(list(rows))[0]
+
+    fails = []
+    good = [("AC-B25-01", "EXP-B25"), ("AC-BB01-01", "EXP-BB01"), ("AC-NB12-03", "EXP-NB12")]
+    bad = [("AC-BB01-01", "EXP-BB02"), ("AC-BB01-01", "EXP-B01"), ("AC-B01-01", "EXP-BB01"),
+           ("AC-BBB01-01", "EXP-BBB01"), ("AC-bb01-01", "EXP-bb01"), ("AC-B1-01", "EXP-B1"),
+           ("AC-B25-1", "EXP-B25"), ("AC-B25-01", "EXP-B25X"), ("AC-B25-01X", "EXP-B25"),
+           ("AC-B251-01", "EXP-B251"), ("AC-25-01", "EXP-25")]
+    for i, e in good:
+        if errs_of(row(i, e)):
+            fails.append(f"rejected a good pair {i} / {e}")
+    for i, e in bad:
+        if not any("does not match" in x for x in errs_of(row(i, e))):
+            fails.append(f"accepted a bad pair {i} / {e}")
+    # The other rules stay as strict as before.
+    strict = {
+        "duplicate id": [row("AC-BB01-01", "EXP-BB01"), row("AC-BB01-01", "EXP-BB01")],
+        "not in docs/requirements.csv": [row("AC-BB01-01", "EXP-BB01", requirement_id="REQ-NONE-999")],
+        "status 'x'": [row("AC-BB01-01", "EXP-BB01", status="x")],
+        "needs a requirement_id": [row("AC-BB01-01", "EXP-BB01", status="requirement")],
+        "direction 'about'": [row("AC-BB01-01", "EXP-BB01", direction="about")],
+        "starts with an operator": [row("AC-BB01-01", "EXP-BB01", threshold="<= 1")],
+        "empty basis": [row("AC-BB01-01", "EXP-BB01", basis=" ")],
+    }
+    for want, rows in strict.items():
+        if not any(want in x for x in errs_of(*rows)):
+            fails.append(f"missed '{want}'")
+    for text, exp in [("<!-- AC-TABLE:EXP-B25:BEGIN -->\nx\n<!-- AC-TABLE:EXP-B25:END -->", "EXP-B25"),
+                      ("<!-- AC-TABLE:EXP-BB01:BEGIN -->\nx\n<!-- AC-TABLE:EXP-BB01:END -->", "EXP-BB01"),
+                      ("<!-- AC-TABLE:EXP-BBB01:BEGIN -->\nx\n<!-- AC-TABLE:EXP-BBB01:END -->", None),
+                      ("<!-- AC-TABLE:EXP-BB01:BEGIN -->\nx\n<!-- AC-TABLE:EXP-BB02:END -->", None)]:
+        got = [m.group(2) for m in MARK.finditer(text)]
+        if got != ([exp] if exp else []):
+            fails.append(f"table markers: expected {exp}, found {got}")
+    return fails
+
+
 def main():
+    fails = selftest()
+    if fails:
+        print("self-test failed:\n" + "\n".join(fails))
+        sys.exit(1)
+    if "--selftest" in sys.argv:
+        print("self-test passed")
+        return
     rows = load()
     errs, uncovered = check(rows)
     exps = {r["experiment_id"] for r in rows}
