@@ -108,9 +108,9 @@ async function run(browser, label, viewport) {
   check(`${label}: no micrometre numbers in the simple view (outside Known problems); ${DETAILS.length} Details blocks, all closed`, !simple.um && simple.dets === DETAILS.length && !simple.anyOpen,
     `µm above Details: ${simple.um}; ${simple.dets} blocks`);
   const mTip = simple.mechs.find(m => m.key === "tip") || {}, mHeel = simple.mechs.find(m => m.key === "heel") || {}, mTail = simple.mechs.find(m => m.key === "tail") || {};
-  check(`${label}: mechanisms: the tail is Rev J.1's 17 g weight, not in the product (no gain in the physics simulation; 6–18 % only in the simpler model); the heel wheel is retracted by default; the nib is being redesigned`,
+  check(`${label}: mechanisms: the tail is Rev J.1's 17 g weight, not in the product (no gain in the physics simulation; 6–18 % only in the simpler model); the heel wheel is retracted by default; the nib is being replaced by a balanced nib`,
     /\b17\s*g tungsten weight/.test(mTail.sent) && /6–18\s*%/.test(mTail.note) && /no gain/.test(mTail.note) && /Not in the product/.test(mTail.note) && /locked/.test(mTail.note) &&
-    /Retracted by default/.test(mHeel.note) && /redesigned/.test(mTip.note) && !simple.first820,
+    /Retracted by default/.test(mHeel.note) && /balanced nib/.test(mTip.note) && !simple.first820,
     `tail: "${(mTail.sent || "").slice(0, 60)}…"; heel note: "${(mHeel.note || "").slice(0, 40)}…"; first design's 8–20 % above Details: ${simple.first820}`);
   const rows = await page.evaluate(() => [...document.querySelectorAll("#better .brow")].map(r => ({ id: r.dataset.row, nums: r.querySelectorAll(".bnum .bv").length, thumbs: r.querySelectorAll("svg.thumb").length,
     tags: r.querySelectorAll(".bnum .tag").length, val: (r.querySelector(".bnum .bv") || {}).textContent, verdict: (r.querySelector(".verdict") || {}).textContent || "" })));
@@ -154,9 +154,9 @@ async function run(browser, label, viewport) {
     kp.afterSure && !kp.inDetails && /Known problems \(being fixed\)/.test(kp.heading) && kp.items.length === 4 && kp.items.every(i => i.tags.length >= 1),
     kp.items.map(i => `${i.key}: ${i.tags.join(" + ")}`).join("; "));
   const kS = it("sideload"), kH = it("heel"), kP = it("sensor"), kD = it("data");
-  check(`${label}: known problems: holding the ball costs 1.6 W at 50° and 4.7 W at 35°, about 7 times; overheats; battery and heat suspended`,
+  check(`${label}: known problems: holding the ball costs 1.6 W at 50° and 4.7 W at 35°, about 7 times; overheats; a fix is designed (about 38 hours, ±1 mm reach)`,
     /about 7 times harder/.test(kS.text) && /1\.6\s*W at a normal 50°/.test(kS.text) && /4\.7\s*W at 35°/.test(kS.text) && /overheat within about a minute/.test(kS.text) &&
-    /balanced nib/.test(kS.text) && /suspended/.test(kS.text) && kS.tags.some(t => /^Calculation/.test(t)) && kS.tags.some(t => /^Simulation/.test(t)), kS.text.slice(0, 110));
+    /fix is designed/.test(kS.text) && /38 hours/.test(kS.text) && /±1/.test(kS.text) && kS.tags.some(t => /^Calculation/.test(t)) && kS.tags.some(t => /^Simulation/.test(t)), kS.text.slice(0, 110));
   check(`${label}: known problems: heel wheel 0.4 mm, retracted; page sensor 3 µm against DeltaPen's 24–68 µm; made-up writers and shakes`,
     /0\.4\s*mm/.test(kH.text) && /retracted unless the writer turns guidance on/.test(kH.text) && kH.tags.some(t => /^Simulation/.test(t)) &&
     /3\s*µm/.test(kP.text) && /DeltaPen, 2022/.test(kP.text) && /24–68\s*µm/.test(kP.text) && /unproven/.test(kP.text) && kP.tags.some(t => /^Assumption/.test(t)) && kP.tags.some(t => /^Literature/.test(t)) &&

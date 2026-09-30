@@ -1241,7 +1241,7 @@ MECHANISMS = [
                   'behind the ball) swings inside the handle you hold, <b>pushed by coils</b> on the magnets at its back end, '
                   'so <b>the ball moves up to {travel_s}&nbsp;mm</b> against the shake and the ink stays on your letters.'),
      "uses": ["steadies the ink", "writes for you, if you turn it on"],
-     "note": "Being redesigned: holding the ball against the paper costs this design too much power (see Known problems).",
+     "note": "Being replaced in the next prototype: holding the ball against the paper costs this design too much power; a balanced nib that slides about ±1 mm fixes it (see Known problems).",
      "evidence": [("PROPOSED DESIGN", ""), ("CALCULATION", "reach and pivot: results/revJ/layout.json")]},
     {"key": "heel", "n": 2, "tok": "--g-drive", "name": "The heel wheel", "where": "under the front ring",
      "sentence": ('<b class="mv">A 2&nbsp;mm wheel under the front ring</b> grips the paper and is <b>steered, or driven, by two '
@@ -1271,10 +1271,14 @@ KNOWN_PROBLEMS = [
      "lead": "The inner pen's coils spend most of their power just holding the ball against the paper.",
      "text": ("Because the pen is tilted, the paper pushes the ball sideways, and the magnets sit on a short arm, so they must "
               "push about {kp_ratio} times harder. That is {kp_p50}&nbsp;W at a normal 50° angle and {kp_p35}&nbsp;W at 35°. "
-              "The coils would overheat within about a minute. A balanced nib is being designed, so battery and heat figures "
-              "are suspended."),
+              "The coils would overheat within about a minute. <b>A fix is designed</b> (study B): in the next prototype (Rev K) "
+              "the refill slides on thin wires, and its spring pushes on a small face kept parallel to the paper, so the two "
+              "pushes cancel at any angle. Holding then costs at most 0.0016&nbsp;W, and the pen would run about 38 hours per charge. "
+              "The price is reach: about ±1&nbsp;mm instead of ±6&nbsp;mm, so the pen can no longer write whole words for you. "
+              "Nothing has been built yet."),
      "evidence": [("CALCULATION", "the independent review's formula, reproduced by the lead; inputs results/revJ/sim_params.json and layout.json"),
-                  ("SIMULATION (sim2, the same load in a writing run)", "about {kp_sim} W of the nose's power in a writing run: docs/revJ_simulation.md §8.1")]},
+                  ("SIMULATION (sim2, the same load in a writing run)", "about {kp_sim} W of the nose's power in a writing run: docs/revJ_simulation.md §8.1"),
+                  ("CALCULATION (the balanced nib)", "docs/balanced_nib.md; DEC-050")]},
     {"key": "heel",
      "lead": "The heel wheel moved clean writing by about {kp_heel}&nbsp;mm in the physics simulation,",
      "text": "so it stays retracted unless the writer turns guidance on.",
