@@ -1,0 +1,122 @@
+row_id,region,product_option,segment,quantity,low,central,high,unit,label,derivation,sources,note
+IN-POP-UK-ALL,UK,all,input,"Resident population, mid-2024",69281437,69281437,69281437,people,LITERATURE,"ONS mid-2024 table MYE2 (UK, all ages)",PDT-118,
+IN-POP-UK-65,UK,all,input,"Population aged 65+, mid-2024",13161666,13161666,13161666,people,LITERATURE,sum of ONS MYE2 single-year ages 65 to 90+,PDT-118,"World Bank WDI gives 13,509,634 for 2024 (UN-based); ONS is used"
+IN-POP-UK-18,UK,all,input,"Population aged 18+, mid-2024",55022253,55022253,55022253,people,LITERATURE,sum of ONS MYE2 single-year ages 18 to 90+,PDT-118,
+IN-POP-UK-5to15,UK,all,input,"Population aged 5-15 (school age), mid-2024",9021968,9021968,9021968,people,LITERATURE,sum of ONS MYE2 single-year ages 5 to 15,PDT-118,
+IN-POP-US-65,US,all,input,"Population aged 65+, 2024",61200000,61200000,61200000,people,LITERATURE,US Census Bureau Vintage 2024 press release (61.2 million),PDT-118,
+IN-POP-US-K12,US,all,input,"Elementary and secondary enrolment (public 49.4 M + private 6.1 M, fall 2021)",55500000,55500000,55500000,pupils,LITERATURE,NCES Fast Facts id=65,HAP-156,private figure is an NCES projection
+IN-POP-W-65,World,all,input,"Population aged 65+, 2024",830519148,830519148,830519148,people,LITERATURE,World Bank WDI SP.POP.65UP.TO (UN WPP based),PDT-118,
+IN-POP-W-5to14,World,all,input,"Population aged 5-14, 2024",1366728771,1366728771,1366728771,people,CALCULATION,"WDI 2024: female share aged 5-9 (8.189 %) + 10-14 (8.177 %) x 4,047,858,202 females; male 8.583 % + 8.623 % x 4,093,039,322 males",PDT-118,
+IN-PD-UK,UK,all,input,People with Parkinson's (diagnosed; high adds the estimated undiagnosed),166000,166000,187000,people,LITERATURE,"Parkinson's UK 2025: 166,000 diagnosed; 21,000 more undiagnosed",PDT-92,
+IN-PD-US,US,all,input,People with Parkinson's,930000,1100000,1238000,people,LITERATURE,low: Marras 2018 projection for 2020 (age 45+); central: Parkinson's Foundation 2024; high: Marras 2018 projection for 2030 (upper bound),PDT-93,
+IN-PD-W,World,all,input,People with Parkinson's,8500000,11770000,13420000,people,LITERATURE,"low: WHO fact sheet (2019 estimate); central and high: GBD 2021 via Luo et al. 2025 (11.77 M, UI upper 13.42 M)",PDT-90; PDT-91,
+IN-ET-P65,all,all,input,"Essential tremor prevalence, age 65+ (pooled)",0.0414,0.0579,0.0805,fraction,LITERATURE,Louis & McCreary 2021 meta-analysis: 5.79 % (95 % CI 4.14-8.05 %),PDT-94,
+IN-ET-PALL,all,all,input,"Essential tremor prevalence, all ages (pooled)",0.0133,0.0133,0.0133,fraction,LITERATURE,Louis & McCreary 2021: 1.33 % (no CI reported in the extracted text),PDT-94,"study populations were often adults, so this may overstate an all-ages rate"
+IN-ET-US-POP,US,all,input,People with ET (population-based estimate),6380000,7010000,7630000,people,LITERATURE,"Louis & Ottman 2014: 7.01 M (6.38-7.63 M), about 2.2 %",PDT-95,
+IN-ET-US-DX,US,all,input,"Adults with diagnosed ET (claims-based), 2024",1100000,1100000,1100000,people,LITERATURE,Lin et al. 2025: 1.1 M; 0.42 % age-standardised,PDT-96,
+IN-ET-DXRATE,all,all,input,Diagnosed ET as a share of adults (US claims),0.0042,0.0042,0.0042,fraction,LITERATURE,Lin et al. 2025,PDT-96,
+IN-ET-SYMPT,all,all,input,Share of community ET cases who report tremor (not asymptomatic),0.507,0.507,0.507,fraction,CALCULATION,"1 - 0.493 (36 of 73 community cases asymptomatic, Louis et al. 1998)",PDT-97,
+IN-ET-WRITE-ENG,all,all,input,Share of engaged or diagnosed ET patients whose writing is affected,0.505,0.65,0.8,fraction,LITERATURE range; central ASSUMPTION,low: QUEST writing moderate impairment 50.5 % (Gerbasi 2022 review); high: IETF member survey 80 % (Gupta 2021); central is the midpoint (ASSUMPTION),PDT-99; PDT-101,central value is an ASSUMPTION
+IN-ET-WRITE-COMM,all,all,input,Share of all (population-based) ET cases whose writing is affected,0.256,0.3296,0.4056,fraction,CALCULATION,IN-ET-SYMPT x IN-ET-WRITE-ENG,PDT-97; PDT-99; PDT-101,ASSUMPTION that asymptomatic community cases have no writing problem and symptomatic ones resemble engaged patients
+IN-PD-WRITE,all,all,input,Share of people with Parkinson's whose handwriting is affected,0.333,0.5,0.632,fraction,LITERATURE range; central ASSUMPTION,low: 'impaired dexterity or micrographia' most bothersome in early PD 33.3 % (Fox Insight 2025); high: micrographia by history 63.2 % (Wagle Shukla 2012); central midpoint (ASSUMPTION),PDT-102; PDT-01,different definitions; central value is an ASSUMPTION
+IN-WEEKLY,all,all,input,Share of people with writing difficulty who still write by hand at least weekly,0.4,0.55,0.62,fraction,ASSUMPTION,"high = general 65+ population writing short lists by hand at least weekly (62 %, YouGov May 2025); low and central ASSUMPTION",HAP-158,the key unknown for go/no-go GNG-1
+IN-CLASS-MS,all,active_pen,input,Share of tremor patients in the moderate or severe tip-tremor class,0.4,0.45,0.5,fraction,CALCULATION,project data: classes set at the median and 90th percentile of 24 PD tuning patients (50 %); 24 % + 16 % = 40 % on 25 held-out patients (docs/real_data.md),project record (study R),PD spirals only; ET tip data do not exist (ASSUMPTION that ET is similar)
+IN-NOW,all,active_pen,input,Share of the serviceable segment with a demonstrated legibility benefit today,0,0,0,fraction,CALCULATION,no causal tracker passes DEC-055 on real tremor (docs/claims_register.md; docs/readable_target.md),"project record (studies R, E, F)",
+IN-EARLY-HW,all,active_pen,input,Share of the serviceable segment buying within 3 years at the needed price,0.02,0.05,0.1,fraction,ASSUMPTION,planning value; to be replaced by EXP-U01 (GNG-5) and EXP-U05 (GNG-6),,
+IN-TABLET-ADULT,all,tablet_app,input,Share of affected adults with a stylus-capable tablet or willing to use one,0.3,0.45,0.6,fraction,ASSUMPTION,no tablet-ownership figure for this group was found (Pew 2025 reports smartphones: 78 % of 65+),HAP-160,GAP
+IN-TABLET-CHILD-HI,UK/US,tablet_app,input,Share of children with handwriting difficulty with tablet access at home or school,0.5,0.65,0.8,fraction,ASSUMPTION,no source found,,GAP
+IN-TABLET-CHILD-W,World,tablet_app,input,Share of the world's children with handwriting difficulty with tablet access and a buyer,0.05,0.1,0.2,fraction,ASSUMPTION,no source found,,GAP; not decision-grade
+IN-EARLY-APP,all,tablet_app,input,Share of serviceable users adopting within 3 years,0.01,0.02,0.05,fraction,ASSUMPTION,planning value,,
+IN-HWD,all,tablet_app,input,Share of school-aged children with handwriting difficulties,0.1,0.2,0.3,fraction,LITERATURE range; central ASSUMPTION,Feder & Majnemer 2007: 10-30 %; central midpoint (ASSUMPTION),HAP-152,
+IN-DCD,all,therapy_tool,input,Share of children with developmental coordination disorder,0.03,0.05,0.07,fraction,LITERATURE,Li et al. 2024 meta-analysis: 5 % (95 % CI 3-7 %); Blank et al. 2019: 5-6 % most quoted,HAP-151; HAP-150,
+IN-OT-CHILD,all,therapy_tool,input,Share of children with DCD receiving OT or school handwriting support,0.2,0.3,0.5,fraction,ASSUMPTION,no source found,,GAP
+IN-OT-PD,all,therapy_tool,input,Share of people with PD handwriting problems referred to therapy for handwriting,0.1,0.2,0.3,fraction,ASSUMPTION,no source found,,GAP
+IN-EARLY-THER,all,therapy_tool,input,Share of the serviceable caseload reached in the first 3 years,0.01,0.03,0.05,fraction,ASSUMPTION,planning value,,
+IN-ET-DX-W,World,all,input,"Diagnosed share of population-based ET, outside the US",0.05,0.1,0.157,fraction,ASSUMPTION,"high = US ratio 1.1 M / 7.01 M (CALCULATION from PDT-95, PDT-96); low and central ASSUMPTION",PDT-95; PDT-96,undiagnosed shares of 59.5-100 % are reported in some countries (PDT-94)
+IN-ET-DX-UK,UK,all,input,Diagnosed ET as a share of UK adults,0.003,0.0042,0.006,fraction,ASSUMPTION,central = US claims rate 0.42 % (PDT-96) transferred to the UK; no UK count was found,PDT-96,GAP
+IN-ACCESS-W,World,all,input,"Share of the world's affected people in markets where a product like this could be sold, afforded and supported",0.1,0.2,0.3,fraction,ASSUMPTION,no source; applied to every World serviceable segment except trials,,GAP; World serviceable values are not decision-grade
+IN-DESK,all,desk_surface,input,Share of handwriting occasions done seated at a desk or table,0.75,0.83,0.9,fraction,LITERATURE central; range ASSUMPTION,"central = 1 - 0.17 (older adults stood for 17 % of handwriting occasions, van Drempt et al. 2011, n = 30); low/high ASSUMPTION",HAP-159,small sample
+IN-CLINIC,all,measuring_pen,input,Share of PD or diagnosed-ET patients in services that would use objective writing measurement,0.1,0.2,0.3,fraction,ASSUMPTION,NICE conditionally recommends wearable PD monitors (HTG657) but none measures handwriting,PDT-115,GAP
+IN-TRIALS,World,measuring_pen,input,"Open or active industry-sponsored phase 2/3 drug trials (PD 80 + ET 2), ClinicalTrials.gov 2026-09-30",82,82,82,trials,LITERATURE,registry query (CALCULATION of counts),PDT-116,
+IN-TRIAL-FIT,World,measuring_pen,input,Share of those trials where a writing or fine-motor endpoint is relevant,0.25,0.35,0.5,fraction,ASSUMPTION,planning value,,
+IN-SITES,World,measuring_pen,input,Sites per trial,20,30,60,sites,ASSUMPTION,planning value,,
+IN-KITS,World,measuring_pen,input,Measuring kits per site,1,2,2,kits,ASSUMPTION,planning value,,
+ET-UK-65,UK,all,input,People with ET aged 65+ (population-based),544893,762060,1059514,people,CALCULATION,IN-POP-UK-65 x IN-ET-P65,PDT-118; PDT-94,ASSUMPTION that the pooled rate applies to the UK
+ET-UK-POP,UK,all,input,"People with ET, all ages (population-based)",544893,921443,1218897,people,CALCULATION,low = 65+ only at the lower CI; central = 1.33 % x all ages; high = 65+ upper CI + (central - 65+ central),PDT-118; PDT-94,ASSUMPTION that pooled rates apply to the UK
+ET-UK-DX,UK,all,input,Adults with diagnosed ET,165067,231093,330134,people,CALCULATION,IN-POP-UK-18 x IN-ET-DX-UK,PDT-118; PDT-96,rests on an ASSUMPTION (GAP)
+ET-W-65,World,all,input,People with ET aged 65+ (population-based),34383493,48087059,66856791,people,CALCULATION,IN-POP-W-65 x IN-ET-P65,PDT-118; PDT-94,excludes under-65s; all-ages 1.33 % x 8.14 bn would give 108 M but overstates in young populations
+ET-W-DX,World,all,input,People with diagnosed ET (65+ only),1719175,4808706,10496516,people,CALCULATION,ET-W-65 x IN-ET-DX-W,PDT-94; PDT-95; PDT-96,ASSUMPTION-heavy
+WA-UK-ET,UK,all,input,People with ET whose writing is affected (population-based),139512,303662,494385,people,CALCULATION,ET-UK-POP x IN-ET-WRITE-COMM,see inputs,
+WA-UK-PD,UK,all,input,People with PD whose handwriting is affected,55278,83000,118184,people,CALCULATION,IN-PD-UK x IN-PD-WRITE,see inputs,
+WA-UK,UK,all,input,Adults with ET or PD whose writing is affected,194790,386662,612569,people,CALCULATION,WA-UK-ET + WA-UK-PD,see inputs,ignores the small overlap of ET and PD
+WA-US-ET,US,all,input,People with ET whose writing is affected (population-based),1633503,2310146,3094728,people,CALCULATION,IN-ET-US-POP x IN-ET-WRITE-COMM,see inputs,
+WA-US-PD,US,all,input,People with PD whose handwriting is affected,309690,550000,782416,people,CALCULATION,IN-PD-US x IN-PD-WRITE,see inputs,
+WA-US,US,all,input,Adults with ET or PD whose writing is affected,1943193,2860146,3877144,people,CALCULATION,WA-US-ET + WA-US-PD,see inputs,ignores the small overlap of ET and PD
+WA-World-ET,World,all,input,People with ET whose writing is affected (population-based),8803378,15847090,27117115,people,CALCULATION,ET-W-65 x IN-ET-WRITE-COMM,see inputs,
+WA-World-PD,World,all,input,People with PD whose handwriting is affected,2830500,5885000,8481440,people,CALCULATION,IN-PD-W x IN-PD-WRITE,see inputs,
+WA-World,World,all,input,Adults with ET or PD whose writing is affected,11633878,21732090,35598555,people,CALCULATION,WA-World-ET + WA-World-PD,see inputs,ignores the small overlap of ET and PD
+DX-UK-ET,UK,all,input,Diagnosed ET with writing affected,83359,150211,264107,people,CALCULATION,ET-UK-DX x IN-ET-WRITE-ENG,see inputs,
+DX-UK,UK,all,input,Diagnosed ET or PD with writing affected,138637,233211,382291,people,CALCULATION,DX-UK-ET + WA-UK-PD,see inputs,
+DX-US-ET,US,all,input,Diagnosed ET with writing affected,555500,715000,880000,people,CALCULATION,IN-ET-US-DX x IN-ET-WRITE-ENG,see inputs,
+DX-US,US,all,input,Diagnosed ET or PD with writing affected,865190,1265000,1662416,people,CALCULATION,DX-US-ET + WA-US-PD,see inputs,
+DX-World-ET,World,all,input,Diagnosed ET with writing affected,868183,3125659,8397213,people,CALCULATION,ET-W-DX x IN-ET-WRITE-ENG,see inputs,
+DX-World,World,all,input,Diagnosed ET or PD with writing affected,3698683,9010659,16878653,people,CALCULATION,DX-World-ET + WA-World-PD,see inputs,
+AP-UK-TOTAL,UK,active_pen,total,Adults with ET or PD whose writing is affected,194790,386662,612569,people,CALCULATION,= WA-UK,see inputs,
+AP-UK-SERV-COND,UK,active_pen,serviceable,"Diagnosed, still writing by hand weekly, tremor class moderate or severe (IF a tracker passes DEC-055)",22182,57720,118510,people,CALCULATION,DX-UK x IN-WEEKLY x IN-CLASS-MS,see inputs,conditional on a technical result that does not exist yet
+AP-UK-SERV-NOW,UK,active_pen,serviceable,Same segment with a demonstrated legibility benefit today,0,0,0,people,CALCULATION,AP-UK-SERV-COND x IN-NOW,project record,zero until DEC-055 passes on real inputs
+AP-UK-EARLY,UK,active_pen,early_adopter,Buyers in the first 3 years (IF the conditional serviceable segment materialises),444,2886,11851,people,CALCULATION,AP-UK-SERV-COND x IN-EARLY-HW,see inputs,
+AP-US-TOTAL,US,active_pen,total,Adults with ET or PD whose writing is affected,1943193,2860146,3877144,people,CALCULATION,= WA-US,see inputs,
+AP-US-SERV-COND,US,active_pen,serviceable,"Diagnosed, still writing by hand weekly, tremor class moderate or severe (IF a tracker passes DEC-055)",138430,313088,515349,people,CALCULATION,DX-US x IN-WEEKLY x IN-CLASS-MS,see inputs,conditional on a technical result that does not exist yet
+AP-US-SERV-NOW,US,active_pen,serviceable,Same segment with a demonstrated legibility benefit today,0,0,0,people,CALCULATION,AP-US-SERV-COND x IN-NOW,project record,zero until DEC-055 passes on real inputs
+AP-US-EARLY,US,active_pen,early_adopter,Buyers in the first 3 years (IF the conditional serviceable segment materialises),2769,15654,51535,people,CALCULATION,AP-US-SERV-COND x IN-EARLY-HW,see inputs,
+AP-World-TOTAL,World,active_pen,total,Adults with ET or PD whose writing is affected,11633878,21732090,35598555,people,CALCULATION,= WA-World,see inputs,
+AP-World-SERV-COND,World,active_pen,serviceable,"Diagnosed, still writing by hand weekly, tremor class moderate or severe (IF a tracker passes DEC-055)",59179,446028,1569715,people,CALCULATION,DX-World x IN-WEEKLY x IN-CLASS-MS x IN-ACCESS-W,see inputs,conditional on a technical result that does not exist yet
+AP-World-SERV-NOW,World,active_pen,serviceable,Same segment with a demonstrated legibility benefit today,0,0,0,people,CALCULATION,AP-World-SERV-COND x IN-NOW,project record,zero until DEC-055 passes on real inputs
+AP-World-EARLY,World,active_pen,early_adopter,Buyers in the first 3 years (IF the conditional serviceable segment materialises),1184,22301,156971,people,CALCULATION,AP-World-SERV-COND x IN-EARLY-HW,see inputs,
+MP-UK-TOTAL,UK,measuring_pen,total,Patients who could have writing measured (PD + diagnosed ET),331067,397093,517134,patients,CALCULATION,IN-PD-UK + ET-UK-DX,see inputs,
+MP-UK-SERV,UK,measuring_pen,serviceable,Patients in services that would measure writing objectively,33107,79419,155140,patients,CALCULATION,MP-UK-TOTAL x IN-CLINIC,see inputs,
+MP-US-TOTAL,US,measuring_pen,total,Patients who could have writing measured (PD + diagnosed ET),2030000,2200000,2338000,patients,CALCULATION,IN-PD-US + IN-ET-US-DX,see inputs,
+MP-US-SERV,US,measuring_pen,serviceable,Patients in services that would measure writing objectively,203000,440000,701400,patients,CALCULATION,MP-US-TOTAL x IN-CLINIC,see inputs,
+MP-World-TOTAL,World,measuring_pen,total,Patients who could have writing measured (PD + diagnosed ET),10219175,16578706,23916516,patients,CALCULATION,IN-PD-W + ET-W-DX,see inputs,
+MP-World-SERV,World,measuring_pen,serviceable,Patients in services that would measure writing objectively,102192,663148,2152486,patients,CALCULATION,MP-World-TOTAL x IN-CLINIC x IN-ACCESS-W,see inputs,
+MP-World-TRIAL-SERV,World,measuring_pen,serviceable,Industry phase 2/3 trials with a relevant endpoint,20,29,41,trials,CALCULATION,IN-TRIALS x IN-TRIAL-FIT,PDT-116,
+MP-World-TRIAL-KITS,World,measuring_pen,serviceable,Measuring kits those trials would need,410,1722,4920,kits,CALCULATION,MP-World-TRIAL-SERV x IN-SITES x IN-KITS,PDT-116,
+MP-UK-EARLY,UK,measuring_pen,early_adopter,Research groups or services running a paid or co-funded pilot,2,4,8,organisations,ASSUMPTION,planning value; tested by EXP-U03 and GNG-7/GNG-8,,
+MP-US-EARLY,US,measuring_pen,early_adopter,Research groups or services running a paid or co-funded pilot,3,6,12,organisations,ASSUMPTION,planning value,,
+MP-World-EARLY,World,measuring_pen,early_adopter,Trial sponsors or CROs running a pilot,1,2,3,sponsors,ASSUMPTION,planning value; GNG-8,,
+TA-UK-KIDS-TOTAL,UK,tablet_app,total,School-aged children with handwriting difficulties,902197,1804394,2706590,children,CALCULATION,IN-POP-UK-5to15 x IN-HWD,HAP-152,
+TA-UK-ADULT-TOTAL,UK,tablet_app,total,Adults with ET or PD whose writing is affected,194790,386662,612569,people,CALCULATION,= WA-UK,see inputs,
+TA-UK-KIDS-SERV,UK,tablet_app,serviceable,Children with DCD who have tablet access,135330,293214,505230,children,CALCULATION,IN-POP-UK-5to15 x IN-DCD x IN-TABLET-CHILD-HI,HAP-151,
+TA-UK-ADULT-SERV,UK,tablet_app,serviceable,Diagnosed adults with writing affected and a tablet,41591,104945,229374,people,CALCULATION,DX-UK x IN-TABLET-ADULT,see inputs,
+TA-UK-EARLY,UK,tablet_app,early_adopter,Users in the first 3 years (children + adults),1769,7963,36730,users,CALCULATION,(TA-UK-KIDS-SERV + TA-UK-ADULT-SERV) x IN-EARLY-APP,see inputs,
+TA-US-KIDS-TOTAL,US,tablet_app,total,School-aged children with handwriting difficulties,5550000,11100000,16650000,children,CALCULATION,IN-POP-US-K12 x IN-HWD,HAP-152,
+TA-US-ADULT-TOTAL,US,tablet_app,total,Adults with ET or PD whose writing is affected,1943193,2860146,3877144,people,CALCULATION,= WA-US,see inputs,
+TA-US-KIDS-SERV,US,tablet_app,serviceable,Children with DCD who have tablet access,832500,1803750,3108000,children,CALCULATION,IN-POP-US-K12 x IN-DCD x IN-TABLET-CHILD-HI,HAP-151,
+TA-US-ADULT-SERV,US,tablet_app,serviceable,Diagnosed adults with writing affected and a tablet,259557,569250,997450,people,CALCULATION,DX-US x IN-TABLET-ADULT,see inputs,
+TA-US-EARLY,US,tablet_app,early_adopter,Users in the first 3 years (children + adults),10921,47460,205272,users,CALCULATION,(TA-US-KIDS-SERV + TA-US-ADULT-SERV) x IN-EARLY-APP,see inputs,
+TA-World-KIDS-TOTAL,World,tablet_app,total,School-aged children with handwriting difficulties,136672877,273345754,410018631,children,CALCULATION,IN-POP-W-5to14 x IN-HWD,HAP-152,
+TA-World-ADULT-TOTAL,World,tablet_app,total,Adults with ET or PD whose writing is affected,11633878,21732090,35598555,people,CALCULATION,= WA-World,see inputs,
+TA-World-KIDS-SERV,World,tablet_app,serviceable,Children with DCD who have tablet access,2050093,6833644,19134203,children,CALCULATION,IN-POP-W-5to14 x IN-DCD x IN-TABLET-CHILD-W,HAP-151,
+TA-World-ADULT-SERV,World,tablet_app,serviceable,Diagnosed adults with writing affected and a tablet,110960,810959,3038158,people,CALCULATION,DX-World x IN-TABLET-ADULT x IN-ACCESS-W,see inputs,
+TA-World-EARLY,World,tablet_app,early_adopter,Users in the first 3 years (children + adults),21611,152892,1108618,users,CALCULATION,(TA-World-KIDS-SERV + TA-World-ADULT-SERV) x IN-EARLY-APP,see inputs,
+TT-UK-KIDS-TOTAL,UK,therapy_tool,total,Children with DCD,270659,451098,631538,children,CALCULATION,IN-POP-UK-5to15 x IN-DCD,HAP-151,
+TT-UK-PD-TOTAL,UK,therapy_tool,total,People with PD whose handwriting is affected,55278,83000,118184,people,CALCULATION,= WA-UK-PD,see inputs,
+TT-UK-SERV,UK,therapy_tool,serviceable,Caseload in therapy (children with DCD in OT + PD referred),59660,151930,351224,people,CALCULATION,(TT-UK-KIDS-TOTAL x IN-OT-CHILD + TT-UK-PD-TOTAL x IN-OT-PD),see inputs,
+TT-UK-EARLY,UK,therapy_tool,early_adopter,Patients reached through early-adopting services,597,4558,17561,people,CALCULATION,TT-UK-SERV x IN-EARLY-THER,see inputs,
+TT-US-KIDS-TOTAL,US,therapy_tool,total,Children with DCD,1665000,2775000,3885000,children,CALCULATION,IN-POP-US-K12 x IN-DCD,HAP-151,
+TT-US-PD-TOTAL,US,therapy_tool,total,People with PD whose handwriting is affected,309690,550000,782416,people,CALCULATION,= WA-US-PD,see inputs,
+TT-US-SERV,US,therapy_tool,serviceable,Caseload in therapy (children with DCD in OT + PD referred),363969,942500,2177225,people,CALCULATION,(TT-US-KIDS-TOTAL x IN-OT-CHILD + TT-US-PD-TOTAL x IN-OT-PD),see inputs,
+TT-US-EARLY,US,therapy_tool,early_adopter,Patients reached through early-adopting services,3640,28275,108861,people,CALCULATION,TT-US-SERV x IN-EARLY-THER,see inputs,
+TT-World-KIDS-TOTAL,World,therapy_tool,total,Children with DCD,41001863,68336439,95671014,children,CALCULATION,IN-POP-W-5to14 x IN-DCD,HAP-151,
+TT-World-PD-TOTAL,World,therapy_tool,total,People with PD whose handwriting is affected,2830500,5885000,8481440,people,CALCULATION,= WA-World-PD,see inputs,
+TT-World-SERV,World,therapy_tool,serviceable,Caseload in therapy (children with DCD in OT + PD referred),848342,4335586,15113982,people,CALCULATION,(TT-World-KIDS-TOTAL x IN-OT-CHILD + TT-World-PD-TOTAL x IN-OT-PD) x IN-ACCESS-W,see inputs,not decision-grade
+TT-World-EARLY,World,therapy_tool,early_adopter,Patients reached through early-adopting services,8483,130068,755699,people,CALCULATION,TT-World-SERV x IN-EARLY-THER,see inputs,
+DS-UK-TOTAL,UK,desk_surface,total,Adults with ET or PD whose writing is affected,194790,386662,612569,people,CALCULATION,= WA-UK,see inputs,
+DS-UK-SERV,UK,desk_surface,serviceable,"Diagnosed, still writing weekly; scaled by the share of writing done at a desk",41591,106461,213318,people,CALCULATION,DX-UK x IN-WEEKLY x IN-DESK,see inputs,no tremor-class filter: the surface is not limited by the nib's reach (ASSUMPTION; another study evaluates it)
+DS-UK-EARLY,UK,desk_surface,early_adopter,Buyers in the first 3 years,832,5323,21332,people,CALCULATION,DS-UK-SERV x IN-EARLY-HW,see inputs,
+DS-US-TOTAL,US,desk_surface,total,Adults with ET or PD whose writing is affected,1943193,2860146,3877144,people,CALCULATION,= WA-US,see inputs,
+DS-US-SERV,US,desk_surface,serviceable,"Diagnosed, still writing weekly; scaled by the share of writing done at a desk",259557,577472,927628,people,CALCULATION,DX-US x IN-WEEKLY x IN-DESK,see inputs,no tremor-class filter: the surface is not limited by the nib's reach (ASSUMPTION; another study evaluates it)
+DS-US-EARLY,US,desk_surface,early_adopter,Buyers in the first 3 years,5191,28874,92763,people,CALCULATION,DS-US-SERV x IN-EARLY-HW,see inputs,
+DS-World-TOTAL,World,desk_surface,total,Adults with ET or PD whose writing is affected,11633878,21732090,35598555,people,CALCULATION,= WA-World,see inputs,
+DS-World-SERV,World,desk_surface,serviceable,"Diagnosed, still writing weekly; scaled by the share of writing done at a desk",110960,822673,2825487,people,CALCULATION,DX-World x IN-WEEKLY x IN-DESK x IN-ACCESS-W,see inputs,no tremor-class filter: the surface is not limited by the nib's reach (ASSUMPTION; another study evaluates it)
+DS-World-EARLY,World,desk_surface,early_adopter,Buyers in the first 3 years,2219,41134,282549,people,CALCULATION,DS-World-SERV x IN-EARLY-HW,see inputs,

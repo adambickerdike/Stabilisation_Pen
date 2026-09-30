@@ -1,0 +1,46 @@
+id,requirement_id,experiment_id,metric,threshold,direction,basis,status,decision_gated
+AC-U01-01,REQ-MKT-002,EXP-U01,"GNG-1: share of respondents with writing affected (S7 >= 1) who write lists, notes, forms, signatures or cards by hand at least a few times a week; lower 95 % Wilson bound, per diagnosis",40 %,>=,ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv); reference 62 % of GB adults 65+ write lists weekly (HAP-158),hypothesis,DEC-090; DEC-091; paper-based options
+AC-U01-02,REQ-MKT-005,EXP-U01,"GNG-2: share with at least one avoided, delegated or rejected paper task in 3 months that could not have been typed, dictated or done online (point estimate)",30 %,>=,ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv),hypothesis,active pen; desk surface
+AC-U01-03,REQ-MKT-001,EXP-U01,"GNG-3: among those who tried a weighted or grip pen, share scoring it <= 5 of 10",40 %,>=,"ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv); ACT-18, ACT-19",hypothesis,active pen; desk surface
+AC-U01-04,REQ-MKT-005,EXP-U01,GNG-4: share for whom typing or dictation already meets almost all or most writing needs,50 %,<=,"ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv); PDT-99, PDT-104",hypothesis,active pen; desk surface
+AC-U01-05,REQ-MKT-003,EXP-U01,"GNG-5: in the serviceable subgroup, share answering 'Definitely' at the 500 price arm",20 %,>=,ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv); implied price from docs/revK_design.md 5.4 (CALCULATION),hypothesis,active pen; REQ-MKT-003
+AC-U01-06,REQ-USR-001,EXP-U01,"Responses per diagnosis group (ET, PD)",100,>=,CALCULATION: about +/-10 percentage points on a proportion at n = 100,derived,validity of GNG-1 to GNG-5
+AC-U01-07,REQ-USR-001,EXP-U01,"Results reported per diagnosis, country and recruitment route; no pooled ET-PD claim",conforms,pass/fail,REQ-USR-001,requirement,claims
+AC-U02-01,REQ-MKT-005,EXP-U02,"Interviews per diagnosis group, stopping after 3 consecutive interviews with no new job code",12,>=,HAP-164 (saturation within 9-17 interviews),derived,validity of the job list
+AC-U02-02,REQ-MKT-005,EXP-U02,Distinct unserved paper-bound jobs each named by at least 25 % of interviewees in a group,1,>=,ASSUMPTION,hypothesis,REQ-MKT-005; active pen; desk surface
+AC-U02-03,REQ-MKT-009,EXP-U02,"Real signatures, forms or cheques collected or photographed",0,=,validation/human_study_plan.md 10 (pseudo-signature),requirement,study conduct
+AC-U03-01,REQ-MKT-006,EXP-U03,GNG-7: clinicians (of 12-16) who would recommend trying a proven device / services willing to host EXP-U06 or EXP-U08,6 / 3,>=,ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv),hypothesis,therapy tool; measuring pen; tablet app
+AC-U03-02,REQ-MKT-006,EXP-U03,"GNG-8: written expressions of interest from sponsors, CROs or academic groups (of >= 10 approached) / co-funded pilots within 6 months",3 / 1,>=,ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv); PDT-116,hypothesis,measuring pen
+AC-U03-03,REQ-MKT-008,EXP-U03,Payer or provision routes documented per product option,2,>=,ASSUMPTION,hypothesis,business model (docs/market_and_users.md 6.2)
+AC-U04-01,REQ-MKT-010,EXP-U04,"GNG-9: among >= 100 parents or teachers, share reporting daily handwriting at school / share reporting an unmet writing job",50 % / 30 %,>=,"ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv); HAP-153, HAP-154",hypothesis,tablet app; therapy tool (children)
+AC-U04-02,REQ-MKT-010,EXP-U04,Children interviewed or asked for data,0,=,Adults-only design; MRS Code rules 16-22 (PDT-119),requirement,study conduct
+AC-U05-01,REQ-MKT-002,EXP-U05,GNG-6: confirmed waitlist sign-ups / unique visitors in at least one arm of a consumer page (>= 400 visitors per arm),10 %,>=,ASSUMPTION threshold fixed in advance (results/market/go_no_go_criteria.csv),hypothesis,active pen; tablet app; desk surface
+AC-U05-02,REQ-MKT-009,EXP-U05,Payments or deposits taken from patients or families,0,=,DEC-094 (proposed); PDT-119,requirement,study conduct
+AC-U05-03,REQ-MKT-009,EXP-U05,Upheld complaints that a page misleads,0,=,CAP Code 12 (PDT-119),requirement,study conduct
+AC-U05-04,REQ-MKT-003,EXP-U05,Sign-up rate in price arm 2 (500-700) as a fraction of the no-price arm,0.5,>=,ASSUMPTION,hypothesis,REQ-MKT-003; DEC-091
+AC-U06-01,REQ-MKT-001,EXP-U06,Task x condition cells completed,90 %,>=,ASSUMPTION (feasibility),hypothesis,go to EXP-U07
+AC-U06-02,,EXP-U06,Session length including breaks,90 min,<=,validation/human_study_plan.md 10 (participant burden),requirement,go to EXP-U07
+AC-U06-03,REQ-MKT-001,EXP-U06,"Agreement of blinded readers on words read (ICC, participant level)",0.80,>=,ASSUMPTION; method as EXP-R03,hypothesis,legibility measure qualification
+AC-U06-04,REQ-MKT-001,EXP-U06,Pilot SD of within-participant log useful-words-per-minute differences reported with its upper 80 % confidence limit,conforms,pass/fail,HAP-165; docs/market_and_users.md 8.7,derived,EXP-U07 sample size
+AC-U06-05,REQ-MKT-004,EXP-U06,Setup time recorded for every condition,conforms,pass/fail,REQ-MKT-004,requirement,EXP-U07 design
+AC-U07-01,REQ-MKT-001,EXP-U07,"Primary: geometric-mean ratio of useful words per minute, device ON / device locked with matched mass, text tasks, lower 95 % CI bound, per group",1.0,>,"superiority, two-sided alpha 0.05; n from EXP-U06 (docs/market_and_users.md 8.7)",hypothesis,task-level usefulness claim; DEC-090
+AC-U07-02,REQ-MKT-001,EXP-U07,Primary point estimate needed to call the gain meaningful,1.20,>=,ASSUMPTION (smallest user-relevant gain),hypothesis,wording of the claim
+AC-U07-03,REQ-MKT-001,EXP-U07,"Key secondary (fixed sequence): GM ratio of useful words per minute, device ON / weighted pen, lower 95 % CI bound",1.0,>,"ACT-18, ACT-19 (passive aids are strong comparators)",hypothesis,active pen value proposition
+AC-U07-04,REQ-MKT-001,EXP-U07,"Share of words read correctly by blinded readers, device ON minus locked, point estimate",10 percentage points,>=,ASSUMPTION,hypothesis,legibility claim
+AC-U07-05,,EXP-U07,"NASA-TLX (raw), device ON minus ordinary pen, upper 95 % CI bound (non-inferiority)",10 points,<=,ASSUMPTION,hypothesis,device burden
+AC-U07-06,REQ-MKT-005,EXP-U07,Participants who choose the device for at least one paper-bound task at the end,50 %,>=,ASSUMPTION,hypothesis,adoption; DEC-090
+AC-U07-07,REQ-MKT-004,EXP-U07,"Median setup time, device ON",10 s,<=,REQ-MKT-004 (ASSUMPTION),hypothesis,REQ-MKT-004
+AC-U07-08,REQ-MKT-004,EXP-U07,"Device unpowered minus ordinary pen, share of words read correctly, lower 95 % CI bound (non-inferiority)",-5 percentage points,>=,REQ-MKT-004; AC-H06-05 uses the same margin,hypothesis,REQ-MKT-004
+AC-U07-09,,EXP-U07,Serious adverse device effects,0,=,ISO 14155; validation/human_study_plan.md 3.4,derived,study continuation
+AC-U07-10,REQ-USR-001,EXP-U07,"Results reported and claimed per group (ET, PD) and per tremor class; no pooled claim",conforms,pass/fail,REQ-USR-001; REQ-DATA-004,requirement,claims
+AC-U07-11,REQ-MKT-007,EXP-U07,Bain-Findley (or TETRAS) ADL writing and MDS-UPDRS 2.7 recorded before and after,conforms,pass/fail,REQ-MKT-007; PDT-113,requirement,payer evidence
+AC-U08-01,REQ-MKT-006,EXP-U08,"Test-retest ICC over 1-2 weeks for each primary writing metric (tremor amplitude in ink, letter size, speed), per group",0.80,>=,REQ-MKT-006; PDT-12 (tablet ICC 0.97 for spirals),hypothesis,measuring pen
+AC-U08-02,REQ-MKT-006,EXP-U08,|Spearman rho| between the pen's metric and the blinded clinical writing or spiral item,0.5,>=,ASSUMPTION,hypothesis,measuring pen
+AC-U08-03,REQ-MKT-006,EXP-U08,Median time for a complete assessment,10 min,<=,REQ-MKT-006 (ASSUMPTION),hypothesis,measuring pen
+AC-U08-04,REQ-MKT-006,EXP-U08,Median clinician System Usability Scale score,70,>=,ASSUMPTION,hypothesis,measuring pen
+AC-U08-05,REQ-USR-003,EXP-U08,Diagnostic or disease-scoring output shown to participants,0,=,REQ-USR-003,requirement,regulatory scope
+AC-U09-01,REQ-MKT-010,EXP-U09,Median share of planned practice sessions completed over 4 weeks,70 %,>=,ASSUMPTION; HAP-41 (practice dose matters),hypothesis,tablet app; therapy tool
+AC-U09-02,,EXP-U09,Median System Usability Scale score (participants or parents),70,>=,ASSUMPTION,hypothesis,tablet app; therapy tool
+AC-U09-03,,EXP-U09,Drop-out over 4 weeks,20 %,<=,ASSUMPTION,hypothesis,efficacy study planning
+AC-U09-04,REQ-VAL-002,EXP-U09,No lasting-improvement claim from the pilot; unassisted writing measured at the end for planning only,conforms,pass/fail,REQ-VAL-002,requirement,claims
+AC-U09-05,REQ-MKT-010,EXP-U09,Materials that claim to treat dyslexia,0,=,REQ-MKT-010; HAP-47,requirement,claims
