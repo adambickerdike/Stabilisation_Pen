@@ -140,11 +140,20 @@ def per_writer(out: Dict) -> str:
             ("revJ_g4|deltapen", "G4"), ("revJ_new|deltapen", "Best causal (frozen)"),
             ("revJ_info_net|deltapen", "TCN on real data (info)"), ("revJ_info_listen_conf|deltapen", "Listening + soft gate (info)"),
             ("revJ_info_glg|deltapen", "GLG (info)"), ("revJ_info_ungated_akf|deltapen", "Listening AKF, no gate (info)")]
-    L = ["| Test note (UNIPEN writer) | " + " | ".join(n for _, n in devs) + " |", "|---" * (len(devs) + 1) + "|"]
+    ws = {w["note"]: w for w in ((out.get("writer_stats") or {}).get("test") or [])}
+    L = ["| Test note (UNIPEN writer) | Letter height, mm | Pen speed, median, mm/s | " + " | ".join(n for _, n in devs) + " |",
+         "|---" * (len(devs) + 3) + "|"]
     for p in per:
         c = p.get("clean") or {}
-        L.append(f"| {p['note']} ({p['writer']}) | " + " | ".join(
+        w = ws.get(p["note"]) or {}
+        L.append(f"| {p['note']} ({p['writer']}) | {f(w.get('letter_height_mm'))} | {f(w.get('speed_median_mm_s'), 0)} | " + " | ".join(
             f((c.get(d) or {}).get("false_correction_um"), 0) for d, _ in devs) + " |")
+    tu = (out.get("writer_stats") or {}).get("tuning") or []
+    if tu:
+        h = [w["letter_height_mm"] for w in tu]
+        v = [w["speed_median_mm_s"] for w in tu]
+        L.append(f"\nThe 5 tuning writers (10 notes): letter height {min(h):.1f}-{max(h):.1f} mm, median pen speed "
+                 f"{min(v):.0f}-{max(v):.0f} mm/s (DATA, statistics only).")
     return "\n".join(L)
 
 

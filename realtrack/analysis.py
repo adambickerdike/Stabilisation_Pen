@@ -223,3 +223,27 @@ def raw_clean(log=print) -> Dict:
     p.write_text(json.dumps(out, default=float))
     log(f"[analysis] raw clean: {out}")
     return out
+
+
+def writer_stats(log=print) -> Dict:
+    """Size and speed of every tuning and test note's writing (statistics only; DATA/CALC): R's letter-height metadata
+    and the median and 90th-percentile pen-down speed of the recorded path.  Explains which test writers lie outside
+    the tuning writers' range."""
+    from realdata import library as RL
+    p = BUILD_DIR / "writer_stats.json"
+    if p.exists():
+        return json.loads(p.read_text())
+    out = {"label": "DATA (UNIPEN hpb2 recordings, statistics only) / CALC", "tuning": [], "test": []}
+    for split, n in (("tuning", C.N_TUNE_NOTES), ("test", 9)):
+        for i in range(n):
+            w = RL.writing(split, seed=i)
+            it = w.intended
+            t, xy, dn = np.asarray(it.t), np.asarray(it.xy), np.asarray(it.pen_down).astype(bool)
+            sp = np.linalg.norm(np.gradient(xy, t, axis=0), axis=1)[dn]
+            out[split].append({"note": i, "writer": w.real["writer"].split("/")[-1].replace(".dat", ""),
+                               "letter_height_mm": float(w.real["letter_height_mm"]),
+                               "speed_median_mm_s": float(np.median(sp)) * 1e3,
+                               "speed_p90_mm_s": float(np.percentile(sp, 90)) * 1e3})
+    p.write_text(json.dumps(out))
+    log(f"[analysis] writer stats written")
+    return out

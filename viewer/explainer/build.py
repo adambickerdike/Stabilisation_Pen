@@ -1290,9 +1290,11 @@ KNOWN_PROBLEMS = [
      "evidence": [("ASSUMPTION (the page sensor)", "{kp_page} µm, results/revJ/sim_params.json (page sensor noise)"),
                   ("LITERATURE · OPT-02", "DeltaPen (UIST 2022): median and mean error per 10 ms window, on a tablet surface; docs/evidence.csv")]},
     {"key": "data",
-     "lead": "All writers and shakes so far are made up.",
-     "text": "Real recordings are being brought in.",
-     "evidence": [("SIMULATION: synthetic writers and shakes", "study R brings in real recordings: docs/round4_plan.md")]},
+     "lead": "Most writers and shakes so far are made up.",
+     "text": ("Real recordings of patients' tremor and real handwriting show that no tracker built so far helps with a real, "
+              "irregular shake (see the real recorded shake row above). Finding one is the next piece of work."),
+     "evidence": [("SIMULATION: synthetic writers and shakes", "most results"),
+                  ("SIMULATION (model HW1) with real recorded inputs", "docs/real_data.md; DEC-055")]},
 ]
 MECH_CHIP = {"tip": ("Inner pen", "--g-nose"), "heel": ("Heel wheel", "--g-drive"), "tail": ("Tail weight", "--g-inertial"),
              "app": ("The app", "--accent")}

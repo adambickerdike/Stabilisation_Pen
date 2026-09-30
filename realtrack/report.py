@@ -190,7 +190,7 @@ def write(quick: bool = False, log=print) -> Dict:
     for k, p in (("delay", BUILD_DIR / "delay.json"), ("separability", BUILD_DIR / "separability.json"),
                  ("learned", BUILD_DIR / "learned.json"), ("sim2", BUILD_DIR / "sim2.json"),
                  ("chosen_mcu", BUILD_DIR / "chosen_mcu.json"), ("int8_ai2tcn", BUILD_DIR / "int8_ai2tcn.json"),
-                 ("raw_clean", BUILD_DIR / "raw_clean.json")):
+                 ("raw_clean", BUILD_DIR / "raw_clean.json"), ("writer_stats", BUILD_DIR / "writer_stats.json")):
         v = _load(p)
         if v is not None:
             out[k] = v
