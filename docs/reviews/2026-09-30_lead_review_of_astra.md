@@ -71,4 +71,4 @@ All match the study's text. Every rerun first reproduced the historical result. 
 5. **Case caches** (studies R, E and F) record the page-model version, and aggregation refuses a mix. Existing caches read as version 1.
 6. **`degrade_page` version 2** anchors at the first valid report instead of raising. Records that start valid are unchanged bit for bit. Every recorded note starts with the pen lifted, so without this fix studies R, E and F could not run on current code.
 
-Tests: the full default suite passed <!--SUITE--> on Linux after the fixes; before them it passed 942, with 5 skipped.
+Tests: after the fixes the full default suite passes on Linux: 958 passed and 5 skipped, both in the patch pass's run and in the lead's own run (6 min 38 s). Before them it was 942 passed and 5 skipped.
