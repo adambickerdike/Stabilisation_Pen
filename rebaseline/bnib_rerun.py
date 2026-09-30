@@ -160,6 +160,16 @@ def install(config: str) -> Dict:
             self._qa, self._va, self._zp = list(sv.qa), list(sv.va), float(sv.zp)
             self._F_extra_rms = 0.0
             self._n_extra = 0
+            # bnib's own copy of the step still hands the servo the TRUE contact flag (it predates the causal
+            # change of sim2j's stepper).  With contact 'current' the servo's authority gate gets the firmware's
+            # delayed measured contact instead, exactly as sim2j.stepper.RevJStepper now does.
+            if cfg["contact"] == "current":
+                orig_ref_tick = sv.ref_tick
+                fw = self.fw
+
+                def ref_tick(t, tick, tip, in_contact, direct_q=None):
+                    return orig_ref_tick(t, tick, tip, bool(fw.contact), direct_q=direct_q)
+                sv.ref_tick = ref_tick
 
         def step(self):
             L = _STATE.get("loads")
