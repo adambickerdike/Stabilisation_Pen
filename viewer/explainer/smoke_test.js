@@ -160,6 +160,13 @@ async function run(browser, label, viewport) {
   check(`${label}: known problems: holding the ball costs 1.6 W at 50° and 4.7 W at 35°, about 7 times; overheats; a fix is designed (Rev K: about 24–49 hours, ±1 mm reach, 9 of 59 fit checks failing)`,
     /about 7 times harder/.test(kS.text) && /1\.6\s*W at a normal 50°/.test(kS.text) && /4\.7\s*W at 35°/.test(kS.text) && /overheat within about a minute/.test(kS.text) &&
     /fix is designed/.test(kS.text) && /24–49 hours/.test(kS.text) && /0\.02–0\.04\s*W/.test(kS.text) && /9 of its 59 fit checks/.test(kS.text) && /±1/.test(kS.text) && !/—/.test(kS.text) && kS.tags.some(t => /^Calculation/.test(t)) && kS.tags.some(t => /^Simulation/.test(t)), kS.text.slice(0, 110));
+  check(`${label}: known problems: study N's matched re-check (Rev K's nib about 0.06 W) and its ±1.5 mm nib in the 24 mm pen (0.04 W, 0.11 W at worst, 157 mm)`,
+    /Study N then re-checked every nib/.test(kS.text) && /about 0\.06 W in normal writing/.test(kS.text) && /±1\.5 mm nib fits the same 24 mm pen/.test(kS.text) &&
+    /about 0\.04 W in normal writing and 0\.11 W at worst/.test(kS.text) && /about 23 hours per charge/.test(kS.text) && /157 mm/.test(kS.text) &&
+    kS.tags.some(t => /^Calculation · study N/.test(t)), kS.text.slice(kS.text.indexOf("Study N"), kS.text.indexOf("Study N") + 90));
+  check(`${label}: known problems: study P's platen removes the reach limit (0.02 mm of 1.7 mm, about 8 words against 4) but a real tracker still leaves about 1.0 mm`,
+    /study P/.test(kD.text) && /leaves 0\.02 mm of the 1\.7 mm shake/.test(kD.text) && /about 8 words in 10 are read, against 4 with the ±1\.5 mm nib/.test(kD.text) &&
+    /still leaves about 1\.0 mm/.test(kD.text) && kD.tags.some(t => /study P/.test(t)), kD.text.slice(kD.text.indexOf("A desk platen"), kD.text.indexOf("A desk platen") + 90));
   check(`${label}: known problems: heel wheel 0.4 mm, retracted; page sensor 3 µm against DeltaPen's 24–68 µm; made-up writers and shakes`,
     /0\.4\s*mm/.test(kH.text) && /retracted unless the writer turns guidance on/.test(kH.text) && kH.tags.some(t => /^Simulation/.test(t)) &&
     /3\s*µm/.test(kP.text) && /DeltaPen, 2022/.test(kP.text) && /24–68\s*µm/.test(kP.text) && /unproven/.test(kP.text) && kP.tags.some(t => /^Assumption/.test(t)) && kP.tags.some(t => /^Literature/.test(t)) &&

@@ -84,6 +84,9 @@ REALTRACK_JSON = "results/realtrack/realtrack.json"      # study E: tremor track
 REVK_BUDGETS = "results/revK/budgets.json"                # study K: the Rev K layout's budgets
 REVK_LAYOUT = "results/revK/layout.json"
 READABLE_JSON = "results/readable/readable.json"          # study F: the readable target, the gap, reach
+NIBOPT_JSON = "results/nibopt/nibopt.json"                # study N: the balanced nib optimised under one matched model
+NIBOPT_BUDGETS = "results/nibopt/budgets.json"
+PLATEN_JSON = "results/platen/platen.json"                # study P: the moving-paper platen
 AI3_JSON = "results/ai3/ai3.json"                         # study S: spelling help, prediction, clarity
 WHOLEPEN_SUMMARY = "results/wholepen/summary.json"         # study W: shifting the whole pen
 SIM2J_CARDS = "results/sim2j/cards.json"        # the study's results cards (one per condition), as data
@@ -486,6 +489,46 @@ def facts_readable() -> dict | None:
         return None
 
 
+def facts_nibopt() -> dict | None:
+    """Study N (results/nibopt/nibopt.json and budgets.json): Rev K's nib B1 and the balanced +-1.5 mm candidate under
+    one matched model (force constant at its weakest point x 0.7, DEC-080): typical and worst-case nib power, length,
+    mass, hours per charge (conservative, steady writing with 1 mm of tremor) and the hottest skin (worst case, same mode)."""
+    if not (exists(NIBOPT_JSON) and exists(NIBOPT_BUDGETS)):
+        return None
+    try:
+        d, b = load(NIBOPT_JSON), load(NIBOPT_BUDGETS)["budgets"]
+        c, k = d["candidates_headline"]["balanced"], d["reconciliation_headline"]["K_B1"]
+        bb = b["balanced"]
+        return {"reach_mm": c["reach_mm"], "od_mm": c["od_mm"], "length_mm": c["length_mm"], "typical_W": c["typical_W"],
+                "worst_W": c["screen_W"], "mass_g": bb["mass"]["mass_g"],
+                "hours": bb["battery_hours"]["conservative"]["steady_1mm"],
+                "skin_C": bb["skin_by_mode"]["worst07"]["steady_1mm"]["max_shell_C"],
+                "k_typical_W": k["typical_worst07_W"], "k_worst_W": k["screen_worst07_W"], "k_feasible": bool(k["feasible"]),
+                "label": "CALCULATION (study N, one matched model)", "source": f"{NIBOPT_JSON}, {NIBOPT_BUDGETS}"}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as ex:
+        warn(f"{NIBOPT_JSON} could not be read ({ex})")
+        return None
+
+
+def facts_platen() -> dict | None:
+    """Study P (results/platen/platen.json), severe class, tuning split: tremor left at the ink and words read for the
+    ordinary pen, the +-5 mm platen with perfect knowledge, the +-1.5 mm nib with perfect knowledge (study F), the
+    platen driven by study E's frozen design and by a tip camera with perfect separation."""
+    if not exists(PLATEN_JSON):
+        return None
+    try:
+        sev = load(PLATEN_JSON)["tremor"]["by_class"]["all/severe"]
+
+        def row(k):
+            return {"tip_mm": _mean(sev[k]["tip_tremor_mm"]), "words": _mean(sev[k]["words_read"])}
+        return {"ordinary": row("none"), "oracle": row("P_oracle"), "nib15": row("F15_oracle"), "e_chosen": row("P_E_chosen"),
+                "camera": row("P_cam_sep"),
+                "label": "SIMULATION (model HW1 with a moving page) with real recorded inputs (study P)", "source": PLATEN_JSON}
+    except (OSError, ValueError, TypeError, KeyError, AttributeError) as ex:
+        warn(f"{PLATEN_JSON} could not be read ({ex})")
+        return None
+
+
 def facts_ai3() -> dict | None:
     """Study S's headline numbers (results/ai3/ai3.json): misspellings put right on paper per cue, the spell checker's
     catch rate with the letters known and with the pen reading them, and word completion after one letter."""
@@ -688,6 +731,14 @@ def build_facts(lay: dict):
     if rk:
         facts["revk"] = rk
         srcs.append(REVK_BUDGETS)
+    no = facts_nibopt()
+    if no:
+        facts["nibopt"] = no
+        srcs.append(NIBOPT_JSON)
+    pl = facts_platen()
+    if pl:
+        facts["platen"] = pl
+        srcs.append(PLATEN_JSON)
     rt = facts_realtrack()
     if rt:
         facts["realtrack"] = rt
@@ -1353,11 +1404,17 @@ KNOWN_PROBLEMS = [
               "pushes cancel at any angle. The whole nib then needs about {kp_k_nib}&nbsp;W, and the pen would run about "
               "{kp_k_hours} hours per charge. The price is reach: about ±1&nbsp;mm instead of ±6&nbsp;mm, so the pen can no longer "
               "write whole words for you. Laying out the whole pen left {kp_k_fail} of its {kp_k_checks} fit checks failing, "
-              "to be solved before it is built. Nothing has been built yet."),
+              "to be solved before it is built. <b>Study N then re-checked every nib under one stricter set of rules</b> "
+              "(the magnets taken at their weakest point and 30&nbsp;% weaker than ideal). Rev K's nib then needs about "
+              "{kp_n_k_typ}&nbsp;W in normal writing, and most of the heat comes from the ball's drag on the paper. With two "
+              "sets of magnets, a ±{kp_n_reach}&nbsp;mm nib fits the same {kp_n_od}&nbsp;mm pen: about {kp_n_typ}&nbsp;W in "
+              "normal writing and {kp_n_worst}&nbsp;W at worst, skin about {kp_n_skin}&nbsp;°C, about {kp_n_hours} hours per "
+              "charge. The price is length: {kp_n_len}&nbsp;mm. Nothing has been built yet."),
      "evidence": [("CALCULATION", "the independent review's formula, reproduced by the lead; inputs results/revJ/sim_params.json and layout.json"),
                   ("SIMULATION (sim2, the same load in a writing run)", "about {kp_sim} W of the nose's power in a writing run: docs/revJ_simulation.md §8.1"),
                   ("CALCULATION (the balanced nib)", "docs/balanced_nib.md; DEC-050"),
-                  ("CALCULATION (study K, the Rev K layout)", "docs/revK_design.md; results/revK/budgets.json; DEC-062…066")]},
+                  ("CALCULATION (study K, the Rev K layout)", "docs/revK_design.md; results/revK/budgets.json; DEC-062…066"),
+                  ("CALCULATION (study N, one matched model)", "docs/nib_optimisation.md; results/nibopt/; DEC-080…084")]},
     {"key": "heel",
      "lead": "The heel wheel moved clean writing by about {kp_heel}&nbsp;mm in the physics simulation,",
      "text": "so it stays retracted unless the writer turns guidance on.",
@@ -1376,12 +1433,16 @@ KNOWN_PROBLEMS = [
               "{kp_rt_worst}&nbsp;mm. For a clear gain at the severe size a tracker must leave less than about {kp_f_target}&nbsp;mm "
               "of the shake; the hard part is telling the shake apart from the writing, not predicting it. The next prototype's "
               "±1&nbsp;mm nib is too short for the severe size even with perfect knowledge ({kp_f_gain1} more words in 10, where "
-              "2 are needed). The next candidate tracker, a small network trained on real recordings, must first pass a test on "
-              "new recordings (EXP-E10)."),
+              "2 are needed). A desk platen that moves the paper under the pen instead (study P) removes the reach limit: with "
+              "perfect knowledge it leaves {kp_p_oracle}&nbsp;mm of the {kp_p_ord}&nbsp;mm shake and about {kp_p_oracle_w} words "
+              "in 10 are read, against {kp_p_nib_w} with the ±1.5&nbsp;mm nib. With the best real tracker it still leaves about "
+              "{kp_p_e}&nbsp;mm, so the platen faces the same problem. The next candidate tracker, a small network trained on "
+              "real recordings, must first pass a test on new recordings (EXP-E10)."),
      "evidence": [("SIMULATION: synthetic writers and shakes", "most results"),
                   ("SIMULATION (model HW1) with real recorded inputs", "docs/real_data.md; DEC-055"),
                   ("SIMULATION (model HW1) with real recorded inputs (study E)", "docs/real_tracker.md; DEC-060, DEC-061"),
-                  ("SIMULATION (model HW1) with real recorded inputs (study F)", "docs/readable_target.md; DEC-067…069")]},
+                  ("SIMULATION (model HW1) with real recorded inputs (study F)", "docs/readable_target.md; DEC-067…069"),
+                  ("SIMULATION (model HW1 with a moving page) with real recorded inputs (study P)", "docs/platen_concept.md; DEC-085…089")]},
 ]
 MECH_CHIP = {"tip": ("Inner pen", "--g-nose"), "heel": ("Heel wheel", "--g-drive"), "tail": ("Tail weight", "--g-inertial"),
              "app": ("The app", "--accent")}
@@ -1411,6 +1472,8 @@ def known_tokens(f: dict) -> dict:
     rk = f.get("revk") or {}
     rb = f.get("readable") or {}
     nw, hh = rk.get("nib_W"), rk.get("hours")
+    no, pl = f.get("nibopt") or {}, f.get("platen") or {}
+    pk = {k: pl.get(k) or {} for k in ("ordinary", "oracle", "nib15", "e_chosen", "camera")}
     return {"kp_ratio": f"{sl['ratio']:.0f}" if sl.get("ratio") else "—", "kp_ratio1": f"{sl['ratio']:.1f}" if sl.get("ratio") else "—",
             "kp_p50": f"{b50['P_W']:.1f}" if b50 else "—", "kp_p35": f"{b35['P_W']:.1f}" if b35 else "—",
             "kp_sim": f"{sl['sim_run_W']:g}" if sl.get("sim_run_W") else "—",
@@ -1424,7 +1487,17 @@ def known_tokens(f: dict) -> dict:
             "kp_k_nib": f"{nw[0]:.2f}–{nw[1]:.2f}" if nw else "—", "kp_k_hours": f"{hh[0]:.0f}–{hh[1]:.0f}" if hh else "—",
             "kp_k_fail": str(rk["n_fail"]) if rk.get("n_checks") else "—", "kp_k_checks": str(rk["n_checks"]) if rk.get("n_checks") else "—",
             "kp_f_target": f"{rb['target_test_mm']:.2f}" if rb.get("target_test_mm") else "—",
-            "kp_f_gain1": f"{rb['gain_1mm']:.1f}" if rb.get("gain_1mm") is not None else "—"}
+            "kp_f_gain1": f"{rb['gain_1mm']:.1f}" if rb.get("gain_1mm") is not None else "—",
+            "kp_n_k_typ": f"{no['k_typical_W']:.2f}" if no else "—", "kp_n_reach": f"{no['reach_mm']:.1f}" if no else "—",
+            "kp_n_od": f"{no['od_mm']:.0f}" if no else "—", "kp_n_typ": f"{no['typical_W']:.2f}" if no else "—",
+            "kp_n_worst": f"{no['worst_W']:.2f}" if no else "—", "kp_n_skin": f"{no['skin_C']:.0f}" if no else "—",
+            "kp_n_hours": f"{no['hours']:.0f}" if no else "—", "kp_n_len": f"{no['length_mm']:.0f}" if no else "—",
+            "kp_p_ord": f"{pk['ordinary']['tip_mm']:.1f}" if pk["ordinary"] else "—",
+            "kp_p_oracle": f"{pk['oracle']['tip_mm']:.2f}" if pk["oracle"] else "—",
+            "kp_p_oracle_w": f"{pk['oracle']['words']:.0f}" if pk["oracle"] else "—",
+            "kp_p_nib_w": f"{pk['nib15']['words']:.0f}" if pk["nib15"] else "—",
+            "kp_p_e": f"{pk['e_chosen']['tip_mm']:.1f}" if pk["e_chosen"] else "—",
+            "kp_p_cam": f"{pk['camera']['tip_mm']:.2f}" if pk["camera"] else "—"}
 
 
 def _fill(s: str, toks: dict) -> str:
