@@ -2,10 +2,10 @@
  "stabpen.provenance": {
   "evidence_status": "SIMULATION (sim2 / MuJoCo 3.6 with the Rev J PROPOSED DESIGN parameters; synthetic writers and synthetic tremor); sensing mode per block; ranks concepts only (COU-1), not evidence of benefit to people",
   "package": "rebaseline 0.1.0",
-  "generated_utc": "2026-09-30T15:55:02+00:00",
+  "generated_utc": "2026-09-30T16:58:34+00:00",
   "git": {
-   "head": "c20c5b4e76e33034329e7d580416b8f80c037009",
-   "short": "c20c5b4",
+   "head": "eb851a46f043bc8ff7d19b4cebd28a8f45a8f0b1",
+   "short": "eb851a4",
    "dirty_tree": true,
    "note": "other agents work in this clone at the same time; the source hashes below pin the code that ran"
   },
@@ -93,7 +93,7 @@
    "results/revJ/sim_params.json": "e4d769dd72035480cbbbfde9dd9754539310b617a9de4f1810ca0545348f0e17",
    "results/revJ/layout.json": "a5f4928697654cabc13d2f2265c2bc75eb3541ee224ed9dcc673833eb56cb1c6",
    "rebaseline/sim2j_cards.py": "e26dc2f7cf3a79ea6d3476a18b3bc08d0d68ed1dc4c617e3cad36aecda7276bf",
-   "rebaseline/common.py": "7a964741aea7d73c4877350a7510a0dae75fe3a34b52b6f35a74546219bb8f44"
+   "rebaseline/common.py": "6be6eedfd68c942d0b6f7446fce31d60b45865750f3327e9e63fbe3f7e1988dc"
   },
   "threads": {
    "OMP_NUM_THREADS": "1",
@@ -1250,6 +1250,134 @@
      "oracle_words_of_10": 10.0,
      "oracle_P_total_W": 1.4871379863033083,
      "who": "Headline pool: 8-12 Hz x 1-2 mm"
+    },
+    "severe_through": {
+     "who": "Severe tremor (3 mm, 5 and 8 Hz), writing through it",
+     "n_cases": 12,
+     "words_of_10": [
+      0.4166666666666667,
+      4.166666666666667
+     ],
+     "letters_of_10": [
+      3.974358974358974,
+      5.705128205128205
+     ],
+     "err_mm": [
+      1.4927570196896287,
+      1.1673631153264354
+     ],
+     "ratio_mean": 0.7731707232097976,
+     "ratio_case_boot": {
+      "mean": 0.7731707232097976,
+      "lo": 0.6680296710970265,
+      "hi": 0.8749404686331577,
+      "n": 12
+     },
+     "ratio_writer_boot": {
+      "mean": 0.7731707232097976,
+      "lo": 0.7569375036585937,
+      "hi": 0.788492915864137,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "oracle_ratio_mean": 0.0862684835026018,
+     "oracle_words_of_10": 10.0,
+     "P_total_W": [
+      1.4743668076292396,
+      1.4915882659508792
+     ]
+    },
+    "severe_autowrite": {
+     "who": "Severe tremor (3 mm, 5 and 8 Hz), known text: the pen writes it",
+     "n_cases": 12,
+     "words_of_10": [
+      0.4166666666666667,
+      6.833333333333333
+     ],
+     "letters_of_10": [
+      3.974358974358974,
+      7.596153846153847
+     ],
+     "err_mm": [
+      1.4927570196896287,
+      0.10050330218523885
+     ],
+     "err_kind": "ordinary pen: to the clean ink; autowrite: to the planned letters",
+     "q_max_mm": 6.567158590391663,
+     "P_total_W": 1.4657135745092573
+    },
+    "autowrite_no_tremor": {
+     "who": "A known text, no tremor: the pen writes it",
+     "n_cases": 6,
+     "words_of_10": [
+      null,
+      10.0
+     ],
+     "letters_of_10": [
+      null,
+      9.551282051282051
+     ],
+     "err_mm": [
+      null,
+      0.06995237354032502
+     ],
+     "P_total_W": 1.5529471175373677
+    },
+    "autowrite_by_condition": {
+     "5 Hz x 2 mm": {
+      "n": 6,
+      "words_of_10": 10.0,
+      "letters_of_10": 8.966666666666667,
+      "ink_err_um": 74.1413308070821,
+      "q_max_mm": 5.950963531617517,
+      "at_reach": 0.0018503675721994255,
+      "P_total_W": 1.5302276058172897
+     },
+     "5 Hz x 3 mm": {
+      "n": 6,
+      "words_of_10": 5.666666666666667,
+      "letters_of_10": 7.371794871794872,
+      "ink_err_um": 88.0366067393855,
+      "q_max_mm": 6.563354305509095,
+      "at_reach": 0.0100989424454199,
+      "P_total_W": 1.4774762040054423
+     },
+     "8 Hz x 0 mm": {
+      "n": 6,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.551282051282051,
+      "ink_err_um": 69.95237354032503,
+      "q_max_mm": 5.282152408725782,
+      "at_reach": 0.0,
+      "P_total_W": 1.5529471175373677
+     },
+     "8 Hz x 1 mm": {
+      "n": 6,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384615,
+      "ink_err_um": 78.87447891673217,
+      "q_max_mm": 5.860086806224778,
+      "at_reach": 0.0007416850661182962,
+      "P_total_W": 1.5391328903905972
+     },
+     "8 Hz x 2 mm": {
+      "n": 6,
+      "words_of_10": 9.0,
+      "letters_of_10": 8.974358974358974,
+      "ink_err_um": 100.89760726153737,
+      "q_max_mm": 6.396558528490309,
+      "at_reach": 0.003229654212806108,
+      "P_total_W": 1.4999092731813166
+     },
+     "8 Hz x 3 mm": {
+      "n": 6,
+      "words_of_10": 8.0,
+      "letters_of_10": 7.82051282051282,
+      "ink_err_um": 112.9699976310922,
+      "q_max_mm": 6.570962875274227,
+      "at_reach": 0.00825880808314462,
+      "P_total_W": 1.4539509450130728
+     }
     }
    },
    "clean_writing": {
@@ -1644,7 +1772,7 @@
      "setup_s": 83.85274767875671
     }
    },
-   "wall_s_total": 3608.566278219223
+   "wall_s_total": 4842.728108406067
   },
   "legacy_flags": {
    "cards": {
@@ -2257,6 +2385,306 @@
     }
    },
    "wall_s_total": 3173.979259490967
+  },
+  "legacy_exact": {
+   "cards": {
+    "et_moderate": {
+     "n_cases": 4,
+     "n_writers": 2,
+     "words_of_10": [
+      10.0,
+      10.0
+     ],
+     "letters_of_10": [
+      9.423076923076923,
+      9.615384615384617
+     ],
+     "err_mm": [
+      0.41315942927299243,
+      0.27659100654208774
+     ],
+     "ratio_mean": 0.6655300481156574,
+     "ratio_case_boot": {
+      "mean": 0.6655300481156574,
+      "lo": 0.5912750745496437,
+      "hi": 0.7923753276943335,
+      "n": 4
+     },
+     "ratio_writer_boot": {
+      "mean": 0.6655300481156574,
+      "lo": 0.6129397421029948,
+      "hi": 0.7181203541283199,
+      "n": 4,
+      "n_clusters": 2
+     },
+     "ratio_worse_share": 0.0,
+     "P_total_W": [
+      2.2938464316201603,
+      2.304943871155202
+     ],
+     "P_nose_W": [
+      2.2168464316201604,
+      2.227943871155202
+     ],
+     "oracle_ratio_mean": 0.15577707073212502,
+     "oracle_words_of_10": 10.0,
+     "oracle_P_total_W": 2.2703087814379024,
+     "who": "Essential tremor, moderate (1 mm, 8-12 Hz)"
+    },
+    "et_strong": {
+     "n_cases": 4,
+     "n_writers": 2,
+     "words_of_10": [
+      3.75,
+      10.0
+     ],
+     "letters_of_10": [
+      5.384615384615385,
+      8.846153846153847
+     ],
+     "err_mm": [
+      0.9782533613929182,
+      0.5739149628934307
+     ],
+     "ratio_mean": 0.5870934261476586,
+     "ratio_case_boot": {
+      "mean": 0.5870934261476586,
+      "lo": 0.5572065331376284,
+      "hi": 0.6130121921143843,
+      "n": 4
+     },
+     "ratio_writer_boot": {
+      "mean": 0.5870934261476586,
+      "lo": 0.5831252991043541,
+      "hi": 0.5910615531909631,
+      "n": 4,
+      "n_clusters": 2
+     },
+     "ratio_worse_share": 0.0,
+     "P_total_W": [
+      2.3784736932453265,
+      2.3506720915831103
+     ],
+     "P_nose_W": [
+      2.3014736932453266,
+      2.2736720915831103
+     ],
+     "oracle_ratio_mean": 0.17539136532481803,
+     "oracle_words_of_10": 10.0,
+     "oracle_P_total_W": 2.2925228632555648,
+     "who": "Essential tremor, strong (2 mm, 8-12 Hz)"
+    },
+    "headline_8_12Hz_1_2mm": {
+     "n_cases": 8,
+     "n_writers": 2,
+     "words_of_10": [
+      6.875,
+      10.0
+     ],
+     "letters_of_10": [
+      7.403846153846154,
+      9.23076923076923
+     ],
+     "err_mm": [
+      0.6957063953329553,
+      0.4252529847177592
+     ],
+     "ratio_mean": 0.626311737131658,
+     "ratio_case_boot": {
+      "mean": 0.626311737131658,
+      "lo": 0.5796772926949707,
+      "hi": 0.6954645561969611,
+      "n": 8
+     },
+     "ratio_writer_boot": {
+      "mean": 0.626311737131658,
+      "lo": 0.602000647646979,
+      "hi": 0.650622826616337,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ratio_worse_share": 0.0,
+     "P_total_W": [
+      2.3361600624327434,
+      2.3278079813691566
+     ],
+     "P_nose_W": [
+      2.2591600624327435,
+      2.2508079813691566
+     ],
+     "oracle_ratio_mean": 0.1655842180284715,
+     "oracle_words_of_10": 10.0,
+     "oracle_P_total_W": 2.281415822346734,
+     "who": "Headline pool: 8-12 Hz x 1-2 mm"
+    }
+   },
+   "clean_writing": {
+    "n": 2,
+    "moved_um_mean": 0.0,
+    "moved_um_max": 0.0,
+    "P_total_W_mean": 2.248527176257845,
+    "words_of_10": 10.0
+   },
+   "by_cell": {
+    "12 Hz x 1 mm": {
+     "none": {
+      "n": 2,
+      "ink_err_um": 386.41682037068165,
+      "ratio": null,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.230769230769232,
+      "P_total_W": 2.3307825341275565
+     },
+     "nose": {
+      "n": 2,
+      "ink_err_um": 232.4105500603351,
+      "ratio": 0.6020745546527204,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384617,
+      "P_total_W": 2.3400327406854498
+     },
+     "oracle": {
+      "n": 2,
+      "ink_err_um": 69.96877773184005,
+      "ratio": 0.18144637113571271,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384617,
+      "P_total_W": 2.274097908187613
+     }
+    },
+    "12 Hz x 2 mm": {
+     "none": {
+      "n": 2,
+      "ink_err_um": 961.4658937815159,
+      "ratio": null,
+      "words_of_10": 2.5,
+      "letters_of_10": 5.0,
+      "P_total_W": 2.490838491711257
+     },
+     "nose": {
+      "n": 2,
+      "ink_err_um": 582.5157546299415,
+      "ratio": 0.6032484975389443,
+      "words_of_10": 10.0,
+      "letters_of_10": 8.846153846153847,
+      "P_total_W": 2.403695649514067
+     },
+     "oracle": {
+      "n": 2,
+      "ink_err_um": 246.1299517108943,
+      "ratio": 0.2507066304003457,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.230769230769232,
+      "P_total_W": 2.2829337293796925
+     }
+    },
+    "8 Hz x 1 mm": {
+     "none": {
+      "n": 2,
+      "ink_err_um": 439.9020381753033,
+      "ratio": null,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384617,
+      "P_total_W": 2.256910329112764
+     },
+     "nose": {
+      "n": 2,
+      "ink_err_um": 320.77146302384034,
+      "ratio": 0.7289855415785942,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384617,
+      "P_total_W": 2.269855001624954
+     },
+     "oracle": {
+      "n": 2,
+      "ink_err_um": 57.2328446859716,
+      "ratio": 0.13010777032853732,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384617,
+      "P_total_W": 2.266519654688192
+     }
+    },
+    "8 Hz x 2 mm": {
+     "none": {
+      "n": 2,
+      "ink_err_um": 995.0408290043204,
+      "ratio": null,
+      "words_of_10": 5.0,
+      "letters_of_10": 5.769230769230769,
+      "P_total_W": 2.2661088947793964
+     },
+     "nose": {
+      "n": 2,
+      "ink_err_um": 565.3141711569199,
+      "ratio": 0.5709383547563729,
+      "words_of_10": 10.0,
+      "letters_of_10": 8.846153846153847,
+      "P_total_W": 2.297648533652154
+     },
+     "oracle": {
+      "n": 2,
+      "ink_err_um": 99.80533193154804,
+      "ratio": 0.10007610024929031,
+      "words_of_10": 10.0,
+      "letters_of_10": 9.615384615384617,
+      "P_total_W": 2.302111997131437
+     }
+    }
+   },
+   "stale_or_warmup_ticks_max": 0,
+   "writers": [
+    0,
+    1
+   ],
+   "setups": {
+    "setup|0": {
+     "adapt_hist_um": [
+      637.9870355558412,
+      366.5527022462449,
+      326.076383696509
+     ],
+     "clean_floor": {
+      "ink_to_intended_um": 96.56188115556199,
+      "letters_read": 1.0,
+      "words_app": 1.0,
+      "adapt_hist_um": [
+       637.9870355558412,
+       366.5527022462449,
+       326.076383696509
+      ]
+     },
+     "hand_path_sha256_16": "07de50726b1a569c",
+     "historical_setup_file": "sim2j/build/setups/setup_w0_v2_base_5c8d3fdf9f192604.npz",
+     "max_abs_diff_to_historical_hand_path_um": 0.0,
+     "kind": "setup",
+     "w": 0,
+     "setup_s": 20.29957127571106
+    },
+    "setup|1": {
+     "adapt_hist_um": [
+      644.9807273626566,
+      362.34367032835775,
+      321.6001615100474
+     ],
+     "clean_floor": {
+      "ink_to_intended_um": 85.99280647161524,
+      "letters_read": 1.0,
+      "words_app": 1.0,
+      "adapt_hist_um": [
+       644.9807273626566,
+       362.34367032835775,
+       321.6001615100474
+      ]
+     },
+     "hand_path_sha256_16": "a214bc8784c44521",
+     "historical_setup_file": "sim2j/build/setups/setup_w1_v2_base_d1e5e98aed4738a1.npz",
+     "max_abs_diff_to_historical_hand_path_um": 265.12600360134155,
+     "kind": "setup",
+     "w": 1,
+     "setup_s": 18.256755590438843
+    }
+   },
+   "wall_s_total": 491.4798016548157
   }
  },
  "paired": {
@@ -2574,6 +3002,163 @@
    },
    "severe_and_autowrite": {}
   },
+  "legacy_exact_vs_historical": {
+   "all_cells": {
+    "none": {
+     "n": 8,
+     "ratio_diff": null,
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ink_err_um_diff": {
+      "mean": -0.006497421614930943,
+      "lo": -0.012994843229861885,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "exactly_equal_ink_share": 0.5,
+     "ink_err_um_absdiff_max": 0.0515431484778901,
+     "ratio_absdiff_max": null
+    },
+    "nose": {
+     "n": 8,
+     "ratio_diff": {
+      "mean": 5.992604688088987e-05,
+      "lo": 0.0,
+      "hi": 0.00011985209376177974,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ink_err_um_diff": {
+      "mean": 0.058896521175910266,
+      "lo": 0.0,
+      "hi": 0.11779304235182053,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "exactly_equal_ink_share": 0.5,
+     "ink_err_um_absdiff_max": 0.39504483163347004,
+     "ratio_absdiff_max": 0.0005104653385898938
+    },
+    "oracle": {
+     "n": 8,
+     "ratio_diff": {
+      "mean": -1.867542229870567e-05,
+      "lo": -3.735689039414958e-05,
+      "hi": 6.045796738241016e-09,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ink_err_um_diff": {
+      "mean": -0.01080330218940162,
+      "lo": -0.021613195214698067,
+      "hi": 6.590835894826341e-06,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "exactly_equal_ink_share": 0.375,
+     "ink_err_um_absdiff_max": 0.0277507180919514,
+     "ratio_absdiff_max": 7.101672318143848e-05
+    }
+   },
+   "headline_cells": {
+    "none": {
+     "n": 8,
+     "ratio_diff": null,
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ink_err_um_diff": {
+      "mean": -0.006497421614930943,
+      "lo": -0.012994843229861885,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "exactly_equal_ink_share": 0.5,
+     "ink_err_um_absdiff_max": 0.0515431484778901,
+     "ratio_absdiff_max": null
+    },
+    "nose": {
+     "n": 8,
+     "ratio_diff": {
+      "mean": 5.992604688088987e-05,
+      "lo": 0.0,
+      "hi": 0.00011985209376177974,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ink_err_um_diff": {
+      "mean": 0.058896521175910266,
+      "lo": 0.0,
+      "hi": 0.11779304235182053,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "exactly_equal_ink_share": 0.5,
+     "ink_err_um_absdiff_max": 0.39504483163347004,
+     "ratio_absdiff_max": 0.0005104653385898938
+    },
+    "oracle": {
+     "n": 8,
+     "ratio_diff": {
+      "mean": -1.867542229870567e-05,
+      "lo": -3.735689039414958e-05,
+      "hi": 6.045796738241016e-09,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "ink_err_um_diff": {
+      "mean": -0.01080330218940162,
+      "lo": -0.021613195214698067,
+      "hi": 6.590835894826341e-06,
+      "n": 8,
+      "n_clusters": 2
+     },
+     "exactly_equal_ink_share": 0.375,
+     "ink_err_um_absdiff_max": 0.0277507180919514,
+     "ratio_absdiff_max": 7.101672318143848e-05
+    }
+   },
+   "severe_and_autowrite": {}
+  },
   "causal_vs_historical": {
    "all_cells": {
     "none": {
@@ -2729,7 +3314,104 @@
      "ratio_absdiff_max": 0.049015447473442414
     }
    },
-   "severe_and_autowrite": {}
+   "severe_and_autowrite": {
+    "none": {
+     "n": 12,
+     "ratio_diff": null,
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "ink_err_um_diff": {
+      "mean": 27.263549187087886,
+      "lo": 22.090025283169194,
+      "hi": 32.60143973926271,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "exactly_equal_ink_share": 0.0,
+     "ink_err_um_absdiff_max": 41.1486458226957,
+     "ratio_absdiff_max": null
+    },
+    "nose": {
+     "n": 12,
+     "ratio_diff": {
+      "mean": -0.0028893743012529394,
+      "lo": -0.004661300954745142,
+      "hi": -0.0011459637735916257,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "words_of_10_diff": {
+      "mean": 0.4166666666666667,
+      "lo": -0.8333333333333334,
+      "hi": 1.6666666666666667,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "ink_err_um_diff": {
+      "mean": 16.143989700324767,
+      "lo": 11.902063762936109,
+      "hi": 19.96528672981626,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "exactly_equal_ink_share": 0.0,
+     "ink_err_um_absdiff_max": 34.66213619584869,
+     "ratio_absdiff_max": 0.013229741593473454
+    },
+    "oracle": {
+     "n": 12,
+     "ratio_diff": {
+      "mean": 0.007898601606588146,
+      "lo": 0.006892777090054515,
+      "hi": 0.00905667813977114,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "words_of_10_diff": {
+      "mean": 0.0,
+      "lo": 0.0,
+      "hi": 0.0,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "ink_err_um_diff": {
+      "mean": 13.778816456373777,
+      "lo": 11.641805568294922,
+      "hi": 16.012872499165905,
+      "n": 12,
+      "n_clusters": 6
+     },
+     "exactly_equal_ink_share": 0.0,
+     "ink_err_um_absdiff_max": 24.916603818495602,
+     "ratio_absdiff_max": 0.015351155617322185
+    },
+    "autowrite": {
+     "n": 36,
+     "ratio_diff": null,
+     "words_of_10_diff": {
+      "mean": -0.7777777777777778,
+      "lo": -1.2222222222222223,
+      "hi": -0.3333333333333333,
+      "n": 36,
+      "n_clusters": 6
+     },
+     "ink_err_um_diff": {
+      "mean": 24.84151705186291,
+      "lo": 23.841544948612473,
+      "hi": 25.850385654783,
+      "n": 36,
+      "n_clusters": 6
+     },
+     "exactly_equal_ink_share": 0.0,
+     "ink_err_um_absdiff_max": 33.32541886541949,
+     "ratio_absdiff_max": null
+    }
+   }
   }
  }
 }

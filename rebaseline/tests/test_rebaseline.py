@@ -326,8 +326,11 @@ def test_evidence_rows_csv_format():
 
 
 def test_no_model_identifiers_in_written_files():
-    bad = re.compile(r"(claude|opus|sonnet|haiku|gpt-\d|chatgpt|gemini)", re.I)
-    paths = list((REPO_ROOT / "rebaseline").glob("*.py")) + list(RESULTS_DIR.glob("*")) if RESULTS_DIR.exists() else []
+    # the forbidden names are stored reversed, so that this file does not contain them either
+    words = ("edualc", "supo", "tennos", "ukiah", "tpgtahc", "inimeg", "rcort", "tfosorcim", "amall", "lartsim")
+    bad = re.compile("(" + "|".join(w[::-1] for w in words) + "|" + "-tpg"[::-1] + r"\d)", re.I)
+    paths = list((REPO_ROOT / "rebaseline").glob("*.py")) + list((REPO_ROOT / "rebaseline" / "tests").glob("*.py"))
+    paths += list(RESULTS_DIR.glob("*")) if RESULTS_DIR.exists() else []
     doc = REPO_ROOT / "docs" / "rebaseline.md"
     if doc.exists():
         paths.append(doc)

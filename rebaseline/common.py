@@ -177,9 +177,26 @@ class Rows:
             self.save()
 
     def save(self) -> None:
-        tmp = self.path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(self.rows, default=_jd))
-        tmp.replace(self.path)
+        """Merge with the rows on disk under an exclusive lock, then write atomically: two processes that share a row
+        file (e.g. two phases of one sensing mode run side by side) keep each other's rows."""
+        import fcntl
+        import os
+        with open(self.path.with_suffix(".lock"), "a") as lf:
+            fcntl.flock(lf, fcntl.LOCK_EX)
+            try:
+                disk: Dict[str, Dict] = {}
+                if self.path.exists():
+                    try:
+                        disk = json.loads(self.path.read_text())
+                    except Exception:
+                        disk = {}
+                disk.update(self.rows)
+                self.rows = disk
+                tmp = self.path.with_name(f"{self.path.name}.{os.getpid()}.tmp")
+                tmp.write_text(json.dumps(self.rows, default=_jd))
+                tmp.replace(self.path)
+            finally:
+                fcntl.flock(lf, fcntl.LOCK_UN)
         self._t = time.time()
 
     def values(self) -> List[Dict]:

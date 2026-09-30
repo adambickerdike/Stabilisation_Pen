@@ -12,6 +12,7 @@ Stages (each simulation stage runs in its own process: sim2j and bnib are config
   sim2j_legacy_exact  task 2, the flags + the historical firmware contact channel (reproduction check, writers 0-1)
   bnib_revK           task 3, Rev K's nib with DEC-066's servo and corrected loads (writers 0-5)
   bnib_cand15         task 3, the 24 mm / 1.5 mm candidate (writers 0-5)
+  bnib_candN          task 3 (extra), study N's balanced candidate of DEC-083 (writers 0-1)
   bnib_ladder         task 3, the attribution ladder (study B now / exact / DEC-066 / Rev K linear; writers 0-1)
   reach               task 4, study F's reach cases with the balanced nib's servo and mass
   page_re             task 5, studies R and E with the version-2 page model
@@ -43,6 +44,7 @@ STAGES: Dict[str, List[List[str]]] = {
                             "--writers", "0,1"]],
     "bnib_revK": [["-m", "rebaseline.bnib_rerun", "--config", "revK_corrected"]],
     "bnib_cand15": [["-m", "rebaseline.bnib_rerun", "--config", "cand15_corrected"]],
+    "bnib_candN": [["-m", "rebaseline.bnib_rerun", "--config", "candN_corrected", "--writers", "0,1"]],
     "bnib_ladder": [["-m", "rebaseline.bnib_rerun", "--config", c, "--writers", w] for c, w in
                     (("B1_studyB_now", "0,1"), ("B1_dec066", "0,1"), ("revK_linear", "0,1"),
                      ("revK_linear_80", "0,1"), ("B1_studyB_exact", "0"))],
@@ -53,7 +55,8 @@ STAGES: Dict[str, List[List[str]]] = {
                 ["-m", "rebaseline.reach_b1", "--summarise"], ["-m", "rebaseline.page_v2", "--summarise"]],
     "report": [["-m", "rebaseline.report"]],
 }
-ORDER = ("impact", "sim2j_causal", "sim2j_legacy_flags", "bnib_revK", "bnib_cand15", "reach", "page_gap", "page_re",
+ORDER = ("impact", "sim2j_causal", "sim2j_legacy_flags", "bnib_revK", "bnib_cand15", "bnib_candN", "reach", "page_gap",
+         "page_re",
          "sim2j_legacy_exact", "bnib_ladder", "summary", "report")
 
 

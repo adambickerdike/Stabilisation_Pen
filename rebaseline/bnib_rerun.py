@@ -20,6 +20,10 @@ Configurations (one per process; each a runtime configuration of the unmodified 
                    mechanics_study.json): usable radius 1.5 mm, stop 1.7 mm, Km 0.2729 N/sqrt(W) (x-axis at the centre,
                    the same map method), 3.67 g moving mass, eight 0.10 mm x 34 mm wires with a 100 N/m anchor and 5 mN
                    assembly tension (nonlinear law), 8.07 mN guide drag; DEC-066 servo
+  candN_corrected  study N's balanced candidate, adopted for the coupon and CAD by DEC-083 (after this study's brief;
+                   writers 0-1 only, a first look): Km 0.398 N/sqrt(W) (x-axis centre; weakest over the disk 0.272),
+                   3.29 g, eight 0.10 x 32.1 mm wires on a 50 N/m anchor with 5 mN assembly tension, 3.83 mN guide drag
+                   (its 1.82 N preload), stop 1.7 mm; DEC-066 servo
 The harmonic-load correction of bnib/loads.py (coherent spring and inertia) is automatic in a time-domain simulation;
 it matters for the CALC budgets, reported beside the SIM power.  Force constants: the sim2 nib is isotropic, so the
 x-axis centre value is used on both axes; the weaker y-axis and the disk minimum (and the 0.7 field derating) are given
@@ -70,7 +74,17 @@ CONFIGS: Dict[str, Dict] = {
     "revK_linear_80": {"nib": "revK", "servo": (80.0, 100.0), "loads": "linear", "contact": "current"},
     "revK_corrected": {"nib": "revK", "servo": (40.0, 46.0), "loads": "corrected", "contact": "current"},
     "cand15_corrected": {"nib": "cand15", "servo": (40.0, 46.0), "loads": "corrected", "contact": "current"},
+    "candN_corrected": {"nib": "candN", "servo": (40.0, 46.0), "loads": "corrected", "contact": "current"},
 }
+CANDN = {"Km_tip": 0.39844846531923156, "Km_y": 0.4085245951116455, "Km_disk_min_map": 0.272,
+         "m_move": 3.29e-3, "travel": 1.5e-3, "stop": 1.7000000000857272e-3, "drag_N": 3.8320989840380166e-3,
+         "wires": {"length": 32.1e-3, "diameter": 0.10e-3, "n_wires": 8, "anchor_stiffness": 50.0,
+                   "assembly_tension": 0.005},
+         "source": "results/nibopt/candidates.json 'balanced' (study N, DEC-083: Km centre x / y, weakest over the disk "
+                   "0.272 from docs/nib_optimisation.md s4.3, moving mass 3.29 g, wires 8 x 0.10 x 32.1 mm on a 50 N/m "
+                   "anchor; 5 mN assembly tension reproduces its 3.58 mN and 7.69 mN at the stop; guide drag 3.83 mN "
+                   "at 50 deg from its 1.82 N preload)"}
+NIBS = {"revK": REVK, "cand15": CAND15, "candN": CANDN}
 HIST_ROWS = REPO_ROOT / "bnib" / "build" / "sim_rows.json"           # read-only (git-ignored historical rows)
 SOURCES = ("bnib/sim.py", "bnib/candidates.py", "bnib/loads.py", "bnib/flexure.py", "bnib/thermal.py",
            "bnib/contact.py", "bnib/actuators.py", "bnib/data/vc_calibration.json", "results/bnib/bnib.json",
@@ -147,10 +161,10 @@ def install(config: str) -> Dict:
             SE.OnlineSensors.read = _historical_contact_read(SE.OnlineSensors.read)
     loads = None
     if cfg["loads"] == "corrected":
-        nib = REVK if cfg["nib"] == "revK" else CAND15
+        nib = NIBS[cfg["nib"]]
         stop = nib.get("stop", nib["travel"] + 0.2e-3)
         tab = wire_table(nib["wires"], stop + 0.3e-3)
-        loads = {"tab": tab, "k0": tab["k0"], "drag": GUIDE_DRAG_N}
+        loads = {"tab": tab, "k0": tab["k0"], "drag": nib.get("drag_N", GUIDE_DRAG_N)}
     _STATE.update({"config": config, "loads": loads})
 
     class LoadStepper(S.BStepper):
@@ -207,7 +221,7 @@ def designs(config: str):
         sd = replace(b1, servo_fi=inner_hz)
         return sd, {"Km_tip": b1.ev["Km_tip"], "k_tip": b1.ev["k_tip_N_m"], "m_move": b1.ev["hw"]["m_move"],
                     "travel": b1.design.travel, "source": "study B (bnib/sim.py sim_designs + results/bnib/rules.json)"}
-    nib = REVK if cfg["nib"] == "revK" else CAND15
+    nib = NIBS[cfg["nib"]]
     ev = copy.deepcopy(b1.ev)
     ev["Km_tip"] = nib["Km_tip"]
     ev["hw"] = dict(ev["hw"], m_move=nib["m_move"])
@@ -225,7 +239,8 @@ def designs(config: str):
                  title=f"{cfg['nib']} nib ({'corrected loads' if cfg['loads'] == 'corrected' else 'linear wires'})")
     return sd, {"Km_tip": nib["Km_tip"], "Km_y": nib["Km_y"], "Km_disk_min_map": nib["Km_disk_min_map"],
                 "k_tip_linear": k_lin, "m_move": nib["m_move"], "travel": nib["travel"],
-                "stop": nib.get("stop", nib["travel"] + 0.2e-3), "wires": nib["wires"], "source": nib["source"]}
+                "stop": nib.get("stop", nib["travel"] + 0.2e-3), "wires": nib["wires"], "source": nib["source"],
+                "guide_drag_N": nib.get("drag_N", GUIDE_DRAG_N)}
 
 
 # ------------------------------------------------------------------ runs
@@ -288,7 +303,8 @@ def run(config: str, writers: Sequence[int] = WRITERS, cells=CELLS, ctls=CTLS, q
                                   "servo_hz": CONFIGS[config]["servo"][0], "inner_hz": CONFIGS[config]["servo"][1],
                                   "loads": CONFIGS[config]["loads"], "contact": CONFIGS[config]["contact"],
                                   "wire_k0_N_m": info.get("wire_k0_N_m"),
-                                  "drag_step_check": drag_step_check(nib["m_move"]) if CONFIGS[config]["loads"] == "corrected" else None},
+                                  "drag_step_check": drag_step_check(nib["m_move"], drag=nib.get("guide_drag_N", GUIDE_DRAG_N))
+                                  if CONFIGS[config]["loads"] == "corrected" else None},
              save=True)
     pens = S.Pens({"B1": sd})
     t0 = time.time()
@@ -371,7 +387,7 @@ def calc_power_bands(P_sim_mW: Optional[float], nib: Dict) -> Optional[Dict]:
     if P_sim_mW is None or "Km_y" not in nib:
         return None
     k = nib["Km_tip"]
-    return {"sim_x_axis_mW": P_sim_mW, "weaker_axis_mW": P_sim_mW * (k / nib["Km_y"]) ** 2,
+    return {"sim_x_axis_mW": P_sim_mW, "weaker_axis_mW": P_sim_mW * (k / min(k, nib["Km_y"])) ** 2,
             "disk_minimum_mW": P_sim_mW * (k / nib["Km_disk_min_map"]) ** 2,
             "disk_minimum_derated_0p7_mW": P_sim_mW * (k / (0.7 * nib["Km_disk_min_map"])) ** 2,
             "label": "CALC on SIM (P = F^2 / Km^2 at the simulated force demand; the servo force does not depend on Km)"}
@@ -394,6 +410,8 @@ def summarise(quick: bool = False, write: bool = True) -> Dict:
              "studyB_cells_writers_0_1": summarise_config(R, writers=(0, 1), cells=CELLS[:3])}
         P = ((s["all_writers"].get("pooled_4_cells") or {}).get("P_nib_mW_G4"))
         s["power_bands"] = calc_power_bands(P, d)
+        Pc = ((s["all_writers"].get("clean") or {}).get("P_nib_mW"))
+        s["power_bands_clean"] = calc_power_bands(Pc, d)
         s["wall_s_total"] = float(sum((r.get("wall_s") or 0.0) for r in R.values()))
         out["configs"][c] = s
     hist = CM.jload(HIST_ROWS) if HIST_ROWS.exists() else None

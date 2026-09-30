@@ -209,12 +209,14 @@ ROWS: List[Dict] = [
               "servo, and wholepen/stepper.py's own step copy still passes the true contact (patch proposal in the doc)"),
     dict(id="T-21", section="Tremor", claim="Rev J, severe tremor (3 mm at 5 and 8 Hz), writing through it: words "
          "4 -> 38 %, ink 1.47 -> 1.15 mm", evidence="SIM (sim2j)", status="CURRENT, synthetic only",
-         model="sim2j-legacy", faults="F1, F2, F3", classification=NR, rerun="",
-         note="not rerun here (compute given to the four headline tasks); proposed EXP-X03"),
+         model="sim2j-legacy", faults="F1, F2, F3", classification=RR,
+         rerun="results/rebaseline/sim2j_cards.json (severe_through card, causal sensing, paired with the historical rows)"),
     dict(id="T-22", section="Tremor", claim="The nose runs out of travel at about 3 mm in autowrite (6.55 of 6.57 mm); "
          "at 8 mm any pen reads 0-2 of 10", evidence="SIM (sim2j, study W); DATA", status="CURRENT",
-         model="sim2j-legacy", faults="F1, F2, F3", classification=NR, rerun="",
-         note="not rerun: autowrite is a C1S bench mode with no hardware in the next prototype (DEC-050); EXP-X03"),
+         model="sim2j-legacy", faults="F1, F2, F3", classification=RR,
+         rerun="results/rebaseline/sim2j_cards.json (autowrite block, causal sensing, paired with the historical rows)",
+         note="the 8 mm half (study W's rows) is not rerun; autowrite is a C1S bench mode (DEC-050), superseded in the pen "
+              "by DEC-071"),
     dict(id="T-23", section="Tremor", claim="Collar (whole pen shifts): -5 to +5 % against locked; light inner pen 17 % "
          "less at 8 mm, 17 points less ink", evidence="CALC; SIM (study W)", status="CURRENT: not adopted",
          model="wholepen-sim2j-legacy", faults="F1, F2, F3", classification=NR, rerun="",
@@ -227,14 +229,15 @@ ROWS: List[Dict] = [
               "autowrite, so the rate caution applies by analogy"),
     dict(id="W-01b", section="Writing help", claim="Autowrite in sim2j: 88 % of words at 3 mm tremor (4 % ordinary), "
          "100 % with no tremor", evidence="SIM (sim2j)", status="CURRENT as mechanism result; no hardware (DEC-050)",
-         model="sim2j-legacy", faults="F1, F2, F3", classification=NR, rerun="",
-         note="not rerun: the +-6 mm C1S nose has no hardware in the next prototype; EXP-X03 (autowrite under causal "
-              "sensing) proposed"),
+         model="sim2j-legacy", faults="F1, F2, F3", classification=RR,
+         rerun="results/rebaseline/sim2j_cards.json (severe_autowrite and autowrite_no_tremor cards, causal sensing)",
+         note="a mechanism result for the C1S bench module only: in-pen autowrite is superseded by DEC-071"),
     dict(id="W-02", section="Writing help", claim="Autowrite with a realistic page sensor: 2-4x ink error, still "
          "readable; accumulating errors: 7 of 10 words", evidence="SIM (sim2j, writers 0-1)", status="CURRENT",
          model="sim2j-legacy", faults="F1, F2, F3", classification=NR, rerun="",
-         note="not rerun, for the same reason as W-01b; sim2j's own page-error model is causal (held/walk draws), so "
-              "only the servo sensing touches this row"),
+         note="not rerun: in-pen autowrite is superseded by DEC-071 and the C1S nose is a bench module (DEC-050); "
+              "sim2j's own page-error model is causal (held/walk draws), so only the servo sensing touches this row, "
+              "and W-01b's rerun shows it costs autowrite about 25 um; EXP-X03"),
     dict(id="W-03a", section="Writing help", claim="PD write-big loops: driven heel wheel keeps the last loop 6.6 -> "
          "8.6 mm (relaxed), 7.4 mm (resisting)", evidence="SIM (sim2j)", status="CURRENT (synthetic)",
          model="sim2j-legacy", faults="F1, F2, F3", classification=NR, rerun="",
@@ -335,16 +338,22 @@ ROWS: List[Dict] = [
          note="study H's calculation already uses the pass's corrected guide drag (8.1 mN)"),
     dict(id="H-15", section="Hardware", claim="The ball guide's contact: ~8 mN rolling drag at 4 N preload (study H)",
          evidence="CALC", status="UNPROVEN", model="calc", faults="", classification=NS, rerun=""),
-    dict(id="H-16", section="Hardware", claim="Wire fatigue test drive: resonance adds 12-90 % at 200 Hz (study H)",
+    # rows 16-17 were added by the lead after study N (commit eb851a4): not SIM
+    dict(id="H-16", section="Hardware", claim="What makes the nib's heat: the ball's writing drag about two thirds "
+         "(study N)", evidence="CALC", status="CURRENT", model="calc", faults="", classification=NS, rerun=""),
+    dict(id="H-17", section="Hardware", claim="How much the force-constant convention matters: weakest x 0.7 for every "
+         "nib claim (study N, DEC-080)", evidence="CALC", status="CURRENT", model="calc", faults="", classification=NS,
+         rerun="", note="this study's SIM powers are at the x-axis centre; its CALC bands give DEC-080's convention"),
+    dict(id="H-18", section="Hardware", claim="Wire fatigue test drive: resonance adds 12-90 % at 200 Hz (study H)",
          evidence="CALC", status="CURRENT (test-method correction)", model="calc", faults="", classification=NS,
          rerun=""),
-    dict(id="H-17", section="Hardware", claim="Cost and time of the first bench build (study H)", evidence="MFR; ASSUMPTION",
+    dict(id="H-19", section="Hardware", claim="Cost and time of the first bench build (study H)", evidence="MFR; ASSUMPTION",
          status="UNPROVEN", model="calc", faults="", classification=NS, rerun=""),
-    dict(id="H-18", section="Hardware", claim="Page sensor: for the trackers on real inputs a DeltaPen-class sensor "
+    dict(id="H-20", section="Hardware", claim="Page sensor: for the trackers on real inputs a DeltaPen-class sensor "
          "changed results by at most 0.1 word and 0.01 mm (study R)", evidence="ASSUMPTION; SIM",
          status="UNPROVEN", model="hw1-real-v1", faults="F4", classification=RR,
          rerun="results/rebaseline/page_v2.json (ideal vs v1 vs v2)"),
-    dict(id="H-19", section="Hardware", claim="Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters "
+    dict(id="H-21", section="Hardware", claim="Km: at 0.7x the C1S nose sags under the static load (4.2 W; 62 % letters "
          "in tremor-free writing, SIM)", evidence="CALC; SIM", status="UNPROVEN, contested", model="sim2j-legacy",
          faults="F1, F2", classification=NR, rerun="", note="not rerun: C1S nose not carried forward (DEC-050)"),
     # ------------------------------------------------------------------ Simulation
@@ -389,7 +398,7 @@ OUTCOMES: Dict[str, str] = {
     "T-13b": "CHANGES for Rev J's gated tracker: clean real writing moved 41.0 um mean, 105 um worst writer (v1 25.5 / "
              "85 um; its gate opened on 2 of 9 clean notes); Rev H 24.7 um (survives)",
     "T-16c": "SURVIVES: TCN 0.705x severe tip tremor, clean writing 169 um, -0.9 words on clean notes",
-    "H-18": "SURVIVES for words and tip tremor (ideal vs DeltaPen-class v2: 0.0 words, 0.006 mm) but NOT for clean "
+    "H-20": "SURVIVES for words and tip tremor (ideal vs DeltaPen-class v2: 0.0 words, 0.006 mm) but NOT for clean "
             "writing: +15.9 um for Rev J's gated tracker",
     # task 2: sim2j's cards, causal sensing against the historical rows (synthetic writers and tremor)
     "T-01b": "CHANGES slightly: perfect knowledge 0.11-0.22 of the ordinary pen at 8-12 Hz (was 0.10-0.20), 0.07-0.11 at "
@@ -401,10 +410,29 @@ OUTCOMES: Dict[str, str] = {
             "on near-identical ink (5 instead of 10 of 10)",
     "T-12": "SURVIVES: 1.000 (1.000-1.001)",
     "T-13a": "SURVIVES: 0 um (max 0) on the 6 writers under causal sensing",
+    "T-21": "SURVIVES: writing through 3 mm at 5 and 8 Hz, words 4 -> 42 % (was 4 -> 38 %), ink 1.49 -> 1.17 mm (1.47 -> "
+            "1.15), ratio 0.773 (0.776); the held nose writes 27 um worse; power 1.5 W (2.3 W)",
+    "T-22": "SURVIVES (the autowrite half): the nose uses 6.56-6.57 of its 6.57 mm at 3 mm with causal sensing (was "
+            "6.55); the 8 mm half (study W) is not rerun",
+    "W-01b": "CHANGES (worse): with causal sensing autowrite reads 68 % of words at 3 mm tremor (was 88 %) and 100 % with "
+             "no tremor (100 %); its ink error to the planned letters rises about 25 um in every case (75 -> 101 um at "
+             "3 mm, 45 -> 70 um with no tremor); power 1.5 W (2.3 W)",
     "P-05": "CHANGES: tremor-free writing draws 1.49 W with causal sensing (2.28 W with the legacy flags on the same code): "
             "the servo-noise share is gone, the C1S static load remains; still SUSPENDED as hardware",
     "H-02c": "CHANGES: about 1.5 W in every ET cell with causal sensing (was about 2.3 W)",
     "H-03c": "CHANGES: about 1.4 h on the 2.22 Wh cell (CALC on SIM 1.54 W; was about 1 h); still SUSPENDED",
+    # task 3: the balanced nib in sim2 (synthetic writers and tremor)
+    "P-06": "CHANGES (SIM part): Rev K with 40/46 Hz and the corrected loads runs 34.0 h on study B's ET cells (study B "
+            "32.6 h there) and 30.9 h at 8-12 Hz x 1-2 mm, at the x-axis centre Km and without gravity on the moving mass "
+            "(as study B); the CALC 7.6 mW / 38 h used the quadrature load and is superseded by DEC-080's matched model",
+    "H-02b": "CHANGES: 14.1 mW while correcting on study B's cells (study B 16.4 mW on the same cells, 14.8 mW over all "
+             "its cells), 20.5 mW at 8-12 Hz x 1-2 mm (x-axis centre Km); 84 mW under DEC-080's weakest x 0.7 (CALC on "
+             "SIM); the 1.5 mm candidate 1.6x Rev K",
+    "H-03b": "CHANGES: 34.0 h on study B's cells, 30.9 h at 8-12 Hz x 1-2 mm (CALC on SIM, x-axis centre Km, no gravity "
+             "load); the candidate 29.7 / 26.3 h",
+    "H-09": "SURVIVES in direction: with causal contact and Rev K's constants on test writers 0-1, 80/100 -> 40/46 Hz "
+            "raises G4's ink error 8 % (12 % with the 12 Hz x 2 mm cell) and cuts the nib's power 38 % (tremor-free "
+            "49 %); perfect knowledge 0.27 -> 0.31; G4's words 10 -> 8.3 of 10",
     # task 4: study F's reach with B1's dynamics (HW1, real inputs, tuning split, perfect knowledge)
     "P-04": "SURVIVES: with B1's 40/46 Hz servo and mass, +-1.06 mm gains +1.6 words (0.7 to 2.4; fails the +2 line), "
             "+-1.5 mm +3.2 (2.6 to 3.8; passes); 0.02 mm worse than on the Rev J plant",

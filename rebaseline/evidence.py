@@ -128,6 +128,11 @@ def row_reach(s: Dict) -> Optional[Dict]:
                 design_implication="See DEC-078 (proposed)")
 
 
+def _clean(ver: Dict, dev: str) -> Optional[float]:
+    v = ((ver.get("clean") or {}).get(dev) or {}).get("false_correction_um")
+    return v.get("mean") if isinstance(v, dict) else v
+
+
 def row_page(s: Dict) -> Optional[Dict]:
     re_ = (s or {}).get("R_and_E") or {}
     v1, v2 = re_.get("v1") or {}, re_.get("v2") or {}
@@ -151,7 +156,11 @@ def row_page(s: Dict) -> Optional[Dict]:
                         f"{k} {_f((sev1.get(k) or {}).get('tip_tremor_mm'))} -> {_f((sev2.get(k) or {}).get('tip_tremor_mm'))} mm"
                         for k in ("revJ_gated|deltapen", "revJ_tcn|deltapen", "revJ_new|deltapen") if sev2.get(k))
                     + f". DEC-055 for E's frozen design: words gain {_f(d1.get('words_gain_mean'))} -> "
-                      f"{_f(d2.get('words_gain_mean'))}, passes {d1.get('passes')} -> {d2.get('passes')}"),
+                      f"{_f(d2.get('words_gain_mean'))}, passes {d1.get('passes')} -> {d2.get('passes')}. Clean real writing "
+                      f"moved by Rev J's gated tracker {_f(_clean(v1, 'revJ_gated|deltapen'), 1)} -> "
+                      f"{_f(_clean(v2, 'revJ_gated|deltapen'), 1)} um (worst writer "
+                      f"{_f(((v1.get('clean') or {}).get('revJ_gated|deltapen') or {}).get('false_correction_um_worst_writer'), 0)} -> "
+                      f"{_f(((v2.get('clean') or {}).get('revJ_gated|deltapen') or {}).get('false_correction_um_worst_writer'), 0)} um)"),
                 units_and_conditions="mm peak at the tip; words of 10 (literal AI reader); SIMULATION",
                 locator="docs/rebaseline.md section 6",
                 limitations="Page model v2 is an ASSUMPTION informed by LIT OPT-02, not a calibrated paper sensor; spent test "
@@ -231,10 +240,47 @@ def row_gap(s: Dict) -> Optional[Dict]:
                 design_implication="See DEC-079 (proposed)")
 
 
+def row_sim2j_more(s: Dict) -> Optional[Dict]:
+    """EML-116: sim2j's other cards under causal sensing (mild, slow, severe, autowrite)."""
+    c = ((s or {}).get("by_mode") or {}).get("causal") or {}
+    h = (((s or {}).get("historical") or {}).get("summary") or {})
+    cc, hc = c.get("cards") or {}, h.get("cards") or {}
+    if not cc.get("severe_autowrite") or not cc.get("et_mild"):
+        return None
+    g = lambda d, k, i=None: (d.get(k) if i is None else (d.get(k) or [None, None])[i])      # noqa: E731
+    m, sl, sv, aw, a0 = (cc.get(k) or {} for k in ("et_mild", "slow_4hz", "severe_through", "severe_autowrite",
+                                                     "autowrite_no_tremor"))
+    hsv, haw = hc.get("severe_through") or {}, hc.get("severe_autowrite") or {}
+    return dict(BASE, id="EML-116",
+                topic="Rev J's other synthetic cards under causal sensing: mild and slow tremor, writing through severe "
+                      "tremor, autowrite (study X)",
+                citation="This study's simulation (rebaseline/sim2j_cards.py): sim2 / MuJoCo whole Rev J pen, causal Hall "
+                         "velocity, delayed measured contact, 80 Hz inner loop; paired with sim2j's historical rows",
+                doi_or_url="results/rebaseline/sim2j_cards.json",
+                task_or_setup="ET 0.3 mm at 4/8/12 Hz, 4 Hz x 1-2 mm, 3 mm at 5 and 8 Hz (G4 writing through it; the nose "
+                              "writing a known text), v2 synthetic test writers 0-5 on their first test seed",
+                participants_or_bench="Simulated (synthetic writers and tremor)",
+                comparator="The historical rows of the same cases (legacy sensing)",
+                key_quantitative_findings=(
+                    f"Mild ratio {_f(m.get('ratio_mean'), 3)} (historical 1.010); slow {_f(sl.get('ratio_mean'), 3)} "
+                    f"(1.000); severe words {_f(g(sv, 'words_of_10', 0), 1)} -> {_f(g(sv, 'words_of_10', 1), 1)} of 10 "
+                    f"(historical {_f(g(hsv, 'words_of_10', 0), 1)} -> {_f(g(hsv, 'words_of_10', 1), 1)}); autowrite at 3 mm "
+                    f"{_f(g(aw, 'words_of_10', 1), 1)} of 10 words (historical {_f(g(haw, 'words_of_10', 1), 1)}), ink to the "
+                    f"planned letters {_f((g(aw, 'err_mm', 1) or 0) * 1e3, 0)} um (historical "
+                    f"{_f((g(haw, 'err_mm', 1) or 0) * 1e3, 0)} um); no tremor {_f(g(a0, 'words_of_10', 1), 1)} of 10"),
+                units_and_conditions="Ink-error ratios to the held nose; words of 10 (app recogniser); SIMULATION",
+                locator="docs/rebaseline.md section 3",
+                limitations="Synthetic inputs; one seed per writer; the C1S nose is a bench module only (DEC-050); in-pen "
+                            "autowrite is superseded (DEC-071)",
+                relevance_to_design="Whether the rest of sim2j's cards depended on ideal sensing",
+                design_implication="Autowrite's accuracy depends on the nib servo's sensing (cause not split); see DEC-075 "
+                                   "(proposed)")
+
+
 def rows() -> List[Dict]:
     out = []
     for fn, name in ((row_sim2j, "sim2j_cards"), (row_bnib, "bnib_rerun"), (row_reach, "reach_b1"), (row_page, "page_v2"),
-                     (row_ladder, "bnib_rerun"), (row_gap, "page_v2")):
+                     (row_ladder, "bnib_rerun"), (row_gap, "page_v2"), (row_sim2j_more, "sim2j_cards")):
         r = fn(_r(name))
         if r:
             out.append(r)
