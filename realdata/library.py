@@ -153,6 +153,14 @@ def synthetic_like(draw: TremorDraw, seed: int = 0) -> TremorDraw:
 
 
 # ------------------------------------------------------------------ writing
+def _bare_writer(writer: Optional[str], source: str) -> Optional[str]:
+    """A writer id as the split lists it: RealWritten.real["writer"] carries the source prefix ('unipen/...', 'brush/...')
+    and is accepted back here, so a note's own writer id selects the same writer."""
+    if writer is not None and writer.startswith(source + "/"):
+        return writer[len(source) + 1:]
+    return writer
+
+
 def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words: int = 10, dt: float = WL.SIM_DT,
             writer: Optional[str] = None, **kw) -> WL.RealWritten:
     """Real handwriting with timing in the aiguide Written format.
@@ -169,6 +177,7 @@ def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words:
             raise FileNotFoundError(
                 f"No licensed UNIPEN writers indexed for split {split!r}; obtain the dataset "
                 "under its licence and rebuild the writing index before running this study")
+        writer = _bare_writer(writer, "unipen")
         if writer is not None and writer not in ws:
             raise ValueError(f"UNIPEN writer {writer!r} is not in split {split!r}")
         w = writer or ws[seed % len(ws)]
@@ -182,6 +191,7 @@ def writing(split: str = "test", seed: int = 0, source: str = "unipen", n_words:
     ws = WL.brush_writers(split, stats)
     if not ws:
         raise FileNotFoundError(f"No BRUSH writers indexed for split {split!r}; rebuild the writing index")
+    writer = _bare_writer(writer, "brush")
     if writer is not None and writer not in ws:
         raise ValueError(f"BRUSH writer {writer!r} is not in split {split!r}")
     w = writer or ws[seed % len(ws)]
