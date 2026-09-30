@@ -219,9 +219,10 @@ def test_evidence_rows_format():
         rows = list(csv.reader(open(p, newline="", encoding="utf-8")))
         ledger = list(csv.reader(open(REPO_ROOT / "docs" / "evidence.csv", newline="", encoding="utf-8")))
         assert rows[0] == ledger[0] and len(rows[0]) == 23
-        used = {r[0] for r in ledger[1:] if r}
+        used = {r[0]: r for r in ledger[1:] if r}
         for r in rows[1:]:
-            assert len(r) == 23 and r[0] not in used
+            # a new id, or one the lead has already merged into the ledger verbatim
+            assert len(r) == 23 and (r[0] not in used or used[r[0]] == r)
 
 
 def test_write_json_has_provenance(tmp_path):
