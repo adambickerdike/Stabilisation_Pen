@@ -30,6 +30,7 @@ servo's group delay (latency 0.6 ms + 2 zeta / omega_n = 3.39 ms) and is swept i
 """
 from __future__ import annotations
 
+import hashlib
 import math
 from typing import Dict, Optional, Tuple
 
@@ -431,6 +432,9 @@ def raw_estimate(name: str, st, p: Optional[Dict] = None, horizon: Optional[floa
     raise KeyError(name)
 
 
+_TCN_MEMO: Dict[str, np.ndarray] = {}
+
+
 def ai2_tcn(st, shift: float = 0.0):
     """ai2's causal TCN (trained on synthetic writers; R's 'Rev J + AI' row) at lag 0: its 500 Hz outputs held and
     linearly extrapolated to the ticks (ai2.candidates.commands at lag 0, which is what R ran).  shift (s): extra
@@ -442,7 +446,13 @@ def ai2_tcn(st, shift: float = 0.0):
     from fusion import learned as FL
     M = H.ai2_models()
     X, tk = FL.features(st, DA.NET_HZ)
-    Y = L2.predict(M["tcn"], L2.make_inputs("tcn", X))[:, 0, :]
+    key = hashlib.sha1(X.tobytes()).hexdigest()           # the same inputs give the same outputs: reuse them (the
+    Y = _TCN_MEMO.get(key)                                 # horizon sweep runs one case at several shifts)
+    if Y is None:
+        Y = L2.predict(M["tcn"], L2.make_inputs("tcn", X))[:, 0, :]
+        if len(_TCN_MEMO) >= 64:
+            _TCN_MEMO.clear()
+        _TCN_MEMO[key] = Y
     if shift == 0.0:
         return np.ascontiguousarray(L2.hold_extrapolate(tk, Y, st.tick_t)), {"tcn_info": "ai2 build/models tcn"}
     t = st.tick_t

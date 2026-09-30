@@ -23,6 +23,9 @@ def main():
     AN.learned(log=log)
     AN.separability(log=log)
     AN.delay(fr["chosen"], log=log)
+    AN.raw_clean(log=log)
+    AN.int8_ai2tcn(log=log)
+    AN.writer_stats(log=log)
     log("[post] done")
 
 

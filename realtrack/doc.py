@@ -305,8 +305,25 @@ def sim2(out: Dict) -> str:
     return "\n".join(L)
 
 
+TABLES = {"one_number": one_number, "dec055": dec055, "info": info, "per_writer": per_writer,
+          "per_writer_severe": per_writer_severe, "cards": cards, "tuning": tuning, "finalists": finalists, "mcu": mcu,
+          "delay": delay, "sim2": sim2}
+
+
+def assemble(template: str, out: Dict) -> str:
+    """Fill every {{T:name}} of a document template with the generated table (no hand transcription)."""
+    import re
+    return re.sub(r"\{\{T:(\w+)\}\}", lambda m: TABLES[m.group(1)](out), template)
+
+
 def main():
+    import sys
     out = json.loads((RESULTS_DIR / "realtrack.json").read_text())
+    if len(sys.argv) > 2 and sys.argv[1] == "--assemble":           # python3 -m realtrack.doc --assemble TEMPLATE OUT
+        from pathlib import Path
+        Path(sys.argv[3]).write_text(assemble(Path(sys.argv[2]).read_text(), out))
+        print(sys.argv[3])
+        return
     parts = ["## One-number table\n", one_number(out), "\n## DEC-055\n", dec055(out), "\n## Every pen\n", info(out),
              "\n## Clean writing per writer\n", per_writer(out), "\n## Severe tip tremor per note, mm\n", per_writer_severe(out),
              "\n## Results cards\n", cards(out), "\n## Tuning table\n", tuning(out), "\n## Finalists\n", finalists(out),

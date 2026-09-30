@@ -12,7 +12,8 @@ Stages (each resumes from realtrack/build; the container may restart; ONE proces
            results/realtrack/frozen.json (test.py refuses to run without it); then the analyses (post.py)
   test     the one test run on R's test split (test.py) and the CC BY before/after picture runs
   sim2     one confirmation in sim2 (sim2j's ET grid, one writer) if time allows (sim2check.py)
-  report   results/realtrack/*.json with stabpen.provenance, figures with CSV twins, evidence_rows.csv
+  report   results/realtrack/*.json with stabpen.provenance, figures with CSV twins, evidence_rows.csv, and the tables
+           of docs/real_tracker.md (realtrack/build/doc_tables.md; doc.py)
 --quick: the first test note only, severe class only (a smoke run; writes realtrack/build/quick/, never the results).
 """
 from __future__ import annotations
@@ -62,13 +63,21 @@ def stage_test(quick: bool):
 
 
 def stage_sim2(quick: bool):
+    import json
+    from . import BUILD_DIR
     from . import sim2check as S2
-    S2.run(log=log, quick=quick)
+    from .final import summarize_sim2
+    out = S2.run(log=log, quick=quick)
+    if not quick:
+        (BUILD_DIR / "sim2.json").write_text(json.dumps(summarize_sim2(out), default=float))
 
 
 def stage_report(quick: bool):
     from . import report as RP
     RP.write(quick=quick, log=log)
+    if not quick:
+        from . import doc
+        doc.main()
 
 
 def main(argv=None):
